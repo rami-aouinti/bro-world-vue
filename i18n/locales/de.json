@@ -14,7 +14,23 @@
     "user": "Benutzer",
     "notification": "Benachrichtigung",
     "themePalette": "Themenpalette",
-    "copyright": "© Copyright 2023"
+    "copyright": "© Copyright 2023",
+    "rounded": {
+      "label": "Abrundung",
+      "none": "Eckig",
+      "soft": "Sanft",
+      "default": "Standard",
+      "large": "Groß",
+      "extra": "Sehr groß"
+    },
+    "shadow": {
+      "label": "Schattenstil",
+      "flat": "Kein Schatten",
+      "soft": "Sanft",
+      "default": "Standard",
+      "strong": "Stark"
+    },
+    "language": "Sprache"
   },
   "common": {
     "confirm": "Bestätigen",
@@ -113,6 +129,23 @@
         "unit": "￥",
         "caption": "Obergrenze: 2000 ￥"
       }
+    },
+    "showcase": {
+      "badge": "Material Dashboard",
+      "title": "Moderne Hero-Karte fürs Dashboard",
+      "description": "Wiederverwendbarer Bereich mit Aktionen, Liste und Modal für eine bessere UX auf allen Admin-Seiten.",
+      "openModal": "Modal öffnen",
+      "secondaryAction": "Widgets ansehen",
+      "quickActions": "Schnellaktionen",
+      "actionTeam": "Team-Arbeitsbereich",
+      "actionStats": "Analytics-Überblick",
+      "actionSettings": "Design-Einstellungen",
+      "modalTitle": "Dieses Layout ausrollen",
+      "modalDescription": "Bestätige den nächsten Schritt und starte deine Business-Aktion direkt aus diesem Modal.",
+      "modalFeatureA": "Wiederverwendbare Inhalte mit klarer CTA",
+      "modalFeatureB": "Einheitliche Abstände, Typografie und Icons",
+      "modalAction": "Bereitstellen bestätigen",
+      "modalSuccess": "Aktion erfolgreich bestätigt."
     }
   },
   "nested": {

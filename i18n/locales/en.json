@@ -14,7 +14,23 @@
     "user": "User",
     "notification": "Notification",
     "themePalette": "Theme Palette",
-    "copyright": "© Copyright 2023"
+    "copyright": "© Copyright 2023",
+    "rounded": {
+      "label": "Rounded style",
+      "none": "Squared",
+      "soft": "Soft",
+      "default": "Default",
+      "large": "Large",
+      "extra": "Extra large"
+    },
+    "shadow": {
+      "label": "Shadow style",
+      "flat": "No shadow",
+      "soft": "Soft",
+      "default": "Default",
+      "strong": "Strong"
+    },
+    "language": "Language"
   },
   "common": {
     "confirm": "Confirm",
@@ -113,6 +129,23 @@
         "unit": "￥",
         "caption": "Upper Limit: 2000 ￥"
       }
+    },
+    "showcase": {
+      "badge": "Material Dashboard",
+      "title": "Modern dashboard hero card",
+      "description": "Reusable section with actions, list and modal for cleaner UX across admin pages.",
+      "openModal": "Open action modal",
+      "secondaryAction": "Explore widgets",
+      "quickActions": "Quick actions",
+      "actionTeam": "Team workspace",
+      "actionStats": "Analytics overview",
+      "actionSettings": "Design settings",
+      "modalTitle": "Deploy this layout",
+      "modalDescription": "Confirm the next step and trigger your custom business action from this modal.",
+      "modalFeatureA": "Reusable content slots and clear CTA",
+      "modalFeatureB": "Consistent spacing, typography and iconography",
+      "modalAction": "Confirm deployment",
+      "modalSuccess": "Action confirmed successfully."
     }
   },
   "nested": {
