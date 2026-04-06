@@ -1,6 +1,8 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
 definePageMeta({
-  title: 'Service',
+  title: 'appbar.service',
 })
 </script>
 
@@ -51,7 +53,7 @@ definePageMeta({
     </PageDrawers>
 
     <v-container fluid>
-      <h1 class="text-h3 mb-4">Service</h1>
+      <h1 class="text-h3 mb-4">{{ t('appbar.service') }}</h1>
       <p>Découvrez nos services et comment nous pouvons vous accompagner.</p>
     </v-container>
   </div>
