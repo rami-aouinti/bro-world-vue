@@ -26,7 +26,6 @@ const title = computed(() => {
   const pageTitle = route.meta?.title || route.matched[0]?.meta?.title || ''
   return translateIfKey(pageTitle)
 })
-const isPublicPage = computed(() => Boolean(route.meta?.publicPage))
 useHead({
   title,
   titleTemplate: (pageTitle) =>
@@ -57,11 +56,17 @@ useSeoMeta({
 
 <style scoped>
 .v-main {
-  padding-top: 0;
+  padding-top: 104px;
   padding-bottom: 0;
   overflow-y: auto;
   transition-property: padding;
   min-height: 100vh;
+}
+
+@media (max-width: 960px) {
+  .v-main {
+    padding-top: 92px;
+  }
 }
 
 .v-main-public {
