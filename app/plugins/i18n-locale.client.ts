@@ -12,12 +12,15 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
   const { locale, setLocale } = i18n
 
-  const syncLocale = async (requestedLocale: string) => {
-    const normalizedLocale = SUPPORTED_LOCALES.has(requestedLocale)
-      ? requestedLocale
-      : FALLBACK_LOCALE
+  const normalizeLocale = (requestedLocale: string) =>
+    SUPPORTED_LOCALES.has(requestedLocale) ? requestedLocale : FALLBACK_LOCALE
 
-    await setLocale(normalizedLocale)
+  const syncLocale = async (requestedLocale: string) => {
+    const normalizedLocale = normalizeLocale(requestedLocale)
+
+    if (locale.value !== normalizedLocale) {
+      await setLocale(normalizedLocale)
+    }
 
     localStorage.setItem(STORAGE_KEY, normalizedLocale)
     document.documentElement.lang = normalizedLocale
@@ -27,6 +30,8 @@ export default defineNuxtPlugin((nuxtApp) => {
   void syncLocale(storedLocale ?? FALLBACK_LOCALE)
 
   watch(locale, (nextLocale) => {
-    void syncLocale(nextLocale)
+    const normalizedLocale = normalizeLocale(nextLocale)
+    localStorage.setItem(STORAGE_KEY, normalizedLocale)
+    document.documentElement.lang = normalizedLocale
   })
 })
