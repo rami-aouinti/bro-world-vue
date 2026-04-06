@@ -10,6 +10,8 @@ const route = useRoute()
 const { locale, t } = useI18n()
 const rounded = useStorage('theme-rounded', 'md')
 const shadow = useStorage('theme-shadow', 'none')
+const showLeftDrawer = useState('show-left-drawer', () => true)
+const showRightDrawer = useState('show-right-drawer', () => true)
 const translateIfKey = (key: unknown) =>
   typeof key === 'string' && key ? t(key) : ''
 
@@ -44,8 +46,9 @@ useSeoMeta({
 <template>
   <v-app>
     <template v-if="!isPublicPage">
-      <AppDrawer />
       <AppBar />
+      <AppDrawer v-if="showLeftDrawer" />
+      <AppRightDrawer v-if="showRightDrawer" />
     </template>
     <v-main :class="{ 'v-main-public': isPublicPage }">
       <NuxtPage />
@@ -58,16 +61,12 @@ useSeoMeta({
 .v-main {
   padding-top: 0;
   padding-bottom: 0;
-  margin-top: 64px;
-  margin-bottom: 32px;
-  height: calc(100vh - 64px - 32px);
   overflow-y: auto;
   transition-property: padding;
+  min-height: 100vh;
 }
 
 .v-main-public {
-  margin-top: 0;
-  margin-bottom: 0;
-  height: 100vh;
+  min-height: 100vh;
 }
 </style>
