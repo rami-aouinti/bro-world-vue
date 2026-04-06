@@ -26,7 +26,7 @@ const breadcrumbs = computed(() => {
     <AppDrawer v-if="showLeftDrawer" />
     <AppRightDrawer v-if="showRightDrawer" />
     <v-main>
-      <v-container fluid class="px-6 pt-4 pb-0">
+      <v-container fluid class="px-2 pt-0 pb-0">
         <v-breadcrumbs :items="breadcrumbs" />
       </v-container>
       <slot />

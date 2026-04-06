@@ -110,7 +110,6 @@ const drawerCards = computed(() => {
   border-radius: 24px;
   margin-top: 56px;
   margin-right: 16px;
-  height: calc(100% - 72px);
 }
 
 .app-right-drawer-list {

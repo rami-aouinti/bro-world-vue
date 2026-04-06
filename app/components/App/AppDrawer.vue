@@ -17,7 +17,6 @@ const drawer = computed({
 const rail = computed(() => !drawerState.value && !mobile.value)
 routes.sort((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98))
 
-drawerState.value = lgAndUp.value && width.value !== 1280
 </script>
 
 <template>
@@ -63,7 +62,7 @@ drawerState.value = lgAndUp.value && width.value !== 1280
     border-radius: 24px;
     margin-top: 56px;
     margin-left: 16px;
-    height: calc(100% - 72px);
+    height: calc(100% - 10px);
   }
   transition-property:
     box-shadow, transform, visibility, width, height, left, right, top, bottom,

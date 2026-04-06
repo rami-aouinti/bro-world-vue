@@ -338,10 +338,6 @@
     font-size: $v-list-item-mini-font-size;
   }
 
-  .v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
-    color: $v-list-item-title-color !important;
-  }
-
   .v-list-item:not(.v-list-item--active):not(.v-list-item--disabled):not(.has-children) {
     &:focus,
     &:hover {
@@ -538,7 +534,6 @@
 }
 
 .drawer-state {
-  width: 100%;
   height: 100%;
   width: calc(100% - #{$v-main-margin-left});
   right: 0;

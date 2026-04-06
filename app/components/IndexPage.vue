@@ -21,11 +21,10 @@ const items = computed(() =>
 <template>
   <v-container>
     <v-row>
-      <v-col>
-        <v-card v-for="item in items" :key="item.title" class="mb-1">
+      <v-col v-for="item in items" :key="item.title" cols="12" md="6" lg="4">
+        <v-card class="mb-1">
           <v-list-item
             v-bind="item"
-            append-icon="mdi-chevron-right"
             :ripple="false"
             class="py-4"
           />
