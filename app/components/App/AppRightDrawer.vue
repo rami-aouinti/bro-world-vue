@@ -1,13 +1,6 @@
 <script setup lang="ts">
 const rightDrawerOpen = useState('right-drawer-open', () => true)
-const registry = useDrawerSlotRegistry()
-const rightDrawerComponent = computed(() =>
-  registry?.right.value
-    ? {
-        render: registry.right.value,
-      }
-    : null,
-)
+const hasPageRightDrawer = useState('has-page-right-drawer', () => false)
 </script>
 
 <template>
@@ -19,8 +12,8 @@ const rightDrawerComponent = computed(() =>
     floating
     class="app-right-drawer"
   >
-    <component :is="rightDrawerComponent" v-if="rightDrawerComponent" />
-    <v-list v-else nav density="compact" class="app-right-drawer-list" />
+    <div v-show="hasPageRightDrawer" id="page-right-drawer-content" class="app-right-drawer-list" />
+    <v-list v-if="!hasPageRightDrawer" nav density="compact" class="app-right-drawer-list" />
     <v-spacer />
     <template #append>
       <v-list-item class="drawer-footer px-0" />

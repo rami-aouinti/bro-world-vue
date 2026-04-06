@@ -3,25 +3,24 @@ import { onUnmounted, useSlots } from 'vue'
 
 const slots = useSlots()
 
-const registry = useDrawerSlotRegistry()
+const hasPageLeftDrawer = useState('has-page-left-drawer', () => false)
+const hasPageRightDrawer = useState('has-page-right-drawer', () => false)
 
-const LeftDrawerContent = slots.left || null
-const RightDrawerContent = slots.right || null
-
-registry?.setLeft(LeftDrawerContent)
-registry?.setRight(RightDrawerContent)
+hasPageLeftDrawer.value = Boolean(slots.left)
+hasPageRightDrawer.value = Boolean(slots.right)
 
 onUnmounted(() => {
-  if (registry?.left.value === LeftDrawerContent) {
-    registry.setLeft(null)
-  }
-
-  if (registry?.right.value === RightDrawerContent) {
-    registry.setRight(null)
-  }
+  hasPageLeftDrawer.value = false
+  hasPageRightDrawer.value = false
 })
 </script>
 
 <template>
-  <div class="d-none" aria-hidden="true" />
+  <Teleport v-if="$slots.left" to="#page-left-drawer-content">
+    <slot name="left" />
+  </Teleport>
+
+  <Teleport v-if="$slots.right" to="#page-right-drawer-content">
+    <slot name="right" />
+  </Teleport>
 </template>
