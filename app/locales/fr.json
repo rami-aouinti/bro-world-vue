@@ -3,6 +3,127 @@
     "name": "Vitify Admin",
     "welcome": "Bienvenue"
   },
+  "appbar": {
+    "dashboard": "Tableau de bord",
+    "table": "Tableau de données",
+    "nested": "Routes imbriquées",
+    "auth": "Authentification",
+    "login": "Connexion",
+    "register": "Inscription",
+    "logout": "Déconnexion",
+    "user": "Utilisateur",
+    "notification": "Notification",
+    "themePalette": "Palette de thème",
+    "copyright": "© Copyright 2023"
+  },
+  "common": {
+    "confirm": "Confirmer",
+    "cancel": "Annuler",
+    "search": "Rechercher",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "copy": "Copier",
+    "helloWorld": "Bonjour le monde",
+    "whatsYourName": "Comment vous appelez-vous ?"
+  },
+  "dialog": {
+    "deleteDessertConfirm": "Voulez-vous vraiment supprimer ce dessert ?"
+  },
+  "notification": {
+    "deleted": "Supprimé",
+    "none": "Aucune nouvelle notification",
+    "clearAll": "Effacer toutes les notifications",
+    "hide": "Masquer les notifications",
+    "greeting": "Salut, {name} !",
+    "warningRefuse": "Comment osez-vous me refuser, {name}."
+  },
+  "table": {
+    "headers": {
+      "dessert": "Dessert (portion de 100g)",
+      "calories": "Calories",
+      "fat": "Lipides (g)",
+      "carbs": "Glucides (g)",
+      "protein": "Protéines (g)",
+      "iron": "Fer (%)",
+      "actions": "Actions",
+      "id": "ID",
+      "name": "Nom",
+      "title": "Titre",
+      "email": "E-mail",
+      "role": "Rôle"
+    }
+  },
+  "dashboard": {
+    "caption": "Template de démarrage opinionné",
+    "days": {
+      "mon": "Lun",
+      "tue": "Mar",
+      "wed": "Mer",
+      "thu": "Jeu",
+      "fri": "Ven",
+      "sat": "Sam",
+      "sun": "Dim"
+    },
+    "charts": {
+      "pageA": "Page A",
+      "pageB": "Page B",
+      "pageC": "Page C",
+      "industries": "Industries",
+      "technology": "Technologie",
+      "forex": "Forex",
+      "gold": "Or",
+      "forecasts": "Prévisions",
+      "weeklyArticles": "ARTICLES HEBDOMADAIRES"
+    },
+    "radar": {
+      "sales": "Ventes",
+      "administration": "Administration",
+      "technology": "Technologie",
+      "customerSupport": "Support client",
+      "development": "Développement",
+      "marketing": "Marketing",
+      "allocatedBudget": "Budget alloué",
+      "expectedSpending": "Dépenses prévues",
+      "actualSpending": "Dépenses réelles"
+    },
+    "stats": {
+      "bandwidth": {
+        "title": "Bande passante",
+        "unit": "Go",
+        "caption": "Montant : 13, Descendant : 10"
+      },
+      "submissions": {
+        "title": "Soumissions",
+        "caption": "Trop jeune, trop naïf"
+      },
+      "requests": {
+        "title": "Requêtes",
+        "caption": "Limite : 1320"
+      },
+      "messages": {
+        "title": "Messages",
+        "caption": "Avertissements : 300, erreurs : 47"
+      },
+      "githubStars": {
+        "title": "Étoiles GitHub",
+        "caption": "L'API ne répond pas"
+      },
+      "totalFee": {
+        "title": "Frais totaux",
+        "unit": "￥",
+        "caption": "Limite supérieure : 2000 ￥"
+      }
+    }
+  },
+  "nested": {
+    "menu1": "Menu 1",
+    "menu2": {
+      "title": "Menu 2",
+      "menu21": "Menu 2-1",
+      "menu22": "Menu 2-2"
+    },
+    "emptyPage": "Page vide"
+  },
   "auth": {
     "login": {
       "title": "Connexion",

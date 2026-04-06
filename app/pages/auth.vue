@@ -1,20 +1,22 @@
 <script setup lang="ts">
 import type { DataTableHeader } from 'vuetify'
 
+const { t } = useI18n()
+
 definePageMeta({
   icon: 'mdi-security',
-  title: 'Auth',
+  title: 'appbar.auth',
   drawerIndex: 4,
   middleware: 'auth',
 })
 
 const headers: DataTableHeader[] = [
-  { title: 'ID', key: 'id' },
-  { title: 'Name', key: 'name' },
-  { title: 'Title', key: 'title' },
-  { title: 'Email', key: 'email' },
-  { title: 'Role', key: 'role' },
-  { title: 'Actions', key: 'actions' },
+  { title: t('table.headers.id'), key: 'id' },
+  { title: t('table.headers.name'), key: 'name' },
+  { title: t('table.headers.title'), key: 'title' },
+  { title: t('table.headers.email'), key: 'email' },
+  { title: t('table.headers.role'), key: 'role' },
+  { title: t('table.headers.actions'), key: 'actions' },
 ]
 
 const { data: people } = await useFetch('/api/people')
@@ -58,9 +60,9 @@ watch(loggedIn, () => {
                   },
                 }"
               >
-                <v-btn v-tooltip="{ text: 'Edit' }" icon="mdi-pencil" />
-                <v-btn v-tooltip="{ text: 'Copy' }" icon="mdi-content-copy" />
-                <v-btn v-tooltip="{ text: 'Delete' }" icon="mdi-delete" />
+                <v-btn v-tooltip="{ text: t('common.edit') }" icon="mdi-pencil" />
+                <v-btn v-tooltip="{ text: t('common.copy') }" icon="mdi-content-copy" />
+                <v-btn v-tooltip="{ text: t('common.delete') }" icon="mdi-delete" />
               </v-defaults-provider>
             </template>
           </v-data-table>

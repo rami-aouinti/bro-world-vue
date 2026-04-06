@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
 const router = useRouter()
 const routes = router.getRoutes().filter((r) => r.path.lastIndexOf('/') === 0)
 const drawerState = useState('drawer', () => true)
@@ -40,7 +42,7 @@ drawerState.value = lgAndUp.value && width.value !== 1280
             class="text-headline-small font-weight-bold"
             style="line-height: 2rem"
           >
-            Vitify <span class="text-primary">Admin</span>
+            {{ t('app.name') }}
           </v-list-item-title>
         </v-list-item>
       </v-list>
@@ -52,7 +54,7 @@ drawerState.value = lgAndUp.value && width.value !== 1280
     <template #append>
       <v-list-item class="drawer-footer px-0 d-flex flex-column justify-center">
         <div class="text-body-small pt-6 pt-md-0 text-center text-no-wrap">
-          &copy; Copyright 2023
+          {{ t('appbar.copyright') }}
           <a
             href="https://github.com/kingyue737"
             class="font-weight-bold text-primary"

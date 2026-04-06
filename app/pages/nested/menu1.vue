@@ -1,9 +1,9 @@
 <script setup lang="ts">
 definePageMeta({
-  title: 'Menu 1',
+  title: 'nested.menu1',
   icon: 'mdi-animation',
 })
 </script>
 <template>
-  <v-container fluid> empty page </v-container>
+  <v-container fluid>{{ $t('nested.emptyPage') }}</v-container>
 </template>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
 const option: ECOption = {
   backgroundColor: 'transparent',
   radar: {
@@ -16,18 +18,22 @@ const option: ECOption = {
       },
     },
     indicator: [
-      { name: 'Sales' },
-      { name: 'Administration' },
-      { name: 'Technology' },
-      { name: 'Customer Support' },
-      { name: 'Development' },
-      { name: 'Marketing' },
+      { name: t('dashboard.radar.sales') },
+      { name: t('dashboard.radar.administration') },
+      { name: t('dashboard.radar.technology') },
+      { name: t('dashboard.radar.customerSupport') },
+      { name: t('dashboard.radar.development') },
+      { name: t('dashboard.radar.marketing') },
     ],
   },
   legend: {
     left: 'center',
     bottom: '10',
-    data: ['Allocated Budget', 'Expected Spending', 'Actual Spending'],
+    data: [
+      t('dashboard.radar.allocatedBudget'),
+      t('dashboard.radar.expectedSpending'),
+      t('dashboard.radar.actualSpending'),
+    ],
   },
   series: [
     {
@@ -43,15 +49,15 @@ const option: ECOption = {
       data: [
         {
           value: [5000, 7000, 12000, 11000, 15000, 14000],
-          name: 'Allocated Budget',
+          name: t('dashboard.radar.allocatedBudget'),
         },
         {
           value: [4000, 9000, 15000, 15000, 13000, 11000],
-          name: 'Expected Spending',
+          name: t('dashboard.radar.expectedSpending'),
         },
         {
           value: [5500, 5000, 12000, 15000, 8000, 6000],
-          name: 'Actual Spending',
+          name: t('dashboard.radar.actualSpending'),
         },
       ],
     },

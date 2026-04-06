@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  title: 'Menu 2',
+  title: 'nested.menu2.title',
   icon: 'mdi-view-list',
 })
 </script>

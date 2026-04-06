@@ -3,6 +3,127 @@
     "name": "Vitify Admin",
     "welcome": "Willkommen"
   },
+  "appbar": {
+    "dashboard": "Dashboard",
+    "table": "Datentabelle",
+    "nested": "Verschachtelte Routen",
+    "auth": "Authentifizierung",
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "logout": "Abmelden",
+    "user": "Benutzer",
+    "notification": "Benachrichtigung",
+    "themePalette": "Themenpalette",
+    "copyright": "© Copyright 2023"
+  },
+  "common": {
+    "confirm": "Bestätigen",
+    "cancel": "Abbrechen",
+    "search": "Suchen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "copy": "Kopieren",
+    "helloWorld": "Hallo Welt",
+    "whatsYourName": "Wie heißt du?"
+  },
+  "dialog": {
+    "deleteDessertConfirm": "Möchtest du dieses Dessert wirklich löschen?"
+  },
+  "notification": {
+    "deleted": "Gelöscht",
+    "none": "Keine neuen Benachrichtigungen",
+    "clearAll": "Alle Benachrichtigungen löschen",
+    "hide": "Benachrichtigungen ausblenden",
+    "greeting": "Hi, {name}!",
+    "warningRefuse": "Wie kannst du mich ablehnen, {name}."
+  },
+  "table": {
+    "headers": {
+      "dessert": "Dessert (100g Portion)",
+      "calories": "Kalorien",
+      "fat": "Fett (g)",
+      "carbs": "Kohlenhydrate (g)",
+      "protein": "Protein (g)",
+      "iron": "Eisen (%)",
+      "actions": "Aktionen",
+      "id": "ID",
+      "name": "Name",
+      "title": "Titel",
+      "email": "E-Mail",
+      "role": "Rolle"
+    }
+  },
+  "dashboard": {
+    "caption": "Meinungsstarkes Starter-Template",
+    "days": {
+      "mon": "Mo",
+      "tue": "Di",
+      "wed": "Mi",
+      "thu": "Do",
+      "fri": "Fr",
+      "sat": "Sa",
+      "sun": "So"
+    },
+    "charts": {
+      "pageA": "Seite A",
+      "pageB": "Seite B",
+      "pageC": "Seite C",
+      "industries": "Industrie",
+      "technology": "Technologie",
+      "forex": "Forex",
+      "gold": "Gold",
+      "forecasts": "Prognosen",
+      "weeklyArticles": "WÖCHENTLICHE ARTIKEL"
+    },
+    "radar": {
+      "sales": "Vertrieb",
+      "administration": "Verwaltung",
+      "technology": "Technologie",
+      "customerSupport": "Kundensupport",
+      "development": "Entwicklung",
+      "marketing": "Marketing",
+      "allocatedBudget": "Zugewiesenes Budget",
+      "expectedSpending": "Erwartete Ausgaben",
+      "actualSpending": "Tatsächliche Ausgaben"
+    },
+    "stats": {
+      "bandwidth": {
+        "title": "Bandbreite",
+        "unit": "GB",
+        "caption": "Upload: 13, Download: 10"
+      },
+      "submissions": {
+        "title": "Einreichungen",
+        "caption": "Zu jung, zu naiv"
+      },
+      "requests": {
+        "title": "Anfragen",
+        "caption": "Limit: 1320"
+      },
+      "messages": {
+        "title": "Nachrichten",
+        "caption": "Warnungen: 300, Fehler: 47"
+      },
+      "githubStars": {
+        "title": "GitHub-Sterne",
+        "caption": "API antwortet nicht"
+      },
+      "totalFee": {
+        "title": "Gesamtgebühr",
+        "unit": "￥",
+        "caption": "Obergrenze: 2000 ￥"
+      }
+    }
+  },
+  "nested": {
+    "menu1": "Menü 1",
+    "menu2": {
+      "title": "Menü 2",
+      "menu21": "Menü 2-1",
+      "menu22": "Menü 2-2"
+    },
+    "emptyPage": "Leere Seite"
+  },
   "auth": {
     "login": {
       "title": "Anmelden",

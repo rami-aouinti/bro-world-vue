@@ -3,6 +3,127 @@
     "name": "Vitify Admin",
     "welcome": "Welcome"
   },
+  "appbar": {
+    "dashboard": "Dashboard",
+    "table": "Data Table",
+    "nested": "Nested Routes",
+    "auth": "Auth",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "user": "User",
+    "notification": "Notification",
+    "themePalette": "Theme Palette",
+    "copyright": "© Copyright 2023"
+  },
+  "common": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "search": "Search",
+    "delete": "Delete",
+    "edit": "Edit",
+    "copy": "Copy",
+    "helloWorld": "Hello World",
+    "whatsYourName": "What's your name?"
+  },
+  "dialog": {
+    "deleteDessertConfirm": "Are you sure you want to delete this dessert?"
+  },
+  "notification": {
+    "deleted": "Deleted",
+    "none": "No New Notifications",
+    "clearAll": "Clear All Notifications",
+    "hide": "Hide Notifications",
+    "greeting": "Hi, {name}!",
+    "warningRefuse": "How dare you refuse me, {name}."
+  },
+  "table": {
+    "headers": {
+      "dessert": "Dessert (100g serving)",
+      "calories": "Calories",
+      "fat": "Fat (g)",
+      "carbs": "Carbs (g)",
+      "protein": "Protein (g)",
+      "iron": "Iron (%)",
+      "actions": "Actions",
+      "id": "ID",
+      "name": "Name",
+      "title": "Title",
+      "email": "Email",
+      "role": "Role"
+    }
+  },
+  "dashboard": {
+    "caption": "Opinionated Starter Template",
+    "days": {
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
+    },
+    "charts": {
+      "pageA": "Page A",
+      "pageB": "Page B",
+      "pageC": "Page C",
+      "industries": "Industries",
+      "technology": "Technology",
+      "forex": "Forex",
+      "gold": "Gold",
+      "forecasts": "Forecasts",
+      "weeklyArticles": "WEEKLY WRITE ARTICLES"
+    },
+    "radar": {
+      "sales": "Sales",
+      "administration": "Administration",
+      "technology": "Technology",
+      "customerSupport": "Customer Support",
+      "development": "Development",
+      "marketing": "Marketing",
+      "allocatedBudget": "Allocated Budget",
+      "expectedSpending": "Expected Spending",
+      "actualSpending": "Actual Spending"
+    },
+    "stats": {
+      "bandwidth": {
+        "title": "Bandwidth",
+        "unit": "GB",
+        "caption": "Up: 13, Down: 10"
+      },
+      "submissions": {
+        "title": "Submissions",
+        "caption": "Too young, too naive"
+      },
+      "requests": {
+        "title": "Requests",
+        "caption": "Limit: 1320"
+      },
+      "messages": {
+        "title": "Messages",
+        "caption": "Warnings: 300, errors: 47"
+      },
+      "githubStars": {
+        "title": "GitHub Stars",
+        "caption": "API has no response"
+      },
+      "totalFee": {
+        "title": "Total Fee",
+        "unit": "￥",
+        "caption": "Upper Limit: 2000 ￥"
+      }
+    }
+  },
+  "nested": {
+    "menu1": "Menu 1",
+    "menu2": {
+      "title": "Menu 2",
+      "menu21": "Menu 2-1",
+      "menu22": "Menu 2-2"
+    },
+    "emptyPage": "Empty page"
+  },
   "auth": {
     "login": {
       "title": "Sign in",

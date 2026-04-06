@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  title: 'Login',
+  title: 'appbar.login',
   publicPage: true,
 })
 

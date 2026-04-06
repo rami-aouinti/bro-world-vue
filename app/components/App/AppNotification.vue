@@ -5,6 +5,7 @@ const notificationsShown = computed(() =>
   notifications.value.filter((notification) => notification.show).reverse(),
 )
 const showAll = ref(false)
+const { t } = useI18n()
 const timeout = computed(() => (showAll.value ? -1 : 5000))
 function deleteNotification(id: number) {
   notificationStore.delNotification(id)
@@ -22,7 +23,7 @@ function toggleAll() {
 
 <template>
   <v-btn
-    v-tooltip="{ text: 'Notification', location: 'top' }"
+    v-tooltip="{ text: t('appbar.notification'), location: 'top' }"
     :icon="notifications.length ? 'mdi-bell-badge-outline' : 'mdi-bell-outline'"
     :rounded="0"
     @click="toggleAll"
@@ -39,17 +40,19 @@ function toggleAll() {
           <v-toolbar-title
             class="font-weight-light text-body-large"
             :text="
-              notifications.length ? 'Notification' : 'No New Notifications'
+              notifications.length
+                ? t('appbar.notification')
+                : t('notification.none')
             "
           />
           <v-btn
-            v-tooltip="{ text: 'Clear All Notifications', location: 'top' }"
+            v-tooltip="{ text: t('notification.clearAll'), location: 'top' }"
             size="small"
             icon="mdi-bell-remove"
             @click="emptyNotifications"
           />
           <v-btn
-            v-tooltip="{ text: 'Hide Notifications', location: 'top' }"
+            v-tooltip="{ text: t('notification.hide'), location: 'top' }"
             class="mr-0"
             size="small"
             icon="$expand"

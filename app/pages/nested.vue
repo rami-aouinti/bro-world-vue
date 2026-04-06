@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  title: 'Nested Routes',
+  title: 'appbar.nested',
   icon: 'mdi-view-list',
   drawerIndex: 2,
 })

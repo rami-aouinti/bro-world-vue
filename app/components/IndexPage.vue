@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const route = useRoute()
+const { t } = useI18n()
 
 const items = computed(() =>
   route.matched
@@ -9,10 +10,10 @@ const items = computed(() =>
       (a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98),
     )
     .map((c) => ({
-      title: c.meta?.title,
+      title: typeof c.meta?.title === 'string' ? t(c.meta.title) : '',
       to: c.name ? c : `${route.path}/${c.path}`,
       prependIcon: c.meta?.icon,
-      subtitle: c.meta?.subtitle,
+      subtitle: typeof c.meta?.subtitle === 'string' ? t(c.meta.subtitle) : '',
     })),
 )
 </script>
