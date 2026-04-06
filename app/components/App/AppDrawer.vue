@@ -30,7 +30,7 @@ drawerState.value = lgAndUp.value && width.value !== 1280
     floating
     class="app-left-drawer"
   >
-    <v-list nav density="compact">
+    <v-list nav density="compact" class="app-left-drawer-list">
       <AppDrawerItem v-for="route in routes" :key="route.name" :item="route" />
     </v-list>
     <v-spacer />
@@ -107,6 +107,11 @@ drawerState.value = lgAndUp.value && width.value !== 1280
   .drawer-footer {
     transition: all 0.2s;
     min-height: 30px;
+  }
+  .app-left-drawer-list {
+    min-height: calc(100% - 96px);
+    max-height: calc(100% - 96px);
+    overflow-y: auto;
   }
   .drawer-header-icon {
     opacity: 1;

@@ -11,7 +11,7 @@ const rightDrawerOpen = useState('right-drawer-open', () => true)
     floating
     class="app-right-drawer"
   >
-    <div class="pa-4" />
+    <v-list class="app-right-drawer-list" />
   </v-navigation-drawer>
 </template>
 
@@ -21,5 +21,10 @@ const rightDrawerOpen = useState('right-drawer-open', () => true)
   margin-top: 56px;
   margin-right: 16px;
   height: calc(100% - 72px);
+}
+
+.app-right-drawer-list {
+  min-height: calc(100% - 96px);
+  max-height: calc(100% - 96px);
 }
 </style>
