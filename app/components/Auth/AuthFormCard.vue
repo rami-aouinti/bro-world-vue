@@ -1,4 +1,6 @@
 <script setup lang="ts">
+type SocialProvider = 'github' | 'google' | 'facebook'
+
 const props = withDefaults(
   defineProps<{
     mode: 'login' | 'register'
@@ -32,6 +34,24 @@ const form = reactive({
 })
 const valid = ref(false)
 const showPassword = ref(false)
+const socialLoadingProvider = ref<SocialProvider | null>(null)
+const socialProviders: Array<{ key: SocialProvider; icon: string; label: string }> = [
+  {
+    key: 'github',
+    icon: 'mdi-github',
+    label: 'GitHub',
+  },
+  {
+    key: 'google',
+    icon: 'mdi-google',
+    label: 'Google',
+  },
+  {
+    key: 'facebook',
+    icon: 'mdi-facebook',
+    label: 'Facebook',
+  },
+]
 
 const rules = {
   required: (v: string) => !!v || t('auth.validation.required'),
@@ -48,6 +68,26 @@ function onSubmit() {
     remember: !isRegister.value ? form.remember : undefined,
     termsAccepted: isRegister.value ? form.termsAccepted : undefined,
   })
+}
+
+async function onSocialLogin(provider: SocialProvider) {
+  if (props.loading || socialLoadingProvider.value) {
+    return
+  }
+
+  socialLoadingProvider.value = provider
+
+  try {
+    if (provider === 'github') {
+      await navigateTo(`/api/auth/${provider}`, { external: true })
+      return
+    }
+
+    Notify.warning('Coming soon')
+  }
+  finally {
+    socialLoadingProvider.value = null
+  }
 }
 </script>
 
@@ -147,6 +187,26 @@ function onSubmit() {
         >
           {{ isRegister ? t('auth.register.submit') : t('auth.login.submit') }}
         </v-btn>
+
+        <v-divider class="my-4" />
+
+        <div class="d-flex flex-column ga-2" role="group" aria-label="Social auth">
+          <v-btn
+            v-for="provider in socialProviders"
+            :key="provider.key"
+            variant="outlined"
+            block
+            color="primary"
+            class="text-none"
+            :prepend-icon="provider.icon"
+            :loading="socialLoadingProvider === provider.key"
+            :disabled="loading || !!socialLoadingProvider"
+            :aria-label="`Continue with ${provider.label}`"
+            @click="onSocialLogin(provider.key)"
+          >
+            Continue with {{ provider.label }}
+          </v-btn>
+        </div>
 
         <div class="text-center text-body-2 mt-4">
           <slot name="switch" />
