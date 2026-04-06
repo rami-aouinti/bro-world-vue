@@ -129,12 +129,18 @@ drawerState.value = lgAndUp.value && width.value !== 1280
   .app-left-drawer-list {
     .v-list-item {
       transition: all 0.2s;
+      min-height: 40px;
+      padding-block: 0;
       padding-inline: 12px 8px;
     }
     .v-list-item__prepend {
       margin-inline-end: 12px;
     }
+    .v-list-group__items {
+      padding-block: 0;
+    }
     .v-list-group__items .v-list-item {
+      min-height: 36px;
       padding-inline-start: calc(var(--v-list-indent) + 12px) !important;
     }
   }
