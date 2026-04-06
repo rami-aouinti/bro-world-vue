@@ -4,7 +4,7 @@ import { mergeProps } from 'vue'
 const theme = useTheme()
 const drawer = useState('drawer')
 const route = useRoute()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 function getMetaTitle(title: unknown) {
   if (typeof title !== 'string') return ''
@@ -12,6 +12,7 @@ function getMetaTitle(title: unknown) {
 }
 
 const breadcrumbs = computed(() => {
+  locale.value
   return route!.matched
     .filter((item) => item.meta && item.meta.title)
     .map((r) => ({

@@ -78,6 +78,9 @@ const stats = ref([
         </StatsCard>
       </v-col>
     </v-row>
+
+    <ShowcaseDesignCards class="mb-6" />
+
     <v-row>
       <v-col cols="12" md="6" lg="12">
         <v-card class="pa-2">
