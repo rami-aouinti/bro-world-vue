@@ -1,6 +1,6 @@
 @use "sass:map";
 @use "variables" as *;
-@use "../variables/typography" as *;
+@use "typography" as *;
 .btn-toggler-hover .drawer-toggler-inner {
   &:hover .drawer-toggler-line,
   &:focus .drawer-toggler-line {
