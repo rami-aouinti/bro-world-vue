@@ -39,17 +39,17 @@ const socialProviders: Array<{ key: SocialProvider; icon: string; label: string 
   {
     key: 'github',
     icon: 'mdi-github',
-    label: 'GitHub',
+    label: t('auth.social.github'),
   },
   {
     key: 'google',
     icon: 'mdi-google',
-    label: 'Google',
+    label: t('auth.social.google'),
   },
   {
     key: 'facebook',
     icon: 'mdi-facebook',
-    label: 'Facebook',
+    label: t('auth.social.facebook'),
   },
 ]
 
@@ -83,7 +83,7 @@ async function onSocialLogin(provider: SocialProvider) {
       return
     }
 
-    Notify.warning('Coming soon')
+    Notify.warning(t('auth.social.comingSoon'))
   }
   finally {
     socialLoadingProvider.value = null
@@ -157,7 +157,7 @@ async function onSocialLogin(provider: SocialProvider) {
             to="/forgot-password"
             class="text-body-2 text-primary font-weight-medium text-decoration-none"
           >
-            {{ t('auth.forgotPassword.cta') }}
+            {{ t('auth.login.forgotPassword') }}
           </NuxtLink>
         </div>
 
@@ -190,7 +190,11 @@ async function onSocialLogin(provider: SocialProvider) {
 
         <v-divider class="my-4" />
 
-        <div class="d-flex flex-column ga-2" role="group" aria-label="Social auth">
+        <div
+          class="d-flex flex-column ga-2"
+          role="group"
+          :aria-label="t('auth.social.groupAria')"
+        >
           <v-btn
             v-for="provider in socialProviders"
             :key="provider.key"
@@ -201,10 +205,10 @@ async function onSocialLogin(provider: SocialProvider) {
             :prepend-icon="provider.icon"
             :loading="socialLoadingProvider === provider.key"
             :disabled="loading || !!socialLoadingProvider"
-            :aria-label="`Continue with ${provider.label}`"
+            :aria-label="t('auth.social.continueWith', { provider: provider.label })"
             @click="onSocialLogin(provider.key)"
           >
-            Continue with {{ provider.label }}
+            {{ t('auth.social.continueWith', { provider: provider.label }) }}
           </v-btn>
         </div>
 

@@ -31,7 +31,11 @@
       "strong": "Strong"
     },
     "language": "Language",
-    "forgotPassword": "Forgot password"
+    "forgotPassword": "Forgot password",
+    "showRightDrawer": "Show right drawer",
+    "hideRightDrawer": "Hide right drawer",
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
   },
   "common": {
     "confirm": "Confirm",
@@ -165,7 +169,8 @@
       "rememberMe": "Remember me",
       "submit": "Sign in",
       "switchPrompt": "Don't have an account?",
-      "switchCta": "Create an account"
+      "switchCta": "Create an account",
+      "forgotPassword": "Forgot password?"
     },
     "register": {
       "title": "Create account",
@@ -190,7 +195,8 @@
     "notifications": {
       "loginSuccess": "Signed in successfully (demo).",
       "registerSuccess": "Account created successfully (demo).",
-      "forgotPasswordSuccess": "Password reset email sent (demo)."
+      "forgotPasswordSuccess": "Password reset email sent (demo).",
+      "resetLinkSent": "Password reset email sent (demo)."
     },
     "forgotPassword": {
       "title": "Forgot password?",
@@ -199,6 +205,14 @@
       "cta": "Forgot password?",
       "backToLoginPrefix": "Remembered your password?",
       "backToLoginCta": "Sign in"
+    },
+    "social": {
+      "continueWith": "Continue with {provider}",
+      "github": "GitHub",
+      "google": "Google",
+      "facebook": "Facebook",
+      "groupAria": "Social authentication",
+      "comingSoon": "Coming soon"
     }
   },
   "$vuetify": {

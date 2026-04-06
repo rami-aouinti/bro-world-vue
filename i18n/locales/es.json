@@ -31,7 +31,11 @@
       "strong": "Strong"
     },
     "language": "Language",
-    "forgotPassword": "Olvidé mi contraseña"
+    "forgotPassword": "Olvidé mi contraseña",
+    "showRightDrawer": "Mostrar panel derecho",
+    "hideRightDrawer": "Ocultar panel derecho",
+    "switchToLight": "Cambiar a modo claro",
+    "switchToDark": "Cambiar a modo oscuro"
   },
   "common": {
     "confirm": "Confirm",
@@ -165,7 +169,8 @@
       "rememberMe": "Remember me",
       "submit": "Sign in",
       "switchPrompt": "Don't have an account?",
-      "switchCta": "Create an account"
+      "switchCta": "Create an account",
+      "forgotPassword": "¿Olvidaste tu contraseña?"
     },
     "register": {
       "title": "Create account",
@@ -190,7 +195,8 @@
     "notifications": {
       "loginSuccess": "Signed in successfully (demo).",
       "registerSuccess": "Account created successfully (demo).",
-      "forgotPasswordSuccess": "Correo de restablecimiento enviado (demo)."
+      "forgotPasswordSuccess": "Correo de restablecimiento enviado (demo).",
+      "resetLinkSent": "Correo de restablecimiento enviado (demo)."
     },
     "forgotPassword": {
       "title": "¿Olvidaste tu contraseña?",
@@ -199,6 +205,14 @@
       "cta": "¿Olvidaste tu contraseña?",
       "backToLoginPrefix": "¿Recordaste tu contraseña?",
       "backToLoginCta": "Iniciar sesión"
+    },
+    "social": {
+      "continueWith": "Continuar con {provider}",
+      "github": "GitHub",
+      "google": "Google",
+      "facebook": "Facebook",
+      "groupAria": "Autenticación social",
+      "comingSoon": "Próximamente"
     }
   },
   "$vuetify": {
