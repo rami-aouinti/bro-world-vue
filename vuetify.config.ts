@@ -5,11 +5,11 @@ export default defineVuetifyConfiguration({
   blueprint: md3,
   // prevent Vuetify Module from fetching unused `materialdesignicon.css` from cdn
   icons: false,
-  // locale: {
-  //   locale: 'zhHans',
-  //   fallback: 'en',
-  // },
-  // localeMessages: ['zhHans', 'en'],
+  locale: {
+    locale: 'en',
+    fallback: 'en',
+  },
+  localeMessages: ['en', 'fr', 'es', 'de'],
   defaults: {
     VSwitch: {
       color: 'primary',
