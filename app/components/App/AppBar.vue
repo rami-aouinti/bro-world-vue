@@ -74,7 +74,7 @@ function toggleLeftDrawer() {
             <template #activator="{ props: tooltip }">
               <v-badge
                 dot
-                color="success"
+                :color="loggedIn ? 'success' : 'error'"
                 location="bottom end"
                 offset-x="8"
                 offset-y="8"
