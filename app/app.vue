@@ -5,6 +5,7 @@ provide(
   computed(() => (theme.current.value.dark ? 'dark' : undefined)),
 )
 const route = useRoute()
+const { locale } = useI18n()
 const title = computed(() => {
   return route.meta?.title || route.matched[0]?.meta?.title || ''
 })
@@ -12,7 +13,7 @@ const isPublicPage = computed(() => Boolean(route.meta?.publicPage))
 useHead({
   title,
   titleTemplate: (t) => (t ? `${t} | Vitify Admin` : 'Vitify Admin'),
-  htmlAttrs: { lang: 'en' },
+  htmlAttrs: computed(() => ({ lang: locale.value })),
   link: [{ rel: 'icon', href: '/favicon.ico' }],
 })
 useSeoMeta({

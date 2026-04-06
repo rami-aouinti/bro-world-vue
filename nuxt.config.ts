@@ -5,6 +5,7 @@ import { defineNuxtConfig } from 'nuxt/config'
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
+    '@nuxtjs/i18n',
     '@pinia/nuxt',
     '@vueuse/nuxt',
     'vuetify-nuxt-module',
@@ -17,7 +18,7 @@ export default defineNuxtConfig({
   css: [
     'vuetify/styles',
     '~/assets/styles/material-dashboard.scss',
-    '~/assets/styles/index.css'
+    '~/assets/styles/index.css',
   ],
   experimental: { typedPages: true },
   typescript: {
@@ -78,6 +79,21 @@ export default defineNuxtConfig({
     session: {
       name: 'nuxt-session',
       password: '',
+    },
+  },
+  i18n: {
+    locales: [
+      { code: 'en', name: 'English', file: 'en.json' },
+      { code: 'de', name: 'Deutsch', file: 'de.json' },
+      { code: 'fr', name: 'Français', file: 'fr.json' },
+    ],
+    defaultLocale: 'en',
+    strategy: 'prefix_except_default',
+    langDir: 'app/locales',
+    lazy: true,
+    detectBrowserLanguage: false,
+    vueI18n: {
+      fallbackLocale: 'en',
     },
   },
   compatibilityDate: '2024-08-05',

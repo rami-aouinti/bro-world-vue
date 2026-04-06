@@ -71,11 +71,23 @@
 ### Nuxt Modules
 
 - [Vuetify Nuxt Module](https://github.com/vuetifyjs/nuxt-module) - Zero-config Nuxt Module for Vuetify
+- [Nuxt I18n](https://i18n.nuxtjs.org/) - Internationalization module with localized routes and lazy-loaded dictionaries
 - [VueUse](https://github.com/vueuse/vueuse) - Collection of useful composition APIs
 - [Pinia](https://github.com/vuejs/pinia) - Intuitive, type-safe, light and flexible Store for Vue
 - [Nuxt Icon](https://github.com/nuxt/icon) - Icon module for Nuxt with 200,000+ ready to use icons from Iconify
 - [Nuxt ECharts](https://github.com/kingyue737/nuxt-echarts) - Nuxt module for Apache ECharts™
 - [Nuxt Auth Utils](https://github.com/Atinux/nuxt-auth-utils) - Minimalist Authentication module for Nuxt
+
+### Internationalization (i18n)
+
+The project uses [`@nuxtjs/i18n`](https://i18n.nuxtjs.org/) with lazy-loaded locale files from `app/locales`.
+
+- Locales: `en`, `de`, `fr`
+- `defaultLocale`: `en`
+- `fallbackLocale`: `en`
+- Routing strategy: `prefix_except_default`
+  - English (`en`) keeps non-prefixed routes (e.g. `/dashboard`)
+  - German and French are prefixed (e.g. `/de/dashboard`, `/fr/dashboard`)
 
 ### Coding Style
 
