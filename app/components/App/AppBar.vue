@@ -42,9 +42,19 @@ function toggleLeftDrawer() {
 
 <template>
   <v-app-bar flat class="app-top-bar rounded-pill">
-    <div class="app-top-bar__left">
-      <v-app-bar-nav-icon :disabled="!showLeftDrawer" @click="toggleLeftDrawer" />
-      <NuxtLink to="/" class="app-brand text-decoration-none">{{ t('app.name') }}</NuxtLink>
+    <div class="app-top-bar__left mx-4">
+      <v-icon
+        icon="custom:vitify-nuxt"
+        size="x-large"
+        class="drawer-header-icon"
+        color="primary"
+        to="/"
+      />
+      <NuxtLink to="/" class="app-brand text-decoration-none">
+        <h2>{{ t('app.name') }}</h2>
+      </NuxtLink>
+      <v-spacer />
+      <v-app-bar-nav-icon class="mx-5" :disabled="!showLeftDrawer" @click="toggleLeftDrawer" />
     </div>
 
     <v-breadcrumbs class="app-top-bar__breadcrumbs d-none d-lg-flex" :items="breadcrumbs" />

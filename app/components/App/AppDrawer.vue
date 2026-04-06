@@ -30,26 +30,6 @@ drawerState.value = lgAndUp.value && width.value !== 1280
     floating
     class="app-left-drawer"
   >
-    <template #prepend>
-      <v-list>
-        <v-list-item class="pa-1" to="/">
-          <template #prepend>
-            <v-icon
-              icon="custom:vitify-nuxt"
-              size="x-large"
-              class="drawer-header-icon"
-              color="primary"
-            />
-          </template>
-          <v-list-item-title
-            class="text-headline-small font-weight-bold"
-            style="line-height: 2rem"
-          >
-            {{ t('app.name') }}
-          </v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </template>
     <v-list nav density="compact">
       <AppDrawerItem v-for="route in routes" :key="route.name" :item="route" />
     </v-list>
