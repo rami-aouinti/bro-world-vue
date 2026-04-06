@@ -41,7 +41,7 @@ const selectedLocale = computed(
       </v-btn>
     </template>
 
-    <v-list class="app-language-switcher__menu" min-width="280">
+    <v-list>
       <v-list-item
         v-for="item in localeOptions"
         :key="item.value"
@@ -73,10 +73,6 @@ const selectedLocale = computed(
 </template>
 
 <style scoped>
-.app-language-switcher__menu :deep(.v-list-item) {
-  min-height: 72px;
-  padding-inline: 18px;
-}
 
 .app-language-switcher__activator {
   border-radius: 10px;
