@@ -20,6 +20,8 @@ const breadcrumbs = computed(() => {
       to: r.path,
     }))
 })
+
+const shouldShowBreadcrumbs = computed(() => breadcrumbs.value.length > 1)
 </script>
 
 <template>
@@ -29,7 +31,7 @@ const breadcrumbs = computed(() => {
     <AppRightDrawer v-if="showRightDrawer" />
     <v-main>
       <v-container fluid class="px-2 pt-0 pb-0">
-        <v-breadcrumbs :items="breadcrumbs" />
+        <v-breadcrumbs v-if="shouldShowBreadcrumbs" :items="breadcrumbs" />
       </v-container>
       <slot />
     </v-main>
