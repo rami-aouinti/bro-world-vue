@@ -31,14 +31,34 @@ const shadowOptions = computed(() => [
   { title: t('appbar.shadow.strong'), value: 'strong' },
 ])
 
+function toHexColor(value: string) {
+  if (!value.startsWith('rgb')) return value
+  const [r, g, b] = value
+    .replace(/rgba?\(/, '')
+    .replace(')', '')
+    .split(',')
+    .map((chunk) => Number.parseInt(chunk.trim(), 10))
+  return `#${[r, g, b]
+    .map((channel) => Math.max(0, Math.min(255, channel)).toString(16).padStart(2, '0'))
+    .join('')}`
+}
+
+function applyPrimaryColor(value: string) {
+  const next = toHexColor(value)
+  primary.value = next
+  theme.themes.value.light!.colors.primary = next
+  theme.themes.value.dark!.colors.primary = next
+  theme.global.current.value.colors.primary = next
+}
+
+watch(primary, (value) => applyPrimaryColor(value), { immediate: true })
+
 const color = computed({
   get() {
-    return theme.themes.value.light!.colors.primary as string
+    return primary.value
   },
   set(val: string) {
-    primary.value = val
-    theme.themes.value.light!.colors.primary = val
-    theme.themes.value.dark!.colors.primary = val
+    applyPrimaryColor(val)
   },
 })
 
