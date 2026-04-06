@@ -10,6 +10,8 @@ const route = useRoute()
 const { locale, t } = useI18n()
 const rounded = useStorage('theme-rounded', 'md')
 const shadow = useStorage('theme-shadow', 'none')
+const translateIfKey = (key: unknown) =>
+  typeof key === 'string' && key ? t(key) : ''
 
 if (import.meta.client) {
   watchEffect(() => {
@@ -21,13 +23,13 @@ if (import.meta.client) {
 const title = computed(() => {
   locale.value
   const pageTitle = route.meta?.title || route.matched[0]?.meta?.title || ''
-  return typeof pageTitle === 'string' ? t(pageTitle) : ''
+  return translateIfKey(pageTitle)
 })
 const isPublicPage = computed(() => Boolean(route.meta?.publicPage))
 useHead({
   title,
   titleTemplate: (pageTitle) =>
-    pageTitle ? `${pageTitle} | ${t('app.name')}` : t('app.name'),
+    pageTitle ? `${pageTitle} | ${translateIfKey('app.name')}` : translateIfKey('app.name'),
   htmlAttrs: computed(() => ({ lang: locale.value })),
   link: [{ rel: 'icon', href: '/favicon.ico' }],
 })
