@@ -14,7 +14,22 @@
     "user": "Utilisateur",
     "notification": "Notification",
     "themePalette": "Palette de thème",
-    "copyright": "© Copyright 2023"
+    "copyright": "© Copyright 2023",
+    "rounded": {
+      "label": "Style des arrondis",
+      "none": "Carré",
+      "soft": "Doux",
+      "default": "Par défaut",
+      "large": "Grand",
+      "extra": "Très grand"
+    },
+    "shadow": {
+      "label": "Style des ombres",
+      "flat": "Sans ombre",
+      "soft": "Douce",
+      "default": "Par défaut",
+      "strong": "Prononcée"
+    }
   },
   "common": {
     "confirm": "Confirmer",
@@ -113,6 +128,23 @@
         "unit": "￥",
         "caption": "Limite supérieure : 2000 ￥"
       }
+    },
+    "showcase": {
+      "badge": "Material Dashboard",
+      "title": "Carte héro moderne du dashboard",
+      "description": "Section réutilisable avec actions, liste et modal pour une meilleure UX sur toutes les pages admin.",
+      "openModal": "Ouvrir la modal",
+      "secondaryAction": "Explorer les widgets",
+      "quickActions": "Actions rapides",
+      "actionTeam": "Espace équipe",
+      "actionStats": "Vue analytique",
+      "actionSettings": "Paramètres design",
+      "modalTitle": "Déployer cette mise en page",
+      "modalDescription": "Confirmez la prochaine étape et déclenchez votre action métier depuis cette modal.",
+      "modalFeatureA": "Contenu réutilisable avec CTA clair",
+      "modalFeatureB": "Espacements, typo et iconographie cohérents",
+      "modalAction": "Confirmer le déploiement",
+      "modalSuccess": "Action confirmée avec succès."
     }
   },
   "nested": {
