@@ -14,7 +14,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/test-utils/module',
   ],
-  css: ['~/assets/styles/index.css', '~/assets/styles/material-dashboard.scss'],
+  css: ['~/assets/styles/index.scss'],
   experimental: { typedPages: true },
   typescript: {
     shim: false,
