@@ -53,7 +53,6 @@ useSeoMeta({
     <v-main :class="{ 'v-main-public': isPublicPage }">
       <NuxtPage />
     </v-main>
-    <AppFooter v-if="!isPublicPage" />
   </v-app>
 </template>
 
