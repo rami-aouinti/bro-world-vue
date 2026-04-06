@@ -100,17 +100,6 @@ const { loggedIn, clear, user } = useUserSession()
 </template>
 
 <style scoped>
-.app-bar-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  border: 1px solid rgba(var(--v-theme-on-surface), 0.12);
-  border-radius: 14px;
-  margin-inline-end: 8px;
-  background-color: rgba(var(--v-theme-surface), 1);
-}
-
 .app-bar-controls__theme {
   color: rgb(var(--v-theme-primary));
 }
