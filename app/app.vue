@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useStorage } from '@vueuse/core'
+
 const theme = useTheme()
 provide(
   THEME_KEY,
@@ -6,7 +8,18 @@ provide(
 )
 const route = useRoute()
 const { locale, t } = useI18n()
+const rounded = useStorage('theme-rounded', 'md')
+const shadow = useStorage('theme-shadow', 'none')
+
+if (import.meta.client) {
+  watchEffect(() => {
+    document.documentElement.dataset.appRounded = rounded.value
+    document.documentElement.dataset.appShadow = shadow.value
+  })
+}
+
 const title = computed(() => {
+  locale.value
   const pageTitle = route.meta?.title || route.matched[0]?.meta?.title || ''
   return typeof pageTitle === 'string' ? t(pageTitle) : ''
 })
