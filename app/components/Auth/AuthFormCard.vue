@@ -96,8 +96,8 @@ function onSubmit() {
           variant="outlined"
           color="primary"
           :rules="[rules.required, rules.password]"
-          @click:append-inner="showPassword = !showPassword"
           class="mb-2"
+          @click:append-inner="showPassword = !showPassword"
         />
 
         <v-checkbox

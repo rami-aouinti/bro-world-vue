@@ -190,5 +190,8 @@
       "loginSuccess": "Connexion réussie (démo).",
       "registerSuccess": "Compte créé (démo)."
     }
+  },
+  "$vuetify": {
+    "badge": "Badge"
   }
 }

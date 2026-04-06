@@ -190,5 +190,8 @@
       "loginSuccess": "Erfolgreich angemeldet (Demo).",
       "registerSuccess": "Konto erfolgreich erstellt (Demo)."
     }
+  },
+  "$vuetify": {
+    "badge": "Badge"
   }
 }

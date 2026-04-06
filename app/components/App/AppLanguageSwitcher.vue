@@ -2,10 +2,10 @@
 const { locale } = useI18n()
 
 const localeOptions = [
-  { title: 'English', value: 'en', country: 'gb' },
-  { title: 'Français', value: 'fr', country: 'fr' },
-  { title: 'Español', value: 'es', country: 'es' },
-  { title: 'Deutsch', value: 'de', country: 'de' },
+  { title: 'English', value: 'en', flag: '🇬🇧' },
+  { title: 'Français', value: 'fr', flag: '🇫🇷' },
+  { title: 'Español', value: 'es', flag: '🇪🇸' },
+  { title: 'Deutsch', value: 'de', flag: '🇩🇪' },
 ] as const
 
 const selectedLocale = computed(
@@ -24,12 +24,9 @@ const selectedLocale = computed(
         class="app-language-switcher__activator"
         aria-label="Language"
       >
-        <span
-          class="app-language-switcher__flag"
-          :class="`fi fi-${selectedLocale.country}`"
-          :aria-label="selectedLocale.title"
-          role="img"
-        />
+        <span class="app-language-switcher__flag" :aria-label="selectedLocale.title" role="img">{{
+          selectedLocale.flag
+        }}</span>
       </v-btn>
     </template>
 
@@ -41,12 +38,9 @@ const selectedLocale = computed(
         @click="locale = item.value"
       >
         <template #prepend>
-          <span
-            class="app-language-switcher__flag"
-            :class="`fi fi-${item.country}`"
-            :aria-label="item.title"
-            role="img"
-          />
+          <span class="app-language-switcher__flag" :aria-label="item.title" role="img">{{
+            item.flag
+          }}</span>
         </template>
         <v-list-item-title class="text-h6 text-medium-emphasis">
           {{ item.title }}
