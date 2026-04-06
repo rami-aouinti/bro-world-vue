@@ -58,6 +58,7 @@ function toggleLeftDrawer() {
     </div>
 
     <v-breadcrumbs class="app-top-bar__breadcrumbs d-none d-lg-flex" :items="breadcrumbs" />
+    <div id="app-bar" class="app-top-bar__portal" />
 
     <div class="app-top-bar__right">
       <v-app-bar-nav-icon
@@ -160,6 +161,11 @@ function toggleLeftDrawer() {
   margin-left: auto;
   max-width: 100%;
   overflow: hidden;
+}
+
+.app-top-bar__portal {
+  display: flex;
+  align-items: center;
 }
 
 .app-top-bar__right-drawer-toggle {
