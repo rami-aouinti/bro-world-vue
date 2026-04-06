@@ -8,6 +8,7 @@ const route = useRoute()
 const title = computed(() => {
   return route.meta?.title || route.matched[0]?.meta?.title || ''
 })
+const isPublicPage = computed(() => Boolean(route.meta?.publicPage))
 useHead({
   title,
   titleTemplate: (t) => (t ? `${t} | Vitify Admin` : 'Vitify Admin'),
@@ -25,28 +26,31 @@ useSeoMeta({
 
 <template>
   <v-app>
-    <AppDrawer />
-    <AppBar />
-    <v-main>
+    <template v-if="!isPublicPage">
+      <AppDrawer />
+      <AppBar />
+    </template>
+    <v-main :class="{ 'v-main-public': isPublicPage }">
       <NuxtPage />
     </v-main>
-    <AppFooter />
+    <AppFooter v-if="!isPublicPage" />
   </v-app>
 </template>
 
 <style scoped>
-/* replace padding with margin to limit scrollbar in v-main */
 .v-main {
   padding-top: 0;
   padding-bottom: 0;
-  /* https://github.com/vuetifyjs/vuetify/issues/15202 */
   margin-top: 64px;
   margin-bottom: 32px;
   height: calc(100vh - 64px - 32px);
-  /* margin-top: var(--v-layout-top);
-  margin-bottom: var(--v-layout-bottom);
-  height: calc(100vh - var(--v-layout-top) - var(--v-layout-bottom)); */
   overflow-y: auto;
   transition-property: padding;
+}
+
+.v-main-public {
+  margin-top: 0;
+  margin-bottom: 0;
+  height: 100vh;
 }
 </style>

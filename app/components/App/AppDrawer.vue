@@ -27,7 +27,7 @@ drawerState.value = lgAndUp.value && width.value !== 1280
   >
     <template #prepend>
       <v-list>
-        <v-list-item class="pa-1">
+        <v-list-item class="pa-1" to="/">
           <template #prepend>
             <v-icon
               icon="custom:vitify-nuxt"
