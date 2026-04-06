@@ -93,6 +93,7 @@ export default defineNuxtConfig({
     lazy: true,
     detectBrowserLanguage: false,
     vueI18n: {
+      locale: 'en',
       fallbackLocale: 'en',
     },
   },

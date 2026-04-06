@@ -4,8 +4,10 @@ definePageMeta({
   publicPage: true,
 })
 
+const { t } = useI18n()
+
 function onSubmit() {
-  Notify.success('Compte créé (démo).')
+  Notify.success(t('auth.notifications.registerSuccess'))
   navigateTo('/dashboard')
 }
 </script>
@@ -16,9 +18,9 @@ function onSubmit() {
       <v-col cols="12" md="7" lg="5">
         <AuthFormCard mode="register" @submit="onSubmit">
           <template #switch>
-            Vous avez déjà un compte ?
+            {{ t('auth.register.switchPrompt') }}
             <NuxtLink to="/login" class="text-primary font-weight-bold">
-              Se connecter
+              {{ t('auth.register.switchCta') }}
             </NuxtLink>
           </template>
         </AuthFormCard>
