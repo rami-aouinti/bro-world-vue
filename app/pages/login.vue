@@ -6,6 +6,7 @@ definePageMeta({
 })
 
 const { t } = useI18n()
+const { fetch: refreshSession, loggedIn } = useUserSession()
 const loading = ref(false)
 
 async function onSubmit(payload: { username?: string; password: string }) {
@@ -25,8 +26,15 @@ async function onSubmit(payload: { username?: string; password: string }) {
       },
     })
 
+    await refreshSession()
+
+    if (!loggedIn.value) {
+      Notify.error(t('auth.notifications.loginError'))
+      return
+    }
+
     Notify.success(t('auth.notifications.loginSuccess'))
-    await navigateTo('/dashboard')
+    await navigateTo('/')
   }
   catch {
     Notify.error(t('auth.notifications.loginError'))

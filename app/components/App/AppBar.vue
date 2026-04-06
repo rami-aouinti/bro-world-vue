@@ -26,7 +26,11 @@ const isDark = computed({
 
 const { loggedIn, clear, user } = useUserSession()
 const avatarUrl = computed(() => user.value?.avatar_url || user.value?.photo)
-const userLabel = computed(() => user.value?.login || user.value?.username || t('appbar.user'))
+const userLabel = computed(() => {
+  const fullName = [user.value?.firstName, user.value?.lastName].filter(Boolean).join(' ')
+
+  return fullName || user.value?.login || user.value?.username || t('appbar.user')
+})
 
 function toggleLeftDrawer() {
   if (!showLeftDrawer.value) return
