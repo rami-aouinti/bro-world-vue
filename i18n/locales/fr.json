@@ -30,7 +30,8 @@
       "default": "Par défaut",
       "strong": "Prononcée"
     },
-    "language": "Langue"
+    "language": "Langue",
+    "forgotPassword": "Mot de passe oublié"
   },
   "common": {
     "confirm": "Confirmer",
@@ -188,7 +189,16 @@
     },
     "notifications": {
       "loginSuccess": "Connexion réussie (démo).",
-      "registerSuccess": "Compte créé (démo)."
+      "registerSuccess": "Compte créé (démo).",
+      "forgotPasswordSuccess": "E-mail de réinitialisation envoyé (démo)."
+    },
+    "forgotPassword": {
+      "title": "Mot de passe oublié ?",
+      "subtitle": "Entrez votre e-mail pour recevoir un lien de réinitialisation.",
+      "submit": "Envoyer l'e-mail",
+      "cta": "Mot de passe oublié ?",
+      "backToLoginPrefix": "Vous avez retrouvé votre mot de passe ?",
+      "backToLoginCta": "Se connecter"
     }
   },
   "$vuetify": {
