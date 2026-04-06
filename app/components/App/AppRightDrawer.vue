@@ -18,8 +18,8 @@ const rightDrawerOpen = useState('right-drawer-open', () => true)
 <style scoped>
 .app-right-drawer {
   border-radius: 24px;
-  margin-top: 82px;
+  margin-top: 56px;
   margin-right: 16px;
-  height: calc(100% - 98px);
+  height: calc(100% - 72px);
 }
 </style>
