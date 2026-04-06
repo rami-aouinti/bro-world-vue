@@ -38,26 +38,37 @@ const { loggedIn, clear, user } = useUserSession()
     <v-breadcrumbs :items="breadcrumbs" />
     <v-spacer />
     <div id="app-bar" />
-    <AppLanguageSwitcher />
-    <v-switch
-      v-model="isDark"
-      color=""
-      hide-details
-      density="compact"
-      inset
-      false-icon="mdi-white-balance-sunny"
-      true-icon="mdi-weather-night"
-      class="opacity-80"
-    />
-    <v-btn
-      icon
-      href="https://github.com/kingyue737/vitify-nuxt"
-      size="small"
-      class="ml-2"
-      target="_blank"
-    >
-      <v-icon size="30" icon="mdi-github" />
-    </v-btn>
+
+    <div class="app-bar-controls">
+      <v-badge
+        dot
+        color="success"
+        location="bottom end"
+        offset-x="4"
+        offset-y="4"
+      >
+        <v-btn icon size="44" color="primary" variant="flat">
+          <v-icon icon="mdi-help" size="28" />
+        </v-btn>
+      </v-badge>
+
+      <AppLanguageSwitcher />
+
+      <v-btn
+        icon
+        size="44"
+        variant="text"
+        class="app-bar-controls__theme"
+        :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+        @click="isDark = !isDark"
+      >
+        <v-icon
+          :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'"
+          size="28"
+        />
+      </v-btn>
+    </div>
+
     <v-menu location="bottom">
       <template #activator="{ props: menu }">
         <v-tooltip location="bottom">
@@ -95,3 +106,20 @@ const { loggedIn, clear, user } = useUserSession()
     </v-menu>
   </v-app-bar>
 </template>
+
+<style scoped>
+.app-bar-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.12);
+  border-radius: 14px;
+  margin-inline-end: 8px;
+  background-color: rgba(var(--v-theme-surface), 1);
+}
+
+.app-bar-controls__theme {
+  color: rgb(var(--v-theme-primary));
+}
+</style>
