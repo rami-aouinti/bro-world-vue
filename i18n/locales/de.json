@@ -187,6 +187,7 @@
     },
     "fields": {
       "name": "Vollständiger Name",
+      "username": "Benutzername",
       "email": "E-Mail",
       "password": "Passwort"
     },
@@ -198,6 +199,7 @@
     },
     "notifications": {
       "loginSuccess": "Erfolgreich angemeldet (Demo).",
+      "loginError": "Anmeldung fehlgeschlagen. Prüfe Benutzername und Passwort.",
       "registerSuccess": "Konto erfolgreich erstellt (Demo).",
       "forgotPasswordSuccess": "E-Mail zum Zurücksetzen gesendet (Demo).",
       "resetLinkSent": "E-Mail zum Zurücksetzen gesendet (Demo)."

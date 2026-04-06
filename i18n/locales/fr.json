@@ -187,6 +187,7 @@
     },
     "fields": {
       "name": "Nom complet",
+      "username": "Nom d'utilisateur",
       "email": "E-mail",
       "password": "Mot de passe"
     },
@@ -198,6 +199,7 @@
     },
     "notifications": {
       "loginSuccess": "Connexion réussie (démo).",
+      "loginError": "Échec de la connexion. Vérifiez votre identifiant et mot de passe.",
       "registerSuccess": "Compte créé (démo).",
       "forgotPasswordSuccess": "E-mail de réinitialisation envoyé (démo).",
       "resetLinkSent": "E-mail de réinitialisation envoyé (démo)."
