@@ -2,5 +2,39 @@
   "app": {
     "name": "Vitify Admin",
     "welcome": "Welcome"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Welcome back 👋 Sign in to continue.",
+      "rememberMe": "Remember me",
+      "submit": "Sign in",
+      "switchPrompt": "Don't have an account?",
+      "switchCta": "Create an account"
+    },
+    "register": {
+      "title": "Create account",
+      "subtitle": "Sign up to access your space.",
+      "submit": "Sign up",
+      "acceptPrefix": "I accept the",
+      "termsLink": "terms of use",
+      "switchPrompt": "Already have an account?",
+      "switchCta": "Sign in"
+    },
+    "fields": {
+      "name": "Full name",
+      "email": "Email",
+      "password": "Password"
+    },
+    "validation": {
+      "required": "This field is required",
+      "invalidEmail": "Invalid email address",
+      "minPassword": "At least 6 characters",
+      "acceptTerms": "Please accept the terms"
+    },
+    "notifications": {
+      "loginSuccess": "Signed in successfully (demo).",
+      "registerSuccess": "Account created successfully (demo)."
+    }
   }
 }

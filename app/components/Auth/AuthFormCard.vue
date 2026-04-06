@@ -20,6 +20,7 @@ const emit = defineEmits<{
 }>()
 
 const isRegister = computed(() => props.mode === 'register')
+const { t } = useI18n()
 const form = reactive({
   name: '',
   email: '',
@@ -31,9 +32,9 @@ const valid = ref(false)
 const showPassword = ref(false)
 
 const rules = {
-  required: (v: string) => !!v || 'Ce champ est obligatoire',
-  email: (v: string) => /.+@.+\..+/.test(v) || 'Adresse e-mail invalide',
-  password: (v: string) => v.length >= 6 || 'Au moins 6 caractères',
+  required: (v: string) => !!v || t('auth.validation.required'),
+  email: (v: string) => /.+@.+\..+/.test(v) || t('auth.validation.invalidEmail'),
+  password: (v: string) => v.length >= 6 || t('auth.validation.minPassword'),
 }
 
 function onSubmit() {
@@ -52,13 +53,13 @@ function onSubmit() {
     <v-card-text class="pa-0">
       <div class="bg-gradient-primary pa-6 text-center text-white">
         <h2 class="text-h5 font-weight-bold mb-2">
-          {{ isRegister ? 'Créer un compte' : 'Connexion' }}
+          {{ isRegister ? t('auth.register.title') : t('auth.login.title') }}
         </h2>
         <p class="text-body-2 opacity-80 mb-0">
           {{
             isRegister
-              ? 'Inscrivez-vous pour accéder à votre espace.'
-              : 'Bienvenue 👋 Connectez-vous pour continuer.'
+              ? t('auth.register.subtitle')
+              : t('auth.login.subtitle')
           }}
         </p>
       </div>
@@ -67,7 +68,7 @@ function onSubmit() {
         <v-text-field
           v-if="isRegister"
           v-model="form.name"
-          label="Nom complet"
+          :label="t('auth.fields.name')"
           prepend-inner-icon="mdi-account-outline"
           variant="outlined"
           color="primary"
@@ -77,7 +78,7 @@ function onSubmit() {
 
         <v-text-field
           v-model="form.email"
-          label="E-mail"
+          :label="t('auth.fields.email')"
           type="email"
           prepend-inner-icon="mdi-email-outline"
           variant="outlined"
@@ -89,7 +90,7 @@ function onSubmit() {
         <v-text-field
           v-model="form.password"
           :type="showPassword ? 'text' : 'password'"
-          label="Mot de passe"
+          :label="t('auth.fields.password')"
           prepend-inner-icon="mdi-lock-outline"
           :append-inner-icon="showPassword ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
           variant="outlined"
@@ -102,7 +103,7 @@ function onSubmit() {
         <v-checkbox
           v-if="!isRegister"
           v-model="form.remember"
-          label="Se souvenir de moi"
+          :label="t('auth.login.rememberMe')"
           color="primary"
           hide-details
           class="mb-2"
@@ -112,12 +113,12 @@ function onSubmit() {
           v-else
           v-model="form.termsAccepted"
           color="primary"
-          :rules="[(v: boolean) => v || 'Merci d\'accepter les conditions']"
+          :rules="[(v: boolean) => v || t('auth.validation.acceptTerms')]"
           class="mb-2"
         >
           <template #label>
-            J'accepte les
-            <a href="#" class="text-primary font-weight-medium ml-1">conditions d'utilisation</a>
+            {{ t('auth.register.acceptPrefix') }}
+            <a href="#" class="text-primary font-weight-medium ml-1">{{ t('auth.register.termsLink') }}</a>
           </template>
         </v-checkbox>
 
@@ -130,7 +131,7 @@ function onSubmit() {
           :loading="loading"
           :disabled="!valid"
         >
-          {{ isRegister ? "S'inscrire" : 'Se connecter' }}
+          {{ isRegister ? t('auth.register.submit') : t('auth.login.submit') }}
         </v-btn>
 
         <div class="text-center text-body-2 mt-4">
