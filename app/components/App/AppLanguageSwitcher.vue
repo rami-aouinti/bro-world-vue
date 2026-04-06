@@ -28,6 +28,7 @@ const selectedLocale = computed(
       <v-btn
         v-bind="props"
         variant="text"
+        size="44"
         class="app-language-switcher__activator"
         aria-label="Language"
       >
@@ -37,7 +38,6 @@ const selectedLocale = computed(
           :aria-label="selectedLocale.title"
           role="img"
         />
-        <span class="app-language-switcher__code">{{ selectedLocale.code }}</span>
       </v-btn>
     </template>
 
@@ -79,7 +79,6 @@ const selectedLocale = computed(
 }
 
 .app-language-switcher__activator {
-  min-width: 78px;
   border-radius: 10px;
   display: inline-flex;
   align-items: center;
@@ -88,8 +87,8 @@ const selectedLocale = computed(
 
 .app-language-switcher__flag {
   border-radius: 999px;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   display: inline-block;
   vertical-align: middle;
   box-shadow: inset 0 0 0 1px rgba(var(--v-theme-on-surface), 0.12);

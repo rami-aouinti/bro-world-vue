@@ -61,27 +61,12 @@ function toggleLeftDrawer() {
 
     <div class="app-top-bar__right">
       <v-app-bar-nav-icon
-        class="app-top-bar__right-drawer-toggle"
+        class="app-top-bar__right-drawer-toggle mx-5"
         :aria-label="showRightDrawer ? 'Hide right drawer' : 'Show right drawer'"
         @click="showRightDrawer = !showRightDrawer"
       />
 
-      <AppLanguageSwitcher />
-
-      <v-btn
-        icon
-        size="44"
-        variant="text"
-        class="app-bar-controls__theme"
-        :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
-        @click="isDark = !isDark"
-      >
-        <v-icon
-          :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'"
-          size="28"
-        />
-      </v-btn>
-
+      <v-spacer />
       <v-menu location="bottom">
         <template #activator="{ props: menu }">
           <v-tooltip location="bottom">
@@ -125,6 +110,22 @@ function toggleLeftDrawer() {
           />
         </v-list>
       </v-menu>
+
+      <AppLanguageSwitcher />
+
+      <v-btn
+        icon
+        size="44"
+        variant="text"
+        class="app-bar-controls__theme"
+        :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+        @click="isDark = !isDark"
+      >
+        <v-icon
+          :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'"
+          size="28"
+        />
+      </v-btn>
     </div>
   </v-app-bar>
 </template>
