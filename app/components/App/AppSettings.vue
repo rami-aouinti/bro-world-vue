@@ -21,7 +21,6 @@ const roundedOptions = computed(() => [
   { title: t('appbar.rounded.soft'), value: 'sm' },
   { title: t('appbar.rounded.default'), value: 'md' },
   { title: t('appbar.rounded.large'), value: 'lg' },
-  { title: t('appbar.rounded.extra'), value: 'xl' },
 ])
 
 const shadowOptions = computed(() => [
