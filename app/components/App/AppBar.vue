@@ -60,25 +60,11 @@ function toggleLeftDrawer() {
     <v-breadcrumbs class="app-top-bar__breadcrumbs d-none d-lg-flex" :items="breadcrumbs" />
 
     <div class="app-top-bar__right">
-      <v-btn
-        icon
-        variant="text"
-        :color="showLeftDrawer ? 'primary' : undefined"
-        :aria-label="showLeftDrawer ? 'Hide left drawer' : 'Show left drawer'"
-        @click="showLeftDrawer = !showLeftDrawer"
-      >
-        <v-icon icon="mdi-dock-left" />
-      </v-btn>
-
-      <v-btn
-        icon
-        variant="text"
-        :color="showRightDrawer ? 'primary' : undefined"
+      <v-app-bar-nav-icon
+        class="app-top-bar__right-drawer-toggle"
         :aria-label="showRightDrawer ? 'Hide right drawer' : 'Show right drawer'"
         @click="showRightDrawer = !showRightDrawer"
-      >
-        <v-icon icon="mdi-dock-right" />
-      </v-btn>
+      />
 
       <AppLanguageSwitcher />
 
@@ -173,6 +159,10 @@ function toggleLeftDrawer() {
   margin-left: auto;
   max-width: 100%;
   overflow: hidden;
+}
+
+.app-top-bar__right-drawer-toggle {
+  margin-inline-end: 2px;
 }
 
 .app-brand {

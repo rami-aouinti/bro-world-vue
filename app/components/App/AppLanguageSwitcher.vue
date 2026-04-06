@@ -1,12 +1,19 @@
 <script setup lang="ts">
 const { locale } = useI18n()
 
-const localeOptions = [
-  { title: 'English', value: 'en', flag: '🇬🇧' },
-  { title: 'Français', value: 'fr', flag: '🇫🇷' },
-  { title: 'Español', value: 'es', flag: '🇪🇸' },
-  { title: 'Deutsch', value: 'de', flag: '🇩🇪' },
-] as const
+type LocaleOption = {
+  title: string
+  value: string
+  code: string
+  flagClass: string
+}
+
+const localeOptions: LocaleOption[] = [
+  { title: 'English', value: 'en', code: 'GB', flagClass: 'fi fi-gb' },
+  { title: 'Français', value: 'fr', code: 'FR', flagClass: 'fi fi-fr' },
+  { title: 'Español', value: 'es', code: 'ES', flagClass: 'fi fi-es' },
+  { title: 'Deutsch', value: 'de', code: 'DE', flagClass: 'fi fi-de' },
+]
 
 const selectedLocale = computed(
   () =>
@@ -24,9 +31,13 @@ const selectedLocale = computed(
         class="app-language-switcher__activator"
         aria-label="Language"
       >
-        <span class="app-language-switcher__flag" :aria-label="selectedLocale.title" role="img">{{
-          selectedLocale.flag
-        }}</span>
+        <span
+          class="app-language-switcher__flag"
+          :class="selectedLocale.flagClass"
+          :aria-label="selectedLocale.title"
+          role="img"
+        />
+        <span class="app-language-switcher__code">{{ selectedLocale.code }}</span>
       </v-btn>
     </template>
 
@@ -38,9 +49,12 @@ const selectedLocale = computed(
         @click="locale = item.value"
       >
         <template #prepend>
-          <span class="app-language-switcher__flag" :aria-label="item.title" role="img">{{
-            item.flag
-          }}</span>
+          <span
+            class="app-language-switcher__flag"
+            :class="item.flagClass"
+            :aria-label="item.title"
+            role="img"
+          />
         </template>
         <v-list-item-title class="text-h6 text-medium-emphasis">
           {{ item.title }}
@@ -65,14 +79,24 @@ const selectedLocale = computed(
 }
 
 .app-language-switcher__activator {
-  min-width: 54px;
+  min-width: 78px;
   border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .app-language-switcher__flag {
-  font-size: 28px;
-  line-height: 1;
+  border-radius: 999px;
+  width: 24px;
+  height: 24px;
   display: inline-block;
   vertical-align: middle;
+  box-shadow: inset 0 0 0 1px rgba(var(--v-theme-on-surface), 0.12);
+}
+
+.app-language-switcher__code {
+  font-weight: 600;
+  letter-spacing: 0.04em;
 }
 </style>
