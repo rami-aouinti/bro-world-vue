@@ -4,6 +4,10 @@
     "welcome": "Willkommen"
   },
   "appbar": {
+    "home": "Startseite",
+    "service": "Service",
+    "about": "Über uns",
+    "contact": "Kontakt",
     "dashboard": "Dashboard",
     "table": "Datentabelle",
     "nested": "Verschachtelte Routen",

@@ -1,6 +1,8 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
 definePageMeta({
-  title: 'Contact',
+  title: 'appbar.contact',
 })
 </script>
 
@@ -51,7 +53,7 @@ definePageMeta({
     </PageDrawers>
 
     <v-container class="py-12 text-center">
-      <h1 class="text-h3 mb-4">Contact</h1>
+      <h1 class="text-h3 mb-4">{{ t('appbar.contact') }}</h1>
       <p>Contactez-nous pour toute question ou demande de collaboration.</p>
     </v-container>
   </div>

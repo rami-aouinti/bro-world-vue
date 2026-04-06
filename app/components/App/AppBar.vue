@@ -9,10 +9,10 @@ const route = useRoute()
 const { t } = useI18n()
 
 const navItems = [
-  { label: 'Home', to: '/' },
-  { label: 'Service', to: '/service' },
-  { label: 'About', to: '/about' },
-  { label: 'Contact', to: '/contact' },
+  { label: 'appbar.home', to: '/' },
+  { label: 'appbar.service', to: '/service' },
+  { label: 'appbar.about', to: '/about' },
+  { label: 'appbar.contact', to: '/contact' },
 ]
 
 const isDark = computed({
@@ -57,7 +57,7 @@ function toggleLeftDrawer() {
         variant="text"
         :color="route.path === item.to ? 'primary' : undefined"
       >
-        {{ item.label }}
+        {{ t(item.label) }}
       </v-btn>
     </v-toolbar-items>
 
