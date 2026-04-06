@@ -4,33 +4,23 @@ const FALLBACK_LOCALE = 'en'
 const SUPPORTED_LOCALES = new Set(['en', 'de', 'fr'])
 
 export default defineNuxtPlugin((nuxtApp) => {
-  const locale = nuxtApp.$i18n.locale // Ref<string>
+  const { locale, setLocale } = nuxtApp.$i18n
 
-  const storedLocale = localStorage.getItem(STORAGE_KEY)
-  const initialLocale =
-    storedLocale && SUPPORTED_LOCALES.has(storedLocale)
-      ? storedLocale
+  const syncLocale = async (requestedLocale: string) => {
+    const normalizedLocale = SUPPORTED_LOCALES.has(requestedLocale)
+      ? requestedLocale
       : FALLBACK_LOCALE
 
-  locale.value = initialLocale
-  localStorage.setItem(STORAGE_KEY, initialLocale)
-  document.documentElement.lang = initialLocale
+    await setLocale(normalizedLocale)
 
-  watch(
-    locale,
-    (nextLocale) => {
-      const normalizedLocale = SUPPORTED_LOCALES.has(nextLocale)
-        ? nextLocale
-        : FALLBACK_LOCALE
+    localStorage.setItem(STORAGE_KEY, normalizedLocale)
+    document.documentElement.lang = normalizedLocale
+  }
 
-      if (locale.value !== normalizedLocale) {
-        locale.value = normalizedLocale
-        return
-      }
+  const storedLocale = localStorage.getItem(STORAGE_KEY)
+  void syncLocale(storedLocale ?? FALLBACK_LOCALE)
 
-      localStorage.setItem(STORAGE_KEY, normalizedLocale)
-      document.documentElement.lang = normalizedLocale
-    },
-    { immediate: true },
-  )
+  watch(locale, (nextLocale) => {
+    void syncLocale(nextLocale)
+  })
 })
