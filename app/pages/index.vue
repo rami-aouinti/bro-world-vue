@@ -15,7 +15,7 @@ function warning() {
 </script>
 
 <template>
-  <v-container fluid class="d-flex align-center justify-center fill-height">
+  <v-container fluid class="d-flex align-center justify-center py-12">
     <div class="text-center">
       <h1 class="text-h3 mb-4">Home</h1>
       <v-icon
