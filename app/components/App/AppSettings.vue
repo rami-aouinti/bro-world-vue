@@ -2,7 +2,7 @@
 import { mergeProps } from 'vue'
 import { useStorage } from '@vueuse/core'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const theme = useTheme()
 const primary = useStorage('theme-primary', '#1697f6')
