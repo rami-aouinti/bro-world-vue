@@ -31,7 +31,11 @@
       "strong": "Stark"
     },
     "language": "Sprache",
-    "forgotPassword": "Passwort vergessen"
+    "forgotPassword": "Passwort vergessen",
+    "showRightDrawer": "Rechte Seitenleiste anzeigen",
+    "hideRightDrawer": "Rechte Seitenleiste ausblenden",
+    "switchToLight": "Zum hellen Modus wechseln",
+    "switchToDark": "Zum dunklen Modus wechseln"
   },
   "common": {
     "confirm": "Bestätigen",
@@ -165,7 +169,8 @@
       "rememberMe": "Angemeldet bleiben",
       "submit": "Anmelden",
       "switchPrompt": "Noch kein Konto?",
-      "switchCta": "Konto erstellen"
+      "switchCta": "Konto erstellen",
+      "forgotPassword": "Passwort vergessen?"
     },
     "register": {
       "title": "Konto erstellen",
@@ -190,7 +195,8 @@
     "notifications": {
       "loginSuccess": "Erfolgreich angemeldet (Demo).",
       "registerSuccess": "Konto erfolgreich erstellt (Demo).",
-      "forgotPasswordSuccess": "E-Mail zum Zurücksetzen gesendet (Demo)."
+      "forgotPasswordSuccess": "E-Mail zum Zurücksetzen gesendet (Demo).",
+      "resetLinkSent": "E-Mail zum Zurücksetzen gesendet (Demo)."
     },
     "forgotPassword": {
       "title": "Passwort vergessen?",
@@ -199,6 +205,14 @@
       "cta": "Passwort vergessen?",
       "backToLoginPrefix": "Passwort wieder eingefallen?",
       "backToLoginCta": "Anmelden"
+    },
+    "social": {
+      "continueWith": "Weiter mit {provider}",
+      "github": "GitHub",
+      "google": "Google",
+      "facebook": "Facebook",
+      "groupAria": "Soziale Anmeldung",
+      "comingSoon": "Demnächst verfügbar"
     }
   },
   "$vuetify": {

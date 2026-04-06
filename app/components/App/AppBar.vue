@@ -63,7 +63,7 @@ function toggleLeftDrawer() {
     <div class="app-top-bar__right">
       <v-app-bar-nav-icon
         class="app-top-bar__right-drawer-toggle mx-5"
-        :aria-label="showRightDrawer ? 'Hide right drawer' : 'Show right drawer'"
+        :aria-label="showRightDrawer ? t('appbar.hideRightDrawer') : t('appbar.showRightDrawer')"
         @click="showRightDrawer = !showRightDrawer"
       />
 
@@ -119,7 +119,7 @@ function toggleLeftDrawer() {
         size="44"
         variant="text"
         class="app-bar-controls__theme"
-        :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+        :aria-label="isDark ? t('appbar.switchToLight') : t('appbar.switchToDark')"
         @click="isDark = !isDark"
       >
         <v-icon

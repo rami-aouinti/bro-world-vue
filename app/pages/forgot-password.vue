@@ -22,7 +22,7 @@ const rules = {
 function onSubmit() {
   loading.value = true
 
-  Notify.success(t('auth.notifications.forgotPasswordSuccess'))
+  Notify.success(t('auth.notifications.resetLinkSent'))
 
   loading.value = false
 }

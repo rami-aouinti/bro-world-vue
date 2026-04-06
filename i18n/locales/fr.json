@@ -31,7 +31,11 @@
       "strong": "Prononcée"
     },
     "language": "Langue",
-    "forgotPassword": "Mot de passe oublié"
+    "forgotPassword": "Mot de passe oublié",
+    "showRightDrawer": "Afficher le panneau droit",
+    "hideRightDrawer": "Masquer le panneau droit",
+    "switchToLight": "Passer au mode clair",
+    "switchToDark": "Passer au mode sombre"
   },
   "common": {
     "confirm": "Confirmer",
@@ -165,7 +169,8 @@
       "rememberMe": "Se souvenir de moi",
       "submit": "Se connecter",
       "switchPrompt": "Pas encore de compte ?",
-      "switchCta": "Créer un compte"
+      "switchCta": "Créer un compte",
+      "forgotPassword": "Mot de passe oublié ?"
     },
     "register": {
       "title": "Créer un compte",
@@ -190,7 +195,8 @@
     "notifications": {
       "loginSuccess": "Connexion réussie (démo).",
       "registerSuccess": "Compte créé (démo).",
-      "forgotPasswordSuccess": "E-mail de réinitialisation envoyé (démo)."
+      "forgotPasswordSuccess": "E-mail de réinitialisation envoyé (démo).",
+      "resetLinkSent": "E-mail de réinitialisation envoyé (démo)."
     },
     "forgotPassword": {
       "title": "Mot de passe oublié ?",
@@ -199,6 +205,14 @@
       "cta": "Mot de passe oublié ?",
       "backToLoginPrefix": "Vous avez retrouvé votre mot de passe ?",
       "backToLoginCta": "Se connecter"
+    },
+    "social": {
+      "continueWith": "Continuer avec {provider}",
+      "github": "GitHub",
+      "google": "Google",
+      "facebook": "Facebook",
+      "groupAria": "Authentification sociale",
+      "comingSoon": "Bientôt disponible"
     }
   },
   "$vuetify": {
