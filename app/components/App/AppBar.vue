@@ -25,6 +25,8 @@ const isDark = computed({
 })
 
 const { loggedIn, clear, user } = useUserSession()
+const avatarUrl = computed(() => user.value?.avatar_url || user.value?.photo)
+const userLabel = computed(() => user.value?.login || user.value?.username || t('appbar.user'))
 
 function toggleLeftDrawer() {
   if (!showLeftDrawer.value) return
@@ -85,12 +87,12 @@ function toggleLeftDrawer() {
                 <v-btn icon v-bind="mergeProps(menu, tooltip)">
                   <v-icon v-if="!loggedIn" icon="mdi-account-circle" size="36" />
                   <v-avatar v-else color="primary" size="36">
-                    <v-img :src="user?.avatar_url" />
+                    <v-img :src="avatarUrl" />
                   </v-avatar>
                 </v-btn>
               </v-badge>
             </template>
-            <span>{{ loggedIn ? user!.login : t('appbar.user') }}</span>
+            <span>{{ loggedIn ? userLabel : t('appbar.user') }}</span>
           </v-tooltip>
         </template>
         <v-list>
