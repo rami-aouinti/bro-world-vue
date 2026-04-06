@@ -44,6 +44,11 @@ const breadcrumbs = computed(() => {
   min-height: 100vh;
 }
 
+.breadcrumbs-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
 @media (max-width: 960px) {
   .v-main {
     padding-top: 92px;
