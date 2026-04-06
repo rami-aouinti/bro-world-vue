@@ -6,12 +6,11 @@ provide(
   THEME_KEY,
   computed(() => (theme.current.value.dark ? 'dark' : undefined)),
 )
+
 const route = useRoute()
 const { locale, t } = useI18n()
 const rounded = useStorage('theme-rounded', 'md')
 const shadow = useStorage('theme-shadow', 'none')
-const showLeftDrawer = useState('show-left-drawer', () => true)
-const showRightDrawer = useState('show-right-drawer', () => true)
 const translateIfKey = (key: unknown) =>
   typeof key === 'string' && key ? t(key) : ''
 
@@ -26,6 +25,7 @@ const title = computed(() => {
   const pageTitle = route.meta?.title || route.matched[0]?.meta?.title || ''
   return translateIfKey(pageTitle)
 })
+
 useHead({
   title,
   titleTemplate: (pageTitle) =>
@@ -33,6 +33,7 @@ useHead({
   htmlAttrs: { lang: locale.value },
   link: [{ rel: 'icon', href: '/favicon.ico' }],
 })
+
 useSeoMeta({
   viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
   description: 'Vuetify 3 + Nuxt 3, Opinionated Admin Starter Template',
@@ -43,34 +44,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <v-app>
-    <AppBar />
-    <AppDrawer v-if="showLeftDrawer" />
-    <AppRightDrawer v-if="showRightDrawer" />
-    <v-main>
-      <NuxtPage />
-    </v-main>
-    <AppFooter />
-  </v-app>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
-
-<style scoped>
-.v-main {
-  padding-top: 104px;
-  padding-bottom: 56px;
-  overflow-y: auto;
-  transition-property: padding;
-  min-height: 100vh;
-}
-
-@media (max-width: 960px) {
-  .v-main {
-    padding-top: 92px;
-    padding-bottom: 52px;
-  }
-}
-
-.v-main-public {
-  min-height: 100vh;
-}
-</style>
