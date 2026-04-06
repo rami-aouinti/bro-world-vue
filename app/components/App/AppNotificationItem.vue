@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Notification } from '~/stores/notification'
+import { formatDateTime } from '~/utils/formatDateTime'
 
 const props = defineProps<{
   timeout: number
@@ -12,7 +13,11 @@ const { start, stop } = useTimeoutFn(() => (isShow.value = false), timeout, {
   immediate: false,
 })
 watch(timeout, (v) => (v !== -1 ? start() : stop()), { immediate: true })
+const { locale } = useI18n()
 const variant = computed(() => timeout.value === -1)
+const notificationTitle = computed(() =>
+  formatDateTime(locale.value, props.notification.time),
+)
 </script>
 
 <template>
@@ -24,7 +29,7 @@ const variant = computed(() => timeout.value === -1)
     :elevation="variant ? 0 : 3"
     :type="notification.type"
     :text="notification.text"
-    :title="notification.time.toLocaleString()"
+    :title="notificationTitle"
   >
     <template #close>
       <v-btn icon="$close" @click="emit('close')" />
