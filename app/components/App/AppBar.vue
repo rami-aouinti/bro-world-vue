@@ -38,47 +38,40 @@ const { loggedIn, clear, user } = useUserSession()
     <v-breadcrumbs :items="breadcrumbs" />
     <v-spacer />
     <div id="app-bar" />
+    <AppLanguageSwitcher />
 
-    <div class="app-bar-controls">
-      <v-badge
-        dot
-        color="success"
-        location="bottom end"
-        offset-x="4"
-        offset-y="4"
-      >
-        <v-btn icon size="44" color="primary" variant="flat">
-          <v-icon icon="mdi-help" size="28" />
-        </v-btn>
-      </v-badge>
-
-      <AppLanguageSwitcher />
-
-      <v-btn
-        icon
-        size="44"
-        variant="text"
-        class="app-bar-controls__theme"
-        :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
-        @click="isDark = !isDark"
-      >
-        <v-icon
-          :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'"
-          size="28"
-        />
-      </v-btn>
-    </div>
+    <v-btn
+      icon
+      size="44"
+      variant="text"
+      class="app-bar-controls__theme"
+      :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+      @click="isDark = !isDark"
+    >
+      <v-icon
+        :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'"
+        size="28"
+      />
+    </v-btn>
 
     <v-menu location="bottom">
       <template #activator="{ props: menu }">
         <v-tooltip location="bottom">
           <template #activator="{ props: tooltip }">
-            <v-btn icon v-bind="mergeProps(menu, tooltip)" class="ml-1">
-              <v-icon v-if="!loggedIn" icon="mdi-account-circle" size="36" />
-              <v-avatar v-else color="primary" size="36">
-                <v-img :src="user?.avatar_url" />
-              </v-avatar>
-            </v-btn>
+            <v-badge
+              dot
+              color="success"
+              location="bottom end"
+              offset-x="8"
+              offset-y="8"
+            >
+              <v-btn icon v-bind="mergeProps(menu, tooltip)" class="ml-1">
+                <v-icon v-if="!loggedIn" icon="mdi-account-circle" size="36" />
+                <v-avatar v-else color="primary" size="36">
+                  <v-img :src="user?.avatar_url" />
+                </v-avatar>
+              </v-btn>
+            </v-badge>
           </template>
           <span>{{ loggedIn ? user!.login : t('appbar.user') }}</span>
         </v-tooltip>

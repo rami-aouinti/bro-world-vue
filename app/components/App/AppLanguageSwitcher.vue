@@ -16,7 +16,7 @@ const selectedLocale = computed(
 </script>
 
 <template>
-  <v-menu location="bottom end" offset="8">
+  <v-menu location="bottom">
     <template #activator="{ props }">
       <v-btn
         v-bind="props"
@@ -65,7 +65,6 @@ const selectedLocale = computed(
 .app-language-switcher__activator {
   min-width: 54px;
   border-radius: 10px;
-  background-color: rgb(var(--v-theme-surface));
 }
 
 .app-language-switcher__flag {
