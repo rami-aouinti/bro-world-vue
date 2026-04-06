@@ -25,7 +25,10 @@ drawerState.value = lgAndUp.value && width.value !== 1280
     v-model="drawer"
     :expand-on-hover="rail"
     :rail="rail"
+    width="260"
+    permanent
     floating
+    class="app-left-drawer"
   >
     <template #prepend>
       <v-list>
@@ -76,6 +79,12 @@ drawerState.value = lgAndUp.value && width.value !== 1280
 
 <style>
 .v-navigation-drawer {
+  &.app-left-drawer {
+    border-radius: 24px;
+    margin-top: 92px;
+    margin-left: 16px;
+    height: calc(100% - 108px);
+  }
   transition-property:
     box-shadow, transform, visibility, width, height, left, right, top, bottom,
     border-radius;
