@@ -11,21 +11,7 @@ const rightDrawerOpen = useState('right-drawer-open', () => true)
     floating
     class="app-right-drawer"
   >
-    <div class="pa-4 d-flex flex-column ga-4">
-      <v-card variant="tonal">
-        <v-card-title class="text-subtitle-1">Notifications</v-card-title>
-        <v-card-text>
-          <AppNotification />
-        </v-card-text>
-      </v-card>
-
-      <v-card variant="tonal">
-        <v-card-title class="text-subtitle-1">Settings</v-card-title>
-        <v-card-text>
-          <AppSettings />
-        </v-card-text>
-      </v-card>
-    </div>
+    <div class="pa-4" />
   </v-navigation-drawer>
 </template>
 
