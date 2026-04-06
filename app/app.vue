@@ -41,7 +41,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <v-app :class="appClass">
+  <v-app>
     <template v-if="!isPublicPage">
       <AppDrawer />
       <AppBar />
