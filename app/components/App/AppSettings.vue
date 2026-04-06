@@ -48,6 +48,10 @@ function applyPrimaryColor(value: string) {
   theme.themes.value.light!.colors.primary = next
   theme.themes.value.dark!.colors.primary = next
   theme.global.current.value.colors.primary = next
+
+  if (import.meta.client) {
+    document.documentElement.style.setProperty('--color-primary', next)
+  }
 }
 
 watch(primary, (value) => applyPrimaryColor(value), { immediate: true })
