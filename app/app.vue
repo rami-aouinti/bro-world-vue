@@ -45,14 +45,13 @@ useSeoMeta({
 
 <template>
   <v-app>
-    <template v-if="!isPublicPage">
-      <AppBar />
-      <AppDrawer v-if="showLeftDrawer" />
-      <AppRightDrawer v-if="showRightDrawer" />
-    </template>
-    <v-main :class="{ 'v-main-public': isPublicPage }">
+    <AppBar />
+    <AppDrawer v-if="showLeftDrawer" />
+    <AppRightDrawer v-if="showRightDrawer" />
+    <v-main>
       <NuxtPage />
     </v-main>
+    <AppFooter />
   </v-app>
 </template>
 
