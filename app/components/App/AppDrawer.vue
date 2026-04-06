@@ -141,7 +141,7 @@ drawerState.value = lgAndUp.value && width.value !== 1280
     }
     .v-list-group__items .v-list-item {
       min-height: 36px;
-      padding-inline-start: calc(var(--v-list-indent) + 12px) !important;
+      padding-inline-start: calc(var(--v-list-indent) + 24px) !important;
     }
   }
 }
