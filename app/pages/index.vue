@@ -1,6 +1,10 @@
 <script setup lang="ts">
 const { t } = useI18n()
 
+definePageMeta({
+  title: 'Home',
+})
+
 const name = ref('')
 function sayHi() {
   Notify.success(t('notification.greeting', { name: name.value }))
@@ -13,6 +17,7 @@ function warning() {
 <template>
   <v-container fluid class="d-flex align-center justify-center fill-height">
     <div class="text-center">
+      <h1 class="text-h3 mb-4">Home</h1>
       <v-icon
         icon="custom:vitify-nuxt"
         size="3em"
