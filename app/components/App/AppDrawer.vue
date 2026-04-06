@@ -5,7 +5,7 @@ const router = useRouter()
 const routes = router.getRoutes().filter((r) => r.path.lastIndexOf('/') === 0)
 const drawerState = useState('drawer', () => true)
 
-const { mobile, lgAndUp, width } = useDisplay()
+const { mobile } = useDisplay()
 const drawer = computed({
   get() {
     return drawerState.value || !mobile.value
@@ -15,6 +15,14 @@ const drawer = computed({
   },
 })
 const rail = computed(() => !drawerState.value && !mobile.value)
+const leftDrawerContent = useState('left-drawer-content', () => null)
+const leftDrawerComponent = computed(() =>
+  leftDrawerContent.value
+    ? {
+        render: leftDrawerContent.value,
+      }
+    : null,
+)
 routes.sort((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98))
 
 </script>
@@ -29,7 +37,8 @@ routes.sort((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98))
     floating
     class="app-left-drawer"
   >
-    <v-list nav density="compact" class="app-left-drawer-list">
+    <component :is="leftDrawerComponent" v-if="leftDrawerComponent" />
+    <v-list v-else nav density="compact" class="app-left-drawer-list">
       <AppDrawerItem v-for="route in routes" :key="route.name" :item="route" />
     </v-list>
     <v-spacer />
