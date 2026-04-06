@@ -4,6 +4,8 @@ const showRightDrawer = useState('show-right-drawer', () => true)
 const route = useRoute()
 const { t } = useI18n()
 
+provideDrawerSlotRegistry()
+
 function getMetaTitle(title: unknown) {
   if (typeof title !== 'string') return ''
   return t(title)
