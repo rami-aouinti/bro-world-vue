@@ -2,7 +2,7 @@
 import { mergeProps } from 'vue'
 import { useStorage } from '@vueuse/core'
 
-const { t, locale } = useI18n()
+const { t } = useI18n()
 
 const theme = useTheme()
 const primary = useStorage('theme-primary', '#1697f6')
@@ -32,7 +32,7 @@ const shadowOptions = computed(() => [
 
 function toHexColor(value: string) {
   if (!value.startsWith('rgb')) return value
-  const [r, g, b] = value
+  const [r = 0, g = 0, b = 0] = value
     .replace(/rgba?\(/, '')
     .replace(')', '')
     .split(',')
@@ -45,9 +45,13 @@ function toHexColor(value: string) {
 function applyPrimaryColor(value: string) {
   const next = toHexColor(value)
   primary.value = next
-  theme.themes.value.light!.colors.primary = next
-  theme.themes.value.dark!.colors.primary = next
-  theme.global.current.value.colors.primary = next
+  if (theme.themes.value.light?.colors) {
+    Object.assign(theme.themes.value.light.colors, { primary: next })
+  }
+  if (theme.themes.value.dark?.colors) {
+    Object.assign(theme.themes.value.dark.colors, { primary: next })
+  }
+  Object.assign(theme.global.current.value.colors, { primary: next })
 
   if (import.meta.client) {
     document.documentElement.style.setProperty('--color-primary', next)

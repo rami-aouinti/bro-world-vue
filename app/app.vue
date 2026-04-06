@@ -21,7 +21,6 @@ if (import.meta.client) {
 }
 
 const title = computed(() => {
-  locale.value
   const pageTitle = route.meta?.title || route.matched[0]?.meta?.title || ''
   return translateIfKey(pageTitle)
 })
@@ -30,7 +29,7 @@ useHead({
   title,
   titleTemplate: (pageTitle) =>
     pageTitle ? `${pageTitle} | ${translateIfKey('app.name')}` : translateIfKey('app.name'),
-  htmlAttrs: computed(() => ({ lang: locale.value })),
+  htmlAttrs: { lang: locale.value },
   link: [{ rel: 'icon', href: '/favicon.ico' }],
 })
 useSeoMeta({

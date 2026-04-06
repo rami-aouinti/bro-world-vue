@@ -1,10 +1,16 @@
 // app/plugins/i18n-locale.client.ts
+import type { Ref } from 'vue'
+
 const STORAGE_KEY = 'app-locale'
 const FALLBACK_LOCALE = 'en'
 const SUPPORTED_LOCALES = new Set(['en', 'de', 'fr', 'es'])
 
 export default defineNuxtPlugin((nuxtApp) => {
-  const { locale, setLocale } = nuxtApp.$i18n
+  const i18n = nuxtApp.$i18n as {
+    locale: Ref<string>
+    setLocale: (locale: string) => Promise<void>
+  }
+  const { locale, setLocale } = i18n
 
   const syncLocale = async (requestedLocale: string) => {
     const normalizedLocale = SUPPORTED_LOCALES.has(requestedLocale)
