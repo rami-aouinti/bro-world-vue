@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
 const dialog = ref(false)
 const confirmed = ref(false)
 let resolve: (value: boolean) => void
@@ -36,8 +38,8 @@ defineExpose({ open })
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn color="primary" @click="cancel"> Cancel </v-btn>
-        <v-btn color="primary" @click="confirm"> Confirm </v-btn>
+        <v-btn color="primary" @click="cancel"> {{ t('common.cancel') }} </v-btn>
+        <v-btn color="primary" @click="confirm"> {{ t('common.confirm') }} </v-btn>
         <v-spacer />
       </v-card-actions>
     </v-card>

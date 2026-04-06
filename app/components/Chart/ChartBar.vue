@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
 const option: ECOption = {
   backgroundColor: 'transparent',
   tooltip: {
@@ -17,7 +19,15 @@ const option: ECOption = {
   xAxis: [
     {
       type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      data: [
+        t('dashboard.days.mon'),
+        t('dashboard.days.tue'),
+        t('dashboard.days.wed'),
+        t('dashboard.days.thu'),
+        t('dashboard.days.fri'),
+        t('dashboard.days.sat'),
+        t('dashboard.days.sun'),
+      ],
       axisTick: {
         alignWithLabel: true,
       },
@@ -33,21 +43,21 @@ const option: ECOption = {
   ],
   series: [
     {
-      name: 'pageA',
+      name: t('dashboard.charts.pageA'),
       type: 'bar',
       stack: 'vistors',
       barWidth: '60%',
       data: [79, 52, 200, 334, 390, 330, 220],
     },
     {
-      name: 'pageB',
+      name: t('dashboard.charts.pageB'),
       type: 'bar',
       stack: 'vistors',
       barWidth: '60%',
       data: [80, 52, 200, 334, 390, 330, 220],
     },
     {
-      name: 'pageC',
+      name: t('dashboard.charts.pageC'),
       type: 'bar',
       stack: 'vistors',
       barWidth: '60%',

@@ -18,6 +18,10 @@ const to = computed<RouteRecordRaw>(() => ({
   name: item.name || visibleChildren.value?.[0]?.name,
 }))
 const route = useRoute()
+const { t } = useI18n()
+const translatedTitle = computed(() =>
+  typeof title.value === 'string' ? t(title.value) : '',
+)
 const isActive = computed(() => {
   return route.path.startsWith(item.path)
 })
@@ -29,11 +33,11 @@ const isActive = computed(() => {
     :to="to"
     :prepend-icon="icon"
     active-class="text-primary"
-    :title="title"
+    :title="translatedTitle"
   />
   <v-list-group v-else-if="icon" :prepend-icon="icon" color="primary">
     <template #activator="{ props: vProps }">
-      <v-list-item :title="title" v-bind="vProps" :active="isActive" />
+      <v-list-item :title="translatedTitle" v-bind="vProps" :active="isActive" />
     </template>
     <AppDrawerItem
       v-for="child in visibleChildren"

@@ -1,10 +1,12 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
 const name = ref('')
 function sayHi() {
-  Notify.success(`Hi, ${name.value}!`)
+  Notify.success(t('notification.greeting', { name: name.value }))
 }
 function warning() {
-  Notify.warning(`How dare you refuse me, ${name.value}.`)
+  Notify.warning(t('notification.warningRefuse', { name: name.value }))
 }
 </script>
 
@@ -17,18 +19,18 @@ function warning() {
         color="primary"
         class="mb-4"
       />
-      <p>Opinionated Starter Template</p>
+      <p>{{ t('dashboard.caption') }}</p>
       <v-text-field
         v-model="name"
         max-width="300"
-        placeholder="Hello World"
-        label="What's your name?"
+        :placeholder="t('common.helloWorld')"
+        :label="t('common.whatsYourName')"
         class="mt-8"
       />
       <v-btn :disabled="!name" class="mr-2" color="primary" @click="sayHi">
-        Confirm
+        {{ t('common.confirm') }}
       </v-btn>
-      <v-btn :disabled="!name" @click="warning"> Cancel </v-btn>
+      <v-btn :disabled="!name" @click="warning"> {{ t('common.cancel') }} </v-btn>
     </div>
   </v-container>
 </template>

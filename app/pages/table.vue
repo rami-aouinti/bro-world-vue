@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import type { DataTableHeader } from 'vuetify'
 
+const { t } = useI18n()
+
 definePageMeta({
   icon: 'mdi-table',
-  title: 'Data Table',
+  title: 'appbar.table',
   drawerIndex: 3,
 })
 
@@ -11,13 +13,13 @@ const search = ref('')
 const dialogDelete = useTemplateRef('dialogDelete')
 function showDialogDelete(name: string) {
   dialogDelete.value
-    ?.open('Are you sure you want to delete this dessert?')
+    ?.open(t('dialog.deleteDessertConfirm'))
     .then(async (confirmed: boolean) => {
       if (confirmed) {
         try {
           const index = desserts.value!.findIndex((v) => v.name === name)
           desserts.value!.splice(index, 1)
-          Notify.success('Deleted')
+          Notify.success(t('notification.deleted'))
         } catch (e) {
           Notify.error(e)
         }
@@ -27,15 +29,15 @@ function showDialogDelete(name: string) {
 
 const headers: DataTableHeader[] = [
   {
-    title: 'Dessert (100g serving)',
+    title: t('table.headers.dessert'),
     key: 'name',
   },
-  { title: 'Calories', key: 'calories' },
-  { title: 'Fat (g)', key: 'fat' },
-  { title: 'Carbs (g)', key: 'carbs' },
-  { title: 'Protein (g)', key: 'protein' },
-  { title: 'Iron (%)', key: 'iron' },
-  { title: 'Actions', key: 'actions', sortable: false },
+  { title: t('table.headers.calories'), key: 'calories' },
+  { title: t('table.headers.fat'), key: 'fat' },
+  { title: t('table.headers.carbs'), key: 'carbs' },
+  { title: t('table.headers.protein'), key: 'protein' },
+  { title: t('table.headers.iron'), key: 'iron' },
+  { title: t('table.headers.actions'), key: 'actions', sortable: false },
 ]
 const desserts = ref([
   {
@@ -139,7 +141,7 @@ const desserts = ref([
               <v-text-field
                 v-model="search"
                 prepend-inner-icon="mdi-magnify"
-                label="Search"
+                :label="t('common.search')"
                 single-line
                 hide-details
                 density="compact"
@@ -175,7 +177,7 @@ const desserts = ref([
                 }"
               >
                 <v-btn
-                  v-tooltip="{ text: 'Delete', location: 'top' }"
+                  v-tooltip="{ text: t('common.delete'), location: 'top' }"
                   icon="mdi-delete-outline"
                   @click.stop="showDialogDelete(item.name)"
                 />

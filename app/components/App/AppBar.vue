@@ -4,11 +4,18 @@ import { mergeProps } from 'vue'
 const theme = useTheme()
 const drawer = useState('drawer')
 const route = useRoute()
+const { t } = useI18n()
+
+function getMetaTitle(title: unknown) {
+  if (typeof title !== 'string') return ''
+  return t(title)
+}
+
 const breadcrumbs = computed(() => {
   return route!.matched
     .filter((item) => item.meta && item.meta.title)
     .map((r) => ({
-      title: r.meta.title!,
+      title: getMetaTitle(r.meta.title),
       disabled: r.path === route.path || false,
       to: r.path,
     }))
@@ -60,25 +67,25 @@ const { loggedIn, clear, user } = useUserSession()
               </v-avatar>
             </v-btn>
           </template>
-          <span>{{ loggedIn ? user!.login : 'User' }}</span>
+          <span>{{ loggedIn ? user!.login : t('appbar.user') }}</span>
         </v-tooltip>
       </template>
       <v-list>
         <v-list-item
           v-if="!loggedIn"
-          title="Login"
+          :title="t('appbar.login')"
           prepend-icon="mdi-login"
           to="/login"
         />
         <v-list-item
           v-if="!loggedIn"
-          title="Register"
+          :title="t('appbar.register')"
           prepend-icon="mdi-account-plus"
           to="/register"
         />
         <v-list-item
           v-else
-          title="Logout"
+          :title="t('appbar.logout')"
           prepend-icon="mdi-logout"
           @click="clear"
         />
