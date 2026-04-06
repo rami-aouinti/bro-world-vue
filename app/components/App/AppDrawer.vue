@@ -109,6 +109,7 @@ drawerState.value = lgAndUp.value && width.value !== 1280
     min-height: 30px;
   }
   .app-left-drawer-list {
+    height: calc(100% - 96px);
     min-height: calc(100% - 96px);
     max-height: calc(100% - 96px);
     overflow-y: auto;
