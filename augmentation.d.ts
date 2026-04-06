@@ -4,6 +4,7 @@ declare module '#app' {
     title?: string
     subtitle?: string
     drawerIndex?: number
+    publicPage?: boolean
   }
 }
 
