@@ -187,6 +187,7 @@
     },
     "fields": {
       "name": "Full name",
+      "username": "Username",
       "email": "Email",
       "password": "Password"
     },
@@ -198,6 +199,7 @@
     },
     "notifications": {
       "loginSuccess": "Signed in successfully (demo).",
+      "loginError": "Sign in failed. Check your username and password.",
       "registerSuccess": "Account created successfully (demo).",
       "forgotPasswordSuccess": "Password reset email sent (demo).",
       "resetLinkSent": "Password reset email sent (demo)."

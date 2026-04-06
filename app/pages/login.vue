@@ -6,10 +6,34 @@ definePageMeta({
 })
 
 const { t } = useI18n()
+const loading = ref(false)
 
-function onSubmit() {
-  Notify.success(t('auth.notifications.loginSuccess'))
-  navigateTo('/dashboard')
+async function onSubmit(payload: { username?: string; password: string }) {
+  if (!payload.username) {
+    Notify.error(t('auth.validation.required'))
+    return
+  }
+
+  loading.value = true
+
+  try {
+    await $fetch('/api/login', {
+      method: 'POST',
+      body: {
+        username: payload.username,
+        password: payload.password,
+      },
+    })
+
+    Notify.success(t('auth.notifications.loginSuccess'))
+    await navigateTo('/dashboard')
+  }
+  catch {
+    Notify.error(t('auth.notifications.loginError'))
+  }
+  finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -17,7 +41,7 @@ function onSubmit() {
   <v-container fluid class="auth-page pa-6 pa-md-10">
     <v-row class="fill-height" align="center" justify="center">
       <v-col cols="12" md="7" lg="5">
-        <AuthFormCard mode="login" @submit="onSubmit">
+        <AuthFormCard mode="login" :loading="loading" @submit="onSubmit">
           <template #switch>
             {{ t('auth.login.switchPrompt') }}
             <NuxtLink to="/register" class="text-primary font-weight-bold">

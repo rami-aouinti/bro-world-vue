@@ -15,6 +15,7 @@ const emit = defineEmits<{
   submit: [
     payload: {
       name?: string
+      username?: string
       email: string
       password: string
       remember?: boolean
@@ -63,6 +64,7 @@ const rules = {
 function onSubmit() {
   emit('submit', {
     name: isRegister.value ? form.name : undefined,
+    username: !isRegister.value ? form.email : undefined,
     email: form.email,
     password: form.password,
     remember: !isRegister.value ? form.remember : undefined,
@@ -119,12 +121,12 @@ async function onSocialLogin(provider: SocialProvider) {
 
         <v-text-field
           v-model="form.email"
-          :label="t('auth.fields.email')"
-          type="email"
-          prepend-inner-icon="mdi-email-outline"
+          :label="isRegister ? t('auth.fields.email') : t('auth.fields.username')"
+          :type="isRegister ? 'email' : 'text'"
+          :prepend-inner-icon="isRegister ? 'mdi-email-outline' : 'mdi-account-outline'"
           variant="outlined"
           color="primary"
-          :rules="[rules.required, rules.email]"
+          :rules="isRegister ? [rules.required, rules.email] : [rules.required]"
           class="mb-2"
         />
 
