@@ -6,7 +6,7 @@ const routes = router.getRoutes().filter((r) => r.path.lastIndexOf('/') === 0)
 const drawerState = useState('drawer', () => true)
 
 const { mobile } = useDisplay()
-const hasPageLeftDrawer = useState('has-page-left-drawer', () => false)
+const registry = useDrawerSlotRegistry()
 const drawer = computed({
   get() {
     return drawerState.value || !mobile.value
@@ -16,13 +16,7 @@ const drawer = computed({
   },
 })
 const rail = computed(() => !drawerState.value && !mobile.value)
-const leftDrawerComponent = computed(() =>
-  registry?.left.value
-    ? {
-        render: registry.left.value,
-      }
-    : null,
-)
+const leftDrawerRenderer = computed(() => registry?.left.value ?? null)
 routes.sort((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98))
 
 </script>
@@ -37,8 +31,8 @@ routes.sort((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98))
     floating
     class="app-left-drawer"
   >
-    <div v-show="hasPageLeftDrawer" id="page-left-drawer-content" class="app-left-drawer-list" />
-    <v-list v-if="!hasPageLeftDrawer" nav density="compact" class="app-left-drawer-list">
+    <component :is="{ render: leftDrawerRenderer }" v-if="leftDrawerRenderer" class="app-left-drawer-list" />
+    <v-list v-else nav density="compact" class="app-left-drawer-list">
       <AppDrawerItem v-for="route in routes" :key="route.name" :item="route" />
     </v-list>
     <v-spacer />

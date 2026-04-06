@@ -8,7 +8,7 @@ definePageMeta({
 
 <template>
   <div>
-    <PageDrawers>
+    <AppPageDrawers>
       <template #left>
         <v-list nav density="compact" class="app-left-drawer-list">
           <v-list-subheader class="text-overline">Services</v-list-subheader>
@@ -50,7 +50,7 @@ definePageMeta({
           </v-list-item>
         </v-list>
       </template>
-    </PageDrawers>
+    </AppPageDrawers>
 
     <v-container fluid>
       <h1 class="text-h3 mb-4">{{ t('appbar.service') }}</h1>
