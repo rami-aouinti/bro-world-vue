@@ -2,13 +2,12 @@
 import { mergeProps } from 'vue'
 import { useStorage } from '@vueuse/core'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const theme = useTheme()
 const primary = useStorage('theme-primary', '#1697f6')
 const rounded = useStorage('theme-rounded', 'md')
-const shadow = useStorage('theme-shadow', 'medium')
-
+const shadow = useStorage('theme-shadow', 'none')
 
 if (import.meta.client) {
   watchEffect(() => {
@@ -16,6 +15,12 @@ if (import.meta.client) {
     document.documentElement.dataset.appShadow = shadow.value
   })
 }
+
+const localeOptions = [
+  { title: 'English', value: 'en' },
+  { title: 'Deutsch', value: 'de' },
+  { title: 'Français', value: 'fr' },
+] as const
 
 const roundedOptions = computed(() => [
   { title: t('appbar.rounded.none'), value: 'none' },
@@ -42,6 +47,7 @@ const color = computed({
     theme.themes.value.dark!.colors.primary = val
   },
 })
+
 const colors = [
   ['#1697f6', '#ff9800'],
   ['#4CAF50', '#FF5252'],
@@ -49,6 +55,7 @@ const colors = [
   ['#304156', '#3f51b5'],
   ['#002FA7', '#492d22'],
 ]
+
 const menuShow = ref(false)
 </script>
 
@@ -70,9 +77,11 @@ const menuShow = ref(false)
         </template>
       </v-tooltip>
     </template>
+
     <v-card width="320">
       <v-card-text>
         <v-label class="mb-3 d-inline-block">{{ t('appbar.themePalette') }}</v-label>
+
         <v-color-picker
           v-model="color"
           show-swatches
@@ -82,7 +91,20 @@ const menuShow = ref(false)
           :modes="['rgb', 'hex', 'hsl']"
           :swatches="colors"
         />
+
         <v-divider class="my-4" />
+
+        <v-select
+          v-model="locale"
+          :label="t('appbar.language')"
+          :items="localeOptions"
+          item-title="title"
+          item-value="value"
+          density="compact"
+          hide-details
+          class="mb-3"
+        />
+
         <v-select
           v-model="rounded"
           :label="t('appbar.rounded.label')"
@@ -93,6 +115,7 @@ const menuShow = ref(false)
           hide-details
           class="mb-3"
         />
+
         <v-select
           v-model="shadow"
           :label="t('appbar.shadow.label')"

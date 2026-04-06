@@ -52,7 +52,7 @@ html.dark {
 
 :root {
   --app-rounded: 12px;
-  --app-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  --app-shadow: none;
 }
 
 :root[data-app-rounded='none'] {

@@ -29,7 +29,8 @@
       "soft": "Sanft",
       "default": "Standard",
       "strong": "Stark"
-    }
+    },
+    "language": "Sprache"
   },
   "common": {
     "confirm": "Bestätigen",

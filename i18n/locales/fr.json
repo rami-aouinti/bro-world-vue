@@ -29,7 +29,8 @@
       "soft": "Douce",
       "default": "Par défaut",
       "strong": "Prononcée"
-    }
+    },
+    "language": "Langue"
   },
   "common": {
     "confirm": "Confirmer",

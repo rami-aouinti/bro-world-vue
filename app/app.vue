@@ -9,7 +9,7 @@ provide(
 const route = useRoute()
 const { locale, t } = useI18n()
 const rounded = useStorage('theme-rounded', 'md')
-const shadow = useStorage('theme-shadow', 'medium')
+const shadow = useStorage('theme-shadow', 'none')
 
 if (import.meta.client) {
   watchEffect(() => {

@@ -29,7 +29,8 @@
       "soft": "Soft",
       "default": "Default",
       "strong": "Strong"
-    }
+    },
+    "language": "Language"
   },
   "common": {
     "confirm": "Confirm",
