@@ -1,0 +1,48 @@
+:root {
+  --md-primary-gradient: linear-gradient(195deg, #49a3f1, #1a73e8);
+  --md-success-gradient: linear-gradient(195deg, #66bb6a, #43a047);
+  --md-warning-gradient: linear-gradient(195deg, #ffa726, #fb8c00);
+  --md-danger-gradient: linear-gradient(195deg, #ef5350, #e53935);
+  --md-card-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+  --md-card-radius: 0.75rem;
+}
+
+.v-card {
+  border-radius: var(--md-card-radius);
+  box-shadow: var(--md-card-shadow);
+}
+
+.v-btn {
+  border-radius: 0.5rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.v-btn.v-btn--variant-elevated {
+  background-image: var(--md-primary-gradient);
+  box-shadow: 0 4px 10px rgb(26 115 232 / 28%);
+}
+
+.v-alert--variant-tonal.v-theme--light {
+  border: 0;
+  box-shadow: var(--md-card-shadow);
+}
+
+.v-navigation-drawer .v-list-item--active {
+  background: var(--md-primary-gradient);
+  color: #fff;
+
+  .v-list-item__prepend,
+  .v-icon {
+    color: #fff;
+  }
+}
+
+.v-main {
+  background: #f5f6fa;
+}
+
+html.dark .v-main,
+.v-theme--dark .v-main {
+  background: #151928;
+}
