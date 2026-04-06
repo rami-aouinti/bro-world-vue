@@ -1,6 +1,23 @@
 <script setup lang="ts">
 const showLeftDrawer = useState('show-left-drawer', () => true)
 const showRightDrawer = useState('show-right-drawer', () => true)
+const route = useRoute()
+const { t } = useI18n()
+
+function getMetaTitle(title: unknown) {
+  if (typeof title !== 'string') return ''
+  return t(title)
+}
+
+const breadcrumbs = computed(() => {
+  return route.matched
+    .filter((item) => item.meta?.title)
+    .map((r) => ({
+      title: getMetaTitle(r.meta.title),
+      disabled: r.path === route.path,
+      to: r.path,
+    }))
+})
 </script>
 
 <template>
@@ -9,6 +26,9 @@ const showRightDrawer = useState('show-right-drawer', () => true)
     <AppDrawer v-if="showLeftDrawer" />
     <AppRightDrawer v-if="showRightDrawer" />
     <v-main>
+      <v-container class="breadcrumbs-wrapper py-4">
+        <v-breadcrumbs :items="breadcrumbs" class="justify-center" />
+      </v-container>
       <slot />
     </v-main>
     <AppFooter />
@@ -22,6 +42,11 @@ const showRightDrawer = useState('show-right-drawer', () => true)
   overflow-y: auto;
   transition-property: padding;
   min-height: 100vh;
+}
+
+.breadcrumbs-wrapper {
+  display: flex;
+  justify-content: center;
 }
 
 @media (max-width: 960px) {
