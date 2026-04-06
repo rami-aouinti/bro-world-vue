@@ -1,5 +1,5 @@
 @use "variables" as *;
-@use "typography" as *;
+@use "variables/typography" as *;
 
 .v-menu__content {
   box-shadow: $card-dropdown-box-shadow;

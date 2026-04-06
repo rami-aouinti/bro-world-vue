@@ -2,7 +2,7 @@
 // Sweet alert 2
 //
 @use "sass:map";
-@use "../variables" as *;
+@use "../../variables" as *;
 @use "../../variables/typography" as *;
 
 .swal2-popup.swal2-toast {
