@@ -19,6 +19,7 @@ export default defineNuxtConfig({
     'vuetify/styles',
     '~/assets/styles/material-dashboard.scss',
     '~/assets/styles/index.css',
+    '~/assets/styles/flag-icons.scss',
   ],
   experimental: { typedPages: true },
   typescript: {
