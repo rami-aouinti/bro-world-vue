@@ -8,20 +8,12 @@ const showRightDrawer = useState('show-right-drawer', () => true)
 const route = useRoute()
 const { t } = useI18n()
 
-function getMetaTitle(title: unknown) {
-  if (typeof title !== 'string') return ''
-  return t(title)
-}
-
-const breadcrumbs = computed(() => {
-  return route!.matched
-    .filter((item) => item.meta && item.meta.title)
-    .map((r) => ({
-      title: getMetaTitle(r.meta.title),
-      disabled: r.path === route.path || false,
-      to: r.path,
-    }))
-})
+const navItems = [
+  { label: 'Home', to: '/' },
+  { label: 'Service', to: '/service' },
+  { label: 'About', to: '/about' },
+  { label: 'Contact', to: '/contact' },
+]
 
 const isDark = computed({
   get() {
@@ -57,7 +49,18 @@ function toggleLeftDrawer() {
       <v-app-bar-nav-icon class="mx-5" :disabled="!showLeftDrawer" @click="toggleLeftDrawer" />
     </div>
 
-    <v-breadcrumbs class="app-top-bar__breadcrumbs d-none d-lg-flex" :items="breadcrumbs" />
+    <v-toolbar-items class="app-top-bar__nav d-none d-md-flex">
+      <v-btn
+        v-for="item in navItems"
+        :key="item.to"
+        :to="item.to"
+        variant="text"
+        :color="route.path === item.to ? 'primary' : undefined"
+      >
+        {{ item.label }}
+      </v-btn>
+    </v-toolbar-items>
+
     <div id="app-bar" class="app-top-bar__portal" />
 
     <div class="app-top-bar__right">
@@ -151,10 +154,9 @@ function toggleLeftDrawer() {
   margin-right: 12px;
 }
 
-.app-top-bar__breadcrumbs {
+.app-top-bar__nav {
   flex: 1;
-  min-width: 0;
-  overflow: hidden;
+  justify-content: center;
 }
 
 .app-top-bar__right {
