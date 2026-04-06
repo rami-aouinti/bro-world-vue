@@ -37,6 +37,7 @@ const { loggedIn, clear, user } = useUserSession()
     <v-breadcrumbs :items="breadcrumbs" />
     <v-spacer />
     <div id="app-bar" />
+    <AppLanguageSwitcher />
     <v-switch
       v-model="isDark"
       color=""
