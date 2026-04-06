@@ -1,7 +1,7 @@
 // app/plugins/i18n-locale.client.ts
 const STORAGE_KEY = 'app-locale'
 const FALLBACK_LOCALE = 'en'
-const SUPPORTED_LOCALES = new Set(['en', 'de', 'fr'])
+const SUPPORTED_LOCALES = new Set(['en', 'de', 'fr', 'es'])
 
 export default defineNuxtPlugin((nuxtApp) => {
   const { locale, setLocale } = nuxtApp.$i18n
