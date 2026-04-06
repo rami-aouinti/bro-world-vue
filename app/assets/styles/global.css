@@ -91,7 +91,15 @@ html.dark {
   --app-shadow: 0 14px 34px rgba(15, 23, 42, 0.2);
 }
 
-:is(.v-btn, .v-list, .v-avatar, .v-chip, .v-overlay__content, .v-card) {
+:is(
+    .v-btn,
+    .v-list,
+    .v-list-item,
+    .v-avatar,
+    .v-chip,
+    .v-overlay__content,
+    .v-card
+  ) {
   border-radius: var(--app-rounded) !important;
 }
 
