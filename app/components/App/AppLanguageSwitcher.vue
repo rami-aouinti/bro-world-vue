@@ -2,10 +2,10 @@
 const { locale } = useI18n()
 
 const localeOptions = [
-  { title: 'English', value: 'en', flag: '🇬🇧' },
-  { title: 'Français', value: 'fr', flag: '🇫🇷' },
-  { title: 'Español', value: 'es', flag: '🇪🇸' },
-  { title: 'Deutsch', value: 'de', flag: '🇩🇪' },
+  { title: 'English', value: 'en', country: 'gb' },
+  { title: 'Français', value: 'fr', country: 'fr' },
+  { title: 'Español', value: 'es', country: 'es' },
+  { title: 'Deutsch', value: 'de', country: 'de' },
 ] as const
 
 const selectedLocale = computed(
@@ -24,9 +24,12 @@ const selectedLocale = computed(
         class="app-language-switcher__activator"
         aria-label="Language"
       >
-        <span class="app-language-switcher__flag">{{
-          selectedLocale.flag
-        }}</span>
+        <span
+          class="app-language-switcher__flag"
+          :class="`fi fi-${selectedLocale.country}`"
+          :aria-label="selectedLocale.title"
+          role="img"
+        />
       </v-btn>
     </template>
 
@@ -38,7 +41,12 @@ const selectedLocale = computed(
         @click="locale = item.value"
       >
         <template #prepend>
-          <span class="app-language-switcher__flag">{{ item.flag }}</span>
+          <span
+            class="app-language-switcher__flag"
+            :class="`fi fi-${item.country}`"
+            :aria-label="item.title"
+            role="img"
+          />
         </template>
         <v-list-item-title class="text-h6 text-medium-emphasis">
           {{ item.title }}
@@ -70,5 +78,7 @@ const selectedLocale = computed(
 .app-language-switcher__flag {
   font-size: 28px;
   line-height: 1;
+  display: inline-block;
+  vertical-align: middle;
 }
 </style>
