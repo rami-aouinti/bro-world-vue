@@ -3,6 +3,8 @@ import { mergeProps } from 'vue'
 
 const theme = useTheme()
 const drawer = useState('drawer')
+const showLeftDrawer = useState('show-left-drawer', () => true)
+const showRightDrawer = useState('show-right-drawer', () => true)
 const route = useRoute()
 const { t } = useI18n()
 
@@ -29,14 +31,39 @@ const isDark = computed({
   },
 })
 const { loggedIn, clear, user } = useUserSession()
+
+function toggleLeftDrawer() {
+  if (!showLeftDrawer.value) return
+  drawer.value = !drawer.value
+}
 </script>
 
 <template>
-  <v-app-bar flat>
-    <v-app-bar-nav-icon @click="drawer = !drawer" />
+  <v-app-bar flat class="app-top-bar mx-4 mt-4 rounded-pill">
+    <v-app-bar-nav-icon :disabled="!showLeftDrawer" @click="toggleLeftDrawer" />
     <v-breadcrumbs :items="breadcrumbs" />
     <v-spacer />
-    <div id="app-bar" />
+
+    <v-btn
+      icon
+      variant="text"
+      :color="showLeftDrawer ? 'primary' : undefined"
+      :aria-label="showLeftDrawer ? 'Hide left drawer' : 'Show left drawer'"
+      @click="showLeftDrawer = !showLeftDrawer"
+    >
+      <v-icon icon="mdi-dock-left" />
+    </v-btn>
+
+    <v-btn
+      icon
+      variant="text"
+      :color="showRightDrawer ? 'primary' : undefined"
+      :aria-label="showRightDrawer ? 'Hide right drawer' : 'Show right drawer'"
+      @click="showRightDrawer = !showRightDrawer"
+    >
+      <v-icon icon="mdi-dock-right" />
+    </v-btn>
+
     <AppLanguageSwitcher />
 
     <v-btn
@@ -100,6 +127,10 @@ const { loggedIn, clear, user } = useUserSession()
 </template>
 
 <style scoped>
+.app-top-bar {
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+}
+
 .app-bar-controls__theme {
   color: rgb(var(--v-theme-primary));
 }
