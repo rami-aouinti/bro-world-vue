@@ -92,10 +92,7 @@ export default defineNuxtConfig({
     langDir: 'app/locales',
     lazy: true,
     detectBrowserLanguage: false,
-    vueI18n: {
-      locale: 'en',
-      fallbackLocale: 'en',
-    },
+    vueI18n: './i18n.config.ts',
   },
   compatibilityDate: '2024-08-05',
 })
