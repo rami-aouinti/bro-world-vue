@@ -16,12 +16,6 @@ if (import.meta.client) {
   })
 }
 
-const localeOptions = [
-  { title: 'English', value: 'en' },
-  { title: 'Deutsch', value: 'de' },
-  { title: 'Français', value: 'fr' },
-] as const
-
 const roundedOptions = computed(() => [
   { title: t('appbar.rounded.none'), value: 'none' },
   { title: t('appbar.rounded.soft'), value: 'sm' },
@@ -78,7 +72,7 @@ const menuShow = ref(false)
       </v-tooltip>
     </template>
 
-    <v-card width="320">
+    <v-card width="360">
       <v-card-text>
         <v-label class="mb-3 d-inline-block">{{ t('appbar.themePalette') }}</v-label>
 
@@ -86,7 +80,7 @@ const menuShow = ref(false)
           v-model="color"
           show-swatches
           elevation="0"
-          width="288"
+          width="320"
           mode="rgb"
           :modes="['rgb', 'hex', 'hsl']"
           :swatches="colors"
@@ -94,38 +88,57 @@ const menuShow = ref(false)
 
         <v-divider class="my-4" />
 
-        <v-select
-          v-model="locale"
-          :label="t('appbar.language')"
-          :items="localeOptions"
-          item-title="title"
-          item-value="value"
-          density="compact"
-          hide-details
-          class="mb-3"
-        />
+        <v-label class="mb-2 d-block text-center">{{ t('appbar.rounded.label') }}</v-label>
+        <div class="d-flex justify-center mb-4">
+          <v-btn-toggle
+            v-model="rounded"
+            mandatory
+            density="comfortable"
+            class="settings-toggle"
+            divided
+          >
+            <v-btn
+              v-for="option in roundedOptions"
+              :key="option.value"
+              :value="option.value"
+              variant="text"
+            >
+              {{ option.title }}
+            </v-btn>
+          </v-btn-toggle>
+        </div>
 
-        <v-select
-          v-model="rounded"
-          :label="t('appbar.rounded.label')"
-          :items="roundedOptions"
-          item-title="title"
-          item-value="value"
-          density="compact"
-          hide-details
-          class="mb-3"
-        />
-
-        <v-select
-          v-model="shadow"
-          :label="t('appbar.shadow.label')"
-          :items="shadowOptions"
-          item-title="title"
-          item-value="value"
-          density="compact"
-          hide-details
-        />
+        <v-label class="mb-2 d-block text-center">{{ t('appbar.shadow.label') }}</v-label>
+        <div class="d-flex justify-center">
+          <v-btn-toggle
+            v-model="shadow"
+            mandatory
+            density="comfortable"
+            class="settings-toggle"
+            divided
+          >
+            <v-btn
+              v-for="option in shadowOptions"
+              :key="option.value"
+              :value="option.value"
+              variant="text"
+            >
+              {{ option.title }}
+            </v-btn>
+          </v-btn-toggle>
+        </div>
       </v-card-text>
     </v-card>
   </v-menu>
 </template>
+
+<style scoped>
+.settings-toggle {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.settings-toggle :deep(.v-btn) {
+  text-transform: none;
+}
+</style>

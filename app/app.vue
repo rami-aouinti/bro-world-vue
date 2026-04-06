@@ -19,6 +19,7 @@ if (import.meta.client) {
 }
 
 const title = computed(() => {
+  locale.value
   const pageTitle = route.meta?.title || route.matched[0]?.meta?.title || ''
   return typeof pageTitle === 'string' ? t(pageTitle) : ''
 })
