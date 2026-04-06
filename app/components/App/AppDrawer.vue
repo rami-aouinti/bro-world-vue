@@ -6,6 +6,7 @@ const routes = router.getRoutes().filter((r) => r.path.lastIndexOf('/') === 0)
 const drawerState = useState('drawer', () => true)
 
 const { mobile } = useDisplay()
+const registry = useDrawerSlotRegistry()
 const drawer = computed({
   get() {
     return drawerState.value || !mobile.value
@@ -15,11 +16,10 @@ const drawer = computed({
   },
 })
 const rail = computed(() => !drawerState.value && !mobile.value)
-const leftDrawerContent = useState('left-drawer-content', () => null)
 const leftDrawerComponent = computed(() =>
-  leftDrawerContent.value
+  registry?.left.value
     ? {
-        render: leftDrawerContent.value,
+        render: registry.left.value,
       }
     : null,
 )

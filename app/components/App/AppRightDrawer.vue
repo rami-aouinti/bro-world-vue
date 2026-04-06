@@ -1,10 +1,10 @@
 <script setup lang="ts">
 const rightDrawerOpen = useState('right-drawer-open', () => true)
-const rightDrawerContent = useState('right-drawer-content', () => null)
+const registry = useDrawerSlotRegistry()
 const rightDrawerComponent = computed(() =>
-  rightDrawerContent.value
+  registry?.right.value
     ? {
-        render: rightDrawerContent.value,
+        render: registry.right.value,
       }
     : null,
 )
