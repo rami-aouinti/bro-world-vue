@@ -30,7 +30,8 @@
       "default": "Default",
       "strong": "Strong"
     },
-    "language": "Language"
+    "language": "Language",
+    "forgotPassword": "Olvidé mi contraseña"
   },
   "common": {
     "confirm": "Confirm",
@@ -188,7 +189,16 @@
     },
     "notifications": {
       "loginSuccess": "Signed in successfully (demo).",
-      "registerSuccess": "Account created successfully (demo)."
+      "registerSuccess": "Account created successfully (demo).",
+      "forgotPasswordSuccess": "Correo de restablecimiento enviado (demo)."
+    },
+    "forgotPassword": {
+      "title": "¿Olvidaste tu contraseña?",
+      "subtitle": "Introduce tu correo para recibir un enlace de restablecimiento.",
+      "submit": "Enviar correo",
+      "cta": "¿Olvidaste tu contraseña?",
+      "backToLoginPrefix": "¿Recordaste tu contraseña?",
+      "backToLoginCta": "Iniciar sesión"
     }
   },
   "$vuetify": {

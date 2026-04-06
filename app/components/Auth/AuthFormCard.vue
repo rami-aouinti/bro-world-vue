@@ -10,13 +10,15 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  submit: [payload: {
-    name?: string
-    email: string
-    password: string
-    remember?: boolean
-    termsAccepted?: boolean
-  }]
+  submit: [
+    payload: {
+      name?: string
+      email: string
+      password: string
+      remember?: boolean
+      termsAccepted?: boolean
+    },
+  ]
 }>()
 
 const isRegister = computed(() => props.mode === 'register')
@@ -33,7 +35,8 @@ const showPassword = ref(false)
 
 const rules = {
   required: (v: string) => !!v || t('auth.validation.required'),
-  email: (v: string) => /.+@.+\..+/.test(v) || t('auth.validation.invalidEmail'),
+  email: (v: string) =>
+    /.+@.+\..+/.test(v) || t('auth.validation.invalidEmail'),
   password: (v: string) => v.length >= 6 || t('auth.validation.minPassword'),
 }
 
@@ -57,9 +60,7 @@ function onSubmit() {
         </h2>
         <p class="text-body-2 opacity-80 mb-0">
           {{
-            isRegister
-              ? t('auth.register.subtitle')
-              : t('auth.login.subtitle')
+            isRegister ? t('auth.register.subtitle') : t('auth.login.subtitle')
           }}
         </p>
       </div>
@@ -92,7 +93,9 @@ function onSubmit() {
           :type="showPassword ? 'text' : 'password'"
           :label="t('auth.fields.password')"
           prepend-inner-icon="mdi-lock-outline"
-          :append-inner-icon="showPassword ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
+          :append-inner-icon="
+            showPassword ? 'mdi-eye-off-outline' : 'mdi-eye-outline'
+          "
           variant="outlined"
           color="primary"
           :rules="[rules.required, rules.password]"
@@ -100,14 +103,23 @@ function onSubmit() {
           @click:append-inner="showPassword = !showPassword"
         />
 
-        <v-checkbox
+        <div
           v-if="!isRegister"
-          v-model="form.remember"
-          :label="t('auth.login.rememberMe')"
-          color="primary"
-          hide-details
-          class="mb-2"
-        />
+          class="d-flex align-center justify-space-between mb-2"
+        >
+          <v-checkbox
+            v-model="form.remember"
+            :label="t('auth.login.rememberMe')"
+            color="primary"
+            hide-details
+          />
+          <NuxtLink
+            to="/forgot-password"
+            class="text-body-2 text-primary font-weight-medium text-decoration-none"
+          >
+            {{ t('auth.forgotPassword.cta') }}
+          </NuxtLink>
+        </div>
 
         <v-checkbox
           v-else
@@ -118,7 +130,9 @@ function onSubmit() {
         >
           <template #label>
             {{ t('auth.register.acceptPrefix') }}
-            <a href="#" class="text-primary font-weight-medium ml-1">{{ t('auth.register.termsLink') }}</a>
+            <a href="#" class="text-primary font-weight-medium ml-1">{{
+              t('auth.register.termsLink')
+            }}</a>
           </template>
         </v-checkbox>
 

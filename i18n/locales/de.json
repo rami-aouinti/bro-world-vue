@@ -30,7 +30,8 @@
       "default": "Standard",
       "strong": "Stark"
     },
-    "language": "Sprache"
+    "language": "Sprache",
+    "forgotPassword": "Passwort vergessen"
   },
   "common": {
     "confirm": "Bestätigen",
@@ -188,7 +189,16 @@
     },
     "notifications": {
       "loginSuccess": "Erfolgreich angemeldet (Demo).",
-      "registerSuccess": "Konto erfolgreich erstellt (Demo)."
+      "registerSuccess": "Konto erfolgreich erstellt (Demo).",
+      "forgotPasswordSuccess": "E-Mail zum Zurücksetzen gesendet (Demo)."
+    },
+    "forgotPassword": {
+      "title": "Passwort vergessen?",
+      "subtitle": "Gib deine E-Mail ein, um einen Link zum Zurücksetzen zu erhalten.",
+      "submit": "E-Mail senden",
+      "cta": "Passwort vergessen?",
+      "backToLoginPrefix": "Passwort wieder eingefallen?",
+      "backToLoginCta": "Anmelden"
     }
   },
   "$vuetify": {
