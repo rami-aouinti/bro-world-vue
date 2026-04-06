@@ -4,6 +4,10 @@
     "welcome": "Welcome"
   },
   "appbar": {
+    "home": "Home",
+    "service": "Service",
+    "about": "About",
+    "contact": "Contact",
     "dashboard": "Dashboard",
     "table": "Data Table",
     "nested": "Nested Routes",

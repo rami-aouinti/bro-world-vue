@@ -2,7 +2,7 @@
 const { t } = useI18n()
 
 definePageMeta({
-  title: 'Home',
+  title: 'appbar.home',
 })
 
 const name = ref('')
@@ -17,7 +17,7 @@ function warning() {
 <template>
   <v-container fluid class="d-flex align-center justify-center">
     <div class="text-center">
-      <h1 class="text-h3 mb-4">Home</h1>
+      <h1 class="text-h3 mb-4">{{ t('appbar.home') }}</h1>
       <v-icon
         icon="custom:vitify-nuxt"
         size="3em"
