@@ -73,6 +73,9 @@ export default defineNuxtConfig({
     build: { sourcemap: false },
   },
   runtimeConfig: {
+    public: {
+      apiBaseUrl: 'https://bro-world.org/api/v1',
+    },
     github: {
       clientId: '',
       clientSecret: '',
