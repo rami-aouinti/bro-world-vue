@@ -11,10 +11,12 @@ const { locale, t } = useI18n()
 const rounded = useStorage('theme-rounded', 'md')
 const shadow = useStorage('theme-shadow', 'medium')
 
-const appClass = computed(() => [
-  `app-radius--${rounded.value}`,
-  `app-shadow--${shadow.value}`,
-])
+if (import.meta.client) {
+  watchEffect(() => {
+    document.documentElement.dataset.appRounded = rounded.value
+    document.documentElement.dataset.appShadow = shadow.value
+  })
+}
 
 const title = computed(() => {
   const pageTitle = route.meta?.title || route.matched[0]?.meta?.title || ''

@@ -9,6 +9,14 @@ const primary = useStorage('theme-primary', '#1697f6')
 const rounded = useStorage('theme-rounded', 'md')
 const shadow = useStorage('theme-shadow', 'medium')
 
+
+if (import.meta.client) {
+  watchEffect(() => {
+    document.documentElement.dataset.appRounded = rounded.value
+    document.documentElement.dataset.appShadow = shadow.value
+  })
+}
+
 const roundedOptions = computed(() => [
   { title: t('appbar.rounded.none'), value: 'none' },
   { title: t('appbar.rounded.soft'), value: 'sm' },
