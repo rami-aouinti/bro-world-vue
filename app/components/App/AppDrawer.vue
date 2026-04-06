@@ -16,6 +16,13 @@ const drawer = computed({
   },
 })
 const rail = computed(() => !drawerState.value && !mobile.value)
+const leftDrawerComponent = computed(() =>
+  registry?.left.value
+    ? {
+        render: registry.left.value,
+      }
+    : null,
+)
 routes.sort((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98))
 
 </script>
