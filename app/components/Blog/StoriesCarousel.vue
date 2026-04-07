@@ -13,7 +13,10 @@ type StoryMedia = {
 type StoryOwner = {
   id?: string | number
   name?: string | null
+  firstName?: string | null
+  lastName?: string | null
   avatarUrl?: string | null
+  photo?: string | null
 }
 
 type StoryGroup = {
@@ -26,6 +29,7 @@ type StoryGroup = {
 type StoriesApiResponse = {
   stories?: StoryGroup[]
   data?: StoryGroup[]
+  items?: StoryGroup[]
 }
 
 type StoryCreateResponse = {
@@ -60,7 +64,7 @@ const storyGroups = computed<StoryGroup[]>(() => {
     return data.value
   }
 
-  return data.value?.stories ?? data.value?.data ?? []
+  return data.value?.stories ?? data.value?.data ?? data.value?.items ?? []
 })
 
 watch(storyGroups, (groups) => {
@@ -107,8 +111,12 @@ const cards = computed(() => {
         stories,
         latestStory,
         cover,
-        displayName: group.owner ? 'Your story' : group.user?.name || 'Utilisateur',
-        avatar: group.user?.avatarUrl || fallbackAvatar,
+        displayName: group.owner
+          ? 'Your story'
+          : group.user?.name
+            || `${group.user?.firstName || ''} ${group.user?.lastName || ''}`.trim()
+            || 'Utilisateur',
+        avatar: group.user?.avatarUrl || group.user?.photo || fallbackAvatar,
       }
     })
     .filter((group) => group.owner || group.stories.length > 0)

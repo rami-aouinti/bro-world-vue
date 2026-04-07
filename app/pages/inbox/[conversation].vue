@@ -119,12 +119,18 @@ async function handleSaveConversation() {
 }
 
 const targetParticipant = computed<PrivateConversationParticipant | undefined>(() =>
-  conversation.value?.participants.find((participant) => participant.id !== conversation.value?.ownerId),
+  conversation.value?.participants.find((participant) => {
+    if (conversation.value?.ownerId) {
+      return (participant.user?.id || participant.id) !== conversation.value.ownerId
+    }
+
+    return !participant.user?.owner
+  }) || conversation.value?.participants[0],
 )
 
 const targetParticipantName = computed(() => {
   if (!targetParticipant.value) return t('pages.inbox.unknownParticipant')
-  const fullName = `${targetParticipant.value.firstName} ${targetParticipant.value.lastName}`.trim()
+  const fullName = `${targetParticipant.value.user?.firstName || targetParticipant.value.firstName || ''} ${targetParticipant.value.user?.lastName || targetParticipant.value.lastName || ''}`.trim()
 
   return fullName || t('pages.inbox.unknownParticipant')
 })
