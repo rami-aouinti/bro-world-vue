@@ -33,8 +33,15 @@ type NotificationsApiResponse = {
 
 export interface PrivateConversationParticipant {
   id: string
-  firstName: string
-  lastName: string
+  firstName?: string
+  lastName?: string
+  user?: {
+    id?: string
+    firstName?: string
+    lastName?: string
+    photo?: string
+    owner?: boolean
+  }
 }
 
 export interface PrivateConversationMessage {
@@ -47,7 +54,7 @@ export interface PrivateConversation {
   title: string | null
   createdAt: string
   participants: PrivateConversationParticipant[]
-  ownerId: string
+  ownerId?: string
   unreadMessagesCount?: number
   lastMessage: PrivateConversationMessage | null
 }
@@ -88,11 +95,25 @@ const normalizeNotification = (notification: UserNotificationItem): UserNotifica
 })
 
 const getParticipantName = (participant: PrivateConversationParticipant): string =>
-  `${participant.firstName} ${participant.lastName}`.trim()
+  `${participant.user?.firstName || participant.firstName || ''} ${participant.user?.lastName || participant.lastName || ''}`.trim()
+
+const isParticipantOwner = (participant: PrivateConversationParticipant): boolean =>
+  Boolean(participant.user?.owner)
+
+const getParticipantUserId = (participant: PrivateConversationParticipant): string | undefined =>
+  participant.user?.id || participant.id
 
 const normalizePrivateConversation = (conversation: PrivateConversation): InboxItem => {
-  const participantFallbackTitle = conversation.participants
-    .find((participant) => participant.id !== conversation.ownerId)
+  const participants = Array.isArray(conversation.participants) ? conversation.participants : []
+  const participantFallbackTitle = participants
+    .find((participant) => {
+      if (conversation.ownerId) {
+        return getParticipantUserId(participant) !== conversation.ownerId
+      }
+
+      return !isParticipantOwner(participant)
+    })
+    || participants[0]
   const title = conversation.title?.trim() || (participantFallbackTitle
     ? getParticipantName(participantFallbackTitle)
     : 'Private conversation')
