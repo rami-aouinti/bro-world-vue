@@ -2,7 +2,9 @@
 const { t } = useI18n()
 
 definePageMeta({
-  title: 'pages.notification.title',
+  title: 'appbar.notifications',
+  icon: 'mdi-bell-ring-outline',
+  middleware: 'auth',
 })
 
 const notifications = ref([
@@ -16,31 +18,20 @@ const notifications = ref([
     title: 'Billing reminder',
     createdAt: '2026-04-06T11:20:00Z',
   },
-  {
-    id: 'team-invite',
-    title: 'New team invite',
-    createdAt: '2026-04-05T16:55:00Z',
-  },
-  {
-    id: 'weekly-report',
-    title: 'Weekly report is ready',
-    createdAt: '2026-04-03T13:10:00Z',
-  },
 ])
 
 const sortedNotifications = computed(() =>
-  [...notifications.value].sort((a, b) =>
-    b.createdAt.localeCompare(a.createdAt),
-  ),
+  [...notifications.value].sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
 )
 </script>
 
 <template>
   <v-container>
     <v-card>
-      <v-card-title>{{ t('pages.notification.title') }}</v-card-title>
-      <v-card-subtitle>{{ t('pages.notification.subtitle') }}</v-card-subtitle>
-      <v-list>
+      <v-card-title>{{ t('appbar.notifications') }}</v-card-title>
+      <v-card-subtitle>Latest updates</v-card-subtitle>
+
+      <v-list v-if="sortedNotifications.length">
         <v-list-item
           v-for="item in sortedNotifications"
           :key="item.id"
@@ -49,6 +40,13 @@ const sortedNotifications = computed(() =>
           :to="`/notification/${item.id}`"
         />
       </v-list>
+
+      <v-card-text v-else>
+        <div class="d-flex flex-column align-center ga-3 py-8 text-medium-emphasis">
+          <v-icon icon="mdi-bell-off-outline" size="40" />
+          <p class="text-body-1">No notification available.</p>
+        </div>
+      </v-card-text>
     </v-card>
   </v-container>
 </template>
