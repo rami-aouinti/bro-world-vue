@@ -18,8 +18,6 @@ const content = ref('')
 const { user } = useUserSession()
 const { t } = useI18n()
 
-const actionLabel = computed(() => props.mode === 'reply' ? t('blog.comment.actions.reply') : t('blog.comment.actions.comment'))
-const isCommentMode = computed(() => props.mode === 'comment')
 const canSubmit = computed(() => content.value.trim().length > 0 && !props.loading)
 const userAvatar = computed(() => user.value?.photo || null)
 const resolvedPlaceholder = computed(() => props.placeholder || t('blog.comment.placeholders.commentAsUser'))
@@ -55,7 +53,7 @@ function onEnter(event: KeyboardEvent) {
 </script>
 
 <template>
-  <div v-if="isCommentMode" class="comment-composer d-flex align-start ga-2">
+  <div class="comment-composer d-flex align-start ga-2">
     <v-avatar size="34" color="grey-darken-2">
       <v-img v-if="userAvatar" :src="userAvatar" cover />
       <v-icon v-else icon="mdi-account" />
@@ -96,28 +94,6 @@ function onEnter(event: KeyboardEvent) {
           @click="onSubmit"
         />
       </div>
-    </div>
-  </div>
-
-  <div v-else class="d-flex flex-column ga-2">
-    <v-textarea
-      v-model="content"
-      :placeholder="resolvedPlaceholder"
-      rows="2"
-      auto-grow
-      variant="solo"
-      flat
-      hide-details
-      class="comment-input"
-    />
-
-    <div class="d-flex ga-2 justify-end">
-      <v-btn variant="text" :disabled="loading" @click="emit('cancel')">
-        {{ t('common.cancel') }}
-      </v-btn>
-      <v-btn color="primary" :loading="loading" @click="onSubmit">
-        {{ actionLabel }}
-      </v-btn>
     </div>
   </div>
 </template>
