@@ -28,7 +28,7 @@ const selectedLocale = computed(
       <v-btn
         v-bind="props"
         variant="text"
-        size="44"
+        size="28"
         class="app-language-switcher__activator"
         aria-label="Language"
       >
@@ -83,8 +83,8 @@ const selectedLocale = computed(
 
 .app-language-switcher__flag {
   border-radius: 999px;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   display: inline-block;
   vertical-align: middle;
   box-shadow: inset 0 0 0 1px rgba(var(--v-theme-on-surface), 0.12);

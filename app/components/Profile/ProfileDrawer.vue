@@ -40,7 +40,7 @@ const profileNavItems = [
 
     <v-divider class="my-2" />
 
-    <v-list nav density="comfortable">
+    <v-list  nav density="compact" class="px-0 app-left-drawer-list">
       <v-list-item
         v-for="item in profileNavItems"
         :key="item.to"
@@ -48,9 +48,36 @@ const profileNavItems = [
         :prepend-icon="item.icon"
         :title="item.label"
         :active="route.path === item.to"
+        active-class="text-primary"
         color="primary"
-        rounded="lg"
+        class="px-0"
       />
     </v-list>
   </v-card-text>
 </template>
+<style scoped>
+.app-left-drawer-list {
+  height: calc(100% - 96px);
+  min-height: calc(100% - 96px);
+  max-height: calc(100% - 96px);
+  overflow-y: auto;
+}
+.app-left-drawer-list {
+  .v-list-item {
+    transition: all 0.2s;
+    min-height: 40px;
+    padding-block: 0;
+    padding-inline: 4px 8px;
+  }
+  .v-list-item__prepend {
+    margin-inline-end: 12px;
+  }
+  .v-list-group__items {
+    padding-block: 0;
+  }
+  .v-list-group__items .v-list-item {
+    min-height: 36px;
+    padding-inline-start: calc(var(--v-list-indent) + 24px) !important;
+  }
+}
+</style>

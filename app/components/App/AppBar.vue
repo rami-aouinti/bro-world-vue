@@ -98,7 +98,7 @@ function toggleLeftDrawer() {
           <template #activator="{ props }">
             <v-btn
               variant="text"
-              icon="mdi-inbox-outline"
+              icon="mdi-chat-outline"
               v-bind="props"
             />
           </template>
@@ -156,18 +156,19 @@ function toggleLeftDrawer() {
             <template #activator="{ props: tooltip }">
               <v-badge
                 dot
+                bordered
                 :color="loggedIn ? 'success' : 'error'"
                 location="bottom end"
-                offset-x="8"
-                offset-y="8"
+                offset-x="6"
+                offset-y="6"
               >
                 <v-btn icon v-bind="mergeProps(menu, tooltip)">
                   <v-icon
                     v-if="!loggedIn"
                     icon="mdi-account-circle"
-                    size="36"
+                    size="28"
                   />
-                  <v-avatar v-else color="primary" size="36">
+                  <v-avatar v-else color="primary" size="28" class="cursor-pointer">
                     <v-img :src="avatarUrl" />
                   </v-avatar>
                 </v-btn>
