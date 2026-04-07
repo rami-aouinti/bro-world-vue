@@ -18,25 +18,21 @@ type PlatformResponse = {
 
 const { t } = useI18n()
 const { loggedIn } = useUserSession()
-const publicApi = usePublicApi()
-const privateApi = usePrivateApi()
 
 definePageMeta({
   title: 'appbar.platform',
 })
 
-const endpoint = computed(() =>
-  loggedIn.value ? '/application/private?page=1&limit=10' : '/application/public?page=1&limit=20',
-)
-
 const { data, pending, error, refresh } = await useAsyncData(
   'platform-applications',
   () => {
+    const query = loggedIn.value ? { page: 1, limit: 10 } : { page: 1, limit: 20 }
+
     if (loggedIn.value) {
-      return privateApi<PlatformResponse>(endpoint.value)
+      return $fetch<PlatformResponse>('/api/application/private', { query })
     }
 
-    return publicApi<PlatformResponse>(endpoint.value)
+    return $fetch<PlatformResponse>('/api/application/public', { query })
   },
   {
     watch: [loggedIn],
