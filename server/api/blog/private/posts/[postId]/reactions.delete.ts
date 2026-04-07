@@ -4,7 +4,11 @@ import { getRequiredRouterParam } from '../../../utils'
 export default defineEventHandler(async (event): Promise<unknown> => {
   const postId = getRequiredRouterParam(event, 'postId', 'post')
 
-  return callPrivateApi(event, `/api/v1/private/blog/posts/${postId}/reactions`, {
-    method: 'DELETE',
-  })
+  return callPrivateApi(
+    event,
+    `/api/v1/private/blog/posts/${postId}/reactions`,
+    {
+      method: 'DELETE',
+    },
+  )
 })

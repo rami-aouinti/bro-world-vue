@@ -31,7 +31,11 @@ export function getPaginationQuery(event: H3Event, defaultLimit = 20) {
   return { page, limit }
 }
 
-export function getRequiredRouterParam(event: H3Event, name: string, label: string) {
+export function getRequiredRouterParam(
+  event: H3Event,
+  name: string,
+  label: string,
+) {
   const value = getRouterParam(event, name)
 
   if (!value) {

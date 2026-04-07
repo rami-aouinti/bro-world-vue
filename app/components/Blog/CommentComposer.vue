@@ -1,13 +1,16 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
-  mode?: 'comment' | 'reply'
-  loading?: boolean
-  placeholder?: string
-}>(), {
-  mode: 'comment',
-  loading: false,
-  placeholder: '',
-})
+const props = withDefaults(
+  defineProps<{
+    mode?: 'comment' | 'reply'
+    loading?: boolean
+    placeholder?: string
+  }>(),
+  {
+    mode: 'comment',
+    loading: false,
+    placeholder: '',
+  },
+)
 
 const emit = defineEmits<{
   submit: [content: string]
@@ -19,9 +22,13 @@ const { user } = useUserSession()
 const { t } = useI18n()
 const theme = useTheme()
 
-const canSubmit = computed(() => content.value.trim().length > 0 && !props.loading)
+const canSubmit = computed(
+  () => content.value.trim().length > 0 && !props.loading,
+)
 const userAvatar = computed(() => user.value?.photo || null)
-const resolvedPlaceholder = computed(() => props.placeholder || t('blog.comment.placeholders.commentAsUser'))
+const resolvedPlaceholder = computed(
+  () => props.placeholder || t('blog.comment.placeholders.commentAsUser'),
+)
 const isLightTheme = computed(() => !theme.current.value.dark)
 
 const quickActions = [
@@ -55,7 +62,10 @@ function onEnter(event: KeyboardEvent) {
 </script>
 
 <template>
-  <div class="comment-composer d-flex align-start ga-2" :class="{ 'comment-composer--light': isLightTheme }">
+  <div
+    class="comment-composer d-flex align-start ga-2"
+    :class="{ 'comment-composer--light': isLightTheme }"
+  >
     <v-avatar size="34" color="grey-darken-2">
       <v-img v-if="userAvatar" :src="userAvatar" cover />
       <v-icon v-else icon="mdi-account" />

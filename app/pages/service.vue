@@ -14,9 +14,21 @@ definePageMeta({
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
         <v-list v-else nav density="compact" class="app-left-drawer-list">
           <v-list-subheader class="text-overline">Services</v-list-subheader>
-          <v-list-item prepend-icon="mdi-magnify-scan" title="Audit rapide" subtitle="Diagnostic en 48h" />
-          <v-list-item prepend-icon="mdi-account-group" title="Accompagnement" subtitle="Suivi sur mesure" />
-          <v-list-item prepend-icon="mdi-school" title="Ateliers" subtitle="Montée en compétences" />
+          <v-list-item
+            prepend-icon="mdi-magnify-scan"
+            title="Audit rapide"
+            subtitle="Diagnostic en 48h"
+          />
+          <v-list-item
+            prepend-icon="mdi-account-group"
+            title="Accompagnement"
+            subtitle="Suivi sur mesure"
+          />
+          <v-list-item
+            prepend-icon="mdi-school"
+            title="Ateliers"
+            subtitle="Montée en compétences"
+          />
         </v-list>
       </template>
 
@@ -29,11 +41,14 @@ definePageMeta({
                 <template #prepend>
                   <v-icon icon="mdi-magnify-scan" class="me-2" />
                 </template>
-                <v-card-title class="text-subtitle-1">Audit rapide</v-card-title>
+                <v-card-title class="text-subtitle-1"
+                  >Audit rapide</v-card-title
+                >
                 <v-card-subtitle>En 48h</v-card-subtitle>
               </v-card-item>
               <v-card-text class="text-body-2 pt-0">
-                Analyse de vos besoins et recommandations priorisées pour démarrer rapidement.
+                Analyse de vos besoins et recommandations priorisées pour
+                démarrer rapidement.
               </v-card-text>
             </v-card>
           </v-list-item>
@@ -43,11 +58,14 @@ definePageMeta({
                 <template #prepend>
                   <v-icon icon="mdi-account-group" class="me-2" />
                 </template>
-                <v-card-title class="text-subtitle-1">Accompagnement</v-card-title>
+                <v-card-title class="text-subtitle-1"
+                  >Accompagnement</v-card-title
+                >
                 <v-card-subtitle>Sur mesure</v-card-subtitle>
               </v-card-item>
               <v-card-text class="text-body-2 pt-0">
-                Suivi régulier, ateliers pratiques et feuille de route adaptée à votre équipe.
+                Suivi régulier, ateliers pratiques et feuille de route adaptée à
+                votre équipe.
               </v-card-text>
             </v-card>
           </v-list-item>

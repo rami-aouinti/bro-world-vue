@@ -16,18 +16,30 @@ const fullName = computed(() => {
 })
 
 const profileNavItems = [
-  { label: 'Friends', to: '/profile/friends', icon: 'mdi-account-group-outline' },
+  {
+    label: 'Friends',
+    to: '/profile/friends',
+    icon: 'mdi-account-group-outline',
+  },
   { label: 'Library', to: '/profile/library', icon: 'mdi-bookshelf' },
   { label: 'Posts', to: '/profile/posts', icon: 'mdi-post-outline' },
   { label: 'Applications', to: '/profile/applications', icon: 'mdi-apps' },
-  { label: 'Games', to: '/profile/games', icon: 'mdi-controller-classic-outline' },
+  {
+    label: 'Games',
+    to: '/profile/games',
+    icon: 'mdi-controller-classic-outline',
+  },
   { label: 'Settings', to: '/profile/settings', icon: 'mdi-cog-outline' },
 ]
 </script>
 
 <template>
   <v-card-text>
-    <NuxtLink to="/profile" class="d-flex align-center text-center ga-3" style="text-decoration: none; color: inherit;">
+    <NuxtLink
+      to="/profile"
+      class="d-flex align-center text-center ga-3"
+      style="text-decoration: none; color: inherit"
+    >
       <div class="d-flex align-center text-center ga-3">
         <v-avatar size="32">
           <v-img :src="avatarUrl" />
@@ -40,7 +52,7 @@ const profileNavItems = [
 
     <v-divider class="my-2" />
 
-    <v-list  nav density="compact" class="px-0 app-left-drawer-list">
+    <v-list nav density="compact" class="px-0 app-left-drawer-list">
       <v-list-item
         v-for="item in profileNavItems"
         :key="item.to"

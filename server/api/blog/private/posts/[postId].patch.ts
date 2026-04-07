@@ -4,7 +4,7 @@ import { getRequiredRouterParam } from '../../utils'
 export default createProxyHandler({
   method: 'PATCH',
   endpointTemplate: '/api/v1/private/blog/posts/:postId',
-  resolveParams: event => ({
+  resolveParams: (event) => ({
     postId: getRequiredRouterParam(event, 'postId', 'post'),
   }),
 })

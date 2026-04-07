@@ -37,7 +37,11 @@ const isActive = computed(() => {
   />
   <v-list-group v-else-if="icon" :prepend-icon="icon" color="primary">
     <template #activator="{ props: vProps }">
-      <v-list-item :title="translatedTitle" v-bind="vProps" :active="isActive" />
+      <v-list-item
+        :title="translatedTitle"
+        v-bind="vProps"
+        :active="isActive"
+      />
     </template>
     <AppDrawerItem
       v-for="child in visibleChildren"

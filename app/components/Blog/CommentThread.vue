@@ -32,22 +32,25 @@ type ReactionType = {
   label: string
 }
 
-const props = withDefaults(defineProps<{
-  comments?: BlogComment[]
-  level?: number
-  activeReplyId?: string | number | null
-  reactionTypes?: ReactionType[]
-}>(), {
-  comments: () => [],
-  level: 0,
-  activeReplyId: null,
-  reactionTypes: () => [],
-})
+const props = withDefaults(
+  defineProps<{
+    comments?: BlogComment[]
+    level?: number
+    activeReplyId?: string | number | null
+    reactionTypes?: ReactionType[]
+  }>(),
+  {
+    comments: () => [],
+    level: 0,
+    activeReplyId: null,
+    reactionTypes: () => [],
+  },
+)
 
 const emit = defineEmits<{
   reply: [comment: BlogComment]
-  submitReply: [payload: { comment: BlogComment, content: string }]
-  react: [payload: { comment: BlogComment, code: string }]
+  submitReply: [payload: { comment: BlogComment; content: string }]
+  react: [payload: { comment: BlogComment; code: string }]
   edit: [comment: BlogComment]
   delete: [comment: BlogComment]
 }>()
@@ -85,7 +88,10 @@ function commentKey(comment: BlogComment) {
 
 function normalizedReactions(comment: BlogComment) {
   return (comment.reactions || [])
-    .filter((reaction) => typeof reaction.type === 'string' && reaction.type.length > 0)
+    .filter(
+      (reaction) =>
+        typeof reaction.type === 'string' && reaction.type.length > 0,
+    )
     .map((reaction) => ({
       type: reaction.type as string,
       count: reaction.count,
@@ -98,7 +104,11 @@ function pickReaction(comment: BlogComment, code: string) {
 }
 
 function formattedDate(comment: BlogComment) {
-  return formatRelativeTime(locale.value, comment.createdAt, t('blog.comment.now'))
+  return formatRelativeTime(
+    locale.value,
+    comment.createdAt,
+    t('blog.comment.now'),
+  )
 }
 </script>
 
@@ -120,12 +130,23 @@ function formattedDate(comment: BlogComment) {
           <div class="comment-bubble">
             <div class="d-flex align-start justify-space-between ga-2">
               <div>
-                <div class="text-subtitle-2 font-weight-bold">{{ comment.author?.displayName || t('blog.common.userFallback') }}</div>
-                <div class="text-caption text-medium-emphasis">{{ formattedDate(comment) }}</div>
+                <div class="text-subtitle-2 font-weight-bold">
+                  {{
+                    comment.author?.displayName || t('blog.common.userFallback')
+                  }}
+                </div>
+                <div class="text-caption text-medium-emphasis">
+                  {{ formattedDate(comment) }}
+                </div>
               </div>
               <v-menu v-if="comment.isAuthor" location="bottom end">
                 <template #activator="{ props: menuProps }">
-                  <v-btn v-bind="menuProps" size="x-small" variant="text" icon="mdi-dots-horizontal" />
+                  <v-btn
+                    v-bind="menuProps"
+                    size="x-small"
+                    variant="text"
+                    icon="mdi-dots-horizontal"
+                  />
                 </template>
 
                 <v-list density="compact" min-width="140">
@@ -154,7 +175,13 @@ function formattedDate(comment: BlogComment) {
               location="top"
             >
               <template #activator="{ props: menuProps }">
-                <button v-bind="menuProps" type="button" @click="pickReaction(comment, 'like')">{{ t('blog.post.actions.like') }}</button>
+                <button
+                  v-bind="menuProps"
+                  type="button"
+                  @click="pickReaction(comment, 'like')"
+                >
+                  {{ t('blog.post.actions.like') }}
+                </button>
               </template>
 
               <div class="reaction-picker">
@@ -171,7 +198,9 @@ function formattedDate(comment: BlogComment) {
               </div>
             </v-menu>
 
-            <button type="button" @click="emit('reply', comment)">{{ t('blog.comment.actions.reply') }}</button>
+            <button type="button" @click="emit('reply', comment)">
+              {{ t('blog.comment.actions.reply') }}
+            </button>
           </div>
 
           <div class="mt-1">

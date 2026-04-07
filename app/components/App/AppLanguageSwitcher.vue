@@ -73,7 +73,6 @@ const selectedLocale = computed(
 </template>
 
 <style scoped>
-
 .app-language-switcher__activator {
   border-radius: 10px;
   display: inline-flex;

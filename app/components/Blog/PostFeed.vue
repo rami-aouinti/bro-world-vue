@@ -18,29 +18,50 @@ type BlogPost = {
   reactions?: BlogReaction[]
 }
 
-const props = withDefaults(defineProps<{
-  mode?: BlogFeedMode
-  showComposer?: boolean
-  showStories?: boolean
-}>(), {
-  mode: 'general',
-  showComposer: false,
-  showStories: false,
-})
+const props = withDefaults(
+  defineProps<{
+    mode?: BlogFeedMode
+    showComposer?: boolean
+    showStories?: boolean
+  }>(),
+  {
+    mode: 'general',
+    showComposer: false,
+    showStories: false,
+  },
+)
 const { t } = useI18n()
 
-const { posts, pending, pagination, reactionTypes, refresh, loadMore, comment, react, edit, delete: remove } = useBlogFeed({
+const {
+  posts,
+  pending,
+  pagination,
+  reactionTypes,
+  refresh,
+  loadMore,
+  comment,
+  react,
+  edit,
+  delete: remove,
+} = useBlogFeed({
   mode: props.mode,
 })
 const { loggedIn } = useUserSession()
 const editDialog = ref(false)
 const editContent = ref('')
 const editPending = ref(false)
-const editTarget = ref<{ type: 'post', postId: string | number } | { type: 'comment', postId: string | number, commentId: string | number } | null>(null)
+const editTarget = ref<
+  | { type: 'post'; postId: string | number }
+  | { type: 'comment'; postId: string | number; commentId: string | number }
+  | null
+>(null)
 
 await refresh()
 
-async function createComment(payload: { post: { id: string | number }, content: string }) {
+async function createComment(payload: {
+  post: { id: string | number }
+  content: string
+}) {
   if (!loggedIn.value) {
     return
   }
@@ -52,7 +73,7 @@ function findOwnReaction(reactions?: BlogReaction[]) {
   return reactions?.find((entry) => entry.isAuthor)
 }
 
-async function reactToPost(payload: { post: BlogPost, code: string }) {
+async function reactToPost(payload: { post: BlogPost; code: string }) {
   if (!loggedIn.value) {
     return
   }
@@ -76,7 +97,11 @@ async function togglePostLike(post: BlogPost) {
   await reactToPost({ post, code: 'like' })
 }
 
-async function reactToComment(payload: { post: BlogPost, comment: BlogComment, code: string }) {
+async function reactToComment(payload: {
+  post: BlogPost
+  comment: BlogComment
+  code: string
+}) {
   if (!loggedIn.value) {
     return
   }
@@ -96,7 +121,11 @@ async function reactToComment(payload: { post: BlogPost, comment: BlogComment, c
   await react('comment', payload.comment.id, { type: payload.code }, 'update')
 }
 
-async function replyToComment(payload: { post: { id: string | number }, comment: { id: string | number }, content: string }) {
+async function replyToComment(payload: {
+  post: { id: string | number }
+  comment: { id: string | number }
+  content: string
+}) {
   if (!loggedIn.value) {
     return
   }
@@ -113,7 +142,7 @@ function openPostEdit(post: BlogPost) {
   editDialog.value = true
 }
 
-function openCommentEdit(payload: { post: BlogPost, comment: BlogComment }) {
+function openCommentEdit(payload: { post: BlogPost; comment: BlogComment }) {
   editTarget.value = {
     type: 'comment',
     postId: payload.post.id,
@@ -127,7 +156,10 @@ async function deletePost(post: BlogPost) {
   await remove('post', post.id)
 }
 
-async function deleteComment(payload: { post: BlogPost, comment: BlogComment }) {
+async function deleteComment(payload: {
+  post: BlogPost
+  comment: BlogComment
+}) {
   await remove('comment', payload.comment.id, payload.post.id)
 }
 
@@ -144,16 +176,14 @@ async function submitEdit() {
   try {
     if (target.type === 'post') {
       await edit('post', target.postId, { content })
-    }
-    else {
+    } else {
       await edit('comment', target.commentId, { content }, target.postId)
     }
 
     editDialog.value = false
     editTarget.value = null
     editContent.value = ''
-  }
-  finally {
+  } finally {
     editPending.value = false
   }
 }
@@ -217,7 +247,9 @@ async function submitEdit() {
         </v-card-text>
         <v-card-actions class="px-6 pb-5">
           <v-spacer />
-          <v-btn variant="text" @click="editDialog = false">{{ t('common.cancel') }}</v-btn>
+          <v-btn variant="text" @click="editDialog = false">{{
+            t('common.cancel')
+          }}</v-btn>
           <v-btn
             color="primary"
             :loading="editPending"

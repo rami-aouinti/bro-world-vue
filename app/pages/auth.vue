@@ -60,9 +60,18 @@ watch(loggedIn, () => {
                   },
                 }"
               >
-                <v-btn v-tooltip="{ text: t('common.edit') }" icon="mdi-pencil" />
-                <v-btn v-tooltip="{ text: t('common.copy') }" icon="mdi-content-copy" />
-                <v-btn v-tooltip="{ text: t('common.delete') }" icon="mdi-delete" />
+                <v-btn
+                  v-tooltip="{ text: t('common.edit') }"
+                  icon="mdi-pencil"
+                />
+                <v-btn
+                  v-tooltip="{ text: t('common.copy') }"
+                  icon="mdi-content-copy"
+                />
+                <v-btn
+                  v-tooltip="{ text: t('common.delete') }"
+                  icon="mdi-delete"
+                />
               </v-defaults-provider>
             </template>
           </v-data-table>

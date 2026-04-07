@@ -9,7 +9,9 @@ type DrawerSlotRegistry = {
   setRight: (renderer: DrawerSlotRenderer) => void
 }
 
-const DRAWER_SLOT_REGISTRY_KEY: InjectionKey<DrawerSlotRegistry> = Symbol('drawer-slot-registry')
+const DRAWER_SLOT_REGISTRY_KEY: InjectionKey<DrawerSlotRegistry> = Symbol(
+  'drawer-slot-registry',
+)
 
 export function provideDrawerSlotRegistry() {
   const left = shallowRef<DrawerSlotRenderer>(null)

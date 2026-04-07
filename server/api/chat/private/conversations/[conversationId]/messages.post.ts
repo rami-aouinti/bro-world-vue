@@ -11,8 +11,12 @@ export default defineEventHandler(async (event): Promise<unknown> => {
 
   const body = await readBody(event)
 
-  return callPrivateApi(event, `/chat/private/conversations/${conversationId}/messages`, {
-    method: 'POST',
-    body,
-  })
+  return callPrivateApi(
+    event,
+    `/chat/private/conversations/${conversationId}/messages`,
+    {
+      method: 'POST',
+      body,
+    },
+  )
 })

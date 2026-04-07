@@ -6,8 +6,12 @@ export default defineEventHandler(async (event): Promise<unknown> => {
   const commentId = getRequiredRouterParam(event, 'commentId', 'comment')
   const body = await readBody(event)
 
-  return callPrivateApi(event, `/api/v1/private/blog/posts/${postId}/comments/${commentId}`, {
-    method: 'PATCH',
-    body,
-  })
+  return callPrivateApi(
+    event,
+    `/api/v1/private/blog/posts/${postId}/comments/${commentId}`,
+    {
+      method: 'PATCH',
+      body,
+    },
+  )
 })

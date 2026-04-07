@@ -92,14 +92,14 @@ html.dark {
 }
 
 :is(
-    .v-btn,
-    .v-list,
-    .v-list-item,
-    .v-avatar,
-    .v-chip,
-    .v-overlay__content,
-    .v-card
-  ) {
+  .v-btn,
+  .v-list,
+  .v-list-item,
+  .v-avatar,
+  .v-chip,
+  .v-overlay__content,
+  .v-card
+) {
   border-radius: var(--app-rounded) !important;
 }
 

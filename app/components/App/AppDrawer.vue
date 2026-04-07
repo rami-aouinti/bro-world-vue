@@ -2,6 +2,7 @@
 import type { SessionUser } from '~/types/session'
 
 const { t } = useI18n()
+const isPageSkeletonLoading = useState('page-skeleton-loading', () => true)
 
 const router = useRouter()
 const { user } = useUserSession()
@@ -10,12 +11,23 @@ const isRoot = computed(() => {
   return roles.includes('root')
 })
 const routes = computed(() => {
-  const rootRoutes = router.getRoutes().filter((r) => r.path.lastIndexOf('/') === 0)
-  const sortedRoutes = rootRoutes.toSorted((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98))
-  const dashboardRoute = sortedRoutes.find((route) => route.name === 'dashboard')
-  const filteredRoutes = sortedRoutes.filter((route) => route.name !== 'dashboard')
+  const rootRoutes = router
+    .getRoutes()
+    .filter((r) => r.path.lastIndexOf('/') === 0)
+  const sortedRoutes = rootRoutes.toSorted(
+    (a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98),
+  )
+  const dashboardRoute = sortedRoutes.find(
+    (route) => route.name === 'dashboard',
+  )
+  const filteredRoutes = sortedRoutes.filter(
+    (route) => route.name !== 'dashboard',
+  )
 
-  if (!filteredRoutes.some((route) => route.name === 'admin') && dashboardRoute) {
+  if (
+    !filteredRoutes.some((route) => route.name === 'admin') &&
+    dashboardRoute
+  ) {
     filteredRoutes.push({
       ...dashboardRoute,
       name: 'admin',
@@ -28,15 +40,18 @@ const routes = computed(() => {
   }
 
   if (isRoot.value) {
-    return filteredRoutes.toSorted((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98))
+    return filteredRoutes.toSorted(
+      (a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98),
+    )
   }
 
   return rootRoutes
     .filter((route) => route.name !== 'dashboard')
-    .toSorted((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98))
+    .toSorted(
+      (a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98),
+    )
 })
 const drawerState = useState('drawer', () => true)
-const isPageSkeletonLoading = useState('page-skeleton-loading', () => true)
 
 const { mobile } = useDisplay()
 const registry = useDrawerSlotRegistry()

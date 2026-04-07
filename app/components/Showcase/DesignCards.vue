@@ -38,9 +38,18 @@ function onConfirmAction() {
           {{ t('dashboard.showcase.quickActions') }}
         </h4>
         <v-list density="compact" nav>
-          <v-list-item prepend-icon="mdi-account-group-outline" :title="t('dashboard.showcase.actionTeam')" />
-          <v-list-item prepend-icon="mdi-chart-areaspline" :title="t('dashboard.showcase.actionStats')" />
-          <v-list-item prepend-icon="mdi-cog-outline" :title="t('dashboard.showcase.actionSettings')" />
+          <v-list-item
+            prepend-icon="mdi-account-group-outline"
+            :title="t('dashboard.showcase.actionTeam')"
+          />
+          <v-list-item
+            prepend-icon="mdi-chart-areaspline"
+            :title="t('dashboard.showcase.actionStats')"
+          />
+          <v-list-item
+            prepend-icon="mdi-cog-outline"
+            :title="t('dashboard.showcase.actionSettings')"
+          />
         </v-list>
       </v-card>
     </v-col>
@@ -50,6 +59,10 @@ function onConfirmAction() {
 
 <style scoped>
 .showcase-card {
-  background: linear-gradient(135deg, rgba(var(--v-theme-primary), 0.08), transparent 45%);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--v-theme-primary), 0.08),
+    transparent 45%
+  );
 }
 </style>

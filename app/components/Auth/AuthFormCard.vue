@@ -36,7 +36,11 @@ const form = reactive({
 const valid = ref(false)
 const showPassword = ref(false)
 const socialLoadingProvider = ref<SocialProvider | null>(null)
-const socialProviders: Array<{ key: SocialProvider; icon: string; label: string }> = [
+const socialProviders: Array<{
+  key: SocialProvider
+  icon: string
+  label: string
+}> = [
   {
     key: 'github',
     icon: 'mdi-github',
@@ -86,8 +90,7 @@ async function onSocialLogin(provider: SocialProvider) {
     }
 
     Notify.warning(t('auth.social.comingSoon'))
-  }
-  finally {
+  } finally {
     socialLoadingProvider.value = null
   }
 }
@@ -121,9 +124,13 @@ async function onSocialLogin(provider: SocialProvider) {
 
         <v-text-field
           v-model="form.email"
-          :label="isRegister ? t('auth.fields.email') : t('auth.fields.username')"
+          :label="
+            isRegister ? t('auth.fields.email') : t('auth.fields.username')
+          "
           :type="isRegister ? 'email' : 'text'"
-          :prepend-inner-icon="isRegister ? 'mdi-email-outline' : 'mdi-account-outline'"
+          :prepend-inner-icon="
+            isRegister ? 'mdi-email-outline' : 'mdi-account-outline'
+          "
           variant="outlined"
           color="primary"
           :rules="isRegister ? [rules.required, rules.email] : [rules.required]"
@@ -207,7 +214,9 @@ async function onSocialLogin(provider: SocialProvider) {
             :prepend-icon="provider.icon"
             :loading="socialLoadingProvider === provider.key"
             :disabled="loading || !!socialLoadingProvider"
-            :aria-label="t('auth.social.continueWith', { provider: provider.label })"
+            :aria-label="
+              t('auth.social.continueWith', { provider: provider.label })
+            "
             @click="onSocialLogin(provider.key)"
           >
             {{ t('auth.social.continueWith', { provider: provider.label }) }}

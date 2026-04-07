@@ -72,7 +72,9 @@ const DEFAULT_PAGINATION: BlogPagination = {
 }
 
 function toRecord(value: unknown): UnknownRecord {
-  return typeof value === 'object' && value !== null ? (value as UnknownRecord) : {}
+  return typeof value === 'object' && value !== null
+    ? (value as UnknownRecord)
+    : {}
 }
 
 function pickArray(value: unknown): unknown[] {
@@ -142,7 +144,8 @@ function normalizeReaction(input: unknown): BlogReaction {
 
   return {
     id: pickId(reaction),
-    type: pickNullableString(reaction.type) ?? pickNullableString(reaction.code),
+    type:
+      pickNullableString(reaction.type) ?? pickNullableString(reaction.code),
     count: pickNumber(reaction.count, 0),
     isAuthor: pickBoolean(reaction.isAuthor, false),
     author: normalizeAuthor(reaction.author ?? reaction.user),
@@ -178,8 +181,10 @@ function normalizeAuthor(input: unknown): BlogAuthor | null {
     username,
     firstName,
     lastName,
-    photo: pickNullableString(author.photo) ?? pickNullableString(author.avatar),
-    displayName: fullName || username || pickNullableString(author.name) || 'Utilisateur',
+    photo:
+      pickNullableString(author.photo) ?? pickNullableString(author.avatar),
+    displayName:
+      fullName || username || pickNullableString(author.name) || 'Utilisateur',
     raw: author,
   }
 }
@@ -194,7 +199,9 @@ function normalizeComment(input: unknown): BlogComment {
     updatedAt: pickNullableString(comment.updatedAt),
     isAuthor: pickBoolean(comment.isAuthor, false),
     author: normalizeAuthor(comment.author ?? comment.user),
-    children: readNestedArray(comment, ['children', 'comments']).map(normalizeComment),
+    children: readNestedArray(comment, ['children', 'comments']).map(
+      normalizeComment,
+    ),
     reactions: readNestedArray(comment, ['reactions']).map(normalizeReaction),
     raw: comment,
   }
@@ -210,8 +217,10 @@ function normalizePost(input: unknown): BlogPost {
     content: pickString(post.content),
     createdAt: pickNullableString(post.createdAt),
     updatedAt: pickNullableString(post.updatedAt),
-    mediaUrl: pickNullableString(post.mediaUrl) ?? pickNullableString(post.media),
-    sharedUrl: pickNullableString(post.sharedUrl) ?? pickNullableString(post.url),
+    mediaUrl:
+      pickNullableString(post.mediaUrl) ?? pickNullableString(post.media),
+    sharedUrl:
+      pickNullableString(post.sharedUrl) ?? pickNullableString(post.url),
     isAuthor: pickBoolean(post.isAuthor, false),
     comments: readNestedArray(post, ['comments']).map(normalizeComment),
     reactions: readNestedArray(post, ['reactions']).map(normalizeReaction),
@@ -219,7 +228,10 @@ function normalizePost(input: unknown): BlogPost {
   }
 }
 
-function normalizePagination(response: UnknownRecord, fallback: BlogPagination): BlogPagination {
+function normalizePagination(
+  response: UnknownRecord,
+  fallback: BlogPagination,
+): BlogPagination {
   const pagination = toRecord(response.pagination)
 
   const page = pickNumber(pagination.page, fallback.page)
@@ -272,17 +284,24 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
       return '/api/blog/private/posts/mine'
     }
 
-    return loggedIn.value ? '/api/blog/private/general' : '/api/blog/public/general'
+    return loggedIn.value
+      ? '/api/blog/private/general'
+      : '/api/blog/public/general'
   })
 
   async function fetchReactionTypes() {
     const response = await $fetch<unknown>('/api/blog/public/reaction-types')
     const record = toRecord(response)
 
-    reactionTypes.value = normalizeReactionTypes(record.reactionTypes ?? record.types ?? record.data ?? response)
+    reactionTypes.value = normalizeReactionTypes(
+      record.reactionTypes ?? record.types ?? record.data ?? response,
+    )
   }
 
-  async function fetchPage(page: number, mergeMode: 'replace' | 'append' = 'replace') {
+  async function fetchPage(
+    page: number,
+    mergeMode: 'replace' | 'append' = 'replace',
+  ) {
     pending.value = true
     error.value = null
 
@@ -296,11 +315,11 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
 
       try {
         response = await $fetch<unknown>(feedEndpoint.value, { query })
-      }
-      catch (err) {
-        const shouldFallbackToPublicGeneral = mode.value === 'general'
-          && feedEndpoint.value === '/api/blog/private/general'
-          && normalizeHttpError(err).isUnauthorized
+      } catch (err) {
+        const shouldFallbackToPublicGeneral =
+          mode.value === 'general' &&
+          feedEndpoint.value === '/api/blog/private/general' &&
+          normalizeHttpError(err).isUnauthorized
 
         if (!shouldFallbackToPublicGeneral) {
           throw err
@@ -313,21 +332,24 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
       const payload = toRecord(record.data)
       const source = Object.keys(payload).length > 0 ? payload : record
 
-      const normalizedPosts = readNestedArray(source, ['posts', 'items']).map(normalizePost)
+      const normalizedPosts = readNestedArray(source, ['posts', 'items']).map(
+        normalizePost,
+      )
       const normalizedPagination = normalizePagination(source, pagination.value)
 
-      posts.value = mergeMode === 'append' ? [...posts.value, ...normalizedPosts] : normalizedPosts
+      posts.value =
+        mergeMode === 'append'
+          ? [...posts.value, ...normalizedPosts]
+          : normalizedPosts
       pagination.value = normalizedPagination
 
       if (reactionTypes.value.length === 0) {
         await fetchReactionTypes()
       }
-    }
-    catch (err) {
+    } catch (err) {
       error.value = err
       throw err
-    }
-    finally {
+    } finally {
       pending.value = false
     }
   }
@@ -437,8 +459,7 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
   function clonePostsState(): BlogPost[] {
     try {
       return structuredClone(posts.value)
-    }
-    catch {
+    } catch {
       return JSON.parse(JSON.stringify(posts.value)) as BlogPost[]
     }
   }
@@ -447,7 +468,8 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
     optimisticPatch: (() => void) | null,
     mutation: () => Promise<void>,
   ) {
-    const snapshot = optimistic.value && optimisticPatch ? clonePostsState() : null
+    const snapshot =
+      optimistic.value && optimisticPatch ? clonePostsState() : null
 
     if (optimistic.value && optimisticPatch) {
       optimisticPatch()
@@ -455,8 +477,7 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
 
     try {
       await mutation()
-    }
-    catch (err) {
+    } catch (err) {
       if (snapshot) {
         posts.value = snapshot
       }
@@ -472,7 +493,10 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
     return Object.keys(payload).length > 0 ? payload : record
   }
 
-  function pickFirstRecord(source: UnknownRecord, keys: string[]): UnknownRecord | null {
+  function pickFirstRecord(
+    source: UnknownRecord,
+    keys: string[],
+  ): UnknownRecord | null {
     for (const key of keys) {
       const nested = toRecord(source[key])
       if (Object.keys(nested).length > 0) {
@@ -506,13 +530,20 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
           }
         : null,
       async () => {
-        const response = await $fetch<unknown>(`/api/blog/private/posts/${postId}/comments`, {
-          method: 'POST',
-          body,
-        })
+        const response = await $fetch<unknown>(
+          `/api/blog/private/posts/${postId}/comments`,
+          {
+            method: 'POST',
+            body,
+          },
+        )
 
         const source = readMutationSource(response)
-        const commentPayload = pickFirstRecord(source, ['comment', 'item', 'data'])
+        const commentPayload = pickFirstRecord(source, [
+          'comment',
+          'item',
+          'data',
+        ])
         const postIndex = findPostIndex(postId)
 
         if (!commentPayload || postIndex < 0) {
@@ -526,7 +557,12 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
         }
 
         const commentEntry = normalizeComment(commentPayload)
-        postEntry.comments = [commentEntry, ...postEntry.comments.filter((entry) => !String(entry.id).startsWith('tmp-'))]
+        postEntry.comments = [
+          commentEntry,
+          ...postEntry.comments.filter(
+            (entry) => !String(entry.id).startsWith('tmp-'),
+          ),
+        ]
       },
     )
   }
@@ -537,46 +573,66 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
     body?: UnknownRecord,
     action: 'create' | 'update' | 'delete' = 'create',
   ) {
-    const base = target === 'post' ? `/api/blog/private/posts/${id}/reactions` : `/api/blog/private/comments/${id}/reactions`
-    const method = action === 'create' ? 'POST' : action === 'update' ? 'PATCH' : 'DELETE'
+    const base =
+      target === 'post'
+        ? `/api/blog/private/posts/${id}/reactions`
+        : `/api/blog/private/comments/${id}/reactions`
+    const method =
+      action === 'create' ? 'POST' : action === 'update' ? 'PATCH' : 'DELETE'
 
-    await runMutation(
-      null,
-      async () => {
-        const response = await $fetch<unknown>(base, {
-          method,
-          body,
-        })
+    await runMutation(null, async () => {
+      const response = await $fetch<unknown>(base, {
+        method,
+        body,
+      })
 
-        const source = readMutationSource(response)
-        const parent = pickFirstRecord(source, [target, 'post', 'comment', 'item'])
-        const reactionsSource = parent ? readNestedArray(parent, ['reactions']) : readNestedArray(source, ['reactions'])
+      const source = readMutationSource(response)
+      const parent = pickFirstRecord(source, [
+        target,
+        'post',
+        'comment',
+        'item',
+      ])
+      const reactionsSource = parent
+        ? readNestedArray(parent, ['reactions'])
+        : readNestedArray(source, ['reactions'])
 
-        if (reactionsSource.length === 0) {
-          await refresh()
-          return
-        }
+      if (reactionsSource.length === 0) {
+        await refresh()
+        return
+      }
 
-        const updated = updateEntityById(target, id, (entry) => ({
-          ...entry,
-          reactions: reactionsSource.map(normalizeReaction),
-        }))
+      const updated = updateEntityById(target, id, (entry) => ({
+        ...entry,
+        reactions: reactionsSource.map(normalizeReaction),
+      }))
 
-        if (!updated) {
-          await refresh()
-        }
-      },
-    )
+      if (!updated) {
+        await refresh()
+      }
+    })
   }
 
-  async function edit(target: 'post' | 'comment', id: string | number, body: UnknownRecord, postId?: string | number) {
-    if (target === 'comment' && (postId === undefined || postId === null || postId === '')) {
-      throw createError({ statusCode: 400, statusMessage: 'postId is required to edit a comment' })
+  async function edit(
+    target: 'post' | 'comment',
+    id: string | number,
+    body: UnknownRecord,
+    postId?: string | number,
+  ) {
+    if (
+      target === 'comment' &&
+      (postId === undefined || postId === null || postId === '')
+    ) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'postId is required to edit a comment',
+      })
     }
 
-    const url = target === 'post'
-      ? `/api/blog/private/posts/${id}`
-      : `/api/blog/private/posts/${postId}/comments/${id}`
+    const url =
+      target === 'post'
+        ? `/api/blog/private/posts/${id}`
+        : `/api/blog/private/posts/${postId}/comments/${id}`
 
     await runMutation(
       optimistic.value
@@ -594,17 +650,20 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
         })
 
         const source = readMutationSource(response)
-        const item = pickFirstRecord(source, [target, 'post', 'comment', 'item'])
+        const item = pickFirstRecord(source, [
+          target,
+          'post',
+          'comment',
+          'item',
+        ])
 
         if (!item) {
           await refresh()
           return
         }
 
-        const patched = updateEntityById(
-          target,
-          id,
-          () => (target === 'post' ? normalizePost(item) : normalizeComment(item)),
+        const patched = updateEntityById(target, id, () =>
+          target === 'post' ? normalizePost(item) : normalizeComment(item),
         )
 
         if (!patched) {
@@ -614,14 +673,25 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
     )
   }
 
-  async function remove(target: 'post' | 'comment', id: string | number, postId?: string | number) {
-    if (target === 'comment' && (postId === undefined || postId === null || postId === '')) {
-      throw createError({ statusCode: 400, statusMessage: 'postId is required to delete a comment' })
+  async function remove(
+    target: 'post' | 'comment',
+    id: string | number,
+    postId?: string | number,
+  ) {
+    if (
+      target === 'comment' &&
+      (postId === undefined || postId === null || postId === '')
+    ) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'postId is required to delete a comment',
+      })
     }
 
-    const url = target === 'post'
-      ? `/api/blog/private/posts/${id}`
-      : `/api/blog/private/posts/${postId}/comments/${id}`
+    const url =
+      target === 'post'
+        ? `/api/blog/private/posts/${id}`
+        : `/api/blog/private/posts/${postId}/comments/${id}`
 
     await runMutation(
       optimistic.value

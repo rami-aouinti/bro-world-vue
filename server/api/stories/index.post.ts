@@ -15,9 +15,12 @@ export default defineEventHandler(async (event): Promise<unknown> => {
     requestHeaders.set('content-type', contentType)
   }
 
-  return $fetch(resolveApiUrl(runtimeConfig.public.apiBaseUrl, '/api/v1/private/stories'), {
-    method: 'POST',
-    headers: requestHeaders,
-    body,
-  })
+  return $fetch(
+    resolveApiUrl(runtimeConfig.public.apiBaseUrl, '/api/v1/private/stories'),
+    {
+      method: 'POST',
+      headers: requestHeaders,
+      body,
+    },
+  )
 })

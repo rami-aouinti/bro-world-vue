@@ -22,7 +22,10 @@ function resolveVueI18nOptions(configOrFactory: unknown): VueI18nOptions {
 
 describe('language configuration', () => {
   it('keeps en/fr/es/de locales with en as default in nuxt config', () => {
-    const i18nConfig = nuxtConfig.i18n as { locales?: I18nNuxtLocale[]; defaultLocale?: string }
+    const i18nConfig = nuxtConfig.i18n as {
+      locales?: I18nNuxtLocale[]
+      defaultLocale?: string
+    }
 
     const localeCodes = (i18nConfig.locales ?? []).map((locale) => locale.code)
 
@@ -38,7 +41,10 @@ describe('language configuration', () => {
   })
 
   it('defines EN/FR/ES/DE options in the language switcher component', () => {
-    const source = readFileSync('app/components/App/AppLanguageSwitcher.vue', 'utf-8')
+    const source = readFileSync(
+      'app/components/App/AppLanguageSwitcher.vue',
+      'utf-8',
+    )
 
     expect(source).toContain("value: 'en'")
     expect(source).toContain("value: 'fr'")

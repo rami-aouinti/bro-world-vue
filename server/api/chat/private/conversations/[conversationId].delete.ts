@@ -9,7 +9,11 @@ export default defineEventHandler(async (event): Promise<unknown> => {
     })
   }
 
-  return callPrivateApi(event, `/chat/private/conversations/${conversationId}`, {
-    method: 'DELETE',
-  })
+  return callPrivateApi(
+    event,
+    `/chat/private/conversations/${conversationId}`,
+    {
+      method: 'DELETE',
+    },
+  )
 })

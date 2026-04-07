@@ -18,7 +18,12 @@ definePageMeta({
 
     <v-container fluid>
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
-      <BlogPostFeed v-else mode="mine" :show-composer="false" :show-stories="false" />
+      <BlogPostFeed
+        v-else
+        mode="mine"
+        :show-composer="false"
+        :show-stories="false"
+      />
     </v-container>
   </div>
 </template>

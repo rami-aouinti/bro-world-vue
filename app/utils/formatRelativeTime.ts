@@ -31,16 +31,13 @@ export function formatRelativeTime(
   if (absDiffMs >= yearMs) {
     unit = 'year'
     value = Math.round(diffMs / yearMs)
-  }
-  else if (absDiffMs >= weekMs) {
+  } else if (absDiffMs >= weekMs) {
     unit = 'week'
     value = Math.round(diffMs / weekMs)
-  }
-  else if (absDiffMs >= dayMs) {
+  } else if (absDiffMs >= dayMs) {
     unit = 'day'
     value = Math.round(diffMs / dayMs)
-  }
-  else if (absDiffMs >= hourMs) {
+  } else if (absDiffMs >= hourMs) {
     unit = 'hour'
     value = Math.round(diffMs / hourMs)
   }

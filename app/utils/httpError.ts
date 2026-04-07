@@ -8,7 +8,9 @@ export type NormalizedHttpError = {
 }
 
 function toRecord(value: unknown): UnknownRecord {
-  return typeof value === 'object' && value !== null ? (value as UnknownRecord) : {}
+  return typeof value === 'object' && value !== null
+    ? (value as UnknownRecord)
+    : {}
 }
 
 function pickStatusCode(value: unknown): number | null {
@@ -51,9 +53,9 @@ export function normalizeHttpError(err: unknown): NormalizedHttpError {
   const response = toRecord(source.response)
 
   const statusCode =
-    pickStatusCode(source.statusCode)
-    ?? pickStatusCode(data.statusCode)
-    ?? pickStatusCode(response.status)
+    pickStatusCode(source.statusCode) ??
+    pickStatusCode(data.statusCode) ??
+    pickStatusCode(response.status)
 
   return {
     statusCode,

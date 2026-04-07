@@ -1,11 +1,14 @@
 <script setup lang="ts">
 const { t } = useI18n()
 
-const props = withDefaults(defineProps<{
-  disabled?: boolean
-}>(), {
-  disabled: false,
-})
+const props = withDefaults(
+  defineProps<{
+    disabled?: boolean
+  }>(),
+  {
+    disabled: false,
+  },
+)
 const theme = useTheme()
 const isLightTheme = computed(() => !theme.current.value.dark)
 
@@ -43,7 +46,9 @@ const actions = [
     class="new-post-actions px-3 py-2 d-flex align-center justify-space-between ga-2"
     :class="{ 'new-post-actions--light': isLightTheme }"
   >
-    <span class="new-post-actions__label text-body-2">{{ t('blog.newPost.addToPost') }}</span>
+    <span class="new-post-actions__label text-body-2">{{
+      t('blog.newPost.addToPost')
+    }}</span>
 
     <div class="d-flex ga-1">
       <v-btn

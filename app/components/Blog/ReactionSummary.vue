@@ -1,16 +1,26 @@
 <script setup lang="ts">
-type ReactionCode = 'like' | 'heart' | 'laugh' | 'celebrate' | 'wow' | 'sad' | 'angry'
+type ReactionCode =
+  | 'like'
+  | 'heart'
+  | 'laugh'
+  | 'celebrate'
+  | 'wow'
+  | 'sad'
+  | 'angry'
 
 type ReactionItem = {
   type: string
   count: number
 }
 
-const props = withDefaults(defineProps<{
-  reactions?: ReactionItem[]
-}>(), {
-  reactions: () => [],
-})
+const props = withDefaults(
+  defineProps<{
+    reactions?: ReactionItem[]
+  }>(),
+  {
+    reactions: () => [],
+  },
+)
 
 const iconMap: Record<ReactionCode, string> = {
   like: '👍',
@@ -22,7 +32,15 @@ const iconMap: Record<ReactionCode, string> = {
   angry: '😡',
 }
 
-const reactionOrder: ReactionCode[] = ['like', 'heart', 'celebrate', 'laugh', 'wow', 'sad', 'angry']
+const reactionOrder: ReactionCode[] = [
+  'like',
+  'heart',
+  'celebrate',
+  'laugh',
+  'wow',
+  'sad',
+  'angry',
+]
 
 const summary = computed(() => {
   const map = new Map<string, number>()
@@ -41,13 +59,20 @@ const summary = computed(() => {
     .filter((item) => item.count > 0)
 })
 
-const totalReactions = computed(() => summary.value.reduce((acc, item) => acc + item.count, 0))
+const totalReactions = computed(() =>
+  summary.value.reduce((acc, item) => acc + item.count, 0),
+)
 </script>
 
 <template>
   <div v-if="totalReactions > 0" class="reaction-summary text-medium-emphasis">
     <div class="reaction-chips">
-      <span v-for="(item, index) in summary.slice(0, 6)" :key="item.type" class="reaction-chip" :style="{ zIndex: `${30 - index}` }">
+      <span
+        v-for="(item, index) in summary.slice(0, 6)"
+        :key="item.type"
+        class="reaction-chip"
+        :style="{ zIndex: `${30 - index}` }"
+      >
         {{ item.icon }}
       </span>
     </div>

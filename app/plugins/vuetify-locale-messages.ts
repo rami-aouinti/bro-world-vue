@@ -17,7 +17,9 @@ export default defineNuxtPlugin((nuxtApp) => {
     mergeLocaleMessage: (locale: string, message: unknown) => void
   }
 
-  for (const [locale, vuetifyMessages] of Object.entries(VUETIFY_LOCALE_MESSAGES)) {
+  for (const [locale, vuetifyMessages] of Object.entries(
+    VUETIFY_LOCALE_MESSAGES,
+  )) {
     i18n.mergeLocaleMessage(locale, { $vuetify: vuetifyMessages })
   }
 })

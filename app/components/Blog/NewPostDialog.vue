@@ -1,16 +1,19 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
 
-const props = withDefaults(defineProps<{
-  modelValue: string
-  disabled?: boolean
-  open?: boolean
-  placeholder?: string
-}>(), {
-  disabled: false,
-  open: false,
-  placeholder: '',
-})
+const props = withDefaults(
+  defineProps<{
+    modelValue: string
+    disabled?: boolean
+    open?: boolean
+    placeholder?: string
+  }>(),
+  {
+    disabled: false,
+    open: false,
+    placeholder: '',
+  },
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
@@ -28,13 +31,24 @@ const { user } = useUserSession()
 const isLightTheme = computed(() => !theme.current.value.dark)
 const sessionUser = computed(() => user.value as SessionUser | null)
 const userDisplayName = computed(() => {
-  const fullName = [sessionUser.value?.firstName, sessionUser.value?.lastName].filter(Boolean).join(' ').trim()
-  return fullName || sessionUser.value?.username || t('blog.common.userFallback')
+  const fullName = [sessionUser.value?.firstName, sessionUser.value?.lastName]
+    .filter(Boolean)
+    .join(' ')
+    .trim()
+  return (
+    fullName || sessionUser.value?.username || t('blog.common.userFallback')
+  )
 })
 const userAvatar = computed(() => sessionUser.value?.photo || null)
-const resolvedPlaceholder = computed(() => props.placeholder || t('blog.newPost.placeholder', { name: userDisplayName.value }))
+const resolvedPlaceholder = computed(
+  () =>
+    props.placeholder ||
+    t('blog.newPost.placeholder', { name: userDisplayName.value }),
+)
 
-const isPostDisabled = computed(() => props.disabled || !props.modelValue.trim())
+const isPostDisabled = computed(
+  () => props.disabled || !props.modelValue.trim(),
+)
 
 function closeDialog() {
   emit('update:open', false)
@@ -60,8 +74,12 @@ function onSubmit() {
       :class="{ 'new-post-dialog--light': isLightTheme }"
       rounded="xl"
     >
-      <v-card-title class="py-4 d-flex align-center justify-center position-relative">
-        <span class="new-post-dialog__title text-h6">{{ t('blog.newPost.createTitle') }}</span>
+      <v-card-title
+        class="py-4 d-flex align-center justify-center position-relative"
+      >
+        <span class="new-post-dialog__title text-h6">{{
+          t('blog.newPost.createTitle')
+        }}</span>
         <v-btn
           icon="mdi-close"
           variant="text"

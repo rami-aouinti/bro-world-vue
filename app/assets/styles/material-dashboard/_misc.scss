@@ -1,5 +1,5 @@
-@use "sass:map";
-@use "variables" as *;
+@use 'sass:map';
+@use 'variables' as *;
 
 html {
   -webkit-font-smoothing: auto;
@@ -72,7 +72,7 @@ html {
   }
 
   .text-dark {
-    color: map.get($colors-simple, "gray-dark") !important;
+    color: map.get($colors-simple, 'gray-dark') !important;
   }
 
   .text-darker {
@@ -85,7 +85,7 @@ html {
 
   .text-border:after,
   .text-border:before {
-    content: "";
+    content: '';
     display: inline-block;
     width: $text-border-width;
     height: $text-border-height;
@@ -307,15 +307,24 @@ html {
 }
 
 .border-radius-lg {
-  border-radius: var(--ui-surface-radius, calc(var(--radius, $border-radius-md) + 4px)) !important;
+  border-radius: var(
+    --ui-surface-radius,
+    calc(var(--radius, $border-radius-md) + 4px)
+  ) !important;
 }
 
 .border-radius-xl {
-  border-radius: var(--ui-card-radius, calc(var(--radius, $border-radius-md) + 8px)) !important;
+  border-radius: var(
+    --ui-card-radius,
+    calc(var(--radius, $border-radius-md) + 8px)
+  ) !important;
 }
 
 .border-radius-2xl {
-  border-radius: var(--ui-card-radius, calc(var(--radius, $border-radius-md) + 12px)) !important;
+  border-radius: var(
+    --ui-card-radius,
+    calc(var(--radius, $border-radius-md) + 12px)
+  ) !important;
 }
 
 // HR variants

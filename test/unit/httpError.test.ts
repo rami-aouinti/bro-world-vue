@@ -3,7 +3,10 @@ import { normalizeHttpError } from '../../app/utils/httpError'
 
 describe('normalizeHttpError', () => {
   it('reads status from statusCode', () => {
-    const error = normalizeHttpError({ statusCode: 401, message: 'Unauthorized' })
+    const error = normalizeHttpError({
+      statusCode: 401,
+      message: 'Unauthorized',
+    })
 
     expect(error.statusCode).toBe(401)
     expect(error.isUnauthorized).toBe(true)

@@ -1,11 +1,14 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
-  disabled?: boolean
-  label?: string
-}>(), {
-  disabled: false,
-  label: 'Freunde',
-})
+const props = withDefaults(
+  defineProps<{
+    disabled?: boolean
+    label?: string
+  }>(),
+  {
+    disabled: false,
+    label: 'Freunde',
+  },
+)
 const theme = useTheme()
 const isLightTheme = computed(() => !theme.current.value.dark)
 </script>

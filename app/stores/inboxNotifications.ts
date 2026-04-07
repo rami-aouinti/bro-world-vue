@@ -77,46 +77,57 @@ export type UpdatePrivateConversationPayload = Record<string, unknown>
 function isUnauthorizedError(error: unknown): boolean {
   if (!error || typeof error !== 'object') return false
 
-  const maybeError = error as { status?: number, statusCode?: number }
+  const maybeError = error as { status?: number; statusCode?: number }
   return maybeError.status === 401 || maybeError.statusCode === 401
 }
 
 function isNotFoundError(error: unknown): boolean {
   if (!error || typeof error !== 'object') return false
 
-  const maybeError = error as { status?: number, statusCode?: number }
+  const maybeError = error as { status?: number; statusCode?: number }
   return maybeError.status === 404 || maybeError.statusCode === 404
 }
 
-const normalizeNotification = (notification: UserNotificationItem): UserNotificationItem => ({
+const normalizeNotification = (
+  notification: UserNotificationItem,
+): UserNotificationItem => ({
   ...notification,
   preview: notification.description,
   content: notification.description,
 })
 
-const getParticipantName = (participant: PrivateConversationParticipant): string =>
+const getParticipantName = (
+  participant: PrivateConversationParticipant,
+): string =>
   `${participant.user?.firstName || participant.firstName || ''} ${participant.user?.lastName || participant.lastName || ''}`.trim()
 
-const isParticipantOwner = (participant: PrivateConversationParticipant): boolean =>
-  Boolean(participant.user?.owner)
+const isParticipantOwner = (
+  participant: PrivateConversationParticipant,
+): boolean => Boolean(participant.user?.owner)
 
-const getParticipantUserId = (participant: PrivateConversationParticipant): string | undefined =>
-  participant.user?.id || participant.id
+const getParticipantUserId = (
+  participant: PrivateConversationParticipant,
+): string | undefined => participant.user?.id || participant.id
 
-const normalizePrivateConversation = (conversation: PrivateConversation): InboxItem => {
-  const participants = Array.isArray(conversation.participants) ? conversation.participants : []
-  const participantFallbackTitle = participants
-    .find((participant) => {
+const normalizePrivateConversation = (
+  conversation: PrivateConversation,
+): InboxItem => {
+  const participants = Array.isArray(conversation.participants)
+    ? conversation.participants
+    : []
+  const participantFallbackTitle =
+    participants.find((participant) => {
       if (conversation.ownerId) {
         return getParticipantUserId(participant) !== conversation.ownerId
       }
 
       return !isParticipantOwner(participant)
-    })
-    || participants[0]
-  const title = conversation.title?.trim() || (participantFallbackTitle
-    ? getParticipantName(participantFallbackTitle)
-    : 'Private conversation')
+    }) || participants[0]
+  const title =
+    conversation.title?.trim() ||
+    (participantFallbackTitle
+      ? getParticipantName(participantFallbackTitle)
+      : 'Private conversation')
   const content = conversation.lastMessage?.content?.trim() || ''
 
   return {
@@ -141,7 +152,9 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
     inboxSortedDesc: (state) =>
       [...state.inbox].sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
     notificationsSortedDesc: (state) =>
-      [...state.notifications].sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
+      [...state.notifications].sort((a, b) =>
+        b.createdAt.localeCompare(a.createdAt),
+      ),
     inboxLatestThree(): InboxItem[] {
       return this.inboxSortedDesc.slice(0, 3)
     },
@@ -156,8 +169,7 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
 
       if (index >= 0) {
         this.inbox.splice(index, 1, normalizedConversation)
-      }
-      else {
+      } else {
         this.inbox.push(normalizedConversation)
       }
 
@@ -170,20 +182,26 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
       }
 
       this.conversationsById = Object.fromEntries(
-        Object.entries(this.conversationsById).filter(([id]) => id !== conversationId),
+        Object.entries(this.conversationsById).filter(
+          ([id]) => id !== conversationId,
+        ),
       )
     },
     async fetchInboxConversations(page = 1, limit = 20) {
       try {
-        const response = await $fetch<PrivateConversationsApiResponse>('/api/chat/private/conversations', {
-          query: { page, limit },
-        })
+        const response = await $fetch<PrivateConversationsApiResponse>(
+          '/api/chat/private/conversations',
+          {
+            query: { page, limit },
+          },
+        )
 
         const items = response.items || []
         this.inbox = items.map(normalizePrivateConversation)
-        this.conversationsById = Object.fromEntries(items.map((conversation) => [conversation.id, conversation]))
-      }
-      catch (error) {
+        this.conversationsById = Object.fromEntries(
+          items.map((conversation) => [conversation.id, conversation]),
+        )
+      } catch (error) {
         if (isUnauthorizedError(error)) {
           this.inbox = []
           this.conversationsById = {}
@@ -195,11 +213,12 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
     },
     async fetchConversationById(conversationId: string) {
       try {
-        const conversation = await $fetch<PrivateConversation>(`/api/chat/private/conversations/${conversationId}`)
+        const conversation = await $fetch<PrivateConversation>(
+          `/api/chat/private/conversations/${conversationId}`,
+        )
         this.upsertInboxConversation(conversation)
         return conversation
-      }
-      catch (error) {
+      } catch (error) {
         if (isUnauthorizedError(error)) {
           this.inbox = []
           this.conversationsById = {}
@@ -214,16 +233,21 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
         throw error
       }
     },
-    async updateConversation(conversationId: string, payload: UpdatePrivateConversationPayload) {
+    async updateConversation(
+      conversationId: string,
+      payload: UpdatePrivateConversationPayload,
+    ) {
       try {
-        const conversation = await $fetch<PrivateConversation>(`/api/chat/private/conversations/${conversationId}`, {
-          method: 'PATCH',
-          body: payload,
-        })
+        const conversation = await $fetch<PrivateConversation>(
+          `/api/chat/private/conversations/${conversationId}`,
+          {
+            method: 'PATCH',
+            body: payload,
+          },
+        )
         this.upsertInboxConversation(conversation)
         return conversation
-      }
-      catch (error) {
+      } catch (error) {
         if (isUnauthorizedError(error)) {
           this.inbox = []
           this.conversationsById = {}
@@ -243,15 +267,15 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
       const currentInboxConversationId = route.path.startsWith('/inbox/')
         ? route.path.slice('/inbox/'.length).split('/')[0]
         : ''
-      const shouldNavigateToInbox = currentInboxConversationId === conversationId
+      const shouldNavigateToInbox =
+        currentInboxConversationId === conversationId
 
       try {
         await $fetch(`/api/chat/private/conversations/${conversationId}`, {
           method: 'DELETE',
         })
         this.removeInboxConversation(conversationId)
-      }
-      catch (error) {
+      } catch (error) {
         if (isUnauthorizedError(error)) {
           this.inbox = []
           this.conversationsById = {}
@@ -263,8 +287,7 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
 
         if (isNotFoundError(error)) {
           this.removeInboxConversation(conversationId)
-        }
-        else {
+        } else {
           throw error
         }
       }
@@ -275,14 +298,16 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
     },
     async fetchNotifications(limit = 20, offset = 0) {
       try {
-        const response = await $fetch<NotificationsApiResponse>('/api/notifications', {
-          query: { limit, offset },
-        })
+        const response = await $fetch<NotificationsApiResponse>(
+          '/api/notifications',
+          {
+            query: { limit, offset },
+          },
+        )
 
         this.notifications = response.items.map(normalizeNotification)
         this.unreadCount = response.unreadCount
-      }
-      catch (error) {
+      } catch (error) {
         if (isUnauthorizedError(error)) {
           this.notifications = []
           this.unreadCount = 0
@@ -293,13 +318,14 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
       }
     },
     async fetchNotificationById(id: string) {
-      const notification = normalizeNotification(await $fetch<UserNotificationItem>(`/api/notifications/${id}`))
+      const notification = normalizeNotification(
+        await $fetch<UserNotificationItem>(`/api/notifications/${id}`),
+      )
       const index = this.notifications.findIndex((item) => item.id === id)
 
       if (index >= 0) {
         this.notifications.splice(index, 1, notification)
-      }
-      else {
+      } else {
         this.notifications.push(notification)
       }
 

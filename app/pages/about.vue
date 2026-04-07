@@ -14,9 +14,21 @@ definePageMeta({
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
         <v-list v-else nav density="compact" class="app-left-drawer-list">
           <v-list-subheader class="text-overline">À propos</v-list-subheader>
-          <v-list-item prepend-icon="mdi-information-outline" title="Présentation" subtitle="Qui sommes-nous ?" />
-          <v-list-item prepend-icon="mdi-bullseye-arrow" title="Mission" subtitle="Notre objectif" />
-          <v-list-item prepend-icon="mdi-hand-heart" title="Valeurs" subtitle="Notre engagement" />
+          <v-list-item
+            prepend-icon="mdi-information-outline"
+            title="Présentation"
+            subtitle="Qui sommes-nous ?"
+          />
+          <v-list-item
+            prepend-icon="mdi-bullseye-arrow"
+            title="Mission"
+            subtitle="Notre objectif"
+          />
+          <v-list-item
+            prepend-icon="mdi-hand-heart"
+            title="Valeurs"
+            subtitle="Notre engagement"
+          />
         </v-list>
       </template>
 
@@ -29,11 +41,14 @@ definePageMeta({
                 <template #prepend>
                   <v-icon icon="mdi-bullseye-arrow" class="me-2" />
                 </template>
-                <v-card-title class="text-subtitle-1">Notre mission</v-card-title>
+                <v-card-title class="text-subtitle-1"
+                  >Notre mission</v-card-title
+                >
                 <v-card-subtitle>Donner de la clarté</v-card-subtitle>
               </v-card-item>
               <v-card-text class="text-body-2 pt-0">
-                Nous aidons les équipes à transformer des idées complexes en actions simples et mesurables.
+                Nous aidons les équipes à transformer des idées complexes en
+                actions simples et mesurables.
               </v-card-text>
             </v-card>
           </v-list-item>
@@ -47,7 +62,8 @@ definePageMeta({
                 <v-card-subtitle>Transparence et impact</v-card-subtitle>
               </v-card-item>
               <v-card-text class="text-body-2 pt-0">
-                Nous privilégions une communication honnête, la collaboration et des résultats utiles au quotidien.
+                Nous privilégions une communication honnête, la collaboration et
+                des résultats utiles au quotidien.
               </v-card-text>
             </v-card>
           </v-list-item>

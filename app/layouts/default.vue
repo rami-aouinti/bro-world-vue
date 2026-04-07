@@ -70,20 +70,28 @@ onUnmounted(() => {
 
 <template>
   <div class="layout-shell">
-    <div v-if="!isLayoutReady" class="layout-shell__loader" aria-label="Loading layout">
-      <v-icon icon="custom:world" size="128" class="layout-shell__loader-icon" />
+    <div
+      v-if="!isLayoutReady"
+      class="layout-shell__loader"
+      aria-label="Loading layout"
+    >
+      <v-icon
+        icon="custom:world"
+        size="128"
+        class="layout-shell__loader-icon"
+      />
     </div>
 
     <v-app :class="{ 'layout-shell--loading': !isLayoutReady }">
-    <AppBar />
-    <AppDrawer v-if="showLeftDrawer" />
-    <AppRightDrawer v-if="showRightDrawer" />
-    <v-main>
-      <v-container fluid class="px-2 pt-0 pb-0">
-        <v-breadcrumbs v-if="shouldShowBreadcrumbs" :items="breadcrumbs" />
-      </v-container>
-      <slot />
-    </v-main>
+      <AppBar />
+      <AppDrawer v-if="showLeftDrawer" />
+      <AppRightDrawer v-if="showRightDrawer" />
+      <v-main>
+        <v-container fluid class="px-2 pt-0 pb-0">
+          <v-breadcrumbs v-if="shouldShowBreadcrumbs" :items="breadcrumbs" />
+        </v-container>
+        <slot />
+      </v-main>
       <AppFooter />
     </v-app>
   </div>

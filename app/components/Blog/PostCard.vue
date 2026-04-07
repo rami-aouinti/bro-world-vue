@@ -43,25 +43,30 @@ type BlogPost = {
   sharesCount?: number
 }
 
-const props = withDefaults(defineProps<{
-  post: BlogPost
-  reactionTypes?: BlogReactionType[]
-}>(), {
-  reactionTypes: () => [],
-})
+const props = withDefaults(
+  defineProps<{
+    post: BlogPost
+    reactionTypes?: BlogReactionType[]
+  }>(),
+  {
+    reactionTypes: () => [],
+  },
+)
 
 const emit = defineEmits<{
   like: [post: BlogPost]
-  reactPost: [payload: { post: BlogPost, code: string }]
-  reactComment: [payload: { post: BlogPost, comment: BlogComment, code: string }]
+  reactPost: [payload: { post: BlogPost; code: string }]
+  reactComment: [
+    payload: { post: BlogPost; comment: BlogComment; code: string },
+  ]
   comment: [post: BlogPost]
   share: [post: BlogPost]
-  createComment: [payload: { post: BlogPost, content: string }]
-  reply: [payload: { post: BlogPost, comment: BlogComment, content: string }]
+  createComment: [payload: { post: BlogPost; content: string }]
+  reply: [payload: { post: BlogPost; comment: BlogComment; content: string }]
   editPost: [post: BlogPost]
   deletePost: [post: BlogPost]
-  editComment: [payload: { post: BlogPost, comment: BlogComment }]
-  deleteComment: [payload: { post: BlogPost, comment: BlogComment }]
+  editComment: [payload: { post: BlogPost; comment: BlogComment }]
+  deleteComment: [payload: { post: BlogPost; comment: BlogComment }]
 }>()
 
 const { locale, t } = useI18n()
@@ -75,11 +80,16 @@ const formattedDate = computed(() => {
 })
 
 const commentsCount = computed(() => props.post.comments?.length ?? 0)
-const authorName = computed(() => props.post.author?.displayName || t('blog.post.fallbackTitle'))
+const authorName = computed(
+  () => props.post.author?.displayName || t('blog.post.fallbackTitle'),
+)
 const authorPhoto = computed(() => props.post.author?.photo || null)
 const normalizedReactions = computed(() =>
   (props.post.reactions || [])
-    .filter((reaction) => typeof reaction.type === 'string' && reaction.type.length > 0)
+    .filter(
+      (reaction) =>
+        typeof reaction.type === 'string' && reaction.type.length > 0,
+    )
     .map((reaction) => ({
       ...reaction,
       type: reaction.type as string,
@@ -90,7 +100,7 @@ function submitComment(content: string) {
   emit('createComment', { post: props.post, content })
 }
 
-function submitReply(payload: { comment: BlogComment, content: string }) {
+function submitReply(payload: { comment: BlogComment; content: string }) {
   emit('reply', {
     post: props.post,
     comment: payload.comment,
@@ -146,14 +156,20 @@ function onCreateComment(content: string) {
         {{ authorName }}
       </v-card-title>
       <v-card-subtitle class="text-medium-emphasis">
-        {{ formattedDate }} · <v-icon size="14" icon="mdi-account-group-outline" class="ms-1" />
+        {{ formattedDate }} ·
+        <v-icon size="14" icon="mdi-account-group-outline" class="ms-1" />
       </v-card-subtitle>
 
       <template #append>
         <ClientOnly>
           <v-menu v-if="post.isAuthor" location="bottom end">
             <template #activator="{ props: menuProps }">
-              <v-btn v-bind="menuProps" icon="mdi-dots-horizontal" size="small" variant="text" />
+              <v-btn
+                v-bind="menuProps"
+                icon="mdi-dots-horizontal"
+                size="small"
+                variant="text"
+              />
             </template>
 
             <v-list density="compact" min-width="140">
@@ -214,11 +230,11 @@ function onCreateComment(content: string) {
     </v-card-text>
 
     <v-card-text v-if="showComments" class="pt-1 pb-1">
-        <BlogCommentComposer
-          mode="comment"
-          :placeholder="t('blog.comment.placeholders.addComment')"
-          @submit="onCreateComment"
-        />
+      <BlogCommentComposer
+        mode="comment"
+        :placeholder="t('blog.comment.placeholders.addComment')"
+        @submit="onCreateComment"
+      />
     </v-card-text>
 
     <v-card-text v-if="showComments && post.comments?.length" class="pt-1 pb-2">
@@ -228,7 +244,13 @@ function onCreateComment(content: string) {
         :reaction-types="reactionTypes"
         @reply="onReply"
         @submit-reply="submitReply"
-        @react="emit('reactComment', { post, comment: $event.comment, code: $event.code })"
+        @react="
+          emit('reactComment', {
+            post,
+            comment: $event.comment,
+            code: $event.code,
+          })
+        "
         @edit="emit('editComment', { post, comment: $event })"
         @delete="emit('deleteComment', { post, comment: $event })"
       />

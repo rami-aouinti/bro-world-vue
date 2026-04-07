@@ -29,7 +29,9 @@ const title = computed(() => {
 useHead({
   title,
   titleTemplate: (pageTitle) =>
-    pageTitle ? `${pageTitle} | ${translateIfKey('app.name')}` : translateIfKey('app.name'),
+    pageTitle
+      ? `${pageTitle} | ${translateIfKey('app.name')}`
+      : translateIfKey('app.name'),
   htmlAttrs: { lang: locale.value },
   link: [{ rel: 'icon', href: '/favicon.ico' }],
 })

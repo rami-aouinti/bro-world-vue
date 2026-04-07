@@ -5,7 +5,11 @@ export default defineEventHandler(async (event): Promise<unknown> => {
   const postId = getRequiredRouterParam(event, 'postId', 'post')
   const commentId = getRequiredRouterParam(event, 'commentId', 'comment')
 
-  return callPrivateApi(event, `/api/v1/private/blog/posts/${postId}/comments/${commentId}`, {
-    method: 'DELETE',
-  })
+  return callPrivateApi(
+    event,
+    `/api/v1/private/blog/posts/${postId}/comments/${commentId}`,
+    {
+      method: 'DELETE',
+    },
+  )
 })

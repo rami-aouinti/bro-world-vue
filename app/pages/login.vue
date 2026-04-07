@@ -36,11 +36,9 @@ async function onSubmit(payload: { username?: string; password: string }) {
 
     Notify.success(t('auth.notifications.loginSuccess'))
     await navigateTo('/')
-  }
-  catch {
+  } catch {
     Notify.error(t('auth.notifications.loginError'))
-  }
-  finally {
+  } finally {
     loading.value = false
   }
 }
@@ -67,8 +65,16 @@ async function onSubmit(payload: { username?: string; password: string }) {
 .auth-page {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 10% 20%, rgb(92 123 229 / 25%) 0%, transparent 35%),
-    radial-gradient(circle at 90% 80%, rgb(126 87 194 / 24%) 0%, transparent 35%),
+    radial-gradient(
+      circle at 10% 20%,
+      rgb(92 123 229 / 25%) 0%,
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 90% 80%,
+      rgb(126 87 194 / 24%) 0%,
+      transparent 35%
+    ),
     #f8f9fa;
 }
 </style>

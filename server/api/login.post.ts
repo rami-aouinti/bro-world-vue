@@ -38,12 +38,15 @@ export default defineEventHandler(async (event) => {
     },
   )
 
-  const userProfile = await $fetch<UserProfile>(`${runtimeConfig.public.apiBaseUrl}/profile`, {
-    headers: {
-      accept: 'application/json',
-      Authorization: `Bearer ${tokenResponse.token}`,
+  const userProfile = await $fetch<UserProfile>(
+    `${runtimeConfig.public.apiBaseUrl}/profile`,
+    {
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${tokenResponse.token}`,
+      },
     },
-  })
+  )
 
   const user = {
     ...userProfile,

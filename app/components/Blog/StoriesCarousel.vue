@@ -58,7 +58,11 @@ const isHydrated = ref(false)
 const { user, loggedIn } = useUserSession()
 const { locale, t } = useI18n()
 
-const { data, pending: storiesPending, refresh } = await useFetch<StoriesApiResponse | StoryGroup[]>('/api/stories', {
+const {
+  data,
+  pending: storiesPending,
+  refresh,
+} = await useFetch<StoriesApiResponse | StoryGroup[]>('/api/stories', {
   default: () => [],
   server: false,
 })
@@ -93,7 +97,10 @@ function getStoryOwner(story: StoryMedia): StoryOwner | null {
   }
 }
 
-function findStorySource(value: unknown, depth = 0): Array<StoryGroup | StoryMedia> {
+function findStorySource(
+  value: unknown,
+  depth = 0,
+): Array<StoryGroup | StoryMedia> {
   if (Array.isArray(value)) {
     return value as Array<StoryGroup | StoryMedia>
   }
@@ -115,7 +122,9 @@ function findStorySource(value: unknown, depth = 0): Array<StoryGroup | StoryMed
   return []
 }
 
-function normalizeStoryGroups(payload: StoriesApiResponse | StoryGroup[] | null | undefined): StoryGroup[] {
+function normalizeStoryGroups(
+  payload: StoriesApiResponse | StoryGroup[] | null | undefined,
+): StoryGroup[] {
   const source = findStorySource(payload)
 
   if (source.length === 0) {
@@ -125,7 +134,10 @@ function normalizeStoryGroups(payload: StoriesApiResponse | StoryGroup[] | null 
   const groupedStories = new Map<string, StoryGroup>()
 
   source.forEach((entry, index) => {
-    const record = entry as StoryGroup & { story?: StoryMedia[], medias?: StoryMedia[] }
+    const record = entry as StoryGroup & {
+      story?: StoryMedia[]
+      medias?: StoryMedia[]
+    }
     const storyList = Array.isArray(record.stories)
       ? record.stories
       : Array.isArray(record.story)
@@ -168,45 +180,60 @@ function normalizeStoryGroups(payload: StoriesApiResponse | StoryGroup[] | null 
   return Array.from(groupedStories.values())
 }
 
-const storyGroups = computed<StoryGroup[]>(() => normalizeStoryGroups(data.value))
+const storyGroups = computed<StoryGroup[]>(() =>
+  normalizeStoryGroups(data.value),
+)
 
-watch(storyGroups, (groups) => {
-  const now = Date.now()
+watch(
+  storyGroups,
+  (groups) => {
+    const now = Date.now()
 
-  localStoryGroups.value = groups.map((group) => ({
-    ...group,
-    user: group.user ? { ...group.user } : null,
-    stories: Array.isArray(group.stories)
-      ? group.stories
-        .map((story) => ({ ...story }))
-        .filter((story) => {
-          if (!story.expiresAt) {
-            return true
-          }
+    localStoryGroups.value = groups.map((group) => ({
+      ...group,
+      user: group.user ? { ...group.user } : null,
+      stories: Array.isArray(group.stories)
+        ? group.stories
+            .map((story) => ({ ...story }))
+            .filter((story) => {
+              if (!story.expiresAt) {
+                return true
+              }
 
-          const expiresAt = new Date(story.expiresAt).getTime()
-          if (Number.isNaN(expiresAt)) {
-            return true
-          }
+              const expiresAt = new Date(story.expiresAt).getTime()
+              if (Number.isNaN(expiresAt)) {
+                return true
+              }
 
-          return expiresAt > now
-        })
-        .sort((a, b) => {
-          const createdAtA = a.createdAt ? new Date(a.createdAt).getTime() : 0
-          const createdAtB = b.createdAt ? new Date(b.createdAt).getTime() : 0
+              return expiresAt > now
+            })
+            .sort((a, b) => {
+              const createdAtA = a.createdAt
+                ? new Date(a.createdAt).getTime()
+                : 0
+              const createdAtB = b.createdAt
+                ? new Date(b.createdAt).getTime()
+                : 0
 
-          return createdAtB - createdAtA
-        })
-      : [],
-  }))
-}, { immediate: true })
+              return createdAtB - createdAtA
+            })
+        : [],
+    }))
+  },
+  { immediate: true },
+)
 
 const cards = computed(() => {
   return localStoryGroups.value
     .map((group, index) => {
       const stories = Array.isArray(group.stories) ? group.stories : []
       const latestStory = stories[0]
-      const cover = latestStory?.coverUrl || latestStory?.thumbnailUrl || latestStory?.imageUrl || latestStory?.mediaUrl || null
+      const cover =
+        latestStory?.coverUrl ||
+        latestStory?.thumbnailUrl ||
+        latestStory?.imageUrl ||
+        latestStory?.mediaUrl ||
+        null
 
       return {
         ...group,
@@ -216,9 +243,9 @@ const cards = computed(() => {
         cover,
         displayName: group.owner
           ? t('blog.story.yourStory')
-          : group.user?.name
-            || `${group.user?.firstName || ''} ${group.user?.lastName || ''}`.trim()
-            || t('blog.common.userFallback'),
+          : group.user?.name ||
+            `${group.user?.firstName || ''} ${group.user?.lastName || ''}`.trim() ||
+            t('blog.common.userFallback'),
         avatar: group.user?.avatarUrl || group.user?.photo || fallbackAvatar,
       }
     })
@@ -257,7 +284,10 @@ const canDeleteSelectedStory = computed(() => {
 
   const ownerId = selectedGroup.value.user?.id
 
-  return selectedGroup.value.owner || (ownerId != null && String(ownerId) === sessionUserId.value)
+  return (
+    selectedGroup.value.owner ||
+    (ownerId != null && String(ownerId) === sessionUserId.value)
+  )
 })
 
 const selectedStoryVisual = computed<string | undefined>(() => {
@@ -272,7 +302,10 @@ const selectedStoryVisual = computed<string | undefined>(() => {
     selectedStory.value.thumbnailUrl,
   ]
 
-  return candidates.find((candidate): candidate is string => typeof candidate === 'string' && candidate.length > 0)
+  return candidates.find(
+    (candidate): candidate is string =>
+      typeof candidate === 'string' && candidate.length > 0,
+  )
 })
 
 const storyReactions = ['👍', '❤️', '🥰', '😆', '😮', '😢', '😡']
@@ -354,11 +387,9 @@ async function handleFileSelect(event: Event) {
 
     latestCreatedStory.value = createdStory
     await refresh()
-  }
-  catch {
+  } catch {
     uploadError.value = t('blog.story.uploadError')
-  }
-  finally {
+  } finally {
     uploadPending.value = false
   }
 }
@@ -376,7 +407,12 @@ function goToNextStory() {
 }
 
 async function deleteSelectedStory() {
-  if (deletePending.value || !selectedGroup.value || !selectedStory.value?.id || !canDeleteSelectedStory.value) {
+  if (
+    deletePending.value ||
+    !selectedGroup.value ||
+    !selectedStory.value?.id ||
+    !canDeleteSelectedStory.value
+  ) {
     return
   }
 
@@ -391,7 +427,9 @@ async function deleteSelectedStory() {
   }))
 
   const groupId = selectedGroup.value.id
-  const groupIndex = localStoryGroups.value.findIndex((group) => String(group.id) === String(groupId))
+  const groupIndex = localStoryGroups.value.findIndex(
+    (group) => String(group.id) === String(groupId),
+  )
 
   if (groupIndex >= 0) {
     const targetGroup = localStoryGroups.value[groupIndex]
@@ -399,8 +437,9 @@ async function deleteSelectedStory() {
       return
     }
 
-    targetGroup.stories = targetGroup.stories
-      .filter((story) => String(story.id) !== storyId)
+    targetGroup.stories = targetGroup.stories.filter(
+      (story) => String(story.id) !== storyId,
+    )
 
     const storiesCount = targetGroup.stories.length
 
@@ -408,8 +447,7 @@ async function deleteSelectedStory() {
       viewerOpen.value = false
       selectedGroupIndex.value = null
       selectedStoryIndex.value = 0
-    }
-    else if (selectedStoryIndex.value >= storiesCount) {
+    } else if (selectedStoryIndex.value >= storiesCount) {
       selectedStoryIndex.value = storiesCount - 1
     }
   }
@@ -418,13 +456,11 @@ async function deleteSelectedStory() {
     await $fetch(`/api/stories/${storyId}`, {
       method: 'DELETE',
     })
-  }
-  catch {
+  } catch {
     deleteError.value = t('blog.story.deleteError')
     localStoryGroups.value = previousGroups
     await refresh()
-  }
-  finally {
+  } finally {
     deletePending.value = false
   }
 }
@@ -432,7 +468,9 @@ async function deleteSelectedStory() {
 
 <template>
   <v-card rounded="xl" class="mb-4 stories-shell">
-    <v-card-title class="text-subtitle-1 font-weight-bold d-flex align-center justify-space-between">
+    <v-card-title
+      class="text-subtitle-1 font-weight-bold d-flex align-center justify-space-between"
+    >
       <span>{{ t('blog.story.title') }}</span>
       <v-btn
         icon="mdi-plus"
@@ -450,7 +488,7 @@ async function deleteSelectedStory() {
         accept="image/*"
         class="d-none"
         @change="handleFileSelect"
-      >
+      />
 
       <div class="d-flex ga-3 overflow-x-auto pb-2">
         <v-sheet
@@ -460,7 +498,11 @@ async function deleteSelectedStory() {
           class="story-card d-flex flex-column justify-space-between"
           min-width="130"
           height="220"
-          :style="card.cover ? `background-image: linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,.15)), url(${card.cover});` : ''"
+          :style="
+            card.cover
+              ? `background-image: linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,.15)), url(${card.cover});`
+              : ''
+          "
           @click="openViewer(card.index)"
         >
           <div class="d-flex justify-space-between align-start pa-2">
@@ -480,9 +522,17 @@ async function deleteSelectedStory() {
             />
           </div>
 
-          <div class="pa-2 text-white text-caption font-weight-medium story-label">
+          <div
+            class="pa-2 text-white text-caption font-weight-medium story-label"
+          >
             <div>{{ card.displayName }}</div>
-            <div v-if="card.owner" class="text-caption text-grey-lighten-2">{{ uploadPending ? t('blog.story.uploading') : t('blog.story.createCta') }}</div>
+            <div v-if="card.owner" class="text-caption text-grey-lighten-2">
+              {{
+                uploadPending
+                  ? t('blog.story.uploading')
+                  : t('blog.story.createCta')
+              }}
+            </div>
           </div>
         </v-sheet>
 
@@ -524,7 +574,13 @@ async function deleteSelectedStory() {
         density="comfortable"
         class="mt-3"
       >
-        {{ t('blog.story.publishSuccess', { id: latestCreatedStory.id, createdAt: latestCreatedStory.createdAt, expiresAt: latestCreatedStory.expiresAt }) }}
+        {{
+          t('blog.story.publishSuccess', {
+            id: latestCreatedStory.id,
+            createdAt: latestCreatedStory.createdAt,
+            expiresAt: latestCreatedStory.expiresAt,
+          })
+        }}
       </v-alert>
     </v-card-text>
   </v-card>
@@ -542,21 +598,24 @@ async function deleteSelectedStory() {
         />
 
         <v-sheet rounded="xl" class="story-phone-frame overflow-hidden">
-          <v-img
-            :src="selectedStoryVisual"
-            class="story-media"
-            cover
-          >
+          <v-img :src="selectedStoryVisual" class="story-media" cover>
             <div class="story-overlay-top pa-4">
               <div class="d-flex ga-1 mb-3">
                 <div
                   v-for="(item, itemIndex) in selectedGroup.stories"
-                  :key="String(item.id ?? `${selectedGroup.id}-progress-${itemIndex}`)"
+                  :key="
+                    String(
+                      item.id ?? `${selectedGroup.id}-progress-${itemIndex}`,
+                    )
+                  "
                   class="story-progress-track"
                 >
                   <div
                     class="story-progress-value"
-                    :class="{ 'story-progress-value--active': selectedStoryIndex >= itemIndex }"
+                    :class="{
+                      'story-progress-value--active':
+                        selectedStoryIndex >= itemIndex,
+                    }"
                   />
                 </div>
               </div>
@@ -566,14 +625,33 @@ async function deleteSelectedStory() {
                     <v-img :src="selectedGroup.avatar" cover />
                   </v-avatar>
                   <div>
-                    <div class="text-subtitle-2 font-weight-bold">{{ selectedGroup.displayName }}</div>
-                    <div v-if="selectedStoryRelativeTime" class="text-caption">{{ selectedStoryRelativeTime }}</div>
+                    <div class="text-subtitle-2 font-weight-bold">
+                      {{ selectedGroup.displayName }}
+                    </div>
+                    <div v-if="selectedStoryRelativeTime" class="text-caption">
+                      {{ selectedStoryRelativeTime }}
+                    </div>
                   </div>
                 </div>
                 <div class="d-flex align-center ga-1">
-                  <v-btn icon="mdi-volume-high" size="small" variant="text" color="white" />
-                  <v-btn icon="mdi-play" size="small" variant="text" color="white" />
-                  <v-btn icon="mdi-dots-horizontal" size="small" variant="text" color="white" />
+                  <v-btn
+                    icon="mdi-volume-high"
+                    size="small"
+                    variant="text"
+                    color="white"
+                  />
+                  <v-btn
+                    icon="mdi-play"
+                    size="small"
+                    variant="text"
+                    color="white"
+                  />
+                  <v-btn
+                    icon="mdi-dots-horizontal"
+                    size="small"
+                    variant="text"
+                    color="white"
+                  />
                 </div>
               </div>
             </div>
@@ -651,17 +729,23 @@ async function deleteSelectedStory() {
 }
 
 .story-card {
-  background: linear-gradient(to top, rgba(37, 37, 37, 0.65), rgba(37, 37, 37, 0.35));
+  background: linear-gradient(
+    to top,
+    rgba(37, 37, 37, 0.65),
+    rgba(37, 37, 37, 0.35)
+  );
   background-size: cover;
   background-position: center;
   cursor: pointer;
-  transition: transform .2s ease, box-shadow .2s ease;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 .story-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,.28);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
 }
 
 .story-avatar {
@@ -669,7 +753,7 @@ async function deleteSelectedStory() {
 }
 
 .story-label {
-  text-shadow: 0 2px 8px rgba(0,0,0,.75);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
 }
 
 .story-viewer {
@@ -699,7 +783,11 @@ async function deleteSelectedStory() {
 }
 
 .story-overlay-top {
-  background: linear-gradient(to bottom, rgba(0,0,0,.62), rgba(0,0,0,.08));
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.62),
+    rgba(0, 0, 0, 0.08)
+  );
 }
 
 .story-overlay-bottom {
@@ -707,14 +795,14 @@ async function deleteSelectedStory() {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,.72), rgba(0,0,0,.12));
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.12));
 }
 
 .story-progress-track {
   flex: 1;
   height: 4px;
   border-radius: 20px;
-  background: rgba(255,255,255,.28);
+  background: rgba(255, 255, 255, 0.28);
   overflow: hidden;
 }
 
@@ -722,7 +810,7 @@ async function deleteSelectedStory() {
   width: 0;
   height: 100%;
   background: #fff;
-  transition: width .2s ease;
+  transition: width 0.2s ease;
 }
 
 .story-progress-value--active {
@@ -734,10 +822,10 @@ async function deleteSelectedStory() {
 }
 
 .story-reactions {
-  border: 1px solid rgba(255,255,255,.22);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 999px;
   padding: 4px 6px;
-  background: rgba(0,0,0,.45);
+  background: rgba(0, 0, 0, 0.45);
 }
 
 .story-reaction-btn {

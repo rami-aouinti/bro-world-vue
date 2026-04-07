@@ -25,7 +25,11 @@ type PrivateApiOptions = {
   query?: Record<string, string | number | boolean | undefined>
 }
 
-export async function callPrivateApi<T>(event: H3Event, endpoint: string, options?: PrivateApiOptions): Promise<T> {
+export async function callPrivateApi<T>(
+  event: H3Event,
+  endpoint: string,
+  options?: PrivateApiOptions,
+): Promise<T> {
   const runtimeConfig = useRuntimeConfig(event)
   const token = await getSessionToken(event)
   const requestHeaders = new Headers()

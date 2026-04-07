@@ -1,13 +1,16 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
-  disabled?: boolean
-  placeholder?: string
-  modelValue?: string
-}>(), {
-  disabled: false,
-  placeholder: 'Was machst du gerade,',
-  modelValue: '',
-})
+const props = withDefaults(
+  defineProps<{
+    disabled?: boolean
+    placeholder?: string
+    modelValue?: string
+  }>(),
+  {
+    disabled: false,
+    placeholder: 'Was machst du gerade,',
+    modelValue: '',
+  },
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]

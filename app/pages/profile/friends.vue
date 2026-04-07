@@ -40,7 +40,12 @@ const sectionConfigs = computed(() => [
     items: friends.value,
     emptyText: 'Aucun ami pour le moment.',
     actions: [
-      { label: 'Bloquer', action: 'block' as const, color: 'error', variant: 'tonal' as const },
+      {
+        label: 'Bloquer',
+        action: 'block' as const,
+        color: 'error',
+        variant: 'tonal' as const,
+      },
     ],
   },
   {
@@ -50,9 +55,24 @@ const sectionConfigs = computed(() => [
     items: requests.value,
     emptyText: 'Aucune demande reçue.',
     actions: [
-      { label: 'Accepter', action: 'accept' as const, color: 'success', variant: 'flat' as const },
-      { label: 'Refuser', action: 'reject' as const, color: 'error', variant: 'tonal' as const },
-      { label: 'Bloquer', action: 'block' as const, color: 'error', variant: 'text' as const },
+      {
+        label: 'Accepter',
+        action: 'accept' as const,
+        color: 'success',
+        variant: 'flat' as const,
+      },
+      {
+        label: 'Refuser',
+        action: 'reject' as const,
+        color: 'error',
+        variant: 'tonal' as const,
+      },
+      {
+        label: 'Bloquer',
+        action: 'block' as const,
+        color: 'error',
+        variant: 'text' as const,
+      },
     ],
   },
   {
@@ -62,8 +82,18 @@ const sectionConfigs = computed(() => [
     items: invitations.value,
     emptyText: 'Aucune invitation envoyée.',
     actions: [
-      { label: 'Annuler', action: 'cancel' as const, color: 'warning', variant: 'tonal' as const },
-      { label: 'Bloquer', action: 'block' as const, color: 'error', variant: 'text' as const },
+      {
+        label: 'Annuler',
+        action: 'cancel' as const,
+        color: 'warning',
+        variant: 'tonal' as const,
+      },
+      {
+        label: 'Bloquer',
+        action: 'block' as const,
+        color: 'error',
+        variant: 'text' as const,
+      },
     ],
   },
   {
@@ -73,17 +103,26 @@ const sectionConfigs = computed(() => [
     items: blockedUsers.value,
     emptyText: 'Aucun utilisateur bloqué.',
     actions: [
-      { label: 'Débloquer', action: 'unblock' as const, color: 'primary', variant: 'tonal' as const },
+      {
+        label: 'Débloquer',
+        action: 'unblock' as const,
+        color: 'primary',
+        variant: 'tonal' as const,
+      },
     ],
   },
 ])
 
 function userName(item: FriendUser) {
-  return [item.firstName, item.lastName].filter(Boolean).join(' ') || item.username
+  return (
+    [item.firstName, item.lastName].filter(Boolean).join(' ') || item.username
+  )
 }
 
 function isActionLoading(userId: string, action: FriendAction) {
-  return actionLoadingUserId.value === userId && actionLoadingType.value === action
+  return (
+    actionLoadingUserId.value === userId && actionLoadingType.value === action
+  )
 }
 
 async function fetchFriendsData() {
@@ -91,22 +130,22 @@ async function fetchFriendsData() {
   globalError.value = ''
 
   try {
-    const [friendsData, requestsData, invitationsData, blockedData] = await Promise.all([
-      api<FriendUser[]>('/api/users/me/friends'),
-      api<FriendUser[]>('/api/users/me/friends/requests'),
-      api<FriendUser[]>('/api/users/me/friends/requests/sent'),
-      api<FriendUser[]>('/api/users/me/friends/blocked'),
-    ])
+    const [friendsData, requestsData, invitationsData, blockedData] =
+      await Promise.all([
+        api<FriendUser[]>('/api/users/me/friends'),
+        api<FriendUser[]>('/api/users/me/friends/requests'),
+        api<FriendUser[]>('/api/users/me/friends/requests/sent'),
+        api<FriendUser[]>('/api/users/me/friends/blocked'),
+      ])
 
     friends.value = friendsData
     requests.value = requestsData
     invitations.value = invitationsData
     blockedUsers.value = blockedData
-  }
-  catch (error) {
-    globalError.value = error instanceof Error ? error.message : 'Erreur lors du chargement.'
-  }
-  finally {
+  } catch (error) {
+    globalError.value =
+      error instanceof Error ? error.message : 'Erreur lors du chargement.'
+  } finally {
     loading.value = false
   }
 }
@@ -118,21 +157,20 @@ async function applyAction(userId: string, action: FriendAction) {
   try {
     if (action === 'unblock') {
       await api(`/api/users/${userId}/block`, { method: 'DELETE' })
-    }
-    else {
-      const endpoint = action === 'block'
-        ? `/api/users/${userId}/block`
-        : `/api/users/${userId}/friends/${action}`
+    } else {
+      const endpoint =
+        action === 'block'
+          ? `/api/users/${userId}/block`
+          : `/api/users/${userId}/friends/${action}`
 
       await api(endpoint, { method: 'POST' })
     }
 
     await fetchFriendsData()
-  }
-  catch (error) {
-    globalError.value = error instanceof Error ? error.message : `Erreur sur l'action ${action}.`
-  }
-  finally {
+  } catch (error) {
+    globalError.value =
+      error instanceof Error ? error.message : `Erreur sur l'action ${action}.`
+  } finally {
     actionLoadingUserId.value = null
     actionLoadingType.value = null
   }
@@ -158,87 +196,96 @@ onMounted(fetchFriendsData)
     <v-container fluid>
       <SkeletonPageContent v-if="isPageSkeletonVisible && loading" />
       <template v-else>
-      <v-alert v-if="globalError" type="error" variant="tonal" class="mb-4" closable>
-        {{ globalError }}
-      </v-alert>
+        <v-alert
+          v-if="globalError"
+          type="error"
+          variant="tonal"
+          class="mb-4"
+          closable
+        >
+          {{ globalError }}
+        </v-alert>
 
-      <div class="d-flex align-center justify-space-between mb-4">
-        <div>
-          <h1 class="text-h5 mb-1">Friends</h1>
-          <p class="text-body-2 text-medium-emphasis mb-0">
-            Gérer vos amis, demandes, invitations et utilisateurs bloqués.
-          </p>
+        <div class="d-flex align-center justify-space-between mb-4">
+          <div>
+            <h1 class="text-h5 mb-1">Friends</h1>
+            <p class="text-body-2 text-medium-emphasis mb-0">
+              Gérer vos amis, demandes, invitations et utilisateurs bloqués.
+            </p>
+          </div>
+          <v-btn
+            prepend-icon="mdi-refresh"
+            color="primary"
+            variant="text"
+            :loading="loading"
+            @click="fetchFriendsData"
+          >
+            Actualiser
+          </v-btn>
         </div>
-        <v-btn
-          prepend-icon="mdi-refresh"
-          color="primary"
-          variant="text"
-          :loading="loading"
-          @click="fetchFriendsData"
-        >
-          Actualiser
-        </v-btn>
-      </div>
 
-      <v-row>
-        <v-col
-          v-for="section in sectionConfigs"
-          :key="section.title"
-          cols="12"
-        >
-          <v-card variant="outlined">
-            <v-card-title class="d-flex align-center ga-2">
-              <v-icon :icon="section.icon" />
-              {{ section.title }}
-            </v-card-title>
-            <v-divider />
-            <v-list v-if="section.items.length" class="bg-transparent">
-              <v-list-item
-                v-for="item in section.items"
-                :key="item.id"
-                :title="userName(item)"
-                :subtitle="`@${item.username}`"
-              >
-                <template #prepend>
-                  <v-avatar size="40" color="primary">
-                    <v-img :src="item.photo" />
-                  </v-avatar>
-                </template>
+        <v-row>
+          <v-col
+            v-for="section in sectionConfigs"
+            :key="section.title"
+            cols="12"
+          >
+            <v-card variant="outlined">
+              <v-card-title class="d-flex align-center ga-2">
+                <v-icon :icon="section.icon" />
+                {{ section.title }}
+              </v-card-title>
+              <v-divider />
+              <v-list v-if="section.items.length" class="bg-transparent">
+                <v-list-item
+                  v-for="item in section.items"
+                  :key="item.id"
+                  :title="userName(item)"
+                  :subtitle="`@${item.username}`"
+                >
+                  <template #prepend>
+                    <v-avatar size="40" color="primary">
+                      <v-img :src="item.photo" />
+                    </v-avatar>
+                  </template>
 
-                <template #append>
-                  <div class="d-flex ga-2 flex-wrap justify-end">
-                    <v-btn
-                      v-for="btn in section.actions"
-                      :key="`${item.id}-${btn.action}`"
-                      :color="btn.color"
-                      :variant="btn.variant"
-                      size="small"
-                      :loading="isActionLoading(item.id, btn.action)"
-                      @click="applyAction(item.id, btn.action)"
-                    >
-                      {{ btn.label }}
-                    </v-btn>
-                    <v-btn
-                      v-if="section.title !== 'Friends' && section.title !== 'Blocked'"
-                      size="small"
-                      color="primary"
-                      variant="outlined"
-                      :loading="isActionLoading(item.id, 'request')"
-                      @click="applyAction(item.id, 'request')"
-                    >
-                      Relancer
-                    </v-btn>
-                  </div>
-                </template>
-              </v-list-item>
-            </v-list>
+                  <template #append>
+                    <div class="d-flex ga-2 flex-wrap justify-end">
+                      <v-btn
+                        v-for="btn in section.actions"
+                        :key="`${item.id}-${btn.action}`"
+                        :color="btn.color"
+                        :variant="btn.variant"
+                        size="small"
+                        :loading="isActionLoading(item.id, btn.action)"
+                        @click="applyAction(item.id, btn.action)"
+                      >
+                        {{ btn.label }}
+                      </v-btn>
+                      <v-btn
+                        v-if="
+                          section.title !== 'Friends' &&
+                          section.title !== 'Blocked'
+                        "
+                        size="small"
+                        color="primary"
+                        variant="outlined"
+                        :loading="isActionLoading(item.id, 'request')"
+                        @click="applyAction(item.id, 'request')"
+                      >
+                        Relancer
+                      </v-btn>
+                    </div>
+                  </template>
+                </v-list-item>
+              </v-list>
 
-            <v-card-text v-else class="text-medium-emphasis">
-              {{ section.emptyText }}
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
+              <v-card-text v-else class="text-medium-emphasis">
+                {{ section.emptyText }}
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
       </template>
     </v-container>
   </div>

@@ -29,7 +29,9 @@ definePageMeta({
       </v-list>
 
       <v-card-text v-else>
-        <div class="d-flex flex-column align-center ga-3 py-8 text-medium-emphasis">
+        <div
+          class="d-flex flex-column align-center ga-3 py-8 text-medium-emphasis"
+        >
           <v-icon icon="mdi-bell-off-outline" size="40" />
           <p class="text-body-1">No notification available.</p>
         </div>

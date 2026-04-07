@@ -22,7 +22,9 @@ const {
   async () => {
     if (!conversationId.value) return null
 
-    return await inboxNotificationsStore.fetchConversationById(conversationId.value)
+    return await inboxNotificationsStore.fetchConversationById(
+      conversationId.value,
+    )
   },
   {
     default: () => cachedConversation.value || null,
@@ -30,10 +32,11 @@ const {
   },
 )
 
-const conversation = computed(() =>
-  fetchedConversation.value
-  || inboxNotificationsStore.getConversationById(conversationId.value)
-  || null,
+const conversation = computed(
+  () =>
+    fetchedConversation.value ||
+    inboxNotificationsStore.getConversationById(conversationId.value) ||
+    null,
 )
 
 const isDeleting = ref(false)
@@ -46,7 +49,9 @@ watch(
   conversation,
   (nextConversation) => {
     editTitle.value = nextConversation?.title?.trim() || ''
-    editArchived.value = Boolean((nextConversation as { archived?: boolean } | null)?.archived)
+    editArchived.value = Boolean(
+      (nextConversation as { archived?: boolean } | null)?.archived,
+    )
   },
   { immediate: true },
 )
@@ -55,9 +60,14 @@ const hasEditChanges = computed(() => {
   if (!conversation.value) return false
 
   const currentTitle = conversation.value.title?.trim() || ''
-  const currentArchived = Boolean((conversation.value as { archived?: boolean }).archived)
+  const currentArchived = Boolean(
+    (conversation.value as { archived?: boolean }).archived,
+  )
 
-  return editTitle.value.trim() !== currentTitle || editArchived.value !== currentArchived
+  return (
+    editTitle.value.trim() !== currentTitle ||
+    editArchived.value !== currentArchived
+  )
 })
 
 async function handleDeleteConversation() {
@@ -69,11 +79,9 @@ async function handleDeleteConversation() {
     await inboxNotificationsStore.deleteConversation(conversation.value.id)
     Notify.success(t('pages.inbox.deleteSuccess'))
     await navigateTo('/inbox')
-  }
-  catch {
+  } catch {
     Notify.error(t('pages.inbox.deleteError'))
-  }
-  finally {
+  } finally {
     isDeleting.value = false
   }
 }
@@ -89,7 +97,9 @@ async function handleSaveConversation() {
     payload.title = nextTitle || null
   }
 
-  const currentArchived = Boolean((conversation.value as { archived?: boolean }).archived)
+  const currentArchived = Boolean(
+    (conversation.value as { archived?: boolean }).archived,
+  )
   if (editArchived.value !== currentArchived) {
     payload.archived = editArchived.value
   }
@@ -99,7 +109,11 @@ async function handleSaveConversation() {
   isSaving.value = true
 
   try {
-    const updatedConversation = await inboxNotificationsStore.updateConversation(conversation.value.id, payload)
+    const updatedConversation =
+      await inboxNotificationsStore.updateConversation(
+        conversation.value.id,
+        payload,
+      )
 
     if (!updatedConversation) {
       Notify.error(t('pages.inbox.updateError'))
@@ -109,34 +123,38 @@ async function handleSaveConversation() {
     fetchedConversation.value = updatedConversation
     isEditMode.value = false
     Notify.success(t('pages.inbox.updateSuccess'))
-  }
-  catch {
+  } catch {
     Notify.error(t('pages.inbox.updateError'))
-  }
-  finally {
+  } finally {
     isSaving.value = false
   }
 }
 
-const targetParticipant = computed<PrivateConversationParticipant | undefined>(() =>
-  conversation.value?.participants.find((participant) => {
-    if (conversation.value?.ownerId) {
-      return (participant.user?.id || participant.id) !== conversation.value.ownerId
-    }
+const targetParticipant = computed<PrivateConversationParticipant | undefined>(
+  () =>
+    conversation.value?.participants.find((participant) => {
+      if (conversation.value?.ownerId) {
+        return (
+          (participant.user?.id || participant.id) !==
+          conversation.value.ownerId
+        )
+      }
 
-    return !participant.user?.owner
-  }) || conversation.value?.participants[0],
+      return !participant.user?.owner
+    }) || conversation.value?.participants[0],
 )
 
 const targetParticipantName = computed(() => {
   if (!targetParticipant.value) return t('pages.inbox.unknownParticipant')
-  const fullName = `${targetParticipant.value.user?.firstName || targetParticipant.value.firstName || ''} ${targetParticipant.value.user?.lastName || targetParticipant.value.lastName || ''}`.trim()
+  const fullName =
+    `${targetParticipant.value.user?.firstName || targetParticipant.value.firstName || ''} ${targetParticipant.value.user?.lastName || targetParticipant.value.lastName || ''}`.trim()
 
   return fullName || t('pages.inbox.unknownParticipant')
 })
 
 const conversationDate = computed(() => {
-  const rawDate = conversation.value?.lastMessage?.createdAt || conversation.value?.createdAt
+  const rawDate =
+    conversation.value?.lastMessage?.createdAt || conversation.value?.createdAt
   if (!rawDate) return ''
 
   return formatDateTime(locale.value, new Date(rawDate))
@@ -162,18 +180,29 @@ definePageMeta({
         <v-alert type="error" variant="tonal" class="mb-3">
           {{ t('pages.inbox.fetchError') }}
         </v-alert>
-        <v-btn color="primary" variant="text" :loading="pending" @click="refresh">
+        <v-btn
+          color="primary"
+          variant="text"
+          :loading="pending"
+          @click="refresh"
+        >
           {{ t('common.retry') }}
         </v-btn>
       </v-card-text>
 
       <v-card-text v-else-if="conversation">
-        <div class="text-subtitle-1 font-weight-medium mb-2">{{ targetParticipantName }}</div>
+        <div class="text-subtitle-1 font-weight-medium mb-2">
+          {{ targetParticipantName }}
+        </div>
         <div class="text-body-2 text-medium-emphasis mb-2">
           {{ t('pages.inbox.dateLabel', { value: conversationDate }) }}
         </div>
         <div class="text-body-2 text-medium-emphasis mb-3">
-          {{ t('pages.inbox.unreadMessagesLabel', { count: conversation.unreadMessagesCount ?? 0 }) }}
+          {{
+            t('pages.inbox.unreadMessagesLabel', {
+              count: conversation.unreadMessagesCount ?? 0,
+            })
+          }}
         </div>
 
         <v-expand-transition>
@@ -199,7 +228,11 @@ definePageMeta({
               >
                 {{ t('common.save') }}
               </v-btn>
-              <v-btn variant="text" :disabled="isSaving" @click="isEditMode = false">
+              <v-btn
+                variant="text"
+                :disabled="isSaving"
+                @click="isEditMode = false"
+              >
                 {{ t('common.cancel') }}
               </v-btn>
             </div>
@@ -207,17 +240,33 @@ definePageMeta({
         </v-expand-transition>
 
         <template v-if="conversation.lastMessage">
-          <div class="text-subtitle-2 font-weight-medium mb-1">{{ t('pages.inbox.lastMessageLabel') }}</div>
-          <div class="text-body-1">{{ conversation.lastMessage.content || t('pages.inbox.emptyMessageContent') }}</div>
+          <div class="text-subtitle-2 font-weight-medium mb-1">
+            {{ t('pages.inbox.lastMessageLabel') }}
+          </div>
+          <div class="text-body-1">
+            {{
+              conversation.lastMessage.content ||
+              t('pages.inbox.emptyMessageContent')
+            }}
+          </div>
         </template>
 
         <div v-else class="d-flex flex-column ga-2 text-medium-emphasis">
-          <div class="text-subtitle-2 font-weight-medium">{{ t('pages.inbox.noMessageTitle') }}</div>
-          <div class="text-body-1">{{ t('pages.inbox.noMessageDescription') }}</div>
+          <div class="text-subtitle-2 font-weight-medium">
+            {{ t('pages.inbox.noMessageTitle') }}
+          </div>
+          <div class="text-body-1">
+            {{ t('pages.inbox.noMessageDescription') }}
+          </div>
         </div>
 
         <div class="d-flex ga-2 mt-5">
-          <v-btn variant="tonal" color="primary" prepend-icon="mdi-pencil" @click="isEditMode = !isEditMode">
+          <v-btn
+            variant="tonal"
+            color="primary"
+            prepend-icon="mdi-pencil"
+            @click="isEditMode = !isEditMode"
+          >
             {{ isEditMode ? t('common.close') : t('pages.inbox.editAction') }}
           </v-btn>
           <v-btn
@@ -233,7 +282,9 @@ definePageMeta({
       </v-card-text>
 
       <v-card-text v-else>
-        <div class="d-flex flex-column align-center ga-3 py-8 text-medium-emphasis">
+        <div
+          class="d-flex flex-column align-center ga-3 py-8 text-medium-emphasis"
+        >
           <v-icon icon="mdi-email-off-outline" size="40" />
           <p class="text-body-1">{{ t('pages.inbox.notFound') }}</p>
         </div>

@@ -30,7 +30,9 @@ const sessionUser = computed(() => user.value as SessionUser | null)
 const avatarUrl = computed(() => sessionUser.value?.photo)
 
 const inboxNotificationsStore = useInboxNotificationsStore()
-const { inboxLatestThree, notificationsLatestThree, unreadCount } = storeToRefs(inboxNotificationsStore)
+const { inboxLatestThree, notificationsLatestThree, unreadCount } = storeToRefs(
+  inboxNotificationsStore,
+)
 const notificationMenuOpen = ref(false)
 
 const userLabel = computed(() => {
@@ -40,7 +42,6 @@ const userLabel = computed(() => {
 
   return fullName || sessionUser.value?.username || t('appbar.user')
 })
-
 
 watch(
   loggedIn,
@@ -118,11 +119,7 @@ function toggleLeftDrawer() {
       <template v-if="loggedIn">
         <v-menu location="bottom end">
           <template #activator="{ props }">
-            <v-btn
-              variant="text"
-              icon="mdi-chat-outline"
-              v-bind="props"
-            />
+            <v-btn variant="text" icon="mdi-chat-outline" v-bind="props" />
           </template>
           <v-list min-width="280">
             <v-list-item
@@ -143,12 +140,14 @@ function toggleLeftDrawer() {
 
         <v-menu v-model="notificationMenuOpen" location="bottom end">
           <template #activator="{ props }">
-            <v-badge :model-value="unreadCount > 0" :content="unreadCount" color="primary" offset-x="10" offset-y="10">
-              <v-btn
-                variant="text"
-                icon="mdi-bell-outline"
-                v-bind="props"
-              />
+            <v-badge
+              :model-value="unreadCount > 0"
+              :content="unreadCount"
+              color="primary"
+              offset-x="10"
+              offset-y="10"
+            >
+              <v-btn variant="text" icon="mdi-bell-outline" v-bind="props" />
             </v-badge>
           </template>
           <v-list min-width="280">
@@ -192,7 +191,12 @@ function toggleLeftDrawer() {
                     icon="mdi-account-circle"
                     size="28"
                   />
-                  <v-avatar v-else color="primary" size="28" class="cursor-pointer">
+                  <v-avatar
+                    v-else
+                    color="primary"
+                    size="28"
+                    class="cursor-pointer"
+                  >
                     <v-img :src="avatarUrl" />
                   </v-avatar>
                 </v-btn>

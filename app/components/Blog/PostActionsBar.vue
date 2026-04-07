@@ -4,15 +4,18 @@ type ReactionType = {
   label: string
 }
 
-const props = withDefaults(defineProps<{
-  commentsCount?: number
-  sharesCount?: number
-  reactionTypes?: ReactionType[]
-}>(), {
-  commentsCount: 0,
-  sharesCount: 0,
-  reactionTypes: () => [],
-})
+const props = withDefaults(
+  defineProps<{
+    commentsCount?: number
+    sharesCount?: number
+    reactionTypes?: ReactionType[]
+  }>(),
+  {
+    commentsCount: 0,
+    sharesCount: 0,
+    reactionTypes: () => [],
+  },
+)
 const { t } = useI18n()
 
 const emit = defineEmits<{
@@ -55,7 +58,10 @@ function onPickReaction(code: string) {
 
 <template>
   <div class="post-actions-wrap">
-    <div v-if="commentsCount > 0 || sharesCount > 0" class="post-stats text-medium-emphasis">
+    <div
+      v-if="commentsCount > 0 || sharesCount > 0"
+      class="post-stats text-medium-emphasis"
+    >
       <span v-if="commentsCount > 0" class="stat-item">
         <v-icon size="16" icon="mdi-comment-outline" />
         {{ commentsCount }}
@@ -101,10 +107,20 @@ function onPickReaction(code: string) {
         </div>
       </v-menu>
 
-      <v-btn class="action-btn" variant="text" prepend-icon="mdi-comment-outline" @click="emit('comment')">
+      <v-btn
+        class="action-btn"
+        variant="text"
+        prepend-icon="mdi-comment-outline"
+        @click="emit('comment')"
+      >
         {{ t('blog.post.actions.comment') }}
       </v-btn>
-      <v-btn class="action-btn" variant="text" prepend-icon="mdi-share-outline" @click="emit('share')">
+      <v-btn
+        class="action-btn"
+        variant="text"
+        prepend-icon="mdi-share-outline"
+        @click="emit('share')"
+      >
         {{ t('blog.post.actions.share') }}
       </v-btn>
     </div>

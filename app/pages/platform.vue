@@ -36,7 +36,9 @@ const currentPage = ref(1)
 const { data, pending, error, refresh } = await useAsyncData(
   'platform-applications',
   () => {
-    const query = loggedIn.value ? { page: 1, limit: 120 } : { page: 1, limit: 120 }
+    const query = loggedIn.value
+      ? { page: 1, limit: 120 }
+      : { page: 1, limit: 120 }
 
     if (loggedIn.value) {
       return $fetch<PlatformResponse>('/api/application/private', { query })
@@ -54,50 +56,75 @@ const applications = computed(() => data.value?.items ?? [])
 
 const filteredApplications = computed(() => {
   return applications.value.filter((application) => {
-    const matchesSearch = !searchTerm.value
-      || application.title.toLowerCase().includes(searchTerm.value.toLowerCase())
-      || application.platformName.toLowerCase().includes(searchTerm.value.toLowerCase())
-      || application.platformKey.toLowerCase().includes(searchTerm.value.toLowerCase())
+    const matchesSearch =
+      !searchTerm.value ||
+      application.title
+        .toLowerCase()
+        .includes(searchTerm.value.toLowerCase()) ||
+      application.platformName
+        .toLowerCase()
+        .includes(searchTerm.value.toLowerCase()) ||
+      application.platformKey
+        .toLowerCase()
+        .includes(searchTerm.value.toLowerCase())
 
-    const matchesStatus = selectedStatus.value === 'all' || application.status === selectedStatus.value
-    const matchesVisibility = selectedVisibility.value === 'all'
-      || (selectedVisibility.value === 'private' && application.private)
-      || (selectedVisibility.value === 'public' && !application.private)
+    const matchesStatus =
+      selectedStatus.value === 'all' ||
+      application.status === selectedStatus.value
+    const matchesVisibility =
+      selectedVisibility.value === 'all' ||
+      (selectedVisibility.value === 'private' && application.private) ||
+      (selectedVisibility.value === 'public' && !application.private)
 
-    const matchesOwnership = selectedOwnership.value === 'all'
-      || (selectedOwnership.value === 'owner' && application.isOwner)
-      || (selectedOwnership.value === 'member' && !application.isOwner)
+    const matchesOwnership =
+      selectedOwnership.value === 'all' ||
+      (selectedOwnership.value === 'owner' && application.isOwner) ||
+      (selectedOwnership.value === 'member' && !application.isOwner)
 
-    return matchesSearch && matchesStatus && matchesVisibility && matchesOwnership
+    return (
+      matchesSearch && matchesStatus && matchesVisibility && matchesOwnership
+    )
   })
 })
 
-const pageCount = computed(() => Math.max(1, Math.ceil(filteredApplications.value.length / PAGE_SIZE)))
+const pageCount = computed(() =>
+  Math.max(1, Math.ceil(filteredApplications.value.length / PAGE_SIZE)),
+)
 
 const paginatedApplications = computed(() => {
   const start = (currentPage.value - 1) * PAGE_SIZE
   return filteredApplications.value.slice(start, start + PAGE_SIZE)
 })
 
-const selectedPlatform = computed(() => applications.value.find((item) => item.id === selectedPlatformId.value) ?? null)
+const selectedPlatform = computed(
+  () =>
+    applications.value.find((item) => item.id === selectedPlatformId.value) ??
+    null,
+)
 
-watch(filteredApplications, (items) => {
-  if (!items.length) {
-    currentPage.value = 1
-    selectedPlatformId.value = null
-    return
-  }
+watch(
+  filteredApplications,
+  (items) => {
+    if (!items.length) {
+      currentPage.value = 1
+      selectedPlatformId.value = null
+      return
+    }
 
-  if (currentPage.value > pageCount.value) {
-    currentPage.value = pageCount.value
-  }
+    if (currentPage.value > pageCount.value) {
+      currentPage.value = pageCount.value
+    }
 
-  const selectionStillExists = items.some((item) => item.id === selectedPlatformId.value)
+    const selectionStillExists = items.some(
+      (item) => item.id === selectedPlatformId.value,
+    )
 
-  if (!selectionStillExists) {
-    selectedPlatformId.value = items[0]?.id ?? null
-  }
-}, { immediate: true })
+    if (!selectionStillExists) {
+      selectedPlatformId.value = items[0]?.id ?? null
+    }
+  },
+  { immediate: true },
+)
 
 watch(currentPage, () => {
   const visibleIds = new Set(paginatedApplications.value.map((item) => item.id))
@@ -123,7 +150,9 @@ function resetFilters() {
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
         <div v-else class="pa-2 d-flex flex-column ga-2">
           <div>
-            <div class="text-overline text-medium-emphasis mb-1">{{ t('platform.filters') }}</div>
+            <div class="text-overline text-medium-emphasis mb-1">
+              {{ t('platform.filters') }}
+            </div>
           </div>
 
           <v-text-field
@@ -175,7 +204,11 @@ function resetFilters() {
             hide-details
           />
 
-          <v-btn variant="tonal" prepend-icon="mdi-filter-off-outline" @click="resetFilters">
+          <v-btn
+            variant="tonal"
+            prepend-icon="mdi-filter-off-outline"
+            @click="resetFilters"
+          >
             {{ t('platform.clearFilters') }}
           </v-btn>
         </div>
@@ -183,9 +216,14 @@ function resetFilters() {
 
       <template #right>
         <SkeletonDrawerRight v-if="isPageSkeletonVisible" />
-        <div v-else-if="selectedPlatform" class="pa-2 d-flex flex-column ga-2 h-100">
+        <div
+          v-else-if="selectedPlatform"
+          class="pa-2 d-flex flex-column ga-2 h-100"
+        >
           <div>
-            <h3 class="text-h6 font-weight-bold">{{ selectedPlatform?.title || t('platform.selectPlatform') }}</h3>
+            <h3 class="text-h6 font-weight-bold">
+              {{ selectedPlatform?.title || t('platform.selectPlatform') }}
+            </h3>
           </div>
           <v-img :src="selectedPlatform.photo" height="120" cover />
           <v-card-text class="d-flex flex-column ga-3">
@@ -193,14 +231,32 @@ function resetFilters() {
               {{ selectedPlatform.description }}
             </div>
             <div class="d-flex flex-wrap ga-2">
-              <v-chip size="small" :color="selectedPlatform.status === 'active' ? 'success' : 'warning'" label>
+              <v-chip
+                size="small"
+                :color="
+                  selectedPlatform.status === 'active' ? 'success' : 'warning'
+                "
+                label
+              >
                 {{ selectedPlatform.status }}
               </v-chip>
               <v-chip size="small" color="primary" variant="outlined" label>
                 {{ selectedPlatform.platformName }}
               </v-chip>
-              <v-chip size="small" :color="selectedPlatform.private ? 'deep-purple-accent-4' : 'teal-darken-1'" label>
-                {{ selectedPlatform.private ? t('platform.private') : t('platform.public') }}
+              <v-chip
+                size="small"
+                :color="
+                  selectedPlatform.private
+                    ? 'deep-purple-accent-4'
+                    : 'teal-darken-1'
+                "
+                label
+              >
+                {{
+                  selectedPlatform.private
+                    ? t('platform.private')
+                    : t('platform.public')
+                }}
               </v-chip>
             </div>
 
@@ -238,106 +294,129 @@ function resetFilters() {
             </div>
           </v-card-text>
         </div>
-        <v-alert v-else type="info" variant="tonal" :text="t('platform.selectPlatformHint')" />
+        <v-alert
+          v-else
+          type="info"
+          variant="tonal"
+          :text="t('platform.selectPlatformHint')"
+        />
       </template>
     </AppPageDrawers>
 
     <v-container fluid>
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
       <template v-else>
-      <client-only>
-        <teleport to="#app-bar">
-          <v-btn
-            variant="tonal"
-            color="primary"
-            prepend-icon="mdi-refresh"
-            :loading="pending"
-            @click="refresh()"
-          >
-            {{ t('platform.refresh') }}
-          </v-btn>
-        </teleport>
-      </client-only>
+        <client-only>
+          <teleport to="#app-bar">
+            <v-btn
+              variant="tonal"
+              color="primary"
+              prepend-icon="mdi-refresh"
+              :loading="pending"
+              @click="refresh()"
+            >
+              {{ t('platform.refresh') }}
+            </v-btn>
+          </teleport>
+        </client-only>
 
-      <v-alert
-        v-if="error"
-        type="error"
-        variant="tonal"
-        class="mb-4"
-        :text="t('platform.error')"
-      />
+        <v-alert
+          v-if="error"
+          type="error"
+          variant="tonal"
+          class="mb-4"
+          :text="t('platform.error')"
+        />
 
-      <v-row v-if="pending" dense>
-        <v-col v-for="index in 6" :key="`skeleton-${index}`" cols="12" md="6">
-          <v-skeleton-loader type="image, article" class="skeleton-card" />
-        </v-col>
-      </v-row>
+        <v-row v-if="pending" dense>
+          <v-col v-for="index in 6" :key="`skeleton-${index}`" cols="12" md="6">
+            <v-skeleton-loader type="image, article" class="skeleton-card" />
+          </v-col>
+        </v-row>
 
-      <v-row v-else-if="paginatedApplications.length" dense class="platform-grid">
-        <v-col
-          v-for="application in paginatedApplications"
-          :key="application.id"
-          cols="12"
-          md="6"
-          class="d-flex"
+        <v-row
+          v-else-if="paginatedApplications.length"
+          dense
+          class="platform-grid"
         >
-          <v-card
-            elevation="3"
-            class="platform-card w-100"
-            :class="{ 'platform-card--selected': selectedPlatformId === application.id }"
-            @click="selectedPlatformId = application.id"
+          <v-col
+            v-for="application in paginatedApplications"
+            :key="application.id"
+            cols="12"
+            md="6"
+            class="d-flex"
           >
-            <div class="platform-card__overlay pa-1 d-flex justify-end">
-              <v-chip
-                size="small"
-                label
-                :color="application.status === 'active' ? 'success' : 'warning'"
-              >
-                {{ application.status }}
-              </v-chip>
-            </div>
-
-            <v-card-item>
-              <v-card-title class="text-wrap text-subtitle-2">{{ application.title }}</v-card-title>
-            </v-card-item>
-
-            <v-card-text class="pt-0">
-              <div class="d-flex flex-wrap ga-2">
+            <v-card
+              elevation="3"
+              class="platform-card w-100"
+              :class="{
+                'platform-card--selected':
+                  selectedPlatformId === application.id,
+              }"
+              @click="selectedPlatformId = application.id"
+            >
+              <div class="platform-card__overlay pa-1 d-flex justify-end">
                 <v-chip
-                  v-for="pluginKey in application.pluginKeys"
-                  :key="pluginKey"
                   size="small"
-                  variant="outlined"
-                  color="primary"
+                  label
+                  :color="
+                    application.status === 'active' ? 'success' : 'warning'
+                  "
                 >
-                  {{ pluginKey }}
-                </v-chip>
-                <v-chip size="small" variant="outlined" color="secondary">
-                  {{ application.private ? t('platform.private') : t('platform.public') }}
+                  {{ application.status }}
                 </v-chip>
               </div>
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
 
-      <v-alert
-        v-else
-        type="info"
-        variant="tonal"
-        class="mt-4"
-        :title="t('platform.emptyTitle')"
-        :text="t('platform.emptySubtitle')"
-      />
+              <v-card-item>
+                <v-card-title class="text-wrap text-subtitle-2">{{
+                  application.title
+                }}</v-card-title>
+              </v-card-item>
 
-      <div v-if="!pending && filteredApplications.length" class="d-flex justify-center mt-6">
-        <v-pagination
-          v-model="currentPage"
-          :length="pageCount"
-          :total-visible="7"
-          rounded="circle"
+              <v-card-text class="pt-0">
+                <div class="d-flex flex-wrap ga-2">
+                  <v-chip
+                    v-for="pluginKey in application.pluginKeys"
+                    :key="pluginKey"
+                    size="small"
+                    variant="outlined"
+                    color="primary"
+                  >
+                    {{ pluginKey }}
+                  </v-chip>
+                  <v-chip size="small" variant="outlined" color="secondary">
+                    {{
+                      application.private
+                        ? t('platform.private')
+                        : t('platform.public')
+                    }}
+                  </v-chip>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+
+        <v-alert
+          v-else
+          type="info"
+          variant="tonal"
+          class="mt-4"
+          :title="t('platform.emptyTitle')"
+          :text="t('platform.emptySubtitle')"
         />
-      </div>
+
+        <div
+          v-if="!pending && filteredApplications.length"
+          class="d-flex justify-center mt-6"
+        >
+          <v-pagination
+            v-model="currentPage"
+            :length="pageCount"
+            :total-visible="7"
+            rounded="circle"
+          />
+        </div>
       </template>
     </v-container>
   </div>

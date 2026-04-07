@@ -38,7 +38,9 @@ function toHexColor(value: string) {
     .split(',')
     .map((chunk) => Number.parseInt(chunk.trim(), 10))
   return `#${[r, g, b]
-    .map((channel) => Math.max(0, Math.min(255, channel)).toString(16).padStart(2, '0'))
+    .map((channel) =>
+      Math.max(0, Math.min(255, channel)).toString(16).padStart(2, '0'),
+    )
     .join('')}`
 }
 
@@ -101,7 +103,9 @@ const menuShow = ref(false)
 
     <v-card width="360">
       <v-card-text>
-        <v-label class="mb-3 d-inline-block">{{ t('appbar.themePalette') }}</v-label>
+        <v-label class="mb-3 d-inline-block">{{
+          t('appbar.themePalette')
+        }}</v-label>
 
         <v-color-picker
           v-model="color"
@@ -115,7 +119,9 @@ const menuShow = ref(false)
 
         <v-divider class="my-4" />
 
-        <v-label class="mb-2 d-block text-center">{{ t('appbar.rounded.label') }}</v-label>
+        <v-label class="mb-2 d-block text-center">{{
+          t('appbar.rounded.label')
+        }}</v-label>
         <div class="d-flex justify-center mb-4">
           <v-btn-toggle
             v-model="rounded"
@@ -135,7 +141,9 @@ const menuShow = ref(false)
           </v-btn-toggle>
         </div>
 
-        <v-label class="mb-2 d-block text-center">{{ t('appbar.shadow.label') }}</v-label>
+        <v-label class="mb-2 d-block text-center">{{
+          t('appbar.shadow.label')
+        }}</v-label>
         <div class="d-flex justify-center">
           <v-btn-toggle
             v-model="shadow"

@@ -323,20 +323,20 @@ onMounted(loadEvents)
       <template #right>
         <SkeletonDrawerRight v-if="isPageSkeletonVisible" />
         <template v-else>
-        <v-card-title>{{ t('pages.calendar.upcomingTitle') }}</v-card-title>
-        <v-list v-if="upcomingEvents.length">
-          <v-list-item
-            v-for="event in upcomingEvents"
-            :key="event.id"
-            :title="event.title"
-            :subtitle="new Date(event.startAt).toLocaleString(locale)"
-            prepend-icon="mdi-calendar-check-outline"
-            @click="openEditDialog(event)"
-          />
-        </v-list>
-        <v-card-text v-else class="text-medium-emphasis">
-          {{ t('pages.calendar.noUpcoming') }}
-        </v-card-text>
+          <v-card-title>{{ t('pages.calendar.upcomingTitle') }}</v-card-title>
+          <v-list v-if="upcomingEvents.length">
+            <v-list-item
+              v-for="event in upcomingEvents"
+              :key="event.id"
+              :title="event.title"
+              :subtitle="new Date(event.startAt).toLocaleString(locale)"
+              prepend-icon="mdi-calendar-check-outline"
+              @click="openEditDialog(event)"
+            />
+          </v-list>
+          <v-card-text v-else class="text-medium-emphasis">
+            {{ t('pages.calendar.noUpcoming') }}
+          </v-card-text>
         </template>
       </template>
     </AppPageDrawers>
@@ -344,27 +344,31 @@ onMounted(loadEvents)
     <v-container fluid>
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
       <template v-else>
-      <v-alert v-if="errorMessage" type="error" class="mb-4" variant="tonal">
-        {{ errorMessage }}
-      </v-alert>
-      <client-only>
-        <teleport to="#app-bar">
-          <v-btn
-            variant="tonal"
-            color="primary"
-            prepend-icon="mdi-plus"
-            @click="openCreateDialog()"
-          >
-            {{ t('pages.calendar.addEvent') }}
-          </v-btn>
-        </teleport>
-      </client-only>
-      <v-card variant="text">
-        <v-card-text>
-          <v-skeleton-loader v-if="isLoading" type="image" class="rounded-lg" />
-          <FullCalendar v-else :options="calendarOptions" />
-        </v-card-text>
-      </v-card>
+        <v-alert v-if="errorMessage" type="error" class="mb-4" variant="tonal">
+          {{ errorMessage }}
+        </v-alert>
+        <client-only>
+          <teleport to="#app-bar">
+            <v-btn
+              variant="tonal"
+              color="primary"
+              prepend-icon="mdi-plus"
+              @click="openCreateDialog()"
+            >
+              {{ t('pages.calendar.addEvent') }}
+            </v-btn>
+          </teleport>
+        </client-only>
+        <v-card variant="text">
+          <v-card-text>
+            <v-skeleton-loader
+              v-if="isLoading"
+              type="image"
+              class="rounded-lg"
+            />
+            <FullCalendar v-else :options="calendarOptions" />
+          </v-card-text>
+        </v-card>
       </template>
     </v-container>
 
@@ -461,7 +465,11 @@ onMounted(loadEvents)
   text-transform: capitalize;
 }
 :deep(.fc .fc-scroller-harness) {
-  background: linear-gradient(135deg, rgba(var(--v-theme-primary), 0.08), transparent 45%);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--v-theme-primary), 0.08),
+    transparent 45%
+  );
 }
 
 :deep(.v-theme--dark .fc .fc-col-header-cell) {

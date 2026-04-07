@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
 
-const props = withDefaults(defineProps<{
-  disabled?: boolean
-  placeholder?: string
-}>(), {
-  disabled: false,
-  placeholder: '',
-})
+const props = withDefaults(
+  defineProps<{
+    disabled?: boolean
+    placeholder?: string
+  }>(),
+  {
+    disabled: false,
+    placeholder: '',
+  },
+)
 
 const emit = defineEmits<{
   open: []
@@ -18,11 +21,20 @@ const { user } = useUserSession()
 const isLightTheme = computed(() => !theme.current.value.dark)
 const sessionUser = computed(() => user.value as SessionUser | null)
 const userDisplayName = computed(() => {
-  const fullName = [sessionUser.value?.firstName, sessionUser.value?.lastName].filter(Boolean).join(' ').trim()
-  return fullName || sessionUser.value?.username || t('blog.common.userFallback')
+  const fullName = [sessionUser.value?.firstName, sessionUser.value?.lastName]
+    .filter(Boolean)
+    .join(' ')
+    .trim()
+  return (
+    fullName || sessionUser.value?.username || t('blog.common.userFallback')
+  )
 })
 const userAvatar = computed(() => sessionUser.value?.photo || null)
-const resolvedPlaceholder = computed(() => props.placeholder || t('blog.newPost.placeholder', { name: userDisplayName.value }))
+const resolvedPlaceholder = computed(
+  () =>
+    props.placeholder ||
+    t('blog.newPost.placeholder', { name: userDisplayName.value }),
+)
 
 const actions = [
   {
