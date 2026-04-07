@@ -38,6 +38,7 @@ interface EventMutationPayload {
 }
 
 const { t } = useI18n()
+const privateApi = usePrivateApi()
 
 definePageMeta({
   title: 'appbar.calendar',
