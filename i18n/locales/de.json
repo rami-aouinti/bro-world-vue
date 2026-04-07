@@ -8,6 +8,7 @@
     "service": "Service",
     "about": "Über uns",
     "contact": "Kontakt",
+    "admin": "Administration",
     "dashboard": "Dashboard",
     "table": "Datentabelle",
     "nested": "Verschachtelte Routen",

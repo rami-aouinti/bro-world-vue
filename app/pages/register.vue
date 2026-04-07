@@ -9,7 +9,7 @@ const { t } = useI18n()
 
 function onSubmit() {
   Notify.success(t('auth.notifications.registerSuccess'))
-  navigateTo('/dashboard')
+  navigateTo('/admin')
 }
 </script>
 
