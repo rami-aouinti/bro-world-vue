@@ -51,6 +51,7 @@
   "common": {
     "confirm": "Confirm",
     "cancel": "Cancel",
+    "save": "Save",
     "search": "Search",
     "delete": "Delete",
     "edit": "Edit",
@@ -271,7 +272,32 @@
     },
     "calendar": {
       "title": "Calendar",
-      "subtitle": "Your schedule will appear here soon."
+      "subtitle": "Your schedule will appear here soon.",
+      "today": "Today",
+      "month": "Month",
+      "week": "Week",
+      "day": "Day",
+      "upcomingTitle": "Upcoming events",
+      "noUpcoming": "No upcoming events.",
+      "addEvent": "Add event",
+      "createDialogTitle": "Create event",
+      "editDialogTitle": "Edit event",
+      "cancelEvent": "Cancel event",
+      "form": {
+        "title": "Title",
+        "description": "Description",
+        "start": "Start",
+        "end": "End",
+        "location": "Location",
+        "allDay": "All day"
+      },
+      "errors": {
+        "loadFailed": "Unable to load events.",
+        "saveFailed": "Unable to save this event.",
+        "deleteFailed": "Unable to delete this event.",
+        "cancelFailed": "Unable to cancel this event.",
+        "moveFailed": "Unable to move this event."
+      }
     }
   }
 }
