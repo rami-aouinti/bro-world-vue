@@ -1,41 +1,39 @@
 <script setup lang="ts">
-const { t } = useI18n()
-
 definePageMeta({
   title: 'appbar.home',
 })
-
-const name = ref('')
-function sayHi() {
-  Notify.success(t('notification.greeting', { name: name.value }))
-}
-function warning() {
-  Notify.warning(t('notification.warningRefuse', { name: name.value }))
-}
 </script>
 
 <template>
-  <v-container fluid class="d-flex align-center justify-center">
-    <div class="text-center">
-      <h1 class="text-h3 mb-4">{{ t('appbar.home') }}</h1>
-      <v-icon
-        icon="custom:vitify-nuxt"
-        size="3em"
-        color="primary"
-        class="mb-4"
-      />
-      <p>{{ t('dashboard.caption') }}</p>
-      <v-text-field
-        v-model="name"
-        max-width="300"
-        :placeholder="t('common.helloWorld')"
-        :label="t('common.whatsYourName')"
-        class="mt-8"
-      />
-      <v-btn :disabled="!name" class="mr-2" color="primary" @click="sayHi">
-        {{ t('common.confirm') }}
-      </v-btn>
-      <v-btn :disabled="!name" @click="warning"> {{ t('common.cancel') }} </v-btn>
-    </div>
+  <v-container fluid>
+    <v-row class="py-4" dense>
+      <v-col cols="12" md="3" lg="3" class="d-none d-md-block">
+        <v-card rounded="lg" class="mb-4">
+          <v-card-title class="text-subtitle-1">Navigation</v-card-title>
+          <v-list density="compact" nav>
+            <v-list-item title="Accueil" prepend-icon="mdi-home" />
+            <v-list-item title="Découvrir" prepend-icon="mdi-compass" />
+            <v-list-item title="Messages" prepend-icon="mdi-message-outline" />
+          </v-list>
+        </v-card>
+      </v-col>
+
+      <v-col cols="12" sm="12" md="6" lg="6">
+        <BlogStoriesCarousel />
+        <BlogNewPostCard />
+        <BlogPostFeed />
+      </v-col>
+
+      <v-col cols="12" sm="12" md="3" lg="3">
+        <v-card rounded="lg" class="mb-4">
+          <v-card-title class="text-subtitle-1">Tendances</v-card-title>
+          <v-list density="compact">
+            <v-list-item title="#nuxt" />
+            <v-list-item title="#vuetify" />
+            <v-list-item title="#frontend" />
+          </v-list>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>

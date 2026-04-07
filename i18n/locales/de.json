@@ -57,7 +57,9 @@
     "edit": "Bearbeiten",
     "copy": "Kopieren",
     "helloWorld": "Hallo Welt",
-    "whatsYourName": "Wie heißt du?"
+    "whatsYourName": "Wie heißt du?",
+    "retry": "Erneut versuchen",
+    "close": "Schließen"
   },
   "platform": {
     "title": "Platforms",
@@ -262,7 +264,16 @@
       "title": "Posteingang",
       "subtitle": "Neueste Unterhaltungen",
       "detailTitle": "Unterhaltung",
-      "detailLabel": "Unterhaltungs-ID"
+      "detailLabel": "Unterhaltungs-ID",
+      "fetchError": "Diese Unterhaltung kann derzeit nicht geladen werden.",
+      "deleteAction": "Unterhaltung löschen",
+      "deleteSuccess": "Unterhaltung gelöscht.",
+      "deleteError": "Die Unterhaltung konnte nicht gelöscht werden.",
+      "editAction": "Unterhaltung bearbeiten",
+      "editTitleLabel": "Unterhaltungstitel",
+      "editArchivedLabel": "Unterhaltung archivieren",
+      "updateSuccess": "Unterhaltung aktualisiert.",
+      "updateError": "Die Unterhaltung konnte nicht aktualisiert werden."
     },
     "notification": {
       "title": "Benachrichtigungen",

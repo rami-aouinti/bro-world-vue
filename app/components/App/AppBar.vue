@@ -46,7 +46,10 @@ watch(
   loggedIn,
   async (isLoggedIn) => {
     if (!isLoggedIn) return
-    await inboxNotificationsStore.fetchNotifications()
+    await Promise.all([
+      inboxNotificationsStore.fetchNotifications(),
+      inboxNotificationsStore.fetchInboxConversations(),
+    ])
   },
   { immediate: true },
 )

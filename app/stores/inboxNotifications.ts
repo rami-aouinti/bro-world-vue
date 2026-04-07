@@ -31,6 +31,42 @@ type NotificationsApiResponse = {
   unreadCount: number
 }
 
+export interface PrivateConversationParticipant {
+  id: string
+  firstName: string
+  lastName: string
+}
+
+export interface PrivateConversationMessage {
+  content: string | null
+  createdAt: string
+}
+
+export interface PrivateConversation {
+  id: string
+  title: string | null
+  createdAt: string
+  participants: PrivateConversationParticipant[]
+  ownerId: string
+  unreadMessagesCount?: number
+  lastMessage: PrivateConversationMessage | null
+}
+
+export interface PrivateConversationsPagination {
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+}
+
+export interface PrivateConversationsApiResponse {
+  items: PrivateConversation[]
+  pagination: PrivateConversationsPagination
+  filters: Record<string, unknown>
+}
+
+export type UpdatePrivateConversationPayload = Record<string, unknown>
+
 function isUnauthorizedError(error: unknown): boolean {
   if (!error || typeof error !== 'object') return false
 
@@ -38,40 +74,12 @@ function isUnauthorizedError(error: unknown): boolean {
   return maybeError.status === 401 || maybeError.statusCode === 401
 }
 
-const mockInboxItems: InboxItem[] = [
-  {
-    id: 'project-kickoff',
-    title: 'Project kickoff notes',
-    createdAt: '2026-04-05T14:00:00Z',
-    preview: 'Summary and decisions from the project kickoff meeting.',
-    content:
-      'Summary and decisions from the project kickoff meeting. Next step: validate milestones with the product team.',
-  },
-  {
-    id: 'design-review',
-    title: 'Design review feedback',
-    createdAt: '2026-04-06T09:15:00Z',
-    preview: 'Updated comments about the latest design iteration.',
-    content:
-      'Updated comments about the latest design iteration. Focus changes on accessibility and spacing consistency.',
-  },
-  {
-    id: 'invoice-follow-up',
-    title: 'Invoice follow-up',
-    createdAt: '2026-04-04T17:45:00Z',
-    preview: 'Reminder to validate invoice details before payment.',
-    content:
-      'Reminder to validate invoice details before payment. Finance asks for confirmation by end of day.',
-  },
-  {
-    id: 'q2-planning',
-    title: 'Q2 planning sync',
-    createdAt: '2026-04-07T08:30:00Z',
-    preview: 'Agenda and follow-up for Q2 planning.',
-    content:
-      'Agenda and follow-up for Q2 planning. Please review priorities and update your capacity by tomorrow.',
-  },
-]
+function isNotFoundError(error: unknown): boolean {
+  if (!error || typeof error !== 'object') return false
+
+  const maybeError = error as { status?: number, statusCode?: number }
+  return maybeError.status === 404 || maybeError.statusCode === 404
+}
 
 const normalizeNotification = (notification: UserNotificationItem): UserNotificationItem => ({
   ...notification,
@@ -79,9 +87,30 @@ const normalizeNotification = (notification: UserNotificationItem): UserNotifica
   content: notification.description,
 })
 
+const getParticipantName = (participant: PrivateConversationParticipant): string =>
+  `${participant.firstName} ${participant.lastName}`.trim()
+
+const normalizePrivateConversation = (conversation: PrivateConversation): InboxItem => {
+  const participantFallbackTitle = conversation.participants
+    .find((participant) => participant.id !== conversation.ownerId)
+  const title = conversation.title?.trim() || (participantFallbackTitle
+    ? getParticipantName(participantFallbackTitle)
+    : 'Private conversation')
+  const content = conversation.lastMessage?.content?.trim() || ''
+
+  return {
+    id: conversation.id,
+    title,
+    createdAt: conversation.lastMessage?.createdAt || conversation.createdAt,
+    preview: content || undefined,
+    content: content || undefined,
+  }
+}
+
 export const useInboxNotificationsStore = defineStore('inbox-notifications', {
   state: () => ({
-    inbox: mockInboxItems,
+    inbox: [] as InboxItem[],
+    conversationsById: {} as Record<string, PrivateConversation>,
     notifications: [] as UserNotificationItem[],
     unreadCount: 0,
   }),
@@ -100,6 +129,129 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
     },
   },
   actions: {
+    upsertInboxConversation(conversation: PrivateConversation) {
+      const normalizedConversation = normalizePrivateConversation(conversation)
+      const index = this.inbox.findIndex((item) => item.id === conversation.id)
+
+      if (index >= 0) {
+        this.inbox.splice(index, 1, normalizedConversation)
+      }
+      else {
+        this.inbox.push(normalizedConversation)
+      }
+
+      this.conversationsById[conversation.id] = conversation
+    },
+    removeInboxConversation(conversationId: string) {
+      const index = this.inbox.findIndex((item) => item.id === conversationId)
+      if (index >= 0) {
+        this.inbox.splice(index, 1)
+      }
+
+      this.conversationsById = Object.fromEntries(
+        Object.entries(this.conversationsById).filter(([id]) => id !== conversationId),
+      )
+    },
+    async fetchInboxConversations(page = 1, limit = 20) {
+      try {
+        const response = await $fetch<PrivateConversationsApiResponse>('/api/chat/private/conversations', {
+          query: { page, limit },
+        })
+
+        const items = response.items || []
+        this.inbox = items.map(normalizePrivateConversation)
+        this.conversationsById = Object.fromEntries(items.map((conversation) => [conversation.id, conversation]))
+      }
+      catch (error) {
+        if (isUnauthorizedError(error)) {
+          this.inbox = []
+          this.conversationsById = {}
+          return
+        }
+
+        throw error
+      }
+    },
+    async fetchConversationById(conversationId: string) {
+      try {
+        const conversation = await $fetch<PrivateConversation>(`/api/chat/private/conversations/${conversationId}`)
+        this.upsertInboxConversation(conversation)
+        return conversation
+      }
+      catch (error) {
+        if (isUnauthorizedError(error)) {
+          this.inbox = []
+          this.conversationsById = {}
+          return null
+        }
+
+        if (isNotFoundError(error)) {
+          this.removeInboxConversation(conversationId)
+          return null
+        }
+
+        throw error
+      }
+    },
+    async updateConversation(conversationId: string, payload: UpdatePrivateConversationPayload) {
+      try {
+        const conversation = await $fetch<PrivateConversation>(`/api/chat/private/conversations/${conversationId}`, {
+          method: 'PATCH',
+          body: payload,
+        })
+        this.upsertInboxConversation(conversation)
+        return conversation
+      }
+      catch (error) {
+        if (isUnauthorizedError(error)) {
+          this.inbox = []
+          this.conversationsById = {}
+          return null
+        }
+
+        if (isNotFoundError(error)) {
+          this.removeInboxConversation(conversationId)
+          return null
+        }
+
+        throw error
+      }
+    },
+    async deleteConversation(conversationId: string) {
+      const route = useRoute()
+      const currentInboxConversationId = route.path.startsWith('/inbox/')
+        ? route.path.slice('/inbox/'.length).split('/')[0]
+        : ''
+      const shouldNavigateToInbox = currentInboxConversationId === conversationId
+
+      try {
+        await $fetch(`/api/chat/private/conversations/${conversationId}`, {
+          method: 'DELETE',
+        })
+        this.removeInboxConversation(conversationId)
+      }
+      catch (error) {
+        if (isUnauthorizedError(error)) {
+          this.inbox = []
+          this.conversationsById = {}
+          if (shouldNavigateToInbox) {
+            await navigateTo('/inbox')
+          }
+          return
+        }
+
+        if (isNotFoundError(error)) {
+          this.removeInboxConversation(conversationId)
+        }
+        else {
+          throw error
+        }
+      }
+
+      if (shouldNavigateToInbox) {
+        await navigateTo('/inbox')
+      }
+    },
     async fetchNotifications(limit = 20, offset = 0) {
       try {
         const response = await $fetch<NotificationsApiResponse>('/api/notifications', {
@@ -145,6 +297,9 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
     },
     getInboxById(id: string) {
       return this.inbox.find((item) => item.id === id)
+    },
+    getConversationById(id: string) {
+      return this.conversationsById[id]
     },
     getNotificationById(id: string) {
       return this.notifications.find((item) => item.id === id)
