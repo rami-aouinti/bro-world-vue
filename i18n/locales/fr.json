@@ -260,6 +260,9 @@
     "showAll": "Voir tout"
   },
   "pages": {
+    "index": {
+      "title": "Accueil"
+    },
     "inbox": {
       "title": "Boîte de réception",
       "subtitle": "Dernières conversations",
@@ -317,6 +320,11 @@
         "deleteFailed": "Impossible de supprimer cet événement.",
         "cancelFailed": "Impossible d’annuler cet événement.",
         "moveFailed": "Impossible de déplacer cet événement."
+      }
+    },
+    "profile": {
+      "posts": {
+        "title": "Publications"
       }
     }
   },
@@ -390,7 +398,10 @@
       "now": "Maintenant",
       "actions": {
         "comment": "Commenter",
-        "reply": "Répondre"
+        "reply": "Répondre",
+        "edit": "Modifier",
+        "delete": "Supprimer",
+        "cancel": "Annuler"
       },
       "placeholders": {
         "commentAsUser": "Ajouter un commentaire…",
@@ -401,6 +412,19 @@
     "story": {
       "title": "Stories",
       "yourStory": "Votre story",
+      "actions": {
+        "upload": "Téléverser une story",
+        "delete": "Supprimer la story"
+      },
+      "states": {
+        "empty": "Aucune story",
+        "success": "Story publiée"
+      },
+      "errors": {
+        "imageOnly": "Seules les images sont autorisées.",
+        "upload": "Impossible d’envoyer la story pour le moment.",
+        "delete": "Suppression impossible pour le moment. Synchronisation en cours."
+      },
       "uploading": "Envoi…",
       "createCta": "Créer une story",
       "empty": "Aucune story",
