@@ -319,5 +319,20 @@
         "moveFailed": "Impossible de déplacer cet événement."
       }
     }
+  },
+  "home": {
+    "leftNav": {
+      "home": "Accueil",
+      "discover": "Découvrir",
+      "messages": "Messages"
+    },
+    "rightNav": {
+      "trending": "Tendances"
+    }
+  },
+  "profile": {
+    "posts": {
+      "title": "Publications"
+    }
   }
 }

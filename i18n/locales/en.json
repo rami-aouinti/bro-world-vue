@@ -334,5 +334,10 @@
     "rightNav": {
       "trending": "Trending"
     }
+  },
+  "profile": {
+    "posts": {
+      "title": "Posts"
+    }
   }
 }
