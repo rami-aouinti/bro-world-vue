@@ -14,4 +14,10 @@ declare module '#auth-utils' {
   interface User extends SessionUser {}
 }
 
+declare module '@fullcalendar/vue3'
+declare module '@fullcalendar/daygrid'
+declare module '@fullcalendar/interaction'
+declare module '@fullcalendar/timegrid'
+declare module '@fullcalendar/core'
+
 export {}
