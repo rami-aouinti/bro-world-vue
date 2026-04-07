@@ -169,21 +169,20 @@ onMounted(fetchFriendsData)
 </script>
 
 <template>
-  <v-container class="py-8">
-    <v-row>
-      <v-col cols="12" md="4" lg="3">
-        <v-card class="pa-4">
-          <div class="d-flex flex-column align-center text-center ga-3">
-            <v-avatar size="96" color="primary">
-              <v-img :src="avatarUrl" />
-            </v-avatar>
-            <div>
-              <p class="text-h6 mb-1">{{ fullName }}</p>
-              <p class="text-body-2 text-medium-emphasis">
-                @{{ sessionUser?.username }}
-              </p>
+  <div>
+    <AppPageDrawers>
+      <template #left>
+        <v-card-text>
+          <NuxtLink to="/profile" class="d-flex align-center text-center ga-3" style="text-decoration: none; color: inherit;">
+            <div class="d-flex align-center text-center ga-3">
+              <v-avatar size="48">
+                <v-img :src="avatarUrl" />
+              </v-avatar>
+              <div>
+                <h2>{{ fullName }}</h2>
+              </div>
             </div>
-          </div>
+          </NuxtLink>
 
           <v-divider class="my-4" />
 
@@ -199,95 +198,92 @@ onMounted(fetchFriendsData)
               rounded="lg"
             />
           </v-list>
-        </v-card>
-      </v-col>
+        </v-card-text>
+      </template>
+    </AppPageDrawers>
 
-      <v-col cols="12" md="8" lg="9">
-        <v-alert v-if="globalError" type="error" variant="tonal" class="mb-4" closable>
-          {{ globalError }}
-        </v-alert>
+    <v-container fluid>
+      <v-alert v-if="globalError" type="error" variant="tonal" class="mb-4" closable>
+        {{ globalError }}
+      </v-alert>
 
-        <v-card class="pa-4 pa-md-6">
-          <div class="d-flex align-center justify-space-between mb-4">
-            <div>
-              <h1 class="text-h5 mb-1">Friends</h1>
-              <p class="text-body-2 text-medium-emphasis mb-0">
-                Gérer vos amis, demandes, invitations et utilisateurs bloqués.
-              </p>
-            </div>
-            <v-btn
-              prepend-icon="mdi-refresh"
-              color="primary"
-              variant="text"
-              :loading="loading"
-              @click="fetchFriendsData"
-            >
-              Actualiser
-            </v-btn>
-          </div>
+      <div class="d-flex align-center justify-space-between mb-4">
+        <div>
+          <h1 class="text-h5 mb-1">Friends</h1>
+          <p class="text-body-2 text-medium-emphasis mb-0">
+            Gérer vos amis, demandes, invitations et utilisateurs bloqués.
+          </p>
+        </div>
+        <v-btn
+          prepend-icon="mdi-refresh"
+          color="primary"
+          variant="text"
+          :loading="loading"
+          @click="fetchFriendsData"
+        >
+          Actualiser
+        </v-btn>
+      </div>
 
-          <v-row>
-            <v-col
-              v-for="section in sectionConfigs"
-              :key="section.title"
-              cols="12"
-            >
-              <v-card variant="outlined">
-                <v-card-title class="d-flex align-center ga-2">
-                  <v-icon :icon="section.icon" />
-                  {{ section.title }}
-                </v-card-title>
-                <v-card-subtitle>{{ section.subtitle }}</v-card-subtitle>
+      <v-row>
+        <v-col
+          v-for="section in sectionConfigs"
+          :key="section.title"
+          cols="12"
+        >
+          <v-card variant="outlined">
+            <v-card-title class="d-flex align-center ga-2">
+              <v-icon :icon="section.icon" />
+              {{ section.title }}
+            </v-card-title>
+            <v-divider />
+            <v-list v-if="section.items.length" class="bg-transparent">
+              <v-list-item
+                v-for="item in section.items"
+                :key="item.id"
+                :title="userName(item)"
+                :subtitle="`@${item.username}`"
+              >
+                <template #prepend>
+                  <v-avatar size="40" color="primary">
+                    <v-img :src="item.photo" />
+                  </v-avatar>
+                </template>
 
-                <v-list v-if="section.items.length">
-                  <v-list-item
-                    v-for="item in section.items"
-                    :key="item.id"
-                    :title="userName(item)"
-                    :subtitle="`@${item.username}`"
-                  >
-                    <template #prepend>
-                      <v-avatar size="40" color="primary">
-                        <v-img :src="item.photo" />
-                      </v-avatar>
-                    </template>
+                <template #append>
+                  <div class="d-flex ga-2 flex-wrap justify-end">
+                    <v-btn
+                      v-for="btn in section.actions"
+                      :key="`${item.id}-${btn.action}`"
+                      :color="btn.color"
+                      :variant="btn.variant"
+                      size="small"
+                      :loading="isActionLoading(item.id, btn.action)"
+                      @click="applyAction(item.id, btn.action)"
+                    >
+                      {{ btn.label }}
+                    </v-btn>
+                    <v-btn
+                      v-if="section.title !== 'Friends' && section.title !== 'Blocked'"
+                      size="small"
+                      color="primary"
+                      variant="outlined"
+                      :loading="isActionLoading(item.id, 'request')"
+                      @click="applyAction(item.id, 'request')"
+                    >
+                      Relancer
+                    </v-btn>
+                  </div>
+                </template>
+              </v-list-item>
+            </v-list>
 
-                    <template #append>
-                      <div class="d-flex ga-2 flex-wrap justify-end">
-                        <v-btn
-                          v-for="btn in section.actions"
-                          :key="`${item.id}-${btn.action}`"
-                          :color="btn.color"
-                          :variant="btn.variant"
-                          size="small"
-                          :loading="isActionLoading(item.id, btn.action)"
-                          @click="applyAction(item.id, btn.action)"
-                        >
-                          {{ btn.label }}
-                        </v-btn>
-                        <v-btn
-                          v-if="section.title !== 'Friends' && section.title !== 'Blocked'"
-                          size="small"
-                          color="primary"
-                          variant="outlined"
-                          :loading="isActionLoading(item.id, 'request')"
-                          @click="applyAction(item.id, 'request')"
-                        >
-                          Relancer
-                        </v-btn>
-                      </div>
-                    </template>
-                  </v-list-item>
-                </v-list>
-
-                <v-card-text v-else class="text-medium-emphasis">
-                  {{ section.emptyText }}
-                </v-card-text>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+            <v-card-text v-else class="text-medium-emphasis">
+              {{ section.emptyText }}
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>

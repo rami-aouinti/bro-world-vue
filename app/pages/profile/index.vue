@@ -30,21 +30,20 @@ definePageMeta({
 </script>
 
 <template>
-  <v-container class="py-8">
-    <v-row>
-      <v-col cols="12" md="4" lg="3">
-        <v-card class="pa-4">
-          <div class="d-flex flex-column align-center text-center ga-3">
-            <v-avatar size="96" color="primary">
-              <v-img :src="avatarUrl" />
-            </v-avatar>
-            <div>
-              <p class="text-h6 mb-1">{{ fullName }}</p>
-              <p class="text-body-2 text-medium-emphasis">
-                @{{ sessionUser?.username }}
-              </p>
+  <div>
+    <AppPageDrawers>
+      <template #left>
+        <v-card-text>
+          <NuxtLink to="/profile" class="d-flex align-center text-center ga-3" style="text-decoration: none; color: inherit;">
+            <div class="d-flex align-center text-center ga-3">
+              <v-avatar size="48">
+                <v-img :src="avatarUrl" />
+              </v-avatar>
+              <div>
+                <h2>{{ fullName }}</h2>
+              </div>
             </div>
-          </div>
+          </NuxtLink>
 
           <v-divider class="my-4" />
 
@@ -60,17 +59,14 @@ definePageMeta({
               rounded="lg"
             />
           </v-list>
-        </v-card>
-      </v-col>
-
-      <v-col cols="12" md="8" lg="9">
-        <v-card class="pa-6">
-          <h1 class="text-h4 mb-2">{{ t('appbar.profile') }}</h1>
-          <p class="text-body-1 text-medium-emphasis mb-0">
-            Utilisez le menu à gauche pour gérer vos amis et vos relations.
-          </p>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+        </v-card-text>
+      </template>
+    </AppPageDrawers>
+    <v-container fluid>
+      <h1 class="text-h4 mb-2">{{ t('appbar.profile') }}</h1>
+      <p class="text-body-1 text-medium-emphasis mb-0">
+        Utilisez le menu à gauche pour gérer vos amis et vos relations.
+      </p>
+    </v-container>
+  </div>
 </template>
