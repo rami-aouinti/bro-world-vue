@@ -57,7 +57,9 @@
     "edit": "Modifier",
     "copy": "Copier",
     "helloWorld": "Bonjour le monde",
-    "whatsYourName": "Comment vous appelez-vous ?"
+    "whatsYourName": "Comment vous appelez-vous ?",
+    "retry": "Réessayer",
+    "close": "Fermer"
   },
   "platform": {
     "title": "Platforms",
@@ -271,7 +273,16 @@
       "lastMessageLabel": "Dernier message",
       "noMessageTitle": "Aucun message pour le moment",
       "noMessageDescription": "Cette conversation a été créée, mais aucun message n’a encore été envoyé.",
-      "emptyMessageContent": "(message vide)"
+      "emptyMessageContent": "(message vide)",
+      "fetchError": "Impossible de charger cette conversation pour le moment.",
+      "deleteAction": "Supprimer la conversation",
+      "deleteSuccess": "Conversation supprimée.",
+      "deleteError": "Impossible de supprimer la conversation.",
+      "editAction": "Modifier la conversation",
+      "editTitleLabel": "Titre de la conversation",
+      "editArchivedLabel": "Archiver la conversation",
+      "updateSuccess": "Conversation mise à jour.",
+      "updateError": "Impossible de mettre à jour la conversation."
     },
     "notification": {
       "title": "Notifications",

@@ -57,7 +57,9 @@
     "edit": "Edit",
     "copy": "Copy",
     "helloWorld": "Hello World",
-    "whatsYourName": "What's your name?"
+    "whatsYourName": "What's your name?",
+    "retry": "Retry",
+    "close": "Close"
   },
   "platform": {
     "title": "Platforms",
@@ -271,7 +273,16 @@
       "lastMessageLabel": "Last message",
       "noMessageTitle": "No messages yet",
       "noMessageDescription": "This conversation was created, but no messages have been sent yet.",
-      "emptyMessageContent": "(empty message)"
+      "emptyMessageContent": "(empty message)",
+      "fetchError": "Unable to load this conversation right now.",
+      "deleteAction": "Delete conversation",
+      "deleteSuccess": "Conversation deleted.",
+      "deleteError": "Unable to delete the conversation.",
+      "editAction": "Edit conversation",
+      "editTitleLabel": "Conversation title",
+      "editArchivedLabel": "Archive conversation",
+      "updateSuccess": "Conversation updated.",
+      "updateError": "Unable to update the conversation."
     },
     "notification": {
       "title": "Notifications",

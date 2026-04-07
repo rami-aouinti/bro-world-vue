@@ -56,7 +56,9 @@
     "edit": "Edit",
     "copy": "Copy",
     "helloWorld": "Hello World",
-    "whatsYourName": "What's your name?"
+    "whatsYourName": "What's your name?",
+    "retry": "Reintentar",
+    "close": "Cerrar"
   },
   "platform": {
     "title": "Platforms",
@@ -261,7 +263,16 @@
       "title": "Bandeja de entrada",
       "subtitle": "Últimas conversaciones",
       "detailTitle": "Conversación",
-      "detailLabel": "ID de conversación"
+      "detailLabel": "ID de conversación",
+      "fetchError": "No se pudo cargar esta conversación en este momento.",
+      "deleteAction": "Eliminar conversación",
+      "deleteSuccess": "Conversación eliminada.",
+      "deleteError": "No se pudo eliminar la conversación.",
+      "editAction": "Editar conversación",
+      "editTitleLabel": "Título de la conversación",
+      "editArchivedLabel": "Archivar conversación",
+      "updateSuccess": "Conversación actualizada.",
+      "updateError": "No se pudo actualizar la conversación."
     },
     "notification": {
       "title": "Notificaciones",
