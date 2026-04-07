@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatDateTime } from '../../utils/formatDateTime'
+import { formatRelativeTime } from '../../utils/formatRelativeTime'
 
 type BlogReaction = {
   type: string | null
@@ -71,11 +71,7 @@ const showComments = ref(false)
 const isLightTheme = computed(() => !theme.current.value.dark)
 
 const formattedDate = computed(() => {
-  if (!props.post.createdAt) {
-    return ''
-  }
-
-  return formatDateTime(locale.value, new Date(props.post.createdAt))
+  return formatRelativeTime(locale.value, props.post.createdAt)
 })
 
 const commentsCount = computed(() => props.post.comments?.length ?? 0)
