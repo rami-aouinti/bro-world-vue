@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
+
 const { t } = useI18n()
 
 const router = useRouter()
@@ -35,6 +36,7 @@ const routes = computed(() => {
     .toSorted((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98))
 })
 const drawerState = useState('drawer', () => true)
+const isPageSkeletonLoading = useState('page-skeleton-loading', () => true)
 
 const { mobile } = useDisplay()
 const registry = useDrawerSlotRegistry()
@@ -48,7 +50,6 @@ const drawer = computed({
 })
 const rail = computed(() => !drawerState.value && !mobile.value)
 const leftDrawerRenderer = computed(() => registry?.left.value ?? null)
-
 </script>
 
 <template>
@@ -62,7 +63,8 @@ const leftDrawerRenderer = computed(() => registry?.left.value ?? null)
     class="app-left-drawer"
   >
     <div v-if="leftDrawerRenderer" class="app-left-drawer-list">
-      <component :is="{ render: leftDrawerRenderer }" />
+      <SkeletonDrawerLeft v-if="isPageSkeletonLoading" />
+      <component :is="{ render: leftDrawerRenderer }" v-else />
     </div>
     <v-list v-else nav density="compact" class="app-left-drawer-list">
       <AppDrawerItem v-for="route in routes" :key="route.name" :item="route" />
