@@ -39,7 +39,10 @@
     "showRightDrawer": "Rechte Seitenleiste anzeigen",
     "hideRightDrawer": "Rechte Seitenleiste ausblenden",
     "switchToLight": "Zum hellen Modus wechseln",
-    "switchToDark": "Zum dunklen Modus wechseln"
+    "switchToDark": "Zum dunklen Modus wechseln",
+    "inbox": "Posteingang",
+    "notifications": "Benachrichtigungen",
+    "calendar": "Kalender"
   },
   "common": {
     "confirm": "Bestätigen",
@@ -223,5 +226,26 @@
   },
   "$vuetify": {
     "badge": "Badge"
+  },
+  "actions": {
+    "showAll": "Alle anzeigen"
+  },
+  "pages": {
+    "inbox": {
+      "title": "Posteingang",
+      "subtitle": "Neueste Unterhaltungen",
+      "detailTitle": "Unterhaltung",
+      "detailLabel": "Unterhaltungs-ID"
+    },
+    "notification": {
+      "title": "Benachrichtigungen",
+      "subtitle": "Neueste Benachrichtigungen",
+      "detailTitle": "Benachrichtigung",
+      "detailLabel": "Benachrichtigungs-ID"
+    },
+    "calendar": {
+      "title": "Kalender",
+      "subtitle": "Dein Zeitplan wird hier bald angezeigt."
+    }
   }
 }

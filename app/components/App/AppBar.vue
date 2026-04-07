@@ -26,10 +26,68 @@ const isDark = computed({
 
 const { loggedIn, clear, user } = useUserSession()
 const avatarUrl = computed(() => user.value?.avatar_url || user.value?.photo)
+const inboxItems = ref([
+  {
+    id: 'project-kickoff',
+    title: 'Project kickoff notes',
+    createdAt: '2026-04-05T14:00:00Z',
+  },
+  {
+    id: 'design-review',
+    title: 'Design review feedback',
+    createdAt: '2026-04-06T09:15:00Z',
+  },
+  {
+    id: 'invoice-follow-up',
+    title: 'Invoice follow-up',
+    createdAt: '2026-04-04T17:45:00Z',
+  },
+  {
+    id: 'q2-planning',
+    title: 'Q2 planning sync',
+    createdAt: '2026-04-07T08:30:00Z',
+  },
+])
+const notificationItems = ref([
+  {
+    id: 'security-alert',
+    title: 'Security alert',
+    createdAt: '2026-04-07T10:30:00Z',
+  },
+  {
+    id: 'billing-reminder',
+    title: 'Billing reminder',
+    createdAt: '2026-04-06T11:20:00Z',
+  },
+  {
+    id: 'weekly-report',
+    title: 'Weekly report is ready',
+    createdAt: '2026-04-03T13:10:00Z',
+  },
+  {
+    id: 'team-invite',
+    title: 'New team invite',
+    createdAt: '2026-04-05T16:55:00Z',
+  },
+])
+const latestInboxItems = computed(() =>
+  [...inboxItems.value]
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .slice(0, 3),
+)
+const latestNotificationItems = computed(() =>
+  [...notificationItems.value]
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .slice(0, 3),
+)
 const userLabel = computed(() => {
-  const fullName = [user.value?.firstName, user.value?.lastName].filter(Boolean).join(' ')
+  const fullName = [user.value?.firstName, user.value?.lastName]
+    .filter(Boolean)
+    .join(' ')
 
-  return fullName || user.value?.login || user.value?.username || t('appbar.user')
+  return (
+    fullName || user.value?.login || user.value?.username || t('appbar.user')
+  )
 })
 
 function toggleLeftDrawer() {
@@ -52,7 +110,11 @@ function toggleLeftDrawer() {
         <h2>{{ t('app.name') }}</h2>
       </NuxtLink>
       <v-spacer />
-      <v-app-bar-nav-icon class="mx-5" :disabled="!showLeftDrawer" @click="toggleLeftDrawer" />
+      <v-app-bar-nav-icon
+        class="mx-5"
+        :disabled="!showLeftDrawer"
+        @click="toggleLeftDrawer"
+      />
     </div>
 
     <v-toolbar-items class="app-top-bar__nav d-none d-md-flex">
@@ -72,7 +134,11 @@ function toggleLeftDrawer() {
     <div class="app-top-bar__right">
       <v-app-bar-nav-icon
         class="app-top-bar__right-drawer-toggle mx-5"
-        :aria-label="showRightDrawer ? t('appbar.hideRightDrawer') : t('appbar.showRightDrawer')"
+        :aria-label="
+          showRightDrawer
+            ? t('appbar.hideRightDrawer')
+            : t('appbar.showRightDrawer')
+        "
         @click="showRightDrawer = !showRightDrawer"
       />
 
@@ -89,7 +155,11 @@ function toggleLeftDrawer() {
                 offset-y="8"
               >
                 <v-btn icon v-bind="mergeProps(menu, tooltip)">
-                  <v-icon v-if="!loggedIn" icon="mdi-account-circle" size="36" />
+                  <v-icon
+                    v-if="!loggedIn"
+                    icon="mdi-account-circle"
+                    size="36"
+                  />
                   <v-avatar v-else color="primary" size="36">
                     <v-img :src="avatarUrl" />
                   </v-avatar>
@@ -121,6 +191,70 @@ function toggleLeftDrawer() {
         </v-list>
       </v-menu>
 
+      <template v-if="loggedIn">
+        <v-menu location="bottom end">
+          <template #activator="{ props }">
+            <v-btn
+              variant="text"
+              prepend-icon="mdi-inbox-outline"
+              v-bind="props"
+            >
+              {{ t('appbar.inbox') }}
+            </v-btn>
+          </template>
+          <v-list min-width="280">
+            <v-list-item
+              v-for="item in latestInboxItems"
+              :key="item.id"
+              :title="item.title"
+              prepend-icon="mdi-email-outline"
+              :to="`/inbox/${item.id}`"
+            />
+            <v-divider class="my-1" />
+            <v-list-item
+              :title="t('actions.showAll')"
+              append-icon="mdi-arrow-right"
+              to="/inbox"
+            />
+          </v-list>
+        </v-menu>
+
+        <v-menu location="bottom end">
+          <template #activator="{ props }">
+            <v-btn
+              variant="text"
+              prepend-icon="mdi-bell-outline"
+              v-bind="props"
+            >
+              {{ t('appbar.notifications') }}
+            </v-btn>
+          </template>
+          <v-list min-width="280">
+            <v-list-item
+              v-for="item in latestNotificationItems"
+              :key="item.id"
+              :title="item.title"
+              prepend-icon="mdi-bell-ring-outline"
+              :to="`/notification/${item.id}`"
+            />
+            <v-divider class="my-1" />
+            <v-list-item
+              :title="t('actions.showAll')"
+              append-icon="mdi-arrow-right"
+              to="/notification"
+            />
+          </v-list>
+        </v-menu>
+
+        <v-btn
+          variant="text"
+          prepend-icon="mdi-calendar-month-outline"
+          to="/calendar"
+        >
+          {{ t('appbar.calendar') }}
+        </v-btn>
+      </template>
+
       <AppLanguageSwitcher />
 
       <v-btn
@@ -128,7 +262,9 @@ function toggleLeftDrawer() {
         size="44"
         variant="text"
         class="app-bar-controls__theme"
-        :aria-label="isDark ? t('appbar.switchToLight') : t('appbar.switchToDark')"
+        :aria-label="
+          isDark ? t('appbar.switchToLight') : t('appbar.switchToDark')
+        "
         @click="isDark = !isDark"
       >
         <v-icon

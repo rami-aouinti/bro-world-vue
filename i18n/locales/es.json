@@ -39,7 +39,10 @@
     "showRightDrawer": "Mostrar panel derecho",
     "hideRightDrawer": "Ocultar panel derecho",
     "switchToLight": "Cambiar a modo claro",
-    "switchToDark": "Cambiar a modo oscuro"
+    "switchToDark": "Cambiar a modo oscuro",
+    "inbox": "Bandeja de entrada",
+    "notifications": "Notificaciones",
+    "calendar": "Calendario"
   },
   "common": {
     "confirm": "Confirm",
@@ -223,5 +226,26 @@
   },
   "$vuetify": {
     "badge": "Badge"
+  },
+  "actions": {
+    "showAll": "Ver todo"
+  },
+  "pages": {
+    "inbox": {
+      "title": "Bandeja de entrada",
+      "subtitle": "Últimas conversaciones",
+      "detailTitle": "Conversación",
+      "detailLabel": "ID de conversación"
+    },
+    "notification": {
+      "title": "Notificaciones",
+      "subtitle": "Últimas notificaciones",
+      "detailTitle": "Notificación",
+      "detailLabel": "ID de notificación"
+    },
+    "calendar": {
+      "title": "Calendario",
+      "subtitle": "Tu agenda aparecerá aquí pronto."
+    }
   }
 }
