@@ -1,10 +1,10 @@
-import { callPrivateApi } from '../../../../utils/privateApi'
+import { createProxyHandler } from '../../../../utils/createProxyHandler'
 import { getRequiredRouterParam } from '../../utils'
 
-export default defineEventHandler(async (event): Promise<unknown> => {
-  const postId = getRequiredRouterParam(event, 'postId', 'post')
-
-  return callPrivateApi(event, `/api/v1/private/blog/posts/${postId}`, {
-    method: 'DELETE',
-  })
+export default createProxyHandler({
+  method: 'DELETE',
+  endpointTemplate: '/api/v1/private/blog/posts/:postId',
+  resolveParams: event => ({
+    postId: getRequiredRouterParam(event, 'postId', 'post'),
+  }),
 })
