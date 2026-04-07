@@ -5,6 +5,7 @@
   },
   "appbar": {
     "home": "Home",
+    "platform": "Platform",
     "service": "Service",
     "about": "About",
     "contact": "Contact",
@@ -56,6 +57,16 @@
     "copy": "Copy",
     "helloWorld": "Hello World",
     "whatsYourName": "What's your name?"
+  },
+  "platform": {
+    "title": "Platforms",
+    "subtitle": "Explore available applications across all platforms.",
+    "refresh": "Refresh",
+    "error": "Unable to load platform applications.",
+    "owner": "Owner",
+    "member": "Member",
+    "emptyTitle": "No applications found",
+    "emptySubtitle": "There are no applications to display right now."
   },
   "dialog": {
     "deleteDessertConfirm": "Are you sure you want to delete this dessert?"
