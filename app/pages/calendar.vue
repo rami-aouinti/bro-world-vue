@@ -160,8 +160,8 @@ async function loadEvents() {
 
   try {
     const [privateResponse, upcomingResponse] = await Promise.all([
-      privateApi<PrivateEventsResponse>('/calendar/private/events'),
-      privateApi<PrivateCalendarEvent[]>('/calendar/events/upcoming'),
+      $fetch<PrivateEventsResponse>('/api/calendar/private/events'),
+      $fetch<PrivateCalendarEvent[]>('/api/calendar/events/upcoming'),
     ])
 
     calendarEvents.value = privateResponse.items || []
@@ -198,13 +198,13 @@ async function saveEvent() {
     const payload = buildPayload()
 
     if (selectedEvent.value) {
-      await privateApi(`/calendar/private/events/${selectedEvent.value.id}`, {
+      await $fetch(`/api/calendar/private/events/${selectedEvent.value.id}`, {
         method: 'PATCH',
         body: payload,
       })
     }
     else {
-      await privateApi('/calendar/private/events', {
+      await $fetch('/api/calendar/private/events', {
         method: 'POST',
         body: payload,
       })
@@ -229,7 +229,7 @@ async function deleteEvent() {
   isSaving.value = true
 
   try {
-    await privateApi(`/calendar/private/events/${selectedEvent.value.id}`, {
+    await $fetch(`/api/calendar/private/events/${selectedEvent.value.id}`, {
       method: 'DELETE',
     })
 
@@ -252,7 +252,7 @@ async function cancelEvent() {
   isSaving.value = true
 
   try {
-    await privateApi(`/calendar/private/events/${selectedEvent.value.id}/cancel`, {
+    await $fetch(`/api/calendar/private/events/${selectedEvent.value.id}/cancel`, {
       method: 'POST',
     })
 
