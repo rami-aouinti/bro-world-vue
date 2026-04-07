@@ -14,18 +14,28 @@ const emit = defineEmits<{
 const actions = [
   {
     icon: 'mdi-video-wireless',
-    color: '#f3425f',
+    colorClass: 'new-post-action--live',
     label: 'Live-Video',
   },
   {
     icon: 'mdi-image-multiple',
-    color: '#45bd62',
+    colorClass: 'new-post-action--media',
     label: 'Foto/Video',
   },
   {
     icon: 'mdi-emoticon-happy-outline',
-    color: '#f7b928',
+    colorClass: 'new-post-action--feeling',
     label: 'Gefühl/Aktivität',
+  },
+  {
+    icon: 'mdi-tag-outline',
+    colorClass: 'new-post-action--tag',
+    label: 'Tag',
+  },
+  {
+    icon: 'mdi-gif',
+    colorClass: 'new-post-action--gif',
+    label: 'GIF',
   },
 ]
 
@@ -41,23 +51,20 @@ function openComposer() {
 <template>
   <v-sheet
     rounded="xl"
-    color="grey-darken-4"
-    class="px-4 py-3 d-flex align-center ga-3"
-    border
+    class="new-post-launcher px-4 py-3 d-flex align-center ga-3"
   >
     <v-avatar size="40" color="grey-darken-2">
       <v-icon icon="mdi-account" />
     </v-avatar>
 
     <v-btn
-      class="flex-grow-1 justify-start text-none"
+      class="new-post-pill flex-grow-1 justify-start text-none"
       variant="tonal"
       rounded="pill"
-      color="grey-darken-2"
       :disabled="disabled"
       @click="openComposer"
     >
-      <span class="text-medium-emphasis">{{ placeholder }}</span>
+      <span class="new-post-pill__placeholder">{{ placeholder }}</span>
     </v-btn>
 
     <div class="d-flex ga-1">
@@ -68,9 +75,66 @@ function openComposer() {
         variant="text"
         size="small"
         :disabled="disabled"
-        :color="action.color"
+        :class="action.colorClass"
         @click="openComposer"
       />
     </div>
   </v-sheet>
 </template>
+
+<style scoped lang="scss">
+.new-post-launcher {
+  --new-post-bg: #1d1f24;
+  --new-post-border: rgba(255, 255, 255, 0.14);
+  --new-post-pill-bg: #2a2d33;
+  --new-post-radius: 18px;
+  --new-post-focus: rgba(255, 255, 255, 0.22);
+  --new-post-hover: rgba(255, 255, 255, 0.06);
+  --new-post-placeholder: rgba(255, 255, 255, 0.68);
+  --icon-live: #f3425f;
+  --icon-media: #45bd62;
+  --icon-feeling: #f7b928;
+  --icon-tag: #4b8ef7;
+  --icon-gif: #31d7e8;
+
+  background: var(--new-post-bg);
+  border: 1px solid var(--new-post-border);
+  border-radius: var(--new-post-radius) !important;
+}
+
+.new-post-pill {
+  background: var(--new-post-pill-bg);
+  transition: background-color 0.2s ease;
+}
+
+.new-post-pill:hover:not(.v-btn--disabled),
+.new-post-pill:focus-visible:not(.v-btn--disabled) {
+  background: color-mix(in srgb, var(--new-post-pill-bg), white 7%);
+  box-shadow: inset 0 0 0 1px var(--new-post-focus);
+}
+
+.new-post-pill__placeholder {
+  color: var(--new-post-placeholder);
+  font-weight: 500;
+}
+
+.new-post-action--live {
+  color: var(--icon-live);
+}
+
+.new-post-action--media {
+  color: var(--icon-media);
+}
+
+.new-post-action--feeling {
+  color: var(--icon-feeling);
+}
+
+.new-post-action--tag {
+  color: var(--icon-tag);
+}
+
+.new-post-action--gif {
+  color: var(--icon-gif);
+}
+</style>

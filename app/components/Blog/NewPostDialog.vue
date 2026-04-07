@@ -42,9 +42,9 @@ function onSubmit() {
     max-width="640"
     @update:model-value="emit('update:open', $event)"
   >
-    <v-card rounded="xl">
+    <v-card class="new-post-dialog" rounded="xl">
       <v-card-title class="py-4 d-flex align-center justify-center position-relative">
-        <span class="text-h6 font-weight-bold">Beitrag erstellen</span>
+        <span class="new-post-dialog__title text-h6">Beitrag erstellen</span>
         <v-btn
           icon="mdi-close"
           variant="text"
@@ -77,13 +77,15 @@ function onSubmit() {
           rows="6"
           variant="plain"
           hide-details
+          class="new-post-dialog__textarea"
         />
 
         <BlogNewPostAddToPostRow :disabled="disabled" />
       </v-card-text>
 
-      <v-card-actions class="px-6 pb-6">
+      <v-card-actions class="new-post-actions px-6 pb-6">
         <v-btn
+          class="new-post-submit"
           block
           color="primary"
           size="large"
@@ -96,3 +98,45 @@ function onSubmit() {
     </v-card>
   </v-dialog>
 </template>
+
+<style scoped lang="scss">
+.new-post-dialog {
+  --dialog-bg: #1d1f24;
+  --dialog-border: rgba(255, 255, 255, 0.16);
+  --dialog-radius: 18px;
+  --dialog-title-color: rgba(255, 255, 255, 0.96);
+  --dialog-placeholder: rgba(255, 255, 255, 0.52);
+  --dialog-focus: rgba(255, 255, 255, 0.22);
+  --dialog-submit-hover: rgba(255, 255, 255, 0.08);
+
+  background: var(--dialog-bg);
+  border: 1px solid var(--dialog-border);
+  border-radius: var(--dialog-radius) !important;
+}
+
+.new-post-dialog__title {
+  color: var(--dialog-title-color);
+  font-weight: 800;
+}
+
+:deep(.new-post-dialog__textarea textarea::placeholder) {
+  color: var(--dialog-placeholder);
+  font-weight: 500;
+}
+
+.new-post-actions {
+  padding-top: 4px;
+}
+
+.new-post-submit {
+  border-radius: 16px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.new-post-submit:hover:not(.v-btn--disabled),
+.new-post-submit:focus-visible:not(.v-btn--disabled) {
+  box-shadow: inset 0 0 0 1px var(--dialog-focus);
+  filter: brightness(1.03);
+}
+</style>
