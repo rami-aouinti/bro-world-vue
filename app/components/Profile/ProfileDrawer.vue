@@ -29,16 +29,16 @@ const profileNavItems = [
   <v-card-text>
     <NuxtLink to="/profile" class="d-flex align-center text-center ga-3" style="text-decoration: none; color: inherit;">
       <div class="d-flex align-center text-center ga-3">
-        <v-avatar size="48">
+        <v-avatar size="32">
           <v-img :src="avatarUrl" />
         </v-avatar>
         <div>
-          <h2>{{ fullName }}</h2>
+          <h3>{{ fullName }}</h3>
         </div>
       </div>
     </NuxtLink>
 
-    <v-divider class="my-4" />
+    <v-divider class="my-2" />
 
     <v-list nav density="comfortable">
       <v-list-item
