@@ -15,7 +15,7 @@ definePageMeta({
   <v-container>
     <v-card>
       <v-card-title>{{ t('appbar.inbox') }}</v-card-title>
-      <v-card-subtitle>Conversations</v-card-subtitle>
+      <v-card-subtitle>{{ t('pages.inbox.subtitle') }}</v-card-subtitle>
 
       <v-list v-if="inboxSortedDesc.length">
         <v-list-item
@@ -31,7 +31,7 @@ definePageMeta({
       <v-card-text v-else>
         <div class="d-flex flex-column align-center ga-3 py-8 text-medium-emphasis">
           <v-icon icon="mdi-email-off-outline" size="40" />
-          <p class="text-body-1">No conversation available.</p>
+          <p class="text-body-1">{{ t('pages.inbox.empty') }}</p>
         </div>
       </v-card-text>
     </v-card>

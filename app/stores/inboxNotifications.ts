@@ -48,6 +48,7 @@ export interface PrivateConversation {
   createdAt: string
   participants: PrivateConversationParticipant[]
   ownerId: string
+  unreadMessagesCount?: number
   lastMessage: PrivateConversationMessage | null
 }
 
@@ -100,6 +101,7 @@ const normalizePrivateConversation = (conversation: PrivateConversation): InboxI
 export const useInboxNotificationsStore = defineStore('inbox-notifications', {
   state: () => ({
     inbox: [] as InboxItem[],
+    conversationsById: {} as Record<string, PrivateConversation>,
     notifications: [] as UserNotificationItem[],
     unreadCount: 0,
   }),
@@ -124,11 +126,14 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
           query: { page, limit },
         })
 
-        this.inbox = (response.items || []).map(normalizePrivateConversation)
+        const items = response.items || []
+        this.inbox = items.map(normalizePrivateConversation)
+        this.conversationsById = Object.fromEntries(items.map((conversation) => [conversation.id, conversation]))
       }
       catch (error) {
         if (isUnauthorizedError(error)) {
           this.inbox = []
+          this.conversationsById = {}
           return
         }
 
@@ -180,6 +185,9 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
     },
     getInboxById(id: string) {
       return this.inbox.find((item) => item.id === id)
+    },
+    getConversationById(id: string) {
+      return this.conversationsById[id]
     },
     getNotificationById(id: string) {
       return this.notifications.find((item) => item.id === id)
