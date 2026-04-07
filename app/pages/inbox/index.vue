@@ -2,7 +2,9 @@
 const { t } = useI18n()
 
 definePageMeta({
-  title: 'pages.inbox.title',
+  title: 'appbar.inbox',
+  icon: 'mdi-email-outline',
+  middleware: 'auth',
 })
 
 const conversations = ref([
@@ -16,31 +18,20 @@ const conversations = ref([
     title: 'Design review feedback',
     createdAt: '2026-04-06T09:15:00Z',
   },
-  {
-    id: 'project-kickoff',
-    title: 'Project kickoff notes',
-    createdAt: '2026-04-05T14:00:00Z',
-  },
-  {
-    id: 'invoice-follow-up',
-    title: 'Invoice follow-up',
-    createdAt: '2026-04-04T17:45:00Z',
-  },
 ])
 
 const sortedConversations = computed(() =>
-  [...conversations.value].sort((a, b) =>
-    b.createdAt.localeCompare(a.createdAt),
-  ),
+  [...conversations.value].sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
 )
 </script>
 
 <template>
   <v-container>
     <v-card>
-      <v-card-title>{{ t('pages.inbox.title') }}</v-card-title>
-      <v-card-subtitle>{{ t('pages.inbox.subtitle') }}</v-card-subtitle>
-      <v-list>
+      <v-card-title>{{ t('appbar.inbox') }}</v-card-title>
+      <v-card-subtitle>Conversations</v-card-subtitle>
+
+      <v-list v-if="sortedConversations.length">
         <v-list-item
           v-for="conversation in sortedConversations"
           :key="conversation.id"
@@ -49,6 +40,13 @@ const sortedConversations = computed(() =>
           :to="`/inbox/${conversation.id}`"
         />
       </v-list>
+
+      <v-card-text v-else>
+        <div class="d-flex flex-column align-center ga-3 py-8 text-medium-emphasis">
+          <v-icon icon="mdi-email-off-outline" size="40" />
+          <p class="text-body-1">No conversation available.</p>
+        </div>
+      </v-card-text>
     </v-card>
   </v-container>
 </template>
