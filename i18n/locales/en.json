@@ -318,6 +318,11 @@
         "cancelFailed": "Unable to cancel this event.",
         "moveFailed": "Unable to move this event."
       }
+    },
+    "profile": {
+      "posts": {
+        "title": "Posts"
+      }
     }
   },
   "home": {

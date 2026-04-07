@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  title: 'Posts',
+  title: 'profile.posts.title',
   middleware: 'auth',
 })
 </script>
