@@ -8,6 +8,7 @@ type BlogComment = {
   content: string
   createdAt: string | null
   isAuthor: boolean
+  author?: string
   children?: BlogComment[]
 }
 
@@ -28,35 +29,35 @@ const emit = defineEmits<{
 
 <template>
   <div class="d-flex flex-column ga-3">
-    <v-card
+    <div
       v-for="comment in comments"
       :key="comment.id"
-      variant="tonal"
-      rounded="lg"
-      :class="level > 0 ? 'ms-6' : ''"
+      class="comment-item"
+      :class="{ 'nested-comment': level > 0 }"
     >
-      <v-card-text class="pb-2">
-        <div class="d-flex justify-space-between align-center mb-2">
-          <span class="text-caption text-medium-emphasis">{{ comment.createdAt ?? 'Maintenant' }}</span>
-          <div class="d-flex ga-1">
-            <v-btn size="x-small" variant="text" @click="emit('reply', comment)">
-              Répondre
-            </v-btn>
+      <div class="d-flex ga-2 align-start">
+        <v-avatar size="34" color="grey-darken-2">
+          <v-icon size="18" icon="mdi-account" />
+        </v-avatar>
+
+        <div class="comment-body">
+          <div class="comment-bubble">
+            <div class="text-subtitle-2 font-weight-bold">{{ comment.author || 'Utilisateur' }}</div>
+            <p class="mb-0 text-body-1">{{ comment.content }}</p>
+          </div>
+
+          <div class="comment-actions text-medium-emphasis">
+            <span>{{ comment.createdAt ?? 'Maintenant' }}</span>
+            <button type="button" @click="emit('reply', comment)">Répondre</button>
             <template v-if="comment.isAuthor">
-              <v-btn size="x-small" variant="text" @click="emit('edit', comment)">
-                Modifier
-              </v-btn>
-              <v-btn size="x-small" variant="text" color="error" @click="emit('delete', comment)">
-                Supprimer
-              </v-btn>
+              <button type="button" @click="emit('edit', comment)">Modifier</button>
+              <button type="button" class="text-error" @click="emit('delete', comment)">Supprimer</button>
             </template>
           </div>
         </div>
+      </div>
 
-        <p class="text-body-2 mb-0">{{ comment.content }}</p>
-      </v-card-text>
-
-      <v-card-text v-if="comment.children?.length" class="pt-0">
+      <div v-if="comment.children?.length" class="children-wrap">
         <BlogCommentThread
           :comments="comment.children"
           :level="level + 1"
@@ -64,7 +65,46 @@ const emit = defineEmits<{
           @edit="emit('edit', $event)"
           @delete="emit('delete', $event)"
         />
-      </v-card-text>
-    </v-card>
+      </div>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.comment-item.nested-comment {
+  margin-left: 1.6rem;
+  padding-left: 0.8rem;
+  border-left: 2px solid rgba(255, 255, 255, 0.12);
+}
+
+.comment-body {
+  flex: 1;
+}
+
+.comment-bubble {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 0.6rem 0.9rem;
+}
+
+.comment-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 0.35rem;
+  padding-left: 0.15rem;
+  font-size: 0.95rem;
+}
+
+.comment-actions button {
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.children-wrap {
+  margin-top: 0.45rem;
+}
+</style>
