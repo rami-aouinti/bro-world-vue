@@ -3,6 +3,8 @@ const { t } = useI18n()
 const inboxNotificationsStore = useInboxNotificationsStore()
 const { inboxSortedDesc } = storeToRefs(inboxNotificationsStore)
 
+await inboxNotificationsStore.fetchInboxConversations()
+
 definePageMeta({
   title: 'appbar.inbox',
   middleware: 'auth',
