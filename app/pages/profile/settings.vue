@@ -12,7 +12,7 @@ definePageMeta({
   <div>
     <AppPageDrawers>
       <template #left>
-        <v-skeleton-loader v-if="isPageSkeletonVisible" type="list-item-avatar, list-item-avatar, list-item-avatar" class="pa-2" />
+        <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
         <ProfileDrawer v-else />
       </template>
     </AppPageDrawers>

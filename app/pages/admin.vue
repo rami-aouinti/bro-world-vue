@@ -58,6 +58,9 @@ const stats = ref([
 <template>
   <div>
     <AppPageDrawers>
+      <template #left>
+        <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
+      </template>
       <template #right>
         <SkeletonDrawerRight v-if="isPageSkeletonVisible" />
       </template>
