@@ -1,5 +1,7 @@
 import type { H3Event } from 'h3'
 
+export const MAX_LIMIT = 100
+
 export function getPaginationQuery(event: H3Event, defaultLimit = 20) {
   const query = getQuery(event)
   const page = Number(query.page ?? 1)
@@ -16,6 +18,13 @@ export function getPaginationQuery(event: H3Event, defaultLimit = 20) {
     throw createError({
       statusCode: 400,
       statusMessage: 'Invalid limit parameter',
+    })
+  }
+
+  if (limit > MAX_LIMIT) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: `Invalid limit parameter (maximum: ${MAX_LIMIT})`,
     })
   }
 
