@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<{
   sharesCount: 0,
   reactionTypes: () => [],
 })
+const { t } = useI18n()
 
 const emit = defineEmits<{
   like: []
@@ -26,13 +27,13 @@ const normalizedReactionTypes = computed(() =>
   props.reactionTypes.length
     ? props.reactionTypes
     : [
-        { code: 'like', label: 'Like' },
-        { code: 'heart', label: 'Love' },
-        { code: 'celebrate', label: 'Celebrate' },
-        { code: 'laugh', label: 'Haha' },
-        { code: 'wow', label: 'Wow' },
-        { code: 'sad', label: 'Sad' },
-        { code: 'angry', label: 'Angry' },
+        { code: 'like', label: t('blog.post.reactions.like') },
+        { code: 'heart', label: t('blog.post.reactions.heart') },
+        { code: 'celebrate', label: t('blog.post.reactions.celebrate') },
+        { code: 'laugh', label: t('blog.post.reactions.laugh') },
+        { code: 'wow', label: t('blog.post.reactions.wow') },
+        { code: 'sad', label: t('blog.post.reactions.sad') },
+        { code: 'angry', label: t('blog.post.reactions.angry') },
       ],
 )
 
@@ -82,7 +83,7 @@ function onPickReaction(code: string) {
             prepend-icon="mdi-thumb-up-outline"
             @click.stop="emit('like')"
           >
-            Gefällt mir
+            {{ t('blog.post.actions.like') }}
           </v-btn>
         </template>
 
@@ -101,10 +102,10 @@ function onPickReaction(code: string) {
       </v-menu>
 
       <v-btn class="action-btn" variant="text" prepend-icon="mdi-comment-outline" @click="emit('comment')">
-        Kommentieren
+        {{ t('blog.post.actions.comment') }}
       </v-btn>
       <v-btn class="action-btn" variant="text" prepend-icon="mdi-share-outline" @click="emit('share')">
-        Teilen
+        {{ t('blog.post.actions.share') }}
       </v-btn>
     </div>
   </div>

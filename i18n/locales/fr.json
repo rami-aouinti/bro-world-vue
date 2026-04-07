@@ -324,15 +324,92 @@
     "leftNav": {
       "home": "Accueil",
       "discover": "Découvrir",
-      "messages": "Messages"
+      "messages": "Messages",
+      "title": "Navigation"
     },
     "rightNav": {
-      "trending": "Tendances"
+      "trending": "Tendances",
+      "tags": {
+        "nuxt": "#nuxt",
+        "vuetify": "#vuetify",
+        "frontend": "#frontend"
+      }
     }
   },
   "profile": {
     "posts": {
       "title": "Publications"
+    }
+  },
+  "blog": {
+    "common": {
+      "userFallback": "Utilisateur"
+    },
+    "newPost": {
+      "placeholder": "Que faites-vous en ce moment, {name} ?",
+      "createTitle": "Créer une publication",
+      "postAction": "Publier",
+      "addToPost": "Ajoutez quelque chose à votre publication",
+      "actions": {
+        "liveVideo": "Vidéo en direct",
+        "photoVideo": "Photo/Vidéo",
+        "feelingActivity": "Humeur/activité",
+        "tag": "Tag",
+        "gif": "GIF"
+      }
+    },
+    "post": {
+      "fallbackTitle": "Publication",
+      "empty": "Aucune publication à afficher",
+      "menu": {
+        "edit": "Modifier",
+        "delete": "Supprimer"
+      },
+      "cta": {
+        "seeMore": "Voir plus"
+      },
+      "edit": {
+        "contentLabel": "Contenu"
+      },
+      "actions": {
+        "like": "J’aime",
+        "comment": "Commenter",
+        "share": "Partager"
+      },
+      "reactions": {
+        "like": "J’aime",
+        "heart": "J’adore",
+        "celebrate": "Bravo",
+        "laugh": "Haha",
+        "wow": "Waouh",
+        "sad": "Triste",
+        "angry": "En colère"
+      }
+    },
+    "comment": {
+      "now": "Maintenant",
+      "actions": {
+        "comment": "Commenter",
+        "reply": "Répondre"
+      },
+      "placeholders": {
+        "commentAsUser": "Ajouter un commentaire…",
+        "addComment": "Ajouter un commentaire…",
+        "reply": "Votre réponse…"
+      }
+    },
+    "story": {
+      "title": "Stories",
+      "yourStory": "Votre story",
+      "uploading": "Envoi…",
+      "createCta": "Créer une story",
+      "empty": "Aucune story",
+      "uploadErrorImageOnly": "Seules les images sont autorisées.",
+      "uploadError": "Impossible d’envoyer la story pour le moment.",
+      "deleteError": "Suppression impossible pour le moment. Synchronisation en cours.",
+      "publishSuccess": "Story publiée (#{id}) · créée {createdAt} · expire {expiresAt}",
+      "messagePlaceholder": "Message...",
+      "deleteCta": "Supprimer cette story"
     }
   }
 }

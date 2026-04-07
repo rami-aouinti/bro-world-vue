@@ -64,7 +64,7 @@ const emit = defineEmits<{
   deleteComment: [payload: { post: BlogPost, comment: BlogComment }]
 }>()
 
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 const theme = useTheme()
 const replyTo = ref<BlogComment | null>(null)
 const showComments = ref(false)
@@ -79,7 +79,7 @@ const formattedDate = computed(() => {
 })
 
 const commentsCount = computed(() => props.post.comments?.length ?? 0)
-const authorName = computed(() => props.post.author?.displayName || 'Publication')
+const authorName = computed(() => props.post.author?.displayName || t('blog.post.fallbackTitle'))
 const authorPhoto = computed(() => props.post.author?.photo || null)
 const normalizedReactions = computed(() =>
   (props.post.reactions || [])
@@ -162,12 +162,12 @@ function onCreateComment(content: string) {
           <v-list density="compact" min-width="140">
             <v-list-item
               prepend-icon="mdi-pencil-outline"
-              title="Modifier"
+              :title="t('blog.post.menu.edit')"
               @click="emit('editPost', post)"
             />
             <v-list-item
               prepend-icon="mdi-delete-outline"
-              title="Supprimer"
+              :title="t('blog.post.menu.delete')"
               base-color="error"
               @click="emit('deletePost', post)"
             />
@@ -216,11 +216,11 @@ function onCreateComment(content: string) {
     </v-card-text>
 
     <v-card-text v-if="showComments" class="pt-1 pb-1">
-      <BlogCommentComposer
-        mode="comment"
-        placeholder="Ajouter un commentaire…"
-        @submit="onCreateComment"
-      />
+        <BlogCommentComposer
+          mode="comment"
+          :placeholder="t('blog.comment.placeholders.addComment')"
+          @submit="onCreateComment"
+        />
     </v-card-text>
 
     <v-card-text v-if="showComments && post.comments?.length" class="pt-1 pb-2">

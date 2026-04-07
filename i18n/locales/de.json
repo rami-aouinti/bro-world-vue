@@ -320,15 +320,92 @@
     "leftNav": {
       "home": "Startseite",
       "discover": "Entdecken",
-      "messages": "Nachrichten"
+      "messages": "Nachrichten",
+      "title": "Navigation"
     },
     "rightNav": {
-      "trending": "Trends"
+      "trending": "Trends",
+      "tags": {
+        "nuxt": "#nuxt",
+        "vuetify": "#vuetify",
+        "frontend": "#frontend"
+      }
     }
   },
   "profile": {
     "posts": {
       "title": "Beiträge"
+    }
+  },
+  "blog": {
+    "common": {
+      "userFallback": "Benutzer"
+    },
+    "newPost": {
+      "placeholder": "Was machst du gerade, {name}?",
+      "createTitle": "Beitrag erstellen",
+      "postAction": "Posten",
+      "addToPost": "Füge noch etwas zu deinem Beitrag hinzu",
+      "actions": {
+        "liveVideo": "Live-Video",
+        "photoVideo": "Foto/Video",
+        "feelingActivity": "Gefühl/Aktivität",
+        "tag": "Tag",
+        "gif": "GIF"
+      }
+    },
+    "post": {
+      "fallbackTitle": "Beitrag",
+      "empty": "Keine Beiträge zum Anzeigen",
+      "menu": {
+        "edit": "Bearbeiten",
+        "delete": "Löschen"
+      },
+      "cta": {
+        "seeMore": "Mehr anzeigen"
+      },
+      "edit": {
+        "contentLabel": "Inhalt"
+      },
+      "actions": {
+        "like": "Gefällt mir",
+        "comment": "Kommentieren",
+        "share": "Teilen"
+      },
+      "reactions": {
+        "like": "Like",
+        "heart": "Love",
+        "celebrate": "Celebrate",
+        "laugh": "Haha",
+        "wow": "Wow",
+        "sad": "Sad",
+        "angry": "Angry"
+      }
+    },
+    "comment": {
+      "now": "Jetzt",
+      "actions": {
+        "comment": "Kommentieren",
+        "reply": "Antworten"
+      },
+      "placeholders": {
+        "commentAsUser": "Kommentieren…",
+        "addComment": "Kommentar hinzufügen…",
+        "reply": "Deine Antwort…"
+      }
+    },
+    "story": {
+      "title": "Stories",
+      "yourStory": "Deine Story",
+      "uploading": "Wird hochgeladen…",
+      "createCta": "Story erstellen",
+      "empty": "Keine Stories",
+      "uploadErrorImageOnly": "Nur Bilder sind erlaubt.",
+      "uploadError": "Story kann gerade nicht hochgeladen werden.",
+      "deleteError": "Löschen derzeit nicht möglich. Synchronisierung läuft.",
+      "publishSuccess": "Story veröffentlicht (#{id}) · erstellt {createdAt} · läuft ab {expiresAt}",
+      "messagePlaceholder": "Nachricht...",
+      "deleteCta": "Diese Story löschen"
     }
   }
 }
