@@ -2,6 +2,16 @@ type SessionUserWithToken = {
   token?: string
 }
 
+function resolveAuthToken(user: SessionUserWithToken | null) {
+  const token = user?.token?.trim()
+
+  if (!token || token === 'undefined' || token === 'null') {
+    return null
+  }
+
+  return token
+}
+
 export function usePublicApi() {
   const runtimeConfig = useRuntimeConfig()
 
@@ -24,8 +34,9 @@ export function usePrivateApi() {
     },
     onRequest({ options }) {
       const sessionUser = user.value as SessionUserWithToken | null
+      const token = resolveAuthToken(sessionUser)
 
-      if (!sessionUser?.token) {
+      if (!token) {
         throw createError({
           statusCode: 401,
           statusMessage: 'Missing authentication token',
@@ -33,7 +44,7 @@ export function usePrivateApi() {
       }
 
       options.headers = new Headers(options.headers)
-      options.headers.set('Authorization', `Bearer ${sessionUser.token}`)
+      options.headers.set('Authorization', `Bearer ${token}`)
     },
   })
 }

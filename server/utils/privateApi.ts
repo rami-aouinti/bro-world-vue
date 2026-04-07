@@ -6,9 +6,9 @@ export function getSessionToken(event: H3Event) {
   const session = requireUserSession(event)
 
   return session.then(({ user }) => {
-    const token = (user as SessionUser | null)?.token
+    const token = (user as SessionUser | null)?.token?.trim()
 
-    if (!token) {
+    if (!token || token === 'undefined' || token === 'null') {
       throw createError({
         statusCode: 401,
         statusMessage: 'Missing authentication token',
