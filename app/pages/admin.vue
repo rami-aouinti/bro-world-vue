@@ -55,55 +55,61 @@ const stats = ref([
 </script>
 
 <template>
-  <v-container fluid>
-    <v-row>
-      <v-col
-        v-for="stat in stats"
-        :key="stat.title"
-        cols="12"
-        sm="6"
-        md="4"
-        lg="2"
-      >
-        <StatsCard
-          :title="stat.title"
-          :unit="stat.unit"
-          :color="stat.color"
-          :icon="stat.icon"
-          :value="stat.value"
+  <div>
+    <AppPageDrawers>
+      <template #right>
+      </template>
+    </AppPageDrawers>
+    <v-container fluid>
+      <v-row>
+        <v-col
+          v-for="stat in stats"
+          :key="stat.title"
+          cols="12"
+          sm="6"
+          md="6"
+          lg="4"
         >
-          <template #footer>
-            {{ stat.caption }}
-          </template>
-        </StatsCard>
-      </v-col>
-    </v-row>
+          <StatsCard
+            :title="stat.title"
+            :unit="stat.unit"
+            :color="stat.color"
+            :icon="stat.icon"
+            :value="stat.value"
+          >
+            <template #footer>
+              {{ stat.caption }}
+            </template>
+          </StatsCard>
+        </v-col>
+      </v-row>
 
-    <ShowcaseDesignCards class="mb-6" />
+      <ShowcaseDesignCards class="mb-6" />
 
-    <v-row>
-      <v-col cols="12" md="6" lg="12">
-        <v-card class="pa-2">
-          <ChartLine />
-        </v-card>
-      </v-col>
-      <v-col cols="12" md="6" lg="4">
-        <v-card class="pa-2">
-          <ChartRadar />
-        </v-card>
-      </v-col>
-      <v-col cols="12" md="6" lg="4">
-        <v-card class="pa-2">
-          <ChartPie />
-        </v-card>
-      </v-col>
-      <v-col cols="12" md="6" lg="4">
-        <v-card class="pa-2">
-          <ChartBar />
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+      <v-row>
+        <v-col cols="12" md="6" lg="12">
+          <v-card class="pa-2">
+            <ChartLine />
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="6" lg="4">
+          <v-card class="pa-2">
+            <ChartRadar />
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="6" lg="4">
+          <v-card class="pa-2">
+            <ChartPie />
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="6" lg="4">
+          <v-card class="pa-2">
+            <ChartBar />
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <style scoped>

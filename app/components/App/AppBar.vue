@@ -93,54 +93,6 @@ function toggleLeftDrawer() {
       />
 
       <v-spacer />
-      <v-menu location="bottom">
-        <template #activator="{ props: menu }">
-          <v-tooltip location="bottom">
-            <template #activator="{ props: tooltip }">
-              <v-badge
-                dot
-                :color="loggedIn ? 'success' : 'error'"
-                location="bottom end"
-                offset-x="8"
-                offset-y="8"
-              >
-                <v-btn icon v-bind="mergeProps(menu, tooltip)">
-                  <v-icon
-                    v-if="!loggedIn"
-                    icon="mdi-account-circle"
-                    size="36"
-                  />
-                  <v-avatar v-else color="primary" size="36">
-                    <v-img :src="avatarUrl" />
-                  </v-avatar>
-                </v-btn>
-              </v-badge>
-            </template>
-            <span>{{ loggedIn ? userLabel : t('appbar.user') }}</span>
-          </v-tooltip>
-        </template>
-        <v-list>
-          <v-list-item
-            v-if="!loggedIn"
-            :title="t('appbar.login')"
-            prepend-icon="mdi-login"
-            to="/login"
-          />
-          <v-list-item
-            v-if="!loggedIn"
-            :title="t('appbar.register')"
-            prepend-icon="mdi-account-plus"
-            to="/register"
-          />
-          <v-list-item
-            v-else
-            :title="t('appbar.logout')"
-            prepend-icon="mdi-logout"
-            @click="clear"
-          />
-        </v-list>
-      </v-menu>
-
       <template v-if="loggedIn">
         <v-menu location="bottom end">
           <template #activator="{ props }">
@@ -201,7 +153,53 @@ function toggleLeftDrawer() {
         >
         </v-btn>
       </template>
-
+      <v-menu location="bottom">
+        <template #activator="{ props: menu }">
+          <v-tooltip location="bottom">
+            <template #activator="{ props: tooltip }">
+              <v-badge
+                dot
+                :color="loggedIn ? 'success' : 'error'"
+                location="bottom end"
+                offset-x="8"
+                offset-y="8"
+              >
+                <v-btn icon v-bind="mergeProps(menu, tooltip)">
+                  <v-icon
+                    v-if="!loggedIn"
+                    icon="mdi-account-circle"
+                    size="36"
+                  />
+                  <v-avatar v-else color="primary" size="36">
+                    <v-img :src="avatarUrl" />
+                  </v-avatar>
+                </v-btn>
+              </v-badge>
+            </template>
+            <span>{{ loggedIn ? userLabel : t('appbar.user') }}</span>
+          </v-tooltip>
+        </template>
+        <v-list>
+          <v-list-item
+            v-if="!loggedIn"
+            :title="t('appbar.login')"
+            prepend-icon="mdi-login"
+            to="/login"
+          />
+          <v-list-item
+            v-if="!loggedIn"
+            :title="t('appbar.register')"
+            prepend-icon="mdi-account-plus"
+            to="/register"
+          />
+          <v-list-item
+            v-else
+            :title="t('appbar.logout')"
+            prepend-icon="mdi-logout"
+            @click="clear"
+          />
+        </v-list>
+      </v-menu>
       <AppLanguageSwitcher />
 
       <v-btn

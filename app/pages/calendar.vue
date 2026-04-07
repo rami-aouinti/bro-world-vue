@@ -3,7 +3,6 @@ const { t } = useI18n()
 
 definePageMeta({
   title: 'appbar.calendar',
-  icon: 'mdi-calendar-month-outline',
   middleware: 'auth',
 })
 

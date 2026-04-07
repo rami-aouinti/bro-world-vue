@@ -5,7 +5,6 @@ const { inboxSortedDesc } = storeToRefs(inboxNotificationsStore)
 
 definePageMeta({
   title: 'appbar.inbox',
-  icon: 'mdi-email-outline',
   middleware: 'auth',
 })
 </script>

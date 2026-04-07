@@ -5,7 +5,6 @@ const { notificationsSortedDesc } = storeToRefs(inboxNotificationsStore)
 
 definePageMeta({
   title: 'appbar.notifications',
-  icon: 'mdi-bell-ring-outline',
   middleware: 'auth',
 })
 </script>
