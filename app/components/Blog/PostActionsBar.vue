@@ -1,32 +1,105 @@
 <script setup lang="ts">
+type ReactionType = {
+  code: string
+  label: string
+}
+
 const props = withDefaults(defineProps<{
   commentsCount?: number
   sharesCount?: number
+  reactionTypes?: ReactionType[]
 }>(), {
   commentsCount: 0,
   sharesCount: 0,
+  reactionTypes: () => [],
 })
 
 const emit = defineEmits<{
   like: []
+  react: [code: string]
   comment: []
   share: []
 }>()
+
+const reactionMenu = ref(false)
+const normalizedReactionTypes = computed(() =>
+  props.reactionTypes.length
+    ? props.reactionTypes
+    : [
+        { code: 'like', label: 'Like' },
+        { code: 'heart', label: 'Love' },
+        { code: 'celebrate', label: 'Celebrate' },
+        { code: 'laugh', label: 'Haha' },
+        { code: 'wow', label: 'Wow' },
+        { code: 'sad', label: 'Sad' },
+        { code: 'angry', label: 'Angry' },
+      ],
+)
+
+const iconMap: Record<string, string> = {
+  like: '👍',
+  heart: '❤️',
+  celebrate: '🥳',
+  laugh: '😄',
+  wow: '😮',
+  sad: '😢',
+  angry: '😡',
+}
+
+function onPickReaction(code: string) {
+  emit('react', code)
+  reactionMenu.value = false
+}
 </script>
 
 <template>
   <div class="post-actions-wrap">
-    <div class="post-stats text-medium-emphasis">
-      <span>{{ commentsCount }} Kommentare</span>
-      <span>{{ sharesCount }} Mal geteilt</span>
+    <div v-if="commentsCount > 0 || sharesCount > 0" class="post-stats text-medium-emphasis">
+      <span v-if="commentsCount > 0" class="stat-item">
+        <v-icon size="16" icon="mdi-comment-outline" />
+        {{ commentsCount }}
+      </span>
+      <span v-if="sharesCount > 0" class="stat-item">
+        <v-icon size="16" icon="mdi-share-outline" />
+        {{ sharesCount }}
+      </span>
     </div>
 
     <v-divider class="my-2" />
 
     <div class="post-actions d-flex ga-2">
-      <v-btn class="action-btn" variant="text" prepend-icon="mdi-thumb-up-outline" @click="emit('like')">
-        Gefällt mir
-      </v-btn>
+      <v-menu
+        v-model="reactionMenu"
+        :open-on-hover="true"
+        open-delay="120"
+        location="top"
+      >
+        <template #activator="{ props: menuProps }">
+          <v-btn
+            v-bind="menuProps"
+            class="action-btn"
+            variant="text"
+            prepend-icon="mdi-thumb-up-outline"
+            @click.stop="emit('like')"
+          >
+            Gefällt mir
+          </v-btn>
+        </template>
+
+        <div class="reaction-picker">
+          <button
+            v-for="item in normalizedReactionTypes"
+            :key="item.code"
+            type="button"
+            class="reaction-choice"
+            :title="item.label"
+            @click="onPickReaction(item.code)"
+          >
+            {{ iconMap[item.code.toLowerCase()] ?? '👍' }}
+          </button>
+        </div>
+      </v-menu>
+
       <v-btn class="action-btn" variant="text" prepend-icon="mdi-comment-outline" @click="emit('comment')">
         Kommentieren
       </v-btn>
@@ -45,11 +118,40 @@ const emit = defineEmits<{
   font-size: 0.95rem;
 }
 
+.stat-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
 .action-btn {
   flex: 1;
   justify-content: center;
   color: rgb(var(--v-theme-on-surface));
   text-transform: none;
   font-weight: 600;
+}
+
+.reaction-picker {
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 999px;
+  background: rgb(var(--v-theme-surface));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.32);
+}
+
+.reaction-choice {
+  border: none;
+  background: transparent;
+  font-size: 1.65rem;
+  cursor: pointer;
+  line-height: 1;
+  transition: transform 0.14s ease;
+}
+
+.reaction-choice:hover {
+  transform: translateY(-3px) scale(1.1);
 }
 </style>

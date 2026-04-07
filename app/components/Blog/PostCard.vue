@@ -4,6 +4,12 @@ import { formatDateTime } from '../../utils/formatDateTime'
 type BlogReaction = {
   type: string | null
   count: number
+  isAuthor?: boolean
+}
+
+type BlogReactionType = {
+  code: string
+  label: string
 }
 
 type BlogAuthor = {
@@ -21,6 +27,7 @@ type BlogComment = {
   isAuthor: boolean
   author?: BlogAuthor | null
   children?: BlogComment[]
+  reactions?: BlogReaction[]
 }
 
 type BlogPost = {
@@ -38,10 +45,15 @@ type BlogPost = {
 
 const props = withDefaults(defineProps<{
   post: BlogPost
-}>(), {})
+  reactionTypes?: BlogReactionType[]
+}>(), {
+  reactionTypes: () => [],
+})
 
 const emit = defineEmits<{
   like: [post: BlogPost]
+  reactPost: [payload: { post: BlogPost, code: string }]
+  reactComment: [payload: { post: BlogPost, comment: BlogComment, code: string }]
   comment: [post: BlogPost]
   share: [post: BlogPost]
   createComment: [payload: { post: BlogPost, content: string }]
@@ -78,17 +90,32 @@ const normalizedReactions = computed(() =>
 )
 
 function submitComment(content: string) {
-  if (replyTo.value) {
-    emit('reply', {
-      post: props.post,
-      comment: replyTo.value,
-      content,
-    })
+  emit('createComment', { post: props.post, content })
+}
+
+function submitReply(payload: { comment: BlogComment, content: string }) {
+  emit('reply', {
+    post: props.post,
+    comment: payload.comment,
+    content: payload.content,
+  })
+
+  if (replyTo.value?.id === payload.comment.id) {
+    replyTo.value = null
+  }
+}
+
+function togglePostLike() {
+  emit('like', props.post)
+}
+
+function onReply(comment: BlogComment) {
+  if (replyTo.value?.id === comment.id) {
     replyTo.value = null
     return
   }
 
-  emit('createComment', { post: props.post, content })
+  replyTo.value = comment
 }
 </script>
 
@@ -168,25 +195,30 @@ function submitComment(content: string) {
       <BlogPostActionsBar
         :comments-count="commentsCount"
         :shares-count="post.sharesCount || 0"
-        @like="emit('like', post)"
+        :reaction-types="reactionTypes"
+        @like="togglePostLike"
+        @react="emit('reactPost', { post, code: $event })"
         @comment="emit('comment', post)"
         @share="emit('share', post)"
       />
     </v-card-text>
 
-    <v-card-text class="pt-1">
+    <v-card-text class="pt-1 pb-1">
       <BlogCommentComposer
-        :mode="replyTo ? 'reply' : 'comment'"
-        :placeholder="replyTo ? 'Votre réponse…' : 'Ajouter un commentaire…'"
+        mode="comment"
+        placeholder="Ajouter un commentaire…"
         @submit="submitComment"
-        @cancel="replyTo = null"
       />
     </v-card-text>
 
     <v-card-text v-if="post.comments?.length" class="pt-0">
       <BlogCommentThread
         :comments="post.comments"
-        @reply="replyTo = $event"
+        :active-reply-id="replyTo?.id ?? null"
+        :reaction-types="reactionTypes"
+        @reply="onReply"
+        @submit-reply="submitReply"
+        @react="emit('reactComment', { post, comment: $event.comment, code: $event.code })"
         @edit="emit('editComment', { post, comment: $event })"
         @delete="emit('deleteComment', { post, comment: $event })"
       />
@@ -211,6 +243,16 @@ function submitComment(content: string) {
   font-size: 1.45rem;
   line-height: 1.5;
   margin-bottom: 1rem;
-  text-align: right;
+  text-align: left;
+}
+
+.post-card--light :deep(.comment-input .v-field) {
+  background: #f7f8fb;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.post-card--light :deep(.comment-bubble) {
+  background: #f4f6fb;
+  border: 1px solid rgba(15, 23, 42, 0.08);
 }
 </style>
