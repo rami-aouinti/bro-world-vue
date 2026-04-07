@@ -299,5 +299,10 @@
     "rightNav": {
       "trending": "Tendencias"
     }
+  },
+  "profile": {
+    "posts": {
+      "title": "Publicaciones"
+    }
   }
 }
