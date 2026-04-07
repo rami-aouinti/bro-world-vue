@@ -45,7 +45,7 @@ const totalReactions = computed(() => summary.value.reduce((acc, item) => acc + 
 </script>
 
 <template>
-  <div class="reaction-summary text-medium-emphasis">
+  <div v-if="totalReactions > 0" class="reaction-summary text-medium-emphasis">
     <div class="reaction-chips">
       <span v-for="(item, index) in summary.slice(0, 6)" :key="item.type" class="reaction-chip" :style="{ zIndex: `${30 - index}` }">
         {{ item.icon }}

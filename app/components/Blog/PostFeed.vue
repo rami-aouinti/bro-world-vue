@@ -1,6 +1,21 @@
 <script setup lang="ts">
 type BlogFeedMode = 'general' | 'mine'
 
+type BlogReaction = {
+  type: string | null
+  isAuthor: boolean
+}
+
+type BlogComment = {
+  id: string | number
+  reactions?: BlogReaction[]
+}
+
+type BlogPost = {
+  id: string | number
+  reactions?: BlogReaction[]
+}
+
 const props = withDefaults(defineProps<{
   mode?: BlogFeedMode
   showComposer?: boolean
@@ -11,7 +26,7 @@ const props = withDefaults(defineProps<{
   showStories: false,
 })
 
-const { posts, pending, pagination, refresh, loadMore, comment } = useBlogFeed({
+const { posts, pending, pagination, reactionTypes, refresh, loadMore, comment, react } = useBlogFeed({
   mode: props.mode,
 })
 const { loggedIn } = useUserSession()
@@ -24,6 +39,65 @@ async function createComment(payload: { post: { id: string | number }, content: 
   }
 
   await comment(payload.post.id, { content: payload.content })
+}
+
+function findOwnReaction(reactions?: BlogReaction[]) {
+  return reactions?.find((entry) => entry.isAuthor)
+}
+
+async function reactToPost(payload: { post: BlogPost, code: string }) {
+  if (!loggedIn.value) {
+    return
+  }
+
+  const existing = findOwnReaction(payload.post.reactions)
+
+  if (!existing) {
+    await react('post', payload.post.id, { type: payload.code }, 'create')
+    return
+  }
+
+  if ((existing.type ?? '').toLowerCase() === payload.code.toLowerCase()) {
+    await react('post', payload.post.id, undefined, 'delete')
+    return
+  }
+
+  await react('post', payload.post.id, { type: payload.code }, 'update')
+}
+
+async function togglePostLike(post: BlogPost) {
+  await reactToPost({ post, code: 'like' })
+}
+
+async function reactToComment(payload: { post: BlogPost, comment: BlogComment, code: string }) {
+  if (!loggedIn.value) {
+    return
+  }
+
+  const existing = findOwnReaction(payload.comment.reactions)
+
+  if (!existing) {
+    await react('comment', payload.comment.id, { type: payload.code }, 'create')
+    return
+  }
+
+  if ((existing.type ?? '').toLowerCase() === payload.code.toLowerCase()) {
+    await react('comment', payload.comment.id, undefined, 'delete')
+    return
+  }
+
+  await react('comment', payload.comment.id, { type: payload.code }, 'update')
+}
+
+async function replyToComment(payload: { post: { id: string | number }, comment: { id: string | number }, content: string }) {
+  if (!loggedIn.value) {
+    return
+  }
+
+  await comment(payload.post.id, {
+    content: payload.content,
+    parentId: payload.comment.id,
+  })
 }
 </script>
 
@@ -39,7 +113,12 @@ async function createComment(payload: { post: { id: string | number }, content: 
         v-for="post in posts"
         :key="post.id"
         :post="post"
+        :reaction-types="reactionTypes"
         @create-comment="createComment"
+        @reply="replyToComment"
+        @like="togglePostLike"
+        @react-post="reactToPost"
+        @react-comment="reactToComment"
       />
 
       <v-card v-if="!pending && posts.length === 0" rounded="lg">
