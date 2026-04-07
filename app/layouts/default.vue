@@ -1,11 +1,14 @@
 <script setup lang="ts">
 const showLeftDrawer = useState('show-left-drawer', () => true)
 const showRightDrawer = useState('show-right-drawer', () => true)
+const isPageSkeletonLoading = useState('page-skeleton-loading', () => true)
 const route = useRoute()
 const { t } = useI18n()
 const isLayoutReady = ref(false)
 
 provideDrawerSlotRegistry()
+
+let pageSkeletonTimer: ReturnType<typeof setTimeout> | null = null
 
 function getMetaTitle(title: unknown) {
   if (typeof title !== 'string') return ''
@@ -30,6 +33,19 @@ function waitForNextFrame() {
   })
 }
 
+function triggerPageSkeleton() {
+  isPageSkeletonLoading.value = true
+
+  if (pageSkeletonTimer) {
+    clearTimeout(pageSkeletonTimer)
+  }
+
+  pageSkeletonTimer = setTimeout(() => {
+    isPageSkeletonLoading.value = false
+    pageSkeletonTimer = null
+  }, 650)
+}
+
 onMounted(async () => {
   if (typeof document !== 'undefined' && 'fonts' in document) {
     await document.fonts.ready
@@ -39,6 +55,16 @@ onMounted(async () => {
   await waitForNextFrame()
   await waitForNextFrame()
   isLayoutReady.value = true
+
+  triggerPageSkeleton()
+})
+
+watch(() => route.fullPath, triggerPageSkeleton)
+
+onUnmounted(() => {
+  if (pageSkeletonTimer) {
+    clearTimeout(pageSkeletonTimer)
+  }
 })
 </script>
 
@@ -56,7 +82,8 @@ onMounted(async () => {
       <v-container fluid class="px-2 pt-0 pb-0">
         <v-breadcrumbs v-if="shouldShowBreadcrumbs" :items="breadcrumbs" />
       </v-container>
-      <slot />
+      <SkeletonPageContent v-if="isPageSkeletonLoading" />
+      <slot v-else />
     </v-main>
       <AppFooter />
     </v-app>

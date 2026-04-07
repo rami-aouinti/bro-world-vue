@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const rightDrawerOpen = useState('right-drawer-open', () => true)
+const isPageSkeletonLoading = useState('page-skeleton-loading', () => true)
 const registry = useDrawerSlotRegistry()
 
 const rightDrawerRenderer = computed(() => registry?.right.value ?? null)
@@ -15,7 +16,8 @@ const rightDrawerRenderer = computed(() => registry?.right.value ?? null)
     class="app-right-drawer"
   >
     <div v-if="rightDrawerRenderer" class="app-right-drawer-list">
-      <component :is="{ render: rightDrawerRenderer }" />
+      <SkeletonDrawerRight v-if="isPageSkeletonLoading" />
+      <component :is="{ render: rightDrawerRenderer }" v-else />
     </div>
     <v-list v-else nav density="compact" class="app-right-drawer-list" />
     <v-spacer />
