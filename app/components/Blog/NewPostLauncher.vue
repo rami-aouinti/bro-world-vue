@@ -12,7 +12,9 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
   open: []
 }>()
+const theme = useTheme()
 const { user } = useUserSession()
+const isLightTheme = computed(() => !theme.current.value.dark)
 const sessionUser = computed(() => user.value as SessionUser | null)
 const userDisplayName = computed(() => {
   const fullName = [sessionUser.value?.firstName, sessionUser.value?.lastName].filter(Boolean).join(' ').trim()
@@ -62,6 +64,7 @@ function openComposer() {
   <v-sheet
     rounded="xl"
     class="new-post-launcher px-4 py-3 d-flex align-center ga-3"
+    :class="{ 'new-post-launcher--light': isLightTheme }"
   >
     <v-avatar size="40" color="grey-darken-2">
       <v-img v-if="userAvatar" :src="userAvatar" />
@@ -100,7 +103,6 @@ function openComposer() {
   --new-post-pill-bg: #2a2d33;
   --new-post-radius: 18px;
   --new-post-focus: rgba(255, 255, 255, 0.22);
-  --new-post-hover: rgba(255, 255, 255, 0.06);
   --new-post-placeholder: rgba(255, 255, 255, 0.68);
   --icon-live: #f3425f;
   --icon-media: #45bd62;
@@ -111,6 +113,14 @@ function openComposer() {
   background: var(--new-post-bg);
   border: 1px solid var(--new-post-border);
   border-radius: var(--new-post-radius) !important;
+}
+
+.new-post-launcher--light {
+  --new-post-bg: #ffffff;
+  --new-post-border: rgba(15, 23, 42, 0.08);
+  --new-post-pill-bg: #f1f5f9;
+  --new-post-focus: rgba(37, 99, 235, 0.22);
+  --new-post-placeholder: rgba(15, 23, 42, 0.62);
 }
 
 .new-post-pill {
