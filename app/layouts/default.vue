@@ -3,6 +3,7 @@ const showLeftDrawer = useState('show-left-drawer', () => true)
 const showRightDrawer = useState('show-right-drawer', () => true)
 const route = useRoute()
 const { t } = useI18n()
+const isLayoutReady = ref(false)
 
 provideDrawerSlotRegistry()
 
@@ -22,10 +23,27 @@ const breadcrumbs = computed(() => {
 })
 
 const shouldShowBreadcrumbs = computed(() => breadcrumbs.value.length > 1)
+
+function waitForNextFrame() {
+  return new Promise<void>((resolve) => {
+    requestAnimationFrame(() => resolve())
+  })
+}
+
+onMounted(async () => {
+  if (typeof document !== 'undefined' && 'fonts' in document) {
+    await document.fonts.ready
+  }
+
+  await nextTick()
+  await waitForNextFrame()
+  await waitForNextFrame()
+  isLayoutReady.value = true
+})
 </script>
 
 <template>
-  <v-app>
+  <v-app :class="{ 'layout-shell--loading': !isLayoutReady }">
     <AppBar />
     <AppDrawer v-if="showLeftDrawer" />
     <AppRightDrawer v-if="showRightDrawer" />
@@ -40,6 +58,11 @@ const shouldShowBreadcrumbs = computed(() => breadcrumbs.value.length > 1)
 </template>
 
 <style scoped>
+.layout-shell--loading {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .v-main {
   padding-top: 104px;
   padding-bottom: 56px;
