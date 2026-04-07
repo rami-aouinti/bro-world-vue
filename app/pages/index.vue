@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { loggedIn } = useUserSession()
+
 definePageMeta({
   title: 'appbar.home',
 })
@@ -25,8 +27,10 @@ definePageMeta({
       </template>
     </AppPageDrawers>
     <v-container fluid>
-      <BlogStoriesCarousel />
-      <BlogNewPostCard />
+      <template v-if="loggedIn">
+        <BlogStoriesCarousel />
+        <BlogNewPostCard />
+      </template>
       <BlogPostFeed />
     </v-container>
   </div>
