@@ -16,6 +16,8 @@ type PlatformResponse = {
   items: PlatformApplication[]
 }
 
+const PAGE_SIZE = 6
+
 const { t } = useI18n()
 const { loggedIn } = useUserSession()
 
@@ -23,10 +25,17 @@ definePageMeta({
   title: 'appbar.platform',
 })
 
+const searchTerm = ref('')
+const selectedStatus = ref<'all' | 'active' | 'inactive'>('all')
+const selectedVisibility = ref<'all' | 'private' | 'public'>('all')
+const selectedOwnership = ref<'all' | 'owner' | 'member'>('all')
+const selectedPlatformId = ref<string | null>(null)
+const currentPage = ref(1)
+
 const { data, pending, error, refresh } = await useAsyncData(
   'platform-applications',
   () => {
-    const query = loggedIn.value ? { page: 1, limit: 10 } : { page: 1, limit: 20 }
+    const query = loggedIn.value ? { page: 1, limit: 120 } : { page: 1, limit: 120 }
 
     if (loggedIn.value) {
       return $fetch<PlatformResponse>('/api/application/private', { query })
@@ -41,16 +50,201 @@ const { data, pending, error, refresh } = await useAsyncData(
 )
 
 const applications = computed(() => data.value?.items ?? [])
+
+const filteredApplications = computed(() => {
+  return applications.value.filter((application) => {
+    const matchesSearch = !searchTerm.value
+      || application.title.toLowerCase().includes(searchTerm.value.toLowerCase())
+      || application.platformName.toLowerCase().includes(searchTerm.value.toLowerCase())
+      || application.platformKey.toLowerCase().includes(searchTerm.value.toLowerCase())
+
+    const matchesStatus = selectedStatus.value === 'all' || application.status === selectedStatus.value
+    const matchesVisibility = selectedVisibility.value === 'all'
+      || (selectedVisibility.value === 'private' && application.private)
+      || (selectedVisibility.value === 'public' && !application.private)
+
+    const matchesOwnership = selectedOwnership.value === 'all'
+      || (selectedOwnership.value === 'owner' && application.isOwner)
+      || (selectedOwnership.value === 'member' && !application.isOwner)
+
+    return matchesSearch && matchesStatus && matchesVisibility && matchesOwnership
+  })
+})
+
+const pageCount = computed(() => Math.max(1, Math.ceil(filteredApplications.value.length / PAGE_SIZE)))
+
+const paginatedApplications = computed(() => {
+  const start = (currentPage.value - 1) * PAGE_SIZE
+  return filteredApplications.value.slice(start, start + PAGE_SIZE)
+})
+
+const selectedPlatform = computed(() => applications.value.find((item) => item.id === selectedPlatformId.value) ?? null)
+
+watch(filteredApplications, (items) => {
+  if (!items.length) {
+    currentPage.value = 1
+    selectedPlatformId.value = null
+    return
+  }
+
+  if (currentPage.value > pageCount.value) {
+    currentPage.value = pageCount.value
+  }
+
+  const selectionStillExists = items.some((item) => item.id === selectedPlatformId.value)
+
+  if (!selectionStillExists) {
+    selectedPlatformId.value = items[0]?.id ?? null
+  }
+}, { immediate: true })
+
+watch(currentPage, () => {
+  const visibleIds = new Set(paginatedApplications.value.map((item) => item.id))
+
+  if (!selectedPlatformId.value || !visibleIds.has(selectedPlatformId.value)) {
+    selectedPlatformId.value = paginatedApplications.value[0]?.id ?? null
+  }
+})
+
+function resetFilters() {
+  searchTerm.value = ''
+  selectedStatus.value = 'all'
+  selectedVisibility.value = 'all'
+  selectedOwnership.value = 'all'
+  currentPage.value = 1
+}
 </script>
 
 <template>
   <div>
     <AppPageDrawers>
       <template #left>
+        <div class="pa-4 d-flex flex-column ga-4">
+          <div>
+            <div class="text-overline text-medium-emphasis mb-1">{{ t('platform.filters') }}</div>
+            <h3 class="text-h6 font-weight-bold">{{ t('platform.refineResults') }}</h3>
+          </div>
+
+          <v-text-field
+            v-model="searchTerm"
+            :label="t('common.search')"
+            prepend-inner-icon="mdi-magnify"
+            variant="solo-filled"
+            density="comfortable"
+            hide-details
+            clearable
+          />
+
+          <v-select
+            v-model="selectedStatus"
+            :label="t('platform.status')"
+            variant="solo-filled"
+            density="comfortable"
+            :items="[
+              { title: t('platform.all'), value: 'all' },
+              { title: 'Active', value: 'active' },
+              { title: 'Inactive', value: 'inactive' },
+            ]"
+            hide-details
+          />
+
+          <v-select
+            v-model="selectedVisibility"
+            :label="t('platform.visibility')"
+            variant="solo-filled"
+            density="comfortable"
+            :items="[
+              { title: t('platform.all'), value: 'all' },
+              { title: t('platform.private'), value: 'private' },
+              { title: t('platform.public'), value: 'public' },
+            ]"
+            hide-details
+          />
+
+          <v-select
+            v-model="selectedOwnership"
+            :label="t('platform.role')"
+            variant="solo-filled"
+            density="comfortable"
+            :items="[
+              { title: t('platform.all'), value: 'all' },
+              { title: t('platform.owner'), value: 'owner' },
+              { title: t('platform.member'), value: 'member' },
+            ]"
+            hide-details
+          />
+
+          <v-btn variant="tonal" prepend-icon="mdi-filter-off-outline" @click="resetFilters">
+            {{ t('platform.clearFilters') }}
+          </v-btn>
+        </div>
       </template>
+
       <template #right>
+        <div class="pa-4 d-flex flex-column ga-4 h-100">
+          <div>
+            <div class="text-overline text-medium-emphasis mb-1">{{ t('platform.details') }}</div>
+            <h3 class="text-h6 font-weight-bold">{{ selectedPlatform?.title || t('platform.selectPlatform') }}</h3>
+          </div>
+
+          <v-card v-if="selectedPlatform" rounded="xl" variant="tonal" class="selected-platform-card">
+            <v-img :src="selectedPlatform.photo" height="180" cover />
+            <v-card-text class="d-flex flex-column ga-3">
+              <div class="text-body-2 text-medium-emphasis">
+                {{ selectedPlatform.description }}
+              </div>
+              <div class="d-flex flex-wrap ga-2">
+                <v-chip size="small" :color="selectedPlatform.status === 'active' ? 'success' : 'warning'" label>
+                  {{ selectedPlatform.status }}
+                </v-chip>
+                <v-chip size="small" color="primary" variant="outlined" label>
+                  {{ selectedPlatform.platformName }}
+                </v-chip>
+                <v-chip size="small" :color="selectedPlatform.private ? 'deep-purple-accent-4' : 'teal-darken-1'" label>
+                  {{ selectedPlatform.private ? t('platform.private') : t('platform.public') }}
+                </v-chip>
+              </div>
+
+              <div class="d-flex flex-wrap ga-2">
+                <v-chip
+                  v-for="pluginKey in selectedPlatform.pluginKeys"
+                  :key="`selected-${pluginKey}`"
+                  size="small"
+                  variant="outlined"
+                >
+                  {{ pluginKey }}
+                </v-chip>
+              </div>
+
+              <div class="d-flex ga-2 pt-2">
+                <v-btn
+                  v-if="selectedPlatform.isOwner"
+                  color="primary"
+                  variant="flat"
+                  prepend-icon="mdi-pencil"
+                >
+                  {{ t('common.edit') }}
+                </v-btn>
+                <v-btn
+                  v-if="selectedPlatform.isOwner"
+                  color="error"
+                  variant="tonal"
+                  prepend-icon="mdi-delete-outline"
+                >
+                  {{ t('common.delete') }}
+                </v-btn>
+                <v-chip v-else color="grey" variant="tonal" label>
+                  {{ t('platform.member') }}
+                </v-chip>
+              </div>
+            </v-card-text>
+          </v-card>
+
+          <v-alert v-else type="info" variant="tonal" :text="t('platform.selectPlatformHint')" />
+        </div>
       </template>
     </AppPageDrawers>
+
     <v-container fluid>
       <div class="d-flex align-center justify-space-between flex-wrap ga-2 mb-6">
         <div>
@@ -79,16 +273,28 @@ const applications = computed(() => data.value?.items ?? [])
       />
 
       <v-row v-if="pending" dense>
-        <v-col v-for="index in 6" :key="`skeleton-${index}`" cols="12" sm="6" lg="4">
-          <v-skeleton-loader type="image, article, actions" />
+        <v-col v-for="index in 6" :key="`skeleton-${index}`" cols="12" md="6">
+          <v-skeleton-loader type="image, article" class="skeleton-card" />
         </v-col>
       </v-row>
 
-      <v-row v-else-if="applications.length" dense>
-        <v-col v-for="application in applications" :key="application.id" cols="12" sm="6" lg="4">
-          <v-card rounded="xl" elevation="2" class="platform-card h-100">
-            <v-img :src="application.photo" height="180" cover>
-              <div class="platform-card__status pa-3 d-flex justify-space-between align-center">
+      <v-row v-else-if="paginatedApplications.length" dense class="platform-grid">
+        <v-col
+          v-for="application in paginatedApplications"
+          :key="application.id"
+          cols="12"
+          md="6"
+          class="d-flex"
+        >
+          <v-card
+            rounded="xl"
+            elevation="3"
+            class="platform-card w-100"
+            :class="{ 'platform-card--selected': selectedPlatformId === application.id }"
+            @click="selectedPlatformId = application.id"
+          >
+            <v-img :src="application.photo" height="180" cover class="platform-card__image">
+              <div class="platform-card__overlay pa-3 d-flex justify-end">
                 <v-chip
                   size="small"
                   label
@@ -96,26 +302,14 @@ const applications = computed(() => data.value?.items ?? [])
                 >
                   {{ application.status }}
                 </v-chip>
-                <v-chip
-                  v-if="application.private"
-                  size="small"
-                  label
-                  color="deep-purple-accent-4"
-                >
-                  Private
-                </v-chip>
               </div>
             </v-img>
+
             <v-card-item>
-              <v-card-title class="text-wrap">{{ application.title }}</v-card-title>
-              <v-card-subtitle>
-                {{ application.platformName }} · {{ application.platformKey }}
-              </v-card-subtitle>
+              <v-card-title class="text-wrap text-subtitle-1">{{ application.title }}</v-card-title>
             </v-card-item>
+
             <v-card-text class="pt-0">
-              <p class="text-body-2 text-medium-emphasis mb-4">
-                {{ application.description }}
-              </p>
               <div class="d-flex flex-wrap ga-2">
                 <v-chip
                   v-for="pluginKey in application.pluginKeys"
@@ -126,30 +320,11 @@ const applications = computed(() => data.value?.items ?? [])
                 >
                   {{ pluginKey }}
                 </v-chip>
-                <v-chip v-if="!application.pluginKeys.length" size="small" variant="outlined">
-                  No plugins
+                <v-chip size="small" variant="outlined" color="secondary">
+                  {{ application.private ? t('platform.private') : t('platform.public') }}
                 </v-chip>
               </div>
             </v-card-text>
-            <v-divider />
-            <v-card-actions class="px-4 py-3">
-              <v-chip
-                :color="application.isOwner ? 'success' : 'default'"
-                size="small"
-                label
-              >
-                {{ application.isOwner ? t('platform.owner') : t('platform.member') }}
-              </v-chip>
-              <v-spacer />
-              <template v-if="application.isOwner">
-                <v-btn size="small" color="primary" variant="text" prepend-icon="mdi-pencil">
-                  {{ t('common.edit') }}
-                </v-btn>
-                <v-btn size="small" color="error" variant="text" prepend-icon="mdi-delete-outline">
-                  {{ t('common.delete') }}
-                </v-btn>
-              </template>
-            </v-card-actions>
           </v-card>
         </v-col>
       </v-row>
@@ -162,23 +337,87 @@ const applications = computed(() => data.value?.items ?? [])
         :title="t('platform.emptyTitle')"
         :text="t('platform.emptySubtitle')"
       />
+
+      <div v-if="!pending && filteredApplications.length" class="d-flex justify-center mt-6">
+        <v-pagination
+          v-model="currentPage"
+          :length="pageCount"
+          :total-visible="7"
+          rounded="circle"
+        />
+      </div>
     </v-container>
   </div>
 </template>
 
 <style scoped>
+.skeleton-card {
+  border-radius: 20px;
+}
+
+.platform-grid {
+  animation: fade-in 0.35s ease;
+}
+
 .platform-card {
+  cursor: pointer;
+  min-height: 320px;
+  max-height: 320px;
+  overflow: hidden;
+  border: 1px solid rgba(100, 116, 139, 0.15);
   transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease,
+    filter 0.25s ease;
+}
+
+.platform-card__image {
+  transition: transform 0.3s ease;
 }
 
 .platform-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.12);
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
+  border-color: rgba(99, 102, 241, 0.4);
 }
 
-.platform-card__status {
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), transparent);
+.platform-card:hover .platform-card__image {
+  transform: scale(1.03);
+}
+
+.platform-card--selected {
+  border-color: rgb(var(--v-theme-primary));
+  box-shadow: 0 16px 38px rgba(99, 102, 241, 0.22);
+}
+
+.platform-card__overlay {
+  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.4), transparent);
+}
+
+.selected-platform-card {
+  animation: slide-up 0.3s ease;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>
