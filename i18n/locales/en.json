@@ -262,7 +262,16 @@
       "title": "Inbox",
       "subtitle": "Latest conversations",
       "detailTitle": "Conversation",
-      "detailLabel": "Conversation ID"
+      "detailLabel": "Conversation ID",
+      "empty": "No conversation available.",
+      "notFound": "Conversation not found.",
+      "unknownParticipant": "Unknown participant",
+      "dateLabel": "Date: {value}",
+      "unreadMessagesLabel": "Unread messages: {count}",
+      "lastMessageLabel": "Last message",
+      "noMessageTitle": "No messages yet",
+      "noMessageDescription": "This conversation was created, but no messages have been sent yet.",
+      "emptyMessageContent": "(empty message)"
     },
     "notification": {
       "title": "Notifications",

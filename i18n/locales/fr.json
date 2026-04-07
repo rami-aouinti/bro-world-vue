@@ -262,7 +262,16 @@
       "title": "Boîte de réception",
       "subtitle": "Dernières conversations",
       "detailTitle": "Conversation",
-      "detailLabel": "ID de conversation"
+      "detailLabel": "ID de conversation",
+      "empty": "Aucune conversation disponible.",
+      "notFound": "Conversation introuvable.",
+      "unknownParticipant": "Participant inconnu",
+      "dateLabel": "Date : {value}",
+      "unreadMessagesLabel": "Messages non lus : {count}",
+      "lastMessageLabel": "Dernier message",
+      "noMessageTitle": "Aucun message pour le moment",
+      "noMessageDescription": "Cette conversation a été créée, mais aucun message n’a encore été envoyé.",
+      "emptyMessageContent": "(message vide)"
     },
     "notification": {
       "title": "Notifications",
