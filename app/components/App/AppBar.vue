@@ -63,7 +63,10 @@ function toggleLeftDrawer() {
 </script>
 
 <template>
-  <v-app-bar flat class="app-top-bar rounded-pill">
+  <v-app-bar
+    :class="{ 'blur shadow-blur': !isDark }"
+    class="app-bar app-bar--kind-glass px-0 border-radius-xl toolbar-content-padding-y-none v-sheet v-toolbar v-toolbar--flat v-app-bar bg-transparent position-sticky top-1 z-index-sticky"
+  >
     <div class="app-top-bar__left mx-4">
       <v-icon
         icon="custom:vitify-nuxt"
@@ -249,11 +252,20 @@ function toggleLeftDrawer() {
 </template>
 
 <style scoped>
-.app-top-bar {
-  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
-  width: min(1240px, calc(100% - 32px));
-  margin: 16px auto 0;
-  padding-inline: 8px;
+.app-bar {
+  margin: var(--ui-spacing-sm) var(--ui-spacing-md);
+  padding-inline: var(--ui-spacing-lg);
+}
+
+.app-bar--kind-glass {
+  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 82%, transparent);
+  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+  box-shadow: 0 12px 24px rgba(var(--v-theme-on-surface), 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.app-bar--dark {
+  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 88%, #000 12%);
 }
 
 .app-top-bar__left,

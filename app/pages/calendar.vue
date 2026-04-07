@@ -341,6 +341,7 @@ onMounted(loadEvents)
       <client-only>
         <teleport to="#app-bar">
           <v-btn
+            variant="tonal"
             color="primary"
             prepend-icon="mdi-plus"
             @click="openCreateDialog()"
@@ -451,5 +452,13 @@ onMounted(loadEvents)
 }
 :deep(.fc .fc-scroller-harness) {
   background: linear-gradient(135deg, rgba(var(--v-theme-primary), 0.08), transparent 45%);
+}
+
+:deep(.v-theme--dark .fc .fc-col-header-cell) {
+  background-color: rgb(var(--v-theme-surface));
+}
+
+:deep(.v-theme--dark .fc .fc-col-header-cell-cushion) {
+  color: rgb(var(--v-theme-on-surface));
 }
 </style>

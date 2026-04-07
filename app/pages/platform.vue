@@ -240,19 +240,19 @@ function resetFilters() {
     </AppPageDrawers>
 
     <v-container fluid>
-      <div class="d-flex align-center justify-space-between flex-wrap ga-2 mb-2">
-        <div>
-        </div>
-        <v-btn
-          variant="tonal"
-          color="primary"
-          prepend-icon="mdi-refresh"
-          :loading="pending"
-          @click="refresh()"
-        >
-          {{ t('platform.refresh') }}
-        </v-btn>
-      </div>
+      <client-only>
+        <teleport to="#app-bar">
+          <v-btn
+            variant="tonal"
+            color="primary"
+            prepend-icon="mdi-refresh"
+            :loading="pending"
+            @click="refresh()"
+          >
+            {{ t('platform.refresh') }}
+          </v-btn>
+        </teleport>
+      </client-only>
 
       <v-alert
         v-if="error"
