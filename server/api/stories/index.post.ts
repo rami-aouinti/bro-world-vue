@@ -1,4 +1,5 @@
 import { getSessionToken } from '../../utils/privateApi'
+import { resolveApiUrl } from '../../utils/resolveApiUrl'
 
 export default defineEventHandler(async (event): Promise<unknown> => {
   const runtimeConfig = useRuntimeConfig(event)
@@ -14,7 +15,7 @@ export default defineEventHandler(async (event): Promise<unknown> => {
     requestHeaders.set('content-type', contentType)
   }
 
-  return $fetch(`${runtimeConfig.public.apiBaseUrl}/api/v1/private/stories`, {
+  return $fetch(resolveApiUrl(runtimeConfig.public.apiBaseUrl, '/api/v1/private/stories'), {
     method: 'POST',
     headers: requestHeaders,
     body,
