@@ -3,6 +3,7 @@ definePageMeta({
   layout: 'auth',
   title: 'appbar.forgotPassword',
   publicPage: true,
+  middleware: 'guest',
 })
 
 const { t } = useI18n()
