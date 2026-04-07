@@ -30,9 +30,10 @@ type StoryGroup = {
 }
 
 type StoriesApiResponse = {
-  stories?: StoryGroup[]
-  data?: StoryGroup[]
+  stories?: Array<StoryGroup | StoryMedia>
+  data?: unknown
   items?: Array<StoryGroup | StoryMedia>
+  results?: Array<StoryGroup | StoryMedia>
 }
 
 type StoryCreateResponse = {
@@ -58,22 +59,19 @@ const { locale } = useI18n()
 
 const { data, pending: storiesPending, refresh } = await useFetch<StoriesApiResponse | StoryGroup[]>('/api/stories', {
   default: () => [],
-  immediate: false,
   server: false,
 })
 
-watch(
-  loggedIn,
-  async (isLoggedIn) => {
-    if (!isLoggedIn) {
-      localStoryGroups.value = []
-      return
-    }
+watch(loggedIn, async (isLoggedIn, wasLoggedIn) => {
+  if (!isLoggedIn) {
+    localStoryGroups.value = []
+    return
+  }
 
+  if (!wasLoggedIn) {
     await refresh()
-  },
-  { immediate: true },
-)
+  }
+})
 
 const sessionUserId = computed(() => String(user.value?.id ?? ''))
 
@@ -90,25 +88,54 @@ function getStoryOwner(story: StoryMedia): StoryOwner | null {
   }
 }
 
-function normalizeStoryGroups(payload: StoriesApiResponse | StoryGroup[] | null | undefined): StoryGroup[] {
-  const source = Array.isArray(payload)
-    ? payload
-    : payload?.stories ?? payload?.data ?? payload?.items ?? []
+function findStorySource(value: unknown, depth = 0): Array<StoryGroup | StoryMedia> {
+  if (Array.isArray(value)) {
+    return value as Array<StoryGroup | StoryMedia>
+  }
 
-  if (!Array.isArray(source) || source.length === 0) {
+  if (!value || typeof value !== 'object' || depth > 4) {
+    return []
+  }
+
+  const record = value as Record<string, unknown>
+  const preferredKeys = ['stories', 'story', 'items', 'results', 'data']
+
+  for (const key of preferredKeys) {
+    const nestedSource = findStorySource(record[key], depth + 1)
+    if (nestedSource.length > 0) {
+      return nestedSource
+    }
+  }
+
+  return []
+}
+
+function normalizeStoryGroups(payload: StoriesApiResponse | StoryGroup[] | null | undefined): StoryGroup[] {
+  const source = findStorySource(payload)
+
+  if (source.length === 0) {
     return []
   }
 
   const groupedStories = new Map<string, StoryGroup>()
 
   source.forEach((entry, index) => {
-    if ('stories' in entry && Array.isArray(entry.stories)) {
-      const key = String(entry.id ?? entry.user?.id ?? `group-${index}`)
+    const record = entry as StoryGroup & { story?: StoryMedia[], medias?: StoryMedia[] }
+    const storyList = Array.isArray(record.stories)
+      ? record.stories
+      : Array.isArray(record.story)
+        ? record.story
+        : Array.isArray(record.medias)
+          ? record.medias
+          : null
+
+    if (storyList) {
+      const key = String(record.id ?? record.user?.id ?? `group-${index}`)
       groupedStories.set(key, {
-        id: entry.id ?? entry.user?.id ?? key,
-        owner: Boolean(entry.owner),
-        user: entry.user ?? null,
-        stories: entry.stories,
+        id: record.id ?? record.user?.id ?? key,
+        owner: Boolean(record.owner),
+        user: record.user ?? null,
+        stories: storyList,
       })
       return
     }
