@@ -8,6 +8,9 @@ type StoryMedia = {
   createdAt?: string | null
   expiresAt?: string | null
   title?: string | null
+  userId?: string | number | null
+  user?: StoryOwner | null
+  owner?: boolean
 }
 
 type StoryOwner = {
@@ -29,7 +32,7 @@ type StoryGroup = {
 type StoriesApiResponse = {
   stories?: StoryGroup[]
   data?: StoryGroup[]
-  items?: StoryGroup[]
+  items?: Array<StoryGroup | StoryMedia>
 }
 
 type StoryCreateResponse = {
@@ -59,13 +62,66 @@ const { data, pending: storiesPending, refresh } = await useFetch<StoriesApiResp
 
 const sessionUserId = computed(() => String(user.value?.id ?? ''))
 
-const storyGroups = computed<StoryGroup[]>(() => {
-  if (Array.isArray(data.value)) {
-    return data.value
+function getStoryOwner(story: StoryMedia): StoryOwner | null {
+  if (!story.user) return null
+
+  return {
+    id: story.user.id,
+    name: story.user.name,
+    firstName: story.user.firstName,
+    lastName: story.user.lastName,
+    avatarUrl: story.user.avatarUrl,
+    photo: story.user.photo,
+  }
+}
+
+function normalizeStoryGroups(payload: StoriesApiResponse | StoryGroup[] | null | undefined): StoryGroup[] {
+  const source = Array.isArray(payload)
+    ? payload
+    : payload?.stories ?? payload?.data ?? payload?.items ?? []
+
+  if (!Array.isArray(source) || source.length === 0) {
+    return []
   }
 
-  return data.value?.stories ?? data.value?.data ?? data.value?.items ?? []
-})
+  const groupedStories = new Map<string, StoryGroup>()
+
+  source.forEach((entry, index) => {
+    if ('stories' in entry && Array.isArray(entry.stories)) {
+      const key = String(entry.id ?? entry.user?.id ?? `group-${index}`)
+      groupedStories.set(key, {
+        id: entry.id ?? entry.user?.id ?? key,
+        owner: Boolean(entry.owner),
+        user: entry.user ?? null,
+        stories: entry.stories,
+      })
+      return
+    }
+
+    const story = entry as StoryMedia
+    const owner = Boolean(story.owner)
+    const storyOwner = getStoryOwner(story)
+    const ownerId = storyOwner?.id ?? story.userId ?? null
+    const key = String(ownerId ?? `story-${index}`)
+    const existingGroup = groupedStories.get(key)
+
+    if (existingGroup) {
+      existingGroup.stories.push(story)
+      return
+    }
+
+    groupedStories.set(key, {
+      id: ownerId ?? key,
+      owner,
+      user: storyOwner,
+      stories: [story],
+    })
+  })
+
+  return Array.from(groupedStories.values())
+}
+
+const storyGroups = computed<StoryGroup[]>(() => normalizeStoryGroups(data.value))
 
 watch(storyGroups, (groups) => {
   const now = Date.now()
