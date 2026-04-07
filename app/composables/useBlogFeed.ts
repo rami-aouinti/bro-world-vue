@@ -191,8 +191,15 @@ function normalizeReactionTypes(input: unknown): BlogReactionType[] {
   })
 }
 
-export function useBlogFeed() {
+type BlogFeedMode = 'general' | 'mine'
+
+type UseBlogFeedOptions = {
+  mode?: BlogFeedMode
+}
+
+export function useBlogFeed(options: UseBlogFeedOptions = {}) {
   const { loggedIn } = useUserSession()
+  const mode = computed<BlogFeedMode>(() => options.mode ?? 'general')
 
   const posts = ref<BlogPost[]>([])
   const pagination = ref<BlogPagination>({ ...DEFAULT_PAGINATION })
@@ -200,7 +207,13 @@ export function useBlogFeed() {
   const pending = ref(false)
   const error = ref<unknown>(null)
 
-  const feedEndpoint = computed(() => (loggedIn.value ? '/api/blog/private/general' : '/api/blog/public/general'))
+  const feedEndpoint = computed(() => {
+    if (mode.value === 'mine') {
+      return '/api/blog/private/posts/mine'
+    }
+
+    return loggedIn.value ? '/api/blog/private/general' : '/api/blog/public/general'
+  })
 
   async function fetchReactionTypes() {
     const response = await $fetch<unknown>('/api/blog/public/reaction-types')
