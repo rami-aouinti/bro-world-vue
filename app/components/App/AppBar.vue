@@ -292,8 +292,4 @@ function toggleLeftDrawer() {
   color: rgb(var(--v-theme-on-surface));
   font-weight: 600;
 }
-
-.app-bar-controls__theme {
-  color: rgb(var(--v-theme-primary));
-}
 </style>
