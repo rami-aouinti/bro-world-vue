@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { isPageSkeletonVisible } = usePageSkeleton()
+
 definePageMeta({
   title: 'Library',
   middleware: 'auth',
@@ -9,15 +11,19 @@ definePageMeta({
   <div>
     <AppPageDrawers>
       <template #left>
-        <ProfileDrawer />
+        <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
+        <ProfileDrawer v-else />
       </template>
     </AppPageDrawers>
 
     <v-container fluid>
-      <h1 class="text-h4 mb-2">Library</h1>
-      <p class="text-body-1 text-medium-emphasis mb-0">
-        Retrouvez ici votre bibliothèque personnelle.
-      </p>
+      <SkeletonPageContent v-if="isPageSkeletonVisible" />
+      <template v-else>
+        <h1 class="text-h4 mb-2">Library</h1>
+        <p class="text-body-1 text-medium-emphasis mb-0">
+          Retrouvez ici votre bibliothèque personnelle.
+        </p>
+      </template>
     </v-container>
   </div>
 </template>

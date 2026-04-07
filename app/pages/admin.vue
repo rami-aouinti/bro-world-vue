@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { t } = useI18n()
+const { isPageSkeletonVisible } = usePageSkeleton()
 
 definePageMeta({
   icon: 'mdi-monitor-dashboard',
@@ -57,10 +58,16 @@ const stats = ref([
 <template>
   <div>
     <AppPageDrawers>
+      <template #left>
+        <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
+      </template>
       <template #right>
+        <SkeletonDrawerRight v-if="isPageSkeletonVisible" />
       </template>
     </AppPageDrawers>
     <v-container fluid>
+      <SkeletonPageContent v-if="isPageSkeletonVisible" />
+      <template v-else>
       <v-row>
         <v-col
           v-for="stat in stats"
@@ -108,6 +115,7 @@ const stats = ref([
           </v-card>
         </v-col>
       </v-row>
+      </template>
     </v-container>
   </div>
 </template>

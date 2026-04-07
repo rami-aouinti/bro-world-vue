@@ -19,6 +19,7 @@ type PlatformResponse = {
 const PAGE_SIZE = 6
 
 const { t } = useI18n()
+const { isPageSkeletonVisible } = usePageSkeleton()
 const { loggedIn } = useUserSession()
 
 definePageMeta({
@@ -119,7 +120,8 @@ function resetFilters() {
   <div>
     <AppPageDrawers>
       <template #left>
-        <div class="pa-2 d-flex flex-column ga-2">
+        <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
+        <div v-else class="pa-2 d-flex flex-column ga-2">
           <div>
             <div class="text-overline text-medium-emphasis mb-1">{{ t('platform.filters') }}</div>
           </div>
@@ -180,7 +182,8 @@ function resetFilters() {
       </template>
 
       <template #right>
-        <div v-if="selectedPlatform" class="pa-2 d-flex flex-column ga-2 h-100">
+        <SkeletonDrawerRight v-if="isPageSkeletonVisible" />
+        <div v-else-if="selectedPlatform" class="pa-2 d-flex flex-column ga-2 h-100">
           <div>
             <h3 class="text-h6 font-weight-bold">{{ selectedPlatform?.title || t('platform.selectPlatform') }}</h3>
           </div>
@@ -240,6 +243,8 @@ function resetFilters() {
     </AppPageDrawers>
 
     <v-container fluid>
+      <SkeletonPageContent v-if="isPageSkeletonVisible" />
+      <template v-else>
       <client-only>
         <teleport to="#app-bar">
           <v-btn
@@ -333,6 +338,7 @@ function resetFilters() {
           rounded="circle"
         />
       </div>
+      </template>
     </v-container>
   </div>
 </template>
