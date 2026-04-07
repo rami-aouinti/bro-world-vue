@@ -201,7 +201,7 @@ function toggleLeftDrawer() {
             <span>{{ loggedIn ? userLabel : t('appbar.user') }}</span>
           </v-tooltip>
         </template>
-        <v-list>
+        <v-list min-width="220">
           <v-list-item
             v-if="!loggedIn"
             :title="t('appbar.login')"
