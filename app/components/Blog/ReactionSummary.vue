@@ -1,5 +1,5 @@
 <script setup lang="ts">
-type ReactionCode = 'like' | 'heart' | 'laugh' | 'celebrate'
+type ReactionCode = 'like' | 'heart' | 'laugh' | 'celebrate' | 'wow' | 'sad' | 'angry'
 
 type ReactionItem = {
   type: string
@@ -13,13 +13,16 @@ const props = withDefaults(defineProps<{
 })
 
 const iconMap: Record<ReactionCode, string> = {
-  like: 'mdi-thumb-up-outline',
-  heart: 'mdi-heart-outline',
-  laugh: 'mdi-emoticon-happy-outline',
-  celebrate: 'mdi-party-popper',
+  like: '👍',
+  heart: '❤️',
+  laugh: '😄',
+  celebrate: '🥳',
+  wow: '😮',
+  sad: '😢',
+  angry: '😡',
 }
 
-const reactionOrder: ReactionCode[] = ['like', 'heart', 'laugh', 'celebrate']
+const reactionOrder: ReactionCode[] = ['like', 'heart', 'celebrate', 'laugh', 'wow', 'sad', 'angry']
 
 const summary = computed(() => {
   const map = new Map<string, number>()
@@ -29,29 +32,54 @@ const summary = computed(() => {
     map.set(code, (map.get(code) ?? 0) + reaction.count)
   }
 
-  return reactionOrder.map((type) => ({
-    type,
-    icon: iconMap[type],
-    count: map.get(type) ?? 0,
-  }))
+  return reactionOrder
+    .map((type) => ({
+      type,
+      icon: iconMap[type],
+      count: map.get(type) ?? 0,
+    }))
+    .filter((item) => item.count > 0)
 })
 
 const totalReactions = computed(() => summary.value.reduce((acc, item) => acc + item.count, 0))
 </script>
 
 <template>
-  <div class="d-flex align-center ga-3 text-medium-emphasis">
-    <div class="d-flex align-center ga-2">
-      <div
-        v-for="item in summary"
-        :key="item.type"
-        class="d-flex align-center ga-1"
-      >
-        <v-icon size="16" :icon="item.icon" />
-        <span class="text-caption">{{ item.count }}</span>
-      </div>
+  <div class="reaction-summary text-medium-emphasis">
+    <div class="reaction-chips">
+      <span v-for="(item, index) in summary.slice(0, 6)" :key="item.type" class="reaction-chip" :style="{ zIndex: `${30 - index}` }">
+        {{ item.icon }}
+      </span>
     </div>
 
-    <span class="text-caption font-weight-medium">{{ totalReactions }} réactions</span>
+    <span class="text-subtitle-2">{{ totalReactions.toLocaleString() }}</span>
   </div>
 </template>
+
+<style scoped>
+.reaction-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.reaction-chips {
+  display: flex;
+}
+
+.reaction-chip {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 2px solid rgba(27, 29, 33, 0.95);
+  display: grid;
+  place-items: center;
+  font-size: 0.95rem;
+  margin-left: -5px;
+  background: #111;
+}
+
+.reaction-chip:first-child {
+  margin-left: 0;
+}
+</style>

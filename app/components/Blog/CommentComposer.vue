@@ -6,7 +6,7 @@ const props = withDefaults(defineProps<{
 }>(), {
   mode: 'comment',
   loading: false,
-  placeholder: 'Écrire un commentaire…',
+  placeholder: 'Als Rami Aouinti kommentieren',
 })
 
 const emit = defineEmits<{
@@ -37,8 +37,10 @@ function onSubmit() {
       :placeholder="placeholder"
       rows="2"
       auto-grow
-      variant="outlined"
+      variant="solo"
+      flat
       hide-details
+      class="comment-input"
     />
 
     <div class="d-flex ga-2 justify-end">
@@ -51,3 +53,10 @@ function onSubmit() {
     </div>
   </div>
 </template>
+
+<style scoped>
+.comment-input :deep(.v-field) {
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+}
+</style>
