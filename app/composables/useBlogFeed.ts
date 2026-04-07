@@ -223,6 +223,20 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
     return loggedIn.value ? '/api/blog/private/general' : '/api/blog/public/general'
   })
 
+  function isUnauthorizedError(err: unknown): boolean {
+    const record = toRecord(err)
+    const statusCode = pickNumber(record.statusCode, -1)
+
+    if (statusCode === 401) {
+      return true
+    }
+
+    const data = toRecord(record.data)
+    const response = toRecord(record.response)
+
+    return pickNumber(data.statusCode, -1) === 401 || pickNumber(response.status, -1) === 401
+  }
+
   async function fetchReactionTypes() {
     const response = await $fetch<unknown>('/api/blog/public/reaction-types')
     const record = toRecord(response)
@@ -230,17 +244,32 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
     reactionTypes.value = normalizeReactionTypes(record.reactionTypes ?? record.types ?? record.data ?? response)
   }
 
-  async function fetchPage(page: number, mode: 'replace' | 'append' = 'replace') {
+  async function fetchPage(page: number, mergeMode: 'replace' | 'append' = 'replace') {
     pending.value = true
     error.value = null
 
     try {
-      const response = await $fetch<unknown>(feedEndpoint.value, {
-        query: {
-          page,
-          limit: pagination.value.limit,
-        },
-      })
+      const query = {
+        page,
+        limit: pagination.value.limit,
+      }
+
+      let response: unknown
+
+      try {
+        response = await $fetch<unknown>(feedEndpoint.value, { query })
+      }
+      catch (err) {
+        const shouldFallbackToPublicGeneral = mode.value === 'general'
+          && feedEndpoint.value === '/api/blog/private/general'
+          && isUnauthorizedError(err)
+
+        if (!shouldFallbackToPublicGeneral) {
+          throw err
+        }
+
+        response = await $fetch<unknown>('/api/blog/public/general', { query })
+      }
 
       const record = toRecord(response)
       const payload = toRecord(record.data)
@@ -249,7 +278,7 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
       const normalizedPosts = readNestedArray(source, ['posts', 'items']).map(normalizePost)
       const normalizedPagination = normalizePagination(source, pagination.value)
 
-      posts.value = mode === 'append' ? [...posts.value, ...normalizedPosts] : normalizedPosts
+      posts.value = mergeMode === 'append' ? [...posts.value, ...normalizedPosts] : normalizedPosts
       pagination.value = normalizedPagination
 
       if (reactionTypes.value.length === 0) {
