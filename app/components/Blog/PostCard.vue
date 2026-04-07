@@ -53,7 +53,9 @@ const emit = defineEmits<{
 }>()
 
 const { locale } = useI18n()
+const theme = useTheme()
 const replyTo = ref<BlogComment | null>(null)
+const isLightTheme = computed(() => !theme.current.value.dark)
 
 const formattedDate = computed(() => {
   if (!props.post.createdAt) {
@@ -91,7 +93,12 @@ function submitComment(content: string) {
 </script>
 
 <template>
-  <v-card rounded="xl" class="post-card" elevation="0">
+  <v-card
+    rounded="xl"
+    class="post-card"
+    :class="{ 'post-card--light': isLightTheme }"
+    elevation="0"
+  >
     <v-card-item class="pb-1">
       <template #prepend>
         <v-avatar size="52" color="grey-darken-2" class="me-3">
@@ -192,6 +199,12 @@ function submitComment(content: string) {
   background: linear-gradient(180deg, #1f2328 0%, #1b1d21 100%);
   color: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.post-card--light {
+  background: #fff;
+  color: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(15, 23, 42, 0.1);
 }
 
 .post-content {

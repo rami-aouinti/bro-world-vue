@@ -1,22 +1,24 @@
 <script setup lang="ts">
-const { disabled, label } = withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   disabled?: boolean
   label?: string
 }>(), {
   disabled: false,
   label: 'Freunde',
 })
+const theme = useTheme()
+const isLightTheme = computed(() => !theme.current.value.dark)
 </script>
 
 <template>
   <v-chip
-    :disabled="disabled"
+    :disabled="props.disabled"
     size="small"
-    color="grey-darken-2"
+    :color="isLightTheme ? 'grey-lighten-3' : 'grey-darken-2'"
     variant="outlined"
     prepend-icon="mdi-account-group"
     append-icon="mdi-menu-down"
   >
-    {{ label }}
+    {{ props.label }}
   </v-chip>
 </template>

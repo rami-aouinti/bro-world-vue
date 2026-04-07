@@ -1,9 +1,11 @@
 <script setup lang="ts">
-const { disabled } = withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   disabled?: boolean
 }>(), {
   disabled: false,
 })
+const theme = useTheme()
+const isLightTheme = computed(() => !theme.current.value.dark)
 
 const actions = [
   {
@@ -35,7 +37,10 @@ const actions = [
 </script>
 
 <template>
-  <v-sheet class="new-post-actions px-3 py-2 d-flex align-center justify-space-between ga-2">
+  <v-sheet
+    class="new-post-actions px-3 py-2 d-flex align-center justify-space-between ga-2"
+    :class="{ 'new-post-actions--light': isLightTheme }"
+  >
     <span class="new-post-actions__label text-body-2">Füge noch etwas zu deinem Beitrag hinzu</span>
 
     <div class="d-flex ga-1">
@@ -43,7 +48,7 @@ const actions = [
         v-for="action in actions"
         :key="action.label"
         :icon="action.icon"
-        :disabled="disabled"
+        :disabled="props.disabled"
         variant="text"
         size="small"
         :class="action.colorClass"
@@ -67,6 +72,12 @@ const actions = [
   background: var(--actions-bg);
   border: 1px solid var(--actions-border);
   border-radius: var(--actions-radius) !important;
+}
+
+.new-post-actions--light {
+  --actions-bg: #ffffff;
+  --actions-border: rgba(15, 23, 42, 0.08);
+  --actions-label: rgba(15, 23, 42, 0.68);
 }
 
 .new-post-actions__label {
