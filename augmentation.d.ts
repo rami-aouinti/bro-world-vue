@@ -11,7 +11,7 @@ declare module '#app' {
 }
 
 declare module '#auth-utils' {
-  interface User extends SessionUser {}
+  type User = SessionUser
 }
 
 declare module '@fullcalendar/vue3'
