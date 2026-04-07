@@ -49,6 +49,7 @@ const emit = defineEmits<{
   edit: [comment: BlogComment]
   delete: [comment: BlogComment]
 }>()
+const { t } = useI18n()
 
 const reactionMenuById = ref<Record<string, boolean>>({})
 
@@ -56,13 +57,13 @@ const normalizedReactionTypes = computed(() =>
   props.reactionTypes.length
     ? props.reactionTypes
     : [
-        { code: 'like', label: 'Like' },
-        { code: 'heart', label: 'Love' },
-        { code: 'celebrate', label: 'Celebrate' },
-        { code: 'laugh', label: 'Haha' },
-        { code: 'wow', label: 'Wow' },
-        { code: 'sad', label: 'Sad' },
-        { code: 'angry', label: 'Angry' },
+        { code: 'like', label: t('blog.post.reactions.like') },
+        { code: 'heart', label: t('blog.post.reactions.heart') },
+        { code: 'celebrate', label: t('blog.post.reactions.celebrate') },
+        { code: 'laugh', label: t('blog.post.reactions.laugh') },
+        { code: 'wow', label: t('blog.post.reactions.wow') },
+        { code: 'sad', label: t('blog.post.reactions.sad') },
+        { code: 'angry', label: t('blog.post.reactions.angry') },
       ],
 )
 
@@ -112,7 +113,7 @@ function pickReaction(comment: BlogComment, code: string) {
         <div class="comment-body">
           <div class="comment-bubble">
             <div class="d-flex align-start justify-space-between ga-2">
-              <div class="text-subtitle-2 font-weight-bold">{{ comment.author?.displayName || 'Utilisateur' }}</div>
+              <div class="text-subtitle-2 font-weight-bold">{{ comment.author?.displayName || t('blog.common.userFallback') }}</div>
               <v-menu v-if="comment.isAuthor" location="bottom end">
                 <template #activator="{ props: menuProps }">
                   <v-btn v-bind="menuProps" size="x-small" variant="text" icon="mdi-dots-horizontal" />
@@ -121,12 +122,12 @@ function pickReaction(comment: BlogComment, code: string) {
                 <v-list density="compact" min-width="140">
                   <v-list-item
                     prepend-icon="mdi-pencil-outline"
-                    title="Modifier"
+                    :title="t('blog.post.menu.edit')"
                     @click="emit('edit', comment)"
                   />
                   <v-list-item
                     prepend-icon="mdi-delete-outline"
-                    title="Supprimer"
+                    :title="t('blog.post.menu.delete')"
                     base-color="error"
                     @click="emit('delete', comment)"
                   />
@@ -137,7 +138,7 @@ function pickReaction(comment: BlogComment, code: string) {
           </div>
 
           <div class="comment-actions text-medium-emphasis">
-            <span>{{ comment.createdAt ?? 'Maintenant' }}</span>
+            <span>{{ comment.createdAt ?? t('blog.comment.now') }}</span>
 
             <v-menu
               v-model="reactionMenuById[commentKey(comment)]"
@@ -146,7 +147,7 @@ function pickReaction(comment: BlogComment, code: string) {
               location="top"
             >
               <template #activator="{ props: menuProps }">
-                <button v-bind="menuProps" type="button" @click="pickReaction(comment, 'like')">Gefällt mir</button>
+                <button v-bind="menuProps" type="button" @click="pickReaction(comment, 'like')">{{ t('blog.post.actions.like') }}</button>
               </template>
 
               <div class="reaction-picker">
@@ -163,7 +164,7 @@ function pickReaction(comment: BlogComment, code: string) {
               </div>
             </v-menu>
 
-            <button type="button" @click="emit('reply', comment)">Répondre</button>
+            <button type="button" @click="emit('reply', comment)">{{ t('blog.comment.actions.reply') }}</button>
           </div>
 
           <div class="mt-1">
@@ -173,7 +174,7 @@ function pickReaction(comment: BlogComment, code: string) {
           <div v-if="activeReplyId === comment.id" class="reply-composer">
             <BlogCommentComposer
               mode="reply"
-              placeholder="Votre réponse…"
+              :placeholder="t('blog.comment.placeholders.reply')"
               @submit="emit('submitReply', { comment, content: $event })"
               @cancel="emit('reply', comment)"
             />

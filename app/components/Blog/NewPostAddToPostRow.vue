@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
 const props = withDefaults(defineProps<{
   disabled?: boolean
 }>(), {
@@ -11,27 +13,27 @@ const actions = [
   {
     icon: 'mdi-video-wireless',
     colorClass: 'new-post-action--live',
-    label: 'Live-Video',
+    label: t('blog.newPost.actions.liveVideo'),
   },
   {
     icon: 'mdi-image-multiple',
     colorClass: 'new-post-action--media',
-    label: 'Foto/Video',
+    label: t('blog.newPost.actions.photoVideo'),
   },
   {
     icon: 'mdi-emoticon-happy-outline',
     colorClass: 'new-post-action--feeling',
-    label: 'Gefühl/Aktivität',
+    label: t('blog.newPost.actions.feelingActivity'),
   },
   {
     icon: 'mdi-tag-outline',
     colorClass: 'new-post-action--tag',
-    label: 'Tag',
+    label: t('blog.newPost.actions.tag'),
   },
   {
     icon: 'mdi-gif',
     colorClass: 'new-post-action--gif',
-    label: 'GIF',
+    label: t('blog.newPost.actions.gif'),
   },
 ]
 </script>
@@ -41,7 +43,7 @@ const actions = [
     class="new-post-actions px-3 py-2 d-flex align-center justify-space-between ga-2"
     :class="{ 'new-post-actions--light': isLightTheme }"
   >
-    <span class="new-post-actions__label text-body-2">Füge noch etwas zu deinem Beitrag hinzu</span>
+    <span class="new-post-actions__label text-body-2">{{ t('blog.newPost.addToPost') }}</span>
 
     <div class="d-flex ga-1">
       <v-btn

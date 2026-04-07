@@ -55,7 +55,7 @@ const deletePending = ref(false)
 const deleteError = ref<string | null>(null)
 const localStoryGroups = ref<StoryGroup[]>([])
 const { user, loggedIn } = useUserSession()
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 
 const { data, pending: storiesPending, refresh } = await useFetch<StoriesApiResponse | StoryGroup[]>('/api/stories', {
   default: () => [],
@@ -210,10 +210,10 @@ const cards = computed(() => {
         latestStory,
         cover,
         displayName: group.owner
-          ? 'Your story'
+          ? t('blog.story.yourStory')
           : group.user?.name
             || `${group.user?.firstName || ''} ${group.user?.lastName || ''}`.trim()
-            || 'Utilisateur',
+            || t('blog.common.userFallback'),
         avatar: group.user?.avatarUrl || group.user?.photo || fallbackAvatar,
       }
     })
@@ -331,7 +331,7 @@ async function handleFileSelect(event: Event) {
   }
 
   if (!file.type.startsWith('image/')) {
-    uploadError.value = 'Seules les images sont autorisées.'
+    uploadError.value = t('blog.story.uploadErrorImageOnly')
     return
   }
 
@@ -351,7 +351,7 @@ async function handleFileSelect(event: Event) {
     await refresh()
   }
   catch {
-    uploadError.value = "Impossible d'envoyer la story pour le moment."
+    uploadError.value = t('blog.story.uploadError')
   }
   finally {
     uploadPending.value = false
@@ -415,7 +415,7 @@ async function deleteSelectedStory() {
     })
   }
   catch {
-    deleteError.value = 'Suppression impossible pour le moment. Synchronisation en cours.'
+    deleteError.value = t('blog.story.deleteError')
     localStoryGroups.value = previousGroups
     await refresh()
   }
@@ -428,7 +428,7 @@ async function deleteSelectedStory() {
 <template>
   <v-card rounded="xl" class="mb-4 stories-shell">
     <v-card-title class="text-subtitle-1 font-weight-bold d-flex align-center justify-space-between">
-      <span>Stories</span>
+      <span>{{ t('blog.story.title') }}</span>
       <v-btn
         icon="mdi-plus"
         size="small"
@@ -477,7 +477,7 @@ async function deleteSelectedStory() {
 
           <div class="pa-2 text-white text-caption font-weight-medium story-label">
             <div>{{ card.displayName }}</div>
-            <div v-if="card.owner" class="text-caption text-grey-lighten-2">{{ uploadPending ? 'Envoi…' : 'Créer une story' }}</div>
+            <div v-if="card.owner" class="text-caption text-grey-lighten-2">{{ uploadPending ? t('blog.story.uploading') : t('blog.story.createCta') }}</div>
           </div>
         </v-sheet>
 
@@ -488,7 +488,7 @@ async function deleteSelectedStory() {
           min-width="160"
           height="220"
         >
-          Aucune story
+          {{ t('blog.story.empty') }}
         </v-sheet>
       </div>
 
@@ -519,7 +519,7 @@ async function deleteSelectedStory() {
         density="comfortable"
         class="mt-3"
       >
-        Story publiée (#{{ latestCreatedStory.id }}) · créée {{ latestCreatedStory.createdAt }} · expire {{ latestCreatedStory.expiresAt }}
+        {{ t('blog.story.publishSuccess', { id: latestCreatedStory.id, createdAt: latestCreatedStory.createdAt, expiresAt: latestCreatedStory.expiresAt }) }}
       </v-alert>
     </v-card-text>
   </v-card>
@@ -576,7 +576,7 @@ async function deleteSelectedStory() {
             <div class="story-overlay-bottom pa-4">
               <div class="d-flex align-center ga-2">
                 <v-text-field
-                  placeholder="Message..."
+                  :placeholder="t('blog.story.messagePlaceholder')"
                   density="compact"
                   hide-details
                   variant="outlined"
@@ -619,10 +619,10 @@ async function deleteSelectedStory() {
           :disabled="deletePending"
           @click="deleteSelectedStory"
         >
-          Supprimer cette story
+          {{ t('blog.story.deleteCta') }}
         </v-btn>
         <v-btn class="ml-2" variant="text" @click="viewerOpen = false">
-          Fermer
+          {{ t('common.close') }}
         </v-btn>
       </div>
 

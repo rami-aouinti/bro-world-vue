@@ -294,15 +294,92 @@
     "leftNav": {
       "home": "Inicio",
       "discover": "Descubrir",
-      "messages": "Mensajes"
+      "messages": "Mensajes",
+      "title": "Navegación"
     },
     "rightNav": {
-      "trending": "Tendencias"
+      "trending": "Tendencias",
+      "tags": {
+        "nuxt": "#nuxt",
+        "vuetify": "#vuetify",
+        "frontend": "#frontend"
+      }
     }
   },
   "profile": {
     "posts": {
       "title": "Publicaciones"
+    }
+  },
+  "blog": {
+    "common": {
+      "userFallback": "Usuario"
+    },
+    "newPost": {
+      "placeholder": "¿Qué estás haciendo ahora, {name}?",
+      "createTitle": "Crear publicación",
+      "postAction": "Publicar",
+      "addToPost": "Añade algo más a tu publicación",
+      "actions": {
+        "liveVideo": "Vídeo en vivo",
+        "photoVideo": "Foto/Vídeo",
+        "feelingActivity": "Estado/actividad",
+        "tag": "Etiqueta",
+        "gif": "GIF"
+      }
+    },
+    "post": {
+      "fallbackTitle": "Publicación",
+      "empty": "No hay publicaciones para mostrar",
+      "menu": {
+        "edit": "Editar",
+        "delete": "Eliminar"
+      },
+      "cta": {
+        "seeMore": "Ver más"
+      },
+      "edit": {
+        "contentLabel": "Contenido"
+      },
+      "actions": {
+        "like": "Me gusta",
+        "comment": "Comentar",
+        "share": "Compartir"
+      },
+      "reactions": {
+        "like": "Me gusta",
+        "heart": "Me encanta",
+        "celebrate": "Celebrar",
+        "laugh": "Jaja",
+        "wow": "Guau",
+        "sad": "Triste",
+        "angry": "Enojado"
+      }
+    },
+    "comment": {
+      "now": "Ahora",
+      "actions": {
+        "comment": "Comentar",
+        "reply": "Responder"
+      },
+      "placeholders": {
+        "commentAsUser": "Añadir un comentario…",
+        "addComment": "Añadir un comentario…",
+        "reply": "Tu respuesta…"
+      }
+    },
+    "story": {
+      "title": "Historias",
+      "yourStory": "Tu historia",
+      "uploading": "Enviando…",
+      "createCta": "Crear una historia",
+      "empty": "Sin historias",
+      "uploadErrorImageOnly": "Solo se permiten imágenes.",
+      "uploadError": "No se puede subir la historia por ahora.",
+      "deleteError": "No se puede eliminar por ahora. Sincronización en curso.",
+      "publishSuccess": "Historia publicada (#{id}) · creada {createdAt} · expira {expiresAt}",
+      "messagePlaceholder": "Mensaje...",
+      "deleteCta": "Eliminar esta historia"
     }
   }
 }

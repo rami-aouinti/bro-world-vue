@@ -329,15 +329,92 @@
     "leftNav": {
       "home": "Home",
       "discover": "Discover",
-      "messages": "Messages"
+      "messages": "Messages",
+      "title": "Navigation"
     },
     "rightNav": {
-      "trending": "Trending"
+      "trending": "Trending",
+      "tags": {
+        "nuxt": "#nuxt",
+        "vuetify": "#vuetify",
+        "frontend": "#frontend"
+      }
     }
   },
   "profile": {
     "posts": {
       "title": "Posts"
+    }
+  },
+  "blog": {
+    "common": {
+      "userFallback": "User"
+    },
+    "newPost": {
+      "placeholder": "What are you doing, {name}?",
+      "createTitle": "Create post",
+      "postAction": "Post",
+      "addToPost": "Add to your post",
+      "actions": {
+        "liveVideo": "Live video",
+        "photoVideo": "Photo/video",
+        "feelingActivity": "Feeling/activity",
+        "tag": "Tag",
+        "gif": "GIF"
+      }
+    },
+    "post": {
+      "fallbackTitle": "Post",
+      "empty": "No posts to display",
+      "menu": {
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "cta": {
+        "seeMore": "See more"
+      },
+      "edit": {
+        "contentLabel": "Content"
+      },
+      "actions": {
+        "like": "Like",
+        "comment": "Comment",
+        "share": "Share"
+      },
+      "reactions": {
+        "like": "Like",
+        "heart": "Love",
+        "celebrate": "Celebrate",
+        "laugh": "Haha",
+        "wow": "Wow",
+        "sad": "Sad",
+        "angry": "Angry"
+      }
+    },
+    "comment": {
+      "now": "Now",
+      "actions": {
+        "comment": "Comment",
+        "reply": "Reply"
+      },
+      "placeholders": {
+        "commentAsUser": "Write a comment…",
+        "addComment": "Add a comment…",
+        "reply": "Your reply…"
+      }
+    },
+    "story": {
+      "title": "Stories",
+      "yourStory": "Your story",
+      "uploading": "Uploading…",
+      "createCta": "Create a story",
+      "empty": "No stories",
+      "uploadErrorImageOnly": "Only images are allowed.",
+      "uploadError": "Unable to upload the story right now.",
+      "deleteError": "Unable to delete right now. Sync in progress.",
+      "publishSuccess": "Story published (#{id}) · created {createdAt} · expires {expiresAt}",
+      "messagePlaceholder": "Message...",
+      "deleteCta": "Delete this story"
     }
   }
 }

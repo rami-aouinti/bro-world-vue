@@ -27,6 +27,7 @@ const props = withDefaults(defineProps<{
   showComposer: false,
   showStories: false,
 })
+const { t } = useI18n()
 
 const { posts, pending, pagination, reactionTypes, refresh, loadMore, comment, react, edit, delete: remove } = useBlogFeed({
   mode: props.mode,
@@ -184,7 +185,7 @@ async function submitEdit() {
 
       <v-card v-if="!pending && posts.length === 0" rounded="lg">
         <v-card-text class="text-medium-emphasis">
-          Aucune publication à afficher
+          {{ t('blog.post.empty') }}
         </v-card-text>
       </v-card>
 
@@ -196,18 +197,18 @@ async function submitEdit() {
           color="primary"
           @click="loadMore"
         >
-          Voir plus
+          {{ t('blog.post.cta.seeMore') }}
         </v-btn>
       </div>
     </div>
 
     <v-dialog v-model="editDialog" max-width="560">
       <v-card rounded="lg">
-        <v-card-title>Modifier</v-card-title>
+        <v-card-title>{{ t('blog.post.menu.edit') }}</v-card-title>
         <v-card-text>
           <v-textarea
             v-model="editContent"
-            label="Contenu"
+            :label="t('blog.post.edit.contentLabel')"
             rows="5"
             auto-grow
             variant="outlined"
@@ -216,14 +217,14 @@ async function submitEdit() {
         </v-card-text>
         <v-card-actions class="px-6 pb-5">
           <v-spacer />
-          <v-btn variant="text" @click="editDialog = false">Annuler</v-btn>
+          <v-btn variant="text" @click="editDialog = false">{{ t('common.cancel') }}</v-btn>
           <v-btn
             color="primary"
             :loading="editPending"
             :disabled="editPending || !editContent.trim()"
             @click="submitEdit"
           >
-            Enregistrer
+            {{ t('common.save') }}
           </v-btn>
         </v-card-actions>
       </v-card>

@@ -6,48 +6,49 @@ const props = withDefaults(defineProps<{
   placeholder?: string
 }>(), {
   disabled: false,
-  placeholder: 'Was machst du gerade?',
+  placeholder: '',
 })
 
 const emit = defineEmits<{
   open: []
 }>()
 const theme = useTheme()
+const { t } = useI18n()
 const { user } = useUserSession()
 const isLightTheme = computed(() => !theme.current.value.dark)
 const sessionUser = computed(() => user.value as SessionUser | null)
 const userDisplayName = computed(() => {
   const fullName = [sessionUser.value?.firstName, sessionUser.value?.lastName].filter(Boolean).join(' ').trim()
-  return fullName || sessionUser.value?.username || 'Utilisateur'
+  return fullName || sessionUser.value?.username || t('blog.common.userFallback')
 })
 const userAvatar = computed(() => sessionUser.value?.photo || null)
-const resolvedPlaceholder = computed(() => `${props.placeholder} ${userDisplayName.value}?`)
+const resolvedPlaceholder = computed(() => props.placeholder || t('blog.newPost.placeholder', { name: userDisplayName.value }))
 
 const actions = [
   {
     icon: 'mdi-video-wireless',
     colorClass: 'new-post-action--live',
-    label: 'Live-Video',
+    label: t('blog.newPost.actions.liveVideo'),
   },
   {
     icon: 'mdi-image-multiple',
     colorClass: 'new-post-action--media',
-    label: 'Foto/Video',
+    label: t('blog.newPost.actions.photoVideo'),
   },
   {
     icon: 'mdi-emoticon-happy-outline',
     colorClass: 'new-post-action--feeling',
-    label: 'Gefühl/Aktivität',
+    label: t('blog.newPost.actions.feelingActivity'),
   },
   {
     icon: 'mdi-tag-outline',
     colorClass: 'new-post-action--tag',
-    label: 'Tag',
+    label: t('blog.newPost.actions.tag'),
   },
   {
     icon: 'mdi-gif',
     colorClass: 'new-post-action--gif',
-    label: 'GIF',
+    label: t('blog.newPost.actions.gif'),
   },
 ]
 

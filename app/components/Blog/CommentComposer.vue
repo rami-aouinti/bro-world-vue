@@ -6,7 +6,7 @@ const props = withDefaults(defineProps<{
 }>(), {
   mode: 'comment',
   loading: false,
-  placeholder: 'Als Rami Aouinti kommentieren',
+  placeholder: '',
 })
 
 const emit = defineEmits<{
@@ -16,11 +16,13 @@ const emit = defineEmits<{
 
 const content = ref('')
 const { user } = useUserSession()
+const { t } = useI18n()
 
-const actionLabel = computed(() => props.mode === 'reply' ? 'Répondre' : 'Commenter')
+const actionLabel = computed(() => props.mode === 'reply' ? t('blog.comment.actions.reply') : t('blog.comment.actions.comment'))
 const isCommentMode = computed(() => props.mode === 'comment')
 const canSubmit = computed(() => content.value.trim().length > 0 && !props.loading)
 const userAvatar = computed(() => user.value?.photo || null)
+const resolvedPlaceholder = computed(() => props.placeholder || t('blog.comment.placeholders.commentAsUser'))
 
 const quickActions = [
   'mdi-star-outline',
@@ -62,7 +64,7 @@ function onEnter(event: KeyboardEvent) {
     <div class="composer-shell">
       <v-textarea
         v-model="content"
-        :placeholder="placeholder"
+        :placeholder="resolvedPlaceholder"
         rows="1"
         auto-grow
         variant="plain"
@@ -100,7 +102,7 @@ function onEnter(event: KeyboardEvent) {
   <div v-else class="d-flex flex-column ga-2">
     <v-textarea
       v-model="content"
-      :placeholder="placeholder"
+      :placeholder="resolvedPlaceholder"
       rows="2"
       auto-grow
       variant="solo"
@@ -111,7 +113,7 @@ function onEnter(event: KeyboardEvent) {
 
     <div class="d-flex ga-2 justify-end">
       <v-btn variant="text" :disabled="loading" @click="emit('cancel')">
-        Annuler
+        {{ t('common.cancel') }}
       </v-btn>
       <v-btn color="primary" :loading="loading" @click="onSubmit">
         {{ actionLabel }}

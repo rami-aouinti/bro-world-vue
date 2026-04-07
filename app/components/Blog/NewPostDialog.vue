@@ -9,7 +9,7 @@ const props = withDefaults(defineProps<{
 }>(), {
   disabled: false,
   open: false,
-  placeholder: 'Was machst du gerade?',
+  placeholder: '',
 })
 
 const emit = defineEmits<{
@@ -23,15 +23,16 @@ const content = computed({
   set: (value: string) => emit('update:modelValue', value),
 })
 const theme = useTheme()
+const { t } = useI18n()
 const { user } = useUserSession()
 const isLightTheme = computed(() => !theme.current.value.dark)
 const sessionUser = computed(() => user.value as SessionUser | null)
 const userDisplayName = computed(() => {
   const fullName = [sessionUser.value?.firstName, sessionUser.value?.lastName].filter(Boolean).join(' ').trim()
-  return fullName || sessionUser.value?.username || 'Utilisateur'
+  return fullName || sessionUser.value?.username || t('blog.common.userFallback')
 })
 const userAvatar = computed(() => sessionUser.value?.photo || null)
-const resolvedPlaceholder = computed(() => `${props.placeholder} ${userDisplayName.value}?`)
+const resolvedPlaceholder = computed(() => props.placeholder || t('blog.newPost.placeholder', { name: userDisplayName.value }))
 
 const isPostDisabled = computed(() => props.disabled || !props.modelValue.trim())
 
@@ -60,7 +61,7 @@ function onSubmit() {
       rounded="xl"
     >
       <v-card-title class="py-4 d-flex align-center justify-center position-relative">
-        <span class="new-post-dialog__title text-h6">Beitrag erstellen</span>
+        <span class="new-post-dialog__title text-h6">{{ t('blog.newPost.createTitle') }}</span>
         <v-btn
           icon="mdi-close"
           variant="text"
@@ -109,7 +110,7 @@ function onSubmit() {
           :disabled="isPostDisabled"
           @click="onSubmit"
         >
-          Posten
+          {{ t('blog.newPost.postAction') }}
         </v-btn>
       </v-card-actions>
     </v-card>
