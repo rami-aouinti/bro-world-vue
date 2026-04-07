@@ -1,5 +1,6 @@
 import type { SessionUser } from '~/types/session'
 import type { H3Event } from 'h3'
+import { resolveApiUrl } from './resolveApiUrl'
 
 export function getSessionToken(event: H3Event) {
   const session = requireUserSession(event)
@@ -31,7 +32,7 @@ export async function callPrivateApi<T>(event: H3Event, endpoint: string, option
   requestHeaders.set('accept', 'application/json')
   requestHeaders.set('Authorization', `Bearer ${token}`)
 
-  return $fetch<T>(`${runtimeConfig.public.apiBaseUrl}${endpoint}`, {
+  return $fetch<T>(resolveApiUrl(runtimeConfig.public.apiBaseUrl, endpoint), {
     ...options,
     headers: requestHeaders,
   })
