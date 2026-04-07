@@ -146,10 +146,9 @@ function toggleLeftDrawer() {
           <template #activator="{ props }">
             <v-btn
               variant="text"
-              prepend-icon="mdi-inbox-outline"
+              icon="mdi-inbox-outline"
               v-bind="props"
             >
-              {{ t('appbar.inbox') }}
             </v-btn>
           </template>
           <v-list min-width="280">
@@ -173,10 +172,9 @@ function toggleLeftDrawer() {
           <template #activator="{ props }">
             <v-btn
               variant="text"
-              prepend-icon="mdi-bell-outline"
+              icon="mdi-bell-outline"
               v-bind="props"
             >
-              {{ t('appbar.notifications') }}
             </v-btn>
           </template>
           <v-list min-width="280">
@@ -198,10 +196,9 @@ function toggleLeftDrawer() {
 
         <v-btn
           variant="text"
-          prepend-icon="mdi-calendar-month-outline"
+          icon="mdi-calendar-month-outline"
           to="/calendar"
         >
-          {{ t('appbar.calendar') }}
         </v-btn>
       </template>
 
