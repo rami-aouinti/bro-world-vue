@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { formatRelativeTime } from '../../utils/formatRelativeTime'
+
 defineOptions({
   name: 'BlogCommentThread',
 })
@@ -49,7 +51,7 @@ const emit = defineEmits<{
   edit: [comment: BlogComment]
   delete: [comment: BlogComment]
 }>()
-const { t } = useI18n()
+const { locale, t } = useI18n()
 
 const reactionMenuById = ref<Record<string, boolean>>({})
 
@@ -94,6 +96,10 @@ function pickReaction(comment: BlogComment, code: string) {
   emit('react', { comment, code })
   reactionMenuById.value[commentKey(comment)] = false
 }
+
+function formattedDate(comment: BlogComment) {
+  return formatRelativeTime(locale.value, comment.createdAt, t('blog.comment.now'))
+}
 </script>
 
 <template>
@@ -113,7 +119,10 @@ function pickReaction(comment: BlogComment, code: string) {
         <div class="comment-body">
           <div class="comment-bubble">
             <div class="d-flex align-start justify-space-between ga-2">
-              <div class="text-subtitle-2 font-weight-bold">{{ comment.author?.displayName || t('blog.common.userFallback') }}</div>
+              <div>
+                <div class="text-subtitle-2 font-weight-bold">{{ comment.author?.displayName || t('blog.common.userFallback') }}</div>
+                <div class="text-caption text-medium-emphasis">{{ formattedDate(comment) }}</div>
+              </div>
               <v-menu v-if="comment.isAuthor" location="bottom end">
                 <template #activator="{ props: menuProps }">
                   <v-btn v-bind="menuProps" size="x-small" variant="text" icon="mdi-dots-horizontal" />
@@ -138,8 +147,6 @@ function pickReaction(comment: BlogComment, code: string) {
           </div>
 
           <div class="comment-actions text-medium-emphasis">
-            <span>{{ comment.createdAt ?? t('blog.comment.now') }}</span>
-
             <v-menu
               v-model="reactionMenuById[commentKey(comment)]"
               :open-on-hover="true"
