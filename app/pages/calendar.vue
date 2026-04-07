@@ -38,6 +38,7 @@ interface EventMutationPayload {
 }
 
 const { t, locale } = useI18n()
+const { isPageSkeletonVisible } = usePageSkeleton()
 
 definePageMeta({
   title: 'appbar.calendar',
@@ -317,6 +318,8 @@ onMounted(loadEvents)
   <div>
     <AppPageDrawers>
       <template #right>
+        <SkeletonDrawerRight v-if="isPageSkeletonVisible" />
+        <template v-else>
         <v-card-title>{{ t('pages.calendar.upcomingTitle') }}</v-card-title>
         <v-list v-if="upcomingEvents.length">
           <v-list-item
@@ -331,10 +334,13 @@ onMounted(loadEvents)
         <v-card-text v-else class="text-medium-emphasis">
           {{ t('pages.calendar.noUpcoming') }}
         </v-card-text>
+        </template>
       </template>
     </AppPageDrawers>
 
     <v-container fluid>
+      <SkeletonPageContent v-if="isPageSkeletonVisible" />
+      <template v-else>
       <v-alert v-if="errorMessage" type="error" class="mb-4" variant="tonal">
         {{ errorMessage }}
       </v-alert>
@@ -356,6 +362,7 @@ onMounted(loadEvents)
           <FullCalendar v-else :options="calendarOptions" />
         </v-card-text>
       </v-card>
+      </template>
     </v-container>
 
     <v-dialog v-model="dialogOpen" max-width="560">

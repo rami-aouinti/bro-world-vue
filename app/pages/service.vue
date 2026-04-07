@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { t } = useI18n()
+const { isPageSkeletonVisible } = usePageSkeleton()
 
 definePageMeta({
   title: 'appbar.service',
@@ -10,7 +11,8 @@ definePageMeta({
   <div>
     <AppPageDrawers>
       <template #left>
-        <v-list nav density="compact" class="app-left-drawer-list">
+        <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
+        <v-list v-else nav density="compact" class="app-left-drawer-list">
           <v-list-subheader class="text-overline">Services</v-list-subheader>
           <v-list-item prepend-icon="mdi-magnify-scan" title="Audit rapide" subtitle="Diagnostic en 48h" />
           <v-list-item prepend-icon="mdi-account-group" title="Accompagnement" subtitle="Suivi sur mesure" />
@@ -19,7 +21,8 @@ definePageMeta({
       </template>
 
       <template #right>
-        <v-list nav density="compact" class="app-right-drawer-list">
+        <SkeletonDrawerRight v-if="isPageSkeletonVisible" />
+        <v-list v-else nav density="compact" class="app-right-drawer-list">
           <v-list-item class="px-0 mb-3">
             <v-card rounded="xl" variant="tonal" color="info">
               <v-card-item>
@@ -53,8 +56,11 @@ definePageMeta({
     </AppPageDrawers>
 
     <v-container fluid>
-      <h1 class="text-h3 mb-4">{{ t('appbar.service') }}</h1>
-      <p>Découvrez nos services et comment nous pouvons vous accompagner.</p>
+      <SkeletonPageContent v-if="isPageSkeletonVisible" />
+      <template v-else>
+        <h1 class="text-h3 mb-4">{{ t('appbar.service') }}</h1>
+        <p>Découvrez nos services et comment nous pouvons vous accompagner.</p>
+      </template>
     </v-container>
   </div>
 </template>
