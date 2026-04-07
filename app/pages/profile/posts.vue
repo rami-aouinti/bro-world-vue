@@ -14,10 +14,8 @@ definePageMeta({
     </AppPageDrawers>
 
     <v-container fluid>
-      <h1 class="text-h4 mb-2">Posts</h1>
-      <p class="text-body-1 text-medium-emphasis mb-0">
-        Consultez et gérez vos publications.
-      </p>
+      <h1 class="text-h4 mb-4">Posts</h1>
+      <BlogPostFeed mode="mine" :show-composer="false" :show-stories="false" />
     </v-container>
   </div>
 </template>
