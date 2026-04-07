@@ -43,7 +43,9 @@
     "switchToDark": "Switch to dark mode",
     "inbox": "Inbox",
     "notifications": "Notifications",
-    "calendar": "Calendar"
+    "calendar": "Calendar",
+    "profile": "Profile",
+    "settings": "Settings"
   },
   "common": {
     "confirm": "Confirm",

@@ -100,8 +100,7 @@ function toggleLeftDrawer() {
               variant="text"
               icon="mdi-inbox-outline"
               v-bind="props"
-            >
-            </v-btn>
+            />
           </template>
           <v-list min-width="280">
             <v-list-item
@@ -126,8 +125,7 @@ function toggleLeftDrawer() {
               variant="text"
               icon="mdi-bell-outline"
               v-bind="props"
-            >
-            </v-btn>
+            />
           </template>
           <v-list min-width="280">
             <v-list-item
@@ -150,8 +148,7 @@ function toggleLeftDrawer() {
           variant="text"
           icon="mdi-calendar-month-outline"
           to="/calendar"
-        >
-        </v-btn>
+        />
       </template>
       <v-menu location="bottom">
         <template #activator="{ props: menu }">
@@ -192,12 +189,23 @@ function toggleLeftDrawer() {
             prepend-icon="mdi-account-plus"
             to="/register"
           />
-          <v-list-item
-            v-else
-            :title="t('appbar.logout')"
-            prepend-icon="mdi-logout"
-            @click="clear"
-          />
+          <template v-else>
+            <v-list-item
+              :title="t('appbar.profile')"
+              prepend-icon="mdi-account-outline"
+              to="/profile"
+            />
+            <v-list-item
+              :title="t('appbar.settings')"
+              prepend-icon="mdi-cog-outline"
+              to="/settings"
+            />
+            <v-list-item
+              :title="t('appbar.logout')"
+              prepend-icon="mdi-logout"
+              @click="clear"
+            />
+          </template>
         </v-list>
       </v-menu>
       <AppLanguageSwitcher />

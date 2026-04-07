@@ -43,7 +43,9 @@
     "switchToDark": "Passer au mode sombre",
     "inbox": "Boîte de réception",
     "notifications": "Notifications",
-    "calendar": "Calendrier"
+    "calendar": "Calendrier",
+    "profile": "Profil",
+    "settings": "Paramètres"
   },
   "common": {
     "confirm": "Confirmer",

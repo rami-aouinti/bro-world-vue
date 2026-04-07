@@ -43,7 +43,9 @@
     "switchToDark": "Zum dunklen Modus wechseln",
     "inbox": "Posteingang",
     "notifications": "Benachrichtigungen",
-    "calendar": "Kalender"
+    "calendar": "Kalender",
+    "profile": "Profil",
+    "settings": "Einstellungen"
   },
   "common": {
     "confirm": "Bestätigen",
