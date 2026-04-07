@@ -14,7 +14,9 @@ const rightDrawerRenderer = computed(() => registry?.right.value ?? null)
     floating
     class="app-right-drawer"
   >
-    <component :is="{ render: rightDrawerRenderer }" v-if="rightDrawerRenderer" class="app-right-drawer-list" />
+    <div v-if="rightDrawerRenderer" class="app-right-drawer-list">
+      <component :is="{ render: rightDrawerRenderer }" />
+    </div>
     <v-list v-else nav density="compact" class="app-right-drawer-list" />
     <v-spacer />
     <template #append>
@@ -30,7 +32,7 @@ const rightDrawerRenderer = computed(() => registry?.right.value ?? null)
   margin-right: 16px;
 }
 
-:deep(.app-right-drawer-list) {
+.app-right-drawer-list {
   height: calc(100% - 96px);
   min-height: calc(100% - 96px);
   max-height: calc(100% - 96px);
