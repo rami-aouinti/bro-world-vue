@@ -282,7 +282,7 @@ function onDrop(isoDate: string) {
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  min-height: 120px;
+  min-height: 25px;
   padding: 8px;
 }
 
