@@ -4,6 +4,9 @@ type StoryMedia = {
   mediaUrl?: string | null
   coverUrl?: string | null
   thumbnailUrl?: string | null
+  imageUrl?: string | null
+  createdAt?: string | null
+  expiresAt?: string | null
   title?: string | null
 }
 
@@ -25,12 +28,23 @@ type StoriesApiResponse = {
   data?: StoryGroup[]
 }
 
+type StoryCreateResponse = {
+  id: string | number
+  imageUrl: string
+  createdAt: string
+  expiresAt: string
+}
+
 const fallbackAvatar = 'https://api.dicebear.com/9.x/initials/svg?seed=Story'
 const viewerOpen = ref(false)
 const selectedGroupIndex = ref<number | null>(null)
 const selectedStoryIndex = ref(0)
+const fileInputRef = ref<HTMLInputElement | null>(null)
+const uploadPending = ref(false)
+const uploadError = ref<string | null>(null)
+const latestCreatedStory = ref<StoryCreateResponse | null>(null)
 
-const { data, pending } = await useFetch<StoriesApiResponse | StoryGroup[]>('/api/stories', {
+const { data, pending: storiesPending, refresh } = await useFetch<StoriesApiResponse | StoryGroup[]>('/api/stories', {
   default: () => [],
 })
 
@@ -47,7 +61,7 @@ const cards = computed(() => {
     .map((group, index) => {
       const stories = Array.isArray(group.stories) ? group.stories : []
       const latestStory = stories.at(-1)
-      const cover = latestStory?.coverUrl || latestStory?.thumbnailUrl || latestStory?.mediaUrl || null
+      const cover = latestStory?.coverUrl || latestStory?.thumbnailUrl || latestStory?.imageUrl || latestStory?.mediaUrl || null
 
       return {
         ...group,
@@ -64,7 +78,7 @@ const cards = computed(() => {
 
 const selectedGroup = computed(() => {
   if (selectedGroupIndex.value === null) {
-    return null
+    return undefined
   }
 
   return cards.value[selectedGroupIndex.value] ?? null
@@ -72,7 +86,7 @@ const selectedGroup = computed(() => {
 
 const selectedStory = computed(() => {
   if (!selectedGroup.value) {
-    return null
+    return undefined
   }
 
   return selectedGroup.value.stories[selectedStoryIndex.value] ?? null
@@ -87,6 +101,21 @@ const hasNextStory = computed(() => {
   return selectedStoryIndex.value < selectedGroup.value.stories.length - 1
 })
 
+const selectedStoryVisual = computed<string | undefined>(() => {
+  if (!selectedStory.value) {
+    return undefined
+  }
+
+  const candidates = [
+    selectedStory.value.imageUrl,
+    selectedStory.value.mediaUrl,
+    selectedStory.value.coverUrl,
+    selectedStory.value.thumbnailUrl,
+  ]
+
+  return candidates.find((candidate): candidate is string => typeof candidate === 'string' && candidate.length > 0)
+})
+
 function openViewer(index: number) {
   const group = cards.value[index]
   if (!group || group.stories.length === 0) {
@@ -96,6 +125,53 @@ function openViewer(index: number) {
   selectedGroupIndex.value = index
   selectedStoryIndex.value = group.stories.length - 1
   viewerOpen.value = true
+}
+
+function triggerUpload() {
+  if (uploadPending.value) {
+    return
+  }
+
+  uploadError.value = null
+  fileInputRef.value?.click()
+}
+
+async function handleFileSelect(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+
+  input.value = ''
+
+  if (!file) {
+    return
+  }
+
+  if (!file.type.startsWith('image/')) {
+    uploadError.value = 'Seules les images sont autorisées.'
+    return
+  }
+
+  uploadPending.value = true
+  uploadError.value = null
+
+  try {
+    const formData = new FormData()
+    formData.append('image', file)
+
+    const createdStory = await $fetch<StoryCreateResponse>('/api/stories', {
+      method: 'POST',
+      body: formData,
+    })
+
+    latestCreatedStory.value = createdStory
+    await refresh()
+  }
+  catch {
+    uploadError.value = "Impossible d'envoyer la story pour le moment."
+  }
+  finally {
+    uploadPending.value = false
+  }
 }
 
 function goToPreviousStory() {
@@ -115,6 +191,14 @@ function goToNextStory() {
   <v-card rounded="lg" class="mb-4">
     <v-card-title class="text-subtitle-1 font-weight-bold">Stories</v-card-title>
     <v-card-text>
+      <input
+        ref="fileInputRef"
+        type="file"
+        accept="image/*"
+        class="d-none"
+        @change="handleFileSelect"
+      >
+
       <div class="d-flex ga-3 overflow-x-auto pb-2">
         <v-sheet
           v-for="card in cards"
@@ -133,21 +217,24 @@ function goToNextStory() {
 
             <v-btn
               v-if="card.owner"
-              icon="mdi-plus"
+              :icon="uploadPending ? 'mdi-loading' : 'mdi-plus'"
               size="x-small"
               color="white"
               variant="flat"
+              :loading="uploadPending"
+              :disabled="uploadPending"
+              @click.stop="triggerUpload"
             />
           </div>
 
           <div class="pa-2 text-white text-caption font-weight-medium">
             <div>{{ card.displayName }}</div>
-            <div v-if="card.owner">Ajouter</div>
+            <div v-if="card.owner">{{ uploadPending ? 'Envoi…' : 'Ajouter' }}</div>
           </div>
         </v-sheet>
 
         <v-sheet
-          v-if="!pending && cards.length === 0"
+          v-if="!storiesPending && cards.length === 0"
           rounded="lg"
           class="d-flex align-center px-4 text-medium-emphasis"
           min-width="140"
@@ -156,13 +243,33 @@ function goToNextStory() {
           Aucune story
         </v-sheet>
       </div>
+
+      <v-alert
+        v-if="uploadError"
+        type="error"
+        variant="tonal"
+        density="comfortable"
+        class="mt-3"
+      >
+        {{ uploadError }}
+      </v-alert>
+
+      <v-alert
+        v-if="latestCreatedStory"
+        type="success"
+        variant="tonal"
+        density="comfortable"
+        class="mt-3"
+      >
+        Story publiée (#{{ latestCreatedStory.id }}) · créée {{ latestCreatedStory.createdAt }} · expire {{ latestCreatedStory.expiresAt }}
+      </v-alert>
     </v-card-text>
   </v-card>
 
   <v-dialog v-model="viewerOpen" max-width="460">
     <v-card v-if="selectedGroup && selectedStory">
       <v-img
-        :src="selectedStory.mediaUrl || selectedStory.coverUrl || selectedStory.thumbnailUrl"
+        :src="selectedStoryVisual"
         height="440"
         cover
       >
