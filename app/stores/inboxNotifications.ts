@@ -31,6 +31,13 @@ type NotificationsApiResponse = {
   unreadCount: number
 }
 
+function isUnauthorizedError(error: unknown): boolean {
+  if (!error || typeof error !== 'object') return false
+
+  const maybeError = error as { status?: number, statusCode?: number }
+  return maybeError.status === 401 || maybeError.statusCode === 401
+}
+
 const mockInboxItems: InboxItem[] = [
   {
     id: 'project-kickoff',
@@ -94,12 +101,23 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
   },
   actions: {
     async fetchNotifications(limit = 20, offset = 0) {
-      const response = await $fetch<NotificationsApiResponse>('/api/notifications', {
-        query: { limit, offset },
-      })
+      try {
+        const response = await $fetch<NotificationsApiResponse>('/api/notifications', {
+          query: { limit, offset },
+        })
 
-      this.notifications = response.items.map(normalizeNotification)
-      this.unreadCount = response.unreadCount
+        this.notifications = response.items.map(normalizeNotification)
+        this.unreadCount = response.unreadCount
+      }
+      catch (error) {
+        if (isUnauthorizedError(error)) {
+          this.notifications = []
+          this.unreadCount = 0
+          return
+        }
+
+        throw error
+      }
     },
     async fetchNotificationById(id: string) {
       const notification = normalizeNotification(await $fetch<UserNotificationItem>(`/api/notifications/${id}`))
