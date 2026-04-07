@@ -1,6 +1,11 @@
 <script setup lang="ts">
 const route = useRoute()
-const notification = computed(() => String(route.params.notification || ''))
+const notificationId = computed(() => String(route.params.notification || ''))
+const inboxNotificationsStore = useInboxNotificationsStore()
+
+const notification = computed(() =>
+  inboxNotificationsStore.getNotificationById(notificationId.value),
+)
 
 definePageMeta({
   title: 'appbar.notifications',
@@ -15,7 +20,9 @@ definePageMeta({
       <v-card-title>Notification detail</v-card-title>
 
       <v-card-text v-if="notification">
-        Notification ID: <strong>{{ notification }}</strong>
+        <div class="text-subtitle-1 font-weight-medium">{{ notification.title }}</div>
+        <div class="text-body-2 text-medium-emphasis mb-3">{{ notification.createdAt }}</div>
+        <div class="text-body-1">{{ notification.content || notification.preview }}</div>
       </v-card-text>
 
       <v-card-text v-else>

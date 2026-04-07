@@ -1,3 +1,5 @@
+import type { SessionUser } from './app/types/session'
+
 declare module '#app' {
   interface PageMeta {
     icon?: string
@@ -9,10 +11,7 @@ declare module '#app' {
 }
 
 declare module '#auth-utils' {
-  interface User {
-    login: string
-    avatar_url: string
-  }
+  interface User extends SessionUser {}
 }
 
 export {}

@@ -1,3 +1,5 @@
+import type { SessionUser } from '~/types/session'
+
 type LoginBody = {
   username?: string
   password?: string
@@ -7,19 +9,7 @@ type TokenResponse = {
   token: string
 }
 
-type UserProfile = {
-  id: string
-  username: string
-  firstName: string
-  lastName: string
-  email: string
-  language: string
-  locale: string
-  timezone: string
-  photo: string
-  coins: number
-  roles: string[]
-}
+type UserProfile = Omit<SessionUser, 'token'>
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<LoginBody>(event)
