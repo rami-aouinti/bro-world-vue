@@ -1,22 +1,56 @@
+<script setup lang="ts">
+const props = withDefaults(defineProps<{
+  disabled?: boolean
+  placeholder?: string
+  modelValue?: string
+}>(), {
+  disabled: false,
+  placeholder: 'Was machst du gerade, Rami?',
+  modelValue: '',
+})
+
+const emit = defineEmits<{
+  'update:modelValue': [value: string]
+  submit: [content: string]
+}>()
+
+const isOpen = ref(false)
+
+const content = computed({
+  get: () => props.modelValue,
+  set: (value: string) => emit('update:modelValue', value),
+})
+
+function openDialog() {
+  if (props.disabled) {
+    return
+  }
+
+  isOpen.value = true
+}
+
+function onSubmit(value: string) {
+  emit('submit', value)
+  emit('update:modelValue', '')
+  isOpen.value = false
+}
+</script>
+
 <template>
-  <v-card rounded="lg" variant="tonal" class="mb-4">
-    <v-card-title class="text-subtitle-1 font-weight-bold">
-      Créer une publication
-    </v-card-title>
-    <v-card-text>
-      <v-textarea
-        model-value=""
-        label="Exprimez-vous..."
-        rows="3"
-        auto-grow
-        variant="outlined"
-        hide-details
-      />
-    </v-card-text>
-    <v-card-actions class="px-4 pb-4">
-      <v-btn color="primary" variant="flat" prepend-icon="mdi-send" disabled>
-        Publier
-      </v-btn>
-    </v-card-actions>
-  </v-card>
+  <div class="mb-4">
+    <BlogNewPostLauncher
+      :disabled="disabled"
+      :placeholder="placeholder"
+      @open="openDialog"
+    />
+
+    <BlogNewPostDialog
+      v-model="content"
+      :disabled="disabled"
+      :open="isOpen"
+      :placeholder="placeholder"
+      @update:open="isOpen = $event"
+      @submit="onSubmit"
+    />
+  </div>
 </template>
