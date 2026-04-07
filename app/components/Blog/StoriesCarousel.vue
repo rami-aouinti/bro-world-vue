@@ -91,24 +91,40 @@ function getStoryOwner(story: StoryMedia): StoryOwner | null {
 }
 
 function normalizeStoryGroups(payload: StoriesApiResponse | StoryGroup[] | null | undefined): StoryGroup[] {
-  const source = Array.isArray(payload)
-    ? payload
-    : payload?.stories ?? payload?.data ?? payload?.items ?? []
+  const payloadRecord = payload && !Array.isArray(payload) ? payload : null
 
-  if (!Array.isArray(source) || source.length === 0) {
+  const sourceCandidates = [
+    payload,
+    payloadRecord?.stories,
+    payloadRecord?.items,
+    payloadRecord?.data,
+    payloadRecord?.data && typeof payloadRecord.data === 'object' ? (payloadRecord.data as StoriesApiResponse).stories : null,
+    payloadRecord?.data && typeof payloadRecord.data === 'object' ? (payloadRecord.data as StoriesApiResponse).items : null,
+  ]
+
+  const source = sourceCandidates.find((candidate): candidate is Array<StoryGroup | StoryMedia> => Array.isArray(candidate)) ?? []
+
+  if (source.length === 0) {
     return []
   }
 
   const groupedStories = new Map<string, StoryGroup>()
 
   source.forEach((entry, index) => {
-    if ('stories' in entry && Array.isArray(entry.stories)) {
-      const key = String(entry.id ?? entry.user?.id ?? `group-${index}`)
+    const record = entry as StoryGroup & { story?: StoryMedia[] }
+    const storyList = Array.isArray(record.stories)
+      ? record.stories
+      : Array.isArray(record.story)
+        ? record.story
+        : null
+
+    if (storyList) {
+      const key = String(record.id ?? record.user?.id ?? `group-${index}`)
       groupedStories.set(key, {
-        id: entry.id ?? entry.user?.id ?? key,
-        owner: Boolean(entry.owner),
-        user: entry.user ?? null,
-        stories: entry.stories,
+        id: record.id ?? record.user?.id ?? key,
+        owner: Boolean(record.owner),
+        user: record.user ?? null,
+        stories: storyList,
       })
       return
     }
