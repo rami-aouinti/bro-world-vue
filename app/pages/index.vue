@@ -28,8 +28,8 @@ definePageMeta({
     </AppPageDrawers>
     <v-container fluid>
       <template v-if="loggedIn">
-        <BlogStoriesCarousel />
         <BlogNewPostCard />
+        <BlogStoriesCarousel />
       </template>
       <BlogPostFeed />
     </v-container>
