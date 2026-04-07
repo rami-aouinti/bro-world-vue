@@ -72,7 +72,7 @@ function toggleLeftDrawer() {
   >
     <div class="app-top-bar__left mx-4">
       <v-icon
-        icon="custom:vitify-nuxt"
+        icon="custom:world"
         size="x-large"
         class="drawer-header-icon"
         color="primary"
