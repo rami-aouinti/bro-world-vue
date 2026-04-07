@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 40" role="img" aria-label="Portugal flag">
+  <rect width="24" height="40" x="0" fill="#006600"/>
+  <rect width="36" height="40" x="24" fill="#FF0000"/>
+  <circle cx="24" cy="20" r="6" fill="#FFCC00" stroke="#996600" stroke-width="1"/>
+</svg>

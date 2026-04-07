@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 64" role="img" aria-label="Flag MX">
+  <rect width="32" height="64" fill="#006847"/>
+  <rect x="32" width="32" height="64" fill="#FFFFFF"/>
+  <rect x="64" width="32" height="64" fill="#CE1126"/>
+  <circle cx="48" cy="32" r="4" fill="#9C6B30"/>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title>Média indisponible</title>
+  <desc>Image de remplacement locale</desc>
+  <rect width="1200" height="675" fill="#e2e8f0" rx="36"/>
+  <g fill="#94a3b8">
+    <rect x="250" y="150" width="700" height="370" rx="24"/>
+    <circle cx="430" cy="300" r="56" fill="#cbd5e1"/>
+    <path d="M330 470l130-130 90 90 110-120 180 160z" fill="#cbd5e1"/>
+  </g>
+  <text x="600" y="590" text-anchor="middle" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="600">Média indisponible</text>
+</svg>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 64" role="img" aria-label="Flag TR">
+  <rect width="96" height="64" fill="#E30A17"/>
+  <circle cx="40" cy="32" r="14" fill="#FFFFFF"/>
+  <circle cx="44" cy="32" r="11" fill="#E30A17"/>
+  <polygon points="56,32 60,33.5 57.2,36.4 57.8,40.5 54,38.4 50.2,40.5 50.8,36.4 48,33.5 52,32" fill="#FFFFFF"/>
+</svg>

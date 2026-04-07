@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 64" role="img" aria-label="Flag US">
+  <rect width="96" height="64" fill="#B22234"/>
+  <g fill="#FFFFFF">
+    <rect y="4.9" width="96" height="4.9"/><rect y="14.7" width="96" height="4.9"/><rect y="24.5" width="96" height="4.9"/>
+    <rect y="34.3" width="96" height="4.9"/><rect y="44.1" width="96" height="4.9"/><rect y="53.9" width="96" height="4.9"/>
+  </g>
+  <rect width="38" height="34.3" fill="#3C3B6E"/>
+  <circle cx="19" cy="17" r="4" fill="#FFFFFF"/>
+</svg>

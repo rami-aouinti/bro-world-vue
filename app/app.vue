@@ -31,7 +31,7 @@ useHead({
   titleTemplate: (pageTitle) =>
     pageTitle ? `${pageTitle} | ${translateIfKey('app.name')}` : translateIfKey('app.name'),
   htmlAttrs: { lang: locale.value },
-  link: [{ rel: 'icon', href: '/world.svg' }],
+  link: [{ rel: 'icon', href: '/favicon.ico' }],
 })
 
 useSeoMeta({

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 64" role="img" aria-label="Flag SN">
+  <rect width="32" height="64" fill="#00853F"/>
+  <rect x="32" width="32" height="64" fill="#FDEF42"/>
+  <rect x="64" width="32" height="64" fill="#E31B23"/>
+  <polygon points="48,24 50.7,31.5 58.7,31.5 52.2,36.2 54.7,43.8 48,39 41.3,43.8 43.8,36.2 37.3,31.5 45.3,31.5" fill="#00853F"/>
+</svg>

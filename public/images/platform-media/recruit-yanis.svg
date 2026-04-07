@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title>Yanis M.</title>
+  <desc>Data Analyst</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#0f766e" />
+      <stop offset="100%" stop-color="#99f6e4" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)" rx="36" />
+  <g fill="#ffffff" opacity="0.2">
+    <circle cx="180" cy="160" r="90" />
+    <circle cx="1040" cy="540" r="120" />
+    <rect x="420" y="90" width="520" height="52" rx="26" />
+  </g>
+  <text x="70" y="540" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="700">Yanis M.</text>
+  <text x="70" y="600" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="36" opacity="0.9">Data Analyst</text>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 64" role="img" aria-label="Flag UY">
+  <rect width="96" height="64" fill="#FFFFFF"/>
+  <g fill="#0038A8">
+    <rect y="7.1" width="96" height="7.1"/><rect y="21.3" width="96" height="7.1"/><rect y="35.5" width="96" height="7.1"/><rect y="49.7" width="96" height="7.1"/>
+  </g>
+  <rect width="38" height="28" fill="#FFFFFF"/>
+  <circle cx="19" cy="14" r="6" fill="#F6B40E"/>
+</svg>
