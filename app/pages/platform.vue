@@ -119,18 +119,17 @@ function resetFilters() {
   <div>
     <AppPageDrawers>
       <template #left>
-        <div class="pa-4 d-flex flex-column ga-4">
+        <div class="pa-2 d-flex flex-column ga-2">
           <div>
             <div class="text-overline text-medium-emphasis mb-1">{{ t('platform.filters') }}</div>
-            <h3 class="text-h6 font-weight-bold">{{ t('platform.refineResults') }}</h3>
           </div>
 
           <v-text-field
             v-model="searchTerm"
             :label="t('common.search')"
             prepend-inner-icon="mdi-magnify"
-            variant="solo-filled"
-            density="comfortable"
+            variant="outlined"
+            density="compact"
             hide-details
             clearable
           />
@@ -138,8 +137,8 @@ function resetFilters() {
           <v-select
             v-model="selectedStatus"
             :label="t('platform.status')"
-            variant="solo-filled"
-            density="comfortable"
+            variant="outlined"
+            density="compact"
             :items="[
               { title: t('platform.all'), value: 'all' },
               { title: 'Active', value: 'active' },
@@ -151,8 +150,8 @@ function resetFilters() {
           <v-select
             v-model="selectedVisibility"
             :label="t('platform.visibility')"
-            variant="solo-filled"
-            density="comfortable"
+            variant="outlined"
+            density="compact"
             :items="[
               { title: t('platform.all'), value: 'all' },
               { title: t('platform.private'), value: 'private' },
@@ -164,8 +163,8 @@ function resetFilters() {
           <v-select
             v-model="selectedOwnership"
             :label="t('platform.role')"
-            variant="solo-filled"
-            density="comfortable"
+            variant="outlined"
+            density="compact"
             :items="[
               { title: t('platform.all'), value: 'all' },
               { title: t('platform.owner'), value: 'owner' },
@@ -181,77 +180,68 @@ function resetFilters() {
       </template>
 
       <template #right>
-        <div class="pa-4 d-flex flex-column ga-4 h-100">
+        <div v-if="selectedPlatform" class="pa-2 d-flex flex-column ga-2 h-100">
           <div>
-            <div class="text-overline text-medium-emphasis mb-1">{{ t('platform.details') }}</div>
             <h3 class="text-h6 font-weight-bold">{{ selectedPlatform?.title || t('platform.selectPlatform') }}</h3>
           </div>
+          <v-img :src="selectedPlatform.photo" height="120" cover />
+          <v-card-text class="d-flex flex-column ga-3">
+            <div class="text-body-2 text-medium-emphasis">
+              {{ selectedPlatform.description }}
+            </div>
+            <div class="d-flex flex-wrap ga-2">
+              <v-chip size="small" :color="selectedPlatform.status === 'active' ? 'success' : 'warning'" label>
+                {{ selectedPlatform.status }}
+              </v-chip>
+              <v-chip size="small" color="primary" variant="outlined" label>
+                {{ selectedPlatform.platformName }}
+              </v-chip>
+              <v-chip size="small" :color="selectedPlatform.private ? 'deep-purple-accent-4' : 'teal-darken-1'" label>
+                {{ selectedPlatform.private ? t('platform.private') : t('platform.public') }}
+              </v-chip>
+            </div>
 
-          <v-card v-if="selectedPlatform" rounded="xl" variant="tonal" class="selected-platform-card">
-            <v-img :src="selectedPlatform.photo" height="180" cover />
-            <v-card-text class="d-flex flex-column ga-3">
-              <div class="text-body-2 text-medium-emphasis">
-                {{ selectedPlatform.description }}
-              </div>
-              <div class="d-flex flex-wrap ga-2">
-                <v-chip size="small" :color="selectedPlatform.status === 'active' ? 'success' : 'warning'" label>
-                  {{ selectedPlatform.status }}
-                </v-chip>
-                <v-chip size="small" color="primary" variant="outlined" label>
-                  {{ selectedPlatform.platformName }}
-                </v-chip>
-                <v-chip size="small" :color="selectedPlatform.private ? 'deep-purple-accent-4' : 'teal-darken-1'" label>
-                  {{ selectedPlatform.private ? t('platform.private') : t('platform.public') }}
-                </v-chip>
-              </div>
+            <div class="d-flex flex-wrap ga-2">
+              <v-chip
+                v-for="pluginKey in selectedPlatform.pluginKeys"
+                :key="`selected-${pluginKey}`"
+                size="small"
+                variant="outlined"
+              >
+                {{ pluginKey }}
+              </v-chip>
+            </div>
 
-              <div class="d-flex flex-wrap ga-2">
-                <v-chip
-                  v-for="pluginKey in selectedPlatform.pluginKeys"
-                  :key="`selected-${pluginKey}`"
-                  size="small"
-                  variant="outlined"
-                >
-                  {{ pluginKey }}
-                </v-chip>
-              </div>
-
-              <div class="d-flex ga-2 pt-2">
-                <v-btn
-                  v-if="selectedPlatform.isOwner"
-                  color="primary"
-                  variant="flat"
-                  prepend-icon="mdi-pencil"
-                >
-                  {{ t('common.edit') }}
-                </v-btn>
-                <v-btn
-                  v-if="selectedPlatform.isOwner"
-                  color="error"
-                  variant="tonal"
-                  prepend-icon="mdi-delete-outline"
-                >
-                  {{ t('common.delete') }}
-                </v-btn>
-                <v-chip v-else color="grey" variant="tonal" label>
-                  {{ t('platform.member') }}
-                </v-chip>
-              </div>
-            </v-card-text>
-          </v-card>
-
-          <v-alert v-else type="info" variant="tonal" :text="t('platform.selectPlatformHint')" />
+            <div class="d-flex flex-wrap ga-2">
+              <v-btn
+                v-if="selectedPlatform.isOwner"
+                color="primary"
+                variant="outlined"
+                prepend-icon="mdi-pencil"
+              >
+                {{ t('common.edit') }}
+              </v-btn>
+              <v-btn
+                v-if="selectedPlatform.isOwner"
+                color="error"
+                variant="tonal"
+                prepend-icon="mdi-delete-outline"
+              >
+                {{ t('common.delete') }}
+              </v-btn>
+              <v-chip v-else color="grey" variant="tonal" label>
+                {{ t('platform.member') }}
+              </v-chip>
+            </div>
+          </v-card-text>
         </div>
+        <v-alert v-else type="info" variant="tonal" :text="t('platform.selectPlatformHint')" />
       </template>
     </AppPageDrawers>
 
     <v-container fluid>
-      <div class="d-flex align-center justify-space-between flex-wrap ga-2 mb-6">
+      <div class="d-flex align-center justify-space-between flex-wrap ga-2 mb-2">
         <div>
-          <h1 class="text-h4 font-weight-bold">{{ t('platform.title') }}</h1>
-          <p class="text-body-1 text-medium-emphasis">
-            {{ t('platform.subtitle') }}
-          </p>
         </div>
         <v-btn
           variant="tonal"
@@ -287,26 +277,23 @@ function resetFilters() {
           class="d-flex"
         >
           <v-card
-            rounded="xl"
             elevation="3"
             class="platform-card w-100"
             :class="{ 'platform-card--selected': selectedPlatformId === application.id }"
             @click="selectedPlatformId = application.id"
           >
-            <v-img :src="application.photo" height="180" cover class="platform-card__image">
-              <div class="platform-card__overlay pa-3 d-flex justify-end">
-                <v-chip
-                  size="small"
-                  label
-                  :color="application.status === 'active' ? 'success' : 'warning'"
-                >
-                  {{ application.status }}
-                </v-chip>
-              </div>
-            </v-img>
+            <div class="platform-card__overlay pa-1 d-flex justify-end">
+              <v-chip
+                size="small"
+                label
+                :color="application.status === 'active' ? 'success' : 'warning'"
+              >
+                {{ application.status }}
+              </v-chip>
+            </div>
 
             <v-card-item>
-              <v-card-title class="text-wrap text-subtitle-1">{{ application.title }}</v-card-title>
+              <v-card-title class="text-wrap text-subtitle-2">{{ application.title }}</v-card-title>
             </v-card-item>
 
             <v-card-text class="pt-0">
@@ -361,7 +348,7 @@ function resetFilters() {
 
 .platform-card {
   cursor: pointer;
-  min-height: 320px;
+  min-height: 100px;
   max-height: 320px;
   overflow: hidden;
   border: 1px solid rgba(100, 116, 139, 0.15);
