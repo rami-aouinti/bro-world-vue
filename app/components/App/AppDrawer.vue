@@ -61,7 +61,9 @@ const leftDrawerRenderer = computed(() => registry?.left.value ?? null)
     floating
     class="app-left-drawer"
   >
-    <component :is="{ render: leftDrawerRenderer }" v-if="leftDrawerRenderer" class="app-left-drawer-list" />
+    <div v-if="leftDrawerRenderer" class="app-left-drawer-list">
+      <component :is="{ render: leftDrawerRenderer }" />
+    </div>
     <v-list v-else nav density="compact" class="app-left-drawer-list">
       <AppDrawerItem v-for="route in routes" :key="route.name" :item="route" />
     </v-list>
