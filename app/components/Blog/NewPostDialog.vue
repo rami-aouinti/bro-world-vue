@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { SessionUser } from '~/types/session'
+
 const props = withDefaults(defineProps<{
   modelValue: string
   disabled?: boolean
@@ -7,7 +9,7 @@ const props = withDefaults(defineProps<{
 }>(), {
   disabled: false,
   open: false,
-  placeholder: 'Was machst du gerade, Rami?',
+  placeholder: 'Was machst du gerade?',
 })
 
 const emit = defineEmits<{
@@ -20,6 +22,14 @@ const content = computed({
   get: () => props.modelValue,
   set: (value: string) => emit('update:modelValue', value),
 })
+const { user } = useUserSession()
+const sessionUser = computed(() => user.value as SessionUser | null)
+const userDisplayName = computed(() => {
+  const fullName = [sessionUser.value?.firstName, sessionUser.value?.lastName].filter(Boolean).join(' ').trim()
+  return fullName || sessionUser.value?.username || 'Utilisateur'
+})
+const userAvatar = computed(() => sessionUser.value?.photo || null)
+const resolvedPlaceholder = computed(() => `${props.placeholder} ${userDisplayName.value}?`)
 
 const isPostDisabled = computed(() => props.disabled || !props.modelValue.trim())
 
@@ -60,11 +70,12 @@ function onSubmit() {
       <v-card-text class="pt-4 d-flex flex-column ga-4">
         <div class="d-flex align-center ga-3">
           <v-avatar size="44" color="grey-darken-2">
-            <v-icon icon="mdi-account" />
+            <v-img v-if="userAvatar" :src="userAvatar" />
+            <v-icon v-else icon="mdi-account" />
           </v-avatar>
 
           <div class="d-flex flex-column ga-1">
-            <span class="font-weight-bold">Rami</span>
+            <span class="font-weight-bold">{{ userDisplayName }}</span>
             <BlogNewPostAudienceChip :disabled="disabled" />
           </div>
         </div>
@@ -72,7 +83,7 @@ function onSubmit() {
         <v-textarea
           v-model="content"
           :disabled="disabled"
-          :placeholder="placeholder"
+          :placeholder="resolvedPlaceholder"
           auto-grow
           rows="6"
           variant="plain"

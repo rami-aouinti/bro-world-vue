@@ -6,18 +6,26 @@ type BlogReaction = {
   count: number
 }
 
+type BlogAuthor = {
+  firstName: string | null
+  lastName: string | null
+  username: string | null
+  photo: string | null
+  displayName: string
+}
+
 type BlogComment = {
   id: string | number
   content: string
   createdAt: string | null
   isAuthor: boolean
-  author?: string
+  author?: BlogAuthor | null
   children?: BlogComment[]
 }
 
 type BlogPost = {
   id: string | number
-  author?: string
+  author?: BlogAuthor | null
   createdAt: string | null
   content: string
   mediaUrl?: string | null
@@ -56,6 +64,16 @@ const formattedDate = computed(() => {
 })
 
 const commentsCount = computed(() => props.post.comments?.length ?? 0)
+const authorName = computed(() => props.post.author?.displayName || 'Publication')
+const authorPhoto = computed(() => props.post.author?.photo || null)
+const normalizedReactions = computed(() =>
+  (props.post.reactions || [])
+    .filter((reaction) => typeof reaction.type === 'string' && reaction.type.length > 0)
+    .map((reaction) => ({
+      ...reaction,
+      type: reaction.type as string,
+    })),
+)
 
 function submitComment(content: string) {
   if (replyTo.value) {
@@ -77,12 +95,13 @@ function submitComment(content: string) {
     <v-card-item class="pb-1">
       <template #prepend>
         <v-avatar size="52" color="grey-darken-2" class="me-3">
-          <v-icon icon="mdi-account" />
+          <v-img v-if="authorPhoto" :src="authorPhoto" />
+          <v-icon v-else icon="mdi-account" />
         </v-avatar>
       </template>
 
       <v-card-title class="text-h6 font-weight-bold">
-        {{ post.author || 'Auteur' }}
+        {{ authorName }}
       </v-card-title>
       <v-card-subtitle class="text-medium-emphasis">
         {{ formattedDate }} · <v-icon size="14" icon="mdi-account-group-outline" class="ms-1" />
@@ -136,7 +155,7 @@ function submitComment(content: string) {
 
     <v-card-text class="pt-0 pb-2">
       <div class="d-flex align-center justify-space-between">
-        <BlogReactionSummary :reactions="post.reactions || []" />
+        <BlogReactionSummary :reactions="normalizedReactions" />
       </div>
 
       <BlogPostActionsBar

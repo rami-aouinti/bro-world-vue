@@ -5,7 +5,7 @@ const props = withDefaults(defineProps<{
   modelValue?: string
 }>(), {
   disabled: false,
-  placeholder: 'Was machst du gerade, Rami?',
+  placeholder: 'Was machst du gerade,',
   modelValue: '',
 })
 

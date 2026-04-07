@@ -1,15 +1,25 @@
 <script setup lang="ts">
+import type { SessionUser } from '~/types/session'
+
 const props = withDefaults(defineProps<{
   disabled?: boolean
   placeholder?: string
 }>(), {
   disabled: false,
-  placeholder: 'Was machst du gerade, Rami?',
+  placeholder: 'Was machst du gerade?',
 })
 
 const emit = defineEmits<{
   open: []
 }>()
+const { user } = useUserSession()
+const sessionUser = computed(() => user.value as SessionUser | null)
+const userDisplayName = computed(() => {
+  const fullName = [sessionUser.value?.firstName, sessionUser.value?.lastName].filter(Boolean).join(' ').trim()
+  return fullName || sessionUser.value?.username || 'Utilisateur'
+})
+const userAvatar = computed(() => sessionUser.value?.photo || null)
+const resolvedPlaceholder = computed(() => `${props.placeholder} ${userDisplayName.value}?`)
 
 const actions = [
   {
@@ -54,7 +64,8 @@ function openComposer() {
     class="new-post-launcher px-4 py-3 d-flex align-center ga-3"
   >
     <v-avatar size="40" color="grey-darken-2">
-      <v-icon icon="mdi-account" />
+      <v-img v-if="userAvatar" :src="userAvatar" />
+      <v-icon v-else icon="mdi-account" />
     </v-avatar>
 
     <v-btn
@@ -64,7 +75,7 @@ function openComposer() {
       :disabled="disabled"
       @click="openComposer"
     >
-      <span class="new-post-pill__placeholder">{{ placeholder }}</span>
+      <span class="new-post-pill__placeholder">{{ resolvedPlaceholder }}</span>
     </v-btn>
 
     <div class="d-flex ga-1">
