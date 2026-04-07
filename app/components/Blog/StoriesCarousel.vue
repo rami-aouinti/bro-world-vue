@@ -54,12 +54,17 @@ const latestCreatedStory = ref<StoryCreateResponse | null>(null)
 const deletePending = ref(false)
 const deleteError = ref<string | null>(null)
 const localStoryGroups = ref<StoryGroup[]>([])
+const isHydrated = ref(false)
 const { user, loggedIn } = useUserSession()
 const { locale, t } = useI18n()
 
 const { data, pending: storiesPending, refresh } = await useFetch<StoriesApiResponse | StoryGroup[]>('/api/stories', {
   default: () => [],
   server: false,
+})
+
+onMounted(() => {
+  isHydrated.value = true
 })
 
 watch(loggedIn, async (isLoggedIn, wasLoggedIn) => {
@@ -482,7 +487,7 @@ async function deleteSelectedStory() {
         </v-sheet>
 
         <v-sheet
-          v-if="!storiesPending && cards.length === 0"
+          v-if="isHydrated && !storiesPending && cards.length === 0"
           rounded="lg"
           class="d-flex align-center px-4 text-medium-emphasis"
           min-width="160"
