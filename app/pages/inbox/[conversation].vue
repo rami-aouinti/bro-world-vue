@@ -1,6 +1,11 @@
 <script setup lang="ts">
 const route = useRoute()
-const conversation = computed(() => String(route.params.conversation || ''))
+const conversationId = computed(() => String(route.params.conversation || ''))
+const inboxNotificationsStore = useInboxNotificationsStore()
+
+const conversation = computed(() =>
+  inboxNotificationsStore.getInboxById(conversationId.value),
+)
 
 definePageMeta({
   title: 'appbar.inbox',
@@ -15,7 +20,9 @@ definePageMeta({
       <v-card-title>Conversation detail</v-card-title>
 
       <v-card-text v-if="conversation">
-        Conversation ID: <strong>{{ conversation }}</strong>
+        <div class="text-subtitle-1 font-weight-medium">{{ conversation.title }}</div>
+        <div class="text-body-2 text-medium-emphasis mb-3">{{ conversation.createdAt }}</div>
+        <div class="text-body-1">{{ conversation.content || conversation.preview }}</div>
       </v-card-text>
 
       <v-card-text v-else>

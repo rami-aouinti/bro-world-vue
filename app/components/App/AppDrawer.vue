@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import type { SessionUser } from '~/types/session'
 const { t } = useI18n()
 
 const router = useRouter()
 const { user } = useUserSession()
 const isRoot = computed(() => {
-  const roles = (user.value as { roles?: string[] } | null)?.roles ?? []
+  const roles = (user.value as SessionUser | null)?.roles ?? []
   return roles.includes('root')
 })
 const routes = computed(() => {

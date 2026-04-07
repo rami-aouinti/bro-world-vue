@@ -1,28 +1,13 @@
 <script setup lang="ts">
 const { t } = useI18n()
+const inboxNotificationsStore = useInboxNotificationsStore()
+const { notificationsSortedDesc } = storeToRefs(inboxNotificationsStore)
 
 definePageMeta({
   title: 'appbar.notifications',
   icon: 'mdi-bell-ring-outline',
   middleware: 'auth',
 })
-
-const notifications = ref([
-  {
-    id: 'security-alert',
-    title: 'Security alert',
-    createdAt: '2026-04-07T10:30:00Z',
-  },
-  {
-    id: 'billing-reminder',
-    title: 'Billing reminder',
-    createdAt: '2026-04-06T11:20:00Z',
-  },
-])
-
-const sortedNotifications = computed(() =>
-  [...notifications.value].sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
-)
 </script>
 
 <template>
@@ -31,11 +16,12 @@ const sortedNotifications = computed(() =>
       <v-card-title>{{ t('appbar.notifications') }}</v-card-title>
       <v-card-subtitle>Latest updates</v-card-subtitle>
 
-      <v-list v-if="sortedNotifications.length">
+      <v-list v-if="notificationsSortedDesc.length">
         <v-list-item
-          v-for="item in sortedNotifications"
+          v-for="item in notificationsSortedDesc"
           :key="item.id"
           :title="item.title"
+          :subtitle="item.preview"
           prepend-icon="mdi-bell-ring-outline"
           :to="`/notification/${item.id}`"
         />

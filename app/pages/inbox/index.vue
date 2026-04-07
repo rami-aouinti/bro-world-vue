@@ -1,28 +1,13 @@
 <script setup lang="ts">
 const { t } = useI18n()
+const inboxNotificationsStore = useInboxNotificationsStore()
+const { inboxSortedDesc } = storeToRefs(inboxNotificationsStore)
 
 definePageMeta({
   title: 'appbar.inbox',
   icon: 'mdi-email-outline',
   middleware: 'auth',
 })
-
-const conversations = ref([
-  {
-    id: 'q2-planning',
-    title: 'Q2 planning sync',
-    createdAt: '2026-04-07T08:30:00Z',
-  },
-  {
-    id: 'design-review',
-    title: 'Design review feedback',
-    createdAt: '2026-04-06T09:15:00Z',
-  },
-])
-
-const sortedConversations = computed(() =>
-  [...conversations.value].sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
-)
 </script>
 
 <template>
@@ -31,11 +16,12 @@ const sortedConversations = computed(() =>
       <v-card-title>{{ t('appbar.inbox') }}</v-card-title>
       <v-card-subtitle>Conversations</v-card-subtitle>
 
-      <v-list v-if="sortedConversations.length">
+      <v-list v-if="inboxSortedDesc.length">
         <v-list-item
-          v-for="conversation in sortedConversations"
+          v-for="conversation in inboxSortedDesc"
           :key="conversation.id"
           :title="conversation.title"
+          :subtitle="conversation.preview"
           prepend-icon="mdi-email-outline"
           :to="`/inbox/${conversation.id}`"
         />

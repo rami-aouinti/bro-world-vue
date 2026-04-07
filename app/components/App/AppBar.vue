@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { mergeProps } from 'vue'
+import type { SessionUser } from '~/types/session'
 
 const theme = useTheme()
 const drawer = useState('drawer')
@@ -25,69 +26,18 @@ const isDark = computed({
 })
 
 const { loggedIn, clear, user } = useUserSession()
-const avatarUrl = computed(() => user.value?.avatar_url || user.value?.photo)
-const inboxItems = ref([
-  {
-    id: 'project-kickoff',
-    title: 'Project kickoff notes',
-    createdAt: '2026-04-05T14:00:00Z',
-  },
-  {
-    id: 'design-review',
-    title: 'Design review feedback',
-    createdAt: '2026-04-06T09:15:00Z',
-  },
-  {
-    id: 'invoice-follow-up',
-    title: 'Invoice follow-up',
-    createdAt: '2026-04-04T17:45:00Z',
-  },
-  {
-    id: 'q2-planning',
-    title: 'Q2 planning sync',
-    createdAt: '2026-04-07T08:30:00Z',
-  },
-])
-const notificationItems = ref([
-  {
-    id: 'security-alert',
-    title: 'Security alert',
-    createdAt: '2026-04-07T10:30:00Z',
-  },
-  {
-    id: 'billing-reminder',
-    title: 'Billing reminder',
-    createdAt: '2026-04-06T11:20:00Z',
-  },
-  {
-    id: 'weekly-report',
-    title: 'Weekly report is ready',
-    createdAt: '2026-04-03T13:10:00Z',
-  },
-  {
-    id: 'team-invite',
-    title: 'New team invite',
-    createdAt: '2026-04-05T16:55:00Z',
-  },
-])
-const latestInboxItems = computed(() =>
-  [...inboxItems.value]
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-    .slice(0, 3),
-)
-const latestNotificationItems = computed(() =>
-  [...notificationItems.value]
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-    .slice(0, 3),
-)
+const sessionUser = computed(() => user.value as SessionUser | null)
+const avatarUrl = computed(() => sessionUser.value?.photo)
+
+const inboxNotificationsStore = useInboxNotificationsStore()
+const { inboxLatestThree, notificationsLatestThree } = storeToRefs(inboxNotificationsStore)
+
 const userLabel = computed(() => {
-  const fullName = [user.value?.firstName, user.value?.lastName]
+  const fullName = [sessionUser.value?.firstName, sessionUser.value?.lastName]
     .filter(Boolean)
     .join(' ')
 
-  return (
-    fullName || user.value?.login || user.value?.username || t('appbar.user')
-  )
+  return fullName || sessionUser.value?.username || t('appbar.user')
 })
 
 function toggleLeftDrawer() {
@@ -204,7 +154,7 @@ function toggleLeftDrawer() {
           </template>
           <v-list min-width="280">
             <v-list-item
-              v-for="item in latestInboxItems"
+              v-for="item in inboxLatestThree"
               :key="item.id"
               :title="item.title"
               prepend-icon="mdi-email-outline"
@@ -231,7 +181,7 @@ function toggleLeftDrawer() {
           </template>
           <v-list min-width="280">
             <v-list-item
-              v-for="item in latestNotificationItems"
+              v-for="item in notificationsLatestThree"
               :key="item.id"
               :title="item.title"
               prepend-icon="mdi-bell-ring-outline"
