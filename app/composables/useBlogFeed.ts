@@ -251,11 +251,13 @@ type BlogFeedMode = 'general' | 'mine'
 
 type UseBlogFeedOptions = {
   mode?: BlogFeedMode
+  optimistic?: boolean
 }
 
 export function useBlogFeed(options: UseBlogFeedOptions = {}) {
   const { loggedIn } = useUserSession()
   const mode = computed<BlogFeedMode>(() => options.mode ?? 'general')
+  const optimistic = computed(() => options.optimistic ?? false)
 
   const posts = ref<BlogPost[]>([])
   const pagination = ref<BlogPagination>({ ...DEFAULT_PAGINATION })
@@ -363,13 +365,182 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
     await refresh()
   }
 
-  async function comment(postId: string | number, body: UnknownRecord) {
-    await $fetch(`/api/blog/private/posts/${postId}/comments`, {
-      method: 'POST',
-      body,
-    })
+  function isSameId(left: string | number, right: string | number): boolean {
+    return String(left) === String(right)
+  }
 
-    await refresh()
+  function findPostIndex(postId: string | number): number {
+    return posts.value.findIndex((post) => isSameId(post.id, postId))
+  }
+
+  function findCommentInTree(
+    comments: BlogComment[],
+    commentId: string | number,
+  ): { list: BlogComment[]; index: number } | null {
+    for (let index = 0; index < comments.length; index += 1) {
+      const comment = comments[index]
+      if (!comment) {
+        continue
+      }
+
+      if (isSameId(comment.id, commentId)) {
+        return { list: comments, index }
+      }
+
+      const nested = findCommentInTree(comment.children, commentId)
+      if (nested) {
+        return nested
+      }
+    }
+
+    return null
+  }
+
+  function updateEntityById(
+    target: 'post' | 'comment',
+    id: string | number,
+    updater: (entry: BlogPost | BlogComment) => BlogPost | BlogComment | null,
+  ): boolean {
+    if (target === 'post') {
+      const postIndex = findPostIndex(id)
+      if (postIndex < 0) {
+        return false
+      }
+
+      const postEntry = posts.value[postIndex]
+      if (!postEntry) {
+        return false
+      }
+
+      const next = updater(postEntry)
+      if (!next) {
+        posts.value.splice(postIndex, 1)
+        return true
+      }
+
+      posts.value[postIndex] = next as BlogPost
+      return true
+    }
+
+    for (const post of posts.value) {
+      const location = findCommentInTree(post.comments, id)
+      if (!location) {
+        continue
+      }
+
+      const commentEntry = location.list[location.index]
+      if (!commentEntry) {
+        return false
+      }
+
+      const next = updater(commentEntry)
+      if (!next) {
+        location.list.splice(location.index, 1)
+        return true
+      }
+
+      location.list[location.index] = next as BlogComment
+      return true
+    }
+
+    return false
+  }
+
+  function clonePostsState(): BlogPost[] {
+    try {
+      return structuredClone(posts.value)
+    }
+    catch {
+      return JSON.parse(JSON.stringify(posts.value)) as BlogPost[]
+    }
+  }
+
+  async function runMutation(
+    optimisticPatch: (() => void) | null,
+    mutation: () => Promise<void>,
+  ) {
+    const snapshot = optimistic.value && optimisticPatch ? clonePostsState() : null
+
+    if (optimistic.value && optimisticPatch) {
+      optimisticPatch()
+    }
+
+    try {
+      await mutation()
+    }
+    catch (err) {
+      if (snapshot) {
+        posts.value = snapshot
+      }
+
+      throw err
+    }
+  }
+
+  function readMutationSource(response: unknown): UnknownRecord {
+    const record = toRecord(response)
+    const payload = toRecord(record.data)
+
+    return Object.keys(payload).length > 0 ? payload : record
+  }
+
+  function pickFirstRecord(source: UnknownRecord, keys: string[]): UnknownRecord | null {
+    for (const key of keys) {
+      const nested = toRecord(source[key])
+      if (Object.keys(nested).length > 0) {
+        return nested
+      }
+    }
+
+    return null
+  }
+
+  async function comment(postId: string | number, body: UnknownRecord) {
+    await runMutation(
+      optimistic.value
+        ? () => {
+            const postIndex = findPostIndex(postId)
+            if (postIndex < 0) {
+              return
+            }
+            const postEntry = posts.value[postIndex]
+            if (!postEntry) {
+              return
+            }
+
+            const draft = normalizeComment({
+              id: `tmp-${Date.now()}`,
+              content: pickString(body.content),
+              children: [],
+              reactions: [],
+            })
+            postEntry.comments = [draft, ...postEntry.comments]
+          }
+        : null,
+      async () => {
+        const response = await $fetch<unknown>(`/api/blog/private/posts/${postId}/comments`, {
+          method: 'POST',
+          body,
+        })
+
+        const source = readMutationSource(response)
+        const commentPayload = pickFirstRecord(source, ['comment', 'item', 'data'])
+        const postIndex = findPostIndex(postId)
+
+        if (!commentPayload || postIndex < 0) {
+          await refresh()
+          return
+        }
+        const postEntry = posts.value[postIndex]
+        if (!postEntry) {
+          await refresh()
+          return
+        }
+
+        const commentEntry = normalizeComment(commentPayload)
+        postEntry.comments = [commentEntry, ...postEntry.comments.filter((entry) => !String(entry.id).startsWith('tmp-'))]
+      },
+    )
   }
 
   async function react(
@@ -381,12 +552,33 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
     const base = target === 'post' ? `/api/blog/private/posts/${id}/reactions` : `/api/blog/private/comments/${id}/reactions`
     const method = action === 'create' ? 'POST' : action === 'update' ? 'PATCH' : 'DELETE'
 
-    await $fetch(base, {
-      method,
-      body,
-    })
+    await runMutation(
+      null,
+      async () => {
+        const response = await $fetch<unknown>(base, {
+          method,
+          body,
+        })
 
-    await refresh()
+        const source = readMutationSource(response)
+        const parent = pickFirstRecord(source, [target, 'post', 'comment', 'item'])
+        const reactionsSource = parent ? readNestedArray(parent, ['reactions']) : readNestedArray(source, ['reactions'])
+
+        if (reactionsSource.length === 0) {
+          await refresh()
+          return
+        }
+
+        const updated = updateEntityById(target, id, (entry) => ({
+          ...entry,
+          reactions: reactionsSource.map(normalizeReaction),
+        }))
+
+        if (!updated) {
+          await refresh()
+        }
+      },
+    )
   }
 
   async function edit(target: 'post' | 'comment', id: string | number, body: UnknownRecord, postId?: string | number) {
@@ -398,12 +590,40 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
       ? `/api/blog/private/posts/${id}`
       : `/api/blog/private/posts/${postId}/comments/${id}`
 
-    await $fetch(url, {
-      method: 'PATCH',
-      body,
-    })
+    await runMutation(
+      optimistic.value
+        ? () => {
+            updateEntityById(target, id, (entry) => ({
+              ...entry,
+              ...body,
+            }))
+          }
+        : null,
+      async () => {
+        const response = await $fetch<unknown>(url, {
+          method: 'PATCH',
+          body,
+        })
 
-    await refresh()
+        const source = readMutationSource(response)
+        const item = pickFirstRecord(source, [target, 'post', 'comment', 'item'])
+
+        if (!item) {
+          await refresh()
+          return
+        }
+
+        const patched = updateEntityById(
+          target,
+          id,
+          () => (target === 'post' ? normalizePost(item) : normalizeComment(item)),
+        )
+
+        if (!patched) {
+          await refresh()
+        }
+      },
+    )
   }
 
   async function remove(target: 'post' | 'comment', id: string | number, postId?: string | number) {
@@ -415,11 +635,23 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
       ? `/api/blog/private/posts/${id}`
       : `/api/blog/private/posts/${postId}/comments/${id}`
 
-    await $fetch(url, {
-      method: 'DELETE',
-    })
+    await runMutation(
+      optimistic.value
+        ? () => {
+            updateEntityById(target, id, () => null)
+          }
+        : null,
+      async () => {
+        await $fetch(url, {
+          method: 'DELETE',
+        })
 
-    await refresh()
+        const removed = updateEntityById(target, id, () => null)
+        if (!removed) {
+          await refresh()
+        }
+      },
+    )
   }
 
   return {
