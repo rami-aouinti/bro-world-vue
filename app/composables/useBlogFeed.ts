@@ -1,3 +1,5 @@
+import { normalizeHttpError } from '../utils/httpError'
+
 type UnknownRecord = Record<string, unknown>
 
 type BlogAuthor = {
@@ -273,20 +275,6 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
     return loggedIn.value ? '/api/blog/private/general' : '/api/blog/public/general'
   })
 
-  function isUnauthorizedError(err: unknown): boolean {
-    const record = toRecord(err)
-    const statusCode = pickNumber(record.statusCode, -1)
-
-    if (statusCode === 401) {
-      return true
-    }
-
-    const data = toRecord(record.data)
-    const response = toRecord(record.response)
-
-    return pickNumber(data.statusCode, -1) === 401 || pickNumber(response.status, -1) === 401
-  }
-
   async function fetchReactionTypes() {
     const response = await $fetch<unknown>('/api/blog/public/reaction-types')
     const record = toRecord(response)
@@ -312,7 +300,7 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
       catch (err) {
         const shouldFallbackToPublicGeneral = mode.value === 'general'
           && feedEndpoint.value === '/api/blog/private/general'
-          && isUnauthorizedError(err)
+          && normalizeHttpError(err).isUnauthorized
 
         if (!shouldFallbackToPublicGeneral) {
           throw err
