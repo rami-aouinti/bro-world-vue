@@ -198,7 +198,7 @@ function toggleLeftDrawer() {
             <v-list-item
               :title="t('appbar.settings')"
               prepend-icon="mdi-cog-outline"
-              to="/settings"
+              to="/profile/settings"
             />
             <v-list-item
               :title="t('appbar.logout')"
