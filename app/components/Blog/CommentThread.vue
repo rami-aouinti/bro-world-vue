@@ -113,10 +113,25 @@ function pickReaction(comment: BlogComment, code: string) {
           <div class="comment-bubble">
             <div class="d-flex align-start justify-space-between ga-2">
               <div class="text-subtitle-2 font-weight-bold">{{ comment.author?.displayName || 'Utilisateur' }}</div>
-              <div v-if="comment.isAuthor" class="d-flex ga-1">
-                <v-btn size="x-small" variant="text" icon="mdi-pencil-outline" @click="emit('edit', comment)" />
-                <v-btn size="x-small" variant="text" color="error" icon="mdi-delete-outline" @click="emit('delete', comment)" />
-              </div>
+              <v-menu v-if="comment.isAuthor" location="bottom end">
+                <template #activator="{ props: menuProps }">
+                  <v-btn v-bind="menuProps" size="x-small" variant="text" icon="mdi-dots-horizontal" />
+                </template>
+
+                <v-list density="compact" min-width="140">
+                  <v-list-item
+                    prepend-icon="mdi-pencil-outline"
+                    title="Modifier"
+                    @click="emit('edit', comment)"
+                  />
+                  <v-list-item
+                    prepend-icon="mdi-delete-outline"
+                    title="Supprimer"
+                    base-color="error"
+                    @click="emit('delete', comment)"
+                  />
+                </v-list>
+              </v-menu>
             </div>
             <p class="mb-0 text-body-1">{{ comment.content }}</p>
           </div>

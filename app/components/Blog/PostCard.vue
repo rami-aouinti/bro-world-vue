@@ -142,25 +142,25 @@ function onReply(comment: BlogComment) {
       </v-card-subtitle>
 
       <template #append>
-        <div class="d-flex ga-1 align-center">
-          <v-btn icon="mdi-dots-horizontal" size="small" variant="text" />
-          <v-btn icon="mdi-close" size="small" variant="text" />
-          <v-btn
-            v-if="post.isAuthor"
-            size="small"
-            variant="text"
-            icon="mdi-pencil-outline"
-            @click="emit('editPost', post)"
-          />
-          <v-btn
-            v-if="post.isAuthor"
-            size="small"
-            variant="text"
-            color="error"
-            icon="mdi-delete-outline"
-            @click="emit('deletePost', post)"
-          />
-        </div>
+        <v-menu v-if="post.isAuthor" location="bottom end">
+          <template #activator="{ props: menuProps }">
+            <v-btn v-bind="menuProps" icon="mdi-dots-horizontal" size="small" variant="text" />
+          </template>
+
+          <v-list density="compact" min-width="140">
+            <v-list-item
+              prepend-icon="mdi-pencil-outline"
+              title="Modifier"
+              @click="emit('editPost', post)"
+            />
+            <v-list-item
+              prepend-icon="mdi-delete-outline"
+              title="Supprimer"
+              base-color="error"
+              @click="emit('deletePost', post)"
+            />
+          </v-list>
+        </v-menu>
       </template>
     </v-card-item>
 

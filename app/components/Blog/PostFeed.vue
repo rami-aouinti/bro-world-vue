@@ -8,11 +8,13 @@ type BlogReaction = {
 
 type BlogComment = {
   id: string | number
+  content: string
   reactions?: BlogReaction[]
 }
 
 type BlogPost = {
   id: string | number
+  content: string
   reactions?: BlogReaction[]
 }
 
@@ -26,10 +28,14 @@ const props = withDefaults(defineProps<{
   showStories: false,
 })
 
-const { posts, pending, pagination, reactionTypes, refresh, loadMore, comment, react } = useBlogFeed({
+const { posts, pending, pagination, reactionTypes, refresh, loadMore, comment, react, edit, delete: remove } = useBlogFeed({
   mode: props.mode,
 })
 const { loggedIn } = useUserSession()
+const editDialog = ref(false)
+const editContent = ref('')
+const editPending = ref(false)
+const editTarget = ref<{ type: 'post', postId: string | number } | { type: 'comment', postId: string | number, commentId: string | number } | null>(null)
 
 await refresh()
 
@@ -99,6 +105,57 @@ async function replyToComment(payload: { post: { id: string | number }, comment:
     parentId: payload.comment.id,
   })
 }
+
+function openPostEdit(post: BlogPost) {
+  editTarget.value = { type: 'post', postId: post.id }
+  editContent.value = post.content ?? ''
+  editDialog.value = true
+}
+
+function openCommentEdit(payload: { post: BlogPost, comment: BlogComment }) {
+  editTarget.value = {
+    type: 'comment',
+    postId: payload.post.id,
+    commentId: payload.comment.id,
+  }
+  editContent.value = payload.comment.content ?? ''
+  editDialog.value = true
+}
+
+async function deletePost(post: BlogPost) {
+  await remove('post', post.id)
+}
+
+async function deleteComment(payload: { post: BlogPost, comment: BlogComment }) {
+  await remove('comment', payload.comment.id, payload.post.id)
+}
+
+async function submitEdit() {
+  const target = editTarget.value
+  const content = editContent.value.trim()
+
+  if (!target || !content || editPending.value) {
+    return
+  }
+
+  editPending.value = true
+
+  try {
+    if (target.type === 'post') {
+      await edit('post', target.postId, { content })
+    }
+    else {
+      await edit('comment', target.commentId, { content }, target.postId)
+    }
+
+    editDialog.value = false
+    editTarget.value = null
+    editContent.value = ''
+  }
+  finally {
+    editPending.value = false
+  }
+}
 </script>
 
 <template>
@@ -119,6 +176,10 @@ async function replyToComment(payload: { post: { id: string | number }, comment:
         @like="togglePostLike"
         @react-post="reactToPost"
         @react-comment="reactToComment"
+        @edit-post="openPostEdit"
+        @delete-post="deletePost"
+        @edit-comment="openCommentEdit"
+        @delete-comment="deleteComment"
       />
 
       <v-card v-if="!pending && posts.length === 0" rounded="lg">
@@ -139,5 +200,33 @@ async function replyToComment(payload: { post: { id: string | number }, comment:
         </v-btn>
       </div>
     </div>
+
+    <v-dialog v-model="editDialog" max-width="560">
+      <v-card rounded="lg">
+        <v-card-title>Modifier</v-card-title>
+        <v-card-text>
+          <v-textarea
+            v-model="editContent"
+            label="Contenu"
+            rows="5"
+            auto-grow
+            variant="outlined"
+            hide-details
+          />
+        </v-card-text>
+        <v-card-actions class="px-6 pb-5">
+          <v-spacer />
+          <v-btn variant="text" @click="editDialog = false">Annuler</v-btn>
+          <v-btn
+            color="primary"
+            :loading="editPending"
+            :disabled="editPending || !editContent.trim()"
+            @click="submitEdit"
+          >
+            Enregistrer
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
