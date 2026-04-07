@@ -270,6 +270,8 @@ const selectedStoryVisual = computed<string | undefined>(() => {
   return candidates.find((candidate): candidate is string => typeof candidate === 'string' && candidate.length > 0)
 })
 
+const storyReactions = ['👍', '❤️', '🥰', '😆', '😮', '😢', '😡']
+
 function openViewer(index: number) {
   const group = cards.value[index]
   if (!group || group.stories.length === 0) {
@@ -387,10 +389,15 @@ async function deleteSelectedStory() {
   const groupIndex = localStoryGroups.value.findIndex((group) => String(group.id) === String(groupId))
 
   if (groupIndex >= 0) {
-    localStoryGroups.value[groupIndex].stories = localStoryGroups.value[groupIndex].stories
+    const targetGroup = localStoryGroups.value[groupIndex]
+    if (!targetGroup) {
+      return
+    }
+
+    targetGroup.stories = targetGroup.stories
       .filter((story) => String(story.id) !== storyId)
 
-    const storiesCount = localStoryGroups.value[groupIndex].stories.length
+    const storiesCount = targetGroup.stories.length
 
     if (storiesCount === 0) {
       viewerOpen.value = false
@@ -419,9 +426,19 @@ async function deleteSelectedStory() {
 </script>
 
 <template>
-  <v-card rounded="lg" class="mb-4">
-    <v-card-title class="text-subtitle-1 font-weight-bold">Stories</v-card-title>
-    <v-card-text>
+  <v-card rounded="xl" class="mb-4 stories-shell">
+    <v-card-title class="text-subtitle-1 font-weight-bold d-flex align-center justify-space-between">
+      <span>Stories</span>
+      <v-btn
+        icon="mdi-plus"
+        size="small"
+        variant="text"
+        :loading="uploadPending"
+        :disabled="uploadPending"
+        @click.stop="triggerUpload"
+      />
+    </v-card-title>
+    <v-card-text class="pt-2">
       <input
         ref="fileInputRef"
         type="file"
@@ -434,23 +451,23 @@ async function deleteSelectedStory() {
         <v-sheet
           v-for="card in cards"
           :key="card.id ?? card.index"
-          rounded="lg"
+          rounded="xl"
           class="story-card d-flex flex-column justify-space-between"
-          min-width="120"
-          height="180"
+          min-width="130"
+          height="220"
           :style="card.cover ? `background-image: linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,.15)), url(${card.cover});` : ''"
           @click="openViewer(card.index)"
         >
           <div class="d-flex justify-space-between align-start pa-2">
-            <v-avatar size="32" class="story-avatar">
+            <v-avatar size="38" class="story-avatar">
               <v-img :src="card.avatar" cover />
             </v-avatar>
 
             <v-btn
               v-if="card.owner"
-              :icon="uploadPending ? 'mdi-loading' : 'mdi-plus'"
-              size="x-small"
-              color="white"
+              icon="mdi-plus"
+              size="small"
+              color="primary"
               variant="flat"
               :loading="uploadPending"
               :disabled="uploadPending"
@@ -458,9 +475,9 @@ async function deleteSelectedStory() {
             />
           </div>
 
-          <div class="pa-2 text-white text-caption font-weight-medium">
+          <div class="pa-2 text-white text-caption font-weight-medium story-label">
             <div>{{ card.displayName }}</div>
-            <div v-if="card.owner">{{ uploadPending ? 'Envoi…' : 'Ajouter' }}</div>
+            <div v-if="card.owner" class="text-caption text-grey-lighten-2">{{ uploadPending ? 'Envoi…' : 'Créer une story' }}</div>
           </div>
         </v-sheet>
 
@@ -468,8 +485,8 @@ async function deleteSelectedStory() {
           v-if="!storiesPending && cards.length === 0"
           rounded="lg"
           class="d-flex align-center px-4 text-medium-emphasis"
-          min-width="140"
-          height="180"
+          min-width="160"
+          height="220"
         >
           Aucune story
         </v-sheet>
@@ -507,50 +524,245 @@ async function deleteSelectedStory() {
     </v-card-text>
   </v-card>
 
-  <v-dialog v-model="viewerOpen" max-width="460">
-    <v-card v-if="selectedGroup && selectedStory">
-      <v-img
-        :src="selectedStoryVisual"
-        height="440"
-        cover
-      >
-        <div class="d-flex justify-space-between align-center pa-3 text-white">
-          <div>
-            <div class="text-subtitle-2">{{ selectedGroup.displayName }}</div>
-            <div v-if="selectedStoryRelativeTime" class="text-caption">{{ selectedStoryRelativeTime }}</div>
-          </div>
-          <div class="text-caption">{{ selectedStoryIndex + 1 }}/{{ selectedGroup.stories.length }}</div>
-        </div>
-      </v-img>
-      <v-card-actions class="justify-space-between">
-        <v-btn :disabled="!hasPreviousStory" variant="text" @click="goToPreviousStory">Précédente</v-btn>
-        <div class="d-flex align-center ga-2">
-          <v-btn
-            v-if="canDeleteSelectedStory"
-            color="error"
-            variant="text"
-            :loading="deletePending"
-            :disabled="deletePending"
-            @click="deleteSelectedStory"
+  <v-dialog v-model="viewerOpen" fullscreen scrim="rgba(0,0,0,.93)">
+    <v-card v-if="selectedGroup && selectedStory" class="story-viewer">
+      <div class="story-stage">
+        <v-btn
+          class="story-nav-btn story-nav-btn--left"
+          icon="mdi-chevron-left"
+          variant="flat"
+          color="grey-darken-3"
+          :disabled="!hasPreviousStory"
+          @click="goToPreviousStory"
+        />
+
+        <v-sheet rounded="xl" class="story-phone-frame overflow-hidden">
+          <v-img
+            :src="selectedStoryVisual"
+            class="story-media"
+            cover
           >
-            Supprimer
-          </v-btn>
-          <v-btn :disabled="!hasNextStory" variant="text" @click="goToNextStory">Suivante</v-btn>
-        </div>
-      </v-card-actions>
+            <div class="story-overlay-top pa-4">
+              <div class="d-flex ga-1 mb-3">
+                <div
+                  v-for="(item, itemIndex) in selectedGroup.stories"
+                  :key="String(item.id ?? `${selectedGroup.id}-progress-${itemIndex}`)"
+                  class="story-progress-track"
+                >
+                  <div
+                    class="story-progress-value"
+                    :class="{ 'story-progress-value--active': selectedStoryIndex >= itemIndex }"
+                  />
+                </div>
+              </div>
+              <div class="d-flex align-center justify-space-between text-white">
+                <div class="d-flex align-center ga-2">
+                  <v-avatar size="40" class="story-avatar">
+                    <v-img :src="selectedGroup.avatar" cover />
+                  </v-avatar>
+                  <div>
+                    <div class="text-subtitle-2 font-weight-bold">{{ selectedGroup.displayName }}</div>
+                    <div v-if="selectedStoryRelativeTime" class="text-caption">{{ selectedStoryRelativeTime }}</div>
+                  </div>
+                </div>
+                <div class="d-flex align-center ga-1">
+                  <v-btn icon="mdi-volume-high" size="small" variant="text" color="white" />
+                  <v-btn icon="mdi-play" size="small" variant="text" color="white" />
+                  <v-btn icon="mdi-dots-horizontal" size="small" variant="text" color="white" />
+                </div>
+              </div>
+            </div>
+
+            <div class="story-overlay-bottom pa-4">
+              <div class="d-flex align-center ga-2">
+                <v-text-field
+                  placeholder="Message..."
+                  density="compact"
+                  hide-details
+                  variant="outlined"
+                  rounded="pill"
+                  bg-color="rgba(0,0,0,.45)"
+                  color="white"
+                  class="story-reply-input"
+                />
+                <div class="d-flex align-center story-reactions">
+                  <button
+                    v-for="emoji in storyReactions"
+                    :key="emoji"
+                    type="button"
+                    class="story-reaction-btn"
+                  >
+                    {{ emoji }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </v-img>
+        </v-sheet>
+
+        <v-btn
+          class="story-nav-btn story-nav-btn--right"
+          icon="mdi-chevron-right"
+          variant="flat"
+          color="grey-darken-3"
+          :disabled="!hasNextStory"
+          @click="goToNextStory"
+        />
+      </div>
+
+      <div class="d-flex justify-center mt-4">
+        <v-btn
+          v-if="canDeleteSelectedStory"
+          color="error"
+          variant="tonal"
+          :loading="deletePending"
+          :disabled="deletePending"
+          @click="deleteSelectedStory"
+        >
+          Supprimer cette story
+        </v-btn>
+        <v-btn class="ml-2" variant="text" @click="viewerOpen = false">
+          Fermer
+        </v-btn>
+      </div>
+
+      <v-alert
+        v-if="deleteError"
+        type="error"
+        variant="tonal"
+        density="comfortable"
+        class="mx-auto mt-3"
+        max-width="540"
+      >
+        {{ deleteError }}
+      </v-alert>
     </v-card>
   </v-dialog>
 </template>
 
 <style scoped>
+.stories-shell {
+  background: rgb(var(--v-theme-surface));
+}
+
 .story-card {
   background: linear-gradient(to top, rgba(37, 37, 37, 0.65), rgba(37, 37, 37, 0.35));
   background-size: cover;
   background-position: center;
   cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+}
+
+.story-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.28);
 }
 
 .story-avatar {
   border: 2px solid rgb(var(--v-theme-primary));
+}
+
+.story-label {
+  text-shadow: 0 2px 8px rgba(0,0,0,.75);
+}
+
+.story-viewer {
+  background: #000;
+  color: #fff;
+}
+
+.story-stage {
+  min-height: calc(100dvh - 110px);
+  display: grid;
+  grid-template-columns: 84px minmax(280px, 460px) 84px;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  padding-top: 14px;
+}
+
+.story-phone-frame {
+  width: min(460px, calc(100vw - 180px));
+  height: min(84dvh, 820px);
+  background: #1f1f1f;
+}
+
+.story-media {
+  width: 100%;
+  height: 100%;
+}
+
+.story-overlay-top {
+  background: linear-gradient(to bottom, rgba(0,0,0,.62), rgba(0,0,0,.08));
+}
+
+.story-overlay-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.72), rgba(0,0,0,.12));
+}
+
+.story-progress-track {
+  flex: 1;
+  height: 4px;
+  border-radius: 20px;
+  background: rgba(255,255,255,.28);
+  overflow: hidden;
+}
+
+.story-progress-value {
+  width: 0;
+  height: 100%;
+  background: #fff;
+  transition: width .2s ease;
+}
+
+.story-progress-value--active {
+  width: 100%;
+}
+
+.story-reply-input :deep(input) {
+  color: #fff;
+}
+
+.story-reactions {
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 999px;
+  padding: 4px 6px;
+  background: rgba(0,0,0,.45);
+}
+
+.story-reaction-btn {
+  border: 0;
+  background: transparent;
+  font-size: 1.55rem;
+  cursor: pointer;
+}
+
+.story-nav-btn {
+  width: 66px;
+  height: 66px;
+  border-radius: 999px;
+}
+
+@media (max-width: 900px) {
+  .story-stage {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding-inline: 12px;
+  }
+
+  .story-phone-frame {
+    width: min(460px, 100%);
+    justify-self: center;
+    height: min(78dvh, 760px);
+  }
+
+  .story-nav-btn {
+    display: none;
+  }
 }
 </style>
