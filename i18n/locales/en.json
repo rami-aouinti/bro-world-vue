@@ -319,5 +319,15 @@
         "moveFailed": "Unable to move this event."
       }
     }
+  },
+  "home": {
+    "leftNav": {
+      "home": "Home",
+      "discover": "Discover",
+      "messages": "Messages"
+    },
+    "rightNav": {
+      "trending": "Trending"
+    }
   }
 }
