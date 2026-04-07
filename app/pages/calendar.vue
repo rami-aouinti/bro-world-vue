@@ -1,259 +1,372 @@
 <script setup lang="ts">
-interface CalendarEvent {
+import FullCalendar from '@fullcalendar/vue3'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import '@fullcalendar/core/index.css'
+import '@fullcalendar/daygrid/index.css'
+import '@fullcalendar/timegrid/index.css'
+
+interface PrivateCalendarEvent {
   id: string
-  date: string
   title: string
-  color: string
+  description: string | null
+  startAt: string
+  endAt: string
+  status: string
+  visibility: string
+  location: string | null
+  isAllDay: boolean
+  timezone: string | null
+  isCancelled: boolean
+  url: string | null
+  color: string | null
+  backgroundColor: string | null
+  borderColor: string | null
+  textColor: string | null
+}
+
+interface PrivateEventsResponse {
+  items: PrivateCalendarEvent[]
+}
+
+interface EventMutationPayload {
+  title: string
+  description: string | null
+  startAt: string
+  endAt: string
+  isAllDay: boolean
+  location: string | null
+  timezone: string
 }
 
 const { t } = useI18n()
+const privateApi = usePrivateApi()
 
 definePageMeta({
   title: 'appbar.calendar',
   middleware: 'auth',
 })
 
-const weekDays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
-
-const today = new Date()
-const currentMonth = ref(new Date(today.getFullYear(), today.getMonth(), 1))
-
-const events = ref<CalendarEvent[]>([
-  { id: 'kickoff', date: '2026-04-08', title: 'Kickoff project', color: 'primary' },
-  { id: 'review', date: '2026-04-10', title: 'Sprint review', color: 'secondary' },
-  { id: 'retro', date: '2026-04-17', title: 'Retro team', color: 'success' },
-])
-
-const draggedEventId = ref<string | null>(null)
+const isLoading = ref(false)
+const isSaving = ref(false)
+const errorMessage = ref('')
+const calendarEvents = ref<PrivateCalendarEvent[]>([])
+const upcomingEvents = ref<PrivateCalendarEvent[]>([])
+const selectedEvent = ref<PrivateCalendarEvent | null>(null)
 const dialogOpen = ref(false)
-const dialogMode = ref<'create' | 'edit'>('create')
-const formTitle = ref('')
-const formColor = ref('primary')
-const editingEventId = ref<string | null>(null)
-const targetDate = ref('')
 
-const colorOptions = ['primary', 'secondary', 'success', 'warning', 'error', 'info']
-
-const monthLabel = computed(() =>
-  currentMonth.value.toLocaleDateString('fr-FR', {
-    month: 'long',
-    year: 'numeric',
-  }),
-)
-
-const calendarDays = computed(() => {
-  const monthStart = new Date(currentMonth.value)
-  const firstDay = new Date(monthStart.getFullYear(), monthStart.getMonth(), 1)
-  const firstWeekday = (firstDay.getDay() + 6) % 7
-
-  const gridStart = new Date(firstDay)
-  gridStart.setDate(firstDay.getDate() - firstWeekday)
-
-  return Array.from({ length: 42 }, (_, index) => {
-    const date = new Date(gridStart)
-    date.setDate(gridStart.getDate() + index)
-
-    return {
-      iso: toISODate(date),
-      day: date.getDate(),
-      inCurrentMonth: date.getMonth() === monthStart.getMonth(),
-      isToday: toISODate(date) === toISODate(today),
-    }
-  })
+const form = reactive({
+  title: '',
+  description: '',
+  startAt: '',
+  endAt: '',
+  location: '',
+  isAllDay: false,
 })
 
-function toISODate(date: Date) {
-  const local = new Date(date)
-  local.setMinutes(local.getMinutes() - local.getTimezoneOffset())
-  return local.toISOString().slice(0, 10)
-}
+const isEditing = computed(() => Boolean(selectedEvent.value))
 
-function eventsByDay(isoDate: string) {
-  return events.value.filter(event => event.date === isoDate)
-}
-
-function previousMonth() {
-  currentMonth.value = new Date(
-    currentMonth.value.getFullYear(),
-    currentMonth.value.getMonth() - 1,
-    1,
-  )
-}
-
-function nextMonth() {
-  currentMonth.value = new Date(
-    currentMonth.value.getFullYear(),
-    currentMonth.value.getMonth() + 1,
-    1,
-  )
-}
-
-function startCreateEvent(date: string) {
-  dialogMode.value = 'create'
-  editingEventId.value = null
-  targetDate.value = date
-  formTitle.value = ''
-  formColor.value = 'primary'
-  dialogOpen.value = true
-}
-
-function startEditEvent(event: CalendarEvent) {
-  dialogMode.value = 'edit'
-  editingEventId.value = event.id
-  targetDate.value = event.date
-  formTitle.value = event.title
-  formColor.value = event.color
-  dialogOpen.value = true
-}
-
-function saveEvent() {
-  if (!formTitle.value.trim() || !targetDate.value)
-    return
-
-  if (dialogMode.value === 'create') {
-    events.value.push({
-      id: crypto.randomUUID(),
-      date: targetDate.value,
-      title: formTitle.value.trim(),
-      color: formColor.value,
+const fullCalendarEvents = computed(() => {
+  return calendarEvents.value
+    .filter(event => !event.isCancelled)
+    .map((event) => {
+      return {
+        id: event.id,
+        title: event.title,
+        start: event.startAt,
+        end: event.endAt,
+        allDay: event.isAllDay,
+        backgroundColor: event.backgroundColor || event.color || undefined,
+        borderColor: event.borderColor || event.color || undefined,
+        textColor: event.textColor || undefined,
+        extendedProps: {
+          raw: event,
+        },
+      }
     })
-  }
-  else {
-    const event = events.value.find(item => item.id === editingEventId.value)
-    if (!event)
-      return
+})
 
-    event.title = formTitle.value.trim()
-    event.date = targetDate.value
-    event.color = formColor.value
+const calendarOptions = computed(() => {
+  return {
+    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+    initialView: 'dayGridMonth',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay',
+    },
+    buttonText: {
+      today: 'Aujourd’hui',
+      month: 'Mois',
+      week: 'Semaine',
+      day: 'Jour',
+    },
+    selectable: true,
+    editable: false,
+    events: fullCalendarEvents.value,
+    select: (selectionInfo: { startStr: string, endStr: string }) => {
+      openCreateDialog(selectionInfo.startStr, selectionInfo.endStr)
+    },
+    eventClick: (clickInfo: { event: { extendedProps: { raw?: PrivateCalendarEvent } } }) => {
+      const event = clickInfo.event.extendedProps.raw as PrivateCalendarEvent | undefined
+      if (event)
+        openEditDialog(event)
+    },
+    height: 'auto',
   }
+})
 
-  dialogOpen.value = false
+function toInputDateTime(value: string | null) {
+  if (!value)
+    return ''
+
+  const date = new Date(value)
+  date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
+  return date.toISOString().slice(0, 16)
 }
 
-function deleteEvent() {
-  if (!editingEventId.value)
+function toApiDateTime(value: string) {
+  return new Date(value).toISOString()
+}
+
+function fillForm(event?: PrivateCalendarEvent) {
+  form.title = event?.title ?? ''
+  form.description = event?.description ?? ''
+  form.startAt = event ? toInputDateTime(event.startAt) : ''
+  form.endAt = event ? toInputDateTime(event.endAt) : ''
+  form.location = event?.location ?? ''
+  form.isAllDay = event?.isAllDay ?? false
+}
+
+function openCreateDialog(start?: string, end?: string) {
+  selectedEvent.value = null
+  fillForm()
+
+  if (start)
+    form.startAt = toInputDateTime(start)
+  if (end)
+    form.endAt = toInputDateTime(end)
+
+  dialogOpen.value = true
+}
+
+function openEditDialog(event: PrivateCalendarEvent) {
+  selectedEvent.value = event
+  fillForm(event)
+  dialogOpen.value = true
+}
+
+async function loadEvents() {
+  isLoading.value = true
+  errorMessage.value = ''
+
+  try {
+    const [privateResponse, upcomingResponse] = await Promise.all([
+      privateApi<PrivateEventsResponse>('/calendar/private/events'),
+      privateApi<PrivateCalendarEvent[]>('/calendar/events/upcoming'),
+    ])
+
+    calendarEvents.value = privateResponse.items || []
+    upcomingEvents.value = upcomingResponse || []
+  }
+  catch (error) {
+    errorMessage.value = 'Impossible de charger les événements.'
+    console.error(error)
+  }
+  finally {
+    isLoading.value = false
+  }
+}
+
+function buildPayload(): EventMutationPayload {
+  return {
+    title: form.title.trim(),
+    description: form.description.trim() || null,
+    startAt: toApiDateTime(form.startAt),
+    endAt: toApiDateTime(form.endAt),
+    isAllDay: form.isAllDay,
+    location: form.location.trim() || null,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  }
+}
+
+async function saveEvent() {
+  if (!form.title.trim() || !form.startAt || !form.endAt)
     return
 
-  events.value = events.value.filter(event => event.id !== editingEventId.value)
-  dialogOpen.value = false
+  isSaving.value = true
+
+  try {
+    const payload = buildPayload()
+
+    if (selectedEvent.value) {
+      await privateApi(`/calendar/private/events/${selectedEvent.value.id}`, {
+        method: 'PATCH',
+        body: payload,
+      })
+    }
+    else {
+      await privateApi('/calendar/private/events', {
+        method: 'POST',
+        body: payload,
+      })
+    }
+
+    dialogOpen.value = false
+    await loadEvents()
+  }
+  catch (error) {
+    errorMessage.value = 'Impossible d’enregistrer cet événement.'
+    console.error(error)
+  }
+  finally {
+    isSaving.value = false
+  }
 }
 
-function onDragStart(eventId: string) {
-  draggedEventId.value = eventId
-}
-
-function onDrop(isoDate: string) {
-  if (!draggedEventId.value)
+async function deleteEvent() {
+  if (!selectedEvent.value)
     return
 
-  const event = events.value.find(item => item.id === draggedEventId.value)
-  if (event)
-    event.date = isoDate
+  isSaving.value = true
 
-  draggedEventId.value = null
+  try {
+    await privateApi(`/calendar/private/events/${selectedEvent.value.id}`, {
+      method: 'DELETE',
+    })
+
+    dialogOpen.value = false
+    await loadEvents()
+  }
+  catch (error) {
+    errorMessage.value = 'Impossible de supprimer cet événement.'
+    console.error(error)
+  }
+  finally {
+    isSaving.value = false
+  }
 }
+
+async function cancelEvent() {
+  if (!selectedEvent.value)
+    return
+
+  isSaving.value = true
+
+  try {
+    await privateApi(`/calendar/private/events/${selectedEvent.value.id}/cancel`, {
+      method: 'POST',
+    })
+
+    dialogOpen.value = false
+    await loadEvents()
+  }
+  catch (error) {
+    errorMessage.value = 'Impossible d’annuler cet événement.'
+    console.error(error)
+  }
+  finally {
+    isSaving.value = false
+  }
+}
+
+onMounted(loadEvents)
 </script>
 
 <template>
   <div>
     <AppPageDrawers>
       <template #right>
-        <v-card-title>Événements</v-card-title>
-        <v-list v-if="events.length">
+        <v-card-title>Upcoming events</v-card-title>
+        <v-list v-if="upcomingEvents.length">
           <v-list-item
-            v-for="event in events"
+            v-for="event in upcomingEvents"
             :key="event.id"
             :title="event.title"
-            :subtitle="event.date"
+            :subtitle="new Date(event.startAt).toLocaleString('fr-FR')"
             prepend-icon="mdi-calendar-check-outline"
-            :draggable="true"
-            @click="startEditEvent(event)"
-            @dragstart="onDragStart(event.id)"
+            @click="openEditDialog(event)"
           />
         </v-list>
         <v-card-text v-else class="text-medium-emphasis">
-          Aucun événement.
+          Aucun événement à venir.
         </v-card-text>
       </template>
     </AppPageDrawers>
 
     <v-container fluid>
+      <v-alert
+        v-if="errorMessage"
+        type="error"
+        class="mb-4"
+        variant="tonal"
+      >
+        {{ errorMessage }}
+      </v-alert>
+
       <v-card>
         <v-card-title class="d-flex align-center justify-space-between ga-3">
           <span>{{ t('appbar.calendar') }}</span>
-          <div class="d-flex align-center ga-2">
-            <v-btn icon="mdi-chevron-left" variant="text" @click="previousMonth" />
-            <span class="text-capitalize">{{ monthLabel }}</span>
-            <v-btn icon="mdi-chevron-right" variant="text" @click="nextMonth" />
-          </div>
+          <v-btn color="primary" prepend-icon="mdi-plus" @click="openCreateDialog()">
+            Ajouter
+          </v-btn>
         </v-card-title>
 
         <v-card-text>
-          <div class="calendar-grid">
-            <div v-for="weekDay in weekDays" :key="weekDay" class="weekday">
-              {{ weekDay }}
-            </div>
-
-            <div
-              v-for="day in calendarDays"
-              :key="day.iso"
-              class="day-cell"
-              :class="{
-                'day-outside': !day.inCurrentMonth,
-                'day-today': day.isToday,
-              }"
-              @dragover.prevent
-              @drop="onDrop(day.iso)"
-              @click="startCreateEvent(day.iso)"
-            >
-              <div class="day-header">{{ day.day }}</div>
-              <v-chip
-                v-for="event in eventsByDay(day.iso)"
-                :key="event.id"
-                :color="event.color"
-                size="small"
-                class="mb-1"
-                :draggable="true"
-                @click.stop="startEditEvent(event)"
-                @dragstart="onDragStart(event.id)"
-              >
-                {{ event.title }}
-              </v-chip>
-            </div>
-          </div>
+          <v-skeleton-loader
+            v-if="isLoading"
+            type="image"
+            class="rounded-lg"
+          />
+          <FullCalendar v-else :options="calendarOptions" />
         </v-card-text>
       </v-card>
     </v-container>
 
-    <v-dialog v-model="dialogOpen" max-width="480">
+    <v-dialog v-model="dialogOpen" max-width="560">
       <v-card>
         <v-card-title>
-          {{ dialogMode === 'create' ? 'Ajouter un événement' : 'Modifier un événement' }}
+          {{ isEditing ? 'Modifier un événement' : 'Créer un événement' }}
         </v-card-title>
         <v-card-text>
-          <v-text-field v-model="formTitle" label="Titre" autofocus />
-          <v-text-field v-model="targetDate" label="Date" type="date" />
-          <v-select
-            v-model="formColor"
-            :items="colorOptions"
-            label="Couleur"
-          />
+          <v-text-field v-model="form.title" label="Titre" autofocus />
+          <v-textarea v-model="form.description" label="Description" rows="3" />
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-text-field v-model="form.startAt" label="Début" type="datetime-local" />
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-text-field v-model="form.endAt" label="Fin" type="datetime-local" />
+            </v-col>
+          </v-row>
+          <v-text-field v-model="form.location" label="Lieu" />
+          <v-switch v-model="form.isAllDay" label="Toute la journée" color="primary" />
         </v-card-text>
         <v-card-actions>
           <v-btn variant="text" @click="dialogOpen = false">
-            Annuler
+            Fermer
           </v-btn>
           <v-spacer />
           <v-btn
-            v-if="dialogMode === 'edit'"
+            v-if="isEditing"
+            color="warning"
+            variant="text"
+            :loading="isSaving"
+            @click="cancelEvent"
+          >
+            Annuler event
+          </v-btn>
+          <v-btn
+            v-if="isEditing"
             color="error"
             variant="text"
+            :loading="isSaving"
             @click="deleteEvent"
           >
             Supprimer
           </v-btn>
-          <v-btn color="primary" @click="saveEvent">
+          <v-btn color="primary" :loading="isSaving" @click="saveEvent">
             Enregistrer
           </v-btn>
         </v-card-actions>
@@ -263,40 +376,18 @@ function onDrop(isoDate: string) {
 </template>
 
 <style scoped>
-.calendar-grid {
-  display: grid;
-  gap: 8px;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+:deep(.fc) {
+  --fc-border-color: rgb(var(--v-theme-outline-variant));
+  --fc-button-bg-color: rgb(var(--v-theme-primary));
+  --fc-button-border-color: rgb(var(--v-theme-primary));
+  --fc-button-hover-bg-color: rgb(var(--v-theme-primary-darken-1));
+  --fc-button-hover-border-color: rgb(var(--v-theme-primary-darken-1));
+  --fc-button-active-bg-color: rgb(var(--v-theme-primary-darken-1));
+  --fc-button-active-border-color: rgb(var(--v-theme-primary-darken-1));
 }
 
-.weekday {
-  font-weight: 600;
-  padding: 8px;
-  text-align: center;
-}
-
-.day-cell {
-  background-color: rgb(var(--v-theme-surface));
-  border: 1px solid rgb(var(--v-theme-outline-variant));
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  min-height: 25px;
-  padding: 8px;
-}
-
-.day-outside {
-  opacity: 0.45;
-}
-
-.day-today {
-  border-color: rgb(var(--v-theme-primary));
-}
-
-.day-header {
-  font-size: 0.875rem;
-  font-weight: 600;
-  margin-bottom: 8px;
+:deep(.fc .fc-toolbar-title) {
+  font-size: 1.1rem;
+  text-transform: capitalize;
 }
 </style>
