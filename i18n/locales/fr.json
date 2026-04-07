@@ -51,6 +51,7 @@
   "common": {
     "confirm": "Confirmer",
     "cancel": "Annuler",
+    "save": "Enregistrer",
     "search": "Rechercher",
     "delete": "Supprimer",
     "edit": "Modifier",
@@ -271,7 +272,32 @@
     },
     "calendar": {
       "title": "Calendrier",
-      "subtitle": "Votre planning apparaîtra ici bientôt."
+      "subtitle": "Votre planning apparaîtra ici bientôt.",
+      "today": "Aujourd’hui",
+      "month": "Mois",
+      "week": "Semaine",
+      "day": "Jour",
+      "upcomingTitle": "Événements à venir",
+      "noUpcoming": "Aucun événement à venir.",
+      "addEvent": "Ajouter un événement",
+      "createDialogTitle": "Créer un événement",
+      "editDialogTitle": "Modifier un événement",
+      "cancelEvent": "Annuler l’événement",
+      "form": {
+        "title": "Titre",
+        "description": "Description",
+        "start": "Début",
+        "end": "Fin",
+        "location": "Lieu",
+        "allDay": "Toute la journée"
+      },
+      "errors": {
+        "loadFailed": "Impossible de charger les événements.",
+        "saveFailed": "Impossible d’enregistrer cet événement.",
+        "deleteFailed": "Impossible de supprimer cet événement.",
+        "cancelFailed": "Impossible d’annuler cet événement.",
+        "moveFailed": "Impossible de déplacer cet événement."
+      }
     }
   }
 }

@@ -37,8 +37,7 @@ interface EventMutationPayload {
   timezone: string
 }
 
-const { t } = useI18n()
-const privateApi = usePrivateApi()
+const { t, locale } = useI18n()
 
 definePageMeta({
   title: 'appbar.calendar',
@@ -63,10 +62,13 @@ const form = reactive({
 })
 
 const isEditing = computed(() => Boolean(selectedEvent.value))
+const currentTimezone = computed(
+  () => Intl.DateTimeFormat().resolvedOptions().timeZone,
+)
 
 const fullCalendarEvents = computed(() => {
   return calendarEvents.value
-    .filter(event => !event.isCancelled)
+    .filter((event) => !event.isCancelled)
     .map((event) => {
       return {
         id: event.id,
@@ -94,29 +96,32 @@ const calendarOptions = computed(() => {
       right: 'dayGridMonth,timeGridWeek,timeGridDay',
     },
     buttonText: {
-      today: 'Aujourd’hui',
-      month: 'Mois',
-      week: 'Semaine',
-      day: 'Jour',
+      today: t('pages.calendar.today'),
+      month: t('pages.calendar.month'),
+      week: t('pages.calendar.week'),
+      day: t('pages.calendar.day'),
     },
     selectable: true,
-    editable: false,
+    editable: true,
     events: fullCalendarEvents.value,
-    select: (selectionInfo: { startStr: string, endStr: string }) => {
+    select: (selectionInfo: { startStr: string; endStr: string }) => {
       openCreateDialog(selectionInfo.startStr, selectionInfo.endStr)
     },
-    eventClick: (clickInfo: { event: { extendedProps: { raw?: PrivateCalendarEvent } } }) => {
-      const event = clickInfo.event.extendedProps.raw as PrivateCalendarEvent | undefined
-      if (event)
-        openEditDialog(event)
+    eventClick: (clickInfo: {
+      event: { extendedProps: { raw?: PrivateCalendarEvent } }
+    }) => {
+      const event = clickInfo.event.extendedProps.raw as
+        | PrivateCalendarEvent
+        | undefined
+      if (event) openEditDialog(event)
     },
+    eventDrop: onEventDrop,
     height: 'auto',
   }
 })
 
 function toInputDateTime(value: string | null) {
-  if (!value)
-    return ''
+  if (!value) return ''
 
   const date = new Date(value)
   date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
@@ -140,10 +145,8 @@ function openCreateDialog(start?: string, end?: string) {
   selectedEvent.value = null
   fillForm()
 
-  if (start)
-    form.startAt = toInputDateTime(start)
-  if (end)
-    form.endAt = toInputDateTime(end)
+  if (start) form.startAt = toInputDateTime(start)
+  if (end) form.endAt = toInputDateTime(end)
 
   dialogOpen.value = true
 }
@@ -166,12 +169,10 @@ async function loadEvents() {
 
     calendarEvents.value = privateResponse.items || []
     upcomingEvents.value = upcomingResponse || []
-  }
-  catch (error) {
-    errorMessage.value = 'Impossible de charger les événements.'
+  } catch (error) {
+    errorMessage.value = t('pages.calendar.errors.loadFailed')
     console.error(error)
-  }
-  finally {
+  } finally {
     isLoading.value = false
   }
 }
@@ -184,13 +185,60 @@ function buildPayload(): EventMutationPayload {
     endAt: toApiDateTime(form.endAt),
     isAllDay: form.isAllDay,
     location: form.location.trim() || null,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    timezone: currentTimezone.value,
+  }
+}
+
+async function onEventDrop(dropInfo: {
+  event: {
+    id: string
+    start: Date | null
+    end: Date | null
+    allDay: boolean
+  }
+  revert: () => void
+}) {
+  const movedEvent = calendarEvents.value.find(
+    (event) => event.id === dropInfo.event.id,
+  )
+  if (!movedEvent || !dropInfo.event.start) {
+    dropInfo.revert()
+    return
+  }
+
+  const previousDurationMs =
+    new Date(movedEvent.endAt).getTime() -
+    new Date(movedEvent.startAt).getTime()
+  const fallbackEnd = new Date(
+    dropInfo.event.start.getTime() +
+      (previousDurationMs > 0 ? previousDurationMs : 60 * 60 * 1000),
+  )
+
+  const payload: EventMutationPayload = {
+    title: movedEvent.title,
+    description: movedEvent.description,
+    startAt: dropInfo.event.start.toISOString(),
+    endAt: (dropInfo.event.end || fallbackEnd).toISOString(),
+    isAllDay: dropInfo.event.allDay,
+    location: movedEvent.location,
+    timezone: movedEvent.timezone || currentTimezone.value,
+  }
+
+  try {
+    await $fetch(`/api/calendar/private/events/${movedEvent.id}`, {
+      method: 'PATCH',
+      body: payload,
+    })
+    await loadEvents()
+  } catch (error) {
+    dropInfo.revert()
+    errorMessage.value = t('pages.calendar.errors.moveFailed')
+    console.error(error)
   }
 }
 
 async function saveEvent() {
-  if (!form.title.trim() || !form.startAt || !form.endAt)
-    return
+  if (!form.title.trim() || !form.startAt || !form.endAt) return
 
   isSaving.value = true
 
@@ -202,8 +250,7 @@ async function saveEvent() {
         method: 'PATCH',
         body: payload,
       })
-    }
-    else {
+    } else {
       await $fetch('/api/calendar/private/events', {
         method: 'POST',
         body: payload,
@@ -212,19 +259,16 @@ async function saveEvent() {
 
     dialogOpen.value = false
     await loadEvents()
-  }
-  catch (error) {
-    errorMessage.value = 'Impossible d’enregistrer cet événement.'
+  } catch (error) {
+    errorMessage.value = t('pages.calendar.errors.saveFailed')
     console.error(error)
-  }
-  finally {
+  } finally {
     isSaving.value = false
   }
 }
 
 async function deleteEvent() {
-  if (!selectedEvent.value)
-    return
+  if (!selectedEvent.value) return
 
   isSaving.value = true
 
@@ -235,35 +279,33 @@ async function deleteEvent() {
 
     dialogOpen.value = false
     await loadEvents()
-  }
-  catch (error) {
-    errorMessage.value = 'Impossible de supprimer cet événement.'
+  } catch (error) {
+    errorMessage.value = t('pages.calendar.errors.deleteFailed')
     console.error(error)
-  }
-  finally {
+  } finally {
     isSaving.value = false
   }
 }
 
 async function cancelEvent() {
-  if (!selectedEvent.value)
-    return
+  if (!selectedEvent.value) return
 
   isSaving.value = true
 
   try {
-    await $fetch(`/api/calendar/private/events/${selectedEvent.value.id}/cancel`, {
-      method: 'POST',
-    })
+    await $fetch(
+      `/api/calendar/private/events/${selectedEvent.value.id}/cancel`,
+      {
+        method: 'POST',
+      },
+    )
 
     dialogOpen.value = false
     await loadEvents()
-  }
-  catch (error) {
-    errorMessage.value = 'Impossible d’annuler cet événement.'
+  } catch (error) {
+    errorMessage.value = t('pages.calendar.errors.cancelFailed')
     console.error(error)
-  }
-  finally {
+  } finally {
     isSaving.value = false
   }
 }
@@ -275,47 +317,42 @@ onMounted(loadEvents)
   <div>
     <AppPageDrawers>
       <template #right>
-        <v-card-title>Upcoming events</v-card-title>
+        <v-card-title>{{ t('pages.calendar.upcomingTitle') }}</v-card-title>
         <v-list v-if="upcomingEvents.length">
           <v-list-item
             v-for="event in upcomingEvents"
             :key="event.id"
             :title="event.title"
-            :subtitle="new Date(event.startAt).toLocaleString('fr-FR')"
+            :subtitle="new Date(event.startAt).toLocaleString(locale)"
             prepend-icon="mdi-calendar-check-outline"
             @click="openEditDialog(event)"
           />
         </v-list>
         <v-card-text v-else class="text-medium-emphasis">
-          Aucun événement à venir.
+          {{ t('pages.calendar.noUpcoming') }}
         </v-card-text>
       </template>
     </AppPageDrawers>
 
     <v-container fluid>
-      <v-alert
-        v-if="errorMessage"
-        type="error"
-        class="mb-4"
-        variant="tonal"
-      >
+      <v-alert v-if="errorMessage" type="error" class="mb-4" variant="tonal">
         {{ errorMessage }}
       </v-alert>
 
       <v-card>
         <v-card-title class="d-flex align-center justify-space-between ga-3">
           <span>{{ t('appbar.calendar') }}</span>
-          <v-btn color="primary" prepend-icon="mdi-plus" @click="openCreateDialog()">
-            Ajouter
+          <v-btn
+            color="primary"
+            prepend-icon="mdi-plus"
+            @click="openCreateDialog()"
+          >
+            {{ t('pages.calendar.addEvent') }}
           </v-btn>
         </v-card-title>
 
         <v-card-text>
-          <v-skeleton-loader
-            v-if="isLoading"
-            type="image"
-            class="rounded-lg"
-          />
+          <v-skeleton-loader v-if="isLoading" type="image" class="rounded-lg" />
           <FullCalendar v-else :options="calendarOptions" />
         </v-card-text>
       </v-card>
@@ -324,25 +361,52 @@ onMounted(loadEvents)
     <v-dialog v-model="dialogOpen" max-width="560">
       <v-card>
         <v-card-title>
-          {{ isEditing ? 'Modifier un événement' : 'Créer un événement' }}
+          {{
+            isEditing
+              ? t('pages.calendar.editDialogTitle')
+              : t('pages.calendar.createDialogTitle')
+          }}
         </v-card-title>
         <v-card-text>
-          <v-text-field v-model="form.title" label="Titre" autofocus />
-          <v-textarea v-model="form.description" label="Description" rows="3" />
+          <v-text-field
+            v-model="form.title"
+            :label="t('pages.calendar.form.title')"
+            autofocus
+          />
+          <v-textarea
+            v-model="form.description"
+            :label="t('pages.calendar.form.description')"
+            rows="3"
+          />
           <v-row>
             <v-col cols="12" md="6">
-              <v-text-field v-model="form.startAt" label="Début" type="datetime-local" />
+              <v-text-field
+                v-model="form.startAt"
+                :label="t('pages.calendar.form.start')"
+                type="datetime-local"
+              />
             </v-col>
             <v-col cols="12" md="6">
-              <v-text-field v-model="form.endAt" label="Fin" type="datetime-local" />
+              <v-text-field
+                v-model="form.endAt"
+                :label="t('pages.calendar.form.end')"
+                type="datetime-local"
+              />
             </v-col>
           </v-row>
-          <v-text-field v-model="form.location" label="Lieu" />
-          <v-switch v-model="form.isAllDay" label="Toute la journée" color="primary" />
+          <v-text-field
+            v-model="form.location"
+            :label="t('pages.calendar.form.location')"
+          />
+          <v-switch
+            v-model="form.isAllDay"
+            :label="t('pages.calendar.form.allDay')"
+            color="primary"
+          />
         </v-card-text>
         <v-card-actions>
           <v-btn variant="text" @click="dialogOpen = false">
-            Fermer
+            {{ t('common.cancel') }}
           </v-btn>
           <v-spacer />
           <v-btn
@@ -352,7 +416,7 @@ onMounted(loadEvents)
             :loading="isSaving"
             @click="cancelEvent"
           >
-            Annuler event
+            {{ t('pages.calendar.cancelEvent') }}
           </v-btn>
           <v-btn
             v-if="isEditing"
@@ -361,10 +425,10 @@ onMounted(loadEvents)
             :loading="isSaving"
             @click="deleteEvent"
           >
-            Supprimer
+            {{ t('common.delete') }}
           </v-btn>
           <v-btn color="primary" :loading="isSaving" @click="saveEvent">
-            Enregistrer
+            {{ t('common.save') }}
           </v-btn>
         </v-card-actions>
       </v-card>

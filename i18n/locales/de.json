@@ -51,6 +51,7 @@
   "common": {
     "confirm": "Bestätigen",
     "cancel": "Abbrechen",
+    "save": "Speichern",
     "search": "Suchen",
     "delete": "Löschen",
     "edit": "Bearbeiten",
@@ -271,7 +272,32 @@
     },
     "calendar": {
       "title": "Kalender",
-      "subtitle": "Dein Zeitplan wird hier bald angezeigt."
+      "subtitle": "Dein Zeitplan wird hier bald angezeigt.",
+      "today": "Heute",
+      "month": "Monat",
+      "week": "Woche",
+      "day": "Tag",
+      "upcomingTitle": "Bevorstehende Ereignisse",
+      "noUpcoming": "Keine bevorstehenden Ereignisse.",
+      "addEvent": "Ereignis hinzufügen",
+      "createDialogTitle": "Ereignis erstellen",
+      "editDialogTitle": "Ereignis bearbeiten",
+      "cancelEvent": "Ereignis absagen",
+      "form": {
+        "title": "Titel",
+        "description": "Beschreibung",
+        "start": "Beginn",
+        "end": "Ende",
+        "location": "Ort",
+        "allDay": "Ganztägig"
+      },
+      "errors": {
+        "loadFailed": "Ereignisse konnten nicht geladen werden.",
+        "saveFailed": "Dieses Ereignis konnte nicht gespeichert werden.",
+        "deleteFailed": "Dieses Ereignis konnte nicht gelöscht werden.",
+        "cancelFailed": "Dieses Ereignis konnte nicht abgesagt werden.",
+        "moveFailed": "Dieses Ereignis konnte nicht verschoben werden."
+      }
     }
   }
 }
