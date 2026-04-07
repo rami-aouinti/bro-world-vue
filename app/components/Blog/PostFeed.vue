@@ -30,7 +30,9 @@ async function createComment(payload: { post: { id: string | number }, content: 
 <template>
   <div>
     <BlogStoriesCarousel v-if="showStories" />
-    <BlogNewPostCard v-if="showComposer" />
+    <div v-if="showComposer" class="mb-4">
+      <BlogNewPostCard />
+    </div>
 
     <div class="d-flex flex-column ga-4">
       <BlogPostCard
