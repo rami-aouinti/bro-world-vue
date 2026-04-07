@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { isPageSkeletonVisible } = usePageSkeleton()
+
 definePageMeta({
   title: 'profile.posts.title',
   middleware: 'auth',
@@ -9,12 +11,14 @@ definePageMeta({
   <div>
     <AppPageDrawers>
       <template #left>
-        <ProfileDrawer />
+        <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
+        <ProfileDrawer v-else />
       </template>
     </AppPageDrawers>
 
     <v-container fluid>
-      <BlogPostFeed mode="mine" :show-composer="false" :show-stories="false" />
+      <SkeletonPageContent v-if="isPageSkeletonVisible" />
+      <BlogPostFeed v-else mode="mine" :show-composer="false" :show-stories="false" />
     </v-container>
   </div>
 </template>

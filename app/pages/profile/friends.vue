@@ -22,6 +22,7 @@ const api = $fetch.create({
 })
 
 const loading = ref(false)
+const { isPageSkeletonVisible } = usePageSkeleton()
 const actionLoadingUserId = ref<string | null>(null)
 const actionLoadingType = ref<FriendAction | null>(null)
 const globalError = ref<string>('')
@@ -149,11 +150,14 @@ onMounted(fetchFriendsData)
   <div>
     <AppPageDrawers>
       <template #left>
-        <ProfileDrawer />
+        <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
+        <ProfileDrawer v-else />
       </template>
     </AppPageDrawers>
 
     <v-container fluid>
+      <SkeletonPageContent v-if="isPageSkeletonVisible && loading" />
+      <template v-else>
       <v-alert v-if="globalError" type="error" variant="tonal" class="mb-4" closable>
         {{ globalError }}
       </v-alert>
@@ -235,6 +239,7 @@ onMounted(fetchFriendsData)
           </v-card>
         </v-col>
       </v-row>
+      </template>
     </v-container>
   </div>
 </template>

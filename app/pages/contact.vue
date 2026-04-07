@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { t } = useI18n()
+const { isPageSkeletonVisible } = usePageSkeleton()
 
 definePageMeta({
   title: 'Contact',
@@ -10,7 +11,8 @@ definePageMeta({
   <div>
     <AppPageDrawers>
       <template #left>
-        <v-list nav density="compact" class="app-left-drawer-list">
+        <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
+        <v-list v-else nav density="compact" class="app-left-drawer-list">
           <v-list-subheader class="text-overline">Contact</v-list-subheader>
           <v-list-item prepend-icon="mdi-headset" title="Support" subtitle="Lun–Ven, 9h–18h" />
           <v-list-item prepend-icon="mdi-calendar-clock" title="Rendez-vous" subtitle="Visio ou sur site" />
@@ -19,7 +21,8 @@ definePageMeta({
       </template>
 
       <template #right>
-        <v-list nav density="compact" class="app-right-drawer-list">
+        <SkeletonDrawerRight v-if="isPageSkeletonVisible" />
+        <v-list v-else nav density="compact" class="app-right-drawer-list">
           <v-list-item class="px-0 mb-3">
             <v-card rounded="xl" variant="tonal" color="secondary">
               <v-card-item>
@@ -53,8 +56,11 @@ definePageMeta({
     </AppPageDrawers>
 
     <v-container class="py-12 text-center">
-      <h1 class="text-h3 mb-4">{{ t('appbar.contact') }}</h1>
-      <p>Contactez-nous pour toute question ou demande de collaboration.</p>
+      <SkeletonPageContent v-if="isPageSkeletonVisible" />
+      <template v-else>
+        <h1 class="text-h3 mb-4">{{ t('appbar.contact') }}</h1>
+        <p>Contactez-nous pour toute question ou demande de collaboration.</p>
+      </template>
     </v-container>
   </div>
 </template>
