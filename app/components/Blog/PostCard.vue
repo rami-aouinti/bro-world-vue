@@ -150,25 +150,27 @@ function onCreateComment(content: string) {
       </v-card-subtitle>
 
       <template #append>
-        <v-menu v-if="post.isAuthor" location="bottom end">
-          <template #activator="{ props: menuProps }">
-            <v-btn v-bind="menuProps" icon="mdi-dots-horizontal" size="small" variant="text" />
-          </template>
+        <ClientOnly>
+          <v-menu v-if="post.isAuthor" location="bottom end">
+            <template #activator="{ props: menuProps }">
+              <v-btn v-bind="menuProps" icon="mdi-dots-horizontal" size="small" variant="text" />
+            </template>
 
-          <v-list density="compact" min-width="140">
-            <v-list-item
-              prepend-icon="mdi-pencil-outline"
-              :title="t('blog.post.menu.edit')"
-              @click="emit('editPost', post)"
-            />
-            <v-list-item
-              prepend-icon="mdi-delete-outline"
-              :title="t('blog.post.menu.delete')"
-              base-color="error"
-              @click="emit('deletePost', post)"
-            />
-          </v-list>
-        </v-menu>
+            <v-list density="compact" min-width="140">
+              <v-list-item
+                prepend-icon="mdi-pencil-outline"
+                :title="t('blog.post.menu.edit')"
+                @click="emit('editPost', post)"
+              />
+              <v-list-item
+                prepend-icon="mdi-delete-outline"
+                :title="t('blog.post.menu.delete')"
+                base-color="error"
+                @click="emit('deletePost', post)"
+              />
+            </v-list>
+          </v-menu>
+        </ClientOnly>
       </template>
     </v-card-item>
 
