@@ -137,7 +137,7 @@ function toggleLeftDrawer() {
 
         <v-menu v-model="notificationMenuOpen" location="bottom end">
           <template #activator="{ props }">
-            <v-badge :model-value="unreadCount > 0" :content="unreadCount" color="error" offset-x="2" offset-y="2">
+            <v-badge :model-value="unreadCount > 0" :content="unreadCount" color="primary" offset-x="10" offset-y="10">
               <v-btn
                 variant="text"
                 icon="mdi-bell-outline"
