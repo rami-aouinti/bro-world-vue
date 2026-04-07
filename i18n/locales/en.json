@@ -39,7 +39,10 @@
     "showRightDrawer": "Show right drawer",
     "hideRightDrawer": "Hide right drawer",
     "switchToLight": "Switch to light mode",
-    "switchToDark": "Switch to dark mode"
+    "switchToDark": "Switch to dark mode",
+    "inbox": "Inbox",
+    "notifications": "Notifications",
+    "calendar": "Calendar"
   },
   "common": {
     "confirm": "Confirm",
@@ -223,5 +226,26 @@
   },
   "$vuetify": {
     "badge": "Badge"
+  },
+  "actions": {
+    "showAll": "Show All"
+  },
+  "pages": {
+    "inbox": {
+      "title": "Inbox",
+      "subtitle": "Latest conversations",
+      "detailTitle": "Conversation",
+      "detailLabel": "Conversation ID"
+    },
+    "notification": {
+      "title": "Notifications",
+      "subtitle": "Latest notifications",
+      "detailTitle": "Notification",
+      "detailLabel": "Notification ID"
+    },
+    "calendar": {
+      "title": "Calendar",
+      "subtitle": "Your schedule will appear here soon."
+    }
   }
 }

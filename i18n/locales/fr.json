@@ -39,7 +39,10 @@
     "showRightDrawer": "Afficher le panneau droit",
     "hideRightDrawer": "Masquer le panneau droit",
     "switchToLight": "Passer au mode clair",
-    "switchToDark": "Passer au mode sombre"
+    "switchToDark": "Passer au mode sombre",
+    "inbox": "Boîte de réception",
+    "notifications": "Notifications",
+    "calendar": "Calendrier"
   },
   "common": {
     "confirm": "Confirmer",
@@ -223,5 +226,26 @@
   },
   "$vuetify": {
     "badge": "Badge"
+  },
+  "actions": {
+    "showAll": "Voir tout"
+  },
+  "pages": {
+    "inbox": {
+      "title": "Boîte de réception",
+      "subtitle": "Dernières conversations",
+      "detailTitle": "Conversation",
+      "detailLabel": "ID de conversation"
+    },
+    "notification": {
+      "title": "Notifications",
+      "subtitle": "Dernières notifications",
+      "detailTitle": "Notification",
+      "detailLabel": "ID de notification"
+    },
+    "calendar": {
+      "title": "Calendrier",
+      "subtitle": "Votre planning apparaîtra ici bientôt."
+    }
   }
 }
