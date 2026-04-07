@@ -284,5 +284,15 @@
       "title": "Calendario",
       "subtitle": "Tu agenda aparecerá aquí pronto."
     }
+  },
+  "home": {
+    "leftNav": {
+      "home": "Inicio",
+      "discover": "Descubrir",
+      "messages": "Mensajes"
+    },
+    "rightNav": {
+      "trending": "Tendencias"
+    }
   }
 }

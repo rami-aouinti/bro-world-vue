@@ -310,5 +310,15 @@
         "moveFailed": "Dieses Ereignis konnte nicht verschoben werden."
       }
     }
+  },
+  "home": {
+    "leftNav": {
+      "home": "Startseite",
+      "discover": "Entdecken",
+      "messages": "Nachrichten"
+    },
+    "rightNav": {
+      "trending": "Trends"
+    }
   }
 }
