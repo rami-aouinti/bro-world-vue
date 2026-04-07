@@ -260,6 +260,9 @@
     "showAll": "Show All"
   },
   "pages": {
+    "index": {
+      "title": "Home"
+    },
     "inbox": {
       "title": "Inbox",
       "subtitle": "Latest conversations",
@@ -395,7 +398,10 @@
       "now": "Now",
       "actions": {
         "comment": "Comment",
-        "reply": "Reply"
+        "reply": "Reply",
+        "edit": "Edit",
+        "delete": "Delete",
+        "cancel": "Cancel"
       },
       "placeholders": {
         "commentAsUser": "Write a comment…",
@@ -406,6 +412,19 @@
     "story": {
       "title": "Stories",
       "yourStory": "Your story",
+      "actions": {
+        "upload": "Upload story",
+        "delete": "Delete story"
+      },
+      "states": {
+        "empty": "No stories",
+        "success": "Story published"
+      },
+      "errors": {
+        "imageOnly": "Only images are allowed.",
+        "upload": "Unable to upload the story right now.",
+        "delete": "Unable to delete right now. Sync in progress."
+      },
       "uploading": "Uploading…",
       "createCta": "Create a story",
       "empty": "No stories",

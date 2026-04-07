@@ -260,6 +260,9 @@
     "showAll": "Alle anzeigen"
   },
   "pages": {
+    "index": {
+      "title": "Startseite"
+    },
     "inbox": {
       "title": "Posteingang",
       "subtitle": "Neueste Unterhaltungen",
@@ -386,7 +389,10 @@
       "now": "Jetzt",
       "actions": {
         "comment": "Kommentieren",
-        "reply": "Antworten"
+        "reply": "Antworten",
+        "edit": "Bearbeiten",
+        "delete": "Löschen",
+        "cancel": "Abbrechen"
       },
       "placeholders": {
         "commentAsUser": "Kommentieren…",
@@ -397,6 +403,19 @@
     "story": {
       "title": "Stories",
       "yourStory": "Deine Story",
+      "actions": {
+        "upload": "Story hochladen",
+        "delete": "Story löschen"
+      },
+      "states": {
+        "empty": "Keine Stories",
+        "success": "Story veröffentlicht"
+      },
+      "errors": {
+        "imageOnly": "Nur Bilder sind erlaubt.",
+        "upload": "Story kann gerade nicht hochgeladen werden.",
+        "delete": "Löschen derzeit nicht möglich. Synchronisierung läuft."
+      },
       "uploading": "Wird hochgeladen…",
       "createCta": "Story erstellen",
       "empty": "Keine Stories",

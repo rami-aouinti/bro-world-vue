@@ -259,6 +259,9 @@
     "showAll": "Ver todo"
   },
   "pages": {
+    "index": {
+      "title": "Inicio"
+    },
     "inbox": {
       "title": "Bandeja de entrada",
       "subtitle": "Últimas conversaciones",
@@ -360,7 +363,10 @@
       "now": "Ahora",
       "actions": {
         "comment": "Comentar",
-        "reply": "Responder"
+        "reply": "Responder",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "cancel": "Cancelar"
       },
       "placeholders": {
         "commentAsUser": "Añadir un comentario…",
@@ -371,6 +377,19 @@
     "story": {
       "title": "Historias",
       "yourStory": "Tu historia",
+      "actions": {
+        "upload": "Subir historia",
+        "delete": "Eliminar historia"
+      },
+      "states": {
+        "empty": "Sin historias",
+        "success": "Historia publicada"
+      },
+      "errors": {
+        "imageOnly": "Solo se permiten imágenes.",
+        "upload": "No se puede subir la historia por ahora.",
+        "delete": "No se puede eliminar por ahora. Sincronización en curso."
+      },
       "uploading": "Enviando…",
       "createCta": "Crear una historia",
       "empty": "Sin historias",
