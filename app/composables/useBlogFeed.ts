@@ -1,10 +1,21 @@
 type UnknownRecord = Record<string, unknown>
 
+type BlogAuthor = {
+  id: string | number
+  username: string | null
+  firstName: string | null
+  lastName: string | null
+  photo: string | null
+  displayName: string
+  raw: UnknownRecord
+}
+
 type BlogReaction = {
   id: string | number
   type: string | null
   count: number
   isAuthor: boolean
+  author: BlogAuthor | null
   raw: UnknownRecord
 }
 
@@ -14,6 +25,7 @@ type BlogComment = {
   createdAt: string | null
   updatedAt: string | null
   isAuthor: boolean
+  author: BlogAuthor | null
   children: BlogComment[]
   reactions: BlogReaction[]
   raw: UnknownRecord
@@ -21,7 +33,7 @@ type BlogComment = {
 
 type BlogPost = {
   id: string | number
-  author: string | null
+  author: BlogAuthor | null
   title: string | null
   content: string
   createdAt: string | null
@@ -131,7 +143,42 @@ function normalizeReaction(input: unknown): BlogReaction {
     type: pickNullableString(reaction.type) ?? pickNullableString(reaction.code),
     count: pickNumber(reaction.count, 0),
     isAuthor: pickBoolean(reaction.isAuthor, false),
+    author: normalizeAuthor(reaction.author ?? reaction.user),
     raw: reaction,
+  }
+}
+
+function normalizeAuthor(input: unknown): BlogAuthor | null {
+  if (typeof input === 'string' && input.trim()) {
+    return {
+      id: '',
+      username: null,
+      firstName: null,
+      lastName: null,
+      photo: null,
+      displayName: input.trim(),
+      raw: {},
+    }
+  }
+
+  const author = toRecord(input)
+  if (Object.keys(author).length === 0) {
+    return null
+  }
+
+  const firstName = pickNullableString(author.firstName)
+  const lastName = pickNullableString(author.lastName)
+  const fullName = [firstName, lastName].filter(Boolean).join(' ').trim()
+  const username = pickNullableString(author.username)
+
+  return {
+    id: pickId(author),
+    username,
+    firstName,
+    lastName,
+    photo: pickNullableString(author.photo) ?? pickNullableString(author.avatar),
+    displayName: fullName || username || pickNullableString(author.name) || 'Utilisateur',
+    raw: author,
   }
 }
 
@@ -144,6 +191,7 @@ function normalizeComment(input: unknown): BlogComment {
     createdAt: pickNullableString(comment.createdAt),
     updatedAt: pickNullableString(comment.updatedAt),
     isAuthor: pickBoolean(comment.isAuthor, false),
+    author: normalizeAuthor(comment.author ?? comment.user),
     children: readNestedArray(comment, ['children', 'comments']).map(normalizeComment),
     reactions: readNestedArray(comment, ['reactions']).map(normalizeReaction),
     raw: comment,
@@ -155,7 +203,7 @@ function normalizePost(input: unknown): BlogPost {
 
   return {
     id: pickId(post),
-    author: pickNullableString(post.author) ?? pickNullableString(toRecord(post.user).name),
+    author: normalizeAuthor(post.author ?? post.user),
     title: pickNullableString(post.title),
     content: pickString(post.content),
     createdAt: pickNullableString(post.createdAt),

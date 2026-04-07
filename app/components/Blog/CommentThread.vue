@@ -8,7 +8,13 @@ type BlogComment = {
   content: string
   createdAt: string | null
   isAuthor: boolean
-  author?: string
+  author?: {
+    firstName: string | null
+    lastName: string | null
+    username: string | null
+    displayName: string
+    photo: string | null
+  } | null
   children?: BlogComment[]
 }
 
@@ -37,12 +43,13 @@ const emit = defineEmits<{
     >
       <div class="d-flex ga-2 align-start">
         <v-avatar size="34" color="grey-darken-2">
-          <v-icon size="18" icon="mdi-account" />
+          <v-img v-if="comment.author?.photo" :src="comment.author.photo" />
+          <v-icon v-else size="18" icon="mdi-account" />
         </v-avatar>
 
         <div class="comment-body">
           <div class="comment-bubble">
-            <div class="text-subtitle-2 font-weight-bold">{{ comment.author || 'Utilisateur' }}</div>
+            <div class="text-subtitle-2 font-weight-bold">{{ comment.author?.displayName || 'Utilisateur' }}</div>
             <p class="mb-0 text-body-1">{{ comment.content }}</p>
           </div>
 

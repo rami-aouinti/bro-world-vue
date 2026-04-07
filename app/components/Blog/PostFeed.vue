@@ -38,10 +38,7 @@ async function createComment(payload: { post: { id: string | number }, content: 
       <BlogPostCard
         v-for="post in posts"
         :key="post.id"
-        :post="{
-          ...post,
-          author: post.author || post.title || 'Publication',
-        }"
+        :post="post"
         @create-comment="createComment"
       />
 
