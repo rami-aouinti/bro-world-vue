@@ -223,7 +223,7 @@ function onCreateComment(content: string) {
       />
     </v-card-text>
 
-    <v-card-text v-if="showComments && post.comments?.length" class="pt-0">
+    <v-card-text v-if="showComments && post.comments?.length" class="pt-1 pb-2">
       <BlogCommentThread
         :comments="post.comments"
         :active-reply-id="replyTo?.id ?? null"

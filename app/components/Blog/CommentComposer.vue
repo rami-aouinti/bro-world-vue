@@ -54,15 +54,10 @@ function onEnter(event: KeyboardEvent) {
 
 <template>
   <div v-if="isCommentMode" class="comment-composer d-flex align-start ga-2">
-    <div class="avatar-wrap">
-      <v-avatar size="42" color="grey-darken-2">
-        <v-img v-if="userAvatar" :src="userAvatar" cover />
-        <v-icon v-else icon="mdi-account" />
-      </v-avatar>
-      <span class="status-dot">
-        <v-icon size="11" icon="mdi-chevron-down" />
-      </span>
-    </div>
+    <v-avatar size="34" color="grey-darken-2">
+      <v-img v-if="userAvatar" :src="userAvatar" cover />
+      <v-icon v-else icon="mdi-account" />
+    </v-avatar>
 
     <div class="composer-shell">
       <v-textarea
