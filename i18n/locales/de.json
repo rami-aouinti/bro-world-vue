@@ -5,6 +5,7 @@
   },
   "appbar": {
     "home": "Startseite",
+    "platform": "Platform",
     "service": "Service",
     "about": "Über uns",
     "contact": "Kontakt",
@@ -56,6 +57,16 @@
     "copy": "Kopieren",
     "helloWorld": "Hallo Welt",
     "whatsYourName": "Wie heißt du?"
+  },
+  "platform": {
+    "title": "Platforms",
+    "subtitle": "Entdecke verfügbare Anwendungen über alle Plattformen hinweg.",
+    "refresh": "Aktualisieren",
+    "error": "Plattform-Anwendungen konnten nicht geladen werden.",
+    "owner": "Autor",
+    "member": "Mitglied",
+    "emptyTitle": "Keine Anwendungen gefunden",
+    "emptySubtitle": "Derzeit sind keine Anwendungen verfügbar."
   },
   "dialog": {
     "deleteDessertConfirm": "Möchtest du dieses Dessert wirklich löschen?"

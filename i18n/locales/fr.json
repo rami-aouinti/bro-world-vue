@@ -5,6 +5,7 @@
   },
   "appbar": {
     "home": "Accueil",
+    "platform": "Platform",
     "service": "Services",
     "about": "À propos",
     "contact": "Contact",
@@ -56,6 +57,16 @@
     "copy": "Copier",
     "helloWorld": "Bonjour le monde",
     "whatsYourName": "Comment vous appelez-vous ?"
+  },
+  "platform": {
+    "title": "Platforms",
+    "subtitle": "Découvrez les applications disponibles sur toutes les plateformes.",
+    "refresh": "Rafraîchir",
+    "error": "Impossible de charger les applications de plateforme.",
+    "owner": "Auteur",
+    "member": "Membre",
+    "emptyTitle": "Aucune application trouvée",
+    "emptySubtitle": "Aucune application à afficher pour le moment."
   },
   "dialog": {
     "deleteDessertConfirm": "Voulez-vous vraiment supprimer ce dessert ?"
