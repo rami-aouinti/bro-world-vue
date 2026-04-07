@@ -1,8 +1,6 @@
 <script setup lang="ts">
-const { t } = useI18n()
-
 definePageMeta({
-  title: 'appbar.profile',
+  title: 'Games',
   middleware: 'auth',
 })
 </script>
@@ -14,10 +12,11 @@ definePageMeta({
         <ProfileDrawer />
       </template>
     </AppPageDrawers>
+
     <v-container fluid>
-      <h1 class="text-h4 mb-2">{{ t('appbar.profile') }}</h1>
+      <h1 class="text-h4 mb-2">Games</h1>
       <p class="text-body-1 text-medium-emphasis mb-0">
-        Utilisez le menu à gauche pour accéder à vos amis, jeux, paramètres et autres sections du profil.
+        Accédez à vos jeux et activités.
       </p>
     </v-container>
   </div>
