@@ -43,10 +43,16 @@ const fileInputRef = ref<HTMLInputElement | null>(null)
 const uploadPending = ref(false)
 const uploadError = ref<string | null>(null)
 const latestCreatedStory = ref<StoryCreateResponse | null>(null)
+const deletePending = ref(false)
+const deleteError = ref<string | null>(null)
+const localStoryGroups = ref<StoryGroup[]>([])
+const { user } = useUserSession()
 
 const { data, pending: storiesPending, refresh } = await useFetch<StoriesApiResponse | StoryGroup[]>('/api/stories', {
   default: () => [],
 })
+
+const sessionUserId = computed(() => String(user.value?.id ?? ''))
 
 const storyGroups = computed<StoryGroup[]>(() => {
   if (Array.isArray(data.value)) {
@@ -56,8 +62,16 @@ const storyGroups = computed<StoryGroup[]>(() => {
   return data.value?.stories ?? data.value?.data ?? []
 })
 
+watch(storyGroups, (groups) => {
+  localStoryGroups.value = groups.map((group) => ({
+    ...group,
+    user: group.user ? { ...group.user } : null,
+    stories: Array.isArray(group.stories) ? group.stories.map((story) => ({ ...story })) : [],
+  }))
+}, { immediate: true })
+
 const cards = computed(() => {
-  return storyGroups.value
+  return localStoryGroups.value
     .map((group, index) => {
       const stories = Array.isArray(group.stories) ? group.stories : []
       const latestStory = stories.at(-1)
@@ -99,6 +113,16 @@ const hasNextStory = computed(() => {
   }
 
   return selectedStoryIndex.value < selectedGroup.value.stories.length - 1
+})
+
+const canDeleteSelectedStory = computed(() => {
+  if (!selectedGroup.value) {
+    return false
+  }
+
+  const ownerId = selectedGroup.value.user?.id
+
+  return selectedGroup.value.owner || (ownerId != null && String(ownerId) === sessionUserId.value)
 })
 
 const selectedStoryVisual = computed<string | undefined>(() => {
@@ -185,6 +209,55 @@ function goToNextStory() {
     selectedStoryIndex.value += 1
   }
 }
+
+async function deleteSelectedStory() {
+  if (deletePending.value || !selectedGroup.value || !selectedStory.value?.id || !canDeleteSelectedStory.value) {
+    return
+  }
+
+  deletePending.value = true
+  deleteError.value = null
+
+  const storyId = String(selectedStory.value.id)
+  const previousGroups = localStoryGroups.value.map((group) => ({
+    ...group,
+    user: group.user ? { ...group.user } : null,
+    stories: group.stories.map((story) => ({ ...story })),
+  }))
+
+  const groupId = selectedGroup.value.id
+  const groupIndex = localStoryGroups.value.findIndex((group) => String(group.id) === String(groupId))
+
+  if (groupIndex >= 0) {
+    localStoryGroups.value[groupIndex].stories = localStoryGroups.value[groupIndex].stories
+      .filter((story) => String(story.id) !== storyId)
+
+    const storiesCount = localStoryGroups.value[groupIndex].stories.length
+
+    if (storiesCount === 0) {
+      viewerOpen.value = false
+      selectedGroupIndex.value = null
+      selectedStoryIndex.value = 0
+    }
+    else if (selectedStoryIndex.value >= storiesCount) {
+      selectedStoryIndex.value = storiesCount - 1
+    }
+  }
+
+  try {
+    await $fetch(`/api/stories/${storyId}`, {
+      method: 'DELETE',
+    })
+  }
+  catch {
+    deleteError.value = 'Suppression impossible pour le moment. Synchronisation en cours.'
+    localStoryGroups.value = previousGroups
+    await refresh()
+  }
+  finally {
+    deletePending.value = false
+  }
+}
 </script>
 
 <template>
@@ -255,6 +328,16 @@ function goToNextStory() {
       </v-alert>
 
       <v-alert
+        v-if="deleteError"
+        type="error"
+        variant="tonal"
+        density="comfortable"
+        class="mt-3"
+      >
+        {{ deleteError }}
+      </v-alert>
+
+      <v-alert
         v-if="latestCreatedStory"
         type="success"
         variant="tonal"
@@ -280,7 +363,19 @@ function goToNextStory() {
       </v-img>
       <v-card-actions class="justify-space-between">
         <v-btn :disabled="!hasPreviousStory" variant="text" @click="goToPreviousStory">Précédente</v-btn>
-        <v-btn :disabled="!hasNextStory" variant="text" @click="goToNextStory">Suivante</v-btn>
+        <div class="d-flex align-center ga-2">
+          <v-btn
+            v-if="canDeleteSelectedStory"
+            color="error"
+            variant="text"
+            :loading="deletePending"
+            :disabled="deletePending"
+            @click="deleteSelectedStory"
+          >
+            Supprimer
+          </v-btn>
+          <v-btn :disabled="!hasNextStory" variant="text" @click="goToNextStory">Suivante</v-btn>
+        </div>
       </v-card-actions>
     </v-card>
   </v-dialog>
