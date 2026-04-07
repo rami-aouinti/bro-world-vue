@@ -47,6 +47,7 @@ const deletePending = ref(false)
 const deleteError = ref<string | null>(null)
 const localStoryGroups = ref<StoryGroup[]>([])
 const { user } = useUserSession()
+const { locale } = useI18n()
 
 const { data, pending: storiesPending, refresh } = await useFetch<StoriesApiResponse | StoryGroup[]>('/api/stories', {
   default: () => [],
@@ -63,10 +64,33 @@ const storyGroups = computed<StoryGroup[]>(() => {
 })
 
 watch(storyGroups, (groups) => {
+  const now = Date.now()
+
   localStoryGroups.value = groups.map((group) => ({
     ...group,
     user: group.user ? { ...group.user } : null,
-    stories: Array.isArray(group.stories) ? group.stories.map((story) => ({ ...story })) : [],
+    stories: Array.isArray(group.stories)
+      ? group.stories
+        .map((story) => ({ ...story }))
+        .filter((story) => {
+          if (!story.expiresAt) {
+            return true
+          }
+
+          const expiresAt = new Date(story.expiresAt).getTime()
+          if (Number.isNaN(expiresAt)) {
+            return true
+          }
+
+          return expiresAt > now
+        })
+        .sort((a, b) => {
+          const createdAtA = a.createdAt ? new Date(a.createdAt).getTime() : 0
+          const createdAtB = b.createdAt ? new Date(b.createdAt).getTime() : 0
+
+          return createdAtB - createdAtA
+        })
+      : [],
   }))
 }, { immediate: true })
 
@@ -74,7 +98,7 @@ const cards = computed(() => {
   return localStoryGroups.value
     .map((group, index) => {
       const stories = Array.isArray(group.stories) ? group.stories : []
-      const latestStory = stories.at(-1)
+      const latestStory = stories[0]
       const cover = latestStory?.coverUrl || latestStory?.thumbnailUrl || latestStory?.imageUrl || latestStory?.mediaUrl || null
 
       return {
@@ -147,9 +171,37 @@ function openViewer(index: number) {
   }
 
   selectedGroupIndex.value = index
-  selectedStoryIndex.value = group.stories.length - 1
+  selectedStoryIndex.value = 0
   viewerOpen.value = true
 }
+
+const selectedStoryRelativeTime = computed(() => {
+  if (!selectedStory.value?.createdAt) {
+    return ''
+  }
+
+  const createdAt = new Date(selectedStory.value.createdAt).getTime()
+  if (Number.isNaN(createdAt)) {
+    return ''
+  }
+
+  const diffMs = createdAt - Date.now()
+  const minuteMs = 60 * 1000
+  const hourMs = 60 * minuteMs
+  const dayMs = 24 * hourMs
+
+  const rtf = new Intl.RelativeTimeFormat(locale.value, { numeric: 'auto' })
+
+  if (Math.abs(diffMs) >= dayMs) {
+    return rtf.format(Math.round(diffMs / dayMs), 'day')
+  }
+
+  if (Math.abs(diffMs) >= hourMs) {
+    return rtf.format(Math.round(diffMs / hourMs), 'hour')
+  }
+
+  return rtf.format(Math.round(diffMs / minuteMs), 'minute')
+})
 
 function triggerUpload() {
   if (uploadPending.value) {
@@ -357,7 +409,10 @@ async function deleteSelectedStory() {
         cover
       >
         <div class="d-flex justify-space-between align-center pa-3 text-white">
-          <div class="text-subtitle-2">{{ selectedGroup.displayName }}</div>
+          <div>
+            <div class="text-subtitle-2">{{ selectedGroup.displayName }}</div>
+            <div v-if="selectedStoryRelativeTime" class="text-caption">{{ selectedStoryRelativeTime }}</div>
+          </div>
           <div class="text-caption">{{ selectedStoryIndex + 1 }}/{{ selectedGroup.stories.length }}</div>
         </div>
       </v-img>
