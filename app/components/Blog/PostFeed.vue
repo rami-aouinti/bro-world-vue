@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { formatDateTime } from '../../utils/formatDateTime'
-
 type BlogFeedMode = 'general' | 'mine'
 
 const props = withDefaults(defineProps<{
@@ -13,20 +11,20 @@ const props = withDefaults(defineProps<{
   showStories: false,
 })
 
-const { posts, pending, pagination, refresh, loadMore } = useBlogFeed({
+const { posts, pending, pagination, refresh, loadMore, comment } = useBlogFeed({
   mode: props.mode,
 })
-const { locale } = useI18n()
-
-function formatPostDate(value: string | null) {
-  if (!value) {
-    return ''
-  }
-
-  return formatDateTime(locale.value, new Date(value))
-}
+const { loggedIn } = useUserSession()
 
 await refresh()
+
+async function createComment(payload: { post: { id: string | number }, content: string }) {
+  if (!loggedIn.value) {
+    return
+  }
+
+  await comment(payload.post.id, { content: payload.content })
+}
 </script>
 
 <template>
@@ -34,27 +32,24 @@ await refresh()
     <BlogStoriesCarousel v-if="showStories" />
     <BlogNewPostCard v-if="showComposer" />
 
-    <v-card rounded="lg">
-      <v-list lines="three">
-        <v-list-subheader>Fil du blog</v-list-subheader>
+    <div class="d-flex flex-column ga-4">
+      <BlogPostCard
+        v-for="post in posts"
+        :key="post.id"
+        :post="{
+          ...post,
+          author: post.author || post.title || 'Publication',
+        }"
+        @create-comment="createComment"
+      />
 
-        <v-list-item
-          v-for="post in posts"
-          :key="post.id"
-          :title="post.title || 'Publication'"
-          :subtitle="post.content"
-        >
-          <template #append>
-            <span class="text-caption text-medium-emphasis">
-              {{ formatPostDate(post.createdAt) }}
-            </span>
-          </template>
-        </v-list-item>
+      <v-card v-if="!pending && posts.length === 0" rounded="lg">
+        <v-card-text class="text-medium-emphasis">
+          Aucune publication à afficher
+        </v-card-text>
+      </v-card>
 
-        <v-list-item v-if="!pending && posts.length === 0" title="Aucune publication à afficher" />
-      </v-list>
-
-      <v-card-actions class="justify-center py-4">
+      <div class="d-flex justify-center py-2">
         <v-btn
           :loading="pending"
           :disabled="pending || !pagination.hasNextPage"
@@ -64,7 +59,7 @@ await refresh()
         >
           Voir plus
         </v-btn>
-      </v-card-actions>
-    </v-card>
+      </div>
+    </div>
   </div>
 </template>

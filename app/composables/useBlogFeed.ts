@@ -14,16 +14,20 @@ type BlogComment = {
   createdAt: string | null
   updatedAt: string | null
   isAuthor: boolean
+  children: BlogComment[]
   reactions: BlogReaction[]
   raw: UnknownRecord
 }
 
 type BlogPost = {
   id: string | number
+  author: string | null
   title: string | null
   content: string
   createdAt: string | null
   updatedAt: string | null
+  mediaUrl: string | null
+  sharedUrl: string | null
   isAuthor: boolean
   comments: BlogComment[]
   reactions: BlogReaction[]
@@ -140,6 +144,7 @@ function normalizeComment(input: unknown): BlogComment {
     createdAt: pickNullableString(comment.createdAt),
     updatedAt: pickNullableString(comment.updatedAt),
     isAuthor: pickBoolean(comment.isAuthor, false),
+    children: readNestedArray(comment, ['children', 'comments']).map(normalizeComment),
     reactions: readNestedArray(comment, ['reactions']).map(normalizeReaction),
     raw: comment,
   }
@@ -150,10 +155,13 @@ function normalizePost(input: unknown): BlogPost {
 
   return {
     id: pickId(post),
+    author: pickNullableString(post.author) ?? pickNullableString(toRecord(post.user).name),
     title: pickNullableString(post.title),
     content: pickString(post.content),
     createdAt: pickNullableString(post.createdAt),
     updatedAt: pickNullableString(post.updatedAt),
+    mediaUrl: pickNullableString(post.mediaUrl) ?? pickNullableString(post.media),
+    sharedUrl: pickNullableString(post.sharedUrl) ?? pickNullableString(post.url),
     isAuthor: pickBoolean(post.isAuthor, false),
     comments: readNestedArray(post, ['comments']).map(normalizeComment),
     reactions: readNestedArray(post, ['reactions']).map(normalizeReaction),
