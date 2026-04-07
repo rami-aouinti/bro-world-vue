@@ -41,7 +41,7 @@ const selectedLocale = computed(
       </v-btn>
     </template>
 
-    <v-list>
+    <v-list min-width="220">
       <v-list-item
         v-for="item in localeOptions"
         :key="item.value"
