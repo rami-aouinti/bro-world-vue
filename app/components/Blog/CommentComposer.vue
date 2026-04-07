@@ -17,10 +17,12 @@ const emit = defineEmits<{
 const content = ref('')
 const { user } = useUserSession()
 const { t } = useI18n()
+const theme = useTheme()
 
 const canSubmit = computed(() => content.value.trim().length > 0 && !props.loading)
 const userAvatar = computed(() => user.value?.photo || null)
 const resolvedPlaceholder = computed(() => props.placeholder || t('blog.comment.placeholders.commentAsUser'))
+const isLightTheme = computed(() => !theme.current.value.dark)
 
 const quickActions = [
   'mdi-star-outline',
@@ -53,7 +55,7 @@ function onEnter(event: KeyboardEvent) {
 </script>
 
 <template>
-  <div class="comment-composer d-flex align-start ga-2">
+  <div class="comment-composer d-flex align-start ga-2" :class="{ 'comment-composer--light': isLightTheme }">
     <v-avatar size="34" color="grey-darken-2">
       <v-img v-if="userAvatar" :src="userAvatar" cover />
       <v-icon v-else icon="mdi-account" />
@@ -148,5 +150,18 @@ function onEnter(event: KeyboardEvent) {
 
 .tool-btn {
   opacity: 0.82;
+}
+
+.comment-composer--light .composer-shell {
+  background: #eef1f7;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+}
+
+.comment-composer--light .tool-btn {
+  color: rgba(15, 23, 42, 0.6) !important;
+}
+
+.comment-composer--light :deep(.v-btn[disabled]) {
+  color: rgba(15, 23, 42, 0.38) !important;
 }
 </style>
