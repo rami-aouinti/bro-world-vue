@@ -31,6 +31,39 @@ type NotificationsApiResponse = {
   unreadCount: number
 }
 
+export interface PrivateConversationParticipant {
+  id: string
+  firstName: string
+  lastName: string
+}
+
+export interface PrivateConversationMessage {
+  content: string | null
+  createdAt: string
+}
+
+export interface PrivateConversation {
+  id: string
+  title: string | null
+  createdAt: string
+  participants: PrivateConversationParticipant[]
+  ownerId: string
+  lastMessage: PrivateConversationMessage | null
+}
+
+export interface PrivateConversationsPagination {
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+}
+
+export interface PrivateConversationsApiResponse {
+  items: PrivateConversation[]
+  pagination: PrivateConversationsPagination
+  filters: Record<string, unknown>
+}
+
 function isUnauthorizedError(error: unknown): boolean {
   if (!error || typeof error !== 'object') return false
 
@@ -38,50 +71,35 @@ function isUnauthorizedError(error: unknown): boolean {
   return maybeError.status === 401 || maybeError.statusCode === 401
 }
 
-const mockInboxItems: InboxItem[] = [
-  {
-    id: 'project-kickoff',
-    title: 'Project kickoff notes',
-    createdAt: '2026-04-05T14:00:00Z',
-    preview: 'Summary and decisions from the project kickoff meeting.',
-    content:
-      'Summary and decisions from the project kickoff meeting. Next step: validate milestones with the product team.',
-  },
-  {
-    id: 'design-review',
-    title: 'Design review feedback',
-    createdAt: '2026-04-06T09:15:00Z',
-    preview: 'Updated comments about the latest design iteration.',
-    content:
-      'Updated comments about the latest design iteration. Focus changes on accessibility and spacing consistency.',
-  },
-  {
-    id: 'invoice-follow-up',
-    title: 'Invoice follow-up',
-    createdAt: '2026-04-04T17:45:00Z',
-    preview: 'Reminder to validate invoice details before payment.',
-    content:
-      'Reminder to validate invoice details before payment. Finance asks for confirmation by end of day.',
-  },
-  {
-    id: 'q2-planning',
-    title: 'Q2 planning sync',
-    createdAt: '2026-04-07T08:30:00Z',
-    preview: 'Agenda and follow-up for Q2 planning.',
-    content:
-      'Agenda and follow-up for Q2 planning. Please review priorities and update your capacity by tomorrow.',
-  },
-]
-
 const normalizeNotification = (notification: UserNotificationItem): UserNotificationItem => ({
   ...notification,
   preview: notification.description,
   content: notification.description,
 })
 
+const getParticipantName = (participant: PrivateConversationParticipant): string =>
+  `${participant.firstName} ${participant.lastName}`.trim()
+
+const normalizePrivateConversation = (conversation: PrivateConversation): InboxItem => {
+  const participantFallbackTitle = conversation.participants
+    .find((participant) => participant.id !== conversation.ownerId)
+  const title = conversation.title?.trim() || (participantFallbackTitle
+    ? getParticipantName(participantFallbackTitle)
+    : 'Private conversation')
+  const content = conversation.lastMessage?.content?.trim() || ''
+
+  return {
+    id: conversation.id,
+    title,
+    createdAt: conversation.lastMessage?.createdAt || conversation.createdAt,
+    preview: content || undefined,
+    content: content || undefined,
+  }
+}
+
 export const useInboxNotificationsStore = defineStore('inbox-notifications', {
   state: () => ({
-    inbox: mockInboxItems,
+    inbox: [] as InboxItem[],
     notifications: [] as UserNotificationItem[],
     unreadCount: 0,
   }),
@@ -100,6 +118,23 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
     },
   },
   actions: {
+    async fetchInboxConversations(page = 1, limit = 20) {
+      try {
+        const response = await $fetch<PrivateConversationsApiResponse>('/api/chat/private/conversations', {
+          query: { page, limit },
+        })
+
+        this.inbox = (response.items || []).map(normalizePrivateConversation)
+      }
+      catch (error) {
+        if (isUnauthorizedError(error)) {
+          this.inbox = []
+          return
+        }
+
+        throw error
+      }
+    },
     async fetchNotifications(limit = 20, offset = 0) {
       try {
         const response = await $fetch<NotificationsApiResponse>('/api/notifications', {
