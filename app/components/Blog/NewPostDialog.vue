@@ -22,7 +22,9 @@ const content = computed({
   get: () => props.modelValue,
   set: (value: string) => emit('update:modelValue', value),
 })
+const theme = useTheme()
 const { user } = useUserSession()
+const isLightTheme = computed(() => !theme.current.value.dark)
 const sessionUser = computed(() => user.value as SessionUser | null)
 const userDisplayName = computed(() => {
   const fullName = [sessionUser.value?.firstName, sessionUser.value?.lastName].filter(Boolean).join(' ').trim()
@@ -52,7 +54,11 @@ function onSubmit() {
     max-width="640"
     @update:model-value="emit('update:open', $event)"
   >
-    <v-card class="new-post-dialog" rounded="xl">
+    <v-card
+      class="new-post-dialog"
+      :class="{ 'new-post-dialog--light': isLightTheme }"
+      rounded="xl"
+    >
       <v-card-title class="py-4 d-flex align-center justify-center position-relative">
         <span class="new-post-dialog__title text-h6">Beitrag erstellen</span>
         <v-btn
@@ -123,6 +129,14 @@ function onSubmit() {
   background: var(--dialog-bg);
   border: 1px solid var(--dialog-border);
   border-radius: var(--dialog-radius) !important;
+}
+
+.new-post-dialog--light {
+  --dialog-bg: #ffffff;
+  --dialog-border: rgba(15, 23, 42, 0.1);
+  --dialog-title-color: rgba(15, 23, 42, 0.94);
+  --dialog-placeholder: rgba(15, 23, 42, 0.42);
+  --dialog-focus: rgba(37, 99, 235, 0.24);
 }
 
 .new-post-dialog__title {
