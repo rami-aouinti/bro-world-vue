@@ -53,12 +53,27 @@ const latestCreatedStory = ref<StoryCreateResponse | null>(null)
 const deletePending = ref(false)
 const deleteError = ref<string | null>(null)
 const localStoryGroups = ref<StoryGroup[]>([])
-const { user } = useUserSession()
+const { user, loggedIn } = useUserSession()
 const { locale } = useI18n()
 
 const { data, pending: storiesPending, refresh } = await useFetch<StoriesApiResponse | StoryGroup[]>('/api/stories', {
   default: () => [],
+  immediate: false,
+  server: false,
 })
+
+watch(
+  loggedIn,
+  async (isLoggedIn) => {
+    if (!isLoggedIn) {
+      localStoryGroups.value = []
+      return
+    }
+
+    await refresh()
+  },
+  { immediate: true },
+)
 
 const sessionUserId = computed(() => String(user.value?.id ?? ''))
 
