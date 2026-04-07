@@ -67,6 +67,7 @@ const emit = defineEmits<{
 const { locale } = useI18n()
 const theme = useTheme()
 const replyTo = ref<BlogComment | null>(null)
+const showComments = ref(false)
 const isLightTheme = computed(() => !theme.current.value.dark)
 
 const formattedDate = computed(() => {
@@ -110,12 +111,23 @@ function togglePostLike() {
 }
 
 function onReply(comment: BlogComment) {
+  showComments.value = true
+
   if (replyTo.value?.id === comment.id) {
     replyTo.value = null
     return
   }
 
   replyTo.value = comment
+}
+
+function toggleComments() {
+  showComments.value = !showComments.value
+}
+
+function onCreateComment(content: string) {
+  showComments.value = true
+  submitComment(content)
 }
 </script>
 
@@ -198,20 +210,20 @@ function onReply(comment: BlogComment) {
         :reaction-types="reactionTypes"
         @like="togglePostLike"
         @react="emit('reactPost', { post, code: $event })"
-        @comment="emit('comment', post)"
+        @comment="toggleComments"
         @share="emit('share', post)"
       />
     </v-card-text>
 
-    <v-card-text class="pt-1 pb-1">
+    <v-card-text v-if="showComments" class="pt-1 pb-1">
       <BlogCommentComposer
         mode="comment"
         placeholder="Ajouter un commentaire…"
-        @submit="submitComment"
+        @submit="onCreateComment"
       />
     </v-card-text>
 
-    <v-card-text v-if="post.comments?.length" class="pt-0">
+    <v-card-text v-if="showComments && post.comments?.length" class="pt-0">
       <BlogCommentThread
         :comments="post.comments"
         :active-reply-id="replyTo?.id ?? null"
