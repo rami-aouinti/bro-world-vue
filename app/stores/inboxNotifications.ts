@@ -65,11 +65,20 @@ export interface PrivateConversationsApiResponse {
   filters: Record<string, unknown>
 }
 
+export type UpdatePrivateConversationPayload = Record<string, unknown>
+
 function isUnauthorizedError(error: unknown): boolean {
   if (!error || typeof error !== 'object') return false
 
   const maybeError = error as { status?: number, statusCode?: number }
   return maybeError.status === 401 || maybeError.statusCode === 401
+}
+
+function isNotFoundError(error: unknown): boolean {
+  if (!error || typeof error !== 'object') return false
+
+  const maybeError = error as { status?: number, statusCode?: number }
+  return maybeError.status === 404 || maybeError.statusCode === 404
 }
 
 const normalizeNotification = (notification: UserNotificationItem): UserNotificationItem => ({
@@ -120,6 +129,29 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
     },
   },
   actions: {
+    upsertInboxConversation(conversation: PrivateConversation) {
+      const normalizedConversation = normalizePrivateConversation(conversation)
+      const index = this.inbox.findIndex((item) => item.id === conversation.id)
+
+      if (index >= 0) {
+        this.inbox.splice(index, 1, normalizedConversation)
+      }
+      else {
+        this.inbox.push(normalizedConversation)
+      }
+
+      this.conversationsById[conversation.id] = conversation
+    },
+    removeInboxConversation(conversationId: string) {
+      const index = this.inbox.findIndex((item) => item.id === conversationId)
+      if (index >= 0) {
+        this.inbox.splice(index, 1)
+      }
+
+      this.conversationsById = Object.fromEntries(
+        Object.entries(this.conversationsById).filter(([id]) => id !== conversationId),
+      )
+    },
     async fetchInboxConversations(page = 1, limit = 20) {
       try {
         const response = await $fetch<PrivateConversationsApiResponse>('/api/chat/private/conversations', {
@@ -138,6 +170,86 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
         }
 
         throw error
+      }
+    },
+    async fetchConversationById(conversationId: string) {
+      try {
+        const conversation = await $fetch<PrivateConversation>(`/api/chat/private/conversations/${conversationId}`)
+        this.upsertInboxConversation(conversation)
+        return conversation
+      }
+      catch (error) {
+        if (isUnauthorizedError(error)) {
+          this.inbox = []
+          this.conversationsById = {}
+          return null
+        }
+
+        if (isNotFoundError(error)) {
+          this.removeInboxConversation(conversationId)
+          return null
+        }
+
+        throw error
+      }
+    },
+    async updateConversation(conversationId: string, payload: UpdatePrivateConversationPayload) {
+      try {
+        const conversation = await $fetch<PrivateConversation>(`/api/chat/private/conversations/${conversationId}`, {
+          method: 'PATCH',
+          body: payload,
+        })
+        this.upsertInboxConversation(conversation)
+        return conversation
+      }
+      catch (error) {
+        if (isUnauthorizedError(error)) {
+          this.inbox = []
+          this.conversationsById = {}
+          return null
+        }
+
+        if (isNotFoundError(error)) {
+          this.removeInboxConversation(conversationId)
+          return null
+        }
+
+        throw error
+      }
+    },
+    async deleteConversation(conversationId: string) {
+      const route = useRoute()
+      const currentInboxConversationId = route.path.startsWith('/inbox/')
+        ? route.path.slice('/inbox/'.length).split('/')[0]
+        : ''
+      const shouldNavigateToInbox = currentInboxConversationId === conversationId
+
+      try {
+        await $fetch(`/api/chat/private/conversations/${conversationId}`, {
+          method: 'DELETE',
+        })
+        this.removeInboxConversation(conversationId)
+      }
+      catch (error) {
+        if (isUnauthorizedError(error)) {
+          this.inbox = []
+          this.conversationsById = {}
+          if (shouldNavigateToInbox) {
+            await navigateTo('/inbox')
+          }
+          return
+        }
+
+        if (isNotFoundError(error)) {
+          this.removeInboxConversation(conversationId)
+        }
+        else {
+          throw error
+        }
+      }
+
+      if (shouldNavigateToInbox) {
+        await navigateTo('/inbox')
       }
     },
     async fetchNotifications(limit = 20, offset = 0) {
