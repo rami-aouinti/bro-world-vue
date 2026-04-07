@@ -20,7 +20,11 @@ type FriendAction =
 const { t } = useI18n()
 const route = useRoute()
 const { user } = useUserSession()
-const api = usePrivateApi()
+const api = $fetch.create({
+  headers: {
+    accept: 'application/json',
+  },
+})
 
 const loading = ref(false)
 const actionLoadingUserId = ref<string | null>(null)
@@ -110,10 +114,10 @@ async function fetchFriendsData() {
 
   try {
     const [friendsData, requestsData, invitationsData, blockedData] = await Promise.all([
-      api<FriendUser[]>('/users/me/friends'),
-      api<FriendUser[]>('/users/me/friends/requests'),
-      api<FriendUser[]>('/users/me/friends/requests/sent'),
-      api<FriendUser[]>('/users/me/friends/blocked'),
+      api<FriendUser[]>('/api/users/me/friends'),
+      api<FriendUser[]>('/api/users/me/friends/requests'),
+      api<FriendUser[]>('/api/users/me/friends/requests/sent'),
+      api<FriendUser[]>('/api/users/me/friends/blocked'),
     ])
 
     friends.value = friendsData
@@ -135,12 +139,12 @@ async function applyAction(userId: string, action: FriendAction) {
 
   try {
     if (action === 'unblock') {
-      await api(`/users/${userId}/block`, { method: 'DELETE' })
+      await api(`/api/users/${userId}/block`, { method: 'DELETE' })
     }
     else {
       const endpoint = action === 'block'
-        ? `/users/${userId}/block`
-        : `/users/${userId}/friends/${action}`
+        ? `/api/users/${userId}/block`
+        : `/api/users/${userId}/friends/${action}`
 
       await api(endpoint, { method: 'POST' })
     }
