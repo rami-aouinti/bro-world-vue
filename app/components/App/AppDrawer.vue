@@ -2,7 +2,37 @@
 const { t } = useI18n()
 
 const router = useRouter()
-const routes = router.getRoutes().filter((r) => r.path.lastIndexOf('/') === 0)
+const { user } = useUserSession()
+const isRoot = computed(() => {
+  const roles = (user.value as { roles?: string[] } | null)?.roles ?? []
+  return roles.includes('root')
+})
+const routes = computed(() => {
+  const rootRoutes = router.getRoutes().filter((r) => r.path.lastIndexOf('/') === 0)
+  const sortedRoutes = rootRoutes.toSorted((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98))
+  const dashboardRoute = sortedRoutes.find((route) => route.name === 'dashboard')
+  const filteredRoutes = sortedRoutes.filter((route) => route.name !== 'dashboard')
+
+  if (!filteredRoutes.some((route) => route.name === 'admin') && dashboardRoute) {
+    filteredRoutes.push({
+      ...dashboardRoute,
+      name: 'admin',
+      path: '/admin',
+      meta: {
+        ...dashboardRoute.meta,
+        title: 'appbar.admin',
+      },
+    })
+  }
+
+  if (isRoot.value) {
+    return filteredRoutes.toSorted((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98))
+  }
+
+  return rootRoutes
+    .filter((route) => route.name !== 'dashboard')
+    .toSorted((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98))
+})
 const drawerState = useState('drawer', () => true)
 
 const { mobile } = useDisplay()
@@ -17,7 +47,6 @@ const drawer = computed({
 })
 const rail = computed(() => !drawerState.value && !mobile.value)
 const leftDrawerRenderer = computed(() => registry?.left.value ?? null)
-routes.sort((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98))
 
 </script>
 

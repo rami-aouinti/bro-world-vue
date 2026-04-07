@@ -8,6 +8,7 @@
     "service": "Service",
     "about": "About",
     "contact": "Contact",
+    "admin": "Admin",
     "dashboard": "Dashboard",
     "table": "Data Table",
     "nested": "Nested Routes",
