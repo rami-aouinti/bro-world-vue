@@ -1,10 +1,17 @@
 <script setup lang="ts">
+import type { UserNotificationItem } from '~/stores/inboxNotifications'
+
 const route = useRoute()
 const notificationId = computed(() => String(route.params.notification || ''))
 const inboxNotificationsStore = useInboxNotificationsStore()
 
-const notification = computed(() =>
-  inboxNotificationsStore.getNotificationById(notificationId.value),
+const { data: notification } = await useAsyncData<UserNotificationItem | null>(
+  () => `notification-${notificationId.value}`,
+  async () => {
+    if (!notificationId.value) return null
+
+    return inboxNotificationsStore.fetchNotificationById(notificationId.value)
+  },
 )
 
 definePageMeta({
@@ -22,7 +29,7 @@ definePageMeta({
       <v-card-text v-if="notification">
         <div class="text-subtitle-1 font-weight-medium">{{ notification.title }}</div>
         <div class="text-body-2 text-medium-emphasis mb-3">{{ notification.createdAt }}</div>
-        <div class="text-body-1">{{ notification.content || notification.preview }}</div>
+        <div class="text-body-1">{{ notification.description }}</div>
       </v-card-text>
 
       <v-card-text v-else>

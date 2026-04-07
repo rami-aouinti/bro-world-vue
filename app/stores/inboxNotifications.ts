@@ -6,12 +6,29 @@ export interface InboxItem {
   content?: string
 }
 
+export type NotificationType = 'info' | 'security' | string
+
+export interface NotificationSender {
+  firstName: string
+  lastName: string
+  photo: string
+}
+
 export interface UserNotificationItem {
   id: string
   title: string
+  description: string
+  type: NotificationType
+  read: boolean
   createdAt: string
+  from: NotificationSender | null
   preview?: string
   content?: string
+}
+
+type NotificationsApiResponse = {
+  items: UserNotificationItem[]
+  unreadCount: number
 }
 
 const mockInboxItems: InboxItem[] = [
@@ -49,45 +66,17 @@ const mockInboxItems: InboxItem[] = [
   },
 ]
 
-const mockNotificationItems: UserNotificationItem[] = [
-  {
-    id: 'security-alert',
-    title: 'Security alert',
-    createdAt: '2026-04-07T10:30:00Z',
-    preview: 'A new login was detected on your account.',
-    content:
-      'A new login was detected on your account from an unrecognized device. If this was not you, reset your password.',
-  },
-  {
-    id: 'billing-reminder',
-    title: 'Billing reminder',
-    createdAt: '2026-04-06T11:20:00Z',
-    preview: 'Your subscription renews in 3 days.',
-    content:
-      'Your subscription renews in 3 days. Ensure your payment method is still valid to avoid service interruption.',
-  },
-  {
-    id: 'weekly-report',
-    title: 'Weekly report is ready',
-    createdAt: '2026-04-03T13:10:00Z',
-    preview: 'The analytics report has been generated.',
-    content:
-      'The analytics report has been generated and is available in your dashboard exports section.',
-  },
-  {
-    id: 'team-invite',
-    title: 'New team invite',
-    createdAt: '2026-04-05T16:55:00Z',
-    preview: 'You have been invited to join a new workspace.',
-    content:
-      'You have been invited to join a new workspace. Accept the invitation to start collaborating with the team.',
-  },
-]
+const normalizeNotification = (notification: UserNotificationItem): UserNotificationItem => ({
+  ...notification,
+  preview: notification.description,
+  content: notification.description,
+})
 
 export const useInboxNotificationsStore = defineStore('inbox-notifications', {
   state: () => ({
     inbox: mockInboxItems,
-    notifications: mockNotificationItems,
+    notifications: [] as UserNotificationItem[],
+    unreadCount: 0,
   }),
   getters: {
     inboxAll: (state) => [...state.inbox],
@@ -104,6 +93,38 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
     },
   },
   actions: {
+    async fetchNotifications(limit = 20, offset = 0) {
+      const response = await $fetch<NotificationsApiResponse>('/api/notifications', {
+        query: { limit, offset },
+      })
+
+      this.notifications = response.items.map(normalizeNotification)
+      this.unreadCount = response.unreadCount
+    },
+    async fetchNotificationById(id: string) {
+      const notification = normalizeNotification(await $fetch<UserNotificationItem>(`/api/notifications/${id}`))
+      const index = this.notifications.findIndex((item) => item.id === id)
+
+      if (index >= 0) {
+        this.notifications.splice(index, 1, notification)
+      }
+      else {
+        this.notifications.push(notification)
+      }
+
+      return notification
+    },
+    async markAllNotificationsRead() {
+      await $fetch('/api/notifications/read-all', {
+        method: 'PATCH',
+      })
+
+      this.notifications = this.notifications.map((item) => ({
+        ...item,
+        read: true,
+      }))
+      this.unreadCount = 0
+    },
     getInboxById(id: string) {
       return this.inbox.find((item) => item.id === id)
     },

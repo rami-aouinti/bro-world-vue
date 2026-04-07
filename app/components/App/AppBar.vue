@@ -30,7 +30,8 @@ const sessionUser = computed(() => user.value as SessionUser | null)
 const avatarUrl = computed(() => sessionUser.value?.photo)
 
 const inboxNotificationsStore = useInboxNotificationsStore()
-const { inboxLatestThree, notificationsLatestThree } = storeToRefs(inboxNotificationsStore)
+const { inboxLatestThree, notificationsLatestThree, unreadCount } = storeToRefs(inboxNotificationsStore)
+const notificationMenuOpen = ref(false)
 
 const userLabel = computed(() => {
   const fullName = [sessionUser.value?.firstName, sessionUser.value?.lastName]
@@ -38,6 +39,21 @@ const userLabel = computed(() => {
     .join(' ')
 
   return fullName || sessionUser.value?.username || t('appbar.user')
+})
+
+
+watch(
+  loggedIn,
+  async (isLoggedIn) => {
+    if (!isLoggedIn) return
+    await inboxNotificationsStore.fetchNotifications()
+  },
+  { immediate: true },
+)
+
+watch(notificationMenuOpen, async (isOpen) => {
+  if (!isOpen || unreadCount.value === 0) return
+  await inboxNotificationsStore.markAllNotificationsRead()
 })
 
 function toggleLeftDrawer() {
@@ -119,13 +135,15 @@ function toggleLeftDrawer() {
           </v-list>
         </v-menu>
 
-        <v-menu location="bottom end">
+        <v-menu v-model="notificationMenuOpen" location="bottom end">
           <template #activator="{ props }">
-            <v-btn
-              variant="text"
-              icon="mdi-bell-outline"
-              v-bind="props"
-            />
+            <v-badge :model-value="unreadCount > 0" :content="unreadCount" color="error" offset-x="2" offset-y="2">
+              <v-btn
+                variant="text"
+                icon="mdi-bell-outline"
+                v-bind="props"
+              />
+            </v-badge>
           </template>
           <v-list min-width="280">
             <v-list-item

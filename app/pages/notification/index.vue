@@ -3,6 +3,8 @@ const { t } = useI18n()
 const inboxNotificationsStore = useInboxNotificationsStore()
 const { notificationsSortedDesc } = storeToRefs(inboxNotificationsStore)
 
+await inboxNotificationsStore.fetchNotifications()
+
 definePageMeta({
   title: 'appbar.notifications',
   middleware: 'auth',
@@ -20,7 +22,7 @@ definePageMeta({
           v-for="item in notificationsSortedDesc"
           :key="item.id"
           :title="item.title"
-          :subtitle="item.preview"
+          :subtitle="item.description"
           prepend-icon="mdi-bell-ring-outline"
           :to="`/notification/${item.id}`"
         />
