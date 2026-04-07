@@ -283,6 +283,11 @@
     "calendar": {
       "title": "Calendario",
       "subtitle": "Tu agenda aparecerá aquí pronto."
+    },
+    "profile": {
+      "posts": {
+        "title": "Publicaciones"
+      }
     }
   },
   "home": {

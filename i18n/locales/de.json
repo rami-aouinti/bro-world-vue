@@ -309,6 +309,11 @@
         "cancelFailed": "Dieses Ereignis konnte nicht abgesagt werden.",
         "moveFailed": "Dieses Ereignis konnte nicht verschoben werden."
       }
+    },
+    "profile": {
+      "posts": {
+        "title": "Beiträge"
+      }
     }
   },
   "home": {
