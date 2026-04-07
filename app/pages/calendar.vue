@@ -338,10 +338,8 @@ onMounted(loadEvents)
       <v-alert v-if="errorMessage" type="error" class="mb-4" variant="tonal">
         {{ errorMessage }}
       </v-alert>
-
-      <v-card>
-        <v-card-title class="d-flex align-center justify-space-between ga-3">
-          <span>{{ t('appbar.calendar') }}</span>
+      <client-only>
+        <teleport to="#app-bar">
           <v-btn
             color="primary"
             prepend-icon="mdi-plus"
@@ -349,8 +347,9 @@ onMounted(loadEvents)
           >
             {{ t('pages.calendar.addEvent') }}
           </v-btn>
-        </v-card-title>
-
+        </teleport>
+      </client-only>
+      <v-card variant="text">
         <v-card-text>
           <v-skeleton-loader v-if="isLoading" type="image" class="rounded-lg" />
           <FullCalendar v-else :options="calendarOptions" />
@@ -438,7 +437,6 @@ onMounted(loadEvents)
 
 <style scoped>
 :deep(.fc) {
-  --fc-border-color: rgb(var(--v-theme-outline-variant));
   --fc-button-bg-color: rgb(var(--v-theme-primary));
   --fc-button-border-color: rgb(var(--v-theme-primary));
   --fc-button-hover-bg-color: rgb(var(--v-theme-primary-darken-1));
@@ -448,7 +446,10 @@ onMounted(loadEvents)
 }
 
 :deep(.fc .fc-toolbar-title) {
-  font-size: 1.1rem;
+  font-size: 0.8rem;
   text-transform: capitalize;
+}
+:deep(.fc .fc-scroller-harness) {
+  background: linear-gradient(135deg, rgba(var(--v-theme-primary), 0.08), transparent 45%);
 }
 </style>
