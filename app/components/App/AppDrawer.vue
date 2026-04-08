@@ -91,14 +91,14 @@ const leftDrawerRenderer = computed(() => registry?.left.value ?? null)
           {{ t('appbar.copyright') }}
           <a
             href="https://github.com/kingyue737"
-            class="font-weight-bold text-primary"
+            class="font-weight-bold drawer-footer__link"
             target="_blank"
             >Yue JIN</a
           >
           <span> & </span>
           <a
             href="https://www.nustarnuclear.com/"
-            class="font-weight-bold text-primary"
+            class="font-weight-bold drawer-footer__link"
             target="_blank"
             >NuStar</a
           >
@@ -158,6 +158,14 @@ const leftDrawerRenderer = computed(() => registry?.left.value ?? null)
   .drawer-footer {
     transition: all 0.2s;
     min-height: 30px;
+  }
+  .drawer-footer__link {
+    color: rgb(var(--v-theme-on-surface));
+    text-decoration: underline;
+  }
+  .drawer-footer__link:hover,
+  .drawer-footer__link:focus-visible {
+    color: rgb(var(--v-theme-primary));
   }
   .app-left-drawer-list {
     height: calc(100% - 96px);
