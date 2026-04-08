@@ -1,12 +1,26 @@
 import { createHash } from 'node:crypto'
 import { resolveCacheResourcePrefix } from './apiCacheConfig'
 
-type CacheScope = 'public' | 'private'
+export type CacheScope = 'public' | 'private'
 
-type BuildCacheKeyInput = {
-  scope: CacheScope
+type CacheKeyInput = {
   endpoint: string
   query?: Record<string, unknown> | null
+}
+
+type PublicCacheKeyInput = CacheKeyInput & {
+  scope: 'public'
+}
+
+type PrivateCacheKeyInput = CacheKeyInput & {
+  scope: 'private'
+  username: string
+}
+
+type BuildCacheKeyInput = PublicCacheKeyInput | PrivateCacheKeyInput
+
+type CachePrefixInput = {
+  resourcePrefix: string
   username?: string
 }
 
@@ -20,6 +34,10 @@ const inMemoryCache = new Map<string, CacheEntry<unknown>>()
 
 function normalizeEndpoint(endpoint: string) {
   return endpoint.trim().replace(/^\/+|\/+$/g, '') || 'root'
+}
+
+function normalizeUsername(username: string) {
+  return username.trim()
 }
 
 function stableStringify(value: unknown): string {
@@ -44,7 +62,7 @@ function stableStringify(value: unknown): string {
   return String(value)
 }
 
-function getQueryHash(query: BuildCacheKeyInput['query']) {
+function getQueryHash(query: CacheKeyInput['query']) {
   return createHash('sha1').update(stableStringify(query)).digest('hex')
 }
 
@@ -94,28 +112,61 @@ function shouldUseRedis() {
   return hasRedisConfig()
 }
 
-export function buildCacheKey({
-  scope,
-  endpoint,
-  query,
-  username,
-}: BuildCacheKeyInput) {
+export function buildCacheKey(input: BuildCacheKeyInput) {
+  const { scope, endpoint, query } = input
+  if (scope === 'private') {
+    return privateCacheKey(input.username, endpoint, query)
+  }
+
+  return publicCacheKey(endpoint, query)
+}
+
+export function publicCacheKey(
+  endpoint: string,
+  query?: CacheKeyInput['query'],
+) {
   const normalizedEndpoint = normalizeEndpoint(endpoint)
   const queryHash = getQueryHash(query)
   const resourcePrefix = resolveCacheResourcePrefix(normalizedEndpoint)
+  return `api:public:${resourcePrefix}:${normalizedEndpoint}:${queryHash}`
+}
 
-  if (scope === 'private') {
-    if (!username) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'Missing username for private cache key',
-      })
-    }
-
-    return `api:private:${username}:${resourcePrefix}:${normalizedEndpoint}:${queryHash}`
+export function privateCacheKey(
+  username: string,
+  endpoint: string,
+  query?: CacheKeyInput['query'],
+) {
+  const normalizedUsername = normalizeUsername(username)
+  if (!normalizedUsername) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Missing username for private cache key',
+    })
   }
 
-  return `api:public:${resourcePrefix}:${normalizedEndpoint}:${queryHash}`
+  const normalizedEndpoint = normalizeEndpoint(endpoint)
+  const queryHash = getQueryHash(query)
+  const resourcePrefix = resolveCacheResourcePrefix(normalizedEndpoint)
+  return `api:private:${normalizedUsername}:${resourcePrefix}:${normalizedEndpoint}:${queryHash}`
+}
+
+export function publicCachePrefix(resourcePrefix: string) {
+  return `api:public:${resourcePrefix}:`
+}
+
+export function privateCachePrefix({
+  username,
+  resourcePrefix,
+}: CachePrefixInput) {
+  const normalizedUsername = normalizeUsername(username ?? '')
+  if (!normalizedUsername) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Missing username for private cache invalidation',
+    })
+  }
+
+  return `api:private:${normalizedUsername}:${resourcePrefix}:`
 }
 
 export async function getCached<T>(key: string): Promise<T | null> {
