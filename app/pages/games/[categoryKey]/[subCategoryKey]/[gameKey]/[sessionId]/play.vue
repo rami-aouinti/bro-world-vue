@@ -6,34 +6,46 @@ definePageMeta({
 })
 
 const route = useRoute()
-const sessionId = computed(() => String(route.params.session || ''))
-const categoryId = computed(() => String(route.params.category || ''))
-const subCategoryId = computed(() => String(route.params.subCategory || ''))
+const sessionId = computed(() => String(route.params.sessionId || ''))
+const categoryParam = computed(() => String(route.params.categoryKey || ''))
+const subCategoryParam = computed(() => String(route.params.subCategoryKey || ''))
+const gameParam = computed(() => String(route.params.gameKey || ''))
 
-const { catalogStore, tOrFallback } = useGamesCatalogNavigation()
+const {
+  catalogStore,
+  tOrFallback,
+  ensureCatalogLoaded,
+  getCategoryByRouteParam,
+  getSubCategoryByRouteParam,
+  getGameByRouteParam,
+} = useGamesCatalogNavigation()
 
 const finishResult = ref<'win' | 'lose' | null>(null)
 
+const selectedCategory = computed(() => getCategoryByRouteParam(categoryParam.value))
+const selectedSubCategory = computed(() => getSubCategoryByRouteParam(categoryParam.value, subCategoryParam.value))
+const selectedGame = computed(() => getGameByRouteParam(categoryParam.value, subCategoryParam.value, gameParam.value))
+
 const currentSession = computed(() => {
-  if (catalogStore.currentSession?.sessionId === sessionId.value) {
+  if (catalogStore.currentSession?.sessionId === sessionId.value)
     return catalogStore.currentSession
-  }
 
   return null
 })
 
-const levelParam = computed(() => String(route.query.level || currentSession.value?.level || ''))
-
 onMounted(async () => {
-  if (!currentSession.value) {
-    await navigateTo(`/games/${categoryId.value}/${subCategoryId.value}/home`)
+  const loaded = await ensureCatalogLoaded()
+  if (!loaded)
+    return
+
+  if (!selectedCategory.value || !selectedSubCategory.value || !selectedGame.value || !currentSession.value) {
+    await navigateTo(`/games/${categoryParam.value}/${subCategoryParam.value}/${gameParam.value}`)
   }
 })
 
 async function onFinish(result: 'win' | 'lose') {
-  if (!currentSession.value) {
+  if (!currentSession.value)
     return
-  }
 
   finishResult.value = result
 
@@ -48,30 +60,31 @@ async function onFinish(result: 'win' | 'lose') {
     )
 
     await navigateTo(
-      `/games/${categoryId.value}/${subCategoryId.value}/home?lastSession=${completedSessionId}&result=${result}`,
+      `/games/${categoryParam.value}/${subCategoryParam.value}/${gameParam.value}?lastSession=${completedSessionId}&result=${result}`,
     )
   } catch (error) {
     Notify.error(error)
   }
 }
+
+const breadcrumbs = computed(() => [
+  { title: 'Games', to: '/games' },
+  { title: selectedCategory.value?.key || selectedCategory.value?.name || 'Category', to: `/games/${categoryParam.value}` },
+  { title: selectedSubCategory.value?.key || selectedSubCategory.value?.name || 'Subcategory', to: `/games/${categoryParam.value}/${subCategoryParam.value}` },
+  { title: selectedGame.value?.key || selectedGame.value?.name || 'Game', to: `/games/${categoryParam.value}/${subCategoryParam.value}/${gameParam.value}` },
+  { title: 'Play', disabled: true },
+])
 </script>
 
 <template>
   <v-container fluid>
-    <v-btn
-      prepend-icon="mdi-arrow-left"
-      variant="text"
-      class="mb-4"
-      @click="navigateTo(`/games/${categoryId}/${subCategoryId}/home`)"
-    >
-      Back to games
-    </v-btn>
+    <v-breadcrumbs :items="breadcrumbs" class="px-0" />
 
     <v-card rounded="xl" class="mb-6">
       <v-card-title>Live session</v-card-title>
       <v-card-text v-if="currentSession" class="d-flex flex-wrap ga-2">
         <v-chip color="primary" variant="tonal">Session: {{ currentSession.sessionId }}</v-chip>
-        <v-chip color="secondary" variant="tonal">Level: {{ levelParam || currentSession.level }}</v-chip>
+        <v-chip color="secondary" variant="tonal">Level: {{ currentSession.level }}</v-chip>
         <v-chip color="info" variant="tonal">Status: {{ currentSession.status }}</v-chip>
         <v-chip color="warning" variant="tonal">Coins: {{ currentSession.coins }}</v-chip>
       </v-card-text>

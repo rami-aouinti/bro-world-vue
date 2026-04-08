@@ -4,14 +4,12 @@ definePageMeta({
 })
 
 const route = useRoute()
-const categoryId = computed(() => String(route.params.subcategory || ''))
+const categoryParam = computed(() => String(route.params.categoryKey || ''))
 
 const {
   ensureCatalogLoaded,
-  entityName,
-  entityDescription,
-  getCategoryById,
-  getGameCardImage,
+  getCategoryByRouteParam,
+  entityRouteValue,
 } = useGamesCatalogNavigation()
 
 onMounted(async () => {
@@ -21,15 +19,16 @@ onMounted(async () => {
   }
 })
 
-const selectedCategory = computed(() => getCategoryById(categoryId.value))
+const selectedCategory = computed(() => getCategoryByRouteParam(categoryParam.value))
 
-function openSubCategory(subCategoryId: string) {
-  navigateTo(`/games/${categoryId.value}/${subCategoryId}/home`)
+function openSubCategory(subCategory: { id: string; key?: string }) {
+  navigateTo(`/games/${categoryParam.value}/${entityRouteValue(subCategory)}`)
 }
 
-function getSubCategoryThumbnail(subCategory: { img?: string | null; games?: Array<{ thumbnailUrl?: string | null; img?: string | null }> }) {
-  return getGameCardImage(subCategory.games?.[0]?.thumbnailUrl || subCategory.games?.[0]?.img || subCategory.img)
-}
+const breadcrumbs = computed(() => [
+  { title: 'Games', to: '/games' },
+  { title: selectedCategory.value?.key || selectedCategory.value?.name || 'Category', disabled: true },
+])
 
 const subCategories = computed(() =>
   Array.isArray(selectedCategory.value?.subCategories) ? selectedCategory.value.subCategories : [],
@@ -39,14 +38,7 @@ const subCategories = computed(() =>
 <template>
   <v-container fluid>
     <template v-if="selectedCategory">
-      <v-btn
-        prepend-icon="mdi-arrow-left"
-        class="mb-4"
-        variant="text"
-        @click="navigateTo(`/games`)"
-      >
-        Categories
-      </v-btn>
+      <v-breadcrumbs :items="breadcrumbs" class="px-0" />
       <v-row v-if="subCategories.length" dense>
         <v-col
           v-for="subCategory in subCategories"
@@ -55,7 +47,7 @@ const subCategories = computed(() =>
           sm="6"
           lg="4"
         >
-          <v-card rounded="xl" class="h-100 game-card cursor-pointer" @click="openSubCategory(subCategory.id)">
+          <v-card rounded="xl" class="h-100 game-card cursor-pointer" @click="openSubCategory(subCategory)">
             <v-img
               :src="subCategory?.img"
               height="200"
