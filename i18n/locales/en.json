@@ -6,7 +6,6 @@
   "appbar": {
     "home": "Home",
     "platform": "Platform",
-    "service": "Service",
     "about": "About",
     "contact": "Contact",
     "admin": "Admin",
@@ -392,26 +391,6 @@
       "errors": {
         "load": "Error while loading data.",
         "action": "Error while processing action {action}."
-      }
-    },
-    "service": {
-      "description": "Discover our services and how we can support your team.",
-      "leftNav": {
-        "title": "Services",
-        "auditTitle": "Quick audit",
-        "auditSubtitle": "48-hour diagnosis",
-        "supportTitle": "Support",
-        "supportSubtitle": "Tailored follow-up",
-        "workshopsTitle": "Workshops",
-        "workshopsSubtitle": "Skill building"
-      },
-      "rightNav": {
-        "auditTitle": "Quick audit",
-        "auditSubtitle": "In 48 hours",
-        "auditDescription": "Analysis of your needs and prioritized recommendations to get started quickly.",
-        "supportTitle": "Support",
-        "supportSubtitle": "Tailored",
-        "supportDescription": "Regular follow-up, practical workshops, and a roadmap adapted to your team."
       }
     },
     "about": {
