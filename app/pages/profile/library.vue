@@ -412,8 +412,8 @@ const isPreviewPdf = computed(() => selectedFile.value?.mimeType === 'applicatio
   padding: 10px 12px;
   display: flex;
   gap: 12px;
-  align-items: center;
-  text-align: left;
+  align-items: start;
+  text-align: start;
   cursor: pointer;
   transition: 0.2s ease;
 }
