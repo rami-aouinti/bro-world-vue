@@ -20,6 +20,7 @@ interface StartSessionPayload {
   sessionId: string
   status: string
   coins: number
+  level?: string
 }
 
 interface FinishSessionPayload {
@@ -90,13 +91,17 @@ export const useGameCatalogStore = defineStore('game-catalog', {
           method: 'POST',
           body: { gameId, level },
         })
-        this.currentSession = response
+        this.currentSession = {
+          ...response,
+          level: response.level ?? level,
+        }
         return response
       } catch {
         const fallback = {
           sessionId: crypto.randomUUID(),
           status: 'started',
           coins: 0,
+          level,
         }
         this.currentSession = fallback
         this.error = 'Start API unavailable. Demo session created locally.'
@@ -118,6 +123,7 @@ export const useGameCatalogStore = defineStore('game-catalog', {
           sessionId: response.sessionId,
           status: response.status,
           coins: response.coins,
+          level: this.currentSession?.level,
         }
         return response
       } catch {
@@ -137,6 +143,7 @@ export const useGameCatalogStore = defineStore('game-catalog', {
           sessionId: fallback.sessionId,
           status: fallback.status,
           coins: fallback.coins,
+          level: this.currentSession?.level,
         }
         this.error = 'Finish API unavailable. Demo result applied locally.'
         return fallback
