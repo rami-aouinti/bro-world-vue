@@ -10,6 +10,8 @@ const {
   ensureCatalogLoaded,
   getCategoryByRouteParam,
   entityRouteValue,
+  entityName,
+  tOrFallback,
 } = useGamesCatalogNavigation()
 
 onMounted(async () => {
@@ -36,34 +38,67 @@ const subCategories = computed(() =>
 </script>
 
 <template>
-  <v-container fluid>
-    <template v-if="selectedCategory">
-      <v-breadcrumbs :items="breadcrumbs" class="px-0" />
-      <v-row v-if="subCategories.length" dense>
-        <v-col
-          v-for="subCategory in subCategories"
-          :key="subCategory.id"
-          cols="12"
-          sm="6"
-          lg="4"
-        >
-          <v-card rounded="xl" class="h-100 game-card cursor-pointer" @click="openSubCategory(subCategory)">
-            <v-img
-              :src="subCategory?.img"
-              height="200"
-              cover
-            />
-          </v-card>
-        </v-col>
-      </v-row>
-      <v-alert
-        v-else
-        type="info"
-        variant="tonal"
-        text="Aucune sous-catégorie disponible pour cette catégorie."
-      />
-    </template>
-  </v-container>
+  <div>
+    <AppPageDrawers>
+      <template #right>
+        <v-list nav density="compact" class="app-right-drawer-list">
+          <v-list-subheader class="text-overline">
+            {{ tOrFallback('gamePage.selection.title', 'Selected') }}
+          </v-list-subheader>
+          <v-list-item>
+            <template #prepend>
+              <v-icon icon="mdi-shape-outline" />
+            </template>
+            <v-list-item-title>{{ tOrFallback('gamePage.selection.category', 'Category') }}</v-list-item-title>
+            <v-list-item-subtitle>{{ entityName(selectedCategory || {}) || '—' }}</v-list-item-subtitle>
+          </v-list-item>
+          <v-list-item>
+            <template #prepend>
+              <v-icon icon="mdi-shape-plus-outline" />
+            </template>
+            <v-list-item-title>{{ tOrFallback('gamePage.selection.subCategory', 'Subcategory') }}</v-list-item-title>
+            <v-list-item-subtitle>—</v-list-item-subtitle>
+          </v-list-item>
+          <v-list-item>
+            <template #prepend>
+              <v-icon icon="mdi-controller-classic-outline" />
+            </template>
+            <v-list-item-title>{{ tOrFallback('gamePage.selection.game', 'Game') }}</v-list-item-title>
+            <v-list-item-subtitle>—</v-list-item-subtitle>
+          </v-list-item>
+        </v-list>
+      </template>
+    </AppPageDrawers>
+
+    <v-container fluid>
+      <template v-if="selectedCategory">
+        <v-breadcrumbs :items="breadcrumbs" class="px-0" />
+        <v-row v-if="subCategories.length" dense>
+          <v-col
+            v-for="subCategory in subCategories"
+            :key="subCategory.id"
+            cols="12"
+            sm="6"
+            lg="4"
+          >
+            <v-card rounded="xl" class="h-100 game-card cursor-pointer" @click="openSubCategory(subCategory)">
+              <v-img
+                :src="subCategory?.img"
+                height="200"
+                cover
+              />
+            </v-card>
+          </v-col>
+        </v-row>
+        <v-alert
+          v-else
+          type="info"
+          variant="tonal"
+          text="Aucune sous-catégorie disponible pour cette catégorie."
+        />
+      </template>
+    </v-container>
+  </div>
 </template>
 <style scoped>
 .game-card {

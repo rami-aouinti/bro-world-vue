@@ -82,38 +82,78 @@ const breadcrumbs = computed(() => [
 </script>
 
 <template>
-  <v-container fluid>
-    <template v-if="selectedGame">
-      <v-breadcrumbs :items="breadcrumbs" class="px-0" />
+  <div>
+    <AppPageDrawers>
+      <template #right>
+        <v-list nav density="compact" class="app-right-drawer-list">
+          <v-list-subheader class="text-overline">
+            {{ tOrFallback('gamePage.selection.title', 'Selected') }}
+          </v-list-subheader>
+          <v-list-item>
+            <template #prepend>
+              <v-icon icon="mdi-shape-outline" />
+            </template>
+            <v-list-item-title>{{ tOrFallback('gamePage.selection.category', 'Category') }}</v-list-item-title>
+            <v-list-item-subtitle>{{ entityName(selectedCategory || {}) || '—' }}</v-list-item-subtitle>
+          </v-list-item>
+          <v-list-item>
+            <template #prepend>
+              <v-icon icon="mdi-shape-plus-outline" />
+            </template>
+            <v-list-item-title>{{ tOrFallback('gamePage.selection.subCategory', 'Subcategory') }}</v-list-item-title>
+            <v-list-item-subtitle>{{ entityName(selectedSubCategory || {}) || '—' }}</v-list-item-subtitle>
+          </v-list-item>
+          <v-list-item>
+            <template #prepend>
+              <v-icon icon="mdi-controller-classic-outline" />
+            </template>
+            <v-list-item-title>{{ tOrFallback('gamePage.selection.game', 'Game') }}</v-list-item-title>
+            <v-list-item-subtitle>{{ entityName(selectedGame || {}) || '—' }}</v-list-item-subtitle>
+          </v-list-item>
+          <v-list-item>
+            <template #prepend>
+              <v-icon icon="mdi-ladder" />
+            </template>
+            <v-list-item-title>{{ tOrFallback('gamePage.selection.level', 'Level') }}</v-list-item-title>
+            <v-list-item-subtitle>{{ selectedLevelValue || '—' }}</v-list-item-subtitle>
+          </v-list-item>
+        </v-list>
+      </template>
+    </AppPageDrawers>
 
-      <v-card rounded="xl" class="mb-6">
-        <v-card-title>{{ tOrFallback('gamePage.levels.title', 'Niveau') }}</v-card-title>
-        <v-card-text>
-          <v-chip-group :model-value="selectedLevelValue ? [selectedLevelValue] : []" column>
-            <v-chip
-              v-for="level in levels"
-              :key="level.id"
-              filter
-              :color="selectedLevelValue === level.value ? 'primary' : undefined"
-              @click="selectedLevelValue = level.value"
-            >
-              {{ difficultyLabel(level.value) }}
-            </v-chip>
-          </v-chip-group>
-        </v-card-text>
-      </v-card>
+    <v-container fluid>
+      <template v-if="selectedGame">
+        <v-breadcrumbs :items="breadcrumbs" class="px-0" />
 
-      <v-btn color="primary" size="large" :disabled="!canStart" :loading="catalogStore.startingSession" @click="onStart">
-        {{ t('gamePage.actions.start') }}
-      </v-btn>
+        <v-card rounded="xl" class="mb-6">
+          <v-card-title>{{ tOrFallback('gamePage.levels.title', 'Niveau') }}</v-card-title>
+          <v-card-text>
+            <v-chip-group :model-value="selectedLevelValue ? [selectedLevelValue] : []" column>
+              <v-chip
+                v-for="level in levels"
+                :key="level.id"
+                filter
+                :color="selectedLevelValue === level.value ? 'primary' : undefined"
+                @click="selectedLevelValue = level.value"
+              >
+                {{ difficultyLabel(level.value) }}
+              </v-chip>
+            </v-chip-group>
+          </v-card-text>
+        </v-card>
 
-      <v-card rounded="xl" variant="tonal" class="mt-6">
-        <v-card-title>Selection summary</v-card-title>
-        <v-card-text class="d-flex flex-wrap ga-2">
-          <v-chip size="small" variant="outlined">Game: {{ entityName(selectedGame) }}</v-chip>
-          <v-chip size="small" variant="outlined">Level: {{ selectedLevelValue || '—' }}</v-chip>
-        </v-card-text>
-      </v-card>
-    </template>
-  </v-container>
+        <v-btn color="primary" size="large" :disabled="!canStart" :loading="catalogStore.startingSession" @click="onStart">
+          {{ t('gamePage.actions.start') }}
+        </v-btn>
+
+        <v-card rounded="xl" variant="tonal" class="mt-6">
+          <v-card-title>Selection summary</v-card-title>
+          <v-card-text class="d-flex flex-wrap ga-2">
+            <v-chip size="small" variant="outlined">Game: {{ entityName(selectedGame) }}</v-chip>
+            <v-chip size="small" variant="outlined">Level: {{ selectedLevelValue || '—' }}</v-chip>
+          </v-card-text>
+        </v-card>
+      </template>
+    </v-container>
+  </div>
 </template>
