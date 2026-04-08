@@ -55,7 +55,14 @@ const findParentId = (nodes: LibraryTreeNode[], targetId: string, parentId: stri
   return undefined
 }
 
-await fetchTree()
+onMounted(async () => {
+  try {
+    await fetchTree({ force: true })
+  }
+  catch (error) {
+    console.error('Failed to load library tree', error)
+  }
+})
 
 const onStartDrag = (payload: LibraryDragPayload) => {
   draggedNode.value = {
