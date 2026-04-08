@@ -245,7 +245,10 @@ onMounted(fetchFriendsData)
                 >
                   <template #prepend>
                     <v-avatar size="40" color="primary">
-                      <v-img :src="item.photo" />
+                      <v-img
+                        :src="item.photo"
+                        :alt="`Avatar of ${userName(item)}`"
+                      />
                     </v-avatar>
                   </template>
 
