@@ -47,7 +47,7 @@ function gameName(gameId: string, fallback: string) {
   return tOrFallback(`gamePage.catalog.games.${gameId}.name`, fallback)
 }
 
-function gameDescription(gameId: string, fallback?: string) {
+function gameDescription(gameId: string, fallback?: string | null) {
   return tOrFallback(`gamePage.catalog.games.${gameId}.description`, fallback || '')
 }
 

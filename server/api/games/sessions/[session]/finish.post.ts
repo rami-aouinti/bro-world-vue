@@ -2,7 +2,7 @@ import { createProxyHandler } from '../../../../utils/createProxyHandler'
 import type {
   GamesSessionFinishPayload,
   GamesSessionFinishResponse,
-} from '../../../../types/api/games'
+} from '~~/server/types/api/games'
 
 export default createProxyHandler<GamesSessionFinishResponse, GamesSessionFinishPayload>({
   method: 'POST',
