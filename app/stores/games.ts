@@ -3,6 +3,22 @@ import { useProfileStore } from './profile'
 const CATALOG_CACHE_TTL_MS = 5 * 60 * 1000
 const LEVELS_CACHE_TTL_MS = 15 * 60 * 1000
 
+
+function normalizeSessionLevel(level: string) {
+  const normalizedLevel = level.trim().toLowerCase()
+
+  if (normalizedLevel === 'beginner')
+    return 'easy'
+
+  if (normalizedLevel === 'intermediate' || normalizedLevel === 'intermidiate')
+    return 'medium'
+
+  if (normalizedLevel === 'advanced')
+    return 'hard'
+
+  return normalizedLevel
+}
+
 interface GameItem {
   id: string
   name: string
@@ -123,7 +139,7 @@ export const useGamesStore = defineStore('games', {
       try {
         const response = await $fetch<GameSessionStartResponse>(`/api/games/${gameId}/sessions/start`, {
           method: 'POST',
-          body: { level },
+          body: { level: normalizeSessionLevel(level) },
         })
 
         this.activeSession = response
