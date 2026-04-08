@@ -74,6 +74,13 @@ export const useProfileStore = defineStore('profile', {
       Boolean(state.profile) && Date.now() - state.lastFetchedAt < PROFILE_CACHE_TTL_MS,
   },
   actions: {
+    setCoins(coins: number) {
+      if (!this.profile) {
+        return
+      }
+
+      this.profile.coins = coins
+    },
     clearProfile() {
       this.profile = null
       this.lastFetchedAt = 0
