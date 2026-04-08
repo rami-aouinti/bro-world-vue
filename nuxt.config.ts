@@ -89,11 +89,14 @@ export default defineNuxtConfig({
     },
   },
   nitro: {
-    storage: {
-      redis: {
-        url: process.env.REDIS_URL,
-      },
-    },
+    storage: process.env.REDIS_URL
+      ? {
+          redis: {
+            driver: 'redis',
+            url: process.env.REDIS_URL,
+          },
+        }
+      : {},
   },
   i18n: {
     locales: [
