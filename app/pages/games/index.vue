@@ -7,7 +7,6 @@ const {
   catalogStore,
   ensureCatalogLoaded,
   entityRouteValue,
-  tOrFallback,
 } = useGamesCatalogNavigation()
 
 onMounted(async () => {
@@ -21,39 +20,26 @@ function openCategory(category: { id: string; key?: string }) {
 const categories = computed(() =>
   Array.isArray(catalogStore.categories) ? catalogStore.categories : [],
 )
+
+const breadcrumbs = [{ title: 'Games', disabled: true }]
 </script>
 
 <template>
   <div>
     <AppPageDrawers>
       <template #right>
-        <v-list nav density="comfortable" class="app-right-drawer-list">
-          <v-list-item>
-            <template #prepend>
-              <v-icon icon="mdi-shape-outline" />
-            </template>
-            <v-list-item-title>{{ tOrFallback('gamePage.selection.category', 'Category') }}</v-list-item-title>
-            <v-list-item-subtitle>—</v-list-item-subtitle>
-          </v-list-item>
-          <v-list-item>
-            <template #prepend>
-              <v-icon icon="mdi-shape-plus-outline" />
-            </template>
-            <v-list-item-title>{{ tOrFallback('gamePage.selection.subCategory', 'Subcategory') }}</v-list-item-title>
-            <v-list-item-subtitle>—</v-list-item-subtitle>
-          </v-list-item>
-          <v-list-item>
-            <template #prepend>
-              <v-icon icon="mdi-controller-classic-outline" />
-            </template>
-            <v-list-item-title>{{ tOrFallback('gamePage.selection.game', 'Game') }}</v-list-item-title>
-            <v-list-item-subtitle>—</v-list-item-subtitle>
-          </v-list-item>
-        </v-list>
+        <v-list nav density="comfortable" class="app-right-drawer-list" />
       </template>
     </AppPageDrawers>
 
     <v-container fluid>
+      <v-breadcrumbs :items="breadcrumbs" class="pa-0 mb-2">
+        <template #item="{ item }">
+          <v-btn variant="text" size="small" :disabled="item.disabled">
+            {{ item.title }}
+          </v-btn>
+        </template>
+      </v-breadcrumbs>
       <div class="text-h2 text-center mb-2">
         <h3>Games</h3>
       </div>
