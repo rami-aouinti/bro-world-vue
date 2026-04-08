@@ -92,6 +92,7 @@ const menuShow = ref(false)
     <template #activator="{ props: menu }">
       <v-tooltip
         location="top"
+        :aria-label="t('appbar.themePalette')"
         :text="t('appbar.themePalette')"
         :content-props="{ 'aria-label': t('appbar.themePalette') }"
       >
