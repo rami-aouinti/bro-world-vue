@@ -42,6 +42,8 @@ const MUTATION_INVALIDATION_RULES: MutationInvalidationRule[] = [
   { key: 'calendar:events:cancel', scope: 'private', prefixes: ['calendar'] },
   { key: 'calendar:events:delete', scope: 'private', prefixes: ['calendar'] },
   { key: 'notifications:read-all', scope: 'private', prefixes: ['notifications'] },
+  { key: 'library:folders:mutate', scope: 'private', prefixes: ['library'] },
+  { key: 'library:files:mutate', scope: 'private', prefixes: ['library'] },
   { key: 'users:block:create', scope: 'private', prefixes: ['users'] },
   { key: 'users:block:delete', scope: 'private', prefixes: ['users'] },
   { key: 'users:friends:action', scope: 'private', prefixes: ['users', 'notifications'] },
