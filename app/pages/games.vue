@@ -29,6 +29,7 @@ const safeCategories = computed(() =>
 const safeLevels = computed(() =>
   Array.isArray(catalogStore.levels) ? catalogStore.levels : [],
 )
+const safeLevelValues = computed(() => safeLevels.value.map(level => level.value))
 
 const selectedCategory = computed(
   () =>
@@ -133,7 +134,7 @@ function resetSelectionIfMissing() {
 
   if (
     selectedLevelValue.value &&
-    !safeLevels.value.includes(selectedLevelValue.value)
+    !safeLevelValues.value.includes(selectedLevelValue.value)
   ) {
     selectedLevelValue.value = null
   }
@@ -392,21 +393,6 @@ watch(safeLevels, resetSelectionIfMissing)
           type="list-item-two-line, list-item-two-line, list-item-two-line"
           class="mb-2"
         />
-        <v-alert
-          v-else-if="catalogStore.levelsError"
-          type="warning"
-          variant="tonal"
-          class="mb-2"
-        >
-          <div
-            class="d-flex flex-column flex-sm-row align-sm-center justify-space-between ga-3"
-          >
-            <span>{{ catalogStore.levelsError }}</span>
-            <v-btn size="small" variant="outlined" @click="catalogStore.fetchLevels(true)">
-              {{ tOrFallback('gamePage.actions.retry', 'Retry') }}
-            </v-btn>
-          </div>
-        </v-alert>
         <v-chip-group
           v-else
           :model-value="selectedLevelValue ? [selectedLevelValue] : []"
@@ -414,12 +400,12 @@ watch(safeLevels, resetSelectionIfMissing)
         >
           <v-chip
             v-for="level in safeLevels"
-            :key="level"
+            :key="level.id"
             filter
-            :color="selectedLevelValue === level ? 'primary' : undefined"
-            @click="selectedLevelValue = level"
+            :color="selectedLevelValue === level.value ? 'primary' : undefined"
+            @click="selectedLevelValue = level.value"
           >
-            {{ difficultyLabel(level) }}
+            {{ difficultyLabel(level.value) }}
           </v-chip>
         </v-chip-group>
       </v-card-text>
