@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Notify } from '~/stores/notification'
+
 const { t, te } = useI18n()
 
 definePageMeta({
@@ -25,7 +27,14 @@ const selectedSubCategory = computed(() =>
 
 const games = computed(() => selectedSubCategory.value?.games ?? [])
 
-const canStart = computed(() => Boolean(selectedGameId.value && selectedLevelValue.value))
+const canStart = computed(
+  () =>
+    Boolean(selectedGameId.value && selectedLevelValue.value)
+    && !catalogStore.startingSession
+    && !catalogStore.finishingSession,
+)
+
+const hasActiveRequest = computed(() => catalogStore.startingSession || catalogStore.finishingSession)
 
 function tOrFallback(key: string, fallback: string) {
   return te(key) ? t(key) : fallback
@@ -55,6 +64,23 @@ function difficultyLabel(level: string) {
   return tOrFallback(`gamePage.catalog.difficulties.${level}`, level)
 }
 
+function resetSelectionIfMissing() {
+  if (selectedCategoryId.value && !catalogStore.categories.some(category => category.id === selectedCategoryId.value)) {
+    selectedCategoryId.value = null
+  }
+
+  if (selectedSubCategoryId.value && !subCategories.value.some(subCategory => subCategory.id === selectedSubCategoryId.value)) {
+    selectedSubCategoryId.value = null
+  }
+
+  if (selectedGameId.value && !games.value.some(game => game.id === selectedGameId.value)) {
+    selectedGameId.value = null
+  }
+
+  if (selectedLevelValue.value && !catalogStore.levels.includes(selectedLevelValue.value)) {
+    selectedLevelValue.value = null
+  }
+}
 
 function selectCategory(categoryId: string) {
   selectedCategoryId.value = categoryId
@@ -73,7 +99,12 @@ async function onStart() {
   }
 
   finishResult.value = null
-  await catalogStore.startSession(selectedGameId.value, selectedLevelValue.value)
+  try {
+    await catalogStore.startSession(selectedGameId.value, selectedLevelValue.value)
+    Notify.success(tOrFallback('gamePage.messages.startSuccess', 'Game session started successfully.'))
+  } catch (error) {
+    Notify.error(error)
+  }
 }
 
 async function onFinish(result: 'win' | 'lose') {
@@ -84,12 +115,34 @@ async function onFinish(result: 'win' | 'lose') {
   }
 
   finishResult.value = result
-  await catalogStore.finishSession(sessionId, result)
+  try {
+    await catalogStore.finishSession(sessionId, result)
+    Notify.success(
+      result === 'win'
+        ? tOrFallback('gamePage.messages.finishWinSuccess', 'Session finished with a win.')
+        : tOrFallback('gamePage.messages.finishLoseSuccess', 'Session finished with a loss.'),
+    )
+  } catch (error) {
+    Notify.error(error)
+  }
+}
+
+async function onRetryCatalog() {
+  try {
+    await catalogStore.fetchCatalog()
+    resetSelectionIfMissing()
+    Notify.success(tOrFallback('gamePage.messages.retrySuccess', 'Catalog refreshed successfully.'))
+  } catch (error) {
+    Notify.error(error)
+  }
 }
 
 onMounted(() => {
   catalogStore.fetchCatalog()
 })
+
+watch(() => catalogStore.categories, resetSelectionIfMissing)
+watch(() => catalogStore.levels, resetSelectionIfMissing)
 </script>
 
 <template>
@@ -101,20 +154,23 @@ onMounted(() => {
       type="warning"
       variant="tonal"
       class="mb-4"
-      :text="t('gamePage.states.error')"
-    />
+    >
+      <div class="d-flex flex-column flex-sm-row align-sm-center justify-space-between ga-3">
+        <span>{{ catalogStore.error }}</span>
+        <v-btn size="small" variant="outlined" @click="onRetryCatalog">
+          {{ tOrFallback('gamePage.actions.retry', 'Retry') }}
+        </v-btn>
+      </div>
+    </v-alert>
 
-    <v-skeleton-loader
-      v-if="catalogStore.loadingCatalog"
-      type="article, article, article"
-      class="mb-6"
-    />
-
-    <template v-else>
-      <v-card class="mb-6" rounded="xl">
+    <v-card class="mb-6" rounded="xl">
         <v-card-title>{{ t('gamePage.catalog.sections.categories') }}</v-card-title>
         <v-card-text>
-          <v-row v-if="catalogStore.categories.length" dense>
+          <v-skeleton-loader
+            v-if="catalogStore.loadingCatalog"
+            type="list-item-three-line, list-item-three-line"
+          />
+          <v-row v-else-if="catalogStore.categories.length" dense>
             <v-col
               v-for="category in catalogStore.categories"
               :key="category.id"
@@ -141,7 +197,7 @@ onMounted(() => {
             v-else
             type="info"
             variant="tonal"
-            :text="t('gamePage.states.empty')"
+            :text="tOrFallback('gamePage.states.emptyCategories', 'No categories available at the moment.')"
           />
         </v-card-text>
       </v-card>
@@ -168,7 +224,7 @@ onMounted(() => {
             v-else
             type="info"
             variant="tonal"
-            :text="t('gamePage.catalog.states.selectCategory')"
+            :text="selectedCategory ? tOrFallback('gamePage.states.emptySubCategories', 'No sub-categories available for this category.') : t('gamePage.catalog.states.selectCategory')"
           />
         </v-card-text>
       </v-card>
@@ -202,7 +258,7 @@ onMounted(() => {
             v-else
             type="info"
             variant="tonal"
-            :text="t('gamePage.catalog.states.selectSubCategory')"
+            :text="selectedSubCategory ? tOrFallback('gamePage.states.emptyGames', 'No games available for this sub-category.') : t('gamePage.catalog.states.selectSubCategory')"
           />
         </v-card-text>
       </v-card>
@@ -210,7 +266,13 @@ onMounted(() => {
       <v-card class="mb-6" rounded="xl">
         <v-card-title>{{ t('gamePage.levels.title') }}</v-card-title>
         <v-card-text>
+          <v-skeleton-loader
+            v-if="catalogStore.loadingCatalog"
+            type="chip, chip, chip"
+            class="mb-2"
+          />
           <v-chip-group
+            v-else
             :model-value="selectedLevelValue ? [selectedLevelValue] : []"
             column
           >
@@ -240,10 +302,20 @@ onMounted(() => {
 
       <v-card v-if="catalogStore.currentSession" rounded="xl" class="mb-6">
         <v-card-title>{{ t('gamePage.session.title') }}</v-card-title>
-        <v-card-text>
-          <div class="mb-2"><strong>{{ t('gamePage.session.sessionId') }}:</strong> {{ catalogStore.currentSession.sessionId }}</div>
-          <div class="mb-2"><strong>{{ t('gamePage.session.status') }}:</strong> {{ catalogStore.currentSession.status }}</div>
-          <div><strong>{{ t('gamePage.session.coins') }}:</strong> {{ catalogStore.currentSession.coins }}</div>
+        <v-card-text class="d-flex flex-wrap ga-2">
+          <v-chip size="small" color="primary" variant="tonal">
+            {{ t('gamePage.session.sessionId') }}: {{ catalogStore.currentSession.sessionId }}
+          </v-chip>
+          <v-chip size="small" color="secondary" variant="tonal">
+            {{ tOrFallback('gamePage.session.level', 'Level') }}:
+            {{ catalogStore.currentSession.level ? difficultyLabel(catalogStore.currentSession.level) : '-' }}
+          </v-chip>
+          <v-chip size="small" color="info" variant="tonal">
+            {{ t('gamePage.session.status') }}: {{ catalogStore.currentSession.status }}
+          </v-chip>
+          <v-chip size="small" color="success" variant="tonal">
+            {{ t('gamePage.session.coins') }}: {{ catalogStore.currentSession.coins }}
+          </v-chip>
         </v-card-text>
       </v-card>
 
@@ -253,7 +325,7 @@ onMounted(() => {
           <v-btn
             color="success"
             :loading="catalogStore.finishingSession && finishResult === 'win'"
-            :disabled="!catalogStore.currentSession"
+            :disabled="!catalogStore.currentSession || hasActiveRequest"
             @click="onFinish('win')"
           >
             {{ t('gamePage.actions.finishWin') }}
@@ -262,13 +334,12 @@ onMounted(() => {
             color="error"
             variant="outlined"
             :loading="catalogStore.finishingSession && finishResult === 'lose'"
-            :disabled="!catalogStore.currentSession"
+            :disabled="!catalogStore.currentSession || hasActiveRequest"
             @click="onFinish('lose')"
           >
             {{ t('gamePage.actions.finishLose') }}
           </v-btn>
         </v-card-text>
       </v-card>
-    </template>
   </v-container>
 </template>
