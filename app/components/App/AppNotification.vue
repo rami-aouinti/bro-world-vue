@@ -24,6 +24,7 @@ function toggleAll() {
 <template>
   <v-tooltip
     location="top"
+    :aria-label="t('appbar.notification')"
     :text="t('appbar.notification')"
     :content-props="{ 'aria-label': t('appbar.notification') }"
   >
@@ -58,6 +59,7 @@ function toggleAll() {
           />
           <v-tooltip
             location="top"
+            :aria-label="t('notification.clearAll')"
             :text="t('notification.clearAll')"
             :content-props="{ 'aria-label': t('notification.clearAll') }"
           >
@@ -73,6 +75,7 @@ function toggleAll() {
           </v-tooltip>
           <v-tooltip
             location="top"
+            :aria-label="t('notification.hide')"
             :text="t('notification.hide')"
             :content-props="{ 'aria-label': t('notification.hide') }"
           >
