@@ -279,17 +279,19 @@ const isPreviewPdf = computed(() => selectedFile.value?.mimeType === 'applicatio
         </div>
 
         <div class="library-grid">
-          <button
+          <v-btn
             v-for="node in currentItems"
+            icon
+            variant="text"
+            block
             :key="node.id"
             class="library-grid__item"
             :class="{ 'library-grid__item--selected': selectedNode?.id === node.id }"
-            type="button"
             @click="openNode(node)"
           >
-            <v-icon :color="node.type === 'folder' ? 'warning' : 'primary'" :icon="node.type === 'folder' ? 'mdi-folder' : 'mdi-file-outline'" size="28" />
+            <v-icon :color="node.type === 'folder' ? 'warning' : 'primary'" :icon="node.type === 'folder' ? 'mdi-folder' : 'mdi-file-outline'" size="48" />
             <span class="library-grid__name">{{ node.name }}</span>
-          </button>
+          </v-btn>
         </div>
 
         <p v-if="currentItems.length === 0" class="text-medium-emphasis mb-0 mt-2">
@@ -406,9 +408,6 @@ const isPreviewPdf = computed(() => selectedFile.value?.mimeType === 'applicatio
 }
 
 .library-grid__item {
-  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-  border-radius: 10px;
-  background: rgba(var(--v-theme-surface), 1);
   min-height: 76px;
   padding: 10px 12px;
   display: flex;
@@ -429,6 +428,7 @@ const isPreviewPdf = computed(() => selectedFile.value?.mimeType === 'applicatio
 }
 
 .library-grid__name {
+  padding-left: 12px;
   font-size: 0.95rem;
   font-weight: 500;
   word-break: break-word;
