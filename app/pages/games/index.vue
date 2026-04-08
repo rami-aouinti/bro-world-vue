@@ -57,6 +57,9 @@ const categories = computed(() =>
     </AppPageDrawers>
 
     <v-container fluid>
+      <div class="text-h2 text-center mb-2">
+        <h3>Games</h3>
+      </div>
       <v-skeleton-loader
         v-if="catalogStore.loadingCatalog"
         type="image, article, image, article"
