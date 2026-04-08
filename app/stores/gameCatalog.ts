@@ -104,6 +104,7 @@ export const useGameCatalogStore = defineStore('game-catalog', {
     async startSession(gameId: string, level: string) {
       this.startingSession = true
       this.error = ''
+      const profileStore = useProfileStore()
 
       try {
         const payload: GamesSessionStartPayload = { level }
@@ -117,6 +118,9 @@ export const useGameCatalogStore = defineStore('game-catalog', {
           coins: response.coins,
           level: response.session.level ?? level,
           userGameId: response.userGameId,
+        }
+        if (profileStore.profile) {
+          profileStore.setCoins(response.coins)
         }
         return response
       } catch (error) {
@@ -139,6 +143,9 @@ export const useGameCatalogStore = defineStore('game-catalog', {
             level: fallback.session.level,
             userGameId: fallback.userGameId,
           }
+          if (profileStore.profile) {
+            profileStore.setCoins(fallback.coins)
+          }
           this.error = 'Start API unavailable. Demo session created locally.'
           return fallback
         }
@@ -153,6 +160,7 @@ export const useGameCatalogStore = defineStore('game-catalog', {
     async finishSession(sessionId: string, result: 'win' | 'lose') {
       this.finishingSession = true
       this.error = ''
+      const profileStore = useProfileStore()
 
       try {
         const payload: GamesSessionFinishPayload = { result }
@@ -166,6 +174,9 @@ export const useGameCatalogStore = defineStore('game-catalog', {
             status: response.userGame.status,
             coins: response.coins,
           }
+        }
+        if (profileStore.profile) {
+          profileStore.setCoins(response.coins)
         }
         return response
       } catch (error) {
@@ -192,6 +203,9 @@ export const useGameCatalogStore = defineStore('game-catalog', {
             ...this.currentSession,
             status: fallback.userGame.status,
             coins: fallback.coins,
+          }
+          if (profileStore.profile) {
+            profileStore.setCoins(fallback.coins)
           }
           this.error = 'Finish API unavailable. Demo result applied locally.'
           return fallback
