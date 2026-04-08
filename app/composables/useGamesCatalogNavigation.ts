@@ -1,5 +1,10 @@
 import { Notify } from '~/stores/notification'
 
+type KeyedEntity = {
+  id: string
+  key?: string
+}
+
 export function useGamesCatalogNavigation() {
   const catalogStore = useGameCatalogStore()
   const { t, te } = useI18n()
@@ -18,13 +23,26 @@ export function useGamesCatalogNavigation() {
     }
   }
 
-  function getCategoryById(categoryId: string) {
-    return catalogStore.categories.find(category => category.id === categoryId) ?? null
+  function matchesRouteParam(entity: KeyedEntity, param: string) {
+    return entity.id === param || entity.key === param
   }
 
-  function getSubCategoryById(categoryId: string, subCategoryId: string) {
-    const category = getCategoryById(categoryId)
-    return category?.subCategories.find(subCategory => subCategory.id === subCategoryId) ?? null
+  function entityRouteValue(entity: KeyedEntity) {
+    return entity.key || entity.id
+  }
+
+  function getCategoryByRouteParam(categoryParam: string) {
+    return catalogStore.categories.find(category => matchesRouteParam(category, categoryParam)) ?? null
+  }
+
+  function getSubCategoryByRouteParam(categoryParam: string, subCategoryParam: string) {
+    const category = getCategoryByRouteParam(categoryParam)
+    return category?.subCategories.find(subCategory => matchesRouteParam(subCategory, subCategoryParam)) ?? null
+  }
+
+  function getGameByRouteParam(categoryParam: string, subCategoryParam: string, gameParam: string) {
+    const subCategory = getSubCategoryByRouteParam(categoryParam, subCategoryParam)
+    return subCategory?.games.find(game => matchesRouteParam(game, gameParam)) ?? null
   }
 
   function getGameCardImage(thumbnailUrl?: string | null) {
@@ -48,9 +66,11 @@ export function useGamesCatalogNavigation() {
     te,
     tOrFallback,
     ensureCatalogLoaded,
-    getCategoryById,
-    getSubCategoryById,
+    getCategoryByRouteParam,
+    getSubCategoryByRouteParam,
+    getGameByRouteParam,
     getGameCardImage,
+    entityRouteValue,
     entityName,
     entityDescription,
   }

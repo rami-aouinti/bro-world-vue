@@ -6,41 +6,37 @@ definePageMeta({
 })
 
 const route = useRoute()
-const categoryId = computed(() => String(route.params.category || ''))
-const subCategoryId = computed(() => String(route.params.subCategory || ''))
+const categoryParam = computed(() => String(route.params.categoryKey || ''))
+const subCategoryParam = computed(() => String(route.params.subCategoryKey || ''))
+const gameParam = computed(() => String(route.params.gameKey || ''))
 
 const {
   catalogStore,
   t,
   tOrFallback,
   ensureCatalogLoaded,
-  getCategoryById,
-  getSubCategoryById,
+  getCategoryByRouteParam,
+  getSubCategoryByRouteParam,
+  getGameByRouteParam,
   entityName,
-  entityDescription,
-  getGameCardImage,
 } = useGamesCatalogNavigation()
 
-const selectedGameId = ref<string | null>(null)
+const selectedCategory = computed(() => getCategoryByRouteParam(categoryParam.value))
+const selectedSubCategory = computed(() => getSubCategoryByRouteParam(categoryParam.value, subCategoryParam.value))
+const selectedGame = computed(() => getGameByRouteParam(categoryParam.value, subCategoryParam.value, gameParam.value))
+const levels = computed(() => (Array.isArray(catalogStore.levels) ? catalogStore.levels : []))
 const selectedLevelValue = ref<string | null>(null)
 
-const selectedCategory = computed(() => getCategoryById(categoryId.value))
-const selectedSubCategory = computed(() => getSubCategoryById(categoryId.value, subCategoryId.value))
-const games = computed(() => selectedSubCategory.value?.games ?? [])
-const selectedGame = computed(() => games.value.find(game => game.id === selectedGameId.value) ?? null)
-const levels = computed(() => (Array.isArray(catalogStore.levels) ? catalogStore.levels : []))
-
 const canStart = computed(
-  () => Boolean(selectedGameId.value && selectedLevelValue.value) && !catalogStore.startingSession,
+  () => Boolean(selectedGame.value && selectedLevelValue.value) && !catalogStore.startingSession,
 )
 
 onMounted(async () => {
   const loaded = await ensureCatalogLoaded()
-  if (!loaded) {
+  if (!loaded)
     return
-  }
 
-  if (!selectedCategory.value || !selectedSubCategory.value) {
+  if (!selectedCategory.value || !selectedSubCategory.value || !selectedGame.value) {
     await navigateTo('/games')
     return
   }
@@ -57,12 +53,11 @@ function difficultyLabel(level: string) {
 }
 
 async function onStart() {
-  if (!selectedGameId.value || !selectedLevelValue.value || !selectedSubCategory.value) {
+  if (!selectedGame.value || !selectedLevelValue.value)
     return
-  }
 
   try {
-    const response = await catalogStore.startSession(selectedGameId.value, selectedLevelValue.value)
+    const response = await catalogStore.startSession(selectedGame.value.id, selectedLevelValue.value)
     const createdSessionId = response.session.id ?? response.session.sessionId ?? catalogStore.currentSession?.sessionId
 
     if (!createdSessionId) {
@@ -71,39 +66,25 @@ async function onStart() {
     }
 
     await navigateTo(
-      `/games/${categoryId.value}/${subCategoryId.value}/${createdSessionId}/play?gameId=${selectedGameId.value}&level=${selectedLevelValue.value}`,
+      `/games/${categoryParam.value}/${subCategoryParam.value}/${gameParam.value}/${createdSessionId}/play`,
     )
   } catch (error) {
     Notify.error(error)
   }
 }
+
+const breadcrumbs = computed(() => [
+  { title: 'Games', to: '/games' },
+  { title: selectedCategory.value?.key || selectedCategory.value?.name || 'Category', to: `/games/${categoryParam.value}` },
+  { title: selectedSubCategory.value?.key || selectedSubCategory.value?.name || 'Subcategory', to: `/games/${categoryParam.value}/${subCategoryParam.value}` },
+  { title: selectedGame.value?.key || selectedGame.value?.name || 'Game', disabled: true },
+])
 </script>
 
 <template>
   <v-container fluid>
-    <v-btn
-      prepend-icon="mdi-arrow-left"
-      variant="text"
-      class="mb-4"
-      @click="navigateTo(`/games/${categoryId}`)"
-    >
-      Back
-    </v-btn>
-
-    <template v-if="selectedSubCategory">
-      <v-row dense>
-        <v-col v-for="game in games" :key="game.id" cols="12" md="6" lg="4">
-          <v-card
-            rounded="lg"
-            class="cursor-pointer h-100"
-            :variant="selectedGameId === game.id ? 'elevated' : 'outlined'"
-            :color="selectedGameId === game.id ? 'primary' : undefined"
-            @click="selectedGameId = game.id"
-          >
-            <v-img :src="game?.img" height="200" cover />
-          </v-card>
-        </v-col>
-      </v-row>
+    <template v-if="selectedGame">
+      <v-breadcrumbs :items="breadcrumbs" class="px-0" />
 
       <v-card rounded="xl" class="mb-6">
         <v-card-title>{{ tOrFallback('gamePage.levels.title', 'Niveau') }}</v-card-title>
@@ -126,7 +107,7 @@ async function onStart() {
         {{ t('gamePage.actions.start') }}
       </v-btn>
 
-      <v-card v-if="selectedGame" rounded="xl" variant="tonal" class="mt-6">
+      <v-card rounded="xl" variant="tonal" class="mt-6">
         <v-card-title>Selection summary</v-card-title>
         <v-card-text class="d-flex flex-wrap ga-2">
           <v-chip size="small" variant="outlined">Game: {{ entityName(selectedGame) }}</v-chip>

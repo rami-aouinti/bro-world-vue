@@ -5,39 +5,16 @@ definePageMeta({
 
 const {
   catalogStore,
-  t,
-  tOrFallback,
   ensureCatalogLoaded,
-  entityName,
-  entityDescription,
-  getGameCardImage,
+  entityRouteValue,
 } = useGamesCatalogNavigation()
 
 onMounted(async () => {
   await ensureCatalogLoaded()
 })
 
-function openCategory(categoryId: string) {
-  navigateTo(`/games/${categoryId}`)
-}
-
-function getCategoryThumbnail(category: {
-  img?: string | null
-  games?: { thumbnailUrl?: string | null; img?: string | null }[]
-  subCategories?: { img?: string | null; games?: { thumbnailUrl?: string | null; img?: string | null }[] }[]
-}) {
-  return getGameCardImage(
-    category.games?.[0]?.thumbnailUrl ||
-      category.games?.[0]?.img ||
-      category.subCategories?.[0]?.games?.[0]?.thumbnailUrl ||
-      category.subCategories?.[0]?.games?.[0]?.img ||
-      category.subCategories?.[0]?.img ||
-      category.img,
-  )
-}
-
-function getSubCategoryCount(category: { subCategories?: unknown[] }) {
-  return Array.isArray(category.subCategories) ? category.subCategories.length : 0
+function openCategory(category: { id: string; key?: string }) {
+  navigateTo(`/games/${entityRouteValue(category)}`)
 }
 
 const categories = computed(() =>
@@ -60,19 +37,18 @@ const categories = computed(() =>
         sm="6"
         lg="4"
       >
-        <v-hover v-slot="{ isHovering, props }">
+        <v-hover v-slot="{ props }">
           <v-card
             v-bind="props"
             class="game-category-card overflow-hidden"
             elevation="8"
-            @click="openCategory(category.id)"
+            @click="openCategory(category)"
           >
             <v-img
               :src="category?.img"
               height="200"
               cover
-            >
-            </v-img>
+            />
           </v-card>
         </v-hover>
       </v-col>
@@ -82,12 +58,7 @@ const categories = computed(() =>
       v-else
       type="info"
       variant="tonal"
-      :text="
-        tOrFallback(
-          'gamePage.states.emptyCategories',
-          'Aucune catégorie disponible pour le moment.',
-        )
-      "
+      text="Aucune catégorie disponible pour le moment."
     />
   </v-container>
 </template>
@@ -100,17 +71,5 @@ const categories = computed(() =>
 
 .game-category-card:hover {
   transform: translateY(-4px);
-}
-
-.category-overlay {
-  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
-}
-
-.text-truncate-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 </style>
