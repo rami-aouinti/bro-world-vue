@@ -171,7 +171,10 @@ async function onFinish(result: 'win' | 'lose') {
 
 async function onRetryCatalog() {
   try {
-    await catalogStore.fetchCatalog()
+    await Promise.all([
+      catalogStore.fetchCatalog(),
+      catalogStore.fetchLevels(),
+    ])
     resetSelectionIfMissing()
     Notify.success(
       tOrFallback(
@@ -184,8 +187,15 @@ async function onRetryCatalog() {
   }
 }
 
-onMounted(() => {
-  catalogStore.fetchCatalog()
+onMounted(async () => {
+  try {
+    await Promise.all([
+      catalogStore.fetchCatalog(),
+      catalogStore.fetchLevels(),
+    ])
+  } catch (error) {
+    Notify.error(error)
+  }
 })
 
 watch(safeCategories, resetSelectionIfMissing)
@@ -349,9 +359,24 @@ watch(safeLevels, resetSelectionIfMissing)
       <v-card-text>
         <v-skeleton-loader
           v-if="catalogStore.loadingLevels"
-          type="chip, chip, chip"
+          type="list-item-two-line, list-item-two-line, list-item-two-line"
           class="mb-2"
         />
+        <v-alert
+          v-else-if="catalogStore.levelsError"
+          type="warning"
+          variant="tonal"
+          class="mb-2"
+        >
+          <div
+            class="d-flex flex-column flex-sm-row align-sm-center justify-space-between ga-3"
+          >
+            <span>{{ catalogStore.levelsError }}</span>
+            <v-btn size="small" variant="outlined" @click="catalogStore.fetchLevels(true)">
+              {{ tOrFallback('gamePage.actions.retry', 'Retry') }}
+            </v-btn>
+          </div>
+        </v-alert>
         <v-chip-group
           v-else
           :model-value="selectedLevelValue ? [selectedLevelValue] : []"
