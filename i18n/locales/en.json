@@ -568,6 +568,7 @@
   "gamePage": {
     "actions": {
       "start": "Start",
+      "retry": "Retry",
       "finishWin": "Win",
       "finishLose": "Lose"
     },
@@ -576,14 +577,24 @@
     },
     "states": {
       "empty": "No data available.",
-      "error": "Unable to load game data."
+      "error": "Unable to load game data.",
+      "emptyCategories": "No categories available at the moment.",
+      "emptySubCategories": "No sub-categories available for this category.",
+      "emptyGames": "No games available for this sub-category."
     },
     "session": {
       "title": "Session info",
       "sessionId": "sessionId",
+      "level": "Level",
       "status": "status",
       "coins": "coins",
       "finishDemo": "Finish demo"
+    },
+    "messages": {
+      "startSuccess": "Game session started successfully.",
+      "finishWinSuccess": "Session finished with a win.",
+      "finishLoseSuccess": "Session finished with a loss.",
+      "retrySuccess": "Catalog refreshed successfully."
     },
     "catalog": {
       "categories": {

@@ -533,6 +533,7 @@
   "gamePage": {
     "actions": {
       "start": "Iniciar",
+      "retry": "Reintentar",
       "finishWin": "Ganar",
       "finishLose": "Perder"
     },
@@ -541,14 +542,24 @@
     },
     "states": {
       "empty": "No hay datos disponibles.",
-      "error": "No se pudieron cargar los datos de juegos."
+      "error": "No se pudieron cargar los datos de juegos.",
+      "emptyCategories": "No hay categorías disponibles en este momento.",
+      "emptySubCategories": "No hay subcategorías disponibles para esta categoría.",
+      "emptyGames": "No hay juegos disponibles para esta subcategoría."
     },
     "session": {
       "title": "Información de sesión",
       "sessionId": "sessionId",
+      "level": "Nivel",
       "status": "estado",
       "coins": "monedas",
       "finishDemo": "Finalizar demo"
+    },
+    "messages": {
+      "startSuccess": "Sesión de juego iniciada correctamente.",
+      "finishWinSuccess": "Sesión finalizada con una victoria.",
+      "finishLoseSuccess": "Sesión finalizada con una derrota.",
+      "retrySuccess": "Catálogo actualizado correctamente."
     },
     "catalog": {
       "categories": {
