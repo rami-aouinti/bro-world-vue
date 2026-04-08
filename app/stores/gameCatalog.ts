@@ -61,6 +61,7 @@ export const useGameCatalogStore = defineStore('game-catalog', {
     levels: [] as string[],
     currentSession: null as StartSessionPayload | null,
     loadingCatalog: false,
+    loadingLevels: false,
     startingSession: false,
     finishingSession: false,
     error: '' as string,
@@ -68,6 +69,7 @@ export const useGameCatalogStore = defineStore('game-catalog', {
   actions: {
     async fetchCatalog() {
       this.loadingCatalog = true
+      this.loadingLevels = true
       this.error = ''
 
       try {
@@ -80,6 +82,7 @@ export const useGameCatalogStore = defineStore('game-catalog', {
         this.error = 'API unavailable. Showing fallback catalog.'
       } finally {
         this.loadingCatalog = false
+        this.loadingLevels = false
       }
     },
     async startSession(gameId: string, level: string) {

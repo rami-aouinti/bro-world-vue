@@ -15,8 +15,11 @@ const selectedGameId = ref<string | null>(null)
 const selectedLevelValue = ref<string | null>(null)
 const finishResult = ref<'win' | 'lose' | null>(null)
 
+const safeCategories = computed(() => Array.isArray(catalogStore.categories) ? catalogStore.categories : [])
+const safeLevels = computed(() => Array.isArray(catalogStore.levels) ? catalogStore.levels : [])
+
 const selectedCategory = computed(() =>
-  catalogStore.categories.find(category => category.id === selectedCategoryId.value) ?? null,
+  safeCategories.value.find(category => category.id === selectedCategoryId.value) ?? null,
 )
 
 const subCategories = computed(() => selectedCategory.value?.subCategories ?? [])
@@ -65,7 +68,7 @@ function difficultyLabel(level: string) {
 }
 
 function resetSelectionIfMissing() {
-  if (selectedCategoryId.value && !catalogStore.categories.some(category => category.id === selectedCategoryId.value)) {
+  if (selectedCategoryId.value && !safeCategories.value.some(category => category.id === selectedCategoryId.value)) {
     selectedCategoryId.value = null
   }
 
@@ -77,7 +80,7 @@ function resetSelectionIfMissing() {
     selectedGameId.value = null
   }
 
-  if (selectedLevelValue.value && !catalogStore.levels.includes(selectedLevelValue.value)) {
+  if (selectedLevelValue.value && !safeLevels.value.includes(selectedLevelValue.value)) {
     selectedLevelValue.value = null
   }
 }
@@ -141,8 +144,8 @@ onMounted(() => {
   catalogStore.fetchCatalog()
 })
 
-watch(() => catalogStore.categories, resetSelectionIfMissing)
-watch(() => catalogStore.levels, resetSelectionIfMissing)
+watch(safeCategories, resetSelectionIfMissing)
+watch(safeLevels, resetSelectionIfMissing)
 </script>
 
 <template>
@@ -170,9 +173,9 @@ watch(() => catalogStore.levels, resetSelectionIfMissing)
             v-if="catalogStore.loadingCatalog"
             type="list-item-three-line, list-item-three-line"
           />
-          <v-row v-else-if="catalogStore.categories.length" dense>
+          <v-row v-else-if="safeCategories.length" dense>
             <v-col
-              v-for="category in catalogStore.categories"
+              v-for="category in safeCategories"
               :key="category.id"
               cols="12"
               sm="6"
@@ -267,7 +270,7 @@ watch(() => catalogStore.levels, resetSelectionIfMissing)
         <v-card-title>{{ t('gamePage.levels.title') }}</v-card-title>
         <v-card-text>
           <v-skeleton-loader
-            v-if="catalogStore.loadingCatalog"
+            v-if="catalogStore.loadingLevels"
             type="chip, chip, chip"
             class="mb-2"
           />
@@ -277,7 +280,7 @@ watch(() => catalogStore.levels, resetSelectionIfMissing)
             column
           >
             <v-chip
-              v-for="level in catalogStore.levels"
+              v-for="level in safeLevels"
               :key="level"
               filter
               :color="selectedLevelValue === level ? 'primary' : undefined"
