@@ -34,6 +34,12 @@ function openGameLevels(game: { id: string; key?: string }) {
   navigateTo(`/games/${categoryParam.value}/${subCategoryParam.value}/${entityRouteValue(game)}`)
 }
 
+function navigateBreadcrumb(to?: string) {
+  if (to) {
+    navigateTo(to)
+  }
+}
+
 const breadcrumbs = computed(() => [
   { title: 'Games', to: '/games' },
   { title: selectedCategory.value?.key || selectedCategory.value?.name || 'Category', to: `/games/${categoryParam.value}` },
@@ -46,26 +52,19 @@ const breadcrumbs = computed(() => [
     <AppPageDrawers>
       <template #right>
         <v-list nav density="compact" class="app-right-drawer-list">
-          <v-list-item>
+          <v-list-item v-if="selectedCategory">
             <template #prepend>
               <v-icon icon="mdi-shape-outline" />
             </template>
             <v-list-item-title>{{ tOrFallback('gamePage.selection.category', 'Category') }}</v-list-item-title>
             <v-list-item-subtitle>{{ entityName(selectedCategory || {}) || '—' }}</v-list-item-subtitle>
           </v-list-item>
-          <v-list-item>
+          <v-list-item v-if="selectedSubCategory">
             <template #prepend>
               <v-icon icon="mdi-shape-plus-outline" />
             </template>
             <v-list-item-title>{{ tOrFallback('gamePage.selection.subCategory', 'Subcategory') }}</v-list-item-title>
             <v-list-item-subtitle>{{ entityName(selectedSubCategory || {}) || '—' }}</v-list-item-subtitle>
-          </v-list-item>
-          <v-list-item>
-            <template #prepend>
-              <v-icon icon="mdi-controller-classic-outline" />
-            </template>
-            <v-list-item-title>{{ tOrFallback('gamePage.selection.game', 'Game') }}</v-list-item-title>
-            <v-list-item-subtitle>—</v-list-item-subtitle>
           </v-list-item>
         </v-list>
       </template>
@@ -73,7 +72,18 @@ const breadcrumbs = computed(() => [
 
     <v-container fluid>
       <template v-if="selectedSubCategory">
-        <v-breadcrumbs :items="breadcrumbs" class="px-0" />
+        <v-breadcrumbs :items="breadcrumbs" class="pa-0 mb-2">
+          <template #item="{ item }">
+            <v-btn
+              variant="text"
+              size="small"
+              :disabled="item.disabled"
+              @click="navigateBreadcrumb(item.to as string | undefined)"
+            >
+              {{ item.title }}
+            </v-btn>
+          </template>
+        </v-breadcrumbs>
         <v-row dense>
           <v-col v-for="game in games" :key="game.id" cols="12" md="6" lg="4">
             <v-card
