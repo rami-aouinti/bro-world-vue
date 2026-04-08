@@ -1,4 +1,4 @@
-import { callPrivateApi } from '../../../utils/privateApi'
+import { mutatingPrivateApiCall } from '../../../utils/privateApi'
 import type { UsersApiResponse } from '~~/server/types/api/users'
 
 export default defineEventHandler(async (event): Promise<UsersApiResponse> => {
@@ -11,7 +11,8 @@ export default defineEventHandler(async (event): Promise<UsersApiResponse> => {
     })
   }
 
-  return callPrivateApi<UsersApiResponse>(event, `/users/${userId}/block`, {
+  return mutatingPrivateApiCall<UsersApiResponse>(event, `/users/${userId}/block`, {
+    mutationKey: 'users:block:create',
     method: 'POST',
   })
 })

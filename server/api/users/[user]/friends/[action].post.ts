@@ -1,4 +1,4 @@
-import { callPrivateApi } from '../../../../utils/privateApi'
+import { mutatingPrivateApiCall } from '../../../../utils/privateApi'
 import type { UsersApiResponse } from '~~/server/types/api/users'
 
 const allowedActions = new Set(['request', 'cancel', 'accept', 'reject'])
@@ -14,10 +14,11 @@ export default defineEventHandler(async (event): Promise<UsersApiResponse> => {
     })
   }
 
-  return callPrivateApi<UsersApiResponse>(
+  return mutatingPrivateApiCall<UsersApiResponse>(
     event,
     `/users/${userId}/friends/${action}`,
     {
+      mutationKey: 'users:friends:action',
       method: 'POST',
     },
   )

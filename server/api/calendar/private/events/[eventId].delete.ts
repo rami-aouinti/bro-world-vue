@@ -1,4 +1,4 @@
-import { callPrivateApi } from '../../../../utils/privateApi'
+import { mutatingPrivateApiCall } from '../../../../utils/privateApi'
 import type { CalendarApiResponse } from '~~/server/types/api/calendar'
 
 export default defineEventHandler(
@@ -11,10 +11,11 @@ export default defineEventHandler(
       })
     }
 
-    return callPrivateApi<CalendarApiResponse>(
+    return mutatingPrivateApiCall<CalendarApiResponse>(
       event,
       `/calendar/private/events/${eventId}`,
       {
+        mutationKey: 'calendar:events:delete',
         method: 'DELETE',
       },
     )
