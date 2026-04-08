@@ -55,6 +55,7 @@ const drawerState = useState('drawer', () => true)
 
 const { mobile } = useDisplay()
 const registry = useDrawerSlotRegistry()
+const isDrawerInteractiveReady = ref(false)
 const drawer = computed({
   get() {
     return drawerState.value || !mobile.value
@@ -65,6 +66,15 @@ const drawer = computed({
 })
 const rail = computed(() => !drawerState.value && !mobile.value)
 const leftDrawerRenderer = computed(() => registry?.left.value ?? null)
+const shouldRenderDrawerSlot = computed(
+  () => isDrawerInteractiveReady.value && Boolean(leftDrawerRenderer.value),
+)
+
+onMounted(() => {
+  requestAnimationFrame(() => {
+    isDrawerInteractiveReady.value = true
+  })
+})
 </script>
 
 <template>
@@ -77,7 +87,7 @@ const leftDrawerRenderer = computed(() => registry?.left.value ?? null)
     floating
     class="app-left-drawer"
   >
-    <div v-if="leftDrawerRenderer" class="app-left-drawer-list">
+    <div v-if="shouldRenderDrawerSlot" class="app-left-drawer-list">
       <SkeletonDrawerLeft v-if="isPageSkeletonLoading" />
       <component :is="{ render: leftDrawerRenderer }" v-else />
     </div>

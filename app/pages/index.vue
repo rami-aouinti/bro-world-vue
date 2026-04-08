@@ -1,9 +1,25 @@
 <script setup lang="ts">
+import { defineAsyncComponent } from 'vue'
+
 const { loggedIn } = useUserSession()
 const { isPageSkeletonVisible } = usePageSkeleton()
+const deferredInteractiveReady = ref(false)
+
+const BlogNewPostCardLazy = defineAsyncComponent(
+  () => import('~/components/Blog/NewPostCard.vue'),
+)
+const BlogStoriesCarouselLazy = defineAsyncComponent(
+  () => import('~/components/Blog/StoriesCarousel.vue'),
+)
 
 definePageMeta({
   title: 'appbar.home',
+})
+
+onMounted(() => {
+  requestAnimationFrame(() => {
+    deferredInteractiveReady.value = true
+  })
 })
 </script>
 
@@ -54,8 +70,10 @@ definePageMeta({
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
       <template v-else>
         <template v-if="loggedIn">
-          <BlogNewPostCard />
-          <BlogStoriesCarousel />
+          <ClientOnly>
+            <BlogNewPostCardLazy v-if="deferredInteractiveReady" />
+            <BlogStoriesCarouselLazy v-if="deferredInteractiveReady" />
+          </ClientOnly>
         </template>
         <BlogPostFeed />
       </template>
