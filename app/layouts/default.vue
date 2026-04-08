@@ -8,6 +8,7 @@ const isLayoutReady = ref(false)
 
 provideDrawerSlotRegistry()
 
+const LAYOUT_SKELETON_MIN_DURATION = 100
 let pageSkeletonTimer: ReturnType<typeof setTimeout> | null = null
 
 function getMetaTitle(title: unknown) {
@@ -27,13 +28,7 @@ const breadcrumbs = computed(() => {
 
 const shouldShowBreadcrumbs = computed(() => breadcrumbs.value.length > 1)
 
-function waitForNextFrame() {
-  return new Promise<void>((resolve) => {
-    requestAnimationFrame(() => resolve())
-  })
-}
-
-function triggerPageSkeleton() {
+function triggerPageSkeleton(minDuration = LAYOUT_SKELETON_MIN_DURATION) {
   isPageSkeletonLoading.value = true
 
   if (pageSkeletonTimer) {
@@ -43,23 +38,20 @@ function triggerPageSkeleton() {
   pageSkeletonTimer = setTimeout(() => {
     isPageSkeletonLoading.value = false
     pageSkeletonTimer = null
-  }, 650)
+  }, Math.max(0, minDuration))
 }
 
 onMounted(async () => {
-  if (typeof document !== 'undefined' && 'fonts' in document) {
-    await document.fonts.ready
-  }
-
   await nextTick()
-  await waitForNextFrame()
-  await waitForNextFrame()
-  isLayoutReady.value = true
+  await new Promise<void>((resolve) => {
+    requestAnimationFrame(() => resolve())
+  })
 
+  isLayoutReady.value = true
   triggerPageSkeleton()
 })
 
-watch(() => route.fullPath, triggerPageSkeleton)
+watch(() => route.fullPath, () => triggerPageSkeleton())
 
 onUnmounted(() => {
   if (pageSkeletonTimer) {
