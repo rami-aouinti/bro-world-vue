@@ -4,7 +4,7 @@ definePageMeta({
 })
 
 const route = useRoute()
-const categoryId = computed(() => String(route.params.category || ''))
+const categoryId = computed(() => String(route.params.subcategory || ''))
 
 const {
   ensureCatalogLoaded,
@@ -38,10 +38,6 @@ const subCategories = computed(() =>
 
 <template>
   <v-container fluid>
-    <v-btn prepend-icon="mdi-arrow-left" variant="text" class="mb-4" @click="navigateTo('/games')">
-      Back to categories
-    </v-btn>
-
     <template v-if="selectedCategory">
       <h1 class="text-h4 mb-1">{{ entityName(selectedCategory) }}</h1>
       <p class="text-medium-emphasis mb-6">

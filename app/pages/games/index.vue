@@ -47,24 +47,6 @@ const categories = computed(() =>
 
 <template>
   <v-container fluid>
-    <div class="d-flex align-end justify-space-between flex-wrap ga-3 mb-6">
-      <div>
-        <h1 class="text-h3 font-weight-bold">{{ t('appbar.games') }}</h1>
-        <p class="text-medium-emphasis mt-2">
-          {{
-            tOrFallback(
-              'gamePage.catalog.states.selectCategory',
-              'Choisis une catégorie pour continuer.',
-            )
-          }}
-        </p>
-      </div>
-      <v-chip color="primary" variant="tonal" size="large">
-        {{ categories.length }}
-        {{ t('gamePage.catalog.sections.categories') }}
-      </v-chip>
-    </div>
-
     <v-skeleton-loader
       v-if="catalogStore.loadingCatalog"
       type="image, article, image, article"
@@ -76,45 +58,20 @@ const categories = computed(() =>
         :key="category.id"
         cols="12"
         sm="6"
-        lg="4"
+        lg="6"
       >
         <v-hover v-slot="{ isHovering, props }">
           <v-card
             v-bind="props"
             class="game-category-card overflow-hidden"
-            rounded="xl"
             elevation="8"
             @click="openCategory(category.id)"
           >
             <v-img
               :src="getCategoryThumbnail(category)"
-              height="220"
+              height="200"
               cover
             >
-              <div class="category-overlay pa-5 d-flex flex-column h-100 justify-end">
-                <div class="text-overline text-white mb-1">BRO WORLD</div>
-                <div class="text-h5 font-weight-bold text-white mb-1">
-                  {{ entityName(category) }}
-                </div>
-                <div class="text-body-2 text-white mb-3 text-truncate-2">
-                  {{
-                    entityDescription(category) ||
-                    tOrFallback(
-                      'gamePage.states.emptySubCategories',
-                      'Découvre les sous-catégories de cette section.',
-                    )
-                  }}
-                </div>
-                <div class="d-flex align-center justify-space-between">
-                  <v-chip color="white" size="small" variant="flat">
-                    {{ getSubCategoryCount(category) }} sous-catégories
-                  </v-chip>
-                  <v-icon
-                    color="white"
-                    :icon="isHovering ? 'mdi-arrow-right-circle' : 'mdi-arrow-right'"
-                  />
-                </div>
-              </div>
             </v-img>
           </v-card>
         </v-hover>

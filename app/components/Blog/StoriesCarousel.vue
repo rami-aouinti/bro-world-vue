@@ -732,15 +732,11 @@ async function deleteSelectedStory() {
 
 <style scoped>
 .stories-shell {
-  background: rgb(var(--v-theme-surface));
+  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
 }
 
 .story-card {
-  background: linear-gradient(
-    to top,
-    rgba(37, 37, 37, 0.65),
-    rgba(37, 37, 37, 0.35)
-  );
+  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
   background-size: cover;
   background-position: center;
   cursor: pointer;

@@ -262,14 +262,12 @@ function onCreateComment(content: string) {
 
 <style scoped>
 .post-card {
-  background: linear-gradient(180deg, #1f2328 0%, #1b1d21 100%);
-  color: rgba(255, 255, 255, 0.92);
+  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .post-card--light {
-  background: #fff;
-  color: rgba(15, 23, 42, 0.92);
+  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
   border: 1px solid rgba(15, 23, 42, 0.1);
 }
 
