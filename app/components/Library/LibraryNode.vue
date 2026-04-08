@@ -22,6 +22,7 @@ const emit = defineEmits<{
 const isFolder = computed(() => props.node.type === 'folder')
 const isSelected = computed(() => props.selectedId === props.node.id)
 const isDragOver = ref(false)
+const shouldShowChildren = computed(() => isFolder.value && props.node.children.length > 0 && isSelected.value)
 
 const iconName = computed(() => {
   if (props.node.type === 'folder') {
@@ -96,7 +97,7 @@ const onDropFolder = (event: DragEvent) => {
       </div>
     </v-card>
 
-    <div v-if="node.type === 'folder' && node.children.length > 0" class="library-node__children">
+    <div v-if="shouldShowChildren" class="library-node__children">
       <LibraryNode
         v-for="child in node.children"
         :key="child.id"
