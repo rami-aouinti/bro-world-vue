@@ -46,7 +46,13 @@
     "notifications": "Notifications",
     "calendar": "Calendrier",
     "profile": "Profil",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "languages": {
+      "en": "Anglais",
+      "fr": "Français",
+      "es": "Espagnol",
+      "de": "Allemand"
+    }
   },
   "common": {
     "confirm": "Confirmer",
@@ -59,7 +65,8 @@
     "helloWorld": "Bonjour le monde",
     "whatsYourName": "Comment vous appelez-vous ?",
     "retry": "Réessayer",
-    "close": "Fermer"
+    "close": "Fermer",
+    "refresh": "Rafraîchir"
   },
   "platform": {
     "title": "Platforms",
@@ -326,6 +333,113 @@
       "posts": {
         "title": "Publications"
       }
+    },
+    "profileOverview": {
+      "subtitle": "Use the menu on the left to access your friends, games, settings, and other profile sections.",
+      "libraryTitle": "Library",
+      "librarySubtitle": "Find your personal library here.",
+      "gamesTitle": "Games",
+      "gamesSubtitle": "Access your games and activities.",
+      "applicationsTitle": "Applications",
+      "applicationsSubtitle": "Manage your connected applications and access.",
+      "settingsSubtitle": "Customize your preferences and account settings."
+    },
+    "friends": {
+      "title": "Friends",
+      "subtitle": "Manage your friends, requests, invitations, and blocked users.",
+      "actions": {
+        "accept": "Accept",
+        "reject": "Reject",
+        "block": "Block",
+        "unblock": "Unblock",
+        "cancel": "Cancel",
+        "resend": "Resend"
+      },
+      "sections": {
+        "friends": {
+          "title": "Friends",
+          "subtitle": "Users already accepted.",
+          "emptyText": "No friends yet."
+        },
+        "requests": {
+          "title": "Requests",
+          "subtitle": "Incoming requests.",
+          "emptyText": "No requests received."
+        },
+        "invitations": {
+          "title": "Invitations",
+          "subtitle": "Sent requests.",
+          "emptyText": "No invitations sent."
+        },
+        "blocked": {
+          "title": "Blocked",
+          "subtitle": "Blocked users.",
+          "emptyText": "No blocked users."
+        }
+      },
+      "errors": {
+        "load": "Error while loading data.",
+        "action": "Error while processing action {action}."
+      }
+    },
+    "service": {
+      "description": "Discover our services and how we can support your team.",
+      "leftNav": {
+        "title": "Services",
+        "auditTitle": "Quick audit",
+        "auditSubtitle": "48-hour diagnosis",
+        "supportTitle": "Support",
+        "supportSubtitle": "Tailored follow-up",
+        "workshopsTitle": "Workshops",
+        "workshopsSubtitle": "Skill building"
+      },
+      "rightNav": {
+        "auditTitle": "Quick audit",
+        "auditSubtitle": "In 48 hours",
+        "auditDescription": "Analysis of your needs and prioritized recommendations to get started quickly.",
+        "supportTitle": "Support",
+        "supportSubtitle": "Tailored",
+        "supportDescription": "Regular follow-up, practical workshops, and a roadmap adapted to your team."
+      }
+    },
+    "about": {
+      "description": "Learn more about our team, mission, and values.",
+      "leftNav": {
+        "title": "About",
+        "overviewTitle": "Overview",
+        "overviewSubtitle": "Who we are",
+        "missionTitle": "Mission",
+        "missionSubtitle": "Our objective",
+        "valuesTitle": "Values",
+        "valuesSubtitle": "Our commitment"
+      },
+      "rightNav": {
+        "missionTitle": "Our mission",
+        "missionSubtitle": "Bring clarity",
+        "missionDescription": "We help teams turn complex ideas into simple, measurable actions.",
+        "valuesTitle": "Our values",
+        "valuesSubtitle": "Transparency and impact",
+        "valuesDescription": "We prioritize honest communication, collaboration, and practical results every day."
+      }
+    },
+    "contact": {
+      "description": "Contact us for any question or collaboration request.",
+      "leftNav": {
+        "supportTitle": "Support",
+        "supportSubtitle": "Mon–Fri, 9am–6pm",
+        "meetingTitle": "Meeting",
+        "meetingSubtitle": "Video or on-site",
+        "emailTitle": "Email",
+        "emailSubtitle": "Reply within 24h"
+      },
+      "rightNav": {
+        "supportTitle": "Customer support",
+        "supportSubtitle": "Mon–Fri, 9am–6pm",
+        "supportDescription": "Average response in under 4 business hours for urgent requests.",
+        "meetingTitle": "Book a meeting",
+        "meetingSubtitle": "Video or on-site",
+        "meetingDescription": "Schedule a 30-minute slot to discuss your project."
+      }
     }
   },
   "home": {
@@ -364,6 +478,9 @@
         "feelingActivity": "Humeur/activité",
         "tag": "Tag",
         "gif": "GIF"
+      },
+      "audience": {
+        "friends": "Amis"
       }
     },
     "post": {

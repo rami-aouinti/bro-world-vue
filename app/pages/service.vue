@@ -13,21 +13,21 @@ definePageMeta({
       <template #left>
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
         <v-list v-else nav density="compact" class="app-left-drawer-list">
-          <v-list-subheader class="text-overline">Services</v-list-subheader>
+          <v-list-subheader class="text-overline">{{ t('pages.service.leftNav.title') }}</v-list-subheader>
           <v-list-item
             prepend-icon="mdi-magnify-scan"
-            title="Audit rapide"
-            subtitle="Diagnostic en 48h"
+            :title="t('pages.service.leftNav.auditTitle')"
+            :subtitle="t('pages.service.leftNav.auditSubtitle')"
           />
           <v-list-item
             prepend-icon="mdi-account-group"
-            title="Accompagnement"
-            subtitle="Suivi sur mesure"
+            :title="t('pages.service.leftNav.supportTitle')"
+            :subtitle="t('pages.service.leftNav.supportSubtitle')"
           />
           <v-list-item
             prepend-icon="mdi-school"
-            title="Ateliers"
-            subtitle="Montée en compétences"
+            :title="t('pages.service.leftNav.workshopsTitle')"
+            :subtitle="t('pages.service.leftNav.workshopsSubtitle')"
           />
         </v-list>
       </template>
@@ -41,14 +41,11 @@ definePageMeta({
                 <template #prepend>
                   <v-icon icon="mdi-magnify-scan" class="me-2" />
                 </template>
-                <v-card-title class="text-subtitle-1"
-                  >Audit rapide</v-card-title
-                >
-                <v-card-subtitle>En 48h</v-card-subtitle>
+                <v-card-title class="text-subtitle-1">{{ t('pages.service.rightNav.auditTitle') }}</v-card-title>
+                <v-card-subtitle>{{ t('pages.service.rightNav.auditSubtitle') }}</v-card-subtitle>
               </v-card-item>
               <v-card-text class="text-body-2 pt-0">
-                Analyse de vos besoins et recommandations priorisées pour
-                démarrer rapidement.
+                {{ t('pages.service.rightNav.auditDescription') }}
               </v-card-text>
             </v-card>
           </v-list-item>
@@ -58,14 +55,11 @@ definePageMeta({
                 <template #prepend>
                   <v-icon icon="mdi-account-group" class="me-2" />
                 </template>
-                <v-card-title class="text-subtitle-1"
-                  >Accompagnement</v-card-title
-                >
-                <v-card-subtitle>Sur mesure</v-card-subtitle>
+                <v-card-title class="text-subtitle-1">{{ t('pages.service.rightNav.supportTitle') }}</v-card-title>
+                <v-card-subtitle>{{ t('pages.service.rightNav.supportSubtitle') }}</v-card-subtitle>
               </v-card-item>
               <v-card-text class="text-body-2 pt-0">
-                Suivi régulier, ateliers pratiques et feuille de route adaptée à
-                votre équipe.
+                {{ t('pages.service.rightNav.supportDescription') }}
               </v-card-text>
             </v-card>
           </v-list-item>
@@ -77,7 +71,7 @@ definePageMeta({
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
       <template v-else>
         <h1 class="text-h3 mb-4">{{ t('appbar.service') }}</h1>
-        <p>Découvrez nos services et comment nous pouvons vous accompagner.</p>
+        <p>{{ t('pages.service.description') }}</p>
       </template>
     </v-container>
   </div>
