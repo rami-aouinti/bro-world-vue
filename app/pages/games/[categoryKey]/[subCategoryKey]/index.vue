@@ -79,7 +79,7 @@ const breadcrumbs = computed(() => [
             <v-card
               rounded="lg"
               class="cursor-pointer h-100"
-              variant="outlined"
+              variant="text"
               @click="openGameLevels(game)"
             >
               <v-img :src="game?.img" height="200" cover />
