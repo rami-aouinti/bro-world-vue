@@ -52,7 +52,8 @@
       "fr": "Französisch",
       "es": "Spanisch",
       "de": "Deutsch"
-    }
+    },
+    "games": "Spiele"
   },
   "common": {
     "confirm": "Bestätigen",
@@ -553,6 +554,108 @@
       "publishSuccess": "Story veröffentlicht (#{id}) · erstellt {createdAt} · läuft ab {expiresAt}",
       "messagePlaceholder": "Nachricht...",
       "deleteCta": "Diese Story löschen"
+    }
+  },
+  "gamePage": {
+    "actions": {
+      "start": "Starten",
+      "finishWin": "Gewonnen",
+      "finishLose": "Verloren"
+    },
+    "levels": {
+      "title": "Level"
+    },
+    "states": {
+      "empty": "Keine Daten verfügbar.",
+      "error": "Spieldaten konnten nicht geladen werden."
+    },
+    "session": {
+      "title": "Sitzungsinfo",
+      "sessionId": "sessionId",
+      "status": "status",
+      "coins": "Münzen",
+      "finishDemo": "Demo abschließen"
+    },
+    "catalog": {
+      "categories": {
+        "logic": {
+          "name": "Logik",
+          "description": "Denk- und Rätselspiele zum Trainieren deines Verstandes."
+        },
+        "action": {
+          "name": "Action",
+          "description": "Schnelle Spiele mit Fokus auf Reflexe und Timing."
+        },
+        "strategy": {
+          "name": "Strategie",
+          "description": "Plane voraus und optimiere deine Entscheidungen."
+        }
+      },
+      "subCategories": {
+        "memory": {
+          "name": "Gedächtnis",
+          "description": "Merke dir Muster, Karten und Sequenzen."
+        },
+        "reflex": {
+          "name": "Reflexe",
+          "description": "Reagiere schnell auf wechselnde Situationen."
+        },
+        "brain": {
+          "name": "Knobeleien",
+          "description": "Löse clevere und anspruchsvolle Aufgaben."
+        }
+      },
+      "games": {
+        "pairs": {
+          "name": "Paare",
+          "description": "Finde Kartenpaare so schnell wie möglich."
+        },
+        "sequence": {
+          "name": "Sequenz Sprint",
+          "description": "Wiederhole und erweitere die gezeigte Sequenz."
+        },
+        "taprush": {
+          "name": "Tap Rush",
+          "description": "Treffe Ziele schnell und fehlerfrei."
+        },
+        "maze": {
+          "name": "Labyrinth-Flucht",
+          "description": "Finde den kürzesten Weg durch das Labyrinth."
+        }
+      },
+      "meta": {
+        "tags": {
+          "casual": "Casual",
+          "solo": "Solo",
+          "multiplayer": "Mehrspieler",
+          "timed": "Auf Zeit",
+          "offline": "Offline"
+        },
+        "features": {
+          "leaderboard": "Bestenliste",
+          "dailyRewards": "Tägliche Belohnungen",
+          "achievements": "Erfolge",
+          "cloudSave": "Cloud-Speicherung"
+        }
+      },
+      "difficulties": {
+        "easy": "Leicht",
+        "medium": "Mittel",
+        "hard": "Schwer"
+      },
+      "sections": {
+        "categories": "Kategorien",
+        "subCategories": "Unterkategorien",
+        "games": "Spiele"
+      },
+      "labels": {
+        "subCategoryCount": "Unterkategorien"
+      },
+      "states": {
+        "selectCategory": "Wähle eine Kategorie, um Unterkategorien anzuzeigen.",
+        "selectSubCategory": "Wähle eine Unterkategorie, um Spiele anzuzeigen.",
+        "ready": "Bereit zum Spielen"
+      }
     }
   }
 }

@@ -52,7 +52,8 @@
       "fr": "French",
       "es": "Spanish",
       "de": "German"
-    }
+    },
+    "games": "Games"
   },
   "common": {
     "confirm": "Confirm",
@@ -562,6 +563,108 @@
       "publishSuccess": "Story published (#{id}) · created {createdAt} · expires {expiresAt}",
       "messagePlaceholder": "Message...",
       "deleteCta": "Delete this story"
+    }
+  },
+  "gamePage": {
+    "actions": {
+      "start": "Start",
+      "finishWin": "Win",
+      "finishLose": "Lose"
+    },
+    "levels": {
+      "title": "Levels"
+    },
+    "states": {
+      "empty": "No data available.",
+      "error": "Unable to load game data."
+    },
+    "session": {
+      "title": "Session info",
+      "sessionId": "sessionId",
+      "status": "status",
+      "coins": "coins",
+      "finishDemo": "Finish demo"
+    },
+    "catalog": {
+      "categories": {
+        "logic": {
+          "name": "Logic",
+          "description": "Puzzle and reasoning games to train your thinking."
+        },
+        "action": {
+          "name": "Action",
+          "description": "Fast-paced games focused on reflexes and timing."
+        },
+        "strategy": {
+          "name": "Strategy",
+          "description": "Plan ahead and optimize your decisions."
+        }
+      },
+      "subCategories": {
+        "memory": {
+          "name": "Memory",
+          "description": "Remember patterns, cards, and sequences."
+        },
+        "reflex": {
+          "name": "Reflex",
+          "description": "React quickly to changing situations."
+        },
+        "brain": {
+          "name": "Brain Teasers",
+          "description": "Solve smart and tricky challenges."
+        }
+      },
+      "games": {
+        "pairs": {
+          "name": "Pairs",
+          "description": "Match card pairs as fast as possible."
+        },
+        "sequence": {
+          "name": "Sequence Sprint",
+          "description": "Repeat and extend the shown sequence."
+        },
+        "taprush": {
+          "name": "Tap Rush",
+          "description": "Tap targets quickly without mistakes."
+        },
+        "maze": {
+          "name": "Maze Escape",
+          "description": "Find the shortest path through the maze."
+        }
+      },
+      "meta": {
+        "tags": {
+          "casual": "Casual",
+          "solo": "Solo",
+          "multiplayer": "Multiplayer",
+          "timed": "Timed",
+          "offline": "Offline"
+        },
+        "features": {
+          "leaderboard": "Leaderboard",
+          "dailyRewards": "Daily rewards",
+          "achievements": "Achievements",
+          "cloudSave": "Cloud save"
+        }
+      },
+      "difficulties": {
+        "easy": "Easy",
+        "medium": "Medium",
+        "hard": "Hard"
+      },
+      "sections": {
+        "categories": "Categories",
+        "subCategories": "Sub-categories",
+        "games": "Games"
+      },
+      "labels": {
+        "subCategoryCount": "sub-categories"
+      },
+      "states": {
+        "selectCategory": "Select a category to view sub-categories.",
+        "selectSubCategory": "Select a sub-category to view games.",
+        "ready": "Ready to play"
+      }
     }
   }
 }
