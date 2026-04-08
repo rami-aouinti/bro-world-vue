@@ -1,46 +1,22 @@
+import type {
+  GamesCatalogApiResponse,
+  GamesSessionFinishPayload,
+  GamesSessionFinishResponse,
+  GamesSessionStartPayload,
+  GamesSessionStartResponse,
+  GamesLevelsApiResponse,
+} from '~~/server/types/api/games'
+
 const CATALOG_CACHE_TTL_MS = 5 * 60 * 1000
 const LEVELS_CACHE_TTL_MS = 15 * 60 * 1000
 const ENABLE_DEMO_SESSION_FALLBACK = import.meta.dev && import.meta.env.VITE_ENABLE_DEMO_SESSION_FALLBACK === 'true'
 
-interface GameCatalogGame {
-  id: string
-  name: string
-  description?: string
-}
-
-interface GameSubCategory {
-  id: string
-  name: string
-  games: GameCatalogGame[]
-}
-
-interface GameCategory {
-  id: string
-  name: string
-  subCategories: GameSubCategory[]
-}
-
-interface GameLevel {
-  value: string
-  label?: string
-}
-
-interface GameLevelsResponse {
-  items: GameLevel[]
-}
-
-interface StartSessionPayload {
+interface CurrentSessionState {
   sessionId: string
   status: string
   coins: number
-  level?: string
-}
-
-interface FinishSessionPayload {
-  sessionId: string
-  status: string
-  coins: number
-  result: 'win' | 'lose'
+  level: string
+  userGameId: string
 }
 
 interface HttpErrorLike extends Error {
@@ -65,9 +41,9 @@ function buildHttpError(error: unknown, fallbackMessage: string): HttpErrorLike 
 
 export const useGameCatalogStore = defineStore('game-catalog', {
   state: () => ({
-    categories: [] as GameCategory[],
+    categories: [] as GamesCatalogApiResponse,
     levels: [] as string[],
-    currentSession: null as StartSessionPayload | null,
+    currentSession: null as CurrentSessionState | null,
     loadingCatalog: false,
     loadingLevels: false,
     startingSession: false,
@@ -92,7 +68,7 @@ export const useGameCatalogStore = defineStore('game-catalog', {
       this.error = ''
 
       try {
-        const response = await $fetch<GameCategory[]>('/api/games/catalog')
+        const response = await $fetch<GamesCatalogApiResponse>('/api/games/catalog')
         this.categories = response
         this.catalogFetchedAt = Date.now()
 
@@ -115,7 +91,7 @@ export const useGameCatalogStore = defineStore('game-catalog', {
       this.error = ''
 
       try {
-        const response = await $fetch<GameLevelsResponse>('/api/games/levels')
+        const response = await $fetch<GamesLevelsApiResponse>('/api/games/levels')
         this.levels = response.items.map(item => item.value.toLowerCase())
         this.levelsFetchedAt = Date.now()
         return this.levels
@@ -131,24 +107,39 @@ export const useGameCatalogStore = defineStore('game-catalog', {
       this.error = ''
 
       try {
-        const response = await $fetch<StartSessionPayload>(`/api/games/${gameId}/sessions/start`, {
+        const payload: GamesSessionStartPayload = { level }
+        const response = await $fetch<GamesSessionStartResponse>(`/api/games/${gameId}/sessions/start`, {
           method: 'POST',
-          body: { level },
+          body: payload,
         })
         this.currentSession = {
-          ...response,
-          level: response.level ?? level,
+          sessionId: response.session.id,
+          status: response.session.status,
+          coins: response.coins,
+          level: response.session.level ?? level,
+          userGameId: response.userGameId,
         }
         return response
       } catch (error) {
         if (ENABLE_DEMO_SESSION_FALLBACK) {
-          const fallback = {
-            sessionId: crypto.randomUUID(),
-            status: 'started',
+          const fallback: GamesSessionStartResponse = {
+            session: {
+              id: crypto.randomUUID(),
+              gameId,
+              level,
+              status: 'started',
+              startedAt: new Date().toISOString(),
+            },
+            userGameId: crypto.randomUUID(),
             coins: 0,
-            level,
           }
-          this.currentSession = fallback
+          this.currentSession = {
+            sessionId: fallback.session.id,
+            status: fallback.session.status,
+            coins: fallback.coins,
+            level: fallback.session.level,
+            userGameId: fallback.userGameId,
+          }
           this.error = 'Start API unavailable. Demo session created locally.'
           return fallback
         }
@@ -165,15 +156,17 @@ export const useGameCatalogStore = defineStore('game-catalog', {
       this.error = ''
 
       try {
-        const response = await $fetch<FinishSessionPayload>(`/api/games/sessions/${sessionId}/finish`, {
+        const payload: GamesSessionFinishPayload = { result }
+        const response = await $fetch<GamesSessionFinishResponse>(`/api/games/sessions/${sessionId}/finish`, {
           method: 'POST',
-          body: { result },
+          body: payload,
         })
-        this.currentSession = {
-          sessionId: response.sessionId,
-          status: response.status,
-          coins: response.coins,
-          level: this.currentSession?.level,
+        if (this.currentSession) {
+          this.currentSession = {
+            ...this.currentSession,
+            status: response.userGame.status,
+            coins: response.coins,
+          }
         }
         return response
       } catch (error) {
@@ -183,18 +176,23 @@ export const useGameCatalogStore = defineStore('game-catalog', {
           }
 
           const coinDelta = result === 'win' ? 50 : 5
-          const fallback = {
-            sessionId,
-            status: result === 'win' ? 'completed' : 'failed',
+          const fallback: GamesSessionFinishResponse = {
+            userGame: {
+              id: this.currentSession.userGameId,
+              sessionId,
+              gameId: '',
+              level: this.currentSession.level,
+              status: result === 'win' ? 'completed' : 'failed',
+              result,
+              finishedAt: new Date().toISOString(),
+            },
             coins: this.currentSession.coins + coinDelta,
-            result,
-          } satisfies FinishSessionPayload
+          }
 
           this.currentSession = {
-            sessionId: fallback.sessionId,
-            status: fallback.status,
+            ...this.currentSession,
+            status: fallback.userGame.status,
             coins: fallback.coins,
-            level: this.currentSession?.level,
           }
           this.error = 'Finish API unavailable. Demo result applied locally.'
           return fallback
@@ -210,12 +208,4 @@ export const useGameCatalogStore = defineStore('game-catalog', {
   },
 })
 
-export type {
-  GameCategory,
-  GameSubCategory,
-  GameCatalogGame,
-  GameLevel,
-  GameLevelsResponse,
-  StartSessionPayload,
-  FinishSessionPayload,
-}
+export type { CurrentSessionState }
