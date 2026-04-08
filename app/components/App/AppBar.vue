@@ -187,7 +187,13 @@ function toggleLeftDrawer() {
       </template>
       <v-menu location="bottom">
         <template #activator="{ props: menu }">
-          <v-tooltip location="bottom">
+          <v-tooltip
+            location="bottom"
+            :text="loggedIn ? userLabel : t('appbar.user')"
+            :content-props="{
+              'aria-label': loggedIn ? userLabel : t('appbar.user'),
+            }"
+          >
             <template #activator="{ props: tooltip }">
               <v-badge
                 dot
@@ -218,7 +224,6 @@ function toggleLeftDrawer() {
                 </v-btn>
               </v-badge>
             </template>
-            <span>{{ loggedIn ? userLabel : t('appbar.user') }}</span>
           </v-tooltip>
         </template>
         <v-list min-width="220">

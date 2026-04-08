@@ -60,21 +60,42 @@ watch(loggedIn, () => {
                   },
                 }"
               >
-                <v-btn
-                  v-tooltip="{ text: t('common.edit') }"
-                  icon="mdi-pencil"
-                  :aria-label="t('common.edit')"
-                />
-                <v-btn
-                  v-tooltip="{ text: t('common.copy') }"
-                  icon="mdi-content-copy"
-                  :aria-label="t('common.copy')"
-                />
-                <v-btn
-                  v-tooltip="{ text: t('common.delete') }"
-                  icon="mdi-delete"
-                  :aria-label="t('common.delete')"
-                />
+                <v-tooltip
+                  :text="t('common.edit')"
+                  :content-props="{ 'aria-label': t('common.edit') }"
+                >
+                  <template #activator="{ props }">
+                    <v-btn
+                      icon="mdi-pencil"
+                      :aria-label="t('common.edit')"
+                      v-bind="props"
+                    />
+                  </template>
+                </v-tooltip>
+                <v-tooltip
+                  :text="t('common.copy')"
+                  :content-props="{ 'aria-label': t('common.copy') }"
+                >
+                  <template #activator="{ props }">
+                    <v-btn
+                      icon="mdi-content-copy"
+                      :aria-label="t('common.copy')"
+                      v-bind="props"
+                    />
+                  </template>
+                </v-tooltip>
+                <v-tooltip
+                  :text="t('common.delete')"
+                  :content-props="{ 'aria-label': t('common.delete') }"
+                >
+                  <template #activator="{ props }">
+                    <v-btn
+                      icon="mdi-delete"
+                      :aria-label="t('common.delete')"
+                      v-bind="props"
+                    />
+                  </template>
+                </v-tooltip>
               </v-defaults-provider>
             </template>
           </v-data-table>
