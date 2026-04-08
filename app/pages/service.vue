@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { t } = useI18n()
+const { t, te } = useI18n()
 
 definePageMeta({
   title: 'appbar.games',
@@ -26,6 +26,35 @@ const selectedSubCategory = computed(() =>
 const games = computed(() => selectedSubCategory.value?.games ?? [])
 
 const canStart = computed(() => Boolean(selectedGameId.value && selectedLevelValue.value))
+
+function tOrFallback(key: string, fallback: string) {
+  return te(key) ? t(key) : fallback
+}
+
+function gameName(gameId: string, fallback: string) {
+  return tOrFallback(`gamePage.catalog.games.${gameId}.name`, fallback)
+}
+
+function gameDescription(gameId: string, fallback?: string) {
+  return tOrFallback(`gamePage.catalog.games.${gameId}.description`, fallback || '')
+}
+
+function categoryName(categoryId: string, fallback: string) {
+  return tOrFallback(`gamePage.catalog.categories.${categoryId}.name`, fallback)
+}
+
+function categoryDescription(categoryId: string, fallback = '') {
+  return tOrFallback(`gamePage.catalog.categories.${categoryId}.description`, fallback)
+}
+
+function subCategoryName(subCategoryId: string, fallback: string) {
+  return tOrFallback(`gamePage.catalog.subCategories.${subCategoryId}.name`, fallback)
+}
+
+function difficultyLabel(level: string) {
+  return tOrFallback(`gamePage.catalog.difficulties.${level}`, level)
+}
+
 
 function selectCategory(categoryId: string) {
   selectedCategoryId.value = categoryId
@@ -72,7 +101,7 @@ onMounted(() => {
       type="warning"
       variant="tonal"
       class="mb-4"
-      :text="catalogStore.error"
+      :text="t('gamePage.states.error')"
     />
 
     <v-skeleton-loader
@@ -83,7 +112,7 @@ onMounted(() => {
 
     <template v-else>
       <v-card class="mb-6" rounded="xl">
-        <v-card-title>Categories</v-card-title>
+        <v-card-title>{{ t('gamePage.catalog.sections.categories') }}</v-card-title>
         <v-card-text>
           <v-row v-if="catalogStore.categories.length" dense>
             <v-col
@@ -101,8 +130,9 @@ onMounted(() => {
                 @click="selectCategory(category.id)"
               >
                 <v-card-item>
-                  <v-card-title>{{ category.name }}</v-card-title>
-                  <v-card-subtitle>{{ category.subCategories.length }} sub-categories</v-card-subtitle>
+                  <v-card-title>{{ categoryName(category.id, category.name) }}</v-card-title>
+                  <v-card-subtitle>{{ categoryDescription(category.id) }}</v-card-subtitle>
+                  <v-card-subtitle>{{ category.subCategories.length }} {{ t('gamePage.catalog.labels.subCategoryCount') }}</v-card-subtitle>
                 </v-card-item>
               </v-card>
             </v-col>
@@ -111,13 +141,13 @@ onMounted(() => {
             v-else
             type="info"
             variant="tonal"
-            text="No category available."
+            :text="t('gamePage.states.empty')"
           />
         </v-card-text>
       </v-card>
 
       <v-card class="mb-6" rounded="xl" :disabled="!selectedCategory">
-        <v-card-title>Sub-categories</v-card-title>
+        <v-card-title>{{ t('gamePage.catalog.sections.subCategories') }}</v-card-title>
         <v-card-text>
           <v-chip-group
             v-if="subCategories.length"
@@ -131,20 +161,20 @@ onMounted(() => {
               :color="selectedSubCategoryId === subCategory.id ? 'primary' : undefined"
               @click="selectSubCategory(subCategory.id)"
             >
-              {{ subCategory.name }}
+              {{ subCategoryName(subCategory.id, subCategory.name) }}
             </v-chip>
           </v-chip-group>
           <v-alert
             v-else
             type="info"
             variant="tonal"
-            text="Select a category to view sub-categories."
+            :text="t('gamePage.catalog.states.selectCategory')"
           />
         </v-card-text>
       </v-card>
 
       <v-card class="mb-6" rounded="xl" :disabled="!selectedSubCategory">
-        <v-card-title>Games</v-card-title>
+        <v-card-title>{{ t('gamePage.catalog.sections.games') }}</v-card-title>
         <v-card-text>
           <v-row v-if="games.length" dense>
             <v-col
@@ -162,8 +192,8 @@ onMounted(() => {
                 @click="selectedGameId = game.id"
               >
                 <v-card-item>
-                  <v-card-title>{{ game.name }}</v-card-title>
-                  <v-card-subtitle>{{ game.description || 'Ready to play' }}</v-card-subtitle>
+                  <v-card-title>{{ gameName(game.id, game.name) }}</v-card-title>
+                  <v-card-subtitle>{{ gameDescription(game.id, game.description) || t('gamePage.catalog.states.ready') }}</v-card-subtitle>
                 </v-card-item>
               </v-card>
             </v-col>
@@ -172,13 +202,13 @@ onMounted(() => {
             v-else
             type="info"
             variant="tonal"
-            text="Select a sub-category to view games."
+            :text="t('gamePage.catalog.states.selectSubCategory')"
           />
         </v-card-text>
       </v-card>
 
       <v-card class="mb-6" rounded="xl">
-        <v-card-title>Levels</v-card-title>
+        <v-card-title>{{ t('gamePage.levels.title') }}</v-card-title>
         <v-card-text>
           <v-chip-group
             :model-value="selectedLevelValue ? [selectedLevelValue] : []"
@@ -191,7 +221,7 @@ onMounted(() => {
               :color="selectedLevelValue === level ? 'primary' : undefined"
               @click="selectedLevelValue = level"
             >
-              {{ level }}
+              {{ difficultyLabel(level) }}
             </v-chip>
           </v-chip-group>
         </v-card-text>
@@ -204,21 +234,21 @@ onMounted(() => {
           :loading="catalogStore.startingSession"
           @click="onStart"
         >
-          Start
+          {{ t('gamePage.actions.start') }}
         </v-btn>
       </div>
 
       <v-card v-if="catalogStore.currentSession" rounded="xl" class="mb-6">
-        <v-card-title>Session info</v-card-title>
+        <v-card-title>{{ t('gamePage.session.title') }}</v-card-title>
         <v-card-text>
-          <div class="mb-2"><strong>sessionId:</strong> {{ catalogStore.currentSession.sessionId }}</div>
-          <div class="mb-2"><strong>status:</strong> {{ catalogStore.currentSession.status }}</div>
-          <div><strong>coins:</strong> {{ catalogStore.currentSession.coins }}</div>
+          <div class="mb-2"><strong>{{ t('gamePage.session.sessionId') }}:</strong> {{ catalogStore.currentSession.sessionId }}</div>
+          <div class="mb-2"><strong>{{ t('gamePage.session.status') }}:</strong> {{ catalogStore.currentSession.status }}</div>
+          <div><strong>{{ t('gamePage.session.coins') }}:</strong> {{ catalogStore.currentSession.coins }}</div>
         </v-card-text>
       </v-card>
 
       <v-card rounded="xl" :disabled="!catalogStore.currentSession">
-        <v-card-title>Finish demo</v-card-title>
+        <v-card-title>{{ t('gamePage.session.finishDemo') }}</v-card-title>
         <v-card-text class="d-flex ga-3 align-center flex-wrap">
           <v-btn
             color="success"
@@ -226,7 +256,7 @@ onMounted(() => {
             :disabled="!catalogStore.currentSession"
             @click="onFinish('win')"
           >
-            Win
+            {{ t('gamePage.actions.finishWin') }}
           </v-btn>
           <v-btn
             color="error"
@@ -235,7 +265,7 @@ onMounted(() => {
             :disabled="!catalogStore.currentSession"
             @click="onFinish('lose')"
           >
-            Lose
+            {{ t('gamePage.actions.finishLose') }}
           </v-btn>
         </v-card-text>
       </v-card>

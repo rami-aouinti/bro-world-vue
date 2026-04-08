@@ -11,7 +11,7 @@ const { t } = useI18n()
 
 const navItems = [
   { label: 'appbar.platform', to: '/platform' },
-  { label: 'appbar.service', to: '/service' },
+  { label: 'appbar.games', to: '/service' },
   { label: 'appbar.about', to: '/about' },
   { label: 'appbar.contact', to: '/contact' },
 ]

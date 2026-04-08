@@ -52,7 +52,8 @@
       "fr": "Français",
       "es": "Espagnol",
       "de": "Allemand"
-    }
+    },
+    "games": "Jeux"
   },
   "common": {
     "confirm": "Confirmer",
@@ -562,6 +563,108 @@
       "publishSuccess": "Story publiée (#{id}) · créée {createdAt} · expire {expiresAt}",
       "messagePlaceholder": "Message...",
       "deleteCta": "Supprimer cette story"
+    }
+  },
+  "gamePage": {
+    "actions": {
+      "start": "Commencer",
+      "finishWin": "Victoire",
+      "finishLose": "Défaite"
+    },
+    "levels": {
+      "title": "Niveaux"
+    },
+    "states": {
+      "empty": "Aucune donnée disponible.",
+      "error": "Impossible de charger les données des jeux."
+    },
+    "session": {
+      "title": "Infos de session",
+      "sessionId": "sessionId",
+      "status": "statut",
+      "coins": "pièces",
+      "finishDemo": "Terminer la démo"
+    },
+    "catalog": {
+      "categories": {
+        "logic": {
+          "name": "Logique",
+          "description": "Jeux de réflexion et de raisonnement pour entraîner votre esprit."
+        },
+        "action": {
+          "name": "Action",
+          "description": "Jeux dynamiques axés sur les réflexes et le timing."
+        },
+        "strategy": {
+          "name": "Stratégie",
+          "description": "Anticipez et optimisez chacune de vos décisions."
+        }
+      },
+      "subCategories": {
+        "memory": {
+          "name": "Mémoire",
+          "description": "Mémorisez des motifs, cartes et séquences."
+        },
+        "reflex": {
+          "name": "Réflexes",
+          "description": "Réagissez vite à des situations changeantes."
+        },
+        "brain": {
+          "name": "Casse-têtes",
+          "description": "Résolvez des défis astucieux et exigeants."
+        }
+      },
+      "games": {
+        "pairs": {
+          "name": "Paires",
+          "description": "Associez les paires de cartes le plus vite possible."
+        },
+        "sequence": {
+          "name": "Sprint Séquence",
+          "description": "Répétez puis prolongez la séquence affichée."
+        },
+        "taprush": {
+          "name": "Tap Rush",
+          "description": "Touchez rapidement les cibles sans erreur."
+        },
+        "maze": {
+          "name": "Évasion du labyrinthe",
+          "description": "Trouvez le chemin le plus court dans le labyrinthe."
+        }
+      },
+      "meta": {
+        "tags": {
+          "casual": "Casual",
+          "solo": "Solo",
+          "multiplayer": "Multijoueur",
+          "timed": "Chronométré",
+          "offline": "Hors ligne"
+        },
+        "features": {
+          "leaderboard": "Classement",
+          "dailyRewards": "Récompenses quotidiennes",
+          "achievements": "Succès",
+          "cloudSave": "Sauvegarde cloud"
+        }
+      },
+      "difficulties": {
+        "easy": "Facile",
+        "medium": "Moyen",
+        "hard": "Difficile"
+      },
+      "sections": {
+        "categories": "Catégories",
+        "subCategories": "Sous-catégories",
+        "games": "Jeux"
+      },
+      "labels": {
+        "subCategoryCount": "sous-catégories"
+      },
+      "states": {
+        "selectCategory": "Sélectionnez une catégorie pour voir les sous-catégories.",
+        "selectSubCategory": "Sélectionnez une sous-catégorie pour voir les jeux.",
+        "ready": "Prêt à jouer"
+      }
     }
   }
 }
