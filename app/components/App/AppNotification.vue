@@ -25,6 +25,7 @@ function toggleAll() {
   <v-btn
     v-tooltip="{ text: t('appbar.notification'), location: 'top' }"
     :icon="notifications.length ? 'mdi-bell-badge-outline' : 'mdi-bell-outline'"
+    :aria-label="t('appbar.notification')"
     :rounded="0"
     @click="toggleAll"
   />
@@ -49,6 +50,7 @@ function toggleAll() {
             v-tooltip="{ text: t('notification.clearAll'), location: 'top' }"
             size="small"
             icon="mdi-bell-remove"
+            :aria-label="t('notification.clearAll')"
             @click="emptyNotifications"
           />
           <v-btn
@@ -56,6 +58,7 @@ function toggleAll() {
             class="mr-0"
             size="small"
             icon="$expand"
+            :aria-label="t('notification.hide')"
             @click="toggleAll"
           />
         </v-toolbar>
