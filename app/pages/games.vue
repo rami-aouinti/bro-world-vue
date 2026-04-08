@@ -14,6 +14,14 @@ const selectedSubCategoryId = ref<string | null>(null)
 const selectedGameId = ref<string | null>(null)
 const selectedLevelValue = ref<string | null>(null)
 const finishResult = ref<'win' | 'lose' | null>(null)
+const lastFinishedSession = ref<{
+  sessionId: string
+  status: string
+  level: string
+  coins: number
+  result: 'win' | 'lose'
+  finishedAt: string
+} | null>(null)
 
 const safeCategories = computed(() =>
   Array.isArray(catalogStore.categories) ? catalogStore.categories : [],
@@ -41,6 +49,9 @@ const selectedSubCategory = computed(
 )
 
 const games = computed(() => selectedSubCategory.value?.games ?? [])
+const selectedGame = computed(
+  () => games.value.find((game) => game.id === selectedGameId.value) ?? null,
+)
 
 const canStart = computed(
   () =>
@@ -74,6 +85,24 @@ function entityDescription(entity: CatalogEntity) {
 
 function difficultyLabel(level: string) {
   return tOrFallback(`gamePage.catalog.difficulties.${level}`, level)
+}
+
+function archiveAndResetSession(result: 'win' | 'lose') {
+  if (!catalogStore.currentSession) {
+    return
+  }
+
+  lastFinishedSession.value = {
+    sessionId: catalogStore.currentSession.sessionId,
+    status: catalogStore.currentSession.status,
+    level: catalogStore.currentSession.level,
+    coins: catalogStore.currentSession.coins,
+    result,
+    finishedAt: new Date().toISOString(),
+  }
+
+  // Product rule: une session "terminée" n'est plus considérée active.
+  catalogStore.currentSession = null
 }
 
 function resetSelectionIfMissing() {
@@ -153,6 +182,7 @@ async function onFinish(result: 'win' | 'lose') {
   finishResult.value = result
   try {
     await catalogStore.finishSession(sessionId, result)
+    archiveAndResetSession(result)
     Notify.success(
       result === 'win'
         ? tOrFallback(
@@ -406,6 +436,32 @@ watch(safeLevels, resetSelectionIfMissing)
       </v-btn>
     </div>
 
+    <v-card class="mb-6" rounded="xl" variant="tonal">
+      <v-card-title>{{
+        tOrFallback('gamePage.selection.summaryTitle', 'Current selection')
+      }}</v-card-title>
+      <v-card-text class="d-flex flex-wrap ga-2">
+        <v-chip size="small" variant="outlined">
+          {{ t('gamePage.catalog.sections.categories') }}:
+          {{ selectedCategory ? entityName(selectedCategory) : '—' }}
+        </v-chip>
+        <v-chip size="small" variant="outlined">
+          {{ t('gamePage.catalog.sections.subCategories') }}:
+          {{ selectedSubCategory ? entityName(selectedSubCategory) : '—' }}
+        </v-chip>
+        <v-chip size="small" variant="outlined">
+          {{ t('gamePage.catalog.sections.games') }}:
+          {{ selectedGame ? entityName(selectedGame) : '—' }}
+        </v-chip>
+        <v-chip size="small" variant="outlined">
+          {{ tOrFallback('gamePage.levels.title', 'Level') }}:
+          {{
+            selectedLevelValue ? difficultyLabel(selectedLevelValue) : '—'
+          }}
+        </v-chip>
+      </v-card-text>
+    </v-card>
+
     <v-card v-if="catalogStore.currentSession" rounded="xl" class="mb-6">
       <v-card-title>{{ t('gamePage.session.title') }}</v-card-title>
       <v-card-text class="d-flex flex-wrap ga-2">
@@ -452,6 +508,38 @@ watch(safeLevels, resetSelectionIfMissing)
         >
           {{ t('gamePage.actions.finishLose') }}
         </v-btn>
+      </v-card-text>
+    </v-card>
+
+    <v-card v-if="lastFinishedSession" rounded="xl" variant="tonal">
+      <v-card-title>{{
+        tOrFallback('gamePage.session.lastSessionTitle', 'Last finished session')
+      }}</v-card-title>
+      <v-card-text class="d-flex flex-wrap ga-2">
+        <v-chip size="small" color="primary" variant="outlined">
+          {{ t('gamePage.session.sessionId') }}:
+          {{ lastFinishedSession.sessionId }}
+        </v-chip>
+        <v-chip size="small" color="secondary" variant="outlined">
+          {{ tOrFallback('gamePage.session.level', 'Level') }}:
+          {{ difficultyLabel(lastFinishedSession.level) }}
+        </v-chip>
+        <v-chip size="small" color="info" variant="outlined">
+          {{ t('gamePage.session.status') }}:
+          {{ lastFinishedSession.status }}
+        </v-chip>
+        <v-chip
+          size="small"
+          :color="lastFinishedSession.result === 'win' ? 'success' : 'error'"
+          variant="outlined"
+        >
+          {{ tOrFallback('gamePage.session.result', 'Result') }}:
+          {{ lastFinishedSession.result }}
+        </v-chip>
+        <v-chip size="small" color="warning" variant="outlined">
+          {{ tOrFallback('gamePage.session.finishedAt', 'Finished at') }}:
+          {{ new Date(lastFinishedSession.finishedAt).toLocaleString() }}
+        </v-chip>
       </v-card-text>
     </v-card>
   </v-container>
