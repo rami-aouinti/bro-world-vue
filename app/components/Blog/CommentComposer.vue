@@ -29,6 +29,7 @@ const userAvatar = computed(() => user.value?.photo || null)
 const resolvedPlaceholder = computed(
   () => props.placeholder || t('blog.comment.placeholders.commentAsUser'),
 )
+const userDisplayName = computed(() => t('blog.common.userFallback'))
 const isLightTheme = computed(() => !theme.current.value.dark)
 
 const quickActions = [
@@ -67,7 +68,12 @@ function onEnter(event: KeyboardEvent) {
     :class="{ 'comment-composer--light': isLightTheme }"
   >
     <v-avatar size="34" color="grey-darken-2">
-      <v-img v-if="userAvatar" :src="userAvatar" cover />
+      <v-img
+        v-if="userAvatar"
+        :src="userAvatar"
+        :alt="`${userDisplayName} avatar`"
+        cover
+      />
       <v-icon v-else icon="mdi-account" />
     </v-avatar>
 
@@ -90,6 +96,7 @@ function onEnter(event: KeyboardEvent) {
             v-for="icon in quickActions"
             :key="icon"
             :icon="icon"
+            :aria-label="icon"
             size="small"
             variant="text"
             color="grey-lighten-1"
@@ -99,6 +106,7 @@ function onEnter(event: KeyboardEvent) {
 
         <v-btn
           :icon="canSubmit ? 'mdi-send' : 'mdi-send-outline'"
+          :aria-label="t('common.save')"
           size="small"
           variant="text"
           :color="canSubmit ? 'primary' : 'grey-lighten-1'"

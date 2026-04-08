@@ -213,7 +213,7 @@ function toggleLeftDrawer() {
                     size="28"
                     class="cursor-pointer"
                   >
-                    <v-img :src="avatarUrl" />
+                    <v-img :src="avatarUrl" :alt="`${userLabel} avatar`" />
                   </v-avatar>
                 </v-btn>
               </v-badge>

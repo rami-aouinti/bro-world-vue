@@ -82,6 +82,7 @@ function onSubmit() {
         }}</span>
         <v-btn
           icon="mdi-close"
+          :aria-label="t('common.close')"
           variant="text"
           size="small"
           class="position-absolute"
@@ -95,7 +96,11 @@ function onSubmit() {
       <v-card-text class="pt-4 d-flex flex-column ga-4">
         <div class="d-flex align-center ga-3">
           <v-avatar size="44" color="grey-darken-2">
-            <v-img v-if="userAvatar" :src="userAvatar" />
+            <v-img
+              v-if="userAvatar"
+              :src="userAvatar"
+              :alt="`${userDisplayName} avatar`"
+            />
             <v-icon v-else icon="mdi-account" />
           </v-avatar>
 

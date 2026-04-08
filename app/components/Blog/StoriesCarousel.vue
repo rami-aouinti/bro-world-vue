@@ -474,6 +474,7 @@ async function deleteSelectedStory() {
       <span>{{ t('blog.story.title') }}</span>
       <v-btn
         icon="mdi-plus"
+        :aria-label="t('blog.story.createCta')"
         size="small"
         variant="text"
         :loading="uploadPending"
@@ -507,12 +508,13 @@ async function deleteSelectedStory() {
         >
           <div class="d-flex justify-space-between align-start pa-2">
             <v-avatar size="38" class="story-avatar">
-              <v-img :src="card.avatar" cover />
+              <v-img :src="card.avatar" :alt="`${card.displayName} avatar`" cover />
             </v-avatar>
 
             <v-btn
               v-if="card.owner"
               icon="mdi-plus"
+              :aria-label="t('blog.story.createCta')"
               size="small"
               color="primary"
               variant="flat"
@@ -591,6 +593,7 @@ async function deleteSelectedStory() {
         <v-btn
           class="story-nav-btn story-nav-btn--left"
           icon="mdi-chevron-left"
+          aria-label="Previous story"
           variant="flat"
           color="grey-darken-3"
           :disabled="!hasPreviousStory"
@@ -598,7 +601,7 @@ async function deleteSelectedStory() {
         />
 
         <v-sheet rounded="xl" class="story-phone-frame overflow-hidden">
-          <v-img :src="selectedStoryVisual" class="story-media" cover>
+          <v-img :src="selectedStoryVisual" :alt="selectedGroup.displayName" class="story-media" cover>
             <div class="story-overlay-top pa-4">
               <div class="d-flex ga-1 mb-3">
                 <div
@@ -622,7 +625,7 @@ async function deleteSelectedStory() {
               <div class="d-flex align-center justify-space-between text-white">
                 <div class="d-flex align-center ga-2">
                   <v-avatar size="40" class="story-avatar">
-                    <v-img :src="selectedGroup.avatar" cover />
+                    <v-img :src="selectedGroup.avatar" :alt="`${selectedGroup.displayName} avatar`" cover />
                   </v-avatar>
                   <div>
                     <div class="text-subtitle-2 font-weight-bold">
@@ -636,18 +639,21 @@ async function deleteSelectedStory() {
                 <div class="d-flex align-center ga-1">
                   <v-btn
                     icon="mdi-volume-high"
+                    aria-label="Story volume"
                     size="small"
                     variant="text"
                     color="white"
                   />
                   <v-btn
                     icon="mdi-play"
+                    aria-label="Play story"
                     size="small"
                     variant="text"
                     color="white"
                   />
                   <v-btn
                     icon="mdi-dots-horizontal"
+                    aria-label="Story options"
                     size="small"
                     variant="text"
                     color="white"
@@ -686,6 +692,7 @@ async function deleteSelectedStory() {
         <v-btn
           class="story-nav-btn story-nav-btn--right"
           icon="mdi-chevron-right"
+          aria-label="Next story"
           variant="flat"
           color="grey-darken-3"
           :disabled="!hasNextStory"

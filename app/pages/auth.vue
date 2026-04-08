@@ -63,14 +63,17 @@ watch(loggedIn, () => {
                 <v-btn
                   v-tooltip="{ text: t('common.edit') }"
                   icon="mdi-pencil"
+                  :aria-label="t('common.edit')"
                 />
                 <v-btn
                   v-tooltip="{ text: t('common.copy') }"
                   icon="mdi-content-copy"
+                  :aria-label="t('common.copy')"
                 />
                 <v-btn
                   v-tooltip="{ text: t('common.delete') }"
                   icon="mdi-delete"
+                  :aria-label="t('common.delete')"
                 />
               </v-defaults-provider>
             </template>
