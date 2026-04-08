@@ -8,6 +8,7 @@ import type {
 export default createProxyHandler<BlogApiResponse, UpdateBlogPostPayload>({
   method: 'PATCH',
   endpointTemplate: '/api/v1/private/blog/posts/:postId',
+  mutationKey: 'blog:posts:update',
   resolveParams: (event) => ({
     postId: getRequiredRouterParam(event, 'postId', 'post'),
   }),

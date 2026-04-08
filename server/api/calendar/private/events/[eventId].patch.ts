@@ -1,4 +1,4 @@
-import { callPrivateApi } from '../../../../utils/privateApi'
+import { mutatingPrivateApiCall } from '../../../../utils/privateApi'
 import type { UpdateCalendarEventPayload } from '~~/server/types/api/calendar'
 import type { CalendarApiResponse } from '~~/server/types/api/calendar'
 
@@ -14,10 +14,11 @@ export default defineEventHandler(
 
     const body = await readBody<UpdateCalendarEventPayload>(event)
 
-    return callPrivateApi<CalendarApiResponse>(
+    return mutatingPrivateApiCall<CalendarApiResponse>(
       event,
       `/calendar/private/events/${eventId}`,
       {
+        mutationKey: 'calendar:events:update',
         method: 'PATCH',
         body,
       },

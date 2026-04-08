@@ -1,4 +1,4 @@
-import { callPrivateApi } from '../../utils/privateApi'
+import { mutatingPrivateApiCall } from '../../utils/privateApi'
 import type { StoriesApiResponse } from '~~/server/types/api/stories'
 
 export default defineEventHandler(
@@ -12,10 +12,11 @@ export default defineEventHandler(
       })
     }
 
-    return callPrivateApi<StoriesApiResponse>(
+    return mutatingPrivateApiCall<StoriesApiResponse>(
       event,
       `/api/v1/private/stories/${id}`,
       {
+        mutationKey: 'stories:delete',
         method: 'DELETE',
       },
     )

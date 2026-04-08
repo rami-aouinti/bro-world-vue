@@ -1,4 +1,4 @@
-import { callPrivateApi } from '../../../../../utils/privateApi'
+import { mutatingPrivateApiCall } from '../../../../../utils/privateApi'
 import type { SendMessagePayload } from '~~/server/types/api/chat'
 import type { ChatApiResponse } from '~~/server/types/api/chat'
 
@@ -13,10 +13,11 @@ export default defineEventHandler(async (event): Promise<ChatApiResponse> => {
 
   const body = await readBody<SendMessagePayload>(event)
 
-  return callPrivateApi<ChatApiResponse>(
+  return mutatingPrivateApiCall<ChatApiResponse>(
     event,
     `/chat/private/conversations/${conversationId}/messages`,
     {
+      mutationKey: 'chat:conversations:messages:create',
       method: 'POST',
       body,
     },

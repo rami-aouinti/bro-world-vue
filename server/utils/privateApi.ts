@@ -4,6 +4,7 @@ import type { ApiObject, ApiQuery, ApiResponse } from '../types/api/common'
 import { buildCacheKey, getCached, setCached } from './apiCache'
 import { resolveCacheDomain, resolveCacheTtl, type CacheDomain } from './apiCacheConfig'
 import { resolveApiUrl } from './resolveApiUrl'
+import { invalidateMutationCaches } from './mutationInvalidation'
 
 export async function getSessionAuth(event: H3Event) {
   const { user } = await requireUserSession(event)
@@ -33,10 +34,11 @@ export function getSessionToken(event: H3Event) {
   return getSessionAuth(event).then(({ token }) => token)
 }
 
-type PrivateApiOptions<TPayload extends ApiObject = ApiObject> = {
+type PrivateApiOptions = {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-  body?: BodyInit | TPayload | null
+  body?: BodyInit | ApiObject | null
   query?: ApiQuery
+  headers?: HeadersInit
 }
 
 type CachedPrivateGetOptions = {
@@ -44,17 +46,14 @@ type CachedPrivateGetOptions = {
   cacheDomain?: CacheDomain
 }
 
-export async function callPrivateApi<
-  TResponse extends ApiResponse,
-  TPayload extends ApiObject = ApiObject,
->(
+export async function callPrivateApi<TResponse extends ApiResponse>(
   event: H3Event,
   endpoint: string,
-  options?: PrivateApiOptions<TPayload>,
+  options?: PrivateApiOptions,
 ): Promise<TResponse> {
   const runtimeConfig = useRuntimeConfig(event)
   const { token } = await getSessionAuth(event)
-  const requestHeaders = new Headers()
+  const requestHeaders = new Headers(options?.headers)
   requestHeaders.set('accept', 'application/json')
   requestHeaders.set('Authorization', `Bearer ${token}`)
 
@@ -63,7 +62,7 @@ export async function callPrivateApi<
     {
       ...options,
       headers: requestHeaders,
-    },
+    } as any,
   )
 }
 
@@ -93,5 +92,19 @@ export async function cachedPrivateGet<TResponse extends ApiResponse>(
   const domain = options?.cacheDomain ?? resolveCacheDomain(endpoint)
   await setCached(cacheKey, response, resolveCacheTtl(domain))
 
+  return response
+}
+
+type MutatingPrivateApiOptions = PrivateApiOptions & {
+  mutationKey: string
+}
+
+export async function mutatingPrivateApiCall<TResponse extends ApiResponse>(
+  event: H3Event,
+  endpoint: string,
+  options: MutatingPrivateApiOptions,
+): Promise<TResponse> {
+  const response = await callPrivateApi<TResponse>(event, endpoint, options)
+  await invalidateMutationCaches(event, options.mutationKey)
   return response
 }

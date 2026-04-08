@@ -1,4 +1,4 @@
-import { callPrivateApi } from '../../../../utils/privateApi'
+import { mutatingPrivateApiCall } from '../../../../utils/privateApi'
 import type { ChatApiResponse } from '~~/server/types/api/chat'
 
 export default defineEventHandler(async (event): Promise<ChatApiResponse> => {
@@ -10,10 +10,11 @@ export default defineEventHandler(async (event): Promise<ChatApiResponse> => {
     })
   }
 
-  return callPrivateApi<ChatApiResponse>(
+  return mutatingPrivateApiCall<ChatApiResponse>(
     event,
     `/chat/private/messages/${messageId}`,
     {
+      mutationKey: 'chat:messages:delete',
       method: 'DELETE',
     },
   )

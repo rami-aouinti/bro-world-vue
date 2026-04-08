@@ -8,6 +8,7 @@ import type {
 export default createProxyHandler<BlogApiResponse, CreateBlogCommentPayload>({
   method: 'POST',
   endpointTemplate: '/api/v1/private/blog/posts/:postId/comments',
+  mutationKey: 'blog:posts:comments:create',
   resolveParams: (event) => ({
     postId: getRequiredRouterParam(event, 'postId', 'post'),
   }),

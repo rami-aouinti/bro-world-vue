@@ -1,4 +1,4 @@
-import { callPrivateApi } from '../../../../utils/privateApi'
+import { mutatingPrivateApiCall } from '../../../../utils/privateApi'
 import type { UpdateMessagePayload } from '~~/server/types/api/chat'
 import type { ChatApiResponse } from '~~/server/types/api/chat'
 
@@ -13,10 +13,11 @@ export default defineEventHandler(async (event): Promise<ChatApiResponse> => {
 
   const body = await readBody<UpdateMessagePayload>(event)
 
-  return callPrivateApi<ChatApiResponse>(
+  return mutatingPrivateApiCall<ChatApiResponse>(
     event,
     `/chat/private/messages/${messageId}`,
     {
+      mutationKey: 'chat:messages:update',
       method: 'PATCH',
       body,
     },

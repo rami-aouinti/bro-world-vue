@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto'
+import { resolveCacheResourcePrefix } from './apiCacheConfig'
 
 type CacheScope = 'public' | 'private'
 
@@ -101,6 +102,7 @@ export function buildCacheKey({
 }: BuildCacheKeyInput) {
   const normalizedEndpoint = normalizeEndpoint(endpoint)
   const queryHash = getQueryHash(query)
+  const resourcePrefix = resolveCacheResourcePrefix(normalizedEndpoint)
 
   if (scope === 'private') {
     if (!username) {
@@ -110,10 +112,10 @@ export function buildCacheKey({
       })
     }
 
-    return `api:private:${username}:${normalizedEndpoint}:${queryHash}`
+    return `api:private:${username}:${resourcePrefix}:${normalizedEndpoint}:${queryHash}`
   }
 
-  return `api:public:${normalizedEndpoint}:${queryHash}`
+  return `api:public:${resourcePrefix}:${normalizedEndpoint}:${queryHash}`
 }
 
 export async function getCached<T>(key: string): Promise<T | null> {
@@ -143,7 +145,7 @@ export async function setCached<T>(key: string, value: T, ttl: number) {
 
   try {
     const storage = useStorage('redis')
-    await storage.setItem(key, value, { ttl })
+    await storage.setItem(key, value as any, { ttl })
   } catch {
     // Explicitly swallow Redis errors to avoid breaking API handlers.
   }

@@ -1,6 +1,6 @@
 import type { H3Event } from 'h3'
 import type { ApiObject, ApiQuery, ApiResponse } from '../types/api/common'
-import { callPrivateApi } from './privateApi'
+import { callPrivateApi, mutatingPrivateApiCall } from './privateApi'
 
 type ProxyMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
@@ -14,6 +14,7 @@ type CreateProxyHandlerOptions<
 > = {
   method: ProxyMethod
   endpointTemplate: string
+  mutationKey?: string
   resolveParams?: (event: H3Event) => ProxyParams
   resolveQuery?: (event: H3Event) => ProxyQuery
 }
@@ -39,7 +40,7 @@ export function createProxyHandler<
   TResponse extends ApiResponse,
   TPayload extends ApiObject = ApiObject,
 >(options: CreateProxyHandlerOptions<TResponse, TPayload>) {
-  const { method, endpointTemplate, resolveParams, resolveQuery } = options
+  const { method, endpointTemplate, mutationKey, resolveParams, resolveQuery } = options
 
   return defineEventHandler(async (event): Promise<TResponse> => {
     const params = resolveParams?.(event) ?? {}
@@ -58,6 +59,20 @@ export function createProxyHandler<
       requestOptions.query = resolveQuery(event)
     }
 
-    return callPrivateApi<TResponse, TPayload>(event, endpoint, requestOptions)
+    if (method !== 'GET') {
+      if (!mutationKey) {
+        throw createError({
+          statusCode: 500,
+          statusMessage: `Missing mutation key for ${method} ${endpointTemplate}`,
+        })
+      }
+
+      return mutatingPrivateApiCall<TResponse>(event, endpoint, {
+        ...requestOptions,
+        mutationKey,
+      })
+    }
+
+    return callPrivateApi<TResponse>(event, endpoint, requestOptions)
   })
 }

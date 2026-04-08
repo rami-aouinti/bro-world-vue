@@ -43,3 +43,8 @@ export function resolveCacheDomain(endpoint: string): CacheDomain {
 
   return DOMAIN_ALIASES[segment] ?? 'default'
 }
+
+
+export function resolveCacheResourcePrefix(endpoint: string) {
+  return resolveCacheDomain(endpoint)
+}
