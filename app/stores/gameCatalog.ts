@@ -3,25 +3,132 @@ const LEVELS_TTL_MS = 15 * 60 * 1000
 
 interface GameItem {
   id: string
-  name: string
-  description: string | null
-  thumbnailUrl: string | null
-  enabled: boolean
+  name?: string
+  key?: string
+  nameKey?: string
+  description?: string | null
+  descriptionKey?: string
+  thumbnailUrl?: string | null
+  img?: string | null
+  icon?: string | null
+  component?: string | null
+  enabled?: boolean
 }
 
 interface GameSubCategory {
   id: string
-  name: string
-  description: string | null
+  name?: string
+  key?: string
+  nameKey?: string
+  description?: string | null
+  descriptionKey?: string
+  thumbnailUrl?: string | null
+  img?: string | null
+  icon?: string | null
   games: GameItem[]
 }
 
 interface GameCategory {
   id: string
-  name: string
-  description: string | null
+  name?: string
+  key?: string
+  nameKey?: string
+  description?: string | null
+  descriptionKey?: string
+  thumbnailUrl?: string | null
+  img?: string | null
+  icon?: string | null
   subCategories: GameSubCategory[]
-  games: GameItem[]
+  games?: GameItem[]
+}
+
+function normalizeGameItem(raw: unknown): GameItem | null {
+  if (!raw || typeof raw !== 'object')
+    return null
+
+  const item = raw as Record<string, unknown>
+  if (typeof item.id !== 'string')
+    return null
+
+  return {
+    id: item.id,
+    name: typeof item.name === 'string' ? item.name : undefined,
+    key: typeof item.key === 'string' ? item.key : undefined,
+    nameKey: typeof item.nameKey === 'string' ? item.nameKey : undefined,
+    description: typeof item.description === 'string' ? item.description : null,
+    descriptionKey: typeof item.descriptionKey === 'string' ? item.descriptionKey : undefined,
+    thumbnailUrl: typeof item.thumbnailUrl === 'string' ? item.thumbnailUrl : null,
+    img: typeof item.img === 'string' ? item.img : null,
+    icon: typeof item.icon === 'string' ? item.icon : null,
+    component: typeof item.component === 'string' ? item.component : null,
+    enabled: typeof item.enabled === 'boolean' ? item.enabled : true,
+  }
+}
+
+function normalizeSubCategory(raw: unknown): GameSubCategory | null {
+  if (!raw || typeof raw !== 'object')
+    return null
+
+  const sub = raw as Record<string, unknown>
+  if (typeof sub.id !== 'string')
+    return null
+
+  const games = Array.isArray(sub.games)
+    ? sub.games.map(normalizeGameItem).filter((game): game is GameItem => game !== null)
+    : []
+
+  return {
+    id: sub.id,
+    name: typeof sub.name === 'string' ? sub.name : undefined,
+    key: typeof sub.key === 'string' ? sub.key : undefined,
+    nameKey: typeof sub.nameKey === 'string' ? sub.nameKey : undefined,
+    description: typeof sub.description === 'string' ? sub.description : null,
+    descriptionKey: typeof sub.descriptionKey === 'string' ? sub.descriptionKey : undefined,
+    thumbnailUrl: typeof sub.thumbnailUrl === 'string' ? sub.thumbnailUrl : null,
+    img: typeof sub.img === 'string' ? sub.img : null,
+    icon: typeof sub.icon === 'string' ? sub.icon : null,
+    games,
+  }
+}
+
+function normalizeCatalog(response: unknown): GameCategory[] {
+  if (!Array.isArray(response))
+    return []
+
+  return response
+    .map((entry) => {
+      if (!entry || typeof entry !== 'object')
+        return null
+
+      const category = entry as Record<string, unknown>
+      if (typeof category.id !== 'string')
+        return null
+
+      const subCategories = Array.isArray(category.subCategories)
+        ? category.subCategories
+            .map(normalizeSubCategory)
+            .filter((subCategory): subCategory is GameSubCategory => subCategory !== null)
+        : []
+
+      const games = Array.isArray(category.games)
+        ? category.games.map(normalizeGameItem).filter((game): game is GameItem => game !== null)
+        : []
+
+      return {
+        id: category.id,
+        name: typeof category.name === 'string' ? category.name : undefined,
+        key: typeof category.key === 'string' ? category.key : undefined,
+        nameKey: typeof category.nameKey === 'string' ? category.nameKey : undefined,
+        description: typeof category.description === 'string' ? category.description : null,
+        descriptionKey: typeof category.descriptionKey === 'string' ? category.descriptionKey : undefined,
+        thumbnailUrl: typeof category.thumbnailUrl === 'string' ? category.thumbnailUrl : null,
+        img: typeof category.img === 'string' ? category.img : null,
+        icon: typeof category.icon === 'string' ? category.icon : null,
+        subCategories,
+        games,
+      } as GameCategory
+    })
+    .filter((category): category is GameCategory => category !== null)
 }
 
 type GameLevelsResponse = {
@@ -35,11 +142,15 @@ type GameLevelsResponse = {
 
 type StartResponse = {
   session: {
-    id: string
-    gameId: string
-    level: string
+    id?: string
+    sessionId?: string
+    gameId?: string
+    level?: string
     status: string
-    startedAt: string
+    startedAt?: string
+    context?: {
+      selectedLevel?: string
+    }
   }
   userGameId: string
   coins: number
@@ -48,12 +159,13 @@ type StartResponse = {
 type FinishResponse = {
   userGame: {
     id: string
-    sessionId: string
-    gameId: string
-    level: string
-    status: string
+    sessionId?: string
+    gameId?: string
+    level?: string
+    selectedLevel?: string
+    status?: string
     result: 'win' | 'lose'
-    finishedAt: string
+    finishedAt?: string
   }
   coins: number
 }
@@ -115,8 +227,8 @@ export const useGameCatalogStore = defineStore('game-catalog', {
       this.error = ''
 
       try {
-        const response = await $fetch<GameCategory[]>('/api/games/catalog')
-        this.categories = response
+        const response = await $fetch<unknown>('/api/games/catalog')
+        this.categories = normalizeCatalog(response)
         this.catalogFetchedAt = Date.now()
         return this.categories
       } catch (error) {
@@ -156,11 +268,19 @@ export const useGameCatalogStore = defineStore('game-catalog', {
           method: 'POST',
           body: { level },
         })
+
+        const sessionId = response.session.id ?? response.session.sessionId ?? ''
+        const sessionLevel = response.session.level ?? response.session.context?.selectedLevel ?? level
+
+        if (!sessionId) {
+          throw new Error('Unable to start session: missing session id in API response.')
+        }
+
         this.currentSession = {
-          sessionId: response.session.id,
+          sessionId,
           status: response.session.status,
           coins: response.coins,
-          level: response.session.level ?? level,
+          level: sessionLevel,
           userGameId: response.userGameId,
         }
         if (profileStore.profile) {
@@ -188,7 +308,7 @@ export const useGameCatalogStore = defineStore('game-catalog', {
         if (this.currentSession) {
           this.currentSession = {
             ...this.currentSession,
-            status: response.userGame.status,
+            status: response.userGame.status ?? this.currentSession.status,
             coins: response.coins,
           }
         }
