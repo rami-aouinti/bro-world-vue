@@ -1,7 +1,11 @@
 import { createProxyHandler } from '../../../../../utils/createProxyHandler'
 import { getRequiredRouterParam } from '../../../utils'
+import type {
+  BlogApiResponse,
+  CreateBlogCommentPayload,
+} from '~~/server/types/api/blog'
 
-export default createProxyHandler({
+export default createProxyHandler<BlogApiResponse, CreateBlogCommentPayload>({
   method: 'POST',
   endpointTemplate: '/api/v1/private/blog/posts/:postId/comments',
   resolveParams: (event) => ({

@@ -1,6 +1,7 @@
 import { callPrivateApi } from '../../../../utils/privateApi'
+import type { ChatApiResponse } from '~~/server/types/api/chat'
 
-export default defineEventHandler(async (event): Promise<unknown> => {
+export default defineEventHandler(async (event): Promise<ChatApiResponse> => {
   const conversationId = getRouterParam(event, 'conversationId')
   if (!conversationId) {
     throw createError({
@@ -9,7 +10,7 @@ export default defineEventHandler(async (event): Promise<unknown> => {
     })
   }
 
-  return callPrivateApi(
+  return callPrivateApi<ChatApiResponse>(
     event,
     `/chat/private/conversations/${conversationId}`,
     {

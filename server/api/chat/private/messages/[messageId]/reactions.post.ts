@@ -1,6 +1,8 @@
 import { callPrivateApi } from '../../../../../utils/privateApi'
+import type { ChatReactionPayload } from '~~/server/types/api/chat'
+import type { ChatApiResponse } from '~~/server/types/api/chat'
 
-export default defineEventHandler(async (event): Promise<unknown> => {
+export default defineEventHandler(async (event): Promise<ChatApiResponse> => {
   const messageId = getRouterParam(event, 'messageId')
   if (!messageId) {
     throw createError({
@@ -9,9 +11,9 @@ export default defineEventHandler(async (event): Promise<unknown> => {
     })
   }
 
-  const body = await readBody(event)
+  const body = await readBody<ChatReactionPayload>(event)
 
-  return callPrivateApi(
+  return callPrivateApi<ChatApiResponse>(
     event,
     `/chat/private/messages/${messageId}/reactions`,
     {
