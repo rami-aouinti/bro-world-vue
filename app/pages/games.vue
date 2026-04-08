@@ -13,6 +13,8 @@ const selectedCategoryId = ref<string | null>(null)
 const selectedSubCategoryId = ref<string | null>(null)
 const selectedGameId = ref<string | null>(null)
 const selectedLevelValue = ref<string | null>(null)
+const catalogError = ref('')
+const levelsError = ref('')
 const finishResult = ref<'win' | 'lose' | null>(null)
 const lastFinishedSession = ref<{
   sessionId: string
@@ -29,7 +31,6 @@ const safeCategories = computed(() =>
 const safeLevels = computed(() =>
   Array.isArray(catalogStore.levels) ? catalogStore.levels : [],
 )
-const safeLevelValues = computed(() => safeLevels.value.map(level => level.value))
 
 const selectedCategory = computed(
   () =>
@@ -118,23 +119,26 @@ function resetSelectionIfMissing() {
 
   if (
     selectedSubCategoryId.value &&
-    !subCategories.value.some(
-      (subCategory) => subCategory.id === selectedSubCategoryId.value,
-    )
+    !safeCategories.value
+      .flatMap(category => category.subCategories)
+      .some((subCategory) => subCategory.id === selectedSubCategoryId.value)
   ) {
     selectedSubCategoryId.value = null
   }
 
   if (
     selectedGameId.value &&
-    !games.value.some((game) => game.id === selectedGameId.value)
+    !safeCategories.value
+      .flatMap(category => category.subCategories)
+      .flatMap(subCategory => subCategory.games)
+      .some((game) => game.id === selectedGameId.value)
   ) {
     selectedGameId.value = null
   }
 
   if (
     selectedLevelValue.value &&
-    !safeLevelValues.value.includes(selectedLevelValue.value)
+    !safeLevels.value.some((level) => level.value === selectedLevelValue.value)
   ) {
     selectedLevelValue.value = null
   }
@@ -201,11 +205,23 @@ async function onFinish(result: 'win' | 'lose') {
 }
 
 async function onRetryCatalog() {
+  catalogError.value = ''
+
   try {
-    await Promise.all([
-      catalogStore.fetchCatalog(),
-      catalogStore.fetchLevels(),
-    ])
+    await catalogStore.fetchCatalog(true)
+    resetSelectionIfMissing()
+  } catch (error) {
+    catalogError.value =
+      error instanceof Error ? error.message : 'Unable to load game catalog.'
+    Notify.error(error)
+  }
+}
+
+async function onRetryLevels() {
+  levelsError.value = ''
+
+  try {
+    await catalogStore.fetchLevels(true)
     resetSelectionIfMissing()
     Notify.success(
       tOrFallback(
@@ -214,17 +230,32 @@ async function onRetryCatalog() {
       ),
     )
   } catch (error) {
+    levelsError.value =
+      error instanceof Error ? error.message : 'Unable to load game levels.'
     Notify.error(error)
   }
 }
 
 onMounted(async () => {
-  try {
-    await Promise.all([
-      catalogStore.fetchCatalog(),
-      catalogStore.fetchLevels(),
-    ])
-  } catch (error) {
+  catalogError.value = ''
+  levelsError.value = ''
+
+  const [catalogResult, levelsResult] = await Promise.allSettled([
+    catalogStore.fetchCatalog(),
+    catalogStore.fetchLevels(),
+  ])
+
+  if (catalogResult.status === 'rejected') {
+    const error = catalogResult.reason
+    catalogError.value =
+      error instanceof Error ? error.message : 'Unable to load game catalog.'
+    Notify.error(error)
+  }
+
+  if (levelsResult.status === 'rejected') {
+    const error = levelsResult.reason
+    levelsError.value =
+      error instanceof Error ? error.message : 'Unable to load game levels.'
     Notify.error(error)
   }
 })
@@ -238,7 +269,7 @@ watch(safeLevels, resetSelectionIfMissing)
     <h1 class="text-h3 mb-6">{{ t('appbar.games') }}</h1>
 
     <v-alert
-      v-if="catalogStore.error"
+      v-if="catalogError"
       type="warning"
       variant="tonal"
       class="mb-4"
@@ -246,7 +277,7 @@ watch(safeLevels, resetSelectionIfMissing)
       <div
         class="d-flex flex-column flex-sm-row align-sm-center justify-space-between ga-3"
       >
-        <span>{{ catalogStore.error }}</span>
+        <span>{{ catalogError }}</span>
         <v-btn size="small" variant="outlined" @click="onRetryCatalog">
           {{ tOrFallback('gamePage.actions.retry', 'Retry') }}
         </v-btn>
@@ -388,8 +419,23 @@ watch(safeLevels, resetSelectionIfMissing)
     <v-card class="mb-6" rounded="xl">
       <v-card-title>{{ t('gamePage.levels.title') }}</v-card-title>
       <v-card-text>
+        <v-alert
+          v-if="levelsError"
+          type="warning"
+          variant="tonal"
+          class="mb-4"
+        >
+          <div
+            class="d-flex flex-column flex-sm-row align-sm-center justify-space-between ga-3"
+          >
+            <span>{{ levelsError }}</span>
+            <v-btn size="small" variant="outlined" @click="onRetryLevels">
+              {{ tOrFallback('gamePage.actions.retry', 'Retry') }}
+            </v-btn>
+          </div>
+        </v-alert>
         <v-skeleton-loader
-          v-if="catalogStore.loadingLevels"
+          v-else-if="catalogStore.loadingLevels"
           type="list-item-two-line, list-item-two-line, list-item-two-line"
           class="mb-2"
         />
@@ -456,10 +502,10 @@ watch(safeLevels, resetSelectionIfMissing)
           {{ catalogStore.currentSession.sessionId }}
         </v-chip>
         <v-chip size="small" color="secondary" variant="tonal">
-          {{ tOrFallback('gamePage.session.level', 'Level') }}:
+          {{ tOrFallback('gamePage.session.selectedLevel', 'Selected level') }}:
           {{
-            catalogStore.currentSession.level
-              ? difficultyLabel(catalogStore.currentSession.level)
+            selectedLevelValue
+              ? difficultyLabel(selectedLevelValue)
               : '-'
           }}
         </v-chip>
