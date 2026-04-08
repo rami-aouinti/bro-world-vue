@@ -50,6 +50,7 @@ export const useGameCatalogStore = defineStore('game-catalog', {
     startingSession: false,
     finishingSession: false,
     error: '' as string,
+    levelsError: '' as string,
     catalogFetchedAt: 0,
     levelsFetchedAt: 0,
   }),
@@ -72,9 +73,6 @@ export const useGameCatalogStore = defineStore('game-catalog', {
         const response = await $fetch<GamesCatalogApiResponse>('/api/games/catalog')
         this.categories = mapCatalogResponseToCategories(response)
         this.catalogFetchedAt = Date.now()
-
-        await this.fetchLevels(force)
-
         return this.categories
       } catch (error) {
         this.error = error instanceof Error ? error.message : 'Unable to load game catalog.'
@@ -89,7 +87,7 @@ export const useGameCatalogStore = defineStore('game-catalog', {
       }
 
       this.loadingLevels = true
-      this.error = ''
+      this.levelsError = ''
 
       try {
         const response = await $fetch<GamesLevelsApiResponse>('/api/games/levels')
@@ -97,7 +95,7 @@ export const useGameCatalogStore = defineStore('game-catalog', {
         this.levelsFetchedAt = Date.now()
         return this.levels
       } catch (error) {
-        this.error = error instanceof Error ? error.message : 'Unable to load game levels.'
+        this.levelsError = error instanceof Error ? error.message : 'Unable to load game levels.'
         throw error
       } finally {
         this.loadingLevels = false
