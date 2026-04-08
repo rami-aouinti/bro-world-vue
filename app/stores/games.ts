@@ -121,9 +121,9 @@ export const useGamesStore = defineStore('games', {
       this.error = ''
 
       try {
-        const response = await $fetch<GameSessionStartResponse>('/api/private/games/sessions/start', {
+        const response = await $fetch<GameSessionStartResponse>(`/api/games/${gameId}/sessions/start`, {
           method: 'POST',
-          body: { gameId, level },
+          body: { level },
         })
 
         this.activeSession = response
@@ -146,9 +146,9 @@ export const useGamesStore = defineStore('games', {
       this.error = ''
 
       try {
-        const response = await $fetch<GameSessionFinishResponse>('/api/private/games/sessions/finish', {
+        const response = await $fetch<GameSessionFinishResponse>(`/api/games/sessions/${sessionId}/finish`, {
           method: 'POST',
-          body: { sessionId, result },
+          body: { result },
         })
 
         const profileStore = useProfileStore()
