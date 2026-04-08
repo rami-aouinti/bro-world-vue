@@ -21,6 +21,17 @@ function openCategory(categoryId: string) {
   navigateTo(`/games/${categoryId}`)
 }
 
+function getCategoryThumbnail(category: { games?: { thumbnailUrl?: string }[]; subCategories?: { games?: { thumbnailUrl?: string }[] }[] }) {
+  return getGameCardImage(
+    category.games?.[0]?.thumbnailUrl ||
+      category.subCategories?.[0]?.games?.[0]?.thumbnailUrl,
+  )
+}
+
+function getSubCategoryCount(category: { subCategories?: unknown[] }) {
+  return Array.isArray(category.subCategories) ? category.subCategories.length : 0
+}
+
 const categories = computed(() =>
   Array.isArray(catalogStore.categories) ? catalogStore.categories : [],
 )
@@ -68,12 +79,7 @@ const categories = computed(() =>
             @click="openCategory(category.id)"
           >
             <v-img
-              :src="
-                getGameCardImage(
-                  category.games[0]?.thumbnailUrl ||
-                    category.subCategories[0]?.games[0]?.thumbnailUrl,
-                )
-              "
+              :src="getCategoryThumbnail(category)"
               height="220"
               cover
             >
@@ -93,7 +99,7 @@ const categories = computed(() =>
                 </div>
                 <div class="d-flex align-center justify-space-between">
                   <v-chip color="white" size="small" variant="flat">
-                    {{ category.subCategories.length }} sous-catégories
+                    {{ getSubCategoryCount(category) }} sous-catégories
                   </v-chip>
                   <v-icon
                     color="white"
