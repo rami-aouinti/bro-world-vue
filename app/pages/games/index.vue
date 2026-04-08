@@ -58,7 +58,7 @@ const categories = computed(() =>
         :key="category.id"
         cols="12"
         sm="6"
-        lg="6"
+        lg="4"
       >
         <v-hover v-slot="{ isHovering, props }">
           <v-card
@@ -68,7 +68,7 @@ const categories = computed(() =>
             @click="openCategory(category.id)"
           >
             <v-img
-              :src="getCategoryThumbnail(category)"
+              :src="category?.img"
               height="200"
               cover
             >
@@ -103,7 +103,7 @@ const categories = computed(() =>
 }
 
 .category-overlay {
-  background: linear-gradient(180deg, rgba(10, 10, 10, 0.1), rgba(10, 10, 10, 0.82));
+  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
 }
 
 .text-truncate-2 {

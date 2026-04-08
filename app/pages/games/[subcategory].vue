@@ -39,11 +39,14 @@ const subCategories = computed(() =>
 <template>
   <v-container fluid>
     <template v-if="selectedCategory">
-      <h1 class="text-h4 mb-1">{{ entityName(selectedCategory) }}</h1>
-      <p class="text-medium-emphasis mb-6">
-        {{ entityDescription(selectedCategory) || 'Choisis une sous-catégorie pour voir les jeux.' }}
-      </p>
-
+      <v-btn
+        prepend-icon="mdi-arrow-left"
+        class="mb-4"
+        variant="text"
+        @click="navigateTo(`/games`)"
+      >
+        Categories
+      </v-btn>
       <v-row v-if="subCategories.length" dense>
         <v-col
           v-for="subCategory in subCategories"
@@ -52,18 +55,12 @@ const subCategories = computed(() =>
           sm="6"
           lg="4"
         >
-          <v-card rounded="xl" class="h-100 cursor-pointer" @click="openSubCategory(subCategory.id)">
+          <v-card rounded="xl" class="h-100 game-card cursor-pointer" @click="openSubCategory(subCategory.id)">
             <v-img
-              :src="getSubCategoryThumbnail(subCategory)"
-              height="180"
+              :src="subCategory?.img"
+              height="200"
               cover
             />
-            <v-card-item>
-              <v-card-title>{{ entityName(subCategory) }}</v-card-title>
-              <v-card-subtitle>
-                {{ entityDescription(subCategory) || 'Explore les jeux de cette sous-catégorie.' }}
-              </v-card-subtitle>
-            </v-card-item>
           </v-card>
         </v-col>
       </v-row>
@@ -76,3 +73,8 @@ const subCategories = computed(() =>
     </template>
   </v-container>
 </template>
+<style scoped>
+.game-card {
+  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
+}
+</style>

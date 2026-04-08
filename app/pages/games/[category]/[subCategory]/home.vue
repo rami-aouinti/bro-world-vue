@@ -87,39 +87,23 @@ async function onStart() {
       class="mb-4"
       @click="navigateTo(`/games/${categoryId}`)"
     >
-      Back to sub-categories
+      Back
     </v-btn>
 
     <template v-if="selectedSubCategory">
-      <h1 class="text-h4 mb-1">{{ entityName(selectedSubCategory) }}</h1>
-      <p class="text-medium-emphasis mb-6">
-        {{ entityDescription(selectedSubCategory) || 'Sélectionne un jeu et un niveau, puis lance ta session.' }}
-      </p>
-
-      <v-card rounded="xl" class="mb-6">
-        <v-card-title>{{ t('gamePage.catalog.sections.games') }}</v-card-title>
-        <v-card-text>
-          <v-row dense>
-            <v-col v-for="game in games" :key="game.id" cols="12" md="6" lg="4">
-              <v-card
-                rounded="lg"
-                class="cursor-pointer h-100"
-                :variant="selectedGameId === game.id ? 'elevated' : 'outlined'"
-                :color="selectedGameId === game.id ? 'primary' : undefined"
-                @click="selectedGameId = game.id"
-              >
-                <v-img :src="getGameCardImage(game.thumbnailUrl)" height="140" cover />
-                <v-card-item>
-                  <v-card-title>{{ entityName(game) }}</v-card-title>
-                  <v-card-subtitle>
-                    {{ entityDescription(game) || 'Prêt à jouer ?' }}
-                  </v-card-subtitle>
-                </v-card-item>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card>
+      <v-row dense>
+        <v-col v-for="game in games" :key="game.id" cols="12" md="6" lg="4">
+          <v-card
+            rounded="lg"
+            class="cursor-pointer h-100"
+            :variant="selectedGameId === game.id ? 'elevated' : 'outlined'"
+            :color="selectedGameId === game.id ? 'primary' : undefined"
+            @click="selectedGameId = game.id"
+          >
+            <v-img :src="game?.img" height="200" cover />
+          </v-card>
+        </v-col>
+      </v-row>
 
       <v-card rounded="xl" class="mb-6">
         <v-card-title>{{ tOrFallback('gamePage.levels.title', 'Niveau') }}</v-card-title>
