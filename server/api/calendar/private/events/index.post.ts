@@ -1,10 +1,19 @@
-import { callPrivateApi } from '../../../../utils/privateApi'
+import { mutatingPrivateApiCall } from '../../../../utils/privateApi'
+import type { CreateCalendarEventPayload } from '~~/server/types/api/calendar'
+import type { CalendarApiResponse } from '~~/server/types/api/calendar'
 
-export default defineEventHandler(async (event): Promise<unknown> => {
-  const body = await readBody(event)
+export default defineEventHandler(
+  async (event): Promise<CalendarApiResponse> => {
+    const body = await readBody<CreateCalendarEventPayload>(event)
 
-  return callPrivateApi(event, '/calendar/private/events', {
-    method: 'POST',
-    body,
-  })
-})
+    return mutatingPrivateApiCall<CalendarApiResponse>(
+      event,
+      '/calendar/private/events',
+      {
+        mutationKey: 'calendar:events:create',
+        method: 'POST',
+        body,
+      },
+    )
+  },
+)

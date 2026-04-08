@@ -1,26 +1,26 @@
-import { getSessionToken } from '../../utils/privateApi'
-import { resolveApiUrl } from '../../utils/resolveApiUrl'
+import { mutatingPrivateApiCall } from '../../utils/privateApi'
+import type { StoriesApiResponse } from '~~/server/types/api/stories'
 
-export default defineEventHandler(async (event): Promise<unknown> => {
-  const runtimeConfig = useRuntimeConfig(event)
-  const token = await getSessionToken(event)
-  const contentType = getHeader(event, 'content-type')
-  const body = await readRawBody(event, false)
+export default defineEventHandler(
+  async (event): Promise<StoriesApiResponse> => {
+    const contentType = getHeader(event, 'content-type')
+    const body = await readRawBody(event, false)
 
-  const requestHeaders = new Headers()
-  requestHeaders.set('accept', 'application/json')
-  requestHeaders.set('Authorization', `Bearer ${token}`)
+    const headers = new Headers()
 
-  if (contentType) {
-    requestHeaders.set('content-type', contentType)
-  }
+    if (contentType) {
+      headers.set('content-type', contentType)
+    }
 
-  return $fetch(
-    resolveApiUrl(runtimeConfig.public.apiBaseUrl, '/api/v1/private/stories'),
-    {
-      method: 'POST',
-      headers: requestHeaders,
-      body,
-    },
-  )
-})
+    return mutatingPrivateApiCall<StoriesApiResponse>(
+      event,
+      '/api/v1/private/stories',
+      {
+        mutationKey: 'stories:create',
+        method: 'POST',
+        headers,
+        body: body as BodyInit | null,
+      },
+    )
+  },
+)

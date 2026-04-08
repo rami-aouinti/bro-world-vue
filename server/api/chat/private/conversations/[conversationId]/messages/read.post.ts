@@ -1,6 +1,8 @@
-import { callPrivateApi } from '../../../../../../utils/privateApi'
+import { mutatingPrivateApiCall } from '../../../../../../utils/privateApi'
+import type { MarkMessagesReadPayload } from '~~/server/types/api/chat'
+import type { ChatApiResponse } from '~~/server/types/api/chat'
 
-export default defineEventHandler(async (event): Promise<unknown> => {
+export default defineEventHandler(async (event): Promise<ChatApiResponse> => {
   const conversationId = getRouterParam(event, 'conversationId')
   if (!conversationId) {
     throw createError({
@@ -9,12 +11,13 @@ export default defineEventHandler(async (event): Promise<unknown> => {
     })
   }
 
-  const body = await readBody(event)
+  const body = await readBody<MarkMessagesReadPayload>(event)
 
-  return callPrivateApi(
+  return mutatingPrivateApiCall<ChatApiResponse>(
     event,
     `/chat/private/conversations/${conversationId}/messages/read`,
     {
+      mutationKey: 'chat:conversations:messages:read',
       method: 'POST',
       body,
     },

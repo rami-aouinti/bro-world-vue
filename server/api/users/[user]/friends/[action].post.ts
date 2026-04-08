@@ -1,8 +1,9 @@
-import { callPrivateApi } from '../../../../utils/privateApi'
+import { mutatingPrivateApiCall } from '../../../../utils/privateApi'
+import type { UsersApiResponse } from '~~/server/types/api/users'
 
 const allowedActions = new Set(['request', 'cancel', 'accept', 'reject'])
 
-export default defineEventHandler(async (event): Promise<unknown> => {
+export default defineEventHandler(async (event): Promise<UsersApiResponse> => {
   const userId = getRouterParam(event, 'user')
   const action = getRouterParam(event, 'action')
 
@@ -13,7 +14,12 @@ export default defineEventHandler(async (event): Promise<unknown> => {
     })
   }
 
-  return callPrivateApi(event, `/users/${userId}/friends/${action}`, {
-    method: 'POST',
-  })
+  return mutatingPrivateApiCall<UsersApiResponse>(
+    event,
+    `/users/${userId}/friends/${action}`,
+    {
+      mutationKey: 'users:friends:action',
+      method: 'POST',
+    },
+  )
 })

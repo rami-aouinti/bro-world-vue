@@ -1,13 +1,15 @@
-export default defineEventHandler(async (event): Promise<unknown> => {
-  const runtimeConfig = useRuntimeConfig(event)
-  const query = getQuery(event)
-  const page = Number(query.page ?? 1)
-  const limit = Number(query.limit ?? 20)
+import { cachedPublicGet } from '../../utils/publicApi'
+import type { ApplicationApiResponse } from '~~/server/types/api/application'
 
-  return $fetch(`${runtimeConfig.public.apiBaseUrl}/application/public`, {
-    query: { page, limit },
-    headers: {
-      accept: 'application/json',
-    },
-  })
-})
+export default defineEventHandler(
+  async (event): Promise<ApplicationApiResponse> => {
+    const query = getQuery(event)
+    const page = Number(query.page ?? 1)
+    const limit = Number(query.limit ?? 20)
+
+    return cachedPublicGet<ApplicationApiResponse>(event, '/application/public', {
+      query: { page, limit },
+      cacheDomain: 'application',
+    })
+  },
+)

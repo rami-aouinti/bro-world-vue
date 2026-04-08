@@ -1,7 +1,15 @@
-import { callPrivateApi } from '../../utils/privateApi'
+import { mutatingPrivateApiCall } from '../../utils/privateApi'
+import type { NotificationsApiResponse } from '~~/server/types/api/notifications'
 
-export default defineEventHandler(async (event): Promise<unknown> => {
-  return callPrivateApi(event, '/notifications/read-all', {
-    method: 'PATCH',
-  })
-})
+export default defineEventHandler(
+  async (event): Promise<NotificationsApiResponse> => {
+    return mutatingPrivateApiCall<NotificationsApiResponse>(
+      event,
+      '/notifications/read-all',
+      {
+        mutationKey: 'notifications:read-all',
+        method: 'PATCH',
+      },
+    )
+  },
+)

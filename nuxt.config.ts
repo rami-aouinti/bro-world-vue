@@ -73,6 +73,9 @@ export default defineNuxtConfig({
     build: { sourcemap: false },
   },
   runtimeConfig: {
+    redis: {
+      url: '',
+    },
     public: {
       apiBaseUrl: 'https://bro-world.org/api/v1',
     },
@@ -84,6 +87,16 @@ export default defineNuxtConfig({
       name: 'nuxt-session',
       password: '',
     },
+  },
+  nitro: {
+    storage: process.env.REDIS_URL
+      ? {
+          redis: {
+            driver: 'redis',
+            url: process.env.REDIS_URL,
+          },
+        }
+      : {},
   },
   i18n: {
     locales: [

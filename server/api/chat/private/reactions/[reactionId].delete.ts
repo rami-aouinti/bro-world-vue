@@ -1,6 +1,7 @@
-import { callPrivateApi } from '../../../../utils/privateApi'
+import { mutatingPrivateApiCall } from '../../../../utils/privateApi'
+import type { ChatApiResponse } from '~~/server/types/api/chat'
 
-export default defineEventHandler(async (event): Promise<unknown> => {
+export default defineEventHandler(async (event): Promise<ChatApiResponse> => {
   const reactionId = getRouterParam(event, 'reactionId')
   if (!reactionId) {
     throw createError({
@@ -9,7 +10,12 @@ export default defineEventHandler(async (event): Promise<unknown> => {
     })
   }
 
-  return callPrivateApi(event, `/chat/private/reactions/${reactionId}`, {
-    method: 'DELETE',
-  })
+  return mutatingPrivateApiCall<ChatApiResponse>(
+    event,
+    `/chat/private/reactions/${reactionId}`,
+    {
+      mutationKey: 'chat:reactions:delete',
+      method: 'DELETE',
+    },
+  )
 })

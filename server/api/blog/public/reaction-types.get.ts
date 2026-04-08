@@ -1,17 +1,12 @@
-import { resolveApiUrl } from '../../../utils/resolveApiUrl'
+import { cachedPublicGet } from '../../../utils/publicApi'
+import type { BlogApiResponse } from '~~/server/types/api/blog'
 
-export default defineEventHandler(async (event): Promise<unknown> => {
-  const runtimeConfig = useRuntimeConfig(event)
-
-  return $fetch(
-    resolveApiUrl(
-      runtimeConfig.public.apiBaseUrl,
-      '/api/v1/public/blogs/reactions/types',
-    ),
+export default defineEventHandler(async (event): Promise<BlogApiResponse> => {
+  return cachedPublicGet<BlogApiResponse>(
+    event,
+    '/api/v1/public/blogs/reactions/types',
     {
-      headers: {
-        accept: 'application/json',
-      },
+      cacheDomain: 'references',
     },
   )
 })

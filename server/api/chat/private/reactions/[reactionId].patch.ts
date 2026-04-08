@@ -1,6 +1,8 @@
-import { callPrivateApi } from '../../../../utils/privateApi'
+import { mutatingPrivateApiCall } from '../../../../utils/privateApi'
+import type { ChatReactionPayload } from '~~/server/types/api/chat'
+import type { ChatApiResponse } from '~~/server/types/api/chat'
 
-export default defineEventHandler(async (event): Promise<unknown> => {
+export default defineEventHandler(async (event): Promise<ChatApiResponse> => {
   const reactionId = getRouterParam(event, 'reactionId')
   if (!reactionId) {
     throw createError({
@@ -9,10 +11,15 @@ export default defineEventHandler(async (event): Promise<unknown> => {
     })
   }
 
-  const body = await readBody(event)
+  const body = await readBody<ChatReactionPayload>(event)
 
-  return callPrivateApi(event, `/chat/private/reactions/${reactionId}`, {
-    method: 'PATCH',
-    body,
-  })
+  return mutatingPrivateApiCall<ChatApiResponse>(
+    event,
+    `/chat/private/reactions/${reactionId}`,
+    {
+      mutationKey: 'chat:reactions:update',
+      method: 'PATCH',
+      body,
+    },
+  )
 })
