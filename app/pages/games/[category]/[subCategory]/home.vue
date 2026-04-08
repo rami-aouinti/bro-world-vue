@@ -63,8 +63,15 @@ async function onStart() {
 
   try {
     const response = await catalogStore.startSession(selectedGameId.value, selectedLevelValue.value)
+    const createdSessionId = response.session.id ?? response.session.sessionId ?? catalogStore.currentSession?.sessionId
+
+    if (!createdSessionId) {
+      Notify.error('Session id not found in start response.')
+      return
+    }
+
     await navigateTo(
-      `/games/${categoryId.value}/${subCategoryId.value}/${response.session.id}/play?gameId=${selectedGameId.value}&level=${selectedLevelValue.value}`,
+      `/games/${categoryId.value}/${subCategoryId.value}/${createdSessionId}/play?gameId=${selectedGameId.value}&level=${selectedLevelValue.value}`,
     )
   } catch (error) {
     Notify.error(error)

@@ -595,6 +595,22 @@
         "strategy": {
           "name": "Stratégie",
           "description": "Anticipez et optimisez chacune de vos décisions."
+        },
+        "cards": {
+          "name": "Jeux de cartes",
+          "description": "Jeux de cartes classiques et sociaux."
+        },
+        "board": {
+          "name": "Jeux de plateau",
+          "description": "Jeux de plateau et de stratégie."
+        },
+        "smartGames": {
+          "name": "Jeux intelligents",
+          "description": "Jeux de logique, mots et entraînement cérébral."
+        },
+        "arcade": {
+          "name": "Arcade",
+          "description": "Défis rapides et amusants."
         }
       },
       "subCategories": {
@@ -609,6 +625,46 @@
         "brain": {
           "name": "Casse-têtes",
           "description": "Résolvez des défis astucieux et exigeants."
+        },
+        "classicCards": {
+          "name": "Cartes classiques",
+          "description": "Jeux de cartes traditionnels pour tous."
+        },
+        "partyCards": {
+          "name": "Cartes festives",
+          "description": "Jeux de cartes légers et conviviaux."
+        },
+        "tableClassic": {
+          "name": "Plateau classique",
+          "description": "Jeux de table intemporels."
+        },
+        "familyBoard": {
+          "name": "Plateau familial",
+          "description": "Jeux de plateau pour la famille."
+        },
+        "logic": {
+          "name": "Logique",
+          "description": "Réfléchis, déduis et résous."
+        },
+        "wordsLanguage": {
+          "name": "Mots & Langue",
+          "description": "Jeux autour des mots et du langage."
+        },
+        "gridsPuzzles": {
+          "name": "Grilles & Puzzles",
+          "description": "Puzzles en grille et déduction."
+        },
+        "brainTraining": {
+          "name": "Entraînement cérébral",
+          "description": "Travaille mémoire, vitesse et concentration."
+        },
+        "reactionArcade": {
+          "name": "Arcade réflexe",
+          "description": "Mini-jeux de réflexe et réaction."
+        },
+        "classicArcade": {
+          "name": "Arcade classique",
+          "description": "Expériences arcade inspirées du rétro."
         }
       },
       "games": {
@@ -627,6 +683,102 @@
         "maze": {
           "name": "Évasion du labyrinthe",
           "description": "Trouvez le chemin le plus court dans le labyrinthe."
+        },
+        "rami": {
+          "name": "Rami",
+          "description": "Compose des combinaisons et gagne la partie."
+        },
+        "belote": {
+          "name": "Belote",
+          "description": "Jeu de plis en équipe avec stratégie."
+        },
+        "poker": {
+          "name": "Poker",
+          "description": "Lis le jeu, bluffe et remporte la mise."
+        },
+        "uno": {
+          "name": "UNO",
+          "description": "Joue tes cartes action et termine ta main."
+        },
+        "solitaire": {
+          "name": "Solitaire",
+          "description": "Défi de cartes en solo."
+        },
+        "hearts": {
+          "name": "Hearts",
+          "description": "Évite les points et anticipe tes adversaires."
+        },
+        "spades": {
+          "name": "Spades",
+          "description": "Annonce bien et remporte les bons plis."
+        },
+        "checkers": {
+          "name": "Dames",
+          "description": "Capture les pions et domine le plateau."
+        },
+        "chess": {
+          "name": "Échecs",
+          "description": "Duel stratégique classique."
+        },
+        "ludo": {
+          "name": "Ludo",
+          "description": "Fais avancer tes pions jusqu’à l’arrivée."
+        },
+        "backgammon": {
+          "name": "Backgammon",
+          "description": "Déplace, bloque et sors tes pions."
+        },
+        "dominoes": {
+          "name": "Dominos",
+          "description": "Associe les tuiles et planifie tes coups."
+        },
+        "sudoku": {
+          "name": "Sudoku",
+          "description": "Remplis la grille avec logique."
+        },
+        "game2048": {
+          "name": "2048",
+          "description": "Fusionne les tuiles pour atteindre 2048."
+        },
+        "hiddenWord": {
+          "name": "Mot caché",
+          "description": "Trouve les mots cachés dans la grille."
+        },
+        "nonogram": {
+          "name": "Nonogramme",
+          "description": "Révèle une image avec les indices."
+        },
+        "memoryMatch": {
+          "name": "Memory Match",
+          "description": "Associe les cartes et entraîne ta mémoire."
+        },
+        "mastermind": {
+          "name": "Mastermind",
+          "description": "Trouve le code couleur secret."
+        },
+        "minesweeper": {
+          "name": "Démineur",
+          "description": "Nettoie la grille sans toucher les mines."
+        },
+        "flappyRocket": {
+          "name": "Flappy Rocket",
+          "description": "Tape pour voler et éviter les obstacles."
+        },
+        "stackJump": {
+          "name": "Stack Jump",
+          "description": "Empile les blocs avec précision."
+        },
+        "spaceInvaders": {
+          "name": "Space Invaders",
+          "description": "Protège-toi des vagues d’aliens."
+        },
+        "brickBreaker": {
+          "name": "Casse-briques",
+          "description": "Brise les briques sans perdre la balle."
+        },
+        "snake": {
+          "name": "Snake",
+          "description": "Fais grandir le serpent sans collision."
         }
       },
       "meta": {

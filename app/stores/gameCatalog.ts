@@ -142,11 +142,15 @@ type GameLevelsResponse = {
 
 type StartResponse = {
   session: {
-    id: string
-    gameId: string
-    level: string
+    id?: string
+    sessionId?: string
+    gameId?: string
+    level?: string
     status: string
-    startedAt: string
+    startedAt?: string
+    context?: {
+      selectedLevel?: string
+    }
   }
   userGameId: string
   coins: number
@@ -155,12 +159,13 @@ type StartResponse = {
 type FinishResponse = {
   userGame: {
     id: string
-    sessionId: string
-    gameId: string
-    level: string
-    status: string
+    sessionId?: string
+    gameId?: string
+    level?: string
+    selectedLevel?: string
+    status?: string
     result: 'win' | 'lose'
-    finishedAt: string
+    finishedAt?: string
   }
   coins: number
 }
@@ -263,11 +268,19 @@ export const useGameCatalogStore = defineStore('game-catalog', {
           method: 'POST',
           body: { level },
         })
+
+        const sessionId = response.session.id ?? response.session.sessionId ?? ''
+        const sessionLevel = response.session.level ?? response.session.context?.selectedLevel ?? level
+
+        if (!sessionId) {
+          throw new Error('Unable to start session: missing session id in API response.')
+        }
+
         this.currentSession = {
-          sessionId: response.session.id,
+          sessionId,
           status: response.session.status,
           coins: response.coins,
-          level: response.session.level ?? level,
+          level: sessionLevel,
           userGameId: response.userGameId,
         }
         if (profileStore.profile) {
@@ -295,7 +308,7 @@ export const useGameCatalogStore = defineStore('game-catalog', {
         if (this.currentSession) {
           this.currentSession = {
             ...this.currentSession,
-            status: response.userGame.status,
+            status: response.userGame.status ?? this.currentSession.status,
             coins: response.coins,
           }
         }
