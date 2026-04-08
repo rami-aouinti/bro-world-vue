@@ -86,9 +86,6 @@ const breadcrumbs = computed(() => [
     <AppPageDrawers>
       <template #right>
         <v-list nav density="compact" class="app-right-drawer-list">
-          <v-list-subheader class="text-overline">
-            {{ tOrFallback('gamePage.selection.title', 'Selected') }}
-          </v-list-subheader>
           <v-list-item>
             <template #prepend>
               <v-icon icon="mdi-shape-outline" />
