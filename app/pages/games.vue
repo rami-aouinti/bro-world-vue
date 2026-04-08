@@ -71,6 +71,7 @@ function tOrFallback(key: string, fallback: string) {
 }
 
 type CatalogEntity = {
+  key?: string
   name: string
   nameKey?: string
   description?: string | null
@@ -78,11 +79,11 @@ type CatalogEntity = {
 }
 
 function entityName(entity: CatalogEntity) {
-  return tOrFallback(entity.nameKey ?? '', entity.name)
+  return tOrFallback(entity.nameKey ?? '', entity.key ?? entity.name)
 }
 
 function entityDescription(entity: CatalogEntity) {
-  return tOrFallback(entity.descriptionKey ?? '', entity.description ?? '')
+  return tOrFallback(entity.descriptionKey ?? '', '')
 }
 
 function difficultyLabel(level: string) {
