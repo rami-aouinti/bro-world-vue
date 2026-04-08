@@ -540,6 +540,9 @@
     "levels": {
       "title": "Niveles"
     },
+    "selection": {
+      "summaryTitle": "Selección actual"
+    },
     "states": {
       "empty": "No hay datos disponibles.",
       "error": "No se pudieron cargar los datos de juegos.",
@@ -551,8 +554,12 @@
       "title": "Información de sesión",
       "sessionId": "sessionId",
       "level": "Nivel",
+      "selectedLevel": "Nivel seleccionado",
       "status": "estado",
+      "result": "Resultado",
+      "finishedAt": "Finalizado el",
       "coins": "monedas",
+      "lastSessionTitle": "Última sesión finalizada",
       "finishDemo": "Finalizar demo"
     },
     "messages": {

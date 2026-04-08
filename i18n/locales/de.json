@@ -566,6 +566,9 @@
     "levels": {
       "title": "Level"
     },
+    "selection": {
+      "summaryTitle": "Aktuelle Auswahl"
+    },
     "states": {
       "empty": "Keine Daten verfügbar.",
       "error": "Spieldaten konnten nicht geladen werden.",
@@ -577,8 +580,12 @@
       "title": "Sitzungsinfo",
       "sessionId": "sessionId",
       "level": "Level",
+      "selectedLevel": "Ausgewähltes Level",
       "status": "status",
+      "result": "Ergebnis",
+      "finishedAt": "Beendet am",
       "coins": "Münzen",
+      "lastSessionTitle": "Zuletzt beendete Sitzung",
       "finishDemo": "Demo abschließen"
     },
     "messages": {
