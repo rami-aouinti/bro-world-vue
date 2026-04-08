@@ -8,6 +8,7 @@ export const CACHE_TTL_BY_DOMAIN = {
   application: 300,
   users: 90,
   stories: 60,
+  library: 120,
 } as const
 
 export type CacheDomain = keyof typeof CACHE_TTL_BY_DOMAIN
@@ -24,6 +25,7 @@ const DOMAIN_ALIASES: Record<string, CacheDomain> = {
   blog: 'blog',
   referentials: 'references',
   references: 'references',
+  library: 'library',
 }
 
 export function resolveCacheTtl(domain: CacheDomain) {

@@ -62,7 +62,12 @@ function isFolderDescendant(nodes: LibraryTreeNode[], sourceId: string, destinat
 }
 
 export function useLibrary() {
-  const api = usePrivateApi()
+  const api = $fetch.create({
+    baseURL: '/api/library',
+    headers: {
+      accept: 'application/json',
+    },
+  })
   const tree = useState<LibraryTreeNode[]>('library-tree', () => [])
   const lastFetchedAt = useState<number>('library-last-fetched-at', () => 0)
   const pending = ref(false)
@@ -78,7 +83,7 @@ export function useLibrary() {
     pending.value = true
 
     try {
-      const response = await api<LibraryTreeResponse>('/library/tree')
+      const response = await api<LibraryTreeResponse>('/tree')
       tree.value = response.children ?? []
       lastFetchedAt.value = now
       return tree.value
@@ -89,7 +94,7 @@ export function useLibrary() {
   }
 
   const createFolder = async (payload: CreateFolderPayload) => {
-    const response = await api('/library/folders', {
+    const response = await api('/folders', {
       method: 'POST',
       body: payload,
     })
@@ -106,7 +111,7 @@ export function useLibrary() {
       formData.append('folderId', folderId)
     }
 
-    const response = await api('/library/files/upload', {
+    const response = await api('/files/upload', {
       method: 'POST',
       body: formData,
     })
@@ -116,7 +121,7 @@ export function useLibrary() {
   }
 
   const patchFolder = async (folderId: string, payload: PatchFolderPayload) => {
-    const response = await api(`/library/folders/${folderId}`, {
+    const response = await api(`/folders/${folderId}`, {
       method: 'PATCH',
       body: payload,
     })
@@ -126,7 +131,7 @@ export function useLibrary() {
   }
 
   const patchFile = async (fileId: string, payload: PatchFilePayload) => {
-    const response = await api(`/library/files/${fileId}`, {
+    const response = await api(`/files/${fileId}`, {
       method: 'PATCH',
       body: payload,
     })
@@ -136,7 +141,7 @@ export function useLibrary() {
   }
 
   const deleteFolder = async (folderId: string) => {
-    await api(`/library/folders/${folderId}`, {
+    await api(`/folders/${folderId}`, {
       method: 'DELETE',
     })
 
@@ -144,7 +149,7 @@ export function useLibrary() {
   }
 
   const deleteFile = async (fileId: string) => {
-    await api(`/library/files/${fileId}`, {
+    await api(`/files/${fileId}`, {
       method: 'DELETE',
     })
 
