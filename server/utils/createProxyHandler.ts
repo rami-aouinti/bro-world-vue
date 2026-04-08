@@ -1,13 +1,17 @@
 import type { H3Event } from 'h3'
+import type { ApiObject, ApiQuery, ApiResponse } from '../types/api/common'
 import { callPrivateApi } from './privateApi'
 
 type ProxyMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
-type ProxyQuery = Record<string, string | number | boolean | undefined>
+type ProxyQuery = ApiQuery
 
 type ProxyParams = Record<string, string>
 
-type CreateProxyHandlerOptions = {
+type CreateProxyHandlerOptions<
+  TResponse extends ApiResponse,
+  TPayload extends ApiObject = ApiObject,
+> = {
   method: ProxyMethod
   endpointTemplate: string
   resolveParams?: (event: H3Event) => ProxyParams
@@ -31,26 +35,29 @@ function resolveEndpoint(template: string, params: ProxyParams) {
   })
 }
 
-export function createProxyHandler(options: CreateProxyHandlerOptions) {
+export function createProxyHandler<
+  TResponse extends ApiResponse,
+  TPayload extends ApiObject = ApiObject,
+>(options: CreateProxyHandlerOptions<TResponse, TPayload>) {
   const { method, endpointTemplate, resolveParams, resolveQuery } = options
 
-  return defineEventHandler(async (event): Promise<unknown> => {
+  return defineEventHandler(async (event): Promise<TResponse> => {
     const params = resolveParams?.(event) ?? {}
     const endpoint = resolveEndpoint(endpointTemplate, params)
     const requestOptions: {
       method: ProxyMethod
-      body?: BodyInit | Record<string, unknown> | null
+      body?: BodyInit | TPayload | null
       query?: ProxyQuery
     } = { method }
 
     if (METHODS_WITH_BODY.includes(method)) {
-      requestOptions.body = await readBody(event)
+      requestOptions.body = await readBody<TPayload>(event)
     }
 
     if (resolveQuery) {
       requestOptions.query = resolveQuery(event)
     }
 
-    return callPrivateApi(event, endpoint, requestOptions)
+    return callPrivateApi<TResponse, TPayload>(event, endpoint, requestOptions)
   })
 }
