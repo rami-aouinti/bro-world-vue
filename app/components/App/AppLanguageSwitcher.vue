@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { locale } = useI18n()
+const { t, locale } = useI18n()
 
 type LocaleOption = {
   title: string
@@ -9,10 +9,10 @@ type LocaleOption = {
 }
 
 const localeOptions: LocaleOption[] = [
-  { title: 'English', value: 'en', code: 'GB', flagClass: 'fi fi-gb' },
-  { title: 'Français', value: 'fr', code: 'FR', flagClass: 'fi fi-fr' },
-  { title: 'Español', value: 'es', code: 'ES', flagClass: 'fi fi-es' },
-  { title: 'Deutsch', value: 'de', code: 'DE', flagClass: 'fi fi-de' },
+  { title: 'appbar.languages.en', value: 'en', code: 'GB', flagClass: 'fi fi-gb' },
+  { title: 'appbar.languages.fr', value: 'fr', code: 'FR', flagClass: 'fi fi-fr' },
+  { title: 'appbar.languages.es', value: 'es', code: 'ES', flagClass: 'fi fi-es' },
+  { title: 'appbar.languages.de', value: 'de', code: 'DE', flagClass: 'fi fi-de' },
 ]
 
 const selectedLocale = computed(
@@ -35,7 +35,7 @@ const selectedLocale = computed(
         <span
           class="app-language-switcher__flag"
           :class="selectedLocale.flagClass"
-          :aria-label="selectedLocale.title"
+          :aria-label="t(selectedLocale.title)"
           role="img"
         />
       </v-btn>
@@ -52,12 +52,12 @@ const selectedLocale = computed(
           <span
             class="app-language-switcher__flag"
             :class="item.flagClass"
-            :aria-label="item.title"
+            :aria-label="t(item.title)"
             role="img"
           />
         </template>
         <v-list-item-title class="text-h6 text-medium-emphasis">
-          {{ item.title }}
+          {{ t(item.title) }}
         </v-list-item-title>
         <template #append>
           <v-icon

@@ -21,8 +21,7 @@ definePageMeta({
       <template v-else>
         <h1 class="text-h4 mb-2">{{ t('appbar.profile') }}</h1>
         <p class="text-body-1 text-medium-emphasis mb-0">
-          Utilisez le menu à gauche pour accéder à vos amis, jeux, paramètres et
-          autres sections du profil.
+          {{ t('pages.profileOverview.subtitle') }}
         </p>
       </template>
     </v-container>

@@ -3,7 +3,7 @@ const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 
 definePageMeta({
-  title: 'Contact',
+  title: 'appbar.contact',
 })
 </script>
 
@@ -13,21 +13,21 @@ definePageMeta({
       <template #left>
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
         <v-list v-else nav density="compact" class="app-left-drawer-list">
-          <v-list-subheader class="text-overline">Contact</v-list-subheader>
+          <v-list-subheader class="text-overline">{{ t('appbar.contact') }}</v-list-subheader>
           <v-list-item
             prepend-icon="mdi-headset"
-            title="Support"
-            subtitle="Lun–Ven, 9h–18h"
+            :title="t('pages.contact.leftNav.supportTitle')"
+            :subtitle="t('pages.contact.leftNav.supportSubtitle')"
           />
           <v-list-item
             prepend-icon="mdi-calendar-clock"
-            title="Rendez-vous"
-            subtitle="Visio ou sur site"
+            :title="t('pages.contact.leftNav.meetingTitle')"
+            :subtitle="t('pages.contact.leftNav.meetingSubtitle')"
           />
           <v-list-item
             prepend-icon="mdi-email-outline"
-            title="Email"
-            subtitle="Réponse sous 24h"
+            :title="t('pages.contact.leftNav.emailTitle')"
+            :subtitle="t('pages.contact.leftNav.emailSubtitle')"
           />
         </v-list>
       </template>
@@ -41,14 +41,11 @@ definePageMeta({
                 <template #prepend>
                   <v-icon icon="mdi-headset" class="me-2" />
                 </template>
-                <v-card-title class="text-subtitle-1"
-                  >Support client</v-card-title
-                >
-                <v-card-subtitle>Lun–Ven, 9h–18h</v-card-subtitle>
+                <v-card-title class="text-subtitle-1">{{ t('pages.contact.rightNav.supportTitle') }}</v-card-title>
+                <v-card-subtitle>{{ t('pages.contact.rightNav.supportSubtitle') }}</v-card-subtitle>
               </v-card-item>
               <v-card-text class="text-body-2 pt-0">
-                Réponse moyenne en moins de 4 heures ouvrées pour toute demande
-                urgente.
+                {{ t('pages.contact.rightNav.supportDescription') }}
               </v-card-text>
             </v-card>
           </v-list-item>
@@ -58,14 +55,11 @@ definePageMeta({
                 <template #prepend>
                   <v-icon icon="mdi-calendar-clock" class="me-2" />
                 </template>
-                <v-card-title class="text-subtitle-1"
-                  >Prendre rendez-vous</v-card-title
-                >
-                <v-card-subtitle>Visio ou sur site</v-card-subtitle>
+                <v-card-title class="text-subtitle-1">{{ t('pages.contact.rightNav.meetingTitle') }}</v-card-title>
+                <v-card-subtitle>{{ t('pages.contact.rightNav.meetingSubtitle') }}</v-card-subtitle>
               </v-card-item>
               <v-card-text class="text-body-2 pt-0">
-                Planifiez un créneau de 30 minutes pour discuter de votre
-                projet.
+                {{ t('pages.contact.rightNav.meetingDescription') }}
               </v-card-text>
             </v-card>
           </v-list-item>
@@ -77,7 +71,7 @@ definePageMeta({
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
       <template v-else>
         <h1 class="text-h3 mb-4">{{ t('appbar.contact') }}</h1>
-        <p>Contactez-nous pour toute question ou demande de collaboration.</p>
+        <p>{{ t('pages.contact.description') }}</p>
       </template>
     </v-container>
   </div>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const props = withDefaults(
   defineProps<{
     disabled?: boolean
@@ -6,11 +7,12 @@ const props = withDefaults(
   }>(),
   {
     disabled: false,
-    label: 'Freunde',
+    label: '',
   },
 )
 const theme = useTheme()
 const isLightTheme = computed(() => !theme.current.value.dark)
+const chipLabel = computed(() => props.label || t('blog.newPost.audience.friends'))
 </script>
 
 <template>
@@ -22,6 +24,6 @@ const isLightTheme = computed(() => !theme.current.value.dark)
     prepend-icon="mdi-account-group"
     append-icon="mdi-menu-down"
   >
-    {{ props.label }}
+    {{ chipLabel }}
   </v-chip>
 </template>

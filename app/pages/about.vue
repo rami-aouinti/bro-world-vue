@@ -13,21 +13,21 @@ definePageMeta({
       <template #left>
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
         <v-list v-else nav density="compact" class="app-left-drawer-list">
-          <v-list-subheader class="text-overline">À propos</v-list-subheader>
+          <v-list-subheader class="text-overline">{{ t('pages.about.leftNav.title') }}</v-list-subheader>
           <v-list-item
             prepend-icon="mdi-information-outline"
-            title="Présentation"
-            subtitle="Qui sommes-nous ?"
+            :title="t('pages.about.leftNav.overviewTitle')"
+            :subtitle="t('pages.about.leftNav.overviewSubtitle')"
           />
           <v-list-item
             prepend-icon="mdi-bullseye-arrow"
-            title="Mission"
-            subtitle="Notre objectif"
+            :title="t('pages.about.leftNav.missionTitle')"
+            :subtitle="t('pages.about.leftNav.missionSubtitle')"
           />
           <v-list-item
             prepend-icon="mdi-hand-heart"
-            title="Valeurs"
-            subtitle="Notre engagement"
+            :title="t('pages.about.leftNav.valuesTitle')"
+            :subtitle="t('pages.about.leftNav.valuesSubtitle')"
           />
         </v-list>
       </template>
@@ -41,14 +41,11 @@ definePageMeta({
                 <template #prepend>
                   <v-icon icon="mdi-bullseye-arrow" class="me-2" />
                 </template>
-                <v-card-title class="text-subtitle-1"
-                  >Notre mission</v-card-title
-                >
-                <v-card-subtitle>Donner de la clarté</v-card-subtitle>
+                <v-card-title class="text-subtitle-1">{{ t('pages.about.rightNav.missionTitle') }}</v-card-title>
+                <v-card-subtitle>{{ t('pages.about.rightNav.missionSubtitle') }}</v-card-subtitle>
               </v-card-item>
               <v-card-text class="text-body-2 pt-0">
-                Nous aidons les équipes à transformer des idées complexes en
-                actions simples et mesurables.
+                {{ t('pages.about.rightNav.missionDescription') }}
               </v-card-text>
             </v-card>
           </v-list-item>
@@ -58,12 +55,11 @@ definePageMeta({
                 <template #prepend>
                   <v-icon icon="mdi-hand-heart" class="me-2" />
                 </template>
-                <v-card-title class="text-subtitle-1">Nos valeurs</v-card-title>
-                <v-card-subtitle>Transparence et impact</v-card-subtitle>
+                <v-card-title class="text-subtitle-1">{{ t('pages.about.rightNav.valuesTitle') }}</v-card-title>
+                <v-card-subtitle>{{ t('pages.about.rightNav.valuesSubtitle') }}</v-card-subtitle>
               </v-card-item>
               <v-card-text class="text-body-2 pt-0">
-                Nous privilégions une communication honnête, la collaboration et
-                des résultats utiles au quotidien.
+                {{ t('pages.about.rightNav.valuesDescription') }}
               </v-card-text>
             </v-card>
           </v-list-item>
@@ -75,7 +71,7 @@ definePageMeta({
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
       <template v-else>
         <h1 class="text-h3 mb-4">{{ t('appbar.about') }}</h1>
-        <p>En savoir plus sur notre équipe, notre mission et nos valeurs.</p>
+        <p>{{ t('pages.about.description') }}</p>
       </template>
     </v-container>
   </div>

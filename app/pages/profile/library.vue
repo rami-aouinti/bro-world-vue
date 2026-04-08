@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 
 definePageMeta({
@@ -19,9 +20,9 @@ definePageMeta({
     <v-container fluid>
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
       <template v-else>
-        <h1 class="text-h4 mb-2">Library</h1>
+        <h1 class="text-h4 mb-2">{{ t('pages.profileOverview.libraryTitle') }}</h1>
         <p class="text-body-1 text-medium-emphasis mb-0">
-          Retrouvez ici votre bibliothèque personnelle.
+          {{ t('pages.profileOverview.librarySubtitle') }}
         </p>
       </template>
     </v-container>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
 interface FriendUser {
   id: string
   username: string
@@ -34,14 +36,14 @@ const blockedUsers = ref<FriendUser[]>([])
 
 const sectionConfigs = computed(() => [
   {
-    title: 'Friends',
-    subtitle: 'Utilisateurs déjà acceptés.',
+    title: t('pages.friends.sections.friends.title'),
+    subtitle: t('pages.friends.sections.friends.subtitle'),
     icon: 'mdi-account-group-outline',
     items: friends.value,
-    emptyText: 'Aucun ami pour le moment.',
+    emptyText: t('pages.friends.sections.friends.emptyText'),
     actions: [
       {
-        label: 'Bloquer',
+        label: t('pages.friends.actions.block'),
         action: 'block' as const,
         color: 'error',
         variant: 'tonal' as const,
@@ -49,26 +51,26 @@ const sectionConfigs = computed(() => [
     ],
   },
   {
-    title: 'Requests',
-    subtitle: 'Demandes reçues.',
+    title: t('pages.friends.sections.requests.title'),
+    subtitle: t('pages.friends.sections.requests.subtitle'),
     icon: 'mdi-account-arrow-right-outline',
     items: requests.value,
-    emptyText: 'Aucune demande reçue.',
+    emptyText: t('pages.friends.sections.requests.emptyText'),
     actions: [
       {
-        label: 'Accepter',
+        label: t('pages.friends.actions.accept'),
         action: 'accept' as const,
         color: 'success',
         variant: 'flat' as const,
       },
       {
-        label: 'Refuser',
+        label: t('pages.friends.actions.reject'),
         action: 'reject' as const,
         color: 'error',
         variant: 'tonal' as const,
       },
       {
-        label: 'Bloquer',
+        label: t('pages.friends.actions.block'),
         action: 'block' as const,
         color: 'error',
         variant: 'text' as const,
@@ -76,20 +78,20 @@ const sectionConfigs = computed(() => [
     ],
   },
   {
-    title: 'Invitations',
-    subtitle: 'Demandes envoyées.',
+    title: t('pages.friends.sections.invitations.title'),
+    subtitle: t('pages.friends.sections.invitations.subtitle'),
     icon: 'mdi-account-arrow-left-outline',
     items: invitations.value,
-    emptyText: 'Aucune invitation envoyée.',
+    emptyText: t('pages.friends.sections.invitations.emptyText'),
     actions: [
       {
-        label: 'Annuler',
+        label: t('pages.friends.actions.cancel'),
         action: 'cancel' as const,
         color: 'warning',
         variant: 'tonal' as const,
       },
       {
-        label: 'Bloquer',
+        label: t('pages.friends.actions.block'),
         action: 'block' as const,
         color: 'error',
         variant: 'text' as const,
@@ -97,14 +99,14 @@ const sectionConfigs = computed(() => [
     ],
   },
   {
-    title: 'Blocked',
-    subtitle: 'Utilisateurs bloqués.',
+    title: t('pages.friends.sections.blocked.title'),
+    subtitle: t('pages.friends.sections.blocked.subtitle'),
     icon: 'mdi-block-helper',
     items: blockedUsers.value,
-    emptyText: 'Aucun utilisateur bloqué.',
+    emptyText: t('pages.friends.sections.blocked.emptyText'),
     actions: [
       {
-        label: 'Débloquer',
+        label: t('pages.friends.actions.unblock'),
         action: 'unblock' as const,
         color: 'primary',
         variant: 'tonal' as const,
@@ -144,7 +146,7 @@ async function fetchFriendsData() {
     blockedUsers.value = blockedData
   } catch (error) {
     globalError.value =
-      error instanceof Error ? error.message : 'Erreur lors du chargement.'
+      error instanceof Error ? error.message : t('pages.friends.errors.load')
   } finally {
     loading.value = false
   }
@@ -169,7 +171,9 @@ async function applyAction(userId: string, action: FriendAction) {
     await fetchFriendsData()
   } catch (error) {
     globalError.value =
-      error instanceof Error ? error.message : `Erreur sur l'action ${action}.`
+      error instanceof Error
+        ? error.message
+        : t('pages.friends.errors.action', { action })
   } finally {
     actionLoadingUserId.value = null
     actionLoadingType.value = null
@@ -208,9 +212,9 @@ onMounted(fetchFriendsData)
 
         <div class="d-flex align-center justify-space-between mb-4">
           <div>
-            <h1 class="text-h5 mb-1">Friends</h1>
+            <h1 class="text-h5 mb-1">{{ t('pages.friends.title') }}</h1>
             <p class="text-body-2 text-medium-emphasis mb-0">
-              Gérer vos amis, demandes, invitations et utilisateurs bloqués.
+              {{ t('pages.friends.subtitle') }}
             </p>
           </div>
           <v-btn
@@ -220,7 +224,7 @@ onMounted(fetchFriendsData)
             :loading="loading"
             @click="fetchFriendsData"
           >
-            Actualiser
+            {{ t('common.refresh') }}
           </v-btn>
         </div>
 
@@ -267,8 +271,8 @@ onMounted(fetchFriendsData)
                       </v-btn>
                       <v-btn
                         v-if="
-                          section.title !== 'Friends' &&
-                          section.title !== 'Blocked'
+                          section.title !== t('pages.friends.sections.friends.title') &&
+                          section.title !== t('pages.friends.sections.blocked.title')
                         "
                         size="small"
                         color="primary"
@@ -276,7 +280,7 @@ onMounted(fetchFriendsData)
                         :loading="isActionLoading(item.id, 'request')"
                         @click="applyAction(item.id, 'request')"
                       >
-                        Relancer
+                        {{ t('pages.friends.actions.resend') }}
                       </v-btn>
                     </div>
                   </template>
