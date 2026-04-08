@@ -1,8 +1,11 @@
 import type { H3Event } from 'h3'
 import type { SessionUser } from '~/types/session'
-import { invalidateByPrefix } from './apiCache'
-
-export type CacheScope = 'public' | 'private'
+import {
+  invalidateByPrefix,
+  privateCachePrefix,
+  publicCachePrefix,
+  type CacheScope,
+} from './apiCache'
 
 type MutationInvalidationRule = {
   key: string
@@ -50,17 +53,10 @@ const MUTATION_RULES_BY_KEY = new Map(
 
 function buildPrefix(scope: CacheScope, resourcePrefix: string, username?: string) {
   if (scope === 'public') {
-    return `api:public:${resourcePrefix}:`
+    return publicCachePrefix(resourcePrefix)
   }
 
-  if (!username) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Missing username for private cache invalidation',
-    })
-  }
-
-  return `api:private:${username}:${resourcePrefix}:`
+  return privateCachePrefix({ username, resourcePrefix })
 }
 
 export async function invalidateMutationCaches(event: H3Event, mutationKey: string) {

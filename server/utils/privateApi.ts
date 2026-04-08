@@ -1,7 +1,7 @@
 import type { H3Event } from 'h3'
 import type { SessionUser } from '~/types/session'
 import type { ApiObject, ApiQuery, ApiResponse } from '../types/api/common'
-import { buildCacheKey, getCached, setCached } from './apiCache'
+import { getCached, privateCacheKey, setCached } from './apiCache'
 import { resolveCacheDomain, resolveCacheTtl, type CacheDomain } from './apiCacheConfig'
 import { resolveApiUrl } from './resolveApiUrl'
 import { invalidateMutationCaches } from './mutationInvalidation'
@@ -72,12 +72,7 @@ export async function cachedPrivateGet<TResponse extends ApiResponse>(
   options?: CachedPrivateGetOptions,
 ): Promise<TResponse> {
   const { username } = await getSessionAuth(event)
-  const cacheKey = buildCacheKey({
-    scope: 'private',
-    endpoint,
-    query: options?.query,
-    username,
-  })
+  const cacheKey = privateCacheKey(username, endpoint, options?.query)
 
   const cached = await getCached<TResponse>(cacheKey)
   if (cached) {
