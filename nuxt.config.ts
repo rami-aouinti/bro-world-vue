@@ -1,6 +1,8 @@
 import { aliases } from 'vuetify/iconsets/mdi'
 import { defineNuxtConfig } from 'nuxt/config'
 
+const shouldSplitCss = process.env.NUXT_CSS_CODE_SPLIT === 'true'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
@@ -19,7 +21,6 @@ export default defineNuxtConfig({
     'vuetify/styles',
     '~/assets/styles/material-dashboard.scss',
     '~/assets/styles/index.css',
-    '~/assets/styles/flag-icons.scss',
   ],
   experimental: { typedPages: true },
   typescript: {
@@ -70,7 +71,12 @@ export default defineNuxtConfig({
     ],
   },
   vite: {
-    build: { sourcemap: false },
+    build: {
+      sourcemap: false,
+      // Test strategy: default to a single CSS bundle to reduce many small render-blocking requests.
+      // Set NUXT_CSS_CODE_SPLIT=true to re-enable chunked CSS.
+      cssCodeSplit: shouldSplitCss,
+    },
   },
   runtimeConfig: {
     redis: {

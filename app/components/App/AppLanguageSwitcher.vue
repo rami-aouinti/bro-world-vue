@@ -73,6 +73,8 @@ const selectedLocale = computed(
 </template>
 
 <style scoped>
+@import '~/assets/styles/flag-icons.scss';
+
 .app-language-switcher__activator {
   border-radius: 10px;
   display: inline-flex;
