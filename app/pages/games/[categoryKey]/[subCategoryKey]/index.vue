@@ -53,7 +53,6 @@ const breadcrumbs = computed(() => [
             @click="openGameLevels(game)"
           >
             <v-img :src="game?.img" height="200" cover />
-            <v-card-title>{{ entityName(game) }}</v-card-title>
           </v-card>
         </v-col>
       </v-row>
