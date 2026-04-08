@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { LibraryDragPayload, LibraryTreeNode } from '~/types/library'
+import type { LibraryFileNode, LibraryFolderNode, LibraryTreeNode } from '~/types/library'
 
 const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
@@ -10,8 +10,6 @@ const {
   fetchTree,
   createFolder,
   uploadFile,
-  moveByDrag,
-  removeByDragToTrash,
   renameNode,
 } = useLibrary()
 
@@ -20,40 +18,107 @@ definePageMeta({
   middleware: 'auth',
 })
 
+const currentFolderId = ref<string | null>(null)
 const selectedNode = ref<LibraryTreeNode | null>(null)
-const draggedNode = ref<LibraryDragPayload | null>(null)
-const isTrashDragOver = ref(false)
-const isRootDragOver = ref(false)
+const selectedFile = ref<LibraryFileNode | null>(null)
+const filePreviewOpen = ref(false)
+
 const folderDialog = reactive({
   open: false,
   name: '',
   parentId: null as string | null,
   saving: false,
 })
+
 const renameDialog = reactive({
   open: false,
   name: '',
   saving: false,
   node: null as LibraryTreeNode | null,
 })
+
 const fileInput = ref<HTMLInputElement | null>(null)
 
-const findParentId = (nodes: LibraryTreeNode[], targetId: string, parentId: string | null = null): string | null | undefined => {
+const rootNode = computed<LibraryFolderNode>(() => ({
+  id: 'root',
+  name: 'Root',
+  type: 'folder',
+  children: tree.value,
+}))
+
+const isFolder = (node: LibraryTreeNode): node is LibraryFolderNode => node.type === 'folder'
+
+const findFolderById = (nodes: LibraryTreeNode[], folderId: string): LibraryFolderNode | null => {
   for (const node of nodes) {
-    if (node.id === targetId) {
-      return parentId
+    if (node.type !== 'folder') {
+      continue
     }
 
-    if (node.type === 'folder') {
-      const nested = findParentId(node.children, targetId, node.id)
-      if (nested !== undefined) {
-        return nested
-      }
+    if (node.id === folderId) {
+      return node
+    }
+
+    const nested = findFolderById(node.children, folderId)
+    if (nested) {
+      return nested
     }
   }
 
-  return undefined
+  return null
 }
+
+const findFolderPath = (nodes: LibraryTreeNode[], folderId: string, path: LibraryFolderNode[] = []): LibraryFolderNode[] | null => {
+  for (const node of nodes) {
+    if (node.type !== 'folder') {
+      continue
+    }
+
+    const nextPath = [...path, node]
+
+    if (node.id === folderId) {
+      return nextPath
+    }
+
+    const nested = findFolderPath(node.children, folderId, nextPath)
+    if (nested) {
+      return nested
+    }
+  }
+
+  return null
+}
+
+const currentFolder = computed(() => {
+  if (!currentFolderId.value) {
+    return rootNode.value
+  }
+
+  return findFolderById(tree.value, currentFolderId.value) ?? rootNode.value
+})
+
+const currentItems = computed(() => currentFolder.value.children)
+
+const breadcrumbFolders = computed(() => {
+  if (!currentFolderId.value) {
+    return [rootNode.value]
+  }
+
+  const path = findFolderPath(tree.value, currentFolderId.value)
+  return [rootNode.value, ...(path ?? [])]
+})
+
+const sidebarFolders = computed(() => {
+  const onlyFolders = (nodes: LibraryTreeNode[]): LibraryFolderNode[] => {
+    return nodes
+      .filter(isFolder)
+      .map(folder => ({
+        ...folder,
+        children: onlyFolders(folder.children),
+      }))
+  }
+
+  return onlyFolders(tree.value)
+})
 
 onMounted(async () => {
   try {
@@ -64,50 +129,9 @@ onMounted(async () => {
   }
 })
 
-const onStartDrag = (payload: LibraryDragPayload) => {
-  draggedNode.value = {
-    ...payload,
-    parentId: findParentId(tree.value, payload.id) ?? null,
-  }
-}
-
-const onDropToFolder = async (folderId: string | null) => {
-  if (!draggedNode.value) {
-    return
-  }
-
-  try {
-    await moveByDrag(draggedNode.value, folderId)
-  }
-  catch (error) {
-    console.error(error)
-  }
-  finally {
-    draggedNode.value = null
-    isRootDragOver.value = false
-  }
-}
-
-const onDropToRoot = async () => {
-  await onDropToFolder(null)
-}
-
-const onDropToTrash = async () => {
-  if (!draggedNode.value) {
-    return
-  }
-
-  await removeByDragToTrash(draggedNode.value)
-  if (selectedNode.value?.id === draggedNode.value.id) {
-    selectedNode.value = null
-  }
-  draggedNode.value = null
-  isTrashDragOver.value = false
-}
-
 const openCreateFolder = () => {
   folderDialog.name = ''
-  folderDialog.parentId = selectedNode.value?.type === 'folder' ? selectedNode.value.id : null
+  folderDialog.parentId = currentFolderId.value
   folderDialog.open = true
 }
 
@@ -142,9 +166,7 @@ const onFileChange = async (event: Event) => {
     return
   }
 
-  const folderId = selectedNode.value?.type === 'folder' ? selectedNode.value.id : null
-  await uploadFile(file, folderId)
-
+  await uploadFile(file, currentFolderId.value)
   input.value = ''
 }
 
@@ -168,6 +190,26 @@ const submitRename = async () => {
     renameDialog.saving = false
   }
 }
+
+const openFolder = (folderId: string | null) => {
+  currentFolderId.value = folderId
+  selectedNode.value = folderId ? findFolderById(tree.value, folderId) : rootNode.value
+}
+
+const openNode = (node: LibraryTreeNode) => {
+  selectedNode.value = node
+
+  if (node.type === 'folder') {
+    openFolder(node.id)
+    return
+  }
+
+  selectedFile.value = node
+  filePreviewOpen.value = true
+}
+
+const isPreviewImage = computed(() => selectedFile.value?.mimeType?.startsWith('image/') ?? false)
+const isPreviewPdf = computed(() => selectedFile.value?.mimeType === 'application/pdf')
 </script>
 
 <template>
@@ -201,75 +243,105 @@ const submitRename = async () => {
           </div>
         </div>
 
-        <v-row>
-          <v-col cols="12" md="8">
-            <v-card
-              class="pa-4"
-              :loading="pending"
-              @dragover.prevent="isRootDragOver = true"
-              @dragleave="isRootDragOver = false"
-              @drop.prevent="onDropToRoot"
-            >
-              <div class="d-flex align-center mb-3">
-                <v-icon icon="mdi-folder-home" class="me-2" />
-                <span class="font-weight-bold">Root</span>
-              </div>
+        <v-card class="library-explorer" :loading="pending">
+          <div class="library-explorer__sidebar">
+            <div class="px-3 py-2 d-flex align-center ga-2 text-medium-emphasis text-caption">
+              <v-icon icon="mdi-folder-multiple" size="16" />
+              <span>Dossiers</span>
+            </div>
 
-              <div class="library-tree" :class="{ 'library-tree--drag-over': isRootDragOver }">
-                <LibraryNode
-                  v-for="node in tree"
-                  :key="node.id"
-                  :node="node"
-                  :selected-id="selectedNode?.id ?? null"
-                  @select="selectedNode = $event"
-                  @start-drag="onStartDrag"
-                  @drop-on-folder="onDropToFolder"
-                  @rename="openRenameDialog"
-                />
+            <v-list density="compact" nav>
+              <v-list-item
+                prepend-icon="mdi-home"
+                title="Root"
+                :active="currentFolderId === null"
+                @click="openFolder(null)"
+              />
+              <LibraryNode
+                v-for="folder in sidebarFolders"
+                :key="folder.id"
+                :node="folder"
+                :selected-id="currentFolderId"
+                @select="openFolder($event.id)"
+                @rename="openRenameDialog"
+              />
+            </v-list>
+          </div>
 
-                <p v-if="tree.length === 0" class="text-medium-emphasis mb-0">
-                  {{ t('pages.profileOverview.libraryEmpty') }}
-                </p>
-              </div>
-            </v-card>
-          </v-col>
+          <div class="library-explorer__content">
+            <div class="d-flex flex-wrap justify-space-between align-center ga-3 mb-4">
+              <v-breadcrumbs :items="breadcrumbFolders" class="pa-0">
+                <template #item="{ item }">
+                  <v-btn variant="text" size="small" @click="openFolder(item.id === 'root' ? null : item.id)">
+                    {{ item.name }}
+                  </v-btn>
+                </template>
+              </v-breadcrumbs>
 
-          <v-col cols="12" md="4">
-            <v-card class="pa-4 mb-4">
-              <h3 class="text-h6 mb-2">{{ t('pages.profileOverview.librarySelectedItem') }}</h3>
-              <template v-if="selectedNode">
-                <div class="d-flex align-center ga-2 mb-2">
-                  <v-chip :color="selectedNode.type === 'folder' ? 'primary' : 'info'" size="small">
-                    {{ selectedNode.type }}
-                  </v-chip>
-                  <span class="font-weight-medium">{{ selectedNode.name }}</span>
-                </div>
-                <p v-if="selectedNode.type === 'file'" class="text-body-2 mb-0 text-medium-emphasis">
-                  {{ selectedNode.mimeType || selectedNode.extension || '-' }}
-                </p>
-              </template>
-              <p v-else class="text-medium-emphasis mb-0">{{ t('pages.profileOverview.librarySelectHint') }}</p>
-            </v-card>
+              <v-btn
+                v-if="selectedNode"
+                size="small"
+                variant="text"
+                prepend-icon="mdi-pencil"
+                @click="openRenameDialog(selectedNode)"
+              >
+                {{ t('pages.profileOverview.libraryRename') }}
+              </v-btn>
+            </div>
 
-            <v-card
-              class="pa-4 trash-zone"
-              :class="{ 'trash-zone--drag-over': isTrashDragOver }"
-              @dragover.prevent="isTrashDragOver = true"
-              @dragleave="isTrashDragOver = false"
-              @drop.prevent="onDropToTrash"
-            >
-              <div class="d-flex align-center ga-2">
-                <v-icon icon="mdi-trash-can-outline" color="error" />
-                <span class="font-weight-bold">{{ t('pages.profileOverview.libraryTrash') }}</span>
-              </div>
-              <p class="text-body-2 text-medium-emphasis mt-2 mb-0">
-                {{ t('pages.profileOverview.libraryTrashHint') }}
-              </p>
-            </v-card>
-          </v-col>
-        </v-row>
+            <div class="library-grid">
+              <button
+                v-for="node in currentItems"
+                :key="node.id"
+                class="library-grid__item"
+                :class="{ 'library-grid__item--selected': selectedNode?.id === node.id }"
+                type="button"
+                @click="openNode(node)"
+              >
+                <v-icon :icon="node.type === 'folder' ? 'mdi-folder' : 'mdi-file-outline'" size="28" />
+                <span class="library-grid__name">{{ node.name }}</span>
+              </button>
+            </div>
+
+            <p v-if="currentItems.length === 0" class="text-medium-emphasis mb-0 mt-2">
+              {{ t('pages.profileOverview.libraryEmpty') }}
+            </p>
+          </div>
+        </v-card>
       </template>
     </v-container>
+
+    <v-dialog v-model="filePreviewOpen" max-width="900">
+      <v-card v-if="selectedFile">
+        <v-card-title class="d-flex align-center justify-space-between ga-3">
+          <span class="text-truncate">{{ selectedFile.name }}</span>
+          <v-btn
+            color="primary"
+            prepend-icon="mdi-download"
+            :href="selectedFile.url"
+            :download="selectedFile.name"
+            target="_blank"
+            rel="noopener"
+          >
+            Télécharger
+          </v-btn>
+        </v-card-title>
+        <v-card-text>
+          <div v-if="isPreviewImage" class="file-preview">
+            <img :src="selectedFile.url" :alt="selectedFile.name" class="file-preview__image">
+          </div>
+          <iframe
+            v-else-if="isPreviewPdf"
+            :src="selectedFile.url"
+            class="file-preview__frame"
+            title="PDF preview"
+          />
+          <div v-else class="text-medium-emphasis">
+            Prévisualisation non disponible pour ce type de fichier.
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
 
     <v-dialog v-model="folderDialog.open" max-width="560">
       <v-card>
@@ -325,24 +397,82 @@ const submitRename = async () => {
 </template>
 
 <style scoped>
-.library-tree {
+.library-explorer {
   display: grid;
-  gap: 10px;
+  grid-template-columns: minmax(220px, 280px) 1fr;
+  min-height: 560px;
 }
 
-.library-tree--drag-over {
-  border: 1px dashed rgb(var(--v-theme-primary));
-  border-radius: 8px;
-  padding: 8px;
+.library-explorer__sidebar {
+  border-right: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+  overflow: auto;
 }
 
-.trash-zone {
-  border: 1px dashed rgba(var(--v-theme-error), 0.4);
+.library-explorer__content {
+  padding: 16px;
+}
+
+.library-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+.library-grid__item {
+  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+  border-radius: 10px;
+  background: rgba(var(--v-theme-surface), 1);
+  min-height: 76px;
+  padding: 10px 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  text-align: left;
+  cursor: pointer;
   transition: 0.2s ease;
 }
 
-.trash-zone--drag-over {
-  background: rgba(var(--v-theme-error), 0.08);
-  border-color: rgb(var(--v-theme-error));
+.library-grid__item:hover {
+  border-color: rgba(var(--v-theme-primary), 0.55);
+}
+
+.library-grid__item--selected {
+  border-color: rgb(var(--v-theme-primary));
+  background: rgba(var(--v-theme-primary), 0.08);
+}
+
+.library-grid__name {
+  font-size: 0.95rem;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.file-preview {
+  display: flex;
+  justify-content: center;
+}
+
+.file-preview__image {
+  max-height: 70vh;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.file-preview__frame {
+  width: 100%;
+  height: 70vh;
+  border: none;
+}
+
+@media (max-width: 960px) {
+  .library-explorer {
+    grid-template-columns: 1fr;
+  }
+
+  .library-explorer__sidebar {
+    border-right: none;
+    border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+    max-height: 280px;
+  }
 }
 </style>
