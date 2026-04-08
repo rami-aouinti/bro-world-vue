@@ -219,95 +219,82 @@ const isPreviewPdf = computed(() => selectedFile.value?.mimeType === 'applicatio
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
         <ProfileDrawer v-else />
       </template>
+      <template #right>
+        <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
+        <v-list v-else density="comfortable" nav>
+          <v-list-item
+            prepend-icon="mdi-home"
+            color="primary"
+            title="Root"
+            :active="currentFolderId === null"
+            @click="openFolder(null)"
+          />
+          <LibraryNode
+            v-for="folder in sidebarFolders"
+            :key="folder.id"
+            :node="folder"
+            :selected-id="currentFolderId"
+            @select="openFolder($event.id)"
+            @rename="openRenameDialog"
+          />
+        </v-list>
+      </template>
     </AppPageDrawers>
 
     <v-container fluid>
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
       <template v-else>
-        <div class="d-flex flex-wrap ga-3 justify-space-between align-start mb-6">
-          <div>
-            <h1 class="text-h4 mb-2">{{ t('pages.profileOverview.libraryTitle') }}</h1>
-            <p class="text-body-1 text-medium-emphasis mb-0">
-              {{ t('pages.profileOverview.librarySubtitle') }}
-            </p>
-          </div>
+        <div class="d-flex flex-wrap justify-space-between align-center ga-3 mb-4">
+          <v-breadcrumbs :items="breadcrumbFolders" class="pa-0">
+            <template #item="{ item }">
+              <v-btn variant="text" size="small" @click="openFolder(item.id === 'root' ? null : item.id)">
+                {{ item.name }}
+              </v-btn>
+            </template>
+          </v-breadcrumbs>
 
-          <div class="d-flex ga-2">
-            <v-btn color="primary" prepend-icon="mdi-folder-plus" @click="openCreateFolder">
-              {{ t('pages.profileOverview.libraryCreateFolder') }}
+          <div class="d-flex text-end">
+            <v-btn
+              v-if="selectedNode"
+              variant="text"
+              icon="mdi-pencil"
+              @click="openRenameDialog(selectedNode)"
+            >
             </v-btn>
-            <v-btn color="secondary" variant="outlined" prepend-icon="mdi-upload" @click="onUploadClick">
-              {{ t('pages.profileOverview.libraryUploadFile') }}
+            <v-btn
+              variant="text"
+              color="primary"
+              icon="mdi-upload"
+              @click="onUploadClick"
+            >
             </v-btn>
-            <input ref="fileInput" type="file" class="d-none" @change="onFileChange">
+            <v-btn
+              variant="text"
+              color="warning"
+              icon="mdi-folder-plus"
+              @click="openCreateFolder"
+            >
+            </v-btn>
           </div>
         </div>
 
-        <v-card class="library-explorer" :loading="pending">
-          <div class="library-explorer__sidebar">
-            <div class="px-3 py-2 d-flex align-center ga-2 text-medium-emphasis text-caption">
-              <v-icon icon="mdi-folder-multiple" size="16" />
-              <span>Dossiers</span>
-            </div>
+        <div class="library-grid">
+          <button
+            v-for="node in currentItems"
+            :key="node.id"
+            class="library-grid__item"
+            :class="{ 'library-grid__item--selected': selectedNode?.id === node.id }"
+            type="button"
+            @click="openNode(node)"
+          >
+            <v-icon :color="node.type === 'folder' ? 'warning' : 'primary'" :icon="node.type === 'folder' ? 'mdi-folder' : 'mdi-file-outline'" size="28" />
+            <span class="library-grid__name">{{ node.name }}</span>
+          </button>
+        </div>
 
-            <v-list density="compact" nav>
-              <v-list-item
-                prepend-icon="mdi-home"
-                title="Root"
-                :active="currentFolderId === null"
-                @click="openFolder(null)"
-              />
-              <LibraryNode
-                v-for="folder in sidebarFolders"
-                :key="folder.id"
-                :node="folder"
-                :selected-id="currentFolderId"
-                @select="openFolder($event.id)"
-                @rename="openRenameDialog"
-              />
-            </v-list>
-          </div>
-
-          <div class="library-explorer__content">
-            <div class="d-flex flex-wrap justify-space-between align-center ga-3 mb-4">
-              <v-breadcrumbs :items="breadcrumbFolders" class="pa-0">
-                <template #item="{ item }">
-                  <v-btn variant="text" size="small" @click="openFolder(item.id === 'root' ? null : item.id)">
-                    {{ item.name }}
-                  </v-btn>
-                </template>
-              </v-breadcrumbs>
-
-              <v-btn
-                v-if="selectedNode"
-                size="small"
-                variant="text"
-                prepend-icon="mdi-pencil"
-                @click="openRenameDialog(selectedNode)"
-              >
-                {{ t('pages.profileOverview.libraryRename') }}
-              </v-btn>
-            </div>
-
-            <div class="library-grid">
-              <button
-                v-for="node in currentItems"
-                :key="node.id"
-                class="library-grid__item"
-                :class="{ 'library-grid__item--selected': selectedNode?.id === node.id }"
-                type="button"
-                @click="openNode(node)"
-              >
-                <v-icon :icon="node.type === 'folder' ? 'mdi-folder' : 'mdi-file-outline'" size="28" />
-                <span class="library-grid__name">{{ node.name }}</span>
-              </button>
-            </div>
-
-            <p v-if="currentItems.length === 0" class="text-medium-emphasis mb-0 mt-2">
-              {{ t('pages.profileOverview.libraryEmpty') }}
-            </p>
-          </div>
-        </v-card>
+        <p v-if="currentItems.length === 0" class="text-medium-emphasis mb-0 mt-2">
+          {{ t('pages.profileOverview.libraryEmpty') }}
+        </p>
       </template>
     </v-container>
 

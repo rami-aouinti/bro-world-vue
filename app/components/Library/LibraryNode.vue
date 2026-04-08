@@ -80,7 +80,7 @@ const onDropFolder = (event: DragEvent) => {
 <template>
   <div class="library-node" :style="{ '--node-level': String(level) }">
     <v-card
-      variant="tonal"
+      variant="text"
       class="library-node__row"
       :class="{ 'library-node__row--selected': isSelected, 'library-node__row--drag-over': isDragOver }"
       draggable="true"
@@ -91,10 +91,8 @@ const onDropFolder = (event: DragEvent) => {
       @drop="onDropFolder"
     >
       <div class="d-flex align-center ga-3 px-3 py-2">
-        <v-icon :icon="iconName" size="20" />
+        <v-icon :icon="iconName" color="warning" size="20" />
         <span class="text-body-2 font-weight-medium text-truncate">{{ node.name }}</span>
-        <v-spacer />
-        <v-btn icon="mdi-pencil" variant="text" size="small" @click.stop="emit('rename', node)" />
       </div>
     </v-card>
 
