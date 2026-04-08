@@ -1,11 +1,12 @@
 import type {
-  GamesCatalogApiResponse,
   GamesSessionFinishPayload,
   GamesSessionFinishResponse,
   GamesSessionStartPayload,
   GamesSessionStartResponse,
+  GamesCatalogApiResponse,
   GamesLevelsApiResponse,
 } from '~~/server/types/api/games'
+import { mapCatalogResponseToCategories, mapLevelsResponseToValues } from '~/utils/gamesMapper'
 
 const CATALOG_CACHE_TTL_MS = 5 * 60 * 1000
 const LEVELS_CACHE_TTL_MS = 15 * 60 * 1000
@@ -69,7 +70,7 @@ export const useGameCatalogStore = defineStore('game-catalog', {
 
       try {
         const response = await $fetch<GamesCatalogApiResponse>('/api/games/catalog')
-        this.categories = response
+        this.categories = mapCatalogResponseToCategories(response)
         this.catalogFetchedAt = Date.now()
 
         await this.fetchLevels(force)
@@ -92,7 +93,7 @@ export const useGameCatalogStore = defineStore('game-catalog', {
 
       try {
         const response = await $fetch<GamesLevelsApiResponse>('/api/games/levels')
-        this.levels = response.items.map(item => item.value.toLowerCase())
+        this.levels = mapLevelsResponseToValues(response)
         this.levelsFetchedAt = Date.now()
         return this.levels
       } catch (error) {
