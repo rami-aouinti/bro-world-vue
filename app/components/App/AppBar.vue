@@ -288,8 +288,8 @@ function toggleLeftDrawer() {
 .app-bar--kind-glass {
   background: color-mix(in srgb, rgb(var(--v-theme-surface)) 82%, transparent);
   border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-  box-shadow: 0 12px 24px rgba(var(--v-theme-on-surface), 0.08);
-  backdrop-filter: blur(12px);
+  box-shadow: 0 12px 24px rgba(var(--v-theme-primary), 0.28);
+  backdrop-filter: blur(8px);
 }
 
 .app-bar--dark {
