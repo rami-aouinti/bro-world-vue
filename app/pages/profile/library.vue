@@ -281,7 +281,6 @@ const isPreviewPdf = computed(() => selectedFile.value?.mimeType === 'applicatio
         <div class="library-grid">
           <v-btn
             v-for="node in currentItems"
-            icon
             variant="text"
             block
             :key="node.id"
@@ -404,13 +403,15 @@ const isPreviewPdf = computed(() => selectedFile.value?.mimeType === 'applicatio
 .library-grid {
   display: grid;
   gap: 12px;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 220px));
+  justify-content: start;
 }
 
 .library-grid__item {
   min-height: 76px;
   padding: 10px 12px;
   display: flex;
+  justify-content: flex-start;
   gap: 12px;
   align-items: start;
   text-align: start;
