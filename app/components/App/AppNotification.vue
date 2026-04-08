@@ -22,13 +22,23 @@ function toggleAll() {
 </script>
 
 <template>
-  <v-btn
-    v-tooltip="{ text: t('appbar.notification'), location: 'top' }"
-    :icon="notifications.length ? 'mdi-bell-badge-outline' : 'mdi-bell-outline'"
-    :aria-label="t('appbar.notification')"
-    :rounded="0"
-    @click="toggleAll"
-  />
+  <v-tooltip
+    location="top"
+    :text="t('appbar.notification')"
+    :content-props="{ 'aria-label': t('appbar.notification') }"
+  >
+    <template #activator="{ props }">
+      <v-btn
+        :icon="
+          notifications.length ? 'mdi-bell-badge-outline' : 'mdi-bell-outline'
+        "
+        :aria-label="t('appbar.notification')"
+        :rounded="0"
+        v-bind="props"
+        @click="toggleAll"
+      />
+    </template>
+  </v-tooltip>
   <ClientOnly>
     <teleport to="body">
       <v-card
@@ -46,21 +56,37 @@ function toggleAll() {
                 : t('notification.none')
             "
           />
-          <v-btn
-            v-tooltip="{ text: t('notification.clearAll'), location: 'top' }"
-            size="small"
-            icon="mdi-bell-remove"
-            :aria-label="t('notification.clearAll')"
-            @click="emptyNotifications"
-          />
-          <v-btn
-            v-tooltip="{ text: t('notification.hide'), location: 'top' }"
-            class="mr-0"
-            size="small"
-            icon="$expand"
-            :aria-label="t('notification.hide')"
-            @click="toggleAll"
-          />
+          <v-tooltip
+            location="top"
+            :text="t('notification.clearAll')"
+            :content-props="{ 'aria-label': t('notification.clearAll') }"
+          >
+            <template #activator="{ props }">
+              <v-btn
+                size="small"
+                icon="mdi-bell-remove"
+                :aria-label="t('notification.clearAll')"
+                v-bind="props"
+                @click="emptyNotifications"
+              />
+            </template>
+          </v-tooltip>
+          <v-tooltip
+            location="top"
+            :text="t('notification.hide')"
+            :content-props="{ 'aria-label': t('notification.hide') }"
+          >
+            <template #activator="{ props }">
+              <v-btn
+                class="mr-0"
+                size="small"
+                icon="$expand"
+                :aria-label="t('notification.hide')"
+                v-bind="props"
+                @click="toggleAll"
+              />
+            </template>
+          </v-tooltip>
         </v-toolbar>
         <v-slide-y-reverse-transition
           tag="div"

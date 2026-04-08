@@ -176,12 +176,20 @@ const desserts = ref([
                   },
                 }"
               >
-                <v-btn
-                  v-tooltip="{ text: t('common.delete'), location: 'top' }"
-                  icon="mdi-delete-outline"
-                  :aria-label="t('common.delete')"
-                  @click.stop="showDialogDelete(item.name)"
-                />
+                <v-tooltip
+                  location="top"
+                  :text="t('common.delete')"
+                  :content-props="{ 'aria-label': t('common.delete') }"
+                >
+                  <template #activator="{ props }">
+                    <v-btn
+                      icon="mdi-delete-outline"
+                      :aria-label="t('common.delete')"
+                      v-bind="props"
+                      @click.stop="showDialogDelete(item.name)"
+                    />
+                  </template>
+                </v-tooltip>
               </v-defaults-provider>
             </template>
           </v-data-table>
