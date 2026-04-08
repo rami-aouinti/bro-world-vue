@@ -1,6 +1,22 @@
 const CATALOG_TTL_MS = 5 * 60 * 1000
 const LEVELS_TTL_MS = 15 * 60 * 1000
 
+
+function normalizeSessionLevel(level: string) {
+  const normalizedLevel = level.trim().toLowerCase()
+
+  if (normalizedLevel === 'beginner')
+    return 'easy'
+
+  if (normalizedLevel === 'intermediate' || normalizedLevel === 'intermidiate')
+    return 'medium'
+
+  if (normalizedLevel === 'advanced')
+    return 'hard'
+
+  return normalizedLevel
+}
+
 interface GameItem {
   id: string
   name?: string
@@ -266,7 +282,7 @@ export const useGameCatalogStore = defineStore('game-catalog', {
       try {
         const response = await $fetch<StartResponse>(`/api/games/${gameId}/sessions/start`, {
           method: 'POST',
-          body: { level },
+          body: { level: normalizeSessionLevel(level) },
         })
 
         const sessionId = response.session.id ?? response.session.sessionId ?? ''
