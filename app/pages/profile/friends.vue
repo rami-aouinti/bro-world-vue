@@ -1,13 +1,11 @@
 <script setup lang="ts">
-const { t } = useI18n()
+import { storeToRefs } from 'pinia'
+import type { FriendUser } from '~/stores/profile'
 
-interface FriendUser {
-  id: string
-  username: string
-  firstName: string
-  lastName: string
-  photo?: string
-}
+const { t } = useI18n()
+const profileStore = useProfileStore()
+const { profile, loading, error: storeError } = storeToRefs(profileStore)
+
 
 type FriendAction =
   | 'request'
@@ -23,16 +21,15 @@ const api = $fetch.create({
   },
 })
 
-const loading = ref(false)
 const { isPageSkeletonVisible } = usePageSkeleton()
 const actionLoadingUserId = ref<string | null>(null)
 const actionLoadingType = ref<FriendAction | null>(null)
 const globalError = ref<string>('')
 
-const friends = ref<FriendUser[]>([])
-const requests = ref<FriendUser[]>([])
-const invitations = ref<FriendUser[]>([])
-const blockedUsers = ref<FriendUser[]>([])
+const friends = computed(() => profile.value?.friends ?? [])
+const requests = computed(() => profile.value?.incomingRequests ?? [])
+const invitations = computed(() => profile.value?.friendRequests ?? [])
+const blockedUsers = computed(() => profile.value?.blockedUsers ?? [])
 
 const sectionConfigs = computed(() => [
   {
@@ -127,28 +124,14 @@ function isActionLoading(userId: string, action: FriendAction) {
   )
 }
 
-async function fetchFriendsData() {
-  loading.value = true
+async function fetchFriendsData(force = false) {
   globalError.value = ''
 
   try {
-    const [friendsData, requestsData, invitationsData, blockedData] =
-      await Promise.all([
-        api<FriendUser[]>('/api/users/me/friends'),
-        api<FriendUser[]>('/api/users/me/friends/requests'),
-        api<FriendUser[]>('/api/users/me/friends/requests/sent'),
-        api<FriendUser[]>('/api/users/me/friends/blocked'),
-      ])
-
-    friends.value = friendsData
-    requests.value = requestsData
-    invitations.value = invitationsData
-    blockedUsers.value = blockedData
+    await profileStore.fetchProfile(force)
   } catch (error) {
     globalError.value =
       error instanceof Error ? error.message : t('pages.friends.errors.load')
-  } finally {
-    loading.value = false
   }
 }
 
@@ -168,7 +151,7 @@ async function applyAction(userId: string, action: FriendAction) {
       await api(endpoint, { method: 'POST' })
     }
 
-    await fetchFriendsData()
+    await fetchFriendsData(true)
   } catch (error) {
     globalError.value =
       error instanceof Error
@@ -180,12 +163,18 @@ async function applyAction(userId: string, action: FriendAction) {
   }
 }
 
+watch(storeError, (value) => {
+  if (value && !globalError.value) {
+    globalError.value = value
+  }
+})
+
 definePageMeta({
   title: 'appbar.profile',
   middleware: 'auth',
 })
 
-onMounted(fetchFriendsData)
+onMounted(() => fetchFriendsData())
 </script>
 
 <template>
