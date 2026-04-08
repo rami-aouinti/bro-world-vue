@@ -138,40 +138,62 @@ const breadcrumbs = computed(() => [
             </v-btn>
           </template>
         </v-breadcrumbs>
-        <div class="d-flex flex-column align-center justify-center gap-4 mb-4">
-          <v-row class="w-100 mb-4">
-            <v-col
-              v-for="level in levels"
-              :key="level.id"
-              cols="12"
-              sm="6"
-              md="4"
-            >
-              <v-card
-                height="200"
-                min-width="200"
-                class="level-card d-flex align-center justify-center text-center cursor-pointer"
-                :elevation="selectedLevelValue === level.value ? 12 : 2"
-                :color="selectedLevelValue === level.value ? 'primary' : ''"
-                :variant="selectedLevelValue === level.value ? 'flat' : 'outlined'"
-                @click="selectedLevelValue = level.value"
+        <div class="game-selection-layout">
+          <div class="game-selection-levels">
+            <v-row class="w-100">
+              <v-col
+                v-for="level in levels"
+                :key="level.id"
+                cols="12"
+                sm="6"
+                md="4"
               >
-                <div class="text-h6">
-                  {{ difficultyLabel(level.value) }}
-                </div>
-              </v-card>
-            </v-col>
-          </v-row>
+                <v-card
+                  height="200"
+                  min-width="200"
+                  class="level-card d-flex align-center justify-center text-center cursor-pointer"
+                  :elevation="selectedLevelValue === level.value ? 12 : 2"
+                  :color="selectedLevelValue === level.value ? 'primary' : ''"
+                  :variant="selectedLevelValue === level.value ? 'flat' : 'outlined'"
+                  @click="selectedLevelValue = level.value"
+                >
+                  <div class="text-h6">
+                    {{ difficultyLabel(level.value) }}
+                  </div>
+                </v-card>
+              </v-col>
+            </v-row>
+          </div>
 
-          <v-btn color="primary" size="large" :disabled="!canStart" :loading="catalogStore.startingSession" @click="onStart">
-            {{ t('gamePage.actions.start') }}
-          </v-btn>
+          <div class="game-selection-footer">
+            <v-btn color="primary" size="large" :disabled="!canStart" :loading="catalogStore.startingSession" @click="onStart">
+              {{ t('gamePage.actions.start') }}
+            </v-btn>
+          </div>
         </div>
       </template>
     </v-container>
   </div>
 </template>
 <style scoped>
+.game-selection-layout {
+  min-height: calc(100vh - 220px);
+  display: flex;
+  flex-direction: column;
+}
+
+.game-selection-levels {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.game-selection-footer {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 16px;
+}
+
 .level-card {
   background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
   border: 1px solid rgba(255, 255, 255, 0.06);
