@@ -1,4 +1,4 @@
-import { callPrivateApi } from '../../utils/privateApi'
+import { cachedPrivateGet } from '../../utils/privateApi'
 import type { NotificationsApiResponse } from '~~/server/types/api/notifications'
 
 export default defineEventHandler(
@@ -12,9 +12,12 @@ export default defineEventHandler(
       })
     }
 
-    return callPrivateApi<NotificationsApiResponse>(
+    return cachedPrivateGet<NotificationsApiResponse>(
       event,
       `/notifications/${notificationId}`,
+      {
+        cacheDomain: 'notifications',
+      },
     )
   },
 )

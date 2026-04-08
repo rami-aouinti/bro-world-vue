@@ -1,4 +1,4 @@
-import { callPrivateApi } from '../../utils/privateApi'
+import { cachedPrivateGet } from '../../utils/privateApi'
 import type { ApplicationApiResponse } from '~~/server/types/api/application'
 
 export default defineEventHandler(
@@ -7,9 +7,9 @@ export default defineEventHandler(
     const page = Number(query.page ?? 1)
     const limit = Number(query.limit ?? 10)
 
-    return callPrivateApi<ApplicationApiResponse>(
-      event,
-      `/application/private?page=${page}&limit=${limit}`,
-    )
+    return cachedPrivateGet<ApplicationApiResponse>(event, '/application/private', {
+      query: { page, limit },
+      cacheDomain: 'application',
+    })
   },
 )
