@@ -1,0 +1,8 @@
+import { cachedPublicGet } from '../../utils/publicApi'
+import type { GamesLevelsApiResponse } from '../../types/api/games'
+
+export default defineEventHandler(async (event): Promise<GamesLevelsApiResponse> => {
+  return cachedPublicGet<GamesLevelsApiResponse>(event, '/game-levels', {
+    cacheDomain: 'games',
+  })
+})
