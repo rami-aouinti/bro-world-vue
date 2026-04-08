@@ -31,8 +31,8 @@ export function useGamesCatalogNavigation() {
     return thumbnailUrl || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80'
   }
 
-  function entityName(entity: { name: string; key?: string; nameKey?: string }) {
-    return tOrFallback(entity.nameKey ?? '', entity.key ?? entity.name)
+  function entityName(entity: { name?: string; key?: string; nameKey?: string; id?: string }) {
+    return tOrFallback(entity.nameKey ?? '', entity.key ?? entity.name ?? entity.id ?? '')
   }
 
   function entityDescription(entity: {

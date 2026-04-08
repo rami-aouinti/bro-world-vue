@@ -21,10 +21,18 @@ function openCategory(categoryId: string) {
   navigateTo(`/games/${categoryId}`)
 }
 
-function getCategoryThumbnail(category: { games?: { thumbnailUrl?: string }[]; subCategories?: { games?: { thumbnailUrl?: string }[] }[] }) {
+function getCategoryThumbnail(category: {
+  img?: string | null
+  games?: { thumbnailUrl?: string | null; img?: string | null }[]
+  subCategories?: { img?: string | null; games?: { thumbnailUrl?: string | null; img?: string | null }[] }[]
+}) {
   return getGameCardImage(
     category.games?.[0]?.thumbnailUrl ||
-      category.subCategories?.[0]?.games?.[0]?.thumbnailUrl,
+      category.games?.[0]?.img ||
+      category.subCategories?.[0]?.games?.[0]?.thumbnailUrl ||
+      category.subCategories?.[0]?.games?.[0]?.img ||
+      category.subCategories?.[0]?.img ||
+      category.img,
   )
 }
 

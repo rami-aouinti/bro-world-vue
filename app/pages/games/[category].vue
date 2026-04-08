@@ -26,6 +26,14 @@ const selectedCategory = computed(() => getCategoryById(categoryId.value))
 function openSubCategory(subCategoryId: string) {
   navigateTo(`/games/${categoryId.value}/${subCategoryId}/home`)
 }
+
+function getSubCategoryThumbnail(subCategory: { img?: string | null; games?: Array<{ thumbnailUrl?: string | null; img?: string | null }> }) {
+  return getGameCardImage(subCategory.games?.[0]?.thumbnailUrl || subCategory.games?.[0]?.img || subCategory.img)
+}
+
+const subCategories = computed(() =>
+  Array.isArray(selectedCategory.value?.subCategories) ? selectedCategory.value.subCategories : [],
+)
 </script>
 
 <template>
@@ -40,9 +48,9 @@ function openSubCategory(subCategoryId: string) {
         {{ entityDescription(selectedCategory) || 'Choisis une sous-catégorie pour voir les jeux.' }}
       </p>
 
-      <v-row dense>
+      <v-row v-if="subCategories.length" dense>
         <v-col
-          v-for="subCategory in selectedCategory.subCategories"
+          v-for="subCategory in subCategories"
           :key="subCategory.id"
           cols="12"
           sm="6"
@@ -50,7 +58,7 @@ function openSubCategory(subCategoryId: string) {
         >
           <v-card rounded="xl" class="h-100 cursor-pointer" @click="openSubCategory(subCategory.id)">
             <v-img
-              :src="getGameCardImage(subCategory.games[0]?.thumbnailUrl)"
+              :src="getSubCategoryThumbnail(subCategory)"
               height="180"
               cover
             />
@@ -63,6 +71,12 @@ function openSubCategory(subCategoryId: string) {
           </v-card>
         </v-col>
       </v-row>
+      <v-alert
+        v-else
+        type="info"
+        variant="tonal"
+        text="Aucune sous-catégorie disponible pour cette catégorie."
+      />
     </template>
   </v-container>
 </template>
