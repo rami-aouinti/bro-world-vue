@@ -2,8 +2,19 @@
 const rightDrawerOpen = useState('right-drawer-open', () => true)
 const isPageSkeletonLoading = useState('page-skeleton-loading', () => true)
 const registry = useDrawerSlotRegistry()
+const { lgAndUp } = useDisplay()
+const isRightDrawerReady = ref(false)
 
 const rightDrawerRenderer = computed(() => registry?.right.value ?? null)
+const shouldRenderRightDrawerContent = computed(
+  () => isRightDrawerReady.value && lgAndUp.value && Boolean(rightDrawerRenderer.value),
+)
+
+onMounted(() => {
+  requestAnimationFrame(() => {
+    isRightDrawerReady.value = true
+  })
+})
 </script>
 
 <template>
@@ -15,7 +26,7 @@ const rightDrawerRenderer = computed(() => registry?.right.value ?? null)
     floating
     class="app-right-drawer"
   >
-    <div v-if="rightDrawerRenderer" class="app-right-drawer-list">
+    <div v-if="shouldRenderRightDrawerContent" class="app-right-drawer-list">
       <SkeletonDrawerRight v-if="isPageSkeletonLoading" />
       <component :is="{ render: rightDrawerRenderer }" v-else />
     </div>

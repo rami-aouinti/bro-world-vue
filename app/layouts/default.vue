@@ -1,10 +1,20 @@
 <script setup lang="ts">
+import { defineAsyncComponent } from 'vue'
+
 const showLeftDrawer = useState('show-left-drawer', () => true)
 const showRightDrawer = useState('show-right-drawer', () => true)
 const isPageSkeletonLoading = useState('page-skeleton-loading', () => true)
 const route = useRoute()
 const { t } = useI18n()
+const { lgAndUp } = useDisplay()
 const isLayoutReady = ref(false)
+
+const AppDrawerLazy = defineAsyncComponent(
+  () => import('~/components/App/AppDrawer.vue'),
+)
+const AppRightDrawerLazy = defineAsyncComponent(
+  () => import('~/components/App/AppRightDrawer.vue'),
+)
 
 provideDrawerSlotRegistry()
 
@@ -27,6 +37,12 @@ const breadcrumbs = computed(() => {
 })
 
 const shouldShowBreadcrumbs = computed(() => breadcrumbs.value.length > 1)
+const shouldRenderLeftDrawer = computed(
+  () => isLayoutReady.value && showLeftDrawer.value,
+)
+const shouldRenderRightDrawer = computed(
+  () => isLayoutReady.value && showRightDrawer.value && lgAndUp.value,
+)
 
 function triggerPageSkeleton(minDuration = LAYOUT_SKELETON_MIN_DURATION) {
   isPageSkeletonLoading.value = true
@@ -76,8 +92,12 @@ onUnmounted(() => {
 
     <v-app :class="{ 'layout-shell--loading': !isLayoutReady }">
       <AppBar />
-      <AppDrawer v-if="showLeftDrawer" />
-      <AppRightDrawer v-if="showRightDrawer" />
+      <ClientOnly>
+        <AppDrawerLazy v-if="shouldRenderLeftDrawer" />
+      </ClientOnly>
+      <ClientOnly>
+        <AppRightDrawerLazy v-if="shouldRenderRightDrawer" />
+      </ClientOnly>
       <v-main>
         <v-container fluid class="px-2 pt-0 pb-0">
           <v-breadcrumbs v-if="shouldShowBreadcrumbs" :items="breadcrumbs" />
