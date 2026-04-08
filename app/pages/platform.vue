@@ -225,7 +225,12 @@ function resetFilters() {
               {{ selectedPlatform?.title || t('platform.selectPlatform') }}
             </h3>
           </div>
-          <v-img :src="selectedPlatform.photo" height="120" cover />
+          <v-img
+            :src="selectedPlatform.photo"
+            :alt="selectedPlatform.title"
+            height="120"
+            cover
+          />
           <v-card-text class="d-flex flex-column ga-3">
             <div class="text-body-2 text-medium-emphasis">
               {{ selectedPlatform.description }}

@@ -24,5 +24,12 @@ export default defineNuxtPlugin((nuxtApp) => {
         dark: { colors: { primary } },
       },
     }
+    vuetifyOptions.defaults = {
+      ...(vuetifyOptions.defaults ?? {}),
+      VImg: {
+        ...(vuetifyOptions.defaults?.VImg ?? {}),
+        alt: '',
+      },
+    }
   })
 })

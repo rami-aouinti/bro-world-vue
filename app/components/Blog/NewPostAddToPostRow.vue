@@ -55,6 +55,7 @@ const actions = [
         v-for="action in actions"
         :key="action.label"
         :icon="action.icon"
+        :aria-label="action.label"
         :disabled="props.disabled"
         variant="text"
         size="small"

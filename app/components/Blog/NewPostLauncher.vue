@@ -80,7 +80,11 @@ function openComposer() {
     :class="{ 'new-post-launcher--light': isLightTheme }"
   >
     <v-avatar size="40" color="grey-darken-2">
-      <v-img v-if="userAvatar" :src="userAvatar" />
+      <v-img
+        v-if="userAvatar"
+        :src="userAvatar"
+        :alt="`${userDisplayName} avatar`"
+      />
       <v-icon v-else icon="mdi-account" />
     </v-avatar>
 
@@ -99,6 +103,7 @@ function openComposer() {
         v-for="action in actions"
         :key="action.label"
         :icon="action.icon"
+        :aria-label="action.label"
         variant="text"
         size="small"
         :disabled="disabled"

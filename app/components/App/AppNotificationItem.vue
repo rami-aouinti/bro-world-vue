@@ -32,7 +32,7 @@ const notificationTitle = computed(() =>
     :title="notificationTitle"
   >
     <template #close>
-      <v-btn icon="$close" @click="emit('close')" />
+      <v-btn icon="$close" aria-label="Close notification" @click="emit('close')" />
     </template>
   </v-alert>
 </template>

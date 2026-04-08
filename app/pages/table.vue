@@ -179,6 +179,7 @@ const desserts = ref([
                 <v-btn
                   v-tooltip="{ text: t('common.delete'), location: 'top' }"
                   icon="mdi-delete-outline"
+                  :aria-label="t('common.delete')"
                   @click.stop="showDialogDelete(item.name)"
                 />
               </v-defaults-provider>

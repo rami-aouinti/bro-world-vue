@@ -147,7 +147,7 @@ function onCreateComment(content: string) {
     <v-card-item class="pb-1">
       <template #prepend>
         <v-avatar size="52" color="grey-darken-2" class="me-3">
-          <v-img v-if="authorPhoto" :src="authorPhoto" />
+          <v-img v-if="authorPhoto" :src="authorPhoto" :alt="`${authorName} avatar`" />
           <v-icon v-else icon="mdi-account" />
         </v-avatar>
       </template>
@@ -167,6 +167,7 @@ function onCreateComment(content: string) {
               <v-btn
                 v-bind="menuProps"
                 icon="mdi-dots-horizontal"
+                :aria-label="t('common.edit')"
                 size="small"
                 variant="text"
               />
@@ -196,6 +197,7 @@ function onCreateComment(content: string) {
       <v-img
         v-if="post.mediaUrl"
         :src="post.mediaUrl"
+        :alt="`Post media by ${authorName}`"
         rounded="lg"
         cover
         max-height="420"

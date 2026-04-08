@@ -94,6 +94,7 @@ const menuShow = ref(false)
         <template #activator="{ props: tooltip }">
           <v-btn
             icon="mdi-palette-outline"
+            :aria-label="t('appbar.themePalette')"
             v-bind="mergeProps(menu, tooltip)"
             :rounded="0"
           />

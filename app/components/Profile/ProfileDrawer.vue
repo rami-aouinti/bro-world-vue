@@ -42,7 +42,7 @@ const profileNavItems = [
     >
       <div class="d-flex align-center text-center ga-3">
         <v-avatar size="32">
-          <v-img :src="avatarUrl" />
+          <v-img :src="avatarUrl" :alt="`${fullName} avatar`" />
         </v-avatar>
         <div>
           <h3>{{ fullName }}</h3>

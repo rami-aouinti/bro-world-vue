@@ -86,6 +86,7 @@ function toggleLeftDrawer() {
       <v-app-bar-nav-icon
         class="mx-5"
         :disabled="!showLeftDrawer"
+        aria-label="Toggle left drawer"
         @click="toggleLeftDrawer"
       />
     </div>
@@ -119,7 +120,12 @@ function toggleLeftDrawer() {
       <template v-if="loggedIn">
         <v-menu location="bottom end">
           <template #activator="{ props }">
-            <v-btn variant="text" icon="mdi-chat-outline" v-bind="props" />
+            <v-btn
+              variant="text"
+              icon="mdi-chat-outline"
+              :aria-label="t('actions.showAll')"
+              v-bind="props"
+            />
           </template>
           <v-list min-width="280">
             <v-list-item
@@ -147,7 +153,12 @@ function toggleLeftDrawer() {
               offset-x="10"
               offset-y="10"
             >
-              <v-btn variant="text" icon="mdi-bell-outline" v-bind="props" />
+              <v-btn
+                variant="text"
+                icon="mdi-bell-outline"
+                :aria-label="t('appbar.notification')"
+                v-bind="props"
+              />
             </v-badge>
           </template>
           <v-list min-width="280">
@@ -170,6 +181,7 @@ function toggleLeftDrawer() {
         <v-btn
           variant="text"
           icon="mdi-calendar-month-outline"
+          :aria-label="t('appbar.calendar')"
           to="/calendar"
         />
       </template>
@@ -185,7 +197,11 @@ function toggleLeftDrawer() {
                 offset-x="6"
                 offset-y="6"
               >
-                <v-btn icon v-bind="mergeProps(menu, tooltip)">
+                <v-btn
+                  icon
+                  :aria-label="loggedIn ? userLabel : t('appbar.user')"
+                  v-bind="mergeProps(menu, tooltip)"
+                >
                   <v-icon
                     v-if="!loggedIn"
                     icon="mdi-account-circle"
@@ -197,7 +213,7 @@ function toggleLeftDrawer() {
                     size="28"
                     class="cursor-pointer"
                   >
-                    <v-img :src="avatarUrl" />
+                    <v-img :src="avatarUrl" :alt="`${userLabel} avatar`" />
                   </v-avatar>
                 </v-btn>
               </v-badge>

@@ -122,7 +122,11 @@ function formattedDate(comment: BlogComment) {
     >
       <div class="d-flex ga-2 align-start">
         <v-avatar size="34" color="grey-darken-2">
-          <v-img v-if="comment.author?.photo" :src="comment.author.photo" />
+          <v-img
+            v-if="comment.author?.photo"
+            :src="comment.author.photo"
+            :alt="`${comment.author?.displayName || t('blog.common.userFallback')} avatar`"
+          />
           <v-icon v-else size="18" icon="mdi-account" />
         </v-avatar>
 
@@ -146,6 +150,7 @@ function formattedDate(comment: BlogComment) {
                     size="x-small"
                     variant="text"
                     icon="mdi-dots-horizontal"
+                    :aria-label="t('common.edit')"
                   />
                 </template>
 

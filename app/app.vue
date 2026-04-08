@@ -37,7 +37,7 @@ useHead({
 })
 
 useSeoMeta({
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
+  viewport: 'width=device-width, initial-scale=1',
   description: 'Vuetify 3 + Nuxt 3, Opinionated Admin Starter Template',
   ogImage: '/social-image.png',
   twitterImage: '/social-image.png',
