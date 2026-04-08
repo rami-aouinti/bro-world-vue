@@ -138,36 +138,42 @@ const breadcrumbs = computed(() => [
             </v-btn>
           </template>
         </v-breadcrumbs>
-
-        <v-card rounded="xl" class="mb-6">
-          <v-card-title>{{ tOrFallback('gamePage.levels.title', 'Niveau') }}</v-card-title>
-          <v-card-text>
-            <v-chip-group :model-value="selectedLevelValue ? [selectedLevelValue] : []" column>
-              <v-chip
-                v-for="level in levels"
-                :key="level.id"
-                filter
-                :color="selectedLevelValue === level.value ? 'primary' : undefined"
+        <div class="d-flex flex-column align-center justify-center gap-4 mb-4">
+          <v-row class="w-100 mb-4">
+            <v-col
+              v-for="level in levels"
+              :key="level.id"
+              cols="12"
+              sm="6"
+              md="4"
+            >
+              <v-card
+                height="200"
+                min-width="200"
+                class="level-card d-flex align-center justify-center text-center cursor-pointer"
+                :elevation="selectedLevelValue === level.value ? 12 : 2"
+                :color="selectedLevelValue === level.value ? 'primary' : ''"
+                :variant="selectedLevelValue === level.value ? 'flat' : 'outlined'"
                 @click="selectedLevelValue = level.value"
               >
-                {{ difficultyLabel(level.value) }}
-              </v-chip>
-            </v-chip-group>
-          </v-card-text>
-        </v-card>
+                <div class="text-h6">
+                  {{ difficultyLabel(level.value) }}
+                </div>
+              </v-card>
+            </v-col>
+          </v-row>
 
-        <v-btn color="primary" size="large" :disabled="!canStart" :loading="catalogStore.startingSession" @click="onStart">
-          {{ t('gamePage.actions.start') }}
-        </v-btn>
-
-        <v-card rounded="xl" variant="tonal" class="mt-6">
-          <v-card-title>Selection summary</v-card-title>
-          <v-card-text class="d-flex flex-wrap ga-2">
-            <v-chip size="small" variant="outlined">Game: {{ entityName(selectedGame) }}</v-chip>
-            <v-chip size="small" variant="outlined">Level: {{ selectedLevelValue || '—' }}</v-chip>
-          </v-card-text>
-        </v-card>
+          <v-btn color="primary" size="large" :disabled="!canStart" :loading="catalogStore.startingSession" @click="onStart">
+            {{ t('gamePage.actions.start') }}
+          </v-btn>
+        </div>
       </template>
     </v-container>
   </div>
 </template>
+<style scoped>
+.level-card {
+  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+</style>

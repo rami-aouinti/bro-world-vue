@@ -33,13 +33,6 @@ const breadcrumbs = [{ title: 'Games', disabled: true }]
     </AppPageDrawers>
 
     <v-container fluid>
-      <v-breadcrumbs :items="breadcrumbs" class="pa-0 mb-2">
-        <template #item="{ item }">
-          <v-btn variant="text" size="small" :disabled="item.disabled">
-            {{ item.title }}
-          </v-btn>
-        </template>
-      </v-breadcrumbs>
       <div class="text-h2 text-center mb-2">
         <h3>Games</h3>
       </div>
