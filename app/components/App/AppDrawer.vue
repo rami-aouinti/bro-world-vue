@@ -99,7 +99,7 @@ onMounted(() => {
     <v-spacer />
     <template #append>
       <v-list-item class="drawer-footer px-0 d-flex flex-column justify-center">
-        <LeftDrawerUserEntry class="mb-3 px-4" />
+        <LeftDrawerUserEntry v-if="!shouldRenderDrawerSlot" class="mb-3 px-4" />
         <div class="text-body-small pt-6 pt-md-0 text-center text-no-wrap">
           {{ t('appbar.copyright') }}
           <a
