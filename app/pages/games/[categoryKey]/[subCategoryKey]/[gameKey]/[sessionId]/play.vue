@@ -215,7 +215,7 @@ async function onFinish(result: 'win' | 'lose') {
         </div>
       </template>
     </AppPageDrawers>
-    <v-container fluid>
+    <v-container fluid class="arena-play-container">
       <CardTablePlaySurface
         v-if="playSurfaceType === 'card'"
         class="arena-interactive"
@@ -249,6 +249,11 @@ async function onFinish(result: 'win' | 'lose') {
 </template>
 
 <style scoped>
+
+.arena-play-container {
+  display: flex;
+  justify-content: center;
+}
 
 .arena-panel-card {
   background: linear-gradient(
