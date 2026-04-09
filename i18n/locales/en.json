@@ -466,11 +466,18 @@
       "title": "Navigation"
     },
     "rightNav": {
-      "trending": "Trending",
-      "tags": {
-        "nuxt": "#nuxt",
-        "vuetify": "#vuetify",
-        "frontend": "#frontend"
+      "localContext": {
+        "title": "Local context",
+        "subtitle": "Share your location to view weather and nearby events.",
+        "permissionCta": "Enable my location",
+        "permissionDenied": "Location access was denied. You can retry anytime.",
+        "loading": "Loading your local context…",
+        "error": "Unable to load your local context right now.",
+        "unsupported": "Geolocation is not supported on this device.",
+        "weatherTitle": "Current weather",
+        "eventsTitle": "Events in your area",
+        "majorEventsTitle": "Major events today",
+        "emptyState": "No events available right now."
       }
     }
   },
