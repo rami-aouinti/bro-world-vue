@@ -7,8 +7,15 @@ import type {
 
 const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
-const { tree, folderOptions, fetchTree, createFolder, uploadFile, renameNode } =
-  useLibrary()
+const {
+  tree,
+  folderOptions,
+  fetchTree,
+  createFolder,
+  uploadFile,
+  renameNode,
+  moveByDrag,
+} = useLibrary()
 
 definePageMeta({
   layout: 'profile',
@@ -20,6 +27,12 @@ const currentFolderId = ref<string | null>(null)
 const selectedNode = ref<LibraryTreeNode | null>(null)
 const selectedFile = ref<LibraryFileNode | null>(null)
 const filePreviewOpen = ref(false)
+const dragPayload = ref<{
+  id: string
+  type: 'folder' | 'file'
+  parentId: string | null
+} | null>(null)
+const dragOverFolderId = ref<string | null>(null)
 
 const folderDialog = reactive({
   open: false,
@@ -211,6 +224,51 @@ const openNode = (node: LibraryTreeNode) => {
   filePreviewOpen.value = true
 }
 
+const onStartDragNode = (node: LibraryTreeNode, parentId: string | null) => {
+  dragPayload.value = {
+    id: node.id,
+    type: node.type,
+    parentId,
+  }
+}
+
+const onDragOverFolder = (event: DragEvent, folderId: string) => {
+  if (!dragPayload.value) {
+    return
+  }
+
+  event.preventDefault()
+  dragOverFolderId.value = folderId
+}
+
+const onDragLeaveFolder = (folderId: string) => {
+  if (dragOverFolderId.value !== folderId) {
+    return
+  }
+
+  dragOverFolderId.value = null
+}
+
+const onDropToFolder = async (destinationParentId: string | null) => {
+  if (!dragPayload.value) {
+    return
+  }
+
+  try {
+    await moveByDrag(dragPayload.value, destinationParentId)
+  } catch (error) {
+    console.error('Failed to move node', error)
+  } finally {
+    dragPayload.value = null
+    dragOverFolderId.value = null
+  }
+}
+
+const onDragEnd = () => {
+  dragPayload.value = null
+  dragOverFolderId.value = null
+}
+
 const isPreviewImage = computed(
   () => selectedFile.value?.mimeType?.startsWith('image/') ?? false,
 )
@@ -224,20 +282,24 @@ const isPreviewPdf = computed(
     <AppPageDrawers>
       <template #right>
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
-        <v-list v-else density="comfortable" nav>
-          <v-list-item
-            prepend-icon="mdi-home"
-            color="primary"
-            title="Root"
-            :active="currentFolderId === null"
-            @click="openFolder(null)"
-          />
+          <v-list v-else density="comfortable" nav>
+            <v-list-item
+              prepend-icon="mdi-home"
+              color="primary"
+              title="Root"
+              :active="currentFolderId === null"
+              @click="openFolder(null)"
+              @dragover.prevent="dragPayload ? $event.preventDefault() : undefined"
+              @drop.prevent="onDropToFolder(null)"
+            />
           <LibraryNode
             v-for="folder in sidebarFolders"
             :key="folder.id"
             :node="folder"
             :selected-id="currentFolderId"
             @select="openFolder($event.id)"
+            @start-drag="dragPayload = $event"
+            @drop-on-folder="onDropToFolder"
             @rename="openRenameDialog"
           />
         </v-list>
@@ -300,15 +362,27 @@ const isPreviewPdf = computed(
               class="library-grid__item"
               :class="{
               'library-grid__item--selected': selectedNode?.id === node.id,
+              'library-grid__item--drag-over':
+                node.type === 'folder' && dragOverFolderId === node.id,
             }"
+              draggable="true"
               @click="openNode(node)"
+              @dragstart="onStartDragNode(node, currentFolderId)"
+              @dragover="
+                node.type === 'folder' ? onDragOverFolder($event, node.id) : undefined
+              "
+              @dragleave="
+                node.type === 'folder' ? onDragLeaveFolder(node.id) : undefined
+              "
+              @drop="node.type === 'folder' ? onDropToFolder(node.id) : undefined"
+              @dragend="onDragEnd"
             >
               <v-icon
                 :color="node.type === 'folder' ? 'warning' : 'primary'"
                 :icon="node.type === 'folder' ? 'mdi-folder' : 'mdi-file-outline'"
                 size="48"
               />
-              <span class="library-grid__name">{{ node.name }}</span>
+              <span class="library-grid__name text-truncate">{{ node.name }}</span>
             </v-btn>
           </div>
 
@@ -482,11 +556,21 @@ const isPreviewPdf = computed(
   background: rgba(var(--v-theme-primary), 0.08);
 }
 
+.library-grid__item--drag-over {
+  border-color: rgb(var(--v-theme-success));
+  background: rgba(var(--v-theme-success), 0.1);
+}
+
 .library-grid__name {
+  display: inline-block;
+  width: 100%;
+  max-width: 140px;
   padding-left: 12px;
   font-size: 0.95rem;
   font-weight: 500;
-  word-break: break-word;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .file-preview {

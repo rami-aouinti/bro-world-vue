@@ -173,6 +173,13 @@ export function useLibrary() {
       return
     }
 
+    if (payload.type === 'folder' && payload.id === destinationParentId) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'A folder cannot be moved into itself.',
+      })
+    }
+
     if (
       payload.type === 'folder' &&
       destinationParentId &&
