@@ -17,8 +17,6 @@ const instructionLines = computed(() => [
   t('gamePage.drawer.instructions.line2'),
   t('gamePage.drawer.instructions.line3'),
   t('gamePage.drawer.instructions.line4'),
-  t('gamePage.drawer.instructions.line5'),
-  t('gamePage.drawer.instructions.line6'),
 ])
 
 const visibleSelection = computed(() =>
@@ -29,25 +27,6 @@ const visibleSelection = computed(() =>
 <template>
   <div class="games-right-panel">
     <v-list nav density="compact" class="app-right-drawer-list">
-      <template v-if="visibleSelection.length">
-        <v-list-subheader>
-          {{ t('gamePage.selection.summaryTitle') }}
-        </v-list-subheader>
-
-        <v-list-item
-          v-for="item in visibleSelection"
-          :key="item.key"
-          :title="item.label"
-          :subtitle="item.value"
-        >
-          <template #prepend>
-            <v-icon :icon="item.icon" />
-          </template>
-        </v-list-item>
-
-        <v-divider class="my-2" />
-      </template>
-
       <v-list-subheader>
         {{ t('gamePage.drawer.instructions.title') }}
       </v-list-subheader>
@@ -65,6 +44,25 @@ const visibleSelection = computed(() =>
           {{ line }}
         </v-list-item-title>
       </v-list-item>
+
+      <template v-if="visibleSelection.length">
+        <v-divider class="my-2" />
+
+        <v-list-subheader>
+          {{ t('gamePage.selection.summaryTitle') }}
+        </v-list-subheader>
+
+        <v-list-item
+          v-for="item in visibleSelection"
+          :key="item.key"
+          :title="item.label"
+          :subtitle="item.value"
+        >
+          <template #prepend>
+            <v-icon :icon="item.icon" />
+          </template>
+        </v-list-item>
+      </template>
     </v-list>
   </div>
 </template>
