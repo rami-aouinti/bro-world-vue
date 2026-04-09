@@ -32,8 +32,28 @@ interface AiGatewayRankingPayload {
   events?: RankedEvent[]
 }
 
+interface AiGatewayRequestBody {
+  model: string
+  temperature: number
+  response_format?: {
+    type: 'json_object'
+  }
+  messages: Array<{
+    role: 'system' | 'user'
+    content: string
+  }>
+}
+
 function cleanString(value: unknown) {
   return typeof value === 'string' ? value.trim() : ''
+}
+
+function clampText(value: string, maxLength: number) {
+  if (value.length <= maxLength) {
+    return value
+  }
+
+  return `${value.slice(0, maxLength - 1)}…`
 }
 
 function parseAndValidateRanking(content: string) {
@@ -89,43 +109,71 @@ export async function rankEventsWithAiGateway(
     return []
   }
 
-  const normalizedCandidates = candidates.map((candidate) => ({
-    title: cleanString(candidate.title),
-    summary: cleanString(candidate.summary),
+  const normalizedCandidates = candidates.slice(0, 10).map((candidate) => ({
+    title: clampText(cleanString(candidate.title), 180),
+    summary: clampText(cleanString(candidate.summary), 320),
     category: cleanString(candidate.category) || 'general',
     startAt: cleanString(candidate.startAt),
-    sourceUrl: cleanString(candidate.sourceUrl),
+    sourceUrl: clampText(cleanString(candidate.sourceUrl), 500),
   }))
 
-  const response = await $fetch<AiGatewayResponse>(
-    'https://ai-gateway.vercel.sh/v1/chat/completions',
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
+  const baseBody: AiGatewayRequestBody = {
+    model,
+    temperature: 0.2,
+    messages: [
+      {
+        role: 'system',
+        content:
+          'You are a newsroom editor. Return strict JSON only with this shape: {"events": [{"title": string, "summary": string, "category": string, "impact": "high"|"medium"|"low", "zone": string, "startAt": string, "sourceUrl": string}]}. Keep max 8 items.',
       },
-      body: {
-        model,
-        temperature: 0.2,
-        response_format: {
-          type: 'json_object',
+      {
+        role: 'user',
+        content: `Prioritize events with high public impact (conflicts, disasters, major sports matches, major political/economic announcements). Candidates: ${JSON.stringify(
+          normalizedCandidates,
+        )}`,
+      },
+    ],
+  }
+
+  let response: AiGatewayResponse
+
+  try {
+    response = await $fetch<AiGatewayResponse>(
+      'https://ai-gateway.vercel.sh/v1/chat/completions',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
         },
-        messages: [
-          {
-            role: 'system',
-            content:
-              'You are a newsroom editor. Return strict JSON only with this shape: {"events": [{"title": string, "summary": string, "category": string, "impact": "high"|"medium"|"low", "zone": string, "startAt": string, "sourceUrl": string}]}. Keep max 8 items.',
+        body: {
+          ...baseBody,
+          response_format: {
+            type: 'json_object',
           },
-          {
-            role: 'user',
-            content: `Prioritize events with high public impact (conflicts, disasters, major sports matches, major political/economic announcements). Candidates: ${JSON.stringify(
-              normalizedCandidates,
-            )}`,
-          },
-        ],
+        } satisfies AiGatewayRequestBody,
       },
-    },
-  )
+    )
+  } catch (error) {
+    const statusCode =
+      typeof error === 'object' && error && 'statusCode' in error
+        ? Number(error.statusCode)
+        : NaN
+
+    if (statusCode !== 400) {
+      throw error
+    }
+
+    response = await $fetch<AiGatewayResponse>(
+      'https://ai-gateway.vercel.sh/v1/chat/completions',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: baseBody,
+      },
+    )
+  }
 
   const content = response.choices?.[0]?.message?.content
 
