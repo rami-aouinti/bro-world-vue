@@ -101,7 +101,7 @@ onUnmounted(() => {
       <v-main>
         <AppPageDrawers>
           <template #left>
-            <GameDrawer />
+            <LeftDrawerUserEntry />
           </template>
         </AppPageDrawers>
         <v-container fluid class="px-2 pt-0 pb-0">
