@@ -147,8 +147,27 @@ const resolvedSurfaceComponentKey = computed(() =>
   resolveSurfaceComponentKey(selectedSurfaceComponentName.value),
 )
 
+const categorySurfaceFallbackKey = computed<KnownSurfaceComponentKey | null>(() => {
+  const normalizedCategoryHint = normalizeSurfaceComponentKey(
+    selectedCategory.value?.key ||
+    selectedCategory.value?.id ||
+    categoryParam.value,
+  )
+
+  if (!normalizedCategoryHint) return null
+
+  if (normalizedCategoryHint.includes('board')) return 'checkerssurface'
+  if (normalizedCategoryHint.includes('card')) return 'pokertablesurface'
+
+  return null
+})
+
+const fallbackSurfaceComponentKey = computed<KnownSurfaceComponentKey | null>(() =>
+  categorySurfaceFallbackKey.value,
+)
+
 const resolvedPlaySurfaceComponent = computed(() => {
-  const key = resolvedSurfaceComponentKey.value
+  const key = resolvedSurfaceComponentKey.value || fallbackSurfaceComponentKey.value
 
   if (!key) return null
 
@@ -156,7 +175,7 @@ const resolvedPlaySurfaceComponent = computed(() => {
 })
 
 const surfaceProps = computed<GameSurfaceProps>(() => {
-  const key = resolvedSurfaceComponentKey.value
+  const key = resolvedSurfaceComponentKey.value || fallbackSurfaceComponentKey.value
 
   if (key === 'checkerssurface') {
     return {
