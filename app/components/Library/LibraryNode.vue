@@ -5,11 +5,13 @@ interface Props {
   node: LibraryTreeNode
   level?: number
   selectedId?: string | null
+  parentId?: string | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
   level: 0,
   selectedId: null,
+  parentId: null,
 })
 
 const emit = defineEmits<{
@@ -45,7 +47,7 @@ const onDragStart = (event: DragEvent) => {
   const payload: LibraryDragPayload = {
     id: props.node.id,
     type: props.node.type,
-    parentId: null,
+    parentId: props.parentId,
   }
 
   emit('startDrag', payload)
@@ -111,6 +113,7 @@ const onDropFolder = (event: DragEvent) => {
         :node="child"
         :level="level + 1"
         :selected-id="selectedId"
+        :parent-id="node.id"
         @select="emit('select', $event)"
         @start-drag="emit('startDrag', $event)"
         @drop-on-folder="emit('dropOnFolder', $event)"
