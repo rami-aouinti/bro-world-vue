@@ -611,6 +611,7 @@
       "coins": "coins",
       "lastSessionTitle": "Last finished session",
       "finishDemo": "Finish demo",
+      "genericSurfaceFallback": "Generic surface for this game.",
       "authRequired": "You must be logged in to start a game."
     },
     "messages": {
