@@ -27,6 +27,9 @@ const breadcrumbs = [{ title: 'Games', disabled: true }]
 <template>
   <div>
     <AppPageDrawers>
+      <template #left>
+        <ProfileDrawer />
+      </template>
       <template #right>
         <v-list nav density="comfortable" class="app-right-drawer-list" />
       </template>
