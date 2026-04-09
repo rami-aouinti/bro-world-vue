@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 
 const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
+const theme = useTheme()
+const isLightTheme = computed(() => !theme.current.value.dark)
 
 definePageMeta({
   title: 'appbar.settings',
@@ -181,7 +183,11 @@ onUnmounted(() => {
           {{ t('pages.profileOverview.settingsSubtitle') }}
         </p>
 
-        <v-card rounded="xl" class="mb-6 pa-4">
+        <v-card
+          rounded="xl"
+          class="mb-6 pa-4 settings-card"
+          :class="{ 'settings-card--light': isLightTheme }"
+        >
           <div class="text-subtitle-1 font-weight-medium mb-3">Jump to section</div>
           <div class="d-flex flex-wrap ga-2">
             <v-chip
@@ -198,7 +204,12 @@ onUnmounted(() => {
         </v-card>
 
         <div class="d-flex flex-column ga-6">
-          <v-card id="profile" rounded="xl" class="pa-6 settings-section">
+          <v-card
+            id="profile"
+            rounded="xl"
+            class="pa-6 settings-section settings-card"
+            :class="{ 'settings-card--light': isLightTheme }"
+          >
             <div class="d-flex align-center justify-space-between flex-wrap ga-4">
               <div class="d-flex align-center ga-4">
                 <v-avatar size="72" :image="profile.avatar" />
@@ -214,7 +225,12 @@ onUnmounted(() => {
             </div>
           </v-card>
 
-          <v-card id="basic-info" rounded="xl" class="pa-6 settings-section">
+          <v-card
+            id="basic-info"
+            rounded="xl"
+            class="pa-6 settings-section settings-card"
+            :class="{ 'settings-card--light': isLightTheme }"
+          >
             <div class="text-h6 mb-4">Basic information</div>
             <v-row>
               <v-col v-for="field in basicInfoFields" :key="field.key" cols="12" md="6">
@@ -226,7 +242,12 @@ onUnmounted(() => {
             </div>
           </v-card>
 
-          <v-card id="change-password" rounded="xl" class="pa-6 settings-section">
+          <v-card
+            id="change-password"
+            rounded="xl"
+            class="pa-6 settings-section settings-card"
+            :class="{ 'settings-card--light': isLightTheme }"
+          >
             <div class="text-h6 mb-4">Change password</div>
             <v-row>
               <v-col cols="12" md="4">
@@ -245,7 +266,12 @@ onUnmounted(() => {
             <v-btn color="primary">Update password</v-btn>
           </v-card>
 
-          <v-card id="two-fa" rounded="xl" class="pa-6 settings-section">
+          <v-card
+            id="two-fa"
+            rounded="xl"
+            class="pa-6 settings-section settings-card"
+            :class="{ 'settings-card--light': isLightTheme }"
+          >
             <div class="text-h6 mb-4">Two-factor authentication</div>
             <v-list lines="two" class="pa-0">
               <v-list-item
@@ -262,7 +288,12 @@ onUnmounted(() => {
             </v-list>
           </v-card>
 
-          <v-card id="accounts" rounded="xl" class="pa-6 settings-section">
+          <v-card
+            id="accounts"
+            rounded="xl"
+            class="pa-6 settings-section settings-card"
+            :class="{ 'settings-card--light': isLightTheme }"
+          >
             <div class="text-h6 mb-4">Connected accounts</div>
             <v-list class="pa-0 mb-4">
               <v-list-item v-for="item in accountProviders" :key="item.provider" :title="item.provider" :subtitle="item.email">
@@ -277,7 +308,12 @@ onUnmounted(() => {
             </v-alert>
           </v-card>
 
-          <v-card id="notifications" rounded="xl" class="pa-6 settings-section">
+          <v-card
+            id="notifications"
+            rounded="xl"
+            class="pa-6 settings-section settings-card"
+            :class="{ 'settings-card--light': isLightTheme }"
+          >
             <div class="text-h6 mb-4">Notifications</div>
             <v-table>
               <thead>
@@ -301,7 +337,12 @@ onUnmounted(() => {
             </v-table>
           </v-card>
 
-          <v-card id="sessions" rounded="xl" class="pa-6 settings-section">
+          <v-card
+            id="sessions"
+            rounded="xl"
+            class="pa-6 settings-section settings-card"
+            :class="{ 'settings-card--light': isLightTheme }"
+          >
             <div class="d-flex align-center justify-space-between mb-4">
               <div class="text-h6">Sessions</div>
               <v-btn variant="text" color="primary">See more</v-btn>
@@ -320,7 +361,12 @@ onUnmounted(() => {
             </v-list>
           </v-card>
 
-          <v-card id="delete-account" rounded="xl" class="pa-6 settings-section">
+          <v-card
+            id="delete-account"
+            rounded="xl"
+            class="pa-6 settings-section settings-card"
+            :class="{ 'settings-card--light': isLightTheme }"
+          >
             <div class="text-h6 mb-2">Delete account</div>
             <p class="text-body-2 text-medium-emphasis mb-4">
               You can deactivate your account temporarily or permanently delete all associated data.
@@ -343,5 +389,15 @@ onUnmounted(() => {
 
 .settings-section {
   scroll-margin-top: 120px;
+}
+
+.settings-card {
+  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.settings-card--light {
+  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
+  border: 1px solid rgba(15, 23, 42, 0.1);
 }
 </style>
