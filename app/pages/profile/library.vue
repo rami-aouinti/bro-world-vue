@@ -9,7 +9,6 @@ const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 const {
   tree,
-  pending,
   folderOptions,
   fetchTree,
   createFolder,
@@ -270,36 +269,39 @@ const isPreviewPdf = computed(
           </v-breadcrumbs>
 
           <div class="d-flex text-end">
+            <input
+              ref="fileInput"
+              type="file"
+              class="d-none"
+              @change="onFileChange"
+            >
             <v-btn
               v-if="selectedNode"
               variant="text"
               icon="mdi-pencil"
               @click="openRenameDialog(selectedNode)"
-            >
-            </v-btn>
+            />
             <v-btn
               variant="text"
               color="primary"
               icon="mdi-upload"
               @click="onUploadClick"
-            >
-            </v-btn>
+            />
             <v-btn
               variant="text"
               color="warning"
               icon="mdi-folder-plus"
               @click="openCreateFolder"
-            >
-            </v-btn>
+            />
           </div>
         </div>
 
         <div class="library-grid">
           <v-btn
             v-for="node in currentItems"
+            :key="node.id"
             variant="text"
             block
-            :key="node.id"
             class="library-grid__item"
             :class="{
               'library-grid__item--selected': selectedNode?.id === node.id,
