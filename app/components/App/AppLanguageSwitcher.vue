@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { t, locale } = useI18n()
+const { t, te, locale, locales, setLocale } = useI18n({ useScope: 'global' })
 
 type LocaleOption = {
   title: string
@@ -46,7 +46,7 @@ const selectedLocale = computed(
         v-for="item in localeOptions"
         :key="item.value"
         :active="locale === item.value"
-        @click="locale = item.value"
+        @click="setLocale(item.value)"
       >
         <template #prepend>
           <span
