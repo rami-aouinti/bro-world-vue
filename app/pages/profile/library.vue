@@ -247,76 +247,78 @@ const isPreviewPdf = computed(
     <v-container fluid>
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
       <template v-else>
-        <div
-          class="d-flex flex-wrap justify-space-between align-center ga-3 mb-4"
-        >
-          <v-breadcrumbs :items="breadcrumbFolders" class="pa-0">
-            <template #item="{ item }">
+        <v-card class="library-card" variant="text">
+          <div
+            class="d-flex flex-wrap justify-space-between align-center ga-3 mb-4"
+          >
+            <v-breadcrumbs :items="breadcrumbFolders" class="pa-0">
+              <template #item="{ item }">
+                <v-btn
+                  variant="text"
+                  size="small"
+                  @click="openFolder(item.id === 'root' ? null : item.id)"
+                >
+                  {{ item.name }}
+                </v-btn>
+              </template>
+            </v-breadcrumbs>
+
+            <div class="d-flex text-end">
+              <input
+                ref="fileInput"
+                type="file"
+                class="d-none"
+                @change="onFileChange"
+              />
+              <v-btn
+                v-if="selectedNode"
+                variant="text"
+                icon="mdi-pencil"
+                @click="openRenameDialog(selectedNode)"
+              />
               <v-btn
                 variant="text"
-                size="small"
-                @click="openFolder(item.id === 'root' ? null : item.id)"
-              >
-                {{ item.name }}
-              </v-btn>
-            </template>
-          </v-breadcrumbs>
-
-          <div class="d-flex text-end">
-            <input
-              ref="fileInput"
-              type="file"
-              class="d-none"
-              @change="onFileChange"
-            />
-            <v-btn
-              v-if="selectedNode"
-              variant="text"
-              icon="mdi-pencil"
-              @click="openRenameDialog(selectedNode)"
-            />
-            <v-btn
-              variant="text"
-              color="primary"
-              icon="mdi-upload"
-              @click="onUploadClick"
-            />
-            <v-btn
-              variant="text"
-              color="warning"
-              icon="mdi-folder-plus"
-              @click="openCreateFolder"
-            />
+                color="primary"
+                icon="mdi-upload"
+                @click="onUploadClick"
+              />
+              <v-btn
+                variant="text"
+                color="warning"
+                icon="mdi-folder-plus"
+                @click="openCreateFolder"
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="library-grid">
-          <v-btn
-            v-for="node in currentItems"
-            :key="node.id"
-            variant="text"
-            block
-            class="library-grid__item"
-            :class="{
+          <div class="library-grid">
+            <v-btn
+              v-for="node in currentItems"
+              :key="node.id"
+              variant="text"
+              block
+              class="library-grid__item"
+              :class="{
               'library-grid__item--selected': selectedNode?.id === node.id,
             }"
-            @click="openNode(node)"
-          >
-            <v-icon
-              :color="node.type === 'folder' ? 'warning' : 'primary'"
-              :icon="node.type === 'folder' ? 'mdi-folder' : 'mdi-file-outline'"
-              size="48"
-            />
-            <span class="library-grid__name">{{ node.name }}</span>
-          </v-btn>
-        </div>
+              @click="openNode(node)"
+            >
+              <v-icon
+                :color="node.type === 'folder' ? 'warning' : 'primary'"
+                :icon="node.type === 'folder' ? 'mdi-folder' : 'mdi-file-outline'"
+                size="48"
+              />
+              <span class="library-grid__name">{{ node.name }}</span>
+            </v-btn>
+          </div>
 
-        <p
-          v-if="currentItems.length === 0"
-          class="text-medium-emphasis mb-0 mt-2"
-        >
-          {{ t('pages.profileOverview.libraryEmpty') }}
-        </p>
+          <p
+            v-if="currentItems.length === 0"
+            class="text-medium-emphasis mb-0 mt-2"
+          >
+            {{ t('pages.profileOverview.libraryEmpty') }}
+          </p>
+        </v-card>
       </template>
     </v-container>
 
@@ -426,6 +428,17 @@ const isPreviewPdf = computed(
 </template>
 
 <style scoped>
+.library-card {
+  padding: 16px;
+  min-height: calc(85vh - var(--v-layout-top, 0px));
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.18) 0%,
+    transparent 20%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
 .library-explorer {
   display: grid;
   grid-template-columns: minmax(220px, 280px) 1fr;

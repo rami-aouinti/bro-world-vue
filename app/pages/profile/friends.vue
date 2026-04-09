@@ -203,7 +203,6 @@ onMounted(() => fetchFriendsData())
                 <v-icon :icon="section.icon" />
                 {{ section.title }}
               </v-card-title>
-              <v-divider />
               <v-list v-if="section.items.length" class="bg-transparent">
                 <v-list-item
                   v-for="item in section.items"
