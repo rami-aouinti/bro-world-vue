@@ -330,6 +330,8 @@
       "libraryParentFolder": "Parent folder",
       "libraryRename": "Rename",
       "libraryName": "Name",
+      "libraryPreviewDownload": "Descargar",
+      "libraryPreviewUnsupported": "La vista previa no está disponible para este tipo de archivo.",
       "gamesTitle": "Games",
       "gamesSubtitle": "Access your games and activities.",
       "applicationsTitle": "Applications",

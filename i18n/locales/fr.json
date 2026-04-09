@@ -365,6 +365,8 @@
       "libraryParentFolder": "Dossier parent",
       "libraryRename": "Renommer",
       "libraryName": "Nom",
+      "libraryPreviewDownload": "Télécharger",
+      "libraryPreviewUnsupported": "La prévisualisation n’est pas disponible pour ce type de fichier.",
       "gamesTitle": "Games",
       "gamesSubtitle": "Access your games and activities.",
       "applicationsTitle": "Applications",

@@ -365,6 +365,8 @@
       "libraryParentFolder": "Parent folder",
       "libraryRename": "Rename",
       "libraryName": "Name",
+      "libraryPreviewDownload": "Download",
+      "libraryPreviewUnsupported": "Preview is not available for this file type.",
       "gamesTitle": "Games",
       "gamesSubtitle": "Access your games and activities.",
       "applicationsTitle": "Applications",
