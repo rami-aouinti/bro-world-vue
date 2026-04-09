@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import BoardTablePlaySurface from '~/components/games/play/BoardTablePlaySurface.vue'
-import CardTablePlaySurface from '~/components/games/play/CardTablePlaySurface.vue'
+import { defineAsyncComponent } from 'vue'
+import type { GameSurfaceProps } from '~/components/games/surfaces/types'
 import { Notify } from '~/stores/notification'
 
 definePageMeta({
@@ -41,27 +41,47 @@ const selectedGame = computed(() =>
   ),
 )
 
-function normalizeCategoryKey(categoryKey: string) {
-  const normalized = categoryKey.trim().toLowerCase()
+const gameSurfaceComponentMap = {
+  checkerssurface: defineAsyncComponent(
+    () => import('~/components/games/surfaces/CheckersSurface.vue'),
+  ),
+  unosurface: defineAsyncComponent(
+    () => import('~/components/games/surfaces/UnoSurface.vue'),
+  ),
+  pokertablesurface: defineAsyncComponent(
+    () => import('~/components/games/surfaces/PokerTableSurface.vue'),
+  ),
+  belotetablesurface: defineAsyncComponent(
+    () => import('~/components/games/surfaces/BeloteTableSurface.vue'),
+  ),
+} as const
 
-  if (['card', 'cards'].includes(normalized)) return 'card'
-  if (['board', 'boards'].includes(normalized)) return 'board'
+type KnownSurfaceComponentKey = keyof typeof gameSurfaceComponentMap
 
-  return ''
+function normalizeSurfaceComponentKey(rawValue: string) {
+  return rawValue.replace(/[^a-z0-9]/gi, '').toLowerCase()
 }
 
-const playSurfaceType = computed<'card' | 'board' | 'default'>(() => {
-  const normalizedCategory = normalizeCategoryKey(
-    selectedCategory.value?.key ||
-      selectedCategory.value?.name ||
-      categoryParam.value,
-  )
+function resolveSurfaceComponentKey(rawValue: string): KnownSurfaceComponentKey | null {
+  const normalized = normalizeSurfaceComponentKey(rawValue)
 
-  if (normalizedCategory === 'card') return 'card'
-  if (normalizedCategory === 'board') return 'board'
+  if (!normalized) return null
+  if (normalized in gameSurfaceComponentMap) {
+    return normalized as KnownSurfaceComponentKey
+  }
 
-  return 'default'
-})
+  const aliasMap: Record<string, KnownSurfaceComponentKey> = {
+    checkers: 'checkerssurface',
+    checkerstable: 'checkerssurface',
+    uno: 'unosurface',
+    pokertable: 'pokertablesurface',
+    poker: 'pokertablesurface',
+    belote: 'belotetablesurface',
+    belotetable: 'belotetablesurface',
+  }
+
+  return aliasMap[normalized] || null
+}
 
 const currentSession = computed(() => {
   if (catalogStore.currentSession?.sessionId === sessionId.value)
@@ -71,15 +91,24 @@ const currentSession = computed(() => {
 })
 
 const commonSurfaceProps = computed(() => ({
-  sessionId: currentSession.value?.sessionId || sessionId.value,
-  gameName:
-    selectedGame.value?.name ||
-    selectedGame.value?.key ||
-    gameParam.value ||
-    'Unknown game',
-  level: currentSession.value?.level || 'unknown',
-  status: currentSession.value?.status || 'pending',
+  session: currentSession.value
+    ? {
+        sessionId: currentSession.value.sessionId || sessionId.value,
+        level: currentSession.value.level || 'unknown',
+        status: currentSession.value.status || 'pending',
+        coins:
+          typeof currentSession.value.coins === 'number'
+            ? currentSession.value.coins
+            : 0,
+      }
+    : null,
+  players: [],
+  gameState: null as Record<string, unknown> | null,
 }))
+
+const gameDisplayName = computed(
+  () => selectedGame.value?.name || selectedGame.value?.key || gameParam.value || 'Unknown game',
+)
 
 
 const cardSeats = computed(() => [
@@ -104,6 +133,48 @@ const boardPlayers = computed(() => [
   { id: 'light', name: 'You', side: 'light' as const, score: '12', isActive: true },
   { id: 'dark', name: 'CPU', side: 'dark' as const, score: '12' },
 ])
+
+const selectedSurfaceComponentName = computed(
+  () => selectedGame.value?.playSurfaceComponent || selectedGame.value?.component || '',
+)
+
+const resolvedSurfaceComponentKey = computed(() =>
+  resolveSurfaceComponentKey(selectedSurfaceComponentName.value),
+)
+
+const resolvedPlaySurfaceComponent = computed(() => {
+  const key = resolvedSurfaceComponentKey.value
+
+  if (!key) return null
+
+  return gameSurfaceComponentMap[key]
+})
+
+const surfaceProps = computed<GameSurfaceProps>(() => {
+  const key = resolvedSurfaceComponentKey.value
+
+  if (key === 'checkerssurface') {
+    return {
+      session: commonSurfaceProps.value.session,
+      players: boardPlayers.value,
+      gameState: {
+        board: boardState.value,
+        selectedCell: { row: 5, col: 0 },
+        possibleMoves: [{ row: 4, col: 1 }],
+        lastMove: { from: { row: 2, col: 1 }, to: { row: 3, col: 2 } },
+      },
+    }
+  }
+
+  return {
+    session: commonSurfaceProps.value.session,
+    players: cardSeats.value,
+    gameState: {
+      communityCards: ['A♠', '10♥', '7♣', '2♦', 'K♠'],
+      playerCards: ['Q♣', 'Q♦'],
+    },
+  }
+})
 
 onMounted(async () => {
   const loaded = await ensureCatalogLoaded()
@@ -217,31 +288,17 @@ async function onFinish(result: 'win' | 'lose') {
     </AppPageDrawers>
     <v-container fluid class="arena-play-container">
       <div class="arena-surface-wrap">
-        <CardTablePlaySurface
-          v-if="playSurfaceType === 'card'"
-          class="arena-interactive"
-          :title="commonSurfaceProps.gameName"
-          :subtitle="`Session ${commonSurfaceProps.sessionId}`"
-          :seats="cardSeats"
-          :community-cards="['A♠', '10♥', '7♣', '2♦', 'K♠']"
-          :player-cards="['Q♣', 'Q♦']"
-        />
-        <BoardTablePlaySurface
-          v-else-if="playSurfaceType === 'board'"
-          class="arena-interactive"
-          :title="commonSurfaceProps.gameName"
-          :board="boardState"
-          :players="boardPlayers"
-          :selected-cell="{ row: 5, col: 0 }"
-          :possible-moves="[{ row: 4, col: 1 }]"
-          :last-move="{ from: { row: 2, col: 1 }, to: { row: 3, col: 2 } }"
+        <component
+          :is="resolvedPlaySurfaceComponent"
+          v-if="resolvedPlaySurfaceComponent"
+          v-bind="surfaceProps"
         />
         <v-card v-else rounded="xl" class="h-100 arena-interactive">
-          <v-card-title>{{ commonSurfaceProps.gameName }}</v-card-title>
+          <v-card-title>{{ gameDisplayName }}</v-card-title>
           <v-card-subtitle>Play surface</v-card-subtitle>
           <v-card-text class="py-8">
             <div class="text-medium-emphasis">
-              Surface non spécialisée pour cette catégorie.
+              Surface non spécialisée pour ce jeu.
             </div>
           </v-card-text>
         </v-card>
