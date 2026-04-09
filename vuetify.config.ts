@@ -60,10 +60,10 @@ export default defineVuetifyConfiguration({
     mobileBreakpoint: 'sm',
   },
   theme: {
-    defaultTheme: 'light',
+    defaultTheme: 'dark',
     themes: {
-      light: { colors: {} },
-      dark: { colors: {} },
+      light: { colors: { primary: '#0f6ea8' } },
+      dark: { colors: { primary: '#0f6ea8' } },
     },
   },
 })

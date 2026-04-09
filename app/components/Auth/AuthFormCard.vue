@@ -14,12 +14,11 @@ const props = withDefaults(
 const emit = defineEmits<{
   submit: [
     payload: {
-      name?: string
       username?: string
       email: string
       password: string
+      repeatPassword?: string
       remember?: boolean
-      termsAccepted?: boolean
     },
   ]
 }>()
@@ -27,14 +26,14 @@ const emit = defineEmits<{
 const isRegister = computed(() => props.mode === 'register')
 const { t } = useI18n()
 const form = reactive({
-  name: '',
   email: '',
   password: '',
+  repeatPassword: '',
   remember: true,
-  termsAccepted: false,
 })
 const valid = ref(false)
 const showPassword = ref(false)
+const showRepeatPassword = ref(false)
 const socialLoadingProvider = ref<SocialProvider | null>(null)
 const socialProviders: Array<{
   key: SocialProvider
@@ -63,16 +62,17 @@ const rules = {
   email: (v: string) =>
     /.+@.+\..+/.test(v) || t('auth.validation.invalidEmail'),
   password: (v: string) => v.length >= 6 || t('auth.validation.minPassword'),
+  repeatPassword: (v: string) =>
+    v === form.password || t('auth.validation.passwordMismatch'),
 }
 
 function onSubmit() {
   emit('submit', {
-    name: isRegister.value ? form.name : undefined,
     username: !isRegister.value ? form.email : undefined,
     email: form.email,
     password: form.password,
+    repeatPassword: isRegister.value ? form.repeatPassword : undefined,
     remember: !isRegister.value ? form.remember : undefined,
-    termsAccepted: isRegister.value ? form.termsAccepted : undefined,
   })
 }
 
@@ -84,12 +84,9 @@ async function onSocialLogin(provider: SocialProvider) {
   socialLoadingProvider.value = provider
 
   try {
-    if (provider === 'github') {
-      await navigateTo(`/api/auth/${provider}`, { external: true })
-      return
-    }
-
-    Notify.warning(t('auth.social.comingSoon'))
+    await navigateTo(`/api/auth/${provider}`, { external: true })
+  } catch {
+    Notify.error(t('auth.notifications.loginError'))
   } finally {
     socialLoadingProvider.value = null
   }
@@ -142,18 +139,6 @@ async function onSocialLogin(provider: SocialProvider) {
         </div>
 
         <v-text-field
-          v-if="isRegister"
-          v-model="form.name"
-          :label="t('auth.fields.name')"
-          prepend-inner-icon="mdi-account-outline"
-          variant="outlined"
-          density="compact"
-          color="primary"
-          :rules="[rules.required]"
-          class="mb-1"
-        />
-
-        <v-text-field
           v-model="form.email"
           :label="
             isRegister ? t('auth.fields.email') : t('auth.fields.username')
@@ -185,6 +170,23 @@ async function onSocialLogin(provider: SocialProvider) {
           @click:append-inner="showPassword = !showPassword"
         />
 
+        <v-text-field
+          v-if="isRegister"
+          v-model="form.repeatPassword"
+          :type="showRepeatPassword ? 'text' : 'password'"
+          :label="t('auth.fields.repeatPassword')"
+          prepend-inner-icon="mdi-lock-check-outline"
+          :append-inner-icon="
+            showRepeatPassword ? 'mdi-eye-off-outline' : 'mdi-eye-outline'
+          "
+          density="compact"
+          variant="outlined"
+          color="primary"
+          :rules="[rules.required, rules.repeatPassword]"
+          class="mb-1"
+          @click:append-inner="showRepeatPassword = !showRepeatPassword"
+        />
+
         <div
           v-if="!isRegister"
           class="d-flex align-center justify-space-between mb-1"
@@ -203,33 +205,19 @@ async function onSocialLogin(provider: SocialProvider) {
           </NuxtLink>
         </div>
 
-        <v-checkbox
-          v-else
-          v-model="form.termsAccepted"
-          color="primary"
-          :rules="[(v: boolean) => v || t('auth.validation.acceptTerms')]"
-        >
-          <template #label>
-            {{ t('auth.register.acceptPrefix') }}
-            <a href="#" class="text-primary font-weight-medium ml-1">{{
-              t('auth.register.termsLink')
-            }}</a>
-          </template>
-        </v-checkbox>
-
         <v-btn
           type="submit"
-          color="primary"
-          size="large"
           block
-          class="bg-primary text-none"
+          size="large"
+          color="primary"
           :loading="loading"
+          class="bg-primary text-none"
           :disabled="!valid"
         >
           {{ isRegister ? t('auth.register.submit') : t('auth.login.submit') }}
         </v-btn>
 
-        <div class="text-center text-body-2 mt-2">
+        <div class="text-center text-body-2 mt-4 text-medium-emphasis">
           <slot name="switch" />
         </div>
       </v-form>
@@ -239,17 +227,16 @@ async function onSocialLogin(provider: SocialProvider) {
 
 <style scoped>
 .auth-card {
-  overflow: hidden;
+  backdrop-filter: blur(6px);
 }
 
 .social-icon-btn {
-  width: 48px;
-  height: 48px;
+  width: 42px;
+  height: 42px;
 }
 
 .social-divider {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
   align-items: center;
 }
 </style>

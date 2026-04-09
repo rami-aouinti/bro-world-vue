@@ -1,15 +1,12 @@
-import type { SessionUser } from '~/types/session'
+import {
+  createSessionFromToken,
+  fetchTokenWithPassword,
+} from '../utils/authSession'
 
 type LoginBody = {
   username?: string
   password?: string
 }
-
-type TokenResponse = {
-  token: string
-}
-
-type UserProfile = Omit<SessionUser, 'token'>
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<LoginBody>(event)
@@ -21,39 +18,12 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const runtimeConfig = useRuntimeConfig(event)
+  const token = await fetchTokenWithPassword(event, {
+    username: body.username,
+    password: body.password,
+  })
 
-  const tokenResponse = await $fetch<TokenResponse>(
-    `${runtimeConfig.public.apiBaseUrl}/auth/get_token`,
-    {
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: {
-        username: body.username,
-        password: body.password,
-      },
-    },
-  )
-
-  const userProfile = await $fetch<UserProfile>(
-    `${runtimeConfig.public.apiBaseUrl}/profile`,
-    {
-      headers: {
-        accept: 'application/json',
-        Authorization: `Bearer ${tokenResponse.token}`,
-      },
-    },
-  )
-
-  const user = {
-    ...userProfile,
-    token: tokenResponse.token,
-  }
-
-  await setUserSession(event, { user })
+  const user = await createSessionFromToken(event, token)
 
   return { user }
 })

@@ -230,20 +230,23 @@
       "name": "Nom complet",
       "username": "Nom d'utilisateur",
       "email": "E-mail",
-      "password": "Mot de passe"
+      "password": "Mot de passe",
+      "repeatPassword": "Confirmer le mot de passe"
     },
     "validation": {
       "required": "Ce champ est obligatoire",
       "invalidEmail": "Adresse e-mail invalide",
       "minPassword": "Au moins 6 caractères",
-      "acceptTerms": "Merci d'accepter les conditions"
+      "acceptTerms": "Merci d'accepter les conditions",
+      "passwordMismatch": "Les mots de passe ne correspondent pas"
     },
     "notifications": {
       "loginSuccess": "Connexion réussie (démo).",
       "loginError": "Échec de la connexion. Vérifiez votre identifiant et mot de passe.",
       "registerSuccess": "Compte créé (démo).",
       "forgotPasswordSuccess": "E-mail de réinitialisation envoyé (démo).",
-      "resetLinkSent": "E-mail de réinitialisation envoyé (démo)."
+      "resetLinkSent": "E-mail de réinitialisation envoyé (démo).",
+      "registerError": "L'inscription a échoué. Vérifiez vos informations."
     },
     "forgotPassword": {
       "title": "Mot de passe oublié ?",
