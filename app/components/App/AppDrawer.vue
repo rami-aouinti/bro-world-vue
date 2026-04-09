@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
+import LeftDrawerUserEntry from '~/components/App/LeftDrawerUserEntry.vue'
 
 const { t } = useI18n()
 const isPageSkeletonLoading = useState('page-skeleton-loading', () => true)
