@@ -587,7 +587,11 @@
       "title": "Levels"
     },
     "selection": {
-      "summaryTitle": "Current selection"
+      "summaryTitle": "Current selection",
+      "category": "Category",
+      "subCategory": "Subcategory",
+      "game": "Game",
+      "level": "Level"
     },
     "states": {
       "empty": "No data available.",
@@ -845,6 +849,18 @@
         "selectCategory": "Select a category to view sub-categories.",
         "selectSubCategory": "Select a sub-category to view games.",
         "ready": "Ready to play"
+      }
+    },
+    "drawer": {
+      "topScores": "Top Scores",
+      "instructions": {
+        "title": "How to play",
+        "line1": "Select a category to start your journey.",
+        "line2": "Choose a subcategory to refine your game style.",
+        "line3": "Open a game and pick the level that matches your challenge.",
+        "line4": "Set player count and opponent type before starting.",
+        "line5": "Press Start to launch your session instantly.",
+        "line6": "Your current selections stay visible above at every step."
       }
     }
   }

@@ -9,6 +9,8 @@ const { t } = useI18n()
 const { lgAndUp } = useDisplay()
 const isLayoutReady = ref(false)
 
+const isPlayRoute = computed(() => route.path.endsWith('/play'))
+
 const AppDrawerLazy = defineAsyncComponent(
   () => import('~/components/App/AppDrawer.vue'),
 )
@@ -107,7 +109,8 @@ onUnmounted(() => {
       <v-main>
         <AppPageDrawers>
           <template #left>
-            <AppLeftDrawerUserEntry />
+            <AppLeftDrawerUserEntry v-if="isPlayRoute" />
+            <GamesDrawersLeftPanel v-else />
           </template>
         </AppPageDrawers>
         <v-container fluid class="px-2 pt-0 pb-0">

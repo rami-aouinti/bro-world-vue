@@ -552,7 +552,11 @@
       "title": "Niveles"
     },
     "selection": {
-      "summaryTitle": "Selección actual"
+      "summaryTitle": "Selección actual",
+      "category": "Categoría",
+      "subCategory": "Subcategoría",
+      "game": "Juego",
+      "level": "Nivel"
     },
     "states": {
       "empty": "No hay datos disponibles.",
@@ -810,6 +814,18 @@
         "selectCategory": "Selecciona una categoría para ver las subcategorías.",
         "selectSubCategory": "Selecciona una subcategoría para ver los juegos.",
         "ready": "Listo para jugar"
+      }
+    },
+    "drawer": {
+      "topScores": "Mejores puntuaciones",
+      "instructions": {
+        "title": "Cómo jugar",
+        "line1": "Selecciona una categoría para empezar tu recorrido.",
+        "line2": "Elige una subcategoría para definir mejor tu estilo de juego.",
+        "line3": "Abre un juego y selecciona el nivel según tu reto.",
+        "line4": "Configura la cantidad de jugadores y el tipo de oponente antes de iniciar.",
+        "line5": "Pulsa Iniciar para lanzar la sesión al instante.",
+        "line6": "Tus selecciones actuales permanecen visibles arriba en cada paso."
       }
     }
   }
