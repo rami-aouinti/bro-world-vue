@@ -78,7 +78,14 @@ async function onStart() {
   try {
     const response = await catalogStore.startSession(
       selectedGame.value.id,
-      selectedLevelValue.value,
+      {
+        level: selectedLevelValue.value,
+        mode: 'solo',
+        playerCount: 1,
+        opponentType: 'none',
+        seatCount: 1,
+        allowedPlayerCounts: [1],
+      },
     )
     const createdSessionId =
       response.session.id ??
