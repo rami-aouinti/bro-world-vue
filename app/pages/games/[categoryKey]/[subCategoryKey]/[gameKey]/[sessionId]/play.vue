@@ -48,6 +48,9 @@ const gameSurfaceComponentMap = {
   unosurface: defineAsyncComponent(
     () => import('~/components/games/surfaces/UnoSurface.vue'),
   ),
+  ramisurface: defineAsyncComponent(
+    () => import('~/components/games/surfaces/PokerTableSurface.vue'),
+  ),
   pokertablesurface: defineAsyncComponent(
     () => import('~/components/games/surfaces/PokerTableSurface.vue'),
   ),
@@ -74,6 +77,8 @@ function resolveSurfaceComponentKey(rawValue: string): KnownSurfaceComponentKey 
     checkers: 'checkerssurface',
     checkerstable: 'checkerssurface',
     uno: 'unosurface',
+    rami: 'ramisurface',
+    ramitable: 'ramisurface',
     pokertable: 'pokertablesurface',
     poker: 'pokertablesurface',
     belote: 'belotetablesurface',

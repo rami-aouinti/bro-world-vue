@@ -14,6 +14,27 @@ function normalizeSessionLevel(level: string) {
   return normalizedLevel
 }
 
+function normalizeSurfaceComponentValue(rawValue: unknown) {
+  if (typeof rawValue !== 'string') return null
+
+  const normalized = rawValue.replace(/[^a-z0-9]/gi, '').toLowerCase()
+  if (!normalized) return null
+
+  const aliasMap: Record<string, string> = {
+    checkers: 'checkerssurface',
+    checkerstable: 'checkerssurface',
+    uno: 'unosurface',
+    rami: 'ramisurface',
+    ramitable: 'ramisurface',
+    poker: 'pokertablesurface',
+    pokertable: 'pokertablesurface',
+    belote: 'belotetablesurface',
+    belotetable: 'belotetablesurface',
+  }
+
+  return aliasMap[normalized] || normalized
+}
+
 interface GameItem {
   id: string
   name?: string
@@ -126,7 +147,7 @@ function normalizeGameItem(raw: unknown): GameItem | null {
       typeof item.thumbnailUrl === 'string' ? item.thumbnailUrl : null,
     img: typeof item.img === 'string' ? item.img : null,
     icon: typeof item.icon === 'string' ? item.icon : null,
-    component: typeof item.component === 'string' ? item.component : null,
+    component: normalizeSurfaceComponentValue(item.component),
     enabled: typeof item.enabled === 'boolean' ? item.enabled : true,
     minPlayers,
     maxPlayers,
@@ -138,11 +159,10 @@ function normalizeGameItem(raw: unknown): GameItem | null {
     requiresOpponent:
       typeof item.requiresOpponent === 'boolean' ? item.requiresOpponent : false,
     playSurfaceComponent:
-      typeof item.playSurfaceComponent === 'string'
-        ? item.playSurfaceComponent
-        : typeof item.component === 'string'
-          ? item.component
-          : null,
+      normalizeSurfaceComponentValue(item.playSurfaceComponent) ||
+      normalizeSurfaceComponentValue(item.component) ||
+      normalizeSurfaceComponentValue(item.key) ||
+      normalizeSurfaceComponentValue(item.id),
   }
 }
 
