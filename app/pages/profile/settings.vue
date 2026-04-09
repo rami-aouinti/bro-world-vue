@@ -272,7 +272,7 @@ onUnmounted(() => {
               </v-col>
             </v-row>
             <div class="mt-4">
-              <v-btn color="primary">Save changes</v-btn>
+              <v-btn variant="outlined" color="primary">Save changes</v-btn>
             </div>
           </v-card>
 
@@ -317,7 +317,7 @@ onUnmounted(() => {
                 :title="item"
               />
             </v-list>
-            <v-btn color="primary">Update password</v-btn>
+            <v-btn variant="outlined" color="primary">Update password</v-btn>
           </v-card>
 
           <v-card
