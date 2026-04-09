@@ -178,31 +178,6 @@ onUnmounted(() => {
     <v-container fluid>
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
       <template v-else>
-        <h1 class="text-h4 mb-2">{{ t('appbar.settings') }}</h1>
-        <p class="text-body-1 text-medium-emphasis mb-6">
-          {{ t('pages.profileOverview.settingsSubtitle') }}
-        </p>
-
-        <v-card
-          rounded="xl"
-          class="mb-6 pa-4 settings-card"
-          :class="{ 'settings-card--light': isLightTheme }"
-        >
-          <div class="text-subtitle-1 font-weight-medium mb-3">Jump to section</div>
-          <div class="d-flex flex-wrap ga-2">
-            <v-chip
-              v-for="section in settingsSections"
-              :key="section.id"
-              :href="`#${section.id}`"
-              prepend-icon="mdi-link-variant"
-              variant="tonal"
-            >
-              <v-icon start :icon="section.icon" />
-              {{ section.label }}
-            </v-chip>
-          </div>
-        </v-card>
-
         <div class="d-flex flex-column ga-6">
           <v-card
             id="profile"
@@ -273,7 +248,7 @@ onUnmounted(() => {
             :class="{ 'settings-card--light': isLightTheme }"
           >
             <div class="text-h6 mb-4">Two-factor authentication</div>
-            <v-list lines="two" class="pa-0">
+            <v-list lines="two" class="bg-transparent pa-0">
               <v-list-item
                 v-for="item in twoFaActions"
                 :key="item.title"
@@ -295,7 +270,7 @@ onUnmounted(() => {
             :class="{ 'settings-card--light': isLightTheme }"
           >
             <div class="text-h6 mb-4">Connected accounts</div>
-            <v-list class="pa-0 mb-4">
+            <v-list class="bg-transparent pa-0 mb-4">
               <v-list-item v-for="item in accountProviders" :key="item.provider" :title="item.provider" :subtitle="item.email">
                 <template #append>
                   <v-switch :model-value="item.connected" hide-details inset color="primary" />
@@ -315,14 +290,14 @@ onUnmounted(() => {
             :class="{ 'settings-card--light': isLightTheme }"
           >
             <div class="text-h6 mb-4">Notifications</div>
-            <v-table>
+            <v-table class="bg-transparent" density="compact">
               <thead>
                 <tr>
                   <th>Type</th>
-                  <th class="text-center">Activity</th>
-                  <th class="text-center">Email</th>
-                  <th class="text-center">Push</th>
-                  <th class="text-center">SMS</th>
+                  <th>Activity</th>
+                  <th>Email</th>
+                  <th>Push</th>
+                  <th>SMS</th>
                 </tr>
               </thead>
               <tbody>
@@ -347,7 +322,7 @@ onUnmounted(() => {
               <div class="text-h6">Sessions</div>
               <v-btn variant="text" color="primary">See more</v-btn>
             </div>
-            <v-list class="pa-0">
+            <v-list class="bg-transparent pa-0">
               <v-list-item
                 v-for="session in sessions"
                 :key="session.device"
@@ -373,7 +348,7 @@ onUnmounted(() => {
             </p>
             <div class="d-flex ga-3 flex-wrap">
               <v-btn variant="outlined" color="warning">Deactivate account</v-btn>
-              <v-btn color="error">Delete account</v-btn>
+              <v-btn variant="outlined" color="error">Delete account</v-btn>
             </div>
           </v-card>
         </div>
