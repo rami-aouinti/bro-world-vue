@@ -492,7 +492,7 @@ onUnmounted(() => {
         <v-alert v-if="errorMessage" type="error" class="mb-4" variant="tonal">
           {{ errorMessage }}
         </v-alert>
-        <v-card variant="text">
+        <v-card variant="text" class="postcard-gradient-card">
           <v-card-text>
             <v-skeleton-loader
               v-if="isLoading"
