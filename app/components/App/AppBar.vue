@@ -200,7 +200,7 @@ function isMenuActive(paths: string[]) {
 <template>
   <v-app-bar
     :class="{ 'blur shadow-blur': !isDark }"
-    class="app-bar app-bar--kind-glass px-0 border-radius-xl toolbar-content-padding-y-none v-sheet v-toolbar v-toolbar--flat v-app-bar bg-transparent position-sticky top-1 z-index-sticky"
+    class="app-bar app-bar--kind-glass px-0 border-radius-xl toolbar-content-padding-y-none v-sheet v-toolbar v-toolbar--flat v-app-bar bg-transparent"
   >
     <div class="app-top-bar__left mx-4">
       <v-icon
@@ -474,7 +474,13 @@ function isMenuActive(paths: string[]) {
 
 <style scoped>
 .app-bar {
-  margin: var(--ui-spacing-sm) var(--ui-spacing-md);
+  --app-right-drawer-width: 300px;
+  --app-right-drawer-gap: 16px;
+  position: fixed;
+  top: var(--ui-spacing-sm);
+  left: var(--ui-spacing-md);
+  right: var(--ui-spacing-md);
+  z-index: 1100;
   padding-inline: var(--ui-spacing-lg);
 }
 
@@ -638,6 +644,14 @@ function isMenuActive(paths: string[]) {
   font-weight: 600;
 }
 
+@media (min-width: 1280px) {
+  .app-bar {
+    right: calc(
+      var(--app-right-drawer-width) + var(--app-right-drawer-gap) +
+        var(--ui-spacing-md)
+    );
+  }
+}
 @media (max-width: 1100px) {
   .app-top-bar__mega-menu-grid {
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
