@@ -60,7 +60,7 @@ const registry = useDrawerSlotRegistry()
 const isDrawerInteractiveReady = ref(false)
 const drawer = computed({
   get() {
-    return drawerState.value || !mobile.value
+    return drawerState.value
   },
   set(val: boolean) {
     drawerState.value = val
