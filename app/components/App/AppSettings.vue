@@ -5,7 +5,7 @@ import { useStorage } from '@vueuse/core'
 const { t } = useI18n()
 
 const theme = useTheme()
-const primary = useStorage('theme-primary', '#1697f6')
+const primary = useStorage('theme-primary', '#0f6ea8')
 const rounded = useStorage('theme-rounded', 'md')
 const shadow = useStorage('theme-shadow', 'none')
 
@@ -72,7 +72,7 @@ const color = computed({
 })
 
 const colors = [
-  ['#1697f6', '#ff9800'],
+  ['#0f6ea8', '#ff9800'],
   ['#4CAF50', '#FF5252'],
   ['#9C27b0', '#E91E63'],
   ['#304156', '#3f51b5'],

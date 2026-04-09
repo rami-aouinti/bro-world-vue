@@ -7,10 +7,45 @@ definePageMeta({
 })
 
 const { t } = useI18n()
+const { fetch: refreshSession, loggedIn } = useUserSession()
+const loading = ref(false)
 
-function onSubmit() {
-  Notify.success(t('auth.notifications.registerSuccess'))
-  navigateTo('/admin')
+async function onSubmit(payload: {
+  email: string
+  password: string
+  repeatPassword?: string
+}) {
+  if (!payload.repeatPassword) {
+    Notify.error(t('auth.validation.required'))
+    return
+  }
+
+  loading.value = true
+
+  try {
+    await $fetch('/api/register', {
+      method: 'POST',
+      body: {
+        email: payload.email,
+        password: payload.password,
+        repeatPassword: payload.repeatPassword,
+      },
+    })
+
+    await refreshSession()
+
+    if (!loggedIn.value) {
+      Notify.error(t('auth.notifications.registerError'))
+      return
+    }
+
+    Notify.success(t('auth.notifications.registerSuccess'))
+    await navigateTo('/')
+  } catch {
+    Notify.error(t('auth.notifications.registerError'))
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -18,7 +53,7 @@ function onSubmit() {
   <v-container fluid class="auth-page pa-6 pa-md-10 d-flex align-center justify-center">
     <v-row class="fill-height" align="center" justify="center">
       <v-col cols="12" md="7" lg="5">
-        <AuthFormCard mode="register" @submit="onSubmit">
+        <AuthFormCard mode="register" :loading="loading" @submit="onSubmit">
           <template #switch>
             {{ t('auth.register.switchPrompt') }}
             <NuxtLink to="/login" class="text-primary font-weight-bold">

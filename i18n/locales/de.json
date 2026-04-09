@@ -230,20 +230,23 @@
       "name": "Vollständiger Name",
       "username": "Benutzername",
       "email": "E-Mail",
-      "password": "Passwort"
+      "password": "Passwort",
+      "repeatPassword": "Passwort wiederholen"
     },
     "validation": {
       "required": "Dieses Feld ist erforderlich",
       "invalidEmail": "Ungültige E-Mail-Adresse",
       "minPassword": "Mindestens 6 Zeichen",
-      "acceptTerms": "Bitte akzeptiere die Bedingungen"
+      "acceptTerms": "Bitte akzeptiere die Bedingungen",
+      "passwordMismatch": "Passwörter stimmen nicht überein"
     },
     "notifications": {
       "loginSuccess": "Erfolgreich angemeldet (Demo).",
       "loginError": "Anmeldung fehlgeschlagen. Prüfe Benutzername und Passwort.",
       "registerSuccess": "Konto erfolgreich erstellt (Demo).",
       "forgotPasswordSuccess": "E-Mail zum Zurücksetzen gesendet (Demo).",
-      "resetLinkSent": "E-Mail zum Zurücksetzen gesendet (Demo)."
+      "resetLinkSent": "E-Mail zum Zurücksetzen gesendet (Demo).",
+      "registerError": "Registrierung fehlgeschlagen. Bitte überprüfe deine Angaben."
     },
     "forgotPassword": {
       "title": "Passwort vergessen?",

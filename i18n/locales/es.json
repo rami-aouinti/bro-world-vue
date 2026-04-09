@@ -229,20 +229,23 @@
       "name": "Full name",
       "username": "Username",
       "email": "Email",
-      "password": "Password"
+      "password": "Password",
+      "repeatPassword": "Repetir contraseña"
     },
     "validation": {
       "required": "This field is required",
       "invalidEmail": "Invalid email address",
       "minPassword": "At least 6 characters",
-      "acceptTerms": "Please accept the terms"
+      "acceptTerms": "Please accept the terms",
+      "passwordMismatch": "Las contraseñas no coinciden"
     },
     "notifications": {
       "loginSuccess": "Signed in successfully (demo).",
       "loginError": "Sign in failed. Check your username and password.",
       "registerSuccess": "Account created successfully (demo).",
       "forgotPasswordSuccess": "Correo de restablecimiento enviado (demo).",
-      "resetLinkSent": "Correo de restablecimiento enviado (demo)."
+      "resetLinkSent": "Correo de restablecimiento enviado (demo).",
+      "registerError": "Error al registrarse. Verifica tus datos."
     },
     "forgotPassword": {
       "title": "¿Olvidaste tu contraseña?",
