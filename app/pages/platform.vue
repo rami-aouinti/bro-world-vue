@@ -148,12 +148,15 @@ function resetFilters() {
     <AppPageDrawers>
       <template #left>
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
-        <div v-else class="pa-2 d-flex flex-column ga-2">
-          <div>
-            <div class="text-overline text-medium-emphasis mb-1">
-              {{ t('platform.filters') }}
-            </div>
-          </div>
+        <div v-else class="d-flex flex-column ga-2">
+          <v-btn
+            variant="tonal"
+            color="primary"
+            prepend-icon="mdi-plus-outline"
+            @click="resetFilters"
+          >
+            Create Platform
+          </v-btn>
 
           <v-text-field
             v-model="searchTerm"

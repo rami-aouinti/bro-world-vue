@@ -34,38 +34,36 @@ const profileNavItems = [
 </script>
 
 <template>
-  <v-card-text>
-    <NuxtLink
-      to="/profile"
-      class="d-flex align-center text-center ga-3"
-      style="text-decoration: none; color: inherit"
-    >
-      <div class="d-flex align-center text-center ga-3">
-        <v-avatar size="32">
-          <v-img :src="avatarUrl" :alt="`${fullName} avatar`" />
-        </v-avatar>
-        <div>
-          <h3>{{ fullName }}</h3>
-        </div>
+  <NuxtLink
+    to="/profile"
+    class="d-flex align-center text-center ga-3"
+    style="text-decoration: none; color: inherit"
+  >
+    <div class="d-flex align-center text-center ga-3">
+      <v-avatar size="32">
+        <v-img :src="avatarUrl" :alt="`${fullName} avatar`" />
+      </v-avatar>
+      <div>
+        <h3>{{ fullName }}</h3>
       </div>
-    </NuxtLink>
+    </div>
+  </NuxtLink>
 
-    <v-divider class="my-2" />
+  <v-divider class="my-1" />
 
-    <v-list nav density="compact" class="px-0 app-left-drawer-list">
-      <v-list-item
-        v-for="item in profileNavItems"
-        :key="item.to"
-        :to="item.to"
-        :prepend-icon="item.icon"
-        :title="item.label"
-        :active="route.path === item.to"
-        active-class="text-primary"
-        color="primary"
-        class="px-0"
-      />
-    </v-list>
-  </v-card-text>
+  <v-list nav density="compact" class="px-0 app-left-drawer-list">
+    <v-list-item
+      v-for="item in profileNavItems"
+      :key="item.to"
+      :to="item.to"
+      :prepend-icon="item.icon"
+      :title="item.label"
+      :active="route.path === item.to"
+      active-class="text-primary"
+      color="primary"
+      class="px-0"
+    />
+  </v-list>
 </template>
 <style scoped>
 .app-left-drawer-list {
