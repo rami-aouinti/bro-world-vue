@@ -444,6 +444,7 @@ function resetFilters() {
   max-height: 320px;
   overflow: hidden;
   border: 1px solid rgba(100, 116, 139, 0.15);
+  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
   transition:
     transform 0.25s ease,
     box-shadow 0.25s ease,
@@ -458,7 +459,6 @@ function resetFilters() {
 .platform-card:hover {
   transform: translateY(-6px) scale(1.01);
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
-  border-color: rgba(99, 102, 241, 0.4);
 }
 
 .platform-card:hover .platform-card__image {
@@ -467,7 +467,7 @@ function resetFilters() {
 
 .platform-card--selected {
   border-color: rgb(var(--v-theme-primary));
-  box-shadow: 0 16px 38px rgba(99, 102, 241, 0.22);
+  box-shadow: 0 16px 38px rgba(var(--v-theme-primary));
 }
 
 .platform-card__overlay {
