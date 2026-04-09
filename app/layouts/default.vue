@@ -104,7 +104,11 @@ onUnmounted(() => {
         </v-container>
         <slot />
       </v-main>
-      <AppFooter />
+      <v-defaults-provider
+        :defaults="{ VBtn: { variant: 'text', size: 'x-small' } }"
+      >
+        <AppSettings />
+      </v-defaults-provider>
     </v-app>
   </div>
 </template>
@@ -149,7 +153,7 @@ onUnmounted(() => {
 
 .v-main {
   padding-top: 104px;
-  padding-bottom: 56px;
+  padding-bottom: 16px;
   overflow-y: visible;
   transition-property: padding;
   min-height: 100vh;
@@ -163,7 +167,7 @@ onUnmounted(() => {
 @media (max-width: 960px) {
   .v-main {
     padding-top: 92px;
-    padding-bottom: 52px;
+    padding-bottom: 12px;
   }
 }
 </style>
