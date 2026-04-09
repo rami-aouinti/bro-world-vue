@@ -102,7 +102,7 @@ const menuShow = ref(false)
               icon="mdi-cog"
               size="56"
               elevation="6"
-              color="surface"
+              color="primary"
               :aria-label="t('appbar.themePalette')"
               v-bind="mergeProps(menu, tooltip)"
             />
@@ -113,7 +113,7 @@ const menuShow = ref(false)
 
     <v-card width="360">
       <v-card-text>
-        <v-label class="mb-3 d-inline-block">{{
+        <v-label class="mb-2 d-block text-center">{{
           t('appbar.themePalette')
         }}</v-label>
 
@@ -127,8 +127,6 @@ const menuShow = ref(false)
           :swatches="colors"
         />
 
-        <v-divider class="my-4" />
-
         <v-label class="mb-2 d-block text-center">{{
           t('appbar.rounded.label')
         }}</v-label>
@@ -136,7 +134,7 @@ const menuShow = ref(false)
           <v-btn-toggle
             v-model="rounded"
             mandatory
-            density="comfortable"
+            density="compact"
             class="settings-toggle"
             divided
           >
@@ -158,7 +156,7 @@ const menuShow = ref(false)
           <v-btn-toggle
             v-model="shadow"
             mandatory
-            density="comfortable"
+            density="compact"
             class="settings-toggle"
             divided
           >
