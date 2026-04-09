@@ -21,7 +21,7 @@ export const usePublicPagesStore = defineStore('public-pages', () => {
   const hydrated = ref(false)
 
   function hydrateFromLocalStorage() {
-    if (!process.client || hydrated.value) {
+    if (!import.meta.client || hydrated.value) {
       return
     }
 
@@ -41,7 +41,7 @@ export const usePublicPagesStore = defineStore('public-pages', () => {
   }
 
   function persistToLocalStorage() {
-    if (!process.client) {
+    if (!import.meta.client) {
       return
     }
 
@@ -98,8 +98,7 @@ export const usePublicPagesStore = defineStore('public-pages', () => {
     error.value = ''
 
     try {
-      const api = usePublicApi()
-      const response = await api<T>(`/page/public/${slug}/${locale}`)
+      const response = await $fetch<T>(`/api/page/public/${slug}/${locale}`)
 
       cache.value[key] = {
         data: response,
