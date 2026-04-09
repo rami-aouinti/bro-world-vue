@@ -99,7 +99,7 @@ async function onSocialLogin(provider: SocialProvider) {
 <template>
   <v-card class="auth-card border-radius-xl" elevation="22">
     <v-card-text class="pa-0">
-      <div class="bg-gradient-primary pa-6 text-center text-white">
+      <div class="bg-primary pa-6 text-center">
         <h2 class="text-h5 font-weight-bold mb-2">
           {{ isRegister ? t('auth.register.title') : t('auth.login.title') }}
         </h2>
@@ -111,9 +111,9 @@ async function onSocialLogin(provider: SocialProvider) {
       </div>
 
       <v-form v-model="valid" class="pa-6" @submit.prevent="onSubmit">
-        <div class="social-icons-wrap mb-5">
+        <div v-if="!isRegister" class="social-icons-wrap mb-5">
           <div
-            class="d-flex justify-center ga-4"
+            class="d-flex justify-center ga-2"
             role="group"
             :aria-label="t('auth.social.groupAria')"
           >
@@ -134,7 +134,7 @@ async function onSocialLogin(provider: SocialProvider) {
               <v-icon>{{ provider.icon }}</v-icon>
             </v-btn>
           </div>
-          <div class="social-divider mt-4 mb-1">
+          <div class="social-divider mt-2 mb-1">
             <v-divider />
             <span class="text-medium-emphasis font-weight-medium px-3">or</span>
             <v-divider />
@@ -147,9 +147,10 @@ async function onSocialLogin(provider: SocialProvider) {
           :label="t('auth.fields.name')"
           prepend-inner-icon="mdi-account-outline"
           variant="outlined"
+          density="compact"
           color="primary"
           :rules="[rules.required]"
-          class="mb-2"
+          class="mb-1"
         />
 
         <v-text-field
@@ -161,10 +162,11 @@ async function onSocialLogin(provider: SocialProvider) {
           :prepend-inner-icon="
             isRegister ? 'mdi-email-outline' : 'mdi-account-outline'
           "
+          density="compact"
           variant="outlined"
           color="primary"
           :rules="isRegister ? [rules.required, rules.email] : [rules.required]"
-          class="mb-2"
+          class="mb-1"
         />
 
         <v-text-field
@@ -175,16 +177,17 @@ async function onSocialLogin(provider: SocialProvider) {
           :append-inner-icon="
             showPassword ? 'mdi-eye-off-outline' : 'mdi-eye-outline'
           "
+          density="compact"
           variant="outlined"
           color="primary"
           :rules="[rules.required, rules.password]"
-          class="mb-2"
+          class="mb-1"
           @click:append-inner="showPassword = !showPassword"
         />
 
         <div
           v-if="!isRegister"
-          class="d-flex align-center justify-space-between mb-2"
+          class="d-flex align-center justify-space-between mb-1"
         >
           <v-checkbox
             v-model="form.remember"
@@ -205,7 +208,6 @@ async function onSocialLogin(provider: SocialProvider) {
           v-model="form.termsAccepted"
           color="primary"
           :rules="[(v: boolean) => v || t('auth.validation.acceptTerms')]"
-          class="mb-2"
         >
           <template #label>
             {{ t('auth.register.acceptPrefix') }}
@@ -220,14 +222,14 @@ async function onSocialLogin(provider: SocialProvider) {
           color="primary"
           size="large"
           block
-          class="bg-gradient-primary text-none"
+          class="bg-primary text-none"
           :loading="loading"
           :disabled="!valid"
         >
           {{ isRegister ? t('auth.register.submit') : t('auth.login.submit') }}
         </v-btn>
 
-        <div class="text-center text-body-2 mt-4">
+        <div class="text-center text-body-2 mt-2">
           <slot name="switch" />
         </div>
       </v-form>
