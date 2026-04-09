@@ -1,6 +1,8 @@
 import { mutatingPrivateApiCall } from '../../../../utils/privateApi'
-import type { ChatReactionPayload } from '~~/server/types/api/chat'
-import type { ChatApiResponse } from '~~/server/types/api/chat'
+import type {
+  ChatReactionPayload,
+  ChatApiResponse,
+} from '~~/server/types/api/chat'
 
 export default defineEventHandler(async (event): Promise<ChatApiResponse> => {
   const reactionId = getRouterParam(event, 'reactionId')

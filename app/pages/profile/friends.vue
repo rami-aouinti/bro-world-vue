@@ -192,24 +192,6 @@ onMounted(() => fetchFriendsData())
           {{ globalError }}
         </v-alert>
 
-        <div class="d-flex align-center justify-space-between mb-4">
-          <div>
-            <h1 class="text-h5 mb-1">{{ t('pages.friends.title') }}</h1>
-            <p class="text-body-2 text-medium-emphasis mb-0">
-              {{ t('pages.friends.subtitle') }}
-            </p>
-          </div>
-          <v-btn
-            prepend-icon="mdi-refresh"
-            color="primary"
-            variant="text"
-            :loading="loading"
-            @click="fetchFriendsData"
-          >
-            {{ t('common.refresh') }}
-          </v-btn>
-        </div>
-
         <v-row>
           <v-col
             v-for="section in sectionConfigs"

@@ -109,7 +109,9 @@ export const usePublicPagesStore = defineStore('public-pages', () => {
       return response
     } catch (err) {
       error.value =
-        err instanceof Error ? err.message : 'Unable to load public page content'
+        err instanceof Error
+          ? err.message
+          : 'Unable to load public page content'
       throw err
     } finally {
       loading.value = false

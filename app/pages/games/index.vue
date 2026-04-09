@@ -4,11 +4,8 @@ definePageMeta({
   layout: 'games',
 })
 
-const {
-  catalogStore,
-  ensureCatalogLoaded,
-  entityRouteValue,
-} = useGamesCatalogNavigation()
+const { catalogStore, ensureCatalogLoaded, entityRouteValue } =
+  useGamesCatalogNavigation()
 
 onMounted(async () => {
   await ensureCatalogLoaded()
@@ -35,11 +32,7 @@ const topScores = [
   <div>
     <AppPageDrawers>
       <template #right>
-        <v-list
-          nav
-          density="comfortable"
-          class="app-right-drawer-list"
-        >
+        <v-list nav density="comfortable" class="app-right-drawer-list">
           <v-list-subheader>Top Scores</v-list-subheader>
 
           <v-list-item
@@ -87,11 +80,7 @@ const topScores = [
               elevation="8"
               @click="openCategory(category)"
             >
-              <v-img
-                :src="category?.img"
-                height="200"
-                cover
-              />
+              <v-img :src="category?.img" height="200" cover />
             </v-card>
           </v-hover>
         </v-col>
@@ -110,7 +99,9 @@ const topScores = [
 <style scoped>
 .game-category-card {
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .game-category-card:hover {

@@ -14,12 +14,19 @@ function isFolder(node: LibraryTreeNode): node is LibraryFolderNode {
   return node.type === 'folder'
 }
 
-function isFolderDescendant(nodes: LibraryTreeNode[], sourceId: string, destinationId: string): boolean {
+function isFolderDescendant(
+  nodes: LibraryTreeNode[],
+  sourceId: string,
+  destinationId: string,
+): boolean {
   if (!destinationId) {
     return false
   }
 
-  const findNode = (children: LibraryTreeNode[], id: string): LibraryTreeNode | null => {
+  const findNode = (
+    children: LibraryTreeNode[],
+    id: string,
+  ): LibraryTreeNode | null => {
     for (const node of children) {
       if (node.id === id) {
         return node
@@ -74,7 +81,10 @@ export function useLibrary() {
 
   const fetchTree = async (opts?: { force?: boolean }) => {
     const now = Date.now()
-    const shouldUseCache = !opts?.force && tree.value.length > 0 && now - lastFetchedAt.value < LIBRARY_CACHE_TTL_MS
+    const shouldUseCache =
+      !opts?.force &&
+      tree.value.length > 0 &&
+      now - lastFetchedAt.value < LIBRARY_CACHE_TTL_MS
 
     if (shouldUseCache) {
       return tree.value
@@ -87,8 +97,7 @@ export function useLibrary() {
       tree.value = response.children ?? []
       lastFetchedAt.value = now
       return tree.value
-    }
-    finally {
+    } finally {
       pending.value = false
     }
   }
@@ -156,13 +165,23 @@ export function useLibrary() {
     await fetchTree({ force: true })
   }
 
-  const moveByDrag = async (payload: LibraryDragPayload, destinationParentId: string | null) => {
+  const moveByDrag = async (
+    payload: LibraryDragPayload,
+    destinationParentId: string | null,
+  ) => {
     if (payload.parentId === destinationParentId) {
       return
     }
 
-    if (payload.type === 'folder' && destinationParentId && isFolderDescendant(tree.value, payload.id, destinationParentId)) {
-      throw createError({ statusCode: 400, statusMessage: 'A folder cannot be moved into one of its children.' })
+    if (
+      payload.type === 'folder' &&
+      destinationParentId &&
+      isFolderDescendant(tree.value, payload.id, destinationParentId)
+    ) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'A folder cannot be moved into one of its children.',
+      })
     }
 
     if (payload.type === 'folder') {
@@ -192,7 +211,9 @@ export function useLibrary() {
   }
 
   const folderOptions = computed(() => {
-    const options: Array<{ title: string, value: string | null }> = [{ title: 'Root', value: null }]
+    const options: Array<{ title: string; value: string | null }> = [
+      { title: 'Root', value: null },
+    ]
 
     const walk = (nodes: LibraryTreeNode[], depth = 0) => {
       for (const node of nodes) {

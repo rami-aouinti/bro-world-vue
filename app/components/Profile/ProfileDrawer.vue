@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
+import LeftDrawerUserEntry from '~/components/App/LeftDrawerUserEntry.vue'
 
 const route = useRoute()
 const { t } = useI18n()
@@ -34,22 +35,9 @@ const profileNavItems = [
 </script>
 
 <template>
-  <NuxtLink
-    to="/profile"
-    class="d-flex align-center text-center ga-3"
-    style="text-decoration: none; color: inherit"
-  >
-    <div class="d-flex align-center text-center ga-3">
-      <v-avatar size="32">
-        <v-img :src="avatarUrl" :alt="`${fullName} avatar`" />
-      </v-avatar>
-      <div>
-        <h3>{{ fullName }}</h3>
-      </div>
-    </div>
-  </NuxtLink>
+  <LeftDrawerUserEntry />
 
-  <v-divider class="my-1" />
+  <v-divider class="my-4" />
 
   <v-list nav density="compact" class="px-0 app-left-drawer-list">
     <v-list-item

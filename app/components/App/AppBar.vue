@@ -61,8 +61,7 @@ const navMenus = [
         label: 'appbar.games',
         to: '/games',
         icon: 'mdi-gamepad-variant-outline',
-        detail:
-          'Play and manage interactive game experiences from one place.',
+        detail: 'Play and manage interactive game experiences from one place.',
       },
       {
         label: 'appbar.sports',
@@ -143,9 +142,7 @@ watch(
   async (isLoggedIn) => {
     if (!isLoggedIn) return
     loginDialogOpen.value = false
-    await Promise.all([
-      inboxNotificationsStore.fetchNotifications(),
-    ])
+    await Promise.all([inboxNotificationsStore.fetchNotifications()])
   },
   { immediate: true },
 )
@@ -235,7 +232,11 @@ function isMenuActive(paths: string[]) {
             size="small"
             rounded="lg"
             class="app-top-bar__nav-btn"
-            :color="isMenuActive(menu.items.map((item) => item.to)) ? 'primary' : undefined"
+            :color="
+              isMenuActive(menu.items.map((item) => item.to))
+                ? 'primary'
+                : undefined
+            "
           >
             {{ t(menu.label) }}
           </v-btn>
@@ -442,7 +443,11 @@ function isMenuActive(paths: string[]) {
     </div>
 
     <v-dialog v-model="loginDialogOpen" max-width="560">
-      <AuthFormCard mode="login" :loading="loginLoading" @submit="onLoginSubmit">
+      <AuthFormCard
+        mode="login"
+        :loading="loginLoading"
+        @submit="onLoginSubmit"
+      >
         <template #switch>
           {{ t('auth.login.switchPrompt') }}
           <NuxtLink to="/register" class="text-primary font-weight-bold">
@@ -517,7 +522,11 @@ function isMenuActive(paths: string[]) {
   margin-top: 8px;
   border-radius: 18px;
   border: 1px solid rgba(var(--v-border-color), 0.32);
-  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.18) 0%,
+    transparent 20%
+  );
   box-shadow:
     0 22px 54px rgba(0, 0, 0, 0.42),
     0 0 0 1px rgba(var(--v-theme-primary), 0.15) inset;
@@ -547,7 +556,10 @@ function isMenuActive(paths: string[]) {
   background: rgba(255, 255, 255, 0.03);
   text-decoration: none;
   color: rgb(var(--v-theme-on-surface));
-  transition: transform 160ms ease, border-color 160ms ease, background-color 160ms ease;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease;
 }
 
 .app-top-bar__mega-menu-card:hover {

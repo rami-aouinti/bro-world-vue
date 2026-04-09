@@ -12,7 +12,9 @@ const props = withDefaults(
 )
 const theme = useTheme()
 const isLightTheme = computed(() => !theme.current.value.dark)
-const chipLabel = computed(() => props.label || t('blog.newPost.audience.friends'))
+const chipLabel = computed(
+  () => props.label || t('blog.newPost.audience.friends'),
+)
 </script>
 
 <template>

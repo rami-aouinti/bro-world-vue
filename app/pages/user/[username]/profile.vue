@@ -16,7 +16,11 @@ type PublicUserProfile = {
   coins: number
 }
 
-const { data: profile, pending, error } = await useAsyncData<PublicUserProfile>(
+const {
+  data: profile,
+  pending,
+  error,
+} = await useAsyncData<PublicUserProfile>(
   () => `public-profile-${username.value}`,
   () => $fetch(`/api/public/user/${encodeURIComponent(username.value)}`),
   {
@@ -39,21 +43,27 @@ const displayName = computed(() => {
 <template>
   <v-container fluid class="py-6">
     <div class="mx-auto" style="max-width: 760px">
-      <v-progress-linear v-if="pending" indeterminate color="primary" class="mb-4" />
+      <v-progress-linear
+        v-if="pending"
+        indeterminate
+        color="primary"
+        class="mb-4"
+      />
 
-      <v-alert
-        v-else-if="error"
-        type="error"
-        variant="tonal"
-      >
-        Impossible de charger le profil public de <strong>{{ username }}</strong>.
+      <v-alert v-else-if="error" type="error" variant="tonal">
+        Impossible de charger le profil public de <strong>{{ username }}</strong
+        >.
       </v-alert>
 
       <v-card v-else-if="profile" rounded="xl">
         <v-card-item>
           <template #prepend>
             <v-avatar size="76" color="grey-darken-2" class="me-4">
-              <v-img v-if="profile.photo" :src="profile.photo" :alt="`${displayName} avatar`" />
+              <v-img
+                v-if="profile.photo"
+                :src="profile.photo"
+                :alt="`${displayName} avatar`"
+              />
               <v-icon v-else icon="mdi-account" />
             </v-avatar>
           </template>

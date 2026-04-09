@@ -49,11 +49,16 @@ const { data, pending, error, refresh } = await useAsyncData(
   () => publicPagesStore.fetchPage<HomePageResponse>('home', locale.value),
   {
     watch: [locale],
-    default: () => publicPagesStore.getPage<HomePageResponse>('home', locale.value),
+    default: () =>
+      publicPagesStore.getPage<HomePageResponse>('home', locale.value),
   },
 )
 
-const page = computed(() => data.value ?? publicPagesStore.getPage<HomePageResponse>('home', locale.value))
+const page = computed(
+  () =>
+    data.value ??
+    publicPagesStore.getPage<HomePageResponse>('home', locale.value),
+)
 </script>
 
 <template>
@@ -62,7 +67,9 @@ const page = computed(() => data.value ?? publicPagesStore.getPage<HomePageRespo
       <template #left>
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible || pending || !page" />
         <v-list v-else nav density="comfortable" class="app-left-drawer-list">
-          <v-list-subheader class="text-overline">{{ page.hero.badge }}</v-list-subheader>
+          <v-list-subheader class="text-overline">{{
+            page.hero.badge
+          }}</v-list-subheader>
           <v-list-item
             v-for="(benefit, index) in page.hero.benefits"
             :key="benefit"
@@ -82,11 +89,15 @@ const page = computed(() => data.value ?? publicPagesStore.getPage<HomePageRespo
                 <template #prepend>
                   <v-icon icon="mdi-lightning-bolt-outline" class="me-2" />
                 </template>
-                <v-card-title class="text-subtitle-1">{{ page.cta.title }}</v-card-title>
+                <v-card-title class="text-subtitle-1">{{
+                  page.cta.title
+                }}</v-card-title>
                 <v-card-subtitle>{{ page.cta.description }}</v-card-subtitle>
               </v-card-item>
               <v-card-actions>
-                <v-btn color="primary" variant="flat" block>{{ page.cta.primaryAction }}</v-btn>
+                <v-btn color="primary" variant="flat" block>{{
+                  page.cta.primaryAction
+                }}</v-btn>
               </v-card-actions>
             </v-card>
           </v-list-item>
@@ -97,26 +108,50 @@ const page = computed(() => data.value ?? publicPagesStore.getPage<HomePageRespo
     <v-container class="py-8">
       <SkeletonPageContent v-if="isPageSkeletonVisible || pending || !page" />
 
-      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-6" :text="String(error)" />
+      <v-alert
+        v-else-if="error"
+        type="error"
+        variant="tonal"
+        class="mb-6"
+        :text="String(error)"
+      />
 
       <template v-else-if="page">
         <v-card rounded="xl" class="mb-8 pa-6 hero-card" elevation="0">
-          <v-chip color="primary" variant="tonal" class="mb-4">{{ page.hero.badge }}</v-chip>
+          <v-chip color="primary" variant="tonal" class="mb-4">{{
+            page.hero.badge
+          }}</v-chip>
           <h1 class="text-h3 font-weight-bold mb-3">{{ page.hero.title }}</h1>
-          <p class="text-body-1 text-medium-emphasis mb-5">{{ page.hero.subtitle }}</p>
+          <p class="text-body-1 text-medium-emphasis mb-5">
+            {{ page.hero.subtitle }}
+          </p>
           <div class="d-flex flex-wrap ga-3">
-            <v-btn color="primary" size="large">{{ page.hero.primaryCta }}</v-btn>
-            <v-btn variant="outlined" size="large">{{ page.hero.secondaryCta }}</v-btn>
+            <v-btn color="primary" size="large">{{
+              page.hero.primaryCta
+            }}</v-btn>
+            <v-btn variant="outlined" size="large">{{
+              page.hero.secondaryCta
+            }}</v-btn>
           </div>
         </v-card>
 
         <h2 class="text-h5 font-weight-bold mb-4">{{ page.featuresTitle }}</h2>
         <v-row class="mb-8" dense>
-          <v-col v-for="feature in page.featureCards" :key="feature.title" cols="12" md="4">
+          <v-col
+            v-for="feature in page.featureCards"
+            :key="feature.title"
+            cols="12"
+            md="4"
+          >
             <v-card rounded="xl" height="100%" variant="outlined" class="pa-2">
               <v-card-item>
                 <template #prepend>
-                  <v-icon :icon="feature.icon" color="primary" size="28" class="me-2" />
+                  <v-icon
+                    :icon="feature.icon"
+                    color="primary"
+                    size="28"
+                    class="me-2"
+                  />
                 </template>
                 <v-card-title>{{ feature.title }}</v-card-title>
               </v-card-item>
@@ -127,11 +162,18 @@ const page = computed(() => data.value ?? publicPagesStore.getPage<HomePageRespo
 
         <h2 class="text-h5 font-weight-bold mb-4">{{ page.metricsTitle }}</h2>
         <v-row class="mb-8" dense>
-          <v-col v-for="metric in page.metrics" :key="metric.label" cols="12" sm="4">
+          <v-col
+            v-for="metric in page.metrics"
+            :key="metric.label"
+            cols="12"
+            sm="4"
+          >
             <v-card rounded="xl" variant="tonal" color="primary">
               <v-card-text class="text-center py-8">
                 <div class="text-h4 font-weight-black">{{ metric.value }}</div>
-                <div class="text-body-2 text-medium-emphasis">{{ metric.label }}</div>
+                <div class="text-body-2 text-medium-emphasis">
+                  {{ metric.label }}
+                </div>
               </v-card-text>
             </v-card>
           </v-col>
@@ -139,7 +181,12 @@ const page = computed(() => data.value ?? publicPagesStore.getPage<HomePageRespo
 
         <h2 class="text-h5 font-weight-bold mb-4">{{ page.stepsTitle }}</h2>
         <v-row class="mb-8" dense>
-          <v-col v-for="(step, index) in page.steps" :key="step.title" cols="12" md="4">
+          <v-col
+            v-for="(step, index) in page.steps"
+            :key="step.title"
+            cols="12"
+            md="4"
+          >
             <v-card rounded="xl" variant="outlined" height="100%">
               <v-card-item>
                 <template #prepend>
@@ -147,7 +194,9 @@ const page = computed(() => data.value ?? publicPagesStore.getPage<HomePageRespo
                     <v-icon :icon="step.icon" />
                   </v-avatar>
                 </template>
-                <v-card-title>{{ `${page.stepLabelPrefix} ${index + 1}` }}</v-card-title>
+                <v-card-title>{{
+                  `${page.stepLabelPrefix} ${index + 1}`
+                }}</v-card-title>
                 <v-card-subtitle>{{ step.title }}</v-card-subtitle>
               </v-card-item>
               <v-card-text>{{ step.description }}</v-card-text>
@@ -155,17 +204,28 @@ const page = computed(() => data.value ?? publicPagesStore.getPage<HomePageRespo
           </v-col>
         </v-row>
 
-        <v-card rounded="xl" color="primary" class="pa-6 text-white" elevation="0">
+        <v-card
+          rounded="xl"
+          color="primary"
+          class="pa-6 text-white"
+          elevation="0"
+        >
           <h3 class="text-h5 mb-2">{{ page.cta.title }}</h3>
           <p class="mb-4">{{ page.cta.description }}</p>
           <div class="d-flex flex-wrap ga-3">
-            <v-btn color="white" variant="flat">{{ page.cta.primaryAction }}</v-btn>
-            <v-btn color="white" variant="outlined">{{ page.cta.secondaryAction }}</v-btn>
+            <v-btn color="white" variant="flat">{{
+              page.cta.primaryAction
+            }}</v-btn>
+            <v-btn color="white" variant="outlined">{{
+              page.cta.secondaryAction
+            }}</v-btn>
           </div>
         </v-card>
 
         <div class="d-flex justify-end mt-4">
-          <v-btn variant="text" prepend-icon="mdi-refresh" @click="refresh">{{ t('common.refresh') }}</v-btn>
+          <v-btn variant="text" prepend-icon="mdi-refresh" @click="refresh">{{
+            t('common.refresh')
+          }}</v-btn>
         </div>
       </template>
     </v-container>
@@ -174,6 +234,10 @@ const page = computed(() => data.value ?? publicPagesStore.getPage<HomePageRespo
 
 <style scoped>
 .hero-card {
-  background: linear-gradient(135deg, rgba(25, 118, 210, 0.08), rgba(126, 87, 194, 0.12));
+  background: linear-gradient(
+    135deg,
+    rgba(25, 118, 210, 0.08),
+    rgba(126, 87, 194, 0.12)
+  );
 }
 </style>

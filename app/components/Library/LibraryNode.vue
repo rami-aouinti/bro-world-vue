@@ -22,7 +22,9 @@ const emit = defineEmits<{
 const isFolder = computed(() => props.node.type === 'folder')
 const isSelected = computed(() => props.selectedId === props.node.id)
 const isDragOver = ref(false)
-const shouldShowChildren = computed(() => isFolder.value && props.node.children.length > 0 && isSelected.value)
+const shouldShowChildren = computed(
+  () => isFolder.value && props.node.children.length > 0 && isSelected.value,
+)
 
 const iconName = computed(() => {
   if (props.node.type === 'folder') {
@@ -83,7 +85,10 @@ const onDropFolder = (event: DragEvent) => {
     <v-card
       variant="text"
       class="library-node__row"
-      :class="{ 'library-node__row--selected': isSelected, 'library-node__row--drag-over': isDragOver }"
+      :class="{
+        'library-node__row--selected': isSelected,
+        'library-node__row--drag-over': isDragOver,
+      }"
       draggable="true"
       @click="emit('select', node)"
       @dragstart="onDragStart"
@@ -93,7 +98,9 @@ const onDropFolder = (event: DragEvent) => {
     >
       <div class="d-flex align-center ga-3 px-3 py-2">
         <v-icon :icon="iconName" color="warning" size="20" />
-        <span class="text-body-2 font-weight-medium text-truncate">{{ node.name }}</span>
+        <span class="text-body-2 font-weight-medium text-truncate">{{
+          node.name
+        }}</span>
       </div>
     </v-card>
 

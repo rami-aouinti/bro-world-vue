@@ -6,7 +6,9 @@ definePageMeta({
 
 const route = useRoute()
 const categoryParam = computed(() => String(route.params.categoryKey || ''))
-const subCategoryParam = computed(() => String(route.params.subCategoryKey || ''))
+const subCategoryParam = computed(() =>
+  String(route.params.subCategoryKey || ''),
+)
 
 const {
   ensureCatalogLoaded,
@@ -17,14 +19,17 @@ const {
   tOrFallback,
 } = useGamesCatalogNavigation()
 
-const selectedCategory = computed(() => getCategoryByRouteParam(categoryParam.value))
-const selectedSubCategory = computed(() => getSubCategoryByRouteParam(categoryParam.value, subCategoryParam.value))
+const selectedCategory = computed(() =>
+  getCategoryByRouteParam(categoryParam.value),
+)
+const selectedSubCategory = computed(() =>
+  getSubCategoryByRouteParam(categoryParam.value, subCategoryParam.value),
+)
 const games = computed(() => selectedSubCategory.value?.games ?? [])
 
 onMounted(async () => {
   const loaded = await ensureCatalogLoaded()
-  if (!loaded)
-    return
+  if (!loaded) return
 
   if (!selectedCategory.value || !selectedSubCategory.value) {
     await navigateTo('/games')
@@ -32,7 +37,9 @@ onMounted(async () => {
 })
 
 function openGameLevels(game: { id: string; key?: string }) {
-  navigateTo(`/games/${categoryParam.value}/${subCategoryParam.value}/${entityRouteValue(game)}`)
+  navigateTo(
+    `/games/${categoryParam.value}/${subCategoryParam.value}/${entityRouteValue(game)}`,
+  )
 }
 
 function navigateBreadcrumb(to?: string) {
@@ -43,8 +50,18 @@ function navigateBreadcrumb(to?: string) {
 
 const breadcrumbs = computed(() => [
   { title: 'Games', to: '/games' },
-  { title: selectedCategory.value?.key || selectedCategory.value?.name || 'Category', to: `/games/${categoryParam.value}` },
-  { title: selectedSubCategory.value?.key || selectedSubCategory.value?.name || 'Subcategory', disabled: true },
+  {
+    title:
+      selectedCategory.value?.key || selectedCategory.value?.name || 'Category',
+    to: `/games/${categoryParam.value}`,
+  },
+  {
+    title:
+      selectedSubCategory.value?.key ||
+      selectedSubCategory.value?.name ||
+      'Subcategory',
+    disabled: true,
+  },
 ])
 </script>
 
@@ -57,15 +74,23 @@ const breadcrumbs = computed(() => [
             <template #prepend>
               <v-icon icon="mdi-shape-outline" />
             </template>
-            <v-list-item-title>{{ tOrFallback('gamePage.selection.category', 'Category') }}</v-list-item-title>
-            <v-list-item-subtitle>{{ entityName(selectedCategory || {}) || '—' }}</v-list-item-subtitle>
+            <v-list-item-title>{{
+              tOrFallback('gamePage.selection.category', 'Category')
+            }}</v-list-item-title>
+            <v-list-item-subtitle>{{
+              entityName(selectedCategory || {}) || '—'
+            }}</v-list-item-subtitle>
           </v-list-item>
           <v-list-item v-if="selectedSubCategory">
             <template #prepend>
               <v-icon icon="mdi-shape-plus-outline" />
             </template>
-            <v-list-item-title>{{ tOrFallback('gamePage.selection.subCategory', 'Subcategory') }}</v-list-item-title>
-            <v-list-item-subtitle>{{ entityName(selectedSubCategory || {}) || '—' }}</v-list-item-subtitle>
+            <v-list-item-title>{{
+              tOrFallback('gamePage.selection.subCategory', 'Subcategory')
+            }}</v-list-item-title>
+            <v-list-item-subtitle>{{
+              entityName(selectedSubCategory || {}) || '—'
+            }}</v-list-item-subtitle>
           </v-list-item>
         </v-list>
       </template>

@@ -4,7 +4,10 @@ import type {
   GamesSessionFinishResponse,
 } from '~~/server/types/api/games'
 
-export default createProxyHandler<GamesSessionFinishResponse, GamesSessionFinishPayload>({
+export default createProxyHandler<
+  GamesSessionFinishResponse,
+  GamesSessionFinishPayload
+>({
   method: 'POST',
   endpointTemplate: '/games/sessions/:session/finish',
   mutationKey: 'games:sessions:finish',

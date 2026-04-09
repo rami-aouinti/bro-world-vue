@@ -45,7 +45,10 @@ async function onSubmit(payload: { username?: string; password: string }) {
 </script>
 
 <template>
-  <v-container fluid class="auth-page pa-6 pa-md-10 d-flex align-center justify-center">
+  <v-container
+    fluid
+    class="auth-page pa-6 pa-md-10 d-flex align-center justify-center"
+  >
     <v-row class="fill-height" align="center" justify="center">
       <v-col cols="12" md="7" lg="5">
         <AuthFormCard mode="login" :loading="loading" @submit="onSubmit">

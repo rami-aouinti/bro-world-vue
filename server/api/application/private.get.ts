@@ -7,9 +7,13 @@ export default defineEventHandler(
     const page = Number(query.page ?? 1)
     const limit = Number(query.limit ?? 10)
 
-    return cachedPrivateGet<ApplicationApiResponse>(event, '/application/private', {
-      query: { page, limit },
-      cacheDomain: 'application',
-    })
+    return cachedPrivateGet<ApplicationApiResponse>(
+      event,
+      '/application/private',
+      {
+        query: { page, limit },
+        cacheDomain: 'application',
+      },
+    )
   },
 )

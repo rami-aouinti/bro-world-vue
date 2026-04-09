@@ -1,7 +1,9 @@
 import { mutatingPrivateApiCall } from '../../../../../utils/privateApi'
 import { getRequiredRouterParam } from '../../../utils'
-import type { BlogReactionPayload } from '~~/server/types/api/blog'
-import type { BlogApiResponse } from '~~/server/types/api/blog'
+import type {
+  BlogReactionPayload,
+  BlogApiResponse,
+} from '~~/server/types/api/blog'
 
 export default defineEventHandler(async (event): Promise<BlogApiResponse> => {
   const commentId = getRequiredRouterParam(event, 'commentId', 'comment')

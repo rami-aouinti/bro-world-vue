@@ -32,25 +32,57 @@ export function useGamesCatalogNavigation() {
   }
 
   function getCategoryByRouteParam(categoryParam: string) {
-    return catalogStore.categories.find(category => matchesRouteParam(category, categoryParam)) ?? null
+    return (
+      catalogStore.categories.find((category) =>
+        matchesRouteParam(category, categoryParam),
+      ) ?? null
+    )
   }
 
-  function getSubCategoryByRouteParam(categoryParam: string, subCategoryParam: string) {
+  function getSubCategoryByRouteParam(
+    categoryParam: string,
+    subCategoryParam: string,
+  ) {
     const category = getCategoryByRouteParam(categoryParam)
-    return category?.subCategories.find(subCategory => matchesRouteParam(subCategory, subCategoryParam)) ?? null
+    return (
+      category?.subCategories.find((subCategory) =>
+        matchesRouteParam(subCategory, subCategoryParam),
+      ) ?? null
+    )
   }
 
-  function getGameByRouteParam(categoryParam: string, subCategoryParam: string, gameParam: string) {
-    const subCategory = getSubCategoryByRouteParam(categoryParam, subCategoryParam)
-    return subCategory?.games.find(game => matchesRouteParam(game, gameParam)) ?? null
+  function getGameByRouteParam(
+    categoryParam: string,
+    subCategoryParam: string,
+    gameParam: string,
+  ) {
+    const subCategory = getSubCategoryByRouteParam(
+      categoryParam,
+      subCategoryParam,
+    )
+    return (
+      subCategory?.games.find((game) => matchesRouteParam(game, gameParam)) ??
+      null
+    )
   }
 
   function getGameCardImage(thumbnailUrl?: string | null) {
-    return thumbnailUrl || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80'
+    return (
+      thumbnailUrl ||
+      'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80'
+    )
   }
 
-  function entityName(entity: { name?: string; key?: string; nameKey?: string; id?: string }) {
-    return tOrFallback(entity.nameKey ?? '', entity.key ?? entity.name ?? entity.id ?? '')
+  function entityName(entity: {
+    name?: string
+    key?: string
+    nameKey?: string
+    id?: string
+  }) {
+    return tOrFallback(
+      entity.nameKey ?? '',
+      entity.key ?? entity.name ?? entity.id ?? '',
+    )
   }
 
   function entityDescription(entity: {

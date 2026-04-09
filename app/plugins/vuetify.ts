@@ -18,8 +18,14 @@ export default defineNuxtPlugin((nuxtApp) => {
       aliases,
     }
     const primary = useStorage('theme-primary', '#e91e63').value
-    const primaryGradient = useStorage('theme-primary-gradient', '#f06292').value
-    const colorScheme = useStorage<'light' | 'dark'>('color-scheme', 'dark').value
+    const primaryGradient = useStorage(
+      'theme-primary-gradient',
+      '#f06292',
+    ).value
+    const colorScheme = useStorage<'light' | 'dark'>(
+      'color-scheme',
+      'dark',
+    ).value
     const defaultTheme = colorScheme === 'light' ? 'light' : 'dark'
 
     vuetifyOptions.theme = {

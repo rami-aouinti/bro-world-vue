@@ -508,7 +508,11 @@ async function deleteSelectedStory() {
         >
           <div class="d-flex justify-space-between align-start pa-2">
             <v-avatar size="38" class="story-avatar">
-              <v-img :src="card.avatar" :alt="`${card.displayName} avatar`" cover />
+              <v-img
+                :src="card.avatar"
+                :alt="`${card.displayName} avatar`"
+                cover
+              />
             </v-avatar>
 
             <v-btn
@@ -601,7 +605,12 @@ async function deleteSelectedStory() {
         />
 
         <v-sheet rounded="xl" class="story-phone-frame overflow-hidden">
-          <v-img :src="selectedStoryVisual" :alt="selectedGroup.displayName" class="story-media" cover>
+          <v-img
+            :src="selectedStoryVisual"
+            :alt="selectedGroup.displayName"
+            class="story-media"
+            cover
+          >
             <div class="story-overlay-top pa-4">
               <div class="d-flex ga-1 mb-3">
                 <div
@@ -625,7 +634,11 @@ async function deleteSelectedStory() {
               <div class="d-flex align-center justify-space-between text-white">
                 <div class="d-flex align-center ga-2">
                   <v-avatar size="40" class="story-avatar">
-                    <v-img :src="selectedGroup.avatar" :alt="`${selectedGroup.displayName} avatar`" cover />
+                    <v-img
+                      :src="selectedGroup.avatar"
+                      :alt="`${selectedGroup.displayName} avatar`"
+                      cover
+                    />
                   </v-avatar>
                   <div>
                     <div class="text-subtitle-2 font-weight-bold">
@@ -732,11 +745,19 @@ async function deleteSelectedStory() {
 
 <style scoped>
 .stories-shell {
-  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.18) 0%,
+    transparent 20%
+  );
 }
 
 .story-card {
-  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.18) 0%,
+    transparent 20%
+  );
   background-size: cover;
   background-position: center;
   cursor: pointer;

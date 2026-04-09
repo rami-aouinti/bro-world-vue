@@ -3,8 +3,12 @@ import type { CalendarApiResponse } from '~~/server/types/api/calendar'
 
 export default defineEventHandler(
   async (event): Promise<CalendarApiResponse> => {
-    return cachedPrivateGet<CalendarApiResponse>(event, '/calendar/events/upcoming', {
-      cacheDomain: 'calendar',
-    })
+    return cachedPrivateGet<CalendarApiResponse>(
+      event,
+      '/calendar/events/upcoming',
+      {
+        cacheDomain: 'calendar',
+      },
+    )
   },
 )

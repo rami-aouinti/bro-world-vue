@@ -1,18 +1,15 @@
 const CATALOG_TTL_MS = 5 * 60 * 1000
 const LEVELS_TTL_MS = 15 * 60 * 1000
 
-
 function normalizeSessionLevel(level: string) {
   const normalizedLevel = level.trim().toLowerCase()
 
-  if (normalizedLevel === 'beginner')
-    return 'easy'
+  if (normalizedLevel === 'beginner') return 'easy'
 
   if (normalizedLevel === 'intermediate' || normalizedLevel === 'intermidiate')
     return 'medium'
 
-  if (normalizedLevel === 'advanced')
-    return 'hard'
+  if (normalizedLevel === 'advanced') return 'hard'
 
   return normalizedLevel
 }
@@ -59,12 +56,10 @@ interface GameCategory {
 }
 
 function normalizeGameItem(raw: unknown): GameItem | null {
-  if (!raw || typeof raw !== 'object')
-    return null
+  if (!raw || typeof raw !== 'object') return null
 
   const item = raw as Record<string, unknown>
-  if (typeof item.id !== 'string')
-    return null
+  if (typeof item.id !== 'string') return null
 
   return {
     id: item.id,
@@ -72,8 +67,10 @@ function normalizeGameItem(raw: unknown): GameItem | null {
     key: typeof item.key === 'string' ? item.key : undefined,
     nameKey: typeof item.nameKey === 'string' ? item.nameKey : undefined,
     description: typeof item.description === 'string' ? item.description : null,
-    descriptionKey: typeof item.descriptionKey === 'string' ? item.descriptionKey : undefined,
-    thumbnailUrl: typeof item.thumbnailUrl === 'string' ? item.thumbnailUrl : null,
+    descriptionKey:
+      typeof item.descriptionKey === 'string' ? item.descriptionKey : undefined,
+    thumbnailUrl:
+      typeof item.thumbnailUrl === 'string' ? item.thumbnailUrl : null,
     img: typeof item.img === 'string' ? item.img : null,
     icon: typeof item.icon === 'string' ? item.icon : null,
     component: typeof item.component === 'string' ? item.component : null,
@@ -82,15 +79,15 @@ function normalizeGameItem(raw: unknown): GameItem | null {
 }
 
 function normalizeSubCategory(raw: unknown): GameSubCategory | null {
-  if (!raw || typeof raw !== 'object')
-    return null
+  if (!raw || typeof raw !== 'object') return null
 
   const sub = raw as Record<string, unknown>
-  if (typeof sub.id !== 'string')
-    return null
+  if (typeof sub.id !== 'string') return null
 
   const games = Array.isArray(sub.games)
-    ? sub.games.map(normalizeGameItem).filter((game): game is GameItem => game !== null)
+    ? sub.games
+        .map(normalizeGameItem)
+        .filter((game): game is GameItem => game !== null)
     : []
 
   return {
@@ -99,8 +96,10 @@ function normalizeSubCategory(raw: unknown): GameSubCategory | null {
     key: typeof sub.key === 'string' ? sub.key : undefined,
     nameKey: typeof sub.nameKey === 'string' ? sub.nameKey : undefined,
     description: typeof sub.description === 'string' ? sub.description : null,
-    descriptionKey: typeof sub.descriptionKey === 'string' ? sub.descriptionKey : undefined,
-    thumbnailUrl: typeof sub.thumbnailUrl === 'string' ? sub.thumbnailUrl : null,
+    descriptionKey:
+      typeof sub.descriptionKey === 'string' ? sub.descriptionKey : undefined,
+    thumbnailUrl:
+      typeof sub.thumbnailUrl === 'string' ? sub.thumbnailUrl : null,
     img: typeof sub.img === 'string' ? sub.img : null,
     icon: typeof sub.icon === 'string' ? sub.icon : null,
     games,
@@ -108,36 +107,48 @@ function normalizeSubCategory(raw: unknown): GameSubCategory | null {
 }
 
 function normalizeCatalog(response: unknown): GameCategory[] {
-  if (!Array.isArray(response))
-    return []
+  if (!Array.isArray(response)) return []
 
   return response
     .map((entry) => {
-      if (!entry || typeof entry !== 'object')
-        return null
+      if (!entry || typeof entry !== 'object') return null
 
       const category = entry as Record<string, unknown>
-      if (typeof category.id !== 'string')
-        return null
+      if (typeof category.id !== 'string') return null
 
       const subCategories = Array.isArray(category.subCategories)
         ? category.subCategories
             .map(normalizeSubCategory)
-            .filter((subCategory): subCategory is GameSubCategory => subCategory !== null)
+            .filter(
+              (subCategory): subCategory is GameSubCategory =>
+                subCategory !== null,
+            )
         : []
 
       const games = Array.isArray(category.games)
-        ? category.games.map(normalizeGameItem).filter((game): game is GameItem => game !== null)
+        ? category.games
+            .map(normalizeGameItem)
+            .filter((game): game is GameItem => game !== null)
         : []
 
       return {
         id: category.id,
         name: typeof category.name === 'string' ? category.name : undefined,
         key: typeof category.key === 'string' ? category.key : undefined,
-        nameKey: typeof category.nameKey === 'string' ? category.nameKey : undefined,
-        description: typeof category.description === 'string' ? category.description : null,
-        descriptionKey: typeof category.descriptionKey === 'string' ? category.descriptionKey : undefined,
-        thumbnailUrl: typeof category.thumbnailUrl === 'string' ? category.thumbnailUrl : null,
+        nameKey:
+          typeof category.nameKey === 'string' ? category.nameKey : undefined,
+        description:
+          typeof category.description === 'string'
+            ? category.description
+            : null,
+        descriptionKey:
+          typeof category.descriptionKey === 'string'
+            ? category.descriptionKey
+            : undefined,
+        thumbnailUrl:
+          typeof category.thumbnailUrl === 'string'
+            ? category.thumbnailUrl
+            : null,
         img: typeof category.img === 'string' ? category.img : null,
         icon: typeof category.icon === 'string' ? category.icon : null,
         subCategories,
@@ -203,9 +214,14 @@ interface HttpErrorLike extends Error {
   }
 }
 
-function buildHttpError(error: unknown, fallbackMessage: string): HttpErrorLike {
+function buildHttpError(
+  error: unknown,
+  fallbackMessage: string,
+): HttpErrorLike {
   const source =
-    error instanceof Error ? (error as HttpErrorLike) : (new Error(fallbackMessage) as HttpErrorLike)
+    error instanceof Error
+      ? (error as HttpErrorLike)
+      : (new Error(fallbackMessage) as HttpErrorLike)
   const status = source.status ?? source.statusCode ?? source.response?.status
   const statusSuffix = status ? ` (HTTP ${status})` : ''
   const message = `${source.message || fallbackMessage}${statusSuffix}`
@@ -229,9 +245,11 @@ export const useGameCatalogStore = defineStore('game-catalog', {
   }),
   getters: {
     isCatalogCacheValid: (state) =>
-      state.categories.length > 0 && Date.now() - state.catalogFetchedAt < CATALOG_TTL_MS,
+      state.categories.length > 0 &&
+      Date.now() - state.catalogFetchedAt < CATALOG_TTL_MS,
     isLevelsCacheValid: (state) =>
-      state.levels.length > 0 && Date.now() - state.levelsFetchedAt < LEVELS_TTL_MS,
+      state.levels.length > 0 &&
+      Date.now() - state.levelsFetchedAt < LEVELS_TTL_MS,
   },
   actions: {
     async fetchCatalog(force = false) {
@@ -248,7 +266,10 @@ export const useGameCatalogStore = defineStore('game-catalog', {
         this.catalogFetchedAt = Date.now()
         return this.categories
       } catch (error) {
-        this.error = error instanceof Error ? error.message : 'Unable to load game catalog.'
+        this.error =
+          error instanceof Error
+            ? error.message
+            : 'Unable to load game catalog.'
         throw error
       } finally {
         this.loadingCatalog = false
@@ -268,7 +289,8 @@ export const useGameCatalogStore = defineStore('game-catalog', {
         this.levelsFetchedAt = Date.now()
         return this.levels
       } catch (error) {
-        this.error = error instanceof Error ? error.message : 'Unable to load game levels.'
+        this.error =
+          error instanceof Error ? error.message : 'Unable to load game levels.'
         throw error
       } finally {
         this.loadingLevels = false
@@ -280,16 +302,25 @@ export const useGameCatalogStore = defineStore('game-catalog', {
       const profileStore = useProfileStore()
 
       try {
-        const response = await $fetch<StartResponse>(`/api/games/${gameId}/sessions/start`, {
-          method: 'POST',
-          body: { level: normalizeSessionLevel(level) },
-        })
+        const response = await $fetch<StartResponse>(
+          `/api/games/${gameId}/sessions/start`,
+          {
+            method: 'POST',
+            body: { level: normalizeSessionLevel(level) },
+          },
+        )
 
-        const sessionId = response.session.id ?? response.session.sessionId ?? ''
-        const sessionLevel = response.session.level ?? response.session.context?.selectedLevel ?? level
+        const sessionId =
+          response.session.id ?? response.session.sessionId ?? ''
+        const sessionLevel =
+          response.session.level ??
+          response.session.context?.selectedLevel ??
+          level
 
         if (!sessionId) {
-          throw new Error('Unable to start session: missing session id in API response.')
+          throw new Error(
+            'Unable to start session: missing session id in API response.',
+          )
         }
 
         this.currentSession = {
@@ -317,10 +348,13 @@ export const useGameCatalogStore = defineStore('game-catalog', {
       const profileStore = useProfileStore()
 
       try {
-        const response = await $fetch<FinishResponse>(`/api/games/sessions/${sessionId}/finish`, {
-          method: 'POST',
-          body: { result },
-        })
+        const response = await $fetch<FinishResponse>(
+          `/api/games/sessions/${sessionId}/finish`,
+          {
+            method: 'POST',
+            body: { result },
+          },
+        )
         if (this.currentSession) {
           this.currentSession = {
             ...this.currentSession,

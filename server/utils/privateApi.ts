@@ -2,7 +2,11 @@ import type { H3Event } from 'h3'
 import type { SessionUser } from '~/types/session'
 import type { ApiObject, ApiQuery, ApiResponse } from '../types/api/common'
 import { getCached, privateCacheKey, setCached } from './apiCache'
-import { resolveCacheDomain, resolveCacheTtl, type CacheDomain } from './apiCacheConfig'
+import {
+  resolveCacheDomain,
+  resolveCacheTtl,
+  type CacheDomain,
+} from './apiCacheConfig'
 import { resolveApiUrl } from './resolveApiUrl'
 import { invalidateMutationCaches } from './mutationInvalidation'
 

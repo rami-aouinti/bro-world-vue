@@ -22,7 +22,9 @@ onMounted(async () => {
   }
 })
 
-const selectedCategory = computed(() => getCategoryByRouteParam(categoryParam.value))
+const selectedCategory = computed(() =>
+  getCategoryByRouteParam(categoryParam.value),
+)
 
 function openSubCategory(subCategory: { id: string; key?: string }) {
   navigateTo(`/games/${categoryParam.value}/${entityRouteValue(subCategory)}`)
@@ -36,11 +38,17 @@ function navigateBreadcrumb(to?: string) {
 
 const breadcrumbs = computed(() => [
   { title: 'Games', to: '/games' },
-  { title: selectedCategory.value?.key || selectedCategory.value?.name || 'Category', disabled: true },
+  {
+    title:
+      selectedCategory.value?.key || selectedCategory.value?.name || 'Category',
+    disabled: true,
+  },
 ])
 
 const subCategories = computed(() =>
-  Array.isArray(selectedCategory.value?.subCategories) ? selectedCategory.value.subCategories : [],
+  Array.isArray(selectedCategory.value?.subCategories)
+    ? selectedCategory.value.subCategories
+    : [],
 )
 </script>
 
@@ -53,8 +61,12 @@ const subCategories = computed(() =>
             <template #prepend>
               <v-icon icon="mdi-shape-outline" />
             </template>
-            <v-list-item-title>{{ tOrFallback('gamePage.selection.category', 'Category') }}</v-list-item-title>
-            <v-list-item-subtitle>{{ entityName(selectedCategory || {}) || '—' }}</v-list-item-subtitle>
+            <v-list-item-title>{{
+              tOrFallback('gamePage.selection.category', 'Category')
+            }}</v-list-item-title>
+            <v-list-item-subtitle>{{
+              entityName(selectedCategory || {}) || '—'
+            }}</v-list-item-subtitle>
           </v-list-item>
         </v-list>
       </template>
@@ -82,12 +94,12 @@ const subCategories = computed(() =>
             sm="6"
             lg="4"
           >
-            <v-card rounded="xl" class="h-100 game-card cursor-pointer" @click="openSubCategory(subCategory)">
-              <v-img
-                :src="subCategory?.img"
-                height="200"
-                cover
-              />
+            <v-card
+              rounded="xl"
+              class="h-100 game-card cursor-pointer"
+              @click="openSubCategory(subCategory)"
+            >
+              <v-img :src="subCategory?.img" height="200" cover />
             </v-card>
           </v-col>
         </v-row>
@@ -103,6 +115,10 @@ const subCategories = computed(() =>
 </template>
 <style scoped>
 .game-card {
-  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.18) 0%,
+    transparent 20%
+  );
 }
 </style>

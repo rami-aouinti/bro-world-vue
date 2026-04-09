@@ -133,7 +133,8 @@ function normalizeAuthor(input: unknown): BlogAuthorView | null {
     firstName,
     lastName,
     username,
-    photo: pickNullableString(source.photo) ?? pickNullableString(source.avatar),
+    photo:
+      pickNullableString(source.photo) ?? pickNullableString(source.avatar),
     displayName:
       fullName || username || pickNullableString(source.name) || 'Utilisateur',
   }
@@ -144,7 +145,8 @@ function normalizeReaction(input: unknown): BlogReactionView {
 
   return {
     id: pickId(reaction),
-    type: pickNullableString(reaction.type) ?? pickNullableString(reaction.code),
+    type:
+      pickNullableString(reaction.type) ?? pickNullableString(reaction.code),
     count: pickNumber(reaction.count, 0),
     isAuthor: pickBoolean(reaction.isAuthor, false),
   }
@@ -159,16 +161,16 @@ function normalizeComment(input: unknown): BlogCommentView {
     createdAt: pickNullableString(comment.createdAt),
     isAuthor: pickBoolean(comment.isAuthor, false),
     author: normalizeAuthor(comment.author ?? comment.user),
-    children: readNestedArray(comment, ['children', 'comments']).map(normalizeComment),
+    children: readNestedArray(comment, ['children', 'comments']).map(
+      normalizeComment,
+    ),
     reactions: readNestedArray(comment, ['reactions']).map(normalizeReaction),
   }
 }
 
 function normalizePost(source: unknown): BlogPostView | null {
   const root = toRecord(source)
-  const post = toRecord(
-    root.post ?? root.data ?? root.item ?? root,
-  )
+  const post = toRecord(root.post ?? root.data ?? root.item ?? root)
 
   if (Object.keys(post).length === 0) {
     return null
@@ -184,7 +186,8 @@ function normalizePost(source: unknown): BlogPostView | null {
     comments: readNestedArray(post, ['comments']).map(normalizeComment),
     reactions: readNestedArray(post, ['reactions']).map(normalizeReaction),
     isAuthor: pickBoolean(post.isAuthor, false),
-    sharedUrl: pickNullableString(post.sharedUrl) ?? pickNullableString(post.url),
+    sharedUrl:
+      pickNullableString(post.sharedUrl) ?? pickNullableString(post.url),
     mediaUrl:
       pickNullableString(post.mediaUrl) ??
       pickNullableString(post.filePath) ??
@@ -211,11 +214,14 @@ const { data: reactionTypesResponse } = await useAsyncData(
   () => $fetch('/api/blog/public/reaction-types'),
 )
 
-const post = computed<BlogPostView | null>(() => normalizePost(postResponse.value))
+const post = computed<BlogPostView | null>(() =>
+  normalizePost(postResponse.value),
+)
 
 const reactionTypes = computed<BlogReactionType[]>(() => {
   const root = toRecord(reactionTypesResponse.value)
-  const source = root.reactionTypes ?? root.types ?? root.data ?? reactionTypesResponse.value
+  const source =
+    root.reactionTypes ?? root.types ?? root.data ?? reactionTypesResponse.value
 
   if (!Array.isArray(source)) {
     return []
@@ -261,7 +267,9 @@ async function reactToPost(payload: { post: BlogPostView; code: string }) {
 
   if (!existing) {
     await react('post', payload.post.id, { type: payload.code }, 'create')
-  } else if ((existing.type ?? '').toLowerCase() === payload.code.toLowerCase()) {
+  } else if (
+    (existing.type ?? '').toLowerCase() === payload.code.toLowerCase()
+  ) {
     await react('post', payload.post.id, undefined, 'delete')
   } else {
     await react('post', payload.post.id, { type: payload.code }, 'update')
@@ -283,7 +291,9 @@ async function reactToComment(payload: {
 
   if (!existing) {
     await react('comment', payload.comment.id, { type: payload.code }, 'create')
-  } else if ((existing.type ?? '').toLowerCase() === payload.code.toLowerCase()) {
+  } else if (
+    (existing.type ?? '').toLowerCase() === payload.code.toLowerCase()
+  ) {
     await react('comment', payload.comment.id, undefined, 'delete')
   } else {
     await react('comment', payload.comment.id, { type: payload.code }, 'update')
@@ -308,7 +318,6 @@ async function replyToComment(payload: {
   await refreshPost()
 }
 
-
 async function deletePost(post: BlogPostView) {
   await remove('post', post.id)
   await navigateTo('/blog')
@@ -332,15 +341,16 @@ async function deleteComment(payload: {
     </AppPageDrawers>
     <v-container fluid class="py-6">
       <div class="mx-auto" style="max-width: 920px">
-        <v-progress-linear v-if="pending" indeterminate color="primary" class="mb-4" />
-
-        <v-alert
-          v-else-if="error"
-          type="error"
-          variant="tonal"
+        <v-progress-linear
+          v-if="pending"
+          indeterminate
+          color="primary"
           class="mb-4"
-        >
-          Impossible de charger le post pour le slug: <strong>{{ slug }}</strong>
+        />
+
+        <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">
+          Impossible de charger le post pour le slug:
+          <strong>{{ slug }}</strong>
         </v-alert>
 
         <BlogPostCard

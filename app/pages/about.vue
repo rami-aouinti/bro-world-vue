@@ -52,11 +52,16 @@ const { data, pending, error, refresh } = await useAsyncData(
   () => publicPagesStore.fetchPage<AboutPageResponse>('about', locale.value),
   {
     watch: [locale],
-    default: () => publicPagesStore.getPage<AboutPageResponse>('about', locale.value),
+    default: () =>
+      publicPagesStore.getPage<AboutPageResponse>('about', locale.value),
   },
 )
 
-const page = computed(() => data.value ?? publicPagesStore.getPage<AboutPageResponse>('about', locale.value))
+const page = computed(
+  () =>
+    data.value ??
+    publicPagesStore.getPage<AboutPageResponse>('about', locale.value),
+)
 </script>
 
 <template>
@@ -65,7 +70,9 @@ const page = computed(() => data.value ?? publicPagesStore.getPage<AboutPageResp
       <template #left>
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible || pending || !page" />
         <v-list v-else nav density="compact" class="app-left-drawer-list">
-          <v-list-subheader class="text-overline">{{ page.hero.badge }}</v-list-subheader>
+          <v-list-subheader class="text-overline">{{
+            page.hero.badge
+          }}</v-list-subheader>
           <v-list-item
             v-for="card in page.missionCards"
             :key="card.title"
@@ -79,10 +86,16 @@ const page = computed(() => data.value ?? publicPagesStore.getPage<AboutPageResp
       <template #right>
         <SkeletonDrawerRight v-if="isPageSkeletonVisible || pending || !page" />
         <v-list v-else nav density="compact" class="app-right-drawer-list">
-          <v-list-item class="px-0 mb-3" v-for="metric in page.metrics" :key="metric.label">
+          <v-list-item
+            v-for="metric in page.metrics"
+            :key="metric.label"
+            class="px-0 mb-3"
+          >
             <v-card rounded="xl" variant="tonal" color="primary">
               <v-card-item>
-                <template #prepend><v-icon :icon="metric.icon" class="me-2" /></template>
+                <template #prepend
+                  ><v-icon :icon="metric.icon" class="me-2"
+                /></template>
                 <v-card-title>{{ metric.value }}</v-card-title>
                 <v-card-subtitle>{{ metric.label }}</v-card-subtitle>
               </v-card-item>
@@ -94,54 +107,114 @@ const page = computed(() => data.value ?? publicPagesStore.getPage<AboutPageResp
 
     <v-container class="py-8">
       <SkeletonPageContent v-if="isPageSkeletonVisible || pending || !page" />
-      <v-alert v-else-if="error" type="error" variant="tonal" :text="String(error)" />
+      <v-alert
+        v-else-if="error"
+        type="error"
+        variant="tonal"
+        :text="String(error)"
+      />
       <template v-else-if="page">
         <v-card rounded="xl" class="mb-8 pa-6" variant="tonal" color="primary">
           <v-chip variant="flat" class="mb-3">{{ page.hero.badge }}</v-chip>
           <h1 class="text-h3 mb-3">{{ page.hero.title }}</h1>
           <p class="mb-3">{{ page.hero.subtitle }}</p>
-          <p v-for="paragraph in page.hero.paragraphs" :key="paragraph" class="mb-2">{{ paragraph }}</p>
-          <v-list lines="one" density="compact" bg-color="transparent" class="mb-2">
-            <v-list-item v-for="bullet in page.hero.bullets" :key="bullet" prepend-icon="mdi-check-circle-outline" :title="bullet" />
+          <p
+            v-for="paragraph in page.hero.paragraphs"
+            :key="paragraph"
+            class="mb-2"
+          >
+            {{ paragraph }}
+          </p>
+          <v-list
+            lines="one"
+            density="compact"
+            bg-color="transparent"
+            class="mb-2"
+          >
+            <v-list-item
+              v-for="bullet in page.hero.bullets"
+              :key="bullet"
+              prepend-icon="mdi-check-circle-outline"
+              :title="bullet"
+            />
           </v-list>
           <div class="d-flex flex-wrap ga-3 mt-4">
-            <v-btn color="primary" variant="flat">{{ page.hero.primaryCta }}</v-btn>
+            <v-btn color="primary" variant="flat">{{
+              page.hero.primaryCta
+            }}</v-btn>
             <v-btn variant="outlined">{{ page.hero.secondaryCta }}</v-btn>
           </div>
         </v-card>
 
         <h2 class="text-h5 font-weight-bold mb-4">{{ page.metricsTitle }}</h2>
         <v-row class="mb-8" dense>
-          <v-col v-for="metric in page.metrics" :key="metric.label" cols="12" md="4">
+          <v-col
+            v-for="metric in page.metrics"
+            :key="metric.label"
+            cols="12"
+            md="4"
+          >
             <v-card rounded="xl" variant="outlined" height="100%">
               <v-card-text class="text-center py-7">
-                <v-icon :icon="metric.icon" color="primary" size="30" class="mb-2" />
+                <v-icon
+                  :icon="metric.icon"
+                  color="primary"
+                  size="30"
+                  class="mb-2"
+                />
                 <div class="text-h4 font-weight-black">{{ metric.value }}</div>
                 <div class="text-body-1">{{ metric.label }}</div>
-                <div class="text-caption text-medium-emphasis">{{ metric.context }}</div>
+                <div class="text-caption text-medium-emphasis">
+                  {{ metric.context }}
+                </div>
               </v-card-text>
             </v-card>
           </v-col>
         </v-row>
 
         <v-row class="mb-8" dense>
-          <v-col v-for="card in page.missionCards" :key="card.title" cols="12" md="6">
+          <v-col
+            v-for="card in page.missionCards"
+            :key="card.title"
+            cols="12"
+            md="6"
+          >
             <v-card rounded="xl" height="100%" class="pa-2">
               <v-card-item>
-                <template #prepend><v-icon :icon="card.icon" color="primary" class="me-2" /></template>
+                <template #prepend
+                  ><v-icon :icon="card.icon" color="primary" class="me-2"
+                /></template>
                 <v-card-title>{{ card.title }}</v-card-title>
                 <v-card-subtitle>{{ card.description }}</v-card-subtitle>
               </v-card-item>
               <v-card-text>
-                <p v-for="paragraph in card.paragraphs" :key="paragraph" class="mb-2">{{ paragraph }}</p>
-                <v-chip v-for="bullet in card.bullets" :key="bullet" class="me-2 mb-2" variant="outlined" size="small">{{ bullet }}</v-chip>
+                <p
+                  v-for="paragraph in card.paragraphs"
+                  :key="paragraph"
+                  class="mb-2"
+                >
+                  {{ paragraph }}
+                </p>
+                <v-chip
+                  v-for="bullet in card.bullets"
+                  :key="bullet"
+                  class="me-2 mb-2"
+                  variant="outlined"
+                  size="small"
+                  >{{ bullet }}</v-chip
+                >
               </v-card-text>
             </v-card>
           </v-col>
         </v-row>
 
         <h2 class="text-h5 font-weight-bold mb-4">{{ page.timelineTitle }}</h2>
-        <v-timeline side="end" align="start" density="comfortable" truncate-line="both">
+        <v-timeline
+          side="end"
+          align="start"
+          density="comfortable"
+          truncate-line="both"
+        >
           <v-timeline-item
             v-for="item in page.timeline"
             :key="item.title"
@@ -157,7 +230,15 @@ const page = computed(() => data.value ?? publicPagesStore.getPage<AboutPageResp
               </v-card-item>
               <v-card-text>
                 <p class="mb-2">{{ item.description }}</p>
-                <v-chip v-for="highlight in item.highlights" :key="highlight" class="me-2 mb-2" size="small" color="primary" variant="tonal">{{ highlight }}</v-chip>
+                <v-chip
+                  v-for="highlight in item.highlights"
+                  :key="highlight"
+                  class="me-2 mb-2"
+                  size="small"
+                  color="primary"
+                  variant="tonal"
+                  >{{ highlight }}</v-chip
+                >
               </v-card-text>
             </v-card>
           </v-timeline-item>
@@ -167,13 +248,19 @@ const page = computed(() => data.value ?? publicPagesStore.getPage<AboutPageResp
           <h3 class="text-h5 text-white mb-2">{{ page.cta.title }}</h3>
           <p class="text-white mb-4">{{ page.cta.description }}</p>
           <div class="d-flex flex-wrap ga-3">
-            <v-btn color="white" variant="flat">{{ page.cta.primaryAction }}</v-btn>
-            <v-btn color="white" variant="outlined">{{ page.cta.secondaryAction }}</v-btn>
+            <v-btn color="white" variant="flat">{{
+              page.cta.primaryAction
+            }}</v-btn>
+            <v-btn color="white" variant="outlined">{{
+              page.cta.secondaryAction
+            }}</v-btn>
           </div>
         </v-card>
 
         <div class="d-flex justify-end mt-4">
-          <v-btn variant="text" prepend-icon="mdi-refresh" @click="refresh">{{ t('common.refresh') }}</v-btn>
+          <v-btn variant="text" prepend-icon="mdi-refresh" @click="refresh">{{
+            t('common.refresh')
+          }}</v-btn>
         </div>
       </template>
     </v-container>

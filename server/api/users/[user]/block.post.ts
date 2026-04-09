@@ -11,8 +11,12 @@ export default defineEventHandler(async (event): Promise<UsersApiResponse> => {
     })
   }
 
-  return mutatingPrivateApiCall<UsersApiResponse>(event, `/users/${userId}/block`, {
-    mutationKey: 'users:block:create',
-    method: 'POST',
-  })
+  return mutatingPrivateApiCall<UsersApiResponse>(
+    event,
+    `/users/${userId}/block`,
+    {
+      mutationKey: 'users:block:create',
+      method: 'POST',
+    },
+  )
 })

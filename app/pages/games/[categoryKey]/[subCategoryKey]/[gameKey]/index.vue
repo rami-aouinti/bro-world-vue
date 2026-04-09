@@ -8,7 +8,9 @@ definePageMeta({
 
 const route = useRoute()
 const categoryParam = computed(() => String(route.params.categoryKey || ''))
-const subCategoryParam = computed(() => String(route.params.subCategoryKey || ''))
+const subCategoryParam = computed(() =>
+  String(route.params.subCategoryKey || ''),
+)
 const gameParam = computed(() => String(route.params.gameKey || ''))
 
 const {
@@ -22,22 +24,39 @@ const {
   entityName,
 } = useGamesCatalogNavigation()
 
-const selectedCategory = computed(() => getCategoryByRouteParam(categoryParam.value))
-const selectedSubCategory = computed(() => getSubCategoryByRouteParam(categoryParam.value, subCategoryParam.value))
-const selectedGame = computed(() => getGameByRouteParam(categoryParam.value, subCategoryParam.value, gameParam.value))
-const levels = computed(() => (Array.isArray(catalogStore.levels) ? catalogStore.levels : []))
+const selectedCategory = computed(() =>
+  getCategoryByRouteParam(categoryParam.value),
+)
+const selectedSubCategory = computed(() =>
+  getSubCategoryByRouteParam(categoryParam.value, subCategoryParam.value),
+)
+const selectedGame = computed(() =>
+  getGameByRouteParam(
+    categoryParam.value,
+    subCategoryParam.value,
+    gameParam.value,
+  ),
+)
+const levels = computed(() =>
+  Array.isArray(catalogStore.levels) ? catalogStore.levels : [],
+)
 const selectedLevelValue = ref<string | null>(null)
 
 const canStart = computed(
-  () => Boolean(selectedGame.value && selectedLevelValue.value) && !catalogStore.startingSession,
+  () =>
+    Boolean(selectedGame.value && selectedLevelValue.value) &&
+    !catalogStore.startingSession,
 )
 
 onMounted(async () => {
   const loaded = await ensureCatalogLoaded()
-  if (!loaded)
-    return
+  if (!loaded) return
 
-  if (!selectedCategory.value || !selectedSubCategory.value || !selectedGame.value) {
+  if (
+    !selectedCategory.value ||
+    !selectedSubCategory.value ||
+    !selectedGame.value
+  ) {
     await navigateTo('/games')
     return
   }
@@ -54,12 +73,17 @@ function difficultyLabel(level: string) {
 }
 
 async function onStart() {
-  if (!selectedGame.value || !selectedLevelValue.value)
-    return
+  if (!selectedGame.value || !selectedLevelValue.value) return
 
   try {
-    const response = await catalogStore.startSession(selectedGame.value.id, selectedLevelValue.value)
-    const createdSessionId = response.session.id ?? response.session.sessionId ?? catalogStore.currentSession?.sessionId
+    const response = await catalogStore.startSession(
+      selectedGame.value.id,
+      selectedLevelValue.value,
+    )
+    const createdSessionId =
+      response.session.id ??
+      response.session.sessionId ??
+      catalogStore.currentSession?.sessionId
 
     if (!createdSessionId) {
       Notify.error('Session id not found in start response.')
@@ -82,9 +106,22 @@ function navigateBreadcrumb(to?: string) {
 
 const breadcrumbs = computed(() => [
   { title: 'Games', to: '/games' },
-  { title: selectedCategory.value?.key || selectedCategory.value?.name || 'Category', to: `/games/${categoryParam.value}` },
-  { title: selectedSubCategory.value?.key || selectedSubCategory.value?.name || 'Subcategory', to: `/games/${categoryParam.value}/${subCategoryParam.value}` },
-  { title: selectedGame.value?.key || selectedGame.value?.name || 'Game', disabled: true },
+  {
+    title:
+      selectedCategory.value?.key || selectedCategory.value?.name || 'Category',
+    to: `/games/${categoryParam.value}`,
+  },
+  {
+    title:
+      selectedSubCategory.value?.key ||
+      selectedSubCategory.value?.name ||
+      'Subcategory',
+    to: `/games/${categoryParam.value}/${subCategoryParam.value}`,
+  },
+  {
+    title: selectedGame.value?.key || selectedGame.value?.name || 'Game',
+    disabled: true,
+  },
 ])
 </script>
 
@@ -97,29 +134,45 @@ const breadcrumbs = computed(() => [
             <template #prepend>
               <v-icon icon="mdi-shape-outline" />
             </template>
-            <v-list-item-title>{{ tOrFallback('gamePage.selection.category', 'Category') }}</v-list-item-title>
-            <v-list-item-subtitle>{{ entityName(selectedCategory || {}) || '—' }}</v-list-item-subtitle>
+            <v-list-item-title>{{
+              tOrFallback('gamePage.selection.category', 'Category')
+            }}</v-list-item-title>
+            <v-list-item-subtitle>{{
+              entityName(selectedCategory || {}) || '—'
+            }}</v-list-item-subtitle>
           </v-list-item>
           <v-list-item v-if="selectedSubCategory">
             <template #prepend>
               <v-icon icon="mdi-shape-plus-outline" />
             </template>
-            <v-list-item-title>{{ tOrFallback('gamePage.selection.subCategory', 'Subcategory') }}</v-list-item-title>
-            <v-list-item-subtitle>{{ entityName(selectedSubCategory || {}) || '—' }}</v-list-item-subtitle>
+            <v-list-item-title>{{
+              tOrFallback('gamePage.selection.subCategory', 'Subcategory')
+            }}</v-list-item-title>
+            <v-list-item-subtitle>{{
+              entityName(selectedSubCategory || {}) || '—'
+            }}</v-list-item-subtitle>
           </v-list-item>
           <v-list-item v-if="selectedGame">
             <template #prepend>
               <v-icon icon="mdi-controller-classic-outline" />
             </template>
-            <v-list-item-title>{{ tOrFallback('gamePage.selection.game', 'Game') }}</v-list-item-title>
-            <v-list-item-subtitle>{{ entityName(selectedGame || {}) || '—' }}</v-list-item-subtitle>
+            <v-list-item-title>{{
+              tOrFallback('gamePage.selection.game', 'Game')
+            }}</v-list-item-title>
+            <v-list-item-subtitle>{{
+              entityName(selectedGame || {}) || '—'
+            }}</v-list-item-subtitle>
           </v-list-item>
           <v-list-item v-if="selectedLevelValue">
             <template #prepend>
               <v-icon icon="mdi-ladder" />
             </template>
-            <v-list-item-title>{{ tOrFallback('gamePage.selection.level', 'Level') }}</v-list-item-title>
-            <v-list-item-subtitle>{{ selectedLevelValue }}</v-list-item-subtitle>
+            <v-list-item-title>{{
+              tOrFallback('gamePage.selection.level', 'Level')
+            }}</v-list-item-title>
+            <v-list-item-subtitle>{{
+              selectedLevelValue
+            }}</v-list-item-subtitle>
           </v-list-item>
         </v-list>
       </template>
@@ -155,7 +208,9 @@ const breadcrumbs = computed(() => [
                   class="level-card d-flex align-center justify-center text-center cursor-pointer"
                   :elevation="selectedLevelValue === level.value ? 12 : 2"
                   :color="selectedLevelValue === level.value ? 'primary' : ''"
-                  :variant="selectedLevelValue === level.value ? 'outlined' : 'text'"
+                  :variant="
+                    selectedLevelValue === level.value ? 'outlined' : 'text'
+                  "
                   @click="selectedLevelValue = level.value"
                 >
                   <div class="text-h6">
@@ -167,7 +222,13 @@ const breadcrumbs = computed(() => [
           </div>
 
           <div class="game-selection-footer">
-            <v-btn color="primary" size="large" :disabled="!canStart" :loading="catalogStore.startingSession" @click="onStart">
+            <v-btn
+              color="primary"
+              size="large"
+              :disabled="!canStart"
+              :loading="catalogStore.startingSession"
+              @click="onStart"
+            >
               {{ t('gamePage.actions.start') }}
             </v-btn>
           </div>
@@ -196,7 +257,11 @@ const breadcrumbs = computed(() => [
 }
 
 .level-card {
-  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.18) 0%,
+    transparent 20%
+  );
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 

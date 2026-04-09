@@ -1,6 +1,6 @@
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue'
 
 export default defineComponent({
-    name: "VercelAnalyticsPlaceholder",
-    render: () => null,
-});
+  name: 'VercelAnalyticsPlaceholder',
+  render: () => null,
+})

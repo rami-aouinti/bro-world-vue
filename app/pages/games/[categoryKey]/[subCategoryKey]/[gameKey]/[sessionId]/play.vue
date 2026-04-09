@@ -9,7 +9,9 @@ definePageMeta({
 const route = useRoute()
 const sessionId = computed(() => String(route.params.sessionId || ''))
 const categoryParam = computed(() => String(route.params.categoryKey || ''))
-const subCategoryParam = computed(() => String(route.params.subCategoryKey || ''))
+const subCategoryParam = computed(() =>
+  String(route.params.subCategoryKey || ''),
+)
 const gameParam = computed(() => String(route.params.gameKey || ''))
 
 const {
@@ -23,9 +25,19 @@ const {
 
 const finishResult = ref<'win' | 'lose' | null>(null)
 
-const selectedCategory = computed(() => getCategoryByRouteParam(categoryParam.value))
-const selectedSubCategory = computed(() => getSubCategoryByRouteParam(categoryParam.value, subCategoryParam.value))
-const selectedGame = computed(() => getGameByRouteParam(categoryParam.value, subCategoryParam.value, gameParam.value))
+const selectedCategory = computed(() =>
+  getCategoryByRouteParam(categoryParam.value),
+)
+const selectedSubCategory = computed(() =>
+  getSubCategoryByRouteParam(categoryParam.value, subCategoryParam.value),
+)
+const selectedGame = computed(() =>
+  getGameByRouteParam(
+    categoryParam.value,
+    subCategoryParam.value,
+    gameParam.value,
+  ),
+)
 
 const currentSession = computed(() => {
   if (catalogStore.currentSession?.sessionId === sessionId.value)
@@ -36,17 +48,22 @@ const currentSession = computed(() => {
 
 onMounted(async () => {
   const loaded = await ensureCatalogLoaded()
-  if (!loaded)
-    return
+  if (!loaded) return
 
-  if (!selectedCategory.value || !selectedSubCategory.value || !selectedGame.value || !currentSession.value) {
-    await navigateTo(`/games/${categoryParam.value}/${subCategoryParam.value}/${gameParam.value}`)
+  if (
+    !selectedCategory.value ||
+    !selectedSubCategory.value ||
+    !selectedGame.value ||
+    !currentSession.value
+  ) {
+    await navigateTo(
+      `/games/${categoryParam.value}/${subCategoryParam.value}/${gameParam.value}`,
+    )
   }
 })
 
 async function onFinish(result: 'win' | 'lose') {
-  if (!currentSession.value)
-    return
+  if (!currentSession.value) return
 
   finishResult.value = result
 
@@ -56,8 +73,14 @@ async function onFinish(result: 'win' | 'lose') {
     catalogStore.currentSession = null
     Notify.success(
       result === 'win'
-        ? tOrFallback('gamePage.messages.finishWinSuccess', 'Session finished with a win.')
-        : tOrFallback('gamePage.messages.finishLoseSuccess', 'Session finished with a loss.'),
+        ? tOrFallback(
+            'gamePage.messages.finishWinSuccess',
+            'Session finished with a win.',
+          )
+        : tOrFallback(
+            'gamePage.messages.finishLoseSuccess',
+            'Session finished with a loss.',
+          ),
     )
 
     await navigateTo(
@@ -70,9 +93,22 @@ async function onFinish(result: 'win' | 'lose') {
 
 const breadcrumbs = computed(() => [
   { title: 'Games', to: '/games' },
-  { title: selectedCategory.value?.key || selectedCategory.value?.name || 'Category', to: `/games/${categoryParam.value}` },
-  { title: selectedSubCategory.value?.key || selectedSubCategory.value?.name || 'Subcategory', to: `/games/${categoryParam.value}/${subCategoryParam.value}` },
-  { title: selectedGame.value?.key || selectedGame.value?.name || 'Game', to: `/games/${categoryParam.value}/${subCategoryParam.value}/${gameParam.value}` },
+  {
+    title:
+      selectedCategory.value?.key || selectedCategory.value?.name || 'Category',
+    to: `/games/${categoryParam.value}`,
+  },
+  {
+    title:
+      selectedSubCategory.value?.key ||
+      selectedSubCategory.value?.name ||
+      'Subcategory',
+    to: `/games/${categoryParam.value}/${subCategoryParam.value}`,
+  },
+  {
+    title: selectedGame.value?.key || selectedGame.value?.name || 'Game',
+    to: `/games/${categoryParam.value}/${subCategoryParam.value}/${gameParam.value}`,
+  },
   { title: 'Play', disabled: true },
 ])
 </script>
@@ -84,10 +120,18 @@ const breadcrumbs = computed(() => [
     <v-card rounded="xl" class="mb-6">
       <v-card-title>Live session</v-card-title>
       <v-card-text v-if="currentSession" class="d-flex flex-wrap ga-2">
-        <v-chip color="primary" variant="tonal">Session: {{ currentSession.sessionId }}</v-chip>
-        <v-chip color="secondary" variant="tonal">Level: {{ currentSession.level }}</v-chip>
-        <v-chip color="info" variant="tonal">Status: {{ currentSession.status }}</v-chip>
-        <v-chip color="warning" variant="tonal">Coins: {{ currentSession.coins }}</v-chip>
+        <v-chip color="primary" variant="tonal"
+          >Session: {{ currentSession.sessionId }}</v-chip
+        >
+        <v-chip color="secondary" variant="tonal"
+          >Level: {{ currentSession.level }}</v-chip
+        >
+        <v-chip color="info" variant="tonal"
+          >Status: {{ currentSession.status }}</v-chip
+        >
+        <v-chip color="warning" variant="tonal"
+          >Coins: {{ currentSession.coins }}</v-chip
+        >
       </v-card-text>
       <v-card-text v-else>
         Session introuvable. Redirection en cours...
@@ -95,7 +139,9 @@ const breadcrumbs = computed(() => [
     </v-card>
 
     <v-card rounded="xl" :disabled="!currentSession">
-      <v-card-title>{{ tOrFallback('gamePage.session.finishDemo', 'Finish demo') }}</v-card-title>
+      <v-card-title>{{
+        tOrFallback('gamePage.session.finishDemo', 'Finish demo')
+      }}</v-card-title>
       <v-card-text class="d-flex ga-3 flex-wrap">
         <v-btn
           color="success"

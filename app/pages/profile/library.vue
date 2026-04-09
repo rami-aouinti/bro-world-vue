@@ -7,14 +7,8 @@ import type {
 
 const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
-const {
-  tree,
-  folderOptions,
-  fetchTree,
-  createFolder,
-  uploadFile,
-  renameNode,
-} = useLibrary()
+const { tree, folderOptions, fetchTree, createFolder, uploadFile, renameNode } =
+  useLibrary()
 
 definePageMeta({
   layout: 'profile',
@@ -274,7 +268,7 @@ const isPreviewPdf = computed(
               type="file"
               class="d-none"
               @change="onFileChange"
-            >
+            />
             <v-btn
               v-if="selectedNode"
               variant="text"

@@ -96,10 +96,22 @@ const fullCalendarEvents = computed(() => {
 })
 
 const presetEvents = computed<PresetCalendarEvent[]>(() => [
-  { key: 'meeting', titleKey: 'pages.calendar.presets.meeting', color: '#2e7d32' },
+  {
+    key: 'meeting',
+    titleKey: 'pages.calendar.presets.meeting',
+    color: '#2e7d32',
+  },
   { key: 'party', titleKey: 'pages.calendar.presets.party', color: '#c62828' },
-  { key: 'training', titleKey: 'pages.calendar.presets.training', color: '#1565c0' },
-  { key: 'deadline', titleKey: 'pages.calendar.presets.deadline', color: '#6a1b9a' },
+  {
+    key: 'training',
+    titleKey: 'pages.calendar.presets.training',
+    color: '#1565c0',
+  },
+  {
+    key: 'deadline',
+    titleKey: 'pages.calendar.presets.deadline',
+    color: '#6a1b9a',
+  },
 ])
 
 const calendarOptions = computed(() => {
@@ -272,7 +284,9 @@ async function onExternalEventReceive(receiveInfo: {
     return
   }
 
-  const fallbackEnd = new Date(receiveInfo.event.start.getTime() + 60 * 60 * 1000)
+  const fallbackEnd = new Date(
+    receiveInfo.event.start.getTime() + 60 * 60 * 1000,
+  )
   const payload: EventMutationPayload = {
     title: receiveInfo.event.title,
     description: null,

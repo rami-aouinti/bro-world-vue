@@ -7,21 +7,27 @@ import type {
 
 export type CategoryItem = GamesCatalogCategory
 
-function mapSubCategory(subCategory: GamesCatalogSubCategory): GamesCatalogSubCategory {
+function mapSubCategory(
+  subCategory: GamesCatalogSubCategory,
+): GamesCatalogSubCategory {
   return {
     ...subCategory,
     games: subCategory.games ?? [],
   }
 }
 
-export function mapCatalogResponseToCategories(response: GamesCatalogApiResponse): CategoryItem[] {
-  return response.map(category => ({
+export function mapCatalogResponseToCategories(
+  response: GamesCatalogApiResponse,
+): CategoryItem[] {
+  return response.map((category) => ({
     ...category,
     subCategories: (category.subCategories ?? []).map(mapSubCategory),
     games: category.games ?? [],
   }))
 }
 
-export function mapLevelsResponseToValues(response: GamesLevelsApiResponse): string[] {
-  return (response.items ?? []).map(item => item.value.toLowerCase())
+export function mapLevelsResponseToValues(
+  response: GamesLevelsApiResponse,
+): string[] {
+  return (response.items ?? []).map((item) => item.value.toLowerCase())
 }

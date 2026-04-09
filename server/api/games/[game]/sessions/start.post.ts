@@ -4,7 +4,10 @@ import type {
   GamesSessionStartResponse,
 } from '~~/server/types/api/games'
 
-export default createProxyHandler<GamesSessionStartResponse, GamesSessionStartPayload>({
+export default createProxyHandler<
+  GamesSessionStartResponse,
+  GamesSessionStartPayload
+>({
   method: 'POST',
   endpointTemplate: '/games/:game/sessions/start',
   mutationKey: 'games:sessions:start',

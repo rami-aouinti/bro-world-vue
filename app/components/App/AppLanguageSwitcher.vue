@@ -9,10 +9,30 @@ type LocaleOption = {
 }
 
 const localeOptions: LocaleOption[] = [
-  { title: 'appbar.languages.en', value: 'en', code: 'GB', flagClass: 'fi fi-gb' },
-  { title: 'appbar.languages.fr', value: 'fr', code: 'FR', flagClass: 'fi fi-fr' },
-  { title: 'appbar.languages.es', value: 'es', code: 'ES', flagClass: 'fi fi-es' },
-  { title: 'appbar.languages.de', value: 'de', code: 'DE', flagClass: 'fi fi-de' },
+  {
+    title: 'appbar.languages.en',
+    value: 'en',
+    code: 'GB',
+    flagClass: 'fi fi-gb',
+  },
+  {
+    title: 'appbar.languages.fr',
+    value: 'fr',
+    code: 'FR',
+    flagClass: 'fi fi-fr',
+  },
+  {
+    title: 'appbar.languages.es',
+    value: 'es',
+    code: 'ES',
+    flagClass: 'fi fi-es',
+  },
+  {
+    title: 'appbar.languages.de',
+    value: 'de',
+    code: 'DE',
+    flagClass: 'fi fi-de',
+  },
 ]
 
 const selectedLocale = computed(

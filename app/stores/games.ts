@@ -3,18 +3,15 @@ import { useProfileStore } from './profile'
 const CATALOG_CACHE_TTL_MS = 5 * 60 * 1000
 const LEVELS_CACHE_TTL_MS = 15 * 60 * 1000
 
-
 function normalizeSessionLevel(level: string) {
   const normalizedLevel = level.trim().toLowerCase()
 
-  if (normalizedLevel === 'beginner')
-    return 'easy'
+  if (normalizedLevel === 'beginner') return 'easy'
 
   if (normalizedLevel === 'intermediate' || normalizedLevel === 'intermidiate')
     return 'medium'
 
-  if (normalizedLevel === 'advanced')
-    return 'hard'
+  if (normalizedLevel === 'advanced') return 'hard'
 
   return normalizedLevel
 }
@@ -87,9 +84,11 @@ export const useGamesStore = defineStore('games', {
   }),
   getters: {
     isCatalogCacheValid: (state) =>
-      state.catalog.length > 0 && Date.now() - state.catalogFetchedAt < CATALOG_CACHE_TTL_MS,
+      state.catalog.length > 0 &&
+      Date.now() - state.catalogFetchedAt < CATALOG_CACHE_TTL_MS,
     isLevelsCacheValid: (state) =>
-      state.levels.length > 0 && Date.now() - state.levelsFetchedAt < LEVELS_CACHE_TTL_MS,
+      state.levels.length > 0 &&
+      Date.now() - state.levelsFetchedAt < LEVELS_CACHE_TTL_MS,
   },
   actions: {
     async fetchCatalog(force = false) {
@@ -106,7 +105,8 @@ export const useGamesStore = defineStore('games', {
         this.catalogFetchedAt = Date.now()
         return this.catalog
       } catch (error) {
-        this.error = error instanceof Error ? error.message : 'Unable to load game catalog'
+        this.error =
+          error instanceof Error ? error.message : 'Unable to load game catalog'
         throw error
       } finally {
         this.loadingCatalog = false
@@ -126,7 +126,8 @@ export const useGamesStore = defineStore('games', {
         this.levelsFetchedAt = Date.now()
         return this.levels
       } catch (error) {
-        this.error = error instanceof Error ? error.message : 'Unable to load game levels'
+        this.error =
+          error instanceof Error ? error.message : 'Unable to load game levels'
         throw error
       } finally {
         this.loadingLevels = false
@@ -137,10 +138,13 @@ export const useGamesStore = defineStore('games', {
       this.error = ''
 
       try {
-        const response = await $fetch<GameSessionStartResponse>(`/api/games/${gameId}/sessions/start`, {
-          method: 'POST',
-          body: { level: normalizeSessionLevel(level) },
-        })
+        const response = await $fetch<GameSessionStartResponse>(
+          `/api/games/${gameId}/sessions/start`,
+          {
+            method: 'POST',
+            body: { level: normalizeSessionLevel(level) },
+          },
+        )
 
         this.activeSession = response
 
@@ -151,7 +155,10 @@ export const useGamesStore = defineStore('games', {
 
         return response
       } catch (error) {
-        this.error = error instanceof Error ? error.message : 'Unable to start game session'
+        this.error =
+          error instanceof Error
+            ? error.message
+            : 'Unable to start game session'
         throw error
       } finally {
         this.loadingSession = false
@@ -162,10 +169,13 @@ export const useGamesStore = defineStore('games', {
       this.error = ''
 
       try {
-        const response = await $fetch<GameSessionFinishResponse>(`/api/games/sessions/${sessionId}/finish`, {
-          method: 'POST',
-          body: { result },
-        })
+        const response = await $fetch<GameSessionFinishResponse>(
+          `/api/games/sessions/${sessionId}/finish`,
+          {
+            method: 'POST',
+            body: { result },
+          },
+        )
 
         const profileStore = useProfileStore()
         if (profileStore.profile) {
@@ -176,7 +186,10 @@ export const useGamesStore = defineStore('games', {
 
         return response
       } catch (error) {
-        this.error = error instanceof Error ? error.message : 'Unable to finish game session'
+        this.error =
+          error instanceof Error
+            ? error.message
+            : 'Unable to finish game session'
         throw error
       } finally {
         this.loadingSession = false

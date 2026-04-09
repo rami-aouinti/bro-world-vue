@@ -244,7 +244,11 @@ function authorProfilePath(comment: BlogComment) {
               </div>
             </v-menu>
 
-            <button type="button" :disabled="!canInteract" @click="emit('reply', comment)">
+            <button
+              type="button"
+              :disabled="!canInteract"
+              @click="emit('reply', comment)"
+            >
               {{ t('blog.comment.actions.reply') }}
             </button>
           </div>

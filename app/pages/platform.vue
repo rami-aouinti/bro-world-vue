@@ -336,7 +336,12 @@ function resetFilters() {
           />
 
           <v-row v-if="pending" dense>
-            <v-col v-for="index in 6" :key="`skeleton-${index}`" cols="12" md="6">
+            <v-col
+              v-for="index in 6"
+              :key="`skeleton-${index}`"
+              cols="12"
+              md="6"
+            >
               <v-skeleton-loader type="image, article" class="skeleton-card" />
             </v-col>
           </v-row>
@@ -431,7 +436,6 @@ function resetFilters() {
 </template>
 
 <style scoped>
-
 .platform-page {
   min-height: calc(90vh - var(--v-layout-top, 0px));
   display: flex;
@@ -461,7 +465,11 @@ function resetFilters() {
   max-height: 320px;
   overflow: hidden;
   border: 1px solid rgba(100, 116, 139, 0.15);
-  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.18) 0%,
+    transparent 20%
+  );
   transition:
     transform 0.25s ease,
     box-shadow 0.25s ease,

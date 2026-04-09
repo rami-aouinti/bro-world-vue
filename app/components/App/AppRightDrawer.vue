@@ -7,7 +7,10 @@ const isRightDrawerReady = ref(false)
 
 const rightDrawerRenderer = computed(() => registry?.right.value ?? null)
 const shouldRenderRightDrawerContent = computed(
-  () => isRightDrawerReady.value && lgAndUp.value && Boolean(rightDrawerRenderer.value),
+  () =>
+    isRightDrawerReady.value &&
+    lgAndUp.value &&
+    Boolean(rightDrawerRenderer.value),
 )
 
 onMounted(() => {

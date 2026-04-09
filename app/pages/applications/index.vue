@@ -6,9 +6,17 @@ definePageMeta({
 const { t } = useI18n()
 
 const applicationItems = [
-  { title: 'appbar.platform', to: '/platform', icon: 'mdi-view-dashboard-outline' },
+  {
+    title: 'appbar.platform',
+    to: '/platform',
+    icon: 'mdi-view-dashboard-outline',
+  },
   { title: 'appbar.games', to: '/games', icon: 'mdi-gamepad-variant-outline' },
-  { title: 'appbar.sports', to: '/applications/sports', icon: 'mdi-basketball' },
+  {
+    title: 'appbar.sports',
+    to: '/applications/sports',
+    icon: 'mdi-basketball',
+  },
   { title: 'appbar.quiz', to: '/applications/quiz', icon: 'mdi-help-box' },
 ]
 </script>

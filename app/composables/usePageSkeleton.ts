@@ -9,10 +9,13 @@ export function usePageSkeleton(duration = 100) {
       clearTimeout(timer)
     }
 
-    timer = setTimeout(() => {
-      isPageSkeletonVisible.value = false
-      timer = null
-    }, Math.max(0, duration))
+    timer = setTimeout(
+      () => {
+        isPageSkeletonVisible.value = false
+        timer = null
+      },
+      Math.max(0, duration),
+    )
   }
 
   onUnmounted(() => {

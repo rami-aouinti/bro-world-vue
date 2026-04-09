@@ -32,7 +32,6 @@ const shadowOptions = computed(() => [
   { title: t('appbar.shadow.strong'), value: 'strong' },
 ])
 
-
 function clampChannel(value: number) {
   return Math.max(0, Math.min(255, Math.round(value)))
 }
@@ -52,7 +51,11 @@ function shiftHexColor(hex: string, shift: number) {
   }
 
   return `#${channels
-    .map((channel) => clampChannel(channel + shift).toString(16).padStart(2, '0'))
+    .map((channel) =>
+      clampChannel(channel + shift)
+        .toString(16)
+        .padStart(2, '0'),
+    )
     .join('')}`
 }
 
@@ -96,7 +99,10 @@ function applyPrimaryColor(value: string) {
 
   if (import.meta.client) {
     document.documentElement.style.setProperty('--color-primary', next)
-    document.documentElement.style.setProperty('--color-primary-gradient', nextGradient)
+    document.documentElement.style.setProperty(
+      '--color-primary-gradient',
+      nextGradient,
+    )
   }
 }
 

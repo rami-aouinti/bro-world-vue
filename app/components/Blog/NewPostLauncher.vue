@@ -128,7 +128,11 @@ function openComposer() {
   --icon-tag: #4b8ef7;
   --icon-gif: #31d7e8;
 
-  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.18) 0%,
+    transparent 20%
+  );
   border: 1px solid var(--new-post-border);
   border-radius: var(--new-post-radius) !important;
 }

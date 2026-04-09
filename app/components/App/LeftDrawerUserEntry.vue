@@ -66,15 +66,15 @@ async function onLoginSubmit(payload: { username?: string; password: string }) {
     style="text-decoration: none; color: inherit"
   >
     <div class="d-flex align-center text-center ga-3">
-      <v-avatar size="32">
+      <v-avatar size="60">
         <v-img :src="avatarUrl" :alt="`${fullName} avatar`" />
       </v-avatar>
       <div>
-        <h3 class="mb-1">{{ fullName }}</h3>
+        <h3 class="my-0">{{ fullName }}</h3>
         <v-chip
-          color="amber-darken-2"
+          color="primary"
           size="small"
-          variant="flat"
+          variant="outlined"
           prepend-icon="mdi-cash-multiple"
           label
         >

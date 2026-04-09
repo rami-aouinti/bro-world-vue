@@ -1,6 +1,8 @@
 import { mutatingPrivateApiCall } from '../../../../utils/privateApi'
-import type { UpdateCalendarEventPayload } from '~~/server/types/api/calendar'
-import type { CalendarApiResponse } from '~~/server/types/api/calendar'
+import type {
+  UpdateCalendarEventPayload,
+  CalendarApiResponse,
+} from '~~/server/types/api/calendar'
 
 export default defineEventHandler(
   async (event): Promise<CalendarApiResponse> => {

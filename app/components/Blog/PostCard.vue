@@ -89,9 +89,17 @@ const authorName = computed(() => {
     return t('blog.post.fallbackTitle')
   }
 
-  const fullName = [author.firstName, author.lastName].filter(Boolean).join(' ').trim()
+  const fullName = [author.firstName, author.lastName]
+    .filter(Boolean)
+    .join(' ')
+    .trim()
 
-  return author.displayName || fullName || author.username || t('blog.post.fallbackTitle')
+  return (
+    author.displayName ||
+    fullName ||
+    author.username ||
+    t('blog.post.fallbackTitle')
+  )
 })
 const authorPhoto = computed(() => props.post.author?.photo || null)
 const authorProfilePath = computed(() => {
@@ -225,13 +233,21 @@ async function onPostBodyClick(event: MouseEvent) {
           @click.stop
         >
           <v-avatar size="52" color="grey-darken-2" class="me-3">
-            <v-img v-if="authorPhoto" :src="authorPhoto" :alt="`${authorName} avatar`" />
+            <v-img
+              v-if="authorPhoto"
+              :src="authorPhoto"
+              :alt="`${authorName} avatar`"
+            />
             <v-icon v-else icon="mdi-account" />
           </v-avatar>
         </NuxtLink>
         <div v-else class="post-author-link">
           <v-avatar size="52" color="grey-darken-2" class="me-3">
-            <v-img v-if="authorPhoto" :src="authorPhoto" :alt="`${authorName} avatar`" />
+            <v-img
+              v-if="authorPhoto"
+              :src="authorPhoto"
+              :alt="`${authorName} avatar`"
+            />
             <v-icon v-else icon="mdi-account" />
           </v-avatar>
         </div>
@@ -362,12 +378,20 @@ async function onPostBodyClick(event: MouseEvent) {
 
 <style scoped>
 .post-card {
-  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.18) 0%,
+    transparent 20%
+  );
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .post-card--light {
-  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.18) 0%,
+    transparent 20%
+  );
   border: 1px solid rgba(15, 23, 42, 0.1);
 }
 

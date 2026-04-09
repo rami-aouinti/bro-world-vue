@@ -51,10 +51,13 @@ function triggerPageSkeleton(minDuration = LAYOUT_SKELETON_MIN_DURATION) {
     clearTimeout(pageSkeletonTimer)
   }
 
-  pageSkeletonTimer = setTimeout(() => {
-    isPageSkeletonLoading.value = false
-    pageSkeletonTimer = null
-  }, Math.max(0, minDuration))
+  pageSkeletonTimer = setTimeout(
+    () => {
+      isPageSkeletonLoading.value = false
+      pageSkeletonTimer = null
+    },
+    Math.max(0, minDuration),
+  )
 }
 
 onMounted(async () => {
@@ -67,7 +70,10 @@ onMounted(async () => {
   triggerPageSkeleton()
 })
 
-watch(() => route.fullPath, () => triggerPageSkeleton())
+watch(
+  () => route.fullPath,
+  () => triggerPageSkeleton(),
+)
 
 onUnmounted(() => {
   if (pageSkeletonTimer) {

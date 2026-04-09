@@ -18,7 +18,6 @@ const fullName = computed(() => {
 const coins = computed(() => {
   return sessionUser.value?.coins || 0
 })
-
 </script>
 
 <template>

@@ -71,7 +71,8 @@ export const useProfileStore = defineStore('profile', {
   }),
   getters: {
     isCacheValid: (state) =>
-      Boolean(state.profile) && Date.now() - state.lastFetchedAt < PROFILE_CACHE_TTL_MS,
+      Boolean(state.profile) &&
+      Date.now() - state.lastFetchedAt < PROFILE_CACHE_TTL_MS,
   },
   actions: {
     setCoins(coins: number) {
@@ -100,7 +101,8 @@ export const useProfileStore = defineStore('profile', {
         this.lastFetchedAt = Date.now()
         return this.profile
       } catch (error) {
-        this.error = error instanceof Error ? error.message : 'Unable to load profile'
+        this.error =
+          error instanceof Error ? error.message : 'Unable to load profile'
         throw error
       } finally {
         this.loading = false
