@@ -5,7 +5,8 @@ import { useStorage } from '@vueuse/core'
 const { t } = useI18n()
 
 const theme = useTheme()
-const primary = useStorage('theme-primary', '#0f6ea8')
+const vision = useStorage('color-scheme', 'dark')
+const primary = useStorage('theme-primary', '#e91e63')
 const rounded = useStorage('theme-rounded', 'md')
 const shadow = useStorage('theme-shadow', 'none')
 
