@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import type { LibraryFileNode, LibraryFolderNode, LibraryTreeNode } from '~/types/library'
+import type {
+  LibraryFileNode,
+  LibraryFolderNode,
+  LibraryTreeNode,
+} from '~/types/library'
 
 const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
@@ -14,6 +18,7 @@ const {
 } = useLibrary()
 
 definePageMeta({
+  layout: 'profile',
   title: 'Library',
   middleware: 'auth',
 })
@@ -46,9 +51,13 @@ const rootNode = computed<LibraryFolderNode>(() => ({
   children: tree.value,
 }))
 
-const isFolder = (node: LibraryTreeNode): node is LibraryFolderNode => node.type === 'folder'
+const isFolder = (node: LibraryTreeNode): node is LibraryFolderNode =>
+  node.type === 'folder'
 
-const findFolderById = (nodes: LibraryTreeNode[], folderId: string): LibraryFolderNode | null => {
+const findFolderById = (
+  nodes: LibraryTreeNode[],
+  folderId: string,
+): LibraryFolderNode | null => {
   for (const node of nodes) {
     if (node.type !== 'folder') {
       continue
@@ -67,7 +76,11 @@ const findFolderById = (nodes: LibraryTreeNode[], folderId: string): LibraryFold
   return null
 }
 
-const findFolderPath = (nodes: LibraryTreeNode[], folderId: string, path: LibraryFolderNode[] = []): LibraryFolderNode[] | null => {
+const findFolderPath = (
+  nodes: LibraryTreeNode[],
+  folderId: string,
+  path: LibraryFolderNode[] = [],
+): LibraryFolderNode[] | null => {
   for (const node of nodes) {
     if (node.type !== 'folder') {
       continue
@@ -109,12 +122,10 @@ const breadcrumbFolders = computed(() => {
 
 const sidebarFolders = computed(() => {
   const onlyFolders = (nodes: LibraryTreeNode[]): LibraryFolderNode[] => {
-    return nodes
-      .filter(isFolder)
-      .map(folder => ({
-        ...folder,
-        children: onlyFolders(folder.children),
-      }))
+    return nodes.filter(isFolder).map((folder) => ({
+      ...folder,
+      children: onlyFolders(folder.children),
+    }))
   }
 
   return onlyFolders(tree.value)
@@ -123,8 +134,7 @@ const sidebarFolders = computed(() => {
 onMounted(async () => {
   try {
     await fetchTree({ force: true })
-  }
-  catch (error) {
+  } catch (error) {
     console.error('Failed to load library tree', error)
   }
 })
@@ -148,8 +158,7 @@ const submitCreateFolder = async () => {
       parentId: folderDialog.parentId,
     })
     folderDialog.open = false
-  }
-  finally {
+  } finally {
     folderDialog.saving = false
   }
 }
@@ -185,15 +194,16 @@ const submitRename = async () => {
   try {
     await renameNode(renameDialog.node, renameDialog.name.trim())
     renameDialog.open = false
-  }
-  finally {
+  } finally {
     renameDialog.saving = false
   }
 }
 
 const openFolder = (folderId: string | null) => {
   currentFolderId.value = folderId
-  selectedNode.value = folderId ? findFolderById(tree.value, folderId) : rootNode.value
+  selectedNode.value = folderId
+    ? findFolderById(tree.value, folderId)
+    : rootNode.value
 }
 
 const openNode = (node: LibraryTreeNode) => {
@@ -208,17 +218,17 @@ const openNode = (node: LibraryTreeNode) => {
   filePreviewOpen.value = true
 }
 
-const isPreviewImage = computed(() => selectedFile.value?.mimeType?.startsWith('image/') ?? false)
-const isPreviewPdf = computed(() => selectedFile.value?.mimeType === 'application/pdf')
+const isPreviewImage = computed(
+  () => selectedFile.value?.mimeType?.startsWith('image/') ?? false,
+)
+const isPreviewPdf = computed(
+  () => selectedFile.value?.mimeType === 'application/pdf',
+)
 </script>
 
 <template>
   <div>
     <AppPageDrawers>
-      <template #left>
-        <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
-        <ProfileDrawer v-else />
-      </template>
       <template #right>
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
         <v-list v-else density="comfortable" nav>
@@ -244,10 +254,16 @@ const isPreviewPdf = computed(() => selectedFile.value?.mimeType === 'applicatio
     <v-container fluid>
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
       <template v-else>
-        <div class="d-flex flex-wrap justify-space-between align-center ga-3 mb-4">
+        <div
+          class="d-flex flex-wrap justify-space-between align-center ga-3 mb-4"
+        >
           <v-breadcrumbs :items="breadcrumbFolders" class="pa-0">
             <template #item="{ item }">
-              <v-btn variant="text" size="small" @click="openFolder(item.id === 'root' ? null : item.id)">
+              <v-btn
+                variant="text"
+                size="small"
+                @click="openFolder(item.id === 'root' ? null : item.id)"
+              >
                 {{ item.name }}
               </v-btn>
             </template>
@@ -285,15 +301,24 @@ const isPreviewPdf = computed(() => selectedFile.value?.mimeType === 'applicatio
             block
             :key="node.id"
             class="library-grid__item"
-            :class="{ 'library-grid__item--selected': selectedNode?.id === node.id }"
+            :class="{
+              'library-grid__item--selected': selectedNode?.id === node.id,
+            }"
             @click="openNode(node)"
           >
-            <v-icon :color="node.type === 'folder' ? 'warning' : 'primary'" :icon="node.type === 'folder' ? 'mdi-folder' : 'mdi-file-outline'" size="48" />
+            <v-icon
+              :color="node.type === 'folder' ? 'warning' : 'primary'"
+              :icon="node.type === 'folder' ? 'mdi-folder' : 'mdi-file-outline'"
+              size="48"
+            />
             <span class="library-grid__name">{{ node.name }}</span>
           </v-btn>
         </div>
 
-        <p v-if="currentItems.length === 0" class="text-medium-emphasis mb-0 mt-2">
+        <p
+          v-if="currentItems.length === 0"
+          class="text-medium-emphasis mb-0 mt-2"
+        >
           {{ t('pages.profileOverview.libraryEmpty') }}
         </p>
       </template>
@@ -316,7 +341,11 @@ const isPreviewPdf = computed(() => selectedFile.value?.mimeType === 'applicatio
         </v-card-title>
         <v-card-text>
           <div v-if="isPreviewImage" class="file-preview">
-            <img :src="selectedFile.url" :alt="selectedFile.name" class="file-preview__image">
+            <img
+              :src="selectedFile.url"
+              :alt="selectedFile.name"
+              class="file-preview__image"
+            />
           </div>
           <iframe
             v-else-if="isPreviewPdf"
@@ -333,7 +362,9 @@ const isPreviewPdf = computed(() => selectedFile.value?.mimeType === 'applicatio
 
     <v-dialog v-model="folderDialog.open" max-width="560">
       <v-card>
-        <v-card-title>{{ t('pages.profileOverview.libraryCreateFolder') }}</v-card-title>
+        <v-card-title>{{
+          t('pages.profileOverview.libraryCreateFolder')
+        }}</v-card-title>
         <v-card-text>
           <v-text-field
             v-model="folderDialog.name"
@@ -353,8 +384,14 @@ const isPreviewPdf = computed(() => selectedFile.value?.mimeType === 'applicatio
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn variant="text" @click="folderDialog.open = false">{{ t('common.cancel') }}</v-btn>
-          <v-btn color="primary" :loading="folderDialog.saving" @click="submitCreateFolder">
+          <v-btn variant="text" @click="folderDialog.open = false">{{
+            t('common.cancel')
+          }}</v-btn>
+          <v-btn
+            color="primary"
+            :loading="folderDialog.saving"
+            @click="submitCreateFolder"
+          >
             {{ t('common.save') }}
           </v-btn>
         </v-card-actions>
@@ -363,7 +400,9 @@ const isPreviewPdf = computed(() => selectedFile.value?.mimeType === 'applicatio
 
     <v-dialog v-model="renameDialog.open" max-width="560">
       <v-card>
-        <v-card-title>{{ t('pages.profileOverview.libraryRename') }}</v-card-title>
+        <v-card-title>{{
+          t('pages.profileOverview.libraryRename')
+        }}</v-card-title>
         <v-card-text>
           <v-text-field
             v-model="renameDialog.name"
@@ -374,8 +413,14 @@ const isPreviewPdf = computed(() => selectedFile.value?.mimeType === 'applicatio
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn variant="text" @click="renameDialog.open = false">{{ t('common.cancel') }}</v-btn>
-          <v-btn color="primary" :loading="renameDialog.saving" @click="submitRename">
+          <v-btn variant="text" @click="renameDialog.open = false">{{
+            t('common.cancel')
+          }}</v-btn>
+          <v-btn
+            color="primary"
+            :loading="renameDialog.saving"
+            @click="submitRename"
+          >
             {{ t('common.save') }}
           </v-btn>
         </v-card-actions>
@@ -459,7 +504,8 @@ const isPreviewPdf = computed(() => selectedFile.value?.mimeType === 'applicatio
 
   .library-explorer__sidebar {
     border-right: none;
-    border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+    border-bottom: 1px solid
+      rgba(var(--v-border-color), var(--v-border-opacity));
     max-height: 280px;
   }
 }

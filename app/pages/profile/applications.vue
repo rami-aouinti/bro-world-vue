@@ -17,6 +17,7 @@ async function refreshApplications(force = false) {
 }
 
 definePageMeta({
+  layout: 'profile',
   title: 'Applications',
   middleware: 'auth',
 })
@@ -26,19 +27,14 @@ onMounted(() => refreshApplications())
 
 <template>
   <div>
-    <AppPageDrawers>
-      <template #left>
-        <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
-        <ProfileDrawer v-else />
-      </template>
-    </AppPageDrawers>
-
     <v-container fluid>
       <SkeletonPageContent v-if="isPageSkeletonVisible && loading" />
       <template v-else>
         <div class="d-flex align-center justify-space-between mb-4">
           <div>
-            <h1 class="text-h4 mb-2">{{ t('pages.profileOverview.applicationsTitle') }}</h1>
+            <h1 class="text-h4 mb-2">
+              {{ t('pages.profileOverview.applicationsTitle') }}
+            </h1>
             <p class="text-body-1 text-medium-emphasis mb-0">
               {{ t('pages.profileOverview.applicationsSubtitle') }}
             </p>
@@ -76,7 +72,9 @@ onMounted(() => refreshApplications())
             <v-card variant="outlined" class="h-100">
               <v-card-item>
                 <v-card-title>{{ application.title }}</v-card-title>
-                <v-card-subtitle>{{ application.platformName }}</v-card-subtitle>
+                <v-card-subtitle>{{
+                  application.platformName
+                }}</v-card-subtitle>
               </v-card-item>
               <v-card-text class="pt-0">
                 <p class="text-body-2 text-medium-emphasis mb-4">
@@ -85,14 +83,20 @@ onMounted(() => refreshApplications())
                 <div class="d-flex flex-wrap ga-2">
                   <v-chip
                     size="small"
-                    :color="application.status === 'active' ? 'success' : 'warning'"
+                    :color="
+                      application.status === 'active' ? 'success' : 'warning'
+                    "
                     label
                   >
                     {{ application.status }}
                   </v-chip>
                   <v-chip
                     size="small"
-                    :color="application.private ? 'deep-purple-accent-4' : 'teal-darken-1'"
+                    :color="
+                      application.private
+                        ? 'deep-purple-accent-4'
+                        : 'teal-darken-1'
+                    "
                     label
                   >
                     {{ application.private ? 'Private' : 'Public' }}

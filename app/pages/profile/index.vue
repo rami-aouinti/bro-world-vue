@@ -12,11 +12,15 @@ const fullName = computed(() => {
     return ''
   }
 
-  return [user.firstName, user.lastName].filter(Boolean).join(' ') || user.username
+  return (
+    [user.firstName, user.lastName].filter(Boolean).join(' ') || user.username
+  )
 })
 
 const profileTitle = computed(() => profile.value?.profile?.title || 'Member')
-const profileInformation = computed(() => profile.value?.profile?.information || '')
+const profileInformation = computed(
+  () => profile.value?.profile?.information || '',
+)
 
 async function fetchProfile(force = false) {
   try {
@@ -27,6 +31,7 @@ async function fetchProfile(force = false) {
 }
 
 definePageMeta({
+  layout: 'profile',
   title: 'appbar.profile',
   middleware: 'auth',
 })
@@ -36,12 +41,6 @@ onMounted(() => fetchProfile())
 
 <template>
   <div>
-    <AppPageDrawers>
-      <template #left>
-        <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
-        <ProfileDrawer v-else />
-      </template>
-    </AppPageDrawers>
     <v-container fluid>
       <SkeletonPageContent v-if="isPageSkeletonVisible && loading" />
       <template v-else>
@@ -64,20 +63,32 @@ onMounted(() => fetchProfile())
           </v-btn>
         </div>
 
-        <v-alert v-if="error" type="error" variant="tonal" class="mb-4" closable>
+        <v-alert
+          v-if="error"
+          type="error"
+          variant="tonal"
+          class="mb-4"
+          closable
+        >
           {{ error }}
         </v-alert>
 
         <v-card v-if="profile" variant="outlined">
-          <v-card-text class="d-flex flex-column flex-md-row ga-4 align-start align-md-center">
+          <v-card-text
+            class="d-flex flex-column flex-md-row ga-4 align-start align-md-center"
+          >
             <v-avatar size="84">
               <v-img :src="profile.photo" :alt="fullName" />
             </v-avatar>
 
             <div class="flex-grow-1">
               <h2 class="text-h5 mb-1">{{ fullName }}</h2>
-              <p class="text-body-2 text-medium-emphasis mb-1">@{{ profile.username }}</p>
-              <p class="text-body-2 text-medium-emphasis mb-0">{{ profile.email }}</p>
+              <p class="text-body-2 text-medium-emphasis mb-1">
+                @{{ profile.username }}
+              </p>
+              <p class="text-body-2 text-medium-emphasis mb-0">
+                {{ profile.email }}
+              </p>
             </div>
 
             <div class="d-flex flex-wrap ga-2">
@@ -93,7 +104,9 @@ onMounted(() => fetchProfile())
           <v-divider />
 
           <v-card-text>
-            <p class="text-body-1 mb-0">{{ profileInformation || 'No profile information yet.' }}</p>
+            <p class="text-body-1 mb-0">
+              {{ profileInformation || 'No profile information yet.' }}
+            </p>
           </v-card-text>
         </v-card>
       </template>
