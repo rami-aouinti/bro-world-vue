@@ -41,11 +41,118 @@ const levels = computed(() =>
   Array.isArray(catalogStore.levels) ? catalogStore.levels : [],
 )
 const selectedLevelValue = ref<string | null>(null)
+const selectedPlayerCount = ref<number | null>(null)
+const selectedOpponentType = ref<'none' | 'human_online' | 'ai_bot'>('none')
+
+const gameConstraints = computed(() => {
+  const game = selectedGame.value
+  const minPlayers =
+    typeof game?.minPlayers === 'number' && game.minPlayers > 0
+      ? game.minPlayers
+      : 1
+  const maxPlayers =
+    typeof game?.maxPlayers === 'number' && game.maxPlayers >= minPlayers
+      ? game.maxPlayers
+      : minPlayers
+  const allowedPlayerCounts = Array.isArray(game?.allowedPlayerCounts)
+    ? game.allowedPlayerCounts
+        .filter(
+          (count): count is number =>
+            typeof count === 'number' &&
+            Number.isInteger(count) &&
+            count >= minPlayers &&
+            count <= maxPlayers,
+        )
+        .sort((a, b) => a - b)
+    : []
+
+  return {
+    minPlayers,
+    maxPlayers,
+    allowedPlayerCounts: allowedPlayerCounts.length
+      ? [...new Set(allowedPlayerCounts)]
+      : Array.from(
+          { length: Math.max(1, maxPlayers - minPlayers + 1) },
+          (_, index) => minPlayers + index,
+        ),
+    supportsAiOpponent: Boolean(game?.supportsAiOpponent),
+    requiresOpponent: Boolean(game?.requiresOpponent),
+  }
+})
+
+const playerCountOptions = computed(() =>
+  gameConstraints.value.allowedPlayerCounts.map((count) => ({
+    title: String(count),
+    value: count,
+  })),
+)
+
+const opponentTypeOptions = computed(() => {
+  const options: Array<{
+    title: string
+    value: 'none' | 'human_online' | 'ai_bot'
+  }> = []
+
+  if (!gameConstraints.value.requiresOpponent) {
+    options.push({ title: 'Solo', value: 'none' })
+  }
+
+  options.push({ title: 'Humain en ligne', value: 'human_online' })
+
+  if (gameConstraints.value.supportsAiOpponent) {
+    options.push({ title: 'IA', value: 'ai_bot' })
+  }
+
+  return options
+})
+
+const isStartCombinationValid = computed(() => {
+  const playerCount = selectedPlayerCount.value
+  const opponentType = selectedOpponentType.value
+  if (!playerCount || !opponentType) return false
+
+  const isAllowedCount = gameConstraints.value.allowedPlayerCounts.includes(
+    playerCount,
+  )
+  if (!isAllowedCount) return false
+
+  if (opponentType === 'none') {
+    return !gameConstraints.value.requiresOpponent && playerCount === 1
+  }
+
+  if (playerCount < 2) return false
+
+  if (opponentType === 'ai_bot') {
+    return gameConstraints.value.supportsAiOpponent
+  }
+
+  return opponentType === 'human_online'
+})
 
 const canStart = computed(
   () =>
     Boolean(selectedGame.value && selectedLevelValue.value) &&
+    isStartCombinationValid.value &&
     !catalogStore.startingSession,
+)
+
+watch(
+  () => selectedGame.value?.id,
+  () => {
+    selectedPlayerCount.value = playerCountOptions.value[0]?.value ?? 1
+
+    const preferredOpponentType = gameConstraints.value.requiresOpponent
+      ? gameConstraints.value.supportsAiOpponent
+        ? 'ai_bot'
+        : 'human_online'
+      : 'none'
+    selectedOpponentType.value = opponentTypeOptions.value.some(
+      (option) => option.value === preferredOpponentType,
+    )
+      ? preferredOpponentType
+      : (opponentTypeOptions.value[0]?.value ?? 'none')
+  },
+  { immediate: true },
 )
 
 onMounted(async () => {
@@ -73,18 +180,25 @@ function difficultyLabel(level: string) {
 }
 
 async function onStart() {
-  if (!selectedGame.value || !selectedLevelValue.value) return
+  if (
+    !selectedGame.value ||
+    !selectedLevelValue.value ||
+    !selectedPlayerCount.value ||
+    !selectedOpponentType.value ||
+    !isStartCombinationValid.value
+  )
+    return
 
   try {
     const response = await catalogStore.startSession(
       selectedGame.value.id,
       {
         level: selectedLevelValue.value,
-        mode: 'solo',
-        playerCount: 1,
-        opponentType: 'none',
-        seatCount: 1,
-        allowedPlayerCounts: [1],
+        playerCount: selectedPlayerCount.value,
+        opponentType: selectedOpponentType.value,
+        mode: selectedOpponentType.value === 'none' ? 'solo' : 'versus',
+        seatCount: selectedPlayerCount.value,
+        allowedPlayerCounts: gameConstraints.value.allowedPlayerCounts,
       },
     )
     const createdSessionId =
@@ -229,6 +343,36 @@ const breadcrumbs = computed(() => [
           </div>
 
           <div class="game-selection-footer">
+            <v-card
+              class="mb-4 pa-4 w-100 game-constraints-card"
+              max-width="620"
+              variant="tonal"
+            >
+              <v-row>
+                <v-col cols="12" md="6">
+                  <v-select
+                    v-model="selectedPlayerCount"
+                    :items="playerCountOptions"
+                    label="Nombre de joueurs"
+                    item-title="title"
+                    item-value="value"
+                    density="comfortable"
+                    hide-details
+                  />
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-select
+                    v-model="selectedOpponentType"
+                    :items="opponentTypeOptions"
+                    label="Type d'adversaire"
+                    item-title="title"
+                    item-value="value"
+                    density="comfortable"
+                    hide-details
+                  />
+                </v-col>
+              </v-row>
+            </v-card>
             <v-btn
               color="primary"
               size="large"
@@ -259,8 +403,14 @@ const breadcrumbs = computed(() => [
 
 .game-selection-footer {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   padding-bottom: 16px;
+}
+
+.game-constraints-card {
+  width: min(100%, 620px);
 }
 
 .level-card {

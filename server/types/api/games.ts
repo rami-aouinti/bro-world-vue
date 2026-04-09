@@ -6,6 +6,12 @@ export interface GamesCatalogGame extends ApiObject {
   description: string | null
   thumbnailUrl: string | null
   enabled: boolean
+  minPlayers: number
+  maxPlayers: number
+  allowedPlayerCounts: number[]
+  supportsAiOpponent: boolean
+  requiresOpponent: boolean
+  playSurfaceComponent: string | null
 }
 
 export interface GamesCatalogSubCategory extends ApiObject {
