@@ -8,11 +8,13 @@ const props = withDefaults(
   defineProps<{
     commentsCount?: number
     sharesCount?: number
+    canInteract?: boolean
     reactionTypes?: ReactionType[]
   }>(),
   {
     commentsCount: 0,
     sharesCount: 0,
+    canInteract: true,
     reactionTypes: () => [],
   },
 )
@@ -51,6 +53,10 @@ const iconMap: Record<string, string> = {
 }
 
 function onPickReaction(code: string) {
+  if (!props.canInteract) {
+    return
+  }
+
   emit('react', code)
   reactionMenu.value = false
 }
@@ -77,9 +83,10 @@ function onPickReaction(code: string) {
     <div class="post-actions d-flex ga-2">
       <v-menu
         v-model="reactionMenu"
-        :open-on-hover="true"
+        :open-on-hover="canInteract"
         open-delay="120"
         location="top"
+        :disabled="!canInteract"
       >
         <template #activator="{ props: menuProps }">
           <v-btn
@@ -87,6 +94,7 @@ function onPickReaction(code: string) {
             class="action-btn"
             variant="text"
             prepend-icon="mdi-thumb-up-outline"
+            :disabled="!canInteract"
             @click.stop="emit('like')"
           >
             {{ t('blog.post.actions.like') }}
@@ -111,6 +119,7 @@ function onPickReaction(code: string) {
         class="action-btn"
         variant="text"
         prepend-icon="mdi-comment-outline"
+        :disabled="!canInteract"
         @click="emit('comment')"
       >
         {{ t('blog.post.actions.comment') }}
@@ -119,6 +128,7 @@ function onPickReaction(code: string) {
         class="action-btn"
         variant="text"
         prepend-icon="mdi-share-outline"
+        :disabled="!canInteract"
         @click="emit('share')"
       >
         {{ t('blog.post.actions.share') }}

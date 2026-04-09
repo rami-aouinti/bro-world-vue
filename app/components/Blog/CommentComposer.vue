@@ -3,11 +3,13 @@ const props = withDefaults(
   defineProps<{
     mode?: 'comment' | 'reply'
     loading?: boolean
+    disabled?: boolean
     placeholder?: string
   }>(),
   {
     mode: 'comment',
     loading: false,
+    disabled: false,
     placeholder: '',
   },
 )
@@ -23,7 +25,7 @@ const { t } = useI18n()
 const theme = useTheme()
 
 const canSubmit = computed(
-  () => content.value.trim().length > 0 && !props.loading,
+  () => content.value.trim().length > 0 && !props.loading && !props.disabled,
 )
 const userAvatar = computed(() => user.value?.photo || null)
 const resolvedPlaceholder = computed(
@@ -44,7 +46,7 @@ const quickActions = [
 function onSubmit() {
   const value = content.value.trim()
 
-  if (!value || props.loading) {
+  if (!value || props.loading || props.disabled) {
     return
   }
 
@@ -54,6 +56,10 @@ function onSubmit() {
 
 function onEnter(event: KeyboardEvent) {
   if (event.shiftKey) {
+    return
+  }
+
+  if (props.disabled) {
     return
   }
 
@@ -81,6 +87,7 @@ function onEnter(event: KeyboardEvent) {
       <v-textarea
         v-model="content"
         :placeholder="resolvedPlaceholder"
+        :disabled="disabled"
         rows="1"
         auto-grow
         variant="plain"
@@ -101,6 +108,7 @@ function onEnter(event: KeyboardEvent) {
             variant="text"
             color="grey-lighten-1"
             class="tool-btn"
+            :disabled="disabled"
           />
         </div>
 
