@@ -44,6 +44,117 @@ type StoryCreateResponse = {
 }
 
 const fallbackAvatar = 'https://api.dicebear.com/9.x/initials/svg?seed=Story'
+const demoStoryCards = [
+  {
+    id: 'demo-1',
+    index: 0,
+    owner: false,
+    stories: [
+      {
+        id: 'demo-story-1',
+        imageUrl: '/img/team-1.jpg',
+      },
+    ],
+    latestStory: {
+      id: 'demo-story-1',
+      imageUrl: '/img/team-1.jpg',
+    },
+    cover: '/img/team-1.jpg',
+    displayName: 'Maya',
+    avatar: '/img/team-1.jpg',
+  },
+  {
+    id: 'demo-2',
+    index: 1,
+    owner: false,
+    stories: [
+      {
+        id: 'demo-story-2',
+        imageUrl: '/img/team-2.jpg',
+      },
+    ],
+    latestStory: {
+      id: 'demo-story-2',
+      imageUrl: '/img/team-2.jpg',
+    },
+    cover: '/img/team-2.jpg',
+    displayName: 'Nora',
+    avatar: '/img/team-2.jpg',
+  },
+  {
+    id: 'demo-3',
+    index: 2,
+    owner: false,
+    stories: [
+      {
+        id: 'demo-story-3',
+        imageUrl: '/img/team-3.jpg',
+      },
+    ],
+    latestStory: {
+      id: 'demo-story-3',
+      imageUrl: '/img/team-3.jpg',
+    },
+    cover: '/img/team-3.jpg',
+    displayName: 'Lina',
+    avatar: '/img/team-3.jpg',
+  },
+  {
+    id: 'demo-4',
+    index: 3,
+    owner: false,
+    stories: [
+      {
+        id: 'demo-story-4',
+        imageUrl: '/img/team-4.jpg',
+      },
+    ],
+    latestStory: {
+      id: 'demo-story-4',
+      imageUrl: '/img/team-4.jpg',
+    },
+    cover: '/img/team-4.jpg',
+    displayName: 'Rami',
+    avatar: '/img/team-4.jpg',
+  },
+  {
+    id: 'demo-5',
+    index: 4,
+    owner: false,
+    stories: [
+      {
+        id: 'demo-story-5',
+        imageUrl: '/img/team-5.jpg',
+      },
+    ],
+    latestStory: {
+      id: 'demo-story-5',
+      imageUrl: '/img/team-5.jpg',
+    },
+    cover: '/img/team-5.jpg',
+    displayName: 'Samir',
+    avatar: '/img/team-5.jpg',
+  },
+  {
+    id: 'demo-6',
+    index: 5,
+    owner: false,
+    stories: [
+      {
+        id: 'demo-story-6',
+        imageUrl: '/img/team-9.jpeg',
+      },
+    ],
+    latestStory: {
+      id: 'demo-story-6',
+      imageUrl: '/img/team-9.jpeg',
+    },
+    cover: '/img/team-9.jpeg',
+    displayName: 'Yanis',
+    avatar: '/img/team-9.jpeg',
+  },
+] as const
+
 const viewerOpen = ref(false)
 const selectedGroupIndex = ref<number | null>(null)
 const selectedStoryIndex = ref(0)
@@ -54,21 +165,15 @@ const latestCreatedStory = ref<StoryCreateResponse | null>(null)
 const deletePending = ref(false)
 const deleteError = ref<string | null>(null)
 const localStoryGroups = ref<StoryGroup[]>([])
-const isHydrated = ref(false)
 const { user, loggedIn } = useUserSession()
 const { locale, t } = useI18n()
 
 const {
   data,
-  pending: storiesPending,
   refresh,
 } = await useFetch<StoriesApiResponse | StoryGroup[]>('/api/stories', {
   default: () => [],
   server: false,
-})
-
-onMounted(() => {
-  isHydrated.value = true
 })
 
 watch(loggedIn, async (isLoggedIn, wasLoggedIn) => {
@@ -252,12 +357,16 @@ const cards = computed(() => {
     .filter((group) => group.owner || group.stories.length > 0)
 })
 
+const displayCards = computed(() =>
+  cards.value.length > 0 ? cards.value : demoStoryCards,
+)
+
 const selectedGroup = computed(() => {
   if (selectedGroupIndex.value === null) {
     return undefined
   }
 
-  return cards.value[selectedGroupIndex.value] ?? null
+  return displayCards.value[selectedGroupIndex.value] ?? null
 })
 
 const selectedStory = computed(() => {
@@ -311,7 +420,7 @@ const selectedStoryVisual = computed<string | undefined>(() => {
 const storyReactions = ['👍', '❤️', '🥰', '😆', '😮', '😢', '😡']
 
 function openViewer(index: number) {
-  const group = cards.value[index]
+  const group = displayCards.value[index]
   if (!group || group.stories.length === 0) {
     return
   }
@@ -493,7 +602,7 @@ async function deleteSelectedStory() {
 
       <div class="d-flex ga-3 overflow-x-auto pb-2">
         <v-sheet
-          v-for="card in cards"
+          v-for="card in displayCards"
           :key="card.id ?? card.index"
           rounded="xl"
           class="story-card d-flex flex-column justify-space-between"
@@ -542,15 +651,6 @@ async function deleteSelectedStory() {
           </div>
         </v-sheet>
 
-        <v-sheet
-          v-if="isHydrated && !storiesPending && cards.length === 0"
-          rounded="lg"
-          class="d-flex align-center px-4 text-medium-emphasis"
-          min-width="160"
-          height="220"
-        >
-          {{ t('blog.story.empty') }}
-        </v-sheet>
       </div>
 
       <v-alert
