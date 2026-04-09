@@ -68,10 +68,16 @@ function onPickReaction(code: string) {
       v-if="commentsCount > 0 || sharesCount > 0"
       class="post-stats text-medium-emphasis"
     >
-      <span v-if="commentsCount > 0" class="stat-item">
+      <button
+        v-if="commentsCount > 0"
+        type="button"
+        class="stat-item stat-item--button"
+        :disabled="!canInteract"
+        @click="emit('comment')"
+      >
         <v-icon size="16" icon="mdi-comment-outline" />
         {{ commentsCount }}
-      </span>
+      </button>
       <span v-if="sharesCount > 0" class="stat-item">
         <v-icon size="16" icon="mdi-share-outline" />
         {{ sharesCount }}
@@ -149,6 +155,19 @@ function onPickReaction(code: string) {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
+}
+
+.stat-item--button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.stat-item--button:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
 
 .action-btn {
