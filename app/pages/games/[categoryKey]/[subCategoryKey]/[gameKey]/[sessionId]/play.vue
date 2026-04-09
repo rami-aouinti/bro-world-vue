@@ -216,34 +216,36 @@ async function onFinish(result: 'win' | 'lose') {
       </template>
     </AppPageDrawers>
     <v-container fluid class="arena-play-container">
-      <CardTablePlaySurface
-        v-if="playSurfaceType === 'card'"
-        class="arena-interactive"
-        :title="commonSurfaceProps.gameName"
-        :subtitle="`Session ${commonSurfaceProps.sessionId}`"
-        :seats="cardSeats"
-        :community-cards="['A♠', '10♥', '7♣', '2♦', 'K♠']"
-        :player-cards="['Q♣', 'Q♦']"
-      />
-      <BoardTablePlaySurface
-        v-else-if="playSurfaceType === 'board'"
-        class="arena-interactive"
-        :title="commonSurfaceProps.gameName"
-        :board="boardState"
-        :players="boardPlayers"
-        :selected-cell="{ row: 5, col: 0 }"
-        :possible-moves="[{ row: 4, col: 1 }]"
-        :last-move="{ from: { row: 2, col: 1 }, to: { row: 3, col: 2 } }"
-      />
-      <v-card v-else rounded="xl" class="h-100 arena-interactive">
-        <v-card-title>{{ commonSurfaceProps.gameName }}</v-card-title>
-        <v-card-subtitle>Play surface</v-card-subtitle>
-        <v-card-text class="py-8">
-          <div class="text-medium-emphasis">
-            Surface non spécialisée pour cette catégorie.
-          </div>
-        </v-card-text>
-      </v-card>
+      <div class="arena-surface-wrap">
+        <CardTablePlaySurface
+          v-if="playSurfaceType === 'card'"
+          class="arena-interactive"
+          :title="commonSurfaceProps.gameName"
+          :subtitle="`Session ${commonSurfaceProps.sessionId}`"
+          :seats="cardSeats"
+          :community-cards="['A♠', '10♥', '7♣', '2♦', 'K♠']"
+          :player-cards="['Q♣', 'Q♦']"
+        />
+        <BoardTablePlaySurface
+          v-else-if="playSurfaceType === 'board'"
+          class="arena-interactive"
+          :title="commonSurfaceProps.gameName"
+          :board="boardState"
+          :players="boardPlayers"
+          :selected-cell="{ row: 5, col: 0 }"
+          :possible-moves="[{ row: 4, col: 1 }]"
+          :last-move="{ from: { row: 2, col: 1 }, to: { row: 3, col: 2 } }"
+        />
+        <v-card v-else rounded="xl" class="h-100 arena-interactive">
+          <v-card-title>{{ commonSurfaceProps.gameName }}</v-card-title>
+          <v-card-subtitle>Play surface</v-card-subtitle>
+          <v-card-text class="py-8">
+            <div class="text-medium-emphasis">
+              Surface non spécialisée pour cette catégorie.
+            </div>
+          </v-card-text>
+        </v-card>
+      </div>
     </v-container>
   </div>
 </template>
@@ -253,6 +255,16 @@ async function onFinish(result: 'win' | 'lose') {
 .arena-play-container {
   display: flex;
   justify-content: center;
+}
+
+:deep(.arena-surface-wrap .board-surface) {
+  width: min(100%, 720px);
+  margin-inline: auto;
+}
+
+:deep(.arena-surface-wrap .board-grid) {
+  width: 100%;
+  max-height: none;
 }
 
 .arena-panel-card {
