@@ -16,40 +16,68 @@ const navMenus = [
   {
     label: 'appbar.feature',
     icon: 'mdi-star-outline',
+    description: 'Explore what you can build with Bro World.',
+    ctaLabel: 'View features',
+    ctaTo: '/service',
     items: [
-      { label: 'appbar.service', to: '/service', icon: 'mdi-briefcase-outline' },
+      {
+        label: 'appbar.service',
+        to: '/service',
+        icon: 'mdi-briefcase-outline',
+        detail:
+          'Browse our key services and pick the best workflow for your team.',
+      },
       {
         label: 'appbar.about',
         to: '/about',
         icon: 'mdi-information-outline',
+        detail:
+          'Get the story behind Bro World and discover our product vision.',
       },
       {
         label: 'appbar.faq',
         to: '/faq',
         icon: 'mdi-frequently-asked-questions',
+        detail:
+          'Find quick answers to common setup, account, and product questions.',
       },
     ],
   },
   {
     label: 'appbar.applications',
     icon: 'mdi-apps',
+    description: 'Launch products and discover apps ready to scale.',
+    ctaLabel: 'View platform',
+    ctaTo: '/platform',
     items: [
       {
         label: 'appbar.platform',
         to: '/platform',
         icon: 'mdi-view-dashboard-outline',
+        detail:
+          'Access your central workspace with projects, metrics, and deployment status.',
       },
       {
         label: 'appbar.games',
         to: '/games',
         icon: 'mdi-gamepad-variant-outline',
+        detail:
+          'Play and manage interactive game experiences from one place.',
       },
       {
         label: 'appbar.sports',
         to: '/applications/sports',
         icon: 'mdi-basketball',
+        detail:
+          'Track sports apps, scores, and fan-focused modules in real time.',
       },
-      { label: 'appbar.quiz', to: '/applications/quiz', icon: 'mdi-help-box' },
+      {
+        label: 'appbar.quiz',
+        to: '/applications/quiz',
+        icon: 'mdi-help-box',
+        detail:
+          'Create engaging quizzes for onboarding, training, and community growth.',
+      },
     ],
   },
 ]
@@ -162,11 +190,7 @@ function isMenuActive(paths: string[]) {
     </div>
 
     <div class="app-top-bar__nav d-none d-md-flex">
-      <v-menu
-        v-for="menu in navMenus"
-        :key="menu.label"
-        location="bottom"
-      >
+      <v-menu v-for="menu in navMenus" :key="menu.label" location="bottom">
         <template #activator="{ props }">
           <v-btn
             v-bind="props"
@@ -180,15 +204,48 @@ function isMenuActive(paths: string[]) {
             {{ t(menu.label) }}
           </v-btn>
         </template>
-        <v-list min-width="220">
-          <v-list-item
-            v-for="item in menu.items"
-            :key="item.to"
-            :title="t(item.label)"
-            :prepend-icon="item.icon"
-            :to="item.to"
-          />
-        </v-list>
+        <div class="app-top-bar__mega-menu">
+          <div class="app-top-bar__mega-menu-header">
+            <p class="text-overline text-primary mb-1">
+              {{ t(menu.label) }}
+            </p>
+            <p class="text-body-2 text-medium-emphasis mb-0">
+              {{ menu.description }}
+            </p>
+          </div>
+
+          <div class="app-top-bar__mega-menu-grid">
+            <NuxtLink
+              v-for="item in menu.items"
+              :key="item.to"
+              :to="item.to"
+              class="app-top-bar__mega-menu-card"
+            >
+              <div class="app-top-bar__mega-menu-icon-wrap">
+                <v-icon :icon="item.icon" size="22" />
+              </div>
+              <div>
+                <p class="text-subtitle-1 font-weight-bold mb-1">
+                  {{ t(item.label) }}
+                </p>
+                <p class="text-body-2 text-medium-emphasis mb-0">
+                  {{ item.detail }}
+                </p>
+              </div>
+            </NuxtLink>
+          </div>
+
+          <div class="app-top-bar__mega-menu-footer">
+            <v-btn
+              :to="menu.ctaTo"
+              variant="text"
+              append-icon="mdi-arrow-right"
+              class="text-none"
+            >
+              {{ menu.ctaLabel }}
+            </v-btn>
+          </div>
+        </div>
       </v-menu>
       <v-btn
         to="/contact"
@@ -408,8 +465,77 @@ function isMenuActive(paths: string[]) {
   margin-inline-end: 2px;
 }
 
+.app-top-bar__mega-menu {
+  width: min(920px, 92vw);
+  margin-top: 8px;
+  border-radius: 18px;
+  border: 1px solid rgba(var(--v-border-color), 0.32);
+  background:
+    linear-gradient(160deg, rgba(var(--v-theme-surface), 0.98), rgba(8, 10, 22, 0.94));
+  box-shadow:
+    0 22px 54px rgba(0, 0, 0, 0.42),
+    0 0 0 1px rgba(var(--v-theme-primary), 0.15) inset;
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+}
+
+.app-top-bar__mega-menu-header {
+  padding: 18px 22px 10px;
+}
+
+.app-top-bar__mega-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 14px;
+  padding: 0 20px 16px;
+}
+
+.app-top-bar__mega-menu-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 116px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.03);
+  text-decoration: none;
+  color: rgb(var(--v-theme-on-surface));
+  transition: transform 160ms ease, border-color 160ms ease, background-color 160ms ease;
+}
+
+.app-top-bar__mega-menu-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(var(--v-theme-primary), 0.65);
+  background: rgba(var(--v-theme-primary), 0.1);
+}
+
+.app-top-bar__mega-menu-icon-wrap {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: rgba(var(--v-theme-primary), 0.14);
+  color: rgb(var(--v-theme-primary));
+  flex-shrink: 0;
+}
+
+.app-top-bar__mega-menu-footer {
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid rgba(var(--v-border-color), 0.24);
+  padding: 10px;
+}
+
 .app-brand {
   color: rgb(var(--v-theme-on-surface));
   font-weight: 600;
+}
+
+@media (max-width: 1100px) {
+  .app-top-bar__mega-menu-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
 }
 </style>
