@@ -154,7 +154,7 @@ const breadcrumbs = computed(() => [
                   class="level-card d-flex align-center justify-center text-center cursor-pointer"
                   :elevation="selectedLevelValue === level.value ? 12 : 2"
                   :color="selectedLevelValue === level.value ? 'primary' : ''"
-                  :variant="selectedLevelValue === level.value ? 'flat' : 'outlined'"
+                  :variant="selectedLevelValue === level.value ? 'outlined' : 'text'"
                   @click="selectedLevelValue = level.value"
                 >
                   <div class="text-h6">
@@ -197,5 +197,19 @@ const breadcrumbs = computed(() => [
 .level-card {
   background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
   border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.level-card--selected {
+  border-color: rgb(var(--v-theme-primary));
+  box-shadow: 0 16px 38px rgba(var(--v-theme-primary));
+}
+
+.level-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
+}
+
+.level-card:hover .level-card__image {
+  transform: scale(1.03);
 }
 </style>
