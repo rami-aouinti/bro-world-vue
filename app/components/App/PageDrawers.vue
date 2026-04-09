@@ -5,18 +5,23 @@ const slots = useSlots()
 
 const registry = useDrawerSlotRegistry()
 
-const LeftDrawerContent = slots.left || null
-const RightDrawerContent = slots.right || null
+const hasLeft = Boolean(slots.left)
+const hasRight = Boolean(slots.right)
 
-registry?.setLeft(LeftDrawerContent)
-registry?.setRight(RightDrawerContent)
+if (hasLeft) {
+  registry?.setLeft(slots.left || null)
+}
+
+if (hasRight) {
+  registry?.setRight(slots.right || null)
+}
 
 onUnmounted(() => {
-  if (registry?.left.value === LeftDrawerContent) {
+  if (hasLeft && registry?.left.value === (slots.left || null)) {
     registry.setLeft(null)
   }
 
-  if (registry?.right.value === RightDrawerContent) {
+  if (hasRight && registry?.right.value === (slots.right || null)) {
     registry.setRight(null)
   }
 })
