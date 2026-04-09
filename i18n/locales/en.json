@@ -610,7 +610,8 @@
       "finishedAt": "Finished at",
       "coins": "coins",
       "lastSessionTitle": "Last finished session",
-      "finishDemo": "Finish demo"
+      "finishDemo": "Finish demo",
+      "authRequired": "You must be logged in to start a game."
     },
     "messages": {
       "startSuccess": "Game session started successfully.",

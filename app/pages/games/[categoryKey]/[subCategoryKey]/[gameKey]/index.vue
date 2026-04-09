@@ -182,7 +182,12 @@ function difficultyLabel(level: string) {
 
 async function onStart() {
   if (!loggedIn.value) {
-    Notify.error('Vous devez être connecté pour démarrer une partie.')
+    Notify.error(
+      tOrFallback(
+        'gamePage.session.authRequired',
+        'You must be logged in to start a game.',
+      ),
+    )
     await navigateTo('/login')
     return
   }

@@ -601,7 +601,8 @@
       "finishedAt": "Beendet am",
       "coins": "Münzen",
       "lastSessionTitle": "Zuletzt beendete Sitzung",
-      "finishDemo": "Demo abschließen"
+      "finishDemo": "Demo abschließen",
+      "authRequired": "Du musst angemeldet sein, um ein Spiel zu starten."
     },
     "messages": {
       "startSuccess": "Spielsitzung erfolgreich gestartet.",

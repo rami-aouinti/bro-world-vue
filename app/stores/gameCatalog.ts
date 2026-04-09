@@ -532,8 +532,15 @@ export const useGameCatalogStore = defineStore('game-catalog', {
         const httpError = buildHttpError(error, 'Unable to start session.')
 
         if (httpError.status === 401) {
+          const { $i18n } = useNuxtApp()
+          const authRequiredMessage = $i18n?.t('gamePage.session.authRequired')
+          const localizedAuthRequiredMessage =
+            typeof authRequiredMessage === 'string' &&
+            authRequiredMessage !== 'gamePage.session.authRequired'
+              ? authRequiredMessage
+              : 'You must be logged in to start a game.'
           const unauthorizedError = new Error(
-            'Vous devez être connecté pour démarrer une partie.',
+            localizedAuthRequiredMessage,
           ) as HttpErrorLike
           unauthorizedError.status = 401
           this.error = unauthorizedError.message
