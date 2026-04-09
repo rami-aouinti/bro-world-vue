@@ -47,7 +47,7 @@ onMounted(() => refreshApplications())
             md="6"
             xl="4"
           >
-            <v-card variant="outlined" class="h-100">
+            <v-card variant="text" class="h-100 postcard-gradient-card">
               <v-card-item>
                 <v-card-title>{{ application.title }}</v-card-title>
                 <v-card-subtitle>{{
