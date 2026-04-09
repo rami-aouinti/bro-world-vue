@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+
 const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 
@@ -98,6 +100,45 @@ const sessions = [
     active: false,
   },
 ]
+
+const activeSection = ref(settingsSections[0]?.id ?? '')
+
+const scrollToSection = (sectionId: string) => {
+  activeSection.value = sectionId
+  document.getElementById(sectionId)?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start',
+  })
+}
+
+const updateActiveSection = () => {
+  const scrollOffset = 140
+  let currentSection = settingsSections[0]?.id ?? ''
+
+  for (const section of settingsSections) {
+    const element = document.getElementById(section.id)
+
+    if (!element) continue
+
+    if (element.getBoundingClientRect().top - scrollOffset <= 0) {
+      currentSection = section.id
+      continue
+    }
+
+    break
+  }
+
+  activeSection.value = currentSection
+}
+
+onMounted(() => {
+  updateActiveSection()
+  window.addEventListener('scroll', updateActiveSection, { passive: true })
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', updateActiveSection)
+})
 </script>
 
 <template>
@@ -106,6 +147,19 @@ const sessions = [
       <template #left>
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
         <ProfileDrawer v-else />
+      </template>
+      <template #right>
+        <v-list nav density="comfortable" class="bg-transparent">
+          <v-list-item
+            v-for="section in settingsSections"
+            :key="section.id"
+            :href="'#' + section.id"
+            :prepend-icon="section.icon"
+            :title="section.label"
+            :active="activeSection === section.id"
+            @click.prevent="scrollToSection(section.id)"
+          />
+        </v-list>
       </template>
     </AppPageDrawers>
 
@@ -134,7 +188,7 @@ const sessions = [
         </v-card>
 
         <div class="d-flex flex-column ga-6">
-          <v-card id="profile" rounded="xl" class="pa-6">
+          <v-card id="profile" rounded="xl" class="pa-6 settings-section">
             <div class="d-flex align-center justify-space-between flex-wrap ga-4">
               <div class="d-flex align-center ga-4">
                 <v-avatar size="72" :image="profile.avatar" />
@@ -150,7 +204,7 @@ const sessions = [
             </div>
           </v-card>
 
-          <v-card id="basic-info" rounded="xl" class="pa-6">
+          <v-card id="basic-info" rounded="xl" class="pa-6 settings-section">
             <div class="text-h6 mb-4">Basic information</div>
             <v-row>
               <v-col v-for="field in basicInfoFields" :key="field.key" cols="12" md="6">
@@ -162,7 +216,7 @@ const sessions = [
             </div>
           </v-card>
 
-          <v-card id="change-password" rounded="xl" class="pa-6">
+          <v-card id="change-password" rounded="xl" class="pa-6 settings-section">
             <div class="text-h6 mb-4">Change password</div>
             <v-row>
               <v-col cols="12" md="4">
@@ -181,7 +235,7 @@ const sessions = [
             <v-btn color="primary">Update password</v-btn>
           </v-card>
 
-          <v-card id="two-fa" rounded="xl" class="pa-6">
+          <v-card id="two-fa" rounded="xl" class="pa-6 settings-section">
             <div class="text-h6 mb-4">Two-factor authentication</div>
             <v-list lines="two" class="pa-0">
               <v-list-item
@@ -198,7 +252,7 @@ const sessions = [
             </v-list>
           </v-card>
 
-          <v-card id="accounts" rounded="xl" class="pa-6">
+          <v-card id="accounts" rounded="xl" class="pa-6 settings-section">
             <div class="text-h6 mb-4">Connected accounts</div>
             <v-list class="pa-0 mb-4">
               <v-list-item v-for="item in accountProviders" :key="item.provider" :title="item.provider" :subtitle="item.email">
@@ -213,7 +267,7 @@ const sessions = [
             </v-alert>
           </v-card>
 
-          <v-card id="notifications" rounded="xl" class="pa-6">
+          <v-card id="notifications" rounded="xl" class="pa-6 settings-section">
             <div class="text-h6 mb-4">Notifications</div>
             <v-table>
               <thead>
@@ -237,7 +291,7 @@ const sessions = [
             </v-table>
           </v-card>
 
-          <v-card id="sessions" rounded="xl" class="pa-6">
+          <v-card id="sessions" rounded="xl" class="pa-6 settings-section">
             <div class="d-flex align-center justify-space-between mb-4">
               <div class="text-h6">Sessions</div>
               <v-btn variant="text" color="primary">See more</v-btn>
@@ -256,7 +310,7 @@ const sessions = [
             </v-list>
           </v-card>
 
-          <v-card id="delete-account" rounded="xl" class="pa-6">
+          <v-card id="delete-account" rounded="xl" class="pa-6 settings-section">
             <div class="text-h6 mb-2">Delete account</div>
             <p class="text-body-2 text-medium-emphasis mb-4">
               You can deactivate your account temporarily or permanently delete all associated data.
@@ -271,3 +325,9 @@ const sessions = [
     </v-container>
   </div>
 </template>
+
+<style scoped>
+.settings-section {
+  scroll-margin-top: 120px;
+}
+</style>
