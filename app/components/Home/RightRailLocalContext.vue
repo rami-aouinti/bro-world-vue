@@ -129,7 +129,7 @@ function requestLocation() {
 
 <template>
   <div class="d-flex flex-column ga-4">
-    <v-card rounded="xl" variant="tonal" class="pa-2">
+    <v-card rounded="xl" variant="text" class="actuality-card">
       <v-card-item>
         <template #prepend>
           <v-icon icon="mdi-map-marker-radius-outline" color="primary" />
@@ -143,7 +143,7 @@ function requestLocation() {
         <div class="d-flex flex-column ga-2">
           <v-btn
             color="primary"
-            variant="flat"
+            variant="tonal"
             block
             :loading="isLoading"
             @click="requestLocation"
@@ -182,7 +182,7 @@ function requestLocation() {
       </v-card-text>
     </v-card>
 
-    <v-card v-if="hasContext && localContext" rounded="xl" variant="outlined">
+    <v-card v-if="hasContext && localContext" rounded="xl" variant="text" class="actuality-card">
       <v-card-item>
         <template #prepend>
           <v-icon icon="mdi-weather-partly-cloudy" color="primary" />
@@ -197,7 +197,7 @@ function requestLocation() {
       </v-card-text>
     </v-card>
 
-    <v-card v-if="hasContext && localContext" rounded="xl" variant="outlined">
+    <v-card v-if="hasContext && localContext" rounded="xl" variant="text" class="actuality-card">
       <v-card-item>
         <template #prepend>
           <v-icon icon="mdi-calendar-star" color="primary" />
@@ -222,7 +222,7 @@ function requestLocation() {
       </v-list>
     </v-card>
 
-    <v-card v-if="hasContext && localContext" rounded="xl" variant="outlined">
+    <v-card v-if="hasContext && localContext" rounded="xl" variant="text" class="actuality-card">
       <v-card-item>
         <template #prepend>
           <v-icon icon="mdi-alert-decagram-outline" color="error" />
@@ -249,3 +249,13 @@ function requestLocation() {
     </v-card>
   </div>
 </template>
+<style scoped>
+.actuality-card {
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.18) 0%,
+    transparent 20%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+</style>
