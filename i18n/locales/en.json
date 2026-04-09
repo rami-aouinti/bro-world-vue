@@ -5,9 +5,11 @@
   },
   "appbar": {
     "home": "Home",
+    "service": "Service",
     "platform": "Platform",
     "about": "About",
     "contact": "Contact",
+    "faq": "FAQ",
     "admin": "Admin",
     "dashboard": "Dashboard",
     "table": "Data Table",

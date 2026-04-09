@@ -10,10 +10,9 @@ const route = useRoute()
 const { t } = useI18n()
 
 const navItems = [
+  { label: 'appbar.service', to: '/service', icon: 'mdi-briefcase-outline' },
   { label: 'appbar.platform', to: '/platform', icon: 'mdi-view-dashboard-outline' },
   { label: 'appbar.games', to: '/games', icon: 'mdi-gamepad-variant-outline' },
-  { label: 'appbar.about', to: '/about', icon: 'mdi-information-outline' },
-  { label: 'appbar.contact', to: '/contact', icon: 'mdi-email-outline' },
 ]
 
 const isDark = computed({
@@ -233,6 +232,22 @@ function toggleLeftDrawer() {
           </v-tooltip>
         </template>
         <v-list min-width="220">
+          <v-list-item
+            :title="t('appbar.about')"
+            prepend-icon="mdi-information-outline"
+            to="/about"
+          />
+          <v-list-item
+            :title="t('appbar.faq')"
+            prepend-icon="mdi-frequently-asked-questions"
+            to="/faq"
+          />
+          <v-list-item
+            :title="t('appbar.contact')"
+            prepend-icon="mdi-email-outline"
+            to="/contact"
+          />
+          <v-divider class="my-1" />
           <v-list-item
             v-if="!loggedIn"
             :title="t('appbar.login')"
