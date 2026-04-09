@@ -31,6 +31,8 @@ onMounted(() => {
           <SkeletonDrawerLeft />
         </template>
         <template v-else>
+          <AppLeftDrawerUserEntry />
+          <v-divider class="my-2" />
           <v-card-title class="text-subtitle-1">{{
             $t('home.leftNav.title')
           }}</v-card-title>

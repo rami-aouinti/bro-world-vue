@@ -54,7 +54,11 @@
       "es": "Spanisch",
       "de": "Deutsch"
     },
-    "games": "Spiele"
+    "games": "Spiele",
+    "feature": "Funktionen",
+    "applications": "Anwendungen",
+    "sports": "Sport",
+    "quiz": "Quiz"
   },
   "common": {
     "confirm": "Bestätigen",
@@ -323,6 +327,13 @@
         "deleteFailed": "Dieses Ereignis konnte nicht gelöscht werden.",
         "cancelFailed": "Dieses Ereignis konnte nicht abgesagt werden.",
         "moveFailed": "Dieses Ereignis konnte nicht verschoben werden."
+      },
+      "presetTitle": "Vordefinierte Ereignisse",
+      "presets": {
+        "meeting": "Meeting",
+        "party": "Party",
+        "training": "Training",
+        "deadline": "Frist"
       }
     },
     "profile": {
@@ -427,6 +438,10 @@
         "meetingSubtitle": "Video or on-site",
         "meetingDescription": "Schedule a 30-minute slot to discuss your project."
       }
+    },
+    "applications": {
+      "sportsDescription": "Entdecke bald Sportinhalte und Funktionen.",
+      "quizDescription": "Hier findest du bald interaktive Quizze."
     }
   },
   "home": {

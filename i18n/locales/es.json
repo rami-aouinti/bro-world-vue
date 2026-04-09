@@ -54,7 +54,11 @@
       "es": "Español",
       "de": "Alemán"
     },
-    "games": "Juegos"
+    "games": "Juegos",
+    "feature": "Funcionalidades",
+    "applications": "Aplicaciones",
+    "sports": "Deportes",
+    "quiz": "Cuestionario"
   },
   "common": {
     "confirm": "Confirm",
@@ -297,7 +301,14 @@
     },
     "calendar": {
       "title": "Calendario",
-      "subtitle": "Tu agenda aparecerá aquí pronto."
+      "subtitle": "Tu agenda aparecerá aquí pronto.",
+      "presetTitle": "Eventos predefinidos",
+      "presets": {
+        "meeting": "Reunión",
+        "party": "Fiesta",
+        "training": "Entrenamiento",
+        "deadline": "Fecha límite"
+      }
     },
     "profile": {
       "posts": {
@@ -401,6 +412,10 @@
         "meetingSubtitle": "Video or on-site",
         "meetingDescription": "Schedule a 30-minute slot to discuss your project."
       }
+    },
+    "applications": {
+      "sportsDescription": "Descubre pronto contenidos y funciones deportivas.",
+      "quizDescription": "Encuentra aquí cuestionarios interactivos muy pronto."
     }
   },
   "home": {
