@@ -28,29 +28,8 @@ const title = computed(() => {
   return translateIfKey(pageTitle)
 })
 
-const LazyAnalytics = defineAsyncComponent({
-  loader: async () => {
-    if (import.meta.server) {
-      return VercelAnalyticsPlaceholder
-    }
-
-    const module = await import('@vercel/analytics/nuxt')
-    return module.Analytics
-  },
-  suspensible: false,
-})
-
-const LazySpeedInsights = defineAsyncComponent({
-  loader: async () => {
-    if (import.meta.server) {
-      return SpeedInsightsPlaceholder
-    }
-
-    const module = await import('@vercel/speed-insights/nuxt')
-    return module.SpeedInsights
-  },
-  suspensible: false,
-})
+const AnalyticsComponent = VercelAnalyticsPlaceholder
+const SpeedInsightsComponent = SpeedInsightsPlaceholder
 
 useHead({
   title,
@@ -73,8 +52,8 @@ useSeoMeta({
 
 <template>
   <ClientOnly>
-    <component :is="LazyAnalytics" />
-    <component :is="LazySpeedInsights" />
+    <component :is="AnalyticsComponent" />
+    <component :is="SpeedInsightsComponent" />
   </ClientOnly>
   <NuxtLayout>
     <NuxtPage />
