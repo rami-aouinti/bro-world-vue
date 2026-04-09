@@ -201,6 +201,7 @@ async function submitEdit() {
         v-for="post in posts"
         :key="post.id"
         :post="post"
+        :can-interact="loggedIn"
         :reaction-types="reactionTypes"
         @create-comment="createComment"
         @reply="replyToComment"

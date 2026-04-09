@@ -36,12 +36,14 @@ const props = withDefaults(
   defineProps<{
     comments?: BlogComment[]
     level?: number
+    canInteract?: boolean
     activeReplyId?: string | number | null
     reactionTypes?: ReactionType[]
   }>(),
   {
     comments: () => [],
     level: 0,
+    canInteract: true,
     activeReplyId: null,
     reactionTypes: () => [],
   },
@@ -99,6 +101,10 @@ function normalizedReactions(comment: BlogComment) {
 }
 
 function pickReaction(comment: BlogComment, code: string) {
+  if (!props.canInteract) {
+    return
+  }
+
   emit('react', { comment, code })
   reactionMenuById.value[commentKey(comment)] = false
 }
@@ -175,14 +181,16 @@ function formattedDate(comment: BlogComment) {
           <div class="comment-actions text-medium-emphasis">
             <v-menu
               v-model="reactionMenuById[commentKey(comment)]"
-              :open-on-hover="true"
+              :open-on-hover="canInteract"
               open-delay="120"
               location="top"
+              :disabled="!canInteract"
             >
               <template #activator="{ props: menuProps }">
                 <button
                   v-bind="menuProps"
                   type="button"
+                  :disabled="!canInteract"
                   @click="pickReaction(comment, 'like')"
                 >
                   {{ t('blog.post.actions.like') }}
@@ -203,7 +211,7 @@ function formattedDate(comment: BlogComment) {
               </div>
             </v-menu>
 
-            <button type="button" @click="emit('reply', comment)">
+            <button type="button" :disabled="!canInteract" @click="emit('reply', comment)">
               {{ t('blog.comment.actions.reply') }}
             </button>
           </div>
@@ -215,6 +223,7 @@ function formattedDate(comment: BlogComment) {
           <div v-if="activeReplyId === comment.id" class="reply-composer">
             <BlogCommentComposer
               mode="reply"
+              :disabled="!canInteract"
               :placeholder="t('blog.comment.placeholders.reply')"
               @submit="emit('submitReply', { comment, content: $event })"
               @cancel="emit('reply', comment)"
@@ -227,6 +236,7 @@ function formattedDate(comment: BlogComment) {
         <BlogCommentThread
           :comments="comment.children"
           :level="level + 1"
+          :can-interact="canInteract"
           :active-reply-id="activeReplyId"
           :reaction-types="reactionTypes"
           @reply="emit('reply', $event)"
@@ -272,6 +282,11 @@ function formattedDate(comment: BlogComment) {
   color: inherit;
   cursor: pointer;
   font-weight: 600;
+}
+
+.comment-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .children-wrap {

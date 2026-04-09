@@ -46,9 +46,11 @@ type BlogPost = {
 const props = withDefaults(
   defineProps<{
     post: BlogPost
+    canInteract?: boolean
     reactionTypes?: BlogReactionType[]
   }>(),
   {
+    canInteract: true,
     reactionTypes: () => [],
   },
 )
@@ -97,10 +99,18 @@ const normalizedReactions = computed(() =>
 )
 
 function submitComment(content: string) {
+  if (!props.canInteract) {
+    return
+  }
+
   emit('createComment', { post: props.post, content })
 }
 
 function submitReply(payload: { comment: BlogComment; content: string }) {
+  if (!props.canInteract) {
+    return
+  }
+
   emit('reply', {
     post: props.post,
     comment: payload.comment,
@@ -113,10 +123,18 @@ function submitReply(payload: { comment: BlogComment; content: string }) {
 }
 
 function togglePostLike() {
+  if (!props.canInteract) {
+    return
+  }
+
   emit('like', props.post)
 }
 
 function onReply(comment: BlogComment) {
+  if (!props.canInteract) {
+    return
+  }
+
   showComments.value = true
 
   if (replyTo.value?.id === comment.id) {
@@ -128,12 +146,28 @@ function onReply(comment: BlogComment) {
 }
 
 function toggleComments() {
+  if (!props.canInteract) {
+    return
+  }
+
   showComments.value = !showComments.value
 }
 
 function onCreateComment(content: string) {
+  if (!props.canInteract) {
+    return
+  }
+
   showComments.value = true
   submitComment(content)
+}
+
+function onShare() {
+  if (!props.canInteract) {
+    return
+  }
+
+  emit('share', props.post)
 }
 </script>
 
@@ -223,17 +257,19 @@ function onCreateComment(content: string) {
       <BlogPostActionsBar
         :comments-count="commentsCount"
         :shares-count="post.sharesCount || 0"
+        :can-interact="canInteract"
         :reaction-types="reactionTypes"
         @like="togglePostLike"
         @react="emit('reactPost', { post, code: $event })"
         @comment="toggleComments"
-        @share="emit('share', post)"
+        @share="onShare"
       />
     </v-card-text>
 
     <v-card-text v-if="showComments" class="pt-1 pb-1">
       <BlogCommentComposer
         mode="comment"
+        :disabled="!canInteract"
         :placeholder="t('blog.comment.placeholders.addComment')"
         @submit="onCreateComment"
       />
@@ -242,6 +278,7 @@ function onCreateComment(content: string) {
     <v-card-text v-if="showComments && post.comments?.length" class="pt-1 pb-2">
       <BlogCommentThread
         :comments="post.comments"
+        :can-interact="canInteract"
         :active-reply-id="replyTo?.id ?? null"
         :reaction-types="reactionTypes"
         @reply="onReply"
