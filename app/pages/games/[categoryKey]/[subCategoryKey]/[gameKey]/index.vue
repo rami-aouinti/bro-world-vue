@@ -209,9 +209,7 @@ async function onStart() {
       },
     )
     const createdSessionId =
-      response.session.id ??
-      response.session.sessionId ??
-      catalogStore.currentSession?.sessionId
+      response.sessionId ?? catalogStore.currentSession?.sessionId
 
     if (!createdSessionId) {
       Notify.error('Session id not found in start response.')
