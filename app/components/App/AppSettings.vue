@@ -86,25 +86,29 @@ const menuShow = ref(false)
   <v-menu
     v-model="menuShow"
     :close-on-content-click="false"
-    location="top right"
+    location="top"
     offset="15"
   >
     <template #activator="{ props: menu }">
-      <v-tooltip
-        location="top"
-        :aria-label="t('appbar.themePalette')"
-        :text="t('appbar.themePalette')"
-        :content-props="{ 'aria-label': t('appbar.themePalette') }"
-      >
-        <template #activator="{ props: tooltip }">
-          <v-btn
-            icon="mdi-palette-outline"
-            :aria-label="t('appbar.themePalette')"
-            v-bind="mergeProps(menu, tooltip)"
-            :rounded="0"
-          />
-        </template>
-      </v-tooltip>
+      <div class="settings-fab">
+        <v-tooltip
+          location="top"
+          :aria-label="t('appbar.themePalette')"
+          :text="t('appbar.themePalette')"
+          :content-props="{ 'aria-label': t('appbar.themePalette') }"
+        >
+          <template #activator="{ props: tooltip }">
+            <v-btn
+              icon="mdi-cog"
+              size="56"
+              elevation="6"
+              color="surface"
+              :aria-label="t('appbar.themePalette')"
+              v-bind="mergeProps(menu, tooltip)"
+            />
+          </template>
+        </v-tooltip>
+      </div>
     </template>
 
     <v-card width="360">
@@ -174,6 +178,13 @@ const menuShow = ref(false)
 </template>
 
 <style scoped>
+.settings-fab {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1300;
+}
+
 .settings-toggle {
   flex-wrap: wrap;
   justify-content: center;
