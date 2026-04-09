@@ -132,9 +132,9 @@ function authorProfilePath(comment: BlogComment) {
       :class="{ 'nested-comment': level > 0 }"
     >
       <div class="d-flex ga-2 align-start">
-        <component
-          :is="authorProfilePath(comment) ? 'NuxtLink' : 'div'"
-          :to="authorProfilePath(comment) || undefined"
+        <NuxtLink
+          v-if="authorProfilePath(comment)"
+          :to="authorProfilePath(comment)!"
           class="comment-author-link"
         >
           <v-avatar size="34" color="grey-darken-2">
@@ -145,21 +145,39 @@ function authorProfilePath(comment: BlogComment) {
             />
             <v-icon v-else size="18" icon="mdi-account" />
           </v-avatar>
-        </component>
+        </NuxtLink>
+        <div v-else class="comment-author-link">
+          <v-avatar size="34" color="grey-darken-2">
+            <v-img
+              v-if="comment.author?.photo"
+              :src="comment.author.photo"
+              :alt="`${comment.author?.displayName || t('blog.common.userFallback')} avatar`"
+            />
+            <v-icon v-else size="18" icon="mdi-account" />
+          </v-avatar>
+        </div>
 
         <div class="comment-body">
           <div class="comment-bubble">
             <div class="d-flex align-start justify-space-between ga-2">
               <div>
-                <component
-                  :is="authorProfilePath(comment) ? 'NuxtLink' : 'span'"
-                  :to="authorProfilePath(comment) || undefined"
+                <NuxtLink
+                  v-if="authorProfilePath(comment)"
+                  :to="authorProfilePath(comment)!"
                   class="text-subtitle-2 font-weight-bold comment-author-link"
                 >
                   {{
                     comment.author?.displayName || t('blog.common.userFallback')
                   }}
-                </component>
+                </NuxtLink>
+                <span
+                  v-else
+                  class="text-subtitle-2 font-weight-bold comment-author-link"
+                >
+                  {{
+                    comment.author?.displayName || t('blog.common.userFallback')
+                  }}
+                </span>
                 <div class="text-caption text-medium-emphasis">
                   {{ formattedDate(comment) }}
                 </div>

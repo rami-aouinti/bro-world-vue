@@ -220,9 +220,9 @@ async function onCardClick(event: MouseEvent) {
   >
     <v-card-item class="pb-1">
       <template #prepend>
-        <component
-          :is="authorProfilePath ? 'NuxtLink' : 'div'"
-          :to="authorProfilePath || undefined"
+        <NuxtLink
+          v-if="authorProfilePath"
+          :to="authorProfilePath"
           class="post-author-link"
           @click.stop
         >
@@ -230,18 +230,25 @@ async function onCardClick(event: MouseEvent) {
             <v-img v-if="authorPhoto" :src="authorPhoto" :alt="`${authorName} avatar`" />
             <v-icon v-else icon="mdi-account" />
           </v-avatar>
-        </component>
+        </NuxtLink>
+        <div v-else class="post-author-link">
+          <v-avatar size="52" color="grey-darken-2" class="me-3">
+            <v-img v-if="authorPhoto" :src="authorPhoto" :alt="`${authorName} avatar`" />
+            <v-icon v-else icon="mdi-account" />
+          </v-avatar>
+        </div>
       </template>
 
       <v-card-title class="text-h6 font-weight-bold">
-        <component
-          :is="authorProfilePath ? 'NuxtLink' : 'span'"
-          :to="authorProfilePath || undefined"
+        <NuxtLink
+          v-if="authorProfilePath"
+          :to="authorProfilePath"
           class="post-author-link"
           @click.stop
         >
           {{ authorName }}
-        </component>
+        </NuxtLink>
+        <span v-else class="post-author-link">{{ authorName }}</span>
       </v-card-title>
       <v-card-subtitle class="text-medium-emphasis">
         {{ formattedDate }} ·
