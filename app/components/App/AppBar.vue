@@ -529,6 +529,12 @@ function isMenuActive(paths: string[]) {
   padding-inline: 14px;
 }
 
+:deep(.app-top-bar__nav-btn .v-btn__prepend .v-icon) {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
 .app-top-bar__right {
   margin-left: auto;
   max-width: 100%;
