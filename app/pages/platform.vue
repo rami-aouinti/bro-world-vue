@@ -319,11 +319,10 @@ function resetFilters() {
             <v-btn
               variant="tonal"
               color="primary"
-              prepend-icon="mdi-refresh"
+              icon="mdi-refresh"
               :loading="pending"
               @click="refresh()"
             >
-              {{ t('platform.refresh') }}
             </v-btn>
           </teleport>
         </client-only>
