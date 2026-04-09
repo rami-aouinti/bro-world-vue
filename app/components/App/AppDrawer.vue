@@ -58,21 +58,22 @@ const drawerState = useState('drawer', () => true)
 const { mobile } = useDisplay()
 const registry = useDrawerSlotRegistry()
 const isDrawerInteractiveReady = ref(false)
-const drawerModel = computed({
-  get() {
-    return mobile.value ? drawerState.value : true
-  },
-  set(val: boolean) {
-    if (mobile.value) {
-      drawerState.value = val
-    }
-  },
-})
+const drawerModelValue = computed(() =>
+  mobile.value ? drawerState.value : true,
+)
 const rail = computed(() => !drawerState.value && !mobile.value)
 const leftDrawerRenderer = computed(() => registry?.left.value ?? null)
 const shouldRenderDrawerSlot = computed(
   () => isDrawerInteractiveReady.value && Boolean(leftDrawerRenderer.value),
 )
+
+function handleDrawerModelUpdate(val: boolean): void {
+  if (!mobile.value) {
+    return
+  }
+
+  drawerState.value = val
+}
 
 onMounted(() => {
   requestAnimationFrame(() => {
@@ -83,13 +84,14 @@ onMounted(() => {
 
 <template>
   <v-navigation-drawer
-    v-model="drawerModel"
+    :model-value="drawerModelValue"
     :expand-on-hover="rail"
     :rail="rail"
     width="260"
     permanent
     floating
     class="app-left-drawer"
+    @update:model-value="handleDrawerModelUpdate"
   >
     <div v-if="shouldRenderDrawerSlot" class="app-left-drawer-list">
       <SkeletonDrawerLeft v-if="isPageSkeletonLoading" />
