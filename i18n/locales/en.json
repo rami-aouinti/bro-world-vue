@@ -54,7 +54,11 @@
       "es": "Spanish",
       "de": "German"
     },
-    "games": "Games"
+    "games": "Games",
+    "feature": "Feature",
+    "applications": "Applications",
+    "sports": "Sports",
+    "quiz": "Quiz"
   },
   "common": {
     "confirm": "Confirm",
@@ -332,6 +336,13 @@
         "deleteFailed": "Unable to delete this event.",
         "cancelFailed": "Unable to cancel this event.",
         "moveFailed": "Unable to move this event."
+      },
+      "presetTitle": "Preset events",
+      "presets": {
+        "meeting": "Meeting",
+        "party": "Party",
+        "training": "Training",
+        "deadline": "Deadline"
       }
     },
     "profile": {
@@ -436,6 +447,10 @@
         "meetingSubtitle": "Video or on-site",
         "meetingDescription": "Schedule a 30-minute slot to discuss your project."
       }
+    },
+    "applications": {
+      "sportsDescription": "Discover sports content and features soon.",
+      "quizDescription": "Interactive quizzes will be available here soon."
     }
   },
   "home": {

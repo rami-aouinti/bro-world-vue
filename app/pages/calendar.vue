@@ -2,6 +2,7 @@
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
+import { Draggable } from '@fullcalendar/interaction'
 import timeGridPlugin from '@fullcalendar/timegrid'
 
 interface PrivateCalendarEvent {
@@ -37,6 +38,12 @@ interface EventMutationPayload {
   timezone: string
 }
 
+interface PresetCalendarEvent {
+  key: string
+  titleKey: string
+  color: string
+}
+
 const { t, locale } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 
@@ -52,6 +59,8 @@ const calendarEvents = ref<PrivateCalendarEvent[]>([])
 const upcomingEvents = ref<PrivateCalendarEvent[]>([])
 const selectedEvent = ref<PrivateCalendarEvent | null>(null)
 const dialogOpen = ref(false)
+const presetEventsHost = ref<HTMLElement | null>(null)
+let presetEventsDraggable: Draggable | null = null
 
 const form = reactive({
   title: '',
@@ -87,6 +96,13 @@ const fullCalendarEvents = computed(() => {
     })
 })
 
+const presetEvents = computed<PresetCalendarEvent[]>(() => [
+  { key: 'meeting', titleKey: 'pages.calendar.presets.meeting', color: '#2e7d32' },
+  { key: 'party', titleKey: 'pages.calendar.presets.party', color: '#c62828' },
+  { key: 'training', titleKey: 'pages.calendar.presets.training', color: '#1565c0' },
+  { key: 'deadline', titleKey: 'pages.calendar.presets.deadline', color: '#6a1b9a' },
+])
+
 const calendarOptions = computed(() => {
   return {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -104,6 +120,7 @@ const calendarOptions = computed(() => {
     },
     selectable: true,
     editable: true,
+    droppable: true,
     events: fullCalendarEvents.value,
     select: (selectionInfo: { startStr: string; endStr: string }) => {
       openCreateDialog(selectionInfo.startStr, selectionInfo.endStr)
@@ -116,6 +133,7 @@ const calendarOptions = computed(() => {
         | undefined
       if (event) openEditDialog(event)
     },
+    eventReceive: onExternalEventReceive,
     eventDrop: onEventDrop,
     height: 'auto',
   }
@@ -238,6 +256,48 @@ async function onEventDrop(dropInfo: {
   }
 }
 
+async function onExternalEventReceive(receiveInfo: {
+  event: {
+    title: string
+    start: Date | null
+    end: Date | null
+    allDay: boolean
+    backgroundColor: string
+    borderColor: string
+    remove: () => void
+  }
+  revert: () => void
+}) {
+  if (!receiveInfo.event.start) {
+    receiveInfo.revert()
+    return
+  }
+
+  const fallbackEnd = new Date(receiveInfo.event.start.getTime() + 60 * 60 * 1000)
+  const payload: EventMutationPayload = {
+    title: receiveInfo.event.title,
+    description: null,
+    startAt: receiveInfo.event.start.toISOString(),
+    endAt: (receiveInfo.event.end || fallbackEnd).toISOString(),
+    isAllDay: receiveInfo.event.allDay,
+    location: null,
+    timezone: currentTimezone.value,
+  }
+
+  try {
+    await $fetch('/api/calendar/private/events', {
+      method: 'POST',
+      body: payload,
+    })
+    receiveInfo.event.remove()
+    await loadEvents()
+  } catch (error) {
+    receiveInfo.revert()
+    errorMessage.value = t('pages.calendar.errors.saveFailed')
+    console.error(error)
+  }
+}
+
 async function saveEvent() {
   if (!form.title.trim() || !form.startAt || !form.endAt) return
 
@@ -311,7 +371,31 @@ async function cancelEvent() {
   }
 }
 
-onMounted(loadEvents)
+onMounted(async () => {
+  await loadEvents()
+
+  if (presetEventsHost.value) {
+    presetEventsDraggable = new Draggable(presetEventsHost.value, {
+      itemSelector: '.calendar-preset-event',
+      eventData: (eventEl) => {
+        const title = eventEl.getAttribute('data-title') || ''
+        const color = eventEl.getAttribute('data-color') || undefined
+        return {
+          title,
+          duration: '01:00',
+          backgroundColor: color,
+          borderColor: color,
+          textColor: '#ffffff',
+        }
+      },
+    })
+  }
+})
+
+onUnmounted(() => {
+  presetEventsDraggable?.destroy()
+  presetEventsDraggable = null
+})
 </script>
 
 <template>
@@ -319,6 +403,34 @@ onMounted(loadEvents)
     <AppPageDrawers>
       <template #left>
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
+        <template v-else>
+          <v-btn
+            block
+            variant="tonal"
+            color="primary"
+            prepend-icon="mdi-plus"
+            class="mb-3"
+            @click="openCreateDialog()"
+          >
+            {{ t('pages.calendar.addEvent') }}
+          </v-btn>
+          <v-card-title class="text-subtitle-1 px-0">
+            {{ t('pages.calendar.presetTitle') }}
+          </v-card-title>
+          <div ref="presetEventsHost" class="d-flex flex-column ga-2">
+            <v-chip
+              v-for="preset in presetEvents"
+              :key="preset.key"
+              class="calendar-preset-event justify-start"
+              label
+              :style="{ backgroundColor: preset.color, color: '#fff' }"
+              :data-title="t(preset.titleKey)"
+              :data-color="preset.color"
+            >
+              {{ t(preset.titleKey) }}
+            </v-chip>
+          </div>
+        </template>
       </template>
       <template #right>
         <SkeletonDrawerRight v-if="isPageSkeletonVisible" />
@@ -347,18 +459,6 @@ onMounted(loadEvents)
         <v-alert v-if="errorMessage" type="error" class="mb-4" variant="tonal">
           {{ errorMessage }}
         </v-alert>
-        <client-only>
-          <teleport to="#app-bar">
-            <v-btn
-              variant="tonal"
-              color="primary"
-              prepend-icon="mdi-plus"
-              @click="openCreateDialog()"
-            >
-              {{ t('pages.calendar.addEvent') }}
-            </v-btn>
-          </teleport>
-        </client-only>
         <v-card variant="text">
           <v-card-text>
             <v-skeleton-loader
@@ -458,6 +558,10 @@ onMounted(loadEvents)
   --fc-button-hover-border-color: rgb(var(--v-theme-primary-darken-1));
   --fc-button-active-bg-color: rgb(var(--v-theme-primary-darken-1));
   --fc-button-active-border-color: rgb(var(--v-theme-primary-darken-1));
+}
+
+.calendar-preset-event {
+  cursor: grab;
 }
 
 :deep(.fc .fc-toolbar-title) {
