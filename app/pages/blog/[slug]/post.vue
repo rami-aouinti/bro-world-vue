@@ -324,32 +324,39 @@ async function deleteComment(payload: {
 </script>
 
 <template>
-  <v-container fluid class="py-6">
-    <div class="mx-auto" style="max-width: 920px">
-      <v-progress-linear v-if="pending" indeterminate color="primary" class="mb-4" />
+  <div>
+    <AppPageDrawers>
+      <template #left>
+        <AppLeftDrawerUserEntry />
+      </template>
+    </AppPageDrawers>
+    <v-container fluid class="py-6">
+      <div class="mx-auto" style="max-width: 920px">
+        <v-progress-linear v-if="pending" indeterminate color="primary" class="mb-4" />
 
-      <v-alert
-        v-else-if="error"
-        type="error"
-        variant="tonal"
-        class="mb-4"
-      >
-        Impossible de charger le post pour le slug: <strong>{{ slug }}</strong>
-      </v-alert>
+        <v-alert
+          v-else-if="error"
+          type="error"
+          variant="tonal"
+          class="mb-4"
+        >
+          Impossible de charger le post pour le slug: <strong>{{ slug }}</strong>
+        </v-alert>
 
-      <BlogPostCard
-        v-else-if="post"
-        :post="post"
-        :can-interact="loggedIn"
-        :reaction-types="reactionTypes"
-        @create-comment="createComment"
-        @reply="replyToComment"
-        @like="reactToPost({ post: $event, code: 'like' })"
-        @react-post="reactToPost"
-        @react-comment="reactToComment"
-        @delete-post="deletePost"
-        @delete-comment="deleteComment"
-      />
-    </div>
-  </v-container>
+        <BlogPostCard
+          v-else-if="post"
+          :post="post"
+          :can-interact="loggedIn"
+          :reaction-types="reactionTypes"
+          @create-comment="createComment"
+          @reply="replyToComment"
+          @like="reactToPost({ post: $event, code: 'like' })"
+          @react-post="reactToPost"
+          @react-comment="reactToComment"
+          @delete-post="deletePost"
+          @delete-comment="deleteComment"
+        />
+      </div>
+    </v-container>
+  </div>
 </template>

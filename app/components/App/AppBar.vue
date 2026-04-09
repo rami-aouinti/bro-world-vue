@@ -2,6 +2,7 @@
 import { mergeProps } from 'vue'
 import { useStorage } from '@vueuse/core'
 import type { SessionUser } from '~/types/session'
+import type { Notification } from '~/stores/notification'
 
 const theme = useTheme()
 const drawer = useState('drawer')
@@ -11,10 +12,46 @@ const route = useRoute()
 const { t } = useI18n()
 const vision = useStorage<'light' | 'dark'>('color-scheme', 'dark')
 
-const navItems = [
-  { label: 'appbar.service', to: '/service', icon: 'mdi-briefcase-outline' },
-  { label: 'appbar.platform', to: '/platform', icon: 'mdi-view-dashboard-outline' },
-  { label: 'appbar.games', to: '/games', icon: 'mdi-gamepad-variant-outline' },
+const navMenus = [
+  {
+    label: 'appbar.feature',
+    icon: 'mdi-star-outline',
+    items: [
+      { label: 'appbar.service', to: '/service', icon: 'mdi-briefcase-outline' },
+      {
+        label: 'appbar.about',
+        to: '/about',
+        icon: 'mdi-information-outline',
+      },
+      {
+        label: 'appbar.faq',
+        to: '/faq',
+        icon: 'mdi-frequently-asked-questions',
+      },
+    ],
+  },
+  {
+    label: 'appbar.applications',
+    icon: 'mdi-apps',
+    items: [
+      {
+        label: 'appbar.platform',
+        to: '/platform',
+        icon: 'mdi-view-dashboard-outline',
+      },
+      {
+        label: 'appbar.games',
+        to: '/games',
+        icon: 'mdi-gamepad-variant-outline',
+      },
+      {
+        label: 'appbar.sports',
+        to: '/applications/sports',
+        icon: 'mdi-basketball',
+      },
+      { label: 'appbar.quiz', to: '/applications/quiz', icon: 'mdi-help-box' },
+    ],
+  },
 ]
 
 const isDark = computed({
@@ -33,9 +70,11 @@ const sessionUser = computed(() => user.value as SessionUser | null)
 const avatarUrl = computed(() => sessionUser.value?.photo)
 
 const inboxNotificationsStore = useInboxNotificationsStore()
-const { inboxLatestThree, notificationsLatestThree, unreadCount } = storeToRefs(
+const notificationStore = useNotificationStore()
+const { notificationsSortedDesc, unreadCount } = storeToRefs(
   inboxNotificationsStore,
 )
+const { notifications: actionNotifications } = storeToRefs(notificationStore)
 const notificationMenuOpen = ref(false)
 
 const userLabel = computed(() => {
@@ -45,6 +84,29 @@ const userLabel = computed(() => {
 
   return fullName || sessionUser.value?.username || t('appbar.user')
 })
+const allNotificationItems = computed(() => {
+  const apiItems = notificationsSortedDesc.value.map((item) => ({
+    id: `api-${item.id}`,
+    title: item.title,
+    createdAt: item.createdAt,
+    icon: 'mdi-bell-ring-outline',
+    to: `/notification/${item.id}`,
+  }))
+  const localItems = actionNotifications.value.map((item: Notification) => ({
+    id: `local-${item.id}`,
+    title: item.text,
+    createdAt: item.time.toISOString(),
+    icon: 'mdi-check-circle-outline',
+    to: null,
+  }))
+
+  return [...apiItems, ...localItems].sort((a, b) =>
+    b.createdAt.localeCompare(a.createdAt),
+  )
+})
+const unreadTotalCount = computed(
+  () => unreadCount.value + actionNotifications.value.length,
+)
 
 watch(
   loggedIn,
@@ -52,7 +114,6 @@ watch(
     if (!isLoggedIn) return
     await Promise.all([
       inboxNotificationsStore.fetchNotifications(),
-      inboxNotificationsStore.fetchInboxConversations(),
     ])
   },
   { immediate: true },
@@ -66,6 +127,12 @@ watch(notificationMenuOpen, async (isOpen) => {
 function toggleLeftDrawer() {
   if (!showLeftDrawer.value) return
   drawer.value = !drawer.value
+}
+
+function isMenuActive(paths: string[]) {
+  return paths.some(
+    (path) => route.path === path || route.path.startsWith(`${path}/`),
+  )
 }
 </script>
 
@@ -95,18 +162,44 @@ function toggleLeftDrawer() {
     </div>
 
     <div class="app-top-bar__nav d-none d-md-flex">
+      <v-menu
+        v-for="menu in navMenus"
+        :key="menu.label"
+        location="bottom"
+      >
+        <template #activator="{ props }">
+          <v-btn
+            v-bind="props"
+            :prepend-icon="menu.icon"
+            variant="text"
+            size="small"
+            rounded="lg"
+            class="app-top-bar__nav-btn"
+            :color="isMenuActive(menu.items.map((item) => item.to)) ? 'primary' : undefined"
+          >
+            {{ t(menu.label) }}
+          </v-btn>
+        </template>
+        <v-list min-width="220">
+          <v-list-item
+            v-for="item in menu.items"
+            :key="item.to"
+            :title="t(item.label)"
+            :prepend-icon="item.icon"
+            :to="item.to"
+          />
+        </v-list>
+      </v-menu>
       <v-btn
-        v-for="item in navItems"
-        :key="item.to"
-        :to="item.to"
-        :prepend-icon="item.icon"
+        to="/contact"
+        prepend-icon="mdi-email-outline"
         variant="text"
         size="small"
         rounded="lg"
         class="app-top-bar__nav-btn"
-        :color="route.path === item.to ? 'primary' : undefined"
+        :color="route.path === '/contact' ? 'primary' : undefined"
       >
-        {{ t(item.label) }}
+        {{ t('appbar.contact') }}
       </v-btn>
     </div>
 
@@ -125,37 +218,11 @@ function toggleLeftDrawer() {
 
       <v-spacer />
       <template v-if="loggedIn">
-        <v-menu location="bottom end">
-          <template #activator="{ props }">
-            <v-btn
-              variant="text"
-              icon="mdi-chat-outline"
-              :aria-label="t('actions.showAll')"
-              v-bind="props"
-            />
-          </template>
-          <v-list min-width="280">
-            <v-list-item
-              v-for="item in inboxLatestThree"
-              :key="item.id"
-              :title="item.title"
-              prepend-icon="mdi-email-outline"
-              :to="`/inbox/${item.id}`"
-            />
-            <v-divider class="my-1" />
-            <v-list-item
-              :title="t('actions.showAll')"
-              append-icon="mdi-arrow-right"
-              to="/inbox"
-            />
-          </v-list>
-        </v-menu>
-
         <v-menu v-model="notificationMenuOpen" location="bottom end">
           <template #activator="{ props }">
             <v-badge
-              :model-value="unreadCount > 0"
-              :content="unreadCount"
+              :model-value="unreadTotalCount > 0"
+              :content="unreadTotalCount"
               color="primary"
               offset-x="10"
               offset-y="10"
@@ -170,11 +237,11 @@ function toggleLeftDrawer() {
           </template>
           <v-list min-width="280">
             <v-list-item
-              v-for="item in notificationsLatestThree"
+              v-for="item in allNotificationItems"
               :key="item.id"
               :title="item.title"
-              prepend-icon="mdi-bell-ring-outline"
-              :to="`/notification/${item.id}`"
+              :prepend-icon="item.icon"
+              :to="item.to || undefined"
             />
             <v-divider class="my-1" />
             <v-list-item
@@ -192,7 +259,6 @@ function toggleLeftDrawer() {
           to="/calendar"
         />
       </template>
-      <AppNotification />
       <v-menu location="bottom">
         <template #activator="{ props: menu }">
           <v-tooltip
@@ -247,42 +313,12 @@ function toggleLeftDrawer() {
               prepend-icon="mdi-account-plus"
               to="/register"
             />
-            <v-list-item
-              :title="t('appbar.about')"
-              prepend-icon="mdi-information-outline"
-              to="/about"
-            />
-            <v-list-item
-              :title="t('appbar.faq')"
-              prepend-icon="mdi-frequently-asked-questions"
-              to="/faq"
-            />
-            <v-list-item
-              :title="t('appbar.contact')"
-              prepend-icon="mdi-email-outline"
-              to="/contact"
-            />
           </template>
           <template v-else>
             <v-list-item
               :title="t('appbar.profile')"
               prepend-icon="mdi-account-outline"
               to="/profile"
-            />
-            <v-list-item
-              :title="t('appbar.about')"
-              prepend-icon="mdi-information-outline"
-              to="/about"
-            />
-            <v-list-item
-              :title="t('appbar.faq')"
-              prepend-icon="mdi-frequently-asked-questions"
-              to="/faq"
-            />
-            <v-list-item
-              :title="t('appbar.contact')"
-              prepend-icon="mdi-email-outline"
-              to="/contact"
             />
             <v-divider class="my-1" />
             <v-list-item
