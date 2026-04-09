@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useStorage } from '@vueuse/core'
+import VercelAnalyticsPlaceholder from '~/components/Layout/analytics/VercelAnalyticsPlaceholder'
+import SpeedInsightsPlaceholder from '~/components/Layout/analytics/SpeedInsightsPlaceholder'
 
 const theme = useTheme()
 provide(
@@ -26,6 +28,30 @@ const title = computed(() => {
   return translateIfKey(pageTitle)
 })
 
+const LazyAnalytics = defineAsyncComponent({
+  loader: async () => {
+    if (import.meta.server) {
+      return VercelAnalyticsPlaceholder
+    }
+
+    const module = await import('@vercel/analytics/nuxt')
+    return module.Analytics
+  },
+  suspensible: false,
+})
+
+const LazySpeedInsights = defineAsyncComponent({
+  loader: async () => {
+    if (import.meta.server) {
+      return SpeedInsightsPlaceholder
+    }
+
+    const module = await import('@vercel/speed-insights/nuxt')
+    return module.SpeedInsights
+  },
+  suspensible: false,
+})
+
 useHead({
   title,
   titleTemplate: (pageTitle) =>
@@ -46,6 +72,10 @@ useSeoMeta({
 </script>
 
 <template>
+  <ClientOnly>
+    <component :is="LazyAnalytics" />
+    <component :is="LazySpeedInsights" />
+  </ClientOnly>
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>

@@ -93,6 +93,8 @@ export default defineNuxtConfig({
       name: 'nuxt-session',
       password: '',
     },
+    aiGatewayApiKey: process.env.AI_GATEWAY_API_KEY || '',
+    aiGatewayModel: process.env.AI_GATEWAY_MODEL || 'openai/gpt-4o-mini',
   },
   nitro: {
     storage: process.env.REDIS_URL
