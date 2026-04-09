@@ -91,7 +91,7 @@ function toggleLeftDrawer() {
       />
     </div>
 
-    <v-toolbar-items class="app-top-bar__nav d-none d-md-flex">
+    <div class="app-top-bar__nav d-none d-md-flex">
       <v-btn
         v-for="item in navItems"
         :key="item.to"
@@ -105,7 +105,7 @@ function toggleLeftDrawer() {
       >
         {{ t(item.label) }}
       </v-btn>
-    </v-toolbar-items>
+    </div>
 
     <div id="app-bar" class="app-top-bar__portal" />
 
@@ -319,12 +319,6 @@ function toggleLeftDrawer() {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-}
-
-.app-top-bar__nav :deep(.v-toolbar-items__content) {
-  display: flex;
-  align-items: center;
   gap: 8px;
 }
 
