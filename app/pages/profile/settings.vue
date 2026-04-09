@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import {storeToRefs} from "pinia";
+import { storeToRefs } from 'pinia'
 
 const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
@@ -9,13 +9,18 @@ const isLightTheme = computed(() => !theme.current.value.dark)
 const profileStore = useProfileStore()
 
 definePageMeta({
+  layout: 'profile',
   title: 'appbar.settings',
   middleware: 'auth',
 })
 const visible = ref(false)
 const settingsSections = [
   { id: 'profile', label: 'Profile', icon: 'mdi-account-circle-outline' },
-  { id: 'basic-info', label: 'Basic info', icon: 'mdi-card-account-details-outline' },
+  {
+    id: 'basic-info',
+    label: 'Basic info',
+    icon: 'mdi-card-account-details-outline',
+  },
   { id: 'change-password', label: 'Change password', icon: 'mdi-lock-reset' },
   { id: 'two-fa', label: '2FA', icon: 'mdi-shield-key-outline' },
   { id: 'accounts', label: 'Accounts', icon: 'mdi-link-variant' },
@@ -31,20 +36,40 @@ const fullName = computed(() => {
   const user = userProfile.value
   if (!user) return ''
 
-  return [user.firstName, user.lastName].filter(Boolean).join(' ') || profile.value?.username || ''
+  return (
+    [user.firstName, user.lastName].filter(Boolean).join(' ') ||
+    profile.value?.username ||
+    ''
+  )
 })
 
 const profileTitle = computed(() => userProfile.value?.title || 'Member')
 
 const basicInfoFields = computed(() => [
-  { key: 'firstName', label: 'First name', value: profile.value?.firstName || '' },
+  {
+    key: 'firstName',
+    label: 'First name',
+    value: profile.value?.firstName || '',
+  },
   { key: 'lastName', label: 'Last name', value: profile.value?.lastName || '' },
-  { key: 'birthDate', label: 'Birth date', value: userProfile.value?.birthDate || '' },
+  {
+    key: 'birthDate',
+    label: 'Birth date',
+    value: userProfile.value?.birthDate || '',
+  },
   { key: 'email', label: 'Email', value: profile.value?.email || '' },
   { key: 'phone', label: 'Phone', value: userProfile.value?.phone || '' },
-  { key: 'location', label: 'Location', value: userProfile.value?.location || '' },
+  {
+    key: 'location',
+    label: 'Location',
+    value: userProfile.value?.location || '',
+  },
   { key: 'company', label: 'Company', value: userProfile.value?.company || '' },
-  { key: 'timezone', label: 'Timezone', value: userProfile.value?.timezone || '' },
+  {
+    key: 'timezone',
+    label: 'Timezone',
+    value: userProfile.value?.timezone || '',
+  },
 ])
 
 const passwordRequirements = [
@@ -54,9 +79,21 @@ const passwordRequirements = [
 ]
 
 const twoFaActions = [
-  { title: 'Authenticator app', subtitle: 'Add or edit your OTP app', action: 'Setup' },
-  { title: 'Recovery codes', subtitle: 'Generate new backup codes', action: 'Regenerate' },
-  { title: 'SMS fallback', subtitle: 'Edit your backup phone number', action: 'Edit' },
+  {
+    title: 'Authenticator app',
+    subtitle: 'Add or edit your OTP app',
+    action: 'Setup',
+  },
+  {
+    title: 'Recovery codes',
+    subtitle: 'Generate new backup codes',
+    action: 'Regenerate',
+  },
+  {
+    title: 'SMS fallback',
+    subtitle: 'Edit your backup phone number',
+    action: 'Edit',
+  },
 ]
 
 const accountProviders = [
@@ -163,10 +200,6 @@ onUnmounted(() => {
 <template>
   <div>
     <AppPageDrawers>
-      <template #left>
-        <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
-        <ProfileDrawer v-else />
-      </template>
       <template #right>
         <v-list nav density="comfortable" class="bg-transparent">
           <v-list-item
@@ -192,17 +225,26 @@ onUnmounted(() => {
             class="pa-6 settings-section settings-card"
             :class="{ 'settings-card--light': isLightTheme }"
           >
-            <div class="d-flex align-center justify-space-between flex-wrap ga-4">
+            <div
+              class="d-flex align-center justify-space-between flex-wrap ga-4"
+            >
               <div class="d-flex align-center ga-4">
                 <v-avatar size="72" :image="profile?.photo" />
                 <div>
                   <div class="text-h6">{{ fullName }}</div>
-                  <div class="text-body-2 text-medium-emphasis">{{ profileTitle }}</div>
+                  <div class="text-body-2 text-medium-emphasis">
+                    {{ profileTitle }}
+                  </div>
                 </div>
               </div>
               <div class="d-flex align-center ga-2">
                 <span class="text-body-2">Visible</span>
-                <v-switch v-model="visible" color="primary" hide-details inset />
+                <v-switch
+                  v-model="visible"
+                  color="primary"
+                  hide-details
+                  inset
+                />
               </div>
             </div>
           </v-card>
@@ -215,8 +257,18 @@ onUnmounted(() => {
           >
             <div class="text-h6 mb-4">Basic information</div>
             <v-row>
-              <v-col v-for="field in basicInfoFields" :key="field.key" cols="12" md="6">
-                <v-text-field :label="field.label" :model-value="field.value" variant="outlined" hide-details />
+              <v-col
+                v-for="field in basicInfoFields"
+                :key="field.key"
+                cols="12"
+                md="6"
+              >
+                <v-text-field
+                  :label="field.label"
+                  :model-value="field.value"
+                  variant="outlined"
+                  hide-details
+                />
               </v-col>
             </v-row>
             <div class="mt-4">
@@ -233,17 +285,37 @@ onUnmounted(() => {
             <div class="text-h6 mb-4">Change password</div>
             <v-row>
               <v-col cols="12" md="4">
-                <v-text-field label="Current password" type="password" variant="outlined" hide-details />
+                <v-text-field
+                  label="Current password"
+                  type="password"
+                  variant="outlined"
+                  hide-details
+                />
               </v-col>
               <v-col cols="12" md="4">
-                <v-text-field label="New password" type="password" variant="outlined" hide-details />
+                <v-text-field
+                  label="New password"
+                  type="password"
+                  variant="outlined"
+                  hide-details
+                />
               </v-col>
               <v-col cols="12" md="4">
-                <v-text-field label="Confirm password" type="password" variant="outlined" hide-details />
+                <v-text-field
+                  label="Confirm password"
+                  type="password"
+                  variant="outlined"
+                  hide-details
+                />
               </v-col>
             </v-row>
             <v-list density="compact" class="bg-transparent px-0">
-              <v-list-item v-for="item in passwordRequirements" :key="item" prepend-icon="mdi-check-circle-outline" :title="item" />
+              <v-list-item
+                v-for="item in passwordRequirements"
+                :key="item"
+                prepend-icon="mdi-check-circle-outline"
+                :title="item"
+              />
             </v-list>
             <v-btn color="primary">Update password</v-btn>
           </v-card>
@@ -264,7 +336,9 @@ onUnmounted(() => {
                 append-icon="mdi-chevron-right"
               >
                 <template #append>
-                  <v-btn size="small" variant="text" color="primary">{{ item.action }}</v-btn>
+                  <v-btn size="small" variant="text" color="primary">{{
+                    item.action
+                  }}</v-btn>
                 </template>
               </v-list-item>
             </v-list>
@@ -278,15 +352,31 @@ onUnmounted(() => {
           >
             <div class="text-h6 mb-4">Connected accounts</div>
             <v-list class="bg-transparent pa-0 mb-4">
-              <v-list-item v-for="item in accountProviders" :key="item.provider" :title="item.provider" :subtitle="item.email">
+              <v-list-item
+                v-for="item in accountProviders"
+                :key="item.provider"
+                :title="item.provider"
+                :subtitle="item.email"
+              >
                 <template #append>
-                  <v-switch :model-value="item.connected" hide-details inset color="primary" />
+                  <v-switch
+                    :model-value="item.connected"
+                    hide-details
+                    inset
+                    color="primary"
+                  />
                 </template>
               </v-list-item>
             </v-list>
 
-            <v-alert type="info" variant="tonal" border="start" title="Connected account">
-              Your Google account is currently used as your primary connected account.
+            <v-alert
+              type="info"
+              variant="tonal"
+              border="start"
+              title="Connected account"
+            >
+              Your Google account is currently used as your primary connected
+              account.
             </v-alert>
           </v-card>
 
@@ -310,10 +400,34 @@ onUnmounted(() => {
               <tbody>
                 <tr v-for="row in notificationRows" :key="row.title">
                   <td>{{ row.title }}</td>
-                  <td class="text-center"><v-checkbox :model-value="row.activity" hide-details density="compact" /></td>
-                  <td class="text-center"><v-checkbox :model-value="row.email" hide-details density="compact" /></td>
-                  <td class="text-center"><v-checkbox :model-value="row.push" hide-details density="compact" /></td>
-                  <td class="text-center"><v-checkbox :model-value="row.sms" hide-details density="compact" /></td>
+                  <td class="text-center">
+                    <v-checkbox
+                      :model-value="row.activity"
+                      hide-details
+                      density="compact"
+                    />
+                  </td>
+                  <td class="text-center">
+                    <v-checkbox
+                      :model-value="row.email"
+                      hide-details
+                      density="compact"
+                    />
+                  </td>
+                  <td class="text-center">
+                    <v-checkbox
+                      :model-value="row.push"
+                      hide-details
+                      density="compact"
+                    />
+                  </td>
+                  <td class="text-center">
+                    <v-checkbox
+                      :model-value="row.sms"
+                      hide-details
+                      density="compact"
+                    />
+                  </td>
                 </tr>
               </tbody>
             </v-table>
@@ -337,7 +451,9 @@ onUnmounted(() => {
                 :subtitle="`${session.location} • ${session.lastSeen}`"
               >
                 <template #append>
-                  <v-chip v-if="session.active" color="success" size="small">Active</v-chip>
+                  <v-chip v-if="session.active" color="success" size="small"
+                    >Active</v-chip
+                  >
                 </template>
               </v-list-item>
             </v-list>
@@ -351,10 +467,13 @@ onUnmounted(() => {
           >
             <div class="text-h6 mb-2">Delete account</div>
             <p class="text-body-2 text-medium-emphasis mb-4">
-              You can deactivate your account temporarily or permanently delete all associated data.
+              You can deactivate your account temporarily or permanently delete
+              all associated data.
             </p>
             <div class="d-flex ga-3 flex-wrap">
-              <v-btn variant="outlined" color="warning">Deactivate account</v-btn>
+              <v-btn variant="outlined" color="warning"
+                >Deactivate account</v-btn
+              >
               <v-btn variant="outlined" color="error">Delete account</v-btn>
             </div>
           </v-card>
@@ -374,12 +493,20 @@ onUnmounted(() => {
 }
 
 .settings-card {
-  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.18) 0%,
+    transparent 20%
+  );
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .settings-card--light {
-  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.18) 0%,
+    transparent 20%
+  );
   border: 1px solid rgba(15, 23, 42, 0.1);
 }
 </style>

@@ -6,7 +6,6 @@ const { t } = useI18n()
 const profileStore = useProfileStore()
 const { profile, loading, error: storeError } = storeToRefs(profileStore)
 
-
 type FriendAction =
   | 'request'
   | 'cancel'
@@ -170,6 +169,7 @@ watch(storeError, (value) => {
 })
 
 definePageMeta({
+  layout: 'profile',
   title: 'appbar.profile',
   middleware: 'auth',
 })
@@ -179,13 +179,6 @@ onMounted(() => fetchFriendsData())
 
 <template>
   <div>
-    <AppPageDrawers>
-      <template #left>
-        <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
-        <ProfileDrawer v-else />
-      </template>
-    </AppPageDrawers>
-
     <v-container fluid>
       <SkeletonPageContent v-if="isPageSkeletonVisible && loading" />
       <template v-else>
@@ -260,8 +253,10 @@ onMounted(() => fetchFriendsData())
                       </v-btn>
                       <v-btn
                         v-if="
-                          section.title !== t('pages.friends.sections.friends.title') &&
-                          section.title !== t('pages.friends.sections.blocked.title')
+                          section.title !==
+                            t('pages.friends.sections.friends.title') &&
+                          section.title !==
+                            t('pages.friends.sections.blocked.title')
                         "
                         size="small"
                         color="primary"
