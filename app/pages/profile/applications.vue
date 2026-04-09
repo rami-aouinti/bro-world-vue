@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 
-const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 const profileStore = useProfileStore()
 const { profile, loading, error } = storeToRefs(profileStore)

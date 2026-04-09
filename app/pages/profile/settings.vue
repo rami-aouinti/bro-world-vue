@@ -2,7 +2,6 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 
-const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 const theme = useTheme()
 const isLightTheme = computed(() => !theme.current.value.dark)
@@ -28,7 +27,7 @@ const settingsSections = [
   { id: 'sessions', label: 'Sessions', icon: 'mdi-monitor-cellphone' },
   { id: 'delete-account', label: 'Delete account', icon: 'mdi-alert-outline' },
 ]
-const { profile, loading, error } = storeToRefs(profileStore)
+const { profile } = storeToRefs(profileStore)
 
 const userProfile = computed(() => profile.value?.profile)
 

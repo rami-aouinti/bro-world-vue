@@ -1,20 +1,7 @@
 <script setup lang="ts">
-import type { SessionUser } from '~/types/session'
 import LeftDrawerUserEntry from '~/components/App/LeftDrawerUserEntry.vue'
 
 const route = useRoute()
-const { t } = useI18n()
-const { user } = useUserSession()
-
-const sessionUser = computed(() => user.value as SessionUser | null)
-const avatarUrl = computed(() => sessionUser.value?.photo)
-const fullName = computed(() => {
-  const values = [sessionUser.value?.firstName, sessionUser.value?.lastName]
-    .filter(Boolean)
-    .join(' ')
-
-  return values || sessionUser.value?.username || t('appbar.user')
-})
 
 const profileNavItems = [
   {
