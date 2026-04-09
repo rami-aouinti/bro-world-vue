@@ -41,6 +41,30 @@ export default defineNuxtPlugin((nuxtApp) => {
         ...(vuetifyOptions.defaults?.VImg ?? {}),
         alt: '',
       },
+      VTextField: {
+        ...(vuetifyOptions.defaults?.VTextField ?? {}),
+        density: 'compact',
+      },
+      VSelect: {
+        ...(vuetifyOptions.defaults?.VSelect ?? {}),
+        density: 'compact',
+      },
+      VTextarea: {
+        ...(vuetifyOptions.defaults?.VTextarea ?? {}),
+        density: 'compact',
+      },
+      VAutocomplete: {
+        ...(vuetifyOptions.defaults?.VAutocomplete ?? {}),
+        density: 'compact',
+      },
+      VCombobox: {
+        ...(vuetifyOptions.defaults?.VCombobox ?? {}),
+        density: 'compact',
+      },
+      VFileInput: {
+        ...(vuetifyOptions.defaults?.VFileInput ?? {}),
+        density: 'compact',
+      },
     }
   })
 })
