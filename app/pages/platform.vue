@@ -416,7 +416,7 @@ function resetFilters() {
 
         <div
           v-if="!pending && filteredApplications.length"
-          class="platform-page__pagination d-flex justify-center mt-6"
+          class="platform-page__pagination d-flex justify-center mt-2"
         >
           <v-pagination
             v-model="currentPage"
@@ -433,7 +433,7 @@ function resetFilters() {
 <style scoped>
 
 .platform-page {
-  min-height: calc(100vh - var(--v-layout-top, 0px));
+  min-height: calc(90vh - var(--v-layout-top, 0px));
   display: flex;
   flex-direction: column;
 }
@@ -444,7 +444,7 @@ function resetFilters() {
 
 .platform-page__pagination {
   margin-top: auto;
-  padding-bottom: 24px;
+  padding-bottom: 5px;
 }
 
 .skeleton-card {

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import GameDrawer from "~/components/Game/GameDrawer.vue";
+
 definePageMeta({
   title: 'appbar.games',
 })
@@ -34,7 +36,7 @@ const topScores = [
   <div>
     <AppPageDrawers>
       <template #left>
-        <ProfileDrawer />
+        <GameDrawer />
       </template>
       <template #right>
         <v-list
