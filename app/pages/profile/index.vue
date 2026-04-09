@@ -44,25 +44,6 @@ onMounted(() => fetchProfile())
     <v-container fluid>
       <SkeletonPageContent v-if="isPageSkeletonVisible && loading" />
       <template v-else>
-        <div class="d-flex align-center justify-space-between mb-4">
-          <div>
-            <h1 class="text-h4 mb-2">{{ t('appbar.profile') }}</h1>
-            <p class="text-body-1 text-medium-emphasis mb-0">
-              {{ t('pages.profileOverview.subtitle') }}
-            </p>
-          </div>
-
-          <v-btn
-            prepend-icon="mdi-refresh"
-            color="primary"
-            variant="text"
-            :loading="loading"
-            @click="fetchProfile(true)"
-          >
-            {{ t('common.refresh') }}
-          </v-btn>
-        </div>
-
         <v-alert
           v-if="error"
           type="error"
