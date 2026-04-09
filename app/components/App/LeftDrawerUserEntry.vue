@@ -2,10 +2,8 @@
 import type { SessionUser } from '~/types/session'
 
 const { t } = useI18n()
-const { fetch: refreshSession, loggedIn, user } = useUserSession()
-
-const loginDialogOpen = ref(false)
-const loading = ref(false)
+const route = useRoute()
+const { loggedIn, user } = useUserSession()
 
 const sessionUser = computed(() => user.value as SessionUser | null)
 const avatarUrl = computed(() => sessionUser.value?.photo)
@@ -18,43 +16,13 @@ const fullName = computed(() => {
   return values || sessionUser.value?.username || t('appbar.user')
 })
 
-watch(loggedIn, (isLoggedIn) => {
-  if (isLoggedIn) {
-    loginDialogOpen.value = false
-  }
-})
-
-async function onLoginSubmit(payload: { username?: string; password: string }) {
-  if (!payload.username) {
-    Notify.error(t('auth.validation.required'))
-    return
-  }
-
-  loading.value = true
-
-  try {
-    await $fetch('/api/login', {
-      method: 'POST',
-      body: {
-        username: payload.username,
-        password: payload.password,
-      },
-    })
-
-    await refreshSession()
-
-    if (!loggedIn.value) {
-      Notify.error(t('auth.notifications.loginError'))
-      return
-    }
-
-    Notify.success(t('auth.notifications.loginSuccess'))
-    loginDialogOpen.value = false
-  } catch {
-    Notify.error(t('auth.notifications.loginError'))
-  } finally {
-    loading.value = false
-  }
+function navigateToLogin() {
+  navigateTo({
+    path: '/login',
+    query: {
+      redirect: route.fullPath,
+    },
+  })
 }
 </script>
 
@@ -89,19 +57,8 @@ async function onLoginSubmit(payload: { username?: string; password: string }) {
     color="primary"
     prepend-icon="mdi-login"
     class="text-none"
-    @click="loginDialogOpen = true"
+    @click="navigateToLogin"
   >
     {{ t('appbar.login') }}
   </v-btn>
-
-  <v-dialog v-model="loginDialogOpen" max-width="560">
-    <AuthFormCard mode="login" :loading="loading" @submit="onLoginSubmit">
-      <template #switch>
-        {{ t('auth.login.switchPrompt') }}
-        <NuxtLink to="/register" class="text-primary font-weight-bold">
-          {{ t('auth.login.switchCta') }}
-        </NuxtLink>
-      </template>
-    </AuthFormCard>
-  </v-dialog>
 </template>
