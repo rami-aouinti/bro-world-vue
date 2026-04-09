@@ -14,6 +14,7 @@ const routes = computed(() => {
   const rootRoutes = router
     .getRoutes()
     .filter((r) => r.path.lastIndexOf('/') === 0)
+    .filter((r) => !['/login', '/register'].includes(r.path))
   const sortedRoutes = rootRoutes.toSorted(
     (a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98),
   )
@@ -97,6 +98,7 @@ onMounted(() => {
     <v-spacer />
     <template #append>
       <v-list-item class="drawer-footer px-0 d-flex flex-column justify-center">
+        <LeftDrawerUserEntry class="mb-3 px-4" />
         <div class="text-body-small pt-6 pt-md-0 text-center text-no-wrap">
           {{ t('appbar.copyright') }}
           <a
