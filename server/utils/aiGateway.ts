@@ -44,6 +44,14 @@ interface AiGatewayRequestBody {
   }>
 }
 
+function getFetchErrorStatusCode(error: unknown) {
+  if (typeof error !== 'object' || !error || !('statusCode' in error)) {
+    return NaN
+  }
+
+  return Number(error.statusCode)
+}
+
 function cleanString(value: unknown) {
   return typeof value === 'string' ? value.trim() : ''
 }
@@ -154,25 +162,36 @@ export async function rankEventsWithAiGateway(
       },
     )
   } catch (error) {
-    const statusCode =
-      typeof error === 'object' && error && 'statusCode' in error
-        ? Number(error.statusCode)
-        : NaN
+    const statusCode = getFetchErrorStatusCode(error)
 
     if (statusCode !== 400) {
+      if ([401, 403, 404, 429].includes(statusCode)) {
+        return []
+      }
+
       throw error
     }
 
-    response = await $fetch<AiGatewayResponse>(
-      'https://ai-gateway.vercel.sh/v1/chat/completions',
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
+    try {
+      response = await $fetch<AiGatewayResponse>(
+        'https://ai-gateway.vercel.sh/v1/chat/completions',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: baseBody,
         },
-        body: baseBody,
-      },
-    )
+      )
+    } catch (fallbackError) {
+      const fallbackStatusCode = getFetchErrorStatusCode(fallbackError)
+
+      if ([401, 403, 404, 429].includes(fallbackStatusCode)) {
+        return []
+      }
+
+      throw fallbackError
+    }
   }
 
   const content = response.choices?.[0]?.message?.content
