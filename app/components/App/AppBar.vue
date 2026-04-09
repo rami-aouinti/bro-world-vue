@@ -215,7 +215,7 @@ function isMenuActive(paths: string[]) {
       </NuxtLink>
       <v-spacer />
       <v-app-bar-nav-icon
-        class="app-top-bar__drawer-toggle"
+        class="mx-5"
         :disabled="!showLeftDrawer"
         aria-label="Toggle left drawer"
         @click="toggleLeftDrawer"
@@ -301,7 +301,7 @@ function isMenuActive(paths: string[]) {
 
     <div class="app-top-bar__right">
       <v-app-bar-nav-icon
-        class="app-top-bar__drawer-toggle"
+        class="app-top-bar__right-drawer-toggle mx-5"
         :aria-label="
           showRightDrawer
             ? t('appbar.hideRightDrawer')
@@ -476,10 +476,6 @@ function isMenuActive(paths: string[]) {
 .app-bar {
   margin: var(--ui-spacing-sm) var(--ui-spacing-md);
   padding-inline: var(--ui-spacing-lg);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  align-items: center;
-  column-gap: 8px;
 }
 
 .app-bar--kind-glass {
@@ -499,11 +495,14 @@ function isMenuActive(paths: string[]) {
   align-items: center;
   gap: 4px;
   min-width: 0;
-  flex: 1 1 0;
+}
+
+.app-top-bar__left {
+  margin-right: 12px;
 }
 
 .app-top-bar__nav {
-  flex: 0 0 auto;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -517,7 +516,7 @@ function isMenuActive(paths: string[]) {
 }
 
 .app-top-bar__right {
-  justify-content: flex-end;
+  margin-left: auto;
   max-width: 100%;
   overflow: hidden;
 }
@@ -527,8 +526,8 @@ function isMenuActive(paths: string[]) {
   align-items: center;
 }
 
-.app-top-bar__drawer-toggle {
-  margin-inline: 12px;
+.app-top-bar__right-drawer-toggle {
+  margin-inline-end: 2px;
 }
 
 .app-top-bar__mega-menu {
@@ -637,18 +636,6 @@ function isMenuActive(paths: string[]) {
 .app-brand {
   color: rgb(var(--v-theme-on-surface));
   font-weight: 600;
-}
-
-
-@media (max-width: 959px) {
-  .app-bar {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .app-top-bar__left,
-  .app-top-bar__right {
-    flex: 0 1 auto;
-  }
 }
 
 @media (max-width: 1100px) {
