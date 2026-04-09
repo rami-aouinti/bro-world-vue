@@ -10,10 +10,10 @@ const route = useRoute()
 const { t } = useI18n()
 
 const navItems = [
-  { label: 'appbar.platform', to: '/platform' },
-  { label: 'appbar.games', to: '/games' },
-  { label: 'appbar.about', to: '/about' },
-  { label: 'appbar.contact', to: '/contact' },
+  { label: 'appbar.platform', to: '/platform', icon: 'mdi-view-dashboard-outline' },
+  { label: 'appbar.games', to: '/games', icon: 'mdi-gamepad-variant-outline' },
+  { label: 'appbar.about', to: '/about', icon: 'mdi-information-outline' },
+  { label: 'appbar.contact', to: '/contact', icon: 'mdi-email-outline' },
 ]
 
 const isDark = computed({
@@ -96,7 +96,11 @@ function toggleLeftDrawer() {
         v-for="item in navItems"
         :key="item.to"
         :to="item.to"
+        :prepend-icon="item.icon"
         variant="text"
+        size="small"
+        rounded="lg"
+        class="app-top-bar__nav-btn"
         :color="route.path === item.to ? 'primary' : undefined"
       >
         {{ t(item.label) }}
@@ -312,7 +316,22 @@ function toggleLeftDrawer() {
 
 .app-top-bar__nav {
   flex: 1;
+  display: flex;
+  align-items: center;
   justify-content: center;
+  gap: 8px;
+}
+
+.app-top-bar__nav :deep(.v-toolbar-items__content) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.app-top-bar__nav-btn {
+  height: 44px;
+  min-height: 44px;
+  padding-inline: 14px;
 }
 
 .app-top-bar__right {
