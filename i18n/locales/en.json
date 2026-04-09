@@ -620,6 +620,9 @@
       "retrySuccess": "Catalog refreshed successfully."
     },
     "catalog": {
+      "emptyCategories": "No categories available for now.",
+      "emptySubCategories": "No sub-categories available for now.",
+      "emptyGames": "No games available for now.",
       "categories": {
         "logic": {
           "name": "Logic",

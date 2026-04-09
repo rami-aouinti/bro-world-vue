@@ -585,6 +585,9 @@
       "retrySuccess": "Catálogo actualizado correctamente."
     },
     "catalog": {
+      "emptyCategories": "No hay categorías disponibles por ahora.",
+      "emptySubCategories": "No hay subcategorías disponibles por ahora.",
+      "emptyGames": "No hay juegos disponibles por ahora.",
       "categories": {
         "logic": {
           "name": "Lógica",
