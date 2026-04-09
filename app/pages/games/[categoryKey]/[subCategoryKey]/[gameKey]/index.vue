@@ -350,8 +350,7 @@ const breadcrumbs = computed(() => [
           <div class="game-selection-footer">
             <v-card
               class="mb-4 pa-4 w-100 game-constraints-card"
-              max-width="620"
-              variant="tonal"
+              variant="text"
             >
               <v-row>
                 <v-col cols="12" md="6">
@@ -415,6 +414,12 @@ const breadcrumbs = computed(() => [
 }
 
 .game-constraints-card {
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.18) 0%,
+    transparent 20%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.06);
   width: min(100%, 620px);
 }
 
