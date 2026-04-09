@@ -215,7 +215,7 @@ function isMenuActive(paths: string[]) {
       </NuxtLink>
       <v-spacer />
       <v-app-bar-nav-icon
-        class="mx-5"
+        class="app-top-bar__left-drawer-toggle"
         :disabled="!showLeftDrawer"
         aria-label="Toggle left drawer"
         @click="toggleLeftDrawer"
@@ -498,7 +498,15 @@ function isMenuActive(paths: string[]) {
 }
 
 .app-top-bar__left {
+  --app-left-drawer-width: 260px;
+  flex: 0 0 var(--app-left-drawer-width);
+  width: var(--app-left-drawer-width);
   margin-right: 12px;
+}
+
+.app-top-bar__left-drawer-toggle {
+  margin-inline-start: auto;
+  margin-inline-end: 8px;
 }
 
 .app-top-bar__nav {
