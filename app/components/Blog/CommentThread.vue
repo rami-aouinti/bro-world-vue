@@ -116,6 +116,11 @@ function formattedDate(comment: BlogComment) {
     t('blog.comment.now'),
   )
 }
+
+function authorProfilePath(comment: BlogComment) {
+  const username = comment.author?.username?.trim()
+  return username ? `/user/${encodeURIComponent(username)}/profile` : null
+}
 </script>
 
 <template>
@@ -127,24 +132,52 @@ function formattedDate(comment: BlogComment) {
       :class="{ 'nested-comment': level > 0 }"
     >
       <div class="d-flex ga-2 align-start">
-        <v-avatar size="34" color="grey-darken-2">
-          <v-img
-            v-if="comment.author?.photo"
-            :src="comment.author.photo"
-            :alt="`${comment.author?.displayName || t('blog.common.userFallback')} avatar`"
-          />
-          <v-icon v-else size="18" icon="mdi-account" />
-        </v-avatar>
+        <NuxtLink
+          v-if="authorProfilePath(comment)"
+          :to="authorProfilePath(comment)!"
+          class="comment-author-link"
+        >
+          <v-avatar size="34" color="grey-darken-2">
+            <v-img
+              v-if="comment.author?.photo"
+              :src="comment.author.photo"
+              :alt="`${comment.author?.displayName || t('blog.common.userFallback')} avatar`"
+            />
+            <v-icon v-else size="18" icon="mdi-account" />
+          </v-avatar>
+        </NuxtLink>
+        <div v-else class="comment-author-link">
+          <v-avatar size="34" color="grey-darken-2">
+            <v-img
+              v-if="comment.author?.photo"
+              :src="comment.author.photo"
+              :alt="`${comment.author?.displayName || t('blog.common.userFallback')} avatar`"
+            />
+            <v-icon v-else size="18" icon="mdi-account" />
+          </v-avatar>
+        </div>
 
         <div class="comment-body">
           <div class="comment-bubble">
             <div class="d-flex align-start justify-space-between ga-2">
               <div>
-                <div class="text-subtitle-2 font-weight-bold">
+                <NuxtLink
+                  v-if="authorProfilePath(comment)"
+                  :to="authorProfilePath(comment)!"
+                  class="text-subtitle-2 font-weight-bold comment-author-link"
+                >
                   {{
                     comment.author?.displayName || t('blog.common.userFallback')
                   }}
-                </div>
+                </NuxtLink>
+                <span
+                  v-else
+                  class="text-subtitle-2 font-weight-bold comment-author-link"
+                >
+                  {{
+                    comment.author?.displayName || t('blog.common.userFallback')
+                  }}
+                </span>
                 <div class="text-caption text-medium-emphasis">
                   {{ formattedDate(comment) }}
                 </div>
@@ -317,5 +350,10 @@ function formattedDate(comment: BlogComment) {
 
 .reaction-choice:hover {
   transform: translateY(-2px) scale(1.08);
+}
+
+.comment-author-link {
+  text-decoration: none;
+  color: inherit;
 }
 </style>

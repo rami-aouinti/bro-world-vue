@@ -3,7 +3,7 @@ type BlogFeedMode = 'general' | 'mine'
 
 type BlogReaction = {
   type: string | null
-  isAuthor: boolean
+  isAuthor?: boolean
 }
 
 type BlogComment = {
@@ -14,6 +14,7 @@ type BlogComment = {
 
 type BlogPost = {
   id: string | number
+  slug?: string | null
   content: string
   reactions?: BlogReaction[]
 }
