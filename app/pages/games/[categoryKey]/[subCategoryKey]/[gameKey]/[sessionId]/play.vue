@@ -147,77 +147,197 @@ const breadcrumbs = computed(() => [
 </script>
 
 <template>
-  <v-container fluid>
-    <v-breadcrumbs :items="breadcrumbs" class="px-0" />
+  <v-container fluid class="arena-layout px-2 px-sm-4 px-md-6">
+    <v-breadcrumbs :items="breadcrumbs" class="px-0 mb-2" />
 
-    <v-row class="ga-0" align="stretch">
-      <v-col cols="12" md="8" lg="9">
-        <CardTablePlaySurface
-          v-if="playSurfaceType === 'card'"
-          v-bind="commonSurfaceProps"
-        />
-        <BoardTablePlaySurface
-          v-else-if="playSurfaceType === 'board'"
-          v-bind="commonSurfaceProps"
-        />
-        <v-card v-else rounded="xl" class="h-100">
-          <v-card-title>{{ commonSurfaceProps.gameName }}</v-card-title>
-          <v-card-subtitle>Play surface</v-card-subtitle>
-          <v-card-text class="py-8">
-            <div class="text-medium-emphasis">
-              Surface non spécialisée pour cette catégorie.
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-col>
+    <div class="arena-shell pa-2 pa-sm-4 pa-md-6">
+      <v-row class="ga-0" align="stretch">
+        <v-col cols="12" lg="8" class="arena-center-col">
+          <div class="arena-surface-wrap mx-auto">
+            <CardTablePlaySurface
+              v-if="playSurfaceType === 'card'"
+              v-bind="commonSurfaceProps"
+              class="arena-interactive"
+            />
+            <BoardTablePlaySurface
+              v-else-if="playSurfaceType === 'board'"
+              v-bind="commonSurfaceProps"
+              class="arena-interactive"
+            />
+            <v-card v-else rounded="xl" class="h-100 arena-interactive">
+              <v-card-title>{{ commonSurfaceProps.gameName }}</v-card-title>
+              <v-card-subtitle>Play surface</v-card-subtitle>
+              <v-card-text class="py-8">
+                <div class="text-medium-emphasis">
+                  Surface non spécialisée pour cette catégorie.
+                </div>
+              </v-card-text>
+            </v-card>
+          </div>
+        </v-col>
 
-      <v-col cols="12" md="4" lg="3">
-        <v-card rounded="xl" class="mb-4">
-          <v-card-title>Live session</v-card-title>
-          <v-card-text v-if="currentSession" class="d-flex flex-wrap ga-2">
-            <v-chip color="primary" variant="tonal"
-              >Session: {{ currentSession.sessionId }}</v-chip
-            >
-            <v-chip color="secondary" variant="tonal"
-              >Level: {{ currentSession.level }}</v-chip
-            >
-            <v-chip color="info" variant="tonal"
-              >Status: {{ currentSession.status }}</v-chip
-            >
-            <v-chip color="warning" variant="tonal"
-              >Coins: {{ currentSession.coins }}</v-chip
-            >
-          </v-card-text>
-          <v-card-text v-else>
-            Session introuvable. Redirection en cours...
-          </v-card-text>
-        </v-card>
+        <v-col cols="12" lg="4" class="arena-panel-col">
+          <div class="arena-panel-stack">
+            <v-card rounded="xl" class="arena-panel-card arena-interactive">
+              <v-card-title>Live session</v-card-title>
+              <v-card-text v-if="currentSession" class="d-flex flex-wrap ga-2">
+                <v-chip color="primary" variant="tonal" class="arena-chip"
+                  >Session: {{ currentSession.sessionId }}</v-chip
+                >
+                <v-chip color="secondary" variant="tonal" class="arena-chip"
+                  >Level: {{ currentSession.level }}</v-chip
+                >
+                <v-chip color="info" variant="tonal" class="arena-chip"
+                  >Status: {{ currentSession.status }}</v-chip
+                >
+                <v-chip color="warning" variant="tonal" class="arena-chip"
+                  >Coins: {{ currentSession.coins }}</v-chip
+                >
+              </v-card-text>
+              <v-card-text v-else>
+                Session introuvable. Redirection en cours...
+              </v-card-text>
+            </v-card>
 
-        <v-card rounded="xl" :disabled="!currentSession">
-          <v-card-title>{{
-            tOrFallback('gamePage.session.finishDemo', 'Finish demo')
-          }}</v-card-title>
-          <v-card-text class="d-flex ga-3 flex-wrap">
-            <v-btn
-              color="success"
-              :disabled="!currentSession || catalogStore.finishingSession"
-              :loading="catalogStore.finishingSession && finishResult === 'win'"
-              @click="onFinish('win')"
+            <v-card
+              rounded="xl"
+              :disabled="!currentSession"
+              class="arena-panel-card arena-interactive"
             >
-              Finish win
-            </v-btn>
-            <v-btn
-              color="error"
-              variant="outlined"
-              :disabled="!currentSession || catalogStore.finishingSession"
-              :loading="catalogStore.finishingSession && finishResult === 'lose'"
-              @click="onFinish('lose')"
-            >
-              Finish lose
-            </v-btn>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+              <v-card-title>{{
+                tOrFallback('gamePage.session.finishDemo', 'Finish demo')
+              }}</v-card-title>
+              <v-card-text class="d-flex ga-3 flex-wrap">
+                <v-btn
+                  color="success"
+                  :disabled="!currentSession || catalogStore.finishingSession"
+                  :loading="
+                    catalogStore.finishingSession && finishResult === 'win'
+                  "
+                  class="arena-action-btn"
+                  @click="onFinish('win')"
+                >
+                  Finish win
+                </v-btn>
+                <v-btn
+                  color="error"
+                  variant="outlined"
+                  :disabled="!currentSession || catalogStore.finishingSession"
+                  :loading="
+                    catalogStore.finishingSession && finishResult === 'lose'
+                  "
+                  class="arena-action-btn"
+                  @click="onFinish('lose')"
+                >
+                  Finish lose
+                </v-btn>
+              </v-card-text>
+            </v-card>
+          </div>
+        </v-col>
+      </v-row>
+    </div>
   </v-container>
 </template>
+
+<style scoped>
+.arena-layout {
+  min-height: calc(100vh - var(--v-layout-top, 72px));
+}
+
+.arena-shell {
+  min-height: calc(100vh - var(--v-layout-top, 72px) - 56px);
+  border-radius: 24px;
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(var(--v-theme-primary), 0.2),
+      rgba(var(--v-theme-surface), 0.92) 60%
+    ),
+    repeating-linear-gradient(
+      135deg,
+      rgba(var(--v-theme-primary), 0.04) 0,
+      rgba(var(--v-theme-primary), 0.04) 2px,
+      transparent 2px,
+      transparent 10px
+    );
+}
+
+.arena-surface-wrap {
+  width: 100%;
+  max-width: min(100%, 1040px);
+}
+
+.arena-panel-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.arena-interactive {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+}
+
+.arena-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px rgba(var(--v-theme-primary), 0.12);
+}
+
+.arena-chip,
+.arena-action-btn {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.arena-chip:hover,
+.arena-action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(var(--v-theme-primary), 0.16);
+}
+
+@media (max-width: 1279px) {
+  .arena-center-col,
+  .arena-panel-col {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+
+  .arena-panel-col {
+    margin-top: 16px;
+  }
+}
+
+@media (max-width: 959px) {
+  .arena-shell {
+    border-radius: 18px;
+    padding: 12px !important;
+  }
+
+  .arena-surface-wrap {
+    max-width: 100%;
+  }
+
+  :deep(.arena-surface-wrap .v-card) {
+    min-height: 240px;
+  }
+}
+
+@media (max-width: 599px) {
+  .arena-shell {
+    padding: 8px !important;
+    border-radius: 14px;
+  }
+
+  :deep(.arena-surface-wrap .v-card-title) {
+    font-size: 1rem;
+  }
+
+  :deep(.arena-surface-wrap .v-card-text) {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+  }
+
+  .arena-action-btn {
+    width: 100%;
+  }
+}
+</style>
