@@ -470,12 +470,11 @@ function isMenuActive(paths: string[]) {
   margin-top: 8px;
   border-radius: 18px;
   border: 1px solid rgba(var(--v-border-color), 0.32);
-  background:
-    linear-gradient(160deg, rgba(var(--v-theme-surface), 0.98), rgba(8, 10, 22, 0.94));
+  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
   box-shadow:
     0 22px 54px rgba(0, 0, 0, 0.42),
     0 0 0 1px rgba(var(--v-theme-primary), 0.15) inset;
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(46px);
   overflow: hidden;
 }
 
