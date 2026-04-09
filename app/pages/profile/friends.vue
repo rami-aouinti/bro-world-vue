@@ -14,6 +14,18 @@ type FriendAction =
   | 'block'
   | 'unblock'
 
+type PublicUser = {
+  id: string
+  email?: string
+  firstName: string
+  lastName: string
+  photo?: string
+}
+
+type PublicUsersResponse = {
+  users?: PublicUser[]
+}
+
 const api = $fetch.create({
   headers: {
     accept: 'application/json',
@@ -24,11 +36,27 @@ const { isPageSkeletonVisible } = usePageSkeleton()
 const actionLoadingUserId = ref<string | null>(null)
 const actionLoadingType = ref<FriendAction | null>(null)
 const globalError = ref<string>('')
+const publicUsers = ref<PublicUser[]>([])
+const suggestedUsers = ref<PublicUser[]>([])
 
 const friends = computed(() => profile.value?.friends ?? [])
 const requests = computed(() => profile.value?.incomingRequests ?? [])
 const invitations = computed(() => profile.value?.friendRequests ?? [])
 const blockedUsers = computed(() => profile.value?.blockedUsers ?? [])
+const excludedSuggestionIds = computed(() => {
+  const ids = new Set<string>()
+
+  profile.value?.friends?.forEach((item) => ids.add(item.id))
+  profile.value?.incomingRequests?.forEach((item) => ids.add(item.id))
+  profile.value?.friendRequests?.forEach((item) => ids.add(item.id))
+  profile.value?.blockedUsers?.forEach((item) => ids.add(item.id))
+
+  if (profile.value?.id) {
+    ids.add(profile.value.id)
+  }
+
+  return ids
+})
 
 const sectionConfigs = computed(() => [
   {
@@ -117,6 +145,35 @@ function userName(item: FriendUser) {
   )
 }
 
+function suggestionName(item: PublicUser) {
+  return [item.firstName, item.lastName].filter(Boolean).join(' ')
+}
+
+function suggestionHandle(item: PublicUser) {
+  return item.email?.split('@')[0] || suggestionName(item).replaceAll(' ', '')
+}
+
+function shuffleUsers(items: PublicUser[]) {
+  const shuffled = [...items]
+
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1))
+    const current = shuffled[index]
+    shuffled[index] = shuffled[randomIndex]
+    shuffled[randomIndex] = current
+  }
+
+  return shuffled
+}
+
+function refreshSuggestions() {
+  const candidates = publicUsers.value.filter(
+    (item) => !excludedSuggestionIds.value.has(item.id),
+  )
+
+  suggestedUsers.value = shuffleUsers(candidates).slice(0, 6)
+}
+
 function isActionLoading(userId: string, action: FriendAction) {
   return (
     actionLoadingUserId.value === userId && actionLoadingType.value === action
@@ -128,9 +185,23 @@ async function fetchFriendsData(force = false) {
 
   try {
     await profileStore.fetchProfile(force)
+    refreshSuggestions()
   } catch (error) {
     globalError.value =
       error instanceof Error ? error.message : t('pages.friends.errors.load')
+  }
+}
+
+async function fetchPublicUsers() {
+  try {
+    const response = await api<PublicUsersResponse>('/api/public/users')
+    publicUsers.value = response.users ?? []
+    refreshSuggestions()
+  } catch (error) {
+    if (!globalError.value) {
+      globalError.value =
+        error instanceof Error ? error.message : t('pages.friends.errors.load')
+    }
   }
 }
 
@@ -174,11 +245,57 @@ definePageMeta({
   middleware: 'auth',
 })
 
-onMounted(() => fetchFriendsData())
+onMounted(async () => {
+  await Promise.all([fetchFriendsData(), fetchPublicUsers()])
+})
 </script>
 
 <template>
   <div>
+    <AppPageDrawers>
+      <template #right>
+        <v-card variant="text" class="postcard-gradient-card ma-2">
+          <v-card-title class="d-flex align-center ga-2">
+            <v-icon icon="mdi-account-multiple-plus-outline" />
+            {{ t('pages.friends.suggestions.title') }}
+          </v-card-title>
+          <v-list v-if="suggestedUsers.length" class="bg-transparent">
+            <v-list-item
+              v-for="item in suggestedUsers"
+              :key="item.id"
+              :title="suggestionName(item)"
+              :subtitle="`@${suggestionHandle(item)}`"
+            >
+              <template #prepend>
+                <v-avatar size="36" color="primary">
+                  <v-img
+                    :src="item.photo"
+                    :alt="`Avatar of ${suggestionName(item)}`"
+                  />
+                </v-avatar>
+              </template>
+
+              <template #append>
+                <v-btn
+                  color="primary"
+                  variant="tonal"
+                  size="small"
+                  :loading="isActionLoading(item.id, 'request')"
+                  @click="applyAction(item.id, 'request')"
+                >
+                  {{ t('pages.friends.actions.send') }}
+                </v-btn>
+              </template>
+            </v-list-item>
+          </v-list>
+
+          <v-card-text v-else class="text-medium-emphasis">
+            {{ t('pages.friends.suggestions.emptyText') }}
+          </v-card-text>
+        </v-card>
+      </template>
+    </AppPageDrawers>
+
     <v-container fluid>
       <SkeletonPageContent v-if="isPageSkeletonVisible && loading" />
       <template v-else>

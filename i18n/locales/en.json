@@ -380,7 +380,12 @@
         "block": "Block",
         "unblock": "Unblock",
         "cancel": "Cancel",
-        "resend": "Resend"
+        "resend": "Resend",
+        "send": "Send"
+      },
+      "suggestions": {
+        "title": "Suggestions",
+        "emptyText": "No friend suggestions available."
       },
       "sections": {
         "friends": {
