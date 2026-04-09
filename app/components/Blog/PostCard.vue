@@ -215,6 +215,7 @@ async function onPostBodyClick(event: MouseEvent) {
       'post-card--light': isLightTheme,
     }"
     elevation="0"
+    @click="onCardClick"
   >
     <v-card-item class="pb-1">
       <template #prepend>
