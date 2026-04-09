@@ -147,102 +147,117 @@ const breadcrumbs = computed(() => [
 </script>
 
 <template>
-  <v-container fluid class="arena-layout px-2 px-sm-4 px-md-6">
-    <v-breadcrumbs :items="breadcrumbs" class="px-0 mb-2" />
+  <div>
+    <AppPageDrawers>
+      <template #right>
+        <div class="arena-panel-stack">
+          <v-card rounded="xl" class="arena-panel-card arena-interactive">
+            <v-card-title>Live session</v-card-title>
+            <v-card-text v-if="currentSession" class="d-flex flex-wrap ga-2">
+              <v-chip color="primary" variant="tonal" class="arena-chip"
+              >Session: {{ currentSession.sessionId }}</v-chip
+              >
+              <v-chip color="secondary" variant="tonal" class="arena-chip"
+              >Level: {{ currentSession.level }}</v-chip
+              >
+              <v-chip color="info" variant="tonal" class="arena-chip"
+              >Status: {{ currentSession.status }}</v-chip
+              >
+              <v-chip color="warning" variant="tonal" class="arena-chip"
+              >Coins: {{ currentSession.coins }}</v-chip
+              >
+            </v-card-text>
+            <v-card-text v-else>
+              Session introuvable. Redirection en cours...
+            </v-card-text>
+          </v-card>
 
-    <div class="arena-shell pa-2 pa-sm-4 pa-md-6">
-      <v-row class="ga-0" align="stretch">
-        <v-col cols="12" lg="8" class="arena-center-col">
-          <div class="arena-surface-wrap mx-auto">
-            <CardTablePlaySurface
-              v-if="playSurfaceType === 'card'"
-              v-bind="commonSurfaceProps"
-              class="arena-interactive"
-            />
-            <BoardTablePlaySurface
-              v-else-if="playSurfaceType === 'board'"
-              v-bind="commonSurfaceProps"
-              class="arena-interactive"
-            />
-            <v-card v-else rounded="xl" class="h-100 arena-interactive">
-              <v-card-title>{{ commonSurfaceProps.gameName }}</v-card-title>
-              <v-card-subtitle>Play surface</v-card-subtitle>
-              <v-card-text class="py-8">
-                <div class="text-medium-emphasis">
-                  Surface non spécialisée pour cette catégorie.
-                </div>
-              </v-card-text>
-            </v-card>
-          </div>
-        </v-col>
-
-        <v-col cols="12" lg="4" class="arena-panel-col">
-          <div class="arena-panel-stack">
-            <v-card rounded="xl" class="arena-panel-card arena-interactive">
-              <v-card-title>Live session</v-card-title>
-              <v-card-text v-if="currentSession" class="d-flex flex-wrap ga-2">
-                <v-chip color="primary" variant="tonal" class="arena-chip"
-                  >Session: {{ currentSession.sessionId }}</v-chip
-                >
-                <v-chip color="secondary" variant="tonal" class="arena-chip"
-                  >Level: {{ currentSession.level }}</v-chip
-                >
-                <v-chip color="info" variant="tonal" class="arena-chip"
-                  >Status: {{ currentSession.status }}</v-chip
-                >
-                <v-chip color="warning" variant="tonal" class="arena-chip"
-                  >Coins: {{ currentSession.coins }}</v-chip
-                >
-              </v-card-text>
-              <v-card-text v-else>
-                Session introuvable. Redirection en cours...
-              </v-card-text>
-            </v-card>
-
-            <v-card
-              rounded="xl"
-              :disabled="!currentSession"
-              class="arena-panel-card arena-interactive"
-            >
-              <v-card-title>{{
+          <v-card
+            rounded="xl"
+            :disabled="!currentSession"
+            class="arena-panel-card arena-interactive"
+          >
+            <v-card-title>{{
                 tOrFallback('gamePage.session.finishDemo', 'Finish demo')
               }}</v-card-title>
-              <v-card-text class="d-flex ga-3 flex-wrap">
-                <v-btn
-                  color="success"
-                  :disabled="!currentSession || catalogStore.finishingSession"
-                  :loading="
+            <v-card-text class="d-flex ga-3 flex-wrap">
+              <v-btn
+                color="success"
+                :disabled="!currentSession || catalogStore.finishingSession"
+                :loading="
                     catalogStore.finishingSession && finishResult === 'win'
                   "
-                  class="arena-action-btn"
-                  @click="onFinish('win')"
-                >
-                  Finish win
-                </v-btn>
-                <v-btn
-                  color="error"
-                  variant="outlined"
-                  :disabled="!currentSession || catalogStore.finishingSession"
-                  :loading="
+                class="arena-action-btn"
+                @click="onFinish('win')"
+              >
+                Finish win
+              </v-btn>
+              <v-btn
+                color="error"
+                variant="outlined"
+                :disabled="!currentSession || catalogStore.finishingSession"
+                :loading="
                     catalogStore.finishingSession && finishResult === 'lose'
                   "
-                  class="arena-action-btn"
-                  @click="onFinish('lose')"
-                >
-                  Finish lose
-                </v-btn>
-              </v-card-text>
-            </v-card>
-          </div>
-        </v-col>
-      </v-row>
-    </div>
-  </v-container>
+                class="arena-action-btn"
+                @click="onFinish('lose')"
+              >
+                Finish lose
+              </v-btn>
+            </v-card-text>
+          </v-card>
+        </div>
+      </template>
+    </AppPageDrawers>
+    <v-container fluid class="arena-layout px-2 px-sm-4 px-md-6">
+
+      <div class="arena-shell pa-2 pa-sm-4 pa-md-6">
+        <div class="arena-surface-wrap mx-auto">
+          <CardTablePlaySurface
+            v-if="playSurfaceType === 'card'"
+            v-bind="commonSurfaceProps"
+            class="arena-interactive"
+            :game-name="gameParam.name"
+            :level="currentSession.level"
+            :session-id="currentSession.id"
+            :status="currentSession.status"
+          />
+          <BoardTablePlaySurface
+            v-else-if="playSurfaceType === 'board'"
+            v-bind="commonSurfaceProps"
+            class="arena-interactive"
+            :game-name="gameParam.name"
+            :level="currentSession.level"
+            :session-id="currentSession.id"
+            :status="currentSession.status"
+          />
+          <v-card v-else rounded="xl" class="h-100 arena-interactive">
+            <v-card-title>{{ commonSurfaceProps.gameName }}</v-card-title>
+            <v-card-subtitle>Play surface</v-card-subtitle>
+            <v-card-text class="py-8">
+              <div class="text-medium-emphasis">
+                Surface non spécialisée pour cette catégorie.
+              </div>
+            </v-card-text>
+          </v-card>
+        </div>
+      </div>
+    </v-container>
+  </div>
 </template>
 
 <style scoped>
 .arena-layout {
   min-height: calc(100vh - var(--v-layout-top, 72px));
+}
+
+.arena-panel-card {
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.18) 0%,
+    transparent 20%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .arena-shell {
