@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const rightDrawerOpen = useState('right-drawer-open', () => true)
 const isPageSkeletonLoading = useState('page-skeleton-loading', () => true)
 const registry = useDrawerSlotRegistry()
 const { lgAndUp } = useDisplay()
@@ -22,7 +21,7 @@ onMounted(() => {
 
 <template>
   <v-navigation-drawer
-    v-model="rightDrawerOpen"
+    :model-value="true"
     location="right"
     width="300"
     permanent
