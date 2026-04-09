@@ -198,7 +198,7 @@ function isInteractiveElement(target: EventTarget | null) {
   )
 }
 
-async function onCardClick(event: MouseEvent) {
+async function onPostBodyClick(event: MouseEvent) {
   if (!postDetailPath.value || isInteractiveElement(event.target)) {
     return
   }
@@ -213,7 +213,6 @@ async function onCardClick(event: MouseEvent) {
     class="post-card"
     :class="{
       'post-card--light': isLightTheme,
-      'post-card--clickable': Boolean(postDetailPath),
     }"
     elevation="0"
     @click="onCardClick"
@@ -286,7 +285,11 @@ async function onCardClick(event: MouseEvent) {
       </template>
     </v-card-item>
 
-    <v-card-text class="pt-1">
+    <v-card-text
+      class="pt-1"
+      :class="{ 'post-body--clickable': Boolean(postDetailPath) }"
+      @click="onPostBodyClick"
+    >
       <p class="text-body-1 post-content">{{ post.content }}</p>
 
       <v-img
@@ -376,7 +379,7 @@ async function onCardClick(event: MouseEvent) {
   text-align: left;
 }
 
-.post-card--clickable {
+.post-body--clickable {
   cursor: pointer;
 }
 
