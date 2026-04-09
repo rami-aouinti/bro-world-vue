@@ -466,11 +466,18 @@
       "title": "Navigation"
     },
     "rightNav": {
-      "trending": "Tendances",
-      "tags": {
-        "nuxt": "#nuxt",
-        "vuetify": "#vuetify",
-        "frontend": "#frontend"
+      "localContext": {
+        "title": "Contexte local",
+        "subtitle": "Partagez votre position pour voir la météo et les événements proches.",
+        "permissionCta": "Activer ma localisation",
+        "permissionDenied": "Accès à la localisation refusé. Vous pouvez réessayer.",
+        "loading": "Chargement du contexte local…",
+        "error": "Impossible de charger votre contexte local pour le moment.",
+        "unsupported": "La géolocalisation n’est pas prise en charge sur cet appareil.",
+        "weatherTitle": "Météo actuelle",
+        "eventsTitle": "Événements près de vous",
+        "majorEventsTitle": "Événements majeurs du jour",
+        "emptyState": "Aucun événement disponible pour le moment."
       }
     }
   },

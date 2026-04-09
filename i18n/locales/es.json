@@ -431,11 +431,18 @@
       "title": "Navegación"
     },
     "rightNav": {
-      "trending": "Tendencias",
-      "tags": {
-        "nuxt": "#nuxt",
-        "vuetify": "#vuetify",
-        "frontend": "#frontend"
+      "localContext": {
+        "title": "Contexto local",
+        "subtitle": "Comparte tu ubicación para ver el clima y eventos cercanos.",
+        "permissionCta": "Activar mi ubicación",
+        "permissionDenied": "Se denegó el acceso a la ubicación. Puedes reintentar cuando quieras.",
+        "loading": "Cargando tu contexto local…",
+        "error": "No se pudo cargar tu contexto local por ahora.",
+        "unsupported": "La geolocalización no está disponible en este dispositivo.",
+        "weatherTitle": "Clima actual",
+        "eventsTitle": "Eventos en tu zona",
+        "majorEventsTitle": "Eventos importantes de hoy",
+        "emptyState": "No hay eventos disponibles en este momento."
       }
     }
   },

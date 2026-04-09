@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue'
+import HomeRightRailLocalContext from '~/components/Home/RightRailLocalContext.vue'
 
 const { loggedIn } = useUserSession()
 const { isPageSkeletonVisible } = usePageSkeleton()
@@ -57,14 +58,7 @@ onMounted(() => {
           <SkeletonDrawerRight />
         </template>
         <template v-else>
-          <v-card-title class="text-subtitle-1">{{
-            $t('home.rightNav.trending')
-          }}</v-card-title>
-          <v-list density="compact">
-            <v-list-item :title="$t('home.rightNav.tags.nuxt')" />
-            <v-list-item :title="$t('home.rightNav.tags.vuetify')" />
-            <v-list-item :title="$t('home.rightNav.tags.frontend')" />
-          </v-list>
+          <HomeRightRailLocalContext />
         </template>
       </template>
     </AppPageDrawers>
