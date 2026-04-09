@@ -34,8 +34,32 @@ export type GamesLevelsApiResponse = ApiObject & {
   }>
 }
 
+export type GamesSessionMode = 'solo' | 'versus' | 'team' | 'table'
+export type GamesSessionOpponentType = 'none' | 'human_online' | 'ai_bot'
+
 export interface GamesSessionStartPayload extends ApiObject {
   level: string
+  mode: GamesSessionMode
+  playerCount: number
+  opponentType: GamesSessionOpponentType
+  seatCount?: number
+  allowedPlayerCounts?: number[]
+}
+
+export interface GamesSessionSeat extends ApiObject {
+  seat: number
+  teamKey?: string | null
+  playerId?: string | null
+  isCurrentPlayer?: boolean
+}
+
+export interface GamesSessionContext extends ApiObject {
+  mode: GamesSessionMode
+  playerCount: number
+  opponentType: GamesSessionOpponentType
+  seatCount?: number
+  allowedPlayerCounts?: number[]
+  seats?: GamesSessionSeat[]
 }
 
 export interface GamesSession extends ApiObject {
@@ -44,6 +68,7 @@ export interface GamesSession extends ApiObject {
   level: string
   status: string
   startedAt: string
+  context?: GamesSessionContext
 }
 
 export interface GamesSessionStartResponse extends ApiObject {

@@ -177,10 +177,30 @@ type StartResponse = {
     startedAt?: string
     context?: {
       selectedLevel?: string
+      mode?: 'solo' | 'versus' | 'team' | 'table'
+      playerCount?: number
+      opponentType?: 'none' | 'human_online' | 'ai_bot'
+      seatCount?: number
+      allowedPlayerCounts?: number[]
+      seats?: Array<{
+        seat: number
+        teamKey?: string | null
+        playerId?: string | null
+        isCurrentPlayer?: boolean
+      }>
     }
   }
   userGameId: string
   coins: number
+}
+
+type StartSessionPayload = {
+  level: string
+  mode: 'solo' | 'versus' | 'team' | 'table'
+  playerCount: number
+  opponentType: 'none' | 'human_online' | 'ai_bot'
+  seatCount?: number
+  allowedPlayerCounts?: number[]
 }
 
 type FinishResponse = {
@@ -296,7 +316,7 @@ export const useGameCatalogStore = defineStore('game-catalog', {
         this.loadingLevels = false
       }
     },
-    async startSession(gameId: string, level: string) {
+    async startSession(gameId: string, payload: StartSessionPayload) {
       this.startingSession = true
       this.error = ''
       const profileStore = useProfileStore()
@@ -306,7 +326,10 @@ export const useGameCatalogStore = defineStore('game-catalog', {
           `/api/games/${gameId}/sessions/start`,
           {
             method: 'POST',
-            body: { level: normalizeSessionLevel(level) },
+            body: {
+              ...payload,
+              level: normalizeSessionLevel(payload.level),
+            },
           },
         )
 
@@ -315,7 +338,7 @@ export const useGameCatalogStore = defineStore('game-catalog', {
         const sessionLevel =
           response.session.level ??
           response.session.context?.selectedLevel ??
-          level
+          payload.level
 
         if (!sessionId) {
           throw new Error(
