@@ -5,7 +5,10 @@ import type {
   LibraryTreeNode,
 } from '~/types/library'
 
-const { t } = useI18n()
+const { t, te } = useI18n()
+
+const tOrFallback = (key: string, fallback: string) =>
+  te(key) ? t(key) : fallback
 const { isPageSkeletonVisible } = usePageSkeleton()
 const {
   tree,
@@ -282,16 +285,18 @@ const isPreviewPdf = computed(
     <AppPageDrawers>
       <template #right>
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
-          <v-list v-else density="comfortable" nav>
-            <v-list-item
-              prepend-icon="mdi-home"
-              color="primary"
-              title="Root"
-              :active="currentFolderId === null"
-              @click="openFolder(null)"
-              @dragover.prevent="dragPayload ? $event.preventDefault() : undefined"
-              @drop.prevent="onDropToFolder(null)"
-            />
+        <v-list v-else density="comfortable" nav>
+          <v-list-item
+            prepend-icon="mdi-home"
+            color="primary"
+            title="Root"
+            :active="currentFolderId === null"
+            @click="openFolder(null)"
+            @dragover.prevent="
+              dragPayload ? $event.preventDefault() : undefined
+            "
+            @drop.prevent="onDropToFolder(null)"
+          />
           <LibraryNode
             v-for="folder in sidebarFolders"
             :key="folder.id"
@@ -361,28 +366,36 @@ const isPreviewPdf = computed(
               block
               class="library-grid__item"
               :class="{
-              'library-grid__item--selected': selectedNode?.id === node.id,
-              'library-grid__item--drag-over':
-                node.type === 'folder' && dragOverFolderId === node.id,
-            }"
+                'library-grid__item--selected': selectedNode?.id === node.id,
+                'library-grid__item--drag-over':
+                  node.type === 'folder' && dragOverFolderId === node.id,
+              }"
               draggable="true"
               @click="openNode(node)"
               @dragstart="onStartDragNode(node, currentFolderId)"
               @dragover="
-                node.type === 'folder' ? onDragOverFolder($event, node.id) : undefined
+                node.type === 'folder'
+                  ? onDragOverFolder($event, node.id)
+                  : undefined
               "
               @dragleave="
                 node.type === 'folder' ? onDragLeaveFolder(node.id) : undefined
               "
-              @drop="node.type === 'folder' ? onDropToFolder(node.id) : undefined"
+              @drop="
+                node.type === 'folder' ? onDropToFolder(node.id) : undefined
+              "
               @dragend="onDragEnd"
             >
               <v-icon
                 :color="node.type === 'folder' ? 'warning' : 'primary'"
-                :icon="node.type === 'folder' ? 'mdi-folder' : 'mdi-file-outline'"
+                :icon="
+                  node.type === 'folder' ? 'mdi-folder' : 'mdi-file-outline'
+                "
                 size="48"
               />
-              <span class="library-grid__name text-truncate">{{ node.name }}</span>
+              <span class="library-grid__name text-truncate">{{
+                node.name
+              }}</span>
             </v-btn>
           </div>
 
@@ -408,7 +421,12 @@ const isPreviewPdf = computed(
             target="_blank"
             rel="noopener"
           >
-            Télécharger
+            {{
+              tOrFallback(
+                'pages.profileOverview.libraryPreviewDownload',
+                'Download',
+              )
+            }}
           </v-btn>
         </v-card-title>
         <v-card-text>
@@ -426,7 +444,12 @@ const isPreviewPdf = computed(
             title="PDF preview"
           />
           <div v-else class="text-medium-emphasis">
-            Prévisualisation non disponible pour ce type de fichier.
+            {{
+              tOrFallback(
+                'pages.profileOverview.libraryPreviewUnsupported',
+                'Preview is not available for this file type.',
+              )
+            }}
           </div>
         </v-card-text>
       </v-card>
