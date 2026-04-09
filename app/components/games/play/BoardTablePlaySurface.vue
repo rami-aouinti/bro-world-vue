@@ -52,17 +52,14 @@ const isLastMoveCell = (cell: BoardCellRef) =>
 
 <template>
   <section class="board-surface">
-    <h3 class="board-surface__title">{{ title }}</h3>
-
-    <div class="board-surface__layout">
-      <div class="board-grid" role="grid" aria-label="8 by 8 board">
-        <template v-for="(row, rowIndex) in board" :key="`row-${rowIndex}`">
-          <button
-            v-for="(piece, colIndex) in row"
-            :key="`cell-${rowIndex}-${colIndex}`"
-            type="button"
-            class="board-cell"
-            :class="[
+    <div class="board-grid" role="grid" aria-label="8 by 8 board">
+      <template v-for="(row, rowIndex) in board" :key="`row-${rowIndex}`">
+        <button
+          v-for="(piece, colIndex) in row"
+          :key="`cell-${rowIndex}-${colIndex}`"
+          type="button"
+          class="board-cell"
+          :class="[
               (rowIndex + colIndex) % 2 === 0 ? 'board-cell--light' : 'board-cell--dark',
               {
                 'board-cell--selected': isSameCell(selectedCell, { row: rowIndex, col: colIndex }),
@@ -70,27 +67,10 @@ const isLastMoveCell = (cell: BoardCellRef) =>
                 'board-cell--last': isLastMoveCell({ row: rowIndex, col: colIndex })
               }
             ]"
-          >
-            <span v-if="piece" class="piece" :class="`piece--${piece.tone}`">{{ piece.label || '' }}</span>
-          </button>
-        </template>
-      </div>
-
-      <aside class="score-panel">
-        <p class="score-panel__title">Players</p>
-        <article
-          v-for="player in players"
-          :key="player.id"
-          class="score-player"
-          :class="{ 'score-player--active': player.isActive }"
         >
-          <div class="score-player__identity">
-            <span class="piece" :class="`piece--${player.side}`" />
-            <strong>{{ player.name }}</strong>
-          </div>
-          <p>{{ player.score }}</p>
-        </article>
-      </aside>
+          <span v-if="piece" class="piece" :class="`piece--${piece.tone}`">{{ piece.label || '' }}</span>
+        </button>
+      </template>
     </div>
   </section>
 </template>
@@ -115,6 +95,7 @@ const isLastMoveCell = (cell: BoardCellRef) =>
 }
 
 .board-grid {
+  max-height: 30rem;
   display: grid;
   grid-template-columns: repeat(8, minmax(0, 1fr));
   aspect-ratio: 1 / 1;

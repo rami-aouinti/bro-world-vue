@@ -90,7 +90,7 @@ const sectionConfigs = computed(() => [
         icon: 'mdi-check',
         action: 'accept' as const,
         color: 'success',
-        variant: 'flat' as const,
+        variant: 'tonal' as const,
       },
       {
         label: t('pages.friends.actions.reject'),

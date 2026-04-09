@@ -26,11 +26,6 @@ withDefaults(defineProps<CardTablePlaySurfaceProps>(), {
 
 <template>
   <section class="card-surface">
-    <header class="surface-header">
-      <h3>{{ title }}</h3>
-      <p>{{ subtitle }}</p>
-    </header>
-
     <div class="oval-table">
       <div class="table-liner" />
       <div class="table-felt-glow" />
