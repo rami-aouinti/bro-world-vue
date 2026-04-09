@@ -535,6 +535,11 @@ function isMenuActive(paths: string[]) {
   height: 18px;
 }
 
+:deep(.app-top-bar__nav-btn .v-btn__content) {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
 .app-top-bar__right {
   --app-right-controls-width: var(--app-right-drawer-width);
   margin-left: auto;
