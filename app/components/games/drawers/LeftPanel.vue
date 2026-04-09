@@ -15,9 +15,9 @@ const topScores = [
     <v-divider class="my-4" />
 
     <v-list nav density="comfortable" class="px-1">
-      <v-list-subheader>
+      <v-chip variant="outlined" color="primary" class="mb-2">
         {{ t('gamePage.drawer.topScores') }}
-      </v-list-subheader>
+      </v-chip>
 
       <v-list-item
         v-for="(user, index) in topScores"

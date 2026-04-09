@@ -16,7 +16,6 @@ const instructionLines = computed(() => [
   t('gamePage.drawer.instructions.line1'),
   t('gamePage.drawer.instructions.line2'),
   t('gamePage.drawer.instructions.line3'),
-  t('gamePage.drawer.instructions.line4'),
 ])
 
 const visibleSelection = computed(() =>
@@ -27,9 +26,9 @@ const visibleSelection = computed(() =>
 <template>
   <div class="games-right-panel">
     <v-list nav density="compact" class="app-right-drawer-list">
-      <v-list-subheader>
+      <v-chip variant="outlined" color="primary" class="mb-2">
         {{ t('gamePage.drawer.instructions.title') }}
-      </v-list-subheader>
+      </v-chip>
 
       <v-list-item
         v-for="(line, index) in instructionLines"
@@ -48,9 +47,9 @@ const visibleSelection = computed(() =>
       <template v-if="visibleSelection.length">
         <v-divider class="my-2" />
 
-        <v-list-subheader>
+        <v-chip variant="outlined" color="primary" class="mb-2">
           {{ t('gamePage.selection.summaryTitle') }}
-        </v-list-subheader>
+        </v-chip>
 
         <v-list-item
           v-for="item in visibleSelection"
