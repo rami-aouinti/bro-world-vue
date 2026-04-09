@@ -610,7 +610,8 @@
       "finishedAt": "Terminé à",
       "coins": "pièces",
       "lastSessionTitle": "Dernière session terminée",
-      "finishDemo": "Terminer la démo"
+      "finishDemo": "Terminer la démo",
+      "authRequired": "Vous devez être connecté pour démarrer une partie."
     },
     "messages": {
       "startSuccess": "Session de jeu démarrée avec succès.",

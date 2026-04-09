@@ -575,7 +575,8 @@
       "finishedAt": "Finalizado el",
       "coins": "monedas",
       "lastSessionTitle": "Última sesión finalizada",
-      "finishDemo": "Finalizar demo"
+      "finishDemo": "Finalizar demo",
+      "authRequired": "Debes iniciar sesión para comenzar una partida."
     },
     "messages": {
       "startSuccess": "Sesión de juego iniciada correctamente.",
