@@ -93,9 +93,11 @@ const isDark = computed({
   },
 })
 
-const { loggedIn, clear, user } = useUserSession()
+const { fetch: refreshSession, loggedIn, clear, user } = useUserSession()
 const sessionUser = computed(() => user.value as SessionUser | null)
 const avatarUrl = computed(() => sessionUser.value?.photo)
+const loginDialogOpen = ref(false)
+const loginLoading = ref(false)
 
 const inboxNotificationsStore = useInboxNotificationsStore()
 const notificationStore = useNotificationStore()
@@ -140,6 +142,7 @@ watch(
   loggedIn,
   async (isLoggedIn) => {
     if (!isLoggedIn) return
+    loginDialogOpen.value = false
     await Promise.all([
       inboxNotificationsStore.fetchNotifications(),
     ])
@@ -155,6 +158,39 @@ watch(notificationMenuOpen, async (isOpen) => {
 function toggleLeftDrawer() {
   if (!showLeftDrawer.value) return
   drawer.value = !drawer.value
+}
+
+async function onLoginSubmit(payload: { username?: string; password: string }) {
+  if (!payload.username) {
+    Notify.error(t('auth.validation.required'))
+    return
+  }
+
+  loginLoading.value = true
+
+  try {
+    await $fetch('/api/login', {
+      method: 'POST',
+      body: {
+        username: payload.username,
+        password: payload.password,
+      },
+    })
+
+    await refreshSession()
+
+    if (!loggedIn.value) {
+      Notify.error(t('auth.notifications.loginError'))
+      return
+    }
+
+    Notify.success(t('auth.notifications.loginSuccess'))
+    loginDialogOpen.value = false
+  } catch {
+    Notify.error(t('auth.notifications.loginError'))
+  } finally {
+    loginLoading.value = false
+  }
 }
 
 function isMenuActive(paths: string[]) {
@@ -363,7 +399,7 @@ function isMenuActive(paths: string[]) {
             <v-list-item
               :title="t('appbar.login')"
               prepend-icon="mdi-login"
-              to="/login"
+              @click="loginDialogOpen = true"
             />
             <v-list-item
               :title="t('appbar.register')"
@@ -404,6 +440,17 @@ function isMenuActive(paths: string[]) {
         />
       </v-btn>
     </div>
+
+    <v-dialog v-model="loginDialogOpen" max-width="560">
+      <AuthFormCard mode="login" :loading="loginLoading" @submit="onLoginSubmit">
+        <template #switch>
+          {{ t('auth.login.switchPrompt') }}
+          <NuxtLink to="/register" class="text-primary font-weight-bold">
+            {{ t('auth.login.switchCta') }}
+          </NuxtLink>
+        </template>
+      </AuthFormCard>
+    </v-dialog>
   </v-app-bar>
 </template>
 

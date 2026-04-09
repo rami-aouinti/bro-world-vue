@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from '@fullcalendar/interaction'
-import { Draggable } from '@fullcalendar/interaction'
+import interactionPlugin, { Draggable } from '@fullcalendar/interaction'
 import timeGridPlugin from '@fullcalendar/timegrid'
 
 interface PrivateCalendarEvent {
@@ -299,10 +298,15 @@ async function onExternalEventReceive(receiveInfo: {
 }
 
 function initPresetDraggable() {
-  if (!presetEventsHost.value || presetEventsDraggable) return
+  if (!presetEventsHost.value) return
+
+  presetEventsDraggable?.destroy()
+  presetEventsDraggable = null
 
   presetEventsDraggable = new Draggable(presetEventsHost.value, {
     itemSelector: '.calendar-preset-event',
+    longPressDelay: 0,
+    minDistance: 1,
     eventData: (eventEl) => {
       const title = eventEl.getAttribute('data-title') || ''
       const color = eventEl.getAttribute('data-color') || undefined
@@ -391,9 +395,11 @@ async function cancelEvent() {
 }
 
 watch(
-  () => [isPageSkeletonVisible.value, presetEventsHost.value],
-  async ([skeletonVisible]) => {
+  [isPageSkeletonVisible, presetEventsHost],
+  async ([skeletonVisible, host], [, previousHost]) => {
     if (skeletonVisible) return
+    if (!host) return
+    if (host === previousHost && presetEventsDraggable) return
     await nextTick()
     initPresetDraggable()
   },
