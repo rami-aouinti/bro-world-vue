@@ -43,7 +43,10 @@ const selectedLocale = computed(
 </script>
 
 <template>
-  <v-menu location="bottom">
+  <v-menu
+    location="bottom"
+    content-class="app-top-bar__menu-surface app-top-bar__menu-surface--compact"
+  >
     <template #activator="{ props }">
       <v-btn
         v-bind="props"
@@ -61,7 +64,7 @@ const selectedLocale = computed(
       </v-btn>
     </template>
 
-    <v-list min-width="220">
+    <v-list min-width="220" class="app-top-bar__menu-list">
       <v-list-item
         v-for="item in localeOptions"
         :key="item.value"

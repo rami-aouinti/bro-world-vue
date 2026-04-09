@@ -241,7 +241,7 @@ function isMenuActive(paths: string[]) {
             {{ t(menu.label) }}
           </v-btn>
         </template>
-        <div class="app-top-bar__mega-menu">
+        <div class="app-top-bar__mega-menu app-top-bar__menu-surface">
           <div class="app-top-bar__mega-menu-header">
             <p class="text-overline text-primary mb-1">
               {{ t(menu.label) }}
@@ -312,7 +312,11 @@ function isMenuActive(paths: string[]) {
 
       <v-spacer />
       <template v-if="loggedIn">
-        <v-menu v-model="notificationMenuOpen" location="bottom end">
+        <v-menu
+          v-model="notificationMenuOpen"
+          location="bottom end"
+          content-class="app-top-bar__menu-surface app-top-bar__menu-surface--compact"
+        >
           <template #activator="{ props }">
             <v-badge
               :model-value="unreadTotalCount > 0"
@@ -329,7 +333,7 @@ function isMenuActive(paths: string[]) {
               />
             </v-badge>
           </template>
-          <v-list min-width="280">
+          <v-list min-width="280" class="app-top-bar__menu-list">
             <v-list-item
               v-for="item in allNotificationItems"
               :key="item.id"
@@ -359,7 +363,10 @@ function isMenuActive(paths: string[]) {
           to="/inbox"
         />
       </template>
-      <v-menu location="bottom">
+      <v-menu
+        location="bottom"
+        content-class="app-top-bar__menu-surface app-top-bar__menu-surface--compact"
+      >
         <template #activator="{ props: menu }">
           <v-tooltip
             location="bottom"
@@ -401,7 +408,7 @@ function isMenuActive(paths: string[]) {
             </template>
           </v-tooltip>
         </template>
-        <v-list min-width="220">
+        <v-list min-width="220" class="app-top-bar__menu-list">
           <template v-if="!loggedIn">
             <v-list-item
               :title="t('appbar.login')"
@@ -526,18 +533,52 @@ function isMenuActive(paths: string[]) {
 .app-top-bar__mega-menu {
   width: min(920px, 92vw);
   margin-top: 8px;
+  overflow: hidden;
+}
+
+.app-top-bar__menu-surface,
+:deep(.app-top-bar__menu-surface) {
   border-radius: 18px;
   border: 1px solid rgba(var(--v-border-color), 0.32);
-  background: linear-gradient(
-    240deg,
-    rgba(var(--v-theme-primary), 0.18) 0%,
-    transparent 20%
-  );
+  background:
+    linear-gradient(
+      240deg,
+      rgba(var(--v-theme-primary), 0.16) 0%,
+      transparent 24%
+    ),
+    color-mix(in srgb, rgb(var(--v-theme-surface)) 84%, transparent);
   box-shadow:
-    0 22px 54px rgba(0, 0, 0, 0.42),
-    0 0 0 1px rgba(var(--v-theme-primary), 0.15) inset;
-  backdrop-filter: blur(46px);
-  overflow: hidden;
+    0 22px 54px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(var(--v-theme-primary), 0.16) inset;
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  color: rgb(var(--v-theme-on-surface));
+}
+
+:deep(.app-top-bar__menu-surface--compact) {
+  border-radius: 14px;
+  background:
+    linear-gradient(
+      240deg,
+      rgba(var(--v-theme-primary), 0.12) 0%,
+      transparent 28%
+    ),
+    color-mix(in srgb, rgb(var(--v-theme-surface)) 88%, transparent);
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(var(--v-theme-primary), 0.14) inset;
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+}
+
+:deep(.app-top-bar__menu-list) {
+  background: transparent !important;
+  color: rgb(var(--v-theme-on-surface));
+  padding-block: 4px;
+}
+
+:deep(.app-top-bar__menu-list .v-list-item) {
+  color: rgb(var(--v-theme-on-surface));
 }
 
 .app-top-bar__mega-menu-header {
