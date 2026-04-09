@@ -7,6 +7,7 @@ definePageMeta({
 })
 
 const route = useRoute()
+const { loggedIn } = useUserSession()
 const categoryParam = computed(() => String(route.params.categoryKey || ''))
 const subCategoryParam = computed(() =>
   String(route.params.subCategoryKey || ''),
@@ -180,6 +181,12 @@ function difficultyLabel(level: string) {
 }
 
 async function onStart() {
+  if (!loggedIn.value) {
+    Notify.error('Vous devez être connecté pour démarrer une partie.')
+    await navigateTo('/login')
+    return
+  }
+
   if (
     !selectedGame.value ||
     !selectedLevelValue.value ||
@@ -202,9 +209,7 @@ async function onStart() {
       },
     )
     const createdSessionId =
-      response.session.id ??
-      response.session.sessionId ??
-      catalogStore.currentSession?.sessionId
+      response.sessionId ?? catalogStore.currentSession?.sessionId
 
     if (!createdSessionId) {
       Notify.error('Session id not found in start response.')

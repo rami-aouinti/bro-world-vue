@@ -226,41 +226,16 @@ function normalizeCatalog(response: unknown): GameCategory[] {
     .filter((category): category is GameCategory => category !== null)
 }
 
-type GameLevelsResponse = {
-  items: Array<{
-    id: string
-    value: string
-    label: string
-    description: string
-  }>
+type LevelItem = {
+  id: string
+  value: string
+  label: string
+  description: string
 }
 
-type StartResponse = {
-  session: {
-    id?: string
-    sessionId?: string
-    gameId?: string
-    level?: string
-    status: string
-    startedAt?: string
-    context?: {
-      selectedLevel?: string
-      mode?: 'solo' | 'versus' | 'team' | 'table'
-      playerCount?: number
-      opponentType?: 'none' | 'human_online' | 'ai_bot'
-      seatCount?: number
-      allowedPlayerCounts?: number[]
-      seats?: Array<{
-        seat: number
-        teamKey?: string | null
-        playerId?: string | null
-        isCurrentPlayer?: boolean
-      }>
-    }
-  }
-  userGameId: string
-  coins: number
-}
+type CatalogResponse = GameCategory[] | { catalog?: unknown }
+
+type LevelsResponse = { items?: unknown; levels?: unknown }
 
 type StartSessionPayload = {
   level: string
@@ -271,19 +246,66 @@ type StartSessionPayload = {
   allowedPlayerCounts?: number[]
 }
 
-type FinishResponse = {
-  userGame: {
-    id: string
-    sessionId?: string
-    gameId?: string
-    level?: string
+type StartApiSession = {
+  id?: string
+  sessionId?: string
+  gameId?: string
+  level?: string
+  status?: string
+  startedAt?: string
+  context?: {
     selectedLevel?: string
-    status?: string
-    result: 'win' | 'lose'
-    finishedAt?: string
+    mode?: 'solo' | 'versus' | 'team' | 'table'
+    playerCount?: number
+    opponentType?: 'none' | 'human_online' | 'ai_bot'
+    seatCount?: number
+    allowedPlayerCounts?: number[]
+    seats?: Array<{
+      seat: number
+      teamKey?: string | null
+      playerId?: string | null
+      isCurrentPlayer?: boolean
+    }>
   }
-  coins: number
 }
+
+type StartResponse =
+  | {
+      session: StartApiSession
+      userGameId?: string
+      coins?: number
+    }
+  | {
+      sessionId?: string
+      gameId?: string
+      level?: string
+      status?: string
+      userGameId?: string
+      coins?: number
+    }
+
+type FinishResponse =
+  | {
+      userGame?: {
+        id?: string
+        sessionId?: string
+        gameId?: string
+        level?: string
+        selectedLevel?: string
+        status?: string
+        result?: 'win' | 'lose'
+        finishedAt?: string
+      }
+      status?: string
+      coins?: number
+    }
+  | {
+      sessionId?: string
+      status?: string
+      result?: 'win' | 'lose'
+      coins?: number
+      finishedAt?: string
+    }
 
 interface CurrentSessionState {
   sessionId: string
@@ -318,10 +340,76 @@ function buildHttpError(
   return enriched
 }
 
+function normalizeCatalogResponse(response: CatalogResponse): GameCategory[] {
+  const source =
+    Array.isArray(response) || !response || typeof response !== 'object'
+      ? response
+      : response.catalog
+  return normalizeCatalog(source)
+}
+
+function normalizeLevelsResponse(response: LevelsResponse): LevelItem[] {
+  const source = Array.isArray(response.items)
+    ? response.items
+    : Array.isArray(response.levels)
+      ? response.levels
+      : []
+
+  return source
+    .filter((level): level is Record<string, unknown> => !!level && typeof level === 'object')
+    .map((level) => ({
+      id: typeof level.id === 'string' ? level.id : String(level.value ?? ''),
+      value:
+        typeof level.value === 'string'
+          ? level.value
+          : typeof level.id === 'string'
+            ? level.id
+            : '',
+      label:
+        typeof level.label === 'string'
+          ? level.label
+          : typeof level.value === 'string'
+            ? level.value
+            : typeof level.id === 'string'
+              ? level.id
+              : '',
+      description: typeof level.description === 'string' ? level.description : '',
+    }))
+    .filter((level) => level.id && level.value && level.label)
+}
+
+function normalizeStartResponse(response: StartResponse, fallbackLevel: string) {
+  const session =
+    'session' in response
+      ? response.session
+      : {
+          sessionId: response.sessionId,
+          gameId: response.gameId,
+          level: response.level,
+          status: response.status,
+        }
+  const sessionId = session?.id ?? session?.sessionId ?? ''
+  const level = session?.level ?? session?.context?.selectedLevel ?? fallbackLevel
+  const status = session?.status ?? 'started'
+  const coins = typeof response.coins === 'number' ? response.coins : 0
+  const userGameId = response.userGameId ?? ''
+
+  return { sessionId, level, status, coins, userGameId }
+}
+
+function normalizeFinishResponse(response: FinishResponse) {
+  const status =
+    ('userGame' in response ? response.userGame?.status : undefined) ??
+    response.status ??
+    'finished'
+  const coins = typeof response.coins === 'number' ? response.coins : 0
+  return { status, coins }
+}
+
 export const useGameCatalogStore = defineStore('game-catalog', {
   state: () => ({
     categories: [] as GameCategory[],
-    levels: [] as GameLevelsResponse['items'],
+    levels: [] as LevelItem[],
     currentSession: null as CurrentSessionState | null,
     loadingCatalog: false,
     loadingLevels: false,
@@ -349,8 +437,8 @@ export const useGameCatalogStore = defineStore('game-catalog', {
       this.error = ''
 
       try {
-        const response = await $fetch<unknown>('/api/games/catalog')
-        this.categories = normalizeCatalog(response)
+        const response = await $fetch<CatalogResponse>('/api/games/catalog')
+        this.categories = normalizeCatalogResponse(response)
         this.catalogFetchedAt = Date.now()
         return this.categories
       } catch (error) {
@@ -372,8 +460,8 @@ export const useGameCatalogStore = defineStore('game-catalog', {
       this.error = ''
 
       try {
-        const response = await $fetch<GameLevelsResponse>('/api/games/levels')
-        this.levels = response.items
+        const response = await $fetch<LevelsResponse>('/api/games/levels')
+        this.levels = normalizeLevelsResponse(response)
         this.levelsFetchedAt = Date.now()
         return this.levels
       } catch (error) {
@@ -401,32 +489,37 @@ export const useGameCatalogStore = defineStore('game-catalog', {
           },
         )
 
-        const sessionId =
-          response.session.id ?? response.session.sessionId ?? ''
-        const sessionLevel =
-          response.session.level ??
-          response.session.context?.selectedLevel ??
-          payload.level
+        const normalizedResponse = normalizeStartResponse(response, payload.level)
 
-        if (!sessionId) {
+        if (!normalizedResponse.sessionId) {
           throw new Error(
             'Unable to start session: missing session id in API response.',
           )
         }
 
         this.currentSession = {
-          sessionId,
-          status: response.session.status,
-          coins: response.coins,
-          level: sessionLevel,
-          userGameId: response.userGameId,
+          sessionId: normalizedResponse.sessionId,
+          status: normalizedResponse.status,
+          coins: normalizedResponse.coins,
+          level: normalizedResponse.level,
+          userGameId: normalizedResponse.userGameId,
         }
         if (profileStore.profile) {
-          profileStore.profile.coins = response.coins
+          profileStore.profile.coins = normalizedResponse.coins
         }
-        return response
+        return normalizedResponse
       } catch (error) {
         const httpError = buildHttpError(error, 'Unable to start session.')
+
+        if (httpError.status === 401) {
+          const unauthorizedError = new Error(
+            'Vous devez être connecté pour démarrer une partie.',
+          ) as HttpErrorLike
+          unauthorizedError.status = 401
+          this.error = unauthorizedError.message
+          throw unauthorizedError
+        }
+
         this.error = httpError.message
         throw httpError
       } finally {
@@ -446,17 +539,19 @@ export const useGameCatalogStore = defineStore('game-catalog', {
             body: { result },
           },
         )
+        const normalizedResponse = normalizeFinishResponse(response)
+
         if (this.currentSession) {
           this.currentSession = {
             ...this.currentSession,
-            status: response.userGame.status ?? this.currentSession.status,
-            coins: response.coins,
+            status: normalizedResponse.status,
+            coins: normalizedResponse.coins,
           }
         }
         if (profileStore.profile) {
-          profileStore.profile.coins = response.coins
+          profileStore.profile.coins = normalizedResponse.coins
         }
-        return response
+        return normalizedResponse
       } catch (error) {
         const httpError = buildHttpError(error, 'Unable to finish session.')
         this.error = httpError.message
