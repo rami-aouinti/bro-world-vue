@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   title: 'appbar.games',
+  layout: 'games',
 })
 
 const route = useRoute()
