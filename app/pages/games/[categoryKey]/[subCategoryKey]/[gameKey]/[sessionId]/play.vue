@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import BoardTablePlaySurface from '~/components/Game/BoardTablePlaySurface.vue'
-import CardTablePlaySurface from '~/components/Game/CardTablePlaySurface.vue'
+import BoardTablePlaySurface from '~/components/games/play/BoardTablePlaySurface.vue'
+import CardTablePlaySurface from '~/components/games/play/CardTablePlaySurface.vue'
 import { Notify } from '~/stores/notification'
 
 definePageMeta({
@@ -52,7 +52,9 @@ function normalizeCategoryKey(categoryKey: string) {
 
 const playSurfaceType = computed<'card' | 'board' | 'default'>(() => {
   const normalizedCategory = normalizeCategoryKey(
-    selectedCategory.value?.key || selectedCategory.value?.name || '',
+    selectedCategory.value?.key ||
+      selectedCategory.value?.name ||
+      categoryParam.value,
   )
 
   if (normalizedCategory === 'card') return 'card'
@@ -78,6 +80,30 @@ const commonSurfaceProps = computed(() => ({
   level: currentSession.value?.level || 'unknown',
   status: currentSession.value?.status || 'pending',
 }))
+
+
+const cardSeats = computed(() => [
+  { id: 'top', name: 'CPU 1', stack: '1200', position: 'top' as const },
+  { id: 'right', name: 'CPU 2', stack: '900', position: 'right' as const },
+  { id: 'bottom', name: 'You', stack: String(currentSession.value?.coins ?? 0), position: 'bottom' as const, isActive: true },
+  { id: 'left', name: 'CPU 3', stack: '1100', position: 'left' as const },
+])
+
+const boardState = computed(() => {
+  const size = 8
+  return Array.from({ length: size }, (_, row) =>
+    Array.from({ length: size }, (_, col) => {
+      if (row < 2 && (row + col) % 2 === 1) return { id: `d-${row}-${col}`, tone: 'dark' as const }
+      if (row > 5 && (row + col) % 2 === 1) return { id: `l-${row}-${col}`, tone: 'light' as const }
+      return null
+    }),
+  )
+})
+
+const boardPlayers = computed(() => [
+  { id: 'light', name: 'You', side: 'light' as const, score: '12', isActive: true },
+  { id: 'dark', name: 'CPU', side: 'dark' as const, score: '12' },
+])
 
 onMounted(async () => {
   const loaded = await ensureCatalogLoaded()
@@ -124,26 +150,6 @@ async function onFinish(result: 'win' | 'lose') {
   }
 }
 
-const breadcrumbs = computed(() => [
-  { title: 'Games', to: '/games' },
-  {
-    title:
-      selectedCategory.value?.key || selectedCategory.value?.name || 'Category',
-    to: `/games/${categoryParam.value}`,
-  },
-  {
-    title:
-      selectedSubCategory.value?.key ||
-      selectedSubCategory.value?.name ||
-      'Subcategory',
-    to: `/games/${categoryParam.value}/${subCategoryParam.value}`,
-  },
-  {
-    title: selectedGame.value?.key || selectedGame.value?.name || 'Game',
-    to: `/games/${categoryParam.value}/${subCategoryParam.value}/${gameParam.value}`,
-  },
-  { title: 'Play', disabled: true },
-])
 </script>
 
 <template>
@@ -215,21 +221,22 @@ const breadcrumbs = computed(() => [
         <div class="arena-surface-wrap mx-auto">
           <CardTablePlaySurface
             v-if="playSurfaceType === 'card'"
-            v-bind="commonSurfaceProps"
             class="arena-interactive"
-            :game-name="gameParam.name"
-            :level="currentSession.level"
-            :session-id="currentSession.id"
-            :status="currentSession.status"
+            :title="commonSurfaceProps.gameName"
+            :subtitle="`Session ${commonSurfaceProps.sessionId}`"
+            :seats="cardSeats"
+            :community-cards="['A♠', '10♥', '7♣', '2♦', 'K♠']"
+            :player-cards="['Q♣', 'Q♦']"
           />
           <BoardTablePlaySurface
             v-else-if="playSurfaceType === 'board'"
-            v-bind="commonSurfaceProps"
             class="arena-interactive"
-            :game-name="gameParam.name"
-            :level="currentSession.level"
-            :session-id="currentSession.id"
-            :status="currentSession.status"
+            :title="commonSurfaceProps.gameName"
+            :board="boardState"
+            :players="boardPlayers"
+            :selected-cell="{ row: 5, col: 0 }"
+            :possible-moves="[{ row: 4, col: 1 }]"
+            :last-move="{ from: { row: 2, col: 1 }, to: { row: 3, col: 2 } }"
           />
           <v-card v-else rounded="xl" class="h-100 arena-interactive">
             <v-card-title>{{ commonSurfaceProps.gameName }}</v-card-title>
