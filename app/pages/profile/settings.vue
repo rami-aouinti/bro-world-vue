@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
@@ -102,42 +102,52 @@ const sessions = [
 ]
 
 const activeSection = ref(settingsSections[0]?.id ?? '')
+const sectionObserver = ref<IntersectionObserver | null>(null)
+
+const updateHash = (sectionId: string) => {
+  history.replaceState(null, '', `#${sectionId}`)
+}
 
 const scrollToSection = (sectionId: string) => {
   activeSection.value = sectionId
+  updateHash(sectionId)
   document.getElementById(sectionId)?.scrollIntoView({
     behavior: 'smooth',
     block: 'start',
   })
 }
 
-const updateActiveSection = () => {
-  const scrollOffset = 140
-  let currentSection = settingsSections[0]?.id ?? ''
-
-  for (const section of settingsSections) {
-    const element = document.getElementById(section.id)
-
-    if (!element) continue
-
-    if (element.getBoundingClientRect().top - scrollOffset <= 0) {
-      currentSection = section.id
-      continue
-    }
-
-    break
-  }
-
-  activeSection.value = currentSection
-}
-
 onMounted(() => {
-  updateActiveSection()
-  window.addEventListener('scroll', updateActiveSection, { passive: true })
+  const sectionElements = settingsSections
+    .map(({ id }) => document.getElementById(id))
+    .filter((element): element is HTMLElement => Boolean(element))
+
+  if (!sectionElements.length) return
+
+  sectionObserver.value = new IntersectionObserver(
+    (entries) => {
+      const visibleEntries = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
+
+      const nextVisibleSection = visibleEntries[0]?.target.getAttribute('id')
+
+      if (!nextVisibleSection) return
+
+      activeSection.value = nextVisibleSection
+    },
+    {
+      threshold: [0.15, 0.35, 0.6],
+      rootMargin: '-120px 0px -45% 0px',
+    },
+  )
+
+  sectionElements.forEach((element) => sectionObserver.value?.observe(element))
 })
 
-onBeforeUnmount(() => {
-  window.removeEventListener('scroll', updateActiveSection)
+onUnmounted(() => {
+  sectionObserver.value?.disconnect()
+  sectionObserver.value = null
 })
 </script>
 
@@ -327,6 +337,10 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+:global(html) {
+  scroll-behavior: smooth;
+}
+
 .settings-section {
   scroll-margin-top: 120px;
 }
