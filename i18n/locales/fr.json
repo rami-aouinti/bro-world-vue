@@ -380,7 +380,8 @@
         "block": "Block",
         "unblock": "Unblock",
         "cancel": "Cancel",
-        "resend": "Resend"
+        "resend": "Resend",
+        "send": "Send"
       },
       "sections": {
         "friends": {
@@ -407,6 +408,10 @@
       "errors": {
         "load": "Error while loading data.",
         "action": "Error while processing action {action}."
+      },
+      "suggestions": {
+        "title": "Suggestions",
+        "emptyText": "No friend suggestions available."
       }
     },
     "about": {
