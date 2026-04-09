@@ -34,12 +34,19 @@ function withPlaySurfaceComponent(game: GamesCatalogGame): GamesCatalogGame {
 }
 
 function enrichCategory(category: GamesCatalogCategory): GamesCatalogCategory {
+  const categoryGames = Array.isArray(category.games) ? category.games : []
+  const subCategories = Array.isArray(category.subCategories)
+    ? category.subCategories
+    : []
+
   return {
     ...category,
-    games: category.games.map(withPlaySurfaceComponent),
-    subCategories: category.subCategories.map((subCategory) => ({
+    games: categoryGames.map(withPlaySurfaceComponent),
+    subCategories: subCategories.map((subCategory) => ({
       ...subCategory,
-      games: subCategory.games.map(withPlaySurfaceComponent),
+      games: Array.isArray(subCategory.games)
+        ? subCategory.games.map(withPlaySurfaceComponent)
+        : [],
     })),
   }
 }
@@ -54,6 +61,6 @@ export default defineEventHandler(
       },
     )
 
-    return catalog.map(enrichCategory)
+    return Array.isArray(catalog) ? catalog.map(enrichCategory) : []
   },
 )
