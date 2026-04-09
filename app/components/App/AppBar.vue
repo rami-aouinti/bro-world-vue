@@ -301,7 +301,7 @@ function isMenuActive(paths: string[]) {
 
     <div class="app-top-bar__right">
       <v-app-bar-nav-icon
-        class="app-top-bar__right-drawer-toggle mx-5"
+        class="app-top-bar__right-drawer-toggle"
         :aria-label="
           showRightDrawer
             ? t('appbar.hideRightDrawer')
@@ -474,7 +474,7 @@ function isMenuActive(paths: string[]) {
 
 <style scoped>
 .app-bar {
-  --app-right-drawer-width: 300px;
+  --app-right-drawer-width: 340px;
   --app-right-drawer-gap: 16px;
   position: fixed;
   top: var(--ui-spacing-sm);
