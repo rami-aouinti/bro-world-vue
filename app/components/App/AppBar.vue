@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { mergeProps } from 'vue'
+import { useStorage } from '@vueuse/core'
 import type { SessionUser } from '~/types/session'
 
 const theme = useTheme()
@@ -8,6 +9,7 @@ const showLeftDrawer = useState('show-left-drawer', () => true)
 const showRightDrawer = useState('show-right-drawer', () => true)
 const route = useRoute()
 const { t } = useI18n()
+const vision = useStorage<'light' | 'dark'>('color-scheme', 'dark')
 
 const navItems = [
   { label: 'appbar.service', to: '/service', icon: 'mdi-briefcase-outline' },
@@ -20,7 +22,9 @@ const isDark = computed({
     return theme.current.value.dark
   },
   set(v) {
-    theme.change(v ? 'dark' : 'light')
+    const next = v ? 'dark' : 'light'
+    vision.value = next
+    theme.change(next)
   },
 })
 
