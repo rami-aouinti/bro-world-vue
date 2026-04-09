@@ -185,6 +185,7 @@ function toggleLeftDrawer() {
           to="/calendar"
         />
       </template>
+      <AppNotification />
       <v-menu location="bottom">
         <template #activator="{ props: menu }">
           <v-tooltip

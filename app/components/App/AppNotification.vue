@@ -122,10 +122,10 @@ function toggleAll() {
   border: 0;
 }
 .notification-card {
-  z-index: 1;
+  z-index: 1400;
   position: fixed;
   right: 15px;
-  bottom: 48px;
+  bottom: 16px;
   max-height: 100vh;
   overflow: visible;
   visibility: hidden;
