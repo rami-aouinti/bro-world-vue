@@ -427,6 +427,16 @@ export const useGameCatalogStore = defineStore('game-catalog', {
         return response
       } catch (error) {
         const httpError = buildHttpError(error, 'Unable to start session.')
+
+        if (httpError.status === 401) {
+          const unauthorizedError = new Error(
+            'Vous devez être connecté pour démarrer une partie.',
+          ) as HttpErrorLike
+          unauthorizedError.status = 401
+          this.error = unauthorizedError.message
+          throw unauthorizedError
+        }
+
         this.error = httpError.message
         throw httpError
       } finally {
