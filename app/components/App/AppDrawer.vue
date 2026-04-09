@@ -58,12 +58,14 @@ const drawerState = useState('drawer', () => true)
 const { mobile } = useDisplay()
 const registry = useDrawerSlotRegistry()
 const isDrawerInteractiveReady = ref(false)
-const drawer = computed({
+const drawerModel = computed({
   get() {
-    return drawerState.value
+    return mobile.value ? drawerState.value : true
   },
   set(val: boolean) {
-    drawerState.value = val
+    if (mobile.value) {
+      drawerState.value = val
+    }
   },
 })
 const rail = computed(() => !drawerState.value && !mobile.value)
@@ -81,7 +83,7 @@ onMounted(() => {
 
 <template>
   <v-navigation-drawer
-    v-model="drawer"
+    v-model="drawerModel"
     :expand-on-hover="rail"
     :rail="rail"
     width="260"
