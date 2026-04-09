@@ -52,7 +52,9 @@ function normalizeCategoryKey(categoryKey: string) {
 
 const playSurfaceType = computed<'card' | 'board' | 'default'>(() => {
   const normalizedCategory = normalizeCategoryKey(
-    selectedCategory.value?.key || selectedCategory.value?.name || '',
+    selectedCategory.value?.key ||
+      selectedCategory.value?.name ||
+      categoryParam.value,
   )
 
   if (normalizedCategory === 'card') return 'card'
@@ -124,26 +126,6 @@ async function onFinish(result: 'win' | 'lose') {
   }
 }
 
-const breadcrumbs = computed(() => [
-  { title: 'Games', to: '/games' },
-  {
-    title:
-      selectedCategory.value?.key || selectedCategory.value?.name || 'Category',
-    to: `/games/${categoryParam.value}`,
-  },
-  {
-    title:
-      selectedSubCategory.value?.key ||
-      selectedSubCategory.value?.name ||
-      'Subcategory',
-    to: `/games/${categoryParam.value}/${subCategoryParam.value}`,
-  },
-  {
-    title: selectedGame.value?.key || selectedGame.value?.name || 'Game',
-    to: `/games/${categoryParam.value}/${subCategoryParam.value}/${gameParam.value}`,
-  },
-  { title: 'Play', disabled: true },
-])
 </script>
 
 <template>
@@ -217,19 +199,11 @@ const breadcrumbs = computed(() => [
             v-if="playSurfaceType === 'card'"
             v-bind="commonSurfaceProps"
             class="arena-interactive"
-            :game-name="gameParam.name"
-            :level="currentSession.level"
-            :session-id="currentSession.id"
-            :status="currentSession.status"
           />
           <BoardTablePlaySurface
             v-else-if="playSurfaceType === 'board'"
             v-bind="commonSurfaceProps"
             class="arena-interactive"
-            :game-name="gameParam.name"
-            :level="currentSession.level"
-            :session-id="currentSession.id"
-            :status="currentSession.status"
           />
           <v-card v-else rounded="xl" class="h-100 arena-interactive">
             <v-card-title>{{ commonSurfaceProps.gameName }}</v-card-title>
