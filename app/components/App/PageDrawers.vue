@@ -2,6 +2,8 @@
 import { onUnmounted, useSlots } from 'vue'
 
 const slots = useSlots()
+const route = useRoute()
+const mountedRoutePath = route.fullPath
 
 const registry = useDrawerSlotRegistry()
 
@@ -19,6 +21,10 @@ if (hasRight) {
 }
 
 onUnmounted(() => {
+  if (route.fullPath === mountedRoutePath) {
+    return
+  }
+
   if (hasLeft && registry?.left.value === leftRenderer) {
     registry.setLeft(null)
   }
