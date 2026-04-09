@@ -106,3 +106,14 @@ html.dark {
 :is(.v-list, .v-overlay__content, .v-card) {
   box-shadow: var(--app-shadow) !important;
 }
+
+:is(
+  .v-text-field .v-field,
+  .v-select .v-field,
+  .v-textarea .v-field,
+  .v-autocomplete .v-field,
+  .v-combobox .v-field,
+  .v-file-input .v-field
+) {
+  border-radius: var(--app-rounded) !important;
+}
