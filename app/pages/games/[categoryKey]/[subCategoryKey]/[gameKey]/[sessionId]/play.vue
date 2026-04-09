@@ -264,7 +264,6 @@ async function onFinish(result: 'win' | 'lose') {
 
 :deep(.arena-surface-wrap .board-grid) {
   width: 100%;
-  max-height: none;
 }
 
 .arena-panel-card {
