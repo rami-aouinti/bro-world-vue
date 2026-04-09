@@ -298,6 +298,25 @@ async function onExternalEventReceive(receiveInfo: {
   }
 }
 
+function initPresetDraggable() {
+  if (!presetEventsHost.value || presetEventsDraggable) return
+
+  presetEventsDraggable = new Draggable(presetEventsHost.value, {
+    itemSelector: '.calendar-preset-event',
+    eventData: (eventEl) => {
+      const title = eventEl.getAttribute('data-title') || ''
+      const color = eventEl.getAttribute('data-color') || undefined
+      return {
+        title,
+        duration: '01:00',
+        backgroundColor: color,
+        borderColor: color,
+        textColor: '#ffffff',
+      }
+    },
+  })
+}
+
 async function saveEvent() {
   if (!form.title.trim() || !form.startAt || !form.endAt) return
 
@@ -371,25 +390,19 @@ async function cancelEvent() {
   }
 }
 
+watch(
+  () => [isPageSkeletonVisible.value, presetEventsHost.value],
+  async ([skeletonVisible]) => {
+    if (skeletonVisible) return
+    await nextTick()
+    initPresetDraggable()
+  },
+  { immediate: true },
+)
+
 onMounted(async () => {
   await loadEvents()
-
-  if (presetEventsHost.value) {
-    presetEventsDraggable = new Draggable(presetEventsHost.value, {
-      itemSelector: '.calendar-preset-event',
-      eventData: (eventEl) => {
-        const title = eventEl.getAttribute('data-title') || ''
-        const color = eventEl.getAttribute('data-color') || undefined
-        return {
-          title,
-          duration: '01:00',
-          backgroundColor: color,
-          borderColor: color,
-          textColor: '#ffffff',
-        }
-      },
-    })
-  }
+  initPresetDraggable()
 })
 
 onUnmounted(() => {
