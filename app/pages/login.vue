@@ -45,7 +45,7 @@ async function onSubmit(payload: { username?: string; password: string }) {
 </script>
 
 <template>
-  <v-container fluid class="auth-page pa-6 pa-md-10">
+  <v-container fluid class="auth-page pa-6 pa-md-10 d-flex align-center justify-center">
     <v-row class="fill-height" align="center" justify="center">
       <v-col cols="12" md="7" lg="5">
         <AuthFormCard mode="login" :loading="loading" @submit="onSubmit">
@@ -65,16 +65,7 @@ async function onSubmit(payload: { username?: string; password: string }) {
 .auth-page {
   min-height: 100vh;
   background:
-    radial-gradient(
-      circle at 10% 20%,
-      rgb(92 123 229 / 25%) 0%,
-      transparent 35%
-    ),
-    radial-gradient(
-      circle at 90% 80%,
-      rgb(126 87 194 / 24%) 0%,
-      transparent 35%
-    ),
-    #f8f9fa;
+    linear-gradient(rgb(10 15 36 / 55%), rgb(10 15 36 / 55%)),
+    url('/cover.webp') center / cover no-repeat;
 }
 </style>

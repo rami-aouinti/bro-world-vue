@@ -111,6 +111,36 @@ async function onSocialLogin(provider: SocialProvider) {
       </div>
 
       <v-form v-model="valid" class="pa-6" @submit.prevent="onSubmit">
+        <div class="social-icons-wrap mb-5">
+          <div
+            class="d-flex justify-center ga-4"
+            role="group"
+            :aria-label="t('auth.social.groupAria')"
+          >
+            <v-btn
+              v-for="provider in socialProviders"
+              :key="provider.key"
+              icon
+              variant="tonal"
+              color="primary"
+              class="social-icon-btn"
+              :loading="socialLoadingProvider === provider.key"
+              :disabled="loading || !!socialLoadingProvider"
+              :aria-label="
+                t('auth.social.continueWith', { provider: provider.label })
+              "
+              @click="onSocialLogin(provider.key)"
+            >
+              <v-icon>{{ provider.icon }}</v-icon>
+            </v-btn>
+          </div>
+          <div class="social-divider mt-4 mb-1">
+            <v-divider />
+            <span class="text-medium-emphasis font-weight-medium px-3">or</span>
+            <v-divider />
+          </div>
+        </div>
+
         <v-text-field
           v-if="isRegister"
           v-model="form.name"
@@ -197,32 +227,6 @@ async function onSocialLogin(provider: SocialProvider) {
           {{ isRegister ? t('auth.register.submit') : t('auth.login.submit') }}
         </v-btn>
 
-        <v-divider class="my-4" />
-
-        <div
-          class="d-flex flex-column ga-2"
-          role="group"
-          :aria-label="t('auth.social.groupAria')"
-        >
-          <v-btn
-            v-for="provider in socialProviders"
-            :key="provider.key"
-            variant="outlined"
-            block
-            color="primary"
-            class="text-none"
-            :prepend-icon="provider.icon"
-            :loading="socialLoadingProvider === provider.key"
-            :disabled="loading || !!socialLoadingProvider"
-            :aria-label="
-              t('auth.social.continueWith', { provider: provider.label })
-            "
-            @click="onSocialLogin(provider.key)"
-          >
-            {{ t('auth.social.continueWith', { provider: provider.label }) }}
-          </v-btn>
-        </div>
-
         <div class="text-center text-body-2 mt-4">
           <slot name="switch" />
         </div>
@@ -234,5 +238,16 @@ async function onSocialLogin(provider: SocialProvider) {
 <style scoped>
 .auth-card {
   overflow: hidden;
+}
+
+.social-icon-btn {
+  width: 48px;
+  height: 48px;
+}
+
+.social-divider {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
 }
 </style>
