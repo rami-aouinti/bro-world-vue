@@ -322,7 +322,12 @@ async function onFinish(result: 'win' | 'lose') {
           <v-card-subtitle>Play surface</v-card-subtitle>
           <v-card-text class="py-8">
             <div class="text-medium-emphasis">
-              Surface non spécialisée pour ce jeu.
+              {{
+                tOrFallback(
+                  'gamePage.session.genericSurfaceFallback',
+                  'Generic surface for this game.',
+                )
+              }}
             </div>
           </v-card-text>
         </v-card>
