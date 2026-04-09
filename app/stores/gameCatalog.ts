@@ -26,6 +26,12 @@ interface GameItem {
   icon?: string | null
   component?: string | null
   enabled?: boolean
+  minPlayers?: number
+  maxPlayers?: number
+  allowedPlayerCounts?: number[]
+  supportsAiOpponent?: boolean
+  requiresOpponent?: boolean
+  playSurfaceComponent?: string | null
 }
 
 interface GameSubCategory {
@@ -55,11 +61,58 @@ interface GameCategory {
   games?: GameItem[]
 }
 
+function normalizeAllowedPlayerCounts(
+  raw: unknown,
+  minPlayers: number,
+  maxPlayers: number,
+) {
+  if (!Array.isArray(raw)) {
+    return Array.from(
+      { length: Math.max(1, maxPlayers - minPlayers + 1) },
+      (_, index) => minPlayers + index,
+    )
+  }
+
+  const normalized = raw
+    .filter((value): value is number => typeof value === 'number')
+    .filter((value) => Number.isFinite(value) && Number.isInteger(value))
+    .filter((value) => value >= minPlayers && value <= maxPlayers)
+    .sort((a, b) => a - b)
+    .filter((value, index, values) => values.indexOf(value) === index)
+
+  return normalized.length
+    ? normalized
+    : Array.from(
+        { length: Math.max(1, maxPlayers - minPlayers + 1) },
+        (_, index) => minPlayers + index,
+      )
+}
+
 function normalizeGameItem(raw: unknown): GameItem | null {
   if (!raw || typeof raw !== 'object') return null
 
   const item = raw as Record<string, unknown>
   if (typeof item.id !== 'string') return null
+
+  const minPlayers =
+    typeof item.minPlayers === 'number' &&
+    Number.isFinite(item.minPlayers) &&
+    Number.isInteger(item.minPlayers) &&
+    item.minPlayers > 0
+      ? item.minPlayers
+      : 1
+  const maxPlayers =
+    typeof item.maxPlayers === 'number' &&
+    Number.isFinite(item.maxPlayers) &&
+    Number.isInteger(item.maxPlayers) &&
+    item.maxPlayers >= minPlayers
+      ? item.maxPlayers
+      : minPlayers
+  const allowedPlayerCounts = normalizeAllowedPlayerCounts(
+    item.allowedPlayerCounts,
+    minPlayers,
+    maxPlayers,
+  )
 
   return {
     id: item.id,
@@ -75,6 +128,21 @@ function normalizeGameItem(raw: unknown): GameItem | null {
     icon: typeof item.icon === 'string' ? item.icon : null,
     component: typeof item.component === 'string' ? item.component : null,
     enabled: typeof item.enabled === 'boolean' ? item.enabled : true,
+    minPlayers,
+    maxPlayers,
+    allowedPlayerCounts,
+    supportsAiOpponent:
+      typeof item.supportsAiOpponent === 'boolean'
+        ? item.supportsAiOpponent
+        : false,
+    requiresOpponent:
+      typeof item.requiresOpponent === 'boolean' ? item.requiresOpponent : false,
+    playSurfaceComponent:
+      typeof item.playSurfaceComponent === 'string'
+        ? item.playSurfaceComponent
+        : typeof item.component === 'string'
+          ? item.component
+          : null,
   }
 }
 
