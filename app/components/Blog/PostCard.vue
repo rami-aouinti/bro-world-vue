@@ -32,6 +32,7 @@ type BlogComment = {
 
 type BlogPost = {
   id: string | number
+  slug?: string | null
   author?: BlogAuthor | null
   createdAt: string | null
   content: string
@@ -82,10 +83,25 @@ const formattedDate = computed(() => {
 })
 
 const commentsCount = computed(() => props.post.comments?.length ?? 0)
-const authorName = computed(
-  () => props.post.author?.displayName || t('blog.post.fallbackTitle'),
-)
+const authorName = computed(() => {
+  const author = props.post.author
+  if (!author) {
+    return t('blog.post.fallbackTitle')
+  }
+
+  const fullName = [author.firstName, author.lastName].filter(Boolean).join(' ').trim()
+
+  return author.displayName || fullName || author.username || t('blog.post.fallbackTitle')
+})
 const authorPhoto = computed(() => props.post.author?.photo || null)
+const authorProfilePath = computed(() => {
+  const username = props.post.author?.username?.trim()
+  return username ? `/user/${encodeURIComponent(username)}/profile` : null
+})
+const postDetailPath = computed(() => {
+  const slug = props.post.slug?.trim()
+  return slug ? `/blog/${encodeURIComponent(slug)}/post` : null
+})
 const normalizedReactions = computed(() =>
   (props.post.reactions || [])
     .filter(
@@ -169,25 +185,63 @@ function onShare() {
 
   emit('share', props.post)
 }
+
+function isInteractiveElement(target: EventTarget | null) {
+  if (!(target instanceof Element)) {
+    return false
+  }
+
+  return Boolean(
+    target.closest(
+      'a, button, input, textarea, [role="button"], .v-btn, .v-input, .v-field',
+    ),
+  )
+}
+
+async function onCardClick(event: MouseEvent) {
+  if (!postDetailPath.value || isInteractiveElement(event.target)) {
+    return
+  }
+
+  await navigateTo(postDetailPath.value)
+}
 </script>
 
 <template>
   <v-card
     rounded="xl"
     class="post-card"
-    :class="{ 'post-card--light': isLightTheme }"
+    :class="{
+      'post-card--light': isLightTheme,
+      'post-card--clickable': Boolean(postDetailPath),
+    }"
     elevation="0"
+    @click="onCardClick"
   >
     <v-card-item class="pb-1">
       <template #prepend>
-        <v-avatar size="52" color="grey-darken-2" class="me-3">
-          <v-img v-if="authorPhoto" :src="authorPhoto" :alt="`${authorName} avatar`" />
-          <v-icon v-else icon="mdi-account" />
-        </v-avatar>
+        <component
+          :is="authorProfilePath ? 'NuxtLink' : 'div'"
+          :to="authorProfilePath || undefined"
+          class="post-author-link"
+          @click.stop
+        >
+          <v-avatar size="52" color="grey-darken-2" class="me-3">
+            <v-img v-if="authorPhoto" :src="authorPhoto" :alt="`${authorName} avatar`" />
+            <v-icon v-else icon="mdi-account" />
+          </v-avatar>
+        </component>
       </template>
 
       <v-card-title class="text-h6 font-weight-bold">
-        {{ authorName }}
+        <component
+          :is="authorProfilePath ? 'NuxtLink' : 'span'"
+          :to="authorProfilePath || undefined"
+          class="post-author-link"
+          @click.stop
+        >
+          {{ authorName }}
+        </component>
       </v-card-title>
       <v-card-subtitle class="text-medium-emphasis">
         {{ formattedDate }} ·
@@ -313,6 +367,15 @@ function onShare() {
   line-height: 1.5;
   margin-bottom: 1rem;
   text-align: left;
+}
+
+.post-card--clickable {
+  cursor: pointer;
+}
+
+.post-author-link {
+  text-decoration: none;
+  color: inherit;
 }
 
 .post-card--light :deep(.comment-input .v-field) {

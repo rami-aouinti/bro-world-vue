@@ -7,6 +7,7 @@ const { t } = useI18n()
 const theme = useTheme()
 const vision = useStorage('color-scheme', 'dark')
 const primary = useStorage('theme-primary', '#e91e63')
+const primaryGradient = useStorage('theme-primary-gradient', '#f06292')
 const rounded = useStorage('theme-rounded', 'md')
 const shadow = useStorage('theme-shadow', 'none')
 
@@ -31,6 +32,30 @@ const shadowOptions = computed(() => [
   { title: t('appbar.shadow.strong'), value: 'strong' },
 ])
 
+
+function clampChannel(value: number) {
+  return Math.max(0, Math.min(255, Math.round(value)))
+}
+
+function shiftHexColor(hex: string, shift: number) {
+  const normalized = hex.replace('#', '')
+  if (normalized.length !== 6) return hex
+
+  const channels = [
+    Number.parseInt(normalized.slice(0, 2), 16),
+    Number.parseInt(normalized.slice(2, 4), 16),
+    Number.parseInt(normalized.slice(4, 6), 16),
+  ]
+
+  if (channels.some((channel) => Number.isNaN(channel))) {
+    return hex
+  }
+
+  return `#${channels
+    .map((channel) => clampChannel(channel + shift).toString(16).padStart(2, '0'))
+    .join('')}`
+}
+
 function toHexColor(value: string) {
   if (!value.startsWith('rgb')) return value
   const [r = 0, g = 0, b = 0] = value
@@ -47,21 +72,43 @@ function toHexColor(value: string) {
 
 function applyPrimaryColor(value: string) {
   const next = toHexColor(value)
+  const nextGradient = shiftHexColor(next, 18)
+
   primary.value = next
+  primaryGradient.value = nextGradient
+
   if (theme.themes.value.light?.colors) {
-    Object.assign(theme.themes.value.light.colors, { primary: next })
+    Object.assign(theme.themes.value.light.colors, {
+      primary: next,
+      'primary-gradient': nextGradient,
+    })
   }
   if (theme.themes.value.dark?.colors) {
-    Object.assign(theme.themes.value.dark.colors, { primary: next })
+    Object.assign(theme.themes.value.dark.colors, {
+      primary: next,
+      'primary-gradient': nextGradient,
+    })
   }
-  Object.assign(theme.global.current.value.colors, { primary: next })
+  Object.assign(theme.global.current.value.colors, {
+    primary: next,
+    'primary-gradient': nextGradient,
+  })
 
   if (import.meta.client) {
     document.documentElement.style.setProperty('--color-primary', next)
+    document.documentElement.style.setProperty('--color-primary-gradient', nextGradient)
   }
 }
 
 watch(primary, (value) => applyPrimaryColor(value), { immediate: true })
+
+watch(
+  vision,
+  (value) => {
+    theme.change(value === 'light' ? 'light' : 'dark')
+  },
+  { immediate: true },
+)
 
 const color = computed({
   get() {

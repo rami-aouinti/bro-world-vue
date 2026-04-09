@@ -35,6 +35,7 @@ type BlogComment = {
 
 type BlogPost = {
   id: string | number
+  slug: string | null
   author: BlogAuthor | null
   title: string | null
   content: string
@@ -212,6 +213,7 @@ function normalizePost(input: unknown): BlogPost {
 
   return {
     id: pickId(post),
+    slug: pickNullableString(post.slug),
     author: normalizeAuthor(post.author ?? post.user),
     title: pickNullableString(post.title),
     content: pickString(post.content),
