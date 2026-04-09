@@ -144,7 +144,7 @@ const calendarOptions = computed(() => {
         | undefined
       if (event) openEditDialog(event)
     },
-    eventReceive: onExternalEventReceive,
+    drop: onExternalDrop,
     eventDrop: onEventDrop,
     height: 'auto',
   }
@@ -267,32 +267,22 @@ async function onEventDrop(dropInfo: {
   }
 }
 
-async function onExternalEventReceive(receiveInfo: {
-  event: {
-    title: string
-    start: Date | null
-    end: Date | null
-    allDay: boolean
-    backgroundColor: string
-    borderColor: string
-    remove: () => void
-  }
-  revert: () => void
+async function onExternalDrop(dropInfo: {
+  date: Date
+  allDay: boolean
+  draggedEl: HTMLElement
 }) {
-  if (!receiveInfo.event.start) {
-    receiveInfo.revert()
-    return
-  }
+  const title = dropInfo.draggedEl.getAttribute('data-title')?.trim() || ''
+  if (!title) return
 
-  const fallbackEnd = new Date(
-    receiveInfo.event.start.getTime() + 60 * 60 * 1000,
-  )
+  const startAt = dropInfo.date
+  const fallbackEnd = new Date(startAt.getTime() + 60 * 60 * 1000)
   const payload: EventMutationPayload = {
-    title: receiveInfo.event.title,
+    title,
     description: null,
-    startAt: receiveInfo.event.start.toISOString(),
-    endAt: (receiveInfo.event.end || fallbackEnd).toISOString(),
-    isAllDay: receiveInfo.event.allDay,
+    startAt: startAt.toISOString(),
+    endAt: fallbackEnd.toISOString(),
+    isAllDay: dropInfo.allDay,
     location: null,
     timezone: currentTimezone.value,
   }
@@ -302,10 +292,8 @@ async function onExternalEventReceive(receiveInfo: {
       method: 'POST',
       body: payload,
     })
-    receiveInfo.event.remove()
     await loadEvents()
   } catch (error) {
-    receiveInfo.revert()
     errorMessage.value = t('pages.calendar.errors.saveFailed')
     console.error(error)
   }
@@ -327,6 +315,7 @@ function initPresetDraggable() {
       return {
         title,
         duration: '01:00',
+        create: false,
         backgroundColor: color,
         borderColor: color,
         textColor: '#ffffff',
@@ -492,7 +481,7 @@ onUnmounted(() => {
         <v-alert v-if="errorMessage" type="error" class="mb-4" variant="tonal">
           {{ errorMessage }}
         </v-alert>
-        <v-card variant="text">
+        <v-card variant="text" class="postcard-gradient-card">
           <v-card-text>
             <v-skeleton-loader
               v-if="isLoading"
@@ -595,6 +584,18 @@ onUnmounted(() => {
 
 .calendar-preset-event {
   cursor: grab;
+}
+
+.calendar-preset-event.fc-event-dragging {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+:deep(.fc-event.fc-event-dragging),
+:deep(.fc-event.fc-event-mirror) {
+  opacity: 1 !important;
+  visibility: visible !important;
+  z-index: 20 !important;
 }
 
 :deep(.fc .fc-toolbar-title) {

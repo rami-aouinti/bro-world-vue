@@ -198,7 +198,7 @@ onMounted(() => fetchFriendsData())
             :key="section.title"
             cols="12"
           >
-            <v-card variant="outlined">
+            <v-card variant="text" class="postcard-gradient-card">
               <v-card-title class="d-flex align-center ga-2">
                 <v-icon :icon="section.icon" />
                 {{ section.title }}

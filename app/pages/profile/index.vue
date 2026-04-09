@@ -54,7 +54,7 @@ onMounted(() => fetchProfile())
           {{ error }}
         </v-alert>
 
-        <v-card v-if="profile" variant="outlined">
+        <v-card v-if="profile" variant="text" class="postcard-gradient-card">
           <v-card-text
             class="d-flex flex-column flex-md-row ga-4 align-start align-md-center"
           >
