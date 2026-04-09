@@ -13,6 +13,7 @@ type FriendAction =
   | 'reject'
   | 'block'
   | 'unblock'
+  | 'message'
 
 type PublicUser = {
   id: string
@@ -60,6 +61,7 @@ const excludedSuggestionIds = computed(() => {
 
 const sectionConfigs = computed(() => [
   {
+    id: 'friends',
     title: t('pages.friends.sections.friends.title'),
     subtitle: t('pages.friends.sections.friends.subtitle'),
     icon: 'mdi-account-group-outline',
@@ -68,6 +70,7 @@ const sectionConfigs = computed(() => [
     actions: [
       {
         label: t('pages.friends.actions.block'),
+        icon: 'mdi-block-helper',
         action: 'block' as const,
         color: 'error',
         variant: 'tonal' as const,
@@ -75,6 +78,7 @@ const sectionConfigs = computed(() => [
     ],
   },
   {
+    id: 'requests',
     title: t('pages.friends.sections.requests.title'),
     subtitle: t('pages.friends.sections.requests.subtitle'),
     icon: 'mdi-account-arrow-right-outline',
@@ -83,18 +87,21 @@ const sectionConfigs = computed(() => [
     actions: [
       {
         label: t('pages.friends.actions.accept'),
+        icon: 'mdi-check',
         action: 'accept' as const,
         color: 'success',
         variant: 'flat' as const,
       },
       {
         label: t('pages.friends.actions.reject'),
+        icon: 'mdi-close',
         action: 'reject' as const,
         color: 'error',
         variant: 'tonal' as const,
       },
       {
         label: t('pages.friends.actions.block'),
+        icon: 'mdi-block-helper',
         action: 'block' as const,
         color: 'error',
         variant: 'text' as const,
@@ -102,6 +109,7 @@ const sectionConfigs = computed(() => [
     ],
   },
   {
+    id: 'invitations',
     title: t('pages.friends.sections.invitations.title'),
     subtitle: t('pages.friends.sections.invitations.subtitle'),
     icon: 'mdi-account-arrow-left-outline',
@@ -110,12 +118,14 @@ const sectionConfigs = computed(() => [
     actions: [
       {
         label: t('pages.friends.actions.cancel'),
+        icon: 'mdi-close-circle-outline',
         action: 'cancel' as const,
         color: 'warning',
         variant: 'tonal' as const,
       },
       {
         label: t('pages.friends.actions.block'),
+        icon: 'mdi-block-helper',
         action: 'block' as const,
         color: 'error',
         variant: 'text' as const,
@@ -123,6 +133,7 @@ const sectionConfigs = computed(() => [
     ],
   },
   {
+    id: 'blocked',
     title: t('pages.friends.sections.blocked.title'),
     subtitle: t('pages.friends.sections.blocked.subtitle'),
     icon: 'mdi-block-helper',
@@ -131,6 +142,7 @@ const sectionConfigs = computed(() => [
     actions: [
       {
         label: t('pages.friends.actions.unblock'),
+        icon: 'mdi-lock-open-variant-outline',
         action: 'unblock' as const,
         color: 'primary',
         variant: 'tonal' as const,
@@ -159,7 +171,12 @@ function shuffleUsers(items: PublicUser[]) {
   for (let index = shuffled.length - 1; index > 0; index -= 1) {
     const randomIndex = Math.floor(Math.random() * (index + 1))
     const current = shuffled[index]
-    shuffled[index] = shuffled[randomIndex]
+    const randomItem = shuffled[randomIndex]
+
+    if (!current || !randomItem) {
+      continue
+    }
+    shuffled[index] = randomItem
     shuffled[randomIndex] = current
   }
 
@@ -210,6 +227,15 @@ async function applyAction(userId: string, action: FriendAction) {
   actionLoadingType.value = action
 
   try {
+    if (action === 'message') {
+      const conversation = await api<{ id: string }>(
+        `/api/chat/private/conversation/${userId}/user`,
+        { method: 'POST' },
+      )
+      await navigateTo(`/inbox/${conversation.id}`)
+      return
+    }
+
     if (action === 'unblock') {
       await api(`/api/users/${userId}/block`, { method: 'DELETE' })
     } else {
@@ -278,13 +304,12 @@ onMounted(async () => {
               <template #append>
                 <v-btn
                   color="primary"
-                  variant="tonal"
-                  size="small"
+                  variant="text"
+                  icon="mdi-account-plus-outline"
                   :loading="isActionLoading(item.id, 'request')"
+                  :aria-label="t('pages.friends.actions.send')"
                   @click="applyAction(item.id, 'request')"
-                >
-                  {{ t('pages.friends.actions.send') }}
-                </v-btn>
+                />
               </template>
             </v-list-item>
           </v-list>
@@ -339,31 +364,33 @@ onMounted(async () => {
                   <template #append>
                     <div class="d-flex ga-2 flex-wrap justify-end">
                       <v-btn
+                        v-if="section.id === 'friends'"
+                        color="primary"
+                        variant="tonal"
+                        icon="mdi-message-text-outline"
+                        :aria-label="t('appbar.inbox')"
+                        :loading="isActionLoading(item.id, 'message')"
+                        @click="applyAction(item.id, 'message')"
+                      />
+                      <v-btn
                         v-for="btn in section.actions"
                         :key="`${item.id}-${btn.action}`"
                         :color="btn.color"
                         :variant="btn.variant"
-                        size="small"
+                        :icon="btn.icon"
+                        :aria-label="btn.label"
                         :loading="isActionLoading(item.id, btn.action)"
                         @click="applyAction(item.id, btn.action)"
-                      >
-                        {{ btn.label }}
-                      </v-btn>
+                      />
                       <v-btn
-                        v-if="
-                          section.title !==
-                            t('pages.friends.sections.friends.title') &&
-                          section.title !==
-                            t('pages.friends.sections.blocked.title')
-                        "
-                        size="small"
+                        v-if="section.id !== 'friends' && section.id !== 'blocked'"
                         color="primary"
-                        variant="outlined"
+                        variant="tonal"
+                        icon="mdi-send-outline"
+                        :aria-label="t('pages.friends.actions.resend')"
                         :loading="isActionLoading(item.id, 'request')"
                         @click="applyAction(item.id, 'request')"
-                      >
-                        {{ t('pages.friends.actions.resend') }}
-                      </v-btn>
+                      />
                     </div>
                   </template>
                 </v-list-item>
