@@ -101,3 +101,20 @@ export interface GamesSessionFinishResponse extends ApiObject {
   userGame: GamesUserGame
   coins: number
 }
+
+export interface GamesPublicCatalogItem extends ApiObject {
+  id: string
+  key: string
+  nameKey?: string | null
+  descriptionKey?: string | null
+  img?: string | null
+  icon?: string | null
+  component?: string | null
+  categoryKey?: string | null
+  subcategoryKey?: string | null
+  status?: string | null
+}
+
+export type GamesPublicCatalogApiResponse = ApiObject & {
+  items: GamesPublicCatalogItem[]
+}

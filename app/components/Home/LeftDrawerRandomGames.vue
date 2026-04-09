@@ -1,0 +1,97 @@
+<script setup lang="ts">
+interface RandomGameItem {
+  id: string
+  key: string
+  nameKey?: string | null
+  img?: string | null
+}
+
+const { ensureCatalogLoaded, catalogStore, entityRouteValue, tOrFallback } =
+  useGamesCatalogNavigation()
+
+const { data: randomGames, pending } = await useAsyncData(
+  'home-left-random-games',
+  () => $fetch<RandomGameItem[]>('/api/games/random', { query: { limit: 3 } }),
+  {
+    default: () => [],
+  },
+)
+
+onMounted(async () => {
+  await ensureCatalogLoaded()
+})
+
+function resolveGameRoute(game: RandomGameItem) {
+  for (const category of catalogStore.categories) {
+    for (const subCategory of category.subCategories ?? []) {
+      const found = subCategory.games?.find(
+        (candidate) => candidate.id === game.id || candidate.key === game.key,
+      )
+
+      if (!found) continue
+
+      return `/games/${entityRouteValue(category)}/${entityRouteValue(subCategory)}/${entityRouteValue(found)}`
+    }
+  }
+
+  return null
+}
+
+async function playGame(game: RandomGameItem) {
+  await ensureCatalogLoaded()
+  const route = resolveGameRoute(game)
+
+  if (route) {
+    await navigateTo(route)
+    return
+  }
+
+  await navigateTo('/games')
+}
+</script>
+
+<template>
+  <div>
+    <v-card-title class="text-subtitle-1">
+      {{ tOrFallback('home.leftNav.randomGames', 'Random games') }}
+    </v-card-title>
+
+    <v-skeleton-loader v-if="pending" type="list-item-two-line@3" />
+
+    <v-list v-else density="compact" nav>
+      <v-list-item
+        v-for="game in randomGames"
+        :key="game.id"
+        class="random-game-item"
+      >
+        <template #prepend>
+          <v-avatar rounded="lg" size="42">
+            <v-img :src="game.img || '/img/game/classic-card.png'" cover />
+          </v-avatar>
+        </template>
+
+        <v-list-item-title>
+          {{ tOrFallback(game.nameKey || '', game.key) }}
+        </v-list-item-title>
+
+        <template #append>
+          <v-btn
+            size="small"
+            color="primary"
+            variant="tonal"
+            @click.stop="playGame(game)"
+          >
+            {{ tOrFallback('gamePage.playButton', 'Play') }}
+          </v-btn>
+        </template>
+      </v-list-item>
+    </v-list>
+  </div>
+</template>
+
+<style scoped>
+.random-game-item {
+  border-radius: 12px;
+  margin-bottom: 4px;
+}
+</style>

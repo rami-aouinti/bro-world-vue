@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue'
 import HomeRightRailLocalContext from '~/components/Home/RightRailLocalContext.vue'
+import LeftDrawerRandomGames from '~/components/Home/LeftDrawerRandomGames.vue'
 
 const { loggedIn } = useUserSession()
 const { isPageSkeletonVisible } = usePageSkeleton()
@@ -34,23 +35,7 @@ onMounted(() => {
         <template v-else>
           <AppLeftDrawerUserEntry />
           <v-divider class="my-2" />
-          <v-card-title class="text-subtitle-1">{{
-            $t('home.leftNav.title')
-          }}</v-card-title>
-          <v-list density="compact" nav>
-            <v-list-item
-              :title="$t('home.leftNav.home')"
-              prepend-icon="mdi-home"
-            />
-            <v-list-item
-              :title="$t('home.leftNav.discover')"
-              prepend-icon="mdi-compass"
-            />
-            <v-list-item
-              :title="$t('home.leftNav.messages')"
-              prepend-icon="mdi-message-outline"
-            />
-          </v-list>
+          <LeftDrawerRandomGames />
         </template>
       </template>
       <template #right>
