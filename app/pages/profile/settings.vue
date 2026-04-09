@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import {storeToRefs} from "pinia";
 
 const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
+const theme = useTheme()
+const isLightTheme = computed(() => !theme.current.value.dark)
+const profileStore = useProfileStore()
 
 definePageMeta({
   title: 'appbar.settings',
   middleware: 'auth',
 })
-
+const visible = ref(false)
 const settingsSections = [
   { id: 'profile', label: 'Profile', icon: 'mdi-account-circle-outline' },
   { id: 'basic-info', label: 'Basic info', icon: 'mdi-card-account-details-outline' },
@@ -19,24 +23,29 @@ const settingsSections = [
   { id: 'sessions', label: 'Sessions', icon: 'mdi-monitor-cellphone' },
   { id: 'delete-account', label: 'Delete account', icon: 'mdi-alert-outline' },
 ]
+const { profile, loading, error } = storeToRefs(profileStore)
 
-const profile = {
-  name: 'Alexandre Martin',
-  role: 'Product Designer',
-  avatar: 'https://i.pravatar.cc/160?img=13',
-  visible: true,
-}
+const userProfile = computed(() => profile.value?.profile)
 
-const basicInfoFields = [
-  { key: 'firstName', label: 'First name', value: 'Alexandre' },
-  { key: 'lastName', label: 'Last name', value: 'Martin' },
-  { key: 'birthDate', label: 'Birth date', value: '1993-05-12' },
-  { key: 'email', label: 'Email', value: 'alexandre.martin@example.com' },
-  { key: 'phone', label: 'Phone', value: '+1 202 555 0189' },
-  { key: 'location', label: 'Location', value: 'San Francisco, CA' },
-  { key: 'company', label: 'Company', value: 'Bro World Inc.' },
-  { key: 'timezone', label: 'Timezone', value: 'UTC-08:00 (Pacific Time)' },
-]
+const fullName = computed(() => {
+  const user = userProfile.value
+  if (!user) return ''
+
+  return [user.firstName, user.lastName].filter(Boolean).join(' ') || profile.value?.username || ''
+})
+
+const profileTitle = computed(() => userProfile.value?.title || 'Member')
+
+const basicInfoFields = computed(() => [
+  { key: 'firstName', label: 'First name', value: profile.value?.firstName || '' },
+  { key: 'lastName', label: 'Last name', value: profile.value?.lastName || '' },
+  { key: 'birthDate', label: 'Birth date', value: userProfile.value?.birthDate || '' },
+  { key: 'email', label: 'Email', value: profile.value?.email || '' },
+  { key: 'phone', label: 'Phone', value: userProfile.value?.phone || '' },
+  { key: 'location', label: 'Location', value: userProfile.value?.location || '' },
+  { key: 'company', label: 'Company', value: userProfile.value?.company || '' },
+  { key: 'timezone', label: 'Timezone', value: userProfile.value?.timezone || '' },
+])
 
 const passwordRequirements = [
   'At least 8 characters',
@@ -176,45 +185,34 @@ onUnmounted(() => {
     <v-container fluid>
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
       <template v-else>
-        <h1 class="text-h4 mb-2">{{ t('appbar.settings') }}</h1>
-        <p class="text-body-1 text-medium-emphasis mb-6">
-          {{ t('pages.profileOverview.settingsSubtitle') }}
-        </p>
-
-        <v-card rounded="xl" class="mb-6 pa-4">
-          <div class="text-subtitle-1 font-weight-medium mb-3">Jump to section</div>
-          <div class="d-flex flex-wrap ga-2">
-            <v-chip
-              v-for="section in settingsSections"
-              :key="section.id"
-              :href="`#${section.id}`"
-              prepend-icon="mdi-link-variant"
-              variant="tonal"
-            >
-              <v-icon start :icon="section.icon" />
-              {{ section.label }}
-            </v-chip>
-          </div>
-        </v-card>
-
         <div class="d-flex flex-column ga-6">
-          <v-card id="profile" rounded="xl" class="pa-6 settings-section">
+          <v-card
+            id="profile"
+            rounded="xl"
+            class="pa-6 settings-section settings-card"
+            :class="{ 'settings-card--light': isLightTheme }"
+          >
             <div class="d-flex align-center justify-space-between flex-wrap ga-4">
               <div class="d-flex align-center ga-4">
-                <v-avatar size="72" :image="profile.avatar" />
+                <v-avatar size="72" :image="profile?.photo" />
                 <div>
-                  <div class="text-h6">{{ profile.name }}</div>
-                  <div class="text-body-2 text-medium-emphasis">{{ profile.role }}</div>
+                  <div class="text-h6">{{ fullName }}</div>
+                  <div class="text-body-2 text-medium-emphasis">{{ profileTitle }}</div>
                 </div>
               </div>
               <div class="d-flex align-center ga-2">
-                <span class="text-body-2">Visible profile</span>
-                <v-switch v-model="profile.visible" color="primary" hide-details inset />
+                <span class="text-body-2">Visible</span>
+                <v-switch v-model="visible" color="primary" hide-details inset />
               </div>
             </div>
           </v-card>
 
-          <v-card id="basic-info" rounded="xl" class="pa-6 settings-section">
+          <v-card
+            id="basic-info"
+            rounded="xl"
+            class="pa-6 settings-section settings-card"
+            :class="{ 'settings-card--light': isLightTheme }"
+          >
             <div class="text-h6 mb-4">Basic information</div>
             <v-row>
               <v-col v-for="field in basicInfoFields" :key="field.key" cols="12" md="6">
@@ -226,7 +224,12 @@ onUnmounted(() => {
             </div>
           </v-card>
 
-          <v-card id="change-password" rounded="xl" class="pa-6 settings-section">
+          <v-card
+            id="change-password"
+            rounded="xl"
+            class="pa-6 settings-section settings-card"
+            :class="{ 'settings-card--light': isLightTheme }"
+          >
             <div class="text-h6 mb-4">Change password</div>
             <v-row>
               <v-col cols="12" md="4">
@@ -245,9 +248,14 @@ onUnmounted(() => {
             <v-btn color="primary">Update password</v-btn>
           </v-card>
 
-          <v-card id="two-fa" rounded="xl" class="pa-6 settings-section">
+          <v-card
+            id="two-fa"
+            rounded="xl"
+            class="pa-6 settings-section settings-card"
+            :class="{ 'settings-card--light': isLightTheme }"
+          >
             <div class="text-h6 mb-4">Two-factor authentication</div>
-            <v-list lines="two" class="pa-0">
+            <v-list lines="two" class="bg-transparent pa-0">
               <v-list-item
                 v-for="item in twoFaActions"
                 :key="item.title"
@@ -262,9 +270,14 @@ onUnmounted(() => {
             </v-list>
           </v-card>
 
-          <v-card id="accounts" rounded="xl" class="pa-6 settings-section">
+          <v-card
+            id="accounts"
+            rounded="xl"
+            class="pa-6 settings-section settings-card"
+            :class="{ 'settings-card--light': isLightTheme }"
+          >
             <div class="text-h6 mb-4">Connected accounts</div>
-            <v-list class="pa-0 mb-4">
+            <v-list class="bg-transparent pa-0 mb-4">
               <v-list-item v-for="item in accountProviders" :key="item.provider" :title="item.provider" :subtitle="item.email">
                 <template #append>
                   <v-switch :model-value="item.connected" hide-details inset color="primary" />
@@ -277,16 +290,21 @@ onUnmounted(() => {
             </v-alert>
           </v-card>
 
-          <v-card id="notifications" rounded="xl" class="pa-6 settings-section">
+          <v-card
+            id="notifications"
+            rounded="xl"
+            class="pa-6 settings-section settings-card"
+            :class="{ 'settings-card--light': isLightTheme }"
+          >
             <div class="text-h6 mb-4">Notifications</div>
-            <v-table>
+            <v-table class="bg-transparent" density="compact">
               <thead>
                 <tr>
                   <th>Type</th>
-                  <th class="text-center">Activity</th>
-                  <th class="text-center">Email</th>
-                  <th class="text-center">Push</th>
-                  <th class="text-center">SMS</th>
+                  <th>Activity</th>
+                  <th>Email</th>
+                  <th>Push</th>
+                  <th>SMS</th>
                 </tr>
               </thead>
               <tbody>
@@ -301,12 +319,17 @@ onUnmounted(() => {
             </v-table>
           </v-card>
 
-          <v-card id="sessions" rounded="xl" class="pa-6 settings-section">
+          <v-card
+            id="sessions"
+            rounded="xl"
+            class="pa-6 settings-section settings-card"
+            :class="{ 'settings-card--light': isLightTheme }"
+          >
             <div class="d-flex align-center justify-space-between mb-4">
               <div class="text-h6">Sessions</div>
               <v-btn variant="text" color="primary">See more</v-btn>
             </div>
-            <v-list class="pa-0">
+            <v-list class="bg-transparent pa-0">
               <v-list-item
                 v-for="session in sessions"
                 :key="session.device"
@@ -320,14 +343,19 @@ onUnmounted(() => {
             </v-list>
           </v-card>
 
-          <v-card id="delete-account" rounded="xl" class="pa-6 settings-section">
+          <v-card
+            id="delete-account"
+            rounded="xl"
+            class="pa-6 settings-section settings-card"
+            :class="{ 'settings-card--light': isLightTheme }"
+          >
             <div class="text-h6 mb-2">Delete account</div>
             <p class="text-body-2 text-medium-emphasis mb-4">
               You can deactivate your account temporarily or permanently delete all associated data.
             </p>
             <div class="d-flex ga-3 flex-wrap">
               <v-btn variant="outlined" color="warning">Deactivate account</v-btn>
-              <v-btn color="error">Delete account</v-btn>
+              <v-btn variant="outlined" color="error">Delete account</v-btn>
             </div>
           </v-card>
         </div>
@@ -343,5 +371,15 @@ onUnmounted(() => {
 
 .settings-section {
   scroll-margin-top: 120px;
+}
+
+.settings-card {
+  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.settings-card--light {
+  background: linear-gradient(240deg, rgba(var(--v-theme-primary), 0.18) 0%, transparent 20%);
+  border: 1px solid rgba(15, 23, 42, 0.1);
 }
 </style>
