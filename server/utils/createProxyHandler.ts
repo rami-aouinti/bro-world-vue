@@ -8,10 +8,7 @@ type ProxyQuery = ApiQuery
 
 type ProxyParams = Record<string, string>
 
-type CreateProxyHandlerOptions<
-  TResponse extends ApiResponse,
-  TPayload extends ApiObject = ApiObject,
-> = {
+type CreateProxyHandlerOptions = {
   method: ProxyMethod
   endpointTemplate: string
   mutationKey?: string
@@ -39,7 +36,7 @@ function resolveEndpoint(template: string, params: ProxyParams) {
 export function createProxyHandler<
   TResponse extends ApiResponse,
   TPayload extends ApiObject = ApiObject,
->(options: CreateProxyHandlerOptions<TResponse, TPayload>) {
+>(options: CreateProxyHandlerOptions) {
   const { method, endpointTemplate, mutationKey, resolveParams, resolveQuery } =
     options
 

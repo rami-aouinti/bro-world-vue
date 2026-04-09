@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { t, te, locale, locales, setLocale } = useI18n({ useScope: 'global' })
+const { t, locale, setLocale } = useI18n({ useScope: 'global' })
 
 type LocaleOption = {
   title: string

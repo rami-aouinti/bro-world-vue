@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
 
-const route = useRoute()
 const { t } = useI18n()
 const { user } = useUserSession()
 
