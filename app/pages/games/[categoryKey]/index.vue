@@ -50,25 +50,22 @@ const subCategories = computed(() =>
     ? selectedCategory.value.subCategories
     : [],
 )
+
+const rightDrawerSelection = computed(() => [
+  {
+    key: 'category',
+    icon: 'mdi-shape-outline',
+    label: tOrFallback('gamePage.selection.category', 'Category'),
+    value: entityName(selectedCategory.value || {}) || '',
+  },
+])
 </script>
 
 <template>
   <div>
     <AppPageDrawers>
       <template #right>
-        <v-list nav density="compact" class="app-right-drawer-list">
-          <v-list-item v-if="selectedCategory">
-            <template #prepend>
-              <v-icon icon="mdi-shape-outline" />
-            </template>
-            <v-list-item-title>{{
-              tOrFallback('gamePage.selection.category', 'Category')
-            }}</v-list-item-title>
-            <v-list-item-subtitle>{{
-              entityName(selectedCategory || {}) || '—'
-            }}</v-list-item-subtitle>
-          </v-list-item>
-        </v-list>
+        <GamesDrawersRightPanel :selection="rightDrawerSelection" />
       </template>
     </AppPageDrawers>
 

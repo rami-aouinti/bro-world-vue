@@ -249,58 +249,40 @@ const breadcrumbs = computed(() => [
     disabled: true,
   },
 ])
+
+const rightDrawerSelection = computed(() => [
+  {
+    key: 'category',
+    icon: 'mdi-shape-outline',
+    label: tOrFallback('gamePage.selection.category', 'Category'),
+    value: entityName(selectedCategory.value || {}) || '',
+  },
+  {
+    key: 'subCategory',
+    icon: 'mdi-shape-plus-outline',
+    label: tOrFallback('gamePage.selection.subCategory', 'Subcategory'),
+    value: entityName(selectedSubCategory.value || {}) || '',
+  },
+  {
+    key: 'game',
+    icon: 'mdi-controller-classic-outline',
+    label: tOrFallback('gamePage.selection.game', 'Game'),
+    value: entityName(selectedGame.value || {}) || '',
+  },
+  {
+    key: 'level',
+    icon: 'mdi-ladder',
+    label: tOrFallback('gamePage.selection.level', 'Level'),
+    value: selectedLevelValue.value || '',
+  },
+])
 </script>
 
 <template>
   <div>
     <AppPageDrawers>
       <template #right>
-        <v-list nav density="compact" class="app-right-drawer-list">
-          <v-list-item v-if="selectedCategory">
-            <template #prepend>
-              <v-icon icon="mdi-shape-outline" />
-            </template>
-            <v-list-item-title>{{
-              tOrFallback('gamePage.selection.category', 'Category')
-            }}</v-list-item-title>
-            <v-list-item-subtitle>{{
-              entityName(selectedCategory || {}) || '—'
-            }}</v-list-item-subtitle>
-          </v-list-item>
-          <v-list-item v-if="selectedSubCategory">
-            <template #prepend>
-              <v-icon icon="mdi-shape-plus-outline" />
-            </template>
-            <v-list-item-title>{{
-              tOrFallback('gamePage.selection.subCategory', 'Subcategory')
-            }}</v-list-item-title>
-            <v-list-item-subtitle>{{
-              entityName(selectedSubCategory || {}) || '—'
-            }}</v-list-item-subtitle>
-          </v-list-item>
-          <v-list-item v-if="selectedGame">
-            <template #prepend>
-              <v-icon icon="mdi-controller-classic-outline" />
-            </template>
-            <v-list-item-title>{{
-              tOrFallback('gamePage.selection.game', 'Game')
-            }}</v-list-item-title>
-            <v-list-item-subtitle>{{
-              entityName(selectedGame || {}) || '—'
-            }}</v-list-item-subtitle>
-          </v-list-item>
-          <v-list-item v-if="selectedLevelValue">
-            <template #prepend>
-              <v-icon icon="mdi-ladder" />
-            </template>
-            <v-list-item-title>{{
-              tOrFallback('gamePage.selection.level', 'Level')
-            }}</v-list-item-title>
-            <v-list-item-subtitle>{{
-              selectedLevelValue
-            }}</v-list-item-subtitle>
-          </v-list-item>
-        </v-list>
+        <GamesDrawersRightPanel :selection="rightDrawerSelection" />
       </template>
     </AppPageDrawers>
 

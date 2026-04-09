@@ -63,36 +63,28 @@ const breadcrumbs = computed(() => [
     disabled: true,
   },
 ])
+
+const rightDrawerSelection = computed(() => [
+  {
+    key: 'category',
+    icon: 'mdi-shape-outline',
+    label: tOrFallback('gamePage.selection.category', 'Category'),
+    value: entityName(selectedCategory.value || {}) || '',
+  },
+  {
+    key: 'subCategory',
+    icon: 'mdi-shape-plus-outline',
+    label: tOrFallback('gamePage.selection.subCategory', 'Subcategory'),
+    value: entityName(selectedSubCategory.value || {}) || '',
+  },
+])
 </script>
 
 <template>
   <div>
     <AppPageDrawers>
       <template #right>
-        <v-list nav density="compact" class="app-right-drawer-list">
-          <v-list-item v-if="selectedCategory">
-            <template #prepend>
-              <v-icon icon="mdi-shape-outline" />
-            </template>
-            <v-list-item-title>{{
-              tOrFallback('gamePage.selection.category', 'Category')
-            }}</v-list-item-title>
-            <v-list-item-subtitle>{{
-              entityName(selectedCategory || {}) || '—'
-            }}</v-list-item-subtitle>
-          </v-list-item>
-          <v-list-item v-if="selectedSubCategory">
-            <template #prepend>
-              <v-icon icon="mdi-shape-plus-outline" />
-            </template>
-            <v-list-item-title>{{
-              tOrFallback('gamePage.selection.subCategory', 'Subcategory')
-            }}</v-list-item-title>
-            <v-list-item-subtitle>{{
-              entityName(selectedSubCategory || {}) || '—'
-            }}</v-list-item-subtitle>
-          </v-list-item>
-        </v-list>
+        <GamesDrawersRightPanel :selection="rightDrawerSelection" />
       </template>
     </AppPageDrawers>
 

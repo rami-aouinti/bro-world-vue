@@ -19,40 +19,13 @@ const categories = computed(() =>
   Array.isArray(catalogStore.categories) ? catalogStore.categories : [],
 )
 
-const _breadcrumbs = [{ title: 'Games', disabled: true }]
-
-const topScores = [
-  { name: 'NovaBlade', score: 12840, avatar: '/img/team-1.jpg' },
-  { name: 'PixelQueen', score: 11720, avatar: '/img/team-2.jpg' },
-  { name: 'ArcadeWolf', score: 10995, avatar: '/img/team-3.jpg' },
-]
 </script>
 
 <template>
   <div>
     <AppPageDrawers>
       <template #right>
-        <v-list nav density="comfortable" class="app-right-drawer-list">
-          <v-list-subheader>Top Scores</v-list-subheader>
-
-          <v-list-item
-            v-for="(user, index) in topScores"
-            :key="user.name"
-            :title="user.name"
-            :subtitle="`${user.score} pts`"
-          >
-            <template #prepend>
-              <v-avatar size="36">
-                <v-img :src="user.avatar" :alt="user.name" cover />
-              </v-avatar>
-            </template>
-            <template #append>
-              <v-chip size="small" color="warning" variant="tonal">
-                #{{ index + 1 }}
-              </v-chip>
-            </template>
-          </v-list-item>
-        </v-list>
+        <GamesDrawersRightPanel />
       </template>
     </AppPageDrawers>
 
