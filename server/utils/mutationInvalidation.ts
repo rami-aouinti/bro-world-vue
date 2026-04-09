@@ -41,6 +41,7 @@ const MUTATION_INVALIDATION_RULES: MutationInvalidationRule[] = [
     prefixes: ['blog'],
   },
   { key: 'chat:conversations:update', scope: 'private', prefixes: ['chat'] },
+  { key: 'chat:conversations:create', scope: 'private', prefixes: ['chat'] },
   { key: 'chat:conversations:delete', scope: 'private', prefixes: ['chat'] },
   {
     key: 'chat:conversations:messages:create',

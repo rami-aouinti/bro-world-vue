@@ -352,6 +352,12 @@ function isMenuActive(paths: string[]) {
           :aria-label="t('appbar.calendar')"
           to="/calendar"
         />
+        <v-btn
+          variant="text"
+          icon="mdi-inbox-outline"
+          :aria-label="t('appbar.inbox')"
+          to="/inbox"
+        />
       </template>
       <v-menu location="bottom">
         <template #activator="{ props: menu }">

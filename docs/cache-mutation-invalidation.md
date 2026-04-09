@@ -26,6 +26,7 @@ Chaque mutation serveur doit déclarer une `mutationKey` qui référence une rè
 | `blog:comments:reactions:update`     | private | `blog`                   |
 | `blog:comments:reactions:delete`     | private | `blog`                   |
 | `chat:conversations:update`          | private | `chat`                   |
+| `chat:conversations:create`          | private | `chat`                   |
 | `chat:conversations:delete`          | private | `chat`                   |
 | `chat:conversations:messages:create` | private | `chat`                   |
 | `chat:conversations:messages:read`   | private | `chat`, `notifications`  |
