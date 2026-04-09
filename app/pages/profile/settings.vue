@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import {storeToRefs} from "pinia";
 
 const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 const theme = useTheme()
 const isLightTheme = computed(() => !theme.current.value.dark)
+const profileStore = useProfileStore()
 
 definePageMeta({
   title: 'appbar.settings',
   middleware: 'auth',
 })
-
+const visible = ref(false)
 const settingsSections = [
   { id: 'profile', label: 'Profile', icon: 'mdi-account-circle-outline' },
   { id: 'basic-info', label: 'Basic info', icon: 'mdi-card-account-details-outline' },
@@ -21,24 +23,29 @@ const settingsSections = [
   { id: 'sessions', label: 'Sessions', icon: 'mdi-monitor-cellphone' },
   { id: 'delete-account', label: 'Delete account', icon: 'mdi-alert-outline' },
 ]
+const { profile, loading, error } = storeToRefs(profileStore)
 
-const profile = {
-  name: 'Alexandre Martin',
-  role: 'Product Designer',
-  avatar: 'https://i.pravatar.cc/160?img=13',
-  visible: true,
-}
+const userProfile = computed(() => profile.value?.profile)
 
-const basicInfoFields = [
-  { key: 'firstName', label: 'First name', value: 'Alexandre' },
-  { key: 'lastName', label: 'Last name', value: 'Martin' },
-  { key: 'birthDate', label: 'Birth date', value: '1993-05-12' },
-  { key: 'email', label: 'Email', value: 'alexandre.martin@example.com' },
-  { key: 'phone', label: 'Phone', value: '+1 202 555 0189' },
-  { key: 'location', label: 'Location', value: 'San Francisco, CA' },
-  { key: 'company', label: 'Company', value: 'Bro World Inc.' },
-  { key: 'timezone', label: 'Timezone', value: 'UTC-08:00 (Pacific Time)' },
-]
+const fullName = computed(() => {
+  const user = userProfile.value
+  if (!user) return ''
+
+  return [user.firstName, user.lastName].filter(Boolean).join(' ') || profile.value?.username || ''
+})
+
+const profileTitle = computed(() => userProfile.value?.title || 'Member')
+
+const basicInfoFields = computed(() => [
+  { key: 'firstName', label: 'First name', value: profile.value?.firstName || '' },
+  { key: 'lastName', label: 'Last name', value: profile.value?.lastName || '' },
+  { key: 'birthDate', label: 'Birth date', value: userProfile.value?.birthDate || '' },
+  { key: 'email', label: 'Email', value: profile.value?.email || '' },
+  { key: 'phone', label: 'Phone', value: userProfile.value?.phone || '' },
+  { key: 'location', label: 'Location', value: userProfile.value?.location || '' },
+  { key: 'company', label: 'Company', value: userProfile.value?.company || '' },
+  { key: 'timezone', label: 'Timezone', value: userProfile.value?.timezone || '' },
+])
 
 const passwordRequirements = [
   'At least 8 characters',
@@ -187,15 +194,15 @@ onUnmounted(() => {
           >
             <div class="d-flex align-center justify-space-between flex-wrap ga-4">
               <div class="d-flex align-center ga-4">
-                <v-avatar size="72" :image="profile.avatar" />
+                <v-avatar size="72" :image="profile?.photo" />
                 <div>
-                  <div class="text-h6">{{ profile.name }}</div>
-                  <div class="text-body-2 text-medium-emphasis">{{ profile.role }}</div>
+                  <div class="text-h6">{{ fullName }}</div>
+                  <div class="text-body-2 text-medium-emphasis">{{ profileTitle }}</div>
                 </div>
               </div>
               <div class="d-flex align-center ga-2">
-                <span class="text-body-2">Visible profile</span>
-                <v-switch v-model="profile.visible" color="primary" hide-details inset />
+                <span class="text-body-2">Visible</span>
+                <v-switch v-model="visible" color="primary" hide-details inset />
               </div>
             </div>
           </v-card>
