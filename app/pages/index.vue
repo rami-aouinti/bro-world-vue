@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue'
+import HomeRightRailLocalContext from '~/components/Home/RightRailLocalContext.vue'
 
 const { loggedIn } = useUserSession()
 const { isPageSkeletonVisible } = usePageSkeleton()

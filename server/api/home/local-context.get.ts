@@ -148,9 +148,9 @@ function parseRss(xml: string, defaultCategory: string) {
 }
 
 async function fetchNewsRss(query: string, category: string, locale: string) {
-  const [language, region] = locale.includes('-')
-    ? locale.split('-')
-    : [locale, 'US']
+  const parts = locale.split('-').filter(Boolean)
+  const language = (parts[0] || 'en').toLowerCase()
+  const region = (parts[1] || 'US').toUpperCase()
   const url = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=${encodeURIComponent(
     `${language}-${region}`,
   )}&gl=${encodeURIComponent(region)}&ceid=${encodeURIComponent(
@@ -199,7 +199,7 @@ export default defineEventHandler(async (event): Promise<LocalContextPayload> =>
       ? query.locale.trim()
       : 'en-US'
 
-  const [geo, weather] = await Promise.all([
+  const [geoResult, weatherResult] = await Promise.allSettled([
     $fetch<ReverseGeocodingResponse>(
       'https://geocoding-api.open-meteo.com/v1/reverse',
       {
@@ -221,6 +221,9 @@ export default defineEventHandler(async (event): Promise<LocalContextPayload> =>
     }),
   ])
 
+  const geo = geoResult.status === 'fulfilled' ? geoResult.value : { results: [] }
+  const weather = weatherResult.status === 'fulfilled' ? weatherResult.value : {}
+
   const firstLocation = geo.results?.[0]
   const city = firstLocation?.name?.trim() || 'Unknown city'
   const region = firstLocation?.admin1?.trim() || ''
@@ -230,10 +233,15 @@ export default defineEventHandler(async (event): Promise<LocalContextPayload> =>
   const localEventsQuery = `${city} ${country} events OR concert OR festival OR conference`
   const majorEventsQuery = `major world events war OR earthquake OR major sports match OR election`
 
-  const [localEventsRaw, majorEventsRaw] = await Promise.all([
+  const [localEventsResult, majorEventsResult] = await Promise.allSettled([
     fetchNewsRss(localEventsQuery, 'local', locale),
     fetchNewsRss(majorEventsQuery, 'major', locale),
   ])
+
+  const localEventsRaw =
+    localEventsResult.status === 'fulfilled' ? localEventsResult.value : []
+  const majorEventsRaw =
+    majorEventsResult.status === 'fulfilled' ? majorEventsResult.value : []
 
   const localEvents = dedupeEvents(localEventsRaw).slice(0, 6)
   const majorCandidates = dedupeEvents(majorEventsRaw).slice(0, 12)
