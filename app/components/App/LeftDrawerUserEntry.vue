@@ -9,6 +9,7 @@ const loading = ref(false)
 
 const sessionUser = computed(() => user.value as SessionUser | null)
 const avatarUrl = computed(() => sessionUser.value?.photo)
+const coins = computed(() => sessionUser.value?.coins ?? 0)
 const fullName = computed(() => {
   const values = [sessionUser.value?.firstName, sessionUser.value?.lastName]
     .filter(Boolean)
@@ -69,7 +70,16 @@ async function onLoginSubmit(payload: { username?: string; password: string }) {
         <v-img :src="avatarUrl" :alt="`${fullName} avatar`" />
       </v-avatar>
       <div>
-        <h3>{{ fullName }}</h3>
+        <h3 class="mb-1">{{ fullName }}</h3>
+        <v-chip
+          color="amber-darken-2"
+          size="small"
+          variant="flat"
+          prepend-icon="mdi-cash-multiple"
+          label
+        >
+          {{ coins }} coins
+        </v-chip>
       </div>
     </div>
   </NuxtLink>
