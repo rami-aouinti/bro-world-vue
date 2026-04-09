@@ -104,7 +104,12 @@ const rightDrawerSelection = computed(() => [
           v-else
           type="info"
           variant="tonal"
-          text="Aucune sous-catégorie disponible pour cette catégorie."
+          :text="
+            tOrFallback(
+              'gamePage.catalog.emptySubCategories',
+              'No sub-categories available for now.',
+            )
+          "
         />
       </template>
     </v-container>

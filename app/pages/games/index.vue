@@ -4,7 +4,7 @@ definePageMeta({
   layout: 'games',
 })
 
-const { catalogStore, ensureCatalogLoaded, entityRouteValue } =
+const { catalogStore, ensureCatalogLoaded, entityRouteValue, tOrFallback } =
   useGamesCatalogNavigation()
 
 onMounted(async () => {
@@ -63,7 +63,12 @@ const categories = computed(() =>
         v-else
         type="info"
         variant="tonal"
-        text="Aucune catégorie disponible pour le moment."
+        :text="
+          tOrFallback(
+            'gamePage.catalog.emptyCategories',
+            'No categories available for now.',
+          )
+        "
       />
     </v-container>
   </div>

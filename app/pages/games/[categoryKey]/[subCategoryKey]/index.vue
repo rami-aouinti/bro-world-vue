@@ -119,7 +119,12 @@ const rightDrawerSelection = computed(() => [
           v-if="!games.length"
           type="info"
           variant="tonal"
-          text="Aucun jeu disponible dans cette sous-catégorie."
+          :text="
+            tOrFallback(
+              'gamePage.catalog.emptyGames',
+              'No games available for now.',
+            )
+          "
         />
       </template>
     </v-container>
