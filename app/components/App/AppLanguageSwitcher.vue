@@ -118,26 +118,4 @@ const selectedLocale = computed(
   font-weight: 600;
   letter-spacing: 0.04em;
 }
-
-:deep(.app-top-bar__menu-surface),
-:deep(.app-top-bar__menu-surface--compact) {
-  border-radius: 14px;
-  border: 1px solid rgba(var(--v-border-color), 0.32);
-  background:
-    linear-gradient(
-      240deg,
-      rgba(var(--v-theme-primary), 0.12) 0%,
-      transparent 28%
-    ),
-    color-mix(in srgb, rgb(var(--v-theme-surface)) 88%, transparent) !important;
-  box-shadow:
-    0 18px 42px rgba(0, 0, 0, 0.3),
-    0 0 0 1px rgba(var(--v-theme-primary), 0.14) inset;
-  backdrop-filter: blur(32px);
-  -webkit-backdrop-filter: blur(32px);
-}
-
-:deep(.app-top-bar__menu-list) {
-  background: transparent !important;
-}
 </style>
