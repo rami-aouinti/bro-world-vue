@@ -232,34 +232,33 @@ function toggleLeftDrawer() {
           </v-tooltip>
         </template>
         <v-list min-width="220">
-          <v-list-item
-            :title="t('appbar.about')"
-            prepend-icon="mdi-information-outline"
-            to="/about"
-          />
-          <v-list-item
-            :title="t('appbar.faq')"
-            prepend-icon="mdi-frequently-asked-questions"
-            to="/faq"
-          />
-          <v-list-item
-            :title="t('appbar.contact')"
-            prepend-icon="mdi-email-outline"
-            to="/contact"
-          />
-          <v-divider class="my-1" />
-          <v-list-item
-            v-if="!loggedIn"
-            :title="t('appbar.login')"
-            prepend-icon="mdi-login"
-            to="/login"
-          />
-          <v-list-item
-            v-if="!loggedIn"
-            :title="t('appbar.register')"
-            prepend-icon="mdi-account-plus"
-            to="/register"
-          />
+          <template v-if="!loggedIn">
+            <v-list-item
+              :title="t('appbar.login')"
+              prepend-icon="mdi-login"
+              to="/login"
+            />
+            <v-list-item
+              :title="t('appbar.register')"
+              prepend-icon="mdi-account-plus"
+              to="/register"
+            />
+            <v-list-item
+              :title="t('appbar.about')"
+              prepend-icon="mdi-information-outline"
+              to="/about"
+            />
+            <v-list-item
+              :title="t('appbar.faq')"
+              prepend-icon="mdi-frequently-asked-questions"
+              to="/faq"
+            />
+            <v-list-item
+              :title="t('appbar.contact')"
+              prepend-icon="mdi-email-outline"
+              to="/contact"
+            />
+          </template>
           <template v-else>
             <v-list-item
               :title="t('appbar.profile')"
@@ -267,10 +266,21 @@ function toggleLeftDrawer() {
               to="/profile"
             />
             <v-list-item
-              :title="t('appbar.settings')"
-              prepend-icon="mdi-cog-outline"
-              to="/profile/settings"
+              :title="t('appbar.about')"
+              prepend-icon="mdi-information-outline"
+              to="/about"
             />
+            <v-list-item
+              :title="t('appbar.faq')"
+              prepend-icon="mdi-frequently-asked-questions"
+              to="/faq"
+            />
+            <v-list-item
+              :title="t('appbar.contact')"
+              prepend-icon="mdi-email-outline"
+              to="/contact"
+            />
+            <v-divider class="my-1" />
             <v-list-item
               :title="t('appbar.logout')"
               prepend-icon="mdi-logout"
