@@ -254,7 +254,7 @@ onMounted(async () => {
   <div>
     <AppPageDrawers>
       <template #right>
-        <v-card variant="text" class="postcard-gradient-card ma-2">
+        <v-card variant="text" class="postcard-gradient-card">
           <v-card-title class="d-flex align-center ga-2">
             <v-icon icon="mdi-account-multiple-plus-outline" />
             {{ t('pages.friends.suggestions.title') }}
