@@ -309,150 +309,150 @@ function isMenuActive(paths: string[]) {
         "
         @click="showRightDrawer = !showRightDrawer"
       />
-
-      <v-spacer />
-      <template v-if="loggedIn">
-        <v-menu
-          v-model="notificationMenuOpen"
-          location="bottom end"
-          content-class="app-top-bar__menu-surface app-top-bar__menu-surface--compact"
-        >
-          <template #activator="{ props }">
-            <v-badge
-              :model-value="unreadTotalCount > 0"
-              :content="unreadTotalCount"
-              color="primary"
-              offset-x="10"
-              offset-y="10"
-            >
-              <v-btn
-                variant="text"
-                icon="mdi-bell-outline"
-                :aria-label="t('appbar.notification')"
-                v-bind="props"
-              />
-            </v-badge>
-          </template>
-          <v-list min-width="280" class="app-top-bar__menu-list">
-            <v-list-item
-              v-for="item in allNotificationItems"
-              :key="item.id"
-              :title="item.title"
-              :prepend-icon="item.icon"
-              :to="item.to || undefined"
-            />
-            <v-divider class="my-1" />
-            <v-list-item
-              :title="t('actions.showAll')"
-              append-icon="mdi-arrow-right"
-              to="/notification"
-            />
-          </v-list>
-        </v-menu>
-
-        <v-btn
-          variant="text"
-          icon="mdi-calendar-month-outline"
-          :aria-label="t('appbar.calendar')"
-          to="/calendar"
-        />
-        <v-btn
-          variant="text"
-          icon="mdi-inbox-outline"
-          :aria-label="t('appbar.inbox')"
-          to="/inbox"
-        />
-      </template>
-      <v-menu
-        location="bottom"
-        content-class="app-top-bar__menu-surface app-top-bar__menu-surface--compact"
-      >
-        <template #activator="{ props: menu }">
-          <v-tooltip
-            location="bottom"
-            :aria-label="loggedIn ? userLabel : t('appbar.user')"
-            :text="loggedIn ? userLabel : t('appbar.user')"
-            :content-props="{
-              'aria-label': loggedIn ? userLabel : t('appbar.user'),
-            }"
+      <div class="app-top-bar__right-controls">
+        <template v-if="loggedIn">
+          <v-menu
+            v-model="notificationMenuOpen"
+            location="bottom end"
+            content-class="app-top-bar__menu-surface app-top-bar__menu-surface--compact"
           >
-            <template #activator="{ props: tooltip }">
+            <template #activator="{ props }">
               <v-badge
-                dot
-                bordered
-                :color="loggedIn ? 'success' : 'error'"
-                location="bottom end"
-                offset-x="6"
-                offset-y="6"
+                :model-value="unreadTotalCount > 0"
+                :content="unreadTotalCount"
+                color="primary"
+                offset-x="10"
+                offset-y="10"
               >
                 <v-btn
-                  icon
-                  :aria-label="loggedIn ? userLabel : t('appbar.user')"
-                  v-bind="mergeProps(menu, tooltip)"
-                >
-                  <v-icon
-                    v-if="!loggedIn"
-                    icon="mdi-account-circle"
-                    size="28"
-                  />
-                  <v-avatar
-                    v-else
-                    color="primary"
-                    size="28"
-                    class="cursor-pointer"
-                  >
-                    <v-img :src="avatarUrl" :alt="`${userLabel} avatar`" />
-                  </v-avatar>
-                </v-btn>
+                  variant="text"
+                  icon="mdi-bell-outline"
+                  :aria-label="t('appbar.notification')"
+                  v-bind="props"
+                />
               </v-badge>
             </template>
-          </v-tooltip>
-        </template>
-        <v-list min-width="220" class="app-top-bar__menu-list">
-          <template v-if="!loggedIn">
-            <v-list-item
-              :title="t('appbar.login')"
-              prepend-icon="mdi-login"
-              @click="loginDialogOpen = true"
-            />
-            <v-list-item
-              :title="t('appbar.register')"
-              prepend-icon="mdi-account-plus"
-              to="/register"
-            />
-          </template>
-          <template v-else>
-            <v-list-item
-              :title="t('appbar.profile')"
-              prepend-icon="mdi-account-outline"
-              to="/profile"
-            />
-            <v-divider class="my-1" />
-            <v-list-item
-              :title="t('appbar.logout')"
-              prepend-icon="mdi-logout"
-              @click="clear"
-            />
-          </template>
-        </v-list>
-      </v-menu>
-      <AppLanguageSwitcher />
+            <v-list min-width="280" class="app-top-bar__menu-list">
+              <v-list-item
+                v-for="item in allNotificationItems"
+                :key="item.id"
+                :title="item.title"
+                :prepend-icon="item.icon"
+                :to="item.to || undefined"
+              />
+              <v-divider class="my-1" />
+              <v-list-item
+                :title="t('actions.showAll')"
+                append-icon="mdi-arrow-right"
+                to="/notification"
+              />
+            </v-list>
+          </v-menu>
 
-      <v-btn
-        icon
-        size="44"
-        variant="text"
-        class="app-bar-controls__theme"
-        :aria-label="
-          isDark ? t('appbar.switchToLight') : t('appbar.switchToDark')
-        "
-        @click="isDark = !isDark"
-      >
-        <v-icon
-          :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'"
-          size="28"
-        />
-      </v-btn>
+          <v-btn
+            variant="text"
+            icon="mdi-calendar-month-outline"
+            :aria-label="t('appbar.calendar')"
+            to="/calendar"
+          />
+          <v-btn
+            variant="text"
+            icon="mdi-inbox-outline"
+            :aria-label="t('appbar.inbox')"
+            to="/inbox"
+          />
+        </template>
+        <v-menu
+          location="bottom"
+          content-class="app-top-bar__menu-surface app-top-bar__menu-surface--compact"
+        >
+          <template #activator="{ props: menu }">
+            <v-tooltip
+              location="bottom"
+              :aria-label="loggedIn ? userLabel : t('appbar.user')"
+              :text="loggedIn ? userLabel : t('appbar.user')"
+              :content-props="{
+                'aria-label': loggedIn ? userLabel : t('appbar.user'),
+              }"
+            >
+              <template #activator="{ props: tooltip }">
+                <v-badge
+                  dot
+                  bordered
+                  :color="loggedIn ? 'success' : 'error'"
+                  location="bottom end"
+                  offset-x="6"
+                  offset-y="6"
+                >
+                  <v-btn
+                    icon
+                    :aria-label="loggedIn ? userLabel : t('appbar.user')"
+                    v-bind="mergeProps(menu, tooltip)"
+                  >
+                    <v-icon
+                      v-if="!loggedIn"
+                      icon="mdi-account-circle"
+                      size="28"
+                    />
+                    <v-avatar
+                      v-else
+                      color="primary"
+                      size="28"
+                      class="cursor-pointer"
+                    >
+                      <v-img :src="avatarUrl" :alt="`${userLabel} avatar`" />
+                    </v-avatar>
+                  </v-btn>
+                </v-badge>
+              </template>
+            </v-tooltip>
+          </template>
+          <v-list min-width="220" class="app-top-bar__menu-list">
+            <template v-if="!loggedIn">
+              <v-list-item
+                :title="t('appbar.login')"
+                prepend-icon="mdi-login"
+                @click="loginDialogOpen = true"
+              />
+              <v-list-item
+                :title="t('appbar.register')"
+                prepend-icon="mdi-account-plus"
+                to="/register"
+              />
+            </template>
+            <template v-else>
+              <v-list-item
+                :title="t('appbar.profile')"
+                prepend-icon="mdi-account-outline"
+                to="/profile"
+              />
+              <v-divider class="my-1" />
+              <v-list-item
+                :title="t('appbar.logout')"
+                prepend-icon="mdi-logout"
+                @click="clear"
+              />
+            </template>
+          </v-list>
+        </v-menu>
+        <AppLanguageSwitcher />
+
+        <v-btn
+          icon
+          size="44"
+          variant="text"
+          class="app-bar-controls__theme"
+          :aria-label="
+            isDark ? t('appbar.switchToLight') : t('appbar.switchToDark')
+          "
+          @click="isDark = !isDark"
+        >
+          <v-icon
+            :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'"
+            size="28"
+          />
+        </v-btn>
+      </div>
     </div>
 
     <v-dialog v-model="loginDialogOpen" max-width="560">
@@ -536,9 +536,21 @@ function isMenuActive(paths: string[]) {
 }
 
 .app-top-bar__right {
+  --app-right-controls-width: var(--app-right-drawer-width);
   margin-left: auto;
+  flex: 0 0 var(--app-right-controls-width);
+  width: var(--app-right-controls-width);
+  justify-content: space-between;
   max-width: 100%;
   overflow: hidden;
+}
+
+.app-top-bar__right-controls {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  min-width: 0;
 }
 
 .app-top-bar__portal {
@@ -667,6 +679,12 @@ function isMenuActive(paths: string[]) {
   }
 }
 @media (max-width: 1100px) {
+  .app-top-bar__right {
+    flex: 0 1 auto;
+    width: auto;
+    justify-content: flex-end;
+  }
+
   .app-top-bar__mega-menu-grid {
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   }
