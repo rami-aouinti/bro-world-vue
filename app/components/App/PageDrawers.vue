@@ -2,26 +2,34 @@
 import { onUnmounted, useSlots } from 'vue'
 
 const slots = useSlots()
+const route = useRoute()
+const mountedRoutePath = route.fullPath
 
 const registry = useDrawerSlotRegistry()
 
 const hasLeft = Boolean(slots.left)
 const hasRight = Boolean(slots.right)
+const leftRenderer = hasLeft ? () => slots.left?.() : null
+const rightRenderer = hasRight ? () => slots.right?.() : null
 
 if (hasLeft) {
-  registry?.setLeft(slots.left || null)
+  registry?.setLeft(leftRenderer)
 }
 
 if (hasRight) {
-  registry?.setRight(slots.right || null)
+  registry?.setRight(rightRenderer)
 }
 
 onUnmounted(() => {
-  if (hasLeft && registry?.left.value === (slots.left || null)) {
+  if (route.fullPath === mountedRoutePath) {
+    return
+  }
+
+  if (hasLeft && registry?.left.value === leftRenderer) {
     registry.setLeft(null)
   }
 
-  if (hasRight && registry?.right.value === (slots.right || null)) {
+  if (hasRight && registry?.right.value === rightRenderer) {
     registry.setRight(null)
   }
 })
