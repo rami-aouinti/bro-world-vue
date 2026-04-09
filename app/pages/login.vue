@@ -8,7 +8,21 @@ definePageMeta({
 
 const { t } = useI18n()
 const { fetch: refreshSession, loggedIn } = useUserSession()
+const route = useRoute()
 const loading = ref(false)
+
+const redirectPath = computed(() => {
+  const redirectQuery = route.query.redirect
+  const redirect = Array.isArray(redirectQuery)
+    ? redirectQuery[0]
+    : redirectQuery
+
+  if (typeof redirect !== 'string' || !redirect.startsWith('/')) {
+    return '/'
+  }
+
+  return redirect
+})
 
 async function onSubmit(payload: { username?: string; password: string }) {
   if (!payload.username) {
@@ -35,7 +49,7 @@ async function onSubmit(payload: { username?: string; password: string }) {
     }
 
     Notify.success(t('auth.notifications.loginSuccess'))
-    await navigateTo('/')
+    await navigateTo(redirectPath.value)
   } catch {
     Notify.error(t('auth.notifications.loginError'))
   } finally {
