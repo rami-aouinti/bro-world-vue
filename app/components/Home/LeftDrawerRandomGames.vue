@@ -17,7 +17,7 @@ const randomGamesLoaded = useState<boolean>(
   'home-left-random-games-loaded',
   () => false,
 )
-const pending = ref(!randomGamesLoaded.value)
+const pending = ref(false)
 
 async function loadRandomGames() {
   if (pending.value || randomGamesLoaded.value) return
@@ -37,6 +37,10 @@ async function loadRandomGames() {
 onMounted(async () => {
   await Promise.all([ensureCatalogLoaded(), loadRandomGames()])
 })
+
+if (import.meta.client) {
+  void loadRandomGames()
+}
 
 function resolveGameRoute(game: RandomGameItem) {
   for (const category of catalogStore.categories) {
