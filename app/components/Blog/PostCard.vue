@@ -3,8 +3,16 @@ import { formatRelativeTime } from '../../utils/formatRelativeTime'
 
 type BlogReaction = {
   type: string | null
-  count: number
+  count?: number
   isAuthor?: boolean
+  author?: {
+    id?: string
+    username?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    displayName?: string | null
+    photo?: string | null
+  } | null
 }
 
 type BlogReactionType = {

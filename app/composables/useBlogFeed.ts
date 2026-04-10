@@ -142,12 +142,15 @@ function readNestedArray(record: UnknownRecord, keys: string[]): unknown[] {
 
 function normalizeReaction(input: unknown): BlogReaction {
   const reaction = toRecord(input)
+  const count = pickNumber(reaction.count, NaN)
+  const hasActor =
+    pickId(reaction.author ?? reaction.user) || pickId(reaction.authorId)
 
   return {
     id: pickId(reaction),
     type:
       pickNullableString(reaction.type) ?? pickNullableString(reaction.code),
-    count: pickNumber(reaction.count, 0),
+    count: Number.isFinite(count) ? count : hasActor ? 1 : 0,
     isAuthor: pickBoolean(reaction.isAuthor, false),
     author: normalizeAuthor(reaction.author ?? reaction.user),
     raw: reaction,
