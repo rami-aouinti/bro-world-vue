@@ -10,7 +10,15 @@ type ReactionCode =
 
 type ReactionItem = {
   type: string
-  count: number
+  count?: number
+  author?: {
+    id?: string
+    username?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    displayName?: string | null
+    photo?: string | null
+  } | null
 }
 
 const props = withDefaults(
@@ -42,12 +50,20 @@ const reactionOrder: ReactionCode[] = [
   'angry',
 ]
 
+const detailsOpen = ref(false)
+
+function normalizedReactionCount(reaction: ReactionItem) {
+  return typeof reaction.count === 'number' && reaction.count > 0
+    ? reaction.count
+    : 1
+}
+
 const summary = computed(() => {
   const map = new Map<string, number>()
 
   for (const reaction of props.reactions) {
     const code = reaction.type?.toLowerCase() ?? ''
-    map.set(code, (map.get(code) ?? 0) + reaction.count)
+    map.set(code, (map.get(code) ?? 0) + normalizedReactionCount(reaction))
   }
 
   return reactionOrder
@@ -62,6 +78,69 @@ const summary = computed(() => {
 const totalReactions = computed(() =>
   summary.value.reduce((acc, item) => acc + item.count, 0),
 )
+
+const groupedReactors = computed(() => {
+  const groups = new Map<
+    string,
+    Array<{
+      id: string
+      name: string
+      username: string | null
+      photo: string | null
+    }>
+  >()
+
+  for (const reaction of props.reactions) {
+    const code = reaction.type?.toLowerCase() ?? ''
+    const author = reaction.author
+    if (!code || !author) {
+      continue
+    }
+
+    const userId =
+      (typeof author.id === 'string' && author.id) ||
+      (typeof author.username === 'string' && author.username) ||
+      ''
+    if (!userId) {
+      continue
+    }
+
+    if (!groups.has(code)) {
+      groups.set(code, [])
+    }
+
+    const current = groups.get(code)!
+    if (current.some((entry) => entry.id === userId)) {
+      continue
+    }
+
+    const fullName = [author.firstName, author.lastName]
+      .filter(Boolean)
+      .join(' ')
+      .trim()
+
+    current.push({
+      id: userId,
+      name:
+        author.displayName?.trim() ||
+        fullName ||
+        author.username?.trim() ||
+        'User',
+      username: author.username ?? null,
+      photo: author.photo ?? null,
+    })
+  }
+
+  return reactionOrder
+    .map((type) => ({
+      type,
+      icon: iconMap[type],
+      users: groups.get(type) ?? [],
+    }))
+    .filter((entry) => entry.users.length > 0)
+})
+
+const canShowDetails = computed(() => groupedReactors.value.length > 0)
 </script>
 
 <template>
@@ -77,7 +156,49 @@ const totalReactions = computed(() =>
       </span>
     </div>
 
-    <span class="text-subtitle-2">{{ totalReactions.toLocaleString() }}</span>
+    <button
+      type="button"
+      class="reaction-total text-subtitle-2"
+      :disabled="!canShowDetails"
+      @click="canShowDetails && (detailsOpen = true)"
+    >
+      {{ totalReactions.toLocaleString() }}
+    </button>
+
+    <v-dialog v-model="detailsOpen" max-width="520">
+      <v-card rounded="lg">
+        <v-card-title class="text-h6">Reactions</v-card-title>
+        <v-card-text class="pt-1">
+          <div
+            v-for="group in groupedReactors"
+            :key="group.type"
+            class="reaction-group"
+          >
+            <div class="text-subtitle-2 mb-2">
+              {{ group.icon }} · {{ group.users.length }}
+            </div>
+
+            <v-list density="compact" bg-color="transparent" class="py-0">
+              <v-list-item
+                v-for="user in group.users"
+                :key="`${group.type}-${user.id}`"
+              >
+                <template #prepend>
+                  <v-avatar size="28" class="me-2">
+                    <v-img v-if="user.photo" :src="user.photo" :alt="user.name" />
+                    <v-icon v-else icon="mdi-account" />
+                  </v-avatar>
+                </template>
+                <v-list-item-title>{{ user.name }}</v-list-item-title>
+                <v-list-item-subtitle v-if="user.username">
+                  @{{ user.username }}
+                </v-list-item-subtitle>
+              </v-list-item>
+            </v-list>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -106,5 +227,20 @@ const totalReactions = computed(() =>
 
 .reaction-chip:first-child {
   margin-left: 0;
+}
+
+.reaction-total {
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.reaction-total:disabled {
+  cursor: default;
+}
+
+.reaction-group:not(:last-child) {
+  margin-bottom: 0.75rem;
 }
 </style>

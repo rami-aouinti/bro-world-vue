@@ -7,8 +7,16 @@ defineOptions({
 
 type BlogReaction = {
   type: string | null
-  count: number
+  count?: number
   isAuthor?: boolean
+  author?: {
+    id?: string
+    username?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    displayName?: string | null
+    photo?: string | null
+  } | null
 }
 
 type BlogComment = {
@@ -95,8 +103,8 @@ function normalizedReactions(comment: BlogComment) {
         typeof reaction.type === 'string' && reaction.type.length > 0,
     )
     .map((reaction) => ({
+      ...reaction,
       type: reaction.type as string,
-      count: reaction.count,
     }))
 }
 

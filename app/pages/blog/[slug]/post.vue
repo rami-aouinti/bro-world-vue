@@ -16,8 +16,9 @@ type BlogAuthorView = {
 type BlogReactionView = {
   id: string | number
   type: string | null
-  count: number
+  count?: number
   isAuthor: boolean
+  author?: BlogAuthorView | null
 }
 
 type BlogCommentView = {
@@ -142,13 +143,18 @@ function normalizeAuthor(input: unknown): BlogAuthorView | null {
 
 function normalizeReaction(input: unknown): BlogReactionView {
   const reaction = toRecord(input)
+  const count = pickNumber(reaction.count, NaN)
+  const hasActor =
+    pickId(toRecord(reaction.author ?? reaction.user)) ||
+    pickId(toRecord({ id: reaction.authorId }))
 
   return {
     id: pickId(reaction),
     type:
       pickNullableString(reaction.type) ?? pickNullableString(reaction.code),
-    count: pickNumber(reaction.count, 0),
+    count: Number.isFinite(count) ? count : hasActor ? 1 : 0,
     isAuthor: pickBoolean(reaction.isAuthor, false),
+    author: normalizeAuthor(reaction.author ?? reaction.user),
   }
 }
 
