@@ -57,6 +57,9 @@ onMounted(() => {
           </ClientOnly>
         </template>
         <BlogPostFeed />
+        <div class="mt-4 d-lg-none">
+          <HomeRightRailLocalContext />
+        </div>
       </template>
     </v-container>
   </div>
