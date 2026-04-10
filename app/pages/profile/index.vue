@@ -7,25 +7,14 @@ interface UpcomingCalendarEvent {
   startAt: string
 }
 
-const { locale } = useI18n()
+const { t, locale } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 const profileStore = useProfileStore()
 const { profile, loading, error } = storeToRefs(profileStore)
 const upcomingEvents = ref<UpcomingCalendarEvent[]>([])
 
-const proverbs = [
-  'Petit à petit, l’oiseau fait son nid.',
-  'Après la pluie, le beau temps.',
-  'Qui va doucement va sûrement.',
-  'Le succès sourit aux patients.',
-]
-
-const displayedText = ref('')
-const activeTextIndex = ref(0)
-const charIndex = ref(0)
-const isTyping = ref(true)
+const displayedProverbs = ref<string[]>([])
 let typingInterval: ReturnType<typeof setInterval> | null = null
-let typingTimeout: ReturnType<typeof setTimeout> | null = null
 
 const fullName = computed(() => {
   const user = profile.value
@@ -42,52 +31,46 @@ const profileTitle = computed(() => profile.value?.profile?.title || 'Member')
 const profileInformation = computed(
   () => profile.value?.profile?.information || '',
 )
-const rightPanelTexts = computed(() => {
-  const upcomingLabel = upcomingEvents.value[0]
-    ? `Événement imminent: ${upcomingEvents.value[0].title}`
-    : null
-
-  return upcomingLabel ? [upcomingLabel, ...proverbs] : [...proverbs]
-})
+const proverbTexts = computed(() => [
+  t('pages.profile.rightRail.proverbs.0'),
+  t('pages.profile.rightRail.proverbs.1'),
+  t('pages.profile.rightRail.proverbs.2'),
+])
 
 const hasUpcomingEvents = computed(() => upcomingEvents.value.length > 0)
+const nextEventLabel = computed(() =>
+  upcomingEvents.value[0]
+    ? t('pages.profile.rightRail.nextEvent', {
+        title: upcomingEvents.value[0].title,
+      })
+    : '',
+)
 
 function clearTypewriterTimers() {
   if (typingInterval) {
     clearInterval(typingInterval)
     typingInterval = null
   }
-  if (typingTimeout) {
-    clearTimeout(typingTimeout)
-    typingTimeout = null
-  }
 }
 
 function startTypewriter() {
   clearTypewriterTimers()
-
-  if (!rightPanelTexts.value.length) {
-    displayedText.value = ''
-    return
-  }
-
-  isTyping.value = true
+  displayedProverbs.value = proverbTexts.value.map(() => '')
+  const charIndexes = proverbTexts.value.map(() => 0)
   typingInterval = setInterval(() => {
-    const activeText = rightPanelTexts.value[activeTextIndex.value] || ''
-    if (isTyping.value) {
-      if (charIndex.value < activeText.length) {
-        displayedText.value += activeText.charAt(charIndex.value)
-        charIndex.value += 1
-      } else {
-        isTyping.value = false
-        typingTimeout = setTimeout(() => {
-          displayedText.value = ''
-          charIndex.value = 0
-          activeTextIndex.value =
-            (activeTextIndex.value + 1) % rightPanelTexts.value.length
-          isTyping.value = true
-        }, 1800)
+    let hasRemainingChars = false
+    proverbTexts.value.forEach((text, index) => {
+      const cursor = charIndexes[index] ?? 0
+      if (cursor < text.length) {
+        displayedProverbs.value[index] =
+          (displayedProverbs.value[index] ?? '') + text.charAt(cursor)
+        charIndexes[index] += 1
+        hasRemainingChars = true
       }
+    })
+
+    if (!hasRemainingChars) {
+      clearTypewriterTimers()
     }
   }, 45)
 }
@@ -130,10 +113,7 @@ onMounted(async () => {
   startTypewriter()
 })
 
-watch(rightPanelTexts, () => {
-  displayedText.value = ''
-  activeTextIndex.value = 0
-  charIndex.value = 0
+watch([proverbTexts, locale], () => {
   startTypewriter()
 })
 
@@ -146,11 +126,18 @@ onUnmounted(() => {
   <div>
     <AppPageDrawers>
       <template #right>
-        <v-card rounded="xl" variant="tonal">
-          <v-card-title>À venir</v-card-title>
+        <v-card rounded="xl" variant="text" class="postcard-gradient-card">
+          <v-card-title>{{ t('pages.profile.rightRail.title') }}</v-card-title>
           <v-card-text>
-            <p class="text-body-2 text-medium-emphasis mb-3">
-              {{ displayedText }}
+            <p v-if="nextEventLabel" class="text-body-2 mb-3">
+              {{ nextEventLabel }}
+            </p>
+            <p
+              v-for="(proverb, index) in displayedProverbs"
+              :key="`proverb-${index}`"
+              class="text-body-2 text-medium-emphasis mb-2"
+            >
+              {{ proverb }}
             </p>
 
             <v-list v-if="hasUpcomingEvents" density="compact" class="pa-0">
@@ -163,7 +150,7 @@ onUnmounted(() => {
               />
             </v-list>
             <p v-else class="text-body-2 text-medium-emphasis mb-0">
-              Aucun événement à venir pour le moment.
+              {{ t('pages.profile.rightRail.emptyUpcoming') }}
             </p>
           </v-card-text>
         </v-card>

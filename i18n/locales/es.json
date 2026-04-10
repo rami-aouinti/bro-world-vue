@@ -311,6 +311,16 @@
       }
     },
     "profile": {
+      "rightRail": {
+        "title": "Próximamente",
+        "nextEvent": "Próximo evento: {title}",
+        "emptyUpcoming": "No hay eventos próximos por ahora.",
+        "proverbs": [
+          "Poco a poco se anda lejos.",
+          "Después de la lluvia sale el sol.",
+          "Despacio y con constancia se gana la carrera."
+        ]
+      },
       "posts": {
         "title": "Publicaciones"
       }
