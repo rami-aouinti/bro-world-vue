@@ -83,7 +83,7 @@ const rightDrawerSelection = computed(() => [
             </v-btn>
           </template>
         </v-breadcrumbs>
-        <v-row v-if="subCategories.length" dense>
+        <v-row v-if="subCategories.length" density="comfortable">
           <v-col
             v-for="subCategory in subCategories"
             :key="subCategory.id"

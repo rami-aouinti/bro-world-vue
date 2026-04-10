@@ -170,7 +170,7 @@ const filteredItems = computed(() => {
           </v-chip>
         </div>
 
-        <v-row v-if="filteredItems.length" dense>
+        <v-row v-if="filteredItems.length" density="comfortable">
           <v-col
             v-for="item in filteredItems"
             :key="item.question"

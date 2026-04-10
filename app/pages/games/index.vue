@@ -38,7 +38,7 @@ const categories = computed(() =>
         type="image, article, image, article"
       />
 
-      <v-row v-else-if="categories.length" dense>
+      <v-row v-else-if="categories.length" density="comfortable">
         <v-col
           v-for="category in categories"
           :key="category.id"

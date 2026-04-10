@@ -159,7 +159,7 @@ function resetForm() {
           </div>
         </v-card>
 
-        <v-row class="mb-8" dense>
+        <v-row class="mb-8" density="comfortable">
           <v-col
             v-for="channel in page.channels"
             :key="channel.label"
@@ -179,7 +179,7 @@ function resetForm() {
           </v-col>
         </v-row>
 
-        <v-row class="mb-8" dense>
+        <v-row class="mb-8" density="comfortable">
           <v-col cols="12" md="5">
             <v-card rounded="xl" class="pa-4" height="100%">
               <h2 class="text-h6 mb-2">{{ page.availability.title }}</h2>
@@ -215,7 +215,7 @@ function resetForm() {
               <p class="text-medium-emphasis mb-4">
                 {{ page.form.description }}
               </p>
-              <v-row dense>
+              <v-row density="comfortable">
                 <v-col cols="12" sm="6">
                   <v-text-field
                     v-model="formState.firstName"
