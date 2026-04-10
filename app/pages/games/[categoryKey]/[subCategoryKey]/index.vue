@@ -102,7 +102,7 @@ const rightDrawerSelection = computed(() => [
             </v-btn>
           </template>
         </v-breadcrumbs>
-        <v-row dense>
+        <v-row density="comfortable">
           <v-col v-for="game in games" :key="game.id" cols="12" md="6" lg="4">
             <v-card
               rounded="lg"
