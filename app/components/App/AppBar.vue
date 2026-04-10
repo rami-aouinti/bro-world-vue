@@ -491,9 +491,13 @@ function isMenuActive(paths: string[]) {
 }
 
 .app-bar--kind-glass {
-  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 82%, transparent);
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.18) 0%,
+    transparent 20%
+  );
   border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-  box-shadow: 0 12px 24px rgba(var(--v-theme-primary), 0.28);
+  box-shadow: 0 12px 24px rgba(var(--v-theme-primary), 0.1);
   backdrop-filter: blur(8px);
 }
 
