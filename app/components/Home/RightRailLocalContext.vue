@@ -30,6 +30,8 @@ interface LocalContextResponse {
 }
 
 const { locale, t } = useI18n()
+const AUTO_LOCAL_CONTEXT_KEY = 'home.local-context.last-fetch-at'
+const AUTO_LOCAL_CONTEXT_TTL_MS = 30 * 60 * 1000
 
 const isLoading = ref(false)
 const permissionDenied = ref(false)
@@ -37,18 +39,6 @@ const loadError = ref('')
 const localContext = ref<LocalContextResponse | null>(null)
 
 const hasContext = computed(() => Boolean(localContext.value))
-
-const geoLabel = computed(() => {
-  const location = localContext.value?.location
-
-  if (!location) {
-    return ''
-  }
-
-  return [location.city, location.region, location.country]
-    .filter(Boolean)
-    .join(', ')
-})
 
 const weatherSummary = computed(() => {
   const weather = localContext.value?.weather
@@ -79,6 +69,34 @@ function impactColor(impact: MajorEvent['impact']) {
 function resetState() {
   permissionDenied.value = false
   loadError.value = ''
+}
+
+function shouldAutoRequest() {
+  try {
+    const value = window.localStorage.getItem(AUTO_LOCAL_CONTEXT_KEY)
+
+    if (!value) {
+      return true
+    }
+
+    const lastFetchAt = Number(value)
+
+    if (!Number.isFinite(lastFetchAt)) {
+      return true
+    }
+
+    return Date.now() - lastFetchAt >= AUTO_LOCAL_CONTEXT_TTL_MS
+  } catch {
+    return true
+  }
+}
+
+function setAutoRequestTimestamp() {
+  try {
+    window.localStorage.setItem(AUTO_LOCAL_CONTEXT_KEY, String(Date.now()))
+  } catch {
+    // Ignore storage write failures.
+  }
 }
 
 async function loadLocalContext(position: GeolocationPosition) {
@@ -113,10 +131,12 @@ function requestLocation() {
 
   navigator.geolocation.getCurrentPosition(
     (position) => {
+      setAutoRequestTimestamp()
       void loadLocalContext(position)
     },
     () => {
       permissionDenied.value = true
+      setAutoRequestTimestamp()
     },
     {
       enableHighAccuracy: false,
@@ -125,63 +145,16 @@ function requestLocation() {
     },
   )
 }
+
+onMounted(() => {
+  if (shouldAutoRequest()) {
+    requestLocation()
+  }
+})
 </script>
 
 <template>
   <div class="d-flex flex-column ga-4">
-    <v-card rounded="xl" variant="text" class="actuality-card">
-      <v-card-item>
-        <template #prepend>
-          <v-icon icon="mdi-map-marker-radius-outline" color="primary" />
-        </template>
-        <v-card-title>{{ $t('home.rightNav.localContext.title') }}</v-card-title>
-        <v-card-subtitle>
-          {{ $t('home.rightNav.localContext.subtitle') }}
-        </v-card-subtitle>
-      </v-card-item>
-      <v-card-text>
-        <div class="d-flex flex-column ga-2">
-          <v-btn
-            color="primary"
-            variant="tonal"
-            block
-            :loading="isLoading"
-            @click="requestLocation"
-          >
-            {{ $t('home.rightNav.localContext.permissionCta') }}
-          </v-btn>
-
-          <v-alert
-            v-if="permissionDenied"
-            type="warning"
-            variant="tonal"
-            density="compact"
-          >
-            {{ $t('home.rightNav.localContext.permissionDenied') }}
-          </v-alert>
-
-          <v-alert
-            v-if="loadError"
-            type="error"
-            variant="tonal"
-            density="compact"
-          >
-            {{ loadError }}
-          </v-alert>
-
-          <v-progress-linear v-if="isLoading" indeterminate color="primary" />
-          <div v-if="isLoading" class="text-caption text-medium-emphasis">
-            {{ $t('home.rightNav.localContext.loading') }}
-          </div>
-
-          <template v-if="hasContext && localContext">
-            <div class="text-body-2 font-weight-medium">{{ geoLabel }}</div>
-            <div class="text-caption text-medium-emphasis">{{ weatherSummary }}</div>
-          </template>
-        </div>
-      </v-card-text>
-    </v-card>
-
     <v-card v-if="hasContext && localContext" rounded="xl" variant="text" class="actuality-card">
       <v-card-item>
         <template #prepend>

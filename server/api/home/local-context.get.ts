@@ -1,4 +1,5 @@
 import { rankEventsWithAiGateway } from '../../utils/aiGateway'
+import { getCached, publicCacheKey, setCached } from '../../utils/apiCache'
 
 interface ReverseGeocodingResponse {
   results?: Array<{
@@ -194,10 +195,24 @@ export default defineEventHandler(async (event): Promise<LocalContextPayload> =>
     throw createError({ statusCode: 400, statusMessage: 'Invalid lon range' })
   }
 
+  const roundedLat = Number(lat.toFixed(3))
+  const roundedLon = Number(lon.toFixed(3))
+
   const locale =
     typeof query.locale === 'string' && query.locale.trim()
       ? query.locale.trim()
       : 'en-US'
+
+  const cacheKey = publicCacheKey('home/local-context', {
+    lat: roundedLat,
+    lon: roundedLon,
+    locale,
+  })
+  const cachedPayload = await getCached<LocalContextPayload>(cacheKey)
+
+  if (cachedPayload) {
+    return cachedPayload
+  }
 
   const [geoResult, weatherResult] = await Promise.allSettled([
     $fetch<ReverseGeocodingResponse>(
@@ -267,7 +282,7 @@ export default defineEventHandler(async (event): Promise<LocalContextPayload> =>
 
   const weatherCode = weather.current?.weather_code
 
-  return {
+  const payload: LocalContextPayload = {
     location: {
       city,
       region,
@@ -289,4 +304,8 @@ export default defineEventHandler(async (event): Promise<LocalContextPayload> =>
     events: localEvents,
     majorEvents,
   }
+
+  await setCached(cacheKey, payload, 1800)
+
+  return payload
 })
