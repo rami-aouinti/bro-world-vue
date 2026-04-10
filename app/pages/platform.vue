@@ -335,7 +335,7 @@ function resetFilters() {
             :text="t('platform.error')"
           />
 
-          <v-row v-if="pending" dense>
+          <v-row v-if="pending" density="comfortable">
             <v-col
               v-for="index in 6"
               :key="`skeleton-${index}`"
@@ -347,8 +347,7 @@ function resetFilters() {
           </v-row>
 
           <v-row
-            v-else-if="paginatedApplications.length"
-            dense
+            v-else-if="paginatedApplications.length" density="comfortable"
             class="platform-grid"
           >
             <v-col
