@@ -9,16 +9,33 @@ interface RandomGameItem {
 const { ensureCatalogLoaded, catalogStore, entityRouteValue, tOrFallback } =
   useGamesCatalogNavigation()
 
-const { data: randomGames, pending } = await useAsyncData(
-  'home-left-random-games',
-  () => $fetch<RandomGameItem[]>('/api/games/random', { query: { limit: 3 } }),
-  {
-    default: () => [],
-  },
+const randomGames = useState<RandomGameItem[]>(
+  'home-left-random-games-data',
+  () => [],
 )
+const randomGamesLoaded = useState<boolean>(
+  'home-left-random-games-loaded',
+  () => false,
+)
+const pending = ref(!randomGamesLoaded.value)
+
+async function loadRandomGames() {
+  if (pending.value || randomGamesLoaded.value) return
+
+  pending.value = true
+
+  try {
+    randomGames.value = await $fetch<RandomGameItem[]>('/api/games/random', {
+      query: { limit: 3 },
+    })
+    randomGamesLoaded.value = true
+  } finally {
+    pending.value = false
+  }
+}
 
 onMounted(async () => {
-  await ensureCatalogLoaded()
+  await Promise.all([ensureCatalogLoaded(), loadRandomGames()])
 })
 
 function resolveGameRoute(game: RandomGameItem) {
