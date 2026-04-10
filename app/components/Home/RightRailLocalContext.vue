@@ -36,6 +36,7 @@ const AUTO_LOCAL_CONTEXT_TTL_MS = 30 * 60 * 1000
 const isLoading = ref(false)
 const permissionDenied = ref(false)
 const loadError = ref('')
+const isLocationModalOpen = ref(false)
 const localContext = ref<LocalContextResponse | null>(null)
 
 const hasContext = computed(() => Boolean(localContext.value))
@@ -123,6 +124,7 @@ async function loadLocalContext(position: GeolocationPosition) {
 
 function requestLocation() {
   resetState()
+  isLocationModalOpen.value = false
 
   if (!navigator.geolocation) {
     loadError.value = t('home.rightNav.localContext.unsupported')
@@ -148,13 +150,33 @@ function requestLocation() {
 
 onMounted(() => {
   if (shouldAutoRequest()) {
-    requestLocation()
+    isLocationModalOpen.value = true
   }
 })
 </script>
 
 <template>
   <div class="d-flex flex-column ga-4">
+    <v-dialog v-model="isLocationModalOpen" max-width="420">
+      <v-card rounded="xl">
+        <v-card-title class="text-h6">
+          {{ $t('home.rightNav.localContext.title') }}
+        </v-card-title>
+        <v-card-text>
+          {{ $t('home.rightNav.localContext.subtitle') }}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" @click="isLocationModalOpen = false">
+            {{ $t('common.close') }}
+          </v-btn>
+          <v-btn color="primary" :loading="isLoading" @click="requestLocation">
+            {{ $t('home.rightNav.localContext.permissionCta') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-card v-if="hasContext && localContext" rounded="xl" variant="text" class="actuality-card">
       <v-card-item>
         <template #prepend>
