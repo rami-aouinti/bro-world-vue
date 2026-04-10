@@ -251,7 +251,13 @@ function isMenuActive(paths: string[]) {
             </p>
           </div>
 
-          <div class="app-top-bar__mega-menu-grid">
+          <div
+            class="app-top-bar__mega-menu-grid"
+            :class="{
+              'app-top-bar__mega-menu-grid--two-columns':
+                menu.label === 'appbar.applications',
+            }"
+          >
             <NuxtLink
               v-for="item in menu.items"
               :key="item.to"
@@ -629,6 +635,10 @@ function isMenuActive(paths: string[]) {
   padding: 0 20px 16px;
 }
 
+.app-top-bar__mega-menu-grid--two-columns {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .app-top-bar__mega-menu-card {
   display: flex;
   align-items: flex-start;
@@ -692,6 +702,16 @@ function isMenuActive(paths: string[]) {
 
   .app-top-bar__mega-menu-grid {
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .app-top-bar__mega-menu-grid--two-columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .app-top-bar__mega-menu-grid--two-columns {
+    grid-template-columns: 1fr;
   }
 }
 </style>
