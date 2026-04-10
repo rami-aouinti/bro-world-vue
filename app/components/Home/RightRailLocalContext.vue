@@ -30,6 +30,8 @@ interface LocalContextResponse {
 }
 
 const { locale, t } = useI18n()
+const AUTO_LOCAL_CONTEXT_KEY = 'home.local-context.last-fetch-at'
+const AUTO_LOCAL_CONTEXT_TTL_MS = 30 * 60 * 1000
 
 const isLoading = ref(false)
 const permissionDenied = ref(false)
@@ -70,6 +72,34 @@ function resetState() {
   loadError.value = ''
 }
 
+function shouldAutoRequest() {
+  try {
+    const value = window.localStorage.getItem(AUTO_LOCAL_CONTEXT_KEY)
+
+    if (!value) {
+      return true
+    }
+
+    const lastFetchAt = Number(value)
+
+    if (!Number.isFinite(lastFetchAt)) {
+      return true
+    }
+
+    return Date.now() - lastFetchAt >= AUTO_LOCAL_CONTEXT_TTL_MS
+  } catch {
+    return true
+  }
+}
+
+function setAutoRequestTimestamp() {
+  try {
+    window.localStorage.setItem(AUTO_LOCAL_CONTEXT_KEY, String(Date.now()))
+  } catch {
+    // Ignore storage write failures.
+  }
+}
+
 async function loadLocalContext(position: GeolocationPosition) {
   isLoading.value = true
 
@@ -103,10 +133,12 @@ function requestLocation() {
 
   navigator.geolocation.getCurrentPosition(
     (position) => {
+      setAutoRequestTimestamp()
       void loadLocalContext(position)
     },
     () => {
       permissionDenied.value = true
+      setAutoRequestTimestamp()
     },
     {
       enableHighAccuracy: false,
