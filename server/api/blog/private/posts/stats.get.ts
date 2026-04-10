@@ -1,6 +1,10 @@
 import type { ApiResponse } from '~~/server/types/api/common'
 import { callPrivateApi, getSessionAuth } from '../../../../utils/privateApi'
-import { getCached, privateCacheKey, setCached } from '../../../../utils/apiCache'
+import {
+  getCached,
+  privateCacheKey,
+  setCached,
+} from '../../../../utils/apiCache'
 
 type UnknownRecord = Record<string, unknown>
 
@@ -60,8 +64,7 @@ function computeStats(response: ApiResponse): BlogPostStatsResponse {
       return {
         totalPosts: accumulator.totalPosts + 1,
         totalComments: accumulator.totalComments + comments.length,
-        totalReacts:
-          accumulator.totalReacts + postReactions + commentReactions,
+        totalReacts: accumulator.totalReacts + postReactions + commentReactions,
       }
     },
     {

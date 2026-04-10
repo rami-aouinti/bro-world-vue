@@ -109,7 +109,8 @@ async function fetchUpcomingEvents() {
       .slice()
       .sort(
         (first, second) =>
-          new Date(first.startAt).getTime() - new Date(second.startAt).getTime(),
+          new Date(first.startAt).getTime() -
+          new Date(second.startAt).getTime(),
       )
       .slice(0, 5)
   } catch (fetchError) {

@@ -29,7 +29,9 @@ const handPreview = computed(() => {
   <CardTablePlaySurface
     class="arena-interactive"
     title="Belote"
-    :subtitle="session?.sessionId ? `Session ${session.sessionId}` : 'Table 4 joueurs'"
+    :subtitle="
+      session?.sessionId ? `Session ${session.sessionId}` : 'Table 4 joueurs'
+    "
     :seats="seats"
     :community-cards="trickCards"
     :player-cards="handPreview"

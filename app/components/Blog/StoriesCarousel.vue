@@ -168,13 +168,13 @@ const localStoryGroups = ref<StoryGroup[]>([])
 const { user, loggedIn } = useUserSession()
 const { locale, t } = useI18n()
 
-const {
-  data,
-  refresh,
-} = await useFetch<StoriesApiResponse | StoryGroup[]>('/api/stories', {
-  default: () => [],
-  server: false,
-})
+const { data, refresh } = await useFetch<StoriesApiResponse | StoryGroup[]>(
+  '/api/stories',
+  {
+    default: () => [],
+    server: false,
+  },
+)
 
 watch(loggedIn, async (isLoggedIn, wasLoggedIn) => {
   if (!isLoggedIn) {
@@ -650,7 +650,6 @@ async function deleteSelectedStory() {
             </div>
           </div>
         </v-sheet>
-
       </div>
 
       <v-alert

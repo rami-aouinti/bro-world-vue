@@ -65,7 +65,9 @@ definePageMeta({
               </v-card>
 
               <v-card rounded="lg" variant="flat" class="pa-3">
-                <p class="text-caption text-medium-emphasis mb-2">Commentaires</p>
+                <p class="text-caption text-medium-emphasis mb-2">
+                  Commentaires
+                </p>
                 <v-chip color="secondary" label size="large">
                   {{ safeStats.totalComments }}
                 </v-chip>

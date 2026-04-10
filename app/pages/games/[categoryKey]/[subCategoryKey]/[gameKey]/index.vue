@@ -112,9 +112,8 @@ const isStartCombinationValid = computed(() => {
   const opponentType = selectedOpponentType.value
   if (!playerCount || !opponentType) return false
 
-  const isAllowedCount = gameConstraints.value.allowedPlayerCounts.includes(
-    playerCount,
-  )
+  const isAllowedCount =
+    gameConstraints.value.allowedPlayerCounts.includes(playerCount)
   if (!isAllowedCount) return false
 
   if (opponentType === 'none') {
@@ -202,17 +201,14 @@ async function onStart() {
     return
 
   try {
-    const response = await catalogStore.startSession(
-      selectedGame.value.id,
-      {
-        level: selectedLevelValue.value,
-        playerCount: selectedPlayerCount.value,
-        opponentType: selectedOpponentType.value,
-        mode: selectedOpponentType.value === 'none' ? 'solo' : 'versus',
-        seatCount: selectedPlayerCount.value,
-        allowedPlayerCounts: gameConstraints.value.allowedPlayerCounts,
-      },
-    )
+    const response = await catalogStore.startSession(selectedGame.value.id, {
+      level: selectedLevelValue.value,
+      playerCount: selectedPlayerCount.value,
+      opponentType: selectedOpponentType.value,
+      mode: selectedOpponentType.value === 'none' ? 'solo' : 'versus',
+      seatCount: selectedPlayerCount.value,
+      allowedPlayerCounts: gameConstraints.value.allowedPlayerCounts,
+    })
     const createdSessionId =
       response.sessionId ?? catalogStore.currentSession?.sessionId
 

@@ -10,8 +10,9 @@ const selectedApplicationId = ref<string | null>(null)
 
 const selectedApplication = computed(
   () =>
-    applications.value.find((item) => item.id === selectedApplicationId.value) ??
-    null,
+    applications.value.find(
+      (item) => item.id === selectedApplicationId.value,
+    ) ?? null,
 )
 
 async function refreshApplications(force = false) {
@@ -74,7 +75,9 @@ onMounted(() => refreshApplications())
               <v-chip
                 size="small"
                 :color="
-                  selectedApplication.status === 'active' ? 'success' : 'warning'
+                  selectedApplication.status === 'active'
+                    ? 'success'
+                    : 'warning'
                 "
                 label
               >
@@ -94,11 +97,31 @@ onMounted(() => refreshApplications())
             </div>
 
             <v-list density="compact" class="pa-0 bg-transparent">
-              <v-list-item class="px-0" title="Platform" :subtitle="selectedApplication.platformName" />
-              <v-list-item class="px-0" title="Platform ID" :subtitle="selectedApplication.platformId" />
-              <v-list-item class="px-0" title="Slug" :subtitle="selectedApplication.slug" />
-              <v-list-item class="px-0" title="Created" :subtitle="selectedApplication.createdAt" />
-              <v-list-item class="px-0" title="Updated" :subtitle="selectedApplication.updatedAt" />
+              <v-list-item
+                class="px-0"
+                title="Platform"
+                :subtitle="selectedApplication.platformName"
+              />
+              <v-list-item
+                class="px-0"
+                title="Platform ID"
+                :subtitle="selectedApplication.platformId"
+              />
+              <v-list-item
+                class="px-0"
+                title="Slug"
+                :subtitle="selectedApplication.slug"
+              />
+              <v-list-item
+                class="px-0"
+                title="Created"
+                :subtitle="selectedApplication.createdAt"
+              />
+              <v-list-item
+                class="px-0"
+                title="Updated"
+                :subtitle="selectedApplication.updatedAt"
+              />
             </v-list>
           </v-card-text>
         </div>

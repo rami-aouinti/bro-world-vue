@@ -15,7 +15,9 @@ defineProps<PlaySurfaceProps>()
     <v-card-subtitle>Card play surface</v-card-subtitle>
     <v-card-text class="py-8">
       <div class="text-h6 mb-2">Session {{ sessionId }}</div>
-      <div class="text-medium-emphasis">Level: {{ level }} · Status: {{ status }}</div>
+      <div class="text-medium-emphasis">
+        Level: {{ level }} · Status: {{ status }}
+      </div>
     </v-card-text>
   </v-card>
 </template>

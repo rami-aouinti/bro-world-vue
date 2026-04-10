@@ -20,7 +20,7 @@ withDefaults(defineProps<CardTablePlaySurfaceProps>(), {
   subtitle: 'No-limit friendly table',
   seats: () => [],
   communityCards: () => [],
-  playerCards: () => []
+  playerCards: () => [],
 })
 </script>
 
@@ -38,21 +38,33 @@ withDefaults(defineProps<CardTablePlaySurfaceProps>(), {
           :class="[`seat--${seat.position}`, { 'seat--active': seat.isActive }]"
         >
           <p class="seat__name">{{ seat.name }}</p>
-          <p v-if="seat.stack !== undefined" class="seat__stack">{{ seat.stack }}</p>
+          <p v-if="seat.stack !== undefined" class="seat__stack">
+            {{ seat.stack }}
+          </p>
         </article>
       </div>
 
       <div class="community-zone">
         <p class="zone-label">Common cards</p>
         <div class="card-row">
-          <span v-for="(card, index) in communityCards" :key="`${card}-${index}`" class="playing-card">{{ card }}</span>
+          <span
+            v-for="(card, index) in communityCards"
+            :key="`${card}-${index}`"
+            class="playing-card"
+            >{{ card }}</span
+          >
         </div>
       </div>
 
       <div class="player-zone">
         <p class="zone-label">Your hand</p>
         <div class="card-row">
-          <span v-for="(card, index) in playerCards" :key="`${card}-${index}`" class="playing-card playing-card--player">{{ card }}</span>
+          <span
+            v-for="(card, index) in playerCards"
+            :key="`${card}-${index}`"
+            class="playing-card playing-card--player"
+            >{{ card }}</span
+          >
         </div>
       </div>
     </div>
@@ -109,7 +121,11 @@ withDefaults(defineProps<CardTablePlaySurfaceProps>(), {
 .table-felt-glow {
   inset: 2.2rem;
   border: 1px solid rgb(255 255 255 / 12%);
-  background: linear-gradient(165deg, rgb(255 255 255 / 9%), rgb(255 255 255 / 1%));
+  background: linear-gradient(
+    165deg,
+    rgb(255 255 255 / 9%),
+    rgb(255 255 255 / 1%)
+  );
   backdrop-filter: blur(2px);
 }
 
@@ -124,7 +140,11 @@ withDefaults(defineProps<CardTablePlaySurfaceProps>(), {
   min-width: 7.5rem;
   border-radius: 0.875rem;
   border: 1px solid rgb(255 255 255 / 18%);
-  background: linear-gradient(135deg, rgb(255 255 255 / 22%), rgb(255 255 255 / 6%));
+  background: linear-gradient(
+    135deg,
+    rgb(255 255 255 / 22%),
+    rgb(255 255 255 / 6%)
+  );
   box-shadow: 0 8px 24px rgb(0 0 0 / 25%);
   color: #f7f8fa;
   backdrop-filter: blur(6px);

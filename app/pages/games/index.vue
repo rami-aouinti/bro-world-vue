@@ -18,7 +18,6 @@ function openCategory(category: { id: string; key?: string }) {
 const categories = computed(() =>
   Array.isArray(catalogStore.categories) ? catalogStore.categories : [],
 )
-
 </script>
 
 <template>

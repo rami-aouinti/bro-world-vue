@@ -16,7 +16,9 @@ const seats = computed(() =>
 
 const communityCards = computed(() => {
   const cards = props.gameState?.communityCards
-  return Array.isArray(cards) ? (cards as string[]) : ['A♠', '10♥', '7♣', '2♦', 'K♠']
+  return Array.isArray(cards)
+    ? (cards as string[])
+    : ['A♠', '10♥', '7♣', '2♦', 'K♠']
 })
 
 const playerCards = computed(() => {
@@ -29,7 +31,9 @@ const playerCards = computed(() => {
   <CardTablePlaySurface
     class="arena-interactive"
     title="Poker"
-    :subtitle="session?.sessionId ? `Session ${session.sessionId}` : 'Cash table'"
+    :subtitle="
+      session?.sessionId ? `Session ${session.sessionId}` : 'Cash table'
+    "
     :seats="seats"
     :community-cards="communityCards"
     :player-cards="playerCards"

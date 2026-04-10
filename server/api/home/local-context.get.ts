@@ -107,14 +107,18 @@ function decodeXmlEntities(value: string) {
 }
 
 function normalizeText(value: string) {
-  return decodeXmlEntities(value).replace(/<[^>]+>/g, '').trim()
+  return decodeXmlEntities(value)
+    .replace(/<[^>]+>/g, '')
+    .trim()
 }
 
 function parseRss(xml: string, defaultCategory: string) {
   const itemRegex = /<item>([\s\S]*?)<\/item>/g
-  const titleRegex = /<title><!\[CDATA\[([\s\S]*?)\]\]><\/title>|<title>([\s\S]*?)<\/title>/
+  const titleRegex =
+    /<title><!\[CDATA\[([\s\S]*?)\]\]><\/title>|<title>([\s\S]*?)<\/title>/
   const linkRegex = /<link>([\s\S]*?)<\/link>/
-  const descriptionRegex = /<description><!\[CDATA\[([\s\S]*?)\]\]><\/description>|<description>([\s\S]*?)<\/description>/
+  const descriptionRegex =
+    /<description><!\[CDATA\[([\s\S]*?)\]\]><\/description>|<description>([\s\S]*?)<\/description>/
   const pubDateRegex = /<pubDate>([\s\S]*?)<\/pubDate>/
 
   const events: EventItem[] = []
@@ -181,131 +185,135 @@ function dedupeEvents(events: EventItem[]) {
   return unique
 }
 
-export default defineEventHandler(async (event): Promise<LocalContextPayload> => {
-  const query = getQuery(event)
+export default defineEventHandler(
+  async (event): Promise<LocalContextPayload> => {
+    const query = getQuery(event)
 
-  const lat = parseCoordinate(query.lat, 'lat')
-  const lon = parseCoordinate(query.lon, 'lon')
+    const lat = parseCoordinate(query.lat, 'lat')
+    const lon = parseCoordinate(query.lon, 'lon')
 
-  if (lat < -90 || lat > 90) {
-    throw createError({ statusCode: 400, statusMessage: 'Invalid lat range' })
-  }
+    if (lat < -90 || lat > 90) {
+      throw createError({ statusCode: 400, statusMessage: 'Invalid lat range' })
+    }
 
-  if (lon < -180 || lon > 180) {
-    throw createError({ statusCode: 400, statusMessage: 'Invalid lon range' })
-  }
+    if (lon < -180 || lon > 180) {
+      throw createError({ statusCode: 400, statusMessage: 'Invalid lon range' })
+    }
 
-  const roundedLat = Number(lat.toFixed(3))
-  const roundedLon = Number(lon.toFixed(3))
+    const roundedLat = Number(lat.toFixed(3))
+    const roundedLon = Number(lon.toFixed(3))
 
-  const locale =
-    typeof query.locale === 'string' && query.locale.trim()
-      ? query.locale.trim()
-      : 'en-US'
+    const locale =
+      typeof query.locale === 'string' && query.locale.trim()
+        ? query.locale.trim()
+        : 'en-US'
 
-  const cacheKey = publicCacheKey('home/local-context', {
-    lat: roundedLat,
-    lon: roundedLon,
-    locale,
-  })
-  const cachedPayload = await getCached<LocalContextPayload>(cacheKey)
+    const cacheKey = publicCacheKey('home/local-context', {
+      lat: roundedLat,
+      lon: roundedLon,
+      locale,
+    })
+    const cachedPayload = await getCached<LocalContextPayload>(cacheKey)
 
-  if (cachedPayload) {
-    return cachedPayload
-  }
+    if (cachedPayload) {
+      return cachedPayload
+    }
 
-  const [geoResult, weatherResult] = await Promise.allSettled([
-    $fetch<ReverseGeocodingResponse>(
-      'https://geocoding-api.open-meteo.com/v1/reverse',
-      {
+    const [geoResult, weatherResult] = await Promise.allSettled([
+      $fetch<ReverseGeocodingResponse>(
+        'https://geocoding-api.open-meteo.com/v1/reverse',
+        {
+          query: {
+            latitude: lat,
+            longitude: lon,
+            language: locale.slice(0, 2),
+            count: 1,
+          },
+        },
+      ),
+      $fetch<WeatherResponse>('https://api.open-meteo.com/v1/forecast', {
         query: {
           latitude: lat,
           longitude: lon,
-          language: locale.slice(0, 2),
-          count: 1,
+          current: 'temperature_2m,weather_code',
+          timezone: 'auto',
         },
+      }),
+    ])
+
+    const geo =
+      geoResult.status === 'fulfilled' ? geoResult.value : { results: [] }
+    const weather =
+      weatherResult.status === 'fulfilled' ? weatherResult.value : {}
+
+    const firstLocation = geo.results?.[0]
+    const city = firstLocation?.name?.trim() || 'Unknown city'
+    const region = firstLocation?.admin1?.trim() || ''
+    const country = firstLocation?.country?.trim() || 'Unknown country'
+    const countryCode = firstLocation?.country_code?.trim() || 'US'
+
+    const localEventsQuery = `${city} ${country} events OR concert OR festival OR conference`
+    const majorEventsQuery = `major world events war OR earthquake OR major sports match OR election`
+
+    const [localEventsResult, majorEventsResult] = await Promise.allSettled([
+      fetchNewsRss(localEventsQuery, 'local', locale),
+      fetchNewsRss(majorEventsQuery, 'major', locale),
+    ])
+
+    const localEventsRaw =
+      localEventsResult.status === 'fulfilled' ? localEventsResult.value : []
+    const majorEventsRaw =
+      majorEventsResult.status === 'fulfilled' ? majorEventsResult.value : []
+
+    const localEvents = dedupeEvents(localEventsRaw).slice(0, 6)
+    const majorCandidates = dedupeEvents(majorEventsRaw).slice(0, 12)
+
+    let majorEvents: LocalContextPayload['majorEvents'] = []
+
+    try {
+      const ranked = await rankEventsWithAiGateway(event, majorCandidates)
+      majorEvents = ranked.slice(0, 6)
+    } catch (error) {
+      console.error('AI Gateway ranking failed for local context', {
+        message: error instanceof Error ? error.message : 'unknown error',
+      })
+    }
+
+    if (!majorEvents.length) {
+      majorEvents = majorCandidates.slice(0, 6).map((eventItem) => ({
+        ...eventItem,
+        impact: 'medium',
+        zone: 'Global',
+      }))
+    }
+
+    const weatherCode = weather.current?.weather_code
+
+    const payload: LocalContextPayload = {
+      location: {
+        city,
+        region,
+        country,
+        countryCode,
       },
-    ),
-    $fetch<WeatherResponse>('https://api.open-meteo.com/v1/forecast', {
-      query: {
-        latitude: lat,
-        longitude: lon,
-        current: 'temperature_2m,weather_code',
-        timezone: 'auto',
+      weather: {
+        temperatureC:
+          typeof weather.current?.temperature_2m === 'number'
+            ? weather.current.temperature_2m
+            : null,
+        condition:
+          typeof weatherCode === 'number'
+            ? weatherCodeMap[weatherCode] || 'Unknown conditions'
+            : 'Unknown conditions',
+        weatherCode: typeof weatherCode === 'number' ? weatherCode : null,
+        observedAt: weather.current?.time || new Date().toISOString(),
       },
-    }),
-  ])
+      events: localEvents,
+      majorEvents,
+    }
 
-  const geo = geoResult.status === 'fulfilled' ? geoResult.value : { results: [] }
-  const weather = weatherResult.status === 'fulfilled' ? weatherResult.value : {}
+    await setCached(cacheKey, payload, 1800)
 
-  const firstLocation = geo.results?.[0]
-  const city = firstLocation?.name?.trim() || 'Unknown city'
-  const region = firstLocation?.admin1?.trim() || ''
-  const country = firstLocation?.country?.trim() || 'Unknown country'
-  const countryCode = firstLocation?.country_code?.trim() || 'US'
-
-  const localEventsQuery = `${city} ${country} events OR concert OR festival OR conference`
-  const majorEventsQuery = `major world events war OR earthquake OR major sports match OR election`
-
-  const [localEventsResult, majorEventsResult] = await Promise.allSettled([
-    fetchNewsRss(localEventsQuery, 'local', locale),
-    fetchNewsRss(majorEventsQuery, 'major', locale),
-  ])
-
-  const localEventsRaw =
-    localEventsResult.status === 'fulfilled' ? localEventsResult.value : []
-  const majorEventsRaw =
-    majorEventsResult.status === 'fulfilled' ? majorEventsResult.value : []
-
-  const localEvents = dedupeEvents(localEventsRaw).slice(0, 6)
-  const majorCandidates = dedupeEvents(majorEventsRaw).slice(0, 12)
-
-  let majorEvents: LocalContextPayload['majorEvents'] = []
-
-  try {
-    const ranked = await rankEventsWithAiGateway(event, majorCandidates)
-    majorEvents = ranked.slice(0, 6)
-  } catch (error) {
-    console.error('AI Gateway ranking failed for local context', {
-      message: error instanceof Error ? error.message : 'unknown error',
-    })
-  }
-
-  if (!majorEvents.length) {
-    majorEvents = majorCandidates.slice(0, 6).map((eventItem) => ({
-      ...eventItem,
-      impact: 'medium',
-      zone: 'Global',
-    }))
-  }
-
-  const weatherCode = weather.current?.weather_code
-
-  const payload: LocalContextPayload = {
-    location: {
-      city,
-      region,
-      country,
-      countryCode,
-    },
-    weather: {
-      temperatureC:
-        typeof weather.current?.temperature_2m === 'number'
-          ? weather.current.temperature_2m
-          : null,
-      condition:
-        typeof weatherCode === 'number'
-          ? weatherCodeMap[weatherCode] || 'Unknown conditions'
-          : 'Unknown conditions',
-      weatherCode: typeof weatherCode === 'number' ? weatherCode : null,
-      observedAt: weather.current?.time || new Date().toISOString(),
-    },
-    events: localEvents,
-    majorEvents,
-  }
-
-  await setCached(cacheKey, payload, 1800)
-
-  return payload
-})
+    return payload
+  },
+)

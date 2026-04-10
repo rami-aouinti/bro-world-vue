@@ -383,7 +383,9 @@ onMounted(async () => {
                         @click="applyAction(item.id, btn.action)"
                       />
                       <v-btn
-                        v-if="section.id !== 'friends' && section.id !== 'blocked'"
+                        v-if="
+                          section.id !== 'friends' && section.id !== 'blocked'
+                        "
                         color="primary"
                         variant="tonal"
                         icon="mdi-send-outline"

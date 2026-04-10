@@ -157,7 +157,9 @@ function normalizeGameItem(raw: unknown): GameItem | null {
         ? item.supportsAiOpponent
         : false,
     requiresOpponent:
-      typeof item.requiresOpponent === 'boolean' ? item.requiresOpponent : false,
+      typeof item.requiresOpponent === 'boolean'
+        ? item.requiresOpponent
+        : false,
     playSurfaceComponent:
       normalizeSurfaceComponentValue(item.playSurfaceComponent) ||
       normalizeSurfaceComponentValue(item.component) ||
@@ -376,7 +378,10 @@ function normalizeLevelsResponse(response: LevelsResponse): LevelItem[] {
       : []
 
   return source
-    .filter((level): level is Record<string, unknown> => !!level && typeof level === 'object')
+    .filter(
+      (level): level is Record<string, unknown> =>
+        !!level && typeof level === 'object',
+    )
     .map((level) => ({
       id: typeof level.id === 'string' ? level.id : String(level.value ?? ''),
       value:
@@ -393,12 +398,16 @@ function normalizeLevelsResponse(response: LevelsResponse): LevelItem[] {
             : typeof level.id === 'string'
               ? level.id
               : '',
-      description: typeof level.description === 'string' ? level.description : '',
+      description:
+        typeof level.description === 'string' ? level.description : '',
     }))
     .filter((level) => level.id && level.value && level.label)
 }
 
-function normalizeStartResponse(response: StartResponse, fallbackLevel: string) {
+function normalizeStartResponse(
+  response: StartResponse,
+  fallbackLevel: string,
+) {
   const session =
     'session' in response
       ? response.session
@@ -409,7 +418,8 @@ function normalizeStartResponse(response: StartResponse, fallbackLevel: string) 
           status: response.status,
         }
   const sessionId = session?.id ?? session?.sessionId ?? ''
-  const level = session?.level ?? session?.context?.selectedLevel ?? fallbackLevel
+  const level =
+    session?.level ?? session?.context?.selectedLevel ?? fallbackLevel
   const status = session?.status ?? 'started'
   const coins = typeof response.coins === 'number' ? response.coins : 0
   const userGameId = response.userGameId ?? ''
@@ -509,7 +519,10 @@ export const useGameCatalogStore = defineStore('game-catalog', {
           },
         )
 
-        const normalizedResponse = normalizeStartResponse(response, payload.level)
+        const normalizedResponse = normalizeStartResponse(
+          response,
+          payload.level,
+        )
 
         if (!normalizedResponse.sessionId) {
           throw new Error(

@@ -65,7 +65,9 @@ function normalizeSurfaceComponentKey(rawValue: string) {
   return rawValue.replace(/[^a-z0-9]/gi, '').toLowerCase()
 }
 
-function resolveSurfaceComponentKey(rawValue: string): KnownSurfaceComponentKey | null {
+function resolveSurfaceComponentKey(
+  rawValue: string,
+): KnownSurfaceComponentKey | null {
   const normalized = normalizeSurfaceComponentKey(rawValue)
 
   if (!normalized) return null
@@ -112,14 +114,23 @@ const commonSurfaceProps = computed(() => ({
 }))
 
 const gameDisplayName = computed(
-  () => selectedGame.value?.name || selectedGame.value?.key || gameParam.value || 'Unknown game',
+  () =>
+    selectedGame.value?.name ||
+    selectedGame.value?.key ||
+    gameParam.value ||
+    'Unknown game',
 )
-
 
 const cardSeats = computed(() => [
   { id: 'top', name: 'CPU 1', stack: '1200', position: 'top' as const },
   { id: 'right', name: 'CPU 2', stack: '900', position: 'right' as const },
-  { id: 'bottom', name: 'You', stack: String(currentSession.value?.coins ?? 0), position: 'bottom' as const, isActive: true },
+  {
+    id: 'bottom',
+    name: 'You',
+    stack: String(currentSession.value?.coins ?? 0),
+    position: 'bottom' as const,
+    isActive: true,
+  },
   { id: 'left', name: 'CPU 3', stack: '1100', position: 'left' as const },
 ])
 
@@ -127,47 +138,61 @@ const boardState = computed(() => {
   const size = 8
   return Array.from({ length: size }, (_, row) =>
     Array.from({ length: size }, (_, col) => {
-      if (row < 2 && (row + col) % 2 === 1) return { id: `d-${row}-${col}`, tone: 'dark' as const }
-      if (row > 5 && (row + col) % 2 === 1) return { id: `l-${row}-${col}`, tone: 'light' as const }
+      if (row < 2 && (row + col) % 2 === 1)
+        return { id: `d-${row}-${col}`, tone: 'dark' as const }
+      if (row > 5 && (row + col) % 2 === 1)
+        return { id: `l-${row}-${col}`, tone: 'light' as const }
       return null
     }),
   )
 })
 
 const boardPlayers = computed(() => [
-  { id: 'light', name: 'You', side: 'light' as const, score: '12', isActive: true },
+  {
+    id: 'light',
+    name: 'You',
+    side: 'light' as const,
+    score: '12',
+    isActive: true,
+  },
   { id: 'dark', name: 'CPU', side: 'dark' as const, score: '12' },
 ])
 
 const selectedSurfaceComponentName = computed(
-  () => selectedGame.value?.playSurfaceComponent || selectedGame.value?.component || '',
+  () =>
+    selectedGame.value?.playSurfaceComponent ||
+    selectedGame.value?.component ||
+    '',
 )
 
 const resolvedSurfaceComponentKey = computed(() =>
   resolveSurfaceComponentKey(selectedSurfaceComponentName.value),
 )
 
-const categorySurfaceFallbackKey = computed<KnownSurfaceComponentKey | null>(() => {
-  const normalizedCategoryHint = normalizeSurfaceComponentKey(
-    selectedCategory.value?.key ||
-    selectedCategory.value?.id ||
-    categoryParam.value,
-  )
+const categorySurfaceFallbackKey = computed<KnownSurfaceComponentKey | null>(
+  () => {
+    const normalizedCategoryHint = normalizeSurfaceComponentKey(
+      selectedCategory.value?.key ||
+        selectedCategory.value?.id ||
+        categoryParam.value,
+    )
 
-  if (!normalizedCategoryHint) return null
+    if (!normalizedCategoryHint) return null
 
-  if (normalizedCategoryHint.includes('board')) return 'checkerssurface'
-  if (normalizedCategoryHint.includes('card')) return 'pokertablesurface'
+    if (normalizedCategoryHint.includes('board')) return 'checkerssurface'
+    if (normalizedCategoryHint.includes('card')) return 'pokertablesurface'
 
-  return null
-})
+    return null
+  },
+)
 
-const fallbackSurfaceComponentKey = computed<KnownSurfaceComponentKey | null>(() =>
-  categorySurfaceFallbackKey.value,
+const fallbackSurfaceComponentKey = computed<KnownSurfaceComponentKey | null>(
+  () => categorySurfaceFallbackKey.value,
 )
 
 const resolvedPlaySurfaceComponent = computed(() => {
-  const key = resolvedSurfaceComponentKey.value || fallbackSurfaceComponentKey.value
+  const key =
+    resolvedSurfaceComponentKey.value || fallbackSurfaceComponentKey.value
 
   if (!key) return null
 
@@ -175,7 +200,8 @@ const resolvedPlaySurfaceComponent = computed(() => {
 })
 
 const surfaceProps = computed<GameSurfaceProps>(() => {
-  const key = resolvedSurfaceComponentKey.value || fallbackSurfaceComponentKey.value
+  const key =
+    resolvedSurfaceComponentKey.value || fallbackSurfaceComponentKey.value
 
   if (key === 'checkerssurface') {
     return {
@@ -244,7 +270,6 @@ async function onFinish(result: 'win' | 'lose') {
     Notify.error(error)
   }
 }
-
 </script>
 
 <template>
@@ -256,16 +281,16 @@ async function onFinish(result: 'win' | 'lose') {
             <v-card-title>Live session</v-card-title>
             <v-card-text v-if="currentSession" class="d-flex flex-wrap ga-2">
               <v-chip color="primary" variant="tonal" class="arena-chip"
-              >Session: {{ currentSession.sessionId }}</v-chip
+                >Session: {{ currentSession.sessionId }}</v-chip
               >
               <v-chip color="secondary" variant="tonal" class="arena-chip"
-              >Level: {{ currentSession.level }}</v-chip
+                >Level: {{ currentSession.level }}</v-chip
               >
               <v-chip color="info" variant="tonal" class="arena-chip"
-              >Status: {{ currentSession.status }}</v-chip
+                >Status: {{ currentSession.status }}</v-chip
               >
               <v-chip color="warning" variant="tonal" class="arena-chip"
-              >Coins: {{ currentSession.coins }}</v-chip
+                >Coins: {{ currentSession.coins }}</v-chip
               >
             </v-card-text>
             <v-card-text v-else>
@@ -279,15 +304,15 @@ async function onFinish(result: 'win' | 'lose') {
             class="arena-panel-card arena-interactive"
           >
             <v-card-title>{{
-                tOrFallback('gamePage.session.finishDemo', 'Finish demo')
-              }}</v-card-title>
+              tOrFallback('gamePage.session.finishDemo', 'Finish demo')
+            }}</v-card-title>
             <v-card-text class="d-flex ga-3 flex-wrap">
               <v-btn
                 color="success"
                 :disabled="!currentSession || catalogStore.finishingSession"
                 :loading="
-                    catalogStore.finishingSession && finishResult === 'win'
-                  "
+                  catalogStore.finishingSession && finishResult === 'win'
+                "
                 class="arena-action-btn"
                 @click="onFinish('win')"
               >
@@ -298,8 +323,8 @@ async function onFinish(result: 'win' | 'lose') {
                 variant="outlined"
                 :disabled="!currentSession || catalogStore.finishingSession"
                 :loading="
-                    catalogStore.finishingSession && finishResult === 'lose'
-                  "
+                  catalogStore.finishingSession && finishResult === 'lose'
+                "
                 class="arena-action-btn"
                 @click="onFinish('lose')"
               >
@@ -337,7 +362,6 @@ async function onFinish(result: 'win' | 'lose') {
 </template>
 
 <style scoped>
-
 .arena-play-container {
   display: flex;
   justify-content: center;
@@ -391,7 +415,10 @@ async function onFinish(result: 'win' | 'lose') {
 }
 
 .arena-interactive {
-  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    filter 0.25s ease;
 }
 
 .arena-interactive:hover {
@@ -401,7 +428,9 @@ async function onFinish(result: 'win' | 'lose') {
 
 .arena-chip,
 .arena-action-btn {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .arena-chip:hover,

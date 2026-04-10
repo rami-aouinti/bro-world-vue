@@ -347,7 +347,8 @@ function resetFilters() {
           </v-row>
 
           <v-row
-            v-else-if="paginatedApplications.length" density="comfortable"
+            v-else-if="paginatedApplications.length"
+            density="comfortable"
             class="platform-grid"
           >
             <v-col

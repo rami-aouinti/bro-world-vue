@@ -33,20 +33,24 @@ const props = withDefaults(defineProps<BoardTablePlaySurfaceProps>(), {
   players: () => [],
   selectedCell: null,
   possibleMoves: () => [],
-  lastMove: null
+  lastMove: null,
 })
 
 const isSameCell = (a: BoardCellRef | null | undefined, b: BoardCellRef) =>
   Boolean(a && a.row === b.row && a.col === b.col)
 
 const isPossibleMove = (cell: BoardCellRef) =>
-  props.possibleMoves.some((move) => move.row === cell.row && move.col === cell.col)
+  props.possibleMoves.some(
+    (move) => move.row === cell.row && move.col === cell.col,
+  )
 
 const isLastMoveCell = (cell: BoardCellRef) =>
   Boolean(
     props.lastMove &&
-      ((props.lastMove.from.row === cell.row && props.lastMove.from.col === cell.col) ||
-        (props.lastMove.to.row === cell.row && props.lastMove.to.col === cell.col))
+    ((props.lastMove.from.row === cell.row &&
+      props.lastMove.from.col === cell.col) ||
+      (props.lastMove.to.row === cell.row &&
+        props.lastMove.to.col === cell.col)),
   )
 </script>
 
@@ -60,15 +64,28 @@ const isLastMoveCell = (cell: BoardCellRef) =>
           type="button"
           class="board-cell"
           :class="[
-              (rowIndex + colIndex) % 2 === 0 ? 'board-cell--light' : 'board-cell--dark',
-              {
-                'board-cell--selected': isSameCell(selectedCell, { row: rowIndex, col: colIndex }),
-                'board-cell--possible': isPossibleMove({ row: rowIndex, col: colIndex }),
-                'board-cell--last': isLastMoveCell({ row: rowIndex, col: colIndex })
-              }
-            ]"
+            (rowIndex + colIndex) % 2 === 0
+              ? 'board-cell--light'
+              : 'board-cell--dark',
+            {
+              'board-cell--selected': isSameCell(selectedCell, {
+                row: rowIndex,
+                col: colIndex,
+              }),
+              'board-cell--possible': isPossibleMove({
+                row: rowIndex,
+                col: colIndex,
+              }),
+              'board-cell--last': isLastMoveCell({
+                row: rowIndex,
+                col: colIndex,
+              }),
+            },
+          ]"
         >
-          <span v-if="piece" class="piece" :class="`piece--${piece.tone}`">{{ piece.label || '' }}</span>
+          <span v-if="piece" class="piece" :class="`piece--${piece.tone}`">{{
+            piece.label || ''
+          }}</span>
         </button>
       </template>
     </div>
@@ -175,7 +192,11 @@ const isLastMoveCell = (cell: BoardCellRef) =>
 .score-panel {
   border-radius: 1rem;
   padding: 1rem;
-  background: linear-gradient(165deg, rgb(255 255 255 / 88%), rgb(255 255 255 / 72%));
+  background: linear-gradient(
+    165deg,
+    rgb(255 255 255 / 88%),
+    rgb(255 255 255 / 72%)
+  );
   border: 1px solid rgb(255 255 255 / 75%);
   box-shadow: 0 12px 28px rgb(0 0 0 / 14%);
 }

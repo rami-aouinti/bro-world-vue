@@ -80,7 +80,7 @@ function getStoredCoords() {
       return null
     }
 
-    const parsed = JSON.parse(raw) as { lat?: unknown, lon?: unknown }
+    const parsed = JSON.parse(raw) as { lat?: unknown; lon?: unknown }
     const lat = Number(parsed?.lat)
     const lon = Number(parsed?.lon)
 
@@ -118,7 +118,7 @@ function markLocationPrompted() {
   }
 }
 
-async function loadLocalContextByCoords(coords: { lat: number, lon: number }) {
+async function loadLocalContextByCoords(coords: { lat: number; lon: number }) {
   isLoading.value = true
 
   try {
@@ -134,7 +134,9 @@ async function loadLocalContextByCoords(coords: { lat: number, lon: number }) {
     )
   } catch (error) {
     loadError.value =
-      error instanceof Error ? error.message : t('home.rightNav.localContext.error')
+      error instanceof Error
+        ? error.message
+        : t('home.rightNav.localContext.error')
   } finally {
     isLoading.value = false
   }
@@ -210,12 +212,19 @@ onMounted(() => {
       </v-card>
     </v-dialog>
 
-    <v-card v-if="hasContext && localContext" rounded="xl" variant="text" class="actuality-card">
+    <v-card
+      v-if="hasContext && localContext"
+      rounded="xl"
+      variant="text"
+      class="actuality-card"
+    >
       <v-card-item>
         <template #prepend>
           <v-icon icon="mdi-weather-partly-cloudy" color="primary" />
         </template>
-        <v-card-title>{{ $t('home.rightNav.localContext.weatherTitle') }}</v-card-title>
+        <v-card-title>{{
+          $t('home.rightNav.localContext.weatherTitle')
+        }}</v-card-title>
       </v-card-item>
       <v-card-text class="pt-0">
         <div class="text-h5 font-weight-bold">{{ weatherSummary }}</div>
@@ -225,12 +234,19 @@ onMounted(() => {
       </v-card-text>
     </v-card>
 
-    <v-card v-if="hasContext && localContext" rounded="xl" variant="text" class="actuality-card">
+    <v-card
+      v-if="hasContext && localContext"
+      rounded="xl"
+      variant="text"
+      class="actuality-card"
+    >
       <v-card-item>
         <template #prepend>
           <v-icon icon="mdi-calendar-star" color="primary" />
         </template>
-        <v-card-title>{{ $t('home.rightNav.localContext.eventsTitle') }}</v-card-title>
+        <v-card-title>{{
+          $t('home.rightNav.localContext.eventsTitle')
+        }}</v-card-title>
       </v-card-item>
 
       <v-list density="compact" lines="two">
@@ -245,17 +261,26 @@ onMounted(() => {
           <v-list-item-subtitle>{{ item.summary }}</v-list-item-subtitle>
         </v-list-item>
         <v-list-item v-if="!localContext.events.length">
-          <v-list-item-title>{{ $t('home.rightNav.localContext.emptyState') }}</v-list-item-title>
+          <v-list-item-title>{{
+            $t('home.rightNav.localContext.emptyState')
+          }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-card>
 
-    <v-card v-if="hasContext && localContext" rounded="xl" variant="text" class="actuality-card">
+    <v-card
+      v-if="hasContext && localContext"
+      rounded="xl"
+      variant="text"
+      class="actuality-card"
+    >
       <v-card-item>
         <template #prepend>
           <v-icon icon="mdi-alert-decagram-outline" color="error" />
         </template>
-        <v-card-title>{{ $t('home.rightNav.localContext.majorEventsTitle') }}</v-card-title>
+        <v-card-title>{{
+          $t('home.rightNav.localContext.majorEventsTitle')
+        }}</v-card-title>
       </v-card-item>
       <v-list density="compact" lines="three">
         <v-list-item
@@ -266,7 +291,11 @@ onMounted(() => {
           rel="noopener noreferrer"
         >
           <template #prepend>
-            <v-chip :color="impactColor(item.impact)" size="x-small" variant="tonal">
+            <v-chip
+              :color="impactColor(item.impact)"
+              size="x-small"
+              variant="tonal"
+            >
               {{ item.impact.toUpperCase() }}
             </v-chip>
           </template>

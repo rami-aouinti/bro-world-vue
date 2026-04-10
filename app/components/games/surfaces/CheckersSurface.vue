@@ -34,9 +34,21 @@ const board = computed(() => {
   )
 })
 
-const selectedCell = computed(() => (props.gameState?.selectedCell as BoardCellRef | null) || null)
-const possibleMoves = computed(() => (Array.isArray(props.gameState?.possibleMoves) ? (props.gameState?.possibleMoves as BoardCellRef[]) : []))
-const lastMove = computed(() => (props.gameState?.lastMove as { from: BoardCellRef; to: BoardCellRef } | null) || null)
+const selectedCell = computed(
+  () => (props.gameState?.selectedCell as BoardCellRef | null) || null,
+)
+const possibleMoves = computed(() =>
+  Array.isArray(props.gameState?.possibleMoves)
+    ? (props.gameState?.possibleMoves as BoardCellRef[])
+    : [],
+)
+const lastMove = computed(
+  () =>
+    (props.gameState?.lastMove as {
+      from: BoardCellRef
+      to: BoardCellRef
+    } | null) || null,
+)
 
 const boardPlayers = computed(() =>
   props.players.map((player) => ({

@@ -83,13 +83,13 @@ onMounted(() => {
 <template>
   <v-navigation-drawer
     :model-value="drawerModel"
-    @update:model-value="handleDrawerModelUpdate"
     :expand-on-hover="rail"
     :rail="rail"
     width="260"
     permanent
     floating
     class="app-left-drawer"
+    @update:model-value="handleDrawerModelUpdate"
   >
     <div v-if="shouldRenderDrawerSlot" class="app-left-drawer-list">
       <SkeletonDrawerLeft v-if="isPageSkeletonLoading" />
