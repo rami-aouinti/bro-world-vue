@@ -30,8 +30,8 @@ interface LocalContextResponse {
 }
 
 const { locale, t } = useI18n()
-const AUTO_LOCAL_CONTEXT_KEY = 'home.local-context.last-fetch-at'
-const AUTO_LOCAL_CONTEXT_TTL_MS = 30 * 60 * 1000
+const LOCATION_PROMPTED_KEY = 'home.local-context.prompted'
+const LAST_COORDS_KEY = 'home.local-context.coords'
 
 const isLoading = ref(false)
 const permissionDenied = ref(false)
@@ -72,35 +72,53 @@ function resetState() {
   loadError.value = ''
 }
 
-function shouldAutoRequest() {
+function getStoredCoords() {
   try {
-    const value = window.localStorage.getItem(AUTO_LOCAL_CONTEXT_KEY)
+    const raw = window.localStorage.getItem(LAST_COORDS_KEY)
 
-    if (!value) {
-      return true
+    if (!raw) {
+      return null
     }
 
-    const lastFetchAt = Number(value)
+    const parsed = JSON.parse(raw) as { lat?: unknown, lon?: unknown }
+    const lat = Number(parsed?.lat)
+    const lon = Number(parsed?.lon)
 
-    if (!Number.isFinite(lastFetchAt)) {
-      return true
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+      return null
     }
 
-    return Date.now() - lastFetchAt >= AUTO_LOCAL_CONTEXT_TTL_MS
+    return { lat, lon }
   } catch {
-    return true
+    return null
   }
 }
 
-function setAutoRequestTimestamp() {
+function setStoredCoords(lat: number, lon: number) {
   try {
-    window.localStorage.setItem(AUTO_LOCAL_CONTEXT_KEY, String(Date.now()))
+    window.localStorage.setItem(LAST_COORDS_KEY, JSON.stringify({ lat, lon }))
   } catch {
     // Ignore storage write failures.
   }
 }
 
-async function loadLocalContext(position: GeolocationPosition) {
+function hasPromptedForLocation() {
+  try {
+    return window.localStorage.getItem(LOCATION_PROMPTED_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+function markLocationPrompted() {
+  try {
+    window.localStorage.setItem(LOCATION_PROMPTED_KEY, '1')
+  } catch {
+    // Ignore storage write failures.
+  }
+}
+
+async function loadLocalContextByCoords(coords: { lat: number, lon: number }) {
   isLoading.value = true
 
   try {
@@ -108,8 +126,8 @@ async function loadLocalContext(position: GeolocationPosition) {
       '/api/home/local-context',
       {
         query: {
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
+          lat: coords.lat,
+          lon: coords.lon,
           locale: locale.value,
         },
       },
@@ -120,6 +138,13 @@ async function loadLocalContext(position: GeolocationPosition) {
   } finally {
     isLoading.value = false
   }
+}
+
+async function loadLocalContext(position: GeolocationPosition) {
+  await loadLocalContextByCoords({
+    lat: position.coords.latitude,
+    lon: position.coords.longitude,
+  })
 }
 
 function requestLocation() {
@@ -133,7 +158,7 @@ function requestLocation() {
 
   navigator.geolocation.getCurrentPosition(
     (position) => {
-      setAutoRequestTimestamp()
+      setStoredCoords(position.coords.latitude, position.coords.longitude)
       void loadLocalContext(position)
     },
     () => {
@@ -149,7 +174,17 @@ function requestLocation() {
 }
 
 onMounted(() => {
-  isLocationModalOpen.value = true
+  const storedCoords = getStoredCoords()
+
+  if (storedCoords) {
+    void loadLocalContextByCoords(storedCoords)
+    return
+  }
+
+  if (!hasPromptedForLocation()) {
+    isLocationModalOpen.value = true
+    markLocationPrompted()
+  }
 })
 </script>
 
