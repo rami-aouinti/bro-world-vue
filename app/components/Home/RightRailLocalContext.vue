@@ -149,9 +149,7 @@ function requestLocation() {
 }
 
 onMounted(() => {
-  if (shouldAutoRequest()) {
-    isLocationModalOpen.value = true
-  }
+  isLocationModalOpen.value = true
 })
 </script>
 
