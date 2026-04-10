@@ -163,6 +163,7 @@ function requestLocation() {
     },
     () => {
       permissionDenied.value = true
+      setAutoRequestTimestamp()
     },
     {
       enableHighAccuracy: false,
