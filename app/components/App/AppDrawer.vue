@@ -59,7 +59,7 @@ const { mobile } = useDisplay()
 const registry = useDrawerSlotRegistry()
 const isDrawerInteractiveReady = ref(false)
 const drawerModelValue = computed(() =>
-  mobile.value ? drawerState.value : undefined,
+  mobile.value ? drawerState.value : true,
 )
 const rail = computed(() => !drawerState.value && !mobile.value)
 const leftDrawerRenderer = computed(() => registry?.left.value ?? null)
