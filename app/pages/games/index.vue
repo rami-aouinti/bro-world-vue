@@ -48,8 +48,8 @@ const categories = computed(() =>
           <v-hover v-slot="{ props }">
             <v-card
               v-bind="props"
-              class="game-category-card overflow-hidden"
-              elevation="8"
+              class="game-category-card overflow-hidden postcard-gradient-card"
+              variant="text"
               @click="openCategory(category)"
             >
               <v-img :src="category?.img" height="200" cover />

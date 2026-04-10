@@ -219,9 +219,10 @@ function resetFilters() {
 
       <template #right>
         <SkeletonDrawerRight v-if="isPageSkeletonVisible" />
-        <div
+        <v-card
           v-else-if="selectedPlatform"
-          class="pa-2 d-flex flex-column ga-2 h-100"
+          variant="text"
+          class="pa-2 d-flex flex-column ga-2 h-100 postcard-gradient-card"
         >
           <div>
             <h3 class="text-h6 font-weight-bold">
@@ -301,7 +302,7 @@ function resetFilters() {
               </v-chip>
             </div>
           </v-card-text>
-        </div>
+        </v-card>
         <v-alert
           v-else
           type="info"
@@ -359,8 +360,8 @@ function resetFilters() {
               class="d-flex"
             >
               <v-card
-                elevation="3"
-                class="platform-card w-100"
+                variant="text"
+                class="platform-card w-100 postcard-gradient-card"
                 :class="{
                   'platform-card--selected':
                     selectedPlatformId === application.id,
@@ -465,11 +466,6 @@ function resetFilters() {
   max-height: 320px;
   overflow: hidden;
   border: 1px solid rgba(100, 116, 139, 0.15);
-  background: linear-gradient(
-    240deg,
-    rgba(var(--v-theme-primary), 0.18) 0%,
-    transparent 20%
-  );
   transition:
     transform 0.25s ease,
     box-shadow 0.25s ease,
