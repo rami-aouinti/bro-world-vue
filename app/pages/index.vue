@@ -42,9 +42,6 @@ onMounted(() => {
         <template v-if="isPageSkeletonVisible">
           <SkeletonDrawerRight />
         </template>
-        <template v-else>
-          <HomeRightRailLocalContext />
-        </template>
       </template>
     </AppPageDrawers>
     <v-container fluid>
@@ -57,6 +54,9 @@ onMounted(() => {
           </ClientOnly>
         </template>
         <BlogPostFeed />
+        <div class="mt-4">
+          <HomeRightRailLocalContext />
+        </div>
       </template>
     </v-container>
   </div>

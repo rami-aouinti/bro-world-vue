@@ -34,21 +34,10 @@ const { locale, t } = useI18n()
 const isLoading = ref(false)
 const permissionDenied = ref(false)
 const loadError = ref('')
+const isLocationModalOpen = ref(false)
 const localContext = ref<LocalContextResponse | null>(null)
 
 const hasContext = computed(() => Boolean(localContext.value))
-
-const geoLabel = computed(() => {
-  const location = localContext.value?.location
-
-  if (!location) {
-    return ''
-  }
-
-  return [location.city, location.region, location.country]
-    .filter(Boolean)
-    .join(', ')
-})
 
 const weatherSummary = computed(() => {
   const weather = localContext.value?.weather
@@ -105,6 +94,7 @@ async function loadLocalContext(position: GeolocationPosition) {
 
 function requestLocation() {
   resetState()
+  isLocationModalOpen.value = false
 
   if (!navigator.geolocation) {
     loadError.value = t('home.rightNav.localContext.unsupported')
@@ -125,62 +115,33 @@ function requestLocation() {
     },
   )
 }
+
+onMounted(() => {
+  isLocationModalOpen.value = true
+})
 </script>
 
 <template>
   <div class="d-flex flex-column ga-4">
-    <v-card rounded="xl" variant="text" class="actuality-card">
-      <v-card-item>
-        <template #prepend>
-          <v-icon icon="mdi-map-marker-radius-outline" color="primary" />
-        </template>
-        <v-card-title>{{ $t('home.rightNav.localContext.title') }}</v-card-title>
-        <v-card-subtitle>
+    <v-dialog v-model="isLocationModalOpen" max-width="420">
+      <v-card rounded="xl">
+        <v-card-title class="text-h6">
+          {{ $t('home.rightNav.localContext.title') }}
+        </v-card-title>
+        <v-card-text>
           {{ $t('home.rightNav.localContext.subtitle') }}
-        </v-card-subtitle>
-      </v-card-item>
-      <v-card-text>
-        <div class="d-flex flex-column ga-2">
-          <v-btn
-            color="primary"
-            variant="tonal"
-            block
-            :loading="isLoading"
-            @click="requestLocation"
-          >
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" @click="isLocationModalOpen = false">
+            {{ $t('common.close') }}
+          </v-btn>
+          <v-btn color="primary" :loading="isLoading" @click="requestLocation">
             {{ $t('home.rightNav.localContext.permissionCta') }}
           </v-btn>
-
-          <v-alert
-            v-if="permissionDenied"
-            type="warning"
-            variant="tonal"
-            density="compact"
-          >
-            {{ $t('home.rightNav.localContext.permissionDenied') }}
-          </v-alert>
-
-          <v-alert
-            v-if="loadError"
-            type="error"
-            variant="tonal"
-            density="compact"
-          >
-            {{ loadError }}
-          </v-alert>
-
-          <v-progress-linear v-if="isLoading" indeterminate color="primary" />
-          <div v-if="isLoading" class="text-caption text-medium-emphasis">
-            {{ $t('home.rightNav.localContext.loading') }}
-          </div>
-
-          <template v-if="hasContext && localContext">
-            <div class="text-body-2 font-weight-medium">{{ geoLabel }}</div>
-            <div class="text-caption text-medium-emphasis">{{ weatherSummary }}</div>
-          </template>
-        </div>
-      </v-card-text>
-    </v-card>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <v-card v-if="hasContext && localContext" rounded="xl" variant="text" class="actuality-card">
       <v-card-item>
