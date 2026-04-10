@@ -73,9 +73,9 @@ async function playGame(game: RandomGameItem) {
 
 <template>
   <div>
-    <v-card-title class="text-subtitle-1">
+    <v-chip color="primary" variant="outlined" class="mb-4" label>
       {{ tOrFallback('home.leftNav.randomGames', 'Random games') }}
-    </v-card-title>
+    </v-chip>
 
     <v-skeleton-loader v-if="pending" type="list-item-two-line@3" />
 
