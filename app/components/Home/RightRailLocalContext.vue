@@ -30,25 +30,16 @@ interface LocalContextResponse {
 }
 
 const { locale, t } = useI18n()
+const LOCATION_PROMPTED_KEY = 'home.local-context.prompted'
+const LAST_COORDS_KEY = 'home.local-context.coords'
 
 const isLoading = ref(false)
 const permissionDenied = ref(false)
 const loadError = ref('')
+const isLocationModalOpen = ref(false)
 const localContext = ref<LocalContextResponse | null>(null)
 
 const hasContext = computed(() => Boolean(localContext.value))
-
-const geoLabel = computed(() => {
-  const location = localContext.value?.location
-
-  if (!location) {
-    return ''
-  }
-
-  return [location.city, location.region, location.country]
-    .filter(Boolean)
-    .join(', ')
-})
 
 const weatherSummary = computed(() => {
   const weather = localContext.value?.weather
@@ -81,7 +72,53 @@ function resetState() {
   loadError.value = ''
 }
 
-async function loadLocalContext(position: GeolocationPosition) {
+function getStoredCoords() {
+  try {
+    const raw = window.localStorage.getItem(LAST_COORDS_KEY)
+
+    if (!raw) {
+      return null
+    }
+
+    const parsed = JSON.parse(raw) as { lat?: unknown, lon?: unknown }
+    const lat = Number(parsed?.lat)
+    const lon = Number(parsed?.lon)
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+      return null
+    }
+
+    return { lat, lon }
+  } catch {
+    return null
+  }
+}
+
+function setStoredCoords(lat: number, lon: number) {
+  try {
+    window.localStorage.setItem(LAST_COORDS_KEY, JSON.stringify({ lat, lon }))
+  } catch {
+    // Ignore storage write failures.
+  }
+}
+
+function hasPromptedForLocation() {
+  try {
+    return window.localStorage.getItem(LOCATION_PROMPTED_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+function markLocationPrompted() {
+  try {
+    window.localStorage.setItem(LOCATION_PROMPTED_KEY, '1')
+  } catch {
+    // Ignore storage write failures.
+  }
+}
+
+async function loadLocalContextByCoords(coords: { lat: number, lon: number }) {
   isLoading.value = true
 
   try {
@@ -89,8 +126,8 @@ async function loadLocalContext(position: GeolocationPosition) {
       '/api/home/local-context',
       {
         query: {
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
+          lat: coords.lat,
+          lon: coords.lon,
           locale: locale.value,
         },
       },
@@ -103,8 +140,16 @@ async function loadLocalContext(position: GeolocationPosition) {
   }
 }
 
+async function loadLocalContext(position: GeolocationPosition) {
+  await loadLocalContextByCoords({
+    lat: position.coords.latitude,
+    lon: position.coords.longitude,
+  })
+}
+
 function requestLocation() {
   resetState()
+  isLocationModalOpen.value = false
 
   if (!navigator.geolocation) {
     loadError.value = t('home.rightNav.localContext.unsupported')
@@ -113,6 +158,7 @@ function requestLocation() {
 
   navigator.geolocation.getCurrentPosition(
     (position) => {
+      setStoredCoords(position.coords.latitude, position.coords.longitude)
       void loadLocalContext(position)
     },
     () => {
@@ -125,62 +171,43 @@ function requestLocation() {
     },
   )
 }
+
+onMounted(() => {
+  const storedCoords = getStoredCoords()
+
+  if (storedCoords) {
+    void loadLocalContextByCoords(storedCoords)
+    return
+  }
+
+  if (!hasPromptedForLocation()) {
+    isLocationModalOpen.value = true
+    markLocationPrompted()
+  }
+})
 </script>
 
 <template>
   <div class="d-flex flex-column ga-4">
-    <v-card rounded="xl" variant="text" class="actuality-card">
-      <v-card-item>
-        <template #prepend>
-          <v-icon icon="mdi-map-marker-radius-outline" color="primary" />
-        </template>
-        <v-card-title>{{ $t('home.rightNav.localContext.title') }}</v-card-title>
-        <v-card-subtitle>
+    <v-dialog v-model="isLocationModalOpen" max-width="420">
+      <v-card rounded="xl">
+        <v-card-title class="text-h6">
+          {{ $t('home.rightNav.localContext.title') }}
+        </v-card-title>
+        <v-card-text>
           {{ $t('home.rightNav.localContext.subtitle') }}
-        </v-card-subtitle>
-      </v-card-item>
-      <v-card-text>
-        <div class="d-flex flex-column ga-2">
-          <v-btn
-            color="primary"
-            variant="tonal"
-            block
-            :loading="isLoading"
-            @click="requestLocation"
-          >
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" @click="isLocationModalOpen = false">
+            {{ $t('common.close') }}
+          </v-btn>
+          <v-btn color="primary" :loading="isLoading" @click="requestLocation">
             {{ $t('home.rightNav.localContext.permissionCta') }}
           </v-btn>
-
-          <v-alert
-            v-if="permissionDenied"
-            type="warning"
-            variant="tonal"
-            density="compact"
-          >
-            {{ $t('home.rightNav.localContext.permissionDenied') }}
-          </v-alert>
-
-          <v-alert
-            v-if="loadError"
-            type="error"
-            variant="tonal"
-            density="compact"
-          >
-            {{ loadError }}
-          </v-alert>
-
-          <v-progress-linear v-if="isLoading" indeterminate color="primary" />
-          <div v-if="isLoading" class="text-caption text-medium-emphasis">
-            {{ $t('home.rightNav.localContext.loading') }}
-          </div>
-
-          <template v-if="hasContext && localContext">
-            <div class="text-body-2 font-weight-medium">{{ geoLabel }}</div>
-            <div class="text-caption text-medium-emphasis">{{ weatherSummary }}</div>
-          </template>
-        </div>
-      </v-card-text>
-    </v-card>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <v-card v-if="hasContext && localContext" rounded="xl" variant="text" class="actuality-card">
       <v-card-item>
