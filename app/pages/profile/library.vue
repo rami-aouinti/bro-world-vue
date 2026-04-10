@@ -413,21 +413,29 @@ const isPreviewPdf = computed(
       <v-card v-if="selectedFile">
         <v-card-title class="d-flex align-center justify-space-between ga-3">
           <span class="text-truncate">{{ selectedFile.name }}</span>
-          <v-btn
-            color="primary"
-            prepend-icon="mdi-download"
-            :href="selectedFile.url"
-            :download="selectedFile.name"
-            target="_blank"
-            rel="noopener"
-          >
-            {{
-              tOrFallback(
-                'pages.profileOverview.libraryPreviewDownload',
-                'Download',
-              )
-            }}
-          </v-btn>
+          <div class="d-flex align-center ga-2">
+            <v-btn
+              color="primary"
+              variant="outlined"
+              icon="mdi-download"
+              :href="selectedFile.url"
+              :download="selectedFile.name"
+              target="_blank"
+              rel="noopener"
+              :aria-label="
+                tOrFallback(
+                  'pages.profileOverview.libraryPreviewDownload',
+                  'Download',
+                )
+              "
+            />
+            <v-btn
+              variant="text"
+              icon="mdi-close"
+              aria-label="Close preview"
+              @click="filePreviewOpen = false"
+            />
+          </div>
         </v-card-title>
         <v-card-text>
           <div v-if="isPreviewImage" class="file-preview">
