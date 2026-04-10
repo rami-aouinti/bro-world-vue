@@ -346,6 +346,16 @@
       }
     },
     "profile": {
+      "rightRail": {
+        "title": "Coming up",
+        "nextEvent": "Upcoming event: {title}",
+        "emptyUpcoming": "No upcoming events at the moment.",
+        "proverbs": [
+          "Little strokes fell great oaks.",
+          "After the rain comes fair weather.",
+          "Slow and steady wins the race."
+        ]
+      },
       "posts": {
         "title": "Posts"
       }

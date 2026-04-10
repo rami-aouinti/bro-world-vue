@@ -42,7 +42,11 @@ definePageMeta({
   <div>
     <AppPageDrawers>
       <template #right>
-        <v-card rounded="xl" variant="tonal">
+        <v-card
+          rounded="xl"
+          variant="text"
+          class="postcard-gradient-card profile-posts-stats-card"
+        >
           <v-card-title>Statistiques de mes posts</v-card-title>
 
           <v-card-text>
@@ -57,14 +61,22 @@ definePageMeta({
             </v-alert>
 
             <div v-else class="d-flex flex-column ga-3">
-              <v-card rounded="lg" variant="flat" class="pa-3">
+              <v-card
+                rounded="lg"
+                variant="text"
+                class="pa-3 postcard-gradient-card"
+              >
                 <p class="text-caption text-medium-emphasis mb-2">Posts</p>
                 <v-chip color="primary" label size="large">
                   {{ safeStats.totalPosts }}
                 </v-chip>
               </v-card>
 
-              <v-card rounded="lg" variant="flat" class="pa-3">
+              <v-card
+                rounded="lg"
+                variant="text"
+                class="pa-3 postcard-gradient-card"
+              >
                 <p class="text-caption text-medium-emphasis mb-2">
                   Commentaires
                 </p>
@@ -73,7 +85,11 @@ definePageMeta({
                 </v-chip>
               </v-card>
 
-              <v-card rounded="lg" variant="flat" class="pa-3">
+              <v-card
+                rounded="lg"
+                variant="text"
+                class="pa-3 postcard-gradient-card"
+              >
                 <p class="text-caption text-medium-emphasis mb-2">Réactions</p>
                 <v-chip color="success" label size="large">
                   {{ safeStats.totalReacts }}
@@ -96,3 +112,9 @@ definePageMeta({
     </v-container>
   </div>
 </template>
+
+<style scoped>
+.profile-posts-stats-card :deep(.v-card) {
+  background: transparent;
+}
+</style>

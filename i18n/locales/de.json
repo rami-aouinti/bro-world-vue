@@ -337,6 +337,16 @@
       }
     },
     "profile": {
+      "rightRail": {
+        "title": "Demnächst",
+        "nextEvent": "Bevorstehendes Ereignis: {title}",
+        "emptyUpcoming": "Derzeit keine bevorstehenden Ereignisse.",
+        "proverbs": [
+          "Steter Tropfen höhlt den Stein.",
+          "Nach dem Regen kommt die Sonne.",
+          "Langsam, aber sicher gewinnt man das Rennen."
+        ]
+      },
       "posts": {
         "title": "Beiträge"
       }

@@ -346,6 +346,16 @@
       }
     },
     "profile": {
+      "rightRail": {
+        "title": "À venir",
+        "nextEvent": "Événement imminent : {title}",
+        "emptyUpcoming": "Aucun événement à venir pour le moment.",
+        "proverbs": [
+          "Petit à petit, l’oiseau fait son nid.",
+          "Après la pluie, le beau temps.",
+          "Qui va doucement va sûrement."
+        ]
+      },
       "posts": {
         "title": "Publications"
       }
