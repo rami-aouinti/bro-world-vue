@@ -3,6 +3,7 @@ import { mergeProps } from 'vue'
 import { useStorage } from '@vueuse/core'
 
 const { t } = useI18n()
+const { mobile } = useDisplay()
 
 const theme = useTheme()
 const vision = useStorage('color-scheme', 'dark')
@@ -144,24 +145,64 @@ const menuShow = ref(false)
     offset="15"
   >
     <template #activator="{ props: menu }">
-      <div class="settings-fab">
-        <v-tooltip
-          location="top"
-          :aria-label="t('appbar.themePalette')"
-          :text="t('appbar.themePalette')"
-          :content-props="{ 'aria-label': t('appbar.themePalette') }"
-        >
-          <template #activator="{ props: tooltip }">
-            <v-btn
-              icon="mdi-cog"
-              size="56"
-              elevation="6"
-              color="primary"
-              :aria-label="t('appbar.themePalette')"
-              v-bind="mergeProps(menu, tooltip)"
-            />
-          </template>
-        </v-tooltip>
+      <div class="settings-fab-wrap">
+        <div v-if="mobile" class="mobile-shortcuts-fab">
+          <v-tooltip
+            location="top"
+            :aria-label="t('appbar.notification')"
+            :text="t('appbar.notification')"
+            :content-props="{ 'aria-label': t('appbar.notification') }"
+          >
+            <template #activator="{ props: tooltip }">
+              <v-btn
+                to="/notification"
+                icon="mdi-bell-outline"
+                size="48"
+                elevation="6"
+                color="primary"
+                :aria-label="t('appbar.notification')"
+                v-bind="tooltip"
+              />
+            </template>
+          </v-tooltip>
+          <v-tooltip
+            location="top"
+            :aria-label="t('appbar.inbox')"
+            :text="t('appbar.inbox')"
+            :content-props="{ 'aria-label': t('appbar.inbox') }"
+          >
+            <template #activator="{ props: tooltip }">
+              <v-btn
+                to="/inbox"
+                icon="mdi-inbox-outline"
+                size="48"
+                elevation="6"
+                color="primary"
+                :aria-label="t('appbar.inbox')"
+                v-bind="tooltip"
+              />
+            </template>
+          </v-tooltip>
+        </div>
+        <div class="settings-fab">
+          <v-tooltip
+            location="top"
+            :aria-label="t('appbar.themePalette')"
+            :text="t('appbar.themePalette')"
+            :content-props="{ 'aria-label': t('appbar.themePalette') }"
+          >
+            <template #activator="{ props: tooltip }">
+              <v-btn
+                icon="mdi-cog"
+                size="56"
+                elevation="6"
+                color="primary"
+                :aria-label="t('appbar.themePalette')"
+                v-bind="mergeProps(menu, tooltip)"
+              />
+            </template>
+          </v-tooltip>
+        </div>
       </div>
     </template>
 
@@ -231,10 +272,30 @@ const menuShow = ref(false)
 
 <style scoped>
 .settings-fab {
+  z-index: 1301;
+}
+
+.settings-fab-wrap {
   position: fixed;
   right: 16px;
+  left: 16px;
   bottom: 16px;
   z-index: 1300;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.settings-fab-wrap > * {
+  pointer-events: auto;
+}
+
+.mobile-shortcuts-fab {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
 }
 
 .settings-toggle {

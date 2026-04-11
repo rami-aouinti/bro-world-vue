@@ -82,26 +82,8 @@ const navMenus = [
   },
 ]
 
-const mobileNavItems = computed(() => [
-  {
-    to: navMenus[0].items[0].to,
-    icon: navMenus[0].icon,
-    label: t(navMenus[0].label),
-    activePaths: navMenus[0].items.map((item) => item.to),
-  },
-  {
-    to: navMenus[1].items[0].to,
-    icon: navMenus[1].icon,
-    label: t(navMenus[1].label),
-    activePaths: navMenus[1].items.map((item) => item.to),
-  },
-  {
-    to: '/contact',
-    icon: 'mdi-email-outline',
-    label: t('appbar.contact'),
-    activePaths: ['/contact'],
-  },
-])
+const featureMenu = navMenus[0]!
+const applicationsMenu = navMenus[1]!
 
 const isDark = computed({
   get() {
@@ -127,6 +109,8 @@ const { notificationsSortedDesc, unreadCount } = storeToRefs(
 )
 const { notifications: actionNotifications } = storeToRefs(notificationStore)
 const notificationMenuOpen = ref(false)
+const mobileFeatureMenuOpen = ref(false)
+const mobileApplicationsMenuOpen = ref(false)
 
 const userLabel = computed(() => {
   const fullName = [sessionUser.value?.firstName, sessionUser.value?.lastName]
@@ -225,14 +209,20 @@ function isMenuActive(paths: string[]) {
     class="app-bar app-bar--kind-glass px-0 border-radius-xl toolbar-content-padding-y-none v-sheet v-toolbar v-toolbar--flat v-app-bar bg-transparent"
   >
     <div class="app-top-bar__left mx-4">
-      <NuxtLink to="/" class="app-brand-icon text-decoration-none" aria-label="Home">
+      <v-btn
+        to="/"
+        icon
+        variant="text"
+        class="app-brand-icon"
+        aria-label="Home"
+      >
         <v-icon
           icon="custom:world"
           size="x-large"
           class="drawer-header-icon"
           color="primary"
         />
-      </NuxtLink>
+      </v-btn>
       <NuxtLink v-if="!mobile" to="/" class="app-brand text-decoration-none">
         <h2>{{ t('app.name') }}</h2>
       </NuxtLink>
@@ -246,18 +236,121 @@ function isMenuActive(paths: string[]) {
     </div>
 
     <div v-if="mobile" class="app-top-bar__nav app-top-bar__nav--mobile">
-      <v-btn
-        v-for="item in mobileNavItems"
-        :key="item.to"
-        :to="item.to"
-        :icon="item.icon"
-        variant="text"
-        size="small"
-        rounded="lg"
-        class="app-top-bar__nav-icon-btn"
-        :aria-label="item.label"
-        :color="isMenuActive(item.activePaths) ? 'primary' : undefined"
-      />
+      <v-menu v-model="mobileFeatureMenuOpen" location="bottom">
+        <template #activator="{ props }">
+          <v-btn
+            v-bind="props"
+            :icon="featureMenu.icon"
+            variant="text"
+            size="small"
+            rounded="lg"
+            class="app-top-bar__nav-icon-btn"
+            :aria-label="t(featureMenu.label)"
+            :color="
+              isMenuActive(featureMenu.items.map((item) => item.to))
+                ? 'primary'
+                : undefined
+            "
+          />
+        </template>
+        <div class="app-top-bar__mega-menu app-top-bar__menu-surface">
+          <div class="app-top-bar__mega-menu-header">
+            <p class="text-overline text-primary mb-1">
+              {{ t(featureMenu.label) }}
+            </p>
+          </div>
+          <div class="app-top-bar__mega-menu-grid">
+            <NuxtLink
+              v-for="item in featureMenu.items"
+              :key="item.to"
+              :to="item.to"
+              class="app-top-bar__mega-menu-card"
+              @click="mobileFeatureMenuOpen = false"
+            >
+              <div class="app-top-bar__mega-menu-icon-wrap">
+                <v-icon :icon="item.icon" size="22" />
+              </div>
+              <div>
+                <p class="text-subtitle-1 font-weight-bold mb-1">
+                  {{ t(item.label) }}
+                </p>
+                <p class="text-body-2 text-medium-emphasis mb-0">
+                  {{ item.detail }}
+                </p>
+              </div>
+            </NuxtLink>
+          </div>
+        </div>
+      </v-menu>
+
+      <v-menu v-model="mobileApplicationsMenuOpen" location="bottom">
+        <template #activator="{ props }">
+          <v-btn
+            v-bind="props"
+            :icon="applicationsMenu.icon"
+            variant="text"
+            size="small"
+            rounded="lg"
+            class="app-top-bar__nav-icon-btn"
+            :aria-label="t(applicationsMenu.label)"
+            :color="
+              isMenuActive(applicationsMenu.items.map((item) => item.to))
+                ? 'primary'
+                : undefined
+            "
+          />
+        </template>
+        <div class="app-top-bar__mega-menu app-top-bar__menu-surface">
+          <div class="app-top-bar__mega-menu-header">
+            <p class="text-overline text-primary mb-1">
+              {{ t(applicationsMenu.label) }}
+            </p>
+          </div>
+          <div class="app-top-bar__mega-menu-grid app-top-bar__mega-menu-grid--two-columns">
+            <NuxtLink
+              v-for="item in applicationsMenu.items"
+              :key="item.to"
+              :to="item.to"
+              class="app-top-bar__mega-menu-card"
+              @click="mobileApplicationsMenuOpen = false"
+            >
+              <div class="app-top-bar__mega-menu-icon-wrap">
+                <v-icon :icon="item.icon" size="22" />
+              </div>
+              <div>
+                <p class="text-subtitle-1 font-weight-bold mb-1">
+                  {{ t(item.label) }}
+                </p>
+                <p class="text-body-2 text-medium-emphasis mb-0">
+                  {{ item.detail }}
+                </p>
+              </div>
+            </NuxtLink>
+          </div>
+        </div>
+      </v-menu>
+
+      <v-menu location="bottom">
+        <template #activator="{ props }">
+          <v-btn
+            v-bind="props"
+            icon="mdi-email-outline"
+            variant="text"
+            size="small"
+            rounded="lg"
+            class="app-top-bar__nav-icon-btn"
+            :aria-label="t('appbar.contact')"
+            :color="route.path === '/contact' ? 'primary' : undefined"
+          />
+        </template>
+        <v-list min-width="220" class="app-top-bar__menu-list">
+          <v-list-item
+            :title="t('appbar.contact')"
+            prepend-icon="mdi-email-outline"
+            to="/contact"
+          />
+        </v-list>
+      </v-menu>
     </div>
 
     <div v-else class="app-top-bar__nav d-none d-md-flex">
@@ -356,6 +449,7 @@ function isMenuActive(paths: string[]) {
       <div class="app-top-bar__right-controls">
         <template v-if="loggedIn">
           <v-menu
+            v-if="!mobile"
             v-model="notificationMenuOpen"
             location="bottom end"
             content-class="app-top-bar__menu-surface app-top-bar__menu-surface--compact"
@@ -472,18 +566,12 @@ function isMenuActive(paths: string[]) {
                 prepend-icon="mdi-account-outline"
                 to="/profile"
               />
-              <template v-if="mobile">
-                <v-list-item
-                  :title="t('appbar.calendar')"
-                  prepend-icon="mdi-calendar-month-outline"
-                  to="/calendar"
-                />
-                <v-list-item
-                  :title="t('appbar.inbox')"
-                  prepend-icon="mdi-inbox-outline"
-                  to="/inbox"
-                />
-              </template>
+              <v-list-item
+                v-if="mobile"
+                :title="t('appbar.calendar')"
+                prepend-icon="mdi-calendar-month-outline"
+                to="/calendar"
+              />
               <v-divider class="my-1" />
               <v-list-item
                 :title="t('appbar.logout')"

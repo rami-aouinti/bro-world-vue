@@ -1,14 +1,14 @@
 <script setup lang="ts">
 const isPageSkeletonLoading = useState('page-skeleton-loading', () => true)
+const showRightDrawer = useState('show-right-drawer', () => true)
 const registry = useDrawerSlotRegistry()
-const { lgAndUp } = useDisplay()
+const { lgAndUp, mobile } = useDisplay()
 const isRightDrawerReady = ref(false)
 
 const rightDrawerRenderer = computed(() => registry?.right.value ?? null)
 const shouldRenderRightDrawerContent = computed(
   () =>
     isRightDrawerReady.value &&
-    lgAndUp.value &&
     Boolean(rightDrawerRenderer.value),
 )
 
@@ -21,10 +21,11 @@ onMounted(() => {
 
 <template>
   <v-navigation-drawer
-    :model-value="true"
+    v-model="showRightDrawer"
     location="right"
     width="300"
-    permanent
+    :permanent="lgAndUp"
+    :temporary="mobile"
     floating
     class="app-right-drawer"
   >
