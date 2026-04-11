@@ -9,7 +9,7 @@ const drawer = useState('drawer')
 const showLeftDrawer = useState('show-left-drawer', () => true)
 const showRightDrawerDesktop = useState(
   'show-right-drawer-desktop',
-  () => false,
+  () => true,
 )
 const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
 const { mobile } = useDisplay()
