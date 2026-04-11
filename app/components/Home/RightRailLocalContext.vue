@@ -192,7 +192,11 @@ onMounted(() => {
 
 <template>
   <div class="d-flex flex-column ga-4">
-    <v-dialog v-model="isLocationModalOpen" max-width="420">
+    <v-dialog
+      v-model="isLocationModalOpen"
+      max-width="420"
+      :aria-label="$t('home.rightNav.localContext.title')"
+    >
       <v-card rounded="xl">
         <v-card-title class="text-h6">
           {{ $t('home.rightNav.localContext.title') }}
