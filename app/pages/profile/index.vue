@@ -103,7 +103,6 @@ async function fetchUpcomingEvents() {
 }
 
 definePageMeta({
-  layout: 'profile',
   title: 'appbar.profile',
   middleware: 'auth',
 })

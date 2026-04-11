@@ -8,7 +8,6 @@ const isLightTheme = computed(() => !theme.current.value.dark)
 const profileStore = useProfileStore()
 
 definePageMeta({
-  layout: 'profile',
   title: 'appbar.settings',
   middleware: 'auth',
 })

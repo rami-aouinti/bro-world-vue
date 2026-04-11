@@ -41,11 +41,13 @@ onMounted(() => {
     floating
     class="app-right-drawer"
   >
-    <div v-if="shouldRenderRightDrawerContent" class="app-right-drawer-list">
-      <SkeletonDrawerRight v-if="isPageSkeletonLoading" />
-      <component :is="{ render: rightDrawerRenderer }" v-else />
-    </div>
-    <v-list v-else nav density="compact" class="app-right-drawer-list" />
+    <v-card variant="text" class="postcard-gradient-card app-right-drawer-card">
+      <div v-if="shouldRenderRightDrawerContent" class="app-right-drawer-list">
+        <SkeletonDrawerRight v-if="isPageSkeletonLoading" />
+        <component :is="{ render: rightDrawerRenderer }" v-else />
+      </div>
+      <v-list v-else nav density="compact" class="app-right-drawer-list" />
+    </v-card>
     <v-spacer />
     <template #append>
       <v-list-item class="drawer-footer px-0" />
@@ -65,5 +67,12 @@ onMounted(() => {
   min-height: calc(100% - 96px);
   max-height: calc(100% - 96px);
   overflow-y: auto;
+}
+
+.app-right-drawer-card {
+  margin: 10px;
+  padding: 8px;
+  height: calc(100% - 20px);
+  overflow: hidden;
 }
 </style>

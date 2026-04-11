@@ -3,7 +3,6 @@ import { Notify } from '~/stores/notification'
 
 definePageMeta({
   title: 'appbar.games',
-  layout: 'games',
 })
 
 const route = useRoute()

@@ -266,7 +266,6 @@ watch(storeError, (value) => {
 })
 
 definePageMeta({
-  layout: 'profile',
   title: 'appbar.profile',
   middleware: 'auth',
 })

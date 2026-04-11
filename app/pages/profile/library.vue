@@ -21,7 +21,6 @@ const {
 } = useLibrary()
 
 definePageMeta({
-  layout: 'profile',
   title: 'Library',
   middleware: 'auth',
 })

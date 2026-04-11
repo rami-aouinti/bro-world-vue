@@ -43,7 +43,6 @@ watch(
 )
 
 definePageMeta({
-  layout: 'profile',
   title: 'Applications',
   middleware: 'auth',
 })
