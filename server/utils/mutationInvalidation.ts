@@ -75,6 +75,11 @@ const MUTATION_INVALIDATION_RULES: MutationInvalidationRule[] = [
   { key: 'library:files:mutate', scope: 'private', prefixes: ['library'] },
   { key: 'games:sessions:start', scope: 'private', prefixes: ['games'] },
   { key: 'games:sessions:finish', scope: 'private', prefixes: ['games'] },
+  {
+    key: 'quiz:submit',
+    scope: 'public',
+    prefixes: ['quiz'],
+  },
   { key: 'users:block:create', scope: 'private', prefixes: ['users'] },
   { key: 'users:block:delete', scope: 'private', prefixes: ['users'] },
   {

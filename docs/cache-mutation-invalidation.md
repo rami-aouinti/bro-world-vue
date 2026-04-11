@@ -40,9 +40,23 @@ Chaque mutation serveur doit déclarer une `mutationKey` qui référence une rè
 | `calendar:events:cancel`             | private | `calendar`               |
 | `calendar:events:delete`             | private | `calendar`               |
 | `notifications:read-all`             | private | `notifications`          |
+| `quiz:submit`                        | public  | `quiz`                   |
 | `users:block:create`                 | private | `users`                  |
 | `users:block:delete`                 | private | `users`                  |
 | `users:friends:action`               | private | `users`, `notifications` |
+
+## Quiz — TTL + invalidation
+
+Les endpoints publics Quiz (`/public/quiz/general*`, y compris `leaderboard`) utilisent le domaine de cache `quiz` (TTL actuel: **300s**).
+
+- **Quand s'appuyer sur le TTL**:
+  - données de référence relativement stables (catégories, niveaux),
+  - trafic de consultation sans écriture concurrente.
+- **Quand forcer l'invalidation**:
+  - après une soumission (`mutationKey: quiz:submit`),
+  - pour éviter un leaderboard/stats publics obsolètes juste après un score.
+
+La mutation `quiz:submit` purge le préfixe `api:public:quiz:*`, ce qui régénère automatiquement les clés publiques liées au leaderboard/stats au prochain `GET`.
 
 ## Sports / Football — politique de cache
 
