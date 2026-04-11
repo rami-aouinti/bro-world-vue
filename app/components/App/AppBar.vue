@@ -82,6 +82,27 @@ const navMenus = [
   },
 ]
 
+const mobileNavItems = computed(() => [
+  {
+    to: navMenus[0].items[0].to,
+    icon: navMenus[0].icon,
+    label: t(navMenus[0].label),
+    activePaths: navMenus[0].items.map((item) => item.to),
+  },
+  {
+    to: navMenus[1].items[0].to,
+    icon: navMenus[1].icon,
+    label: t(navMenus[1].label),
+    activePaths: navMenus[1].items.map((item) => item.to),
+  },
+  {
+    to: '/contact',
+    icon: 'mdi-email-outline',
+    label: t('appbar.contact'),
+    activePaths: ['/contact'],
+  },
+])
+
 const isDark = computed({
   get() {
     return theme.current.value.dark
@@ -212,7 +233,7 @@ function isMenuActive(paths: string[]) {
           color="primary"
         />
       </NuxtLink>
-      <NuxtLink to="/" class="app-brand text-decoration-none">
+      <NuxtLink v-if="!mobile" to="/" class="app-brand text-decoration-none">
         <h2>{{ t('app.name') }}</h2>
       </NuxtLink>
       <v-spacer />
@@ -224,7 +245,22 @@ function isMenuActive(paths: string[]) {
       />
     </div>
 
-    <div class="app-top-bar__nav d-none d-md-flex">
+    <div v-if="mobile" class="app-top-bar__nav app-top-bar__nav--mobile">
+      <v-btn
+        v-for="item in mobileNavItems"
+        :key="item.to"
+        :to="item.to"
+        :icon="item.icon"
+        variant="text"
+        size="small"
+        rounded="lg"
+        class="app-top-bar__nav-icon-btn"
+        :aria-label="item.label"
+        :color="isMenuActive(item.activePaths) ? 'primary' : undefined"
+      />
+    </div>
+
+    <div v-else class="app-top-bar__nav d-none d-md-flex">
       <v-menu v-for="menu in navMenus" :key="menu.label" location="bottom">
         <template #activator="{ props }">
           <v-btn
@@ -357,18 +393,20 @@ function isMenuActive(paths: string[]) {
             </v-list>
           </v-menu>
 
-          <v-btn
-            variant="text"
-            icon="mdi-calendar-month-outline"
-            :aria-label="t('appbar.calendar')"
-            to="/calendar"
-          />
-          <v-btn
-            variant="text"
-            icon="mdi-inbox-outline"
-            :aria-label="t('appbar.inbox')"
-            to="/inbox"
-          />
+          <template v-if="!mobile">
+            <v-btn
+              variant="text"
+              icon="mdi-calendar-month-outline"
+              :aria-label="t('appbar.calendar')"
+              to="/calendar"
+            />
+            <v-btn
+              variant="text"
+              icon="mdi-inbox-outline"
+              :aria-label="t('appbar.inbox')"
+              to="/inbox"
+            />
+          </template>
         </template>
         <v-menu
           location="bottom"
@@ -434,6 +472,18 @@ function isMenuActive(paths: string[]) {
                 prepend-icon="mdi-account-outline"
                 to="/profile"
               />
+              <template v-if="mobile">
+                <v-list-item
+                  :title="t('appbar.calendar')"
+                  prepend-icon="mdi-calendar-month-outline"
+                  to="/calendar"
+                />
+                <v-list-item
+                  :title="t('appbar.inbox')"
+                  prepend-icon="mdi-inbox-outline"
+                  to="/inbox"
+                />
+              </template>
               <v-divider class="my-1" />
               <v-list-item
                 :title="t('appbar.logout')"
@@ -539,6 +589,10 @@ function isMenuActive(paths: string[]) {
   height: 44px;
   min-height: 44px;
   padding-inline: 14px;
+}
+
+.app-top-bar__nav-icon-btn {
+  min-width: 40px;
 }
 
 :deep(.app-top-bar__nav-btn .v-btn__prepend .v-icon) {
@@ -720,8 +774,28 @@ function isMenuActive(paths: string[]) {
 }
 
 @media (max-width: 760px) {
-  .app-brand {
-    display: none;
+  .app-bar {
+    left: var(--ui-spacing-sm);
+    right: var(--ui-spacing-sm);
+    padding-inline: var(--ui-spacing-sm);
+  }
+
+  .app-top-bar__left {
+    flex: 0 1 auto;
+    width: auto;
+    margin-right: 0;
+  }
+
+  .app-top-bar__nav--mobile {
+    flex: 1 1 auto;
+    justify-content: center;
+    gap: 0;
+    min-width: 0;
+  }
+
+  .app-top-bar__right {
+    flex: 0 1 auto;
+    width: auto;
   }
 
   .app-top-bar__mega-menu-grid--two-columns {
