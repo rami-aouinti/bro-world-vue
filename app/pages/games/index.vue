@@ -1,7 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
   title: 'appbar.games',
-  layout: 'games',
 })
 
 const { catalogStore, ensureCatalogLoaded, entityRouteValue, tOrFallback } =

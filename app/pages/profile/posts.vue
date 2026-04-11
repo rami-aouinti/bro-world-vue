@@ -32,7 +32,6 @@ const safeStats = computed<BlogPostStats>(() => {
 })
 
 definePageMeta({
-  layout: 'profile',
   title: 'profile.posts.title',
   middleware: 'auth',
 })

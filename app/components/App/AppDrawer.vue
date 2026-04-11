@@ -93,13 +93,19 @@ watch(mobile, (isMobile) => {
     class="app-left-drawer"
     @update:model-value="handleDrawerModelUpdate"
   >
-    <div v-if="shouldRenderDrawerSlot" class="app-left-drawer-list">
-      <SkeletonDrawerLeft v-if="isPageSkeletonLoading" />
-      <component :is="{ render: leftDrawerRenderer }" v-else />
-    </div>
-    <v-list v-else nav density="compact" class="app-left-drawer-list">
-      <AppDrawerItem v-for="route in routes" :key="route.name" :item="route" />
-    </v-list>
+    <v-card variant="text" class="postcard-gradient-card app-drawer-card">
+      <div v-if="shouldRenderDrawerSlot" class="app-left-drawer-list">
+        <SkeletonDrawerLeft v-if="isPageSkeletonLoading" />
+        <component :is="{ render: leftDrawerRenderer }" v-else />
+      </div>
+      <v-list v-else nav density="compact" class="app-left-drawer-list">
+        <AppDrawerItem
+          v-for="route in routes"
+          :key="route.name"
+          :item="route"
+        />
+      </v-list>
+    </v-card>
     <v-spacer />
     <template #append>
       <v-list-item class="drawer-footer px-0 d-flex flex-column justify-center">
@@ -189,6 +195,12 @@ watch(mobile, (isMobile) => {
     min-height: calc(100% - 96px);
     max-height: calc(100% - 96px);
     overflow-y: auto;
+  }
+  .app-drawer-card {
+    margin: 10px;
+    padding: 8px;
+    height: calc(100% - 20px);
+    overflow: hidden;
   }
   .drawer-header-icon {
     opacity: 1;
