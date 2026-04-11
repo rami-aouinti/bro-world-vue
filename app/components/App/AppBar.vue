@@ -253,7 +253,9 @@ function isMenuActive(paths: string[]) {
             "
           />
         </template>
-        <div class="app-top-bar__mega-menu app-top-bar__menu-surface">
+        <div
+          class="app-top-bar__mega-menu app-top-bar__menu-surface app-top-bar__mega-menu--mobile"
+        >
           <div class="app-top-bar__mega-menu-header">
             <p class="text-overline text-primary mb-1">
               {{ t(featureMenu.label) }}
@@ -264,17 +266,17 @@ function isMenuActive(paths: string[]) {
               v-for="item in featureMenu.items"
               :key="item.to"
               :to="item.to"
-              class="app-top-bar__mega-menu-card"
+              class="app-top-bar__mega-menu-card app-top-bar__mega-menu-card--mobile"
               @click="mobileFeatureMenuOpen = false"
             >
               <div class="app-top-bar__mega-menu-icon-wrap">
                 <v-icon :icon="item.icon" size="22" />
               </div>
               <div>
-                <p class="text-subtitle-1 font-weight-bold mb-1">
+                <p class="text-body-1 font-weight-bold mb-1">
                   {{ t(item.label) }}
                 </p>
-                <p class="text-body-2 text-medium-emphasis mb-0">
+                <p class="text-caption text-medium-emphasis mb-0">
                   {{ item.detail }}
                 </p>
               </div>
@@ -300,7 +302,9 @@ function isMenuActive(paths: string[]) {
             "
           />
         </template>
-        <div class="app-top-bar__mega-menu app-top-bar__menu-surface">
+        <div
+          class="app-top-bar__mega-menu app-top-bar__menu-surface app-top-bar__mega-menu--mobile"
+        >
           <div class="app-top-bar__mega-menu-header">
             <p class="text-overline text-primary mb-1">
               {{ t(applicationsMenu.label) }}
@@ -311,17 +315,17 @@ function isMenuActive(paths: string[]) {
               v-for="item in applicationsMenu.items"
               :key="item.to"
               :to="item.to"
-              class="app-top-bar__mega-menu-card"
+              class="app-top-bar__mega-menu-card app-top-bar__mega-menu-card--mobile"
               @click="mobileApplicationsMenuOpen = false"
             >
               <div class="app-top-bar__mega-menu-icon-wrap">
                 <v-icon :icon="item.icon" size="22" />
               </div>
               <div>
-                <p class="text-subtitle-1 font-weight-bold mb-1">
+                <p class="text-body-1 font-weight-bold mb-1">
                   {{ t(item.label) }}
                 </p>
-                <p class="text-body-2 text-medium-emphasis mb-0">
+                <p class="text-caption text-medium-emphasis mb-0">
                   {{ item.detail }}
                 </p>
               </div>
@@ -330,27 +334,16 @@ function isMenuActive(paths: string[]) {
         </div>
       </v-menu>
 
-      <v-menu location="bottom">
-        <template #activator="{ props }">
-          <v-btn
-            v-bind="props"
-            icon="mdi-email-outline"
-            variant="text"
-            size="small"
-            rounded="lg"
-            class="app-top-bar__nav-icon-btn"
-            :aria-label="t('appbar.contact')"
-            :color="route.path === '/contact' ? 'primary' : undefined"
-          />
-        </template>
-        <v-list min-width="220" class="app-top-bar__menu-list">
-          <v-list-item
-            :title="t('appbar.contact')"
-            prepend-icon="mdi-email-outline"
-            to="/contact"
-          />
-        </v-list>
-      </v-menu>
+      <v-btn
+        to="/contact"
+        icon="mdi-email-outline"
+        variant="text"
+        size="small"
+        rounded="lg"
+        class="app-top-bar__nav-icon-btn"
+        :aria-label="t('appbar.contact')"
+        :color="route.path === '/contact' ? 'primary' : undefined"
+      />
     </div>
 
     <div v-else class="app-top-bar__nav d-none d-md-flex">
@@ -581,23 +574,25 @@ function isMenuActive(paths: string[]) {
             </template>
           </v-list>
         </v-menu>
-        <AppLanguageSwitcher />
+        <template v-if="!mobile">
+          <AppLanguageSwitcher />
 
-        <v-btn
-          icon
-          size="44"
-          variant="text"
-          class="app-bar-controls__theme"
-          :aria-label="
-            isDark ? t('appbar.switchToLight') : t('appbar.switchToDark')
-          "
-          @click="isDark = !isDark"
-        >
-          <v-icon
-            :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'"
-            size="28"
-          />
-        </v-btn>
+          <v-btn
+            icon
+            size="44"
+            variant="text"
+            class="app-bar-controls__theme"
+            :aria-label="
+              isDark ? t('appbar.switchToLight') : t('appbar.switchToDark')
+            "
+            @click="isDark = !isDark"
+          >
+            <v-icon
+              :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'"
+              size="28"
+            />
+          </v-btn>
+        </template>
       </div>
     </div>
 
@@ -888,6 +883,26 @@ function isMenuActive(paths: string[]) {
 
   .app-top-bar__mega-menu-grid--two-columns {
     grid-template-columns: 1fr;
+  }
+
+  .app-top-bar__mega-menu--mobile {
+    width: min(340px, calc(100vw - 24px));
+    padding: 14px;
+    border-radius: 14px;
+  }
+
+  .app-top-bar__mega-menu-card--mobile {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .app-top-bar__mega-menu-card--mobile .text-caption {
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }
 </style>
