@@ -13,10 +13,6 @@ const shouldRenderRightDrawerContent = computed(
 )
 
 onMounted(() => {
-  if (mobile.value) {
-    showRightDrawer.value = false
-  }
-
   requestAnimationFrame(() => {
     isRightDrawerReady.value = true
   })
