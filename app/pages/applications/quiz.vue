@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import type { QuizSubmitApiResponse } from '~~/server/types/api/quiz'
+import type {
+  QuizCategoriesApiResponse,
+  QuizLevelsApiResponse,
+  QuizSubmitApiResponse,
+} from '~~/server/types/api/quiz'
 
 definePageMeta({
   title: 'appbar.quiz',
@@ -9,25 +13,25 @@ type QuizStep = 'select-category' | 'select-level' | 'in-quiz' | 'finished'
 
 type QuizCategory = {
   id: string
+  value: string
   title: string
   description: string
   color: string
   icon: string
 }
 
-type QuizLevel = {
+type QuizLevelUi = {
   id: string
   value: string
   label: string
-  description: string
+  description?: string | null
   timeLimit: number
 }
 
-type QuizQuestion = {
+type QuizQuestionUi = {
   id: string
-  text: string
+  question: string
   answers: Array<{ id: string, text: string }>
-  correctIndex: number
 }
 
 const { t } = useI18n()
@@ -40,17 +44,15 @@ const isLoading = ref(true)
 const errorMessage = ref('')
 
 const categories = ref<QuizCategory[]>([])
-const levels = ref<QuizLevel[]>([])
+const levels = ref<QuizLevelUi[]>([])
 
 const selectedCategoryId = ref<string | null>(null)
 const selectedLevelValue = ref<string | null>(null)
-const questions = ref<QuizQuestion[]>([])
+const questions = ref<QuizQuestionUi[]>([])
 
 const currentQuestionIndex = ref(0)
 const selectedAnswerIndex = ref<number | null>(null)
 const selectedAnswersByQuestion = ref<Record<string, string>>({})
-const score = ref(0)
-const correctAnswers = ref(0)
 const remainingTime = ref(0)
 const isSubmittingResult = ref(false)
 const submitErrorMessage = ref('')
@@ -66,7 +68,7 @@ const selectedCategory = computed(() =>
   categories.value.find((category) => category.id === selectedCategoryId.value),
 )
 
-const selectedLevel = computed(() =>
+const selectedLevel = computed<QuizLevelUi | undefined>(() =>
   levels.value.find((level) => level.value === selectedLevelValue.value),
 )
 
@@ -80,16 +82,9 @@ const progressValue = computed(() => {
   return Math.round((currentQuestionIndex.value / questions.value.length) * 100)
 })
 
-const scorePercent = computed(() => {
-  if (submitResult.value) {
-    return submitResult.value.percentage
-  }
+const scorePercent = computed(() => submitResult.value?.percentage ?? 0)
 
-  if (!questions.value.length) return 0
-  return Math.round((score.value / questions.value.length) * 100)
-})
-
-const hasPassed = computed(() => submitResult.value?.passed ?? scorePercent.value >= 60)
+const hasPassed = computed(() => submitResult.value?.passed ?? false)
 
 const totalDuration = computed(() => selectedLevel.value?.timeLimit || 60)
 
@@ -136,79 +131,10 @@ function resetQuizState() {
   currentQuestionIndex.value = 0
   selectedAnswerIndex.value = null
   selectedAnswersByQuestion.value = {}
-  score.value = 0
-  correctAnswers.value = 0
   submitErrorMessage.value = ''
   submitResult.value = null
   isSubmittingResult.value = false
   clearTimer()
-}
-
-function createQuestions(categoryTitle: string, levelLabel: string) {
-  const base = [
-    {
-      text: t('pages.applications.quiz.questions.goal.text', {
-        category: categoryTitle,
-      }),
-      answers: [
-        t('pages.applications.quiz.questions.goal.answers.0'),
-        t('pages.applications.quiz.questions.goal.answers.1'),
-        t('pages.applications.quiz.questions.goal.answers.2'),
-        t('pages.applications.quiz.questions.goal.answers.3'),
-      ],
-      correctIndex: 1,
-    },
-    {
-      text: t('pages.applications.quiz.questions.rhythm.text', { level: levelLabel }),
-      answers: [
-        t('pages.applications.quiz.questions.rhythm.answers.0'),
-        t('pages.applications.quiz.questions.rhythm.answers.1'),
-        t('pages.applications.quiz.questions.rhythm.answers.2'),
-        t('pages.applications.quiz.questions.rhythm.answers.3'),
-      ],
-      correctIndex: 0,
-    },
-    {
-      text: t('pages.applications.quiz.questions.feedback.text'),
-      answers: [
-        t('pages.applications.quiz.questions.feedback.answers.0'),
-        t('pages.applications.quiz.questions.feedback.answers.1'),
-        t('pages.applications.quiz.questions.feedback.answers.2'),
-        t('pages.applications.quiz.questions.feedback.answers.3'),
-      ],
-      correctIndex: 2,
-    },
-    {
-      text: t('pages.applications.quiz.questions.metric.text'),
-      answers: [
-        t('pages.applications.quiz.questions.metric.answers.0'),
-        t('pages.applications.quiz.questions.metric.answers.1'),
-        t('pages.applications.quiz.questions.metric.answers.2'),
-        t('pages.applications.quiz.questions.metric.answers.3'),
-      ],
-      correctIndex: 3,
-    },
-    {
-      text: t('pages.applications.quiz.questions.confidence.text'),
-      answers: [
-        t('pages.applications.quiz.questions.confidence.answers.0'),
-        t('pages.applications.quiz.questions.confidence.answers.1'),
-        t('pages.applications.quiz.questions.confidence.answers.2'),
-        t('pages.applications.quiz.questions.confidence.answers.3'),
-      ],
-      correctIndex: 0,
-    },
-  ]
-
-  return base.map((item, index) => ({
-    id: `question-${index + 1}`,
-    text: item.text,
-    answers: item.answers.map((answerText, answerIndex) => ({
-      id: `question-${index + 1}-answer-${answerIndex + 1}`,
-      text: answerText,
-    })),
-    correctIndex: item.correctIndex,
-  }))
 }
 
 async function loadQuizSetup() {
@@ -216,20 +142,21 @@ async function loadQuizSetup() {
   errorMessage.value = ''
 
   try {
-    const [catalogResponse, levelsResponse] = await Promise.all([
-      $fetch<Record<string, unknown>[]>('/api/games/catalog'),
-      $fetch<{ items?: unknown[]; levels?: unknown[] }>('/api/games/levels'),
+    const [categoriesResponse, levelsResponse] = await Promise.all([
+      $fetch<QuizCategoriesApiResponse>('/api/quiz/public/categories'),
+      $fetch<QuizLevelsApiResponse>('/api/quiz/public/levels'),
     ])
 
     const fallbackColors = ['#5C6BC0', '#00ACC1', '#43A047', '#FB8C00', '#8E24AA']
 
-    categories.value = (Array.isArray(catalogResponse) ? catalogResponse : [])
-      .filter((item) => typeof item?.id === 'string')
+    categories.value = (Array.isArray(categoriesResponse?.items) ? categoriesResponse.items : [])
+      .filter((item) => typeof item?.id === 'string' && typeof item?.value === 'string')
       .map((item, index) => ({
         id: String(item.id),
+        value: String(item.value),
         title:
-          typeof item.name === 'string' && item.name.trim()
-            ? item.name
+          typeof item.label === 'string' && item.label.trim()
+            ? item.label
             : t('pages.applications.quiz.unnamedCategory'),
         description:
           typeof item.description === 'string' && item.description.trim()
@@ -245,42 +172,17 @@ async function loadQuizSetup() {
             : 'mdi-shape-outline',
       }))
 
-    const rawLevels = Array.isArray(levelsResponse?.items)
-      ? levelsResponse.items
-      : Array.isArray(levelsResponse?.levels)
-        ? levelsResponse.levels
-        : []
-
-    levels.value = rawLevels
-      .filter((level): level is Record<string, unknown> =>
-        typeof level === 'object' && level !== null,
-      )
+    levels.value = (Array.isArray(levelsResponse?.items) ? levelsResponse.items : [])
       .map((level) => {
-        const value =
-          typeof level.value === 'string' && level.value.trim()
-            ? level.value
-            : typeof level.id === 'string'
-              ? level.id
-              : 'standard'
-
+        const value = level.value?.trim() || level.id || 'standard'
         const normalizedValue = value.toLowerCase()
-        const timeByDifficulty: Record<string, number> = {
-          easy: 90,
-          medium: 70,
-          hard: 50,
-        }
+        const timeByDifficulty: Record<string, number> = { easy: 90, medium: 70, hard: 50 }
 
         return {
-          id: typeof level.id === 'string' ? level.id : value,
+          id: level.id || value,
           value,
-          label:
-            typeof level.label === 'string' && level.label.trim()
-              ? level.label
-              : value,
-          description:
-            typeof level.description === 'string' && level.description.trim()
-              ? level.description
-              : t('pages.applications.quiz.levelFallbackDescription'),
+          label: level.label?.trim() || value,
+          description: level.description?.trim() || t('pages.applications.quiz.levelFallbackDescription'),
           timeLimit: timeByDifficulty[normalizedValue] || 60,
         }
       })
@@ -311,17 +213,38 @@ function selectLevel(levelValue: string) {
   selectedLevelValue.value = levelValue
 }
 
-function launchQuiz() {
+async function launchQuiz() {
   if (!selectedCategory.value || !selectedLevel.value) return
 
   resetQuizState()
+  isLoading.value = true
+  errorMessage.value = ''
 
-  questions.value = createQuestions(
-    selectedCategory.value.title,
-    selectedLevel.value.label,
-  )
-  quizStep.value = 'in-quiz'
-  startTimer()
+  try {
+    const response = await $fetch<{ questions?: QuizQuestionUi[] }>('/api/quiz/public', {
+      query: {
+        category: selectedCategory.value.value,
+        level: selectedLevel.value.value,
+      },
+    })
+
+    if (!Array.isArray(response?.questions) || !response.questions.length) {
+      throw new Error(t('pages.applications.quiz.errorState.emptyData'))
+    }
+
+    questions.value = response.questions
+    quizStep.value = 'in-quiz'
+    startTimer()
+  }
+  catch (error) {
+    errorMessage.value
+      = error instanceof Error
+        ? error.message
+        : t('pages.applications.quiz.errorState.generic')
+  }
+  finally {
+    isLoading.value = false
+  }
 }
 
 function submitAnswer(answerIndex: number) {
@@ -331,12 +254,6 @@ function submitAnswer(answerIndex: number) {
   const selectedAnswer = currentQuestion.value.answers[answerIndex]
   if (selectedAnswer?.id) {
     selectedAnswersByQuestion.value[currentQuestion.value.id] = selectedAnswer.id
-  }
-
-  const isCorrect = answerIndex === currentQuestion.value.correctIndex
-  if (isCorrect) {
-    score.value += 1
-    correctAnswers.value += 1
   }
 
   setTimeout(() => {
@@ -557,7 +474,7 @@ onBeforeUnmount(clearTimer)
 
             <v-card variant="tonal" color="primary" rounded="lg" class="mb-4">
               <v-card-text class="text-body-1 font-weight-medium">
-                {{ currentQuestion.text }}
+                {{ currentQuestion.question }}
               </v-card-text>
             </v-card>
 
@@ -575,11 +492,9 @@ onBeforeUnmount(clearTimer)
                   :color="
                     selectedAnswerIndex === null
                       ? undefined
-                      : answerIndex === currentQuestion.correctIndex
-                        ? 'success'
-                        : answerIndex === selectedAnswerIndex
-                          ? 'error'
-                          : undefined
+                      : answerIndex === selectedAnswerIndex
+                        ? 'primary'
+                        : undefined
                   "
                   :variant="selectedAnswerIndex === null ? 'outlined' : 'flat'"
                   @click="submitAnswer(answerIndex)"
@@ -624,7 +539,7 @@ onBeforeUnmount(clearTimer)
                   <v-sheet rounded="lg" class="pa-4 text-center" border>
                     <div class="text-caption text-medium-emphasis">{{ t('pages.applications.quiz.results.score') }}</div>
                     <div class="text-h4 font-weight-bold">
-                      {{ submitResult?.score ?? score }}/{{ submitResult?.totalQuestions ?? questions.length }}
+                      {{ submitResult?.score ?? 0 }}/{{ submitResult?.totalQuestions ?? questions.length }}
                     </div>
                   </v-sheet>
                 </v-col>
@@ -644,7 +559,7 @@ onBeforeUnmount(clearTimer)
 
               <p class="mt-4 mb-0 text-medium-emphasis">
                 {{ t('pages.applications.quiz.results.correctAnswers', {
-                  count: submitResult?.correctAnswers ?? correctAnswers,
+                  count: submitResult?.correctAnswers ?? 0,
                   total: submitResult?.totalQuestions ?? questions.length,
                 }) }}
               </p>
