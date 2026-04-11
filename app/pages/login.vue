@@ -61,7 +61,7 @@ async function onSubmit(payload: { username?: string; password: string }) {
 <template>
   <v-container
     fluid
-    class="auth-page pa-6 pa-md-10 d-flex align-center justify-center"
+    class="auth-page px-3 py-4 px-md-10 py-md-10 d-flex align-center justify-center"
   >
     <v-row class="fill-height" align="center" justify="center">
       <v-col cols="12" md="7" lg="5">
@@ -80,7 +80,8 @@ async function onSubmit(payload: { username?: string; password: string }) {
 
 <style scoped>
 .auth-page {
-  min-height: 100vh;
+  min-height: 100dvh;
+  padding-block: clamp(12px, 4vh, 32px);
   background:
     linear-gradient(rgb(10 15 36 / 55%), rgb(10 15 36 / 55%)),
     url('/cover.webp') center / cover no-repeat;
