@@ -315,8 +315,8 @@ const selectedLocale = computed<LocaleOption>(() => {
                     :key="item.value"
                     :active="locale === item.value"
                     @click="
-                      setLocale(item.value)
-                      languageMenuShow = false
+                      setLocale(item.value);
+                      languageMenuShow = false;
                     "
                   >
                     <template #prepend>
@@ -366,8 +366,8 @@ const selectedLocale = computed<LocaleOption>(() => {
                     :active="vision === 'light'"
                     prepend-icon="mdi-white-balance-sunny"
                     @click="
-                      vision = 'light'
-                      themeMenuShow = false
+                      vision = 'light';
+                      themeMenuShow = false;
                     "
                   >
                     <v-list-item-title>Light</v-list-item-title>
@@ -376,8 +376,8 @@ const selectedLocale = computed<LocaleOption>(() => {
                     :active="vision === 'dark'"
                     prepend-icon="mdi-weather-night"
                     @click="
-                      vision = 'dark'
-                      themeMenuShow = false
+                      vision = 'dark';
+                      themeMenuShow = false;
                     "
                   >
                     <v-list-item-title>Dark</v-list-item-title>
