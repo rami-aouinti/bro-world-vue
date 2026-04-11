@@ -3,6 +3,7 @@ const isPageSkeletonLoading = useState('page-skeleton-loading', () => true)
 const drawerState = useState('drawer', () => true)
 
 const { mobile } = useDisplay()
+const router = useRouter()
 const registry = useDrawerSlotRegistry()
 const drawerModel = computed(() => (mobile.value ? drawerState.value : true))
 
@@ -16,6 +17,11 @@ function handleDrawerModelUpdate(val: boolean) {
 const rail = computed(() => !drawerState.value && !mobile.value)
 const leftDrawerRenderer = computed(() => registry?.left.value ?? null)
 const shouldRenderDrawerSlot = computed(() => Boolean(leftDrawerRenderer.value))
+const fallbackDrawerItems = computed(() =>
+  router.options.routes
+    .filter((route) => route.meta?.icon)
+    .sort((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 99)),
+)
 
 onMounted(() => {
   if (mobile.value) {
@@ -45,7 +51,13 @@ watch(mobile, (isMobile) => {
         <SkeletonDrawerLeft v-if="isPageSkeletonLoading" />
         <component :is="{ render: leftDrawerRenderer }" v-else />
       </div>
-      <v-list v-else nav density="compact" class="app-left-drawer-list" />
+      <v-list v-else nav density="compact" class="app-left-drawer-list">
+        <AppDrawerItem
+          v-for="item in fallbackDrawerItems"
+          :key="item.path"
+          :item="item"
+        />
+      </v-list>
     </v-card>
     <v-spacer />
     <template #append>
