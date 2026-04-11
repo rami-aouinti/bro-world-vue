@@ -1,5 +1,6 @@
 export function usePageSkeleton(duration = 100) {
   const isPageSkeletonVisible = useState('page-skeleton-loading', () => true)
+  const route = useRoute()
   let timer: ReturnType<typeof setTimeout> | null = null
 
   const startSkeleton = () => {
@@ -17,6 +18,17 @@ export function usePageSkeleton(duration = 100) {
       Math.max(0, duration),
     )
   }
+
+  onMounted(() => {
+    startSkeleton()
+  })
+
+  watch(
+    () => route.fullPath,
+    () => {
+      startSkeleton()
+    },
+  )
 
   onUnmounted(() => {
     if (timer) {
