@@ -1,58 +1,5 @@
 <script setup lang="ts">
-import type { SessionUser } from '~/types/session'
-import LeftDrawerUserEntry from '~/components/App/LeftDrawerUserEntry.vue'
-
-const { t } = useI18n()
 const isPageSkeletonLoading = useState('page-skeleton-loading', () => true)
-
-const router = useRouter()
-const { user } = useUserSession()
-const isRoot = computed(() => {
-  const roles = (user.value as SessionUser | null)?.roles ?? []
-  return roles.includes('root')
-})
-const routes = computed(() => {
-  const rootRoutes = router
-    .getRoutes()
-    .filter((r) => r.path.lastIndexOf('/') === 0)
-    .filter((r) => !['/login', '/register'].includes(r.path))
-  const sortedRoutes = rootRoutes.toSorted(
-    (a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98),
-  )
-  const dashboardRoute = sortedRoutes.find(
-    (route) => route.name === 'dashboard',
-  )
-  const filteredRoutes = sortedRoutes.filter(
-    (route) => route.name !== 'dashboard',
-  )
-
-  if (
-    !filteredRoutes.some((route) => route.name === 'admin') &&
-    dashboardRoute
-  ) {
-    filteredRoutes.push({
-      ...dashboardRoute,
-      name: 'admin',
-      path: '/admin',
-      meta: {
-        ...dashboardRoute.meta,
-        title: 'appbar.admin',
-      },
-    })
-  }
-
-  if (isRoot.value) {
-    return filteredRoutes.toSorted(
-      (a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98),
-    )
-  }
-
-  return rootRoutes
-    .filter((route) => route.name !== 'dashboard')
-    .toSorted(
-      (a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98),
-    )
-})
 const drawerState = useState('drawer', () => true)
 
 const { mobile } = useDisplay()
@@ -98,35 +45,11 @@ watch(mobile, (isMobile) => {
         <SkeletonDrawerLeft v-if="isPageSkeletonLoading" />
         <component :is="{ render: leftDrawerRenderer }" v-else />
       </div>
-      <v-list v-else nav density="compact" class="app-left-drawer-list">
-        <AppDrawerItem
-          v-for="route in routes"
-          :key="route.name"
-          :item="route"
-        />
-      </v-list>
+      <v-list v-else nav density="compact" class="app-left-drawer-list" />
     </v-card>
     <v-spacer />
     <template #append>
-      <v-list-item class="drawer-footer px-0 d-flex flex-column justify-center">
-        <LeftDrawerUserEntry v-if="!shouldRenderDrawerSlot" class="mb-3 px-4" />
-        <div class="text-body-small pt-6 pt-md-0 text-center text-no-wrap">
-          {{ t('appbar.copyright') }}
-          <a
-            href="https://github.com/kingyue737"
-            class="font-weight-bold drawer-footer__link"
-            target="_blank"
-            >Yue JIN</a
-          >
-          <span> & </span>
-          <a
-            href="https://www.nustarnuclear.com/"
-            class="font-weight-bold drawer-footer__link"
-            target="_blank"
-            >NuStar</a
-          >
-        </div>
-      </v-list-item>
+      <v-list-item class="drawer-footer px-0 d-flex flex-column justify-center" />
     </template>
   </v-navigation-drawer>
 </template>
