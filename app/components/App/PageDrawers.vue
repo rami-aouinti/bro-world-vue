@@ -1,35 +1,49 @@
 <script setup lang="ts">
-import { onUnmounted, useSlots } from 'vue'
+import { computed, onBeforeUnmount, useSlots } from 'vue'
 
 const slots = useSlots()
-const route = useRoute()
-const mountedRoutePath = route.fullPath
 
 const registry = useDrawerSlotRegistry()
+const scopeId = Symbol('page-drawers-scope')
 
-const hasLeft = Boolean(slots.left)
-const hasRight = Boolean(slots.right)
-const leftRenderer = hasLeft ? () => slots.left?.() : null
-const rightRenderer = hasRight ? () => slots.right?.() : null
+const leftRenderer = computed(() => (slots.left ? () => slots.left?.() : null))
+const rightRenderer = computed(() =>
+  slots.right ? () => slots.right?.() : null,
+)
 
-if (hasLeft) {
-  registry?.setLeft(leftRenderer)
-}
-
-if (hasRight) {
-  registry?.setRight(rightRenderer)
-}
-
-onUnmounted(() => {
-  if (route.fullPath === mountedRoutePath) {
+watchEffect(() => {
+  if (!registry) {
     return
   }
 
-  if (hasLeft && registry?.left.value === leftRenderer) {
+  const left = leftRenderer.value
+  const right = rightRenderer.value
+
+  if (left) {
+    registry.setLeft(Object.assign(left, { __scopeId: scopeId }))
+  }
+  else if ((registry.left.value as { __scopeId?: symbol } | null)?.__scopeId === scopeId) {
     registry.setLeft(null)
   }
 
-  if (hasRight && registry?.right.value === rightRenderer) {
+  if (right) {
+    registry.setRight(Object.assign(right, { __scopeId: scopeId }))
+  }
+  else if ((registry.right.value as { __scopeId?: symbol } | null)?.__scopeId === scopeId) {
+    registry.setRight(null)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (!registry) {
+    return
+  }
+
+  if ((registry.left.value as { __scopeId?: symbol } | null)?.__scopeId === scopeId) {
+    registry.setLeft(null)
+  }
+
+  if ((registry.right.value as { __scopeId?: symbol } | null)?.__scopeId === scopeId) {
     registry.setRight(null)
   }
 })
