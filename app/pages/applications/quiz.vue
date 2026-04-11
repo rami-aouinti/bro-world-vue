@@ -408,6 +408,11 @@ onBeforeUnmount(clearTimer)
 
 <template>
   <v-container fluid class="quiz-page py-6">
+    <AppPageDrawers>
+      <template #left>
+        <QuizQuizLeaderboardPanel />
+      </template>
+    </AppPageDrawers>
     <v-card class="pa-4 pa-sm-6" rounded="xl">
       <div class="d-flex align-center justify-space-between flex-wrap ga-3 mb-4">
         <div>
