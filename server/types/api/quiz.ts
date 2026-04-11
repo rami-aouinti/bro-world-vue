@@ -27,6 +27,25 @@ export interface QuizQuestion extends ApiObject {
   answers: QuizAnswer[]
 }
 
+export interface QuizSubmitAnswer extends ApiObject {
+  questionId: string
+  answerId: string
+}
+
+export interface QuizSubmitPayload extends ApiObject {
+  answers: QuizSubmitAnswer[]
+}
+
+export type QuizSubmitApiResponse = ApiObject & {
+  attemptId: string
+  score: number
+  passed: boolean
+  totalQuestions: number
+  correctAnswers: number
+  percentage: number
+  submittedAt?: string
+}
+
 export interface QuizLeaderboardItem extends ApiObject {
   rank: number
   userId: string
