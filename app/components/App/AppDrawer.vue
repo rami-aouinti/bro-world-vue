@@ -74,9 +74,17 @@ const shouldRenderDrawerSlot = computed(
 )
 
 onMounted(() => {
+  if (mobile.value) {
+    drawerState.value = false
+  }
+
   requestAnimationFrame(() => {
     isDrawerInteractiveReady.value = true
   })
+})
+
+watch(mobile, (isMobile) => {
+  drawerState.value = !isMobile
 })
 </script>
 
@@ -85,8 +93,9 @@ onMounted(() => {
     :model-value="drawerModel"
     :expand-on-hover="rail"
     :rail="rail"
+    :temporary="mobile"
+    :permanent="!mobile"
     width="260"
-    permanent
     floating
     class="app-left-drawer"
     @update:model-value="handleDrawerModelUpdate"
