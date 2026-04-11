@@ -11,6 +11,7 @@ export const CACHE_TTL_BY_DOMAIN = {
   stories: 60,
   library: 120,
   games: 300,
+  quiz: 300,
 } as const
 
 export type CacheDomain = keyof typeof CACHE_TTL_BY_DOMAIN
@@ -34,6 +35,7 @@ const DOMAIN_ALIASES: Record<string, CacheDomain> = {
   library: 'library',
   game: 'games',
   games: 'games',
+  quiz: 'quiz',
 }
 
 const SPORTS_CACHE_TTL_BY_PROFILE: Record<CacheProfile, number> = {
