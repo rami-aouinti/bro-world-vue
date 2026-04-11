@@ -384,7 +384,7 @@ const selectedLocale = computed<LocaleOption>(() => {
             <template #activator="{ props: tooltip }">
               <v-btn
                 icon="mdi-cog"
-                size="56"
+                size="48"
                 color="primary"
                 variant="tonal"
                 :aria-label="t('appbar.themePalette')"
