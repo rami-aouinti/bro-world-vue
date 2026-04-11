@@ -1,4 +1,6 @@
 import type { H3Event } from 'h3'
+import { getCached, publicCacheKey, setCached } from './apiCache'
+import { resolveCacheTtl } from './apiCacheConfig'
 import type {
   FootballFixture,
   FootballFixtureDetailsApiResponse,
@@ -26,6 +28,7 @@ import type {
 } from '../types/api/football/external'
 
 type FootballQueryParams = Record<string, string | number>
+type FootballCacheProfile = 'reference' | 'live'
 
 function parseIntegerParam(value: unknown, name: string) {
   const normalized = Array.isArray(value) ? value[0] : value
@@ -277,21 +280,64 @@ export async function callFootballApi<TItem>(
   }
 }
 
+export async function cachedFootballApiGet<TItem>(
+  event: H3Event,
+  endpoint: string,
+  query: FootballQueryParams,
+  options?: {
+    cacheProfile?: FootballCacheProfile
+    cacheKeySuffix?: string
+  },
+): Promise<ApiSportsResponse<TItem>> {
+  const cacheKey = publicCacheKey(
+    `/sports/football${endpoint}:${options?.cacheKeySuffix ?? options?.cacheProfile ?? 'default'}`,
+    query,
+  )
+
+  const cached = await getCached<ApiSportsResponse<TItem>>(cacheKey)
+  if (cached) {
+    return cached
+  }
+
+  const payload = await callFootballApi<TItem>(event, endpoint, query)
+  await setCached(
+    cacheKey,
+    payload,
+    resolveCacheTtl('sports', options?.cacheProfile ?? 'default'),
+  )
+
+  return payload
+}
+
 export async function fetchFixtureDetails(
   event: H3Event,
   fixture: number,
 ): Promise<FootballFixtureDetailsApiResponse> {
   const [fixtures, events, lineups, players] = await Promise.all([
-    callFootballApi<ApiSportsFixtureItem>(event, '/fixtures', { id: fixture }),
-    callFootballApi<ApiSportsFixtureEventItem>(event, '/fixtures/events', {
-      fixture,
-    }),
-    callFootballApi<ApiSportsLineupItem>(event, '/fixtures/lineups', {
-      fixture,
-    }),
-    callFootballApi<ApiSportsPlayerStatsItem>(event, '/fixtures/players', {
-      fixture,
-    }),
+    cachedFootballApiGet<ApiSportsFixtureItem>(
+      event,
+      '/fixtures',
+      { id: fixture },
+      { cacheProfile: 'live' },
+    ),
+    cachedFootballApiGet<ApiSportsFixtureEventItem>(
+      event,
+      '/fixtures/events',
+      { fixture },
+      { cacheProfile: 'live' },
+    ),
+    cachedFootballApiGet<ApiSportsLineupItem>(
+      event,
+      '/fixtures/lineups',
+      { fixture },
+      { cacheProfile: 'live' },
+    ),
+    cachedFootballApiGet<ApiSportsPlayerStatsItem>(
+      event,
+      '/fixtures/players',
+      { fixture },
+      { cacheProfile: 'live' },
+    ),
   ])
 
   return {

@@ -1,5 +1,5 @@
 import {
-  callFootballApi,
+  cachedFootballApiGet,
   getRequiredFootballId,
   mapFixturesResponse,
 } from '../../../utils/footballApi'
@@ -11,13 +11,14 @@ export default defineEventHandler(
     const league = getRequiredFootballId(event, 'league')
     const season = getRequiredFootballId(event, 'season')
 
-    const payload = await callFootballApi<ApiSportsFixtureItem>(
+    const payload = await cachedFootballApiGet<ApiSportsFixtureItem>(
       event,
       '/fixtures',
       {
         league,
         season,
       },
+      { cacheProfile: 'live' },
     )
 
     return mapFixturesResponse(payload)
