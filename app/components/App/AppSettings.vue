@@ -140,7 +140,6 @@ const menuShow = ref(false)
 const notificationMenuShow = ref(false)
 const inboxMenuShow = ref(false)
 const languageMenuShow = ref(false)
-const themeMenuShow = ref(false)
 
 const { loggedIn } = useUserSession()
 const inboxNotificationsStore = useInboxNotificationsStore()
@@ -234,8 +233,8 @@ const selectedLocale = computed<LocaleOption>(() => {
                   v-bind="props"
                   icon="mdi-bell-outline"
                   size="48"
-                  elevation="6"
                   color="primary"
+                  variant="tonal"
                   :aria-label="t('appbar.notification')"
                 />
               </v-badge>
@@ -272,8 +271,8 @@ const selectedLocale = computed<LocaleOption>(() => {
                 v-bind="props"
                 icon="mdi-inbox-outline"
                 size="48"
-                elevation="6"
                 color="primary"
+                variant="tonal"
                 :aria-label="t('appbar.inbox')"
               />
             </template>
@@ -296,8 +295,8 @@ const selectedLocale = computed<LocaleOption>(() => {
                 <v-btn
                   v-bind="props"
                   size="48"
-                  elevation="6"
                   color="primary"
+                  variant="tonal"
                   :aria-label="t('appbar.language')"
                 >
                   <span
@@ -341,50 +340,39 @@ const selectedLocale = computed<LocaleOption>(() => {
               </v-card>
             </v-menu>
 
-            <v-menu v-model="themeMenuShow" location="top" offset="12">
-              <template #activator="{ props }">
+            <v-tooltip
+              location="top"
+              :aria-label="
+                theme.current.value.dark
+                  ? t('appbar.switchToLight')
+                  : t('appbar.switchToDark')
+              "
+              :text="
+                theme.current.value.dark
+                  ? t('appbar.switchToLight')
+                  : t('appbar.switchToDark')
+              "
+            >
+              <template #activator="{ props: tooltip }">
                 <v-btn
-                  v-bind="props"
                   :icon="
                     theme.current.value.dark
                       ? 'mdi-white-balance-sunny'
                       : 'mdi-weather-night'
                   "
                   size="48"
-                  elevation="6"
                   color="primary"
+                  variant="tonal"
                   :aria-label="
                     theme.current.value.dark
                       ? t('appbar.switchToLight')
                       : t('appbar.switchToDark')
                   "
+                  v-bind="tooltip"
+                  @click="vision = vision === 'dark' ? 'light' : 'dark'"
                 />
               </template>
-              <v-card width="220">
-                <v-list class="py-1">
-                  <v-list-item
-                    :active="vision === 'light'"
-                    prepend-icon="mdi-white-balance-sunny"
-                    @click="
-                      vision = 'light';
-                      themeMenuShow = false;
-                    "
-                  >
-                    <v-list-item-title>Light</v-list-item-title>
-                  </v-list-item>
-                  <v-list-item
-                    :active="vision === 'dark'"
-                    prepend-icon="mdi-weather-night"
-                    @click="
-                      vision = 'dark';
-                      themeMenuShow = false;
-                    "
-                  >
-                    <v-list-item-title>Dark</v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-card>
-            </v-menu>
+            </v-tooltip>
           </template>
 
           <v-tooltip
@@ -397,8 +385,8 @@ const selectedLocale = computed<LocaleOption>(() => {
               <v-btn
                 icon="mdi-cog"
                 size="56"
-                elevation="6"
                 color="primary"
+                variant="tonal"
                 :aria-label="t('appbar.themePalette')"
                 v-bind="mergeProps(menu, tooltip)"
               />
