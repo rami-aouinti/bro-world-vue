@@ -83,18 +83,19 @@ const navMenus = [
 ]
 
 const mobileNavItems = computed(() => [
-  ...navMenus.map((menu) => ({
-    key: menu.label,
-    icon: menu.icon,
-    label: t(menu.label),
-    items: menu.items.map((item) => ({
-      ...item,
-      translatedLabel: t(item.label),
-    })),
-    activePaths: menu.items.map((item) => item.to),
-  })),
   {
-    key: 'appbar.contact',
+    to: navMenus[0].items[0].to,
+    icon: navMenus[0].icon,
+    label: t(navMenus[0].label),
+    activePaths: navMenus[0].items.map((item) => item.to),
+  },
+  {
+    to: navMenus[1].items[0].to,
+    icon: navMenus[1].icon,
+    label: t(navMenus[1].label),
+    activePaths: navMenus[1].items.map((item) => item.to),
+  },
+  {
     to: '/contact',
     icon: 'mdi-email-outline',
     label: t('appbar.contact'),
@@ -245,42 +246,18 @@ function isMenuActive(paths: string[]) {
     </div>
 
     <div v-if="mobile" class="app-top-bar__nav app-top-bar__nav--mobile">
-      <template v-for="item in mobileNavItems" :key="item.key">
-        <v-menu v-if="item.items?.length" location="bottom">
-          <template #activator="{ props }">
-            <v-btn
-              v-bind="props"
-              :icon="item.icon"
-              variant="text"
-              size="small"
-              rounded="lg"
-              class="app-top-bar__nav-icon-btn"
-              :aria-label="item.label"
-              :color="isMenuActive(item.activePaths) ? 'primary' : undefined"
-            />
-          </template>
-          <v-list min-width="220" class="app-top-bar__menu-list">
-            <v-list-item
-              v-for="menuItem in item.items"
-              :key="menuItem.to"
-              :title="menuItem.translatedLabel"
-              :prepend-icon="menuItem.icon"
-              :to="menuItem.to"
-            />
-          </v-list>
-        </v-menu>
-        <v-btn
-          v-else
-          :to="item.to"
-          :icon="item.icon"
-          variant="text"
-          size="small"
-          rounded="lg"
-          class="app-top-bar__nav-icon-btn"
-          :aria-label="item.label"
-          :color="isMenuActive(item.activePaths) ? 'primary' : undefined"
-        />
-      </template>
+      <v-btn
+        v-for="item in mobileNavItems"
+        :key="item.to"
+        :to="item.to"
+        :icon="item.icon"
+        variant="text"
+        size="small"
+        rounded="lg"
+        class="app-top-bar__nav-icon-btn"
+        :aria-label="item.label"
+        :color="isMenuActive(item.activePaths) ? 'primary' : undefined"
+      />
     </div>
 
     <div v-else class="app-top-bar__nav d-none d-md-flex">
@@ -801,28 +778,22 @@ function isMenuActive(paths: string[]) {
     left: var(--ui-spacing-sm);
     right: var(--ui-spacing-sm);
     padding-inline: var(--ui-spacing-sm);
-    flex-wrap: wrap;
-    row-gap: 4px;
   }
 
   .app-top-bar__left {
-    order: 1;
     flex: 0 1 auto;
     width: auto;
     margin-right: 0;
   }
 
   .app-top-bar__nav--mobile {
-    order: 3;
-    flex: 1 0 100%;
+    flex: 1 1 auto;
     justify-content: center;
-    gap: 2px;
+    gap: 0;
     min-width: 0;
-    padding-bottom: 4px;
   }
 
   .app-top-bar__right {
-    order: 2;
     flex: 0 1 auto;
     width: auto;
   }
