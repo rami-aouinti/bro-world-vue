@@ -467,7 +467,86 @@
     },
     "applications": {
       "sportsDescription": "Discover sports content and features soon.",
-      "quizDescription": "Interactive quizzes will be available here soon."
+      "quizDescription": "Interactive quizzes will be available here soon.",
+      "quiz": {
+        "selectCategoryTitle": "Choose a category",
+        "selectLevelTitle": "Choose a level",
+        "levelLabel": "Level",
+        "startQuiz": "Start quiz",
+        "questionCounter": "Question {current} of {total}",
+        "timeLeft": "{time}s left",
+        "playAgain": "Play again",
+        "unnamedCategory": "Untitled category",
+        "categoryFallbackDescription": "No description available for this category yet.",
+        "levelFallbackDescription": "A balanced level for this quiz session.",
+        "steps": {
+          "select-category": "Select category",
+          "select-level": "Select level",
+          "in-quiz": "In quiz",
+          "finished": "Finished"
+        },
+        "errorState": {
+          "emptyData": "Quiz configuration is incomplete. Please try again later.",
+          "generic": "Unable to load quiz configuration."
+        },
+        "results": {
+          "title": "Quiz results",
+          "pass": "Passed",
+          "fail": "Not passed",
+          "score": "Score",
+          "percentage": "Success rate",
+          "timeRemaining": "Time remaining",
+          "correctAnswers": "You got {count} out of {total} correct."
+        },
+        "questions": {
+          "goal": {
+            "text": "In {category}, what is the best objective for a first attempt?",
+            "answers": [
+              "Win as fast as possible",
+              "Understand the core mechanics",
+              "Skip tutorials and improvise",
+              "Focus only on advanced tactics"
+            ]
+          },
+          "rhythm": {
+            "text": "At {level} level, what rhythm should you prioritize?",
+            "answers": [
+              "Steady and controlled",
+              "Fast and risky",
+              "Random and unpredictable",
+              "Only defensive"
+            ]
+          },
+          "feedback": {
+            "text": "After each question, what helps you improve the most?",
+            "answers": [
+              "Ignore the correction",
+              "Change every answer style",
+              "Review why an answer was correct",
+              "Rush to the next item"
+            ]
+          },
+          "metric": {
+            "text": "Which metric best reflects quiz mastery over time?",
+            "answers": [
+              "Number of clicks",
+              "Longest streak of guesses",
+              "Lowest response time only",
+              "Consistent accuracy across sessions"
+            ]
+          },
+          "confidence": {
+            "text": "When unsure, what strategy is usually best?",
+            "answers": [
+              "Eliminate clearly wrong options",
+              "Pick the longest answer",
+              "Always choose option C",
+              "Skip without thinking"
+            ]
+          }
+        },
+        "backToCategories": "Back to categories"
+      }
     }
   },
   "home": {

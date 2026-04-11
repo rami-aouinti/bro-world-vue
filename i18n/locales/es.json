@@ -432,7 +432,86 @@
     },
     "applications": {
       "sportsDescription": "Descubre pronto contenidos y funciones deportivas.",
-      "quizDescription": "Encuentra aquí cuestionarios interactivos muy pronto."
+      "quizDescription": "Encuentra aquí cuestionarios interactivos muy pronto.",
+      "quiz": {
+        "selectCategoryTitle": "Elige una categoría",
+        "selectLevelTitle": "Elige un nivel",
+        "levelLabel": "Nivel",
+        "startQuiz": "Iniciar quiz",
+        "questionCounter": "Pregunta {current} de {total}",
+        "timeLeft": "Quedan {time}s",
+        "playAgain": "Jugar de nuevo",
+        "unnamedCategory": "Categoría sin título",
+        "categoryFallbackDescription": "Aún no hay descripción para esta categoría.",
+        "levelFallbackDescription": "Un nivel equilibrado para esta sesión de quiz.",
+        "steps": {
+          "select-category": "Elegir categoría",
+          "select-level": "Elegir nivel",
+          "in-quiz": "En quiz",
+          "finished": "Finalizado"
+        },
+        "errorState": {
+          "emptyData": "La configuración del quiz está incompleta. Inténtalo más tarde.",
+          "generic": "No se pudo cargar la configuración del quiz."
+        },
+        "results": {
+          "title": "Resultados del quiz",
+          "pass": "Aprobado",
+          "fail": "No aprobado",
+          "score": "Puntuación",
+          "percentage": "Tasa de acierto",
+          "timeRemaining": "Tiempo restante",
+          "correctAnswers": "Has acertado {count} de {total}."
+        },
+        "questions": {
+          "goal": {
+            "text": "En {category}, ¿cuál es el mejor objetivo para un primer intento?",
+            "answers": [
+              "Ganar lo más rápido posible",
+              "Entender la mecánica principal",
+              "Saltar tutoriales e improvisar",
+              "Centrarse solo en tácticas avanzadas"
+            ]
+          },
+          "rhythm": {
+            "text": "En el nivel {level}, ¿qué ritmo debes priorizar?",
+            "answers": [
+              "Constante y controlado",
+              "Rápido y arriesgado",
+              "Aleatorio e impredecible",
+              "Solo defensivo"
+            ]
+          },
+          "feedback": {
+            "text": "Después de cada pregunta, ¿qué te ayuda más a mejorar?",
+            "answers": [
+              "Ignorar la corrección",
+              "Cambiar de estilo en cada respuesta",
+              "Revisar por qué una respuesta era correcta",
+              "Ir corriendo a la siguiente"
+            ]
+          },
+          "metric": {
+            "text": "¿Qué métrica refleja mejor el dominio del quiz con el tiempo?",
+            "answers": [
+              "Número de clics",
+              "Racha más larga de aciertos al azar",
+              "Solo el menor tiempo de respuesta",
+              "Precisión constante entre sesiones"
+            ]
+          },
+          "confidence": {
+            "text": "Si dudas, ¿qué estrategia suele funcionar mejor?",
+            "answers": [
+              "Eliminar opciones claramente incorrectas",
+              "Elegir la respuesta más larga",
+              "Elegir siempre la opción C",
+              "Saltar sin pensar"
+            ]
+          }
+        },
+        "backToCategories": "Volver a categorías"
+      }
     }
   },
   "home": {
