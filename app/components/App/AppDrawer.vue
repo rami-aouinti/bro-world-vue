@@ -57,7 +57,6 @@ const drawerState = useState('drawer', () => true)
 
 const { mobile } = useDisplay()
 const registry = useDrawerSlotRegistry()
-const isDrawerInteractiveReady = ref(false)
 const drawerModel = computed(() => (mobile.value ? drawerState.value : true))
 
 function handleDrawerModelUpdate(val: boolean) {
@@ -69,18 +68,12 @@ function handleDrawerModelUpdate(val: boolean) {
 }
 const rail = computed(() => !drawerState.value && !mobile.value)
 const leftDrawerRenderer = computed(() => registry?.left.value ?? null)
-const shouldRenderDrawerSlot = computed(
-  () => isDrawerInteractiveReady.value && Boolean(leftDrawerRenderer.value),
-)
+const shouldRenderDrawerSlot = computed(() => Boolean(leftDrawerRenderer.value))
 
 onMounted(() => {
   if (mobile.value) {
     drawerState.value = false
   }
-
-  requestAnimationFrame(() => {
-    isDrawerInteractiveReady.value = true
-  })
 })
 
 watch(mobile, (isMobile) => {
