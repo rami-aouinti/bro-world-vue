@@ -95,6 +95,13 @@ export default defineNuxtConfig({
     },
     aiGatewayApiKey: process.env.AI_GATEWAY_API_KEY || '',
     aiGatewayModel: process.env.AI_GATEWAY_MODEL || 'openai/gpt-4o-mini',
+    footballApi: {
+      baseUrl:
+        process.env.FOOTBALL_API_BASE_URL ||
+        'https://v3.football.api-sports.io',
+      host: process.env.FOOTBALL_API_HOST || 'v3.football.api-sports.io',
+      key: process.env.FOOTBALL_API_KEY || '',
+    },
   },
   nitro: {
     storage: process.env.REDIS_URL
