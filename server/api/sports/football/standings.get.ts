@@ -1,5 +1,5 @@
 import {
-  callFootballApi,
+  cachedFootballApiGet,
   getRequiredFootballId,
   mapStandingsResponse,
 } from '../../../utils/footballApi'
@@ -11,13 +11,14 @@ export default defineEventHandler(
     const league = getRequiredFootballId(event, 'league')
     const season = getRequiredFootballId(event, 'season')
 
-    const payload = await callFootballApi<ApiSportsStandingLeagueItem>(
+    const payload = await cachedFootballApiGet<ApiSportsStandingLeagueItem>(
       event,
       '/standings',
       {
         league,
         season,
       },
+      { cacheProfile: 'reference' },
     )
 
     return mapStandingsResponse(payload)
