@@ -8,6 +8,7 @@ const theme = useTheme()
 const drawer = useState('drawer')
 const showLeftDrawer = useState('show-left-drawer', () => true)
 const showRightDrawer = useState('show-right-drawer', () => true)
+const { mobile } = useDisplay()
 const route = useRoute()
 const { t } = useI18n()
 const vision = useStorage<'light' | 'dark'>('color-scheme', 'dark')
@@ -153,7 +154,7 @@ watch(notificationMenuOpen, async (isOpen) => {
 })
 
 function toggleLeftDrawer() {
-  if (!showLeftDrawer.value) return
+  if (!showLeftDrawer.value && !mobile.value) return
   drawer.value = !drawer.value
 }
 
@@ -203,20 +204,21 @@ function isMenuActive(paths: string[]) {
     class="app-bar app-bar--kind-glass px-0 border-radius-xl toolbar-content-padding-y-none v-sheet v-toolbar v-toolbar--flat v-app-bar bg-transparent"
   >
     <div class="app-top-bar__left mx-4">
-      <v-icon
-        icon="custom:world"
-        size="x-large"
-        class="drawer-header-icon"
-        color="primary"
-        to="/"
-      />
+      <NuxtLink to="/" class="app-brand-icon text-decoration-none" aria-label="Home">
+        <v-icon
+          icon="custom:world"
+          size="x-large"
+          class="drawer-header-icon"
+          color="primary"
+        />
+      </NuxtLink>
       <NuxtLink to="/" class="app-brand text-decoration-none">
         <h2>{{ t('app.name') }}</h2>
       </NuxtLink>
       <v-spacer />
       <v-app-bar-nav-icon
         class="app-top-bar__left-drawer-toggle"
-        :disabled="!showLeftDrawer"
+        :disabled="!showLeftDrawer && !mobile"
         aria-label="Toggle left drawer"
         @click="toggleLeftDrawer"
       />
@@ -689,6 +691,10 @@ function isMenuActive(paths: string[]) {
   font-weight: 600;
 }
 
+.app-brand-icon {
+  display: inline-flex;
+}
+
 @media (min-width: 1280px) {
   .app-bar {
     right: calc(
@@ -714,6 +720,10 @@ function isMenuActive(paths: string[]) {
 }
 
 @media (max-width: 760px) {
+  .app-brand {
+    display: none;
+  }
+
   .app-top-bar__mega-menu-grid--two-columns {
     grid-template-columns: 1fr;
   }

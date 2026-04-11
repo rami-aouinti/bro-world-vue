@@ -98,7 +98,7 @@ function openComposer() {
       <span class="new-post-pill__placeholder">{{ resolvedPlaceholder }}</span>
     </v-btn>
 
-    <div class="d-flex ga-1">
+    <div class="new-post-launcher__actions d-flex ga-1">
       <v-btn
         v-for="action in actions"
         :key="action.label"
@@ -179,5 +179,22 @@ function openComposer() {
 
 .new-post-action--gif {
   color: var(--icon-gif);
+}
+
+@media (max-width: 760px) {
+  .new-post-launcher {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+
+  .new-post-pill {
+    min-width: 0;
+  }
+
+  .new-post-launcher__actions {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
 }
 </style>
