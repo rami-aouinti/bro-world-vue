@@ -6,7 +6,6 @@ const showRightDrawer = useState('show-right-drawer', () => true)
 const isPageSkeletonLoading = useState('page-skeleton-loading', () => true)
 const route = useRoute()
 const { t } = useI18n()
-const { lgAndUp } = useDisplay()
 const isLayoutReady = ref(false)
 
 const AppDrawerLazy = defineAsyncComponent(
@@ -41,7 +40,7 @@ const shouldRenderLeftDrawer = computed(
   () => isLayoutReady.value && showLeftDrawer.value,
 )
 const shouldRenderRightDrawer = computed(
-  () => isLayoutReady.value && showRightDrawer.value && lgAndUp.value,
+  () => isLayoutReady.value && showRightDrawer.value,
 )
 
 function triggerPageSkeleton(minDuration = LAYOUT_SKELETON_MIN_DURATION) {
