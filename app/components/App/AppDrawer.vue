@@ -197,9 +197,8 @@ watch(mobile, (isMobile) => {
     overflow-y: auto;
   }
   .app-drawer-card {
-    margin: 10px;
     padding: 8px;
-    height: calc(100% - 20px);
+    height: calc(100% - 40px);
     overflow: hidden;
   }
   .drawer-header-icon {
