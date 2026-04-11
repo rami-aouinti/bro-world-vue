@@ -1,22 +1,33 @@
 <script setup lang="ts">
-import type { RouteRecordRaw } from 'vue-router'
+import type { RouteLocationRaw, RouteRecordRaw } from 'vue-router'
 
 const { item } = defineProps<{
   item: RouteRecordRaw
 }>()
 const visibleChildren = computed(() =>
   item.children
-    ?.filter((child) => child.meta?.icon)
+    ?.filter((child) => child.meta?.icon && !child.path.includes(':'))
     .sort((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98)),
 )
 const visibleChildrenNum = computed(() => visibleChildren.value?.length || 0)
 const isItem = computed(() => !item.children || visibleChildrenNum.value <= 1)
 const title = toRef(() => item.meta?.title)
 const icon = toRef(() => item.meta?.icon)
-// @ts-expect-error unknown type miss match
-const to = computed<RouteRecordRaw>(() => ({
-  name: item.name || visibleChildren.value?.[0]?.name,
-}))
+const targetRouteName = computed<string | undefined>(() => {
+  if (typeof item.name === 'string' && item.name.length > 0) {
+    return item.name
+  }
+
+  return visibleChildren.value?.find((child) => typeof child.name === 'string')
+    ?.name as string | undefined
+})
+const to = computed<RouteLocationRaw | undefined>(() => {
+  if (!targetRouteName.value) {
+    return undefined
+  }
+
+  return { name: targetRouteName.value }
+})
 const route = useRoute()
 const { t } = useI18n()
 const translatedTitle = computed(() =>
@@ -29,7 +40,7 @@ const isActive = computed(() => {
 
 <template>
   <v-list-item
-    v-if="isItem && icon"
+    v-if="isItem && icon && to"
     :to="to"
     :prepend-icon="icon"
     active-class="text-primary"
@@ -45,7 +56,7 @@ const isActive = computed(() => {
     </template>
     <AppDrawerItem
       v-for="child in visibleChildren"
-      :key="child.name"
+      :key="String(child.name ?? child.path)"
       :item="child"
     />
   </v-list-group>

@@ -19,7 +19,7 @@ const leftDrawerRenderer = computed(() => registry?.left.value ?? null)
 const shouldRenderDrawerSlot = computed(() => Boolean(leftDrawerRenderer.value))
 const fallbackDrawerItems = computed(() =>
   router.options.routes
-    .filter((route) => route.meta?.icon)
+    .filter((route) => route.meta?.icon && !route.path.includes(':'))
     .sort((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 99)),
 )
 
