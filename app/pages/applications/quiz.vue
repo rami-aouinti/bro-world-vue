@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { QuizSubmitApiResponse } from '~~/server/types/api/quiz'
+
 definePageMeta({
   title: 'appbar.quiz',
 })
@@ -24,12 +26,14 @@ type QuizLevel = {
 type QuizQuestion = {
   id: string
   text: string
-  answers: string[]
+  answers: Array<{ id: string, text: string }>
   correctIndex: number
 }
 
 const { t } = useI18n()
 const theme = useTheme()
+const route = useRoute()
+const { loggedIn } = useUserSession()
 
 const quizStep = ref<QuizStep>('select-category')
 const isLoading = ref(true)
@@ -44,9 +48,13 @@ const questions = ref<QuizQuestion[]>([])
 
 const currentQuestionIndex = ref(0)
 const selectedAnswerIndex = ref<number | null>(null)
+const selectedAnswersByQuestion = ref<Record<string, string>>({})
 const score = ref(0)
 const correctAnswers = ref(0)
 const remainingTime = ref(0)
+const isSubmittingResult = ref(false)
+const submitErrorMessage = ref('')
+const submitResult = ref<QuizSubmitApiResponse | null>(null)
 
 let timer: ReturnType<typeof setInterval> | null = null
 
@@ -73,12 +81,15 @@ const progressValue = computed(() => {
 })
 
 const scorePercent = computed(() => {
-  if (!questions.value.length) return 0
+  if (submitResult.value) {
+    return submitResult.value.percentage
+  }
 
+  if (!questions.value.length) return 0
   return Math.round((score.value / questions.value.length) * 100)
 })
 
-const hasPassed = computed(() => scorePercent.value >= 60)
+const hasPassed = computed(() => submitResult.value?.passed ?? scorePercent.value >= 60)
 
 const totalDuration = computed(() => selectedLevel.value?.timeLimit || 60)
 
@@ -124,8 +135,12 @@ function resetQuizState() {
   questions.value = []
   currentQuestionIndex.value = 0
   selectedAnswerIndex.value = null
+  selectedAnswersByQuestion.value = {}
   score.value = 0
   correctAnswers.value = 0
+  submitErrorMessage.value = ''
+  submitResult.value = null
+  isSubmittingResult.value = false
   clearTimer()
 }
 
@@ -188,7 +203,10 @@ function createQuestions(categoryTitle: string, levelLabel: string) {
   return base.map((item, index) => ({
     id: `question-${index + 1}`,
     text: item.text,
-    answers: item.answers,
+    answers: item.answers.map((answerText, answerIndex) => ({
+      id: `question-${index + 1}-answer-${answerIndex + 1}`,
+      text: answerText,
+    })),
     correctIndex: item.correctIndex,
   }))
 }
@@ -310,6 +328,10 @@ function submitAnswer(answerIndex: number) {
   if (!currentQuestion.value || selectedAnswerIndex.value !== null) return
 
   selectedAnswerIndex.value = answerIndex
+  const selectedAnswer = currentQuestion.value.answers[answerIndex]
+  if (selectedAnswer?.id) {
+    selectedAnswersByQuestion.value[currentQuestion.value.id] = selectedAnswer.id
+  }
 
   const isCorrect = answerIndex === currentQuestion.value.correctIndex
   if (isCorrect) {
@@ -328,9 +350,49 @@ function submitAnswer(answerIndex: number) {
   }, 450)
 }
 
-function finishQuiz() {
+async function finishQuiz() {
   clearTimer()
+  await submitQuizResult()
   quizStep.value = 'finished'
+}
+
+async function submitQuizResult() {
+  if (!loggedIn.value) {
+    submitErrorMessage.value = 'Vous devez être connecté pour soumettre le quiz.'
+    await navigateTo({
+      path: '/login',
+      query: { redirect: route.fullPath },
+    })
+    return
+  }
+
+  const answers = Object.entries(selectedAnswersByQuestion.value).map(
+    ([questionId, answerId]) => ({ questionId, answerId }),
+  )
+
+  if (!answers.length) {
+    submitErrorMessage.value = 'Aucune réponse à envoyer.'
+    return
+  }
+
+  isSubmittingResult.value = true
+  submitErrorMessage.value = ''
+
+  try {
+    submitResult.value = await $fetch<QuizSubmitApiResponse>('/api/quiz/submit', {
+      method: 'POST',
+      body: { answers },
+    })
+  }
+  catch (error) {
+    submitErrorMessage.value
+      = error instanceof Error
+        ? error.message
+        : 'Échec de soumission du quiz. Veuillez réessayer.'
+  }
+  finally {
+    isSubmittingResult.value = false
+  }
 }
 
 function restartQuiz() {
@@ -517,7 +579,7 @@ onBeforeUnmount(clearTimer)
                   :variant="selectedAnswerIndex === null ? 'outlined' : 'flat'"
                   @click="submitAnswer(answerIndex)"
                 >
-                  {{ answer }}
+                  {{ answer.text }}
                 </v-btn>
               </v-col>
             </v-row>
@@ -532,11 +594,33 @@ onBeforeUnmount(clearTimer)
                 </v-chip>
               </div>
 
+              <v-alert
+                v-if="submitErrorMessage"
+                type="warning"
+                variant="tonal"
+                border="start"
+                class="mb-4"
+              >
+                {{ submitErrorMessage }}
+              </v-alert>
+
+              <v-alert
+                v-else-if="isSubmittingResult"
+                type="info"
+                variant="tonal"
+                border="start"
+                class="mb-4"
+              >
+                Soumission des résultats en cours…
+              </v-alert>
+
               <v-row>
                 <v-col cols="12" sm="4">
                   <v-sheet rounded="lg" class="pa-4 text-center" border>
                     <div class="text-caption text-medium-emphasis">{{ t('pages.applications.quiz.results.score') }}</div>
-                    <div class="text-h4 font-weight-bold">{{ score }}/{{ questions.length }}</div>
+                    <div class="text-h4 font-weight-bold">
+                      {{ submitResult?.score ?? score }}/{{ submitResult?.totalQuestions ?? questions.length }}
+                    </div>
                   </v-sheet>
                 </v-col>
                 <v-col cols="12" sm="4">
@@ -555,9 +639,13 @@ onBeforeUnmount(clearTimer)
 
               <p class="mt-4 mb-0 text-medium-emphasis">
                 {{ t('pages.applications.quiz.results.correctAnswers', {
-                  count: correctAnswers,
-                  total: questions.length,
+                  count: submitResult?.correctAnswers ?? correctAnswers,
+                  total: submitResult?.totalQuestions ?? questions.length,
                 }) }}
+              </p>
+
+              <p v-if="submitResult?.attemptId" class="mt-2 mb-0 text-caption text-medium-emphasis">
+                Attempt ID: {{ submitResult.attemptId }}
               </p>
 
               <div class="d-flex justify-end mt-6">
