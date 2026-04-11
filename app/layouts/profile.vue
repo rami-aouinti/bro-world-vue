@@ -2,11 +2,15 @@
 import { defineAsyncComponent } from 'vue'
 
 const showLeftDrawer = useState('show-left-drawer', () => true)
-const showRightDrawer = useState('show-right-drawer', () => true)
+const showRightDrawerDesktop = useState(
+  'show-right-drawer-desktop',
+  () => false,
+)
+const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
 const isPageSkeletonLoading = useState('page-skeleton-loading', () => true)
 const route = useRoute()
 const { t } = useI18n()
-const { lgAndUp } = useDisplay()
+const { mobile } = useDisplay()
 const isLayoutReady = ref(false)
 
 const AppDrawerLazy = defineAsyncComponent(
@@ -41,7 +45,9 @@ const shouldRenderLeftDrawer = computed(
   () => isLayoutReady.value && showLeftDrawer.value,
 )
 const shouldRenderRightDrawer = computed(
-  () => isLayoutReady.value && showRightDrawer.value && lgAndUp.value,
+  () =>
+    isLayoutReady.value &&
+    (mobile.value ? showRightDrawerMobile.value : showRightDrawerDesktop.value),
 )
 
 function triggerPageSkeleton(minDuration = LAYOUT_SKELETON_MIN_DURATION) {

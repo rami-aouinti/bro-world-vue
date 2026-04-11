@@ -1,6 +1,10 @@
 <script setup lang="ts">
 const isPageSkeletonLoading = useState('page-skeleton-loading', () => true)
-const showRightDrawer = useState('show-right-drawer', () => true)
+const showRightDrawerDesktop = useState(
+  'show-right-drawer-desktop',
+  () => false,
+)
+const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
 const registry = useDrawerSlotRegistry()
 const { lgAndUp, mobile } = useDisplay()
 const isRightDrawerReady = ref(false)
@@ -11,15 +15,22 @@ const shouldRenderRightDrawerContent = computed(
     isRightDrawerReady.value &&
     Boolean(rightDrawerRenderer.value),
 )
+const showRightDrawer = computed({
+  get: () => (mobile.value ? showRightDrawerMobile.value : showRightDrawerDesktop.value),
+  set: (value: boolean) => {
+    if (mobile.value) {
+      showRightDrawerMobile.value = value
+      return
+    }
+
+    showRightDrawerDesktop.value = value
+  },
+})
 
 onMounted(() => {
   requestAnimationFrame(() => {
     isRightDrawerReady.value = true
   })
-})
-
-watch(mobile, (isMobile) => {
-  showRightDrawer.value = !isMobile
 })
 </script>
 

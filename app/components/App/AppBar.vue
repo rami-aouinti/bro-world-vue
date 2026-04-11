@@ -7,7 +7,11 @@ import type { Notification } from '~/stores/notification'
 const theme = useTheme()
 const drawer = useState('drawer')
 const showLeftDrawer = useState('show-left-drawer', () => true)
-const showRightDrawer = useState('show-right-drawer', () => true)
+const showRightDrawerDesktop = useState(
+  'show-right-drawer-desktop',
+  () => false,
+)
+const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
 const { mobile } = useDisplay()
 const route = useRoute()
 const { t } = useI18n()
@@ -142,6 +146,17 @@ const allNotificationItems = computed(() => {
 const unreadTotalCount = computed(
   () => unreadCount.value + actionNotifications.value.length,
 )
+const showRightDrawer = computed({
+  get: () => (mobile.value ? showRightDrawerMobile.value : showRightDrawerDesktop.value),
+  set: (value: boolean) => {
+    if (mobile.value) {
+      showRightDrawerMobile.value = value
+      return
+    }
+
+    showRightDrawerDesktop.value = value
+  },
+})
 
 watch(
   loggedIn,
