@@ -581,23 +581,25 @@ function isMenuActive(paths: string[]) {
             </template>
           </v-list>
         </v-menu>
-        <AppLanguageSwitcher />
+        <template v-if="!mobile">
+          <AppLanguageSwitcher />
 
-        <v-btn
-          icon
-          size="44"
-          variant="text"
-          class="app-bar-controls__theme"
-          :aria-label="
-            isDark ? t('appbar.switchToLight') : t('appbar.switchToDark')
-          "
-          @click="isDark = !isDark"
-        >
-          <v-icon
-            :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'"
-            size="28"
-          />
-        </v-btn>
+          <v-btn
+            icon
+            size="44"
+            variant="text"
+            class="app-bar-controls__theme"
+            :aria-label="
+              isDark ? t('appbar.switchToLight') : t('appbar.switchToDark')
+            "
+            @click="isDark = !isDark"
+          >
+            <v-icon
+              :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'"
+              size="28"
+            />
+          </v-btn>
+        </template>
       </div>
     </div>
 
