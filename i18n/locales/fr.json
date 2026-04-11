@@ -467,7 +467,86 @@
     },
     "applications": {
       "sportsDescription": "Découvrez bientôt des contenus et fonctionnalités sportives.",
-      "quizDescription": "Retrouvez ici des quiz interactifs très prochainement."
+      "quizDescription": "Retrouvez ici des quiz interactifs très prochainement.",
+      "quiz": {
+        "selectCategoryTitle": "Choisissez une catégorie",
+        "selectLevelTitle": "Choisissez un niveau",
+        "levelLabel": "Niveau",
+        "startQuiz": "Démarrer le quiz",
+        "questionCounter": "Question {current} sur {total}",
+        "timeLeft": "{time}s restantes",
+        "playAgain": "Rejouer",
+        "unnamedCategory": "Catégorie sans titre",
+        "categoryFallbackDescription": "Aucune description disponible pour cette catégorie.",
+        "levelFallbackDescription": "Un niveau équilibré pour cette session de quiz.",
+        "steps": {
+          "select-category": "Choix catégorie",
+          "select-level": "Choix niveau",
+          "in-quiz": "En quiz",
+          "finished": "Terminé"
+        },
+        "errorState": {
+          "emptyData": "La configuration du quiz est incomplète. Réessayez plus tard.",
+          "generic": "Impossible de charger la configuration du quiz."
+        },
+        "results": {
+          "title": "Résultats du quiz",
+          "pass": "Réussi",
+          "fail": "Échoué",
+          "score": "Score",
+          "percentage": "Taux de réussite",
+          "timeRemaining": "Temps restant",
+          "correctAnswers": "Vous avez {count} bonnes réponses sur {total}."
+        },
+        "questions": {
+          "goal": {
+            "text": "Dans {category}, quel est le meilleur objectif pour une première tentative ?",
+            "answers": [
+              "Gagner le plus vite possible",
+              "Comprendre les mécaniques principales",
+              "Ignorer les tutoriels et improviser",
+              "Se concentrer seulement sur des tactiques avancées"
+            ]
+          },
+          "rhythm": {
+            "text": "Au niveau {level}, quel rythme faut-il privilégier ?",
+            "answers": [
+              "Régulier et maîtrisé",
+              "Rapide et risqué",
+              "Aléatoire et imprévisible",
+              "Uniquement défensif"
+            ]
+          },
+          "feedback": {
+            "text": "Après chaque question, qu’est-ce qui aide le plus à progresser ?",
+            "answers": [
+              "Ignorer la correction",
+              "Changer de style à chaque réponse",
+              "Analyser pourquoi une réponse était correcte",
+              "Se précipiter vers la suivante"
+            ]
+          },
+          "metric": {
+            "text": "Quelle métrique reflète le mieux la maîtrise du quiz dans le temps ?",
+            "answers": [
+              "Le nombre de clics",
+              "La plus longue série de réponses au hasard",
+              "Uniquement le temps de réponse le plus bas",
+              "Une précision régulière sur plusieurs sessions"
+            ]
+          },
+          "confidence": {
+            "text": "En cas d’hésitation, quelle stratégie est la plus efficace ?",
+            "answers": [
+              "Éliminer les options clairement fausses",
+              "Choisir la réponse la plus longue",
+              "Toujours sélectionner l’option C",
+              "Passer sans réfléchir"
+            ]
+          }
+        },
+        "backToCategories": "Retour aux catégories"
+      }
     }
   },
   "home": {

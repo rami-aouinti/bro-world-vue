@@ -458,7 +458,86 @@
     },
     "applications": {
       "sportsDescription": "Entdecke bald Sportinhalte und Funktionen.",
-      "quizDescription": "Hier findest du bald interaktive Quizze."
+      "quizDescription": "Hier findest du bald interaktive Quizze.",
+      "quiz": {
+        "selectCategoryTitle": "Wähle eine Kategorie",
+        "selectLevelTitle": "Wähle ein Level",
+        "levelLabel": "Level",
+        "startQuiz": "Quiz starten",
+        "questionCounter": "Frage {current} von {total}",
+        "timeLeft": "Noch {time}s",
+        "playAgain": "Erneut spielen",
+        "unnamedCategory": "Unbenannte Kategorie",
+        "categoryFallbackDescription": "Für diese Kategorie ist noch keine Beschreibung verfügbar.",
+        "levelFallbackDescription": "Ein ausgewogenes Level für diese Quiz-Session.",
+        "steps": {
+          "select-category": "Kategorie wählen",
+          "select-level": "Level wählen",
+          "in-quiz": "Im Quiz",
+          "finished": "Abgeschlossen"
+        },
+        "errorState": {
+          "emptyData": "Die Quiz-Konfiguration ist unvollständig. Bitte später erneut versuchen.",
+          "generic": "Die Quiz-Konfiguration konnte nicht geladen werden."
+        },
+        "results": {
+          "title": "Quiz-Ergebnis",
+          "pass": "Bestanden",
+          "fail": "Nicht bestanden",
+          "score": "Punktzahl",
+          "percentage": "Trefferquote",
+          "timeRemaining": "Verbleibende Zeit",
+          "correctAnswers": "Du hast {count} von {total} richtig beantwortet."
+        },
+        "questions": {
+          "goal": {
+            "text": "Was ist in {category} das beste Ziel für den ersten Versuch?",
+            "answers": [
+              "So schnell wie möglich gewinnen",
+              "Die Kernmechanik verstehen",
+              "Tutorials überspringen und improvisieren",
+              "Nur auf fortgeschrittene Taktiken setzen"
+            ]
+          },
+          "rhythm": {
+            "text": "Welches Tempo solltest du auf Stufe {level} priorisieren?",
+            "answers": [
+              "Konstant und kontrolliert",
+              "Schnell und riskant",
+              "Zufällig und unvorhersehbar",
+              "Nur defensiv"
+            ]
+          },
+          "feedback": {
+            "text": "Was hilft dir nach jeder Frage am meisten, besser zu werden?",
+            "answers": [
+              "Korrektur ignorieren",
+              "Bei jeder Antwort den Stil wechseln",
+              "Prüfen, warum eine Antwort richtig war",
+              "Sofort zur nächsten Frage springen"
+            ]
+          },
+          "metric": {
+            "text": "Welche Kennzahl zeigt langfristig die beste Quiz-Beherrschung?",
+            "answers": [
+              "Anzahl der Klicks",
+              "Längste Serie von Zufallstreffern",
+              "Nur die geringste Antwortzeit",
+              "Konstante Genauigkeit über mehrere Sessions"
+            ]
+          },
+          "confidence": {
+            "text": "Welche Strategie ist bei Unsicherheit meist am besten?",
+            "answers": [
+              "Klar falsche Optionen ausschließen",
+              "Die längste Antwort wählen",
+              "Immer Option C wählen",
+              "Ohne Nachdenken überspringen"
+            ]
+          }
+        },
+        "backToCategories": "Zurück zu Kategorien"
+      }
     }
   },
   "home": {
