@@ -240,19 +240,18 @@ function isMenuActive(paths: string[]) {
         <template #activator="{ props }">
           <v-btn
             v-bind="props"
-            :prepend-icon="featureMenu.icon"
+            :icon="featureMenu.icon"
             variant="text"
             size="small"
             rounded="lg"
-            class="app-top-bar__nav-btn app-top-bar__nav-btn--mobile"
+            class="app-top-bar__nav-icon-btn"
+            :aria-label="t(featureMenu.label)"
             :color="
               isMenuActive(featureMenu.items.map((item) => item.to))
                 ? 'primary'
                 : undefined
             "
-          >
-            {{ t(featureMenu.label) }}
-          </v-btn>
+          />
         </template>
         <div class="app-top-bar__mega-menu app-top-bar__menu-surface">
           <div class="app-top-bar__mega-menu-header">
@@ -288,19 +287,18 @@ function isMenuActive(paths: string[]) {
         <template #activator="{ props }">
           <v-btn
             v-bind="props"
-            :prepend-icon="applicationsMenu.icon"
+            :icon="applicationsMenu.icon"
             variant="text"
             size="small"
             rounded="lg"
-            class="app-top-bar__nav-btn app-top-bar__nav-btn--mobile"
+            class="app-top-bar__nav-icon-btn"
+            :aria-label="t(applicationsMenu.label)"
             :color="
               isMenuActive(applicationsMenu.items.map((item) => item.to))
                 ? 'primary'
                 : undefined
             "
-          >
-            {{ t(applicationsMenu.label) }}
-          </v-btn>
+          />
         </template>
         <div class="app-top-bar__mega-menu app-top-bar__menu-surface">
           <div class="app-top-bar__mega-menu-header">
@@ -332,16 +330,27 @@ function isMenuActive(paths: string[]) {
         </div>
       </v-menu>
 
-      <v-btn
-        to="/contact"
-        icon="mdi-email-outline"
-        variant="text"
-        size="small"
-        rounded="lg"
-        class="app-top-bar__nav-icon-btn"
-        :aria-label="t('appbar.contact')"
-        :color="route.path === '/contact' ? 'primary' : undefined"
-      />
+      <v-menu location="bottom">
+        <template #activator="{ props }">
+          <v-btn
+            v-bind="props"
+            icon="mdi-email-outline"
+            variant="text"
+            size="small"
+            rounded="lg"
+            class="app-top-bar__nav-icon-btn"
+            :aria-label="t('appbar.contact')"
+            :color="route.path === '/contact' ? 'primary' : undefined"
+          />
+        </template>
+        <v-list min-width="220" class="app-top-bar__menu-list">
+          <v-list-item
+            :title="t('appbar.contact')"
+            prepend-icon="mdi-email-outline"
+            to="/contact"
+          />
+        </v-list>
+      </v-menu>
     </div>
 
     <div v-else class="app-top-bar__nav d-none d-md-flex">
