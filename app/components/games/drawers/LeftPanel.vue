@@ -10,35 +10,29 @@ const topScores = [
 
 <template>
   <div class="games-left-panel px-2">
-    <AppLeftDrawerUserEntry class="px-2 pt-2" />
+    <v-list nav density="compact" class="bg-transparent">
+      <v-chip variant="outlined" color="primary" class="mb-2">
+        {{ t('gamePage.drawer.topScores') }}
+      </v-chip>
 
-    <v-divider class="my-4" />
-
-    <v-card variant="text" class="postcard-gradient-card px-1 py-2">
-      <v-list nav density="comfortable" class="bg-transparent">
-        <v-chip variant="outlined" color="primary" class="mb-2">
-          {{ t('gamePage.drawer.topScores') }}
-        </v-chip>
-
-        <v-list-item
-          v-for="(user, index) in topScores"
-          :key="user.name"
-          :title="user.name"
-          :subtitle="`${user.score} pts`"
-        >
-          <template #prepend>
-            <v-avatar size="34">
-              <v-img :src="user.avatar" :alt="user.name" cover />
-            </v-avatar>
-          </template>
-          <template #append>
-            <v-chip size="x-small" color="warning" variant="tonal">
-              #{{ index + 1 }}
-            </v-chip>
-          </template>
-        </v-list-item>
-      </v-list>
-    </v-card>
+      <v-list-item
+        v-for="(user, index) in topScores"
+        :key="user.name"
+        :title="user.name"
+        :subtitle="`${user.score} pts`"
+      >
+        <template #prepend>
+          <v-avatar size="34">
+            <v-img :src="user.avatar" :alt="user.name" cover />
+          </v-avatar>
+        </template>
+        <template #append>
+          <v-chip size="x-small" color="warning" variant="tonal">
+            #{{ index + 1 }}
+          </v-chip>
+        </template>
+      </v-list-item>
+    </v-list>
   </div>
 </template>
 

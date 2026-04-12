@@ -25,6 +25,9 @@ const categories = computed(() =>
       <template #right>
         <GamesDrawersRightPanel />
       </template>
+      <template #left>
+        <GamesDrawersLeftPanel />
+      </template>
     </AppPageDrawers>
 
     <v-container fluid>
@@ -36,7 +39,7 @@ const categories = computed(() =>
         type="image, article, image, article"
       />
 
-      <v-row v-else-if="categories.length" density="comfortable">
+      <v-row v-else-if="categories.length" density="compact">
         <v-col
           v-for="category in categories"
           :key="category.id"

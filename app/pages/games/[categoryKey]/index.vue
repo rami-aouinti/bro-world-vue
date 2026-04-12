@@ -66,6 +66,9 @@ const rightDrawerSelection = computed(() => [
       <template #right>
         <GamesDrawersRightPanel :selection="rightDrawerSelection" />
       </template>
+      <template #left>
+        <GamesDrawersLeftPanel />
+      </template>
     </AppPageDrawers>
 
     <v-container fluid>
