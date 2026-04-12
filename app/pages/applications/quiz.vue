@@ -24,6 +24,7 @@ type QuizLevelUi = {
   id: string
   value: string
   label: string
+  color: string
   description?: string | null
   timeLimit: number
 }
@@ -61,15 +62,15 @@ const submitResult = ref<QuizSubmitApiResponse | null>(null)
 let timer: ReturnType<typeof setInterval> | null = null
 
 const primaryColor = computed(
-  () => theme.current.value.colors.primary || '#1976D2',
+  () => theme.current.value.colors.primary || '#074a8b',
 )
 
 const selectedCategory = computed(() =>
-  categories.value.find((category) => category.id === selectedCategoryId.value),
+  categories.value.find((c) => c.id === selectedCategoryId.value),
 )
 
-const selectedLevel = computed<QuizLevelUi | undefined>(() =>
-  levels.value.find((level) => level.value === selectedLevelValue.value),
+const selectedLevel = computed(() =>
+  levels.value.find((l) => l.value === selectedLevelValue.value),
 )
 
 const currentQuestion = computed(
@@ -78,14 +79,11 @@ const currentQuestion = computed(
 
 const progressValue = computed(() => {
   if (!questions.value.length) return 0
-
   return Math.round((currentQuestionIndex.value / questions.value.length) * 100)
 })
 
 const scorePercent = computed(() => submitResult.value?.percentage ?? 0)
-
 const hasPassed = computed(() => submitResult.value?.passed ?? false)
-
 const totalDuration = computed(() => selectedLevel.value?.timeLimit || 60)
 
 function isHexColor(value: unknown): value is string {
@@ -100,8 +98,8 @@ function categoryGradient(category: QuizCategory) {
   return `linear-gradient(145deg, ${category.color}, ${primaryColor.value})`
 }
 
-function levelGradient() {
-  return `linear-gradient(145deg, ${primaryColor.value}, rgba(255,255,255,0.14))`
+function levelGradient(level: QuizLevelUi) {
+  return `linear-gradient(145deg, ${level.color}, ${primaryColor.value})`
 }
 
 function clearTimer() {
@@ -116,13 +114,15 @@ function startTimer() {
   remainingTime.value = totalDuration.value
 
   timer = setInterval(() => {
+    if (quizStep.value !== 'in-quiz') return
+
     if (remainingTime.value <= 0) {
       clearTimer()
       finishQuiz()
       return
     }
 
-    remainingTime.value -= 1
+    remainingTime.value--
   }, 1000)
 }
 
@@ -137,80 +137,35 @@ function resetQuizState() {
   clearTimer()
 }
 
+
 async function loadQuizSetup() {
   isLoading.value = true
   errorMessage.value = ''
 
   try {
-    const [categoriesResponse, levelsResponse] = await Promise.all([
+    const [catRes, lvlRes] = await Promise.all([
       $fetch<QuizCategoriesApiResponse>('/api/quiz/public/categories'),
       $fetch<QuizLevelsApiResponse>('/api/quiz/public/levels'),
     ])
 
-    const fallbackColors = ['#5C6BC0', '#00ACC1', '#43A047', '#FB8C00', '#8E24AA']
-
-    categories.value = (Array.isArray(categoriesResponse?.items) ? categoriesResponse.items : [])
-      .filter((item) => typeof item?.id === 'string' && typeof item?.value === 'string')
-      .map((item, index) => ({
-        id: String(item.id),
-        value: String(item.value),
-        title:
-          typeof item.label === 'string' && item.label.trim()
-            ? item.label
-            : t('pages.applications.quiz.unnamedCategory'),
-        description:
-          typeof item.description === 'string' && item.description.trim()
-            ? item.description
-            : t('pages.applications.quiz.categoryFallbackDescription'),
-        color: normalizeColor(
-          item.color,
-          fallbackColors[index % fallbackColors.length] || '#5C6BC0',
-        ),
-        icon:
-          typeof item.icon === 'string' && item.icon.trim()
-            ? item.icon
-            : 'mdi-shape-outline',
-      }))
-
-    levels.value = (Array.isArray(levelsResponse?.items) ? levelsResponse.items : [])
-      .map((level) => {
-        const value = level.value?.trim() || level.id || 'standard'
-        const normalizedValue = value.toLowerCase()
-        const timeByDifficulty: Record<string, number> = { easy: 90, medium: 70, hard: 50 }
-
-        return {
-          id: level.id || value,
-          value,
-          label: level.label?.trim() || value,
-          description: level.description?.trim() || t('pages.applications.quiz.levelFallbackDescription'),
-          timeLimit: timeByDifficulty[normalizedValue] || 60,
-        }
-      })
-
-    if (!categories.value.length || !levels.value.length) {
-      throw new Error(t('pages.applications.quiz.errorState.emptyData'))
-    }
-  }
-  catch (error) {
-    errorMessage.value =
-      error instanceof Error
-        ? error.message
-        : t('pages.applications.quiz.errorState.generic')
-  }
-  finally {
+    categories.value = catRes.items || []
+    levels.value = lvlRes.items || []
+  } catch (e: any) {
+    errorMessage.value = e.message || 'Error'
+  } finally {
     isLoading.value = false
   }
 }
 
-function selectCategory(categoryId: string) {
-  selectedCategoryId.value = categoryId
+function selectCategory(id: string) {
+  selectedCategoryId.value = id
   selectedLevelValue.value = null
   resetQuizState()
   quizStep.value = 'select-level'
 }
 
-function selectLevel(levelValue: string) {
-  selectedLevelValue.value = levelValue
+function selectLevel(val: string) {
+  selectedLevelValue.value = val
 }
 
 async function launchQuiz() {
@@ -218,56 +173,48 @@ async function launchQuiz() {
 
   resetQuizState()
   isLoading.value = true
-  errorMessage.value = ''
 
   try {
-    const response = await $fetch<{ questions?: QuizQuestionUi[] }>('/api/quiz/public', {
+    const res = await $fetch('/api/quiz/public', {
       query: {
         category: selectedCategory.value.value,
         level: selectedLevel.value.value,
       },
     })
 
-    if (!Array.isArray(response?.questions) || !response.questions.length) {
-      throw new Error(t('pages.applications.quiz.errorState.emptyData'))
-    }
-
-    questions.value = response.questions
+    questions.value = res.questions || []
     quizStep.value = 'in-quiz'
     startTimer()
-  }
-  catch (error) {
-    errorMessage.value
-      = error instanceof Error
-        ? error.message
-        : t('pages.applications.quiz.errorState.generic')
-  }
-  finally {
+  } finally {
     isLoading.value = false
   }
 }
 
-function submitAnswer(answerIndex: number) {
+function submitAnswer(index: number) {
   if (!currentQuestion.value || selectedAnswerIndex.value !== null) return
 
-  selectedAnswerIndex.value = answerIndex
-  const selectedAnswer = currentQuestion.value.answers[answerIndex]
-  if (selectedAnswer?.id) {
-    selectedAnswersByQuestion.value[currentQuestion.value.id] = selectedAnswer.id
+  selectedAnswerIndex.value = index
+
+  const answer = currentQuestion.value.answers[index]
+
+  selectedAnswersByQuestion.value = {
+    ...selectedAnswersByQuestion.value,
+    [currentQuestion.value.id]: answer.id,
   }
 
   setTimeout(() => {
     if (currentQuestionIndex.value >= questions.value.length - 1) {
       finishQuiz()
-      return
+    } else {
+      currentQuestionIndex.value++
+      selectedAnswerIndex.value = null
     }
-
-    currentQuestionIndex.value += 1
-    selectedAnswerIndex.value = null
-  }, 450)
+  }, 400)
 }
 
 async function finishQuiz() {
+  if (quizStep.value === 'finished') return
+
   clearTimer()
   await submitQuizResult()
   quizStep.value = 'finished'
@@ -275,11 +222,7 @@ async function finishQuiz() {
 
 async function submitQuizResult() {
   if (!loggedIn.value) {
-    submitErrorMessage.value = 'Vous devez être connecté pour soumettre le quiz.'
-    await navigateTo({
-      path: '/login',
-      query: { redirect: route.fullPath },
-    })
+    await navigateTo('/login')
     return
   }
 
@@ -287,27 +230,16 @@ async function submitQuizResult() {
     ([questionId, answerId]) => ({ questionId, answerId }),
   )
 
-  if (!answers.length) {
-    submitErrorMessage.value = 'Aucune réponse à envoyer.'
-    return
-  }
+  if (!answers.length) return
 
   isSubmittingResult.value = true
-  submitErrorMessage.value = ''
 
   try {
-    submitResult.value = await $fetch<QuizSubmitApiResponse>('/api/quiz/submit', {
+    submitResult.value = await $fetch('/api/quiz/submit', {
       method: 'POST',
       body: { answers },
     })
-  }
-  catch (error) {
-    submitErrorMessage.value
-      = error instanceof Error
-        ? error.message
-        : 'Échec de soumission du quiz. Veuillez réessayer.'
-  }
-  finally {
+  } finally {
     isSubmittingResult.value = false
   }
 }
@@ -324,47 +256,16 @@ onBeforeUnmount(clearTimer)
 </script>
 
 <template>
-  <v-container fluid class="quiz-page py-6">
+  <v-container fluid>
     <AppPageDrawers>
       <template #left>
         <QuizLeaderboardPanel />
       </template>
     </AppPageDrawers>
-    <v-card class="pa-4 pa-sm-6" rounded="xl">
-      <div class="d-flex align-center justify-space-between flex-wrap ga-3 mb-4">
+    <v-card variant="text"  class="pa-2 quiz-shell" rounded="xl">
+
+      <v-fade-transition>
         <div>
-          <h2 class="text-h5 mb-1">{{ t('appbar.quiz') }}</h2>
-          <p class="text-medium-emphasis mb-0">
-            {{ t('pages.applications.quizDescription') }}
-          </p>
-        </div>
-
-        <v-chip color="primary" variant="tonal" label>
-          {{ t(`pages.applications.quiz.steps.${quizStep}`) }}
-        </v-chip>
-      </div>
-
-      <template v-if="isLoading">
-        <v-row>
-          <v-col v-for="index in 6" :key="`quiz-skeleton-${index}`" cols="12" sm="6" lg="4">
-            <v-skeleton-loader type="image, article" class="rounded-lg" />
-          </v-col>
-        </v-row>
-      </template>
-
-      <template v-else-if="errorMessage">
-        <v-alert type="error" variant="tonal" class="mb-4" border="start">
-          <div class="d-flex align-center justify-space-between ga-3 flex-wrap">
-            <span>{{ errorMessage }}</span>
-            <v-btn color="primary" variant="flat" @click="loadQuizSetup">
-              {{ t('common.retry') }}
-            </v-btn>
-          </div>
-        </v-alert>
-      </template>
-
-      <v-fade-transition mode="out-in">
-        <div :key="quizStep">
           <section v-if="quizStep === 'select-category'">
             <h3 class="text-h6 mb-4">{{ t('pages.applications.quiz.selectCategoryTitle') }}</h3>
             <v-row>
@@ -377,7 +278,7 @@ onBeforeUnmount(clearTimer)
               >
                 <v-slide-y-transition :appear="true">
                   <v-card
-                    class="quiz-card category-card h-100"
+                    class="quiz-card category-card"
                     rounded="xl"
                     :style="{
                       backgroundImage: categoryGradient(category),
@@ -385,15 +286,11 @@ onBeforeUnmount(clearTimer)
                     }"
                     @click="selectCategory(category.id)"
                   >
-                    <v-card-text class="text-white">
-                      <div class="d-flex align-center justify-space-between mb-3">
+                    <v-card-text>
+                      <div class="d-flex align-center mb-3">
                         <v-icon :icon="category.icon || 'mdi-shape-outline'" size="32" />
-                        <v-icon icon="mdi-arrow-right" />
+                        <div class="text-h6 mx-3">{{ category.name }}</div>
                       </div>
-                      <div class="text-h6 mb-1">{{ category.title }}</div>
-                      <p class="text-body-2 text-white mb-0 category-description">
-                        {{ category.description }}
-                      </p>
                     </v-card-text>
                   </v-card>
                 </v-slide-y-transition>
@@ -416,20 +313,13 @@ onBeforeUnmount(clearTimer)
                   rounded="xl"
                   :class="{ 'level-card--selected': selectedLevelValue === level.value }"
                   :style="{
-                    backgroundImage: levelGradient(),
+                    backgroundImage: levelGradient(level),
                     animationDelay: `${index * 80}ms`,
                   }"
                   @click="selectLevel(level.value)"
                 >
-                  <v-card-text>
-                    <div class="d-flex align-center justify-space-between mb-2">
-                      <span class="text-overline">{{ t('pages.applications.quiz.levelLabel') }}</span>
-                      <v-chip size="small" color="primary" variant="tonal" label>
-                        {{ level.timeLimit }}s
-                      </v-chip>
-                    </div>
-                    <div class="text-h6 mb-1">{{ level.label }}</div>
-                    <p class="text-body-2 text-medium-emphasis mb-0">{{ level.description }}</p>
+                  <v-card-text class="text-center">
+                    <div class="text-h6 mb-1">{{ level.value }}</div>
                   </v-card-text>
                 </v-card>
               </v-col>
@@ -450,7 +340,7 @@ onBeforeUnmount(clearTimer)
           <section v-else-if="quizStep === 'in-quiz' && currentQuestion">
             <div class="d-flex align-center justify-space-between ga-3 mb-3 flex-wrap">
               <div>
-                <div class="text-caption text-medium-emphasis">
+                <div class="">
                   {{ t('pages.applications.quiz.questionCounter', {
                     current: currentQuestionIndex + 1,
                     total: questions.length,
@@ -472,9 +362,9 @@ onBeforeUnmount(clearTimer)
               class="mb-6"
             />
 
-            <v-card variant="tonal" color="primary" rounded="lg" class="mb-4">
-              <v-card-text class="text-body-1 font-weight-medium">
-                {{ currentQuestion.question }}
+            <v-card variant="text" rounded="lg" class="mb-4">
+              <v-card-text>
+                {{ currentQuestion.title }}
               </v-card-text>
             </v-card>
 
@@ -499,7 +389,7 @@ onBeforeUnmount(clearTimer)
                   :variant="selectedAnswerIndex === null ? 'outlined' : 'flat'"
                   @click="submitAnswer(answerIndex)"
                 >
-                  {{ answer.text }}
+                  {{ answer.label }}
                 </v-btn>
               </v-col>
             </v-row>
@@ -582,14 +472,19 @@ onBeforeUnmount(clearTimer)
 </template>
 
 <style scoped>
+.quiz-shell {
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.18) 0%,
+    transparent 20%
+  );
+  height: calc(100% - 40px);
+}
+
 .quiz-card {
   cursor: pointer;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   animation: quizCardAppear 360ms ease both;
-}
-
-.category-card {
-  min-height: 190px;
 }
 
 .level-card {
@@ -615,12 +510,6 @@ onBeforeUnmount(clearTimer)
   .quiz-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 14px 28px rgba(15, 23, 42, 0.2);
-  }
-}
-
-@media (max-width: 600px) {
-  .category-card {
-    min-height: 165px;
   }
 }
 

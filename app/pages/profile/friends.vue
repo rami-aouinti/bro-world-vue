@@ -73,7 +73,7 @@ const sectionConfigs = computed(() => [
         icon: 'mdi-block-helper',
         action: 'block' as const,
         color: 'error',
-        variant: 'tonal' as const,
+        variant: 'text' as const,
       },
     ],
   },
@@ -90,14 +90,14 @@ const sectionConfigs = computed(() => [
         icon: 'mdi-check',
         action: 'accept' as const,
         color: 'success',
-        variant: 'tonal' as const,
+        variant: 'text' as const,
       },
       {
         label: t('pages.friends.actions.reject'),
         icon: 'mdi-close',
         action: 'reject' as const,
         color: 'error',
-        variant: 'tonal' as const,
+        variant: 'text' as const,
       },
       {
         label: t('pages.friends.actions.block'),
@@ -121,7 +121,7 @@ const sectionConfigs = computed(() => [
         icon: 'mdi-close-circle-outline',
         action: 'cancel' as const,
         color: 'warning',
-        variant: 'tonal' as const,
+        variant: 'text' as const,
       },
       {
         label: t('pages.friends.actions.block'),
@@ -145,7 +145,7 @@ const sectionConfigs = computed(() => [
         icon: 'mdi-lock-open-variant-outline',
         action: 'unblock' as const,
         color: 'primary',
-        variant: 'tonal' as const,
+        variant: 'text' as const,
       },
     ],
   },
@@ -279,44 +279,45 @@ onMounted(async () => {
   <div>
     <AppPageDrawers>
       <template #right>
-        <v-card variant="text" class="postcard-gradient-card">
-          <v-card-title class="d-flex align-center ga-2">
-            <v-icon icon="mdi-account-multiple-plus-outline" />
-            {{ t('pages.friends.suggestions.title') }}
-          </v-card-title>
-          <v-list v-if="suggestedUsers.length" class="bg-transparent">
-            <v-list-item
-              v-for="item in suggestedUsers"
-              :key="item.id"
-              :title="suggestionName(item)"
-              :subtitle="`@${suggestionHandle(item)}`"
-            >
-              <template #prepend>
-                <v-avatar size="36" color="primary">
-                  <v-img
-                    :src="item.photo"
-                    :alt="`Avatar of ${suggestionName(item)}`"
-                  />
-                </v-avatar>
-              </template>
-
-              <template #append>
-                <v-btn
-                  color="primary"
-                  variant="text"
-                  icon="mdi-account-plus-outline"
-                  :loading="isActionLoading(item.id, 'request')"
-                  :aria-label="t('pages.friends.actions.send')"
-                  @click="applyAction(item.id, 'request')"
+        <v-card-title class="d-flex align-center ga-2">
+          <v-icon icon="mdi-account-multiple-plus-outline" />
+          {{ t('pages.friends.suggestions.title') }}
+        </v-card-title>
+        <v-list v-if="suggestedUsers.length" class="bg-transparent">
+          <v-list-item
+            v-for="item in suggestedUsers"
+            :key="item.id"
+            :title="suggestionName(item)"
+            :subtitle="`@${suggestionHandle(item)}`"
+          >
+            <template #prepend>
+              <v-avatar size="36" color="primary">
+                <v-img
+                  :src="item.photo"
+                  :alt="`Avatar of ${suggestionName(item)}`"
                 />
-              </template>
-            </v-list-item>
-          </v-list>
+              </v-avatar>
+            </template>
 
-          <v-card-text v-else class="text-medium-emphasis">
-            {{ t('pages.friends.suggestions.emptyText') }}
-          </v-card-text>
-        </v-card>
+            <template #append>
+              <v-btn
+                color="primary"
+                variant="text"
+                icon="mdi-account-plus-outline"
+                :loading="isActionLoading(item.id, 'request')"
+                :aria-label="t('pages.friends.actions.send')"
+                @click="applyAction(item.id, 'request')"
+              />
+            </template>
+          </v-list-item>
+        </v-list>
+
+        <v-card-text v-else class="text-medium-emphasis">
+          {{ t('pages.friends.suggestions.emptyText') }}
+        </v-card-text>
+      </template>
+      <template #left>
+        <ProfileDrawer />
       </template>
     </AppPageDrawers>
 
@@ -365,7 +366,7 @@ onMounted(async () => {
                       <v-btn
                         v-if="section.id === 'friends'"
                         color="primary"
-                        variant="tonal"
+                        variant="text"
                         icon="mdi-message-text-outline"
                         :aria-label="t('appbar.inbox')"
                         :loading="isActionLoading(item.id, 'message')"
@@ -386,7 +387,7 @@ onMounted(async () => {
                           section.id !== 'friends' && section.id !== 'blocked'
                         "
                         color="primary"
-                        variant="tonal"
+                        variant="text"
                         icon="mdi-send-outline"
                         :aria-label="t('pages.friends.actions.resend')"
                         :loading="isActionLoading(item.id, 'request')"

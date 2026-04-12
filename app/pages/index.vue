@@ -33,8 +33,6 @@ onMounted(() => {
           <SkeletonDrawerLeft />
         </template>
         <template v-else>
-          <AppLeftDrawerUserEntry />
-          <v-divider class="my-2" />
           <LeftDrawerRandomGames />
         </template>
       </template>

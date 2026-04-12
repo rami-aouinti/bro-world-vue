@@ -47,6 +47,8 @@ watch(mobile, (isMobile) => {
     @update:model-value="handleDrawerModelUpdate"
   >
     <v-card variant="text" class="postcard-gradient-card app-drawer-card">
+      <AppLeftDrawerUserEntry />
+      <v-divider class="my-2" />
       <div v-if="shouldRenderDrawerSlot" class="app-left-drawer-list">
         <SkeletonDrawerLeft v-if="isPageSkeletonLoading" />
         <component :is="{ render: leftDrawerRenderer }" v-else />

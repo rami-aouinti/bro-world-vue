@@ -146,8 +146,7 @@ function formatScore(value: number | null) {
         </v-list-item-title>
 
         <v-list-item-subtitle class="quiz-leaderboard-panel__subtitle mt-1">
-          <span>Moyenne pondérée: {{ formatScore(entry.weightedAverageScore) }}</span>
-          <span>Tentatives: {{ entry.attempts ?? '—' }}</span>
+          <span> {{ formatScore(entry.weightedAverageScore) }}</span>
         </v-list-item-subtitle>
       </v-list-item>
     </v-list>
@@ -160,14 +159,10 @@ function formatScore(value: number | null) {
 }
 
 .quiz-leaderboard-panel__list {
+  background-color: transparent;
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
-
-.quiz-leaderboard-panel__item {
-  border: 1px solid rgba(var(--v-theme-primary), 0.16);
-  border-radius: 12px;
 }
 
 .quiz-leaderboard-panel__subtitle {

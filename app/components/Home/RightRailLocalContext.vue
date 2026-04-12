@@ -191,7 +191,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="d-flex flex-column ga-4">
+  <div>
     <v-dialog
       v-model="isLocationModalOpen"
       max-width="420"
@@ -216,19 +216,14 @@ onMounted(() => {
       </v-card>
     </v-dialog>
 
-    <v-card
-      v-if="hasContext && localContext"
-      rounded="xl"
-      variant="text"
-      class="actuality-card"
-    >
+    <div v-if="hasContext && localContext">
       <v-card-item>
         <template #prepend>
           <v-icon icon="mdi-weather-partly-cloudy" color="primary" />
         </template>
-        <v-card-title>{{
-          $t('home.rightNav.localContext.weatherTitle')
-        }}</v-card-title>
+        <div class="text-h6">{{
+            $t('home.rightNav.localContext.weatherTitle')
+          }}</div>
       </v-card-item>
       <v-card-text class="pt-0">
         <div class="text-h5 font-weight-bold">{{ weatherSummary }}</div>
@@ -236,23 +231,14 @@ onMounted(() => {
           {{ new Date(localContext.weather.observedAt).toLocaleString() }}
         </div>
       </v-card-text>
-    </v-card>
-
-    <v-card
-      v-if="hasContext && localContext"
-      rounded="xl"
-      variant="text"
-      class="actuality-card"
-    >
       <v-card-item>
         <template #prepend>
           <v-icon icon="mdi-calendar-star" color="primary" />
         </template>
-        <v-card-title>{{
-          $t('home.rightNav.localContext.eventsTitle')
-        }}</v-card-title>
+        <div class="text-h6">{{
+            $t('home.rightNav.localContext.eventsTitle')
+          }}</div>
       </v-card-item>
-
       <v-list density="compact" lines="two">
         <v-list-item
           v-for="item in localContext.events"
@@ -266,25 +252,17 @@ onMounted(() => {
         </v-list-item>
         <v-list-item v-if="!localContext.events.length">
           <v-list-item-title>{{
-            $t('home.rightNav.localContext.emptyState')
-          }}</v-list-item-title>
+              $t('home.rightNav.localContext.emptyState')
+            }}</v-list-item-title>
         </v-list-item>
       </v-list>
-    </v-card>
-
-    <v-card
-      v-if="hasContext && localContext"
-      rounded="xl"
-      variant="text"
-      class="actuality-card"
-    >
       <v-card-item>
         <template #prepend>
           <v-icon icon="mdi-alert-decagram-outline" color="error" />
         </template>
-        <v-card-title>{{
-          $t('home.rightNav.localContext.majorEventsTitle')
-        }}</v-card-title>
+        <div class="text-h6">{{
+            $t('home.rightNav.localContext.majorEventsTitle')
+          }}</div>
       </v-card-item>
       <v-list density="compact" lines="three">
         <v-list-item
@@ -307,16 +285,6 @@ onMounted(() => {
           <v-list-item-subtitle>{{ item.summary }}</v-list-item-subtitle>
         </v-list-item>
       </v-list>
-    </v-card>
+    </div>
   </div>
 </template>
-<style scoped>
-.actuality-card {
-  background: linear-gradient(
-    240deg,
-    rgba(var(--v-theme-primary), 0.18) 0%,
-    transparent 20%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-</style>

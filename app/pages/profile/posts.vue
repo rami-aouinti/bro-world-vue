@@ -41,62 +41,43 @@ definePageMeta({
   <div>
     <AppPageDrawers>
       <template #right>
-        <v-card
-          rounded="xl"
-          variant="text"
-          class="postcard-gradient-card profile-posts-stats-card"
-        >
-          <v-card-title>Statistiques de mes posts</v-card-title>
+        <div class="text-h6 pa-4">Statistics</div>
 
-          <v-card-text>
-            <v-skeleton-loader
-              v-if="statsPending"
-              type="list-item-three-line"
-              class="bg-transparent px-0"
-            />
+        <v-card-text>
+          <v-skeleton-loader
+            v-if="statsPending"
+            type="list-item-three-line"
+            class="bg-transparent px-0"
+          />
 
-            <v-alert v-else-if="statsError" type="warning" variant="tonal">
-              Impossible de charger les statistiques.
-            </v-alert>
+          <v-alert v-else-if="statsError" type="warning" variant="tonal">
+            Impossible de charger les statistiques.
+          </v-alert>
 
-            <div v-else class="d-flex flex-column ga-3">
-              <v-card
-                rounded="lg"
-                variant="text"
-                class="pa-3 postcard-gradient-card"
-              >
-                <p class="text-caption text-medium-emphasis mb-2">Posts</p>
-                <v-chip color="primary" label size="large">
-                  {{ safeStats.totalPosts }}
-                </v-chip>
-              </v-card>
-
-              <v-card
-                rounded="lg"
-                variant="text"
-                class="pa-3 postcard-gradient-card"
-              >
-                <p class="text-caption text-medium-emphasis mb-2">
-                  Commentaires
-                </p>
-                <v-chip color="secondary" label size="large">
-                  {{ safeStats.totalComments }}
-                </v-chip>
-              </v-card>
-
-              <v-card
-                rounded="lg"
-                variant="text"
-                class="pa-3 postcard-gradient-card"
-              >
-                <p class="text-caption text-medium-emphasis mb-2">Réactions</p>
-                <v-chip color="success" label size="large">
-                  {{ safeStats.totalReacts }}
-                </v-chip>
-              </v-card>
+          <div v-else class="d-flex flex-column ga-3">
+            <div class="d-flex align-center">
+              <v-chip color="primary" label size="large">
+                {{ safeStats.totalPosts }}
+              </v-chip>
+              <p class="text-caption text-medium-emphasis mx-3">Posts</p>
             </div>
-          </v-card-text>
-        </v-card>
+            <div class="d-flex align-center">
+              <v-chip color="primary" label size="large">
+                {{ safeStats.totalComments }}
+              </v-chip>
+              <p class="text-caption text-medium-emphasis mx-3">Comments</p>
+            </div>
+            <div class="d-flex align-center">
+              <v-chip color="primary" label size="large">
+                {{ safeStats.totalReacts }}
+              </v-chip>
+              <p class="text-caption text-medium-emphasis mx-3">Reacts</p>
+            </div>
+          </div>
+        </v-card-text>
+      </template>
+      <template #left>
+        <ProfileDrawer />
       </template>
     </AppPageDrawers>
 

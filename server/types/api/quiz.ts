@@ -4,6 +4,7 @@ export interface QuizCategory extends ApiObject {
   id: string
   value: string
   label: string
+  color: string
   description?: string | null
 }
 
@@ -11,6 +12,7 @@ export interface QuizLevel extends ApiObject {
   id: string
   value: string
   label: string
+  color: string
   description?: string | null
 }
 

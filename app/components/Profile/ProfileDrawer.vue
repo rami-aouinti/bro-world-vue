@@ -22,10 +22,6 @@ const profileNavItems = [
 </script>
 
 <template>
-  <LeftDrawerUserEntry />
-
-  <v-divider class="my-4" />
-
   <v-list nav density="compact" class="px-0 app-left-drawer-list">
     <v-list-item
       v-for="item in profileNavItems"

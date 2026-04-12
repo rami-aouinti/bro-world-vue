@@ -211,6 +211,9 @@ onUnmounted(() => {
           />
         </v-list>
       </template>
+      <template #left>
+        <ProfileDrawer />
+      </template>
     </AppPageDrawers>
 
     <v-container fluid>

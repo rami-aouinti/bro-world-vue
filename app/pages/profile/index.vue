@@ -125,34 +125,35 @@ onUnmounted(() => {
   <div>
     <AppPageDrawers>
       <template #right>
-        <v-card rounded="xl" variant="text" class="postcard-gradient-card">
-          <v-card-title>{{ t('pages.profile.rightRail.title') }}</v-card-title>
-          <v-card-text>
-            <p v-if="nextEventLabel" class="text-body-2 mb-3">
-              {{ nextEventLabel }}
-            </p>
-            <p
-              v-for="(proverb, index) in displayedProverbs"
-              :key="`proverb-${index}`"
-              class="text-body-2 text-medium-emphasis mb-2"
-            >
-              {{ proverb }}
-            </p>
+        <v-card-title>{{ t('pages.profile.rightRail.title') }}</v-card-title>
+        <v-card-text>
+          <p v-if="nextEventLabel" class="text-body-2 mb-3">
+            {{ nextEventLabel }}
+          </p>
+          <p
+            v-for="(proverb, index) in displayedProverbs"
+            :key="`proverb-${index}`"
+            class="text-body-2 text-medium-emphasis mb-2"
+          >
+            {{ proverb }}
+          </p>
 
-            <v-list v-if="hasUpcomingEvents" density="compact" class="pa-0">
-              <v-list-item
-                v-for="event in upcomingEvents"
-                :key="event.id"
-                prepend-icon="mdi-calendar-clock-outline"
-                :title="event.title"
-                :subtitle="new Date(event.startAt).toLocaleString(locale)"
-              />
-            </v-list>
-            <p v-else class="text-body-2 text-medium-emphasis mb-0">
-              {{ t('pages.profile.rightRail.emptyUpcoming') }}
-            </p>
-          </v-card-text>
-        </v-card>
+          <v-list v-if="hasUpcomingEvents" density="compact" class="pa-0">
+            <v-list-item
+              v-for="event in upcomingEvents"
+              :key="event.id"
+              prepend-icon="mdi-calendar-clock-outline"
+              :title="event.title"
+              :subtitle="new Date(event.startAt).toLocaleString(locale)"
+            />
+          </v-list>
+          <p v-else class="text-body-2 text-medium-emphasis mb-0">
+            {{ t('pages.profile.rightRail.emptyUpcoming') }}
+          </p>
+        </v-card-text>
+      </template>
+      <template #left>
+        <ProfileDrawer />
       </template>
     </AppPageDrawers>
 

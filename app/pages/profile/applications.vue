@@ -55,11 +55,7 @@ onMounted(() => refreshApplications())
     <AppPageDrawers>
       <template #right>
         <SkeletonDrawerRight v-if="isPageSkeletonVisible && loading" />
-        <v-card
-          v-else-if="selectedApplication"
-          variant="text"
-          class="pa-2 d-flex flex-column ga-2 h-100 postcard-gradient-card"
-        >
+        <div v-else-if="selectedApplication">
           <div>
             <h3 class="text-h6 font-weight-bold">
               {{ selectedApplication.title }}
@@ -124,13 +120,16 @@ onMounted(() => refreshApplications())
               />
             </v-list>
           </v-card-text>
-        </v-card>
+        </div>
         <v-alert
           v-else
           type="info"
           variant="tonal"
           text="Sélectionnez une application pour afficher ses détails."
         />
+      </template>
+      <template #left>
+        <ProfileDrawer />
       </template>
     </AppPageDrawers>
 
