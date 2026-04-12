@@ -219,11 +219,7 @@ function resetFilters() {
 
       <template #right>
         <SkeletonDrawerRight v-if="isPageSkeletonVisible" />
-        <v-card
-          v-else-if="selectedPlatform"
-          variant="text"
-          class="pa-2 d-flex flex-column ga-2 h-100 postcard-gradient-card"
-        >
+        <v-card-text v-else-if="selectedPlatform">
           <div>
             <h3 class="text-h6 font-weight-bold">
               {{ selectedPlatform?.title || t('platform.selectPlatform') }}
@@ -302,7 +298,7 @@ function resetFilters() {
               </v-chip>
             </div>
           </v-card-text>
-        </v-card>
+        </v-card-text>
         <v-alert
           v-else
           type="info"
