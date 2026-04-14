@@ -6,6 +6,16 @@ const shouldSplitCss = process.env.NUXT_CSS_CODE_SPLIT === 'true'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
+  app: {
+    head: {
+      meta: [
+        {
+          name: 'google-site-verification',
+          content: process.env.GOOGLE_KEY_INDEX
+        }
+      ]
+    }
+  },
   modules: [
     '@nuxtjs/i18n',
     '@pinia/nuxt',
