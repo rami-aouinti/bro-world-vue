@@ -69,43 +69,58 @@ const page = computed(
     <AppPageDrawers>
       <template #left>
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible || pending || !page" />
-        <v-list v-else nav density="compact" class="app-left-drawer-list">
-          <v-list-subheader class="text-overline">{{
-            page.hero.badge
-          }}</v-list-subheader>
-          <v-list-item
-            v-for="card in page.missionCards"
-            :key="card.title"
-            :prepend-icon="card.icon"
-            :title="card.title"
-            :subtitle="card.description"
-          />
-        </v-list>
+        <div v-else class="d-flex flex-column gap-4">
+          <h3 class="text-h5 text-white mb-2">{{ page.cta.title }}</h3>
+          <p class="text-white mb-4">{{ page.cta.description }}</p>
+          <div class="d-flex flex-wrap ga-3">
+            <v-btn color="white" variant="flat">{{
+                page.cta.primaryAction
+              }}</v-btn>
+            <v-btn color="white" variant="outlined">{{
+                page.cta.secondaryAction
+              }}</v-btn>
+          </div>
+        </div>
       </template>
 
       <template #right>
         <SkeletonDrawerRight v-if="isPageSkeletonVisible || pending || !page" />
-        <v-list v-else nav density="compact" class="app-right-drawer-list">
-          <v-list-item
-            v-for="metric in page.metrics"
-            :key="metric.label"
-            class="px-0 mb-3"
-          >
-            <v-card rounded="xl" variant="tonal" color="primary">
-              <v-card-item>
-                <template #prepend
+        <div v-else class="d-flex flex-column gap-4">
+          <v-list nav density="compact" class="app-left-drawer-list">
+            <v-list-subheader class="text-overline">{{
+                page.hero.badge
+              }}</v-list-subheader>
+            <v-list-item
+              v-for="card in page.missionCards"
+              :key="card.title"
+              :prepend-icon="card.icon"
+              :title="card.title"
+              :subtitle="card.description"
+            />
+          </v-list>
+          <v-list nav density="compact" class="app-right-drawer-list">
+            <v-list-item
+              v-for="metric in page.metrics"
+              :key="metric.label"
+              class="px-0 mb-3"
+            >
+              <v-card rounded="xl" variant="tonal" color="primary">
+                <v-card-item>
+                  <template #prepend
                   ><v-icon :icon="metric.icon" class="me-2"
-                /></template>
-                <v-card-title>{{ metric.value }}</v-card-title>
-                <v-card-subtitle>{{ metric.label }}</v-card-subtitle>
-              </v-card-item>
-            </v-card>
-          </v-list-item>
-        </v-list>
+                  /></template>
+                  <v-card-title>{{ metric.value }}</v-card-title>
+                  <v-card-subtitle>{{ metric.label }}</v-card-subtitle>
+                </v-card-item>
+              </v-card>
+            </v-list-item>
+          </v-list>
+        </div>
+
       </template>
     </AppPageDrawers>
 
-    <v-container class="py-8">
+    <v-container>
       <SkeletonPageContent v-if="isPageSkeletonVisible || pending || !page" />
       <v-alert
         v-else-if="error"
@@ -154,7 +169,7 @@ const page = computed(
             cols="12"
             md="4"
           >
-            <v-card rounded="xl" variant="outlined" height="100%">
+            <v-card rounded="xl" variant="outlined" height="100%" class="postcard-gradient-card">
               <v-card-text class="text-center py-7">
                 <v-icon
                   :icon="metric.icon"
@@ -179,7 +194,7 @@ const page = computed(
             cols="12"
             md="6"
           >
-            <v-card rounded="xl" height="100%" class="pa-2">
+            <v-card rounded="xl" height="100%" class="pa-2 postcard-gradient-card">
               <v-card-item>
                 <template #prepend
                   ><v-icon :icon="card.icon" color="primary" class="me-2"
@@ -214,6 +229,7 @@ const page = computed(
           align="start"
           density="comfortable"
           truncate-line="both"
+
         >
           <v-timeline-item
             v-for="item in page.timeline"
@@ -223,7 +239,7 @@ const page = computed(
             size="small"
           >
             <template #icon><v-icon :icon="item.icon" size="18" /></template>
-            <v-card rounded="xl" class="mb-4">
+            <v-card rounded="xl" class="mb-4 postcard-gradient-card">
               <v-card-item>
                 <v-card-title>{{ item.title }}</v-card-title>
                 <v-card-subtitle>{{ item.period }}</v-card-subtitle>
@@ -243,25 +259,6 @@ const page = computed(
             </v-card>
           </v-timeline-item>
         </v-timeline>
-
-        <v-card rounded="xl" class="pa-6" color="primary" elevation="0">
-          <h3 class="text-h5 text-white mb-2">{{ page.cta.title }}</h3>
-          <p class="text-white mb-4">{{ page.cta.description }}</p>
-          <div class="d-flex flex-wrap ga-3">
-            <v-btn color="white" variant="flat">{{
-              page.cta.primaryAction
-            }}</v-btn>
-            <v-btn color="white" variant="outlined">{{
-              page.cta.secondaryAction
-            }}</v-btn>
-          </div>
-        </v-card>
-
-        <div class="d-flex justify-end mt-4">
-          <v-btn variant="text" prepend-icon="mdi-refresh" @click="refresh">{{
-            t('common.refresh')
-          }}</v-btn>
-        </div>
       </template>
     </v-container>
   </div>

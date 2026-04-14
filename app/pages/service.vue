@@ -66,46 +66,62 @@ const page = computed(
     <AppPageDrawers>
       <template #left>
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible || pending || !page" />
-        <v-list v-else nav density="comfortable" class="app-left-drawer-list">
-          <v-list-subheader class="text-overline">{{
-            page.hero.badge
-          }}</v-list-subheader>
-          <v-list-item
-            v-for="(benefit, index) in page.hero.benefits"
-            :key="benefit"
-            prepend-icon="mdi-check-circle-outline"
-            :title="benefit"
-            :subtitle="`${page.stepLabelPrefix} ${index + 1}`"
-          />
-        </v-list>
+        <div v-else  class="mb-4 pa-3">
+          <h3 class="text-h3 font-weight-bold mb-3">{{ page.hero.title }}</h3>
+          <p class="text-body-1 text-medium-emphasis mb-5">
+            {{ page.hero.subtitle }}
+          </p>
+          <div class="d-flex flex-wrap ga-3">
+            <v-btn color="primary" size="large">{{
+                page.hero.primaryCta
+              }}</v-btn>
+            <v-btn variant="outlined" size="large">{{
+                page.hero.secondaryCta
+              }}</v-btn>
+          </div>
+        </div>
       </template>
 
       <template #right>
         <SkeletonDrawerRight v-if="isPageSkeletonVisible || pending || !page" />
-        <v-list v-else nav density="comfortable" class="app-right-drawer-list">
-          <v-list-item class="px-0">
-            <v-card rounded="xl" variant="tonal" color="primary">
-              <v-card-item>
-                <template #prepend>
-                  <v-icon icon="mdi-lightning-bolt-outline" class="me-2" />
-                </template>
-                <v-card-title class="text-subtitle-1">{{
-                  page.cta.title
-                }}</v-card-title>
-                <v-card-subtitle>{{ page.cta.description }}</v-card-subtitle>
-              </v-card-item>
-              <v-card-actions>
-                <v-btn color="primary" variant="flat" block>{{
-                  page.cta.primaryAction
-                }}</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-list-item>
-        </v-list>
+        <div v-else class="d-flex flex-column gap-4">
+          <v-list nav density="comfortable" class="app-left-drawer-list">
+            <v-list-subheader class="text-overline">{{
+                page.hero.badge
+              }}</v-list-subheader>
+            <v-list-item
+              v-for="(benefit, index) in page.hero.benefits"
+              :key="benefit"
+              prepend-icon="mdi-check-circle-outline"
+              :title="benefit"
+              :subtitle="`${page.stepLabelPrefix} ${index + 1}`"
+            />
+          </v-list>
+          <v-list nav density="comfortable" class="app-right-drawer-list">
+            <v-list-item class="px-0">
+              <v-card rounded="xl" variant="tonal" color="primary">
+                <v-card-item>
+                  <template #prepend>
+                    <v-icon icon="mdi-lightning-bolt-outline" class="me-2" />
+                  </template>
+                  <v-card-title class="text-subtitle-1">{{
+                      page.cta.title
+                    }}</v-card-title>
+                  <v-card-subtitle>{{ page.cta.description }}</v-card-subtitle>
+                </v-card-item>
+                <v-card-actions>
+                  <v-btn color="primary" variant="flat" block>{{
+                      page.cta.primaryAction
+                    }}</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-list-item>
+          </v-list>
+        </div>
       </template>
     </AppPageDrawers>
 
-    <v-container class="py-8">
+    <v-container>
       <SkeletonPageContent v-if="isPageSkeletonVisible || pending || !page" />
 
       <v-alert
@@ -117,26 +133,8 @@ const page = computed(
       />
 
       <template v-else-if="page">
-        <v-card rounded="xl" class="mb-8 pa-6 hero-card" elevation="0">
-          <v-chip color="primary" variant="tonal" class="mb-4">{{
-            page.hero.badge
-          }}</v-chip>
-          <h1 class="text-h3 font-weight-bold mb-3">{{ page.hero.title }}</h1>
-          <p class="text-body-1 text-medium-emphasis mb-5">
-            {{ page.hero.subtitle }}
-          </p>
-          <div class="d-flex flex-wrap ga-3">
-            <v-btn color="primary" size="large">{{
-              page.hero.primaryCta
-            }}</v-btn>
-            <v-btn variant="outlined" size="large">{{
-              page.hero.secondaryCta
-            }}</v-btn>
-          </div>
-        </v-card>
-
-        <h2 class="text-h5 font-weight-bold mb-4">{{ page.featuresTitle }}</h2>
-        <v-row class="mb-8" density="comfortable">
+        <h2 class="text-h5 font-weight-bold mb-3">{{ page.featuresTitle }}</h2>
+        <v-row class="mb-3" density="comfortable">
           <v-col
             v-for="feature in page.featureCards"
             :key="feature.title"
@@ -221,12 +219,6 @@ const page = computed(
             }}</v-btn>
           </div>
         </v-card>
-
-        <div class="d-flex justify-end mt-4">
-          <v-btn variant="text" prepend-icon="mdi-refresh" @click="refresh">{{
-            t('common.refresh')
-          }}</v-btn>
-        </div>
       </template>
     </v-container>
   </div>
