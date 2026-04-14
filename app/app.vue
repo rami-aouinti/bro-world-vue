@@ -52,8 +52,8 @@ useSeoMeta({
 
 <template>
   <ClientOnly>
-    <component :is="AnalyticsComponent" />
-    <component :is="SpeedInsightsComponent" />
+    <AnalyticsComponent />
+    <SpeedInsightsComponent />
   </ClientOnly>
   <NuxtLayout>
     <NuxtPage />
