@@ -9,6 +9,10 @@ import type {
   WorldLearningProgressMutationPayload,
   WorldPaginationState,
 } from '~/types/world/learning'
+import {
+  recordStoreCacheEvent,
+  runTrackedStoreFetch,
+} from '~/utils/storeTelemetry'
 
 const LEARNING_TTL_MS = 4 * 60 * 1000
 
@@ -61,16 +65,18 @@ export const useWorldLearningStore = defineStore('world-learning', () => {
     const cacheKey = buildCacheKey('learning-courses', filters.value)
     const cached = cache.value[cacheKey]
     if (cached && !options?.force && isFresh(cached)) {
+      recordStoreCacheEvent('learning', true)
       items.value = (cached.data as { items: LearningCourse[] }).items
       pagination.value.total = items.value.length
       return
     }
+    recordStoreCacheEvent('learning', false)
 
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<{ items: LearningCourse[] }>(
-        '/api/world/learning/courses',
+      const response = await runTrackedStoreFetch('learning', () =>
+        $fetch<{ items: LearningCourse[] }>('/api/world/learning/courses'),
       )
       items.value = response.items
       pagination.value.total = response.items.length
@@ -97,16 +103,20 @@ export const useWorldLearningStore = defineStore('world-learning', () => {
     const cacheKey = `learning-progress:${courseId}`
     const cached = cache.value[cacheKey]
     if (cached && !options?.force && isFresh(cached)) {
+      recordStoreCacheEvent('learning', true)
       const data = (cached.data as { items: LearningProgress[] }).items
       progressByCourse.value[courseId] = data
       return data
     }
+    recordStoreCacheEvent('learning', false)
 
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<{ items: LearningProgress[] }>(
-        `/api/world/learning/courses/${courseId}/progress`,
+      const response = await runTrackedStoreFetch('learning', () =>
+        $fetch<{ items: LearningProgress[] }>(
+          `/api/world/learning/courses/${courseId}/progress`,
+        ),
       )
       progressByCourse.value[courseId] = response.items
       lastFetchedAt.value = Date.now()
@@ -121,15 +131,17 @@ export const useWorldLearningStore = defineStore('world-learning', () => {
     const cacheKey = 'learning-analytics'
     const cached = cache.value[cacheKey]
     if (cached && !options?.force && isFresh(cached)) {
+      recordStoreCacheEvent('learning', true)
       detail.value = (cached.data as { items: LearningAdminAnalytics }).items
       return
     }
+    recordStoreCacheEvent('learning', false)
 
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<{ items: LearningAdminAnalytics }>(
-        '/api/world/learning/analytics',
+      const response = await runTrackedStoreFetch('learning', () =>
+        $fetch<{ items: LearningAdminAnalytics }>('/api/world/learning/analytics'),
       )
       detail.value = response.items
       lastFetchedAt.value = Date.now()
@@ -143,12 +155,11 @@ export const useWorldLearningStore = defineStore('world-learning', () => {
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<{ items: LearningCourse[] }>(
-        '/api/world/learning/courses',
-        {
+      const response = await runTrackedStoreFetch('learning', () =>
+        $fetch<{ items: LearningCourse[] }>('/api/world/learning/courses', {
           method: 'POST',
           body: payload,
-        },
+        }),
       )
       items.value = response.items
       invalidateCache('learning-courses')
@@ -169,12 +180,14 @@ export const useWorldLearningStore = defineStore('world-learning', () => {
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<{ items: LearningProgress[] }>(
-        `/api/world/learning/courses/${courseId}/progress`,
-        {
-          method: 'POST',
-          body: payload,
-        },
+      const response = await runTrackedStoreFetch('learning', () =>
+        $fetch<{ items: LearningProgress[] }>(
+          `/api/world/learning/courses/${courseId}/progress`,
+          {
+            method: 'POST',
+            body: payload,
+          },
+        ),
       )
       progressByCourse.value[courseId] = response.items
       cache.value[`learning-progress:${courseId}`] = {

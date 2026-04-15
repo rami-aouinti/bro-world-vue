@@ -11,6 +11,10 @@ import type {
   WorldCrmTransitionPayload,
   WorldPaginationState,
 } from '~/types/world/crm'
+import {
+  recordStoreCacheEvent,
+  runTrackedStoreFetch,
+} from '~/utils/storeTelemetry'
 
 type CrmListKind = 'projects' | 'companies'
 
@@ -82,6 +86,7 @@ export const useWorldCrmStore = defineStore('world-crm', () => {
     const cached = cache.value[key]
 
     if (cached && !options?.force && isFresh(cached)) {
+      recordStoreCacheEvent('crm', true)
       const data = cached.data as
         | WorldCrmProjectsListResponse
         | WorldCrmCompaniesListResponse
@@ -96,6 +101,7 @@ export const useWorldCrmStore = defineStore('world-crm', () => {
       pending.value = false
       return
     }
+    recordStoreCacheEvent('crm', false)
 
     try {
       const query = {
@@ -113,9 +119,12 @@ export const useWorldCrmStore = defineStore('world-crm', () => {
         kind === 'projects'
           ? '/api/world/crm/projects'
           : '/api/world/crm/companies'
-      const response = await $fetch<
-        WorldCrmProjectsListResponse | WorldCrmCompaniesListResponse
-      >(endpoint, { query })
+      const response = await runTrackedStoreFetch('crm', () =>
+        $fetch<WorldCrmProjectsListResponse | WorldCrmCompaniesListResponse>(
+          endpoint,
+          { query },
+        ),
+      )
 
       items.value = response.items
       pagination.value = {
@@ -139,15 +148,19 @@ export const useWorldCrmStore = defineStore('world-crm', () => {
     const key = 'crm-pipeline'
     const cached = cache.value[key]
     if (cached && !options?.force && isFresh(cached)) {
+      recordStoreCacheEvent('crm', true)
       detail.value = cached.data as CrmPipelineApiResponse
       lastFetchedAt.value = cached.fetchedAt
       return
     }
+    recordStoreCacheEvent('crm', false)
 
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<CrmPipelineApiResponse>('/api/crm/pipeline')
+      const response = await runTrackedStoreFetch('crm', () =>
+        $fetch<CrmPipelineApiResponse>('/api/crm/pipeline'),
+      )
       detail.value = response
       lastFetchedAt.value = Date.now()
       cache.value[key] = { fetchedAt: lastFetchedAt.value, data: response }
@@ -167,12 +180,11 @@ export const useWorldCrmStore = defineStore('world-crm', () => {
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<CrmPipelineApiResponse>(
-        `/api/crm/deals/${dealId}/transition`,
-        {
+      const response = await runTrackedStoreFetch('crm', () =>
+        $fetch<CrmPipelineApiResponse>(`/api/crm/deals/${dealId}/transition`, {
           method: 'PATCH',
           body: payload,
-        },
+        }),
       )
       detail.value = response
       lastFetchedAt.value = Date.now()
@@ -195,15 +207,19 @@ export const useWorldCrmStore = defineStore('world-crm', () => {
     const key = 'crm-admin'
     const cached = cache.value[key]
     if (cached && !options?.force && isFresh(cached)) {
+      recordStoreCacheEvent('crm', true)
       detail.value = cached.data as CrmAdminApiResponse
       lastFetchedAt.value = cached.fetchedAt
       return
     }
+    recordStoreCacheEvent('crm', false)
 
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<CrmAdminApiResponse>('/api/world/crm/admin')
+      const response = await runTrackedStoreFetch('crm', () =>
+        $fetch<CrmAdminApiResponse>('/api/world/crm/admin'),
+      )
       detail.value = response
       lastFetchedAt.value = Date.now()
       cache.value[key] = { fetchedAt: lastFetchedAt.value, data: response }

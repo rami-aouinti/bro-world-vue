@@ -43,6 +43,9 @@ await crmStore.fetchList('projects', {
 const rows = computed<Record<string, string | number>[]>(
   () => crmStore.items as Record<string, string | number>[],
 )
+const isLoading = computed(() => crmStore.pending)
+const hasError = computed(() => !!crmStore.error)
+const isEmpty = computed(() => !isLoading.value && !hasError.value && !rows.value.length)
 </script>
 
 <template>
@@ -62,6 +65,31 @@ const rows = computed<Record<string, string | number>[]>(
     />
 
     <v-container fluid>
+      <v-alert
+        v-if="isLoading"
+        data-testid="crm-projects-loading"
+        type="info"
+        variant="tonal"
+        class="mb-4"
+        text="Chargement des projets CRM..."
+      />
+      <v-alert
+        v-else-if="hasError"
+        data-testid="crm-projects-error"
+        type="error"
+        variant="tonal"
+        class="mb-4"
+        :text="crmStore.error ?? undefined"
+      />
+      <v-alert
+        v-else-if="isEmpty"
+        data-testid="crm-projects-empty"
+        type="warning"
+        variant="tonal"
+        class="mb-4"
+        text="Aucun projet CRM à afficher."
+      />
+
       <WorldFeatureScaffold
         title="CRM Projects"
         subtitle="Planifie, assigne et suis l’avancement des projets clients."
