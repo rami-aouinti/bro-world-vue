@@ -3,6 +3,16 @@ import { mergeProps } from 'vue'
 import { useStorage } from '@vueuse/core'
 import type { SessionUser } from '~/types/session'
 import type { Notification } from '~/stores/notification'
+import type { WorldShopCartLine } from '~/types/world/shop'
+
+type ShopCartResponse = {
+  id?: string
+  currency?: string
+  totalAmount?: number
+  subtotalAmount?: number
+  items?: WorldShopCartLine[]
+  cart?: WorldShopCartLine[]
+}
 
 const theme = useTheme()
 const drawer = useState('drawer')
@@ -152,6 +162,7 @@ const sessionUser = computed(() => user.value as SessionUser | null)
 const avatarUrl = computed(() => sessionUser.value?.photo)
 const loginDialogOpen = ref(false)
 const loginLoading = ref(false)
+const shopStore = useWorldShopStore()
 
 const inboxNotificationsStore = useInboxNotificationsStore()
 const notificationStore = useNotificationStore()
@@ -194,6 +205,37 @@ const allNotificationItems = computed(() => {
 const unreadTotalCount = computed(
   () => unreadCount.value + actionNotifications.value.length,
 )
+const cartPayload = computed(() => shopStore.cart as ShopCartResponse | null)
+const cartItems = computed(() => {
+  const payload = cartPayload.value
+  if (!payload) return []
+  if (Array.isArray(payload.items)) return payload.items
+  if (Array.isArray(payload.cart)) return payload.cart
+  return []
+})
+const cartCount = computed(() =>
+  cartItems.value.reduce((sum, line) => sum + (line.quantity || 0), 0),
+)
+const cartTotalAmount = computed(() => {
+  const payload = cartPayload.value
+  if (!payload) return 0
+  if (typeof payload.totalAmount === 'number') return payload.totalAmount
+  if (typeof payload.subtotalAmount === 'number') return payload.subtotalAmount
+  return cartItems.value.reduce(
+    (sum, line) => sum + Number(line.unitPrice || 0) * Number(line.quantity || 0),
+    0,
+  )
+})
+const cartCurrency = computed(() => cartPayload.value?.currency || 'EUR')
+const showCartMenu = computed(() => loggedIn.value && cartCount.value > 0)
+
+function formatMoney(amount: number, currency: string) {
+  return new Intl.NumberFormat('fr-FR', {
+    style: 'currency',
+    currency,
+    maximumFractionDigits: 2,
+  }).format(amount)
+}
 const showRightDrawer = computed({
   get: () =>
     mobile.value ? showRightDrawerMobile.value : showRightDrawerDesktop.value,
@@ -212,7 +254,10 @@ watch(
   async (isLoggedIn) => {
     if (!isLoggedIn) return
     loginDialogOpen.value = false
-    await Promise.all([inboxNotificationsStore.fetchNotifications()])
+    await Promise.all([
+      inboxNotificationsStore.fetchNotifications(),
+      shopStore.fetchCart(),
+    ])
   },
   { immediate: true },
 )
@@ -225,6 +270,10 @@ watch(notificationMenuOpen, async (isOpen) => {
 function toggleLeftDrawer() {
   if (!showLeftDrawer.value && !mobile.value) return
   drawer.value = !drawer.value
+}
+
+function goToCheckout() {
+  void navigateTo('/world/shop/checkout')
 }
 
 async function onLoginSubmit(payload: { username?: string; password: string }) {
@@ -579,6 +628,60 @@ function isMenuActive(paths: string[]) {
           </v-menu>
 
           <template v-if="!mobile">
+            <v-menu
+              v-if="showCartMenu"
+              location="bottom end"
+              content-class="app-top-bar__menu-surface app-top-bar__menu-surface--compact"
+            >
+              <template #activator="{ props }">
+                <v-badge
+                  :content="cartCount"
+                  color="primary"
+                  offset-x="10"
+                  offset-y="10"
+                >
+                  <v-btn
+                    variant="text"
+                    icon="mdi-cart-outline"
+                    :aria-label="t('appbar.cart', 'Cart')"
+                    v-bind="props"
+                  />
+                </v-badge>
+              </template>
+              <v-list min-width="340" class="app-top-bar__menu-list">
+                <v-list-subheader>
+                  {{ t('appbar.cart', 'Cart') }}
+                </v-list-subheader>
+                <v-list-item
+                  v-for="line in cartItems"
+                  :key="line.productId"
+                  :title="line.name"
+                  :subtitle="`x${line.quantity}`"
+                >
+                  <template #append>
+                    <span class="text-body-2 font-weight-medium">
+                      {{
+                        formatMoney(
+                          Number(line.unitPrice || 0) * Number(line.quantity || 0),
+                          cartCurrency,
+                        )
+                      }}
+                    </span>
+                  </template>
+                </v-list-item>
+                <v-divider class="my-1" />
+                <v-list-item :title="t('appbar.total', 'Total')">
+                  <template #append>
+                    <strong>{{ formatMoney(cartTotalAmount, cartCurrency) }}</strong>
+                  </template>
+                </v-list-item>
+                <v-list-item>
+                  <v-btn block color="primary" prepend-icon="mdi-credit-card-outline" @click="goToCheckout">
+                    {{ t('world.shop.actions.checkout', 'Checkout') }}
+                  </v-btn>
+                </v-list-item>
+              </v-list>
+            </v-menu>
             <v-btn
               variant="text"
               icon="mdi-calendar-month-outline"
@@ -656,6 +759,11 @@ function isMenuActive(paths: string[]) {
                 :title="t('appbar.profile')"
                 prepend-icon="mdi-account-outline"
                 to="/profile"
+              />
+              <v-list-item
+                :title="t('world.shop.nav.orders', 'Orders')"
+                prepend-icon="mdi-receipt-text-outline"
+                to="/world/shop/orders"
               />
               <v-list-item
                 v-if="mobile"
