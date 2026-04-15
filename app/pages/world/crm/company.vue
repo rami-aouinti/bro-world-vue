@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import type { CrmCompaniesApiResponse, CrmCompany } from '~~/server/types/api/crm'
+import type { CrmCompaniesApiResponse } from '~~/server/types/api/crm'
+import { useCrmPermissions } from '~/composables/useCrmPermissions'
 
 definePageMeta({ title: 'CRM Company' })
 
-const crmNavItems = [
+const { can } = useCrmPermissions()
+
+const crmNavItems = computed(() => [
   { title: 'Overview CRM', to: '/world/crm', icon: 'mdi-view-dashboard-outline' },
   { title: 'Projects', to: '/world/crm/projects', icon: 'mdi-folder-outline' },
   { title: 'Company', to: '/world/crm/company', icon: 'mdi-domain' },
-  { title: 'Admin', to: '/world/crm/admin', icon: 'mdi-shield-crown-outline', rootOnly: true },
-]
+  ...(can('crm.admin.manage')
+    ? [{ title: 'Admin', to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' }]
+    : []),
+])
 
 const companiesQuery = {
   page: 1,
@@ -22,7 +27,7 @@ const { data: companiesData } = await useAsyncData<CrmCompaniesApiResponse>(
   () => $fetch('/api/world/crm/companies', { query: companiesQuery }),
 )
 
-const rows = computed<CrmCompany[]>(() => companiesData.value?.items ?? [])
+const rows = computed<Record<string, string | number>[]>(() => companiesData.value?.items ?? [])
 </script>
 
 <template>

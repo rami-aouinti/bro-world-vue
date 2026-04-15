@@ -5,6 +5,7 @@ import type {
   CrmCompanyHealth,
   SortOrder,
 } from '~~/server/types/api/crm'
+import { requireCrmPermission } from '~~/server/utils/crmAccessControl'
 
 const COMPANIES: CrmCompany[] = [
   { id: 'C-3001', company: 'Atlas Dynamics', industry: 'Fintech', owner: 'N. Park', health: 'Great' },
@@ -26,7 +27,9 @@ const normalizeHealth = (value: unknown): CrmCompanyHealth | undefined => {
   return undefined
 }
 
-export default defineEventHandler((event): CrmCompaniesApiResponse => {
+export default defineEventHandler(async (event): Promise<CrmCompaniesApiResponse> => {
+  await requireCrmPermission(event, 'crm.accounts.read')
+
   const query = getQuery(event) as CrmCompaniesListQuery
   const page = Math.max(1, Number(query.page ?? 1) || 1)
   const limit = Math.min(100, Math.max(1, Number(query.limit ?? 10) || 10))

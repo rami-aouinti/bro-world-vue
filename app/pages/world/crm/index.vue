@@ -6,21 +6,17 @@ import type {
   CrmPipelineResponse,
   CrmPipelineStage,
 } from '~/types/crm'
-import type { SessionUser } from '~/types/session'
-import type { CrmLead, CrmLeadsApiResponse } from '~~/server/types/api/crm'
 
 definePageMeta({ title: 'CRM' })
 
-const { user } = useUserSession()
-const sessionUser = computed(() => user.value as SessionUser | null)
-const isRoot = computed(() => sessionUser.value?.roles?.includes('ROLE_ROOT') ?? false)
+const { can } = useCrmPermissions()
 
 const crmNavItems = computed(() => [
   { title: 'Overview CRM', to: '/world/crm', icon: 'mdi-view-dashboard-outline' },
   { title: 'Projects', to: '/world/crm/projects', icon: 'mdi-folder-outline' },
   { title: 'Company', to: '/world/crm/company', icon: 'mdi-domain' },
-  ...(isRoot.value
-    ? [{ title: 'Admin', to: '/world/crm/admin', icon: 'mdi-shield-crown-outline', rootOnly: true }]
+  ...(can('crm.admin.manage')
+    ? [{ title: 'Admin', to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' }]
     : []),
 ])
 
