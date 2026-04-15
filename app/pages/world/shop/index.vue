@@ -8,44 +8,9 @@ const { t } = useI18n()
 const { user } = useUserSession()
 const route = useRoute()
 const shopStore = useWorldShopStore()
+const { shopNavItems } = useShopNavItems()
 
 const sessionUser = computed(() => user.value as SessionUser | null)
-const isRoot = computed(
-  () => sessionUser.value?.roles?.includes('ROLE_ROOT') ?? false,
-)
-
-const shopNavItems = computed(() => [
-  {
-    title: t('world.shop.nav.overview', 'Overview Shop'),
-    to: '/world/shop',
-    icon: 'mdi-view-dashboard-outline',
-  },
-  {
-    title: t('world.shop.nav.checkout', 'Checkout'),
-    to: '/world/shop/checkout',
-    icon: 'mdi-cart-outline',
-  },
-  {
-    title: t('world.shop.nav.payment', 'Payment'),
-    to: '/world/shop/payment',
-    icon: 'mdi-credit-card-outline',
-  },
-  {
-    title: t('world.shop.nav.orders', 'Orders'),
-    to: '/world/shop/orders',
-    icon: 'mdi-receipt-text-outline',
-  },
-  ...(isRoot.value
-    ? [
-        {
-          title: t('world.shop.nav.admin', 'Admin'),
-          to: '/world/shop/admin',
-          icon: 'mdi-shield-crown-outline',
-          rootOnly: true,
-        },
-      ]
-    : []),
-])
 
 const listLoading = ref(false)
 const categoriesLoading = ref(false)

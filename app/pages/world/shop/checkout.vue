@@ -2,6 +2,7 @@
 import { useWorldShopStore } from '~/stores/worldShop'
 
 definePageMeta({ title: 'Shop Checkout' })
+const { shopNavItems } = useShopNavItems()
 
 type CheckoutStep = 'cart' | 'address' | 'shipping' | 'payment' | 'confirmation'
 type CheckoutStatus =
@@ -39,31 +40,6 @@ type CheckoutSession = {
   selectedShippingId?: string
   providerPaymentId?: string
 }
-
-const shopNavItems = [
-  {
-    title: 'Overview Shop',
-    to: '/world/shop',
-    icon: 'mdi-view-dashboard-outline',
-  },
-  { title: 'Checkout', to: '/world/shop/checkout', icon: 'mdi-cart-outline' },
-  {
-    title: 'Payment',
-    to: '/world/shop/payment',
-    icon: 'mdi-credit-card-outline',
-  },
-  {
-    title: 'Orders',
-    to: '/world/shop/orders',
-    icon: 'mdi-receipt-text-outline',
-  },
-  {
-    title: 'Admin',
-    to: '/world/shop/admin',
-    icon: 'mdi-shield-crown-outline',
-    rootOnly: true,
-  },
-]
 
 const shopStore = useWorldShopStore()
 const loading = ref(false)

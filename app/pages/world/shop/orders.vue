@@ -1,5 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ title: 'Shop Orders' })
+const { shopNavItems } = useShopNavItems()
 
 type OrderStatus =
   | 'pending'
@@ -49,31 +50,6 @@ type OrderRecord = {
   invoiceNumber?: string
   invoiceGeneratedAt?: string
 }
-
-const shopNavItems = [
-  {
-    title: 'Overview Shop',
-    to: '/world/shop',
-    icon: 'mdi-view-dashboard-outline',
-  },
-  { title: 'Checkout', to: '/world/shop/checkout', icon: 'mdi-cart-outline' },
-  {
-    title: 'Payment',
-    to: '/world/shop/payment',
-    icon: 'mdi-credit-card-outline',
-  },
-  {
-    title: 'Orders',
-    to: '/world/shop/orders',
-    icon: 'mdi-receipt-text-outline',
-  },
-  {
-    title: 'Admin',
-    to: '/world/shop/admin',
-    icon: 'mdi-shield-crown-outline',
-    rootOnly: true,
-  },
-]
 
 const statusCatalog: {
   value: OrderStatus | 'all'
