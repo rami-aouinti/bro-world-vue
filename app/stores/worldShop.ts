@@ -524,6 +524,33 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     }
   }
 
+  async function addCartItem(shopId: string, productId: string, quantity = 1) {
+    pending.value = true
+    error.value = null
+    try {
+      return await runTrackedStoreFetch('shop', () =>
+        $fetch('/api/world/shop/carts/' + encodeURIComponent(shopId) + '/items', {
+          method: 'POST',
+          body: {
+            productId,
+            quantity,
+          },
+        }),
+      )
+    } catch (err) {
+      const normalized = normalizeHttpError(err)
+      const translatedMessage = translateShopErrorMessage(
+        "Impossible d'ajouter ce produit au panier pour le moment.",
+        'world.shop.errors.addToCart',
+        normalized.statusCode,
+      )
+      error.value = `${translatedMessage}${normalized.message ? ` (${normalized.message})` : ''}`
+      throw err
+    } finally {
+      pending.value = false
+    }
+  }
+
   return {
     items,
     detail,
@@ -542,6 +569,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     fetchCheckoutById,
     createPaymentIntent,
     confirmPayment,
+    addCartItem,
     invalidateCache,
     buildModuleCacheKey,
     buildProductsQuery,
