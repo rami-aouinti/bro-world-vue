@@ -91,21 +91,23 @@ const canPay = computed(() => {
     checkout.value.status !== 'paid'
   )
 })
-const transactionTone = computed<'info' | 'success' | 'error' | 'warning'>(() => {
-  if (transactionState.value === 'success') {
-    return 'success'
-  }
+const transactionTone = computed<'info' | 'success' | 'error' | 'warning'>(
+  () => {
+    if (transactionState.value === 'success') {
+      return 'success'
+    }
 
-  if (transactionState.value === 'failure') {
-    return 'error'
-  }
+    if (transactionState.value === 'failure') {
+      return 'error'
+    }
 
-  if (transactionState.value === 'cancelled') {
-    return 'warning'
-  }
+    if (transactionState.value === 'cancelled') {
+      return 'warning'
+    }
 
-  return 'info'
-})
+    return 'info'
+  },
+)
 const transactionLabel = computed(() => {
   if (transactionState.value === 'pending') {
     return t('pages.profile.buyCoins.transaction.pending')
@@ -127,7 +129,10 @@ const transactionLabel = computed(() => {
 })
 const flowItems = computed(() => [
   { title: t('pages.profile.buyCoins.flow.product'), value: 'product' },
-  { title: t('pages.profile.buyCoins.flow.confirmation'), value: 'confirmation' },
+  {
+    title: t('pages.profile.buyCoins.flow.confirmation'),
+    value: 'confirmation',
+  },
   { title: t('pages.profile.buyCoins.flow.payment'), value: 'payment' },
   { title: t('pages.profile.buyCoins.flow.validation'), value: 'validation' },
 ])
@@ -188,20 +193,24 @@ async function fetchCoinProducts(force = false) {
       filters: { status: 'active', page: 1, limit: 50 },
     })
 
-    const normalizedProducts = (shopStore.items as ShopProduct[]).filter((item) => {
-      const category = String(item.category || '').toLowerCase()
-      return (
-        category.includes('coins') ||
-        category.includes('pack coins') ||
-        category.includes('packs coins')
-      )
-    })
+    const normalizedProducts = (shopStore.items as ShopProduct[]).filter(
+      (item) => {
+        const category = String(item.category || '').toLowerCase()
+        return (
+          category.includes('coins') ||
+          category.includes('pack coins') ||
+          category.includes('packs coins')
+        )
+      },
+    )
 
     coinProducts.value = normalizedProducts
   } catch {
     coinProducts.value = []
     transactionState.value = 'failure'
-    transactionMessage.value = t('pages.profile.buyCoins.messages.productsError')
+    transactionMessage.value = t(
+      'pages.profile.buyCoins.messages.productsError',
+    )
   }
 }
 
@@ -253,7 +262,9 @@ async function startPayment() {
     const productSnapshot = selectedProduct.value
     if (!productSnapshot) {
       transactionState.value = 'failure'
-      transactionMessage.value = t('pages.profile.buyCoins.messages.paymentFailed')
+      transactionMessage.value = t(
+        'pages.profile.buyCoins.messages.paymentFailed',
+      )
       return
     }
 
@@ -279,7 +290,9 @@ async function startPayment() {
 
     if (confirmedCheckout.status === 'paid') {
       transactionState.value = 'success'
-      transactionMessage.value = t('pages.profile.buyCoins.messages.paymentSuccess')
+      transactionMessage.value = t(
+        'pages.profile.buyCoins.messages.paymentSuccess',
+      )
 
       await Promise.all([refreshSession(), fetchProfile(true)])
       const sessionUser = user.value as SessionUser | null
@@ -302,21 +315,29 @@ async function startPayment() {
 
     if (confirmedCheckout.status === 'failed') {
       transactionState.value = 'failure'
-      transactionMessage.value = t('pages.profile.buyCoins.messages.paymentFailed')
+      transactionMessage.value = t(
+        'pages.profile.buyCoins.messages.paymentFailed',
+      )
       return
     }
 
     transactionState.value = 'cancelled'
-    transactionMessage.value = t('pages.profile.buyCoins.messages.paymentCancelled')
+    transactionMessage.value = t(
+      'pages.profile.buyCoins.messages.paymentCancelled',
+    )
   } catch {
     transactionState.value = 'failure'
-    transactionMessage.value = t('pages.profile.buyCoins.messages.paymentFailed')
+    transactionMessage.value = t(
+      'pages.profile.buyCoins.messages.paymentFailed',
+    )
   }
 }
 
 function cancelPurchase() {
   transactionState.value = 'cancelled'
-  transactionMessage.value = t('pages.profile.buyCoins.messages.paymentCancelled')
+  transactionMessage.value = t(
+    'pages.profile.buyCoins.messages.paymentCancelled',
+  )
   buyCoinsStep.value = 'validation'
 }
 
@@ -369,7 +390,11 @@ definePageMeta({
 })
 
 onMounted(async () => {
-  await Promise.all([fetchProfile(), fetchUpcomingEvents(), fetchCoinProducts()])
+  await Promise.all([
+    fetchProfile(),
+    fetchUpcomingEvents(),
+    fetchCoinProducts(),
+  ])
   startTypewriter()
 })
 
@@ -472,7 +497,11 @@ onUnmounted(() => {
           <v-card-title class="d-flex justify-space-between align-center">
             <span>{{ t('pages.profile.buyCoins.title') }}</span>
             <v-chip color="amber-darken-2" label>
-              {{ t('pages.profile.buyCoins.currentBalance', { coins: profile?.coins ?? 0 }) }}
+              {{
+                t('pages.profile.buyCoins.currentBalance', {
+                  coins: profile?.coins ?? 0,
+                })
+              }}
             </v-chip>
           </v-card-title>
           <v-card-text>
@@ -480,7 +509,11 @@ onUnmounted(() => {
               {{ t('pages.profile.buyCoins.subtitle') }}
             </p>
 
-            <v-stepper :model-value="buyCoinsStep" :items="flowItems" class="mb-4" />
+            <v-stepper
+              :model-value="buyCoinsStep"
+              :items="flowItems"
+              class="mb-4"
+            />
 
             <v-window v-model="buyCoinsStep">
               <v-window-item value="product">
@@ -492,21 +525,57 @@ onUnmounted(() => {
                 >
                   {{ t('pages.profile.buyCoins.emptyProducts') }}
                 </v-alert>
-                <v-list v-else lines="two" class="pa-0">
-                  <v-list-item
+                <v-row v-else class="coin-products-row" dense>
+                  <v-col
                     v-for="item in coinProducts"
                     :key="item.id"
-                    :title="item.name"
-                    :subtitle="`${item.coinsAmount} coins`"
-                    class="px-0"
+                    cols="12"
+                    sm="6"
+                    md="4"
                   >
-                    <template #append>
-                      <v-btn color="primary" variant="flat" @click="selectProduct(item.id)">
-                        {{ formatProductAmount(item) }}
-                      </v-btn>
-                    </template>
-                  </v-list-item>
-                </v-list>
+                    <v-card
+                      class="coin-product-card h-100"
+                      rounded="xl"
+                      variant="outlined"
+                    >
+                      <v-img
+                        :src="item.photo || '/favicon.ico'"
+                        :alt="item.name"
+                        height="150"
+                        cover
+                        class="coin-product-image"
+                      >
+                        <template #placeholder>
+                          <div
+                            class="d-flex align-center justify-center fill-height"
+                          >
+                            <v-progress-circular indeterminate size="24" />
+                          </div>
+                        </template>
+                      </v-img>
+                      <v-card-text class="pb-2">
+                        <h3 class="text-subtitle-1 mb-1">{{ item.name }}</h3>
+                        <p class="text-body-2 text-medium-emphasis mb-0">
+                          {{ item.coinsAmount }} coins
+                        </p>
+                      </v-card-text>
+                      <v-card-actions
+                        class="px-4 pb-4 pt-0 d-flex align-center justify-space-between"
+                      >
+                        <span class="text-body-1 font-weight-bold">
+                          {{ formatProductAmount(item) }}
+                        </span>
+                        <v-btn
+                          color="primary"
+                          variant="flat"
+                          @click="selectProduct(item.id)"
+                        >
+                          {{ t('pages.profile.buyCoins.addToCart') }}
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-col>
+                </v-row>
               </v-window-item>
 
               <v-window-item value="confirmation">
@@ -515,22 +584,33 @@ onUnmounted(() => {
                     {{ t('pages.profile.buyCoins.confirmationTitle') }}
                   </h3>
                   <p class="mb-1">
-                    <strong>{{ t('pages.profile.buyCoins.labels.product') }}:</strong>
+                    <strong
+                      >{{ t('pages.profile.buyCoins.labels.product') }}:</strong
+                    >
                     {{ selectedProduct?.name || '—' }}
                   </p>
                   <p class="mb-1">
-                    <strong>{{ t('pages.profile.buyCoins.labels.coins') }}:</strong>
+                    <strong
+                      >{{ t('pages.profile.buyCoins.labels.coins') }}:</strong
+                    >
                     {{ selectedProduct?.coinsAmount || 0 }}
                   </p>
                   <p class="mb-4">
-                    <strong>{{ t('pages.profile.buyCoins.labels.amount') }}:</strong>
+                    <strong
+                      >{{ t('pages.profile.buyCoins.labels.amount') }}:</strong
+                    >
                     {{ checkoutAmountLabel }}
                   </p>
                   <div class="d-flex ga-2">
                     <v-btn variant="text" @click="buyCoinsStep = 'product'">
                       {{ t('common.back') }}
                     </v-btn>
-                    <v-btn color="primary" :disabled="!canConfirmCart" :loading="isBusy" @click="confirmCart">
+                    <v-btn
+                      color="primary"
+                      :disabled="!canConfirmCart"
+                      :loading="isBusy"
+                      @click="confirmCart"
+                    >
                       {{ t('pages.profile.buyCoins.confirmCart') }}
                     </v-btn>
                   </div>
@@ -554,13 +634,26 @@ onUnmounted(() => {
                     class="mb-2"
                   />
                   <div class="d-flex ga-2">
-                    <v-btn variant="text" @click="buyCoinsStep = 'confirmation'">
+                    <v-btn
+                      variant="text"
+                      @click="buyCoinsStep = 'confirmation'"
+                    >
                       {{ t('common.back') }}
                     </v-btn>
-                    <v-btn color="primary" :disabled="!canPay" :loading="isBusy" @click="startPayment">
+                    <v-btn
+                      color="primary"
+                      :disabled="!canPay"
+                      :loading="isBusy"
+                      @click="startPayment"
+                    >
                       {{ t('pages.profile.buyCoins.payNow') }}
                     </v-btn>
-                    <v-btn color="warning" variant="tonal" :disabled="transactionState === 'pending'" @click="cancelPurchase">
+                    <v-btn
+                      color="warning"
+                      variant="tonal"
+                      :disabled="transactionState === 'pending'"
+                      @click="cancelPurchase"
+                    >
                       {{ t('pages.profile.buyCoins.cancel') }}
                     </v-btn>
                   </div>
@@ -573,7 +666,11 @@ onUnmounted(() => {
                     {{ t('pages.profile.buyCoins.validationTitle') }}
                   </h3>
                   <p class="mb-3">{{ transactionMessage }}</p>
-                  <v-btn color="primary" variant="outlined" @click="resetTransactionState">
+                  <v-btn
+                    color="primary"
+                    variant="outlined"
+                    @click="resetTransactionState"
+                  >
                     {{ t('pages.profile.buyCoins.newOrder') }}
                   </v-btn>
                 </v-card>
@@ -603,8 +700,20 @@ onUnmounted(() => {
                 :subtitle="`${new Date(receipt.createdAt).toLocaleString(locale)} · ${formatReceiptAmount(receipt)}`"
               >
                 <template #append>
-                  <v-chip size="small" :color="receipt.status === 'success' ? 'success' : receipt.status === 'failure' ? 'error' : 'warning'" label>
-                    {{ t(`pages.profile.buyCoins.transaction.${receipt.status}`) }}
+                  <v-chip
+                    size="small"
+                    :color="
+                      receipt.status === 'success'
+                        ? 'success'
+                        : receipt.status === 'failure'
+                          ? 'error'
+                          : 'warning'
+                    "
+                    label
+                  >
+                    {{
+                      t(`pages.profile.buyCoins.transaction.${receipt.status}`)
+                    }}
                   </v-chip>
                 </template>
               </v-list-item>
@@ -618,3 +727,22 @@ onUnmounted(() => {
     </v-container>
   </div>
 </template>
+
+<style scoped>
+.coin-products-row {
+  row-gap: 12px;
+}
+
+.coin-product-card {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.04),
+    rgba(255, 255, 255, 0.01)
+  );
+}
+
+.coin-product-image {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+</style>
