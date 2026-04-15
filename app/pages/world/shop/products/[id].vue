@@ -12,6 +12,19 @@ const loading = ref(false)
 const product = ref<ShopProduct | null>(null)
 const similarProducts = ref<ShopProduct[]>([])
 
+function productImage(item: ShopProduct) {
+  const fallback = '/images/platform-media/shop-premium-hoodie.svg'
+  return item.photo?.trim() || fallback
+}
+
+function formatPrice(item: ShopProduct) {
+  return new Intl.NumberFormat('fr-FR', {
+    style: 'currency',
+    currency: item.currencyCode || 'EUR',
+    maximumFractionDigits: 2,
+  }).format(item.amount)
+}
+
 async function loadProduct(force = false) {
   const productId = String(route.params.id || '')
   if (!productId) {
@@ -62,8 +75,8 @@ watch(
     </div>
 
     <template v-if="loading">
-      <v-skeleton-loader type="article, actions" />
-      <v-skeleton-loader type="table" class="mt-4" />
+      <v-skeleton-loader type="image, article, actions" />
+      <v-skeleton-loader type="card" class="mt-4" />
     </template>
 
     <v-alert v-else-if="listError" type="error" variant="tonal" :text="listError" />
@@ -76,64 +89,67 @@ watch(
     />
 
     <template v-else>
-      <v-card rounded="xl" class="mb-6">
-        <v-card-title class="d-flex justify-space-between align-center flex-wrap ga-3">
-          <span>{{ product.name }}</span>
-          <v-chip
-            size="small"
-            variant="tonal"
-            :color="
-              product.status === 'active'
-                ? 'success'
-                : product.status === 'draft'
-                  ? 'warning'
-                  : 'default'
-            "
-          >
-            {{ product.status }}
-          </v-chip>
-        </v-card-title>
-        <v-divider />
-        <v-card-text>
-          <v-row>
-            <v-col cols="12" md="6">
-              <div class="text-caption text-medium-emphasis">ID</div>
-              <div class="font-weight-medium mb-3">{{ product.id }}</div>
+      <v-card rounded="xl" class="mb-6 overflow-hidden">
+        <v-row no-gutters>
+          <v-col cols="12" md="5">
+            <v-img :src="productImage(product)" :alt="product.name" height="100%" min-height="320" cover />
+          </v-col>
 
-              <div class="text-caption text-medium-emphasis">Slug</div>
-              <div class="font-weight-medium mb-3">{{ product.slug }}</div>
+          <v-col cols="12" md="7">
+            <v-card-title class="d-flex justify-space-between align-center flex-wrap ga-3">
+              <span>{{ product.name }}</span>
+              <v-chip
+                size="small"
+                variant="tonal"
+                :color="
+                  product.status === 'active'
+                    ? 'success'
+                    : product.status === 'draft'
+                      ? 'warning'
+                      : 'default'
+                "
+              >
+                {{ product.status }}
+              </v-chip>
+            </v-card-title>
+            <v-divider />
+            <v-card-text>
+              <p class="text-body-1 mb-4">{{ product.description }}</p>
 
-              <div class="text-caption text-medium-emphasis">Category</div>
-              <div class="font-weight-medium mb-3">{{ product.category }}</div>
-            </v-col>
+              <v-row>
+                <v-col cols="6" md="4">
+                  <div class="text-caption text-medium-emphasis">Price</div>
+                  <div class="font-weight-bold text-h6">{{ formatPrice(product) }}</div>
+                </v-col>
 
-            <v-col cols="12" md="6">
-              <div class="text-caption text-medium-emphasis">Price</div>
-              <div class="font-weight-medium mb-3">
-                {{
-                  new Intl.NumberFormat('fr-FR', {
-                    style: 'currency',
-                    currency: product.currencyCode || 'EUR',
-                    maximumFractionDigits: 2,
-                  }).format(product.amount)
-                }}
-              </div>
+                <v-col cols="6" md="4">
+                  <div class="text-caption text-medium-emphasis">Coins</div>
+                  <div class="font-weight-medium">{{ product.coinsAmount }}</div>
+                </v-col>
 
-              <div class="text-caption text-medium-emphasis">Coins amount</div>
-              <div class="font-weight-medium mb-3">{{ product.coinsAmount }}</div>
+                <v-col cols="6" md="4">
+                  <div class="text-caption text-medium-emphasis">Stock</div>
+                  <div class="font-weight-medium">{{ product.stock ?? '-' }}</div>
+                </v-col>
 
-              <div class="text-caption text-medium-emphasis">Featured</div>
-              <div class="font-weight-medium mb-3">
-                {{ product.isFeatured ? 'Yes' : 'No' }}
-              </div>
-            </v-col>
+                <v-col cols="6" md="4">
+                  <div class="text-caption text-medium-emphasis">Category</div>
+                  <div class="font-weight-medium">{{ product.categoryName || product.category }}</div>
+                </v-col>
 
-            <v-col cols="12">
-              <div class="text-caption text-medium-emphasis">Description</div>
-              <div class="font-weight-medium">{{ product.description }}</div>
-            </v-col>
-          </v-row>
-        </v-card-text>
+                <v-col cols="6" md="4">
+                  <div class="text-caption text-medium-emphasis">SKU</div>
+                  <div class="font-weight-medium">{{ product.sku || product.slug }}</div>
+                </v-col>
+
+                <v-col cols="6" md="4">
+                  <div class="text-caption text-medium-emphasis">Featured</div>
+                  <div class="font-weight-medium">{{ product.isFeatured ? 'Yes' : 'No' }}</div>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-col>
+        </v-row>
       </v-card>
 
       <v-card rounded="xl">
@@ -147,23 +163,32 @@ watch(
           text="Aucune recommandation n'est disponible pour ce produit."
         />
 
-        <v-list v-else lines="two">
-          <v-list-item
-            v-for="related in similarProducts"
-            :key="related.id"
-            :title="related.name"
-            :subtitle="`${related.category} • ${related.status}`"
-            :to="`/world/shop/products/${related.id}`"
-          >
-            <template #append>
-              <v-btn
-                icon="mdi-open-in-new"
-                variant="text"
-                @mouseenter="shopStore.fetchProductById(related.id).catch(() => undefined)"
-              />
-            </template>
-          </v-list-item>
-        </v-list>
+        <v-card-text v-else>
+          <v-row>
+            <v-col
+              v-for="related in similarProducts"
+              :key="related.id"
+              cols="12"
+              sm="6"
+              md="4"
+            >
+              <v-card
+                class="h-100"
+                rounded="lg"
+                :to="`/world/shop/products/${related.id}`"
+              >
+                <v-img :src="productImage(related)" :alt="related.name" height="180" cover />
+                <v-card-item>
+                  <v-card-title class="text-subtitle-1">{{ related.name }}</v-card-title>
+                  <v-card-subtitle>{{ related.categoryName || related.category }}</v-card-subtitle>
+                </v-card-item>
+                <v-card-actions>
+                  <v-chip size="small" variant="tonal">{{ formatPrice(related) }}</v-chip>
+                </v-card-actions>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-card-text>
       </v-card>
     </template>
   </v-container>

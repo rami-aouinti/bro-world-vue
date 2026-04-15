@@ -1,41 +1,72 @@
-import type { ShopApiProduct } from '~~/server/types/api/shop'
-import { getShopCatalog } from '~~/server/utils/shopCatalog'
+import type { ShopProductStatus } from '~~/app/types/world/shop'
+import { callPublicApi } from '~~/server/utils/publicApi'
 
-function toApiProduct(
-  product: Awaited<ReturnType<typeof getShopCatalog>>['products'][number],
-  categoriesById: Map<string, string>,
-): ShopApiProduct {
-  const categoryName =
-    product.categoryIds
-      .map((categoryId) => categoriesById.get(categoryId))
-      .find((name): name is string => typeof name === 'string') ?? 'Uncategorized'
+interface PublicShopProduct {
+  id: string
+  name: string
+  sku: string
+  description: string
+  photo?: string
+  price: number
+  currencyCode: string
+  stock: number
+  coinsAmount: number
+  isFeatured: boolean
+  status: ShopProductStatus
+  categoryId?: string
+  categoryName?: string
+  tags?: string[]
+  updatedAt: string
+}
 
+interface PublicShopProductDetailResponse {
+  product?: PublicShopProduct
+  similarProducts?: PublicShopProduct[]
+}
+
+function toUiProduct(product: PublicShopProduct) {
   return {
     id: product.id,
     name: product.name,
-    slug: product.slug,
+    sku: product.sku,
+    slug: product.sku,
     description: product.description,
+    photo: product.photo ?? '',
     status: product.status,
-    category: categoryName,
-    currencyCode: 'EUR',
+    category: product.categoryName ?? 'Uncategorized',
+    categoryId: product.categoryId,
+    categoryName: product.categoryName ?? 'Uncategorized',
+    currencyCode: product.currencyCode,
     amount: product.price,
-    coinsAmount: Math.max(1, Math.round(product.price * 100)),
-    isFeatured: product.stock > 25,
-    createdAt: product.createdAt,
+    stock: product.stock,
+    coinsAmount: product.coinsAmount,
+    isFeatured: product.isFeatured,
+    tags: product.tags ?? [],
+    createdAt: product.updatedAt,
     updatedAt: product.updatedAt,
   }
 }
 
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
-  const catalog = await getShopCatalog()
 
-  const product = catalog.products.find((item) => item.id === id)
-  if (!product) {
+  if (!id) {
+    throw createError({ statusCode: 400, statusMessage: 'Product id is required' })
+  }
+
+  const response = await callPublicApi<PublicShopProductDetailResponse>(
+    event,
+    `/shop/general/products/${id}`,
+  )
+
+  if (!response.product) {
     throw createError({ statusCode: 404, statusMessage: 'Product not found' })
   }
 
-  const categoriesById = new Map(catalog.categories.map((category) => [category.id, category.name]))
-
-  return { data: toApiProduct(product, categoriesById) }
+  return {
+    data: {
+      product: toUiProduct(response.product),
+      similarProducts: (response.similarProducts ?? []).map(toUiProduct),
+    },
+  }
 })
