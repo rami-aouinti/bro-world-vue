@@ -2,6 +2,7 @@
 import type { SessionUser } from '~/types/session'
 
 definePageMeta({ title: 'Shop Admin' })
+const { shopNavItems } = useShopNavItems()
 
 const { user } = useUserSession()
 const sessionUser = computed(() => user.value as SessionUser | null)
@@ -9,30 +10,6 @@ const isRoot = computed(
   () => sessionUser.value?.roles?.includes('ROLE_ROOT') ?? false,
 )
 
-const shopNavItems = [
-  {
-    title: 'Overview Shop',
-    to: '/world/shop',
-    icon: 'mdi-view-dashboard-outline',
-  },
-  { title: 'Checkout', to: '/world/shop/checkout', icon: 'mdi-cart-outline' },
-  {
-    title: 'Payment',
-    to: '/world/shop/payment',
-    icon: 'mdi-credit-card-outline',
-  },
-  {
-    title: 'Orders',
-    to: '/world/shop/orders',
-    icon: 'mdi-receipt-text-outline',
-  },
-  {
-    title: 'Admin',
-    to: '/world/shop/admin',
-    icon: 'mdi-shield-crown-outline',
-    rootOnly: true,
-  },
-]
 </script>
 
 <template>

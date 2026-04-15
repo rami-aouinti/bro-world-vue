@@ -2,6 +2,7 @@
 import { useWorldShopStore } from '~/stores/worldShop'
 
 definePageMeta({ title: 'Shop Payment' })
+const { shopNavItems } = useShopNavItems()
 
 type CheckoutStatus =
   | 'draft'
@@ -34,31 +35,6 @@ const route = useRoute()
 const checkoutId = computed(() =>
   typeof route.query.checkoutId === 'string' ? route.query.checkoutId : '',
 )
-
-const shopNavItems = [
-  {
-    title: 'Overview Shop',
-    to: '/world/shop',
-    icon: 'mdi-view-dashboard-outline',
-  },
-  { title: 'Checkout', to: '/world/shop/checkout', icon: 'mdi-cart-outline' },
-  {
-    title: 'Payment',
-    to: '/world/shop/payment',
-    icon: 'mdi-credit-card-outline',
-  },
-  {
-    title: 'Orders',
-    to: '/world/shop/orders',
-    icon: 'mdi-receipt-text-outline',
-  },
-  {
-    title: 'Admin',
-    to: '/world/shop/admin',
-    icon: 'mdi-shield-crown-outline',
-    rootOnly: true,
-  },
-]
 
 const provider = ref<'stripe' | 'adyen' | 'paypal'>('stripe')
 const shopStore = useWorldShopStore()
