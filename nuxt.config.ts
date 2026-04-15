@@ -133,6 +133,10 @@ export default defineNuxtConfig({
       host: process.env.FOOTBALL_API_HOST || 'v3.football.api-sports.io',
       key: process.env.FOOTBALL_API_KEY || '',
     },
+    stripe: {
+      secretKey: process.env.STRIPE_SECRET_KEY || '',
+      webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
+    },
   },
   nitro: {
     storage: process.env.REDIS_URL
