@@ -111,7 +111,9 @@ async function createCheckoutOrder(item: CoinPackage) {
     checkoutStep.value = 'payment'
   } catch (error) {
     checkoutError.value
-      = error instanceof Error ? error.message : 'Une erreur est survenue.'
+      = error instanceof Error
+        ? error.message
+        : t('appbar.coinCheckout.errors.generic')
   } finally {
     orderLoading.value = false
   }
@@ -119,7 +121,7 @@ async function createCheckoutOrder(item: CoinPackage) {
 
 async function processPayment() {
   if (!currentOrder.value || !paymentMethod.value) {
-    checkoutError.value = 'Sélectionnez un mode de paiement.'
+    checkoutError.value = t('appbar.coinCheckout.errors.selectPaymentMethod')
     return
   }
 
@@ -137,16 +139,21 @@ async function processPayment() {
     })
 
     if (response.status === 'success') {
-      checkoutSuccess.value = `Paiement confirmé via ${paymentMethodLabel.value}.`
+      checkoutSuccess.value = t('appbar.coinCheckout.success.paymentConfirmed', {
+        method: paymentMethodLabel.value,
+      })
       checkoutStep.value = 'result'
       return
     }
 
-    checkoutError.value = response.message || 'Paiement refusé.'
+    checkoutError.value
+      = response.message || t('appbar.coinCheckout.errors.paymentDeclined')
     checkoutStep.value = 'result'
   } catch (error) {
     checkoutError.value
-      = error instanceof Error ? error.message : 'Une erreur est survenue.'
+      = error instanceof Error
+        ? error.message
+        : t('appbar.coinCheckout.errors.generic')
   } finally {
     paymentLoading.value = false
   }
@@ -182,9 +189,9 @@ async function processPayment() {
     <v-dialog v-model="coinModalOpen" max-width="620">
       <v-card>
         <v-card-title class="d-flex align-center justify-space-between">
-          <span>Checkout coins</span>
+          <span>{{ t('appbar.coinCheckout.title') }}</span>
           <v-chip size="small" color="primary" variant="tonal">
-            Solde actuel: {{ coins }} coins
+            {{ t('appbar.coinCheckout.currentBalance', { coins }) }}
           </v-chip>
         </v-card-title>
 
@@ -192,7 +199,7 @@ async function processPayment() {
           <v-window v-model="checkoutStep">
             <v-window-item value="package">
               <p class="text-medium-emphasis mb-4">
-                1) Choisissez votre pack, puis on crée la commande checkout.
+                {{ t('appbar.coinCheckout.steps.package') }}
               </p>
 
               <v-list class="pa-0" lines="two">
@@ -200,7 +207,7 @@ async function processPayment() {
                   v-for="item in coinPackages"
                   :key="item.id"
                   :title="`${item.coins} coins`"
-                  subtitle="Création de la commande checkout"
+                  :subtitle="t('appbar.coinCheckout.packageSubtitle')"
                   class="px-0"
                 >
                   <template #append>
@@ -219,14 +226,20 @@ async function processPayment() {
 
             <v-window-item value="payment">
               <p class="text-medium-emphasis mb-4">
-                2) Commande créée, choisissez maintenant le type de paiement.
+                {{ t('appbar.coinCheckout.steps.payment') }}
               </p>
               <v-card variant="tonal" class="mb-4">
                 <v-card-text class="text-body-2">
-                  <div><strong>Order:</strong> {{ currentOrder?.orderId }}</div>
-                  <div><strong>Pack:</strong> {{ currentOrder?.coins }} coins</div>
                   <div>
-                    <strong>Montant:</strong>
+                    <strong>{{ t('appbar.coinCheckout.labels.order') }}:</strong>
+                    {{ currentOrder?.orderId }}
+                  </div>
+                  <div>
+                    <strong>{{ t('appbar.coinCheckout.labels.pack') }}:</strong>
+                    {{ currentOrder?.coins }} coins
+                  </div>
+                  <div>
+                    <strong>{{ t('appbar.coinCheckout.labels.amount') }}:</strong>
                     {{ currencySymbol }}{{ currentOrder?.amount }}
                   </div>
                 </v-card-text>
@@ -252,7 +265,7 @@ async function processPayment() {
 
               <div class="d-flex ga-2">
                 <v-btn variant="text" @click="checkoutStep = 'package'">
-                  Retour
+                  {{ t('common.back') }}
                 </v-btn>
                 <v-btn
                   color="primary"
@@ -260,18 +273,21 @@ async function processPayment() {
                   :disabled="!paymentMethod"
                   @click="processPayment"
                 >
-                  Payer maintenant
+                  {{ t('appbar.coinCheckout.payNow') }}
                 </v-btn>
               </div>
             </v-window-item>
 
             <v-window-item value="result">
               <p class="text-medium-emphasis">
-                3) Résultat du paiement pour la commande
-                <strong>{{ currentOrder?.orderId }}</strong>.
+                {{
+                  t('appbar.coinCheckout.steps.result', {
+                    orderId: currentOrder?.orderId ?? '-',
+                  })
+                }}
               </p>
               <v-btn class="mt-2" color="primary" variant="outlined" @click="openCoinModal">
-                Nouveau checkout
+                {{ t('appbar.coinCheckout.newCheckout') }}
               </v-btn>
             </v-window-item>
           </v-window>

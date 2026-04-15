@@ -58,7 +58,32 @@
     "feature": "Feature",
     "applications": "Applications",
     "sports": "Sports",
-    "quiz": "Quiz"
+    "quiz": "Quiz",
+    "coinCheckout": {
+      "title": "Buy coins",
+      "currentBalance": "Current balance: {coins} coins",
+      "packageSubtitle": "Create checkout order",
+      "payNow": "Pay now",
+      "newCheckout": "New checkout",
+      "steps": {
+        "package": "1) Choose your pack, then we create the checkout order.",
+        "payment": "2) Order created, now choose your payment method.",
+        "result": "3) Payment result for order {orderId}."
+      },
+      "labels": {
+        "order": "Order",
+        "pack": "Pack",
+        "amount": "Amount"
+      },
+      "success": {
+        "paymentConfirmed": "Payment confirmed via {method}."
+      },
+      "errors": {
+        "generic": "Something went wrong.",
+        "selectPaymentMethod": "Select a payment method.",
+        "paymentDeclined": "Payment declined."
+      }
+    }
   },
   "common": {
     "confirm": "Confirm",
@@ -72,7 +97,8 @@
     "whatsYourName": "What's your name?",
     "retry": "Retry",
     "close": "Close",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "back": "Back"
   },
   "platform": {
     "title": "Platforms",

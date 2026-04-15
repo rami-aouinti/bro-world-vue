@@ -230,6 +230,7 @@ function isMenuActive(paths: string[]) {
         variant="text"
         class="app-brand-icon"
         aria-label="Home"
+        exact
       >
         <v-icon
           icon="custom:world"
@@ -845,6 +846,14 @@ function isMenuActive(paths: string[]) {
 
 .app-brand-icon {
   display: inline-flex;
+}
+
+:deep(.app-brand-icon.v-btn--active > .v-btn__overlay) {
+  opacity: 0 !important;
+}
+
+:deep(.app-brand-icon.v-btn--active) {
+  background-color: transparent !important;
 }
 
 @media (min-width: 1280px) {
