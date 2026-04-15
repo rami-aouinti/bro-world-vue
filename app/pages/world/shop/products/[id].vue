@@ -18,11 +18,32 @@ function productImage(item: ShopProduct) {
 }
 
 function formatPrice(item: ShopProduct) {
+  const baseAmount = item.price ?? item.amount
+  const effectiveAmount = item.discountedPrice ?? baseAmount
+
   return new Intl.NumberFormat('fr-FR', {
     style: 'currency',
     currency: item.currencyCode || 'EUR',
     maximumFractionDigits: 2,
-  }).format(item.amount)
+  }).format(effectiveAmount)
+}
+
+function formatAmount(value: number, currencyCode: string) {
+  return new Intl.NumberFormat('fr-FR', {
+    style: 'currency',
+    currency: currencyCode || 'EUR',
+    maximumFractionDigits: 2,
+  }).format(value)
+}
+
+function originalPrice(item: ShopProduct) {
+  return item.price ?? item.amount
+}
+
+function hasPromotion(item: ShopProduct) {
+  const original = originalPrice(item)
+  const discounted = item.discountedPrice
+  return typeof discounted === 'number' && discounted < original
 }
 
 async function loadProduct(force = false) {
@@ -137,8 +158,32 @@ watch(
               <v-row>
                 <v-col cols="6" md="4">
                   <div class="text-caption text-medium-emphasis">Price</div>
-                  <div class="font-weight-bold text-h6">
-                    {{ formatPrice(product) }}
+                  <div class="d-flex align-center ga-2 flex-wrap">
+                    <div class="font-weight-bold text-h6">
+                      {{ formatPrice(product) }}
+                    </div>
+                    <div
+                      v-if="hasPromotion(product)"
+                      class="text-caption text-medium-emphasis text-decoration-line-through"
+                    >
+                      {{
+                        formatAmount(
+                          originalPrice(product),
+                          product.currencyCode || 'EUR',
+                        )
+                      }}
+                    </div>
+                    <v-chip
+                      v-if="
+                        hasPromotion(product) &&
+                        typeof product.promotionPercentage === 'number'
+                      "
+                      size="small"
+                      color="error"
+                      variant="tonal"
+                    >
+                      -{{ product.promotionPercentage }}%
+                    </v-chip>
                   </div>
                 </v-col>
 
@@ -222,9 +267,33 @@ watch(
                   }}</v-card-subtitle>
                 </v-card-item>
                 <v-card-actions>
-                  <v-chip size="small" variant="tonal">{{
-                    formatPrice(related)
-                  }}</v-chip>
+                  <div class="d-flex align-center ga-2 flex-wrap">
+                    <v-chip size="small" variant="tonal">{{
+                      formatPrice(related)
+                    }}</v-chip>
+                    <span
+                      v-if="hasPromotion(related)"
+                      class="text-caption text-medium-emphasis text-decoration-line-through"
+                    >
+                      {{
+                        formatAmount(
+                          originalPrice(related),
+                          related.currencyCode || 'EUR',
+                        )
+                      }}
+                    </span>
+                    <v-chip
+                      v-if="
+                        hasPromotion(related) &&
+                        typeof related.promotionPercentage === 'number'
+                      "
+                      size="x-small"
+                      color="error"
+                      variant="tonal"
+                    >
+                      -{{ related.promotionPercentage }}%
+                    </v-chip>
+                  </div>
                 </v-card-actions>
               </v-card>
             </v-col>

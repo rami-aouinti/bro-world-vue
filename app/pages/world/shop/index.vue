@@ -86,11 +86,32 @@ function normalizedPromotionFilter() {
 }
 
 function formatPrice(product: ShopProduct) {
+  const baseAmount = product.price ?? product.amount
+  const effectiveAmount = product.discountedPrice ?? baseAmount
+
   return new Intl.NumberFormat('fr-FR', {
     style: 'currency',
     currency: product.currencyCode || 'EUR',
     maximumFractionDigits: 2,
-  }).format(product.amount)
+  }).format(effectiveAmount)
+}
+
+function formatAmount(value: number, currencyCode: string) {
+  return new Intl.NumberFormat('fr-FR', {
+    style: 'currency',
+    currency: currencyCode || 'EUR',
+    maximumFractionDigits: 2,
+  }).format(value)
+}
+
+function originalPrice(product: ShopProduct) {
+  return product.price ?? product.amount
+}
+
+function hasPromotion(product: ShopProduct) {
+  const original = originalPrice(product)
+  const discounted = product.discountedPrice
+  return typeof discounted === 'number' && discounted < original
 }
 
 function productImage(product: ShopProduct) {
@@ -436,9 +457,33 @@ onMounted(async () => {
 
                 <v-card-text>
                   <div class="d-flex align-center justify-space-between mb-2">
-                    <span class="text-h6 font-weight-bold">{{
-                      formatPrice(item)
-                    }}</span>
+                    <div class="d-flex flex-column">
+                      <span class="text-h6 font-weight-bold">{{
+                        formatPrice(item)
+                      }}</span>
+                      <span
+                        v-if="hasPromotion(item)"
+                        class="text-caption text-medium-emphasis text-decoration-line-through"
+                      >
+                        {{
+                          formatAmount(
+                            originalPrice(item),
+                            item.currencyCode || 'EUR',
+                          )
+                        }}
+                      </span>
+                    </div>
+                    <v-chip
+                      v-if="
+                        hasPromotion(item) &&
+                        typeof item.promotionPercentage === 'number'
+                      "
+                      size="small"
+                      color="error"
+                      variant="tonal"
+                    >
+                      -{{ item.promotionPercentage }}%
+                    </v-chip>
                   </div>
                 </v-card-text>
 
