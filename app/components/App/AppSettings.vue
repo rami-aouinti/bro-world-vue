@@ -315,8 +315,8 @@ const selectedLocale = computed<LocaleOption>(() => {
                     :key="item.value"
                     :active="locale === item.value"
                     @click="
-                      setLocale(item.value)
-                      languageMenuShow = false
+                      setLocale(item.value);
+                      languageMenuShow = false;
                     "
                   >
                     <template #prepend>
