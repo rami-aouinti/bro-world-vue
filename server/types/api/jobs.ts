@@ -30,7 +30,12 @@ export type JobCandidate = {
   id: string
   context: 'offers' | 'applications' | 'my-offers'
   name: string
+  email: string
+  phone: string
   offerTitle: string
+  source: 'Referral' | 'Job board' | 'Career site' | 'Agency'
+  diversityFlags: string[]
+  createdAt: string
   currentStage: JobPipelineStage
   recruiterNotes: string
   panelFeedback: string
@@ -47,4 +52,54 @@ export type JobCandidate = {
 export type JobCandidatesApiResponse = {
   items: JobCandidate[]
   stages: readonly JobPipelineStage[]
+}
+
+export const JOB_ACCESS_ROLES = [
+  'recruiter',
+  'hiring_manager',
+  'interviewer',
+  'admin',
+] as const
+
+export type JobAccessRole = typeof JOB_ACCESS_ROLES[number]
+
+export type JobPermissionMatrix = {
+  canViewPii: boolean
+  canViewCompensation: boolean
+  canTransitionStage: boolean
+  canEditNotes: boolean
+  canViewDiversity: boolean
+  canManagePolicy: boolean
+}
+
+export type JobsDataRetentionPolicy = {
+  retentionDays: number
+  anonymizeAfterDays: number
+  restrictedAccessEnabled: boolean
+  autoDeleteRejectedAfterDays: number
+  legalHoldEnabled: boolean
+}
+
+export type JobsAdminPolicyResponse = {
+  policy: JobsDataRetentionPolicy
+  permissions: Record<JobAccessRole, JobPermissionMatrix>
+}
+
+export type JobsAdminDashboardResponse = {
+  timeToHireDays: {
+    average: number
+    median: number
+    target: number
+  }
+  candidateSources: Array<{ source: JobCandidate['source']; count: number; ratio: number }>
+  offerAcceptanceRate: {
+    accepted: number
+    declined: number
+    rate: number
+  }
+  diversityPipeline: {
+    totalCandidates: number
+    selfIdentified: number
+    ratio: number
+  }
 }

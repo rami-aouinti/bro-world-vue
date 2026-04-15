@@ -1,5 +1,7 @@
 import { JOB_PIPELINE_STAGES, type JobCandidate, type JobPipelineStage } from '~~/server/types/api/jobs'
+import { resolveJobAccessRole } from '~~/server/utils/jobsAdminStore'
 import { transitionCandidate } from '~~/server/utils/jobsPipelineStore'
+import type { SessionUser } from '~/types/session'
 
 type TransitionBody = {
   toStage?: string
@@ -13,6 +15,8 @@ const isPipelineStage = (value: string): value is JobPipelineStage => {
 }
 
 export default defineEventHandler(async (event): Promise<JobCandidate> => {
+  await requireUserSession(event)
+
   const id = getRouterParam(event, 'id')
 
   if (!id) {
@@ -26,11 +30,16 @@ export default defineEventHandler(async (event): Promise<JobCandidate> => {
     throw createError({ statusCode: 400, statusMessage: 'Invalid pipeline stage' })
   }
 
+  const session = await getUserSession(event)
+  const user = (session?.user as SessionUser | null) ?? null
+  const role = resolveJobAccessRole(user)
+
   return transitionCandidate({
     candidateId: id,
     toStage,
     recruiterNotes: body.recruiterNotes?.trim() || '',
     panelFeedback: body.panelFeedback?.trim() || '',
-    actor: body.actor?.trim() || 'Recruiter',
+    actor: body.actor?.trim() || user?.username || 'Recruiter',
+    role,
   })
 })
