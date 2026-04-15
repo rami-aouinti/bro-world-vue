@@ -79,6 +79,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
 
   const currentAttempt = ref<WorldShopPaymentAttempt | null>(null)
   const cart = ref<unknown>(null)
+  const globalShopId = ref<string | null>(null)
 
   function isFresh(entry?: { fetchedAt: number }) {
     return !!entry && Date.now() - entry.fetchedAt < SHOP_TTL_MS
@@ -100,12 +101,39 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     return fallback
   }
 
-  function resolveRequiredShopId() {
+  async function resolveRequiredShopId() {
+    if (isValidShopId(globalShopId.value)) {
+      return globalShopId.value
+    }
+
     const runtimeConfig = useRuntimeConfig()
-    const shopId = resolveGlobalShopId(runtimeConfig.public)
+    const configuredShopId = resolveGlobalShopId(runtimeConfig.public)
+    if (configuredShopId && !isValidShopId(configuredShopId)) {
+      const message =
+        "Configuration shop invalide: 'runtimeConfig.public.shop.globalShopId' est présent mais incorrect."
+      error.value = message
+      throw new Error(message)
+    }
+    if (configuredShopId) {
+      globalShopId.value = configuredShopId
+      return configuredShopId
+    }
+
+    const response = await runTrackedStoreFetch('shop', () =>
+      $fetch<{ shop?: { id?: string } }>('/api/world/shop/general', {
+        query: { page: 1, limit: 1 },
+      }),
+    )
+    const resolvedShopId = response.shop?.id?.trim()
+    if (isValidShopId(resolvedShopId)) {
+      globalShopId.value = resolvedShopId
+      return resolvedShopId
+    }
+
+    const shopId = resolvedShopId
     if (!isValidShopId(shopId)) {
       const message =
-        "Configuration shop invalide: 'runtimeConfig.public.shop.globalShopId' est absent ou incorrect."
+        "Impossible de résoudre le shopId global depuis '/api/world/shop/general'."
       error.value = message
       throw new Error(message)
     }
@@ -386,7 +414,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     currency: string
     cart: WorldShopCartLine[]
   }) {
-    const shopId = resolveRequiredShopId()
+    const shopId = await resolveRequiredShopId()
     pending.value = true
     error.value = null
     try {
@@ -496,7 +524,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     provider: 'stripe' | 'adyen' | 'paypal'
     idempotencyKey: string
   }) {
-    const shopId = resolveRequiredShopId()
+    const shopId = await resolveRequiredShopId()
     pending.value = true
     error.value = null
     try {
@@ -527,7 +555,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     providerPaymentId: string
     idempotencyKey: string
   }) {
-    const shopId = resolveRequiredShopId()
+    const shopId = await resolveRequiredShopId()
     pending.value = true
     error.value = null
     try {
@@ -552,7 +580,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
   }
 
   async function fetchCart() {
-    const shopId = resolveRequiredShopId()
+    const shopId = await resolveRequiredShopId()
     pending.value = true
     error.value = null
     try {
@@ -574,7 +602,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
   }
 
   async function addCartItem(productId: string, quantity = 1) {
-    const shopId = resolveRequiredShopId()
+    const shopId = await resolveRequiredShopId()
     pending.value = true
     error.value = null
     try {
