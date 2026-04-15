@@ -36,8 +36,6 @@ const jobsNavItems = [
   },
 ]
 
-const publicApi = usePublicApi()
-
 const page = ref(1)
 const limit = ref(20)
 const q = ref('')
@@ -75,7 +73,7 @@ async function fetchJobs() {
   errorMessage.value = ''
 
   try {
-    const response = await publicApi<RecruitJobsListResponse>('/recruit/general/jobs', {
+    const response = await $fetch<RecruitJobsListResponse>('/api/recruit/general/jobs', {
       query: {
         page: page.value,
         limit: limit.value,
@@ -102,8 +100,8 @@ async function openDetail(job: RecruitJob) {
   detailsOpen.value = true
 
   try {
-    const response = await publicApi<RecruitJobDetailResponse>(
-      `/recruit/general/jobs/${job.slug}`,
+    const response = await $fetch<RecruitJobDetailResponse>(
+      `/api/recruit/general/jobs/${encodeURIComponent(job.slug)}`,
     )
     selectedJob.value = response.job
   } catch (error) {
