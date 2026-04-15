@@ -949,5 +949,201 @@
         "line6": "Tus selecciones actuales permanecen visibles arriba en cada paso."
       }
     }
+  },
+  "world": {
+    "home": {
+      "title": "World menu",
+      "subtitle": "Choose one business domain to continue."
+    },
+    "common": {
+      "search": "Search",
+      "table": {
+        "id": "ID"
+      },
+      "actions": {
+        "saveRecord": "Save record",
+        "createInModule": "Create in {module}"
+      },
+      "quickChecks": {
+        "title": "Quick checks",
+        "sync": "Data sync: online",
+        "pendingApprovals": "Pending approvals: 3",
+        "assignedToMe": "Assigned to me: 12"
+      }
+    },
+    "crm": {
+      "label": "CRM",
+      "description": "Projects, company data and admin operations.",
+      "moduleDescription": "CRM navigation with projects and company management.",
+      "nav": {
+        "overview": "Overview CRM",
+        "projects": "Projects",
+        "company": "Company",
+        "admin": "Admin"
+      }
+    },
+    "shop": {
+      "label": "Shop",
+      "description": "Categories, products, checkout and order management.",
+      "moduleDescription": "Catalogue, pricing, checkout, payment and fulfillment.",
+      "nav": {
+        "overview": "Overview Shop",
+        "categories": "Categories",
+        "products": "Products",
+        "checkout": "Checkout",
+        "payment": "Payment",
+        "orders": "Orders",
+        "admin": "Admin"
+      },
+      "actions": {
+        "createProduct": "Create product",
+        "publishProduct": "Publish product"
+      },
+      "kpis": {
+        "revenue30d": "Revenue (30d)",
+        "ordersPending": "Orders pending",
+        "conversionRate": "Conversion rate",
+        "abandonedCarts": "Abandoned carts"
+      },
+      "home": {
+        "title": "Shop Operations",
+        "subtitle": "Complete e-commerce interface inspired by real merchant back offices.",
+        "formTitle": "Add product",
+        "formDescription": "Create a product with price, stock, category and selling strategy."
+      },
+      "form": {
+        "productName": "Product name",
+        "sku": "SKU",
+        "category": "Category",
+        "price": "Price",
+        "stock": "Stock",
+        "description": "Description"
+      },
+      "categories": {
+        "apparel": "Apparel",
+        "bundles": "Bundles",
+        "digital": "Digital"
+      },
+      "table": {
+        "product": "Product",
+        "category": "Category",
+        "stock": "Stock",
+        "status": "Status"
+      }
+    },
+    "learning": {
+      "label": "Learning",
+      "description": "Courses by level and structured learning paths.",
+      "moduleDescription": "LMS platform with user progression tracking, score, time spent and attempts.",
+      "nav": {
+        "overview": "Overview Learning",
+        "courses": "Courses",
+        "levels": "Levels",
+        "paths": "Paths",
+        "admin": "Admin"
+      },
+      "actions": {
+        "refreshDashboard": "Refresh dashboard",
+        "monitoringEnabled": "Monitoring enabled"
+      },
+      "kpis": {
+        "activeLearners": "Active learners",
+        "courseCompletion": "Course completion",
+        "dropoutRate": "Dropout rate",
+        "certificatesIssued": "Certificates issued"
+      },
+      "home": {
+        "title": "Learning Hub",
+        "subtitle": "Mentor view of top learners with live progression and performance metrics.",
+        "formTitle": "Rules snapshot",
+        "formDescription": "Level progression: score + completed lessons + time spent + attempt limits."
+      },
+      "form": {
+        "intermediate": "Intermediate",
+        "advanced": "Advanced",
+        "intermediateRule": "Score ≥70, completion ≥50%, time ≥60 min, attempts ≤6",
+        "advancedRule": "Score ≥85, completion 100%, time ≥180 min, attempts ≤4"
+      },
+      "table": {
+        "learner": "Learner",
+        "cohort": "Cohort",
+        "currentLevel": "Current level",
+        "score": "Score",
+        "timeSpent": "Time spent",
+        "attempts": "Attempts"
+      }
+    },
+    "jobs": {
+      "label": "Jobs",
+      "description": "Offers, applications and recruitment workflows.",
+      "moduleDescription": "Full ATS: offers, applications and recruitment pipeline tracking.",
+      "nav": {
+        "overview": "Overview Jobs",
+        "offers": "Offers",
+        "myOffers": "My Offers",
+        "applications": "Applications",
+        "apply": "Apply",
+        "admin": "Admin"
+      },
+      "actions": {
+        "publishOffer": "Publish new offer",
+        "publish": "Publish offer"
+      },
+      "kpis": {
+        "openOffers": "Open offers",
+        "newApplications": "New applications",
+        "interviewsWeek": "Interviews this week",
+        "offerAcceptance": "Offer acceptance"
+      },
+      "home": {
+        "title": "Hiring Command Center",
+        "subtitle": "Professional offers and applications management like a real ATS.",
+        "formTitle": "Create job offer",
+        "formDescription": "Define role, level, work mode and target compensation."
+      },
+      "form": {
+        "jobTitle": "Job title",
+        "department": "Department",
+        "seniority": "Seniority",
+        "salary": "Salary (annual)",
+        "deadline": "Application deadline",
+        "roleDescription": "Role description"
+      },
+      "seniority": {
+        "junior": "Junior",
+        "mid": "Mid",
+        "senior": "Senior"
+      },
+      "table": {
+        "role": "Role",
+        "team": "Team",
+        "applicants": "Applicants",
+        "status": "Status"
+      },
+      "pipeline": {
+        "title": "Transition pipeline",
+        "stagesHint": "Applied → Screening → Interview → Offer → Hired / Rejected",
+        "candidate": "Candidate",
+        "newStage": "New stage",
+        "recruiterNotes": "Recruiter notes",
+        "panelFeedback": "Panel feedback",
+        "serverScore": "Server score:",
+        "scoreBreakdown": "skills {skills}, experience {experience}, availability {availability}",
+        "persist": "Persist transition",
+        "readOnly": "Your role (interviewer) has read-only access for pipeline transitions.",
+        "history": "Transition history",
+        "notes": "Notes:",
+        "panel": "Panel:",
+        "noHistory": "No transition history yet.",
+        "table": {
+          "id": "ID",
+          "candidate": "Candidate",
+          "offer": "Offer",
+          "stage": "Stage",
+          "score": "Score",
+          "updated": "Updated"
+        }
+      }
+    }
   }
 }

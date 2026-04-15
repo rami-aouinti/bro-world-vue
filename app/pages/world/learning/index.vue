@@ -4,17 +4,18 @@ import type { LearningAdminAnalyticsApiResponse, LearningProgressApiResponse } f
 
 definePageMeta({ title: 'Learning' })
 
+const { t } = useI18n()
 const { user } = useUserSession()
 const sessionUser = computed(() => user.value as SessionUser | null)
 const isRoot = computed(() => sessionUser.value?.roles?.includes('ROLE_ROOT') ?? false)
 
 const learningNavItems = computed(() => [
-  { title: 'Overview Learning', to: '/world/learning', icon: 'mdi-view-dashboard-outline' },
-  { title: 'Courses', to: '/world/learning/courses', icon: 'mdi-book-open-page-variant-outline' },
-  { title: 'Levels', to: '/world/learning/levels', icon: 'mdi-stairs' },
-  { title: 'Paths', to: '/world/learning/paths', icon: 'mdi-map-marker-path' },
+  { title: t('world.learning.nav.overview', 'Overview Learning'), to: '/world/learning', icon: 'mdi-view-dashboard-outline' },
+  { title: t('world.learning.nav.courses', 'Courses'), to: '/world/learning/courses', icon: 'mdi-book-open-page-variant-outline' },
+  { title: t('world.learning.nav.levels', 'Levels'), to: '/world/learning/levels', icon: 'mdi-stairs' },
+  { title: t('world.learning.nav.paths', 'Paths'), to: '/world/learning/paths', icon: 'mdi-map-marker-path' },
   ...(isRoot.value
-    ? [{ title: 'Admin', to: '/world/learning/admin', icon: 'mdi-shield-crown-outline', rootOnly: true }]
+    ? [{ title: t('world.learning.nav.admin', 'Admin'), to: '/world/learning/admin', icon: 'mdi-shield-crown-outline', rootOnly: true }]
     : []),
 ])
 
@@ -55,42 +56,42 @@ const refreshDashboard = async () => {
 <template>
   <div>
     <WorldModuleDrawers
-      module-title="Learning"
+      :module-title="t('world.learning.label', 'Learning')"
       module-icon="mdi-school-outline"
-      module-description="Plateforme LMS avec suivi progression par utilisateur, score, temps passé et tentatives."
+      :module-description="t('world.learning.moduleDescription', 'Plateforme LMS avec suivi progression par utilisateur, score, temps passé et tentatives.')"
       :nav-items="learningNavItems"
-      action-label="Refresh dashboard"
+      :action-label="t('world.learning.actions.refreshDashboard', 'Refresh dashboard')"
       action-icon="mdi-refresh"
       @action="refreshDashboard"
     />
 
     <v-container fluid class="pt-0">
       <v-row class="mb-4">
-        <v-col cols="12" md="3"><v-card class="pa-3 postcard-gradient-card" rounded="xl"><p class="text-caption mb-1">Active learners</p><h3 class="text-h5">{{ analytics?.totalLearners ?? 0 }}</h3></v-card></v-col>
-        <v-col cols="12" md="3"><v-card class="pa-3 postcard-gradient-card" rounded="xl"><p class="text-caption mb-1">Course completion</p><h3 class="text-h5">{{ analytics?.completionRate ?? 0 }}%</h3></v-card></v-col>
-        <v-col cols="12" md="3"><v-card class="pa-3 postcard-gradient-card" rounded="xl"><p class="text-caption mb-1">Dropout rate</p><h3 class="text-h5">{{ analytics?.dropoutRate ?? 0 }}%</h3></v-card></v-col>
-        <v-col cols="12" md="3"><v-card class="pa-3 postcard-gradient-card" rounded="xl"><p class="text-caption mb-1">Certificates issued</p><h3 class="text-h5">{{ certifiedCount }}</h3></v-card></v-col>
+        <v-col cols="12" md="3"><v-card class="pa-3 postcard-gradient-card" rounded="xl"><p class="text-caption mb-1">{{ t('world.learning.kpis.activeLearners', 'Active learners') }}</p><h3 class="text-h5">{{ analytics?.totalLearners ?? 0 }}</h3></v-card></v-col>
+        <v-col cols="12" md="3"><v-card class="pa-3 postcard-gradient-card" rounded="xl"><p class="text-caption mb-1">{{ t('world.learning.kpis.courseCompletion', 'Course completion') }}</p><h3 class="text-h5">{{ analytics?.completionRate ?? 0 }}%</h3></v-card></v-col>
+        <v-col cols="12" md="3"><v-card class="pa-3 postcard-gradient-card" rounded="xl"><p class="text-caption mb-1">{{ t('world.learning.kpis.dropoutRate', 'Dropout rate') }}</p><h3 class="text-h5">{{ analytics?.dropoutRate ?? 0 }}%</h3></v-card></v-col>
+        <v-col cols="12" md="3"><v-card class="pa-3 postcard-gradient-card" rounded="xl"><p class="text-caption mb-1">{{ t('world.learning.kpis.certificatesIssued', 'Certificates issued') }}</p><h3 class="text-h5">{{ certifiedCount }}</h3></v-card></v-col>
       </v-row>
 
       <WorldFeatureScaffold
-        title="Learning Hub"
-        subtitle="Vue mentor des meilleurs apprenants avec progression live et métriques de performance."
-        form-title="Rules snapshot"
-        form-description="Passage niveau: score + leçons complétées + temps passé + limite tentatives."
+        :title="t('world.learning.home.title', 'Learning Hub')"
+        :subtitle="t('world.learning.home.subtitle', 'Vue mentor des meilleurs apprenants avec progression live et métriques de performance.')"
+        :form-title="t('world.learning.home.formTitle', 'Rules snapshot')"
+        :form-description="t('world.learning.home.formDescription', 'Passage niveau: score + leçons complétées + temps passé + limite tentatives.')"
         :fields="[
-          { key: 'rule1', label: 'Intermediate', type: 'text', placeholder: 'Score ≥70, complétion ≥50%, temps ≥60 min, tentatives ≤6' },
-          { key: 'rule2', label: 'Advanced', type: 'text', placeholder: 'Score ≥85, complétion 100%, temps ≥180 min, tentatives ≤4' },
+          { key: 'rule1', label: t('world.learning.form.intermediate', 'Intermediate'), type: 'text', placeholder: t('world.learning.form.intermediateRule', 'Score ≥70, complétion ≥50%, temps ≥60 min, tentatives ≤6') },
+          { key: 'rule2', label: t('world.learning.form.advanced', 'Advanced'), type: 'text', placeholder: t('world.learning.form.advancedRule', 'Score ≥85, complétion 100%, temps ≥180 min, tentatives ≤4') },
         ]"
         :headers="[
-          { title: 'Learner', key: 'learner' },
-          { title: 'Cohort', key: 'cohort' },
-          { title: 'Current level', key: 'level' },
-          { title: 'Score', key: 'score' },
-          { title: 'Time spent', key: 'timeSpent' },
-          { title: 'Attempts', key: 'attempts' },
+          { title: t('world.learning.table.learner', 'Learner'), key: 'learner' },
+          { title: t('world.learning.table.cohort', 'Cohort'), key: 'cohort' },
+          { title: t('world.learning.table.currentLevel', 'Current level'), key: 'level' },
+          { title: t('world.learning.table.score', 'Score'), key: 'score' },
+          { title: t('world.learning.table.timeSpent', 'Time spent'), key: 'timeSpent' },
+          { title: t('world.learning.table.attempts', 'Attempts'), key: 'attempts' },
         ]"
         :rows="rows"
-        create-label="Monitoring enabled"
+        :create-label="t('world.learning.actions.monitoringEnabled', 'Monitoring enabled')"
       />
     </v-container>
   </div>
