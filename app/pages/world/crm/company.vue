@@ -4,14 +4,15 @@ import { useCrmPermissions } from '~/composables/useCrmPermissions'
 
 definePageMeta({ title: 'CRM Company' })
 
+const { t } = useI18n()
 const { can } = useCrmPermissions()
 
 const crmNavItems = computed(() => [
-  { title: 'Overview CRM', to: '/world/crm', icon: 'mdi-view-dashboard-outline' },
-  { title: 'Projects', to: '/world/crm/projects', icon: 'mdi-folder-outline' },
-  { title: 'Company', to: '/world/crm/company', icon: 'mdi-domain' },
+  { title: t('world.crm.nav.overview', 'Overview CRM'), to: '/world/crm', icon: 'mdi-view-dashboard-outline' },
+  { title: t('world.crm.nav.projects', 'Projects'), to: '/world/crm/projects', icon: 'mdi-folder-outline' },
+  { title: t('world.crm.nav.company', 'Company'), to: '/world/crm/company', icon: 'mdi-domain' },
   ...(can('crm.admin.manage')
-    ? [{ title: 'Admin', to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' }]
+    ? [{ title: t('world.crm.nav.admin', 'Admin'), to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' }]
     : []),
 ])
 
@@ -33,9 +34,9 @@ const rows = computed<Record<string, string | number>[]>(() => companiesData.val
 <template>
   <div>
     <WorldModuleDrawers
-      module-title="CRM"
+      :module-title="t('world.crm.label', 'CRM')"
       module-icon="mdi-account-group-outline"
-      module-description="Navigation CRM avec gestion des projets et entreprises."
+      :module-description="t('world.crm.moduleDescription', 'Navigation CRM avec gestion des projets et entreprises.')"
       :nav-items="crmNavItems"
       action-label="Add company"
       action-icon="mdi-domain-plus"

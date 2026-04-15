@@ -1,39 +1,41 @@
 <script setup lang="ts">
 definePageMeta({ title: 'World' })
 
-const worldSections = [
+const { t } = useI18n()
+
+const worldSections = computed(() => [
   {
-    title: 'CRM',
+    title: t('world.crm.label', 'CRM'),
     to: '/world/crm',
     icon: 'mdi-account-group-outline',
-    description: 'Projects, company data and admin operations.',
+    description: t('world.crm.description', 'Projects, company data and admin operations.'),
   },
   {
-    title: 'Shop',
+    title: t('world.shop.label', 'Shop'),
     to: '/world/shop',
     icon: 'mdi-storefront-outline',
-    description: 'Categories, products, checkout and order management.',
+    description: t('world.shop.description', 'Categories, products, checkout and order management.'),
   },
   {
-    title: 'Learning',
+    title: t('world.learning.label', 'Learning'),
     to: '/world/learning',
     icon: 'mdi-school-outline',
-    description: 'Courses by level and structured learning paths.',
+    description: t('world.learning.description', 'Courses by level and structured learning paths.'),
   },
   {
-    title: 'Jobs',
+    title: t('world.jobs.label', 'Jobs'),
     to: '/world/jobs',
     icon: 'mdi-briefcase-search-outline',
-    description: 'Offers, applications and recruitment workflows.',
+    description: t('world.jobs.description', 'Offers, applications and recruitment workflows.'),
   },
-]
+])
 </script>
 
 <template>
   <v-container fluid>
     <v-card rounded="xl" class="pa-3">
-      <v-card-title class="text-h5">World menu</v-card-title>
-      <v-card-subtitle>Choose one business domain to continue.</v-card-subtitle>
+      <v-card-title class="text-h5">{{ t('world.home.title', 'World menu') }}</v-card-title>
+      <v-card-subtitle>{{ t('world.home.subtitle', 'Choose one business domain to continue.') }}</v-card-subtitle>
       <v-row class="mt-2">
         <v-col
           v-for="section in worldSections"

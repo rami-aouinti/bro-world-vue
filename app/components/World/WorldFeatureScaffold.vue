@@ -21,15 +21,18 @@ const props = withDefaults(defineProps<{
   rows: Record<string, string | number>[]
   createLabel?: string
 }>(), {
-  createLabel: 'Save record',
+  createLabel: '',
 })
 
+const { t } = useI18n()
 const search = ref('')
 const form = reactive<Record<string, string | number>>({})
 
 for (const field of props.fields) {
   form[field.key] = ''
 }
+
+const resolvedCreateLabel = computed(() => props.createLabel || t('world.common.actions.saveRecord', 'Save record'))
 
 const filteredRows = computed(() => {
   if (!search.value) return props.rows
@@ -55,7 +58,7 @@ const filteredRows = computed(() => {
           <v-text-field
             v-model="search"
             prepend-inner-icon="mdi-magnify"
-            label="Search"
+            :label="t('world.common.search', 'Search')"
             density="compact"
             variant="outlined"
             hide-details
@@ -118,7 +121,7 @@ const filteredRows = computed(() => {
         </v-row>
 
         <v-btn color="primary" prepend-icon="mdi-content-save-outline" class="mt-4" block>
-          {{ createLabel }}
+          {{ resolvedCreateLabel }}
         </v-btn>
       </v-card>
     </v-col>
