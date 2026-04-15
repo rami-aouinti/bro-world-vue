@@ -33,6 +33,20 @@ type ShopProductsMetaLike = {
   }
 }
 
+function isObjectLike(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
+}
+
+function isProductsResponseLike(
+  value: unknown,
+): value is WorldShopProductsListResponse {
+  return (
+    isObjectLike(value) &&
+    'data' in value &&
+    Array.isArray((value as { data?: unknown }).data)
+  )
+}
+
 function stableQueryString(filters: Record<string, unknown>) {
   return Object.entries(filters)
     .filter(
@@ -116,7 +130,15 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     throw lastError
   }
 
-  function resolveProductsPagination(response: WorldShopProductsListResponse) {
+  function resolveProductsPagination(response: unknown) {
+    if (!isObjectLike(response)) {
+      pagination.value.page = filters.value.page ?? pagination.value.page
+      pagination.value.limit = filters.value.limit ?? pagination.value.limit
+      pagination.value.total = 0
+      pagination.value.totalPages = 1
+      return
+    }
+
     const meta = ('meta' in response ? response.meta : undefined) as
       | ShopProductsMetaLike
       | undefined
@@ -124,7 +146,9 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     const totalItems =
       apiPagination?.totalItems ??
       apiPagination?.total ??
-      ('total' in response ? response.total : 0)
+      ('total' in response && typeof response.total === 'number'
+        ? response.total
+        : 0)
     const page = apiPagination?.page ?? filters.value.page ?? pagination.value.page
     const limit =
       apiPagination?.limit ?? filters.value.limit ?? pagination.value.limit
@@ -224,6 +248,9 @@ export const useWorldShopStore = defineStore('world-shop', () => {
             "Impossible de récupérer les produits de la boutique. Merci de réessayer.",
         },
       )
+      if (!isProductsResponseLike(response)) {
+        throw new Error('Invalid shop products response format.')
+      }
       items.value = response.data
       resolveProductsPagination(response)
       lastFetchedAt.value = Date.now()
