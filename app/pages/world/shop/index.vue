@@ -51,6 +51,9 @@ const categoriesLoading = ref(false)
 
 const qFilter = ref('')
 const selectedCategory = ref('')
+const minPriceFilter = ref<number | null>(null)
+const maxPriceFilter = ref<number | null>(null)
+const promotionFilter = ref('')
 
 const page = ref(1)
 const limit = ref(20)
@@ -65,6 +68,22 @@ const hasError = computed(() => !!shopStore.error)
 const isEmpty = computed(
   () => !listLoading.value && !hasError.value && products.value.length === 0,
 )
+const promotionOptions = [
+  { title: '10%', value: '10' },
+  { title: '20%', value: '20' },
+  { title: '30%', value: '30' },
+  { title: '40%', value: '40' },
+  { title: '40+', value: '40+' },
+]
+
+function normalizedPromotionFilter() {
+  if (!promotionFilter.value) return undefined
+  if (promotionFilter.value === '40+') return 40
+
+  const parsed = Number(promotionFilter.value)
+  if (!Number.isFinite(parsed)) return undefined
+  return Math.max(0, Math.floor(parsed))
+}
 
 function formatPrice(product: ShopProduct) {
   return new Intl.NumberFormat('fr-FR', {
@@ -95,6 +114,15 @@ function addToCart(product: ShopProduct) {
       productId: product.id,
       q: qFilter.value || undefined,
       category: selectedCategory.value || undefined,
+      minPrice:
+        typeof minPriceFilter.value === 'number'
+          ? minPriceFilter.value
+          : undefined,
+      maxPrice:
+        typeof maxPriceFilter.value === 'number'
+          ? maxPriceFilter.value
+          : undefined,
+      promotion: normalizedPromotionFilter(),
     },
   })
 }
@@ -112,6 +140,9 @@ async function fetchProducts() {
       filters: {
         q: qFilter.value,
         category: selectedCategory.value,
+        minPrice: minPriceFilter.value ?? undefined,
+        maxPrice: maxPriceFilter.value ?? undefined,
+        promotion: normalizedPromotionFilter(),
         page: page.value,
         limit: limit.value,
       },
@@ -139,6 +170,15 @@ async function applyFilters() {
   await fetchProducts()
 }
 
+async function resetFilters() {
+  qFilter.value = ''
+  selectedCategory.value = ''
+  minPriceFilter.value = null
+  maxPriceFilter.value = null
+  promotionFilter.value = ''
+  await applyFilters()
+}
+
 watch([page, limit], async ([nextPage, nextLimit], [prevPage, prevLimit]) => {
   if (nextPage === prevPage && nextLimit === prevLimit) {
     return
@@ -150,6 +190,12 @@ watch([page, limit], async ([nextPage, nextLimit], [prevPage, prevLimit]) => {
 onMounted(async () => {
   qFilter.value = shopStore.filters.q ?? ''
   selectedCategory.value = shopStore.filters.category ?? ''
+  minPriceFilter.value = shopStore.filters.minPrice ?? null
+  maxPriceFilter.value = shopStore.filters.maxPrice ?? null
+  promotionFilter.value =
+    typeof shopStore.filters.promotion === 'number'
+      ? String(shopStore.filters.promotion)
+      : ''
 
   page.value = shopStore.pagination.page || 1
   limit.value = shopStore.pagination.limit || 20
@@ -222,6 +268,59 @@ onMounted(async () => {
                 t('world.shop.filters.noCategories', 'No categories available')
               "
             />
+          </v-card-text>
+
+          <v-divider class="mt-2" />
+
+          <v-card-text class="pt-4">
+            <v-text-field
+              v-model.number="minPriceFilter"
+              type="number"
+              min="0"
+              :label="t('world.shop.filters.minPrice', 'Min price')"
+              variant="outlined"
+              density="comfortable"
+              clearable
+              hide-details
+              class="mb-3"
+              @update:model-value="applyFilters"
+            />
+
+            <v-text-field
+              v-model.number="maxPriceFilter"
+              type="number"
+              min="0"
+              :label="t('world.shop.filters.maxPrice', 'Max price')"
+              variant="outlined"
+              density="comfortable"
+              clearable
+              hide-details
+              class="mb-3"
+              @update:model-value="applyFilters"
+            />
+
+            <v-select
+              v-model="promotionFilter"
+              :items="promotionOptions"
+              item-title="title"
+              item-value="value"
+              :label="t('world.shop.filters.promotion', 'Promotion')"
+              variant="outlined"
+              density="comfortable"
+              hide-details
+              clearable
+              class="mb-4"
+              @update:model-value="applyFilters"
+            />
+
+            <v-btn
+              block
+              variant="outlined"
+              prepend-icon="mdi-filter-remove-outline"
+              @click="resetFilters"
+            >
+              {{ t('world.shop.filters.reset', 'Reset filters') }}
+            </v-btn>
           </v-card-text>
         </v-card>
       </template>

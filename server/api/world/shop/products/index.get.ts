@@ -42,16 +42,43 @@ function parsePositiveInt(value: unknown, fallback: number) {
   return Math.max(1, Math.floor(parsed))
 }
 
+function parseNonNegativeNumber(value: unknown) {
+  const parsed = Number(value)
+  if (!Number.isFinite(parsed)) {
+    return undefined
+  }
+
+  return Math.max(0, parsed)
+}
+
+function parseNonNegativeInt(value: unknown) {
+  const parsed = Number(value)
+  if (!Number.isFinite(parsed)) {
+    return undefined
+  }
+
+  return Math.max(0, Math.floor(parsed))
+}
+
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const page = parsePositiveInt(query.page, 1)
   const limit = parsePositiveInt(query.limit, 20)
+  const minPrice = parseNonNegativeNumber(query.minPrice)
+  const maxPrice = parseNonNegativeNumber(query.maxPrice)
+  const promotion = parseNonNegativeInt(query.promotion)
 
   const response = await callPublicApi<PublicShopProductsResponse>(
     event,
     '/shop/general/products',
     {
-      query: { page, limit },
+      query: {
+        page,
+        limit,
+        minPrice,
+        maxPrice,
+        promotion,
+      },
     },
   )
 
@@ -98,6 +125,12 @@ export default defineEventHandler(async (event) => {
     if (category && !product.category.toLowerCase().includes(category)) {
       return false
     }
+    if (typeof minPrice === 'number' && product.amount < minPrice) {
+      return false
+    }
+    if (typeof maxPrice === 'number' && product.amount > maxPrice) {
+      return false
+    }
     return true
   })
 
@@ -120,6 +153,9 @@ export default defineEventHandler(async (event) => {
         name: typeof query.name === 'string' ? query.name : undefined,
         category: typeof query.category === 'string' ? query.category : undefined,
         status,
+        minPrice,
+        maxPrice,
+        promotion,
         page,
         limit,
       } satisfies ShopApiProductsFilters,

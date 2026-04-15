@@ -96,6 +96,9 @@ export interface ShopApiProductsFilters {
   name?: string
   category?: string
   status?: ShopApiProductStatus
+  minPrice?: number
+  maxPrice?: number
+  promotion?: number
   page?: number
   limit?: number
 }
