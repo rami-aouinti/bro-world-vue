@@ -36,10 +36,7 @@ useHead({
   link: [{ rel: 'icon', href: '/favicon.ico' }],
 })
 
-const isTrackingEnabled =
-  import.meta.client &&
-  import.meta.env.PROD &&
-  (Boolean(import.meta.env.VERCEL) || Boolean(import.meta.env.VERCEL_URL))
+const isTrackingEnabled = import.meta.client && import.meta.env.PROD
 
 if (isTrackingEnabled) {
   useHead({
