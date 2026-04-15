@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { CrmCompaniesApiResponse, CrmCompany } from '~~/server/types/api/crm'
+
 definePageMeta({ title: 'CRM Company' })
 
 const crmNavItems = [
@@ -8,11 +10,19 @@ const crmNavItems = [
   { title: 'Admin', to: '/world/crm/admin', icon: 'mdi-shield-crown-outline', rootOnly: true },
 ]
 
-const rows = [
-  { id: 'C-3001', company: 'Atlas Dynamics', industry: 'Fintech', owner: 'N. Park', health: 'Great' },
-  { id: 'C-3002', company: 'Blue Harbor', industry: 'Retail', owner: 'M. Costa', health: 'At risk' },
-  { id: 'C-3003', company: 'Kite Labs', industry: 'Education', owner: 'R. Silva', health: 'Stable' },
-]
+const companiesQuery = {
+  page: 1,
+  limit: 10,
+  sortBy: 'id',
+  sortOrder: 'asc' as const,
+}
+
+const { data: companiesData } = await useAsyncData<CrmCompaniesApiResponse>(
+  'crm-companies',
+  () => $fetch('/api/world/crm/companies', { query: companiesQuery }),
+)
+
+const rows = computed<CrmCompany[]>(() => companiesData.value?.items ?? [])
 </script>
 
 <template>

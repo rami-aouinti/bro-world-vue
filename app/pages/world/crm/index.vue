@@ -7,6 +7,7 @@ import type {
   CrmPipelineStage,
 } from '~/types/crm'
 import type { SessionUser } from '~/types/session'
+import type { CrmLead, CrmLeadsApiResponse } from '~~/server/types/api/crm'
 
 definePageMeta({ title: 'CRM' })
 
