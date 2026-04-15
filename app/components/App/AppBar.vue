@@ -684,12 +684,6 @@ function isMenuActive(paths: string[]) {
             </v-menu>
             <v-btn
               variant="text"
-              icon="mdi-calendar-month-outline"
-              :aria-label="t('appbar.calendar')"
-              to="/calendar"
-            />
-            <v-btn
-              variant="text"
               icon="mdi-inbox-outline"
               :aria-label="t('appbar.inbox')"
               to="/inbox"
@@ -761,15 +755,14 @@ function isMenuActive(paths: string[]) {
                 to="/profile"
               />
               <v-list-item
-                :title="t('world.shop.nav.orders', 'Orders')"
-                prepend-icon="mdi-receipt-text-outline"
-                to="/world/shop/orders"
-              />
-              <v-list-item
-                v-if="mobile"
                 :title="t('appbar.calendar')"
                 prepend-icon="mdi-calendar-month-outline"
                 to="/calendar"
+              />
+              <v-list-item
+                :title="t('world.shop.nav.orders', 'Orders')"
+                prepend-icon="mdi-receipt-text-outline"
+                to="/world/shop/orders"
               />
               <v-divider class="my-1" />
               <v-list-item
