@@ -554,10 +554,7 @@ const toggleAssessmentCompletion = async (
                       <v-list-item
                         v-for="lesson in module.lessons"
                         :key="lesson.id"
-                        @click="
-                          selectedModuleId = module.id
-                          selectedLessonId = lesson.id
-                        "
+                        @click="selectedModuleId = module.id; selectedLessonId = lesson.id"
                       >
                         <template #prepend
                           ><v-icon icon="mdi-book-education-outline" size="18"
