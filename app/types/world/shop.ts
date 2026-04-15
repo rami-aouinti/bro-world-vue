@@ -44,6 +44,9 @@ export interface ShopProductsFilters {
   name?: string
   category?: string
   status?: ShopProductStatus
+  minPrice?: number
+  maxPrice?: number
+  promotion?: number
   page?: number
   limit?: number
 }
@@ -78,12 +81,23 @@ export function normalizeShopProductsFilters(
   }
 
   const normalizedCategory = trimOrUndefined(filters.category)
+  const normalizeNonNegativeNumber = (value: unknown) => {
+    if (typeof value !== 'number' || !Number.isFinite(value)) return undefined
+    return Math.max(0, value)
+  }
+  const normalizeNonNegativeInteger = (value: unknown) => {
+    if (typeof value !== 'number' || !Number.isFinite(value)) return undefined
+    return Math.max(0, Math.floor(value))
+  }
 
   return {
     q: trimOrUndefined(filters.q),
     name: trimOrUndefined(filters.name),
     category: normalizedCategory?.toUpperCase(),
     status: filters.status,
+    minPrice: normalizeNonNegativeNumber(filters.minPrice),
+    maxPrice: normalizeNonNegativeNumber(filters.maxPrice),
+    promotion: normalizeNonNegativeInteger(filters.promotion),
     page:
       typeof filters.page === 'number' && Number.isFinite(filters.page)
         ? Math.max(1, Math.floor(filters.page))

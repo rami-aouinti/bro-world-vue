@@ -183,6 +183,9 @@ export const useWorldShopStore = defineStore('world-shop', () => {
       name: normalized.name,
       category: normalized.category,
       status: normalized.status,
+      minPrice: normalized.minPrice,
+      maxPrice: normalized.maxPrice,
+      promotion: normalized.promotion,
       page: normalized.page,
       limit: normalized.limit,
     }
