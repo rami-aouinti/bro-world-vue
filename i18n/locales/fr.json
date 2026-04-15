@@ -58,7 +58,32 @@
     "feature": "Fonctionnalités",
     "applications": "Applications",
     "sports": "Sports",
-    "quiz": "Quiz"
+    "quiz": "Quiz",
+    "coinCheckout": {
+      "title": "Acheter des pièces",
+      "currentBalance": "Solde actuel : {coins} pièces",
+      "packageSubtitle": "Créer la commande de paiement",
+      "payNow": "Payer maintenant",
+      "newCheckout": "Nouveau paiement",
+      "steps": {
+        "package": "1) Choisissez votre pack, puis nous créons la commande de paiement.",
+        "payment": "2) Commande créée, choisissez maintenant votre mode de paiement.",
+        "result": "3) Résultat du paiement pour la commande {orderId}."
+      },
+      "labels": {
+        "order": "Commande",
+        "pack": "Pack",
+        "amount": "Montant"
+      },
+      "success": {
+        "paymentConfirmed": "Paiement confirmé via {method}."
+      },
+      "errors": {
+        "generic": "Une erreur est survenue.",
+        "selectPaymentMethod": "Sélectionnez un mode de paiement.",
+        "paymentDeclined": "Paiement refusé."
+      }
+    }
   },
   "common": {
     "confirm": "Confirmer",
@@ -72,7 +97,8 @@
     "whatsYourName": "Comment vous appelez-vous ?",
     "retry": "Réessayer",
     "close": "Fermer",
-    "refresh": "Rafraîchir"
+    "refresh": "Rafraîchir",
+    "back": "Retour"
   },
   "platform": {
     "title": "Platforms",
