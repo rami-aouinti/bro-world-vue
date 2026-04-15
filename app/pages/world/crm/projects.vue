@@ -56,6 +56,47 @@ const rows = computed<Record<string, string | number>[]>(
 const isLoading = computed(() => crmStore.pending)
 const hasError = computed(() => !!crmStore.error)
 const isEmpty = computed(() => !isLoading.value && !hasError.value && !rows.value.length)
+const search = ref('')
+const selectedManager = ref('all')
+const selectedPhase = ref('all')
+
+const managerOptions = computed(() => {
+  const managers = new Set<string>()
+  for (const row of rows.value) {
+    const manager = String(row.manager ?? '').trim()
+    if (manager) managers.add(manager)
+  }
+  return ['all', ...Array.from(managers)]
+})
+
+const phaseOptions = computed(() => {
+  const phases = new Set<string>()
+  for (const row of rows.value) {
+    const phase = String(row.phase ?? '').trim()
+    if (phase) phases.add(phase)
+  }
+  return ['all', ...Array.from(phases)]
+})
+
+const filteredRows = computed(() =>
+  rows.value.filter((row) => {
+    const searchable = Object.values(row).join(' ').toLowerCase()
+    const matchesSearch = searchable.includes(search.value.toLowerCase().trim())
+    const matchesManager =
+      selectedManager.value === 'all' ||
+      String(row.manager ?? '') === selectedManager.value
+    const matchesPhase =
+      selectedPhase.value === 'all' || String(row.phase ?? '') === selectedPhase.value
+
+    return matchesSearch && matchesManager && matchesPhase
+  }),
+)
+
+function normalizeProgress(value: unknown) {
+  const numeric = Number(value)
+  if (!Number.isFinite(numeric)) return 0
+  return Math.min(100, Math.max(0, Math.round(numeric)))
+}
 </script>
 
 <template>
@@ -72,7 +113,39 @@ const isEmpty = computed(() => !isLoading.value && !hasError.value && !rows.valu
       :nav-items="crmNavItems"
       action-label="New project"
       action-icon="mdi-folder-plus-outline"
-    />
+    >
+      <template #right>
+        <v-card rounded="xl" class="pa-4 postcard-gradient-card" variant="tonal">
+          <h3 class="text-subtitle-1 font-weight-bold mb-3">Filters</h3>
+          <v-text-field
+            v-model="search"
+            prepend-inner-icon="mdi-magnify"
+            label="Search project"
+            variant="outlined"
+            density="comfortable"
+            hide-details
+            class="mb-3"
+          />
+          <v-select
+            v-model="selectedManager"
+            :items="managerOptions"
+            label="Manager"
+            variant="outlined"
+            density="comfortable"
+            hide-details
+            class="mb-3"
+          />
+          <v-select
+            v-model="selectedPhase"
+            :items="phaseOptions"
+            label="Phase"
+            variant="outlined"
+            density="comfortable"
+            hide-details
+          />
+        </v-card>
+      </template>
+    </WorldModuleDrawers>
 
     <v-container fluid>
       <v-alert
@@ -100,38 +173,41 @@ const isEmpty = computed(() => !isLoading.value && !hasError.value && !rows.valu
         text="Aucun projet CRM à afficher."
       />
 
-      <WorldFeatureScaffold
-        title="CRM Projects"
-        subtitle="Planifie, assigne et suis l’avancement des projets clients."
-        form-title="Create project"
-        form-description="Configure timeline, manager, budget et priorité opérationnelle."
-        :fields="[
-          { key: 'name', label: 'Project name', type: 'text' },
-          { key: 'manager', label: 'Project manager', type: 'text' },
-          {
-            key: 'priority',
-            label: 'Priority',
-            type: 'select',
-            options: [
-              { title: 'Low', value: 'low' },
-              { title: 'Medium', value: 'medium' },
-              { title: 'High', value: 'high' },
-            ],
-          },
-          { key: 'startDate', label: 'Start date', type: 'date' },
-          { key: 'budget', label: 'Budget', type: 'number' },
-          { key: 'notes', label: 'Brief', type: 'textarea' },
-        ]"
-        :headers="[
-          { title: 'ID', key: 'id' },
-          { title: 'Project', key: 'project' },
-          { title: 'Manager', key: 'manager' },
-          { title: 'Phase', key: 'phase' },
-          { title: 'Progress', key: 'progress' },
-        ]"
-        :rows="rows"
-        create-label="Create project"
-      />
+      <v-row>
+        <v-col
+          v-for="project in filteredRows"
+          :key="String(project.id)"
+          cols="12"
+          md="6"
+          xl="4"
+        >
+          <v-card rounded="xl" class="h-100 postcard-gradient-card">
+            <v-card-item>
+              <v-card-title class="d-flex align-center justify-space-between">
+                <span>{{ project.project || project.name || `Project #${project.id}` }}</span>
+                <v-chip size="small" color="primary" variant="tonal">
+                  {{ project.phase || 'N/A' }}
+                </v-chip>
+              </v-card-title>
+              <v-card-subtitle>
+                Manager: {{ project.manager || 'N/A' }}
+              </v-card-subtitle>
+            </v-card-item>
+            <v-card-text>
+              <div class="d-flex justify-space-between text-caption mb-2">
+                <span>Progress</span>
+                <strong>{{ normalizeProgress(project.progress) }}%</strong>
+              </div>
+              <v-progress-linear
+                :model-value="normalizeProgress(project.progress)"
+                color="primary"
+                height="8"
+                rounded
+              />
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
