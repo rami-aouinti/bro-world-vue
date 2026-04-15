@@ -83,17 +83,19 @@ const quickCheckItems = computed(() => [
     </template>
 
     <template #right>
-      <h3 class="text-subtitle-1 font-weight-bold mb-3">
-        {{ t('world.common.quickChecks.title', 'Quick checks') }}
-      </h3>
-      <v-list density="compact" class="bg-transparent">
-        <v-list-item
-          v-for="item in quickCheckItems"
-          :key="item.title"
-          :prepend-icon="item.icon"
-          :title="item.title"
-        />
-      </v-list>
+      <slot name="right">
+        <h3 class="text-subtitle-1 font-weight-bold mb-3">
+          {{ t('world.common.quickChecks.title', 'Quick checks') }}
+        </h3>
+        <v-list density="compact" class="bg-transparent">
+          <v-list-item
+            v-for="item in quickCheckItems"
+            :key="item.title"
+            :prepend-icon="item.icon"
+            :title="item.title"
+          />
+        </v-list>
+      </slot>
     </template>
   </AppPageDrawers>
 </template>
