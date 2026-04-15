@@ -67,18 +67,31 @@ export default defineEventHandler(async (event) => {
   const minPrice = parseNonNegativeNumber(query.minPrice)
   const maxPrice = parseNonNegativeNumber(query.maxPrice)
   const promotion = parseNonNegativeInt(query.promotion)
+  const q = typeof query.q === 'string' ? query.q : undefined
+  const name = typeof query.name === 'string' ? query.name : undefined
+  const category = typeof query.category === 'string' ? query.category : undefined
+  const status =
+    query.status === 'draft' || query.status === 'active' || query.status === 'archived'
+      ? query.status
+      : undefined
+
+  const sentFilters = {
+    q,
+    name,
+    category,
+    status,
+    minPrice,
+    maxPrice,
+    promotion,
+    page,
+    limit,
+  } satisfies ShopApiProductsFilters
 
   const response = await callPublicApi<PublicShopProductsResponse>(
     event,
     '/shop/general/products',
     {
-      query: {
-        page,
-        limit,
-        minPrice,
-        maxPrice,
-        promotion,
-      },
+      query: sentFilters,
     },
   )
 
@@ -103,62 +116,22 @@ export default defineEventHandler(async (event) => {
     updatedAt: product.updatedAt,
   }))
 
-  const q = typeof query.q === 'string' ? query.q.toLowerCase().trim() : ''
-  const name =
-    typeof query.name === 'string' ? query.name.toLowerCase().trim() : ''
-  const category =
-    typeof query.category === 'string' ? query.category.toLowerCase().trim() : ''
-  const status =
-    query.status === 'draft' || query.status === 'active' || query.status === 'archived'
-      ? query.status
-      : undefined
-
-  const filtered = normalizedProducts.filter((product) => {
-    if (status && product.status !== status) return false
-    if (
-      q &&
-      !`${product.name} ${product.description}`.toLowerCase().includes(q)
-    ) {
-      return false
-    }
-    if (name && !product.name.toLowerCase().includes(name)) return false
-    if (category && !product.category.toLowerCase().includes(category)) {
-      return false
-    }
-    if (typeof minPrice === 'number' && product.amount < minPrice) {
-      return false
-    }
-    if (typeof maxPrice === 'number' && product.amount > maxPrice) {
-      return false
-    }
-    return true
-  })
-
-  const total = response.pagination?.totalItems ?? filtered.length
+  const totalItems = response.pagination?.totalItems ?? normalizedProducts.length
   const totalPages =
-    response.pagination?.totalPages ?? Math.max(1, Math.ceil(total / Math.max(1, limit)))
+    response.pagination?.totalPages ??
+    Math.max(1, Math.ceil(totalItems / Math.max(1, response.pagination?.limit ?? limit)))
 
   return {
-    data: filtered,
+    data: normalizedProducts,
     meta: {
       pagination: {
         page: response.pagination?.page ?? page,
         limit: response.pagination?.limit ?? limit,
-        total,
-        totalItems: total,
+        total: totalItems,
+        totalItems,
         totalPages,
       },
-      filters: {
-        q: typeof query.q === 'string' ? query.q : undefined,
-        name: typeof query.name === 'string' ? query.name : undefined,
-        category: typeof query.category === 'string' ? query.category : undefined,
-        status,
-        minPrice,
-        maxPrice,
-        promotion,
-        page,
-        limit,
-      } satisfies ShopApiProductsFilters,
+      filters: sentFilters,
       upstreamFilters: response.meta?.filters ?? [],
     },
   }
