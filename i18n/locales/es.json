@@ -363,6 +363,7 @@
         "paymentTitle": "Elegir método de pago",
         "validationTitle": "Validación de la transacción",
         "confirmCart": "Confirmar carrito",
+        "addToCart": "Añadir al carrito",
         "payNow": "Pagar ahora",
         "cancel": "Cancelar",
         "newOrder": "Crear un nuevo pedido",

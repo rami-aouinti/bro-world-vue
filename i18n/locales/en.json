@@ -398,6 +398,7 @@
         "paymentTitle": "Choose payment method",
         "validationTitle": "Transaction validation",
         "confirmCart": "Confirm cart",
+        "addToCart": "Add to cart",
         "payNow": "Pay now",
         "cancel": "Cancel",
         "newOrder": "Create a new order",
