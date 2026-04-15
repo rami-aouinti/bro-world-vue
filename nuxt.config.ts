@@ -1,5 +1,6 @@
 import { aliases } from 'vuetify/iconsets/mdi'
 import { defineNuxtConfig } from 'nuxt/config'
+import { DEFAULT_GLOBAL_SHOP_ID } from './app/constants/shop'
 
 const shouldSplitCss = process.env.NUXT_CSS_CODE_SPLIT === 'true'
 
@@ -116,6 +117,9 @@ export default defineNuxtConfig({
     },
     public: {
       apiBaseUrl: 'https://bro-world.org/api/v1',
+      shop: {
+        globalShopId: process.env.NUXT_PUBLIC_GLOBAL_SHOP_ID || DEFAULT_GLOBAL_SHOP_ID,
+      },
     },
     github: {
       clientId: '',
