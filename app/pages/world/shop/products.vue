@@ -12,9 +12,28 @@ const shopNavItems = [
 ]
 
 const rows = [
-  { id: 'SH-01', name: 'Products workflow A', owner: 'Team Alpha', status: 'Active', priority: 'High' },
-  { id: 'SH-02', name: 'Products workflow B', owner: 'Team Beta', status: 'Review', priority: 'Medium' },
-  { id: 'SH-03', name: 'Products workflow C', owner: 'Team Gamma', status: 'Draft', priority: 'Low' },
+  {
+    id: 'prd-premium-hoodie',
+    name: 'Premium Hoodie',
+    sku: 'BW-HOOD-BASE',
+    variants: '2 variants (M/Black, L/Navy)',
+    categories: 'Apparel > Hoodies',
+    facets: 'brand:bro-world · material:cotton',
+    images: 2,
+    seo: 'Ready',
+    status: 'Active',
+  },
+  {
+    id: 'prd-desk-kit',
+    name: 'Desk Setup Kit',
+    sku: 'BW-DSK-BASE',
+    variants: '3 variants (S/M/L · Walnut)',
+    categories: 'Workspace',
+    facets: 'brand:atelier · color:walnut',
+    images: 3,
+    seo: 'In progress',
+    status: 'Draft',
+  },
 ]
 </script>
 
@@ -25,36 +44,46 @@ const rows = [
       module-icon="mdi-storefront-outline"
       module-description="Navigation complète du module Shop."
       :nav-items="shopNavItems"
-      action-label="Create Products item"
+      action-label="Create product"
     />
 
     <v-container fluid class="pt-0">
       <WorldFeatureScaffold
         title="Shop - Products"
-        subtitle="Gestion opérationnelle de products avec formulaires et tableau de suivi."
-        form-title="Create Products record"
-        form-description="Renseigne les informations métier pour le module products."
+        subtitle="Catalogue produit avancé: variantes taille/couleur, attributs, SKU uniques, galerie d'images et champs SEO."
+        form-title="Create / Update product"
+        form-description="Renseigne les informations produit, variantes, médias et SEO pour publication e-commerce."
         :fields="[
-          { key: 'title', label: 'Title', type: 'text' },
-          { key: 'owner', label: 'Owner', type: 'text' },
+          { key: 'name', label: 'Product name', type: 'text' },
+          { key: 'slug', label: 'Slug', type: 'text' },
+          { key: 'baseSku', label: 'Base SKU (unique)', type: 'text' },
           { key: 'status', label: 'Status', type: 'select', options: [
             { title: 'Draft', value: 'draft' },
             { title: 'Active', value: 'active' },
             { title: 'Archived', value: 'archived' },
           ] },
-          { key: 'target', label: 'Target', type: 'number' },
-          { key: 'date', label: 'Date', type: 'date' },
-          { key: 'notes', label: 'Notes', type: 'textarea' },
+          { key: 'categoryIds', label: 'Categories (hierarchy ids)', type: 'text' },
+          { key: 'attributes', label: 'Attributes JSON (brand/material/fit...)', type: 'textarea' },
+          { key: 'variants', label: 'Variants JSON (size/color/sku/price/stock)', type: 'textarea' },
+          { key: 'images', label: 'Image URLs (comma separated)', type: 'textarea' },
+          { key: 'metaTitle', label: 'SEO meta title', type: 'text' },
+          { key: 'metaDescription', label: 'SEO meta description', type: 'textarea' },
+          { key: 'keywords', label: 'SEO keywords', type: 'text' },
+          { key: 'canonicalUrl', label: 'SEO canonical URL', type: 'text' },
         ]"
         :headers="[
           { title: 'ID', key: 'id' },
           { title: 'Name', key: 'name' },
-          { title: 'Owner', key: 'owner' },
+          { title: 'Base SKU', key: 'sku' },
+          { title: 'Variants', key: 'variants' },
+          { title: 'Categories', key: 'categories' },
+          { title: 'Facet values', key: 'facets' },
+          { title: 'Images', key: 'images' },
+          { title: 'SEO', key: 'seo' },
           { title: 'Status', key: 'status' },
-          { title: 'Priority', key: 'priority' },
         ]"
         :rows="rows"
-        create-label="Save Products"
+        create-label="Save product"
       />
     </v-container>
   </div>

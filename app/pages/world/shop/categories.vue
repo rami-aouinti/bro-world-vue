@@ -12,9 +12,24 @@ const shopNavItems = [
 ]
 
 const rows = [
-  { id: 'SH-01', name: 'Categories workflow A', owner: 'Team Alpha', status: 'Active', priority: 'High' },
-  { id: 'SH-02', name: 'Categories workflow B', owner: 'Team Beta', status: 'Review', priority: 'Medium' },
-  { id: 'SH-03', name: 'Categories workflow C', owner: 'Team Gamma', status: 'Draft', priority: 'Low' },
+  {
+    id: 'cat-apparel',
+    name: 'Apparel',
+    hierarchy: 'Root',
+    facets: 'size, color, price',
+    productsCount: 12,
+    seo: 'Ready',
+    status: 'Active',
+  },
+  {
+    id: 'cat-hoodies',
+    name: 'Hoodies',
+    hierarchy: 'Apparel > Hoodies',
+    facets: 'size, material',
+    productsCount: 5,
+    seo: 'Ready',
+    status: 'Active',
+  },
 ]
 </script>
 
@@ -25,36 +40,38 @@ const rows = [
       module-icon="mdi-storefront-outline"
       module-description="Navigation complète du module Shop."
       :nav-items="shopNavItems"
-      action-label="Create Categories item"
+      action-label="Create category"
     />
 
     <v-container fluid class="pt-0">
       <WorldFeatureScaffold
         title="Shop - Categories"
-        subtitle="Gestion opérationnelle de categories avec formulaires et tableau de suivi."
-        form-title="Create Categories record"
-        form-description="Renseigne les informations métier pour le module categories."
+        subtitle="Taxonomie hiérarchique parent/enfant avec filtres facettés, médias et SEO."
+        form-title="Create / Update category"
+        form-description="Configure la hiérarchie des catégories et les facettes utilisées dans les filtres du catalogue."
         :fields="[
-          { key: 'title', label: 'Title', type: 'text' },
-          { key: 'owner', label: 'Owner', type: 'text' },
-          { key: 'status', label: 'Status', type: 'select', options: [
-            { title: 'Draft', value: 'draft' },
-            { title: 'Active', value: 'active' },
-            { title: 'Archived', value: 'archived' },
-          ] },
-          { key: 'target', label: 'Target', type: 'number' },
-          { key: 'date', label: 'Date', type: 'date' },
-          { key: 'notes', label: 'Notes', type: 'textarea' },
+          { key: 'name', label: 'Category name', type: 'text' },
+          { key: 'slug', label: 'Slug', type: 'text' },
+          { key: 'parentId', label: 'Parent category id (optional)', type: 'text' },
+          { key: 'description', label: 'Description', type: 'textarea' },
+          { key: 'image', label: 'Category image URL', type: 'text' },
+          { key: 'facetDefinitions', label: 'Facet definitions JSON', type: 'textarea' },
+          { key: 'metaTitle', label: 'SEO meta title', type: 'text' },
+          { key: 'metaDescription', label: 'SEO meta description', type: 'textarea' },
+          { key: 'keywords', label: 'SEO keywords', type: 'text' },
+          { key: 'canonicalUrl', label: 'SEO canonical URL', type: 'text' },
         ]"
         :headers="[
           { title: 'ID', key: 'id' },
           { title: 'Name', key: 'name' },
-          { title: 'Owner', key: 'owner' },
+          { title: 'Hierarchy', key: 'hierarchy' },
+          { title: 'Facets', key: 'facets' },
+          { title: 'Products linked', key: 'productsCount' },
+          { title: 'SEO', key: 'seo' },
           { title: 'Status', key: 'status' },
-          { title: 'Priority', key: 'priority' },
         ]"
         :rows="rows"
-        create-label="Save Categories"
+        create-label="Save category"
       />
     </v-container>
   </div>
