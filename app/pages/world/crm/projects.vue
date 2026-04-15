@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { CrmProject, CrmProjectsApiResponse } from '~~/server/types/api/crm'
+
 definePageMeta({ title: 'CRM Projects' })
 
 const crmNavItems = [
@@ -8,11 +10,19 @@ const crmNavItems = [
   { title: 'Admin', to: '/world/crm/admin', icon: 'mdi-shield-crown-outline', rootOnly: true },
 ]
 
-const rows = [
-  { id: 'P-104', project: 'Migration B2B', manager: 'S. Ali', phase: 'Build', progress: '62%' },
-  { id: 'P-108', project: 'Referral Automation', manager: 'E. Stone', phase: 'QA', progress: '81%' },
-  { id: 'P-113', project: 'Contract Workspace', manager: 'J. Reid', phase: 'Design', progress: '29%' },
-]
+const projectsQuery = {
+  page: 1,
+  limit: 10,
+  sortBy: 'id',
+  sortOrder: 'asc' as const,
+}
+
+const { data: projectsData } = await useAsyncData<CrmProjectsApiResponse>(
+  'crm-projects',
+  () => $fetch('/api/world/crm/projects', { query: projectsQuery }),
+)
+
+const rows = computed<CrmProject[]>(() => projectsData.value?.items ?? [])
 </script>
 
 <template>
