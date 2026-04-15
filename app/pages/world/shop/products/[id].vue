@@ -65,11 +65,9 @@ async function addToCart() {
     return
   }
 
-  const shopId = (route.query.shopId as string | undefined)?.trim() || 'default'
-
   addToCartLoading.value = true
   try {
-    await shopStore.addCartItem(shopId, product.value.id, 1)
+    await shopStore.addCartItem(product.value.id, 1)
     Notify.success(
       t(
         'world.shop.feedback.addToCartSuccess',
