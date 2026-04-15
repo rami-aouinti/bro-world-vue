@@ -15,20 +15,35 @@ type Body = {
 
 const validateCart = (cart: unknown) => {
   if (!Array.isArray(cart) || cart.length === 0) {
-    throw createError({ statusCode: 422, statusMessage: 'cart must contain at least one line' })
+    throw createError({
+      statusCode: 422,
+      statusMessage: 'cart must contain at least one line',
+    })
   }
 
   return cart.map((line, index) => {
     if (!line || typeof line !== 'object') {
-      throw createError({ statusCode: 422, statusMessage: `cart[${index}] is invalid` })
+      throw createError({
+        statusCode: 422,
+        statusMessage: `cart[${index}] is invalid`,
+      })
     }
 
     const payload = line as CartLine
     return {
-      productId: assertNonEmptyString(payload.productId, `cart[${index}].productId`),
+      productId: assertNonEmptyString(
+        payload.productId,
+        `cart[${index}].productId`,
+      ),
       name: assertNonEmptyString(payload.name, `cart[${index}].name`),
-      unitPrice: assertPositiveNumber(payload.unitPrice, `cart[${index}].unitPrice`),
-      quantity: assertPositiveNumber(payload.quantity, `cart[${index}].quantity`),
+      unitPrice: assertPositiveNumber(
+        payload.unitPrice,
+        `cart[${index}].unitPrice`,
+      ),
+      quantity: assertPositiveNumber(
+        payload.quantity,
+        `cart[${index}].quantity`,
+      ),
     }
   })
 }
@@ -36,7 +51,10 @@ const validateCart = (cart: unknown) => {
 export default defineEventHandler(async (event) => {
   const body = await readBody<Body>(event)
   const cart = validateCart(body.cart)
-  const currency = typeof body.currency === 'string' && body.currency.trim() ? body.currency.trim().toUpperCase() : 'USD'
+  const currency =
+    typeof body.currency === 'string' && body.currency.trim()
+      ? body.currency.trim().toUpperCase()
+      : 'USD'
 
   const store = await getCheckoutStore()
   const id = generateId('chk')

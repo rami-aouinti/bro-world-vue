@@ -10,10 +10,10 @@ export default defineEventHandler(async (event) => {
   const body = await readBody<CheckoutBody>(event)
 
   if (
-    !body.packageId
-    || !body.paymentMethod
-    || typeof body.coins !== 'number'
-    || typeof body.amount !== 'number'
+    !body.packageId ||
+    !body.paymentMethod ||
+    typeof body.coins !== 'number' ||
+    typeof body.amount !== 'number'
   ) {
     throw createError({
       statusCode: 400,

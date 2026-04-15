@@ -20,9 +20,15 @@ type StripeIntent = {
   client_secret?: string
 }
 
-async function createStripePaymentIntent(amountInSmallestUnit: number, currency: string, idempotencyKey: string, metadata: Record<string, string>) {
+async function createStripePaymentIntent(
+  amountInSmallestUnit: number,
+  currency: string,
+  idempotencyKey: string,
+  metadata: Record<string, string>,
+) {
   const runtimeConfig = useRuntimeConfig()
-  const secretKey = runtimeConfig.stripe?.secretKey || process.env.STRIPE_SECRET_KEY
+  const secretKey =
+    runtimeConfig.stripe?.secretKey || process.env.STRIPE_SECRET_KEY
 
   if (!secretKey) {
     throw createError({
@@ -40,16 +46,19 @@ async function createStripePaymentIntent(amountInSmallestUnit: number, currency:
     payload.set(`metadata[${key}]`, value)
   }
 
-  const response = await $fetch<StripeIntent>('https://api.stripe.com/v1/payment_intents', {
-    method: 'POST',
-    headers: {
-      authorization: `Bearer ${secretKey}`,
-      'content-type': 'application/x-www-form-urlencoded',
-      'idempotency-key': idempotencyKey,
+  const response = await $fetch<StripeIntent>(
+    'https://api.stripe.com/v1/payment_intents',
+    {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${secretKey}`,
+        'content-type': 'application/x-www-form-urlencoded',
+        'idempotency-key': idempotencyKey,
+      },
+      body: payload.toString(),
+      timeout: 15000,
     },
-    body: payload.toString(),
-    timeout: 15000,
-  })
+  )
 
   return response
 }
@@ -61,32 +70,45 @@ export default defineEventHandler(async (event) => {
   const provider = body.provider || 'stripe'
 
   if (provider !== 'stripe') {
-    throw createError({ statusCode: 422, statusMessage: 'Only stripe provider is currently implemented' })
+    throw createError({
+      statusCode: 422,
+      statusMessage: 'Only stripe provider is currently implemented',
+    })
   }
 
   const store = await getCheckoutStore()
   const session = store.sessions[checkoutId]
 
   if (!session) {
-    throw createError({ statusCode: 404, statusMessage: 'checkout session not found' })
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'checkout session not found',
+    })
   }
 
   const previousCheckout = store.idempotency[idempotencyKey]
   if (previousCheckout === checkoutId) {
-    const previous = session.attempts.find(attempt => attempt.idempotencyKey === idempotencyKey)
-    if (previous)
-      return { checkout: session, attempt: previous }
+    const previous = session.attempts.find(
+      (attempt) => attempt.idempotencyKey === idempotencyKey,
+    )
+    if (previous) return { checkout: session, attempt: previous }
     return { checkout: session, attempt: null }
   }
 
   if (previousCheckout && previousCheckout !== checkoutId) {
-    throw createError({ statusCode: 409, statusMessage: 'idempotencyKey already used by another checkout' })
+    throw createError({
+      statusCode: 409,
+      statusMessage: 'idempotencyKey already used by another checkout',
+    })
   }
 
   assertStepTransition(session.step, 'payment')
 
   if (!session.selectedShippingId) {
-    throw createError({ statusCode: 422, statusMessage: 'shipping must be selected before payment' })
+    throw createError({
+      statusCode: 422,
+      statusMessage: 'shipping must be selected before payment',
+    })
   }
 
   const amountInCents = Math.round(session.totalAmount * 100)
@@ -127,10 +149,13 @@ export default defineEventHandler(async (event) => {
     await saveCheckoutStore(store)
 
     return { checkout: session, attempt }
-  }
-  catch (error: any) {
-    const statusCode = typeof error?.statusCode === 'number' ? error.statusCode : 502
-    const reason = typeof error?.statusMessage === 'string' ? error.statusMessage : 'provider_error'
+  } catch (error: any) {
+    const statusCode =
+      typeof error?.statusCode === 'number' ? error.statusCode : 502
+    const reason =
+      typeof error?.statusMessage === 'string'
+        ? error.statusMessage
+        : 'provider_error'
 
     session.status = 'failed'
     session.lastError = reason

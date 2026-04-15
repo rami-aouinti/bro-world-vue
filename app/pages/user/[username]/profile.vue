@@ -41,7 +41,7 @@ const displayName = computed(() => {
 </script>
 
 <template>
-  <v-container fluid class="py-6">
+  <v-container fluid>
     <div class="mx-auto" style="max-width: 760px">
       <v-progress-linear
         v-if="pending"

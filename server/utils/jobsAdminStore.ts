@@ -6,7 +6,12 @@ import type {
 } from '~~/server/types/api/jobs'
 import type { SessionUser } from '~/types/session'
 
-const rolesPriority: JobAccessRole[] = ['admin', 'recruiter', 'hiring_manager', 'interviewer']
+const rolesPriority: JobAccessRole[] = [
+  'admin',
+  'recruiter',
+  'hiring_manager',
+  'interviewer',
+]
 
 const permissions: Record<JobAccessRole, JobPermissionMatrix> = {
   recruiter: {
@@ -58,17 +63,25 @@ export const getJobsAdminPolicy = (): JobsAdminPolicyResponse => ({
   permissions,
 })
 
-export const updateJobsPolicy = (nextPolicy: Partial<JobsDataRetentionPolicy>): JobsDataRetentionPolicy => {
+export const updateJobsPolicy = (
+  nextPolicy: Partial<JobsDataRetentionPolicy>,
+): JobsDataRetentionPolicy => {
   if (typeof nextPolicy.retentionDays === 'number') {
     policy.retentionDays = Math.max(30, Math.round(nextPolicy.retentionDays))
   }
 
   if (typeof nextPolicy.anonymizeAfterDays === 'number') {
-    policy.anonymizeAfterDays = Math.max(7, Math.round(nextPolicy.anonymizeAfterDays))
+    policy.anonymizeAfterDays = Math.max(
+      7,
+      Math.round(nextPolicy.anonymizeAfterDays),
+    )
   }
 
   if (typeof nextPolicy.autoDeleteRejectedAfterDays === 'number') {
-    policy.autoDeleteRejectedAfterDays = Math.max(30, Math.round(nextPolicy.autoDeleteRejectedAfterDays))
+    policy.autoDeleteRejectedAfterDays = Math.max(
+      30,
+      Math.round(nextPolicy.autoDeleteRejectedAfterDays),
+    )
   }
 
   if (typeof nextPolicy.restrictedAccessEnabled === 'boolean') {
@@ -94,10 +107,16 @@ export const updateRolePermission = (
   return permissions[role]
 }
 
-export const resolveJobAccessRole = (user: SessionUser | null): JobAccessRole => {
+export const resolveJobAccessRole = (
+  user: SessionUser | null,
+): JobAccessRole => {
   const roles = new Set(user?.roles ?? [])
 
-  if (roles.has('ROLE_ROOT') || roles.has('ROLE_ADMIN') || roles.has('ROLE_HR_ADMIN')) {
+  if (
+    roles.has('ROLE_ROOT') ||
+    roles.has('ROLE_ADMIN') ||
+    roles.has('ROLE_HR_ADMIN')
+  ) {
     return 'admin'
   }
 
@@ -116,11 +135,15 @@ export const resolveJobAccessRole = (user: SessionUser | null): JobAccessRole =>
   return 'interviewer'
 }
 
-export const getResolvedPermissions = (role: JobAccessRole): JobPermissionMatrix => {
+export const getResolvedPermissions = (
+  role: JobAccessRole,
+): JobPermissionMatrix => {
   return permissions[role]
 }
 
-export const getHighestRoleFromMany = (roles: JobAccessRole[]): JobAccessRole => {
+export const getHighestRoleFromMany = (
+  roles: JobAccessRole[],
+): JobAccessRole => {
   for (const role of rolesPriority) {
     if (roles.includes(role)) {
       return role

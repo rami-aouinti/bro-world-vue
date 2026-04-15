@@ -1,4 +1,9 @@
-export type CrmPipelineStage = 'lead' | 'qualified' | 'proposal' | 'negotiation' | 'won_lost'
+export type CrmPipelineStage =
+  | 'lead'
+  | 'qualified'
+  | 'proposal'
+  | 'negotiation'
+  | 'won_lost'
 
 export type CrmOutcome = 'won' | 'lost'
 

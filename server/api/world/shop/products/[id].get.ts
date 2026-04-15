@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
   const catalog = await getShopCatalog()
 
-  const product = catalog.products.find(item => item.id === id)
+  const product = catalog.products.find((item) => item.id === id)
   if (!product) {
     throw createError({ statusCode: 404, statusMessage: 'Product not found' })
   }

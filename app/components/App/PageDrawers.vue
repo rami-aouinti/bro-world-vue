@@ -21,15 +21,19 @@ watchEffect(() => {
 
   if (left) {
     registry.setLeft(Object.assign(left, { __scopeId: scopeId }))
-  }
-  else if ((registry.left.value as { __scopeId?: symbol } | null)?.__scopeId === scopeId) {
+  } else if (
+    (registry.left.value as { __scopeId?: symbol } | null)?.__scopeId ===
+    scopeId
+  ) {
     registry.setLeft(null)
   }
 
   if (right) {
     registry.setRight(Object.assign(right, { __scopeId: scopeId }))
-  }
-  else if ((registry.right.value as { __scopeId?: symbol } | null)?.__scopeId === scopeId) {
+  } else if (
+    (registry.right.value as { __scopeId?: symbol } | null)?.__scopeId ===
+    scopeId
+  ) {
     registry.setRight(null)
   }
 })
@@ -39,11 +43,17 @@ onBeforeUnmount(() => {
     return
   }
 
-  if ((registry.left.value as { __scopeId?: symbol } | null)?.__scopeId === scopeId) {
+  if (
+    (registry.left.value as { __scopeId?: symbol } | null)?.__scopeId ===
+    scopeId
+  ) {
     registry.setLeft(null)
   }
 
-  if ((registry.right.value as { __scopeId?: symbol } | null)?.__scopeId === scopeId) {
+  if (
+    (registry.right.value as { __scopeId?: symbol } | null)?.__scopeId ===
+    scopeId
+  ) {
     registry.setRight(null)
   }
 })

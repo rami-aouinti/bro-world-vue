@@ -88,59 +88,59 @@ export interface LearningCoursesApiResponse {
 
 export type LearningCoursesMutationPayload =
   | {
-    action: 'createCourse'
-    title: string
-    owner: string
-  }
+      action: 'createCourse'
+      title: string
+      owner: string
+    }
   | {
-    action: 'addModule'
-    courseId: string
-    title: string
-    description?: string
-  }
+      action: 'addModule'
+      courseId: string
+      title: string
+      description?: string
+    }
   | {
-    action: 'addLesson'
-    courseId: string
-    moduleId: string
-    title: string
-    objective?: string
-  }
+      action: 'addLesson'
+      courseId: string
+      moduleId: string
+      title: string
+      objective?: string
+    }
   | {
-    action: 'addAssessment'
-    courseId: string
-    moduleId: string
-    lessonId: string
-    title: string
-    gradingScale: 'points' | 'percent'
-    passThreshold: number
-    questions: Array<{ prompt: string, points: number }>
-  }
+      action: 'addAssessment'
+      courseId: string
+      moduleId: string
+      lessonId: string
+      title: string
+      gradingScale: 'points' | 'percent'
+      passThreshold: number
+      questions: Array<{ prompt: string; points: number }>
+    }
   | {
-    action: 'addContentBlock'
-    courseId: string
-    moduleId: string
-    lessonId: string
-    title: string
-    type: LearningContentType
-    payload: string
-    versionNote?: string
-  }
+      action: 'addContentBlock'
+      courseId: string
+      moduleId: string
+      lessonId: string
+      title: string
+      type: LearningContentType
+      payload: string
+      versionNote?: string
+    }
   | {
-    action: 'addContentVersion'
-    courseId: string
-    moduleId: string
-    lessonId: string
-    contentBlockId: string
-    payload: string
-    versionNote?: string
-  }
+      action: 'addContentVersion'
+      courseId: string
+      moduleId: string
+      lessonId: string
+      contentBlockId: string
+      payload: string
+      versionNote?: string
+    }
   | {
-    action: 'setPrerequisite'
-    courseId: string
-    moduleId: string
-    lessonId: string
-    prerequisiteLessonIds: string[]
-  }
+      action: 'setPrerequisite'
+      courseId: string
+      moduleId: string
+      lessonId: string
+      prerequisiteLessonIds: string[]
+    }
 
 export interface LearningProgressApiResponse {
   items: LearningProgress[]

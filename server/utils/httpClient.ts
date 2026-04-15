@@ -20,12 +20,15 @@ function headersToRecord(headers?: HeadersInit): Record<string, string> {
     return Object.fromEntries(headers)
   }
 
-  return Object.entries(headers).reduce<Record<string, string>>((acc, [key, value]) => {
-    if (typeof value === 'string') {
-      acc[key] = value
-    }
-    return acc
-  }, {})
+  return Object.entries(headers).reduce<Record<string, string>>(
+    (acc, [key, value]) => {
+      if (typeof value === 'string') {
+        acc[key] = value
+      }
+      return acc
+    },
+    {},
+  )
 }
 
 function withQuery(url: string, query?: ApiQuery): string {
@@ -55,16 +58,16 @@ export async function apiRequest<TResponse>(
   const fullUrl = withQuery(url, options?.query)
   const maxRetries = 3
   const hasBody = typeof options?.body !== 'undefined' && options?.body !== null
-  const isBodyInit
-    = hasBody
-      && (
-        options?.body instanceof FormData
-        || typeof options?.body === 'string'
-        || options?.body instanceof URLSearchParams
-        || options?.body instanceof Blob
-      )
-  const body
-    = hasBody && !isBodyInit ? JSON.stringify(options?.body) : (options?.body as BodyInit | null | undefined)
+  const isBodyInit =
+    hasBody &&
+    (options?.body instanceof FormData ||
+      typeof options?.body === 'string' ||
+      options?.body instanceof URLSearchParams ||
+      options?.body instanceof Blob)
+  const body =
+    hasBody && !isBodyInit
+      ? JSON.stringify(options?.body)
+      : (options?.body as BodyInit | null | undefined)
 
   if (hasBody && !isBodyInit && !headers['Content-Type']) {
     headers['Content-Type'] = 'application/json'
@@ -80,10 +83,12 @@ export async function apiRequest<TResponse>(
 
       if (!response.ok) {
         if (
-          RETRYABLE_STATUS_CODES.includes(response.status)
-          && attempt < maxRetries
+          RETRYABLE_STATUS_CODES.includes(response.status) &&
+          attempt < maxRetries
         ) {
-          await new Promise(resolve => setTimeout(resolve, (attempt + 1) * 300))
+          await new Promise((resolve) =>
+            setTimeout(resolve, (attempt + 1) * 300),
+          )
           continue
         }
 
@@ -99,7 +104,7 @@ export async function apiRequest<TResponse>(
         throw error
       }
 
-      await new Promise(resolve => setTimeout(resolve, (attempt + 1) * 300))
+      await new Promise((resolve) => setTimeout(resolve, (attempt + 1) * 300))
     }
   }
 

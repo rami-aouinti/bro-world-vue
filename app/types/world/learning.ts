@@ -27,6 +27,8 @@ export interface WorldLearningListResponse<T> {
 
 export type WorldLearningCoursesListResponse = LearningCoursesApiResponse
 export type WorldLearningProgressListResponse = LearningProgressApiResponse
-export type WorldLearningAnalyticsDetailResponse = LearningAdminAnalyticsApiResponse
+export type WorldLearningAnalyticsDetailResponse =
+  LearningAdminAnalyticsApiResponse
 export type WorldLearningCourseMutationPayload = LearningCoursesMutationPayload
-export type WorldLearningProgressMutationPayload = LearningProgressMutationPayload
+export type WorldLearningProgressMutationPayload =
+  LearningProgressMutationPayload

@@ -185,7 +185,11 @@ const canShowDetails = computed(() => groupedReactors.value.length > 0)
               >
                 <template #prepend>
                   <v-avatar size="28" class="me-2">
-                    <v-img v-if="user.photo" :src="user.photo" :alt="user.name" />
+                    <v-img
+                      v-if="user.photo"
+                      :src="user.photo"
+                      :alt="user.name"
+                    />
                     <v-icon v-else icon="mdi-account" />
                   </v-avatar>
                 </template>

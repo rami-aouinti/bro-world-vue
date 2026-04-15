@@ -118,7 +118,7 @@ function resetForm() {
             size="small"
             color="primary"
             variant="tonal"
-          >{{ step }}</v-chip
+            >{{ step }}</v-chip
           >
         </div>
       </template>
@@ -131,8 +131,8 @@ function resetForm() {
           <p class="mb-4">{{ page.hero.subtitle }}</p>
           <div class="d-flex flex-wrap ga-3">
             <v-btn color="primary" variant="flat">{{
-                page.hero.primaryCta
-              }}</v-btn>
+              page.hero.primaryCta
+            }}</v-btn>
             <v-btn variant="outlined">{{ page.hero.secondaryCta }}</v-btn>
           </div>
         </div>
@@ -149,67 +149,66 @@ function resetForm() {
       />
 
       <template v-else-if="page">
-       <v-card rounded="xl" class="mb-4 pa-6 postcard-gradient-card">
-         <h1 class="text-h6 mb-2">{{ page.form.title }}</h1>
-         <v-row density="comfortable">
-           <v-col cols="12" sm="6">
-             <v-text-field
-               v-model="formState.firstName"
-               :label="page.form.fields.firstName"
-               variant="outlined"
-               density="comfortable"
-             />
-           </v-col>
-           <v-col cols="12" sm="6">
-             <v-text-field
-               v-model="formState.lastName"
-               :label="page.form.fields.lastName"
-               variant="outlined"
-               density="comfortable"
-             />
-           </v-col>
-           <v-col cols="12" sm="6">
-             <v-text-field
-               v-model="formState.email"
-               :label="page.form.fields.email"
-               variant="outlined"
-               density="comfortable"
-             />
-           </v-col>
-           <v-col cols="12" sm="6">
-             <v-select
-               v-model="formState.topic"
-               :label="page.form.fields.topic"
-               :items="page.form.topics"
-               item-title="label"
-               item-value="value"
-               variant="outlined"
-               density="comfortable"
-             />
-           </v-col>
-           <v-col cols="12">
-             <v-textarea
-               v-model="formState.message"
-               :label="page.form.fields.message"
-               :placeholder="page.form.fields.messagePlaceholder"
-               variant="outlined"
-               rows="4"
-             />
-           </v-col>
-         </v-row>
-         <p class="text-caption text-medium-emphasis mb-3">
-           {{ page.form.privacyNote }}
-         </p>
-         <div class="d-flex flex-wrap ga-3">
-           <v-btn color="primary">{{ page.form.submit }}</v-btn>
-           <v-btn variant="outlined" @click="resetForm">{{
-               page.form.reset
-             }}</v-btn>
-         </div>
-       </v-card>
+        <v-card rounded="xl" class="mb-4 pa-6 postcard-gradient-card">
+          <h1 class="text-h6 mb-2">{{ page.form.title }}</h1>
+          <v-row density="comfortable">
+            <v-col cols="12" sm="6">
+              <v-text-field
+                v-model="formState.firstName"
+                :label="page.form.fields.firstName"
+                variant="outlined"
+                density="comfortable"
+              />
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-text-field
+                v-model="formState.lastName"
+                :label="page.form.fields.lastName"
+                variant="outlined"
+                density="comfortable"
+              />
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-text-field
+                v-model="formState.email"
+                :label="page.form.fields.email"
+                variant="outlined"
+                density="comfortable"
+              />
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-select
+                v-model="formState.topic"
+                :label="page.form.fields.topic"
+                :items="page.form.topics"
+                item-title="label"
+                item-value="value"
+                variant="outlined"
+                density="comfortable"
+              />
+            </v-col>
+            <v-col cols="12">
+              <v-textarea
+                v-model="formState.message"
+                :label="page.form.fields.message"
+                :placeholder="page.form.fields.messagePlaceholder"
+                variant="outlined"
+                rows="4"
+              />
+            </v-col>
+          </v-row>
+          <p class="text-caption text-medium-emphasis mb-3">
+            {{ page.form.privacyNote }}
+          </p>
+          <div class="d-flex flex-wrap ga-3">
+            <v-btn color="primary">{{ page.form.submit }}</v-btn>
+            <v-btn variant="outlined" @click="resetForm">{{
+              page.form.reset
+            }}</v-btn>
+          </div>
+        </v-card>
       </template>
     </v-container>
   </div>
 </template>
-<style scoped>
-</style>
+<style scoped></style>

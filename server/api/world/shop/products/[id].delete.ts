@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const catalog = await getShopCatalog()
-  const index = catalog.products.findIndex(product => product.id === id)
+  const index = catalog.products.findIndex((product) => product.id === id)
 
   if (index < 0) {
     throw createError({ statusCode: 404, statusMessage: 'Product not found' })

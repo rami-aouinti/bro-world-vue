@@ -14,7 +14,10 @@ const JOBS_TTL_MS = 2 * 60 * 1000
 
 function buildCacheKey(prefix: string, filters: Record<string, unknown>) {
   const serialized = Object.entries(filters)
-    .filter(([, value]) => value !== undefined && value !== null && String(value).trim() !== '')
+    .filter(
+      ([, value]) =>
+        value !== undefined && value !== null && String(value).trim() !== '',
+    )
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
     .join(':')
@@ -24,17 +27,24 @@ function buildCacheKey(prefix: string, filters: Record<string, unknown>) {
 
 export const useWorldJobsStore = defineStore('world-jobs', () => {
   const items = ref<JobCandidate[]>([])
-  const detail = ref<JobsAdminPolicyResponse | JobsAdminDashboardResponse | null>(null)
+  const detail = ref<
+    JobsAdminPolicyResponse | JobsAdminDashboardResponse | null
+  >(null)
   const pending = ref(false)
   const error = ref<string | null>(null)
   const filters = ref<WorldJobsFilters>({ context: 'offers' })
-  const pagination = ref<WorldPaginationState>({ page: 1, limit: 100, total: 0, totalPages: 1 })
+  const pagination = ref<WorldPaginationState>({
+    page: 1,
+    limit: 100,
+    total: 0,
+    totalPages: 1,
+  })
   const lastFetchedAt = ref<number | null>(null)
 
   const stages = ref<readonly string[]>([])
   const policy = ref<JobsAdminPolicyResponse | null>(null)
   const dashboard = ref<JobsAdminDashboardResponse | null>(null)
-  const cache = ref<Record<string, { fetchedAt: number, data: unknown }>>({})
+  const cache = ref<Record<string, { fetchedAt: number; data: unknown }>>({})
 
   function isFresh(entry?: { fetchedAt: number }) {
     return !!entry && Date.now() - entry.fetchedAt < JOBS_TTL_MS
@@ -46,16 +56,24 @@ export const useWorldJobsStore = defineStore('world-jobs', () => {
       return
     }
 
-    cache.value = Object.fromEntries(Object.entries(cache.value).filter(([key]) => !key.startsWith(prefix)))
+    cache.value = Object.fromEntries(
+      Object.entries(cache.value).filter(([key]) => !key.startsWith(prefix)),
+    )
   }
 
-  async function fetchCandidates(context: 'offers' | 'applications' | 'my-offers', options?: { force?: boolean }) {
+  async function fetchCandidates(
+    context: 'offers' | 'applications' | 'my-offers',
+    options?: { force?: boolean },
+  ) {
     filters.value.context = context
     const cacheKey = buildCacheKey('jobs-candidates', { context })
     const cached = cache.value[cacheKey]
 
     if (cached && !options?.force && isFresh(cached)) {
-      const response = cached.data as { items: JobCandidate[], stages: readonly string[] }
+      const response = cached.data as {
+        items: JobCandidate[]
+        stages: readonly string[]
+      }
       items.value = response.items
       stages.value = response.stages
       pagination.value.total = response.items.length
@@ -66,7 +84,10 @@ export const useWorldJobsStore = defineStore('world-jobs', () => {
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<{ items: JobCandidate[], stages: readonly string[] }>('/api/jobs/candidates', {
+      const response = await $fetch<{
+        items: JobCandidate[]
+        stages: readonly string[]
+      }>('/api/jobs/candidates', {
         query: { context },
       })
       items.value = response.items
@@ -74,13 +95,15 @@ export const useWorldJobsStore = defineStore('world-jobs', () => {
       pagination.value.total = response.items.length
       lastFetchedAt.value = Date.now()
       cache.value[cacheKey] = { fetchedAt: lastFetchedAt.value, data: response }
-    }
-    finally {
+    } finally {
       pending.value = false
     }
   }
 
-  async function transitionCandidate(candidateId: string, payload: WorldJobsTransitionPayload) {
+  async function transitionCandidate(
+    candidateId: string,
+    payload: WorldJobsTransitionPayload,
+  ) {
     pending.value = true
     error.value = null
     try {
@@ -89,8 +112,7 @@ export const useWorldJobsStore = defineStore('world-jobs', () => {
         body: payload,
       })
       invalidateCache('jobs-candidates')
-    }
-    finally {
+    } finally {
       pending.value = false
     }
   }
@@ -107,13 +129,14 @@ export const useWorldJobsStore = defineStore('world-jobs', () => {
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<JobsAdminPolicyResponse>('/api/jobs/admin/policy')
+      const response = await $fetch<JobsAdminPolicyResponse>(
+        '/api/jobs/admin/policy',
+      )
       policy.value = response
       detail.value = response
       lastFetchedAt.value = Date.now()
       cache.value[cacheKey] = { fetchedAt: lastFetchedAt.value, data: response }
-    }
-    finally {
+    } finally {
       pending.value = false
     }
   }
@@ -129,12 +152,13 @@ export const useWorldJobsStore = defineStore('world-jobs', () => {
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<JobsAdminDashboardResponse>('/api/jobs/admin/dashboard')
+      const response = await $fetch<JobsAdminDashboardResponse>(
+        '/api/jobs/admin/dashboard',
+      )
       dashboard.value = response
       lastFetchedAt.value = Date.now()
       cache.value[cacheKey] = { fetchedAt: lastFetchedAt.value, data: response }
-    }
-    finally {
+    } finally {
       pending.value = false
     }
   }
@@ -146,13 +170,16 @@ export const useWorldJobsStore = defineStore('world-jobs', () => {
       await $fetch('/api/jobs/admin/policy', { method: 'PATCH', body: payload })
       invalidateCache('jobs-admin-policy')
       await fetchAdminPolicy({ force: true })
-    }
-    finally {
+    } finally {
       pending.value = false
     }
   }
 
-  async function updateRolePermission(role: string, key: keyof JobPermissionMatrix, value: boolean) {
+  async function updateRolePermission(
+    role: string,
+    key: keyof JobPermissionMatrix,
+    value: boolean,
+  ) {
     pending.value = true
     error.value = null
     try {
@@ -162,8 +189,7 @@ export const useWorldJobsStore = defineStore('world-jobs', () => {
       })
       invalidateCache('jobs-admin-policy')
       await fetchAdminPolicy({ force: true })
-    }
-    finally {
+    } finally {
       pending.value = false
     }
   }

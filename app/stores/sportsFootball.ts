@@ -72,7 +72,8 @@ function normalizeUiError(error: unknown, fallbackMessage: string) {
   const message =
     typeof source.data?.message === 'string' && source.data.message.length > 0
       ? source.data.message
-      : typeof source.statusMessage === 'string' && source.statusMessage.length > 0
+      : typeof source.statusMessage === 'string' &&
+          source.statusMessage.length > 0
         ? source.statusMessage
         : typeof source.message === 'string' && source.message.length > 0
           ? source.message
@@ -121,7 +122,11 @@ export const useSportsFootballStore = defineStore('sports-football', {
     setResourceLoading(resource: FootballResource, value: boolean) {
       this.loading[resource] = value
     },
-    setResourceError(resource: FootballResource, error: unknown, fallback: string) {
+    setResourceError(
+      resource: FootballResource,
+      error: unknown,
+      fallback: string,
+    ) {
       this.error[resource] = normalizeUiError(error, fallback)
     },
     async fetchLeagues() {
@@ -129,16 +134,20 @@ export const useSportsFootballStore = defineStore('sports-football', {
       this.clearResourceError('leagues')
 
       try {
-        const response = await $fetch<{ items?: FootballLeague[] }>('/api/sports/football/leagues')
+        const response = await $fetch<{ items?: FootballLeague[] }>(
+          '/api/sports/football/leagues',
+        )
         this.leagues = Array.isArray(response.items) ? response.items : []
         return this.leagues
-      }
-      catch (error) {
+      } catch (error) {
         this.leagues = []
-        this.setResourceError('leagues', error, 'Impossible de charger les ligues.')
+        this.setResourceError(
+          'leagues',
+          error,
+          'Impossible de charger les ligues.',
+        )
         throw error
-      }
-      finally {
+      } finally {
         this.setResourceLoading('leagues', false)
       }
     },
@@ -151,19 +160,24 @@ export const useSportsFootballStore = defineStore('sports-football', {
       this.clearResourceError('fixtures')
 
       try {
-        const response = await $fetch<{ items?: FootballFixture[] }>('/api/sports/football/fixtures', {
-          query: { league: leagueId, season },
-        })
+        const response = await $fetch<{ items?: FootballFixture[] }>(
+          '/api/sports/football/fixtures',
+          {
+            query: { league: leagueId, season },
+          },
+        )
 
         this.fixtures = Array.isArray(response.items) ? response.items : []
         return this.fixtures
-      }
-      catch (error) {
+      } catch (error) {
         this.fixtures = []
-        this.setResourceError('fixtures', error, 'Impossible de charger les matches.')
+        this.setResourceError(
+          'fixtures',
+          error,
+          'Impossible de charger les matches.',
+        )
         throw error
-      }
-      finally {
+      } finally {
         this.setResourceLoading('fixtures', false)
       }
     },
@@ -175,19 +189,24 @@ export const useSportsFootballStore = defineStore('sports-football', {
       this.clearResourceError('standings')
 
       try {
-        const response = await $fetch<{ groups?: FootballStandingsGroup[] }>('/api/sports/football/standings', {
-          query: { league: leagueId, season },
-        })
+        const response = await $fetch<{ groups?: FootballStandingsGroup[] }>(
+          '/api/sports/football/standings',
+          {
+            query: { league: leagueId, season },
+          },
+        )
 
         this.standings = Array.isArray(response.groups) ? response.groups : []
         return this.standings
-      }
-      catch (error) {
+      } catch (error) {
         this.standings = []
-        this.setResourceError('standings', error, 'Impossible de charger le classement.')
+        this.setResourceError(
+          'standings',
+          error,
+          'Impossible de charger le classement.',
+        )
         throw error
-      }
-      finally {
+      } finally {
         this.setResourceLoading('standings', false)
       }
     },
@@ -200,19 +219,24 @@ export const useSportsFootballStore = defineStore('sports-football', {
       this.clearResourceError('teams')
 
       try {
-        const response = await $fetch<{ items?: FootballTeam[] }>('/api/sports/football/teams', {
-          query: { league: leagueId, season },
-        })
+        const response = await $fetch<{ items?: FootballTeam[] }>(
+          '/api/sports/football/teams',
+          {
+            query: { league: leagueId, season },
+          },
+        )
 
         this.teams = Array.isArray(response.items) ? response.items : []
         return this.teams
-      }
-      catch (error) {
+      } catch (error) {
         this.teams = []
-        this.setResourceError('teams', error, 'Impossible de charger les équipes.')
+        this.setResourceError(
+          'teams',
+          error,
+          'Impossible de charger les équipes.',
+        )
         throw error
-      }
-      finally {
+      } finally {
         this.setResourceLoading('teams', false)
       }
     },
@@ -223,25 +247,32 @@ export const useSportsFootballStore = defineStore('sports-football', {
       this.clearResourceError('fixtureDetails')
 
       try {
-        const response = await $fetch<FootballFixtureDetails>('/api/sports/football/fixture', {
-          query: { fixture: fixtureId },
-        })
+        const response = await $fetch<FootballFixtureDetails>(
+          '/api/sports/football/fixture',
+          {
+            query: { fixture: fixtureId },
+          },
+        )
 
         this.fixtureDetails = {
           fixture: response?.fixture || null,
           events: Array.isArray(response?.events) ? response.events : [],
           lineups: Array.isArray(response?.lineups) ? response.lineups : [],
-          playerStats: Array.isArray(response?.playerStats) ? response.playerStats : [],
+          playerStats: Array.isArray(response?.playerStats)
+            ? response.playerStats
+            : [],
         }
 
         return this.fixtureDetails
-      }
-      catch (error) {
+      } catch (error) {
         this.fixtureDetails = null
-        this.setResourceError('fixtureDetails', error, 'Impossible de charger le détail du match.')
+        this.setResourceError(
+          'fixtureDetails',
+          error,
+          'Impossible de charger le détail du match.',
+        )
         throw error
-      }
-      finally {
+      } finally {
         this.setResourceLoading('fixtureDetails', false)
       }
     },

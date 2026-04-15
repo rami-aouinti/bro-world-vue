@@ -30,11 +30,24 @@ interface CohortNotification {
 }
 
 const learningNavItems = [
-  { title: 'Overview Learning', to: '/world/learning', icon: 'mdi-view-dashboard-outline' },
-  { title: 'Courses', to: '/world/learning/courses', icon: 'mdi-book-open-page-variant-outline' },
+  {
+    title: 'Overview Learning',
+    to: '/world/learning',
+    icon: 'mdi-view-dashboard-outline',
+  },
+  {
+    title: 'Courses',
+    to: '/world/learning/courses',
+    icon: 'mdi-book-open-page-variant-outline',
+  },
   { title: 'Levels', to: '/world/learning/levels', icon: 'mdi-stairs' },
   { title: 'Paths', to: '/world/learning/paths', icon: 'mdi-map-marker-path' },
-  { title: 'Admin', to: '/world/learning/admin', icon: 'mdi-shield-crown-outline', rootOnly: true },
+  {
+    title: 'Admin',
+    to: '/world/learning/admin',
+    icon: 'mdi-shield-crown-outline',
+    rootOnly: true,
+  },
 ]
 
 const cohorts = ref<LearningCohort[]>([
@@ -49,18 +62,26 @@ const cohorts = ref<LearningCohort[]>([
         id: 'session-found-01',
         title: 'Kickoff cohort',
         startAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3).toISOString(),
-        endAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3 + 1000 * 60 * 90).toISOString(),
+        endAt: new Date(
+          Date.now() + 1000 * 60 * 60 * 24 * 3 + 1000 * 60 * 90,
+        ).toISOString(),
         location: 'Room Atlas',
       },
       {
         id: 'session-found-02',
         title: 'Case study lab',
         startAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 10).toISOString(),
-        endAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 10 + 1000 * 60 * 90).toISOString(),
+        endAt: new Date(
+          Date.now() + 1000 * 60 * 60 * 24 * 10 + 1000 * 60 * 90,
+        ).toISOString(),
         location: 'Room Atlas',
       },
     ],
-    registrations: ['chloe@academy.io', 'samir@academy.io', 'antoine@academy.io'],
+    registrations: [
+      'chloe@academy.io',
+      'samir@academy.io',
+      'antoine@academy.io',
+    ],
     waitlist: [],
     syncedAt: null,
   },
@@ -89,21 +110,27 @@ const registrationForm = reactive({
 
 const draftSessions = ref<CohortSession[]>([])
 
-const selectedCohort = computed(() =>
-  cohorts.value.find((cohort) => cohort.id === selectedCohortId.value) || null,
+const selectedCohort = computed(
+  () =>
+    cohorts.value.find((cohort) => cohort.id === selectedCohortId.value) ||
+    null,
 )
 
 const occupancyRate = computed(() => {
   if (!selectedCohort.value || selectedCohort.value.capacity <= 0) return 0
   return Math.min(
     100,
-    Math.round((selectedCohort.value.registrations.length / selectedCohort.value.capacity) * 100),
+    Math.round(
+      (selectedCohort.value.registrations.length /
+        selectedCohort.value.capacity) *
+        100,
+    ),
   )
 })
 
 const sortedNotifications = computed(() => {
-  return [...notifications.value].sort((a, b) =>
-    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  return [...notifications.value].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   )
 })
 
@@ -126,7 +153,8 @@ function addNotification(
 }
 
 function addDraftSession() {
-  if (!newSessionForm.title || !newSessionForm.startAt || !newSessionForm.endAt) return
+  if (!newSessionForm.title || !newSessionForm.startAt || !newSessionForm.endAt)
+    return
 
   draftSessions.value.push({
     id: makeId('session'),
@@ -183,7 +211,10 @@ function registerLearner() {
   const learner = registrationForm.learnerEmail.trim().toLowerCase()
   if (!learner) return
 
-  if (cohort.registrations.includes(learner) || cohort.waitlist.includes(learner)) {
+  if (
+    cohort.registrations.includes(learner) ||
+    cohort.waitlist.includes(learner)
+  ) {
     registrationForm.learnerEmail = ''
     return
   }
@@ -209,7 +240,12 @@ function registerLearner() {
 
 function promoteFromWaitlist() {
   const cohort = selectedCohort.value
-  if (!cohort || cohort.waitlist.length === 0 || cohort.registrations.length >= cohort.capacity) return
+  if (
+    !cohort ||
+    cohort.waitlist.length === 0 ||
+    cohort.registrations.length >= cohort.capacity
+  )
+    return
 
   const next = cohort.waitlist.shift()
   if (!next) return
@@ -243,7 +279,9 @@ async function syncSessionsWithCalendar() {
         },
       })
 
-      const reminderStart = new Date(new Date(session.startAt).getTime() - 1000 * 60 * 60 * 24)
+      const reminderStart = new Date(
+        new Date(session.startAt).getTime() - 1000 * 60 * 60 * 24,
+      )
       const reminderEnd = new Date(reminderStart.getTime() + 1000 * 60 * 30)
 
       await $fetch('/api/calendar/private/events', {
@@ -295,15 +333,21 @@ async function syncSessionsWithCalendar() {
       action-label="Créer une cohorte"
     />
 
-    <v-container fluid class="pt-0">
+    <v-container fluid>
       <v-row>
         <v-col cols="12" lg="4">
           <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
             <h2 class="text-h6 mb-1">Nouvelle cohorte</h2>
             <p class="text-medium-emphasis mb-4">
-              Parcours par cohortes avec capacité, formateurs assignés et dates de session.
+              Parcours par cohortes avec capacité, formateurs assignés et dates
+              de session.
             </p>
-            <v-text-field v-model="newCohortForm.pathName" label="Parcours" variant="outlined" class="mb-2" />
+            <v-text-field
+              v-model="newCohortForm.pathName"
+              label="Parcours"
+              variant="outlined"
+              class="mb-2"
+            />
             <v-text-field
               v-model.number="newCohortForm.capacity"
               type="number"
@@ -321,12 +365,40 @@ async function syncSessionsWithCalendar() {
 
             <v-divider class="mb-4" />
             <h3 class="text-subtitle-1 mb-2">Ajouter une session</h3>
-            <v-text-field v-model="newSessionForm.title" label="Titre session" variant="outlined" class="mb-2" />
-            <v-text-field v-model="newSessionForm.startAt" type="datetime-local" label="Début" variant="outlined" class="mb-2" />
-            <v-text-field v-model="newSessionForm.endAt" type="datetime-local" label="Fin" variant="outlined" class="mb-2" />
-            <v-text-field v-model="newSessionForm.location" label="Salle / lieu" variant="outlined" class="mb-2" />
+            <v-text-field
+              v-model="newSessionForm.title"
+              label="Titre session"
+              variant="outlined"
+              class="mb-2"
+            />
+            <v-text-field
+              v-model="newSessionForm.startAt"
+              type="datetime-local"
+              label="Début"
+              variant="outlined"
+              class="mb-2"
+            />
+            <v-text-field
+              v-model="newSessionForm.endAt"
+              type="datetime-local"
+              label="Fin"
+              variant="outlined"
+              class="mb-2"
+            />
+            <v-text-field
+              v-model="newSessionForm.location"
+              label="Salle / lieu"
+              variant="outlined"
+              class="mb-2"
+            />
 
-            <v-btn block variant="tonal" prepend-icon="mdi-plus" class="mb-3" @click="addDraftSession">
+            <v-btn
+              block
+              variant="tonal"
+              prepend-icon="mdi-plus"
+              class="mb-3"
+              @click="addDraftSession"
+            >
               Ajouter au brouillon de cohortes
             </v-btn>
 
@@ -340,7 +412,12 @@ async function syncSessionsWithCalendar() {
               />
             </v-list>
 
-            <v-btn color="primary" block prepend-icon="mdi-content-save" @click="createCohort">
+            <v-btn
+              color="primary"
+              block
+              prepend-icon="mdi-content-save"
+              @click="createCohort"
+            >
               Créer la cohorte
             </v-btn>
           </v-card>
@@ -348,17 +425,26 @@ async function syncSessionsWithCalendar() {
 
         <v-col cols="12" lg="8">
           <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
-            <div class="d-flex align-center justify-space-between flex-wrap ga-2 mb-4">
+            <div
+              class="d-flex align-center justify-space-between flex-wrap ga-2 mb-4"
+            >
               <div>
                 <h2 class="text-h6 mb-1">Pilotage des cohortes</h2>
                 <p class="text-medium-emphasis mb-0">
-                  Synchronisation avec <NuxtLink to="/calendar">le calendrier</NuxtLink>, gestion inscriptions/attente et rappels.
+                  Synchronisation avec
+                  <NuxtLink to="/calendar">le calendrier</NuxtLink>, gestion
+                  inscriptions/attente et rappels.
                 </p>
               </div>
               <v-select
                 v-model="selectedCohortId"
                 label="Cohorte"
-                :items="cohorts.map((cohort) => ({ title: `${cohort.pathName} (${cohort.id})`, value: cohort.id }))"
+                :items="
+                  cohorts.map((cohort) => ({
+                    title: `${cohort.pathName} (${cohort.id})`,
+                    value: cohort.id,
+                  }))
+                "
                 variant="outlined"
                 density="comfortable"
                 hide-details
@@ -370,23 +456,53 @@ async function syncSessionsWithCalendar() {
               <v-row>
                 <v-col cols="12" md="6">
                   <v-card variant="outlined" class="pa-3 h-100">
-                    <p class="text-caption text-medium-emphasis mb-1">Capacité</p>
-                    <p class="text-h6 mb-2">{{ selectedCohort.registrations.length }} / {{ selectedCohort.capacity }}</p>
-                    <v-progress-linear :model-value="occupancyRate" color="primary" height="8" rounded />
-                    <p class="text-caption mt-2 mb-0">{{ occupancyRate }}% de remplissage</p>
+                    <p class="text-caption text-medium-emphasis mb-1">
+                      Capacité
+                    </p>
+                    <p class="text-h6 mb-2">
+                      {{ selectedCohort.registrations.length }} /
+                      {{ selectedCohort.capacity }}
+                    </p>
+                    <v-progress-linear
+                      :model-value="occupancyRate"
+                      color="primary"
+                      height="8"
+                      rounded
+                    />
+                    <p class="text-caption mt-2 mb-0">
+                      {{ occupancyRate }}% de remplissage
+                    </p>
                   </v-card>
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-card variant="outlined" class="pa-3 h-100">
-                    <p class="text-caption text-medium-emphasis mb-1">Formateurs assignés</p>
+                    <p class="text-caption text-medium-emphasis mb-1">
+                      Formateurs assignés
+                    </p>
                     <v-chip-group>
-                      <v-chip v-for="trainer in selectedCohort.trainers" :key="trainer" size="small" color="primary" variant="tonal">
+                      <v-chip
+                        v-for="trainer in selectedCohort.trainers"
+                        :key="trainer"
+                        size="small"
+                        color="primary"
+                        variant="tonal"
+                      >
                         {{ trainer }}
                       </v-chip>
-                      <v-chip v-if="!selectedCohort.trainers.length" size="small" variant="outlined">Aucun formateur assigné</v-chip>
+                      <v-chip
+                        v-if="!selectedCohort.trainers.length"
+                        size="small"
+                        variant="outlined"
+                        >Aucun formateur assigné</v-chip
+                      >
                     </v-chip-group>
                     <p class="text-caption mt-2 mb-0">
-                      Dernière synchro: {{ selectedCohort.syncedAt ? new Date(selectedCohort.syncedAt).toLocaleString() : 'Jamais' }}
+                      Dernière synchro:
+                      {{
+                        selectedCohort.syncedAt
+                          ? new Date(selectedCohort.syncedAt).toLocaleString()
+                          : 'Jamais'
+                      }}
                     </p>
                   </v-card>
                 </v-col>
@@ -403,7 +519,11 @@ async function syncSessionsWithCalendar() {
                   :title="session.title"
                   :subtitle="`${new Date(session.startAt).toLocaleString()} → ${new Date(session.endAt).toLocaleString()} · ${session.location}`"
                 />
-                <v-list-item v-if="!selectedCohort.sessions.length" title="Aucune session" subtitle="Ajoute des sessions dans le formulaire de gauche." />
+                <v-list-item
+                  v-if="!selectedCohort.sessions.length"
+                  title="Aucune session"
+                  subtitle="Ajoute des sessions dans le formulaire de gauche."
+                />
               </v-list>
 
               <v-btn
@@ -418,7 +538,9 @@ async function syncSessionsWithCalendar() {
 
               <v-divider class="mb-4" />
 
-              <h3 class="text-subtitle-1 mb-2">Inscriptions & liste d’attente</h3>
+              <h3 class="text-subtitle-1 mb-2">
+                Inscriptions & liste d’attente
+              </h3>
               <v-row class="mb-1">
                 <v-col cols="12" md="8">
                   <v-text-field
@@ -430,14 +552,18 @@ async function syncSessionsWithCalendar() {
                   />
                 </v-col>
                 <v-col cols="12" md="4" class="d-flex ga-2">
-                  <v-btn color="primary" block @click="registerLearner">Inscrire</v-btn>
+                  <v-btn color="primary" block @click="registerLearner"
+                    >Inscrire</v-btn
+                  >
                 </v-col>
               </v-row>
 
               <v-row>
                 <v-col cols="12" md="6">
                   <v-card variant="outlined" class="pa-3 h-100">
-                    <p class="text-caption text-medium-emphasis mb-2">Inscrits</p>
+                    <p class="text-caption text-medium-emphasis mb-2">
+                      Inscrits
+                    </p>
                     <v-list density="compact">
                       <v-list-item
                         v-for="learner in selectedCohort.registrations"
@@ -445,15 +571,25 @@ async function syncSessionsWithCalendar() {
                         :title="learner"
                         prepend-icon="mdi-account-check-outline"
                       />
-                      <v-list-item v-if="!selectedCohort.registrations.length" title="Aucun inscrit" />
+                      <v-list-item
+                        v-if="!selectedCohort.registrations.length"
+                        title="Aucun inscrit"
+                      />
                     </v-list>
                   </v-card>
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-card variant="outlined" class="pa-3 h-100">
                     <div class="d-flex align-center justify-space-between mb-2">
-                      <p class="text-caption text-medium-emphasis mb-0">Liste d’attente</p>
-                      <v-btn size="small" variant="tonal" prepend-icon="mdi-account-arrow-up" @click="promoteFromWaitlist">
+                      <p class="text-caption text-medium-emphasis mb-0">
+                        Liste d’attente
+                      </p>
+                      <v-btn
+                        size="small"
+                        variant="tonal"
+                        prepend-icon="mdi-account-arrow-up"
+                        @click="promoteFromWaitlist"
+                      >
                         Promouvoir
                       </v-btn>
                     </div>
@@ -464,7 +600,10 @@ async function syncSessionsWithCalendar() {
                         :title="learner"
                         prepend-icon="mdi-timer-sand"
                       />
-                      <v-list-item v-if="!selectedCohort.waitlist.length" title="Pas d’attente" />
+                      <v-list-item
+                        v-if="!selectedCohort.waitlist.length"
+                        title="Pas d’attente"
+                      />
                     </v-list>
                   </v-card>
                 </v-col>
@@ -480,7 +619,13 @@ async function syncSessionsWithCalendar() {
                 :key="item.id"
                 :title="item.title"
                 :subtitle="`${item.message} · ${new Date(item.createdAt).toLocaleString()}`"
-                :prepend-icon="item.type === 'waitlist' ? 'mdi-account-clock-outline' : item.type === 'reminder' ? 'mdi-bell-ring-outline' : 'mdi-bell-outline'"
+                :prepend-icon="
+                  item.type === 'waitlist'
+                    ? 'mdi-account-clock-outline'
+                    : item.type === 'reminder'
+                      ? 'mdi-bell-ring-outline'
+                      : 'mdi-bell-outline'
+                "
               />
               <v-list-item
                 v-if="!sortedNotifications.length"

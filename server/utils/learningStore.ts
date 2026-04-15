@@ -15,7 +15,8 @@ import type {
 const COURSES_KEY = 'world:learning:courses'
 const PROGRESS_KEY = 'world:learning:progress'
 
-const createId = (prefix: string) => `${prefix}-${Math.random().toString(36).slice(2, 10)}`
+const createId = (prefix: string) =>
+  `${prefix}-${Math.random().toString(36).slice(2, 10)}`
 
 export const LEARNING_LEVEL_RULES: LearningLevelRule[] = [
   {
@@ -50,12 +51,23 @@ const createSeedAssessment = (): LearningAssessment => ({
   gradingScale: 'points',
   passThreshold: 70,
   questions: [
-    { id: createId('q'), prompt: 'Quel est l’objectif principal du module ?', points: 10 },
-    { id: createId('q'), prompt: 'Quelle activité valide la compréhension ?', points: 10 },
+    {
+      id: createId('q'),
+      prompt: 'Quel est l’objectif principal du module ?',
+      points: 10,
+    },
+    {
+      id: createId('q'),
+      prompt: 'Quelle activité valide la compréhension ?',
+      points: 10,
+    },
   ],
 })
 
-const createSeedLesson = (title: string, objective: string): LearningLesson => ({
+const createSeedLesson = (
+  title: string,
+  objective: string,
+): LearningLesson => ({
   id: createId('les'),
   title,
   objective,
@@ -95,15 +107,23 @@ const createSeedCourse = (): LearningCourse => {
         title: 'Module 1 - Foundations',
         description: 'Bases pédagogiques du parcours',
         lessons: [
-          createSeedLesson('Lesson 1 - Orientation', 'Comprendre les objectifs du cursus.'),
-          createSeedLesson('Lesson 2 - Practice Lab', 'Mettre en pratique les concepts.'),
+          createSeedLesson(
+            'Lesson 1 - Orientation',
+            'Comprendre les objectifs du cursus.',
+          ),
+          createSeedLesson(
+            'Lesson 2 - Practice Lab',
+            'Mettre en pratique les concepts.',
+          ),
         ],
       },
     ],
   }
 }
 
-export const getLearningCoursesStorage = async (): Promise<LearningCourse[]> => {
+export const getLearningCoursesStorage = async (): Promise<
+  LearningCourse[]
+> => {
   const storage = useStorage('data')
   const stored = await storage.getItem<LearningCourse[]>(COURSES_KEY)
 
@@ -117,12 +137,16 @@ export const getLearningCoursesStorage = async (): Promise<LearningCourse[]> => 
   return seeded
 }
 
-export const saveLearningCoursesStorage = async (courses: LearningCourse[]): Promise<void> => {
+export const saveLearningCoursesStorage = async (
+  courses: LearningCourse[],
+): Promise<void> => {
   const storage = useStorage('data')
   await storage.setItem(COURSES_KEY, courses)
 }
 
-export const getLearningProgressStorage = async (): Promise<LearningProgress[]> => {
+export const getLearningProgressStorage = async (): Promise<
+  LearningProgress[]
+> => {
   const storage = useStorage('data')
   const stored = await storage.getItem<LearningProgress[]>(PROGRESS_KEY)
 
@@ -134,52 +158,87 @@ export const getLearningProgressStorage = async (): Promise<LearningProgress[]> 
   return []
 }
 
-export const saveLearningProgressStorage = async (progress: LearningProgress[]): Promise<void> => {
+export const saveLearningProgressStorage = async (
+  progress: LearningProgress[],
+): Promise<void> => {
   const storage = useStorage('data')
   await storage.setItem(PROGRESS_KEY, progress)
 }
 
-export const findModuleInCourse = (course: LearningCourse, moduleId: string): LearningModule => {
+export const findModuleInCourse = (
+  course: LearningCourse,
+  moduleId: string,
+): LearningModule => {
   const module = course.modules.find((entry) => entry.id === moduleId)
 
   if (!module) {
-    throw createError({ statusCode: 404, statusMessage: 'Learning module not found' })
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Learning module not found',
+    })
   }
 
   return module
 }
 
-export const findLessonInModule = (module: LearningModule, lessonId: string): LearningLesson => {
+export const findLessonInModule = (
+  module: LearningModule,
+  lessonId: string,
+): LearningLesson => {
   const lesson = module.lessons.find((entry) => entry.id === lessonId)
 
   if (!lesson) {
-    throw createError({ statusCode: 404, statusMessage: 'Learning lesson not found' })
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Learning lesson not found',
+    })
   }
 
   return lesson
 }
 
-export const findContentInLesson = (lesson: LearningLesson, contentBlockId: string): LearningContentBlock => {
-  const contentBlock = lesson.contentBlocks.find((entry) => entry.id === contentBlockId)
+export const findContentInLesson = (
+  lesson: LearningLesson,
+  contentBlockId: string,
+): LearningContentBlock => {
+  const contentBlock = lesson.contentBlocks.find(
+    (entry) => entry.id === contentBlockId,
+  )
 
   if (!contentBlock) {
-    throw createError({ statusCode: 404, statusMessage: 'Learning content block not found' })
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Learning content block not found',
+    })
   }
 
   return contentBlock
 }
 
-const getCompletedLessonRatio = (course: LearningCourse, progress: LearningProgress): number => {
-  const totalLessons = course.modules.reduce((count, module) => count + module.lessons.length, 0)
+const getCompletedLessonRatio = (
+  course: LearningCourse,
+  progress: LearningProgress,
+): number => {
+  const totalLessons = course.modules.reduce(
+    (count, module) => count + module.lessons.length,
+    0,
+  )
   if (totalLessons === 0) {
     return 0
   }
 
-  const completed = Object.values(progress.lessonStatuses).filter((status) => status === 'completed').length
+  const completed = Object.values(progress.lessonStatuses).filter(
+    (status) => status === 'completed',
+  ).length
   return completed / totalLessons
 }
 
-const renderSimplePdfBase64 = (verificationId: string, learner: string, courseTitle: string, issuedAt: string): string => {
+const renderSimplePdfBase64 = (
+  verificationId: string,
+  learner: string,
+  courseTitle: string,
+  issuedAt: string,
+): string => {
   const content = [
     '%PDF-1.1',
     '1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj',
@@ -203,14 +262,18 @@ const renderSimplePdfBase64 = (verificationId: string, learner: string, courseTi
   return Buffer.from(content, 'utf-8').toString('base64')
 }
 
-export const evaluateProgressRules = (course: LearningCourse, progress: LearningProgress): LearningProgress => {
+export const evaluateProgressRules = (
+  course: LearningCourse,
+  progress: LearningProgress,
+): LearningProgress => {
   const ratio = getCompletedLessonRatio(course, progress)
-  const eligibleLevels = LEARNING_LEVEL_RULES
-    .filter((rule) => progress.score >= rule.minScore
-      && ratio >= rule.minCompletedLessonsRatio
-      && progress.attempts <= rule.maxAttempts
-      && progress.timeSpentMinutes >= rule.minTimeSpentMinutes)
-    .map((rule) => rule.level)
+  const eligibleLevels = LEARNING_LEVEL_RULES.filter(
+    (rule) =>
+      progress.score >= rule.minScore &&
+      ratio >= rule.minCompletedLessonsRatio &&
+      progress.attempts <= rule.maxAttempts &&
+      progress.timeSpentMinutes >= rule.minTimeSpentMinutes,
+  ).map((rule) => rule.level)
 
   const currentLevel: LearningLevel = eligibleLevels.includes('advanced')
     ? 'advanced'
@@ -219,7 +282,9 @@ export const evaluateProgressRules = (course: LearningCourse, progress: Learning
       : 'beginner'
 
   progress.currentLevel = currentLevel
-  progress.unlockedLevels = Array.from(new Set(['beginner', ...eligibleLevels])) as LearningLevel[]
+  progress.unlockedLevels = Array.from(
+    new Set(['beginner', ...eligibleLevels]),
+  ) as LearningLevel[]
   progress.hasDroppedOut = progress.attempts >= 8 && ratio < 0.5
 
   if (currentLevel === 'advanced' && !progress.certificate) {
@@ -230,7 +295,12 @@ export const evaluateProgressRules = (course: LearningCourse, progress: Learning
     progress.certificate = {
       verificationId,
       hash: createHash('sha256').update(source).digest('hex'),
-      pdfBase64: renderSimplePdfBase64(verificationId, progress.learner, course.title, issuedAt),
+      pdfBase64: renderSimplePdfBase64(
+        verificationId,
+        progress.learner,
+        course.title,
+        issuedAt,
+      ),
       issuedAt,
     }
   }
@@ -238,7 +308,9 @@ export const evaluateProgressRules = (course: LearningCourse, progress: Learning
   return progress
 }
 
-export const buildLearningAdminAnalytics = (progressItems: LearningProgress[]): LearningAdminAnalytics => {
+export const buildLearningAdminAnalytics = (
+  progressItems: LearningProgress[],
+): LearningAdminAnalytics => {
   const totalLearners = progressItems.length
   if (!totalLearners) {
     return {
@@ -251,16 +323,22 @@ export const buildLearningAdminAnalytics = (progressItems: LearningProgress[]): 
     }
   }
 
-  const completed = progressItems.filter((entry) => entry.currentLevel === 'advanced').length
+  const completed = progressItems.filter(
+    (entry) => entry.currentLevel === 'advanced',
+  ).length
   const dropped = progressItems.filter((entry) => entry.hasDroppedOut).length
-  const averageScore = progressItems.reduce((sum, entry) => sum + entry.score, 0) / totalLearners
+  const averageScore =
+    progressItems.reduce((sum, entry) => sum + entry.score, 0) / totalLearners
 
-  const byCohort = progressItems.reduce<Record<string, LearningProgress[]>>((acc, entry) => {
-    const key = entry.cohort || 'unassigned'
-    acc[key] = acc[key] ?? []
-    acc[key].push(entry)
-    return acc
-  }, {})
+  const byCohort = progressItems.reduce<Record<string, LearningProgress[]>>(
+    (acc, entry) => {
+      const key = entry.cohort || 'unassigned'
+      acc[key] = acc[key] ?? []
+      acc[key].push(entry)
+      return acc
+    },
+    {},
+  )
 
   const cohortPerformance: LearningCohortAnalytics[] = Object.entries(byCohort)
     .map(([cohort, entries]) => {
@@ -268,9 +346,33 @@ export const buildLearningAdminAnalytics = (progressItems: LearningProgress[]): 
       return {
         cohort,
         learners: learnerCount,
-        completionRate: learnerCount ? Number(((entries.filter((entry) => entry.currentLevel === 'advanced').length / learnerCount) * 100).toFixed(1)) : 0,
-        dropoutRate: learnerCount ? Number(((entries.filter((entry) => entry.hasDroppedOut).length / learnerCount) * 100).toFixed(1)) : 0,
-        averageScore: learnerCount ? Number((entries.reduce((sum, entry) => sum + entry.score, 0) / learnerCount).toFixed(1)) : 0,
+        completionRate: learnerCount
+          ? Number(
+              (
+                (entries.filter((entry) => entry.currentLevel === 'advanced')
+                  .length /
+                  learnerCount) *
+                100
+              ).toFixed(1),
+            )
+          : 0,
+        dropoutRate: learnerCount
+          ? Number(
+              (
+                (entries.filter((entry) => entry.hasDroppedOut).length /
+                  learnerCount) *
+                100
+              ).toFixed(1),
+            )
+          : 0,
+        averageScore: learnerCount
+          ? Number(
+              (
+                entries.reduce((sum, entry) => sum + entry.score, 0) /
+                learnerCount
+              ).toFixed(1),
+            )
+          : 0,
       }
     })
     .sort((left, right) => right.learners - left.learners)

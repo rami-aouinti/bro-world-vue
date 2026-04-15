@@ -86,4 +86,7 @@ export interface WorldShopPaymentIntentResponse {
 }
 
 export type WorldShopProductsListResponse = WorldShopListResponse<ShopProduct>
-export type WorldShopCategoriesListResponse = { data: ShopCategory[], tree: Array<ShopCategory & { children: ShopCategory[] }> }
+export type WorldShopCategoriesListResponse = {
+  data: ShopCategory[]
+  tree: Array<ShopCategory & { children: ShopCategory[] }>
+}

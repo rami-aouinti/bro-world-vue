@@ -9,11 +9,21 @@ definePageMeta({ title: 'CRM Admin' })
 const { can } = useCrmPermissions()
 
 const crmNavItems = computed(() => [
-  { title: 'Overview CRM', to: '/world/crm', icon: 'mdi-view-dashboard-outline' },
+  {
+    title: 'Overview CRM',
+    to: '/world/crm',
+    icon: 'mdi-view-dashboard-outline',
+  },
   { title: 'Projects', to: '/world/crm/projects', icon: 'mdi-folder-outline' },
   { title: 'Company', to: '/world/crm/company', icon: 'mdi-domain' },
   ...(can('crm.admin.manage')
-    ? [{ title: 'Admin', to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' }]
+    ? [
+        {
+          title: 'Admin',
+          to: '/world/crm/admin',
+          icon: 'mdi-shield-crown-outline',
+        },
+      ]
     : []),
 ])
 
@@ -24,7 +34,9 @@ const adminData = computed(() => crmStore.detail as CrmAdminApiResponse | null)
 const policy = computed(() => adminData.value?.policy)
 const roleMappings = computed(() => adminData.value?.roleMappings ?? [])
 const auditLogs = computed(() => adminData.value?.auditLogs ?? [])
-const currentUserPermissions = computed(() => adminData.value?.currentUserPermissions ?? [])
+const currentUserPermissions = computed(
+  () => adminData.value?.currentUserPermissions ?? [],
+)
 
 function formatDateTime(value: string) {
   return new Intl.DateTimeFormat('fr-FR', {
@@ -45,7 +57,7 @@ function formatDateTime(value: string) {
       action-icon="mdi-shield-check-outline"
     />
 
-    <v-container fluid class="pt-0 d-flex flex-column ga-4">
+    <v-container fluid>
       <v-card rounded="xl" class="pa-5 postcard-gradient-card">
         <h2 class="text-h5 mb-2">CRM Admin center</h2>
         <p class="text-body-2 text-medium-emphasis mb-4">
@@ -104,7 +116,11 @@ function formatDateTime(value: string) {
               ]"
               :model-value="policy?.regionPolicy"
             />
-            <v-btn color="primary" prepend-icon="mdi-content-save-outline" block>
+            <v-btn
+              color="primary"
+              prepend-icon="mdi-content-save-outline"
+              block
+            >
               Save CRM policy
             </v-btn>
           </v-col>
@@ -114,7 +130,9 @@ function formatDateTime(value: string) {
       <v-card rounded="xl" class="pa-5">
         <div class="d-flex justify-space-between align-center mb-3">
           <h3 class="text-h6 mb-0">Role → Permission mapping</h3>
-          <v-chip color="primary" variant="tonal" size="small">Server-enforced</v-chip>
+          <v-chip color="primary" variant="tonal" size="small"
+            >Server-enforced</v-chip
+          >
         </div>
         <v-table density="comfortable">
           <thead>
@@ -159,7 +177,11 @@ function formatDateTime(value: string) {
             <tr v-for="entry in auditLogs" :key="entry.id">
               <td>{{ formatDateTime(entry.changedAt) }}</td>
               <td>{{ entry.actor }}</td>
-              <td><v-chip size="small" color="primary" variant="tonal">{{ entry.action }}</v-chip></td>
+              <td>
+                <v-chip size="small" color="primary" variant="tonal">{{
+                  entry.action
+                }}</v-chip>
+              </td>
               <td>{{ entry.targetType }} · {{ entry.targetId }}</td>
               <td>{{ entry.details }}</td>
             </tr>

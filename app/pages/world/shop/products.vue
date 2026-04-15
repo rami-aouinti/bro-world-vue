@@ -2,13 +2,38 @@
 definePageMeta({ title: 'Shop Products' })
 
 const shopNavItems = [
-  { title: 'Overview Shop', to: '/world/shop', icon: 'mdi-view-dashboard-outline' },
-  { title: 'Categories', to: '/world/shop/categories', icon: 'mdi-shape-outline' },
-  { title: 'Products', to: '/world/shop/products', icon: 'mdi-package-variant-closed' },
+  {
+    title: 'Overview Shop',
+    to: '/world/shop',
+    icon: 'mdi-view-dashboard-outline',
+  },
+  {
+    title: 'Categories',
+    to: '/world/shop/categories',
+    icon: 'mdi-shape-outline',
+  },
+  {
+    title: 'Products',
+    to: '/world/shop/products',
+    icon: 'mdi-package-variant-closed',
+  },
   { title: 'Checkout', to: '/world/shop/checkout', icon: 'mdi-cart-outline' },
-  { title: 'Payment', to: '/world/shop/payment', icon: 'mdi-credit-card-outline' },
-  { title: 'Orders', to: '/world/shop/orders', icon: 'mdi-receipt-text-outline' },
-  { title: 'Admin', to: '/world/shop/admin', icon: 'mdi-shield-crown-outline', rootOnly: true },
+  {
+    title: 'Payment',
+    to: '/world/shop/payment',
+    icon: 'mdi-credit-card-outline',
+  },
+  {
+    title: 'Orders',
+    to: '/world/shop/orders',
+    icon: 'mdi-receipt-text-outline',
+  },
+  {
+    title: 'Admin',
+    to: '/world/shop/admin',
+    icon: 'mdi-shield-crown-outline',
+    rootOnly: true,
+  },
 ]
 
 const rows = [
@@ -47,7 +72,7 @@ const rows = [
       action-label="Create product"
     />
 
-    <v-container fluid class="pt-0">
+    <v-container fluid>
       <WorldFeatureScaffold
         title="Shop - Products"
         subtitle="Catalogue produit avancé: variantes taille/couleur, attributs, SKU uniques, galerie d'images et champs SEO."
@@ -57,17 +82,42 @@ const rows = [
           { key: 'name', label: 'Product name', type: 'text' },
           { key: 'slug', label: 'Slug', type: 'text' },
           { key: 'baseSku', label: 'Base SKU (unique)', type: 'text' },
-          { key: 'status', label: 'Status', type: 'select', options: [
-            { title: 'Draft', value: 'draft' },
-            { title: 'Active', value: 'active' },
-            { title: 'Archived', value: 'archived' },
-          ] },
-          { key: 'categoryIds', label: 'Categories (hierarchy ids)', type: 'text' },
-          { key: 'attributes', label: 'Attributes JSON (brand/material/fit...)', type: 'textarea' },
-          { key: 'variants', label: 'Variants JSON (size/color/sku/price/stock)', type: 'textarea' },
-          { key: 'images', label: 'Image URLs (comma separated)', type: 'textarea' },
+          {
+            key: 'status',
+            label: 'Status',
+            type: 'select',
+            options: [
+              { title: 'Draft', value: 'draft' },
+              { title: 'Active', value: 'active' },
+              { title: 'Archived', value: 'archived' },
+            ],
+          },
+          {
+            key: 'categoryIds',
+            label: 'Categories (hierarchy ids)',
+            type: 'text',
+          },
+          {
+            key: 'attributes',
+            label: 'Attributes JSON (brand/material/fit...)',
+            type: 'textarea',
+          },
+          {
+            key: 'variants',
+            label: 'Variants JSON (size/color/sku/price/stock)',
+            type: 'textarea',
+          },
+          {
+            key: 'images',
+            label: 'Image URLs (comma separated)',
+            type: 'textarea',
+          },
           { key: 'metaTitle', label: 'SEO meta title', type: 'text' },
-          { key: 'metaDescription', label: 'SEO meta description', type: 'textarea' },
+          {
+            key: 'metaDescription',
+            label: 'SEO meta description',
+            type: 'textarea',
+          },
           { key: 'keywords', label: 'SEO keywords', type: 'text' },
           { key: 'canonicalUrl', label: 'SEO canonical URL', type: 'text' },
         ]"

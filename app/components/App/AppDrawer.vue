@@ -63,7 +63,9 @@ watch(mobile, (isMobile) => {
     </v-card>
     <v-spacer />
     <template #append>
-      <v-list-item class="drawer-footer px-0 d-flex flex-column justify-center" />
+      <v-list-item
+        class="drawer-footer px-0 d-flex flex-column justify-center"
+      />
     </template>
   </v-navigation-drawer>
 </template>

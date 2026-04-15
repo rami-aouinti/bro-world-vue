@@ -1,4 +1,8 @@
-import { JOB_PIPELINE_STAGES, type JobCandidate, type JobPipelineStage } from '~~/server/types/api/jobs'
+import {
+  JOB_PIPELINE_STAGES,
+  type JobCandidate,
+  type JobPipelineStage,
+} from '~~/server/types/api/jobs'
 import { resolveJobAccessRole } from '~~/server/utils/jobsAdminStore'
 import { transitionCandidate } from '~~/server/utils/jobsPipelineStore'
 import type { SessionUser } from '~/types/session'
@@ -20,14 +24,20 @@ export default defineEventHandler(async (event): Promise<JobCandidate> => {
   const id = getRouterParam(event, 'id')
 
   if (!id) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing candidate id' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing candidate id',
+    })
   }
 
   const body = await readBody<TransitionBody>(event)
   const toStage = body.toStage ?? ''
 
   if (!isPipelineStage(toStage)) {
-    throw createError({ statusCode: 400, statusMessage: 'Invalid pipeline stage' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Invalid pipeline stage',
+    })
   }
 
   const session = await getUserSession(event)

@@ -4,6 +4,6 @@ export default defineSitemapEventHandler(async () => {
     { loc: '/service' },
     { loc: '/about' },
     { loc: '/faq' },
-    { loc: '/contact' }
+    { loc: '/contact' },
   ]
 })

@@ -1,19 +1,17 @@
 <script setup lang="ts">
 const isPageSkeletonLoading = useState('page-skeleton-loading', () => true)
-const showRightDrawerDesktop = useState(
-  'show-right-drawer-desktop',
-  () => true,
-)
+const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => true)
 const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
 const registry = useDrawerSlotRegistry()
 const { lgAndUp, mobile } = useDisplay()
 
 const rightDrawerRenderer = computed(() => registry?.right.value ?? null)
-const shouldRenderRightDrawerContent = computed(
-  () => Boolean(rightDrawerRenderer.value),
+const shouldRenderRightDrawerContent = computed(() =>
+  Boolean(rightDrawerRenderer.value),
 )
 const showRightDrawer = computed({
-  get: () => (mobile.value ? showRightDrawerMobile.value : showRightDrawerDesktop.value),
+  get: () =>
+    mobile.value ? showRightDrawerMobile.value : showRightDrawerDesktop.value,
   set: (value: boolean) => {
     if (mobile.value) {
       showRightDrawerMobile.value = value

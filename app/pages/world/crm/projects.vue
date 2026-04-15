@@ -8,11 +8,29 @@ const { t } = useI18n()
 const { can } = useCrmPermissions()
 
 const crmNavItems = computed(() => [
-  { title: t('world.crm.nav.overview', 'Overview CRM'), to: '/world/crm', icon: 'mdi-view-dashboard-outline' },
-  { title: t('world.crm.nav.projects', 'Projects'), to: '/world/crm/projects', icon: 'mdi-folder-outline' },
-  { title: t('world.crm.nav.company', 'Company'), to: '/world/crm/company', icon: 'mdi-domain' },
+  {
+    title: t('world.crm.nav.overview', 'Overview CRM'),
+    to: '/world/crm',
+    icon: 'mdi-view-dashboard-outline',
+  },
+  {
+    title: t('world.crm.nav.projects', 'Projects'),
+    to: '/world/crm/projects',
+    icon: 'mdi-folder-outline',
+  },
+  {
+    title: t('world.crm.nav.company', 'Company'),
+    to: '/world/crm/company',
+    icon: 'mdi-domain',
+  },
   ...(can('crm.admin.manage')
-    ? [{ title: t('world.crm.nav.admin', 'Admin'), to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' }]
+    ? [
+        {
+          title: t('world.crm.nav.admin', 'Admin'),
+          to: '/world/crm/admin',
+          icon: 'mdi-shield-crown-outline',
+        },
+      ]
     : []),
 ])
 
@@ -22,7 +40,9 @@ await crmStore.fetchList('projects', {
   pagination: { page: 1, limit: 10 },
 })
 
-const rows = computed<Record<string, string | number>[]>(() => crmStore.items as Record<string, string | number>[])
+const rows = computed<Record<string, string | number>[]>(
+  () => crmStore.items as Record<string, string | number>[],
+)
 </script>
 
 <template>
@@ -30,13 +50,18 @@ const rows = computed<Record<string, string | number>[]>(() => crmStore.items as
     <WorldModuleDrawers
       :module-title="t('world.crm.label', 'CRM')"
       module-icon="mdi-account-group-outline"
-      :module-description="t('world.crm.moduleDescription', 'Navigation CRM avec gestion des projets et entreprises.')"
+      :module-description="
+        t(
+          'world.crm.moduleDescription',
+          'Navigation CRM avec gestion des projets et entreprises.',
+        )
+      "
       :nav-items="crmNavItems"
       action-label="New project"
       action-icon="mdi-folder-plus-outline"
     />
 
-    <v-container fluid class="pt-0">
+    <v-container fluid>
       <WorldFeatureScaffold
         title="CRM Projects"
         subtitle="Planifie, assigne et suis l’avancement des projets clients."
@@ -45,11 +70,16 @@ const rows = computed<Record<string, string | number>[]>(() => crmStore.items as
         :fields="[
           { key: 'name', label: 'Project name', type: 'text' },
           { key: 'manager', label: 'Project manager', type: 'text' },
-          { key: 'priority', label: 'Priority', type: 'select', options: [
-            { title: 'Low', value: 'low' },
-            { title: 'Medium', value: 'medium' },
-            { title: 'High', value: 'high' },
-          ] },
+          {
+            key: 'priority',
+            label: 'Priority',
+            type: 'select',
+            options: [
+              { title: 'Low', value: 'low' },
+              { title: 'Medium', value: 'medium' },
+              { title: 'High', value: 'high' },
+            ],
+          },
           { key: 'startDate', label: 'Start date', type: 'date' },
           { key: 'budget', label: 'Budget', type: 'number' },
           { key: 'notes', label: 'Brief', type: 'textarea' },

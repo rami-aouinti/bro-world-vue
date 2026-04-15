@@ -28,7 +28,10 @@ const validateAddress = (address: unknown): Address => {
     city: assertNonEmptyString(payload.city, 'address.city'),
     state: assertNonEmptyString(payload.state, 'address.state'),
     postalCode: assertNonEmptyString(payload.postalCode, 'address.postalCode'),
-    country: assertNonEmptyString(payload.country, 'address.country').toUpperCase(),
+    country: assertNonEmptyString(
+      payload.country,
+      'address.country',
+    ).toUpperCase(),
     phone: typeof payload.phone === 'string' ? payload.phone.trim() : '',
   }
 }
@@ -43,7 +46,10 @@ export default defineEventHandler(async (event) => {
   const session = store.sessions[checkoutId]
 
   if (!session) {
-    throw createError({ statusCode: 404, statusMessage: 'checkout session not found' })
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'checkout session not found',
+    })
   }
 
   const existingByIdempotency = store.idempotency[idempotencyKey]
@@ -52,7 +58,10 @@ export default defineEventHandler(async (event) => {
   }
 
   if (existingByIdempotency && existingByIdempotency !== checkoutId) {
-    throw createError({ statusCode: 409, statusMessage: 'idempotencyKey already used by another checkout' })
+    throw createError({
+      statusCode: 409,
+      statusMessage: 'idempotencyKey already used by another checkout',
+    })
   }
 
   assertStepTransition(session.step, 'address')

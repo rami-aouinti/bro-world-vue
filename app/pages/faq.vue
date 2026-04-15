@@ -122,21 +122,21 @@ const filteredItems = computed(() => {
               </template>
               <v-list-item-title>{{ category.label }}</v-list-item-title>
               <v-list-item-subtitle>{{
-                  category.description
-                }}</v-list-item-subtitle>
+                category.description
+              }}</v-list-item-subtitle>
             </v-list-item>
           </v-list>
           <v-card rounded="xl" variant="tonal" color="primary">
             <v-card-title class="pt-4 px-4">{{
-                page.hero.primaryCta
-              }}</v-card-title>
+              page.hero.primaryCta
+            }}</v-card-title>
             <v-card-subtitle class="px-4">{{
-                page.hero.secondaryCta
-              }}</v-card-subtitle>
+              page.hero.secondaryCta
+            }}</v-card-subtitle>
             <v-card-actions>
               <v-btn block color="primary" to="/contact" variant="flat">{{
-                  page.hero.primaryCta
-                }}</v-btn>
+                page.hero.primaryCta
+              }}</v-btn>
             </v-card-actions>
           </v-card>
         </div>
@@ -159,8 +159,8 @@ const filteredItems = computed(() => {
               v-for="category in page.categories"
               :key="category.key"
               :color="
-              activeCategory === category.key ? category.color : undefined
-            "
+                activeCategory === category.key ? category.color : undefined
+              "
               :variant="activeCategory === category.key ? 'flat' : 'outlined'"
               @click="activeCategory = category.key"
             >
@@ -175,7 +175,11 @@ const filteredItems = computed(() => {
               cols="12"
               md="6"
             >
-              <v-card rounded="xl" height="100%" class="pa-2 postcard-gradient-card">
+              <v-card
+                rounded="xl"
+                height="100%"
+                class="pa-2 postcard-gradient-card"
+              >
                 <v-card-title>{{ item.question }}</v-card-title>
                 <v-card-text>
                   <p class="mb-2">{{ item.answer }}</p>
@@ -193,14 +197,19 @@ const filteredItems = computed(() => {
                     class="me-2 mb-2"
                     color="primary"
                     variant="tonal"
-                  >{{ bullet }}</v-chip
+                    >{{ bullet }}</v-chip
                   >
                 </v-card-text>
               </v-card>
             </v-col>
           </v-row>
 
-          <v-card v-else rounded="xl" variant="outlined" class="pa-8 text-center postcard-gradient-card">
+          <v-card
+            v-else
+            rounded="xl"
+            variant="outlined"
+            class="pa-8 text-center postcard-gradient-card"
+          >
             <h3 class="text-h5 mb-2">{{ page.emptyState.title }}</h3>
             <p class="mb-1">{{ page.emptyState.description }}</p>
             <p class="text-medium-emphasis">{{ page.emptyState.suggestion }}</p>

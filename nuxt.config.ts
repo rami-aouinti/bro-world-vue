@@ -13,16 +13,17 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Jobs, social network, AI tools and more.' },
+        {
+          name: 'description',
+          content: 'Jobs, social network, AI tools and more.',
+        },
         {
           name: 'google-site-verification',
-          content: process.env.GOOGLE_KEY_INDEX || ''
-        }
+          content: process.env.GOOGLE_KEY_INDEX || '',
+        },
       ],
-      link: [
-        { rel: 'canonical', href: 'https://bro-world-space.com' }
-      ]
-    }
+      link: [{ rel: 'canonical', href: 'https://bro-world-space.com' }],
+    },
   },
   modules: [
     '@nuxtjs/i18n',
@@ -36,17 +37,17 @@ export default defineNuxtConfig({
     '@nuxt/test-utils/module',
     '@nuxtjs/sitemap',
     '@nuxtjs/robots',
-    'nuxt-schema-org'
+    'nuxt-schema-org',
   ],
   sitemap: {
     siteUrl: 'https://bro-world-space.com',
-    sources: ['/api/__sitemap__/urls']
+    sources: ['/api/__sitemap__/urls'],
   },
   robots: {
     UserAgent: '*',
     Allow: '/',
     Disallow: ['/admin', '/dashboard'],
-    Sitemap: 'https://bro-world-space.com/sitemap.xml'
+    Sitemap: 'https://bro-world-space.com/sitemap.xml',
   },
   css: [
     'vuetify/styles',

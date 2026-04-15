@@ -14,7 +14,10 @@ const LEARNING_TTL_MS = 4 * 60 * 1000
 
 function buildCacheKey(prefix: string, filters: Record<string, unknown>) {
   const query = Object.entries(filters)
-    .filter(([, value]) => value !== undefined && value !== null && String(value).trim() !== '')
+    .filter(
+      ([, value]) =>
+        value !== undefined && value !== null && String(value).trim() !== '',
+    )
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
     .join(':')
@@ -28,11 +31,16 @@ export const useWorldLearningStore = defineStore('world-learning', () => {
   const pending = ref(false)
   const error = ref<string | null>(null)
   const filters = ref<WorldLearningFilters>({})
-  const pagination = ref<WorldPaginationState>({ page: 1, limit: 100, total: 0, totalPages: 1 })
+  const pagination = ref<WorldPaginationState>({
+    page: 1,
+    limit: 100,
+    total: 0,
+    totalPages: 1,
+  })
   const lastFetchedAt = ref<number | null>(null)
 
   const progressByCourse = ref<Record<string, LearningProgress[]>>({})
-  const cache = ref<Record<string, { fetchedAt: number, data: unknown }>>({})
+  const cache = ref<Record<string, { fetchedAt: number; data: unknown }>>({})
 
   function isFresh(entry?: { fetchedAt: number }) {
     return !!entry && Date.now() - entry.fetchedAt < LEARNING_TTL_MS
@@ -44,7 +52,9 @@ export const useWorldLearningStore = defineStore('world-learning', () => {
       return
     }
 
-    cache.value = Object.fromEntries(Object.entries(cache.value).filter(([key]) => !key.startsWith(prefix)))
+    cache.value = Object.fromEntries(
+      Object.entries(cache.value).filter(([key]) => !key.startsWith(prefix)),
+    )
   }
 
   async function fetchCourses(options?: { force?: boolean }) {
@@ -59,23 +69,27 @@ export const useWorldLearningStore = defineStore('world-learning', () => {
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<{ items: LearningCourse[] }>('/api/world/learning/courses')
+      const response = await $fetch<{ items: LearningCourse[] }>(
+        '/api/world/learning/courses',
+      )
       items.value = response.items
       pagination.value.total = response.items.length
       pagination.value.totalPages = 1
       lastFetchedAt.value = Date.now()
       cache.value[cacheKey] = { fetchedAt: lastFetchedAt.value, data: response }
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : 'Unable to fetch learning courses'
+    } catch (err) {
+      error.value =
+        err instanceof Error ? err.message : 'Unable to fetch learning courses'
       throw err
-    }
-    finally {
+    } finally {
       pending.value = false
     }
   }
 
-  async function fetchProgress(courseId: string, options?: { force?: boolean }) {
+  async function fetchProgress(
+    courseId: string,
+    options?: { force?: boolean },
+  ) {
     if (!courseId) {
       return []
     }
@@ -91,13 +105,14 @@ export const useWorldLearningStore = defineStore('world-learning', () => {
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<{ items: LearningProgress[] }>(`/api/world/learning/courses/${courseId}/progress`)
+      const response = await $fetch<{ items: LearningProgress[] }>(
+        `/api/world/learning/courses/${courseId}/progress`,
+      )
       progressByCourse.value[courseId] = response.items
       lastFetchedAt.value = Date.now()
       cache.value[cacheKey] = { fetchedAt: lastFetchedAt.value, data: response }
       return response.items
-    }
-    finally {
+    } finally {
       pending.value = false
     }
   }
@@ -113,12 +128,13 @@ export const useWorldLearningStore = defineStore('world-learning', () => {
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<{ items: LearningAdminAnalytics }>('/api/world/learning/analytics')
+      const response = await $fetch<{ items: LearningAdminAnalytics }>(
+        '/api/world/learning/analytics',
+      )
       detail.value = response.items
       lastFetchedAt.value = Date.now()
       cache.value[cacheKey] = { fetchedAt: lastFetchedAt.value, data: response }
-    }
-    finally {
+    } finally {
       pending.value = false
     }
   }
@@ -127,34 +143,47 @@ export const useWorldLearningStore = defineStore('world-learning', () => {
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<{ items: LearningCourse[] }>('/api/world/learning/courses', {
-        method: 'POST',
-        body: payload,
-      })
+      const response = await $fetch<{ items: LearningCourse[] }>(
+        '/api/world/learning/courses',
+        {
+          method: 'POST',
+          body: payload,
+        },
+      )
       items.value = response.items
       invalidateCache('learning-courses')
-      cache.value['learning-courses'] = { fetchedAt: Date.now(), data: response }
+      cache.value['learning-courses'] = {
+        fetchedAt: Date.now(),
+        data: response,
+      }
       return response
-    }
-    finally {
+    } finally {
       pending.value = false
     }
   }
 
-  async function upsertProgress(courseId: string, payload: WorldLearningProgressMutationPayload) {
+  async function upsertProgress(
+    courseId: string,
+    payload: WorldLearningProgressMutationPayload,
+  ) {
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<{ items: LearningProgress[] }>(`/api/world/learning/courses/${courseId}/progress`, {
-        method: 'POST',
-        body: payload,
-      })
+      const response = await $fetch<{ items: LearningProgress[] }>(
+        `/api/world/learning/courses/${courseId}/progress`,
+        {
+          method: 'POST',
+          body: payload,
+        },
+      )
       progressByCourse.value[courseId] = response.items
-      cache.value[`learning-progress:${courseId}`] = { fetchedAt: Date.now(), data: response }
+      cache.value[`learning-progress:${courseId}`] = {
+        fetchedAt: Date.now(),
+        data: response,
+      }
       invalidateCache('learning-analytics')
       return response
-    }
-    finally {
+    } finally {
       pending.value = false
     }
   }

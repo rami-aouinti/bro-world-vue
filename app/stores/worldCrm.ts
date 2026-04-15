@@ -16,9 +16,16 @@ type CrmListKind = 'projects' | 'companies'
 
 const CRM_TTL_MS = 3 * 60 * 1000
 
-function buildCacheKey(prefix: string, pagination: WorldPaginationState, filters: Record<string, unknown>) {
+function buildCacheKey(
+  prefix: string,
+  pagination: WorldPaginationState,
+  filters: Record<string, unknown>,
+) {
   const normalizedFilters = Object.entries(filters)
-    .filter(([, value]) => value !== undefined && value !== null && String(value).trim() !== '')
+    .filter(
+      ([, value]) =>
+        value !== undefined && value !== null && String(value).trim() !== '',
+    )
     .sort(([left], [right]) => left.localeCompare(right))
     .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
     .join(':')
@@ -32,10 +39,15 @@ export const useWorldCrmStore = defineStore('world-crm', () => {
   const pending = ref(false)
   const error = ref<string | null>(null)
   const filters = ref<WorldCrmFilters>({ sortBy: 'id', sortOrder: 'asc' })
-  const pagination = ref<WorldPaginationState>({ page: 1, limit: 10, total: 0, totalPages: 1 })
+  const pagination = ref<WorldPaginationState>({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 1,
+  })
   const lastFetchedAt = ref<number | null>(null)
 
-  const cache = ref<Record<string, { fetchedAt: number, data: unknown }>>({})
+  const cache = ref<Record<string, { fetchedAt: number; data: unknown }>>({})
 
   function isFresh(entry?: { fetchedAt: number }) {
     return !!entry && Date.now() - entry.fetchedAt < CRM_TTL_MS
@@ -47,10 +59,19 @@ export const useWorldCrmStore = defineStore('world-crm', () => {
       return
     }
 
-    cache.value = Object.fromEntries(Object.entries(cache.value).filter(([key]) => !key.startsWith(prefix)))
+    cache.value = Object.fromEntries(
+      Object.entries(cache.value).filter(([key]) => !key.startsWith(prefix)),
+    )
   }
 
-  async function fetchList(kind: CrmListKind, options?: { force?: boolean, filters?: Partial<WorldCrmFilters>, pagination?: Partial<WorldPaginationState> }) {
+  async function fetchList(
+    kind: CrmListKind,
+    options?: {
+      force?: boolean
+      filters?: Partial<WorldCrmFilters>
+      pagination?: Partial<WorldPaginationState>
+    },
+  ) {
     pending.value = true
     error.value = null
 
@@ -61,9 +82,16 @@ export const useWorldCrmStore = defineStore('world-crm', () => {
     const cached = cache.value[key]
 
     if (cached && !options?.force && isFresh(cached)) {
-      const data = cached.data as WorldCrmProjectsListResponse | WorldCrmCompaniesListResponse
+      const data = cached.data as
+        | WorldCrmProjectsListResponse
+        | WorldCrmCompaniesListResponse
       items.value = data.items
-      pagination.value = { page: data.page, limit: data.limit, total: data.total, totalPages: data.totalPages }
+      pagination.value = {
+        page: data.page,
+        limit: data.limit,
+        total: data.total,
+        totalPages: data.totalPages,
+      }
       lastFetchedAt.value = cached.fetchedAt
       pending.value = false
       return
@@ -81,19 +109,28 @@ export const useWorldCrmStore = defineStore('world-crm', () => {
         industry: filters.value.industry,
         health: filters.value.health,
       }
-      const endpoint = kind === 'projects' ? '/api/world/crm/projects' : '/api/world/crm/companies'
-      const response = await $fetch<WorldCrmProjectsListResponse | WorldCrmCompaniesListResponse>(endpoint, { query })
+      const endpoint =
+        kind === 'projects'
+          ? '/api/world/crm/projects'
+          : '/api/world/crm/companies'
+      const response = await $fetch<
+        WorldCrmProjectsListResponse | WorldCrmCompaniesListResponse
+      >(endpoint, { query })
 
       items.value = response.items
-      pagination.value = { page: response.page, limit: response.limit, total: response.total, totalPages: response.totalPages }
+      pagination.value = {
+        page: response.page,
+        limit: response.limit,
+        total: response.total,
+        totalPages: response.totalPages,
+      }
       lastFetchedAt.value = Date.now()
       cache.value[key] = { fetchedAt: lastFetchedAt.value, data: response }
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : 'Unable to fetch CRM list'
+    } catch (err) {
+      error.value =
+        err instanceof Error ? err.message : 'Unable to fetch CRM list'
       throw err
-    }
-    finally {
+    } finally {
       pending.value = false
     }
   }
@@ -114,35 +151,42 @@ export const useWorldCrmStore = defineStore('world-crm', () => {
       detail.value = response
       lastFetchedAt.value = Date.now()
       cache.value[key] = { fetchedAt: lastFetchedAt.value, data: response }
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : 'Unable to fetch CRM pipeline'
+    } catch (err) {
+      error.value =
+        err instanceof Error ? err.message : 'Unable to fetch CRM pipeline'
       throw err
-    }
-    finally {
+    } finally {
       pending.value = false
     }
   }
 
-  async function transitionDeal(dealId: string, payload: WorldCrmTransitionPayload) {
+  async function transitionDeal(
+    dealId: string,
+    payload: WorldCrmTransitionPayload,
+  ) {
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<CrmPipelineApiResponse>(`/api/crm/deals/${dealId}/transition`, {
-        method: 'PATCH',
-        body: payload,
-      })
+      const response = await $fetch<CrmPipelineApiResponse>(
+        `/api/crm/deals/${dealId}/transition`,
+        {
+          method: 'PATCH',
+          body: payload,
+        },
+      )
       detail.value = response
       lastFetchedAt.value = Date.now()
-      cache.value['crm-pipeline'] = { fetchedAt: lastFetchedAt.value, data: response }
+      cache.value['crm-pipeline'] = {
+        fetchedAt: lastFetchedAt.value,
+        data: response,
+      }
       invalidateCache('crm-projects')
       invalidateCache('crm-companies')
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : 'Unable to transition deal'
+    } catch (err) {
+      error.value =
+        err instanceof Error ? err.message : 'Unable to transition deal'
       throw err
-    }
-    finally {
+    } finally {
       pending.value = false
     }
   }
@@ -163,12 +207,11 @@ export const useWorldCrmStore = defineStore('world-crm', () => {
       detail.value = response
       lastFetchedAt.value = Date.now()
       cache.value[key] = { fetchedAt: lastFetchedAt.value, data: response }
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : 'Unable to fetch CRM admin data'
+    } catch (err) {
+      error.value =
+        err instanceof Error ? err.message : 'Unable to fetch CRM admin data'
       throw err
-    }
-    finally {
+    } finally {
       pending.value = false
     }
   }

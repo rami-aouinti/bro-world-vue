@@ -74,11 +74,11 @@ const page = computed(
           <p class="text-white mb-4">{{ page.cta.description }}</p>
           <div class="d-flex flex-wrap ga-3">
             <v-btn color="white" variant="flat">{{
-                page.cta.primaryAction
-              }}</v-btn>
+              page.cta.primaryAction
+            }}</v-btn>
             <v-btn color="white" variant="outlined">{{
-                page.cta.secondaryAction
-              }}</v-btn>
+              page.cta.secondaryAction
+            }}</v-btn>
           </div>
         </div>
       </template>
@@ -88,8 +88,8 @@ const page = computed(
         <div v-else class="d-flex flex-column gap-4">
           <v-list nav density="compact" class="app-left-drawer-list">
             <v-list-subheader class="text-overline">{{
-                page.hero.badge
-              }}</v-list-subheader>
+              page.hero.badge
+            }}</v-list-subheader>
             <v-list-item
               v-for="card in page.missionCards"
               :key="card.title"
@@ -107,7 +107,7 @@ const page = computed(
               <v-card rounded="xl" variant="tonal" color="primary">
                 <v-card-item>
                   <template #prepend
-                  ><v-icon :icon="metric.icon" class="me-2"
+                    ><v-icon :icon="metric.icon" class="me-2"
                   /></template>
                   <v-card-title>{{ metric.value }}</v-card-title>
                   <v-card-subtitle>{{ metric.label }}</v-card-subtitle>
@@ -116,7 +116,6 @@ const page = computed(
             </v-list-item>
           </v-list>
         </div>
-
       </template>
     </AppPageDrawers>
 
@@ -169,7 +168,12 @@ const page = computed(
             cols="12"
             md="4"
           >
-            <v-card rounded="xl" variant="outlined" height="100%" class="postcard-gradient-card">
+            <v-card
+              rounded="xl"
+              variant="outlined"
+              height="100%"
+              class="postcard-gradient-card"
+            >
               <v-card-text class="text-center py-7">
                 <v-icon
                   :icon="metric.icon"
@@ -194,7 +198,11 @@ const page = computed(
             cols="12"
             md="6"
           >
-            <v-card rounded="xl" height="100%" class="pa-2 postcard-gradient-card">
+            <v-card
+              rounded="xl"
+              height="100%"
+              class="pa-2 postcard-gradient-card"
+            >
               <v-card-item>
                 <template #prepend
                   ><v-icon :icon="card.icon" color="primary" class="me-2"
@@ -229,7 +237,6 @@ const page = computed(
           align="start"
           density="comfortable"
           truncate-line="both"
-
         >
           <v-timeline-item
             v-for="item in page.timeline"

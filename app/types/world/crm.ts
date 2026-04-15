@@ -6,8 +6,8 @@ import type {
   CrmProjectsApiResponse,
   CrmProjectsListQuery,
   PaginatedResponse,
+  CrmTransitionApiPayload,
 } from '~~/server/types/api/crm'
-import type { CrmTransitionApiPayload } from '~~/server/types/api/crm'
 
 export interface WorldPaginationState {
   page: number

@@ -1,5 +1,9 @@
 import type { ShopCategory } from '~~/server/types/api/shop'
-import { getShopCatalog, saveShopCatalog, validateCategoryInput } from '~~/server/utils/shopCatalog'
+import {
+  getShopCatalog,
+  saveShopCatalog,
+  validateCategoryInput,
+} from '~~/server/utils/shopCatalog'
 
 export default defineEventHandler(async (event) => {
   const payload = await readBody<Partial<ShopCategory>>(event)
@@ -16,8 +20,11 @@ export default defineEventHandler(async (event) => {
     updatedAt: now,
   }
 
-  if (catalog.categories.some(existing => existing.id === category.id)) {
-    throw createError({ statusCode: 409, statusMessage: `Category id already exists: ${category.id}` })
+  if (catalog.categories.some((existing) => existing.id === category.id)) {
+    throw createError({
+      statusCode: 409,
+      statusMessage: `Category id already exists: ${category.id}`,
+    })
   }
 
   catalog.categories.push(category)

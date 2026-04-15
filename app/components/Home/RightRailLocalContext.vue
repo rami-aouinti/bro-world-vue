@@ -221,9 +221,9 @@ onMounted(() => {
         <template #prepend>
           <v-icon icon="mdi-weather-partly-cloudy" color="primary" />
         </template>
-        <div class="text-h6">{{
-            $t('home.rightNav.localContext.weatherTitle')
-          }}</div>
+        <div class="text-h6">
+          {{ $t('home.rightNav.localContext.weatherTitle') }}
+        </div>
       </v-card-item>
       <v-card-text class="pt-0">
         <div class="text-h5 font-weight-bold">{{ weatherSummary }}</div>
@@ -235,9 +235,9 @@ onMounted(() => {
         <template #prepend>
           <v-icon icon="mdi-calendar-star" color="primary" />
         </template>
-        <div class="text-h6">{{
-            $t('home.rightNav.localContext.eventsTitle')
-          }}</div>
+        <div class="text-h6">
+          {{ $t('home.rightNav.localContext.eventsTitle') }}
+        </div>
       </v-card-item>
       <v-list density="compact" lines="two">
         <v-list-item
@@ -252,17 +252,17 @@ onMounted(() => {
         </v-list-item>
         <v-list-item v-if="!localContext.events.length">
           <v-list-item-title>{{
-              $t('home.rightNav.localContext.emptyState')
-            }}</v-list-item-title>
+            $t('home.rightNav.localContext.emptyState')
+          }}</v-list-item-title>
         </v-list-item>
       </v-list>
       <v-card-item>
         <template #prepend>
           <v-icon icon="mdi-alert-decagram-outline" color="error" />
         </template>
-        <div class="text-h6">{{
-            $t('home.rightNav.localContext.majorEventsTitle')
-          }}</div>
+        <div class="text-h6">
+          {{ $t('home.rightNav.localContext.majorEventsTitle') }}
+        </div>
       </v-card-item>
       <v-list density="compact" lines="three">
         <v-list-item

@@ -205,7 +205,8 @@ const localeOptions: LocaleOption[] = [
 
 const selectedLocale = computed<LocaleOption>(() => {
   return (
-    localeOptions.find((item) => item.value === locale.value) ?? localeOptions[0]!
+    localeOptions.find((item) => item.value === locale.value) ??
+    localeOptions[0]!
   )
 })
 </script>
@@ -314,8 +315,8 @@ const selectedLocale = computed<LocaleOption>(() => {
                     :key="item.value"
                     :active="locale === item.value"
                     @click="
-                      setLocale(item.value);
-                      languageMenuShow = false;
+                      setLocale(item.value)
+                      languageMenuShow = false
                     "
                   >
                     <template #prepend>

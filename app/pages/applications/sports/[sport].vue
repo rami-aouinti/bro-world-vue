@@ -34,7 +34,9 @@ if (!sportSlug.value) {
   })
 }
 
-const sport = computed<SportDefinition>(() => SPORTS_BY_SLUG[sportSlug.value as SportSlug])
+const sport = computed<SportDefinition>(
+  () => SPORTS_BY_SLUG[sportSlug.value as SportSlug],
+)
 
 const {
   leagues,
@@ -77,7 +79,13 @@ if (selectedLeagueId.value && selectedSeason.value) {
 <template>
   <v-container fluid>
     <v-card class="pa-6 mb-6">
-      <v-img :src="sport.image" :alt="sport.label" height="220" cover class="mb-4" />
+      <v-img
+        :src="sport.image"
+        :alt="sport.label"
+        height="220"
+        cover
+        class="mb-4"
+      />
       <h2 class="text-h5 mb-2">{{ sport.label }}</h2>
       <p class="text-medium-emphasis mb-0">Slug: {{ sport.slug }}</p>
     </v-card>
@@ -121,7 +129,12 @@ if (selectedLeagueId.value && selectedSeason.value) {
             <v-divider />
             <v-card-text>
               <template v-if="leaguesState === 'loading'">
-                <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
+                <v-progress-circular
+                  indeterminate
+                  color="primary"
+                  size="22"
+                  class="mr-3"
+                />
                 <span>Loading leagues…</span>
               </template>
 
@@ -161,7 +174,12 @@ if (selectedLeagueId.value && selectedSeason.value) {
             <v-divider />
             <v-card-text>
               <template v-if="fixturesState === 'loading'">
-                <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
+                <v-progress-circular
+                  indeterminate
+                  color="primary"
+                  size="22"
+                  class="mr-3"
+                />
                 <span>Loading fixtures…</span>
               </template>
 
@@ -203,7 +221,12 @@ if (selectedLeagueId.value && selectedSeason.value) {
             <v-divider />
             <v-card-text>
               <template v-if="standingsState === 'loading'">
-                <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
+                <v-progress-circular
+                  indeterminate
+                  color="primary"
+                  size="22"
+                  class="mr-3"
+                />
                 <span>Loading standings…</span>
               </template>
 
@@ -246,7 +269,12 @@ if (selectedLeagueId.value && selectedSeason.value) {
             <v-divider />
             <v-card-text>
               <template v-if="teamsState === 'loading'">
-                <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
+                <v-progress-circular
+                  indeterminate
+                  color="primary"
+                  size="22"
+                  class="mr-3"
+                />
                 <span>Loading teams…</span>
               </template>
 
@@ -269,7 +297,11 @@ if (selectedLeagueId.value && selectedSeason.value) {
               </v-alert>
 
               <v-list v-else density="compact" lines="one" class="pa-0">
-                <v-list-item v-for="team in teams" :key="team.id" :title="team.name" />
+                <v-list-item
+                  v-for="team in teams"
+                  :key="team.id"
+                  :title="team.name"
+                />
               </v-list>
             </v-card-text>
           </v-card>
@@ -281,7 +313,12 @@ if (selectedLeagueId.value && selectedSeason.value) {
             <v-divider />
             <v-card-text>
               <template v-if="fixtureDetailsState === 'loading'">
-                <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
+                <v-progress-circular
+                  indeterminate
+                  color="primary"
+                  size="22"
+                  class="mr-3"
+                />
                 <span>Loading fixture details…</span>
               </template>
 
@@ -305,9 +342,9 @@ if (selectedLeagueId.value && selectedSeason.value) {
 
               <template v-else-if="fixtureDetails">
                 <div class="mb-3 text-subtitle-2">
-                  Events: {{ fixtureDetails.events.length }} ·
-                  Lineups: {{ fixtureDetails.lineups.length }} ·
-                  Player stats: {{ fixtureDetails.playerStats.length }}
+                  Events: {{ fixtureDetails.events.length }} · Lineups:
+                  {{ fixtureDetails.lineups.length }} · Player stats:
+                  {{ fixtureDetails.playerStats.length }}
                 </div>
                 <v-list density="compact" lines="two" class="pa-0">
                   <v-list-item

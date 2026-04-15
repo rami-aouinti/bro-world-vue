@@ -24,12 +24,29 @@ type CandidateApplication = {
 }
 
 const jobsNavItems = [
-  { title: 'Overview Jobs', to: '/world/jobs', icon: 'mdi-view-dashboard-outline' },
+  {
+    title: 'Overview Jobs',
+    to: '/world/jobs',
+    icon: 'mdi-view-dashboard-outline',
+  },
   { title: 'Offers', to: '/world/jobs/offers', icon: 'mdi-briefcase-outline' },
-  { title: 'My Offers', to: '/world/jobs/my-offers', icon: 'mdi-account-tie-outline' },
-  { title: 'Applications', to: '/world/jobs/applications', icon: 'mdi-file-document-outline' },
+  {
+    title: 'My Offers',
+    to: '/world/jobs/my-offers',
+    icon: 'mdi-account-tie-outline',
+  },
+  {
+    title: 'Applications',
+    to: '/world/jobs/applications',
+    icon: 'mdi-file-document-outline',
+  },
   { title: 'Apply', to: '/world/jobs/apply', icon: 'mdi-send-outline' },
-  { title: 'Admin', to: '/world/jobs/admin', icon: 'mdi-shield-crown-outline', rootOnly: true },
+  {
+    title: 'Admin',
+    to: '/world/jobs/admin',
+    icon: 'mdi-shield-crown-outline',
+    rootOnly: true,
+  },
 ]
 
 const maxCvSizeBytes = 5 * 1024 * 1024
@@ -74,8 +91,16 @@ const applications = ref<CandidateApplication[]>([
     duplicateKey: 'job-fe-2026::alex.martin@example.com',
     cvFileName: 'alex_martin_cv.pdf',
     events: [
-      { status: 'draft', at: new Date().toISOString(), note: 'Brouillon créé par le candidat' },
-      { status: 'submitted', at: new Date().toISOString(), note: 'Candidature soumise' },
+      {
+        status: 'draft',
+        at: new Date().toISOString(),
+        note: 'Brouillon créé par le candidat',
+      },
+      {
+        status: 'submitted',
+        at: new Date().toISOString(),
+        note: 'Candidature soumise',
+      },
     ],
   },
 ])
@@ -102,23 +127,28 @@ const tableHeaders = [
   { title: 'Updated', key: 'updatedAt' },
 ]
 
-const requiredRule = (value: string | number | boolean | null) => value !== null && value !== '' || 'Champ obligatoire'
-const emailRule = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || 'Email invalide'
+const requiredRule = (value: string | number | boolean | null) =>
+  (value !== null && value !== '') || 'Champ obligatoire'
+const emailRule = (value: string) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || 'Email invalide'
 const portfolioRule = (value: string) => {
   try {
     const parsed = new URL(value)
-    return ['http:', 'https:'].includes(parsed.protocol) || 'URL portfolio invalide'
-  }
-  catch {
+    return (
+      ['http:', 'https:'].includes(parsed.protocol) || 'URL portfolio invalide'
+    )
+  } catch {
     return 'URL portfolio invalide'
   }
 }
-const coverLetterRule = (value: string) => value.trim().length >= 120 || 'La cover letter doit contenir au moins 120 caractères'
-const phoneRule = (value: string) => /^[+\d\s().-]{8,20}$/.test(value) || 'Téléphone invalide'
+const coverLetterRule = (value: string) =>
+  value.trim().length >= 120 ||
+  'La cover letter doit contenir au moins 120 caractères'
+const phoneRule = (value: string) =>
+  /^[+\d\s().-]{8,20}$/.test(value) || 'Téléphone invalide'
 
 const cvValidationError = computed(() => {
-  if (!cvFile.value)
-    return 'CV requis'
+  if (!cvFile.value) return 'CV requis'
 
   const fileExtension = cvFile.value.name.split('.').pop()?.toLowerCase() || ''
   if (!allowedCvExtensions.includes(fileExtension))
@@ -127,22 +157,25 @@ const cvValidationError = computed(() => {
   if (cvFile.value.type && !allowedCvMimeTypes.includes(cvFile.value.type))
     return 'MIME type du fichier CV non autorisé'
 
-  if (cvFile.value.size > maxCvSizeBytes)
-    return 'CV trop volumineux (max 5MB)'
+  if (cvFile.value.size > maxCvSizeBytes) return 'CV trop volumineux (max 5MB)'
 
   return ''
 })
 
 const selectedApplication = computed(() => {
-  if (!selectedApplicationId.value)
-    return null
+  if (!selectedApplicationId.value) return null
 
-  return applications.value.find(app => app.id === selectedApplicationId.value) || null
+  return (
+    applications.value.find((app) => app.id === selectedApplicationId.value) ||
+    null
+  )
 })
 
-const createDuplicateKey = (jobId: string, email: string) => `${jobId.trim().toLowerCase()}::${email.trim().toLowerCase()}`
+const createDuplicateKey = (jobId: string, email: string) =>
+  `${jobId.trim().toLowerCase()}::${email.trim().toLowerCase()}`
 
-const createCvFingerprint = (file: File) => `${file.name}-${file.size}-${file.lastModified}`
+const createCvFingerprint = (file: File) =>
+  `${file.name}-${file.size}-${file.lastModified}`
 
 const resetForm = () => {
   Object.assign(applicationForm, {
@@ -171,16 +204,20 @@ const clearMessages = () => {
 const validateForm = async () => {
   const validationResult = await formRef.value?.validate()
   const isFormValid = Boolean(validationResult?.valid)
-  if (!isFormValid)
-    return false
+  if (!isFormValid) return false
 
   if (cvValidationError.value) {
     errorMessage.value = cvValidationError.value
     return false
   }
 
-  if (applicationForm.authorizedToWork === false || applicationForm.yearsExperience === null || applicationForm.yearsExperience < 2) {
-    errorMessage.value = 'Le candidat ne passe pas les critères knockout (autorisation de travail + minimum 2 ans d\'expérience).'
+  if (
+    applicationForm.authorizedToWork === false ||
+    applicationForm.yearsExperience === null ||
+    applicationForm.yearsExperience < 2
+  ) {
+    errorMessage.value =
+      "Le candidat ne passe pas les critères knockout (autorisation de travail + minimum 2 ans d'expérience)."
     return false
   }
 
@@ -189,8 +226,13 @@ const validateForm = async () => {
 
 const buildApplication = (status: ApplicationStatus): CandidateApplication => {
   const now = new Date().toISOString()
-  const duplicateKey = createDuplicateKey(applicationForm.jobId, applicationForm.email)
-  const baseCvFingerprint = cvFile.value ? createCvFingerprint(cvFile.value) : ''
+  const duplicateKey = createDuplicateKey(
+    applicationForm.jobId,
+    applicationForm.email,
+  )
+  const baseCvFingerprint = cvFile.value
+    ? createCvFingerprint(cvFile.value)
+    : ''
 
   return {
     id: `APP-${Math.floor(1000 + Math.random() * 9000)}`,
@@ -203,25 +245,34 @@ const buildApplication = (status: ApplicationStatus): CandidateApplication => {
     updatedAt: now,
     duplicateKey: `${duplicateKey}::${baseCvFingerprint}`,
     cvFileName: cvFile.value?.name || '',
-    events: [{ status, at: now, note: status === 'draft' ? 'Brouillon sauvegardé' : 'Candidature soumise' }],
+    events: [
+      {
+        status,
+        at: now,
+        note:
+          status === 'draft' ? 'Brouillon sauvegardé' : 'Candidature soumise',
+      },
+    ],
   }
 }
 
 const hasDuplicateApplication = (candidate: CandidateApplication) => {
-  return applications.value.some(existing =>
-    existing.status !== 'withdrawn' && existing.duplicateKey === candidate.duplicateKey,
+  return applications.value.some(
+    (existing) =>
+      existing.status !== 'withdrawn' &&
+      existing.duplicateKey === candidate.duplicateKey,
   )
 }
 
 const saveDraft = async () => {
   clearMessages()
   const isValid = await validateForm()
-  if (!isValid)
-    return
+  if (!isValid) return
 
   const candidate = buildApplication('draft')
   if (hasDuplicateApplication(candidate)) {
-    errorMessage.value = 'Un brouillon/candidature identique existe déjà pour ce job et ce CV.'
+    errorMessage.value =
+      'Un brouillon/candidature identique existe déjà pour ce job et ce CV.'
     return
   }
 
@@ -234,12 +285,12 @@ const saveDraft = async () => {
 const submitApplication = async () => {
   clearMessages()
   const isValid = await validateForm()
-  if (!isValid)
-    return
+  if (!isValid) return
 
   const candidate = buildApplication('submitted')
   if (hasDuplicateApplication(candidate)) {
-    errorMessage.value = 'Candidature dupliquée détectée. Veuillez mettre à jour la candidature existante.'
+    errorMessage.value =
+      'Candidature dupliquée détectée. Veuillez mettre à jour la candidature existante.'
     return
   }
 
@@ -282,7 +333,7 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
       action-label="Postuler"
     />
 
-    <v-container fluid class="pt-0">
+    <v-container fluid>
       <v-row>
         <v-col cols="12" lg="7">
           <v-card>
@@ -316,19 +367,39 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
               <v-form ref="formRef">
                 <v-row>
                   <v-col cols="12" md="6">
-                    <v-text-field v-model="applicationForm.jobId" label="Job ID" :rules="[requiredRule]" />
+                    <v-text-field
+                      v-model="applicationForm.jobId"
+                      label="Job ID"
+                      :rules="[requiredRule]"
+                    />
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-text-field v-model="applicationForm.email" label="Email" :rules="[requiredRule, emailRule]" />
+                    <v-text-field
+                      v-model="applicationForm.email"
+                      label="Email"
+                      :rules="[requiredRule, emailRule]"
+                    />
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-text-field v-model="applicationForm.firstName" label="First name" :rules="[requiredRule]" />
+                    <v-text-field
+                      v-model="applicationForm.firstName"
+                      label="First name"
+                      :rules="[requiredRule]"
+                    />
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-text-field v-model="applicationForm.lastName" label="Last name" :rules="[requiredRule]" />
+                    <v-text-field
+                      v-model="applicationForm.lastName"
+                      label="Last name"
+                      :rules="[requiredRule]"
+                    />
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-text-field v-model="applicationForm.phone" label="Phone" :rules="[requiredRule, phoneRule]" />
+                    <v-text-field
+                      v-model="applicationForm.phone"
+                      label="Phone"
+                      :rules="[requiredRule, phoneRule]"
+                    />
                   </v-col>
                   <v-col cols="12" md="6">
                     <v-text-field
@@ -344,8 +415,15 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
                       accept=".pdf,.doc,.docx"
                       prepend-icon="mdi-file-account-outline"
                       show-size
-                      :error-messages="cvValidationError ? [cvValidationError] : []"
-                      :rules="[() => !cvValidationError || cvValidationError === '' || cvValidationError]"
+                      :error-messages="
+                        cvValidationError ? [cvValidationError] : []
+                      "
+                      :rules="[
+                        () =>
+                          !cvValidationError ||
+                          cvValidationError === '' ||
+                          cvValidationError,
+                      ]"
                     />
                   </v-col>
                   <v-col cols="12">
@@ -417,13 +495,27 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
                 </v-row>
 
                 <div class="d-flex flex-wrap ga-3 mt-6">
-                  <v-btn color="warning" variant="flat" prepend-icon="mdi-content-save-outline" @click="saveDraft">
+                  <v-btn
+                    color="warning"
+                    variant="flat"
+                    prepend-icon="mdi-content-save-outline"
+                    @click="saveDraft"
+                  >
                     Save draft
                   </v-btn>
-                  <v-btn color="primary" prepend-icon="mdi-send-outline" @click="submitApplication">
+                  <v-btn
+                    color="primary"
+                    prepend-icon="mdi-send-outline"
+                    @click="submitApplication"
+                  >
                     Submit application
                   </v-btn>
-                  <v-btn variant="text" prepend-icon="mdi-refresh" @click="resetForm">Reset</v-btn>
+                  <v-btn
+                    variant="text"
+                    prepend-icon="mdi-refresh"
+                    @click="resetForm"
+                    >Reset</v-btn
+                  >
                 </div>
               </v-form>
             </v-card-text>
@@ -442,10 +534,16 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
                 @click:row="handleRowClick"
               >
                 <template #item.portfolioUrl="{ item }">
-                  <a :href="item.portfolioUrl" target="_blank" rel="noreferrer">Portfolio</a>
+                  <a :href="item.portfolioUrl" target="_blank" rel="noreferrer"
+                    >Portfolio</a
+                  >
                 </template>
                 <template #item.status="{ item }">
-                  <v-chip :color="statusColor[item.status]" size="small" variant="tonal">
+                  <v-chip
+                    :color="statusColor[item.status]"
+                    size="small"
+                    variant="tonal"
+                  >
                     {{ statusLabel[item.status] }}
                   </v-chip>
                 </template>
@@ -459,14 +557,19 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
           <v-card>
             <v-card-title class="d-flex align-center justify-space-between">
               <span>État de candidature</span>
-              <v-chip v-if="selectedApplication" :color="statusColor[selectedApplication.status]" variant="tonal">
+              <v-chip
+                v-if="selectedApplication"
+                :color="statusColor[selectedApplication.status]"
+                variant="tonal"
+              >
                 {{ statusLabel[selectedApplication.status] }}
               </v-chip>
             </v-card-title>
             <v-card-text>
               <template v-if="selectedApplication">
                 <p class="text-body-2 mb-3">
-                  <strong>{{ selectedApplication.candidateName }}</strong> · {{ selectedApplication.email }}
+                  <strong>{{ selectedApplication.candidateName }}</strong> ·
+                  {{ selectedApplication.email }}
                 </p>
                 <div class="d-flex flex-wrap ga-2 mb-4">
                   <v-btn
@@ -474,7 +577,12 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
                     color="success"
                     variant="tonal"
                     :disabled="selectedApplication.status === 'submitted'"
-                    @click="updateApplicationStatus('submitted', 'Resoumission par le candidat')"
+                    @click="
+                      updateApplicationStatus(
+                        'submitted',
+                        'Resoumission par le candidat',
+                      )
+                    "
                   >
                     Mark submitted
                   </v-btn>
@@ -483,7 +591,12 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
                     color="warning"
                     variant="tonal"
                     :disabled="selectedApplication.status === 'draft'"
-                    @click="updateApplicationStatus('draft', 'Retour en brouillon pour modification')"
+                    @click="
+                      updateApplicationStatus(
+                        'draft',
+                        'Retour en brouillon pour modification',
+                      )
+                    "
                   >
                     Mark draft
                   </v-btn>
@@ -492,7 +605,12 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
                     color="error"
                     variant="tonal"
                     :disabled="selectedApplication.status === 'withdrawn'"
-                    @click="updateApplicationStatus('withdrawn', 'Candidature retirée par le candidat')"
+                    @click="
+                      updateApplicationStatus(
+                        'withdrawn',
+                        'Candidature retirée par le candidat',
+                      )
+                    "
                   >
                     Withdraw
                   </v-btn>
@@ -505,8 +623,12 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
                     dot-color="primary"
                     size="small"
                   >
-                    <div class="text-caption text-medium-emphasis">{{ new Date(event.at).toLocaleString() }}</div>
-                    <div>{{ statusLabel[event.status] }} — {{ event.note }}</div>
+                    <div class="text-caption text-medium-emphasis">
+                      {{ new Date(event.at).toLocaleString() }}
+                    </div>
+                    <div>
+                      {{ statusLabel[event.status] }} — {{ event.note }}
+                    </div>
                   </v-timeline-item>
                 </v-timeline>
               </template>

@@ -7,7 +7,7 @@ export const JOB_PIPELINE_STAGES = [
   'Rejected',
 ] as const
 
-export type JobPipelineStage = typeof JOB_PIPELINE_STAGES[number]
+export type JobPipelineStage = (typeof JOB_PIPELINE_STAGES)[number]
 
 export type CandidateScoreBreakdown = {
   skillsMatch: number
@@ -61,7 +61,7 @@ export const JOB_ACCESS_ROLES = [
   'admin',
 ] as const
 
-export type JobAccessRole = typeof JOB_ACCESS_ROLES[number]
+export type JobAccessRole = (typeof JOB_ACCESS_ROLES)[number]
 
 export type JobPermissionMatrix = {
   canViewPii: boolean
@@ -91,7 +91,11 @@ export type JobsAdminDashboardResponse = {
     median: number
     target: number
   }
-  candidateSources: Array<{ source: JobCandidate['source']; count: number; ratio: number }>
+  candidateSources: Array<{
+    source: JobCandidate['source']
+    count: number
+    ratio: number
+  }>
   offerAcceptanceRate: {
     accepted: number
     declined: number

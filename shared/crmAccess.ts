@@ -10,7 +10,7 @@ export const CRM_PERMISSIONS = [
   'crm.admin.manage',
 ] as const
 
-export type CrmPermission = typeof CRM_PERMISSIONS[number]
+export type CrmPermission = (typeof CRM_PERMISSIONS)[number]
 
 export const CRM_ROLE_PERMISSIONS: Record<string, CrmPermission[]> = {
   ROLE_ROOT: [...CRM_PERMISSIONS],
@@ -31,10 +31,7 @@ export const CRM_ROLE_PERMISSIONS: Record<string, CrmPermission[]> = {
     'crm.accounts.edit',
     'crm.projects.read',
   ],
-  ROLE_CRM_VIEWER: [
-    'crm.projects.read',
-    'crm.accounts.read',
-  ],
+  ROLE_CRM_VIEWER: ['crm.projects.read', 'crm.accounts.read'],
 }
 
 export const CRM_PERMISSION_LABELS: Record<CrmPermission, string> = {
@@ -47,7 +44,9 @@ export const CRM_PERMISSION_LABELS: Record<CrmPermission, string> = {
   'crm.admin.manage': 'Admin · Manage policies',
 }
 
-export function resolveCrmPermissionsForRoles(roles: string[]): CrmPermission[] {
+export function resolveCrmPermissionsForRoles(
+  roles: string[],
+): CrmPermission[] {
   const permissions = new Set<CrmPermission>()
 
   for (const role of roles) {
@@ -65,14 +64,17 @@ export function resolveCrmPermissionsForRoles(roles: string[]): CrmPermission[] 
   return Array.from(permissions)
 }
 
-export function resolveCrmPermissionsForUser(user: SessionUser | null | undefined): CrmPermission[] {
+export function resolveCrmPermissionsForUser(
+  user: SessionUser | null | undefined,
+): CrmPermission[] {
   if (!user) {
     return []
   }
 
   const roleBasedPermissions = resolveCrmPermissionsForRoles(user.roles ?? [])
   const explicitPermissions = (user.permissions ?? []).filter(
-    (permission): permission is CrmPermission => CRM_PERMISSIONS.includes(permission as CrmPermission),
+    (permission): permission is CrmPermission =>
+      CRM_PERMISSIONS.includes(permission as CrmPermission),
   )
 
   return Array.from(new Set([...roleBasedPermissions, ...explicitPermissions]))

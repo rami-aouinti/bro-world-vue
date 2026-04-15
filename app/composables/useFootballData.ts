@@ -97,7 +97,10 @@ export function useFootballData() {
 
   const selectedLeague = computed<FootballLeague | null>(() => {
     if (!selectedLeagueId.value) return null
-    return leagues.value.find((league) => league.id === selectedLeagueId.value) || null
+    return (
+      leagues.value.find((league) => league.id === selectedLeagueId.value) ||
+      null
+    )
   })
 
   const seasons = computed<number[]>(() => {
@@ -129,21 +132,27 @@ export function useFootballData() {
     leaguesError.value = ''
 
     try {
-      const response = await $fetch<{ items: FootballLeague[] }>('/api/sports/football/leagues')
+      const response = await $fetch<{ items: FootballLeague[] }>(
+        '/api/sports/football/leagues',
+      )
       leagues.value = response.items
       leaguesState.value = leagues.value.length ? 'ready' : 'empty'
 
       if (leagues.value.length && !selectedLeagueId.value) {
         const firstLeague = leagues.value[0] as FootballLeague
         selectedLeagueId.value = firstLeague.id
-        const currentSeason = firstLeague.seasons.find((season) => season.current)
+        const currentSeason = firstLeague.seasons.find(
+          (season) => season.current,
+        )
         selectedSeason.value = currentSeason?.year || seasons.value[0] || null
       }
-    }
-    catch (error) {
+    } catch (error) {
       leagues.value = []
       leaguesState.value = 'error'
-      leaguesError.value = toErrorMessage(error, 'Impossible de charger les ligues.')
+      leaguesError.value = toErrorMessage(
+        error,
+        'Impossible de charger les ligues.',
+      )
       resetLeagueDependentData()
     }
   }
@@ -165,49 +174,59 @@ export function useFootballData() {
     const league = selectedLeagueId.value
     const season = selectedSeason.value
 
-    const [fixturesResult, standingsResult, teamsResult] = await Promise.allSettled([
-      $fetch<{ items: FootballFixture[] }>('/api/sports/football/fixtures', {
-        query: { league, season },
-      }),
-      $fetch<{ groups: FootballStandingsGroup[] }>('/api/sports/football/standings', {
-        query: { league, season },
-      }),
-      $fetch<{ items: FootballTeam[] }>('/api/sports/football/teams', {
-        query: { league, season },
-      }),
-    ])
+    const [fixturesResult, standingsResult, teamsResult] =
+      await Promise.allSettled([
+        $fetch<{ items: FootballFixture[] }>('/api/sports/football/fixtures', {
+          query: { league, season },
+        }),
+        $fetch<{ groups: FootballStandingsGroup[] }>(
+          '/api/sports/football/standings',
+          {
+            query: { league, season },
+          },
+        ),
+        $fetch<{ items: FootballTeam[] }>('/api/sports/football/teams', {
+          query: { league, season },
+        }),
+      ])
 
     if (fixturesResult.status === 'fulfilled') {
       fixtures.value = fixturesResult.value.items
       fixturesState.value = fixtures.value.length ? 'ready' : 'empty'
       fixturesError.value = ''
-    }
-    else {
+    } else {
       fixtures.value = []
       fixturesState.value = 'error'
-      fixturesError.value = toErrorMessage(fixturesResult.reason, 'Impossible de charger les matches.')
+      fixturesError.value = toErrorMessage(
+        fixturesResult.reason,
+        'Impossible de charger les matches.',
+      )
     }
 
     if (standingsResult.status === 'fulfilled') {
       standings.value = standingsResult.value.groups
       standingsState.value = standings.value.length ? 'ready' : 'empty'
       standingsError.value = ''
-    }
-    else {
+    } else {
       standings.value = []
       standingsState.value = 'error'
-      standingsError.value = toErrorMessage(standingsResult.reason, 'Impossible de charger le classement.')
+      standingsError.value = toErrorMessage(
+        standingsResult.reason,
+        'Impossible de charger le classement.',
+      )
     }
 
     if (teamsResult.status === 'fulfilled') {
       teams.value = teamsResult.value.items
       teamsState.value = teams.value.length ? 'ready' : 'empty'
       teamsError.value = ''
-    }
-    else {
+    } else {
       teams.value = []
       teamsState.value = 'error'
-      teamsError.value = toErrorMessage(teamsResult.reason, 'Impossible de charger les équipes.')
+      teamsError.value = toErrorMessage(
+        teamsResult.reason,
+        'Impossible de charger les équipes.',
+      )
     }
   }
 
@@ -220,7 +239,9 @@ export function useFootballData() {
       return
     }
 
-    const preferredSeason = selectedLeague.value.seasons.find((season) => season.current)?.year
+    const preferredSeason = selectedLeague.value.seasons.find(
+      (season) => season.current,
+    )?.year
     selectedSeason.value = preferredSeason || seasons.value[0] || null
   }
 
@@ -241,9 +262,12 @@ export function useFootballData() {
     fixtureDetailsState.value = 'loading'
 
     try {
-      const response = await $fetch<FootballFixtureDetails>('/api/sports/football/fixture', {
-        query: { fixture: fixtureId },
-      })
+      const response = await $fetch<FootballFixtureDetails>(
+        '/api/sports/football/fixture',
+        {
+          query: { fixture: fixtureId },
+        },
+      )
 
       fixtureDetails.value = response
       const hasContent =
@@ -253,10 +277,12 @@ export function useFootballData() {
         response.playerStats.length > 0
 
       fixtureDetailsState.value = hasContent ? 'ready' : 'empty'
-    }
-    catch (error) {
+    } catch (error) {
       fixtureDetailsState.value = 'error'
-      fixtureDetailsError.value = toErrorMessage(error, 'Impossible de charger le détail du match.')
+      fixtureDetailsError.value = toErrorMessage(
+        error,
+        'Impossible de charger le détail du match.',
+      )
     }
   }
 

@@ -1,4 +1,9 @@
-import type { CrmDeal, CrmPipelineColumn, CrmPipelineKpis, CrmPipelineStage } from '../../app/types/crm'
+import type {
+  CrmDeal,
+  CrmPipelineColumn,
+  CrmPipelineKpis,
+  CrmPipelineStage,
+} from '../../app/types/crm'
 
 interface CrmPipelineStore {
   columns: CrmPipelineColumn[]
@@ -90,7 +95,9 @@ const INITIAL_DEALS: CrmDeal[] = [
 ]
 
 function getStore(): CrmPipelineStore {
-  const runtime = globalThis as typeof globalThis & { __crmPipelineStore?: CrmPipelineStore }
+  const runtime = globalThis as typeof globalThis & {
+    __crmPipelineStore?: CrmPipelineStore
+  }
 
   if (!runtime.__crmPipelineStore) {
     runtime.__crmPipelineStore = {
@@ -103,7 +110,11 @@ function getStore(): CrmPipelineStore {
   return runtime.__crmPipelineStore
 }
 
-function normalizeProbability(stage: CrmPipelineStage, probability: number, outcome: CrmDeal['outcome']): number {
+function normalizeProbability(
+  stage: CrmPipelineStage,
+  probability: number,
+  outcome: CrmDeal['outcome'],
+): number {
   if (stage === 'won_lost') {
     if (outcome === 'won') {
       return 100
@@ -130,7 +141,12 @@ export function getCrmPipelineSnapshot() {
 
 export function transitionCrmDeal(
   dealId: string,
-  payload: { toStage: CrmPipelineStage; probability: number; expectedCloseDate: string; outcome?: CrmDeal['outcome'] },
+  payload: {
+    toStage: CrmPipelineStage
+    probability: number
+    expectedCloseDate: string
+    outcome?: CrmDeal['outcome']
+  },
 ): CrmDeal | null {
   const store = getStore()
   const deal = store.deals.find((entry) => entry.id === dealId)
@@ -139,14 +155,21 @@ export function transitionCrmDeal(
     return null
   }
 
-  const nextOutcome = payload.toStage === 'won_lost' ? (payload.outcome ?? deal.outcome ?? 'won') : null
+  const nextOutcome =
+    payload.toStage === 'won_lost'
+      ? (payload.outcome ?? deal.outcome ?? 'won')
+      : null
   const isClosing = payload.toStage === 'won_lost'
 
   deal.stage = payload.toStage
   deal.outcome = nextOutcome
-  deal.probability = normalizeProbability(payload.toStage, payload.probability, nextOutcome)
+  deal.probability = normalizeProbability(
+    payload.toStage,
+    payload.probability,
+    nextOutcome,
+  )
   deal.expectedCloseDate = payload.expectedCloseDate
-  deal.closedAt = isClosing ? deal.closedAt ?? new Date().toISOString() : null
+  deal.closedAt = isClosing ? (deal.closedAt ?? new Date().toISOString()) : null
   store.updatedAt = new Date().toISOString()
 
   return deal
@@ -154,9 +177,14 @@ export function transitionCrmDeal(
 
 function computeKpis(deals: CrmDeal[]): CrmPipelineKpis {
   const activeDeals = deals.filter((deal) => deal.stage !== 'won_lost').length
-  const weightedForecast = deals.reduce((sum, deal) => sum + deal.amount * (deal.probability / 100), 0)
+  const weightedForecast = deals.reduce(
+    (sum, deal) => sum + deal.amount * (deal.probability / 100),
+    0,
+  )
 
-  const closedDeals = deals.filter((deal) => deal.stage === 'won_lost' && deal.outcome)
+  const closedDeals = deals.filter(
+    (deal) => deal.stage === 'won_lost' && deal.outcome,
+  )
   const wonDeals = closedDeals.filter((deal) => deal.outcome === 'won').length
   const winRate = closedDeals.length ? (wonDeals / closedDeals.length) * 100 : 0
 
@@ -166,11 +194,15 @@ function computeKpis(deals: CrmDeal[]): CrmPipelineKpis {
       const startedAt = new Date(deal.createdAt).getTime()
       const endedAt = new Date(deal.closedAt as string).getTime()
 
-      return Math.max(0, Math.round((endedAt - startedAt) / (1000 * 60 * 60 * 24)))
+      return Math.max(
+        0,
+        Math.round((endedAt - startedAt) / (1000 * 60 * 60 * 24)),
+      )
     })
 
   const averageCycleDays = cycleLengths.length
-    ? cycleLengths.reduce((total, cycleDay) => total + cycleDay, 0) / cycleLengths.length
+    ? cycleLengths.reduce((total, cycleDay) => total + cycleDay, 0) /
+      cycleLengths.length
     : 0
 
   return {

@@ -21,16 +21,30 @@ const { t } = useI18n()
 const route = useRoute()
 const { user } = useUserSession()
 const sessionUser = computed(() => user.value as SessionUser | null)
-const isRoot = computed(() => sessionUser.value?.roles?.includes('ROLE_ROOT') ?? false)
+const isRoot = computed(
+  () => sessionUser.value?.roles?.includes('ROLE_ROOT') ?? false,
+)
 
 const visibleNavItems = computed(() =>
   props.navItems.filter((item) => !item.rootOnly || isRoot.value),
 )
 
 const quickCheckItems = computed(() => [
-  { icon: 'mdi-check-circle-outline', title: t('world.common.quickChecks.sync', 'Data sync: online') },
-  { icon: 'mdi-timer-sand', title: t('world.common.quickChecks.pendingApprovals', 'Pending approvals: 3') },
-  { icon: 'mdi-account-clock-outline', title: t('world.common.quickChecks.assignedToMe', 'Assigned to me: 12') },
+  {
+    icon: 'mdi-check-circle-outline',
+    title: t('world.common.quickChecks.sync', 'Data sync: online'),
+  },
+  {
+    icon: 'mdi-timer-sand',
+    title: t(
+      'world.common.quickChecks.pendingApprovals',
+      'Pending approvals: 3',
+    ),
+  },
+  {
+    icon: 'mdi-account-clock-outline',
+    title: t('world.common.quickChecks.assignedToMe', 'Assigned to me: 12'),
+  },
 ])
 </script>
 
@@ -38,15 +52,22 @@ const quickCheckItems = computed(() => [
   <AppPageDrawers>
     <template #left>
       <div class="d-flex flex-column ga-3">
-        <v-card rounded="xl" variant="tonal" class="pa-3">
-          <div class="d-flex align-center ga-2 mb-1">
-            <v-icon :icon="moduleIcon" color="primary" />
-            <h3 class="text-subtitle-1 font-weight-bold mb-0">{{ moduleTitle }}</h3>
-          </div>
-          <p class="text-caption text-medium-emphasis mb-0">{{ moduleDescription }}</p>
-        </v-card>
-
-        <v-list nav density="compact" rounded="xl" class="world-module-drawer-list">
+        <v-btn
+          color="primary"
+          variant="tonal"
+          :prepend-icon="actionIcon || 'mdi-plus-circle-outline'"
+          block
+        >
+          {{
+            actionLabel ||
+            t(
+              'world.common.actions.createInModule',
+              { module: moduleTitle },
+              `Create in ${moduleTitle}`,
+            )
+          }}
+        </v-btn>
+        <v-list nav density="compact" rounded="xl" class="bg-transparent">
           <v-list-item
             v-for="item in visibleNavItems"
             :key="item.to"
@@ -58,30 +79,21 @@ const quickCheckItems = computed(() => [
             color="primary"
           />
         </v-list>
-
-        <v-btn
-          color="primary"
-          variant="tonal"
-          :prepend-icon="actionIcon || 'mdi-plus-circle-outline'"
-          block
-        >
-          {{ actionLabel || t('world.common.actions.createInModule', { module: moduleTitle }, `Create in ${moduleTitle}`) }}
-        </v-btn>
       </div>
     </template>
 
     <template #right>
-      <v-card rounded="xl" class="pa-4" variant="text">
-        <h3 class="text-subtitle-1 font-weight-bold mb-3">{{ t('world.common.quickChecks.title', 'Quick checks') }}</h3>
-        <v-list density="compact" class="bg-transparent">
-          <v-list-item
-            v-for="item in quickCheckItems"
-            :key="item.title"
-            :prepend-icon="item.icon"
-            :title="item.title"
-          />
-        </v-list>
-      </v-card>
+      <h3 class="text-subtitle-1 font-weight-bold mb-3">
+        {{ t('world.common.quickChecks.title', 'Quick checks') }}
+      </h3>
+      <v-list density="compact" class="bg-transparent">
+        <v-list-item
+          v-for="item in quickCheckItems"
+          :key="item.title"
+          :prepend-icon="item.icon"
+          :title="item.title"
+        />
+      </v-list>
     </template>
   </AppPageDrawers>
 </template>

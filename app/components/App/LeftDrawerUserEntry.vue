@@ -41,10 +41,10 @@ const coinPackages: CoinPackage[] = [
 const currency = computed(() => {
   const locale = sessionUser.value?.locale?.toLowerCase() || ''
   if (
-    locale.startsWith('fr')
-    || locale.startsWith('de')
-    || locale.startsWith('es')
-    || locale.startsWith('it')
+    locale.startsWith('fr') ||
+    locale.startsWith('de') ||
+    locale.startsWith('es') ||
+    locale.startsWith('it')
   ) {
     return 'EUR'
   }
@@ -110,8 +110,8 @@ async function createCheckoutOrder(item: CoinPackage) {
     currentOrder.value = response
     checkoutStep.value = 'payment'
   } catch (error) {
-    checkoutError.value
-      = error instanceof Error
+    checkoutError.value =
+      error instanceof Error
         ? error.message
         : t('appbar.coinCheckout.errors.generic')
   } finally {
@@ -139,19 +139,22 @@ async function processPayment() {
     })
 
     if (response.status === 'success') {
-      checkoutSuccess.value = t('appbar.coinCheckout.success.paymentConfirmed', {
-        method: paymentMethodLabel.value,
-      })
+      checkoutSuccess.value = t(
+        'appbar.coinCheckout.success.paymentConfirmed',
+        {
+          method: paymentMethodLabel.value,
+        },
+      )
       checkoutStep.value = 'result'
       return
     }
 
-    checkoutError.value
-      = response.message || t('appbar.coinCheckout.errors.paymentDeclined')
+    checkoutError.value =
+      response.message || t('appbar.coinCheckout.errors.paymentDeclined')
     checkoutStep.value = 'result'
   } catch (error) {
-    checkoutError.value
-      = error instanceof Error
+    checkoutError.value =
+      error instanceof Error
         ? error.message
         : t('appbar.coinCheckout.errors.generic')
   } finally {
@@ -231,7 +234,9 @@ async function processPayment() {
               <v-card variant="tonal" class="mb-4">
                 <v-card-text class="text-body-2">
                   <div>
-                    <strong>{{ t('appbar.coinCheckout.labels.order') }}:</strong>
+                    <strong
+                      >{{ t('appbar.coinCheckout.labels.order') }}:</strong
+                    >
                     {{ currentOrder?.orderId }}
                   </div>
                   <div>
@@ -239,7 +244,9 @@ async function processPayment() {
                     {{ currentOrder?.coins }} coins
                   </div>
                   <div>
-                    <strong>{{ t('appbar.coinCheckout.labels.amount') }}:</strong>
+                    <strong
+                      >{{ t('appbar.coinCheckout.labels.amount') }}:</strong
+                    >
                     {{ currencySymbol }}{{ currentOrder?.amount }}
                   </div>
                 </v-card-text>
@@ -286,7 +293,12 @@ async function processPayment() {
                   })
                 }}
               </p>
-              <v-btn class="mt-2" color="primary" variant="outlined" @click="openCoinModal">
+              <v-btn
+                class="mt-2"
+                color="primary"
+                variant="outlined"
+                @click="openCoinModal"
+              >
                 {{ t('appbar.coinCheckout.newCheckout') }}
               </v-btn>
             </v-window-item>

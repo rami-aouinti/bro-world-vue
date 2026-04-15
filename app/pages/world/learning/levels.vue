@@ -8,23 +8,53 @@ import { useWorldLearningStore } from '~/stores/worldLearning'
 definePageMeta({ title: 'Learning Levels' })
 
 const learningNavItems = [
-  { title: 'Overview Learning', to: '/world/learning', icon: 'mdi-view-dashboard-outline' },
-  { title: 'Courses', to: '/world/learning/courses', icon: 'mdi-book-open-page-variant-outline' },
+  {
+    title: 'Overview Learning',
+    to: '/world/learning',
+    icon: 'mdi-view-dashboard-outline',
+  },
+  {
+    title: 'Courses',
+    to: '/world/learning/courses',
+    icon: 'mdi-book-open-page-variant-outline',
+  },
   { title: 'Levels', to: '/world/learning/levels', icon: 'mdi-stairs' },
   { title: 'Paths', to: '/world/learning/paths', icon: 'mdi-map-marker-path' },
-  { title: 'Admin', to: '/world/learning/admin', icon: 'mdi-shield-crown-outline', rootOnly: true },
+  {
+    title: 'Admin',
+    to: '/world/learning/admin',
+    icon: 'mdi-shield-crown-outline',
+    rootOnly: true,
+  },
 ]
 
 const learningStore = useWorldLearningStore()
 await learningStore.fetchCourses()
 await learningStore.fetchAnalytics()
 const selectedCourseId = computed(() => learningStore.items[0]?.id ?? '')
-watch(selectedCourseId, async (courseId) => {
-  if (!courseId) return
-  await learningStore.fetchProgress(courseId)
-}, { immediate: true })
-const analyticsData = computed(() => ({ items: learningStore.detail ?? { totalLearners: 0, completionRate: 0, dropoutRate: 0, averageScore: 0, cohortPerformance: [], levelRules: [] } }))
-const progressData = computed(() => ({ items: selectedCourseId.value ? (learningStore.progressByCourse[selectedCourseId.value] ?? []) : [] }))
+watch(
+  selectedCourseId,
+  async (courseId) => {
+    if (!courseId) return
+    await learningStore.fetchProgress(courseId)
+  },
+  { immediate: true },
+)
+const analyticsData = computed(() => ({
+  items: learningStore.detail ?? {
+    totalLearners: 0,
+    completionRate: 0,
+    dropoutRate: 0,
+    averageScore: 0,
+    cohortPerformance: [],
+    levelRules: [],
+  },
+}))
+const progressData = computed(() => ({
+  items: selectedCourseId.value
+    ? (learningStore.progressByCourse[selectedCourseId.value] ?? [])
+    : [],
+}))
 
 const updateForm = reactive({
   learner: '',
@@ -35,20 +65,30 @@ const updateForm = reactive({
   lessonStatus: 'in_progress' as LearningProgressStatus,
 })
 
-const progressRows = computed(() => (progressData.value?.items ?? []).map((entry) => ({
-  learner: entry.learner,
-  cohort: entry.cohort,
-  level: entry.currentLevel,
-  score: `${entry.score}%`,
-  timeSpent: `${entry.timeSpentMinutes} min`,
-  attempts: entry.attempts,
-  completion: entry.unlockedLevels.includes('advanced') ? 'Completed' : 'In progress',
-  certificate: entry.certificate ? entry.certificate.verificationId : 'Pending',
-})))
+const progressRows = computed(() =>
+  (progressData.value?.items ?? []).map((entry) => ({
+    learner: entry.learner,
+    cohort: entry.cohort,
+    level: entry.currentLevel,
+    score: `${entry.score}%`,
+    timeSpent: `${entry.timeSpentMinutes} min`,
+    attempts: entry.attempts,
+    completion: entry.unlockedLevels.includes('advanced')
+      ? 'Completed'
+      : 'In progress',
+    certificate: entry.certificate
+      ? entry.certificate.verificationId
+      : 'Pending',
+  })),
+)
 
 const selectedLearner = computed<LearningProgress | null>(() => {
   const key = updateForm.learner.trim().toLowerCase()
-  return (progressData.value?.items ?? []).find((item) => item.learner.toLowerCase() === key) ?? null
+  return (
+    (progressData.value?.items ?? []).find(
+      (item) => item.learner.toLowerCase() === key,
+    ) ?? null
+  )
 })
 
 const updateTracking = async () => {
@@ -67,7 +107,10 @@ const updateTracking = async () => {
     attempts: updateForm.attempts,
   })
 
-  await Promise.all([learningStore.fetchProgress(selectedCourseId.value, { force: true }), learningStore.fetchAnalytics({ force: true })])
+  await Promise.all([
+    learningStore.fetchProgress(selectedCourseId.value, { force: true }),
+    learningStore.fetchAnalytics({ force: true }),
+  ])
 }
 </script>
 
@@ -82,16 +125,45 @@ const updateTracking = async () => {
       action-icon="mdi-chart-line"
     />
 
-    <v-container fluid class="pt-0">
+    <v-container fluid>
       <v-row>
         <v-col cols="12" lg="4">
           <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
             <h3 class="text-h6 mb-3">Update learner tracking</h3>
-            <v-text-field v-model="updateForm.learner" label="Learner" variant="outlined" density="comfortable" />
-            <v-text-field v-model="updateForm.cohort" label="Cohort" variant="outlined" density="comfortable" />
-            <v-slider v-model="updateForm.score" label="Score" :max="100" :step="1" color="primary" thumb-label />
-            <v-text-field v-model.number="updateForm.timeSpentMinutes" label="Time spent (minutes)" type="number" variant="outlined" density="comfortable" />
-            <v-text-field v-model.number="updateForm.attempts" label="Attempts" type="number" variant="outlined" density="comfortable" />
+            <v-text-field
+              v-model="updateForm.learner"
+              label="Learner"
+              variant="outlined"
+              density="comfortable"
+            />
+            <v-text-field
+              v-model="updateForm.cohort"
+              label="Cohort"
+              variant="outlined"
+              density="comfortable"
+            />
+            <v-slider
+              v-model="updateForm.score"
+              label="Score"
+              :max="100"
+              :step="1"
+              color="primary"
+              thumb-label
+            />
+            <v-text-field
+              v-model.number="updateForm.timeSpentMinutes"
+              label="Time spent (minutes)"
+              type="number"
+              variant="outlined"
+              density="comfortable"
+            />
+            <v-text-field
+              v-model.number="updateForm.attempts"
+              label="Attempts"
+              type="number"
+              variant="outlined"
+              density="comfortable"
+            />
             <v-select
               v-model="updateForm.lessonStatus"
               label="Lesson status"
@@ -103,16 +175,30 @@ const updateTracking = async () => {
                 { title: 'Completed', value: 'completed' },
               ]"
             />
-            <v-btn color="primary" block prepend-icon="mdi-content-save-outline" @click="updateTracking">Save tracking</v-btn>
+            <v-btn
+              color="primary"
+              block
+              prepend-icon="mdi-content-save-outline"
+              @click="updateTracking"
+              >Save tracking</v-btn
+            >
           </v-card>
 
           <v-card rounded="xl" class="pa-4 postcard-gradient-card">
             <h3 class="text-h6 mb-3">Level rules</h3>
             <v-list density="compact" class="bg-transparent">
-              <v-list-item v-for="rule in analyticsData?.items.levelRules ?? []" :key="rule.level">
-                <v-list-item-title class="text-subtitle-2 text-uppercase">{{ rule.level }}</v-list-item-title>
+              <v-list-item
+                v-for="rule in analyticsData?.items.levelRules ?? []"
+                :key="rule.level"
+              >
+                <v-list-item-title class="text-subtitle-2 text-uppercase">{{
+                  rule.level
+                }}</v-list-item-title>
                 <v-list-item-subtitle>
-                  Score ≥ {{ rule.minScore }} | Lessons ≥ {{ Math.round(rule.minCompletedLessonsRatio * 100) }}% | Time ≥ {{ rule.minTimeSpentMinutes }} min | Attempts ≤ {{ rule.maxAttempts }}
+                  Score ≥ {{ rule.minScore }} | Lessons ≥
+                  {{ Math.round(rule.minCompletedLessonsRatio * 100) }}% | Time
+                  ≥ {{ rule.minTimeSpentMinutes }} min | Attempts ≤
+                  {{ rule.maxAttempts }}
                 </v-list-item-subtitle>
               </v-list-item>
             </v-list>
@@ -126,8 +212,22 @@ const updateTracking = async () => {
             form-title="Certificate verification"
             form-description="Chaque certificat avancé reçoit un ID unique + hash SHA-256 + PDF base64 pour audit."
             :fields="[
-              { key: 'verificationId', label: 'Verification ID', type: 'text', placeholder: selectedLearner?.certificate?.verificationId ?? 'No certificate yet' },
-              { key: 'hash', label: 'Hash', type: 'textarea', placeholder: selectedLearner?.certificate?.hash ?? 'Hash generated at advanced level' },
+              {
+                key: 'verificationId',
+                label: 'Verification ID',
+                type: 'text',
+                placeholder:
+                  selectedLearner?.certificate?.verificationId ??
+                  'No certificate yet',
+              },
+              {
+                key: 'hash',
+                label: 'Hash',
+                type: 'textarea',
+                placeholder:
+                  selectedLearner?.certificate?.hash ??
+                  'Hash generated at advanced level',
+              },
             ]"
             :headers="[
               { title: 'Learner', key: 'learner' },

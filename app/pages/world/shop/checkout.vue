@@ -4,7 +4,12 @@ import { useWorldShopStore } from '~/stores/worldShop'
 definePageMeta({ title: 'Shop Checkout' })
 
 type CheckoutStep = 'cart' | 'address' | 'shipping' | 'payment' | 'confirmation'
-type CheckoutStatus = 'draft' | 'payment_pending' | 'processing' | 'paid' | 'failed'
+type CheckoutStatus =
+  | 'draft'
+  | 'payment_pending'
+  | 'processing'
+  | 'paid'
+  | 'failed'
 
 type CartLine = {
   productId: string
@@ -36,13 +41,38 @@ type CheckoutSession = {
 }
 
 const shopNavItems = [
-  { title: 'Overview Shop', to: '/world/shop', icon: 'mdi-view-dashboard-outline' },
-  { title: 'Categories', to: '/world/shop/categories', icon: 'mdi-shape-outline' },
-  { title: 'Products', to: '/world/shop/products', icon: 'mdi-package-variant-closed' },
+  {
+    title: 'Overview Shop',
+    to: '/world/shop',
+    icon: 'mdi-view-dashboard-outline',
+  },
+  {
+    title: 'Categories',
+    to: '/world/shop/categories',
+    icon: 'mdi-shape-outline',
+  },
+  {
+    title: 'Products',
+    to: '/world/shop/products',
+    icon: 'mdi-package-variant-closed',
+  },
   { title: 'Checkout', to: '/world/shop/checkout', icon: 'mdi-cart-outline' },
-  { title: 'Payment', to: '/world/shop/payment', icon: 'mdi-credit-card-outline' },
-  { title: 'Orders', to: '/world/shop/orders', icon: 'mdi-receipt-text-outline' },
-  { title: 'Admin', to: '/world/shop/admin', icon: 'mdi-shield-crown-outline', rootOnly: true },
+  {
+    title: 'Payment',
+    to: '/world/shop/payment',
+    icon: 'mdi-credit-card-outline',
+  },
+  {
+    title: 'Orders',
+    to: '/world/shop/orders',
+    icon: 'mdi-receipt-text-outline',
+  },
+  {
+    title: 'Admin',
+    to: '/world/shop/admin',
+    icon: 'mdi-shield-crown-outline',
+    rootOnly: true,
+  },
 ]
 
 const shopStore = useWorldShopStore()
@@ -51,8 +81,18 @@ const errorMessage = ref('')
 const checkout = computed(() => shopStore.detail as CheckoutSession | null)
 
 const cart = ref<CartLine[]>([
-  { productId: 'prd-premium-hoodie', name: 'Premium Hoodie', unitPrice: 79, quantity: 1 },
-  { productId: 'prd-starter-pack', name: 'Starter Pack', unitPrice: 45, quantity: 1 },
+  {
+    productId: 'prd-premium-hoodie',
+    name: 'Premium Hoodie',
+    unitPrice: 79,
+    quantity: 1,
+  },
+  {
+    productId: 'prd-starter-pack',
+    name: 'Starter Pack',
+    unitPrice: 45,
+    quantity: 1,
+  },
 ])
 
 const address = reactive({
@@ -77,25 +117,32 @@ const checkoutSteps = [
 ]
 
 const activeStep = computed(() => {
-  if (!checkout.value)
-    return 'cart'
+  if (!checkout.value) return 'cart'
 
-  if (checkout.value.step === 'address' && checkout.value.shippingOptions.length > 0)
+  if (
+    checkout.value.step === 'address' &&
+    checkout.value.shippingOptions.length > 0
+  )
     return 'shipping'
 
   return checkout.value.step
 })
 
-const subtotal = computed(() => cart.value.reduce((sum, line) => sum + line.quantity * line.unitPrice, 0))
+const subtotal = computed(() =>
+  cart.value.reduce((sum, line) => sum + line.quantity * line.unitPrice, 0),
+)
 
 const shippingAmount = computed(() => {
-  const option = checkout.value?.shippingOptions?.find(item => item.id === selectedShippingId.value)
+  const option = checkout.value?.shippingOptions?.find(
+    (item) => item.id === selectedShippingId.value,
+  )
   return option?.amount || 0
 })
 
 const total = computed(() => subtotal.value + shippingAmount.value)
 
-const buildIdempotencyKey = (prefix: string) => `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
+const buildIdempotencyKey = (prefix: string) =>
+  `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
 
 async function createCheckout() {
   loading.value = true
@@ -106,18 +153,16 @@ async function createCheckout() {
       currency: 'USD',
       cart: cart.value,
     })
-  }
-  catch (error: any) {
-    errorMessage.value = error?.statusMessage || 'Impossible de créer la session checkout.'
-  }
-  finally {
+  } catch (error: any) {
+    errorMessage.value =
+      error?.statusMessage || 'Impossible de créer la session checkout.'
+  } finally {
     loading.value = false
   }
 }
 
 async function saveAddress() {
-  if (!checkout.value)
-    return
+  if (!checkout.value) return
 
   loading.value = true
   errorMessage.value = ''
@@ -128,18 +173,15 @@ async function saveAddress() {
       idempotencyKey: buildIdempotencyKey('address'),
       address,
     })
-  }
-  catch (error: any) {
+  } catch (error: any) {
     errorMessage.value = error?.statusMessage || 'Adresse invalide.'
-  }
-  finally {
+  } finally {
     loading.value = false
   }
 }
 
 async function saveShipping() {
-  if (!checkout.value || !selectedShippingId.value)
-    return
+  if (!checkout.value || !selectedShippingId.value) return
 
   loading.value = true
   errorMessage.value = ''
@@ -152,11 +194,10 @@ async function saveShipping() {
     })
 
     await navigateTo(`/world/shop/payment?checkoutId=${updated.id}`)
-  }
-  catch (error: any) {
-    errorMessage.value = error?.statusMessage || 'Impossible de sauvegarder le shipping.'
-  }
-  finally {
+  } catch (error: any) {
+    errorMessage.value =
+      error?.statusMessage || 'Impossible de sauvegarder le shipping.'
+  } finally {
     loading.value = false
   }
 }
@@ -172,7 +213,7 @@ async function saveShipping() {
       action-label="Créer checkout"
     />
 
-    <v-container fluid class="pt-0">
+    <v-container fluid>
       <v-card rounded="xl" class="pa-5">
         <div class="d-flex justify-space-between align-center mb-4">
           <div>
@@ -190,14 +231,24 @@ async function saveShipping() {
           {{ errorMessage }}
         </v-alert>
 
-        <v-stepper :model-value="activeStep" :items="checkoutSteps" class="mb-4" />
+        <v-stepper
+          :model-value="activeStep"
+          :items="checkoutSteps"
+          class="mb-4"
+        />
 
         <v-row>
           <v-col cols="12" md="7">
             <v-card variant="outlined" rounded="lg" class="pa-4 mb-4">
               <h3 class="text-subtitle-1 mb-3">1) Panier</h3>
               <v-table density="comfortable">
-                <thead><tr><th>Produit</th><th>Qté</th><th>Prix</th></tr></thead>
+                <thead>
+                  <tr>
+                    <th>Produit</th>
+                    <th>Qté</th>
+                    <th>Prix</th>
+                  </tr>
+                </thead>
                 <tbody>
                   <tr v-for="line in cart" :key="line.productId">
                     <td>{{ line.name }}</td>
@@ -211,22 +262,46 @@ async function saveShipping() {
             <v-card variant="outlined" rounded="lg" class="pa-4 mb-4">
               <h3 class="text-subtitle-1 mb-3">2) Adresse</h3>
               <v-row>
-                <v-col cols="12" md="6"><v-text-field v-model="address.fullName" label="Nom complet" /></v-col>
-                <v-col cols="12" md="6"><v-text-field v-model="address.phone" label="Téléphone" /></v-col>
-                <v-col cols="12"><v-text-field v-model="address.line1" label="Adresse" /></v-col>
-                <v-col cols="12"><v-text-field v-model="address.line2" label="Complément" /></v-col>
-                <v-col cols="12" md="4"><v-text-field v-model="address.city" label="Ville" /></v-col>
-                <v-col cols="12" md="4"><v-text-field v-model="address.state" label="État" /></v-col>
-                <v-col cols="12" md="4"><v-text-field v-model="address.postalCode" label="Code postal" /></v-col>
+                <v-col cols="12" md="6"
+                  ><v-text-field v-model="address.fullName" label="Nom complet"
+                /></v-col>
+                <v-col cols="12" md="6"
+                  ><v-text-field v-model="address.phone" label="Téléphone"
+                /></v-col>
+                <v-col cols="12"
+                  ><v-text-field v-model="address.line1" label="Adresse"
+                /></v-col>
+                <v-col cols="12"
+                  ><v-text-field v-model="address.line2" label="Complément"
+                /></v-col>
+                <v-col cols="12" md="4"
+                  ><v-text-field v-model="address.city" label="Ville"
+                /></v-col>
+                <v-col cols="12" md="4"
+                  ><v-text-field v-model="address.state" label="État"
+                /></v-col>
+                <v-col cols="12" md="4"
+                  ><v-text-field
+                    v-model="address.postalCode"
+                    label="Code postal"
+                /></v-col>
               </v-row>
-              <v-btn color="secondary" :disabled="!checkout" :loading="loading" @click="saveAddress">
+              <v-btn
+                color="secondary"
+                :disabled="!checkout"
+                :loading="loading"
+                @click="saveAddress"
+              >
                 Valider adresse
               </v-btn>
             </v-card>
 
             <v-card variant="outlined" rounded="lg" class="pa-4">
               <h3 class="text-subtitle-1 mb-3">3) Shipping</h3>
-              <v-radio-group v-model="selectedShippingId" :disabled="!checkout?.shippingOptions?.length">
+              <v-radio-group
+                v-model="selectedShippingId"
+                :disabled="!checkout?.shippingOptions?.length"
+              >
                 <v-radio
                   v-for="option in checkout?.shippingOptions || []"
                   :key="option.id"
@@ -234,7 +309,12 @@ async function saveShipping() {
                   :label="`${option.label} (${option.carrier}) - $${option.amount.toFixed(2)} - ${option.etaDays}j`"
                 />
               </v-radio-group>
-              <v-btn color="primary" :disabled="!selectedShippingId" :loading="loading" @click="saveShipping">
+              <v-btn
+                color="primary"
+                :disabled="!selectedShippingId"
+                :loading="loading"
+                @click="saveShipping"
+              >
                 Continuer vers paiement
               </v-btn>
             </v-card>
@@ -243,11 +323,21 @@ async function saveShipping() {
           <v-col cols="12" md="5">
             <v-card variant="outlined" rounded="lg" class="pa-4">
               <h3 class="text-subtitle-1 mb-3">Résumé</h3>
-              <p class="mb-2">Checkout ID: <strong>{{ checkout?.id || '—' }}</strong></p>
-              <p class="mb-2">Status: <strong>{{ checkout?.status || 'draft' }}</strong></p>
-              <p class="mb-2">Subtotal: <strong>${{ subtotal.toFixed(2) }}</strong></p>
-              <p class="mb-2">Shipping: <strong>${{ shippingAmount.toFixed(2) }}</strong></p>
-              <p>Total: <strong>${{ total.toFixed(2) }}</strong></p>
+              <p class="mb-2">
+                Checkout ID: <strong>{{ checkout?.id || '—' }}</strong>
+              </p>
+              <p class="mb-2">
+                Status: <strong>{{ checkout?.status || 'draft' }}</strong>
+              </p>
+              <p class="mb-2">
+                Subtotal: <strong>${{ subtotal.toFixed(2) }}</strong>
+              </p>
+              <p class="mb-2">
+                Shipping: <strong>${{ shippingAmount.toFixed(2) }}</strong>
+              </p>
+              <p>
+                Total: <strong>${{ total.toFixed(2) }}</strong>
+              </p>
             </v-card>
           </v-col>
         </v-row>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-type SelectOption = { title: string, value: string }
+type SelectOption = { title: string; value: string }
 
 type FormField = {
   key: string
@@ -9,20 +9,23 @@ type FormField = {
   options?: SelectOption[]
 }
 
-type TableHeader = { title: string, key: string }
+type TableHeader = { title: string; key: string }
 
-const props = withDefaults(defineProps<{
-  title: string
-  subtitle: string
-  formTitle: string
-  formDescription: string
-  fields: FormField[]
-  headers: TableHeader[]
-  rows: Record<string, string | number>[]
-  createLabel?: string
-}>(), {
-  createLabel: '',
-})
+const props = withDefaults(
+  defineProps<{
+    title: string
+    subtitle: string
+    formTitle: string
+    formDescription: string
+    fields: FormField[]
+    headers: TableHeader[]
+    rows: Record<string, string | number>[]
+    createLabel?: string
+  }>(),
+  {
+    createLabel: '',
+  },
+)
 
 const { t } = useI18n()
 const search = ref('')
@@ -32,7 +35,10 @@ for (const field of props.fields) {
   form[field.key] = ''
 }
 
-const resolvedCreateLabel = computed(() => props.createLabel || t('world.common.actions.saveRecord', 'Save record'))
+const resolvedCreateLabel = computed(
+  () =>
+    props.createLabel || t('world.common.actions.saveRecord', 'Save record'),
+)
 
 const filteredRows = computed(() => {
   if (!search.value) return props.rows
@@ -50,7 +56,9 @@ const filteredRows = computed(() => {
   <v-row class="ga-0">
     <v-col cols="12" lg="7" class="pr-lg-3">
       <v-card rounded="xl" class="pa-4 mb-4 postcard-gradient-card">
-        <div class="d-flex align-center justify-space-between mb-4 flex-wrap ga-2">
+        <div
+          class="d-flex align-center justify-space-between mb-4 flex-wrap ga-2"
+        >
           <div>
             <h1 class="text-h5 mb-1">{{ title }}</h1>
             <p class="text-medium-emphasis mb-0">{{ subtitle }}</p>
@@ -79,7 +87,9 @@ const filteredRows = computed(() => {
     <v-col cols="12" lg="5" class="pl-lg-3">
       <v-card rounded="xl" class="pa-4 postcard-gradient-card">
         <h2 class="text-h6 mb-1">{{ formTitle }}</h2>
-        <p class="text-body-2 text-medium-emphasis mb-4">{{ formDescription }}</p>
+        <p class="text-body-2 text-medium-emphasis mb-4">
+          {{ formDescription }}
+        </p>
 
         <v-row>
           <v-col
@@ -120,7 +130,12 @@ const filteredRows = computed(() => {
           </v-col>
         </v-row>
 
-        <v-btn color="primary" prepend-icon="mdi-content-save-outline" class="mt-4" block>
+        <v-btn
+          color="primary"
+          prepend-icon="mdi-content-save-outline"
+          class="mt-4"
+          block
+        >
           {{ resolvedCreateLabel }}
         </v-btn>
       </v-card>

@@ -12,11 +12,21 @@ definePageMeta({ title: 'CRM' })
 const { can } = useCrmPermissions()
 
 const crmNavItems = computed(() => [
-  { title: 'Overview CRM', to: '/world/crm', icon: 'mdi-view-dashboard-outline' },
+  {
+    title: 'Overview CRM',
+    to: '/world/crm',
+    icon: 'mdi-view-dashboard-outline',
+  },
   { title: 'Projects', to: '/world/crm/projects', icon: 'mdi-folder-outline' },
   { title: 'Company', to: '/world/crm/company', icon: 'mdi-domain' },
   ...(can('crm.admin.manage')
-    ? [{ title: 'Admin', to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' }]
+    ? [
+        {
+          title: 'Admin',
+          to: '/world/crm/admin',
+          icon: 'mdi-shield-crown-outline',
+        },
+      ]
     : []),
 ])
 
@@ -29,9 +39,13 @@ const refresh = () => crmStore.fetchPipeline({ force: true })
 
 const isTransitioning = ref(false)
 const draggedDealId = ref<string | null>(null)
-const dealDrafts = ref<Record<string, { probability: number; expectedCloseDate: string }>>({})
+const dealDrafts = ref<
+  Record<string, { probability: number; expectedCloseDate: string }>
+>({})
 
-const columns = computed<CrmPipelineColumn[]>(() => pipelineData.value?.columns ?? [])
+const columns = computed<CrmPipelineColumn[]>(
+  () => pipelineData.value?.columns ?? [],
+)
 const deals = computed<CrmDeal[]>(() => pipelineData.value?.deals ?? [])
 
 const emptyKpi: CrmPipelineKpis = {
@@ -41,12 +55,16 @@ const emptyKpi: CrmPipelineKpis = {
   averageCycleDays: 0,
 }
 
-const kpis = computed<CrmPipelineKpis>(() => pipelineData.value?.kpis ?? emptyKpi)
+const kpis = computed<CrmPipelineKpis>(
+  () => pipelineData.value?.kpis ?? emptyKpi,
+)
 
 watch(
   deals,
   (nextDeals) => {
-    dealDrafts.value = nextDeals.reduce<Record<string, { probability: number; expectedCloseDate: string }>>((acc, deal) => {
+    dealDrafts.value = nextDeals.reduce<
+      Record<string, { probability: number; expectedCloseDate: string }>
+    >((acc, deal) => {
       acc[deal.id] = {
         probability: deal.probability,
         expectedCloseDate: deal.expectedCloseDate,
@@ -60,7 +78,9 @@ watch(
 const dealsByStage = computed(() => {
   return columns.value.reduce<Record<CrmPipelineStage, CrmDeal[]>>(
     (acc, column) => {
-      acc[column.stage] = deals.value.filter((deal) => deal.stage === column.stage)
+      acc[column.stage] = deals.value.filter(
+        (deal) => deal.stage === column.stage,
+      )
       return acc
     },
     {
@@ -73,27 +93,47 @@ const dealsByStage = computed(() => {
   )
 })
 
-const stageOrder: CrmPipelineStage[] = ['lead', 'qualified', 'proposal', 'negotiation', 'won_lost']
+const stageOrder: CrmPipelineStage[] = [
+  'lead',
+  'qualified',
+  'proposal',
+  'negotiation',
+  'won_lost',
+]
 
 function getDraft(deal: CrmDeal) {
-  return dealDrafts.value[deal.id] ?? {
-    probability: deal.probability,
-    expectedCloseDate: deal.expectedCloseDate,
-  }
+  return (
+    dealDrafts.value[deal.id] ?? {
+      probability: deal.probability,
+      expectedCloseDate: deal.expectedCloseDate,
+    }
+  )
 }
 
 async function moveDeal(
   deal: CrmDeal,
   toStage: CrmPipelineStage,
-  overrides: Partial<Pick<CrmDeal, 'probability' | 'expectedCloseDate' | 'outcome'>> = {},
+  overrides: Partial<
+    Pick<CrmDeal, 'probability' | 'expectedCloseDate' | 'outcome'>
+  > = {},
 ) {
   if (isTransitioning.value) {
     return
   }
 
   const draft = getDraft(deal)
-  const probability = Math.min(100, Math.max(0, Number(overrides.probability ?? draft.probability ?? deal.probability)))
-  const expectedCloseDate = String(overrides.expectedCloseDate ?? draft.expectedCloseDate ?? deal.expectedCloseDate)
+  const probability = Math.min(
+    100,
+    Math.max(
+      0,
+      Number(overrides.probability ?? draft.probability ?? deal.probability),
+    ),
+  )
+  const expectedCloseDate = String(
+    overrides.expectedCloseDate ??
+      draft.expectedCloseDate ??
+      deal.expectedCloseDate,
+  )
 
   isTransitioning.value = true
 
@@ -106,8 +146,7 @@ async function moveDeal(
     }
 
     await crmStore.transitionDeal(deal.id, payload)
-  }
-  finally {
+  } finally {
     isTransitioning.value = false
   }
 }
@@ -120,7 +159,8 @@ function onDragStart(event: DragEvent, dealId: string) {
 async function onDrop(stage: CrmPipelineStage, event: DragEvent) {
   event.preventDefault()
 
-  const dealId = event.dataTransfer?.getData('text/plain') || draggedDealId.value
+  const dealId =
+    event.dataTransfer?.getData('text/plain') || draggedDealId.value
   const deal = deals.value.find((entry) => entry.id === dealId)
 
   if (!deal) {
@@ -167,12 +207,14 @@ function goToNextStage(deal: CrmDeal) {
   return moveDeal(deal, nextStage)
 }
 
-
 function setDraftProbability(dealId: string, value: number | string) {
   const normalizedValue = Math.min(100, Math.max(0, Number(value) || 0))
 
   if (!dealDrafts.value[dealId]) {
-    dealDrafts.value[dealId] = { probability: normalizedValue, expectedCloseDate: new Date().toISOString().slice(0, 10) }
+    dealDrafts.value[dealId] = {
+      probability: normalizedValue,
+      expectedCloseDate: new Date().toISOString().slice(0, 10),
+    }
     return
   }
 
@@ -198,11 +240,19 @@ function persistDealMeta(deal: CrmDeal) {
 }
 
 function formatCurrency(amount: number) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(amount)
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  }).format(amount)
 }
 
 function formatDate(date: string) {
-  return new Intl.DateTimeFormat('fr-FR', { month: 'short', day: '2-digit', year: 'numeric' }).format(new Date(date))
+  return new Intl.DateTimeFormat('fr-FR', {
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric',
+  }).format(new Date(date))
 }
 </script>
 
@@ -217,7 +267,7 @@ function formatDate(date: string) {
       action-icon="mdi-account-plus-outline"
     />
 
-    <v-container fluid class="pt-0">
+    <v-container fluid>
       <v-row class="mb-4">
         <v-col cols="12" md="4">
           <v-card rounded="xl" class="pa-3 postcard-gradient-card">
@@ -227,30 +277,46 @@ function formatDate(date: string) {
         </v-col>
         <v-col cols="12" md="4">
           <v-card rounded="xl" class="pa-3 postcard-gradient-card">
-            <p class="text-caption text-medium-emphasis mb-1">Weighted forecast</p>
+            <p class="text-caption text-medium-emphasis mb-1">
+              Weighted forecast
+            </p>
             <h3 class="text-h5">{{ formatCurrency(kpis.weightedForecast) }}</h3>
           </v-card>
         </v-col>
         <v-col cols="12" md="4">
           <v-card rounded="xl" class="pa-3 postcard-gradient-card">
-            <p class="text-caption text-medium-emphasis mb-1">Win rate / Cycle moyen</p>
-            <h3 class="text-h6">{{ kpis.winRate.toFixed(1) }}% · {{ kpis.averageCycleDays.toFixed(1) }} jours</h3>
+            <p class="text-caption text-medium-emphasis mb-1">
+              Win rate / Cycle moyen
+            </p>
+            <h3 class="text-h6">
+              {{ kpis.winRate.toFixed(1) }}% ·
+              {{ kpis.averageCycleDays.toFixed(1) }} jours
+            </h3>
           </v-card>
         </v-col>
       </v-row>
 
       <v-row>
-        <v-col v-for="column in columns" :key="column.stage" cols="12" md="6" lg="4" xl="2">
+        <v-col
+          v-for="column in columns"
+          :key="column.stage"
+          cols="12"
+          md="6"
+          lg="4"
+          xl="2"
+        >
           <v-card
             rounded="xl"
-            class="pa-3 h-100"
+            class="pa-3 h-100 postcard-gradient-card"
             :loading="pending || isTransitioning"
             @dragover.prevent
             @drop="onDrop(column.stage, $event)"
           >
             <div class="d-flex align-center justify-space-between mb-3">
               <h3 class="text-subtitle-1">{{ column.title }}</h3>
-              <v-chip size="small" color="primary" variant="tonal">{{ dealsByStage[column.stage]?.length ?? 0 }}</v-chip>
+              <v-chip size="small" color="primary" variant="tonal">{{
+                dealsByStage[column.stage]?.length ?? 0
+              }}</v-chip>
             </div>
 
             <div class="d-flex flex-column ga-3">
@@ -258,23 +324,31 @@ function formatDate(date: string) {
                 v-for="deal in dealsByStage[column.stage]"
                 :key="deal.id"
                 rounded="lg"
-                class="pa-3"
-                variant="tonal"
+                class="pa-3 postcard-gradient-card"
+                variant="text"
                 draggable="true"
                 @dragstart="onDragStart($event, deal.id)"
                 @dragend="onDragEnd"
               >
                 <div class="d-flex justify-space-between align-start ga-2 mb-1">
                   <div>
-                    <p class="text-caption text-medium-emphasis mb-1">{{ deal.id }} · {{ deal.owner }}</p>
+                    <p class="text-caption text-medium-emphasis mb-1">
+                      {{ deal.id }} · {{ deal.owner }}
+                    </p>
                     <p class="font-weight-medium mb-1">{{ deal.account }}</p>
                   </div>
-                  <v-chip v-if="deal.outcome" :color="deal.outcome === 'won' ? 'success' : 'error'" size="x-small">
+                  <v-chip
+                    v-if="deal.outcome"
+                    :color="deal.outcome === 'won' ? 'success' : 'error'"
+                    size="x-small"
+                  >
                     {{ deal.outcome.toUpperCase() }}
                   </v-chip>
                 </div>
 
-                <p class="text-body-2 mb-2">{{ formatCurrency(deal.amount) }}</p>
+                <p class="text-body-2 mb-2">
+                  {{ formatCurrency(deal.amount) }}
+                </p>
 
                 <div class="d-flex ga-2 mb-2">
                   <v-text-field
@@ -295,19 +369,39 @@ function formatDate(date: string) {
                     density="compact"
                     hide-details
                     class="flex-grow-1"
-                    @update:model-value="setDraftCloseDate(deal.id, String($event ?? ''))"
+                    @update:model-value="
+                      setDraftCloseDate(deal.id, String($event ?? ''))
+                    "
                   />
                 </div>
-                <p class="text-caption text-medium-emphasis mb-3">Actuel: {{ formatDate(deal.expectedCloseDate) }}</p>
+                <p class="text-caption text-medium-emphasis mb-3">
+                  Actuel: {{ formatDate(deal.expectedCloseDate) }}
+                </p>
 
                 <div class="d-flex flex-wrap ga-2">
-                  <v-btn size="x-small" variant="outlined" :disabled="isTransitioning" @click="goToPreviousStage(deal)">
+                  <v-btn
+                    size="x-small"
+                    variant="outlined"
+                    :disabled="isTransitioning"
+                    @click="goToPreviousStage(deal)"
+                  >
                     Prev
                   </v-btn>
-                  <v-btn size="x-small" color="primary" variant="outlined" :disabled="isTransitioning" @click="goToNextStage(deal)">
+                  <v-btn
+                    size="x-small"
+                    color="primary"
+                    variant="outlined"
+                    :disabled="isTransitioning"
+                    @click="goToNextStage(deal)"
+                  >
                     Next
                   </v-btn>
-                  <v-btn size="x-small" variant="text" :disabled="isTransitioning" @click="persistDealMeta(deal)">
+                  <v-btn
+                    size="x-small"
+                    variant="text"
+                    :disabled="isTransitioning"
+                    @click="persistDealMeta(deal)"
+                  >
                     Save meta
                   </v-btn>
                   <v-btn
@@ -331,17 +425,18 @@ function formatDate(date: string) {
                 </div>
               </v-card>
 
-              <v-alert v-if="!dealsByStage[column.stage]?.length" density="comfortable" variant="tonal" type="info">
+              <v-alert
+                v-if="!dealsByStage[column.stage]?.length"
+                density="comfortable"
+                variant="tonal"
+                type="info"
+              >
                 Aucun deal dans cette étape.
               </v-alert>
             </div>
           </v-card>
         </v-col>
       </v-row>
-
-      <div class="d-flex mt-4">
-        <v-btn variant="text" prepend-icon="mdi-refresh" :loading="pending" @click="refresh">Rafraîchir pipeline</v-btn>
-      </div>
     </v-container>
   </div>
 </template>

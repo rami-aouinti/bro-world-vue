@@ -308,7 +308,7 @@ function resetFilters() {
       </template>
     </AppPageDrawers>
 
-    <v-container fluid class="platform-page">
+    <v-container fluid>
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
       <template v-else>
         <client-only>

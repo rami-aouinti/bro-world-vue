@@ -11,7 +11,10 @@ export async function getSessionUser(event: H3Event): Promise<SessionUser> {
   return user as SessionUser
 }
 
-export async function requireCrmPermission(event: H3Event, permission: CrmPermission): Promise<SessionUser> {
+export async function requireCrmPermission(
+  event: H3Event,
+  permission: CrmPermission,
+): Promise<SessionUser> {
   const user = await getSessionUser(event)
 
   if (!hasCrmPermission(user, permission)) {

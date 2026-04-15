@@ -35,7 +35,9 @@ const { t } = useI18n()
           <v-img :src="sport.image" :alt="sport.label" height="160" cover />
 
           <v-card-text class="d-flex align-center justify-space-between py-4">
-            <span class="text-subtitle-1 font-weight-medium">{{ sport.label }}</span>
+            <span class="text-subtitle-1 font-weight-medium">{{
+              sport.label
+            }}</span>
             <v-icon icon="mdi-chevron-right" />
           </v-card-text>
         </v-card>
@@ -46,7 +48,9 @@ const { t } = useI18n()
 
 <style scoped>
 .sport-card {
-  transition: transform 0.18s ease, box-shadow 0.18s ease,
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
     border-color 0.18s ease;
 }
 

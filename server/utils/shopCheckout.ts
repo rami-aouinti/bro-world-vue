@@ -1,8 +1,18 @@
 import crypto from 'node:crypto'
 
-export type CheckoutStep = 'cart' | 'address' | 'shipping' | 'payment' | 'confirmation'
+export type CheckoutStep =
+  | 'cart'
+  | 'address'
+  | 'shipping'
+  | 'payment'
+  | 'confirmation'
 export type PaymentProvider = 'stripe' | 'adyen' | 'paypal'
-export type CheckoutStatus = 'draft' | 'payment_pending' | 'processing' | 'paid' | 'failed'
+export type CheckoutStatus =
+  | 'draft'
+  | 'payment_pending'
+  | 'processing'
+  | 'paid'
+  | 'failed'
 
 export interface CartLine {
   productId: string
@@ -74,8 +84,7 @@ export async function getCheckoutStore() {
   const storage = useStorage<CheckoutStore>('data')
   const existing = await storage.getItem(STORAGE_KEY)
 
-  if (existing)
-    return existing
+  if (existing) return existing
 
   const seeded = baseStore()
   await storage.setItem(STORAGE_KEY, seeded)
@@ -98,14 +107,29 @@ export function computeShippingOptions(address: Address): ShippingOption[] {
   const isDomestic = address.country.toUpperCase() === 'US'
 
   return [
-    { id: 'standard', label: 'Standard', carrier: 'UPS', amount: isDomestic ? 7.5 : 18, etaDays: isDomestic ? 5 : 10 },
-    { id: 'express', label: 'Express', carrier: 'DHL', amount: isDomestic ? 15 : 32, etaDays: isDomestic ? 2 : 4 },
+    {
+      id: 'standard',
+      label: 'Standard',
+      carrier: 'UPS',
+      amount: isDomestic ? 7.5 : 18,
+      etaDays: isDomestic ? 5 : 10,
+    },
+    {
+      id: 'express',
+      label: 'Express',
+      carrier: 'DHL',
+      amount: isDomestic ? 15 : 32,
+      etaDays: isDomestic ? 2 : 4,
+    },
   ]
 }
 
 export function assertIdempotencyKey(idempotencyKey: unknown) {
   if (typeof idempotencyKey !== 'string' || !idempotencyKey.trim()) {
-    throw createError({ statusCode: 422, statusMessage: 'idempotencyKey is required' })
+    throw createError({
+      statusCode: 422,
+      statusMessage: 'idempotencyKey is required',
+    })
   }
 
   return idempotencyKey.trim()
@@ -113,7 +137,10 @@ export function assertIdempotencyKey(idempotencyKey: unknown) {
 
 export function assertNonEmptyString(value: unknown, field: string) {
   if (typeof value !== 'string' || !value.trim()) {
-    throw createError({ statusCode: 422, statusMessage: `${field} is required` })
+    throw createError({
+      statusCode: 422,
+      statusMessage: `${field} is required`,
+    })
   }
 
   return value.trim()
@@ -121,13 +148,19 @@ export function assertNonEmptyString(value: unknown, field: string) {
 
 export function assertPositiveNumber(value: unknown, field: string) {
   if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0) {
-    throw createError({ statusCode: 422, statusMessage: `${field} must be a positive number` })
+    throw createError({
+      statusCode: 422,
+      statusMessage: `${field} must be a positive number`,
+    })
   }
 
   return value
 }
 
-export function assertStepTransition(current: CheckoutStep, target: CheckoutStep) {
+export function assertStepTransition(
+  current: CheckoutStep,
+  target: CheckoutStep,
+) {
   const map: Record<CheckoutStep, CheckoutStep[]> = {
     cart: ['address'],
     address: ['shipping'],

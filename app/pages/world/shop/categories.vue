@@ -2,13 +2,38 @@
 definePageMeta({ title: 'Shop Categories' })
 
 const shopNavItems = [
-  { title: 'Overview Shop', to: '/world/shop', icon: 'mdi-view-dashboard-outline' },
-  { title: 'Categories', to: '/world/shop/categories', icon: 'mdi-shape-outline' },
-  { title: 'Products', to: '/world/shop/products', icon: 'mdi-package-variant-closed' },
+  {
+    title: 'Overview Shop',
+    to: '/world/shop',
+    icon: 'mdi-view-dashboard-outline',
+  },
+  {
+    title: 'Categories',
+    to: '/world/shop/categories',
+    icon: 'mdi-shape-outline',
+  },
+  {
+    title: 'Products',
+    to: '/world/shop/products',
+    icon: 'mdi-package-variant-closed',
+  },
   { title: 'Checkout', to: '/world/shop/checkout', icon: 'mdi-cart-outline' },
-  { title: 'Payment', to: '/world/shop/payment', icon: 'mdi-credit-card-outline' },
-  { title: 'Orders', to: '/world/shop/orders', icon: 'mdi-receipt-text-outline' },
-  { title: 'Admin', to: '/world/shop/admin', icon: 'mdi-shield-crown-outline', rootOnly: true },
+  {
+    title: 'Payment',
+    to: '/world/shop/payment',
+    icon: 'mdi-credit-card-outline',
+  },
+  {
+    title: 'Orders',
+    to: '/world/shop/orders',
+    icon: 'mdi-receipt-text-outline',
+  },
+  {
+    title: 'Admin',
+    to: '/world/shop/admin',
+    icon: 'mdi-shield-crown-outline',
+    rootOnly: true,
+  },
 ]
 
 const rows = [
@@ -43,7 +68,7 @@ const rows = [
       action-label="Create category"
     />
 
-    <v-container fluid class="pt-0">
+    <v-container fluid>
       <WorldFeatureScaffold
         title="Shop - Categories"
         subtitle="Taxonomie hiérarchique parent/enfant avec filtres facettés, médias et SEO."
@@ -52,12 +77,24 @@ const rows = [
         :fields="[
           { key: 'name', label: 'Category name', type: 'text' },
           { key: 'slug', label: 'Slug', type: 'text' },
-          { key: 'parentId', label: 'Parent category id (optional)', type: 'text' },
+          {
+            key: 'parentId',
+            label: 'Parent category id (optional)',
+            type: 'text',
+          },
           { key: 'description', label: 'Description', type: 'textarea' },
           { key: 'image', label: 'Category image URL', type: 'text' },
-          { key: 'facetDefinitions', label: 'Facet definitions JSON', type: 'textarea' },
+          {
+            key: 'facetDefinitions',
+            label: 'Facet definitions JSON',
+            type: 'textarea',
+          },
           { key: 'metaTitle', label: 'SEO meta title', type: 'text' },
-          { key: 'metaDescription', label: 'SEO meta description', type: 'textarea' },
+          {
+            key: 'metaDescription',
+            label: 'SEO meta description',
+            type: 'textarea',
+          },
           { key: 'keywords', label: 'SEO keywords', type: 'text' },
           { key: 'canonicalUrl', label: 'SEO canonical URL', type: 'text' },
         ]"

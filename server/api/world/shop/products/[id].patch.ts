@@ -1,5 +1,9 @@
 import type { ShopProduct } from '~~/server/types/api/shop'
-import { getShopCatalog, saveShopCatalog, validateProductInput } from '~~/server/utils/shopCatalog'
+import {
+  getShopCatalog,
+  saveShopCatalog,
+  validateProductInput,
+} from '~~/server/utils/shopCatalog'
 
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
@@ -9,7 +13,7 @@ export default defineEventHandler(async (event) => {
 
   const payload = await readBody<Partial<ShopProduct>>(event)
   const catalog = await getShopCatalog()
-  const index = catalog.products.findIndex(product => product.id === id)
+  const index = catalog.products.findIndex((product) => product.id === id)
 
   if (index < 0) {
     throw createError({ statusCode: 404, statusMessage: 'Product not found' })

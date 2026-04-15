@@ -7,10 +7,7 @@ import type { Notification } from '~/stores/notification'
 const theme = useTheme()
 const drawer = useState('drawer')
 const showLeftDrawer = useState('show-left-drawer', () => true)
-const showRightDrawerDesktop = useState(
-  'show-right-drawer-desktop',
-  () => true,
-)
+const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => true)
 const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
 const { mobile } = useDisplay()
 const route = useRoute()
@@ -127,8 +124,7 @@ const navMenus = [
         label: 'Jobs',
         to: '/world/jobs',
         icon: 'mdi-briefcase-search-outline',
-        detail:
-          'Track offers, applications, and personal hiring workflows.',
+        detail: 'Track offers, applications, and personal hiring workflows.',
       },
     ],
     twoColumns: true,
@@ -199,7 +195,8 @@ const unreadTotalCount = computed(
   () => unreadCount.value + actionNotifications.value.length,
 )
 const showRightDrawer = computed({
-  get: () => (mobile.value ? showRightDrawerMobile.value : showRightDrawerDesktop.value),
+  get: () =>
+    mobile.value ? showRightDrawerMobile.value : showRightDrawerDesktop.value,
   set: (value: boolean) => {
     if (mobile.value) {
       showRightDrawerMobile.value = value
@@ -378,7 +375,9 @@ function isMenuActive(paths: string[]) {
               {{ t(applicationsMenu.label) }}
             </p>
           </div>
-          <div class="app-top-bar__mega-menu-grid app-top-bar__mega-menu-grid--two-columns">
+          <div
+            class="app-top-bar__mega-menu-grid app-top-bar__mega-menu-grid--two-columns"
+          >
             <NuxtLink
               v-for="item in applicationsMenu.items"
               :key="item.to"
@@ -427,7 +426,9 @@ function isMenuActive(paths: string[]) {
               {{ t(worldMenu.label) }}
             </p>
           </div>
-          <div class="app-top-bar__mega-menu-grid app-top-bar__mega-menu-grid--two-columns">
+          <div
+            class="app-top-bar__mega-menu-grid app-top-bar__mega-menu-grid--two-columns"
+          >
             <NuxtLink
               v-for="item in worldMenu.items"
               :key="item.to"
@@ -484,8 +485,7 @@ function isMenuActive(paths: string[]) {
           <div
             class="app-top-bar__mega-menu-grid"
             :class="{
-              'app-top-bar__mega-menu-grid--two-columns':
-                menu.twoColumns,
+              'app-top-bar__mega-menu-grid--two-columns': menu.twoColumns,
             }"
           >
             <NuxtLink
@@ -493,7 +493,9 @@ function isMenuActive(paths: string[]) {
               :key="item.to"
               :to="item.to"
               class="app-top-bar__mega-menu-card"
-              :class="{ 'app-top-bar__mega-menu-card--compact': menu.compactCards }"
+              :class="{
+                'app-top-bar__mega-menu-card--compact': menu.compactCards,
+              }"
             >
               <div class="app-top-bar__mega-menu-icon-wrap">
                 <v-icon :icon="item.icon" size="22" />

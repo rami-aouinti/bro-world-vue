@@ -9,9 +9,12 @@ export function useCrmPermissions() {
   const { user } = useUserSession()
   const sessionUser = computed(() => user.value as SessionUser | null)
 
-  const permissions = computed(() => resolveCrmPermissionsForUser(sessionUser.value))
+  const permissions = computed(() =>
+    resolveCrmPermissionsForUser(sessionUser.value),
+  )
 
-  const can = (permission: CrmPermission) => hasCrmPermission(sessionUser.value, permission)
+  const can = (permission: CrmPermission) =>
+    hasCrmPermission(sessionUser.value, permission)
 
   return {
     sessionUser,

@@ -9,9 +9,9 @@ export default defineEventHandler(async (event) => {
   const body = await readBody<CreateOrderBody>(event)
 
   if (
-    !body.packageId
-    || typeof body.coins !== 'number'
-    || typeof body.amount !== 'number'
+    !body.packageId ||
+    typeof body.coins !== 'number' ||
+    typeof body.amount !== 'number'
   ) {
     throw createError({
       statusCode: 400,

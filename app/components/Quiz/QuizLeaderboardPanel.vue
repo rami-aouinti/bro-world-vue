@@ -23,7 +23,7 @@ const {
 
 function asRecord(value: unknown): Record<string, unknown> {
   return typeof value === 'object' && value !== null
-    ? value as Record<string, unknown>
+    ? (value as Record<string, unknown>)
     : {}
 }
 
@@ -45,29 +45,29 @@ const leaderboardEntries = computed<LeaderboardEntry[]>(() => {
     const profile = asRecord(item.profile)
 
     const weightedAverageScore =
-      asNumber(item.weightedAverageScore)
-      ?? asNumber(item.averageWeightedScore)
-      ?? asNumber(item.avgWeightedScore)
-      ?? asNumber(item.score)
+      asNumber(item.weightedAverageScore) ??
+      asNumber(item.averageWeightedScore) ??
+      asNumber(item.avgWeightedScore) ??
+      asNumber(item.score)
 
     const attempts =
-      asNumber(item.attempts)
-      ?? asNumber(item.attemptCount)
-      ?? asNumber(item.totalAttempts)
+      asNumber(item.attempts) ??
+      asNumber(item.attemptCount) ??
+      asNumber(item.totalAttempts)
 
     return {
       rank: asNumber(item.rank) ?? index + 1,
       username:
-        asString(item.username)
-        ?? asString(profile.username)
-        ?? `User #${index + 1}`,
+        asString(item.username) ??
+        asString(profile.username) ??
+        `User #${index + 1}`,
       avatarUrl:
-        asString(item.avatar)
-        ?? asString(item.photo)
-        ?? asString(item.avatarUrl)
-        ?? asString(profile.avatar)
-        ?? asString(profile.photo)
-        ?? asString(profile.avatarUrl),
+        asString(item.avatar) ??
+        asString(item.photo) ??
+        asString(item.avatarUrl) ??
+        asString(profile.avatar) ??
+        asString(profile.photo) ??
+        asString(profile.avatarUrl),
       weightedAverageScore,
       attempts,
     }
@@ -76,7 +76,10 @@ const leaderboardEntries = computed<LeaderboardEntry[]>(() => {
 
 const isPending = computed(() => status.value === 'pending')
 const isError = computed(() => status.value === 'error')
-const isEmpty = computed(() => !isPending.value && !isError.value && leaderboardEntries.value.length === 0)
+const isEmpty = computed(
+  () =>
+    !isPending.value && !isError.value && leaderboardEntries.value.length === 0,
+)
 
 function formatScore(value: number | null) {
   if (value === null) return '—'
@@ -96,17 +99,17 @@ function formatScore(value: number | null) {
       </v-card-text>
     </v-card>
 
-    <v-card
-      v-else-if="isError"
-      variant="outlined"
-      color="error"
-      rounded="lg"
-    >
+    <v-card v-else-if="isError" variant="outlined" color="error" rounded="lg">
       <v-card-text class="d-flex flex-column ga-3">
         <div class="text-body-2">
           Impossible de charger le classement pour le moment.
         </div>
-        <v-btn color="error" variant="tonal" prepend-icon="mdi-refresh" @click="refresh()">
+        <v-btn
+          color="error"
+          variant="tonal"
+          prepend-icon="mdi-refresh"
+          @click="refresh()"
+        >
           Réessayer
         </v-btn>
       </v-card-text>
@@ -118,12 +121,7 @@ function formatScore(value: number | null) {
       </v-card-text>
     </v-card>
 
-    <v-list
-      v-else
-      class="quiz-leaderboard-panel__list"
-      density="compact"
-      nav
-    >
+    <v-list v-else class="quiz-leaderboard-panel__list" density="compact" nav>
       <v-list-item
         v-for="entry in leaderboardEntries"
         :key="`${entry.rank}-${entry.username}`"
@@ -136,7 +134,9 @@ function formatScore(value: number | null) {
             </v-chip>
             <v-avatar size="36" variant="tonal" color="primary">
               <v-img v-if="entry.avatarUrl" :src="entry.avatarUrl" cover />
-              <span v-else class="text-caption">{{ entry.username.slice(0, 1).toUpperCase() }}</span>
+              <span v-else class="text-caption">{{
+                entry.username.slice(0, 1).toUpperCase()
+              }}</span>
             </v-avatar>
           </div>
         </template>

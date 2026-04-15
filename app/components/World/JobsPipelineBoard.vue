@@ -13,13 +13,22 @@ const { t } = useI18n()
 
 const jobsStore = useWorldJobsStore()
 await jobsStore.fetchCandidates(props.context)
-const data = computed(() => ({ items: jobsStore.items, stages: jobsStore.stages }))
+const data = computed(() => ({
+  items: jobsStore.items,
+  stages: jobsStore.stages,
+}))
 const refresh = () => jobsStore.fetchCandidates(props.context, { force: true })
 const pending = computed(() => jobsStore.pending)
 const { user } = useUserSession()
 const sessionUser = computed(() => user.value as SessionUser | null)
-const uiRole = computed<'admin' | 'recruiter' | 'hiring_manager' | 'interviewer'>(() => {
-  if (sessionUser.value?.roles?.includes('ROLE_ROOT') || sessionUser.value?.roles?.includes('ROLE_ADMIN') || sessionUser.value?.roles?.includes('ROLE_HR_ADMIN')) {
+const uiRole = computed<
+  'admin' | 'recruiter' | 'hiring_manager' | 'interviewer'
+>(() => {
+  if (
+    sessionUser.value?.roles?.includes('ROLE_ROOT') ||
+    sessionUser.value?.roles?.includes('ROLE_ADMIN') ||
+    sessionUser.value?.roles?.includes('ROLE_HR_ADMIN')
+  ) {
     return 'admin'
   }
   if (sessionUser.value?.roles?.includes('ROLE_RECRUITER')) {
@@ -31,7 +40,12 @@ const uiRole = computed<'admin' | 'recruiter' | 'hiring_manager' | 'interviewer'
   return 'interviewer'
 })
 const canTransition = computed(() => uiRole.value !== 'interviewer')
-const canEditNotes = computed(() => uiRole.value === 'admin' || uiRole.value === 'recruiter' || uiRole.value === 'hiring_manager')
+const canEditNotes = computed(
+  () =>
+    uiRole.value === 'admin' ||
+    uiRole.value === 'recruiter' ||
+    uiRole.value === 'hiring_manager',
+)
 
 const candidates = computed(() => data.value?.items ?? [])
 const stages = computed(() => data.value?.stages ?? [])
@@ -41,24 +55,32 @@ const recruiterNotes = ref('')
 const panelFeedback = ref('')
 
 const selectedCandidate = computed(() =>
-  candidates.value.find(candidate => candidate.id === selectedId.value),
+  candidates.value.find((candidate) => candidate.id === selectedId.value),
 )
 
-watch(stages, (value) => {
-  if (!toStage.value && value.length > 0) {
-    toStage.value = value[0] as JobPipelineStage
-  }
-}, { immediate: true })
+watch(
+  stages,
+  (value) => {
+    if (!toStage.value && value.length > 0) {
+      toStage.value = value[0] as JobPipelineStage
+    }
+  },
+  { immediate: true },
+)
 
-watch(selectedCandidate, (candidate) => {
-  if (!candidate) {
-    return
-  }
+watch(
+  selectedCandidate,
+  (candidate) => {
+    if (!candidate) {
+      return
+    }
 
-  toStage.value = candidate.currentStage
-  recruiterNotes.value = candidate.recruiterNotes
-  panelFeedback.value = candidate.panelFeedback
-}, { immediate: true })
+    toStage.value = candidate.currentStage
+    recruiterNotes.value = candidate.recruiterNotes
+    panelFeedback.value = candidate.panelFeedback
+  },
+  { immediate: true },
+)
 
 const tableHeaders = computed(() => [
   { title: t('world.jobs.pipeline.table.id', 'ID'), key: 'id' },
@@ -66,7 +88,10 @@ const tableHeaders = computed(() => [
   { title: t('world.jobs.pipeline.table.offer', 'Offer'), key: 'offerTitle' },
   { title: t('world.jobs.pipeline.table.stage', 'Stage'), key: 'currentStage' },
   { title: t('world.jobs.pipeline.table.score', 'Score'), key: 'score.total' },
-  { title: t('world.jobs.pipeline.table.updated', 'Updated'), key: 'updatedAt' },
+  {
+    title: t('world.jobs.pipeline.table.updated', 'Updated'),
+    key: 'updatedAt',
+  },
 ])
 
 const selectCandidate = (row: { item: JobCandidate }) => {
@@ -102,22 +127,37 @@ const saveTransition = async () => {
           item-value="id"
           :loading="pending"
           class="bg-transparent"
-          @click:row="(_event: MouseEvent, row: unknown) => selectCandidate(row as { item: JobCandidate })"
+          @click:row="
+            (_event: MouseEvent, row: unknown) =>
+              selectCandidate(row as { item: JobCandidate })
+          "
         />
       </v-card>
     </v-col>
 
     <v-col cols="12" lg="5" class="pl-lg-3">
       <v-card rounded="xl" class="pa-4 postcard-gradient-card">
-        <h2 class="text-h6 mb-1">{{ t('world.jobs.pipeline.title', 'Transition pipeline') }}</h2>
+        <h2 class="text-h6 mb-1">
+          {{ t('world.jobs.pipeline.title', 'Transition pipeline') }}
+        </h2>
         <p class="text-body-2 text-medium-emphasis mb-4">
-          {{ t('world.jobs.pipeline.stagesHint', 'Applied → Screening → Interview → Offer → Hired / Rejected') }}
+          {{
+            t(
+              'world.jobs.pipeline.stagesHint',
+              'Applied → Screening → Interview → Offer → Hired / Rejected',
+            )
+          }}
         </p>
 
         <v-select
           v-model="selectedId"
           :label="t('world.jobs.pipeline.candidate', 'Candidate')"
-          :items="candidates.map(candidate => ({ title: `${candidate.name} (${candidate.id})`, value: candidate.id }))"
+          :items="
+            candidates.map((candidate) => ({
+              title: `${candidate.name} (${candidate.id})`,
+              value: candidate.id,
+            }))
+          "
           variant="outlined"
           density="comfortable"
           class="mb-3"
@@ -160,8 +200,19 @@ const saveTransition = async () => {
           class="mb-3"
           density="comfortable"
         >
-          {{ t('world.jobs.pipeline.serverScore', 'Server score:') }} {{ selectedCandidate.score.total }}/100
-          {{ t('world.jobs.pipeline.scoreBreakdown', { skills: selectedCandidate.score.skillsMatch, experience: selectedCandidate.score.experience, availability: selectedCandidate.score.availability }, `skills ${selectedCandidate.score.skillsMatch}, experience ${selectedCandidate.score.experience}, availability ${selectedCandidate.score.availability}`) }}
+          {{ t('world.jobs.pipeline.serverScore', 'Server score:') }}
+          {{ selectedCandidate.score.total }}/100
+          {{
+            t(
+              'world.jobs.pipeline.scoreBreakdown',
+              {
+                skills: selectedCandidate.score.skillsMatch,
+                experience: selectedCandidate.score.experience,
+                availability: selectedCandidate.score.availability,
+              },
+              `skills ${selectedCandidate.score.skillsMatch}, experience ${selectedCandidate.score.experience}, availability ${selectedCandidate.score.availability}`,
+            )
+          }}
         </v-alert>
 
         <v-btn
@@ -174,12 +225,19 @@ const saveTransition = async () => {
           {{ t('world.jobs.pipeline.persist', 'Persist transition') }}
         </v-btn>
         <p v-if="!canTransition" class="text-caption text-warning mt-2 mb-0">
-          {{ t('world.jobs.pipeline.readOnly', 'Your role (interviewer) has read-only access for pipeline transitions.') }}
+          {{
+            t(
+              'world.jobs.pipeline.readOnly',
+              'Your role (interviewer) has read-only access for pipeline transitions.',
+            )
+          }}
         </p>
 
         <v-divider class="my-4" />
 
-        <h3 class="text-subtitle-1 mb-2">{{ t('world.jobs.pipeline.history', 'Transition history') }}</h3>
+        <h3 class="text-subtitle-1 mb-2">
+          {{ t('world.jobs.pipeline.history', 'Transition history') }}
+        </h3>
         <v-timeline
           v-if="selectedCandidate?.history.length"
           side="end"
@@ -192,10 +250,20 @@ const saveTransition = async () => {
             dot-color="primary"
             size="small"
           >
-            <div class="text-body-2 font-weight-medium">{{ entry.fromStage }} → {{ entry.toStage }}</div>
-            <div class="text-caption text-medium-emphasis">{{ entry.changedAt }} • {{ entry.actor }}</div>
-            <div class="text-caption mt-1"><strong>{{ t('world.jobs.pipeline.notes', 'Notes:') }}</strong> {{ entry.recruiterNotes || '—' }}</div>
-            <div class="text-caption"><strong>{{ t('world.jobs.pipeline.panel', 'Panel:') }}</strong> {{ entry.panelFeedback || '—' }}</div>
+            <div class="text-body-2 font-weight-medium">
+              {{ entry.fromStage }} → {{ entry.toStage }}
+            </div>
+            <div class="text-caption text-medium-emphasis">
+              {{ entry.changedAt }} • {{ entry.actor }}
+            </div>
+            <div class="text-caption mt-1">
+              <strong>{{ t('world.jobs.pipeline.notes', 'Notes:') }}</strong>
+              {{ entry.recruiterNotes || '—' }}
+            </div>
+            <div class="text-caption">
+              <strong>{{ t('world.jobs.pipeline.panel', 'Panel:') }}</strong>
+              {{ entry.panelFeedback || '—' }}
+            </div>
           </v-timeline-item>
         </v-timeline>
         <p v-else class="text-body-2 text-medium-emphasis mb-0">
