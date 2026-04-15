@@ -347,6 +347,49 @@
           "Despacio y con constancia se gana la carrera."
         ]
       },
+      "buyCoins": {
+        "title": "Comprar coins",
+        "subtitle": "Selecciona un producto de coins del catálogo Shop y completa el pago de forma segura.",
+        "currentBalance": "Saldo actual: {coins} coins",
+        "flow": {
+          "product": "1. Selección de producto",
+          "confirmation": "2. Confirmación del carrito",
+          "payment": "3. Pago",
+          "validation": "4. Validación"
+        },
+        "emptyProducts": "No hay productos coins disponibles en las categorías Coins o Packs coins.",
+        "confirmationTitle": "Confirmar carrito",
+        "paymentTitle": "Elegir método de pago",
+        "validationTitle": "Validación de la transacción",
+        "confirmCart": "Confirmar carrito",
+        "payNow": "Pagar ahora",
+        "cancel": "Cancelar",
+        "newOrder": "Crear un nuevo pedido",
+        "historyTitle": "Recibos e historial",
+        "emptyHistory": "Aún no hay historial de transacciones.",
+        "labels": {
+          "product": "Producto",
+          "coins": "Coins",
+          "amount": "Importe",
+          "provider": "Proveedor de pago"
+        },
+        "messages": {
+          "productsError": "No se pudieron cargar los productos de coins.",
+          "confirming": "Confirmando carrito…",
+          "confirmError": "No se pudo confirmar el carrito.",
+          "paymentPending": "Pago en proceso…",
+          "paymentSuccess": "Pago completado. Tu saldo de coins fue actualizado.",
+          "paymentFailed": "El pago falló. No se acreditaron coins.",
+          "paymentCancelled": "Pago cancelado por el usuario."
+        },
+        "transaction": {
+          "idle": "Esperando acción",
+          "pending": "Transacción pendiente",
+          "success": "Transacción exitosa",
+          "failure": "Transacción fallida",
+          "cancelled": "Transacción cancelada"
+        }
+      },
       "posts": {
         "title": "Publicaciones"
       }

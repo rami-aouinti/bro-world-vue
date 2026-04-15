@@ -382,6 +382,49 @@
           "Qui va doucement va sûrement."
         ]
       },
+      "buyCoins": {
+        "title": "Acheter des coins",
+        "subtitle": "Sélectionnez un produit coins du catalogue Shop puis finalisez le paiement en toute sécurité.",
+        "currentBalance": "Solde actuel : {coins} coins",
+        "flow": {
+          "product": "1. Sélection produit",
+          "confirmation": "2. Confirmation panier",
+          "payment": "3. Paiement",
+          "validation": "4. Validation"
+        },
+        "emptyProducts": "Aucun produit coins n’est disponible dans les catégories Coins ou Packs coins.",
+        "confirmationTitle": "Confirmer votre panier",
+        "paymentTitle": "Choisir le mode de paiement",
+        "validationTitle": "Validation de la transaction",
+        "confirmCart": "Confirmer le panier",
+        "payNow": "Payer maintenant",
+        "cancel": "Annuler",
+        "newOrder": "Créer une nouvelle commande",
+        "historyTitle": "Reçus et historique",
+        "emptyHistory": "Aucun historique de transaction pour le moment.",
+        "labels": {
+          "product": "Produit",
+          "coins": "Coins",
+          "amount": "Montant",
+          "provider": "Fournisseur de paiement"
+        },
+        "messages": {
+          "productsError": "Impossible de charger les produits coins pour le moment.",
+          "confirming": "Confirmation du panier en cours…",
+          "confirmError": "Impossible de confirmer le panier.",
+          "paymentPending": "Paiement en cours de traitement…",
+          "paymentSuccess": "Paiement réussi. Votre solde de coins a été mis à jour.",
+          "paymentFailed": "Le paiement a échoué. Aucun coin n’a été crédité.",
+          "paymentCancelled": "Paiement annulé par l’utilisateur."
+        },
+        "transaction": {
+          "idle": "En attente d’action",
+          "pending": "Transaction en attente",
+          "success": "Transaction réussie",
+          "failure": "Transaction échouée",
+          "cancelled": "Transaction annulée"
+        }
+      },
       "posts": {
         "title": "Publications"
       }

@@ -373,6 +373,49 @@
           "Langsam, aber sicher gewinnt man das Rennen."
         ]
       },
+      "buyCoins": {
+        "title": "Coins kaufen",
+        "subtitle": "Wähle ein Coins-Produkt aus dem Shop-Katalog und schließe die Zahlung sicher ab.",
+        "currentBalance": "Aktuelles Guthaben: {coins} Coins",
+        "flow": {
+          "product": "1. Produktauswahl",
+          "confirmation": "2. Warenkorb bestätigen",
+          "payment": "3. Zahlung",
+          "validation": "4. Validierung"
+        },
+        "emptyProducts": "Derzeit sind keine Coins-Produkte in den Kategorien Coins oder Packs coins verfügbar.",
+        "confirmationTitle": "Warenkorb bestätigen",
+        "paymentTitle": "Zahlungsmethode wählen",
+        "validationTitle": "Transaktionsvalidierung",
+        "confirmCart": "Warenkorb bestätigen",
+        "payNow": "Jetzt bezahlen",
+        "cancel": "Abbrechen",
+        "newOrder": "Neue Bestellung erstellen",
+        "historyTitle": "Belege & Verlauf",
+        "emptyHistory": "Noch kein Transaktionsverlauf vorhanden.",
+        "labels": {
+          "product": "Produkt",
+          "coins": "Coins",
+          "amount": "Betrag",
+          "provider": "Zahlungsanbieter"
+        },
+        "messages": {
+          "productsError": "Coins-Produkte konnten derzeit nicht geladen werden.",
+          "confirming": "Warenkorb wird bestätigt…",
+          "confirmError": "Warenkorb konnte nicht bestätigt werden.",
+          "paymentPending": "Zahlung wird verarbeitet…",
+          "paymentSuccess": "Zahlung erfolgreich. Dein Coin-Guthaben wurde aktualisiert.",
+          "paymentFailed": "Zahlung fehlgeschlagen. Keine Coins wurden gutgeschrieben.",
+          "paymentCancelled": "Zahlung vom Benutzer abgebrochen."
+        },
+        "transaction": {
+          "idle": "Warten auf Aktion",
+          "pending": "Transaktion ausstehend",
+          "success": "Transaktion erfolgreich",
+          "failure": "Transaktion fehlgeschlagen",
+          "cancelled": "Transaktion abgebrochen"
+        }
+      },
       "posts": {
         "title": "Beiträge"
       }
