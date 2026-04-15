@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { JobCandidate, JobCandidatesApiResponse, JobPipelineStage } from '~~/server/types/api/jobs'
+import type { SessionUser } from '~/types/session'
 
 const props = defineProps<{
   context: 'offers' | 'applications' | 'my-offers'
@@ -12,6 +13,22 @@ const { data, refresh, pending } = await useFetch<JobCandidatesApiResponse>('/ap
     context: props.context,
   },
 })
+const { user } = useUserSession()
+const sessionUser = computed(() => user.value as SessionUser | null)
+const uiRole = computed<'admin' | 'recruiter' | 'hiring_manager' | 'interviewer'>(() => {
+  if (sessionUser.value?.roles?.includes('ROLE_ROOT') || sessionUser.value?.roles?.includes('ROLE_ADMIN') || sessionUser.value?.roles?.includes('ROLE_HR_ADMIN')) {
+    return 'admin'
+  }
+  if (sessionUser.value?.roles?.includes('ROLE_RECRUITER')) {
+    return 'recruiter'
+  }
+  if (sessionUser.value?.roles?.includes('ROLE_HIRING_MANAGER')) {
+    return 'hiring_manager'
+  }
+  return 'interviewer'
+})
+const canTransition = computed(() => uiRole.value !== 'interviewer')
+const canEditNotes = computed(() => uiRole.value === 'admin' || uiRole.value === 'recruiter' || uiRole.value === 'hiring_manager')
 
 const candidates = computed(() => data.value?.items ?? [])
 const stages = computed(() => data.value?.stages ?? [])
@@ -85,7 +102,7 @@ const saveTransition = async () => {
           item-value="id"
           :loading="pending"
           class="bg-transparent"
-          @click:row="(_, row) => selectCandidate(row as { item: JobCandidate })"
+          @click:row="(_event: MouseEvent, row: unknown) => selectCandidate(row as { item: JobCandidate })"
         />
       </v-card>
     </v-col>
@@ -113,6 +130,7 @@ const saveTransition = async () => {
           variant="outlined"
           density="comfortable"
           class="mb-3"
+          :disabled="!canTransition"
         />
 
         <v-textarea
@@ -122,6 +140,7 @@ const saveTransition = async () => {
           auto-grow
           variant="outlined"
           class="mb-3"
+          :disabled="!canEditNotes"
         />
 
         <v-textarea
@@ -131,6 +150,7 @@ const saveTransition = async () => {
           auto-grow
           variant="outlined"
           class="mb-3"
+          :disabled="!canEditNotes"
         />
 
         <v-alert
@@ -148,11 +168,14 @@ const saveTransition = async () => {
           block
           color="primary"
           prepend-icon="mdi-content-save-outline"
-          :disabled="!selectedCandidate"
+          :disabled="!selectedCandidate || !canTransition"
           @click="saveTransition"
         >
           Persist transition
         </v-btn>
+        <p v-if="!canTransition" class="text-caption text-warning mt-2 mb-0">
+          Votre rôle (interviewer) est en lecture seule sur les transitions pipeline.
+        </p>
 
         <v-divider class="my-4" />
 
