@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
+import type { CrmAdminApiResponse } from '~~/server/types/api/crm'
 
 definePageMeta({ title: 'CRM Admin' })
 
@@ -13,6 +14,13 @@ const crmNavItems = [
   { title: 'Company', to: '/world/crm/company', icon: 'mdi-domain' },
   { title: 'Admin', to: '/world/crm/admin', icon: 'mdi-shield-crown-outline', rootOnly: true },
 ]
+
+const { data: adminData } = await useAsyncData<CrmAdminApiResponse>(
+  'crm-admin-policy',
+  () => $fetch('/api/world/crm/admin'),
+)
+
+const policy = computed(() => adminData.value?.policy)
 </script>
 
 <template>
@@ -35,12 +43,32 @@ const crmNavItems = [
           </p>
           <v-row>
             <v-col cols="12" md="6">
-              <v-switch label="Enforce lead assignment rules" color="primary" inset />
-              <v-switch label="Enable audit logs" color="primary" inset />
-              <v-switch label="Require contract template" color="primary" inset />
+              <v-switch
+                label="Enforce lead assignment rules"
+                color="primary"
+                inset
+                :model-value="policy?.enforceLeadAssignmentRules"
+              />
+              <v-switch
+                label="Enable audit logs"
+                color="primary"
+                inset
+                :model-value="policy?.enableAuditLogs"
+              />
+              <v-switch
+                label="Require contract template"
+                color="primary"
+                inset
+                :model-value="policy?.requireContractTemplate"
+              />
             </v-col>
             <v-col cols="12" md="6">
-              <v-text-field label="Default SLA (hours)" type="number" variant="outlined" />
+              <v-text-field
+                label="Default SLA (hours)"
+                type="number"
+                variant="outlined"
+                :model-value="policy?.defaultSlaHours"
+              />
               <v-select
                 label="Region policy"
                 variant="outlined"
@@ -49,6 +77,7 @@ const crmNavItems = [
                   { title: 'EU only', value: 'eu' },
                   { title: 'US only', value: 'us' },
                 ]"
+                :model-value="policy?.regionPolicy"
               />
               <v-btn color="primary" prepend-icon="mdi-content-save-outline" block>
                 Save CRM policy

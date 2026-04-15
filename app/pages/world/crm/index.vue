@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
+import type { CrmLead, CrmLeadsApiResponse } from '~~/server/types/api/crm'
 
 definePageMeta({ title: 'CRM' })
 
@@ -16,11 +17,19 @@ const crmNavItems = computed(() => [
     : []),
 ])
 
-const crmRows = [
-  { id: 'CRM-001', project: 'Neon Replatform', owner: 'A. Martin', status: 'In progress', budget: '$84,000' },
-  { id: 'CRM-002', project: 'Enterprise Onboarding', owner: 'L. Diaz', status: 'Blocked', budget: '$46,500' },
-  { id: 'CRM-003', project: 'Partner Success', owner: 'S. Ahmed', status: 'Review', budget: '$22,700' },
-]
+const leadsQuery = {
+  page: 1,
+  limit: 10,
+  sortBy: 'id',
+  sortOrder: 'asc' as const,
+}
+
+const { data: crmLeadsData } = await useAsyncData<CrmLeadsApiResponse>(
+  'crm-leads',
+  () => $fetch('/api/world/crm/leads', { query: leadsQuery }),
+)
+
+const crmRows = computed<CrmLead[]>(() => crmLeadsData.value?.items ?? [])
 </script>
 
 <template>
