@@ -12,6 +12,8 @@ const activeView = ref<'pipeline' | 'list' | 'detail' | 'dashboard'>('pipeline')
 const crmNavItems = computed(() => [
   { title: 'Overview CRM', to: '/world/crm', icon: 'mdi-view-dashboard-outline' },
   { title: 'Projects', to: '/world/crm/projects', icon: 'mdi-folder-outline' },
+  { title: 'Tasks', to: '/world/crm/tasks', icon: 'mdi-format-list-checks' },
+  { title: 'Sprints', to: '/world/crm/sprints', icon: 'mdi-run-fast' },
   { title: 'Company', to: '/world/crm/company', icon: 'mdi-domain' },
   ...(can('crm.admin.manage')
     ? [{ title: 'Admin', to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' }]
