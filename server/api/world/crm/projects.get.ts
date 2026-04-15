@@ -5,6 +5,7 @@ import type {
   CrmProjectsListQuery,
   SortOrder,
 } from '~~/server/types/api/crm'
+import { requireCrmPermission } from '~~/server/utils/crmAccessControl'
 
 const PROJECTS: CrmProject[] = [
   { id: 'P-104', project: 'Migration B2B', manager: 'S. Ali', phase: 'Build', progress: '62%' },
@@ -26,7 +27,9 @@ const normalizePhase = (value: unknown): CrmProjectPhase | undefined => {
   return undefined
 }
 
-export default defineEventHandler((event): CrmProjectsApiResponse => {
+export default defineEventHandler(async (event): Promise<CrmProjectsApiResponse> => {
+  await requireCrmPermission(event, 'crm.projects.read')
+
   const query = getQuery(event) as CrmProjectsListQuery
   const page = Math.max(1, Number(query.page ?? 1) || 1)
   const limit = Math.min(100, Math.max(1, Number(query.limit ?? 10) || 10))

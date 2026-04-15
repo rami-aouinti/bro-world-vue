@@ -10,5 +10,6 @@ export interface SessionUser {
   photo: string
   coins: number
   roles: string[]
+  permissions?: string[]
   token: string
 }

@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import type { CrmProject, CrmProjectsApiResponse } from '~~/server/types/api/crm'
+import type { CrmProjectsApiResponse } from '~~/server/types/api/crm'
+import { useCrmPermissions } from '~/composables/useCrmPermissions'
 
 definePageMeta({ title: 'CRM Projects' })
 
-const crmNavItems = [
+const { can } = useCrmPermissions()
+
+const crmNavItems = computed(() => [
   { title: 'Overview CRM', to: '/world/crm', icon: 'mdi-view-dashboard-outline' },
   { title: 'Projects', to: '/world/crm/projects', icon: 'mdi-folder-outline' },
   { title: 'Company', to: '/world/crm/company', icon: 'mdi-domain' },
-  { title: 'Admin', to: '/world/crm/admin', icon: 'mdi-shield-crown-outline', rootOnly: true },
-]
+  ...(can('crm.admin.manage')
+    ? [{ title: 'Admin', to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' }]
+    : []),
+])
 
 const projectsQuery = {
   page: 1,
@@ -22,7 +27,7 @@ const { data: projectsData } = await useAsyncData<CrmProjectsApiResponse>(
   () => $fetch('/api/world/crm/projects', { query: projectsQuery }),
 )
 
-const rows = computed<CrmProject[]>(() => projectsData.value?.items ?? [])
+const rows = computed<Record<string, string | number>[]>(() => projectsData.value?.items ?? [])
 </script>
 
 <template>
