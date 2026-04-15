@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { useStorage } from '@vueuse/core'
-import VercelAnalyticsPlaceholder from '~/components/Layout/analytics/VercelAnalyticsPlaceholder'
-import SpeedInsightsPlaceholder from '~/components/Layout/analytics/SpeedInsightsPlaceholder'
 
 const theme = useTheme()
 provide(
@@ -28,9 +26,6 @@ const title = computed(() => {
   return translateIfKey(pageTitle)
 })
 
-const AnalyticsComponent = VercelAnalyticsPlaceholder
-const SpeedInsightsComponent = SpeedInsightsPlaceholder
-
 useHead({
   title,
   titleTemplate: (pageTitle) =>
@@ -40,6 +35,34 @@ useHead({
   htmlAttrs: { lang: locale.value },
   link: [{ rel: 'icon', href: '/favicon.ico' }],
 })
+
+const isTrackingEnabled =
+  import.meta.client &&
+  import.meta.env.PROD &&
+  (Boolean(import.meta.env.VERCEL) || Boolean(import.meta.env.VERCEL_URL))
+
+if (isTrackingEnabled) {
+  useHead({
+    script: [
+      {
+        innerHTML:
+          'window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};',
+      },
+      {
+        defer: true,
+        src: '/_vercel/insights/script.js',
+      },
+      {
+        innerHTML:
+          'window.si=window.si||function(){(window.siq=window.siq||[]).push(arguments);};',
+      },
+      {
+        defer: true,
+        src: '/_vercel/speed-insights/script.js',
+      },
+    ],
+  })
+}
 
 useSeoMeta({
   viewport: 'width=device-width, initial-scale=1',
@@ -51,10 +74,6 @@ useSeoMeta({
 </script>
 
 <template>
-  <ClientOnly>
-    <AnalyticsComponent />
-    <SpeedInsightsComponent />
-  </ClientOnly>
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
