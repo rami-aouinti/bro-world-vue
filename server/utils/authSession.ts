@@ -1,5 +1,7 @@
 import type { H3Event } from 'h3'
 import type { SessionUser } from '~/types/session'
+import { apiRequest } from './httpClient'
+import { resolveApiUrl } from './resolveApiUrl'
 
 type TokenResponse = {
   token: string
@@ -13,8 +15,8 @@ export async function fetchUserProfileFromToken(
 ): Promise<SessionUser> {
   const runtimeConfig = useRuntimeConfig(event)
 
-  const userProfile = await $fetch<UserProfile>(
-    `${runtimeConfig.public.apiBaseUrl}/profile`,
+  const userProfile = await apiRequest<UserProfile>(
+    resolveApiUrl(runtimeConfig.public.apiBaseUrl, '/profile'),
     {
       headers: {
         accept: 'application/json',
@@ -35,8 +37,8 @@ export async function fetchTokenWithPassword(
 ): Promise<string> {
   const runtimeConfig = useRuntimeConfig(event)
 
-  const tokenResponse = await $fetch<TokenResponse>(
-    `${runtimeConfig.public.apiBaseUrl}/auth/get_token`,
+  const tokenResponse = await apiRequest<TokenResponse>(
+    resolveApiUrl(runtimeConfig.public.apiBaseUrl, '/auth/get_token'),
     {
       method: 'POST',
       headers: {
@@ -56,8 +58,8 @@ export async function fetchTokenWithSocialLogin(
 ): Promise<string> {
   const runtimeConfig = useRuntimeConfig(event)
 
-  const tokenResponse = await $fetch<TokenResponse>(
-    `${runtimeConfig.public.apiBaseUrl}/auth/social_login`,
+  const tokenResponse = await apiRequest<TokenResponse>(
+    resolveApiUrl(runtimeConfig.public.apiBaseUrl, '/auth/social_login'),
     {
       method: 'POST',
       headers: {
@@ -77,8 +79,8 @@ export async function fetchTokenWithRegister(
 ): Promise<string> {
   const runtimeConfig = useRuntimeConfig(event)
 
-  const tokenResponse = await $fetch<TokenResponse>(
-    `${runtimeConfig.public.apiBaseUrl}/auth/register`,
+  const tokenResponse = await apiRequest<TokenResponse>(
+    resolveApiUrl(runtimeConfig.public.apiBaseUrl, '/auth/register'),
     {
       method: 'POST',
       headers: {
