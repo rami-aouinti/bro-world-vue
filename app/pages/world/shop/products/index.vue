@@ -49,17 +49,6 @@ const listLoading = ref(false)
 const page = ref(1)
 const limit = ref(20)
 
-const headers = [
-  { title: 'ID', key: 'id' },
-  { title: 'Name', key: 'name' },
-  { title: 'Category', key: 'category' },
-  { title: 'Status', key: 'status' },
-  { title: 'Price', key: 'price' },
-  { title: 'Featured', key: 'featured' },
-  { title: 'Updated at', key: 'updatedAt' },
-  { title: 'Actions', key: 'actions', sortable: false },
-]
-
 const products = computed(() => shopStore.items as ShopProduct[])
 const totalItems = computed(() => shopStore.pagination.total)
 const totalPages = computed(() => shopStore.pagination.totalPages)
@@ -100,6 +89,11 @@ function formatPrice(product: ShopProduct) {
     currency: product.currencyCode || 'EUR',
     maximumFractionDigits: 2,
   }).format(product.amount)
+}
+
+function productImage(product: ShopProduct) {
+  const fallback = '/images/platform-media/shop-premium-hoodie.svg'
+  return product.photo?.trim() || fallback
 }
 
 function prefetchProductDetail(productId: string) {
@@ -265,13 +259,11 @@ onMounted(async () => {
 
         <v-card-text>
           <template v-if="listLoading">
-            <v-skeleton-loader
-              v-for="index in 6"
-              :key="`products-skeleton-${index}`"
-              type="table-row"
-              data-testid="shop-products-loading"
-              class="mb-2"
-            />
+            <v-row>
+              <v-col v-for="index in 6" :key="`products-skeleton-${index}`" cols="12" md="6" lg="4">
+                <v-skeleton-loader type="card" data-testid="shop-products-loading" />
+              </v-col>
+            </v-row>
           </template>
 
           <v-empty-state
@@ -282,55 +274,86 @@ onMounted(async () => {
             text="Aucun produit ne correspond aux filtres appliqués."
           />
 
-          <v-data-table
-            v-else
-            :headers="headers"
-            :items="products"
-            item-value="id"
-            hide-default-footer
-            density="comfortable"
-          >
-            <template #item.status="{ item }">
-              <v-chip
-                size="small"
-                :color="
-                  item.status === 'active'
-                    ? 'success'
-                    : item.status === 'draft'
-                      ? 'warning'
-                      : 'default'
-                "
-                variant="tonal"
-              >
-                {{ item.status }}
-              </v-chip>
-            </template>
-
-            <template #item.featured="{ item }">
-              <v-icon :icon="item.isFeatured ? 'mdi-star' : 'mdi-star-outline'" />
-            </template>
-
-            <template #item.price="{ item }">
-              {{ formatPrice(item) }}
-            </template>
-
-            <template #item.updatedAt="{ item }">
-              {{ new Date(item.updatedAt).toLocaleString('fr-FR') }}
-            </template>
-
-            <template #item.actions="{ item }">
-              <v-btn
-                variant="text"
-                color="primary"
-                prepend-icon="mdi-open-in-new"
+          <v-row v-else>
+            <v-col
+              v-for="item in products"
+              :key="item.id"
+              cols="12"
+              sm="6"
+              lg="4"
+              xl="3"
+            >
+              <v-card
+                class="shop-product-card h-100"
+                rounded="xl"
+                elevation="3"
                 @mouseenter="prefetchProductDetail(item.id)"
-                @focus="prefetchProductDetail(item.id)"
-                @click="goToProductDetail(item.id)"
+                @focusin="prefetchProductDetail(item.id)"
               >
-                View
-              </v-btn>
-            </template>
-          </v-data-table>
+                <v-img
+                  :src="productImage(item)"
+                  :alt="item.name"
+                  height="220"
+                  cover
+                >
+                  <template #error>
+                    <div class="d-flex align-center justify-center fill-height bg-surface-variant">
+                      <v-icon icon="mdi-image-off-outline" size="40" />
+                    </div>
+                  </template>
+                </v-img>
+
+                <v-card-item>
+                  <v-card-title class="text-subtitle-1 font-weight-bold text-wrap">
+                    {{ item.name }}
+                  </v-card-title>
+                  <v-card-subtitle>
+                    {{ item.categoryName || item.category }}
+                  </v-card-subtitle>
+                </v-card-item>
+
+                <v-card-text>
+                  <p class="text-body-2 text-medium-emphasis mb-3 text-truncate-3">
+                    {{ item.description }}
+                  </p>
+
+                  <div class="d-flex align-center justify-space-between mb-2">
+                    <span class="text-h6 font-weight-bold">{{ formatPrice(item) }}</span>
+                    <v-chip
+                      size="small"
+                      :color="
+                        item.status === 'active'
+                          ? 'success'
+                          : item.status === 'draft'
+                            ? 'warning'
+                            : 'default'
+                      "
+                      variant="tonal"
+                    >
+                      {{ item.status }}
+                    </v-chip>
+                  </div>
+
+                  <div class="d-flex align-center justify-space-between text-caption text-medium-emphasis">
+                    <span>Stock: {{ item.stock ?? '-' }}</span>
+                    <span>{{ new Date(item.updatedAt).toLocaleDateString('fr-FR') }}</span>
+                  </div>
+                </v-card-text>
+
+                <v-card-actions>
+                  <v-btn
+                    block
+                    color="primary"
+                    variant="flat"
+                    prepend-icon="mdi-open-in-new"
+                    @click="goToProductDetail(item.id)"
+                  >
+                    View details
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-col>
+          </v-row>
         </v-card-text>
 
         <v-divider />
@@ -356,3 +379,22 @@ onMounted(async () => {
     </v-container>
   </div>
 </template>
+
+<style scoped>
+.shop-product-card {
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.shop-product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 30px rgb(15 23 42 / 18%) !important;
+}
+
+.text-truncate-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+</style>

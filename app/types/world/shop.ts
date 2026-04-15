@@ -5,6 +5,8 @@ export interface ShopCategory {
   name: string
   slug: string
   description: string
+  photo?: string
+  shopId?: string
   createdAt: string
   updatedAt: string
 }
@@ -13,13 +15,19 @@ export interface ShopProduct {
   id: string
   name: string
   slug: string
+  sku?: string
   description: string
+  photo?: string
   status: ShopProductStatus
   category: string
+  categoryId?: string
+  categoryName?: string
   currencyCode: string
   amount: number
+  stock?: number
   coinsAmount: number
   isFeatured: boolean
+  tags?: string[]
   createdAt: string
   updatedAt: string
 }
