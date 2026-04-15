@@ -382,6 +382,49 @@
           "Slow and steady wins the race."
         ]
       },
+      "buyCoins": {
+        "title": "Buy coins",
+        "subtitle": "Select a coin product from the Shop catalog and complete your payment securely.",
+        "currentBalance": "Current balance: {coins} coins",
+        "flow": {
+          "product": "1. Product selection",
+          "confirmation": "2. Cart confirmation",
+          "payment": "3. Payment",
+          "validation": "4. Validation"
+        },
+        "emptyProducts": "No coin product is currently available in categories Coins or Packs coins.",
+        "confirmationTitle": "Confirm your cart",
+        "paymentTitle": "Choose payment method",
+        "validationTitle": "Transaction validation",
+        "confirmCart": "Confirm cart",
+        "payNow": "Pay now",
+        "cancel": "Cancel",
+        "newOrder": "Create a new order",
+        "historyTitle": "Receipts & history",
+        "emptyHistory": "No transaction history yet.",
+        "labels": {
+          "product": "Product",
+          "coins": "Coins",
+          "amount": "Amount",
+          "provider": "Payment provider"
+        },
+        "messages": {
+          "productsError": "Unable to load coin products right now.",
+          "confirming": "Cart confirmation in progress…",
+          "confirmError": "Unable to confirm cart.",
+          "paymentPending": "Payment is being processed…",
+          "paymentSuccess": "Payment successful. Your coin balance has been updated.",
+          "paymentFailed": "Payment failed. No coins were credited.",
+          "paymentCancelled": "Payment cancelled by user."
+        },
+        "transaction": {
+          "idle": "Waiting for action",
+          "pending": "Transaction pending",
+          "success": "Transaction successful",
+          "failure": "Transaction failed",
+          "cancelled": "Transaction cancelled"
+        }
+      },
       "posts": {
         "title": "Posts"
       }
