@@ -1,5 +1,6 @@
 export type LearningContentType = 'text' | 'video' | 'file'
 export type LearningProgressStatus = 'not_started' | 'in_progress' | 'completed'
+export type LearningLevel = 'beginner' | 'intermediate' | 'advanced'
 
 export interface LearningContentVersion {
   version: number
@@ -57,12 +58,27 @@ export interface LearningCourse {
   modules: LearningModule[]
 }
 
+export interface LearningCertificate {
+  verificationId: string
+  hash: string
+  pdfBase64: string
+  issuedAt: string
+}
+
 export interface LearningProgress {
   id: string
   courseId: string
   learner: string
+  cohort: string
   lessonStatuses: Record<string, LearningProgressStatus>
   completedAssessments: string[]
+  score: number
+  timeSpentMinutes: number
+  attempts: number
+  currentLevel: LearningLevel
+  unlockedLevels: LearningLevel[]
+  hasDroppedOut: boolean
+  certificate?: LearningCertificate
   updatedAt: string
 }
 
@@ -134,8 +150,42 @@ export interface LearningProgressMutationPayload {
   action: 'upsertProgress'
   courseId: string
   learner: string
+  cohort?: string
   lessonId?: string
   status?: LearningProgressStatus
   assessmentId?: string
   assessmentCompleted?: boolean
+  score?: number
+  timeSpentMinutes?: number
+  attempts?: number
+}
+
+export interface LearningLevelRule {
+  level: LearningLevel
+  minScore: number
+  minCompletedLessonsRatio: number
+  maxAttempts: number
+  minTimeSpentMinutes: number
+  unlocks: LearningLevel[]
+}
+
+export interface LearningCohortAnalytics {
+  cohort: string
+  learners: number
+  completionRate: number
+  dropoutRate: number
+  averageScore: number
+}
+
+export interface LearningAdminAnalytics {
+  totalLearners: number
+  completionRate: number
+  dropoutRate: number
+  averageScore: number
+  cohortPerformance: LearningCohortAnalytics[]
+  levelRules: LearningLevelRule[]
+}
+
+export interface LearningAdminAnalyticsApiResponse {
+  items: LearningAdminAnalytics
 }

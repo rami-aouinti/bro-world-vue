@@ -1,5 +1,11 @@
 import type { LearningProgress, LearningProgressApiResponse, LearningProgressMutationPayload } from '~~/server/types/api/learning'
-import { createId, getLearningProgressStorage, saveLearningProgressStorage } from '~~/server/utils/learningStore'
+import {
+  createId,
+  evaluateProgressRules,
+  getLearningCoursesStorage,
+  getLearningProgressStorage,
+  saveLearningProgressStorage,
+} from '~~/server/utils/learningStore'
 
 export default defineEventHandler(async (event): Promise<LearningProgressApiResponse> => {
   const courseId = getRouterParam(event, 'courseId')
@@ -13,6 +19,13 @@ export default defineEventHandler(async (event): Promise<LearningProgressApiResp
     throw createError({ statusCode: 400, statusMessage: 'Unsupported action' })
   }
 
+  const courses = await getLearningCoursesStorage()
+  const course = courses.find((entry) => entry.id === courseId)
+
+  if (!course) {
+    throw createError({ statusCode: 404, statusMessage: 'Learning course not found' })
+  }
+
   const progress = await getLearningProgressStorage()
   const now = new Date().toISOString()
 
@@ -23,8 +36,15 @@ export default defineEventHandler(async (event): Promise<LearningProgressApiResp
       id: createId('prg'),
       courseId,
       learner: body.learner,
+      cohort: body.cohort?.trim() || 'cohort-alpha',
       lessonStatuses: {},
       completedAssessments: [],
+      score: 0,
+      timeSpentMinutes: 0,
+      attempts: 0,
+      currentLevel: 'beginner',
+      unlockedLevels: ['beginner'],
+      hasDroppedOut: false,
       updatedAt: now,
     }
 
@@ -45,6 +65,23 @@ export default defineEventHandler(async (event): Promise<LearningProgressApiResp
     }
   }
 
+  if (typeof body.score === 'number') {
+    target.score = Math.max(0, Math.min(100, body.score))
+  }
+
+  if (typeof body.timeSpentMinutes === 'number') {
+    target.timeSpentMinutes = Math.max(0, Math.round(body.timeSpentMinutes))
+  }
+
+  if (typeof body.attempts === 'number') {
+    target.attempts = Math.max(0, Math.round(body.attempts))
+  }
+
+  if (body.cohort?.trim()) {
+    target.cohort = body.cohort.trim()
+  }
+
+  evaluateProgressRules(course, target)
   target.updatedAt = now
 
   await saveLearningProgressStorage(progress)
