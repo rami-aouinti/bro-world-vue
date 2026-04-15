@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
+import type { ShopCategory, ShopProduct } from '~/types/world/shop'
 
 definePageMeta({ title: 'Shop' })
 
 const { t } = useI18n()
 const { user } = useUserSession()
+const shopStore = useWorldShopStore()
+
 const sessionUser = computed(() => user.value as SessionUser | null)
 const isRoot = computed(
   () => sessionUser.value?.roles?.includes('ROLE_ROOT') ?? false,
@@ -15,16 +18,6 @@ const shopNavItems = computed(() => [
     title: t('world.shop.nav.overview', 'Overview Shop'),
     to: '/world/shop',
     icon: 'mdi-view-dashboard-outline',
-  },
-  {
-    title: t('world.shop.nav.categories', 'Categories'),
-    to: '/world/shop/categories',
-    icon: 'mdi-shape-outline',
-  },
-  {
-    title: t('world.shop.nav.products', 'Products'),
-    to: '/world/shop/products',
-    icon: 'mdi-package-variant-closed',
   },
   {
     title: t('world.shop.nav.checkout', 'Checkout'),
@@ -53,29 +46,116 @@ const shopNavItems = computed(() => [
     : []),
 ])
 
-const rows = [
-  {
-    id: 'S-1201',
-    product: 'Premium Hoodie',
-    category: 'Apparel',
-    stock: 148,
-    status: 'Active',
-  },
-  {
-    id: 'S-1202',
-    product: 'Starter Kit',
-    category: 'Bundles',
-    stock: 46,
-    status: 'Low stock',
-  },
-  {
-    id: 'S-1203',
-    product: 'Gift Card',
-    category: 'Digital',
-    stock: 999,
-    status: 'Active',
-  },
-]
+const listLoading = ref(false)
+const categoriesLoading = ref(false)
+
+const qFilter = ref('')
+const selectedCategory = ref('')
+
+const page = ref(1)
+const limit = ref(20)
+
+const products = computed(() => shopStore.items as ShopProduct[])
+const totalItems = computed(() => shopStore.pagination.total)
+const totalPages = computed(() => shopStore.pagination.totalPages)
+
+const categories = ref<ShopCategory[]>([])
+
+const hasError = computed(() => !!shopStore.error)
+const isEmpty = computed(
+  () => !listLoading.value && !hasError.value && products.value.length === 0,
+)
+
+function formatPrice(product: ShopProduct) {
+  return new Intl.NumberFormat('fr-FR', {
+    style: 'currency',
+    currency: product.currencyCode || 'EUR',
+    maximumFractionDigits: 2,
+  }).format(product.amount)
+}
+
+function productImage(product: ShopProduct) {
+  const fallback = '/images/platform-media/shop-premium-hoodie.svg'
+  return product.photo?.trim() || fallback
+}
+
+function categoryImage(category: ShopCategory) {
+  const fallback = '/images/platform-media/shop-premium-hoodie.svg'
+  return category.photo?.trim() || fallback
+}
+
+function goToProductDetail(productId: string) {
+  return navigateTo(`/world/shop/products/${productId}`)
+}
+
+function addToCart(product: ShopProduct) {
+  void navigateTo({
+    path: '/world/shop/checkout',
+    query: {
+      productId: product.id,
+      q: qFilter.value || undefined,
+      category: selectedCategory.value || undefined,
+    },
+  })
+}
+
+function toggleCategoryFilter(categoryName: string) {
+  selectedCategory.value =
+    selectedCategory.value === categoryName ? '' : categoryName
+  void applyFilters()
+}
+
+async function fetchProducts() {
+  listLoading.value = true
+  try {
+    await shopStore.fetchProducts({
+      filters: {
+        q: qFilter.value,
+        category: selectedCategory.value,
+        page: page.value,
+        limit: limit.value,
+      },
+    })
+
+    page.value = shopStore.pagination.page
+    limit.value = shopStore.pagination.limit
+  } finally {
+    listLoading.value = false
+  }
+}
+
+async function fetchCategories() {
+  categoriesLoading.value = true
+  try {
+    await shopStore.fetchCategories()
+    categories.value = (shopStore.items as ShopCategory[]).slice()
+  } finally {
+    categoriesLoading.value = false
+  }
+}
+
+async function applyFilters() {
+  page.value = 1
+  await fetchProducts()
+}
+
+watch([page, limit], async ([nextPage, nextLimit], [prevPage, prevLimit]) => {
+  if (nextPage === prevPage && nextLimit === prevLimit) {
+    return
+  }
+
+  await fetchProducts()
+})
+
+onMounted(async () => {
+  qFilter.value = shopStore.filters.q ?? ''
+  selectedCategory.value = shopStore.filters.category ?? ''
+
+  page.value = shopStore.pagination.page || 1
+  limit.value = shopStore.pagination.limit || 20
+
+  await Promise.all([fetchProducts(), fetchCategories()])
+})
 </script>
 
 <template>
@@ -92,116 +172,230 @@ const rows = [
       :nav-items="shopNavItems"
       :action-label="t('world.shop.actions.createProduct', 'Create product')"
       action-icon="mdi-package-variant-plus"
-    />
+    >
+      <template #right>
+        <v-card class="postcard-gradient-card" rounded="xl" variant="tonal">
+          <v-card-title>{{
+            t('world.shop.filters.categoriesTitle', 'Categories')
+          }}</v-card-title>
+          <v-divider />
+
+          <v-list class="py-0" lines="two" bg-color="transparent">
+            <v-list-item
+              v-for="category in categories"
+              :key="category.id"
+              :active="selectedCategory === category.name"
+              rounded="lg"
+              @click="toggleCategoryFilter(category.name)"
+            >
+              <template #prepend>
+                <v-avatar rounded="lg" size="44">
+                  <v-img
+                    :src="categoryImage(category)"
+                    :alt="category.name"
+                    cover
+                  />
+                </v-avatar>
+              </template>
+
+              <v-list-item-title>{{ category.name }}</v-list-item-title>
+              <v-list-item-subtitle>
+                {{
+                  selectedCategory === category.name
+                    ? t('world.shop.filters.selected', 'Selected')
+                    : t('world.shop.filters.clickToFilter', 'Click to filter')
+                }}
+              </v-list-item-subtitle>
+            </v-list-item>
+          </v-list>
+
+          <v-card-text v-if="categoriesLoading">
+            <v-skeleton-loader
+              type="list-item-three-line, list-item-three-line"
+            />
+          </v-card-text>
+
+          <v-card-text v-if="!categoriesLoading && categories.length === 0">
+            <v-empty-state
+              icon="mdi-shape-outline"
+              :title="
+                t('world.shop.filters.noCategories', 'No categories available')
+              "
+            />
+          </v-card-text>
+        </v-card>
+      </template>
+    </WorldModuleDrawers>
 
     <v-container fluid>
-      <v-row class="mb-4">
-        <v-col cols="12" md="3"
-          ><v-card class="pa-3 postcard-gradient-card" rounded="xl"
-            ><p class="text-caption mb-1">
-              {{ t('world.shop.kpis.revenue30d', 'Revenue (30d)') }}
-            </p>
-            <h3 class="text-h5">$86,450</h3></v-card
-          ></v-col
-        >
-        <v-col cols="12" md="3"
-          ><v-card class="pa-3 postcard-gradient-card" rounded="xl"
-            ><p class="text-caption mb-1">
-              {{ t('world.shop.kpis.ordersPending', 'Orders pending') }}
-            </p>
-            <h3 class="text-h5">34</h3></v-card
-          ></v-col
-        >
-        <v-col cols="12" md="3"
-          ><v-card class="pa-3 postcard-gradient-card" rounded="xl"
-            ><p class="text-caption mb-1">
-              {{ t('world.shop.kpis.conversionRate', 'Conversion rate') }}
-            </p>
-            <h3 class="text-h5">4.8%</h3></v-card
-          ></v-col
-        >
-        <v-col cols="12" md="3"
-          ><v-card class="pa-3 postcard-gradient-card" rounded="xl"
-            ><p class="text-caption mb-1">
-              {{ t('world.shop.kpis.abandonedCarts', 'Abandoned carts') }}
-            </p>
-            <h3 class="text-h5">129</h3></v-card
-          ></v-col
-        >
-      </v-row>
-
-      <WorldFeatureScaffold
-        :title="t('world.shop.home.title', 'Shop Operations')"
-        :subtitle="
-          t(
-            'world.shop.home.subtitle',
-            'Interface e-commerce complète inspirée des vrais back-offices marchands.',
-          )
-        "
-        :form-title="t('world.shop.home.formTitle', 'Add product')"
-        :form-description="
-          t(
-            'world.shop.home.formDescription',
-            'Crée un produit avec prix, stock, catégorie et stratégie de vente.',
-          )
-        "
-        :fields="[
-          {
-            key: 'name',
-            label: t('world.shop.form.productName', 'Product name'),
-            type: 'text',
-          },
-          { key: 'sku', label: t('world.shop.form.sku', 'SKU'), type: 'text' },
-          {
-            key: 'category',
-            label: t('world.shop.form.category', 'Category'),
-            type: 'select',
-            options: [
-              {
-                title: t('world.shop.categories.apparel', 'Apparel'),
-                value: 'apparel',
-              },
-              {
-                title: t('world.shop.categories.bundles', 'Bundles'),
-                value: 'bundles',
-              },
-              {
-                title: t('world.shop.categories.digital', 'Digital'),
-                value: 'digital',
-              },
-            ],
-          },
-          {
-            key: 'price',
-            label: t('world.shop.form.price', 'Price'),
-            type: 'number',
-          },
-          {
-            key: 'inventory',
-            label: t('world.shop.form.stock', 'Stock'),
-            type: 'number',
-          },
-          {
-            key: 'description',
-            label: t('world.shop.form.description', 'Description'),
-            type: 'textarea',
-          },
-        ]"
-        :headers="[
-          { title: t('world.common.table.id', 'ID'), key: 'id' },
-          { title: t('world.shop.table.product', 'Product'), key: 'product' },
-          {
-            title: t('world.shop.table.category', 'Category'),
-            key: 'category',
-          },
-          { title: t('world.shop.table.stock', 'Stock'), key: 'stock' },
-          { title: t('world.shop.table.status', 'Status'), key: 'status' },
-        ]"
-        :rows="rows"
-        :create-label="
-          t('world.shop.actions.publishProduct', 'Publish product')
-        "
+      <v-alert
+        v-if="hasError"
+        data-testid="shop-products-error"
+        type="error"
+        variant="tonal"
+        class="mb-6"
+        :text="shopStore.error ?? undefined"
       />
+
+      <v-card rounded="xl" class="postcard-gradient-card">
+        <v-card-title
+          class="d-flex align-center justify-space-between flex-wrap ga-3"
+        >
+          <span>{{ t('world.shop.products.title', 'Products') }}</span>
+          <v-chip size="small" variant="outlined">
+            {{ totalItems }} {{ t('world.shop.products.results', 'results') }}
+          </v-chip>
+        </v-card-title>
+
+        <v-divider />
+
+        <v-card-text>
+          <v-text-field
+            v-model="qFilter"
+            :label="t('world.shop.filters.searchLabel', 'Search (q)')"
+            class="mb-6"
+            variant="outlined"
+            density="comfortable"
+            prepend-inner-icon="mdi-magnify"
+            hide-details
+            clearable
+            @keyup.enter="applyFilters"
+          />
+
+          <template v-if="listLoading">
+            <v-row>
+              <v-col
+                v-for="index in 6"
+                :key="`products-skeleton-${index}`"
+                cols="12"
+                md="6"
+                lg="4"
+              >
+                <v-skeleton-loader
+                  type="card"
+                  data-testid="shop-products-loading"
+                />
+              </v-col>
+            </v-row>
+          </template>
+
+          <v-empty-state
+            v-else-if="isEmpty"
+            data-testid="shop-products-empty"
+            icon="mdi-package-variant-remove"
+            :title="t('world.shop.products.emptyTitle', 'No products found')"
+            :text="
+              t(
+                'world.shop.products.emptyText',
+                'Aucun produit ne correspond aux filtres appliqués.',
+              )
+            "
+          />
+
+          <v-row v-else>
+            <v-col
+              v-for="item in products"
+              :key="item.id"
+              cols="12"
+              sm="6"
+              lg="4"
+              xl="3"
+            >
+              <v-card
+                class="shop-product-card postcard-gradient-card h-100"
+                rounded="xl"
+                elevation="3"
+              >
+                <v-img
+                  :src="productImage(item)"
+                  :alt="item.name"
+                  height="220"
+                  cover
+                  class="cursor-pointer"
+                  @click="goToProductDetail(item.id)"
+                >
+                  <template #error>
+                    <div
+                      class="d-flex align-center justify-center fill-height bg-surface-variant"
+                    >
+                      <v-icon icon="mdi-image-off-outline" size="40" />
+                    </div>
+                  </template>
+                </v-img>
+
+                <v-card-item>
+                  <v-card-title
+                    class="text-subtitle-1 font-weight-bold text-wrap cursor-pointer"
+                    @click="goToProductDetail(item.id)"
+                  >
+                    {{ item.name }}
+                  </v-card-title>
+                  <v-card-subtitle>
+                    {{ item.categoryName || item.category }}
+                  </v-card-subtitle>
+                </v-card-item>
+
+                <v-card-text>
+                  <div class="d-flex align-center justify-space-between mb-2">
+                    <span class="text-h6 font-weight-bold">{{
+                      formatPrice(item)
+                    }}</span>
+                  </div>
+                </v-card-text>
+
+                <v-card-actions>
+                  <v-btn
+                    block
+                    color="primary"
+                    variant="tonal"
+                    prepend-icon="mdi-cart-plus"
+                    @click="addToCart(item)"
+                  >
+                    {{ t('world.shop.actions.addToCart', 'Add to cart') }}
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-divider />
+
+        <v-card-actions class="justify-space-between flex-wrap ga-4 px-4 py-4">
+          <v-select
+            v-model="limit"
+            :items="[10, 20, 50]"
+            :label="t('world.shop.products.rows', 'Rows')"
+            density="compact"
+            variant="outlined"
+            hide-details
+            style="max-width: 120px"
+          />
+
+          <v-pagination
+            v-model="page"
+            :length="Math.max(1, totalPages)"
+            total-visible="7"
+          />
+        </v-card-actions>
+      </v-card>
     </v-container>
   </div>
 </template>
+
+<style scoped>
+.shop-product-card {
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.shop-product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 30px rgb(15 23 42 / 18%) !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+</style>

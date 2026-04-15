@@ -69,7 +69,12 @@ watch(
   <v-container fluid>
     <div class="d-flex align-center justify-space-between mb-4 flex-wrap ga-3">
       <h1 class="text-h5 font-weight-bold">Product detail</h1>
-      <v-btn to="/world/shop/products" color="primary" prepend-icon="mdi-arrow-left" variant="tonal">
+      <v-btn
+        to="/world/shop"
+        color="primary"
+        prepend-icon="mdi-arrow-left"
+        variant="tonal"
+      >
         Back to products
       </v-btn>
     </div>
@@ -79,7 +84,12 @@ watch(
       <v-skeleton-loader type="card" class="mt-4" />
     </template>
 
-    <v-alert v-else-if="listError" type="error" variant="tonal" :text="listError" />
+    <v-alert
+      v-else-if="listError"
+      type="error"
+      variant="tonal"
+      :text="listError"
+    />
 
     <v-empty-state
       v-else-if="!product"
@@ -92,11 +102,19 @@ watch(
       <v-card rounded="xl" class="mb-6 overflow-hidden postcard-gradient-card">
         <v-row no-gutters>
           <v-col cols="12" md="5">
-            <v-img :src="productImage(product)" :alt="product.name" height="100%" min-height="320" cover />
+            <v-img
+              :src="productImage(product)"
+              :alt="product.name"
+              height="100%"
+              min-height="320"
+              cover
+            />
           </v-col>
 
           <v-col cols="12" md="7">
-            <v-card-title class="d-flex justify-space-between align-center flex-wrap ga-3">
+            <v-card-title
+              class="d-flex justify-space-between align-center flex-wrap ga-3"
+            >
               <span>{{ product.name }}</span>
               <v-chip
                 size="small"
@@ -119,32 +137,44 @@ watch(
               <v-row>
                 <v-col cols="6" md="4">
                   <div class="text-caption text-medium-emphasis">Price</div>
-                  <div class="font-weight-bold text-h6">{{ formatPrice(product) }}</div>
+                  <div class="font-weight-bold text-h6">
+                    {{ formatPrice(product) }}
+                  </div>
                 </v-col>
 
                 <v-col cols="6" md="4">
                   <div class="text-caption text-medium-emphasis">Coins</div>
-                  <div class="font-weight-medium">{{ product.coinsAmount }}</div>
+                  <div class="font-weight-medium">
+                    {{ product.coinsAmount }}
+                  </div>
                 </v-col>
 
                 <v-col cols="6" md="4">
                   <div class="text-caption text-medium-emphasis">Stock</div>
-                  <div class="font-weight-medium">{{ product.stock ?? '-' }}</div>
+                  <div class="font-weight-medium">
+                    {{ product.stock ?? '-' }}
+                  </div>
                 </v-col>
 
                 <v-col cols="6" md="4">
                   <div class="text-caption text-medium-emphasis">Category</div>
-                  <div class="font-weight-medium">{{ product.categoryName || product.category }}</div>
+                  <div class="font-weight-medium">
+                    {{ product.categoryName || product.category }}
+                  </div>
                 </v-col>
 
                 <v-col cols="6" md="4">
                   <div class="text-caption text-medium-emphasis">SKU</div>
-                  <div class="font-weight-medium">{{ product.sku || product.slug }}</div>
+                  <div class="font-weight-medium">
+                    {{ product.sku || product.slug }}
+                  </div>
                 </v-col>
 
                 <v-col cols="6" md="4">
                   <div class="text-caption text-medium-emphasis">Featured</div>
-                  <div class="font-weight-medium">{{ product.isFeatured ? 'Yes' : 'No' }}</div>
+                  <div class="font-weight-medium">
+                    {{ product.isFeatured ? 'Yes' : 'No' }}
+                  </div>
                 </v-col>
               </v-row>
             </v-card-text>
@@ -177,13 +207,24 @@ watch(
                 rounded="lg"
                 :to="`/world/shop/products/${related.id}`"
               >
-                <v-img :src="productImage(related)" :alt="related.name" height="180" cover />
+                <v-img
+                  :src="productImage(related)"
+                  :alt="related.name"
+                  height="180"
+                  cover
+                />
                 <v-card-item>
-                  <v-card-title class="text-subtitle-1">{{ related.name }}</v-card-title>
-                  <v-card-subtitle>{{ related.categoryName || related.category }}</v-card-subtitle>
+                  <v-card-title class="text-subtitle-1">{{
+                    related.name
+                  }}</v-card-title>
+                  <v-card-subtitle>{{
+                    related.categoryName || related.category
+                  }}</v-card-subtitle>
                 </v-card-item>
                 <v-card-actions>
-                  <v-chip size="small" variant="tonal">{{ formatPrice(related) }}</v-chip>
+                  <v-chip size="small" variant="tonal">{{
+                    formatPrice(related)
+                  }}</v-chip>
                 </v-card-actions>
               </v-card>
             </v-col>

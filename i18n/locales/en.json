@@ -1077,7 +1077,8 @@
       },
       "actions": {
         "createProduct": "Create product",
-        "publishProduct": "Publish product"
+        "publishProduct": "Publish product",
+        "addToCart": "Add to cart"
       },
       "kpis": {
         "revenue30d": "Revenue (30d)",
@@ -1109,6 +1110,20 @@
         "category": "Category",
         "stock": "Stock",
         "status": "Status"
+      },
+      "filters": {
+        "categoriesTitle": "Categories",
+        "selected": "Selected",
+        "clickToFilter": "Click to filter",
+        "noCategories": "No categories available",
+        "searchLabel": "Search (q)"
+      },
+      "products": {
+        "title": "Products",
+        "results": "results",
+        "emptyTitle": "No products found",
+        "emptyText": "No products match the applied filters.",
+        "rows": "Rows"
       }
     },
     "learning": {
