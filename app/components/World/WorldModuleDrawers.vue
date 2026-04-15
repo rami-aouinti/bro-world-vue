@@ -1,0 +1,84 @@
+<script setup lang="ts">
+import type { SessionUser } from '~/types/session'
+
+type WorldModuleNavItem = {
+  title: string
+  to: string
+  icon: string
+  rootOnly?: boolean
+}
+
+const props = defineProps<{
+  moduleTitle: string
+  moduleIcon: string
+  moduleDescription: string
+  navItems: WorldModuleNavItem[]
+  actionLabel?: string
+  actionIcon?: string
+}>()
+
+const route = useRoute()
+const { user } = useUserSession()
+const sessionUser = computed(() => user.value as SessionUser | null)
+const isRoot = computed(() => sessionUser.value?.roles?.includes('ROLE_ROOT') ?? false)
+
+const visibleNavItems = computed(() =>
+  props.navItems.filter((item) => !item.rootOnly || isRoot.value),
+)
+</script>
+
+<template>
+  <AppPageDrawers>
+    <template #left>
+      <div class="d-flex flex-column ga-3">
+        <v-card rounded="xl" variant="tonal" class="pa-3">
+          <div class="d-flex align-center ga-2 mb-1">
+            <v-icon :icon="moduleIcon" color="primary" />
+            <h3 class="text-subtitle-1 font-weight-bold mb-0">{{ moduleTitle }}</h3>
+          </div>
+          <p class="text-caption text-medium-emphasis mb-0">{{ moduleDescription }}</p>
+        </v-card>
+
+        <v-list nav density="compact" rounded="xl" class="world-module-drawer-list">
+          <v-list-item
+            v-for="item in visibleNavItems"
+            :key="item.to"
+            :title="item.title"
+            :prepend-icon="item.icon"
+            :to="item.to"
+            :active="route.path === item.to"
+            rounded="lg"
+            color="primary"
+          />
+        </v-list>
+
+        <v-btn
+          color="primary"
+          variant="tonal"
+          :prepend-icon="actionIcon || 'mdi-plus-circle-outline'"
+          block
+        >
+          {{ actionLabel || `Create in ${moduleTitle}` }}
+        </v-btn>
+      </div>
+    </template>
+
+    <template #right>
+      <v-card rounded="xl" class="pa-4" variant="text">
+        <h3 class="text-subtitle-1 font-weight-bold mb-3">Quick checks</h3>
+        <v-list density="compact" class="bg-transparent">
+          <v-list-item prepend-icon="mdi-check-circle-outline" title="Data sync: online" />
+          <v-list-item prepend-icon="mdi-timer-sand" title="Pending approvals: 3" />
+          <v-list-item prepend-icon="mdi-account-clock-outline" title="Assigned to me: 12" />
+        </v-list>
+      </v-card>
+    </template>
+  </AppPageDrawers>
+</template>
+
+<style scoped>
+.world-module-drawer-list {
+  border: 1px solid rgba(var(--v-border-color), 0.26);
+  background: rgba(var(--v-theme-surface), 0.6);
+}
+</style>
