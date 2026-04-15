@@ -169,75 +169,78 @@ onMounted(async () => {
       module-description="Navigation complète du module Shop."
       :nav-items="shopNavItems"
       action-label="Create product"
-    />
+    >
+      <template #right>
+        <v-card class="postcard-gradient-card" rounded="xl" variant="tonal">
+          <v-card-text>
+            <v-row>
+              <v-col cols="12">
+                <v-text-field
+                  v-model="qFilter"
+                  label="Search (q)"
+                  variant="outlined"
+                  density="comfortable"
+                  prepend-inner-icon="mdi-magnify"
+                  hide-details
+                  clearable
+                  @keyup.enter="applyFilters"
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-model="nameFilter"
+                  label="Filter by name"
+                  variant="outlined"
+                  density="comfortable"
+                  hide-details
+                  clearable
+                  @keyup.enter="applyFilters"
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-combobox
+                  v-model="categoryFilter"
+                  :items="categoryOptions"
+                  label="Filter by category"
+                  variant="outlined"
+                  density="comfortable"
+                  hide-details
+                  clearable
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-select
+                  v-model="statusFilter"
+                  :items="statusOptions"
+                  label="Status"
+                  variant="outlined"
+                  density="comfortable"
+                  hide-details
+                  clearable
+                />
+              </v-col>
+            </v-row>
+
+            <div class="d-flex flex-column ga-2 mt-4">
+              <v-btn color="primary" variant="tonal" prepend-icon="mdi-filter" @click="applyFilters">
+                Apply filters
+              </v-btn>
+              <v-btn
+                color="primary"
+                variant="tonal"
+                prepend-icon="mdi-filter-remove-outline"
+                :disabled="!hasActiveFilters"
+                @click="resetFilters"
+              >
+                Reset
+              </v-btn>
+            </div>
+          </v-card-text>
+        </v-card>
+      </template>
+    </WorldModuleDrawers>
 
     <v-container fluid>
-      <v-card class="mb-6" rounded="xl" variant="tonal">
-        <v-card-text>
-          <v-row>
-            <v-col cols="12" md="4">
-              <v-text-field
-                v-model="qFilter"
-                label="Search (q)"
-                variant="outlined"
-                density="comfortable"
-                prepend-inner-icon="mdi-magnify"
-                hide-details
-                clearable
-                @keyup.enter="applyFilters"
-              />
-            </v-col>
-            <v-col cols="12" md="3">
-              <v-text-field
-                v-model="nameFilter"
-                label="Filter by name"
-                variant="outlined"
-                density="comfortable"
-                hide-details
-                clearable
-                @keyup.enter="applyFilters"
-              />
-            </v-col>
-            <v-col cols="12" md="3">
-              <v-combobox
-                v-model="categoryFilter"
-                :items="categoryOptions"
-                label="Filter by category"
-                variant="outlined"
-                density="comfortable"
-                hide-details
-                clearable
-              />
-            </v-col>
-            <v-col cols="12" md="2">
-              <v-select
-                v-model="statusFilter"
-                :items="statusOptions"
-                label="Status"
-                variant="outlined"
-                density="comfortable"
-                hide-details
-                clearable
-              />
-            </v-col>
-          </v-row>
-
-          <div class="d-flex gap-3 mt-4">
-            <v-btn color="primary" prepend-icon="mdi-filter" @click="applyFilters">
-              Apply filters
-            </v-btn>
-            <v-btn
-              variant="text"
-              prepend-icon="mdi-filter-remove-outline"
-              :disabled="!hasActiveFilters"
-              @click="resetFilters"
-            >
-              Reset
-            </v-btn>
-          </div>
-        </v-card-text>
-      </v-card>
-
       <v-alert
         v-if="hasError"
         data-testid="shop-products-error"
@@ -247,7 +250,7 @@ onMounted(async () => {
         :text="shopStore.error ?? undefined"
       />
 
-      <v-card rounded="xl">
+      <v-card rounded="xl" class="postcard-gradient-card">
         <v-card-title class="d-flex align-center justify-space-between flex-wrap ga-3">
           <span>Products</span>
           <v-chip size="small" variant="outlined">
@@ -284,7 +287,7 @@ onMounted(async () => {
               xl="3"
             >
               <v-card
-                class="shop-product-card h-100"
+                class="shop-product-card postcard-gradient-card h-100"
                 rounded="xl"
                 elevation="3"
                 @mouseenter="prefetchProductDetail(item.id)"
@@ -319,24 +322,6 @@ onMounted(async () => {
 
                   <div class="d-flex align-center justify-space-between mb-2">
                     <span class="text-h6 font-weight-bold">{{ formatPrice(item) }}</span>
-                    <v-chip
-                      size="small"
-                      :color="
-                        item.status === 'active'
-                          ? 'success'
-                          : item.status === 'draft'
-                            ? 'warning'
-                            : 'default'
-                      "
-                      variant="tonal"
-                    >
-                      {{ item.status }}
-                    </v-chip>
-                  </div>
-
-                  <div class="d-flex align-center justify-space-between text-caption text-medium-emphasis">
-                    <span>Stock: {{ item.stock ?? '-' }}</span>
-                    <span>{{ new Date(item.updatedAt).toLocaleDateString('fr-FR') }}</span>
                   </div>
                 </v-card-text>
 
@@ -344,7 +329,7 @@ onMounted(async () => {
                   <v-btn
                     block
                     color="primary"
-                    variant="flat"
+                    variant="tonal"
                     prepend-icon="mdi-open-in-new"
                     @click="goToProductDetail(item.id)"
                   >

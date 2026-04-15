@@ -69,7 +69,7 @@ watch(
   <v-container fluid>
     <div class="d-flex align-center justify-space-between mb-4 flex-wrap ga-3">
       <h1 class="text-h5 font-weight-bold">Product detail</h1>
-      <v-btn to="/world/shop/products" prepend-icon="mdi-arrow-left" variant="tonal">
+      <v-btn to="/world/shop/products" color="primary" prepend-icon="mdi-arrow-left" variant="tonal">
         Back to products
       </v-btn>
     </div>
@@ -89,7 +89,7 @@ watch(
     />
 
     <template v-else>
-      <v-card rounded="xl" class="mb-6 overflow-hidden">
+      <v-card rounded="xl" class="mb-6 overflow-hidden postcard-gradient-card">
         <v-row no-gutters>
           <v-col cols="12" md="5">
             <v-img :src="productImage(product)" :alt="product.name" height="100%" min-height="320" cover />
@@ -152,7 +152,7 @@ watch(
         </v-row>
       </v-card>
 
-      <v-card rounded="xl">
+      <v-card rounded="xl" class="postcard-gradient-card">
         <v-card-title>Similar products</v-card-title>
         <v-divider />
 
@@ -173,7 +173,7 @@ watch(
               md="4"
             >
               <v-card
-                class="h-100"
+                class="h-100 postcard-gradient-card"
                 rounded="lg"
                 :to="`/world/shop/products/${related.id}`"
               >
