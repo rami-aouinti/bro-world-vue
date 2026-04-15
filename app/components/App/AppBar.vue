@@ -93,35 +93,35 @@ const navMenus = [
     compactCards: true,
   },
   {
-    label: 'World',
+    label: 'appbar.world',
     icon: 'mdi-earth',
     description: 'Explore all world business modules.',
     ctaLabel: 'Open World',
     ctaTo: '/world',
     items: [
       {
-        label: 'CRM',
+        label: 'world.crm.label',
         to: '/world/crm',
         icon: 'mdi-account-group-outline',
         detail:
           'Manage projects, companies, pipelines, and governance modules.',
       },
       {
-        label: 'Shop',
+        label: 'world.shop.label',
         to: '/world/shop',
         icon: 'mdi-storefront-outline',
         detail:
           'Run products, categories, checkout, payment, and order operations.',
       },
       {
-        label: 'Learning',
+        label: 'world.learning.label',
         to: '/world/learning',
         icon: 'mdi-school-outline',
         detail:
           'Organize courses, levels, and learning paths for every audience.',
       },
       {
-        label: 'Jobs',
+        label: 'world.jobs.label',
         to: '/world/jobs',
         icon: 'mdi-briefcase-search-outline',
         detail: 'Track offers, applications, and personal hiring workflows.',
