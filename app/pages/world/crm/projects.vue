@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { CrmProjectsApiResponse } from '~~/server/types/api/crm'
 import { useCrmPermissions } from '~/composables/useCrmPermissions'
+import { useWorldCrmStore } from '~/stores/worldCrm'
 
 definePageMeta({ title: 'CRM Projects' })
 
@@ -16,19 +16,13 @@ const crmNavItems = computed(() => [
     : []),
 ])
 
-const projectsQuery = {
-  page: 1,
-  limit: 10,
-  sortBy: 'id',
-  sortOrder: 'asc' as const,
-}
+const crmStore = useWorldCrmStore()
+await crmStore.fetchList('projects', {
+  filters: { sortBy: 'id', sortOrder: 'asc' },
+  pagination: { page: 1, limit: 10 },
+})
 
-const { data: projectsData } = await useAsyncData<CrmProjectsApiResponse>(
-  'crm-projects',
-  () => $fetch('/api/world/crm/projects', { query: projectsQuery }),
-)
-
-const rows = computed<Record<string, string | number>[]>(() => projectsData.value?.items ?? [])
+const rows = computed<Record<string, string | number>[]>(() => crmStore.items as Record<string, string | number>[])
 </script>
 
 <template>
