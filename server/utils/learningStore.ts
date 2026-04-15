@@ -1,9 +1,14 @@
+import { createHash } from 'node:crypto'
 import type {
+  LearningAdminAnalytics,
   LearningAssessment,
   LearningContentBlock,
   LearningCourse,
+  LearningCohortAnalytics,
   LearningLesson,
+  LearningLevel,
   LearningModule,
+  LearningLevelRule,
   LearningProgress,
 } from '~~/server/types/api/learning'
 
@@ -11,6 +16,33 @@ const COURSES_KEY = 'world:learning:courses'
 const PROGRESS_KEY = 'world:learning:progress'
 
 const createId = (prefix: string) => `${prefix}-${Math.random().toString(36).slice(2, 10)}`
+
+export const LEARNING_LEVEL_RULES: LearningLevelRule[] = [
+  {
+    level: 'beginner',
+    minScore: 0,
+    minCompletedLessonsRatio: 0,
+    maxAttempts: 99,
+    minTimeSpentMinutes: 0,
+    unlocks: ['intermediate'],
+  },
+  {
+    level: 'intermediate',
+    minScore: 70,
+    minCompletedLessonsRatio: 0.5,
+    maxAttempts: 6,
+    minTimeSpentMinutes: 60,
+    unlocks: ['advanced'],
+  },
+  {
+    level: 'advanced',
+    minScore: 85,
+    minCompletedLessonsRatio: 1,
+    maxAttempts: 4,
+    minTimeSpentMinutes: 180,
+    unlocks: [],
+  },
+]
 
 const createSeedAssessment = (): LearningAssessment => ({
   id: createId('asm'),
@@ -135,6 +167,122 @@ export const findContentInLesson = (lesson: LearningLesson, contentBlockId: stri
   }
 
   return contentBlock
+}
+
+const getCompletedLessonRatio = (course: LearningCourse, progress: LearningProgress): number => {
+  const totalLessons = course.modules.reduce((count, module) => count + module.lessons.length, 0)
+  if (totalLessons === 0) {
+    return 0
+  }
+
+  const completed = Object.values(progress.lessonStatuses).filter((status) => status === 'completed').length
+  return completed / totalLessons
+}
+
+const renderSimplePdfBase64 = (verificationId: string, learner: string, courseTitle: string, issuedAt: string): string => {
+  const content = [
+    '%PDF-1.1',
+    '1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj',
+    '2 0 obj << /Type /Pages /Count 1 /Kids [3 0 R] >> endobj',
+    '3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << >> >> endobj',
+    `4 0 obj << /Length ${`BT /F1 16 Tf 72 700 Td (Certificate ${verificationId}) Tj 0 -24 Td (Learner: ${learner}) Tj 0 -24 Td (Course: ${courseTitle}) Tj 0 -24 Td (Issued: ${issuedAt}) Tj ET`.length} >> stream`,
+    `BT /F1 16 Tf 72 700 Td (Certificate ${verificationId}) Tj 0 -24 Td (Learner: ${learner}) Tj 0 -24 Td (Course: ${courseTitle}) Tj 0 -24 Td (Issued: ${issuedAt}) Tj ET`,
+    'endstream endobj',
+    'xref 0 5',
+    '0000000000 65535 f ',
+    '0000000010 00000 n ',
+    '0000000062 00000 n ',
+    '0000000116 00000 n ',
+    '0000000228 00000 n ',
+    'trailer << /Size 5 /Root 1 0 R >>',
+    'startxref',
+    '420',
+    '%%EOF',
+  ].join('\n')
+
+  return Buffer.from(content, 'utf-8').toString('base64')
+}
+
+export const evaluateProgressRules = (course: LearningCourse, progress: LearningProgress): LearningProgress => {
+  const ratio = getCompletedLessonRatio(course, progress)
+  const eligibleLevels = LEARNING_LEVEL_RULES
+    .filter((rule) => progress.score >= rule.minScore
+      && ratio >= rule.minCompletedLessonsRatio
+      && progress.attempts <= rule.maxAttempts
+      && progress.timeSpentMinutes >= rule.minTimeSpentMinutes)
+    .map((rule) => rule.level)
+
+  const currentLevel: LearningLevel = eligibleLevels.includes('advanced')
+    ? 'advanced'
+    : eligibleLevels.includes('intermediate')
+      ? 'intermediate'
+      : 'beginner'
+
+  progress.currentLevel = currentLevel
+  progress.unlockedLevels = Array.from(new Set(['beginner', ...eligibleLevels])) as LearningLevel[]
+  progress.hasDroppedOut = progress.attempts >= 8 && ratio < 0.5
+
+  if (currentLevel === 'advanced' && !progress.certificate) {
+    const issuedAt = new Date().toISOString()
+    const verificationId = createId('cert')
+    const source = `${verificationId}|${progress.learner}|${course.id}|${progress.score}|${issuedAt}`
+
+    progress.certificate = {
+      verificationId,
+      hash: createHash('sha256').update(source).digest('hex'),
+      pdfBase64: renderSimplePdfBase64(verificationId, progress.learner, course.title, issuedAt),
+      issuedAt,
+    }
+  }
+
+  return progress
+}
+
+export const buildLearningAdminAnalytics = (progressItems: LearningProgress[]): LearningAdminAnalytics => {
+  const totalLearners = progressItems.length
+  if (!totalLearners) {
+    return {
+      totalLearners: 0,
+      completionRate: 0,
+      dropoutRate: 0,
+      averageScore: 0,
+      cohortPerformance: [],
+      levelRules: LEARNING_LEVEL_RULES,
+    }
+  }
+
+  const completed = progressItems.filter((entry) => entry.currentLevel === 'advanced').length
+  const dropped = progressItems.filter((entry) => entry.hasDroppedOut).length
+  const averageScore = progressItems.reduce((sum, entry) => sum + entry.score, 0) / totalLearners
+
+  const byCohort = progressItems.reduce<Record<string, LearningProgress[]>>((acc, entry) => {
+    const key = entry.cohort || 'unassigned'
+    acc[key] = acc[key] ?? []
+    acc[key].push(entry)
+    return acc
+  }, {})
+
+  const cohortPerformance: LearningCohortAnalytics[] = Object.entries(byCohort)
+    .map(([cohort, entries]) => {
+      const learnerCount = entries.length
+      return {
+        cohort,
+        learners: learnerCount,
+        completionRate: learnerCount ? Number(((entries.filter((entry) => entry.currentLevel === 'advanced').length / learnerCount) * 100).toFixed(1)) : 0,
+        dropoutRate: learnerCount ? Number(((entries.filter((entry) => entry.hasDroppedOut).length / learnerCount) * 100).toFixed(1)) : 0,
+        averageScore: learnerCount ? Number((entries.reduce((sum, entry) => sum + entry.score, 0) / learnerCount).toFixed(1)) : 0,
+      }
+    })
+    .sort((left, right) => right.learners - left.learners)
+
+  return {
+    totalLearners,
+    completionRate: Number(((completed / totalLearners) * 100).toFixed(1)),
+    dropoutRate: Number(((dropped / totalLearners) * 100).toFixed(1)),
+    averageScore: Number(averageScore.toFixed(1)),
+    cohortPerformance,
+    levelRules: LEARNING_LEVEL_RULES,
+  }
 }
 
 export { createId }
