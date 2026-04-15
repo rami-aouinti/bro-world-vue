@@ -1,5 +1,6 @@
 import { normalizeShopProductsFilters } from '~/types/world/shop'
 import { normalizeHttpError } from '~/utils/httpError'
+import { isValidShopId, resolveGlobalShopId } from '~/constants/shop'
 import {
   recordStoreCacheEvent,
   runTrackedStoreFetch,
@@ -77,6 +78,8 @@ export const useWorldShopStore = defineStore('world-shop', () => {
   const cache = ref<Record<string, { fetchedAt: number; data: unknown }>>({})
 
   const currentAttempt = ref<WorldShopPaymentAttempt | null>(null)
+  const cart = ref<unknown>(null)
+  const globalShopId = ref<string | null>(null)
 
   function isFresh(entry?: { fetchedAt: number }) {
     return !!entry && Date.now() - entry.fetchedAt < SHOP_TTL_MS
@@ -96,6 +99,46 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     }
 
     return fallback
+  }
+
+  async function resolveRequiredShopId() {
+    if (isValidShopId(globalShopId.value)) {
+      return globalShopId.value
+    }
+
+    const runtimeConfig = useRuntimeConfig()
+    const configuredShopId = resolveGlobalShopId(runtimeConfig.public)
+    if (configuredShopId && !isValidShopId(configuredShopId)) {
+      const message =
+        "Configuration shop invalide: 'runtimeConfig.public.shop.globalShopId' est présent mais incorrect."
+      error.value = message
+      throw new Error(message)
+    }
+    if (configuredShopId) {
+      globalShopId.value = configuredShopId
+      return configuredShopId
+    }
+
+    const response = await runTrackedStoreFetch('shop', () =>
+      $fetch<{ shop?: { id?: string } }>('/api/world/shop/general', {
+        query: { page: 1, limit: 1 },
+      }),
+    )
+    const resolvedShopId = response.shop?.id?.trim()
+    if (isValidShopId(resolvedShopId)) {
+      globalShopId.value = resolvedShopId
+      return resolvedShopId
+    }
+
+    const shopId = resolvedShopId
+    if (!isValidShopId(shopId)) {
+      const message =
+        "Impossible de résoudre le shopId global depuis '/api/world/shop/general'."
+      error.value = message
+      throw new Error(message)
+    }
+
+    return shopId
   }
 
   async function fetchWithRetry<T>(
@@ -371,13 +414,17 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     currency: string
     cart: WorldShopCartLine[]
   }) {
+    const shopId = await resolveRequiredShopId()
     pending.value = true
     error.value = null
     try {
       const response = await runTrackedStoreFetch('shop', () =>
         $fetch<WorldShopCheckoutSession>('/api/world/shop/checkout/session', {
           method: 'POST',
-          body: payload,
+          body: {
+            ...payload,
+            shopId,
+          },
         }),
       )
       detail.value = response
@@ -477,13 +524,17 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     provider: 'stripe' | 'adyen' | 'paypal'
     idempotencyKey: string
   }) {
+    const shopId = await resolveRequiredShopId()
     pending.value = true
     error.value = null
     try {
       const response = await runTrackedStoreFetch('shop', () =>
         $fetch<WorldShopPaymentIntentResponse>('/api/world/shop/payment/intent', {
           method: 'POST',
-          body: payload,
+          body: {
+            ...payload,
+            shopId,
+          },
           timeout: 20000,
         }),
       )
@@ -504,13 +555,17 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     providerPaymentId: string
     idempotencyKey: string
   }) {
+    const shopId = await resolveRequiredShopId()
     pending.value = true
     error.value = null
     try {
       const response = await runTrackedStoreFetch('shop', () =>
         $fetch<WorldShopCheckoutSession>('/api/world/shop/payment/confirm', {
           method: 'POST',
-          body: payload,
+          body: {
+            ...payload,
+            shopId,
+          },
         }),
       )
       detail.value = response
@@ -524,7 +579,30 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     }
   }
 
-  async function addCartItem(shopId: string, productId: string, quantity = 1) {
+  async function fetchCart() {
+    const shopId = await resolveRequiredShopId()
+    pending.value = true
+    error.value = null
+    try {
+      const response = await runTrackedStoreFetch('shop', () =>
+        $fetch('/api/world/shop/carts/' + encodeURIComponent(shopId)),
+      )
+      cart.value = response
+      return response
+    } catch (err) {
+      const normalized = normalizeHttpError(err)
+      const translatedMessage = translateShopErrorMessage(
+        'Impossible de récupérer le panier pour le moment.',
+      )
+      error.value = `${translatedMessage}${normalized.message ? ` (${normalized.message})` : ''}`
+      throw err
+    } finally {
+      pending.value = false
+    }
+  }
+
+  async function addCartItem(productId: string, quantity = 1) {
+    const shopId = await resolveRequiredShopId()
     pending.value = true
     error.value = null
     try {
@@ -560,6 +638,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     pagination,
     lastFetchedAt,
     currentAttempt,
+    cart,
     fetchProducts,
     fetchCategories,
     fetchProductById,
@@ -569,6 +648,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     fetchCheckoutById,
     createPaymentIntent,
     confirmPayment,
+    fetchCart,
     addCartItem,
     invalidateCache,
     buildModuleCacheKey,
