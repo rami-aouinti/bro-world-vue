@@ -56,16 +56,6 @@ const shopNavItems = [
     to: '/world/shop',
     icon: 'mdi-view-dashboard-outline',
   },
-  {
-    title: 'Categories',
-    to: '/world/shop/categories',
-    icon: 'mdi-shape-outline',
-  },
-  {
-    title: 'Products',
-    to: '/world/shop/products',
-    icon: 'mdi-package-variant-closed',
-  },
   { title: 'Checkout', to: '/world/shop/checkout', icon: 'mdi-cart-outline' },
   {
     title: 'Payment',
