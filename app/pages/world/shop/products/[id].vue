@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import type { ShopProduct } from '~/types/world/shop'
+import type { SessionUser } from '~/types/session'
 
 definePageMeta({ title: 'Product detail' })
 
 const route = useRoute()
+const { user } = useUserSession()
+const { t } = useI18n()
 const shopStore = useWorldShopStore()
+const sessionUser = computed(() => user.value as SessionUser | null)
 
 const listError = ref<string | null>(null)
 const loading = ref(false)
+const addToCartLoading = ref(false)
 
 const product = ref<ShopProduct | null>(null)
 const similarProducts = ref<ShopProduct[]>([])
@@ -44,6 +49,46 @@ function hasPromotion(item: ShopProduct) {
   const original = originalPrice(item)
   const discounted = item.discountedPrice
   return typeof discounted === 'number' && discounted < original
+}
+
+async function addToCart() {
+  if (!product.value) {
+    return
+  }
+
+  const token = sessionUser.value?.token?.trim()
+  if (!token) {
+    await navigateTo({
+      path: '/login',
+      query: { redirect: route.fullPath },
+    })
+    return
+  }
+
+  const shopId = (route.query.shopId as string | undefined)?.trim() || 'default'
+
+  addToCartLoading.value = true
+  try {
+    await shopStore.addCartItem(shopId, product.value.id, 1)
+    Notify.success(
+      t(
+        'world.shop.feedback.addToCartSuccess',
+        'Produit ajouté au panier avec succès.',
+      ),
+    )
+  } catch (error) {
+    Notify.error(
+      shopStore.error ||
+        (error instanceof Error
+          ? error.message
+          : t(
+              'world.shop.feedback.addToCartError',
+              "Impossible d'ajouter le produit au panier.",
+            )),
+    )
+  } finally {
+    addToCartLoading.value = false
+  }
 }
 
 async function loadProduct(force = false) {
@@ -154,6 +199,18 @@ watch(
             <v-divider />
             <v-card-text>
               <p class="text-body-1 mb-4">{{ product.description }}</p>
+
+              <div class="mb-4">
+                <v-btn
+                  color="primary"
+                  prepend-icon="mdi-cart-plus"
+                  :loading="addToCartLoading"
+                  :disabled="addToCartLoading"
+                  @click="addToCart"
+                >
+                  {{ t('world.shop.actions.addToCart', 'Add to cart') }}
+                </v-btn>
+              </div>
 
               <v-row>
                 <v-col cols="6" md="4">

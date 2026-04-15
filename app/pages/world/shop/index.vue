@@ -6,6 +6,7 @@ definePageMeta({ title: 'Shop' })
 
 const { t } = useI18n()
 const { user } = useUserSession()
+const route = useRoute()
 const shopStore = useWorldShopStore()
 
 const sessionUser = computed(() => user.value as SessionUser | null)
@@ -48,6 +49,7 @@ const shopNavItems = computed(() => [
 
 const listLoading = ref(false)
 const categoriesLoading = ref(false)
+const cartPendingProductId = ref<string | null>(null)
 
 const qFilter = ref('')
 const selectedCategory = ref('')
@@ -128,24 +130,39 @@ function goToProductDetail(productId: string) {
   return navigateTo(`/world/shop/products/${productId}`)
 }
 
-function addToCart(product: ShopProduct) {
-  void navigateTo({
-    path: '/world/shop/checkout',
-    query: {
-      productId: product.id,
-      q: qFilter.value || undefined,
-      category: selectedCategory.value || undefined,
-      minPrice:
-        typeof minPriceFilter.value === 'number'
-          ? minPriceFilter.value
-          : undefined,
-      maxPrice:
-        typeof maxPriceFilter.value === 'number'
-          ? maxPriceFilter.value
-          : undefined,
-      promotion: normalizedPromotionFilter(),
-    },
-  })
+async function addToCart(product: ShopProduct) {
+  const token = sessionUser.value?.token?.trim()
+  if (!token) {
+    await navigateTo({
+      path: '/login',
+      query: { redirect: route.fullPath },
+    })
+    return
+  }
+
+  const shopId = (route.query.shopId as string | undefined)?.trim() || 'default'
+  cartPendingProductId.value = product.id
+  try {
+    await shopStore.addCartItem(shopId, product.id, 1)
+    Notify.success(
+      t(
+        'world.shop.feedback.addToCartSuccess',
+        'Produit ajouté au panier avec succès.',
+      ),
+    )
+  } catch (error) {
+    Notify.error(
+      shopStore.error ||
+        (error instanceof Error
+          ? error.message
+          : t(
+              'world.shop.feedback.addToCartError',
+              "Impossible d'ajouter le produit au panier.",
+            )),
+    )
+  } finally {
+    cartPendingProductId.value = null
+  }
 }
 
 function toggleCategoryFilter(categoryName: string) {
@@ -493,6 +510,8 @@ onMounted(async () => {
                     color="primary"
                     variant="tonal"
                     prepend-icon="mdi-cart-plus"
+                    :loading="cartPendingProductId === item.id"
+                    :disabled="cartPendingProductId === item.id"
                     @click="addToCart(item)"
                   >
                     {{ t('world.shop.actions.addToCart', 'Add to cart') }}
