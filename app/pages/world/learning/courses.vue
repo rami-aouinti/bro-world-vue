@@ -56,6 +56,10 @@ const coursesData = computed(() => ({ items: learningStore.items }))
 const refreshCourses = () => learningStore.fetchCourses({ force: true })
 
 const courses = computed<LearningCourse[]>(() => coursesData.value.items ?? [])
+const hasError = computed(() => !!learningStore.error)
+const isEmpty = computed(
+  () => !pending.value && !hasError.value && courses.value.length === 0,
+)
 const selectedCourseId = ref('')
 const selectedModuleId = ref('')
 const selectedLessonId = ref('')
@@ -428,6 +432,31 @@ const toggleAssessmentCompletion = async (
     />
 
     <v-container fluid>
+      <v-alert
+        v-if="pending"
+        data-testid="learning-courses-loading"
+        type="info"
+        variant="tonal"
+        class="mb-4"
+        text="Chargement des cours..."
+      />
+      <v-alert
+        v-else-if="hasError"
+        data-testid="learning-courses-error"
+        type="error"
+        variant="tonal"
+        class="mb-4"
+        :text="learningStore.error ?? undefined"
+      />
+      <v-alert
+        v-else-if="isEmpty"
+        data-testid="learning-courses-empty"
+        type="warning"
+        variant="tonal"
+        class="mb-4"
+        text="Aucun cours disponible pour le moment."
+      />
+
       <v-row>
         <v-col cols="12" lg="4">
           <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">

@@ -163,6 +163,11 @@ const dashboardCards = computed(() => {
     },
   ]
 })
+const hasError = computed(() => !!jobsStore.error)
+const isLoading = computed(() => policyPending.value || dashboardPending.value)
+const isEmpty = computed(
+  () => !isLoading.value && !hasError.value && dashboardCards.value.length === 0,
+)
 
 const reloadDashboard = async () => {
   await Promise.all([refreshPolicy(), refreshDashboard()])
@@ -181,6 +186,31 @@ const reloadDashboard = async () => {
     />
 
     <v-container fluid>
+      <v-alert
+        v-if="isLoading"
+        data-testid="jobs-admin-loading"
+        type="info"
+        variant="tonal"
+        class="mb-4"
+        text="Chargement des données RH..."
+      />
+      <v-alert
+        v-else-if="hasError"
+        data-testid="jobs-admin-error"
+        type="error"
+        variant="tonal"
+        class="mb-4"
+        :text="jobsStore.error ?? undefined"
+      />
+      <v-alert
+        v-else-if="isEmpty"
+        data-testid="jobs-admin-empty"
+        type="warning"
+        variant="tonal"
+        class="mb-4"
+        text="Aucun indicateur RH disponible."
+      />
+
       <v-card rounded="xl" class="pa-5 postcard-gradient-card">
         <template v-if="isRoot">
           <h2 class="text-h5 mb-2">Jobs Admin center</h2>

@@ -1,5 +1,9 @@
 import { normalizeShopProductsFilters } from '~/types/world/shop'
 import { normalizeHttpError } from '~/utils/httpError'
+import {
+  recordStoreCacheEvent,
+  runTrackedStoreFetch,
+} from '~/utils/storeTelemetry'
 import type {
   ShopCategory,
   ShopProductDetailData,
@@ -194,21 +198,25 @@ export const useWorldShopStore = defineStore('world-shop', () => {
 
     const cached = cache.value[cacheKey]
     if (cached && !options?.force && isFresh(cached)) {
+      recordStoreCacheEvent('shop', true)
       const response = cached.data as WorldShopProductsListResponse
       items.value = response.data
       resolveProductsPagination(response)
       lastFetchedAt.value = cached.fetchedAt
       return
     }
+    recordStoreCacheEvent('shop', false)
 
     pending.value = true
     error.value = null
     try {
       const response = await fetchWithRetry(
         () =>
-          $fetch<WorldShopProductsListResponse>(
-            '/api/v1/shop/general/products',
-            { query },
+          runTrackedStoreFetch('shop', () =>
+            $fetch<WorldShopProductsListResponse>(
+              '/api/v1/shop/general/products',
+              { query },
+            ),
           ),
         {
           i18nKey: 'world.shop.errors.productsFetch',
@@ -229,18 +237,22 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     const cacheKey = 'shop-categories'
     const cached = cache.value[cacheKey]
     if (cached && !options?.force && isFresh(cached)) {
+      recordStoreCacheEvent('shop', true)
       items.value = (cached.data as { data: ShopCategory[] }).data
       lastFetchedAt.value = cached.fetchedAt
       return
     }
+    recordStoreCacheEvent('shop', false)
 
     pending.value = true
     error.value = null
     try {
       const response = await fetchWithRetry(
         () =>
-          $fetch<WorldShopCategoriesListResponse>(
-            '/api/v1/shop/general/categories',
+          runTrackedStoreFetch('shop', () =>
+            $fetch<WorldShopCategoriesListResponse>(
+              '/api/v1/shop/general/categories',
+            ),
           ),
         {
           i18nKey: 'world.shop.errors.categoriesFetch',
@@ -264,6 +276,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     const cacheKey = `shop-product:${productId}`
     const cached = cache.value[cacheKey]
     if (cached && !options?.force && isFresh(cached)) {
+      recordStoreCacheEvent('shop', true)
       const cachedData = cached.data as {
         product: ShopProduct
         similarProducts: ShopProduct[]
@@ -271,14 +284,17 @@ export const useWorldShopStore = defineStore('world-shop', () => {
       detail.value = cachedData.product
       return cachedData
     }
+    recordStoreCacheEvent('shop', false)
 
     pending.value = true
     error.value = null
     try {
       const response = await fetchWithRetry(
         () =>
-          $fetch<ShopProductDetailResponse>(
-            `/api/v1/shop/general/products/${productId}`,
+          runTrackedStoreFetch('shop', () =>
+            $fetch<ShopProductDetailResponse>(
+              `/api/v1/shop/general/products/${productId}`,
+            ),
           ),
         {
           i18nKey: 'world.shop.errors.productDetailFetch',
@@ -328,12 +344,11 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<WorldShopCheckoutSession>(
-        '/api/world/shop/checkout/session',
-        {
+      const response = await runTrackedStoreFetch('shop', () =>
+        $fetch<WorldShopCheckoutSession>('/api/world/shop/checkout/session', {
           method: 'POST',
           body: payload,
-        },
+        }),
       )
       detail.value = response
       invalidateCache('shop-checkout')
@@ -356,9 +371,11 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     pending.value = true
     error.value = null
     try {
-      const updated = await $fetch<WorldShopCheckoutSession>(
-        '/api/world/shop/checkout/address',
-        { method: 'POST', body: payload },
+      const updated = await runTrackedStoreFetch('shop', () =>
+        $fetch<WorldShopCheckoutSession>('/api/world/shop/checkout/address', {
+          method: 'POST',
+          body: payload,
+        }),
       )
       detail.value = updated
       cache.value[`shop-checkout:${updated.id}`] = {
@@ -380,9 +397,11 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     pending.value = true
     error.value = null
     try {
-      const updated = await $fetch<WorldShopCheckoutSession>(
-        '/api/world/shop/checkout/shipping',
-        { method: 'POST', body: payload },
+      const updated = await runTrackedStoreFetch('shop', () =>
+        $fetch<WorldShopCheckoutSession>('/api/world/shop/checkout/shipping', {
+          method: 'POST',
+          body: payload,
+        }),
       )
       detail.value = updated
       cache.value[`shop-checkout:${updated.id}`] = {
@@ -403,15 +422,17 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     const cacheKey = `shop-checkout:${checkoutId}`
     const cached = cache.value[cacheKey]
     if (cached && !options?.force && isFresh(cached)) {
+      recordStoreCacheEvent('shop', true)
       detail.value = cached.data as WorldShopCheckoutSession
       return detail.value
     }
+    recordStoreCacheEvent('shop', false)
 
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<WorldShopCheckoutSession>(
-        `/api/world/shop/checkout/${checkoutId}`,
+      const response = await runTrackedStoreFetch('shop', () =>
+        $fetch<WorldShopCheckoutSession>(`/api/world/shop/checkout/${checkoutId}`),
       )
       detail.value = response
       cache.value[cacheKey] = { fetchedAt: Date.now(), data: response }
@@ -429,13 +450,12 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<WorldShopPaymentIntentResponse>(
-        '/api/world/shop/payment/intent',
-        {
+      const response = await runTrackedStoreFetch('shop', () =>
+        $fetch<WorldShopPaymentIntentResponse>('/api/world/shop/payment/intent', {
           method: 'POST',
           body: payload,
           timeout: 20000,
-        },
+        }),
       )
       detail.value = response.checkout
       currentAttempt.value = response.attempt
@@ -457,9 +477,11 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<WorldShopCheckoutSession>(
-        '/api/world/shop/payment/confirm',
-        { method: 'POST', body: payload },
+      const response = await runTrackedStoreFetch('shop', () =>
+        $fetch<WorldShopCheckoutSession>('/api/world/shop/payment/confirm', {
+          method: 'POST',
+          body: payload,
+        }),
       )
       detail.value = response
       cache.value[`shop-checkout:${response.id}`] = {

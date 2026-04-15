@@ -246,6 +246,7 @@ onMounted(async () => {
 
       <v-alert
         v-if="hasError"
+        data-testid="shop-products-error"
         type="error"
         variant="tonal"
         class="mb-6"
@@ -268,12 +269,14 @@ onMounted(async () => {
               v-for="index in 6"
               :key="`products-skeleton-${index}`"
               type="table-row"
+              data-testid="shop-products-loading"
               class="mb-2"
             />
           </template>
 
           <v-empty-state
             v-else-if="isEmpty"
+            data-testid="shop-products-empty"
             icon="mdi-package-variant-remove"
             title="No products found"
             text="Aucun produit ne correspond aux filtres appliqués."

@@ -9,6 +9,10 @@ import type {
   WorldJobsTransitionPayload,
   WorldPaginationState,
 } from '~/types/world/jobs'
+import {
+  recordStoreCacheEvent,
+  runTrackedStoreFetch,
+} from '~/utils/storeTelemetry'
 
 const JOBS_TTL_MS = 2 * 60 * 1000
 
@@ -70,6 +74,7 @@ export const useWorldJobsStore = defineStore('world-jobs', () => {
     const cached = cache.value[cacheKey]
 
     if (cached && !options?.force && isFresh(cached)) {
+      recordStoreCacheEvent('jobs', true)
       const response = cached.data as {
         items: JobCandidate[]
         stages: readonly string[]
@@ -80,16 +85,19 @@ export const useWorldJobsStore = defineStore('world-jobs', () => {
       lastFetchedAt.value = cached.fetchedAt
       return
     }
+    recordStoreCacheEvent('jobs', false)
 
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<{
-        items: JobCandidate[]
-        stages: readonly string[]
-      }>('/api/jobs/candidates', {
-        query: { context },
-      })
+      const response = await runTrackedStoreFetch('jobs', () =>
+        $fetch<{
+          items: JobCandidate[]
+          stages: readonly string[]
+        }>('/api/jobs/candidates', {
+          query: { context },
+        }),
+      )
       items.value = response.items
       stages.value = response.stages
       pagination.value.total = response.items.length
@@ -107,10 +115,12 @@ export const useWorldJobsStore = defineStore('world-jobs', () => {
     pending.value = true
     error.value = null
     try {
-      await $fetch(`/api/jobs/candidates/${candidateId}/transition`, {
-        method: 'PATCH',
-        body: payload,
-      })
+      await runTrackedStoreFetch('jobs', () =>
+        $fetch(`/api/jobs/candidates/${candidateId}/transition`, {
+          method: 'PATCH',
+          body: payload,
+        }),
+      )
       invalidateCache('jobs-candidates')
     } finally {
       pending.value = false
@@ -121,16 +131,18 @@ export const useWorldJobsStore = defineStore('world-jobs', () => {
     const cacheKey = 'jobs-admin-policy'
     const cached = cache.value[cacheKey]
     if (cached && !options?.force && isFresh(cached)) {
+      recordStoreCacheEvent('jobs', true)
       policy.value = cached.data as JobsAdminPolicyResponse
       detail.value = policy.value
       return
     }
+    recordStoreCacheEvent('jobs', false)
 
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<JobsAdminPolicyResponse>(
-        '/api/jobs/admin/policy',
+      const response = await runTrackedStoreFetch('jobs', () =>
+        $fetch<JobsAdminPolicyResponse>('/api/jobs/admin/policy'),
       )
       policy.value = response
       detail.value = response
@@ -145,15 +157,17 @@ export const useWorldJobsStore = defineStore('world-jobs', () => {
     const cacheKey = 'jobs-admin-dashboard'
     const cached = cache.value[cacheKey]
     if (cached && !options?.force && isFresh(cached)) {
+      recordStoreCacheEvent('jobs', true)
       dashboard.value = cached.data as JobsAdminDashboardResponse
       return
     }
+    recordStoreCacheEvent('jobs', false)
 
     pending.value = true
     error.value = null
     try {
-      const response = await $fetch<JobsAdminDashboardResponse>(
-        '/api/jobs/admin/dashboard',
+      const response = await runTrackedStoreFetch('jobs', () =>
+        $fetch<JobsAdminDashboardResponse>('/api/jobs/admin/dashboard'),
       )
       dashboard.value = response
       lastFetchedAt.value = Date.now()
@@ -167,7 +181,9 @@ export const useWorldJobsStore = defineStore('world-jobs', () => {
     pending.value = true
     error.value = null
     try {
-      await $fetch('/api/jobs/admin/policy', { method: 'PATCH', body: payload })
+      await runTrackedStoreFetch('jobs', () =>
+        $fetch('/api/jobs/admin/policy', { method: 'PATCH', body: payload }),
+      )
       invalidateCache('jobs-admin-policy')
       await fetchAdminPolicy({ force: true })
     } finally {
@@ -183,10 +199,12 @@ export const useWorldJobsStore = defineStore('world-jobs', () => {
     pending.value = true
     error.value = null
     try {
-      await $fetch(`/api/jobs/admin/permissions/${role}`, {
-        method: 'PATCH',
-        body: { [key]: value },
-      })
+      await runTrackedStoreFetch('jobs', () =>
+        $fetch(`/api/jobs/admin/permissions/${role}`, {
+          method: 'PATCH',
+          body: { [key]: value },
+        }),
+      )
       invalidateCache('jobs-admin-policy')
       await fetchAdminPolicy({ force: true })
     } finally {
