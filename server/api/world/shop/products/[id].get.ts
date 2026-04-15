@@ -8,6 +8,9 @@ interface PublicShopProduct {
   description: string
   photo?: string
   price: number
+  discountedPrice?: number
+  promotionPercentage?: number
+  texture?: string | null
   currencyCode: string
   stock: number
   coinsAmount: number
@@ -37,6 +40,10 @@ function toUiProduct(product: PublicShopProduct) {
     categoryId: product.categoryId,
     categoryName: product.categoryName ?? 'Uncategorized',
     currencyCode: product.currencyCode,
+    price: product.price,
+    discountedPrice: product.discountedPrice,
+    promotionPercentage: product.promotionPercentage,
+    texture: product.texture ?? null,
     amount: product.price,
     stock: product.stock,
     coinsAmount: product.coinsAmount,
@@ -51,7 +58,10 @@ export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
 
   if (!id) {
-    throw createError({ statusCode: 400, statusMessage: 'Product id is required' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Product id is required',
+    })
   }
 
   const response = await callPublicApi<PublicShopProductDetailResponse>(

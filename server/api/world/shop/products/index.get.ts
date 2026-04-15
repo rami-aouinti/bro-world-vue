@@ -9,6 +9,9 @@ interface PublicShopProduct {
   description: string
   photo?: string
   price: number
+  discountedPrice?: number
+  promotionPercentage?: number
+  texture?: string | null
   currencyCode: string
   stock: number
   coinsAmount: number
@@ -69,9 +72,12 @@ export default defineEventHandler(async (event) => {
   const promotion = parseNonNegativeInt(query.promotion)
   const q = typeof query.q === 'string' ? query.q : undefined
   const name = typeof query.name === 'string' ? query.name : undefined
-  const category = typeof query.category === 'string' ? query.category : undefined
+  const category =
+    typeof query.category === 'string' ? query.category : undefined
   const status =
-    query.status === 'draft' || query.status === 'active' || query.status === 'archived'
+    query.status === 'draft' ||
+    query.status === 'active' ||
+    query.status === 'archived'
       ? query.status
       : undefined
 
@@ -107,6 +113,10 @@ export default defineEventHandler(async (event) => {
     categoryId: product.categoryId,
     categoryName: product.categoryName ?? 'Uncategorized',
     currencyCode: product.currencyCode,
+    price: product.price,
+    discountedPrice: product.discountedPrice,
+    promotionPercentage: product.promotionPercentage,
+    texture: product.texture ?? null,
     amount: product.price,
     stock: product.stock,
     coinsAmount: product.coinsAmount,
@@ -116,10 +126,14 @@ export default defineEventHandler(async (event) => {
     updatedAt: product.updatedAt,
   }))
 
-  const totalItems = response.pagination?.totalItems ?? normalizedProducts.length
+  const totalItems =
+    response.pagination?.totalItems ?? normalizedProducts.length
   const totalPages =
     response.pagination?.totalPages ??
-    Math.max(1, Math.ceil(totalItems / Math.max(1, response.pagination?.limit ?? limit)))
+    Math.max(
+      1,
+      Math.ceil(totalItems / Math.max(1, response.pagination?.limit ?? limit)),
+    )
 
   return {
     data: normalizedProducts,

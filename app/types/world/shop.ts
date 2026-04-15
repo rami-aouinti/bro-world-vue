@@ -23,6 +23,10 @@ export interface ShopProduct {
   categoryId?: string
   categoryName?: string
   currencyCode: string
+  price?: number
+  discountedPrice?: number
+  promotionPercentage?: number
+  texture?: string | null
   amount: number
   stock?: number
   coinsAmount: number
