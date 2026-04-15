@@ -1068,13 +1068,61 @@
     },
     "crm": {
       "label": "CRM",
-      "description": "Projects, company data and admin operations.",
-      "moduleDescription": "CRM navigation with projects and company management.",
+      "description": "Projets, données d'entreprise et opérations d'administration.",
+      "moduleDescription": "Leads, comptes, contacts, opportunités, activités et analytics pipeline.",
       "nav": {
-        "overview": "Overview CRM",
-        "projects": "Projects",
-        "company": "Company",
+        "overview": "Vue d'ensemble CRM",
+        "projects": "Projets",
+        "tasks": "Tâches",
+        "sprints": "Sprints",
+        "company": "Entreprise",
         "admin": "Admin"
+      },
+      "actions": {
+        "createLead": "Créer un lead CRM",
+        "apply": "Appliquer",
+        "detail": "Détail",
+        "prev": "Préc.",
+        "next": "Suiv.",
+        "won": "Gagnée",
+        "lost": "Perdue"
+      },
+      "filters": {
+        "search": "Recherche",
+        "owner": "Responsable",
+        "industry": "Secteur",
+        "minAmount": "Montant min",
+        "maxAmount": "Montant max"
+      },
+      "tabs": {
+        "pipeline": "Pipeline",
+        "list": "Liste",
+        "detail": "Détail",
+        "dashboard": "Tableau de bord"
+      },
+      "table": {
+        "opportunity": "Opportunité",
+        "owner": "Responsable",
+        "stage": "Étape",
+        "probability": "Probabilité",
+        "amount": "Montant",
+        "expectedClose": "Clôture prévue"
+      },
+      "detail": {
+        "noAccount": "Aucun compte",
+        "activitiesJournal": "Journal d'activités",
+        "notesAndAttachments": "Notes et pièces jointes"
+      },
+      "alerts": {
+        "noReadPermission": "Vous n'avez pas la permission de lecture CRM (opportunities.read).",
+        "selectOpportunity": "Sélectionnez une opportunité depuis la vue Pipeline ou Liste."
+      },
+      "dashboard": {
+        "conversionRate": "Taux de conversion",
+        "winLoss": "Gagné / Perdu",
+        "averageCycle": "Cycle moyen",
+        "daysSuffix": "j",
+        "weightedForecast": "Prévision pondérée"
       }
     },
     "shop": {

@@ -3,20 +3,47 @@ import type { CrmOpportunity, CrmPipelineStage } from '~/types/crm'
 import { useCrmPermissions } from '~/composables/useCrmPermissions'
 import { useCrmStore } from '~/stores/crm'
 
-definePageMeta({ title: 'CRM' })
+definePageMeta({ title: 'world.crm.label' })
 
+const { t } = useI18n()
 const { can } = useCrmPermissions()
 const crmStore = useCrmStore()
 const activeView = ref<'pipeline' | 'list' | 'detail' | 'dashboard'>('pipeline')
 
 const crmNavItems = computed(() => [
-  { title: 'Overview CRM', to: '/world/crm', icon: 'mdi-view-dashboard-outline' },
-  { title: 'Projects', to: '/world/crm/projects', icon: 'mdi-folder-outline' },
-  { title: 'Tasks', to: '/world/crm/tasks', icon: 'mdi-format-list-checks' },
-  { title: 'Sprints', to: '/world/crm/sprints', icon: 'mdi-run-fast' },
-  { title: 'Company', to: '/world/crm/company', icon: 'mdi-domain' },
+  {
+    title: t('world.crm.nav.overview'),
+    to: '/world/crm',
+    icon: 'mdi-view-dashboard-outline',
+  },
+  {
+    title: t('world.crm.nav.projects'),
+    to: '/world/crm/projects',
+    icon: 'mdi-folder-outline',
+  },
+  {
+    title: t('world.crm.nav.tasks'),
+    to: '/world/crm/tasks',
+    icon: 'mdi-format-list-checks',
+  },
+  {
+    title: t('world.crm.nav.sprints'),
+    to: '/world/crm/sprints',
+    icon: 'mdi-run-fast',
+  },
+  {
+    title: t('world.crm.nav.company'),
+    to: '/world/crm/company',
+    icon: 'mdi-domain',
+  },
   ...(can('crm.admin.manage')
-    ? [{ title: 'Admin', to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' }]
+    ? [
+        {
+          title: t('world.crm.nav.admin'),
+          to: '/world/crm/admin',
+          icon: 'mdi-shield-crown-outline',
+        },
+      ]
     : []),
 ])
 
@@ -65,7 +92,10 @@ function onListRowClick(_event: unknown, row: { item: CrmOpportunity }) {
   return selectOpportunity(row.item.id)
 }
 
-async function moveStage(opportunity: CrmOpportunity, direction: 'next' | 'prev') {
+async function moveStage(
+  opportunity: CrmOpportunity,
+  direction: 'next' | 'prev',
+) {
   if (!can('crm.opportunities.edit')) {
     return
   }
@@ -82,13 +112,16 @@ async function moveStage(opportunity: CrmOpportunity, direction: 'next' | 'prev'
     toStage,
     probability: opportunity.probability,
     expectedCloseDate: opportunity.expectedCloseDate,
-    outcome: toStage === 'closed' ? opportunity.outcome ?? 'won' : null,
+    outcome: toStage === 'closed' ? (opportunity.outcome ?? 'won') : null,
   })
 
   await crmStore.fetchOpportunityDetail(opportunity.id)
 }
 
-async function closeOpportunity(opportunity: CrmOpportunity, outcome: 'won' | 'lost') {
+async function closeOpportunity(
+  opportunity: CrmOpportunity,
+  outcome: 'won' | 'lost',
+) {
   if (!can('crm.opportunities.edit')) {
     return
   }
@@ -107,17 +140,21 @@ async function closeOpportunity(opportunity: CrmOpportunity, outcome: 'won' | 'l
 <template>
   <div>
     <WorldModuleDrawers
-      module-title="CRM"
+      :module-title="t('world.crm.label')"
       module-icon="mdi-account-group-outline"
-      module-description="Leads, comptes, contacts, opportunités, activités et analytics pipeline."
+      :module-description="t('world.crm.moduleDescription')"
       :nav-items="crmNavItems"
-      action-label="Create CRM lead"
+      :action-label="t('world.crm.actions.createLead')"
       action-icon="mdi-account-plus-outline"
     />
 
     <v-container fluid>
-      <v-alert v-if="!can('crm.opportunities.read')" type="error" variant="tonal">
-        Vous n'avez pas la permission de lecture CRM (opportunities.read).
+      <v-alert
+        v-if="!can('crm.opportunities.read')"
+        type="error"
+        variant="tonal"
+      >
+        {{ t('world.crm.alerts.noReadPermission') }}
       </v-alert>
 
       <template v-else>
@@ -126,7 +163,7 @@ async function closeOpportunity(opportunity: CrmOpportunity, outcome: 'won' | 'l
             <v-col cols="12" md="3">
               <v-text-field
                 v-model="filters.search"
-                label="Search"
+                :label="t('world.crm.filters.search')"
                 density="comfortable"
                 variant="outlined"
                 hide-details
@@ -136,7 +173,7 @@ async function closeOpportunity(opportunity: CrmOpportunity, outcome: 'won' | 'l
             <v-col cols="12" md="2">
               <v-text-field
                 v-model="filters.owner"
-                label="Owner"
+                :label="t('world.crm.filters.owner')"
                 density="comfortable"
                 variant="outlined"
                 hide-details
@@ -146,7 +183,7 @@ async function closeOpportunity(opportunity: CrmOpportunity, outcome: 'won' | 'l
             <v-col cols="12" md="2">
               <v-text-field
                 v-model="filters.industry"
-                label="Industry"
+                :label="t('world.crm.filters.industry')"
                 density="comfortable"
                 variant="outlined"
                 hide-details
@@ -156,7 +193,7 @@ async function closeOpportunity(opportunity: CrmOpportunity, outcome: 'won' | 'l
             <v-col cols="6" md="2">
               <v-text-field
                 v-model.number="filters.minAmount"
-                label="Min amount"
+                :label="t('world.crm.filters.minAmount')"
                 type="number"
                 density="comfortable"
                 variant="outlined"
@@ -166,7 +203,7 @@ async function closeOpportunity(opportunity: CrmOpportunity, outcome: 'won' | 'l
             <v-col cols="6" md="2">
               <v-text-field
                 v-model.number="filters.maxAmount"
-                label="Max amount"
+                :label="t('world.crm.filters.maxAmount')"
                 type="number"
                 density="comfortable"
                 variant="outlined"
@@ -174,44 +211,70 @@ async function closeOpportunity(opportunity: CrmOpportunity, outcome: 'won' | 'l
               />
             </v-col>
             <v-col cols="12" md="1" class="d-flex align-center justify-end">
-              <v-btn color="primary" :loading="crmStore.pending" @click="refreshData">
-                Apply
+              <v-btn
+                color="primary"
+                :loading="crmStore.pending"
+                @click="refreshData"
+              >
+                {{ t('world.crm.actions.apply') }}
               </v-btn>
             </v-col>
           </v-row>
         </v-card>
 
         <v-tabs v-model="activeView" color="primary" class="mb-4">
-          <v-tab value="pipeline">Pipeline</v-tab>
-          <v-tab value="list">List</v-tab>
-          <v-tab value="detail">Detail</v-tab>
-          <v-tab value="dashboard">Dashboard</v-tab>
+          <v-tab value="pipeline">{{ t('world.crm.tabs.pipeline') }}</v-tab>
+          <v-tab value="list">{{ t('world.crm.tabs.list') }}</v-tab>
+          <v-tab value="detail">{{ t('world.crm.tabs.detail') }}</v-tab>
+          <v-tab value="dashboard">{{ t('world.crm.tabs.dashboard') }}</v-tab>
         </v-tabs>
 
         <v-window v-model="activeView">
           <v-window-item value="pipeline">
             <v-row>
-              <v-col v-for="column in columns" :key="column.stage" cols="12" md="6" lg="4" xl="2">
+              <v-col
+                v-for="column in columns"
+                :key="column.stage"
+                cols="12"
+                md="6"
+                lg="4"
+                xl="2"
+              >
                 <v-card rounded="xl" class="pa-3 h-100 postcard-gradient-card">
                   <div class="d-flex align-center justify-space-between mb-3">
                     <h3 class="text-subtitle-1">{{ column.title }}</h3>
                     <v-chip size="small" :color="stageColor(column.stage)">
-                      {{ crmStore.opportunitiesByStage.get(column.stage)?.length ?? 0 }}
+                      {{
+                        crmStore.opportunitiesByStage.get(column.stage)
+                          ?.length ?? 0
+                      }}
                     </v-chip>
                   </div>
                   <v-card
-                    v-for="opportunity in crmStore.opportunitiesByStage.get(column.stage)"
+                    v-for="opportunity in crmStore.opportunitiesByStage.get(
+                      column.stage,
+                    )"
                     :key="opportunity.id"
                     rounded="lg"
                     class="pa-3 mb-2"
                     variant="tonal"
                   >
-                    <p class="text-caption mb-1">{{ opportunity.id }} · {{ opportunity.owner }}</p>
-                    <p class="font-weight-medium mb-1">{{ opportunity.name }}</p>
-                    <p class="text-body-2 mb-2">{{ formatCurrency(opportunity.amount) }}</p>
+                    <p class="text-caption mb-1">
+                      {{ opportunity.id }} · {{ opportunity.owner }}
+                    </p>
+                    <p class="font-weight-medium mb-1">
+                      {{ opportunity.name }}
+                    </p>
+                    <p class="text-body-2 mb-2">
+                      {{ formatCurrency(opportunity.amount) }}
+                    </p>
                     <div class="d-flex flex-wrap ga-2">
-                      <v-btn size="x-small" variant="outlined" @click="selectOpportunity(opportunity.id)">
-                        Detail
+                      <v-btn
+                        size="x-small"
+                        variant="outlined"
+                        @click="selectOpportunity(opportunity.id)"
+                      >
+                        {{ t('world.crm.actions.detail') }}
                       </v-btn>
                       <v-btn
                         size="x-small"
@@ -219,7 +282,7 @@ async function closeOpportunity(opportunity: CrmOpportunity, outcome: 'won' | 'l
                         :disabled="!can('crm.opportunities.edit')"
                         @click="moveStage(opportunity, 'prev')"
                       >
-                        Prev
+                        {{ t('world.crm.actions.prev') }}
                       </v-btn>
                       <v-btn
                         size="x-small"
@@ -228,7 +291,7 @@ async function closeOpportunity(opportunity: CrmOpportunity, outcome: 'won' | 'l
                         :disabled="!can('crm.opportunities.edit')"
                         @click="moveStage(opportunity, 'next')"
                       >
-                        Next
+                        {{ t('world.crm.actions.next') }}
                       </v-btn>
                       <v-btn
                         size="x-small"
@@ -237,7 +300,7 @@ async function closeOpportunity(opportunity: CrmOpportunity, outcome: 'won' | 'l
                         :disabled="!can('crm.opportunities.edit')"
                         @click="closeOpportunity(opportunity, 'won')"
                       >
-                        Won
+                        {{ t('world.crm.actions.won') }}
                       </v-btn>
                       <v-btn
                         size="x-small"
@@ -246,7 +309,7 @@ async function closeOpportunity(opportunity: CrmOpportunity, outcome: 'won' | 'l
                         :disabled="!can('crm.opportunities.edit')"
                         @click="closeOpportunity(opportunity, 'lost')"
                       >
-                        Lost
+                        {{ t('world.crm.actions.lost') }}
                       </v-btn>
                     </div>
                   </v-card>
@@ -260,13 +323,19 @@ async function closeOpportunity(opportunity: CrmOpportunity, outcome: 'won' | 'l
               <v-data-table
                 :items="opportunities"
                 :headers="[
-                  { title: 'ID', key: 'id' },
-                  { title: 'Opportunity', key: 'name' },
-                  { title: 'Owner', key: 'owner' },
-                  { title: 'Stage', key: 'stage' },
-                  { title: 'Probability', key: 'probability' },
-                  { title: 'Amount', key: 'amount' },
-                  { title: 'Expected close', key: 'expectedCloseDate' },
+                  { title: t('world.common.table.id'), key: 'id' },
+                  { title: t('world.crm.table.opportunity'), key: 'name' },
+                  { title: t('world.crm.table.owner'), key: 'owner' },
+                  { title: t('world.crm.table.stage'), key: 'stage' },
+                  {
+                    title: t('world.crm.table.probability'),
+                    key: 'probability',
+                  },
+                  { title: t('world.crm.table.amount'), key: 'amount' },
+                  {
+                    title: t('world.crm.table.expectedClose'),
+                    key: 'expectedCloseDate',
+                  },
                 ]"
                 item-value="id"
                 density="comfortable"
@@ -280,31 +349,50 @@ async function closeOpportunity(opportunity: CrmOpportunity, outcome: 'won' | 'l
           </v-window-item>
 
           <v-window-item value="detail">
-            <v-card v-if="selectedDetail" rounded="xl" class="pa-4 postcard-gradient-card">
-              <h2 class="text-h6 mb-1">{{ selectedDetail.opportunity.name }}</h2>
+            <v-card
+              v-if="selectedDetail"
+              rounded="xl"
+              class="pa-4 postcard-gradient-card"
+            >
+              <h2 class="text-h6 mb-1">
+                {{ selectedDetail.opportunity.name }}
+              </h2>
               <p class="text-medium-emphasis mb-3">
-                {{ selectedDetail.account?.name || 'No account' }} ·
-                {{ selectedDetail.opportunity.stage }} ·
+                {{
+                  selectedDetail.account?.name ||
+                  t('world.crm.detail.noAccount')
+                }}
+                · {{ selectedDetail.opportunity.stage }} ·
                 {{ formatCurrency(selectedDetail.opportunity.amount) }}
               </p>
 
               <v-row>
                 <v-col cols="12" md="6">
-                  <h3 class="text-subtitle-1 mb-2">Activities journal</h3>
+                  <h3 class="text-subtitle-1 mb-2">
+                    {{ t('world.crm.detail.activitiesJournal') }}
+                  </h3>
                   <v-timeline density="compact" side="end" truncate-line="both">
                     <v-timeline-item
                       v-for="entry in selectedDetail.journal"
                       :key="entry.id"
-                      :dot-color="entry.eventType === 'stage_transition' ? 'primary' : 'secondary'"
+                      :dot-color="
+                        entry.eventType === 'stage_transition'
+                          ? 'primary'
+                          : 'secondary'
+                      "
                       size="small"
                     >
-                      <p class="text-caption mb-1">{{ entry.actor }} · {{ entry.timestamp }}</p>
+                      <p class="text-caption mb-1">
+                        {{ entry.actor }} · {{ entry.timestamp }}
+                      </p>
                       <p class="mb-0">{{ entry.message }}</p>
                     </v-timeline-item>
                   </v-timeline>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <h3 class="text-subtitle-1 mb-2">Notes & attachments</h3>
+                  <h3 class="text-subtitle-1 mb-2">
+                    {{ t('world.crm.detail.notesAndAttachments') }}
+                  </h3>
                   <v-card
                     v-for="note in selectedDetail.notes"
                     :key="note.id"
@@ -312,7 +400,9 @@ async function closeOpportunity(opportunity: CrmOpportunity, outcome: 'won' | 'l
                     class="pa-3 mb-2"
                     variant="tonal"
                   >
-                    <p class="text-caption mb-1">{{ note.author }} · {{ note.createdAt }}</p>
+                    <p class="text-caption mb-1">
+                      {{ note.author }} · {{ note.createdAt }}
+                    </p>
                     <p class="mb-2">{{ note.body }}</p>
                     <v-chip
                       v-for="attachment in note.attachments"
@@ -327,7 +417,7 @@ async function closeOpportunity(opportunity: CrmOpportunity, outcome: 'won' | 'l
               </v-row>
             </v-card>
             <v-alert v-else type="info" variant="tonal">
-              Sélectionnez une opportunité depuis la vue Pipeline ou List.
+              {{ t('world.crm.alerts.selectOpportunity') }}
             </v-alert>
           </v-window-item>
 
@@ -335,28 +425,44 @@ async function closeOpportunity(opportunity: CrmOpportunity, outcome: 'won' | 'l
             <v-row>
               <v-col cols="12" md="3">
                 <v-card rounded="xl" class="pa-3 postcard-gradient-card">
-                  <p class="text-caption text-medium-emphasis">Conversion rate</p>
-                  <h3 class="text-h5">{{ analytics?.conversionRate.toFixed(1) }}%</h3>
-                </v-card>
-              </v-col>
-              <v-col cols="12" md="3">
-                <v-card rounded="xl" class="pa-3 postcard-gradient-card">
-                  <p class="text-caption text-medium-emphasis">Win / Loss</p>
-                  <h3 class="text-h6">
-                    {{ analytics?.winRate.toFixed(1) }}% / {{ analytics?.lossRate.toFixed(1) }}%
+                  <p class="text-caption text-medium-emphasis">
+                    {{ t('world.crm.dashboard.conversionRate') }}
+                  </p>
+                  <h3 class="text-h5">
+                    {{ analytics?.conversionRate.toFixed(1) }}%
                   </h3>
                 </v-card>
               </v-col>
               <v-col cols="12" md="3">
                 <v-card rounded="xl" class="pa-3 postcard-gradient-card">
-                  <p class="text-caption text-medium-emphasis">Cycle moyen</p>
-                  <h3 class="text-h5">{{ analytics?.averageCycleDays.toFixed(1) }} j</h3>
+                  <p class="text-caption text-medium-emphasis">
+                    {{ t('world.crm.dashboard.winLoss') }}
+                  </p>
+                  <h3 class="text-h6">
+                    {{ analytics?.winRate.toFixed(1) }}% /
+                    {{ analytics?.lossRate.toFixed(1) }}%
+                  </h3>
                 </v-card>
               </v-col>
               <v-col cols="12" md="3">
                 <v-card rounded="xl" class="pa-3 postcard-gradient-card">
-                  <p class="text-caption text-medium-emphasis">Weighted forecast</p>
-                  <h3 class="text-h6">{{ formatCurrency(analytics?.weightedForecast || 0) }}</h3>
+                  <p class="text-caption text-medium-emphasis">
+                    {{ t('world.crm.dashboard.averageCycle') }}
+                  </p>
+                  <h3 class="text-h5">
+                    {{ analytics?.averageCycleDays.toFixed(1) }}
+                    {{ t('world.crm.dashboard.daysSuffix') }}
+                  </h3>
+                </v-card>
+              </v-col>
+              <v-col cols="12" md="3">
+                <v-card rounded="xl" class="pa-3 postcard-gradient-card">
+                  <p class="text-caption text-medium-emphasis">
+                    {{ t('world.crm.dashboard.weightedForecast') }}
+                  </p>
+                  <h3 class="text-h6">
+                    {{ formatCurrency(analytics?.weightedForecast || 0) }}
+                  </h3>
                 </v-card>
               </v-col>
             </v-row>

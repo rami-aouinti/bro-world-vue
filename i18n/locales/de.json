@@ -1059,13 +1059,61 @@
     },
     "crm": {
       "label": "CRM",
-      "description": "Projects, company data and admin operations.",
-      "moduleDescription": "CRM navigation with projects and company management.",
+      "description": "Projekte, Firmendaten und Admin-Operationen.",
+      "moduleDescription": "Leads, Konten, Kontakte, Chancen, Aktivitäten und Pipeline-Analysen.",
       "nav": {
-        "overview": "Overview CRM",
-        "projects": "Projects",
-        "company": "Company",
+        "overview": "CRM-Übersicht",
+        "projects": "Projekte",
+        "tasks": "Aufgaben",
+        "sprints": "Sprints",
+        "company": "Firma",
         "admin": "Admin"
+      },
+      "actions": {
+        "createLead": "CRM-Lead erstellen",
+        "apply": "Anwenden",
+        "detail": "Details",
+        "prev": "Zurück",
+        "next": "Weiter",
+        "won": "Gewonnen",
+        "lost": "Verloren"
+      },
+      "filters": {
+        "search": "Suche",
+        "owner": "Verantwortlich",
+        "industry": "Branche",
+        "minAmount": "Min. Betrag",
+        "maxAmount": "Max. Betrag"
+      },
+      "tabs": {
+        "pipeline": "Pipeline",
+        "list": "Liste",
+        "detail": "Details",
+        "dashboard": "Dashboard"
+      },
+      "table": {
+        "opportunity": "Chance",
+        "owner": "Verantwortlich",
+        "stage": "Phase",
+        "probability": "Wahrscheinlichkeit",
+        "amount": "Betrag",
+        "expectedClose": "Erwarteter Abschluss"
+      },
+      "detail": {
+        "noAccount": "Kein Konto",
+        "activitiesJournal": "Aktivitätsprotokoll",
+        "notesAndAttachments": "Notizen & Anhänge"
+      },
+      "alerts": {
+        "noReadPermission": "Sie haben keine CRM-Leseberechtigung (opportunities.read).",
+        "selectOpportunity": "Wählen Sie eine Chance aus der Pipeline- oder Listenansicht aus."
+      },
+      "dashboard": {
+        "conversionRate": "Konversionsrate",
+        "winLoss": "Gewonnen / Verloren",
+        "averageCycle": "Durchschnittlicher Zyklus",
+        "daysSuffix": "T",
+        "weightedForecast": "Gewichtete Prognose"
       }
     },
     "shop": {
