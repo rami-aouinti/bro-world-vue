@@ -8,6 +8,56 @@ const { loggedIn, user } = useUserSession()
 const sessionUser = computed(() => user.value as SessionUser | null)
 const avatarUrl = computed(() => sessionUser.value?.photo)
 const coins = computed(() => sessionUser.value?.coins ?? 0)
+const coinModalOpen = ref(false)
+const orderLoading = ref(false)
+const paymentLoading = ref(false)
+const checkoutError = ref('')
+const checkoutSuccess = ref('')
+const selectedPackageId = ref<string | null>(null)
+const paymentMethod = ref<'stripe' | 'paypal' | null>(null)
+const checkoutStep = ref<'package' | 'payment' | 'result'>('package')
+const currentOrder = ref<{
+  orderId: string
+  packageId: string
+  coins: number
+  amount: number
+  currency: 'USD' | 'EUR'
+  status: string
+} | null>(null)
+
+type CoinPackage = {
+  id: string
+  coins: number
+  usdPrice: number
+  eurPrice: number
+}
+
+const coinPackages: CoinPackage[] = [
+  { id: 'starter-500', coins: 500, usdPrice: 2, eurPrice: 2 },
+  { id: 'plus-1500', coins: 1500, usdPrice: 5, eurPrice: 5 },
+  { id: 'pro-5000', coins: 5000, usdPrice: 15, eurPrice: 14 },
+]
+
+const currency = computed(() => {
+  const locale = sessionUser.value?.locale?.toLowerCase() || ''
+  if (
+    locale.startsWith('fr')
+    || locale.startsWith('de')
+    || locale.startsWith('es')
+    || locale.startsWith('it')
+  ) {
+    return 'EUR'
+  }
+
+  return 'USD'
+})
+
+const currencySymbol = computed(() => (currency.value === 'EUR' ? '€' : '$'))
+const paymentMethodLabel = computed(() => {
+  if (paymentMethod.value === 'stripe') return 'Stripe'
+  if (paymentMethod.value === 'paypal') return 'PayPal'
+  return '-'
+})
 const fullName = computed(() => {
   const values = [sessionUser.value?.firstName, sessionUser.value?.lastName]
     .filter(Boolean)
@@ -24,16 +74,92 @@ function navigateToLogin() {
     },
   })
 }
+
+function openCoinModal() {
+  checkoutStep.value = 'package'
+  checkoutError.value = ''
+  checkoutSuccess.value = ''
+  currentOrder.value = null
+  selectedPackageId.value = null
+  paymentMethod.value = null
+  coinModalOpen.value = true
+}
+
+function formatPrice(item: CoinPackage) {
+  const amount = currency.value === 'EUR' ? item.eurPrice : item.usdPrice
+  return `${currencySymbol.value}${amount}`
+}
+
+async function createCheckoutOrder(item: CoinPackage) {
+  orderLoading.value = true
+  checkoutError.value = ''
+  checkoutSuccess.value = ''
+  selectedPackageId.value = item.id
+
+  try {
+    const response = await $fetch('/api/coins/orders', {
+      method: 'POST',
+      body: {
+        packageId: item.id,
+        coins: item.coins,
+        currency: currency.value,
+        amount: currency.value === 'EUR' ? item.eurPrice : item.usdPrice,
+      },
+    })
+
+    currentOrder.value = response
+    checkoutStep.value = 'payment'
+  } catch (error) {
+    checkoutError.value
+      = error instanceof Error ? error.message : 'Une erreur est survenue.'
+  } finally {
+    orderLoading.value = false
+  }
+}
+
+async function processPayment() {
+  if (!currentOrder.value || !paymentMethod.value) {
+    checkoutError.value = 'Sélectionnez un mode de paiement.'
+    return
+  }
+
+  paymentLoading.value = true
+  checkoutError.value = ''
+  checkoutSuccess.value = ''
+
+  try {
+    const response = await $fetch('/api/coins/checkout/pay', {
+      method: 'POST',
+      body: {
+        orderId: currentOrder.value.orderId,
+        paymentMethod: paymentMethod.value,
+      },
+    })
+
+    if (response.status === 'success') {
+      checkoutSuccess.value = `Paiement confirmé via ${paymentMethodLabel.value}.`
+      checkoutStep.value = 'result'
+      return
+    }
+
+    checkoutError.value = response.message || 'Paiement refusé.'
+    checkoutStep.value = 'result'
+  } catch (error) {
+    checkoutError.value
+      = error instanceof Error ? error.message : 'Une erreur est survenue.'
+  } finally {
+    paymentLoading.value = false
+  }
+}
 </script>
 
 <template>
-  <NuxtLink
-    v-if="loggedIn"
-    to="/profile"
-    class="d-flex align-center text-center ga-3"
-    style="text-decoration: none; color: inherit"
-  >
-    <div class="d-flex align-center text-center ga-3">
+  <div v-if="loggedIn">
+    <NuxtLink
+      to="/profile"
+      class="d-flex align-center text-center ga-3"
+      style="text-decoration: none; color: inherit"
+    >
       <v-avatar size="60">
         <v-img :src="avatarUrl" :alt="`${fullName} avatar`" />
       </v-avatar>
@@ -45,12 +171,132 @@ function navigateToLogin() {
           variant="outlined"
           prepend-icon="mdi-cash-multiple"
           label
+          class="mt-1"
+          @click.prevent.stop="openCoinModal"
         >
           {{ coins }} coins
         </v-chip>
       </div>
-    </div>
-  </NuxtLink>
+    </NuxtLink>
+
+    <v-dialog v-model="coinModalOpen" max-width="620">
+      <v-card>
+        <v-card-title class="d-flex align-center justify-space-between">
+          <span>Checkout coins</span>
+          <v-chip size="small" color="primary" variant="tonal">
+            Solde actuel: {{ coins }} coins
+          </v-chip>
+        </v-card-title>
+
+        <v-card-text>
+          <v-window v-model="checkoutStep">
+            <v-window-item value="package">
+              <p class="text-medium-emphasis mb-4">
+                1) Choisissez votre pack, puis on crée la commande checkout.
+              </p>
+
+              <v-list class="pa-0" lines="two">
+                <v-list-item
+                  v-for="item in coinPackages"
+                  :key="item.id"
+                  :title="`${item.coins} coins`"
+                  subtitle="Création de la commande checkout"
+                  class="px-0"
+                >
+                  <template #append>
+                    <v-btn
+                      color="primary"
+                      variant="flat"
+                      :loading="orderLoading && selectedPackageId === item.id"
+                      @click="createCheckoutOrder(item)"
+                    >
+                      {{ formatPrice(item) }}
+                    </v-btn>
+                  </template>
+                </v-list-item>
+              </v-list>
+            </v-window-item>
+
+            <v-window-item value="payment">
+              <p class="text-medium-emphasis mb-4">
+                2) Commande créée, choisissez maintenant le type de paiement.
+              </p>
+              <v-card variant="tonal" class="mb-4">
+                <v-card-text class="text-body-2">
+                  <div><strong>Order:</strong> {{ currentOrder?.orderId }}</div>
+                  <div><strong>Pack:</strong> {{ currentOrder?.coins }} coins</div>
+                  <div>
+                    <strong>Montant:</strong>
+                    {{ currencySymbol }}{{ currentOrder?.amount }}
+                  </div>
+                </v-card-text>
+              </v-card>
+              <div class="d-flex ga-2 mb-4">
+                <v-btn
+                  :color="paymentMethod === 'stripe' ? 'primary' : undefined"
+                  variant="outlined"
+                  prepend-icon="mdi-credit-card-outline"
+                  @click="paymentMethod = 'stripe'"
+                >
+                  Stripe
+                </v-btn>
+                <v-btn
+                  :color="paymentMethod === 'paypal' ? 'primary' : undefined"
+                  variant="outlined"
+                  prepend-icon="mdi-paypal"
+                  @click="paymentMethod = 'paypal'"
+                >
+                  PayPal
+                </v-btn>
+              </div>
+
+              <div class="d-flex ga-2">
+                <v-btn variant="text" @click="checkoutStep = 'package'">
+                  Retour
+                </v-btn>
+                <v-btn
+                  color="primary"
+                  :loading="paymentLoading"
+                  :disabled="!paymentMethod"
+                  @click="processPayment"
+                >
+                  Payer maintenant
+                </v-btn>
+              </div>
+            </v-window-item>
+
+            <v-window-item value="result">
+              <p class="text-medium-emphasis">
+                3) Résultat du paiement pour la commande
+                <strong>{{ currentOrder?.orderId }}</strong>.
+              </p>
+              <v-btn class="mt-2" color="primary" variant="outlined" @click="openCoinModal">
+                Nouveau checkout
+              </v-btn>
+            </v-window-item>
+          </v-window>
+
+          <v-alert
+            v-if="checkoutSuccess"
+            type="success"
+            variant="tonal"
+            class="mt-4"
+          >
+            {{ checkoutSuccess }}
+          </v-alert>
+
+          <v-alert
+            v-if="checkoutError"
+            type="error"
+            variant="tonal"
+            class="mt-4"
+          >
+            {{ checkoutError }}
+          </v-alert>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+  </div>
   <v-btn
     v-else
     block

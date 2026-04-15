@@ -7,6 +7,7 @@ import {
   resolveCacheTtl,
   type CacheDomain,
 } from './apiCacheConfig'
+import { apiRequest } from './httpClient'
 import { resolveApiUrl } from './resolveApiUrl'
 import { invalidateMutationCaches } from './mutationInvalidation'
 
@@ -61,12 +62,12 @@ export async function callPrivateApi<TResponse extends ApiResponse>(
   requestHeaders.set('accept', 'application/json')
   requestHeaders.set('Authorization', `Bearer ${token}`)
 
-  return $fetch<TResponse>(
+  return apiRequest<TResponse>(
     resolveApiUrl(runtimeConfig.public.apiBaseUrl, endpoint),
     {
       ...options,
       headers: requestHeaders,
-    } as any,
+    },
   )
 }
 
