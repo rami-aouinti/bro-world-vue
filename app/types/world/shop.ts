@@ -1,4 +1,85 @@
-import type { ShopCategory, ShopProduct } from '~~/server/types/api/shop'
+export type ShopProductStatus = 'draft' | 'active' | 'archived'
+
+export interface ShopCategory {
+  id: string
+  name: string
+  slug: string
+  description: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ShopProduct {
+  id: string
+  name: string
+  slug: string
+  description: string
+  status: ShopProductStatus
+  category: string
+  currencyCode: string
+  amount: number
+  coinsAmount: number
+  isFeatured: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ShopProductsPagination {
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+}
+
+export interface ShopProductsFilters {
+  q?: string
+  name?: string
+  category?: string
+  status?: ShopProductStatus
+  page?: number
+  limit?: number
+}
+
+export interface ShopProductsMeta {
+  pagination: ShopProductsPagination
+  filters: ShopProductsFilters
+}
+
+export interface ShopProductsListResponse {
+  data: ShopProduct[]
+  meta: ShopProductsMeta
+}
+
+export interface ShopProductDetailResponse {
+  data: ShopProduct
+}
+
+export function normalizeShopProductsFilters(
+  filters: ShopProductsFilters,
+): ShopProductsFilters {
+  const trimOrUndefined = (value?: string) => {
+    if (typeof value !== 'string') return undefined
+    const trimmed = value.trim()
+    return trimmed.length > 0 ? trimmed : undefined
+  }
+
+  const normalizedCategory = trimOrUndefined(filters.category)
+
+  return {
+    q: trimOrUndefined(filters.q),
+    name: trimOrUndefined(filters.name),
+    category: normalizedCategory?.toUpperCase(),
+    status: filters.status,
+    page:
+      typeof filters.page === 'number' && Number.isFinite(filters.page)
+        ? Math.max(1, Math.floor(filters.page))
+        : undefined,
+    limit:
+      typeof filters.limit === 'number' && Number.isFinite(filters.limit)
+        ? Math.max(1, Math.floor(filters.limit))
+        : undefined,
+  }
+}
 
 export interface WorldPaginationState {
   page: number
@@ -7,17 +88,7 @@ export interface WorldPaginationState {
   totalPages: number
 }
 
-export interface WorldShopFilters {
-  q?: string
-  categoryId?: string
-  status?: ShopProduct['status']
-  brand?: string
-  material?: string
-  color?: string
-  size?: string
-  priceMin?: number
-  priceMax?: number
-}
+export type WorldShopFilters = ShopProductsFilters
 
 export interface WorldShopListResponse<T> {
   data: T[]
@@ -85,7 +156,10 @@ export interface WorldShopPaymentIntentResponse {
   attempt: WorldShopPaymentAttempt
 }
 
-export type WorldShopProductsListResponse = WorldShopListResponse<ShopProduct>
+export type WorldShopProductsListResponse =
+  | ShopProductsListResponse
+  | WorldShopListResponse<ShopProduct>
+
 export type WorldShopCategoriesListResponse = {
   data: ShopCategory[]
   tree: Array<ShopCategory & { children: ShopCategory[] }>

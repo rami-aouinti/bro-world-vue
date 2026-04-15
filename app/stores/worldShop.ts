@@ -1,5 +1,7 @@
-import type { ShopCategory, ShopProduct } from '~~/server/types/api/shop'
+import { normalizeShopProductsFilters } from '~/types/world/shop'
 import type {
+  ShopCategory,
+  ShopProduct,
   WorldPaginationState,
   WorldShopCartLine,
   WorldShopCheckoutAddress,
@@ -70,17 +72,22 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     force?: boolean
     filters?: Partial<WorldShopFilters>
   }) {
-    filters.value = { ...filters.value, ...(options?.filters ?? {}) }
+    filters.value = normalizeShopProductsFilters({
+      ...filters.value,
+      ...(options?.filters ?? {}),
+      page: pagination.value.page,
+      limit: pagination.value.limit,
+    })
+
+    pagination.value.page = filters.value.page ?? 1
+    pagination.value.limit = filters.value.limit ?? pagination.value.limit
+
     const query = {
-      search: filters.value.q,
-      categoryId: filters.value.categoryId,
+      search: filters.value.q ?? filters.value.name,
+      categoryId: filters.value.category?.toLowerCase(),
       status: filters.value.status,
-      brand: filters.value.brand,
-      material: filters.value.material,
-      color: filters.value.color,
-      size: filters.value.size,
-      priceMin: filters.value.priceMin,
-      priceMax: filters.value.priceMax,
+      page: filters.value.page,
+      limit: filters.value.limit,
     }
 
     const cacheKey = buildModuleCacheKey('shop-products', {
@@ -93,11 +100,14 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     if (cached && !options?.force && isFresh(cached)) {
       const response = cached.data as WorldShopProductsListResponse
       items.value = response.data
-      pagination.value.total = response.total
-      pagination.value.totalPages = Math.max(
-        1,
-        Math.ceil(response.total / pagination.value.limit),
-      )
+      const total =
+        'total' in response ? response.total : response.meta.pagination.total
+      const totalPages =
+        'meta' in response
+          ? response.meta.pagination.totalPages
+          : Math.max(1, Math.ceil(total / pagination.value.limit))
+      pagination.value.total = total
+      pagination.value.totalPages = totalPages
       lastFetchedAt.value = cached.fetchedAt
       return
     }
@@ -110,11 +120,14 @@ export const useWorldShopStore = defineStore('world-shop', () => {
         { query },
       )
       items.value = response.data
-      pagination.value.total = response.total
-      pagination.value.totalPages = Math.max(
-        1,
-        Math.ceil(response.total / pagination.value.limit),
-      )
+      const total =
+        'total' in response ? response.total : response.meta.pagination.total
+      const totalPages =
+        'meta' in response
+          ? response.meta.pagination.totalPages
+          : Math.max(1, Math.ceil(total / pagination.value.limit))
+      pagination.value.total = total
+      pagination.value.totalPages = totalPages
       lastFetchedAt.value = Date.now()
       cache.value[cacheKey] = { fetchedAt: lastFetchedAt.value, data: response }
     } catch (err) {

@@ -57,3 +57,59 @@ export interface ShopCatalogState {
   products: ShopProduct[]
   categories: ShopCategory[]
 }
+
+export type ShopApiProductStatus = ShopProduct['status']
+
+export interface ShopApiCategory {
+  id: string
+  name: string
+  slug: string
+  description: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ShopApiProduct {
+  id: string
+  name: string
+  slug: string
+  description: string
+  status: ShopApiProductStatus
+  category: string
+  currencyCode: string
+  amount: number
+  coinsAmount: number
+  isFeatured: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ShopApiProductsPagination {
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+}
+
+export interface ShopApiProductsFilters {
+  q?: string
+  name?: string
+  category?: string
+  status?: ShopApiProductStatus
+  page?: number
+  limit?: number
+}
+
+export interface ShopApiProductsMeta {
+  pagination: ShopApiProductsPagination
+  filters: ShopApiProductsFilters
+}
+
+export interface ShopApiProductsListResponse {
+  data: ShopApiProduct[]
+  meta: ShopApiProductsMeta
+}
+
+export interface ShopApiProductDetailResponse {
+  data: ShopApiProduct
+}
