@@ -1033,13 +1033,61 @@
     },
     "crm": {
       "label": "CRM",
-      "description": "Projects, company data and admin operations.",
-      "moduleDescription": "CRM navigation with projects and company management.",
+      "description": "Proyectos, datos de empresa y operaciones de administración.",
+      "moduleDescription": "Leads, cuentas, contactos, oportunidades, actividades y analíticas del pipeline.",
       "nav": {
-        "overview": "Overview CRM",
-        "projects": "Projects",
-        "company": "Company",
+        "overview": "Resumen CRM",
+        "projects": "Proyectos",
+        "tasks": "Tareas",
+        "sprints": "Sprints",
+        "company": "Empresa",
         "admin": "Admin"
+      },
+      "actions": {
+        "createLead": "Crear lead CRM",
+        "apply": "Aplicar",
+        "detail": "Detalle",
+        "prev": "Anterior",
+        "next": "Siguiente",
+        "won": "Ganada",
+        "lost": "Perdida"
+      },
+      "filters": {
+        "search": "Buscar",
+        "owner": "Responsable",
+        "industry": "Industria",
+        "minAmount": "Monto mín.",
+        "maxAmount": "Monto máx."
+      },
+      "tabs": {
+        "pipeline": "Pipeline",
+        "list": "Lista",
+        "detail": "Detalle",
+        "dashboard": "Panel"
+      },
+      "table": {
+        "opportunity": "Oportunidad",
+        "owner": "Responsable",
+        "stage": "Etapa",
+        "probability": "Probabilidad",
+        "amount": "Monto",
+        "expectedClose": "Cierre esperado"
+      },
+      "detail": {
+        "noAccount": "Sin cuenta",
+        "activitiesJournal": "Registro de actividades",
+        "notesAndAttachments": "Notas y adjuntos"
+      },
+      "alerts": {
+        "noReadPermission": "No tienes permiso de lectura CRM (opportunities.read).",
+        "selectOpportunity": "Selecciona una oportunidad desde la vista Pipeline o Lista."
+      },
+      "dashboard": {
+        "conversionRate": "Tasa de conversión",
+        "winLoss": "Ganadas / Perdidas",
+        "averageCycle": "Ciclo promedio",
+        "daysSuffix": "d",
+        "weightedForecast": "Pronóstico ponderado"
       }
     },
     "shop": {

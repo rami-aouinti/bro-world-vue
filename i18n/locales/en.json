@@ -1070,12 +1070,60 @@
     "crm": {
       "label": "CRM",
       "description": "Projects, company data and admin operations.",
-      "moduleDescription": "CRM navigation with projects and company management.",
+      "moduleDescription": "Leads, accounts, contacts, opportunities, activities and pipeline analytics.",
       "nav": {
         "overview": "Overview CRM",
         "projects": "Projects",
+        "tasks": "Tasks",
+        "sprints": "Sprints",
         "company": "Company",
         "admin": "Admin"
+      },
+      "actions": {
+        "createLead": "Create CRM lead",
+        "apply": "Apply",
+        "detail": "Detail",
+        "prev": "Prev",
+        "next": "Next",
+        "won": "Won",
+        "lost": "Lost"
+      },
+      "filters": {
+        "search": "Search",
+        "owner": "Owner",
+        "industry": "Industry",
+        "minAmount": "Min amount",
+        "maxAmount": "Max amount"
+      },
+      "tabs": {
+        "pipeline": "Pipeline",
+        "list": "List",
+        "detail": "Detail",
+        "dashboard": "Dashboard"
+      },
+      "table": {
+        "opportunity": "Opportunity",
+        "owner": "Owner",
+        "stage": "Stage",
+        "probability": "Probability",
+        "amount": "Amount",
+        "expectedClose": "Expected close"
+      },
+      "detail": {
+        "noAccount": "No account",
+        "activitiesJournal": "Activities journal",
+        "notesAndAttachments": "Notes & attachments"
+      },
+      "alerts": {
+        "noReadPermission": "You don't have CRM read permission (opportunities.read).",
+        "selectOpportunity": "Select an opportunity from the Pipeline or List view."
+      },
+      "dashboard": {
+        "conversionRate": "Conversion rate",
+        "winLoss": "Win / Loss",
+        "averageCycle": "Average cycle",
+        "daysSuffix": "d",
+        "weightedForecast": "Weighted forecast"
       }
     },
     "shop": {
