@@ -50,8 +50,14 @@ export interface ShopProductsListResponse {
   meta: ShopProductsMeta
 }
 
+export interface ShopProductDetailData {
+  product: ShopProduct
+  similarProducts?: ShopProduct[]
+}
+
 export interface ShopProductDetailResponse {
-  data: ShopProduct
+  data: ShopProduct | ShopProductDetailData
+  similarProducts?: ShopProduct[]
 }
 
 export function normalizeShopProductsFilters(

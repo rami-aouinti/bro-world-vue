@@ -2,6 +2,7 @@ import { normalizeShopProductsFilters } from '~/types/world/shop'
 import { normalizeHttpError } from '~/utils/httpError'
 import type {
   ShopCategory,
+  ShopProductDetailData,
   ShopProductDetailResponse,
   ShopProduct,
   WorldPaginationState,
@@ -263,8 +264,12 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     const cacheKey = `shop-product:${productId}`
     const cached = cache.value[cacheKey]
     if (cached && !options?.force && isFresh(cached)) {
-      detail.value = cached.data as ShopProduct
-      return detail.value
+      const cachedData = cached.data as {
+        product: ShopProduct
+        similarProducts: ShopProduct[]
+      }
+      detail.value = cachedData.product
+      return cachedData
     }
 
     pending.value = true
@@ -281,10 +286,36 @@ export const useWorldShopStore = defineStore('world-shop', () => {
             'Impossible de récupérer le détail du produit pour le moment.',
         },
       )
-      detail.value = response.data
+
+      const payload = response.data
+      const hasNestedData =
+        typeof payload === 'object' &&
+        payload !== null &&
+        'product' in payload
+
+      const product = hasNestedData
+        ? (payload as ShopProductDetailData).product
+        : (payload as ShopProduct)
+
+      const similarProducts = hasNestedData
+        ? ((payload as ShopProductDetailData).similarProducts ??
+          response.similarProducts ??
+          [])
+        : (response.similarProducts ?? [])
+
+      const normalizedResponse = {
+        product,
+        similarProducts,
+      }
+
+      detail.value = normalizedResponse.product
       lastFetchedAt.value = Date.now()
-      cache.value[cacheKey] = { fetchedAt: lastFetchedAt.value, data: response.data }
-      return response.data
+      cache.value[cacheKey] = {
+        fetchedAt: lastFetchedAt.value,
+        data: normalizedResponse,
+      }
+
+      return normalizedResponse
     } finally {
       pending.value = false
     }
