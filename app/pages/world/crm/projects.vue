@@ -19,6 +19,16 @@ const crmNavItems = computed(() => [
     icon: 'mdi-folder-outline',
   },
   {
+    title: t('world.crm.nav.tasks', 'Tasks'),
+    to: '/world/crm/tasks',
+    icon: 'mdi-format-list-checks',
+  },
+  {
+    title: t('world.crm.nav.sprints', 'Sprints'),
+    to: '/world/crm/sprints',
+    icon: 'mdi-run-fast',
+  },
+  {
     title: t('world.crm.nav.company', 'Company'),
     to: '/world/crm/company',
     icon: 'mdi-domain',
