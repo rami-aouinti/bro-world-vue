@@ -2,6 +2,7 @@
 import type { CrmAdminApiResponse } from '~~/server/types/api/crm'
 import { CRM_PERMISSION_LABELS } from '~~/shared/crmAccess'
 import { useCrmPermissions } from '~/composables/useCrmPermissions'
+import { useWorldCrmStore } from '~/stores/worldCrm'
 
 definePageMeta({ title: 'CRM Admin' })
 
@@ -16,11 +17,10 @@ const crmNavItems = computed(() => [
     : []),
 ])
 
-const { data: adminData } = await useAsyncData<CrmAdminApiResponse>(
-  'crm-admin-policy',
-  () => $fetch('/api/world/crm/admin'),
-)
+const crmStore = useWorldCrmStore()
+await crmStore.fetchAdmin()
 
+const adminData = computed(() => crmStore.detail as CrmAdminApiResponse | null)
 const policy = computed(() => adminData.value?.policy)
 const roleMappings = computed(() => adminData.value?.roleMappings ?? [])
 const auditLogs = computed(() => adminData.value?.auditLogs ?? [])

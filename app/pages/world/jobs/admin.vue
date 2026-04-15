@@ -2,10 +2,9 @@
 import type {
   JobAccessRole,
   JobPermissionMatrix,
-  JobsAdminDashboardResponse,
-  JobsAdminPolicyResponse,
   JobsDataRetentionPolicy,
 } from '~~/server/types/api/jobs'
+import { useWorldJobsStore } from '~/stores/worldJobs'
 import type { SessionUser } from '~/types/session'
 
 definePageMeta({ title: 'Jobs Admin' })
@@ -23,8 +22,14 @@ const jobsNavItems = [
   { title: 'Admin', to: '/world/jobs/admin', icon: 'mdi-shield-crown-outline', rootOnly: true },
 ]
 
-const { data: policyResponse, pending: policyPending, refresh: refreshPolicy } = await useFetch<JobsAdminPolicyResponse>('/api/jobs/admin/policy')
-const { data: dashboard, pending: dashboardPending, refresh: refreshDashboard } = await useFetch<JobsAdminDashboardResponse>('/api/jobs/admin/dashboard')
+const jobsStore = useWorldJobsStore()
+await Promise.all([jobsStore.fetchAdminPolicy(), jobsStore.fetchAdminDashboard()])
+const policyResponse = computed(() => jobsStore.policy)
+const dashboard = computed(() => jobsStore.dashboard)
+const policyPending = computed(() => jobsStore.pending)
+const dashboardPending = computed(() => jobsStore.pending)
+const refreshPolicy = () => jobsStore.fetchAdminPolicy({ force: true })
+const refreshDashboard = () => jobsStore.fetchAdminDashboard({ force: true })
 
 const editablePolicy = reactive<JobsDataRetentionPolicy>({
   retentionDays: 365,
@@ -60,22 +65,12 @@ const permissionItems = [
 ] as const
 
 const savePolicy = async () => {
-  await $fetch('/api/jobs/admin/policy', {
-    method: 'PATCH',
-    body: editablePolicy,
-  })
-
+  await jobsStore.updateAdminPolicy(editablePolicy as unknown as Record<string, unknown>)
   await refreshPolicy()
 }
 
 const togglePermission = async (role: JobAccessRole, key: keyof JobPermissionMatrix, value: boolean) => {
-  await $fetch(`/api/jobs/admin/permissions/${role}`, {
-    method: 'PATCH',
-    body: {
-      [key]: value,
-    },
-  })
-
+  await jobsStore.updateRolePermission(role, key, value)
   await refreshPolicy()
 }
 

@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import type {
-  LearningAdminAnalyticsApiResponse,
   LearningProgress,
-  LearningProgressApiResponse,
   LearningProgressStatus,
 } from '~~/server/types/api/learning'
+import { useWorldLearningStore } from '~/stores/worldLearning'
 
 definePageMeta({ title: 'Learning Levels' })
 
@@ -16,21 +15,16 @@ const learningNavItems = [
   { title: 'Admin', to: '/world/learning/admin', icon: 'mdi-shield-crown-outline', rootOnly: true },
 ]
 
-const { data: coursesData } = await useAsyncData('learning-courses-levels', () => $fetch('/api/world/learning/courses'))
-const selectedCourseId = computed(() => coursesData.value?.items?.[0]?.id ?? '')
-
-const { data: progressData, refresh: refreshProgress } = await useAsyncData(
-  'learning-progress-levels',
-  () => selectedCourseId.value
-    ? $fetch<LearningProgressApiResponse>(`/api/world/learning/courses/${selectedCourseId.value}/progress`)
-    : Promise.resolve({ items: [] }),
-  { watch: [selectedCourseId] },
-)
-
-const { data: analyticsData, refresh: refreshAnalytics } = await useAsyncData(
-  'learning-analytics-levels',
-  () => $fetch<LearningAdminAnalyticsApiResponse>('/api/world/learning/analytics'),
-)
+const learningStore = useWorldLearningStore()
+await learningStore.fetchCourses()
+await learningStore.fetchAnalytics()
+const selectedCourseId = computed(() => learningStore.items[0]?.id ?? '')
+watch(selectedCourseId, async (courseId) => {
+  if (!courseId) return
+  await learningStore.fetchProgress(courseId)
+}, { immediate: true })
+const analyticsData = computed(() => ({ items: learningStore.detail ?? { totalLearners: 0, completionRate: 0, dropoutRate: 0, averageScore: 0, cohortPerformance: [], levelRules: [] } }))
+const progressData = computed(() => ({ items: selectedCourseId.value ? (learningStore.progressByCourse[selectedCourseId.value] ?? []) : [] }))
 
 const updateForm = reactive({
   learner: '',
@@ -62,21 +56,18 @@ const updateTracking = async () => {
     return
   }
 
-  await $fetch(`/api/world/learning/courses/${selectedCourseId.value}/progress`, {
-    method: 'POST',
-    body: {
-      action: 'upsertProgress',
-      courseId: selectedCourseId.value,
-      learner: updateForm.learner.trim(),
-      cohort: updateForm.cohort,
-      status: updateForm.lessonStatus,
-      score: updateForm.score,
-      timeSpentMinutes: updateForm.timeSpentMinutes,
-      attempts: updateForm.attempts,
-    },
+  await learningStore.upsertProgress(selectedCourseId.value, {
+    action: 'upsertProgress',
+    courseId: selectedCourseId.value,
+    learner: updateForm.learner.trim(),
+    cohort: updateForm.cohort,
+    status: updateForm.lessonStatus,
+    score: updateForm.score,
+    timeSpentMinutes: updateForm.timeSpentMinutes,
+    attempts: updateForm.attempts,
   })
 
-  await Promise.all([refreshProgress(), refreshAnalytics()])
+  await Promise.all([learningStore.fetchProgress(selectedCourseId.value, { force: true }), learningStore.fetchAnalytics({ force: true })])
 }
 </script>
 

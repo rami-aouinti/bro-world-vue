@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
-import type { LearningAdminAnalyticsApiResponse, LearningProgressApiResponse } from '~~/server/types/api/learning'
+import { useWorldLearningStore } from '~/stores/worldLearning'
 
 definePageMeta({ title: 'Learning' })
 
@@ -19,25 +19,20 @@ const learningNavItems = computed(() => [
     : []),
 ])
 
-const { data: coursesData } = await useAsyncData('learning-courses-home', () => $fetch('/api/world/learning/courses'))
-const firstCourseId = computed(() => coursesData.value?.items?.[0]?.id ?? '')
+const learningStore = useWorldLearningStore()
+await learningStore.fetchCourses()
+await learningStore.fetchAnalytics()
 
-const { data: analyticsData, refresh: refreshAnalytics } = await useAsyncData(
-  'learning-admin-analytics-home',
-  () => $fetch<LearningAdminAnalyticsApiResponse>('/api/world/learning/analytics'),
-)
+const firstCourseId = computed(() => learningStore.items[0]?.id ?? '')
+watch(firstCourseId, async (courseId) => {
+  if (!courseId) return
+  await learningStore.fetchProgress(courseId)
+}, { immediate: true })
 
-const { data: progressData, refresh: refreshProgress } = await useAsyncData(
-  'learning-progress-home',
-  () => firstCourseId.value
-    ? $fetch<LearningProgressApiResponse>(`/api/world/learning/courses/${firstCourseId.value}/progress`)
-    : Promise.resolve({ items: [] }),
-  { watch: [firstCourseId] },
-)
-
-const analytics = computed(() => analyticsData.value?.items)
-const topLearners = computed(() => [...(progressData.value?.items ?? [])].sort((a, b) => b.score - a.score).slice(0, 5))
-const certifiedCount = computed(() => (progressData.value?.items ?? []).filter((item) => item.certificate).length)
+const analytics = computed(() => learningStore.detail)
+const progressItems = computed(() => firstCourseId.value ? (learningStore.progressByCourse[firstCourseId.value] ?? []) : [])
+const topLearners = computed(() => [...progressItems.value].sort((a, b) => b.score - a.score).slice(0, 5))
+const certifiedCount = computed(() => progressItems.value.filter((item) => item.certificate).length)
 
 const rows = computed(() => topLearners.value.map((entry) => ({
   learner: entry.learner,
@@ -49,7 +44,7 @@ const rows = computed(() => topLearners.value.map((entry) => ({
 })))
 
 const refreshDashboard = async () => {
-  await Promise.all([refreshAnalytics(), refreshProgress()])
+  await Promise.all([learningStore.fetchAnalytics({ force: true }), firstCourseId.value ? learningStore.fetchProgress(firstCourseId.value, { force: true }) : Promise.resolve([])])
 }
 </script>
 

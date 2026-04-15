@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useWorldShopStore } from '~/stores/worldShop'
+
 definePageMeta({ title: 'Shop Checkout' })
 
 type CheckoutStep = 'cart' | 'address' | 'shipping' | 'payment' | 'confirmation'
@@ -43,9 +45,10 @@ const shopNavItems = [
   { title: 'Admin', to: '/world/shop/admin', icon: 'mdi-shield-crown-outline', rootOnly: true },
 ]
 
+const shopStore = useWorldShopStore()
 const loading = ref(false)
 const errorMessage = ref('')
-const checkout = ref<CheckoutSession | null>(null)
+const checkout = computed(() => shopStore.detail as CheckoutSession | null)
 
 const cart = ref<CartLine[]>([
   { productId: 'prd-premium-hoodie', name: 'Premium Hoodie', unitPrice: 79, quantity: 1 },
@@ -99,12 +102,9 @@ async function createCheckout() {
   errorMessage.value = ''
 
   try {
-    checkout.value = await $fetch('/api/world/shop/checkout/session', {
-      method: 'POST',
-      body: {
-        currency: 'USD',
-        cart: cart.value,
-      },
+    await shopStore.createCheckoutSession({
+      currency: 'USD',
+      cart: cart.value,
     })
   }
   catch (error: any) {
@@ -123,16 +123,11 @@ async function saveAddress() {
   errorMessage.value = ''
 
   try {
-    const updated = await $fetch<CheckoutSession>('/api/world/shop/checkout/address', {
-      method: 'POST',
-      body: {
-        checkoutId: checkout.value.id,
-        idempotencyKey: buildIdempotencyKey('address'),
-        address,
-      },
+    await shopStore.saveCheckoutAddress({
+      checkoutId: checkout.value.id,
+      idempotencyKey: buildIdempotencyKey('address'),
+      address,
     })
-
-    checkout.value = updated
   }
   catch (error: any) {
     errorMessage.value = error?.statusMessage || 'Adresse invalide.'
@@ -150,16 +145,12 @@ async function saveShipping() {
   errorMessage.value = ''
 
   try {
-    const updated = await $fetch<CheckoutSession>('/api/world/shop/checkout/shipping', {
-      method: 'POST',
-      body: {
-        checkoutId: checkout.value.id,
-        idempotencyKey: buildIdempotencyKey('shipping'),
-        shippingOptionId: selectedShippingId.value,
-      },
+    const updated = await shopStore.saveCheckoutShipping({
+      checkoutId: checkout.value.id,
+      idempotencyKey: buildIdempotencyKey('shipping'),
+      shippingOptionId: selectedShippingId.value,
     })
 
-    checkout.value = updated
     await navigateTo(`/world/shop/payment?checkoutId=${updated.id}`)
   }
   catch (error: any) {

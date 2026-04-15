@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useWorldShopStore } from '~/stores/worldShop'
+
 definePageMeta({ title: 'Shop Payment' })
 
 type CheckoutStatus = 'draft' | 'payment_pending' | 'processing' | 'paid' | 'failed'
@@ -37,11 +39,12 @@ const shopNavItems = [
 ]
 
 const provider = ref<'stripe' | 'adyen' | 'paypal'>('stripe')
+const shopStore = useWorldShopStore()
 const loading = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
-const checkout = ref<CheckoutSession | null>(null)
-const currentAttempt = ref<PaymentAttempt | null>(null)
+const checkout = computed(() => shopStore.detail as CheckoutSession | null)
+const currentAttempt = computed(() => shopStore.currentAttempt as PaymentAttempt | null)
 
 const buildIdempotencyKey = (prefix: string) => `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
 
@@ -49,7 +52,7 @@ async function refreshCheckout() {
   if (!checkoutId.value)
     return
 
-  checkout.value = await $fetch(`/api/world/shop/checkout/${checkoutId.value}`)
+  await shopStore.fetchCheckoutById(checkoutId.value)
 }
 
 async function createPaymentIntent() {
@@ -61,18 +64,11 @@ async function createPaymentIntent() {
   successMessage.value = ''
 
   try {
-    const response = await $fetch<{ checkout: CheckoutSession, attempt: PaymentAttempt }>('/api/world/shop/payment/intent', {
-      method: 'POST',
-      body: {
-        checkoutId: checkoutId.value,
-        provider: provider.value,
-        idempotencyKey: buildIdempotencyKey('payment'),
-      },
-      timeout: 20000,
+    await shopStore.createPaymentIntent({
+      checkoutId: checkoutId.value,
+      provider: provider.value,
+      idempotencyKey: buildIdempotencyKey('payment'),
     })
-
-    checkout.value = response.checkout
-    currentAttempt.value = response.attempt
     successMessage.value = 'Intent créé. Confirmez le paiement côté provider puis finalisez.'
   }
   catch (error: any) {
@@ -92,16 +88,11 @@ async function finalizeCheckout() {
   successMessage.value = ''
 
   try {
-    const updated = await $fetch<CheckoutSession>('/api/world/shop/payment/confirm', {
-      method: 'POST',
-      body: {
-        checkoutId: checkout.value.id,
-        providerPaymentId: checkout.value.providerPaymentId,
-        idempotencyKey: buildIdempotencyKey('confirm'),
-      },
+    await shopStore.confirmPayment({
+      checkoutId: checkout.value.id,
+      providerPaymentId: checkout.value.providerPaymentId,
+      idempotencyKey: buildIdempotencyKey('confirm'),
     })
-
-    checkout.value = updated
     successMessage.value = 'Checkout confirmé ✅'
   }
   catch (error: any) {

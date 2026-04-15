@@ -3,9 +3,9 @@ import type {
   CrmDeal,
   CrmPipelineColumn,
   CrmPipelineKpis,
-  CrmPipelineResponse,
   CrmPipelineStage,
 } from '~/types/crm'
+import { useWorldCrmStore } from '~/stores/worldCrm'
 
 definePageMeta({ title: 'CRM' })
 
@@ -20,9 +20,12 @@ const crmNavItems = computed(() => [
     : []),
 ])
 
-const { data: pipelineData, pending, refresh } = await useAsyncData<CrmPipelineResponse>('crm-pipeline', () =>
-  $fetch('/api/crm/pipeline'),
-)
+const crmStore = useWorldCrmStore()
+await crmStore.fetchPipeline()
+
+const pipelineData = computed(() => crmStore.detail as any)
+const pending = computed(() => crmStore.pending)
+const refresh = () => crmStore.fetchPipeline({ force: true })
 
 const isTransitioning = ref(false)
 const draggedDealId = ref<string | null>(null)
@@ -102,12 +105,7 @@ async function moveDeal(
       outcome: overrides.outcome ?? deal.outcome,
     }
 
-    const response = await $fetch<CrmPipelineResponse>(`/api/crm/deals/${deal.id}/transition`, {
-      method: 'PATCH',
-      body: payload,
-    })
-
-    pipelineData.value = response
+    await crmStore.transitionDeal(deal.id, payload)
   }
   finally {
     isTransitioning.value = false

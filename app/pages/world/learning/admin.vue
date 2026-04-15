@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
-import type { LearningAdminAnalyticsApiResponse } from '~~/server/types/api/learning'
+import { useWorldLearningStore } from '~/stores/worldLearning'
 
 definePageMeta({ title: 'Learning Admin' })
 
@@ -18,12 +18,14 @@ const learningNavItems = [
   { title: 'Admin', to: '/world/learning/admin', icon: 'mdi-shield-crown-outline', rootOnly: true },
 ]
 
-const { data: analyticsData, refresh, pending } = await useAsyncData(
-  'learning-admin-analytics',
-  () => $fetch<LearningAdminAnalyticsApiResponse>('/api/world/learning/analytics'),
-)
+const learningStore = useWorldLearningStore()
+await learningStore.fetchAnalytics()
 
-const cohortRows = computed(() => analyticsData.value?.items.cohortPerformance ?? [])
+const analyticsData = computed(() => ({ items: learningStore.detail ?? { totalLearners: 0, completionRate: 0, dropoutRate: 0, averageScore: 0, cohortPerformance: [], levelRules: [] } }))
+const pending = computed(() => learningStore.pending)
+const refresh = () => learningStore.fetchAnalytics({ force: true })
+
+const cohortRows = computed(() => analyticsData.value?.items?.cohortPerformance ?? [])
 </script>
 
 <template>

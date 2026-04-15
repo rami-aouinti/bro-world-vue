@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { JobCandidate, JobCandidatesApiResponse, JobPipelineStage } from '~~/server/types/api/jobs'
+import type { JobCandidate, JobPipelineStage } from '~~/server/types/api/jobs'
+import { useWorldJobsStore } from '~/stores/worldJobs'
 import type { SessionUser } from '~/types/session'
 
 const props = defineProps<{
@@ -10,11 +11,11 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-const { data, refresh, pending } = await useFetch<JobCandidatesApiResponse>('/api/jobs/candidates', {
-  query: {
-    context: props.context,
-  },
-})
+const jobsStore = useWorldJobsStore()
+await jobsStore.fetchCandidates(props.context)
+const data = computed(() => ({ items: jobsStore.items, stages: jobsStore.stages }))
+const refresh = () => jobsStore.fetchCandidates(props.context, { force: true })
+const pending = computed(() => jobsStore.pending)
 const { user } = useUserSession()
 const sessionUser = computed(() => user.value as SessionUser | null)
 const uiRole = computed<'admin' | 'recruiter' | 'hiring_manager' | 'interviewer'>(() => {
@@ -77,14 +78,11 @@ const saveTransition = async () => {
     return
   }
 
-  await $fetch(`/api/jobs/candidates/${selectedCandidate.value.id}/transition`, {
-    method: 'PATCH',
-    body: {
-      toStage: toStage.value,
-      recruiterNotes: recruiterNotes.value,
-      panelFeedback: panelFeedback.value,
-      actor: 'Recruiter UI',
-    },
+  await jobsStore.transitionCandidate(selectedCandidate.value.id, {
+    toStage: toStage.value,
+    recruiterNotes: recruiterNotes.value,
+    panelFeedback: panelFeedback.value,
+    actor: 'Recruiter UI',
   })
 
   await refresh()

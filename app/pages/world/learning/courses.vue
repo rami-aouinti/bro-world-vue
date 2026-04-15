@@ -2,12 +2,11 @@
 import type {
   LearningContentType,
   LearningCourse,
-  LearningCoursesApiResponse,
   LearningLesson,
   LearningProgress,
-  LearningProgressApiResponse,
   LearningProgressStatus,
 } from '~~/server/types/api/learning'
+import { useWorldLearningStore } from '~/stores/worldLearning'
 
 definePageMeta({ title: 'Learning Courses' })
 
@@ -36,12 +35,13 @@ const statusOptions: Array<{ title: string, value: LearningProgressStatus }> = [
   { title: 'Completed', value: 'completed' },
 ]
 
-const { data: coursesData, refresh: refreshCourses, pending } = await useAsyncData(
-  'learning-courses-content',
-  () => $fetch<LearningCoursesApiResponse>('/api/world/learning/courses'),
-)
+const learningStore = useWorldLearningStore()
+await learningStore.fetchCourses()
+const pending = computed(() => learningStore.pending)
+const coursesData = computed(() => ({ items: learningStore.items }))
+const refreshCourses = () => learningStore.fetchCourses({ force: true })
 
-const courses = computed<LearningCourse[]>(() => coursesData.value?.items ?? [])
+const courses = computed<LearningCourse[]>(() => coursesData.value.items ?? [])
 const selectedCourseId = ref('')
 const selectedModuleId = ref('')
 const selectedLessonId = ref('')
@@ -114,8 +114,7 @@ watch(selectedCourseId, async (courseId) => {
     return
   }
 
-  const response = await $fetch<LearningProgressApiResponse>('/api/world/learning/courses/' + courseId + '/progress')
-  progressData.value = response.items
+  progressData.value = await learningStore.fetchProgress(courseId)
 }, { immediate: true })
 
 const createCourseForm = reactive({ title: '', owner: '' })
@@ -150,10 +149,7 @@ const allCourseLessons = computed(() => {
 const selectedLearnerProgress = computed(() => progressData.value.find((item) => item.learner === progressForm.learner.trim()))
 
 const mutateCourses = async (payload: Record<string, unknown>) => {
-  coursesData.value = await $fetch('/api/world/learning/courses', {
-    method: 'POST',
-    body: payload,
-  })
+  await learningStore.mutateCourses(payload as any)
   await refreshCourses()
 }
 
@@ -289,16 +285,13 @@ const updateProgress = async () => {
     return
   }
 
-  const response = await $fetch<LearningProgressApiResponse>('/api/world/learning/courses/' + selectedCourse.value.id + '/progress', {
-    method: 'POST',
-    body: {
-      action: 'upsertProgress',
-      courseId: selectedCourse.value.id,
-      learner: progressForm.learner.trim(),
-      lessonId: progressForm.lessonId,
-      status: progressForm.status,
-    },
-  })
+  const response = await learningStore.upsertProgress(selectedCourse.value.id, {
+    action: 'upsertProgress',
+    courseId: selectedCourse.value.id,
+    learner: progressForm.learner.trim(),
+    lessonId: progressForm.lessonId,
+    status: progressForm.status,
+  } as any)
 
   progressData.value = response.items
 }
@@ -308,16 +301,13 @@ const toggleAssessmentCompletion = async (assessmentId: string, completed: boole
     return
   }
 
-  const response = await $fetch<LearningProgressApiResponse>('/api/world/learning/courses/' + selectedCourse.value.id + '/progress', {
-    method: 'POST',
-    body: {
-      action: 'upsertProgress',
-      courseId: selectedCourse.value.id,
-      learner: progressForm.learner.trim(),
-      assessmentId,
-      assessmentCompleted: completed,
-    },
-  })
+  const response = await learningStore.upsertProgress(selectedCourse.value.id, {
+    action: 'upsertProgress',
+    courseId: selectedCourse.value.id,
+    learner: progressForm.learner.trim(),
+    assessmentId,
+    assessmentCompleted: completed,
+  } as any)
 
   progressData.value = response.items
 }
