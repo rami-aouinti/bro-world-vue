@@ -83,7 +83,8 @@
         "selectPaymentMethod": "Sélectionnez un mode de paiement.",
         "paymentDeclined": "Paiement refusé."
       }
-    }
+    },
+    "world": "World"
   },
   "common": {
     "confirm": "Confirmer",

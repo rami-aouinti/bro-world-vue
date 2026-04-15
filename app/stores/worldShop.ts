@@ -238,7 +238,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
         () =>
           runTrackedStoreFetch('shop', () =>
             $fetch<WorldShopProductsListResponse>(
-              '/api/v1/shop/general/products',
+              '/api/world/shop/products',
               { query },
             ),
           ),
@@ -278,7 +278,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
         () =>
           runTrackedStoreFetch('shop', () =>
             $fetch<WorldShopCategoriesListResponse>(
-              '/api/v1/shop/general/categories',
+              '/api/world/shop/categories',
             ),
           ),
         {
@@ -320,7 +320,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
         () =>
           runTrackedStoreFetch('shop', () =>
             $fetch<ShopProductDetailResponse>(
-              `/api/v1/shop/general/products/${productId}`,
+              `/api/world/shop/products/${productId}`,
             ),
           ),
         {
