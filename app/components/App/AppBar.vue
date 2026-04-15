@@ -46,7 +46,16 @@ const navMenus = [
         detail:
           'Find quick answers to common setup, account, and product questions.',
       },
+      {
+        label: 'appbar.contact',
+        to: '/contact',
+        icon: 'mdi-email-outline',
+        detail:
+          'Reach out to our team for partnerships, support, and collaboration.',
+      },
     ],
+    twoColumns: true,
+    compactCards: true,
   },
   {
     label: 'appbar.applications',
@@ -83,11 +92,53 @@ const navMenus = [
           'Create engaging quizzes for onboarding, training, and community growth.',
       },
     ],
+    twoColumns: true,
+    compactCards: true,
+  },
+  {
+    label: 'World',
+    icon: 'mdi-earth',
+    description: 'Explore all world business modules.',
+    ctaLabel: 'Open World',
+    ctaTo: '/world',
+    items: [
+      {
+        label: 'CRM',
+        to: '/world/crm',
+        icon: 'mdi-account-group-outline',
+        detail:
+          'Manage projects, companies, pipelines, and governance modules.',
+      },
+      {
+        label: 'Shop',
+        to: '/world/shop',
+        icon: 'mdi-storefront-outline',
+        detail:
+          'Run products, categories, checkout, payment, and order operations.',
+      },
+      {
+        label: 'Learning',
+        to: '/world/learning',
+        icon: 'mdi-school-outline',
+        detail:
+          'Organize courses, levels, and learning paths for every audience.',
+      },
+      {
+        label: 'Jobs',
+        to: '/world/jobs',
+        icon: 'mdi-briefcase-search-outline',
+        detail:
+          'Track offers, applications, and personal hiring workflows.',
+      },
+    ],
+    twoColumns: true,
+    compactCards: true,
   },
 ]
 
 const featureMenu = navMenus[0]!
 const applicationsMenu = navMenus[1]!
+const worldMenu = navMenus[2]!
 
 const isDark = computed({
   get() {
@@ -115,6 +166,7 @@ const { notifications: actionNotifications } = storeToRefs(notificationStore)
 const notificationMenuOpen = ref(false)
 const mobileFeatureMenuOpen = ref(false)
 const mobileApplicationsMenuOpen = ref(false)
+const mobileWorldMenuOpen = ref(false)
 
 const userLabel = computed(() => {
   const fullName = [sessionUser.value?.firstName, sessionUser.value?.lastName]
@@ -350,16 +402,54 @@ function isMenuActive(paths: string[]) {
         </div>
       </v-menu>
 
-      <v-btn
-        to="/contact"
-        icon="mdi-email-outline"
-        variant="text"
-        size="small"
-        rounded="lg"
-        class="app-top-bar__nav-icon-btn"
-        :aria-label="t('appbar.contact')"
-        :color="route.path === '/contact' ? 'primary' : undefined"
-      />
+      <v-menu v-model="mobileWorldMenuOpen" location="bottom">
+        <template #activator="{ props }">
+          <v-btn
+            v-bind="props"
+            :icon="worldMenu.icon"
+            variant="text"
+            size="small"
+            rounded="lg"
+            class="app-top-bar__nav-icon-btn"
+            :aria-label="t(worldMenu.label)"
+            :color="
+              isMenuActive(worldMenu.items.map((item) => item.to))
+                ? 'primary'
+                : undefined
+            "
+          />
+        </template>
+        <div
+          class="app-top-bar__mega-menu app-top-bar__menu-surface app-top-bar__mega-menu--mobile"
+        >
+          <div class="app-top-bar__mega-menu-header">
+            <p class="text-overline text-primary mb-1">
+              {{ t(worldMenu.label) }}
+            </p>
+          </div>
+          <div class="app-top-bar__mega-menu-grid app-top-bar__mega-menu-grid--two-columns">
+            <NuxtLink
+              v-for="item in worldMenu.items"
+              :key="item.to"
+              :to="item.to"
+              class="app-top-bar__mega-menu-card app-top-bar__mega-menu-card--mobile"
+              @click="mobileWorldMenuOpen = false"
+            >
+              <div class="app-top-bar__mega-menu-icon-wrap">
+                <v-icon :icon="item.icon" size="22" />
+              </div>
+              <div>
+                <p class="text-body-1 font-weight-bold mb-1">
+                  {{ t(item.label) }}
+                </p>
+                <p class="text-caption text-medium-emphasis mb-0">
+                  {{ item.detail }}
+                </p>
+              </div>
+            </NuxtLink>
+          </div>
+        </div>
+      </v-menu>
     </div>
 
     <div v-else class="app-top-bar__nav d-none d-md-flex">
@@ -395,7 +485,7 @@ function isMenuActive(paths: string[]) {
             class="app-top-bar__mega-menu-grid"
             :class="{
               'app-top-bar__mega-menu-grid--two-columns':
-                menu.label === 'appbar.applications',
+                menu.twoColumns,
             }"
           >
             <NuxtLink
@@ -403,6 +493,7 @@ function isMenuActive(paths: string[]) {
               :key="item.to"
               :to="item.to"
               class="app-top-bar__mega-menu-card"
+              :class="{ 'app-top-bar__mega-menu-card--compact': menu.compactCards }"
             >
               <div class="app-top-bar__mega-menu-icon-wrap">
                 <v-icon :icon="item.icon" size="22" />
@@ -430,17 +521,6 @@ function isMenuActive(paths: string[]) {
           </div>
         </div>
       </v-menu>
-      <v-btn
-        to="/contact"
-        prepend-icon="mdi-email-outline"
-        variant="text"
-        size="small"
-        rounded="lg"
-        class="app-top-bar__nav-btn"
-        :color="route.path === '/contact' ? 'primary' : undefined"
-      >
-        {{ t('appbar.contact') }}
-      </v-btn>
     </div>
 
     <div id="app-bar" class="app-top-bar__portal" />
@@ -802,8 +882,8 @@ function isMenuActive(paths: string[]) {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  min-height: 116px;
-  padding: 16px;
+  min-height: 104px;
+  padding: 14px;
   border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.09);
   background: rgba(255, 255, 255, 0.03);
@@ -813,6 +893,12 @@ function isMenuActive(paths: string[]) {
     transform 160ms ease,
     border-color 160ms ease,
     background-color 160ms ease;
+}
+
+.app-top-bar__mega-menu-card--compact {
+  min-height: 96px;
+  padding: 12px;
+  gap: 10px;
 }
 
 .app-top-bar__mega-menu-card:hover {

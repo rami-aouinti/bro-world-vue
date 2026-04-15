@@ -1,0 +1,40 @@
+<script setup lang="ts">
+import type { SessionUser } from '~/types/session'
+
+definePageMeta({ title: 'CRM' })
+
+const { user } = useUserSession()
+const sessionUser = computed(() => user.value as SessionUser | null)
+const isRoot = computed(() => sessionUser.value?.roles?.includes('ROLE_ROOT') ?? false)
+
+const crmItems = computed(() => {
+  const base = [
+    { title: 'Projects', to: '/world/crm/projects', icon: 'mdi-folder-outline' },
+    { title: 'Company', to: '/world/crm/company', icon: 'mdi-domain' },
+  ]
+
+  return isRoot.value
+    ? [...base, { title: 'Admin', to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' }]
+    : base
+})
+</script>
+
+<template>
+  <v-container fluid>
+    <v-card rounded="xl" class="pa-3">
+      <v-card-title class="text-h5">CRM</v-card-title>
+      <v-row class="mt-2">
+        <v-col v-for="item in crmItems" :key="item.to" cols="12" sm="6">
+          <v-card :to="item.to" rounded="lg" variant="tonal">
+            <v-card-item>
+              <template #prepend>
+                <v-icon :icon="item.icon" class="mr-3" />
+              </template>
+              <v-card-title>{{ item.title }}</v-card-title>
+            </v-card-item>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-card>
+  </v-container>
+</template>
