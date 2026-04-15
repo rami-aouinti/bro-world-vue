@@ -616,7 +616,17 @@
       "home": "Startseite",
       "discover": "Entdecken",
       "messages": "Nachrichten",
-      "title": "Navigation"
+      "title": "Navigation",
+      "games": "Spiele",
+      "products": "Produkte",
+      "actions": {
+        "open": "Öffnen"
+      },
+      "states": {
+        "emptyGames": "Zurzeit sind keine Spiele verfügbar.",
+        "emptyProducts": "Zurzeit sind keine Produkte verfügbar.",
+        "productsError": "Produkte können derzeit nicht geladen werden."
+      }
     },
     "rightNav": {
       "localContext": {

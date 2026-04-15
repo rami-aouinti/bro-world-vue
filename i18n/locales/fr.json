@@ -625,7 +625,17 @@
       "home": "Accueil",
       "discover": "Découvrir",
       "messages": "Messages",
-      "title": "Navigation"
+      "title": "Navigation",
+      "games": "Jeux",
+      "products": "Produits",
+      "actions": {
+        "open": "Ouvrir"
+      },
+      "states": {
+        "emptyGames": "Aucun jeu disponible pour le moment.",
+        "emptyProducts": "Aucun produit disponible pour le moment.",
+        "productsError": "Impossible de charger les produits pour le moment."
+      }
     },
     "rightNav": {
       "localContext": {

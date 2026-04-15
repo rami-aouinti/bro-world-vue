@@ -625,7 +625,17 @@
       "home": "Home",
       "discover": "Discover",
       "messages": "Messages",
-      "title": "Navigation"
+      "title": "Navigation",
+      "games": "Games",
+      "products": "Products",
+      "actions": {
+        "open": "Open"
+      },
+      "states": {
+        "emptyGames": "No games available right now.",
+        "emptyProducts": "No products available right now.",
+        "productsError": "Unable to load products right now."
+      }
     },
     "rightNav": {
       "localContext": {
