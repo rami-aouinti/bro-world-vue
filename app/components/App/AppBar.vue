@@ -8,10 +8,22 @@ import type { WorldShopCartLine } from '~/types/world/shop'
 type ShopCartResponse = {
   id?: string
   currency?: string
+  currencyCode?: string
   totalAmount?: number
+  subtotal?: number
   subtotalAmount?: number
   items?: WorldShopCartLine[]
   cart?: WorldShopCartLine[]
+}
+
+type ShopCartItem = WorldShopCartLine & {
+  id?: string
+  lineTotal?: number
+  unitPriceSnapshot?: number
+  product?: {
+    id?: string
+    name?: string
+  }
 }
 
 const theme = useTheme()
@@ -220,13 +232,21 @@ const cartTotalAmount = computed(() => {
   const payload = cartPayload.value
   if (!payload) return 0
   if (typeof payload.totalAmount === 'number') return payload.totalAmount
+  if (typeof payload.subtotal === 'number') return payload.subtotal
   if (typeof payload.subtotalAmount === 'number') return payload.subtotalAmount
   return cartItems.value.reduce(
-    (sum, line) => sum + Number(line.unitPrice || 0) * Number(line.quantity || 0),
+    (sum, line: ShopCartItem) =>
+      sum +
+      (typeof line.lineTotal === 'number'
+        ? Number(line.lineTotal || 0)
+        : Number(line.unitPrice || line.unitPriceSnapshot || 0) *
+          Number(line.quantity || 0)),
     0,
   )
 })
-const cartCurrency = computed(() => cartPayload.value?.currency || 'EUR')
+const cartCurrency = computed(
+  () => cartPayload.value?.currency || cartPayload.value?.currencyCode || 'EUR',
+)
 const showCartMenu = computed(() => loggedIn.value && cartCount.value > 0)
 
 function formatMoney(amount: number, currency: string) {
@@ -654,15 +674,18 @@ function isMenuActive(paths: string[]) {
                 </v-list-subheader>
                 <v-list-item
                   v-for="line in cartItems"
-                  :key="line.productId"
-                  :title="line.name"
+                  :key="line.productId || line.product?.id || line.id"
+                  :title="line.name || line.product?.name || line.productId"
                   :subtitle="`x${line.quantity}`"
                 >
                   <template #append>
                     <span class="text-body-2 font-weight-medium">
                       {{
                         formatMoney(
-                          Number(line.unitPrice || 0) * Number(line.quantity || 0),
+                          typeof line.lineTotal === 'number'
+                            ? Number(line.lineTotal || 0)
+                            : Number(line.unitPrice || line.unitPriceSnapshot || 0) *
+                                Number(line.quantity || 0),
                           cartCurrency,
                         )
                       }}

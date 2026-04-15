@@ -1,65 +1,64 @@
 <script setup lang="ts">
 import { useWorldShopStore } from '~/stores/worldShop'
+import type { WorldShopCheckoutSession } from '~/types/world/shop'
 
 definePageMeta({ title: 'Shop Checkout' })
 const { shopNavItems } = useShopNavItems()
-
-type CheckoutStep = 'cart' | 'address' | 'shipping' | 'payment' | 'confirmation'
-type CheckoutStatus =
-  | 'draft'
-  | 'payment_pending'
-  | 'processing'
-  | 'paid'
-  | 'failed'
 
 type CartLine = {
   productId: string
   name: string
   unitPrice: number
   quantity: number
+  lineTotal?: number
 }
 
-type ShippingOption = {
-  id: string
-  label: string
-  carrier: string
-  amount: number
-  etaDays: number
+type ShopCartApiItem = {
+  id?: string
+  productId: string
+  quantity: number
+  unitPriceSnapshot?: number
+  lineTotal?: number
+  product?: {
+    name?: string
+  }
 }
 
-type CheckoutSession = {
-  id: string
-  step: CheckoutStep
-  status: CheckoutStatus
-  currency: string
-  cart: CartLine[]
-  subtotalAmount: number
-  shippingAmount: number
-  totalAmount: number
-  shippingOptions: ShippingOption[]
-  selectedShippingId?: string
-  providerPaymentId?: string
+type ShopCartApiResponse = {
+  id?: string
+  currency?: string
+  currencyCode?: string
+  items?: ShopCartApiItem[]
+  cart?: ShopCartApiItem[]
+  subtotal?: number
+  subtotalAmount?: number
 }
 
 const shopStore = useWorldShopStore()
 const loading = ref(false)
 const errorMessage = ref('')
-const checkout = computed(() => shopStore.detail as CheckoutSession | null)
+const checkout = computed(() => shopStore.detail as WorldShopCheckoutSession | null)
+const cartPayload = computed(() => shopStore.cart as ShopCartApiResponse | null)
+const cart = computed<CartLine[]>(() => {
+  const payload = cartPayload.value
+  if (!payload) return []
+  const lines = Array.isArray(payload.items)
+    ? payload.items
+    : Array.isArray(payload.cart)
+      ? payload.cart
+      : []
 
-const cart = ref<CartLine[]>([
-  {
-    productId: 'prd-premium-hoodie',
-    name: 'Premium Hoodie',
-    unitPrice: 79,
-    quantity: 1,
-  },
-  {
-    productId: 'prd-starter-pack',
-    name: 'Starter Pack',
-    unitPrice: 45,
-    quantity: 1,
-  },
-])
+  return lines.map((line) => ({
+    productId: line.productId,
+    name: line.product?.name || line.productId,
+    unitPrice: Number(line.unitPriceSnapshot || 0),
+    quantity: Number(line.quantity || 0),
+    lineTotal: Number(line.lineTotal || 0),
+  }))
+})
+const checkoutCurrency = computed(
+  () => cartPayload.value?.currencyCode || cartPayload.value?.currency || 'EUR',
+)
 
 const address = reactive({
   fullName: 'John Doe',
@@ -94,9 +93,20 @@ const activeStep = computed(() => {
   return checkout.value.step
 })
 
-const subtotal = computed(() =>
-  cart.value.reduce((sum, line) => sum + line.quantity * line.unitPrice, 0),
-)
+const subtotal = computed(() => {
+  if (typeof cartPayload.value?.subtotal === 'number') return cartPayload.value.subtotal
+  if (typeof cartPayload.value?.subtotalAmount === 'number')
+    return cartPayload.value.subtotalAmount
+
+  return cart.value.reduce(
+    (sum, line) =>
+      sum +
+      (typeof line.lineTotal === 'number'
+        ? line.lineTotal
+        : line.quantity * line.unitPrice),
+    0,
+  )
+})
 
 const shippingAmount = computed(() => {
   const option = checkout.value?.shippingOptions?.find(
@@ -111,13 +121,23 @@ const buildIdempotencyKey = (prefix: string) =>
   `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
 
 async function createCheckout() {
+  if (!cart.value.length) {
+    errorMessage.value = 'Panier vide. Ajoutez des produits avant de lancer checkout.'
+    return
+  }
+
   loading.value = true
   errorMessage.value = ''
 
   try {
     await shopStore.createCheckoutSession({
-      currency: 'USD',
-      cart: cart.value,
+      currency: checkoutCurrency.value,
+      cart: cart.value.map((line) => ({
+        productId: line.productId,
+        name: line.name,
+        unitPrice: line.unitPrice,
+        quantity: line.quantity,
+      })),
     })
   } catch (error: any) {
     errorMessage.value =
@@ -167,6 +187,15 @@ async function saveShipping() {
     loading.value = false
   }
 }
+
+onMounted(async () => {
+  try {
+    await shopStore.fetchCart()
+  } catch (error: any) {
+    errorMessage.value =
+      error?.statusMessage || 'Impossible de récupérer le panier pour checkout.'
+  }
+})
 </script>
 
 <template>
@@ -219,7 +248,21 @@ async function saveShipping() {
                   <tr v-for="line in cart" :key="line.productId">
                     <td>{{ line.name }}</td>
                     <td>{{ line.quantity }}</td>
-                    <td>${{ line.unitPrice.toFixed(2) }}</td>
+                    <td>
+                      {{
+                        new Intl.NumberFormat('fr-FR', {
+                          style: 'currency',
+                          currency: checkoutCurrency,
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }).format(line.unitPrice)
+                      }}
+                    </td>
+                  </tr>
+                  <tr v-if="cart.length === 0">
+                    <td colspan="3" class="text-medium-emphasis">
+                      Panier vide.
+                    </td>
                   </tr>
                 </tbody>
               </v-table>
@@ -272,7 +315,7 @@ async function saveShipping() {
                   v-for="option in checkout?.shippingOptions || []"
                   :key="option.id"
                   :value="option.id"
-                  :label="`${option.label} (${option.carrier}) - $${option.amount.toFixed(2)} - ${option.etaDays}j`"
+                  :label="`${option.label} (${option.carrier}) - ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: checkoutCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(option.amount)} - ${option.etaDays}j`"
                 />
               </v-radio-group>
               <v-btn
@@ -296,13 +339,37 @@ async function saveShipping() {
                 Status: <strong>{{ checkout?.status || 'draft' }}</strong>
               </p>
               <p class="mb-2">
-                Subtotal: <strong>${{ subtotal.toFixed(2) }}</strong>
+                Subtotal:
+                <strong>{{
+                  new Intl.NumberFormat('fr-FR', {
+                    style: 'currency',
+                    currency: checkoutCurrency,
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  }).format(subtotal)
+                }}</strong>
               </p>
               <p class="mb-2">
-                Shipping: <strong>${{ shippingAmount.toFixed(2) }}</strong>
+                Shipping:
+                <strong>{{
+                  new Intl.NumberFormat('fr-FR', {
+                    style: 'currency',
+                    currency: checkoutCurrency,
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  }).format(shippingAmount)
+                }}</strong>
               </p>
               <p>
-                Total: <strong>${{ total.toFixed(2) }}</strong>
+                Total:
+                <strong>{{
+                  new Intl.NumberFormat('fr-FR', {
+                    style: 'currency',
+                    currency: checkoutCurrency,
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  }).format(total)
+                }}</strong>
               </p>
             </v-card>
           </v-col>
