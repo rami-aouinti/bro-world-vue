@@ -5,6 +5,7 @@ import type {
   CrmLeadsListQuery,
   SortOrder,
 } from '~~/server/types/api/crm'
+import { requireCrmPermission } from '~~/server/utils/crmAccessControl'
 
 const LEADS: CrmLead[] = [
   {
@@ -63,7 +64,8 @@ const normalizeStatus = (value: unknown): CrmLeadStatus | undefined => {
   return undefined
 }
 
-export default defineEventHandler((event): CrmLeadsApiResponse => {
+export default defineEventHandler(async (event): Promise<CrmLeadsApiResponse> => {
+  await requireCrmPermission(event, 'crm.leads.read')
   const query = getQuery(event) as CrmLeadsListQuery
   const page = Math.max(1, Number(query.page ?? 1) || 1)
   const limit = Math.min(100, Math.max(1, Number(query.limit ?? 10) || 10))
