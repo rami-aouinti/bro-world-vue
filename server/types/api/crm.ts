@@ -1,9 +1,16 @@
 import type {
-  CrmDeal,
-  CrmOutcome,
+  CrmAccount as CrmCoreAccount,
+  CrmActivity as CrmCoreActivity,
+  CrmAnalytics,
+  CrmContact as CrmCoreContact,
+  CrmLead as CrmCoreLead,
+  CrmNote as CrmCoreNote,
+  CrmOpportunity as CrmCoreOpportunity,
+  CrmOpportunityDetail,
   CrmPipelineColumn,
   CrmPipelineKpis,
   CrmPipelineStage,
+  CrmTransitionPayload,
 } from '../../../app/types/crm'
 import type { CrmPermission } from '~~/shared/crmAccess'
 
@@ -116,14 +123,40 @@ export interface CrmAdminApiResponse {
 
 export interface CrmPipelineApiResponse {
   columns: CrmPipelineColumn[]
-  deals: CrmDeal[]
+  opportunities: CrmCoreOpportunity[]
+  deals: CrmCoreOpportunity[]
   kpis: CrmPipelineKpis
+  analytics: CrmAnalytics
   updatedAt: string
 }
 
-export interface CrmTransitionApiPayload {
-  toStage: CrmPipelineStage
-  probability: number
-  expectedCloseDate: string
-  outcome?: CrmOutcome | null
+export type CrmTransitionApiPayload = CrmTransitionPayload
+
+export interface CrmOverviewQuery {
+  search?: string
+  owner?: string
+  stage?: CrmPipelineStage | 'all'
+  industry?: string
+  minAmount?: string | number
+  maxAmount?: string | number
+  fromExpectedCloseDate?: string
+  toExpectedCloseDate?: string
 }
+
+export interface CrmOverviewApiResponse {
+  leads: CrmCoreLead[]
+  accounts: CrmCoreAccount[]
+  contacts: CrmCoreContact[]
+  opportunities: CrmCoreOpportunity[]
+  activities: CrmCoreActivity[]
+  notes: CrmCoreNote[]
+  pipeline: {
+    columns: CrmPipelineColumn[]
+    opportunities: CrmCoreOpportunity[]
+  }
+  analytics: CrmAnalytics
+  filtersApplied: Record<string, string>
+  updatedAt: string
+}
+
+export type CrmOpportunityDetailApiResponse = CrmOpportunityDetail
