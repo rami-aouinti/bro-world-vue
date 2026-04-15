@@ -165,7 +165,6 @@ function requestLocation() {
     },
     () => {
       permissionDenied.value = true
-      setAutoRequestTimestamp()
     },
     {
       enableHighAccuracy: false,
@@ -216,7 +215,61 @@ onMounted(() => {
       </v-card>
     </v-dialog>
 
-    <div v-if="hasContext && localContext">
+    <div v-if="isLoading">
+      <v-card-text class="py-6 text-center">
+        <v-progress-circular
+          class="mb-3"
+          indeterminate
+          color="primary"
+          size="24"
+          width="3"
+        />
+        <div class="text-body-2">
+          {{ $t('home.rightNav.localContext.stateLoading') }}
+        </div>
+      </v-card-text>
+    </div>
+
+    <div v-else-if="permissionDenied">
+      <v-card-text class="py-6 text-center">
+        <v-icon icon="mdi-map-marker-off-outline" color="warning" class="mb-3" />
+        <div class="text-body-2 mb-3">
+          {{ $t('home.rightNav.localContext.statePermissionDenied') }}
+        </div>
+        <v-btn color="primary" variant="tonal" size="small" @click="requestLocation">
+          {{ $t('home.rightNav.localContext.permissionCta') }}
+        </v-btn>
+      </v-card-text>
+    </div>
+
+    <div v-else-if="loadError">
+      <v-card-text class="py-6 text-center">
+        <v-icon icon="mdi-alert-circle-outline" color="error" class="mb-3" />
+        <div class="text-body-2 mb-2">
+          {{ $t('home.rightNav.localContext.stateError') }}
+        </div>
+        <div class="text-caption text-medium-emphasis mb-3">
+          {{ loadError }}
+        </div>
+        <v-btn color="primary" variant="tonal" size="small" @click="requestLocation">
+          {{ $t('home.rightNav.localContext.retryCta') }}
+        </v-btn>
+      </v-card-text>
+    </div>
+
+    <div v-else-if="!hasContext">
+      <v-card-text class="py-6 text-center">
+        <v-icon icon="mdi-crosshairs-gps" color="primary" class="mb-3" />
+        <div class="text-body-2 mb-3">
+          {{ $t('home.rightNav.localContext.stateInitial') }}
+        </div>
+        <v-btn color="primary" size="small" @click="requestLocation">
+          {{ $t('home.rightNav.localContext.permissionCta') }}
+        </v-btn>
+      </v-card-text>
+    </div>
+
+    <div v-else-if="localContext">
       <v-card-item>
         <template #prepend>
           <v-icon icon="mdi-weather-partly-cloudy" color="primary" />
