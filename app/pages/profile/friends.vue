@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import type { FriendUser } from '~/stores/profile'
+import { privateApi } from '~/utils/http/privateApi'
 
 const { t } = useI18n()
 const profileStore = useProfileStore()
@@ -228,7 +229,7 @@ async function applyAction(userId: string, action: FriendAction) {
 
   try {
     if (action === 'message') {
-      const conversation = await api<{ id: string }>(
+      const conversation = await privateApi.request<{ id: string }>(
         `/api/chat/private/conversation/${userId}/user`,
         { method: 'POST' },
       )

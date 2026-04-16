@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { privateApi } from '~/utils/http/privateApi'
+
 definePageMeta({ title: 'Learning Paths' })
 
 interface CohortSession {
@@ -266,7 +268,7 @@ async function syncSessionsWithCalendar() {
 
   try {
     for (const session of cohort.sessions) {
-      await $fetch('/api/calendar/private/events', {
+      await privateApi.request('/api/calendar/private/events', {
         method: 'POST',
         body: {
           title: `[Learning] ${cohort.pathName} · ${session.title}`,
@@ -284,7 +286,7 @@ async function syncSessionsWithCalendar() {
       )
       const reminderEnd = new Date(reminderStart.getTime() + 1000 * 60 * 30)
 
-      await $fetch('/api/calendar/private/events', {
+      await privateApi.request('/api/calendar/private/events', {
         method: 'POST',
         body: {
           title: `[Reminder] ${cohort.pathName} · ${session.title}`,

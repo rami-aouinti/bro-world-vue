@@ -1,3 +1,5 @@
+import { privateApi } from '~/utils/http/privateApi'
+
 export interface InboxItem {
   id: string
   title: string
@@ -189,12 +191,13 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
     },
     async fetchInboxConversations(page = 1, limit = 20) {
       try {
-        const response = await $fetch<PrivateConversationsApiResponse>(
-          '/api/chat/private/conversations',
-          {
-            query: { page, limit },
-          },
-        )
+        const response =
+          await privateApi.request<PrivateConversationsApiResponse>(
+            '/api/chat/private/conversations',
+            {
+              params: { page, limit },
+            },
+          )
 
         const items = response.items || []
         this.inbox = items.map(normalizePrivateConversation)
@@ -213,7 +216,7 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
     },
     async fetchConversationById(conversationId: string) {
       try {
-        const conversation = await $fetch<PrivateConversation>(
+        const conversation = await privateApi.request<PrivateConversation>(
           `/api/chat/private/conversations/${conversationId}`,
         )
         this.upsertInboxConversation(conversation)
@@ -238,7 +241,7 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
       payload: UpdatePrivateConversationPayload,
     ) {
       try {
-        const conversation = await $fetch<PrivateConversation>(
+        const conversation = await privateApi.request<PrivateConversation>(
           `/api/chat/private/conversations/${conversationId}`,
           {
             method: 'PATCH',
@@ -271,9 +274,12 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
         currentInboxConversationId === conversationId
 
       try {
-        await $fetch(`/api/chat/private/conversations/${conversationId}`, {
-          method: 'DELETE',
-        })
+        await privateApi.request(
+          `/api/chat/private/conversations/${conversationId}`,
+          {
+            method: 'DELETE',
+          },
+        )
         this.removeInboxConversation(conversationId)
       } catch (error) {
         if (isUnauthorizedError(error)) {

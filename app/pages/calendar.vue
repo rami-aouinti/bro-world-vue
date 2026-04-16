@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { privateApi } from '~/utils/http/privateApi'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin, { Draggable } from '@fullcalendar/interaction'
@@ -193,7 +194,7 @@ async function loadEvents() {
 
   try {
     const [privateResponse, upcomingResponse] = await Promise.all([
-      $fetch<PrivateEventsResponse>('/api/calendar/private/events'),
+      privateApi.request<PrivateEventsResponse>('/api/calendar/private/events'),
       $fetch<PrivateCalendarEvent[]>('/api/calendar/events/upcoming'),
     ])
 
@@ -255,7 +256,7 @@ async function onEventDrop(dropInfo: {
   }
 
   try {
-    await $fetch(`/api/calendar/private/events/${movedEvent.id}`, {
+    await privateApi.request(`/api/calendar/private/events/${movedEvent.id}`, {
       method: 'PATCH',
       body: payload,
     })
@@ -288,7 +289,7 @@ async function onExternalDrop(dropInfo: {
   }
 
   try {
-    await $fetch('/api/calendar/private/events', {
+    await privateApi.request('/api/calendar/private/events', {
       method: 'POST',
       body: payload,
     })
@@ -333,12 +334,15 @@ async function saveEvent() {
     const payload = buildPayload()
 
     if (selectedEvent.value) {
-      await $fetch(`/api/calendar/private/events/${selectedEvent.value.id}`, {
-        method: 'PATCH',
-        body: payload,
-      })
+      await privateApi.request(
+        `/api/calendar/private/events/${selectedEvent.value.id}`,
+        {
+          method: 'PATCH',
+          body: payload,
+        },
+      )
     } else {
-      await $fetch('/api/calendar/private/events', {
+      await privateApi.request('/api/calendar/private/events', {
         method: 'POST',
         body: payload,
       })
@@ -360,9 +364,12 @@ async function deleteEvent() {
   isSaving.value = true
 
   try {
-    await $fetch(`/api/calendar/private/events/${selectedEvent.value.id}`, {
-      method: 'DELETE',
-    })
+    await privateApi.request(
+      `/api/calendar/private/events/${selectedEvent.value.id}`,
+      {
+        method: 'DELETE',
+      },
+    )
 
     dialogOpen.value = false
     await loadEvents()
@@ -380,7 +387,7 @@ async function cancelEvent() {
   isSaving.value = true
 
   try {
-    await $fetch(
+    await privateApi.request(
       `/api/calendar/private/events/${selectedEvent.value.id}/cancel`,
       {
         method: 'POST',

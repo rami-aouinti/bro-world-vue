@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { RecruitMyJobsResponse } from '~/types/world/jobs'
+import { privateApi } from '~/utils/http/privateApi'
 
 definePageMeta({ title: 'Jobs My Offers' })
 
@@ -38,7 +39,7 @@ async function fetchMyJobs() {
   errorMessage.value = ''
 
   try {
-    const response = await $fetch<RecruitMyJobsResponse>(
+    const response = await privateApi.request<RecruitMyJobsResponse>(
       '/api/recruit/general/private/me/jobs',
     )
     createdJobs.value = response.createdJobs.filter((job) => job.owner)
@@ -116,11 +117,26 @@ await fetchMyJobs()
                 <td>{{ job.contractType }}</td>
                 <td>{{ job.workMode }}</td>
                 <td>
-                  <v-chip size="small" color="success" variant="tonal" class="mr-1">
+                  <v-chip
+                    size="small"
+                    color="success"
+                    variant="tonal"
+                    class="mr-1"
+                  >
                     owner
                   </v-chip>
-                  <v-btn size="x-small" variant="text" icon="mdi-pencil" disabled />
-                  <v-btn size="x-small" variant="text" icon="mdi-delete" disabled />
+                  <v-btn
+                    size="x-small"
+                    variant="text"
+                    icon="mdi-pencil"
+                    disabled
+                  />
+                  <v-btn
+                    size="x-small"
+                    variant="text"
+                    icon="mdi-delete"
+                    disabled
+                  />
                 </td>
               </tr>
               <tr v-if="!createdJobs.length">

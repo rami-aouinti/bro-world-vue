@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { privateApi } from '~/utils/http/privateApi'
+
 type BlogPostStats = {
   totalPosts: number
   totalComments: number
@@ -12,7 +14,7 @@ const {
   pending: statsPending,
   error: statsError,
 } = await useAsyncData<BlogPostStats>('profile-posts-stats', () =>
-  $fetch<BlogPostStats>('/api/blog/private/posts/stats' as string),
+  privateApi.request<BlogPostStats>('/api/blog/private/posts/stats' as string),
 )
 
 const safeStats = computed<BlogPostStats>(() => {

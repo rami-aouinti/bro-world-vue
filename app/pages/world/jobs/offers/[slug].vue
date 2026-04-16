@@ -6,6 +6,7 @@ import type {
   RecruitResume,
   RecruitResumeSection,
 } from '~/types/world/jobs'
+import { privateApi } from '~/utils/http/privateApi'
 
 definePageMeta({ title: 'Jobs Offer Detail' })
 
@@ -71,7 +72,9 @@ async function fetchDetail() {
 }
 
 async function fetchMyResumes() {
-  resumes.value = await $fetch<RecruitResume[]>('/api/recruit/general/private/me/resumes')
+  resumes.value = await privateApi.request<RecruitResume[]>(
+    '/api/recruit/general/private/me/resumes',
+  )
   if (!selectedResumeId.value && resumes.value.length) {
     selectedResumeId.value = resumes.value[0].id
   }
@@ -81,22 +84,31 @@ async function createResume(): Promise<string> {
   if (resumeFile.value) {
     const formData = new FormData()
     formData.append('document', resumeFile.value)
-    formData.append('experiences', JSON.stringify(toSections(manualResume.experiences)))
+    formData.append(
+      'experiences',
+      JSON.stringify(toSections(manualResume.experiences)),
+    )
     formData.append('skills', JSON.stringify(toSections(manualResume.skills)))
-    const response = await $fetch<{ id: string }>('/api/recruit/general/resumes', {
-      method: 'POST',
-      body: formData,
-    })
+    const response = await $fetch<{ id: string }>(
+      '/api/recruit/general/resumes',
+      {
+        method: 'POST',
+        body: formData,
+      },
+    )
     return response.id
   }
 
-  const response = await $fetch<{ id: string }>('/api/recruit/general/resumes', {
-    method: 'POST',
-    body: {
-      experiences: toSections(manualResume.experiences),
-      skills: toSections(manualResume.skills),
+  const response = await $fetch<{ id: string }>(
+    '/api/recruit/general/resumes',
+    {
+      method: 'POST',
+      body: {
+        experiences: toSections(manualResume.experiences),
+        skills: toSections(manualResume.skills),
+      },
     },
-  })
+  )
 
   return response.id
 }
@@ -118,13 +130,17 @@ async function submitApplication() {
       selectedResumeId.value = resumeId
     }
 
-    const applicant = await $fetch<{ id: string }>('/api/recruit/general/applicants', {
-      method: 'POST',
-      body: {
-        resumeId,
-        coverLetter: coverLetter.value.trim() || 'Application from jobs module',
+    const applicant = await $fetch<{ id: string }>(
+      '/api/recruit/general/applicants',
+      {
+        method: 'POST',
+        body: {
+          resumeId,
+          coverLetter:
+            coverLetter.value.trim() || 'Application from jobs module',
+        },
       },
-    })
+    )
 
     const application = await $fetch<RecruitApplicationSummary>(
       '/api/recruit/general/applications',
@@ -301,7 +317,9 @@ await fetchDetail()
         <v-select
           v-model="selectedResumeId"
           label="Choisir un CV existant"
-          :items="resumes.map((resume) => ({ title: resume.id, value: resume.id }))"
+          :items="
+            resumes.map((resume) => ({ title: resume.id, value: resume.id }))
+          "
           item-title="title"
           item-value="value"
           :disabled="applyLoading"
@@ -327,7 +345,11 @@ await fetchDetail()
           :key="`exp-${index}`"
           class="mb-2"
         >
-          <v-text-field v-model="item.title" label="Titre" density="comfortable" />
+          <v-text-field
+            v-model="item.title"
+            label="Titre"
+            density="comfortable"
+          />
           <v-text-field
             v-model="item.description"
             label="Description"
@@ -350,7 +372,11 @@ await fetchDetail()
           :key="`skill-${index}`"
           class="mb-2"
         >
-          <v-text-field v-model="item.title" label="Titre" density="comfortable" />
+          <v-text-field
+            v-model="item.title"
+            label="Titre"
+            density="comfortable"
+          />
           <v-text-field
             v-model="item.description"
             label="Description"
@@ -378,7 +404,10 @@ await fetchDetail()
 
       <template #actions>
         <v-spacer />
-        <v-btn variant="text" :disabled="applyLoading" @click="applyOpen = false"
+        <v-btn
+          variant="text"
+          :disabled="applyLoading"
+          @click="applyOpen = false"
           >Fermer</v-btn
         >
         <v-btn
