@@ -30,22 +30,21 @@ defineExpose({ open })
 </script>
 
 <template>
-  <v-dialog v-model="dialog" max-width="400px">
-    <v-card>
-      <v-card-text class="font-weight-bold d-flex">
-        <v-icon class="mr-2" color="warning" icon="$warning" />
-        <span>{{ message }}</span>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer />
-        <v-btn color="primary" @click="cancel">
-          {{ t('common.cancel') }}
-        </v-btn>
-        <v-btn color="primary" @click="confirm">
-          {{ t('common.confirm') }}
-        </v-btn>
-        <v-spacer />
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <AppModal v-model="dialog" :title="t('common.confirm')" max-width="400px">
+    <div class="font-weight-bold d-flex align-center">
+      <v-icon class="mr-2" color="warning" icon="$warning" />
+      <span>{{ message }}</span>
+    </div>
+
+    <template #actions>
+      <v-spacer />
+      <v-btn color="primary" @click="cancel">
+        {{ t('common.cancel') }}
+      </v-btn>
+      <v-btn color="primary" @click="confirm">
+        {{ t('common.confirm') }}
+      </v-btn>
+      <v-spacer />
+    </template>
+  </AppModal>
 </template>

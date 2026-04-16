@@ -864,62 +864,53 @@ await refreshAllCrudLists()
       </v-window>
     </v-container>
 
-    <v-dialog v-model="modalOpen" max-width="720">
-      <v-card rounded="xl" class="pa-2">
-        <v-card-title class="text-h6">{{ modalTitle }}</v-card-title>
-        <v-card-text>
-          <v-alert v-if="submitError" type="error" variant="tonal" class="mb-4">
-            {{ submitError }}
-          </v-alert>
+    <AppModal v-model="modalOpen" :title="modalTitle" :max-width="720">
+      <v-alert v-if="submitError" type="error" variant="tonal" class="mb-4">
+        {{ submitError }}
+      </v-alert>
 
-          <v-row>
-            <v-col
-              v-for="field in activeEntityConfig.fields"
-              :key="field.key"
-              cols="12"
-              :md="field.type === 'textarea' ? 12 : 6"
-            >
-              <v-textarea
-                v-if="field.type === 'textarea'"
-                v-model="formState[field.key]"
-                :label="field.label"
-                :placeholder="field.placeholder"
-                :required="field.required"
-                variant="outlined"
-                rows="3"
-              />
+      <v-row>
+        <v-col
+          v-for="field in activeEntityConfig.fields"
+          :key="field.key"
+          cols="12"
+          :md="field.type === 'textarea' ? 12 : 6"
+        >
+          <v-textarea
+            v-if="field.type === 'textarea'"
+            v-model="formState[field.key]"
+            :label="field.label"
+            :placeholder="field.placeholder"
+            :required="field.required"
+            variant="outlined"
+            rows="3"
+          />
 
-              <v-text-field
-                v-else
-                v-model="formState[field.key]"
-                :label="field.label"
-                :placeholder="field.placeholder"
-                :required="field.required"
-                :type="mapFieldType(field.type)"
-                variant="outlined"
-              />
-            </v-col>
-          </v-row>
-        </v-card-text>
+          <v-text-field
+            v-else
+            v-model="formState[field.key]"
+            :label="field.label"
+            :placeholder="field.placeholder"
+            :required="field.required"
+            :type="mapFieldType(field.type)"
+            variant="outlined"
+          />
+        </v-col>
+      </v-row>
 
-        <v-card-actions class="px-4 pb-4">
-          <v-spacer />
-          <v-btn
-            variant="text"
-            :disabled="modalPending"
-            @click="modalOpen = false"
-            >Cancel</v-btn
-          >
-          <v-btn
-            color="primary"
-            :loading="modalPending"
-            @click="submitCrudForm"
-          >
-            {{ modalMode === 'create' ? 'Create' : 'Update' }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      <template #actions>
+        <v-spacer />
+        <v-btn
+          variant="text"
+          :disabled="modalPending"
+          @click="modalOpen = false"
+          >Cancel</v-btn
+        >
+        <v-btn color="primary" :loading="modalPending" @click="submitCrudForm">
+          {{ modalMode === 'create' ? 'Create' : 'Update' }}
+        </v-btn>
+      </template>
+    </AppModal>
 
     <v-snackbar v-model="toastVisible" :color="toastColor" timeout="3500">
       {{ toastMessage }}
