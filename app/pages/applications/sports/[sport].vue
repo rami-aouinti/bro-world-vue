@@ -58,7 +58,11 @@ const {
   selectSeason,
 } = useFootballData()
 
-const getSection = (key: string, fallbackTitle: string, fallbackEmptyMessage: string) =>
+const getSection = (
+  key: string,
+  fallbackTitle: string,
+  fallbackEmptyMessage: string,
+) =>
   computed(() => {
     return (
       footballSections.value.find((section) => section.key === key) ?? {
@@ -90,13 +94,28 @@ const fixtureDetailsSection = getSection(
 )
 
 watch(selectedSeason, () => {
+  if (sportSlug.value !== 'football') {
+    return
+  }
+
   loadLeagueSeasonData()
 })
 
-await loadLeagues()
-if (selectedLeagueId.value && selectedSeason.value) {
-  await loadLeagueSeasonData()
+const initializeFootballPage = async () => {
+  if (sportSlug.value !== 'football') {
+    return
+  }
+
+  await loadLeagues()
+
+  if (selectedLeagueId.value && selectedSeason.value) {
+    await loadLeagueSeasonData()
+  }
 }
+
+onMounted(() => {
+  void initializeFootballPage()
+})
 </script>
 
 <template>
@@ -382,6 +401,14 @@ if (selectedLeagueId.value && selectedSeason.value) {
           </v-card>
         </v-col>
       </v-row>
+    </template>
+
+    <template v-else>
+      <v-alert type="info" variant="tonal" density="comfortable">
+        Detailed stats are currently available for football. Select another
+        sport from the catalog while we roll out additional leagues and data
+        feeds.
+      </v-alert>
     </template>
   </v-container>
 </template>
