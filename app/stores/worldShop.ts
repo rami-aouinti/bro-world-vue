@@ -61,6 +61,7 @@ function stableQueryString(filters: Record<string, unknown>) {
 
 export const useWorldShopStore = defineStore('world-shop', () => {
   const items = ref<Array<ShopProduct | ShopCategory>>([])
+  const categories = ref<ShopCategory[]>([])
   const detail = ref<
     ShopProduct | ShopCategory | WorldShopCheckoutSession | null
   >(null)
@@ -271,6 +272,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
       recordStoreCacheEvent('shop', true)
       const response = cached.data as WorldShopProductsListResponse
       items.value = response.data
+      categories.value = []
       resolveProductsPagination(response)
       lastFetchedAt.value = cached.fetchedAt
       return
@@ -298,6 +300,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
         throw new Error('Invalid shop products response format.')
       }
       items.value = response.data
+      categories.value = []
       resolveProductsPagination(response)
       lastFetchedAt.value = Date.now()
       cache.value[cacheKey] = { fetchedAt: lastFetchedAt.value, data: response }
@@ -311,7 +314,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     const cached = cache.value[cacheKey]
     if (cached && !options?.force && isFresh(cached)) {
       recordStoreCacheEvent('shop', true)
-      items.value = (cached.data as { data: ShopCategory[] }).data
+      categories.value = (cached.data as { data: ShopCategory[] }).data
       lastFetchedAt.value = cached.fetchedAt
       return
     }
@@ -333,7 +336,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
             'Impossible de récupérer les catégories de la boutique.',
         },
       )
-      items.value = response.data
+      categories.value = response.data
       pagination.value.page = 1
       pagination.value.limit = response.data.length || pagination.value.limit
       pagination.value.total = response.data.length
@@ -631,6 +634,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
 
   return {
     items,
+    categories,
     detail,
     pending,
     error,
