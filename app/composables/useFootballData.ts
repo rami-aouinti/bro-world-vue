@@ -57,8 +57,22 @@ export interface FootballTeam {
 export interface FootballStandingRow {
   rank: number
   points: number
+  goalsDiff: number
+  group: string | null
+  form: string | null
+  status: string | null
+  description: string | null
   team: { id: number; name: string; logo?: string | null }
-  all: { played: number }
+  all: {
+    played: number
+    win: number
+    draw: number
+    lose: number
+    goals: {
+      for: number
+      against: number
+    }
+  }
 }
 
 export interface FootballStandingsGroup {

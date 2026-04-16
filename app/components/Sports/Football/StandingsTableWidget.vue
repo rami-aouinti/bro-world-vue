@@ -1,30 +1,113 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type {
   FootballSection,
+  FootballStandingRow,
   FootballStandingsGroup,
   FootballStandingsLeague,
 } from '~/composables/useFootballData'
 
-defineProps<{
-  standings: FootballStandingsGroup[]
-  standingsLeague: FootballStandingsLeague | null
-  section: FootballSection
-}>()
+interface ZoneRules {
+  qualification: number
+  relegation: number
+}
 
-defineEmits<{
+const props = withDefaults(
+  defineProps<{
+    standings: FootballStandingsGroup[]
+    standingsLeague: FootballStandingsLeague | null
+    section: FootballSection
+    zoneRules?: Partial<ZoneRules>
+  }>(),
+  {
+    zoneRules: () => ({
+      qualification: 4,
+      relegation: 3,
+    }),
+  },
+)
+
+const emit = defineEmits<{
   selectTeam: [teamId: number]
 }>()
 
+const mergedZoneRules = computed<ZoneRules>(() => ({
+  qualification: Math.max(0, props.zoneRules.qualification ?? 4),
+  relegation: Math.max(0, props.zoneRules.relegation ?? 3),
+}))
+
 const getInitial = (name: string) => name?.trim().charAt(0).toUpperCase() || '?'
+
+const normalizeText = (value: string | null | undefined) =>
+  (value || '').toLowerCase().trim()
+
+const getZoneFromApi = (row: FootballStandingRow) => {
+  const description = normalizeText(row.description)
+  const status = normalizeText(row.status)
+
+  if (
+    /champions|qualification|qualifying|play-offs|europa|conference|promotion|title/.test(
+      `${description} ${status}`,
+    )
+  ) {
+    return 'qualification'
+  }
+
+  if (/relegation|demotion/.test(`${description} ${status}`)) {
+    return 'relegation'
+  }
+
+  return null
+}
+
+const getZoneFromDefaultRules = (row: FootballStandingRow, rowsCount: number) => {
+  if (row.rank <= mergedZoneRules.value.qualification) {
+    return 'qualification'
+  }
+
+  if (row.rank > rowsCount - mergedZoneRules.value.relegation) {
+    return 'relegation'
+  }
+
+  return null
+}
+
+const getZone = (row: FootballStandingRow, rowsCount: number) => {
+  return getZoneFromApi(row) ?? getZoneFromDefaultRules(row, rowsCount)
+}
+
+const getZoneClass = (row: FootballStandingRow, rowsCount: number) => {
+  const zone = getZone(row, rowsCount)
+
+  if (!zone) {
+    return ''
+  }
+
+  return zone === 'qualification'
+    ? 'standings-row--qualification'
+    : 'standings-row--relegation'
+}
+
+const onRowKeydown = (event: KeyboardEvent, teamId: number) => {
+  if (event.key !== 'Enter' && event.key !== ' ') {
+    return
+  }
+
+  event.preventDefault()
+  emit('selectTeam', teamId)
+}
 </script>
 
 <template>
   <v-card class="h-100 football-surface football-interactive-card" variant="outlined">
     <v-card-title class="d-flex align-center justify-space-between">
       <span>{{ section.title }}</span>
-      <v-avatar v-if="standingsLeague?.flag" size="22" rounded="sm" class="ml-2">
-        <v-img :src="standingsLeague.flag" :alt="standingsLeague.country" />
-      </v-avatar>
+      <div class="d-flex align-center ga-2">
+        <span class="text-caption text-medium-emphasis">{{ standingsLeague?.name }}</span>
+        <v-avatar v-if="standingsLeague?.flag" size="22" rounded="sm">
+          <v-img :src="standingsLeague.flag" :alt="standingsLeague.country" />
+        </v-avatar>
+      </div>
     </v-card-title>
 
     <v-divider />
@@ -43,28 +126,163 @@ const getInitial = (name: string) => name?.trim().charAt(0).toUpperCase() || '?'
         {{ section.emptyMessage }}
       </v-alert>
 
-      <v-list v-else density="compact" lines="one" class="pa-0">
-        <template v-for="group in standings" :key="group.name">
-          <v-list-subheader>{{ group.name }}</v-list-subheader>
-          <v-list-item
-            v-for="row in group.rows"
-            :key="`${group.name}-${row.team.id}`"
-            class="football-interactive-item"
-            :title="`${row.rank}. ${row.team.name}`"
-            :subtitle="`${row.points} pts | ${row.all.played} played`"
-            @click="$emit('selectTeam', row.team.id)"
-          >
-            <template #prepend>
-              <v-avatar size="22" color="primary" variant="tonal">
-                <v-img v-if="row.team.logo" :src="row.team.logo" :alt="row.team.name" />
-                <span v-else class="text-caption">
-                  {{ getInitial(row.team.name) }}
-                </span>
-              </v-avatar>
-            </template>
-          </v-list-item>
-        </template>
-      </v-list>
+      <div v-else class="standings-groups">
+        <section
+          v-for="group in standings"
+          :key="group.name"
+          class="standings-group"
+          :aria-label="`Standings ${group.name}`"
+        >
+          <h3 class="text-subtitle-2 font-weight-medium mb-2">{{ group.name }}</h3>
+
+          <div class="standings-table-wrap">
+            <table class="standings-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th class="text-left">Team</th>
+                  <th>P</th>
+                  <th>W</th>
+                  <th class="standings-column-mobile">D</th>
+                  <th class="standings-column-mobile">L</th>
+                  <th class="standings-column-desktop">GF</th>
+                  <th class="standings-column-desktop">GA</th>
+                  <th>GD</th>
+                  <th>Pts</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="row in group.rows"
+                  :key="`${group.name}-${row.team.id}`"
+                  class="standings-row"
+                  :class="getZoneClass(row, group.rows.length)"
+                  tabindex="0"
+                  role="button"
+                  :aria-label="`Open details for ${row.team.name}`"
+                  @click="emit('selectTeam', row.team.id)"
+                  @keydown="onRowKeydown($event, row.team.id)"
+                >
+                  <td class="font-weight-medium">{{ row.rank }}</td>
+                  <td>
+                    <div class="standings-team">
+                      <v-avatar size="22" color="primary" variant="tonal">
+                        <v-img v-if="row.team.logo" :src="row.team.logo" :alt="row.team.name" />
+                        <span v-else class="text-caption">
+                          {{ getInitial(row.team.name) }}
+                        </span>
+                      </v-avatar>
+                      <span class="standings-team-name">{{ row.team.name }}</span>
+                    </div>
+                  </td>
+                  <td>{{ row.all.played }}</td>
+                  <td>{{ row.all.win }}</td>
+                  <td class="standings-column-mobile">{{ row.all.draw }}</td>
+                  <td class="standings-column-mobile">{{ row.all.lose }}</td>
+                  <td class="standings-column-desktop">{{ row.all.goals.for }}</td>
+                  <td class="standings-column-desktop">{{ row.all.goals.against }}</td>
+                  <td>{{ row.goalsDiff }}</td>
+                  <td>{{ row.points }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
     </v-card-text>
   </v-card>
 </template>
+
+<style scoped>
+.standings-groups {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.standings-table-wrap {
+  max-height: 440px;
+  overflow: auto;
+  border-radius: 12px;
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.14);
+}
+
+.standings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.83rem;
+}
+
+.standings-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: rgba(var(--v-theme-surface), 0.98);
+  backdrop-filter: blur(4px);
+  text-align: center;
+  padding: 0.56rem 0.45rem;
+  border-bottom: 1px solid rgba(var(--v-theme-on-surface), 0.12);
+  white-space: nowrap;
+}
+
+.standings-table thead th.text-left {
+  text-align: left;
+}
+
+.standings-table td {
+  text-align: center;
+  padding: 0.5rem 0.4rem;
+  border-bottom: 1px solid rgba(var(--v-theme-on-surface), 0.09);
+  white-space: nowrap;
+}
+
+.standings-row {
+  cursor: pointer;
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.standings-row:hover {
+  background: rgba(var(--v-theme-primary), 0.1);
+}
+
+.standings-row:focus-visible {
+  outline: 2px solid rgba(var(--v-theme-primary), 0.85);
+  outline-offset: -2px;
+  background: rgba(var(--v-theme-primary), 0.12);
+}
+
+.standings-team {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 150px;
+}
+
+.standings-team-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.standings-row--qualification {
+  box-shadow: inset 3px 0 0 rgba(var(--v-theme-success), 0.95);
+}
+
+.standings-row--relegation {
+  box-shadow: inset 3px 0 0 rgba(var(--v-theme-error), 0.95);
+}
+
+@media (max-width: 760px) {
+  .standings-table {
+    font-size: 0.75rem;
+  }
+
+  .standings-column-desktop,
+  .standings-column-mobile {
+    display: none;
+  }
+
+  .standings-team {
+    min-width: 115px;
+    max-width: 145px;
+  }
+}
+</style>
