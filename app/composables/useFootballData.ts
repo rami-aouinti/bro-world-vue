@@ -148,6 +148,15 @@ function toErrorMessage(error: unknown, fallback: string) {
   return fallback
 }
 
+function normalizeSelectionId(value: number | string | null | undefined) {
+  if (value === null || typeof value === 'undefined' || value === '') {
+    return null
+  }
+
+  const parsed = Number(value)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null
+}
+
 export function useFootballData() {
   const leagues = ref<FootballLeague[]>([])
   const fixtures = ref<FootballFixture[]>([])
@@ -388,8 +397,8 @@ export function useFootballData() {
     }
   }
 
-  const selectLeague = (leagueId: number | null) => {
-    selectedLeagueId.value = leagueId
+  const selectLeague = (leagueId: number | string | null) => {
+    selectedLeagueId.value = normalizeSelectionId(leagueId)
 
     if (!selectedLeague.value) {
       selectedSeason.value = null
@@ -403,8 +412,8 @@ export function useFootballData() {
     selectedSeason.value = preferredSeason || seasons.value[0] || null
   }
 
-  const selectSeason = (season: number | null) => {
-    selectedSeason.value = season
+  const selectSeason = (season: number | string | null) => {
+    selectedSeason.value = normalizeSelectionId(season)
   }
 
   const loadFixtureDetails = async (fixtureId: number | null) => {
@@ -473,7 +482,9 @@ export function useFootballData() {
       )
 
       teamDetails.value = response
-      teamDetailsState.value = response.squad.players.length ? 'ready' : 'empty'
+      const hasStatistics = !!response?.statistics?.team?.id
+      const hasPlayers = response?.squad?.players?.length > 0
+      teamDetailsState.value = hasStatistics || hasPlayers ? 'ready' : 'empty'
     } catch (error) {
       teamDetailsState.value = 'error'
       teamDetailsError.value = toErrorMessage(
