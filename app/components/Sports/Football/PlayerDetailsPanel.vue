@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import PlayerHeroCard from './PlayerHeroCard.vue'
+import PlayerStatsGrid from './PlayerStatsGrid.vue'
+
 interface PlayerDetails {
   profile: {
     name: string
@@ -18,21 +21,7 @@ defineProps<{
 
 <template>
   <template v-if="details.profile">
-    <div class="d-flex align-start mb-4">
-      <v-avatar size="72" class="mr-3">
-        <v-img :src="details.profile.photo || undefined" />
-      </v-avatar>
-      <div>
-        <div class="text-h6">{{ details.profile.name }}</div>
-        <div class="text-body-2">
-          {{ details.profile.nationality || 'Unknown nationality' }} ·
-          Age {{ details.profile.age ?? '-' }}
-        </div>
-        <div class="text-caption">
-          {{ details.profile.height || '-' }} / {{ details.profile.weight || '-' }}
-        </div>
-      </div>
-    </div>
+    <PlayerHeroCard :profile="details.profile" />
 
     <v-expansion-panels variant="accordion">
       <v-expansion-panel
@@ -43,11 +32,7 @@ defineProps<{
           {{ stat.league?.name || 'League' }} · {{ stat.team?.name || 'Team' }}
         </v-expansion-panel-title>
         <v-expansion-panel-text>
-          <div class="text-body-2">Appearances: {{ stat.games?.appearences ?? '-' }}</div>
-          <div class="text-body-2">Minutes: {{ stat.games?.minutes ?? '-' }}</div>
-          <div class="text-body-2">Goals: {{ stat.goals?.total ?? '-' }}</div>
-          <div class="text-body-2">Assists: {{ stat.goals?.assists ?? '-' }}</div>
-          <div class="text-body-2">Rating: {{ stat.games?.rating ?? '-' }}</div>
+          <PlayerStatsGrid :stats="stat" />
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
