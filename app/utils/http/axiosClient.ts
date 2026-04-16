@@ -5,6 +5,7 @@ import axios, {
   type InternalAxiosRequestConfig,
 } from 'axios'
 import axiosRetry from 'axios-retry'
+import { awaitSessionReady, createMissingSessionTokenError } from '~/composables/useSessionReady'
 import { resolveAuthToken, type SessionUserWithToken } from './authToken'
 
 const RETRYABLE_STATUS_CODES = new Set([408, 425, 429, 500, 502, 503, 504])
@@ -56,23 +57,54 @@ function ensureInstances() {
     })
 
     privateAxiosInstance.interceptors.request.use(
-      (config: InternalAxiosRequestConfig) => {
+      async (config: InternalAxiosRequestConfig & { _sessionRefreshed?: boolean }) => {
+        await awaitSessionReady()
+
         const { user } = useUserSession()
         const token = resolveAuthToken(
           user.value as SessionUserWithToken | null,
         )
 
         if (!token) {
-          throw createError({
-            statusCode: 401,
-            statusMessage: 'Missing authentication token',
-          })
+          throw createMissingSessionTokenError()
         }
 
         config.headers = config.headers ?? {}
         config.headers.Authorization = `Bearer ${token}`
 
         return config
+      },
+    )
+
+    privateAxiosInstance.interceptors.response.use(
+      (response) => response,
+      async (error: AxiosError) => {
+        const status = error.response?.status
+        const requestConfig = error.config as
+          | (InternalAxiosRequestConfig & { _sessionRefreshed?: boolean })
+          | undefined
+
+        if (status !== 401 || !requestConfig || requestConfig._sessionRefreshed) {
+          throw error
+        }
+
+        requestConfig._sessionRefreshed = true
+
+        await awaitSessionReady({ forceRefresh: true })
+
+        const { user } = useUserSession()
+        const token = resolveAuthToken(
+          user.value as SessionUserWithToken | null,
+        )
+
+        if (!token) {
+          throw createMissingSessionTokenError()
+        }
+
+        requestConfig.headers = requestConfig.headers ?? {}
+        requestConfig.headers.Authorization = `Bearer ${token}`
+
+        return (privateAxiosInstance as AxiosInstance).request(requestConfig)
       },
     )
   }
