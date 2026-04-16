@@ -290,90 +290,92 @@ const rightDrawerSelection = computed(() => [
     </AppPageDrawers>
 
     <v-container fluid>
-      <template v-if="selectedGame">
-        <v-breadcrumbs :items="breadcrumbs" class="pa-0 mb-2">
-          <template #item="{ item }">
-            <v-btn
-              variant="text"
-              size="small"
-              :disabled="item.disabled"
-              @click="navigateBreadcrumb(item.to as string | undefined)"
-            >
-              {{ item.title }}
-            </v-btn>
-          </template>
-        </v-breadcrumbs>
-        <div class="game-selection-layout">
-          <div class="game-selection-levels">
-            <v-row class="w-100">
-              <v-col
-                v-for="level in levels"
-                :key="level.id"
-                cols="12"
-                sm="6"
-                md="4"
+      <v-card variant="text" class="content-main postcard-gradient-card mb-3 pa-3">
+        <template v-if="selectedGame">
+          <v-breadcrumbs :items="breadcrumbs" class="pa-0 mb-2">
+            <template #item="{ item }">
+              <v-btn
+                variant="text"
+                size="small"
+                :disabled="item.disabled"
+                @click="navigateBreadcrumb(item.to as string | undefined)"
               >
-                <v-card
-                  height="200"
-                  min-width="200"
-                  class="level-card d-flex align-center justify-center text-center cursor-pointer"
-                  :elevation="selectedLevelValue === level.value ? 12 : 2"
-                  :color="selectedLevelValue === level.value ? 'primary' : ''"
-                  :variant="
+                {{ item.title }}
+              </v-btn>
+            </template>
+          </v-breadcrumbs>
+          <div class="game-selection-layout">
+            <div class="game-selection-levels">
+              <v-row class="w-100">
+                <v-col
+                  v-for="level in levels"
+                  :key="level.id"
+                  cols="12"
+                  sm="6"
+                  md="4"
+                >
+                  <v-card
+                    height="200"
+                    min-width="200"
+                    class="level-card d-flex align-center justify-center text-center cursor-pointer"
+                    :elevation="selectedLevelValue === level.value ? 12 : 2"
+                    :color="selectedLevelValue === level.value ? 'primary' : ''"
+                    :variant="
                     selectedLevelValue === level.value ? 'outlined' : 'text'
                   "
-                  @click="selectedLevelValue = level.value"
-                >
-                  <div class="text-h6">
-                    {{ difficultyLabel(level.value) }}
-                  </div>
-                </v-card>
-              </v-col>
-            </v-row>
-          </div>
-
-          <div class="game-selection-footer">
-            <v-card
-              class="mb-4 pa-4 w-100 game-constraints-card"
-              variant="text"
-            >
-              <v-row>
-                <v-col cols="12" md="6">
-                  <v-select
-                    v-model="selectedPlayerCount"
-                    :items="playerCountOptions"
-                    label="Nombre de joueurs"
-                    item-title="title"
-                    item-value="value"
-                    density="comfortable"
-                    hide-details
-                  />
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-select
-                    v-model="selectedOpponentType"
-                    :items="opponentTypeOptions"
-                    label="Type d'adversaire"
-                    item-title="title"
-                    item-value="value"
-                    density="comfortable"
-                    hide-details
-                  />
+                    @click="selectedLevelValue = level.value"
+                  >
+                    <div class="text-h6">
+                      {{ difficultyLabel(level.value) }}
+                    </div>
+                  </v-card>
                 </v-col>
               </v-row>
-            </v-card>
-            <v-btn
-              color="primary"
-              size="large"
-              :disabled="!canStart"
-              :loading="catalogStore.startingSession"
-              @click="onStart"
-            >
-              {{ t('gamePage.actions.start') }}
-            </v-btn>
+            </div>
+
+            <div class="game-selection-footer">
+              <v-card
+                class="mb-4 pa-4 w-100 game-constraints-card"
+                variant="text"
+              >
+                <v-row>
+                  <v-col cols="12" md="6">
+                    <v-select
+                      v-model="selectedPlayerCount"
+                      :items="playerCountOptions"
+                      label="Nombre de joueurs"
+                      item-title="title"
+                      item-value="value"
+                      density="comfortable"
+                      hide-details
+                    />
+                  </v-col>
+                  <v-col cols="12" md="6">
+                    <v-select
+                      v-model="selectedOpponentType"
+                      :items="opponentTypeOptions"
+                      label="Type d'adversaire"
+                      item-title="title"
+                      item-value="value"
+                      density="comfortable"
+                      hide-details
+                    />
+                  </v-col>
+                </v-row>
+              </v-card>
+              <v-btn
+                color="primary"
+                size="large"
+                :disabled="!canStart"
+                :loading="catalogStore.startingSession"
+                @click="onStart"
+              >
+                {{ t('gamePage.actions.start') }}
+              </v-btn>
+            </div>
           </div>
-        </div>
-      </template>
+        </template>
+      </v-card>
     </v-container>
   </div>
 </template>

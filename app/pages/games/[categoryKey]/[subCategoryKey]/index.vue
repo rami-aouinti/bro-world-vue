@@ -91,44 +91,46 @@ const rightDrawerSelection = computed(() => [
     </AppPageDrawers>
 
     <v-container fluid>
-      <template v-if="selectedSubCategory">
-        <v-breadcrumbs :items="breadcrumbs" class="pa-0 mb-2">
-          <template #item="{ item }">
-            <v-btn
-              variant="text"
-              size="small"
-              :disabled="item.disabled"
-              @click="navigateBreadcrumb(item.to as string | undefined)"
-            >
-              {{ item.title }}
-            </v-btn>
-          </template>
-        </v-breadcrumbs>
-        <v-row density="comfortable">
-          <v-col v-for="game in games" :key="game.id" cols="12" md="6" lg="4">
-            <v-card
-              rounded="lg"
-              class="cursor-pointer h-100"
-              variant="text"
-              @click="openGameLevels(game)"
-            >
-              <v-img :src="game?.img" height="200" cover />
-            </v-card>
-          </v-col>
-        </v-row>
+      <v-card variant="text" class="content-main postcard-gradient-card mb-3 pa-3">
+        <template v-if="selectedSubCategory">
+          <v-breadcrumbs :items="breadcrumbs" class="pa-0 mb-2">
+            <template #item="{ item }">
+              <v-btn
+                variant="text"
+                size="small"
+                :disabled="item.disabled"
+                @click="navigateBreadcrumb(item.to as string | undefined)"
+              >
+                {{ item.title }}
+              </v-btn>
+            </template>
+          </v-breadcrumbs>
+          <v-row density="comfortable">
+            <v-col v-for="game in games" :key="game.id" cols="12" md="6" lg="4">
+              <v-card
+                rounded="lg"
+                class="cursor-pointer h-100"
+                variant="text"
+                @click="openGameLevels(game)"
+              >
+                <v-img :src="game?.img" height="200" cover />
+              </v-card>
+            </v-col>
+          </v-row>
 
-        <v-alert
-          v-if="!games.length"
-          type="info"
-          variant="tonal"
-          :text="
+          <v-alert
+            v-if="!games.length"
+            type="info"
+            variant="tonal"
+            :text="
             tOrFallback(
               'gamePage.catalog.emptyGames',
               'No games available for now.',
             )
           "
-        />
-      </template>
+          />
+        </template>
+      </v-card>
     </v-container>
   </div>
 </template>

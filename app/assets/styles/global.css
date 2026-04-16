@@ -125,3 +125,9 @@ html.dark {
     transparent 20%
   );
 }
+
+.content-main {
+  padding: 8px;
+  height: calc(100% - 10px);
+  overflow-y: auto;
+}
