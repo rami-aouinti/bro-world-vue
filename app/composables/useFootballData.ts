@@ -5,6 +5,8 @@ export type FootballSectionKey =
   | 'standings'
   | 'teams'
   | 'fixtureDetails'
+  | 'teamDetails'
+  | 'playerDetails'
 
 export interface FootballSection {
   key: FootballSectionKey
@@ -31,6 +33,11 @@ export interface FootballLeague {
 export interface FootballFixture {
   id: number
   date: string
+  status?: {
+    short?: string
+    long?: string
+    elapsed?: number | null
+  }
   teams: {
     home: { name: string }
     away: { name: string }
@@ -40,6 +47,7 @@ export interface FootballFixture {
 export interface FootballTeam {
   id: number
   name: string
+  logo?: string | null
 }
 
 export interface FootballStandingRow {
@@ -64,6 +72,47 @@ export interface FootballFixtureDetails {
   }>
   lineups: unknown[]
   playerStats: unknown[]
+}
+
+export interface FootballTeamDetails {
+  statistics: {
+    team: FootballTeam
+    league: {
+      name: string
+      season: number
+    }
+    form: string | null
+    fixtures: Record<string, any>
+    goals: Record<string, any>
+    cleanSheet: Record<string, any>
+    failedToScore: Record<string, any>
+    lineups: Array<{ formation?: string; played?: number }>
+  }
+  squad: {
+    players: Array<{
+      id: number
+      name: string
+      age: number | null
+      number: number | null
+      position: string | null
+      photo: string | null
+    }>
+  }
+}
+
+export interface FootballPlayerDetails {
+  profile: {
+    id: number
+    name: string
+    firstname: string | null
+    lastname: string | null
+    age: number | null
+    nationality: string | null
+    photo: string | null
+    height: string | null
+    weight: string | null
+  } | null
+  statistics: Array<Record<string, any>>
 }
 
 function toErrorMessage(error: unknown, fallback: string) {
@@ -92,22 +141,30 @@ export function useFootballData() {
   const standings = ref<FootballStandingsGroup[]>([])
   const teams = ref<FootballTeam[]>([])
   const fixtureDetails = ref<FootballFixtureDetails | null>(null)
+  const teamDetails = ref<FootballTeamDetails | null>(null)
+  const playerDetails = ref<FootballPlayerDetails | null>(null)
 
   const selectedLeagueId = ref<number | null>(null)
   const selectedSeason = ref<number | null>(null)
   const selectedFixtureId = ref<number | null>(null)
+  const selectedTeamId = ref<number | null>(null)
+  const selectedPlayerId = ref<number | null>(null)
 
   const leaguesState = ref<SectionState>('loading')
   const fixturesState = ref<SectionState>('empty')
   const standingsState = ref<SectionState>('empty')
   const teamsState = ref<SectionState>('empty')
   const fixtureDetailsState = ref<SectionState>('empty')
+  const teamDetailsState = ref<SectionState>('empty')
+  const playerDetailsState = ref<SectionState>('empty')
 
   const leaguesError = ref('')
   const fixturesError = ref('')
   const standingsError = ref('')
   const teamsError = ref('')
   const fixtureDetailsError = ref('')
+  const teamDetailsError = ref('')
+  const playerDetailsError = ref('')
 
   const selectedLeague = computed<FootballLeague | null>(() => {
     if (!selectedLeagueId.value) return null
@@ -136,7 +193,7 @@ export function useFootballData() {
       },
       {
         key: 'fixtures',
-        title: 'Fixtures / Matches',
+        title: 'Live / Fixtures',
         state: fixturesState.value,
         error: fixturesError.value,
         emptyMessage: 'No fixture for this league/season.',
@@ -162,6 +219,20 @@ export function useFootballData() {
         error: fixtureDetailsError.value,
         emptyMessage: 'Select a fixture to see events, lineups and player stats.',
       },
+      {
+        key: 'teamDetails',
+        title: 'Team details',
+        state: teamDetailsState.value,
+        error: teamDetailsError.value,
+        emptyMessage: 'Select a team to see full team and squad details.',
+      },
+      {
+        key: 'playerDetails',
+        title: 'Player details',
+        state: playerDetailsState.value,
+        error: playerDetailsError.value,
+        emptyMessage: 'Select a player to open the player profile and statistics.',
+      },
     ]
   })
 
@@ -170,15 +241,23 @@ export function useFootballData() {
     standings.value = []
     teams.value = []
     fixtureDetails.value = null
+    teamDetails.value = null
+    playerDetails.value = null
     selectedFixtureId.value = null
+    selectedTeamId.value = null
+    selectedPlayerId.value = null
     fixturesError.value = ''
     standingsError.value = ''
     teamsError.value = ''
     fixtureDetailsError.value = ''
+    teamDetailsError.value = ''
+    playerDetailsError.value = ''
     fixturesState.value = 'empty'
     standingsState.value = 'empty'
     teamsState.value = 'empty'
     fixtureDetailsState.value = 'empty'
+    teamDetailsState.value = 'empty'
+    playerDetailsState.value = 'empty'
   }
 
   const loadLeagues = async () => {
@@ -222,8 +301,16 @@ export function useFootballData() {
     teamsState.value = 'loading'
     fixtureDetails.value = null
     selectedFixtureId.value = null
+    selectedTeamId.value = null
+    selectedPlayerId.value = null
+    teamDetails.value = null
+    playerDetails.value = null
     fixtureDetailsError.value = ''
+    teamDetailsError.value = ''
+    playerDetailsError.value = ''
     fixtureDetailsState.value = 'empty'
+    teamDetailsState.value = 'empty'
+    playerDetailsState.value = 'empty'
 
     const league = selectedLeagueId.value
     const season = selectedSeason.value
@@ -340,31 +427,116 @@ export function useFootballData() {
     }
   }
 
+  const loadTeamDetails = async (teamId: number | null) => {
+    selectedTeamId.value = teamId
+    teamDetails.value = null
+    teamDetailsError.value = ''
+    selectedPlayerId.value = null
+    playerDetails.value = null
+    playerDetailsError.value = ''
+    playerDetailsState.value = 'empty'
+
+    if (!teamId || !selectedLeagueId.value || !selectedSeason.value) {
+      teamDetailsState.value = 'empty'
+      return
+    }
+
+    teamDetailsState.value = 'loading'
+
+    try {
+      const response = await $fetch<FootballTeamDetails>(
+        '/api/sports/football/team',
+        {
+          query: {
+            team: teamId,
+            league: selectedLeagueId.value,
+            season: selectedSeason.value,
+          },
+        },
+      )
+
+      teamDetails.value = response
+      teamDetailsState.value = response.squad.players.length ? 'ready' : 'empty'
+    } catch (error) {
+      teamDetailsState.value = 'error'
+      teamDetailsError.value = toErrorMessage(
+        error,
+        "Impossible de charger le détail de l'équipe.",
+      )
+    }
+  }
+
+  const loadPlayerDetails = async (playerId: number | null) => {
+    selectedPlayerId.value = playerId
+    playerDetails.value = null
+    playerDetailsError.value = ''
+
+    if (!playerId || !selectedSeason.value) {
+      playerDetailsState.value = 'empty'
+      return
+    }
+
+    playerDetailsState.value = 'loading'
+
+    try {
+      const response = await $fetch<FootballPlayerDetails>(
+        '/api/sports/football/player',
+        {
+          query: {
+            player: playerId,
+            season: selectedSeason.value,
+            ...(selectedLeagueId.value ? { league: selectedLeagueId.value } : {}),
+            ...(selectedTeamId.value ? { team: selectedTeamId.value } : {}),
+          },
+        },
+      )
+
+      playerDetails.value = response
+      playerDetailsState.value = response.profile ? 'ready' : 'empty'
+    } catch (error) {
+      playerDetailsState.value = 'error'
+      playerDetailsError.value = toErrorMessage(
+        error,
+        'Impossible de charger le profil joueur.',
+      )
+    }
+  }
+
   return {
     leagues,
     fixtures,
     standings,
     teams,
     fixtureDetails,
+    teamDetails,
+    playerDetails,
     footballSections,
     selectedLeague,
     seasons,
     selectedLeagueId,
     selectedSeason,
     selectedFixtureId,
+    selectedTeamId,
+    selectedPlayerId,
     leaguesState,
     fixturesState,
     standingsState,
     teamsState,
     fixtureDetailsState,
+    teamDetailsState,
+    playerDetailsState,
     leaguesError,
     fixturesError,
     standingsError,
     teamsError,
     fixtureDetailsError,
+    teamDetailsError,
+    playerDetailsError,
     loadLeagues,
     loadLeagueSeasonData,
     loadFixtureDetails,
+    loadTeamDetails,
+    loadPlayerDetails,
     selectLeague,
     selectSeason,
   }

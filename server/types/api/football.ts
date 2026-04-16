@@ -58,6 +58,57 @@ export interface FootballTeamsApiResponse extends ApiObject {
   items: FootballTeam[]
 }
 
+export interface FootballTeamStatisticsApiResponse extends ApiObject {
+  league: {
+    id: number
+    name: string
+    country: string
+    season: number
+  }
+  team: FootballTeam
+  form: string | null
+  fixtures: ApiObject
+  goals: ApiObject
+  biggest: ApiObject
+  cleanSheet: ApiObject
+  failedToScore: ApiObject
+  penalty: ApiObject
+  lineups: ApiObject[]
+  cards: ApiObject
+}
+
+export interface FootballSquadPlayer extends ApiObject {
+  id: number
+  name: string
+  age: number | null
+  number: number | null
+  position: string | null
+  photo: string | null
+}
+
+export interface FootballTeamSquadApiResponse extends ApiObject {
+  team: FootballTeam
+  players: FootballSquadPlayer[]
+}
+
+export interface FootballPlayerProfile extends ApiObject {
+  id: number
+  name: string
+  firstname: string | null
+  lastname: string | null
+  age: number | null
+  birth: ApiObject
+  nationality: string | null
+  height: string | null
+  weight: string | null
+  photo: string | null
+}
+
+export interface FootballPlayerApiResponse extends ApiObject {
+  profile: FootballPlayerProfile | null
+  statistics: ApiObject[]
+}
+
 export interface FootballFixture extends ApiObject {
   id: number
   referee: string | null

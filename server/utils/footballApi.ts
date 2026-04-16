@@ -20,7 +20,10 @@ import type {
   ApiSportsFixtureEventItem,
   ApiSportsFixtureItem,
   ApiSportsLeagueItem,
+  ApiSportsPlayerItem,
+  ApiSportsSquadItem,
   ApiSportsLineupItem,
+  ApiSportsTeamStatisticsItem,
   ApiSportsPlayerStatsItem,
   ApiSportsResponse,
   ApiSportsStandingLeagueItem,
@@ -47,6 +50,17 @@ function parseIntegerParam(value: unknown, name: string) {
 export function getRequiredFootballId(event: H3Event, name: string) {
   const query = getQuery(event)
   return parseIntegerParam(query[name], name)
+}
+
+export function getOptionalFootballId(event: H3Event, name: string) {
+  const query = getQuery(event)
+  const raw = query[name]
+
+  if (typeof raw === 'undefined' || raw === null || raw === '') {
+    return undefined
+  }
+
+  return parseIntegerParam(raw, name)
 }
 
 function mapTeamBase(team: {
@@ -153,6 +167,84 @@ export function mapTeamsResponse(
 ): FootballTeamsApiResponse {
   return {
     items: (payload.response ?? []).map((entry) => mapTeamBase(entry.team)),
+  }
+}
+
+export function mapTeamStatisticsResponse(
+  payload: ApiSportsResponse<ApiSportsTeamStatisticsItem>,
+) {
+  const item = payload.response?.[0]
+
+  if (!item) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Team statistics not found',
+    })
+  }
+
+  return {
+    league: item.league,
+    team: {
+      ...mapTeamBase(item.team),
+      national: false,
+      code: null,
+      country: null,
+      founded: null,
+    },
+    form: item.form,
+    fixtures: item.fixtures,
+    goals: item.goals,
+    biggest: item.biggest,
+    cleanSheet: item.clean_sheet,
+    failedToScore: item.failed_to_score,
+    penalty: item.penalty,
+    lineups: item.lineups,
+    cards: item.cards,
+  }
+}
+
+export function mapTeamSquadResponse(payload: ApiSportsResponse<ApiSportsSquadItem>) {
+  const item = payload.response?.[0]
+
+  if (!item) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Team squad not found',
+    })
+  }
+
+  return {
+    team: {
+      ...mapTeamBase(item.team),
+      national: false,
+      code: null,
+      country: null,
+      founded: null,
+    },
+    players: (item.players ?? []).map((player) => ({
+      id: player.id,
+      name: player.name,
+      age: player.age,
+      number: player.number,
+      position: player.position,
+      photo: player.photo,
+    })),
+  }
+}
+
+export function mapPlayerResponse(payload: ApiSportsResponse<ApiSportsPlayerItem>) {
+  const item = payload.response?.[0]
+
+  if (!item) {
+    return {
+      profile: null,
+      statistics: [],
+    }
+  }
+
+  return {
+    profile: item.player,
+    statistics: item.statistics ?? [],
   }
 }
 
