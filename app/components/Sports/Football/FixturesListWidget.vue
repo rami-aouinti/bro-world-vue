@@ -47,9 +47,21 @@ defineEmits<{
         :key="fixture.id"
         :fixture="fixture"
         :active="selectedFixtureId === fixture.id"
+        class="fixtures-list-widget__card"
         @select="$emit('select', $event)"
         @select-team="$emit('selectTeam', $event)"
       />
     </TransitionGroup>
   </v-list>
 </template>
+
+<style scoped>
+.football-transition-list {
+  display: grid;
+  row-gap: 8px;
+}
+
+.fixtures-list-widget__card {
+  margin-bottom: 0 !important;
+}
+</style>
