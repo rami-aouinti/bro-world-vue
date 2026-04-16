@@ -404,10 +404,12 @@ async function onPostBodyClick(event: MouseEvent) {
 }
 
 .post-content {
-  font-size: 1.45rem;
-  line-height: 1.5;
+  font-size: clamp(1rem, 1.5vw + 0.75rem, 1.2rem);
+  line-height: 1.65;
   margin-bottom: 1rem;
   text-align: left;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .post-body--clickable {
@@ -417,6 +419,22 @@ async function onPostBodyClick(event: MouseEvent) {
 .post-author-link {
   text-decoration: none;
   color: inherit;
+}
+
+.text-decoration-none {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+@media (max-width: 600px) {
+  .post-card :deep(.v-card-title) {
+    font-size: 1rem;
+    line-height: 1.3;
+  }
+
+  .post-card :deep(.v-card-subtitle) {
+    font-size: 0.78rem;
+  }
 }
 
 .post-card--light :deep(.comment-input .v-field) {
