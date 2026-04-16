@@ -12,8 +12,8 @@ interface FootballFixtureCardItem {
     elapsed?: number | null
   }
   teams: {
-    home: { name: string; logo?: string | null }
-    away: { name: string; logo?: string | null }
+    home: { id?: number | null; name: string; logo?: string | null }
+    away: { id?: number | null; name: string; logo?: string | null }
   }
   goals?: {
     home: number | null
@@ -129,7 +129,7 @@ function selectTeam(teamId?: number | null) {
 <template>
   <v-card
     variant="outlined"
-    class="postcard-gradient-card fixture-card mb-2"
+    class="postcard-gradient-card fixture-card"
     :class="{ 'fixture-card--active': active }"
     role="button"
     tabindex="0"
@@ -138,26 +138,10 @@ function selectTeam(teamId?: number | null) {
     @keydown.space.prevent="selectFixture"
   >
     <v-card-text class="fixture-card__content">
-      <div class="d-flex align-center justify-space-between mb-3 ga-2">
-        <span class="text-caption fixture-card__date">
+      <div class="mb-2">
+        <span class="fixture-card__date">
           {{ formattedKickoff }}
         </span>
-        <div class="d-flex align-center ga-2">
-          <span
-            v-if="elapsedLabel"
-            class="text-caption font-weight-bold fixture-card__elapsed"
-          >
-            {{ elapsedLabel }}
-          </span>
-          <v-chip
-            size="small"
-            :color="statusChip.color"
-            variant="tonal"
-            class="fixture-card__status-chip"
-          >
-            {{ statusShort }}
-          </v-chip>
-        </div>
       </div>
 
       <div class="fixture-card__main-row">
@@ -172,7 +156,7 @@ function selectTeam(teamId?: number | null) {
               {{ fixture.teams.home.name.charAt(0).toUpperCase() || '?' }}
             </span>
           </v-avatar>
-          <span class="text-truncate text-body-2">{{ fixture.teams.home.name }}</span>
+          <span class="text-truncate fixture-card__team-name">{{ fixture.teams.home.name }}</span>
         </div>
 
         <div class="fixture-card__score" :aria-label="t('pages.applications.football.misc.score')">
@@ -182,7 +166,7 @@ function selectTeam(teamId?: number | null) {
         </div>
 
         <div class="d-flex align-center justify-end fixture-card__team fixture-card__team--clickable" @click.stop="selectTeam(fixture.teams.away.id)">
-          <span class="text-truncate text-right text-body-2">{{ fixture.teams.away.name }}</span>
+          <span class="text-truncate text-right fixture-card__team-name">{{ fixture.teams.away.name }}</span>
           <v-avatar size="28" class="ml-2" color="primary" variant="tonal">
             <v-img
               v-if="fixture.teams.away.logo"
@@ -196,8 +180,26 @@ function selectTeam(teamId?: number | null) {
         </div>
       </div>
 
-      <div class="text-caption mt-3 text-truncate fixture-card__status-long">
-        {{ longStatusLabel }}
+      <div class="fixture-card__status-row mt-2">
+        <div class="text-truncate fixture-card__status-long">
+          {{ longStatusLabel }}
+        </div>
+        <div class="d-flex align-center ga-1">
+          <span
+            v-if="elapsedLabel"
+            class="fixture-card__elapsed"
+          >
+            {{ elapsedLabel }}
+          </span>
+          <v-chip
+            size="x-small"
+            :color="statusChip.color"
+            variant="tonal"
+            class="fixture-card__status-chip"
+          >
+            {{ statusShort }}
+          </v-chip>
+        </div>
       </div>
     </v-card-text>
   </v-card>
@@ -216,7 +218,13 @@ function selectTeam(teamId?: number | null) {
 
 .fixture-card__date,
 .fixture-card__status-long {
-  color: rgba(var(--v-theme-on-surface), 0.74);
+  color: rgba(var(--v-theme-on-surface), 0.66);
+}
+
+.fixture-card__date {
+  font-size: 0.72rem;
+  line-height: 1.2;
+  font-weight: 500;
 }
 
 .fixture-card__main-row {
@@ -234,36 +242,58 @@ function selectTeam(teamId?: number | null) {
   cursor: pointer;
 }
 
+.fixture-card__team-name {
+  font-size: 0.85rem;
+  line-height: 1.2;
+  font-weight: 500;
+}
+
 .fixture-card__score {
-  min-width: 74px;
+  min-width: 64px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 4px;
   text-align: center;
 }
 
 .fixture-card__score-goal {
-  min-width: 14px;
-  font-size: 1.15rem;
+  min-width: 12px;
+  font-size: 1.02rem;
   line-height: 1;
-  font-weight: 800;
+  font-weight: 700;
   color: rgba(var(--v-theme-on-surface), 0.96);
 }
 
 .fixture-card__score-separator {
   color: rgba(var(--v-theme-on-surface), 0.48);
-  font-weight: 700;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .fixture-card__elapsed {
+  font-size: 0.68rem;
+  line-height: 1;
+  font-weight: 700;
   color: rgb(var(--v-theme-error));
 }
 
 .fixture-card__status-chip {
   font-weight: 700;
   letter-spacing: 0.02em;
-  font-size: 0.68rem;
+  font-size: 0.62rem;
+}
+
+.fixture-card__status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.fixture-card__status-long {
+  font-size: 0.72rem;
+  line-height: 1.2;
 }
 
 .fixture-card:hover {
@@ -290,12 +320,12 @@ function selectTeam(teamId?: number | null) {
   }
 
   .fixture-card__score {
-    min-width: 62px;
-    gap: 4px;
+    min-width: 56px;
+    gap: 3px;
   }
 
   .fixture-card__score-goal {
-    font-size: 1.2rem;
+    font-size: 0.98rem;
   }
 }
 </style>
