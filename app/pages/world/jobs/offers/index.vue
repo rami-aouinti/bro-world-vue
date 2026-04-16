@@ -100,6 +100,11 @@ function resetFilters() {
   fetchJobs()
 }
 
+function applyFilters() {
+  page.value = 1
+  fetchJobs()
+}
+
 watch(page, () => fetchJobs())
 
 await fetchJobs()
@@ -141,10 +146,7 @@ await fetchJobs()
           <v-btn
             color="primary"
             block
-            @click="
-              page = 1
-              fetchJobs()
-            "
+            @click="applyFilters"
           >
             Filter
           </v-btn>
@@ -161,10 +163,7 @@ await fetchJobs()
           prepend-inner-icon="mdi-magnify"
           clearable
           hide-details
-          @keyup.enter="
-            page = 1
-            fetchJobs()
-          "
+          @keyup.enter="applyFilters"
         />
       </v-card>
 
