@@ -187,35 +187,13 @@ watch(
   <div>
     <AppPageDrawers>
       <template #left>
-        <v-row class="mb-4">
-          <v-col cols="12">
-            <v-select
-              :model-value="selectedLeagueId"
-              :items="leagues"
-              item-title="name"
-              item-value="id"
-              :label="t('pages.applications.football.filters.league')"
-              density="comfortable"
-              :loading="leaguesState === 'loading'"
-              :disabled="leaguesState !== 'ready'"
-              variant="outlined"
-              hide-details
-              @update:model-value="selectLeague"
-            />
-          </v-col>
-
-          <v-col cols="12">
-            <v-select
-              :model-value="selectedSeason"
-              :items="seasons"
-              :label="t('pages.applications.football.filters.season')"
-              density="comfortable"
-              :disabled="!selectedLeague"
-              variant="outlined"
-              hide-details
-              @update:model-value="selectSeason"
-            />
-          </v-col>
+        <v-row class="mb-4 pt-3">
+          <SportsFootballFixturesListWidget
+            :fixtures="fixtures"
+            :section="fixturesSection"
+            :selected-fixture-id="selectedFixtureId"
+            @select="loadFixtureDetails"
+          />
         </v-row>
       </template>
 
@@ -264,6 +242,36 @@ watch(
     </AppPageDrawers>
 
     <v-container fluid>
+     <v-row>
+       <v-col cols="12" md="6">
+         <v-select
+           :model-value="selectedLeagueId"
+           :items="leagues"
+           item-title="name"
+           item-value="id"
+           :label="t('pages.applications.football.filters.league')"
+           density="comfortable"
+           :loading="leaguesState === 'loading'"
+           :disabled="leaguesState !== 'ready'"
+           variant="outlined"
+           hide-details
+           @update:model-value="selectLeague"
+         />
+       </v-col>
+
+       <v-col cols="12" md="6">
+         <v-select
+           :model-value="selectedSeason"
+           :items="seasons"
+           :label="t('pages.applications.football.filters.season')"
+           density="comfortable"
+           :disabled="!selectedLeague"
+           variant="outlined"
+           hide-details
+           @update:model-value="selectSeason"
+         />
+       </v-col>
+     </v-row>
       <template v-if="sport.slug === 'football'">
         <v-row class="football-stagger">
           <v-col cols="12" class="football-fade-up">
@@ -273,18 +281,8 @@ watch(
               @select="loadFixtureDetails"
             />
           </v-col>
-
-          <v-col cols="12" md="6" class="football-fade-up">
-            <SportsFootballFixturesListWidget
-              :fixtures="fixtures"
-              :section="fixturesSection"
-              :selected-fixture-id="selectedFixtureId"
-              @select="loadFixtureDetails"
-            />
-          </v-col>
-
           <template v-if="hasSelection">
-            <v-col cols="12" md="6" class="football-fade-up">
+            <v-col cols="12" class="football-fade-up">
               <SportsFootballFixtureDetailsWidget
                 :section="fixtureDetailsSection"
                 :events="mappedFixtureEvents"
@@ -293,7 +291,7 @@ watch(
               />
             </v-col>
 
-            <v-col cols="12" md="6" class="football-fade-up">
+            <v-col cols="12" class="football-fade-up">
               <SportsFootballStandingsTableWidget
                 :standings="standings"
                 :standings-league="standingsLeague"
@@ -302,7 +300,7 @@ watch(
               />
             </v-col>
 
-            <v-col cols="12" md="6" class="football-fade-up">
+            <v-col cols="12" class="football-fade-up">
               <SportsFootballTeamDetailsWidget
                 :section="teamDetailsSection"
                 :team-details="teamDetails"
@@ -311,7 +309,7 @@ watch(
               />
             </v-col>
 
-            <v-col cols="12" md="6" class="football-fade-up">
+            <v-col cols="12" class="football-fade-up">
               <SportsFootballPlayerDetailsWidget
                 :section="playerDetailsSection"
                 :player-details="playerDetails"
@@ -341,11 +339,6 @@ watch(
 }
 
 .football-surface {
-  background: linear-gradient(
-    165deg,
-    rgba(var(--v-theme-surface), 0.94),
-    rgba(var(--v-theme-surface), 0.84)
-  );
   border-color: rgba(var(--v-theme-on-surface), 0.16) !important;
   box-shadow: 0 10px 24px rgba(5, 10, 24, 0.18);
   backdrop-filter: blur(5px);

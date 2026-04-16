@@ -64,7 +64,6 @@ onMounted(() => {
 .home-feed-shell {
   max-width: 920px;
   margin: 0 auto;
-  padding-top: 8px;
   padding-bottom: 24px;
 }
 

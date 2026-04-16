@@ -77,7 +77,7 @@ watch(mobile, (isMobile) => {
 .v-navigation-drawer {
   &.app-left-drawer {
     border-radius: 24px;
-    margin-top: 20px;
+    margin-top: 24px;
     margin-left: 16px;
     height: calc(100% - 10px);
   }
@@ -141,7 +141,7 @@ watch(mobile, (isMobile) => {
   .app-drawer-card {
     padding: 8px;
     height: calc(100% - 10px);
-    overflow: hidden;
+    overflow-y: auto;
   }
   .drawer-header-icon {
     opacity: 1;

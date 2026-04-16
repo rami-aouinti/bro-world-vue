@@ -71,7 +71,7 @@ const selectHeroFixture = () => {
 
 <template>
   <v-card
-    class="football-surface football-surface--glow football-interactive-card"
+    class="postcard-gradient-card football-surface football-surface--glow football-interactive-card"
     variant="outlined"
     @click="selectHeroFixture"
   >

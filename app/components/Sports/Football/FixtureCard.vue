@@ -125,7 +125,7 @@ function selectFixture() {
 <template>
   <v-card
     variant="outlined"
-    class="fixture-card mb-2"
+    class="postcard-gradient-card fixture-card mb-2"
     :class="{ 'fixture-card--active': active }"
     role="button"
     tabindex="0"
@@ -203,7 +203,6 @@ function selectFixture() {
 .fixture-card {
   cursor: pointer;
   border-color: rgba(var(--v-theme-on-surface), 0.15);
-  background: rgba(var(--v-theme-surface), 1);
   transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease, background-color 180ms ease;
 }
 
