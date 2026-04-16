@@ -1,4 +1,4 @@
-import { callPublicApi } from '~~/server/utils/publicApi'
+import { cachedPublicGet } from '~~/server/utils/publicApi'
 
 function parsePositiveInt(value: unknown, fallback: number) {
   const parsed = Number(value)
@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
   const page = parsePositiveInt(query.page, 1)
   const limit = parsePositiveInt(query.limit, 20)
 
-  return callPublicApi(event, '/shop/general', {
+  return cachedPublicGet(event, '/shop/general', {
     query: { page, limit },
   })
 })

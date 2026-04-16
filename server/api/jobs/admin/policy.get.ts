@@ -1,4 +1,6 @@
 import type { JobsAdminPolicyResponse } from '~~/server/types/api/jobs'
+import { getCached, privateCacheKey, setCached } from '~~/server/utils/apiCache'
+import { resolveCacheTtl } from '~~/server/utils/apiCacheConfig'
 import { getJobsAdminPolicy } from '~~/server/utils/jobsAdminStore'
 import type { SessionUser } from '~/types/session'
 
@@ -8,6 +10,11 @@ export default defineEventHandler(
 
     const session = await getUserSession(event)
     const user = (session?.user as SessionUser | null) ?? null
+    const username = user?.username?.trim()
+
+    if (!username) {
+      throw createError({ statusCode: 401, statusMessage: 'Missing username' })
+    }
 
     if (
       !(
@@ -19,6 +26,16 @@ export default defineEventHandler(
       throw createError({ statusCode: 403, statusMessage: 'Access denied' })
     }
 
-    return getJobsAdminPolicy()
+    const cacheKey = privateCacheKey(username, '/jobs/admin/policy')
+    const cached = await getCached<JobsAdminPolicyResponse>(cacheKey)
+
+    if (cached) {
+      return cached
+    }
+
+    const response = getJobsAdminPolicy()
+    await setCached(cacheKey, response, resolveCacheTtl('default'))
+
+    return response
   },
 )
