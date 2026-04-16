@@ -1,5 +1,7 @@
 import type { CrmAdminApiResponse } from '~~/server/types/api/crm'
 import { CRM_ROLE_PERMISSIONS } from '~~/shared/crmAccess'
+import { getCached, privateCacheKey, setCached } from '~~/server/utils/apiCache'
+import { resolveCacheTtl } from '~~/server/utils/apiCacheConfig'
 import {
   getCurrentUserCrmPermissions,
   requireCrmPermission,
@@ -7,10 +9,23 @@ import {
 
 export default defineEventHandler(
   async (event): Promise<CrmAdminApiResponse> => {
-    await requireCrmPermission(event, 'crm.admin.manage')
+    const user = await requireCrmPermission(event, 'crm.admin.manage')
+    const username = user?.username?.trim()
+
+    if (!username) {
+      throw createError({ statusCode: 401, statusMessage: 'Missing username' })
+    }
+
+    const cacheKey = privateCacheKey(username, '/world/crm/admin')
+    const cached = await getCached<CrmAdminApiResponse>(cacheKey)
+
+    if (cached) {
+      return cached
+    }
+
     const currentUserPermissions = await getCurrentUserCrmPermissions(event)
 
-    return {
+    const response = {
       policy: {
         enforceLeadAssignmentRules: true,
         enableAuditLogs: true,
@@ -64,5 +79,9 @@ export default defineEventHandler(
       ],
       currentUserPermissions,
     }
+
+    await setCached(cacheKey, response, resolveCacheTtl('default'))
+
+    return response
   },
 )

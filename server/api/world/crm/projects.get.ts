@@ -5,6 +5,8 @@ import type {
   CrmProjectsListQuery,
   SortOrder,
 } from '~~/server/types/api/crm'
+import { getCached, privateCacheKey, setCached } from '~~/server/utils/apiCache'
+import { resolveCacheTtl } from '~~/server/utils/apiCacheConfig'
 import { requireCrmPermission } from '~~/server/utils/crmAccessControl'
 
 const PROJECTS: CrmProject[] = [
@@ -66,9 +68,21 @@ const normalizePhase = (value: unknown): CrmProjectPhase | undefined => {
 
 export default defineEventHandler(
   async (event): Promise<CrmProjectsApiResponse> => {
-    await requireCrmPermission(event, 'crm.projects.read')
+    const user = await requireCrmPermission(event, 'crm.projects.read')
+    const username = user?.username?.trim()
+
+    if (!username) {
+      throw createError({ statusCode: 401, statusMessage: 'Missing username' })
+    }
 
     const query = getQuery(event) as CrmProjectsListQuery
+    const cacheKey = privateCacheKey(username, '/world/crm/projects', query)
+    const cached = await getCached<CrmProjectsApiResponse>(cacheKey)
+
+    if (cached) {
+      return cached
+    }
+
     const page = Math.max(1, Number(query.page ?? 1) || 1)
     const limit = Math.min(100, Math.max(1, Number(query.limit ?? 10) || 10))
     const sortBy: string = ALLOWED_SORT_FIELDS.includes(
@@ -110,7 +124,7 @@ export default defineEventHandler(
     const totalPages = Math.max(1, Math.ceil(total / limit))
     const start = (page - 1) * limit
 
-    return {
+    const response = {
       items: sorted.slice(start, start + limit),
       page,
       limit,
@@ -124,5 +138,9 @@ export default defineEventHandler(
         ...(manager ? { manager: query.manager } : {}),
       },
     }
+
+    await setCached(cacheKey, response, resolveCacheTtl('default'))
+
+    return response
   },
 )

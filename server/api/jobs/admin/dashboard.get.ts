@@ -1,4 +1,6 @@
 import type { JobsAdminDashboardResponse } from '~~/server/types/api/jobs'
+import { getCached, privateCacheKey, setCached } from '~~/server/utils/apiCache'
+import { resolveCacheTtl } from '~~/server/utils/apiCacheConfig'
 import { listCandidatesByContext } from '~~/server/utils/jobsPipelineStore'
 import type { SessionUser } from '~/types/session'
 
@@ -8,6 +10,11 @@ export default defineEventHandler(
 
     const session = await getUserSession(event)
     const user = (session?.user as SessionUser | null) ?? null
+    const username = user?.username?.trim()
+
+    if (!username) {
+      throw createError({ statusCode: 401, statusMessage: 'Missing username' })
+    }
 
     if (
       !(
@@ -17,6 +24,13 @@ export default defineEventHandler(
       )
     ) {
       throw createError({ statusCode: 403, statusMessage: 'Access denied' })
+    }
+
+    const cacheKey = privateCacheKey(username, '/jobs/admin/dashboard')
+    const cached = await getCached<JobsAdminDashboardResponse>(cacheKey)
+
+    if (cached) {
+      return cached
     }
 
     const { items } = listCandidatesByContext(undefined, {
@@ -76,7 +90,7 @@ export default defineEventHandler(
       (candidate) => candidate.diversityFlags.length > 0,
     ).length
 
-    return {
+    const response = {
       timeToHireDays: {
         average,
         median,
@@ -98,5 +112,9 @@ export default defineEventHandler(
           : 0,
       },
     }
+
+    await setCached(cacheKey, response, resolveCacheTtl('default'))
+
+    return response
   },
 )

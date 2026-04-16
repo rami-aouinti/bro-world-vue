@@ -5,6 +5,8 @@ import type {
   CrmLeadsListQuery,
   SortOrder,
 } from '~~/server/types/api/crm'
+import { getCached, privateCacheKey, setCached } from '~~/server/utils/apiCache'
+import { resolveCacheTtl } from '~~/server/utils/apiCacheConfig'
 import { requireCrmPermission } from '~~/server/utils/crmAccessControl'
 
 const LEADS: CrmLead[] = [
@@ -65,8 +67,21 @@ const normalizeStatus = (value: unknown): CrmLeadStatus | undefined => {
 }
 
 export default defineEventHandler(async (event): Promise<CrmLeadsApiResponse> => {
-  await requireCrmPermission(event, 'crm.leads.read')
+  const user = await requireCrmPermission(event, 'crm.leads.read')
+  const username = user?.username?.trim()
+
+  if (!username) {
+    throw createError({ statusCode: 401, statusMessage: 'Missing username' })
+  }
+
   const query = getQuery(event) as CrmLeadsListQuery
+  const cacheKey = privateCacheKey(username, '/world/crm/leads', query)
+  const cached = await getCached<CrmLeadsApiResponse>(cacheKey)
+
+  if (cached) {
+    return cached
+  }
+
   const page = Math.max(1, Number(query.page ?? 1) || 1)
   const limit = Math.min(100, Math.max(1, Number(query.limit ?? 10) || 10))
   const sortBy: string = ALLOWED_SORT_FIELDS.includes(
@@ -106,7 +121,7 @@ export default defineEventHandler(async (event): Promise<CrmLeadsApiResponse> =>
   const totalPages = Math.max(1, Math.ceil(total / limit))
   const start = (page - 1) * limit
 
-  return {
+  const response = {
     items: sorted.slice(start, start + limit),
     page,
     limit,
@@ -120,4 +135,8 @@ export default defineEventHandler(async (event): Promise<CrmLeadsApiResponse> =>
       ...(owner ? { owner: query.owner } : {}),
     },
   }
+
+  await setCached(cacheKey, response, resolveCacheTtl('default'))
+
+  return response
 })
