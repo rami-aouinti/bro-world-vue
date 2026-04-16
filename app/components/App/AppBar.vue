@@ -18,11 +18,13 @@ type ShopCartResponse = {
 
 type ShopCartItem = WorldShopCartLine & {
   id?: string
+  photo?: string
   lineTotal?: number
   unitPriceSnapshot?: number
   product?: {
     id?: string
     name?: string
+    photo?: string
   }
 }
 
@@ -248,6 +250,10 @@ const cartCurrency = computed(
   () => cartPayload.value?.currency || cartPayload.value?.currencyCode || 'EUR',
 )
 const showCartMenu = computed(() => loggedIn.value && cartCount.value > 0)
+
+function getCartItemPhoto(line: ShopCartItem) {
+  return line.photo || line.product?.photo || ''
+}
 
 function formatMoney(amount: number, currency: string) {
   return new Intl.NumberFormat('fr-FR', {
@@ -678,6 +684,19 @@ function isMenuActive(paths: string[]) {
                   :title="line.name || line.product?.name || line.productId"
                   :subtitle="`x${line.quantity}`"
                 >
+                  <template #prepend>
+                    <v-avatar rounded="lg" size="40" class="mr-3">
+                      <v-img
+                        :src="getCartItemPhoto(line)"
+                        :alt="line.name || line.product?.name || line.productId"
+                        cover
+                      >
+                        <template #error>
+                          <v-icon icon="mdi-image-off-outline" size="20" />
+                        </template>
+                      </v-img>
+                    </v-avatar>
+                  </template>
                   <template #append>
                     <span class="text-body-2 font-weight-medium">
                       {{
