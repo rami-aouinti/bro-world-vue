@@ -1,6 +1,7 @@
-import { apiRequest } from '~~/server/utils/httpClient'
-import { getSessionToken } from '~~/server/utils/privateApi'
-import { resolveApiUrl } from '~~/server/utils/resolveApiUrl'
+import {
+  getServerPrivateAxios,
+  resolveServerApiUrl,
+} from '~~/server/utils/http/axiosClient'
 
 function assertNonEmptyString(value: unknown, field: string) {
   if (typeof value !== 'string' || value.trim().length === 0) {
@@ -17,20 +18,13 @@ export default defineEventHandler(async (event) => {
   const { shopId } = getRouterParams(event)
   const normalizedShopId = assertNonEmptyString(shopId, 'shopId')
 
-  const runtimeConfig = useRuntimeConfig(event)
-  const token = await getSessionToken(event)
-
-  return apiRequest(
-    resolveApiUrl(
-      runtimeConfig.public.apiBaseUrl,
+  const client = await getServerPrivateAxios(event)
+  const response = await client.get(
+    resolveServerApiUrl(
+      event,
       `/shop/general/carts/${encodeURIComponent(normalizedShopId)}`,
     ),
-    {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        authorization: `Bearer ${token}`,
-      },
-    },
   )
+
+  return response.data
 })

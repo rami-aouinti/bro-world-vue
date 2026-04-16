@@ -1,7 +1,6 @@
 import type { H3Event } from 'h3'
 import type { SessionUser } from '~/types/session'
-import { apiRequest } from './httpClient'
-import { resolveApiUrl } from './resolveApiUrl'
+import { getServerPublicAxios, resolveServerApiUrl } from './http/axiosClient'
 
 type TokenResponse = {
   token: string
@@ -13,20 +12,19 @@ export async function fetchUserProfileFromToken(
   event: H3Event,
   token: string,
 ): Promise<SessionUser> {
-  const runtimeConfig = useRuntimeConfig(event)
+  const client = getServerPublicAxios(event)
 
-  const userProfile = await apiRequest<UserProfile>(
-    resolveApiUrl(runtimeConfig.public.apiBaseUrl, '/profile'),
+  const userProfileResponse = await client.get<UserProfile>(
+    resolveServerApiUrl(event, '/profile'),
     {
       headers: {
-        accept: 'application/json',
         Authorization: `Bearer ${token}`,
       },
     },
   )
 
   return {
-    ...userProfile,
+    ...userProfileResponse.data,
     token,
   }
 }
@@ -35,63 +33,42 @@ export async function fetchTokenWithPassword(
   event: H3Event,
   payload: { username: string; password: string },
 ): Promise<string> {
-  const runtimeConfig = useRuntimeConfig(event)
+  const client = getServerPublicAxios(event)
 
-  const tokenResponse = await apiRequest<TokenResponse>(
-    resolveApiUrl(runtimeConfig.public.apiBaseUrl, '/auth/get_token'),
-    {
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: payload,
-    },
+  const tokenResponse = await client.post<TokenResponse>(
+    resolveServerApiUrl(event, '/auth/get_token'),
+    payload,
   )
 
-  return tokenResponse.token
+  return tokenResponse.data.token
 }
 
 export async function fetchTokenWithSocialLogin(
   event: H3Event,
   payload: { email: string; provider: string; providerId: string },
 ): Promise<string> {
-  const runtimeConfig = useRuntimeConfig(event)
+  const client = getServerPublicAxios(event)
 
-  const tokenResponse = await apiRequest<TokenResponse>(
-    resolveApiUrl(runtimeConfig.public.apiBaseUrl, '/auth/social_login'),
-    {
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: payload,
-    },
+  const tokenResponse = await client.post<TokenResponse>(
+    resolveServerApiUrl(event, '/auth/social_login'),
+    payload,
   )
 
-  return tokenResponse.token
+  return tokenResponse.data.token
 }
 
 export async function fetchTokenWithRegister(
   event: H3Event,
   payload: { email: string; password: string; repeatPassword: string },
 ): Promise<string> {
-  const runtimeConfig = useRuntimeConfig(event)
+  const client = getServerPublicAxios(event)
 
-  const tokenResponse = await apiRequest<TokenResponse>(
-    resolveApiUrl(runtimeConfig.public.apiBaseUrl, '/auth/register'),
-    {
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: payload,
-    },
+  const tokenResponse = await client.post<TokenResponse>(
+    resolveServerApiUrl(event, '/auth/register'),
+    payload,
   )
 
-  return tokenResponse.token
+  return tokenResponse.data.token
 }
 
 export async function createSessionFromToken(event: H3Event, token: string) {

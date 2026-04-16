@@ -46,6 +46,8 @@
     "nuxt-auth-utils": "^0.5.29",
     "nuxt-schema-org": "^6.0.4",
     "pinia": "^3.0.4",
-    "vuetify": "^4.0.4"
+    "vuetify": "^4.0.4",
+    "axios": "^1.9.0",
+    "axios-retry": "^4.5.0"
   }
 }
