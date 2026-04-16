@@ -25,5 +25,18 @@ export default defineEventHandler(async (event): Promise<FootballPlayerApiRespon
     { cacheProfile: 'reference', cacheKeySuffix: 'reference-player' },
   )
 
-  return mapPlayerResponse(payload)
+  const mapped = mapPlayerResponse(payload)
+
+  if (mapped.profile || (!league && !team)) {
+    return mapped
+  }
+
+  const fallbackPayload = await cachedFootballApiGet<ApiSportsPlayerItem>(
+    event,
+    '/players',
+    { id: player, season },
+    { cacheProfile: 'reference', cacheKeySuffix: 'reference-player-fallback' },
+  )
+
+  return mapPlayerResponse(fallbackPayload)
 })

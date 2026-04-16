@@ -173,7 +173,11 @@ export function mapTeamsResponse(
 export function mapTeamStatisticsResponse(
   payload: ApiSportsResponse<ApiSportsTeamStatisticsItem>,
 ) {
-  const item = payload.response?.[0]
+  const response = payload.response as
+    | ApiSportsTeamStatisticsItem
+    | ApiSportsTeamStatisticsItem[]
+    | undefined
+  const item = Array.isArray(response) ? response[0] : response
 
   if (!item) {
     throw createError({
