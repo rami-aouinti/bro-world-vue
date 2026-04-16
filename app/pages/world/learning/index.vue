@@ -2,7 +2,7 @@
 import type { SessionUser } from '~/types/session'
 import { useWorldLearningStore } from '~/stores/worldLearning'
 
-definePageMeta({ title: 'Learning' })
+definePageMeta({ title: 'world.learning.label' })
 
 const { t } = useI18n()
 const { user } = useUserSession()
@@ -13,29 +13,29 @@ const isRoot = computed(
 
 const learningNavItems = computed(() => [
   {
-    title: t('world.learning.nav.overview', 'Overview Learning'),
+    title: t('world.learning.nav.overview'),
     to: '/world/learning',
     icon: 'mdi-view-dashboard-outline',
   },
   {
-    title: t('world.learning.nav.courses', 'Courses'),
+    title: t('world.learning.nav.courses'),
     to: '/world/learning/courses',
     icon: 'mdi-book-open-page-variant-outline',
   },
   {
-    title: t('world.learning.nav.levels', 'Levels'),
+    title: t('world.learning.nav.levels'),
     to: '/world/learning/levels',
     icon: 'mdi-stairs',
   },
   {
-    title: t('world.learning.nav.paths', 'Paths'),
+    title: t('world.learning.nav.paths'),
     to: '/world/learning/paths',
     icon: 'mdi-map-marker-path',
   },
   ...(isRoot.value
     ? [
         {
-          title: t('world.learning.nav.admin', 'Admin'),
+          title: t('world.learning.nav.admin'),
           to: '/world/learning/admin',
           icon: 'mdi-shield-crown-outline',
           rootOnly: true,
@@ -77,7 +77,7 @@ const rows = computed(() =>
     cohort: entry.cohort,
     level: entry.currentLevel,
     score: `${entry.score}%`,
-    timeSpent: `${entry.timeSpentMinutes} min`,
+    timeSpent: `${entry.timeSpentMinutes} ${t('world.common.units.minuteShort')}`,
     attempts: entry.attempts,
   })),
 )
@@ -95,18 +95,11 @@ const refreshDashboard = async () => {
 <template>
   <div>
     <WorldModuleDrawers
-      :module-title="t('world.learning.label', 'Learning')"
+      :module-title="t('world.learning.label')"
       module-icon="mdi-school-outline"
-      :module-description="
-        t(
-          'world.learning.moduleDescription',
-          'Plateforme LMS avec suivi progression par utilisateur, score, temps passé et tentatives.',
-        )
-      "
+      :module-description="t('world.learning.moduleDescription')"
       :nav-items="learningNavItems"
-      :action-label="
-        t('world.learning.actions.refreshDashboard', 'Refresh dashboard')
-      "
+      :action-label="t('world.learning.actions.refreshDashboard')"
       action-icon="mdi-refresh"
       @action="refreshDashboard"
     />
@@ -116,7 +109,7 @@ const refreshDashboard = async () => {
         <v-col cols="12" md="3"
           ><v-card class="pa-3 postcard-gradient-card" rounded="xl"
             ><p class="text-caption mb-1">
-              {{ t('world.learning.kpis.activeLearners', 'Active learners') }}
+              {{ t('world.learning.kpis.activeLearners') }}
             </p>
             <h3 class="text-h5">{{ analytics?.totalLearners ?? 0 }}</h3></v-card
           ></v-col
@@ -124,9 +117,7 @@ const refreshDashboard = async () => {
         <v-col cols="12" md="3"
           ><v-card class="pa-3 postcard-gradient-card" rounded="xl"
             ><p class="text-caption mb-1">
-              {{
-                t('world.learning.kpis.courseCompletion', 'Course completion')
-              }}
+              {{ t('world.learning.kpis.courseCompletion') }}
             </p>
             <h3 class="text-h5">
               {{ analytics?.completionRate ?? 0 }}%
@@ -136,7 +127,7 @@ const refreshDashboard = async () => {
         <v-col cols="12" md="3"
           ><v-card class="pa-3 postcard-gradient-card" rounded="xl"
             ><p class="text-caption mb-1">
-              {{ t('world.learning.kpis.dropoutRate', 'Dropout rate') }}
+              {{ t('world.learning.kpis.dropoutRate') }}
             </p>
             <h3 class="text-h5">{{ analytics?.dropoutRate ?? 0 }}%</h3></v-card
           ></v-col
@@ -144,12 +135,7 @@ const refreshDashboard = async () => {
         <v-col cols="12" md="3"
           ><v-card class="pa-3 postcard-gradient-card" rounded="xl"
             ><p class="text-caption mb-1">
-              {{
-                t(
-                  'world.learning.kpis.certificatesIssued',
-                  'Certificates issued',
-                )
-              }}
+              {{ t('world.learning.kpis.certificatesIssued') }}
             </p>
             <h3 class="text-h5">{{ certifiedCount }}</h3></v-card
           ></v-col
@@ -157,64 +143,46 @@ const refreshDashboard = async () => {
       </v-row>
 
       <WorldFeatureScaffold
-        :title="t('world.learning.home.title', 'Learning Hub')"
-        :subtitle="
-          t(
-            'world.learning.home.subtitle',
-            'Vue mentor des meilleurs apprenants avec progression live et métriques de performance.',
-          )
-        "
-        :form-title="t('world.learning.home.formTitle', 'Rules snapshot')"
-        :form-description="
-          t(
-            'world.learning.home.formDescription',
-            'Passage niveau: score + leçons complétées + temps passé + limite tentatives.',
-          )
-        "
+        :title="t('world.learning.home.title')"
+        :subtitle="t('world.learning.home.subtitle')"
+        :form-title="t('world.learning.home.formTitle')"
+        :form-description="t('world.learning.home.formDescription')"
         :fields="[
           {
             key: 'rule1',
-            label: t('world.learning.form.intermediate', 'Intermediate'),
+            label: t('world.learning.form.intermediate'),
             type: 'text',
-            placeholder: t(
-              'world.learning.form.intermediateRule',
-              'Score ≥70, complétion ≥50%, temps ≥60 min, tentatives ≤6',
-            ),
+            placeholder: t('world.learning.form.intermediateRule'),
           },
           {
             key: 'rule2',
-            label: t('world.learning.form.advanced', 'Advanced'),
+            label: t('world.learning.form.advanced'),
             type: 'text',
-            placeholder: t(
-              'world.learning.form.advancedRule',
-              'Score ≥85, complétion 100%, temps ≥180 min, tentatives ≤4',
-            ),
+            placeholder: t('world.learning.form.advancedRule'),
           },
         ]"
         :headers="[
           {
-            title: t('world.learning.table.learner', 'Learner'),
+            title: t('world.learning.table.learner'),
             key: 'learner',
           },
-          { title: t('world.learning.table.cohort', 'Cohort'), key: 'cohort' },
+          { title: t('world.learning.table.cohort'), key: 'cohort' },
           {
-            title: t('world.learning.table.currentLevel', 'Current level'),
+            title: t('world.learning.table.currentLevel'),
             key: 'level',
           },
-          { title: t('world.learning.table.score', 'Score'), key: 'score' },
+          { title: t('world.learning.table.score'), key: 'score' },
           {
-            title: t('world.learning.table.timeSpent', 'Time spent'),
+            title: t('world.learning.table.timeSpent'),
             key: 'timeSpent',
           },
           {
-            title: t('world.learning.table.attempts', 'Attempts'),
+            title: t('world.learning.table.attempts'),
             key: 'attempts',
           },
         ]"
         :rows="rows"
-        :create-label="
-          t('world.learning.actions.monitoringEnabled', 'Monitoring enabled')
-        "
+        :create-label="t('world.learning.actions.monitoringEnabled')"
       />
     </v-container>
   </div>

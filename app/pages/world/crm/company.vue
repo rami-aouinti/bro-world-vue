@@ -9,34 +9,34 @@ const { can } = useCrmPermissions()
 
 const crmNavItems = computed(() => [
   {
-    title: t('world.crm.nav.overview', 'Overview CRM'),
+    title: t('world.crm.nav.overview'),
     to: '/world/crm',
     icon: 'mdi-view-dashboard-outline',
   },
   {
-    title: t('world.crm.nav.projects', 'Projects'),
+    title: t('world.crm.nav.projects'),
     to: '/world/crm/projects',
     icon: 'mdi-folder-outline',
   },
   {
-    title: t('world.crm.nav.tasks', 'Tasks'),
+    title: t('world.crm.nav.tasks'),
     to: '/world/crm/tasks',
     icon: 'mdi-format-list-checks',
   },
   {
-    title: t('world.crm.nav.sprints', 'Sprints'),
+    title: t('world.crm.nav.sprints'),
     to: '/world/crm/sprints',
     icon: 'mdi-run-fast',
   },
   {
-    title: t('world.crm.nav.company', 'Company'),
+    title: t('world.crm.nav.company'),
     to: '/world/crm/company',
     icon: 'mdi-domain',
   },
   ...(can('crm.admin.manage')
     ? [
         {
-          title: t('world.crm.nav.admin', 'Admin'),
+          title: t('world.crm.nav.admin'),
           to: '/world/crm/admin',
           icon: 'mdi-shield-crown-outline',
         },
@@ -58,7 +58,7 @@ const rows = computed<Record<string, string | number>[]>(
 <template>
   <div>
     <WorldModuleDrawers
-      :module-title="t('world.crm.label', 'CRM')"
+      :module-title="t('world.crm.label')"
       module-icon="mdi-account-group-outline"
       :module-description="
         t(

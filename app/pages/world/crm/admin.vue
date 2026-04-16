@@ -70,6 +70,8 @@ interface CrmReportsResponse {
 
 definePageMeta({ title: 'CRM Admin' })
 
+const { locale } = useI18n()
+
 const activeTab = ref<CrmAdminTab>('dashboard')
 const modalOpen = ref(false)
 const modalPending = ref(false)
@@ -111,7 +113,12 @@ const entityConfigs: CrmAdminEntityConfig[] = [
     fields: [
       { key: 'name', label: 'Company name', type: 'text', required: true },
       { key: 'industry', label: 'Industry', type: 'text', required: true },
-      { key: 'website', label: 'Website', type: 'url', placeholder: 'https://...' },
+      {
+        key: 'website',
+        label: 'Website',
+        type: 'url',
+        placeholder: 'https://...',
+      },
       { key: 'contactEmail', label: 'Contact email', type: 'email' },
       { key: 'phone', label: 'Phone', type: 'text' },
     ],
@@ -173,13 +180,29 @@ const entityConfigs: CrmAdminEntityConfig[] = [
       { key: 'name', label: 'Sprint name', type: 'text', required: true },
       { key: 'goal', label: 'Goal', type: 'textarea' },
       { key: 'status', label: 'Status', type: 'text' },
-      { key: 'startDate', label: 'Start date', type: 'text', placeholder: 'YYYY-MM-DD' },
-      { key: 'endDate', label: 'End date', type: 'text', placeholder: 'YYYY-MM-DD' },
+      {
+        key: 'startDate',
+        label: 'Start date',
+        type: 'text',
+        placeholder: 'YYYY-MM-DD',
+      },
+      {
+        key: 'endDate',
+        label: 'End date',
+        type: 'text',
+        placeholder: 'YYYY-MM-DD',
+      },
     ],
   },
 ]
 
-const tabToEntityKind: Record<Extract<CrmAdminTab, 'companies' | 'projects' | 'tasks' | 'taskRequests' | 'sprints'>, CrmGeneralEntityKind> = {
+const tabToEntityKind: Record<
+  Extract<
+    CrmAdminTab,
+    'companies' | 'projects' | 'tasks' | 'taskRequests' | 'sprints'
+  >,
+  CrmGeneralEntityKind
+> = {
   companies: 'companies',
   projects: 'projects',
   tasks: 'tasks',
@@ -187,7 +210,9 @@ const tabToEntityKind: Record<Extract<CrmAdminTab, 'companies' | 'projects' | 't
   sprints: 'sprints',
 }
 
-const entityCollections = reactive<Record<CrmGeneralEntityKind, Record<string, unknown>[]>>({
+const entityCollections = reactive<
+  Record<CrmGeneralEntityKind, Record<string, unknown>[]>
+>({
   companies: [],
   projects: [],
   tasks: [],
@@ -203,29 +228,38 @@ const entityPending = reactive<Record<CrmGeneralEntityKind, boolean>>({
   sprints: false,
 })
 
-const { data: dashboardData, pending: dashboardPending } = await useFetch<CrmDashboardResponse>(
-  '/api/world/crm/general/dashboard',
-)
-const { data: billingsData, pending: billingsPending } =
-  await useFetch<CrmGeneralCollectionResponse<Record<string, unknown>>>(
-    '/api/world/crm/general/billings',
-  )
-const { data: contactsData, pending: contactsPending } =
-  await useFetch<CrmGeneralCollectionResponse<CrmContactItem>>(
-    '/api/world/crm/general/contacts',
-  )
+const { data: dashboardData, pending: dashboardPending } =
+  await useFetch<CrmDashboardResponse>('/api/world/crm/general/dashboard')
+const { data: billingsData, pending: billingsPending } = await useFetch<
+  CrmGeneralCollectionResponse<Record<string, unknown>>
+>('/api/world/crm/general/billings')
+const { data: contactsData, pending: contactsPending } = await useFetch<
+  CrmGeneralCollectionResponse<CrmContactItem>
+>('/api/world/crm/general/contacts')
 const { data: reportsData, pending: reportsPending } =
   await useFetch<CrmReportsResponse>('/api/world/crm/general/reports')
 
 const adminTabs = [
-  { value: 'dashboard', label: 'Dashboard', icon: 'mdi-view-dashboard-outline' },
+  {
+    value: 'dashboard',
+    label: 'Dashboard',
+    icon: 'mdi-view-dashboard-outline',
+  },
   { value: 'companies', label: 'Companies', icon: 'mdi-domain' },
   { value: 'projects', label: 'Projects', icon: 'mdi-folder-outline' },
   { value: 'tasks', label: 'Tasks', icon: 'mdi-format-list-checks' },
-  { value: 'taskRequests', label: 'Task requests', icon: 'mdi-file-document-edit-outline' },
+  {
+    value: 'taskRequests',
+    label: 'Task requests',
+    icon: 'mdi-file-document-edit-outline',
+  },
   { value: 'sprints', label: 'Sprints', icon: 'mdi-run-fast' },
   { value: 'billings', label: 'Billings', icon: 'mdi-receipt-text-outline' },
-  { value: 'contacts', label: 'Contacts', icon: 'mdi-account-box-multiple-outline' },
+  {
+    value: 'contacts',
+    label: 'Contacts',
+    icon: 'mdi-account-box-multiple-outline',
+  },
   { value: 'reports', label: 'Reports', icon: 'mdi-chart-box-outline' },
 ]
 
@@ -267,7 +301,10 @@ const dashboardCards = computed(() => {
 })
 
 const activeEntityConfig = computed(() => {
-  return entityConfigs.find(config => config.key === activeEntityKind.value) ?? entityConfigs[0]
+  return (
+    entityConfigs.find((config) => config.key === activeEntityKind.value) ??
+    entityConfigs[0]
+  )
 })
 
 const modalTitle = computed(() => {
@@ -286,7 +323,7 @@ function getEntityKindByTab(tab: string): CrmGeneralEntityKind {
 
 function getConfigByTab(tab: string): CrmAdminEntityConfig {
   const kind = getEntityKindByTab(tab)
-  return entityConfigs.find(config => config.key === kind) ?? entityConfigs[0]
+  return entityConfigs.find((config) => config.key === kind) ?? entityConfigs[0]
 }
 
 function getItemsByTab(tab: string): Record<string, unknown>[] {
@@ -297,19 +334,33 @@ function isTabPending(tab: string) {
   return entityPending[getEntityKindByTab(tab)]
 }
 
-function getEntityKey(item: Record<string, unknown>, config: CrmAdminEntityConfig) {
+function getEntityKey(
+  item: Record<string, unknown>,
+  config: CrmAdminEntityConfig,
+) {
   return String(item[config.idKey] ?? item[config.titleKey] ?? 'unknown-item')
 }
 
-function getEntityTitle(item: Record<string, unknown>, config: CrmAdminEntityConfig) {
+function getEntityTitle(
+  item: Record<string, unknown>,
+  config: CrmAdminEntityConfig,
+) {
   return String(item[config.titleKey] ?? item[config.idKey] ?? 'Untitled')
 }
 
-function getEntitySubtitle(item: Record<string, unknown>, config: CrmAdminEntityConfig) {
+function getEntitySubtitle(
+  item: Record<string, unknown>,
+  config: CrmAdminEntityConfig,
+) {
   return config.subtitleKeys
-    .map(key => item[key])
-    .filter(value => value !== undefined && value !== null && String(value).trim().length > 0)
-    .map(value => String(value))
+    .map((key) => item[key])
+    .filter(
+      (value) =>
+        value !== undefined &&
+        value !== null &&
+        String(value).trim().length > 0,
+    )
+    .map((value) => String(value))
     .slice(0, 3)
     .join(' · ')
 }
@@ -331,9 +382,9 @@ async function fetchEntityList(kind: CrmGeneralEntityKind) {
   entityPending[kind] = true
 
   try {
-    const response = await $fetch<CrmGeneralCollectionResponse<Record<string, unknown>>>(
-      `/api/world/crm/general/${kind}`,
-    )
+    const response = await $fetch<
+      CrmGeneralCollectionResponse<Record<string, unknown>>
+    >(`/api/world/crm/general/${kind}`)
 
     entityCollections[kind] = response.items ?? []
   } catch {
@@ -344,11 +395,14 @@ async function fetchEntityList(kind: CrmGeneralEntityKind) {
 }
 
 async function refreshAllCrudLists() {
-  await Promise.all(entityConfigs.map(config => fetchEntityList(config.key)))
+  await Promise.all(entityConfigs.map((config) => fetchEntityList(config.key)))
 }
 
-function initializeForm(config: CrmAdminEntityConfig, item?: Record<string, unknown>) {
-  config.fields.forEach(field => {
+function initializeForm(
+  config: CrmAdminEntityConfig,
+  item?: Record<string, unknown>,
+) {
+  config.fields.forEach((field) => {
     const rawValue = item?.[field.key]
     formState[field.key] =
       rawValue === undefined || rawValue === null ? '' : String(rawValue)
@@ -356,7 +410,7 @@ function initializeForm(config: CrmAdminEntityConfig, item?: Record<string, unkn
 }
 
 function openCreateDialog(kind: CrmGeneralEntityKind) {
-  const config = entityConfigs.find(candidate => candidate.key === kind)
+  const config = entityConfigs.find((candidate) => candidate.key === kind)
 
   if (!config) return
 
@@ -368,8 +422,11 @@ function openCreateDialog(kind: CrmGeneralEntityKind) {
   modalOpen.value = true
 }
 
-function openEditDialog(kind: CrmGeneralEntityKind, item: Record<string, unknown>) {
-  const config = entityConfigs.find(candidate => candidate.key === kind)
+function openEditDialog(
+  kind: CrmGeneralEntityKind,
+  item: Record<string, unknown>,
+) {
+  const config = entityConfigs.find((candidate) => candidate.key === kind)
 
   if (!config) return
 
@@ -389,7 +446,7 @@ async function submitCrudForm() {
   const config = activeEntityConfig.value
   const payload = sanitizeBody(config)
 
-  if (config.fields.some(field => field.required && !payload[field.key])) {
+  if (config.fields.some((field) => field.required && !payload[field.key])) {
     submitError.value = 'Merci de remplir tous les champs obligatoires.'
     return
   }
@@ -398,16 +455,20 @@ async function submitCrudForm() {
   submitError.value = null
 
   try {
-    const endpoint = modalMode.value === 'create'
-      ? `/api/world/crm/general/${config.key}`
-      : `/api/world/crm/general/${config.key}/${editingEntityId.value}`
+    const endpoint =
+      modalMode.value === 'create'
+        ? `/api/world/crm/general/${config.key}`
+        : `/api/world/crm/general/${config.key}/${editingEntityId.value}`
 
     const method = modalMode.value === 'create' ? 'POST' : 'PATCH'
 
-    await $fetch<CrmGeneralMutationResponse<Record<string, unknown>>>(endpoint, {
-      method,
-      body: payload,
-    })
+    await $fetch<CrmGeneralMutationResponse<Record<string, unknown>>>(
+      endpoint,
+      {
+        method,
+        body: payload,
+      },
+    )
 
     await fetchEntityList(config.key)
 
@@ -420,7 +481,9 @@ async function submitCrudForm() {
     modalOpen.value = false
   } catch (error) {
     submitError.value =
-      error instanceof Error ? error.message : 'Impossible de sauvegarder les données.'
+      error instanceof Error
+        ? error.message
+        : 'Impossible de sauvegarder les données.'
     toastColor.value = 'error'
     toastMessage.value = 'Action failed. Please retry.'
     toastVisible.value = true
@@ -429,8 +492,11 @@ async function submitCrudForm() {
   }
 }
 
-async function deleteEntity(kind: CrmGeneralEntityKind, item: Record<string, unknown>) {
-  const config = entityConfigs.find(candidate => candidate.key === kind)
+async function deleteEntity(
+  kind: CrmGeneralEntityKind,
+  item: Record<string, unknown>,
+) {
+  const config = entityConfigs.find((candidate) => candidate.key === kind)
 
   if (!config) return
 
@@ -456,14 +522,14 @@ async function deleteEntity(kind: CrmGeneralEntityKind, item: Record<string, unk
 }
 
 function formatDateTime(value: string) {
-  return new Intl.DateTimeFormat('fr-FR', {
+  return new Intl.DateTimeFormat(locale.value, {
     dateStyle: 'medium',
     timeStyle: 'short',
   }).format(new Date(value))
 }
 
 function formatMoney(value: number) {
-  return new Intl.NumberFormat('fr-FR', {
+  return new Intl.NumberFormat(locale.value, {
     style: 'currency',
     currency: 'EUR',
     maximumFractionDigits: 0,
@@ -489,7 +555,8 @@ await refreshAllCrudLists()
       <v-card rounded="xl" class="pa-4 mb-4 postcard-gradient-card">
         <h2 class="text-h5 mb-2">CRM Admin center</h2>
         <p class="text-body-2 text-medium-emphasis mb-0">
-          Vue centralisée des endpoints CRM avec actions create / patch / delete pour les entités clés.
+          Vue centralisée des endpoints CRM avec actions create / patch / delete
+          pour les entités clés.
         </p>
       </v-card>
 
@@ -502,16 +569,31 @@ await refreshAllCrudLists()
 
       <v-window v-model="activeTab">
         <v-window-item value="dashboard">
-          <v-alert v-if="dashboardPending" type="info" variant="tonal" class="mb-4">
+          <v-alert
+            v-if="dashboardPending"
+            type="info"
+            variant="tonal"
+            class="mb-4"
+          >
             Chargement du dashboard CRM...
           </v-alert>
           <v-row v-else>
-            <v-col v-for="card in dashboardCards" :key="card.title" cols="12" sm="6" lg="4">
+            <v-col
+              v-for="card in dashboardCards"
+              :key="card.title"
+              cols="12"
+              sm="6"
+              lg="4"
+            >
               <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
                 <div class="d-flex align-center justify-space-between">
                   <div>
-                    <p class="text-caption text-medium-emphasis mb-1">{{ card.title }}</p>
-                    <p class="text-h5 font-weight-bold mb-0">{{ card.value }}</p>
+                    <p class="text-caption text-medium-emphasis mb-1">
+                      {{ card.title }}
+                    </p>
+                    <p class="text-h5 font-weight-bold mb-0">
+                      {{ card.value }}
+                    </p>
                   </div>
                   <v-avatar color="primary" variant="tonal" size="42">
                     <v-icon>{{ card.icon }}</v-icon>
@@ -523,15 +605,24 @@ await refreshAllCrudLists()
         </v-window-item>
 
         <v-window-item
-          v-for="tab in ['companies', 'projects', 'tasks', 'taskRequests', 'sprints']"
+          v-for="tab in [
+            'companies',
+            'projects',
+            'tasks',
+            'taskRequests',
+            'sprints',
+          ]"
           :key="tab"
           :value="tab"
         >
-          <div class="d-flex align-center justify-space-between mb-4 flex-wrap ga-2">
+          <div
+            class="d-flex align-center justify-space-between mb-4 flex-wrap ga-2"
+          >
             <div>
               <h3 class="text-h6 mb-1">{{ getConfigByTab(tab).label }}</h3>
               <p class="text-body-2 text-medium-emphasis mb-0">
-                Administration rapide avec formulaires structurés et actions CRUD.
+                Administration rapide avec formulaires structurés et actions
+                CRUD.
               </p>
             </div>
             <v-btn
@@ -567,7 +658,10 @@ await refreshAllCrudLists()
                       {{ getEntityTitle(item, getConfigByTab(tab)) }}
                     </p>
                     <p class="text-body-2 text-medium-emphasis mb-0">
-                      {{ getEntitySubtitle(item, getConfigByTab(tab)) || 'No metadata' }}
+                      {{
+                        getEntitySubtitle(item, getConfigByTab(tab)) ||
+                        'No metadata'
+                      }}
                     </p>
                   </div>
                   <v-chip size="small" color="primary" variant="tonal">
@@ -598,10 +692,7 @@ await refreshAllCrudLists()
               </v-card>
             </v-col>
 
-            <v-col
-              v-if="getItemsByTab(tab).length === 0"
-              cols="12"
-            >
+            <v-col v-if="getItemsByTab(tab).length === 0" cols="12">
               <v-alert type="info" variant="tonal">
                 Aucun enregistrement trouvé pour cet endpoint.
               </v-alert>
@@ -610,27 +701,45 @@ await refreshAllCrudLists()
         </v-window-item>
 
         <v-window-item value="billings">
-          <v-alert v-if="billingsPending" type="info" variant="tonal" class="mb-4">
+          <v-alert
+            v-if="billingsPending"
+            type="info"
+            variant="tonal"
+            class="mb-4"
+          >
             Chargement des billings...
           </v-alert>
           <v-row v-else>
             <v-col cols="12" md="6">
               <v-card rounded="xl" class="pa-4 postcard-gradient-card">
-                <p class="text-caption text-medium-emphasis mb-1">Billing items</p>
-                <p class="text-h5 mb-0">{{ billingsData?.items?.length ?? 0 }}</p>
+                <p class="text-caption text-medium-emphasis mb-1">
+                  Billing items
+                </p>
+                <p class="text-h5 mb-0">
+                  {{ billingsData?.items?.length ?? 0 }}
+                </p>
               </v-card>
             </v-col>
             <v-col cols="12" md="6">
               <v-card rounded="xl" class="pa-4 postcard-gradient-card">
-                <p class="text-caption text-medium-emphasis mb-1">Reports billings count</p>
-                <p class="text-h5 mb-0">{{ reportsData?.counts.billings ?? 0 }}</p>
+                <p class="text-caption text-medium-emphasis mb-1">
+                  Reports billings count
+                </p>
+                <p class="text-h5 mb-0">
+                  {{ reportsData?.counts.billings ?? 0 }}
+                </p>
               </v-card>
             </v-col>
           </v-row>
         </v-window-item>
 
         <v-window-item value="contacts">
-          <v-alert v-if="contactsPending" type="info" variant="tonal" class="mb-4">
+          <v-alert
+            v-if="contactsPending"
+            type="info"
+            variant="tonal"
+            class="mb-4"
+          >
             Chargement des contacts...
           </v-alert>
           <v-row v-else>
@@ -646,7 +755,9 @@ await refreshAllCrudLists()
                   <h3 class="text-subtitle-1 mb-0">
                     {{ contact.firstName }} {{ contact.lastName }}
                   </h3>
-                  <v-chip color="secondary" size="small" variant="tonal">Score {{ contact.score }}</v-chip>
+                  <v-chip color="secondary" size="small" variant="tonal"
+                    >Score {{ contact.score }}</v-chip
+                  >
                 </div>
                 <p class="text-body-2 mb-1">{{ contact.jobTitle }}</p>
                 <p class="text-body-2 mb-1">{{ contact.city }}</p>
@@ -658,7 +769,12 @@ await refreshAllCrudLists()
         </v-window-item>
 
         <v-window-item value="reports">
-          <v-alert v-if="reportsPending" type="info" variant="tonal" class="mb-4">
+          <v-alert
+            v-if="reportsPending"
+            type="info"
+            variant="tonal"
+            class="mb-4"
+          >
             Chargement des reports...
           </v-alert>
           <template v-else>
@@ -666,35 +782,59 @@ await refreshAllCrudLists()
               <v-col cols="12" sm="6" lg="3">
                 <v-card rounded="xl" class="pa-4 postcard-gradient-card">
                   <p class="text-caption text-medium-emphasis mb-1">Pipeline</p>
-                  <p class="text-h6 mb-0">{{ formatMoney(reportsData?.kpis.pipeline ?? 0) }}</p>
+                  <p class="text-h6 mb-0">
+                    {{ formatMoney(reportsData?.kpis.pipeline ?? 0) }}
+                  </p>
                 </v-card>
               </v-col>
               <v-col cols="12" sm="6" lg="3">
                 <v-card rounded="xl" class="pa-4 postcard-gradient-card">
-                  <p class="text-caption text-medium-emphasis mb-1">Deals won</p>
-                  <p class="text-h6 mb-0">{{ reportsData?.kpis.dealsWon ?? 0 }}</p>
+                  <p class="text-caption text-medium-emphasis mb-1">
+                    Deals won
+                  </p>
+                  <p class="text-h6 mb-0">
+                    {{ reportsData?.kpis.dealsWon ?? 0 }}
+                  </p>
                 </v-card>
               </v-col>
               <v-col cols="12" sm="6" lg="3">
                 <v-card rounded="xl" class="pa-4 postcard-gradient-card">
-                  <p class="text-caption text-medium-emphasis mb-1">Cycle days</p>
-                  <p class="text-h6 mb-0">{{ reportsData?.kpis.cycleDays ?? 0 }}</p>
+                  <p class="text-caption text-medium-emphasis mb-1">
+                    Cycle days
+                  </p>
+                  <p class="text-h6 mb-0">
+                    {{ reportsData?.kpis.cycleDays ?? 0 }}
+                  </p>
                 </v-card>
               </v-col>
               <v-col cols="12" sm="6" lg="3">
                 <v-card rounded="xl" class="pa-4 postcard-gradient-card">
-                  <p class="text-caption text-medium-emphasis mb-1">NPS clients</p>
-                  <p class="text-h6 mb-0">{{ reportsData?.kpis.npsClients ?? 0 }}</p>
+                  <p class="text-caption text-medium-emphasis mb-1">
+                    NPS clients
+                  </p>
+                  <p class="text-h6 mb-0">
+                    {{ reportsData?.kpis.npsClients ?? 0 }}
+                  </p>
                 </v-card>
               </v-col>
             </v-row>
 
             <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
               <p class="text-caption text-medium-emphasis mb-1">Metadata</p>
-              <p class="text-body-2 mb-1">Period: {{ reportsData?.metadata.period }}</p>
-              <p class="text-body-2 mb-1">Timezone: {{ reportsData?.metadata.timezone }}</p>
+              <p class="text-body-2 mb-1">
+                Period: {{ reportsData?.metadata.period }}
+              </p>
+              <p class="text-body-2 mb-1">
+                Timezone: {{ reportsData?.metadata.timezone }}
+              </p>
               <p class="text-body-2 mb-0">
-                Generated: {{ formatDateTime(reportsData?.metadata.generatedAt ?? new Date().toISOString()) }}
+                Generated:
+                {{
+                  formatDateTime(
+                    reportsData?.metadata.generatedAt ??
+                      new Date().toISOString(),
+                  )
+                }}
               </p>
             </v-card>
 
@@ -707,8 +847,12 @@ await refreshAllCrudLists()
               >
                 <v-card rounded="xl" class="pa-4 postcard-gradient-card">
                   <div class="d-flex justify-space-between align-start mb-2">
-                    <v-chip size="small" color="warning" variant="outlined">{{ action.priority }}</v-chip>
-                    <span class="text-caption text-medium-emphasis">ETA {{ action.etaDays }} jours</span>
+                    <v-chip size="small" color="warning" variant="outlined">{{
+                      action.priority
+                    }}</v-chip>
+                    <span class="text-caption text-medium-emphasis"
+                      >ETA {{ action.etaDays }} jours</span
+                    >
                   </div>
                   <p class="text-subtitle-2 mb-1">{{ action.title }}</p>
                   <p class="text-body-2 mb-0">Owner: {{ action.owner }}</p>
@@ -760,8 +904,17 @@ await refreshAllCrudLists()
 
         <v-card-actions class="px-4 pb-4">
           <v-spacer />
-          <v-btn variant="text" :disabled="modalPending" @click="modalOpen = false">Cancel</v-btn>
-          <v-btn color="primary" :loading="modalPending" @click="submitCrudForm">
+          <v-btn
+            variant="text"
+            :disabled="modalPending"
+            @click="modalOpen = false"
+            >Cancel</v-btn
+          >
+          <v-btn
+            color="primary"
+            :loading="modalPending"
+            @click="submitCrudForm"
+          >
             {{ modalMode === 'create' ? 'Create' : 'Update' }}
           </v-btn>
         </v-card-actions>

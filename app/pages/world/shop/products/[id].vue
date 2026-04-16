@@ -2,11 +2,11 @@
 import type { ShopProduct } from '~/types/world/shop'
 import type { SessionUser } from '~/types/session'
 
-definePageMeta({ title: 'Product detail' })
+definePageMeta({ title: 'world.shop.productDetail.title' })
 
 const route = useRoute()
 const { user } = useUserSession()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const shopStore = useWorldShopStore()
 const sessionUser = computed(() => user.value as SessionUser | null)
 
@@ -26,7 +26,7 @@ function formatPrice(item: ShopProduct) {
   const baseAmount = item.price ?? item.amount
   const effectiveAmount = item.discountedPrice ?? baseAmount
 
-  return new Intl.NumberFormat('fr-FR', {
+  return new Intl.NumberFormat(locale.value, {
     style: 'currency',
     currency: item.currencyCode || 'EUR',
     maximumFractionDigits: 2,
@@ -34,7 +34,7 @@ function formatPrice(item: ShopProduct) {
 }
 
 function formatAmount(value: number, currencyCode: string) {
-  return new Intl.NumberFormat('fr-FR', {
+  return new Intl.NumberFormat(locale.value, {
     style: 'currency',
     currency: currencyCode || 'EUR',
     maximumFractionDigits: 2,
@@ -68,21 +68,13 @@ async function addToCart() {
   addToCartLoading.value = true
   try {
     await shopStore.addCartItem(product.value.id, 1)
-    Notify.success(
-      t(
-        'world.shop.feedback.addToCartSuccess',
-        'Produit ajouté au panier avec succès.',
-      ),
-    )
+    Notify.success(t('world.shop.feedback.addToCartSuccess'))
   } catch (error) {
     Notify.error(
       shopStore.error ||
         (error instanceof Error
           ? error.message
-          : t(
-              'world.shop.feedback.addToCartError',
-              "Impossible d'ajouter le produit au panier.",
-            )),
+          : t('world.shop.feedback.addToCartError')),
     )
   } finally {
     addToCartLoading.value = false
@@ -92,7 +84,7 @@ async function addToCart() {
 async function loadProduct(force = false) {
   const productId = String(route.params.id || '')
   if (!productId) {
-    listError.value = 'Product ID manquant.'
+    listError.value = t('world.shop.productDetail.errors.missingId')
     return
   }
 
@@ -107,7 +99,7 @@ async function loadProduct(force = false) {
       shopStore.error ||
       (error instanceof Error
         ? error.message
-        : 'Impossible de charger ce produit pour le moment.')
+        : t('world.shop.productDetail.errors.loadFailed'))
   } finally {
     loading.value = false
   }
@@ -132,14 +124,16 @@ watch(
 <template>
   <v-container fluid>
     <div class="d-flex align-center justify-space-between mb-4 flex-wrap ga-3">
-      <h1 class="text-h5 font-weight-bold">Product detail</h1>
+      <h1 class="text-h5 font-weight-bold">
+        {{ t('world.shop.productDetail.title') }}
+      </h1>
       <v-btn
         to="/world/shop"
         color="primary"
         prepend-icon="mdi-arrow-left"
         variant="tonal"
       >
-        Back to products
+        {{ t('world.shop.productDetail.backToProducts') }}
       </v-btn>
     </div>
 
@@ -158,8 +152,8 @@ watch(
     <v-empty-state
       v-else-if="!product"
       icon="mdi-package-variant-remove"
-      title="Produit introuvable"
-      text="Le produit demandé n'existe pas ou n'est plus disponible."
+      :title="t('world.shop.productDetail.notFound.title')"
+      :text="t('world.shop.productDetail.notFound.text')"
     />
 
     <template v-else>
@@ -206,13 +200,15 @@ watch(
                   :disabled="addToCartLoading"
                   @click="addToCart"
                 >
-                  {{ t('world.shop.actions.addToCart', 'Add to cart') }}
+                  {{ t('world.shop.actions.addToCart') }}
                 </v-btn>
               </div>
 
               <v-row>
                 <v-col cols="6" md="4">
-                  <div class="text-caption text-medium-emphasis">Price</div>
+                  <div class="text-caption text-medium-emphasis">
+                    {{ t('world.shop.productDetail.fields.price') }}
+                  </div>
                   <div class="d-flex align-center ga-2 flex-wrap">
                     <div class="font-weight-bold text-h6">
                       {{ formatPrice(product) }}
@@ -243,37 +239,51 @@ watch(
                 </v-col>
 
                 <v-col cols="6" md="4">
-                  <div class="text-caption text-medium-emphasis">Coins</div>
+                  <div class="text-caption text-medium-emphasis">
+                    {{ t('world.shop.productDetail.fields.coins') }}
+                  </div>
                   <div class="font-weight-medium">
                     {{ product.coinsAmount }}
                   </div>
                 </v-col>
 
                 <v-col cols="6" md="4">
-                  <div class="text-caption text-medium-emphasis">Stock</div>
+                  <div class="text-caption text-medium-emphasis">
+                    {{ t('world.shop.productDetail.fields.stock') }}
+                  </div>
                   <div class="font-weight-medium">
-                    {{ product.stock ?? '-' }}
+                    {{ product.stock ?? t('world.common.notAvailable') }}
                   </div>
                 </v-col>
 
                 <v-col cols="6" md="4">
-                  <div class="text-caption text-medium-emphasis">Category</div>
+                  <div class="text-caption text-medium-emphasis">
+                    {{ t('world.shop.productDetail.fields.category') }}
+                  </div>
                   <div class="font-weight-medium">
                     {{ product.categoryName || product.category }}
                   </div>
                 </v-col>
 
                 <v-col cols="6" md="4">
-                  <div class="text-caption text-medium-emphasis">SKU</div>
+                  <div class="text-caption text-medium-emphasis">
+                    {{ t('world.shop.productDetail.fields.sku') }}
+                  </div>
                   <div class="font-weight-medium">
                     {{ product.sku || product.slug }}
                   </div>
                 </v-col>
 
                 <v-col cols="6" md="4">
-                  <div class="text-caption text-medium-emphasis">Featured</div>
+                  <div class="text-caption text-medium-emphasis">
+                    {{ t('world.shop.productDetail.fields.featured') }}
+                  </div>
                   <div class="font-weight-medium">
-                    {{ product.isFeatured ? 'Yes' : 'No' }}
+                    {{
+                      product.isFeatured
+                        ? t('world.common.yes')
+                        : t('world.common.no')
+                    }}
                   </div>
                 </v-col>
               </v-row>
@@ -283,14 +293,16 @@ watch(
       </v-card>
 
       <v-card rounded="xl" class="postcard-gradient-card">
-        <v-card-title>Similar products</v-card-title>
+        <v-card-title>{{
+          t('world.shop.productDetail.similar.title')
+        }}</v-card-title>
         <v-divider />
 
         <v-empty-state
           v-if="similarProducts.length === 0"
           icon="mdi-shape-outline"
-          title="No similar products"
-          text="Aucune recommandation n'est disponible pour ce produit."
+          :title="t('world.shop.productDetail.similar.emptyTitle')"
+          :text="t('world.shop.productDetail.similar.emptyText')"
         />
 
         <v-card-text v-else>

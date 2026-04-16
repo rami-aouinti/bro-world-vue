@@ -1055,6 +1055,12 @@
         "sync": "Data sync: online",
         "pendingApprovals": "Pending approvals: 3",
         "assignedToMe": "Assigned to me: 12"
+      },
+      "yes": "Ja",
+      "no": "Nein",
+      "notAvailable": "k. A.",
+      "units": {
+        "minuteShort": "Min"
       }
     },
     "crm": {
@@ -1168,7 +1174,11 @@
         "selected": "Selected",
         "clickToFilter": "Click to filter",
         "noCategories": "No categories available",
-        "searchLabel": "Search (q)"
+        "searchLabel": "Search (q)",
+        "minPrice": "Mindestpreis",
+        "maxPrice": "Höchstpreis",
+        "promotion": "Rabatt",
+        "reset": "Filter zurücksetzen"
       },
       "products": {
         "title": "Products",
@@ -1176,6 +1186,35 @@
         "emptyTitle": "No products found",
         "emptyText": "No products match the applied filters.",
         "rows": "Rows"
+      },
+      "feedback": {
+        "addToCartSuccess": "Produkt wurde erfolgreich zum Warenkorb hinzugefügt.",
+        "addToCartError": "Produkt konnte nicht zum Warenkorb hinzugefügt werden."
+      },
+      "productDetail": {
+        "title": "Produktdetails",
+        "backToProducts": "Zurück zu Produkten",
+        "errors": {
+          "missingId": "Produkt-ID fehlt.",
+          "loadFailed": "Dieses Produkt kann momentan nicht geladen werden."
+        },
+        "notFound": {
+          "title": "Produkt nicht gefunden",
+          "text": "Das angeforderte Produkt existiert nicht oder ist nicht mehr verfügbar."
+        },
+        "fields": {
+          "price": "Preis",
+          "coins": "Münzen",
+          "stock": "Bestand",
+          "category": "Kategorie",
+          "sku": "SKU",
+          "featured": "Hervorgehoben"
+        },
+        "similar": {
+          "title": "Ähnliche Produkte",
+          "emptyTitle": "Keine ähnlichen Produkte",
+          "emptyText": "Für dieses Produkt sind keine Empfehlungen verfügbar."
+        }
       }
     },
     "learning": {
@@ -1289,6 +1328,23 @@
           "stage": "Stage",
           "score": "Score",
           "updated": "Updated"
+        }
+      },
+      "sampleRows": {
+        "j100": {
+          "role": "Senior Vue Engineer",
+          "team": "Plattform",
+          "status": "Offen"
+        },
+        "j101": {
+          "role": "Produktdesigner",
+          "team": "Erlebnis",
+          "status": "Interview"
+        },
+        "j102": {
+          "role": "DevOps-Spezialist",
+          "team": "Infra",
+          "status": "Geschlossen"
         }
       }
     }
