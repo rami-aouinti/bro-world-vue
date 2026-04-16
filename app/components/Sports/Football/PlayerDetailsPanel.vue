@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import PlayerHeroCard from './PlayerHeroCard.vue'
 import PlayerStatsGrid from './PlayerStatsGrid.vue'
 
@@ -14,9 +15,27 @@ interface PlayerDetails {
   statistics: Array<Record<string, any>>
 }
 
-defineProps<{
+
+
+const props = defineProps<{
   details: PlayerDetails
 }>()
+
+const normalizeStat = (stat: Record<string, any>) => {
+  const games = stat?.games && typeof stat.games === 'object'
+    ? {
+        ...stat.games,
+        appearances: stat.games?.appearances ?? stat.games?.appearences ?? '-',
+      }
+    : stat.games
+
+  return {
+    ...stat,
+    games,
+  }
+}
+
+const normalizedStatistics = computed(() => props.details.statistics.map(normalizeStat))
 </script>
 
 <template>
@@ -25,7 +44,7 @@ defineProps<{
 
     <v-expansion-panels variant="accordion">
       <v-expansion-panel
-        v-for="(stat, index) in details.statistics"
+        v-for="(stat, index) in normalizedStatistics"
         :key="`stat-${index}`"
       >
         <v-expansion-panel-title>

@@ -128,6 +128,27 @@ export interface FootballPlayerDetails {
   statistics: Array<Record<string, any>>
 }
 
+
+function normalizePlayerStatistics(stats: Array<Record<string, any>> | undefined) {
+  if (!Array.isArray(stats)) {
+    return []
+  }
+
+  return stats.map((stat) => {
+    const games = stat?.games && typeof stat.games === 'object'
+      ? {
+          ...stat.games,
+          appearances: stat.games.appearances ?? stat.games.appearences ?? null,
+        }
+      : stat.games
+
+    return {
+      ...stat,
+      games,
+    }
+  })
+}
+
 function toErrorMessage(error: unknown, fallback: string) {
   if (error && typeof error === 'object' && 'statusMessage' in error) {
     const statusMessage = (error as { statusMessage?: unknown }).statusMessage
@@ -508,7 +529,10 @@ export function useFootballData() {
         },
       )
 
-      playerDetails.value = response
+      playerDetails.value = {
+        ...response,
+        statistics: normalizePlayerStatistics(response.statistics),
+      }
       playerDetailsState.value = response.profile ? 'ready' : 'empty'
     } catch (error) {
       playerDetailsState.value = 'error'
