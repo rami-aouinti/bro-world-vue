@@ -32,15 +32,14 @@ function closeModal() {
     :max-width="maxWidth"
     :persistent="persistent"
   >
-    <v-card rounded="xl" class="postcard-gradient-card">
+    <v-card rounded="xl" class="modal-card">
       <v-card-title
-        class="d-flex justify-space-between align-center text-white app-modal-header"
+        class="d-flex justify-space-between align-center app-modal-header"
       >
         <span>{{ title }}</span>
         <v-btn
           icon="mdi-close"
           variant="text"
-          color="white"
           density="comfortable"
           @click="closeModal"
         />
@@ -60,9 +59,12 @@ function closeModal() {
 <style scoped>
 .app-modal-header {
   background: linear-gradient(
-    135deg,
-    rgb(var(--v-theme-primary)),
-    rgb(var(--v-theme-primary-gradient))
+    240deg,
+    rgba(var(--v-theme-primary), 0.18) 0%,
+    rgb(var(--v-theme-surface))
   );
+}
+.modal-card {
+  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 88%, #000 12%);
 }
 </style>
