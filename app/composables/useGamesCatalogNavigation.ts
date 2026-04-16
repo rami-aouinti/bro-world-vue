@@ -5,9 +5,38 @@ type KeyedEntity = {
   key?: string
 }
 
+type NameLikeEntity = {
+  name?: string
+  key?: string
+  nameKey?: string
+  id?: string
+}
+
+type DescriptionLikeEntity = {
+  description?: string | null
+  descriptionKey?: string
+}
+
+const DEFAULT_GAME_CARD_IMAGE =
+  'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80'
+
 export function useGamesCatalogNavigation() {
   const catalogStore = useGameCatalogStore()
   const { t, te } = useI18n()
+
+  const categoriesByRouteParam = computed(() => {
+    const index = new Map<string, (typeof catalogStore.categories)[number]>()
+
+    for (const category of catalogStore.categories) {
+      index.set(category.id, category)
+
+      if (category.key) {
+        index.set(category.key, category)
+      }
+    }
+
+    return index
+  })
 
   function tOrFallback(key: string, fallback: string) {
     return te(key) ? t(key) : fallback
@@ -23,8 +52,17 @@ export function useGamesCatalogNavigation() {
     }
   }
 
-  function matchesRouteParam(entity: KeyedEntity, param: string) {
-    return entity.id === param || entity.key === param
+  function findByRouteParam<T extends KeyedEntity>(
+    entities: readonly T[],
+    param: string,
+  ): T | null {
+    for (const entity of entities) {
+      if (entity.id === param || entity.key === param) {
+        return entity
+      }
+    }
+
+    return null
   }
 
   function entityRouteValue(entity: KeyedEntity) {
@@ -32,11 +70,7 @@ export function useGamesCatalogNavigation() {
   }
 
   function getCategoryByRouteParam(categoryParam: string) {
-    return (
-      catalogStore.categories.find((category) =>
-        matchesRouteParam(category, categoryParam),
-      ) ?? null
-    )
+    return categoriesByRouteParam.value.get(categoryParam) ?? null
   }
 
   function getSubCategoryByRouteParam(
@@ -44,11 +78,12 @@ export function useGamesCatalogNavigation() {
     subCategoryParam: string,
   ) {
     const category = getCategoryByRouteParam(categoryParam)
-    return (
-      category?.subCategories.find((subCategory) =>
-        matchesRouteParam(subCategory, subCategoryParam),
-      ) ?? null
-    )
+
+    if (!category) {
+      return null
+    }
+
+    return findByRouteParam(category.subCategories, subCategoryParam)
   }
 
   function getGameByRouteParam(
@@ -60,35 +95,26 @@ export function useGamesCatalogNavigation() {
       categoryParam,
       subCategoryParam,
     )
-    return (
-      subCategory?.games.find((game) => matchesRouteParam(game, gameParam)) ??
-      null
-    )
+
+    if (!subCategory) {
+      return null
+    }
+
+    return findByRouteParam(subCategory.games, gameParam)
   }
 
   function getGameCardImage(thumbnailUrl?: string | null) {
-    return (
-      thumbnailUrl ||
-      'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80'
-    )
+    return thumbnailUrl || DEFAULT_GAME_CARD_IMAGE
   }
 
-  function entityName(entity: {
-    name?: string
-    key?: string
-    nameKey?: string
-    id?: string
-  }) {
+  function entityName(entity: NameLikeEntity) {
     return tOrFallback(
       entity.nameKey ?? '',
       entity.key ?? entity.name ?? entity.id ?? '',
     )
   }
 
-  function entityDescription(entity: {
-    description?: string | null
-    descriptionKey?: string
-  }) {
+  function entityDescription(entity: DescriptionLikeEntity) {
     return tOrFallback(entity.descriptionKey ?? '', entity.description ?? '')
   }
 
