@@ -77,7 +77,7 @@ watch(mobile, (isMobile) => {
 .v-navigation-drawer {
   &.app-left-drawer {
     border-radius: 24px;
-    margin-top: 56px;
+    margin-top: 74px;
     margin-left: 16px;
     height: calc(100% - 10px);
   }
@@ -171,6 +171,14 @@ watch(mobile, (isMobile) => {
     .v-list-group__items .v-list-item {
       min-height: 36px;
       padding-inline-start: calc(var(--v-list-indent) + 24px) !important;
+    }
+  }
+}
+
+@media (max-width: 960px) {
+  .v-navigation-drawer {
+    &.app-left-drawer {
+      margin-top: 68px;
     }
   }
 }

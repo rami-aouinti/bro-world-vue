@@ -59,7 +59,7 @@ onMounted(() => {
 <style scoped>
 .app-right-drawer {
   border-radius: 24px;
-  margin-top: 56px;
+  margin-top: 74px;
   margin-right: 16px;
 }
 
@@ -78,5 +78,11 @@ onMounted(() => {
 .app-right-drawer-list :deep(.v-card) {
   background: transparent !important;
   box-shadow: none;
+}
+
+@media (max-width: 960px) {
+  .app-right-drawer {
+    margin-top: 68px;
+  }
 }
 </style>
