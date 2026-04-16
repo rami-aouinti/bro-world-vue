@@ -146,7 +146,7 @@ export const useSportsFootballStore = defineStore('sports-football', {
           error,
           'Impossible de charger les ligues.',
         )
-        throw error
+        return []
       } finally {
         this.setResourceLoading('leagues', false)
       }
@@ -176,7 +176,7 @@ export const useSportsFootballStore = defineStore('sports-football', {
           error,
           'Impossible de charger les matches.',
         )
-        throw error
+        return []
       } finally {
         this.setResourceLoading('fixtures', false)
       }
@@ -205,7 +205,7 @@ export const useSportsFootballStore = defineStore('sports-football', {
           error,
           'Impossible de charger le classement.',
         )
-        throw error
+        return []
       } finally {
         this.setResourceLoading('standings', false)
       }
@@ -235,7 +235,7 @@ export const useSportsFootballStore = defineStore('sports-football', {
           error,
           'Impossible de charger les équipes.',
         )
-        throw error
+        return []
       } finally {
         this.setResourceLoading('teams', false)
       }
@@ -271,7 +271,7 @@ export const useSportsFootballStore = defineStore('sports-football', {
           error,
           'Impossible de charger le détail du match.',
         )
-        throw error
+        return null
       } finally {
         this.setResourceLoading('fixtureDetails', false)
       }
