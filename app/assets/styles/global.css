@@ -128,6 +128,16 @@ html.dark {
 
 .content-main {
   padding: 8px;
-  height: calc(100% - 10px);
+  height: calc(100dvh - 132px);
+  min-height: calc(100dvh - 132px);
+  max-height: calc(100dvh - 132px);
   overflow-y: auto;
+}
+
+@media (max-width: 960px) {
+  .content-main {
+    height: calc(100dvh - 120px);
+    min-height: calc(100dvh - 120px);
+    max-height: calc(100dvh - 120px);
+  }
 }
