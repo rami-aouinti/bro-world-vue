@@ -127,17 +127,12 @@ html.dark {
 }
 
 .content-main {
-  padding: 8px;
-  height: calc(100dvh - 132px);
-  min-height: calc(100dvh - 132px);
-  max-height: calc(100dvh - 132px);
-  overflow-y: auto;
+  height: calc(93dvh - 58px);
+  overflow-y: hidden;
 }
 
 @media (max-width: 960px) {
   .content-main {
-    height: calc(100dvh - 120px);
-    min-height: calc(100dvh - 120px);
-    max-height: calc(100dvh - 120px);
+    height: calc(93dvh - 35px);
   }
 }
