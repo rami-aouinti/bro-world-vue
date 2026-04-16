@@ -80,14 +80,14 @@
 
 ### Internationalization (i18n)
 
-The project uses [`@nuxtjs/i18n`](https://i18n.nuxtjs.org/) with lazy-loaded locale files from `app/locales`.
+The project uses [`@nuxtjs/i18n`](https://i18n.nuxtjs.org/) with lazy-loaded locale files from `i18n/locales`.
 
-- Locales: `en`, `de`, `fr`
+- Locales: `en`, `fr`, `es`, `de`
 - `defaultLocale`: `en`
 - `fallbackLocale`: `en`
-- Routing strategy: `prefix_except_default`
-  - English (`en`) keeps non-prefixed routes (e.g. `/dashboard`)
-  - German and French are prefixed (e.g. `/de/dashboard`, `/fr/dashboard`)
+- Routing strategy: `no_prefix`
+  - All locales share non-prefixed routes (e.g. `/dashboard`)
+  - Language switching changes translations without changing the URL path
 
 ### Coding Style
 
