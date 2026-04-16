@@ -45,7 +45,7 @@ onMounted(() => {
         </template>
       </template>
     </AppPageDrawers>
-    <v-container fluid>
+    <v-container fluid class="home-feed-shell">
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
       <template v-else>
         <template v-if="loggedIn">
@@ -59,3 +59,18 @@ onMounted(() => {
     </v-container>
   </div>
 </template>
+
+<style scoped>
+.home-feed-shell {
+  max-width: 920px;
+  margin: 0 auto;
+  padding-top: 8px;
+  padding-bottom: 24px;
+}
+
+@media (max-width: 959px) {
+  .home-feed-shell {
+    padding-inline: 8px;
+  }
+}
+</style>
