@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { RecruitMyJobsResponse } from '~/types/world/jobs'
+import { privateApi } from '~/utils/http/privateApi'
 
 definePageMeta({ title: 'Jobs Applications' })
 
@@ -48,7 +49,7 @@ async function fetchAppliedJobs() {
   errorMessage.value = ''
 
   try {
-    const response = await $fetch<RecruitMyJobsResponse>(
+    const response = await privateApi.request<RecruitMyJobsResponse>(
       '/api/recruit/general/private/me/jobs',
     )
     appliedJobs.value = response.appliedJobs.filter((entry) => entry.job.apply)

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { privateApi } from '~/utils/http/privateApi'
+
 type PlatformApplication = {
   id: string
   title: string
@@ -41,7 +43,9 @@ const { data, pending, error, refresh } = await useAsyncData(
       : { page: 1, limit: 120 }
 
     if (loggedIn.value) {
-      return $fetch<PlatformResponse>('/api/application/private', { query })
+      return privateApi.request<PlatformResponse>('/api/application/private', {
+        params: query,
+      })
     }
 
     return $fetch<PlatformResponse>('/api/application/public', { query })

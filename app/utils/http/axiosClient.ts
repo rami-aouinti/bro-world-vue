@@ -5,6 +5,7 @@ import axios, {
   type InternalAxiosRequestConfig,
 } from 'axios'
 import axiosRetry from 'axios-retry'
+import { resolveAuthToken, type SessionUserWithToken } from './authToken'
 
 const RETRYABLE_STATUS_CODES = new Set([408, 425, 429, 500, 502, 503, 504])
 
@@ -54,17 +55,26 @@ function ensureInstances() {
       },
     })
 
-    privateAxiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-      const { user } = useUserSession()
-      const token = (user.value as { token?: string } | null)?.token?.trim()
+    privateAxiosInstance.interceptors.request.use(
+      (config: InternalAxiosRequestConfig) => {
+        const { user } = useUserSession()
+        const token = resolveAuthToken(
+          user.value as SessionUserWithToken | null,
+        )
 
-      if (token && token !== 'undefined' && token !== 'null') {
+        if (!token) {
+          throw createError({
+            statusCode: 401,
+            statusMessage: 'Missing authentication token',
+          })
+        }
+
         config.headers = config.headers ?? {}
         config.headers.Authorization = `Bearer ${token}`
-      }
 
-      return config
-    })
+        return config
+      },
+    )
   }
 }
 

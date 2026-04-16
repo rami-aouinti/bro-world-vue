@@ -1,16 +1,7 @@
-type SessionUserWithToken = {
-  token?: string
-}
-
-function resolveAuthToken(user: SessionUserWithToken | null) {
-  const token = user?.token?.trim()
-
-  if (!token || token === 'undefined' || token === 'null') {
-    return null
-  }
-
-  return token
-}
+import {
+  resolveAuthToken,
+  type SessionUserWithToken,
+} from '~/utils/http/authToken'
 
 export function usePublicApi() {
   const runtimeConfig = useRuntimeConfig()

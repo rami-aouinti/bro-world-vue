@@ -1,3 +1,4 @@
+import { privateApi } from '~/utils/http/privateApi'
 import { normalizeHttpError } from '../utils/httpError'
 
 type UnknownRecord = Record<string, unknown>
@@ -372,7 +373,7 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
   }
 
   async function createPost(body: UnknownRecord) {
-    await $fetch('/api/blog/private/general', {
+    await privateApi.request('/api/blog/private/general', {
       method: 'POST',
       body,
     })
@@ -535,7 +536,7 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
           }
         : null,
       async () => {
-        const response = await $fetch<unknown>(
+        const response = await privateApi.request<unknown>(
           `/api/blog/private/posts/${postId}/comments`,
           {
             method: 'POST',
@@ -586,7 +587,7 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
       action === 'create' ? 'POST' : action === 'update' ? 'PATCH' : 'DELETE'
 
     await runMutation(null, async () => {
-      const response = await $fetch<unknown>(base, {
+      const response = await privateApi.request<unknown>(base, {
         method,
         body,
       })
@@ -649,7 +650,7 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
           }
         : null,
       async () => {
-        const response = await $fetch<unknown>(url, {
+        const response = await privateApi.request<unknown>(url, {
           method: 'PATCH',
           body,
         })
@@ -705,7 +706,7 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
           }
         : null,
       async () => {
-        await $fetch(url, {
+        await privateApi.request(url, {
           method: 'DELETE',
         })
 
