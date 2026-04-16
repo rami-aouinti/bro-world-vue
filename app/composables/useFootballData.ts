@@ -1,4 +1,18 @@
 export type SectionState = 'loading' | 'error' | 'empty' | 'ready'
+export type FootballSectionKey =
+  | 'leagues'
+  | 'fixtures'
+  | 'standings'
+  | 'teams'
+  | 'fixtureDetails'
+
+export interface FootballSection {
+  key: FootballSectionKey
+  title: string
+  state: SectionState
+  error: string
+  emptyMessage: string
+}
 
 export interface FootballLeagueSeason {
   year: number
@@ -109,6 +123,46 @@ export function useFootballData() {
     return [...selectedLeague.value.seasons]
       .map((season) => season.year)
       .sort((left, right) => right - left)
+  })
+
+  const footballSections = computed<FootballSection[]>(() => {
+    return [
+      {
+        key: 'leagues',
+        title: 'Leagues',
+        state: leaguesState.value,
+        error: leaguesError.value,
+        emptyMessage: 'No league available.',
+      },
+      {
+        key: 'fixtures',
+        title: 'Fixtures / Matches',
+        state: fixturesState.value,
+        error: fixturesError.value,
+        emptyMessage: 'No fixture for this league/season.',
+      },
+      {
+        key: 'standings',
+        title: 'Results / Standings',
+        state: standingsState.value,
+        error: standingsError.value,
+        emptyMessage: 'No standings data.',
+      },
+      {
+        key: 'teams',
+        title: 'Clubs / Teams',
+        state: teamsState.value,
+        error: teamsError.value,
+        emptyMessage: 'No teams data.',
+      },
+      {
+        key: 'fixtureDetails',
+        title: 'Fixture details',
+        state: fixtureDetailsState.value,
+        error: fixtureDetailsError.value,
+        emptyMessage: 'Select a fixture to see events, lineups and player stats.',
+      },
+    ]
   })
 
   const resetLeagueDependentData = () => {
@@ -292,6 +346,7 @@ export function useFootballData() {
     standings,
     teams,
     fixtureDetails,
+    footballSections,
     selectedLeague,
     seasons,
     selectedLeagueId,

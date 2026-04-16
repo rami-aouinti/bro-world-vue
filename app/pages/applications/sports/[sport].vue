@@ -44,27 +44,50 @@ const {
   standings,
   teams,
   fixtureDetails,
+  footballSections,
   selectedLeague,
   seasons,
   selectedLeagueId,
   selectedSeason,
   selectedFixtureId,
   leaguesState,
-  fixturesState,
-  standingsState,
-  teamsState,
-  fixtureDetailsState,
-  leaguesError,
-  fixturesError,
-  standingsError,
-  teamsError,
-  fixtureDetailsError,
   loadLeagues,
   loadLeagueSeasonData,
   loadFixtureDetails,
   selectLeague,
   selectSeason,
 } = useFootballData()
+
+const getSection = (key: string, fallbackTitle: string, fallbackEmptyMessage: string) =>
+  computed(() => {
+    return (
+      footballSections.value.find((section) => section.key === key) ?? {
+        key,
+        title: fallbackTitle,
+        state: 'empty' as const,
+        error: '',
+        emptyMessage: fallbackEmptyMessage,
+      }
+    )
+  })
+
+const leaguesSection = getSection('leagues', 'Leagues', 'No league available.')
+const fixturesSection = getSection(
+  'fixtures',
+  'Fixtures / Matches',
+  'No fixture for this league/season.',
+)
+const standingsSection = getSection(
+  'standings',
+  'Results / Standings',
+  'No standings data.',
+)
+const teamsSection = getSection('teams', 'Clubs / Teams', 'No teams data.')
+const fixtureDetailsSection = getSection(
+  'fixtureDetails',
+  'Fixture details',
+  'Select a fixture to see events, lineups and player stats.',
+)
 
 watch(selectedSeason, () => {
   loadLeagueSeasonData()
@@ -125,10 +148,10 @@ if (selectedLeagueId.value && selectedSeason.value) {
       <v-row>
         <v-col cols="12" md="6" lg="4">
           <v-card class="h-100" variant="outlined">
-            <v-card-title>Leagues</v-card-title>
+            <v-card-title>{{ leaguesSection.title }}</v-card-title>
             <v-divider />
             <v-card-text>
-              <template v-if="leaguesState === 'loading'">
+              <template v-if="leaguesSection.state === 'loading'">
                 <v-progress-circular
                   indeterminate
                   color="primary"
@@ -139,21 +162,21 @@ if (selectedLeagueId.value && selectedSeason.value) {
               </template>
 
               <v-alert
-                v-else-if="leaguesState === 'error'"
+                v-else-if="leaguesSection.state === 'error'"
                 type="error"
                 variant="tonal"
                 density="comfortable"
               >
-                {{ leaguesError }}
+                {{ leaguesSection.error }}
               </v-alert>
 
               <v-alert
-                v-else-if="leaguesState === 'empty'"
+                v-else-if="leaguesSection.state === 'empty'"
                 type="info"
                 variant="tonal"
                 density="comfortable"
               >
-                No league available.
+                {{ leaguesSection.emptyMessage }}
               </v-alert>
 
               <v-list v-else density="compact" lines="one" class="pa-0">
@@ -170,10 +193,10 @@ if (selectedLeagueId.value && selectedSeason.value) {
 
         <v-col cols="12" md="6" lg="4">
           <v-card class="h-100" variant="outlined">
-            <v-card-title>Fixtures / Matches</v-card-title>
+            <v-card-title>{{ fixturesSection.title }}</v-card-title>
             <v-divider />
             <v-card-text>
-              <template v-if="fixturesState === 'loading'">
+              <template v-if="fixturesSection.state === 'loading'">
                 <v-progress-circular
                   indeterminate
                   color="primary"
@@ -184,21 +207,21 @@ if (selectedLeagueId.value && selectedSeason.value) {
               </template>
 
               <v-alert
-                v-else-if="fixturesState === 'error'"
+                v-else-if="fixturesSection.state === 'error'"
                 type="error"
                 variant="tonal"
                 density="comfortable"
               >
-                {{ fixturesError }}
+                {{ fixturesSection.error }}
               </v-alert>
 
               <v-alert
-                v-else-if="fixturesState === 'empty'"
+                v-else-if="fixturesSection.state === 'empty'"
                 type="info"
                 variant="tonal"
                 density="comfortable"
               >
-                No fixture for this league/season.
+                {{ fixturesSection.emptyMessage }}
               </v-alert>
 
               <v-list v-else density="compact" class="pa-0">
@@ -217,10 +240,10 @@ if (selectedLeagueId.value && selectedSeason.value) {
 
         <v-col cols="12" md="6" lg="4">
           <v-card class="h-100" variant="outlined">
-            <v-card-title>Results / Standings</v-card-title>
+            <v-card-title>{{ standingsSection.title }}</v-card-title>
             <v-divider />
             <v-card-text>
-              <template v-if="standingsState === 'loading'">
+              <template v-if="standingsSection.state === 'loading'">
                 <v-progress-circular
                   indeterminate
                   color="primary"
@@ -231,21 +254,21 @@ if (selectedLeagueId.value && selectedSeason.value) {
               </template>
 
               <v-alert
-                v-else-if="standingsState === 'error'"
+                v-else-if="standingsSection.state === 'error'"
                 type="error"
                 variant="tonal"
                 density="comfortable"
               >
-                {{ standingsError }}
+                {{ standingsSection.error }}
               </v-alert>
 
               <v-alert
-                v-else-if="standingsState === 'empty'"
+                v-else-if="standingsSection.state === 'empty'"
                 type="info"
                 variant="tonal"
                 density="comfortable"
               >
-                No standings data.
+                {{ standingsSection.emptyMessage }}
               </v-alert>
 
               <v-list v-else density="compact" lines="one" class="pa-0">
@@ -265,10 +288,10 @@ if (selectedLeagueId.value && selectedSeason.value) {
 
         <v-col cols="12" md="6" lg="4">
           <v-card class="h-100" variant="outlined">
-            <v-card-title>Clubs / Teams</v-card-title>
+            <v-card-title>{{ teamsSection.title }}</v-card-title>
             <v-divider />
             <v-card-text>
-              <template v-if="teamsState === 'loading'">
+              <template v-if="teamsSection.state === 'loading'">
                 <v-progress-circular
                   indeterminate
                   color="primary"
@@ -279,21 +302,21 @@ if (selectedLeagueId.value && selectedSeason.value) {
               </template>
 
               <v-alert
-                v-else-if="teamsState === 'error'"
+                v-else-if="teamsSection.state === 'error'"
                 type="error"
                 variant="tonal"
                 density="comfortable"
               >
-                {{ teamsError }}
+                {{ teamsSection.error }}
               </v-alert>
 
               <v-alert
-                v-else-if="teamsState === 'empty'"
+                v-else-if="teamsSection.state === 'empty'"
                 type="info"
                 variant="tonal"
                 density="comfortable"
               >
-                No teams data.
+                {{ teamsSection.emptyMessage }}
               </v-alert>
 
               <v-list v-else density="compact" lines="one" class="pa-0">
@@ -309,10 +332,10 @@ if (selectedLeagueId.value && selectedSeason.value) {
 
         <v-col cols="12" md="6" lg="8">
           <v-card class="h-100" variant="outlined">
-            <v-card-title>Fixture details</v-card-title>
+            <v-card-title>{{ fixtureDetailsSection.title }}</v-card-title>
             <v-divider />
             <v-card-text>
-              <template v-if="fixtureDetailsState === 'loading'">
+              <template v-if="fixtureDetailsSection.state === 'loading'">
                 <v-progress-circular
                   indeterminate
                   color="primary"
@@ -323,21 +346,21 @@ if (selectedLeagueId.value && selectedSeason.value) {
               </template>
 
               <v-alert
-                v-else-if="fixtureDetailsState === 'error'"
+                v-else-if="fixtureDetailsSection.state === 'error'"
                 type="error"
                 variant="tonal"
                 density="comfortable"
               >
-                {{ fixtureDetailsError }}
+                {{ fixtureDetailsSection.error }}
               </v-alert>
 
               <v-alert
-                v-else-if="fixtureDetailsState === 'empty'"
+                v-else-if="fixtureDetailsSection.state === 'empty'"
                 type="info"
                 variant="tonal"
                 density="comfortable"
               >
-                Select a fixture to see events, lineups and player stats.
+                {{ fixtureDetailsSection.emptyMessage }}
               </v-alert>
 
               <template v-else-if="fixtureDetails">
