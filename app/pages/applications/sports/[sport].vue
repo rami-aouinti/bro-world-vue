@@ -14,6 +14,7 @@ import SportsFootballFixturesListWidget from '~/components/Sports/Football/Fixtu
 import SportsFootballStandingsTableWidget from '~/components/Sports/Football/StandingsTableWidget.vue'
 import SportsFootballTeamDetailsWidget from '~/components/Sports/Football/TeamDetailsWidget.vue'
 import SportsFootballPlayerDetailsWidget from '~/components/Sports/Football/PlayerDetailsWidget.vue'
+import SportsFootballFixtureDetailsWidget from '~/components/Sports/Football/FixtureDetailsWidget.vue'
 
 definePageMeta({
   title: 'appbar.sports',
@@ -51,6 +52,9 @@ const {
   fixtures,
   standings,
   standingsLeague,
+  mappedFixtureEvents,
+  mappedFixtureLineups,
+  mappedFixturePlayerStats,
   teamDetails,
   playerDetails,
   footballSections,
@@ -103,6 +107,11 @@ const teamDetailsSection = getSection(
   'teamDetails',
   'Team details',
   'Select a team to see full team and squad details.',
+)
+const fixtureDetailsSection = getSection(
+  'fixtureDetails',
+  'Fixture details',
+  'Select a fixture to see events, lineups and player stats.',
 )
 const playerDetailsSection = getSection(
   'playerDetails',
@@ -270,6 +279,15 @@ watch(
           </v-col>
 
           <template v-if="hasSelection">
+            <v-col cols="12" md="6" class="football-fade-up">
+              <SportsFootballFixtureDetailsWidget
+                :section="fixtureDetailsSection"
+                :events="mappedFixtureEvents"
+                :lineups="mappedFixtureLineups"
+                :player-stats="mappedFixturePlayerStats"
+              />
+            </v-col>
+
             <v-col cols="12" md="6" class="football-fade-up">
               <SportsFootballStandingsTableWidget
                 :standings="standings"
