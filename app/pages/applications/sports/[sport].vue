@@ -289,13 +289,12 @@ watch(
               </v-alert>
 
               <v-list v-else density="compact" class="pa-0">
-                <v-list-item
+                <SportsFootballFixtureCard
                   v-for="fixture in fixtures"
                   :key="fixture.id"
-                  :title="`${fixture.teams.home.name} vs ${fixture.teams.away.name}`"
-                  :subtitle="`${new Date(fixture.date).toLocaleString()} · ${fixture.status?.long ?? 'Scheduled'}`"
+                  :fixture="fixture"
                   :active="selectedFixtureId === fixture.id"
-                  @click="loadFixtureDetails(fixture.id)"
+                  @select="loadFixtureDetails"
                 />
               </v-list>
             </v-card-text>
@@ -464,31 +463,11 @@ watch(
                 {{ teamDetailsSection.emptyMessage }}
               </v-alert>
               <template v-else-if="teamDetails">
-                <div class="d-flex align-center mb-3">
-                  <v-avatar size="34" class="mr-2">
-                    <v-img :src="teamDetails.statistics.team.logo || undefined" />
-                  </v-avatar>
-                  <div>
-                    <div class="text-subtitle-1 font-weight-bold">{{ teamDetails.statistics.team.name }}</div>
-                    <div class="text-caption">Form: {{ teamDetails.statistics.form || 'N/A' }}</div>
-                  </div>
-                </div>
-                <v-chip-group class="mb-2">
-                  <v-chip color="primary" size="small">Played: {{ teamDetails.statistics.fixtures?.played?.total ?? '-' }}</v-chip>
-                  <v-chip color="success" size="small">Wins: {{ teamDetails.statistics.fixtures?.wins?.total ?? '-' }}</v-chip>
-                  <v-chip color="warning" size="small">Goals: {{ teamDetails.statistics.goals?.for?.total?.total ?? '-' }}</v-chip>
-                </v-chip-group>
-                <div class="text-caption mb-2">Squad (click player)</div>
-                <v-list density="compact" lines="one" class="pa-0 football-list-scroll">
-                  <v-list-item
-                    v-for="player in teamDetails.squad.players"
-                    :key="player.id"
-                    :title="player.name"
-                    :subtitle="`${player.position || 'Unknown position'} · #${player.number ?? '-'}`"
-                    :active="selectedPlayerId === player.id"
-                    @click="loadPlayerDetails(player.id)"
-                  />
-                </v-list>
+                <SportsFootballTeamDetailsPanel
+                  :details="teamDetails"
+                  :selected-player-id="selectedPlayerId"
+                  @select-player="loadPlayerDetails"
+                />
               </template>
             </v-card-text>
           </v-card>
@@ -509,40 +488,7 @@ watch(
               <v-alert v-else-if="playerDetailsSection.state === 'empty'" type="info" variant="tonal" density="comfortable">
                 {{ playerDetailsSection.emptyMessage }}
               </v-alert>
-              <template v-else-if="playerDetails?.profile">
-                <div class="d-flex align-start mb-4">
-                  <v-avatar size="72" class="mr-3">
-                    <v-img :src="playerDetails.profile.photo || undefined" />
-                  </v-avatar>
-                  <div>
-                    <div class="text-h6">{{ playerDetails.profile.name }}</div>
-                    <div class="text-body-2">
-                      {{ playerDetails.profile.nationality || 'Unknown nationality' }} ·
-                      Age {{ playerDetails.profile.age ?? '-' }}
-                    </div>
-                    <div class="text-caption">
-                      {{ playerDetails.profile.height || '-' }} / {{ playerDetails.profile.weight || '-' }}
-                    </div>
-                  </div>
-                </div>
-                <v-expansion-panels variant="accordion">
-                  <v-expansion-panel
-                    v-for="(stat, index) in playerDetails.statistics"
-                    :key="`stat-${index}`"
-                  >
-                    <v-expansion-panel-title>
-                      {{ stat.league?.name || 'League' }} · {{ stat.team?.name || 'Team' }}
-                    </v-expansion-panel-title>
-                    <v-expansion-panel-text>
-                      <div class="text-body-2">Appearances: {{ stat.games?.appearences ?? '-' }}</div>
-                      <div class="text-body-2">Minutes: {{ stat.games?.minutes ?? '-' }}</div>
-                      <div class="text-body-2">Goals: {{ stat.goals?.total ?? '-' }}</div>
-                      <div class="text-body-2">Assists: {{ stat.goals?.assists ?? '-' }}</div>
-                      <div class="text-body-2">Rating: {{ stat.games?.rating ?? '-' }}</div>
-                    </v-expansion-panel-text>
-                  </v-expansion-panel>
-                </v-expansion-panels>
-              </template>
+              <SportsFootballPlayerDetailsPanel v-else-if="playerDetails?.profile" :details="playerDetails" />
             </v-card-text>
           </v-card>
         </v-col>
@@ -573,8 +519,4 @@ watch(
   box-shadow: 0 8px 24px rgba(5, 150, 105, 0.16);
 }
 
-.football-list-scroll {
-  max-height: 360px;
-  overflow: auto;
-}
 </style>
