@@ -6,6 +6,9 @@ import {
   type SportSlug,
 } from '~/types/sports'
 import { useFootballData } from '~/composables/useFootballData'
+import SportsFootballFixtureCard from '~/components/Sports/Football/FixtureCard.vue'
+import SportsFootballTeamDetailsPanel from '~/components/Sports/Football/TeamDetailsPanel.vue'
+import SportsFootballPlayerDetailsPanel from '~/components/Sports/Football/PlayerDetailsPanel.vue'
 
 definePageMeta({
   title: 'appbar.sports',
