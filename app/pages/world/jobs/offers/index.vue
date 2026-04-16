@@ -9,26 +9,36 @@ import type {
 
 definePageMeta({ title: 'Jobs Offers' })
 
+const { t } = useI18n()
+
 const jobsNavItems = [
   {
-    title: 'Overview Jobs',
+    title: t('world.jobs.nav.overview', 'Vue d’ensemble / Overview'),
     to: '/world/jobs',
     icon: 'mdi-view-dashboard-outline',
   },
-  { title: 'Offers', to: '/world/jobs/offers', icon: 'mdi-briefcase-outline' },
   {
-    title: 'My Offers',
+    title: t('world.jobs.nav.offers', 'Offres / Offers'),
+    to: '/world/jobs/offers',
+    icon: 'mdi-briefcase-outline',
+  },
+  {
+    title: t('world.jobs.nav.myOffers', 'Mes offres / My offers'),
     to: '/world/jobs/my-offers',
     icon: 'mdi-account-tie-outline',
   },
   {
-    title: 'Applications',
+    title: t('world.jobs.nav.applications', 'Candidatures / Applications'),
     to: '/world/jobs/applications',
     icon: 'mdi-file-document-outline',
   },
-  { title: 'Apply', to: '/world/jobs/apply', icon: 'mdi-send-outline' },
   {
-    title: 'Admin',
+    title: t('world.jobs.nav.apply', 'Postuler / Apply'),
+    to: '/world/jobs/apply',
+    icon: 'mdi-send-outline',
+  },
+  {
+    title: t('world.jobs.nav.admin', 'Admin'),
     to: '/world/jobs/admin',
     icon: 'mdi-shield-crown-outline',
     rootOnly: true,
@@ -47,6 +57,9 @@ const totalItems = ref(0)
 const totalPages = ref(1)
 const loading = ref(false)
 const errorMessage = ref('')
+const filterMenuProps = {
+  contentClass: 'jobs-offers-filter-menu',
+}
 
 const workModeOptions: RecruitWorkMode[] = ['Onsite', 'Remote', 'Hybrid']
 const contractTypeOptions: RecruitContractType[] = [
@@ -85,7 +98,10 @@ async function fetchJobs() {
     totalPages.value = response.pagination?.totalPages || 1
   } catch (error) {
     console.error(error)
-    errorMessage.value = 'Impossible de charger les offres.'
+    errorMessage.value = t(
+      'world.jobs.offers.errors.loading',
+      'Impossible de charger les offres.',
+    )
   } finally {
     loading.value = false
   }
@@ -113,33 +129,43 @@ await fetchJobs()
 <template>
   <div>
     <WorldModuleDrawers
-      module-title="Jobs"
+      :module-title="t('world.jobs.title', 'Jobs')"
       module-icon="mdi-briefcase-search-outline"
-      module-description="Navigation complète du module Jobs."
+      :module-description="
+        t(
+          'world.jobs.description',
+          'Navigation complète du module Jobs.',
+        )
+      "
       :nav-items="jobsNavItems"
-      action-label="Create Offers"
+      :action-label="t('world.jobs.offers.actions.create', 'Créer une offre')"
     >
       <template #right>
-        <h3 class="text-subtitle-1 font-weight-bold mb-3">Filters</h3>
+        <h3 class="text-subtitle-1 font-weight-bold mb-3">
+          {{ t('world.jobs.offers.filters.title', 'Filtres') }}
+        </h3>
         <div class="d-flex flex-column ga-3">
           <v-select
             v-model="workMode"
             :items="workModeOptions"
-            label="Work mode"
+            :label="t('world.jobs.offers.filters.workMode', 'Mode de travail')"
+            :menu-props="filterMenuProps"
             clearable
             hide-details
           />
           <v-select
             v-model="contractType"
             :items="contractTypeOptions"
-            label="Contract type"
+            :label="t('world.jobs.offers.filters.contractType', 'Type de contrat')"
+            :menu-props="filterMenuProps"
             clearable
             hide-details
           />
           <v-select
             v-model="experienceLevel"
             :items="experienceOptions"
-            label="Experience"
+            :label="t('world.jobs.offers.filters.experience', 'Expérience')"
+            :menu-props="filterMenuProps"
             clearable
             hide-details
           />
@@ -148,9 +174,11 @@ await fetchJobs()
             block
             @click="applyFilters"
           >
-            Filter
+            {{ t('world.jobs.offers.filters.apply', 'Filtrer') }}
           </v-btn>
-          <v-btn variant="tonal" block @click="resetFilters">Reset</v-btn>
+          <v-btn variant="tonal" block @click="resetFilters">
+            {{ t('world.jobs.offers.filters.reset', 'Réinitialiser') }}
+          </v-btn>
         </div>
       </template>
     </WorldModuleDrawers>
@@ -159,7 +187,7 @@ await fetchJobs()
       <v-card rounded="xl" class="mb-4 pa-4 postcard-gradient-card">
         <v-text-field
           v-model="q"
-          label="Recherche"
+          :label="t('world.jobs.offers.search.label', 'Recherche')"
           prepend-inner-icon="mdi-magnify"
           clearable
           hide-details
@@ -210,7 +238,7 @@ await fetchJobs()
                 prepend-icon="mdi-file-document-outline"
                 :to="`/world/jobs/offers/${job.slug}`"
               >
-                Voir détail
+                {{ t('world.jobs.offers.actions.viewDetails', 'Voir détail') }}
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -222,7 +250,12 @@ await fetchJobs()
         rounded="xl"
         class="pa-6 text-center"
       >
-        Aucune offre trouvée avec ces filtres.
+        {{
+          t(
+            'world.jobs.offers.empty',
+            'Aucune offre trouvée avec ces filtres.',
+          )
+        }}
       </v-card>
 
       <div class="d-flex justify-center py-4">
@@ -230,8 +263,31 @@ await fetchJobs()
       </div>
 
       <div class="text-center text-caption text-medium-emphasis pb-6">
-        {{ totalItems }} offres
+        {{ t('world.jobs.offers.total', { count: totalItems }, `${totalItems} offres`) }}
       </div>
     </v-container>
   </div>
 </template>
+
+<style scoped>
+:deep(.jobs-offers-filter-menu) {
+  border-radius: 14px;
+  border: 1px solid rgba(var(--v-border-color), 0.32);
+  background:
+    linear-gradient(
+      240deg,
+      rgba(var(--v-theme-primary), 0.12) 0%,
+      transparent 28%
+    ),
+    color-mix(in srgb, rgb(var(--v-theme-surface)) 88%, transparent);
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(var(--v-theme-primary), 0.14) inset;
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+}
+
+:deep(.jobs-offers-filter-menu .v-list) {
+  background: transparent !important;
+}
+</style>
