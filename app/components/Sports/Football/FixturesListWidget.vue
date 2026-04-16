@@ -12,6 +12,7 @@ defineProps<{
 
 defineEmits<{
   select: [fixtureId: number]
+  selectTeam: [teamId: number]
 }>()
 </script>
 
@@ -47,6 +48,7 @@ defineEmits<{
         :fixture="fixture"
         :active="selectedFixtureId === fixture.id"
         @select="$emit('select', $event)"
+        @select-team="$emit('selectTeam', $event)"
       />
     </TransitionGroup>
   </v-list>
