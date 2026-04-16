@@ -1,42 +1,21 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
+import type { ShopProduct } from '~/types/world/shop'
 
 const { t } = useI18n()
 const route = useRoute()
 const { loggedIn, user } = useUserSession()
+const shopStore = useWorldShopStore()
 
 const sessionUser = computed(() => user.value as SessionUser | null)
 const avatarUrl = computed(() => sessionUser.value?.photo)
 const coins = computed(() => sessionUser.value?.coins ?? 0)
 const coinModalOpen = ref(false)
-const orderLoading = ref(false)
-const paymentLoading = ref(false)
+const productsLoading = ref(false)
 const checkoutError = ref('')
 const checkoutSuccess = ref('')
-const selectedPackageId = ref<string | null>(null)
-const paymentMethod = ref<'stripe' | 'paypal' | null>(null)
-const checkoutStep = ref<'package' | 'payment' | 'result'>('package')
-const currentOrder = ref<{
-  orderId: string
-  packageId: string
-  coins: number
-  amount: number
-  currency: 'USD' | 'EUR'
-  status: string
-} | null>(null)
-
-type CoinPackage = {
-  id: string
-  coins: number
-  usdPrice: number
-  eurPrice: number
-}
-
-const coinPackages: CoinPackage[] = [
-  { id: 'starter-500', coins: 500, usdPrice: 2, eurPrice: 2 },
-  { id: 'plus-1500', coins: 1500, usdPrice: 5, eurPrice: 5 },
-  { id: 'pro-5000', coins: 5000, usdPrice: 15, eurPrice: 14 },
-]
+const cartPendingProductId = ref<string | null>(null)
+const coinProducts = ref<ShopProduct[]>([])
 
 const currency = computed(() => {
   const locale = sessionUser.value?.locale?.toLowerCase() || ''
@@ -52,12 +31,6 @@ const currency = computed(() => {
   return 'USD'
 })
 
-const currencySymbol = computed(() => (currency.value === 'EUR' ? '€' : '$'))
-const paymentMethodLabel = computed(() => {
-  if (paymentMethod.value === 'stripe') return 'Stripe'
-  if (paymentMethod.value === 'paypal') return 'PayPal'
-  return '-'
-})
 const fullName = computed(() => {
   const values = [sessionUser.value?.firstName, sessionUser.value?.lastName]
     .filter(Boolean)
@@ -75,90 +48,61 @@ function navigateToLogin() {
   })
 }
 
-function openCoinModal() {
-  checkoutStep.value = 'package'
+async function fetchCoinProducts() {
+  productsLoading.value = true
+  checkoutError.value = ''
+  try {
+    await shopStore.fetchProducts({
+      force: true,
+      filters: { status: 'active', page: 1, limit: 50 },
+    })
+    coinProducts.value = (shopStore.items as ShopProduct[]).filter((item) => {
+      const category = String(item.category || item.categoryName || '')
+        .toLowerCase()
+        .trim()
+      return category.includes('coins')
+    })
+  } catch (error) {
+    coinProducts.value = []
+    checkoutError.value =
+      error instanceof Error
+        ? error.message
+        : t('appbar.coinCheckout.errors.generic')
+  } finally {
+    productsLoading.value = false
+  }
+}
+
+function formatProductAmount(product: ShopProduct) {
+  return new Intl.NumberFormat(sessionUser.value?.locale || 'en-US', {
+    style: 'currency',
+    currency: product.currencyCode || currency.value,
+    maximumFractionDigits: 2,
+  }).format(product.amount)
+}
+
+async function openCoinModal() {
   checkoutError.value = ''
   checkoutSuccess.value = ''
-  currentOrder.value = null
-  selectedPackageId.value = null
-  paymentMethod.value = null
   coinModalOpen.value = true
+  await fetchCoinProducts()
 }
 
-function formatPrice(item: CoinPackage) {
-  const amount = currency.value === 'EUR' ? item.eurPrice : item.usdPrice
-  return `${currencySymbol.value}${amount}`
-}
-
-async function createCheckoutOrder(item: CoinPackage) {
-  orderLoading.value = true
+async function addToCart(product: ShopProduct) {
+  cartPendingProductId.value = product.id
   checkoutError.value = ''
   checkoutSuccess.value = ''
-  selectedPackageId.value = item.id
 
   try {
-    const response = await $fetch('/api/coins/orders', {
-      method: 'POST',
-      body: {
-        packageId: item.id,
-        coins: item.coins,
-        currency: currency.value,
-        amount: currency.value === 'EUR' ? item.eurPrice : item.usdPrice,
-      },
-    })
-
-    currentOrder.value = response
-    checkoutStep.value = 'payment'
+    await shopStore.addCartItem(product.id, 1)
+    checkoutSuccess.value = t('world.shop.feedback.addToCartSuccess')
   } catch (error) {
     checkoutError.value =
       error instanceof Error
         ? error.message
         : t('appbar.coinCheckout.errors.generic')
   } finally {
-    orderLoading.value = false
-  }
-}
-
-async function processPayment() {
-  if (!currentOrder.value || !paymentMethod.value) {
-    checkoutError.value = t('appbar.coinCheckout.errors.selectPaymentMethod')
-    return
-  }
-
-  paymentLoading.value = true
-  checkoutError.value = ''
-  checkoutSuccess.value = ''
-
-  try {
-    const response = await $fetch('/api/coins/checkout/pay', {
-      method: 'POST',
-      body: {
-        orderId: currentOrder.value.orderId,
-        paymentMethod: paymentMethod.value,
-      },
-    })
-
-    if (response.status === 'success') {
-      checkoutSuccess.value = t(
-        'appbar.coinCheckout.success.paymentConfirmed',
-        {
-          method: paymentMethodLabel.value,
-        },
-      )
-      checkoutStep.value = 'result'
-      return
-    }
-
-    checkoutError.value =
-      response.message || t('appbar.coinCheckout.errors.paymentDeclined')
-    checkoutStep.value = 'result'
-  } catch (error) {
-    checkoutError.value =
-      error instanceof Error
-        ? error.message
-        : t('appbar.coinCheckout.errors.generic')
-  } finally {
-    paymentLoading.value = false
+    cartPendingProductId.value = null
   }
 }
 </script>
@@ -199,110 +143,86 @@ async function processPayment() {
         </v-card-title>
 
         <v-card-text>
-          <v-window v-model="checkoutStep">
-            <v-window-item value="package">
-              <p class="text-medium-emphasis mb-4">
-                {{ t('appbar.coinCheckout.steps.package') }}
-              </p>
+          <p class="text-medium-emphasis mb-4">
+            {{ t('appbar.coinCheckout.steps.package') }}
+          </p>
 
-              <v-list class="pa-0" lines="two">
-                <v-list-item
-                  v-for="item in coinPackages"
-                  :key="item.id"
-                  :title="`${item.coins} coins`"
-                  :subtitle="t('appbar.coinCheckout.packageSubtitle')"
-                  class="px-0"
-                >
-                  <template #append>
-                    <v-btn
-                      color="primary"
-                      variant="flat"
-                      :loading="orderLoading && selectedPackageId === item.id"
-                      @click="createCheckoutOrder(item)"
-                    >
-                      {{ formatPrice(item) }}
-                    </v-btn>
-                  </template>
-                </v-list-item>
-              </v-list>
-            </v-window-item>
+          <v-row v-if="productsLoading">
+            <v-col
+              v-for="index in 3"
+              :key="`coins-product-skeleton-${index}`"
+              cols="12"
+              md="4"
+            >
+              <v-skeleton-loader type="card" />
+            </v-col>
+          </v-row>
 
-            <v-window-item value="payment">
-              <p class="text-medium-emphasis mb-4">
-                {{ t('appbar.coinCheckout.steps.payment') }}
-              </p>
-              <v-card variant="tonal" class="mb-4">
-                <v-card-text class="text-body-2">
-                  <div>
-                    <strong
-                      >{{ t('appbar.coinCheckout.labels.order') }}:</strong
-                    >
-                    {{ currentOrder?.orderId }}
-                  </div>
-                  <div>
-                    <strong>{{ t('appbar.coinCheckout.labels.pack') }}:</strong>
-                    {{ currentOrder?.coins }} coins
-                  </div>
-                  <div>
-                    <strong
-                      >{{ t('appbar.coinCheckout.labels.amount') }}:</strong
-                    >
-                    {{ currencySymbol }}{{ currentOrder?.amount }}
-                  </div>
-                </v-card-text>
-              </v-card>
-              <div class="d-flex ga-2 mb-4">
-                <v-btn
-                  :color="paymentMethod === 'stripe' ? 'primary' : undefined"
-                  variant="outlined"
-                  prepend-icon="mdi-credit-card-outline"
-                  @click="paymentMethod = 'stripe'"
-                >
-                  Stripe
-                </v-btn>
-                <v-btn
-                  :color="paymentMethod === 'paypal' ? 'primary' : undefined"
-                  variant="outlined"
-                  prepend-icon="mdi-paypal"
-                  @click="paymentMethod = 'paypal'"
-                >
-                  PayPal
-                </v-btn>
-              </div>
+          <v-alert
+            v-else-if="!coinProducts.length"
+            type="info"
+            variant="tonal"
+            class="mb-4"
+          >
+            {{ t('pages.profile.buyCoins.emptyProducts') }}
+          </v-alert>
 
-              <div class="d-flex ga-2">
-                <v-btn variant="text" @click="checkoutStep = 'package'">
-                  {{ t('common.back') }}
-                </v-btn>
-                <v-btn
-                  color="primary"
-                  :loading="paymentLoading"
-                  :disabled="!paymentMethod"
-                  @click="processPayment"
-                >
-                  {{ t('appbar.coinCheckout.payNow') }}
-                </v-btn>
-              </div>
-            </v-window-item>
-
-            <v-window-item value="result">
-              <p class="text-medium-emphasis">
-                {{
-                  t('appbar.coinCheckout.steps.result', {
-                    orderId: currentOrder?.orderId ?? '-',
-                  })
-                }}
-              </p>
-              <v-btn
-                class="mt-2"
-                color="primary"
-                variant="outlined"
-                @click="openCoinModal"
+          <v-row v-else dense>
+            <v-col
+              v-for="item in coinProducts"
+              :key="item.id"
+              cols="12"
+              sm="6"
+              md="4"
+            >
+              <v-card
+                class="shop-product-card h-100"
+                rounded="xl"
+                elevation="3"
               >
-                {{ t('appbar.coinCheckout.newCheckout') }}
-              </v-btn>
-            </v-window-item>
-          </v-window>
+                <v-img
+                  :src="
+                    item.photo ||
+                    '/images/placeholders/platform-media-fallback.svg'
+                  "
+                  :alt="item.name"
+                  height="160"
+                  cover
+                >
+                  <template #error>
+                    <div
+                      class="d-flex align-center justify-center fill-height bg-surface-variant"
+                    >
+                      <v-icon icon="mdi-image-off-outline" size="40" />
+                    </div>
+                  </template>
+                </v-img>
+                <v-card-text class="pb-2">
+                  <h3 class="text-subtitle-1 mb-1">{{ item.name }}</h3>
+                  <p class="text-body-2 text-medium-emphasis mb-0">
+                    {{ item.coinsAmount }} coins
+                  </p>
+                </v-card-text>
+                <v-card-actions
+                  class="px-4 pb-4 pt-0 d-flex align-center justify-space-between"
+                >
+                  <span class="text-body-1 font-weight-bold">
+                    {{ formatProductAmount(item) }}
+                  </span>
+                  <v-btn
+                    color="primary"
+                    variant="tonal"
+                    prepend-icon="mdi-cart-plus"
+                    :loading="cartPendingProductId === item.id"
+                    :disabled="cartPendingProductId === item.id"
+                    @click="addToCart(item)"
+                  >
+                    {{ t('world.shop.actions.addToCart') }}
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-col>
+          </v-row>
 
           <v-alert
             v-if="checkoutSuccess"
@@ -336,3 +256,16 @@ async function processPayment() {
     {{ t('appbar.login') }}
   </v-btn>
 </template>
+
+<style scoped>
+.shop-product-card {
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.shop-product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 30px rgb(15 23 42 / 18%) !important;
+}
+</style>
