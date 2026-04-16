@@ -2,6 +2,8 @@
 import type { FootballFixture, FootballSection } from '~/composables/useFootballData'
 import SportsFootballFixtureCard from '~/components/Sports/Football/FixtureCard.vue'
 
+const { t } = useI18n()
+
 defineProps<{
   fixtures: FootballFixture[]
   selectedFixtureId: number | null
@@ -20,7 +22,7 @@ defineEmits<{
     <v-card-text>
       <template v-if="section.state === 'loading'">
         <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
-        <span>Loading fixtures…</span>
+        <span>{{ t('pages.applications.football.loading.fixtures') }}</span>
       </template>
 
       <v-alert

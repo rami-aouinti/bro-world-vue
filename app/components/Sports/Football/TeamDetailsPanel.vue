@@ -31,6 +31,7 @@ const props = defineProps<{
   details: TeamDetails
   selectedPlayerId?: number | null
 }>()
+const { t } = useI18n()
 
 defineEmits<{
   selectPlayer: [playerId: number]
@@ -48,7 +49,7 @@ const topPlayers = computed(() => props.details.squad.players.slice(0, 4))
       :goals="details.statistics.goals"
     />
 
-    <div class="text-caption mb-2">Top players</div>
+    <div class="text-caption mb-2">{{ t('pages.applications.football.misc.topPlayers') }}</div>
     <TransitionGroup name="stagger" tag="div" class="d-flex flex-wrap ga-2 mb-4">
       <v-sheet
         v-for="player in topPlayers"
@@ -66,14 +67,14 @@ const topPlayers = computed(() => props.details.squad.players.slice(0, 4))
           <div>
             <div class="text-caption font-weight-bold">{{ player.name }}</div>
             <div class="text-caption text-medium-emphasis">
-              {{ player.position || 'N/A' }} · #{{ player.number ?? '-' }}
+              {{ player.position || t('pages.applications.football.misc.notAvailableShort') }} · #{{ player.number ?? '-' }}
             </div>
           </div>
         </div>
       </v-sheet>
     </TransitionGroup>
 
-    <div class="text-caption mb-2">Squad (click player)</div>
+    <div class="text-caption mb-2">{{ t('pages.applications.football.misc.squadHint') }}</div>
     <v-list density="comfortable" lines="one" class="pa-0 football-list-scroll">
       <TransitionGroup name="stagger" tag="div">
         <v-list-item
@@ -92,8 +93,8 @@ const topPlayers = computed(() => props.details.squad.players.slice(0, 4))
 
           <v-list-item-title class="text-body-2 font-weight-medium">{{ player.name }}</v-list-item-title>
           <v-list-item-subtitle>
-            {{ player.position || 'Unknown position' }}
-            <span class="text-medium-emphasis"> · {{ player.age ? `${player.age} yrs` : 'Age -' }}</span>
+            {{ player.position || t('pages.applications.football.misc.unknownPosition') }}
+            <span class="text-medium-emphasis"> · {{ player.age ? t('pages.applications.football.misc.ageYearsShort', { age: player.age }) : t('pages.applications.football.misc.ageUnknown') }}</span>
           </v-list-item-subtitle>
 
           <template #append>

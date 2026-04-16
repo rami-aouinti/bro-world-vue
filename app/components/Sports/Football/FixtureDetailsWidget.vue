@@ -7,6 +7,8 @@ import type {
 } from '~/composables/useFootballData'
 import SportsFootballFixtureDetailsPanel from '~/components/Sports/Football/FixtureDetailsPanel.vue'
 
+const { t } = useI18n()
+
 defineProps<{
   section: FootballSection
   events: FixtureEventViewModel[]
@@ -22,7 +24,7 @@ defineProps<{
     <v-card-text>
       <template v-if="section.state === 'loading'">
         <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
-        <span>Loading fixture details…</span>
+        <span>{{ t('pages.applications.football.loading.fixtureDetails') }}</span>
       </template>
       <v-alert v-else-if="section.state === 'error'" type="error" variant="tonal" density="comfortable">
         {{ section.error }}

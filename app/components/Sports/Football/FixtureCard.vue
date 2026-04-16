@@ -25,6 +25,7 @@ const props = defineProps<{
   fixture: FootballFixtureCardItem
   active?: boolean
 }>()
+const { t, locale } = useI18n()
 
 const emit = defineEmits<{
   select: [fixtureId: number]
@@ -32,29 +33,29 @@ const emit = defineEmits<{
 
 interface FixtureStatusChip {
   color: string
-  label: string
+  labelKey: string
   live?: boolean
 }
 
 const STATUS_CHIP_MAP: Record<string, FixtureStatusChip> = {
-  NS: { color: 'info', label: 'À venir' },
-  TBD: { color: 'info', label: 'À confirmer' },
-  PST: { color: 'warning', label: 'Reporté' },
-  CANC: { color: 'error', label: 'Annulé' },
-  ABD: { color: 'error', label: 'Arrêté' },
-  AWD: { color: 'secondary', label: 'Forfait' },
-  WO: { color: 'secondary', label: 'Walkover' },
-  HT: { color: 'warning', label: 'Mi-temps', live: true },
-  FT: { color: 'success', label: 'Terminé' },
-  AET: { color: 'success', label: 'Après prolong.' },
-  PEN: { color: 'secondary', label: 'Tirs au but', live: true },
-  ET: { color: 'warning', label: 'Prolongation', live: true },
-  BT: { color: 'warning', label: 'Pause prolong.', live: true },
-  INT: { color: 'warning', label: 'Interrompu', live: true },
-  SUSP: { color: 'error', label: 'Suspendu' },
-  LIVE: { color: 'error', label: 'En direct', live: true },
-  '1H': { color: 'error', label: '1re MT', live: true },
-  '2H': { color: 'error', label: '2e MT', live: true },
+  NS: { color: 'info', labelKey: 'pages.applications.football.status.NS' },
+  TBD: { color: 'info', labelKey: 'pages.applications.football.status.TBD' },
+  PST: { color: 'warning', labelKey: 'pages.applications.football.status.PST' },
+  CANC: { color: 'error', labelKey: 'pages.applications.football.status.CANC' },
+  ABD: { color: 'error', labelKey: 'pages.applications.football.status.ABD' },
+  AWD: { color: 'secondary', labelKey: 'pages.applications.football.status.AWD' },
+  WO: { color: 'secondary', labelKey: 'pages.applications.football.status.WO' },
+  HT: { color: 'warning', labelKey: 'pages.applications.football.status.HT', live: true },
+  FT: { color: 'success', labelKey: 'pages.applications.football.status.FT' },
+  AET: { color: 'success', labelKey: 'pages.applications.football.status.AET' },
+  PEN: { color: 'secondary', labelKey: 'pages.applications.football.status.PEN', live: true },
+  ET: { color: 'warning', labelKey: 'pages.applications.football.status.ET', live: true },
+  BT: { color: 'warning', labelKey: 'pages.applications.football.status.BT', live: true },
+  INT: { color: 'warning', labelKey: 'pages.applications.football.status.INT', live: true },
+  SUSP: { color: 'error', labelKey: 'pages.applications.football.status.SUSP' },
+  LIVE: { color: 'error', labelKey: 'pages.applications.football.status.LIVE', live: true },
+  '1H': { color: 'error', labelKey: 'pages.applications.football.status._1H', live: true },
+  '2H': { color: 'error', labelKey: 'pages.applications.football.status._2H', live: true },
 }
 
 const statusShort = computed(() => (props.fixture.status?.short ?? 'NS').toUpperCase())
@@ -62,7 +63,7 @@ const statusShort = computed(() => (props.fixture.status?.short ?? 'NS').toUpper
 const statusChip = computed<FixtureStatusChip>(() => {
   return STATUS_CHIP_MAP[statusShort.value] ?? {
     color: 'primary',
-    label: statusShort.value,
+    labelKey: '',
   }
 })
 
@@ -84,11 +85,11 @@ const formattedKickoff = computed(() => {
   const kickoff = new Date(props.fixture.date)
 
   if (Number.isNaN(kickoff.getTime())) {
-    return 'Date inconnue'
+    return t('pages.applications.football.misc.unknownDate')
   }
 
   try {
-    return formatDateTime('fr-FR', kickoff, {
+    return formatDateTime(locale.value === 'fr' ? 'fr-FR' : 'en-US', kickoff, {
       dateStyle: 'medium',
       timeStyle: 'short',
     })
@@ -96,6 +97,16 @@ const formattedKickoff = computed(() => {
   catch {
     return formatDateTime('en-US', kickoff)
   }
+})
+
+const longStatusLabel = computed(() => {
+  if (props.fixture.status?.long) {
+    return props.fixture.status.long
+  }
+
+  return statusChip.value.labelKey
+    ? t(statusChip.value.labelKey)
+    : statusShort.value
 })
 
 const homeGoals = computed(() => {
@@ -160,7 +171,7 @@ function selectFixture() {
           <span class="text-truncate">{{ fixture.teams.home.name }}</span>
         </div>
 
-        <div class="fixture-card__score" aria-label="score">
+        <div class="fixture-card__score" :aria-label="t('pages.applications.football.misc.score')">
           <span class="fixture-card__score-goal">{{ homeGoals }}</span>
           <span class="fixture-card__score-separator">-</span>
           <span class="fixture-card__score-goal">{{ awayGoals }}</span>
@@ -182,7 +193,7 @@ function selectFixture() {
       </div>
 
       <div class="text-caption mt-3 text-truncate fixture-card__status-long">
-        {{ fixture.status?.long || statusChip.label }}
+        {{ longStatusLabel }}
       </div>
     </v-card-text>
   </v-card>

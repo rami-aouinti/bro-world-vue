@@ -20,6 +20,7 @@ interface PlayerDetails {
 const props = defineProps<{
   details: PlayerDetails
 }>()
+const { t } = useI18n()
 
 const normalizeStat = (stat: Record<string, any>) => {
   const games = stat?.games && typeof stat.games === 'object'
@@ -48,7 +49,7 @@ const normalizedStatistics = computed(() => props.details.statistics.map(normali
         :key="`stat-${index}`"
       >
         <v-expansion-panel-title>
-          {{ stat.league?.name || 'League' }} · {{ stat.team?.name || 'Team' }}
+          {{ (stat as Record<string, any>).league?.name || t('pages.applications.football.stats.league') }} · {{ (stat as Record<string, any>).team?.name || t('pages.applications.football.stats.team') }}
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <PlayerStatsGrid :stats="stat" />

@@ -10,6 +10,7 @@ const props = defineProps<{
   lineups: FixtureLineupViewModel[]
   playerStats: FixturePlayerStatViewModel[]
 }>()
+const { t } = useI18n()
 
 const activeTab = ref<'timeline' | 'lineups' | 'player-stats'>('timeline')
 const selectedTeamFilter = ref<'all' | string>('all')
@@ -26,7 +27,10 @@ const teamFilters = computed(() => {
     }
   })
 
-  return [{ title: 'All teams', value: 'all' }, ...teams.values()]
+  return [
+    { title: t('pages.applications.football.filters.allTeams'), value: 'all' },
+    ...teams.values(),
+  ]
 })
 
 const filteredPlayerStats = computed(() => {
@@ -40,24 +44,24 @@ const filteredPlayerStats = computed(() => {
 })
 
 const playerStatsHeaders = [
-  { title: 'Player', key: 'playerName' },
-  { title: 'Team', key: 'teamName' },
-  { title: 'Rating', key: 'rating' },
-  { title: 'Min', key: 'minutes' },
-  { title: 'Goals', key: 'goals' },
-  { title: 'Assists', key: 'assists' },
-  { title: 'Shots', key: 'shots' },
-  { title: 'Passes', key: 'passes' },
-  { title: 'Tackles', key: 'tackles' },
+  { title: t('pages.applications.football.stats.player'), key: 'playerName' },
+  { title: t('pages.applications.football.stats.team'), key: 'teamName' },
+  { title: t('pages.applications.football.stats.rating'), key: 'rating' },
+  { title: t('pages.applications.football.stats.min'), key: 'minutes' },
+  { title: t('pages.applications.football.stats.goals'), key: 'goals' },
+  { title: t('pages.applications.football.stats.assists'), key: 'assists' },
+  { title: t('pages.applications.football.stats.shots'), key: 'shots' },
+  { title: t('pages.applications.football.stats.passes'), key: 'passes' },
+  { title: t('pages.applications.football.stats.tackles'), key: 'tackles' },
 ]
 </script>
 
 <template>
   <div class="d-flex flex-column ga-4">
     <v-tabs v-model="activeTab" color="primary" density="comfortable">
-      <v-tab value="timeline">Timeline</v-tab>
-      <v-tab value="lineups">Lineups</v-tab>
-      <v-tab value="player-stats">Player stats</v-tab>
+      <v-tab value="timeline">{{ t('pages.applications.football.tabs.timeline') }}</v-tab>
+      <v-tab value="lineups">{{ t('pages.applications.football.tabs.lineups') }}</v-tab>
+      <v-tab value="player-stats">{{ t('pages.applications.football.tabs.playerStats') }}</v-tab>
     </v-tabs>
 
     <v-window v-model="activeTab">
@@ -96,7 +100,7 @@ const playerStatsHeaders = [
           variant="tonal"
           density="comfortable"
         >
-          No event available for this fixture.
+          {{ t('pages.applications.football.empty.events') }}
         </v-alert>
       </v-window-item>
 
@@ -116,12 +120,17 @@ const playerStatsHeaders = [
                 <div>
                   <div class="text-subtitle-1 font-weight-bold">{{ lineup.teamName }}</div>
                   <div class="text-caption text-medium-emphasis">
-                    Formation {{ lineup.formation }} · Coach {{ lineup.coachName }}
+                    {{
+                      t('pages.applications.football.misc.formationCoach', {
+                        formation: lineup.formation,
+                        coach: lineup.coachName,
+                      })
+                    }}
                   </div>
                 </div>
               </div>
 
-              <div class="text-overline">Starting XI</div>
+              <div class="text-overline">{{ t('pages.applications.football.misc.startingXI') }}</div>
               <v-list density="compact" class="pa-0 mb-2">
                 <v-list-item
                   v-for="starter in lineup.starters"
@@ -131,7 +140,7 @@ const playerStatsHeaders = [
                 />
               </v-list>
 
-              <div class="text-overline">Substitutes</div>
+              <div class="text-overline">{{ t('pages.applications.football.misc.substitutes') }}</div>
               <v-list density="compact" class="pa-0">
                 <v-list-item
                   v-for="sub in lineup.substitutes"
@@ -151,7 +160,7 @@ const playerStatsHeaders = [
           variant="tonal"
           density="comfortable"
         >
-          No lineup available for this fixture.
+          {{ t('pages.applications.football.empty.lineups') }}
         </v-alert>
       </v-window-item>
 
@@ -162,7 +171,7 @@ const playerStatsHeaders = [
             :items="teamFilters"
             item-title="title"
             item-value="value"
-            label="Filter team"
+            :label="t('pages.applications.football.filters.team')"
             density="comfortable"
             variant="outlined"
             hide-details
@@ -185,7 +194,7 @@ const playerStatsHeaders = [
           variant="tonal"
           density="comfortable"
         >
-          No player stats available for this fixture.
+          {{ t('pages.applications.football.empty.playerStats') }}
         </v-alert>
       </v-window-item>
     </v-window>

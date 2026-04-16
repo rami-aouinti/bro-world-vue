@@ -325,19 +325,22 @@ function mapFixtureEventIcon(type: string, detail: string) {
   return { icon: 'mdi-whistle', color: 'primary' }
 }
 
-function mapFixtureEvents(events: FootballFixtureDetails['events']) {
+function mapFixtureEvents(
+  events: FootballFixtureDetails['events'],
+  t: (key: string, params?: Record<string, unknown>) => string,
+) {
   return [...events]
     .map((event, index): FixtureEventViewModel => {
       const minute = event.time?.elapsed ?? 0
-      const detail = event.detail ?? event.type ?? 'Event'
+      const detail = event.detail ?? event.type ?? t('pages.applications.football.misc.event')
       const iconConfig = mapFixtureEventIcon(event.type ?? '', detail)
 
       return {
         id: `${minute}-${event.player?.name ?? 'player'}-${index}`,
         minute,
         timeLabel: minute > 0 ? `${minute}'` : "0'",
-        teamName: event.team?.name ?? 'Unknown team',
-        playerName: event.player?.name ?? 'Unknown player',
+        teamName: event.team?.name ?? t('pages.applications.football.misc.unknownTeam'),
+        playerName: event.player?.name ?? t('pages.applications.football.misc.unknownPlayer'),
         detail,
         comment: event.comments ?? '',
         icon: iconConfig.icon,
@@ -347,20 +350,23 @@ function mapFixtureEvents(events: FootballFixtureDetails['events']) {
     .sort((left, right) => left.minute - right.minute)
 }
 
-function mapFixtureLineups(lineups: FootballFixtureDetails['lineups']) {
+function mapFixtureLineups(
+  lineups: FootballFixtureDetails['lineups'],
+  t: (key: string, params?: Record<string, unknown>) => string,
+) {
   return lineups.map((lineup): FixtureLineupViewModel => {
     const toPlayer = (
       player: NonNullable<typeof lineup.startXI>[number],
     ): FixtureLineupPlayerViewModel => ({
       id: player?.id ?? null,
-      name: player?.name ?? 'Unknown player',
+      name: player?.name ?? t('pages.applications.football.misc.unknownPlayer'),
       number: player?.number ? `${player.number}` : '-',
       position: player?.pos ?? '-',
     })
 
     return {
       teamId: lineup.team?.id ?? null,
-      teamName: lineup.team?.name ?? 'Unknown team',
+      teamName: lineup.team?.name ?? t('pages.applications.football.misc.unknownTeam'),
       teamLogo: lineup.team?.logo ?? null,
       formation: lineup.formation ?? '-',
       coachName: lineup.coach?.name ?? '-',
@@ -372,6 +378,7 @@ function mapFixtureLineups(lineups: FootballFixtureDetails['lineups']) {
 
 function mapFixturePlayerStats(
   stats: FootballFixtureDetails['playerStats'],
+  t: (key: string, params?: Record<string, unknown>) => string,
 ): FixturePlayerStatViewModel[] {
   return stats.map((entry, index) => {
     const details = entry.statistics?.[0] ?? {}
@@ -384,8 +391,8 @@ function mapFixturePlayerStats(
     return {
       id: `${entry.team?.id ?? 'team'}-${entry.player?.id ?? index}`,
       teamId: entry.team?.id ?? null,
-      teamName: entry.team?.name ?? 'Unknown team',
-      playerName: entry.player?.name ?? 'Unknown player',
+      teamName: entry.team?.name ?? t('pages.applications.football.misc.unknownTeam'),
+      playerName: entry.player?.name ?? t('pages.applications.football.misc.unknownPlayer'),
       rating: toStatLabel(games?.rating),
       minutes: toStatLabel(games?.minutes),
       goals: toStatLabel(goals?.total),
@@ -398,6 +405,7 @@ function mapFixturePlayerStats(
 }
 
 export function useFootballData() {
+  const { t } = useI18n()
   const leagues = ref<FootballLeague[]>([])
   const fixtures = ref<FootballFixture[]>([])
   const standings = ref<FootballStandingsGroup[]>([])
@@ -449,66 +457,66 @@ export function useFootballData() {
     return [
       {
         key: 'leagues',
-        title: 'Leagues',
+        title: t('pages.applications.football.sections.leagues.title'),
         state: leaguesState.value,
         error: leaguesError.value,
-        emptyMessage: 'No league available.',
+        emptyMessage: t('pages.applications.football.sections.leagues.empty'),
       },
       {
         key: 'fixtures',
-        title: 'Live / Fixtures',
+        title: t('pages.applications.football.sections.fixtures.title'),
         state: fixturesState.value,
         error: fixturesError.value,
-        emptyMessage: 'No fixture for this league/season.',
+        emptyMessage: t('pages.applications.football.sections.fixtures.empty'),
       },
       {
         key: 'standings',
-        title: 'Results / Standings',
+        title: t('pages.applications.football.sections.standings.title'),
         state: standingsState.value,
         error: standingsError.value,
-        emptyMessage: 'No standings data.',
+        emptyMessage: t('pages.applications.football.sections.standings.empty'),
       },
       {
         key: 'teams',
-        title: 'Clubs / Teams',
+        title: t('pages.applications.football.sections.teams.title'),
         state: teamsState.value,
         error: teamsError.value,
-        emptyMessage: 'No teams data.',
+        emptyMessage: t('pages.applications.football.sections.teams.empty'),
       },
       {
         key: 'fixtureDetails',
-        title: 'Fixture details',
+        title: t('pages.applications.football.sections.fixtureDetails.title'),
         state: fixtureDetailsState.value,
         error: fixtureDetailsError.value,
-        emptyMessage: 'Select a fixture to see events, lineups and player stats.',
+        emptyMessage: t('pages.applications.football.sections.fixtureDetails.empty'),
       },
       {
         key: 'teamDetails',
-        title: 'Team details',
+        title: t('pages.applications.football.sections.teamDetails.title'),
         state: teamDetailsState.value,
         error: teamDetailsError.value,
-        emptyMessage: 'Select a team to see full team and squad details.',
+        emptyMessage: t('pages.applications.football.sections.teamDetails.empty'),
       },
       {
         key: 'playerDetails',
-        title: 'Player details',
+        title: t('pages.applications.football.sections.playerDetails.title'),
         state: playerDetailsState.value,
         error: playerDetailsError.value,
-        emptyMessage: 'Select a player to open the player profile and statistics.',
+        emptyMessage: t('pages.applications.football.sections.playerDetails.empty'),
       },
     ]
   })
 
   const mappedFixtureEvents = computed<FixtureEventViewModel[]>(() => {
-    return mapFixtureEvents(fixtureDetails.value?.events ?? [])
+    return mapFixtureEvents(fixtureDetails.value?.events ?? [], t)
   })
 
   const mappedFixtureLineups = computed<FixtureLineupViewModel[]>(() => {
-    return mapFixtureLineups(fixtureDetails.value?.lineups ?? [])
+    return mapFixtureLineups(fixtureDetails.value?.lineups ?? [], t)
   })
 
   const mappedFixturePlayerStats = computed<FixturePlayerStatViewModel[]>(() => {
-    return mapFixturePlayerStats(fixtureDetails.value?.playerStats ?? [])
+    return mapFixturePlayerStats(fixtureDetails.value?.playerStats ?? [], t)
   })
 
   const resetLeagueDependentData = () => {
@@ -560,7 +568,7 @@ export function useFootballData() {
       leaguesState.value = 'error'
       leaguesError.value = toErrorMessage(
         error,
-        'Impossible de charger les ligues.',
+        t('pages.applications.football.errors.loadLeagues'),
       )
       resetLeagueDependentData()
     }
@@ -616,7 +624,7 @@ export function useFootballData() {
       fixturesState.value = 'error'
       fixturesError.value = toErrorMessage(
         fixturesResult.reason,
-        'Impossible de charger les matches.',
+        t('pages.applications.football.errors.loadFixtures'),
       )
     }
 
@@ -631,7 +639,7 @@ export function useFootballData() {
       standingsState.value = 'error'
       standingsError.value = toErrorMessage(
         standingsResult.reason,
-        'Impossible de charger le classement.',
+        t('pages.applications.football.errors.loadStandings'),
       )
     }
 
@@ -644,7 +652,7 @@ export function useFootballData() {
       teamsState.value = 'error'
       teamsError.value = toErrorMessage(
         teamsResult.reason,
-        'Impossible de charger les équipes.',
+        t('pages.applications.football.errors.loadTeams'),
       )
     }
   }
@@ -700,7 +708,7 @@ export function useFootballData() {
       fixtureDetailsState.value = 'error'
       fixtureDetailsError.value = toErrorMessage(
         error,
-        'Impossible de charger le détail du match.',
+        t('pages.applications.football.errors.loadFixtureDetails'),
       )
     }
   }
@@ -741,7 +749,7 @@ export function useFootballData() {
       teamDetailsState.value = 'error'
       teamDetailsError.value = toErrorMessage(
         error,
-        "Impossible de charger le détail de l'équipe.",
+        t('pages.applications.football.errors.loadTeamDetails'),
       )
     }
   }
@@ -780,7 +788,7 @@ export function useFootballData() {
       playerDetailsState.value = 'error'
       playerDetailsError.value = toErrorMessage(
         error,
-        'Impossible de charger le profil joueur.',
+        t('pages.applications.football.errors.loadPlayerDetails'),
       )
     }
   }
