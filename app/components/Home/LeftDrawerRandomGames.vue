@@ -123,7 +123,7 @@ async function openProduct(product: RandomProductItem) {
 
     <v-skeleton-loader v-if="gamesPending" type="list-item-two-line@2" />
 
-    <v-list v-else-if="randomGames.length > 0" density="compact" nav>
+    <v-list v-else-if="randomGames.length > 0" density="compact" nav class="random-list">
       <v-list-item
         v-for="game in randomGames"
         :key="game.id"
@@ -162,7 +162,7 @@ async function openProduct(product: RandomProductItem) {
 
     <v-skeleton-loader v-if="productsPending" type="list-item-two-line@2" />
 
-    <v-list v-else-if="randomProducts.length > 0" density="compact" nav>
+    <v-list v-else-if="randomProducts.length > 0" density="compact" nav class="random-list">
       <v-list-item
         v-for="product in randomProducts"
         :key="product.id"
@@ -211,8 +211,14 @@ async function openProduct(product: RandomProductItem) {
 </template>
 
 <style scoped>
+.random-list {
+  background: transparent;
+  padding: 0;
+}
+
 .random-item {
   border-radius: 12px;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
+  background: rgb(var(--v-theme-surface-variant));
 }
 </style>
