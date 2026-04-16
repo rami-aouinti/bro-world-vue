@@ -48,6 +48,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       VSelect: {
         ...(vuetifyOptions.defaults?.VSelect ?? {}),
         density: 'compact',
+        menuProps: {
+          contained: true,
+          closeOnContentClick: true,
+          ...(vuetifyOptions.defaults?.VSelect as { menuProps?: Record<string, unknown> })
+            ?.menuProps,
+        },
       },
       VTextarea: {
         ...(vuetifyOptions.defaults?.VTextarea ?? {}),
