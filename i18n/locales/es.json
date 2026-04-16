@@ -84,7 +84,9 @@
         "paymentDeclined": "Pago rechazado."
       }
     },
-    "world": "World"
+    "world": "World",
+    "cart": "Carrito",
+    "total": "Total"
   },
   "common": {
     "confirm": "Confirm",
@@ -1008,7 +1010,8 @@
         "line5": "Pulsa Iniciar para lanzar la sesión al instante.",
         "line6": "Tus selecciones actuales permanecen visibles arriba en cada paso."
       }
-    }
+    },
+    "playButton": "Jugar ahora"
   },
   "world": {
     "home": {
@@ -1110,7 +1113,8 @@
       "actions": {
         "createProduct": "Create product",
         "publishProduct": "Publish product",
-        "addToCart": "Add to cart"
+        "addToCart": "Add to cart",
+        "checkout": "Finalizar compra"
       },
       "kpis": {
         "revenue30d": "Revenue (30d)",
