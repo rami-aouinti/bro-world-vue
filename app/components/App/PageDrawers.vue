@@ -1,26 +1,21 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, useSlots } from 'vue'
+import { onBeforeUnmount, useSlots } from 'vue'
 
 const slots = useSlots()
 
 const registry = useDrawerSlotRegistry()
 const scopeId = Symbol('page-drawers-scope')
 
-const leftRenderer = computed(() => (slots.left ? () => slots.left?.() : null))
-const rightRenderer = computed(() =>
-  slots.right ? () => slots.right?.() : null,
-)
+const leftRenderer = slots.left
+  ? Object.assign(() => slots.left?.(), { __scopeId: scopeId })
+  : null
+const rightRenderer = slots.right
+  ? Object.assign(() => slots.right?.(), { __scopeId: scopeId })
+  : null
 
-watchEffect(() => {
-  if (!registry) {
-    return
-  }
-
-  const left = leftRenderer.value
-  const right = rightRenderer.value
-
-  if (left) {
-    registry.setLeft(Object.assign(left, { __scopeId: scopeId }))
+if (registry) {
+  if (leftRenderer) {
+    registry.setLeft(leftRenderer)
   } else if (
     (registry.left.value as { __scopeId?: symbol } | null)?.__scopeId ===
     scopeId
@@ -28,15 +23,15 @@ watchEffect(() => {
     registry.setLeft(null)
   }
 
-  if (right) {
-    registry.setRight(Object.assign(right, { __scopeId: scopeId }))
+  if (rightRenderer) {
+    registry.setRight(rightRenderer)
   } else if (
     (registry.right.value as { __scopeId?: symbol } | null)?.__scopeId ===
     scopeId
   ) {
     registry.setRight(null)
   }
-})
+}
 
 onBeforeUnmount(() => {
   if (!registry) {

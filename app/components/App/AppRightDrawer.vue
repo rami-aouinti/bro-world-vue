@@ -9,6 +9,9 @@ const rightDrawerRenderer = computed(() => registry?.right.value ?? null)
 const shouldRenderRightDrawerContent = computed(() =>
   Boolean(rightDrawerRenderer.value),
 )
+const rightDrawerSlotHost = {
+  render: () => rightDrawerRenderer.value?.(),
+}
 const showRightDrawer = computed({
   get: () =>
     mobile.value ? showRightDrawerMobile.value : showRightDrawerDesktop.value,
@@ -42,7 +45,7 @@ onMounted(() => {
     <v-card variant="text" class="postcard-gradient-card app-right-drawer-card">
       <div v-if="shouldRenderRightDrawerContent" class="app-right-drawer-list">
         <SkeletonDrawerRight v-if="isPageSkeletonLoading" />
-        <component :is="{ render: rightDrawerRenderer }" v-else />
+        <component :is="rightDrawerSlotHost" v-else />
       </div>
       <v-list v-else nav density="compact" class="app-right-drawer-list" />
     </v-card>

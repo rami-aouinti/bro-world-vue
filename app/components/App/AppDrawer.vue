@@ -17,6 +17,9 @@ function handleDrawerModelUpdate(val: boolean) {
 const rail = computed(() => !drawerState.value && !mobile.value)
 const leftDrawerRenderer = computed(() => registry?.left.value ?? null)
 const shouldRenderDrawerSlot = computed(() => Boolean(leftDrawerRenderer.value))
+const leftDrawerSlotHost = {
+  render: () => leftDrawerRenderer.value?.(),
+}
 const fallbackDrawerItems = computed(() =>
   router.options.routes
     .filter((route) => route.meta?.icon && !route.path.includes(':'))
@@ -51,7 +54,7 @@ watch(mobile, (isMobile) => {
       <v-divider class="my-2" />
       <div v-if="shouldRenderDrawerSlot" class="app-left-drawer-list">
         <SkeletonDrawerLeft v-if="isPageSkeletonLoading" />
-        <component :is="{ render: leftDrawerRenderer }" v-else />
+        <component :is="leftDrawerSlotHost" v-else />
       </div>
       <v-list v-else nav density="compact" class="app-left-drawer-list">
         <AppDrawerItem
