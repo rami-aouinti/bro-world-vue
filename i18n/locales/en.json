@@ -231,6 +231,11 @@
       "modalSuccess": "Action confirmed successfully."
     }
   },
+  "Jobs Offers": "Jobs Offers",
+  "CRM Projects": "CRM Projects",
+  "CRM Tasks": "CRM Tasks",
+  "CRM Sprints": "CRM Sprints",
+  "CRM Company": "CRM Company",
   "nested": {
     "menu1": "Menu 1",
     "menu2": {
