@@ -4,15 +4,16 @@ import { computed } from 'vue'
 const props = defineProps<{
   stats: Record<string, any>
 }>()
+const { t } = useI18n()
 
 const appearances = computed(() => props.stats.games?.appearances ?? props.stats.games?.appearences ?? '-')
 
 const items = computed(() => ([
-  { label: 'Apps', value: appearances.value },
-  { label: 'Minutes', value: props.stats.games?.minutes ?? '-' },
-  { label: 'Goals', value: props.stats.goals?.total ?? '-' },
-  { label: 'Assists', value: props.stats.goals?.assists ?? '-' },
-  { label: 'Rating', value: props.stats.games?.rating ?? '-' },
+  { label: t('pages.applications.football.stats.apps'), value: appearances.value },
+  { label: t('pages.applications.football.stats.minutes'), value: props.stats.games?.minutes ?? '-' },
+  { label: t('pages.applications.football.stats.goals'), value: props.stats.goals?.total ?? '-' },
+  { label: t('pages.applications.football.stats.assists'), value: props.stats.goals?.assists ?? '-' },
+  { label: t('pages.applications.football.stats.rating'), value: props.stats.games?.rating ?? '-' },
 ]))
 </script>
 

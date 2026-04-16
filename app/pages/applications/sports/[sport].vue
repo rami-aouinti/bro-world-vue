@@ -20,6 +20,7 @@ definePageMeta({
   title: 'appbar.sports',
 })
 
+const { t } = useI18n()
 const route = useRoute()
 
 const isSportSlug = (value: string): value is SportSlug => {
@@ -39,7 +40,7 @@ const sportSlug = computed<SportSlug | null>(() => {
 if (!sportSlug.value) {
   throw createError({
     statusCode: 404,
-    statusMessage: 'Sport not found',
+    statusMessage: t('pages.applications.football.errors.sportNotFound'),
   })
 }
 
@@ -92,31 +93,35 @@ const getSection = (
     )
   })
 
-const leaguesSection = getSection('leagues', 'Leagues', 'No league available.')
+const leaguesSection = getSection(
+  'leagues',
+  t('pages.applications.football.sections.leagues.title'),
+  t('pages.applications.football.sections.leagues.empty'),
+)
 const fixturesSection = getSection(
   'fixtures',
-  'Fixtures / Matches',
-  'No fixture for this league/season.',
+  t('pages.applications.football.sections.fixtures.title'),
+  t('pages.applications.football.sections.fixtures.empty'),
 )
 const standingsSection = getSection(
   'standings',
-  'Results / Standings',
-  'No standings data.',
+  t('pages.applications.football.sections.standings.title'),
+  t('pages.applications.football.sections.standings.empty'),
 )
 const teamDetailsSection = getSection(
   'teamDetails',
-  'Team details',
-  'Select a team to see full team and squad details.',
+  t('pages.applications.football.sections.teamDetails.title'),
+  t('pages.applications.football.sections.teamDetails.empty'),
 )
 const fixtureDetailsSection = getSection(
   'fixtureDetails',
-  'Fixture details',
-  'Select a fixture to see events, lineups and player stats.',
+  t('pages.applications.football.sections.fixtureDetails.title'),
+  t('pages.applications.football.sections.fixtureDetails.empty'),
 )
 const playerDetailsSection = getSection(
   'playerDetails',
-  'Player details',
-  'Select a player to open the player profile and statistics.',
+  t('pages.applications.football.sections.playerDetails.title'),
+  t('pages.applications.football.sections.playerDetails.empty'),
 )
 
 const hasSelection = computed(() => {
@@ -189,7 +194,7 @@ watch(
               :items="leagues"
               item-title="name"
               item-value="id"
-              label="League"
+              :label="t('pages.applications.football.filters.league')"
               density="comfortable"
               :loading="leaguesState === 'loading'"
               :disabled="leaguesState !== 'ready'"
@@ -203,7 +208,7 @@ watch(
             <v-select
               :model-value="selectedSeason"
               :items="seasons"
-              label="Season"
+              :label="t('pages.applications.football.filters.season')"
               density="comfortable"
               :disabled="!selectedLeague"
               variant="outlined"
@@ -225,7 +230,7 @@ watch(
               size="22"
               class="mr-3"
             />
-            <span>Loading leagues…</span>
+            <span>{{ t('pages.applications.football.loading.leagues') }}</span>
           </template>
 
           <v-alert
@@ -318,9 +323,7 @@ watch(
 
       <template v-else>
         <v-alert type="info" variant="tonal" density="comfortable">
-          Detailed stats are currently available for football. Select another
-          sport from the catalog while we roll out additional leagues and data
-          feeds.
+          {{ t('pages.applications.football.empty.otherSports') }}
         </v-alert>
       </template>
     </v-container>

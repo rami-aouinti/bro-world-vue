@@ -2,6 +2,8 @@
 import type { FootballSection, FootballTeamDetails } from '~/composables/useFootballData'
 import SportsFootballTeamDetailsPanel from '~/components/Sports/Football/TeamDetailsPanel.vue'
 
+const { t } = useI18n()
+
 defineProps<{
   section: FootballSection
   teamDetails: FootballTeamDetails | null
@@ -20,7 +22,7 @@ defineEmits<{
     <v-card-text>
       <template v-if="section.state === 'loading'">
         <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
-        <span>Loading team details…</span>
+        <span>{{ t('pages.applications.football.loading.teamDetails') }}</span>
       </template>
       <v-alert v-else-if="section.state === 'error'" type="error" variant="tonal" density="comfortable">
         {{ section.error }}

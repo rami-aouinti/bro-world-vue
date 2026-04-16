@@ -540,6 +540,125 @@
     },
     "applications": {
       "sportsDescription": "Découvrez bientôt des contenus et fonctionnalités sportives.",
+      "football": {
+        "sections": {
+          "matchHero": "Match à la une",
+          "leagues": { "title": "Ligues", "empty": "Aucune ligue disponible." },
+          "fixtures": { "title": "Matchs / Rencontres", "empty": "Aucun match pour cette ligue/saison." },
+          "standings": { "title": "Résultats / Classement", "empty": "Aucune donnée de classement." },
+          "teams": { "title": "Clubs / Équipes", "empty": "Aucune donnée d'équipe." },
+          "fixtureDetails": { "title": "Détails du match", "empty": "Sélectionnez un match pour voir les événements, compositions et stats joueurs." },
+          "teamDetails": { "title": "Détails de l'équipe", "empty": "Sélectionnez une équipe pour afficher l'effectif et les détails complets." },
+          "playerDetails": { "title": "Détails du joueur", "empty": "Sélectionnez un joueur pour ouvrir son profil et ses statistiques." }
+        },
+        "filters": {
+          "league": "Ligue",
+          "season": "Saison",
+          "team": "Filtrer l'équipe",
+          "allTeams": "Toutes les équipes"
+        },
+        "tabs": {
+          "timeline": "Chronologie",
+          "lineups": "Compositions",
+          "playerStats": "Stats joueurs"
+        },
+        "loading": {
+          "leagues": "Chargement des ligues…",
+          "fixtures": "Chargement des matchs…",
+          "standings": "Chargement du classement…",
+          "fixtureDetails": "Chargement des détails du match…",
+          "teamDetails": "Chargement des détails de l'équipe…",
+          "playerDetails": "Chargement des détails du joueur…"
+        },
+        "empty": {
+          "otherSports": "Les statistiques détaillées sont actuellement disponibles pour le football. Sélectionnez un autre sport du catalogue pendant le déploiement de nouvelles ligues et sources de données.",
+          "events": "Aucun événement disponible pour ce match.",
+          "lineups": "Aucune composition disponible pour ce match.",
+          "playerStats": "Aucune statistique joueur disponible pour ce match.",
+          "selectLeagueHero": "Sélectionnez une ligue pour afficher le prochain match.",
+          "noMatchHero": "Aucun match à afficher pour le moment."
+        },
+        "stats": {
+          "apps": "App.",
+          "minutes": "Minutes",
+          "goals": "Buts",
+          "assists": "Passes déc.",
+          "rating": "Note",
+          "player": "Joueur",
+          "team": "Équipe",
+          "league": "Ligue",
+          "min": "Min",
+          "shots": "Tirs",
+          "passes": "Passes",
+          "tackles": "Tacles",
+          "played": "Joués",
+          "wins": "Victoires"
+        },
+        "standings": {
+          "rank": "Rang",
+          "team": "Équipe",
+          "playedShort": "J",
+          "wonShort": "G",
+          "drawShort": "N",
+          "lostShort": "P",
+          "goalsForShort": "BP",
+          "goalsAgainstShort": "BC",
+          "goalDiffShort": "Diff",
+          "pointsShort": "Pts"
+        },
+        "status": {
+          "NS": "À venir",
+          "TBD": "À confirmer",
+          "PST": "Reporté",
+          "CANC": "Annulé",
+          "ABD": "Arrêté",
+          "AWD": "Forfait",
+          "WO": "Walkover",
+          "HT": "Mi-temps",
+          "FT": "Terminé",
+          "AET": "Après prolongation",
+          "PEN": "Tirs au but",
+          "ET": "Prolongation",
+          "BT": "Pause prolongation",
+          "INT": "Interrompu",
+          "SUSP": "Suspendu",
+          "LIVE": "En direct",
+          "_1H": "1re mi-temps",
+          "_2H": "2e mi-temps"
+        },
+        "misc": {
+          "unknownDate": "Date inconnue",
+          "score": "Score",
+          "formationCoach": "Formation {formation} · Coach {coach}",
+          "startingXI": "Onze de départ",
+          "substitutes": "Remplaçants",
+          "scheduled": "Programmé",
+          "unknownNationality": "Nationalité inconnue",
+          "ageYears": "{age} ans",
+          "ageYearsShort": "{age} ans",
+          "ageUnknown": "Âge -",
+          "topPlayers": "Joueurs clés",
+          "squadHint": "Effectif (cliquez sur un joueur)",
+          "unknownPosition": "Poste inconnu",
+          "notAvailableShort": "N/A",
+          "form": "Forme",
+          "event": "Événement",
+          "unknownTeam": "Équipe inconnue",
+          "unknownPlayer": "Joueur inconnu",
+          "standingsGroupAria": "Classement {group}",
+          "openTeamDetailsAria": "Ouvrir les détails de {team}"
+        },
+        "errors": {
+          "sportNotFound": "Sport introuvable",
+          "loadLeagues": "Impossible de charger les ligues.",
+          "loadFixtures": "Impossible de charger les matchs.",
+          "loadStandings": "Impossible de charger le classement.",
+          "loadTeams": "Impossible de charger les équipes.",
+          "loadFixtureDetails": "Impossible de charger les détails du match.",
+          "loadTeamDetails": "Impossible de charger les détails de l'équipe.",
+          "loadPlayerDetails": "Impossible de charger le profil du joueur."
+        }
+      },
       "quizDescription": "Retrouvez ici des quiz interactifs très prochainement.",
       "quiz": {
         "selectCategoryTitle": "Choisissez une catégorie",

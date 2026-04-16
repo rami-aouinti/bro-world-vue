@@ -9,6 +9,7 @@ defineProps<{
     weight: string | null
   }
 }>()
+const { t } = useI18n()
 </script>
 
 <template>
@@ -21,7 +22,7 @@ defineProps<{
       <div>
         <div class="text-h6 font-weight-bold">{{ profile.name }}</div>
         <div class="text-body-2 text-medium-emphasis">
-          {{ profile.nationality || 'Unknown nationality' }} · {{ profile.age ? `${profile.age} years` : 'Age -' }}
+          {{ profile.nationality || t('pages.applications.football.misc.unknownNationality') }} · {{ profile.age ? t('pages.applications.football.misc.ageYears', { age: profile.age }) : t('pages.applications.football.misc.ageUnknown') }}
         </div>
         <div class="text-caption text-medium-emphasis mt-1">
           {{ profile.height || '-' }} · {{ profile.weight || '-' }}

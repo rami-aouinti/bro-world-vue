@@ -5,6 +5,7 @@ const props = defineProps<{
   fixtures: FootballFixture[]
   selectedFixtureId: number | null
 }>()
+const { t } = useI18n()
 
 const emit = defineEmits<{
   select: [fixtureId: number]
@@ -34,11 +35,11 @@ const heroFixture = computed<FootballFixture | null>(() => {
 
 const heroSubtitle = computed(() => {
   if (!heroFixture.value) {
-    return 'Sélectionnez une ligue pour afficher le prochain match.'
+    return t('pages.applications.football.empty.selectLeagueHero')
   }
 
   const dateLabel = new Date(heroFixture.value.date).toLocaleString()
-  const statusLabel = heroFixture.value.status?.long ?? 'Scheduled'
+  const statusLabel = heroFixture.value.status?.long ?? t('pages.applications.football.misc.scheduled')
 
   return `${statusLabel} · ${dateLabel}`
 })
@@ -75,7 +76,7 @@ const selectHeroFixture = () => {
     @click="selectHeroFixture"
   >
     <v-card-title class="d-flex align-center justify-space-between">
-      <span>Match Hero</span>
+      <span>{{ t('pages.applications.football.sections.matchHero') }}</span>
       <v-chip size="small" color="primary" variant="tonal">
         {{ heroFixture?.status?.short || 'NS' }}
       </v-chip>
@@ -117,7 +118,7 @@ const selectHeroFixture = () => {
         density="comfortable"
         variant="tonal"
       >
-        Aucun match à afficher pour le moment.
+        {{ t('pages.applications.football.empty.noMatchHero') }}
       </v-alert>
     </v-card-text>
   </v-card>
