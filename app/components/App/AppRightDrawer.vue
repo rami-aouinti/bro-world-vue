@@ -60,7 +60,7 @@ onMounted(() => {
 .app-right-drawer {
   border-radius: 24px;
   margin-top: 20px;
-  margin-right: 16px;
+  margin-right: 8px;
 }
 
 .app-right-drawer-list {
@@ -70,8 +70,7 @@ onMounted(() => {
 
 .app-right-drawer-card {
   padding: 8px;
-  height: calc(100% - 40px);
-  overflow: hidden;
+  height: calc(100% - 10px);
 }
 
 .app-right-drawer-list :deep(.v-list),

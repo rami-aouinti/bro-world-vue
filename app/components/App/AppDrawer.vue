@@ -140,7 +140,7 @@ watch(mobile, (isMobile) => {
   }
   .app-drawer-card {
     padding: 8px;
-    height: calc(100% - 40px);
+    height: calc(100% - 10px);
     overflow: hidden;
   }
   .drawer-header-icon {
