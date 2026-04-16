@@ -109,7 +109,15 @@ const authorName = computed(() => {
     t('blog.post.fallbackTitle')
   )
 })
-const authorPhoto = computed(() => props.post.author?.photo || null)
+const authorPhoto = computed(() => {
+  const photo = props.post.author?.photo
+  if (typeof photo !== 'string') {
+    return null
+  }
+
+  const normalizedPhoto = photo.trim()
+  return normalizedPhoto.length > 0 ? normalizedPhoto : null
+})
 const authorProfilePath = computed(() => {
   const username = props.post.author?.username?.trim()
   return username ? `/user/${encodeURIComponent(username)}/profile` : null
@@ -241,20 +249,22 @@ async function onPostBodyClick(event: MouseEvent) {
           @click.stop
         >
           <v-avatar size="52" color="grey-darken-2" class="me-3">
-            <v-img
+            <img
               v-if="authorPhoto"
               :src="authorPhoto"
               :alt="`${authorName} avatar`"
+              class="post-avatar-image"
             />
             <v-icon v-else icon="mdi-account" />
           </v-avatar>
         </NuxtLink>
         <div v-else class="post-author-link">
           <v-avatar size="52" color="grey-darken-2" class="me-3">
-            <v-img
+            <img
               v-if="authorPhoto"
               :src="authorPhoto"
               :alt="`${authorName} avatar`"
+              class="post-avatar-image"
             />
             <v-icon v-else icon="mdi-account" />
           </v-avatar>
@@ -419,6 +429,13 @@ async function onPostBodyClick(event: MouseEvent) {
 .post-author-link {
   text-decoration: none;
   color: inherit;
+}
+
+.post-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .text-decoration-none {
