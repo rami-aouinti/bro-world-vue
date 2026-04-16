@@ -59,7 +59,7 @@ onMounted(() => {
 <style scoped>
 .app-right-drawer {
   border-radius: 24px;
-  margin-top: 74px;
+  margin-top: 20px;
   margin-right: 16px;
 }
 
