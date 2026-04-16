@@ -93,14 +93,6 @@ const fixtureDetailsSection = getSection(
   'Select a fixture to see events, lineups and player stats.',
 )
 
-watch(selectedSeason, () => {
-  if (sportSlug.value !== 'football') {
-    return
-  }
-
-  loadLeagueSeasonData()
-})
-
 const initializeFootballPage = async () => {
   if (sportSlug.value !== 'football') {
     return
@@ -108,14 +100,51 @@ const initializeFootballPage = async () => {
 
   await loadLeagues()
 
-  if (selectedLeagueId.value && selectedSeason.value) {
-    await loadLeagueSeasonData()
-  }
 }
 
-onMounted(() => {
-  void initializeFootballPage()
-})
+watch(
+  sportSlug,
+  async (slug, previousSlug) => {
+    if (slug !== 'football') {
+      return
+    }
+
+    if (slug === previousSlug) {
+      return
+    }
+
+    await initializeFootballPage()
+  },
+  { immediate: true },
+)
+
+watch(
+  () => [sportSlug.value, selectedLeagueId.value, selectedSeason.value] as const,
+  ([slug, leagueId, season], previous) => {
+    if (slug !== 'football') {
+      return
+    }
+
+    if (!leagueId || !season) {
+      return
+    }
+
+    if (previous) {
+      const [previousSlug, previousLeagueId, previousSeason] = previous
+
+      if (
+        slug === previousSlug &&
+        leagueId === previousLeagueId &&
+        season === previousSeason
+      ) {
+        return
+      }
+    }
+
+    void loadLeagueSeasonData()
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
