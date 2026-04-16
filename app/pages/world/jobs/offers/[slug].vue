@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import type { RecruitJob, RecruitJobDetailResponse } from '~/types/world/jobs'
+import type {
+  RecruitApplicationSummary,
+  RecruitJob,
+  RecruitJobDetailResponse,
+  RecruitResume,
+  RecruitResumeSection,
+} from '~/types/world/jobs'
 
 definePageMeta({ title: 'Jobs Offer Detail' })
 
@@ -9,7 +15,39 @@ const slug = computed(() => String(route.params.slug || ''))
 const loading = ref(false)
 const job = ref<RecruitJob | null>(null)
 const errorMessage = ref('')
+
 const applyOpen = ref(false)
+const applyLoading = ref(false)
+const applyError = ref('')
+const applySuccess = ref('')
+
+const resumes = ref<RecruitResume[]>([])
+const selectedResumeId = ref('')
+const coverLetter = ref('')
+const createResumeMode = ref(false)
+const resumeFile = ref<File | null>(null)
+const manualResume = reactive({
+  experiences: [{ title: '', description: '' }],
+  skills: [{ title: '', description: '' }],
+})
+
+const canSubmitApplication = computed(
+  () =>
+    (!createResumeMode.value && !!selectedResumeId.value) ||
+    (createResumeMode.value &&
+      (!!resumeFile.value ||
+        manualResume.experiences.some((e) => e.title.trim()) ||
+        manualResume.skills.some((s) => s.title.trim()))),
+)
+
+function toSections(items: RecruitResumeSection[]) {
+  return items
+    .map((item) => ({
+      title: item.title.trim(),
+      description: (item.description || '').trim(),
+    }))
+    .filter((item) => item.title)
+}
 
 async function fetchDetail() {
   if (!slug.value) {
@@ -31,6 +69,103 @@ async function fetchDetail() {
     loading.value = false
   }
 }
+
+async function fetchMyResumes() {
+  resumes.value = await $fetch<RecruitResume[]>('/api/recruit/general/private/me/resumes')
+  if (!selectedResumeId.value && resumes.value.length) {
+    selectedResumeId.value = resumes.value[0].id
+  }
+}
+
+async function createResume(): Promise<string> {
+  if (resumeFile.value) {
+    const formData = new FormData()
+    formData.append('document', resumeFile.value)
+    formData.append('experiences', JSON.stringify(toSections(manualResume.experiences)))
+    formData.append('skills', JSON.stringify(toSections(manualResume.skills)))
+    const response = await $fetch<{ id: string }>('/api/recruit/general/resumes', {
+      method: 'POST',
+      body: formData,
+    })
+    return response.id
+  }
+
+  const response = await $fetch<{ id: string }>('/api/recruit/general/resumes', {
+    method: 'POST',
+    body: {
+      experiences: toSections(manualResume.experiences),
+      skills: toSections(manualResume.skills),
+    },
+  })
+
+  return response.id
+}
+
+async function submitApplication() {
+  if (!job.value || !canSubmitApplication.value) {
+    return
+  }
+
+  applyLoading.value = true
+  applyError.value = ''
+  applySuccess.value = ''
+
+  try {
+    let resumeId = selectedResumeId.value
+    if (createResumeMode.value) {
+      resumeId = await createResume()
+      await fetchMyResumes()
+      selectedResumeId.value = resumeId
+    }
+
+    const applicant = await $fetch<{ id: string }>('/api/recruit/general/applicants', {
+      method: 'POST',
+      body: {
+        resumeId,
+        coverLetter: coverLetter.value.trim() || 'Application from jobs module',
+      },
+    })
+
+    const application = await $fetch<RecruitApplicationSummary>(
+      '/api/recruit/general/applications',
+      {
+        method: 'POST',
+        body: {
+          applicantId: applicant.id,
+          jobId: job.value.id,
+        },
+      },
+    )
+
+    applySuccess.value = `Candidature envoyée ✅ (status: ${application.status})`
+    coverLetter.value = ''
+    createResumeMode.value = false
+    resumeFile.value = null
+  } catch (error) {
+    console.error(error)
+    applyError.value = "Impossible d'envoyer la candidature pour le moment."
+  } finally {
+    applyLoading.value = false
+  }
+}
+
+function addResumeLine(target: 'experiences' | 'skills') {
+  manualResume[target].push({ title: '', description: '' })
+}
+
+watch(applyOpen, async (isOpen) => {
+  if (!isOpen) return
+
+  applyError.value = ''
+  applySuccess.value = ''
+
+  try {
+    await fetchMyResumes()
+  } catch (error) {
+    console.error(error)
+    applyError.value = 'Impossible de récupérer vos CV.'
+  }
+})
 
 await fetchDetail()
 </script>
@@ -133,16 +268,127 @@ await fetchDetail()
       </v-card-text>
     </v-card>
 
-    <AppModal v-model="applyOpen" title="Apply to this job" :max-width="560">
-      <p class="mb-0">
-        Le flow d'application sera branché ici. Pour le moment ce bouton ouvre
-        ce modal comme demandé.
-      </p>
+    <AppModal v-model="applyOpen" title="Apply to this job" :max-width="700">
+      <v-alert
+        v-if="applyError"
+        type="error"
+        variant="tonal"
+        class="mb-4"
+        density="comfortable"
+      >
+        {{ applyError }}
+      </v-alert>
+
+      <v-alert
+        v-if="applySuccess"
+        type="success"
+        variant="tonal"
+        class="mb-4"
+        density="comfortable"
+      >
+        {{ applySuccess }}
+      </v-alert>
+
+      <v-switch
+        v-model="createResumeMode"
+        color="primary"
+        label="Créer un nouveau CV pour cette candidature"
+        inset
+        class="mb-2"
+      />
+
+      <template v-if="!createResumeMode">
+        <v-select
+          v-model="selectedResumeId"
+          label="Choisir un CV existant"
+          :items="resumes.map((resume) => ({ title: resume.id, value: resume.id }))"
+          item-title="title"
+          item-value="value"
+          :disabled="applyLoading"
+          variant="outlined"
+          class="mb-4"
+        />
+      </template>
+
+      <template v-else>
+        <v-file-input
+          v-model="resumeFile"
+          label="Uploader un PDF (optionnel)"
+          accept="application/pdf"
+          prepend-icon="mdi-file-pdf-box"
+          show-size
+          variant="outlined"
+          class="mb-3"
+        />
+
+        <h4 class="text-subtitle-2 mb-2">Experiences</h4>
+        <div
+          v-for="(item, index) in manualResume.experiences"
+          :key="`exp-${index}`"
+          class="mb-2"
+        >
+          <v-text-field v-model="item.title" label="Titre" density="comfortable" />
+          <v-text-field
+            v-model="item.description"
+            label="Description"
+            density="comfortable"
+          />
+        </div>
+        <v-btn
+          size="small"
+          variant="tonal"
+          prepend-icon="mdi-plus"
+          class="mb-3"
+          @click="addResumeLine('experiences')"
+        >
+          Ajouter une experience
+        </v-btn>
+
+        <h4 class="text-subtitle-2 mb-2">Skills</h4>
+        <div
+          v-for="(item, index) in manualResume.skills"
+          :key="`skill-${index}`"
+          class="mb-2"
+        >
+          <v-text-field v-model="item.title" label="Titre" density="comfortable" />
+          <v-text-field
+            v-model="item.description"
+            label="Description"
+            density="comfortable"
+          />
+        </div>
+        <v-btn
+          size="small"
+          variant="tonal"
+          prepend-icon="mdi-plus"
+          class="mb-4"
+          @click="addResumeLine('skills')"
+        >
+          Ajouter un skill
+        </v-btn>
+      </template>
+
+      <v-textarea
+        v-model="coverLetter"
+        label="Cover letter"
+        auto-grow
+        rows="4"
+        variant="outlined"
+      />
 
       <template #actions>
         <v-spacer />
-        <v-btn variant="text" @click="applyOpen = false">Fermer</v-btn>
-        <v-btn color="primary" @click="applyOpen = false">Compris</v-btn>
+        <v-btn variant="text" :disabled="applyLoading" @click="applyOpen = false"
+          >Fermer</v-btn
+        >
+        <v-btn
+          color="primary"
+          :loading="applyLoading"
+          :disabled="!canSubmitApplication"
+          @click="submitApplication"
+        >
+          Envoyer la candidature
+        </v-btn>
       </template>
     </AppModal>
   </v-container>
