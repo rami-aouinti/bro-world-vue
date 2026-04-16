@@ -77,7 +77,7 @@ watch(mobile, (isMobile) => {
 .v-navigation-drawer {
   &.app-left-drawer {
     border-radius: 24px;
-    margin-top: 56px;
+    margin-top: 48px;
     margin-left: 16px;
     height: calc(100% - 10px);
   }
