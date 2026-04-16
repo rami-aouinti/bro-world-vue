@@ -110,6 +110,25 @@ const sectionConfigs = computed(() => [
     ],
   },
   {
+    id: 'blocked',
+    title: t('pages.friends.sections.blocked.title'),
+    subtitle: t('pages.friends.sections.blocked.subtitle'),
+    icon: 'mdi-block-helper',
+    items: blockedUsers.value,
+    emptyText: t('pages.friends.sections.blocked.emptyText'),
+    actions: [
+      {
+        label: t('pages.friends.actions.unblock'),
+        icon: 'mdi-lock-open-variant-outline',
+        action: 'unblock' as const,
+        color: 'primary',
+        variant: 'text' as const,
+      },
+    ],
+  },
+])
+const sectionConfigsRight = computed(() => [
+  {
     id: 'invitations',
     title: t('pages.friends.sections.invitations.title'),
     subtitle: t('pages.friends.sections.invitations.subtitle'),
@@ -129,23 +148,6 @@ const sectionConfigs = computed(() => [
         icon: 'mdi-block-helper',
         action: 'block' as const,
         color: 'error',
-        variant: 'text' as const,
-      },
-    ],
-  },
-  {
-    id: 'blocked',
-    title: t('pages.friends.sections.blocked.title'),
-    subtitle: t('pages.friends.sections.blocked.subtitle'),
-    icon: 'mdi-block-helper',
-    items: blockedUsers.value,
-    emptyText: t('pages.friends.sections.blocked.emptyText'),
-    actions: [
-      {
-        label: t('pages.friends.actions.unblock'),
-        icon: 'mdi-lock-open-variant-outline',
-        action: 'unblock' as const,
-        color: 'primary',
         variant: 'text' as const,
       },
     ],
@@ -289,10 +291,9 @@ onMounted(async () => {
             v-for="item in suggestedUsers"
             :key="item.id"
             :title="suggestionName(item)"
-            :subtitle="`@${suggestionHandle(item)}`"
           >
             <template #prepend>
-              <v-avatar size="36" color="primary">
+              <v-avatar size="30" color="primary">
                 <v-img
                   :src="item.photo"
                   :alt="`Avatar of ${suggestionName(item)}`"
@@ -304,6 +305,7 @@ onMounted(async () => {
               <v-btn
                 color="primary"
                 variant="text"
+                size="xs"
                 icon="mdi-account-plus-outline"
                 :loading="isActionLoading(item.id, 'request')"
                 :aria-label="t('pages.friends.actions.send')"
@@ -337,11 +339,10 @@ onMounted(async () => {
 
         <v-row>
           <v-col
-            v-for="section in sectionConfigs"
-            :key="section.title"
             cols="12"
+            md="6"
           >
-            <v-card variant="text" class="postcard-gradient-card">
+            <v-card v-for="section in sectionConfigs" :key="section.title" variant="text" class="postcard-gradient-card mb-3">
               <v-card-title class="d-flex align-center ga-2">
                 <v-icon :icon="section.icon" />
                 {{ section.title }}
@@ -351,10 +352,78 @@ onMounted(async () => {
                   v-for="item in section.items"
                   :key="item.id"
                   :title="userName(item)"
-                  :subtitle="`@${item.username}`"
                 >
                   <template #prepend>
-                    <v-avatar size="40" color="primary">
+                    <v-avatar size="30" color="primary">
+                      <v-img
+                        :src="item.photo"
+                        :alt="`Avatar of ${userName(item)}`"
+                      />
+                    </v-avatar>
+                  </template>
+
+                  <template #append>
+                    <div class="d-flex ga-2 flex-wrap justify-end">
+                      <v-btn
+                        v-if="section.id === 'friends'"
+                        color="primary"
+                        size="xs"
+                        variant="text"
+                        icon="mdi-message-text-outline"
+                        :aria-label="t('appbar.inbox')"
+                        :loading="isActionLoading(item.id, 'message')"
+                        @click="applyAction(item.id, 'message')"
+                      />
+                      <v-btn
+                        v-for="btn in section.actions"
+                        :key="`${item.id}-${btn.action}`"
+                        :color="btn.color"
+                        size="xs"
+                        :variant="btn.variant"
+                        :icon="btn.icon"
+                        :aria-label="btn.label"
+                        :loading="isActionLoading(item.id, btn.action)"
+                        @click="applyAction(item.id, btn.action)"
+                      />
+                      <v-btn
+                        v-if="
+                          section.id !== 'friends' && section.id !== 'blocked'
+                        "
+                        color="primary"
+                        variant="text"
+                        size="xs"
+                        icon="mdi-send-outline"
+                        :aria-label="t('pages.friends.actions.resend')"
+                        :loading="isActionLoading(item.id, 'request')"
+                        @click="applyAction(item.id, 'request')"
+                      />
+                    </div>
+                  </template>
+                </v-list-item>
+              </v-list>
+
+              <v-card-text v-else class="text-medium-emphasis">
+                {{ section.emptyText }}
+              </v-card-text>
+            </v-card>
+          </v-col>
+          <v-col
+            cols="12"
+            md="6"
+          >
+            <v-card v-for="section in sectionConfigsRight" :key="section.title" variant="text" class="postcard-gradient-card">
+              <v-card-title class="d-flex align-center ga-2">
+                <v-icon :icon="section.icon" />
+                {{ section.title }}
+              </v-card-title>
+              <v-list v-if="section.items.length" class="bg-transparent">
+                <v-list-item
+                  v-for="item in section.items"
+                  :key="item.id"
+                  :title="userName(item)"
+                >
+                  <template #prepend>
+                    <v-avatar size="30" color="primary">
                       <v-img
                         :src="item.photo"
                         :alt="`Avatar of ${userName(item)}`"
@@ -368,6 +437,7 @@ onMounted(async () => {
                         v-if="section.id === 'friends'"
                         color="primary"
                         variant="text"
+                        size="xs"
                         icon="mdi-message-text-outline"
                         :aria-label="t('appbar.inbox')"
                         :loading="isActionLoading(item.id, 'message')"
@@ -377,6 +447,7 @@ onMounted(async () => {
                         v-for="btn in section.actions"
                         :key="`${item.id}-${btn.action}`"
                         :color="btn.color"
+                        size="xs"
                         :variant="btn.variant"
                         :icon="btn.icon"
                         :aria-label="btn.label"
@@ -389,6 +460,7 @@ onMounted(async () => {
                         "
                         color="primary"
                         variant="text"
+                        size="xs"
                         icon="mdi-send-outline"
                         :aria-label="t('pages.friends.actions.resend')"
                         :loading="isActionLoading(item.id, 'request')"
