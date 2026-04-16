@@ -29,7 +29,7 @@ const products = computed(() => shopStore.items as ShopProduct[])
 const totalItems = computed(() => shopStore.pagination.total)
 const totalPages = computed(() => shopStore.pagination.totalPages)
 
-const categories = ref<ShopCategory[]>([])
+const categories = computed(() => shopStore.categories as ShopCategory[])
 
 const hasError = computed(() => !!shopStore.error)
 const isEmpty = computed(
@@ -153,7 +153,6 @@ async function fetchCategories() {
   categoriesLoading.value = true
   try {
     await shopStore.fetchCategories()
-    categories.value = (shopStore.items as ShopCategory[]).slice()
   } finally {
     categoriesLoading.value = false
   }
