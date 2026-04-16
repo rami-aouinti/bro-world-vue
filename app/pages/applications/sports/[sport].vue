@@ -540,3 +540,154 @@ watch(
     </v-container>
   </div>
 </template>
+
+<style scoped>
+.football-stagger {
+  --football-gap: 1rem;
+  row-gap: var(--football-gap);
+}
+
+.football-fade-up {
+  animation: football-fade-up 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.football-surface {
+  background: linear-gradient(
+    165deg,
+    rgba(var(--v-theme-surface), 0.94),
+    rgba(var(--v-theme-surface), 0.84)
+  );
+  border-color: rgba(var(--v-theme-on-surface), 0.16) !important;
+  box-shadow: 0 10px 24px rgba(5, 10, 24, 0.18);
+  backdrop-filter: blur(5px);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.football-surface--dark {
+  background: linear-gradient(
+    175deg,
+    rgba(var(--v-theme-surface), 0.9),
+    rgba(var(--v-theme-surface-variant), 0.64)
+  );
+  border-color: rgba(var(--v-theme-on-surface), 0.2) !important;
+}
+
+.football-surface--glow {
+  box-shadow:
+    0 14px 28px rgba(6, 17, 34, 0.25),
+    0 0 0 1px rgba(var(--v-theme-primary), 0.16),
+    0 0 24px rgba(var(--v-theme-primary), 0.16);
+}
+
+.football-interactive-card:hover,
+.football-interactive-card:focus-within {
+  transform: translateY(-2px);
+  border-color: rgba(var(--v-theme-primary), 0.46) !important;
+  box-shadow:
+    0 16px 30px rgba(8, 18, 38, 0.3),
+    0 0 0 1px rgba(var(--v-theme-primary), 0.22);
+}
+
+.football-interactive-item {
+  border-radius: 10px;
+  transition: background-color 180ms ease, transform 180ms ease;
+}
+
+.football-interactive-item:hover,
+.football-interactive-item:focus-visible {
+  background-color: rgba(var(--v-theme-primary), 0.1);
+  transform: translateX(3px);
+}
+
+.football-transition-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.stagger-enter-active {
+  animation: football-fade-up 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.stagger-enter-from,
+.stagger-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.stagger-leave-active {
+  transition: opacity 200ms ease;
+}
+
+.stagger-move {
+  transition: transform 220ms ease;
+}
+
+.football-transition-list > *:nth-child(1) {
+  animation-delay: 30ms;
+}
+.football-transition-list > *:nth-child(2) {
+  animation-delay: 60ms;
+}
+.football-transition-list > *:nth-child(3) {
+  animation-delay: 90ms;
+}
+.football-transition-list > *:nth-child(4) {
+  animation-delay: 120ms;
+}
+.football-transition-list > *:nth-child(5) {
+  animation-delay: 150ms;
+}
+.football-transition-list > *:nth-child(6) {
+  animation-delay: 180ms;
+}
+
+@keyframes football-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 959px) {
+  .football-stagger {
+    --football-gap: 0.75rem;
+  }
+
+  :deep(.football-stagger .v-card-title) {
+    padding-bottom: 0.4rem;
+  }
+
+  :deep(.football-stagger .v-card-text) {
+    padding-top: 0.7rem;
+    padding-bottom: 0.8rem;
+  }
+}
+
+@media (min-width: 960px) {
+  .football-stagger {
+    --football-gap: 1.1rem;
+  }
+
+  :deep(.football-stagger .v-card-text) {
+    padding-top: 0.95rem;
+    padding-bottom: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .football-fade-up,
+  .stagger-enter-active,
+  .stagger-leave-active,
+  .stagger-move,
+  .football-interactive-card,
+  .football-interactive-item {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
+</style>
