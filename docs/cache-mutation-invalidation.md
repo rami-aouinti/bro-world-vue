@@ -18,6 +18,62 @@ Les stores Pinia `worldCrm`, `worldShop`, `worldLearning`, `worldJobs` appliquen
 - **Clés stables**: format `module-resource:param=value:param=value` avec tri alphabétique des filtres.
   - Exemple: `shop-products:page=1:limit=20:q=hoodie:status=active`
 
+## Section Sports / Football
+
+### TTL recommandé par endpoint
+
+Ces TTL sont des valeurs de base pour limiter les appels API tout en gardant une expérience "live" cohérente.
+
+| Endpoint            | TTL recommandé | Notes |
+| ------------------- | -------------- | ----- |
+| `leagues`           | 24h            | Donnée très stable (compétitions). |
+| `teams`             | 12h            | Effectifs / métadonnées peu volatiles hors mercato. |
+| `fixtures`          | 60s à 120s     | Liste de matchs à rafraîchir fréquemment en phase live. |
+| `fixture details`   | 15s à 30s      | Événements de match (score, stats, incidents) quasi temps réel. |
+| `standings`         | 5min           | Classements à recalculer après fin de match et événements majeurs. |
+
+> Recommandation pratique: utiliser la borne basse du TTL pendant les créneaux live, et la borne haute hors match.
+
+### Stratégie de purge / invalidation (GET + refresh live)
+
+Même avec une API majoritairement en `GET`, on applique une invalidation orientée événements:
+
+1. **Refresh périodique intelligent**
+   - Polling court (`15-30s`) pour `fixture details` quand un match est `LIVE`.
+   - Polling moyen (`60-120s`) pour `fixtures` et `standings` le jour de match.
+   - Retour au TTL nominal hors période active.
+2. **Invalidation en cascade sur changement d'état**
+   - Passage `NS` → `LIVE`: invalider `fixtures`, `fixture details:<fixtureId>`.
+   - But / carton rouge / mi-temps / fin de match: invalider `fixture details:<fixtureId>`, puis `fixtures` et `standings` de la ligue concernée.
+   - Passage `LIVE` → `FT`: invalider immédiatement `fixture details`, `fixtures`, `standings` (priorité au classement).
+3. **Stale-while-revalidate**
+   - Servir la dernière valeur cache si TTL expiré depuis peu (grâce période de tolérance), puis relancer un refresh en arrière-plan.
+   - Limiter les pics de charge lors des multiplex.
+4. **Déduplication des refresh**
+   - Une seule requête active par clé de cache.
+   - Les consommateurs concurrents se branchent sur la même promesse/réponse.
+
+### Convention de clés de cache (league / season / fixture / team)
+
+Format recommandé:
+
+`sports:football:<resource>:league=<leagueId>:season=<season>:fixture=<fixtureId>:team=<teamId>`
+
+Règles:
+
+- Garder un **ordre stable** des dimensions: `league` → `season` → `fixture` → `team`.
+- Omettre les dimensions non pertinentes pour une ressource (ex: `leagues` n'inclut pas `fixture`).
+- Préférer les IDs normalisés (numériques ou slug canonicalisé).
+- Ajouter les filtres secondaires en suffixe trié alphabétiquement.
+
+Exemples:
+
+- `sports:football:leagues:season=2026`
+- `sports:football:teams:league=39:season=2026`
+- `sports:football:fixtures:league=39:season=2026:date=2026-04-16`
+- `sports:football:fixture-details:fixture=123456`
+- `sports:football:standings:league=39:season=2026`
+
 ## Règles de purge par scope
 
 - `public` → purge tous les caches qui matchent `api:public:<resource>:*`
