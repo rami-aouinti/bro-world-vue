@@ -14,7 +14,6 @@ import SportsFootballFixturesListWidget from '~/components/Sports/Football/Fixtu
 import SportsFootballStandingsTableWidget from '~/components/Sports/Football/StandingsTableWidget.vue'
 import SportsFootballTeamDetailsWidget from '~/components/Sports/Football/TeamDetailsWidget.vue'
 import SportsFootballPlayerDetailsWidget from '~/components/Sports/Football/PlayerDetailsWidget.vue'
-import SportsFootballFixtureDetailsWidget from '~/components/Sports/Football/FixtureDetailsWidget.vue'
 
 definePageMeta({
   title: 'appbar.sports',
@@ -113,11 +112,6 @@ const teamDetailsSection = getSection(
   t('pages.applications.football.sections.teamDetails.title'),
   t('pages.applications.football.sections.teamDetails.empty'),
 )
-const fixtureDetailsSection = getSection(
-  'fixtureDetails',
-  t('pages.applications.football.sections.fixtureDetails.title'),
-  t('pages.applications.football.sections.fixtureDetails.empty'),
-)
 const playerDetailsSection = getSection(
   'playerDetails',
   t('pages.applications.football.sections.playerDetails.title'),
@@ -129,6 +123,19 @@ const hasSelection = computed(() => {
     selectedFixtureId.value || selectedTeamId.value || selectedPlayerId.value,
   )
 })
+
+const teamModalOpen = ref(false)
+const playerModalOpen = ref(false)
+
+const openTeamModal = async (teamId: number) => {
+  await loadTeamDetails(teamId)
+  teamModalOpen.value = true
+}
+
+const openPlayerModal = async (playerId: number) => {
+  await loadPlayerDetails(playerId)
+  playerModalOpen.value = true
+}
 
 const initializeFootballPage = async () => {
   if (sportSlug.value !== 'football') {
@@ -193,6 +200,7 @@ watch(
             :section="fixturesSection"
             :selected-fixture-id="selectedFixtureId"
             @select="loadFixtureDetails"
+            @select-team="openTeamModal"
           />
         </v-row>
       </template>
@@ -278,41 +286,21 @@ watch(
             <SportsFootballMatchHeroWidget
               :fixtures="fixtures"
               :selected-fixture-id="selectedFixtureId"
+              :events="mappedFixtureEvents"
+              :lineups="mappedFixtureLineups"
+              :player-stats="mappedFixturePlayerStats"
               @select="loadFixtureDetails"
+              @select-team="openTeamModal"
+              @select-player="openPlayerModal"
             />
           </v-col>
           <template v-if="hasSelection">
-            <v-col cols="12" class="football-fade-up">
-              <SportsFootballFixtureDetailsWidget
-                :section="fixtureDetailsSection"
-                :events="mappedFixtureEvents"
-                :lineups="mappedFixtureLineups"
-                :player-stats="mappedFixturePlayerStats"
-              />
-            </v-col>
-
             <v-col cols="12" class="football-fade-up">
               <SportsFootballStandingsTableWidget
                 :standings="standings"
                 :standings-league="standingsLeague"
                 :section="standingsSection"
-                @select-team="loadTeamDetails"
-              />
-            </v-col>
-
-            <v-col cols="12" class="football-fade-up">
-              <SportsFootballTeamDetailsWidget
-                :section="teamDetailsSection"
-                :team-details="teamDetails"
-                :selected-player-id="selectedPlayerId"
-                @select-player="loadPlayerDetails"
-              />
-            </v-col>
-
-            <v-col cols="12" class="football-fade-up">
-              <SportsFootballPlayerDetailsWidget
-                :section="playerDetailsSection"
-                :player-details="playerDetails"
+                @select-team="openTeamModal"
               />
             </v-col>
           </template>
@@ -325,6 +313,22 @@ watch(
         </v-alert>
       </template>
     </v-container>
+
+    <v-dialog v-model="teamModalOpen" max-width="1000">
+      <SportsFootballTeamDetailsWidget
+        :section="teamDetailsSection"
+        :team-details="teamDetails"
+        :selected-player-id="selectedPlayerId"
+        @select-player="openPlayerModal"
+      />
+    </v-dialog>
+
+    <v-dialog v-model="playerModalOpen" max-width="760">
+      <SportsFootballPlayerDetailsWidget
+        :section="playerDetailsSection"
+        :player-details="playerDetails"
+      />
+    </v-dialog>
   </div>
 </template>
 
