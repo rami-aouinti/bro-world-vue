@@ -88,3 +88,85 @@ export interface WorldJobsTransitionPayload {
 export type WorldJobsCandidatesListResponse = JobCandidatesApiResponse
 export type WorldJobsAdminPolicyDetailResponse = JobsAdminPolicyResponse
 export type WorldJobsAdminDashboardDetailResponse = JobsAdminDashboardResponse
+
+
+export type RecruitMyJobsResponse = {
+  createdJobs: Array<{
+    id: string
+    slug: string
+    title: string
+    company: string
+    location: string
+    contractType: string
+    workMode: string
+    schedule: string
+    createdAt?: string
+    owner: boolean
+    apply: boolean
+  }>
+  appliedJobs: Array<{
+    applicationId: string
+    status: string
+    appliedAt: string
+    job: {
+      id: string
+      slug: string
+      title: string
+      company: string
+      location: string
+      contractType: string
+      workMode: string
+      schedule: string
+      owner: boolean
+      apply: boolean
+    }
+  }>
+}
+
+export type RecruitResumeSection = {
+  id?: string
+  title: string
+  description?: string
+}
+
+export type RecruitResume = {
+  id: string
+  documentUrl: string | null
+  experiences: RecruitResumeSection[]
+  educations: RecruitResumeSection[]
+  skills: RecruitResumeSection[]
+  languages: RecruitResumeSection[]
+  certifications: RecruitResumeSection[]
+  projects: RecruitResumeSection[]
+  references: RecruitResumeSection[]
+  hobbies: RecruitResumeSection[]
+}
+
+export type RecruitApplicant = {
+  id: string
+  coverLetter: string
+  createdAt?: {
+    date: string
+    timezone_type: number
+    timezone: string
+  }
+  updatedAt?: {
+    date: string
+    timezone_type: number
+    timezone: string
+  }
+}
+
+export type RecruitApplicationStatus =
+  | 'WAITING'
+  | 'SCREENING'
+  | 'INTERVIEW_PLANNED'
+  | 'INTERVIEW_DONE'
+  | 'OFFER_SENT'
+  | 'HIRED'
+  | 'REJECTED'
+
+export type RecruitApplicationSummary = {
+  id: string
+  status: RecruitApplicationStatus
+}
