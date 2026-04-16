@@ -219,6 +219,6 @@ async function openProduct(product: RandomProductItem) {
 .random-item {
   border-radius: 12px;
   margin-bottom: 8px;
-  background: rgb(var(--v-theme-surface-variant));
+  background: transparent;
 }
 </style>
