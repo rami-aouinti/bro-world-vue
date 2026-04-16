@@ -89,6 +89,39 @@ The project uses [`@nuxtjs/i18n`](https://i18n.nuxtjs.org/) with lazy-loaded loc
   - English (`en`) keeps non-prefixed routes (e.g. `/dashboard`)
   - German and French are prefixed (e.g. `/de/dashboard`, `/fr/dashboard`)
 
+### Architecture du projet
+
+Le projet suit une organisation Nuxt "full-stack" : l'UI et les stores vivent dans `app/`, tandis que les endpoints backend résident dans `server/`.
+
+- **Dossiers principaux**
+  - `app/pages` : pages Nuxt (routing file-based), incluant les espaces métier `world/*` (CRM, jobs, learning, shop).
+  - `app/stores` : stores Pinia (état UI + orchestration des appels API), avec des stores dédiés comme `worldCrm`, `worldJobs`, `worldLearning`, `worldShop`.
+  - `server/api` : endpoints Nitro (`/api/**`) utilisés par le front et éventuellement par d'autres clients.
+  - `server/utils` : utilitaires serveur partagés (clients HTTP, invalidation cache, helpers métier).
+  - `i18n/locales` : dictionnaires de traduction chargés en lazy (`en`, `fr`, `es`, `de`).
+
+- **Flux front ↔ API**
+  - Les pages/composables déclenchent des actions de stores (`app/stores/*`).
+  - Les stores appellent les endpoints dans `server/api/**` via `$fetch`/helpers serveur.
+  - Les réponses sont typées (voir `app/types` et `server/types`) puis normalisées dans les stores avant affichage.
+
+- **Modules métier existants**
+  - `jobs`
+  - `crm`
+  - `learning`
+  - `shop`
+
+  Ces modules partagent des conventions communes (types dédiés, stores dédiés, clés i18n hiérarchiques et stratégie de cache/invalidation).
+
+- **Point d'entrée de configuration et conventions de nommage**
+  - `nuxt.config.ts` est le point central de configuration (modules Nuxt, i18n, runtimeConfig, SSR, build/vite, Nitro).
+  - Convention de nommage côté "world" :
+    - pages : `app/pages/world/<module>/...`
+    - store : `app/stores/world<Module>.ts`
+    - types : `app/types/world/<module>.ts`
+    - endpoints : `server/api/world/<module>/...`
+  - Clés i18n recommandées : `world.<module>.<zone>.<key>`.
+
 ### Coding Style
 
 - [Prettier](https://prettier.io/), single quotes, no semi
