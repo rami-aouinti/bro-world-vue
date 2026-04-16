@@ -133,117 +133,110 @@ async function addToCart(product: ShopProduct) {
       </div>
     </NuxtLink>
 
-    <v-dialog v-model="coinModalOpen" max-width="620">
-      <v-card>
-        <v-card-title class="d-flex align-center justify-space-between">
-          <span>{{ t('appbar.coinCheckout.title') }}</span>
-          <v-chip size="small" color="primary" variant="tonal">
+    <AppModal
+      v-model="coinModalOpen"
+      :title="t('appbar.coinCheckout.title')"
+      :max-width="760"
+    >
+      <v-sheet class="coin-modal-banner mb-4 pa-4" rounded="xl">
+        <div class="d-flex align-center justify-space-between flex-wrap ga-2">
+          <div>
+            <p class="text-overline mb-1 text-medium-emphasis">
+              {{ t('appbar.coinCheckout.steps.package') }}
+            </p>
+            <h3 class="text-h6 mb-0">{{ t('appbar.coinCheckout.title') }}</h3>
+          </div>
+          <v-chip size="small" color="primary" variant="flat">
             {{ t('appbar.coinCheckout.currentBalance', { coins }) }}
           </v-chip>
-        </v-card-title>
+        </div>
+      </v-sheet>
 
-        <v-card-text>
-          <p class="text-medium-emphasis mb-4">
-            {{ t('appbar.coinCheckout.steps.package') }}
-          </p>
+      <v-row v-if="productsLoading">
+        <v-col
+          v-for="index in 3"
+          :key="`coins-product-skeleton-${index}`"
+          cols="12"
+          md="4"
+        >
+          <v-skeleton-loader type="card" />
+        </v-col>
+      </v-row>
 
-          <v-row v-if="productsLoading">
-            <v-col
-              v-for="index in 3"
-              :key="`coins-product-skeleton-${index}`"
-              cols="12"
-              md="4"
+      <v-alert
+        v-else-if="!coinProducts.length"
+        type="info"
+        variant="tonal"
+        class="mb-4"
+      >
+        {{ t('pages.profile.buyCoins.emptyProducts') }}
+      </v-alert>
+
+      <v-row v-else dense>
+        <v-col
+          v-for="item in coinProducts"
+          :key="item.id"
+          cols="12"
+          sm="6"
+          md="4"
+        >
+          <v-card class="shop-product-card h-100" rounded="xl" elevation="4">
+            <v-img
+              :src="
+                item.photo || '/images/placeholders/platform-media-fallback.svg'
+              "
+              :alt="item.name"
+              height="160"
+              cover
             >
-              <v-skeleton-loader type="card" />
-            </v-col>
-          </v-row>
-
-          <v-alert
-            v-else-if="!coinProducts.length"
-            type="info"
-            variant="tonal"
-            class="mb-4"
-          >
-            {{ t('pages.profile.buyCoins.emptyProducts') }}
-          </v-alert>
-
-          <v-row v-else dense>
-            <v-col
-              v-for="item in coinProducts"
-              :key="item.id"
-              cols="12"
-              sm="6"
-              md="4"
+              <template #error>
+                <div
+                  class="d-flex align-center justify-center fill-height bg-surface-variant"
+                >
+                  <v-icon icon="mdi-image-off-outline" size="40" />
+                </div>
+              </template>
+            </v-img>
+            <v-card-text class="pb-2">
+              <h3 class="text-subtitle-1 mb-1">{{ item.name }}</h3>
+              <p class="text-body-2 text-medium-emphasis mb-0">
+                {{ item.coinsAmount }} coins
+              </p>
+            </v-card-text>
+            <v-card-actions
+              class="px-4 pb-4 pt-0 d-flex align-center justify-space-between"
             >
-              <v-card
-                class="shop-product-card h-100"
-                rounded="xl"
-                elevation="3"
+              <span class="text-body-1 font-weight-bold">
+                {{ formatProductAmount(item) }}
+              </span>
+              <v-btn
+                color="primary"
+                variant="flat"
+                prepend-icon="mdi-cart-plus"
+                :loading="cartPendingProductId === item.id"
+                :disabled="cartPendingProductId === item.id"
+                @click="addToCart(item)"
               >
-                <v-img
-                  :src="
-                    item.photo ||
-                    '/images/placeholders/platform-media-fallback.svg'
-                  "
-                  :alt="item.name"
-                  height="160"
-                  cover
-                >
-                  <template #error>
-                    <div
-                      class="d-flex align-center justify-center fill-height bg-surface-variant"
-                    >
-                      <v-icon icon="mdi-image-off-outline" size="40" />
-                    </div>
-                  </template>
-                </v-img>
-                <v-card-text class="pb-2">
-                  <h3 class="text-subtitle-1 mb-1">{{ item.name }}</h3>
-                  <p class="text-body-2 text-medium-emphasis mb-0">
-                    {{ item.coinsAmount }} coins
-                  </p>
-                </v-card-text>
-                <v-card-actions
-                  class="px-4 pb-4 pt-0 d-flex align-center justify-space-between"
-                >
-                  <span class="text-body-1 font-weight-bold">
-                    {{ formatProductAmount(item) }}
-                  </span>
-                  <v-btn
-                    color="primary"
-                    variant="tonal"
-                    prepend-icon="mdi-cart-plus"
-                    :loading="cartPendingProductId === item.id"
-                    :disabled="cartPendingProductId === item.id"
-                    @click="addToCart(item)"
-                  >
-                    {{ t('world.shop.actions.addToCart') }}
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-col>
-          </v-row>
+                {{ t('world.shop.actions.addToCart') }}
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
 
-          <v-alert
-            v-if="checkoutSuccess"
-            type="success"
-            variant="tonal"
-            class="mt-4"
-          >
-            {{ checkoutSuccess }}
-          </v-alert>
+      <v-alert
+        v-if="checkoutSuccess"
+        type="success"
+        variant="tonal"
+        class="mt-4"
+      >
+        {{ checkoutSuccess }}
+      </v-alert>
 
-          <v-alert
-            v-if="checkoutError"
-            type="error"
-            variant="tonal"
-            class="mt-4"
-          >
-            {{ checkoutError }}
-          </v-alert>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
+      <v-alert v-if="checkoutError" type="error" variant="tonal" class="mt-4">
+        {{ checkoutError }}
+      </v-alert>
+    </AppModal>
   </div>
   <v-btn
     v-else
@@ -262,10 +255,20 @@ async function addToCart(product: ShopProduct) {
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease;
+  border: 1px solid rgb(var(--v-theme-primary), 0.14);
 }
 
 .shop-product-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 18px 30px rgb(15 23 42 / 18%) !important;
+  box-shadow: 0 18px 30px rgb(15 23 42 / 20%) !important;
+}
+
+.coin-modal-banner {
+  background: linear-gradient(
+    120deg,
+    rgb(var(--v-theme-primary), 0.15),
+    rgb(var(--v-theme-surface))
+  );
+  border: 1px solid rgb(var(--v-theme-primary), 0.2);
 }
 </style>
