@@ -72,48 +72,50 @@ const rightDrawerSelection = computed(() => [
     </AppPageDrawers>
 
     <v-container fluid>
-      <template v-if="selectedCategory">
-        <v-breadcrumbs :items="breadcrumbs" class="pa-0 mb-2">
-          <template #item="{ item }">
-            <v-btn
-              variant="text"
-              size="small"
-              :disabled="item.disabled"
-              @click="navigateBreadcrumb(item.to as string | undefined)"
+      <v-card variant="text" class="content-main postcard-gradient-card mb-3 pa-3">
+        <template v-if="selectedCategory">
+          <v-breadcrumbs :items="breadcrumbs" class="pa-0 mb-2">
+            <template #item="{ item }">
+              <v-btn
+                variant="text"
+                size="small"
+                :disabled="item.disabled"
+                @click="navigateBreadcrumb(item.to as string | undefined)"
+              >
+                {{ item.title }}
+              </v-btn>
+            </template>
+          </v-breadcrumbs>
+          <v-row v-if="subCategories.length" density="comfortable">
+            <v-col
+              v-for="subCategory in subCategories"
+              :key="subCategory.id"
+              cols="12"
+              sm="6"
+              lg="4"
             >
-              {{ item.title }}
-            </v-btn>
-          </template>
-        </v-breadcrumbs>
-        <v-row v-if="subCategories.length" density="comfortable">
-          <v-col
-            v-for="subCategory in subCategories"
-            :key="subCategory.id"
-            cols="12"
-            sm="6"
-            lg="4"
-          >
-            <v-card
-              rounded="xl"
-              class="h-100 game-card cursor-pointer"
-              @click="openSubCategory(subCategory)"
-            >
-              <v-img :src="subCategory?.img" height="200" cover />
-            </v-card>
-          </v-col>
-        </v-row>
-        <v-alert
-          v-else
-          type="info"
-          variant="tonal"
-          :text="
+              <v-card
+                rounded="xl"
+                class="h-100 game-card cursor-pointer"
+                @click="openSubCategory(subCategory)"
+              >
+                <v-img :src="subCategory?.img" height="200" cover />
+              </v-card>
+            </v-col>
+          </v-row>
+          <v-alert
+            v-else
+            type="info"
+            variant="tonal"
+            :text="
             tOrFallback(
               'gamePage.catalog.emptySubCategories',
               'No sub-categories available for now.',
             )
           "
-        />
-      </template>
+          />
+        </template>
+      </v-card>
     </v-container>
   </div>
 </template>
