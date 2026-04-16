@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { usePublicAxios } from '~/utils/http/axiosClient'
 definePageMeta({
   layout: 'auth',
   title: 'appbar.register',
@@ -9,6 +10,7 @@ definePageMeta({
 const { t } = useI18n()
 const { fetch: refreshSession, loggedIn } = useUserSession()
 const loading = ref(false)
+const publicAxios = usePublicAxios()
 
 async function onSubmit(payload: {
   email: string
@@ -23,13 +25,10 @@ async function onSubmit(payload: {
   loading.value = true
 
   try {
-    await $fetch('/api/register', {
-      method: 'POST',
-      body: {
-        email: payload.email,
-        password: payload.password,
-        repeatPassword: payload.repeatPassword,
-      },
+    await publicAxios.post('/api/register', {
+      email: payload.email,
+      password: payload.password,
+      repeatPassword: payload.repeatPassword,
     })
 
     await refreshSession()

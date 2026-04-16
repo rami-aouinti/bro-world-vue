@@ -1,5 +1,7 @@
-import { apiRequest } from '~~/server/utils/httpClient'
-import { resolveApiUrl } from '~~/server/utils/resolveApiUrl'
+import {
+  getServerPublicAxios,
+  resolveServerApiUrl,
+} from '~~/server/utils/http/axiosClient'
 
 type WebhookProvider = 'mock' | 'stripe' | 'paypal'
 
@@ -24,7 +26,6 @@ function normalizeProvider(value: unknown): WebhookProvider {
 
 export default defineEventHandler(async (event) => {
   const provider = normalizeProvider(getQuery(event).provider)
-  const runtimeConfig = useRuntimeConfig(event)
   const rawBody = await readRawBody(event, 'utf8')
 
   if (!rawBody?.trim()) {
@@ -64,19 +65,14 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  return apiRequest(
-    resolveApiUrl(
-      runtimeConfig.public.apiBaseUrl,
-      '/shop/general/payments/webhook',
-    ),
+  const client = getServerPublicAxios(event)
+  const response = await client.post(
+    resolveServerApiUrl(event, '/shop/general/payments/webhook'),
+    parsedBody,
     {
-      method: 'POST',
-      query: { provider },
-      headers: {
-        accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(parsedBody),
+      params: { provider },
     },
   )
+
+  return response.data
 })

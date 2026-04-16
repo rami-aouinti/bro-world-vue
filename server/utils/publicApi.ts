@@ -6,7 +6,7 @@ import {
   resolveCacheTtl,
   type CacheDomain,
 } from './apiCacheConfig'
-import { resolveApiUrl } from './resolveApiUrl'
+import { getServerPublicAxios, resolveServerApiUrl } from './http/axiosClient'
 
 type PublicApiOptions = {
   query?: ApiQuery
@@ -16,25 +16,25 @@ type CachedPublicGetOptions = PublicApiOptions & {
   cacheDomain?: CacheDomain
 }
 
+/**
+ * @deprecated Use server/utils/http/axiosClient.ts directly.
+ */
 export async function callPublicApi<TResponse extends ApiResponse>(
   event: H3Event,
   endpoint: string,
   options?: PublicApiOptions,
 ): Promise<TResponse> {
-  const runtimeConfig = useRuntimeConfig(event)
+  const client = getServerPublicAxios(event)
+  const response = await client.get<TResponse>(resolveServerApiUrl(event, endpoint), {
+    params: options?.query,
+  })
 
-  return $fetch<TResponse>(
-    resolveApiUrl(runtimeConfig.public.apiBaseUrl, endpoint),
-    {
-      method: 'GET',
-      query: options?.query,
-      headers: {
-        accept: 'application/json',
-      },
-    },
-  )
+  return response.data
 }
 
+/**
+ * @deprecated Use server/utils/http/axiosClient.ts directly.
+ */
 export async function cachedPublicGet<TResponse extends ApiResponse>(
   event: H3Event,
   endpoint: string,

@@ -7,8 +7,7 @@ import {
   resolveCacheTtl,
   type CacheDomain,
 } from './apiCacheConfig'
-import { apiRequest } from './httpClient'
-import { resolveApiUrl } from './resolveApiUrl'
+import { getServerPrivateAxios, resolveServerApiUrl } from './http/axiosClient'
 import { invalidateMutationCaches } from './mutationInvalidation'
 
 export async function getSessionAuth(event: H3Event) {
@@ -56,19 +55,15 @@ export async function callPrivateApi<TResponse extends ApiResponse>(
   endpoint: string,
   options?: PrivateApiOptions,
 ): Promise<TResponse> {
-  const runtimeConfig = useRuntimeConfig(event)
-  const { token } = await getSessionAuth(event)
-  const requestHeaders = new Headers(options?.headers)
-  requestHeaders.set('accept', 'application/json')
-  requestHeaders.set('Authorization', `Bearer ${token}`)
+  const client = await getServerPrivateAxios(event, { headers: options?.headers })
+  const response = await client.request<TResponse>({
+    url: resolveServerApiUrl(event, endpoint),
+    method: options?.method ?? 'GET',
+    params: options?.query,
+    data: options?.body,
+  })
 
-  return apiRequest<TResponse>(
-    resolveApiUrl(runtimeConfig.public.apiBaseUrl, endpoint),
-    {
-      ...options,
-      headers: requestHeaders,
-    },
-  )
+  return response.data
 }
 
 export async function cachedPrivateGet<TResponse extends ApiResponse>(

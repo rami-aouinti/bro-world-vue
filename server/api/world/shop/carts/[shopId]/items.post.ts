@@ -1,6 +1,7 @@
-import { apiRequest } from '~~/server/utils/httpClient'
-import { getSessionToken } from '~~/server/utils/privateApi'
-import { resolveApiUrl } from '~~/server/utils/resolveApiUrl'
+import {
+  getServerPrivateAxios,
+  resolveServerApiUrl,
+} from '~~/server/utils/http/axiosClient'
 
 type Body = {
   productId?: string
@@ -37,24 +38,17 @@ export default defineEventHandler(async (event) => {
   const productId = assertNonEmptyString(body?.productId, 'productId')
   const quantity = assertPositiveInteger(body?.quantity ?? 1, 'quantity')
 
-  const runtimeConfig = useRuntimeConfig(event)
-  const token = await getSessionToken(event)
-
-  return apiRequest(
-    resolveApiUrl(
-      runtimeConfig.public.apiBaseUrl,
+  const client = await getServerPrivateAxios(event)
+  const response = await client.post(
+    resolveServerApiUrl(
+      event,
       `/shop/general/carts/${encodeURIComponent(normalizedShopId)}/items`,
     ),
     {
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        authorization: `Bearer ${token}`,
-      },
-      body: {
-        productId,
-        quantity,
-      },
+      productId,
+      quantity,
     },
   )
+
+  return response.data
 })
