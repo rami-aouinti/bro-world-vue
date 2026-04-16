@@ -1,5 +1,5 @@
 import {
-  fetchFixtureDetails,
+  cachedFixtureDetails,
   getRequiredFootballId,
 } from '../../../utils/footballApi'
 import type { FootballFixtureDetailsApiResponse } from '~~/server/types/api/football'
@@ -7,6 +7,6 @@ import type { FootballFixtureDetailsApiResponse } from '~~/server/types/api/foot
 export default defineEventHandler(
   async (event): Promise<FootballFixtureDetailsApiResponse> => {
     const fixture = getRequiredFootballId(event, 'fixture')
-    return fetchFixtureDetails(event, fixture)
+    return cachedFixtureDetails(event, fixture)
   },
 )

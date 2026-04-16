@@ -18,7 +18,7 @@ export default defineEventHandler(
         league,
         season,
       },
-      { cacheProfile: 'reference' },
+      { cacheProfile: 'reference', cacheKeySuffix: 'reference-standings' },
     )
 
     return mapStandingsResponse(payload)

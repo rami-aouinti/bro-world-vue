@@ -3,6 +3,7 @@ export const CACHE_TTL_BY_DOMAIN = {
   notifications: 30,
   references: 1800,
   sports: 120,
+  football: 120,
   blog: 180,
   chat: 20,
   calendar: 120,
@@ -31,25 +32,40 @@ const DOMAIN_ALIASES: Record<string, CacheDomain> = {
   references: 'references',
   sports: 'sports',
   sport: 'sports',
-  football: 'sports',
+  football: 'football',
+  footballs: 'football',
   library: 'library',
   game: 'games',
   games: 'games',
   quiz: 'quiz',
 }
 
-const SPORTS_CACHE_TTL_BY_PROFILE: Record<CacheProfile, number> = {
-  default: CACHE_TTL_BY_DOMAIN.sports,
+const SPORTS_LIKE_CACHE_TTL_BY_PROFILE: Record<CacheProfile, number> = {
+  default: CACHE_TTL_BY_DOMAIN.football,
   reference: 1800,
   live: 15,
+}
+
+const CACHE_PROFILE_BY_SUFFIX: Record<string, CacheProfile> = {
+  default: 'default',
+  reference: 'reference',
+  live: 'live',
+}
+
+export function resolveCacheProfileFromSuffix(suffix?: string | null): CacheProfile {
+  if (!suffix) {
+    return 'default'
+  }
+
+  return CACHE_PROFILE_BY_SUFFIX[suffix] ?? 'default'
 }
 
 export function resolveCacheTtl(
   domain: CacheDomain,
   profile: CacheProfile = 'default',
 ) {
-  if (domain === 'sports') {
-    return SPORTS_CACHE_TTL_BY_PROFILE[profile]
+  if (domain === 'sports' || domain === 'football') {
+    return SPORTS_LIKE_CACHE_TTL_BY_PROFILE[profile]
   }
 
   return CACHE_TTL_BY_DOMAIN[domain]

@@ -1,6 +1,6 @@
 import type { H3Event } from 'h3'
 import { getCached, publicCacheKey, setCached } from './apiCache'
-import { resolveCacheTtl } from './apiCacheConfig'
+import { resolveCacheProfileFromSuffix, resolveCacheTtl } from './apiCacheConfig'
 import type {
   FootballFixture,
   FootballFixtureDetailsApiResponse,
@@ -289,8 +289,10 @@ export async function cachedFootballApiGet<TItem>(
     cacheKeySuffix?: string
   },
 ): Promise<ApiSportsResponse<TItem>> {
+  const cacheSuffix = options?.cacheKeySuffix ?? options?.cacheProfile ?? 'default'
+  const cacheProfile = options?.cacheProfile ?? resolveCacheProfileFromSuffix(cacheSuffix)
   const cacheKey = publicCacheKey(
-    `/sports/football${endpoint}:${options?.cacheKeySuffix ?? options?.cacheProfile ?? 'default'}`,
+    `/sports/football${endpoint}:${cacheSuffix}`,
     query,
   )
 
@@ -303,7 +305,7 @@ export async function cachedFootballApiGet<TItem>(
   await setCached(
     cacheKey,
     payload,
-    resolveCacheTtl('sports', options?.cacheProfile ?? 'default'),
+    resolveCacheTtl('football', cacheProfile),
   )
 
   return payload
@@ -346,4 +348,21 @@ export async function fetchFixtureDetails(
     lineups: (lineups.response ?? []).map(mapLineup),
     playerStats: (players.response ?? []).flatMap(mapPlayerStats),
   }
+}
+
+export async function cachedFixtureDetails(
+  event: H3Event,
+  fixture: number,
+): Promise<FootballFixtureDetailsApiResponse> {
+  const cacheKey = publicCacheKey('/sports/football/fixture:live', { fixture })
+  const cached = await getCached<FootballFixtureDetailsApiResponse>(cacheKey)
+
+  if (cached) {
+    return cached
+  }
+
+  const payload = await fetchFixtureDetails(event, fixture)
+  await setCached(cacheKey, payload, resolveCacheTtl('football', 'live'))
+
+  return payload
 }
