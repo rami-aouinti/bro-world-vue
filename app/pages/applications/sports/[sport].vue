@@ -164,359 +164,334 @@ watch(
 </script>
 
 <template>
-  <v-container fluid>
-    <v-card class="pa-6 mb-6">
-      <v-img
-        :src="sport.image"
-        :alt="sport.label"
-        height="220"
-        cover
-        class="mb-4"
-      />
-      <h2 class="text-h5 mb-2">{{ sport.label }}</h2>
-      <p class="text-medium-emphasis mb-0">Slug: {{ sport.slug }}</p>
-    </v-card>
+  <div>
+    <AppPageDrawers>
+      <template #left>
+        <v-row class="mb-4">
+          <v-col cols="12">
+            <v-select
+              :model-value="selectedLeagueId"
+              :items="leagues"
+              item-title="name"
+              item-value="id"
+              label="League"
+              density="comfortable"
+              :loading="leaguesState === 'loading'"
+              :disabled="leaguesState !== 'ready'"
+              variant="outlined"
+              hide-details
+              @update:model-value="selectLeague"
+            />
+          </v-col>
 
-    <template v-if="sport.slug === 'football'">
-      <v-row class="mb-4">
-        <v-col cols="12" md="6">
-          <v-select
-            :model-value="selectedLeagueId"
-            :items="leagues"
-            item-title="name"
-            item-value="id"
-            label="League"
+          <v-col cols="12">
+            <v-select
+              :model-value="selectedSeason"
+              :items="seasons"
+              label="Season"
+              density="comfortable"
+              :disabled="!selectedLeague"
+              variant="outlined"
+              hide-details
+              @update:model-value="selectSeason"
+            />
+          </v-col>
+        </v-row>
+      </template>
+
+      <template #right>
+        <v-card-title>{{ leaguesSection.title }}</v-card-title>
+        <v-divider />
+        <v-card-text>
+          <template v-if="leaguesSection.state === 'loading'">
+            <v-progress-circular
+              indeterminate
+              color="primary"
+              size="22"
+              class="mr-3"
+            />
+            <span>Loading leagues…</span>
+          </template>
+
+          <v-alert
+            v-else-if="leaguesSection.state === 'error'"
+            type="error"
+            variant="tonal"
             density="comfortable"
-            :loading="leaguesState === 'loading'"
-            :disabled="leaguesState !== 'ready'"
-            variant="outlined"
-            hide-details
-            @update:model-value="selectLeague"
-          />
-        </v-col>
+          >
+            {{ leaguesSection.error }}
+          </v-alert>
 
-        <v-col cols="12" md="6">
-          <v-select
-            :model-value="selectedSeason"
-            :items="seasons"
-            label="Season"
+          <v-alert
+            v-else-if="leaguesSection.state === 'empty'"
+            type="info"
+            variant="tonal"
             density="comfortable"
-            :disabled="!selectedLeague"
-            variant="outlined"
-            hide-details
-            @update:model-value="selectSeason"
-          />
-        </v-col>
-      </v-row>
+          >
+            {{ leaguesSection.emptyMessage }}
+          </v-alert>
 
-      <v-row>
-        <v-col cols="12" md="6" lg="4">
-          <v-card class="h-100" variant="outlined">
-            <v-card-title>{{ leaguesSection.title }}</v-card-title>
-            <v-divider />
-            <v-card-text>
-              <template v-if="leaguesSection.state === 'loading'">
-                <v-progress-circular
-                  indeterminate
-                  color="primary"
-                  size="22"
-                  class="mr-3"
-                />
-                <span>Loading leagues…</span>
-              </template>
-
-              <v-alert
-                v-else-if="leaguesSection.state === 'error'"
-                type="error"
-                variant="tonal"
-                density="comfortable"
-              >
-                {{ leaguesSection.error }}
-              </v-alert>
-
-              <v-alert
-                v-else-if="leaguesSection.state === 'empty'"
-                type="info"
-                variant="tonal"
-                density="comfortable"
-              >
-                {{ leaguesSection.emptyMessage }}
-              </v-alert>
-
-              <v-list v-else density="compact" lines="one" class="pa-0">
-                <v-list-item
-                  v-for="league in leagues"
-                  :key="league.id"
-                  :title="league.name"
-                  :subtitle="league.country.name"
-                />
-              </v-list>
-            </v-card-text>
-          </v-card>
-        </v-col>
-
-        <v-col cols="12" md="6" lg="4">
-          <v-card class="h-100 football-surface football-surface--glow" variant="outlined">
-            <v-card-title>{{ fixturesSection.title }}</v-card-title>
-            <v-divider />
-            <v-card-text>
-              <template v-if="fixturesSection.state === 'loading'">
-                <v-progress-circular
-                  indeterminate
-                  color="primary"
-                  size="22"
-                  class="mr-3"
-                />
-                <span>Loading fixtures…</span>
-              </template>
-
-              <v-alert
-                v-else-if="fixturesSection.state === 'error'"
-                type="error"
-                variant="tonal"
-                density="comfortable"
-              >
-                {{ fixturesSection.error }}
-              </v-alert>
-
-              <v-alert
-                v-else-if="fixturesSection.state === 'empty'"
-                type="info"
-                variant="tonal"
-                density="comfortable"
-              >
-                {{ fixturesSection.emptyMessage }}
-              </v-alert>
-
-              <v-list v-else density="compact" class="pa-0">
-                <SportsFootballFixtureCard
-                  v-for="fixture in fixtures"
-                  :key="fixture.id"
-                  :fixture="fixture"
-                  :active="selectedFixtureId === fixture.id"
-                  @select="loadFixtureDetails"
-                />
-              </v-list>
-            </v-card-text>
-          </v-card>
-        </v-col>
-
-        <v-col cols="12" md="6" lg="4">
-          <v-card class="h-100" variant="outlined">
-            <v-card-title>{{ standingsSection.title }}</v-card-title>
-            <v-divider />
-            <v-card-text>
-              <template v-if="standingsSection.state === 'loading'">
-                <v-progress-circular
-                  indeterminate
-                  color="primary"
-                  size="22"
-                  class="mr-3"
-                />
-                <span>Loading standings…</span>
-              </template>
-
-              <v-alert
-                v-else-if="standingsSection.state === 'error'"
-                type="error"
-                variant="tonal"
-                density="comfortable"
-              >
-                {{ standingsSection.error }}
-              </v-alert>
-
-              <v-alert
-                v-else-if="standingsSection.state === 'empty'"
-                type="info"
-                variant="tonal"
-                density="comfortable"
-              >
-                {{ standingsSection.emptyMessage }}
-              </v-alert>
-
-              <v-list v-else density="compact" lines="one" class="pa-0">
-                <template v-for="group in standings" :key="group.name">
-                  <v-list-subheader>{{ group.name }}</v-list-subheader>
-                  <v-list-item
-                    v-for="row in group.rows"
-                    :key="`${group.name}-${row.team.id}`"
-                    :title="`${row.rank}. ${row.team.name}`"
-                    :subtitle="`${row.points} pts | ${row.all.played} played`"
+          <v-list v-else density="compact" lines="one" class="pa-0">
+            <v-list-item
+              v-for="league in leagues"
+              :key="league.id"
+              :title="league.name"
+              :subtitle="league.country.name"
+            />
+          </v-list>
+        </v-card-text>
+      </template>
+    </AppPageDrawers>
+    <v-container fluid>
+      <template v-if="sport.slug === 'football'">
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-card class="h-100 football-surface football-surface--glow" variant="outlined">
+              <v-card-title>{{ fixturesSection.title }}</v-card-title>
+              <v-divider />
+              <v-card-text>
+                <template v-if="fixturesSection.state === 'loading'">
+                  <v-progress-circular
+                    indeterminate
+                    color="primary"
+                    size="22"
+                    class="mr-3"
                   />
+                  <span>Loading fixtures…</span>
                 </template>
-              </v-list>
-            </v-card-text>
-          </v-card>
-        </v-col>
 
-        <v-col cols="12" md="6" lg="4">
-          <v-card class="h-100 football-surface" variant="outlined">
-            <v-card-title>{{ teamsSection.title }}</v-card-title>
-            <v-divider />
-            <v-card-text>
-              <template v-if="teamsSection.state === 'loading'">
-                <v-progress-circular
-                  indeterminate
-                  color="primary"
-                  size="22"
-                  class="mr-3"
-                />
-                <span>Loading teams…</span>
-              </template>
+                <v-alert
+                  v-else-if="fixturesSection.state === 'error'"
+                  type="error"
+                  variant="tonal"
+                  density="comfortable"
+                >
+                  {{ fixturesSection.error }}
+                </v-alert>
 
-              <v-alert
-                v-else-if="teamsSection.state === 'error'"
-                type="error"
-                variant="tonal"
-                density="comfortable"
-              >
-                {{ teamsSection.error }}
-              </v-alert>
+                <v-alert
+                  v-else-if="fixturesSection.state === 'empty'"
+                  type="info"
+                  variant="tonal"
+                  density="comfortable"
+                >
+                  {{ fixturesSection.emptyMessage }}
+                </v-alert>
 
-              <v-alert
-                v-else-if="teamsSection.state === 'empty'"
-                type="info"
-                variant="tonal"
-                density="comfortable"
-              >
-                {{ teamsSection.emptyMessage }}
-              </v-alert>
-
-              <v-list v-else density="compact" lines="one" class="pa-0">
-                <v-list-item
-                  v-for="team in teams"
-                  :key="team.id"
-                  :title="team.name"
-                  :active="selectedTeamId === team.id"
-                  @click="loadTeamDetails(team.id)"
-                />
-              </v-list>
-            </v-card-text>
-          </v-card>
-        </v-col>
-
-        <v-col cols="12" md="6" lg="8">
-          <v-card class="h-100 football-surface football-surface--dark" variant="outlined">
-            <v-card-title>{{ fixtureDetailsSection.title }}</v-card-title>
-            <v-divider />
-            <v-card-text>
-              <template v-if="fixtureDetailsSection.state === 'loading'">
-                <v-progress-circular
-                  indeterminate
-                  color="primary"
-                  size="22"
-                  class="mr-3"
-                />
-                <span>Loading fixture details…</span>
-              </template>
-
-              <v-alert
-                v-else-if="fixtureDetailsSection.state === 'error'"
-                type="error"
-                variant="tonal"
-                density="comfortable"
-              >
-                {{ fixtureDetailsSection.error }}
-              </v-alert>
-
-              <v-alert
-                v-else-if="fixtureDetailsSection.state === 'empty'"
-                type="info"
-                variant="tonal"
-                density="comfortable"
-              >
-                {{ fixtureDetailsSection.emptyMessage }}
-              </v-alert>
-
-              <template v-else-if="fixtureDetails">
-                <div class="mb-3 text-subtitle-2">
-                  Events: {{ fixtureDetails.events.length }} · Lineups:
-                  {{ fixtureDetails.lineups.length }} · Player stats:
-                  {{ fixtureDetails.playerStats.length }}
-                </div>
-                <v-list density="compact" lines="two" class="pa-0">
-                  <v-list-item
-                    v-for="event in fixtureDetails.events"
-                    :key="`${event.time.elapsed}-${event.type}-${event.player.name}`"
-                    :title="`${event.time.elapsed ?? '-'}' ${event.type}`"
-                    :subtitle="`${event.team.name ?? 'Unknown team'} · ${event.player.name ?? 'Unknown player'}`"
+                <v-list v-else density="compact" class="pa-0">
+                  <SportsFootballFixtureCard
+                    v-for="fixture in fixtures"
+                    :key="fixture.id"
+                    :fixture="fixture"
+                    :active="selectedFixtureId === fixture.id"
+                    @select="loadFixtureDetails"
                   />
                 </v-list>
-              </template>
-            </v-card-text>
-          </v-card>
-        </v-col>
+              </v-card-text>
+            </v-card>
+          </v-col>
 
-        <v-col cols="12" md="6" lg="4">
-          <v-card class="h-100 football-surface football-surface--dark" variant="outlined">
-            <v-card-title>{{ teamDetailsSection.title }}</v-card-title>
-            <v-divider />
-            <v-card-text>
-              <template v-if="teamDetailsSection.state === 'loading'">
-                <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
-                <span>Loading team details…</span>
-              </template>
-              <v-alert v-else-if="teamDetailsSection.state === 'error'" type="error" variant="tonal" density="comfortable">
-                {{ teamDetailsSection.error }}
-              </v-alert>
-              <v-alert v-else-if="teamDetailsSection.state === 'empty'" type="info" variant="tonal" density="comfortable">
-                {{ teamDetailsSection.emptyMessage }}
-              </v-alert>
-              <template v-else-if="teamDetails">
-                <SportsFootballTeamDetailsPanel
-                  :details="teamDetails"
-                  :selected-player-id="selectedPlayerId"
-                  @select-player="loadPlayerDetails"
-                />
-              </template>
-            </v-card-text>
-          </v-card>
-        </v-col>
+          <v-col cols="12" md="6">
+            <v-card class="h-100" variant="outlined">
+              <v-card-title>{{ standingsSection.title }}</v-card-title>
+              <v-divider />
+              <v-card-text>
+                <template v-if="standingsSection.state === 'loading'">
+                  <v-progress-circular
+                    indeterminate
+                    color="primary"
+                    size="22"
+                    class="mr-3"
+                  />
+                  <span>Loading standings…</span>
+                </template>
 
-        <v-col cols="12" md="6" lg="8">
-          <v-card class="h-100 football-surface football-surface--glow" variant="outlined">
-            <v-card-title>{{ playerDetailsSection.title }}</v-card-title>
-            <v-divider />
-            <v-card-text>
-              <template v-if="playerDetailsSection.state === 'loading'">
-                <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
-                <span>Loading player details…</span>
-              </template>
-              <v-alert v-else-if="playerDetailsSection.state === 'error'" type="error" variant="tonal" density="comfortable">
-                {{ playerDetailsSection.error }}
-              </v-alert>
-              <v-alert v-else-if="playerDetailsSection.state === 'empty'" type="info" variant="tonal" density="comfortable">
-                {{ playerDetailsSection.emptyMessage }}
-              </v-alert>
-              <SportsFootballPlayerDetailsPanel v-else-if="playerDetails?.profile" :details="playerDetails" />
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
-    </template>
+                <v-alert
+                  v-else-if="standingsSection.state === 'error'"
+                  type="error"
+                  variant="tonal"
+                  density="comfortable"
+                >
+                  {{ standingsSection.error }}
+                </v-alert>
 
-    <template v-else>
-      <v-alert type="info" variant="tonal" density="comfortable">
-        Detailed stats are currently available for football. Select another
-        sport from the catalog while we roll out additional leagues and data
-        feeds.
-      </v-alert>
-    </template>
-  </v-container>
+                <v-alert
+                  v-else-if="standingsSection.state === 'empty'"
+                  type="info"
+                  variant="tonal"
+                  density="comfortable"
+                >
+                  {{ standingsSection.emptyMessage }}
+                </v-alert>
+
+                <v-list v-else density="compact" lines="one" class="pa-0">
+                  <template v-for="group in standings" :key="group.name">
+                    <v-list-subheader>{{ group.name }}</v-list-subheader>
+                    <v-list-item
+                      v-for="row in group.rows"
+                      :key="`${group.name}-${row.team.id}`"
+                      :title="`${row.rank}. ${row.team.name}`"
+                      :subtitle="`${row.points} pts | ${row.all.played} played`"
+                    />
+                  </template>
+                </v-list>
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-card class="h-100 football-surface" variant="outlined">
+              <v-card-title>{{ teamsSection.title }}</v-card-title>
+              <v-divider />
+              <v-card-text>
+                <template v-if="teamsSection.state === 'loading'">
+                  <v-progress-circular
+                    indeterminate
+                    color="primary"
+                    size="22"
+                    class="mr-3"
+                  />
+                  <span>Loading teams…</span>
+                </template>
+
+                <v-alert
+                  v-else-if="teamsSection.state === 'error'"
+                  type="error"
+                  variant="tonal"
+                  density="comfortable"
+                >
+                  {{ teamsSection.error }}
+                </v-alert>
+
+                <v-alert
+                  v-else-if="teamsSection.state === 'empty'"
+                  type="info"
+                  variant="tonal"
+                  density="comfortable"
+                >
+                  {{ teamsSection.emptyMessage }}
+                </v-alert>
+
+                <v-list v-else density="compact" lines="one" class="pa-0">
+                  <v-list-item
+                    v-for="team in teams"
+                    :key="team.id"
+                    :title="team.name"
+                    :active="selectedTeamId === team.id"
+                    @click="loadTeamDetails(team.id)"
+                  />
+                </v-list>
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-card class="h-100 football-surface football-surface--dark" variant="outlined">
+              <v-card-title>{{ fixtureDetailsSection.title }}</v-card-title>
+              <v-divider />
+              <v-card-text>
+                <template v-if="fixtureDetailsSection.state === 'loading'">
+                  <v-progress-circular
+                    indeterminate
+                    color="primary"
+                    size="22"
+                    class="mr-3"
+                  />
+                  <span>Loading fixture details…</span>
+                </template>
+
+                <v-alert
+                  v-else-if="fixtureDetailsSection.state === 'error'"
+                  type="error"
+                  variant="tonal"
+                  density="comfortable"
+                >
+                  {{ fixtureDetailsSection.error }}
+                </v-alert>
+
+                <v-alert
+                  v-else-if="fixtureDetailsSection.state === 'empty'"
+                  type="info"
+                  variant="tonal"
+                  density="comfortable"
+                >
+                  {{ fixtureDetailsSection.emptyMessage }}
+                </v-alert>
+
+                <template v-else-if="fixtureDetails">
+                  <div class="mb-3 text-subtitle-2">
+                    Events: {{ fixtureDetails.events.length }} · Lineups:
+                    {{ fixtureDetails.lineups.length }} · Player stats:
+                    {{ fixtureDetails.playerStats.length }}
+                  </div>
+                  <v-list density="compact" lines="two" class="pa-0">
+                    <v-list-item
+                      v-for="event in fixtureDetails.events"
+                      :key="`${event.time.elapsed}-${event.type}-${event.player.name}`"
+                      :title="`${event.time.elapsed ?? '-'}' ${event.type}`"
+                      :subtitle="`${event.team.name ?? 'Unknown team'} · ${event.player.name ?? 'Unknown player'}`"
+                    />
+                  </v-list>
+                </template>
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="6" >
+            <v-card class="h-100 football-surface football-surface--dark" variant="outlined">
+              <v-card-title>{{ teamDetailsSection.title }}</v-card-title>
+              <v-divider />
+              <v-card-text>
+                <template v-if="teamDetailsSection.state === 'loading'">
+                  <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
+                  <span>Loading team details…</span>
+                </template>
+                <v-alert v-else-if="teamDetailsSection.state === 'error'" type="error" variant="tonal" density="comfortable">
+                  {{ teamDetailsSection.error }}
+                </v-alert>
+                <v-alert v-else-if="teamDetailsSection.state === 'empty'" type="info" variant="tonal" density="comfortable">
+                  {{ teamDetailsSection.emptyMessage }}
+                </v-alert>
+                <template v-else-if="teamDetails">
+                  <SportsFootballTeamDetailsPanel
+                    :details="teamDetails"
+                    :selected-player-id="selectedPlayerId"
+                    @select-player="loadPlayerDetails"
+                  />
+                </template>
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-card class="h-100 football-surface football-surface--glow" variant="outlined">
+              <v-card-title>{{ playerDetailsSection.title }}</v-card-title>
+              <v-divider />
+              <v-card-text>
+                <template v-if="playerDetailsSection.state === 'loading'">
+                  <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
+                  <span>Loading player details…</span>
+                </template>
+                <v-alert v-else-if="playerDetailsSection.state === 'error'" type="error" variant="tonal" density="comfortable">
+                  {{ playerDetailsSection.error }}
+                </v-alert>
+                <v-alert v-else-if="playerDetailsSection.state === 'empty'" type="info" variant="tonal" density="comfortable">
+                  {{ playerDetailsSection.emptyMessage }}
+                </v-alert>
+                <SportsFootballPlayerDetailsPanel v-else-if="playerDetails?.profile" :details="playerDetails" />
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+      </template>
+
+      <template v-else>
+        <v-alert type="info" variant="tonal" density="comfortable">
+          Detailed stats are currently available for football. Select another
+          sport from the catalog while we roll out additional leagues and data
+          feeds.
+        </v-alert>
+      </template>
+    </v-container>
+  </div>
 </template>
-
-<style scoped>
-.football-surface {
-  background: linear-gradient(145deg, rgb(var(--v-theme-surface)) 0%, rgba(15, 23, 42, 0.88) 100%);
-}
-
-.football-surface--dark {
-  background: linear-gradient(145deg, #0f172a 0%, #111827 100%);
-}
-
-.football-surface--glow {
-  border-color: rgba(var(--v-theme-primary), 0.35);
-  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.16);
-}
-
-</style>
