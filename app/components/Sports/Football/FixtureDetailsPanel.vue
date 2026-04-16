@@ -129,17 +129,55 @@ const lineupStarters = computed(() => {
     lineup.starters.forEach((starter) => {
       const [rawRow] = starter.grid.split(':')
       const rowIndex = Math.max(1, Math.min(6, Number(rawRow) || 1)) - 1
-      rows[rowIndex].push(starter)
+      const row = rows[rowIndex]
+      if (row) row.push(starter)
     })
     return { ...lineup, rows: rows.filter(row => row.length > 0) }
   })
 })
 
-const isLeftEvent = (event: FixtureEventViewModel) => {
-  if (props.homeTeamId && event.teamId === props.homeTeamId) return true
-  if (props.awayTeamId && event.teamId === props.awayTeamId) return false
-  return true
+const normalizedTeamName = (name: string | null | undefined) => {
+  return (name ?? '').trim().toLowerCase()
 }
+
+const homeTeamName = computed(() => {
+  return (
+    props.lineups.find(lineup => lineup.teamId === props.homeTeamId)?.teamName
+    ?? props.playerStats.find(stat => stat.teamId === props.homeTeamId)?.teamName
+    ?? props.lineups[0]?.teamName
+    ?? ''
+  )
+})
+
+const awayTeamName = computed(() => {
+  return (
+    props.lineups.find(lineup => lineup.teamId === props.awayTeamId)?.teamName
+    ?? props.playerStats.find(stat => stat.teamId === props.awayTeamId)?.teamName
+    ?? props.lineups[1]?.teamName
+    ?? ''
+  )
+})
+
+const resolveEventSide = (event: FixtureEventViewModel): 'left' | 'right' => {
+  if (props.homeTeamId !== null && event.teamId === props.homeTeamId) return 'left'
+  if (props.awayTeamId !== null && event.teamId === props.awayTeamId) return 'right'
+
+  const eventTeamName = normalizedTeamName(event.teamName)
+  const homeName = normalizedTeamName(homeTeamName.value)
+  const awayName = normalizedTeamName(awayTeamName.value)
+
+  if (eventTeamName && homeName && eventTeamName.includes(homeName)) return 'left'
+  if (eventTeamName && awayName && eventTeamName.includes(awayName)) return 'right'
+
+  return 'left'
+}
+
+const timelineEvents = computed(() => {
+  return props.events.map(event => ({
+    ...event,
+    side: resolveEventSide(event),
+  }))
+})
 
 function onSelectTeam(teamId: number | null | undefined) {
   if (typeof teamId === 'number') emit('selectTeam', teamId)
@@ -161,25 +199,49 @@ function onSelectPlayer(playerId: number | null | undefined) {
 
     <v-window v-model="activeTab">
       <v-window-item value="timeline">
-        <div class="timeline-split">
-          <div class="timeline-split__line" />
+        <div class="timeline-split" role="list">
           <div
-            v-for="event in events"
+            v-for="event in timelineEvents"
             :key="event.id"
-            class="timeline-event"
-            :class="isLeftEvent(event) ? 'timeline-event--left' : 'timeline-event--right'"
+            class="timeline-row"
+            role="listitem"
           >
-            <div class="timeline-event__content">
-              <v-chip size="x-small" variant="outlined" class="mb-1">{{ event.timeLabel }}</v-chip>
-              <div class="font-weight-bold text-body-2">{{ event.detail }}</div>
-              <div class="text-caption">
-                <a href="#" class="timeline-link" @click.prevent="onSelectPlayer(event.playerId)">{{ event.playerName }}</a>
-                ·
-                <a href="#" class="timeline-link" @click.prevent="onSelectTeam(event.teamId)">{{ event.teamName }}</a>
-              </div>
-              <div v-if="event.comment" class="text-caption text-medium-emphasis">{{ event.comment }}</div>
+            <div class="timeline-col timeline-col--left">
+              <article v-if="event.side === 'left'" class="timeline-card">
+                <header class="timeline-card__header">
+                  <v-chip size="small" variant="flat" color="primary" class="timeline-minute">{{ event.timeLabel }}</v-chip>
+                  <v-icon :icon="event.icon" size="18" :color="event.color" />
+                </header>
+                <div class="timeline-card__title">{{ event.detail }}</div>
+                <div class="timeline-card__meta text-caption">
+                  <a href="#" class="timeline-link" @click.prevent="onSelectPlayer(event.playerId)">{{ event.playerName }}</a>
+                  <span class="mx-1">·</span>
+                  <a href="#" class="timeline-link" @click.prevent="onSelectTeam(event.teamId)">{{ event.teamName }}</a>
+                </div>
+                <div v-if="event.comment" class="text-caption text-medium-emphasis">{{ event.comment }}</div>
+              </article>
             </div>
-            <div class="timeline-event__dot" :style="{ backgroundColor: `rgb(var(--v-theme-${event.color}))` }" />
+
+            <div class="timeline-axis" aria-hidden="true">
+              <span class="timeline-axis__line" />
+              <span class="timeline-axis__dot" :style="{ backgroundColor: `rgb(var(--v-theme-${event.color}))` }" />
+            </div>
+
+            <div class="timeline-col timeline-col--right">
+              <article v-if="event.side === 'right'" class="timeline-card">
+                <header class="timeline-card__header">
+                  <v-chip size="small" variant="flat" color="primary" class="timeline-minute">{{ event.timeLabel }}</v-chip>
+                  <v-icon :icon="event.icon" size="18" :color="event.color" />
+                </header>
+                <div class="timeline-card__title">{{ event.detail }}</div>
+                <div class="timeline-card__meta text-caption">
+                  <a href="#" class="timeline-link" @click.prevent="onSelectPlayer(event.playerId)">{{ event.playerName }}</a>
+                  <span class="mx-1">·</span>
+                  <a href="#" class="timeline-link" @click.prevent="onSelectTeam(event.teamId)">{{ event.teamName }}</a>
+                </div>
+                <div v-if="event.comment" class="text-caption text-medium-emphasis">{{ event.comment }}</div>
+              </article>
+            </div>
           </div>
         </div>
 
@@ -277,14 +339,47 @@ function onSelectPlayer(playerId: number | null | undefined) {
 </template>
 
 <style scoped>
-.timeline-split { position: relative; padding: 6px 0; }
-.timeline-split__line { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: rgba(var(--v-theme-on-surface), .2); transform: translateX(-50%); }
-.timeline-event { position: relative; display: flex; margin: 0 0 14px; width: 100%; }
-.timeline-event--left { justify-content: flex-start; padding-right: calc(50% + 14px); }
-.timeline-event--right { justify-content: flex-end; padding-left: calc(50% + 14px); }
-.timeline-event__content { width: 100%; max-width: 320px; padding: 10px; border-radius: 10px; border: 1px solid rgba(var(--v-theme-on-surface), .15); background: rgba(var(--v-theme-surface), .35); }
-.timeline-event__dot { position: absolute; left: 50%; top: 16px; width: 10px; height: 10px; border-radius: 50%; transform: translateX(-50%); box-shadow: 0 0 0 4px rgba(var(--v-theme-surface), 1); }
+.timeline-split { display: flex; flex-direction: column; gap: 12px; padding: 4px 0 8px; }
+.timeline-row { display: grid; grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr); gap: 14px; align-items: stretch; }
+.timeline-col { min-height: 100%; }
+.timeline-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(var(--v-theme-on-surface), .12);
+  background: linear-gradient(180deg, rgba(var(--v-theme-surface), .94), rgba(var(--v-theme-surface), .7));
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .08);
+}
+
+.timeline-card__header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.timeline-minute { min-width: 56px; justify-content: center; font-weight: 700; }
+.timeline-card__title { font-size: .9rem; font-weight: 700; line-height: 1.3; }
+.timeline-card__meta { display: flex; flex-wrap: wrap; align-items: center; color: rgba(var(--v-theme-on-surface), .84); }
+
+.timeline-axis { position: relative; display: flex; justify-content: center; }
+.timeline-axis__line {
+  position: absolute;
+  top: -8px;
+  bottom: -8px;
+  width: 2px;
+  border-radius: 99px;
+  background: linear-gradient(180deg, rgba(var(--v-theme-primary), .45), rgba(var(--v-theme-on-surface), .2));
+}
+.timeline-axis__dot {
+  position: relative;
+  top: 18px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid rgba(var(--v-theme-surface), 1);
+  box-shadow: 0 0 0 4px rgba(var(--v-theme-surface), 1);
+}
+
 .timeline-link, .lineup-team { color: rgb(var(--v-theme-primary)); text-decoration: none; }
+.timeline-link:hover, .lineup-team:hover { text-decoration: underline; }
 .pitch { border: 1px solid rgba(var(--v-theme-on-surface), 0.16); border-radius: 12px; background: radial-gradient(circle at center, rgba(32, 95, 79, 0.35), rgba(var(--v-theme-surface), 0.8)); }
 .pitch-row { display: flex; justify-content: center; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
 .pitch-player { border: 1px solid rgba(var(--v-theme-on-surface), .15); border-radius: 10px; padding: 4px 8px; background: rgba(var(--v-theme-surface), .55); cursor: pointer; }
@@ -294,4 +389,12 @@ function onSelectPlayer(playerId: number | null | undefined) {
 .stats-bar__left { background: rgb(var(--v-theme-primary)); }
 .stats-bar__right { background: rgba(var(--v-theme-on-surface), .42); }
 .player-note-item { border-radius: 10px; }
+
+@media (max-width: 720px) {
+  .timeline-row { grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr); gap: 8px; }
+  .timeline-card { padding: 10px; border-radius: 12px; }
+  .timeline-minute { min-width: 52px; }
+  .timeline-card__title { font-size: .85rem; }
+  .timeline-axis__dot { top: 16px; width: 10px; height: 10px; }
+}
 </style>
