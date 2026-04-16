@@ -23,7 +23,6 @@ export default defineNuxtConfig({
           content: process.env.GOOGLE_KEY_INDEX || '',
         },
       ],
-      link: [{ rel: 'canonical', href: 'https://bro-world-space.com' }],
     },
   },
   modules: [
@@ -116,6 +115,7 @@ export default defineNuxtConfig({
       url: '',
     },
     public: {
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://bro-world-space.com',
       apiBaseUrl: 'https://bro-world.org/api/v1',
       shop: {
         globalShopId: process.env.NUXT_PUBLIC_GLOBAL_SHOP_ID || '',

@@ -9,10 +9,19 @@ provide(
 
 const route = useRoute()
 const { locale, t } = useI18n()
+const runtimeConfig = useRuntimeConfig()
 const rounded = useStorage('theme-rounded', 'md')
 const shadow = useStorage('theme-shadow', 'none')
 const translateIfKey = (key: unknown) =>
   typeof key === 'string' && key ? t(key) : ''
+
+const canonicalUrl = computed(() => {
+  const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world-space.com'
+  const normalizedPath =
+    route.path === '/' ? '/' : route.path.replace(/\/+$/, '')
+
+  return new URL(normalizedPath || '/', siteUrl).toString()
+})
 
 if (import.meta.client) {
   watchEffect(() => {
@@ -33,7 +42,10 @@ useHead({
       ? `${pageTitle} | ${translateIfKey('app.name')}`
       : translateIfKey('app.name'),
   htmlAttrs: { lang: locale.value },
-  link: [{ rel: 'icon', href: '/favicon.ico' }],
+  link: [
+    { rel: 'icon', href: '/favicon.ico' },
+    { rel: 'canonical', href: canonicalUrl },
+  ],
 })
 
 const isTrackingEnabled = import.meta.client && import.meta.env.PROD
