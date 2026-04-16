@@ -60,6 +60,45 @@ export interface ApiSportsTeamItem {
   }
 }
 
+export interface ApiSportsTeamStatisticsItem {
+  league: {
+    id: number
+    name: string
+    country: string
+    season: number
+  }
+  team: {
+    id: number
+    name: string
+    logo: string | null
+  }
+  form: string | null
+  fixtures: ApiObject
+  goals: ApiObject
+  biggest: ApiObject
+  clean_sheet: ApiObject
+  failed_to_score: ApiObject
+  penalty: ApiObject
+  lineups: ApiObject[]
+  cards: ApiObject
+}
+
+export interface ApiSportsSquadItem {
+  team: {
+    id: number
+    name: string
+    logo: string | null
+  }
+  players: Array<{
+    id: number
+    name: string
+    age: number | null
+    number: number | null
+    position: string | null
+    photo: string | null
+  }>
+}
+
 export interface ApiSportsFixtureItem {
   fixture: {
     id: number
@@ -219,4 +258,20 @@ export interface ApiSportsPlayerStatsItem {
     }
     statistics: ApiObject[]
   }>
+}
+
+export interface ApiSportsPlayerItem {
+  player: {
+    id: number
+    name: string
+    firstname: string | null
+    lastname: string | null
+    age: number | null
+    birth: ApiObject
+    nationality: string | null
+    height: string | null
+    weight: string | null
+    photo: string | null
+  }
+  statistics: ApiObject[]
 }
