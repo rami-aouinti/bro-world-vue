@@ -44,16 +44,22 @@ const {
   standings,
   teams,
   fixtureDetails,
+  teamDetails,
+  playerDetails,
   footballSections,
   selectedLeague,
   seasons,
   selectedLeagueId,
   selectedSeason,
   selectedFixtureId,
+  selectedTeamId,
+  selectedPlayerId,
   leaguesState,
   loadLeagues,
   loadLeagueSeasonData,
   loadFixtureDetails,
+  loadTeamDetails,
+  loadPlayerDetails,
   selectLeague,
   selectSeason,
 } = useFootballData()
@@ -91,6 +97,16 @@ const fixtureDetailsSection = getSection(
   'fixtureDetails',
   'Fixture details',
   'Select a fixture to see events, lineups and player stats.',
+)
+const teamDetailsSection = getSection(
+  'teamDetails',
+  'Team details',
+  'Select a team to see full team and squad details.',
+)
+const playerDetailsSection = getSection(
+  'playerDetails',
+  'Player details',
+  'Select a player to open the player profile and statistics.',
 )
 
 const initializeFootballPage = async () => {
@@ -240,7 +256,7 @@ watch(
         </v-col>
 
         <v-col cols="12" md="6" lg="4">
-          <v-card class="h-100" variant="outlined">
+          <v-card class="h-100 football-surface football-surface--glow" variant="outlined">
             <v-card-title>{{ fixturesSection.title }}</v-card-title>
             <v-divider />
             <v-card-text>
@@ -273,13 +289,12 @@ watch(
               </v-alert>
 
               <v-list v-else density="compact" class="pa-0">
-                <v-list-item
+                <SportsFootballFixtureCard
                   v-for="fixture in fixtures"
                   :key="fixture.id"
-                  :title="`${fixture.teams.home.name} vs ${fixture.teams.away.name}`"
-                  :subtitle="new Date(fixture.date).toLocaleString()"
+                  :fixture="fixture"
                   :active="selectedFixtureId === fixture.id"
-                  @click="loadFixtureDetails(fixture.id)"
+                  @select="loadFixtureDetails"
                 />
               </v-list>
             </v-card-text>
@@ -335,7 +350,7 @@ watch(
         </v-col>
 
         <v-col cols="12" md="6" lg="4">
-          <v-card class="h-100" variant="outlined">
+          <v-card class="h-100 football-surface" variant="outlined">
             <v-card-title>{{ teamsSection.title }}</v-card-title>
             <v-divider />
             <v-card-text>
@@ -372,6 +387,8 @@ watch(
                   v-for="team in teams"
                   :key="team.id"
                   :title="team.name"
+                  :active="selectedTeamId === team.id"
+                  @click="loadTeamDetails(team.id)"
                 />
               </v-list>
             </v-card-text>
@@ -379,7 +396,7 @@ watch(
         </v-col>
 
         <v-col cols="12" md="6" lg="8">
-          <v-card class="h-100" variant="outlined">
+          <v-card class="h-100 football-surface football-surface--dark" variant="outlined">
             <v-card-title>{{ fixtureDetailsSection.title }}</v-card-title>
             <v-divider />
             <v-card-text>
@@ -429,6 +446,52 @@ watch(
             </v-card-text>
           </v-card>
         </v-col>
+
+        <v-col cols="12" md="6" lg="4">
+          <v-card class="h-100 football-surface football-surface--dark" variant="outlined">
+            <v-card-title>{{ teamDetailsSection.title }}</v-card-title>
+            <v-divider />
+            <v-card-text>
+              <template v-if="teamDetailsSection.state === 'loading'">
+                <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
+                <span>Loading team details…</span>
+              </template>
+              <v-alert v-else-if="teamDetailsSection.state === 'error'" type="error" variant="tonal" density="comfortable">
+                {{ teamDetailsSection.error }}
+              </v-alert>
+              <v-alert v-else-if="teamDetailsSection.state === 'empty'" type="info" variant="tonal" density="comfortable">
+                {{ teamDetailsSection.emptyMessage }}
+              </v-alert>
+              <template v-else-if="teamDetails">
+                <SportsFootballTeamDetailsPanel
+                  :details="teamDetails"
+                  :selected-player-id="selectedPlayerId"
+                  @select-player="loadPlayerDetails"
+                />
+              </template>
+            </v-card-text>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12" md="6" lg="8">
+          <v-card class="h-100 football-surface football-surface--glow" variant="outlined">
+            <v-card-title>{{ playerDetailsSection.title }}</v-card-title>
+            <v-divider />
+            <v-card-text>
+              <template v-if="playerDetailsSection.state === 'loading'">
+                <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
+                <span>Loading player details…</span>
+              </template>
+              <v-alert v-else-if="playerDetailsSection.state === 'error'" type="error" variant="tonal" density="comfortable">
+                {{ playerDetailsSection.error }}
+              </v-alert>
+              <v-alert v-else-if="playerDetailsSection.state === 'empty'" type="info" variant="tonal" density="comfortable">
+                {{ playerDetailsSection.emptyMessage }}
+              </v-alert>
+              <SportsFootballPlayerDetailsPanel v-else-if="playerDetails?.profile" :details="playerDetails" />
+            </v-card-text>
+          </v-card>
+        </v-col>
       </v-row>
     </template>
 
@@ -441,3 +504,19 @@ watch(
     </template>
   </v-container>
 </template>
+
+<style scoped>
+.football-surface {
+  background: linear-gradient(145deg, rgb(var(--v-theme-surface)) 0%, rgba(15, 23, 42, 0.88) 100%);
+}
+
+.football-surface--dark {
+  background: linear-gradient(145deg, #0f172a 0%, #111827 100%);
+}
+
+.football-surface--glow {
+  border-color: rgba(var(--v-theme-primary), 0.35);
+  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.16);
+}
+
+</style>
