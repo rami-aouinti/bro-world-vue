@@ -84,7 +84,9 @@
         "paymentDeclined": "Zahlung abgelehnt."
       }
     },
-    "world": "World"
+    "world": "World",
+    "cart": "Warenkorb",
+    "total": "Summe"
   },
   "common": {
     "confirm": "Bestätigen",
@@ -1034,7 +1036,8 @@
         "line5": "Drücke Start, um die Sitzung sofort zu starten.",
         "line6": "Deine aktuelle Auswahl bleibt oben in jedem Schritt sichtbar."
       }
-    }
+    },
+    "playButton": "Jetzt spielen"
   },
   "world": {
     "home": {
@@ -1136,7 +1139,8 @@
       "actions": {
         "createProduct": "Create product",
         "publishProduct": "Publish product",
-        "addToCart": "Add to cart"
+        "addToCart": "Add to cart",
+        "checkout": "Zur Kasse"
       },
       "kpis": {
         "revenue30d": "Revenue (30d)",

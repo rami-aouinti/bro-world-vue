@@ -84,7 +84,9 @@
         "paymentDeclined": "Payment declined."
       }
     },
-    "world": "World"
+    "world": "World",
+    "cart": "Cart",
+    "total": "Total"
   },
   "common": {
     "confirm": "Confirm",
@@ -1044,7 +1046,8 @@
         "line5": "Press Start to launch your session instantly.",
         "line6": "Your current selections stay visible above at every step."
       }
-    }
+    },
+    "playButton": "Play now"
   },
   "world": {
     "home": {
@@ -1146,7 +1149,8 @@
       "actions": {
         "createProduct": "Create product",
         "publishProduct": "Publish product",
-        "addToCart": "Add to cart"
+        "addToCart": "Add to cart",
+        "checkout": "Checkout"
       },
       "kpis": {
         "revenue30d": "Revenue (30d)",
