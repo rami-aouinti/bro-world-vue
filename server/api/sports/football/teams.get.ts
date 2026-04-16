@@ -33,7 +33,7 @@ export default defineEventHandler(
         season,
         ...(team ? { id: team } : {}),
       },
-      { cacheProfile: 'reference' },
+      { cacheProfile: 'reference', cacheKeySuffix: 'reference-teams' },
     )
 
     return mapTeamsResponse(payload)

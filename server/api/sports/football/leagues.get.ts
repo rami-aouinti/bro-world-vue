@@ -11,7 +11,7 @@ export default defineEventHandler(
       event,
       '/leagues',
       {},
-      { cacheProfile: 'reference' },
+      { cacheProfile: 'reference', cacheKeySuffix: 'reference-leagues' },
     )
     return mapLeaguesResponse(payload)
   },
