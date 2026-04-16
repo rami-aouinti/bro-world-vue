@@ -52,6 +52,7 @@ export default defineNuxtConfig({
   css: [
     'vuetify/styles',
     '~/assets/styles/material-dashboard.scss',
+    '~/assets/styles/football-dashboard.scss',
     '~/assets/styles/index.css',
   ],
   experimental: { typedPages: true },

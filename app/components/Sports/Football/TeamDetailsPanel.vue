@@ -49,13 +49,13 @@ const topPlayers = computed(() => props.details.squad.players.slice(0, 4))
     />
 
     <div class="text-caption mb-2">Top players</div>
-    <div class="d-flex flex-wrap ga-2 mb-4">
+    <TransitionGroup name="stagger" tag="div" class="d-flex flex-wrap ga-2 mb-4">
       <v-sheet
         v-for="player in topPlayers"
         :key="`top-${player.id}`"
         rounded="lg"
         border
-        class="pa-2 top-player-card"
+        class="pa-2 top-player-card football-interactive-card"
         :class="{ 'top-player-card--active': selectedPlayerId === player.id }"
         @click="$emit('selectPlayer', player.id)"
       >
@@ -71,41 +71,43 @@ const topPlayers = computed(() => props.details.squad.players.slice(0, 4))
           </div>
         </div>
       </v-sheet>
-    </div>
+    </TransitionGroup>
 
     <div class="text-caption mb-2">Squad (click player)</div>
     <v-list density="comfortable" lines="one" class="pa-0 football-list-scroll">
-      <v-list-item
-        v-for="player in details.squad.players"
-        :key="player.id"
-        :active="selectedPlayerId === player.id"
-        rounded="lg"
-        class="mb-1"
-        @click="$emit('selectPlayer', player.id)"
-      >
-        <template #prepend>
-          <v-avatar size="28" class="mr-2">
-            <v-img :src="player.photo || undefined" />
-          </v-avatar>
-        </template>
+      <TransitionGroup name="stagger" tag="div">
+        <v-list-item
+          v-for="player in details.squad.players"
+          :key="player.id"
+          :active="selectedPlayerId === player.id"
+          rounded="lg"
+          class="mb-1 football-interactive-item"
+          @click="$emit('selectPlayer', player.id)"
+        >
+          <template #prepend>
+            <v-avatar size="28" class="mr-2">
+              <v-img :src="player.photo || undefined" />
+            </v-avatar>
+          </template>
 
-        <v-list-item-title class="text-body-2 font-weight-medium">{{ player.name }}</v-list-item-title>
-        <v-list-item-subtitle>
-          {{ player.position || 'Unknown position' }}
-          <span class="text-medium-emphasis"> · {{ player.age ? `${player.age} yrs` : 'Age -' }}</span>
-        </v-list-item-subtitle>
+          <v-list-item-title class="text-body-2 font-weight-medium">{{ player.name }}</v-list-item-title>
+          <v-list-item-subtitle>
+            {{ player.position || 'Unknown position' }}
+            <span class="text-medium-emphasis"> · {{ player.age ? `${player.age} yrs` : 'Age -' }}</span>
+          </v-list-item-subtitle>
 
-        <template #append>
-          <div class="d-flex align-center ga-2">
-            <v-chip size="x-small" variant="tonal" color="primary">#{{ player.number ?? '-' }}</v-chip>
-            <v-icon
-              icon="mdi-circle"
-              size="10"
-              :color="selectedPlayerId === player.id ? 'primary' : 'medium-emphasis'"
-            />
-          </div>
-        </template>
-      </v-list-item>
+          <template #append>
+            <div class="d-flex align-center ga-2">
+              <v-chip size="x-small" variant="tonal" color="primary">#{{ player.number ?? '-' }}</v-chip>
+              <v-icon
+                icon="mdi-circle"
+                size="10"
+                :color="selectedPlayerId === player.id ? 'primary' : 'medium-emphasis'"
+              />
+            </div>
+          </template>
+        </v-list-item>
+      </TransitionGroup>
     </v-list>
   </div>
 </template>

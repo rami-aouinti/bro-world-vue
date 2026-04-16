@@ -252,9 +252,9 @@ watch(
     </AppPageDrawers>
     <v-container fluid>
       <template v-if="sport.slug === 'football'">
-        <v-row>
-          <v-col cols="12" md="6">
-            <v-card class="h-100 football-surface football-surface--glow" variant="outlined">
+        <v-row class="football-stagger">
+          <v-col cols="12" md="6" class="football-fade-up">
+            <v-card class="h-100 football-surface football-surface--glow football-interactive-card" variant="outlined">
               <v-card-title>{{ fixturesSection.title }}</v-card-title>
               <v-divider />
               <v-card-text>
@@ -287,20 +287,22 @@ watch(
                 </v-alert>
 
                 <v-list v-else density="compact" class="pa-0">
-                  <SportsFootballFixtureCard
-                    v-for="fixture in fixtures"
-                    :key="fixture.id"
-                    :fixture="fixture"
-                    :active="selectedFixtureId === fixture.id"
-                    @select="loadFixtureDetails"
-                  />
+                  <TransitionGroup name="stagger" tag="div" class="football-transition-list">
+                    <SportsFootballFixtureCard
+                      v-for="fixture in fixtures"
+                      :key="fixture.id"
+                      :fixture="fixture"
+                      :active="selectedFixtureId === fixture.id"
+                      @select="loadFixtureDetails"
+                    />
+                  </TransitionGroup>
                 </v-list>
               </v-card-text>
             </v-card>
           </v-col>
 
-          <v-col cols="12" md="6">
-            <v-card class="h-100" variant="outlined">
+          <v-col cols="12" md="6" class="football-fade-up">
+            <v-card class="h-100 football-surface football-interactive-card" variant="outlined">
               <v-card-title class="d-flex align-center justify-space-between">
                 <span>{{ standingsSection.title }}</span>
                 <v-avatar
@@ -348,6 +350,7 @@ watch(
                     <v-list-item
                       v-for="row in group.rows"
                       :key="`${group.name}-${row.team.id}`"
+                      class="football-interactive-item"
                       :title="`${row.rank}. ${row.team.name}`"
                       :subtitle="`${row.points} pts | ${row.all.played} played`"
                     >
@@ -370,8 +373,8 @@ watch(
             </v-card>
           </v-col>
 
-          <v-col cols="12" md="6">
-            <v-card class="h-100 football-surface" variant="outlined">
+          <v-col cols="12" md="6" class="football-fade-up">
+            <v-card class="h-100 football-surface football-interactive-card" variant="outlined">
               <v-card-title>{{ teamsSection.title }}</v-card-title>
               <v-divider />
               <v-card-text>
@@ -409,6 +412,7 @@ watch(
                     :key="team.id"
                     :title="team.name"
                     :active="selectedTeamId === team.id"
+                    class="football-interactive-item"
                     @click="loadTeamDetails(team.id)"
                   >
                     <template #prepend>
@@ -425,8 +429,8 @@ watch(
             </v-card>
           </v-col>
 
-          <v-col cols="12" md="6">
-            <v-card class="h-100 football-surface football-surface--dark" variant="outlined">
+          <v-col cols="12" md="6" class="football-fade-up">
+            <v-card class="h-100 football-surface football-surface--dark football-interactive-card" variant="outlined">
               <v-card-title>{{ fixtureDetailsSection.title }}</v-card-title>
               <v-divider />
               <v-card-text>
@@ -468,6 +472,7 @@ watch(
                     <v-list-item
                       v-for="event in fixtureDetails.events"
                       :key="`${event.time.elapsed}-${event.type}-${event.player.name}`"
+                      class="football-interactive-item"
                       :title="`${event.time.elapsed ?? '-'}' ${event.type}`"
                       :subtitle="`${event.team.name ?? 'Unknown team'} · ${event.player.name ?? 'Unknown player'}`"
                     />
@@ -477,8 +482,8 @@ watch(
             </v-card>
           </v-col>
 
-          <v-col cols="12" md="6" >
-            <v-card class="h-100 football-surface football-surface--dark" variant="outlined">
+          <v-col cols="12" md="6" class="football-fade-up" >
+            <v-card class="h-100 football-surface football-surface--dark football-interactive-card" variant="outlined">
               <v-card-title>{{ teamDetailsSection.title }}</v-card-title>
               <v-divider />
               <v-card-text>
@@ -503,8 +508,8 @@ watch(
             </v-card>
           </v-col>
 
-          <v-col cols="12" md="6">
-            <v-card class="h-100 football-surface football-surface--glow" variant="outlined">
+          <v-col cols="12" md="6" class="football-fade-up">
+            <v-card class="h-100 football-surface football-surface--glow football-interactive-card" variant="outlined">
               <v-card-title>{{ playerDetailsSection.title }}</v-card-title>
               <v-divider />
               <v-card-text>
