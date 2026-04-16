@@ -718,7 +718,7 @@ function isMenuActive(paths: string[]) {
                   </template>
                 </v-list-item>
                 <v-list-item>
-                  <v-btn block color="primary" prepend-icon="mdi-credit-card-outline" @click="goToCheckout">
+                  <v-btn variant="tonal" block color="primary" prepend-icon="mdi-credit-card-outline" @click="goToCheckout">
                     {{ t('world.shop.actions.checkout', 'Checkout') }}
                   </v-btn>
                 </v-list-item>

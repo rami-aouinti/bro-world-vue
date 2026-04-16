@@ -103,6 +103,5 @@ const quickCheckItems = computed(() => [
 <style scoped>
 .world-module-drawer-list {
   border: 1px solid rgba(var(--v-border-color), 0.26);
-  background: rgba(var(--v-theme-surface), 0.6);
 }
 </style>
