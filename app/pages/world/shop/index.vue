@@ -2,9 +2,9 @@
 import type { SessionUser } from '~/types/session'
 import type { ShopCategory, ShopProduct } from '~/types/world/shop'
 
-definePageMeta({ title: 'Shop' })
+definePageMeta({ title: 'world.shop.label' })
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const { user } = useUserSession()
 const route = useRoute()
 const shopStore = useWorldShopStore()
@@ -56,7 +56,7 @@ function formatPrice(product: ShopProduct) {
   const baseAmount = product.price ?? product.amount
   const effectiveAmount = product.discountedPrice ?? baseAmount
 
-  return new Intl.NumberFormat('fr-FR', {
+  return new Intl.NumberFormat(locale.value, {
     style: 'currency',
     currency: product.currencyCode || 'EUR',
     maximumFractionDigits: 2,
@@ -64,7 +64,7 @@ function formatPrice(product: ShopProduct) {
 }
 
 function formatAmount(value: number, currencyCode: string) {
-  return new Intl.NumberFormat('fr-FR', {
+  return new Intl.NumberFormat(locale.value, {
     style: 'currency',
     currency: currencyCode || 'EUR',
     maximumFractionDigits: 2,
@@ -108,21 +108,13 @@ async function addToCart(product: ShopProduct) {
   cartPendingProductId.value = product.id
   try {
     await shopStore.addCartItem(product.id, 1)
-    Notify.success(
-      t(
-        'world.shop.feedback.addToCartSuccess',
-        'Produit ajouté au panier avec succès.',
-      ),
-    )
+    Notify.success(t('world.shop.feedback.addToCartSuccess'))
   } catch (error) {
     Notify.error(
       shopStore.error ||
         (error instanceof Error
           ? error.message
-          : t(
-              'world.shop.feedback.addToCartError',
-              "Impossible d'ajouter le produit au panier.",
-            )),
+          : t('world.shop.feedback.addToCartError')),
     )
   } finally {
     cartPendingProductId.value = null
@@ -209,22 +201,17 @@ onMounted(async () => {
 <template>
   <div>
     <WorldModuleDrawers
-      :module-title="t('world.shop.label', 'Shop')"
+      :module-title="t('world.shop.label')"
       module-icon="mdi-storefront-outline"
-      :module-description="
-        t(
-          'world.shop.moduleDescription',
-          'Catalogue, pricing, checkout, paiement et fulfillment.',
-        )
-      "
+      :module-description="t('world.shop.moduleDescription')"
       :nav-items="shopNavItems"
-      :action-label="t('world.shop.actions.createProduct', 'Create product')"
+      :action-label="t('world.shop.actions.createProduct')"
       action-icon="mdi-package-variant-plus"
     >
       <template #right>
         <v-card class="postcard-gradient-card" rounded="xl" variant="tonal">
           <v-card-title>{{
-            t('world.shop.filters.categoriesTitle', 'Categories')
+            t('world.shop.filters.categoriesTitle')
           }}</v-card-title>
           <v-divider />
 
@@ -250,8 +237,8 @@ onMounted(async () => {
               <v-list-item-subtitle>
                 {{
                   selectedCategory === category.name
-                    ? t('world.shop.filters.selected', 'Selected')
-                    : t('world.shop.filters.clickToFilter', 'Click to filter')
+                    ? t('world.shop.filters.selected')
+                    : t('world.shop.filters.clickToFilter')
                 }}
               </v-list-item-subtitle>
             </v-list-item>
@@ -266,9 +253,7 @@ onMounted(async () => {
           <v-card-text v-if="!categoriesLoading && categories.length === 0">
             <v-empty-state
               icon="mdi-shape-outline"
-              :title="
-                t('world.shop.filters.noCategories', 'No categories available')
-              "
+              :title="t('world.shop.filters.noCategories')"
             />
           </v-card-text>
 
@@ -279,7 +264,7 @@ onMounted(async () => {
               v-model.number="minPriceFilter"
               type="number"
               min="0"
-              :label="t('world.shop.filters.minPrice', 'Min price')"
+              :label="t('world.shop.filters.minPrice')"
               variant="outlined"
               density="comfortable"
               clearable
@@ -292,7 +277,7 @@ onMounted(async () => {
               v-model.number="maxPriceFilter"
               type="number"
               min="0"
-              :label="t('world.shop.filters.maxPrice', 'Max price')"
+              :label="t('world.shop.filters.maxPrice')"
               variant="outlined"
               density="comfortable"
               clearable
@@ -306,7 +291,7 @@ onMounted(async () => {
               :items="promotionOptions"
               item-title="title"
               item-value="value"
-              :label="t('world.shop.filters.promotion', 'Promotion')"
+              :label="t('world.shop.filters.promotion')"
               variant="outlined"
               density="comfortable"
               hide-details
@@ -321,7 +306,7 @@ onMounted(async () => {
               prepend-icon="mdi-filter-remove-outline"
               @click="resetFilters"
             >
-              {{ t('world.shop.filters.reset', 'Reset filters') }}
+              {{ t('world.shop.filters.reset') }}
             </v-btn>
           </v-card-text>
         </v-card>
@@ -342,9 +327,9 @@ onMounted(async () => {
         <v-card-title
           class="d-flex align-center justify-space-between flex-wrap ga-3"
         >
-          <span>{{ t('world.shop.products.title', 'Products') }}</span>
+          <span>{{ t('world.shop.products.title') }}</span>
           <v-chip size="small" variant="outlined">
-            {{ totalItems }} {{ t('world.shop.products.results', 'results') }}
+            {{ totalItems }} {{ t('world.shop.products.results') }}
           </v-chip>
         </v-card-title>
 
@@ -353,7 +338,7 @@ onMounted(async () => {
         <v-card-text>
           <v-text-field
             v-model="qFilter"
-            :label="t('world.shop.filters.searchLabel', 'Search (q)')"
+            :label="t('world.shop.filters.searchLabel')"
             class="mb-6"
             variant="outlined"
             density="comfortable"
@@ -384,13 +369,8 @@ onMounted(async () => {
             v-else-if="isEmpty"
             data-testid="shop-products-empty"
             icon="mdi-package-variant-remove"
-            :title="t('world.shop.products.emptyTitle', 'No products found')"
-            :text="
-              t(
-                'world.shop.products.emptyText',
-                'Aucun produit ne correspond aux filtres appliqués.',
-              )
-            "
+            :title="t('world.shop.products.emptyTitle')"
+            :text="t('world.shop.products.emptyText')"
           />
 
           <v-row v-else>
@@ -478,7 +458,7 @@ onMounted(async () => {
                     :disabled="cartPendingProductId === item.id"
                     @click="addToCart(item)"
                   >
-                    {{ t('world.shop.actions.addToCart', 'Add to cart') }}
+                    {{ t('world.shop.actions.addToCart') }}
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -492,7 +472,7 @@ onMounted(async () => {
           <v-select
             v-model="limit"
             :items="[10, 20, 50]"
-            :label="t('world.shop.products.rows', 'Rows')"
+            :label="t('world.shop.products.rows')"
             density="compact"
             variant="outlined"
             hide-details

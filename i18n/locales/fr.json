@@ -1064,6 +1064,12 @@
         "sync": "Data sync: online",
         "pendingApprovals": "Pending approvals: 3",
         "assignedToMe": "Assigned to me: 12"
+      },
+      "yes": "Oui",
+      "no": "Non",
+      "notAvailable": "N/D",
+      "units": {
+        "minuteShort": "min"
       }
     },
     "crm": {
@@ -1177,7 +1183,11 @@
         "selected": "Selected",
         "clickToFilter": "Click to filter",
         "noCategories": "No categories available",
-        "searchLabel": "Search (q)"
+        "searchLabel": "Search (q)",
+        "minPrice": "Prix min",
+        "maxPrice": "Prix max",
+        "promotion": "Promotion",
+        "reset": "Réinitialiser les filtres"
       },
       "products": {
         "title": "Products",
@@ -1185,6 +1195,35 @@
         "emptyTitle": "No products found",
         "emptyText": "No products match the applied filters.",
         "rows": "Rows"
+      },
+      "feedback": {
+        "addToCartSuccess": "Produit ajouté au panier avec succès.",
+        "addToCartError": "Impossible d'ajouter le produit au panier."
+      },
+      "productDetail": {
+        "title": "Détail du produit",
+        "backToProducts": "Retour aux produits",
+        "errors": {
+          "missingId": "Identifiant produit manquant.",
+          "loadFailed": "Impossible de charger ce produit pour le moment."
+        },
+        "notFound": {
+          "title": "Produit introuvable",
+          "text": "Le produit demandé n'existe pas ou n'est plus disponible."
+        },
+        "fields": {
+          "price": "Prix",
+          "coins": "Coins",
+          "stock": "Stock",
+          "category": "Catégorie",
+          "sku": "SKU",
+          "featured": "Mis en avant"
+        },
+        "similar": {
+          "title": "Produits similaires",
+          "emptyTitle": "Aucun produit similaire",
+          "emptyText": "Aucune recommandation n'est disponible pour ce produit."
+        }
       }
     },
     "learning": {
@@ -1298,6 +1337,23 @@
           "stage": "Stage",
           "score": "Score",
           "updated": "Updated"
+        }
+      },
+      "sampleRows": {
+        "j100": {
+          "role": "Ingénieur Vue Senior",
+          "team": "Plateforme",
+          "status": "Ouvert"
+        },
+        "j101": {
+          "role": "Product Designer",
+          "team": "Expérience",
+          "status": "Entretien"
+        },
+        "j102": {
+          "role": "Spécialiste DevOps",
+          "team": "Infra",
+          "status": "Clôturé"
         }
       }
     }

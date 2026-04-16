@@ -14,8 +14,14 @@ interface CrmSprintResponse {
 
 definePageMeta({ title: 'CRM Sprints' })
 
+const { locale } = useI18n()
+
 const crmNavItems = [
-  { title: 'Overview CRM', to: '/world/crm', icon: 'mdi-view-dashboard-outline' },
+  {
+    title: 'Overview CRM',
+    to: '/world/crm',
+    icon: 'mdi-view-dashboard-outline',
+  },
   { title: 'Projects', to: '/world/crm/projects', icon: 'mdi-folder-outline' },
   { title: 'Tasks', to: '/world/crm/tasks', icon: 'mdi-format-list-checks' },
   { title: 'Sprints', to: '/world/crm/sprints', icon: 'mdi-run-fast' },
@@ -28,7 +34,7 @@ const { data, pending, error } = await useFetch<CrmSprintResponse>(
 )
 
 function formatDate(value: string) {
-  return new Intl.DateTimeFormat('fr-FR', {
+  return new Intl.DateTimeFormat(locale.value, {
     dateStyle: 'medium',
   }).format(new Date(value))
 }
@@ -46,18 +52,34 @@ function formatDate(value: string) {
     />
 
     <v-container fluid>
-      <v-alert v-if="pending" type="info" variant="tonal" class="mb-4">Chargement des sprints...</v-alert>
-      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">Erreur de chargement des sprints.</v-alert>
+      <v-alert v-if="pending" type="info" variant="tonal" class="mb-4"
+        >Chargement des sprints...</v-alert
+      >
+      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4"
+        >Erreur de chargement des sprints.</v-alert
+      >
 
       <v-row v-else>
-        <v-col v-for="sprint in data?.items ?? []" :key="sprint.id" cols="12" md="6" xl="4">
+        <v-col
+          v-for="sprint in data?.items ?? []"
+          :key="sprint.id"
+          cols="12"
+          md="6"
+          xl="4"
+        >
           <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
             <div class="d-flex align-start justify-space-between ga-2 mb-2">
               <h3 class="text-subtitle-1 mb-0">{{ sprint.name }}</h3>
-              <v-chip size="small" color="secondary" variant="tonal">{{ sprint.status }}</v-chip>
+              <v-chip size="small" color="secondary" variant="tonal">{{
+                sprint.status
+              }}</v-chip>
             </div>
-            <p class="text-body-2 mb-1">Start: {{ formatDate(sprint.startDate) }}</p>
-            <p class="text-body-2 mb-0">End: {{ formatDate(sprint.endDate) }}</p>
+            <p class="text-body-2 mb-1">
+              Start: {{ formatDate(sprint.startDate) }}
+            </p>
+            <p class="text-body-2 mb-0">
+              End: {{ formatDate(sprint.endDate) }}
+            </p>
           </v-card>
         </v-col>
       </v-row>

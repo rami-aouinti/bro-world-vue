@@ -5,7 +5,7 @@ import { useCrmStore } from '~/stores/crm'
 
 definePageMeta({ title: 'world.crm.label' })
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const { can } = useCrmPermissions()
 const crmStore = useCrmStore()
 const activeView = ref<'pipeline' | 'list' | 'detail' | 'dashboard'>('pipeline')
@@ -66,7 +66,7 @@ const stageOrder: CrmPipelineStage[] = [
 ]
 
 function formatCurrency(amount: number) {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat(locale.value, {
     style: 'currency',
     currency: 'USD',
     maximumFractionDigits: 0,
