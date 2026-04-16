@@ -36,7 +36,7 @@ onMounted(() => {
   <v-navigation-drawer
     v-model="showRightDrawer"
     location="right"
-    width="300"
+    width="260"
     :permanent="lgAndUp"
     :temporary="mobile"
     floating
