@@ -45,6 +45,7 @@ const {
   leagues,
   fixtures,
   standings,
+  standingsLeague,
   teams,
   fixtureDetails,
   teamDetails,
@@ -66,6 +67,10 @@ const {
   selectLeague,
   selectSeason,
 } = useFootballData()
+
+const getInitial = (name: string) => {
+  return name?.trim().charAt(0).toUpperCase() || '?'
+}
 
 const getSection = (
   key: string,
@@ -296,7 +301,17 @@ watch(
 
           <v-col cols="12" md="6">
             <v-card class="h-100" variant="outlined">
-              <v-card-title>{{ standingsSection.title }}</v-card-title>
+              <v-card-title class="d-flex align-center justify-space-between">
+                <span>{{ standingsSection.title }}</span>
+                <v-avatar
+                  v-if="standingsLeague?.flag"
+                  size="22"
+                  rounded="sm"
+                  class="ml-2"
+                >
+                  <v-img :src="standingsLeague.flag" :alt="standingsLeague.country" />
+                </v-avatar>
+              </v-card-title>
               <v-divider />
               <v-card-text>
                 <template v-if="standingsSection.state === 'loading'">
@@ -335,7 +350,20 @@ watch(
                       :key="`${group.name}-${row.team.id}`"
                       :title="`${row.rank}. ${row.team.name}`"
                       :subtitle="`${row.points} pts | ${row.all.played} played`"
-                    />
+                    >
+                      <template #prepend>
+                        <v-avatar size="22" color="primary" variant="tonal">
+                          <v-img
+                            v-if="row.team.logo"
+                            :src="row.team.logo"
+                            :alt="row.team.name"
+                          />
+                          <span v-else class="text-caption">
+                            {{ getInitial(row.team.name) }}
+                          </span>
+                        </v-avatar>
+                      </template>
+                    </v-list-item>
                   </template>
                 </v-list>
               </v-card-text>
@@ -382,7 +410,16 @@ watch(
                     :title="team.name"
                     :active="selectedTeamId === team.id"
                     @click="loadTeamDetails(team.id)"
-                  />
+                  >
+                    <template #prepend>
+                      <v-avatar size="22" color="primary" variant="tonal">
+                        <v-img v-if="team.logo" :src="team.logo" :alt="team.name" />
+                        <span v-else class="text-caption">
+                          {{ getInitial(team.name) }}
+                        </span>
+                      </v-avatar>
+                    </template>
+                  </v-list-item>
                 </v-list>
               </v-card-text>
             </v-card>

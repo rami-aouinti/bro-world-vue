@@ -8,8 +8,12 @@ interface FootballFixtureCardItem {
     elapsed?: number | null
   }
   teams: {
-    home: { name: string }
-    away: { name: string }
+    home: { name: string; logo?: string | null }
+    away: { name: string; logo?: string | null }
+  }
+  goals?: {
+    home: number | null
+    away: number | null
   }
 }
 
@@ -41,9 +45,39 @@ defineEmits<{
       </div>
 
       <div class="d-flex align-center justify-space-between text-body-2 font-weight-bold">
-        <span class="text-truncate">{{ fixture.teams.home.name }}</span>
-        <span class="mx-2 text-medium-emphasis">vs</span>
-        <span class="text-truncate text-right">{{ fixture.teams.away.name }}</span>
+        <div class="d-flex align-center fixture-card__team">
+          <v-avatar size="24" class="mr-2" color="primary" variant="tonal">
+            <v-img
+              v-if="fixture.teams.home.logo"
+              :src="fixture.teams.home.logo"
+              :alt="fixture.teams.home.name"
+            />
+            <span v-else class="text-caption">
+              {{ fixture.teams.home.name.charAt(0).toUpperCase() }}
+            </span>
+          </v-avatar>
+          <span class="text-truncate">{{ fixture.teams.home.name }}</span>
+        </div>
+        <span class="mx-2 text-medium-emphasis text-no-wrap">
+          {{
+            fixture.goals
+              ? `${fixture.goals.home ?? '-'} - ${fixture.goals.away ?? '-'}`
+              : 'vs'
+          }}
+        </span>
+        <div class="d-flex align-center justify-end fixture-card__team">
+          <span class="text-truncate text-right">{{ fixture.teams.away.name }}</span>
+          <v-avatar size="24" class="ml-2" color="primary" variant="tonal">
+            <v-img
+              v-if="fixture.teams.away.logo"
+              :src="fixture.teams.away.logo"
+              :alt="fixture.teams.away.name"
+            />
+            <span v-else class="text-caption">
+              {{ fixture.teams.away.name.charAt(0).toUpperCase() }}
+            </span>
+          </v-avatar>
+        </div>
       </div>
 
       <div class="text-caption text-medium-emphasis mt-2 text-truncate">
@@ -67,5 +101,9 @@ defineEmits<{
 .fixture-card--active {
   border-color: rgb(var(--v-theme-primary));
   box-shadow: 0 8px 20px rgba(14, 165, 233, 0.22);
+}
+
+.fixture-card__team {
+  max-width: calc(50% - 24px);
 }
 </style>

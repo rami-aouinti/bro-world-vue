@@ -39,8 +39,12 @@ export interface FootballFixture {
     elapsed?: number | null
   }
   teams: {
-    home: { name: string }
-    away: { name: string }
+    home: { name: string; logo?: string | null }
+    away: { name: string; logo?: string | null }
+  }
+  goals?: {
+    home: number | null
+    away: number | null
   }
 }
 
@@ -53,13 +57,22 @@ export interface FootballTeam {
 export interface FootballStandingRow {
   rank: number
   points: number
-  team: { id: number; name: string }
+  team: { id: number; name: string; logo?: string | null }
   all: { played: number }
 }
 
 export interface FootballStandingsGroup {
   name: string
   rows: FootballStandingRow[]
+}
+
+export interface FootballStandingsLeague {
+  id: number
+  name: string
+  country: string
+  logo: string | null
+  flag: string | null
+  season: number
 }
 
 export interface FootballFixtureDetails {
@@ -139,6 +152,7 @@ export function useFootballData() {
   const leagues = ref<FootballLeague[]>([])
   const fixtures = ref<FootballFixture[]>([])
   const standings = ref<FootballStandingsGroup[]>([])
+  const standingsLeague = ref<FootballStandingsLeague | null>(null)
   const teams = ref<FootballTeam[]>([])
   const fixtureDetails = ref<FootballFixtureDetails | null>(null)
   const teamDetails = ref<FootballTeamDetails | null>(null)
@@ -239,6 +253,7 @@ export function useFootballData() {
   const resetLeagueDependentData = () => {
     fixtures.value = []
     standings.value = []
+    standingsLeague.value = null
     teams.value = []
     fixtureDetails.value = null
     teamDetails.value = null
@@ -320,7 +335,7 @@ export function useFootballData() {
         $fetch<{ items: FootballFixture[] }>('/api/sports/football/fixtures', {
           query: { league, season },
         }),
-        $fetch<{ groups: FootballStandingsGroup[] }>(
+        $fetch<{ league: FootballStandingsLeague; groups: FootballStandingsGroup[] }>(
           '/api/sports/football/standings',
           {
             query: { league, season },
@@ -346,10 +361,12 @@ export function useFootballData() {
 
     if (standingsResult.status === 'fulfilled') {
       standings.value = standingsResult.value.groups
+      standingsLeague.value = standingsResult.value.league
       standingsState.value = standings.value.length ? 'ready' : 'empty'
       standingsError.value = ''
     } else {
       standings.value = []
+      standingsLeague.value = null
       standingsState.value = 'error'
       standingsError.value = toErrorMessage(
         standingsResult.reason,
@@ -506,6 +523,7 @@ export function useFootballData() {
     leagues,
     fixtures,
     standings,
+    standingsLeague,
     teams,
     fixtureDetails,
     teamDetails,
