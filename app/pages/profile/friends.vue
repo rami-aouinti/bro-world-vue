@@ -283,7 +283,7 @@ onMounted(async () => {
           <v-icon icon="mdi-account-multiple-plus-outline" />
           {{ t('pages.friends.suggestions.title') }}
         </v-card-title>
-        <v-list v-if="suggestedUsers.length" class="bg-transparent">
+        <v-list v-if="suggestedUsers.length">
           <v-list-item
             v-for="item in suggestedUsers"
             :key="item.id"
