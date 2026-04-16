@@ -215,7 +215,7 @@ onMounted(async () => {
           }}</v-card-title>
           <v-divider />
 
-          <v-list class="py-0" lines="two" bg-color="transparent">
+          <v-list class="py-0" lines="two">
             <v-list-item
               v-for="category in categories"
               :key="category.id"

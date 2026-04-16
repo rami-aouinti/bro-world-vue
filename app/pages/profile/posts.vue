@@ -47,7 +47,7 @@ definePageMeta({
           <v-skeleton-loader
             v-if="statsPending"
             type="list-item-three-line"
-            class="bg-transparent px-0"
+            class="px-0"
           />
 
           <v-alert v-else-if="statsError" type="warning" variant="tonal">
@@ -92,9 +92,3 @@ definePageMeta({
     </v-container>
   </div>
 </template>
-
-<style scoped>
-.profile-posts-stats-card :deep(.v-card) {
-  background: transparent;
-}
-</style>

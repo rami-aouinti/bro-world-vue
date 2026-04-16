@@ -70,4 +70,10 @@ onMounted(() => {
   height: calc(100% - 40px);
   overflow: hidden;
 }
+
+.app-right-drawer-list :deep(.v-list),
+.app-right-drawer-list :deep(.v-card) {
+  background: transparent !important;
+  box-shadow: none;
+}
 </style>

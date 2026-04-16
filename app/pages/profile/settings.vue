@@ -199,7 +199,7 @@ onUnmounted(() => {
   <div>
     <AppPageDrawers>
       <template #right>
-        <v-list nav density="comfortable" class="bg-transparent">
+        <v-list nav density="comfortable">
           <v-list-item
             v-for="section in settingsSections"
             :key="section.id"

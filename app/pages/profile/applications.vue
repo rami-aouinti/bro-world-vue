@@ -92,7 +92,7 @@ onMounted(() => refreshApplications())
               </v-chip>
             </div>
 
-            <v-list density="compact" class="pa-0 bg-transparent">
+            <v-list density="compact" class="pa-0">
               <v-list-item
                 class="px-0"
                 title="Platform"
