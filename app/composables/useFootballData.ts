@@ -96,9 +96,90 @@ export interface FootballFixtureDetails {
     team: { name: string | null }
     player: { name: string | null }
     type: string
+    detail?: string | null
+    comments?: string | null
   }>
-  lineups: unknown[]
-  playerStats: unknown[]
+  lineups: Array<{
+    team?: {
+      id?: number | null
+      name?: string | null
+      logo?: string | null
+    }
+    coach?: {
+      name?: string | null
+    }
+    formation?: string | null
+    startXI?: Array<{
+      id?: number | null
+      name?: string | null
+      number?: number | null
+      pos?: string | null
+      grid?: string | null
+    }>
+    substitutes?: Array<{
+      id?: number | null
+      name?: string | null
+      number?: number | null
+      pos?: string | null
+      grid?: string | null
+    }>
+  }>
+  playerStats: Array<{
+    team?: {
+      id?: number | null
+      name?: string | null
+      logo?: string | null
+    }
+    player?: {
+      id?: number | null
+      name?: string | null
+      photo?: string | null
+    }
+    statistics?: Array<Record<string, any>>
+  }>
+}
+
+export interface FixtureEventViewModel {
+  id: string
+  minute: number
+  timeLabel: string
+  teamName: string
+  playerName: string
+  detail: string
+  comment: string
+  icon: string
+  color: string
+}
+
+export interface FixtureLineupPlayerViewModel {
+  id: number | null
+  name: string
+  number: string
+  position: string
+}
+
+export interface FixtureLineupViewModel {
+  teamId: number | null
+  teamName: string
+  teamLogo: string | null
+  formation: string
+  coachName: string
+  starters: FixtureLineupPlayerViewModel[]
+  substitutes: FixtureLineupPlayerViewModel[]
+}
+
+export interface FixturePlayerStatViewModel {
+  id: string
+  teamId: number | null
+  teamName: string
+  playerName: string
+  rating: string
+  minutes: string
+  goals: string
+  assists: string
+  shots: string
+  passes: string
+  tackles: string
 }
 
 export interface FootballTeamDetails {
@@ -141,7 +222,6 @@ export interface FootballPlayerDetails {
   } | null
   statistics: Array<Record<string, any>>
 }
-
 
 function normalizePlayerStatistics(stats: Array<Record<string, any>> | undefined) {
   if (!Array.isArray(stats)) {
@@ -190,6 +270,131 @@ function normalizeSelectionId(value: number | string | null | undefined) {
 
   const parsed = Number(value)
   return Number.isFinite(parsed) && parsed > 0 ? parsed : null
+}
+
+function toNumber(value: unknown): number | null {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value
+  }
+
+  if (typeof value === 'string' && value.trim().length > 0) {
+    const parsed = Number(value)
+    return Number.isFinite(parsed) ? parsed : null
+  }
+
+  return null
+}
+
+function toStatLabel(value: unknown) {
+  const numeric = toNumber(value)
+  if (numeric !== null) {
+    return `${numeric}`
+  }
+
+  if (typeof value === 'string' && value.trim().length > 0) {
+    return value
+  }
+
+  return '-'
+}
+
+function mapFixtureEventIcon(type: string, detail: string) {
+  const normalizedType = type.toLowerCase()
+  const normalizedDetail = detail.toLowerCase()
+
+  if (normalizedType.includes('goal')) {
+    return { icon: 'mdi-soccer', color: 'success' }
+  }
+
+  if (normalizedDetail.includes('yellow')) {
+    return { icon: 'mdi-card', color: 'warning' }
+  }
+
+  if (normalizedDetail.includes('red')) {
+    return { icon: 'mdi-card-bulleted', color: 'error' }
+  }
+
+  if (normalizedType.includes('subst')) {
+    return { icon: 'mdi-swap-horizontal', color: 'info' }
+  }
+
+  if (normalizedType.includes('var')) {
+    return { icon: 'mdi-video-outline', color: 'secondary' }
+  }
+
+  return { icon: 'mdi-whistle', color: 'primary' }
+}
+
+function mapFixtureEvents(events: FootballFixtureDetails['events']) {
+  return [...events]
+    .map((event, index): FixtureEventViewModel => {
+      const minute = event.time?.elapsed ?? 0
+      const detail = event.detail ?? event.type ?? 'Event'
+      const iconConfig = mapFixtureEventIcon(event.type ?? '', detail)
+
+      return {
+        id: `${minute}-${event.player?.name ?? 'player'}-${index}`,
+        minute,
+        timeLabel: minute > 0 ? `${minute}'` : "0'",
+        teamName: event.team?.name ?? 'Unknown team',
+        playerName: event.player?.name ?? 'Unknown player',
+        detail,
+        comment: event.comments ?? '',
+        icon: iconConfig.icon,
+        color: iconConfig.color,
+      }
+    })
+    .sort((left, right) => left.minute - right.minute)
+}
+
+function mapFixtureLineups(lineups: FootballFixtureDetails['lineups']) {
+  return lineups.map((lineup): FixtureLineupViewModel => {
+    const toPlayer = (
+      player: NonNullable<typeof lineup.startXI>[number],
+    ): FixtureLineupPlayerViewModel => ({
+      id: player?.id ?? null,
+      name: player?.name ?? 'Unknown player',
+      number: player?.number ? `${player.number}` : '-',
+      position: player?.pos ?? '-',
+    })
+
+    return {
+      teamId: lineup.team?.id ?? null,
+      teamName: lineup.team?.name ?? 'Unknown team',
+      teamLogo: lineup.team?.logo ?? null,
+      formation: lineup.formation ?? '-',
+      coachName: lineup.coach?.name ?? '-',
+      starters: (lineup.startXI ?? []).map(toPlayer),
+      substitutes: (lineup.substitutes ?? []).map(toPlayer),
+    }
+  })
+}
+
+function mapFixturePlayerStats(
+  stats: FootballFixtureDetails['playerStats'],
+): FixturePlayerStatViewModel[] {
+  return stats.map((entry, index) => {
+    const details = entry.statistics?.[0] ?? {}
+    const games = details?.games ?? {}
+    const goals = details?.goals ?? {}
+    const shots = details?.shots ?? {}
+    const passes = details?.passes ?? {}
+    const tackles = details?.tackles ?? {}
+
+    return {
+      id: `${entry.team?.id ?? 'team'}-${entry.player?.id ?? index}`,
+      teamId: entry.team?.id ?? null,
+      teamName: entry.team?.name ?? 'Unknown team',
+      playerName: entry.player?.name ?? 'Unknown player',
+      rating: toStatLabel(games?.rating),
+      minutes: toStatLabel(games?.minutes),
+      goals: toStatLabel(goals?.total),
+      assists: toStatLabel(goals?.assists),
+      shots: toStatLabel(shots?.total),
+      passes: toStatLabel(passes?.total),
+      tackles: toStatLabel(tackles?.total),
+    }
+  })
 }
 
 export function useFootballData() {
@@ -292,6 +497,18 @@ export function useFootballData() {
         emptyMessage: 'Select a player to open the player profile and statistics.',
       },
     ]
+  })
+
+  const mappedFixtureEvents = computed<FixtureEventViewModel[]>(() => {
+    return mapFixtureEvents(fixtureDetails.value?.events ?? [])
+  })
+
+  const mappedFixtureLineups = computed<FixtureLineupViewModel[]>(() => {
+    return mapFixtureLineups(fixtureDetails.value?.lineups ?? [])
+  })
+
+  const mappedFixturePlayerStats = computed<FixturePlayerStatViewModel[]>(() => {
+    return mapFixturePlayerStats(fixtureDetails.value?.playerStats ?? [])
   })
 
   const resetLeagueDependentData = () => {
@@ -575,6 +792,9 @@ export function useFootballData() {
     standingsLeague,
     teams,
     fixtureDetails,
+    mappedFixtureEvents,
+    mappedFixtureLineups,
+    mappedFixturePlayerStats,
     teamDetails,
     playerDetails,
     footballSections,
