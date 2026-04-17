@@ -150,3 +150,18 @@ export type RecruitDecisionSummary = ApiObject
 export type RecruitInterviewFeedbackPayload = ApiObject
 
 export type RecruitInterviewWithFeedback = ApiObject
+
+export type RecruitAnalyticsResponse = ApiObject
+export type RecruitStatusHistoryResponse = ApiObject
+export type RecruitPipelineResponse = ApiObject
+export type RecruitJobsStatsResponse = ApiObject
+
+export type RecruitOfferCreatePayload = ApiObject
+export type RecruitOfferActionPayload = ApiObject
+
+export type RecruitJobUpsertPayload = ApiObject
+export type RecruitResumePatchPayload = ApiObject
+
+export type RecruitBasicMessageResponse = {
+  message: string
+} & ApiObject

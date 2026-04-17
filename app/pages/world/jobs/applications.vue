@@ -145,6 +145,8 @@ await fetchAppliedJobs()
           </v-table>
         </v-card-text>
       </v-card>
+
+      <RecruitApplicationEndpointConsole class="mt-4" />
     </v-container>
   </div>
 </template>
