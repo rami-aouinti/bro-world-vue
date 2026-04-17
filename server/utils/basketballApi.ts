@@ -176,9 +176,73 @@ export function mapBasketballGamesResponse(
 }
 
 export function mapBasketballStandingsResponse(
-  payload: ApiSportsBasketballResponse<ApiSportsBasketballStandingItem>,
+  payload: ApiSportsBasketballResponse<ApiSportsBasketballStandingItem> | null | undefined,
 ): BasketballStandingsApiResponse {
-  const firstEntry = payload.response?.[0]
+  const emptyResponse: BasketballStandingsApiResponse = {
+    league: {
+      id: null,
+      name: null,
+      season: null,
+      logo: null,
+      country: null,
+    },
+    groups: [],
+  }
+
+  if (!payload || !Array.isArray(payload.response) || payload.response.length === 0) {
+    return emptyResponse
+  }
+
+  const normalizedRows = payload.response
+    .filter((entry): entry is ApiSportsBasketballStandingItem => Boolean(entry))
+    .map((entry) => {
+      const hasTeamShape =
+        entry.team &&
+        typeof entry.team.id === 'number' &&
+        typeof entry.team.name === 'string'
+      const team = hasTeamShape
+        ? mapTeamBase(entry.team)
+        : {
+            id: 0,
+            name: 'Unknown team',
+            code: null,
+            logo: null,
+            country: null,
+            founded: null,
+            national: false,
+          }
+
+      return {
+        position:
+          typeof entry.position === 'number' && Number.isFinite(entry.position)
+            ? entry.position
+            : 0,
+        team,
+        played: entry.games?.played ?? 0,
+        win: {
+          total: entry.games?.win?.total ?? 0,
+          percentage: entry.games?.win?.percentage ?? null,
+        },
+        lose: {
+          total: entry.games?.lose?.total ?? 0,
+          percentage: entry.games?.lose?.percentage ?? null,
+        },
+        points: {
+          for: entry.points?.for ?? 0,
+          against: entry.points?.against ?? 0,
+        },
+        form: entry.form ?? null,
+        group: {
+          name: entry.group?.name ?? null,
+        },
+      }
+    })
+
+  if (!normalizedRows.length) {
+    return emptyResponse
+  }
+
+  const firstEntry = payload.response[0]
 
   return {
     league: {
@@ -191,27 +255,7 @@ export function mapBasketballStandingsResponse(
     groups: [
       {
         name: firstEntry?.group?.name || 'General',
-        rows: (payload.response ?? []).map((entry) => ({
-          position: entry.position,
-          team: mapTeamBase(entry.team),
-          played: entry.games?.played ?? 0,
-          win: {
-            total: entry.games?.win?.total ?? 0,
-            percentage: entry.games?.win?.percentage ?? null,
-          },
-          lose: {
-            total: entry.games?.lose?.total ?? 0,
-            percentage: entry.games?.lose?.percentage ?? null,
-          },
-          points: {
-            for: entry.points?.for ?? 0,
-            against: entry.points?.against ?? 0,
-          },
-          form: entry.form ?? null,
-          group: {
-            name: entry.group?.name ?? null,
-          },
-        })),
+        rows: normalizedRows,
       },
     ],
   }
