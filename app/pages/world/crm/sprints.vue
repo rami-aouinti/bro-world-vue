@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { CrmIdResponse, CrmSprintCreatePayload } from '~~/server/types/api/crm-general'
+
 interface CrmSprintItem {
   id: string
   name: string
@@ -15,6 +17,15 @@ interface CrmSprintResponse {
 definePageMeta({ title: 'CRM Sprints' })
 
 const { locale } = useI18n()
+const router = useRouter()
+const createDialog = ref(false)
+const pendingCreate = ref(false)
+const createPayload = reactive<CrmSprintCreatePayload>({
+  projectId: '',
+  name: '',
+  goal: '',
+  status: 'planned',
+})
 
 const crmNavItems = [
   {
@@ -38,6 +49,20 @@ function formatDate(value: string) {
     dateStyle: 'medium',
   }).format(new Date(value))
 }
+
+async function createSprint() {
+  pendingCreate.value = true
+  try {
+    await $fetch<CrmIdResponse>('/api/crm/general/sprints', {
+      method: 'POST',
+      body: createPayload,
+    })
+    createDialog.value = false
+    await refreshNuxtData('/api/crm/general/sprints')
+  } finally {
+    pendingCreate.value = false
+  }
+}
 </script>
 
 <template>
@@ -49,6 +74,7 @@ function formatDate(value: string) {
       :nav-items="crmNavItems"
       action-label="Create sprint"
       action-icon="mdi-plus"
+      @action="createDialog = true"
     />
 
     <v-container fluid>
@@ -80,9 +106,33 @@ function formatDate(value: string) {
             <p class="text-body-2 mb-0">
               End: {{ formatDate(sprint.endDate) }}
             </p>
+            <v-btn
+              class="mt-3"
+              color="primary"
+              variant="tonal"
+              prepend-icon="mdi-arrow-right"
+              @click="router.push(`/world/crm/sprints/${sprint.id}`)"
+            >
+              Voir détail
+            </v-btn>
           </v-card>
         </v-col>
       </v-row>
     </v-container>
+
+    <AppModal v-model="createDialog" title="Créer un sprint" :max-width="720">
+      <v-row>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.projectId" label="Project ID" required /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.name" label="Nom" required /></v-col>
+        <v-col cols="12"><v-textarea v-model="createPayload.goal" label="Goal" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.status" label="Status" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.startDate" label="StartDate (ISO)" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.endDate" label="EndDate (ISO)" /></v-col>
+      </v-row>
+      <template #actions>
+        <v-btn variant="text" @click="createDialog = false">Annuler</v-btn>
+        <v-btn color="primary" :loading="pendingCreate" @click="createSprint">Créer</v-btn>
+      </template>
+    </AppModal>
   </div>
 </template>

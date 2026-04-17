@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { CrmIdResponse, CrmTaskCreatePayload } from '~~/server/types/api/crm-general'
+
 interface CrmTaskItem {
   id: string
   title: string
@@ -20,6 +22,16 @@ interface CrmTaskResponse {
 definePageMeta({ title: 'CRM Tasks' })
 
 const { locale } = useI18n()
+const router = useRouter()
+const createDialog = ref(false)
+const pendingCreate = ref(false)
+const createPayload = reactive<CrmTaskCreatePayload>({
+  projectId: '',
+  title: '',
+  description: '',
+  status: 'todo',
+  priority: 'medium',
+})
 
 const crmNavItems = [
   {
@@ -47,6 +59,20 @@ function formatDate(value: string | null) {
     dateStyle: 'medium',
   }).format(new Date(value))
 }
+
+async function createTask() {
+  pendingCreate.value = true
+  try {
+    await $fetch<CrmIdResponse>('/api/crm/general/tasks', {
+      method: 'POST',
+      body: createPayload,
+    })
+    createDialog.value = false
+    await refreshNuxtData('/api/crm/general/tasks')
+  } finally {
+    pendingCreate.value = false
+  }
+}
 </script>
 
 <template>
@@ -58,6 +84,7 @@ function formatDate(value: string | null) {
       :nav-items="crmNavItems"
       action-label="Create task"
       action-icon="mdi-plus"
+      @action="createDialog = true"
     />
 
     <v-container fluid>
@@ -92,9 +119,32 @@ function formatDate(value: string | null) {
               {{ task.attachments.length }} attachments ·
               {{ task.children.length }} subtasks
             </p>
+            <v-btn
+              class="mt-3"
+              color="primary"
+              variant="tonal"
+              prepend-icon="mdi-arrow-right"
+              @click="router.push(`/world/crm/tasks/${task.id}`)"
+            >
+              Voir détail
+            </v-btn>
           </v-card>
         </v-col>
       </v-row>
     </v-container>
+
+    <AppModal v-model="createDialog" title="Créer une tâche" :max-width="720">
+      <v-row>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.projectId" label="Project ID" required /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.title" label="Titre" required /></v-col>
+        <v-col cols="12"><v-textarea v-model="createPayload.description" label="Description" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.status" label="Status" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.priority" label="Priority" /></v-col>
+      </v-row>
+      <template #actions>
+        <v-btn variant="text" @click="createDialog = false">Annuler</v-btn>
+        <v-btn color="primary" :loading="pendingCreate" @click="createTask">Créer</v-btn>
+      </template>
+    </AppModal>
   </div>
 </template>

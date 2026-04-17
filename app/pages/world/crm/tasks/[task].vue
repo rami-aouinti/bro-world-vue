@@ -1,0 +1,167 @@
+<script setup lang="ts">
+import type {
+  CrmIdResponse,
+  CrmSubtaskCreatePayload,
+  CrmTaskItem,
+  CrmTaskUpdatePayload,
+} from '~~/server/types/api/crm-general'
+
+const route = useRoute()
+const router = useRouter()
+const taskId = computed(() => String(route.params.task ?? ''))
+
+definePageMeta({ title: 'CRM Task Detail' })
+
+const payload = reactive<CrmTaskUpdatePayload>({})
+const assigneeId = ref('')
+const subtaskToAttach = ref('')
+const pendingSave = ref(false)
+const newSubtask = reactive<CrmSubtaskCreatePayload>({
+  title: '',
+  description: '',
+  status: 'todo',
+  priority: 'medium',
+})
+
+const { data, pending, error, refresh } = await useFetch<CrmTaskItem>(
+  () => `/api/crm/general/tasks/${taskId.value}`,
+)
+
+watchEffect(() => {
+  if (!data.value) return
+  Object.assign(payload, {
+    title: data.value.title,
+    description: data.value.description,
+    status: data.value.status,
+    priority: data.value.priority,
+    dueAt: data.value.dueAt,
+    estimatedHours: data.value.estimatedHours,
+    projectId: data.value.projectId,
+    parentTaskId: data.value.parentTaskId,
+  })
+})
+
+async function save() {
+  pendingSave.value = true
+  try {
+    await $fetch<CrmIdResponse>(`/api/crm/general/tasks/${taskId.value}`, {
+      method: 'PATCH',
+      body: payload,
+    })
+    await refresh()
+  } finally {
+    pendingSave.value = false
+  }
+}
+
+async function remove() {
+  await $fetch(`/api/crm/general/tasks/${taskId.value}`, { method: 'DELETE' })
+  await router.push('/world/crm/tasks')
+}
+
+async function attachAssignee() {
+  if (!assigneeId.value.trim()) return
+  await $fetch(`/api/crm/general/tasks/${taskId.value}/assignees/${encodeURIComponent(assigneeId.value.trim())}`, { method: 'PUT' })
+  assigneeId.value = ''
+  await refresh()
+}
+
+async function detachAssignee(userId: string) {
+  await $fetch(`/api/crm/general/tasks/${taskId.value}/assignees/${encodeURIComponent(userId)}`, { method: 'DELETE' })
+  await refresh()
+}
+
+async function createSubtask() {
+  await $fetch<CrmIdResponse>(`/api/crm/general/tasks/${taskId.value}/subtasks`, {
+    method: 'POST',
+    body: newSubtask,
+  })
+  await refresh()
+}
+
+async function attachSubtask() {
+  if (!subtaskToAttach.value.trim()) return
+  await $fetch(`/api/crm/general/tasks/${taskId.value}/subtasks/${encodeURIComponent(subtaskToAttach.value.trim())}`, { method: 'PUT' })
+  subtaskToAttach.value = ''
+  await refresh()
+}
+
+async function detachSubtask(subtaskId: string) {
+  await $fetch(`/api/crm/general/tasks/${taskId.value}/subtasks/${encodeURIComponent(subtaskId)}`, { method: 'DELETE' })
+  await refresh()
+}
+</script>
+
+<template>
+  <v-container fluid>
+    <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push('/world/crm/tasks')">Retour</v-btn>
+    <v-alert v-if="pending" type="info" variant="tonal">Chargement de la tâche...</v-alert>
+    <v-alert v-else-if="error" type="error" variant="tonal">Tâche introuvable.</v-alert>
+
+    <v-row v-else-if="data">
+      <v-col cols="12" lg="8">
+        <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
+          <h2 class="text-h6 mb-4">{{ data.title }}</h2>
+          <v-row>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.projectId" label="Project ID" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.title" label="Titre" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.status" label="Status" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.priority" label="Priority" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.dueAt" label="DueAt (ISO)" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.estimatedHours" label="Estimated hours" type="number" /></v-col>
+            <v-col cols="12"><v-textarea v-model="payload.description" label="Description" /></v-col>
+          </v-row>
+          <div class="d-flex ga-2">
+            <v-btn color="primary" :loading="pendingSave" @click="save">Sauvegarder</v-btn>
+            <v-btn color="error" variant="tonal" @click="remove">Supprimer</v-btn>
+          </div>
+        </v-card>
+
+        <v-card rounded="xl" class="pa-4 postcard-gradient-card">
+          <h3 class="text-subtitle-1 mb-3">Subtasks</h3>
+          <v-row>
+            <v-col cols="12" md="6"><v-text-field v-model="newSubtask.title" label="Titre subtask" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="newSubtask.status" label="Status" /></v-col>
+            <v-col cols="12"><v-textarea v-model="newSubtask.description" label="Description" /></v-col>
+          </v-row>
+          <v-btn color="secondary" variant="tonal" class="mb-3" @click="createSubtask">Créer subtask</v-btn>
+
+          <v-text-field v-model="subtaskToAttach" label="Subtask ID à attacher" class="mb-2" />
+          <v-btn color="secondary" variant="tonal" class="mb-3" @click="attachSubtask">Attacher subtask</v-btn>
+
+          <v-list density="compact" bg-color="transparent">
+            <v-list-item
+              v-for="subtask in data.subTasks"
+              :key="subtask.id"
+              :title="subtask.title"
+              :subtitle="subtask.status"
+            >
+              <template #append>
+                <v-btn size="small" icon="mdi-link-off" variant="text" color="error" @click="detachSubtask(subtask.id)" />
+              </template>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-col>
+
+      <v-col cols="12" lg="4">
+        <v-card rounded="xl" class="pa-4 postcard-gradient-card">
+          <h3 class="text-subtitle-1 mb-3">Assignees</h3>
+          <v-text-field v-model="assigneeId" label="User ID" class="mb-2" />
+          <v-btn color="secondary" variant="tonal" class="mb-4" @click="attachAssignee">Attacher</v-btn>
+          <v-list density="compact" bg-color="transparent">
+            <v-list-item
+              v-for="assignee in data.assignees"
+              :key="String((assignee as any).id ?? assignee)"
+              :title="String((assignee as any).username ?? (assignee as any).id ?? assignee)"
+            >
+              <template #append>
+                <v-btn size="small" color="error" variant="text" icon="mdi-close" @click="detachAssignee(String((assignee as any).id ?? assignee))" />
+              </template>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
