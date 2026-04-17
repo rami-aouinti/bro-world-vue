@@ -2085,5 +2085,41 @@
         "accessDenied": "Access denied. This page requires ROLE_ROOT."
       }
     }
+  },
+  "crm": {
+    "components": {
+      "endpointAction": {
+        "fields": {
+          "param": "Parameter: {param}",
+          "queryJson": "Abfrage-JSON",
+          "queryHint": "Bsp.: { \"page\": 1, \"limit\": 20 }",
+          "bodyJson": "Body-JSON",
+          "bodyHint": "Bsp.: { \"name\": \"Acme\" }",
+          "response": "Antwort"
+        },
+        "actions": {
+          "execute": "Ausführen"
+        },
+        "status": {
+          "label": "Status {status}"
+        },
+        "response": {
+          "empty": "(leere Antwort)"
+        },
+        "errors": {
+          "missingRouteParam": "Fehlender Routenparameter: {param}",
+          "unknownExecution": "Unbekannter Fehler bei der Anfrageausführung."
+        }
+      }
+    }
+  },
+  "quiz": {
+    "leaderboard": {
+      "title": "Quiz-Bestenliste",
+      "error": "Die Bestenliste kann momentan nicht geladen werden.",
+      "retry": "Erneut versuchen",
+      "empty": "Momentan sind keine Ergebnisse verfügbar.",
+      "fallbackUser": "Benutzer #{index}"
+    }
   }
 }

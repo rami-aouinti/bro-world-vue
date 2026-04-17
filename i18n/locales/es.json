@@ -2059,5 +2059,41 @@
         "accessDenied": "Access denied. This page requires ROLE_ROOT."
       }
     }
+  },
+  "crm": {
+    "components": {
+      "endpointAction": {
+        "fields": {
+          "param": "Parámetro: {param}",
+          "queryJson": "JSON de consulta",
+          "queryHint": "Ej.: { \"page\": 1, \"limit\": 20 }",
+          "bodyJson": "JSON del body",
+          "bodyHint": "Ej.: { \"name\": \"Acme\" }",
+          "response": "Respuesta"
+        },
+        "actions": {
+          "execute": "Ejecutar"
+        },
+        "status": {
+          "label": "Estado {status}"
+        },
+        "response": {
+          "empty": "(respuesta vacía)"
+        },
+        "errors": {
+          "missingRouteParam": "Falta el parámetro de ruta: {param}",
+          "unknownExecution": "Error desconocido al ejecutar la solicitud."
+        }
+      }
+    }
+  },
+  "quiz": {
+    "leaderboard": {
+      "title": "Clasificación del quiz",
+      "error": "No se puede cargar la clasificación en este momento.",
+      "retry": "Reintentar",
+      "empty": "No hay resultados disponibles por ahora.",
+      "fallbackUser": "Usuario #{index}"
+    }
   }
 }

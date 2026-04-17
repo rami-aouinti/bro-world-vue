@@ -2309,5 +2309,41 @@
         "accessDenied": "Access denied. This page requires ROLE_ROOT."
       }
     }
+  },
+  "crm": {
+    "components": {
+      "endpointAction": {
+        "fields": {
+          "param": "Param: {param}",
+          "queryJson": "Query JSON",
+          "queryHint": "Ex: { \"page\": 1, \"limit\": 20 }",
+          "bodyJson": "Body JSON",
+          "bodyHint": "Ex: { \"name\": \"Acme\" }",
+          "response": "Response"
+        },
+        "actions": {
+          "execute": "Execute"
+        },
+        "status": {
+          "label": "Status {status}"
+        },
+        "response": {
+          "empty": "(empty response)"
+        },
+        "errors": {
+          "missingRouteParam": "Missing route param: {param}",
+          "unknownExecution": "Unknown request execution error."
+        }
+      }
+    }
+  },
+  "quiz": {
+    "leaderboard": {
+      "title": "Quiz leaderboard",
+      "error": "Unable to load the leaderboard right now.",
+      "retry": "Try again",
+      "empty": "No results available at the moment.",
+      "fallbackUser": "User #{index}"
+    }
   }
 }

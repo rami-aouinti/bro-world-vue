@@ -2303,5 +2303,41 @@
         "accessDenied": "Access denied. This page requires ROLE_ROOT."
       }
     }
+  },
+  "crm": {
+    "components": {
+      "endpointAction": {
+        "fields": {
+          "param": "Paramètre : {param}",
+          "queryJson": "JSON de requête",
+          "queryHint": "Ex : { \"page\": 1, \"limit\": 20 }",
+          "bodyJson": "JSON du body",
+          "bodyHint": "Ex : { \"name\": \"Acme\" }",
+          "response": "Réponse"
+        },
+        "actions": {
+          "execute": "Exécuter"
+        },
+        "status": {
+          "label": "Statut {status}"
+        },
+        "response": {
+          "empty": "(réponse vide)"
+        },
+        "errors": {
+          "missingRouteParam": "Paramètre de route manquant : {param}",
+          "unknownExecution": "Erreur inconnue lors de l’exécution de la requête."
+        }
+      }
+    }
+  },
+  "quiz": {
+    "leaderboard": {
+      "title": "Classement du quiz",
+      "error": "Impossible de charger le classement pour le moment.",
+      "retry": "Réessayer",
+      "empty": "Aucun résultat disponible pour le moment.",
+      "fallbackUser": "Utilisateur #{index}"
+    }
   }
 }
