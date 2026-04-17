@@ -342,7 +342,7 @@ onBeforeUnmount(clearTimer)
               </v-col>
             </v-row>
 
-            <div class="d-flex justify-end mt-auto pt-6">
+            <div class="d-flex justify-center mt-auto pt-6">
               <v-btn
                 color="primary"
                 size="large"
