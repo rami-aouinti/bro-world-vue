@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
     getRouterParam(event, 'orderId'),
     'orderId',
   )
+  const body = await readBody(event)
 
   try {
     const client = await getServerPrivateAxios(event)
@@ -20,6 +21,7 @@ export default defineEventHandler(async (event) => {
         event,
         `/shop/general/orders/${encodeURIComponent(orderId)}/payment-confirm`,
       ),
+      body,
     )
 
     return response.data
