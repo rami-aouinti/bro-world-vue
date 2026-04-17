@@ -8,6 +8,9 @@ import { getPersistentCached, setPersistentCached } from './persistentApiCache'
 import type {
   FootballFixture,
   FootballFixtureDetailsApiResponse,
+  FootballFixtureStatisticsMetricKey,
+  FootballFixtureStatisticsMetricValue,
+  FootballFixtureTeamStatistics,
   FootballFixtureEvent,
   FootballFixturesApiResponse,
   FootballLeague,
@@ -24,6 +27,7 @@ import type {
 import type {
   ApiSportsFixtureEventItem,
   ApiSportsFixtureItem,
+  ApiSportsFixtureStatisticsItem,
   ApiSportsLeagueItem,
   ApiSportsPlayerItem,
   ApiSportsSquadItem,
@@ -318,6 +322,184 @@ export function mapStandingsResponse(
   }
 }
 
+type FixtureStatsPeriodKey = 'match' | 'firstHalf' | 'secondHalf'
+type FixtureTeamSide = 'home' | 'away'
+
+const FIXTURE_STAT_METRIC_KEYS: FootballFixtureStatisticsMetricKey[] = [
+  'xg',
+  'possession',
+  'shotsTotal',
+  'shotsOnTarget',
+  'bigChances',
+  'passes',
+  'corners',
+  'cards',
+]
+
+function normalizeStatisticValue(
+  value: unknown,
+): FootballFixtureStatisticsMetricValue {
+  if (value === null || typeof value === 'undefined') return null
+
+  if (typeof value === 'number') {
+    return Number.isFinite(value) ? value : null
+  }
+
+  if (typeof value !== 'string') {
+    return null
+  }
+
+  const trimmed = value.trim()
+  if (!trimmed) return null
+
+  const hasPercentage = trimmed.endsWith('%')
+  const numericValue = hasPercentage ? trimmed.slice(0, -1).trim() : trimmed
+  const parsed = Number(numericValue)
+
+  if (Number.isFinite(parsed)) {
+    return hasPercentage ? `${parsed}%` : parsed
+  }
+
+  return trimmed
+}
+
+function normalizeStatisticTypeLabel(type: string) {
+  return type.toLowerCase().replace(/\s+/g, ' ').trim()
+}
+
+function getStatisticPeriod(type: string): FixtureStatsPeriodKey {
+  const normalized = normalizeStatisticTypeLabel(type)
+
+  if (normalized.includes('1st half') || normalized.includes('first half')) {
+    return 'firstHalf'
+  }
+
+  if (normalized.includes('2nd half') || normalized.includes('second half')) {
+    return 'secondHalf'
+  }
+
+  return 'match'
+}
+
+function resolveMetricFromType(
+  type: string,
+): FootballFixtureStatisticsMetricKey | null {
+  const normalized = normalizeStatisticTypeLabel(type)
+
+  if (normalized.includes('expected goals') || normalized === 'xg') return 'xg'
+  if (normalized.includes('ball possession') || normalized === 'possession')
+    return 'possession'
+  if (normalized.includes('total shots')) return 'shotsTotal'
+  if (
+    normalized.includes('shots on goal') ||
+    normalized.includes('shots on target')
+  )
+    return 'shotsOnTarget'
+  if (normalized.includes('big chances')) return 'bigChances'
+  if (normalized.includes('total passes') || normalized === 'passes')
+    return 'passes'
+  if (normalized.includes('corner kicks') || normalized === 'corners')
+    return 'corners'
+  if (
+    normalized.includes('yellow cards') ||
+    normalized.includes('red cards') ||
+    normalized === 'cards'
+  )
+    return 'cards'
+
+  return null
+}
+
+function createEmptyFixturePeriod() {
+  return {
+    home: {} as Partial<
+      Record<
+        FootballFixtureStatisticsMetricKey,
+        FootballFixtureStatisticsMetricValue
+      >
+    >,
+    away: {} as Partial<
+      Record<
+        FootballFixtureStatisticsMetricKey,
+        FootballFixtureStatisticsMetricValue
+      >
+    >,
+  }
+}
+
+function mergeCardValues(
+  current: FootballFixtureStatisticsMetricValue | undefined,
+  incoming: FootballFixtureStatisticsMetricValue,
+): FootballFixtureStatisticsMetricValue {
+  if (incoming === null) return current ?? null
+  if (typeof current === 'number' && typeof incoming === 'number') {
+    return current + incoming
+  }
+
+  return incoming
+}
+
+function mapFixtureStatistics(
+  fixture: FootballFixture | null,
+  statistics: ApiSportsFixtureStatisticsItem[] | undefined,
+): FootballFixtureTeamStatistics {
+  const mapped: FootballFixtureTeamStatistics = {
+    match: createEmptyFixturePeriod(),
+  }
+
+  const entries = statistics ?? []
+  if (!entries.length) {
+    return mapped
+  }
+
+  const homeTeamId = fixture?.teams.home.id ?? null
+  const awayTeamId = fixture?.teams.away.id ?? null
+
+  entries.forEach((teamStats, index) => {
+    const side: FixtureTeamSide =
+      teamStats.team.id === homeTeamId
+        ? 'home'
+        : teamStats.team.id === awayTeamId
+          ? 'away'
+          : index === 0
+            ? 'home'
+            : 'away'
+
+    ;(teamStats.statistics ?? []).forEach((metricItem) => {
+      const metricKey = resolveMetricFromType(metricItem.type)
+      if (!metricKey) return
+
+      const periodKey = getStatisticPeriod(metricItem.type)
+      if (!mapped[periodKey]) {
+        mapped[periodKey] = createEmptyFixturePeriod()
+      }
+
+      const normalizedValue = normalizeStatisticValue(metricItem.value)
+      const period = mapped[periodKey]
+      if (!period) return
+
+      if (metricKey === 'cards') {
+        period[side].cards = mergeCardValues(
+          period[side].cards,
+          normalizedValue,
+        )
+        return
+      }
+
+      period[side][metricKey] = normalizedValue
+    })
+  })
+
+  FIXTURE_STAT_METRIC_KEYS.forEach((key) => {
+    if (typeof mapped.match.home[key] === 'undefined')
+      mapped.match.home[key] = null
+    if (typeof mapped.match.away[key] === 'undefined')
+      mapped.match.away[key] = null
+  })
+
+  return mapped
+}
+
 function mapEvent(item: ApiSportsFixtureEventItem): FootballFixtureEvent {
   return {
     time: item.time,
@@ -439,7 +621,7 @@ export async function fetchFixtureDetails(
   event: H3Event,
   fixture: number,
 ): Promise<FootballFixtureDetailsApiResponse> {
-  const [fixtures, events, lineups, players] = await Promise.all([
+  const [fixtures, events, lineups, players, statistics] = await Promise.all([
     cachedFootballApiGet<ApiSportsFixtureItem>(
       event,
       '/fixtures',
@@ -470,13 +652,27 @@ export async function fetchFixtureDetails(
         cacheKeySuffix: 'reference-fixture-players',
       },
     ),
+    cachedFootballApiGet<ApiSportsFixtureStatisticsItem>(
+      event,
+      '/fixtures/statistics',
+      { fixture },
+      {
+        cacheProfile: 'reference',
+        cacheKeySuffix: 'reference-fixture-statistics',
+      },
+    ),
   ])
 
+  const mappedFixture = fixtures.response?.[0]
+    ? mapFixture(fixtures.response[0])
+    : null
+
   return {
-    fixture: fixtures.response?.[0] ? mapFixture(fixtures.response[0]) : null,
+    fixture: mappedFixture,
     events: (events.response ?? []).map(mapEvent),
     lineups: (lineups.response ?? []).map(mapLineup),
     playerStats: (players.response ?? []).flatMap(mapPlayerStats),
+    teamStatistics: mapFixtureStatistics(mappedFixture, statistics.response),
   }
 }
 

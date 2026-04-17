@@ -97,6 +97,27 @@ export interface FootballStandingsLeague {
   season: number
 }
 
+export type FixtureTeamStatsMetricKey =
+  | 'xg'
+  | 'possession'
+  | 'shotsTotal'
+  | 'shotsOnTarget'
+  | 'bigChances'
+  | 'passes'
+  | 'corners'
+  | 'cards'
+
+export interface FixtureTeamStatsPeriod {
+  home?: Partial<Record<FixtureTeamStatsMetricKey, string | number | null>>
+  away?: Partial<Record<FixtureTeamStatsMetricKey, string | number | null>>
+}
+
+export interface FixtureTeamStatistics {
+  match: FixtureTeamStatsPeriod
+  firstHalf?: FixtureTeamStatsPeriod
+  secondHalf?: FixtureTeamStatsPeriod
+}
+
 export interface FootballFixtureDetails {
   fixture: FootballFixture | null
   events: Array<{
@@ -145,6 +166,7 @@ export interface FootballFixtureDetails {
     }
     statistics?: Array<Record<string, any>>
   }>
+  teamStatistics: FixtureTeamStatistics
 }
 
 export interface FixtureEventViewModel {
@@ -237,18 +259,22 @@ export interface FootballPlayerDetails {
   statistics: Array<Record<string, any>>
 }
 
-function normalizePlayerStatistics(stats: Array<Record<string, any>> | undefined) {
+function normalizePlayerStatistics(
+  stats: Array<Record<string, any>> | undefined,
+) {
   if (!Array.isArray(stats)) {
     return []
   }
 
   return stats.map((stat) => {
-    const games = stat?.games && typeof stat.games === 'object'
-      ? {
-          ...stat.games,
-          appearances: stat.games.appearances ?? stat.games.appearences ?? null,
-        }
-      : stat.games
+    const games =
+      stat?.games && typeof stat.games === 'object'
+        ? {
+            ...stat.games,
+            appearances:
+              stat.games.appearances ?? stat.games.appearences ?? null,
+          }
+        : stat.games
 
     return {
       ...stat,
@@ -346,7 +372,10 @@ function mapFixtureEvents(
   return [...events]
     .map((event, index): FixtureEventViewModel => {
       const minute = event.time?.elapsed ?? 0
-      const detail = event.detail ?? event.type ?? t('pages.applications.football.misc.event')
+      const detail =
+        event.detail ??
+        event.type ??
+        t('pages.applications.football.misc.event')
       const iconConfig = mapFixtureEventIcon(event.type ?? '', detail)
 
       return {
@@ -354,9 +383,12 @@ function mapFixtureEvents(
         minute,
         timeLabel: minute > 0 ? `${minute}'` : "0'",
         teamId: event.team?.id ?? null,
-        teamName: event.team?.name ?? t('pages.applications.football.misc.unknownTeam'),
+        teamName:
+          event.team?.name ?? t('pages.applications.football.misc.unknownTeam'),
         playerId: event.player?.id ?? null,
-        playerName: event.player?.name ?? t('pages.applications.football.misc.unknownPlayer'),
+        playerName:
+          event.player?.name ??
+          t('pages.applications.football.misc.unknownPlayer'),
         detail,
         comment: event.comments ?? '',
         icon: iconConfig.icon,
@@ -383,7 +415,8 @@ function mapFixtureLineups(
 
     return {
       teamId: lineup.team?.id ?? null,
-      teamName: lineup.team?.name ?? t('pages.applications.football.misc.unknownTeam'),
+      teamName:
+        lineup.team?.name ?? t('pages.applications.football.misc.unknownTeam'),
       teamLogo: lineup.team?.logo ?? null,
       formation: lineup.formation ?? '-',
       coachName: lineup.coach?.name ?? '-',
@@ -410,8 +443,11 @@ function mapFixturePlayerStats(
       playerId: entry.player?.id ?? null,
       playerPhoto: entry.player?.photo ?? null,
       teamId: entry.team?.id ?? null,
-      teamName: entry.team?.name ?? t('pages.applications.football.misc.unknownTeam'),
-      playerName: entry.player?.name ?? t('pages.applications.football.misc.unknownPlayer'),
+      teamName:
+        entry.team?.name ?? t('pages.applications.football.misc.unknownTeam'),
+      playerName:
+        entry.player?.name ??
+        t('pages.applications.football.misc.unknownPlayer'),
       position: toStatLabel(games?.position),
       rating: toStatLabel(games?.rating),
       minutes: toStatLabel(games?.minutes),
@@ -445,11 +481,17 @@ function mapFootballOddsByFixture(items: Array<Record<string, any>>) {
       continue
     }
 
-    const bookmaker = Array.isArray(item?.bookmakers) ? item.bookmakers[0] : null
+    const bookmaker = Array.isArray(item?.bookmakers)
+      ? item.bookmakers[0]
+      : null
     const matchWinner = Array.isArray(bookmaker?.bets)
       ? bookmaker.bets.find((bet: Record<string, any>) => {
           const name = `${bet?.name ?? ''}`.toLowerCase()
-          return name.includes('match winner') || name.includes('winner') || name.includes('result')
+          return (
+            name.includes('match winner') ||
+            name.includes('winner') ||
+            name.includes('result')
+          )
         })
       : null
 
@@ -557,21 +599,27 @@ export function useFootballData() {
         title: t('pages.applications.football.sections.fixtureDetails.title'),
         state: fixtureDetailsState.value,
         error: fixtureDetailsError.value,
-        emptyMessage: t('pages.applications.football.sections.fixtureDetails.empty'),
+        emptyMessage: t(
+          'pages.applications.football.sections.fixtureDetails.empty',
+        ),
       },
       {
         key: 'teamDetails',
         title: t('pages.applications.football.sections.teamDetails.title'),
         state: teamDetailsState.value,
         error: teamDetailsError.value,
-        emptyMessage: t('pages.applications.football.sections.teamDetails.empty'),
+        emptyMessage: t(
+          'pages.applications.football.sections.teamDetails.empty',
+        ),
       },
       {
         key: 'playerDetails',
         title: t('pages.applications.football.sections.playerDetails.title'),
         state: playerDetailsState.value,
         error: playerDetailsError.value,
-        emptyMessage: t('pages.applications.football.sections.playerDetails.empty'),
+        emptyMessage: t(
+          'pages.applications.football.sections.playerDetails.empty',
+        ),
       },
     ]
   })
@@ -584,8 +632,21 @@ export function useFootballData() {
     return mapFixtureLineups(fixtureDetails.value?.lineups ?? [], t)
   })
 
-  const mappedFixturePlayerStats = computed<FixturePlayerStatViewModel[]>(() => {
-    return mapFixturePlayerStats(fixtureDetails.value?.playerStats ?? [], t)
+  const mappedFixturePlayerStats = computed<FixturePlayerStatViewModel[]>(
+    () => {
+      return mapFixturePlayerStats(fixtureDetails.value?.playerStats ?? [], t)
+    },
+  )
+
+  const mappedFixtureTeamStatistics = computed<FixtureTeamStatistics>(() => {
+    return (
+      fixtureDetails.value?.teamStatistics ?? {
+        match: {
+          home: {},
+          away: {},
+        },
+      }
+    )
   })
 
   const resetLeagueDependentData = () => {
@@ -673,18 +734,21 @@ export function useFootballData() {
         $fetch<{ items: FootballFixture[] }>('/api/sports/football/fixtures', {
           query: { league, season },
         }),
-        $fetch<{ league: FootballStandingsLeague; groups: FootballStandingsGroup[] }>(
-          '/api/sports/football/standings',
+        $fetch<{
+          league: FootballStandingsLeague
+          groups: FootballStandingsGroup[]
+        }>('/api/sports/football/standings', {
+          query: { league, season },
+        }),
+        $fetch<{ items: FootballTeam[] }>('/api/sports/football/teams', {
+          query: { league, season },
+        }),
+        $fetch<{ items: Array<Record<string, any>> }>(
+          '/api/sports/football/odds',
           {
             query: { league, season },
           },
         ),
-        $fetch<{ items: FootballTeam[] }>('/api/sports/football/teams', {
-          query: { league, season },
-        }),
-        $fetch<{ items: Array<Record<string, any>> }>('/api/sports/football/odds', {
-          query: { league, season },
-        }),
       ])
 
     if (fixturesResult.status === 'fulfilled') {
@@ -853,7 +917,9 @@ export function useFootballData() {
           query: {
             player: playerId,
             season: selectedSeason.value,
-            ...(selectedLeagueId.value ? { league: selectedLeagueId.value } : {}),
+            ...(selectedLeagueId.value
+              ? { league: selectedLeagueId.value }
+              : {}),
             ...(selectedTeamId.value ? { team: selectedTeamId.value } : {}),
           },
         },
@@ -883,6 +949,7 @@ export function useFootballData() {
     mappedFixtureEvents,
     mappedFixtureLineups,
     mappedFixturePlayerStats,
+    mappedFixtureTeamStatistics,
     teamDetails,
     playerDetails,
     footballSections,

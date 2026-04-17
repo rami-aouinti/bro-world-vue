@@ -63,6 +63,7 @@ const {
   mappedFixtureEvents,
   mappedFixtureLineups,
   mappedFixturePlayerStats,
+  mappedFixtureTeamStatistics,
   teamDetails,
   playerDetails,
   footballSections,
@@ -301,7 +302,9 @@ const findPlayerName = (playerId: number) => {
 const teamModalTitle = computed(() => {
   return (
     teamDetails.value?.statistics?.team?.name ||
-    (teamModalRequestedId.value ? findTeamName(teamModalRequestedId.value) : '') ||
+    (teamModalRequestedId.value
+      ? findTeamName(teamModalRequestedId.value)
+      : '') ||
     teamDetailsSection.value.title
   )
 })
@@ -309,7 +312,9 @@ const teamModalTitle = computed(() => {
 const playerModalTitle = computed(() => {
   return (
     playerDetails.value?.profile?.name ||
-    (playerModalRequestedId.value ? findPlayerName(playerModalRequestedId.value) : '') ||
+    (playerModalRequestedId.value
+      ? findPlayerName(playerModalRequestedId.value)
+      : '') ||
     playerDetailsSection.value.title
   )
 })
@@ -364,7 +369,8 @@ watch(
 )
 
 watch(
-  () => [sportSlug.value, selectedLeagueId.value, selectedSeason.value] as const,
+  () =>
+    [sportSlug.value, selectedLeagueId.value, selectedSeason.value] as const,
   ([slug, leagueId, season], previous) => {
     if (slug !== 'football') {
       return
@@ -392,7 +398,12 @@ watch(
 )
 
 watch(
-  () => [sportSlug.value, basketballSelectedLeagueId.value, basketballSelectedSeason.value] as const,
+  () =>
+    [
+      sportSlug.value,
+      basketballSelectedLeagueId.value,
+      basketballSelectedSeason.value,
+    ] as const,
   ([slug, leagueId, season], previous) => {
     if (slug !== 'basketball') {
       return
@@ -480,13 +491,30 @@ watch(
           <v-divider />
           <v-card-text>
             <template v-if="leaguesSection.state === 'loading'">
-              <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
-              <span>{{ t('pages.applications.football.loading.leagues') }}</span>
+              <v-progress-circular
+                indeterminate
+                color="primary"
+                size="22"
+                class="mr-3"
+              />
+              <span>{{
+                t('pages.applications.football.loading.leagues')
+              }}</span>
             </template>
-            <v-alert v-else-if="leaguesSection.state === 'error'" type="error" variant="tonal" density="comfortable">
+            <v-alert
+              v-else-if="leaguesSection.state === 'error'"
+              type="error"
+              variant="tonal"
+              density="comfortable"
+            >
               {{ leaguesSection.error }}
             </v-alert>
-            <v-alert v-else-if="leaguesSection.state === 'empty'" type="info" variant="tonal" density="comfortable">
+            <v-alert
+              v-else-if="leaguesSection.state === 'empty'"
+              type="info"
+              variant="tonal"
+              density="comfortable"
+            >
               {{ leaguesSection.emptyMessage }}
             </v-alert>
             <v-list v-else density="compact" lines="one" class="pa-0">
@@ -538,10 +566,20 @@ watch(
           <v-divider />
           <v-card-text>
             <template v-if="basketballLeaguesState === 'loading'">
-              <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
+              <v-progress-circular
+                indeterminate
+                color="primary"
+                size="22"
+                class="mr-3"
+              />
               <span>Loading basketball leagues…</span>
             </template>
-            <v-alert v-else-if="basketballLeaguesState === 'error'" type="error" variant="tonal" density="comfortable">
+            <v-alert
+              v-else-if="basketballLeaguesState === 'error'"
+              type="error"
+              variant="tonal"
+              density="comfortable"
+            >
               {{ basketballLeaguesError }}
             </v-alert>
             <v-list v-else density="compact" lines="one" class="pa-0">
@@ -570,6 +608,7 @@ watch(
               :events="mappedFixtureEvents"
               :lineups="mappedFixtureLineups"
               :player-stats="mappedFixturePlayerStats"
+              :team-statistics="mappedFixtureTeamStatistics"
               @select="loadFixtureDetails"
               @select-team="openTeamModal"
               @select-player="openPlayerModal"
@@ -599,7 +638,9 @@ watch(
           </v-col>
           <v-col cols="12" class="football-fade-up">
             <template v-if="basketballStandingsState === 'ready'">
-              <SportsBasketballStandingsWidget :standings="basketballStandings" />
+              <SportsBasketballStandingsWidget
+                :standings="basketballStandings"
+              />
             </template>
             <v-alert
               v-else-if="basketballStandingsState === 'error'"
@@ -690,7 +731,10 @@ watch(
   border-color: rgba(var(--v-theme-on-surface), 0.16) !important;
   box-shadow: 0 10px 24px rgba(5, 10, 24, 0.18);
   backdrop-filter: blur(5px);
-  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .football-surface--dark {
@@ -720,7 +764,9 @@ watch(
 
 .football-interactive-item {
   border-radius: 10px;
-  transition: background-color 180ms ease, transform 180ms ease;
+  transition:
+    background-color 180ms ease,
+    transform 180ms ease;
 }
 
 .football-interactive-item:hover,

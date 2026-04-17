@@ -4,6 +4,7 @@ import type {
   FixtureEventViewModel,
   FixtureLineupViewModel,
   FixturePlayerStatViewModel,
+  FixtureTeamStatistics,
 } from '~/composables/useFootballData'
 import SportsFootballFixtureDetailsPanel from '~/components/Sports/Football/FixtureDetailsPanel.vue'
 
@@ -14,22 +15,43 @@ defineProps<{
   events: FixtureEventViewModel[]
   lineups: FixtureLineupViewModel[]
   playerStats: FixturePlayerStatViewModel[]
+  teamStatistics: FixtureTeamStatistics
 }>()
 </script>
 
 <template>
-  <v-card class="h-100 football-surface football-surface--dark football-interactive-card" variant="outlined">
+  <v-card
+    class="h-100 football-surface football-surface--dark football-interactive-card"
+    variant="outlined"
+  >
     <v-card-title>{{ section.title }}</v-card-title>
     <v-divider />
     <v-card-text>
       <template v-if="section.state === 'loading'">
-        <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
-        <span>{{ t('pages.applications.football.loading.fixtureDetails') }}</span>
+        <v-progress-circular
+          indeterminate
+          color="primary"
+          size="22"
+          class="mr-3"
+        />
+        <span>{{
+          t('pages.applications.football.loading.fixtureDetails')
+        }}</span>
       </template>
-      <v-alert v-else-if="section.state === 'error'" type="error" variant="tonal" density="comfortable">
+      <v-alert
+        v-else-if="section.state === 'error'"
+        type="error"
+        variant="tonal"
+        density="comfortable"
+      >
         {{ section.error }}
       </v-alert>
-      <v-alert v-else-if="section.state === 'empty'" type="info" variant="tonal" density="comfortable">
+      <v-alert
+        v-else-if="section.state === 'empty'"
+        type="info"
+        variant="tonal"
+        density="comfortable"
+      >
         {{ section.emptyMessage }}
       </v-alert>
       <SportsFootballFixtureDetailsPanel
@@ -37,6 +59,7 @@ defineProps<{
         :events="events"
         :lineups="lineups"
         :player-stats="playerStats"
+        :team-statistics="teamStatistics"
       />
     </v-card-text>
   </v-card>
