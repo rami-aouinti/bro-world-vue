@@ -167,6 +167,56 @@ export interface FootballFixtureDetails {
     statistics?: Array<Record<string, any>>
   }>
   teamStatistics: FixtureTeamStatistics
+  matchContext: {
+    coverage: {
+      injuries: boolean
+      predictions: boolean
+      odds: boolean
+    }
+    availability: {
+      covered: boolean
+      available: boolean
+      status: 'available' | 'not-covered' | 'unavailable'
+      injuries: Array<{
+        playerId: number | null
+        playerName: string | null
+        playerPhoto: string | null
+        teamId: number | null
+        teamName: string | null
+        teamLogo: string | null
+        type: string | null
+        reason: string | null
+      }>
+      suspensions: Array<{
+        playerId: number | null
+        playerName: string | null
+        playerPhoto: string | null
+        teamId: number | null
+        teamName: string | null
+        teamLogo: string | null
+        type: string | null
+        reason: string | null
+      }>
+    }
+    headToHead: {
+      covered: boolean
+      available: boolean
+      status: 'available' | 'not-covered' | 'unavailable'
+      fixtures: FootballFixture[]
+    }
+    prediction: {
+      covered: boolean
+      available: boolean
+      status: 'available' | 'not-covered' | 'unavailable'
+      item: Record<string, any> | null
+    }
+    liveOdds: {
+      covered: boolean
+      available: boolean
+      status: 'available' | 'not-covered' | 'unavailable'
+      item: Record<string, any> | null
+    }
+  }
 }
 
 export interface FixtureEventViewModel {
@@ -217,6 +267,18 @@ export interface FixturePlayerStatViewModel {
   passes: string
   tackles: string
   metrics: Record<string, string | number | null>
+}
+
+export interface FixtureMatchContextViewModel {
+  coverage: {
+    injuries: boolean
+    predictions: boolean
+    odds: boolean
+  }
+  availability: FootballFixtureDetails['matchContext']['availability']
+  headToHead: FootballFixtureDetails['matchContext']['headToHead']
+  prediction: FootballFixtureDetails['matchContext']['prediction']
+  liveOdds: FootballFixtureDetails['matchContext']['liveOdds']
 }
 
 export interface FootballTeamDetails {
@@ -731,6 +793,43 @@ export function useFootballData() {
     )
   })
 
+  const mappedFixtureMatchContext = computed<FixtureMatchContextViewModel>(() => {
+    return (
+      fixtureDetails.value?.matchContext ?? {
+        coverage: {
+          injuries: false,
+          predictions: false,
+          odds: false,
+        },
+        availability: {
+          covered: false,
+          available: false,
+          status: 'not-covered',
+          injuries: [],
+          suspensions: [],
+        },
+        headToHead: {
+          covered: true,
+          available: false,
+          status: 'unavailable',
+          fixtures: [],
+        },
+        prediction: {
+          covered: false,
+          available: false,
+          status: 'not-covered',
+          item: null,
+        },
+        liveOdds: {
+          covered: false,
+          available: false,
+          status: 'not-covered',
+          item: null,
+        },
+      }
+    )
+  })
+
   const resetLeagueDependentData = () => {
     fixtures.value = []
     standings.value = []
@@ -1032,6 +1131,7 @@ export function useFootballData() {
     mappedFixtureLineups,
     mappedFixturePlayerStats,
     mappedFixtureTeamStatistics,
+    mappedFixtureMatchContext,
     teamDetails,
     playerDetails,
     footballSections,

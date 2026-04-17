@@ -2,6 +2,7 @@
 import type {
   FixtureEventViewModel,
   FixtureLineupViewModel,
+  FixtureMatchContextViewModel,
   FixturePlayerStatViewModel,
 } from '~/composables/useFootballData'
 
@@ -17,12 +18,45 @@ const props = withDefaults(defineProps<{
     home?: Partial<Record<'xg' | 'possession' | 'shotsTotal' | 'shotsOnTarget' | 'bigChances' | 'passes' | 'corners' | 'cards', string | number | null>>
     away?: Partial<Record<'xg' | 'possession' | 'shotsTotal' | 'shotsOnTarget' | 'bigChances' | 'passes' | 'corners' | 'cards', string | number | null>>
   }>>
+  matchContext?: FixtureMatchContextViewModel
 }>(), {
   mode: 'tabs',
   initialTab: 'timeline',
   homeTeamId: null,
   awayTeamId: null,
   teamStatistics: () => ({}),
+  matchContext: () => ({
+    coverage: {
+      injuries: false,
+      predictions: false,
+      odds: false,
+    },
+    availability: {
+      covered: false,
+      available: false,
+      status: 'not-covered',
+      injuries: [],
+      suspensions: [],
+    },
+    headToHead: {
+      covered: true,
+      available: false,
+      status: 'unavailable',
+      fixtures: [],
+    },
+    prediction: {
+      covered: false,
+      available: false,
+      status: 'not-covered',
+      item: null,
+    },
+    liveOdds: {
+      covered: false,
+      available: false,
+      status: 'not-covered',
+      item: null,
+    },
+  }),
 })
 
 const emit = defineEmits<{
@@ -554,6 +588,68 @@ const timelineTeams = computed(() => {
   return { home, away }
 })
 
+const formatCoverageStatus = (status: 'available' | 'not-covered' | 'unavailable') => {
+  if (status === 'not-covered') return 'Non couvert par la compétition'
+  if (status === 'unavailable') return 'Données indisponibles'
+  return 'Disponible'
+}
+
+const availabilityByTeam = computed(() => {
+  const grouped = new Map<string, { teamId: number | null; teamName: string; count: number }>()
+  props.matchContext.availability.injuries.forEach((entry) => {
+    const key = `${entry.teamId ?? 'unknown'}-${entry.teamName ?? 'unknown'}`
+    const row = grouped.get(key) ?? {
+      teamId: entry.teamId,
+      teamName: entry.teamName ?? 'Équipe inconnue',
+      count: 0,
+    }
+    row.count += 1
+    grouped.set(key, row)
+  })
+  return [...grouped.values()]
+})
+
+const headToHeadSnapshot = computed(() => {
+  return props.matchContext.headToHead.fixtures.slice(0, 3).map((fixture) => ({
+    id: fixture.id,
+    label: `${fixture.teams.home.name} ${fixture.goals?.home ?? '-'} - ${fixture.goals?.away ?? '-'} ${fixture.teams.away.name}`,
+    date: new Date(fixture.date).toLocaleDateString(),
+  }))
+})
+
+const predictionSummary = computed(() => {
+  const payload = props.matchContext.prediction.item
+  if (!payload) return null
+  const winnerName = `${payload.predictions?.winner?.name ?? ''}`.trim()
+  const comment = `${payload.predictions?.advice ?? ''}`.trim()
+  const winOrDraw = `${payload.predictions?.win_or_draw ?? ''}`.trim()
+  return {
+    winnerName: winnerName || null,
+    comment: comment || null,
+    winOrDraw: winOrDraw || null,
+  }
+})
+
+const liveOddsSummary = computed(() => {
+  const item = props.matchContext.liveOdds.item
+  const bookmaker = Array.isArray(item?.bookmakers) ? item.bookmakers[0] : null
+  const matchWinner = Array.isArray(bookmaker?.bets)
+    ? bookmaker.bets.find((bet: Record<string, any>) => `${bet?.name ?? ''}`.toLowerCase().includes('winner'))
+    : null
+  const values = Array.isArray(matchWinner?.values) ? matchWinner.values : []
+  const findOdd = (labels: string[]) => {
+    const target = values.find((entry: Record<string, any>) => labels.includes(`${entry?.value ?? ''}`.toLowerCase()))
+    const odd = target?.odd
+    return typeof odd === 'string' || typeof odd === 'number' ? `${odd}` : null
+  }
+  return {
+    bookmaker: typeof bookmaker?.name === 'string' ? bookmaker.name : null,
+    home: findOdd(['home', '1']),
+    draw: findOdd(['draw', 'x']),
+    away: findOdd(['away', '2']),
+  }
+})
+
 function onSelectTeam(teamId: number | null | undefined) {
   if (typeof teamId === 'number') emit('selectTeam', teamId)
 }
@@ -867,6 +963,84 @@ function onSelectPlayer(playerId: number | null | undefined) {
               <div class="stats-bar__right" :style="{ width: `${row.rightPct}%` }" />
             </div>
           </div>
+
+          <v-divider class="my-4" />
+
+          <section class="context-section">
+            <div class="text-subtitle-2 font-weight-bold mb-2">Team availability</div>
+            <v-alert
+              v-if="matchContext.availability.status !== 'available'"
+              type="info"
+              variant="tonal"
+              density="compact"
+            >
+              {{ formatCoverageStatus(matchContext.availability.status) }}
+            </v-alert>
+            <v-list v-else density="compact" class="pa-0 bg-transparent">
+              <v-list-item
+                v-for="team in availabilityByTeam"
+                :key="`availability-${team.teamId ?? team.teamName}`"
+                @click="onSelectTeam(team.teamId)"
+              >
+                <v-list-item-title>{{ team.teamName }}</v-list-item-title>
+                <v-list-item-subtitle>{{ team.count }} indisponibilité(s)</v-list-item-subtitle>
+              </v-list-item>
+            </v-list>
+          </section>
+
+          <section class="context-section">
+            <div class="text-subtitle-2 font-weight-bold mb-2">Head-to-head snapshot</div>
+            <v-alert
+              v-if="matchContext.headToHead.status !== 'available'"
+              type="info"
+              variant="tonal"
+              density="compact"
+            >
+              {{ formatCoverageStatus(matchContext.headToHead.status) }}
+            </v-alert>
+            <v-list v-else density="compact" class="pa-0 bg-transparent">
+              <v-list-item
+                v-for="h2h in headToHeadSnapshot"
+                :key="`h2h-${h2h.id}`"
+              >
+                <v-list-item-title>{{ h2h.label }}</v-list-item-title>
+                <v-list-item-subtitle>{{ h2h.date }}</v-list-item-subtitle>
+              </v-list-item>
+            </v-list>
+          </section>
+
+          <section class="context-section">
+            <div class="text-subtitle-2 font-weight-bold mb-2">Pre-match prediction</div>
+            <v-alert
+              v-if="matchContext.prediction.status !== 'available'"
+              type="info"
+              variant="tonal"
+              density="compact"
+            >
+              {{ formatCoverageStatus(matchContext.prediction.status) }}
+            </v-alert>
+            <div v-else class="text-body-2">
+              <div>Favori: {{ predictionSummary?.winnerName ?? '—' }}</div>
+              <div>Double chance: {{ predictionSummary?.winOrDraw ?? '—' }}</div>
+              <div>Conseil: {{ predictionSummary?.comment ?? '—' }}</div>
+            </div>
+          </section>
+
+          <section class="context-section">
+            <div class="text-subtitle-2 font-weight-bold mb-2">Live odds (match en cours)</div>
+            <v-alert
+              v-if="matchContext.liveOdds.status !== 'available'"
+              type="info"
+              variant="tonal"
+              density="compact"
+            >
+              {{ formatCoverageStatus(matchContext.liveOdds.status) }}
+            </v-alert>
+            <div v-else class="text-body-2">
+              <div>Bookmaker: {{ liveOddsSummary.bookmaker ?? '—' }}</div>
+              <div>1: {{ liveOddsSummary.home ?? '—' }} · X: {{ liveOddsSummary.draw ?? '—' }} · 2: {{ liveOddsSummary.away ?? '—' }}</div>
+            </div>
+          </section>
         </v-sheet>
       </v-window-item>
 
@@ -1157,6 +1331,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
 .stats-panel {
   background: linear-gradient(180deg, rgba(var(--v-theme-surface), .95), rgba(var(--v-theme-surface), .72));
 }
+.context-section { margin-top: 16px; }
 .stats-row { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
 .stats-row:last-child { margin-bottom: 0; }
 .stats-row__values {

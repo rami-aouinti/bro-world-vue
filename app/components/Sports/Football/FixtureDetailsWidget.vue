@@ -4,6 +4,7 @@ import type {
   FixtureEventViewModel,
   FixtureLineupViewModel,
   FixturePlayerStatViewModel,
+  FixtureMatchContextViewModel,
   FixtureTeamStatistics,
 } from '~/composables/useFootballData'
 import SportsFootballFixtureDetailsPanel from '~/components/Sports/Football/FixtureDetailsPanel.vue'
@@ -16,6 +17,7 @@ defineProps<{
   lineups: FixtureLineupViewModel[]
   playerStats: FixturePlayerStatViewModel[]
   teamStatistics: FixtureTeamStatistics
+  matchContext: FixtureMatchContextViewModel
 }>()
 </script>
 
@@ -60,6 +62,7 @@ defineProps<{
         :lineups="lineups"
         :player-stats="playerStats"
         :team-statistics="teamStatistics"
+        :match-context="matchContext"
       />
     </v-card-text>
   </v-card>
