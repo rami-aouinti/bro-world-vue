@@ -2,6 +2,7 @@
 type BlogFeedMode = 'general' | 'mine'
 
 type BlogReaction = {
+  id: string | number
   type: string | null
   isAuthor?: boolean
 }
@@ -87,11 +88,17 @@ async function reactToPost(payload: { post: BlogPost; code: string }) {
   }
 
   if ((existing.type ?? '').toLowerCase() === payload.code.toLowerCase()) {
-    await react('post', payload.post.id, undefined, 'delete')
+    await react('post', payload.post.id, undefined, 'delete', existing.id)
     return
   }
 
-  await react('post', payload.post.id, { type: payload.code }, 'update')
+  await react(
+    'post',
+    payload.post.id,
+    { type: payload.code },
+    'update',
+    existing.id,
+  )
 }
 
 async function togglePostLike(post: BlogPost) {
@@ -115,11 +122,17 @@ async function reactToComment(payload: {
   }
 
   if ((existing.type ?? '').toLowerCase() === payload.code.toLowerCase()) {
-    await react('comment', payload.comment.id, undefined, 'delete')
+    await react('comment', payload.comment.id, undefined, 'delete', existing.id)
     return
   }
 
-  await react('comment', payload.comment.id, { type: payload.code }, 'update')
+  await react(
+    'comment',
+    payload.comment.id,
+    { type: payload.code },
+    'update',
+    existing.id,
+  )
 }
 
 async function replyToComment(payload: {
@@ -133,7 +146,7 @@ async function replyToComment(payload: {
 
   await comment(payload.post.id, {
     content: payload.content,
-    parentId: payload.comment.id,
+    parentCommentId: payload.comment.id,
   })
 }
 
@@ -161,7 +174,7 @@ async function deleteComment(payload: {
   post: BlogPost
   comment: BlogComment
 }) {
-  await remove('comment', payload.comment.id, payload.post.id)
+  await remove('comment', payload.comment.id)
 }
 
 async function submitEdit() {
@@ -178,7 +191,7 @@ async function submitEdit() {
     if (target.type === 'post') {
       await edit('post', target.postId, { content })
     } else {
-      await edit('comment', target.commentId, { content }, target.postId)
+      await edit('comment', target.commentId, { content })
     }
 
     editDialog.value = false

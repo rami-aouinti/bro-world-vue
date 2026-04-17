@@ -73,6 +73,9 @@ const DEFAULT_PAGINATION: BlogPagination = {
   hasNextPage: false,
 }
 
+const BLOG_DEFAULT_ID = 'general'
+const ALLOWED_REACTION_TYPES = new Set(['like', 'heart', 'laugh', 'celebrate'])
+
 function toRecord(value: unknown): UnknownRecord {
   return typeof value === 'object' && value !== null
     ? (value as UnknownRecord)
@@ -378,10 +381,16 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
   }
 
   async function createPost(body: UnknownRecord) {
-    await privateApi.request('/api/blog/private/general', {
-      method: 'POST',
-      body,
-    })
+    const blogId =
+      pickString(body.blogId, BLOG_DEFAULT_ID).trim() || BLOG_DEFAULT_ID
+    const { blogId: _blogId, ...payload } = body
+    await privateApi.request(
+      `/api/blog/private/blogs/${encodeURIComponent(blogId)}/posts`,
+      {
+        method: 'POST',
+        body: payload,
+      },
+    )
 
     await refresh()
   }
@@ -583,19 +592,37 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
     id: string | number,
     body?: UnknownRecord,
     action: 'create' | 'update' | 'delete' = 'create',
+    reactionId?: string | number,
   ) {
     const base =
-      target === 'post'
-        ? `/api/blog/private/posts/${id}/reactions`
-        : `/api/blog/private/comments/${id}/reactions`
+      action === 'create'
+        ? target === 'post'
+          ? `/api/blog/private/posts/${id}/reactions`
+          : `/api/blog/private/comments/${id}/reactions`
+        : `/api/blog/private/reactions/${reactionId}`
     const method =
       action === 'create' ? 'POST' : action === 'update' ? 'PATCH' : 'DELETE'
+    const reactionType = pickNullableString(body?.type)?.toLowerCase()
+
+    if (action !== 'delete') {
+      if (!reactionType || !ALLOWED_REACTION_TYPES.has(reactionType)) {
+        throw createError({
+          statusCode: 400,
+          statusMessage: `Unsupported reaction type: ${String(body?.type ?? '')}`,
+        })
+      }
+    }
+
+    if (action !== 'create' && !reactionId) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'reactionId is required to update or delete a reaction',
+      })
+    }
 
     await runMutation(
       optimistic.value
         ? () => {
-            const reactionType = pickNullableString(body?.type)?.toLowerCase()
-
             updateEntityById(target, id, (entry) => {
               const normalizedReactions = [...(entry.reactions ?? [])]
               const ownIndex = normalizedReactions.findIndex(
@@ -682,22 +709,11 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
     target: 'post' | 'comment',
     id: string | number,
     body: UnknownRecord,
-    postId?: string | number,
   ) {
-    if (
-      target === 'comment' &&
-      (postId === undefined || postId === null || postId === '')
-    ) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'postId is required to edit a comment',
-      })
-    }
-
     const url =
       target === 'post'
         ? `/api/blog/private/posts/${id}`
-        : `/api/blog/private/posts/${postId}/comments/${id}`
+        : `/api/blog/private/comments/${id}`
 
     await runMutation(
       optimistic.value
@@ -738,25 +754,11 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
     )
   }
 
-  async function remove(
-    target: 'post' | 'comment',
-    id: string | number,
-    postId?: string | number,
-  ) {
-    if (
-      target === 'comment' &&
-      (postId === undefined || postId === null || postId === '')
-    ) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'postId is required to delete a comment',
-      })
-    }
-
+  async function remove(target: 'post' | 'comment', id: string | number) {
     const url =
       target === 'post'
         ? `/api/blog/private/posts/${id}`
-        : `/api/blog/private/posts/${postId}/comments/${id}`
+        : `/api/blog/private/comments/${id}`
 
     await runMutation(
       optimistic.value
