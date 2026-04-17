@@ -171,6 +171,7 @@ const { locale, t } = useI18n()
 const { data, refresh } = await useFetch<StoriesApiResponse | StoryGroup[]>(
   '/api/stories',
   {
+    query: { limit: 50 },
     default: () => [],
     server: false,
   },
@@ -487,7 +488,7 @@ async function handleFileSelect(event: Event) {
 
   try {
     const formData = new FormData()
-    formData.append('image', file)
+    formData.append('photo', file)
 
     const createdStory = await $fetch<StoryCreateResponse>('/api/stories', {
       method: 'POST',
