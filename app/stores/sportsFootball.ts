@@ -89,6 +89,22 @@ function normalizeUiError(error: unknown, fallbackMessage: string) {
   return statusCode ? `${message} (HTTP ${statusCode})` : message
 }
 
+function footballErrorMessage(
+  key:
+    | 'loadLeagues'
+    | 'loadFixtures'
+    | 'loadStandings'
+    | 'loadTeams'
+    | 'loadFixtureDetails',
+) {
+  const i18n = useNuxtApp().$i18n
+  const path = `pages.applications.football.errors.${key}`
+  const translated = i18n?.t?.(path)
+  return typeof translated === 'string' && translated !== path
+    ? translated
+    : 'Unable to load sports data.'
+}
+
 export const useSportsFootballStore = defineStore('sports-football', {
   state: () => ({
     selectedLeagueId: null as number | null,
@@ -144,7 +160,7 @@ export const useSportsFootballStore = defineStore('sports-football', {
         this.setResourceError(
           'leagues',
           error,
-          'Impossible de charger les ligues.',
+          footballErrorMessage('loadLeagues'),
         )
         return []
       } finally {
@@ -174,7 +190,7 @@ export const useSportsFootballStore = defineStore('sports-football', {
         this.setResourceError(
           'fixtures',
           error,
-          'Impossible de charger les matches.',
+          footballErrorMessage('loadFixtures'),
         )
         return []
       } finally {
@@ -203,7 +219,7 @@ export const useSportsFootballStore = defineStore('sports-football', {
         this.setResourceError(
           'standings',
           error,
-          'Impossible de charger le classement.',
+          footballErrorMessage('loadStandings'),
         )
         return []
       } finally {
@@ -233,7 +249,7 @@ export const useSportsFootballStore = defineStore('sports-football', {
         this.setResourceError(
           'teams',
           error,
-          'Impossible de charger les équipes.',
+          footballErrorMessage('loadTeams'),
         )
         return []
       } finally {
@@ -269,7 +285,7 @@ export const useSportsFootballStore = defineStore('sports-football', {
         this.setResourceError(
           'fixtureDetails',
           error,
-          'Impossible de charger le détail du match.',
+          footballErrorMessage('loadFixtureDetails'),
         )
         return null
       } finally {

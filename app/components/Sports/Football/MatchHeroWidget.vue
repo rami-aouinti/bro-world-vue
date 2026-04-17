@@ -81,14 +81,14 @@ const selectedDetailsTab = ref<
 const detailsModalTitle = computed(() => {
   switch (selectedDetailsTab.value) {
     case 'lineups':
-      return 'Lineup'
+      return t('pages.applications.football.tabs.lineups')
     case 'statistics':
-      return 'Statistics'
+      return t('pages.applications.football.misc.statistics')
     case 'player-notes':
-      return 'Player notes'
+      return t('pages.applications.football.misc.playerNotes')
     case 'timeline':
     default:
-      return 'Timeline'
+      return t('pages.applications.football.tabs.timeline')
   }
 })
 
@@ -121,7 +121,7 @@ function onSelectPlayer(playerId?: number | null) {
     @click="selectHeroFixture"
   >
     <v-card-title class="d-flex align-center justify-space-between">
-      <span>Featured match</span>
+      <span>{{ t('pages.applications.football.sections.matchHero') }}</span>
       <v-chip size="small" color="primary" variant="tonal">{{
         heroFixture?.status?.short || 'NS'
       }}</v-chip>
@@ -193,7 +193,7 @@ function onSelectPlayer(playerId?: number | null) {
             color="primary"
             block
             @click.stop="openDetailsTab('timeline')"
-            >Timeline</v-btn
+            >{{ t('pages.applications.football.tabs.timeline') }}</v-btn
           >
           <v-btn
             size="small"
@@ -201,7 +201,7 @@ function onSelectPlayer(playerId?: number | null) {
             color="primary"
             block
             @click.stop="openDetailsTab('lineups')"
-            >Lineup</v-btn
+            >{{ t('pages.applications.football.tabs.lineups') }}</v-btn
           >
           <v-btn
             size="small"
@@ -209,7 +209,7 @@ function onSelectPlayer(playerId?: number | null) {
             color="primary"
             block
             @click.stop="openDetailsTab('statistics')"
-            >Statistics</v-btn
+            >{{ t('pages.applications.football.misc.statistics') }}</v-btn
           >
           <v-btn
             size="small"
@@ -217,7 +217,7 @@ function onSelectPlayer(playerId?: number | null) {
             color="primary"
             block
             @click.stop="openDetailsTab('player-notes')"
-            >Player notes</v-btn
+            >{{ t('pages.applications.football.misc.playerNotes') }}</v-btn
           >
         </div>
       </template>

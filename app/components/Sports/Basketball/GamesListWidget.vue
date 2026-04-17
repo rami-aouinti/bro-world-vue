@@ -10,6 +10,7 @@ defineProps<{
 const emit = defineEmits<{
   select: [gameId: number]
 }>()
+const { t } = useI18n()
 
 function onSelect(gameId: number) {
   emit('select', gameId)
@@ -37,7 +38,9 @@ const scoreLabel = (game: BasketballGame) => {
 
 <template>
   <v-card variant="outlined" class="pa-2">
-    <v-card-title class="text-subtitle-1">Basketball games</v-card-title>
+    <v-card-title class="text-subtitle-1">{{
+      t('pages.applications.basketball.gamesTitle')
+    }}</v-card-title>
     <v-divider class="mb-2" />
 
     <v-alert
@@ -47,7 +50,7 @@ const scoreLabel = (game: BasketballGame) => {
       density="comfortable"
       class="ma-2"
     >
-      No games available for this league and season.
+      {{ t('pages.applications.basketball.noGamesForSeason') }}
     </v-alert>
 
     <v-list

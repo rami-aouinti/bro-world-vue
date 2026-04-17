@@ -125,12 +125,12 @@ const toNumericValue = (value: string | number | null | undefined) => {
 
 const normalizeStatDisplay = (value: string | number | null | undefined, key: StatsKey) => {
   if (value === null || typeof value === 'undefined' || `${value}`.trim() === '') {
-    return { text: 'data unavailable', numeric: null }
+    return { text: t('pages.applications.football.misc.dataUnavailable'), numeric: null }
   }
 
   if (key === 'possession') {
     const numeric = toNumericValue(value)
-    if (numeric === null) return { text: 'data unavailable', numeric: null }
+    if (numeric === null) return { text: t('pages.applications.football.misc.dataUnavailable'), numeric: null }
     return { text: `${numeric}%`, numeric }
   }
 
@@ -155,9 +155,19 @@ const fallbackMatchStats = computed<Record<StatsKey, { home: string | number | n
 })
 
 const availableStatsPeriods = computed<Array<{ title: string; value: StatsPeriod }>>(() => {
-  const periods: Array<{ title: string; value: StatsPeriod }> = [{ title: 'Match', value: 'match' }]
-  if (props.teamStatistics?.firstHalf) periods.push({ title: '1st Half', value: 'firstHalf' })
-  if (props.teamStatistics?.secondHalf) periods.push({ title: '2nd Half', value: 'secondHalf' })
+  const periods: Array<{ title: string; value: StatsPeriod }> = [
+    { title: t('pages.applications.football.misc.match'), value: 'match' },
+  ]
+  if (props.teamStatistics?.firstHalf)
+    periods.push({
+      title: t('pages.applications.football.misc.firstHalf'),
+      value: 'firstHalf',
+    })
+  if (props.teamStatistics?.secondHalf)
+    periods.push({
+      title: t('pages.applications.football.misc.secondHalf'),
+      value: 'secondHalf',
+    })
   return periods
 })
 
@@ -576,12 +586,18 @@ const timelineTeams = computed(() => {
 
   const home = {
     id: homeLineup?.teamId ?? props.homeTeamId ?? null,
-    name: homeTeamName.value || homeLineup?.teamName || 'Home',
+    name:
+      homeTeamName.value ||
+      homeLineup?.teamName ||
+      t('pages.applications.football.misc.homeTeam'),
     logo: homeLineup?.teamLogo ?? null,
   }
   const away = {
     id: awayLineup?.teamId ?? props.awayTeamId ?? null,
-    name: awayTeamName.value || awayLineup?.teamName || 'Away',
+    name:
+      awayTeamName.value ||
+      awayLineup?.teamName ||
+      t('pages.applications.football.misc.awayTeam'),
     logo: awayLineup?.teamLogo ?? null,
   }
 
@@ -589,9 +605,11 @@ const timelineTeams = computed(() => {
 })
 
 const formatCoverageStatus = (status: 'available' | 'not-covered' | 'unavailable') => {
-  if (status === 'not-covered') return 'Non couvert par la compétition'
-  if (status === 'unavailable') return 'Données indisponibles'
-  return 'Disponible'
+  if (status === 'not-covered')
+    return t('pages.applications.football.misc.notCoveredByCompetition')
+  if (status === 'unavailable')
+    return t('pages.applications.football.misc.dataUnavailable')
+  return t('pages.applications.football.misc.available')
 }
 
 const availabilityByTeam = computed(() => {
@@ -600,7 +618,7 @@ const availabilityByTeam = computed(() => {
     const key = `${entry.teamId ?? 'unknown'}-${entry.teamName ?? 'unknown'}`
     const row = grouped.get(key) ?? {
       teamId: entry.teamId,
-      teamName: entry.teamName ?? 'Équipe inconnue',
+      teamName: entry.teamName ?? t('pages.applications.football.misc.unknownTeam'),
       count: 0,
     }
     row.count += 1
@@ -662,10 +680,10 @@ function onSelectPlayer(playerId: number | null | undefined) {
 <template>
   <div class="d-flex flex-column ga-4">
     <v-tabs v-if="mode === 'tabs'" v-model="activeTab" color="primary" density="compact">
-      <v-tab value="timeline">Timeline</v-tab>
-      <v-tab value="lineups">Lineup</v-tab>
-      <v-tab value="statistics">Statistics</v-tab>
-      <v-tab value="player-notes">Player notes</v-tab>
+      <v-tab value="timeline">{{ t('pages.applications.football.tabs.timeline') }}</v-tab>
+      <v-tab value="lineups">{{ t('pages.applications.football.tabs.lineups') }}</v-tab>
+      <v-tab value="statistics">{{ t('pages.applications.football.misc.statistics') }}</v-tab>
+      <v-tab value="player-notes">{{ t('pages.applications.football.misc.playerNotes') }}</v-tab>
     </v-tabs>
 
     <v-window v-model="activeTab">
@@ -681,7 +699,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
             </v-avatar>
             <span class="text-body-2 font-weight-bold">{{ timelineTeams.home.name }}</span>
           </button>
-          <span class="text-caption text-medium-emphasis">Timeline</span>
+          <span class="text-caption text-medium-emphasis">{{ t('pages.applications.football.tabs.timeline') }}</span>
           <button
             type="button"
             class="timeline-team-button timeline-team-button--right"
@@ -776,9 +794,9 @@ function onSelectPlayer(playerId: number | null | undefined) {
             mandatory
             class="modal-filter-toggle"
           >
-            <v-btn value="combined" size="small" class="modal-filter-toggle__btn">Combined</v-btn>
-            <v-btn value="home" size="small" class="modal-filter-toggle__btn">Home team</v-btn>
-            <v-btn value="away" size="small" class="modal-filter-toggle__btn">Away team</v-btn>
+            <v-btn value="combined" size="small" class="modal-filter-toggle__btn">{{ t('pages.applications.football.misc.combined') }}</v-btn>
+            <v-btn value="home" size="small" class="modal-filter-toggle__btn">{{ t('pages.applications.football.misc.homeTeam') }}</v-btn>
+            <v-btn value="away" size="small" class="modal-filter-toggle__btn">{{ t('pages.applications.football.misc.awayTeam') }}</v-btn>
           </v-btn-toggle>
         </div>
 
@@ -931,7 +949,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
       <v-window-item value="statistics">
         <v-sheet class="stats-panel pa-4 rounded border">
           <div class="d-flex align-center justify-space-between ga-3 mb-4">
-            <div class="text-subtitle-1 font-weight-bold">Top statistics</div>
+            <div class="text-subtitle-1 font-weight-bold">{{ t('pages.applications.football.misc.topStatistics') }}</div>
             <v-btn-toggle
               v-if="availableStatsPeriods.length > 1"
               v-model="selectedStatsFilter"
@@ -967,7 +985,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
           <v-divider class="my-4" />
 
           <section class="context-section">
-            <div class="text-subtitle-2 font-weight-bold mb-2">Team availability</div>
+            <div class="text-subtitle-2 font-weight-bold mb-2">{{ t('pages.applications.football.misc.teamAvailability') }}</div>
             <v-alert
               v-if="matchContext.availability.status !== 'available'"
               type="info"
@@ -983,13 +1001,13 @@ function onSelectPlayer(playerId: number | null | undefined) {
                 @click="onSelectTeam(team.teamId)"
               >
                 <v-list-item-title>{{ team.teamName }}</v-list-item-title>
-                <v-list-item-subtitle>{{ team.count }} indisponibilité(s)</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ t('pages.applications.football.misc.unavailableCount', { count: team.count }) }}</v-list-item-subtitle>
               </v-list-item>
             </v-list>
           </section>
 
           <section class="context-section">
-            <div class="text-subtitle-2 font-weight-bold mb-2">Head-to-head snapshot</div>
+            <div class="text-subtitle-2 font-weight-bold mb-2">{{ t('pages.applications.football.misc.headToHeadSnapshot') }}</div>
             <v-alert
               v-if="matchContext.headToHead.status !== 'available'"
               type="info"
@@ -1010,7 +1028,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
           </section>
 
           <section class="context-section">
-            <div class="text-subtitle-2 font-weight-bold mb-2">Pre-match prediction</div>
+            <div class="text-subtitle-2 font-weight-bold mb-2">{{ t('pages.applications.football.misc.preMatchPrediction') }}</div>
             <v-alert
               v-if="matchContext.prediction.status !== 'available'"
               type="info"
@@ -1020,14 +1038,14 @@ function onSelectPlayer(playerId: number | null | undefined) {
               {{ formatCoverageStatus(matchContext.prediction.status) }}
             </v-alert>
             <div v-else class="text-body-2">
-              <div>Favori: {{ predictionSummary?.winnerName ?? '—' }}</div>
-              <div>Double chance: {{ predictionSummary?.winOrDraw ?? '—' }}</div>
-              <div>Conseil: {{ predictionSummary?.comment ?? '—' }}</div>
+              <div>{{ t('pages.applications.football.misc.favorite') }}: {{ predictionSummary?.winnerName ?? '—' }}</div>
+              <div>{{ t('pages.applications.football.misc.doubleChance') }}: {{ predictionSummary?.winOrDraw ?? '—' }}</div>
+              <div>{{ t('pages.applications.football.misc.advice') }}: {{ predictionSummary?.comment ?? '—' }}</div>
             </div>
           </section>
 
           <section class="context-section">
-            <div class="text-subtitle-2 font-weight-bold mb-2">Live odds (match en cours)</div>
+            <div class="text-subtitle-2 font-weight-bold mb-2">{{ t('pages.applications.football.misc.liveOdds') }}</div>
             <v-alert
               v-if="matchContext.liveOdds.status !== 'available'"
               type="info"
@@ -1037,7 +1055,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
               {{ formatCoverageStatus(matchContext.liveOdds.status) }}
             </v-alert>
             <div v-else class="text-body-2">
-              <div>Bookmaker: {{ liveOddsSummary.bookmaker ?? '—' }}</div>
+              <div>{{ t('pages.applications.football.misc.bookmaker') }}: {{ liveOddsSummary.bookmaker ?? '—' }}</div>
               <div>1: {{ liveOddsSummary.home ?? '—' }} · X: {{ liveOddsSummary.draw ?? '—' }} · 2: {{ liveOddsSummary.away ?? '—' }}</div>
             </div>
           </section>
@@ -1055,9 +1073,9 @@ function onSelectPlayer(playerId: number | null | undefined) {
             mandatory
             class="modal-filter-toggle"
           >
-            <v-btn value="all" size="small" class="modal-filter-toggle__btn">All</v-btn>
-            <v-btn value="home" size="small" class="modal-filter-toggle__btn">Home team</v-btn>
-            <v-btn value="away" size="small" class="modal-filter-toggle__btn">Away team</v-btn>
+            <v-btn value="all" size="small" class="modal-filter-toggle__btn">{{ t('pages.applications.football.misc.all') }}</v-btn>
+            <v-btn value="home" size="small" class="modal-filter-toggle__btn">{{ t('pages.applications.football.misc.homeTeam') }}</v-btn>
+            <v-btn value="away" size="small" class="modal-filter-toggle__btn">{{ t('pages.applications.football.misc.awayTeam') }}</v-btn>
           </v-btn-toggle>
         </div>
 
