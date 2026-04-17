@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useWorldShopStore } from '~/stores/worldShop'
-import type { WorldShopCheckoutSession } from '~/types/world/shop'
+import type { ShopGeneralCheckoutSession } from '~/types/world/shop'
 
 definePageMeta({ title: 'Shop Checkout' })
 const { shopNavItems } = useShopNavItems()
@@ -37,7 +37,9 @@ type ShopCartApiResponse = {
 const shopStore = useWorldShopStore()
 const loading = ref(false)
 const errorMessage = ref('')
-const checkout = computed(() => shopStore.detail as WorldShopCheckoutSession | null)
+const checkout = computed(
+  () => shopStore.detail as ShopGeneralCheckoutSession | null,
+)
 const cartPayload = computed(() => shopStore.cart as ShopCartApiResponse | null)
 const cart = computed<CartLine[]>(() => {
   const payload = cartPayload.value
@@ -94,7 +96,8 @@ const activeStep = computed(() => {
 })
 
 const subtotal = computed(() => {
-  if (typeof cartPayload.value?.subtotal === 'number') return cartPayload.value.subtotal
+  if (typeof cartPayload.value?.subtotal === 'number')
+    return cartPayload.value.subtotal
   if (typeof cartPayload.value?.subtotalAmount === 'number')
     return cartPayload.value.subtotalAmount
 
@@ -122,7 +125,8 @@ const buildIdempotencyKey = (prefix: string) =>
 
 async function createCheckout() {
   if (!cart.value.length) {
-    errorMessage.value = 'Panier vide. Ajoutez des produits avant de lancer checkout.'
+    errorMessage.value =
+      'Panier vide. Ajoutez des produits avant de lancer checkout.'
     return
   }
 

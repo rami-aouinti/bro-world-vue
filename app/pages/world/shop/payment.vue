@@ -1,35 +1,12 @@
 <script setup lang="ts">
 import { useWorldShopStore } from '~/stores/worldShop'
+import type {
+  ShopGeneralCheckoutSession,
+  WorldShopPaymentAttempt,
+} from '~/types/world/shop'
 
 definePageMeta({ title: 'Shop Payment' })
 const { shopNavItems } = useShopNavItems()
-
-type CheckoutStatus =
-  | 'draft'
-  | 'payment_pending'
-  | 'processing'
-  | 'paid'
-  | 'failed'
-
-type PaymentAttempt = {
-  id: string
-  provider: 'stripe' | 'adyen' | 'paypal'
-  status: 'pending' | 'failed' | 'succeeded'
-  reason?: string
-  providerPaymentId?: string
-  clientSecret?: string
-}
-
-type CheckoutSession = {
-  id: string
-  status: CheckoutStatus
-  step: string
-  currency: string
-  totalAmount: number
-  providerPaymentId?: string
-  lastError?: string
-  attempts: PaymentAttempt[]
-}
 
 const route = useRoute()
 const checkoutId = computed(() =>
@@ -41,9 +18,11 @@ const shopStore = useWorldShopStore()
 const loading = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
-const checkout = computed(() => shopStore.detail as CheckoutSession | null)
+const checkout = computed(
+  () => shopStore.detail as ShopGeneralCheckoutSession | null,
+)
 const currentAttempt = computed(
-  () => shopStore.currentAttempt as PaymentAttempt | null,
+  () => shopStore.currentAttempt as WorldShopPaymentAttempt | null,
 )
 
 const buildIdempotencyKey = (prefix: string) =>

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
-import type { ShopCategory, ShopProduct } from '~/types/world/shop'
+import type {
+  ShopGeneralCategory,
+  ShopGeneralProduct,
+} from '~/types/world/shop'
 
 definePageMeta({ title: 'world.shop.label' })
 
@@ -25,11 +28,11 @@ const promotionFilter = ref('')
 const page = ref(1)
 const limit = ref(20)
 
-const products = computed(() => shopStore.items as ShopProduct[])
+const products = computed(() => shopStore.items as ShopGeneralProduct[])
 const totalItems = computed(() => shopStore.pagination.total)
 const totalPages = computed(() => shopStore.pagination.totalPages)
 
-const categories = computed(() => shopStore.categories as ShopCategory[])
+const categories = computed(() => shopStore.categories as ShopGeneralCategory[])
 
 const hasError = computed(() => !!shopStore.error)
 const isEmpty = computed(
@@ -52,7 +55,7 @@ function normalizedPromotionFilter() {
   return Math.max(0, Math.floor(parsed))
 }
 
-function formatPrice(product: ShopProduct) {
+function formatPrice(product: ShopGeneralProduct) {
   const baseAmount = product.price ?? product.amount
   const effectiveAmount = product.discountedPrice ?? baseAmount
 
@@ -71,22 +74,22 @@ function formatAmount(value: number, currencyCode: string) {
   }).format(value)
 }
 
-function originalPrice(product: ShopProduct) {
+function originalPrice(product: ShopGeneralProduct) {
   return product.price ?? product.amount
 }
 
-function hasPromotion(product: ShopProduct) {
+function hasPromotion(product: ShopGeneralProduct) {
   const original = originalPrice(product)
   const discounted = product.discountedPrice
   return typeof discounted === 'number' && discounted < original
 }
 
-function productImage(product: ShopProduct) {
+function productImage(product: ShopGeneralProduct) {
   const fallback = '/images/platform-media/shop-premium-hoodie.svg'
   return product.photo?.trim() || fallback
 }
 
-function categoryImage(category: ShopCategory) {
+function categoryImage(category: ShopGeneralCategory) {
   const fallback = '/images/platform-media/shop-premium-hoodie.svg'
   return category.photo?.trim() || fallback
 }
@@ -95,7 +98,7 @@ function goToProductDetail(productId: string) {
   return navigateTo(`/world/shop/products/${productId}`)
 }
 
-async function addToCart(product: ShopProduct) {
+async function addToCart(product: ShopGeneralProduct) {
   const token = sessionUser.value?.token?.trim()
   if (!token) {
     await navigateTo({
@@ -127,7 +130,7 @@ function toggleCategoryFilter(categoryName: string) {
   void applyFilters()
 }
 
-function resolveProductCategory(item: ShopProduct) {
+function resolveProductCategory(item: ShopGeneralProduct) {
   return item.categoryName || item.category || ''
 }
 
@@ -429,7 +432,9 @@ onMounted(async () => {
                           ? 'mdi-filter-check-outline'
                           : 'mdi-shape-outline'
                       "
-                      @click="toggleCategoryFilter(resolveProductCategory(item))"
+                      @click="
+                        toggleCategoryFilter(resolveProductCategory(item))
+                      "
                     >
                       {{ resolveProductCategory(item) }}
                     </v-chip>

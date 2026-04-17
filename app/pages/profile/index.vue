@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import type { ShopProduct, WorldShopCheckoutSession } from '~/types/world/shop'
+import type {
+  ShopGeneralProduct,
+  WorldShopCheckoutSession,
+} from '~/types/world/shop'
 import type { SessionUser } from '~/types/session'
 
 interface UpcomingCalendarEvent {
@@ -34,7 +37,7 @@ const { pending: shopPending } = storeToRefs(shopStore)
 const displayedProverbs = ref<string[]>([])
 let typingInterval: ReturnType<typeof setInterval> | null = null
 
-const coinProducts = ref<ShopProduct[]>([])
+const coinProducts = ref<ShopGeneralProduct[]>([])
 const selectedProductId = ref('')
 const checkout = ref<WorldShopCheckoutSession | null>(null)
 const selectedProvider = ref<'stripe' | 'paypal'>('stripe')
@@ -190,10 +193,10 @@ async function fetchCoinProducts(force = false) {
   try {
     await shopStore.fetchProducts({
       force,
-      filters: { status: 'active', page: 1, limit: 50 },
+      filters: { status: 'published', page: 1, limit: 50 },
     })
 
-    const normalizedProducts = (shopStore.items as ShopProduct[]).filter(
+    const normalizedProducts = (shopStore.items as ShopGeneralProduct[]).filter(
       (item) => {
         const category = String(item.category || '').toLowerCase()
         return (
@@ -349,7 +352,7 @@ function formatReceiptAmount(receipt: CoinsReceipt) {
   }).format(receipt.amount)
 }
 
-function formatProductAmount(product: ShopProduct) {
+function formatProductAmount(product: ShopGeneralProduct) {
   return new Intl.NumberFormat(locale.value, {
     style: 'currency',
     currency: product.currencyCode,
