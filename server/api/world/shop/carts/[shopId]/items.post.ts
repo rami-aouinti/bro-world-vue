@@ -14,8 +14,9 @@ type Body = {
 }
 
 export default defineEventHandler(async (event) => {
-  const { shopId } = getRouterParams(event)
-  const normalizedShopId = assertShopNonEmptyString(shopId, 'shopId')
+  const routerShopId =
+    getRouterParam(event, 'shopId') ?? getRouterParam(event, 'shopid')
+  const normalizedShopId = assertShopNonEmptyString(routerShopId, 'shopId')
   const body = await readBody<Body>(event)
   const productId = assertShopNonEmptyString(body?.productId, 'productId')
   const quantity = assertShopPositiveInteger(body?.quantity ?? 1, 'quantity')
