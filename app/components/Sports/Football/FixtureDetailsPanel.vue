@@ -969,7 +969,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
 .lineup-player-link:hover, .player-link:hover { color: rgb(var(--v-theme-primary)); text-decoration: underline; }
 .pitch-layout {
   position: relative;
-  min-height: 520px;
+  min-height: 900px;
   border-radius: 16px;
   border: 1px solid rgba(var(--v-theme-on-surface), .16);
   background: linear-gradient(180deg, rgba(17, 65, 52, .95), rgba(11, 48, 39, .96));
@@ -1146,7 +1146,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
   .timeline-minute { min-width: 52px; }
   .timeline-card__title { font-size: .85rem; }
   .timeline-axis__dot { top: 16px; width: 10px; height: 10px; }
-  .pitch-layout { min-height: 420px; }
+  .pitch-layout { min-height: 800px; }
   .pitch-player { width: 68px; }
   .pitch-player__name { font-size: .62rem; }
 }
