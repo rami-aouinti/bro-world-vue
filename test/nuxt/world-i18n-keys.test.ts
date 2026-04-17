@@ -7,15 +7,37 @@ import fr from '../../i18n/locales/fr.json'
 const locales = { en, fr, es, de }
 
 const criticalKeys = [
-  'world.crm.nav.overview',
-  'world.shop.nav.overview',
-  'world.shop.actions.publishProduct',
-  'world.learning.nav.overview',
-  'world.learning.home.title',
-  'world.jobs.nav.overview',
-  'world.jobs.pipeline.title',
+  // world common
   'world.common.quickChecks.title',
   'world.common.actions.saveRecord',
+
+  // CRM
+  'world.crm.label',
+  'world.crm.nav.overview',
+  'world.crm.nav.admin',
+  'world.crm.actions.createLead',
+  'world.crm.projects.moduleDescription',
+
+  // Shop
+  'world.shop.label',
+  'world.shop.nav.overview',
+  'world.shop.nav.admin',
+  'world.shop.actions.publishProduct',
+  'world.shop.home.title',
+  'world.shop.orders.title',
+
+  // Jobs
+  'world.jobs.label',
+  'world.jobs.nav.overview',
+  'world.jobs.nav.admin',
+  'world.jobs.home.title',
+  'world.jobs.pipeline.title',
+  'world.jobs.actions.publishOffer',
+  'world.jobs.offers.total',
+
+  // Learning
+  'world.learning.nav.overview',
+  'world.learning.home.title',
 ]
 
 function getByPath(object: Record<string, any>, path: string) {
