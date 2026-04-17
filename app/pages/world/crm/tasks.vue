@@ -6,8 +6,8 @@ interface CrmTaskItem {
   priority: string
   projectName: string
   sprintName: string
-  dueAt: string
-  estimatedHours: number
+  dueAt: string | null
+  estimatedHours: number | null
   updatedAt: string
   attachments: Array<{ id?: string }>
   children: Array<{ id: string; status: string }>
@@ -35,10 +35,14 @@ const crmNavItems = [
 ]
 
 const { data, pending, error } = await useFetch<CrmTaskResponse>(
-  '/api/world/crm/general/tasks',
+  '/api/crm/general/tasks',
 )
 
-function formatDate(value: string) {
+function formatDate(value: string | null) {
+  if (!value) {
+    return '—'
+  }
+
   return new Intl.DateTimeFormat(locale.value, {
     dateStyle: 'medium',
   }).format(new Date(value))

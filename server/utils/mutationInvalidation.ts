@@ -104,6 +104,7 @@ const MUTATION_INVALIDATION_RULES: MutationInvalidationRule[] = [
     scope: 'public',
     prefixes: ['quiz'],
   },
+  { key: 'crm:general:mutate', scope: 'private', prefixes: ['crm'] },
   { key: 'users:block:create', scope: 'private', prefixes: ['users'] },
   { key: 'users:block:delete', scope: 'private', prefixes: ['users'] },
   {
