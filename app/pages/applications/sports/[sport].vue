@@ -14,7 +14,6 @@ import SportsFootballFixturesListWidget from '~/components/Sports/Football/Fixtu
 import SportsFootballStandingsTableWidget from '~/components/Sports/Football/StandingsTableWidget.vue'
 import SportsFootballTeamDetailsWidget from '~/components/Sports/Football/TeamDetailsWidget.vue'
 import SportsFootballPlayerDetailsWidget from '~/components/Sports/Football/PlayerDetailsWidget.vue'
-import SportsFootballFixtureDetailsWidget from '~/components/Sports/Football/FixtureDetailsWidget.vue'
 
 definePageMeta({
   title: 'appbar.sports',
@@ -113,11 +112,6 @@ const teamDetailsSection = getSection(
   t('pages.applications.football.sections.teamDetails.title'),
   t('pages.applications.football.sections.teamDetails.empty'),
 )
-const fixtureDetailsSection = getSection(
-  'fixtureDetails',
-  t('pages.applications.football.sections.fixtureDetails.title'),
-  t('pages.applications.football.sections.fixtureDetails.empty'),
-)
 const playerDetailsSection = getSection(
   'playerDetails',
   t('pages.applications.football.sections.playerDetails.title'),
@@ -129,6 +123,35 @@ const hasSelection = computed(() => {
     selectedFixtureId.value || selectedTeamId.value || selectedPlayerId.value,
   )
 })
+
+const teamModalOpen = ref(false)
+const playerModalOpen = ref(false)
+const featuredLeaguePatterns = [
+  /world cup/i,
+  /euro|uefa european championship/i,
+  /premier league/i,
+  /la liga/i,
+  /serie a/i,
+  /bundesliga/i,
+]
+
+const featuredLeagues = computed(() => {
+  const byPattern = featuredLeaguePatterns
+    .map((pattern) => leagues.value.find(league => pattern.test(league.name)))
+    .filter((league): league is (typeof leagues.value)[number] => Boolean(league))
+
+  return byPattern.slice(0, 6)
+})
+
+const openTeamModal = async (teamId: number) => {
+  await loadTeamDetails(teamId)
+  teamModalOpen.value = true
+}
+
+const openPlayerModal = async (playerId: number) => {
+  await loadPlayerDetails(playerId)
+  playerModalOpen.value = true
+}
 
 const initializeFootballPage = async () => {
   if (sportSlug.value !== 'football') {
@@ -193,6 +216,7 @@ watch(
             :section="fixturesSection"
             :selected-fixture-id="selectedFixtureId"
             @select="loadFixtureDetails"
+            @select-team="openTeamModal"
           />
         </v-row>
       </template>
@@ -201,6 +225,53 @@ watch(
         <v-card-title>{{ leaguesSection.title }}</v-card-title>
         <v-divider />
         <v-card-text>
+          <v-select
+            :model-value="selectedLeagueId"
+            :items="leagues"
+            item-title="name"
+            item-value="id"
+            :label="t('pages.applications.football.filters.league')"
+            density="comfortable"
+            :loading="leaguesState === 'loading'"
+            :disabled="leaguesState !== 'ready'"
+            variant="outlined"
+            hide-details
+            class="mb-3"
+            @update:model-value="selectLeague"
+          />
+
+          <v-select
+            :model-value="selectedSeason"
+            :items="seasons"
+            :label="t('pages.applications.football.filters.season')"
+            density="comfortable"
+            :disabled="!selectedLeague"
+            variant="outlined"
+            hide-details
+            class="mb-4"
+            @update:model-value="selectSeason"
+          />
+
+          <div class="text-subtitle-2 mb-2">{{ t('pages.applications.football.sections.leagues.title') }}</div>
+          <v-list density="compact" lines="one" class="pa-0 mb-4">
+            <v-list-item
+              v-for="league in featuredLeagues"
+              :key="`featured-${league.id}`"
+              :active="selectedLeagueId === league.id"
+              rounded="lg"
+              class="football-interactive-item"
+              @click="selectLeague(league.id)"
+            >
+              <template #prepend>
+                <v-avatar size="24" rounded="0" class="mr-2">
+                  <v-img :src="league.logo || undefined" :alt="league.name" cover />
+                </v-avatar>
+              </template>
+              <v-list-item-title class="text-body-2">{{ league.name }}</v-list-item-title>
+              <v-list-item-subtitle>{{ league.country.name }}</v-list-item-subtitle>
+            </v-list-item>
+          </v-list>
+
           <template v-if="leaguesSection.state === 'loading'">
             <v-progress-circular
               indeterminate
@@ -228,91 +299,40 @@ watch(
           >
             {{ leaguesSection.emptyMessage }}
           </v-alert>
-
-          <v-list v-else density="compact" lines="one" class="pa-0">
-            <v-list-item
-              v-for="league in leagues"
-              :key="league.id"
-              :title="league.name"
-              :subtitle="league.country.name"
-            />
-          </v-list>
+          <v-alert
+            v-else-if="!featuredLeagues.length"
+            type="info"
+            variant="tonal"
+            density="comfortable"
+          >
+            No featured leagues found.
+          </v-alert>
         </v-card-text>
       </template>
     </AppPageDrawers>
 
     <v-container fluid>
-     <v-row>
-       <v-col cols="12" md="6">
-         <v-select
-           :model-value="selectedLeagueId"
-           :items="leagues"
-           item-title="name"
-           item-value="id"
-           :label="t('pages.applications.football.filters.league')"
-           density="comfortable"
-           :loading="leaguesState === 'loading'"
-           :disabled="leaguesState !== 'ready'"
-           variant="outlined"
-           hide-details
-           @update:model-value="selectLeague"
-         />
-       </v-col>
-
-       <v-col cols="12" md="6">
-         <v-select
-           :model-value="selectedSeason"
-           :items="seasons"
-           :label="t('pages.applications.football.filters.season')"
-           density="comfortable"
-           :disabled="!selectedLeague"
-           variant="outlined"
-           hide-details
-           @update:model-value="selectSeason"
-         />
-       </v-col>
-     </v-row>
       <template v-if="sport.slug === 'football'">
         <v-row class="football-stagger">
           <v-col cols="12" class="football-fade-up">
             <SportsFootballMatchHeroWidget
               :fixtures="fixtures"
               :selected-fixture-id="selectedFixtureId"
+              :events="mappedFixtureEvents"
+              :lineups="mappedFixtureLineups"
+              :player-stats="mappedFixturePlayerStats"
               @select="loadFixtureDetails"
+              @select-team="openTeamModal"
+              @select-player="openPlayerModal"
             />
           </v-col>
           <template v-if="hasSelection">
-            <v-col cols="12" class="football-fade-up">
-              <SportsFootballFixtureDetailsWidget
-                :section="fixtureDetailsSection"
-                :events="mappedFixtureEvents"
-                :lineups="mappedFixtureLineups"
-                :player-stats="mappedFixturePlayerStats"
-              />
-            </v-col>
-
             <v-col cols="12" class="football-fade-up">
               <SportsFootballStandingsTableWidget
                 :standings="standings"
                 :standings-league="standingsLeague"
                 :section="standingsSection"
-                @select-team="loadTeamDetails"
-              />
-            </v-col>
-
-            <v-col cols="12" class="football-fade-up">
-              <SportsFootballTeamDetailsWidget
-                :section="teamDetailsSection"
-                :team-details="teamDetails"
-                :selected-player-id="selectedPlayerId"
-                @select-player="loadPlayerDetails"
-              />
-            </v-col>
-
-            <v-col cols="12" class="football-fade-up">
-              <SportsFootballPlayerDetailsWidget
-                :section="playerDetailsSection"
-                :player-details="playerDetails"
+                @select-team="openTeamModal"
               />
             </v-col>
           </template>
@@ -325,6 +345,22 @@ watch(
         </v-alert>
       </template>
     </v-container>
+
+    <v-dialog v-model="teamModalOpen" max-width="1000">
+      <SportsFootballTeamDetailsWidget
+        :section="teamDetailsSection"
+        :team-details="teamDetails"
+        :selected-player-id="selectedPlayerId"
+        @select-player="openPlayerModal"
+      />
+    </v-dialog>
+
+    <v-dialog v-model="playerModalOpen" max-width="760">
+      <SportsFootballPlayerDetailsWidget
+        :section="playerDetailsSection"
+        :player-details="playerDetails"
+      />
+    </v-dialog>
   </div>
 </template>
 

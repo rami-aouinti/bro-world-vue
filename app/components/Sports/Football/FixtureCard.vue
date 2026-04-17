@@ -29,6 +29,7 @@ const { t, locale } = useI18n()
 
 const emit = defineEmits<{
   select: [fixtureId: number]
+  selectTeam: [teamId: number]
 }>()
 
 interface FixtureStatusChip {
@@ -89,10 +90,7 @@ const formattedKickoff = computed(() => {
   }
 
   try {
-    return formatDateTime(locale.value === 'fr' ? 'fr-FR' : 'en-US', kickoff, {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    })
+    return formatDateTime(locale.value === 'fr' ? 'fr-FR' : 'en-US', kickoff, { dateStyle: 'medium' })
   }
   catch {
     return formatDateTime('en-US', kickoff)
@@ -119,6 +117,12 @@ const awayGoals = computed(() => {
 
 function selectFixture() {
   emit('select', props.fixture.id)
+}
+
+function selectTeam(teamId?: number | null) {
+  if (typeof teamId === 'number') {
+    emit('selectTeam', teamId)
+  }
 }
 </script>
 
@@ -157,7 +161,7 @@ function selectFixture() {
       </div>
 
       <div class="fixture-card__main-row">
-        <div class="d-flex align-center fixture-card__team">
+        <div class="d-flex align-center fixture-card__team fixture-card__team--clickable" @click.stop="selectTeam(fixture.teams.home.id)">
           <v-avatar size="28" class="mr-2" color="primary" variant="tonal">
             <v-img
               v-if="fixture.teams.home.logo"
@@ -168,7 +172,7 @@ function selectFixture() {
               {{ fixture.teams.home.name.charAt(0).toUpperCase() || '?' }}
             </span>
           </v-avatar>
-          <span class="text-truncate">{{ fixture.teams.home.name }}</span>
+          <span class="text-truncate text-body-2">{{ fixture.teams.home.name }}</span>
         </div>
 
         <div class="fixture-card__score" :aria-label="t('pages.applications.football.misc.score')">
@@ -177,8 +181,8 @@ function selectFixture() {
           <span class="fixture-card__score-goal">{{ awayGoals }}</span>
         </div>
 
-        <div class="d-flex align-center justify-end fixture-card__team">
-          <span class="text-truncate text-right">{{ fixture.teams.away.name }}</span>
+        <div class="d-flex align-center justify-end fixture-card__team fixture-card__team--clickable" @click.stop="selectTeam(fixture.teams.away.id)">
+          <span class="text-truncate text-right text-body-2">{{ fixture.teams.away.name }}</span>
           <v-avatar size="28" class="ml-2" color="primary" variant="tonal">
             <v-img
               v-if="fixture.teams.away.logo"
@@ -226,6 +230,9 @@ function selectFixture() {
   flex: 1;
   min-width: 0;
 }
+.fixture-card__team--clickable {
+  cursor: pointer;
+}
 
 .fixture-card__score {
   min-width: 74px;
@@ -238,7 +245,7 @@ function selectFixture() {
 
 .fixture-card__score-goal {
   min-width: 14px;
-  font-size: 1.35rem;
+  font-size: 1.15rem;
   line-height: 1;
   font-weight: 800;
   color: rgba(var(--v-theme-on-surface), 0.96);
@@ -256,6 +263,7 @@ function selectFixture() {
 .fixture-card__status-chip {
   font-weight: 700;
   letter-spacing: 0.02em;
+  font-size: 0.68rem;
 }
 
 .fixture-card:hover {

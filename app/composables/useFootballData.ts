@@ -39,8 +39,8 @@ export interface FootballFixture {
     elapsed?: number | null
   }
   teams: {
-    home: { name: string; logo?: string | null }
-    away: { name: string; logo?: string | null }
+    home: { id?: number | null; name: string; logo?: string | null }
+    away: { id?: number | null; name: string; logo?: string | null }
   }
   goals?: {
     home: number | null
@@ -143,7 +143,9 @@ export interface FixtureEventViewModel {
   id: string
   minute: number
   timeLabel: string
+  teamId: number | null
   teamName: string
+  playerId: number | null
   playerName: string
   detail: string
   comment: string
@@ -156,6 +158,7 @@ export interface FixtureLineupPlayerViewModel {
   name: string
   number: string
   position: string
+  grid: string
 }
 
 export interface FixtureLineupViewModel {
@@ -170,9 +173,12 @@ export interface FixtureLineupViewModel {
 
 export interface FixturePlayerStatViewModel {
   id: string
+  playerId: number | null
+  playerPhoto: string | null
   teamId: number | null
   teamName: string
   playerName: string
+  position: string
   rating: string
   minutes: string
   goals: string
@@ -339,7 +345,9 @@ function mapFixtureEvents(
         id: `${minute}-${event.player?.name ?? 'player'}-${index}`,
         minute,
         timeLabel: minute > 0 ? `${minute}'` : "0'",
+        teamId: event.team?.id ?? null,
         teamName: event.team?.name ?? t('pages.applications.football.misc.unknownTeam'),
+        playerId: event.player?.id ?? null,
         playerName: event.player?.name ?? t('pages.applications.football.misc.unknownPlayer'),
         detail,
         comment: event.comments ?? '',
@@ -362,6 +370,7 @@ function mapFixtureLineups(
       name: player?.name ?? t('pages.applications.football.misc.unknownPlayer'),
       number: player?.number ? `${player.number}` : '-',
       position: player?.pos ?? '-',
+      grid: player?.grid ?? '',
     })
 
     return {
@@ -390,9 +399,12 @@ function mapFixturePlayerStats(
 
     return {
       id: `${entry.team?.id ?? 'team'}-${entry.player?.id ?? index}`,
+      playerId: entry.player?.id ?? null,
+      playerPhoto: entry.player?.photo ?? null,
       teamId: entry.team?.id ?? null,
       teamName: entry.team?.name ?? t('pages.applications.football.misc.unknownTeam'),
       playerName: entry.player?.name ?? t('pages.applications.football.misc.unknownPlayer'),
+      position: toStatLabel(games?.position),
       rating: toStatLabel(games?.rating),
       minutes: toStatLabel(games?.minutes),
       goals: toStatLabel(goals?.total),
@@ -414,6 +426,16 @@ export function useFootballData() {
   const fixtureDetails = ref<FootballFixtureDetails | null>(null)
   const teamDetails = ref<FootballTeamDetails | null>(null)
   const playerDetails = ref<FootballPlayerDetails | null>(null)
+  const leaguesCache = ref<FootballLeague[] | null>(null)
+  const leagueSeasonCache = ref<Record<string, {
+    fixtures: FootballFixture[]
+    standings: FootballStandingsGroup[]
+    standingsLeague: FootballStandingsLeague | null
+    teams: FootballTeam[]
+  }>>({})
+  const fixtureDetailsCache = ref<Record<number, FootballFixtureDetails>>({})
+  const teamDetailsCache = ref<Record<string, FootballTeamDetails>>({})
+  const playerDetailsCache = ref<Record<string, FootballPlayerDetails>>({})
 
   const selectedLeagueId = ref<number | null>(null)
   const selectedSeason = ref<number | null>(null)
@@ -548,11 +570,25 @@ export function useFootballData() {
     leaguesState.value = 'loading'
     leaguesError.value = ''
 
+    if (leaguesCache.value?.length) {
+      leagues.value = leaguesCache.value
+      leaguesState.value = 'ready'
+
+      if (leagues.value.length && !selectedLeagueId.value) {
+        const firstLeague = leagues.value[0] as FootballLeague
+        selectedLeagueId.value = firstLeague.id
+        const currentSeason = firstLeague.seasons.find((season) => season.current)
+        selectedSeason.value = currentSeason?.year || seasons.value[0] || null
+      }
+      return
+    }
+
     try {
       const response = await $fetch<{ items: FootballLeague[] }>(
         '/api/sports/football/leagues',
       )
       leagues.value = response.items
+      leaguesCache.value = response.items
       leaguesState.value = leagues.value.length ? 'ready' : 'empty'
 
       if (leagues.value.length && !selectedLeagueId.value) {
@@ -598,6 +634,19 @@ export function useFootballData() {
 
     const league = selectedLeagueId.value
     const season = selectedSeason.value
+    const leagueSeasonKey = `${league}:${season}`
+    const cachedLeagueSeason = leagueSeasonCache.value[leagueSeasonKey]
+
+    if (cachedLeagueSeason) {
+      fixtures.value = cachedLeagueSeason.fixtures
+      standings.value = cachedLeagueSeason.standings
+      standingsLeague.value = cachedLeagueSeason.standingsLeague
+      teams.value = cachedLeagueSeason.teams
+      fixturesState.value = fixtures.value.length ? 'ready' : 'empty'
+      standingsState.value = standings.value.length ? 'ready' : 'empty'
+      teamsState.value = teams.value.length ? 'ready' : 'empty'
+      return
+    }
 
     const [fixturesResult, standingsResult, teamsResult] =
       await Promise.allSettled([
@@ -655,6 +704,19 @@ export function useFootballData() {
         t('pages.applications.football.errors.loadTeams'),
       )
     }
+
+    if (
+      fixturesResult.status === 'fulfilled' &&
+      standingsResult.status === 'fulfilled' &&
+      teamsResult.status === 'fulfilled'
+    ) {
+      leagueSeasonCache.value[leagueSeasonKey] = {
+        fixtures: fixturesResult.value.items,
+        standings: standingsResult.value.groups,
+        standingsLeague: standingsResult.value.league,
+        teams: teamsResult.value.items,
+      }
+    }
   }
 
   const selectLeague = (leagueId: number | string | null) => {
@@ -686,6 +748,13 @@ export function useFootballData() {
       return
     }
 
+    const cachedFixtureDetails = fixtureDetailsCache.value[fixtureId]
+    if (cachedFixtureDetails) {
+      fixtureDetails.value = cachedFixtureDetails
+      fixtureDetailsState.value = 'ready'
+      return
+    }
+
     fixtureDetailsState.value = 'loading'
 
     try {
@@ -697,6 +766,7 @@ export function useFootballData() {
       )
 
       fixtureDetails.value = response
+      fixtureDetailsCache.value[fixtureId] = response
       const hasContent =
         !!response.fixture ||
         response.events.length > 0 ||
@@ -727,6 +797,14 @@ export function useFootballData() {
       return
     }
 
+    const teamCacheKey = `${teamId}:${selectedLeagueId.value}:${selectedSeason.value}`
+    const cachedTeamDetails = teamDetailsCache.value[teamCacheKey]
+    if (cachedTeamDetails) {
+      teamDetails.value = cachedTeamDetails
+      teamDetailsState.value = 'ready'
+      return
+    }
+
     teamDetailsState.value = 'loading'
 
     try {
@@ -742,6 +820,7 @@ export function useFootballData() {
       )
 
       teamDetails.value = response
+      teamDetailsCache.value[teamCacheKey] = response
       const hasStatistics = !!response?.statistics?.team?.id
       const hasPlayers = response?.squad?.players?.length > 0
       teamDetailsState.value = hasStatistics || hasPlayers ? 'ready' : 'empty'
@@ -764,6 +843,14 @@ export function useFootballData() {
       return
     }
 
+    const playerCacheKey = `${playerId}:${selectedSeason.value}:${selectedLeagueId.value ?? 'none'}:${selectedTeamId.value ?? 'none'}`
+    const cachedPlayerDetails = playerDetailsCache.value[playerCacheKey]
+    if (cachedPlayerDetails) {
+      playerDetails.value = cachedPlayerDetails
+      playerDetailsState.value = cachedPlayerDetails.profile ? 'ready' : 'empty'
+      return
+    }
+
     playerDetailsState.value = 'loading'
 
     try {
@@ -783,6 +870,7 @@ export function useFootballData() {
         ...response,
         statistics: normalizePlayerStatistics(response.statistics),
       }
+      playerDetailsCache.value[playerCacheKey] = playerDetails.value
       playerDetailsState.value = response.profile ? 'ready' : 'empty'
     } catch (error) {
       playerDetailsState.value = 'error'

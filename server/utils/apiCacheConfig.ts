@@ -41,9 +41,9 @@ const DOMAIN_ALIASES: Record<string, CacheDomain> = {
 }
 
 const SPORTS_LIKE_CACHE_TTL_BY_PROFILE: Record<CacheProfile, number> = {
-  default: CACHE_TTL_BY_DOMAIN.football,
+  default: 60 * 60 * 24 * 30,
   reference: 60 * 60 * 24 * 30,
-  live: 15,
+  live: 60 * 60 * 24 * 30,
 }
 
 const CACHE_PROFILE_BY_SUFFIX: Record<string, CacheProfile> = {
