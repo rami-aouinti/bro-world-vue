@@ -30,6 +30,13 @@ export interface FootballLeague {
   seasons: FootballLeagueSeason[]
 }
 
+export interface FootballFixtureOdds {
+  home: string | null
+  draw: string | null
+  away: string | null
+  bookmaker: string | null
+}
+
 export interface FootballFixture {
   id: number
   date: string
@@ -46,6 +53,7 @@ export interface FootballFixture {
     home: number | null
     away: number | null
   }
+  odds?: FootballFixtureOdds | null
 }
 
 export interface FootballTeam {
@@ -416,6 +424,55 @@ function mapFixturePlayerStats(
   })
 }
 
+function toOddLabel(value: unknown) {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value.toFixed(2)
+  }
+
+  if (typeof value === 'string' && value.trim().length > 0) {
+    return value
+  }
+
+  return null
+}
+
+function mapFootballOddsByFixture(items: Array<Record<string, any>>) {
+  const map = new Map<number, FootballFixtureOdds>()
+
+  for (const item of items) {
+    const fixtureId = Number(item?.fixture?.id)
+    if (!Number.isInteger(fixtureId) || fixtureId <= 0 || map.has(fixtureId)) {
+      continue
+    }
+
+    const bookmaker = Array.isArray(item?.bookmakers) ? item.bookmakers[0] : null
+    const matchWinner = Array.isArray(bookmaker?.bets)
+      ? bookmaker.bets.find((bet: Record<string, any>) => {
+          const name = `${bet?.name ?? ''}`.toLowerCase()
+          return name.includes('match winner') || name.includes('winner') || name.includes('result')
+        })
+      : null
+
+    const values = Array.isArray(matchWinner?.values) ? matchWinner.values : []
+    const findOdd = (labels: string[]) => {
+      const candidate = values.find((entry: Record<string, any>) => {
+        const value = `${entry?.value ?? ''}`.toLowerCase()
+        return labels.some((label) => value === label)
+      })
+      return toOddLabel(candidate?.odd)
+    }
+
+    map.set(fixtureId, {
+      home: findOdd(['home', '1']),
+      draw: findOdd(['draw', 'x']),
+      away: findOdd(['away', '2']),
+      bookmaker: typeof bookmaker?.name === 'string' ? bookmaker.name : null,
+    })
+  }
+
+  return map
+}
+
 export function useFootballData() {
   const { t } = useI18n()
   const leagues = ref<FootballLeague[]>([])
@@ -611,7 +668,7 @@ export function useFootballData() {
     const league = selectedLeagueId.value
     const season = selectedSeason.value
 
-    const [fixturesResult, standingsResult, teamsResult] =
+    const [fixturesResult, standingsResult, teamsResult, oddsResult] =
       await Promise.allSettled([
         $fetch<{ items: FootballFixture[] }>('/api/sports/football/fixtures', {
           query: { league, season },
@@ -625,10 +682,21 @@ export function useFootballData() {
         $fetch<{ items: FootballTeam[] }>('/api/sports/football/teams', {
           query: { league, season },
         }),
+        $fetch<{ items: Array<Record<string, any>> }>('/api/sports/football/odds', {
+          query: { league, season },
+        }),
       ])
 
     if (fixturesResult.status === 'fulfilled') {
-      fixtures.value = fixturesResult.value.items
+      const oddsByFixture =
+        oddsResult.status === 'fulfilled'
+          ? mapFootballOddsByFixture(oddsResult.value.items)
+          : new Map<number, FootballFixtureOdds>()
+
+      fixtures.value = fixturesResult.value.items.map((fixture) => ({
+        ...fixture,
+        odds: oddsByFixture.get(fixture.id) ?? null,
+      }))
       fixturesState.value = fixtures.value.length ? 'ready' : 'empty'
       fixturesError.value = ''
     } else {
