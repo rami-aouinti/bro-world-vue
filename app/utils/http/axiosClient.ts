@@ -14,7 +14,18 @@ let publicAxiosInstance: AxiosInstance | null = null
 let privateAxiosInstance: AxiosInstance | null = null
 
 function resolveApiBaseUrl(baseUrl: string): string {
-  return baseUrl.replace(/\/+$/, '')
+  const normalizedBaseUrl = baseUrl.replace(/\/+$/, '')
+
+  if (import.meta.client) {
+    try {
+      const url = new URL(normalizedBaseUrl)
+      return url.pathname.replace(/\/+$/, '') || '/'
+    } catch {
+      return normalizedBaseUrl
+    }
+  }
+
+  return normalizedBaseUrl
 }
 
 function createAxiosInstance(config?: AxiosRequestConfig): AxiosInstance {
