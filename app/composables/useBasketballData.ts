@@ -62,6 +62,34 @@ export interface BasketballStandingRow {
     against: number
   }
   form: string | null
+  topPlayerId?: number | null
+  topPlayer?: {
+    id?: number | null
+    name?: string | null
+    photo?: string | null
+    position?: string | null
+  } | null
+}
+
+export interface BasketballPlayerDetails {
+  player: {
+    id: number | null
+    name: string
+    firstname: string | null
+    lastname: string | null
+    age: number | null
+    height: string | null
+    weight: string | null
+    nationality: string | null
+    photo: string | null
+    injured: boolean | null
+  } | null
+  team: {
+    id: number | null
+    name: string
+    logo: string | null
+  } | null
+  statistics: Array<Record<string, any>>
 }
 
 function toErrorMessage(error: unknown, fallback: string) {
@@ -122,10 +150,14 @@ export function useBasketballData() {
   const leaguesError = ref('')
   const gamesError = ref('')
   const standingsError = ref('')
+  const playerError = ref('')
 
   const selectedLeagueId = ref<number | null>(null)
   const selectedSeason = ref<number | null>(null)
   const selectedGameId = ref<number | null>(null)
+  const selectedPlayerId = ref<number | null>(null)
+  const playerDetails = ref<BasketballPlayerDetails | null>(null)
+  const playerState = ref<BasketballSectionState>('empty')
 
   const selectedLeague = computed<BasketballLeague | null>(() => {
     if (!selectedLeagueId.value) return null
@@ -144,10 +176,14 @@ export function useBasketballData() {
     games.value = []
     standings.value = []
     selectedGameId.value = null
+    selectedPlayerId.value = null
+    playerDetails.value = null
     gamesState.value = 'empty'
     standingsState.value = 'empty'
+    playerState.value = 'empty'
     gamesError.value = ''
     standingsError.value = ''
+    playerError.value = ''
   }
 
   const loadLeagues = async () => {
@@ -180,6 +216,10 @@ export function useBasketballData() {
     gamesState.value = 'loading'
     gamesError.value = ''
     standingsError.value = ''
+    selectedPlayerId.value = null
+    playerDetails.value = null
+    playerState.value = 'empty'
+    playerError.value = ''
 
     const league = selectedLeagueId.value
     const season = selectedSeason.value
@@ -287,6 +327,89 @@ export function useBasketballData() {
     selectedGameId.value = gameId
   }
 
+  const normalizePlayerDetails = (
+    response: Record<string, any>,
+  ): BasketballPlayerDetails => {
+    const profile =
+      response?.player ??
+      response?.profile ??
+      null
+    const team =
+      response?.team ??
+      response?.statistics?.[0]?.team ??
+      null
+    const statistics = Array.isArray(response?.statistics)
+      ? response.statistics
+      : []
+
+    return {
+      player: profile
+        ? {
+            id: typeof profile.id === 'number' ? profile.id : null,
+            name:
+              (typeof profile.name === 'string' && profile.name.trim()) ||
+              [profile.firstname, profile.lastname]
+                .filter((part) => typeof part === 'string' && part.trim().length > 0)
+                .join(' ') ||
+              'Unknown player',
+            firstname: typeof profile.firstname === 'string' ? profile.firstname : null,
+            lastname: typeof profile.lastname === 'string' ? profile.lastname : null,
+            age: typeof profile.age === 'number' ? profile.age : null,
+            height: typeof profile.height === 'string' ? profile.height : null,
+            weight: typeof profile.weight === 'string' ? profile.weight : null,
+            nationality:
+              typeof profile.nationality === 'string' ? profile.nationality : null,
+            photo: typeof profile.photo === 'string' ? profile.photo : null,
+            injured: typeof profile.injured === 'boolean' ? profile.injured : null,
+          }
+        : null,
+      team: team
+        ? {
+            id: typeof team.id === 'number' ? team.id : null,
+            name:
+              (typeof team.name === 'string' && team.name.trim()) ||
+              'Unknown team',
+            logo: typeof team.logo === 'string' ? team.logo : null,
+          }
+        : null,
+      statistics,
+    }
+  }
+
+  const loadPlayerDetails = async (playerId: number | null, season?: number | null) => {
+    selectedPlayerId.value = playerId
+    playerDetails.value = null
+    playerError.value = ''
+
+    const resolvedSeason = normalizeSelectionId(season ?? selectedSeason.value)
+
+    if (!playerId || !resolvedSeason) {
+      playerState.value = 'empty'
+      return
+    }
+
+    playerState.value = 'loading'
+
+    try {
+      const response = await $fetch<Record<string, any>>(
+        '/api/sports/basketball/player',
+        {
+          query: {
+            player: playerId,
+            season: resolvedSeason,
+            ...(selectedLeagueId.value ? { league: selectedLeagueId.value } : {}),
+          },
+        },
+      )
+
+      playerDetails.value = normalizePlayerDetails(response)
+      playerState.value = playerDetails.value.player ? 'ready' : 'empty'
+    } catch (error) {
+      playerState.value = 'error'
+      playerError.value = toErrorMessage(error, 'Failed to load basketball player details')
+    }
+  }
+
   const featuredGame = computed(() => {
     if (!games.value.length) {
       return null
@@ -330,15 +453,20 @@ export function useBasketballData() {
     leaguesError,
     gamesError,
     standingsError,
+    playerError,
     selectedLeague,
     seasons,
     selectedLeagueId,
     selectedSeason,
     selectedGameId,
+    selectedPlayerId,
+    playerDetails,
+    playerState,
     featuredGame,
     featuredScore,
     loadLeagues,
     loadLeagueSeasonData,
+    loadPlayerDetails,
     selectLeague,
     selectSeason,
     selectGame,
