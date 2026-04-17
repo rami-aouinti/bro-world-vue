@@ -276,9 +276,15 @@ async function reactToPost(payload: { post: BlogPostView; code: string }) {
   } else if (
     (existing.type ?? '').toLowerCase() === payload.code.toLowerCase()
   ) {
-    await react('post', payload.post.id, undefined, 'delete')
+    await react('post', payload.post.id, undefined, 'delete', existing.id)
   } else {
-    await react('post', payload.post.id, { type: payload.code }, 'update')
+    await react(
+      'post',
+      payload.post.id,
+      { type: payload.code },
+      'update',
+      existing.id,
+    )
   }
 
   await refreshPost()
@@ -300,9 +306,15 @@ async function reactToComment(payload: {
   } else if (
     (existing.type ?? '').toLowerCase() === payload.code.toLowerCase()
   ) {
-    await react('comment', payload.comment.id, undefined, 'delete')
+    await react('comment', payload.comment.id, undefined, 'delete', existing.id)
   } else {
-    await react('comment', payload.comment.id, { type: payload.code }, 'update')
+    await react(
+      'comment',
+      payload.comment.id,
+      { type: payload.code },
+      'update',
+      existing.id,
+    )
   }
 
   await refreshPost()
@@ -319,7 +331,7 @@ async function replyToComment(payload: {
 
   await comment(payload.post.id, {
     content: payload.content,
-    parentId: payload.comment.id,
+    parentCommentId: payload.comment.id,
   })
   await refreshPost()
 }
@@ -333,7 +345,7 @@ async function deleteComment(payload: {
   post: BlogPostView
   comment: BlogCommentView
 }) {
-  await remove('comment', payload.comment.id, payload.post.id)
+  await remove('comment', payload.comment.id)
   await refreshPost()
 }
 </script>
