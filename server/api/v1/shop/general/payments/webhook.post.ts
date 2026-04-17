@@ -1,3 +1,7 @@
+/**
+ * Public webhook relay endpoint.
+ * noauth: provider callbacks (Stripe/PayPal/mock) must reach this route without user auth.
+ */
 import {
   getServerPublicAxios,
   resolveServerApiUrl,
