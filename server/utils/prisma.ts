@@ -1,8 +1,11 @@
-import { PrismaClient } from '@prisma/client'
+import type { PrismaClient as PrismaClientType } from '@prisma/client'
+import prismaPkg from '@prisma/client'
+
+const { PrismaClient } = prismaPkg
 
 declare global {
   // eslint-disable-next-line no-var
-  var __broWorldPrisma__: PrismaClient | undefined
+  var __broWorldPrisma__: PrismaClientType | undefined
 }
 
 export const prisma =
