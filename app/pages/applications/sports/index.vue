@@ -14,18 +14,18 @@ const quickSports = computed(() => SPORTS.slice(0, 6))
   <div>
     <AppPageDrawers>
       <template #left>
-        <v-card class="pa-4" variant="outlined">
+        <div class="pa-4">
           <h3 class="text-subtitle-1 font-weight-bold mb-2">
             {{ t('appbar.sports') }}
           </h3>
           <p class="text-body-2 text-medium-emphasis mb-0">
             {{ t('pages.applications.sportsDescription') }}
           </p>
-        </v-card>
+        </div>
       </template>
 
       <template #right>
-        <v-card class="pa-4" variant="outlined">
+        <div class="pa-4">
           <h3 class="text-subtitle-1 font-weight-bold mb-3">
             {{ t('pages.applications.quickSportsTitle', 'Quick sports') }}
           </h3>
@@ -34,7 +34,6 @@ const quickSports = computed(() => SPORTS.slice(0, 6))
               v-for="sport in quickSports"
               :key="`quick-${sport.slug}`"
               :title="sport.label"
-              :subtitle="sport.apiBaseUrl"
               :to="`/applications/sports/${sport.slug}`"
               rounded="lg"
             >
@@ -45,18 +44,11 @@ const quickSports = computed(() => SPORTS.slice(0, 6))
               </template>
             </v-list-item>
           </v-list>
-        </v-card>
+        </div>
       </template>
     </AppPageDrawers>
 
     <v-container fluid>
-      <v-card class="pa-6 mb-6" variant="tonal">
-        <h2 class="text-h5 mb-2">{{ t('appbar.sports') }}</h2>
-        <p class="text-medium-emphasis mb-0">
-          {{ t('pages.applications.sportsDescription') }}
-        </p>
-      </v-card>
-
       <v-row>
         <v-col
           v-for="sport in SPORTS"
@@ -64,7 +56,6 @@ const quickSports = computed(() => SPORTS.slice(0, 6))
           cols="12"
           sm="6"
           md="4"
-          lg="3"
         >
           <v-card
             class="sport-card h-100"
@@ -72,7 +63,7 @@ const quickSports = computed(() => SPORTS.slice(0, 6))
             link
             variant="outlined"
           >
-            <v-img :src="sport.image" :alt="sport.label" height="160" cover />
+            <v-img :src="sport.image" :alt="sport.label" height="120" cover />
 
             <v-card-text class="d-flex align-center justify-space-between py-4">
               <span class="text-subtitle-1 font-weight-medium">{{
