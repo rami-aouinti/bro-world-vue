@@ -18,6 +18,7 @@ type FriendAction =
 
 type PublicUser = {
   id: string
+  username?: string
   email?: string
   firstName: string
   lastName: string
@@ -160,12 +161,15 @@ function userName(item: FriendUser) {
   )
 }
 
-function suggestionName(item: PublicUser) {
-  return [item.firstName, item.lastName].filter(Boolean).join(' ')
+function userProfilePath(username?: string | null) {
+  const normalizedUsername = username?.trim()
+  return normalizedUsername
+    ? `/user/${encodeURIComponent(normalizedUsername)}/profile`
+    : null
 }
 
-function suggestionHandle(item: PublicUser) {
-  return item.email?.split('@')[0] || suggestionName(item).replaceAll(' ', '')
+function suggestionName(item: PublicUser) {
+  return [item.firstName, item.lastName].filter(Boolean).join(' ')
 }
 
 function shuffleUsers(items: PublicUser[]) {
@@ -290,15 +294,36 @@ onMounted(async () => {
           <v-list-item
             v-for="item in suggestedUsers"
             :key="item.id"
-            :title="suggestionName(item)"
           >
             <template #prepend>
-              <v-avatar size="30" color="primary">
+              <NuxtLink
+                v-if="userProfilePath(item.username)"
+                :to="userProfilePath(item.username)!"
+                class="friend-user-link"
+              >
+                <v-avatar size="30" color="primary">
+                  <v-img
+                    :src="item.photo"
+                    :alt="`Avatar of ${suggestionName(item)}`"
+                  />
+                </v-avatar>
+              </NuxtLink>
+              <v-avatar v-else size="30" color="primary">
                 <v-img
                   :src="item.photo"
                   :alt="`Avatar of ${suggestionName(item)}`"
                 />
               </v-avatar>
+            </template>
+            <template #title>
+              <NuxtLink
+                v-if="userProfilePath(item.username)"
+                :to="userProfilePath(item.username)!"
+                class="friend-user-link"
+              >
+                {{ suggestionName(item) }}
+              </NuxtLink>
+              <span v-else>{{ suggestionName(item) }}</span>
             </template>
 
             <template #append>
@@ -351,15 +376,36 @@ onMounted(async () => {
                 <v-list-item
                   v-for="item in section.items"
                   :key="item.id"
-                  :title="userName(item)"
                 >
                   <template #prepend>
-                    <v-avatar size="30" color="primary">
+                    <NuxtLink
+                      v-if="userProfilePath(item.username)"
+                      :to="userProfilePath(item.username)!"
+                      class="friend-user-link"
+                    >
+                      <v-avatar size="30" color="primary">
+                        <v-img
+                          :src="item.photo"
+                          :alt="`Avatar of ${userName(item)}`"
+                        />
+                      </v-avatar>
+                    </NuxtLink>
+                    <v-avatar v-else size="30" color="primary">
                       <v-img
                         :src="item.photo"
                         :alt="`Avatar of ${userName(item)}`"
                       />
                     </v-avatar>
+                  </template>
+                  <template #title>
+                    <NuxtLink
+                      v-if="userProfilePath(item.username)"
+                      :to="userProfilePath(item.username)!"
+                      class="friend-user-link"
+                    >
+                      {{ userName(item) }}
+                    </NuxtLink>
+                    <span v-else>{{ userName(item) }}</span>
                   </template>
 
                   <template #append>
@@ -420,15 +466,36 @@ onMounted(async () => {
                 <v-list-item
                   v-for="item in section.items"
                   :key="item.id"
-                  :title="userName(item)"
                 >
                   <template #prepend>
-                    <v-avatar size="30" color="primary">
+                    <NuxtLink
+                      v-if="userProfilePath(item.username)"
+                      :to="userProfilePath(item.username)!"
+                      class="friend-user-link"
+                    >
+                      <v-avatar size="30" color="primary">
+                        <v-img
+                          :src="item.photo"
+                          :alt="`Avatar of ${userName(item)}`"
+                        />
+                      </v-avatar>
+                    </NuxtLink>
+                    <v-avatar v-else size="30" color="primary">
                       <v-img
                         :src="item.photo"
                         :alt="`Avatar of ${userName(item)}`"
                       />
                     </v-avatar>
+                  </template>
+                  <template #title>
+                    <NuxtLink
+                      v-if="userProfilePath(item.username)"
+                      :to="userProfilePath(item.username)!"
+                      class="friend-user-link"
+                    >
+                      {{ userName(item) }}
+                    </NuxtLink>
+                    <span v-else>{{ userName(item) }}</span>
                   </template>
 
                   <template #append>
@@ -481,3 +548,10 @@ onMounted(async () => {
     </v-container>
   </div>
 </template>
+
+<style scoped>
+.friend-user-link {
+  color: inherit;
+  text-decoration: none;
+}
+</style>
