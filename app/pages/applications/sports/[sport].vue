@@ -14,10 +14,14 @@ import SportsFootballFixturesListWidget from '~/components/Sports/Football/Fixtu
 import SportsFootballStandingsTableWidget from '~/components/Sports/Football/StandingsTableWidget.vue'
 import SportsFootballTeamDetailsWidget from '~/components/Sports/Football/TeamDetailsWidget.vue'
 import SportsFootballPlayerDetailsWidget from '~/components/Sports/Football/PlayerDetailsWidget.vue'
-import { useBasketballData } from '~/composables/useBasketballData'
+import {
+  useBasketballData,
+  type BasketballLeague,
+} from '~/composables/useBasketballData'
 import SportsBasketballGamesListWidget from '~/components/Sports/Basketball/GamesListWidget.vue'
 import SportsBasketballHeroWidget from '~/components/Sports/Basketball/HeroWidget.vue'
 import SportsBasketballStandingsWidget from '~/components/Sports/Basketball/StandingsWidget.vue'
+import { getBasketballLeaguePriority } from '~/constants/sports'
 
 definePageMeta({
   title: 'appbar.sports',
@@ -103,6 +107,86 @@ const {
   selectSeason: selectBasketballSeason,
   selectGame: selectBasketballGame,
 } = useBasketballData()
+
+const BASKETBALL_DISPLAY_LIMIT = 10
+
+const isBasketballSeasonActive = (season: BasketballLeague['seasons'][number]) => {
+  const now = new Date()
+
+  if (season.start && season.end) {
+    const startDate = new Date(season.start)
+    const endDate = new Date(season.end)
+
+    if (!Number.isNaN(startDate.getTime()) && !Number.isNaN(endDate.getTime())) {
+      return startDate <= now && now <= endDate
+    }
+  }
+
+  const currentYear = now.getUTCFullYear()
+  return season.season === currentYear || season.season === currentYear - 1
+}
+
+const hasBasketballCoverage = (season: BasketballLeague['seasons'][number]) => {
+  return (
+    season.coverage.standings ||
+    season.coverage.games.statistics.teams ||
+    season.coverage.games.statistics.players
+  )
+}
+
+const displayedBasketballLeagues = computed(() => {
+  return [...basketballLeagues.value]
+    .filter((league) => league.seasons.some(hasBasketballCoverage))
+    .sort((left, right) => {
+      const priorityDelta =
+        getBasketballLeaguePriority(left) - getBasketballLeaguePriority(right)
+
+      if (priorityDelta !== 0) {
+        return priorityDelta
+      }
+
+      const leftHasActiveSeason = left.seasons.some(isBasketballSeasonActive)
+      const rightHasActiveSeason = right.seasons.some(isBasketballSeasonActive)
+
+      if (leftHasActiveSeason !== rightHasActiveSeason) {
+        return leftHasActiveSeason ? -1 : 1
+      }
+
+      const leftLatestSeason = Math.max(...left.seasons.map((season) => season.season), 0)
+      const rightLatestSeason = Math.max(...right.seasons.map((season) => season.season), 0)
+
+      if (leftLatestSeason !== rightLatestSeason) {
+        return rightLatestSeason - leftLatestSeason
+      }
+
+      return left.name.localeCompare(right.name)
+    })
+    .slice(0, BASKETBALL_DISPLAY_LIMIT)
+})
+
+watch(
+  () => [sportSlug.value, displayedBasketballLeagues.value, basketballSelectedLeagueId.value] as const,
+  ([slug, leaguesList, selectedLeagueId]) => {
+    if (slug !== 'basketball') {
+      return
+    }
+
+    if (!leaguesList.length) {
+      return
+    }
+
+    const hasSelectedLeague = leaguesList.some((league) => league.id === selectedLeagueId)
+
+    if (!hasSelectedLeague) {
+      const firstLeague = leaguesList[0]
+
+      if (firstLeague) {
+        selectBasketballLeague(firstLeague.id)
+      }
+    }
+  },
+  { immediate: true },
+)
 
 const FEATURED_LEAGUE_IDS = new Set([1, 4, 39, 140, 135, 78])
 const FEATURED_LEAGUE_NAMES = new Set([
@@ -452,7 +536,7 @@ watch(
             <v-col cols="12">
               <v-select
                 :model-value="basketballSelectedLeagueId"
-                :items="basketballLeagues"
+                :items="displayedBasketballLeagues"
                 item-title="name"
                 item-value="id"
                 label="Basketball league"
@@ -500,7 +584,7 @@ watch(
             </v-alert>
             <v-list v-else density="compact" lines="one" class="pa-0">
               <v-list-item
-                v-for="league in basketballLeagues.slice(0, 10)"
+                v-for="league in displayedBasketballLeagues"
                 :key="league.id"
                 :title="league.name"
                 :subtitle="league.country.name"
@@ -574,12 +658,21 @@ watch(
             >
               {{ basketballGamesError }}
             </v-alert>
-            <v-alert v-else type="info" variant="tonal" density="comfortable">
-              {{
-                basketballGamesState === 'loading'
-                  ? 'Loading basketball data…'
-                  : 'Select a league and season to see basketball data.'
-              }}
+            <v-alert
+              v-else-if="basketballStandingsError"
+              type="info"
+              variant="tonal"
+              density="comfortable"
+            >
+              {{ basketballStandingsError }}
+            </v-alert>
+            <v-alert
+              v-else
+              type="info"
+              variant="tonal"
+              density="comfortable"
+            >
+              {{ basketballGamesState === 'loading' ? 'Loading basketball data…' : 'Select a league and season to see basketball data.' }}
             </v-alert>
           </v-col>
         </v-row>

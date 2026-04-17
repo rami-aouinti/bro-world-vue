@@ -93,6 +93,23 @@ function normalizeSelectionId(value: number | string | null | undefined) {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : null
 }
 
+const STANDINGS_UNAVAILABLE_MESSAGE =
+  'Standings are not available for the selected league season.'
+
+function isStandingsUnavailableError(error: unknown) {
+  const message = toErrorMessage(error, '').toLowerCase()
+
+  if (!message) {
+    return false
+  }
+
+  return (
+    (message.includes('standings') &&
+      (message.includes('not available') || message.includes('unavailable'))) ||
+    message.includes('source_without_standings')
+  )
+}
+
 export function useBasketballData() {
   const leagues = ref<BasketballLeague[]>([])
   const games = ref<BasketballGame[]>([])
@@ -161,20 +178,41 @@ export function useBasketballData() {
     }
 
     gamesState.value = 'loading'
-    standingsState.value = 'loading'
     gamesError.value = ''
     standingsError.value = ''
 
     const league = selectedLeagueId.value
     const season = selectedSeason.value
+    const seasonCoverage = selectedLeague.value?.seasons.find(
+      (entry) => entry.season === season,
+    )?.coverage
+    const canLoadStandings = seasonCoverage?.standings === true
+
+    standingsState.value = canLoadStandings ? 'loading' : 'empty'
+    standings.value = []
+
+    if (!canLoadStandings) {
+      standingsError.value = STANDINGS_UNAVAILABLE_MESSAGE
+    }
 
     const [gamesResult, standingsResult] = await Promise.allSettled([
       $fetch<{ items: BasketballGame[] }>('/api/sports/basketball/games', {
         query: { league, season },
       }),
-      $fetch<{ groups: Array<{ rows: BasketballStandingRow[] }> }>('/api/sports/basketball/standings', {
-        query: { league, season },
-      }),
+      canLoadStandings
+        ? $fetch<{
+            groups: Array<{ rows: BasketballStandingRow[] }>
+            meta?: {
+              standingsAvailable?: boolean
+              reason?: string | null
+            }
+          }>(
+            '/api/sports/basketball/standings',
+            {
+              query: { league, season },
+            },
+          )
+        : Promise.resolve(null),
     ])
 
     if (gamesResult.status === 'fulfilled') {
@@ -189,13 +227,43 @@ export function useBasketballData() {
       gamesError.value = toErrorMessage(gamesResult.reason, 'Failed to load basketball games')
     }
 
-    if (standingsResult.status === 'fulfilled') {
-      standings.value = standingsResult.value.groups?.[0]?.rows ?? []
-      standingsState.value = standings.value.length ? 'ready' : 'empty'
+    if (!canLoadStandings) {
+      standings.value = []
+      standingsState.value = 'empty'
+    } else if (standingsResult.status === 'fulfilled') {
+      const standingsResponse = standingsResult.value
+      if (!standingsResponse) {
+        standings.value = []
+        standingsState.value = 'empty'
+        standingsError.value = STANDINGS_UNAVAILABLE_MESSAGE
+        return
+      }
+
+      const standingsUnavailable =
+        standingsResponse.meta?.standingsAvailable === false ||
+        standingsResponse.meta?.reason === 'source_without_standings'
+
+      if (standingsUnavailable) {
+        standings.value = []
+        standingsState.value = 'empty'
+        standingsError.value = STANDINGS_UNAVAILABLE_MESSAGE
+      } else {
+        standings.value = standingsResponse.groups?.[0]?.rows ?? []
+        standingsState.value = standings.value.length ? 'ready' : 'empty'
+        standingsError.value = ''
+      }
     } else {
       standings.value = []
-      standingsState.value = 'error'
-      standingsError.value = toErrorMessage(standingsResult.reason, 'Failed to load basketball standings')
+      if (isStandingsUnavailableError(standingsResult.reason)) {
+        standingsState.value = 'empty'
+        standingsError.value = STANDINGS_UNAVAILABLE_MESSAGE
+      } else {
+        standingsState.value = 'error'
+        standingsError.value = toErrorMessage(
+          standingsResult.reason,
+          'Failed to load basketball standings (server or network error)',
+        )
+      }
     }
   }
 
