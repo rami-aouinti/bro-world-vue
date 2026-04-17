@@ -8,11 +8,15 @@ import {
 import type {
   ShopGeneralCart,
   ShopGeneralCategory,
+  ShopGeneralOrder,
+  ShopGeneralOrdersResponse,
   ShopGeneralProduct,
   ShopGeneralProductDetailResponse,
   ShopGeneralProductsResponse,
+  ShopGeneralTransaction,
   WorldPaginationState,
   WorldShopCartLine,
+  WorldShopCartSummary,
   WorldShopCategoriesListResponse,
   WorldShopCheckoutAddress,
   WorldShopCheckoutSession,
@@ -68,6 +72,10 @@ export const useWorldShopStore = defineStore('world-shop', () => {
 
   const currentAttempt = ref<WorldShopPaymentAttempt | null>(null)
   const cart = ref<ShopGeneralCart | null>(null)
+  const orders = ref<ShopGeneralOrder[]>([])
+  const selectedOrder = ref<ShopGeneralOrder | null>(null)
+  const transaction = ref<ShopGeneralTransaction | null>(null)
+  const cartSummary = ref<WorldShopCartSummary | null>(null)
   const globalShopId = ref<string | null>(null)
 
   function isFresh(entry?: { fetchedAt: number }) {
@@ -234,6 +242,28 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     )
   }
 
+  function invalidateCartCache(shopId: string) {
+    invalidateCache(`shop-cart:${shopId}`)
+  }
+
+  function invalidateOrdersCache(orderId?: string) {
+    invalidateCache('shop-orders')
+    if (orderId) {
+      invalidateCache(`shop-order:${orderId}`)
+      invalidateCache(`shop-transaction:${orderId}`)
+    }
+  }
+
+  function invalidateProductCaches() {
+    invalidateCache('shop-products:')
+    invalidateCache('shop-product:')
+  }
+
+  function invalidateCategoryCaches() {
+    invalidateCache('shop-categories')
+    invalidateProductCaches()
+  }
+
   async function fetchProducts(options?: {
     force?: boolean
     filters?: Partial<WorldShopFilters>
@@ -395,7 +425,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
         }),
       )
       detail.value = response
-      invalidateCache('shop-checkout')
+      invalidateCache('shop-checkout:')
       cache.value[`shop-checkout:${response.id}`] = {
         fetchedAt: Date.now(),
         data: response,
@@ -545,14 +575,33 @@ export const useWorldShopStore = defineStore('world-shop', () => {
         fetchedAt: Date.now(),
         data: response,
       }
+      invalidateOrdersCache()
       return response
     } finally {
       pending.value = false
     }
   }
 
-  async function fetchCart() {
+  async function fetchCart(options?: { force?: boolean }) {
     const shopId = await resolveRequiredShopId()
+    const cacheKey = `shop-cart:${shopId}`
+    const cached = cache.value[cacheKey]
+
+    if (cached && !options?.force && isFresh(cached)) {
+      recordStoreCacheEvent('shop', true)
+      const cachedCart = cached.data as ShopGeneralCart
+      cart.value = cachedCart
+      cartSummary.value = {
+        subtotalAmount: cachedCart.subtotalAmount,
+        totalAmount: cachedCart.totalAmount,
+        currency: cachedCart.currencyCode ?? cachedCart.currency,
+        itemsCount: cachedCart.items.length,
+      }
+      lastFetchedAt.value = cached.fetchedAt
+      return cachedCart
+    }
+    recordStoreCacheEvent('shop', false)
+
     pending.value = true
     error.value = null
     try {
@@ -562,6 +611,13 @@ export const useWorldShopStore = defineStore('world-shop', () => {
         ),
       )
       cart.value = response
+      cartSummary.value = {
+        subtotalAmount: response.subtotalAmount,
+        totalAmount: response.totalAmount,
+        currency: response.currencyCode ?? response.currency,
+        itemsCount: response.items.length,
+      }
+      cache.value[cacheKey] = { fetchedAt: Date.now(), data: response }
       return response
     } catch (err) {
       const normalized = normalizeHttpError(err)
@@ -580,8 +636,8 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     pending.value = true
     error.value = null
     try {
-      return await runTrackedStoreFetch('shop', () =>
-        $fetch(
+      const response = await runTrackedStoreFetch('shop', () =>
+        $fetch<ShopGeneralCart>(
           '/api/world/shop/carts/' + encodeURIComponent(shopId) + '/items',
           {
             method: 'POST',
@@ -592,6 +648,15 @@ export const useWorldShopStore = defineStore('world-shop', () => {
           },
         ),
       )
+      cart.value = response
+      cartSummary.value = {
+        subtotalAmount: response.subtotalAmount,
+        totalAmount: response.totalAmount,
+        currency: response.currencyCode ?? response.currency,
+        itemsCount: response.items.length,
+      }
+      invalidateCartCache(shopId)
+      return response
     } catch (err) {
       const normalized = normalizeHttpError(err)
       const translatedMessage = translateShopErrorMessage(
@@ -601,6 +666,176 @@ export const useWorldShopStore = defineStore('world-shop', () => {
       )
       error.value = `${translatedMessage}${normalized.message ? ` (${normalized.message})` : ''}`
       throw err
+    } finally {
+      pending.value = false
+    }
+  }
+
+  async function updateCartItem(
+    shopId: string,
+    itemId: string,
+    quantity: number,
+  ) {
+    pending.value = true
+    error.value = null
+    try {
+      const response = await runTrackedStoreFetch('shop', () =>
+        $fetch<ShopGeneralCart>(
+          `/api/world/shop/carts/${encodeURIComponent(shopId)}/items/${encodeURIComponent(itemId)}`,
+          {
+            method: 'PATCH',
+            body: {
+              quantity,
+            },
+          },
+        ),
+      )
+      cart.value = response
+      cartSummary.value = {
+        subtotalAmount: response.subtotalAmount,
+        totalAmount: response.totalAmount,
+        currency: response.currencyCode ?? response.currency,
+        itemsCount: response.items.length,
+      }
+      invalidateCartCache(shopId)
+      return response
+    } finally {
+      pending.value = false
+    }
+  }
+
+  async function removeCartItem(shopId: string, itemId: string) {
+    pending.value = true
+    error.value = null
+    try {
+      const response = await runTrackedStoreFetch('shop', () =>
+        $fetch<ShopGeneralCart>(
+          `/api/world/shop/carts/${encodeURIComponent(shopId)}/items/${encodeURIComponent(itemId)}`,
+          {
+            method: 'DELETE',
+          },
+        ),
+      )
+      cart.value = response
+      cartSummary.value = {
+        subtotalAmount: response.subtotalAmount,
+        totalAmount: response.totalAmount,
+        currency: response.currencyCode ?? response.currency,
+        itemsCount: response.items.length,
+      }
+      invalidateCartCache(shopId)
+      return response
+    } finally {
+      pending.value = false
+    }
+  }
+
+  async function checkout(
+    shopId: string,
+    payload: Record<string, unknown>,
+    requestId: string,
+  ) {
+    pending.value = true
+    error.value = null
+    try {
+      const response = await runTrackedStoreFetch('shop', () =>
+        $fetch<ShopGeneralOrder>('/api/world/shop/checkout', {
+          method: 'POST',
+          body: {
+            ...payload,
+            shopId,
+            requestId,
+          },
+        }),
+      )
+      selectedOrder.value = response
+      invalidateCartCache(shopId)
+      invalidateOrdersCache(response.id)
+      return response
+    } finally {
+      pending.value = false
+    }
+  }
+
+  async function fetchOrders(options?: { force?: boolean }) {
+    const cacheKey = 'shop-orders'
+    const cached = cache.value[cacheKey]
+    if (cached && !options?.force && isFresh(cached)) {
+      recordStoreCacheEvent('shop', true)
+      const response = cached.data as ShopGeneralOrdersResponse
+      orders.value = response.items
+      selectedOrder.value = response.items[0] ?? null
+      lastFetchedAt.value = cached.fetchedAt
+      return response.items
+    }
+    recordStoreCacheEvent('shop', false)
+
+    pending.value = true
+    error.value = null
+    try {
+      const response = await runTrackedStoreFetch('shop', () =>
+        $fetch<ShopGeneralOrdersResponse>('/api/world/shop/orders'),
+      )
+      orders.value = response.items
+      selectedOrder.value = response.items[0] ?? null
+      cache.value[cacheKey] = { fetchedAt: Date.now(), data: response }
+      return response.items
+    } finally {
+      pending.value = false
+    }
+  }
+
+  async function createOrderPaymentIntent(
+    orderId: string,
+    payload: Record<string, unknown>,
+  ) {
+    pending.value = true
+    error.value = null
+    try {
+      const response = await runTrackedStoreFetch('shop', () =>
+        $fetch<ShopGeneralTransaction>(
+          `/api/world/shop/orders/${encodeURIComponent(orderId)}/payment/intent`,
+          {
+            method: 'POST',
+            body: payload,
+          },
+        ),
+      )
+      transaction.value = response
+      invalidateCache(`shop-transaction:${orderId}`)
+      cache.value[`shop-transaction:${orderId}`] = {
+        fetchedAt: Date.now(),
+        data: response,
+      }
+      return response
+    } finally {
+      pending.value = false
+    }
+  }
+
+  async function confirmOrderPayment(
+    orderId: string,
+    payload: Record<string, unknown>,
+  ) {
+    pending.value = true
+    error.value = null
+    try {
+      const response = await runTrackedStoreFetch('shop', () =>
+        $fetch<ShopGeneralTransaction>(
+          `/api/world/shop/orders/${encodeURIComponent(orderId)}/payment/confirm`,
+          {
+            method: 'POST',
+            body: payload,
+          },
+        ),
+      )
+      transaction.value = response
+      invalidateOrdersCache(orderId)
+      cache.value[`shop-transaction:${orderId}`] = {
+        fetchedAt: Date.now(),
+        data: response,
+      }
+      return response
     } finally {
       pending.value = false
     }
@@ -617,6 +852,10 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     lastFetchedAt,
     currentAttempt,
     cart,
+    orders,
+    selectedOrder,
+    transaction,
+    cartSummary,
     fetchProducts,
     fetchCategories,
     fetchProductById,
@@ -628,7 +867,17 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     confirmPayment,
     fetchCart,
     addCartItem,
+    updateCartItem,
+    removeCartItem,
+    checkout,
+    fetchOrders,
+    createOrderPaymentIntent,
+    confirmOrderPayment,
     invalidateCache,
+    invalidateCartCache,
+    invalidateOrdersCache,
+    invalidateProductCaches,
+    invalidateCategoryCaches,
     buildModuleCacheKey,
     buildProductsQuery,
   }

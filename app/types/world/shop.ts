@@ -145,6 +145,13 @@ export interface ShopGeneralTransaction {
   updatedAt?: string
 }
 
+export interface WorldShopCartSummary {
+  subtotalAmount: number
+  totalAmount: number
+  currency: string
+  itemsCount: number
+}
+
 export function normalizeShopProductsFilters(
   filters: ShopGeneralProductsFilters,
 ): ShopGeneralProductsFilters {
@@ -167,7 +174,7 @@ export function normalizeShopProductsFilters(
   return {
     q: trimOrUndefined(filters.q),
     name: trimOrUndefined(filters.name),
-    category: normalizedCategory?.toUpperCase(),
+    category: normalizedCategory,
     status: filters.status,
     minPrice: normalizeNonNegativeNumber(filters.minPrice),
     maxPrice: normalizeNonNegativeNumber(filters.maxPrice),
