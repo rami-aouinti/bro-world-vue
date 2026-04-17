@@ -1,16 +1,12 @@
 <script setup lang="ts">
 import { useWorldShopStore } from '~/stores/worldShop'
-import type {
-  ShopGeneralCheckoutSession,
-  WorldShopPaymentAttempt,
-} from '~/types/world/shop'
 
 definePageMeta({ title: 'Shop Payment' })
 const { shopNavItems } = useShopNavItems()
 
 const route = useRoute()
-const checkoutId = computed(() =>
-  typeof route.query.checkoutId === 'string' ? route.query.checkoutId : '',
+const orderId = computed(() =>
+  typeof route.query.orderId === 'string' ? route.query.orderId : '',
 )
 
 const provider = ref<'stripe' | 'adyen' | 'paypal'>('stripe')
@@ -18,80 +14,102 @@ const shopStore = useWorldShopStore()
 const loading = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
-const checkout = computed(
-  () => shopStore.detail as ShopGeneralCheckoutSession | null,
-)
-const currentAttempt = computed(
-  () => shopStore.currentAttempt as WorldShopPaymentAttempt | null,
-)
 
-const buildIdempotencyKey = (prefix: string) =>
-  `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
+const selectedOrder = computed(() => shopStore.selectedOrder)
+const transaction = computed(() => shopStore.transaction)
 
-async function refreshCheckout() {
-  if (!checkoutId.value) return
+const orderStatusLabels: Record<string, string> = {
+  pending: 'Commande créée',
+  pending_payment: 'Paiement en attente',
+  paid: 'Payée',
+  packed: 'Préparée',
+  shipped: 'Expédiée',
+  delivered: 'Livrée',
+  returned: 'Retournée',
+  refunded: 'Remboursée',
+  failed: 'Échec',
+  cancelled: 'Annulée',
+}
 
-  await shopStore.fetchCheckoutById(checkoutId.value)
+const paymentStatusLabels: Record<string, string> = {
+  pending: 'En attente',
+  pending_payment: 'Paiement en attente',
+  requires_action: 'Action client requise',
+  processing: 'Traitement en cours',
+  succeeded: 'Paiement confirmé',
+  failed: 'Paiement échoué',
+  canceled: 'Paiement annulé',
+}
+
+async function refreshOrder() {
+  if (!orderId.value) return
+
+  const orders = await shopStore.fetchOrders({ force: true })
+  const order = orders.find((entry) => entry.id === orderId.value)
+  if (!order) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Order introuvable.',
+    })
+  }
+
+  shopStore.selectedOrder = order
 }
 
 async function createPaymentIntent() {
-  if (!checkoutId.value) return
+  if (!orderId.value) return
 
   loading.value = true
   errorMessage.value = ''
   successMessage.value = ''
 
   try {
-    await shopStore.createPaymentIntent({
-      checkoutId: checkoutId.value,
+    await shopStore.createOrderPaymentIntent(orderId.value, {
       provider: provider.value,
-      idempotencyKey: buildIdempotencyKey('payment'),
     })
     successMessage.value =
-      'Intent créé. Confirmez le paiement côté provider puis finalisez.'
+      'Payment intent créé pour la commande. Confirmez ensuite le paiement.'
   } catch (error: any) {
     errorMessage.value =
-      error?.statusMessage ||
-      'Échec création payment intent (timeout/provider).'
+      error?.statusMessage || 'Échec création payment intent (order payment).'
   } finally {
     loading.value = false
   }
 }
 
-async function finalizeCheckout() {
-  if (!checkout.value?.providerPaymentId) return
+async function confirmOrderPayment() {
+  if (!orderId.value) return
 
   loading.value = true
   errorMessage.value = ''
   successMessage.value = ''
 
   try {
-    await shopStore.confirmPayment({
-      checkoutId: checkout.value.id,
-      providerPaymentId: checkout.value.providerPaymentId,
-      idempotencyKey: buildIdempotencyKey('confirm'),
+    await shopStore.confirmOrderPayment(orderId.value, {
+      provider: provider.value,
+      transactionId: transaction.value?.id,
     })
-    successMessage.value = 'Checkout confirmé ✅'
+    await refreshOrder()
+    successMessage.value = 'Paiement confirmé ✅'
   } catch (error: any) {
     errorMessage.value =
-      error?.statusMessage ||
-      'Le webhook provider n’a pas encore confirmé le paiement.'
+      error?.statusMessage || 'Le paiement n’a pas encore été confirmé.'
   } finally {
     loading.value = false
   }
 }
 
 onMounted(async () => {
-  if (!checkoutId.value) {
+  if (!orderId.value) {
     errorMessage.value =
-      'checkoutId manquant. Lancez le workflow depuis /world/shop/checkout.'
+      'orderId manquant. Lancez le workflow depuis /world/shop/checkout.'
     return
   }
 
   try {
-    await refreshCheckout()
+    await refreshOrder()
   } catch (error: any) {
-    errorMessage.value = error?.statusMessage || 'Checkout introuvable.'
+    errorMessage.value = error?.statusMessage || 'Commande introuvable.'
   }
 })
 </script>
@@ -101,17 +119,16 @@ onMounted(async () => {
     <WorldModuleDrawers
       module-title="Shop"
       module-icon="mdi-storefront-outline"
-      module-description="Paiement réel Stripe + webhook + protection idempotency."
+      module-description="Order payment API: payment-intent + payment-confirm + webhook provider."
       :nav-items="shopNavItems"
       action-label="Créer paiement"
     />
 
     <v-container fluid>
       <v-card rounded="xl" class="pa-5">
-        <h2 class="text-h5 mb-2">Payment orchestration</h2>
+        <h2 class="text-h5 mb-2">Order payment orchestration</h2>
         <p class="text-body-2 text-medium-emphasis mb-4">
-          Cas gérés: timeout provider, refus paiement, double soumission
-          (idempotency key).
+          Flux: orderId -> /orders/{orderId}/payment-intent -> /orders/{orderId}/payment-confirm.
         </p>
 
         <v-alert
@@ -147,88 +164,65 @@ onMounted(async () => {
               <v-btn
                 color="primary"
                 :loading="loading"
-                :disabled="!checkoutId"
+                :disabled="!orderId"
                 @click="createPaymentIntent"
               >
-                Créer payment intent
+                Créer payment intent (order)
               </v-btn>
             </v-card>
 
             <v-card variant="outlined" rounded="lg" class="pa-4">
               <h3 class="text-subtitle-1 mb-3">Confirmation</h3>
               <p class="text-body-2 mb-2">
-                Le paiement est validé uniquement après webhook provider.
+                Le paiement est validé après retour provider + webhook.
               </p>
               <v-btn
                 color="success"
                 :loading="loading"
-                :disabled="!checkout?.providerPaymentId"
-                @click="finalizeCheckout"
+                :disabled="!orderId"
+                @click="confirmOrderPayment"
               >
-                Finaliser checkout
+                Finaliser paiement commande
               </v-btn>
             </v-card>
           </v-col>
 
           <v-col cols="12" md="6">
             <v-card variant="outlined" rounded="lg" class="pa-4">
-              <h3 class="text-subtitle-1 mb-3">État checkout</h3>
+              <h3 class="text-subtitle-1 mb-3">État commande</h3>
               <p class="mb-2">
-                Checkout ID:
-                <strong>{{ checkout?.id || checkoutId || '—' }}</strong>
+                Order ID:
+                <strong>{{ selectedOrder?.id || orderId || '—' }}</strong>
               </p>
               <p class="mb-2">
-                Status: <strong>{{ checkout?.status || '—' }}</strong>
-              </p>
-              <p class="mb-2">
-                Step: <strong>{{ checkout?.step || '—' }}</strong>
+                Status:
+                <strong>{{ orderStatusLabels[selectedOrder?.status || ''] || selectedOrder?.status || '—' }}</strong>
               </p>
               <p class="mb-2">
                 Total:
                 <strong
-                  >{{ checkout?.totalAmount?.toFixed?.(2) || '0.00' }}
-                  {{ checkout?.currency || 'USD' }}</strong
+                  >{{ selectedOrder?.amount?.toFixed?.(2) || '0.00' }}
+                  {{ selectedOrder?.currency || 'USD' }}</strong
                 >
-              </p>
-              <p class="mb-2">
-                Provider payment ID:
-                <strong>{{ checkout?.providerPaymentId || '—' }}</strong>
-              </p>
-              <p class="mb-0">
-                Dernière erreur:
-                <strong>{{ checkout?.lastError || 'aucune' }}</strong>
               </p>
             </v-card>
 
             <v-card variant="outlined" rounded="lg" class="pa-4 mt-4">
-              <h3 class="text-subtitle-1 mb-3">Dernière tentative</h3>
+              <h3 class="text-subtitle-1 mb-3">Transaction</h3>
               <p class="mb-1">
-                Attempt ID:
-                <strong>{{
-                  currentAttempt?.id || checkout?.attempts?.[0]?.id || '—'
-                }}</strong>
+                Transaction ID: <strong>{{ transaction?.id || '—' }}</strong>
               </p>
               <p class="mb-1">
                 Statut:
-                <strong>{{
-                  currentAttempt?.status ||
-                  checkout?.attempts?.[0]?.status ||
-                  '—'
-                }}</strong>
+                <strong>{{ paymentStatusLabels[transaction?.status || ''] || transaction?.status || '—' }}</strong>
               </p>
               <p class="mb-1">
                 Provider:
-                <strong>{{
-                  currentAttempt?.provider ||
-                  checkout?.attempts?.[0]?.provider ||
-                  '—'
-                }}</strong>
+                <strong>{{ transaction?.provider || provider }}</strong>
               </p>
               <p class="mb-0">
-                Client secret:
-                <code>{{
-                  currentAttempt?.clientSecret || 'non retourné'
-                }}</code>
+                Raison:
+                <strong>{{ transaction?.reason || 'aucune' }}</strong>
               </p>
             </v-card>
           </v-col>

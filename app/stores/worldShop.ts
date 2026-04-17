@@ -529,7 +529,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     try {
       const response = await runTrackedStoreFetch('shop', () =>
         $fetch<WorldShopPaymentIntentResponse>(
-          '/api/world/shop/payment/intent',
+          '/api/world/shop/payment-intent',
           {
             method: 'POST',
             body: {
@@ -562,7 +562,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     error.value = null
     try {
       const response = await runTrackedStoreFetch('shop', () =>
-        $fetch<WorldShopCheckoutSession>('/api/world/shop/payment/confirm', {
+        $fetch<WorldShopCheckoutSession>('/api/world/shop/payment-confirm', {
           method: 'POST',
           body: {
             ...payload,
@@ -731,22 +731,31 @@ export const useWorldShopStore = defineStore('world-shop', () => {
   }
 
   async function checkout(
-    shopId: string,
-    payload: Record<string, unknown>,
-    requestId: string,
+    payload: {
+      billingAddress: WorldShopCheckoutAddress
+      shippingAddress: WorldShopCheckoutAddress
+      email: string
+      phone: string
+      shippingMethod: string
+    },
+    requestId?: string,
   ) {
+    const shopId = await resolveRequiredShopId()
     pending.value = true
     error.value = null
     try {
       const response = await runTrackedStoreFetch('shop', () =>
-        $fetch<ShopGeneralOrder>('/api/world/shop/checkout', {
-          method: 'POST',
-          body: {
-            ...payload,
-            shopId,
-            requestId,
+        $fetch<ShopGeneralOrder>(
+          `/api/world/shop/checkout/${encodeURIComponent(shopId)}`,
+          {
+            method: 'POST',
+            body: payload,
+            headers:
+              requestId && requestId.trim().length > 0
+                ? { 'x-request-id': requestId.trim() }
+                : undefined,
           },
-        }),
+        ),
       )
       selectedOrder.value = response
       invalidateCartCache(shopId)
@@ -794,7 +803,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     try {
       const response = await runTrackedStoreFetch('shop', () =>
         $fetch<ShopGeneralTransaction>(
-          `/api/world/shop/orders/${encodeURIComponent(orderId)}/payment/intent`,
+          `/api/world/shop/orders/${encodeURIComponent(orderId)}/payment-intent`,
           {
             method: 'POST',
             body: payload,
@@ -822,7 +831,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     try {
       const response = await runTrackedStoreFetch('shop', () =>
         $fetch<ShopGeneralTransaction>(
-          `/api/world/shop/orders/${encodeURIComponent(orderId)}/payment/confirm`,
+          `/api/world/shop/orders/${encodeURIComponent(orderId)}/payment-confirm`,
           {
             method: 'POST',
             body: payload,
