@@ -13,11 +13,16 @@ const props = withDefaults(defineProps<{
   initialTab?: 'timeline' | 'lineups' | 'statistics' | 'player-notes'
   homeTeamId?: number | null
   awayTeamId?: number | null
+  teamStatistics?: Partial<Record<'match' | 'firstHalf' | 'secondHalf', {
+    home?: Partial<Record<'xg' | 'possession' | 'shotsTotal' | 'shotsOnTarget' | 'bigChances' | 'passes' | 'corners' | 'cards', string | number | null>>
+    away?: Partial<Record<'xg' | 'possession' | 'shotsTotal' | 'shotsOnTarget' | 'bigChances' | 'passes' | 'corners' | 'cards', string | number | null>>
+  }>>
 }>(), {
   mode: 'tabs',
   initialTab: 'timeline',
   homeTeamId: null,
   awayTeamId: null,
+  teamStatistics: () => ({}),
 })
 
 const emit = defineEmits<{
@@ -30,6 +35,7 @@ const { t } = useI18n()
 const activeTab = ref<'timeline' | 'lineups' | 'statistics' | 'player-notes'>(props.initialTab)
 const selectedTeamFilter = ref<'all' | string>('all')
 const lineupView = ref<'split' | 'home' | 'away'>('split')
+const selectedStatsFilter = ref<'match' | 'firstHalf' | 'secondHalf'>('match')
 
 watch(() => props.initialTab, (value) => {
   activeTab.value = value
@@ -90,22 +96,100 @@ const teamStatsRows = computed(() => {
   return [...groups.values()].slice(0, 2)
 })
 
-const statisticsRows = computed(() => {
+type StatsKey = 'xg' | 'possession' | 'shotsTotal' | 'shotsOnTarget' | 'bigChances' | 'passes' | 'corners' | 'cards'
+type StatsPeriod = 'match' | 'firstHalf' | 'secondHalf'
+
+const statisticsMetricDefinitions: Array<{ key: StatsKey; label: string }> = [
+  { key: 'xg', label: 'xG' },
+  { key: 'possession', label: 'Possession' },
+  { key: 'shotsTotal', label: 'Shots total' },
+  { key: 'shotsOnTarget', label: 'Shots on target' },
+  { key: 'bigChances', label: 'Big chances' },
+  { key: 'passes', label: 'Passes' },
+  { key: 'corners', label: 'Corners' },
+  { key: 'cards', label: 'Cards' },
+]
+
+const toNumericValue = (value: string | number | null | undefined) => {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : null
+  if (typeof value !== 'string') return null
+  const parsed = Number(value.replace('%', '').trim())
+  return Number.isFinite(parsed) ? parsed : null
+}
+
+const normalizeStatDisplay = (value: string | number | null | undefined, key: StatsKey) => {
+  if (value === null || typeof value === 'undefined' || `${value}`.trim() === '') {
+    return { text: 'data unavailable', numeric: null }
+  }
+
+  if (key === 'possession') {
+    const numeric = toNumericValue(value)
+    if (numeric === null) return { text: 'data unavailable', numeric: null }
+    return { text: `${numeric}%`, numeric }
+  }
+
+  const numeric = toNumericValue(value)
+  if (numeric === null) return { text: `${value}`, numeric: null }
+  if (key === 'xg') return { text: numeric.toFixed(2), numeric }
+  return { text: `${numeric}`, numeric }
+}
+
+const fallbackMatchStats = computed<Record<StatsKey, { home: string | number | null; away: string | number | null }>>(() => {
   const [home, away] = teamStatsRows.value
-  if (!home || !away) return []
+  return {
+    xg: { home: null, away: null },
+    possession: { home: null, away: null },
+    shotsTotal: { home: home?.shots ?? null, away: away?.shots ?? null },
+    shotsOnTarget: { home: null, away: null },
+    bigChances: { home: null, away: null },
+    passes: { home: home?.passes ?? null, away: away?.passes ?? null },
+    corners: { home: null, away: null },
+    cards: { home: null, away: null },
+  }
+})
 
-  const metrics = [
-    { label: 'Rating', left: home.rating, right: away.rating },
-    { label: 'Goals', left: home.goals, right: away.goals },
-    { label: 'Shots', left: home.shots, right: away.shots },
-    { label: 'Passes', left: home.passes, right: away.passes },
-    { label: 'Tackles', left: home.tackles, right: away.tackles },
-  ]
+const availableStatsPeriods = computed<Array<{ title: string; value: StatsPeriod }>>(() => {
+  const periods: Array<{ title: string; value: StatsPeriod }> = [{ title: 'Match', value: 'match' }]
+  if (props.teamStatistics?.firstHalf) periods.push({ title: '1st Half', value: 'firstHalf' })
+  if (props.teamStatistics?.secondHalf) periods.push({ title: '2nd Half', value: 'secondHalf' })
+  return periods
+})
 
-  return metrics.map((metric) => {
-    const total = metric.left + metric.right
-    const leftPct = total > 0 ? (metric.left / total) * 100 : 50
-    return { ...metric, leftPct, rightPct: 100 - leftPct }
+watch(availableStatsPeriods, (periods) => {
+  if (!periods.some(period => period.value === selectedStatsFilter.value)) {
+    selectedStatsFilter.value = 'match'
+  }
+}, { immediate: true })
+
+const statisticsRows = computed(() => {
+  const periodStats = props.teamStatistics?.[selectedStatsFilter.value]
+  const source = periodStats
+    ? {
+        xg: { home: periodStats.home?.xg ?? null, away: periodStats.away?.xg ?? null },
+        possession: { home: periodStats.home?.possession ?? null, away: periodStats.away?.possession ?? null },
+        shotsTotal: { home: periodStats.home?.shotsTotal ?? null, away: periodStats.away?.shotsTotal ?? null },
+        shotsOnTarget: { home: periodStats.home?.shotsOnTarget ?? null, away: periodStats.away?.shotsOnTarget ?? null },
+        bigChances: { home: periodStats.home?.bigChances ?? null, away: periodStats.away?.bigChances ?? null },
+        passes: { home: periodStats.home?.passes ?? null, away: periodStats.away?.passes ?? null },
+        corners: { home: periodStats.home?.corners ?? null, away: periodStats.away?.corners ?? null },
+        cards: { home: periodStats.home?.cards ?? null, away: periodStats.away?.cards ?? null },
+      }
+    : fallbackMatchStats.value
+
+  return statisticsMetricDefinitions.map((metric) => {
+    const home = normalizeStatDisplay(source[metric.key].home, metric.key)
+    const away = normalizeStatDisplay(source[metric.key].away, metric.key)
+    const total = (home.numeric ?? 0) + (away.numeric ?? 0)
+    const leftPct = total > 0 ? ((home.numeric ?? 0) / total) * 100 : 50
+
+    return {
+      label: metric.label,
+      leftText: home.text,
+      rightText: away.text,
+      leftPct,
+      rightPct: 100 - leftPct,
+      unavailable: home.numeric === null || away.numeric === null,
+    }
   })
 })
 
@@ -434,23 +518,41 @@ function onSelectPlayer(playerId: number | null | undefined) {
       </v-window-item>
 
       <v-window-item value="statistics">
-        <v-sheet class="pa-3 rounded border">
-          <div v-for="row in statisticsRows" :key="row.label" class="mb-4">
-            <div class="d-flex align-center justify-space-between mb-1 text-body-2">
-              <span>{{ row.left }}</span>
-              <span class="font-weight-bold">{{ row.label }}</span>
-              <span>{{ row.right }}</span>
+        <v-sheet class="stats-panel pa-4 rounded border">
+          <div class="d-flex align-center justify-space-between ga-3 mb-4">
+            <div class="text-subtitle-1 font-weight-bold">Top statistics</div>
+            <v-btn-toggle
+              v-if="availableStatsPeriods.length > 1"
+              v-model="selectedStatsFilter"
+              density="comfortable"
+              rounded="lg"
+              variant="tonal"
+              color="primary"
+              mandatory
+            >
+              <v-btn
+                v-for="period in availableStatsPeriods"
+                :key="period.value"
+                :value="period.value"
+                size="small"
+              >
+                {{ period.title }}
+              </v-btn>
+            </v-btn-toggle>
+          </div>
+
+          <div v-for="row in statisticsRows" :key="row.label" class="stats-row">
+            <div class="stats-row__values text-body-2">
+              <span class="stats-row__value stats-row__value--home">{{ row.leftText }}</span>
+              <span class="stats-row__label">{{ row.label }}</span>
+              <span class="stats-row__value stats-row__value--away">{{ row.rightText }}</span>
             </div>
-            <div class="stats-bar">
+            <div class="stats-bar" :class="{ 'stats-bar--muted': row.unavailable }">
               <div class="stats-bar__left" :style="{ width: `${row.leftPct}%` }" />
               <div class="stats-bar__right" :style="{ width: `${row.rightPct}%` }" />
             </div>
           </div>
         </v-sheet>
-
-        <v-alert v-if="!statisticsRows.length" class="mt-2" type="info" variant="tonal" density="comfortable">
-          Not enough data for team statistics.
-        </v-alert>
       </v-window-item>
 
       <v-window-item value="player-notes">
@@ -610,9 +712,32 @@ function onSelectPlayer(playerId: number | null | undefined) {
 .pitch-player__name { display: block; font-size: .66rem; font-weight: 700; color: rgba(255, 255, 255, .96); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .lineup-fallback { border: 1px solid rgba(var(--v-theme-on-surface), .12); border-radius: 12px; }
 .lineup-fallback__item { border-radius: 10px; margin: 2px 4px; }
-.stats-bar { height: 8px; border-radius: 99px; display: flex; overflow: hidden; background: rgba(var(--v-theme-on-surface), .1); }
-.stats-bar__left { background: rgb(var(--v-theme-primary)); }
+.stats-panel {
+  background: linear-gradient(180deg, rgba(var(--v-theme-surface), .95), rgba(var(--v-theme-surface), .72));
+}
+.stats-row { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.stats-row:last-child { margin-bottom: 0; }
+.stats-row__values {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+}
+.stats-row__value { font-weight: 700; }
+.stats-row__value--home { text-align: left; color: rgb(var(--v-theme-primary)); }
+.stats-row__value--away { text-align: right; color: rgba(var(--v-theme-on-surface), .92); }
+.stats-row__label {
+  text-align: center;
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-weight: 700;
+  color: rgba(var(--v-theme-on-surface), .72);
+}
+.stats-bar { height: 8px; border-radius: 99px; display: flex; overflow: hidden; background: rgba(var(--v-theme-on-surface), .12); }
+.stats-bar__left { background: linear-gradient(90deg, rgba(var(--v-theme-primary), .7), rgb(var(--v-theme-primary))); }
 .stats-bar__right { background: rgba(var(--v-theme-on-surface), .42); }
+.stats-bar--muted { opacity: .7; }
 .player-note-item { border-radius: 10px; }
 
 @media (max-width: 720px) {
