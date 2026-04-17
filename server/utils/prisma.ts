@@ -1,19 +1,35 @@
 import type { PrismaClient as PrismaClientType } from '@prisma/client'
-import prismaPkg from '@prisma/client'
 
-const { PrismaClient } = prismaPkg
+let prismaPromise: Promise<PrismaClientType | null> | null = null
 
 declare global {
-  // eslint-disable-next-line no-var
   var __broWorldPrisma__: PrismaClientType | undefined
 }
 
-export const prisma =
-  globalThis.__broWorldPrisma__ ??
-  new PrismaClient({
-    log: process.env.NODE_ENV === 'development' ? ['warn', 'error'] : ['error'],
-  })
+export async function getPrismaClient(): Promise<PrismaClientType | null> {
+  if (globalThis.__broWorldPrisma__) {
+    return globalThis.__broWorldPrisma__
+  }
 
-if (process.env.NODE_ENV !== 'production') {
-  globalThis.__broWorldPrisma__ = prisma
+  if (!prismaPromise) {
+    prismaPromise = (async () => {
+      try {
+        const prismaPkg = await import('@prisma/client')
+
+        const prisma = new prismaPkg.PrismaClient({
+          log: process.env.NODE_ENV === 'development' ? ['warn', 'error'] : ['error'],
+        })
+
+        if (process.env.NODE_ENV !== 'production') {
+          globalThis.__broWorldPrisma__ = prisma
+        }
+
+        return prisma
+      } catch {
+        return null
+      }
+    })()
+  }
+
+  return prismaPromise
 }

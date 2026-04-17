@@ -1,5 +1,5 @@
 import type { Prisma } from '@prisma/client'
-import { prisma } from './prisma'
+import { getPrismaClient } from './prisma'
 
 type PersistentCacheEntry<T> = {
   payload: T
@@ -34,6 +34,11 @@ export async function getPersistentCached<T>(key: string): Promise<T | null> {
     return null
   }
 
+  const prisma = await getPrismaClient()
+  if (!prisma) {
+    return null
+  }
+
   const now = new Date()
 
   try {
@@ -65,6 +70,11 @@ export async function setPersistentCached<T>(
   ttlSeconds: number,
 ) {
   if (!hasDatabaseUrl()) {
+    return
+  }
+
+  const prisma = await getPrismaClient()
+  if (!prisma) {
     return
   }
 
