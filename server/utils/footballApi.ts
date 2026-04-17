@@ -6,8 +6,11 @@ import {
 } from './apiCacheConfig'
 import { getPersistentCached, setPersistentCached } from './persistentApiCache'
 import type {
+  FootballCoverageIndicator,
   FootballFixture,
+  FootballFixtureAvailabilityPlayer,
   FootballFixtureDetailsApiResponse,
+  FootballFixtureMatchContext,
   FootballFixtureStatisticsMetricKey,
   FootballFixtureStatisticsMetricValue,
   FootballFixtureTeamStatistics,
@@ -24,9 +27,12 @@ import type {
   FootballTeamsApiResponse,
   FootballOddsApiResponse,
 } from '../types/api/football'
+import type { ApiObject } from '../types/api/common'
 import type {
   ApiSportsFixtureEventItem,
+  ApiSportsFixtureInjuryItem,
   ApiSportsFixtureItem,
+  ApiSportsFixturePredictionItem,
   ApiSportsFixtureStatisticsItem,
   ApiSportsLeagueItem,
   ApiSportsPlayerItem,
@@ -169,6 +175,32 @@ export function mapFixturesResponse(
 ): FootballFixturesApiResponse {
   return {
     items: (payload.response ?? []).map(mapFixture),
+  }
+}
+
+function toCoverageIndicator(
+  covered: boolean,
+  hasData: boolean,
+): FootballCoverageIndicator {
+  return {
+    covered,
+    available: covered && hasData,
+    status: !covered ? 'not-covered' : hasData ? 'available' : 'unavailable',
+  }
+}
+
+function mapFixtureAvailabilityPlayer(
+  item: ApiSportsFixtureInjuryItem,
+): FootballFixtureAvailabilityPlayer {
+  return {
+    playerId: item.player.id,
+    playerName: item.player.name,
+    playerPhoto: item.player.photo,
+    teamId: item.team.id,
+    teamName: item.team.name,
+    teamLogo: item.team.logo,
+    type: item.player.type,
+    reason: item.player.reason,
   }
 }
 
@@ -617,17 +649,210 @@ export async function cachedFootballApiGet<TItem>(
   return payload
 }
 
+async function fetchFixtureById(event: H3Event, fixture: number) {
+  const fixtures = await cachedFootballApiGet<ApiSportsFixtureItem>(
+    event,
+    '/fixtures',
+    { id: fixture },
+    { cacheProfile: 'reference', cacheKeySuffix: 'reference-fixture' },
+  )
+
+  const mappedFixture = fixtures.response?.[0]
+    ? mapFixture(fixtures.response[0])
+    : null
+
+  return mappedFixture
+}
+
+async function getFixtureCoverageContext(
+  event: H3Event,
+  fixture: FootballFixture | null,
+) {
+  const coverage = {
+    injuries: false,
+    predictions: false,
+    odds: false,
+  }
+
+  if (!fixture) {
+    return coverage
+  }
+
+  const leagues = await cachedFootballApiGet<ApiSportsLeagueItem>(
+    event,
+    '/leagues',
+    {
+      id: fixture.league.id,
+      season: fixture.league.season,
+    },
+    { cacheProfile: 'reference', cacheKeySuffix: 'reference-league-coverage' },
+  )
+
+  const league = leagues.response?.[0]
+  const season = league?.seasons?.find(
+    (item) => item.year === fixture.league.season,
+  )
+  const seasonCoverage = season?.coverage
+
+  if (!seasonCoverage) {
+    return coverage
+  }
+
+  return {
+    injuries: !!seasonCoverage.injuries,
+    predictions: !!seasonCoverage.predictions,
+    odds: !!seasonCoverage.odds,
+  }
+}
+
+export async function fetchFixtureInjuries(
+  event: H3Event,
+  fixture: number,
+  covered = true,
+) {
+  if (!covered) {
+    return {
+      ...toCoverageIndicator(false, false),
+      injuries: [] as FootballFixtureAvailabilityPlayer[],
+      suspensions: [] as FootballFixtureAvailabilityPlayer[],
+    }
+  }
+
+  const payload = await cachedFootballApiGet<ApiSportsFixtureInjuryItem>(
+    event,
+    '/injuries',
+    { fixture },
+    { cacheProfile: 'reference', cacheKeySuffix: 'reference-fixture-injuries' },
+  )
+  const injuries = (payload.response ?? []).map(mapFixtureAvailabilityPlayer)
+
+  return {
+    ...toCoverageIndicator(true, injuries.length > 0),
+    injuries,
+    suspensions: [],
+  }
+}
+
+export async function fetchFixturePrediction(
+  event: H3Event,
+  fixture: number,
+  covered = true,
+) {
+  if (!covered) {
+    return {
+      ...toCoverageIndicator(false, false),
+      item: null as ApiObject | null,
+    }
+  }
+
+  const payload = await cachedFootballApiGet<ApiSportsFixturePredictionItem>(
+    event,
+    '/predictions',
+    { fixture },
+    {
+      cacheProfile: 'reference',
+      cacheKeySuffix: 'reference-fixture-predictions',
+    },
+  )
+  const item = (payload.response?.[0] as ApiObject) ?? null
+
+  return {
+    ...toCoverageIndicator(true, !!item),
+    item,
+  }
+}
+
+export async function fetchFixtureHeadToHead(
+  event: H3Event,
+  h2h: string,
+) {
+  const payload = await cachedFootballApiGet<ApiSportsFixtureItem>(
+    event,
+    '/fixtures/headtohead',
+    { h2h },
+    {
+      cacheProfile: 'reference',
+      cacheKeySuffix: 'reference-fixture-headtohead',
+    },
+  )
+  const fixtures = (payload.response ?? []).map(mapFixture)
+
+  return {
+    ...toCoverageIndicator(true, fixtures.length > 0),
+    fixtures,
+  }
+}
+
+export async function fetchFixtureLiveOdds(
+  event: H3Event,
+  fixture: number,
+  covered = true,
+) {
+  if (!covered) {
+    return {
+      ...toCoverageIndicator(false, false),
+      item: null as ApiObject | null,
+    }
+  }
+
+  const payload = await cachedFootballApiGet<ApiSportsOddsItem>(
+    event,
+    '/odds/live',
+    {},
+    { cacheProfile: 'live', cacheKeySuffix: 'live-odds-live' },
+  )
+  const item =
+    ((payload.response ?? []).find(
+      (entry) => Number((entry as ApiObject)?.fixture?.id) === fixture,
+    ) as ApiObject | undefined) ?? null
+
+  return {
+    ...toCoverageIndicator(true, !!item),
+    item,
+  }
+}
+
+export async function fetchFixtureMatchContext(
+  event: H3Event,
+  fixtureData: FootballFixture | null,
+  fixtureId: number,
+): Promise<FootballFixtureMatchContext> {
+  const coverage = await getFixtureCoverageContext(event, fixtureData)
+  const homeId = fixtureData?.teams.home.id
+  const awayId = fixtureData?.teams.away.id
+  const h2h =
+    typeof homeId === 'number' && typeof awayId === 'number'
+      ? `${homeId}-${awayId}`
+      : null
+
+  const [availability, prediction, liveOdds, headToHead] = await Promise.all([
+    fetchFixtureInjuries(event, fixtureId, coverage.injuries),
+    fetchFixturePrediction(event, fixtureId, coverage.predictions),
+    fetchFixtureLiveOdds(event, fixtureId, coverage.odds),
+    h2h
+      ? fetchFixtureHeadToHead(event, h2h)
+      : Promise.resolve({
+          ...toCoverageIndicator(true, false),
+          fixtures: [],
+        }),
+  ])
+
+  return {
+    coverage,
+    availability,
+    headToHead,
+    prediction,
+    liveOdds,
+  }
+}
+
 export async function fetchFixtureDetails(
   event: H3Event,
   fixture: number,
 ): Promise<FootballFixtureDetailsApiResponse> {
-  const [fixtures, events, lineups, players, statistics] = await Promise.all([
-    cachedFootballApiGet<ApiSportsFixtureItem>(
-      event,
-      '/fixtures',
-      { id: fixture },
-      { cacheProfile: 'reference', cacheKeySuffix: 'reference-fixture' },
-    ),
+  const [mappedFixture, events, lineups, players, statistics] =
+    await Promise.all([
+      fetchFixtureById(event, fixture),
     cachedFootballApiGet<ApiSportsFixtureEventItem>(
       event,
       '/fixtures/events',
@@ -661,11 +886,8 @@ export async function fetchFixtureDetails(
         cacheKeySuffix: 'reference-fixture-statistics',
       },
     ),
-  ])
-
-  const mappedFixture = fixtures.response?.[0]
-    ? mapFixture(fixtures.response[0])
-    : null
+    ])
+  const matchContext = await fetchFixtureMatchContext(event, mappedFixture, fixture)
 
   return {
     fixture: mappedFixture,
@@ -673,6 +895,7 @@ export async function fetchFixtureDetails(
     lineups: (lineups.response ?? []).map(mapLineup),
     playerStats: (players.response ?? []).flatMap(mapPlayerStats),
     teamStatistics: mapFixtureStatistics(mappedFixture, statistics.response),
+    matchContext,
   }
 }
 

@@ -4,6 +4,7 @@ import type {
   FixtureEventViewModel,
   FixtureLineupViewModel,
   FixturePlayerStatViewModel,
+  FixtureMatchContextViewModel,
   FixtureTeamStatistics,
 } from '~/composables/useFootballData'
 import SportsFootballFixtureDetailsPanel from '~/components/Sports/Football/FixtureDetailsPanel.vue'
@@ -15,6 +16,7 @@ const props = defineProps<{
   lineups: FixtureLineupViewModel[]
   playerStats: FixturePlayerStatViewModel[]
   teamStatistics: FixtureTeamStatistics
+  matchContext: FixtureMatchContextViewModel
 }>()
 const { t } = useI18n()
 
@@ -247,6 +249,7 @@ function onSelectPlayer(playerId?: number | null) {
       :home-team-id="heroFixture?.teams.home.id ?? null"
       :away-team-id="heroFixture?.teams.away.id ?? null"
       :team-statistics="teamStatistics"
+      :match-context="matchContext"
       @select-team="onSelectTeam"
       @select-player="onSelectPlayer"
     />

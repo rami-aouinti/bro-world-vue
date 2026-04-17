@@ -65,6 +65,7 @@ const {
   mappedFixtureLineups,
   mappedFixturePlayerStats,
   mappedFixtureTeamStatistics,
+  mappedFixtureMatchContext,
   teamDetails,
   playerDetails,
   footballSections,
@@ -639,6 +640,7 @@ watch(
               :lineups="mappedFixtureLineups"
               :player-stats="mappedFixturePlayerStats"
               :team-statistics="mappedFixtureTeamStatistics"
+              :match-context="mappedFixtureMatchContext"
               @select="loadFixtureDetails"
               @select-team="openTeamModal"
               @select-player="openPlayerModal"

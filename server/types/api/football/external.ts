@@ -289,3 +289,34 @@ export interface ApiSportsPlayerItem {
 }
 
 export type ApiSportsOddsItem = ApiObject
+
+export interface ApiSportsFixtureInjuryItem {
+  player: {
+    id: number | null
+    name: string | null
+    photo: string | null
+    type: string | null
+    reason: string | null
+  }
+  team: {
+    id: number | null
+    name: string | null
+    logo: string | null
+  }
+  fixture: {
+    id: number
+    timezone: string
+    date: string
+    timestamp: number
+  }
+  league: {
+    id: number
+    season: number
+    name: string
+    country: string
+    logo: string | null
+    flag: string | null
+  }
+}
+
+export type ApiSportsFixturePredictionItem = ApiObject
