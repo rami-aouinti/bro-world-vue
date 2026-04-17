@@ -23,7 +23,22 @@ export interface ApiSportsBasketballLeagueItem {
     code: string | null
     flag: string | null
   }
-  seasons: string[]
+  seasons: Array<{
+    season: number
+    start: string | null
+    end: string | null
+    coverage: {
+      games: {
+        statistics: {
+          teams: boolean
+          players: boolean
+        }
+      }
+      standings: boolean
+      players: boolean
+      odds: boolean
+    }
+  }>
 }
 
 export interface ApiSportsBasketballTeamItem {

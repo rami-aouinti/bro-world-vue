@@ -43,18 +43,6 @@ function parseIntegerParam(value: unknown, name: string) {
   return parsed
 }
 
-function parseStringParam(value: unknown, name: string) {
-  const normalized = Array.isArray(value) ? value[0] : value
-  if (typeof normalized !== 'string' || normalized.trim().length === 0) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: `Invalid query parameter: ${name}`,
-    })
-  }
-
-  return normalized.trim()
-}
-
 export function getRequiredBasketballId(event: H3Event, name: string) {
   const query = getQuery(event)
   return parseIntegerParam(query[name], name)
@@ -72,19 +60,11 @@ export function getOptionalBasketballId(event: H3Event, name: string) {
 }
 
 export function getRequiredBasketballSeason(event: H3Event) {
-  const query = getQuery(event)
-  return parseStringParam(query.season, 'season')
+  return getRequiredBasketballId(event, 'season')
 }
 
 export function getOptionalBasketballSeason(event: H3Event) {
-  const query = getQuery(event)
-  const raw = query.season
-
-  if (typeof raw === 'undefined' || raw === null || raw === '') {
-    return undefined
-  }
-
-  return parseStringParam(raw, 'season')
+  return getOptionalBasketballId(event, 'season')
 }
 
 function mapCountry(country?: {
@@ -158,7 +138,22 @@ export function mapBasketballLeaguesResponse(
           code: item.country.code,
           flag: item.country.flag,
         },
-        seasons: item.seasons ?? [],
+        seasons: (item.seasons ?? []).map((season) => ({
+          season: season.season,
+          start: season.start ?? null,
+          end: season.end ?? null,
+          coverage: {
+            games: {
+              statistics: {
+                teams: season.coverage?.games?.statistics?.teams ?? false,
+                players: season.coverage?.games?.statistics?.players ?? false,
+              },
+            },
+            standings: season.coverage?.standings ?? false,
+            players: season.coverage?.players ?? false,
+            odds: season.coverage?.odds ?? false,
+          },
+        })),
       }),
     ),
   }

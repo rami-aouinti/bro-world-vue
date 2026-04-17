@@ -6,7 +6,22 @@ export interface BasketballLeague {
   country: {
     name: string
   }
-  seasons: string[]
+  seasons: Array<{
+    season: number
+    start: string | null
+    end: string | null
+    coverage: {
+      games: {
+        statistics: {
+          teams: boolean
+          players: boolean
+        }
+      }
+      standings: boolean
+      players: boolean
+      odds: boolean
+    }
+  }>
 }
 
 export interface BasketballTeam {
@@ -79,8 +94,6 @@ function normalizeSelectionId(value: number | string | null | undefined) {
 }
 
 export function useBasketballData() {
-  const { t } = useI18n()
-
   const leagues = ref<BasketballLeague[]>([])
   const games = ref<BasketballGame[]>([])
   const standings = ref<BasketballStandingRow[]>([])
@@ -94,7 +107,7 @@ export function useBasketballData() {
   const standingsError = ref('')
 
   const selectedLeagueId = ref<number | null>(null)
-  const selectedSeason = ref<string | null>(null)
+  const selectedSeason = ref<number | null>(null)
   const selectedGameId = ref<number | null>(null)
 
   const selectedLeague = computed<BasketballLeague | null>(() => {
@@ -102,9 +115,12 @@ export function useBasketballData() {
     return leagues.value.find((league) => league.id === selectedLeagueId.value) ?? null
   })
 
-  const seasons = computed<string[]>(() => {
+  const seasons = computed<number[]>(() => {
     if (!selectedLeague.value) return []
-    return [...selectedLeague.value.seasons].sort((left, right) => right.localeCompare(left))
+    return [...selectedLeague.value.seasons]
+      .map((entry) => entry.season)
+      .filter((season) => Number.isInteger(season) && season > 0)
+      .sort((left, right) => right - left)
   })
 
   const resetLeagueData = () => {
@@ -195,8 +211,8 @@ export function useBasketballData() {
     selectedSeason.value = seasons.value[0] ?? null
   }
 
-  const selectSeason = (season: string | null) => {
-    selectedSeason.value = season
+  const selectSeason = (season: string | number | null) => {
+    selectedSeason.value = normalizeSelectionId(season)
   }
 
   const selectGame = (gameId: number | null) => {

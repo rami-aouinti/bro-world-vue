@@ -13,7 +13,22 @@ export interface BasketballLeague extends ApiObject {
   type: string
   logo: string | null
   country: BasketballCountry
-  seasons: string[]
+  seasons: Array<{
+    season: number
+    start: string | null
+    end: string | null
+    coverage: {
+      games: {
+        statistics: {
+          teams: boolean
+          players: boolean
+        }
+      }
+      standings: boolean
+      players: boolean
+      odds: boolean
+    }
+  }>
 }
 
 export interface BasketballLeaguesApiResponse extends ApiObject {

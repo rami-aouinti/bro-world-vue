@@ -39,7 +39,22 @@ const scoreLabel = (game: BasketballGame) => {
     <v-card-title class="text-subtitle-1">Basketball games</v-card-title>
     <v-divider class="mb-2" />
 
-    <v-list density="compact" lines="two" class="pa-0">
+    <v-alert
+      v-if="!games.length"
+      type="info"
+      variant="tonal"
+      density="comfortable"
+      class="ma-2"
+    >
+      No games available for this league and season.
+    </v-alert>
+
+    <v-list
+      v-else
+      density="compact"
+      lines="two"
+      class="pa-0"
+    >
       <v-list-item
         v-for="game in games"
         :key="game.id"
