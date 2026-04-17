@@ -24,6 +24,17 @@ interface BasicInfoForm {
   timezone: string
 }
 
+interface NotificationPreferenceItem {
+  switchState: boolean
+  type: 'Activity' | 'Email' | 'Push' | 'SMS'
+  text: string
+}
+
+interface NotificationPreferencesResponse {
+  configurationKey: string
+  configurationValue: NotificationPreferenceItem[]
+}
+
 const visible = ref(false)
 const settingsSections = [
   { id: 'profile', label: 'Profile', icon: 'mdi-account-circle-outline' },
@@ -48,6 +59,15 @@ const sessionsError = ref('')
 const sessions = ref<UserSessionInfo[]>([])
 const isSessionsDialogOpen = ref(false)
 const fileInputRef = ref<HTMLInputElement | null>(null)
+const isUpdatingPassword = ref(false)
+const passwordFeedback = ref<{ type: 'success' | 'error'; message: string } | null>(
+  null,
+)
+const notificationFeedback = ref<{
+  type: 'success' | 'error'
+  message: string
+} | null>(null)
+const isSavingNotifications = ref(false)
 const profileFeedback = ref<{ type: 'success' | 'error'; message: string } | null>(
   null,
 )
@@ -63,6 +83,25 @@ const basicInfoForm = ref<BasicInfoForm>({
   location: '',
   timezone: '',
 })
+const passwordForm = ref({
+  currentPassword: '',
+  newPassword: '',
+  confirmPassword: '',
+})
+
+const NOTIFICATION_TEXTS = [
+  'New login detected',
+  'Product updates',
+  'Billing alerts',
+] as const
+
+const NOTIFICATION_TYPES = ['Activity', 'Email', 'Push', 'SMS'] as const
+
+type NotificationType = (typeof NOTIFICATION_TYPES)[number]
+
+type NotificationRow = {
+  title: string
+} & Record<Lowercase<NotificationType>, boolean>
 
 const fullName = computed(() => {
   const user = profile.value
@@ -100,6 +139,67 @@ function setBasicInfoValue(fieldKey: BasicInfoFieldKey, value: unknown) {
   }
 
   basicInfoForm.value[fieldKey] = String(value ?? '')
+}
+
+function normalizePhotoUrl(url: string | undefined): string | undefined {
+  if (!url) {
+    return url
+  }
+
+  try {
+    const parsedUrl = new URL(url)
+    if (parsedUrl.hostname === 'bro-world.org' && parsedUrl.port === '3000') {
+      parsedUrl.port = ''
+    }
+    return parsedUrl.toString()
+  } catch {
+    return url.replace('bro-world.org:3000', 'bro-world.org')
+  }
+}
+
+function sanitizeProfilePhotoInStore() {
+  if (!profileStore.profile?.photo) {
+    return
+  }
+
+  profileStore.profile.photo = normalizePhotoUrl(profileStore.profile.photo)
+}
+
+function buildNotificationRows(
+  configurationItems: NotificationPreferenceItem[],
+): NotificationRow[] {
+  return NOTIFICATION_TEXTS.map((text) => {
+    const row: NotificationRow = {
+      title: text,
+      activity: false,
+      email: false,
+      push: false,
+      sms: false,
+    }
+
+    NOTIFICATION_TYPES.forEach((type) => {
+      const item = configurationItems.find(
+        (entry) =>
+          entry.text === text &&
+          entry.type.toLowerCase() === type.toLowerCase(),
+      )
+      row[type.toLowerCase() as keyof Omit<NotificationRow, 'title'>] = Boolean(
+        item?.switchState,
+      )
+    })
+
+    return row
+  })
+}
+
+function buildNotificationPayload() {
+  return notificationRows.value.flatMap((row) =>
+    NOTIFICATION_TYPES.map((type) => ({
+      switchState: Boolean(row[type.toLowerCase() as keyof Omit<NotificationRow, 'title'>]),
+      type,
+      text: row.title,
+    })),
+  )
 }
 
 watch(
@@ -141,35 +241,34 @@ const twoFaActions = [
   },
 ]
 
-const accountProviders = [
-  { provider: 'Google', connected: true, email: 'alex.martin@gmail.com' },
-  { provider: 'GitHub', connected: false, email: 'Not connected' },
-  { provider: 'Apple', connected: false, email: 'Not connected' },
-]
+const accountProviders = computed(() => {
+  const socials = profile.value?.socials || []
+  const socialMap = new Map(
+    socials.map((social) => [social.provider.toLowerCase(), social.providerId]),
+  )
 
-const notificationRows = [
-  {
-    title: 'New login detected',
-    activity: true,
-    email: true,
-    push: true,
-    sms: false,
-  },
-  {
-    title: 'Product updates',
-    activity: true,
-    email: true,
+  return [
+    { label: 'Google', key: 'google' },
+    { label: 'GitHub', key: 'github' },
+    { label: 'Facebook', key: 'facebook' },
+    { label: 'Instagram', key: 'instagram' },
+    { label: 'Apple', key: 'apple' },
+  ].map((provider) => ({
+    provider: provider.label,
+    connected: socialMap.has(provider.key),
+    providerId: socialMap.get(provider.key) || 'Not connected',
+  }))
+})
+
+const notificationRows = ref<NotificationRow[]>(
+  NOTIFICATION_TEXTS.map((text) => ({
+    title: text,
+    activity: false,
+    email: false,
     push: false,
     sms: false,
-  },
-  {
-    title: 'Billing alerts',
-    activity: true,
-    email: true,
-    push: true,
-    sms: true,
-  },
-]
+  })),
+)
 
 const activeSection = ref(settingsSections[0]?.id ?? '')
 const sectionObserver = ref<IntersectionObserver | null>(null)
@@ -197,11 +296,18 @@ function updateProfileStore(nextProfile: typeof profile.value) {
   }
 
   profileStore.profile = nextProfile
+  sanitizeProfilePhotoInStore()
   profileStore.lastFetchedAt = Date.now()
 }
 
+function invalidateProfileCache() {
+  profileStore.lastFetchedAt = 0
+}
+
 async function refreshProfileState() {
+  invalidateProfileCache()
   await Promise.all([profileStore.fetchProfile(true), refreshSession()])
+  sanitizeProfilePhotoInStore()
 }
 
 async function loadSessions() {
@@ -219,6 +325,69 @@ async function loadSessions() {
   } finally {
     sessionsLoading.value = false
   }
+}
+
+async function loadNotificationPreferences() {
+  notificationFeedback.value = null
+
+  try {
+    const response =
+      await privateApi.request<NotificationPreferencesResponse>(
+        '/profile/configuration/user.notifications.preferences',
+      )
+    notificationRows.value = buildNotificationRows(
+      response.configurationValue || [],
+    )
+  } catch (error) {
+    notificationRows.value = buildNotificationRows([])
+    notificationFeedback.value = {
+      type: 'error',
+      message:
+        error instanceof Error
+          ? error.message
+          : 'Unable to load notification preferences.',
+    }
+  }
+}
+
+async function saveNotificationPreferences() {
+  isSavingNotifications.value = true
+  notificationFeedback.value = null
+
+  try {
+    await privateApi.request('/profile/configuration/user.notifications.preferences', {
+      method: 'PATCH',
+      body: {
+        configurationValue: buildNotificationPayload(),
+      },
+    })
+    notificationFeedback.value = {
+      type: 'success',
+      message: 'Notification preferences updated.',
+    }
+  } catch (error) {
+    notificationFeedback.value = {
+      type: 'error',
+      message:
+        error instanceof Error
+          ? error.message
+          : 'Unable to update notification preferences.',
+    }
+  } finally {
+    isSavingNotifications.value = false
+  }
+}
+
+function onNotificationSwitchChanged(
+  rowIndex: number,
+  channel: Lowercase<NotificationType>,
+  value: boolean,
+) {
+  notificationRows.value[rowIndex] = {
+    ...notificationRows.value[rowIndex],
+    [channel]: value,
+  }
+  void saveNotificationPreferences()
 }
 
 async function submitBasicInfo() {
@@ -247,14 +416,16 @@ async function submitBasicInfo() {
       }),
     ])
 
-    updateProfileStore({
-      ...profile.value,
-      ...(accountResponse as object),
-      profile: {
-        ...profile.value.profile,
-        ...(detailsResponse as object),
-      },
-    })
+    if (profile.value) {
+      updateProfileStore({
+        ...profile.value,
+        ...(accountResponse as object),
+        profile: {
+          ...profile.value.profile,
+          ...(detailsResponse as object),
+        },
+      })
+    }
     await refreshProfileState()
     profileFeedback.value = {
       type: 'success',
@@ -267,6 +438,55 @@ async function submitBasicInfo() {
     }
   } finally {
     isSubmittingProfile.value = false
+  }
+}
+
+async function submitPasswordChange() {
+  passwordFeedback.value = null
+
+  if (!passwordForm.value.currentPassword || !passwordForm.value.newPassword) {
+    passwordFeedback.value = {
+      type: 'error',
+      message: 'Current password and new password are required.',
+    }
+    return
+  }
+
+  if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
+    passwordFeedback.value = {
+      type: 'error',
+      message: 'New password and confirmation do not match.',
+    }
+    return
+  }
+
+  isUpdatingPassword.value = true
+  try {
+    await privateApi.request('/users/me/password', {
+      method: 'PATCH',
+      body: {
+        currentPassword: passwordForm.value.currentPassword,
+        newPassword: passwordForm.value.newPassword,
+      },
+    })
+
+    passwordForm.value = {
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+    }
+    passwordFeedback.value = {
+      type: 'success',
+      message: 'Password updated successfully.',
+    }
+  } catch (error) {
+    passwordFeedback.value = {
+      type: 'error',
+      message:
+        error instanceof Error ? error.message : 'Unable to update password.',
+    }
+  } finally {
+    isUpdatingPassword.value = false
   }
 }
 
@@ -295,7 +515,7 @@ async function onPhotoSelected(event: Event) {
     if (profile.value) {
       updateProfileStore({
         ...profile.value,
-        photo: response.photo,
+        photo: normalizePhotoUrl(response.photo),
       })
     }
     await refreshProfileState()
@@ -315,6 +535,12 @@ async function onPhotoSelected(event: Event) {
 }
 
 onMounted(() => {
+  void Promise.all([
+    profileStore.fetchProfile().then(() => sanitizeProfilePhotoInStore()),
+    loadSessions(),
+    loadNotificationPreferences(),
+  ])
+
   const sectionElements = settingsSections
     .map(({ id }) => document.getElementById(id))
     .filter((element): element is HTMLElement => Boolean(element))
@@ -487,6 +713,7 @@ onUnmounted(() => {
             <v-row>
               <v-col cols="12" md="4">
                 <v-text-field
+                  v-model="passwordForm.currentPassword"
                   label="Current password"
                   type="password"
                   variant="outlined"
@@ -495,6 +722,7 @@ onUnmounted(() => {
               </v-col>
               <v-col cols="12" md="4">
                 <v-text-field
+                  v-model="passwordForm.newPassword"
                   label="New password"
                   type="password"
                   variant="outlined"
@@ -503,6 +731,7 @@ onUnmounted(() => {
               </v-col>
               <v-col cols="12" md="4">
                 <v-text-field
+                  v-model="passwordForm.confirmPassword"
                   label="Confirm password"
                   type="password"
                   variant="outlined"
@@ -518,7 +747,22 @@ onUnmounted(() => {
                 :title="item"
               />
             </v-list>
-            <v-btn variant="outlined" color="primary">Update password</v-btn>
+            <v-btn
+              variant="outlined"
+              color="primary"
+              :loading="isUpdatingPassword"
+              :disabled="isUpdatingPassword"
+              @click="submitPasswordChange"
+              >Update password</v-btn
+            >
+            <v-alert
+              v-if="passwordFeedback"
+              class="mt-4"
+              :type="passwordFeedback.type"
+              variant="tonal"
+              border="start"
+              :text="passwordFeedback.message"
+            />
           </v-card>
 
           <v-card
@@ -557,15 +801,16 @@ onUnmounted(() => {
                 v-for="item in accountProviders"
                 :key="item.provider"
                 :title="item.provider"
-                :subtitle="item.email"
+                :subtitle="item.providerId"
               >
                 <template #append>
-                  <v-switch
-                    :model-value="item.connected"
-                    hide-details
-                    inset
-                    color="primary"
-                  />
+                  <v-chip
+                    :color="item.connected ? 'success' : 'default'"
+                    size="small"
+                    variant="tonal"
+                  >
+                    {{ item.connected ? 'Active' : 'Not connected' }}
+                  </v-chip>
                 </template>
               </v-list-item>
             </v-list>
@@ -599,39 +844,67 @@ onUnmounted(() => {
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="row in notificationRows" :key="row.title">
+                <tr v-for="(row, index) in notificationRows" :key="row.title">
                   <td>{{ row.title }}</td>
                   <td class="text-center">
-                    <v-checkbox
+                    <v-switch
                       :model-value="row.activity"
-                      hide-details
+                      :disabled="isSavingNotifications"
                       density="compact"
+                      hide-details
+                      color="primary"
+                      @update:model-value="
+                        onNotificationSwitchChanged(index, 'activity', Boolean($event))
+                      "
                     />
                   </td>
                   <td class="text-center">
-                    <v-checkbox
+                    <v-switch
                       :model-value="row.email"
-                      hide-details
+                      :disabled="isSavingNotifications"
                       density="compact"
+                      hide-details
+                      color="primary"
+                      @update:model-value="
+                        onNotificationSwitchChanged(index, 'email', Boolean($event))
+                      "
                     />
                   </td>
                   <td class="text-center">
-                    <v-checkbox
+                    <v-switch
                       :model-value="row.push"
-                      hide-details
+                      :disabled="isSavingNotifications"
                       density="compact"
+                      hide-details
+                      color="primary"
+                      @update:model-value="
+                        onNotificationSwitchChanged(index, 'push', Boolean($event))
+                      "
                     />
                   </td>
                   <td class="text-center">
-                    <v-checkbox
+                    <v-switch
                       :model-value="row.sms"
-                      hide-details
+                      :disabled="isSavingNotifications"
                       density="compact"
+                      hide-details
+                      color="primary"
+                      @update:model-value="
+                        onNotificationSwitchChanged(index, 'sms', Boolean($event))
+                      "
                     />
                   </td>
                 </tr>
               </tbody>
             </v-table>
+            <v-alert
+              v-if="notificationFeedback"
+              class="mt-4"
+              :type="notificationFeedback.type"
+              variant="tonal"
+              border="start"
+              :text="notificationFeedback.message"
+            />
           </v-card>
 
           <v-card
