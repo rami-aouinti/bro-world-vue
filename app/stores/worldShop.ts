@@ -771,7 +771,10 @@ export const useWorldShopStore = defineStore('world-shop', () => {
           `/api/world/shop/checkout/${encodeURIComponent(shopId)}`,
           {
             method: 'POST',
-            body: payload,
+            body: {
+              ...payload,
+              shopId,
+            },
             headers:
               requestId && requestId.trim().length > 0
                 ? { 'x-request-id': requestId.trim() }
