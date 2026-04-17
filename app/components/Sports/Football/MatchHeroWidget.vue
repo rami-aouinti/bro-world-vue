@@ -192,32 +192,24 @@ function onSelectPlayer(playerId?: number | null) {
     </v-card-text>
   </v-card>
 
-  <v-dialog v-model="detailsModalOpen" max-width="1040">
-    <v-card class="football-surface football-surface--dark" variant="outlined">
-      <v-card-title class="d-flex align-center justify-space-between">
-        <span>Fixture details</span>
-        <v-btn
-          icon="mdi-close"
-          variant="text"
-          @click="detailsModalOpen = false"
-        />
-      </v-card-title>
-      <v-divider />
-      <v-card-text>
-        <SportsFootballFixtureDetailsPanel
-          :events="events"
-          :lineups="lineups"
-          :player-stats="playerStats"
-          mode="single"
-          :initial-tab="selectedDetailsTab"
-          :home-team-id="heroFixture?.teams.home.id ?? null"
-          :away-team-id="heroFixture?.teams.away.id ?? null"
-          @select-team="onSelectTeam"
-          @select-player="onSelectPlayer"
-        />
-      </v-card-text>
-    </v-card>
-  </v-dialog>
+  <AppModal
+    v-model="detailsModalOpen"
+    title="Fixture details"
+    :max-width="1040"
+    density="compact"
+  >
+    <SportsFootballFixtureDetailsPanel
+      :events="events"
+      :lineups="lineups"
+      :player-stats="playerStats"
+      mode="single"
+      :initial-tab="selectedDetailsTab"
+      :home-team-id="heroFixture?.teams.home.id ?? null"
+      :away-team-id="heroFixture?.teams.away.id ?? null"
+      @select-team="onSelectTeam"
+      @select-player="onSelectPlayer"
+    />
+  </AppModal>
 </template>
 
 <style scoped>

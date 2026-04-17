@@ -5,10 +5,12 @@ const props = withDefaults(
     title: string
     maxWidth?: string | number
     persistent?: boolean
+    density?: 'comfortable' | 'compact'
   }>(),
   {
     maxWidth: 600,
     persistent: false,
+    density: 'comfortable',
   },
 )
 
@@ -40,7 +42,7 @@ function closeModal() {
         <v-btn
           icon="mdi-close"
           variant="text"
-          density="comfortable"
+          :density="density"
           @click="closeModal"
         />
       </v-card-title>

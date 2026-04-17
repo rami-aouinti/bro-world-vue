@@ -404,33 +404,33 @@ watch(
       </template>
     </v-container>
 
-    <v-dialog
+    <AppModal
       v-model="teamModalOpen"
-      max-width="1000"
-      @update:model-value="teamModalOpen = $event"
+      :title="teamModalTitle"
+      :max-width="1000"
+      density="compact"
     >
       <SportsFootballTeamDetailsWidget
-        :title="teamModalTitle"
         :section="teamDetailsSection"
         :team-details="teamDetails"
         :selected-player-id="selectedPlayerId"
         :loading-override="teamModalLoading"
         @select-player="openPlayerModal"
       />
-    </v-dialog>
+    </AppModal>
 
-    <v-dialog
+    <AppModal
       v-model="playerModalOpen"
-      max-width="760"
-      @update:model-value="playerModalOpen = $event"
+      :title="playerModalTitle"
+      :max-width="760"
+      density="compact"
     >
       <SportsFootballPlayerDetailsWidget
-        :title="playerModalTitle"
         :section="playerDetailsSection"
         :player-details="playerDetails"
         :loading-override="playerModalLoading"
       />
-    </v-dialog>
+    </AppModal>
   </div>
 </template>
 
