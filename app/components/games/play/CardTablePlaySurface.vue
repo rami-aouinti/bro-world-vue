@@ -91,7 +91,7 @@ withDefaults(defineProps<CardTablePlaySurfaceProps>(), {
 
 .oval-table {
   position: relative;
-  min-height: 28rem;
+  min-height: 34rem;
   border-radius: 999px;
   overflow: hidden;
   background:
