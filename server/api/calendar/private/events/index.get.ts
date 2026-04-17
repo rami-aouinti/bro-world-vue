@@ -3,12 +3,20 @@ import type { CalendarApiResponse } from '~~/server/types/api/calendar'
 
 export default defineEventHandler(
   async (event): Promise<CalendarApiResponse> => {
-    return cachedPrivateGet<CalendarApiResponse>(
+    const response = await cachedPrivateGet<CalendarApiResponse | unknown[]>(
       event,
-      '/calendar/private/events',
+      '/api/calendar/events/upcoming',
       {
         cacheDomain: 'calendar',
       },
     )
+
+    if (Array.isArray(response)) {
+      return {
+        items: response,
+      }
+    }
+
+    return response
   },
 )
