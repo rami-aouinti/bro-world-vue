@@ -33,40 +33,12 @@ const emit = defineEmits<{
 const { t } = useI18n()
 
 const activeTab = ref<'timeline' | 'lineups' | 'statistics' | 'player-notes'>(props.initialTab)
-const selectedTeamFilter = ref<'all' | string>('all')
+const selectedPlayerNotesFilter = ref<'all' | 'home' | 'away'>('all')
 const lineupView = ref<'split' | 'home' | 'away'>('split')
 const selectedStatsFilter = ref<'match' | 'firstHalf' | 'secondHalf'>('match')
 
 watch(() => props.initialTab, (value) => {
   activeTab.value = value
-})
-
-const teamFilters = computed(() => {
-  const teams = new Map<string, { title: string; value: string }>()
-
-  props.playerStats.forEach((stat) => {
-    if (stat.teamId !== null) {
-      teams.set(`${stat.teamId}`, {
-        title: stat.teamName,
-        value: `${stat.teamId}`,
-      })
-    }
-  })
-
-  return [
-    { title: t('pages.applications.football.filters.allTeams'), value: 'all' },
-    ...teams.values(),
-  ]
-})
-
-const filteredPlayerStats = computed(() => {
-  if (selectedTeamFilter.value === 'all') {
-    return props.playerStats
-  }
-
-  return props.playerStats.filter(
-    stat => `${stat.teamId}` === selectedTeamFilter.value,
-  )
 })
 
 const teamStatsRows = computed(() => {
@@ -193,19 +165,129 @@ const statisticsRows = computed(() => {
   })
 })
 
-const playerNotesGroups = computed(() => {
-  const grouped = new Map<string, FixturePlayerStatViewModel[]>()
+const toNumericStat = (value: string | number | null | undefined) => {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : null
+  if (typeof value !== 'string') return null
+  const normalized = value.trim()
+  if (!normalized) return null
+  const parsed = Number(normalized)
+  return Number.isFinite(parsed) ? parsed : null
+}
 
-  filteredPlayerStats.value.forEach((stat) => {
-    const group = grouped.get(stat.teamName) ?? []
-    group.push(stat)
-    grouped.set(stat.teamName, group)
+type PlayerMetricKey = 'rating' | 'shots' | 'xg' | 'keyPasses' | 'tackles'
+
+const playerMetricDefinitions: Array<{
+  key: PlayerMetricKey
+  label: string
+  getValue: (stat: FixturePlayerStatViewModel) => number | null
+  format: (value: number) => string
+}> = [
+  {
+    key: 'rating',
+    label: 'Rating',
+    getValue: stat => toNumericStat(stat.rating),
+    format: value => value.toFixed(2),
+  },
+  {
+    key: 'shots',
+    label: 'Shots total',
+    getValue: stat => toNumericStat(stat.shots),
+    format: value => `${value}`,
+  },
+  {
+    key: 'xg',
+    label: 'xG',
+    getValue: (stat) => {
+      const raw = (stat as FixturePlayerStatViewModel & { xg?: string | number | null; expectedGoals?: string | number | null })
+      return toNumericStat(raw.xg ?? raw.expectedGoals ?? null)
+    },
+    format: value => value.toFixed(2),
+  },
+  {
+    key: 'keyPasses',
+    label: 'Key passes',
+    getValue: (stat) => {
+      const raw = (stat as FixturePlayerStatViewModel & {
+        keyPasses?: string | number | null
+        key_passes?: string | number | null
+        passesKey?: string | number | null
+      })
+      return toNumericStat(raw.keyPasses ?? raw.key_passes ?? raw.passesKey ?? null)
+    },
+    format: value => `${value}`,
+  },
+  {
+    key: 'tackles',
+    label: 'Tackles',
+    getValue: stat => toNumericStat(stat.tackles),
+    format: value => `${value}`,
+  },
+]
+
+const normalizedTeamKey = (name: string | null | undefined) => (name ?? '').trim().toLowerCase()
+
+const teamVisuals = computed(() => {
+  const byId = new Map<number, { teamName: string; teamLogo: string | null }>()
+  const byName = new Map<string, { teamName: string; teamLogo: string | null }>()
+
+  props.lineups.forEach((lineup) => {
+    if (lineup.teamId !== null) byId.set(lineup.teamId, { teamName: lineup.teamName, teamLogo: lineup.teamLogo })
+    const key = normalizedTeamKey(lineup.teamName)
+    if (key) byName.set(key, { teamName: lineup.teamName, teamLogo: lineup.teamLogo })
   })
 
-  return [...grouped.entries()].map(([teamName, players]) => ({
-    teamName,
-    players: [...players].sort((a, b) => (Number(b.rating) || 0) - (Number(a.rating) || 0)),
-  }))
+  return { byId, byName }
+})
+
+const teamMatches = (stat: FixturePlayerStatViewModel, teamId: number | null, teamName: string) => {
+  if (teamId !== null && stat.teamId === teamId) return true
+  const targetName = normalizedTeamKey(teamName)
+  return targetName.length > 0 && normalizedTeamKey(stat.teamName) === targetName
+}
+
+const filteredPlayerNotesStats = computed(() => {
+  if (selectedPlayerNotesFilter.value === 'all') return props.playerStats
+  if (selectedPlayerNotesFilter.value === 'home') {
+    return props.playerStats.filter(stat => teamMatches(stat, props.homeTeamId ?? null, homeTeamName.value))
+  }
+  return props.playerStats.filter(stat => teamMatches(stat, props.awayTeamId ?? null, awayTeamName.value))
+})
+
+const playerNotesMetricSections = computed(() => {
+  return playerMetricDefinitions.map((metric) => {
+    const topPlayers = filteredPlayerNotesStats.value
+      .map((stat) => {
+        const value = metric.getValue(stat)
+        if (value === null) return null
+
+        const visuals = (typeof stat.teamId === 'number' && teamVisuals.value.byId.get(stat.teamId))
+          ?? teamVisuals.value.byName.get(normalizedTeamKey(stat.teamName))
+
+        return {
+          id: stat.id,
+          playerId: stat.playerId,
+          playerName: stat.playerName,
+          playerPhoto: stat.playerPhoto,
+          position: stat.position || 'Position unavailable',
+          teamId: stat.teamId,
+          teamName: visuals?.teamName ?? stat.teamName,
+          teamLogo: visuals?.teamLogo ?? null,
+          value,
+          valueLabel: metric.format(value),
+        }
+      })
+      .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry))
+      .sort((a, b) => b.value - a.value || a.playerName.localeCompare(b.playerName))
+      .slice(0, 3)
+      .map((player, index) => ({ ...player, rank: index + 1 }))
+
+    return {
+      key: metric.key,
+      label: metric.label,
+      players: topPlayers,
+      empty: topPlayers.length === 0,
+    }
+  })
 })
 
 const numericRating = (value: string | null | undefined) => {
@@ -557,35 +639,79 @@ function onSelectPlayer(playerId: number | null | undefined) {
 
       <v-window-item value="player-notes">
         <div class="d-flex justify-end mb-3">
-          <v-select
-            v-model="selectedTeamFilter"
-            :items="teamFilters"
-            item-title="title"
-            item-value="value"
-            :label="t('pages.applications.football.filters.team')"
+          <v-btn-toggle
+            v-model="selectedPlayerNotesFilter"
             density="comfortable"
-            variant="outlined"
-            hide-details
-            max-width="260"
-          />
+            rounded="lg"
+            variant="tonal"
+            color="primary"
+            mandatory
+          >
+            <v-btn value="all" size="small">All</v-btn>
+            <v-btn value="home" size="small">Home team</v-btn>
+            <v-btn value="away" size="small">Away team</v-btn>
+          </v-btn-toggle>
         </div>
 
-        <v-sheet v-for="group in playerNotesGroups" :key="group.teamName" class="pa-3 rounded border mb-3">
-          <div class="text-subtitle-2 mb-2">{{ group.teamName }}</div>
-          <v-list density="compact" class="pa-0">
-            <v-list-item v-for="player in group.players" :key="player.id" class="player-note-item" @click="onSelectPlayer(player.playerId)">
-              <template #prepend>
-                <v-avatar size="34" class="mr-2">
-                  <v-img :src="player.playerPhoto || undefined" :alt="player.playerName" />
-                </v-avatar>
-              </template>
-              <v-list-item-title class="text-body-2">{{ player.playerName }}</v-list-item-title>
-              <v-list-item-subtitle>{{ player.position }}</v-list-item-subtitle>
-              <template #append>
-                <v-chip color="primary" size="small">{{ player.rating }}</v-chip>
-              </template>
-            </v-list-item>
-          </v-list>
+        <v-sheet class="player-notes-panel pa-2 pa-sm-3 rounded border">
+          <section
+            v-for="section in playerNotesMetricSections"
+            :key="section.key"
+            class="player-metric-section"
+          >
+            <header class="player-metric-section__header">
+              <h4 class="player-metric-section__title">{{ section.label }}</h4>
+              <span class="player-metric-section__count text-caption text-medium-emphasis">
+                Top {{ section.players.length }}
+              </span>
+            </header>
+
+            <div v-if="section.empty" class="text-caption text-medium-emphasis py-2 px-1">
+              data unavailable
+            </div>
+
+            <v-list v-else density="compact" class="pa-0 bg-transparent">
+              <v-list-item
+                v-for="player in section.players"
+                :key="`${section.key}-${player.id}`"
+                class="player-note-item player-note-item--ranked"
+                @click="onSelectPlayer(player.playerId)"
+              >
+                <template #prepend>
+                  <div class="d-flex align-center ga-2 mr-2">
+                    <span class="player-rank-badge">{{ player.rank }}</span>
+                    <v-avatar size="34">
+                      <v-img :src="player.playerPhoto || undefined" :alt="player.playerName" />
+                    </v-avatar>
+                  </div>
+                </template>
+
+                <v-list-item-title class="text-body-2 font-weight-medium">
+                  {{ player.playerName }}
+                </v-list-item-title>
+                <v-list-item-subtitle class="d-flex align-center ga-2 flex-wrap">
+                  <span>{{ player.position }}</span>
+                  <v-chip
+                    size="x-small"
+                    variant="tonal"
+                    class="player-team-chip"
+                    @click.stop.prevent="onSelectTeam(player.teamId)"
+                  >
+                    <template #prepend>
+                      <v-avatar v-if="player.teamLogo" size="14">
+                        <v-img :src="player.teamLogo" :alt="player.teamName" />
+                      </v-avatar>
+                    </template>
+                    {{ player.teamName }}
+                  </v-chip>
+                </v-list-item-subtitle>
+
+                <template #append>
+                  <span class="player-metric-value">{{ player.valueLabel }}</span>
+                </template>
+              </v-list-item>
+            </v-list>
+          </section>
         </v-sheet>
       </v-window-item>
     </v-window>
@@ -738,7 +864,52 @@ function onSelectPlayer(playerId: number | null | undefined) {
 .stats-bar__left { background: linear-gradient(90deg, rgba(var(--v-theme-primary), .7), rgb(var(--v-theme-primary))); }
 .stats-bar__right { background: rgba(var(--v-theme-on-surface), .42); }
 .stats-bar--muted { opacity: .7; }
+.player-notes-panel {
+  background: linear-gradient(180deg, rgba(18, 20, 30, .82), rgba(11, 13, 20, .66));
+}
+.player-metric-section {
+  padding: 10px 8px 6px;
+  border-bottom: 1px solid rgba(var(--v-theme-on-surface), .12);
+}
+.player-metric-section:last-child { border-bottom: 0; }
+.player-metric-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding: 0 4px;
+}
+.player-metric-section__title {
+  font-size: .8rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-weight: 800;
+  margin: 0;
+  color: rgba(var(--v-theme-on-surface), .8);
+}
 .player-note-item { border-radius: 10px; }
+.player-note-item--ranked { margin-bottom: 2px; }
+.player-rank-badge {
+  min-width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .7rem;
+  font-weight: 800;
+  color: rgb(var(--v-theme-primary));
+  border: 1px solid rgba(var(--v-theme-primary), .5);
+  background: rgba(var(--v-theme-primary), .14);
+}
+.player-team-chip { cursor: pointer; }
+.player-metric-value {
+  min-width: 46px;
+  text-align: right;
+  font-size: .82rem;
+  font-weight: 800;
+  color: rgb(var(--v-theme-primary));
+}
 
 @media (max-width: 720px) {
   .timeline-row { grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr); gap: 8px; }
