@@ -321,7 +321,7 @@ const rightDrawerSelection = computed(() => [
                     :elevation="selectedLevelValue === level.value ? 12 : 2"
                     :color="selectedLevelValue === level.value ? 'primary' : ''"
                     :variant="
-                    selectedLevelValue === level.value ? 'outlined' : 'text'
+                    selectedLevelValue === level.value ? 'tonal' : 'text'
                   "
                     @click="selectedLevelValue = level.value"
                   >
