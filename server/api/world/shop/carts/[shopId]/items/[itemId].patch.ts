@@ -9,32 +9,28 @@ import {
 } from '~~/server/utils/shopProxy'
 
 type Body = {
-  productId?: string
   quantity?: number
 }
 
 export default defineEventHandler(async (event) => {
-  const { shopId } = getRouterParams(event)
+  const { shopId, itemId } = getRouterParams(event)
   const normalizedShopId = assertShopNonEmptyString(shopId, 'shopId')
+  const normalizedItemId = assertShopNonEmptyString(itemId, 'itemId')
   const body = await readBody<Body>(event)
-  const productId = assertShopNonEmptyString(body?.productId, 'productId')
-  const quantity = assertShopPositiveInteger(body?.quantity ?? 1, 'quantity')
+  const quantity = assertShopPositiveInteger(body?.quantity, 'quantity')
 
   try {
     const client = await getServerPrivateAxios(event)
-    const response = await client.post(
+    const response = await client.patch(
       resolveServerApiUrl(
         event,
-        `/shop/general/carts/${encodeURIComponent(normalizedShopId)}/items`,
+        `/shop/general/carts/${encodeURIComponent(normalizedShopId)}/items/${encodeURIComponent(normalizedItemId)}`,
       ),
-      {
-        productId,
-        quantity,
-      },
+      { quantity },
     )
 
     return response.data
   } catch (error) {
-    rethrowShopProxyError(error, 'Unable to add cart item')
+    rethrowShopProxyError(error, 'Unable to update cart item')
   }
 })
