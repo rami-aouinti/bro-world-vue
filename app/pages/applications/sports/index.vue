@@ -38,7 +38,7 @@ const quickSports = computed(() => SPORTS.slice(0, 6))
               rounded="lg"
             >
               <template #prepend>
-                <v-avatar size="32" rounded="lg" class="mr-2">
+                <v-avatar size="40" rounded="lg" class="mr-2">
                   <v-img :src="sport.image" :alt="sport.label" cover />
                 </v-avatar>
               </template>
