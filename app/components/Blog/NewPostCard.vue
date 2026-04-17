@@ -18,11 +18,22 @@ const emit = defineEmits<{
 }>()
 
 const isOpen = ref(false)
+const localContent = ref(props.modelValue)
 
 const content = computed({
-  get: () => props.modelValue,
-  set: (value: string) => emit('update:modelValue', value),
+  get: () => localContent.value,
+  set: (value: string) => {
+    localContent.value = value
+    emit('update:modelValue', value)
+  },
 })
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    localContent.value = value ?? ''
+  },
+)
 
 function openDialog() {
   if (props.disabled) {
@@ -34,6 +45,7 @@ function openDialog() {
 
 function onSubmit(value: string) {
   emit('submit', value)
+  localContent.value = ''
   emit('update:modelValue', '')
   isOpen.value = false
 }

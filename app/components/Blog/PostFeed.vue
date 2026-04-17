@@ -41,6 +41,7 @@ const {
   reactionTypes,
   refresh,
   loadMore,
+  createPost: create,
   comment,
   react,
   edit,
@@ -48,6 +49,7 @@ const {
 } = useBlogFeed({
   mode: props.mode,
 })
+const createPending = ref(false)
 const { loggedIn } = useUserSession()
 const editDialog = ref(false)
 const editContent = ref('')
@@ -69,6 +71,24 @@ async function createComment(payload: {
   }
 
   await comment(payload.post.id, { content: payload.content })
+}
+
+async function createNewPost(content: string) {
+  const trimmedContent = content.trim()
+  if (!loggedIn.value || !trimmedContent || createPending.value) {
+    return
+  }
+
+  createPending.value = true
+
+  try {
+    await create({
+      content: trimmedContent,
+      blogId: 'general',
+    })
+  } finally {
+    createPending.value = false
+  }
 }
 
 function findOwnReaction(reactions?: BlogReaction[]) {
@@ -207,7 +227,7 @@ async function submitEdit() {
   <div>
     <BlogStoriesCarousel v-if="showStories" />
     <div v-if="showComposer" class="mb-4">
-      <BlogNewPostCard />
+      <BlogNewPostCard :disabled="createPending" @submit="createNewPost" />
     </div>
 
     <div class="d-flex flex-column ga-4">
