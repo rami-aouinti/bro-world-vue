@@ -327,7 +327,19 @@ const lineupLayouts = computed(() => {
       .filter((entry): entry is { starter: FixtureLineupViewModel['starters'][number]; row: number; col: number } => Boolean(entry))
 
     const maxRow = Math.max(...valid.map(entry => entry.row), 1)
-    const maxCol = Math.max(...valid.map(entry => entry.col), 1)
+    const rows = new Map<number, Array<{ starter: FixtureLineupViewModel['starters'][number]; row: number; col: number }>>()
+    valid.forEach((entry) => {
+      const existing = rows.get(entry.row)
+      if (existing) {
+        existing.push(entry)
+        return
+      }
+      rows.set(entry.row, [entry])
+    })
+
+    rows.forEach((entries) => {
+      entries.sort((a, b) => a.col - b.col)
+    })
 
     const positionedPlayers = valid.map((entry) => {
       const stat = props.playerStats.find((playerStat) => {
@@ -341,7 +353,11 @@ const lineupLayouts = computed(() => {
       })
 
       const rowRatio = maxRow > 1 ? (entry.row - 1) / (maxRow - 1) : 0.5
-      const colRatio = maxCol > 1 ? (entry.col - 1) / (maxCol - 1) : 0.5
+      const rowEntries = rows.get(entry.row) ?? [entry]
+      const rowIndex = rowEntries.findIndex(candidate => candidate.starter.name === entry.starter.name && candidate.starter.number === entry.starter.number)
+      const colRatio = rowEntries.length > 1
+        ? Math.max(0, rowIndex) / (rowEntries.length - 1)
+        : 0.5
 
       return {
         ...entry.starter,
@@ -351,8 +367,8 @@ const lineupLayouts = computed(() => {
         ratingColor: getRatingColor(numericRating(stat?.rating)),
         rowRatio,
         colRatio,
-        top: 10 + rowRatio * 80,
-        left: 16 + colRatio * 68,
+        top: 8 + rowRatio * 84,
+        left: 14 + colRatio * 72,
       }
     })
 
@@ -397,9 +413,11 @@ const combinedLineup = computed(() => {
   const positionedPlayers = hasGrid
     ? ordered.flatMap((lineup) => {
       return lineup.positionedPlayers.map((player) => {
+        const sideBase = lineup.side === 'home' ? 56 : 8
+        const sideSpan = 36
         const adjustedTop = lineup.side === 'home'
-          ? 10 + (1 - player.rowRatio) * 80
-          : 10 + player.rowRatio * 80
+          ? sideBase + (1 - player.rowRatio) * sideSpan
+          : sideBase + player.rowRatio * sideSpan
 
         return {
           ...player,
