@@ -106,7 +106,7 @@ const onRowKeydown = (event: KeyboardEvent, teamId: number) => {
       <div class="d-flex align-center ga-2">
         <span class="text-caption text-medium-emphasis">{{ standingsLeague?.name }}</span>
         <v-avatar v-if="standingsLeague?.flag" size="22" rounded="sm">
-          <v-img :src="standingsLeague.flag" :alt="standingsLeague.country" />
+          <v-img :src="standingsLeague.flag" :alt="standingsLeague.country" :transition="false" />
         </v-avatar>
       </div>
     </v-card-title>
@@ -168,7 +168,7 @@ const onRowKeydown = (event: KeyboardEvent, teamId: number) => {
                   <td>
                     <div class="standings-team">
                       <v-avatar size="22" color="primary" variant="tonal">
-                        <v-img v-if="row.team.logo" :src="row.team.logo" :alt="row.team.name" />
+                        <v-img v-if="row.team.logo" :src="row.team.logo" :alt="row.team.name" :transition="false" />
                         <span v-else class="text-caption">
                           {{ getInitial(row.team.name) }}
                         </span>
