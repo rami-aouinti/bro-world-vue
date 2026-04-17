@@ -9,6 +9,7 @@ import type {
 definePageMeta({ title: 'CRM Projects' })
 
 const router = useRouter()
+const { t } = useI18n()
 
 const createDialog = ref(false)
 const pendingCreate = ref(false)
@@ -26,14 +27,14 @@ const { data, pending, error, refresh } = await useFetch<ApiListResponse<CrmProj
   '/api/crm/general/projects',
 )
 
-const crmNavItems = [
-  { title: 'Overview CRM', to: '/world/crm', icon: 'mdi-view-dashboard-outline' },
-  { title: 'Projects', to: '/world/crm/projects', icon: 'mdi-folder-outline' },
-  { title: 'Tasks', to: '/world/crm/tasks', icon: 'mdi-format-list-checks' },
-  { title: 'Sprints', to: '/world/crm/sprints', icon: 'mdi-run-fast' },
-  { title: 'Company', to: '/world/crm/company', icon: 'mdi-domain' },
-  { title: 'Admin', to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' },
-]
+const crmNavItems = computed(() => [
+  { title: t('world.crm.nav.overview'), to: '/world/crm', icon: 'mdi-view-dashboard-outline' },
+  { title: t('world.crm.nav.projects'), to: '/world/crm/projects', icon: 'mdi-folder-outline' },
+  { title: t('world.crm.nav.tasks'), to: '/world/crm/tasks', icon: 'mdi-format-list-checks' },
+  { title: t('world.crm.nav.sprints'), to: '/world/crm/sprints', icon: 'mdi-run-fast' },
+  { title: t('world.crm.nav.company'), to: '/world/crm/company', icon: 'mdi-domain' },
+  { title: t('world.crm.nav.admin'), to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' },
+])
 
 async function createProject() {
   pendingCreate.value = true
@@ -57,18 +58,18 @@ async function createProject() {
 <template>
   <div>
     <WorldModuleDrawers
-      module-title="CRM"
+      :module-title="t('world.crm.label')"
       module-icon="mdi-account-group-outline"
-      module-description="Gestion complète des projets CRM"
+      :module-description="t('world.crm.projects.moduleDescription')"
       :nav-items="crmNavItems"
-      action-label="Nouveau projet"
+      :action-label="t('world.crm.projects.actions.newProject')"
       action-icon="mdi-folder-plus-outline"
       @action="createDialog = true"
     />
 
     <v-container fluid>
-      <v-alert v-if="pending" type="info" variant="tonal" class="mb-4">Chargement des projets...</v-alert>
-      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">Erreur de chargement des projets.</v-alert>
+      <v-alert v-if="pending" type="info" variant="tonal" class="mb-4">{{ t('world.crm.projects.alerts.loadingList') }}</v-alert>
+      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">{{ t('world.crm.projects.alerts.loadListError') }}</v-alert>
 
       <v-row v-else>
         <v-col v-for="project in data?.items ?? []" :key="project.id" cols="12" md="6" xl="4">
@@ -77,30 +78,30 @@ async function createProject() {
               <h3 class="text-subtitle-1 mb-0">{{ project.name }}</h3>
               <v-chip size="small" color="primary" variant="tonal">{{ project.status }}</v-chip>
             </div>
-            <p class="text-body-2 mb-1">Repos GitHub: {{ project.githubRepositoriesCount }}</p>
-            <p class="text-body-2 mb-4">Provisioning: {{ project.provisioning.state }}</p>
+            <p class="text-body-2 mb-1">{{ t('world.crm.projects.list.githubRepos') }}: {{ project.githubRepositoriesCount }}</p>
+            <p class="text-body-2 mb-4">{{ t('world.crm.projects.list.provisioning') }}: {{ project.provisioning.state }}</p>
             <v-spacer />
             <v-btn color="primary" variant="tonal" prepend-icon="mdi-arrow-right" @click="router.push(`/world/crm/projects/${project.id}`)">
-              Voir détail
+              {{ t('world.crm.projects.actions.viewDetails') }}
             </v-btn>
           </v-card>
         </v-col>
       </v-row>
     </v-container>
 
-    <AppModal v-model="createDialog" title="Créer un projet" :max-width="720">
+    <AppModal v-model="createDialog" :title="t('world.crm.projects.modal.createTitle')" :max-width="720">
       <v-row>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.companyId" label="Company ID" required /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.name" label="Nom" required /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.code" label="Code" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.status" label="Status" /></v-col>
-        <v-col cols="12"><v-textarea v-model="createPayload.description" label="Description" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.startedAt" label="StartedAt (ISO)" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.dueAt" label="DueAt (ISO)" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.companyId" :label="t('world.crm.projects.form.companyId')" required /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.name" :label="t('world.crm.projects.form.name')" required /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.code" :label="t('world.crm.projects.form.code')" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.status" :label="t('world.crm.projects.form.status')" /></v-col>
+        <v-col cols="12"><v-textarea v-model="createPayload.description" :label="t('world.crm.projects.form.description')" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.startedAt" :label="t('world.crm.projects.form.startedAt')" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.dueAt" :label="t('world.crm.projects.form.dueAt')" /></v-col>
       </v-row>
       <template #actions>
-        <v-btn variant="text" @click="createDialog = false">Annuler</v-btn>
-        <v-btn color="primary" :loading="pendingCreate" @click="createProject">Créer</v-btn>
+        <v-btn variant="text" @click="createDialog = false">{{ t('world.crm.projects.actions.cancel') }}</v-btn>
+        <v-btn color="primary" :loading="pendingCreate" @click="createProject">{{ t('world.crm.projects.actions.create') }}</v-btn>
       </template>
     </AppModal>
   </div>
