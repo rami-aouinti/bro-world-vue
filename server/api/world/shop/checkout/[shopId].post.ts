@@ -9,8 +9,10 @@ import {
 } from '~~/server/utils/shopProxy'
 
 export default defineEventHandler(async (event) => {
+  const routerShopId =
+    getRouterParam(event, 'shopId') ?? getRouterParam(event, 'shopid')
   const shopId = assertShopNonEmptyString(
-    getRouterParam(event, 'shopId'),
+    routerShopId,
     'shopId',
   )
   const requestIdHeader = getHeader(event, 'x-request-id')
