@@ -110,7 +110,12 @@ function pickBoolean(value: unknown, fallback = false): boolean {
   return typeof value === 'boolean' ? value : fallback
 }
 
-function pickId(record: UnknownRecord): string | number {
+function pickId(value: unknown): string | number {
+  if (typeof value === 'number' || typeof value === 'string') {
+    return value
+  }
+
+  const record = toRecord(value)
   const candidates = [record.id, record._id, record.uuid]
 
   for (const candidate of candidates) {
