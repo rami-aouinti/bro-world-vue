@@ -2310,9 +2310,9 @@
         "fields": {
           "param": "Paramètre : {param}",
           "queryJson": "JSON de requête",
-          "queryHint": "Ex : { \"page\": 1, \"limit\": 20 }",
+          "queryHint": "Ex: page=1, limit=20",
+          "bodyHint": "Ex: name=Acme",
           "bodyJson": "JSON du body",
-          "bodyHint": "Ex : { \"name\": \"Acme\" }",
           "response": "Réponse"
         },
         "actions": {

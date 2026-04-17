@@ -2092,9 +2092,9 @@
         "fields": {
           "param": "Parameter: {param}",
           "queryJson": "Abfrage-JSON",
-          "queryHint": "Bsp.: { \"page\": 1, \"limit\": 20 }",
+          "queryHint": "Ex: page=1, limit=20",
+          "bodyHint": "Ex: name=Acme",
           "bodyJson": "Body-JSON",
-          "bodyHint": "Bsp.: { \"name\": \"Acme\" }",
           "response": "Antwort"
         },
         "actions": {

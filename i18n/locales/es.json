@@ -2066,9 +2066,9 @@
         "fields": {
           "param": "Parámetro: {param}",
           "queryJson": "JSON de consulta",
-          "queryHint": "Ej.: { \"page\": 1, \"limit\": 20 }",
+          "queryHint": "Ex: page=1, limit=20",
+          "bodyHint": "Ex: name=Acme",
           "bodyJson": "JSON del body",
-          "bodyHint": "Ej.: { \"name\": \"Acme\" }",
           "response": "Respuesta"
         },
         "actions": {
