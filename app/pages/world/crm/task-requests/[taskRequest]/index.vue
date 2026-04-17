@@ -3,6 +3,7 @@ import type { CrmTaskRequestItem, CrmTaskRequestUpdatePayload } from '~~/server/
 
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 const id = computed(() => String(route.params.taskRequest ?? ''))
 
 definePageMeta({ title: 'CRM Task Request Detail' })
@@ -33,19 +34,19 @@ async function remove() {
 
 <template>
   <v-container fluid>
-    <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push('/world/crm/task-requests')">Retour</v-btn>
-    <v-alert v-if="pending" type="info" variant="tonal">Chargement...</v-alert>
-    <v-alert v-else-if="error" type="error" variant="tonal">Introuvable.</v-alert>
+    <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push('/world/crm/task-requests')">{{ t('world.crm.taskRequests.actions.backToList') }}</v-btn>
+    <v-alert v-if="pending" type="info" variant="tonal">{{ t('world.crm.taskRequests.alerts.loadingDetail') }}</v-alert>
+    <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.taskRequests.alerts.notFound') }}</v-alert>
     <v-card v-else rounded="xl" class="pa-4 postcard-gradient-card">
       <v-row>
-        <v-col cols="12"><v-text-field v-model="payload.title" label="Titre" /></v-col>
-        <v-col cols="12"><v-textarea v-model="payload.description" label="Description" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="payload.status" label="Status" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="payload.resolvedAt" label="ResolvedAt (ISO)" /></v-col>
+        <v-col cols="12"><v-text-field v-model="payload.title" :label="t('world.crm.taskRequests.form.title')" /></v-col>
+        <v-col cols="12"><v-textarea v-model="payload.description" :label="t('world.crm.taskRequests.form.description')" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="payload.status" :label="t('world.crm.taskRequests.form.status')" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="payload.resolvedAt" :label="t('world.crm.taskRequests.form.resolvedAt')" /></v-col>
       </v-row>
       <div class="d-flex ga-2">
-        <v-btn color="primary" @click="save">Sauvegarder</v-btn>
-        <v-btn color="error" variant="tonal" @click="remove">Supprimer</v-btn>
+        <v-btn color="primary" @click="save">{{ t('world.crm.taskRequests.actions.save') }}</v-btn>
+        <v-btn color="error" variant="tonal" @click="remove">{{ t('world.crm.taskRequests.actions.delete') }}</v-btn>
       </div>
     </v-card>
   </v-container>

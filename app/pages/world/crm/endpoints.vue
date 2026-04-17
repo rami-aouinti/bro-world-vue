@@ -1,5 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ title: 'CRM Endpoints' })
+const { t } = useI18n()
 
 type EndpointGroup = {
   key: string
@@ -18,7 +19,7 @@ type EndpointGroup = {
 const endpointGroups: EndpointGroup[] = [
   {
     key: 'companies',
-    title: 'A) Companies',
+    title: 'world.crm.endpoints.groups.companies',
     endpoints: [
       { id: '1', title: 'List companies', method: 'GET', path: '/api/crm/general/companies', defaultQuery: { page: 1, limit: 20 } },
       { id: '2', title: 'Get company', method: 'GET', path: '/api/crm/general/companies/{company}' },
@@ -29,7 +30,7 @@ const endpointGroups: EndpointGroup[] = [
   },
   {
     key: 'contacts',
-    title: 'B) Contacts',
+    title: 'world.crm.endpoints.groups.contacts',
     endpoints: [
       { id: '6', title: 'List contacts', method: 'GET', path: '/api/crm/general/contacts', defaultQuery: { page: 1, limit: 20 } },
       { id: '7', title: 'Get contact', method: 'GET', path: '/api/crm/general/contacts/{contact}' },
@@ -37,7 +38,7 @@ const endpointGroups: EndpointGroup[] = [
   },
   {
     key: 'projects',
-    title: 'C) Projects',
+    title: 'world.crm.endpoints.groups.projects',
     endpoints: [
       { id: '8', title: 'List projects', method: 'GET', path: '/api/crm/general/projects', defaultQuery: { page: 1, limit: 20 } },
       { id: '9', title: 'Get project', method: 'GET', path: '/api/crm/general/projects/{project}' },
@@ -50,7 +51,7 @@ const endpointGroups: EndpointGroup[] = [
   },
   {
     key: 'sprints',
-    title: 'D) Sprints',
+    title: 'world.crm.endpoints.groups.sprints',
     endpoints: [
       { id: '15', title: 'List sprints', method: 'GET', path: '/api/crm/general/sprints', defaultQuery: { page: 1, limit: 20 } },
       { id: '16', title: 'Get sprint', method: 'GET', path: '/api/crm/general/sprints/{sprint}' },
@@ -65,7 +66,7 @@ const endpointGroups: EndpointGroup[] = [
   },
   {
     key: 'tasks',
-    title: 'E) Tasks + Subtasks',
+    title: 'world.crm.endpoints.groups.tasks',
     endpoints: [
       { id: '24', title: 'List tasks', method: 'GET', path: '/api/crm/general/tasks', defaultQuery: { page: 1, limit: 20 } },
       { id: '25', title: 'Get task', method: 'GET', path: '/api/crm/general/tasks/{task}' },
@@ -83,7 +84,7 @@ const endpointGroups: EndpointGroup[] = [
   },
   {
     key: 'billings',
-    title: 'F) Billings',
+    title: 'world.crm.endpoints.groups.billings',
     endpoints: [
       { id: '36', title: 'List billings', method: 'GET', path: '/api/crm/general/billings' },
       { id: '37', title: 'Get billing', method: 'GET', path: '/api/crm/general/billings/{billing}' },
@@ -94,7 +95,7 @@ const endpointGroups: EndpointGroup[] = [
   },
   {
     key: 'task-requests',
-    title: 'G) Task Requests',
+    title: 'world.crm.endpoints.groups.taskRequests',
     endpoints: [
       { id: '41', title: 'List task requests', method: 'GET', path: '/api/crm/general/task-requests' },
       { id: '42', title: 'Get task request', method: 'GET', path: '/api/crm/general/task-requests/{taskRequest}' },
@@ -105,7 +106,7 @@ const endpointGroups: EndpointGroup[] = [
   },
   {
     key: 'dashboard-reports',
-    title: 'H) Dashboard / Reports',
+    title: 'world.crm.endpoints.groups.dashboardReports',
     endpoints: [
       { id: '46', title: 'Get dashboard', method: 'GET', path: '/api/crm/general/dashboard' },
       { id: '47-json', title: 'Get report JSON', method: 'GET', path: '/api/crm/general/reports', defaultQuery: { format: 'json' } },
@@ -115,48 +116,47 @@ const endpointGroups: EndpointGroup[] = [
   },
 ]
 
-const crmNavItems = [
+const crmNavItems = computed(() => [
   {
-    title: 'Overview CRM',
+    title: t('world.crm.nav.overview'),
     to: '/world/crm',
     icon: 'mdi-view-dashboard-outline',
   },
-  { title: 'Projects', to: '/world/crm/projects', icon: 'mdi-folder-outline' },
-  { title: 'Tasks', to: '/world/crm/tasks', icon: 'mdi-format-list-checks' },
-  { title: 'Sprints', to: '/world/crm/sprints', icon: 'mdi-run-fast' },
-  { title: 'Company', to: '/world/crm/company', icon: 'mdi-domain' },
-  { title: 'Admin', to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' },
+  { title: t('world.crm.nav.projects'), to: '/world/crm/projects', icon: 'mdi-folder-outline' },
+  { title: t('world.crm.nav.tasks'), to: '/world/crm/tasks', icon: 'mdi-format-list-checks' },
+  { title: t('world.crm.nav.sprints'), to: '/world/crm/sprints', icon: 'mdi-run-fast' },
+  { title: t('world.crm.nav.company'), to: '/world/crm/company', icon: 'mdi-domain' },
+  { title: t('world.crm.nav.admin'), to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' },
   {
-    title: 'Endpoints',
+    title: t('world.crm.endpoints.nav.title'),
     to: '/world/crm/endpoints',
     icon: 'mdi-api',
   },
-]
+])
 </script>
 
 <template>
   <div>
     <WorldModuleDrawers
-      module-title="CRM"
+      :module-title="t('world.crm.label')"
       module-icon="mdi-account-group-outline"
-      module-description="Playground complet des endpoints CRM General (GET/POST/PATCH/PUT/DELETE)."
+      :module-description="t('world.crm.endpoints.moduleDescription')"
       :nav-items="crmNavItems"
-      action-label="Open admin"
+      :action-label="t('world.crm.endpoints.actions.openAdmin')"
       action-icon="mdi-cog-outline"
       @action="$router.push('/world/crm/admin')"
     />
 
     <v-container fluid>
       <v-card rounded="xl" class="pa-4 mb-4 postcard-gradient-card">
-        <h2 class="text-h5 mb-2">CRM Endpoints Playground</h2>
+        <h2 class="text-h5 mb-2">{{ t('world.crm.endpoints.page.title') }}</h2>
         <p class="text-body-2 text-medium-emphasis mb-0">
-          Chaque endpoint du module CRM est exposé ici avec un composant d'exécution.
-          Tous les verbes POST / PUT / PATCH / DELETE sont testables depuis cette page.
+          {{ t('world.crm.endpoints.page.description') }}
         </p>
       </v-card>
 
       <div v-for="group in endpointGroups" :key="group.key" class="mb-6">
-        <h3 class="text-h6 mb-3">{{ group.title }}</h3>
+        <h3 class="text-h6 mb-3">{{ t(group.title) }}</h3>
         <v-row>
           <v-col
             v-for="endpoint in group.endpoints"
@@ -164,7 +164,7 @@ const crmNavItems = [
             cols="12"
             lg="6"
           >
-            <CrmEndpointAction :config="endpoint" />
+            <CrmEndpointAction :config="{ ...endpoint, title: t(`world.crm.endpoints.items.${endpoint.id}`) }" />
           </v-col>
         </v-row>
       </div>

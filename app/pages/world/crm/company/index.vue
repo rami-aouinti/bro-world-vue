@@ -7,6 +7,7 @@ import type {
 } from '~~/server/types/api/crm-general'
 
 const router = useRouter()
+const { t } = useI18n()
 definePageMeta({ title: 'CRM Companies' })
 
 const createDialog = ref(false)
@@ -24,14 +25,14 @@ const { data, pending, error, refresh } = await useFetch<ApiListResponse<CrmComp
   '/api/crm/general/companies',
 )
 
-const crmNavItems = [
-  { title: 'Overview CRM', to: '/world/crm', icon: 'mdi-view-dashboard-outline' },
-  { title: 'Projects', to: '/world/crm/projects', icon: 'mdi-folder-outline' },
-  { title: 'Tasks', to: '/world/crm/tasks', icon: 'mdi-format-list-checks' },
-  { title: 'Sprints', to: '/world/crm/sprints', icon: 'mdi-run-fast' },
-  { title: 'Company', to: '/world/crm/company', icon: 'mdi-domain' },
-  { title: 'Admin', to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' },
-]
+const crmNavItems = computed(() => [
+  { title: t('world.crm.nav.overview'), to: '/world/crm', icon: 'mdi-view-dashboard-outline' },
+  { title: t('world.crm.nav.projects'), to: '/world/crm/projects', icon: 'mdi-folder-outline' },
+  { title: t('world.crm.nav.tasks'), to: '/world/crm/tasks', icon: 'mdi-format-list-checks' },
+  { title: t('world.crm.nav.sprints'), to: '/world/crm/sprints', icon: 'mdi-run-fast' },
+  { title: t('world.crm.nav.company'), to: '/world/crm/company', icon: 'mdi-domain' },
+  { title: t('world.crm.nav.admin'), to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' },
+])
 
 async function createCompany() {
   pendingCreate.value = true
@@ -51,18 +52,18 @@ async function createCompany() {
 <template>
   <div>
     <WorldModuleDrawers
-      module-title="CRM"
+      :module-title="t('world.crm.label')"
       module-icon="mdi-account-group-outline"
-      module-description="Gestion des entreprises CRM"
+      :module-description="t('world.crm.company.moduleDescription')"
       :nav-items="crmNavItems"
-      action-label="Ajouter entreprise"
+      :action-label="t('world.crm.company.actions.addCompany')"
       action-icon="mdi-domain-plus"
       @action="createDialog = true"
     />
 
     <v-container fluid>
-      <v-alert v-if="pending" type="info" variant="tonal">Chargement des entreprises...</v-alert>
-      <v-alert v-else-if="error" type="error" variant="tonal">Erreur de chargement des entreprises.</v-alert>
+      <v-alert v-if="pending" type="info" variant="tonal">{{ t('world.crm.company.alerts.loadingList') }}</v-alert>
+      <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.company.alerts.loadListError') }}</v-alert>
 
       <v-row v-else>
         <v-col v-for="company in data?.items ?? []" :key="company.id" cols="12" md="6" xl="4">
@@ -71,24 +72,24 @@ async function createCompany() {
             <p class="text-body-2 mb-1">{{ company.industry }}</p>
             <p class="text-body-2 mb-1">{{ company.contactEmail }}</p>
             <p class="text-body-2 mb-4">{{ company.phone }}</p>
-            <v-btn color="primary" variant="tonal" prepend-icon="mdi-arrow-right" @click="router.push(`/world/crm/company/${company.id}`)">Voir détail</v-btn>
+            <v-btn color="primary" variant="tonal" prepend-icon="mdi-arrow-right" @click="router.push(`/world/crm/company/${company.id}`)">{{ t('world.crm.company.actions.viewDetails') }}</v-btn>
           </v-card>
         </v-col>
       </v-row>
     </v-container>
 
-    <AppModal v-model="createDialog" title="Créer une entreprise" :max-width="720">
+    <AppModal v-model="createDialog" :title="t('world.crm.company.modal.createTitle')" :max-width="720">
       <v-row>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.crmId" label="CRM ID" required /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.name" label="Nom" required /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.industry" label="Industrie" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.website" label="Website" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.contactEmail" label="Email" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.phone" label="Phone" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.crmId" :label="t('world.crm.company.form.crmId')" required /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.name" :label="t('world.crm.company.form.name')" required /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.industry" :label="t('world.crm.company.form.industry')" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.website" :label="t('world.crm.company.form.website')" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.contactEmail" :label="t('world.crm.company.form.email')" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.phone" :label="t('world.crm.company.form.phone')" /></v-col>
       </v-row>
       <template #actions>
-        <v-btn variant="text" @click="createDialog = false">Annuler</v-btn>
-        <v-btn color="primary" :loading="pendingCreate" @click="createCompany">Créer</v-btn>
+        <v-btn variant="text" @click="createDialog = false">{{ t('world.crm.company.actions.cancel') }}</v-btn>
+        <v-btn color="primary" :loading="pendingCreate" @click="createCompany">{{ t('world.crm.company.actions.create') }}</v-btn>
       </template>
     </AppModal>
   </div>

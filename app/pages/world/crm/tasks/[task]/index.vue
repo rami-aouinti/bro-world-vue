@@ -8,6 +8,7 @@ import type {
 
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 const taskId = computed(() => String(route.params.task ?? ''))
 
 definePageMeta({ title: 'CRM Task Detail' })
@@ -94,40 +95,40 @@ async function detachSubtask(subtaskId: string) {
 
 <template>
   <v-container fluid>
-    <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push('/world/crm/tasks')">Retour</v-btn>
-    <v-alert v-if="pending" type="info" variant="tonal">Chargement de la tâche...</v-alert>
-    <v-alert v-else-if="error" type="error" variant="tonal">Tâche introuvable.</v-alert>
+    <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push('/world/crm/tasks')">{{ t('world.crm.tasks.actions.backToList') }}</v-btn>
+    <v-alert v-if="pending" type="info" variant="tonal">{{ t('world.crm.tasks.alerts.loadingDetail') }}</v-alert>
+    <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.tasks.alerts.notFound') }}</v-alert>
 
     <v-row v-else-if="data">
       <v-col cols="12" lg="8">
         <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
           <h2 class="text-h6 mb-4">{{ data.title }}</h2>
           <v-row>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.projectId" label="Project ID" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.title" label="Titre" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.status" label="Status" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.priority" label="Priority" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.dueAt" label="DueAt (ISO)" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.estimatedHours" label="Estimated hours" type="number" /></v-col>
-            <v-col cols="12"><v-textarea v-model="payload.description" label="Description" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.projectId" :label="t('world.crm.tasks.form.projectId')" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.title" :label="t('world.crm.tasks.form.title')" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.status" :label="t('world.crm.tasks.form.status')" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.priority" :label="t('world.crm.tasks.form.priority')" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.dueAt" :label="t('world.crm.tasks.form.dueAt')" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.estimatedHours" :label="t('world.crm.tasks.form.estimatedHours')" type="number" /></v-col>
+            <v-col cols="12"><v-textarea v-model="payload.description" :label="t('world.crm.tasks.form.description')" /></v-col>
           </v-row>
           <div class="d-flex ga-2">
-            <v-btn color="primary" :loading="pendingSave" @click="save">Sauvegarder</v-btn>
-            <v-btn color="error" variant="tonal" @click="remove">Supprimer</v-btn>
+            <v-btn color="primary" :loading="pendingSave" @click="save">{{ t('world.crm.tasks.actions.save') }}</v-btn>
+            <v-btn color="error" variant="tonal" @click="remove">{{ t('world.crm.tasks.actions.delete') }}</v-btn>
           </div>
         </v-card>
 
         <v-card rounded="xl" class="pa-4 postcard-gradient-card">
-          <h3 class="text-subtitle-1 mb-3">Subtasks</h3>
+          <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.tasks.sections.subtasks') }}</h3>
           <v-row>
-            <v-col cols="12" md="6"><v-text-field v-model="newSubtask.title" label="Titre subtask" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="newSubtask.status" label="Status" /></v-col>
-            <v-col cols="12"><v-textarea v-model="newSubtask.description" label="Description" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="newSubtask.title" :label="t('world.crm.tasks.form.subtaskTitle')" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="newSubtask.status" :label="t('world.crm.tasks.form.status')" /></v-col>
+            <v-col cols="12"><v-textarea v-model="newSubtask.description" :label="t('world.crm.tasks.form.description')" /></v-col>
           </v-row>
-          <v-btn color="secondary" variant="tonal" class="mb-3" @click="createSubtask">Créer subtask</v-btn>
+          <v-btn color="secondary" variant="tonal" class="mb-3" @click="createSubtask">{{ t('world.crm.tasks.actions.createSubtask') }}</v-btn>
 
-          <v-text-field v-model="subtaskToAttach" label="Subtask ID à attacher" class="mb-2" />
-          <v-btn color="secondary" variant="tonal" class="mb-3" @click="attachSubtask">Attacher subtask</v-btn>
+          <v-text-field v-model="subtaskToAttach" :label="t('world.crm.tasks.form.subtaskIdToAttach')" class="mb-2" />
+          <v-btn color="secondary" variant="tonal" class="mb-3" @click="attachSubtask">{{ t('world.crm.tasks.actions.attachSubtask') }}</v-btn>
 
           <v-list density="compact" bg-color="transparent">
             <v-list-item
@@ -146,9 +147,9 @@ async function detachSubtask(subtaskId: string) {
 
       <v-col cols="12" lg="4">
         <v-card rounded="xl" class="pa-4 postcard-gradient-card">
-          <h3 class="text-subtitle-1 mb-3">Assignees</h3>
-          <v-text-field v-model="assigneeId" label="User ID" class="mb-2" />
-          <v-btn color="secondary" variant="tonal" class="mb-4" @click="attachAssignee">Attacher</v-btn>
+          <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.tasks.sections.assignees') }}</h3>
+          <v-text-field v-model="assigneeId" :label="t('world.crm.tasks.form.userId')" class="mb-2" />
+          <v-btn color="secondary" variant="tonal" class="mb-4" @click="attachAssignee">{{ t('world.crm.tasks.actions.attach') }}</v-btn>
           <v-list density="compact" bg-color="transparent">
             <v-list-item
               v-for="assignee in data.assignees"

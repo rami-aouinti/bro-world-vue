@@ -21,7 +21,7 @@ interface CrmTaskResponse {
 
 definePageMeta({ title: 'CRM Tasks' })
 
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 const router = useRouter()
 const createDialog = ref(false)
 const pendingCreate = ref(false)
@@ -33,18 +33,18 @@ const createPayload = reactive<CrmTaskCreatePayload>({
   priority: 'medium',
 })
 
-const crmNavItems = [
+const crmNavItems = computed(() => [
   {
-    title: 'Overview CRM',
+    title: t('world.crm.nav.overview'),
     to: '/world/crm',
     icon: 'mdi-view-dashboard-outline',
   },
-  { title: 'Projects', to: '/world/crm/projects', icon: 'mdi-folder-outline' },
-  { title: 'Tasks', to: '/world/crm/tasks', icon: 'mdi-format-list-checks' },
-  { title: 'Sprints', to: '/world/crm/sprints', icon: 'mdi-run-fast' },
-  { title: 'Company', to: '/world/crm/company', icon: 'mdi-domain' },
-  { title: 'Admin', to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' },
-]
+  { title: t('world.crm.nav.projects'), to: '/world/crm/projects', icon: 'mdi-folder-outline' },
+  { title: t('world.crm.nav.tasks'), to: '/world/crm/tasks', icon: 'mdi-format-list-checks' },
+  { title: t('world.crm.nav.sprints'), to: '/world/crm/sprints', icon: 'mdi-run-fast' },
+  { title: t('world.crm.nav.company'), to: '/world/crm/company', icon: 'mdi-domain' },
+  { title: t('world.crm.nav.admin'), to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' },
+])
 
 const { data, pending, error } = await useFetch<CrmTaskResponse>(
   '/api/crm/general/tasks',
@@ -78,21 +78,21 @@ async function createTask() {
 <template>
   <div>
     <WorldModuleDrawers
-      module-title="CRM"
+      :module-title="t('world.crm.label')"
       module-icon="mdi-account-group-outline"
-      module-description="Liste publique des tâches CRM"
+      :module-description="t('world.crm.tasks.moduleDescription')"
       :nav-items="crmNavItems"
-      action-label="Create task"
+      :action-label="t('world.crm.tasks.actions.create')"
       action-icon="mdi-plus"
       @action="createDialog = true"
     />
 
     <v-container fluid>
       <v-alert v-if="pending" type="info" variant="tonal" class="mb-4"
-        >Chargement des tasks...</v-alert
+        >{{ t('world.crm.tasks.alerts.loadingList') }}</v-alert
       >
       <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4"
-        >Erreur de chargement des tasks.</v-alert
+        >{{ t('world.crm.tasks.alerts.loadListError') }}</v-alert
       >
 
       <v-row v-else>
@@ -110,14 +110,14 @@ async function createTask() {
                 task.status
               }}</v-chip>
             </div>
-            <p class="text-body-2 mb-1">Project: {{ task.projectName }}</p>
-            <p class="text-body-2 mb-1">Sprint: {{ task.sprintName }}</p>
-            <p class="text-body-2 mb-1">Priority: {{ task.priority }}</p>
-            <p class="text-body-2 mb-1">Due: {{ formatDate(task.dueAt) }}</p>
+            <p class="text-body-2 mb-1">{{ t('world.crm.tasks.list.project') }}: {{ task.projectName }}</p>
+            <p class="text-body-2 mb-1">{{ t('world.crm.tasks.list.sprint') }}: {{ task.sprintName }}</p>
+            <p class="text-body-2 mb-1">{{ t('world.crm.tasks.list.priority') }}: {{ task.priority }}</p>
+            <p class="text-body-2 mb-1">{{ t('world.crm.tasks.list.due') }}: {{ formatDate(task.dueAt) }}</p>
             <p class="text-body-2 mb-0">
               {{ task.estimatedHours }}h ·
-              {{ task.attachments.length }} attachments ·
-              {{ task.children.length }} subtasks
+              {{ task.attachments.length }} {{ t('world.crm.tasks.list.attachments') }} ·
+              {{ task.children.length }} {{ t('world.crm.tasks.list.subtasks') }}
             </p>
             <v-btn
               class="mt-3"
@@ -126,24 +126,24 @@ async function createTask() {
               prepend-icon="mdi-arrow-right"
               @click="router.push(`/world/crm/tasks/${task.id}`)"
             >
-              Voir détail
+              {{ t('world.crm.tasks.actions.viewDetails') }}
             </v-btn>
           </v-card>
         </v-col>
       </v-row>
     </v-container>
 
-    <AppModal v-model="createDialog" title="Créer une tâche" :max-width="720">
+    <AppModal v-model="createDialog" :title="t('world.crm.tasks.modal.createTitle')" :max-width="720">
       <v-row>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.projectId" label="Project ID" required /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.title" label="Titre" required /></v-col>
-        <v-col cols="12"><v-textarea v-model="createPayload.description" label="Description" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.status" label="Status" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.priority" label="Priority" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.projectId" :label="t('world.crm.tasks.form.projectId')" required /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.title" :label="t('world.crm.tasks.form.title')" required /></v-col>
+        <v-col cols="12"><v-textarea v-model="createPayload.description" :label="t('world.crm.tasks.form.description')" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.status" :label="t('world.crm.tasks.form.status')" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.priority" :label="t('world.crm.tasks.form.priority')" /></v-col>
       </v-row>
       <template #actions>
-        <v-btn variant="text" @click="createDialog = false">Annuler</v-btn>
-        <v-btn color="primary" :loading="pendingCreate" @click="createTask">Créer</v-btn>
+        <v-btn variant="text" @click="createDialog = false">{{ t('world.crm.tasks.actions.cancel') }}</v-btn>
+        <v-btn color="primary" :loading="pendingCreate" @click="createTask">{{ t('world.crm.tasks.actions.create') }}</v-btn>
       </template>
     </AppModal>
   </div>

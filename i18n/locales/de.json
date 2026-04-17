@@ -1134,6 +1134,318 @@
         "averageCycle": "Durchschnittlicher Zyklus",
         "daysSuffix": "T",
         "weightedForecast": "Gewichtete Prognose"
+      },
+      "billings": {
+        "list": {
+          "title": "Billings",
+          "status": "Status"
+        },
+        "form": {
+          "label": "Label",
+          "amount": "Amount",
+          "currency": "Currency",
+          "status": "Status",
+          "dueAt": "Due at (ISO)",
+          "paidAt": "Paid at (ISO)"
+        },
+        "actions": {
+          "viewDetails": "View details",
+          "backToList": "Back",
+          "save": "Save",
+          "delete": "Delete",
+          "create": "Create",
+          "cancel": "Cancel"
+        },
+        "alerts": {
+          "loading": "Loading...",
+          "loadError": "Failed to load billings.",
+          "notFound": "Billing not found.",
+          "successSave": "Billing updated successfully.",
+          "successDelete": "Billing deleted successfully.",
+          "errorSave": "Failed to save billing.",
+          "errorDelete": "Failed to delete billing."
+        }
+      },
+      "sprints": {
+        "moduleDescription": "Public CRM sprint list",
+        "list": {
+          "start": "Start",
+          "end": "End"
+        },
+        "modal": {
+          "createTitle": "Create a sprint"
+        },
+        "form": {
+          "projectId": "Project ID",
+          "name": "Name",
+          "goal": "Goal",
+          "status": "Status",
+          "startDate": "Start date (ISO)",
+          "endDate": "End date (ISO)",
+          "userId": "User ID",
+          "taskId": "Task ID"
+        },
+        "sections": {
+          "assignees": "Assignees",
+          "tasks": "Tasks"
+        },
+        "actions": {
+          "viewDetails": "View details",
+          "backToList": "Back",
+          "save": "Save",
+          "delete": "Delete",
+          "create": "Create sprint",
+          "cancel": "Cancel",
+          "attach": "Attach",
+          "detach": "Detach"
+        },
+        "alerts": {
+          "loadingList": "Loading sprints...",
+          "loadListError": "Failed to load sprints.",
+          "loadingDetail": "Loading sprint...",
+          "notFound": "Sprint not found.",
+          "successSave": "Sprint updated successfully.",
+          "successDelete": "Sprint deleted successfully.",
+          "errorSave": "Failed to save sprint.",
+          "errorDelete": "Failed to delete sprint."
+        }
+      },
+      "projects": {
+        "moduleDescription": "Complete CRM project management",
+        "list": {
+          "githubRepos": "GitHub repos",
+          "provisioning": "Provisioning"
+        },
+        "modal": {
+          "createTitle": "Create a project"
+        },
+        "form": {
+          "companyId": "Company ID",
+          "name": "Name",
+          "code": "Code",
+          "description": "Description",
+          "status": "Status",
+          "startedAt": "Started at (ISO)",
+          "dueAt": "Due at (ISO)",
+          "userId": "User ID"
+        },
+        "sections": {
+          "assignees": "Assignees"
+        },
+        "actions": {
+          "newProject": "New project",
+          "viewDetails": "View details",
+          "backToList": "Back",
+          "save": "Save",
+          "delete": "Delete",
+          "create": "Create",
+          "cancel": "Cancel",
+          "attach": "Attach"
+        },
+        "alerts": {
+          "loadingList": "Loading projects...",
+          "loadListError": "Failed to load projects.",
+          "loadingDetail": "Loading project...",
+          "notFound": "Project not found.",
+          "successSave": "Project updated successfully.",
+          "successDelete": "Project deleted successfully.",
+          "errorSave": "Failed to save project.",
+          "errorDelete": "Failed to delete project."
+        }
+      },
+      "company": {
+        "moduleDescription": "CRM company management",
+        "modal": {
+          "createTitle": "Create a company"
+        },
+        "form": {
+          "crmId": "CRM ID",
+          "name": "Name",
+          "industry": "Industry",
+          "website": "Website",
+          "email": "Email",
+          "phone": "Phone"
+        },
+        "actions": {
+          "addCompany": "Add company",
+          "viewDetails": "View details",
+          "backToList": "Back",
+          "save": "Save",
+          "delete": "Delete",
+          "create": "Create",
+          "cancel": "Cancel"
+        },
+        "alerts": {
+          "loadingList": "Loading companies...",
+          "loadListError": "Failed to load companies.",
+          "loadingDetail": "Loading company...",
+          "notFound": "Company not found.",
+          "successSave": "Company updated successfully.",
+          "successDelete": "Company deleted successfully.",
+          "errorSave": "Failed to save company.",
+          "errorDelete": "Failed to delete company."
+        }
+      },
+      "tasks": {
+        "moduleDescription": "Public CRM task list",
+        "list": {
+          "project": "Project",
+          "sprint": "Sprint",
+          "priority": "Priority",
+          "due": "Due",
+          "attachments": "attachments",
+          "subtasks": "subtasks"
+        },
+        "modal": {
+          "createTitle": "Create a task"
+        },
+        "form": {
+          "projectId": "Project ID",
+          "title": "Title",
+          "description": "Description",
+          "status": "Status",
+          "priority": "Priority",
+          "dueAt": "Due at (ISO)",
+          "estimatedHours": "Estimated hours",
+          "subtaskTitle": "Subtask title",
+          "subtaskIdToAttach": "Subtask ID to attach",
+          "userId": "User ID"
+        },
+        "sections": {
+          "subtasks": "Subtasks",
+          "assignees": "Assignees"
+        },
+        "actions": {
+          "viewDetails": "View details",
+          "backToList": "Back",
+          "save": "Save",
+          "delete": "Delete",
+          "create": "Create task",
+          "cancel": "Cancel",
+          "createSubtask": "Create subtask",
+          "attachSubtask": "Attach subtask",
+          "attach": "Attach"
+        },
+        "alerts": {
+          "loadingList": "Loading tasks...",
+          "loadListError": "Failed to load tasks.",
+          "loadingDetail": "Loading task...",
+          "notFound": "Task not found.",
+          "successSave": "Task updated successfully.",
+          "successDelete": "Task deleted successfully.",
+          "errorSave": "Failed to save task.",
+          "errorDelete": "Failed to delete task."
+        }
+      },
+      "taskRequests": {
+        "list": {
+          "title": "Task requests",
+          "task": "Task"
+        },
+        "modal": {
+          "createTitle": "Create a request"
+        },
+        "form": {
+          "taskId": "Task ID",
+          "repositoryId": "Repository ID",
+          "title": "Title",
+          "description": "Description",
+          "status": "Status",
+          "resolvedAt": "Resolved at (ISO)"
+        },
+        "actions": {
+          "new": "New",
+          "viewDetails": "View details",
+          "backToList": "Back",
+          "save": "Save",
+          "delete": "Delete",
+          "create": "Create",
+          "cancel": "Cancel"
+        },
+        "alerts": {
+          "loadingList": "Loading requests...",
+          "loadListError": "Failed to load requests.",
+          "loadingDetail": "Loading request...",
+          "notFound": "Request not found.",
+          "successSave": "Request updated successfully.",
+          "successDelete": "Request deleted successfully.",
+          "errorSave": "Failed to save request.",
+          "errorDelete": "Failed to delete request."
+        }
+      },
+      "endpoints": {
+        "nav": {
+          "title": "Endpoints"
+        },
+        "moduleDescription": "Complete CRM General endpoints playground (GET/POST/PATCH/PUT/DELETE).",
+        "page": {
+          "title": "CRM Endpoints Playground",
+          "description": "Every CRM endpoint is exposed here with an execution component. All POST / PUT / PATCH / DELETE verbs are testable from this page."
+        },
+        "groups": {
+          "companies": "A) Companies",
+          "contacts": "B) Contacts",
+          "projects": "C) Projects",
+          "sprints": "D) Sprints",
+          "tasks": "E) Tasks + Subtasks",
+          "billings": "F) Billings",
+          "taskRequests": "G) Task requests",
+          "dashboardReports": "H) Dashboard / Reports"
+        },
+        "actions": {
+          "openAdmin": "Open admin"
+        },
+        "items": {
+          "1": "List companies",
+          "2": "Get company",
+          "3": "Create company",
+          "4": "Update company",
+          "5": "Delete company",
+          "6": "List contacts",
+          "7": "Get contact",
+          "8": "List projects",
+          "9": "Get project",
+          "10": "Create project",
+          "11": "Update project",
+          "12": "Delete project",
+          "13": "Attach project assignee",
+          "14": "Detach project assignee",
+          "15": "List sprints",
+          "16": "Get sprint",
+          "17": "Create sprint",
+          "18": "Update sprint",
+          "19": "Delete sprint",
+          "20": "Attach sprint assignee",
+          "21": "Detach sprint assignee",
+          "22": "Attach sprint task",
+          "23": "Detach sprint task",
+          "24": "List tasks",
+          "25": "Get task",
+          "26": "Create task",
+          "27": "Update task",
+          "28": "Delete task",
+          "29": "Attach task assignee",
+          "30": "Detach task assignee",
+          "31": "Create subtask",
+          "32": "Update subtask",
+          "33": "Delete subtask",
+          "34": "Attach subtask to task",
+          "35": "Detach subtask from task",
+          "36": "List billings",
+          "37": "Get billing",
+          "38": "Create billing",
+          "39": "Update billing",
+          "40": "Delete billing",
+          "41": "List task requests",
+          "42": "Get task request",
+          "43": "Create task request",
+          "44": "Update task request",
+          "45": "Delete task request",
+          "46": "Get dashboard",
+          "47-json": "Get report JSON",
+          "47-csv": "Get report CSV",
+          "47-pdf": "Get report PDF"
+        }
       }
     },
     "shop": {

@@ -7,6 +7,7 @@ import type {
 
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 const companyId = computed(() => String(route.params.company ?? ''))
 
 definePageMeta({ title: 'CRM Company Detail' })
@@ -50,22 +51,22 @@ async function remove() {
 
 <template>
   <v-container fluid>
-    <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push('/world/crm/company')">Retour</v-btn>
-    <v-alert v-if="pending" type="info" variant="tonal">Chargement de l'entreprise...</v-alert>
-    <v-alert v-else-if="error" type="error" variant="tonal">Entreprise introuvable.</v-alert>
+    <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push('/world/crm/company')">{{ t('world.crm.company.actions.backToList') }}</v-btn>
+    <v-alert v-if="pending" type="info" variant="tonal">{{ t('world.crm.company.alerts.loadingDetail') }}</v-alert>
+    <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.company.alerts.notFound') }}</v-alert>
 
     <v-card v-else rounded="xl" class="pa-4 postcard-gradient-card">
       <h2 class="text-h6 mb-4">{{ data?.name }}</h2>
       <v-row>
-        <v-col cols="12" md="6"><v-text-field v-model="payload.name" label="Nom" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="payload.industry" label="Industrie" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="payload.website" label="Website" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="payload.contactEmail" label="Email" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="payload.phone" label="Téléphone" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="payload.name" :label="t('world.crm.company.form.name')" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="payload.industry" :label="t('world.crm.company.form.industry')" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="payload.website" :label="t('world.crm.company.form.website')" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="payload.contactEmail" :label="t('world.crm.company.form.email')" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="payload.phone" :label="t('world.crm.company.form.phone')" /></v-col>
       </v-row>
       <div class="d-flex ga-2">
-        <v-btn color="primary" :loading="pendingSave" @click="save">Sauvegarder</v-btn>
-        <v-btn color="error" variant="tonal" @click="remove">Supprimer</v-btn>
+        <v-btn color="primary" :loading="pendingSave" @click="save">{{ t('world.crm.company.actions.save') }}</v-btn>
+        <v-btn color="error" variant="tonal" @click="remove">{{ t('world.crm.company.actions.delete') }}</v-btn>
       </div>
     </v-card>
   </v-container>
