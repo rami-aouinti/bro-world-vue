@@ -37,7 +37,6 @@ type QuizQuestionUi = {
 
 const { t } = useI18n()
 const theme = useTheme()
-const route = useRoute()
 const { loggedIn } = useUserSession()
 
 const quizStep = ref<QuizStep>('select-category')
@@ -85,14 +84,6 @@ const progressValue = computed(() => {
 const scorePercent = computed(() => submitResult.value?.percentage ?? 0)
 const hasPassed = computed(() => submitResult.value?.passed ?? false)
 const totalDuration = computed(() => selectedLevel.value?.timeLimit || 60)
-
-function isHexColor(value: unknown): value is string {
-  return typeof value === 'string' && /^#(?:[0-9a-fA-F]{3}){1,2}$/.test(value)
-}
-
-function normalizeColor(candidate: unknown, fallback: string) {
-  return isHexColor(candidate) ? candidate : fallback
-}
 
 function categoryGradient(category: QuizCategory) {
   return `linear-gradient(145deg, ${category.color}, ${primaryColor.value})`
@@ -261,7 +252,11 @@ onBeforeUnmount(clearTimer)
         <QuizLeaderboardPanel />
       </template>
     </AppPageDrawers>
-    <v-card variant="text" class="content-main postcard-gradient-card mb-3 pa-3" rounded="xl">
+    <v-card
+      variant="text"
+      class="content-main postcard-gradient-card mb-3 pa-3 quiz-page-card"
+      rounded="xl"
+    >
       <v-fade-transition>
         <div>
           <section v-if="quizStep === 'select-category'">
@@ -301,7 +296,10 @@ onBeforeUnmount(clearTimer)
             </v-row>
           </section>
 
-          <section v-else-if="quizStep === 'select-level'">
+          <section
+            v-else-if="quizStep === 'select-level'"
+            class="quiz-level-layout d-flex flex-column"
+          >
             <div
               class="d-flex align-center justify-space-between flex-wrap ga-3 mb-4"
             >
@@ -344,7 +342,7 @@ onBeforeUnmount(clearTimer)
               </v-col>
             </v-row>
 
-            <div class="d-flex justify-end mt-4">
+            <div class="d-flex justify-end mt-auto pt-6">
               <v-btn
                 color="primary"
                 size="large"
@@ -541,6 +539,14 @@ onBeforeUnmount(clearTimer)
     transparent 20%
   );
   height: calc(100% - 40px);
+}
+
+.quiz-page-card {
+  min-height: calc(100vh - 220px);
+}
+
+.quiz-level-layout {
+  min-height: calc(100vh - 340px);
 }
 
 .quiz-card {
