@@ -2,31 +2,20 @@
 import { useWorldShopStore } from '~/stores/worldShop'
 import type { WorldShopCheckoutAddress } from '~/types/world/shop'
 
-definePageMeta({ title: 'Shop Checkout' })
+definePageMeta({ title: 'world.shop.checkout.metaTitle' })
+
+const { t, locale } = useI18n()
 const { shopNavItems } = useShopNavItems()
 
 const shopStore = useWorldShopStore()
 const loading = ref(false)
 const errorMessage = ref('')
 
-const shippingMethods = [
-  { title: 'Standard', value: 'standard' },
-  { title: 'Express', value: 'express' },
-  { title: 'Pickup', value: 'pickup' },
-]
-
-const orderStatusLabels: Record<string, string> = {
-  pending: 'Commande créée',
-  pending_payment: 'Paiement en attente',
-  paid: 'Payée',
-  packed: 'Préparée',
-  shipped: 'Expédiée',
-  delivered: 'Livrée',
-  returned: 'Retournée',
-  refunded: 'Remboursée',
-  failed: 'Échec',
-  cancelled: 'Annulée',
-}
+const shippingMethods = computed(() => [
+  { title: t('world.shop.checkout.shippingMethods.standard'), value: 'standard' },
+  { title: t('world.shop.checkout.shippingMethods.express'), value: 'express' },
+  { title: t('world.shop.checkout.shippingMethods.pickup'), value: 'pickup' },
+])
 
 const cartPayload = computed(() => shopStore.cart)
 const selectedOrder = computed(() => shopStore.selectedOrder)
@@ -93,9 +82,23 @@ watch(
 const buildRequestId = () =>
   `checkout_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
 
+const orderStatusLabel = (status?: string) => {
+  if (!status) return t('world.shop.common.notAvailable')
+  const key = `world.shop.status.${status}`
+  return t(key)
+}
+
+const formatCurrency = (amount: number, currency: string) =>
+  new Intl.NumberFormat(locale.value, {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount)
+
 async function createOrderCheckout() {
   if (!cart.value.length) {
-    errorMessage.value = 'Panier vide. Ajoutez des produits avant checkout.'
+    errorMessage.value = t('world.shop.checkout.errors.emptyCart')
     return
   }
 
@@ -117,7 +120,7 @@ async function createOrderCheckout() {
     await navigateTo(`/world/shop/payment?orderId=${order.id}`)
   } catch (error: any) {
     errorMessage.value =
-      error?.statusMessage || 'Impossible de créer la commande checkout.'
+      error?.statusMessage || t('world.shop.checkout.errors.createOrderFailed')
   } finally {
     loading.value = false
   }
@@ -128,7 +131,7 @@ onMounted(async () => {
     await shopStore.fetchCart({ force: true })
   } catch (error: any) {
     errorMessage.value =
-      error?.statusMessage || 'Impossible de récupérer le panier pour checkout.'
+      error?.statusMessage || t('world.shop.checkout.errors.fetchCartFailed')
   }
 })
 </script>
@@ -136,24 +139,24 @@ onMounted(async () => {
 <template>
   <div>
     <WorldModuleDrawers
-      module-title="Shop"
+      :module-title="t('world.shop.label')"
       module-icon="mdi-storefront-outline"
-      module-description="Flux API: cart -> POST /checkout/{shopId} -> order -> payment intent -> payment confirm."
+      :module-description="t('world.shop.checkout.moduleDescription')"
       :nav-items="shopNavItems"
-      action-label="Créer commande"
+      :action-label="t('world.shop.checkout.actions.createOrder')"
     />
 
     <v-container fluid>
       <v-card rounded="xl" class="pa-5">
         <div class="d-flex justify-space-between align-center mb-4">
           <div>
-            <h2 class="text-h5">Checkout API (order-first)</h2>
+            <h2 class="text-h5">{{ t('world.shop.checkout.title') }}</h2>
             <p class="text-body-2 text-medium-emphasis mb-0">
-              Le payload checkout envoie billing/shipping + contact + méthode de livraison.
+              {{ t('world.shop.checkout.subtitle') }}
             </p>
           </div>
           <v-btn color="primary" :loading="loading" @click="createOrderCheckout">
-            Créer la commande
+            {{ t('world.shop.checkout.actions.createOrder') }}
           </v-btn>
         </div>
 
@@ -164,45 +167,36 @@ onMounted(async () => {
         <v-row>
           <v-col cols="12" md="7">
             <v-card variant="outlined" rounded="lg" class="pa-4 mb-4">
-              <h3 class="text-subtitle-1 mb-3">1) Panier</h3>
+              <h3 class="text-subtitle-1 mb-3">{{ t('world.shop.checkout.sections.cart') }}</h3>
               <v-table density="comfortable">
                 <thead>
                   <tr>
-                    <th>Produit</th>
-                    <th>Qté</th>
-                    <th>Prix</th>
+                    <th>{{ t('world.shop.checkout.table.product') }}</th>
+                    <th>{{ t('world.shop.checkout.table.quantity') }}</th>
+                    <th>{{ t('world.shop.checkout.table.price') }}</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="line in cart" :key="line.productId">
                     <td>{{ line.name }}</td>
                     <td>{{ line.quantity }}</td>
-                    <td>
-                      {{
-                        new Intl.NumberFormat('fr-FR', {
-                          style: 'currency',
-                          currency: checkoutCurrency,
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        }).format(line.unitPrice)
-                      }}
-                    </td>
+                    <td>{{ formatCurrency(line.unitPrice, checkoutCurrency) }}</td>
                   </tr>
                   <tr v-if="cart.length === 0">
-                    <td colspan="3" class="text-medium-emphasis">Panier vide.</td>
+                    <td colspan="3" class="text-medium-emphasis">{{ t('world.shop.checkout.emptyCart') }}</td>
                   </tr>
                 </tbody>
               </v-table>
             </v-card>
 
             <v-card variant="outlined" rounded="lg" class="pa-4 mb-4">
-              <h3 class="text-subtitle-1 mb-3">2) Contact & shipping method</h3>
+              <h3 class="text-subtitle-1 mb-3">{{ t('world.shop.checkout.sections.contact') }}</h3>
               <v-row>
                 <v-col cols="12" md="6">
-                  <v-text-field v-model="email" label="Email" type="email" />
+                  <v-text-field v-model="email" :label="t('world.shop.checkout.fields.email')" type="email" />
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-text-field v-model="phone" label="Téléphone" />
+                  <v-text-field v-model="phone" :label="t('world.shop.checkout.fields.phone')" />
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-select
@@ -210,13 +204,13 @@ onMounted(async () => {
                     :items="shippingMethods"
                     item-title="title"
                     item-value="value"
-                    label="Shipping method"
+                    :label="t('world.shop.checkout.fields.shippingMethod')"
                   />
                 </v-col>
                 <v-col cols="12" md="6" class="d-flex align-center">
                   <v-checkbox
                     v-model="useSameBillingAddress"
-                    label="Adresse de facturation identique"
+                    :label="t('world.shop.checkout.fields.sameBillingAddress')"
                     hide-details
                   />
                 </v-col>
@@ -224,48 +218,50 @@ onMounted(async () => {
             </v-card>
 
             <v-card variant="outlined" rounded="lg" class="pa-4 mb-4">
-              <h3 class="text-subtitle-1 mb-3">3) Shipping address</h3>
+              <h3 class="text-subtitle-1 mb-3">{{ t('world.shop.checkout.sections.shippingAddress') }}</h3>
               <v-row>
-                <v-col cols="12" md="6"><v-text-field v-model="shippingAddress.fullName" label="Nom complet" /></v-col>
-                <v-col cols="12"><v-text-field v-model="shippingAddress.line1" label="Adresse" /></v-col>
-                <v-col cols="12"><v-text-field v-model="shippingAddress.line2" label="Complément" /></v-col>
-                <v-col cols="12" md="4"><v-text-field v-model="shippingAddress.city" label="Ville" /></v-col>
-                <v-col cols="12" md="4"><v-text-field v-model="shippingAddress.state" label="État" /></v-col>
-                <v-col cols="12" md="4"><v-text-field v-model="shippingAddress.postalCode" label="Code postal" /></v-col>
-                <v-col cols="12" md="6"><v-text-field v-model="shippingAddress.country" label="Pays" /></v-col>
+                <v-col cols="12" md="6"><v-text-field v-model="shippingAddress.fullName" :label="t('world.shop.checkout.address.fullName')" /></v-col>
+                <v-col cols="12"><v-text-field v-model="shippingAddress.line1" :label="t('world.shop.checkout.address.line1')" /></v-col>
+                <v-col cols="12"><v-text-field v-model="shippingAddress.line2" :label="t('world.shop.checkout.address.line2')" /></v-col>
+                <v-col cols="12" md="4"><v-text-field v-model="shippingAddress.city" :label="t('world.shop.checkout.address.city')" /></v-col>
+                <v-col cols="12" md="4"><v-text-field v-model="shippingAddress.state" :label="t('world.shop.checkout.address.state')" /></v-col>
+                <v-col cols="12" md="4"><v-text-field v-model="shippingAddress.postalCode" :label="t('world.shop.checkout.address.postalCode')" /></v-col>
+                <v-col cols="12" md="6"><v-text-field v-model="shippingAddress.country" :label="t('world.shop.checkout.address.country')" /></v-col>
               </v-row>
             </v-card>
 
             <v-card v-if="!useSameBillingAddress" variant="outlined" rounded="lg" class="pa-4">
-              <h3 class="text-subtitle-1 mb-3">4) Billing address</h3>
+              <h3 class="text-subtitle-1 mb-3">{{ t('world.shop.checkout.sections.billingAddress') }}</h3>
               <v-row>
-                <v-col cols="12" md="6"><v-text-field v-model="billingAddress.fullName" label="Nom complet" /></v-col>
-                <v-col cols="12"><v-text-field v-model="billingAddress.line1" label="Adresse" /></v-col>
-                <v-col cols="12"><v-text-field v-model="billingAddress.line2" label="Complément" /></v-col>
-                <v-col cols="12" md="4"><v-text-field v-model="billingAddress.city" label="Ville" /></v-col>
-                <v-col cols="12" md="4"><v-text-field v-model="billingAddress.state" label="État" /></v-col>
-                <v-col cols="12" md="4"><v-text-field v-model="billingAddress.postalCode" label="Code postal" /></v-col>
-                <v-col cols="12" md="6"><v-text-field v-model="billingAddress.country" label="Pays" /></v-col>
+                <v-col cols="12" md="6"><v-text-field v-model="billingAddress.fullName" :label="t('world.shop.checkout.address.fullName')" /></v-col>
+                <v-col cols="12"><v-text-field v-model="billingAddress.line1" :label="t('world.shop.checkout.address.line1')" /></v-col>
+                <v-col cols="12"><v-text-field v-model="billingAddress.line2" :label="t('world.shop.checkout.address.line2')" /></v-col>
+                <v-col cols="12" md="4"><v-text-field v-model="billingAddress.city" :label="t('world.shop.checkout.address.city')" /></v-col>
+                <v-col cols="12" md="4"><v-text-field v-model="billingAddress.state" :label="t('world.shop.checkout.address.state')" /></v-col>
+                <v-col cols="12" md="4"><v-text-field v-model="billingAddress.postalCode" :label="t('world.shop.checkout.address.postalCode')" /></v-col>
+                <v-col cols="12" md="6"><v-text-field v-model="billingAddress.country" :label="t('world.shop.checkout.address.country')" /></v-col>
               </v-row>
             </v-card>
           </v-col>
 
           <v-col cols="12" md="5">
             <v-card variant="outlined" rounded="lg" class="pa-4">
-              <h3 class="text-subtitle-1 mb-3">Résumé</h3>
+              <h3 class="text-subtitle-1 mb-3">{{ t('world.shop.checkout.summary.title') }}</h3>
               <p class="mb-2">
-                Dernière commande: <strong>{{ selectedOrder?.id || '—' }}</strong>
+                {{ t('world.shop.checkout.summary.lastOrder') }}:
+                <strong>{{ selectedOrder?.id || t('world.shop.common.notAvailable') }}</strong>
               </p>
               <p class="mb-2">
-                Statut:
-                <strong>{{ orderStatusLabels[selectedOrder?.status || ''] || selectedOrder?.status || '—' }}</strong>
+                {{ t('world.shop.checkout.summary.status') }}:
+                <strong>{{ orderStatusLabel(selectedOrder?.status) }}</strong>
               </p>
               <p class="mb-2">
-                Shipping method: <strong>{{ shippingMethod }}</strong>
+                {{ t('world.shop.checkout.summary.shippingMethod') }}:
+                <strong>{{ t(`world.shop.checkout.shippingMethods.${shippingMethod}`) }}</strong>
               </p>
               <p>
-                Subtotal:
-                <strong>{{ new Intl.NumberFormat('fr-FR', { style: 'currency', currency: checkoutCurrency }).format(subtotal) }}</strong>
+                {{ t('world.shop.checkout.summary.subtotal') }}:
+                <strong>{{ formatCurrency(subtotal, checkoutCurrency) }}</strong>
               </p>
             </v-card>
           </v-col>

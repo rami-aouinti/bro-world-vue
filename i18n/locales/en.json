@@ -1766,6 +1766,179 @@
           "emptyTitle": "No similar products",
           "emptyText": "No recommendations are available for this product."
         }
+      },
+      "common": {
+        "notAvailable": "—"
+      },
+      "status": {
+        "pending": "Order created",
+        "pending_payment": "Payment pending",
+        "paid": "Paid",
+        "packed": "Packed",
+        "shipped": "Shipped",
+        "delivered": "Delivered",
+        "returned": "Returned",
+        "refunded": "Refunded",
+        "failed": "Failed",
+        "cancelled": "Cancelled"
+      },
+      "channel": {
+        "web": "Web",
+        "mobile": "Mobile app",
+        "marketplace": "Marketplace",
+        "store": "Retail store"
+      },
+      "checkout": {
+        "metaTitle": "world.shop.checkout.title",
+        "moduleDescription": "API flow: cart -> checkout -> order -> payment.",
+        "title": "Checkout API (order-first)",
+        "subtitle": "The checkout payload sends billing/shipping + contact + shipping method.",
+        "emptyCart": "Cart is empty.",
+        "actions": {
+          "createOrder": "Create order"
+        },
+        "sections": {
+          "cart": "1) Cart",
+          "contact": "2) Contact & shipping method",
+          "shippingAddress": "3) Shipping address",
+          "billingAddress": "4) Billing address"
+        },
+        "table": {
+          "product": "Product",
+          "quantity": "Qty",
+          "price": "Price"
+        },
+        "fields": {
+          "email": "Email",
+          "phone": "Phone",
+          "shippingMethod": "Shipping method",
+          "sameBillingAddress": "Use same billing address"
+        },
+        "address": {
+          "fullName": "Full name",
+          "line1": "Address",
+          "line2": "Address line 2",
+          "city": "City",
+          "state": "State",
+          "postalCode": "Postal code",
+          "country": "Country"
+        },
+        "shippingMethods": {
+          "standard": "Standard",
+          "express": "Express",
+          "pickup": "Pickup"
+        },
+        "summary": {
+          "title": "Summary",
+          "lastOrder": "Last order",
+          "status": "Status",
+          "shippingMethod": "Shipping method",
+          "subtotal": "Subtotal"
+        },
+        "errors": {
+          "emptyCart": "Cart is empty. Add products before checkout.",
+          "createOrderFailed": "Unable to create checkout order.",
+          "fetchCartFailed": "Unable to load cart for checkout."
+        }
+      },
+      "orders": {
+        "metaTitle": "world.shop.orders.title",
+        "moduleDescription": "Full order control: statuses, timeline, invoices, returns, refunds, and export.",
+        "actionLabel": "Orders console",
+        "title": "Shop Orders - Advanced operations",
+        "subtitle": "Data loaded from the store (`fetchOrders`) with standardized state handling.",
+        "empty": "No orders were found. Check filters or reload data.",
+        "customerLabel": "Customer {suffix}",
+        "catalog": {
+          "status": {
+            "all": "All"
+          },
+          "channel": {
+            "all": "All channels"
+          }
+        },
+        "table": {
+          "order": "Order",
+          "customer": "Customer",
+          "channel": "Channel",
+          "status": "Status",
+          "date": "Date",
+          "amount": "Amount",
+          "refunded": "Refunded",
+          "actions": "Actions"
+        },
+        "timeline": {
+          "initialStatus": "Initial status: {status}",
+          "statusChanged": "Status updated: {status}",
+          "invoiceGenerated": "Invoice generated ({invoiceNumber})",
+          "returnRequested": "Return request recorded",
+          "returnRequestedNote": "{amount} requested",
+          "partialRefundApproved": "Partial refund approved",
+          "partialRefundApprovedNote": "{amount} refunded"
+        },
+        "errors": {
+          "badRequest": "Invalid request (400): check the submitted filters. Detail: {detail}",
+          "notFound": "Resource not found (404): check orders endpoint availability. Detail: {detail}",
+          "invalidData": "Invalid data (422): fix payload structure and retry. Detail: {detail}",
+          "api": "API error: {detail}"
+        }
+      },
+      "payment": {
+        "metaTitle": "world.shop.payment.title",
+        "moduleDescription": "Order payment API: payment-intent + payment-confirm + provider webhook.",
+        "title": "Order payment orchestration",
+        "subtitle": "Flow: orderId -> /orders/{orderId}/payment-intent -> /orders/{orderId}/payment-confirm.",
+        "actions": {
+          "createPayment": "Create payment",
+          "createIntent": "Create payment intent (order)",
+          "confirmPayment": "Finalize order payment"
+        },
+        "sections": {
+          "provider": "Provider",
+          "confirmation": "Confirmation",
+          "orderState": "Order state",
+          "transaction": "Transaction"
+        },
+        "fields": {
+          "provider": "Payment provider"
+        },
+        "providers": {
+          "stripe": "Stripe (implemented)",
+          "adyen": "Adyen (to implement)",
+          "paypal": "PayPal (to implement)"
+        },
+        "confirmationHint": "Payment is validated after provider return + webhook.",
+        "summary": {
+          "orderId": "Order ID",
+          "status": "Status",
+          "total": "Total"
+        },
+        "transaction": {
+          "id": "Transaction ID",
+          "status": "Status",
+          "provider": "Provider",
+          "reason": "Reason",
+          "none": "none"
+        },
+        "status": {
+          "pending": "Pending",
+          "pending_payment": "Payment pending",
+          "requires_action": "Customer action required",
+          "processing": "Processing",
+          "succeeded": "Payment confirmed",
+          "failed": "Payment failed",
+          "canceled": "Payment canceled"
+        },
+        "success": {
+          "intentCreated": "Payment intent created for this order. Confirm payment next.",
+          "paymentConfirmed": "Payment confirmed ✅"
+        },
+        "errors": {
+          "missingOrderId": "Missing orderId. Start the workflow from /world/shop/checkout.",
+          "orderNotFound": "Order not found.",
+          "intentFailed": "Failed to create payment intent (order payment).",
+          "confirmFailed": "Payment has not been confirmed yet."
+        }
       }
     },
     "learning": {

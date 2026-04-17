@@ -1516,6 +1516,179 @@
           "emptyTitle": "No hay productos similares",
           "emptyText": "No hay recomendaciones disponibles para este producto."
         }
+      },
+      "common": {
+        "notAvailable": "—"
+      },
+      "status": {
+        "pending": "Pedido creado",
+        "pending_payment": "Pago pendiente",
+        "paid": "Pagado",
+        "packed": "Preparado",
+        "shipped": "Enviado",
+        "delivered": "Entregado",
+        "returned": "Devuelto",
+        "refunded": "Reembolsado",
+        "failed": "Fallido",
+        "cancelled": "Cancelado"
+      },
+      "channel": {
+        "web": "Web",
+        "mobile": "App móvil",
+        "marketplace": "Marketplace",
+        "store": "Tienda física"
+      },
+      "checkout": {
+        "metaTitle": "world.shop.checkout.title",
+        "moduleDescription": "Flujo API: carrito -> checkout -> pedido -> pago.",
+        "title": "Checkout API (order-first)",
+        "subtitle": "El payload de checkout envía facturación/envío + contacto + método de envío.",
+        "emptyCart": "Carrito vacío.",
+        "actions": {
+          "createOrder": "Crear pedido"
+        },
+        "sections": {
+          "cart": "1) Carrito",
+          "contact": "2) Contacto y método de envío",
+          "shippingAddress": "3) Dirección de envío",
+          "billingAddress": "4) Dirección de facturación"
+        },
+        "table": {
+          "product": "Producto",
+          "quantity": "Cant.",
+          "price": "Precio"
+        },
+        "fields": {
+          "email": "Correo",
+          "phone": "Teléfono",
+          "shippingMethod": "Método de envío",
+          "sameBillingAddress": "Usar misma dirección de facturación"
+        },
+        "address": {
+          "fullName": "Nombre completo",
+          "line1": "Dirección",
+          "line2": "Complemento",
+          "city": "Ciudad",
+          "state": "Estado",
+          "postalCode": "Código postal",
+          "country": "País"
+        },
+        "shippingMethods": {
+          "standard": "Estándar",
+          "express": "Exprés",
+          "pickup": "Recogida"
+        },
+        "summary": {
+          "title": "Resumen",
+          "lastOrder": "Último pedido",
+          "status": "Estado",
+          "shippingMethod": "Método de envío",
+          "subtotal": "Subtotal"
+        },
+        "errors": {
+          "emptyCart": "Carrito vacío. Añade productos antes del checkout.",
+          "createOrderFailed": "No se pudo crear el pedido de checkout.",
+          "fetchCartFailed": "No se pudo recuperar el carrito para checkout."
+        }
+      },
+      "orders": {
+        "metaTitle": "world.shop.orders.title",
+        "moduleDescription": "Gestión completa de pedidos: estados, timeline, factura, devoluciones, reembolsos y exportación.",
+        "actionLabel": "Consola de pedidos",
+        "title": "Shop Orders - Operaciones avanzadas",
+        "subtitle": "Datos cargados desde el store (`fetchOrders`) con gestión estandarizada de estados.",
+        "empty": "No se encontraron pedidos. Revisa los filtros o recarga los datos.",
+        "customerLabel": "Cliente {suffix}",
+        "catalog": {
+          "status": {
+            "all": "Todos"
+          },
+          "channel": {
+            "all": "Todos los canales"
+          }
+        },
+        "table": {
+          "order": "Pedido",
+          "customer": "Cliente",
+          "channel": "Canal",
+          "status": "Estado",
+          "date": "Fecha",
+          "amount": "Importe",
+          "refunded": "Reembolsado",
+          "actions": "Acciones"
+        },
+        "timeline": {
+          "initialStatus": "Estado inicial: {status}",
+          "statusChanged": "Estado actualizado: {status}",
+          "invoiceGenerated": "Factura generada ({invoiceNumber})",
+          "returnRequested": "Solicitud de devolución registrada",
+          "returnRequestedNote": "{amount} solicitados",
+          "partialRefundApproved": "Reembolso parcial aprobado",
+          "partialRefundApprovedNote": "{amount} reembolsados"
+        },
+        "errors": {
+          "badRequest": "Solicitud inválida (400): revisa los filtros enviados. Detalle: {detail}",
+          "notFound": "Recurso no encontrado (404): revisa la disponibilidad del endpoint de pedidos. Detalle: {detail}",
+          "invalidData": "Datos inválidos (422): corrige la estructura y vuelve a intentar. Detalle: {detail}",
+          "api": "Error API: {detail}"
+        }
+      },
+      "payment": {
+        "metaTitle": "world.shop.payment.title",
+        "moduleDescription": "API de pago de pedidos: payment-intent + payment-confirm + webhook del proveedor.",
+        "title": "Orquestación de pago del pedido",
+        "subtitle": "Flujo: orderId -> /orders/{orderId}/payment-intent -> /orders/{orderId}/payment-confirm.",
+        "actions": {
+          "createPayment": "Crear pago",
+          "createIntent": "Crear payment intent (pedido)",
+          "confirmPayment": "Finalizar pago del pedido"
+        },
+        "sections": {
+          "provider": "Proveedor",
+          "confirmation": "Confirmación",
+          "orderState": "Estado del pedido",
+          "transaction": "Transacción"
+        },
+        "fields": {
+          "provider": "Proveedor de pago"
+        },
+        "providers": {
+          "stripe": "Stripe (implementado)",
+          "adyen": "Adyen (por implementar)",
+          "paypal": "PayPal (por implementar)"
+        },
+        "confirmationHint": "El pago se valida tras la respuesta del proveedor y el webhook.",
+        "summary": {
+          "orderId": "ID de pedido",
+          "status": "Estado",
+          "total": "Total"
+        },
+        "transaction": {
+          "id": "ID de transacción",
+          "status": "Estado",
+          "provider": "Proveedor",
+          "reason": "Motivo",
+          "none": "ninguno"
+        },
+        "status": {
+          "pending": "Pendiente",
+          "pending_payment": "Pago pendiente",
+          "requires_action": "Acción del cliente requerida",
+          "processing": "Procesando",
+          "succeeded": "Pago confirmado",
+          "failed": "Pago fallido",
+          "canceled": "Pago cancelado"
+        },
+        "success": {
+          "intentCreated": "Payment intent creado para el pedido. Luego confirma el pago.",
+          "paymentConfirmed": "Pago confirmado ✅"
+        },
+        "errors": {
+          "missingOrderId": "Falta orderId. Inicia el flujo desde /world/shop/checkout.",
+          "orderNotFound": "Pedido no encontrado.",
+          "intentFailed": "Error al crear payment intent (pago de pedido).",
+          "confirmFailed": "El pago aún no ha sido confirmado."
+        }
       }
     },
     "learning": {
