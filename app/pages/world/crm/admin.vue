@@ -100,6 +100,11 @@ const crmNavItems = [
     to: '/world/crm/admin',
     icon: 'mdi-shield-crown-outline',
   },
+  {
+    title: 'Endpoints',
+    to: '/world/crm/endpoints',
+    icon: 'mdi-api',
+  },
 ]
 
 const entityConfigs: CrmAdminEntityConfig[] = [
