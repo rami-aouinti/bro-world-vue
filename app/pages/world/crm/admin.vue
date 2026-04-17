@@ -41,26 +41,26 @@ interface CrmContactItem {
 }
 
 interface CrmReportsResponse {
-  metadata: {
+  metadata?: {
     period: string
     timezone: string
     generatedAt: string
     version: string
   }
-  kpis: {
+  kpis?: {
     pipeline: number
     dealsWon: number
     cycleDays: number
     npsClients: number
   }
-  counts: {
+  counts?: {
     companies: number
     contacts: number
     employees: number
     billings: number
     tasks: number
   }
-  recommendedActions: Array<{
+  recommendedActions?: Array<{
     priority: string
     title: string
     owner: string
@@ -100,6 +100,11 @@ const crmNavItems = [
     to: '/world/crm/admin',
     icon: 'mdi-shield-crown-outline',
   },
+  {
+    title: 'Endpoints',
+    to: '/world/crm/endpoints',
+    icon: 'mdi-api',
+  },
 ]
 
 const entityConfigs: CrmAdminEntityConfig[] = [
@@ -111,6 +116,7 @@ const entityConfigs: CrmAdminEntityConfig[] = [
     titleKey: 'name',
     subtitleKeys: ['industry', 'contactEmail', 'phone'],
     fields: [
+      { key: 'crmId', label: 'CRM ID', type: 'text', required: true },
       { key: 'name', label: 'Company name', type: 'text', required: true },
       { key: 'industry', label: 'Industry', type: 'text', required: true },
       {
@@ -129,13 +135,15 @@ const entityConfigs: CrmAdminEntityConfig[] = [
     icon: 'mdi-folder-outline',
     idKey: 'id',
     titleKey: 'name',
-    subtitleKeys: ['status', 'owner', 'companyId'],
+    subtitleKeys: ['status', 'code', 'companyId'],
     fields: [
+      { key: 'companyId', label: 'Company ID', type: 'text', required: true },
       { key: 'name', label: 'Project name', type: 'text', required: true },
+      { key: 'code', label: 'Code', type: 'text' },
       { key: 'description', label: 'Description', type: 'textarea' },
       { key: 'status', label: 'Status', type: 'text' },
-      { key: 'owner', label: 'Owner', type: 'text' },
-      { key: 'companyId', label: 'Company ID', type: 'text' },
+      { key: 'startedAt', label: 'Started at (ISO)', type: 'text' },
+      { key: 'dueAt', label: 'Due at (ISO)', type: 'text' },
     ],
   },
   {
@@ -146,12 +154,15 @@ const entityConfigs: CrmAdminEntityConfig[] = [
     titleKey: 'title',
     subtitleKeys: ['status', 'priority', 'projectId'],
     fields: [
+      { key: 'projectId', label: 'Project ID', type: 'text', required: true },
       { key: 'title', label: 'Task title', type: 'text', required: true },
       { key: 'description', label: 'Description', type: 'textarea' },
       { key: 'status', label: 'Status', type: 'text' },
       { key: 'priority', label: 'Priority', type: 'text' },
-      { key: 'projectId', label: 'Project ID', type: 'text' },
+      { key: 'dueAt', label: 'Due at (ISO)', type: 'text' },
       { key: 'estimatedHours', label: 'Estimated hours', type: 'number' },
+      { key: 'sprintId', label: 'Sprint ID', type: 'text' },
+      { key: 'parentTaskId', label: 'Parent Task ID', type: 'text' },
     ],
   },
   {
@@ -160,13 +171,20 @@ const entityConfigs: CrmAdminEntityConfig[] = [
     icon: 'mdi-file-document-edit-outline',
     idKey: 'id',
     titleKey: 'title',
-    subtitleKeys: ['status', 'requestedBy', 'projectId'],
+    subtitleKeys: ['status', 'taskId', 'repositoryId'],
     fields: [
+      { key: 'taskId', label: 'Task ID', type: 'text', required: true },
+      {
+        key: 'repositoryId',
+        label: 'Repository ID',
+        type: 'text',
+        required: true,
+      },
       { key: 'title', label: 'Request title', type: 'text', required: true },
       { key: 'description', label: 'Description', type: 'textarea' },
       { key: 'status', label: 'Status', type: 'text' },
-      { key: 'requestedBy', label: 'Requested by', type: 'text' },
-      { key: 'projectId', label: 'Project ID', type: 'text' },
+      { key: 'requestedAt', label: 'Requested at (ISO)', type: 'text' },
+      { key: 'resolvedAt', label: 'Resolved at (ISO)', type: 'text' },
     ],
   },
   {
@@ -177,6 +195,7 @@ const entityConfigs: CrmAdminEntityConfig[] = [
     titleKey: 'name',
     subtitleKeys: ['status', 'startDate', 'endDate'],
     fields: [
+      { key: 'projectId', label: 'Project ID', type: 'text', required: true },
       { key: 'name', label: 'Sprint name', type: 'text', required: true },
       { key: 'goal', label: 'Goal', type: 'textarea' },
       { key: 'status', label: 'Status', type: 'text' },
@@ -229,15 +248,17 @@ const entityPending = reactive<Record<CrmGeneralEntityKind, boolean>>({
 })
 
 const { data: dashboardData, pending: dashboardPending } =
-  await useFetch<CrmDashboardResponse>('/api/world/crm/general/dashboard')
+  await useFetch<CrmDashboardResponse>('/api/crm/general/dashboard')
 const { data: billingsData, pending: billingsPending } = await useFetch<
   CrmGeneralCollectionResponse<Record<string, unknown>>
->('/api/world/crm/general/billings')
+>('/api/crm/general/billings')
 const { data: contactsData, pending: contactsPending } = await useFetch<
   CrmGeneralCollectionResponse<CrmContactItem>
->('/api/world/crm/general/contacts')
+>('/api/crm/general/contacts')
 const { data: reportsData, pending: reportsPending } =
-  await useFetch<CrmReportsResponse>('/api/world/crm/general/reports')
+  await useFetch<CrmReportsResponse>('/api/crm/general/reports', {
+    query: { format: 'json' },
+  })
 
 const adminTabs = [
   {
@@ -384,7 +405,7 @@ async function fetchEntityList(kind: CrmGeneralEntityKind) {
   try {
     const response = await $fetch<
       CrmGeneralCollectionResponse<Record<string, unknown>>
-    >(`/api/world/crm/general/${kind}`)
+    >(`/api/crm/general/${kind}`)
 
     entityCollections[kind] = response.items ?? []
   } catch {
@@ -457,8 +478,8 @@ async function submitCrudForm() {
   try {
     const endpoint =
       modalMode.value === 'create'
-        ? `/api/world/crm/general/${config.key}`
-        : `/api/world/crm/general/${config.key}/${editingEntityId.value}`
+        ? `/api/crm/general/${config.key}`
+        : `/api/crm/general/${config.key}/${editingEntityId.value}`
 
     const method = modalMode.value === 'create' ? 'POST' : 'PATCH'
 
@@ -505,7 +526,7 @@ async function deleteEntity(
   if (!entityId) return
 
   try {
-    await $fetch(`/api/world/crm/general/${kind}/${String(entityId)}`, {
+    await $fetch(`/api/crm/general/${kind}/${String(entityId)}`, {
       method: 'DELETE',
     })
 
@@ -726,7 +747,7 @@ await refreshAllCrudLists()
                   Reports billings count
                 </p>
                 <p class="text-h5 mb-0">
-                  {{ reportsData?.counts.billings ?? 0 }}
+                  {{ reportsData?.counts?.billings ?? 0 }}
                 </p>
               </v-card>
             </v-col>
@@ -783,7 +804,7 @@ await refreshAllCrudLists()
                 <v-card rounded="xl" class="pa-4 postcard-gradient-card">
                   <p class="text-caption text-medium-emphasis mb-1">Pipeline</p>
                   <p class="text-h6 mb-0">
-                    {{ formatMoney(reportsData?.kpis.pipeline ?? 0) }}
+                    {{ formatMoney(reportsData?.kpis?.pipeline ?? 0) }}
                   </p>
                 </v-card>
               </v-col>
@@ -793,7 +814,7 @@ await refreshAllCrudLists()
                     Deals won
                   </p>
                   <p class="text-h6 mb-0">
-                    {{ reportsData?.kpis.dealsWon ?? 0 }}
+                    {{ reportsData?.kpis?.dealsWon ?? 0 }}
                   </p>
                 </v-card>
               </v-col>
@@ -803,7 +824,7 @@ await refreshAllCrudLists()
                     Cycle days
                   </p>
                   <p class="text-h6 mb-0">
-                    {{ reportsData?.kpis.cycleDays ?? 0 }}
+                    {{ reportsData?.kpis?.cycleDays ?? 0 }}
                   </p>
                 </v-card>
               </v-col>
@@ -813,7 +834,7 @@ await refreshAllCrudLists()
                     NPS clients
                   </p>
                   <p class="text-h6 mb-0">
-                    {{ reportsData?.kpis.npsClients ?? 0 }}
+                    {{ reportsData?.kpis?.npsClients ?? 0 }}
                   </p>
                 </v-card>
               </v-col>
@@ -822,16 +843,16 @@ await refreshAllCrudLists()
             <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
               <p class="text-caption text-medium-emphasis mb-1">Metadata</p>
               <p class="text-body-2 mb-1">
-                Period: {{ reportsData?.metadata.period }}
+                Period: {{ reportsData?.metadata?.period ?? '—' }}
               </p>
               <p class="text-body-2 mb-1">
-                Timezone: {{ reportsData?.metadata.timezone }}
+                Timezone: {{ reportsData?.metadata?.timezone ?? '—' }}
               </p>
               <p class="text-body-2 mb-0">
                 Generated:
                 {{
                   formatDateTime(
-                    reportsData?.metadata.generatedAt ??
+                    reportsData?.metadata?.generatedAt ??
                       new Date().toISOString(),
                   )
                 }}

@@ -30,7 +30,7 @@ const crmNavItems = [
 ]
 
 const { data, pending, error } = await useFetch<CrmSprintResponse>(
-  '/api/world/crm/general/sprints',
+  '/api/crm/general/sprints',
 )
 
 function formatDate(value: string) {
