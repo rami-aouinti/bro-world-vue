@@ -75,6 +75,36 @@ const {
   selectSeason,
 } = useFootballData()
 
+const FEATURED_LEAGUE_IDS = new Set([1, 4, 39, 140, 135, 78])
+const FEATURED_LEAGUE_NAMES = new Set([
+  'worldcup',
+  'fifaworldcup',
+  'uefaeurochampionship',
+  'uefaeuro',
+  'premierleague',
+  'laliga',
+  'seriea',
+  'bundesliga',
+])
+
+const normalizeLeagueName = (name: string) => {
+  return name
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '')
+}
+
+const featuredLeagues = computed(() => {
+  return leagues.value.filter((league) => {
+    if (FEATURED_LEAGUE_IDS.has(league.id)) {
+      return true
+    }
+
+    return FEATURED_LEAGUE_NAMES.has(normalizeLeagueName(league.name))
+  })
+})
+
 const getSection = (
   key: FootballSectionKey,
   fallbackTitle: string,
@@ -326,10 +356,13 @@ watch(
 
           <v-list v-else density="compact" lines="one" class="pa-0">
             <v-list-item
-              v-for="league in leagues"
+              v-for="league in featuredLeagues"
               :key="league.id"
               :title="league.name"
               :subtitle="league.country.name"
+              :active="selectedLeagueId === league.id"
+              active-class="text-primary"
+              @click="selectLeague(league.id)"
             />
           </v-list>
         </v-card-text>
