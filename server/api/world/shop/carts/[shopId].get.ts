@@ -8,8 +8,9 @@ import {
 } from '~~/server/utils/shopProxy'
 
 export default defineEventHandler(async (event) => {
-  const { shopId } = getRouterParams(event)
-  const normalizedShopId = assertShopNonEmptyString(shopId, 'shopId')
+  const routerShopId =
+    getRouterParam(event, 'shopId') ?? getRouterParam(event, 'shopid')
+  const normalizedShopId = assertShopNonEmptyString(routerShopId, 'shopId')
 
   try {
     const client = await getServerPrivateAxios(event)
