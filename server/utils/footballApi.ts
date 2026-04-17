@@ -416,25 +416,25 @@ export async function fetchFixtureDetails(
       event,
       '/fixtures',
       { id: fixture },
-      { cacheProfile: 'live' },
+      { cacheProfile: 'reference', cacheKeySuffix: 'reference-fixture' },
     ),
     cachedFootballApiGet<ApiSportsFixtureEventItem>(
       event,
       '/fixtures/events',
       { fixture },
-      { cacheProfile: 'live' },
+      { cacheProfile: 'reference', cacheKeySuffix: 'reference-fixture-events' },
     ),
     cachedFootballApiGet<ApiSportsLineupItem>(
       event,
       '/fixtures/lineups',
       { fixture },
-      { cacheProfile: 'live' },
+      { cacheProfile: 'reference', cacheKeySuffix: 'reference-fixture-lineups' },
     ),
     cachedFootballApiGet<ApiSportsPlayerStatsItem>(
       event,
       '/fixtures/players',
       { fixture },
-      { cacheProfile: 'live' },
+      { cacheProfile: 'reference', cacheKeySuffix: 'reference-fixture-players' },
     ),
   ])
 
@@ -450,7 +450,7 @@ export async function cachedFixtureDetails(
   event: H3Event,
   fixture: number,
 ): Promise<FootballFixtureDetailsApiResponse> {
-  const cacheKey = publicCacheKey('/sports/football/fixture:live', { fixture })
+  const cacheKey = publicCacheKey('/sports/football/fixture:reference', { fixture })
   const cached = await getCached<FootballFixtureDetailsApiResponse>(cacheKey)
 
   if (cached) {
@@ -458,7 +458,7 @@ export async function cachedFixtureDetails(
   }
 
   const payload = await fetchFixtureDetails(event, fixture)
-  await setCached(cacheKey, payload, resolveCacheTtl('football', 'live'))
+  await setCached(cacheKey, payload, resolveCacheTtl('football', 'reference'))
 
   return payload
 }

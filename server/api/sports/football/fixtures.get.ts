@@ -18,7 +18,7 @@ export default defineEventHandler(
         league,
         season,
       },
-      { cacheProfile: 'live', cacheKeySuffix: 'live-fixtures' },
+      { cacheProfile: 'reference', cacheKeySuffix: 'reference-fixtures' },
     )
 
     return mapFixturesResponse(payload)
