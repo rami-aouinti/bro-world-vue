@@ -307,7 +307,11 @@ function authorProfilePath(comment: BlogComment) {
 }
 
 .comment-bubble {
-  background: rgba(255, 255, 255, 0.08);
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.28) 0%,
+    transparent 30%
+  );
   border-radius: 18px;
   padding: 0.6rem 0.9rem;
 }

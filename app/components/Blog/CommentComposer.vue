@@ -157,8 +157,13 @@ function onEnter(event: KeyboardEvent) {
 .composer-shell {
   flex: 1;
   border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 0.45rem 0.7rem 0.35rem;
-  background: rgba(55, 57, 65, 0.92);
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.38) 0%,
+    transparent 90%
+  );
 }
 
 .composer-shell .comment-input :deep(.v-field) {
