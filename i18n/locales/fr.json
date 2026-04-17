@@ -543,13 +543,34 @@
       "football": {
         "sections": {
           "matchHero": "Match à la une",
-          "leagues": { "title": "Ligues", "empty": "Aucune ligue disponible." },
-          "fixtures": { "title": "Matchs / Rencontres", "empty": "Aucun match pour cette ligue/saison." },
-          "standings": { "title": "Résultats / Classement", "empty": "Aucune donnée de classement." },
-          "teams": { "title": "Clubs / Équipes", "empty": "Aucune donnée d'équipe." },
-          "fixtureDetails": { "title": "Détails du match", "empty": "Sélectionnez un match pour voir les événements, compositions et stats joueurs." },
-          "teamDetails": { "title": "Détails de l'équipe", "empty": "Sélectionnez une équipe pour afficher l'effectif et les détails complets." },
-          "playerDetails": { "title": "Détails du joueur", "empty": "Sélectionnez un joueur pour ouvrir son profil et ses statistiques." }
+          "leagues": {
+            "title": "Ligues",
+            "empty": "Aucune ligue disponible."
+          },
+          "fixtures": {
+            "title": "Matchs / Rencontres",
+            "empty": "Aucun match pour cette ligue/saison."
+          },
+          "standings": {
+            "title": "Résultats / Classement",
+            "empty": "Aucune donnée de classement."
+          },
+          "teams": {
+            "title": "Clubs / Équipes",
+            "empty": "Aucune donnée d'équipe."
+          },
+          "fixtureDetails": {
+            "title": "Détails du match",
+            "empty": "Sélectionnez un match pour voir les événements, compositions et stats joueurs."
+          },
+          "teamDetails": {
+            "title": "Détails de l'équipe",
+            "empty": "Sélectionnez une équipe pour afficher l'effectif et les détails complets."
+          },
+          "playerDetails": {
+            "title": "Détails du joueur",
+            "empty": "Sélectionnez un joueur pour ouvrir son profil et ses statistiques."
+          }
         },
         "filters": {
           "league": "Ligue",
@@ -646,7 +667,10 @@
           "unknownTeam": "Équipe inconnue",
           "unknownPlayer": "Joueur inconnu",
           "standingsGroupAria": "Classement {group}",
-          "openTeamDetailsAria": "Ouvrir les détails de {team}"
+          "openTeamDetailsAria": "Ouvrir les détails de {team}",
+          "detailedPlayerStats": "Statistiques détaillées des joueurs",
+          "dataUnavailable": "Donnée indisponible",
+          "positionUnavailable": "Poste indisponible"
         },
         "errors": {
           "sportNotFound": "Sport introuvable",
@@ -657,6 +681,38 @@
           "loadFixtureDetails": "Impossible de charger les détails du match.",
           "loadTeamDetails": "Impossible de charger les détails de l'équipe.",
           "loadPlayerDetails": "Impossible de charger le profil du joueur."
+        },
+        "metrics": {
+          "games_position": "Poste",
+          "games_rating": "Note",
+          "games_minutes": "Minutes",
+          "games_appearances": "Apparitions",
+          "games_lineups": "Titularisations",
+          "goals_total": "Buts",
+          "goals_assists": "Passes décisives",
+          "goals_expected": "Buts attendus (xG)",
+          "shots_total": "Tirs",
+          "shots_on": "Tirs cadrés",
+          "passes_total": "Passes",
+          "passes_key": "Passes clés",
+          "passes_accuracy": "Précision de passe",
+          "tackles_total": "Tacles",
+          "tackles_blocks": "Contres",
+          "tackles_interceptions": "Interceptions",
+          "duels_total": "Duels",
+          "duels_won": "Duels gagnés",
+          "dribbles_attempts": "Dribbles tentés",
+          "dribbles_success": "Dribbles réussis",
+          "dribbles_past": "Dribbles subis",
+          "fouls_drawn": "Fautes provoquées",
+          "fouls_committed": "Fautes commises",
+          "cards_yellow": "Cartons jaunes",
+          "cards_red": "Cartons rouges",
+          "penalty_won": "Penalties obtenus",
+          "penalty_commited": "Penalties concédés",
+          "penalty_scored": "Penalties marqués",
+          "penalty_missed": "Penalties ratés",
+          "penalty_saved": "Penalties arrêtés"
         }
       },
       "quizDescription": "Retrouvez ici des quiz interactifs très prochainement.",

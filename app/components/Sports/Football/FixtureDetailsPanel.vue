@@ -174,6 +174,30 @@ const toNumericStat = (value: string | number | null | undefined) => {
   return Number.isFinite(parsed) ? parsed : null
 }
 
+const metricLabelFromKey = (key: string) => {
+  const normalized = key.split('.').join('_')
+  const translated = t(`pages.applications.football.metrics.${normalized}`)
+  return translated === `pages.applications.football.metrics.${normalized}`
+    ? key
+    : translated
+}
+
+const formatDetailedMetricValue = (key: string, value: string | number | null) => {
+  if (value === null || typeof value === 'undefined' || `${value}`.trim() === '') {
+    return t('pages.applications.football.misc.dataUnavailable')
+  }
+
+  const keyLower = key.toLowerCase()
+  const numeric = toNumericStat(value)
+  const isPercent = keyLower.includes('percentage') || keyLower.includes('percent') || keyLower.includes('possession')
+  const isDecimal = ['rating', 'xg', 'expectedgoals', 'expected_goals'].some(token => keyLower.includes(token))
+
+  if (numeric === null) return `${value}`
+  if (isPercent) return `${numeric}%`
+  if (isDecimal) return numeric.toFixed(2)
+  return `${numeric}`
+}
+
 type PlayerMetricKey = 'rating' | 'shots' | 'xg' | 'keyPasses' | 'tackles'
 
 const playerMetricDefinitions: Array<{
@@ -197,23 +221,13 @@ const playerMetricDefinitions: Array<{
   {
     key: 'xg',
     label: 'xG',
-    getValue: (stat) => {
-      const raw = (stat as FixturePlayerStatViewModel & { xg?: string | number | null; expectedGoals?: string | number | null })
-      return toNumericStat(raw.xg ?? raw.expectedGoals ?? null)
-    },
+    getValue: stat => toNumericStat(stat.metrics['expected.goals'] ?? stat.metrics['goals.expected'] ?? stat.metrics['xg'] ?? null),
     format: value => value.toFixed(2),
   },
   {
     key: 'keyPasses',
     label: 'Key passes',
-    getValue: (stat) => {
-      const raw = (stat as FixturePlayerStatViewModel & {
-        keyPasses?: string | number | null
-        key_passes?: string | number | null
-        passesKey?: string | number | null
-      })
-      return toNumericStat(raw.keyPasses ?? raw.key_passes ?? raw.passesKey ?? null)
-    },
+    getValue: stat => toNumericStat(stat.metrics['passes.key'] ?? stat.metrics['passes.keyPasses'] ?? stat.metrics['keyPasses'] ?? null),
     format: value => `${value}`,
   },
   {
@@ -253,6 +267,25 @@ const filteredPlayerNotesStats = computed(() => {
   return props.playerStats.filter(stat => teamMatches(stat, props.awayTeamId ?? null, awayTeamName.value))
 })
 
+const detailedPlayerStats = computed(() => {
+  return filteredPlayerNotesStats.value
+    .map((stat) => {
+      const entries = Object.entries(stat.metrics)
+        .filter(([, value]) => value !== null && typeof value !== 'undefined' && `${value}`.trim() !== '')
+        .map(([key, value]) => ({
+          key,
+          label: metricLabelFromKey(key),
+          value: formatDetailedMetricValue(key, value),
+        }))
+
+      return {
+        ...stat,
+        detailEntries: entries,
+      }
+    })
+    .filter(stat => stat.detailEntries.length > 0)
+})
+
 const playerNotesMetricSections = computed(() => {
   return playerMetricDefinitions.map((metric) => {
     const topPlayers = filteredPlayerNotesStats.value
@@ -268,7 +301,7 @@ const playerNotesMetricSections = computed(() => {
           playerId: stat.playerId,
           playerName: stat.playerName,
           playerPhoto: stat.playerPhoto,
-          position: stat.position || 'Position unavailable',
+          position: stat.position || t('pages.applications.football.misc.positionUnavailable'),
           teamId: stat.teamId,
           teamName: visuals?.teamName ?? stat.teamName,
           teamLogo: visuals?.teamLogo ?? null,
@@ -777,7 +810,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
                     </a>
                   </v-list-item-title>
                   <v-list-item-subtitle>
-                    {{ player.position || 'position unavailable' }}
+                    {{ player.position || t('pages.applications.football.misc.positionUnavailable') }}
                   </v-list-item-subtitle>
                   <template #append>
                     <v-chip size="x-small" :color="numericRating(player.rating) && Number(player.rating) >= 7 ? 'success' : 'default'">
@@ -788,7 +821,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
               </v-list>
 
               <div v-if="!lineup.hasGrid" class="text-caption text-medium-emphasis mt-2">
-                position unavailable
+                {{ t('pages.applications.football.misc.positionUnavailable') }}
               </div>
             </v-sheet>
           </v-col>
@@ -854,6 +887,54 @@ function onSelectPlayer(playerId: number | null | undefined) {
           </v-btn-toggle>
         </div>
 
+        <v-sheet class="player-details-panel pa-2 pa-sm-3 rounded border mb-3">
+          <header class="player-details-panel__header">
+            <h4 class="player-details-panel__title">
+              {{ t('pages.applications.football.misc.detailedPlayerStats') }}
+            </h4>
+          </header>
+
+          <v-expansion-panels
+            v-if="detailedPlayerStats.length"
+            density="compact"
+            variant="accordion"
+            class="player-details-panels"
+          >
+            <v-expansion-panel
+              v-for="player in detailedPlayerStats"
+              :key="`detailed-${player.id}`"
+            >
+              <v-expansion-panel-title>
+                <div class="d-flex align-center ga-3">
+                  <v-avatar size="30">
+                    <v-img :src="player.playerPhoto || undefined" :alt="player.playerName" />
+                  </v-avatar>
+                  <div class="d-flex flex-column">
+                    <a href="#" class="player-link text-body-2 font-weight-medium" @click.prevent.stop="onSelectPlayer(player.playerId)">
+                      {{ player.playerName }}
+                    </a>
+                    <span class="text-caption text-medium-emphasis">{{ player.teamName }}</span>
+                  </div>
+                </div>
+              </v-expansion-panel-title>
+              <v-expansion-panel-text>
+                <v-table density="compact" class="detailed-player-table">
+                  <tbody>
+                    <tr v-for="metric in player.detailEntries" :key="`${player.id}-${metric.key}`">
+                      <td class="text-caption text-medium-emphasis">{{ metric.label }}</td>
+                      <td class="text-body-2 font-weight-medium text-right">{{ metric.value }}</td>
+                    </tr>
+                  </tbody>
+                </v-table>
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+          </v-expansion-panels>
+
+          <div v-else class="text-caption text-medium-emphasis py-2 px-1">
+            {{ t('pages.applications.football.misc.dataUnavailable') }}
+          </div>
+        </v-sheet>
+
         <v-sheet class="player-notes-panel pa-2 pa-sm-3 rounded border">
           <section
             v-for="section in playerNotesMetricSections"
@@ -868,7 +949,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
             </header>
 
             <div v-if="section.empty" class="text-caption text-medium-emphasis py-2 px-1">
-              data unavailable
+              {{ t('pages.applications.football.misc.dataUnavailable') }}
             </div>
 
             <v-list v-else density="compact" class="pa-0 bg-transparent">
@@ -1112,6 +1193,20 @@ function onSelectPlayer(playerId: number | null | undefined) {
 .player-notes-panel {
   background: linear-gradient(180deg, rgba(18, 20, 30, .82), rgba(11, 13, 20, .66));
 }
+.player-details-panel {
+  background: linear-gradient(180deg, rgba(var(--v-theme-surface), .95), rgba(var(--v-theme-surface), .78));
+}
+.player-details-panel__header { padding: 2px 6px 8px; }
+.player-details-panel__title {
+  margin: 0;
+  font-size: .82rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-weight: 800;
+  color: rgba(var(--v-theme-on-surface), .8);
+}
+.detailed-player-table td { padding: 6px 8px; }
+.detailed-player-table tr + tr td { border-top: 1px solid rgba(var(--v-theme-on-surface), .08); }
 .player-metric-section {
   padding: 10px 8px 6px;
   border-bottom: 1px solid rgba(var(--v-theme-on-surface), .12);

@@ -584,6 +584,17 @@
           }
         },
         "backToCategories": "Volver a categorías"
+      },
+      "football": {
+        "misc": {
+          "detailedPlayerStats": "Estadísticas detalladas de jugadores",
+          "dataUnavailable": "Dato no disponible",
+          "positionUnavailable": "Posición no disponible"
+        },
+        "metrics": {
+          "passes_key": "Pases clave",
+          "goals_expected": "Goles esperados (xG)"
+        }
       }
     }
   },
