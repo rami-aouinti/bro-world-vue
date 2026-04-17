@@ -19,6 +19,7 @@ import type {
   FootballStandingsApiResponse,
   FootballTeam,
   FootballTeamsApiResponse,
+  FootballOddsApiResponse,
 } from '../types/api/football'
 import type {
   ApiSportsFixtureEventItem,
@@ -32,6 +33,7 @@ import type {
   ApiSportsResponse,
   ApiSportsStandingLeagueItem,
   ApiSportsTeamItem,
+  ApiSportsOddsItem,
 } from '../types/api/football/external'
 
 type FootballQueryParams = Record<string, string | number>
@@ -257,6 +259,15 @@ export function mapPlayerResponse(
   return {
     profile: item.player,
     statistics: item.statistics ?? [],
+  }
+}
+
+export function mapOddsResponse(
+  payload: ApiSportsResponse<ApiSportsOddsItem>,
+): FootballOddsApiResponse {
+  return {
+    items: payload.response ?? [],
+    paging: payload.paging ?? { current: 1, total: 1 },
   }
 }
 
