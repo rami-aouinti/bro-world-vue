@@ -6,44 +6,85 @@ definePageMeta({
 })
 
 const { t } = useI18n()
+
+const quickSports = computed(() => SPORTS.slice(0, 6))
 </script>
 
 <template>
-  <v-container fluid>
-    <v-card class="pa-6 mb-6">
-      <h2 class="text-h5 mb-2">{{ t('appbar.sports') }}</h2>
-      <p class="text-medium-emphasis mb-0">
-        {{ t('pages.applications.sportsDescription') }}
-      </p>
-    </v-card>
-
-    <v-row>
-      <v-col
-        v-for="sport in SPORTS"
-        :key="sport.slug"
-        cols="12"
-        sm="6"
-        md="4"
-        lg="3"
-      >
-        <v-card
-          class="sport-card h-100"
-          :to="`/applications/sports/${sport.slug}`"
-          link
-          variant="outlined"
-        >
-          <v-img :src="sport.image" :alt="sport.label" height="160" cover />
-
-          <v-card-text class="d-flex align-center justify-space-between py-4">
-            <span class="text-subtitle-1 font-weight-medium">{{
-              sport.label
-            }}</span>
-            <v-icon icon="mdi-chevron-right" />
-          </v-card-text>
+  <div>
+    <AppPageDrawers>
+      <template #left>
+        <v-card class="pa-4" variant="outlined">
+          <h3 class="text-subtitle-1 font-weight-bold mb-2">
+            {{ t('appbar.sports') }}
+          </h3>
+          <p class="text-body-2 text-medium-emphasis mb-0">
+            {{ t('pages.applications.sportsDescription') }}
+          </p>
         </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+      </template>
+
+      <template #right>
+        <v-card class="pa-4" variant="outlined">
+          <h3 class="text-subtitle-1 font-weight-bold mb-3">
+            {{ t('pages.applications.quickSportsTitle', 'Quick sports') }}
+          </h3>
+          <v-list density="compact" lines="one" class="pa-0 bg-transparent">
+            <v-list-item
+              v-for="sport in quickSports"
+              :key="`quick-${sport.slug}`"
+              :title="sport.label"
+              :subtitle="sport.apiBaseUrl"
+              :to="`/applications/sports/${sport.slug}`"
+              rounded="lg"
+            >
+              <template #prepend>
+                <v-avatar size="32" rounded="lg" class="mr-2">
+                  <v-img :src="sport.image" :alt="sport.label" cover />
+                </v-avatar>
+              </template>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </template>
+    </AppPageDrawers>
+
+    <v-container fluid>
+      <v-card class="pa-6 mb-6" variant="tonal">
+        <h2 class="text-h5 mb-2">{{ t('appbar.sports') }}</h2>
+        <p class="text-medium-emphasis mb-0">
+          {{ t('pages.applications.sportsDescription') }}
+        </p>
+      </v-card>
+
+      <v-row>
+        <v-col
+          v-for="sport in SPORTS"
+          :key="sport.slug"
+          cols="12"
+          sm="6"
+          md="4"
+          lg="3"
+        >
+          <v-card
+            class="sport-card h-100"
+            :to="`/applications/sports/${sport.slug}`"
+            link
+            variant="outlined"
+          >
+            <v-img :src="sport.image" :alt="sport.label" height="160" cover />
+
+            <v-card-text class="d-flex align-center justify-space-between py-4">
+              <span class="text-subtitle-1 font-weight-medium">{{
+                sport.label
+              }}</span>
+              <v-icon icon="mdi-chevron-right" />
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <style scoped>

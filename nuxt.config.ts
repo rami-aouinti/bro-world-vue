@@ -141,6 +141,14 @@ export default defineNuxtConfig({
       host: process.env.FOOTBALL_API_HOST || 'v3.football.api-sports.io',
       key: process.env.FOOTBALL_API_KEY || '',
     },
+    basketballApi: {
+      baseUrl:
+        process.env.BASKETBALL_API_BASE_URL ||
+        'https://v1.basketball.api-sports.io',
+      host:
+        process.env.BASKETBALL_API_HOST || 'v1.basketball.api-sports.io',
+      key: process.env.BASKETBALL_API_KEY || process.env.FOOTBALL_API_KEY || '',
+    },
     stripe: {
       secretKey: process.env.STRIPE_SECRET_KEY || '',
       webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
