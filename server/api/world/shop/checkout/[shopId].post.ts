@@ -9,13 +9,18 @@ import {
 } from '~~/server/utils/shopProxy'
 
 export default defineEventHandler(async (event) => {
-  const routerShopId =
-    getRouterParam(event, 'shopId') ?? getRouterParam(event, 'shopid')
+  const body = await readBody<unknown>(event)
+  const bodyShopId =
+    body && typeof body === 'object' && !Array.isArray(body)
+      ? (body as { shopId?: unknown }).shopId
+      : undefined
   const shopId = assertShopNonEmptyString(
-    routerShopId,
+    getRouterParam(event, 'shopId') ??
+      getRouterParam(event, 'shopid') ??
+      getQuery(event).shopId ??
+      bodyShopId,
     'shopId',
   )
-  const body = await readBody<unknown>(event)
   const payload =
     body && typeof body === 'object' && !Array.isArray(body)
       ? { ...body, shopId }
