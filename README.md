@@ -178,6 +178,20 @@ NUXT_SESSION_SECRET=your-super-long-secret-for-session-encryption
 
 Nuxt Auth Utils generates one for you when running Nuxt in development the first time if no `NUXT_SESSION_PASSWORD` is set.
 
+### Contribution (section football)
+
+Avant toute merge sur les évolutions des statistiques football (composable + panel de détail), exécuter la commande suivante :
+
+```bash
+pnpm run check:football
+```
+
+Cette vérification standardisée couvre :
+
+- le typecheck TypeScript/Vue SFC (`nuxt typecheck`),
+- le lint ciblé sur `app/composables/useFootballData.ts` et `app/components/Sports/Football/FixtureDetailsPanel.vue`,
+- des règles anti-duplication (`no-redeclare`, `no-dupe-args`, `no-dupe-keys`) et la détection d'erreurs de parsing template (`vue/no-parsing-error`).
+
 ### Development
 
 Start the development server on http://localhost:3000
