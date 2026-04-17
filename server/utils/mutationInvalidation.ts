@@ -17,17 +17,31 @@ const MUTATION_INVALIDATION_RULES: MutationInvalidationRule[] = [
   { key: 'stories:create', scope: 'private', prefixes: ['stories'] },
   { key: 'stories:delete', scope: 'private', prefixes: ['stories'] },
   { key: 'blog:posts:create', scope: 'private', prefixes: ['blog'] },
+  { key: 'blog:posts:create', scope: 'public', prefixes: ['blog'] },
   { key: 'blog:posts:update', scope: 'private', prefixes: ['blog'] },
+  { key: 'blog:posts:update', scope: 'public', prefixes: ['blog'] },
   { key: 'blog:posts:delete', scope: 'private', prefixes: ['blog'] },
+  { key: 'blog:posts:delete', scope: 'public', prefixes: ['blog'] },
   { key: 'blog:posts:comments:create', scope: 'private', prefixes: ['blog'] },
+  { key: 'blog:posts:comments:create', scope: 'public', prefixes: ['blog'] },
   { key: 'blog:posts:comments:update', scope: 'private', prefixes: ['blog'] },
+  { key: 'blog:posts:comments:update', scope: 'public', prefixes: ['blog'] },
   { key: 'blog:posts:comments:delete', scope: 'private', prefixes: ['blog'] },
+  { key: 'blog:posts:comments:delete', scope: 'public', prefixes: ['blog'] },
   { key: 'blog:posts:reactions:create', scope: 'private', prefixes: ['blog'] },
+  { key: 'blog:posts:reactions:create', scope: 'public', prefixes: ['blog'] },
   { key: 'blog:posts:reactions:update', scope: 'private', prefixes: ['blog'] },
+  { key: 'blog:posts:reactions:update', scope: 'public', prefixes: ['blog'] },
   { key: 'blog:posts:reactions:delete', scope: 'private', prefixes: ['blog'] },
+  { key: 'blog:posts:reactions:delete', scope: 'public', prefixes: ['blog'] },
   {
     key: 'blog:comments:reactions:create',
     scope: 'private',
+    prefixes: ['blog'],
+  },
+  {
+    key: 'blog:comments:reactions:create',
+    scope: 'public',
     prefixes: ['blog'],
   },
   {
@@ -36,8 +50,18 @@ const MUTATION_INVALIDATION_RULES: MutationInvalidationRule[] = [
     prefixes: ['blog'],
   },
   {
+    key: 'blog:comments:reactions:update',
+    scope: 'public',
+    prefixes: ['blog'],
+  },
+  {
     key: 'blog:comments:reactions:delete',
     scope: 'private',
+    prefixes: ['blog'],
+  },
+  {
+    key: 'blog:comments:reactions:delete',
+    scope: 'public',
     prefixes: ['blog'],
   },
   { key: 'chat:conversations:update', scope: 'private', prefixes: ['chat'] },
@@ -89,8 +113,14 @@ const MUTATION_INVALIDATION_RULES: MutationInvalidationRule[] = [
   },
 ] as const
 
-const MUTATION_RULES_BY_KEY = new Map(
-  MUTATION_INVALIDATION_RULES.map((rule) => [rule.key, rule]),
+const MUTATION_RULES_BY_KEY = MUTATION_INVALIDATION_RULES.reduce(
+  (map, rule) => {
+    const entries = map.get(rule.key) ?? []
+    entries.push(rule)
+    map.set(rule.key, entries)
+    return map
+  },
+  new Map<string, MutationInvalidationRule[]>(),
 )
 
 function buildPrefix(
@@ -109,9 +139,9 @@ export async function invalidateMutationCaches(
   event: H3Event,
   mutationKey: string,
 ) {
-  const rule = MUTATION_RULES_BY_KEY.get(mutationKey)
+  const rules = MUTATION_RULES_BY_KEY.get(mutationKey)
 
-  if (!rule) {
+  if (!rules || rules.length === 0) {
     throw createError({
       statusCode: 500,
       statusMessage: `Missing cache invalidation mapping for mutation: ${mutationKey}`,
@@ -119,8 +149,8 @@ export async function invalidateMutationCaches(
   }
 
   let username: string | undefined
-
-  if (rule.scope === 'private') {
+  const hasPrivateScope = rules.some((rule) => rule.scope === 'private')
+  if (hasPrivateScope) {
     const { user } = await requireUserSession(event)
     username = (user as SessionUser | null)?.username?.trim()
 
@@ -133,8 +163,10 @@ export async function invalidateMutationCaches(
   }
 
   await Promise.all(
-    rule.prefixes.map((prefix) =>
-      invalidateByPrefix(buildPrefix(rule.scope, prefix, username)),
+    rules.flatMap((rule) =>
+      rule.prefixes.map((prefix) =>
+        invalidateByPrefix(buildPrefix(rule.scope, prefix, username)),
+      ),
     ),
   )
 }
