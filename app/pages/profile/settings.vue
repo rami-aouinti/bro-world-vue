@@ -566,6 +566,7 @@ onMounted(() => {
   )
 
   sectionElements.forEach((element) => sectionObserver.value?.observe(element))
+  void Promise.all([profileStore.fetchProfile(), loadSessions()])
 })
 
 onUnmounted(() => {
