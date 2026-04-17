@@ -21,6 +21,7 @@ import {
 import SportsBasketballGamesListWidget from '~/components/Sports/Basketball/GamesListWidget.vue'
 import SportsBasketballHeroWidget from '~/components/Sports/Basketball/HeroWidget.vue'
 import SportsBasketballStandingsWidget from '~/components/Sports/Basketball/StandingsWidget.vue'
+import SportsBasketballPlayerDetailsWidget from '~/components/Sports/Basketball/PlayerDetailsWidget.vue'
 import { getBasketballLeaguePriority } from '~/constants/sports'
 
 definePageMeta({
@@ -99,10 +100,14 @@ const {
   selectedLeagueId: basketballSelectedLeagueId,
   selectedSeason: basketballSelectedSeason,
   selectedGameId: basketballSelectedGameId,
+  playerDetails: basketballPlayerDetails,
+  playerState: basketballPlayerState,
+  playerError: basketballPlayerError,
   featuredGame: basketballFeaturedGame,
   featuredScore: basketballFeaturedScore,
   loadLeagues: loadBasketballLeagues,
   loadLeagueSeasonData: loadBasketballLeagueSeasonData,
+  loadPlayerDetails: loadBasketballPlayerDetails,
   selectLeague: selectBasketballLeague,
   selectSeason: selectBasketballSeason,
   selectGame: selectBasketballGame,
@@ -273,10 +278,13 @@ const hasSelection = computed(() => {
 
 const teamModalOpen = ref(false)
 const playerModalOpen = ref(false)
+const basketballPlayerModalOpen = ref(false)
 const teamModalLoading = ref(false)
 const playerModalLoading = ref(false)
+const basketballPlayerModalLoading = ref(false)
 const teamModalRequestedId = ref<number | null>(null)
 const playerModalRequestedId = ref<number | null>(null)
+const basketballPlayerModalRequestedId = ref<number | null>(null)
 
 const findTeamName = (teamId: number) => {
   const inFixtures = fixtures.value
@@ -356,6 +364,27 @@ const initializeSportPage = async () => {
   }
 }
 
+const openBasketballPlayerModal = async (playerId: number) => {
+  basketballPlayerModalRequestedId.value = playerId
+  basketballPlayerModalOpen.value = true
+  basketballPlayerModalLoading.value = true
+
+  try {
+    await loadBasketballPlayerDetails(playerId)
+  } finally {
+    basketballPlayerModalLoading.value = false
+  }
+}
+
+const basketballPlayerModalTitle = computed(() => {
+  return (
+    basketballPlayerDetails.value?.player?.name ||
+    (basketballPlayerModalRequestedId.value
+      ? `Player #${basketballPlayerModalRequestedId.value}`
+      : 'Player details')
+  )
+})
+
 watch(
   sportSlug,
   async (slug, previousSlug) => {
@@ -425,6 +454,7 @@ watch(
       }
     }
 
+    basketballPlayerModalOpen.value = false
     void loadBasketballLeagueSeasonData()
   },
   { immediate: true },
@@ -640,6 +670,7 @@ watch(
             <template v-if="basketballStandingsState === 'ready'">
               <SportsBasketballStandingsWidget
                 :standings="basketballStandings"
+                @select-player="openBasketballPlayerModal"
               />
             </template>
             <v-alert
@@ -712,6 +743,21 @@ watch(
         :section="playerDetailsSection"
         :player-details="playerDetails"
         :loading-override="playerModalLoading"
+      />
+    </AppModal>
+
+    <AppModal
+      v-if="sport.slug === 'basketball'"
+      v-model="basketballPlayerModalOpen"
+      :title="basketballPlayerModalTitle"
+      :max-width="760"
+      density="compact"
+    >
+      <SportsBasketballPlayerDetailsWidget
+        :player-details="basketballPlayerDetails"
+        :player-state="basketballPlayerState"
+        :player-error="basketballPlayerError"
+        :loading-override="basketballPlayerModalLoading"
       />
     </AppModal>
   </div>
