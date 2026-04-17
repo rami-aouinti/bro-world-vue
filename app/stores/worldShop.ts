@@ -272,7 +272,6 @@ export const useWorldShopStore = defineStore('world-shop', () => {
       recordStoreCacheEvent('shop', true)
       const response = cached.data as WorldShopProductsListResponse
       items.value = response.data
-      categories.value = []
       resolveProductsPagination(response)
       lastFetchedAt.value = cached.fetchedAt
       return
@@ -300,7 +299,6 @@ export const useWorldShopStore = defineStore('world-shop', () => {
         throw new Error('Invalid shop products response format.')
       }
       items.value = response.data
-      categories.value = []
       resolveProductsPagination(response)
       lastFetchedAt.value = Date.now()
       cache.value[cacheKey] = { fetchedAt: lastFetchedAt.value, data: response }

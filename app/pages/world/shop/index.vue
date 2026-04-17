@@ -127,6 +127,10 @@ function toggleCategoryFilter(categoryName: string) {
   void applyFilters()
 }
 
+function resolveProductCategory(item: ShopProduct) {
+  return item.categoryName || item.category || ''
+}
+
 async function fetchProducts() {
   listLoading.value = true
   try {
@@ -389,7 +393,7 @@ onMounted(async () => {
                 <v-img
                   :src="productImage(item)"
                   :alt="item.name"
-                  height="220"
+                  height="190"
                   cover
                   class="cursor-pointer"
                   @click="goToProductDetail(item.id)"
@@ -410,12 +414,27 @@ onMounted(async () => {
                   >
                     {{ item.name }}
                   </v-card-title>
-                  <v-card-subtitle>
-                    {{ item.categoryName || item.category }}
-                  </v-card-subtitle>
                 </v-card-item>
 
                 <v-card-text>
+                  <div class="mb-3">
+                    <v-chip
+                      v-if="resolveProductCategory(item)"
+                      size="small"
+                      variant="tonal"
+                      color="primary"
+                      class="cursor-pointer"
+                      :prepend-icon="
+                        selectedCategory === resolveProductCategory(item)
+                          ? 'mdi-filter-check-outline'
+                          : 'mdi-shape-outline'
+                      "
+                      @click="toggleCategoryFilter(resolveProductCategory(item))"
+                    >
+                      {{ resolveProductCategory(item) }}
+                    </v-chip>
+                  </div>
+
                   <div class="d-flex align-center justify-space-between mb-2">
                     <div class="d-flex flex-column">
                       <span class="text-h6 font-weight-bold">{{
