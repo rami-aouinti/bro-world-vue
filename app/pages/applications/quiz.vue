@@ -261,7 +261,7 @@ onBeforeUnmount(clearTimer)
         <QuizLeaderboardPanel />
       </template>
     </AppPageDrawers>
-    <v-card variant="text" class="pa-2 quiz-shell" rounded="xl">
+    <v-card variant="text" class="content-main postcard-gradient-card mb-3 pa-3" rounded="xl">
       <v-fade-transition>
         <div>
           <section v-if="quizStep === 'select-category'">
