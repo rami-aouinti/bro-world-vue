@@ -9,6 +9,7 @@ const theme = useTheme()
 const isLightTheme = computed(() => !theme.current.value.dark)
 const profileStore = useProfileStore()
 const { fetch: refreshSession } = useUserSession()
+const runtimeConfig = useRuntimeConfig()
 
 definePageMeta({
   title: 'appbar.settings',
@@ -146,14 +147,48 @@ function normalizePhotoUrl(url: string | undefined): string | undefined {
     return url
   }
 
+  const normalizedInput = url.trim()
+
+  if (!normalizedInput) {
+    return normalizedInput
+  }
+
+  const apiBaseUrl = String(runtimeConfig.public.apiBaseUrl ?? '').trim()
+  const apiOrigin = (() => {
+    if (!apiBaseUrl) {
+      return ''
+    }
+
+    try {
+      return new URL(apiBaseUrl).origin
+    } catch {
+      return ''
+    }
+  })()
+
+  if (normalizedInput.startsWith('/')) {
+    return apiOrigin ? new URL(normalizedInput, apiOrigin).toString() : normalizedInput
+  }
+
   try {
-    const parsedUrl = new URL(url)
+    const parsedUrl = new URL(normalizedInput)
     if (parsedUrl.hostname === 'bro-world.org' && parsedUrl.port === '3000') {
       parsedUrl.port = ''
     }
     return parsedUrl.toString()
   } catch {
-    return url.replace('bro-world.org:3000', 'bro-world.org')
+    const normalizedLegacyHost = normalizedInput.replace(
+      'bro-world.org:3000',
+      'bro-world.org',
+    )
+
+    if (normalizedLegacyHost.startsWith('/')) {
+      return apiOrigin
+        ? new URL(normalizedLegacyHost, apiOrigin).toString()
+        : normalizedLegacyHost
+    }
+
+    return normalizedLegacyHost
   }
 }
 
