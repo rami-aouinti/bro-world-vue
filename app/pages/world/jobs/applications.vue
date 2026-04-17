@@ -4,31 +4,41 @@ import { privateApi } from '~/utils/http/privateApi'
 
 definePageMeta({ title: 'Jobs Applications' })
 
-const jobsNavItems = [
+const { t } = useI18n()
+
+const jobsNavItems = computed(() => [
   {
-    title: 'Overview Jobs',
+    title: t('world.jobs.nav.overview'),
     to: '/world/jobs',
     icon: 'mdi-view-dashboard-outline',
   },
-  { title: 'Offers', to: '/world/jobs/offers', icon: 'mdi-briefcase-outline' },
   {
-    title: 'My Offers',
+    title: t('world.jobs.nav.offers'),
+    to: '/world/jobs/offers',
+    icon: 'mdi-briefcase-outline',
+  },
+  {
+    title: t('world.jobs.nav.myOffers'),
     to: '/world/jobs/my-offers',
     icon: 'mdi-account-tie-outline',
   },
   {
-    title: 'Applications',
+    title: t('world.jobs.nav.applications'),
     to: '/world/jobs/applications',
     icon: 'mdi-file-document-outline',
   },
-  { title: 'Apply', to: '/world/jobs/apply', icon: 'mdi-send-outline' },
   {
-    title: 'Admin',
+    title: t('world.jobs.nav.apply'),
+    to: '/world/jobs/apply',
+    icon: 'mdi-send-outline',
+  },
+  {
+    title: t('world.jobs.nav.admin'),
     to: '/world/jobs/admin',
     icon: 'mdi-shield-crown-outline',
     rootOnly: true,
   },
-]
+])
 
 const loading = ref(false)
 const errorMessage = ref('')
@@ -55,7 +65,7 @@ async function fetchAppliedJobs() {
     appliedJobs.value = response.appliedJobs.filter((entry) => entry.job.apply)
   } catch (error) {
     console.error(error)
-    errorMessage.value = 'Impossible de charger vos candidatures.'
+    errorMessage.value = t('world.jobs.applications.errors.loading')
   } finally {
     loading.value = false
   }
@@ -67,11 +77,11 @@ await fetchAppliedJobs()
 <template>
   <div>
     <WorldModuleDrawers
-      module-title="Jobs"
+      :module-title="t('world.jobs.label')"
       module-icon="mdi-briefcase-search-outline"
-      module-description="Navigation complète du module Jobs."
+      :module-description="t('world.jobs.moduleDescription')"
       :nav-items="jobsNavItems"
-      action-label="Create Applications"
+      :action-label="t('world.jobs.applications.actions.create')"
     />
 
     <v-container fluid>
@@ -88,7 +98,7 @@ await fetchAppliedJobs()
 
       <v-card rounded="xl" class="postcard-gradient-card">
         <v-card-title class="d-flex align-center justify-space-between">
-          <span>Mes candidatures (apply=true)</span>
+          <span>{{ t('world.jobs.applications.title') }}</span>
           <v-btn
             size="small"
             prepend-icon="mdi-refresh"
@@ -96,7 +106,7 @@ await fetchAppliedJobs()
             :loading="loading"
             @click="fetchAppliedJobs"
           >
-            Refresh
+            {{ t('world.jobs.applications.actions.refresh') }}
           </v-btn>
         </v-card-title>
 
@@ -111,12 +121,12 @@ await fetchAppliedJobs()
           <v-table v-else>
             <thead>
               <tr>
-                <th>Job</th>
-                <th>Entreprise</th>
-                <th>Lieu</th>
-                <th>Application ID</th>
-                <th>Status</th>
-                <th>Date</th>
+                <th>{{ t('world.jobs.applications.table.job') }}</th>
+                <th>{{ t('world.jobs.applications.table.company') }}</th>
+                <th>{{ t('world.jobs.applications.table.location') }}</th>
+                <th>{{ t('world.jobs.applications.table.applicationId') }}</th>
+                <th>{{ t('world.jobs.applications.table.status') }}</th>
+                <th>{{ t('world.jobs.applications.table.date') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -138,7 +148,7 @@ await fetchAppliedJobs()
               </tr>
               <tr v-if="!appliedJobs.length">
                 <td colspan="6" class="text-center text-medium-emphasis py-6">
-                  Aucune candidature trouvée.
+                  {{ t('world.jobs.applications.empty') }}
                 </td>
               </tr>
             </tbody>

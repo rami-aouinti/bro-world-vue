@@ -4,31 +4,41 @@ import { privateApi } from '~/utils/http/privateApi'
 
 definePageMeta({ title: 'Jobs My Offers' })
 
-const jobsNavItems = [
+const { t } = useI18n()
+
+const jobsNavItems = computed(() => [
   {
-    title: 'Overview Jobs',
+    title: t('world.jobs.nav.overview'),
     to: '/world/jobs',
     icon: 'mdi-view-dashboard-outline',
   },
-  { title: 'Offers', to: '/world/jobs/offers', icon: 'mdi-briefcase-outline' },
   {
-    title: 'My Offers',
+    title: t('world.jobs.nav.offers'),
+    to: '/world/jobs/offers',
+    icon: 'mdi-briefcase-outline',
+  },
+  {
+    title: t('world.jobs.nav.myOffers'),
     to: '/world/jobs/my-offers',
     icon: 'mdi-account-tie-outline',
   },
   {
-    title: 'Applications',
+    title: t('world.jobs.nav.applications'),
     to: '/world/jobs/applications',
     icon: 'mdi-file-document-outline',
   },
-  { title: 'Apply', to: '/world/jobs/apply', icon: 'mdi-send-outline' },
   {
-    title: 'Admin',
+    title: t('world.jobs.nav.apply'),
+    to: '/world/jobs/apply',
+    icon: 'mdi-send-outline',
+  },
+  {
+    title: t('world.jobs.nav.admin'),
     to: '/world/jobs/admin',
     icon: 'mdi-shield-crown-outline',
     rootOnly: true,
   },
-]
+])
 
 const loading = ref(false)
 const errorMessage = ref('')
@@ -45,7 +55,7 @@ async function fetchMyJobs() {
     createdJobs.value = response.createdJobs.filter((job) => job.owner)
   } catch (error) {
     console.error(error)
-    errorMessage.value = 'Impossible de charger vos offres créées.'
+    errorMessage.value = t('world.jobs.myOffers.errors.loading')
   } finally {
     loading.value = false
   }
@@ -57,11 +67,11 @@ await fetchMyJobs()
 <template>
   <div>
     <WorldModuleDrawers
-      module-title="Jobs"
+      :module-title="t('world.jobs.label')"
       module-icon="mdi-briefcase-search-outline"
-      module-description="Navigation complète du module Jobs."
+      :module-description="t('world.jobs.moduleDescription')"
       :nav-items="jobsNavItems"
-      action-label="Create My Offers"
+      :action-label="t('world.jobs.myOffers.actions.create')"
     />
 
     <v-container fluid>
@@ -78,7 +88,7 @@ await fetchMyJobs()
 
       <v-card rounded="xl" class="postcard-gradient-card">
         <v-card-title class="d-flex align-center justify-space-between">
-          <span>Mes offres créées</span>
+          <span>{{ t('world.jobs.myOffers.title') }}</span>
           <v-btn
             size="small"
             prepend-icon="mdi-refresh"
@@ -86,7 +96,7 @@ await fetchMyJobs()
             :loading="loading"
             @click="fetchMyJobs"
           >
-            Refresh
+            {{ t('world.jobs.myOffers.actions.refresh') }}
           </v-btn>
         </v-card-title>
 
@@ -101,12 +111,12 @@ await fetchMyJobs()
           <v-table v-else>
             <thead>
               <tr>
-                <th>Titre</th>
-                <th>Entreprise</th>
-                <th>Lieu</th>
-                <th>Type</th>
-                <th>Mode</th>
-                <th>Actions</th>
+                <th>{{ t('world.jobs.myOffers.table.title') }}</th>
+                <th>{{ t('world.jobs.myOffers.table.company') }}</th>
+                <th>{{ t('world.jobs.myOffers.table.location') }}</th>
+                <th>{{ t('world.jobs.myOffers.table.contractType') }}</th>
+                <th>{{ t('world.jobs.myOffers.table.workMode') }}</th>
+                <th>{{ t('world.jobs.myOffers.table.actions') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -123,7 +133,7 @@ await fetchMyJobs()
                     variant="tonal"
                     class="mr-1"
                   >
-                    owner
+                    {{ t('world.jobs.myOffers.owner') }}
                   </v-chip>
                   <v-btn
                     size="x-small"
@@ -141,7 +151,7 @@ await fetchMyJobs()
               </tr>
               <tr v-if="!createdJobs.length">
                 <td colspan="6" class="text-center text-medium-emphasis py-6">
-                  Aucune offre créée pour le moment.
+                  {{ t('world.jobs.myOffers.empty') }}
                 </td>
               </tr>
             </tbody>

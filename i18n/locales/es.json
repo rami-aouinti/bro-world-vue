@@ -1820,6 +1820,243 @@
           "team": "Infra",
           "status": "Cerrada"
         }
+      },
+      "apply": {
+        "actions": {
+          "apply": "Apply",
+          "saveDraft": "Save draft",
+          "submitApplication": "Submit application",
+          "reset": "Reset",
+          "markSubmitted": "Mark submitted",
+          "markDraft": "Mark draft",
+          "withdraw": "Withdraw"
+        },
+        "form": {
+          "title": "Candidate · Full form",
+          "atsReady": "ATS Ready",
+          "jobId": "Job ID",
+          "email": "Email",
+          "firstName": "First name",
+          "lastName": "Last name",
+          "phone": "Phone",
+          "portfolioUrl": "Portfolio URL",
+          "cvLabel": "CV (PDF/DOC/DOCX, max 5MB)",
+          "coverLetter": "Cover letter",
+          "knockoutQuestions": "Knockout questions",
+          "authorizedToWork": "Authorized to work?",
+          "yearsExperience": "Years of experience",
+          "expectedSalary": "Expected salary (USD)",
+          "availableDate": "Available date",
+          "openToRelocation": "Open to relocation?"
+        },
+        "table": {
+          "id": "ID",
+          "jobId": "Job ID",
+          "candidate": "Candidate",
+          "email": "Email",
+          "portfolio": "Portfolio",
+          "status": "Status",
+          "updated": "Updated",
+          "portfolioLink": "Portfolio"
+        },
+        "tracking": {
+          "candidateTracking": "Candidate tracking",
+          "applicationState": "Application state",
+          "selectApplication": "Select an application to view its tracking."
+        },
+        "status": {
+          "draft": "Draft",
+          "submitted": "Submitted",
+          "withdrawn": "Withdrawn"
+        },
+        "validation": {
+          "required": "Required field",
+          "invalidEmail": "Invalid email",
+          "invalidPortfolioUrl": "Invalid portfolio URL",
+          "coverLetterMin": "Cover letter must contain at least {min} characters",
+          "invalidPhone": "Invalid phone number",
+          "cvRequired": "CV required",
+          "invalidFileType": "Unauthorized file type ({types})",
+          "invalidCvMimeType": "Unauthorized CV MIME type",
+          "cvTooLarge": "CV too large (max {max})"
+        },
+        "errors": {
+          "knockoutCriteria": "Candidate does not meet knockout criteria (work authorization + minimum 2 years experience).",
+          "duplicateDraft": "An identical draft/application already exists for this job and CV.",
+          "duplicateApplication": "Duplicate application detected. Please update the existing one.",
+          "selectApplication": "Select an application to change its status."
+        },
+        "success": {
+          "draftSaved": "Draft saved.",
+          "applicationSubmitted": "Application submitted successfully.",
+          "statusUpdated": "Status updated: {status}."
+        },
+        "events": {
+          "draftSaved": "Draft saved",
+          "submitted": "Application submitted",
+          "resubmittedByCandidate": "Resubmitted by candidate",
+          "backToDraft": "Returned to draft for edits",
+          "withdrawnByCandidate": "Application withdrawn by candidate"
+        }
+      },
+      "offers": {
+        "errors": {
+          "loading": "Unable to load offers.",
+          "detailLoading": "Unable to load offer details."
+        },
+        "actions": {
+          "backToOffers": "Back to offers",
+          "create": "Create offer",
+          "viewDetails": "View details"
+        },
+        "filters": {
+          "title": "Filters",
+          "workMode": "Work mode",
+          "contractType": "Contract type",
+          "experience": "Experience",
+          "apply": "Filter",
+          "reset": "Reset"
+        },
+        "search": {
+          "label": "Search"
+        },
+        "empty": "No offers found with these filters.",
+        "total": "{count} offers",
+        "sections": {
+          "mission": "Mission",
+          "responsibilities": "Responsibilities",
+          "profile": "Profile",
+          "benefits": "Benefits"
+        },
+        "placeholder": {
+          "empty": "—"
+        },
+        "apply": {
+          "modalTitle": "Apply to this job",
+          "createResumeMode": "Create a new resume for this application",
+          "selectResume": "Choose an existing resume",
+          "uploadPdf": "Upload a PDF (optional)",
+          "experiences": "Experiences",
+          "skills": "Skills",
+          "fieldTitle": "Title",
+          "fieldDescription": "Description",
+          "addExperience": "Add experience",
+          "addSkill": "Add skill",
+          "coverLetter": "Cover letter",
+          "defaultCoverLetter": "Application from jobs module",
+          "success": "Application sent ✅ (status: {status})",
+          "errors": {
+            "submit": "Unable to submit application for now.",
+            "resumes": "Unable to load your resumes."
+          },
+          "actions": {
+            "open": "Apply",
+            "close": "Close",
+            "submit": "Submit application"
+          }
+        }
+      },
+      "applications": {
+        "actions": {
+          "create": "Create applications",
+          "refresh": "Refresh"
+        },
+        "title": "My applications (apply=true)",
+        "table": {
+          "job": "Job",
+          "company": "Company",
+          "location": "Location",
+          "applicationId": "Application ID",
+          "status": "Status",
+          "date": "Date"
+        },
+        "empty": "No applications found.",
+        "errors": {
+          "loading": "Unable to load your applications."
+        }
+      },
+      "myOffers": {
+        "actions": {
+          "create": "Create my offers",
+          "refresh": "Refresh"
+        },
+        "title": "My created offers",
+        "table": {
+          "title": "Title",
+          "company": "Company",
+          "location": "Location",
+          "contractType": "Type",
+          "workMode": "Mode",
+          "actions": "Actions"
+        },
+        "owner": "Owner",
+        "empty": "No offers created yet.",
+        "errors": {
+          "loading": "Unable to load your created offers."
+        }
+      },
+      "admin": {
+        "actions": {
+          "refreshHrData": "Refresh HR data",
+          "refreshKpis": "Refresh HR KPIs",
+          "saveRetentionPolicy": "Save retention policy"
+        },
+        "loading": "Loading HR data...",
+        "empty": "No HR indicators available.",
+        "title": "Jobs Admin center",
+        "subtitle": "Retention policies, candidate anonymization, restricted access and HR steering.",
+        "sections": {
+          "retention": "Data retention & anonymization",
+          "candidateSources": "Candidate sources",
+          "permissions": "Fine-grained permissions (UI + API)"
+        },
+        "fields": {
+          "retentionDays": "Candidate retention (days)",
+          "anonymizeAfterDays": "Anonymize after (days)",
+          "autoDeleteRejectedAfterDays": "Delete rejected after (days)",
+          "restrictedAccessEnabled": "Restricted access enabled",
+          "legalHoldEnabled": "Legal hold enabled"
+        },
+        "candidateSources": {
+          "count": "{count} candidates",
+          "empty": "No source data yet."
+        },
+        "table": {
+          "role": "Role"
+        },
+        "roles": {
+          "recruiter": "Recruiter",
+          "hiringManager": "Hiring manager",
+          "interviewer": "Interviewer",
+          "admin": "HR admin"
+        },
+        "permissions": {
+          "viewPii": "View personal data",
+          "viewCompensation": "View compensation",
+          "transitionStage": "Change stages",
+          "editNotes": "Edit recruiter notes",
+          "viewDiversity": "View diversity data",
+          "managePolicy": "Manage policies"
+        },
+        "dashboard": {
+          "timeToHire": {
+            "title": "Average time-to-hire",
+            "value": "{days} days",
+            "subtitle": "Median {median} days • Target {target} days"
+          },
+          "offerAcceptance": {
+            "title": "Offer acceptance rate",
+            "value": "{rate}%",
+            "subtitle": "{accepted} accepted / {declined} declined"
+          },
+          "diversity": {
+            "title": "Pipeline diversity",
+            "value": "{ratio}%",
+            "subtitle": "{selfIdentified}/{totalCandidates} self-identified"
+          }
+        },
+        "info": "API endpoints enforce these rights when reading candidates and pipeline transitions.",
+        "accessDenied": "Access denied. This page requires ROLE_ROOT."
       }
     }
   }
