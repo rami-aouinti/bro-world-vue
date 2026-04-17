@@ -12,6 +12,10 @@ export type CreateBlogPostPayload = ResourceMutationPayload<
   {
     content: string
     title?: string
+    sharedUrl?: string
+    filePath?: string
+    isPinned?: boolean
+    parentPostId?: string
   }
 >
 
@@ -20,6 +24,9 @@ export type UpdateBlogPostPayload = ResourceMutationPayload<
   {
     content?: string
     title?: string
+    sharedUrl?: string
+    filePath?: string
+    isPinned?: boolean
   }
 >
 
@@ -27,7 +34,7 @@ export type CreateBlogCommentPayload = ResourceMutationPayload<
   'blog.comment',
   {
     content: string
-    postId: string
+    parentCommentId?: string
   }
 >
 
@@ -35,13 +42,14 @@ export type UpdateBlogCommentPayload = ResourceMutationPayload<
   'blog.comment',
   {
     content: string
-    commentId: string
   }
 >
+
+export type BlogReactionTypeCode = 'like' | 'heart' | 'laugh' | 'celebrate'
 
 export type BlogReactionPayload = ResourceMutationPayload<
   'blog.reaction',
   {
-    reactionTypeId: string
+    type: BlogReactionTypeCode
   }
 >
