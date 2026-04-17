@@ -1,5 +1,5 @@
 import { createProxyHandler } from '../../../../utils/createProxyHandler'
-import { getRequiredRouterParam } from '../utils'
+import { getRequiredRouterParam } from '../../utils'
 import type {
   BlogApiResponse,
   BlogReactionPayload,

@@ -570,7 +570,7 @@ watch(
                 :items="displayedBasketballLeagues"
                 item-title="name"
                 item-value="id"
-                label="Basketball league"
+                :label="t('pages.applications.basketball.leagueLabel')"
                 density="comfortable"
                 :loading="basketballLeaguesState === 'loading'"
                 :disabled="basketballLeaguesState !== 'ready'"
@@ -584,7 +584,7 @@ watch(
               <v-select
                 :model-value="basketballSelectedSeason"
                 :items="basketballSeasons"
-                label="Season"
+                :label="t('pages.applications.football.filters.season')"
                 density="comfortable"
                 :disabled="!basketballSelectedLeague"
                 variant="outlined"
@@ -593,7 +593,7 @@ watch(
               />
             </v-col>
           </v-row>
-          <v-card-title>Leagues</v-card-title>
+          <v-card-title>{{ t('pages.applications.football.sections.leagues.title') }}</v-card-title>
           <v-divider />
           <v-card-text>
             <template v-if="basketballLeaguesState === 'loading'">
@@ -603,7 +603,7 @@ watch(
                 size="22"
                 class="mr-3"
               />
-              <span>Loading basketball leagues…</span>
+              <span>{{ t('pages.applications.basketball.loadingLeagues') }}</span>
             </template>
             <v-alert
               v-else-if="basketballLeaguesState === 'error'"
@@ -705,7 +705,11 @@ watch(
               variant="tonal"
               density="comfortable"
             >
-              {{ basketballGamesState === 'loading' ? 'Loading basketball data…' : 'Select a league and season to see basketball data.' }}
+              {{
+                basketballGamesState === 'loading'
+                  ? t('pages.applications.basketball.loadingData')
+                  : t('pages.applications.basketball.selectLeagueSeason')
+              }}
             </v-alert>
           </v-col>
         </v-row>
