@@ -7,6 +7,14 @@ const HOP_BY_HOP_HEADERS = new Set([
 
 const METHODS_WITH_BODY = new Set(['POST', 'PUT', 'PATCH', 'DELETE'])
 
+function rewriteLegacyEndpoint(endpoint: string) {
+  if (endpoint.startsWith('/blog/private/')) {
+    return endpoint.replace('/blog/private/', '/private/blog/')
+  }
+
+  return endpoint
+}
+
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig(event)
   const baseUrl = String(runtimeConfig.public.apiBaseUrl || '').replace(/\/+$/, '')
@@ -19,7 +27,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const path = getRouterParam(event, 'path')
-  const endpoint = path ? `/${path}` : ''
+  const endpoint = rewriteLegacyEndpoint(path ? `/${path}` : '')
   const targetUrl = `${baseUrl}${endpoint}`
 
   const method = event.method.toUpperCase()
