@@ -4,18 +4,23 @@ import SportsFootballPlayerDetailsPanel from '~/components/Sports/Football/Playe
 
 const { t } = useI18n()
 
-defineProps<{
+withDefaults(defineProps<{
   section: FootballSection
   playerDetails: FootballPlayerDetails | null
-}>()
+  title?: string
+  loadingOverride?: boolean
+}>(), {
+  title: '',
+  loadingOverride: false,
+})
 </script>
 
 <template>
   <v-card class="h-100 football-surface football-surface--glow football-interactive-card" variant="outlined">
-    <v-card-title>{{ section.title }}</v-card-title>
+    <v-card-title>{{ title || section.title }}</v-card-title>
     <v-divider />
     <v-card-text>
-      <template v-if="section.state === 'loading'">
+      <template v-if="loadingOverride || section.state === 'loading'">
         <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
         <span>{{ t('pages.applications.football.loading.playerDetails') }}</span>
       </template>
