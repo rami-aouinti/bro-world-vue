@@ -216,6 +216,7 @@ export interface FixturePlayerStatViewModel {
   shots: string
   passes: string
   tackles: string
+  metrics: Record<string, string | number | null>
 }
 
 export interface FootballTeamDetails {
@@ -338,6 +339,83 @@ function toStatLabel(value: unknown) {
   return '-'
 }
 
+function normalizeMetricKey(key: string) {
+  const trimmed = key.trim()
+  if (!trimmed) return trimmed
+
+  const aliasMap: Record<string, string> = {
+    appearences: 'appearances',
+    key_passes: 'keyPasses',
+    keypasses: 'keyPasses',
+    totalpasses: 'totalPasses',
+  }
+
+  const normalizedLookupKey = trimmed.toLowerCase().replace(/[\s_-]/g, '')
+  const mapped = aliasMap[normalizedLookupKey]
+  if (mapped) return mapped
+
+  if (trimmed.includes('_')) {
+    const [first, ...rest] = trimmed.split('_')
+    return `${first}${rest.map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('')}`
+  }
+
+  return trimmed
+}
+
+function normalizePlayerStatRecord(
+  value: unknown,
+): Record<string, unknown> | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return null
+  }
+
+  const normalized: Record<string, unknown> = {}
+
+  Object.entries(value).forEach(([key, entry]) => {
+    const normalizedKey = normalizeMetricKey(key)
+    if (entry && typeof entry === 'object' && !Array.isArray(entry)) {
+      normalized[normalizedKey] = normalizePlayerStatRecord(entry) ?? entry
+      return
+    }
+    normalized[normalizedKey] = entry as string | number | null | boolean
+  })
+
+  return normalized
+}
+
+function flattenPlayerMetrics(
+  value: Record<string, unknown>,
+  parentKey = '',
+): Record<string, string | number | null> {
+  const output: Record<string, string | number | null> = {}
+
+  Object.entries(value).forEach(([key, entry]) => {
+    const path = parentKey ? `${parentKey}.${key}` : key
+
+    if (entry === null || typeof entry === 'undefined') {
+      output[path] = null
+      return
+    }
+
+    if (typeof entry === 'object' && !Array.isArray(entry)) {
+      Object.assign(
+        output,
+        flattenPlayerMetrics(entry as Record<string, unknown>, path),
+      )
+      return
+    }
+
+    if (typeof entry === 'number' || typeof entry === 'string') {
+      output[path] = entry
+      return
+    }
+
+    output[path] = `${entry}`
+  })
+
+  return output
+}
+
 function mapFixtureEventIcon(type: string, detail: string) {
   const normalizedType = type.toLowerCase()
   const normalizedDetail = detail.toLowerCase()
@@ -431,12 +509,15 @@ function mapFixturePlayerStats(
   t: (key: string, params?: Record<string, unknown>) => string,
 ): FixturePlayerStatViewModel[] {
   return stats.map((entry, index) => {
-    const details = entry.statistics?.[0] ?? {}
-    const games = details?.games ?? {}
-    const goals = details?.goals ?? {}
-    const shots = details?.shots ?? {}
-    const passes = details?.passes ?? {}
-    const tackles = details?.tackles ?? {}
+    const details = normalizePlayerStatRecord(entry.statistics?.[0] ?? {}) ?? {}
+    const metrics = flattenPlayerMetrics(details)
+    const games = (details.games as Record<string, unknown> | undefined) ?? {}
+    const goals = (details.goals as Record<string, unknown> | undefined) ?? {}
+    const shots = (details.shots as Record<string, unknown> | undefined) ?? {}
+    const passes =
+      (details.passes as Record<string, unknown> | undefined) ?? {}
+    const tackles =
+      (details.tackles as Record<string, unknown> | undefined) ?? {}
 
     return {
       id: `${entry.team?.id ?? 'team'}-${entry.player?.id ?? index}`,
@@ -456,6 +537,7 @@ function mapFixturePlayerStats(
       shots: toStatLabel(shots?.total),
       passes: toStatLabel(passes?.total),
       tackles: toStatLabel(tackles?.total),
+      metrics,
     }
   })
 }
