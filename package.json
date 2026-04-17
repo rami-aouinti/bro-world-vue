@@ -9,6 +9,8 @@
     "postinstall": "nuxt prepare",
     "preview": "nuxt preview",
     "typecheck": "nuxt typecheck",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate:dev": "prisma migrate dev",
     "test": "vitest",
     "lint": "eslint . --fix",
     "format": "prettier . --write"
@@ -32,6 +34,7 @@
     "vuetify-nuxt-module": "^0.19.5"
   },
   "dependencies": {
+    "@prisma/client": "^6.7.0",
     "@fullcalendar/core": "^6.1.20",
     "@fullcalendar/daygrid": "^6.1.20",
     "@fullcalendar/interaction": "^6.1.20",
@@ -48,6 +51,7 @@
     "pinia": "^3.0.4",
     "vuetify": "^4.0.4",
     "axios": "^1.9.0",
-    "axios-retry": "^4.5.0"
+    "axios-retry": "^4.5.0",
+    "prisma": "^6.7.0"
   }
 }

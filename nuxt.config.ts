@@ -112,11 +112,13 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
+    databaseUrl: process.env.DATABASE_URL || '',
     redis: {
       url: '',
     },
     public: {
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://bro-world-space.com',
+      siteUrl:
+        process.env.NUXT_PUBLIC_SITE_URL || 'https://bro-world-space.com',
       apiBaseUrl: 'https://bro-world.org/api/v1',
       shop: {
         globalShopId: process.env.NUXT_PUBLIC_GLOBAL_SHOP_ID || '',

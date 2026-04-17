@@ -1,6 +1,10 @@
 import type { H3Event } from 'h3'
 import { getCached, publicCacheKey, setCached } from './apiCache'
-import { resolveCacheProfileFromSuffix, resolveCacheTtl } from './apiCacheConfig'
+import {
+  resolveCacheProfileFromSuffix,
+  resolveCacheTtl,
+} from './apiCacheConfig'
+import { getPersistentCached, setPersistentCached } from './persistentApiCache'
 import type {
   FootballFixture,
   FootballFixtureDetailsApiResponse,
@@ -207,7 +211,9 @@ export function mapTeamStatisticsResponse(
   }
 }
 
-export function mapTeamSquadResponse(payload: ApiSportsResponse<ApiSportsSquadItem>) {
+export function mapTeamSquadResponse(
+  payload: ApiSportsResponse<ApiSportsSquadItem>,
+) {
   const item = payload.response?.[0]
 
   if (!item) {
@@ -236,7 +242,9 @@ export function mapTeamSquadResponse(payload: ApiSportsResponse<ApiSportsSquadIt
   }
 }
 
-export function mapPlayerResponse(payload: ApiSportsResponse<ApiSportsPlayerItem>) {
+export function mapPlayerResponse(
+  payload: ApiSportsResponse<ApiSportsPlayerItem>,
+) {
   const item = payload.response?.[0]
 
   if (!item) {
@@ -385,24 +393,33 @@ export async function cachedFootballApiGet<TItem>(
     cacheKeySuffix?: string
   },
 ): Promise<ApiSportsResponse<TItem>> {
-  const cacheSuffix = options?.cacheKeySuffix ?? options?.cacheProfile ?? 'default'
-  const cacheProfile = options?.cacheProfile ?? resolveCacheProfileFromSuffix(cacheSuffix)
+  const cacheSuffix =
+    options?.cacheKeySuffix ?? options?.cacheProfile ?? 'default'
+  const cacheProfile =
+    options?.cacheProfile ?? resolveCacheProfileFromSuffix(cacheSuffix)
+  const ttl = resolveCacheTtl('football', cacheProfile)
   const cacheKey = publicCacheKey(
     `/sports/football${endpoint}:${cacheSuffix}`,
     query,
   )
 
-  const cached = await getCached<ApiSportsResponse<TItem>>(cacheKey)
-  if (cached) {
-    return cached
+  const redisCached = await getCached<ApiSportsResponse<TItem>>(cacheKey)
+  if (redisCached) {
+    return redisCached
+  }
+
+  const persistentCached =
+    await getPersistentCached<ApiSportsResponse<TItem>>(cacheKey)
+  if (persistentCached) {
+    await setCached(cacheKey, persistentCached, ttl)
+    return persistentCached
   }
 
   const payload = await callFootballApi<TItem>(event, endpoint, query)
-  await setCached(
-    cacheKey,
-    payload,
-    resolveCacheTtl('football', cacheProfile),
-  )
+  await Promise.all([
+    setCached(cacheKey, payload, ttl),
+    setPersistentCached(cacheKey, payload, ttl),
+  ])
 
   return payload
 }
@@ -428,13 +445,19 @@ export async function fetchFixtureDetails(
       event,
       '/fixtures/lineups',
       { fixture },
-      { cacheProfile: 'reference', cacheKeySuffix: 'reference-fixture-lineups' },
+      {
+        cacheProfile: 'reference',
+        cacheKeySuffix: 'reference-fixture-lineups',
+      },
     ),
     cachedFootballApiGet<ApiSportsPlayerStatsItem>(
       event,
       '/fixtures/players',
       { fixture },
-      { cacheProfile: 'reference', cacheKeySuffix: 'reference-fixture-players' },
+      {
+        cacheProfile: 'reference',
+        cacheKeySuffix: 'reference-fixture-players',
+      },
     ),
   ])
 
@@ -450,15 +473,29 @@ export async function cachedFixtureDetails(
   event: H3Event,
   fixture: number,
 ): Promise<FootballFixtureDetailsApiResponse> {
-  const cacheKey = publicCacheKey('/sports/football/fixture:reference', { fixture })
-  const cached = await getCached<FootballFixtureDetailsApiResponse>(cacheKey)
+  const cacheKey = publicCacheKey('/sports/football/fixture:reference', {
+    fixture,
+  })
+  const ttl = resolveCacheTtl('football', 'reference')
+  const redisCached =
+    await getCached<FootballFixtureDetailsApiResponse>(cacheKey)
 
-  if (cached) {
-    return cached
+  if (redisCached) {
+    return redisCached
+  }
+
+  const persistentCached =
+    await getPersistentCached<FootballFixtureDetailsApiResponse>(cacheKey)
+  if (persistentCached) {
+    await setCached(cacheKey, persistentCached, ttl)
+    return persistentCached
   }
 
   const payload = await fetchFixtureDetails(event, fixture)
-  await setCached(cacheKey, payload, resolveCacheTtl('football', 'reference'))
+  await Promise.all([
+    setCached(cacheKey, payload, ttl),
+    setPersistentCached(cacheKey, payload, ttl),
+  ])
 
   return payload
 }
