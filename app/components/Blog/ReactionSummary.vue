@@ -141,28 +141,43 @@ const groupedReactors = computed(() => {
 })
 
 const canShowDetails = computed(() => groupedReactors.value.length > 0)
+
+function openDetails() {
+  if (!canShowDetails.value) {
+    return
+  }
+
+  detailsOpen.value = true
+}
+
+function userProfilePath(user: { username: string | null }) {
+  const username = user.username?.trim()
+  return username ? `/user/${encodeURIComponent(username)}/profile` : null
+}
 </script>
 
 <template>
   <div v-if="totalReactions > 0" class="reaction-summary text-medium-emphasis">
-    <div class="reaction-chips">
-      <span
-        v-for="(item, index) in summary.slice(0, 6)"
-        :key="item.type"
-        class="reaction-chip"
-        :style="{ zIndex: `${30 - index}` }"
-      >
-        {{ item.icon }}
-      </span>
-    </div>
-
     <button
       type="button"
-      class="reaction-total text-subtitle-2"
+      class="reaction-trigger"
       :disabled="!canShowDetails"
-      @click="canShowDetails && (detailsOpen = true)"
+      @click="openDetails"
     >
-      {{ totalReactions.toLocaleString() }}
+      <div class="reaction-chips">
+        <span
+          v-for="(item, index) in summary.slice(0, 6)"
+          :key="item.type"
+          class="reaction-chip"
+          :style="{ zIndex: `${30 - index}` }"
+        >
+          {{ item.icon }}
+        </span>
+      </div>
+
+      <span class="reaction-total text-subtitle-2">
+        {{ totalReactions.toLocaleString() }}
+      </span>
     </button>
 
     <v-dialog v-model="detailsOpen" max-width="520">
@@ -182,6 +197,8 @@ const canShowDetails = computed(() => groupedReactors.value.length > 0)
               <v-list-item
                 v-for="user in group.users"
                 :key="`${group.type}-${user.id}`"
+                :to="userProfilePath(user) ?? undefined"
+                :link="Boolean(userProfilePath(user))"
               >
                 <template #prepend>
                   <v-avatar size="28" class="me-2">
@@ -194,9 +211,6 @@ const canShowDetails = computed(() => groupedReactors.value.length > 0)
                   </v-avatar>
                 </template>
                 <v-list-item-title>{{ user.name }}</v-list-item-title>
-                <v-list-item-subtitle v-if="user.username">
-                  @{{ user.username }}
-                </v-list-item-subtitle>
               </v-list-item>
             </v-list>
           </div>
@@ -210,7 +224,21 @@ const canShowDetails = computed(() => groupedReactors.value.length > 0)
 .reaction-summary {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+}
+
+.reaction-trigger {
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0;
+}
+
+.reaction-trigger:disabled {
+  cursor: default;
 }
 
 .reaction-chips {
@@ -234,14 +262,7 @@ const canShowDetails = computed(() => groupedReactors.value.length > 0)
 }
 
 .reaction-total {
-  border: none;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-}
-
-.reaction-total:disabled {
-  cursor: default;
+  line-height: 1;
 }
 
 .reaction-group:not(:last-child) {
