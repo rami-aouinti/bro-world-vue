@@ -28,6 +28,34 @@ function resolveApiBaseUrl(baseUrl: string): string {
   return normalizedBaseUrl
 }
 
+export function normalizeAxiosRequestUrl(
+  baseUrl: string,
+  requestUrl?: string,
+): string | undefined {
+  if (!requestUrl) {
+    return requestUrl
+  }
+
+  if (!requestUrl.startsWith('/')) {
+    return requestUrl
+  }
+
+  const normalizedBaseUrl = baseUrl.replace(/\/+$/, '')
+
+  if (
+    normalizedBaseUrl.endsWith('/api/v1') &&
+    requestUrl.startsWith('/api/v1/')
+  ) {
+    return requestUrl.slice('/api/v1'.length)
+  }
+
+  if (normalizedBaseUrl.endsWith('/api/v1') && requestUrl.startsWith('/api/')) {
+    return requestUrl.slice('/api'.length)
+  }
+
+  return requestUrl
+}
+
 function createAxiosInstance(config?: AxiosRequestConfig): AxiosInstance {
   const instance = axios.create(config)
 
@@ -50,6 +78,13 @@ function ensureInstances() {
   const runtimeConfig = useRuntimeConfig()
   const baseURL = resolveApiBaseUrl(runtimeConfig.public.apiBaseUrl)
 
+  const attachUrlNormalizer = (instance: AxiosInstance) => {
+    instance.interceptors.request.use((config) => {
+      config.url = normalizeAxiosRequestUrl(baseURL, config.url)
+      return config
+    })
+  }
+
   if (!publicAxiosInstance) {
     publicAxiosInstance = createAxiosInstance({
       baseURL,
@@ -57,6 +92,8 @@ function ensureInstances() {
         accept: 'application/json',
       },
     })
+
+    attachUrlNormalizer(publicAxiosInstance)
   }
 
   if (!privateAxiosInstance) {
@@ -66,6 +103,8 @@ function ensureInstances() {
         accept: 'application/json',
       },
     })
+
+    attachUrlNormalizer(privateAxiosInstance)
 
     privateAxiosInstance.interceptors.request.use(
       async (config: InternalAxiosRequestConfig & { _sessionRefreshed?: boolean }) => {
