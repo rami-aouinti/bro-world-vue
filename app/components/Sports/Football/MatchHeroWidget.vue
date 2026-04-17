@@ -51,6 +51,20 @@ const heroMinute = computed(() => {
   return typeof elapsed === 'number' ? `${elapsed}'` : null
 })
 
+
+const heroOdds = computed(() => {
+  const odds = heroFixture.value?.odds
+  if (!odds) {
+    return null
+  }
+
+  if (!odds.home && !odds.draw && !odds.away) {
+    return null
+  }
+
+  return odds
+})
+
 const scoreLabel = computed(() => {
   const fixture = heroFixture.value
   if (!fixture || !fixture.goals) return 'vs'
@@ -155,6 +169,12 @@ function onSelectPlayer(playerId?: number | null) {
               {{ heroFixture.teams.away.name }}
             </div>
           </button>
+        </div>
+
+        <div v-if="heroOdds" class="d-flex ga-2 mt-3 mb-1 flex-wrap">
+          <v-chip size="x-small" variant="tonal" color="primary">1 {{ heroOdds.home ?? '-' }}</v-chip>
+          <v-chip size="x-small" variant="tonal" color="primary">X {{ heroOdds.draw ?? '-' }}</v-chip>
+          <v-chip size="x-small" variant="tonal" color="primary">2 {{ heroOdds.away ?? '-' }}</v-chip>
         </div>
 
         <div class="hero-actions mt-4">

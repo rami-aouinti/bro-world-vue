@@ -19,6 +19,12 @@ interface FootballFixtureCardItem {
     home: number | null
     away: number | null
   }
+  odds?: {
+    home: string | null
+    draw: string | null
+    away: string | null
+    bookmaker: string | null
+  } | null
 }
 
 const props = defineProps<{
@@ -115,6 +121,16 @@ const awayGoals = computed(() => {
   return props.fixture.goals?.away ?? '-'
 })
 
+
+const oddsLabel = computed(() => {
+  const odds = props.fixture.odds
+  if (!odds || (!odds.home && !odds.draw && !odds.away)) {
+    return ''
+  }
+
+  return `1 ${odds.home ?? '-'} · X ${odds.draw ?? '-'} · 2 ${odds.away ?? '-'}`
+})
+
 function selectFixture() {
   emit('select', props.fixture.id)
 }
@@ -181,6 +197,7 @@ function selectTeam(teamId?: number | null) {
       </div>
 
       <div class="fixture-card__status-row mt-2">
+        <div v-if="oddsLabel" class="text-caption text-medium-emphasis">{{ oddsLabel }}</div>
         <div class="text-truncate fixture-card__status-long">
           {{ longStatusLabel }}
         </div>
