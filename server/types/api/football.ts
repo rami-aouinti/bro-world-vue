@@ -259,3 +259,11 @@ export interface FootballFixtureDetailsApiResponse extends ApiObject {
   lineups: FootballLineup[]
   playerStats: FootballPlayerStatistic[]
 }
+
+export interface FootballOddsApiResponse extends ApiObject {
+  items: ApiObject[]
+  paging: {
+    current: number
+    total: number
+  }
+}

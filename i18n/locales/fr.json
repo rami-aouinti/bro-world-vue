@@ -571,7 +571,7 @@
           "playerDetails": "Chargement des détails du joueur…"
         },
         "empty": {
-          "otherSports": "Les statistiques détaillées sont actuellement disponibles pour le football. Sélectionnez un autre sport du catalogue pendant le déploiement de nouvelles ligues et sources de données.",
+          "otherSports": "Les statistiques détaillées sont actuellement disponibles pour le football et le basketball. Sélectionnez un autre sport du catalogue pendant le déploiement de nouvelles ligues et sources de données.",
           "events": "Aucun événement disponible pour ce match.",
           "lineups": "Aucune composition disponible pour ce match.",
           "playerStats": "Aucune statistique joueur disponible pour ce match.",

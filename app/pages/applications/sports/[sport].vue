@@ -14,6 +14,10 @@ import SportsFootballFixturesListWidget from '~/components/Sports/Football/Fixtu
 import SportsFootballStandingsTableWidget from '~/components/Sports/Football/StandingsTableWidget.vue'
 import SportsFootballTeamDetailsWidget from '~/components/Sports/Football/TeamDetailsWidget.vue'
 import SportsFootballPlayerDetailsWidget from '~/components/Sports/Football/PlayerDetailsWidget.vue'
+import { useBasketballData } from '~/composables/useBasketballData'
+import SportsBasketballGamesListWidget from '~/components/Sports/Basketball/GamesListWidget.vue'
+import SportsBasketballHeroWidget from '~/components/Sports/Basketball/HeroWidget.vue'
+import SportsBasketballStandingsWidget from '~/components/Sports/Basketball/StandingsWidget.vue'
 
 definePageMeta({
   title: 'appbar.sports',
@@ -74,6 +78,30 @@ const {
   selectLeague,
   selectSeason,
 } = useFootballData()
+
+const {
+  leagues: basketballLeagues,
+  games: basketballGames,
+  standings: basketballStandings,
+  leaguesState: basketballLeaguesState,
+  gamesState: basketballGamesState,
+  standingsState: basketballStandingsState,
+  leaguesError: basketballLeaguesError,
+  gamesError: basketballGamesError,
+  standingsError: basketballStandingsError,
+  selectedLeague: basketballSelectedLeague,
+  seasons: basketballSeasons,
+  selectedLeagueId: basketballSelectedLeagueId,
+  selectedSeason: basketballSelectedSeason,
+  selectedGameId: basketballSelectedGameId,
+  featuredGame: basketballFeaturedGame,
+  featuredScore: basketballFeaturedScore,
+  loadLeagues: loadBasketballLeagues,
+  loadLeagueSeasonData: loadBasketballLeagueSeasonData,
+  selectLeague: selectBasketballLeague,
+  selectSeason: selectBasketballSeason,
+  selectGame: selectBasketballGame,
+} = useBasketballData()
 
 const FEATURED_LEAGUE_IDS = new Set([1, 4, 39, 140, 135, 78])
 const FEATURED_LEAGUE_NAMES = new Set([
@@ -228,26 +256,25 @@ const openPlayerModal = async (playerId: number) => {
   }
 }
 
-const initializeFootballPage = async () => {
-  if (sportSlug.value !== 'football') {
+const initializeSportPage = async () => {
+  if (sportSlug.value === 'football') {
+    await loadLeagues()
     return
   }
 
-  await loadLeagues()
+  if (sportSlug.value === 'basketball') {
+    await loadBasketballLeagues()
+  }
 }
 
 watch(
   sportSlug,
   async (slug, previousSlug) => {
-    if (slug !== 'football') {
-      return
-    }
-
     if (slug === previousSlug) {
       return
     }
 
-    await initializeFootballPage()
+    await initializeSportPage()
   },
   { immediate: true },
 )
@@ -279,6 +306,34 @@ watch(
   },
   { immediate: true },
 )
+
+watch(
+  () => [sportSlug.value, basketballSelectedLeagueId.value, basketballSelectedSeason.value] as const,
+  ([slug, leagueId, season], previous) => {
+    if (slug !== 'basketball') {
+      return
+    }
+
+    if (!leagueId || !season) {
+      return
+    }
+
+    if (previous) {
+      const [previousSlug, previousLeagueId, previousSeason] = previous
+
+      if (
+        slug === previousSlug &&
+        leagueId === previousLeagueId &&
+        season === previousSeason
+      ) {
+        return
+      }
+    }
+
+    void loadBasketballLeagueSeasonData()
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
@@ -286,90 +341,138 @@ watch(
     <AppPageDrawers>
       <template #left>
         <v-row class="mb-4 pt-3">
-          <SportsFootballFixturesListWidget
-            :fixtures="fixtures"
-            :section="fixturesSection"
-            :selected-fixture-id="selectedFixtureId"
-            @select="loadFixtureDetails"
-            @select-team="openTeamModal"
-          />
+          <template v-if="sport.slug === 'football'">
+            <SportsFootballFixturesListWidget
+              :fixtures="fixtures"
+              :section="fixturesSection"
+              :selected-fixture-id="selectedFixtureId"
+              @select="loadFixtureDetails"
+              @select-team="openTeamModal"
+            />
+          </template>
+          <template v-else-if="sport.slug === 'basketball'">
+            <SportsBasketballGamesListWidget
+              :games="basketballGames"
+              :selected-game-id="basketballSelectedGameId"
+              @select="selectBasketballGame"
+            />
+          </template>
         </v-row>
       </template>
 
       <template #right>
-        <v-row class="pa-4">
-          <v-col cols="12">
-            <v-select
-              :model-value="selectedLeagueId"
-              :items="leagues"
-              item-title="name"
-              item-value="id"
-              :label="t('pages.applications.football.filters.league')"
-              density="comfortable"
-              :loading="leaguesState === 'loading'"
-              :disabled="leaguesState !== 'ready'"
-              variant="outlined"
-              hide-details
-              @update:model-value="selectLeague"
-            />
-          </v-col>
+        <template v-if="sport.slug === 'football'">
+          <v-row class="pa-4">
+            <v-col cols="12">
+              <v-select
+                :model-value="selectedLeagueId"
+                :items="leagues"
+                item-title="name"
+                item-value="id"
+                :label="t('pages.applications.football.filters.league')"
+                density="comfortable"
+                :loading="leaguesState === 'loading'"
+                :disabled="leaguesState !== 'ready'"
+                variant="outlined"
+                hide-details
+                @update:model-value="selectLeague"
+              />
+            </v-col>
 
-          <v-col cols="12">
-            <v-select
-              :model-value="selectedSeason"
-              :items="seasons"
-              :label="t('pages.applications.football.filters.season')"
-              density="comfortable"
-              :disabled="!selectedLeague"
-              variant="outlined"
-              hide-details
-              @update:model-value="selectSeason"
-            />
-          </v-col>
-        </v-row>
-        <v-card-title>{{ leaguesSection.title }}</v-card-title>
-        <v-divider />
-        <v-card-text>
-          <template v-if="leaguesSection.state === 'loading'">
-            <v-progress-circular
-              indeterminate
-              color="primary"
-              size="22"
-              class="mr-3"
-            />
-            <span>{{ t('pages.applications.football.loading.leagues') }}</span>
-          </template>
+            <v-col cols="12">
+              <v-select
+                :model-value="selectedSeason"
+                :items="seasons"
+                :label="t('pages.applications.football.filters.season')"
+                density="comfortable"
+                :disabled="!selectedLeague"
+                variant="outlined"
+                hide-details
+                @update:model-value="selectSeason"
+              />
+            </v-col>
+          </v-row>
+          <v-card-title>{{ leaguesSection.title }}</v-card-title>
+          <v-divider />
+          <v-card-text>
+            <template v-if="leaguesSection.state === 'loading'">
+              <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
+              <span>{{ t('pages.applications.football.loading.leagues') }}</span>
+            </template>
+            <v-alert v-else-if="leaguesSection.state === 'error'" type="error" variant="tonal" density="comfortable">
+              {{ leaguesSection.error }}
+            </v-alert>
+            <v-alert v-else-if="leaguesSection.state === 'empty'" type="info" variant="tonal" density="comfortable">
+              {{ leaguesSection.emptyMessage }}
+            </v-alert>
+            <v-list v-else density="compact" lines="one" class="pa-0">
+              <v-list-item
+                v-for="league in displayedLeagues"
+                :key="league.id"
+                :title="league.name"
+                :subtitle="league.country.name"
+                :active="selectedLeagueId === league.id"
+                active-class="text-primary"
+                @click="selectLeague(league.id)"
+              />
+            </v-list>
+          </v-card-text>
+        </template>
 
-          <v-alert
-            v-else-if="leaguesSection.state === 'error'"
-            type="error"
-            variant="tonal"
-            density="comfortable"
-          >
-            {{ leaguesSection.error }}
-          </v-alert>
+        <template v-else-if="sport.slug === 'basketball'">
+          <v-row class="pa-4">
+            <v-col cols="12">
+              <v-select
+                :model-value="basketballSelectedLeagueId"
+                :items="basketballLeagues"
+                item-title="name"
+                item-value="id"
+                label="Basketball league"
+                density="comfortable"
+                :loading="basketballLeaguesState === 'loading'"
+                :disabled="basketballLeaguesState !== 'ready'"
+                variant="outlined"
+                hide-details
+                @update:model-value="selectBasketballLeague"
+              />
+            </v-col>
 
-          <v-alert
-            v-else-if="leaguesSection.state === 'empty'"
-            type="info"
-            variant="tonal"
-            density="comfortable"
-          >
-            {{ leaguesSection.emptyMessage }}
-          </v-alert>
-
-          <v-list v-else density="compact" lines="one" class="pa-0">
-            <v-list-item
-              v-for="league in displayedLeagues"
-              :key="league.id"
-              :title="league.name"
-              :subtitle="league.country.name"
-              :active="selectedLeagueId === league.id"
-              active-class="text-primary"
-              @click="selectLeague(league.id)"
-            />
-          </v-list>
-        </v-card-text>
+            <v-col cols="12">
+              <v-select
+                :model-value="basketballSelectedSeason"
+                :items="basketballSeasons"
+                label="Season"
+                density="comfortable"
+                :disabled="!basketballSelectedLeague"
+                variant="outlined"
+                hide-details
+                @update:model-value="selectBasketballSeason"
+              />
+            </v-col>
+          </v-row>
+          <v-card-title>Leagues</v-card-title>
+          <v-divider />
+          <v-card-text>
+            <template v-if="basketballLeaguesState === 'loading'">
+              <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
+              <span>Loading basketball leagues…</span>
+            </template>
+            <v-alert v-else-if="basketballLeaguesState === 'error'" type="error" variant="tonal" density="comfortable">
+              {{ basketballLeaguesError }}
+            </v-alert>
+            <v-list v-else density="compact" lines="one" class="pa-0">
+              <v-list-item
+                v-for="league in basketballLeagues.slice(0, 10)"
+                :key="league.id"
+                :title="league.name"
+                :subtitle="league.country.name"
+                :active="basketballSelectedLeagueId === league.id"
+                active-class="text-primary"
+                @click="selectBasketballLeague(league.id)"
+              />
+            </v-list>
+          </v-card-text>
+        </template>
       </template>
     </AppPageDrawers>
 
@@ -401,6 +504,39 @@ watch(
         </v-row>
       </template>
 
+      <template v-else-if="sport.slug === 'basketball'">
+        <v-row class="football-stagger">
+          <v-col cols="12" class="football-fade-up">
+            <SportsBasketballHeroWidget
+              :game="basketballFeaturedGame"
+              :score="basketballFeaturedScore"
+              @select="selectBasketballGame"
+            />
+          </v-col>
+          <v-col cols="12" class="football-fade-up">
+            <template v-if="basketballStandingsState === 'ready'">
+              <SportsBasketballStandingsWidget :standings="basketballStandings" />
+            </template>
+            <v-alert
+              v-else-if="basketballStandingsState === 'error'"
+              type="error"
+              variant="tonal"
+              density="comfortable"
+            >
+              {{ basketballStandingsError }}
+            </v-alert>
+            <v-alert
+              v-else
+              type="info"
+              variant="tonal"
+              density="comfortable"
+            >
+              {{ basketballGamesState === 'loading' ? 'Loading basketball data…' : 'Select a league and season to see basketball data.' }}
+            </v-alert>
+          </v-col>
+        </v-row>
+      </template>
+
       <template v-else>
         <v-alert type="info" variant="tonal" density="comfortable">
           {{ t('pages.applications.football.empty.otherSports') }}
@@ -409,6 +545,7 @@ watch(
     </v-container>
 
     <AppModal
+      v-if="sport.slug === 'football'"
       v-model="teamModalOpen"
       :title="teamModalTitle"
       :max-width="1000"
@@ -424,6 +561,7 @@ watch(
     </AppModal>
 
     <AppModal
+      v-if="sport.slug === 'football'"
       v-model="playerModalOpen"
       :title="playerModalTitle"
       :max-width="760"
