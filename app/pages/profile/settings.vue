@@ -2,12 +2,12 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import type { UserSessionInfo } from '~/stores/profile'
+import { privateApi } from '~/utils/http/privateApi'
 
 const { isPageSkeletonVisible } = usePageSkeleton()
 const theme = useTheme()
 const isLightTheme = computed(() => !theme.current.value.dark)
 const profileStore = useProfileStore()
-const privateApi = usePrivateApi()
 const { fetch: refreshSession } = useUserSession()
 
 definePageMeta({
@@ -209,7 +209,9 @@ async function loadSessions() {
   sessionsError.value = ''
 
   try {
-    sessions.value = await privateApi<UserSessionInfo[]>('/users/me/sessions')
+    sessions.value = await privateApi.request<UserSessionInfo[]>(
+      '/users/me/sessions',
+    )
   } catch (error) {
     sessions.value = []
     sessionsError.value =
@@ -220,10 +222,6 @@ async function loadSessions() {
 }
 
 async function submitBasicInfo() {
-  if (!profile.value) {
-    return
-  }
-
   isSubmittingProfile.value = true
   profileFeedback.value = null
   try {
@@ -239,11 +237,11 @@ async function submitBasicInfo() {
     }
 
     const [accountResponse, detailsResponse] = await Promise.all([
-      privateApi('/profile', {
+      privateApi.request('/profile', {
         method: 'PATCH',
         body: accountPayload,
       }),
-      privateApi('/users/me/profile', {
+      privateApi.request('/users/me/profile', {
         method: 'PATCH',
         body: profilePayload,
       }),
@@ -286,10 +284,13 @@ async function onPhotoSelected(event: Event) {
   isUploadingPhoto.value = true
   photoFeedback.value = null
   try {
-    const response = await privateApi<{ photo: string }>('/profile/photo', {
-      method: 'POST',
-      body: formData,
-    })
+    const response = await privateApi.request<{ photo: string }>(
+      '/profile/photo',
+      {
+        method: 'POST',
+        body: formData,
+      },
+    )
 
     if (profile.value) {
       updateProfileStore({
@@ -339,7 +340,7 @@ onMounted(() => {
   )
 
   sectionElements.forEach((element) => sectionObserver.value?.observe(element))
-  void loadSessions()
+  void Promise.all([profileStore.fetchProfile(), loadSessions()])
 })
 
 onUnmounted(() => {
