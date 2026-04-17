@@ -217,6 +217,10 @@ function authorProfilePath(comment: BlogComment) {
               </v-menu>
             </div>
             <p class="mb-0 text-body-1">{{ comment.content }}</p>
+
+            <div class="comment-bubble-footer">
+              <BlogReactionSummary :reactions="normalizedReactions(comment)" />
+            </div>
           </div>
 
           <div class="comment-actions text-medium-emphasis">
@@ -259,10 +263,6 @@ function authorProfilePath(comment: BlogComment) {
             >
               {{ t('blog.comment.actions.reply') }}
             </button>
-          </div>
-
-          <div class="mt-1">
-            <BlogReactionSummary :reactions="normalizedReactions(comment)" />
           </div>
 
           <div v-if="activeReplyId === comment.id" class="reply-composer">
@@ -310,6 +310,12 @@ function authorProfilePath(comment: BlogComment) {
   background: rgba(255, 255, 255, 0.08);
   border-radius: 18px;
   padding: 0.6rem 0.9rem;
+}
+
+.comment-bubble-footer {
+  margin-top: 0.45rem;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .comment-actions {
