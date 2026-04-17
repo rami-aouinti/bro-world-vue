@@ -42,3 +42,22 @@ Ce document sert de base commune pour les modules CRM, Jobs, Learning et Shop.
   - hit/miss cache.
 - Utiliser `app/utils/storeTelemetry.ts` pour homogénéiser les compteurs.
 - Réviser ces métriques en revue de perf avant livraison de nouveaux modules.
+
+## 6) Convention de routing pages CRM
+
+Dans `app/pages/world/crm/`, appliquer une convention unique pour éviter les divergences:
+
+- **Page liste**: fichier direct à la racine CRM.
+  - Exemple: `app/pages/world/crm/projects.vue`
+- **Page détail dynamique**: dossier dynamique + `index.vue`.
+  - Exemple: `app/pages/world/crm/projects/[project]/index.vue`
+
+Cette règle s’applique à toutes les ressources CRM (projects, tasks, sprints, contacts, etc.).
+
+### Note de migration
+
+- Si un ancien écran détail existe en fichier dynamique plat (ex: `projects/[project].vue`), le migrer vers `projects/[project]/index.vue`.
+- **Ne plus créer** de nouveaux fichiers dynamiques plats dans `app/pages/world/crm/`.
+- Lors de chaque ajout de ressource CRM:
+  1. créer la liste en `<resource>.vue`;
+  2. créer le détail en `<resource>/[param]/index.vue`.
