@@ -39,7 +39,7 @@ export interface BasketballTeam extends ApiObject {
   id: number
   name: string
   code: string | null
-  logo: string | null
+  logo?: string | null
   country: BasketballCountry | null
   founded: number | null
   national: boolean
