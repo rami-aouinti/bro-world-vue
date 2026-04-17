@@ -16,6 +16,7 @@ export interface CrmGeneralCollectionResponse<T extends Record<string, unknown>>
 }
 
 export interface CrmGeneralMutationResponse<T extends Record<string, unknown>> {
+  id?: string
   item?: T
   message?: string
   status?: string
