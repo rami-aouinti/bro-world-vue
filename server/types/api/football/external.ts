@@ -275,3 +275,5 @@ export interface ApiSportsPlayerItem {
   }
   statistics: ApiObject[]
 }
+
+export type ApiSportsOddsItem = ApiObject

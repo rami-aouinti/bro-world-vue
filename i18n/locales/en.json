@@ -576,7 +576,7 @@
           "playerDetails": "Loading player details…"
         },
         "empty": {
-          "otherSports": "Detailed stats are currently available for football. Select another sport from the catalog while we roll out additional leagues and data feeds.",
+          "otherSports": "Detailed stats are currently available for football and basketball. Select another sport from the catalog while we roll out additional leagues and data feeds.",
           "events": "No event available for this fixture.",
           "lineups": "No lineup available for this fixture.",
           "playerStats": "No player stats available for this fixture.",
