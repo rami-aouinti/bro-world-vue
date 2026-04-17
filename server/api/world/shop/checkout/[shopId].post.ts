@@ -15,6 +15,7 @@ export default defineEventHandler(async (event) => {
     routerShopId,
     'shopId',
   )
+  const body = await readBody(event)
   const requestIdHeader = getHeader(event, 'x-request-id')
   const requestId =
     typeof requestIdHeader === 'string' && requestIdHeader.trim().length > 0
@@ -33,6 +34,7 @@ export default defineEventHandler(async (event) => {
         event,
         `/shop/general/checkout/${encodeURIComponent(shopId)}`,
       ),
+      body,
     )
 
     return response.data
