@@ -35,11 +35,33 @@ function isObjectLike(value: unknown): value is Record<string, unknown> {
 function isProductsResponseLike(
   value: unknown,
 ): value is ShopGeneralProductsResponse {
+  if (!isObjectLike(value)) {
+    return false
+  }
+
+  const candidate = value as { items?: unknown; data?: unknown }
   return (
-    isObjectLike(value) &&
-    'items' in value &&
-    Array.isArray((value as { items?: unknown }).items)
+    Array.isArray(candidate.items) ||
+    Array.isArray(candidate.data)
   )
+}
+
+function getProductsFromResponse(response: unknown): ShopGeneralProduct[] {
+  if (!isObjectLike(response)) {
+    return []
+  }
+
+  const candidate = response as { items?: unknown; data?: unknown }
+
+  if (Array.isArray(candidate.items)) {
+    return candidate.items as ShopGeneralProduct[]
+  }
+
+  if (Array.isArray(candidate.data)) {
+    return candidate.data as ShopGeneralProduct[]
+  }
+
+  return []
 }
 
 function stableQueryString(filters: Record<string, unknown>) {
@@ -182,7 +204,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     const typedResponse = response as ShopGeneralProductsResponse
     const apiPagination =
       typedResponse.pagination ?? typedResponse.meta?.pagination
-    const totalItems = apiPagination?.total ?? 0
+    const totalItems = apiPagination?.total ?? apiPagination?.totalItems ?? 0
     const page =
       apiPagination?.page ?? filters.value.page ?? pagination.value.page
     const limit =
@@ -281,7 +303,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     if (cached && !options?.force && isFresh(cached)) {
       recordStoreCacheEvent('shop', true)
       const response = cached.data as ShopGeneralProductsResponse
-      items.value = response.items
+      items.value = getProductsFromResponse(response)
       resolveProductsPagination(response)
       lastFetchedAt.value = cached.fetchedAt
       return
@@ -307,7 +329,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
       if (!isProductsResponseLike(response)) {
         throw new Error('Invalid shop products response format.')
       }
-      items.value = response.items
+      items.value = getProductsFromResponse(response)
       resolveProductsPagination(response)
       lastFetchedAt.value = Date.now()
       cache.value[cacheKey] = { fetchedAt: lastFetchedAt.value, data: response }
