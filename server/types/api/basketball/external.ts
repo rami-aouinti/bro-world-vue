@@ -45,7 +45,7 @@ export interface ApiSportsBasketballTeamItem {
   id: number
   name: string
   code: string | null
-  logo: string | null
+  logo?: string | null
   country?: {
     id: number | null
     name: string

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { BasketballGame } from '~/composables/useBasketballData'
+import SportsBasketballTeamAvatar from '~/components/Sports/Basketball/TeamAvatar.vue'
 
 const props = defineProps<{
   game: BasketballGame | null
@@ -38,9 +39,21 @@ function selectGame() {
       <template v-if="game">
         <div class="text-caption mb-2">{{ subtitle }}</div>
         <div class="d-flex align-center justify-space-between ga-3">
-          <div class="text-body-2 font-weight-bold">{{ game.teams.home.name }}</div>
+          <div class="d-flex align-center ga-2 min-w-0 flex-1">
+            <sports-basketball-team-avatar
+              :team-name="game.teams.home.name"
+              :logo="game.teams.home.logo"
+            />
+            <div class="text-body-2 font-weight-bold text-truncate">{{ game.teams.home.name }}</div>
+          </div>
           <div class="text-h6 font-weight-bold">{{ score }}</div>
-          <div class="text-body-2 font-weight-bold">{{ game.teams.away.name }}</div>
+          <div class="d-flex align-center ga-2 min-w-0 justify-end flex-1">
+            <div class="text-body-2 font-weight-bold text-truncate">{{ game.teams.away.name }}</div>
+            <sports-basketball-team-avatar
+              :team-name="game.teams.away.name"
+              :logo="game.teams.away.logo"
+            />
+          </div>
         </div>
       </template>
       <template v-else>

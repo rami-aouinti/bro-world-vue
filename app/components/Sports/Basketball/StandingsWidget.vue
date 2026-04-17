@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { BasketballStandingRow } from '~/composables/useBasketballData'
+import SportsBasketballTeamAvatar from '~/components/Sports/Basketball/TeamAvatar.vue'
 
 defineProps<{
   standings: BasketballStandingRow[]
@@ -25,7 +26,16 @@ defineProps<{
       <tbody>
         <tr v-for="row in standings" :key="row.team.id">
           <td>{{ row.position }}</td>
-          <td class="text-left">{{ row.team.name }}</td>
+          <td class="text-left">
+            <div class="d-flex align-center ga-2">
+              <sports-basketball-team-avatar
+                :team-name="row.team.name"
+                :logo="row.team.logo"
+                :size="24"
+              />
+              <span>{{ row.team.name }}</span>
+            </div>
+          </td>
           <td>{{ row.win.total }}</td>
           <td>{{ row.lose.total }}</td>
           <td>{{ row.points.for }}</td>
