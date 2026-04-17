@@ -351,8 +351,8 @@ const lineupLayouts = computed(() => {
         ratingColor: getRatingColor(numericRating(stat?.rating)),
         rowRatio,
         colRatio,
-        top: 12 + rowRatio * 76,
-        left: 8 + colRatio * 84,
+        top: 10 + rowRatio * 80,
+        left: 16 + colRatio * 68,
       }
     })
 
@@ -398,8 +398,8 @@ const combinedLineup = computed(() => {
     ? ordered.flatMap((lineup) => {
       return lineup.positionedPlayers.map((player) => {
         const adjustedTop = lineup.side === 'home'
-          ? 12 + (1 - player.rowRatio) * 76
-          : 12 + player.rowRatio * 76
+          ? 10 + (1 - player.rowRatio) * 80
+          : 10 + player.rowRatio * 80
 
         return {
           ...player,
@@ -468,10 +468,39 @@ const resolveEventSide = (event: FixtureEventViewModel): 'left' | 'right' => {
 }
 
 const timelineEvents = computed(() => {
-  return props.events.map(event => ({
-    ...event,
-    side: resolveEventSide(event),
-  }))
+  return props.events.map((event) => {
+    const playerVisual = typeof event.playerId === 'number'
+      ? props.playerStats.find(player => player.playerId === event.playerId)
+      : null
+    const teamVisualById = typeof event.teamId === 'number' ? teamVisuals.value.byId.get(event.teamId) : null
+    const teamVisualByName = teamVisuals.value.byName.get(normalizedTeamKey(event.teamName))
+    const teamVisual = teamVisualById ?? teamVisualByName ?? null
+
+    return {
+      ...event,
+      side: resolveEventSide(event),
+      playerPhoto: playerVisual?.playerPhoto ?? null,
+      teamLogo: teamVisual?.teamLogo ?? null,
+    }
+  })
+})
+
+const timelineTeams = computed(() => {
+  const homeLineup = props.lineups.find(lineup => lineup.teamId === props.homeTeamId) ?? props.lineups[0]
+  const awayLineup = props.lineups.find(lineup => lineup.teamId === props.awayTeamId) ?? props.lineups[1]
+
+  const home = {
+    id: homeLineup?.teamId ?? props.homeTeamId ?? null,
+    name: homeTeamName.value || homeLineup?.teamName || 'Home',
+    logo: homeLineup?.teamLogo ?? null,
+  }
+  const away = {
+    id: awayLineup?.teamId ?? props.awayTeamId ?? null,
+    name: awayTeamName.value || awayLineup?.teamName || 'Away',
+    logo: awayLineup?.teamLogo ?? null,
+  }
+
+  return { home, away }
 })
 
 function onSelectTeam(teamId: number | null | undefined) {
@@ -494,6 +523,30 @@ function onSelectPlayer(playerId: number | null | undefined) {
 
     <v-window v-model="activeTab">
       <v-window-item value="timeline">
+        <div class="timeline-header">
+          <button
+            type="button"
+            class="timeline-team-button"
+            @click="onSelectTeam(timelineTeams.home.id)"
+          >
+            <v-avatar size="28" rounded="0">
+              <v-img :src="timelineTeams.home.logo || undefined" :alt="timelineTeams.home.name" cover />
+            </v-avatar>
+            <span class="text-body-2 font-weight-bold">{{ timelineTeams.home.name }}</span>
+          </button>
+          <span class="text-caption text-medium-emphasis">Timeline</span>
+          <button
+            type="button"
+            class="timeline-team-button timeline-team-button--right"
+            @click="onSelectTeam(timelineTeams.away.id)"
+          >
+            <span class="text-body-2 font-weight-bold">{{ timelineTeams.away.name }}</span>
+            <v-avatar size="28" rounded="0">
+              <v-img :src="timelineTeams.away.logo || undefined" :alt="timelineTeams.away.name" cover />
+            </v-avatar>
+          </button>
+        </div>
+
         <div class="timeline-split" role="list">
           <div
             v-for="event in timelineEvents"
@@ -509,9 +562,19 @@ function onSelectPlayer(playerId: number | null | undefined) {
                 </header>
                 <div class="timeline-card__title">{{ event.detail }}</div>
                 <div class="timeline-card__meta text-caption">
-                  <a href="#" class="timeline-link" @click.prevent="onSelectPlayer(event.playerId)">{{ event.playerName }}</a>
+                  <a href="#" class="timeline-link timeline-link--with-avatar" @click.prevent="onSelectPlayer(event.playerId)">
+                    <v-avatar size="18">
+                      <v-img :src="event.playerPhoto || undefined" :alt="event.playerName" />
+                    </v-avatar>
+                    <span>{{ event.playerName }}</span>
+                  </a>
                   <span class="mx-1">·</span>
-                  <a href="#" class="timeline-link" @click.prevent="onSelectTeam(event.teamId)">{{ event.teamName }}</a>
+                  <a href="#" class="timeline-link timeline-link--with-avatar" @click.prevent="onSelectTeam(event.teamId)">
+                    <v-avatar size="16" rounded="0">
+                      <v-img :src="event.teamLogo || undefined" :alt="event.teamName" cover />
+                    </v-avatar>
+                    <span>{{ event.teamName }}</span>
+                  </a>
                 </div>
                 <div v-if="event.comment" class="text-caption text-medium-emphasis">{{ event.comment }}</div>
               </article>
@@ -530,9 +593,19 @@ function onSelectPlayer(playerId: number | null | undefined) {
                 </header>
                 <div class="timeline-card__title">{{ event.detail }}</div>
                 <div class="timeline-card__meta text-caption">
-                  <a href="#" class="timeline-link" @click.prevent="onSelectPlayer(event.playerId)">{{ event.playerName }}</a>
+                  <a href="#" class="timeline-link timeline-link--with-avatar" @click.prevent="onSelectPlayer(event.playerId)">
+                    <v-avatar size="18">
+                      <v-img :src="event.playerPhoto || undefined" :alt="event.playerName" />
+                    </v-avatar>
+                    <span>{{ event.playerName }}</span>
+                  </a>
                   <span class="mx-1">·</span>
-                  <a href="#" class="timeline-link" @click.prevent="onSelectTeam(event.teamId)">{{ event.teamName }}</a>
+                  <a href="#" class="timeline-link timeline-link--with-avatar" @click.prevent="onSelectTeam(event.teamId)">
+                    <v-avatar size="16" rounded="0">
+                      <v-img :src="event.teamLogo || undefined" :alt="event.teamName" cover />
+                    </v-avatar>
+                    <span>{{ event.teamName }}</span>
+                  </a>
                 </div>
                 <div v-if="event.comment" class="text-caption text-medium-emphasis">{{ event.comment }}</div>
               </article>
@@ -554,10 +627,11 @@ function onSelectPlayer(playerId: number | null | undefined) {
             variant="tonal"
             color="primary"
             mandatory
+            class="modal-filter-toggle"
           >
-            <v-btn value="combined" size="small">Combined</v-btn>
-            <v-btn value="home" size="small">Home</v-btn>
-            <v-btn value="away" size="small">Away</v-btn>
+            <v-btn value="combined" size="small" class="modal-filter-toggle__btn">Combined</v-btn>
+            <v-btn value="home" size="small" class="modal-filter-toggle__btn">Home team</v-btn>
+            <v-btn value="away" size="small" class="modal-filter-toggle__btn">Away team</v-btn>
           </v-btn-toggle>
         </div>
 
@@ -680,7 +754,9 @@ function onSelectPlayer(playerId: number | null | undefined) {
                     </v-avatar>
                   </template>
                   <v-list-item-title class="text-body-2">
-                    {{ player.shortName }} · #{{ player.number }}
+                    <a href="#" class="lineup-player-link" @click.prevent.stop="onSelectPlayer(player.id)">
+                      {{ player.shortName }} · #{{ player.number }}
+                    </a>
                   </v-list-item-title>
                   <v-list-item-subtitle>
                     {{ player.position || 'position unavailable' }}
@@ -735,7 +811,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
               <span class="stats-row__label">{{ row.label }}</span>
               <span class="stats-row__value stats-row__value--away">{{ row.rightText }}</span>
             </div>
-            <div class="stats-bar" :class="{ 'stats-bar--muted': row.unavailable }">
+            <div v-if="!row.unavailable" class="stats-bar">
               <div class="stats-bar__left" :style="{ width: `${row.leftPct}%` }" />
               <div class="stats-bar__right" :style="{ width: `${row.rightPct}%` }" />
             </div>
@@ -752,10 +828,11 @@ function onSelectPlayer(playerId: number | null | undefined) {
             variant="tonal"
             color="primary"
             mandatory
+            class="modal-filter-toggle"
           >
-            <v-btn value="all" size="small">All</v-btn>
-            <v-btn value="home" size="small">Home team</v-btn>
-            <v-btn value="away" size="small">Away team</v-btn>
+            <v-btn value="all" size="small" class="modal-filter-toggle__btn">All</v-btn>
+            <v-btn value="home" size="small" class="modal-filter-toggle__btn">Home team</v-btn>
+            <v-btn value="away" size="small" class="modal-filter-toggle__btn">Away team</v-btn>
           </v-btn-toggle>
         </div>
 
@@ -793,7 +870,9 @@ function onSelectPlayer(playerId: number | null | undefined) {
                 </template>
 
                 <v-list-item-title class="text-body-2 font-weight-medium">
-                  {{ player.playerName }}
+                  <a href="#" class="player-link" @click.prevent.stop="onSelectPlayer(player.playerId)">
+                    {{ player.playerName }}
+                  </a>
                 </v-list-item-title>
                 <v-list-item-subtitle class="d-flex align-center ga-2 flex-wrap">
                   <span>{{ player.position }}</span>
@@ -825,6 +904,25 @@ function onSelectPlayer(playerId: number | null | undefined) {
 </template>
 
 <style scoped>
+.timeline-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+.timeline-team-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  justify-self: start;
+  border: 1px solid rgba(var(--v-theme-on-surface), .14);
+  background: rgba(var(--v-theme-surface), .35);
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: inherit;
+  cursor: pointer;
+}
+.timeline-team-button--right { justify-self: end; }
 .timeline-split { display: flex; flex-direction: column; gap: 12px; padding: 4px 0 8px; }
 .timeline-row { display: grid; grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr); gap: 14px; align-items: stretch; }
 .timeline-col { min-height: 100%; }
@@ -844,6 +942,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
 .timeline-minute { min-width: 56px; justify-content: center; font-weight: 700; }
 .timeline-card__title { font-size: .9rem; font-weight: 700; line-height: 1.3; }
 .timeline-card__meta { display: flex; flex-wrap: wrap; align-items: center; color: rgba(var(--v-theme-on-surface), .84); }
+.timeline-link--with-avatar { display: inline-flex; align-items: center; gap: 6px; }
 
 .timeline-axis { position: relative; display: flex; justify-content: center; }
 .timeline-axis__line {
@@ -866,9 +965,11 @@ function onSelectPlayer(playerId: number | null | undefined) {
 
 .timeline-link, .lineup-team { color: rgb(var(--v-theme-primary)); text-decoration: none; }
 .timeline-link:hover, .lineup-team:hover { text-decoration: underline; }
+.lineup-player-link, .player-link { color: inherit; text-decoration: none; }
+.lineup-player-link:hover, .player-link:hover { color: rgb(var(--v-theme-primary)); text-decoration: underline; }
 .pitch-layout {
   position: relative;
-  min-height: 420px;
+  min-height: 520px;
   border-radius: 16px;
   border: 1px solid rgba(var(--v-theme-on-surface), .16);
   background: linear-gradient(180deg, rgba(17, 65, 52, .95), rgba(11, 48, 39, .96));
@@ -980,6 +1081,16 @@ function onSelectPlayer(playerId: number | null | undefined) {
 .stats-bar__left { background: linear-gradient(90deg, rgba(var(--v-theme-primary), .7), rgb(var(--v-theme-primary))); }
 .stats-bar__right { background: rgba(var(--v-theme-on-surface), .42); }
 .stats-bar--muted { opacity: .7; }
+.modal-filter-toggle {
+  background: rgba(var(--v-theme-surface), .42);
+  border: 1px solid rgba(var(--v-theme-on-surface), .12);
+  padding: 2px;
+}
+.modal-filter-toggle__btn {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+}
 .player-notes-panel {
   background: linear-gradient(180deg, rgba(18, 20, 30, .82), rgba(11, 13, 20, .66));
 }
@@ -1028,12 +1139,14 @@ function onSelectPlayer(playerId: number | null | undefined) {
 }
 
 @media (max-width: 720px) {
+  .timeline-header { gap: 8px; }
+  .timeline-team-button { padding: 4px 8px; font-size: .75rem; }
   .timeline-row { grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr); gap: 8px; }
   .timeline-card { padding: 10px; border-radius: 12px; }
   .timeline-minute { min-width: 52px; }
   .timeline-card__title { font-size: .85rem; }
   .timeline-axis__dot { top: 16px; width: 10px; height: 10px; }
-  .pitch-layout { min-height: 360px; }
+  .pitch-layout { min-height: 420px; }
   .pitch-player { width: 68px; }
   .pitch-player__name { font-size: .62rem; }
 }

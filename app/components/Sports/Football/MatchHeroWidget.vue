@@ -61,6 +61,19 @@ const detailsModalOpen = ref(false)
 const selectedDetailsTab = ref<
   'timeline' | 'lineups' | 'statistics' | 'player-notes'
 >('timeline')
+const detailsModalTitle = computed(() => {
+  switch (selectedDetailsTab.value) {
+    case 'lineups':
+      return 'Lineup'
+    case 'statistics':
+      return 'Statistics'
+    case 'player-notes':
+      return 'Player notes'
+    case 'timeline':
+    default:
+      return 'Timeline'
+  }
+})
 
 function selectHeroFixture() {
   if (heroFixture.value) emit('select', heroFixture.value.id)
@@ -194,7 +207,7 @@ function onSelectPlayer(playerId?: number | null) {
 
   <AppModal
     v-model="detailsModalOpen"
-    title="Fixture details"
+    :title="detailsModalTitle"
     :max-width="1040"
     density="compact"
   >
