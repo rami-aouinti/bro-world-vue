@@ -3,29 +3,30 @@ import type { ShopGeneralOrder } from '~/types/world/shop'
 import { normalizeHttpError } from '~/utils/httpError'
 import type { ChannelOption, OrderRecord, OrderStatus, OrderStatusMeta, SalesChannel } from '~/components/Shop/types'
 
-definePageMeta({ title: 'Shop Orders' })
+definePageMeta({ title: 'world.shop.orders.metaTitle' })
 
+const { t, locale } = useI18n()
 const { shopNavItems } = useShopNavItems()
 const shopStore = useWorldShopStore()
 
-const statusCatalog: OrderStatusMeta[] = [
-  { value: 'all', title: 'Tous', color: 'grey' },
-  { value: 'pending', title: 'Pending', color: 'amber-darken-2' },
-  { value: 'paid', title: 'Paid', color: 'green-darken-1' },
-  { value: 'packed', title: 'Packed', color: 'indigo' },
-  { value: 'shipped', title: 'Shipped', color: 'blue' },
-  { value: 'delivered', title: 'Delivered', color: 'teal' },
-  { value: 'returned', title: 'Returned', color: 'deep-orange' },
-  { value: 'refunded', title: 'Refunded', color: 'pink-darken-2' },
-]
+const statusCatalog = computed<OrderStatusMeta[]>(() => [
+  { value: 'all', title: t('world.shop.orders.catalog.status.all'), color: 'grey' },
+  { value: 'pending', title: t('world.shop.status.pending'), color: 'amber-darken-2' },
+  { value: 'paid', title: t('world.shop.status.paid'), color: 'green-darken-1' },
+  { value: 'packed', title: t('world.shop.status.packed'), color: 'indigo' },
+  { value: 'shipped', title: t('world.shop.status.shipped'), color: 'blue' },
+  { value: 'delivered', title: t('world.shop.status.delivered'), color: 'teal' },
+  { value: 'returned', title: t('world.shop.status.returned'), color: 'deep-orange' },
+  { value: 'refunded', title: t('world.shop.status.refunded'), color: 'pink-darken-2' },
+])
 
-const channelCatalog: ChannelOption[] = [
-  { value: 'all', title: 'Tous canaux' },
-  { value: 'web', title: 'Web' },
-  { value: 'mobile', title: 'Mobile App' },
-  { value: 'marketplace', title: 'Marketplace' },
-  { value: 'store', title: 'Retail Store' },
-]
+const channelCatalog = computed<ChannelOption[]>(() => [
+  { value: 'all', title: t('world.shop.orders.catalog.channel.all') },
+  { value: 'web', title: t('world.shop.channel.web') },
+  { value: 'mobile', title: t('world.shop.channel.mobile') },
+  { value: 'marketplace', title: t('world.shop.channel.marketplace') },
+  { value: 'store', title: t('world.shop.channel.store') },
+])
 
 const filters = ref({
   search: '',
@@ -37,16 +38,16 @@ const filters = ref({
   amountMax: null as number | null,
 })
 
-const headers = [
-  { title: 'Commande', key: 'id' },
-  { title: 'Client', key: 'customer' },
-  { title: 'Canal', key: 'channel' },
-  { title: 'Statut', key: 'status' },
-  { title: 'Date', key: 'createdAt' },
-  { title: 'Montant', key: 'amount' },
-  { title: 'Remboursé', key: 'refundedAmount' },
-  { title: 'Actions', key: 'actions', sortable: false },
-]
+const headers = computed(() => [
+  { title: t('world.shop.orders.table.order'), key: 'id' },
+  { title: t('world.shop.orders.table.customer'), key: 'customer' },
+  { title: t('world.shop.orders.table.channel'), key: 'channel' },
+  { title: t('world.shop.orders.table.status'), key: 'status' },
+  { title: t('world.shop.orders.table.date'), key: 'createdAt' },
+  { title: t('world.shop.orders.table.amount'), key: 'amount' },
+  { title: t('world.shop.orders.table.refunded'), key: 'refundedAmount' },
+  { title: t('world.shop.orders.table.actions'), key: 'actions', sortable: false },
+])
 
 const orders = ref<OrderRecord[]>([])
 const selectedOrderId = ref('')
@@ -54,6 +55,14 @@ const drawerOpen = ref(false)
 const returnReason = ref('')
 const returnAmount = ref<number | null>(null)
 const apiError = ref<string | null>(null)
+
+const formatCurrency = (value: number, currency = 'EUR') =>
+  new Intl.NumberFormat(locale.value, {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value)
 
 const parseOrderChannel = (order: ShopGeneralOrder): SalesChannel => {
   if (order.id.endsWith('1')) return 'web'
@@ -64,7 +73,7 @@ const parseOrderChannel = (order: ShopGeneralOrder): SalesChannel => {
 
 const normalizeOrder = (order: ShopGeneralOrder): OrderRecord => ({
   id: order.id,
-  customer: `Client ${order.id.slice(-4)}`,
+  customer: t('world.shop.orders.customerLabel', { suffix: order.id.slice(-4) }),
   channel: parseOrderChannel(order),
   status: order.status,
   createdAt: order.createdAt,
@@ -75,7 +84,9 @@ const normalizeOrder = (order: ShopGeneralOrder): OrderRecord => ({
     {
       id: `T-${order.id}`,
       status: order.status,
-      label: `Statut initial: ${order.status}`,
+      label: t('world.shop.orders.timeline.initialStatus', {
+        status: t(`world.shop.status.${order.status}`),
+      }),
       at: order.createdAt,
     },
   ],
@@ -91,15 +102,15 @@ const normalizeOrder = (order: ShopGeneralOrder): OrderRecord => ({
 const extractApiMessage = (err: unknown) => {
   const normalized = normalizeHttpError(err)
   if (normalized.statusCode === 400) {
-    return `Requête invalide (400): vérifiez les filtres envoyés. Détail: ${normalized.message}`
+    return t('world.shop.orders.errors.badRequest', { detail: normalized.message })
   }
   if (normalized.statusCode === 404) {
-    return `Ressource introuvable (404): vérifiez la disponibilité de l'endpoint de commandes. Détail: ${normalized.message}`
+    return t('world.shop.orders.errors.notFound', { detail: normalized.message })
   }
   if (normalized.statusCode === 422) {
-    return `Données invalides (422): corrigez la structure des données avant de réessayer. Détail: ${normalized.message}`
+    return t('world.shop.orders.errors.invalidData', { detail: normalized.message })
   }
-  return `Erreur API: ${normalized.message}`
+  return t('world.shop.orders.errors.api', { detail: normalized.message })
 }
 
 const loadOrders = async () => {
@@ -171,7 +182,13 @@ const updateOrderStatus = (orderId: string, status: OrderStatus) => {
   const order = orders.value.find((entry) => entry.id === orderId)
   if (!order) return
   order.status = status
-  addTimelineEvent(order, status, `Statut modifié: ${status}`)
+  addTimelineEvent(
+    order,
+    status,
+    t('world.shop.orders.timeline.statusChanged', {
+      status: t(`world.shop.status.${status}`),
+    }),
+  )
 }
 
 const generateInvoice = (orderId: string) => {
@@ -180,7 +197,11 @@ const generateInvoice = (orderId: string) => {
 
   order.invoiceNumber = `INV-${new Date().getFullYear()}-${order.id.slice(-4)}`
   order.invoiceGeneratedAt = new Date().toISOString()
-  addTimelineEvent(order, order.status, `Facture générée (${order.invoiceNumber})`)
+  addTimelineEvent(
+    order,
+    order.status,
+    t('world.shop.orders.timeline.invoiceGenerated', { invoiceNumber: order.invoiceNumber }),
+  )
 }
 
 const addReturnRequest = (orderId: string) => {
@@ -197,7 +218,14 @@ const addReturnRequest = (orderId: string) => {
   })
 
   order.status = 'returned'
-  addTimelineEvent(order, 'returned', 'Demande de retour enregistrée', `${amount.toFixed(2)} € demandés`)
+  addTimelineEvent(
+    order,
+    'returned',
+    t('world.shop.orders.timeline.returnRequested'),
+    t('world.shop.orders.timeline.returnRequestedNote', {
+      amount: formatCurrency(amount, order.currency),
+    }),
+  )
   returnReason.value = ''
   returnAmount.value = null
 }
@@ -212,7 +240,14 @@ const approvePartialRefund = (orderId: string, returnId: string) => {
   record.status = 'refunded'
   order.refundedAmount = Math.min(order.amount, order.refundedAmount + record.amount)
   order.status = 'refunded'
-  addTimelineEvent(order, 'refunded', 'Remboursement partiel validé', `${record.amount.toFixed(2)} € remboursés`)
+  addTimelineEvent(
+    order,
+    'refunded',
+    t('world.shop.orders.timeline.partialRefundApproved'),
+    t('world.shop.orders.timeline.partialRefundApprovedNote', {
+      amount: formatCurrency(record.amount, order.currency),
+    }),
+  )
 }
 
 const resetFilters = () => {
@@ -261,11 +296,11 @@ const onSelectOrder = (orderId: string) => {
 <template>
   <div>
     <WorldModuleDrawers
-      module-title="Shop"
+      :module-title="t('world.shop.label')"
       module-icon="mdi-storefront-outline"
-      module-description="Pilotage complet des commandes: statuts, timeline, facture, retours, remboursements et export."
+      :module-description="t('world.shop.orders.moduleDescription')"
       :nav-items="shopNavItems"
-      action-label="Orders Console"
+      :action-label="t('world.shop.orders.actionLabel')"
     />
 
     <v-container fluid>
@@ -279,9 +314,9 @@ const onSelectOrder = (orderId: string) => {
         >
           <template #heading>
             <div>
-              <h2 class="text-h5">Shop Orders - Opérations avancées</h2>
+              <h2 class="text-h5">{{ t('world.shop.orders.title') }}</h2>
               <p class="text-body-2 text-medium-emphasis mb-0">
-                Données chargées depuis le store (`fetchOrders`) avec gestion standardisée des états.
+                {{ t('world.shop.orders.subtitle') }}
               </p>
             </div>
           </template>
@@ -296,7 +331,7 @@ const onSelectOrder = (orderId: string) => {
           type="info"
           variant="tonal"
           class="mb-4"
-          text="Aucune commande n'a été trouvée. Vérifiez les filtres ou rechargez les données."
+          :text="t('world.shop.orders.empty')"
         />
 
         <v-row>
