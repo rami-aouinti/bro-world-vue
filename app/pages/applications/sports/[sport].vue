@@ -105,6 +105,10 @@ const featuredLeagues = computed(() => {
   })
 })
 
+const displayedLeagues = computed(() => {
+  return featuredLeagues.value.slice(0, 7)
+})
+
 const getSection = (
   key: FootballSectionKey,
   fallbackTitle: string,
@@ -294,7 +298,7 @@ watch(
 
       <template #right>
         <v-row class="pa-4">
-          <v-col cols="12" md="6">
+          <v-col cols="12">
             <v-select
               :model-value="selectedLeagueId"
               :items="leagues"
@@ -310,7 +314,7 @@ watch(
             />
           </v-col>
 
-          <v-col cols="12" md="6">
+          <v-col cols="12">
             <v-select
               :model-value="selectedSeason"
               :items="seasons"
@@ -356,7 +360,7 @@ watch(
 
           <v-list v-else density="compact" lines="one" class="pa-0">
             <v-list-item
-              v-for="league in featuredLeagues"
+              v-for="league in displayedLeagues"
               :key="league.id"
               :title="league.name"
               :subtitle="league.country.name"
