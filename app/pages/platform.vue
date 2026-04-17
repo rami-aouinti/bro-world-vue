@@ -329,7 +329,10 @@ function resetFilters() {
           </teleport>
         </client-only>
 
-        <div class="platform-page__content">
+        <v-card
+          variant="text"
+          class="content-main postcard-gradient-card mb-3 pa-3 platform-page__content"
+        >
           <v-alert
             v-if="error"
             type="error"
@@ -420,19 +423,19 @@ function resetFilters() {
             :title="t('platform.emptyTitle')"
             :text="t('platform.emptySubtitle')"
           />
-        </div>
 
-        <div
-          v-if="!pending && filteredApplications.length"
-          class="platform-page__pagination d-flex justify-center mt-2"
-        >
-          <v-pagination
-            v-model="currentPage"
-            :length="pageCount"
-            :total-visible="7"
-            rounded="circle"
-          />
-        </div>
+          <div
+            v-if="!pending && filteredApplications.length"
+            class="platform-page__pagination d-flex justify-center"
+          >
+            <v-pagination
+              v-model="currentPage"
+              :length="pageCount"
+              :total-visible="7"
+              rounded="circle"
+            />
+          </div>
+        </v-card>
       </template>
     </v-container>
   </div>
@@ -446,11 +449,15 @@ function resetFilters() {
 }
 
 .platform-page__content {
+  min-height: calc(100vh - 220px);
+  display: flex;
+  flex-direction: column;
   flex: 1;
 }
 
 .platform-page__pagination {
   margin-top: auto;
+  padding-top: 10px;
   padding-bottom: 5px;
 }
 
