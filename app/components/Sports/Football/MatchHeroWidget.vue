@@ -4,6 +4,8 @@ import type {
   FixtureEventViewModel,
   FixtureLineupViewModel,
   FixturePlayerStatViewModel,
+  FixtureMatchContextViewModel,
+  FixtureTeamStatistics,
 } from '~/composables/useFootballData'
 import SportsFootballFixtureDetailsPanel from '~/components/Sports/Football/FixtureDetailsPanel.vue'
 
@@ -13,6 +15,8 @@ const props = defineProps<{
   events: FixtureEventViewModel[]
   lineups: FixtureLineupViewModel[]
   playerStats: FixturePlayerStatViewModel[]
+  teamStatistics: FixtureTeamStatistics
+  matchContext: FixtureMatchContextViewModel
 }>()
 const { t } = useI18n()
 
@@ -50,7 +54,6 @@ const heroMinute = computed(() => {
   const elapsed = heroFixture.value?.status?.elapsed
   return typeof elapsed === 'number' ? `${elapsed}'` : null
 })
-
 
 const heroOdds = computed(() => {
   const odds = heroFixture.value?.odds
@@ -172,9 +175,15 @@ function onSelectPlayer(playerId?: number | null) {
         </div>
 
         <div v-if="heroOdds" class="d-flex ga-2 mt-3 mb-1 flex-wrap">
-          <v-chip size="x-small" variant="tonal" color="primary">1 {{ heroOdds.home ?? '-' }}</v-chip>
-          <v-chip size="x-small" variant="tonal" color="primary">X {{ heroOdds.draw ?? '-' }}</v-chip>
-          <v-chip size="x-small" variant="tonal" color="primary">2 {{ heroOdds.away ?? '-' }}</v-chip>
+          <v-chip size="x-small" variant="tonal" color="primary"
+            >1 {{ heroOdds.home ?? '-' }}</v-chip
+          >
+          <v-chip size="x-small" variant="tonal" color="primary"
+            >X {{ heroOdds.draw ?? '-' }}</v-chip
+          >
+          <v-chip size="x-small" variant="tonal" color="primary"
+            >2 {{ heroOdds.away ?? '-' }}</v-chip
+          >
         </div>
 
         <div class="hero-actions mt-4">
@@ -239,6 +248,8 @@ function onSelectPlayer(playerId?: number | null) {
       :initial-tab="selectedDetailsTab"
       :home-team-id="heroFixture?.teams.home.id ?? null"
       :away-team-id="heroFixture?.teams.away.id ?? null"
+      :team-statistics="teamStatistics"
+      :match-context="matchContext"
       @select-team="onSelectTeam"
       @select-player="onSelectPlayer"
     />

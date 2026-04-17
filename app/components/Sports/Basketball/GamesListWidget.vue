@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { BasketballGame } from '~/composables/useBasketballData'
+import SportsBasketballTeamAvatar from '~/components/Sports/Basketball/TeamAvatar.vue'
 
-const props = defineProps<{
+defineProps<{
   games: BasketballGame[]
   selectedGameId: number | null
 }>()
@@ -62,12 +63,26 @@ const scoreLabel = (game: BasketballGame) => {
         active-class="text-primary"
         @click="onSelect(game.id)"
       >
+        <template #prepend>
+          <sports-basketball-team-avatar
+            :team-name="game.teams.home.name"
+            :logo="game.teams.home.logo"
+          />
+        </template>
+
         <v-list-item-title>
           {{ game.teams.home.name }} vs {{ game.teams.away.name }}
         </v-list-item-title>
         <v-list-item-subtitle>
           {{ scoreLabel(game) }} · {{ game.status?.short || 'NS' }}
         </v-list-item-subtitle>
+
+        <template #append>
+          <sports-basketball-team-avatar
+            :team-name="game.teams.away.name"
+            :logo="game.teams.away.logo"
+          />
+        </template>
       </v-list-item>
     </v-list>
   </v-card>

@@ -253,11 +253,46 @@ export interface FootballPlayerStatistic extends ApiObject {
   statistics: ApiObject[]
 }
 
+export type FootballFixtureStatisticsMetricKey =
+  | 'xg'
+  | 'possession'
+  | 'shotsTotal'
+  | 'shotsOnTarget'
+  | 'bigChances'
+  | 'passes'
+  | 'corners'
+  | 'cards'
+
+export type FootballFixtureStatisticsMetricValue = string | number | null
+
+export interface FootballFixtureStatisticsPeriod extends ApiObject {
+  home: Partial<
+    Record<
+      FootballFixtureStatisticsMetricKey,
+      FootballFixtureStatisticsMetricValue
+    >
+  >
+  away: Partial<
+    Record<
+      FootballFixtureStatisticsMetricKey,
+      FootballFixtureStatisticsMetricValue
+    >
+  >
+}
+
+export interface FootballFixtureTeamStatistics extends ApiObject {
+  match: FootballFixtureStatisticsPeriod
+  firstHalf?: FootballFixtureStatisticsPeriod
+  secondHalf?: FootballFixtureStatisticsPeriod
+}
+
 export interface FootballFixtureDetailsApiResponse extends ApiObject {
   fixture: FootballFixture | null
   events: FootballFixtureEvent[]
   lineups: FootballLineup[]
   playerStats: FootballPlayerStatistic[]
+  teamStatistics: FootballFixtureTeamStatistics
+  matchContext: FootballFixtureMatchContext
 }
 
 export interface FootballOddsApiResponse extends ApiObject {
@@ -266,4 +301,59 @@ export interface FootballOddsApiResponse extends ApiObject {
     current: number
     total: number
   }
+}
+
+export type FootballCoverageStatus =
+  | 'available'
+  | 'not-covered'
+  | 'unavailable'
+
+export interface FootballCoverageIndicator extends ApiObject {
+  covered: boolean
+  available: boolean
+  status: FootballCoverageStatus
+}
+
+export interface FootballFixtureAvailabilityPlayer extends ApiObject {
+  playerId: number | null
+  playerName: string | null
+  playerPhoto: string | null
+  teamId: number | null
+  teamName: string | null
+  teamLogo: string | null
+  type: string | null
+  reason: string | null
+}
+
+export interface FootballFixtureAvailabilityContext
+  extends FootballCoverageIndicator {
+  injuries: FootballFixtureAvailabilityPlayer[]
+  suspensions: FootballFixtureAvailabilityPlayer[]
+}
+
+export interface FootballFixtureHeadToHeadContext
+  extends FootballCoverageIndicator {
+  fixtures: FootballFixture[]
+}
+
+export interface FootballFixturePredictionContext
+  extends FootballCoverageIndicator {
+  item: ApiObject | null
+}
+
+export interface FootballFixtureLiveOddsContext
+  extends FootballCoverageIndicator {
+  item: ApiObject | null
+}
+
+export interface FootballFixtureMatchContext extends ApiObject {
+  coverage: {
+    injuries: boolean
+    predictions: boolean
+    odds: boolean
+  }
+  availability: FootballFixtureAvailabilityContext
+  headToHead: FootballFixtureHeadToHeadContext
+  prediction: FootballFixturePredictionContext
+  liveOdds: FootballFixtureLiveOddsContext
 }

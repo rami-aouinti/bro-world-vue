@@ -97,6 +97,27 @@ export interface FootballStandingsLeague {
   season: number
 }
 
+export type FixtureTeamStatsMetricKey =
+  | 'xg'
+  | 'possession'
+  | 'shotsTotal'
+  | 'shotsOnTarget'
+  | 'bigChances'
+  | 'passes'
+  | 'corners'
+  | 'cards'
+
+export interface FixtureTeamStatsPeriod {
+  home?: Partial<Record<FixtureTeamStatsMetricKey, string | number | null>>
+  away?: Partial<Record<FixtureTeamStatsMetricKey, string | number | null>>
+}
+
+export interface FixtureTeamStatistics {
+  match: FixtureTeamStatsPeriod
+  firstHalf?: FixtureTeamStatsPeriod
+  secondHalf?: FixtureTeamStatsPeriod
+}
+
 export interface FootballFixtureDetails {
   fixture: FootballFixture | null
   events: Array<{
@@ -145,6 +166,57 @@ export interface FootballFixtureDetails {
     }
     statistics?: Array<Record<string, any>>
   }>
+  teamStatistics: FixtureTeamStatistics
+  matchContext: {
+    coverage: {
+      injuries: boolean
+      predictions: boolean
+      odds: boolean
+    }
+    availability: {
+      covered: boolean
+      available: boolean
+      status: 'available' | 'not-covered' | 'unavailable'
+      injuries: Array<{
+        playerId: number | null
+        playerName: string | null
+        playerPhoto: string | null
+        teamId: number | null
+        teamName: string | null
+        teamLogo: string | null
+        type: string | null
+        reason: string | null
+      }>
+      suspensions: Array<{
+        playerId: number | null
+        playerName: string | null
+        playerPhoto: string | null
+        teamId: number | null
+        teamName: string | null
+        teamLogo: string | null
+        type: string | null
+        reason: string | null
+      }>
+    }
+    headToHead: {
+      covered: boolean
+      available: boolean
+      status: 'available' | 'not-covered' | 'unavailable'
+      fixtures: FootballFixture[]
+    }
+    prediction: {
+      covered: boolean
+      available: boolean
+      status: 'available' | 'not-covered' | 'unavailable'
+      item: Record<string, any> | null
+    }
+    liveOdds: {
+      covered: boolean
+      available: boolean
+      status: 'available' | 'not-covered' | 'unavailable'
+      item: Record<string, any> | null
+    }
+  }
 }
 
 export interface FixtureEventViewModel {
@@ -194,6 +266,19 @@ export interface FixturePlayerStatViewModel {
   shots: string
   passes: string
   tackles: string
+  metrics: Record<string, string | number | null>
+}
+
+export interface FixtureMatchContextViewModel {
+  coverage: {
+    injuries: boolean
+    predictions: boolean
+    odds: boolean
+  }
+  availability: FootballFixtureDetails['matchContext']['availability']
+  headToHead: FootballFixtureDetails['matchContext']['headToHead']
+  prediction: FootballFixtureDetails['matchContext']['prediction']
+  liveOdds: FootballFixtureDetails['matchContext']['liveOdds']
 }
 
 export interface FootballTeamDetails {
@@ -237,18 +322,22 @@ export interface FootballPlayerDetails {
   statistics: Array<Record<string, any>>
 }
 
-function normalizePlayerStatistics(stats: Array<Record<string, any>> | undefined) {
+function normalizePlayerStatistics(
+  stats: Array<Record<string, any>> | undefined,
+) {
   if (!Array.isArray(stats)) {
     return []
   }
 
   return stats.map((stat) => {
-    const games = stat?.games && typeof stat.games === 'object'
-      ? {
-          ...stat.games,
-          appearances: stat.games.appearances ?? stat.games.appearences ?? null,
-        }
-      : stat.games
+    const games =
+      stat?.games && typeof stat.games === 'object'
+        ? {
+            ...stat.games,
+            appearances:
+              stat.games.appearances ?? stat.games.appearences ?? null,
+          }
+        : stat.games
 
     return {
       ...stat,
@@ -312,6 +401,83 @@ function toStatLabel(value: unknown) {
   return '-'
 }
 
+function normalizeMetricKey(key: string) {
+  const trimmed = key.trim()
+  if (!trimmed) return trimmed
+
+  const aliasMap: Record<string, string> = {
+    appearences: 'appearances',
+    key_passes: 'keyPasses',
+    keypasses: 'keyPasses',
+    totalpasses: 'totalPasses',
+  }
+
+  const normalizedLookupKey = trimmed.toLowerCase().replace(/[\s_-]/g, '')
+  const mapped = aliasMap[normalizedLookupKey]
+  if (mapped) return mapped
+
+  if (trimmed.includes('_')) {
+    const [first, ...rest] = trimmed.split('_')
+    return `${first}${rest.map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('')}`
+  }
+
+  return trimmed
+}
+
+function normalizePlayerStatRecord(
+  value: unknown,
+): Record<string, unknown> | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return null
+  }
+
+  const normalized: Record<string, unknown> = {}
+
+  Object.entries(value).forEach(([key, entry]) => {
+    const normalizedKey = normalizeMetricKey(key)
+    if (entry && typeof entry === 'object' && !Array.isArray(entry)) {
+      normalized[normalizedKey] = normalizePlayerStatRecord(entry) ?? entry
+      return
+    }
+    normalized[normalizedKey] = entry as string | number | null | boolean
+  })
+
+  return normalized
+}
+
+function flattenPlayerMetrics(
+  value: Record<string, unknown>,
+  parentKey = '',
+): Record<string, string | number | null> {
+  const output: Record<string, string | number | null> = {}
+
+  Object.entries(value).forEach(([key, entry]) => {
+    const path = parentKey ? `${parentKey}.${key}` : key
+
+    if (entry === null || typeof entry === 'undefined') {
+      output[path] = null
+      return
+    }
+
+    if (typeof entry === 'object' && !Array.isArray(entry)) {
+      Object.assign(
+        output,
+        flattenPlayerMetrics(entry as Record<string, unknown>, path),
+      )
+      return
+    }
+
+    if (typeof entry === 'number' || typeof entry === 'string') {
+      output[path] = entry
+      return
+    }
+
+    output[path] = `${entry}`
+  })
+
+  return output
+}
+
 function mapFixtureEventIcon(type: string, detail: string) {
   const normalizedType = type.toLowerCase()
   const normalizedDetail = detail.toLowerCase()
@@ -346,7 +512,10 @@ function mapFixtureEvents(
   return [...events]
     .map((event, index): FixtureEventViewModel => {
       const minute = event.time?.elapsed ?? 0
-      const detail = event.detail ?? event.type ?? t('pages.applications.football.misc.event')
+      const detail =
+        event.detail ??
+        event.type ??
+        t('pages.applications.football.misc.event')
       const iconConfig = mapFixtureEventIcon(event.type ?? '', detail)
 
       return {
@@ -354,9 +523,12 @@ function mapFixtureEvents(
         minute,
         timeLabel: minute > 0 ? `${minute}'` : "0'",
         teamId: event.team?.id ?? null,
-        teamName: event.team?.name ?? t('pages.applications.football.misc.unknownTeam'),
+        teamName:
+          event.team?.name ?? t('pages.applications.football.misc.unknownTeam'),
         playerId: event.player?.id ?? null,
-        playerName: event.player?.name ?? t('pages.applications.football.misc.unknownPlayer'),
+        playerName:
+          event.player?.name ??
+          t('pages.applications.football.misc.unknownPlayer'),
         detail,
         comment: event.comments ?? '',
         icon: iconConfig.icon,
@@ -383,7 +555,8 @@ function mapFixtureLineups(
 
     return {
       teamId: lineup.team?.id ?? null,
-      teamName: lineup.team?.name ?? t('pages.applications.football.misc.unknownTeam'),
+      teamName:
+        lineup.team?.name ?? t('pages.applications.football.misc.unknownTeam'),
       teamLogo: lineup.team?.logo ?? null,
       formation: lineup.formation ?? '-',
       coachName: lineup.coach?.name ?? '-',
@@ -398,20 +571,26 @@ function mapFixturePlayerStats(
   t: (key: string, params?: Record<string, unknown>) => string,
 ): FixturePlayerStatViewModel[] {
   return stats.map((entry, index) => {
-    const details = entry.statistics?.[0] ?? {}
-    const games = details?.games ?? {}
-    const goals = details?.goals ?? {}
-    const shots = details?.shots ?? {}
-    const passes = details?.passes ?? {}
-    const tackles = details?.tackles ?? {}
+    const details = normalizePlayerStatRecord(entry.statistics?.[0] ?? {}) ?? {}
+    const metrics = flattenPlayerMetrics(details)
+    const games = (details.games as Record<string, unknown> | undefined) ?? {}
+    const goals = (details.goals as Record<string, unknown> | undefined) ?? {}
+    const shots = (details.shots as Record<string, unknown> | undefined) ?? {}
+    const passes =
+      (details.passes as Record<string, unknown> | undefined) ?? {}
+    const tackles =
+      (details.tackles as Record<string, unknown> | undefined) ?? {}
 
     return {
       id: `${entry.team?.id ?? 'team'}-${entry.player?.id ?? index}`,
       playerId: entry.player?.id ?? null,
       playerPhoto: entry.player?.photo ?? null,
       teamId: entry.team?.id ?? null,
-      teamName: entry.team?.name ?? t('pages.applications.football.misc.unknownTeam'),
-      playerName: entry.player?.name ?? t('pages.applications.football.misc.unknownPlayer'),
+      teamName:
+        entry.team?.name ?? t('pages.applications.football.misc.unknownTeam'),
+      playerName:
+        entry.player?.name ??
+        t('pages.applications.football.misc.unknownPlayer'),
       position: toStatLabel(games?.position),
       rating: toStatLabel(games?.rating),
       minutes: toStatLabel(games?.minutes),
@@ -420,6 +599,7 @@ function mapFixturePlayerStats(
       shots: toStatLabel(shots?.total),
       passes: toStatLabel(passes?.total),
       tackles: toStatLabel(tackles?.total),
+      metrics,
     }
   })
 }
@@ -445,11 +625,17 @@ function mapFootballOddsByFixture(items: Array<Record<string, any>>) {
       continue
     }
 
-    const bookmaker = Array.isArray(item?.bookmakers) ? item.bookmakers[0] : null
+    const bookmaker = Array.isArray(item?.bookmakers)
+      ? item.bookmakers[0]
+      : null
     const matchWinner = Array.isArray(bookmaker?.bets)
       ? bookmaker.bets.find((bet: Record<string, any>) => {
           const name = `${bet?.name ?? ''}`.toLowerCase()
-          return name.includes('match winner') || name.includes('winner') || name.includes('result')
+          return (
+            name.includes('match winner') ||
+            name.includes('winner') ||
+            name.includes('result')
+          )
         })
       : null
 
@@ -557,21 +743,27 @@ export function useFootballData() {
         title: t('pages.applications.football.sections.fixtureDetails.title'),
         state: fixtureDetailsState.value,
         error: fixtureDetailsError.value,
-        emptyMessage: t('pages.applications.football.sections.fixtureDetails.empty'),
+        emptyMessage: t(
+          'pages.applications.football.sections.fixtureDetails.empty',
+        ),
       },
       {
         key: 'teamDetails',
         title: t('pages.applications.football.sections.teamDetails.title'),
         state: teamDetailsState.value,
         error: teamDetailsError.value,
-        emptyMessage: t('pages.applications.football.sections.teamDetails.empty'),
+        emptyMessage: t(
+          'pages.applications.football.sections.teamDetails.empty',
+        ),
       },
       {
         key: 'playerDetails',
         title: t('pages.applications.football.sections.playerDetails.title'),
         state: playerDetailsState.value,
         error: playerDetailsError.value,
-        emptyMessage: t('pages.applications.football.sections.playerDetails.empty'),
+        emptyMessage: t(
+          'pages.applications.football.sections.playerDetails.empty',
+        ),
       },
     ]
   })
@@ -584,8 +776,58 @@ export function useFootballData() {
     return mapFixtureLineups(fixtureDetails.value?.lineups ?? [], t)
   })
 
-  const mappedFixturePlayerStats = computed<FixturePlayerStatViewModel[]>(() => {
-    return mapFixturePlayerStats(fixtureDetails.value?.playerStats ?? [], t)
+  const mappedFixturePlayerStats = computed<FixturePlayerStatViewModel[]>(
+    () => {
+      return mapFixturePlayerStats(fixtureDetails.value?.playerStats ?? [], t)
+    },
+  )
+
+  const mappedFixtureTeamStatistics = computed<FixtureTeamStatistics>(() => {
+    return (
+      fixtureDetails.value?.teamStatistics ?? {
+        match: {
+          home: {},
+          away: {},
+        },
+      }
+    )
+  })
+
+  const mappedFixtureMatchContext = computed<FixtureMatchContextViewModel>(() => {
+    return (
+      fixtureDetails.value?.matchContext ?? {
+        coverage: {
+          injuries: false,
+          predictions: false,
+          odds: false,
+        },
+        availability: {
+          covered: false,
+          available: false,
+          status: 'not-covered',
+          injuries: [],
+          suspensions: [],
+        },
+        headToHead: {
+          covered: true,
+          available: false,
+          status: 'unavailable',
+          fixtures: [],
+        },
+        prediction: {
+          covered: false,
+          available: false,
+          status: 'not-covered',
+          item: null,
+        },
+        liveOdds: {
+          covered: false,
+          available: false,
+          status: 'not-covered',
+          item: null,
+        },
+      }
+    )
   })
 
   const resetLeagueDependentData = () => {
@@ -673,18 +915,21 @@ export function useFootballData() {
         $fetch<{ items: FootballFixture[] }>('/api/sports/football/fixtures', {
           query: { league, season },
         }),
-        $fetch<{ league: FootballStandingsLeague; groups: FootballStandingsGroup[] }>(
-          '/api/sports/football/standings',
+        $fetch<{
+          league: FootballStandingsLeague
+          groups: FootballStandingsGroup[]
+        }>('/api/sports/football/standings', {
+          query: { league, season },
+        }),
+        $fetch<{ items: FootballTeam[] }>('/api/sports/football/teams', {
+          query: { league, season },
+        }),
+        $fetch<{ items: Array<Record<string, any>> }>(
+          '/api/sports/football/odds',
           {
             query: { league, season },
           },
         ),
-        $fetch<{ items: FootballTeam[] }>('/api/sports/football/teams', {
-          query: { league, season },
-        }),
-        $fetch<{ items: Array<Record<string, any>> }>('/api/sports/football/odds', {
-          query: { league, season },
-        }),
       ])
 
     if (fixturesResult.status === 'fulfilled') {
@@ -853,7 +1098,9 @@ export function useFootballData() {
           query: {
             player: playerId,
             season: selectedSeason.value,
-            ...(selectedLeagueId.value ? { league: selectedLeagueId.value } : {}),
+            ...(selectedLeagueId.value
+              ? { league: selectedLeagueId.value }
+              : {}),
             ...(selectedTeamId.value ? { team: selectedTeamId.value } : {}),
           },
         },
@@ -883,6 +1130,8 @@ export function useFootballData() {
     mappedFixtureEvents,
     mappedFixtureLineups,
     mappedFixturePlayerStats,
+    mappedFixtureTeamStatistics,
+    mappedFixtureMatchContext,
     teamDetails,
     playerDetails,
     footballSections,
