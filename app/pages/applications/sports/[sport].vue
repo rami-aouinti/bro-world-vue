@@ -126,15 +126,72 @@ const hasSelection = computed(() => {
 
 const teamModalOpen = ref(false)
 const playerModalOpen = ref(false)
+const teamModalLoading = ref(false)
+const playerModalLoading = ref(false)
+const teamModalRequestedId = ref<number | null>(null)
+const playerModalRequestedId = ref<number | null>(null)
+
+const findTeamName = (teamId: number) => {
+  const inFixtures = fixtures.value
+    .flatMap((fixture) => [fixture.teams.home, fixture.teams.away])
+    .find((team) => team.id === teamId)?.name
+  if (inFixtures) {
+    return inFixtures
+  }
+
+  const inStandings = standings.value
+    .flatMap((group) => group.rows)
+    .find((row) => row.team.id === teamId)?.team.name
+  return inStandings ?? ''
+}
+
+const findPlayerName = (playerId: number) => {
+  const inPlayerStats = mappedFixturePlayerStats.value.find(
+    (player) => player.playerId === playerId,
+  )?.playerName
+  return inPlayerStats ?? ''
+}
+
+const teamModalTitle = computed(() => {
+  return (
+    teamDetails.value?.statistics?.team?.name ||
+    (teamModalRequestedId.value ? findTeamName(teamModalRequestedId.value) : '') ||
+    teamDetailsSection.value.title
+  )
+})
+
+const playerModalTitle = computed(() => {
+  return (
+    playerDetails.value?.profile?.name ||
+    (playerModalRequestedId.value ? findPlayerName(playerModalRequestedId.value) : '') ||
+    playerDetailsSection.value.title
+  )
+})
 
 const openTeamModal = async (teamId: number) => {
-  await loadTeamDetails(teamId)
+  playerModalOpen.value = false
+  teamModalRequestedId.value = teamId
+  teamModalLoading.value = true
   teamModalOpen.value = true
+
+  try {
+    await loadTeamDetails(teamId)
+  } finally {
+    teamModalLoading.value = false
+  }
 }
 
 const openPlayerModal = async (playerId: number) => {
-  await loadPlayerDetails(playerId)
+  teamModalOpen.value = false
+  playerModalRequestedId.value = playerId
+  playerModalLoading.value = true
   playerModalOpen.value = true
+
+  try {
+    await loadPlayerDetails(playerId)
+  } finally {
+    playerModalLoading.value = false
+  }
 }
 
 const initializeFootballPage = async () => {
@@ -314,19 +371,31 @@ watch(
       </template>
     </v-container>
 
-    <v-dialog v-model="teamModalOpen" max-width="1000">
+    <v-dialog
+      v-model="teamModalOpen"
+      max-width="1000"
+      @update:model-value="teamModalOpen = $event"
+    >
       <SportsFootballTeamDetailsWidget
+        :title="teamModalTitle"
         :section="teamDetailsSection"
         :team-details="teamDetails"
         :selected-player-id="selectedPlayerId"
+        :loading-override="teamModalLoading"
         @select-player="openPlayerModal"
       />
     </v-dialog>
 
-    <v-dialog v-model="playerModalOpen" max-width="760">
+    <v-dialog
+      v-model="playerModalOpen"
+      max-width="760"
+      @update:model-value="playerModalOpen = $event"
+    >
       <SportsFootballPlayerDetailsWidget
+        :title="playerModalTitle"
         :section="playerDetailsSection"
         :player-details="playerDetails"
+        :loading-override="playerModalLoading"
       />
     </v-dialog>
   </div>

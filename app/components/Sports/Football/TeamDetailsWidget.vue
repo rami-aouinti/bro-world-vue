@@ -4,11 +4,16 @@ import SportsFootballTeamDetailsPanel from '~/components/Sports/Football/TeamDet
 
 const { t } = useI18n()
 
-defineProps<{
+withDefaults(defineProps<{
   section: FootballSection
   teamDetails: FootballTeamDetails | null
   selectedPlayerId: number | null
-}>()
+  title?: string
+  loadingOverride?: boolean
+}>(), {
+  title: '',
+  loadingOverride: false,
+})
 
 defineEmits<{
   selectPlayer: [playerId: number]
@@ -17,10 +22,10 @@ defineEmits<{
 
 <template>
   <v-card class="h-100 football-surface football-surface--dark football-interactive-card" variant="outlined">
-    <v-card-title>{{ section.title }}</v-card-title>
+    <v-card-title>{{ title || section.title }}</v-card-title>
     <v-divider />
     <v-card-text>
-      <template v-if="section.state === 'loading'">
+      <template v-if="loadingOverride || section.state === 'loading'">
         <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
         <span>{{ t('pages.applications.football.loading.teamDetails') }}</span>
       </template>
