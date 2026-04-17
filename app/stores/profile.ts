@@ -48,6 +48,9 @@ export interface ConnectedUserProfile {
   email: string
   firstName: string
   lastName: string
+  language?: string
+  locale?: string
+  timezone?: string
   photo?: string
   coins: number
   profile?: ProfileDetails
