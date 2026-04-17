@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ShopProduct } from '~/types/world/shop'
+import type { ShopGeneralProduct } from '~/types/world/shop'
 import type { SessionUser } from '~/types/session'
 
 definePageMeta({ title: 'world.shop.productDetail.title' })
@@ -14,15 +14,15 @@ const listError = ref<string | null>(null)
 const loading = ref(false)
 const addToCartLoading = ref(false)
 
-const product = ref<ShopProduct | null>(null)
-const similarProducts = ref<ShopProduct[]>([])
+const product = ref<ShopGeneralProduct | null>(null)
+const similarProducts = ref<ShopGeneralProduct[]>([])
 
-function productImage(item: ShopProduct) {
+function productImage(item: ShopGeneralProduct) {
   const fallback = '/images/platform-media/shop-premium-hoodie.svg'
   return item.photo?.trim() || fallback
 }
 
-function formatPrice(item: ShopProduct) {
+function formatPrice(item: ShopGeneralProduct) {
   const baseAmount = item.price ?? item.amount
   const effectiveAmount = item.discountedPrice ?? baseAmount
 
@@ -41,11 +41,11 @@ function formatAmount(value: number, currencyCode: string) {
   }).format(value)
 }
 
-function originalPrice(item: ShopProduct) {
+function originalPrice(item: ShopGeneralProduct) {
   return item.price ?? item.amount
 }
 
-function hasPromotion(item: ShopProduct) {
+function hasPromotion(item: ShopGeneralProduct) {
   const original = originalPrice(item)
   const discounted = item.discountedPrice
   return typeof discounted === 'number' && discounted < original
@@ -178,7 +178,7 @@ watch(
                 size="small"
                 variant="tonal"
                 :color="
-                  product.status === 'active'
+                  product.status === 'published'
                     ? 'success'
                     : product.status === 'draft'
                       ? 'warning'

@@ -6,10 +6,11 @@ import {
   runTrackedStoreFetch,
 } from '~/utils/storeTelemetry'
 import type {
-  ShopCategory,
-  ShopProductDetailData,
-  ShopProductDetailResponse,
-  ShopProduct,
+  ShopGeneralCart,
+  ShopGeneralCategory,
+  ShopGeneralProduct,
+  ShopGeneralProductDetailResponse,
+  ShopGeneralProductsResponse,
   WorldPaginationState,
   WorldShopCartLine,
   WorldShopCategoriesListResponse,
@@ -18,21 +19,10 @@ import type {
   WorldShopFilters,
   WorldShopPaymentAttempt,
   WorldShopPaymentIntentResponse,
-  WorldShopProductsListResponse,
 } from '~/types/world/shop'
 
 const SHOP_TTL_MS = 5 * 60 * 1000
 const SHOP_MAX_RETRY = 2
-
-type ShopProductsMetaLike = {
-  pagination?: {
-    page?: number
-    limit?: number
-    total?: number
-    totalItems?: number
-    totalPages?: number
-  }
-}
 
 function isObjectLike(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
@@ -40,11 +30,11 @@ function isObjectLike(value: unknown): value is Record<string, unknown> {
 
 function isProductsResponseLike(
   value: unknown,
-): value is WorldShopProductsListResponse {
+): value is ShopGeneralProductsResponse {
   return (
     isObjectLike(value) &&
-    'data' in value &&
-    Array.isArray((value as { data?: unknown }).data)
+    'items' in value &&
+    Array.isArray((value as { items?: unknown }).items)
   )
 }
 
@@ -60,11 +50,9 @@ function stableQueryString(filters: Record<string, unknown>) {
 }
 
 export const useWorldShopStore = defineStore('world-shop', () => {
-  const items = ref<Array<ShopProduct | ShopCategory>>([])
-  const categories = ref<ShopCategory[]>([])
-  const detail = ref<
-    ShopProduct | ShopCategory | WorldShopCheckoutSession | null
-  >(null)
+  const items = ref<ShopGeneralProduct[]>([])
+  const categories = ref<ShopGeneralCategory[]>([])
+  const detail = ref<ShopGeneralProduct | WorldShopCheckoutSession | null>(null)
   const pending = ref(false)
   const error = ref<string | null>(null)
   const filters = ref<WorldShopFilters>({})
@@ -79,7 +67,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
   const cache = ref<Record<string, { fetchedAt: number; data: unknown }>>({})
 
   const currentAttempt = ref<WorldShopPaymentAttempt | null>(null)
-  const cart = ref<unknown>(null)
+  const cart = ref<ShopGeneralCart | null>(null)
   const globalShopId = ref<string | null>(null)
 
   function isFresh(entry?: { fetchedAt: number }) {
@@ -183,17 +171,12 @@ export const useWorldShopStore = defineStore('world-shop', () => {
       return
     }
 
-    const meta = ('meta' in response ? response.meta : undefined) as
-      | ShopProductsMetaLike
-      | undefined
-    const apiPagination = meta?.pagination
-    const totalItems =
-      apiPagination?.totalItems ??
-      apiPagination?.total ??
-      ('total' in response && typeof response.total === 'number'
-        ? response.total
-        : 0)
-    const page = apiPagination?.page ?? filters.value.page ?? pagination.value.page
+    const typedResponse = response as ShopGeneralProductsResponse
+    const apiPagination =
+      typedResponse.pagination ?? typedResponse.meta?.pagination
+    const totalItems = apiPagination?.total ?? 0
+    const page =
+      apiPagination?.page ?? filters.value.page ?? pagination.value.page
     const limit =
       apiPagination?.limit ?? filters.value.limit ?? pagination.value.limit
     const totalPages =
@@ -211,10 +194,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
       ...filters.value,
       ...(localFilters ?? {}),
       page:
-        localFilters?.page ??
-        pagination.value.page ??
-        filters.value.page ??
-        1,
+        localFilters?.page ?? pagination.value.page ?? filters.value.page ?? 1,
       limit:
         localFilters?.limit ??
         pagination.value.limit ??
@@ -270,8 +250,8 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     const cached = cache.value[cacheKey]
     if (cached && !options?.force && isFresh(cached)) {
       recordStoreCacheEvent('shop', true)
-      const response = cached.data as WorldShopProductsListResponse
-      items.value = response.data
+      const response = cached.data as ShopGeneralProductsResponse
+      items.value = response.items
       resolveProductsPagination(response)
       lastFetchedAt.value = cached.fetchedAt
       return
@@ -284,21 +264,20 @@ export const useWorldShopStore = defineStore('world-shop', () => {
       const response = await fetchWithRetry(
         () =>
           runTrackedStoreFetch('shop', () =>
-            $fetch<WorldShopProductsListResponse>(
-              '/api/world/shop/products',
-              { query },
-            ),
+            $fetch<ShopGeneralProductsResponse>('/api/world/shop/products', {
+              query,
+            }),
           ),
         {
           i18nKey: 'world.shop.errors.productsFetch',
           fallbackMessage:
-            "Impossible de récupérer les produits de la boutique. Merci de réessayer.",
+            'Impossible de récupérer les produits de la boutique. Merci de réessayer.',
         },
       )
       if (!isProductsResponseLike(response)) {
         throw new Error('Invalid shop products response format.')
       }
-      items.value = response.data
+      items.value = response.items
       resolveProductsPagination(response)
       lastFetchedAt.value = Date.now()
       cache.value[cacheKey] = { fetchedAt: lastFetchedAt.value, data: response }
@@ -312,7 +291,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     const cached = cache.value[cacheKey]
     if (cached && !options?.force && isFresh(cached)) {
       recordStoreCacheEvent('shop', true)
-      categories.value = (cached.data as { data: ShopCategory[] }).data
+      categories.value = (cached.data as { data: ShopGeneralCategory[] }).data
       lastFetchedAt.value = cached.fetchedAt
       return
     }
@@ -346,14 +325,17 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     }
   }
 
-  async function fetchProductById(productId: string, options?: { force?: boolean }) {
+  async function fetchProductById(
+    productId: string,
+    options?: { force?: boolean },
+  ) {
     const cacheKey = `shop-product:${productId}`
     const cached = cache.value[cacheKey]
     if (cached && !options?.force && isFresh(cached)) {
       recordStoreCacheEvent('shop', true)
       const cachedData = cached.data as {
-        product: ShopProduct
-        similarProducts: ShopProduct[]
+        product: ShopGeneralProduct
+        similarProducts: ShopGeneralProduct[]
       }
       detail.value = cachedData.product
       return cachedData
@@ -366,7 +348,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
       const response = await fetchWithRetry(
         () =>
           runTrackedStoreFetch('shop', () =>
-            $fetch<ShopProductDetailResponse>(
+            $fetch<ShopGeneralProductDetailResponse>(
               `/api/world/shop/products/${productId}`,
             ),
           ),
@@ -377,25 +359,9 @@ export const useWorldShopStore = defineStore('world-shop', () => {
         },
       )
 
-      const payload = response.data
-      const hasNestedData =
-        typeof payload === 'object' &&
-        payload !== null &&
-        'product' in payload
-
-      const product = hasNestedData
-        ? (payload as ShopProductDetailData).product
-        : (payload as ShopProduct)
-
-      const similarProducts = hasNestedData
-        ? ((payload as ShopProductDetailData).similarProducts ??
-          response.similarProducts ??
-          [])
-        : (response.similarProducts ?? [])
-
       const normalizedResponse = {
-        product,
-        similarProducts,
+        product: response.product,
+        similarProducts: response.similarProducts ?? [],
       }
 
       detail.value = normalizedResponse.product
@@ -510,7 +476,9 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     error.value = null
     try {
       const response = await runTrackedStoreFetch('shop', () =>
-        $fetch<WorldShopCheckoutSession>(`/api/world/shop/checkout/${checkoutId}`),
+        $fetch<WorldShopCheckoutSession>(
+          `/api/world/shop/checkout/${checkoutId}`,
+        ),
       )
       detail.value = response
       cache.value[cacheKey] = { fetchedAt: Date.now(), data: response }
@@ -530,14 +498,17 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     error.value = null
     try {
       const response = await runTrackedStoreFetch('shop', () =>
-        $fetch<WorldShopPaymentIntentResponse>('/api/world/shop/payment/intent', {
-          method: 'POST',
-          body: {
-            ...payload,
-            shopId,
+        $fetch<WorldShopPaymentIntentResponse>(
+          '/api/world/shop/payment/intent',
+          {
+            method: 'POST',
+            body: {
+              ...payload,
+              shopId,
+            },
+            timeout: 20000,
           },
-          timeout: 20000,
-        }),
+        ),
       )
       detail.value = response.checkout
       currentAttempt.value = response.attempt
@@ -586,7 +557,9 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     error.value = null
     try {
       const response = await runTrackedStoreFetch('shop', () =>
-        $fetch('/api/world/shop/carts/' + encodeURIComponent(shopId)),
+        $fetch<ShopGeneralCart>(
+          '/api/world/shop/carts/' + encodeURIComponent(shopId),
+        ),
       )
       cart.value = response
       return response
@@ -608,13 +581,16 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     error.value = null
     try {
       return await runTrackedStoreFetch('shop', () =>
-        $fetch('/api/world/shop/carts/' + encodeURIComponent(shopId) + '/items', {
-          method: 'POST',
-          body: {
-            productId,
-            quantity,
+        $fetch(
+          '/api/world/shop/carts/' + encodeURIComponent(shopId) + '/items',
+          {
+            method: 'POST',
+            body: {
+              productId,
+              quantity,
+            },
           },
-        }),
+        ),
       )
     } catch (err) {
       const normalized = normalizeHttpError(err)

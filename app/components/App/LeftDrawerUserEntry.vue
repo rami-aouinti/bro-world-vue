@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
-import type { ShopProduct } from '~/types/world/shop'
+import type { ShopGeneralProduct } from '~/types/world/shop'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -15,7 +15,7 @@ const productsLoading = ref(false)
 const checkoutError = ref('')
 const checkoutSuccess = ref('')
 const cartPendingProductId = ref<string | null>(null)
-const coinProducts = ref<ShopProduct[]>([])
+const coinProducts = ref<ShopGeneralProduct[]>([])
 
 const currency = computed(() => {
   const locale = sessionUser.value?.locale?.toLowerCase() || ''
@@ -54,14 +54,16 @@ async function fetchCoinProducts() {
   try {
     await shopStore.fetchProducts({
       force: true,
-      filters: { status: 'active', page: 1, limit: 50 },
+      filters: { status: 'published', page: 1, limit: 50 },
     })
-    coinProducts.value = (shopStore.items as ShopProduct[]).filter((item) => {
-      const category = String(item.category || item.categoryName || '')
-        .toLowerCase()
-        .trim()
-      return category.includes('coins')
-    })
+    coinProducts.value = (shopStore.items as ShopGeneralProduct[]).filter(
+      (item) => {
+        const category = String(item.category || item.categoryName || '')
+          .toLowerCase()
+          .trim()
+        return category.includes('coins')
+      },
+    )
   } catch (error) {
     coinProducts.value = []
     checkoutError.value =
@@ -73,7 +75,7 @@ async function fetchCoinProducts() {
   }
 }
 
-function formatProductAmount(product: ShopProduct) {
+function formatProductAmount(product: ShopGeneralProduct) {
   return new Intl.NumberFormat(sessionUser.value?.locale || 'en-US', {
     style: 'currency',
     currency: product.currencyCode || currency.value,
@@ -88,7 +90,7 @@ async function openCoinModal() {
   await fetchCoinProducts()
 }
 
-async function addToCart(product: ShopProduct) {
+async function addToCart(product: ShopGeneralProduct) {
   cartPendingProductId.value = product.id
   checkoutError.value = ''
   checkoutSuccess.value = ''

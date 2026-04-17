@@ -1,6 +1,11 @@
-export type ShopProductStatus = 'draft' | 'active' | 'archived'
+export type ShopGeneralProductStatus =
+  | 'draft'
+  | 'active'
+  | 'published'
+  | 'archived'
+  | 'unpublished'
 
-export interface ShopCategory {
+export interface ShopGeneralCategory {
   id: string
   name: string
   slug: string
@@ -11,14 +16,14 @@ export interface ShopCategory {
   updatedAt: string
 }
 
-export interface ShopProduct {
+export interface ShopGeneralProduct {
   id: string
   name: string
   slug: string
   sku?: string
   description: string
   photo?: string
-  status: ShopProductStatus
+  status: ShopGeneralProductStatus
   category: string
   categoryId?: string
   categoryName?: string
@@ -36,18 +41,18 @@ export interface ShopProduct {
   updatedAt: string
 }
 
-export interface ShopProductsPagination {
+export interface ShopGeneralProductsPagination {
   page: number
   limit: number
   total: number
   totalPages: number
 }
 
-export interface ShopProductsFilters {
+export interface ShopGeneralProductsFilters {
   q?: string
   name?: string
   category?: string
-  status?: ShopProductStatus
+  status?: ShopGeneralProductStatus
   minPrice?: number
   maxPrice?: number
   promotion?: number
@@ -55,29 +60,94 @@ export interface ShopProductsFilters {
   limit?: number
 }
 
-export interface ShopProductsMeta {
-  pagination: ShopProductsPagination
-  filters: ShopProductsFilters
+export interface ShopGeneralProductsMeta {
+  pagination: ShopGeneralProductsPagination
+  filters: ShopGeneralProductsFilters
 }
 
-export interface ShopProductsListResponse {
-  data: ShopProduct[]
-  meta: ShopProductsMeta
+export interface ShopGeneralProductsResponse {
+  items: ShopGeneralProduct[]
+  pagination?: ShopGeneralProductsPagination
+  meta?: ShopGeneralProductsMeta
 }
 
-export interface ShopProductDetailData {
-  product: ShopProduct
-  similarProducts?: ShopProduct[]
+export interface ShopGeneralProductDetailResponse {
+  product: ShopGeneralProduct
+  similarProducts?: ShopGeneralProduct[]
 }
 
-export interface ShopProductDetailResponse {
-  data: ShopProduct | ShopProductDetailData
-  similarProducts?: ShopProduct[]
+export interface ShopGeneralCartLine {
+  productId: string
+  name: string
+  unitPrice: number
+  quantity: number
+  id?: string
+  unitPriceSnapshot?: number
+  lineTotal?: number
+  product?: {
+    id?: string
+    name?: string
+  }
+}
+
+export interface ShopGeneralCart {
+  id: string
+  shopId: string
+  currency: string
+  currencyCode?: string
+  items: ShopGeneralCartLine[]
+  cart?: ShopGeneralCartLine[]
+  subtotal?: number
+  subtotalAmount: number
+  totalAmount: number
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface ShopGeneralOrderLine {
+  sku?: string
+  productId: string
+  title: string
+  quantity: number
+  unitPrice: number
+}
+
+export interface ShopGeneralOrder {
+  id: string
+  status:
+    | 'pending'
+    | 'paid'
+    | 'packed'
+    | 'shipped'
+    | 'delivered'
+    | 'returned'
+    | 'refunded'
+  currency: string
+  amount: number
+  createdAt: string
+  lines?: ShopGeneralOrderLine[]
+}
+
+export interface ShopGeneralOrdersResponse {
+  items: ShopGeneralOrder[]
+}
+
+export interface ShopGeneralTransaction {
+  id: string
+  orderId?: string
+  checkoutId?: string
+  provider: 'stripe' | 'adyen' | 'paypal'
+  status: 'pending' | 'failed' | 'succeeded'
+  amount?: number
+  currency?: string
+  reason?: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 export function normalizeShopProductsFilters(
-  filters: ShopProductsFilters,
-): ShopProductsFilters {
+  filters: ShopGeneralProductsFilters,
+): ShopGeneralProductsFilters {
   const trimOrUndefined = (value?: string) => {
     if (typeof value !== 'string') return undefined
     const trimmed = value.trim()
@@ -120,17 +190,7 @@ export interface WorldPaginationState {
   totalPages: number
 }
 
-export type WorldShopFilters = ShopProductsFilters
-
-export interface WorldShopListResponse<T> {
-  data: T[]
-  total: number
-  facets?: Record<string, string[]>
-}
-
-export interface WorldShopDetailResponse<T> {
-  data: T
-}
+export type WorldShopFilters = ShopGeneralProductsFilters
 
 export interface WorldShopCheckoutAddress {
   fullName: string
@@ -143,12 +203,7 @@ export interface WorldShopCheckoutAddress {
   phone: string
 }
 
-export interface WorldShopCartLine {
-  productId: string
-  name: string
-  unitPrice: number
-  quantity: number
-}
+export interface WorldShopCartLine extends ShopGeneralCartLine {}
 
 export interface WorldShopShippingOption {
   id: string
@@ -183,16 +238,19 @@ export interface WorldShopCheckoutSession {
   attempts?: WorldShopPaymentAttempt[]
 }
 
+export type ShopGeneralCheckoutSession = WorldShopCheckoutSession
+
 export interface WorldShopPaymentIntentResponse {
   checkout: WorldShopCheckoutSession
   attempt: WorldShopPaymentAttempt
 }
 
-export type WorldShopProductsListResponse =
-  | ShopProductsListResponse
-  | WorldShopListResponse<ShopProduct>
-
 export type WorldShopCategoriesListResponse = {
-  data: ShopCategory[]
-  tree: Array<ShopCategory & { children: ShopCategory[] }>
+  data: ShopGeneralCategory[]
+  tree: Array<ShopGeneralCategory & { children: ShopGeneralCategory[] }>
 }
+
+// Backward-compatible aliases while code is migrated.
+export type ShopProductStatus = ShopGeneralProductStatus
+export type ShopCategory = ShopGeneralCategory
+export type ShopProduct = ShopGeneralProduct
