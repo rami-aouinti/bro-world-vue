@@ -1,6 +1,8 @@
 <script setup lang="ts">
 definePageMeta({ title: 'Jobs Apply' })
 
+const { t } = useI18n()
+
 type ApplicationStatus = 'draft' | 'submitted' | 'withdrawn'
 
 type StatusEvent = {
@@ -23,31 +25,39 @@ type CandidateApplication = {
   events: StatusEvent[]
 }
 
-const jobsNavItems = [
+const jobsNavItems = computed(() => [
   {
-    title: 'Overview Jobs',
+    title: t('world.jobs.nav.overview'),
     to: '/world/jobs',
     icon: 'mdi-view-dashboard-outline',
   },
-  { title: 'Offers', to: '/world/jobs/offers', icon: 'mdi-briefcase-outline' },
   {
-    title: 'My Offers',
+    title: t('world.jobs.nav.offers'),
+    to: '/world/jobs/offers',
+    icon: 'mdi-briefcase-outline',
+  },
+  {
+    title: t('world.jobs.nav.myOffers'),
     to: '/world/jobs/my-offers',
     icon: 'mdi-account-tie-outline',
   },
   {
-    title: 'Applications',
+    title: t('world.jobs.nav.applications'),
     to: '/world/jobs/applications',
     icon: 'mdi-file-document-outline',
   },
-  { title: 'Apply', to: '/world/jobs/apply', icon: 'mdi-send-outline' },
   {
-    title: 'Admin',
+    title: t('world.jobs.nav.apply'),
+    to: '/world/jobs/apply',
+    icon: 'mdi-send-outline',
+  },
+  {
+    title: t('world.jobs.nav.admin'),
     to: '/world/jobs/admin',
     icon: 'mdi-shield-crown-outline',
     rootOnly: true,
   },
-]
+])
 
 const maxCvSizeBytes = 5 * 1024 * 1024
 const allowedCvExtensions = ['pdf', 'doc', 'docx']
@@ -78,38 +88,13 @@ const selectedApplicationId = ref<string | null>(null)
 const errorMessage = ref('')
 const successMessage = ref('')
 
-const applications = ref<CandidateApplication[]>([
-  {
-    id: 'APP-1001',
-    jobId: 'JOB-FE-2026',
-    candidateName: 'Alex Martin',
-    email: 'alex.martin@example.com',
-    portfolioUrl: 'https://portfolio.example.com/alex',
-    status: 'submitted',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    duplicateKey: 'job-fe-2026::alex.martin@example.com',
-    cvFileName: 'alex_martin_cv.pdf',
-    events: [
-      {
-        status: 'draft',
-        at: new Date().toISOString(),
-        note: 'Brouillon créé par le candidat',
-      },
-      {
-        status: 'submitted',
-        at: new Date().toISOString(),
-        note: 'Candidature soumise',
-      },
-    ],
-  },
-])
+const applications = ref<CandidateApplication[]>([])
 
-const statusLabel: Record<ApplicationStatus, string> = {
-  draft: 'Draft',
-  submitted: 'Submitted',
-  withdrawn: 'Withdrawn',
-}
+const statusLabel = computed<Record<ApplicationStatus, string>>(() => ({
+  draft: t('world.jobs.apply.status.draft'),
+  submitted: t('world.jobs.apply.status.submitted'),
+  withdrawn: t('world.jobs.apply.status.withdrawn'),
+}))
 
 const statusColor: Record<ApplicationStatus, string> = {
   draft: 'warning',
@@ -117,47 +102,53 @@ const statusColor: Record<ApplicationStatus, string> = {
   withdrawn: 'error',
 }
 
-const tableHeaders = [
-  { title: 'ID', key: 'id' },
-  { title: 'Job ID', key: 'jobId' },
-  { title: 'Candidate', key: 'candidateName' },
-  { title: 'Email', key: 'email' },
-  { title: 'Portfolio', key: 'portfolioUrl' },
-  { title: 'Status', key: 'status' },
-  { title: 'Updated', key: 'updatedAt' },
-]
+const tableHeaders = computed(() => [
+  { title: t('world.jobs.apply.table.id'), key: 'id' },
+  { title: t('world.jobs.apply.table.jobId'), key: 'jobId' },
+  { title: t('world.jobs.apply.table.candidate'), key: 'candidateName' },
+  { title: t('world.jobs.apply.table.email'), key: 'email' },
+  { title: t('world.jobs.apply.table.portfolio'), key: 'portfolioUrl' },
+  { title: t('world.jobs.apply.table.status'), key: 'status' },
+  { title: t('world.jobs.apply.table.updated'), key: 'updatedAt' },
+])
 
 const requiredRule = (value: string | number | boolean | null) =>
-  (value !== null && value !== '') || 'Champ obligatoire'
+  (value !== null && value !== '') || t('world.jobs.apply.validation.required')
 const emailRule = (value: string) =>
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || 'Email invalide'
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ||
+  t('world.jobs.apply.validation.invalidEmail')
 const portfolioRule = (value: string) => {
   try {
     const parsed = new URL(value)
     return (
-      ['http:', 'https:'].includes(parsed.protocol) || 'URL portfolio invalide'
+      ['http:', 'https:'].includes(parsed.protocol) ||
+      t('world.jobs.apply.validation.invalidPortfolioUrl')
     )
   } catch {
-    return 'URL portfolio invalide'
+    return t('world.jobs.apply.validation.invalidPortfolioUrl')
   }
 }
 const coverLetterRule = (value: string) =>
   value.trim().length >= 120 ||
-  'La cover letter doit contenir au moins 120 caractères'
+  t('world.jobs.apply.validation.coverLetterMin', { min: 120 })
 const phoneRule = (value: string) =>
-  /^[+\d\s().-]{8,20}$/.test(value) || 'Téléphone invalide'
+  /^[+\d\s().-]{8,20}$/.test(value) ||
+  t('world.jobs.apply.validation.invalidPhone')
 
 const cvValidationError = computed(() => {
-  if (!cvFile.value) return 'CV requis'
+  if (!cvFile.value) return t('world.jobs.apply.validation.cvRequired')
 
   const fileExtension = cvFile.value.name.split('.').pop()?.toLowerCase() || ''
   if (!allowedCvExtensions.includes(fileExtension))
-    return `Type de fichier non autorisé (${allowedCvExtensions.join(', ')})`
+    return t('world.jobs.apply.validation.invalidFileType', {
+      types: allowedCvExtensions.join(', '),
+    })
 
   if (cvFile.value.type && !allowedCvMimeTypes.includes(cvFile.value.type))
-    return 'MIME type du fichier CV non autorisé'
+    return t('world.jobs.apply.validation.invalidCvMimeType')
 
-  if (cvFile.value.size > maxCvSizeBytes) return 'CV trop volumineux (max 5MB)'
+  if (cvFile.value.size > maxCvSizeBytes)
+    return t('world.jobs.apply.validation.cvTooLarge', { max: '5MB' })
 
   return ''
 })
@@ -216,8 +207,7 @@ const validateForm = async () => {
     applicationForm.yearsExperience === null ||
     applicationForm.yearsExperience < 2
   ) {
-    errorMessage.value =
-      "Le candidat ne passe pas les critères knockout (autorisation de travail + minimum 2 ans d'expérience)."
+    errorMessage.value = t('world.jobs.apply.errors.knockoutCriteria')
     return false
   }
 
@@ -250,7 +240,9 @@ const buildApplication = (status: ApplicationStatus): CandidateApplication => {
         status,
         at: now,
         note:
-          status === 'draft' ? 'Brouillon sauvegardé' : 'Candidature soumise',
+          status === 'draft'
+            ? t('world.jobs.apply.events.draftSaved')
+            : t('world.jobs.apply.events.submitted'),
       },
     ],
   }
@@ -271,14 +263,13 @@ const saveDraft = async () => {
 
   const candidate = buildApplication('draft')
   if (hasDuplicateApplication(candidate)) {
-    errorMessage.value =
-      'Un brouillon/candidature identique existe déjà pour ce job et ce CV.'
+    errorMessage.value = t('world.jobs.apply.errors.duplicateDraft')
     return
   }
 
   applications.value.unshift(candidate)
   selectedApplicationId.value = candidate.id
-  successMessage.value = 'Brouillon enregistré.'
+  successMessage.value = t('world.jobs.apply.success.draftSaved')
   resetForm()
 }
 
@@ -289,14 +280,13 @@ const submitApplication = async () => {
 
   const candidate = buildApplication('submitted')
   if (hasDuplicateApplication(candidate)) {
-    errorMessage.value =
-      'Candidature dupliquée détectée. Veuillez mettre à jour la candidature existante.'
+    errorMessage.value = t('world.jobs.apply.errors.duplicateApplication')
     return
   }
 
   applications.value.unshift(candidate)
   selectedApplicationId.value = candidate.id
-  successMessage.value = 'Candidature soumise avec succès.'
+  successMessage.value = t('world.jobs.apply.success.applicationSubmitted')
   resetForm()
 }
 
@@ -307,7 +297,7 @@ const handleRowClick = (_event: Event, ctx: { item: CandidateApplication }) => {
 const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
   clearMessages()
   if (!selectedApplication.value) {
-    errorMessage.value = 'Sélectionnez une candidature pour changer son statut.'
+    errorMessage.value = t('world.jobs.apply.errors.selectApplication')
     return
   }
 
@@ -319,18 +309,20 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
     note,
   })
 
-  successMessage.value = `Statut mis à jour: ${statusLabel[status]}.`
+  successMessage.value = t('world.jobs.apply.success.statusUpdated', {
+    status: statusLabel.value[status],
+  })
 }
 </script>
 
 <template>
   <div>
     <WorldModuleDrawers
-      module-title="Jobs"
+      :module-title="t('world.jobs.label')"
       module-icon="mdi-briefcase-search-outline"
-      module-description="Navigation complète du module Jobs."
+      :module-description="t('world.jobs.moduleDescription')"
       :nav-items="jobsNavItems"
-      action-label="Postuler"
+      :action-label="t('world.jobs.apply.actions.apply')"
     />
 
     <v-container fluid>
@@ -338,8 +330,10 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
         <v-col cols="12" lg="7">
           <v-card>
             <v-card-title class="d-flex align-center justify-space-between">
-              <span>Candidat · Formulaire complet</span>
-              <v-chip color="primary" variant="tonal">ATS Ready</v-chip>
+              <span>{{ t('world.jobs.apply.form.title') }}</span>
+              <v-chip color="primary" variant="tonal">{{
+                t('world.jobs.apply.form.atsReady')
+              }}</v-chip>
             </v-card-title>
             <v-card-text>
               <v-alert
@@ -369,49 +363,49 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
                   <v-col cols="12" md="6">
                     <v-text-field
                       v-model="applicationForm.jobId"
-                      label="Job ID"
+                      :label="t('world.jobs.apply.form.jobId')"
                       :rules="[requiredRule]"
                     />
                   </v-col>
                   <v-col cols="12" md="6">
                     <v-text-field
                       v-model="applicationForm.email"
-                      label="Email"
+                      :label="t('world.jobs.apply.form.email')"
                       :rules="[requiredRule, emailRule]"
                     />
                   </v-col>
                   <v-col cols="12" md="6">
                     <v-text-field
                       v-model="applicationForm.firstName"
-                      label="First name"
+                      :label="t('world.jobs.apply.form.firstName')"
                       :rules="[requiredRule]"
                     />
                   </v-col>
                   <v-col cols="12" md="6">
                     <v-text-field
                       v-model="applicationForm.lastName"
-                      label="Last name"
+                      :label="t('world.jobs.apply.form.lastName')"
                       :rules="[requiredRule]"
                     />
                   </v-col>
                   <v-col cols="12" md="6">
                     <v-text-field
                       v-model="applicationForm.phone"
-                      label="Phone"
+                      :label="t('world.jobs.apply.form.phone')"
                       :rules="[requiredRule, phoneRule]"
                     />
                   </v-col>
                   <v-col cols="12" md="6">
                     <v-text-field
                       v-model="applicationForm.portfolioUrl"
-                      label="Portfolio URL"
+                      :label="t('world.jobs.apply.form.portfolioUrl')"
                       :rules="[requiredRule, portfolioRule]"
                     />
                   </v-col>
                   <v-col cols="12">
                     <v-file-input
                       v-model="cvFile"
-                      label="CV (PDF/DOC/DOCX, max 5MB)"
+                      :label="t('world.jobs.apply.form.cvLabel')"
                       accept=".pdf,.doc,.docx"
                       prepend-icon="mdi-file-account-outline"
                       show-size
@@ -429,7 +423,7 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
                   <v-col cols="12">
                     <v-textarea
                       v-model="applicationForm.coverLetter"
-                      label="Cover letter"
+                      :label="t('world.jobs.apply.form.coverLetter')"
                       rows="6"
                       counter="1200"
                       :rules="[requiredRule, coverLetterRule]"
@@ -439,16 +433,18 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
 
                 <v-divider class="my-6" />
 
-                <h4 class="text-subtitle-1 mb-3">Questions knockout</h4>
+                <h4 class="text-subtitle-1 mb-3">
+                  {{ t('world.jobs.apply.form.knockoutQuestions') }}
+                </h4>
 
                 <v-row>
                   <v-col cols="12" md="6">
                     <v-select
                       v-model="applicationForm.authorizedToWork"
-                      label="Authorized to work?"
+                      :label="t('world.jobs.apply.form.authorizedToWork')"
                       :items="[
-                        { title: 'Oui', value: true },
-                        { title: 'Non', value: false },
+                        { title: t('world.common.yes'), value: true },
+                        { title: t('world.common.no'), value: false },
                       ]"
                       :rules="[requiredRule]"
                     />
@@ -457,7 +453,7 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
                     <v-text-field
                       v-model.number="applicationForm.yearsExperience"
                       type="number"
-                      label="Years of experience"
+                      :label="t('world.jobs.apply.form.yearsExperience')"
                       :min="0"
                       :max="40"
                       :rules="[requiredRule]"
@@ -467,7 +463,7 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
                     <v-text-field
                       v-model.number="applicationForm.expectedSalary"
                       type="number"
-                      label="Expected salary (USD)"
+                      :label="t('world.jobs.apply.form.expectedSalary')"
                       :min="30000"
                       :max="500000"
                       :rules="[requiredRule]"
@@ -477,17 +473,17 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
                     <v-text-field
                       v-model="applicationForm.availableDate"
                       type="date"
-                      label="Available date"
+                      :label="t('world.jobs.apply.form.availableDate')"
                       :rules="[requiredRule]"
                     />
                   </v-col>
                   <v-col cols="12">
                     <v-select
                       v-model="applicationForm.openToRelocate"
-                      label="Open to relocation?"
+                      :label="t('world.jobs.apply.form.openToRelocation')"
                       :items="[
-                        { title: 'Oui', value: true },
-                        { title: 'Non', value: false },
+                        { title: t('world.common.yes'), value: true },
+                        { title: t('world.common.no'), value: false },
                       ]"
                       :rules="[requiredRule]"
                     />
@@ -501,20 +497,20 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
                     prepend-icon="mdi-content-save-outline"
                     @click="saveDraft"
                   >
-                    Save draft
+                    {{ t('world.jobs.apply.actions.saveDraft') }}
                   </v-btn>
                   <v-btn
                     color="primary"
                     prepend-icon="mdi-send-outline"
                     @click="submitApplication"
                   >
-                    Submit application
+                    {{ t('world.jobs.apply.actions.submitApplication') }}
                   </v-btn>
                   <v-btn
                     variant="text"
                     prepend-icon="mdi-refresh"
                     @click="resetForm"
-                    >Reset</v-btn
+                    >{{ t('world.jobs.apply.actions.reset') }}</v-btn
                   >
                 </div>
               </v-form>
@@ -524,7 +520,9 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
 
         <v-col cols="12" lg="5">
           <v-card class="mb-4">
-            <v-card-title>Suivi candidat</v-card-title>
+            <v-card-title>{{
+              t('world.jobs.apply.tracking.candidateTracking')
+            }}</v-card-title>
             <v-card-text>
               <v-data-table
                 :headers="tableHeaders"
@@ -534,8 +532,11 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
                 @click:row="handleRowClick"
               >
                 <template #item.portfolioUrl="{ item }">
-                  <a :href="item.portfolioUrl" target="_blank" rel="noreferrer"
-                    >Portfolio</a
+                  <a
+                    :href="item.portfolioUrl"
+                    target="_blank"
+                    rel="noreferrer"
+                    >{{ t('world.jobs.apply.table.portfolioLink') }}</a
                   >
                 </template>
                 <template #item.status="{ item }">
@@ -556,7 +557,7 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
 
           <v-card>
             <v-card-title class="d-flex align-center justify-space-between">
-              <span>État de candidature</span>
+              <span>{{ t('world.jobs.apply.tracking.applicationState') }}</span>
               <v-chip
                 v-if="selectedApplication"
                 :color="statusColor[selectedApplication.status]"
@@ -580,11 +581,11 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
                     @click="
                       updateApplicationStatus(
                         'submitted',
-                        'Resoumission par le candidat',
+                        t('world.jobs.apply.events.resubmittedByCandidate'),
                       )
                     "
                   >
-                    Mark submitted
+                    {{ t('world.jobs.apply.actions.markSubmitted') }}
                   </v-btn>
                   <v-btn
                     size="small"
@@ -594,11 +595,11 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
                     @click="
                       updateApplicationStatus(
                         'draft',
-                        'Retour en brouillon pour modification',
+                        t('world.jobs.apply.events.backToDraft'),
                       )
                     "
                   >
-                    Mark draft
+                    {{ t('world.jobs.apply.actions.markDraft') }}
                   </v-btn>
                   <v-btn
                     size="small"
@@ -608,11 +609,11 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
                     @click="
                       updateApplicationStatus(
                         'withdrawn',
-                        'Candidature retirée par le candidat',
+                        t('world.jobs.apply.events.withdrawnByCandidate'),
                       )
                     "
                   >
-                    Withdraw
+                    {{ t('world.jobs.apply.actions.withdraw') }}
                   </v-btn>
                 </div>
 
@@ -634,7 +635,7 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
               </template>
 
               <v-alert v-else type="info" variant="tonal">
-                Sélectionnez une candidature pour consulter son suivi.
+                {{ t('world.jobs.apply.tracking.selectApplication') }}
               </v-alert>
             </v-card-text>
           </v-card>

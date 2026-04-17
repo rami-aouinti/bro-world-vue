@@ -10,6 +10,8 @@ import { privateApi } from '~/utils/http/privateApi'
 
 definePageMeta({ title: 'Jobs Offer Detail' })
 
+const { t } = useI18n()
+
 const route = useRoute()
 const slug = computed(() => String(route.params.slug || ''))
 
@@ -65,7 +67,7 @@ async function fetchDetail() {
     job.value = response.job
   } catch (error) {
     console.error(error)
-    errorMessage.value = "Impossible de charger le détail de l'offre."
+    errorMessage.value = t('world.jobs.offers.errors.detailLoading')
   } finally {
     loading.value = false
   }
@@ -137,7 +139,8 @@ async function submitApplication() {
         body: {
           resumeId,
           coverLetter:
-            coverLetter.value.trim() || 'Application from jobs module',
+            coverLetter.value.trim() ||
+            t('world.jobs.offers.apply.defaultCoverLetter'),
         },
       },
     )
@@ -153,13 +156,15 @@ async function submitApplication() {
       },
     )
 
-    applySuccess.value = `Candidature envoyée ✅ (status: ${application.status})`
+    applySuccess.value = t('world.jobs.offers.apply.success', {
+      status: application.status,
+    })
     coverLetter.value = ''
     createResumeMode.value = false
     resumeFile.value = null
   } catch (error) {
     console.error(error)
-    applyError.value = "Impossible d'envoyer la candidature pour le moment."
+    applyError.value = t('world.jobs.offers.apply.errors.submit')
   } finally {
     applyLoading.value = false
   }
@@ -179,7 +184,7 @@ watch(applyOpen, async (isOpen) => {
     await fetchMyResumes()
   } catch (error) {
     console.error(error)
-    applyError.value = 'Impossible de récupérer vos CV.'
+    applyError.value = t('world.jobs.offers.apply.errors.resumes')
   }
 })
 
@@ -194,7 +199,7 @@ await fetchDetail()
       variant="text"
       to="/world/jobs/offers"
     >
-      Retour aux offres
+      {{ t('world.jobs.offers.actions.backToOffers') }}
     </v-btn>
 
     <v-alert
@@ -239,7 +244,7 @@ await fetchDetail()
                 prepend-icon="mdi-send"
                 @click="applyOpen = true"
               >
-                Apply
+                {{ t('world.jobs.offers.apply.actions.open') }}
               </v-btn>
             </div>
           </div>
@@ -261,22 +266,34 @@ await fetchDetail()
 
           <p class="mb-4">{{ job.summary }}</p>
 
-          <h2 class="text-h6 mb-2">Mission</h2>
-          <p class="mb-4">{{ job.missionDescription || '—' }}</p>
+          <h2 class="text-h6 mb-2">
+            {{ t('world.jobs.offers.sections.mission') }}
+          </h2>
+          <p class="mb-4">
+            {{
+              job.missionDescription || t('world.jobs.offers.placeholder.empty')
+            }}
+          </p>
 
-          <h2 class="text-h6 mb-2">Responsabilités</h2>
+          <h2 class="text-h6 mb-2">
+            {{ t('world.jobs.offers.sections.responsibilities') }}
+          </h2>
           <ul class="pl-5 mb-4">
             <li v-for="item in job.responsibilities || []" :key="item">
               {{ item }}
             </li>
           </ul>
 
-          <h2 class="text-h6 mb-2">Profil</h2>
+          <h2 class="text-h6 mb-2">
+            {{ t('world.jobs.offers.sections.profile') }}
+          </h2>
           <ul class="pl-5 mb-4">
             <li v-for="item in job.profile || []" :key="item">{{ item }}</li>
           </ul>
 
-          <h2 class="text-h6 mb-2">Bénéfices</h2>
+          <h2 class="text-h6 mb-2">
+            {{ t('world.jobs.offers.sections.benefits') }}
+          </h2>
           <ul class="pl-5 mb-0">
             <li v-for="item in job.benefits || []" :key="item">{{ item }}</li>
           </ul>
@@ -284,7 +301,11 @@ await fetchDetail()
       </v-card-text>
     </v-card>
 
-    <AppModal v-model="applyOpen" title="Apply to this job" :max-width="700">
+    <AppModal
+      v-model="applyOpen"
+      :title="t('world.jobs.offers.apply.modalTitle')"
+      :max-width="700"
+    >
       <v-alert
         v-if="applyError"
         type="error"
@@ -308,7 +329,7 @@ await fetchDetail()
       <v-switch
         v-model="createResumeMode"
         color="primary"
-        label="Créer un nouveau CV pour cette candidature"
+        :label="t('world.jobs.offers.apply.createResumeMode')"
         inset
         class="mb-2"
       />
@@ -316,7 +337,7 @@ await fetchDetail()
       <template v-if="!createResumeMode">
         <v-select
           v-model="selectedResumeId"
-          label="Choisir un CV existant"
+          :label="t('world.jobs.offers.apply.selectResume')"
           :items="
             resumes.map((resume) => ({ title: resume.id, value: resume.id }))
           "
@@ -331,7 +352,7 @@ await fetchDetail()
       <template v-else>
         <v-file-input
           v-model="resumeFile"
-          label="Uploader un PDF (optionnel)"
+          :label="t('world.jobs.offers.apply.uploadPdf')"
           accept="application/pdf"
           prepend-icon="mdi-file-pdf-box"
           show-size
@@ -339,7 +360,9 @@ await fetchDetail()
           class="mb-3"
         />
 
-        <h4 class="text-subtitle-2 mb-2">Experiences</h4>
+        <h4 class="text-subtitle-2 mb-2">
+          {{ t('world.jobs.offers.apply.experiences') }}
+        </h4>
         <div
           v-for="(item, index) in manualResume.experiences"
           :key="`exp-${index}`"
@@ -347,12 +370,12 @@ await fetchDetail()
         >
           <v-text-field
             v-model="item.title"
-            label="Titre"
+            :label="t('world.jobs.offers.apply.fieldTitle')"
             density="comfortable"
           />
           <v-text-field
             v-model="item.description"
-            label="Description"
+            :label="t('world.jobs.offers.apply.fieldDescription')"
             density="comfortable"
           />
         </div>
@@ -363,10 +386,12 @@ await fetchDetail()
           class="mb-3"
           @click="addResumeLine('experiences')"
         >
-          Ajouter une experience
+          {{ t('world.jobs.offers.apply.addExperience') }}
         </v-btn>
 
-        <h4 class="text-subtitle-2 mb-2">Skills</h4>
+        <h4 class="text-subtitle-2 mb-2">
+          {{ t('world.jobs.offers.apply.skills') }}
+        </h4>
         <div
           v-for="(item, index) in manualResume.skills"
           :key="`skill-${index}`"
@@ -374,12 +399,12 @@ await fetchDetail()
         >
           <v-text-field
             v-model="item.title"
-            label="Titre"
+            :label="t('world.jobs.offers.apply.fieldTitle')"
             density="comfortable"
           />
           <v-text-field
             v-model="item.description"
-            label="Description"
+            :label="t('world.jobs.offers.apply.fieldDescription')"
             density="comfortable"
           />
         </div>
@@ -390,13 +415,13 @@ await fetchDetail()
           class="mb-4"
           @click="addResumeLine('skills')"
         >
-          Ajouter un skill
+          {{ t('world.jobs.offers.apply.addSkill') }}
         </v-btn>
       </template>
 
       <v-textarea
         v-model="coverLetter"
-        label="Cover letter"
+        :label="t('world.jobs.offers.apply.coverLetter')"
         auto-grow
         rows="4"
         variant="outlined"
@@ -408,7 +433,7 @@ await fetchDetail()
           variant="text"
           :disabled="applyLoading"
           @click="applyOpen = false"
-          >Fermer</v-btn
+          >{{ t('world.jobs.offers.apply.actions.close') }}</v-btn
         >
         <v-btn
           color="primary"
@@ -416,7 +441,7 @@ await fetchDetail()
           :disabled="!canSubmitApplication"
           @click="submitApplication"
         >
-          Envoyer la candidature
+          {{ t('world.jobs.offers.apply.actions.submit') }}
         </v-btn>
       </template>
     </AppModal>

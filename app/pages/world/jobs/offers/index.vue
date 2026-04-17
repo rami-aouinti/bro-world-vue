@@ -13,32 +13,32 @@ const { t } = useI18n()
 
 const jobsNavItems = [
   {
-    title: t('world.jobs.nav.overview', 'Vue d’ensemble / Overview'),
+    title: t('world.jobs.nav.overview'),
     to: '/world/jobs',
     icon: 'mdi-view-dashboard-outline',
   },
   {
-    title: t('world.jobs.nav.offers', 'Offres / Offers'),
+    title: t('world.jobs.nav.offers'),
     to: '/world/jobs/offers',
     icon: 'mdi-briefcase-outline',
   },
   {
-    title: t('world.jobs.nav.myOffers', 'Mes offres / My offers'),
+    title: t('world.jobs.nav.myOffers'),
     to: '/world/jobs/my-offers',
     icon: 'mdi-account-tie-outline',
   },
   {
-    title: t('world.jobs.nav.applications', 'Candidatures / Applications'),
+    title: t('world.jobs.nav.applications'),
     to: '/world/jobs/applications',
     icon: 'mdi-file-document-outline',
   },
   {
-    title: t('world.jobs.nav.apply', 'Postuler / Apply'),
+    title: t('world.jobs.nav.apply'),
     to: '/world/jobs/apply',
     icon: 'mdi-send-outline',
   },
   {
-    title: t('world.jobs.nav.admin', 'Admin'),
+    title: t('world.jobs.nav.admin'),
     to: '/world/jobs/admin',
     icon: 'mdi-shield-crown-outline',
     rootOnly: true,
@@ -98,10 +98,7 @@ async function fetchJobs() {
     totalPages.value = response.pagination?.totalPages || 1
   } catch (error) {
     console.error(error)
-    errorMessage.value = t(
-      'world.jobs.offers.errors.loading',
-      'Impossible de charger les offres.',
-    )
+    errorMessage.value = t('world.jobs.offers.errors.loading')
   } finally {
     loading.value = false
   }
@@ -129,26 +126,21 @@ await fetchJobs()
 <template>
   <div>
     <WorldModuleDrawers
-      :module-title="t('world.jobs.title', 'Jobs')"
+      :module-title="t('world.jobs.title')"
       module-icon="mdi-briefcase-search-outline"
-      :module-description="
-        t(
-          'world.jobs.description',
-          'Navigation complète du module Jobs.',
-        )
-      "
+      :module-description="t('world.jobs.description')"
       :nav-items="jobsNavItems"
-      :action-label="t('world.jobs.offers.actions.create', 'Créer une offre')"
+      :action-label="t('world.jobs.offers.actions.create')"
     >
       <template #right>
         <h3 class="text-subtitle-1 font-weight-bold mb-3">
-          {{ t('world.jobs.offers.filters.title', 'Filtres') }}
+          {{ t('world.jobs.offers.filters.title') }}
         </h3>
         <div class="d-flex flex-column ga-3">
           <v-select
             v-model="workMode"
             :items="workModeOptions"
-            :label="t('world.jobs.offers.filters.workMode', 'Mode de travail')"
+            :label="t('world.jobs.offers.filters.workMode')"
             :menu-props="filterMenuProps"
             clearable
             hide-details
@@ -156,7 +148,7 @@ await fetchJobs()
           <v-select
             v-model="contractType"
             :items="contractTypeOptions"
-            :label="t('world.jobs.offers.filters.contractType', 'Type de contrat')"
+            :label="t('world.jobs.offers.filters.contractType')"
             :menu-props="filterMenuProps"
             clearable
             hide-details
@@ -164,20 +156,16 @@ await fetchJobs()
           <v-select
             v-model="experienceLevel"
             :items="experienceOptions"
-            :label="t('world.jobs.offers.filters.experience', 'Expérience')"
+            :label="t('world.jobs.offers.filters.experience')"
             :menu-props="filterMenuProps"
             clearable
             hide-details
           />
-          <v-btn
-            color="primary"
-            block
-            @click="applyFilters"
-          >
-            {{ t('world.jobs.offers.filters.apply', 'Filtrer') }}
+          <v-btn color="primary" block @click="applyFilters">
+            {{ t('world.jobs.offers.filters.apply') }}
           </v-btn>
           <v-btn variant="tonal" block @click="resetFilters">
-            {{ t('world.jobs.offers.filters.reset', 'Réinitialiser') }}
+            {{ t('world.jobs.offers.filters.reset') }}
           </v-btn>
         </div>
       </template>
@@ -187,7 +175,7 @@ await fetchJobs()
       <v-card rounded="xl" class="mb-4 pa-4 postcard-gradient-card">
         <v-text-field
           v-model="q"
-          :label="t('world.jobs.offers.search.label', 'Recherche')"
+          :label="t('world.jobs.offers.search.label')"
           prepend-inner-icon="mdi-magnify"
           clearable
           hide-details
@@ -238,7 +226,7 @@ await fetchJobs()
                 prepend-icon="mdi-file-document-outline"
                 :to="`/world/jobs/offers/${job.slug}`"
               >
-                {{ t('world.jobs.offers.actions.viewDetails', 'Voir détail') }}
+                {{ t('world.jobs.offers.actions.viewDetails') }}
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -250,12 +238,7 @@ await fetchJobs()
         rounded="xl"
         class="pa-6 text-center"
       >
-        {{
-          t(
-            'world.jobs.offers.empty',
-            'Aucune offre trouvée avec ces filtres.',
-          )
-        }}
+        {{ t('world.jobs.offers.empty') }}
       </v-card>
 
       <div class="d-flex justify-center py-4">
@@ -263,7 +246,7 @@ await fetchJobs()
       </div>
 
       <div class="text-center text-caption text-medium-emphasis pb-6">
-        {{ t('world.jobs.offers.total', { count: totalItems }, `${totalItems} offres`) }}
+        {{ t('world.jobs.offers.total', { count: totalItems }) }}
       </div>
     </v-container>
   </div>

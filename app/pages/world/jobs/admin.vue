@@ -9,6 +9,7 @@ import type { SessionUser } from '~/types/session'
 
 definePageMeta({ title: 'Jobs Admin' })
 
+const { t } = useI18n()
 const { user } = useUserSession()
 const sessionUser = computed(() => user.value as SessionUser | null)
 const isRoot = computed(
@@ -17,24 +18,32 @@ const isRoot = computed(
 
 const jobsNavItems = [
   {
-    title: 'Overview Jobs',
+    title: t('world.jobs.nav.overview'),
     to: '/world/jobs',
     icon: 'mdi-view-dashboard-outline',
   },
-  { title: 'Offers', to: '/world/jobs/offers', icon: 'mdi-briefcase-outline' },
   {
-    title: 'My Offers',
+    title: t('world.jobs.nav.offers'),
+    to: '/world/jobs/offers',
+    icon: 'mdi-briefcase-outline',
+  },
+  {
+    title: t('world.jobs.nav.myOffers'),
     to: '/world/jobs/my-offers',
     icon: 'mdi-account-tie-outline',
   },
   {
-    title: 'Applications',
+    title: t('world.jobs.nav.applications'),
     to: '/world/jobs/applications',
     icon: 'mdi-file-document-outline',
   },
-  { title: 'Apply', to: '/world/jobs/apply', icon: 'mdi-send-outline' },
   {
-    title: 'Admin',
+    title: t('world.jobs.nav.apply'),
+    to: '/world/jobs/apply',
+    icon: 'mdi-send-outline',
+  },
+  {
+    title: t('world.jobs.nav.admin'),
     to: '/world/jobs/admin',
     icon: 'mdi-shield-crown-outline',
     rootOnly: true,
@@ -80,41 +89,41 @@ const roleOrder: JobAccessRole[] = [
   'admin',
 ]
 const roleLabels: Record<JobAccessRole, string> = {
-  recruiter: 'Recruiter',
-  hiring_manager: 'Hiring manager',
-  interviewer: 'Interviewer',
-  admin: 'Admin RH',
+  recruiter: t('world.jobs.admin.roles.recruiter'),
+  hiring_manager: t('world.jobs.admin.roles.hiringManager'),
+  interviewer: t('world.jobs.admin.roles.interviewer'),
+  admin: t('world.jobs.admin.roles.admin'),
 }
 
 const permissionItems = [
   {
     key: 'canViewPii',
-    label: 'Voir données personnelles',
+    label: t('world.jobs.admin.permissions.viewPii'),
     icon: 'mdi-account-key-outline',
   },
   {
     key: 'canViewCompensation',
-    label: 'Voir rémunération',
+    label: t('world.jobs.admin.permissions.viewCompensation'),
     icon: 'mdi-cash-multiple',
   },
   {
     key: 'canTransitionStage',
-    label: 'Changer les étapes',
+    label: t('world.jobs.admin.permissions.transitionStage'),
     icon: 'mdi-transit-connection-variant',
   },
   {
     key: 'canEditNotes',
-    label: 'Éditer notes recruteur',
+    label: t('world.jobs.admin.permissions.editNotes'),
     icon: 'mdi-note-edit-outline',
   },
   {
     key: 'canViewDiversity',
-    label: 'Voir données diversité',
+    label: t('world.jobs.admin.permissions.viewDiversity'),
     icon: 'mdi-account-group-outline',
   },
   {
     key: 'canManagePolicy',
-    label: 'Administrer politiques',
+    label: t('world.jobs.admin.permissions.managePolicy'),
     icon: 'mdi-shield-crown-outline',
   },
 ] as const
@@ -144,21 +153,36 @@ const dashboardCards = computed(() => {
 
   return [
     {
-      title: 'Time-to-hire moyen',
-      value: `${value.timeToHireDays.average} jours`,
-      subtitle: `Médiane ${value.timeToHireDays.median} jours • Cible ${value.timeToHireDays.target} jours`,
+      title: t('world.jobs.admin.dashboard.timeToHire.title'),
+      value: t('world.jobs.admin.dashboard.timeToHire.value', {
+        days: value.timeToHireDays.average,
+      }),
+      subtitle: t('world.jobs.admin.dashboard.timeToHire.subtitle', {
+        median: value.timeToHireDays.median,
+        target: value.timeToHireDays.target,
+      }),
       icon: 'mdi-timer-outline',
     },
     {
-      title: 'Taux acceptation offre',
-      value: `${value.offerAcceptanceRate.rate}%`,
-      subtitle: `${value.offerAcceptanceRate.accepted} acceptées / ${value.offerAcceptanceRate.declined} refusées`,
+      title: t('world.jobs.admin.dashboard.offerAcceptance.title'),
+      value: t('world.jobs.admin.dashboard.offerAcceptance.value', {
+        rate: value.offerAcceptanceRate.rate,
+      }),
+      subtitle: t('world.jobs.admin.dashboard.offerAcceptance.subtitle', {
+        accepted: value.offerAcceptanceRate.accepted,
+        declined: value.offerAcceptanceRate.declined,
+      }),
       icon: 'mdi-check-decagram-outline',
     },
     {
-      title: 'Diversité pipeline',
-      value: `${value.diversityPipeline.ratio}%`,
-      subtitle: `${value.diversityPipeline.selfIdentified}/${value.diversityPipeline.totalCandidates} auto-déclarés`,
+      title: t('world.jobs.admin.dashboard.diversity.title'),
+      value: t('world.jobs.admin.dashboard.diversity.value', {
+        ratio: value.diversityPipeline.ratio,
+      }),
+      subtitle: t('world.jobs.admin.dashboard.diversity.subtitle', {
+        selfIdentified: value.diversityPipeline.selfIdentified,
+        totalCandidates: value.diversityPipeline.totalCandidates,
+      }),
       icon: 'mdi-account-group',
     },
   ]
@@ -166,7 +190,8 @@ const dashboardCards = computed(() => {
 const hasError = computed(() => !!jobsStore.error)
 const isLoading = computed(() => policyPending.value || dashboardPending.value)
 const isEmpty = computed(
-  () => !isLoading.value && !hasError.value && dashboardCards.value.length === 0,
+  () =>
+    !isLoading.value && !hasError.value && dashboardCards.value.length === 0,
 )
 
 const reloadDashboard = async () => {
@@ -177,11 +202,11 @@ const reloadDashboard = async () => {
 <template>
   <div>
     <WorldModuleDrawers
-      module-title="Jobs"
+      :module-title="t('world.jobs.label')"
       module-icon="mdi-briefcase-search-outline"
-      module-description="Navigation complète du module Jobs."
+      :module-description="t('world.jobs.moduleDescription')"
       :nav-items="jobsNavItems"
-      action-label="Refresh HR data"
+      :action-label="t('world.jobs.admin.actions.refreshHrData')"
       action-icon="mdi-refresh"
     />
 
@@ -192,7 +217,7 @@ const reloadDashboard = async () => {
         type="info"
         variant="tonal"
         class="mb-4"
-        text="Chargement des données RH..."
+        :text="t('world.jobs.admin.loading')"
       />
       <v-alert
         v-else-if="hasError"
@@ -208,15 +233,14 @@ const reloadDashboard = async () => {
         type="warning"
         variant="tonal"
         class="mb-4"
-        text="Aucun indicateur RH disponible."
+        :text="t('world.jobs.admin.empty')"
       />
 
       <v-card rounded="xl" class="pa-5 postcard-gradient-card">
         <template v-if="isRoot">
-          <h2 class="text-h5 mb-2">Jobs Admin center</h2>
+          <h2 class="text-h5 mb-2">{{ t('world.jobs.admin.title') }}</h2>
           <p class="text-medium-emphasis mb-4">
-            Politiques de conservation, anonymisation candidats, accès restreint
-            et pilotage RH.
+            {{ t('world.jobs.admin.subtitle') }}
           </p>
           <v-btn
             size="small"
@@ -225,7 +249,7 @@ const reloadDashboard = async () => {
             class="mb-4"
             @click="reloadDashboard"
           >
-            Actualiser KPI RH
+            {{ t('world.jobs.admin.actions.refreshKpis') }}
           </v-btn>
 
           <v-row>
@@ -251,12 +275,14 @@ const reloadDashboard = async () => {
           <v-row class="mt-1">
             <v-col cols="12" md="7">
               <v-card rounded="xl" variant="outlined" class="pa-4 h-100">
-                <h3 class="text-h6 mb-3">Data retention & anonymisation</h3>
+                <h3 class="text-h6 mb-3">
+                  {{ t('world.jobs.admin.sections.retention') }}
+                </h3>
                 <v-row>
                   <v-col cols="12" sm="6">
                     <v-text-field
                       v-model.number="editablePolicy.retentionDays"
-                      label="Retention candidats (jours)"
+                      :label="t('world.jobs.admin.fields.retentionDays')"
                       type="number"
                       variant="outlined"
                       density="comfortable"
@@ -265,7 +291,7 @@ const reloadDashboard = async () => {
                   <v-col cols="12" sm="6">
                     <v-text-field
                       v-model.number="editablePolicy.anonymizeAfterDays"
-                      label="Anonymiser après (jours)"
+                      :label="t('world.jobs.admin.fields.anonymizeAfterDays')"
                       type="number"
                       variant="outlined"
                       density="comfortable"
@@ -276,7 +302,9 @@ const reloadDashboard = async () => {
                       v-model.number="
                         editablePolicy.autoDeleteRejectedAfterDays
                       "
-                      label="Suppression rejetés après (jours)"
+                      :label="
+                        t('world.jobs.admin.fields.autoDeleteRejectedAfterDays')
+                      "
                       type="number"
                       variant="outlined"
                       density="comfortable"
@@ -285,7 +313,9 @@ const reloadDashboard = async () => {
                   <v-col cols="12" sm="6">
                     <v-switch
                       v-model="editablePolicy.restrictedAccessEnabled"
-                      label="Accès restreint activé"
+                      :label="
+                        t('world.jobs.admin.fields.restrictedAccessEnabled')
+                      "
                       color="primary"
                       inset
                       hide-details
@@ -293,7 +323,7 @@ const reloadDashboard = async () => {
                     />
                     <v-switch
                       v-model="editablePolicy.legalHoldEnabled"
-                      label="Legal hold actif"
+                      :label="t('world.jobs.admin.fields.legalHoldEnabled')"
                       color="primary"
                       inset
                       hide-details
@@ -306,14 +336,18 @@ const reloadDashboard = async () => {
                   prepend-icon="mdi-content-save-outline"
                   :loading="policyPending"
                   @click="savePolicy"
-                  >Save retention policy</v-btn
+                  >{{
+                    t('world.jobs.admin.actions.saveRetentionPolicy')
+                  }}</v-btn
                 >
               </v-card>
             </v-col>
 
             <v-col cols="12" md="5">
               <v-card rounded="xl" variant="outlined" class="pa-4 h-100">
-                <h3 class="text-h6 mb-3">Source de candidats</h3>
+                <h3 class="text-h6 mb-3">
+                  {{ t('world.jobs.admin.sections.candidateSources') }}
+                </h3>
                 <v-list
                   v-if="dashboard?.candidateSources.length"
                   class="bg-transparent px-0"
@@ -323,7 +357,11 @@ const reloadDashboard = async () => {
                     :key="source.source"
                     class="px-0"
                     :title="source.source"
-                    :subtitle="`${source.count} candidats`"
+                    :subtitle="
+                      t('world.jobs.admin.candidateSources.count', {
+                        count: source.count,
+                      })
+                    "
                   >
                     <template #append>
                       <v-chip color="primary" size="small" variant="tonal"
@@ -333,18 +371,20 @@ const reloadDashboard = async () => {
                   </v-list-item>
                 </v-list>
                 <p v-else class="text-medium-emphasis mb-0">
-                  No source data yet.
+                  {{ t('world.jobs.admin.candidateSources.empty') }}
                 </p>
               </v-card>
             </v-col>
           </v-row>
 
           <v-card rounded="xl" variant="outlined" class="pa-4 mt-4">
-            <h3 class="text-h6 mb-3">Permissions fines (UI + API)</h3>
+            <h3 class="text-h6 mb-3">
+              {{ t('world.jobs.admin.sections.permissions') }}
+            </h3>
             <v-table density="comfortable">
               <thead>
                 <tr>
-                  <th>Role</th>
+                  <th>{{ t('world.jobs.admin.table.role') }}</th>
                   <th
                     v-for="permission in permissionItems"
                     :key="permission.key"
@@ -387,12 +427,11 @@ const reloadDashboard = async () => {
             class="mt-4"
             :loading="dashboardPending"
           >
-            Les endpoints API appliquent ces droits lors de la lecture des
-            candidats et transitions pipeline.
+            {{ t('world.jobs.admin.info') }}
           </v-alert>
         </template>
         <p v-else class="text-error mb-0">
-          Access denied. This page requires ROLE_ROOT.
+          {{ t('world.jobs.admin.accessDenied') }}
         </p>
       </v-card>
     </v-container>
