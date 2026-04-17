@@ -277,7 +277,7 @@ type UseBlogFeedOptions = {
 export function useBlogFeed(options: UseBlogFeedOptions = {}) {
   const { loggedIn } = useUserSession()
   const mode = computed<BlogFeedMode>(() => options.mode ?? 'general')
-  const optimistic = computed(() => options.optimistic ?? false)
+  const optimistic = computed(() => options.optimistic ?? true)
 
   const posts = ref<BlogPost[]>([])
   const pagination = ref<BlogPagination>({ ...DEFAULT_PAGINATION })
@@ -586,37 +586,91 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
     const method =
       action === 'create' ? 'POST' : action === 'update' ? 'PATCH' : 'DELETE'
 
-    await runMutation(null, async () => {
-      const response = await privateApi.request<unknown>(base, {
-        method,
-        body,
-      })
+    await runMutation(
+      optimistic.value
+        ? () => {
+            const reactionType = pickNullableString(body?.type)?.toLowerCase()
 
-      const source = readMutationSource(response)
-      const parent = pickFirstRecord(source, [
-        target,
-        'post',
-        'comment',
-        'item',
-      ])
-      const reactionsSource = parent
-        ? readNestedArray(parent, ['reactions'])
-        : readNestedArray(source, ['reactions'])
+            updateEntityById(target, id, (entry) => {
+              const normalizedReactions = [...(entry.reactions ?? [])]
+              const ownIndex = normalizedReactions.findIndex(
+                (reaction) => reaction.isAuthor,
+              )
+              const ownReaction =
+                ownIndex >= 0 ? normalizedReactions[ownIndex] : null
 
-      if (reactionsSource.length === 0) {
-        await refresh()
-        return
-      }
+              if (action === 'delete') {
+                if (ownIndex >= 0) {
+                  normalizedReactions.splice(ownIndex, 1)
+                }
 
-      const updated = updateEntityById(target, id, (entry) => ({
-        ...entry,
-        reactions: reactionsSource.map(normalizeReaction),
-      }))
+                return {
+                  ...entry,
+                  reactions: normalizedReactions,
+                }
+              }
 
-      if (!updated) {
-        await refresh()
-      }
-    })
+              if (!reactionType) {
+                return entry
+              }
+
+              if (ownReaction && ownIndex >= 0) {
+                normalizedReactions[ownIndex] = {
+                  ...ownReaction,
+                  type: reactionType,
+                  count: 1,
+                  isAuthor: true,
+                }
+              } else {
+                normalizedReactions.unshift(
+                  normalizeReaction({
+                    id: `tmp-react-${Date.now()}`,
+                    type: reactionType,
+                    count: 1,
+                    isAuthor: true,
+                  }),
+                )
+              }
+
+              return {
+                ...entry,
+                reactions: normalizedReactions,
+              }
+            })
+          }
+        : null,
+      async () => {
+        const response = await privateApi.request<unknown>(base, {
+          method,
+          body,
+        })
+
+        const source = readMutationSource(response)
+        const parent = pickFirstRecord(source, [
+          target,
+          'post',
+          'comment',
+          'item',
+        ])
+        const reactionsSource = parent
+          ? readNestedArray(parent, ['reactions'])
+          : readNestedArray(source, ['reactions'])
+
+        if (reactionsSource.length === 0) {
+          await refresh()
+          return
+        }
+
+        const updated = updateEntityById(target, id, (entry) => ({
+          ...entry,
+          reactions: reactionsSource.map(normalizeReaction),
+        }))
+
+        if (!updated) {
+          await refresh()
+        }
+      },
+    )
   }
 
   async function edit(

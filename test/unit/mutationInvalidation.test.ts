@@ -13,4 +13,25 @@ describe('mutation invalidation rules', () => {
       prefixes: ['quiz'],
     })
   })
+
+  it('contains private and public invalidation for blog comment reactions', () => {
+    const rules = getMutationInvalidationRules().filter(
+      (entry) => entry.key === 'blog:comments:reactions:create',
+    )
+
+    expect(rules).toEqual(
+      expect.arrayContaining([
+        {
+          key: 'blog:comments:reactions:create',
+          scope: 'private',
+          prefixes: ['blog'],
+        },
+        {
+          key: 'blog:comments:reactions:create',
+          scope: 'public',
+          prefixes: ['blog'],
+        },
+      ]),
+    )
+  })
 })
