@@ -29,6 +29,7 @@ const { t } = useI18n()
 
 const activeTab = ref<'timeline' | 'lineups' | 'statistics' | 'player-notes'>(props.initialTab)
 const selectedTeamFilter = ref<'all' | string>('all')
+const lineupView = ref<'split' | 'home' | 'away'>('split')
 
 watch(() => props.initialTab, (value) => {
   activeTab.value = value
@@ -123,17 +124,97 @@ const playerNotesGroups = computed(() => {
   }))
 })
 
-const lineupStarters = computed(() => {
+const numericRating = (value: string | null | undefined) => {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : null
+}
+
+const getRatingColor = (rating: number | null) => {
+  if (rating === null) return 'rgba(var(--v-theme-on-surface), .5)'
+  if (rating >= 7.5) return 'rgb(var(--v-theme-success))'
+  if (rating >= 6.8) return 'rgb(var(--v-theme-primary))'
+  if (rating >= 6) return 'rgb(var(--v-theme-warning))'
+  return 'rgb(var(--v-theme-error))'
+}
+
+const toShortName = (name: string) => {
+  const parts = name.trim().split(/\s+/).filter(Boolean)
+  if (parts.length <= 1) return name
+  return `${parts[0]?.[0]}. ${parts[parts.length - 1]}`
+}
+
+const parseGrid = (grid: string) => {
+  const match = grid.match(/^(\d+):(\d+)$/)
+  if (!match) return null
+  return { row: Number(match[1]), col: Number(match[2]) }
+}
+
+const lineupLayouts = computed(() => {
+  const lower = (value: string) => value.trim().toLowerCase()
+
   return props.lineups.map((lineup) => {
-    const rows = Array.from({ length: 6 }, () => [] as typeof lineup.starters)
-    lineup.starters.forEach((starter) => {
-      const [rawRow] = starter.grid.split(':')
-      const rowIndex = Math.max(1, Math.min(6, Number(rawRow) || 1)) - 1
-      const row = rows[rowIndex]
-      if (row) row.push(starter)
+    const valid = lineup.starters
+      .map((starter) => {
+        const grid = parseGrid(starter.grid)
+        return grid ? { starter, ...grid } : null
+      })
+      .filter((entry): entry is { starter: FixtureLineupViewModel['starters'][number]; row: number; col: number } => Boolean(entry))
+
+    const maxRow = Math.max(...valid.map(entry => entry.row), 1)
+    const maxCol = Math.max(...valid.map(entry => entry.col), 1)
+
+    const positionedPlayers = valid.map((entry) => {
+      const stat = props.playerStats.find((playerStat) => {
+        const sameTeam = lineup.teamId !== null
+          ? playerStat.teamId === lineup.teamId
+          : lower(playerStat.teamName) === lower(lineup.teamName)
+        const samePlayer = entry.starter.id !== null
+          ? playerStat.playerId === entry.starter.id
+          : lower(playerStat.playerName) === lower(entry.starter.name)
+        return sameTeam && samePlayer
+      })
+
+      const rowRatio = maxRow > 1 ? (entry.row - 1) / (maxRow - 1) : 0.5
+      const colRatio = maxCol > 1 ? (entry.col - 1) / (maxCol - 1) : 0.5
+
+      return {
+        ...entry.starter,
+        shortName: toShortName(entry.starter.name),
+        playerPhoto: stat?.playerPhoto ?? null,
+        rating: stat?.rating ?? null,
+        ratingColor: getRatingColor(numericRating(stat?.rating)),
+        top: 12 + rowRatio * 76,
+        left: 8 + colRatio * 84,
+      }
     })
-    return { ...lineup, rows: rows.filter(row => row.length > 0) }
+
+    const fallbackPlayers = lineup.starters.map((starter) => {
+      const stat = props.playerStats.find(playerStat => playerStat.playerId === starter.id)
+      return {
+        ...starter,
+        shortName: toShortName(starter.name),
+        playerPhoto: stat?.playerPhoto ?? null,
+        rating: stat?.rating ?? null,
+        ratingColor: getRatingColor(numericRating(stat?.rating)),
+      }
+    })
+
+    return {
+      ...lineup,
+      hasGrid: positionedPlayers.length > 0,
+      positionedPlayers,
+      fallbackPlayers,
+    }
   })
+})
+
+const visibleLineups = computed(() => {
+  if (lineupView.value === 'split') return lineupLayouts.value
+
+  const targetTeamId = lineupView.value === 'home' ? props.homeTeamId : props.awayTeamId
+  const filteredById = lineupLayouts.value.filter(lineup => lineup.teamId !== null && lineup.teamId === targetTeamId)
+  if (filteredById.length) return filteredById
+  return lineupLayouts.value.slice(lineupView.value === 'home' ? 0 : 1, lineupView.value === 'home' ? 1 : 2)
 })
 
 const normalizedTeamName = (name: string | null | undefined) => {
@@ -251,8 +332,23 @@ function onSelectPlayer(playerId: number | null | undefined) {
       </v-window-item>
 
       <v-window-item value="lineups">
+        <div class="d-flex justify-end mb-3">
+          <v-btn-toggle
+            v-model="lineupView"
+            density="comfortable"
+            rounded="lg"
+            variant="tonal"
+            color="primary"
+            mandatory
+          >
+            <v-btn value="split" size="small">Split</v-btn>
+            <v-btn value="home" size="small">Home</v-btn>
+            <v-btn value="away" size="small">Away</v-btn>
+          </v-btn-toggle>
+        </div>
+
         <v-row>
-          <v-col v-for="lineup in lineupStarters" :key="lineup.teamId ?? lineup.teamName" cols="12" md="6">
+          <v-col v-for="lineup in visibleLineups" :key="lineup.teamId ?? lineup.teamName" cols="12" :md="lineupView === 'split' ? 6 : 12">
             <v-sheet class="pa-3 rounded border lineup-board">
               <div class="d-flex align-center ga-3 mb-3">
                 <v-avatar size="28" rounded="0">
@@ -264,13 +360,69 @@ function onSelectPlayer(playerId: number | null | undefined) {
                 </div>
               </div>
 
-              <div class="pitch pa-2">
-                <div v-for="(row, index) in lineup.rows" :key="`${lineup.teamName}-row-${index}`" class="pitch-row">
-                  <div v-for="player in row" :key="`${lineup.teamName}-${player.name}-${player.number}`" class="pitch-player" @click="onSelectPlayer(player.id)">
-                    <div class="pitch-player__badge">#{{ player.number }}</div>
-                    <div class="pitch-player__name">{{ player.name }}</div>
-                  </div>
+              <div v-if="lineup.hasGrid" class="pitch-layout">
+                <div class="pitch-overlay" aria-hidden="true">
+                  <span class="pitch-line pitch-line--mid" />
+                  <span class="pitch-circle" />
+                  <span class="pitch-area pitch-area--top" />
+                  <span class="pitch-area pitch-area--bottom" />
                 </div>
+
+                <button
+                  v-for="player in lineup.positionedPlayers"
+                  :key="`${lineup.teamName}-${player.name}-${player.number}`"
+                  type="button"
+                  class="pitch-player"
+                  :style="{ top: `${player.top}%`, left: `${player.left}%` }"
+                  @click="onSelectPlayer(player.id)"
+                >
+                  <div class="pitch-player__avatar">
+                    <v-avatar size="28">
+                      <v-img :src="player.playerPhoto || undefined" :alt="player.name">
+                        <template #error>
+                          <span class="text-caption font-weight-bold">{{ player.number }}</span>
+                        </template>
+                      </v-img>
+                    </v-avatar>
+                    <span class="pitch-player__rating" :style="{ backgroundColor: player.ratingColor }">
+                      {{ player.rating ?? '-' }}
+                    </span>
+                  </div>
+                  <div class="pitch-player__meta">
+                    <span class="pitch-player__name">{{ player.shortName }}</span>
+                    <span class="pitch-player__badge">#{{ player.number }}</span>
+                  </div>
+                </button>
+              </div>
+
+              <v-list v-else density="compact" class="lineup-fallback pa-0">
+                <v-list-item
+                  v-for="player in lineup.fallbackPlayers"
+                  :key="`${lineup.teamName}-fallback-${player.name}-${player.number}`"
+                  class="lineup-fallback__item"
+                  @click="onSelectPlayer(player.id)"
+                >
+                  <template #prepend>
+                    <v-avatar size="28">
+                      <v-img :src="player.playerPhoto || undefined" :alt="player.name" />
+                    </v-avatar>
+                  </template>
+                  <v-list-item-title class="text-body-2">
+                    {{ player.shortName }} · #{{ player.number }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle>
+                    {{ player.position || 'position unavailable' }}
+                  </v-list-item-subtitle>
+                  <template #append>
+                    <v-chip size="x-small" :color="numericRating(player.rating) && Number(player.rating) >= 7 ? 'success' : 'default'">
+                      {{ player.rating ?? '-' }}
+                    </v-chip>
+                  </template>
+                </v-list-item>
+              </v-list>
+
+              <div v-if="!lineup.hasGrid" class="text-caption text-medium-emphasis mt-2">
+                position unavailable
               </div>
             </v-sheet>
           </v-col>
@@ -380,11 +532,84 @@ function onSelectPlayer(playerId: number | null | undefined) {
 
 .timeline-link, .lineup-team { color: rgb(var(--v-theme-primary)); text-decoration: none; }
 .timeline-link:hover, .lineup-team:hover { text-decoration: underline; }
-.pitch { border: 1px solid rgba(var(--v-theme-on-surface), 0.16); border-radius: 12px; background: radial-gradient(circle at center, rgba(32, 95, 79, 0.35), rgba(var(--v-theme-surface), 0.8)); }
-.pitch-row { display: flex; justify-content: center; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
-.pitch-player { border: 1px solid rgba(var(--v-theme-on-surface), .15); border-radius: 10px; padding: 4px 8px; background: rgba(var(--v-theme-surface), .55); cursor: pointer; }
-.pitch-player__badge { font-size: .68rem; color: rgba(var(--v-theme-on-surface), .75); }
-.pitch-player__name { font-size: .74rem; font-weight: 600; }
+.pitch-layout {
+  position: relative;
+  min-height: 420px;
+  border-radius: 16px;
+  border: 1px solid rgba(var(--v-theme-on-surface), .16);
+  background: linear-gradient(180deg, rgba(17, 65, 52, .95), rgba(11, 48, 39, .96));
+  overflow: hidden;
+}
+.pitch-overlay { position: absolute; inset: 0; pointer-events: none; }
+.pitch-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    180deg,
+    rgba(255, 255, 255, .04),
+    rgba(255, 255, 255, .04) 32px,
+    rgba(255, 255, 255, .01) 32px,
+    rgba(255, 255, 255, .01) 64px
+  );
+}
+.pitch-line--mid { position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(255, 255, 255, .45); }
+.pitch-circle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .45);
+  transform: translate(-50%, -50%);
+}
+.pitch-area {
+  position: absolute;
+  left: 17%;
+  right: 17%;
+  height: 18%;
+  border: 1px solid rgba(255, 255, 255, .45);
+}
+.pitch-area--top { top: 0; border-top: 0; border-radius: 0 0 12px 12px; }
+.pitch-area--bottom { bottom: 0; border-bottom: 0; border-radius: 12px 12px 0 0; }
+.pitch-player {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  z-index: 2;
+  width: 76px;
+}
+.pitch-player__avatar { position: relative; margin-bottom: 4px; }
+.pitch-player__rating {
+  position: absolute;
+  bottom: -3px;
+  right: -14px;
+  color: #fff;
+  font-size: .62rem;
+  line-height: 1;
+  font-weight: 700;
+  padding: 2px 4px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, .35);
+}
+.pitch-player__meta {
+  width: 100%;
+  text-align: center;
+  border-radius: 10px;
+  padding: 4px 6px;
+  background: rgba(7, 18, 15, .62);
+  border: 1px solid rgba(255, 255, 255, .12);
+}
+.pitch-player__badge { display: block; font-size: .62rem; color: rgba(255, 255, 255, .78); }
+.pitch-player__name { display: block; font-size: .66rem; font-weight: 700; color: rgba(255, 255, 255, .96); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lineup-fallback { border: 1px solid rgba(var(--v-theme-on-surface), .12); border-radius: 12px; }
+.lineup-fallback__item { border-radius: 10px; margin: 2px 4px; }
 .stats-bar { height: 8px; border-radius: 99px; display: flex; overflow: hidden; background: rgba(var(--v-theme-on-surface), .1); }
 .stats-bar__left { background: rgb(var(--v-theme-primary)); }
 .stats-bar__right { background: rgba(var(--v-theme-on-surface), .42); }
@@ -396,5 +621,8 @@ function onSelectPlayer(playerId: number | null | undefined) {
   .timeline-minute { min-width: 52px; }
   .timeline-card__title { font-size: .85rem; }
   .timeline-axis__dot { top: 16px; width: 10px; height: 10px; }
+  .pitch-layout { min-height: 360px; }
+  .pitch-player { width: 68px; }
+  .pitch-player__name { font-size: .62rem; }
 }
 </style>
