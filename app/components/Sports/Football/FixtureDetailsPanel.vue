@@ -34,7 +34,7 @@ const { t } = useI18n()
 
 const activeTab = ref<'timeline' | 'lineups' | 'statistics' | 'player-notes'>(props.initialTab)
 const selectedPlayerNotesFilter = ref<'all' | 'home' | 'away'>('all')
-const lineupView = ref<'split' | 'home' | 'away'>('split')
+const lineupView = ref<'combined' | 'home' | 'away'>('combined')
 const selectedStatsFilter = ref<'match' | 'firstHalf' | 'secondHalf'>('match')
 
 watch(() => props.initialTab, (value) => {
@@ -260,8 +260,8 @@ const playerNotesMetricSections = computed(() => {
         const value = metric.getValue(stat)
         if (value === null) return null
 
-        const visuals = (typeof stat.teamId === 'number' && teamVisuals.value.byId.get(stat.teamId))
-          ?? teamVisuals.value.byName.get(normalizedTeamKey(stat.teamName))
+        const visualsById = typeof stat.teamId === 'number' ? teamVisuals.value.byId.get(stat.teamId) : null
+        const visuals = visualsById ?? teamVisuals.value.byName.get(normalizedTeamKey(stat.teamName))
 
         return {
           id: stat.id,
@@ -349,6 +349,8 @@ const lineupLayouts = computed(() => {
         playerPhoto: stat?.playerPhoto ?? null,
         rating: stat?.rating ?? null,
         ratingColor: getRatingColor(numericRating(stat?.rating)),
+        rowRatio,
+        colRatio,
         top: 12 + rowRatio * 76,
         left: 8 + colRatio * 84,
       }
@@ -374,8 +376,54 @@ const lineupLayouts = computed(() => {
   })
 })
 
+const resolveLineupSide = (lineup: { teamId: number | null; teamName: string }, index: number): 'home' | 'away' => {
+  if (props.homeTeamId !== null && lineup.teamId === props.homeTeamId) return 'home'
+  if (props.awayTeamId !== null && lineup.teamId === props.awayTeamId) return 'away'
+
+  const normalized = normalizedTeamName(lineup.teamName)
+  if (normalized && normalized === normalizedTeamName(homeTeamName.value)) return 'home'
+  if (normalized && normalized === normalizedTeamName(awayTeamName.value)) return 'away'
+
+  return index === 0 ? 'home' : 'away'
+}
+
+const combinedLineup = computed(() => {
+  const ordered = lineupLayouts.value
+    .map((lineup, index) => ({ ...lineup, side: resolveLineupSide(lineup, index) }))
+    .sort((a, b) => (a.side === 'home' ? -1 : 1) - (b.side === 'home' ? -1 : 1))
+
+  const hasGrid = ordered.length >= 2 && ordered.every(lineup => lineup.hasGrid)
+
+  const positionedPlayers = hasGrid
+    ? ordered.flatMap((lineup) => {
+      return lineup.positionedPlayers.map((player) => {
+        const adjustedTop = lineup.side === 'home'
+          ? 12 + (1 - player.rowRatio) * 76
+          : 12 + player.rowRatio * 76
+
+        return {
+          ...player,
+          teamId: lineup.teamId,
+          teamName: lineup.teamName,
+          teamLogo: lineup.teamLogo,
+          side: lineup.side,
+          top: adjustedTop,
+          zIndex: 10 + Math.round(adjustedTop),
+        }
+      })
+    })
+      .sort((a, b) => a.zIndex - b.zIndex)
+    : []
+
+  return {
+    hasGrid,
+    lineups: ordered,
+    positionedPlayers,
+  }
+})
+
 const visibleLineups = computed(() => {
-  if (lineupView.value === 'split') return lineupLayouts.value
+  if (lineupView.value === 'combined') return lineupLayouts.value
 
   const targetTeamId = lineupView.value === 'home' ? props.homeTeamId : props.awayTeamId
   const filteredById = lineupLayouts.value.filter(lineup => lineup.teamId !== null && lineup.teamId === targetTeamId)
@@ -507,14 +555,71 @@ function onSelectPlayer(playerId: number | null | undefined) {
             color="primary"
             mandatory
           >
-            <v-btn value="split" size="small">Split</v-btn>
+            <v-btn value="combined" size="small">Combined</v-btn>
             <v-btn value="home" size="small">Home</v-btn>
             <v-btn value="away" size="small">Away</v-btn>
           </v-btn-toggle>
         </div>
 
-        <v-row>
-          <v-col v-for="lineup in visibleLineups" :key="lineup.teamId ?? lineup.teamName" cols="12" :md="lineupView === 'split' ? 6 : 12">
+        <v-sheet
+          v-if="lineupView === 'combined' && combinedLineup.hasGrid"
+          class="pa-3 rounded border lineup-board mb-3"
+        >
+          <div class="d-flex align-center justify-space-between flex-wrap ga-3 mb-3">
+            <div
+              v-for="lineup in combinedLineup.lineups"
+              :key="`combined-header-${lineup.teamId ?? lineup.teamName}`"
+              class="d-flex align-center ga-2"
+            >
+              <v-avatar size="26" rounded="0">
+                <v-img :src="lineup.teamLogo || undefined" :alt="lineup.teamName" cover />
+              </v-avatar>
+              <a href="#" class="lineup-team text-body-2 font-weight-bold" @click.prevent="onSelectTeam(lineup.teamId)">
+                {{ lineup.teamName }}
+              </a>
+            </div>
+          </div>
+
+          <div class="pitch-layout pitch-layout--combined">
+            <div class="pitch-overlay pitch-overlay--combined" aria-hidden="true">
+              <span class="pitch-line pitch-line--mid" />
+              <span class="pitch-circle" />
+              <span class="pitch-area pitch-area--top" />
+              <span class="pitch-area pitch-area--bottom" />
+            </div>
+
+            <button
+              v-for="player in combinedLineup.positionedPlayers"
+              :key="`combined-${player.teamName}-${player.name}-${player.number}`"
+              type="button"
+              class="pitch-player"
+              :class="`pitch-player--${player.side}`"
+              :style="{ top: `${player.top}%`, left: `${player.left}%`, zIndex: player.zIndex }"
+              :title="`${player.teamName} · ${player.name} (#${player.number})`"
+              @click="onSelectPlayer(player.id)"
+            >
+              <div class="pitch-player__avatar">
+                <v-avatar size="28">
+                  <v-img :src="player.playerPhoto || undefined" :alt="player.name">
+                    <template #error>
+                      <span class="text-caption font-weight-bold">{{ player.number }}</span>
+                    </template>
+                  </v-img>
+                </v-avatar>
+                <span class="pitch-player__rating" :style="{ backgroundColor: player.ratingColor }">
+                  {{ player.rating ?? '-' }}
+                </span>
+              </div>
+              <div class="pitch-player__meta">
+                <span class="pitch-player__name">{{ player.shortName }}</span>
+                <span class="pitch-player__badge">#{{ player.number }}</span>
+              </div>
+            </button>
+          </div>
+        </v-sheet>
+
+        <v-row v-if="lineupView !== 'combined' || !combinedLineup.hasGrid">
+          <v-col v-for="lineup in visibleLineups" :key="lineup.teamId ?? lineup.teamName" cols="12" :md="lineupView === 'combined' ? 6 : 12">
             <v-sheet class="pa-3 rounded border lineup-board">
               <div class="d-flex align-center ga-3 mb-3">
                 <v-avatar size="28" rounded="0">
@@ -540,6 +645,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
                   type="button"
                   class="pitch-player"
                   :style="{ top: `${player.top}%`, left: `${player.left}%` }"
+                  :title="`${lineup.teamName} · ${player.name} (#${player.number})`"
                   @click="onSelectPlayer(player.id)"
                 >
                   <div class="pitch-player__avatar">
@@ -769,6 +875,14 @@ function onSelectPlayer(playerId: number | null | undefined) {
   overflow: hidden;
 }
 .pitch-overlay { position: absolute; inset: 0; pointer-events: none; }
+.pitch-overlay--combined::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(44, 118, 214, .2) 0%, rgba(44, 118, 214, .08) 48%, transparent 52%),
+    linear-gradient(0deg, rgba(221, 84, 84, .22) 0%, rgba(221, 84, 84, .08) 48%, transparent 52%);
+}
 .pitch-overlay::before {
   content: '';
   position: absolute;
@@ -834,6 +948,8 @@ function onSelectPlayer(playerId: number | null | undefined) {
   background: rgba(7, 18, 15, .62);
   border: 1px solid rgba(255, 255, 255, .12);
 }
+.pitch-player--home .pitch-player__avatar { filter: drop-shadow(0 0 8px rgba(242, 86, 86, .55)); }
+.pitch-player--away .pitch-player__avatar { filter: drop-shadow(0 0 8px rgba(82, 151, 255, .55)); }
 .pitch-player__badge { display: block; font-size: .62rem; color: rgba(255, 255, 255, .78); }
 .pitch-player__name { display: block; font-size: .66rem; font-weight: 700; color: rgba(255, 255, 255, .96); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .lineup-fallback { border: 1px solid rgba(var(--v-theme-on-surface), .12); border-radius: 12px; }
