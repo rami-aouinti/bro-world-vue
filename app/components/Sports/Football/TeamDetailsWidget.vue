@@ -29,10 +29,10 @@ defineEmits<{
         <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
         <span>{{ t('pages.applications.football.loading.teamDetails') }}</span>
       </template>
-      <v-alert v-else-if="section.state === 'error'" type="error" variant="tonal" density="comfortable">
+      <v-alert v-else-if="section.state === 'error'" type="error" variant="tonal" density="compact">
         {{ section.error }}
       </v-alert>
-      <v-alert v-else-if="section.state === 'empty'" type="info" variant="tonal" density="comfortable">
+      <v-alert v-else-if="section.state === 'empty'" type="info" variant="tonal" density="compact">
         {{ section.emptyMessage }}
       </v-alert>
       <template v-else-if="teamDetails">

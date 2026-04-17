@@ -437,7 +437,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
 
 <template>
   <div class="d-flex flex-column ga-4">
-    <v-tabs v-if="mode === 'tabs'" v-model="activeTab" color="primary" density="comfortable">
+    <v-tabs v-if="mode === 'tabs'" v-model="activeTab" color="primary" density="compact">
       <v-tab value="timeline">Timeline</v-tab>
       <v-tab value="lineups">Lineup</v-tab>
       <v-tab value="statistics">Statistics</v-tab>
@@ -492,7 +492,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
           </div>
         </div>
 
-        <v-alert v-if="!events.length" class="mt-2" type="info" variant="tonal" density="comfortable">
+        <v-alert v-if="!events.length" class="mt-2" type="info" variant="tonal" density="compact">
           {{ t('pages.applications.football.empty.events') }}
         </v-alert>
       </v-window-item>
@@ -501,7 +501,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
         <div class="d-flex justify-end mb-3">
           <v-btn-toggle
             v-model="lineupView"
-            density="comfortable"
+            density="compact"
             rounded="lg"
             variant="tonal"
             color="primary"
@@ -594,7 +594,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
           </v-col>
         </v-row>
 
-        <v-alert v-if="!lineups.length" class="mt-2" type="info" variant="tonal" density="comfortable">
+        <v-alert v-if="!lineups.length" class="mt-2" type="info" variant="tonal" density="compact">
           {{ t('pages.applications.football.empty.lineups') }}
         </v-alert>
       </v-window-item>
@@ -606,7 +606,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
             <v-btn-toggle
               v-if="availableStatsPeriods.length > 1"
               v-model="selectedStatsFilter"
-              density="comfortable"
+              density="compact"
               rounded="lg"
               variant="tonal"
               color="primary"
@@ -641,7 +641,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
         <div class="d-flex justify-end mb-3">
           <v-btn-toggle
             v-model="selectedPlayerNotesFilter"
-            density="comfortable"
+            density="compact"
             rounded="lg"
             variant="tonal"
             color="primary"
