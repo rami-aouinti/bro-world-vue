@@ -263,6 +263,36 @@ watch(
       </template>
 
       <template #right>
+        <v-row class="pa-4">
+          <v-col cols="12" md="6">
+            <v-select
+              :model-value="selectedLeagueId"
+              :items="leagues"
+              item-title="name"
+              item-value="id"
+              :label="t('pages.applications.football.filters.league')"
+              density="comfortable"
+              :loading="leaguesState === 'loading'"
+              :disabled="leaguesState !== 'ready'"
+              variant="outlined"
+              hide-details
+              @update:model-value="selectLeague"
+            />
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <v-select
+              :model-value="selectedSeason"
+              :items="seasons"
+              :label="t('pages.applications.football.filters.season')"
+              density="comfortable"
+              :disabled="!selectedLeague"
+              variant="outlined"
+              hide-details
+              @update:model-value="selectSeason"
+            />
+          </v-col>
+        </v-row>
         <v-card-title>{{ leaguesSection.title }}</v-card-title>
         <v-divider />
         <v-card-text>
@@ -307,36 +337,6 @@ watch(
     </AppPageDrawers>
 
     <v-container fluid>
-     <v-row>
-       <v-col cols="12" md="6">
-         <v-select
-           :model-value="selectedLeagueId"
-           :items="leagues"
-           item-title="name"
-           item-value="id"
-           :label="t('pages.applications.football.filters.league')"
-           density="comfortable"
-           :loading="leaguesState === 'loading'"
-           :disabled="leaguesState !== 'ready'"
-           variant="outlined"
-           hide-details
-           @update:model-value="selectLeague"
-         />
-       </v-col>
-
-       <v-col cols="12" md="6">
-         <v-select
-           :model-value="selectedSeason"
-           :items="seasons"
-           :label="t('pages.applications.football.filters.season')"
-           density="comfortable"
-           :disabled="!selectedLeague"
-           variant="outlined"
-           hide-details
-           @update:model-value="selectSeason"
-         />
-       </v-col>
-     </v-row>
       <template v-if="sport.slug === 'football'">
         <v-row class="football-stagger">
           <v-col cols="12" class="football-fade-up">
