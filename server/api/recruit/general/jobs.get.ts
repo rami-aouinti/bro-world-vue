@@ -1,13 +1,22 @@
 import type { RecruitJobsListResponse } from '~/types/world/jobs'
+import { getCached, publicCacheKey, setCached } from '~~/server/utils/apiCache'
+import { resolveCacheTtl } from '~~/server/utils/apiCacheConfig'
 import { resolveApiUrl } from '~~/server/utils/resolveApiUrl'
 
 export default defineEventHandler(
   async (event): Promise<RecruitJobsListResponse> => {
     const runtimeConfig = useRuntimeConfig(event)
     const query = getQuery(event)
+    const endpoint = '/recruit/general/jobs'
+    const cacheKey = publicCacheKey(endpoint, query)
 
-    return $fetch<RecruitJobsListResponse>(
-      resolveApiUrl(runtimeConfig.public.apiBaseUrl, '/recruit/general/jobs'),
+    const cached = await getCached<RecruitJobsListResponse>(cacheKey)
+    if (cached) {
+      return cached
+    }
+
+    const response = await $fetch<RecruitJobsListResponse>(
+      resolveApiUrl(runtimeConfig.public.apiBaseUrl, endpoint),
       {
         query,
         headers: {
@@ -15,5 +24,9 @@ export default defineEventHandler(
         },
       },
     )
+
+    await setCached(cacheKey, response, resolveCacheTtl('recruit'))
+
+    return response
   },
 )
