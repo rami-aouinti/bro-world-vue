@@ -44,6 +44,22 @@ jobs:
       - name: Typecheck
         run: pnpm run typecheck
 
+  football-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20.x
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install
+
+      - name: Football checks
+        run: pnpm run check:football
+
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
