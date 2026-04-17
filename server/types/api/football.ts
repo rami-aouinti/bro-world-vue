@@ -253,11 +253,45 @@ export interface FootballPlayerStatistic extends ApiObject {
   statistics: ApiObject[]
 }
 
+export type FootballFixtureStatisticsMetricKey =
+  | 'xg'
+  | 'possession'
+  | 'shotsTotal'
+  | 'shotsOnTarget'
+  | 'bigChances'
+  | 'passes'
+  | 'corners'
+  | 'cards'
+
+export type FootballFixtureStatisticsMetricValue = string | number | null
+
+export interface FootballFixtureStatisticsPeriod extends ApiObject {
+  home: Partial<
+    Record<
+      FootballFixtureStatisticsMetricKey,
+      FootballFixtureStatisticsMetricValue
+    >
+  >
+  away: Partial<
+    Record<
+      FootballFixtureStatisticsMetricKey,
+      FootballFixtureStatisticsMetricValue
+    >
+  >
+}
+
+export interface FootballFixtureTeamStatistics extends ApiObject {
+  match: FootballFixtureStatisticsPeriod
+  firstHalf?: FootballFixtureStatisticsPeriod
+  secondHalf?: FootballFixtureStatisticsPeriod
+}
+
 export interface FootballFixtureDetailsApiResponse extends ApiObject {
   fixture: FootballFixture | null
   events: FootballFixtureEvent[]
   lineups: FootballLineup[]
   playerStats: FootballPlayerStatistic[]
+  teamStatistics: FootballFixtureTeamStatistics
 }
 
 export interface FootballOddsApiResponse extends ApiObject {

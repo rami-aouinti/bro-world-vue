@@ -260,6 +260,18 @@ export interface ApiSportsPlayerStatsItem {
   }>
 }
 
+export interface ApiSportsFixtureStatisticsItem {
+  team: {
+    id: number
+    name: string
+    logo: string | null
+  }
+  statistics: Array<{
+    type: string
+    value: string | number | null
+  }>
+}
+
 export interface ApiSportsPlayerItem {
   player: {
     id: number
