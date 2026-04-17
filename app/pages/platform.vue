@@ -38,12 +38,14 @@ const currentPage = ref(1)
 const { data, pending, error, refresh } = await useAsyncData(
   'platform-applications',
   () => {
-    const query = loggedIn.value
-      ? { page: 1, limit: 120 }
-      : { page: 1, limit: 120 }
+    const query = { page: 1, limit: 120 }
 
     if (loggedIn.value) {
-      return privateApi.request<PlatformResponse>('/api/application/private', {
+      const privateApplicationsUrl = import.meta.client
+        ? new URL('/api/application/private', window.location.origin).toString()
+        : new URL('/api/application/private', useRequestURL().origin).toString()
+
+      return privateApi.request<PlatformResponse>(privateApplicationsUrl, {
         params: query,
       })
     }
