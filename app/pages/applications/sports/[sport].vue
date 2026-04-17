@@ -534,6 +534,14 @@ watch(
               {{ basketballGamesError }}
             </v-alert>
             <v-alert
+              v-else-if="basketballStandingsError"
+              type="info"
+              variant="tonal"
+              density="comfortable"
+            >
+              {{ basketballStandingsError }}
+            </v-alert>
+            <v-alert
               v-else
               type="info"
               variant="tonal"
