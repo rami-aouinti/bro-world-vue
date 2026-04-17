@@ -13,6 +13,8 @@ const props = defineProps<{
   config: CrmEndpointActionConfig
 }>()
 
+const { t } = useI18n()
+
 const routeParams = reactive<Record<string, string>>({})
 const queryText = ref(JSON.stringify(props.config.defaultQuery ?? {}, null, 2))
 const bodyText = ref(JSON.stringify(props.config.defaultBody ?? {}, null, 2))
@@ -23,7 +25,9 @@ const errorText = ref('')
 
 const pathParams = computed(() => {
   const matches = props.config.path.matchAll(/\{([^}]+)\}/g)
-  return Array.from(matches).map((match) => match[1])
+  return Array.from(matches)
+    .map((match) => match[1])
+    .filter((param): param is string => typeof param === 'string' && param.length > 0)
 })
 
 for (const param of pathParams.value) {
@@ -48,7 +52,7 @@ function buildPath() {
   return pathParams.value.reduce((path, param) => {
     const rawValue = routeParams[param]?.trim()
     if (!rawValue) {
-      throw new Error(`Missing route param: ${param}`)
+      throw new Error(t('crm.components.endpointAction.errors.missingRouteParam', { param }))
     }
 
     return path.replace(`{${param}}`, encodeURIComponent(rawValue))
@@ -75,13 +79,15 @@ async function execute() {
     status.value = result.status
     responseText.value =
       result._data === null || result._data === undefined
-        ? '(empty response)'
+        ? t('crm.components.endpointAction.response.empty')
         : typeof result._data === 'string'
           ? result._data
           : JSON.stringify(result._data, null, 2)
   } catch (error) {
     errorText.value =
-      error instanceof Error ? error.message : 'Unknown request execution error.'
+      error instanceof Error
+        ? error.message
+        : t('crm.components.endpointAction.errors.unknownExecution')
   } finally {
     pending.value = false
   }
@@ -108,7 +114,7 @@ async function execute() {
       <v-col v-for="param in pathParams" :key="param" cols="12" md="6">
         <v-text-field
           v-model="routeParams[param]"
-          :label="`Param: ${param}`"
+          :label="t('crm.components.endpointAction.fields.param', { param })"
           density="comfortable"
           variant="outlined"
           hide-details
@@ -118,32 +124,34 @@ async function execute() {
 
     <v-textarea
       v-model="queryText"
-      label="Query JSON"
+      :label="t('crm.components.endpointAction.fields.queryJson')"
       rows="3"
       auto-grow
       variant="outlined"
       class="mb-2"
-      hint='Ex: { "page": 1, "limit": 20 }'
+      :hint="t('crm.components.endpointAction.fields.queryHint')"
       persistent-hint
     />
 
     <v-textarea
       v-if="hasBody"
       v-model="bodyText"
-      label="Body JSON"
+      :label="t('crm.components.endpointAction.fields.bodyJson')"
       rows="5"
       auto-grow
       variant="outlined"
       class="mb-2"
-      hint='Ex: { "name": "Acme" }'
+      :hint="t('crm.components.endpointAction.fields.bodyHint')"
       persistent-hint
     />
 
     <div class="d-flex align-center ga-2 mb-2">
       <v-btn color="primary" :loading="pending" prepend-icon="mdi-send" @click="execute">
-        Exécuter
+        {{ t('crm.components.endpointAction.actions.execute') }}
       </v-btn>
-      <v-chip v-if="status" color="success" variant="tonal">Status {{ status }}</v-chip>
+      <v-chip v-if="status" color="success" variant="tonal">
+        {{ t('crm.components.endpointAction.status.label', { status }) }}
+      </v-chip>
     </div>
 
     <v-alert v-if="errorText" type="error" variant="tonal" class="mb-2">
@@ -153,7 +161,7 @@ async function execute() {
     <v-textarea
       v-if="responseText"
       :model-value="responseText"
-      label="Response"
+      :label="t('crm.components.endpointAction.fields.response')"
       readonly
       rows="5"
       auto-grow

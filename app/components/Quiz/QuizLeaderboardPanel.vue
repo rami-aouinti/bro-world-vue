@@ -21,6 +21,7 @@ const {
     default: () => ({ items: [] }),
   },
 )
+const { t } = useI18n()
 
 function asRecord(value: unknown): Record<string, unknown> {
   return typeof value === 'object' && value !== null
@@ -66,7 +67,11 @@ const leaderboardEntries = computed<LeaderboardEntry[]>(() => {
 
     return {
       rank: asNumber(item.rank) ?? index + 1,
-      username: username ?? `User #${index + 1}`,
+      username:
+        username ??
+        t('quiz.leaderboard.fallbackUser', {
+          index: index + 1,
+        }),
       profilePath: userProfilePath(username),
       avatarUrl:
         asString(item.avatar) ??
@@ -97,7 +102,7 @@ function formatScore(value: number | null) {
 <template>
   <div class="quiz-leaderboard-panel">
     <v-chip color="primary" variant="outlined" class="mb-4" label>
-      Quiz leaderboard
+      {{ t('quiz.leaderboard.title') }}
     </v-chip>
 
     <v-card v-if="isPending" variant="tonal" color="primary" rounded="lg">
@@ -109,7 +114,7 @@ function formatScore(value: number | null) {
     <v-card v-else-if="isError" variant="outlined" color="error" rounded="lg">
       <v-card-text class="d-flex flex-column ga-3">
         <div class="text-body-2">
-          Impossible de charger le classement pour le moment.
+          {{ t('quiz.leaderboard.error') }}
         </div>
         <v-btn
           color="error"
@@ -117,14 +122,14 @@ function formatScore(value: number | null) {
           prepend-icon="mdi-refresh"
           @click="refresh()"
         >
-          Réessayer
+          {{ t('quiz.leaderboard.retry') }}
         </v-btn>
       </v-card-text>
     </v-card>
 
     <v-card v-else-if="isEmpty" variant="outlined" rounded="lg">
       <v-card-text class="text-body-2 text-medium-emphasis">
-        Aucun résultat disponible pour le moment.
+        {{ t('quiz.leaderboard.empty') }}
       </v-card-text>
     </v-card>
 
