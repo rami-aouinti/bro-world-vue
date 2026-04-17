@@ -73,7 +73,6 @@ const DEFAULT_PAGINATION: BlogPagination = {
   hasNextPage: false,
 }
 
-const BLOG_DEFAULT_ID = 'general'
 const ALLOWED_REACTION_TYPES = new Set(['like', 'heart', 'laugh', 'celebrate'])
 
 function toRecord(value: unknown): UnknownRecord {
@@ -381,11 +380,10 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
   }
 
   async function createPost(body: UnknownRecord) {
-    const blogId =
-      pickString(body.blogId, BLOG_DEFAULT_ID).trim() || BLOG_DEFAULT_ID
-    const { blogId: _blogId, ...payload } = body
+    const blogId = pickString(body.blogId).trim()
+    const payload = blogId ? { ...body, blogId } : body
     await privateApi.request(
-      `/api/blog/private/blogs/${encodeURIComponent(blogId)}/posts`,
+      '/api/blog/private/general',
       {
         method: 'POST',
         body: payload,
