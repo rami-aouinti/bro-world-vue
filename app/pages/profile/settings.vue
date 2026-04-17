@@ -1,16 +1,29 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
+import type { UserSessionInfo } from '~/stores/profile'
 
 const { isPageSkeletonVisible } = usePageSkeleton()
 const theme = useTheme()
 const isLightTheme = computed(() => !theme.current.value.dark)
 const profileStore = useProfileStore()
+const privateApi = usePrivateApi()
+const { fetch: refreshSession } = useUserSession()
 
 definePageMeta({
   title: 'appbar.settings',
   middleware: 'auth',
 })
+
+interface BasicInfoForm {
+  firstName: string
+  lastName: string
+  birthday: string
+  phone: string
+  location: string
+  timezone: string
+}
+
 const visible = ref(false)
 const settingsSections = [
   { id: 'profile', label: 'Profile', icon: 'mdi-account-circle-outline' },
@@ -27,48 +40,82 @@ const settingsSections = [
   { id: 'delete-account', label: 'Delete account', icon: 'mdi-alert-outline' },
 ]
 const { profile } = storeToRefs(profileStore)
-
 const userProfile = computed(() => profile.value?.profile)
+const isSubmittingProfile = ref(false)
+const isUploadingPhoto = ref(false)
+const sessionsLoading = ref(false)
+const sessionsError = ref('')
+const sessions = ref<UserSessionInfo[]>([])
+const isSessionsDialogOpen = ref(false)
+const fileInputRef = ref<HTMLInputElement | null>(null)
+const profileFeedback = ref<{ type: 'success' | 'error'; message: string } | null>(
+  null,
+)
+const photoFeedback = ref<{ type: 'success' | 'error'; message: string } | null>(
+  null,
+)
+
+const basicInfoForm = ref<BasicInfoForm>({
+  firstName: '',
+  lastName: '',
+  birthday: '',
+  phone: '',
+  location: '',
+  timezone: '',
+})
 
 const fullName = computed(() => {
-  const user = userProfile.value
+  const user = profile.value
   if (!user) return ''
 
-  return (
-    [user.firstName, user.lastName].filter(Boolean).join(' ') ||
-    profile.value?.username ||
-    ''
-  )
+  return [user.firstName, user.lastName].filter(Boolean).join(' ') || user.username
 })
 
 const profileTitle = computed(() => userProfile.value?.title || 'Member')
+const displayedSessions = computed(() => sessions.value.slice(-2).reverse())
 
 const basicInfoFields = computed(() => [
-  {
-    key: 'firstName',
-    label: 'First name',
-    value: profile.value?.firstName || '',
-  },
-  { key: 'lastName', label: 'Last name', value: profile.value?.lastName || '' },
-  {
-    key: 'birthDate',
-    label: 'Birth date',
-    value: userProfile.value?.birthDate || '',
-  },
-  { key: 'email', label: 'Email', value: profile.value?.email || '' },
-  { key: 'phone', label: 'Phone', value: userProfile.value?.phone || '' },
-  {
-    key: 'location',
-    label: 'Location',
-    value: userProfile.value?.location || '',
-  },
-  { key: 'company', label: 'Company', value: userProfile.value?.company || '' },
-  {
-    key: 'timezone',
-    label: 'Timezone',
-    value: userProfile.value?.timezone || '',
-  },
+  { key: 'firstName', label: 'First name' },
+  { key: 'lastName', label: 'Last name' },
+  { key: 'birthday', label: 'Birth date', type: 'date' as const },
+  { key: 'email', label: 'Email', readonly: true },
+  { key: 'phone', label: 'Phone' },
+  { key: 'location', label: 'Location' },
+  { key: 'timezone', label: 'Timezone' },
 ])
+
+type BasicInfoFieldKey = keyof BasicInfoForm | 'email'
+
+function getBasicInfoValue(fieldKey: BasicInfoFieldKey) {
+  if (fieldKey === 'email') {
+    return profile.value?.email || ''
+  }
+
+  return basicInfoForm.value[fieldKey]
+}
+
+function setBasicInfoValue(fieldKey: BasicInfoFieldKey, value: unknown) {
+  if (fieldKey === 'email') {
+    return
+  }
+
+  basicInfoForm.value[fieldKey] = String(value ?? '')
+}
+
+watch(
+  () => profile.value,
+  (value) => {
+    basicInfoForm.value = {
+      firstName: value?.firstName || '',
+      lastName: value?.lastName || '',
+      birthday: value?.profile?.birthday || '',
+      phone: value?.profile?.phone || '',
+      location: value?.profile?.location || '',
+      timezone: value?.timezone || '',
+    }
+  },
+  { immediate: true },
+)
 
 const passwordRequirements = [
   'At least 8 characters',
@@ -124,27 +171,6 @@ const notificationRows = [
   },
 ]
 
-const sessions = [
-  {
-    device: 'MacBook Pro • Chrome',
-    location: 'San Francisco, United States',
-    lastSeen: 'Active now',
-    active: true,
-  },
-  {
-    device: 'iPhone 15 • Safari',
-    location: 'San Francisco, United States',
-    lastSeen: '2 hours ago',
-    active: false,
-  },
-  {
-    device: 'Windows PC • Edge',
-    location: 'Seattle, United States',
-    lastSeen: 'Yesterday',
-    active: false,
-  },
-]
-
 const activeSection = ref(settingsSections[0]?.id ?? '')
 const sectionObserver = ref<IntersectionObserver | null>(null)
 
@@ -159,6 +185,132 @@ const scrollToSection = (sectionId: string) => {
     behavior: 'smooth',
     block: 'start',
   })
+}
+
+function openPhotoPicker() {
+  fileInputRef.value?.click()
+}
+
+function updateProfileStore(nextProfile: typeof profile.value) {
+  if (!nextProfile) {
+    return
+  }
+
+  profileStore.profile = nextProfile
+  profileStore.lastFetchedAt = Date.now()
+}
+
+async function refreshProfileState() {
+  await Promise.all([profileStore.fetchProfile(true), refreshSession()])
+}
+
+async function loadSessions() {
+  sessionsLoading.value = true
+  sessionsError.value = ''
+
+  try {
+    sessions.value = await privateApi<UserSessionInfo[]>('/users/me/sessions')
+  } catch (error) {
+    sessions.value = []
+    sessionsError.value =
+      error instanceof Error ? error.message : 'Unable to load sessions'
+  } finally {
+    sessionsLoading.value = false
+  }
+}
+
+async function submitBasicInfo() {
+  if (!profile.value) {
+    return
+  }
+
+  isSubmittingProfile.value = true
+  profileFeedback.value = null
+  try {
+    const accountPayload = {
+      firstName: basicInfoForm.value.firstName.trim(),
+      lastName: basicInfoForm.value.lastName.trim(),
+      timezone: basicInfoForm.value.timezone.trim() || undefined,
+    }
+    const profilePayload = {
+      birthday: basicInfoForm.value.birthday || undefined,
+      phone: basicInfoForm.value.phone.trim() || undefined,
+      location: basicInfoForm.value.location.trim() || undefined,
+    }
+
+    const [accountResponse, detailsResponse] = await Promise.all([
+      privateApi('/profile', {
+        method: 'PATCH',
+        body: accountPayload,
+      }),
+      privateApi('/users/me/profile', {
+        method: 'PATCH',
+        body: profilePayload,
+      }),
+    ])
+
+    updateProfileStore({
+      ...profile.value,
+      ...(accountResponse as object),
+      profile: {
+        ...profile.value.profile,
+        ...(detailsResponse as object),
+      },
+    })
+    await refreshProfileState()
+    profileFeedback.value = {
+      type: 'success',
+      message: 'Profile updated successfully.',
+    }
+  } catch (error) {
+    profileFeedback.value = {
+      type: 'error',
+      message: error instanceof Error ? error.message : 'Unable to update profile.',
+    }
+  } finally {
+    isSubmittingProfile.value = false
+  }
+}
+
+async function onPhotoSelected(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+
+  if (!file) {
+    return
+  }
+
+  const formData = new FormData()
+  formData.append('photo', file)
+
+  isUploadingPhoto.value = true
+  photoFeedback.value = null
+  try {
+    const response = await privateApi<{ photo: string }>('/profile/photo', {
+      method: 'POST',
+      body: formData,
+    })
+
+    if (profile.value) {
+      updateProfileStore({
+        ...profile.value,
+        photo: response.photo,
+      })
+    }
+    await refreshProfileState()
+    photoFeedback.value = {
+      type: 'success',
+      message: 'Photo updated successfully.',
+    }
+  } catch (error) {
+    photoFeedback.value = {
+      type: 'error',
+      message: error instanceof Error ? error.message : 'Photo upload failed.',
+    }
+  } finally {
+    isUploadingPhoto.value = false
+    input.value = ''
+  }
 }
 
 onMounted(() => {
@@ -187,6 +339,7 @@ onMounted(() => {
   )
 
   sectionElements.forEach((element) => sectionObserver.value?.observe(element))
+  void loadSessions()
 })
 
 onUnmounted(() => {
@@ -230,7 +383,25 @@ onUnmounted(() => {
               class="d-flex align-center justify-space-between flex-wrap ga-4"
             >
               <div class="d-flex align-center ga-4">
-                <v-avatar size="72" :image="profile?.photo" />
+                <div class="avatar-upload">
+                  <v-avatar size="72" :image="profile?.photo" />
+                  <v-btn
+                    class="avatar-upload__action"
+                    icon="mdi-camera"
+                    size="x-small"
+                    color="primary"
+                    :loading="isUploadingPhoto"
+                    :disabled="isUploadingPhoto"
+                    @click="openPhotoPicker"
+                  />
+                  <input
+                    ref="fileInputRef"
+                    class="d-none"
+                    type="file"
+                    accept="image/*"
+                    @change="onPhotoSelected"
+                  />
+                </div>
                 <div>
                   <div class="text-h6">{{ fullName }}</div>
                   <div class="text-body-2 text-medium-emphasis">
@@ -248,6 +419,14 @@ onUnmounted(() => {
                 />
               </div>
             </div>
+            <v-alert
+              v-if="photoFeedback"
+              class="mt-4"
+              :type="photoFeedback.type"
+              variant="tonal"
+              border="start"
+              :text="photoFeedback.message"
+            />
           </v-card>
 
           <v-card
@@ -266,15 +445,35 @@ onUnmounted(() => {
               >
                 <v-text-field
                   :label="field.label"
-                  :model-value="field.value"
+                  :model-value="getBasicInfoValue(field.key as BasicInfoFieldKey)"
+                  :readonly="Boolean(field.readonly)"
+                  :type="field.type || 'text'"
                   variant="outlined"
                   hide-details
+                  @update:model-value="
+                    setBasicInfoValue(field.key as BasicInfoFieldKey, $event)
+                  "
                 />
               </v-col>
             </v-row>
             <div class="mt-4">
-              <v-btn variant="outlined" color="primary">Save changes</v-btn>
+              <v-btn
+                variant="outlined"
+                color="primary"
+                :loading="isSubmittingProfile"
+                :disabled="isSubmittingProfile"
+                @click="submitBasicInfo"
+                >Save changes</v-btn
+              >
             </div>
+            <v-alert
+              v-if="profileFeedback"
+              class="mt-4"
+              :type="profileFeedback.type"
+              variant="tonal"
+              border="start"
+              :text="profileFeedback.message"
+            />
           </v-card>
 
           <v-card
@@ -442,18 +641,43 @@ onUnmounted(() => {
           >
             <div class="d-flex align-center justify-space-between mb-4">
               <div class="text-h6">Sessions</div>
-              <v-btn variant="text" color="primary">See more</v-btn>
+              <v-btn
+                variant="text"
+                color="primary"
+                :disabled="sessions.length <= 2"
+                @click="isSessionsDialogOpen = true"
+                >See more</v-btn
+              >
             </div>
-            <v-list class="bg-transparent pa-0">
+            <v-progress-linear
+              v-if="sessionsLoading"
+              indeterminate
+              color="primary"
+              class="mb-4"
+            />
+            <v-alert
+              v-else-if="sessionsError"
+              type="error"
+              variant="tonal"
+              border="start"
+              class="mb-4"
+              :text="sessionsError"
+            />
+            <v-list v-else class="bg-transparent pa-0">
               <v-list-item
-                v-for="session in sessions"
-                :key="session.device"
-                :title="session.device"
-                :subtitle="`${session.location} • ${session.lastSeen}`"
+                v-for="session in displayedSessions"
+                :key="`${session.ip}-${session.title}`"
+                :prepend-icon="session.icon || 'mdi-monitor'"
+                :title="session.title"
+                :subtitle="`${session.city || 'Unknown'} • ${session.ip}`"
               >
                 <template #append>
-                  <v-chip v-if="session.active" color="success" size="small"
-                    >Active</v-chip
+                  <v-chip
+                    v-if="session.badge"
+                    color="success"
+                    size="small"
+                    variant="tonal"
+                    >{{ session.badge }}</v-chip
                   >
                 </template>
               </v-list-item>
@@ -481,6 +705,41 @@ onUnmounted(() => {
         </div>
       </template>
     </v-container>
+
+    <v-dialog v-model="isSessionsDialogOpen" max-width="760">
+      <v-card rounded="xl">
+        <v-card-title class="d-flex justify-space-between align-center">
+          <span>All sessions</span>
+          <v-btn
+            icon="mdi-close"
+            variant="text"
+            size="small"
+            @click="isSessionsDialogOpen = false"
+          />
+        </v-card-title>
+        <v-card-text>
+          <v-list class="bg-transparent pa-0">
+            <v-list-item
+              v-for="session in sessions.slice().reverse()"
+              :key="`${session.ip}-${session.title}-${session.badge}`"
+              :prepend-icon="session.icon || 'mdi-monitor'"
+              :title="session.title"
+              :subtitle="`${session.city || 'Unknown'} • ${session.ip}`"
+            >
+              <template #append>
+                <v-chip
+                  v-if="session.badge"
+                  color="success"
+                  size="small"
+                  variant="tonal"
+                  >{{ session.badge }}</v-chip
+                >
+              </template>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -509,5 +768,15 @@ onUnmounted(() => {
     transparent 20%
   );
   border: 1px solid rgba(15, 23, 42, 0.1);
+}
+
+.avatar-upload {
+  position: relative;
+}
+
+.avatar-upload__action {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
 }
 </style>
