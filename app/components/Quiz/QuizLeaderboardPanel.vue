@@ -4,6 +4,7 @@ import type { QuizLeaderboardApiResponse } from '~~/server/types/api/quiz'
 type LeaderboardEntry = {
   rank: number
   username: string
+  profilePath: string | null
   avatarUrl: string | null
   weightedAverageScore: number | null
   attempts: number | null
@@ -35,6 +36,12 @@ function asString(value: unknown): string | null {
   return typeof value === 'string' && value.trim().length ? value : null
 }
 
+function userProfilePath(username: string | null): string | null {
+  return username
+    ? `/user/${encodeURIComponent(username)}/profile`
+    : null
+}
+
 const leaderboardEntries = computed<LeaderboardEntry[]>(() => {
   const items = Array.isArray(leaderboardResponse.value?.items)
     ? leaderboardResponse.value.items
@@ -55,12 +62,12 @@ const leaderboardEntries = computed<LeaderboardEntry[]>(() => {
       asNumber(item.attemptCount) ??
       asNumber(item.totalAttempts)
 
+    const username = asString(item.username) ?? asString(profile.username)
+
     return {
       rank: asNumber(item.rank) ?? index + 1,
-      username:
-        asString(item.username) ??
-        asString(profile.username) ??
-        `User #${index + 1}`,
+      username: username ?? `User #${index + 1}`,
+      profilePath: userProfilePath(username),
       avatarUrl:
         asString(item.avatar) ??
         asString(item.photo) ??
@@ -142,7 +149,14 @@ function formatScore(value: number | null) {
         </template>
 
         <v-list-item-title class="font-weight-medium">
-          {{ entry.username }}
+          <NuxtLink
+            v-if="entry.profilePath"
+            :to="entry.profilePath"
+            class="quiz-leaderboard-panel__user-link text-decoration-none"
+          >
+            {{ entry.username }}
+          </NuxtLink>
+          <span v-else>{{ entry.username }}</span>
         </v-list-item-title>
 
         <v-list-item-subtitle class="quiz-leaderboard-panel__subtitle mt-1">
@@ -170,5 +184,9 @@ function formatScore(value: number | null) {
   flex-wrap: wrap;
   gap: 10px;
   white-space: normal;
+}
+
+.quiz-leaderboard-panel__user-link {
+  color: inherit;
 }
 </style>
