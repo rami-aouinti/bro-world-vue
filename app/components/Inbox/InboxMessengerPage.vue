@@ -83,7 +83,7 @@ const reactionEmoji: Record<ReactionType, string> = {
 const reactionOptions = Object.keys(reactionEmoji) as ReactionType[]
 const route = useRoute()
 const router = useRouter()
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 const { user: sessionUser } = useUserSession()
 
 const loading = ref(false)
@@ -101,7 +101,9 @@ const messagesContainerRef = ref<HTMLElement | null>(null)
 const editMessageId = ref<string>('')
 const editMessageContent = ref('')
 const reactionUsersDialog = ref(false)
-const selectedReactionUsers = ref<Array<{ name: string; reaction: ReactionType }>>([])
+const selectedReactionUsers = ref<
+  Array<{ name: string; reaction: ReactionType; profilePath: string | null }>
+>([])
 
 const sessionUserMeta = computed(() => {
   const raw = (sessionUser.value || {}) as Record<string, unknown>
@@ -132,7 +134,7 @@ const targetParticipant = computed(() => {
 const selectedConversationName = computed(() => {
   const target = targetParticipant.value?.user
   const fullName = [target?.firstName, target?.lastName].filter(Boolean).join(' ')
-  return fullName || 'Conversation'
+  return fullName || t('pages.inbox.conversationFallback')
 })
 
 const userComboboxItems = computed(() => {
@@ -147,7 +149,10 @@ const userComboboxItems = computed(() => {
     })
     .slice(0, 20)
     .map((entry) => ({
-      title: [entry.firstName, entry.lastName].filter(Boolean).join(' ') || entry.username || 'User',
+      title:
+        [entry.firstName, entry.lastName].filter(Boolean).join(' ') ||
+        entry.username ||
+        t('pages.inbox.userFallback'),
       value: entry.id,
       photo: entry.photo,
       username: entry.username,
@@ -162,7 +167,15 @@ const sortedConversations = computed(() =>
   }),
 )
 
-function userProfilePath(user?: Pick<ChatUser, 'username'> | Pick<PublicUser, 'username'> | null) {
+function userProfilePath(
+  user?:
+    | Pick<ChatUser, 'id' | 'username' | 'owner'>
+    | Pick<PublicUser, 'id' | 'username'>
+    | null,
+) {
+  if (!user) return null
+  if ('owner' in user && user.owner) return null
+  if (user.id === currentUserId.value) return null
   const username = user?.username?.trim()
   return username ? `/user/${encodeURIComponent(username)}/profile` : null
 }
@@ -177,7 +190,10 @@ function participantForConversation(conversation: ConversationSummary) {
 
 function participantName(conversation: ConversationSummary) {
   const target = participantForConversation(conversation)?.user
-  return [target?.firstName, target?.lastName].filter(Boolean).join(' ') || 'Conversation'
+  return (
+    [target?.firstName, target?.lastName].filter(Boolean).join(' ') ||
+    t('pages.inbox.conversationFallback')
+  )
 }
 
 function isMine(message: ConversationMessage) {
@@ -186,7 +202,7 @@ function isMine(message: ConversationMessage) {
 }
 
 function messageTime(createdAt: string) {
-  return formatRelativeTime(locale.value, createdAt, 'just now')
+  return formatRelativeTime(locale.value, createdAt, t('pages.inbox.justNow'))
 }
 
 function upsertConversationPreview(conversationId: string, content: string) {
@@ -489,7 +505,7 @@ async function deleteMessage(messageId: string) {
 
 async function deleteSelectedConversation() {
   if (!selectedConversationId.value || deletingConversation.value) return
-  const approved = window.confirm('Delete this conversation?')
+  const approved = window.confirm(t('pages.inbox.confirmDelete'))
   if (!approved) return
 
   deletingConversation.value = true
@@ -517,8 +533,11 @@ async function deleteSelectedConversation() {
 
 function openReactionUsers(message: ConversationMessage) {
   selectedReactionUsers.value = (message.reactions || []).map((reaction) => ({
-    name: [reaction.user?.firstName, reaction.user?.lastName].filter(Boolean).join(' ') || 'User',
+    name:
+      [reaction.user?.firstName, reaction.user?.lastName].filter(Boolean).join(' ') ||
+      t('pages.inbox.userFallback'),
     reaction: reaction.type,
+    profilePath: userProfilePath(reaction.user),
   }))
   reactionUsersDialog.value = true
 }
@@ -550,7 +569,7 @@ watch(
           variant="outlined"
           hide-details
           clearable
-          placeholder="Search contact"
+          :placeholder="t('pages.inbox.searchContact')"
           prepend-inner-icon="mdi-account-search-outline"
           class="mb-4"
           @update:model-value="onComboboxUserSelected"
@@ -607,7 +626,11 @@ watch(
           <v-list-item
             v-for="entry in suggestedRightUsers"
             :key="entry.id"
-            :title="[entry.firstName, entry.lastName].filter(Boolean).join(' ') || entry.username || 'User'"
+            :title="
+              [entry.firstName, entry.lastName].filter(Boolean).join(' ') ||
+              entry.username ||
+              t('pages.inbox.userFallback')
+            "
           >
             <template #prepend>
               <v-avatar size="30">
@@ -620,7 +643,14 @@ watch(
                 size="small"
                 variant="text"
                 color="primary"
-                :aria-label="`Open conversation with ${[entry.firstName, entry.lastName].filter(Boolean).join(' ') || entry.username || 'user'}`"
+                :aria-label="
+                  t('pages.inbox.openConversationWith', {
+                    name:
+                      [entry.firstName, entry.lastName].filter(Boolean).join(' ') ||
+                      entry.username ||
+                      t('pages.inbox.userFallback'),
+                  })
+                "
                 @click="startConversationWithUser(entry)"
               />
             </template>
@@ -632,7 +662,7 @@ watch(
   <v-container fluid>
     <v-sheet border rounded="xl" class="pa-4 inbox-chat-shell content-main postcard-gradient-card">
       <div v-if="!selectedConversation" class="text-medium-emphasis py-12 text-center">
-        Select a conversation
+        {{ t('pages.inbox.selectConversation') }}
       </div>
 
       <template v-else>
@@ -668,7 +698,7 @@ watch(
               variant="text"
               color="white"
               :loading="deletingConversation"
-              aria-label="Delete conversation"
+              :aria-label="t('pages.inbox.deleteAction')"
               @click="deleteSelectedConversation"
             />
           </div>
@@ -711,8 +741,8 @@ watch(
                       hide-details
                     />
                     <div class="d-flex ga-2 mt-2">
-                      <v-btn size="x-small" color="primary" @click="saveEditMessage(message.id)">Save</v-btn>
-                      <v-btn size="x-small" variant="text" @click="editMessageId = ''">Cancel</v-btn>
+                      <v-btn size="x-small" color="primary" @click="saveEditMessage(message.id)">{{ t('common.save') }}</v-btn>
+                      <v-btn size="x-small" variant="text" @click="editMessageId = ''">{{ t('common.cancel') }}</v-btn>
                     </div>
                   </template>
 
@@ -793,7 +823,7 @@ watch(
             variant="outlined"
             density="comfortable"
             hide-details
-            placeholder="Type your message"
+            :placeholder="t('pages.inbox.typeMessage')"
             @keydown.enter.prevent="sendMessage"
           />
           <v-btn color="primary" icon="mdi-send" @click="sendMessage" />
@@ -801,25 +831,25 @@ watch(
       </template>
     </v-sheet>
 
-    <v-dialog v-model="reactionUsersDialog" max-width="420">
-      <v-card rounded="xl">
-        <v-card-title>Reactions</v-card-title>
-        <v-card-text>
-          <v-list density="comfortable">
-            <v-list-item
-              v-for="(entry, index) in selectedReactionUsers"
-              :key="`${entry.name}-${index}`"
-              :title="entry.name"
-              :subtitle="entry.reaction"
-            >
-              <template #prepend>
-                <span class="text-h6">{{ reactionEmoji[entry.reaction] }}</span>
-              </template>
-            </v-list-item>
-          </v-list>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
+    <AppModal
+      v-model="reactionUsersDialog"
+      :title="t('pages.inbox.reactionsTitle')"
+      :max-width="420"
+    >
+      <v-list density="comfortable">
+        <v-list-item
+          v-for="(entry, index) in selectedReactionUsers"
+          :key="`${entry.name}-${index}`"
+          :title="entry.name"
+          :subtitle="entry.reaction"
+          :to="entry.profilePath || undefined"
+        >
+          <template #prepend>
+            <span class="text-h6">{{ reactionEmoji[entry.reaction] }}</span>
+          </template>
+        </v-list-item>
+      </v-list>
+    </AppModal>
   </v-container>
 </template>
 
