@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 
 const { isPageSkeletonVisible } = usePageSkeleton()
+const { t } = useI18n()
 const profileStore = useProfileStore()
 const { profile, loading, error } = storeToRefs(profileStore)
 
@@ -43,7 +44,7 @@ watch(
 )
 
 definePageMeta({
-  title: 'Applications',
+  title: 'pages.profileOverview.applicationsTitle',
   middleware: 'auth',
 })
 
@@ -88,34 +89,34 @@ onMounted(() => refreshApplications())
                 "
                 label
               >
-                {{ selectedApplication.private ? 'Private' : 'Public' }}
+                {{ selectedApplication.private ? t('common.private') : t('common.public') }}
               </v-chip>
             </div>
 
             <v-list density="compact" class="pa-0">
               <v-list-item
                 class="px-0"
-                title="Platform"
+                :title="t('pages.profileApplications.platform')"
                 :subtitle="selectedApplication.platformName"
               />
               <v-list-item
                 class="px-0"
-                title="Platform ID"
+                :title="t('pages.profileApplications.platformId')"
                 :subtitle="selectedApplication.platformId"
               />
               <v-list-item
                 class="px-0"
-                title="Slug"
+                :title="t('pages.profileApplications.slug')"
                 :subtitle="selectedApplication.slug"
               />
               <v-list-item
                 class="px-0"
-                title="Created"
+                :title="t('pages.profileApplications.created')"
                 :subtitle="selectedApplication.createdAt"
               />
               <v-list-item
                 class="px-0"
-                title="Updated"
+                :title="t('pages.profileApplications.updated')"
                 :subtitle="selectedApplication.updatedAt"
               />
             </v-list>
@@ -125,7 +126,7 @@ onMounted(() => refreshApplications())
           v-else
           type="info"
           variant="tonal"
-          text="Sélectionnez une application pour afficher ses détails."
+          :text="t('pages.profileApplications.selectHint')"
         />
       </template>
       <template #left>
@@ -192,7 +193,7 @@ onMounted(() => refreshApplications())
                     "
                     label
                   >
-                    {{ application.private ? 'Private' : 'Public' }}
+                    {{ application.private ? t('common.private') : t('common.public') }}
                   </v-chip>
                 </div>
               </v-card-text>
@@ -201,7 +202,7 @@ onMounted(() => refreshApplications())
         </v-row>
 
         <v-alert v-else type="info" variant="tonal">
-          No applications found for the connected user.
+          {{ t('pages.profileApplications.empty') }}
         </v-alert>
       </template>
     </v-container>

@@ -463,6 +463,21 @@
       "applicationsSubtitle": "Manage your connected applications and access.",
       "settingsSubtitle": "Customize your preferences and account settings."
     },
+    "profilePosts": {
+      "statistics": "Estadísticas",
+      "loadError": "No se pueden cargar las estadísticas.",
+      "comments": "Comentarios",
+      "reacts": "Reacciones"
+    },
+    "profileApplications": {
+      "platform": "Plataforma",
+      "platformId": "ID de plataforma",
+      "slug": "Slug",
+      "created": "Creado",
+      "updated": "Actualizado",
+      "selectHint": "Selecciona una aplicación para mostrar los detalles.",
+      "empty": "No se encontraron aplicaciones para el usuario conectado."
+    },
     "friends": {
       "title": "Friends",
       "subtitle": "Manage your friends, requests, invitations, and blocked users.",
@@ -703,6 +718,27 @@
       },
       "audience": {
         "friends": "Amigos"
+      },
+      "modals": {
+        "tag": {
+          "title": "Agregar etiquetas",
+          "input": "Etiquetas (separadas por comas)"
+        },
+        "youtube": {
+          "title": "Enlace de YouTube"
+        },
+        "camera": {
+          "title": "Grabación de video",
+          "description": "Haz clic en «Abrir cámara» para grabar un video en tu dispositivo.",
+          "open": "Abrir cámara"
+        },
+        "media": {
+          "title": "Media (imagen / video)",
+          "imageUrl": "URL de imagen (opcional)",
+          "videoUrl": "URL de video (opcional)",
+          "upload": "Subir imagen / video",
+          "selectedFiles": "Archivos seleccionados"
+        }
       }
     },
     "post": {

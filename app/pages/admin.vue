@@ -1,6 +1,8 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
+const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => true)
+const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
 
 definePageMeta({
   icon: 'mdi-monitor-dashboard',
@@ -53,6 +55,9 @@ const stats = ref([
     caption: t('dashboard.stats.totalFee.caption'),
   },
 ])
+
+showRightDrawerDesktop.value = false
+showRightDrawerMobile.value = false
 </script>
 
 <template>
@@ -60,9 +65,6 @@ const stats = ref([
     <AppPageDrawers>
       <template #left>
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
-      </template>
-      <template #right>
-        <SkeletonDrawerRight v-if="isPageSkeletonVisible" />
       </template>
     </AppPageDrawers>
     <v-container fluid>

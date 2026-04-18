@@ -179,6 +179,7 @@ const inboxMenuOpen = ref(false)
 const mobileFeatureMenuOpen = ref(false)
 const mobileApplicationsMenuOpen = ref(false)
 const mobileWorldMenuOpen = ref(false)
+const isAdminPage = computed(() => route.path === '/admin')
 
 const userLabel = computed(() => {
   const fullName = [sessionUser.value?.firstName, sessionUser.value?.lastName]
@@ -616,6 +617,7 @@ function isMenuActive(paths: string[]) {
 
     <div class="app-top-bar__right">
       <v-app-bar-nav-icon
+        v-if="!isAdminPage"
         class="app-top-bar__right-drawer-toggle"
         :aria-label="
           showRightDrawer
@@ -1099,13 +1101,12 @@ function isMenuActive(paths: string[]) {
   min-height: 104px;
   padding: 14px;
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: none;
   background: rgba(255, 255, 255, 0.03);
   text-decoration: none;
   color: rgb(var(--v-theme-on-surface));
   transition:
     transform 160ms ease,
-    border-color 160ms ease,
     background-color 160ms ease;
 }
 
@@ -1117,7 +1118,6 @@ function isMenuActive(paths: string[]) {
 
 .app-top-bar__mega-menu-card:hover {
   transform: translateY(-3px);
-  border-color: rgba(var(--v-theme-primary), 0.65);
   background: rgba(var(--v-theme-primary), 0.1);
 }
 

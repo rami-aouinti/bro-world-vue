@@ -3,6 +3,7 @@ import type { SessionUser } from '~/types/session'
 
 const route = useRoute()
 const { user } = useUserSession()
+const { t } = useI18n()
 
 const sessionUser = computed(() => user.value as SessionUser | null)
 const isRoot = computed(
@@ -10,7 +11,7 @@ const isRoot = computed(
 )
 
 type ProfileNavItem = {
-  label: string
+  labelKey: string
   to: string
   icon: string
   rootOnly?: boolean
@@ -18,27 +19,27 @@ type ProfileNavItem = {
 
 const profileNavItems: ProfileNavItem[] = [
   {
-    label: 'Friends',
+    labelKey: 'pages.friends.title',
     to: '/profile/friends',
     icon: 'mdi-account-group-outline',
   },
-  { label: 'Library', to: '/profile/library', icon: 'mdi-bookshelf' },
-  { label: 'Posts', to: '/profile/posts', icon: 'mdi-post-outline' },
-  { label: 'Applications', to: '/profile/applications', icon: 'mdi-apps' },
+  { labelKey: 'pages.profileOverview.libraryTitle', to: '/profile/library', icon: 'mdi-bookshelf' },
+  { labelKey: 'profile.posts.title', to: '/profile/posts', icon: 'mdi-post-outline' },
+  { labelKey: 'pages.profileOverview.applicationsTitle', to: '/profile/applications', icon: 'mdi-apps' },
   {
-    label: 'Games',
+    labelKey: 'pages.profileOverview.gamesTitle',
     to: '/profile/games',
     icon: 'mdi-controller-classic-outline',
   },
-  { label: 'Calendar', to: '/calendar', icon: 'mdi-calendar-month-outline' },
-  { label: 'Inbox', to: '/inbox', icon: 'mdi-inbox-outline' },
+  { labelKey: 'appbar.calendar', to: '/calendar', icon: 'mdi-calendar-month-outline' },
+  { labelKey: 'appbar.inbox', to: '/inbox', icon: 'mdi-inbox-outline' },
   {
-    label: 'Notifications',
+    labelKey: 'appbar.notifications',
     to: '/notification',
     icon: 'mdi-bell-outline',
   },
-  { label: 'Admin', to: '/admin', icon: 'mdi-shield-crown-outline', rootOnly: true },
-  { label: 'Settings', to: '/profile/settings', icon: 'mdi-cog-outline' },
+  { labelKey: 'appbar.admin', to: '/admin', icon: 'mdi-shield-crown-outline', rootOnly: true },
+  { labelKey: 'appbar.settings', to: '/profile/settings', icon: 'mdi-cog-outline' },
 ]
 
 const visibleNavItems = computed(() =>
@@ -57,7 +58,7 @@ function isNavItemActive(item: ProfileNavItem) {
       :key="item.to"
       :to="item.to"
       :prepend-icon="item.icon"
-      :title="item.label"
+      :title="t(item.labelKey)"
       :active="isNavItemActive(item)"
       active-class="text-primary"
       color="primary"

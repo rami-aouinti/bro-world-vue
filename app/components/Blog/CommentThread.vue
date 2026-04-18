@@ -214,7 +214,11 @@ function authorProfilePath(comment: BlogComment) {
                   {{ formattedDate(comment) }}
                 </div>
               </div>
-              <v-menu v-if="comment.isAuthor" location="bottom end">
+              <v-menu
+                v-if="comment.isAuthor"
+                location="bottom end"
+                content-class="app-menu-surface"
+              >
                 <template #activator="{ props: menuProps }">
                   <v-btn
                     v-bind="menuProps"
@@ -254,6 +258,7 @@ function authorProfilePath(comment: BlogComment) {
               open-delay="120"
               location="top"
               :disabled="!canInteract"
+              content-class="app-menu-surface"
             >
               <template #activator="{ props: menuProps }">
                 <button

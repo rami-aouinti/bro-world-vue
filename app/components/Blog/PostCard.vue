@@ -420,7 +420,11 @@ function openImagePreview(src: string) {
 
       <template #append>
         <ClientOnly>
-          <v-menu v-if="post.isAuthor" location="bottom end">
+          <v-menu
+            v-if="post.isAuthor"
+            location="bottom end"
+            content-class="app-menu-surface"
+          >
             <template #activator="{ props: menuProps }">
               <v-btn
                 v-bind="menuProps"
