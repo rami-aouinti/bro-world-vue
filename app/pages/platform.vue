@@ -174,43 +174,34 @@ function resetFilters() {
             clearable
           />
 
-          <v-select
+          <AppSelect
             v-model="selectedStatus"
             :label="t('platform.status')"
-            variant="outlined"
-            density="compact"
             :items="[
               { title: t('platform.all'), value: 'all' },
               { title: 'Active', value: 'active' },
               { title: 'Inactive', value: 'inactive' },
             ]"
-            hide-details
           />
 
-          <v-select
+          <AppSelect
             v-model="selectedVisibility"
             :label="t('platform.visibility')"
-            variant="outlined"
-            density="compact"
             :items="[
               { title: t('platform.all'), value: 'all' },
               { title: t('platform.private'), value: 'private' },
               { title: t('platform.public'), value: 'public' },
             ]"
-            hide-details
           />
 
-          <v-select
+          <AppSelect
             v-model="selectedOwnership"
             :label="t('platform.role')"
-            variant="outlined"
-            density="compact"
             :items="[
               { title: t('platform.all'), value: 'all' },
               { title: t('platform.owner'), value: 'owner' },
               { title: t('platform.member'), value: 'member' },
             ]"
-            hide-details
           />
 
           <v-btn

@@ -64,6 +64,41 @@ function getProductsFromResponse(response: unknown): ShopGeneralProduct[] {
   return []
 }
 
+function getProductDetailFromResponse(
+  response: unknown,
+): ShopGeneralProductDetailResponse | null {
+  if (!isObjectLike(response)) {
+    return null
+  }
+
+  const directResponse = response as {
+    product?: ShopGeneralProduct
+    similarProducts?: ShopGeneralProduct[]
+  }
+  const wrappedResponse = response as {
+    data?: {
+      product?: ShopGeneralProduct
+      similarProducts?: ShopGeneralProduct[]
+    }
+  }
+
+  if (directResponse.product) {
+    return {
+      product: directResponse.product,
+      similarProducts: directResponse.similarProducts ?? [],
+    }
+  }
+
+  if (wrappedResponse.data?.product) {
+    return {
+      product: wrappedResponse.data.product,
+      similarProducts: wrappedResponse.data.similarProducts ?? [],
+    }
+  }
+
+  return null
+}
+
 function stableQueryString(filters: Record<string, unknown>) {
   return Object.entries(filters)
     .filter(
@@ -411,9 +446,9 @@ export const useWorldShopStore = defineStore('world-shop', () => {
         },
       )
 
-      const normalizedResponse = {
-        product: response.product,
-        similarProducts: response.similarProducts ?? [],
+      const normalizedResponse = getProductDetailFromResponse(response)
+      if (!normalizedResponse) {
+        throw new Error('Invalid product detail response format.')
       }
 
       detail.value = normalizedResponse.product

@@ -62,25 +62,23 @@ const local = computed({
         />
       </v-col>
       <v-col cols="12" md="2">
-        <v-select
+        <AppSelect
           v-model="local.status"
           :items="statusCatalog"
           item-title="title"
           item-value="value"
           label="Statut"
           density="comfortable"
-          hide-details
         />
       </v-col>
       <v-col cols="12" md="2">
-        <v-select
+        <AppSelect
           v-model="local.channel"
           :items="channelCatalog"
           item-title="title"
           item-value="value"
           label="Canal"
           density="comfortable"
-          hide-details
         />
       </v-col>
       <v-col cols="6" md="2">
