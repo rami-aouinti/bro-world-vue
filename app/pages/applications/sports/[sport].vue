@@ -490,7 +490,7 @@ watch(
         <template v-if="sport.slug === 'football'">
           <v-row class="pa-4">
             <v-col cols="12">
-              <v-select
+              <AppSelect
                 :model-value="selectedLeagueId"
                 :items="leagues"
                 item-title="name"
@@ -499,22 +499,18 @@ watch(
                 density="comfortable"
                 :loading="leaguesState === 'loading'"
                 :disabled="leaguesState !== 'ready'"
-                variant="outlined"
-                hide-details
-                @update:model-value="selectLeague"
+                @update:model-value="(value) => selectLeague(value as string | number | null)"
               />
             </v-col>
 
             <v-col cols="12">
-              <v-select
+              <AppSelect
                 :model-value="selectedSeason"
                 :items="seasons"
                 :label="t('pages.applications.football.filters.season')"
                 density="comfortable"
                 :disabled="!selectedLeague"
-                variant="outlined"
-                hide-details
-                @update:model-value="selectSeason"
+                @update:model-value="(value) => selectSeason(value as string | number | null)"
               />
             </v-col>
           </v-row>
@@ -565,7 +561,7 @@ watch(
         <template v-else-if="sport.slug === 'basketball'">
           <v-row class="pa-4">
             <v-col cols="12">
-              <v-select
+              <AppSelect
                 :model-value="basketballSelectedLeagueId"
                 :items="displayedBasketballLeagues"
                 item-title="name"
@@ -574,22 +570,22 @@ watch(
                 density="comfortable"
                 :loading="basketballLeaguesState === 'loading'"
                 :disabled="basketballLeaguesState !== 'ready'"
-                variant="outlined"
-                hide-details
-                @update:model-value="selectBasketballLeague"
+                @update:model-value="
+                  (value) => selectBasketballLeague(value as string | number | null)
+                "
               />
             </v-col>
 
             <v-col cols="12">
-              <v-select
+              <AppSelect
                 :model-value="basketballSelectedSeason"
                 :items="basketballSeasons"
                 :label="t('pages.applications.football.filters.season')"
                 density="comfortable"
                 :disabled="!basketballSelectedLeague"
-                variant="outlined"
-                hide-details
-                @update:model-value="selectBasketballSeason"
+                @update:model-value="
+                  (value) => selectBasketballSeason(value as string | number | null)
+                "
               />
             </v-col>
           </v-row>
