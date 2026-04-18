@@ -42,37 +42,33 @@ const navMenus = [
   {
     label: 'appbar.feature',
     icon: 'mdi-star-outline',
-    description: 'Explore what you can build with Bro World.',
-    ctaLabel: 'View features',
+    description: 'appbar.mega.feature.description',
+    ctaLabel: 'appbar.mega.feature.ctaLabel',
     ctaTo: '/service',
     items: [
       {
         label: 'appbar.service',
         to: '/service',
         icon: 'mdi-briefcase-outline',
-        detail:
-          'Browse our key services and pick the best workflow for your team.',
+        detail: 'appbar.mega.feature.items.service',
       },
       {
         label: 'appbar.about',
         to: '/about',
         icon: 'mdi-information-outline',
-        detail:
-          'Get the story behind Bro World and discover our product vision.',
+        detail: 'appbar.mega.feature.items.about',
       },
       {
         label: 'appbar.faq',
         to: '/faq',
         icon: 'mdi-frequently-asked-questions',
-        detail:
-          'Find quick answers to common setup, account, and product questions.',
+        detail: 'appbar.mega.feature.items.faq',
       },
       {
         label: 'appbar.contact',
         to: '/contact',
         icon: 'mdi-email-outline',
-        detail:
-          'Reach out to our team for partnerships, support, and collaboration.',
+        detail: 'appbar.mega.feature.items.contact',
       },
     ],
     twoColumns: true,
@@ -81,36 +77,33 @@ const navMenus = [
   {
     label: 'appbar.applications',
     icon: 'mdi-apps',
-    description: 'Launch products and discover apps ready to scale.',
-    ctaLabel: 'View platform',
+    description: 'appbar.mega.applications.description',
+    ctaLabel: 'appbar.mega.applications.ctaLabel',
     ctaTo: '/platform',
     items: [
       {
         label: 'appbar.platform',
         to: '/platform',
         icon: 'mdi-view-dashboard-outline',
-        detail:
-          'Access your central workspace with projects, metrics, and deployment status.',
+        detail: 'appbar.mega.applications.items.platform',
       },
       {
         label: 'appbar.games',
         to: '/games',
         icon: 'mdi-gamepad-variant-outline',
-        detail: 'Play and manage interactive game experiences from one place.',
+        detail: 'appbar.mega.applications.items.games',
       },
       {
         label: 'appbar.sports',
         to: '/applications/sports',
         icon: 'mdi-basketball',
-        detail:
-          'Track sports apps, scores, and fan-focused modules in real time.',
+        detail: 'appbar.mega.applications.items.sports',
       },
       {
         label: 'appbar.quiz',
         to: '/applications/quiz',
         icon: 'mdi-help-box',
-        detail:
-          'Create engaging quizzes for onboarding, training, and community growth.',
+        detail: 'appbar.mega.applications.items.quiz',
       },
     ],
     twoColumns: true,
@@ -119,36 +112,33 @@ const navMenus = [
   {
     label: 'appbar.world',
     icon: 'mdi-earth',
-    description: 'Explore all world business modules.',
-    ctaLabel: 'Open World',
+    description: 'appbar.mega.world.description',
+    ctaLabel: 'appbar.mega.world.ctaLabel',
     ctaTo: '/world',
     items: [
       {
         label: 'world.crm.label',
         to: '/world/crm',
         icon: 'mdi-account-group-outline',
-        detail:
-          'Manage projects, companies, pipelines, and governance modules.',
+        detail: 'appbar.mega.world.items.crm',
       },
       {
         label: 'world.shop.label',
         to: '/world/shop',
         icon: 'mdi-storefront-outline',
-        detail:
-          'Run products, categories, checkout, payment, and order operations.',
+        detail: 'appbar.mega.world.items.shop',
       },
       {
         label: 'world.learning.label',
         to: '/world/learning',
         icon: 'mdi-school-outline',
-        detail:
-          'Organize courses, levels, and learning paths for every audience.',
+        detail: 'appbar.mega.world.items.learning',
       },
       {
         label: 'world.jobs.label',
         to: '/world/jobs',
         icon: 'mdi-briefcase-search-outline',
-        detail: 'Track offers, applications, and personal hiring workflows.',
+        detail: 'appbar.mega.world.items.jobs',
       },
     ],
     twoColumns: true,
@@ -431,7 +421,7 @@ function isMenuActive(paths: string[]) {
                   {{ t(item.label) }}
                 </p>
                 <p class="text-caption text-medium-emphasis mb-0">
-                  {{ item.detail }}
+                  {{ t(item.detail) }}
                 </p>
               </div>
             </NuxtLink>
@@ -482,7 +472,7 @@ function isMenuActive(paths: string[]) {
                   {{ t(item.label) }}
                 </p>
                 <p class="text-caption text-medium-emphasis mb-0">
-                  {{ item.detail }}
+                  {{ t(item.detail) }}
                 </p>
               </div>
             </NuxtLink>
@@ -533,7 +523,7 @@ function isMenuActive(paths: string[]) {
                   {{ t(item.label) }}
                 </p>
                 <p class="text-caption text-medium-emphasis mb-0">
-                  {{ item.detail }}
+                  {{ t(item.detail) }}
                 </p>
               </div>
             </NuxtLink>
@@ -567,7 +557,7 @@ function isMenuActive(paths: string[]) {
               {{ t(menu.label) }}
             </p>
             <p class="text-body-2 text-medium-emphasis mb-0">
-              {{ menu.description }}
+              {{ t(menu.description) }}
             </p>
           </div>
 
@@ -594,7 +584,7 @@ function isMenuActive(paths: string[]) {
                   {{ t(item.label) }}
                 </p>
                 <p class="text-body-2 text-medium-emphasis mb-0">
-                  {{ item.detail }}
+                  {{ t(item.detail) }}
                 </p>
               </div>
             </NuxtLink>
@@ -607,7 +597,7 @@ function isMenuActive(paths: string[]) {
               append-icon="mdi-arrow-right"
               class="text-none"
             >
-              {{ menu.ctaLabel }}
+              {{ t(menu.ctaLabel) }}
             </v-btn>
           </div>
         </div>
@@ -910,7 +900,11 @@ function isMenuActive(paths: string[]) {
       </div>
     </div>
 
-    <v-dialog v-model="loginDialogOpen" max-width="560">
+    <AppModal
+      v-model="loginDialogOpen"
+      :title="t('auth.login.title')"
+      :max-width="560"
+    >
       <AuthFormCard
         mode="login"
         :loading="loginLoading"
@@ -923,7 +917,7 @@ function isMenuActive(paths: string[]) {
           </NuxtLink>
         </template>
       </AuthFormCard>
-    </v-dialog>
+    </AppModal>
   </v-app-bar>
 </template>
 

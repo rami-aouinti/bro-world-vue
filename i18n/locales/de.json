@@ -86,7 +86,39 @@
     },
     "world": "World",
     "cart": "Warenkorb",
-    "total": "Summe"
+    "total": "Summe",
+    "mega": {
+      "feature": {
+        "description": "Entdecke, was du mit Bro World erstellen kannst.",
+        "ctaLabel": "Funktionen ansehen",
+        "items": {
+          "service": "Durchsuche unsere wichtigsten Services und wähle den besten Workflow für dein Team.",
+          "about": "Lerne die Geschichte von Bro World und unsere Produktvision kennen.",
+          "faq": "Finde schnelle Antworten zu Einrichtung, Konto und Produkt.",
+          "contact": "Kontaktiere unser Team für Partnerschaften, Support und Zusammenarbeit."
+        }
+      },
+      "applications": {
+        "description": "Starte Produkte und entdecke Apps, die bereit zum Skalieren sind.",
+        "ctaLabel": "Plattform ansehen",
+        "items": {
+          "platform": "Greife auf deinen zentralen Workspace mit Projekten, Metriken und Deployment-Status zu.",
+          "games": "Spiele und verwalte interaktive Spielerlebnisse an einem Ort.",
+          "sports": "Verfolge Sport-Apps, Ergebnisse und fanorientierte Module in Echtzeit.",
+          "quiz": "Erstelle spannende Quizze für Onboarding, Schulung und Community-Wachstum."
+        }
+      },
+      "world": {
+        "description": "Erkunde alle Business-Module in World.",
+        "ctaLabel": "World öffnen",
+        "items": {
+          "crm": "Verwalte Projekte, Unternehmen, Pipelines und Governance-Module.",
+          "shop": "Steuere Produkte, Kategorien, Checkout, Zahlung und Bestellprozesse.",
+          "learning": "Organisiere Kurse, Levels und Lernpfade für jede Zielgruppe.",
+          "jobs": "Verfolge Stellenangebote, Bewerbungen und persönliche Hiring-Workflows."
+        }
+      }
+    }
   },
   "common": {
     "confirm": "Bestätigen",
@@ -321,7 +353,16 @@
       "editTitleLabel": "Unterhaltungstitel",
       "editArchivedLabel": "Unterhaltung archivieren",
       "updateSuccess": "Unterhaltung aktualisiert.",
-      "updateError": "Die Unterhaltung konnte nicht aktualisiert werden."
+      "updateError": "Die Unterhaltung konnte nicht aktualisiert werden.",
+      "searchContact": "Kontakt suchen",
+      "selectConversation": "Wähle eine Unterhaltung",
+      "typeMessage": "Schreibe deine Nachricht",
+      "reactionsTitle": "Reaktionen",
+      "userFallback": "Benutzer",
+      "conversationFallback": "Unterhaltung",
+      "confirmDelete": "Diese Unterhaltung löschen?",
+      "justNow": "gerade eben",
+      "openConversationWith": "Unterhaltung mit {name} öffnen"
     },
     "notification": {
       "title": "Benachrichtigungen",

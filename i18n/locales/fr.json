@@ -86,7 +86,39 @@
     },
     "world": "World",
     "cart": "Panier",
-    "total": "Total"
+    "total": "Total",
+    "mega": {
+      "feature": {
+        "description": "Découvrez ce que vous pouvez créer avec Bro World.",
+        "ctaLabel": "Voir les fonctionnalités",
+        "items": {
+          "service": "Parcourez nos services clés et choisissez le meilleur flux pour votre équipe.",
+          "about": "Découvrez l’histoire de Bro World et notre vision produit.",
+          "faq": "Trouvez rapidement des réponses aux questions fréquentes de configuration, compte et produit.",
+          "contact": "Contactez notre équipe pour les partenariats, le support et la collaboration."
+        }
+      },
+      "applications": {
+        "description": "Lancez des produits et découvrez des apps prêtes à évoluer.",
+        "ctaLabel": "Voir la plateforme",
+        "items": {
+          "platform": "Accédez à votre espace central avec projets, métriques et état des déploiements.",
+          "games": "Jouez et gérez des expériences de jeu interactives depuis un seul endroit.",
+          "sports": "Suivez les applications sportives, scores et modules fans en temps réel.",
+          "quiz": "Créez des quiz engageants pour l’onboarding, la formation et la communauté."
+        }
+      },
+      "world": {
+        "description": "Explorez tous les modules business du world.",
+        "ctaLabel": "Ouvrir World",
+        "items": {
+          "crm": "Gérez projets, entreprises, pipelines et modules de gouvernance.",
+          "shop": "Pilotez produits, catégories, paiement et opérations de commande.",
+          "learning": "Organisez cours, niveaux et parcours d’apprentissage pour tous les publics.",
+          "jobs": "Suivez les offres, candidatures et workflows de recrutement."
+        }
+      }
+    }
   },
   "common": {
     "confirm": "Confirmer",
@@ -330,7 +362,16 @@
       "editTitleLabel": "Titre de la conversation",
       "editArchivedLabel": "Archiver la conversation",
       "updateSuccess": "Conversation mise à jour.",
-      "updateError": "Impossible de mettre à jour la conversation."
+      "updateError": "Impossible de mettre à jour la conversation.",
+      "searchContact": "Rechercher un contact",
+      "selectConversation": "Sélectionnez une conversation",
+      "typeMessage": "Écrivez votre message",
+      "reactionsTitle": "Réactions",
+      "userFallback": "Utilisateur",
+      "conversationFallback": "Conversation",
+      "confirmDelete": "Supprimer cette conversation ?",
+      "justNow": "à l’instant",
+      "openConversationWith": "Ouvrir une conversation avec {name}"
     },
     "notification": {
       "title": "Notifications",

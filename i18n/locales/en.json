@@ -86,7 +86,39 @@
     },
     "world": "World",
     "cart": "Cart",
-    "total": "Total"
+    "total": "Total",
+    "mega": {
+      "feature": {
+        "description": "Explore what you can build with Bro World.",
+        "ctaLabel": "View features",
+        "items": {
+          "service": "Browse our key services and pick the best workflow for your team.",
+          "about": "Get the story behind Bro World and discover our product vision.",
+          "faq": "Find quick answers to common setup, account, and product questions.",
+          "contact": "Reach out to our team for partnerships, support, and collaboration."
+        }
+      },
+      "applications": {
+        "description": "Launch products and discover apps ready to scale.",
+        "ctaLabel": "View platform",
+        "items": {
+          "platform": "Access your central workspace with projects, metrics, and deployment status.",
+          "games": "Play and manage interactive game experiences from one place.",
+          "sports": "Track sports apps, scores, and fan-focused modules in real time.",
+          "quiz": "Create engaging quizzes for onboarding, training, and community growth."
+        }
+      },
+      "world": {
+        "description": "Explore all world business modules.",
+        "ctaLabel": "Open World",
+        "items": {
+          "crm": "Manage projects, companies, pipelines, and governance modules.",
+          "shop": "Run products, categories, checkout, payment, and order operations.",
+          "learning": "Organize courses, levels, and learning paths for every audience.",
+          "jobs": "Track offers, applications, and personal hiring workflows."
+        }
+      }
+    }
   },
   "common": {
     "confirm": "Confirm",
@@ -335,7 +367,16 @@
       "editTitleLabel": "Conversation title",
       "editArchivedLabel": "Archive conversation",
       "updateSuccess": "Conversation updated.",
-      "updateError": "Unable to update the conversation."
+      "updateError": "Unable to update the conversation.",
+      "searchContact": "Search contact",
+      "selectConversation": "Select a conversation",
+      "typeMessage": "Type your message",
+      "reactionsTitle": "Reactions",
+      "userFallback": "User",
+      "conversationFallback": "Conversation",
+      "confirmDelete": "Delete this conversation?",
+      "justNow": "just now",
+      "openConversationWith": "Open conversation with {name}"
     },
     "notification": {
       "title": "Notifications",
