@@ -9,34 +9,42 @@ const props = withDefaults(
     disabled: false,
   },
 )
+const emit = defineEmits<{
+  action: [action: 'live' | 'media' | 'feeling' | 'tag' | 'youtube']
+}>()
 const theme = useTheme()
 const isLightTheme = computed(() => !theme.current.value.dark)
 
 const actions = [
   {
+    key: 'live' as const,
     icon: 'mdi-video-wireless',
     colorClass: 'new-post-action--live',
     label: t('blog.newPost.actions.liveVideo'),
   },
   {
+    key: 'media' as const,
     icon: 'mdi-image-multiple',
     colorClass: 'new-post-action--media',
     label: t('blog.newPost.actions.photoVideo'),
   },
   {
+    key: 'feeling' as const,
     icon: 'mdi-emoticon-happy-outline',
     colorClass: 'new-post-action--feeling',
     label: t('blog.newPost.actions.feelingActivity'),
   },
   {
+    key: 'tag' as const,
     icon: 'mdi-tag-outline',
     colorClass: 'new-post-action--tag',
     label: t('blog.newPost.actions.tag'),
   },
   {
-    icon: 'mdi-gif',
+    key: 'youtube' as const,
+    icon: 'mdi-youtube',
     colorClass: 'new-post-action--gif',
-    label: t('blog.newPost.actions.gif'),
+    label: 'YouTube link',
   },
 ]
 </script>
@@ -60,6 +68,7 @@ const actions = [
         variant="text"
         size="small"
         :class="action.colorClass"
+        @click="emit('action', action.key)"
       />
     </div>
   </v-sheet>
