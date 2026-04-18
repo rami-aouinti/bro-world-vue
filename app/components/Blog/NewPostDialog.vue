@@ -71,7 +71,7 @@ const videoUrl = ref('')
 const coverImage = ref('')
 const mediaFiles = ref<File[]>([])
 const mediaType = ref<'image' | 'video'>('image')
-const modalState = ref<null | 'tag' | 'youtube' | 'camera'>(null)
+const modalState = ref<null | 'tag' | 'youtube' | 'camera' | 'media'>(null)
 const cameraInput = ref<HTMLInputElement | null>(null)
 const mediaInput = ref<HTMLInputElement | null>(null)
 
@@ -113,7 +113,7 @@ function openActionModal(action: 'live' | 'media' | 'feeling' | 'tag' | 'youtube
   }
 
   if (action === 'media') {
-    nextTick(() => mediaInput.value?.click())
+    modalState.value = 'media'
   }
 }
 
@@ -131,6 +131,8 @@ function onMediaFileChange(event: Event) {
   const target = event.target as HTMLInputElement
   const files = Array.from(target.files || [])
   if (files.length > 0) {
+    const hasVideo = files.some((file) => file.type.startsWith('video/'))
+    mediaType.value = hasVideo ? 'video' : 'image'
     mediaFiles.value = [...mediaFiles.value, ...files]
   }
   target.value = ''
@@ -237,67 +239,6 @@ function onSubmit() {
           variant="outlined"
           hide-details
         />
-        <v-text-field
-          v-model="tagsInput"
-          :disabled="disabled"
-          label="Tags (séparés par des virgules)"
-          variant="outlined"
-          hide-details
-        />
-        <v-text-field
-          v-model="youtubeUrl"
-          :disabled="disabled"
-          label="YouTube URL (optionnel)"
-          variant="outlined"
-          hide-details
-        />
-        <v-text-field
-          v-model="imageUrl"
-          :disabled="disabled"
-          label="Image URL (optionnel)"
-          variant="outlined"
-          hide-details
-        />
-        <v-text-field
-          v-model="videoUrl"
-          :disabled="disabled"
-          label="Video URL (optionnel)"
-          variant="outlined"
-          hide-details
-        />
-        <v-text-field
-          v-model="coverImage"
-          :disabled="disabled"
-          label="Cover image URL (optionnel)"
-          variant="outlined"
-          hide-details
-        />
-        <v-text-field
-          v-model="imageGalleryInput"
-          :disabled="disabled"
-          label="Images galerie (URLs, séparées par virgules)"
-          variant="outlined"
-          hide-details
-        />
-        <v-file-input
-          v-model="mediaFiles"
-          :disabled="disabled"
-          label="Upload image / video"
-          multiple
-          chips
-          accept="image/*,video/*"
-          variant="outlined"
-          hide-details
-        />
-        <v-select
-          v-model="mediaType"
-          :disabled="disabled"
-          :items="['image', 'video']"
-          label="Media type upload"
-          variant="outlined"
-          hide-details
-        />
-
         <BlogNewPostAddToPostRow
           :disabled="disabled"
           @action="openActionModal"
@@ -315,6 +256,114 @@ function onSubmit() {
         >
           {{ t('blog.newPost.postAction') }}
         </v-btn>
+      </v-card-actions>
+
+      <input
+        ref="cameraInput"
+        type="file"
+        accept="video/*"
+        capture="environment"
+        class="d-none"
+        @change="onCameraFileChange"
+      />
+      <input
+        ref="mediaInput"
+        type="file"
+        accept="image/*,video/*"
+        multiple
+        class="d-none"
+        @change="onMediaFileChange"
+      />
+    </v-card>
+  </v-dialog>
+
+  <v-dialog
+    :model-value="Boolean(modalState)"
+    max-width="520"
+    @update:model-value="(value) => !value && (modalState = null)"
+  >
+    <v-card v-if="modalState === 'tag'" rounded="lg">
+      <v-card-title>Ajouter des tags</v-card-title>
+      <v-card-text>
+        <v-text-field
+          v-model="tagsInput"
+          label="Tags (séparés par des virgules)"
+          variant="outlined"
+          hide-details
+        />
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn variant="text" @click="modalState = null">Fermer</v-btn>
+      </v-card-actions>
+    </v-card>
+
+    <v-card v-else-if="modalState === 'youtube'" rounded="lg">
+      <v-card-title>Lien YouTube</v-card-title>
+      <v-card-text>
+        <v-text-field
+          v-model="youtubeUrl"
+          label="YouTube URL"
+          variant="outlined"
+          hide-details
+        />
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn variant="text" @click="modalState = null">Fermer</v-btn>
+      </v-card-actions>
+    </v-card>
+
+    <v-card v-else-if="modalState === 'camera'" rounded="lg">
+      <v-card-title>Enregistrement vidéo</v-card-title>
+      <v-card-text>
+        Cliquez sur « Ouvrir caméra » pour enregistrer une vidéo sur votre appareil.
+      </v-card-text>
+      <v-card-actions>
+        <v-btn color="primary" variant="tonal" @click="cameraInput?.click()">
+          Ouvrir caméra
+        </v-btn>
+        <v-spacer />
+        <v-btn variant="text" @click="modalState = null">Fermer</v-btn>
+      </v-card-actions>
+    </v-card>
+
+    <v-card v-else-if="modalState === 'media'" rounded="lg">
+      <v-card-title>Média (image / vidéo)</v-card-title>
+      <v-card-text class="d-flex flex-column ga-3">
+        <v-text-field
+          v-model="imageUrl"
+          label="Image URL (optionnel)"
+          variant="outlined"
+          hide-details
+        />
+        <v-text-field
+          v-model="videoUrl"
+          label="Video URL (optionnel)"
+          variant="outlined"
+          hide-details
+        />
+        <v-btn
+          color="primary"
+          variant="tonal"
+          prepend-icon="mdi-paperclip"
+          @click="mediaInput?.click()"
+        >
+          Upload image / video
+        </v-btn>
+        <v-file-input
+          v-model="mediaFiles"
+          label="Fichiers sélectionnés"
+          multiple
+          chips
+          accept="image/*,video/*"
+          variant="outlined"
+          hide-details
+        />
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn variant="text" @click="modalState = null">Fermer</v-btn>
       </v-card-actions>
 
       <input
