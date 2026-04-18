@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import HomeRightRailLocalContext from '~/components/Home/RightRailLocalContext.vue'
+import LeftDrawerRandomGames from '~/components/Home/LeftDrawerRandomGames.vue'
+
 definePageMeta({
   title: 'Blog post',
 })
@@ -34,12 +37,12 @@ type BlogCommentView = {
 type BlogPostView = {
   id: string | number
   slug: string | null
-  title: string | null
+  title?: string | null
   content: string
   createdAt: string | null
   author: BlogAuthorView | null
-  comments: BlogCommentView[]
-  reactions: BlogReactionView[]
+  comments?: BlogCommentView[]
+  reactions?: BlogReactionView[]
   isAuthor: boolean
   sharedUrl: string | null
   mediaUrl: string | null
@@ -182,6 +185,7 @@ function normalizeComment(input: unknown): BlogCommentView {
 function normalizePost(source: unknown): BlogPostView | null {
   const root = toRecord(source)
   const post = toRecord(root.post ?? root.data ?? root.item ?? root)
+  const payload = toRecord(post.payload)
 
   if (Object.keys(post).length === 0) {
     return null
@@ -190,8 +194,8 @@ function normalizePost(source: unknown): BlogPostView | null {
   return {
     id: pickId(post),
     slug: pickNullableString(post.slug),
-    title: pickNullableString(post.title),
-    content: pickString(post.content),
+    title: pickNullableString(post.title) ?? pickNullableString(payload.title),
+    content: pickString(post.content, pickString(payload.content)),
     createdAt: pickNullableString(post.createdAt),
     author: normalizeAuthor(post.author ?? post.user),
     comments: readNestedArray(post, ['comments']).map(normalizeComment),
@@ -202,7 +206,8 @@ function normalizePost(source: unknown): BlogPostView | null {
     mediaUrl:
       pickNullableString(post.mediaUrl) ??
       pickNullableString(post.filePath) ??
-      pickNullableString(post.media),
+      pickNullableString(post.media) ??
+      pickNullableString(payload.filePath),
     mediaUrls: pickArray(post.mediaUrls)
       .map((entry) => pickNullableString(entry))
       .filter((entry): entry is string => Boolean(entry)),
@@ -362,11 +367,14 @@ async function deleteComment(payload: {
   <div>
     <AppPageDrawers>
       <template #left>
-        <AppLeftDrawerUserEntry />
+        <LeftDrawerRandomGames />
+      </template>
+      <template #right>
+        <HomeRightRailLocalContext />
       </template>
     </AppPageDrawers>
-    <v-container fluid>
-      <div class="mx-auto" style="max-width: 920px">
+    <v-container fluid class="home-feed-shell">
+      <div>
         <v-progress-linear
           v-if="pending"
           indeterminate
@@ -396,3 +404,17 @@ async function deleteComment(payload: {
     </v-container>
   </div>
 </template>
+
+<style scoped>
+.home-feed-shell {
+  max-width: 920px;
+  margin: 0 auto;
+  padding-bottom: 24px;
+}
+
+@media (max-width: 959px) {
+  .home-feed-shell {
+    padding-inline: 8px;
+  }
+}
+</style>
