@@ -533,40 +533,20 @@ watch(
 
         <v-progress-linear v-if="loading" indeterminate color="primary" class="mb-3" />
 
-        <v-list class="inbox-conversation-list">
-          <v-list-item
-            v-for="conversation in sortedConversations"
-            :key="conversation.id"
-            :active="conversation.id === selectedConversationId"
-            rounded="xl"
-            class="mb-2 conversation-item"
-            @click="openConversation(conversation.id)"
-          >
-            <template #prepend>
-              <v-avatar size="48">
-                <v-img
-                  :src="participantForConversation(conversation)?.user?.photo || '/img/default-avatar.png'"
-                  cover
-                />
-              </v-avatar>
-            </template>
-
-            <v-list-item-title class="font-weight-bold text-body-1">
-              {{ participantName(conversation) }}
-            </v-list-item-title>
-            <v-list-item-subtitle class="text-caption mb-1">
-              {{ messageTime(conversation.lastMessage?.createdAt || conversation.createdAt) }}
-            </v-list-item-subtitle>
-            <v-list-item-subtitle class="text-body-2 text-truncate">
-              {{ conversation.lastMessage?.content || '...' }}
-            </v-list-item-subtitle>
-
-            <template #append>
-              <v-badge
-                v-if="(conversation.unreadMessagesCount || 0) > 0"
-                :content="conversation.unreadMessagesCount"
-                color="primary"
-                inline
+      <v-list class="inbox-conversation-list">
+        <v-list-item
+          v-for="conversation in sortedConversations"
+          :key="conversation.id"
+          :active="conversation.id === selectedConversationId"
+          rounded="xl"
+          class="mb-2 conversation-item"
+          @click="openConversation(conversation.id)"
+        >
+          <template #prepend>
+            <v-avatar size="48">
+              <v-img
+                :src="participantForConversation(conversation)?.user?.photo || '/img/default-avatar.png'"
+                cover
               />
             </v-avatar>
           </template>
@@ -594,8 +574,6 @@ watch(
     </template>
 
     <template #right>
-      <v-sheet class="pa-4" rounded="xl" border>
-        <div class="text-subtitle-1 font-weight-bold mb-3">Quick chat</div>
         <v-list density="compact" class="bg-transparent">
           <v-list-item
             v-for="entry in suggestedRightUsers"
