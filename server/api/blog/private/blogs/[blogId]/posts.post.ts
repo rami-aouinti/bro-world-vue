@@ -8,7 +8,7 @@ import type {
 
 export default defineEventHandler(async (event): Promise<BlogApiResponse> => {
   const blogId = getRequiredRouterParam(event, 'blogId', 'blog')
-  const endpoint = `/api/v1/private/blogs/${encodeURIComponent(blogId)}/posts`
+  const endpoint = `/api/v1/private/blog/blogs/${encodeURIComponent(blogId)}/posts`
   const contentType = (getHeader(event, 'content-type') || '').toLowerCase()
 
   if (contentType.includes('multipart/form-data')) {

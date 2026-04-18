@@ -13,7 +13,7 @@ export default defineEventHandler(async (event): Promise<BlogApiResponse> => {
 
   return mutatingPrivateApiCall<BlogApiResponse>(
     event,
-    `/api/v1/private/blogs/${encodeURIComponent(blogId)}/posts`,
+    `/api/v1/private/blog/blogs/${encodeURIComponent(blogId)}/posts`,
     {
       mutationKey: 'blog:posts:create',
       method: 'POST',
