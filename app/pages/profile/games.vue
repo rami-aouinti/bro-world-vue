@@ -3,7 +3,7 @@ const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 
 definePageMeta({
-  title: 'Games',
+  title: 'pages.profileOverview.gamesTitle',
   middleware: 'auth',
 })
 </script>

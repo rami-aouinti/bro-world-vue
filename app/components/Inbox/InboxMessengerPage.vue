@@ -772,7 +772,7 @@ watch(
                     {{ reactionEmoji[entry.type] }} {{ entry.count }}
                   </v-chip>
 
-                  <v-menu location="top">
+                  <v-menu location="top" content-class="app-menu-surface">
                     <template #activator="{ props }">
                       <v-btn size="x-small" variant="text" icon="mdi-emoticon-happy-outline" v-bind="props" />
                     </template>

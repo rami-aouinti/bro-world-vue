@@ -116,6 +116,7 @@ function onPickReaction(code: string) {
         open-delay="120"
         location="top"
         :disabled="!canInteract"
+        content-class="app-menu-surface"
       >
         <template #activator="{ props: menuProps }">
           <v-btn

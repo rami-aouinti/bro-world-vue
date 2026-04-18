@@ -502,6 +502,21 @@
       "applicationsSubtitle": "Manage your connected applications and access.",
       "settingsSubtitle": "Customize your preferences and account settings."
     },
+    "profilePosts": {
+      "statistics": "Statistics",
+      "loadError": "Unable to load statistics.",
+      "comments": "Comments",
+      "reacts": "Reacts"
+    },
+    "profileApplications": {
+      "platform": "Platform",
+      "platformId": "Platform ID",
+      "slug": "Slug",
+      "created": "Created",
+      "updated": "Updated",
+      "selectHint": "Select an application to display details.",
+      "empty": "No applications found for the connected user."
+    },
     "friends": {
       "title": "Friends",
       "subtitle": "Manage your friends, requests, invitations, and blocked users.",
@@ -951,6 +966,27 @@
       },
       "audience": {
         "friends": "Friends"
+      },
+      "modals": {
+        "tag": {
+          "title": "Add tags",
+          "input": "Tags (comma separated)"
+        },
+        "youtube": {
+          "title": "YouTube link"
+        },
+        "camera": {
+          "title": "Video recording",
+          "description": "Click “Open camera” to record a video on your device.",
+          "open": "Open camera"
+        },
+        "media": {
+          "title": "Media (image / video)",
+          "imageUrl": "Image URL (optional)",
+          "videoUrl": "Video URL (optional)",
+          "upload": "Upload image / video",
+          "selectedFiles": "Selected files"
+        }
       }
     },
     "post": {

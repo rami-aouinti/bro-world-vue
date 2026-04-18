@@ -8,6 +8,7 @@ type BlogPostStats = {
 }
 
 const { isPageSkeletonVisible } = usePageSkeleton()
+const { t } = useI18n()
 
 const {
   data: stats,
@@ -43,7 +44,7 @@ definePageMeta({
   <div>
     <AppPageDrawers>
       <template #right>
-        <div class="text-h6 pa-4">Statistics</div>
+        <div class="text-h6 pa-4">{{ t('pages.profilePosts.statistics') }}</div>
 
         <v-card-text>
           <v-skeleton-loader
@@ -53,7 +54,7 @@ definePageMeta({
           />
 
           <v-alert v-else-if="statsError" type="warning" variant="tonal">
-            Impossible de charger les statistiques.
+            {{ t('pages.profilePosts.loadError') }}
           </v-alert>
 
           <div v-else class="d-flex flex-column ga-3">
@@ -61,19 +62,19 @@ definePageMeta({
               <v-chip color="primary" label size="large">
                 {{ safeStats.totalPosts }}
               </v-chip>
-              <p class="text-caption text-medium-emphasis mx-3">Posts</p>
+              <p class="text-caption text-medium-emphasis mx-3">{{ t('profile.posts.title') }}</p>
             </div>
             <div class="d-flex align-center">
               <v-chip color="primary" label size="large">
                 {{ safeStats.totalComments }}
               </v-chip>
-              <p class="text-caption text-medium-emphasis mx-3">Comments</p>
+              <p class="text-caption text-medium-emphasis mx-3">{{ t('pages.profilePosts.comments') }}</p>
             </div>
             <div class="d-flex align-center">
               <v-chip color="primary" label size="large">
                 {{ safeStats.totalReacts }}
               </v-chip>
-              <p class="text-caption text-medium-emphasis mx-3">Reacts</p>
+              <p class="text-caption text-medium-emphasis mx-3">{{ t('pages.profilePosts.reacts') }}</p>
             </div>
           </div>
         </v-card-text>

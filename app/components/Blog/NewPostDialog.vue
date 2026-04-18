@@ -74,6 +74,21 @@ const mediaType = ref<'image' | 'video'>('image')
 const modalState = ref<null | 'tag' | 'youtube' | 'camera' | 'media'>(null)
 const cameraInput = ref<HTMLInputElement | null>(null)
 const mediaInput = ref<HTMLInputElement | null>(null)
+const actionModalOpen = computed({
+  get: () => Boolean(modalState.value),
+  set: (value: boolean) => {
+    if (!value) {
+      modalState.value = null
+    }
+  },
+})
+const actionModalTitle = computed(() => {
+  if (modalState.value === 'tag') return t('blog.newPost.modals.tag.title')
+  if (modalState.value === 'youtube') return t('blog.newPost.modals.youtube.title')
+  if (modalState.value === 'camera') return t('blog.newPost.modals.camera.title')
+  if (modalState.value === 'media') return t('blog.newPost.modals.media.title')
+  return t('blog.newPost.createTitle')
+})
 
 function isValidHttpUrl(value: string): boolean {
   try {
@@ -89,10 +104,6 @@ function parseCsv(input: string): string[] {
     .split(',')
     .map((entry) => entry.trim())
     .filter(Boolean)
-}
-
-function closeDialog() {
-  emit('update:open', false)
 }
 
 function openActionModal(action: 'live' | 'media' | 'feeling' | 'tag' | 'youtube') {
@@ -176,9 +187,10 @@ function onSubmit() {
 </script>
 
 <template>
-  <v-dialog
+  <AppModal
     :model-value="open"
-    max-width="640"
+    :title="t('blog.newPost.createTitle')"
+    :max-width="640"
     @update:model-value="emit('update:open', $event)"
   >
     <v-card
@@ -186,25 +198,6 @@ function onSubmit() {
       :class="{ 'new-post-dialog--light': isLightTheme }"
       rounded="xl"
     >
-      <v-card-title
-        class="py-4 d-flex align-center justify-center position-relative"
-      >
-        <span class="new-post-dialog__title text-h6">{{
-          t('blog.newPost.createTitle')
-        }}</span>
-        <v-btn
-          icon="mdi-close"
-          :aria-label="t('common.close')"
-          variant="text"
-          size="small"
-          class="position-absolute"
-          style="right: 12px"
-          @click="closeDialog"
-        />
-      </v-card-title>
-
-      <v-divider />
-
       <v-card-text class="pt-4 d-flex flex-column ga-4">
         <div class="d-flex align-center ga-3">
           <v-avatar size="44" color="grey-darken-2">
@@ -274,31 +267,29 @@ function onSubmit() {
         @change="onMediaFileChange"
       />
     </v-card>
-  </v-dialog>
+  </AppModal>
 
-  <v-dialog
-    :model-value="Boolean(modalState)"
-    max-width="520"
-    @update:model-value="(value) => !value && (modalState = null)"
+  <AppModal
+    v-model="actionModalOpen"
+    :title="actionModalTitle"
+    :max-width="520"
   >
     <v-card v-if="modalState === 'tag'" rounded="lg">
-      <v-card-title>Ajouter des tags</v-card-title>
       <v-card-text>
         <v-text-field
           v-model="tagsInput"
-          label="Tags (séparés par des virgules)"
+          :label="t('blog.newPost.modals.tag.input')"
           variant="outlined"
           hide-details
         />
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions class="px-4 pb-4">
         <v-spacer />
-        <v-btn variant="text" @click="modalState = null">Fermer</v-btn>
+        <v-btn variant="text" @click="modalState = null">{{ t('common.close') }}</v-btn>
       </v-card-actions>
     </v-card>
 
     <v-card v-else-if="modalState === 'youtube'" rounded="lg">
-      <v-card-title>Lien YouTube</v-card-title>
       <v-card-text>
         <v-text-field
           v-model="youtubeUrl"
@@ -307,38 +298,36 @@ function onSubmit() {
           hide-details
         />
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions class="px-4 pb-4">
         <v-spacer />
-        <v-btn variant="text" @click="modalState = null">Fermer</v-btn>
+        <v-btn variant="text" @click="modalState = null">{{ t('common.close') }}</v-btn>
       </v-card-actions>
     </v-card>
 
     <v-card v-else-if="modalState === 'camera'" rounded="lg">
-      <v-card-title>Enregistrement vidéo</v-card-title>
       <v-card-text>
-        Cliquez sur « Ouvrir caméra » pour enregistrer une vidéo sur votre appareil.
+        {{ t('blog.newPost.modals.camera.description') }}
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions class="px-4 pb-4">
         <v-btn color="primary" variant="tonal" @click="cameraInput?.click()">
-          Ouvrir caméra
+          {{ t('blog.newPost.modals.camera.open') }}
         </v-btn>
         <v-spacer />
-        <v-btn variant="text" @click="modalState = null">Fermer</v-btn>
+        <v-btn variant="text" @click="modalState = null">{{ t('common.close') }}</v-btn>
       </v-card-actions>
     </v-card>
 
     <v-card v-else-if="modalState === 'media'" rounded="lg">
-      <v-card-title>Média (image / vidéo)</v-card-title>
       <v-card-text class="d-flex flex-column ga-3">
         <v-text-field
           v-model="imageUrl"
-          label="Image URL (optionnel)"
+          :label="t('blog.newPost.modals.media.imageUrl')"
           variant="outlined"
           hide-details
         />
         <v-text-field
           v-model="videoUrl"
-          label="Video URL (optionnel)"
+          :label="t('blog.newPost.modals.media.videoUrl')"
           variant="outlined"
           hide-details
         />
@@ -348,11 +337,11 @@ function onSubmit() {
           prepend-icon="mdi-paperclip"
           @click="mediaInput?.click()"
         >
-          Upload image / video
+          {{ t('blog.newPost.modals.media.upload') }}
         </v-btn>
         <v-file-input
           v-model="mediaFiles"
-          label="Fichiers sélectionnés"
+          :label="t('blog.newPost.modals.media.selectedFiles')"
           multiple
           chips
           accept="image/*,video/*"
@@ -360,12 +349,12 @@ function onSubmit() {
           hide-details
         />
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions class="px-4 pb-4">
         <v-spacer />
-        <v-btn variant="text" @click="modalState = null">Fermer</v-btn>
+        <v-btn variant="text" @click="modalState = null">{{ t('common.close') }}</v-btn>
       </v-card-actions>
     </v-card>
-  </v-dialog>
+  </AppModal>
 </template>
 
 <style scoped lang="scss">
