@@ -5,7 +5,7 @@ import axios, {
   type InternalAxiosRequestConfig,
 } from 'axios'
 import axiosRetry from 'axios-retry'
-import { awaitSessionReady, createMissingSessionTokenError } from '~/composables/useSessionReady'
+import { createMissingSessionTokenError } from '~/composables/useSessionReady'
 import { resolveAuthToken, type SessionUserWithToken } from './authToken'
 
 const RETRYABLE_STATUS_CODES = new Set([408, 425, 429, 500, 502, 503, 504])
@@ -97,6 +97,36 @@ function ensureInstances() {
   }
 
   if (!privateAxiosInstance) {
+    const { user, fetch: fetchUserSession } = useUserSession()
+    let sessionReadyPromise: Promise<void> | null = null
+    let sessionInitialized = false
+    const ensureSessionReady = async (options?: { forceRefresh?: boolean }) => {
+      if (import.meta.server) {
+        return
+      }
+
+      const forceRefresh = options?.forceRefresh === true
+      if (forceRefresh) {
+        sessionInitialized = false
+        sessionReadyPromise = null
+      }
+
+      if (sessionInitialized) {
+        return
+      }
+
+      if (!sessionReadyPromise) {
+        sessionReadyPromise = (async () => {
+          await fetchUserSession()
+          sessionInitialized = true
+        })().finally(() => {
+          sessionReadyPromise = null
+        })
+      }
+
+      await sessionReadyPromise
+    }
+
     privateAxiosInstance = createAxiosInstance({
       baseURL,
       headers: {
@@ -108,9 +138,7 @@ function ensureInstances() {
 
     privateAxiosInstance.interceptors.request.use(
       async (config: InternalAxiosRequestConfig & { _sessionRefreshed?: boolean }) => {
-        await awaitSessionReady()
-
-        const { user } = useUserSession()
+        await ensureSessionReady()
         const token = resolveAuthToken(
           user.value as SessionUserWithToken | null,
         )
@@ -140,9 +168,7 @@ function ensureInstances() {
 
         requestConfig._sessionRefreshed = true
 
-        await awaitSessionReady({ forceRefresh: true })
-
-        const { user } = useUserSession()
+        await ensureSessionReady({ forceRefresh: true })
         const token = resolveAuthToken(
           user.value as SessionUserWithToken | null,
         )
