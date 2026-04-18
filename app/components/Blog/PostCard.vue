@@ -238,7 +238,8 @@ const hasLongTextContent = computed(
   () => shouldRenderTextContent.value && normalizedContent.value.length > 220,
 )
 const shouldShowReadMore = computed(
-  () => showReadMore && Boolean(postDetailPath) && hasLongTextContent.value,
+  () =>
+    props.showReadMore && Boolean(postDetailPath) && hasLongTextContent.value,
 )
 const previewStyle = computed(() => {
   if (!props.contentPreviewLines || props.contentPreviewLines < 1) {
