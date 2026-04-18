@@ -509,7 +509,6 @@ watch(
 <template>
   <AppPageDrawers>
     <template #left>
-      <v-sheet class="pa-4 inbox-left-panel" rounded="xl" border>
         <div class="text-h6 font-weight-bold mb-4">Friends</div>
 
         <v-combobox
@@ -569,10 +568,29 @@ watch(
                 color="primary"
                 inline
               />
-            </template>
-          </v-list-item>
-        </v-list>
-      </v-sheet>
+            </v-avatar>
+          </template>
+
+          <v-list-item-title class="font-weight-bold text-body-1">
+            {{ participantName(conversation) }}
+          </v-list-item-title>
+          <v-list-item-subtitle class="text-caption mb-1">
+            {{ messageTime(conversation.lastMessage?.createdAt || conversation.createdAt) }}
+          </v-list-item-subtitle>
+          <v-list-item-subtitle class="text-body-2 text-truncate">
+            {{ conversation.lastMessage?.content || '...' }}
+          </v-list-item-subtitle>
+
+          <template #append>
+            <v-badge
+              v-if="(conversation.unreadMessagesCount || 0) > 0"
+              :content="conversation.unreadMessagesCount"
+              color="primary"
+              inline
+            />
+          </template>
+        </v-list-item>
+      </v-list>
     </template>
 
     <template #right>
@@ -601,12 +619,11 @@ watch(
             </template>
           </v-list-item>
         </v-list>
-      </v-sheet>
     </template>
   </AppPageDrawers>
 
-  <v-container fluid class="py-6">
-    <v-sheet border rounded="xl" class="pa-4 inbox-chat-shell">
+  <v-container fluid>
+    <v-sheet border rounded="xl" class="pa-4 inbox-chat-shell content-main postcard-gradient-card">
       <div v-if="!selectedConversation" class="text-medium-emphasis py-12 text-center">
         Select a conversation
       </div>
@@ -806,7 +823,7 @@ watch(
 }
 
 .inbox-conversation-list {
-  max-height: calc(100vh - 300px);
+  max-height: calc(100vh - 280px);
   overflow: auto;
 }
 
@@ -820,12 +837,11 @@ watch(
 }
 
 .message-bubble--mine {
-  background: linear-gradient(135deg, rgb(var(--v-theme-primary)) 0%, color-mix(in srgb, rgb(var(--v-theme-primary)) 86%, white) 100%);
-  color: white;
+  background: linear-gradient(135deg, rgb(var(--v-theme-primary)) 0%, color-mix(in srgb, rgb(var(--v-theme-surface)) 56%, black) 100%);
 }
 
 .message-bubble--other {
-  background: rgb(var(--v-theme-surface-variant));
+  background: linear-gradient(135deg, rgb(var(--v-theme-primary)) 0%, color-mix(in srgb, rgb(var(--v-theme-surface)) 56%, white) 100%);
 }
 
 .message-time {
@@ -847,6 +863,6 @@ watch(
 }
 
 :deep(.v-list-item--active.conversation-item) {
-  background: color-mix(in srgb, rgb(var(--v-theme-primary)) 16%, white);
+  background: color-mix(in srgb, rgb(var(--v-theme-primary)) 16%, rgb(var(--v-theme-primary)));
 }
 </style>
