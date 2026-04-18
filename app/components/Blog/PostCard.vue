@@ -6,7 +6,7 @@ type BlogReaction = {
   count?: number
   isAuthor?: boolean
   author?: {
-    id?: string
+    id?: string | number
     username?: string | null
     firstName?: string | null
     lastName?: string | null
@@ -157,8 +157,89 @@ const normalizedMediaUrls = computed(() => {
 
   return props.post.mediaUrl ? [props.post.mediaUrl] : []
 })
-const hasSingleMedia = computed(() => normalizedMediaUrls.value.length === 1)
-const hasMultipleMedia = computed(() => normalizedMediaUrls.value.length > 1)
+const imagePreviewDialog = ref(false)
+const imagePreviewSrc = ref('')
+const urlRegex = /^https?:\/\//i
+
+function isYouTubeUrl(value: string): boolean {
+  return /(youtube\.com|youtu\.be)/i.test(value)
+}
+
+function toYouTubeEmbedUrl(value: string): string | null {
+  try {
+    const url = new URL(value)
+    if (url.hostname.includes('youtu.be')) {
+      const id = url.pathname.replace('/', '').trim()
+      return id ? `https://www.youtube.com/embed/${id}` : null
+    }
+
+    if (url.hostname.includes('youtube.com')) {
+      const id = url.searchParams.get('v') || url.pathname.split('/').at(-1)
+      return id ? `https://www.youtube.com/embed/${id}` : null
+    }
+  } catch {
+    return null
+  }
+
+  return null
+}
+
+function isImageUrl(value: string): boolean {
+  return /\.(png|jpe?g|gif|webp|svg|bmp|avif)(\?.*)?$/i.test(value)
+}
+
+function isVideoUrl(value: string): boolean {
+  return /\.(mp4|mov|webm|ogg|m4v)(\?.*)?$/i.test(value)
+}
+
+type MediaEntry = {
+  url: string
+  type: 'image' | 'video'
+}
+
+function resolveMediaType(url: string): MediaEntry['type'] {
+  return isVideoUrl(url) ? 'video' : 'image'
+}
+
+const resolvedMediaEntries = computed<MediaEntry[]>(() =>
+  normalizedMediaUrls.value.map((url) => ({
+    url,
+    type: resolveMediaType(url),
+  })),
+)
+const hasMedia = computed(() => resolvedMediaEntries.value.length > 0)
+
+const normalizedContent = computed(() => props.post.content.trim())
+const contentAsMedia = computed(() => {
+  const value = normalizedContent.value
+  if (!urlRegex.test(value)) {
+    return { type: 'text' as const, value: '' }
+  }
+
+  if (isYouTubeUrl(value)) {
+    const embedUrl = toYouTubeEmbedUrl(value)
+    if (embedUrl) {
+      return { type: 'youtube' as const, value: embedUrl }
+    }
+  }
+
+  if (isImageUrl(value)) {
+    return { type: 'image' as const, value }
+  }
+
+  if (isVideoUrl(value)) {
+    return { type: 'video' as const, value }
+  }
+
+  return { type: 'link' as const, value }
+})
+const shouldRenderTextContent = computed(() => contentAsMedia.value.type === 'text')
+const hasLongTextContent = computed(
+  () => shouldRenderTextContent.value && normalizedContent.value.length > 220,
+)
+const shouldShowReadMore = computed(
+  () => showReadMore && Boolean(postDetailPath) && hasLongTextContent.value,
+)
 const previewStyle = computed(() => {
   if (!props.contentPreviewLines || props.contentPreviewLines < 1) {
     return undefined
@@ -268,6 +349,11 @@ async function goToPostDetail() {
 
   await navigateTo(postDetailPath.value)
 }
+
+function openImagePreview(src: string) {
+  imagePreviewSrc.value = src
+  imagePreviewDialog.value = true
+}
 </script>
 
 <template>
@@ -364,15 +450,47 @@ async function goToPostDetail() {
     >
       <h3 v-if="post.title" class="text-h6 mb-3">{{ post.title }}</h3>
       <p
-        v-if="!titleOnly"
+        v-if="!titleOnly && shouldRenderTextContent"
         class="text-body-1 post-content"
         :class="{ 'post-content--preview': Boolean(contentPreviewLines) }"
         :style="previewStyle"
       >
         {{ post.content }}
       </p>
+      <v-img
+        v-if="!titleOnly && contentAsMedia.type === 'image'"
+        :src="contentAsMedia.value"
+        :alt="`Post content image by ${authorName}`"
+        rounded="lg"
+        cover
+        height="320"
+        class="mb-3"
+        @click.stop="openImagePreview(contentAsMedia.value)"
+      />
+      <iframe
+        v-else-if="!titleOnly && contentAsMedia.type === 'youtube'"
+        :src="contentAsMedia.value"
+        title="YouTube video"
+        class="post-youtube mb-3"
+        allowfullscreen
+      />
+      <video
+        v-else-if="!titleOnly && contentAsMedia.type === 'video'"
+        :src="contentAsMedia.value"
+        controls
+        class="post-video mb-3"
+      />
+      <a
+        v-else-if="!titleOnly && contentAsMedia.type === 'link'"
+        :href="contentAsMedia.value"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-decoration-none d-inline-block mb-3"
+      >
+        {{ contentAsMedia.value }}
+      </a>
       <v-btn
-        v-if="showReadMore && postDetailPath"
+        v-if="shouldShowReadMore"
         variant="text"
         size="small"
         color="primary"
@@ -382,39 +500,28 @@ async function goToPostDetail() {
         Read more
       </v-btn>
 
-      <v-img
-        v-if="hasSingleMedia"
-        :src="normalizedMediaUrls[0]"
-        :alt="`Post media by ${authorName}`"
-        rounded="lg"
-        cover
-        height="320"
-        class="mb-3"
-        @click.stop
-      />
-
-      <v-carousel
-        v-else-if="hasMultipleMedia"
-        class="mb-3 post-media-slider"
-        hide-delimiters
-        show-arrows="hover"
-        height="320"
-        @click.stop
-      >
-        <v-carousel-item
-          v-for="(mediaUrl, index) in normalizedMediaUrls"
+      <div v-if="hasMedia" class="post-media-grid mb-3" @click.stop>
+        <div
+          v-for="(entry, index) in resolvedMediaEntries"
           :key="`${post.id}-media-${index}`"
+          class="post-media-item"
         >
           <v-img
-            :src="mediaUrl"
+            v-if="entry.type === 'image'"
+            :src="entry.url"
             :alt="`Post media ${index + 1} by ${authorName}`"
-            rounded="lg"
+            class="post-media-item__image"
             cover
-            height="100%"
-            @click.stop
+            @click="openImagePreview(entry.url)"
           />
-        </v-carousel-item>
-      </v-carousel>
+          <video
+            v-else
+            :src="entry.url"
+            controls
+            class="post-media-item__video"
+          />
+        </div>
+      </div>
 
       <a
         v-if="post.sharedUrl"
@@ -472,6 +579,17 @@ async function goToPostDetail() {
         @delete="emit('deleteComment', { post, comment: $event })"
       />
     </v-card-text>
+
+    <v-dialog v-model="imagePreviewDialog" max-width="920">
+      <v-card rounded="lg">
+        <v-img
+          :src="imagePreviewSrc"
+          alt="Post image preview"
+          max-height="80vh"
+          contain
+        />
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -527,6 +645,46 @@ async function goToPostDetail() {
 .text-decoration-none {
   overflow-wrap: anywhere;
   word-break: break-word;
+}
+
+.post-youtube {
+  width: 100%;
+  height: 360px;
+  border: 0;
+  border-radius: 12px;
+}
+
+.post-video {
+  width: 100%;
+  max-height: 420px;
+  border-radius: 12px;
+}
+
+.post-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.post-media-item {
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  min-height: 220px;
+}
+
+.post-media-item__image {
+  height: 100%;
+  min-height: 240px;
+}
+
+.post-media-item__video {
+  width: 100%;
+  min-height: 240px;
+  max-height: 380px;
+  display: block;
+  background: #000;
 }
 
 @media (max-width: 600px) {

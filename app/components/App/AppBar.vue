@@ -220,6 +220,18 @@ const allNotificationItems = computed(() => {
 const unreadTotalCount = computed(
   () => unreadCount.value + actionNotifications.value.length,
 )
+const inboxLatestThreePreview = computed(() =>
+  inboxLatestThree.value.map((item) => {
+    const source = `${item.preview || item.content || ''}`.trim()
+    const shortPreview =
+      source.length > 20 ? `${source.slice(0, 20).trimEnd()}...` : source
+
+    return {
+      ...item,
+      shortPreview: shortPreview || '...',
+    }
+  }),
+)
 const cartPayload = computed(() => shopStore.cart as ShopCartResponse | null)
 const cartItems = computed(() => {
   const payload = cartPayload.value
@@ -744,11 +756,10 @@ function isMenuActive(paths: string[]) {
                   {{ t('appbar.inbox') }}
                 </v-list-subheader>
                 <v-list-item
-                  v-for="item in inboxLatestThree"
+                  v-for="item in inboxLatestThreePreview"
                   :key="item.id"
                   :title="item.title"
-                  :subtitle="item.preview || item.content || '...'
-                  "
+                  :subtitle="item.shortPreview"
                   @click="navigateTo({ path: '/inbox', query: { conversation: item.id } }); inboxMenuOpen = false"
                 >
                   <template #prepend>
@@ -764,7 +775,7 @@ function isMenuActive(paths: string[]) {
                   </template>
                 </v-list-item>
                 <v-list-item
-                  v-if="inboxLatestThree.length === 0"
+                  v-if="inboxLatestThreePreview.length === 0"
                   :title="t('notification.none')"
                   prepend-icon="mdi-inbox-outline"
                 />

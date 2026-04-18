@@ -227,14 +227,17 @@ function normalizeComment(input: unknown): BlogComment {
 
 function normalizePost(input: unknown): BlogPost {
   const post = toRecord(input)
+  const payload = toRecord(post.payload)
   const mediaUrls = pickArray(post.mediaUrls)
     .map((entry) => pickNullableString(entry))
     .filter((entry): entry is string => Boolean(entry))
   const mediaUrl =
     pickNullableString(post.mediaUrl) ??
+    pickNullableString(post.filePath) ??
     pickNullableString(post.media) ??
     pickNullableString(post.imageUrl) ??
     pickNullableString(post.videoUrl) ??
+    pickNullableString(payload.filePath) ??
     mediaUrls[0] ??
     null
 
@@ -242,8 +245,8 @@ function normalizePost(input: unknown): BlogPost {
     id: pickId(post),
     slug: pickNullableString(post.slug),
     author: normalizeAuthor(post.author ?? post.user),
-    title: pickNullableString(post.title),
-    content: pickString(post.content),
+    title: pickNullableString(post.title) ?? pickNullableString(payload.title),
+    content: pickString(post.content, pickString(payload.content)),
     createdAt: pickNullableString(post.createdAt),
     updatedAt: pickNullableString(post.updatedAt),
     mediaUrl,
@@ -432,17 +435,23 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
       body: requestBody,
     })
     const source = readMutationSource(response)
+    const payload = toRecord(source.payload)
     const createdId = pickId(source.id)
     const createdSlug = pickNullableString(source.slug)
+    const responseFilePath =
+      pickNullableString(source.filePath) ?? pickNullableString(payload.filePath)
+    const responseContent = pickString(payload.content, pickString(body.content))
+    const responseTitle = pickNullableString(payload.title) ?? pickNullableString(body.title)
 
     if (createdId) {
       const draft = normalizePost({
         id: createdId,
         slug: createdSlug,
-        title: pickNullableString(body.title),
-        content: pickString(body.content),
+        title: responseTitle,
+        content: responseContent,
         mediaUrls: pickArray(body.images),
         mediaUrl:
+          responseFilePath ??
           pickNullableString(body.imageUrl) ??
           pickNullableString(body.videoUrl) ??
           pickNullableString(body.coverImage) ??
@@ -457,6 +466,8 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
 
     await refreshNuxtData('/api/blog/private/general')
     await refreshNuxtData('/api/blog/public/general')
+    await refreshNuxtData('/api/blog/private/posts/mine')
+    await refreshNuxtData('/api/blog/private/posts/stats')
     await refresh()
   }
 

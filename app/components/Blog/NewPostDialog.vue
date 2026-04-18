@@ -71,6 +71,18 @@ const videoUrl = ref('')
 const coverImage = ref('')
 const mediaFiles = ref<File[]>([])
 const mediaType = ref<'image' | 'video'>('image')
+const modalState = ref<null | 'tag' | 'youtube' | 'camera' | 'media'>(null)
+const cameraInput = ref<HTMLInputElement | null>(null)
+const mediaInput = ref<HTMLInputElement | null>(null)
+
+function isValidHttpUrl(value: string): boolean {
+  try {
+    const parsed = new URL(value)
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
 
 function parseCsv(input: string): string[] {
   return input
@@ -83,17 +95,67 @@ function closeDialog() {
   emit('update:open', false)
 }
 
+function openActionModal(action: 'live' | 'media' | 'feeling' | 'tag' | 'youtube') {
+  if (action === 'tag') {
+    modalState.value = 'tag'
+    return
+  }
+
+  if (action === 'youtube') {
+    modalState.value = 'youtube'
+    return
+  }
+
+  if (action === 'live') {
+    modalState.value = 'camera'
+    nextTick(() => cameraInput.value?.click())
+    return
+  }
+
+  if (action === 'media') {
+    modalState.value = 'media'
+  }
+}
+
+function onCameraFileChange(event: Event) {
+  const target = event.target as HTMLInputElement
+  const files = Array.from(target.files || [])
+  if (files.length > 0) {
+    mediaType.value = 'video'
+    mediaFiles.value = [...mediaFiles.value, ...files]
+  }
+  target.value = ''
+}
+
+function onMediaFileChange(event: Event) {
+  const target = event.target as HTMLInputElement
+  const files = Array.from(target.files || [])
+  if (files.length > 0) {
+    const hasVideo = files.some((file) => file.type.startsWith('video/'))
+    mediaType.value = hasVideo ? 'video' : 'image'
+    mediaFiles.value = [...mediaFiles.value, ...files]
+  }
+  target.value = ''
+}
+
 function onSubmit() {
   if (isPostDisabled.value) {
     return
   }
 
+  const youtube = youtubeUrl.value.trim()
+  const image = imageUrl.value.trim()
+  const video = videoUrl.value.trim()
+  const resolvedContent =
+    [youtube, image, video].find((entry) => entry && isValidHttpUrl(entry)) ||
+    props.modelValue.trim()
+
   emit('submit', {
     title: title.value.trim(),
-    content: props.modelValue.trim(),
-    youtubeUrl: youtubeUrl.value.trim() || undefined,
-    imageUrl: imageUrl.value.trim() || undefined,
-    videoUrl: videoUrl.value.trim() || undefined,
+    content: resolvedContent,
+    youtubeUrl: youtube || undefined,
+    imageUrl: image || undefined,
+    videoUrl: video || undefined,
     coverImage: coverImage.value.trim() || undefined,
     tags: parseCsv(tagsInput.value),
     images: parseCsv(imageGalleryInput.value),
@@ -177,68 +239,10 @@ function onSubmit() {
           variant="outlined"
           hide-details
         />
-        <v-text-field
-          v-model="tagsInput"
+        <BlogNewPostAddToPostRow
           :disabled="disabled"
-          label="Tags (séparés par des virgules)"
-          variant="outlined"
-          hide-details
+          @action="openActionModal"
         />
-        <v-text-field
-          v-model="youtubeUrl"
-          :disabled="disabled"
-          label="YouTube URL (optionnel)"
-          variant="outlined"
-          hide-details
-        />
-        <v-text-field
-          v-model="imageUrl"
-          :disabled="disabled"
-          label="Image URL (optionnel)"
-          variant="outlined"
-          hide-details
-        />
-        <v-text-field
-          v-model="videoUrl"
-          :disabled="disabled"
-          label="Video URL (optionnel)"
-          variant="outlined"
-          hide-details
-        />
-        <v-text-field
-          v-model="coverImage"
-          :disabled="disabled"
-          label="Cover image URL (optionnel)"
-          variant="outlined"
-          hide-details
-        />
-        <v-text-field
-          v-model="imageGalleryInput"
-          :disabled="disabled"
-          label="Images galerie (URLs, séparées par virgules)"
-          variant="outlined"
-          hide-details
-        />
-        <v-file-input
-          v-model="mediaFiles"
-          :disabled="disabled"
-          label="Upload image / video"
-          multiple
-          chips
-          accept="image/*,video/*"
-          variant="outlined"
-          hide-details
-        />
-        <v-select
-          v-model="mediaType"
-          :disabled="disabled"
-          :items="['image', 'video']"
-          label="Media type upload"
-          variant="outlined"
-          hide-details
-        />
-
-        <BlogNewPostAddToPostRow :disabled="disabled" />
       </v-card-text>
 
       <v-card-actions class="new-post-actions px-6 pb-6">
@@ -252,6 +256,114 @@ function onSubmit() {
         >
           {{ t('blog.newPost.postAction') }}
         </v-btn>
+      </v-card-actions>
+
+      <input
+        ref="cameraInput"
+        type="file"
+        accept="video/*"
+        capture="environment"
+        class="d-none"
+        @change="onCameraFileChange"
+      />
+      <input
+        ref="mediaInput"
+        type="file"
+        accept="image/*,video/*"
+        multiple
+        class="d-none"
+        @change="onMediaFileChange"
+      />
+    </v-card>
+  </v-dialog>
+
+  <v-dialog
+    :model-value="Boolean(modalState)"
+    max-width="520"
+    @update:model-value="(value) => !value && (modalState = null)"
+  >
+    <v-card v-if="modalState === 'tag'" rounded="lg">
+      <v-card-title>Ajouter des tags</v-card-title>
+      <v-card-text>
+        <v-text-field
+          v-model="tagsInput"
+          label="Tags (séparés par des virgules)"
+          variant="outlined"
+          hide-details
+        />
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn variant="text" @click="modalState = null">Fermer</v-btn>
+      </v-card-actions>
+    </v-card>
+
+    <v-card v-else-if="modalState === 'youtube'" rounded="lg">
+      <v-card-title>Lien YouTube</v-card-title>
+      <v-card-text>
+        <v-text-field
+          v-model="youtubeUrl"
+          label="YouTube URL"
+          variant="outlined"
+          hide-details
+        />
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn variant="text" @click="modalState = null">Fermer</v-btn>
+      </v-card-actions>
+    </v-card>
+
+    <v-card v-else-if="modalState === 'camera'" rounded="lg">
+      <v-card-title>Enregistrement vidéo</v-card-title>
+      <v-card-text>
+        Cliquez sur « Ouvrir caméra » pour enregistrer une vidéo sur votre appareil.
+      </v-card-text>
+      <v-card-actions>
+        <v-btn color="primary" variant="tonal" @click="cameraInput?.click()">
+          Ouvrir caméra
+        </v-btn>
+        <v-spacer />
+        <v-btn variant="text" @click="modalState = null">Fermer</v-btn>
+      </v-card-actions>
+    </v-card>
+
+    <v-card v-else-if="modalState === 'media'" rounded="lg">
+      <v-card-title>Média (image / vidéo)</v-card-title>
+      <v-card-text class="d-flex flex-column ga-3">
+        <v-text-field
+          v-model="imageUrl"
+          label="Image URL (optionnel)"
+          variant="outlined"
+          hide-details
+        />
+        <v-text-field
+          v-model="videoUrl"
+          label="Video URL (optionnel)"
+          variant="outlined"
+          hide-details
+        />
+        <v-btn
+          color="primary"
+          variant="tonal"
+          prepend-icon="mdi-paperclip"
+          @click="mediaInput?.click()"
+        >
+          Upload image / video
+        </v-btn>
+        <v-file-input
+          v-model="mediaFiles"
+          label="Fichiers sélectionnés"
+          multiple
+          chips
+          accept="image/*,video/*"
+          variant="outlined"
+          hide-details
+        />
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn variant="text" @click="modalState = null">Fermer</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
