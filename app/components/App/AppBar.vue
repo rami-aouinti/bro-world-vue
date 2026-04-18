@@ -180,11 +180,12 @@ const shopStore = useWorldShopStore()
 
 const inboxNotificationsStore = useInboxNotificationsStore()
 const notificationStore = useNotificationStore()
-const { notificationsSortedDesc, unreadCount } = storeToRefs(
+const { notificationsSortedDesc, unreadCount, inboxLatestThree } = storeToRefs(
   inboxNotificationsStore,
 )
 const { notifications: actionNotifications } = storeToRefs(notificationStore)
 const notificationMenuOpen = ref(false)
+const inboxMenuOpen = ref(false)
 const mobileFeatureMenuOpen = ref(false)
 const mobileApplicationsMenuOpen = ref(false)
 const mobileWorldMenuOpen = ref(false)
@@ -282,6 +283,7 @@ watch(
     loginDialogOpen.value = false
     await Promise.all([
       inboxNotificationsStore.fetchNotifications(),
+      inboxNotificationsStore.fetchInboxConversations(),
       shopStore.fetchCart(),
     ])
   },
@@ -724,12 +726,46 @@ function isMenuActive(paths: string[]) {
                 </v-list-item>
               </v-list>
             </v-menu>
-            <v-btn
-              variant="text"
-              icon="mdi-inbox-outline"
-              :aria-label="t('appbar.inbox')"
-              to="/inbox"
-            />
+            <v-menu
+              v-model="inboxMenuOpen"
+              location="bottom end"
+              content-class="app-top-bar__menu-surface app-top-bar__menu-surface--compact"
+            >
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  variant="text"
+                  icon="mdi-message-text-outline"
+                  :aria-label="t('appbar.inbox')"
+                />
+              </template>
+              <v-list min-width="300" class="app-top-bar__menu-list">
+                <v-list-subheader>
+                  {{ t('appbar.inbox') }}
+                </v-list-subheader>
+                <v-list-item
+                  v-for="item in inboxLatestThree"
+                  :key="item.id"
+                  :title="item.title"
+                  :subtitle="item.preview || item.content || '...'
+                  "
+                  prepend-icon="mdi-message-text-outline"
+                  @click="navigateTo({ path: '/inbox', query: { conversation: item.id } }); inboxMenuOpen = false"
+                />
+                <v-list-item
+                  v-if="inboxLatestThree.length === 0"
+                  :title="t('notification.none')"
+                  prepend-icon="mdi-inbox-outline"
+                />
+                <v-divider class="my-1" />
+                <v-list-item
+                  :title="t('appbar.inbox')"
+                  append-icon="mdi-arrow-right"
+                  to="/inbox"
+                  @click="inboxMenuOpen = false"
+                />
+              </v-list>
+            </v-menu>
           </template>
         </template>
         <v-menu

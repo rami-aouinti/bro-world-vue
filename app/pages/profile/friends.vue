@@ -239,7 +239,7 @@ async function applyAction(userId: string, action: FriendAction) {
         `/api/chat/private/conversation/${userId}/user`,
         { method: 'POST' },
       )
-      await navigateTo(`/inbox/${conversation.id}`)
+      await navigateTo({ path: '/inbox', query: { conversation: conversation.id } })
       return
     }
 

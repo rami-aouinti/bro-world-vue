@@ -1,10 +1,14 @@
 <script setup lang="ts">
+import { privateApi } from '~/utils/http/privateApi'
+
 definePageMeta({
   title: 'User profile',
+  middleware: 'auth',
 })
 
 const route = useRoute()
 const username = computed(() => String(route.params.username ?? ''))
+const openingConversation = ref(false)
 
 type PublicUserProfile = {
   id: string
@@ -38,6 +42,25 @@ const displayName = computed(() => {
 
   return fullName || profile.value.username || username.value
 })
+
+async function openInboxConversation() {
+  if (!profile.value?.id || openingConversation.value) return
+  openingConversation.value = true
+
+  try {
+    const response = await privateApi.request<{ conversationId?: string; id?: string }>(
+      `/api/chat/private/conversation/${profile.value.id}/user`,
+      { method: 'POST' },
+    )
+
+    const conversationId = String(response.conversationId || response.id || '')
+    if (!conversationId) return
+
+    await navigateTo({ path: '/inbox', query: { conversation: conversationId } })
+  } finally {
+    openingConversation.value = false
+  }
+}
 </script>
 
 <template>
@@ -68,7 +91,18 @@ const displayName = computed(() => {
             </v-avatar>
           </template>
 
-          <v-card-title class="text-h5">{{ displayName }}</v-card-title>
+          <v-card-title class="text-h5 d-flex align-center ga-2">
+            <span>{{ displayName }}</span>
+            <v-btn
+              icon="mdi-message-text-outline"
+              size="small"
+              variant="tonal"
+              color="primary"
+              :loading="openingConversation"
+              aria-label="Open inbox conversation"
+              @click="openInboxConversation"
+            />
+          </v-card-title>
           <v-card-subtitle>@{{ profile.username }}</v-card-subtitle>
         </v-card-item>
 
