@@ -43,7 +43,8 @@ onMounted(() => {
         <BlogPostFeed
           :show-composer="loggedIn && deferredInteractiveReady"
           :show-stories="loggedIn && deferredInteractiveReady"
-          title-only
+          :content-preview-lines="2"
+          show-read-more
         />
       </template>
     </v-container>

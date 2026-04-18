@@ -60,11 +60,15 @@ const props = withDefaults(
     canInteract?: boolean
     reactionTypes?: BlogReactionType[]
     titleOnly?: boolean
+    contentPreviewLines?: number | null
+    showReadMore?: boolean
   }>(),
   {
     canInteract: true,
     reactionTypes: () => [],
     titleOnly: false,
+    contentPreviewLines: null,
+    showReadMore: false,
   },
 )
 
@@ -153,6 +157,17 @@ const normalizedMediaUrls = computed(() => {
 
   return props.post.mediaUrl ? [props.post.mediaUrl] : []
 })
+const hasSingleMedia = computed(() => normalizedMediaUrls.value.length === 1)
+const hasMultipleMedia = computed(() => normalizedMediaUrls.value.length > 1)
+const previewStyle = computed(() => {
+  if (!props.contentPreviewLines || props.contentPreviewLines < 1) {
+    return undefined
+  }
+
+  return {
+    WebkitLineClamp: String(props.contentPreviewLines),
+  }
+})
 
 function submitComment(content: string) {
   if (!props.canInteract) {
@@ -240,6 +255,14 @@ function isInteractiveElement(target: EventTarget | null) {
 
 async function onPostBodyClick(event: MouseEvent) {
   if (!postDetailPath.value || isInteractiveElement(event.target)) {
+    return
+  }
+
+  await navigateTo(postDetailPath.value)
+}
+
+async function goToPostDetail() {
+  if (!postDetailPath.value) {
     return
   }
 
@@ -340,14 +363,43 @@ async function onPostBodyClick(event: MouseEvent) {
       @click="onPostBodyClick"
     >
       <h3 v-if="post.title" class="text-h6 mb-3">{{ post.title }}</h3>
-      <p v-if="!titleOnly" class="text-body-1 post-content">{{ post.content }}</p>
+      <p
+        v-if="!titleOnly"
+        class="text-body-1 post-content"
+        :class="{ 'post-content--preview': Boolean(contentPreviewLines) }"
+        :style="previewStyle"
+      >
+        {{ post.content }}
+      </p>
+      <v-btn
+        v-if="showReadMore && postDetailPath"
+        variant="text"
+        size="small"
+        color="primary"
+        class="px-0 mb-2"
+        @click.stop="goToPostDetail"
+      >
+        Read more
+      </v-btn>
+
+      <v-img
+        v-if="hasSingleMedia"
+        :src="normalizedMediaUrls[0]"
+        :alt="`Post media by ${authorName}`"
+        rounded="lg"
+        cover
+        height="320"
+        class="mb-3"
+        @click.stop
+      />
 
       <v-carousel
-        v-if="normalizedMediaUrls.length > 0"
+        v-else-if="hasMultipleMedia"
         class="mb-3 post-media-slider"
         hide-delimiters
         show-arrows="hover"
         height="320"
+        @click.stop
       >
         <v-carousel-item
           v-for="(mediaUrl, index) in normalizedMediaUrls"
@@ -359,6 +411,7 @@ async function onPostBodyClick(event: MouseEvent) {
             rounded="lg"
             cover
             height="100%"
+            @click.stop
           />
         </v-carousel-item>
       </v-carousel>
@@ -448,6 +501,11 @@ async function onPostBodyClick(event: MouseEvent) {
   text-align: left;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+.post-content--preview {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .post-body--clickable {

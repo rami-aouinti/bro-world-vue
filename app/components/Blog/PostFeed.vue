@@ -48,6 +48,8 @@ type NewPostPayload = {
   coverImage?: string
   tags?: string[]
   images?: string[]
+  mediaFiles?: File[]
+  mediaType?: 'image' | 'video'
 }
 
 const props = withDefaults(
@@ -56,12 +58,16 @@ const props = withDefaults(
     showComposer?: boolean
     showStories?: boolean
     titleOnly?: boolean
+    contentPreviewLines?: number | null
+    showReadMore?: boolean
   }>(),
   {
     mode: 'general',
     showComposer: false,
     showStories: false,
     titleOnly: false,
+    contentPreviewLines: null,
+    showReadMore: false,
   },
 )
 const { t } = useI18n()
@@ -125,6 +131,8 @@ async function createNewPost(payload: NewPostPayload) {
       coverImage: payload.coverImage?.trim() || undefined,
       images: payload.images?.map((entry) => entry.trim()).filter(Boolean),
       tags: payload.tags?.map((entry) => entry.trim()).filter(Boolean),
+      mediaFiles: payload.mediaFiles,
+      mediaType: payload.mediaType,
     })
   } finally {
     createPending.value = false
@@ -276,6 +284,8 @@ async function submitEdit() {
         :key="post.id"
         :post="post"
         :title-only="titleOnly"
+        :content-preview-lines="contentPreviewLines"
+        :show-read-more="showReadMore"
         :can-interact="loggedIn"
         :reaction-types="reactionTypes"
         @create-comment="createComment"

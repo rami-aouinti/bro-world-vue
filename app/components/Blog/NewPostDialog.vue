@@ -10,6 +10,8 @@ type NewPostPayload = {
   coverImage?: string
   tags?: string[]
   images?: string[]
+  mediaFiles?: File[]
+  mediaType?: 'image' | 'video'
 }
 
 const props = withDefaults(
@@ -67,6 +69,8 @@ const youtubeUrl = ref('')
 const imageUrl = ref('')
 const videoUrl = ref('')
 const coverImage = ref('')
+const mediaFiles = ref<File[]>([])
+const mediaType = ref<'image' | 'video'>('image')
 
 function parseCsv(input: string): string[] {
   return input
@@ -93,6 +97,8 @@ function onSubmit() {
     coverImage: coverImage.value.trim() || undefined,
     tags: parseCsv(tagsInput.value),
     images: parseCsv(imageGalleryInput.value),
+    mediaFiles: mediaFiles.value,
+    mediaType: mediaType.value,
   })
   title.value = ''
   tagsInput.value = ''
@@ -101,6 +107,8 @@ function onSubmit() {
   imageUrl.value = ''
   videoUrl.value = ''
   coverImage.value = ''
+  mediaFiles.value = []
+  mediaType.value = 'image'
   emit('update:modelValue', '')
 }
 </script>
@@ -208,6 +216,24 @@ function onSubmit() {
           v-model="imageGalleryInput"
           :disabled="disabled"
           label="Images galerie (URLs, séparées par virgules)"
+          variant="outlined"
+          hide-details
+        />
+        <v-file-input
+          v-model="mediaFiles"
+          :disabled="disabled"
+          label="Upload image / video"
+          multiple
+          chips
+          accept="image/*,video/*"
+          variant="outlined"
+          hide-details
+        />
+        <v-select
+          v-model="mediaType"
+          :disabled="disabled"
+          :items="['image', 'video']"
+          label="Media type upload"
           variant="outlined"
           hide-details
         />

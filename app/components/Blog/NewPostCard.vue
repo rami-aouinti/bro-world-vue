@@ -8,6 +8,8 @@ type NewPostPayload = {
   coverImage?: string
   tags?: string[]
   images?: string[]
+  mediaFiles?: File[]
+  mediaType?: 'image' | 'video'
 }
 
 const props = withDefaults(

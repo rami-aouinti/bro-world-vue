@@ -43,6 +43,7 @@ type BlogPostView = {
   isAuthor: boolean
   sharedUrl: string | null
   mediaUrl: string | null
+  mediaUrls: string[]
 }
 
 type BlogReactionType = {
@@ -68,6 +69,10 @@ function pickNullableString(value: unknown): string | null {
 
 function pickString(value: unknown, fallback = ''): string {
   return typeof value === 'string' ? value : fallback
+}
+
+function pickArray(value: unknown): unknown[] {
+  return Array.isArray(value) ? value : []
 }
 
 function pickBoolean(value: unknown, fallback = false): boolean {
@@ -198,6 +203,9 @@ function normalizePost(source: unknown): BlogPostView | null {
       pickNullableString(post.mediaUrl) ??
       pickNullableString(post.filePath) ??
       pickNullableString(post.media),
+    mediaUrls: pickArray(post.mediaUrls)
+      .map((entry) => pickNullableString(entry))
+      .filter((entry): entry is string => Boolean(entry)),
   }
 }
 

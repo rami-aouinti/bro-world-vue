@@ -2,6 +2,7 @@ import { privateApi } from '~/utils/http/privateApi'
 import { normalizeHttpError } from '../utils/httpError'
 
 type UnknownRecord = Record<string, unknown>
+type MediaType = 'image' | 'video'
 
 type BlogAuthor = {
   id: string | number
@@ -84,6 +85,10 @@ function toRecord(value: unknown): UnknownRecord {
 
 function pickArray(value: unknown): unknown[] {
   return Array.isArray(value) ? value : []
+}
+
+function isFile(value: unknown): value is File {
+  return typeof File !== 'undefined' && value instanceof File
 }
 
 function pickString(value: unknown, fallback = ''): string {
@@ -398,14 +403,34 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
   async function createPost(body: UnknownRecord) {
     const blogIdFromBody = pickString(body.blogId).trim()
     const resolvedBlogId = blogIdFromBody || blogId.value || 'general'
-    const payload = { ...body, blogId: resolvedBlogId }
-    const response = await privateApi.request<unknown>(
-      '/api/blog/private/general',
-      {
-        method: 'POST',
-        body: payload,
-      },
-    )
+    const mediaFiles = pickArray(body.mediaFiles).filter(isFile)
+    const hasUpload = mediaFiles.length > 0
+    const endpoint = `/api/blog/private/blogs/${encodeURIComponent(resolvedBlogId)}/posts`
+
+    let requestBody: UnknownRecord | FormData
+    if (hasUpload) {
+      const formData = new FormData()
+      formData.append('category', pickString(body.category, 'general'))
+      formData.append('title', pickString(body.title))
+      formData.append('content', pickString(body.content))
+
+      const mediaType = pickString(body.mediaType, 'image') as MediaType
+      formData.append('mediaType', mediaType)
+
+      for (const mediaFile of mediaFiles) {
+        formData.append('media', mediaFile)
+      }
+
+      requestBody = formData
+    } else {
+      const { blogId: _blogId, mediaFiles: _mediaFiles, ...payload } = body
+      requestBody = payload
+    }
+
+    const response = await privateApi.request<unknown>(endpoint, {
+      method: 'POST',
+      body: requestBody,
+    })
     const source = readMutationSource(response)
     const createdId = pickId(source.id)
     const createdSlug = pickNullableString(source.slug)
