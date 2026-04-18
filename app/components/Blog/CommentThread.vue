@@ -108,6 +108,30 @@ function normalizedReactions(comment: BlogComment) {
     }))
 }
 
+function ownReactionCode(comment: BlogComment) {
+  const ownReaction = (comment.reactions || []).find((entry) => entry.isAuthor)
+  const code = ownReaction?.type?.toLowerCase().trim()
+  return code?.length ? code : null
+}
+
+function reactionButtonEmoji(comment: BlogComment) {
+  const ownCode = ownReactionCode(comment)
+  return ownCode ? iconMap[ownCode] ?? '👍' : '👍'
+}
+
+function reactionButtonLabel(comment: BlogComment) {
+  const ownCode = ownReactionCode(comment)
+  if (!ownCode) {
+    return t('blog.post.actions.like')
+  }
+
+  const match = normalizedReactionTypes.value.find(
+    (entry) => entry.code.toLowerCase() === ownCode,
+  )
+
+  return match?.label ?? t('blog.post.actions.like')
+}
+
 function pickReaction(comment: BlogComment, code: string) {
   if (!props.canInteract) {
     return
@@ -236,9 +260,12 @@ function authorProfilePath(comment: BlogComment) {
                   v-bind="menuProps"
                   type="button"
                   :disabled="!canInteract"
-                  @click="pickReaction(comment, 'like')"
+                  @click="pickReaction(comment, ownReactionCode(comment) ?? 'like')"
                 >
-                  {{ t('blog.post.actions.like') }}
+                  <span class="d-inline-flex align-center ga-2">
+                    <span class="reaction-button-emoji">{{ reactionButtonEmoji(comment) }}</span>
+                    <span>{{ reactionButtonLabel(comment) }}</span>
+                  </span>
                 </button>
               </template>
 
@@ -248,6 +275,10 @@ function authorProfilePath(comment: BlogComment) {
                   :key="item.code"
                   type="button"
                   class="reaction-choice"
+                  :class="{
+                    'reaction-choice--selected':
+                      ownReactionCode(comment) === item.code.toLowerCase(),
+                  }"
                   :title="item.label"
                   @click="pickReaction(comment, item.code)"
                 >
@@ -372,6 +403,15 @@ function authorProfilePath(comment: BlogComment) {
 
 .reaction-choice:hover {
   transform: translateY(-2px) scale(1.08);
+}
+
+.reaction-choice--selected {
+  transform: scale(1.2);
+  filter: drop-shadow(0 0 8px rgba(var(--v-theme-primary), 0.6));
+}
+
+.reaction-button-emoji {
+  line-height: 1;
 }
 
 .comment-author-link {

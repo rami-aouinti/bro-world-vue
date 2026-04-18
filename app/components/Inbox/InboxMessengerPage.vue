@@ -402,28 +402,59 @@ function reactionSummary(message: ConversationMessage) {
   }))
 }
 
-async function addReaction(message: ConversationMessage, reaction: ReactionType) {
-  const response = await privateApi.request<{ id: string }>(
-    `/api/chat/private/messages/${message.id}/reactions`,
-    {
-      method: 'POST',
-      body: { reaction },
-    },
+function ownReaction(message: ConversationMessage) {
+  const mine = (message.reactions || []).find(
+    (entry) => entry.user?.id === currentUserId.value || entry.user?.owner,
   )
+  return mine ?? null
+}
 
+async function addReaction(message: ConversationMessage, reaction: ReactionType) {
   message.reactions = message.reactions || []
-  message.reactions.push({
-    id: response.id,
-    type: reaction,
-    user: {
-      id: currentUserId.value,
-      username: sessionUserMeta.value.username,
-      firstName: sessionUserMeta.value.firstName,
-      lastName: sessionUserMeta.value.lastName,
-      photo: sessionUserMeta.value.photo,
-      owner: true,
-    },
+  const existing = ownReaction(message)
+
+  if (!existing) {
+    const response = await privateApi.request<{ id: string }>(
+      `/api/chat/private/messages/${message.id}/reactions`,
+      {
+        method: 'POST',
+        body: { reaction },
+      },
+    )
+
+    message.reactions.push({
+      id: response.id,
+      type: reaction,
+      user: {
+        id: currentUserId.value,
+        username: sessionUserMeta.value.username,
+        firstName: sessionUserMeta.value.firstName,
+        lastName: sessionUserMeta.value.lastName,
+        photo: sessionUserMeta.value.photo,
+        owner: true,
+      },
+    })
+    return
+  }
+
+  if (existing.type === reaction) {
+    await privateApi.request(`/api/chat/private/reactions/${existing.id}`, {
+      method: 'DELETE',
+    })
+    message.reactions = message.reactions.filter(
+      (entry) => entry.id !== existing.id,
+    )
+    return
+  }
+
+  await privateApi.request(`/api/chat/private/reactions/${existing.id}`, {
+    method: 'PATCH',
+    body: { reaction },
   })
+
+  message.reactions = message.reactions.map((entry) =>
+    entry.id === existing.id ? { ...entry, type: reaction } : entry,
+  )
 }
 
 function startEditMessage(message: ConversationMessage) {
@@ -722,6 +753,10 @@ watch(
                           :key="reaction"
                           size="small"
                           variant="text"
+                          :class="{
+                            'message-reaction-option--selected':
+                              ownReaction(message)?.type === reaction,
+                          }"
                           @click="addReaction(message, reaction)"
                         >
                           {{ reactionEmoji[reaction] }}
@@ -826,6 +861,10 @@ watch(
 
 .message-action-btn :deep(.v-icon) {
   font-size: 16px;
+}
+
+.message-reaction-option--selected {
+  transform: scale(1.2);
 }
 
 .inbox-user-link {

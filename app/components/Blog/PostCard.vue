@@ -145,6 +145,11 @@ const normalizedReactions = computed(() =>
       type: reaction.type as string,
     })),
 )
+const ownPostReactionCode = computed(() => {
+  const ownReaction = normalizedReactions.value.find((entry) => entry.isAuthor)
+  const code = ownReaction?.type?.toLowerCase().trim()
+  return code?.length ? code : null
+})
 const normalizedMediaUrls = computed(() => {
   const urls = (props.post.mediaUrls ?? [])
     .filter((entry): entry is string => typeof entry === 'string')
@@ -545,6 +550,7 @@ function openImagePreview(src: string) {
         :shares-count="post.sharesCount || 0"
         :can-interact="canInteract"
         :reaction-types="reactionTypes"
+        :current-reaction-code="ownPostReactionCode"
         @like="togglePostLike"
         @react="emit('reactPost', { post, code: $event })"
         @comment="toggleComments"
