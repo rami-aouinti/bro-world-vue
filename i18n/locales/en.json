@@ -879,6 +879,8 @@
         "retryCta": "Try again",
         "unsupported": "Geolocation is not supported on this device.",
         "weatherTitle": "Current weather",
+        "jobsTitle": "General jobs",
+        "projectsTitle": "CRM projects",
         "eventsTitle": "Events in your area",
         "majorEventsTitle": "Major events today",
         "emptyState": "No events available right now."
