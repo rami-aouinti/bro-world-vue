@@ -48,11 +48,20 @@ export default defineNuxtPlugin((nuxtApp) => {
       VSelect: {
         ...(vuetifyOptions.defaults?.VSelect ?? {}),
         density: 'compact',
+        class: [
+          'app-menu-field',
+          (vuetifyOptions.defaults?.VSelect as { class?: string | string[] })
+            ?.class,
+        ],
         menuProps: {
           contained: true,
           closeOnContentClick: true,
-          ...(vuetifyOptions.defaults?.VSelect as { menuProps?: Record<string, unknown> })
-            ?.menuProps,
+          contentClass: 'app-menu-surface',
+          ...(
+            vuetifyOptions.defaults?.VSelect as {
+              menuProps?: Record<string, unknown>
+            }
+          )?.menuProps,
         },
       },
       VTextarea: {
@@ -62,10 +71,43 @@ export default defineNuxtPlugin((nuxtApp) => {
       VAutocomplete: {
         ...(vuetifyOptions.defaults?.VAutocomplete ?? {}),
         density: 'compact',
+        class: [
+          'app-menu-field',
+          (
+            vuetifyOptions.defaults?.VAutocomplete as {
+              class?: string | string[]
+            }
+          )?.class,
+        ],
+        menuProps: {
+          contained: true,
+          closeOnContentClick: true,
+          contentClass: 'app-menu-surface',
+          ...(
+            vuetifyOptions.defaults?.VAutocomplete as {
+              menuProps?: Record<string, unknown>
+            }
+          )?.menuProps,
+        },
       },
       VCombobox: {
         ...(vuetifyOptions.defaults?.VCombobox ?? {}),
         density: 'compact',
+        class: [
+          'app-menu-field',
+          (vuetifyOptions.defaults?.VCombobox as { class?: string | string[] })
+            ?.class,
+        ],
+        menuProps: {
+          contained: true,
+          closeOnContentClick: true,
+          contentClass: 'app-menu-surface',
+          ...(
+            vuetifyOptions.defaults?.VCombobox as {
+              menuProps?: Record<string, unknown>
+            }
+          )?.menuProps,
+        },
       },
       VFileInput: {
         ...(vuetifyOptions.defaults?.VFileInput ?? {}),
