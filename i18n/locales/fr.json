@@ -913,8 +913,10 @@
         "stateError": "Impossible de charger votre contexte local pour le moment.",
         "stateInitial": "Activez votre localisation pour voir la météo et les événements proches.",
         "retryCta": "Réessayer",
-        "unsupported": "La géolocalisation n’est pas prise en charge sur cet appareil.",
+        "unsupported": "La géolocalisation n'est pas prise en charge sur cet appareil.",
         "weatherTitle": "Météo actuelle",
+        "jobsTitle": "Offres d'emploi générales",
+        "projectsTitle": "Projets CRM",
         "eventsTitle": "Événements près de vous",
         "majorEventsTitle": "Événements majeurs du jour",
         "emptyState": "Aucun événement disponible pour le moment."

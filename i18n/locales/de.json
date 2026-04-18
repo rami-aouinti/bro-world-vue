@@ -697,6 +697,8 @@
         "retryCta": "Erneut versuchen",
         "unsupported": "Geolokalisierung wird auf diesem Gerät nicht unterstützt.",
         "weatherTitle": "Aktuelles Wetter",
+        "jobsTitle": "Allgemeine Jobs",
+        "projectsTitle": "CRM-Projekte",
         "eventsTitle": "Events in deiner Nähe",
         "majorEventsTitle": "Wichtige Ereignisse heute",
         "emptyState": "Derzeit sind keine Events verfügbar."

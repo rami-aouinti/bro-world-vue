@@ -29,6 +29,31 @@ interface LocalContextResponse {
   majorEvents: MajorEvent[]
 }
 
+interface RecruitJobItem {
+  id: string
+  slug: string
+  title: string
+  company?: {
+    name?: string
+  }
+  location?: string
+}
+
+interface RecruitJobsListResponse {
+  items?: RecruitJobItem[]
+}
+
+interface CrmProjectItem {
+  id: string
+  name?: string
+  code?: string
+  status?: string
+}
+
+interface CrmProjectsResponse {
+  items?: CrmProjectItem[]
+}
+
 const { locale, t } = useI18n()
 const LOCATION_PROMPTED_KEY = 'home.local-context.prompted'
 const LAST_COORDS_KEY = 'home.local-context.coords'
@@ -38,6 +63,8 @@ const permissionDenied = ref(false)
 const loadError = ref('')
 const isLocationModalOpen = ref(false)
 const localContext = ref<LocalContextResponse | null>(null)
+const featuredJobs = ref<RecruitJobItem[]>([])
+const featuredProjects = ref<CrmProjectItem[]>([])
 
 const hasContext = computed(() => Boolean(localContext.value))
 
@@ -55,16 +82,36 @@ const weatherSummary = computed(() => {
   return `${weather.temperatureC.toFixed(1)}°C · ${weather.condition}`
 })
 
-function impactColor(impact: MajorEvent['impact']) {
-  if (impact === 'high') {
-    return 'error'
+function pickRandomItems<T>(items: T[], count: number) {
+  const shuffled = [...items]
+
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1))
+    const current = shuffled[index]
+    shuffled[index] = shuffled[randomIndex]
+    shuffled[randomIndex] = current
   }
 
-  if (impact === 'medium') {
-    return 'warning'
-  }
+  return shuffled.slice(0, count)
+}
 
-  return 'info'
+async function loadRecommendations() {
+  const [jobsResult, projectsResult] = await Promise.allSettled([
+    $fetch<RecruitJobsListResponse>('/api/recruit/general/jobs', {
+      query: { limit: 12, page: 1 },
+    }),
+    $fetch<CrmProjectsResponse>('/api/world/crm/general/projects'),
+  ])
+
+  featuredJobs.value =
+    jobsResult.status === 'fulfilled'
+      ? pickRandomItems(jobsResult.value.items ?? [], 2)
+      : []
+
+  featuredProjects.value =
+    projectsResult.status === 'fulfilled'
+      ? pickRandomItems(projectsResult.value.items ?? [], 2)
+      : []
 }
 
 function resetState() {
@@ -132,6 +179,7 @@ async function loadLocalContextByCoords(coords: { lat: number; lon: number }) {
         },
       },
     )
+    await loadRecommendations()
   } catch (error) {
     loadError.value =
       error instanceof Error
@@ -286,24 +334,25 @@ onMounted(() => {
       </v-card-text>
       <v-card-item>
         <template #prepend>
-          <v-icon icon="mdi-calendar-star" color="primary" />
+          <v-icon icon="mdi-briefcase-variant-outline" color="primary" />
         </template>
         <div class="text-h6">
-          {{ $t('home.rightNav.localContext.eventsTitle') }}
+          {{ $t('home.rightNav.localContext.jobsTitle') }}
         </div>
       </v-card-item>
       <v-list density="compact" lines="two">
         <v-list-item
-          v-for="item in localContext.events"
-          :key="item.sourceUrl"
-          :href="item.sourceUrl"
-          target="_blank"
-          rel="noopener noreferrer"
+          v-for="job in featuredJobs"
+          :key="job.id"
+          :to="`/world/jobs/offers/${job.slug}`"
         >
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-          <v-list-item-subtitle>{{ item.summary }}</v-list-item-subtitle>
+          <v-list-item-title>{{ job.title }}</v-list-item-title>
+          <v-list-item-subtitle>
+            {{ job.company?.name || '—' }}
+            <span v-if="job.location"> · {{ job.location }}</span>
+          </v-list-item-subtitle>
         </v-list-item>
-        <v-list-item v-if="!localContext.events.length">
+        <v-list-item v-if="!featuredJobs.length">
           <v-list-item-title>{{
             $t('home.rightNav.localContext.emptyState')
           }}</v-list-item-title>
@@ -311,31 +360,28 @@ onMounted(() => {
       </v-list>
       <v-card-item>
         <template #prepend>
-          <v-icon icon="mdi-alert-decagram-outline" color="error" />
+          <v-icon icon="mdi-folder-outline" color="primary" />
         </template>
         <div class="text-h6">
-          {{ $t('home.rightNav.localContext.majorEventsTitle') }}
+          {{ $t('home.rightNav.localContext.projectsTitle') }}
         </div>
       </v-card-item>
-      <v-list density="compact" lines="three">
+      <v-list density="compact" lines="two">
         <v-list-item
-          v-for="item in localContext.majorEvents"
-          :key="item.sourceUrl"
-          :href="item.sourceUrl"
-          target="_blank"
-          rel="noopener noreferrer"
+          v-for="project in featuredProjects"
+          :key="project.id"
+          :to="`/world/crm/projects/${project.id}`"
         >
-          <template #prepend>
-            <v-chip
-              :color="impactColor(item.impact)"
-              size="x-small"
-              variant="tonal"
-            >
-              {{ item.impact.toUpperCase() }}
-            </v-chip>
-          </template>
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-          <v-list-item-subtitle>{{ item.summary }}</v-list-item-subtitle>
+          <v-list-item-title>{{ project.name || project.code || project.id }}</v-list-item-title>
+          <v-list-item-subtitle>
+            {{ project.code || '—' }}
+            <span v-if="project.status"> · {{ project.status }}</span>
+          </v-list-item-subtitle>
+        </v-list-item>
+        <v-list-item v-if="!featuredProjects.length">
+          <v-list-item-title>{{
+            $t('home.rightNav.localContext.emptyState')
+          }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </div>
