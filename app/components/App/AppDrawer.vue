@@ -133,9 +133,6 @@ watch(mobile, (isMobile) => {
     color: rgb(var(--v-theme-primary));
   }
   .app-left-drawer-list {
-    height: calc(100% - 96px);
-    min-height: calc(100% - 96px);
-    max-height: calc(100% - 96px);
     overflow-y: auto;
   }
   .app-drawer-card {

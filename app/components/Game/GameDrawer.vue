@@ -40,9 +40,6 @@ const coins = computed(() => {
 </template>
 <style scoped>
 .app-left-drawer-list {
-  height: calc(100% - 96px);
-  min-height: calc(100% - 96px);
-  max-height: calc(100% - 96px);
   overflow-y: auto;
 }
 .app-left-drawer-list {
