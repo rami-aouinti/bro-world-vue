@@ -1,4 +1,17 @@
 <script setup lang="ts">
+type NewPostPayload = {
+  title: string
+  content: string
+  youtubeUrl?: string
+  imageUrl?: string
+  videoUrl?: string
+  coverImage?: string
+  tags?: string[]
+  images?: string[]
+  mediaFiles?: File[]
+  mediaType?: 'image' | 'video'
+}
+
 const props = withDefaults(
   defineProps<{
     disabled?: boolean
@@ -14,7 +27,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
-  submit: [content: string]
+  submit: [payload: NewPostPayload]
 }>()
 
 const isOpen = ref(false)
@@ -43,8 +56,8 @@ function openDialog() {
   isOpen.value = true
 }
 
-function onSubmit(value: string) {
-  emit('submit', value)
+function onSubmit(payload: NewPostPayload) {
+  emit('submit', payload)
   localContent.value = ''
   emit('update:modelValue', '')
   isOpen.value = false

@@ -2,6 +2,7 @@ import { privateApi } from '~/utils/http/privateApi'
 import { normalizeHttpError } from '../utils/httpError'
 
 type UnknownRecord = Record<string, unknown>
+type MediaType = 'image' | 'video'
 
 type BlogAuthor = {
   id: string | number
@@ -43,6 +44,7 @@ type BlogPost = {
   createdAt: string | null
   updatedAt: string | null
   mediaUrl: string | null
+  mediaUrls: string[]
   sharedUrl: string | null
   isAuthor: boolean
   comments: BlogComment[]
@@ -83,6 +85,10 @@ function toRecord(value: unknown): UnknownRecord {
 
 function pickArray(value: unknown): unknown[] {
   return Array.isArray(value) ? value : []
+}
+
+function isFile(value: unknown): value is File {
+  return typeof File !== 'undefined' && value instanceof File
 }
 
 function pickString(value: unknown, fallback = ''): string {
@@ -221,6 +227,16 @@ function normalizeComment(input: unknown): BlogComment {
 
 function normalizePost(input: unknown): BlogPost {
   const post = toRecord(input)
+  const mediaUrls = pickArray(post.mediaUrls)
+    .map((entry) => pickNullableString(entry))
+    .filter((entry): entry is string => Boolean(entry))
+  const mediaUrl =
+    pickNullableString(post.mediaUrl) ??
+    pickNullableString(post.media) ??
+    pickNullableString(post.imageUrl) ??
+    pickNullableString(post.videoUrl) ??
+    mediaUrls[0] ??
+    null
 
   return {
     id: pickId(post),
@@ -230,8 +246,8 @@ function normalizePost(input: unknown): BlogPost {
     content: pickString(post.content),
     createdAt: pickNullableString(post.createdAt),
     updatedAt: pickNullableString(post.updatedAt),
-    mediaUrl:
-      pickNullableString(post.mediaUrl) ?? pickNullableString(post.media),
+    mediaUrl,
+    mediaUrls,
     sharedUrl:
       pickNullableString(post.sharedUrl) ?? pickNullableString(post.url),
     isAuthor: pickBoolean(post.isAuthor, false),
@@ -287,6 +303,7 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
   const optimistic = computed(() => options.optimistic ?? true)
 
   const posts = ref<BlogPost[]>([])
+  const blogId = ref<string | null>(null)
   const pagination = ref<BlogPagination>({ ...DEFAULT_PAGINATION })
   const reactionTypes = ref<BlogReactionType[]>([])
   const pending = ref(false)
@@ -349,6 +366,10 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
         normalizePost,
       )
       const normalizedPagination = normalizePagination(source, pagination.value)
+      const resolvedBlogId = pickNullableString(source.id)
+      if (resolvedBlogId && mode.value === 'general') {
+        blogId.value = resolvedBlogId
+      }
 
       posts.value =
         mergeMode === 'append'
@@ -380,16 +401,62 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
   }
 
   async function createPost(body: UnknownRecord) {
-    const blogId = pickString(body.blogId).trim()
-    const payload = blogId ? { ...body, blogId } : body
-    await privateApi.request(
-      '/api/blog/private/general',
-      {
-        method: 'POST',
-        body: payload,
-      },
-    )
+    const blogIdFromBody = pickString(body.blogId).trim()
+    const resolvedBlogId = blogIdFromBody || blogId.value || 'general'
+    const mediaFiles = pickArray(body.mediaFiles).filter(isFile)
+    const hasUpload = mediaFiles.length > 0
+    const endpoint = `/api/blog/private/blogs/${encodeURIComponent(resolvedBlogId)}/posts`
 
+    let requestBody: UnknownRecord | FormData
+    if (hasUpload) {
+      const formData = new FormData()
+      formData.append('category', pickString(body.category, 'general'))
+      formData.append('title', pickString(body.title))
+      formData.append('content', pickString(body.content))
+
+      const mediaType = pickString(body.mediaType, 'image') as MediaType
+      formData.append('mediaType', mediaType)
+
+      for (const mediaFile of mediaFiles) {
+        formData.append('media', mediaFile)
+      }
+
+      requestBody = formData
+    } else {
+      const { blogId: _blogId, mediaFiles: _mediaFiles, ...payload } = body
+      requestBody = payload
+    }
+
+    const response = await privateApi.request<unknown>(endpoint, {
+      method: 'POST',
+      body: requestBody,
+    })
+    const source = readMutationSource(response)
+    const createdId = pickId(source.id)
+    const createdSlug = pickNullableString(source.slug)
+
+    if (createdId) {
+      const draft = normalizePost({
+        id: createdId,
+        slug: createdSlug,
+        title: pickNullableString(body.title),
+        content: pickString(body.content),
+        mediaUrls: pickArray(body.images),
+        mediaUrl:
+          pickNullableString(body.imageUrl) ??
+          pickNullableString(body.videoUrl) ??
+          pickNullableString(body.coverImage) ??
+          pickNullableString(body.youtubeUrl),
+        createdAt: new Date().toISOString(),
+        comments: [],
+        reactions: [],
+        isAuthor: true,
+      })
+      posts.value = [draft, ...posts.value]
+    }
+
+    await refreshNuxtData('/api/blog/private/general')
+    await refreshNuxtData('/api/blog/public/general')
     await refresh()
   }
 
