@@ -1,9 +1,22 @@
 <script setup lang="ts">
-import LeftDrawerUserEntry from '~/components/App/LeftDrawerUserEntry.vue'
+import type { SessionUser } from '~/types/session'
 
 const route = useRoute()
+const { user } = useUserSession()
 
-const profileNavItems = [
+const sessionUser = computed(() => user.value as SessionUser | null)
+const isRoot = computed(
+  () => sessionUser.value?.roles?.includes('ROLE_ROOT') ?? false,
+)
+
+type ProfileNavItem = {
+  label: string
+  to: string
+  icon: string
+  rootOnly?: boolean
+}
+
+const profileNavItems: ProfileNavItem[] = [
   {
     label: 'Friends',
     to: '/profile/friends',
@@ -17,19 +30,35 @@ const profileNavItems = [
     to: '/profile/games',
     icon: 'mdi-controller-classic-outline',
   },
+  { label: 'Calendar', to: '/calendar', icon: 'mdi-calendar-month-outline' },
+  { label: 'Inbox', to: '/inbox', icon: 'mdi-inbox-outline' },
+  {
+    label: 'Notifications',
+    to: '/notification',
+    icon: 'mdi-bell-outline',
+  },
+  { label: 'Admin', to: '/admin', icon: 'mdi-shield-crown-outline', rootOnly: true },
   { label: 'Settings', to: '/profile/settings', icon: 'mdi-cog-outline' },
 ]
+
+const visibleNavItems = computed(() =>
+  profileNavItems.filter((item) => !item.rootOnly || isRoot.value),
+)
+function isNavItemActive(item: ProfileNavItem) {
+  return route.path === item.to || route.path.startsWith(`${item.to}/`)
+}
+
 </script>
 
 <template>
   <v-list nav density="compact" class="px-0 app-left-drawer-list">
     <v-list-item
-      v-for="item in profileNavItems"
+      v-for="item in visibleNavItems"
       :key="item.to"
       :to="item.to"
       :prepend-icon="item.icon"
       :title="item.label"
-      :active="route.path === item.to"
+      :active="isNavItemActive(item)"
       active-class="text-primary"
       color="primary"
       class="px-0"
