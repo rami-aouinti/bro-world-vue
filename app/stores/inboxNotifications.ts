@@ -267,11 +267,9 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
     },
     async deleteConversation(conversationId: string) {
       const route = useRoute()
-      const currentInboxConversationId = route.path.startsWith('/inbox/')
-        ? route.path.slice('/inbox/'.length).split('/')[0]
-        : ''
+      const currentInboxConversationId = String(route.query.conversation || '')
       const shouldNavigateToInbox =
-        currentInboxConversationId === conversationId
+        route.path === '/inbox' && currentInboxConversationId === conversationId
 
       try {
         await privateApi.request(

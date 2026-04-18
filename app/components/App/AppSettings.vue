@@ -144,7 +144,7 @@ const languageMenuShow = ref(false)
 const { loggedIn } = useUserSession()
 const inboxNotificationsStore = useInboxNotificationsStore()
 const notificationStore = useNotificationStore()
-const { notificationsSortedDesc, unreadCount } = storeToRefs(
+const { notificationsSortedDesc, unreadCount, inboxLatestThree } = storeToRefs(
   inboxNotificationsStore,
 )
 const { notifications: actionNotifications } = storeToRefs(notificationStore)
@@ -153,7 +153,10 @@ watch(
   loggedIn,
   async (isLoggedIn) => {
     if (!isLoggedIn) return
-    await inboxNotificationsStore.fetchNotifications()
+    await Promise.all([
+      inboxNotificationsStore.fetchNotifications(),
+      inboxNotificationsStore.fetchInboxConversations(),
+    ])
   },
   { immediate: true },
 )
@@ -270,15 +273,29 @@ const selectedLocale = computed<LocaleOption>(() => {
             <template #activator="{ props }">
               <v-btn
                 v-bind="props"
-                icon="mdi-inbox-outline"
+                icon="mdi-message-text-outline"
                 size="48"
                 color="primary"
                 variant="tonal"
                 :aria-label="t('appbar.inbox')"
               />
             </template>
-            <v-card width="260">
+            <v-card width="300">
               <v-list class="py-1">
+                <v-list-item
+                  v-for="item in inboxLatestThree"
+                  :key="item.id"
+                  :title="item.title"
+                  :subtitle="item.preview || item.content || '...'"
+                  prepend-icon="mdi-message-text-outline"
+                  @click="navigateTo({ path: '/inbox', query: { conversation: item.id } }); inboxMenuShow = false"
+                />
+                <v-list-item
+                  v-if="inboxLatestThree.length === 0"
+                  :title="t('notification.none')"
+                  prepend-icon="mdi-inbox-outline"
+                />
+                <v-divider class="my-1" />
                 <v-list-item
                   :title="t('appbar.inbox')"
                   prepend-icon="mdi-inbox-outline"
