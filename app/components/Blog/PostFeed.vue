@@ -279,10 +279,10 @@ async function submitEdit() {
 
 <template>
   <div>
-    <BlogStoriesCarousel v-if="showStories" />
     <div v-if="showComposer" class="mb-4">
       <BlogNewPostCard :disabled="createPending" @submit="createNewPost" />
     </div>
+    <BlogStoriesCarousel v-if="showStories" />
 
     <div class="d-flex flex-column ga-4">
       <BlogPostCard

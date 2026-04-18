@@ -614,7 +614,7 @@ function openImagePreview(src: string) {
 }
 
 .post-content {
-  font-size: clamp(1rem, 1.5vw + 0.75rem, 1.2rem);
+  font-size: clamp(1rem, 1.5vw + 0.75rem, 0.2rem);
   line-height: 1.65;
   margin-bottom: 1rem;
   text-align: left;
