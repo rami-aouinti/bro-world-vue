@@ -1,18 +1,10 @@
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue'
 import HomeRightRailLocalContext from '~/components/Home/RightRailLocalContext.vue'
 import LeftDrawerRandomGames from '~/components/Home/LeftDrawerRandomGames.vue'
 
 const { loggedIn } = useUserSession()
 const { isPageSkeletonVisible } = usePageSkeleton()
 const deferredInteractiveReady = ref(false)
-
-const BlogNewPostCardLazy = defineAsyncComponent(
-  () => import('~/components/Blog/NewPostCard.vue'),
-)
-const BlogStoriesCarouselLazy = defineAsyncComponent(
-  () => import('~/components/Blog/StoriesCarousel.vue'),
-)
 
 definePageMeta({
   title: 'appbar.home',
@@ -48,13 +40,12 @@ onMounted(() => {
     <v-container fluid class="home-feed-shell">
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
       <template v-else>
-        <template v-if="loggedIn">
-          <ClientOnly>
-            <BlogNewPostCardLazy v-if="deferredInteractiveReady" />
-            <BlogStoriesCarouselLazy v-if="deferredInteractiveReady" />
-          </ClientOnly>
-        </template>
-        <BlogPostFeed />
+        <BlogPostFeed
+          :show-composer="loggedIn && deferredInteractiveReady"
+          :show-stories="loggedIn && deferredInteractiveReady"
+          :content-preview-lines="2"
+          show-read-more
+        />
       </template>
     </v-container>
   </div>

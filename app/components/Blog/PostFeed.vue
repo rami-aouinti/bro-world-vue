@@ -5,19 +5,51 @@ type BlogReaction = {
   id: string | number
   type: string | null
   isAuthor?: boolean
+  author?: {
+    id?: string | number
+  } | null
 }
 
 type BlogComment = {
   id: string | number
   content: string
   reactions?: BlogReaction[]
+  author?: {
+    id?: string | number
+  } | null
 }
 
 type BlogPost = {
   id: string | number
-  slug?: string | null
+  slug: string | null
+  title?: string | null
   content: string
+  mediaUrls?: string[]
   reactions?: BlogReaction[]
+  comments?: BlogComment[]
+  isAuthor?: boolean
+  createdAt?: string | null
+  author?: {
+    id?: string | number
+    username?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    photo?: string | null
+    displayName?: string | null
+  } | null
+}
+
+type NewPostPayload = {
+  title: string
+  content: string
+  youtubeUrl?: string
+  imageUrl?: string
+  videoUrl?: string
+  coverImage?: string
+  tags?: string[]
+  images?: string[]
+  mediaFiles?: File[]
+  mediaType?: 'image' | 'video'
 }
 
 const props = withDefaults(
@@ -25,11 +57,17 @@ const props = withDefaults(
     mode?: BlogFeedMode
     showComposer?: boolean
     showStories?: boolean
+    titleOnly?: boolean
+    contentPreviewLines?: number | null
+    showReadMore?: boolean
   }>(),
   {
     mode: 'general',
     showComposer: false,
     showStories: false,
+    titleOnly: false,
+    contentPreviewLines: null,
+    showReadMore: false,
   },
 )
 const { t } = useI18n()
@@ -73,9 +111,10 @@ async function createComment(payload: {
   await comment(payload.post.id, { content: payload.content })
 }
 
-async function createNewPost(content: string) {
-  const trimmedContent = content.trim()
-  if (!loggedIn.value || !trimmedContent || createPending.value) {
+async function createNewPost(payload: NewPostPayload) {
+  const title = payload.title.trim()
+  const content = payload.content.trim()
+  if (!loggedIn.value || !title || !content || createPending.value) {
     return
   }
 
@@ -83,8 +122,17 @@ async function createNewPost(content: string) {
 
   try {
     await create({
-      content: trimmedContent,
-      blogId: 'general',
+      category: 'general',
+      title,
+      content,
+      youtubeUrl: payload.youtubeUrl?.trim() || undefined,
+      imageUrl: payload.imageUrl?.trim() || undefined,
+      videoUrl: payload.videoUrl?.trim() || undefined,
+      coverImage: payload.coverImage?.trim() || undefined,
+      images: payload.images?.map((entry) => entry.trim()).filter(Boolean),
+      tags: payload.tags?.map((entry) => entry.trim()).filter(Boolean),
+      mediaFiles: payload.mediaFiles,
+      mediaType: payload.mediaType,
     })
   } finally {
     createPending.value = false
@@ -235,6 +283,9 @@ async function submitEdit() {
         v-for="post in posts"
         :key="post.id"
         :post="post"
+        :title-only="titleOnly"
+        :content-preview-lines="contentPreviewLines"
+        :show-read-more="showReadMore"
         :can-interact="loggedIn"
         :reaction-types="reactionTypes"
         @create-comment="createComment"

@@ -40,11 +40,13 @@ type BlogComment = {
 
 type BlogPost = {
   id: string | number
-  slug?: string | null
+  slug: string | null
   author?: BlogAuthor | null
   createdAt: string | null
+  title?: string | null
   content: string
   mediaUrl?: string | null
+  mediaUrls?: string[]
   sharedUrl?: string | null
   isAuthor: boolean
   comments?: BlogComment[]
@@ -57,10 +59,16 @@ const props = withDefaults(
     post: BlogPost
     canInteract?: boolean
     reactionTypes?: BlogReactionType[]
+    titleOnly?: boolean
+    contentPreviewLines?: number | null
+    showReadMore?: boolean
   }>(),
   {
     canInteract: true,
     reactionTypes: () => [],
+    titleOnly: false,
+    contentPreviewLines: null,
+    showReadMore: false,
   },
 )
 
@@ -137,6 +145,29 @@ const normalizedReactions = computed(() =>
       type: reaction.type as string,
     })),
 )
+const normalizedMediaUrls = computed(() => {
+  const urls = (props.post.mediaUrls ?? [])
+    .filter((entry): entry is string => typeof entry === 'string')
+    .map((entry) => entry.trim())
+    .filter(Boolean)
+
+  if (urls.length > 0) {
+    return urls
+  }
+
+  return props.post.mediaUrl ? [props.post.mediaUrl] : []
+})
+const hasSingleMedia = computed(() => normalizedMediaUrls.value.length === 1)
+const hasMultipleMedia = computed(() => normalizedMediaUrls.value.length > 1)
+const previewStyle = computed(() => {
+  if (!props.contentPreviewLines || props.contentPreviewLines < 1) {
+    return undefined
+  }
+
+  return {
+    WebkitLineClamp: String(props.contentPreviewLines),
+  }
+})
 
 function submitComment(content: string) {
   if (!props.canInteract) {
@@ -224,6 +255,14 @@ function isInteractiveElement(target: EventTarget | null) {
 
 async function onPostBodyClick(event: MouseEvent) {
   if (!postDetailPath.value || isInteractiveElement(event.target)) {
+    return
+  }
+
+  await navigateTo(postDetailPath.value)
+}
+
+async function goToPostDetail() {
+  if (!postDetailPath.value) {
     return
   }
 
@@ -323,17 +362,59 @@ async function onPostBodyClick(event: MouseEvent) {
       :class="{ 'post-body--clickable': Boolean(postDetailPath) }"
       @click="onPostBodyClick"
     >
-      <p class="text-body-1 post-content">{{ post.content }}</p>
+      <h3 v-if="post.title" class="text-h6 mb-3">{{ post.title }}</h3>
+      <p
+        v-if="!titleOnly"
+        class="text-body-1 post-content"
+        :class="{ 'post-content--preview': Boolean(contentPreviewLines) }"
+        :style="previewStyle"
+      >
+        {{ post.content }}
+      </p>
+      <v-btn
+        v-if="showReadMore && postDetailPath"
+        variant="text"
+        size="small"
+        color="primary"
+        class="px-0 mb-2"
+        @click.stop="goToPostDetail"
+      >
+        Read more
+      </v-btn>
 
       <v-img
-        v-if="post.mediaUrl"
-        :src="post.mediaUrl"
+        v-if="hasSingleMedia"
+        :src="normalizedMediaUrls[0]"
         :alt="`Post media by ${authorName}`"
         rounded="lg"
         cover
-        max-height="420"
+        height="320"
         class="mb-3"
+        @click.stop
       />
+
+      <v-carousel
+        v-else-if="hasMultipleMedia"
+        class="mb-3 post-media-slider"
+        hide-delimiters
+        show-arrows="hover"
+        height="320"
+        @click.stop
+      >
+        <v-carousel-item
+          v-for="(mediaUrl, index) in normalizedMediaUrls"
+          :key="`${post.id}-media-${index}`"
+        >
+          <v-img
+            :src="mediaUrl"
+            :alt="`Post media ${index + 1} by ${authorName}`"
+            rounded="lg"
+            cover
+            height="100%"
+            @click.stop
+          />
+        </v-carousel-item>
+      </v-carousel>
 
       <a
         v-if="post.sharedUrl"
@@ -420,6 +501,11 @@ async function onPostBodyClick(event: MouseEvent) {
   text-align: left;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+.post-content--preview {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .post-body--clickable {
