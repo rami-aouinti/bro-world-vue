@@ -656,7 +656,7 @@ watch(
 }
 
 .inbox-conversation-list {
-  max-height: calc(100vh - 300px);
+  max-height: calc(100vh - 280px);
   overflow: auto;
 }
 
