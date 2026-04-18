@@ -321,6 +321,24 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
       ? '/api/blog/private/general'
       : '/api/blog/public/general'
   })
+  const blogCacheKeys = [
+    '/api/blog/private/general',
+    '/api/blog/public/general',
+    '/api/blog/private/posts/mine',
+    '/api/blog/private/posts/stats',
+  ] as const
+
+  async function invalidateBlogCaches() {
+    const clearFn =
+      typeof clearNuxtData === 'function'
+        ? clearNuxtData
+        : ((_: string) => undefined)
+
+    for (const key of blogCacheKeys) {
+      clearFn(key)
+      await refreshNuxtData(key)
+    }
+  }
 
   async function fetchReactionTypes() {
     const response = await $fetch<unknown>('/api/blog/public/reaction-types')
@@ -464,11 +482,7 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
       posts.value = [draft, ...posts.value]
     }
 
-    await refreshNuxtData('/api/blog/private/general')
-    await refreshNuxtData('/api/blog/public/general')
-    await refreshNuxtData('/api/blog/private/posts/mine')
-    await refreshNuxtData('/api/blog/private/posts/stats')
-    await refresh()
+    await invalidateBlogCaches()
   }
 
   function isSameId(left: string | number, right: string | number): boolean {
@@ -643,12 +657,12 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
         const postIndex = findPostIndex(postId)
 
         if (!commentPayload || postIndex < 0) {
-          await refresh()
+          await invalidateBlogCaches()
           return
         }
         const postEntry = posts.value[postIndex]
         if (!postEntry) {
-          await refresh()
+          await invalidateBlogCaches()
           return
         }
 
@@ -659,6 +673,8 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
             (entry) => !String(entry.id).startsWith('tmp-'),
           ),
         ]
+
+        await invalidateBlogCaches()
       },
     )
   }
@@ -765,7 +781,7 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
           : readNestedArray(source, ['reactions'])
 
         if (reactionsSource.length === 0) {
-          await refresh()
+          await invalidateBlogCaches()
           return
         }
 
@@ -775,8 +791,11 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
         }))
 
         if (!updated) {
-          await refresh()
+          await invalidateBlogCaches()
+          return
         }
+
+        await invalidateBlogCaches()
       },
     )
   }

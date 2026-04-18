@@ -10,12 +10,14 @@ const props = withDefaults(
     sharesCount?: number
     canInteract?: boolean
     reactionTypes?: ReactionType[]
+    currentReactionCode?: string | null
   }>(),
   {
     commentsCount: 0,
     sharesCount: 0,
     canInteract: true,
     reactionTypes: () => [],
+    currentReactionCode: null,
   },
 )
 const { t } = useI18n()
@@ -51,6 +53,27 @@ const iconMap: Record<string, string> = {
   sad: '😢',
   angry: '😡',
 }
+
+const normalizedCurrentReactionCode = computed(() => {
+  const code = props.currentReactionCode?.toLowerCase().trim()
+  return code?.length ? code : null
+})
+
+const currentReactionEmoji = computed(
+  () => iconMap[normalizedCurrentReactionCode.value ?? ''] ?? null,
+)
+
+const currentReactionLabel = computed(() => {
+  if (!normalizedCurrentReactionCode.value) {
+    return t('blog.post.actions.like')
+  }
+
+  const match = normalizedReactionTypes.value.find(
+    (entry) => entry.code.toLowerCase() === normalizedCurrentReactionCode.value,
+  )
+
+  return match?.label ?? t('blog.post.actions.like')
+})
 
 function onPickReaction(code: string) {
   if (!props.canInteract) {
@@ -99,11 +122,18 @@ function onPickReaction(code: string) {
             v-bind="menuProps"
             class="action-btn"
             variant="text"
-            prepend-icon="mdi-thumb-up-outline"
             :disabled="!canInteract"
             @click.stop="emit('like')"
           >
-            {{ t('blog.post.actions.like') }}
+            <span class="d-inline-flex align-center ga-2">
+              <v-icon
+                v-if="!currentReactionEmoji"
+                size="18"
+                icon="mdi-thumb-up-outline"
+              />
+              <span v-else class="reaction-btn-emoji">{{ currentReactionEmoji }}</span>
+              <span>{{ currentReactionLabel }}</span>
+            </span>
           </v-btn>
         </template>
 
@@ -113,6 +143,10 @@ function onPickReaction(code: string) {
             :key="item.code"
             type="button"
             class="reaction-choice"
+            :class="{
+              'reaction-choice--selected':
+                normalizedCurrentReactionCode === item.code.toLowerCase(),
+            }"
             :title="item.label"
             @click="onPickReaction(item.code)"
           >
@@ -199,5 +233,15 @@ function onPickReaction(code: string) {
 
 .reaction-choice:hover {
   transform: translateY(-3px) scale(1.1);
+}
+
+.reaction-choice--selected {
+  transform: scale(1.2);
+  filter: drop-shadow(0 0 8px rgba(var(--v-theme-primary), 0.6));
+}
+
+.reaction-btn-emoji {
+  font-size: 1rem;
+  line-height: 1;
 }
 </style>
