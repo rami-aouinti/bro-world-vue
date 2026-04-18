@@ -412,7 +412,6 @@ watch(
 <template>
   <AppPageDrawers>
     <template #left>
-      <div class="text-h6 font-weight-bold mb-4">Friends</div>
       <v-text-field
         v-model="search"
         placeholder="Search contact"
