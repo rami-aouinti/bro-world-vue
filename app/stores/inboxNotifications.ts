@@ -266,10 +266,22 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
       }
     },
     async deleteConversation(conversationId: string) {
-      const route = useRoute()
-      const currentInboxConversationId = String(route.query.conversation || '')
+      const locationPath =
+        import.meta.client && typeof window !== 'undefined'
+          ? window.location.pathname
+          : ''
+      const currentInboxConversationId =
+        import.meta.client && typeof window !== 'undefined'
+          ? new URLSearchParams(window.location.search).get('conversation') || ''
+          : ''
       const shouldNavigateToInbox =
-        route.path === '/inbox' && currentInboxConversationId === conversationId
+        locationPath === '/inbox' &&
+        currentInboxConversationId === conversationId
+      const navigateToInbox = async () => {
+        if (import.meta.client && typeof window !== 'undefined') {
+          window.location.assign('/inbox')
+        }
+      }
 
       try {
         await privateApi.request(
@@ -284,7 +296,7 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
           this.inbox = []
           this.conversationsById = {}
           if (shouldNavigateToInbox) {
-            await navigateTo('/inbox')
+            await navigateToInbox()
           }
           return
         }
@@ -297,7 +309,7 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
       }
 
       if (shouldNavigateToInbox) {
-        await navigateTo('/inbox')
+        await navigateToInbox()
       }
     },
     async fetchNotifications(limit = 20, offset = 0) {
