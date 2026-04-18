@@ -1,6 +1,17 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
 
+type NewPostPayload = {
+  title: string
+  content: string
+  youtubeUrl?: string
+  imageUrl?: string
+  videoUrl?: string
+  coverImage?: string
+  tags?: string[]
+  images?: string[]
+}
+
 const props = withDefaults(
   defineProps<{
     modelValue: string
@@ -18,7 +29,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   'update:modelValue': [value: string]
   'update:open': [value: boolean]
-  submit: [content: string]
+  submit: [payload: NewPostPayload]
 }>()
 
 const content = computed({
@@ -47,8 +58,22 @@ const resolvedPlaceholder = computed(
 )
 
 const isPostDisabled = computed(
-  () => props.disabled || !props.modelValue.trim(),
+  () => props.disabled || !props.modelValue.trim() || !title.value.trim(),
 )
+const title = ref('')
+const tagsInput = ref('')
+const imageGalleryInput = ref('')
+const youtubeUrl = ref('')
+const imageUrl = ref('')
+const videoUrl = ref('')
+const coverImage = ref('')
+
+function parseCsv(input: string): string[] {
+  return input
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean)
+}
 
 function closeDialog() {
   emit('update:open', false)
@@ -59,7 +84,24 @@ function onSubmit() {
     return
   }
 
-  emit('submit', props.modelValue.trim())
+  emit('submit', {
+    title: title.value.trim(),
+    content: props.modelValue.trim(),
+    youtubeUrl: youtubeUrl.value.trim() || undefined,
+    imageUrl: imageUrl.value.trim() || undefined,
+    videoUrl: videoUrl.value.trim() || undefined,
+    coverImage: coverImage.value.trim() || undefined,
+    tags: parseCsv(tagsInput.value),
+    images: parseCsv(imageGalleryInput.value),
+  })
+  title.value = ''
+  tagsInput.value = ''
+  imageGalleryInput.value = ''
+  youtubeUrl.value = ''
+  imageUrl.value = ''
+  videoUrl.value = ''
+  coverImage.value = ''
+  emit('update:modelValue', '')
 }
 </script>
 
@@ -119,6 +161,55 @@ function onSubmit() {
           variant="plain"
           hide-details
           class="new-post-dialog__textarea"
+        />
+        <v-text-field
+          v-model="title"
+          :disabled="disabled"
+          label="Titre"
+          variant="outlined"
+          hide-details
+        />
+        <v-text-field
+          v-model="tagsInput"
+          :disabled="disabled"
+          label="Tags (séparés par des virgules)"
+          variant="outlined"
+          hide-details
+        />
+        <v-text-field
+          v-model="youtubeUrl"
+          :disabled="disabled"
+          label="YouTube URL (optionnel)"
+          variant="outlined"
+          hide-details
+        />
+        <v-text-field
+          v-model="imageUrl"
+          :disabled="disabled"
+          label="Image URL (optionnel)"
+          variant="outlined"
+          hide-details
+        />
+        <v-text-field
+          v-model="videoUrl"
+          :disabled="disabled"
+          label="Video URL (optionnel)"
+          variant="outlined"
+          hide-details
+        />
+        <v-text-field
+          v-model="coverImage"
+          :disabled="disabled"
+          label="Cover image URL (optionnel)"
+          variant="outlined"
+          hide-details
+        />
+        <v-text-field
+          v-model="imageGalleryInput"
+          :disabled="disabled"
+          label="Images galerie (URLs, séparées par virgules)"
+          variant="outlined"
+          hide-details
         />
 
         <BlogNewPostAddToPostRow :disabled="disabled" />
