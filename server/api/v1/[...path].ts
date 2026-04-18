@@ -8,6 +8,10 @@ const HOP_BY_HOP_HEADERS = new Set([
 const METHODS_WITH_BODY = new Set(['POST', 'PUT', 'PATCH', 'DELETE'])
 
 function rewriteLegacyEndpoint(endpoint: string) {
+  if (endpoint.startsWith('/blog/private/blogs/')) {
+    return endpoint.replace('/blog/private/blogs/', '/private/blogs/')
+  }
+
   if (endpoint.startsWith('/blog/private/')) {
     return endpoint.replace('/blog/private/', '/private/blog/')
   }
