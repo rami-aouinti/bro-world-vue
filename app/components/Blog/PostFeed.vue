@@ -113,7 +113,13 @@ async function createComment(payload: {
 
 async function createNewPost(payload: NewPostPayload) {
   const title = payload.title.trim()
-  const content = payload.content.trim()
+  const fallbackContent = payload.content.trim()
+  const urlContent =
+    payload.youtubeUrl?.trim() ||
+    payload.imageUrl?.trim() ||
+    payload.videoUrl?.trim() ||
+    ''
+  const content = urlContent || fallbackContent
   if (!loggedIn.value || !title || !content || createPending.value) {
     return
   }
