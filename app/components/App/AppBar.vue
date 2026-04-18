@@ -306,6 +306,14 @@ function goToCheckout() {
   void navigateTo('/world/shop/checkout')
 }
 
+function goToInboxConversation(conversationId: string) {
+  void navigateTo({
+    path: '/inbox',
+    query: { conversation: conversationId },
+  })
+  inboxMenuOpen.value = false
+}
+
 async function onLoginSubmit(payload: { username?: string; password: string }) {
   if (!payload.username) {
     Notify.error(t('auth.validation.required'))
@@ -759,13 +767,7 @@ function isMenuActive(paths: string[]) {
                   :key="item.id"
                   :title="item.title"
                   :subtitle="item.shortPreview"
-                  @click="
-                    navigateTo({
-                      path: '/inbox',
-                      query: { conversation: item.id },
-                    })
-                    inboxMenuOpen = false
-                  "
+                  @click="goToInboxConversation(item.id)"
                 >
                   <template #prepend>
                     <v-avatar size="32">
