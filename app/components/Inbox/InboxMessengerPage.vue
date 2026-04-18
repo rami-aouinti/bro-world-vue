@@ -509,8 +509,6 @@ watch(
 <template>
   <AppPageDrawers>
     <template #left>
-        <div class="text-h6 font-weight-bold mb-4">Friends</div>
-
         <v-combobox
           v-model="selectedUserId"
           v-model:search="search"
@@ -801,7 +799,7 @@ watch(
 }
 
 .inbox-conversation-list {
-  max-height: calc(100vh - 280px);
+  max-height: calc(100vh - 290px);
   overflow: auto;
 }
 

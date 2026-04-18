@@ -4,6 +4,7 @@ export interface InboxItem {
   id: string
   title: string
   createdAt: string
+  avatar?: string
   preview?: string
   content?: string
 }
@@ -136,6 +137,7 @@ const normalizePrivateConversation = (
     id: conversation.id,
     title,
     createdAt: conversation.lastMessage?.createdAt || conversation.createdAt,
+    avatar: participantFallbackTitle?.user?.photo || undefined,
     preview: content || undefined,
     content: content || undefined,
   }
