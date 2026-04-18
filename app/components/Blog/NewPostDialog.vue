@@ -221,7 +221,13 @@ function onSubmit() {
             <BlogNewPostAudienceChip :disabled="disabled" />
           </div>
         </div>
-
+        <v-text-field
+          v-model="title"
+          :disabled="disabled"
+          label="Titre"
+          variant="outlined"
+          hide-details
+        />
         <v-textarea
           v-model="content"
           :disabled="disabled"
@@ -231,13 +237,6 @@ function onSubmit() {
           variant="plain"
           hide-details
           class="new-post-dialog__textarea"
-        />
-        <v-text-field
-          v-model="title"
-          :disabled="disabled"
-          label="Titre"
-          variant="outlined"
-          hide-details
         />
         <BlogNewPostAddToPostRow
           :disabled="disabled"
