@@ -40,11 +40,13 @@ type BlogComment = {
 
 type BlogPost = {
   id: string | number
-  slug?: string | null
+  slug: string | null
   author?: BlogAuthor | null
   createdAt: string | null
+  title?: string | null
   content: string
   mediaUrl?: string | null
+  mediaUrls?: string[]
   sharedUrl?: string | null
   isAuthor: boolean
   comments?: BlogComment[]
@@ -57,10 +59,12 @@ const props = withDefaults(
     post: BlogPost
     canInteract?: boolean
     reactionTypes?: BlogReactionType[]
+    titleOnly?: boolean
   }>(),
   {
     canInteract: true,
     reactionTypes: () => [],
+    titleOnly: false,
   },
 )
 
@@ -137,6 +141,18 @@ const normalizedReactions = computed(() =>
       type: reaction.type as string,
     })),
 )
+const normalizedMediaUrls = computed(() => {
+  const urls = (props.post.mediaUrls ?? [])
+    .filter((entry): entry is string => typeof entry === 'string')
+    .map((entry) => entry.trim())
+    .filter(Boolean)
+
+  if (urls.length > 0) {
+    return urls
+  }
+
+  return props.post.mediaUrl ? [props.post.mediaUrl] : []
+})
 
 function submitComment(content: string) {
   if (!props.canInteract) {
@@ -323,17 +339,29 @@ async function onPostBodyClick(event: MouseEvent) {
       :class="{ 'post-body--clickable': Boolean(postDetailPath) }"
       @click="onPostBodyClick"
     >
-      <p class="text-body-1 post-content">{{ post.content }}</p>
+      <h3 v-if="post.title" class="text-h6 mb-3">{{ post.title }}</h3>
+      <p v-if="!titleOnly" class="text-body-1 post-content">{{ post.content }}</p>
 
-      <v-img
-        v-if="post.mediaUrl"
-        :src="post.mediaUrl"
-        :alt="`Post media by ${authorName}`"
-        rounded="lg"
-        cover
-        max-height="420"
-        class="mb-3"
-      />
+      <v-carousel
+        v-if="normalizedMediaUrls.length > 0"
+        class="mb-3 post-media-slider"
+        hide-delimiters
+        show-arrows="hover"
+        height="320"
+      >
+        <v-carousel-item
+          v-for="(mediaUrl, index) in normalizedMediaUrls"
+          :key="`${post.id}-media-${index}`"
+        >
+          <v-img
+            :src="mediaUrl"
+            :alt="`Post media ${index + 1} by ${authorName}`"
+            rounded="lg"
+            cover
+            height="100%"
+          />
+        </v-carousel-item>
+      </v-carousel>
 
       <a
         v-if="post.sharedUrl"
