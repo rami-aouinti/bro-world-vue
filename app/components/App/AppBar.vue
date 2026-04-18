@@ -717,8 +717,9 @@ function isMenuActive(paths: string[]) {
                         formatMoney(
                           typeof line.lineTotal === 'number'
                             ? Number(line.lineTotal || 0)
-                            : Number(line.unitPrice || line.unitPriceSnapshot || 0) *
-                                Number(line.quantity || 0),
+                            : Number(
+                                line.unitPrice || line.unitPriceSnapshot || 0,
+                              ) * Number(line.quantity || 0),
                           cartCurrency,
                         )
                       }}
@@ -728,11 +729,19 @@ function isMenuActive(paths: string[]) {
                 <v-divider class="my-1" />
                 <v-list-item :title="t('appbar.total', 'Total')">
                   <template #append>
-                    <strong>{{ formatMoney(cartTotalAmount, cartCurrency) }}</strong>
+                    <strong>{{
+                      formatMoney(cartTotalAmount, cartCurrency)
+                    }}</strong>
                   </template>
                 </v-list-item>
                 <v-list-item>
-                  <v-btn variant="tonal" block color="primary" prepend-icon="mdi-credit-card-outline" @click="goToCheckout">
+                  <v-btn
+                    variant="tonal"
+                    block
+                    color="primary"
+                    prepend-icon="mdi-credit-card-outline"
+                    @click="goToCheckout"
+                  >
                     {{ t('world.shop.actions.checkout', 'Checkout') }}
                   </v-btn>
                 </v-list-item>
@@ -760,7 +769,13 @@ function isMenuActive(paths: string[]) {
                   :key="item.id"
                   :title="item.title"
                   :subtitle="item.shortPreview"
-                  @click="navigateTo({ path: '/inbox', query: { conversation: item.id } }); inboxMenuOpen = false"
+                  @click="
+                    navigateTo({
+                      path: '/inbox',
+                      query: { conversation: item.id },
+                    })
+                    inboxMenuOpen = false
+                  "
                 >
                   <template #prepend>
                     <v-avatar size="32">
@@ -1024,7 +1039,7 @@ function isMenuActive(paths: string[]) {
 .app-top-bar__menu-surface,
 :deep(.app-top-bar__menu-surface) {
   border-radius: 18px;
-  border: 1px solid rgba(var(--v-border-color), 0.32);
+  border: none;
   background:
     linear-gradient(
       240deg,

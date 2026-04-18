@@ -122,7 +122,7 @@ const selectedLocale = computed(
 :deep(.app-top-bar__menu-surface),
 :deep(.app-top-bar__menu-surface--compact) {
   border-radius: 14px;
-  border: 1px solid rgba(var(--v-border-color), 0.32);
+  border: none;
   background:
     linear-gradient(
       240deg,
