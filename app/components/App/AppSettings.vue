@@ -287,9 +287,20 @@ const selectedLocale = computed<LocaleOption>(() => {
                   :key="item.id"
                   :title="item.title"
                   :subtitle="item.preview || item.content || '...'"
-                  prepend-icon="mdi-message-text-outline"
                   @click="navigateTo({ path: '/inbox', query: { conversation: item.id } }); inboxMenuShow = false"
-                />
+                >
+                  <template #prepend>
+                    <v-avatar size="32">
+                      <v-img
+                        v-if="item.avatar"
+                        :src="item.avatar"
+                        :alt="item.title"
+                        cover
+                      />
+                      <v-icon v-else icon="mdi-message-text-outline" />
+                    </v-avatar>
+                  </template>
+                </v-list-item>
                 <v-list-item
                   v-if="inboxLatestThree.length === 0"
                   :title="t('notification.none')"
