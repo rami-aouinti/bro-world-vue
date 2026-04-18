@@ -412,85 +412,83 @@ watch(
 <template>
   <AppPageDrawers>
     <template #left>
-      <v-sheet class="pa-4 inbox-left-panel" rounded="xl" border>
-        <div class="text-h6 font-weight-bold mb-4">Friends</div>
-        <v-text-field
-          v-model="search"
-          placeholder="Search contact"
-          density="comfortable"
-          variant="outlined"
-          hide-details
-          prepend-inner-icon="mdi-magnify"
-          class="mb-3"
-        />
+      <div class="text-h6 font-weight-bold mb-4">Friends</div>
+      <v-text-field
+        v-model="search"
+        placeholder="Search contact"
+        density="comfortable"
+        variant="outlined"
+        hide-details
+        prepend-inner-icon="mdi-magnify"
+        class="mb-3"
+      />
 
-        <v-list
-          v-if="filteredUsers.length"
-          density="compact"
-          class="mb-4 rounded-lg border"
+      <v-list
+        v-if="filteredUsers.length"
+        density="compact"
+        class="mb-4 rounded-lg border"
+      >
+        <v-list-item
+          v-for="entry in filteredUsers"
+          :key="entry.id"
+          @click="startConversationWithUser(entry)"
         >
-          <v-list-item
-            v-for="entry in filteredUsers"
-            :key="entry.id"
-            @click="startConversationWithUser(entry)"
-          >
-            <template #prepend>
-              <v-avatar size="34">
-                <v-img :src="entry.photo || '/img/default-avatar.png'" cover />
-              </v-avatar>
-            </template>
-            <v-list-item-title>
-              {{ [entry.firstName, entry.lastName].filter(Boolean).join(' ') }}
-            </v-list-item-title>
-          </v-list-item>
-        </v-list>
+          <template #prepend>
+            <v-avatar size="34">
+              <v-img :src="entry.photo || '/img/default-avatar.png'" cover />
+            </v-avatar>
+          </template>
+          <v-list-item-title>
+            {{ [entry.firstName, entry.lastName].filter(Boolean).join(' ') }}
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
 
-        <v-progress-linear v-if="loading" indeterminate color="primary" class="mb-3" />
+      <v-progress-linear v-if="loading" indeterminate color="primary" class="mb-3" />
 
-        <v-list class="inbox-conversation-list">
-          <v-list-item
-            v-for="conversation in sortedConversations"
-            :key="conversation.id"
-            :active="conversation.id === selectedConversationId"
-            rounded="xl"
-            class="mb-2 conversation-item"
-            @click="openConversation(conversation.id)"
-          >
-            <template #prepend>
-              <v-avatar size="48">
-                <v-img
-                  :src="participantForConversation(conversation)?.user?.photo || '/img/default-avatar.png'"
-                  cover
-                />
-              </v-avatar>
-            </template>
-
-            <v-list-item-title class="font-weight-bold text-body-1">
-              {{ participantName(conversation) }}
-            </v-list-item-title>
-            <v-list-item-subtitle class="text-caption mb-1">
-              {{ messageTime(conversation.lastMessage?.createdAt || conversation.createdAt) }}
-            </v-list-item-subtitle>
-            <v-list-item-subtitle class="text-body-2 text-truncate">
-              {{ conversation.lastMessage?.content || '...' }}
-            </v-list-item-subtitle>
-
-            <template #append>
-              <v-badge
-                v-if="(conversation.unreadMessagesCount || 0) > 0"
-                :content="conversation.unreadMessagesCount"
-                color="primary"
-                inline
+      <v-list class="inbox-conversation-list">
+        <v-list-item
+          v-for="conversation in sortedConversations"
+          :key="conversation.id"
+          :active="conversation.id === selectedConversationId"
+          rounded="xl"
+          class="mb-2 conversation-item"
+          @click="openConversation(conversation.id)"
+        >
+          <template #prepend>
+            <v-avatar size="48">
+              <v-img
+                :src="participantForConversation(conversation)?.user?.photo || '/img/default-avatar.png'"
+                cover
               />
-            </template>
-          </v-list-item>
-        </v-list>
-      </v-sheet>
+            </v-avatar>
+          </template>
+
+          <v-list-item-title class="font-weight-bold text-body-1">
+            {{ participantName(conversation) }}
+          </v-list-item-title>
+          <v-list-item-subtitle class="text-caption mb-1">
+            {{ messageTime(conversation.lastMessage?.createdAt || conversation.createdAt) }}
+          </v-list-item-subtitle>
+          <v-list-item-subtitle class="text-body-2 text-truncate">
+            {{ conversation.lastMessage?.content || '...' }}
+          </v-list-item-subtitle>
+
+          <template #append>
+            <v-badge
+              v-if="(conversation.unreadMessagesCount || 0) > 0"
+              :content="conversation.unreadMessagesCount"
+              color="primary"
+              inline
+            />
+          </template>
+        </v-list-item>
+      </v-list>
     </template>
   </AppPageDrawers>
 
-  <v-container fluid class="py-6">
-    <v-sheet border rounded="xl" class="pa-4 inbox-chat-shell">
+  <v-container fluid>
+    <v-sheet border rounded="xl" class="pa-4 inbox-chat-shell content-main postcard-gradient-card">
       <div v-if="!selectedConversation" class="text-medium-emphasis py-12 text-center">
         Select a conversation
       </div>
@@ -673,15 +671,14 @@ watch(
 }
 
 .message-bubble--mine {
-  background: linear-gradient(135deg, rgb(var(--v-theme-primary)) 0%, color-mix(in srgb, rgb(var(--v-theme-primary)) 86%, white) 100%);
-  color: white;
+  background: linear-gradient(135deg, rgb(var(--v-theme-primary)) 0%, color-mix(in srgb, rgb(var(--v-theme-surface)) 56%, black) 100%);
 }
 
 .message-bubble--other {
-  background: rgb(var(--v-theme-surface-variant));
+  background: linear-gradient(135deg, rgb(var(--v-theme-primary)) 0%, color-mix(in srgb, rgb(var(--v-theme-surface)) 56%, white) 100%);
 }
 
 :deep(.v-list-item--active.conversation-item) {
-  background: color-mix(in srgb, rgb(var(--v-theme-primary)) 16%, white);
+  background: color-mix(in srgb, rgb(var(--v-theme-primary)) 16%, rgb(var(--v-theme-primary)));
 }
 </style>
