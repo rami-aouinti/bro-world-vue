@@ -106,9 +106,9 @@ const hasUpcomingEvents = computed(() => upcomingEvents.value.length > 0)
 const hasCoinProducts = computed(() => coinProducts.value.length > 0)
 const hasResumes = computed(() => resumes.value.length > 0)
 const resumeTemplateOptions = [
-  { value: 'modern', label: 'Template 1' },
-  { value: 'elegant', label: 'Template 2' },
-  { value: 'compact', label: 'Template 3' },
+  { value: 'modern', label: 'Modern Pro' },
+  { value: 'elegant', label: 'Executive' },
+  { value: 'compact', label: 'Clean Grid' },
 ] as const
 const resumeSectionEntries = computed(() => [
   { key: 'experiences', label: 'Experiences' },
@@ -134,6 +134,8 @@ const profileResumeIdentity = computed(() => {
   const summary =
     currentProfile?.profile?.information ||
     'Experienced and motivated professional focused on delivering results.'
+  const avatar = currentProfile?.photo || ''
+  const username = currentProfile?.username || ''
 
   return {
     completeName,
@@ -142,6 +144,8 @@ const profileResumeIdentity = computed(() => {
     email,
     phone,
     summary,
+    avatar,
+    username,
   }
 })
 const selectedProduct = computed(() =>
@@ -836,18 +840,20 @@ onUnmounted(() => {
             title="Resume PDF preview"
           />
           <div v-else class="resume-template-shell">
-            <div class="d-flex justify-end mb-4">
+            <div class="resume-template-picker mb-4">
               <v-btn-toggle
                 v-model="selectedResumeTemplate"
                 mandatory
-                density="comfortable"
+                divided
                 color="primary"
                 variant="outlined"
+                class="resume-template-toggle"
               >
                 <v-btn
                   v-for="option in resumeTemplateOptions"
                   :key="option.value"
                   :value="option.value"
+                  class="text-none px-5"
                 >
                   {{ option.label }}
                 </v-btn>
@@ -859,12 +865,32 @@ onUnmounted(() => {
               class="resume-template resume-template-modern"
             >
               <header class="resume-header">
-                <div>
+                <div class="d-flex ga-3 align-start">
+                  <v-avatar
+                    v-if="profileResumeIdentity.avatar"
+                    size="76"
+                    class="resume-avatar"
+                  >
+                    <v-img
+                      :src="profileResumeIdentity.avatar"
+                      :alt="profileResumeIdentity.completeName"
+                    />
+                  </v-avatar>
+                  <v-avatar
+                    v-else
+                    size="76"
+                    color="primary"
+                    class="resume-avatar"
+                  >
+                    {{ profileResumeIdentity.completeName.slice(0, 2).toUpperCase() }}
+                  </v-avatar>
                   <h2 class="text-h4 font-weight-bold mb-1">{{ profileResumeIdentity.completeName }}</h2>
-                  <p class="text-subtitle-1 mb-2">{{ profileResumeIdentity.title }}</p>
-                  <p class="mb-0">{{ profileResumeIdentity.summary }}</p>
                 </div>
-                <div class="text-body-2">
+                <div class="resume-header-main">
+                  <p class="text-subtitle-1 mb-2">{{ profileResumeIdentity.title }}</p>
+                  <p class="mb-0 text-body-2">{{ profileResumeIdentity.summary }}</p>
+                </div>
+                <div class="text-body-2 resume-contact-card">
                   <p v-if="profileResumeIdentity.location" class="mb-1">{{ profileResumeIdentity.location }}</p>
                   <p v-if="profileResumeIdentity.phone" class="mb-1">{{ profileResumeIdentity.phone }}</p>
                   <p v-if="profileResumeIdentity.email" class="mb-0">{{ profileResumeIdentity.email }}</p>
@@ -920,6 +946,26 @@ onUnmounted(() => {
               class="resume-template resume-template-elegant"
             >
               <header class="resume-header text-center">
+                <div class="d-flex flex-column align-center mb-3">
+                  <v-avatar
+                    v-if="profileResumeIdentity.avatar"
+                    size="90"
+                    class="resume-avatar-elegant mb-3"
+                  >
+                    <v-img
+                      :src="profileResumeIdentity.avatar"
+                      :alt="profileResumeIdentity.completeName"
+                    />
+                  </v-avatar>
+                  <v-avatar
+                    v-else
+                    size="90"
+                    color="brown-lighten-1"
+                    class="resume-avatar-elegant mb-3"
+                  >
+                    {{ profileResumeIdentity.completeName.slice(0, 2).toUpperCase() }}
+                  </v-avatar>
+                </div>
                 <h2 class="text-h3 font-weight-bold mb-2">{{ profileResumeIdentity.completeName }}</h2>
                 <p class="text-subtitle-1 mb-2">{{ profileResumeIdentity.title }}</p>
                 <p class="mb-0">
@@ -952,10 +998,23 @@ onUnmounted(() => {
 
             <article v-else class="resume-template resume-template-compact">
               <header class="resume-header">
-                <div>
+                <div class="d-flex ga-3 align-center">
+                  <v-avatar
+                    v-if="profileResumeIdentity.avatar"
+                    size="64"
+                    class="resume-avatar"
+                  >
+                    <v-img
+                      :src="profileResumeIdentity.avatar"
+                      :alt="profileResumeIdentity.completeName"
+                    />
+                  </v-avatar>
+                  <v-avatar v-else size="64" color="blue-grey" class="resume-avatar">
+                    {{ profileResumeIdentity.completeName.slice(0, 2).toUpperCase() }}
+                  </v-avatar>
                   <h2 class="text-h4 font-weight-bold mb-1">{{ profileResumeIdentity.completeName }}</h2>
-                  <p class="mb-0">{{ profileResumeIdentity.title }}</p>
                 </div>
+                <p class="mb-0">{{ profileResumeIdentity.title }}</p>
                 <p class="mb-0 text-body-2">
                   {{ [profileResumeIdentity.location, profileResumeIdentity.phone, profileResumeIdentity.email].filter(Boolean).join(' | ') }}
                 </p>
@@ -1171,36 +1230,68 @@ onUnmounted(() => {
 .resume-template-shell {
   max-height: 75vh;
   overflow: auto;
+  padding-right: 4px;
+}
+
+.resume-template-picker {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.resume-template-toggle {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
 }
 
 .resume-template {
-  border-radius: 16px;
-  padding: 20px;
+  border-radius: 18px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 16px 35px rgba(16, 24, 40, 0.08);
 }
 
 .resume-template-modern {
-  background: #f5f8ff;
+  background: linear-gradient(180deg, #f6f9ff 0%, #eef4ff 100%);
   color: #1d2a52;
 }
 
 .resume-template-elegant {
-  background: #fff8f4;
+  background: linear-gradient(180deg, #f6eeea 0%, #fff9f4 100%);
   color: #3e2b26;
 }
 
 .resume-template-compact {
-  background: #f8fbff;
+  background: linear-gradient(180deg, #f8fbff 0%, #f1f7ff 100%);
   color: #1e293b;
 }
 
 .resume-header {
-  border-bottom: 2px solid rgba(106, 125, 175, 0.25);
+  border-bottom: 2px solid rgba(106, 125, 175, 0.2);
   margin-bottom: 18px;
-  padding-bottom: 12px;
+  padding-bottom: 16px;
   display: flex;
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
+}
+
+.resume-avatar,
+.resume-avatar-elegant {
+  border: 3px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.resume-header-main {
+  flex: 1;
+  min-width: 240px;
+}
+
+.resume-contact-card {
+  min-width: 200px;
+  border-radius: 12px;
+  border: 1px solid rgba(106, 125, 175, 0.22);
+  background: rgba(255, 255, 255, 0.5);
+  padding: 10px 12px;
 }
 
 .resume-grid {
@@ -1211,6 +1302,10 @@ onUnmounted(() => {
 
 .resume-block {
   margin-bottom: 14px;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(106, 125, 175, 0.16);
 }
 
 .resume-block h3 {
@@ -1222,6 +1317,14 @@ onUnmounted(() => {
 
 .resume-line {
   margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed rgba(106, 125, 175, 0.2);
+}
+
+.resume-line:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 .resume-list {
@@ -1230,6 +1333,18 @@ onUnmounted(() => {
 }
 
 @media (max-width: 960px) {
+  .resume-template {
+    padding: 16px;
+  }
+
+  .resume-template-picker {
+    justify-content: stretch;
+  }
+
+  .resume-template-toggle {
+    width: 100%;
+  }
+
   .resume-grid {
     grid-template-columns: 1fr;
   }
