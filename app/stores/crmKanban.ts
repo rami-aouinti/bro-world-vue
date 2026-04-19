@@ -57,6 +57,8 @@ function normalizeStatus(status: string | null | undefined) {
   }
 
   if (status === 'open') return 'todo'
+  if (status === 'pending') return 'todo'
+  if (status === 'progress') return 'in_progress'
   if (status === 'closed') return 'done'
 
   return 'todo'
@@ -82,7 +84,30 @@ function flattenSubtasks(payload: CrmTasksBySprintResponse): KanbanCardItem[] {
 
   for (const bucket of payload.items ?? []) {
     for (const task of bucket.tasks ?? []) {
-      for (const subtask of task.subTasks ?? []) {
+      const nestedItems = [
+        ...(task.subTasks ?? []),
+        ...(task.children ?? []),
+      ]
+
+      if (!nestedItems.length) {
+        cards.push({
+          id: task.id,
+          title: task.title,
+          status: normalizeStatus(task.status),
+          priority: task.priority,
+          dueAt: task.dueAt,
+          updatedAt: task.updatedAt,
+          estimatedHours: task.estimatedHours,
+          projectId: task.projectId ?? null,
+          projectName: task.projectName ?? null,
+          parentTaskId: task.parentTaskId,
+          parentTaskTitle: null,
+          assignees: mapAssignees(task.assignees),
+        })
+        continue
+      }
+
+      for (const subtask of nestedItems) {
         cards.push({
           id: subtask.id,
           title: subtask.title,
