@@ -116,6 +116,7 @@ const postStats = computed(
               ]"
               :items="appStats.byPlatform"
               density="comfortable"
+              class="bg-transparent"
             />
           </v-card>
         </v-col>
@@ -131,6 +132,7 @@ const postStats = computed(
               ]"
               :items="pluginStats.usage"
               density="comfortable"
+              class="bg-transparent"
             />
           </v-card>
         </v-col>

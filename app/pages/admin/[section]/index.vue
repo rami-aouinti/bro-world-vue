@@ -145,6 +145,7 @@ async function removeItem(item: Record<string, unknown>) {
           ]"
           :items="filteredRows"
           density="comfortable"
+          class="bg-transparent"
         >
           <template #item.actions="{ item }">
             <div class="d-flex ga-1">
