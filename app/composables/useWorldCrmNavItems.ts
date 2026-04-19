@@ -32,19 +32,9 @@ export function useWorldCrmNavItems() {
     ...(isRootAdmin.value
       ? [
           {
-            title: t('world.crm.nav.company'),
-            to: '/world/crm/company',
-            icon: 'mdi-domain',
-          },
-          {
             title: t('world.crm.nav.githubSync', 'GitHub Sync'),
             to: '/world/crm/github-sync',
             icon: 'mdi-github',
-          },
-          {
-            title: t('world.crm.endpoints.nav.title'),
-            to: '/world/crm/endpoints',
-            icon: 'mdi-api',
           },
           {
             title: t('world.crm.taskRequests.list.title'),

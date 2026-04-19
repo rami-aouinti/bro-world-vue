@@ -21,6 +21,9 @@ const router = useRouter()
 const { crmNavItems } = useWorldCrmNavItems()
 const createDialog = ref(false)
 const pendingCreate = ref(false)
+const search = ref('')
+const currentPage = ref(1)
+const itemsPerPage = 9
 const createPayload = reactive<CrmSprintCreatePayload>({
   projectId: '',
   name: '',
@@ -28,10 +31,35 @@ const createPayload = reactive<CrmSprintCreatePayload>({
   status: 'planned',
 })
 
-
 const { data, pending, error } = await useFetch<CrmSprintResponse>(
   '/api/crm/general/sprints',
 )
+
+const filteredSprints = computed(() => {
+  const query = search.value.trim().toLowerCase()
+  const items = data.value?.items ?? []
+
+  if (!query) return items
+
+  return items.filter((sprint) =>
+    [sprint.name, sprint.status, sprint.projectId, sprint.id]
+      .filter(Boolean)
+      .some((value) => String(value).toLowerCase().includes(query)),
+  )
+})
+
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(filteredSprints.value.length / itemsPerPage)),
+)
+
+const paginatedSprints = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  return filteredSprints.value.slice(start, start + itemsPerPage)
+})
+
+watch([search, filteredSprints], () => {
+  currentPage.value = 1
+})
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat(locale.value, {
@@ -74,39 +102,58 @@ async function createSprint() {
         >{{ t('world.crm.sprints.alerts.loadListError') }}</v-alert
       >
 
-      <v-row v-else>
-        <v-col
-          v-for="sprint in data?.items ?? []"
-          :key="sprint.id"
-          cols="12"
-          md="6"
-          xl="4"
-        >
-          <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
-            <div class="d-flex align-start justify-space-between ga-2 mb-2">
-              <h3 class="text-subtitle-1 mb-0">{{ sprint.name }}</h3>
-              <v-chip size="small" color="secondary" variant="tonal">{{
-                sprint.status
-              }}</v-chip>
-            </div>
-            <p class="text-body-2 mb-1">
-              {{ t('world.crm.sprints.list.start') }}: {{ formatDate(sprint.startDate) }}
-            </p>
-            <p class="text-body-2 mb-0">
-              {{ t('world.crm.sprints.list.end') }}: {{ formatDate(sprint.endDate) }}
-            </p>
-            <v-btn
-              class="mt-3"
-              color="primary"
-              variant="tonal"
-              prepend-icon="mdi-arrow-right"
-              @click="router.push(`/world/crm/sprints/${sprint.id}`)"
-            >
-              {{ t('world.crm.sprints.actions.viewDetails') }}
-            </v-btn>
-          </v-card>
-        </v-col>
-      </v-row>
+      <template v-else>
+        <v-text-field
+          v-model="search"
+          class="mb-4"
+          prepend-inner-icon="mdi-magnify"
+          label="Rechercher un sprint"
+          clearable
+          variant="outlined"
+        />
+
+        <v-row>
+          <v-col
+            v-for="sprint in paginatedSprints"
+            :key="sprint.id"
+            cols="12"
+            md="6"
+            xl="4"
+          >
+            <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
+              <div class="d-flex align-start justify-space-between ga-2 mb-2">
+                <h3 class="text-subtitle-1 mb-0">{{ sprint.name }}</h3>
+                <v-chip size="small" color="secondary" variant="tonal">{{
+                  sprint.status
+                }}</v-chip>
+              </div>
+              <p class="text-body-2 mb-1">
+                {{ t('world.crm.sprints.list.start') }}: {{ formatDate(sprint.startDate) }}
+              </p>
+              <p class="text-body-2 mb-0">
+                {{ t('world.crm.sprints.list.end') }}: {{ formatDate(sprint.endDate) }}
+              </p>
+              <v-btn
+                class="mt-3"
+                color="primary"
+                variant="tonal"
+                prepend-icon="mdi-arrow-right"
+                @click="router.push(`/world/crm/sprints/${sprint.id}`)"
+              >
+                {{ t('world.crm.sprints.actions.viewDetails') }}
+              </v-btn>
+            </v-card>
+          </v-col>
+
+          <v-col v-if="paginatedSprints.length === 0" cols="12">
+            <v-alert type="info" variant="tonal">Aucun sprint trouvé.</v-alert>
+          </v-col>
+        </v-row>
+
+        <div v-if="totalPages > 1" class="d-flex justify-center mt-6">
+          <v-pagination v-model="currentPage" :length="totalPages" rounded="circle" />
+        </div>
+      </template>
     </v-container>
 
     <AppModal v-model="createDialog" :title="t('world.crm.sprints.modal.createTitle')" :max-width="720">
