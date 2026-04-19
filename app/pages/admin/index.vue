@@ -11,7 +11,7 @@ const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
 showRightDrawerDesktop.value = false
 showRightDrawerMobile.value = false
 
-const { data: statistics, pending } = await useAsyncData('admin-statistics', () =>
+const { data: statistics, pending } = useAsyncData('admin-statistics', () =>
   $fetch('/api/admin/statistics'),
 )
 
@@ -108,8 +108,24 @@ const postStats = computed(
         <v-col cols="12" md="6">
           <v-card class="pa-4 postcard-gradient-card rounded-xl">
             <h3 class="text-h6 mb-3">Applications by platform</h3>
+            <template v-if="pending">
+              <v-table class="bg-transparent">
+                <thead>
+                  <tr>
+                    <th>Platform</th>
+                    <th>Applications</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="index in 5" :key="`apps-skeleton-${index}`">
+                    <td><v-skeleton-loader type="text" /></td>
+                    <td><v-skeleton-loader type="text" /></td>
+                  </tr>
+                </tbody>
+              </v-table>
+            </template>
             <v-data-table
-              :loading="pending"
+              v-else
               :headers="[
                 { title: 'Platform', key: 'name' },
                 { title: 'Applications', key: 'applicationCount' },
@@ -125,8 +141,24 @@ const postStats = computed(
         <v-col cols="12" md="6">
           <v-card class="pa-4 postcard-gradient-card rounded-xl">
             <h3 class="text-h6 mb-3">Plugin usage</h3>
+            <template v-if="pending">
+              <v-table class="bg-transparent">
+                <thead>
+                  <tr>
+                    <th>Plugin</th>
+                    <th>Usage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="index in 5" :key="`plugins-skeleton-${index}`">
+                    <td><v-skeleton-loader type="text" /></td>
+                    <td><v-skeleton-loader type="text" /></td>
+                  </tr>
+                </tbody>
+              </v-table>
+            </template>
             <v-data-table
-              :loading="pending"
+              v-else
               :headers="[
                 { title: 'Plugin', key: 'name' },
                 { title: 'Usage', key: 'usageCount' },
