@@ -20,6 +20,20 @@ const bootstrapPayload = reactive({
 const dashboard = ref<Record<string, unknown> | null>(null)
 const repositories = ref<Array<Record<string, unknown>>>([])
 const syncJob = ref<Record<string, unknown> | null>(null)
+const { data: projectsResponse } = await useAsyncData(
+  '/api/crm/general/projects',
+  () => $fetch<{ items?: Array<{ id: string; name: string }> }>('/api/crm/general/projects'),
+)
+const projectItems = computed(() => projectsResponse.value?.items ?? [])
+
+watch(
+  projectItems,
+  (items) => {
+    if (projectId.value || !items.length) return
+    projectId.value = items[0].id
+  },
+  { immediate: true },
+)
 
 async function loadDashboard() {
   if (!projectId.value) return
@@ -48,7 +62,14 @@ async function loadSyncJob() {
       <h2 class="text-h6 mb-4">{{ t('world.crm.nav.githubSync', 'GitHub Sync') }}</h2>
       <v-row>
         <v-col cols="12" md="6">
-          <v-text-field v-model="projectId" label="Project ID" />
+          <v-select
+            v-model="projectId"
+            :items="projectItems"
+            item-title="name"
+            item-value="id"
+            label="Project"
+            :placeholder="t('world.crm.projects.list.empty', 'Select a project')"
+          />
         </v-col>
         <v-col cols="12" md="6" class="d-flex align-center ga-2">
           <v-btn color="primary" :loading="githubStore.pending" @click="loadDashboard">Load dashboard</v-btn>
