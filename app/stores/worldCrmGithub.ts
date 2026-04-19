@@ -13,6 +13,7 @@ import type {
   CrmGithubMoveProjectItemPayload,
   CrmGithubPullRequestActionPayload,
   CrmGithubSyncJobStatus,
+  CrmGithubSyncContext,
   CrmGithubTaskRequestBranchPayload,
   CrmGithubUpdateRepositoryBindingPayload,
 } from '~/types/world/crmGithub'
@@ -34,6 +35,40 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
   const error = ref<string | null>(null)
   const lastFetchedAt = ref<number | null>(null)
   const cache = ref<Record<string, { fetchedAt: number; data: unknown }>>({})
+  const syncContext = ref<CrmGithubSyncContext | null>(null)
+
+  function withSyncContextQuery(
+    endpoint: string,
+    query?: Record<string, unknown>,
+  ): Record<string, unknown> | undefined {
+    const context = syncContext.value
+    const isGithubWorldEndpoint = endpoint.startsWith('/api/world/crm/general/')
+      && endpoint.includes('/github/')
+
+    if (!isGithubWorldEndpoint || !context) {
+      return query
+    }
+
+    const mergedQuery: Record<string, unknown> = { ...(query ?? {}) }
+
+    if (!mergedQuery.jobId && context.jobId) {
+      mergedQuery.jobId = context.jobId
+    }
+
+    if (!mergedQuery.applicationSlug && context.applicationSlug) {
+      mergedQuery.applicationSlug = context.applicationSlug
+    }
+
+    return mergedQuery
+  }
+
+  function rememberSyncContext(context: Partial<CrmGithubSyncContext>) {
+    syncContext.value = {
+      ...(syncContext.value ?? { updatedAt: new Date().toISOString() }),
+      ...context,
+      updatedAt: new Date().toISOString(),
+    }
+  }
 
   function isFresh(entry?: { fetchedAt: number }) {
     return !!entry && Date.now() - entry.fetchedAt < CRM_GITHUB_TTL_MS
@@ -55,7 +90,8 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
     query?: Record<string, unknown>,
     options?: { force?: boolean },
   ) {
-    const cacheKey = buildCacheKey(endpoint, query)
+    const finalQuery = withSyncContextQuery(endpoint, query)
+    const cacheKey = buildCacheKey(endpoint, finalQuery)
     const cached = cache.value[cacheKey]
 
     if (cached && !options?.force && isFresh(cached)) {
@@ -67,7 +103,7 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
     error.value = null
 
     try {
-      const response = await $fetch<TResponse>(endpoint, { query })
+      const response = await $fetch<TResponse>(endpoint, { query: finalQuery })
       lastFetchedAt.value = Date.now()
       cache.value[cacheKey] = { fetchedAt: lastFetchedAt.value, data: response }
       return response
@@ -92,11 +128,13 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
     pending.value = true
     error.value = null
 
+    const finalQuery = withSyncContextQuery(endpoint, options?.query)
+
     try {
       const response = await $fetch<TResponse>(endpoint, {
         method,
         body: options?.body,
-        query: options?.query,
+        query: finalQuery,
       })
 
       invalidateCache(options?.invalidatePrefix)
@@ -117,7 +155,17 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
     pending,
     error,
     lastFetchedAt,
+    syncContext,
     invalidateCache,
+    loadSyncContext: async (options?: { force?: boolean }) => {
+      const context = await get<CrmGithubSyncContext | null>(
+        '/api/world/crm/general/github/sync/context',
+        undefined,
+        options,
+      )
+      syncContext.value = context
+      return context
+    },
     getProjectDashboard: (projectId: string, options?: { force?: boolean }) =>
       get(`${projectBase(projectId)}/dashboard`, undefined, options),
     getProjectRepositories: (projectId: string, query?: Record<string, unknown>) =>
@@ -223,9 +271,23 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
       mutate<CrmGithubBootstrapResponse>('/api/world/crm/general/github/sync/bootstrap', 'POST', {
         body,
         invalidatePrefix: '/api/world/crm/general/github/sync/jobs',
+      }).then((response) => {
+        rememberSyncContext({
+          jobId: response.jobId,
+          status: response.status,
+        })
+        return response
       }),
     getSyncJobStatus: (jobId: string, options?: { force?: boolean }) =>
-      get<CrmGithubSyncJobStatus>(`/api/world/crm/general/github/sync/jobs/${jobId}`, undefined, options),
+      get<CrmGithubSyncJobStatus>(`/api/world/crm/general/github/sync/jobs/${jobId}`, undefined, options).then((response) => {
+        rememberSyncContext({
+          jobId: response.id,
+          applicationSlug: response.applicationSlug,
+          owner: response.owner,
+          status: response.status,
+        })
+        return response
+      }),
     getTaskRequestBranches: (taskRequestId: string, options?: { force?: boolean }) =>
       get<CrmGithubListResponse>(`/api/world/crm/general/task-requests/${taskRequestId}/github/branches`, undefined, options),
     createTaskRequestBranch: (
