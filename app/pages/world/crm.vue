@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useWorldCrmNavItems } from '~/composables/useWorldCrmNavItems'
+
 const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
 </script>
