@@ -1,140 +1,129 @@
 <script setup lang="ts">
+const { t } = useI18n()
+const { isPageSkeletonVisible } = usePageSkeleton()
+const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => true)
+const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
+
 definePageMeta({
   icon: 'mdi-monitor-dashboard',
   title: 'appbar.admin',
   drawerIndex: 1,
 })
-
-const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => true)
-const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
+const stats = ref([
+  {
+    icon: 'mdi-web',
+    title: t('dashboard.stats.bandwidth.title'),
+    value: 23,
+    unit: t('dashboard.stats.bandwidth.unit'),
+    color: 'primary',
+    caption: t('dashboard.stats.bandwidth.caption'),
+  },
+  {
+    icon: 'mdi-rss',
+    title: t('dashboard.stats.submissions.title'),
+    value: 108,
+    color: 'primary',
+    caption: t('dashboard.stats.submissions.caption'),
+  },
+  {
+    icon: 'mdi-send',
+    title: t('dashboard.stats.requests.title'),
+    value: 1238,
+    color: 'warning',
+    caption: t('dashboard.stats.requests.caption'),
+  },
+  {
+    icon: 'mdi-bell',
+    title: t('dashboard.stats.messages.title'),
+    value: 9042,
+    color: 'primary',
+    caption: t('dashboard.stats.messages.caption'),
+  },
+  {
+    icon: 'mdi-github',
+    title: t('dashboard.stats.githubStars.title'),
+    value: NaN,
+    color: 'grey',
+    caption: t('dashboard.stats.githubStars.caption'),
+  },
+  {
+    icon: 'mdi-currency-cny',
+    title: t('dashboard.stats.totalFee.title'),
+    value: 2300,
+    unit: t('dashboard.stats.totalFee.unit'),
+    color: 'error',
+    caption: t('dashboard.stats.totalFee.caption'),
+  },
+])
 
 showRightDrawerDesktop.value = false
 showRightDrawerMobile.value = false
-
-const { data: statistics, pending } = await useAsyncData('admin-statistics', () =>
-  $fetch('/api/admin/statistics'),
-)
-
-const userStats = computed(
-  () =>
-    statistics.value?.users ?? {
-      total: 0,
-      thisWeek: 0,
-      thisMonth: 0,
-      thisYear: 0,
-    },
-)
-
-const appStats = computed(
-  () =>
-    statistics.value?.applications ?? {
-      total: 0,
-      byPlatform: [],
-    },
-)
-
-const pluginStats = computed(
-  () =>
-    statistics.value?.plugins ?? {
-      total: 0,
-      usage: [],
-    },
-)
-
-const postStats = computed(
-  () =>
-    statistics.value?.posts ?? {
-      total: 0,
-      last7Days: 0,
-      thisMonth: 0,
-      thisYear: 0,
-    },
-)
 </script>
 
 <template>
   <div>
-    <AdminModuleDrawers />
-
+    <AppPageDrawers>
+      <template #left>
+        <SkeletonDrawerLeft v-if="isPageSkeletonVisible" />
+      </template>
+    </AppPageDrawers>
     <v-container fluid>
-      <v-row>
-        <v-col cols="12" sm="6" md="3">
-          <StatsCard
-            title="Users"
-            color="primary"
-            icon="mdi-account-group-outline"
-            :value="userStats.total"
+      <SkeletonPageContent v-if="isPageSkeletonVisible" />
+      <template v-else>
+        <v-row>
+          <v-col
+            v-for="stat in stats"
+            :key="stat.title"
+            cols="12"
+            sm="6"
+            md="6"
+            lg="4"
           >
-            <template #footer> This week: {{ userStats.thisWeek }} </template>
-          </StatsCard>
-        </v-col>
-        <v-col cols="12" sm="6" md="3">
-          <StatsCard
-            title="Applications"
-            color="warning"
-            icon="mdi-apps"
-            :value="appStats.total"
-          >
-            <template #footer>
-              Platforms: {{ appStats.byPlatform.length }}
-            </template>
-          </StatsCard>
-        </v-col>
-        <v-col cols="12" sm="6" md="3">
-          <StatsCard
-            title="Plugins"
-            color="success"
-            icon="mdi-puzzle-outline"
-            :value="pluginStats.total"
-          >
-            <template #footer>
-              Active usage: {{ pluginStats.usage.length }}
-            </template>
-          </StatsCard>
-        </v-col>
-        <v-col cols="12" sm="6" md="3">
-          <StatsCard
-            title="Posts"
-            color="info"
-            icon="mdi-post-outline"
-            :value="postStats.total"
-          >
-            <template #footer> Last 7 days: {{ postStats.last7Days }} </template>
-          </StatsCard>
-        </v-col>
-      </v-row>
+            <StatsCard
+              :title="stat.title"
+              :unit="stat.unit"
+              :color="stat.color"
+              :icon="stat.icon"
+              :value="stat.value"
+            >
+              <template #footer>
+                {{ stat.caption }}
+              </template>
+            </StatsCard>
+          </v-col>
+        </v-row>
 
-      <v-row>
-        <v-col cols="12" md="6">
-          <v-card class="pa-4 postcard-gradient-card rounded-xl">
-            <h3 class="text-h6 mb-3">Applications by platform</h3>
-            <v-data-table
-              :loading="pending"
-              :headers="[
-                { title: 'Platform', key: 'name' },
-                { title: 'Applications', key: 'applicationCount' },
-              ]"
-              :items="appStats.byPlatform"
-              density="comfortable"
-            />
-          </v-card>
-        </v-col>
+        <ShowcaseDesignCards class="mb-6" />
 
-        <v-col cols="12" md="6">
-          <v-card class="pa-4 postcard-gradient-card rounded-xl">
-            <h3 class="text-h6 mb-3">Plugin usage</h3>
-            <v-data-table
-              :loading="pending"
-              :headers="[
-                { title: 'Plugin', key: 'name' },
-                { title: 'Usage', key: 'usageCount' },
-              ]"
-              :items="pluginStats.usage"
-              density="comfortable"
-            />
-          </v-card>
-        </v-col>
-      </v-row>
+        <v-row>
+          <v-col cols="12" md="6" lg="12">
+            <v-card class="pa-2">
+              <ChartLine />
+            </v-card>
+          </v-col>
+          <v-col cols="12" md="6" lg="4">
+            <v-card class="pa-2">
+              <ChartRadar />
+            </v-card>
+          </v-col>
+          <v-col cols="12" md="6" lg="4">
+            <v-card class="pa-2">
+              <ChartPie />
+            </v-card>
+          </v-col>
+          <v-col cols="12" md="6" lg="4">
+            <v-card class="pa-2">
+              <ChartBar />
+            </v-card>
+          </v-col>
+        </v-row>
+      </template>
     </v-container>
   </div>
 </template>
+
+<style scoped>
+.v-card:not(.stats-card) {
+  height: 340px;
+}
+</style>
