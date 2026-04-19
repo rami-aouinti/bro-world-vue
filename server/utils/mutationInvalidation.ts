@@ -105,6 +105,41 @@ const MUTATION_INVALIDATION_RULES: MutationInvalidationRule[] = [
     prefixes: ['quiz'],
   },
   { key: 'crm:general:mutate', scope: 'private', prefixes: ['crm'] },
+  {
+    key: 'recruit-applicants',
+    scope: 'private',
+    prefixes: ['default'],
+  },
+  {
+    key: 'recruit-resumes',
+    scope: 'private',
+    prefixes: ['default'],
+  },
+  {
+    key: 'recruit-applications',
+    scope: 'private',
+    prefixes: ['default'],
+  },
+  {
+    key: 'recruit-interviews',
+    scope: 'private',
+    prefixes: ['default'],
+  },
+  {
+    key: 'recruit-interviews-feedback',
+    scope: 'private',
+    prefixes: ['default'],
+  },
+  {
+    key: 'recruit-jobs',
+    scope: 'private',
+    prefixes: ['default'],
+  },
+  {
+    key: 'recruit-offers',
+    scope: 'private',
+    prefixes: ['default'],
+  },
   { key: 'users:block:create', scope: 'private', prefixes: ['users'] },
   { key: 'users:block:delete', scope: 'private', prefixes: ['users'] },
   {

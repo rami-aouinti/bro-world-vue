@@ -53,10 +53,9 @@ type SelectedPluginConfig = {
 }
 
 const PAGE_SIZE = 6
-const PLATFORM_PUBLIC_ENDPOINT = 'https://bro-world.org/api/v1/platform/public'
-const PLUGIN_PUBLIC_ENDPOINT = 'https://bro-world.org/api/v1/plugin/public'
-const CREATE_APPLICATION_ENDPOINT =
-  'https://bro-world.org/api/v1/profile/applications'
+const PLATFORM_PUBLIC_ENDPOINT = '/api/platform/public'
+const PLUGIN_PUBLIC_ENDPOINT = '/api/plugin/public'
+const CREATE_APPLICATION_ENDPOINT = '/api/profile/applications'
 
 const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
