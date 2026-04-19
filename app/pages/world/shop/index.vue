@@ -11,7 +11,6 @@ const { t, locale } = useI18n()
 const { user } = useUserSession()
 const route = useRoute()
 const shopStore = useWorldShopStore()
-const { shopNavItems } = useShopNavItems()
 
 const sessionUser = computed(() => user.value as SessionUser | null)
 
@@ -206,14 +205,7 @@ onMounted(async () => {
 
 <template>
   <div>
-    <WorldModuleDrawers
-      :module-title="t('world.shop.label')"
-      module-icon="mdi-storefront-outline"
-      :module-description="t('world.shop.moduleDescription')"
-      :nav-items="shopNavItems"
-      :action-label="t('world.shop.actions.createProduct')"
-      action-icon="mdi-package-variant-plus"
-    >
+    <AppPageDrawers>
       <template #right>
         <v-card class="postcard-gradient-card" rounded="xl" variant="tonal">
           <v-card-title>{{
@@ -317,7 +309,7 @@ onMounted(async () => {
           </v-card-text>
         </v-card>
       </template>
-    </WorldModuleDrawers>
+    </AppPageDrawers>
 
     <v-container fluid>
       <v-alert

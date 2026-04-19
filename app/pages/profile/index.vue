@@ -5,6 +5,8 @@ import type {
   WorldShopCheckoutSession,
 } from '~/types/world/shop'
 import type { SessionUser } from '~/types/session'
+import type { RecruitResume, RecruitResumeSection } from '~/types/world/jobs'
+import { privateApi } from '~/utils/http/privateApi'
 
 interface UpcomingCalendarEvent {
   id: string
@@ -24,6 +26,16 @@ interface CoinsReceipt {
   amount: number
   currency: string
 }
+
+type ResumeSectionKey =
+  | 'experiences'
+  | 'educations'
+  | 'skills'
+  | 'languages'
+  | 'certifications'
+  | 'projects'
+  | 'references'
+  | 'hobbies'
 
 const { t, locale } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
@@ -45,6 +57,27 @@ const transactionState = ref<TransactionState>('idle')
 const transactionMessage = ref('')
 const buyCoinsStep = ref<BuyCoinsStep>('product')
 const receipts = ref<CoinsReceipt[]>([])
+const resumes = ref<RecruitResume[]>([])
+const resumesLoading = ref(false)
+const resumesError = ref('')
+const resumeViewerOpen = ref(false)
+const resumeEditorOpen = ref(false)
+const resumeCreateOpen = ref(false)
+const resumeCreateStep = ref<'choice' | 'upload' | 'manual'>('choice')
+const selectedResume = ref<RecruitResume | null>(null)
+const createLoading = ref(false)
+const updateLoading = ref(false)
+const resumeUploadFile = ref<File | null>(null)
+const resumeForm = reactive<Record<ResumeSectionKey, RecruitResumeSection[]>>({
+  experiences: [{ title: '', description: '' }],
+  educations: [{ title: '', description: '' }],
+  skills: [{ title: '', description: '' }],
+  languages: [{ title: '', description: '' }],
+  certifications: [{ title: '', description: '' }],
+  projects: [{ title: '', description: '' }],
+  references: [{ title: '', description: '' }],
+  hobbies: [{ title: '', description: '' }],
+})
 
 const fullName = computed(() => {
   const user = profile.value
@@ -69,6 +102,17 @@ const proverbTexts = computed(() => [
 
 const hasUpcomingEvents = computed(() => upcomingEvents.value.length > 0)
 const hasCoinProducts = computed(() => coinProducts.value.length > 0)
+const hasResumes = computed(() => resumes.value.length > 0)
+const resumeSectionEntries = computed(() => [
+  { key: 'experiences', label: 'Experiences' },
+  { key: 'educations', label: 'Educations' },
+  { key: 'skills', label: 'Skills' },
+  { key: 'languages', label: 'Languages' },
+  { key: 'certifications', label: 'Certifications' },
+  { key: 'projects', label: 'Projects' },
+  { key: 'references', label: 'References' },
+  { key: 'hobbies', label: 'Hobbies' },
+] as Array<{ key: ResumeSectionKey; label: string }>)
 const selectedProduct = computed(() =>
   coinProducts.value.find((product) => product.id === selectedProductId.value),
 )
@@ -187,6 +231,170 @@ function resetTransactionState() {
   transactionMessage.value = ''
   checkout.value = null
   buyCoinsStep.value = 'product'
+}
+
+function normalizeSections(items: RecruitResumeSection[]) {
+  return items
+    .map((item) => ({
+      title: item.title.trim(),
+      description: (item.description || '').trim(),
+    }))
+    .filter((item) => item.title)
+}
+
+function populateResumeFormFromResume(resume: RecruitResume) {
+  resumeSectionEntries.value.forEach(({ key }) => {
+    const values = resume[key]
+    resumeForm[key] = values.length
+      ? values.map((item) => ({
+          id: item.id,
+          title: item.title || '',
+          description: item.description || '',
+        }))
+      : [{ title: '', description: '' }]
+  })
+}
+
+function resetResumeForm() {
+  resumeSectionEntries.value.forEach(({ key }) => {
+    resumeForm[key] = [{ title: '', description: '' }]
+  })
+}
+
+function addResumeLine(section: ResumeSectionKey) {
+  resumeForm[section].push({ title: '', description: '' })
+}
+
+function removeResumeLine(section: ResumeSectionKey, index: number) {
+  resumeForm[section].splice(index, 1)
+  if (resumeForm[section].length === 0) {
+    resumeForm[section].push({ title: '', description: '' })
+  }
+}
+
+function openResume(resume: RecruitResume) {
+  selectedResume.value = resume
+  resumeViewerOpen.value = true
+}
+
+function openResumeEdit(resume: RecruitResume) {
+  selectedResume.value = resume
+  populateResumeFormFromResume(resume)
+  resumeEditorOpen.value = true
+}
+
+async function fetchResumes() {
+  resumesLoading.value = true
+  resumesError.value = ''
+  try {
+    resumes.value = await privateApi.request<RecruitResume[]>(
+      '/api/recruit/general/private/me/resumes',
+    )
+  } catch {
+    resumesError.value = 'Impossible de charger vos CV.'
+  } finally {
+    resumesLoading.value = false
+  }
+}
+
+async function createResumeFromUpload() {
+  if (!resumeUploadFile.value) return
+  createLoading.value = true
+  resumesError.value = ''
+  try {
+    const formData = new FormData()
+    formData.append('document', resumeUploadFile.value)
+    const created = await $fetch<{ id: string; documentUrl: string | null }>(
+      '/api/recruit/general/resumes',
+      { method: 'POST', body: formData },
+    )
+    resumes.value = [
+      {
+        id: created.id,
+        documentUrl: created.documentUrl,
+        experiences: [],
+        educations: [],
+        skills: [],
+        languages: [],
+        certifications: [],
+        projects: [],
+        references: [],
+        hobbies: [],
+      },
+      ...resumes.value,
+    ]
+    resumeUploadFile.value = null
+    resumeCreateOpen.value = false
+  } catch {
+    resumesError.value = "Impossible d'ajouter le CV PDF."
+  } finally {
+    createLoading.value = false
+  }
+}
+
+async function createResumeFromManual() {
+  createLoading.value = true
+  resumesError.value = ''
+  try {
+    const body = Object.fromEntries(
+      resumeSectionEntries.value
+        .map(({ key }) => [key, normalizeSections(resumeForm[key])] as const)
+        .filter(([, value]) => value.length > 0),
+    )
+
+    const created = await $fetch<{ id: string; documentUrl: string | null }>(
+      '/api/recruit/general/resumes',
+      { method: 'POST', body },
+    )
+
+    resumes.value = [
+      {
+        id: created.id,
+        documentUrl: null,
+        experiences: (body.experiences as RecruitResumeSection[]) || [],
+        educations: (body.educations as RecruitResumeSection[]) || [],
+        skills: (body.skills as RecruitResumeSection[]) || [],
+        languages: (body.languages as RecruitResumeSection[]) || [],
+        certifications: (body.certifications as RecruitResumeSection[]) || [],
+        projects: (body.projects as RecruitResumeSection[]) || [],
+        references: (body.references as RecruitResumeSection[]) || [],
+        hobbies: (body.hobbies as RecruitResumeSection[]) || [],
+      },
+      ...resumes.value,
+    ]
+    resetResumeForm()
+    resumeCreateOpen.value = false
+  } catch {
+    resumesError.value = "Impossible de créer le CV manuel."
+  } finally {
+    createLoading.value = false
+  }
+}
+
+async function updateResume() {
+  if (!selectedResume.value || selectedResume.value.documentUrl) return
+  updateLoading.value = true
+  resumesError.value = ''
+  try {
+    const body = Object.fromEntries(
+      resumeSectionEntries.value
+        .map(({ key }) => [key, normalizeSections(resumeForm[key])] as const)
+        .filter(([, value]) => value.length > 0),
+    )
+    await privateApi.request(
+      `/api/recruit/general/private/me/resumes/${selectedResume.value.id}`,
+      {
+        method: 'PATCH',
+        body,
+      },
+    )
+    await fetchResumes()
+    resumeEditorOpen.value = false
+  } catch {
+    resumesError.value = 'Modification du CV impossible.'
+  } finally {
+    updateLoading.value = false
+  }
 }
 
 async function fetchCoinProducts(force = false) {
@@ -397,6 +605,7 @@ onMounted(async () => {
     fetchProfile(),
     fetchUpcomingEvents(),
     fetchCoinProducts(),
+    fetchResumes(),
   ])
   startTypewriter()
 })
@@ -494,8 +703,288 @@ onUnmounted(() => {
             </p>
           </v-card-text>
         </v-card>
+
+        <v-card class="postcard-gradient-card mt-6" rounded="xl">
+          <v-card-title class="d-flex align-center justify-space-between">
+            <span>My CV</span>
+            <v-btn
+              color="primary"
+              prepend-icon="mdi-file-plus-outline"
+              @click="
+                resumeCreateOpen = true
+                resumeCreateStep = 'choice'
+              "
+            >
+              New CV
+            </v-btn>
+          </v-card-title>
+          <v-divider />
+          <v-card-text>
+            <v-alert
+              v-if="resumesError"
+              type="error"
+              variant="tonal"
+              density="comfortable"
+              class="mb-4"
+            >
+              {{ resumesError }}
+            </v-alert>
+
+            <v-skeleton-loader
+              v-if="resumesLoading"
+              type="list-item-three-line, list-item-three-line"
+            />
+
+            <v-empty-state
+              v-else-if="!hasResumes"
+              icon="mdi-file-document-outline"
+              title="Aucun CV pour le moment"
+              text="Ajoute un CV PDF ou crée-le manuellement."
+            />
+
+            <v-row v-else>
+              <v-col
+                v-for="resume in resumes"
+                :key="resume.id"
+                cols="12"
+                md="6"
+                lg="4"
+              >
+                <v-card
+                  rounded="xl"
+                  class="h-100 postcard-gradient-card resume-card"
+                  @click="openResume(resume)"
+                >
+                  <v-card-text>
+                    <div class="d-flex justify-space-between align-center mb-3">
+                      <v-chip
+                        size="small"
+                        :color="resume.documentUrl ? 'info' : 'primary'"
+                        variant="tonal"
+                      >
+                        {{ resume.documentUrl ? 'PDF' : 'Data CV' }}
+                      </v-chip>
+                      <v-btn
+                        v-if="!resume.documentUrl"
+                        size="small"
+                        icon="mdi-pencil-outline"
+                        variant="text"
+                        @click.stop="openResumeEdit(resume)"
+                      />
+                    </div>
+                    <h3 class="text-subtitle-1 font-weight-bold mb-2">
+                      CV #{{ resume.id.slice(0, 8) }}
+                    </h3>
+                    <p class="text-body-2 text-medium-emphasis mb-0">
+                      {{
+                        resume.documentUrl
+                          ? 'Clique pour prévisualiser le PDF.'
+                          : 'Clique pour voir les sections du CV.'
+                      }}
+                    </p>
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
       </template>
     </v-container>
+
+    <v-dialog v-model="resumeViewerOpen" max-width="980">
+      <v-card rounded="xl">
+        <v-card-title class="d-flex align-center justify-space-between">
+          <span>Détail CV</span>
+          <v-btn icon="mdi-close" variant="text" @click="resumeViewerOpen = false" />
+        </v-card-title>
+        <v-divider />
+        <v-card-text v-if="selectedResume">
+          <iframe
+            v-if="selectedResume.documentUrl"
+            :src="selectedResume.documentUrl"
+            style="width: 100%; height: 72vh; border: none; border-radius: 12px"
+            title="Resume PDF preview"
+          />
+          <v-row v-else>
+            <v-col
+              v-for="entry in resumeSectionEntries"
+              :key="entry.key"
+              cols="12"
+              md="6"
+            >
+              <v-card variant="tonal" rounded="lg">
+                <v-card-title class="text-subtitle-2">{{ entry.label }}</v-card-title>
+                <v-card-text>
+                  <div
+                    v-for="item in selectedResume[entry.key]"
+                    :key="item.id || `${entry.key}-${item.title}`"
+                    class="mb-3"
+                  >
+                    <p class="font-weight-medium mb-1">{{ item.title }}</p>
+                    <p class="text-medium-emphasis mb-0">{{ item.description }}</p>
+                  </div>
+                  <p
+                    v-if="selectedResume[entry.key].length === 0"
+                    class="text-medium-emphasis mb-0"
+                  >
+                    Empty
+                  </p>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="resumeCreateOpen" max-width="980">
+      <v-card rounded="xl">
+        <v-card-title>Create new CV</v-card-title>
+        <v-divider />
+        <v-card-text>
+          <v-row v-if="resumeCreateStep === 'choice'">
+            <v-col cols="12" md="6">
+              <v-card class="postcard-gradient-card h-100" @click="resumeCreateStep = 'upload'">
+                <v-card-text class="text-center py-10">
+                  <v-icon icon="mdi-file-upload-outline" size="42" class="mb-3" />
+                  <h3 class="text-h6 mb-2">Upload PDF</h3>
+                  <p class="text-body-2 text-medium-emphasis mb-0">
+                    Importer directement ton CV en PDF.
+                  </p>
+                </v-card-text>
+              </v-card>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-card class="postcard-gradient-card h-100" @click="resumeCreateStep = 'manual'">
+                <v-card-text class="text-center py-10">
+                  <v-icon icon="mdi-form-select" size="42" class="mb-3" />
+                  <h3 class="text-h6 mb-2">Create manually</h3>
+                  <p class="text-body-2 text-medium-emphasis mb-0">
+                    Renseigne les sections (experience, skills, projects...).
+                  </p>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <div v-else-if="resumeCreateStep === 'upload'">
+            <v-file-input
+              v-model="resumeUploadFile"
+              label="Upload CV file (PDF)"
+              accept="application/pdf"
+              prepend-icon="mdi-paperclip"
+              variant="outlined"
+            />
+            <div class="d-flex ga-2 justify-end">
+              <v-btn variant="text" @click="resumeCreateStep = 'choice'">Back</v-btn>
+              <v-btn
+                color="primary"
+                :loading="createLoading"
+                :disabled="!resumeUploadFile"
+                @click="createResumeFromUpload"
+              >
+                Save PDF CV
+              </v-btn>
+            </div>
+          </div>
+
+          <div v-else>
+            <div v-for="entry in resumeSectionEntries" :key="entry.key" class="mb-5">
+              <div class="d-flex align-center justify-space-between mb-2">
+                <h4 class="text-subtitle-1">{{ entry.label }}</h4>
+                <v-btn
+                  size="small"
+                  variant="tonal"
+                  prepend-icon="mdi-plus"
+                  @click="addResumeLine(entry.key)"
+                >
+                  Add line
+                </v-btn>
+              </div>
+              <v-card
+                v-for="(line, index) in resumeForm[entry.key]"
+                :key="`${entry.key}-${index}`"
+                class="mb-2"
+                variant="tonal"
+                rounded="lg"
+              >
+                <v-card-text>
+                  <v-row>
+                    <v-col cols="12" md="5">
+                      <v-text-field v-model="line.title" label="Title" variant="outlined" />
+                    </v-col>
+                    <v-col cols="12" md="6">
+                      <v-text-field
+                        v-model="line.description"
+                        label="Description"
+                        variant="outlined"
+                      />
+                    </v-col>
+                    <v-col cols="12" md="1" class="d-flex align-center">
+                      <v-btn
+                        size="small"
+                        icon="mdi-delete-outline"
+                        variant="text"
+                        color="error"
+                        @click="removeResumeLine(entry.key, index)"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
+            </div>
+            <div class="d-flex ga-2 justify-end">
+              <v-btn variant="text" @click="resumeCreateStep = 'choice'">Back</v-btn>
+              <v-btn color="primary" :loading="createLoading" @click="createResumeFromManual">
+                Save manual CV
+              </v-btn>
+            </div>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="resumeEditorOpen" max-width="980">
+      <v-card rounded="xl">
+        <v-card-title>Edit CV</v-card-title>
+        <v-divider />
+        <v-card-text>
+          <div v-for="entry in resumeSectionEntries" :key="`editor-${entry.key}`" class="mb-4">
+            <div class="d-flex align-center justify-space-between mb-2">
+              <h4 class="text-subtitle-1">{{ entry.label }}</h4>
+              <v-btn size="small" variant="tonal" @click="addResumeLine(entry.key)">Add</v-btn>
+            </div>
+            <v-card
+              v-for="(line, index) in resumeForm[entry.key]"
+              :key="`editor-${entry.key}-${index}`"
+              variant="tonal"
+              class="mb-2"
+            >
+              <v-card-text>
+                <v-row>
+                  <v-col cols="12" md="5"><v-text-field v-model="line.title" label="Title" /></v-col>
+                  <v-col cols="12" md="6"><v-text-field v-model="line.description" label="Description" /></v-col>
+                  <v-col cols="12" md="1" class="d-flex align-center">
+                    <v-btn
+                      icon="mdi-delete-outline"
+                      size="small"
+                      color="error"
+                      variant="text"
+                      @click="removeResumeLine(entry.key, index)"
+                    />
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+          </div>
+          <div class="d-flex justify-end">
+            <v-btn color="primary" :loading="updateLoading" @click="updateResume">
+              Save changes
+            </v-btn>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -515,5 +1004,17 @@ onUnmounted(() => {
 
 .coin-product-image {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.resume-card {
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.resume-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.18);
 }
 </style>

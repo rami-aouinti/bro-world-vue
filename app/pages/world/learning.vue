@@ -1,0 +1,57 @@
+<script setup lang="ts">
+import type { SessionUser } from '~/types/session'
+
+const { t } = useI18n()
+const { user } = useUserSession()
+const sessionUser = computed(() => user.value as SessionUser | null)
+const isRoot = computed(
+  () => sessionUser.value?.roles?.includes('ROLE_ROOT') ?? false,
+)
+
+const learningNavItems = computed(() => [
+  {
+    title: t('world.learning.nav.overview'),
+    to: '/world/learning',
+    icon: 'mdi-view-dashboard-outline',
+  },
+  {
+    title: t('world.learning.nav.courses'),
+    to: '/world/learning/courses',
+    icon: 'mdi-book-open-page-variant-outline',
+  },
+  {
+    title: t('world.learning.nav.levels'),
+    to: '/world/learning/levels',
+    icon: 'mdi-stairs',
+  },
+  {
+    title: t('world.learning.nav.paths'),
+    to: '/world/learning/paths',
+    icon: 'mdi-map-marker-path',
+  },
+  ...(isRoot.value
+    ? [
+        {
+          title: t('world.learning.nav.admin'),
+          to: '/world/learning/admin',
+          icon: 'mdi-shield-crown-outline',
+          rootOnly: true,
+        },
+      ]
+    : []),
+])
+</script>
+
+<template>
+  <div>
+    <WorldModuleDrawers
+      :module-title="t('world.learning.label')"
+      module-icon="mdi-school-outline"
+      :module-description="t('world.learning.moduleDescription')"
+      :nav-items="learningNavItems"
+      :action-label="t('world.learning.actions.refreshDashboard')"
+      action-icon="mdi-refresh"
+    />
+    <NuxtPage />
+  </div>
+</template>
