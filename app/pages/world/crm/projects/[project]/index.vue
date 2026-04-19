@@ -15,6 +15,19 @@ definePageMeta({ title: 'CRM Project Detail' })
 const editPayload = reactive<CrmProjectUpdatePayload>({})
 const assigneeId = ref('')
 const pendingSave = ref(false)
+const { data: usersData } = await useFetch<Record<string, any>>('/api/public/users')
+
+const publicUserOptions = computed(() => {
+  const list = usersData.value?.users ?? usersData.value?.items ?? []
+  if (!Array.isArray(list)) return []
+
+  return list
+    .map((user: any) => ({
+      title: user.username ?? user.fullName ?? user.name ?? user.email ?? user.id,
+      value: String(user.id ?? ''),
+    }))
+    .filter((item: { value: string }) => item.value)
+})
 
 const { data, pending, error, refresh } = await useFetch<CrmProjectItem>(
   () => `/api/crm/general/projects/${projectId.value}`,
@@ -94,7 +107,14 @@ async function detachAssignee(userId: string) {
       <v-col cols="12" lg="4">
         <v-card rounded="xl" class="pa-4 postcard-gradient-card">
           <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.projects.sections.assignees') }}</h3>
-          <v-text-field v-model="assigneeId" :label="t('world.crm.projects.form.userId')" class="mb-2" />
+          <v-select
+            v-model="assigneeId"
+            :items="publicUserOptions"
+            item-title="title"
+            item-value="value"
+            :label="t('world.crm.projects.form.userId')"
+            class="mb-2"
+          />
           <v-btn color="secondary" variant="tonal" class="mb-4" @click="attachAssignee">{{ t('world.crm.projects.actions.attach') }}</v-btn>
           <v-list density="compact" bg-color="transparent">
             <v-list-item

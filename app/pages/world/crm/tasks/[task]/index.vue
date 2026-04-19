@@ -16,6 +16,7 @@ definePageMeta({ title: 'CRM Task Detail' })
 const payload = reactive<CrmTaskUpdatePayload>({})
 const assigneeId = ref('')
 const subtaskToAttach = ref('')
+const sprintToAttach = ref('')
 const pendingSave = ref(false)
 const newSubtask = reactive<CrmSubtaskCreatePayload>({
   title: '',
@@ -26,6 +27,35 @@ const newSubtask = reactive<CrmSubtaskCreatePayload>({
 
 const { data, pending, error, refresh } = await useFetch<CrmTaskItem>(
   () => `/api/crm/general/tasks/${taskId.value}`,
+)
+const { data: usersData } = await useFetch<Record<string, any>>('/api/public/users')
+const { data: tasksData } = await useFetch<{ items?: Array<{ id: string; title?: string }> }>('/api/crm/general/tasks')
+const { data: sprintsData } = await useFetch<{ items?: Array<{ id: string; name?: string }> }>('/api/crm/general/sprints')
+
+const publicUserOptions = computed(() => {
+  const list = usersData.value?.users ?? usersData.value?.items ?? []
+  if (!Array.isArray(list)) return []
+
+  return list
+    .map((user: any) => ({
+      title: user.username ?? user.fullName ?? user.name ?? user.email ?? user.id,
+      value: String(user.id ?? ''),
+    }))
+    .filter((item: { value: string }) => item.value)
+})
+
+const taskOptions = computed(() =>
+  (tasksData.value?.items ?? []).map((task) => ({
+    title: task.title ? `${task.title} (${task.id})` : task.id,
+    value: task.id,
+  })),
+)
+
+const sprintOptions = computed(() =>
+  (sprintsData.value?.items ?? []).map((sprint) => ({
+    title: sprint.name ? `${sprint.name} (${sprint.id})` : sprint.id,
+    value: sprint.id,
+  })),
 )
 
 watchEffect(() => {
@@ -91,6 +121,12 @@ async function detachSubtask(subtaskId: string) {
   await $fetch(`/api/crm/general/tasks/${taskId.value}/subtasks/${encodeURIComponent(subtaskId)}`, { method: 'DELETE' })
   await refresh()
 }
+
+async function attachToSprint() {
+  if (!sprintToAttach.value) return
+  await $fetch(`/api/crm/general/sprints/${encodeURIComponent(sprintToAttach.value)}/tasks/${encodeURIComponent(taskId.value)}`, { method: 'PUT' })
+  await refresh()
+}
 </script>
 
 <template>
@@ -127,7 +163,14 @@ async function detachSubtask(subtaskId: string) {
           </v-row>
           <v-btn color="secondary" variant="tonal" class="mb-3" @click="createSubtask">{{ t('world.crm.tasks.actions.createSubtask') }}</v-btn>
 
-          <v-text-field v-model="subtaskToAttach" :label="t('world.crm.tasks.form.subtaskIdToAttach')" class="mb-2" />
+          <v-select
+            v-model="subtaskToAttach"
+            :items="taskOptions"
+            item-title="title"
+            item-value="value"
+            :label="t('world.crm.tasks.form.subtaskIdToAttach')"
+            class="mb-2"
+          />
           <v-btn color="secondary" variant="tonal" class="mb-3" @click="attachSubtask">{{ t('world.crm.tasks.actions.attachSubtask') }}</v-btn>
 
           <v-list density="compact" bg-color="transparent">
@@ -148,7 +191,14 @@ async function detachSubtask(subtaskId: string) {
       <v-col cols="12" lg="4">
         <v-card rounded="xl" class="pa-4 postcard-gradient-card">
           <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.tasks.sections.assignees') }}</h3>
-          <v-text-field v-model="assigneeId" :label="t('world.crm.tasks.form.userId')" class="mb-2" />
+          <v-select
+            v-model="assigneeId"
+            :items="publicUserOptions"
+            item-title="title"
+            item-value="value"
+            :label="t('world.crm.tasks.form.userId')"
+            class="mb-2"
+          />
           <v-btn color="secondary" variant="tonal" class="mb-4" @click="attachAssignee">{{ t('world.crm.tasks.actions.attach') }}</v-btn>
           <v-list density="compact" bg-color="transparent">
             <v-list-item
@@ -161,6 +211,17 @@ async function detachSubtask(subtaskId: string) {
               </template>
             </v-list-item>
           </v-list>
+
+          <h3 class="text-subtitle-1 mt-4 mb-3">Attach to sprint</h3>
+          <v-select
+            v-model="sprintToAttach"
+            :items="sprintOptions"
+            item-title="title"
+            item-value="value"
+            label="Sprint"
+            class="mb-2"
+          />
+          <v-btn color="secondary" variant="tonal" class="mb-4" @click="attachToSprint">Attach sprint</v-btn>
         </v-card>
       </v-col>
     </v-row>
