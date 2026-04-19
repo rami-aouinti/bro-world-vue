@@ -117,7 +117,7 @@ async function detachTask() {
       <v-col cols="12" lg="4">
         <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
           <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.sprints.sections.assignees') }}</h3>
-          <v-select
+          <AppSelect
             v-model="assigneeId"
             :items="publicUserOptions"
             item-title="title"
@@ -132,7 +132,7 @@ async function detachTask() {
 
         <v-card rounded="xl" class="pa-4 postcard-gradient-card">
           <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.sprints.sections.tasks') }}</h3>
-          <v-select
+          <AppSelect
             v-model="taskId"
             :items="taskOptions"
             item-title="title"

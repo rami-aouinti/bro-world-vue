@@ -148,7 +148,7 @@ function profileLink(username: string | null) {
       <v-card rounded="xl" class="pa-4 mb-4 postcard-gradient-card">
       <v-row align="center">
         <v-col cols="12" md="5" lg="4">
-          <v-select
+          <AppSelect
             :model-value="crmKanbanStore.selectedSprintId"
             :items="sprintOptions"
             item-title="title"
