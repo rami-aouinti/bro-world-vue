@@ -1,48 +1,9 @@
 <script setup lang="ts">
-import type { SessionUser } from '~/types/session'
 import { useWorldLearningStore } from '~/stores/worldLearning'
 
 definePageMeta({ title: 'world.learning.label' })
 
 const { t } = useI18n()
-const { user } = useUserSession()
-const sessionUser = computed(() => user.value as SessionUser | null)
-const isRoot = computed(
-  () => sessionUser.value?.roles?.includes('ROLE_ROOT') ?? false,
-)
-
-const learningNavItems = computed(() => [
-  {
-    title: t('world.learning.nav.overview'),
-    to: '/world/learning',
-    icon: 'mdi-view-dashboard-outline',
-  },
-  {
-    title: t('world.learning.nav.courses'),
-    to: '/world/learning/courses',
-    icon: 'mdi-book-open-page-variant-outline',
-  },
-  {
-    title: t('world.learning.nav.levels'),
-    to: '/world/learning/levels',
-    icon: 'mdi-stairs',
-  },
-  {
-    title: t('world.learning.nav.paths'),
-    to: '/world/learning/paths',
-    icon: 'mdi-map-marker-path',
-  },
-  ...(isRoot.value
-    ? [
-        {
-          title: t('world.learning.nav.admin'),
-          to: '/world/learning/admin',
-          icon: 'mdi-shield-crown-outline',
-          rootOnly: true,
-        },
-      ]
-    : []),
-])
 
 const learningStore = useWorldLearningStore()
 await learningStore.fetchCourses()
@@ -82,28 +43,10 @@ const rows = computed(() =>
   })),
 )
 
-const refreshDashboard = async () => {
-  await Promise.all([
-    learningStore.fetchAnalytics({ force: true }),
-    firstCourseId.value
-      ? learningStore.fetchProgress(firstCourseId.value, { force: true })
-      : Promise.resolve([]),
-  ])
-}
 </script>
 
 <template>
   <div>
-    <WorldModuleDrawers
-      :module-title="t('world.learning.label')"
-      module-icon="mdi-school-outline"
-      :module-description="t('world.learning.moduleDescription')"
-      :nav-items="learningNavItems"
-      :action-label="t('world.learning.actions.refreshDashboard')"
-      action-icon="mdi-refresh"
-      @action="refreshDashboard"
-    />
-
     <v-container fluid>
       <v-row class="mb-4">
         <v-col cols="12" md="3"
