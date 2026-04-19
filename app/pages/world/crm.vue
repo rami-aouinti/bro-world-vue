@@ -30,6 +30,11 @@ const crmNavItems = computed(() => [
     to: '/world/crm/company',
     icon: 'mdi-domain',
   },
+  {
+    title: t('world.crm.nav.githubSync', 'GitHub Sync'),
+    to: '/world/crm/github-sync',
+    icon: 'mdi-github',
+  },
   ...(can('crm.admin.manage')
     ? [
         {

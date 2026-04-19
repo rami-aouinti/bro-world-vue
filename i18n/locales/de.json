@@ -1166,7 +1166,8 @@
         "tasks": "Aufgaben",
         "sprints": "Sprints",
         "company": "Firma",
-        "admin": "Admin"
+        "admin": "Admin",
+        "githubSync": "GitHub Sync"
       },
       "actions": {
         "createLead": "CRM-Lead erstellen",

@@ -1390,7 +1390,8 @@
         "tasks": "Tasks",
         "sprints": "Sprints",
         "company": "Company",
-        "admin": "Admin"
+        "admin": "Admin",
+        "githubSync": "GitHub Sync"
       },
       "actions": {
         "createLead": "Create CRM lead",
