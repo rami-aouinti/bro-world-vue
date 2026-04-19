@@ -34,4 +34,16 @@ describe('mutation invalidation rules', () => {
       ]),
     )
   })
+
+  it('contains private invalidation for recruit resume mutations', () => {
+    const rule = getMutationInvalidationRules().find(
+      (entry) => entry.key === 'recruit-resumes',
+    )
+
+    expect(rule).toEqual({
+      key: 'recruit-resumes',
+      scope: 'private',
+      prefixes: ['default'],
+    })
+  })
 })
