@@ -19,6 +19,11 @@ const bootstrapPayload = reactive({
 
 const dashboard = ref<Record<string, unknown> | null>(null)
 const repositories = ref<Array<Record<string, unknown>>>([])
+const issues = ref<Array<Record<string, unknown>>>([])
+const pullRequests = ref<Array<Record<string, unknown>>>([])
+const branches = ref<Array<Record<string, unknown>>>([])
+const projectBoards = ref<Array<Record<string, unknown>>>([])
+const accountRepositories = ref<Array<Record<string, unknown>>>([])
 const syncJob = ref<CrmGithubSyncJobStatus | null>(null)
 const bootstrapResponse = ref<{ jobId: string; status: string } | null>(null)
 const { data: projectsResponse } = await useAsyncData(
@@ -26,6 +31,22 @@ const { data: projectsResponse } = await useAsyncData(
   () => $fetch<{ items?: Array<{ id: string; name: string }> }>('/api/crm/general/projects'),
 )
 const projectItems = computed(() => projectsResponse.value?.items ?? [])
+const dashboardPullRequests = computed(() => {
+  if (!dashboard.value || typeof dashboard.value.pullRequests !== 'object' || !dashboard.value.pullRequests) {
+    return { open: 0, closed: 0, merged: 0 }
+  }
+
+  const pullRequestSummary = dashboard.value.pullRequests as Record<string, unknown>
+  return {
+    open: Number(pullRequestSummary.open ?? 0),
+    closed: Number(pullRequestSummary.closed ?? 0),
+    merged: Number(pullRequestSummary.merged ?? 0),
+  }
+})
+const dashboardRepositories = computed<Array<Record<string, unknown>>>(() => {
+  if (!dashboard.value || !Array.isArray(dashboard.value.repositories)) return []
+  return dashboard.value.repositories as Array<Record<string, unknown>>
+})
 
 watch(
   projectItems,
@@ -60,6 +81,48 @@ async function loadRepositories() {
   repositories.value = response.items ?? []
 }
 
+async function loadIssues() {
+  if (!projectId.value) return
+  const response = await githubStore.getIssues(projectId.value)
+  issues.value = response.items ?? []
+}
+
+async function loadPullRequests() {
+  if (!projectId.value) return
+  const response = await githubStore.getPullRequests(projectId.value)
+  pullRequests.value = response.items ?? []
+}
+
+async function loadBranches() {
+  if (!projectId.value) return
+  const response = await githubStore.getBranches(projectId.value)
+  branches.value = response.items ?? []
+}
+
+async function loadProjectBoards() {
+  if (!projectId.value) return
+  const response = await githubStore.getProjectsBoards(projectId.value)
+  projectBoards.value = response.items ?? []
+}
+
+async function loadAccountRepositories() {
+  if (!projectId.value) return
+  const response = await githubStore.getAccountRepositories(projectId.value)
+  accountRepositories.value = response.items ?? []
+}
+
+async function loadGithubOverview() {
+  await Promise.all([
+    loadDashboard(),
+    loadRepositories(),
+    loadIssues(),
+    loadPullRequests(),
+    loadBranches(),
+    loadProjectBoards(),
+    loadAccountRepositories(),
+  ])
+}
+
 async function runBootstrap() {
   bootstrapResponse.value = await githubStore.bootstrapSync(bootstrapPayload)
   syncJobId.value = bootstrapResponse.value.jobId
@@ -79,27 +142,143 @@ async function loadSyncJob() {
       <h2 class="text-h6 mb-4">{{ t('world.crm.nav.githubSync', 'GitHub Sync') }}</h2>
       <v-row>
         <v-col cols="12" md="6">
-          <v-select
+          <AppSelect
             v-model="projectId"
             :items="projectItems"
             item-title="name"
             item-value="id"
             label="Project"
             :placeholder="t('world.crm.projects.list.empty', 'Select a project')"
+            class="github-sync__project-select"
           />
         </v-col>
-        <v-col cols="12" md="6" class="d-flex align-center ga-2">
+        <v-col cols="12" md="6" class="d-flex align-center flex-wrap ga-2">
           <v-btn color="primary" :loading="githubStore.pending" @click="loadDashboard">Load dashboard</v-btn>
           <v-btn color="secondary" :loading="githubStore.pending" @click="loadRepositories">Load repositories</v-btn>
+          <v-btn color="info" :loading="githubStore.pending" @click="loadGithubOverview">Load all endpoints</v-btn>
         </v-col>
       </v-row>
       <v-alert v-if="githubStore.error" type="error" variant="tonal" class="mb-3">{{ githubStore.error }}</v-alert>
-      <v-card v-if="dashboard" variant="tonal" class="mb-3 pa-3">
-        <pre class="text-caption">{{ JSON.stringify(dashboard, null, 2) }}</pre>
-      </v-card>
-      <v-card v-if="repositories.length" variant="tonal" class="pa-3">
-        <pre class="text-caption">{{ JSON.stringify(repositories, null, 2) }}</pre>
-      </v-card>
+      <v-row>
+        <v-col cols="12" lg="6">
+          <v-card v-if="dashboard" variant="tonal" class="mb-3 pa-3">
+            <h3 class="text-subtitle-1 mb-2">Dashboard overview</h3>
+            <v-row dense>
+              <v-col cols="12" sm="4">
+                <v-sheet rounded="lg" class="pa-3 github-sync-stat">
+                  <div class="text-caption text-medium-emphasis">Open PRs</div>
+                  <div class="text-h5">{{ dashboardPullRequests.open }}</div>
+                </v-sheet>
+              </v-col>
+              <v-col cols="12" sm="4">
+                <v-sheet rounded="lg" class="pa-3 github-sync-stat">
+                  <div class="text-caption text-medium-emphasis">Closed PRs</div>
+                  <div class="text-h5">{{ dashboardPullRequests.closed }}</div>
+                </v-sheet>
+              </v-col>
+              <v-col cols="12" sm="4">
+                <v-sheet rounded="lg" class="pa-3 github-sync-stat">
+                  <div class="text-caption text-medium-emphasis">Merged PRs</div>
+                  <div class="text-h5">{{ dashboardPullRequests.merged }}</div>
+                </v-sheet>
+              </v-col>
+            </v-row>
+            <v-list v-if="dashboardRepositories.length" class="bg-transparent mt-3">
+              <v-list-subheader>Linked repositories</v-list-subheader>
+              <v-list-item
+                v-for="repository in dashboardRepositories"
+                :key="String(repository.fullName ?? repository.id)"
+                :title="String(repository.fullName ?? 'Unknown repository')"
+                :subtitle="`Default branch: ${String(repository.defaultBranch ?? 'n/a')}`"
+              />
+            </v-list>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12" lg="6">
+          <v-card v-if="repositories.length" variant="tonal" class="mb-3 pa-3">
+            <h3 class="text-subtitle-1 mb-2">Project repositories ({{ repositories.length }})</h3>
+            <v-list class="bg-transparent">
+              <v-list-item
+                v-for="repository in repositories"
+                :key="String(repository.fullName ?? repository.id)"
+                :title="String(repository.fullName ?? 'Unknown repository')"
+                :subtitle="`Default branch: ${String(repository.defaultBranch ?? 'n/a')}`"
+              />
+            </v-list>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12" md="6">
+          <v-card v-if="issues.length" variant="tonal" class="pa-3">
+            <h3 class="text-subtitle-1 mb-2">Issues ({{ issues.length }})</h3>
+            <v-list class="bg-transparent">
+              <v-list-item
+                v-for="issue in issues"
+                :key="String(issue.id ?? issue.number)"
+                :title="`#${String(issue.number ?? '?')} • ${String(issue.title ?? 'Untitled issue')}`"
+                :subtitle="`State: ${String(issue.state ?? 'unknown')}`"
+              />
+            </v-list>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12" md="6">
+          <v-card v-if="pullRequests.length" variant="tonal" class="pa-3">
+            <h3 class="text-subtitle-1 mb-2">Pull requests ({{ pullRequests.length }})</h3>
+            <v-list class="bg-transparent">
+              <v-list-item
+                v-for="pullRequest in pullRequests"
+                :key="String(pullRequest.id ?? pullRequest.number)"
+                :title="`#${String(pullRequest.number ?? '?')} • ${String(pullRequest.title ?? 'Untitled pull request')}`"
+                :subtitle="`State: ${String(pullRequest.state ?? 'unknown')}`"
+              />
+            </v-list>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12" md="4">
+          <v-card v-if="branches.length" variant="tonal" class="pa-3">
+            <h3 class="text-subtitle-1 mb-2">Branches ({{ branches.length }})</h3>
+            <v-list class="bg-transparent">
+              <v-list-item
+                v-for="branch in branches"
+                :key="String(branch.id ?? branch.name)"
+                :title="String(branch.name ?? 'Unnamed branch')"
+                :subtitle="`Protected: ${String(branch.protected ?? false)}`"
+              />
+            </v-list>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12" md="4">
+          <v-card v-if="projectBoards.length" variant="tonal" class="pa-3">
+            <h3 class="text-subtitle-1 mb-2">GitHub projects ({{ projectBoards.length }})</h3>
+            <v-list class="bg-transparent">
+              <v-list-item
+                v-for="board in projectBoards"
+                :key="String(board.id ?? board.number)"
+                :title="String(board.title ?? board.name ?? 'Untitled project')"
+                :subtitle="`Status: ${String(board.state ?? 'active')}`"
+              />
+            </v-list>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12" md="4">
+          <v-card v-if="accountRepositories.length" variant="tonal" class="pa-3">
+            <h3 class="text-subtitle-1 mb-2">Account repositories ({{ accountRepositories.length }})</h3>
+            <v-list class="bg-transparent">
+              <v-list-item
+                v-for="repository in accountRepositories"
+                :key="String(repository.id ?? repository.fullName)"
+                :title="String(repository.fullName ?? repository.name ?? 'Unknown repository')"
+                :subtitle="`Default branch: ${String(repository.defaultBranch ?? 'n/a')}`"
+              />
+            </v-list>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-card>
 
     <v-card rounded="xl" class="pa-4 mb-4 postcard-gradient-card">
@@ -142,3 +321,14 @@ async function loadSyncJob() {
     </v-card>
   </v-container>
 </template>
+
+<style scoped>
+.github-sync__project-select {
+  max-width: 520px;
+}
+
+.github-sync-stat {
+  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 84%, #000 16%);
+  border: 1px solid rgba(var(--v-theme-primary), 0.25);
+}
+</style>
