@@ -14,6 +14,9 @@ const { crmNavItems } = useWorldCrmNavItems()
 
 const createDialog = ref(false)
 const pendingCreate = ref(false)
+const search = ref('')
+const currentPage = ref(1)
+const itemsPerPage = 9
 const createPayload = reactive<CrmProjectCreatePayload>({
   companyId: '',
   name: '',
@@ -28,6 +31,31 @@ const { data, pending, error, refresh } = await useFetch<ApiListResponse<CrmProj
   '/api/crm/general/projects',
 )
 
+const filteredProjects = computed(() => {
+  const query = search.value.trim().toLowerCase()
+  const items = data.value?.items ?? []
+
+  if (!query) return items
+
+  return items.filter((project) =>
+    [project.name, project.status, project.code, project.id]
+      .filter(Boolean)
+      .some((value) => String(value).toLowerCase().includes(query)),
+  )
+})
+
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(filteredProjects.value.length / itemsPerPage)),
+)
+
+const paginatedProjects = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  return filteredProjects.value.slice(start, start + itemsPerPage)
+})
+
+watch([search, filteredProjects], () => {
+  currentPage.value = 1
+})
 
 async function createProject() {
   pendingCreate.value = true
@@ -64,22 +92,41 @@ async function createProject() {
       <v-alert v-if="pending" type="info" variant="tonal" class="mb-4">{{ t('world.crm.projects.alerts.loadingList') }}</v-alert>
       <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">{{ t('world.crm.projects.alerts.loadListError') }}</v-alert>
 
-      <v-row v-else>
-        <v-col v-for="project in data?.items ?? []" :key="project.id" cols="12" md="6" xl="4">
-          <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100 d-flex flex-column">
-            <div class="d-flex justify-space-between align-start ga-2 mb-2">
-              <h3 class="text-subtitle-1 mb-0">{{ project.name }}</h3>
-              <v-chip size="small" color="primary" variant="tonal">{{ project.status }}</v-chip>
-            </div>
-            <p class="text-body-2 mb-1">{{ t('world.crm.projects.list.githubRepos') }}: {{ project.githubRepositoriesCount }}</p>
-            <p class="text-body-2 mb-4">{{ t('world.crm.projects.list.provisioning') }}: {{ project.provisioning.state }}</p>
-            <v-spacer />
-            <v-btn color="primary" variant="tonal" prepend-icon="mdi-arrow-right" @click="router.push(`/world/crm/projects/${project.id}`)">
-              {{ t('world.crm.projects.actions.viewDetails') }}
-            </v-btn>
-          </v-card>
-        </v-col>
-      </v-row>
+      <template v-else>
+        <v-text-field
+          v-model="search"
+          class="mb-4"
+          prepend-inner-icon="mdi-magnify"
+          label="Rechercher un projet"
+          clearable
+          variant="outlined"
+        />
+
+        <v-row>
+          <v-col v-for="project in paginatedProjects" :key="project.id" cols="12" md="6" xl="4">
+            <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100 d-flex flex-column">
+              <div class="d-flex justify-space-between align-start ga-2 mb-2">
+                <h3 class="text-subtitle-1 mb-0">{{ project.name }}</h3>
+                <v-chip size="small" color="primary" variant="tonal">{{ project.status }}</v-chip>
+              </div>
+              <p class="text-body-2 mb-1">{{ t('world.crm.projects.list.githubRepos') }}: {{ project.githubRepositoriesCount }}</p>
+              <p class="text-body-2 mb-4">{{ t('world.crm.projects.list.provisioning') }}: {{ project.provisioning.state }}</p>
+              <v-spacer />
+              <v-btn color="primary" variant="tonal" prepend-icon="mdi-arrow-right" @click="router.push(`/world/crm/projects/${project.id}`)">
+                {{ t('world.crm.projects.actions.viewDetails') }}
+              </v-btn>
+            </v-card>
+          </v-col>
+
+          <v-col v-if="paginatedProjects.length === 0" cols="12">
+            <v-alert type="info" variant="tonal">Aucun projet trouvé.</v-alert>
+          </v-col>
+        </v-row>
+
+        <div v-if="totalPages > 1" class="d-flex justify-center mt-6">
+          <v-pagination v-model="currentPage" :length="totalPages" rounded="circle" />
+        </div>
+      </template>
     </v-container>
 
     <AppModal v-model="createDialog" :title="t('world.crm.projects.modal.createTitle')" :max-width="720">
