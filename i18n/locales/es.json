@@ -1141,7 +1141,8 @@
         "tasks": "Tareas",
         "sprints": "Sprints",
         "company": "Empresa",
-        "admin": "Admin"
+        "admin": "Admin",
+        "githubSync": "Sync GitHub"
       },
       "actions": {
         "createLead": "Crear lead CRM",
