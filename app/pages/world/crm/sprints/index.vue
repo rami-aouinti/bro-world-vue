@@ -18,6 +18,7 @@ definePageMeta({ title: 'CRM Sprints' })
 
 const { locale, t } = useI18n()
 const router = useRouter()
+const { crmNavItems } = useWorldCrmNavItems()
 const createDialog = ref(false)
 const pendingCreate = ref(false)
 const createPayload = reactive<CrmSprintCreatePayload>({
@@ -27,18 +28,6 @@ const createPayload = reactive<CrmSprintCreatePayload>({
   status: 'planned',
 })
 
-const crmNavItems = computed(() => [
-  {
-    title: t('world.crm.nav.overview'),
-    to: '/world/crm',
-    icon: 'mdi-view-dashboard-outline',
-  },
-  { title: t('world.crm.nav.projects'), to: '/world/crm/projects', icon: 'mdi-folder-outline' },
-  { title: t('world.crm.nav.tasks'), to: '/world/crm/tasks', icon: 'mdi-format-list-checks' },
-  { title: t('world.crm.nav.sprints'), to: '/world/crm/sprints', icon: 'mdi-run-fast' },
-  { title: t('world.crm.nav.company'), to: '/world/crm/company', icon: 'mdi-domain' },
-  { title: t('world.crm.nav.admin'), to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' },
-])
 
 const { data, pending, error } = await useFetch<CrmSprintResponse>(
   '/api/crm/general/sprints',

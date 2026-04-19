@@ -71,6 +71,7 @@ interface CrmReportsResponse {
 definePageMeta({ title: 'CRM Admin' })
 
 const { locale } = useI18n()
+const { crmNavItems } = useWorldCrmNavItems()
 
 const activeTab = ref<CrmAdminTab>('dashboard')
 const modalOpen = ref(false)
@@ -85,27 +86,6 @@ const toastColor = ref<'success' | 'error'>('success')
 
 const formState = reactive<Record<string, string | number>>({})
 
-const crmNavItems = [
-  {
-    title: 'Overview CRM',
-    to: '/world/crm',
-    icon: 'mdi-view-dashboard-outline',
-  },
-  { title: 'Projects', to: '/world/crm/projects', icon: 'mdi-folder-outline' },
-  { title: 'Tasks', to: '/world/crm/tasks', icon: 'mdi-format-list-checks' },
-  { title: 'Sprints', to: '/world/crm/sprints', icon: 'mdi-run-fast' },
-  { title: 'Company', to: '/world/crm/company', icon: 'mdi-domain' },
-  {
-    title: 'Admin',
-    to: '/world/crm/admin',
-    icon: 'mdi-shield-crown-outline',
-  },
-  {
-    title: 'Endpoints',
-    to: '/world/crm/endpoints',
-    icon: 'mdi-api',
-  },
-]
 
 const entityConfigs: CrmAdminEntityConfig[] = [
   {

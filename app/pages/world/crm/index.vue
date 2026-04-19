@@ -6,6 +6,7 @@ definePageMeta({ title: 'world.crm.label' })
 
 const { t, locale } = useI18n()
 const crmKanbanStore = useCrmKanbanStore()
+const { crmNavItems } = useWorldCrmNavItems()
 
 const draggingCardId = ref<string | null>(null)
 const projectModalOpen = ref(false)
@@ -134,8 +135,17 @@ function profileLink(username: string | null) {
 </script>
 
 <template>
-  <v-container fluid>
-    <v-card rounded="xl" class="pa-4 mb-4 postcard-gradient-card">
+  <div>
+    <WorldModuleDrawers
+      :module-title="t('world.crm.label')"
+      module-icon="mdi-account-group-outline"
+      :module-description="t('world.crm.moduleDescription')"
+      :nav-items="crmNavItems"
+      :action-label="t('world.crm.actions.createLead')"
+      action-icon="mdi-account-plus-outline"
+    />
+    <v-container fluid>
+      <v-card rounded="xl" class="pa-4 mb-4 postcard-gradient-card">
       <v-row align="center">
         <v-col cols="12" md="5" lg="4">
           <v-select
@@ -377,7 +387,8 @@ function profileLink(username: string | null) {
         </div>
       </div>
     </AppModal>
-  </v-container>
+    </v-container>
+  </div>
 </template>
 
 <style scoped>

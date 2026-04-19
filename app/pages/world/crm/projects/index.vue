@@ -10,6 +10,7 @@ definePageMeta({ title: 'CRM Projects' })
 
 const router = useRouter()
 const { t } = useI18n()
+const { crmNavItems } = useWorldCrmNavItems()
 
 const createDialog = ref(false)
 const pendingCreate = ref(false)
@@ -27,14 +28,6 @@ const { data, pending, error, refresh } = await useFetch<ApiListResponse<CrmProj
   '/api/crm/general/projects',
 )
 
-const crmNavItems = computed(() => [
-  { title: t('world.crm.nav.overview'), to: '/world/crm', icon: 'mdi-view-dashboard-outline' },
-  { title: t('world.crm.nav.projects'), to: '/world/crm/projects', icon: 'mdi-folder-outline' },
-  { title: t('world.crm.nav.tasks'), to: '/world/crm/tasks', icon: 'mdi-format-list-checks' },
-  { title: t('world.crm.nav.sprints'), to: '/world/crm/sprints', icon: 'mdi-run-fast' },
-  { title: t('world.crm.nav.company'), to: '/world/crm/company', icon: 'mdi-domain' },
-  { title: t('world.crm.nav.admin'), to: '/world/crm/admin', icon: 'mdi-shield-crown-outline' },
-])
 
 async function createProject() {
   pendingCreate.value = true
