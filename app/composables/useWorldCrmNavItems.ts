@@ -22,7 +22,7 @@ export function useWorldCrmNavItems() {
     {
       title: 'Kanaban',
       to: '/world/crm/kanaban',
-      icon: 'mdi-view-kanban',
+      icon: 'mdi-view-column-outline',
     },
     {
       title: t('world.crm.nav.tasks'),
