@@ -22,6 +22,7 @@ export default defineSitemapEventHandler(async (event) => {
     { loc: '/world/crm' },
     { loc: '/games' },
     { loc: '/platform' },
+    { loc: '/quiz' },
     { loc: '/applications/quiz' },
     { loc: '/applications/sports' },
   ]
