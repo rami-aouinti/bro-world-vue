@@ -17,6 +17,13 @@ const bootstrapPayload = reactive({
   createPublicProject: true,
   dryRun: false,
 })
+const createIssuePayload = reactive({
+  title: '',
+  body: '',
+})
+const createProjectPayload = reactive({
+  title: '',
+})
 
 const dashboard = ref<Record<string, unknown> | null>(null)
 const repositories = ref<Array<Record<string, unknown>>>([])
@@ -28,6 +35,7 @@ const projectBoards = ref<Array<Record<string, unknown>>>([])
 const accountRepositories = ref<Array<Record<string, unknown>>>([])
 const syncJob = ref<CrmGithubSyncJobStatus | null>(null)
 const bootstrapResponse = ref<{ jobId: string; status: string } | null>(null)
+const actionFeedback = ref<{ type: 'success' | 'error'; message: string } | null>(null)
 const { data: projectsResponse } = await useAsyncData(
   '/api/crm/general/projects',
   () => $fetch<{ items?: Array<{ id: string; name: string }> }>('/api/crm/general/projects'),
@@ -152,6 +160,40 @@ async function loadGithubOverview() {
   ])
 }
 
+async function createIssue() {
+  if (!projectId.value || !activeRepository.value || !createIssuePayload.title.trim()) return
+
+  actionFeedback.value = null
+  await githubStore.createIssue(projectId.value, {
+    repository: activeRepository.value,
+    title: createIssuePayload.title.trim(),
+    body: createIssuePayload.body.trim() || undefined,
+  })
+  createIssuePayload.title = ''
+  createIssuePayload.body = ''
+  actionFeedback.value = {
+    type: 'success',
+    message: 'Issue created successfully.',
+  }
+  await loadIssues()
+}
+
+async function createProjectBoard() {
+  if (!projectId.value || !bootstrapPayload.owner.trim() || !createProjectPayload.title.trim()) return
+
+  actionFeedback.value = null
+  await githubStore.createProjectBoard(projectId.value, {
+    owner: bootstrapPayload.owner.trim(),
+    title: createProjectPayload.title.trim(),
+  })
+  createProjectPayload.title = ''
+  actionFeedback.value = {
+    type: 'success',
+    message: 'GitHub project created successfully.',
+  }
+  await loadProjectBoards()
+}
+
 async function runBootstrap() {
   bootstrapResponse.value = await githubStore.bootstrapSync(bootstrapPayload)
   syncJobId.value = bootstrapResponse.value.jobId
@@ -216,6 +258,62 @@ watch(
         </v-col>
       </v-row>
       <v-alert v-if="githubStore.error" type="error" variant="tonal" class="mb-3">{{ githubStore.error }}</v-alert>
+      <v-alert
+        v-if="actionFeedback"
+        :type="actionFeedback.type"
+        variant="tonal"
+        class="mb-3"
+      >
+        {{ actionFeedback.message }}
+      </v-alert>
+      <v-row class="mb-1">
+        <v-col cols="12" lg="6">
+          <v-card variant="tonal" class="pa-3 h-100">
+            <h3 class="text-subtitle-1 mb-2">Create issue</h3>
+            <v-text-field
+              v-model="createIssuePayload.title"
+              label="Issue title"
+              density="comfortable"
+              class="mb-2"
+            />
+            <v-textarea
+              v-model="createIssuePayload.body"
+              label="Issue body"
+              auto-grow
+              rows="2"
+              density="comfortable"
+              class="mb-2"
+            />
+            <v-btn
+              color="primary"
+              :loading="githubStore.pending"
+              :disabled="!activeRepository || !createIssuePayload.title.trim()"
+              @click="createIssue"
+            >
+              Create issue
+            </v-btn>
+          </v-card>
+        </v-col>
+        <v-col cols="12" lg="6">
+          <v-card variant="tonal" class="pa-3 h-100">
+            <h3 class="text-subtitle-1 mb-2">Create project</h3>
+            <v-text-field
+              v-model="createProjectPayload.title"
+              label="Project title"
+              density="comfortable"
+              class="mb-2"
+            />
+            <v-btn
+              color="secondary"
+              :loading="githubStore.pending"
+              :disabled="!bootstrapPayload.owner.trim() || !createProjectPayload.title.trim()"
+              @click="createProjectBoard"
+            >
+              Create project
+            </v-btn>
+          </v-card>
+        </v-col>
+      </v-row>
       <v-row>
         <v-col cols="12" lg="6">
           <v-card v-if="dashboard" variant="tonal" class="mb-3 pa-3">
