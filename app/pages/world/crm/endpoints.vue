@@ -69,6 +69,8 @@ const endpointGroups: EndpointGroup[] = [
     title: 'world.crm.endpoints.groups.tasks',
     endpoints: [
       { id: '24', title: 'List tasks', method: 'GET', path: '/api/crm/general/tasks', defaultQuery: { page: 1, limit: 20 } },
+      { id: '24a', title: 'List tasks by latest sprint', method: 'GET', path: '/api/crm/general/tasks/by-latest-sprint' },
+      { id: '24b', title: 'List tasks by sprint', method: 'GET', path: '/api/crm/general/tasks/by-sprint', defaultQuery: { sprintId: 'sprint-uuid' } },
       { id: '25', title: 'Get task', method: 'GET', path: '/api/crm/general/tasks/{task}' },
       { id: '26', title: 'Create task', method: 'POST', path: '/api/crm/general/tasks', defaultBody: { projectId: 'project-uuid', title: 'Implémenter migration', description: 'Créer scripts SQL', status: 'todo', priority: 'medium', dueAt: '2026-05-20T10:00:00+00:00', estimatedHours: 8, sprintId: 'sprint-uuid', parentTaskId: null } },
       { id: '27', title: 'Update task', method: 'PATCH', path: '/api/crm/general/tasks/{task}', defaultBody: { title: 'Implémenter migration v2', description: 'Update', status: 'in_progress', priority: 'high', dueAt: '2026-05-22T10:00:00+00:00', estimatedHours: 10, projectId: 'project-uuid', parentTaskId: null } },

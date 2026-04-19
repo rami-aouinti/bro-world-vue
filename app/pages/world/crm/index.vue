@@ -1,428 +1,274 @@
 <script setup lang="ts">
-import type { CrmOpportunity, CrmPipelineStage } from '~/types/crm'
-import { useCrmPermissions } from '~/composables/useCrmPermissions'
-import { useCrmStore } from '~/stores/crm'
+import type { CrmProjectItem, CrmTaskItem } from '~~/server/types/api/crm-general'
+import { useCrmKanbanStore } from '~/stores/crmKanban'
 
 definePageMeta({ title: 'world.crm.label' })
 
 const { t, locale } = useI18n()
-const { can } = useCrmPermissions()
-const crmStore = useCrmStore()
-const activeView = ref<'pipeline' | 'list' | 'detail' | 'dashboard'>('pipeline')
+const crmKanbanStore = useCrmKanbanStore()
 
-if (can('crm.opportunities.read')) {
-  await crmStore.fetchOverview()
+const draggingCardId = ref<string | null>(null)
+const projectModalOpen = ref(false)
+const taskModalOpen = ref(false)
+const modalLoading = ref(false)
+const selectedProject = ref<CrmProjectItem | null>(null)
+const selectedTask = ref<CrmTaskItem | null>(null)
+
+await crmKanbanStore.hydrate()
+
+const sprintOptions = computed(() =>
+  crmKanbanStore.sprints.map((sprint) => ({
+    title: sprint.name,
+    value: sprint.id,
+  })),
+)
+
+function formatDate(value: string | null) {
+  if (!value) {
+    return '—'
+  }
+
+  return new Intl.DateTimeFormat(locale.value, {
+    dateStyle: 'medium',
+  }).format(new Date(value))
 }
 
-const filters = computed(() => crmStore.filters)
-const columns = computed(() => crmStore.columns)
-const opportunities = computed(() => crmStore.opportunities)
-const selectedDetail = computed(() => crmStore.selectedOpportunityDetail)
-const analytics = computed(() => crmStore.analytics)
-
-const stageOrder: CrmPipelineStage[] = [
-  'lead',
-  'qualified',
-  'proposal',
-  'negotiation',
-  'closed',
-]
-
-function formatCurrency(amount: number) {
-  return new Intl.NumberFormat(locale.value, {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0,
-  }).format(amount)
-}
-
-function stageColor(stage: CrmPipelineStage) {
-  if (stage === 'closed') return 'success'
-  if (stage === 'negotiation') return 'warning'
+function priorityColor(priority: string) {
+  if (priority === 'high') return 'error'
+  if (priority === 'medium') return 'warning'
   return 'primary'
 }
 
-async function refreshData() {
-  await crmStore.fetchOverview()
+function statusLabel(status: string) {
+  return t(`world.crm.kanban.status.${status}`)
 }
 
-async function selectOpportunity(opportunityId: string) {
-  await crmStore.fetchOpportunityDetail(opportunityId)
-  activeView.value = 'detail'
+async function onSprintChange(value: string | null) {
+  await crmKanbanStore.setSelectedSprint(value)
 }
 
-function onListRowClick(_event: unknown, row: { item: CrmOpportunity }) {
-  return selectOpportunity(row.item.id)
+function onDragStart(cardId: string) {
+  draggingCardId.value = cardId
 }
 
-async function moveStage(
-  opportunity: CrmOpportunity,
-  direction: 'next' | 'prev',
-) {
-  if (!can('crm.opportunities.edit')) {
+async function onDrop(targetStatus: string) {
+  if (!draggingCardId.value) return
+
+  const current = crmKanbanStore.cards.find((card) => card.id === draggingCardId.value)
+  if (!current || current.status === targetStatus) {
+    draggingCardId.value = null
     return
   }
 
-  const currentIndex = stageOrder.indexOf(opportunity.stage)
-  if (currentIndex === -1) return
-
-  const targetIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1
-  const toStage = stageOrder[targetIndex]
-
-  if (!toStage) return
-
-  await crmStore.transitionOpportunity(opportunity.id, {
-    toStage,
-    probability: opportunity.probability,
-    expectedCloseDate: opportunity.expectedCloseDate,
-    outcome: toStage === 'closed' ? (opportunity.outcome ?? 'won') : null,
-  })
-
-  await crmStore.fetchOpportunityDetail(opportunity.id)
+  try {
+    await crmKanbanStore.updateSubtaskStatus(current.id, targetStatus)
+  } finally {
+    draggingCardId.value = null
+  }
 }
 
-async function closeOpportunity(
-  opportunity: CrmOpportunity,
-  outcome: 'won' | 'lost',
-) {
-  if (!can('crm.opportunities.edit')) {
-    return
+async function openProject(projectId: string | null) {
+  if (!projectId) return
+
+  modalLoading.value = true
+  projectModalOpen.value = true
+
+  try {
+    selectedProject.value = await crmKanbanStore.fetchProject(projectId)
+  } finally {
+    modalLoading.value = false
   }
+}
 
-  await crmStore.transitionOpportunity(opportunity.id, {
-    toStage: 'closed',
-    probability: outcome === 'won' ? 100 : 0,
-    expectedCloseDate: opportunity.expectedCloseDate,
-    outcome,
-  })
+async function openTask(taskId: string | null) {
+  if (!taskId) return
 
-  await crmStore.fetchOpportunityDetail(opportunity.id)
+  modalLoading.value = true
+  taskModalOpen.value = true
+
+  try {
+    selectedTask.value = await crmKanbanStore.fetchTask(taskId)
+  } finally {
+    modalLoading.value = false
+  }
+}
+
+function profileLink(username: string | null) {
+  return username ? `/user/${encodeURIComponent(username)}/profile` : null
 }
 </script>
 
 <template>
-  <div>
-    <v-container fluid>
-      <v-alert
-        v-if="!can('crm.opportunities.read')"
-        type="error"
-        variant="tonal"
+  <v-container fluid>
+    <v-card rounded="xl" class="pa-4 mb-4 postcard-gradient-card">
+      <v-row align="center">
+        <v-col cols="12" md="5" lg="4">
+          <v-select
+            :model-value="crmKanbanStore.selectedSprintId"
+            :items="sprintOptions"
+            item-title="title"
+            item-value="value"
+            clearable
+            :label="t('world.crm.kanban.selectSprint')"
+            :loading="crmKanbanStore.pending"
+            @update:model-value="onSprintChange"
+          />
+        </v-col>
+        <v-col cols="12" md="7" lg="8">
+          <v-alert
+            type="info"
+            density="comfortable"
+            variant="tonal"
+            class="mb-0"
+          >
+            {{
+              crmKanbanStore.currentSprintMeta?.name
+                ? t('world.crm.kanban.currentSprint', {
+                    name: crmKanbanStore.currentSprintMeta.name,
+                    start: formatDate(crmKanbanStore.currentSprintMeta.startDate),
+                    end: formatDate(crmKanbanStore.currentSprintMeta.endDate),
+                  })
+                : t('world.crm.kanban.noSprint')
+            }}
+          </v-alert>
+        </v-col>
+      </v-row>
+    </v-card>
+
+    <v-alert
+      v-if="crmKanbanStore.error"
+      type="error"
+      variant="tonal"
+      class="mb-4"
+    >
+      {{ crmKanbanStore.error }}
+    </v-alert>
+
+    <v-row class="kanban-row" no-gutters>
+      <v-col
+        v-for="status in crmKanbanStore.statuses"
+        :key="status"
+        cols="12"
+        md="3"
+        class="pa-2"
       >
-        {{ t('world.crm.alerts.noReadPermission') }}
-      </v-alert>
+        <v-card
+          rounded="xl"
+          class="pa-3 h-100 postcard-gradient-card"
+          @dragover.prevent
+          @drop.prevent="onDrop(status)"
+        >
+          <div class="d-flex align-center justify-space-between mb-3">
+            <h3 class="text-subtitle-1 text-capitalize mb-0">{{ statusLabel(status) }}</h3>
+            <v-chip size="small" color="primary" variant="tonal">
+              {{ crmKanbanStore.cardsByStatus[status]?.length ?? 0 }}
+            </v-chip>
+          </div>
 
-      <template v-else>
-        <v-card rounded="xl" class="pa-4 mb-4 postcard-gradient-card">
-          <v-row>
-            <v-col cols="12" md="3">
-              <v-text-field
-                v-model="filters.search"
-                :label="t('world.crm.filters.search')"
-                density="comfortable"
+          <div
+            v-if="!(crmKanbanStore.cardsByStatus[status]?.length)"
+            class="text-caption text-medium-emphasis"
+          >
+            {{ t('world.crm.kanban.emptyStatus') }}
+          </div>
+
+          <v-card
+            v-for="card in crmKanbanStore.cardsByStatus[status]"
+            :key="card.id"
+            rounded="lg"
+            class="pa-3 mb-2"
+            variant="tonal"
+            draggable="true"
+            @dragstart="onDragStart(card.id)"
+          >
+            <div class="d-flex align-start justify-space-between ga-2 mb-2">
+              <p class="font-weight-medium mb-0">{{ card.title }}</p>
+              <v-chip size="x-small" :color="priorityColor(card.priority)">
+                {{ card.priority }}
+              </v-chip>
+            </div>
+
+            <div class="d-flex flex-wrap ga-2 mb-2">
+              <v-chip
+                v-if="card.projectId"
+                size="small"
+                color="secondary"
                 variant="outlined"
-                hide-details
-                @keyup.enter="refreshData"
-              />
-            </v-col>
-            <v-col cols="12" md="2">
-              <v-text-field
-                v-model="filters.owner"
-                :label="t('world.crm.filters.owner')"
-                density="comfortable"
-                variant="outlined"
-                hide-details
-                @keyup.enter="refreshData"
-              />
-            </v-col>
-            <v-col cols="12" md="2">
-              <v-text-field
-                v-model="filters.industry"
-                :label="t('world.crm.filters.industry')"
-                density="comfortable"
-                variant="outlined"
-                hide-details
-                @keyup.enter="refreshData"
-              />
-            </v-col>
-            <v-col cols="6" md="2">
-              <v-text-field
-                v-model.number="filters.minAmount"
-                :label="t('world.crm.filters.minAmount')"
-                type="number"
-                density="comfortable"
-                variant="outlined"
-                hide-details
-              />
-            </v-col>
-            <v-col cols="6" md="2">
-              <v-text-field
-                v-model.number="filters.maxAmount"
-                :label="t('world.crm.filters.maxAmount')"
-                type="number"
-                density="comfortable"
-                variant="outlined"
-                hide-details
-              />
-            </v-col>
-            <v-col cols="12" md="1" class="d-flex align-center justify-end">
-              <v-btn
+                @click="openProject(card.projectId)"
+              >
+                {{ card.projectName ?? t('world.crm.kanban.project') }}
+              </v-chip>
+              <v-chip
+                v-if="card.parentTaskId"
+                size="small"
                 color="primary"
-                :loading="crmStore.pending"
-                @click="refreshData"
+                variant="outlined"
+                @click="openTask(card.parentTaskId)"
               >
-                {{ t('world.crm.actions.apply') }}
-              </v-btn>
-            </v-col>
-          </v-row>
+                {{ card.parentTaskTitle ?? t('world.crm.kanban.task') }}
+              </v-chip>
+            </div>
+
+            <p class="text-caption mb-2">
+              {{ t('world.crm.kanban.dueAt') }}: {{ formatDate(card.dueAt) }}
+            </p>
+
+            <div class="d-flex flex-wrap ga-2">
+              <NuxtLink
+                v-for="assignee in card.assignees"
+                :key="assignee.id"
+                :to="profileLink(assignee.username) ?? '#'"
+                class="text-decoration-none"
+              >
+                <v-avatar size="28">
+                  <v-img
+                    :src="assignee.photo || '/img/avatar_default.svg'"
+                    :alt="assignee.username ?? assignee.id"
+                    cover
+                  />
+                </v-avatar>
+              </NuxtLink>
+            </div>
+          </v-card>
         </v-card>
+      </v-col>
+    </v-row>
 
-        <v-tabs v-model="activeView" color="primary" class="mb-4">
-          <v-tab value="pipeline">{{ t('world.crm.tabs.pipeline') }}</v-tab>
-          <v-tab value="list">{{ t('world.crm.tabs.list') }}</v-tab>
-          <v-tab value="detail">{{ t('world.crm.tabs.detail') }}</v-tab>
-          <v-tab value="dashboard">{{ t('world.crm.tabs.dashboard') }}</v-tab>
-        </v-tabs>
+    <AppModal
+      v-model="projectModalOpen"
+      :title="t('world.crm.kanban.projectDetail')"
+      :max-width="700"
+    >
+      <v-progress-linear v-if="modalLoading" indeterminate class="mb-3" />
+      <div v-else-if="selectedProject">
+        <p><strong>ID:</strong> {{ selectedProject.id }}</p>
+        <p><strong>{{ t('world.crm.projects.form.name') }}:</strong> {{ selectedProject.name }}</p>
+        <p><strong>{{ t('world.crm.projects.form.code') }}:</strong> {{ selectedProject.code || '—' }}</p>
+        <p><strong>{{ t('world.crm.projects.form.status') }}:</strong> {{ selectedProject.status }}</p>
+        <p><strong>{{ t('world.crm.projects.form.description') }}:</strong> {{ selectedProject.description || '—' }}</p>
+      </div>
+    </AppModal>
 
-        <v-window v-model="activeView">
-          <v-window-item value="pipeline">
-            <v-row>
-              <v-col
-                v-for="column in columns"
-                :key="column.stage"
-                cols="12"
-                md="6"
-                lg="4"
-                xl="2"
-              >
-                <v-card rounded="xl" class="pa-3 h-100 postcard-gradient-card">
-                  <div class="d-flex align-center justify-space-between mb-3">
-                    <h3 class="text-subtitle-1">{{ column.title }}</h3>
-                    <v-chip size="small" :color="stageColor(column.stage)">
-                      {{
-                        crmStore.opportunitiesByStage.get(column.stage)
-                          ?.length ?? 0
-                      }}
-                    </v-chip>
-                  </div>
-                  <v-card
-                    v-for="opportunity in crmStore.opportunitiesByStage.get(
-                      column.stage,
-                    )"
-                    :key="opportunity.id"
-                    rounded="lg"
-                    class="pa-3 mb-2"
-                    variant="tonal"
-                  >
-                    <p class="text-caption mb-1">
-                      {{ opportunity.id }} · {{ opportunity.owner }}
-                    </p>
-                    <p class="font-weight-medium mb-1">
-                      {{ opportunity.name }}
-                    </p>
-                    <p class="text-body-2 mb-2">
-                      {{ formatCurrency(opportunity.amount) }}
-                    </p>
-                    <div class="d-flex flex-wrap ga-2">
-                      <v-btn
-                        size="x-small"
-                        variant="outlined"
-                        @click="selectOpportunity(opportunity.id)"
-                      >
-                        {{ t('world.crm.actions.detail') }}
-                      </v-btn>
-                      <v-btn
-                        size="x-small"
-                        variant="outlined"
-                        :disabled="!can('crm.opportunities.edit')"
-                        @click="moveStage(opportunity, 'prev')"
-                      >
-                        {{ t('world.crm.actions.prev') }}
-                      </v-btn>
-                      <v-btn
-                        size="x-small"
-                        color="primary"
-                        variant="outlined"
-                        :disabled="!can('crm.opportunities.edit')"
-                        @click="moveStage(opportunity, 'next')"
-                      >
-                        {{ t('world.crm.actions.next') }}
-                      </v-btn>
-                      <v-btn
-                        size="x-small"
-                        color="success"
-                        variant="text"
-                        :disabled="!can('crm.opportunities.edit')"
-                        @click="closeOpportunity(opportunity, 'won')"
-                      >
-                        {{ t('world.crm.actions.won') }}
-                      </v-btn>
-                      <v-btn
-                        size="x-small"
-                        color="error"
-                        variant="text"
-                        :disabled="!can('crm.opportunities.edit')"
-                        @click="closeOpportunity(opportunity, 'lost')"
-                      >
-                        {{ t('world.crm.actions.lost') }}
-                      </v-btn>
-                    </div>
-                  </v-card>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-window-item>
-
-          <v-window-item value="list">
-            <v-card rounded="xl" class="pa-4 postcard-gradient-card">
-              <v-data-table
-                :items="opportunities"
-                :headers="[
-                  { title: t('world.common.table.id'), key: 'id' },
-                  { title: t('world.crm.table.opportunity'), key: 'name' },
-                  { title: t('world.crm.table.owner'), key: 'owner' },
-                  { title: t('world.crm.table.stage'), key: 'stage' },
-                  {
-                    title: t('world.crm.table.probability'),
-                    key: 'probability',
-                  },
-                  { title: t('world.crm.table.amount'), key: 'amount' },
-                  {
-                    title: t('world.crm.table.expectedClose'),
-                    key: 'expectedCloseDate',
-                  },
-                ]"
-                item-value="id"
-                density="comfortable"
-                @click:row="onListRowClick"
-              >
-                <template #item.amount="{ item }">
-                  {{ formatCurrency(item.amount) }}
-                </template>
-              </v-data-table>
-            </v-card>
-          </v-window-item>
-
-          <v-window-item value="detail">
-            <v-card
-              v-if="selectedDetail"
-              rounded="xl"
-              class="pa-4 postcard-gradient-card"
-            >
-              <h2 class="text-h6 mb-1">
-                {{ selectedDetail.opportunity.name }}
-              </h2>
-              <p class="text-medium-emphasis mb-3">
-                {{
-                  selectedDetail.account?.name ||
-                  t('world.crm.detail.noAccount')
-                }}
-                · {{ selectedDetail.opportunity.stage }} ·
-                {{ formatCurrency(selectedDetail.opportunity.amount) }}
-              </p>
-
-              <v-row>
-                <v-col cols="12" md="6">
-                  <h3 class="text-subtitle-1 mb-2">
-                    {{ t('world.crm.detail.activitiesJournal') }}
-                  </h3>
-                  <v-timeline density="compact" side="end" truncate-line="both">
-                    <v-timeline-item
-                      v-for="entry in selectedDetail.journal"
-                      :key="entry.id"
-                      :dot-color="
-                        entry.eventType === 'stage_transition'
-                          ? 'primary'
-                          : 'secondary'
-                      "
-                      size="small"
-                    >
-                      <p class="text-caption mb-1">
-                        {{ entry.actor }} · {{ entry.timestamp }}
-                      </p>
-                      <p class="mb-0">{{ entry.message }}</p>
-                    </v-timeline-item>
-                  </v-timeline>
-                </v-col>
-                <v-col cols="12" md="6">
-                  <h3 class="text-subtitle-1 mb-2">
-                    {{ t('world.crm.detail.notesAndAttachments') }}
-                  </h3>
-                  <v-card
-                    v-for="note in selectedDetail.notes"
-                    :key="note.id"
-                    rounded="lg"
-                    class="pa-3 mb-2"
-                    variant="tonal"
-                  >
-                    <p class="text-caption mb-1">
-                      {{ note.author }} · {{ note.createdAt }}
-                    </p>
-                    <p class="mb-2">{{ note.body }}</p>
-                    <v-chip
-                      v-for="attachment in note.attachments"
-                      :key="attachment.id"
-                      size="small"
-                      class="mr-2 mb-1"
-                    >
-                      {{ attachment.fileName }} ({{ attachment.sizeKb }}kb)
-                    </v-chip>
-                  </v-card>
-                </v-col>
-              </v-row>
-            </v-card>
-            <v-alert v-else type="info" variant="tonal">
-              {{ t('world.crm.alerts.selectOpportunity') }}
-            </v-alert>
-          </v-window-item>
-
-          <v-window-item value="dashboard">
-            <v-row>
-              <v-col cols="12" md="3">
-                <v-card rounded="xl" class="pa-3 postcard-gradient-card">
-                  <p class="text-caption text-medium-emphasis">
-                    {{ t('world.crm.dashboard.conversionRate') }}
-                  </p>
-                  <h3 class="text-h5">
-                    {{ analytics?.conversionRate.toFixed(1) }}%
-                  </h3>
-                </v-card>
-              </v-col>
-              <v-col cols="12" md="3">
-                <v-card rounded="xl" class="pa-3 postcard-gradient-card">
-                  <p class="text-caption text-medium-emphasis">
-                    {{ t('world.crm.dashboard.winLoss') }}
-                  </p>
-                  <h3 class="text-h6">
-                    {{ analytics?.winRate.toFixed(1) }}% /
-                    {{ analytics?.lossRate.toFixed(1) }}%
-                  </h3>
-                </v-card>
-              </v-col>
-              <v-col cols="12" md="3">
-                <v-card rounded="xl" class="pa-3 postcard-gradient-card">
-                  <p class="text-caption text-medium-emphasis">
-                    {{ t('world.crm.dashboard.averageCycle') }}
-                  </p>
-                  <h3 class="text-h5">
-                    {{ analytics?.averageCycleDays.toFixed(1) }}
-                    {{ t('world.crm.dashboard.daysSuffix') }}
-                  </h3>
-                </v-card>
-              </v-col>
-              <v-col cols="12" md="3">
-                <v-card rounded="xl" class="pa-3 postcard-gradient-card">
-                  <p class="text-caption text-medium-emphasis">
-                    {{ t('world.crm.dashboard.weightedForecast') }}
-                  </p>
-                  <h3 class="text-h6">
-                    {{ formatCurrency(analytics?.weightedForecast || 0) }}
-                  </h3>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-window-item>
-        </v-window>
-      </template>
-    </v-container>
-  </div>
+    <AppModal
+      v-model="taskModalOpen"
+      :title="t('world.crm.kanban.taskDetail')"
+      :max-width="700"
+    >
+      <v-progress-linear v-if="modalLoading" indeterminate class="mb-3" />
+      <div v-else-if="selectedTask">
+        <p><strong>ID:</strong> {{ selectedTask.id }}</p>
+        <p><strong>{{ t('world.crm.tasks.form.title') }}:</strong> {{ selectedTask.title }}</p>
+        <p><strong>{{ t('world.crm.tasks.form.status') }}:</strong> {{ selectedTask.status }}</p>
+        <p><strong>{{ t('world.crm.tasks.form.priority') }}:</strong> {{ selectedTask.priority }}</p>
+        <p><strong>{{ t('world.crm.tasks.form.description') }}:</strong> {{ selectedTask.description || '—' }}</p>
+      </div>
+    </AppModal>
+  </v-container>
 </template>
+
+<style scoped>
+.kanban-row {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+</style>
