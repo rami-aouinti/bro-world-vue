@@ -20,6 +20,11 @@ export function useWorldCrmNavItems() {
       icon: 'mdi-folder-outline',
     },
     {
+      title: 'Kanaban',
+      to: '/world/crm/kanaban',
+      icon: 'mdi-view-kanban',
+    },
+    {
       title: t('world.crm.nav.tasks'),
       to: '/world/crm/tasks',
       icon: 'mdi-format-list-checks',
@@ -40,16 +45,6 @@ export function useWorldCrmNavItems() {
             title: t('world.crm.taskRequests.list.title'),
             to: '/world/crm/task-requests',
             icon: 'mdi-source-pull',
-          },
-          {
-            title: t('world.crm.billings.list.title'),
-            to: '/world/crm/billings',
-            icon: 'mdi-cash-multiple',
-          },
-          {
-            title: t('world.crm.contacts.list.title', 'Contacts'),
-            to: '/world/crm/contacts',
-            icon: 'mdi-card-account-phone-outline',
           },
         ]
       : []),
