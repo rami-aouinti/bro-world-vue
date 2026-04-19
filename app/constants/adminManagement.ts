@@ -25,6 +25,15 @@ export type AdminSectionConfig = {
   capabilities: AdminCapability
 }
 
+export const PAGE_MANAGEMENT_NAV_ITEMS = [
+  { key: 'home', title: 'Home' },
+  { key: 'about', title: 'About' },
+  { key: 'faq', title: 'Faq' },
+  { key: 'contact', title: 'Contact' },
+] as const
+
+export type PageManagementNavKey = (typeof PAGE_MANAGEMENT_NAV_ITEMS)[number]['key']
+
 export const ADMIN_SECTIONS: AdminSectionConfig[] = [
   {
     key: 'users',
