@@ -37,6 +37,9 @@ type ResumeSectionKey =
   | 'references'
   | 'hobbies'
 type ResumeTemplate = 'modern' | 'elegant' | 'compact'
+type ResumeSectionForm = RecruitResumeSection & {
+  attachmentFiles?: File[]
+}
 
 const { t, locale } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
@@ -70,15 +73,32 @@ const selectedResume = ref<RecruitResume | null>(null)
 const createLoading = ref(false)
 const updateLoading = ref(false)
 const resumeUploadFile = ref<File | null>(null)
-const resumeForm = reactive<Record<ResumeSectionKey, RecruitResumeSection[]>>({
-  experiences: [{ title: '', description: '' }],
-  educations: [{ title: '', description: '' }],
-  skills: [{ title: '', description: '' }],
-  languages: [{ title: '', description: '' }],
-  certifications: [{ title: '', description: '' }],
-  projects: [{ title: '', description: '' }],
-  references: [{ title: '', description: '' }],
-  hobbies: [{ title: '', description: '' }],
+
+function createEmptyResumeSection(): ResumeSectionForm {
+  return {
+    title: '',
+    description: '',
+    startDate: '',
+    endDate: '',
+    company: '',
+    school: '',
+    location: '',
+    level: '',
+    home_page: '',
+    attachments: [],
+    attachmentFiles: [],
+  }
+}
+
+const resumeForm = reactive<Record<ResumeSectionKey, ResumeSectionForm[]>>({
+  experiences: [createEmptyResumeSection()],
+  educations: [createEmptyResumeSection()],
+  skills: [createEmptyResumeSection()],
+  languages: [createEmptyResumeSection()],
+  certifications: [createEmptyResumeSection()],
+  projects: [createEmptyResumeSection()],
+  references: [createEmptyResumeSection()],
+  hobbies: [createEmptyResumeSection()],
 })
 
 const fullName = computed(() => {
@@ -122,20 +142,23 @@ const resumeSectionEntries = computed(() => [
 ] as Array<{ key: ResumeSectionKey; label: string }>)
 const profileResumeIdentity = computed(() => {
   const currentProfile = profile.value
+  const resumeIdentity = selectedResume.value?.resumeInformation
   const completeName =
-    [currentProfile?.firstName, currentProfile?.lastName]
-      .filter(Boolean)
-      .join(' ')
-      .trim() || currentProfile?.username || 'Anonymous Member'
+    resumeIdentity?.fullName ||
+    [currentProfile?.firstName, currentProfile?.lastName].filter(Boolean).join(' ').trim() ||
+    currentProfile?.username ||
+    'Anonymous Member'
   const title = currentProfile?.profile?.title || 'Professional Profile'
-  const location = currentProfile?.profile?.location || ''
-  const email = currentProfile?.email || ''
-  const phone = currentProfile?.profile?.phone || ''
+  const location = resumeIdentity?.adresse || currentProfile?.profile?.location || ''
+  const email = resumeIdentity?.email || currentProfile?.email || ''
+  const phone = resumeIdentity?.phone || currentProfile?.profile?.phone || ''
   const summary =
     currentProfile?.profile?.information ||
     'Experienced and motivated professional focused on delivering results.'
   const avatar = currentProfile?.photo || ''
   const username = currentProfile?.username || ''
+  const homepage = resumeIdentity?.homepage || ''
+  const repoProfile = resumeIdentity?.repo_profile || ''
 
   return {
     completeName,
@@ -146,6 +169,8 @@ const profileResumeIdentity = computed(() => {
     summary,
     avatar,
     username,
+    homepage,
+    repoProfile,
   }
 })
 const selectedProduct = computed(() =>
@@ -268,13 +293,78 @@ function resetTransactionState() {
   buyCoinsStep.value = 'product'
 }
 
-function normalizeSections(items: RecruitResumeSection[]) {
+const sectionSpecificFields: Record<
+  ResumeSectionKey,
+  Array<
+    | 'startDate'
+    | 'endDate'
+    | 'company'
+    | 'school'
+    | 'location'
+    | 'level'
+    | 'home_page'
+    | 'attachments'
+  >
+> = {
+  experiences: ['startDate', 'endDate', 'company'],
+  educations: ['startDate', 'endDate', 'school', 'location'],
+  skills: [],
+  languages: ['level'],
+  certifications: ['attachments'],
+  projects: ['home_page', 'attachments'],
+  references: [],
+  hobbies: [],
+}
+
+function hasSectionField(
+  section: ResumeSectionKey,
+  field: (typeof sectionSpecificFields)[ResumeSectionKey][number],
+) {
+  return sectionSpecificFields[section].includes(field)
+}
+
+function normalizeSections(section: ResumeSectionKey, items: ResumeSectionForm[]) {
+  const fields = sectionSpecificFields[section]
   return items
     .map((item) => ({
+      id: item.id,
       title: item.title.trim(),
       description: (item.description || '').trim(),
+      ...(fields.includes('startDate')
+        ? { startDate: (item.startDate || '').trim() || null }
+        : {}),
+      ...(fields.includes('endDate')
+        ? { endDate: (item.endDate || '').trim() || null }
+        : {}),
+      ...(fields.includes('company')
+        ? { company: (item.company || '').trim() || null }
+        : {}),
+      ...(fields.includes('school')
+        ? { school: (item.school || '').trim() || null }
+        : {}),
+      ...(fields.includes('location')
+        ? { location: (item.location || '').trim() || null }
+        : {}),
+      ...(fields.includes('level') ? { level: (item.level || '').trim() || null } : {}),
+      ...(fields.includes('home_page')
+        ? { home_page: (item.home_page || '').trim() || null }
+        : {}),
+      ...(fields.includes('attachments')
+        ? {
+            attachments: (item.attachments || [])
+              .map((attachment) => attachment.trim())
+              .filter(Boolean),
+          }
+        : {}),
     }))
     .filter((item) => item.title)
+    .map(({ id, ...item }) => ({
+      ...(id ? { id } : {}),
+      ...item,
+      ...('attachments' in item && item.attachments.length === 0
+        ? { attachments: undefined }
+        : {}),
+    }))
 }
 
 function populateResumeFormFromResume(resume: RecruitResume) {
@@ -282,29 +372,83 @@ function populateResumeFormFromResume(resume: RecruitResume) {
     const values = resume[key]
     resumeForm[key] = values.length
       ? values.map((item) => ({
+          ...createEmptyResumeSection(),
           id: item.id,
           title: item.title || '',
           description: item.description || '',
+          startDate: item.startDate || '',
+          endDate: item.endDate || '',
+          company: item.company || '',
+          school: item.school || '',
+          location: item.location || '',
+          level: item.level || '',
+          home_page: item.home_page || '',
+          attachments: item.attachments || [],
+          attachmentFiles: [],
         }))
-      : [{ title: '', description: '' }]
+      : [createEmptyResumeSection()]
   })
 }
 
 function resetResumeForm() {
   resumeSectionEntries.value.forEach(({ key }) => {
-    resumeForm[key] = [{ title: '', description: '' }]
+    resumeForm[key] = [createEmptyResumeSection()]
   })
 }
 
 function addResumeLine(section: ResumeSectionKey) {
-  resumeForm[section].push({ title: '', description: '' })
+  resumeForm[section].push(createEmptyResumeSection())
 }
 
 function removeResumeLine(section: ResumeSectionKey, index: number) {
   resumeForm[section].splice(index, 1)
   if (resumeForm[section].length === 0) {
-    resumeForm[section].push({ title: '', description: '' })
+    resumeForm[section].push(createEmptyResumeSection())
   }
+}
+
+function formatResumeDateRange(section: RecruitResumeSection) {
+  const startDate = section.startDate || ''
+  const endDate = section.endDate || ''
+  if (!startDate && !endDate) return ''
+  if (startDate && endDate) return `${startDate} → ${endDate}`
+  if (startDate) return `${startDate} → Present`
+  return endDate
+}
+
+function sectionMeta(section: RecruitResumeSection) {
+  return [section.company, section.school, section.location, section.level]
+    .filter(Boolean)
+    .join(' • ')
+}
+
+function hasAttachmentFiles() {
+  return (['certifications', 'projects'] as ResumeSectionKey[]).some((section) =>
+    resumeForm[section].some((line) => (line.attachmentFiles || []).length > 0),
+  )
+}
+
+function buildResumeMultipartPayload() {
+  const normalizedBySection = Object.fromEntries(
+    resumeSectionEntries.value
+      .map(({ key }) => [key, normalizeSections(key, resumeForm[key])] as const)
+      .filter(([, value]) => value.length > 0),
+  )
+
+  const formData = new FormData()
+  Object.entries(normalizedBySection).forEach(([key, value]) => {
+    formData.append(key, JSON.stringify(value))
+  })
+
+  ;(['certifications', 'projects'] as ResumeSectionKey[]).forEach((sectionKey) => {
+    resumeForm[sectionKey].forEach((line, lineIndex) => {
+      ;(line.attachmentFiles || []).forEach((file) => {
+        formData.append(`${sectionKey}[${lineIndex}][attachments][]`, file)
+      })
+    })
+  })
+
+  return { normalizedBySection, formData }
 }
 
 function openResume(resume: RecruitResume) {
@@ -354,6 +498,7 @@ async function createResumeFromUpload() {
       {
         id: created.id,
         documentUrl: created.documentUrl,
+        resumeInformation: null,
         experiences: [],
         educations: [],
         skills: [],
@@ -378,29 +523,31 @@ async function createResumeFromManual() {
   createLoading.value = true
   resumesError.value = ''
   try {
-    const body = Object.fromEntries(
-      resumeSectionEntries.value
-        .map(({ key }) => [key, normalizeSections(resumeForm[key])] as const)
-        .filter(([, value]) => value.length > 0),
-    )
+    const { normalizedBySection, formData } = buildResumeMultipartPayload()
 
     const created = await $fetch<{ id: string; documentUrl: string | null }>(
       '/api/recruit/general/resumes',
-      { method: 'POST', body },
+      {
+        method: 'POST',
+        body: hasAttachmentFiles() ? formData : normalizedBySection,
+      },
     )
 
     resumes.value = [
       {
         id: created.id,
         documentUrl: null,
-        experiences: (body.experiences as RecruitResumeSection[]) || [],
-        educations: (body.educations as RecruitResumeSection[]) || [],
-        skills: (body.skills as RecruitResumeSection[]) || [],
-        languages: (body.languages as RecruitResumeSection[]) || [],
-        certifications: (body.certifications as RecruitResumeSection[]) || [],
-        projects: (body.projects as RecruitResumeSection[]) || [],
-        references: (body.references as RecruitResumeSection[]) || [],
-        hobbies: (body.hobbies as RecruitResumeSection[]) || [],
+        resumeInformation: null,
+        experiences:
+          (normalizedBySection.experiences as RecruitResumeSection[]) || [],
+        educations: (normalizedBySection.educations as RecruitResumeSection[]) || [],
+        skills: (normalizedBySection.skills as RecruitResumeSection[]) || [],
+        languages: (normalizedBySection.languages as RecruitResumeSection[]) || [],
+        certifications:
+          (normalizedBySection.certifications as RecruitResumeSection[]) || [],
+        projects: (normalizedBySection.projects as RecruitResumeSection[]) || [],
+        references: (normalizedBySection.references as RecruitResumeSection[]) || [],
+        hobbies: (normalizedBySection.hobbies as RecruitResumeSection[]) || [],
       },
       ...resumes.value,
     ]
@@ -418,16 +565,12 @@ async function updateResume() {
   updateLoading.value = true
   resumesError.value = ''
   try {
-    const body = Object.fromEntries(
-      resumeSectionEntries.value
-        .map(({ key }) => [key, normalizeSections(resumeForm[key])] as const)
-        .filter(([, value]) => value.length > 0),
-    )
+    const { normalizedBySection, formData } = buildResumeMultipartPayload()
     await privateApi.request(
       `/api/recruit/general/private/me/resumes/${selectedResume.value.id}`,
       {
         method: 'PATCH',
-        body,
+        body: hasAttachmentFiles() ? formData : normalizedBySection,
       },
     )
     await fetchResumes()
@@ -894,6 +1037,8 @@ onUnmounted(() => {
                   <p v-if="profileResumeIdentity.location" class="mb-1">{{ profileResumeIdentity.location }}</p>
                   <p v-if="profileResumeIdentity.phone" class="mb-1">{{ profileResumeIdentity.phone }}</p>
                   <p v-if="profileResumeIdentity.email" class="mb-0">{{ profileResumeIdentity.email }}</p>
+                  <p v-if="profileResumeIdentity.homepage" class="mb-0">{{ profileResumeIdentity.homepage }}</p>
+                  <p v-if="profileResumeIdentity.repoProfile" class="mb-0">{{ profileResumeIdentity.repoProfile }}</p>
                 </div>
               </header>
               <section class="resume-grid">
@@ -911,7 +1056,11 @@ onUnmounted(() => {
                         class="resume-line"
                       >
                         <p class="font-weight-bold mb-1">{{ item.title }}</p>
+                        <p v-if="formatResumeDateRange(item)" class="mb-1 text-caption">{{ formatResumeDateRange(item) }}</p>
+                        <p v-if="sectionMeta(item)" class="mb-1 text-caption">{{ sectionMeta(item) }}</p>
                         <p class="mb-0">{{ item.description }}</p>
+                        <p v-if="item.home_page" class="mb-0 text-caption">{{ item.home_page }}</p>
+                        <p v-if="item.attachments?.length" class="mb-0 text-caption">Attachments: {{ item.attachments.join(', ') }}</p>
                       </div>
                     </template>
                     <p v-else class="text-medium-emphasis mb-0">Empty</p>
@@ -932,6 +1081,8 @@ onUnmounted(() => {
                         >
                           <span class="font-weight-medium">{{ item.title }}</span>
                           <span v-if="item.description"> — {{ item.description }}</span>
+                          <span v-if="formatResumeDateRange(item)"> ({{ formatResumeDateRange(item) }})</span>
+                          <span v-if="sectionMeta(item)"> • {{ sectionMeta(item) }}</span>
                         </li>
                       </ul>
                     </template>
@@ -971,6 +1122,9 @@ onUnmounted(() => {
                 <p class="mb-0">
                   {{ [profileResumeIdentity.location, profileResumeIdentity.phone, profileResumeIdentity.email].filter(Boolean).join(' • ') }}
                 </p>
+                <p class="mb-0 text-body-2">
+                  {{ [profileResumeIdentity.homepage, profileResumeIdentity.repoProfile].filter(Boolean).join(' • ') }}
+                </p>
               </header>
               <section class="resume-block">
                 <h3>Professional Summary</h3>
@@ -989,7 +1143,11 @@ onUnmounted(() => {
                     class="resume-line"
                   >
                     <p class="font-weight-bold mb-1">{{ item.title }}</p>
+                    <p v-if="formatResumeDateRange(item)" class="mb-1 text-caption">{{ formatResumeDateRange(item) }}</p>
+                    <p v-if="sectionMeta(item)" class="mb-1 text-caption">{{ sectionMeta(item) }}</p>
                     <p class="mb-0">{{ item.description }}</p>
+                    <p v-if="item.home_page" class="mb-0 text-caption">{{ item.home_page }}</p>
+                    <p v-if="item.attachments?.length" class="mb-0 text-caption">Attachments: {{ item.attachments.join(', ') }}</p>
                   </div>
                 </template>
                 <p v-else class="text-medium-emphasis mb-0">Empty</p>
@@ -1018,6 +1176,9 @@ onUnmounted(() => {
                 <p class="mb-0 text-body-2">
                   {{ [profileResumeIdentity.location, profileResumeIdentity.phone, profileResumeIdentity.email].filter(Boolean).join(' | ') }}
                 </p>
+                <p class="mb-0 text-body-2">
+                  {{ [profileResumeIdentity.homepage, profileResumeIdentity.repoProfile].filter(Boolean).join(' | ') }}
+                </p>
               </header>
               <section class="resume-block">
                 <h3>Summary</h3>
@@ -1040,6 +1201,10 @@ onUnmounted(() => {
                         >
                           <span class="font-weight-medium">{{ item.title }}</span>
                           <span v-if="item.description"> — {{ item.description }}</span>
+                          <span v-if="formatResumeDateRange(item)"> ({{ formatResumeDateRange(item) }})</span>
+                          <span v-if="sectionMeta(item)"> • {{ sectionMeta(item) }}</span>
+                          <span v-if="item.home_page"> • {{ item.home_page }}</span>
+                          <span v-if="item.attachments?.length"> • {{ item.attachments.join(', ') }}</span>
                         </li>
                       </ul>
                     </template>
@@ -1122,15 +1287,55 @@ onUnmounted(() => {
           >
             <v-card-text>
               <v-row>
-                <v-col cols="12" md="5">
+                <v-col cols="12" md="4">
                   <v-text-field v-model="line.title" label="Title" variant="outlined" />
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="4">
                   <v-text-field
                     v-model="line.description"
                     label="Description"
                     variant="outlined"
                   />
+                </v-col>
+                <v-col v-if="hasSectionField(entry.key, 'startDate')" cols="12" md="2">
+                  <v-text-field v-model="line.startDate" label="Start date" placeholder="YYYY-MM-DD" variant="outlined" />
+                </v-col>
+                <v-col v-if="hasSectionField(entry.key, 'endDate')" cols="12" md="2">
+                  <v-text-field v-model="line.endDate" label="End date" placeholder="YYYY-MM-DD" variant="outlined" />
+                </v-col>
+                <v-col v-if="hasSectionField(entry.key, 'company')" cols="12" md="3">
+                  <v-text-field v-model="line.company" label="Company" variant="outlined" />
+                </v-col>
+                <v-col v-if="hasSectionField(entry.key, 'school')" cols="12" md="3">
+                  <v-text-field v-model="line.school" label="School" variant="outlined" />
+                </v-col>
+                <v-col v-if="hasSectionField(entry.key, 'location')" cols="12" md="3">
+                  <v-text-field v-model="line.location" label="Location" variant="outlined" />
+                </v-col>
+                <v-col v-if="hasSectionField(entry.key, 'level')" cols="12" md="2">
+                  <v-text-field v-model="line.level" label="Level" variant="outlined" />
+                </v-col>
+                <v-col v-if="hasSectionField(entry.key, 'home_page')" cols="12" md="10">
+                  <v-text-field v-model="line.home_page" label="Home page URL" variant="outlined" />
+                </v-col>
+                <v-col v-if="hasSectionField(entry.key, 'attachments')" cols="12" md="11">
+                  <v-file-input
+                    v-model="line.attachmentFiles"
+                    label="Attachments files"
+                    multiple
+                    chips
+                    clearable
+                    variant="outlined"
+                    prepend-icon="mdi-paperclip"
+                    hint="Upload files (PDF/JPG/PNG...)"
+                    persistent-hint
+                  />
+                  <p
+                    v-if="line.attachments?.length"
+                    class="text-caption text-medium-emphasis mt-1 mb-0"
+                  >
+                    Existing files: {{ line.attachments.join(', ') }}
+                  </p>
                 </v-col>
                 <v-col cols="12" md="1" class="d-flex align-center">
                   <v-btn
@@ -1173,8 +1378,33 @@ onUnmounted(() => {
             >
               <v-card-text>
                 <v-row>
-                  <v-col cols="12" md="5"><v-text-field v-model="line.title" label="Title" /></v-col>
-                  <v-col cols="12" md="6"><v-text-field v-model="line.description" label="Description" /></v-col>
+                  <v-col cols="12" md="4"><v-text-field v-model="line.title" label="Title" /></v-col>
+                  <v-col cols="12" md="4"><v-text-field v-model="line.description" label="Description" /></v-col>
+                  <v-col v-if="hasSectionField(entry.key, 'startDate')" cols="12" md="2"><v-text-field v-model="line.startDate" label="Start date" placeholder="YYYY-MM-DD" /></v-col>
+                  <v-col v-if="hasSectionField(entry.key, 'endDate')" cols="12" md="2"><v-text-field v-model="line.endDate" label="End date" placeholder="YYYY-MM-DD" /></v-col>
+                  <v-col v-if="hasSectionField(entry.key, 'company')" cols="12" md="3"><v-text-field v-model="line.company" label="Company" /></v-col>
+                  <v-col v-if="hasSectionField(entry.key, 'school')" cols="12" md="3"><v-text-field v-model="line.school" label="School" /></v-col>
+                  <v-col v-if="hasSectionField(entry.key, 'location')" cols="12" md="3"><v-text-field v-model="line.location" label="Location" /></v-col>
+                  <v-col v-if="hasSectionField(entry.key, 'level')" cols="12" md="2"><v-text-field v-model="line.level" label="Level" /></v-col>
+                  <v-col v-if="hasSectionField(entry.key, 'home_page')" cols="12" md="10"><v-text-field v-model="line.home_page" label="Home page URL" /></v-col>
+                  <v-col v-if="hasSectionField(entry.key, 'attachments')" cols="12" md="11">
+                    <v-file-input
+                      v-model="line.attachmentFiles"
+                      label="Attachments files"
+                      multiple
+                      chips
+                      clearable
+                      prepend-icon="mdi-paperclip"
+                      hint="Upload files (PDF/JPG/PNG...)"
+                      persistent-hint
+                    />
+                    <p
+                      v-if="line.attachments?.length"
+                      class="text-caption text-medium-emphasis mt-1 mb-0"
+                    >
+                      Existing files: {{ line.attachments.join(', ') }}
+                    </p>
+                  </v-col>
                   <v-col cols="12" md="1" class="d-flex align-center">
                     <v-btn
                       icon="mdi-delete-outline"
