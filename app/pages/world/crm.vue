@@ -64,7 +64,9 @@ const crmNavItems = computed(() => [
       :nav-items="crmNavItems"
       :action-label="t('world.crm.actions.createLead')"
       action-icon="mdi-account-plus-outline"
-    />
+    >
+      <template #right />
+    </WorldModuleDrawers>
     <NuxtPage />
   </div>
 </template>
