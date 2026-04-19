@@ -7,6 +7,8 @@ import type {
 
 definePageMeta({
   title: 'appbar.quiz',
+  description:
+    'Testez vos connaissances avec les quiz Bro World : choisissez une catégorie, un niveau et améliorez votre score.',
 })
 
 type QuizStep = 'select-category' | 'select-level' | 'in-quiz' | 'finished'

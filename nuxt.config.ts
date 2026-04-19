@@ -1,6 +1,5 @@
 import { aliases } from 'vuetify/iconsets/mdi'
 import { defineNuxtConfig } from 'nuxt/config'
-import { DEFAULT_GLOBAL_SHOP_ID } from './app/constants/shop'
 
 const shouldSplitCss = process.env.NUXT_CSS_CODE_SPLIT === 'true'
 
@@ -8,6 +7,9 @@ const shouldSplitCss = process.env.NUXT_CSS_CODE_SPLIT === 'true'
 export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: true,
+  routeRules: {
+    '/quiz': { redirect: '/applications/quiz' },
+  },
   app: {
     head: {
       title: 'Bro World Space',
