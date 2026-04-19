@@ -11,15 +11,15 @@ export default defineEventHandler(
       const formData = new FormData()
 
       for (const part of parts || []) {
-        if (!part.name) {
+        if (!part.name || !part.data) {
           continue
         }
 
         if (part.filename) {
-          const blob = new Blob([new Uint8Array(part.data)], {
+          const file = new File([part.data], part.filename, {
             type: part.type || 'application/octet-stream',
           })
-          formData.append(part.name, blob, part.filename)
+          formData.append(part.name, file)
           continue
         }
 
