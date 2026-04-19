@@ -43,11 +43,29 @@ export type RecruitResumeSection = {
   id: string
   title: string
   description: string
+  startDate?: string | null
+  endDate?: string | null
+  company?: string | null
+  school?: string | null
+  location?: string | null
+  level?: string | null
+  attachments?: string[]
+  home_page?: string | null
+}
+
+export type RecruitResumeInformation = {
+  fullName?: string | null
+  email?: string | null
+  phone?: string | null
+  homepage?: string | null
+  repo_profile?: string | null
+  adresse?: string | null
 }
 
 export type RecruitResume = {
   id: string
   documentUrl: string | null
+  resumeInformation?: RecruitResumeInformation | null
   experiences: RecruitResumeSection[]
   educations: RecruitResumeSection[]
   skills: RecruitResumeSection[]
@@ -60,14 +78,15 @@ export type RecruitResume = {
 
 export type RecruitResumeCreatePayload = Partial<{
   document: File
-  experiences: Array<{ title: string; description?: string }>
-  educations: Array<{ title: string; description?: string }>
-  skills: Array<{ title: string; description?: string }>
-  languages: Array<{ title: string; description?: string }>
-  certifications: Array<{ title: string; description?: string }>
-  projects: Array<{ title: string; description?: string }>
-  references: Array<{ title: string; description?: string }>
-  hobbies: Array<{ title: string; description?: string }>
+  resumeInformation: RecruitResumeInformation
+  experiences: Array<RecruitResumeSection>
+  educations: Array<RecruitResumeSection>
+  skills: Array<RecruitResumeSection>
+  languages: Array<RecruitResumeSection>
+  certifications: Array<RecruitResumeSection>
+  projects: Array<RecruitResumeSection>
+  references: Array<RecruitResumeSection>
+  hobbies: Array<RecruitResumeSection>
 }>
 
 export type RecruitResumeCreateResponse = {
