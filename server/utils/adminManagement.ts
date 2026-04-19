@@ -11,6 +11,8 @@ export const ADMIN_RESOURCE_MAP = {
   plugins: 'plugin',
 } as const
 
+const PAGE_RESOURCE_TYPES = new Set(['home', 'about', 'faq', 'contact'])
+
 export type AdminResourceKey = keyof typeof ADMIN_RESOURCE_MAP
 
 export function resolveAdminResource(resource: string) {
@@ -40,7 +42,20 @@ export function getAdminResource(event: H3Event) {
     })
   }
 
-  return resolveAdminResource(rawResource)
+  const resolved = resolveAdminResource(rawResource)
+
+  if (resolved.resourceKey !== 'pages') {
+    return resolved
+  }
+
+  const query = getQuery(event)
+  const pageType = String(query.pageType ?? '').trim().toLowerCase()
+  const scopedPageType = PAGE_RESOURCE_TYPES.has(pageType) ? pageType : 'home'
+
+  return {
+    ...resolved,
+    endpointResource: `page/${scopedPageType}`,
+  }
 }
 
 export function sanitizeQuery(
