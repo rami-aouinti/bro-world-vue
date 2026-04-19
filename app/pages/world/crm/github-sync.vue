@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useWorldCrmGithubStore } from '~/stores/worldCrmGithub'
+import type { CrmGithubSyncJobStatus } from '~/types/world/crmGithub'
 
 definePageMeta({ title: 'CRM GitHub Sync' })
 
@@ -9,7 +10,6 @@ const githubStore = useWorldCrmGithubStore()
 const projectId = ref('')
 const syncJobId = ref('')
 const bootstrapPayload = reactive({
-  applicationSlug: '',
   token: '',
   owner: '',
   issueTarget: 'task',
@@ -19,7 +19,8 @@ const bootstrapPayload = reactive({
 
 const dashboard = ref<Record<string, unknown> | null>(null)
 const repositories = ref<Array<Record<string, unknown>>>([])
-const syncJob = ref<Record<string, unknown> | null>(null)
+const syncJob = ref<CrmGithubSyncJobStatus | null>(null)
+const bootstrapResponse = ref<{ jobId: string; status: string } | null>(null)
 const { data: projectsResponse } = await useAsyncData(
   '/api/crm/general/projects',
   () => $fetch<{ items?: Array<{ id: string; name: string }> }>('/api/crm/general/projects'),
@@ -47,12 +48,15 @@ async function loadRepositories() {
 }
 
 async function runBootstrap() {
-  syncJob.value = await githubStore.bootstrapSync(bootstrapPayload)
+  bootstrapResponse.value = await githubStore.bootstrapSync(bootstrapPayload)
+  syncJobId.value = bootstrapResponse.value.jobId
+  await loadSyncJob()
 }
 
 async function loadSyncJob() {
   if (!syncJobId.value) return
   syncJob.value = await githubStore.getSyncJobStatus(syncJobId.value)
+  bootstrapPayload.owner = syncJob.value.owner
 }
 </script>
 
@@ -88,7 +92,6 @@ async function loadSyncJob() {
     <v-card rounded="xl" class="pa-4 mb-4 postcard-gradient-card">
       <h3 class="text-subtitle-1 mb-4">Bootstrap sync</h3>
       <v-row>
-        <v-col cols="12" md="6"><v-text-field v-model="bootstrapPayload.applicationSlug" label="Application slug" /></v-col>
         <v-col cols="12" md="6"><v-text-field v-model="bootstrapPayload.owner" label="Owner" /></v-col>
         <v-col cols="12" md="6"><v-text-field v-model="bootstrapPayload.token" label="GitHub token" type="password" /></v-col>
         <v-col cols="12" md="6"><v-text-field v-model="bootstrapPayload.issueTarget" label="Issue target" /></v-col>
@@ -98,6 +101,14 @@ async function loadSyncJob() {
         <v-switch v-model="bootstrapPayload.dryRun" label="Dry run" hide-details />
       </div>
       <v-btn color="primary" :loading="githubStore.pending" @click="runBootstrap">Run bootstrap</v-btn>
+      <v-alert
+        v-if="bootstrapResponse"
+        class="mt-3"
+        type="info"
+        variant="tonal"
+      >
+        Job {{ bootstrapResponse.jobId }} is {{ bootstrapResponse.status }}.
+      </v-alert>
     </v-card>
 
     <v-card rounded="xl" class="pa-4 postcard-gradient-card">
@@ -107,6 +118,12 @@ async function loadSyncJob() {
         <v-col cols="12" md="4" class="d-flex align-center"><v-btn color="primary" :loading="githubStore.pending" @click="loadSyncJob">Load status</v-btn></v-col>
       </v-row>
       <v-card v-if="syncJob" variant="tonal" class="pa-3">
+        <div class="text-caption mb-2">
+          Next calls can reuse:
+          <strong>applicationSlug={{ syncJob.applicationSlug }}</strong>
+          and
+          <strong>owner={{ syncJob.owner }}</strong>
+        </div>
         <pre class="text-caption">{{ JSON.stringify(syncJob, null, 2) }}</pre>
       </v-card>
     </v-card>
