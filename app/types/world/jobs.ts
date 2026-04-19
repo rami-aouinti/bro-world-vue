@@ -127,11 +127,29 @@ export type RecruitResumeSection = {
   id?: string
   title: string
   description?: string
+  startDate?: string | null
+  endDate?: string | null
+  company?: string | null
+  school?: string | null
+  location?: string | null
+  level?: string | null
+  attachments?: string[]
+  home_page?: string | null
+}
+
+export type RecruitResumeInformation = {
+  fullName?: string | null
+  email?: string | null
+  phone?: string | null
+  homepage?: string | null
+  repo_profile?: string | null
+  adresse?: string | null
 }
 
 export type RecruitResume = {
   id: string
   documentUrl: string | null
+  resumeInformation?: RecruitResumeInformation | null
   experiences: RecruitResumeSection[]
   educations: RecruitResumeSection[]
   skills: RecruitResumeSection[]

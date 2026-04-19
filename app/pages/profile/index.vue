@@ -70,15 +70,31 @@ const selectedResume = ref<RecruitResume | null>(null)
 const createLoading = ref(false)
 const updateLoading = ref(false)
 const resumeUploadFile = ref<File | null>(null)
+
+function createEmptyResumeSection(): RecruitResumeSection {
+  return {
+    title: '',
+    description: '',
+    startDate: '',
+    endDate: '',
+    company: '',
+    school: '',
+    location: '',
+    level: '',
+    home_page: '',
+    attachments: [],
+  }
+}
+
 const resumeForm = reactive<Record<ResumeSectionKey, RecruitResumeSection[]>>({
-  experiences: [{ title: '', description: '' }],
-  educations: [{ title: '', description: '' }],
-  skills: [{ title: '', description: '' }],
-  languages: [{ title: '', description: '' }],
-  certifications: [{ title: '', description: '' }],
-  projects: [{ title: '', description: '' }],
-  references: [{ title: '', description: '' }],
-  hobbies: [{ title: '', description: '' }],
+  experiences: [createEmptyResumeSection()],
+  educations: [createEmptyResumeSection()],
+  skills: [createEmptyResumeSection()],
+  languages: [createEmptyResumeSection()],
+  certifications: [createEmptyResumeSection()],
+  projects: [createEmptyResumeSection()],
+  references: [createEmptyResumeSection()],
+  hobbies: [createEmptyResumeSection()],
 })
 
 const fullName = computed(() => {
@@ -122,20 +138,23 @@ const resumeSectionEntries = computed(() => [
 ] as Array<{ key: ResumeSectionKey; label: string }>)
 const profileResumeIdentity = computed(() => {
   const currentProfile = profile.value
+  const resumeIdentity = selectedResume.value?.resumeInformation
   const completeName =
-    [currentProfile?.firstName, currentProfile?.lastName]
-      .filter(Boolean)
-      .join(' ')
-      .trim() || currentProfile?.username || 'Anonymous Member'
+    resumeIdentity?.fullName ||
+    [currentProfile?.firstName, currentProfile?.lastName].filter(Boolean).join(' ').trim() ||
+    currentProfile?.username ||
+    'Anonymous Member'
   const title = currentProfile?.profile?.title || 'Professional Profile'
-  const location = currentProfile?.profile?.location || ''
-  const email = currentProfile?.email || ''
-  const phone = currentProfile?.profile?.phone || ''
+  const location = resumeIdentity?.adresse || currentProfile?.profile?.location || ''
+  const email = resumeIdentity?.email || currentProfile?.email || ''
+  const phone = resumeIdentity?.phone || currentProfile?.profile?.phone || ''
   const summary =
     currentProfile?.profile?.information ||
     'Experienced and motivated professional focused on delivering results.'
   const avatar = currentProfile?.photo || ''
   const username = currentProfile?.username || ''
+  const homepage = resumeIdentity?.homepage || ''
+  const repoProfile = resumeIdentity?.repo_profile || ''
 
   return {
     completeName,
@@ -146,6 +165,8 @@ const profileResumeIdentity = computed(() => {
     summary,
     avatar,
     username,
+    homepage,
+    repoProfile,
   }
 })
 const selectedProduct = computed(() =>
@@ -271,10 +292,26 @@ function resetTransactionState() {
 function normalizeSections(items: RecruitResumeSection[]) {
   return items
     .map((item) => ({
+      id: item.id,
       title: item.title.trim(),
       description: (item.description || '').trim(),
+      startDate: (item.startDate || '').trim() || null,
+      endDate: (item.endDate || '').trim() || null,
+      company: (item.company || '').trim() || null,
+      school: (item.school || '').trim() || null,
+      location: (item.location || '').trim() || null,
+      level: (item.level || '').trim() || null,
+      home_page: (item.home_page || '').trim() || null,
+      attachments: (item.attachments || [])
+        .map((attachment) => attachment.trim())
+        .filter(Boolean),
     }))
     .filter((item) => item.title)
+    .map(({ id, ...item }) => ({
+      ...(id ? { id } : {}),
+      ...item,
+      ...(item.attachments.length === 0 ? { attachments: undefined } : {}),
+    }))
 }
 
 function populateResumeFormFromResume(resume: RecruitResume) {
@@ -282,29 +319,53 @@ function populateResumeFormFromResume(resume: RecruitResume) {
     const values = resume[key]
     resumeForm[key] = values.length
       ? values.map((item) => ({
+          ...createEmptyResumeSection(),
           id: item.id,
           title: item.title || '',
           description: item.description || '',
+          startDate: item.startDate || '',
+          endDate: item.endDate || '',
+          company: item.company || '',
+          school: item.school || '',
+          location: item.location || '',
+          level: item.level || '',
+          home_page: item.home_page || '',
+          attachments: item.attachments || [],
         }))
-      : [{ title: '', description: '' }]
+      : [createEmptyResumeSection()]
   })
 }
 
 function resetResumeForm() {
   resumeSectionEntries.value.forEach(({ key }) => {
-    resumeForm[key] = [{ title: '', description: '' }]
+    resumeForm[key] = [createEmptyResumeSection()]
   })
 }
 
 function addResumeLine(section: ResumeSectionKey) {
-  resumeForm[section].push({ title: '', description: '' })
+  resumeForm[section].push(createEmptyResumeSection())
 }
 
 function removeResumeLine(section: ResumeSectionKey, index: number) {
   resumeForm[section].splice(index, 1)
   if (resumeForm[section].length === 0) {
-    resumeForm[section].push({ title: '', description: '' })
+    resumeForm[section].push(createEmptyResumeSection())
   }
+}
+
+function formatResumeDateRange(section: RecruitResumeSection) {
+  const startDate = section.startDate || ''
+  const endDate = section.endDate || ''
+  if (!startDate && !endDate) return ''
+  if (startDate && endDate) return `${startDate} → ${endDate}`
+  if (startDate) return `${startDate} → Present`
+  return endDate
+}
+
+function sectionMeta(section: RecruitResumeSection) {
+  return [section.company, section.school, section.location, section.level]
+    .filter(Boolean)
+    .join(' • ')
 }
 
 function openResume(resume: RecruitResume) {
@@ -354,6 +415,7 @@ async function createResumeFromUpload() {
       {
         id: created.id,
         documentUrl: created.documentUrl,
+        resumeInformation: null,
         experiences: [],
         educations: [],
         skills: [],
@@ -393,6 +455,7 @@ async function createResumeFromManual() {
       {
         id: created.id,
         documentUrl: null,
+        resumeInformation: null,
         experiences: (body.experiences as RecruitResumeSection[]) || [],
         educations: (body.educations as RecruitResumeSection[]) || [],
         skills: (body.skills as RecruitResumeSection[]) || [],
@@ -894,6 +957,8 @@ onUnmounted(() => {
                   <p v-if="profileResumeIdentity.location" class="mb-1">{{ profileResumeIdentity.location }}</p>
                   <p v-if="profileResumeIdentity.phone" class="mb-1">{{ profileResumeIdentity.phone }}</p>
                   <p v-if="profileResumeIdentity.email" class="mb-0">{{ profileResumeIdentity.email }}</p>
+                  <p v-if="profileResumeIdentity.homepage" class="mb-0">{{ profileResumeIdentity.homepage }}</p>
+                  <p v-if="profileResumeIdentity.repoProfile" class="mb-0">{{ profileResumeIdentity.repoProfile }}</p>
                 </div>
               </header>
               <section class="resume-grid">
@@ -911,7 +976,11 @@ onUnmounted(() => {
                         class="resume-line"
                       >
                         <p class="font-weight-bold mb-1">{{ item.title }}</p>
+                        <p v-if="formatResumeDateRange(item)" class="mb-1 text-caption">{{ formatResumeDateRange(item) }}</p>
+                        <p v-if="sectionMeta(item)" class="mb-1 text-caption">{{ sectionMeta(item) }}</p>
                         <p class="mb-0">{{ item.description }}</p>
+                        <p v-if="item.home_page" class="mb-0 text-caption">{{ item.home_page }}</p>
+                        <p v-if="item.attachments?.length" class="mb-0 text-caption">Attachments: {{ item.attachments.join(', ') }}</p>
                       </div>
                     </template>
                     <p v-else class="text-medium-emphasis mb-0">Empty</p>
@@ -932,6 +1001,8 @@ onUnmounted(() => {
                         >
                           <span class="font-weight-medium">{{ item.title }}</span>
                           <span v-if="item.description"> — {{ item.description }}</span>
+                          <span v-if="formatResumeDateRange(item)"> ({{ formatResumeDateRange(item) }})</span>
+                          <span v-if="sectionMeta(item)"> • {{ sectionMeta(item) }}</span>
                         </li>
                       </ul>
                     </template>
@@ -971,6 +1042,9 @@ onUnmounted(() => {
                 <p class="mb-0">
                   {{ [profileResumeIdentity.location, profileResumeIdentity.phone, profileResumeIdentity.email].filter(Boolean).join(' • ') }}
                 </p>
+                <p class="mb-0 text-body-2">
+                  {{ [profileResumeIdentity.homepage, profileResumeIdentity.repoProfile].filter(Boolean).join(' • ') }}
+                </p>
               </header>
               <section class="resume-block">
                 <h3>Professional Summary</h3>
@@ -989,7 +1063,11 @@ onUnmounted(() => {
                     class="resume-line"
                   >
                     <p class="font-weight-bold mb-1">{{ item.title }}</p>
+                    <p v-if="formatResumeDateRange(item)" class="mb-1 text-caption">{{ formatResumeDateRange(item) }}</p>
+                    <p v-if="sectionMeta(item)" class="mb-1 text-caption">{{ sectionMeta(item) }}</p>
                     <p class="mb-0">{{ item.description }}</p>
+                    <p v-if="item.home_page" class="mb-0 text-caption">{{ item.home_page }}</p>
+                    <p v-if="item.attachments?.length" class="mb-0 text-caption">Attachments: {{ item.attachments.join(', ') }}</p>
                   </div>
                 </template>
                 <p v-else class="text-medium-emphasis mb-0">Empty</p>
@@ -1018,6 +1096,9 @@ onUnmounted(() => {
                 <p class="mb-0 text-body-2">
                   {{ [profileResumeIdentity.location, profileResumeIdentity.phone, profileResumeIdentity.email].filter(Boolean).join(' | ') }}
                 </p>
+                <p class="mb-0 text-body-2">
+                  {{ [profileResumeIdentity.homepage, profileResumeIdentity.repoProfile].filter(Boolean).join(' | ') }}
+                </p>
               </header>
               <section class="resume-block">
                 <h3>Summary</h3>
@@ -1040,6 +1121,10 @@ onUnmounted(() => {
                         >
                           <span class="font-weight-medium">{{ item.title }}</span>
                           <span v-if="item.description"> — {{ item.description }}</span>
+                          <span v-if="formatResumeDateRange(item)"> ({{ formatResumeDateRange(item) }})</span>
+                          <span v-if="sectionMeta(item)"> • {{ sectionMeta(item) }}</span>
+                          <span v-if="item.home_page"> • {{ item.home_page }}</span>
+                          <span v-if="item.attachments?.length"> • {{ item.attachments.join(', ') }}</span>
                         </li>
                       </ul>
                     </template>
@@ -1122,14 +1207,47 @@ onUnmounted(() => {
           >
             <v-card-text>
               <v-row>
-                <v-col cols="12" md="5">
+                <v-col cols="12" md="4">
                   <v-text-field v-model="line.title" label="Title" variant="outlined" />
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="4">
                   <v-text-field
                     v-model="line.description"
                     label="Description"
                     variant="outlined"
+                  />
+                </v-col>
+                <v-col cols="12" md="2">
+                  <v-text-field v-model="line.startDate" label="Start date" placeholder="YYYY-MM-DD" variant="outlined" />
+                </v-col>
+                <v-col cols="12" md="2">
+                  <v-text-field v-model="line.endDate" label="End date" placeholder="YYYY-MM-DD" variant="outlined" />
+                </v-col>
+                <v-col cols="12" md="3">
+                  <v-text-field v-model="line.company" label="Company" variant="outlined" />
+                </v-col>
+                <v-col cols="12" md="3">
+                  <v-text-field v-model="line.school" label="School" variant="outlined" />
+                </v-col>
+                <v-col cols="12" md="3">
+                  <v-text-field v-model="line.location" label="Location" variant="outlined" />
+                </v-col>
+                <v-col cols="12" md="2">
+                  <v-text-field v-model="line.level" label="Level" variant="outlined" />
+                </v-col>
+                <v-col cols="12" md="10">
+                  <v-text-field v-model="line.home_page" label="Home page URL" variant="outlined" />
+                </v-col>
+                <v-col cols="12" md="11">
+                  <v-combobox
+                    v-model="line.attachments"
+                    label="Attachments URLs"
+                    chips
+                    multiple
+                    clearable
+                    variant="outlined"
+                    hint="Press Enter after each URL"
+                    persistent-hint
                   />
                 </v-col>
                 <v-col cols="12" md="1" class="d-flex align-center">
@@ -1173,8 +1291,26 @@ onUnmounted(() => {
             >
               <v-card-text>
                 <v-row>
-                  <v-col cols="12" md="5"><v-text-field v-model="line.title" label="Title" /></v-col>
-                  <v-col cols="12" md="6"><v-text-field v-model="line.description" label="Description" /></v-col>
+                  <v-col cols="12" md="4"><v-text-field v-model="line.title" label="Title" /></v-col>
+                  <v-col cols="12" md="4"><v-text-field v-model="line.description" label="Description" /></v-col>
+                  <v-col cols="12" md="2"><v-text-field v-model="line.startDate" label="Start date" placeholder="YYYY-MM-DD" /></v-col>
+                  <v-col cols="12" md="2"><v-text-field v-model="line.endDate" label="End date" placeholder="YYYY-MM-DD" /></v-col>
+                  <v-col cols="12" md="3"><v-text-field v-model="line.company" label="Company" /></v-col>
+                  <v-col cols="12" md="3"><v-text-field v-model="line.school" label="School" /></v-col>
+                  <v-col cols="12" md="3"><v-text-field v-model="line.location" label="Location" /></v-col>
+                  <v-col cols="12" md="2"><v-text-field v-model="line.level" label="Level" /></v-col>
+                  <v-col cols="12" md="10"><v-text-field v-model="line.home_page" label="Home page URL" /></v-col>
+                  <v-col cols="12" md="11">
+                    <v-combobox
+                      v-model="line.attachments"
+                      label="Attachments URLs"
+                      chips
+                      multiple
+                      clearable
+                      hint="Press Enter after each URL"
+                      persistent-hint
+                    />
+                  </v-col>
                   <v-col cols="12" md="1" class="d-flex align-center">
                     <v-btn
                       icon="mdi-delete-outline"
