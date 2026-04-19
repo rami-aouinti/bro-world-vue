@@ -15,6 +15,27 @@ definePageMeta({ title: 'CRM Sprint Detail' })
 const payload = reactive<CrmSprintUpdatePayload>({})
 const assigneeId = ref('')
 const taskId = ref('')
+const { data: usersData } = await useFetch<Record<string, any>>('/api/public/users')
+const { data: tasksData } = await useFetch<{ items?: Array<{ id: string; title?: string }> }>('/api/crm/general/tasks')
+
+const publicUserOptions = computed(() => {
+  const list = usersData.value?.users ?? usersData.value?.items ?? []
+  if (!Array.isArray(list)) return []
+
+  return list
+    .map((user: any) => ({
+      title: user.username ?? user.fullName ?? user.name ?? user.email ?? user.id,
+      value: String(user.id ?? ''),
+    }))
+    .filter((item: { value: string }) => item.value)
+})
+
+const taskOptions = computed(() =>
+  (tasksData.value?.items ?? []).map((task) => ({
+    title: task.title ? `${task.title} (${task.id})` : task.id,
+    value: task.id,
+  })),
+)
 
 const { data, pending, error, refresh } = await useFetch<CrmSprintItem>(
   () => `/api/crm/general/sprints/${sprintId.value}`,
@@ -96,7 +117,13 @@ async function detachTask() {
       <v-col cols="12" lg="4">
         <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
           <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.sprints.sections.assignees') }}</h3>
-          <v-text-field v-model="assigneeId" :label="t('world.crm.sprints.form.userId')" />
+          <v-select
+            v-model="assigneeId"
+            :items="publicUserOptions"
+            item-title="title"
+            item-value="value"
+            :label="t('world.crm.sprints.form.userId')"
+          />
           <div class="d-flex ga-2">
             <v-btn size="small" color="secondary" variant="tonal" @click="attachAssignee">{{ t('world.crm.sprints.actions.attach') }}</v-btn>
             <v-btn size="small" color="error" variant="tonal" @click="detachAssignee">{{ t('world.crm.sprints.actions.detach') }}</v-btn>
@@ -105,7 +132,13 @@ async function detachTask() {
 
         <v-card rounded="xl" class="pa-4 postcard-gradient-card">
           <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.sprints.sections.tasks') }}</h3>
-          <v-text-field v-model="taskId" :label="t('world.crm.sprints.form.taskId')" />
+          <v-select
+            v-model="taskId"
+            :items="taskOptions"
+            item-title="title"
+            item-value="value"
+            :label="t('world.crm.sprints.form.taskId')"
+          />
           <div class="d-flex ga-2">
             <v-btn size="small" color="secondary" variant="tonal" @click="attachTask">{{ t('world.crm.sprints.actions.attach') }}</v-btn>
             <v-btn size="small" color="error" variant="tonal" @click="detachTask">{{ t('world.crm.sprints.actions.detach') }}</v-btn>

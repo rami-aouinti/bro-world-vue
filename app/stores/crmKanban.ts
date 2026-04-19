@@ -2,6 +2,7 @@ import type {
   ApiListResponse,
   CrmProjectItem,
   CrmSprintItem,
+  CrmTaskRequestItem,
   CrmTaskItem,
 } from '~~/server/types/api/crm-general'
 
@@ -138,7 +139,9 @@ export const useCrmKanbanStore = defineStore('crm-kanban', () => {
   const error = ref<string | null>(null)
 
   const projectCache = ref<Record<string, CrmProjectItem>>({})
+  const sprintCache = ref<Record<string, CrmSprintItem>>({})
   const taskCache = ref<Record<string, CrmTaskItem>>({})
+  const taskRequestCache = ref<Record<string, CrmTaskRequestItem | null>>({})
   const sprintCardsCache = ref<Record<string, KanbanCardItem[]>>({})
   const sprintMetaCache = ref<Record<string, CrmSprintMeta | null>>({})
 
@@ -244,9 +247,12 @@ export const useCrmKanbanStore = defineStore('crm-kanban', () => {
 
   async function updateSubtaskStatus(subtaskId: string, status: string) {
     const nextStatus = normalizeStatus(status)
-    await $fetch(`/api/crm/general/subtasks/${subtaskId}`, {
+    await $fetch(`/api/crm/general/task-requests/${subtaskId}`, {
       method: 'PATCH',
-      body: { status: nextStatus },
+      body: {
+        status: nextStatus,
+        resolvedAt: nextStatus === 'done' ? new Date().toISOString() : null,
+      },
     })
 
     cards.value = cards.value.map((card) =>
@@ -258,6 +264,7 @@ export const useCrmKanbanStore = defineStore('crm-kanban', () => {
     if (selectedSprintId.value) {
       sprintCardsCache.value[selectedSprintId.value] = cards.value
     }
+    taskRequestCache.value[subtaskId] = null
   }
 
   async function fetchProject(projectId: string) {
@@ -280,6 +287,26 @@ export const useCrmKanbanStore = defineStore('crm-kanban', () => {
     return task
   }
 
+  async function fetchTaskRequest(taskRequestId: string) {
+    if (taskRequestCache.value[taskRequestId]) {
+      return taskRequestCache.value[taskRequestId]
+    }
+
+    const taskRequest = await $fetch<CrmTaskRequestItem>(`/api/crm/general/task-requests/${taskRequestId}`)
+    taskRequestCache.value[taskRequestId] = taskRequest
+    return taskRequest
+  }
+
+  async function fetchSprint(sprintId: string) {
+    if (sprintCache.value[sprintId]) {
+      return sprintCache.value[sprintId]
+    }
+
+    const sprint = await $fetch<CrmSprintItem>(`/api/crm/general/sprints/${sprintId}`)
+    sprintCache.value[sprintId] = sprint
+    return sprint
+  }
+
   return {
     statuses: KANBAN_STATUSES,
     sprints,
@@ -292,7 +319,9 @@ export const useCrmKanbanStore = defineStore('crm-kanban', () => {
     hydrate,
     setSelectedSprint,
     updateSubtaskStatus,
+    fetchTaskRequest,
     fetchProject,
+    fetchSprint,
     fetchTask,
   }
 })

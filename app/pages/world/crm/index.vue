@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CrmProjectItem, CrmTaskItem } from '~~/server/types/api/crm-general'
+import type { CrmProjectItem, CrmSprintItem, CrmTaskItem, CrmTaskRequestItem } from '~~/server/types/api/crm-general'
 import { useCrmKanbanStore } from '~/stores/crmKanban'
 
 definePageMeta({ title: 'world.crm.label' })
@@ -9,10 +9,14 @@ const crmKanbanStore = useCrmKanbanStore()
 
 const draggingCardId = ref<string | null>(null)
 const projectModalOpen = ref(false)
+const sprintModalOpen = ref(false)
+const taskRequestModalOpen = ref(false)
 const taskModalOpen = ref(false)
 const modalLoading = ref(false)
 const selectedProject = ref<CrmProjectItem | null>(null)
+const selectedSprint = ref<CrmSprintItem | null>(null)
 const selectedTask = ref<CrmTaskItem | null>(null)
+const selectedTaskRequest = ref<CrmTaskRequestItem | null>(null)
 
 await crmKanbanStore.hydrate()
 
@@ -67,6 +71,17 @@ async function onDrop(targetStatus: string) {
   }
 }
 
+async function openTaskRequest(taskRequestId: string) {
+  modalLoading.value = true
+  taskRequestModalOpen.value = true
+
+  try {
+    selectedTaskRequest.value = await crmKanbanStore.fetchTaskRequest(taskRequestId)
+  } finally {
+    modalLoading.value = false
+  }
+}
+
 async function openProject(projectId: string | null) {
   if (!projectId) return
 
@@ -88,6 +103,26 @@ async function openTask(taskId: string | null) {
 
   try {
     selectedTask.value = await crmKanbanStore.fetchTask(taskId)
+  } finally {
+    modalLoading.value = false
+  }
+}
+
+async function openTaskFromRequest(taskId: string | null) {
+  if (!taskId) return
+
+  taskRequestModalOpen.value = false
+  await openTask(taskId)
+}
+
+async function openSprint(sprintId: string | null) {
+  if (!sprintId) return
+
+  modalLoading.value = true
+  sprintModalOpen.value = true
+
+  try {
+    selectedSprint.value = await crmKanbanStore.fetchSprint(sprintId)
   } finally {
     modalLoading.value = false
   }
@@ -176,10 +211,11 @@ function profileLink(username: string | null) {
             v-for="card in crmKanbanStore.cardsByStatus[status]"
             :key="card.id"
             rounded="lg"
-            class="pa-3 mb-2"
+            class="pa-3 mb-2 cursor-pointer"
             variant="tonal"
             draggable="true"
             @dragstart="onDragStart(card.id)"
+            @click="openTaskRequest(card.id)"
           >
             <div class="d-flex align-start justify-space-between ga-2 mb-2">
               <p class="font-weight-medium mb-0">{{ card.title }}</p>
@@ -194,7 +230,7 @@ function profileLink(username: string | null) {
                 size="small"
                 color="secondary"
                 variant="outlined"
-                @click="openProject(card.projectId)"
+                @click.stop="openProject(card.projectId)"
               >
                 {{ card.projectName ?? t('world.crm.kanban.project') }}
               </v-chip>
@@ -203,13 +239,13 @@ function profileLink(username: string | null) {
                 size="small"
                 color="primary"
                 variant="outlined"
-                @click="openTask(card.parentTaskId)"
+                @click.stop="openTask(card.parentTaskId)"
               >
                 {{ card.parentTaskTitle ?? t('world.crm.kanban.task') }}
               </v-chip>
             </div>
 
-            <p class="text-caption mb-2">
+            <p class="text-caption mb-0">
               {{ t('world.crm.kanban.dueAt') }}: {{ formatDate(card.dueAt) }}
             </p>
 
@@ -219,6 +255,7 @@ function profileLink(username: string | null) {
                 :key="assignee.id"
                 :to="profileLink(assignee.username) ?? '#'"
                 class="text-decoration-none"
+                @click.stop
               >
                 <v-avatar size="28">
                   <v-img
@@ -233,6 +270,29 @@ function profileLink(username: string | null) {
         </v-card>
       </v-col>
     </v-row>
+
+    <AppModal
+      v-model="taskRequestModalOpen"
+      title="Subtask request detail"
+      :max-width="760"
+    >
+      <v-progress-linear v-if="modalLoading" indeterminate class="mb-3" />
+      <div v-else-if="selectedTaskRequest">
+        <p><strong>ID:</strong> {{ selectedTaskRequest.id }}</p>
+        <p><strong>Title:</strong> {{ selectedTaskRequest.title }}</p>
+        <p><strong>Description:</strong> {{ selectedTaskRequest.description || '—' }}</p>
+        <p><strong>Status:</strong> {{ selectedTaskRequest.status }}</p>
+        <p><strong>Requested at:</strong> {{ selectedTaskRequest.requestedAt }}</p>
+        <p><strong>Resolved at:</strong> {{ selectedTaskRequest.resolvedAt || '—' }}</p>
+        <p><strong>Repository ID:</strong> {{ selectedTaskRequest.repositoryId }}</p>
+        <div class="d-flex align-center ga-2">
+          <strong>Task:</strong>
+          <v-chip size="small" color="primary" variant="outlined" @click="openTaskFromRequest(selectedTaskRequest.taskId)">
+            {{ selectedTaskRequest.taskId }}
+          </v-chip>
+        </div>
+      </div>
+    </AppModal>
 
     <AppModal
       v-model="projectModalOpen"
@@ -250,6 +310,23 @@ function profileLink(username: string | null) {
     </AppModal>
 
     <AppModal
+      v-model="sprintModalOpen"
+      title="Sprint detail"
+      :max-width="700"
+    >
+      <v-progress-linear v-if="modalLoading" indeterminate class="mb-3" />
+      <div v-else-if="selectedSprint">
+        <p><strong>ID:</strong> {{ selectedSprint.id }}</p>
+        <p><strong>Name:</strong> {{ selectedSprint.name }}</p>
+        <p><strong>Status:</strong> {{ selectedSprint.status }}</p>
+        <p><strong>Goal:</strong> {{ selectedSprint.goal || '—' }}</p>
+        <p><strong>Start:</strong> {{ selectedSprint.startDate || '—' }}</p>
+        <p><strong>End:</strong> {{ selectedSprint.endDate || '—' }}</p>
+        <p><strong>Project ID:</strong> {{ selectedSprint.projectId }}</p>
+      </div>
+    </AppModal>
+
+    <AppModal
       v-model="taskModalOpen"
       :title="t('world.crm.kanban.taskDetail')"
       :max-width="700"
@@ -257,10 +334,47 @@ function profileLink(username: string | null) {
       <v-progress-linear v-if="modalLoading" indeterminate class="mb-3" />
       <div v-else-if="selectedTask">
         <p><strong>ID:</strong> {{ selectedTask.id }}</p>
-        <p><strong>{{ t('world.crm.tasks.form.title') }}:</strong> {{ selectedTask.title }}</p>
-        <p><strong>{{ t('world.crm.tasks.form.status') }}:</strong> {{ selectedTask.status }}</p>
-        <p><strong>{{ t('world.crm.tasks.form.priority') }}:</strong> {{ selectedTask.priority }}</p>
+        <p><strong>{{ t('world.crm.tasks.form.title') }}:</strong> {{ selectedTask.title || '—' }}</p>
+        <p><strong>{{ t('world.crm.tasks.form.status') }}:</strong> {{ selectedTask.status || '—' }}</p>
+        <p><strong>{{ t('world.crm.tasks.form.priority') }}:</strong> {{ selectedTask.priority || '—' }}</p>
         <p><strong>{{ t('world.crm.tasks.form.description') }}:</strong> {{ selectedTask.description || '—' }}</p>
+        <p><strong>{{ t('world.crm.tasks.form.dueAt') }}:</strong> {{ selectedTask.dueAt || '—' }}</p>
+        <p><strong>{{ t('world.crm.tasks.form.estimatedHours') }}:</strong> {{ selectedTask.estimatedHours ?? '—' }}</p>
+        <div class="d-flex flex-wrap ga-2 mb-2">
+          <v-chip
+            v-if="selectedTask.projectId"
+            size="small"
+            color="secondary"
+            variant="outlined"
+            @click="openProject(selectedTask.projectId)"
+          >
+            Project {{ selectedTask.projectId }}
+          </v-chip>
+          <v-chip
+            v-if="selectedTask.sprintId"
+            size="small"
+            color="primary"
+            variant="outlined"
+            @click="openSprint(selectedTask.sprintId)"
+          >
+            Sprint {{ selectedTask.sprintId }}
+          </v-chip>
+        </div>
+        <div>
+          <strong>Attachments:</strong>
+          <v-list density="compact" bg-color="transparent">
+            <v-list-item
+              v-for="(attachment, index) in selectedTask.attachments"
+              :key="index"
+              :title="String((attachment as any).originalName ?? (attachment as any).url ?? `Attachment ${index + 1}`)"
+              :subtitle="String((attachment as any).mimeType ?? '')"
+              :href="(attachment as any).url"
+              target="_blank"
+              rel="noopener noreferrer"
+              prepend-icon="mdi-download"
+            />
+          </v-list>
+        </div>
       </div>
     </AppModal>
   </v-container>
