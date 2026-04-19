@@ -1,11 +1,70 @@
 import type { H3Event } from 'h3'
-import { getCached, publicCacheKey, setCached } from './apiCache'
+import { getCached, privateCacheKey, setCached } from './apiCache'
 import { resolveCacheTtl } from './apiCacheConfig'
 import { getServerPrivateAxios, resolveServerApiUrl } from './http/axiosClient'
 import { invalidateMutationCaches } from './mutationInvalidation'
+import { getSessionAuth } from './privateApi'
 
 const CRM_GENERAL_BASE_ENDPOINT = '/crm/general'
-const CRM_GITHUB_MUTATION_KEY = 'crm:general:github:mutate'
+const CRM_GITHUB_MUTATION_KEY = 'crm:general:mutate'
+const MONTH_IN_SECONDS = 30 * 24 * 60 * 60
+const CRM_GITHUB_SYNC_CONTEXT_ENDPOINT = 'crm/general/github/sync/context'
+
+export type CrmGithubSyncContext = {
+  jobId?: string
+  applicationSlug?: string
+  owner?: string
+  status?: string
+  updatedAt: string
+}
+
+function isBootstrapPath(path: string) {
+  return path.replace(/^\/+/, '') === 'github/sync/bootstrap'
+}
+
+function extractSyncJobIdPath(path: string) {
+  const normalizedPath = path.replace(/^\/+/, '')
+  const match = normalizedPath.match(/^github\/sync\/jobs\/([^/]+)$/)
+  return match?.[1] ?? null
+}
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return value && typeof value === 'object' ? (value as Record<string, unknown>) : null
+}
+
+function toNonEmptyString(value: unknown) {
+  return typeof value === 'string' && value.trim().length > 0 ? value.trim() : undefined
+}
+
+async function getSyncContextCacheKey(event: H3Event) {
+  const { username } = await getSessionAuth(event)
+  return privateCacheKey(username, CRM_GITHUB_SYNC_CONTEXT_ENDPOINT)
+}
+
+export async function getCrmGithubSyncContext(event: H3Event) {
+  const cacheKey = await getSyncContextCacheKey(event)
+  return await getCached<CrmGithubSyncContext>(cacheKey)
+}
+
+async function saveCrmGithubSyncContext(
+  event: H3Event,
+  context: Partial<CrmGithubSyncContext>,
+) {
+  const cacheKey = await getSyncContextCacheKey(event)
+  const previous = (await getCached<CrmGithubSyncContext>(cacheKey)) ?? {
+    updatedAt: new Date().toISOString(),
+  }
+
+  const nextContext: CrmGithubSyncContext = {
+    ...previous,
+    ...context,
+    updatedAt: new Date().toISOString(),
+  }
+
+  await setCached(cacheKey, nextContext, MONTH_IN_SECONDS)
+
+  return nextContext
+}
 
 function crmGithubEndpoint(path: string) {
   const normalizedPath = path.replace(/^\/+/, '')
@@ -17,8 +76,9 @@ export async function cachedCrmGithubGeneralGet<TResponse = unknown>(
   path: string,
   query?: Record<string, unknown>,
 ): Promise<TResponse> {
+  const { username } = await getSessionAuth(event)
   const endpoint = crmGithubEndpoint(path)
-  const cacheKey = publicCacheKey(endpoint, query)
+  const cacheKey = privateCacheKey(username, endpoint, query)
 
   const cached = await getCached<TResponse>(cacheKey)
   if (cached) {
@@ -29,6 +89,24 @@ export async function cachedCrmGithubGeneralGet<TResponse = unknown>(
   const response = await client.get<TResponse>(resolveServerApiUrl(event, endpoint), {
     params: query,
   })
+
+  const syncJobId = extractSyncJobIdPath(path)
+  if (syncJobId) {
+    const payload = asRecord(response.data)
+    const applicationSlug = toNonEmptyString(payload?.applicationSlug)
+    const owner = toNonEmptyString(payload?.owner)
+    const status = toNonEmptyString(payload?.status)
+    const id = toNonEmptyString(payload?.id)
+
+    if (id || applicationSlug || owner || status) {
+      await saveCrmGithubSyncContext(event, {
+        jobId: id ?? syncJobId,
+        applicationSlug,
+        owner,
+        status,
+      })
+    }
+  }
 
   await setCached(cacheKey, response.data, resolveCacheTtl('crm'))
 
@@ -53,6 +131,34 @@ export async function mutateCrmGithubGeneral<TResponse = unknown>(
     params: options.query,
     data: options.body,
   })
+
+  if (isBootstrapPath(path)) {
+    const payload = asRecord(response.data)
+    const jobId = toNonEmptyString(payload?.jobId)
+    const status = toNonEmptyString(payload?.status)
+
+    if (jobId || status) {
+      await saveCrmGithubSyncContext(event, { jobId, status })
+    }
+  }
+
+  const syncJobId = extractSyncJobIdPath(path)
+  if (syncJobId) {
+    const payload = asRecord(response.data)
+    const applicationSlug = toNonEmptyString(payload?.applicationSlug)
+    const owner = toNonEmptyString(payload?.owner)
+    const status = toNonEmptyString(payload?.status)
+    const id = toNonEmptyString(payload?.id)
+
+    if (id || applicationSlug || owner || status) {
+      await saveCrmGithubSyncContext(event, {
+        jobId: id ?? syncJobId,
+        applicationSlug,
+        owner,
+        status,
+      })
+    }
+  }
 
   await invalidateMutationCaches(event, CRM_GITHUB_MUTATION_KEY)
 

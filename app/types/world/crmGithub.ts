@@ -30,6 +30,14 @@ export interface CrmGithubBootstrapResponse {
   status: string
 }
 
+export interface CrmGithubSyncContext {
+  jobId?: string
+  applicationSlug?: string
+  owner?: string
+  status?: string
+  updatedAt: string
+}
+
 export interface CrmGithubAttachRepositoryPayload {
   fullName: string
 }

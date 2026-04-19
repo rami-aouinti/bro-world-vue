@@ -36,6 +36,19 @@ watch(
   { immediate: true },
 )
 
+onMounted(async () => {
+  const cachedContext = await githubStore.loadSyncContext()
+  if (!cachedContext) return
+
+  if (!syncJobId.value && cachedContext.jobId) {
+    syncJobId.value = cachedContext.jobId
+  }
+
+  if (!bootstrapPayload.owner && cachedContext.owner) {
+    bootstrapPayload.owner = cachedContext.owner
+  }
+})
+
 async function loadDashboard() {
   if (!projectId.value) return
   dashboard.value = await githubStore.getProjectDashboard(projectId.value)
