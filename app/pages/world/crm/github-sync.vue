@@ -58,11 +58,12 @@ watch(
 )
 
 onMounted(async () => {
-  const cachedContext = await githubStore.loadSyncContext()
+  const cachedContext = await githubStore.loadSyncContext({ force: true })
   if (!cachedContext) return
 
   if (!syncJobId.value && cachedContext.jobId) {
     syncJobId.value = cachedContext.jobId
+    await loadSyncJob({ force: true })
   }
 
   if (!bootstrapPayload.owner && cachedContext.owner) {
@@ -129,11 +130,19 @@ async function runBootstrap() {
   await loadSyncJob()
 }
 
-async function loadSyncJob() {
+async function loadSyncJob(options?: { force?: boolean }) {
   if (!syncJobId.value) return
-  syncJob.value = await githubStore.getSyncJobStatus(syncJobId.value)
+  syncJob.value = await githubStore.getSyncJobStatus(syncJobId.value, options)
   bootstrapPayload.owner = syncJob.value.owner
 }
+
+watch(
+  projectId,
+  async (nextProjectId, previousProjectId) => {
+    if (!nextProjectId || nextProjectId === previousProjectId) return
+    await loadGithubOverview()
+  },
+)
 </script>
 
 <template>
@@ -156,6 +165,16 @@ async function loadSyncJob() {
           <v-btn color="primary" :loading="githubStore.pending" @click="loadDashboard">Load dashboard</v-btn>
           <v-btn color="secondary" :loading="githubStore.pending" @click="loadRepositories">Load repositories</v-btn>
           <v-btn color="info" :loading="githubStore.pending" @click="loadGithubOverview">Load all endpoints</v-btn>
+        </v-col>
+      </v-row>
+      <v-row class="mb-1">
+        <v-col cols="12" class="d-flex flex-wrap ga-2">
+          <v-btn size="small" variant="tonal" :loading="githubStore.pending" @click="loadIssues">Load issues</v-btn>
+          <v-btn size="small" variant="tonal" :loading="githubStore.pending" @click="loadPullRequests">Load pull requests</v-btn>
+          <v-btn size="small" variant="tonal" :loading="githubStore.pending" @click="loadBranches">Load branches</v-btn>
+          <v-btn size="small" variant="tonal" :loading="githubStore.pending" @click="loadProjectBoards">Load projects</v-btn>
+          <v-btn size="small" variant="tonal" :loading="githubStore.pending" @click="loadAccountRepositories">Load account repositories</v-btn>
+          <v-btn size="small" color="info" :loading="githubStore.pending" @click="loadGithubOverview">Load all endpoints</v-btn>
         </v-col>
       </v-row>
       <v-alert v-if="githubStore.error" type="error" variant="tonal" class="mb-3">{{ githubStore.error }}</v-alert>

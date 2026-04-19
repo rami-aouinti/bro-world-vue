@@ -42,10 +42,9 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
     query?: Record<string, unknown>,
   ): Record<string, unknown> | undefined {
     const context = syncContext.value
-    const isGithubWorldEndpoint = endpoint.startsWith('/api/world/crm/general/')
-      && endpoint.includes('/github/')
+    const isSyncContextEndpoint = endpoint.startsWith('/api/world/crm/general/github/sync/context')
 
-    if (!isGithubWorldEndpoint || !context) {
+    if (!isSyncContextEndpoint || !context) {
       return query
     }
 
@@ -53,10 +52,6 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
 
     if (!mergedQuery.jobId && context.jobId) {
       mergedQuery.jobId = context.jobId
-    }
-
-    if (!mergedQuery.applicationSlug && context.applicationSlug) {
-      mergedQuery.applicationSlug = context.applicationSlug
     }
 
     return mergedQuery
