@@ -163,7 +163,7 @@ async function attachToSprint() {
           </v-row>
           <v-btn color="secondary" variant="tonal" class="mb-3" @click="createSubtask">{{ t('world.crm.tasks.actions.createSubtask') }}</v-btn>
 
-          <v-select
+          <AppSelect
             v-model="subtaskToAttach"
             :items="taskOptions"
             item-title="title"
@@ -191,7 +191,7 @@ async function attachToSprint() {
       <v-col cols="12" lg="4">
         <v-card rounded="xl" class="pa-4 postcard-gradient-card">
           <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.tasks.sections.assignees') }}</h3>
-          <v-select
+          <AppSelect
             v-model="assigneeId"
             :items="publicUserOptions"
             item-title="title"
@@ -213,7 +213,7 @@ async function attachToSprint() {
           </v-list>
 
           <h3 class="text-subtitle-1 mt-4 mb-3">Attach to sprint</h3>
-          <v-select
+          <AppSelect
             v-model="sprintToAttach"
             :items="sprintOptions"
             item-title="title"
