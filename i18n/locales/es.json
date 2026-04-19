@@ -1499,7 +1499,26 @@
           "46": "Get dashboard",
           "47-json": "Get report JSON",
           "47-csv": "Get report CSV",
-          "47-pdf": "Get report PDF"
+          "47-pdf": "Get report PDF",
+          "24a": "List tasks by latest sprint",
+          "24b": "List tasks by sprint"
+        }
+      },
+      "kanban": {
+        "selectSprint": "Select sprint",
+        "currentSprint": "Current sprint: {name} ({start} → {end})",
+        "noSprint": "No sprint is currently selected.",
+        "emptyStatus": "No subtasks in this status.",
+        "project": "Project",
+        "task": "Task",
+        "dueAt": "Due",
+        "projectDetail": "Project details",
+        "taskDetail": "Task details",
+        "status": {
+          "todo": "To do",
+          "in_progress": "In progress",
+          "review": "Review",
+          "done": "Done"
         }
       }
     },
