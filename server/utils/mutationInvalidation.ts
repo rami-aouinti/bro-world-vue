@@ -112,6 +112,11 @@ const MUTATION_INVALIDATION_RULES: MutationInvalidationRule[] = [
     scope: 'private',
     prefixes: ['users', 'notifications'],
   },
+  {
+    key: 'recruit-resumes',
+    scope: 'private',
+    prefixes: ['default'],
+  },
 ] as const
 
 const MUTATION_RULES_BY_KEY = MUTATION_INVALIDATION_RULES.reduce(

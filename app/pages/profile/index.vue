@@ -709,6 +709,7 @@ onUnmounted(() => {
             <span>My CV</span>
             <v-btn
               color="primary"
+              variant="tonal"
               prepend-icon="mdi-file-plus-outline"
               @click="resumeCreateOpen = true; resumeCreateStep = 'choice'"
             >
@@ -788,14 +789,8 @@ onUnmounted(() => {
       </template>
     </v-container>
 
-    <v-dialog v-model="resumeViewerOpen" max-width="980">
-      <v-card rounded="xl">
-        <v-card-title class="d-flex align-center justify-space-between">
-          <span>Détail CV</span>
-          <v-btn icon="mdi-close" variant="text" @click="resumeViewerOpen = false" />
-        </v-card-title>
-        <v-divider />
-        <v-card-text v-if="selectedResume">
+    <AppModal v-model="resumeViewerOpen" title="Détail CV" :max-width="980">
+      <div v-if="selectedResume">
           <iframe
             v-if="selectedResume.documentUrl"
             :src="selectedResume.documentUrl"
@@ -809,7 +804,7 @@ onUnmounted(() => {
               cols="12"
               md="6"
             >
-              <v-card variant="tonal" rounded="lg">
+              <v-card variant="tonal" rounded="lg" class="postcard-gradient-card">
                 <v-card-title class="text-subtitle-2">{{ entry.label }}</v-card-title>
                 <v-card-text>
                   <div
@@ -830,16 +825,11 @@ onUnmounted(() => {
               </v-card>
             </v-col>
           </v-row>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
+      </div>
+    </AppModal>
 
-    <v-dialog v-model="resumeCreateOpen" max-width="980">
-      <v-card rounded="xl">
-        <v-card-title>Create new CV</v-card-title>
-        <v-divider />
-        <v-card-text>
-          <v-row v-if="resumeCreateStep === 'choice'">
+    <AppModal v-model="resumeCreateOpen" title="Create new CV" :max-width="980">
+      <v-row v-if="resumeCreateStep === 'choice'">
             <v-col cols="12" md="6">
               <v-card class="postcard-gradient-card h-100" @click="resumeCreateStep = 'upload'">
                 <v-card-text class="text-center py-10">
@@ -862,91 +852,91 @@ onUnmounted(() => {
                 </v-card-text>
               </v-card>
             </v-col>
-          </v-row>
+      </v-row>
 
-          <div v-else-if="resumeCreateStep === 'upload'">
-            <v-file-input
-              v-model="resumeUploadFile"
-              label="Upload CV file (PDF)"
-              accept="application/pdf"
-              prepend-icon="mdi-paperclip"
-              variant="outlined"
-            />
-            <div class="d-flex ga-2 justify-end">
-              <v-btn variant="text" @click="resumeCreateStep = 'choice'">Back</v-btn>
-              <v-btn
-                color="primary"
-                :loading="createLoading"
-                :disabled="!resumeUploadFile"
-                @click="createResumeFromUpload"
-              >
-                Save PDF CV
-              </v-btn>
-            </div>
+      <div v-else-if="resumeCreateStep === 'upload'">
+        <v-file-input
+          v-model="resumeUploadFile"
+          label="Upload CV file (PDF)"
+          accept="application/pdf"
+          prepend-icon="mdi-paperclip"
+          variant="outlined"
+        />
+        <div class="d-flex ga-2 justify-end">
+          <v-btn variant="tonal" @click="resumeCreateStep = 'choice'">Back</v-btn>
+          <v-btn
+            color="primary"
+            variant="tonal"
+            :loading="createLoading"
+            :disabled="!resumeUploadFile"
+            @click="createResumeFromUpload"
+          >
+            Save PDF CV
+          </v-btn>
+        </div>
+      </div>
+
+      <div v-else>
+        <div v-for="entry in resumeSectionEntries" :key="entry.key" class="mb-5">
+          <div class="d-flex align-center justify-space-between mb-2">
+            <h4 class="text-subtitle-1">{{ entry.label }}</h4>
+            <v-btn
+              size="small"
+              variant="tonal"
+              prepend-icon="mdi-plus"
+              @click="addResumeLine(entry.key)"
+            >
+              Add line
+            </v-btn>
           </div>
+          <v-card
+            v-for="(line, index) in resumeForm[entry.key]"
+            :key="`${entry.key}-${index}`"
+            class="mb-2 postcard-gradient-card"
+            variant="tonal"
+            rounded="lg"
+          >
+            <v-card-text>
+              <v-row>
+                <v-col cols="12" md="5">
+                  <v-text-field v-model="line.title" label="Title" variant="outlined" />
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    v-model="line.description"
+                    label="Description"
+                    variant="outlined"
+                  />
+                </v-col>
+                <v-col cols="12" md="1" class="d-flex align-center">
+                  <v-btn
+                    size="small"
+                    icon="mdi-delete-outline"
+                    variant="text"
+                    color="error"
+                    @click="removeResumeLine(entry.key, index)"
+                  />
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </div>
+        <div class="d-flex ga-2 justify-end">
+          <v-btn variant="tonal" @click="resumeCreateStep = 'choice'">Back</v-btn>
+          <v-btn
+            color="primary"
+            variant="tonal"
+            :loading="createLoading"
+            @click="createResumeFromManual"
+          >
+            Save manual CV
+          </v-btn>
+        </div>
+      </div>
+    </AppModal>
 
-          <div v-else>
-            <div v-for="entry in resumeSectionEntries" :key="entry.key" class="mb-5">
-              <div class="d-flex align-center justify-space-between mb-2">
-                <h4 class="text-subtitle-1">{{ entry.label }}</h4>
-                <v-btn
-                  size="small"
-                  variant="tonal"
-                  prepend-icon="mdi-plus"
-                  @click="addResumeLine(entry.key)"
-                >
-                  Add line
-                </v-btn>
-              </div>
-              <v-card
-                v-for="(line, index) in resumeForm[entry.key]"
-                :key="`${entry.key}-${index}`"
-                class="mb-2"
-                variant="tonal"
-                rounded="lg"
-              >
-                <v-card-text>
-                  <v-row>
-                    <v-col cols="12" md="5">
-                      <v-text-field v-model="line.title" label="Title" variant="outlined" />
-                    </v-col>
-                    <v-col cols="12" md="6">
-                      <v-text-field
-                        v-model="line.description"
-                        label="Description"
-                        variant="outlined"
-                      />
-                    </v-col>
-                    <v-col cols="12" md="1" class="d-flex align-center">
-                      <v-btn
-                        size="small"
-                        icon="mdi-delete-outline"
-                        variant="text"
-                        color="error"
-                        @click="removeResumeLine(entry.key, index)"
-                      />
-                    </v-col>
-                  </v-row>
-                </v-card-text>
-              </v-card>
-            </div>
-            <div class="d-flex ga-2 justify-end">
-              <v-btn variant="text" @click="resumeCreateStep = 'choice'">Back</v-btn>
-              <v-btn color="primary" :loading="createLoading" @click="createResumeFromManual">
-                Save manual CV
-              </v-btn>
-            </div>
-          </div>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-
-    <v-dialog v-model="resumeEditorOpen" max-width="980">
-      <v-card rounded="xl">
-        <v-card-title>Edit CV</v-card-title>
-        <v-divider />
-        <v-card-text>
-          <div v-for="entry in resumeSectionEntries" :key="`editor-${entry.key}`" class="mb-4">
+    <AppModal v-model="resumeEditorOpen" title="Edit CV" :max-width="980">
+      <div v-for="entry in resumeSectionEntries" :key="`editor-${entry.key}`" class="mb-4">
             <div class="d-flex align-center justify-space-between mb-2">
               <h4 class="text-subtitle-1">{{ entry.label }}</h4>
               <v-btn size="small" variant="tonal" @click="addResumeLine(entry.key)">Add</v-btn>
@@ -955,7 +945,7 @@ onUnmounted(() => {
               v-for="(line, index) in resumeForm[entry.key]"
               :key="`editor-${entry.key}-${index}`"
               variant="tonal"
-              class="mb-2"
+              class="mb-2 postcard-gradient-card"
             >
               <v-card-text>
                 <v-row>
@@ -973,15 +963,13 @@ onUnmounted(() => {
                 </v-row>
               </v-card-text>
             </v-card>
-          </div>
-          <div class="d-flex justify-end">
-            <v-btn color="primary" :loading="updateLoading" @click="updateResume">
-              Save changes
-            </v-btn>
-          </div>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
+      </div>
+      <div class="d-flex justify-end">
+        <v-btn color="primary" variant="tonal" :loading="updateLoading" @click="updateResume">
+          Save changes
+        </v-btn>
+      </div>
+    </AppModal>
   </div>
 </template>
 
