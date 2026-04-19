@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {
   ADMIN_SECTIONS_BY_KEY,
+  PAGE_MANAGEMENT_NAV_ITEMS,
+  type PageManagementNavKey,
   type AdminSectionKey,
 } from '~/constants/adminManagement'
 import { useAdminManagementStore } from '~/stores/adminManagement'
@@ -10,6 +12,20 @@ const store = useAdminManagementStore()
 
 const sectionKey = computed(() => route.params.section as AdminSectionKey)
 const section = computed(() => ADMIN_SECTIONS_BY_KEY[sectionKey.value])
+const isPagesSection = computed(() => sectionKey.value === 'pages')
+
+const defaultPageType = PAGE_MANAGEMENT_NAV_ITEMS[0].key
+
+const pageType = computed<PageManagementNavKey>(() => {
+  if (!isPagesSection.value) {
+    return defaultPageType
+  }
+
+  const rawType = String(route.query.pageType ?? '').toLowerCase() as PageManagementNavKey
+  const valid = PAGE_MANAGEMENT_NAV_ITEMS.some((item) => item.key === rawType)
+
+  return valid ? rawType : defaultPageType
+})
 
 if (!section.value) {
   throw createError({ statusCode: 404, statusMessage: 'Admin section not found' })
@@ -21,7 +37,11 @@ const dialogMode = ref<'create' | 'edit'>('create')
 const selectedItemId = ref('')
 const formState = ref<Record<string, string>>({})
 
-void store.fetchSection(sectionKey.value)
+watchEffect(async () => {
+  await store.fetchSection(sectionKey.value, {
+    pageType: isPagesSection.value ? pageType.value : undefined,
+  })
+})
 
 const pending = computed(() => store.pending)
 const totalCount = computed(() => store.countBySection[sectionKey.value] ?? 0)
@@ -86,9 +106,13 @@ async function submit() {
   )
 
   if (dialogMode.value === 'create') {
-    await store.createItem(sectionKey.value, payload)
+    await store.createItem(sectionKey.value, payload, {
+      pageType: isPagesSection.value ? pageType.value : undefined,
+    })
   } else if (selectedItemId.value) {
-    await store.updateItem(sectionKey.value, selectedItemId.value, payload)
+    await store.updateItem(sectionKey.value, selectedItemId.value, payload, {
+      pageType: isPagesSection.value ? pageType.value : undefined,
+    })
   }
 
   dialogOpen.value = false
@@ -101,7 +125,19 @@ async function removeItem(item: Record<string, unknown>) {
     return
   }
 
-  await store.deleteItem(sectionKey.value, id)
+  await store.deleteItem(sectionKey.value, id, {
+    pageType: isPagesSection.value ? pageType.value : undefined,
+  })
+}
+
+async function switchPageType(nextPageType: PageManagementNavKey) {
+  await navigateTo({
+    path: route.path,
+    query: {
+      ...route.query,
+      pageType: nextPageType,
+    },
+  })
 }
 </script>
 
@@ -128,6 +164,23 @@ async function removeItem(item: Record<string, unknown>) {
             </v-btn>
           </div>
         </div>
+
+        <v-chip-group
+          v-if="isPagesSection"
+          :model-value="pageType"
+          selected-class="text-primary"
+          class="mb-4"
+        >
+          <v-chip
+            v-for="item in PAGE_MANAGEMENT_NAV_ITEMS"
+            :key="item.key"
+            :value="item.key"
+            filter
+            @click="switchPageType(item.key)"
+          >
+            {{ item.title }}
+          </v-chip>
+        </v-chip-group>
 
         <v-text-field
           v-model="search"

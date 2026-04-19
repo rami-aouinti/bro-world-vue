@@ -1,9 +1,13 @@
-import type { AdminSectionKey } from '~/constants/adminManagement'
+import type { AdminSectionKey, PageManagementNavKey } from '~/constants/adminManagement'
 
 type CacheEntry = {
   fetchedAt: number
   rows: Record<string, unknown>[]
   count: number
+}
+
+type PageScopeOptions = {
+  pageType?: PageManagementNavKey
 }
 
 const ADMIN_TTL_MS = 60 * 1000
@@ -49,7 +53,7 @@ export const useAdminManagementStore = defineStore('admin-management', () => {
 
   async function fetchSection(
     section: AdminSectionKey,
-    options?: { force?: boolean; query?: string },
+    options?: { force?: boolean; query?: string } & PageScopeOptions,
   ) {
     const key = cacheKey(section, options?.query)
     const cached = cache.value[key]
@@ -69,11 +73,17 @@ export const useAdminManagementStore = defineStore('admin-management', () => {
 
     try {
       const query = options?.query?.trim()
+      const pageType = section === 'pages' ? options?.pageType : undefined
       const [rows, countResponse] = await Promise.all([
         $fetch<Record<string, unknown>[]>(`/api/admin/management/${section}`, {
-          query: query ? { search: query } : undefined,
+          query: {
+            ...(query ? { search: query } : {}),
+            ...(pageType ? { pageType } : {}),
+          },
         }),
-        $fetch<{ count: number }>(`/api/admin/management/${section}/count`),
+        $fetch<{ count: number }>(`/api/admin/management/${section}/count`, {
+          query: pageType ? { pageType } : undefined,
+        }),
       ])
 
       setRows(section, rows)
@@ -101,37 +111,45 @@ export const useAdminManagementStore = defineStore('admin-management', () => {
     )
   }
 
-  async function createItem(section: AdminSectionKey, payload: Record<string, unknown>) {
+  async function createItem(
+    section: AdminSectionKey,
+    payload: Record<string, unknown>,
+    options?: PageScopeOptions,
+  ) {
     await $fetch(`/api/admin/management/${section}`, {
       method: 'POST',
       body: payload,
+      query: section === 'pages' && options?.pageType ? { pageType: options.pageType } : undefined,
     })
 
     invalidateSection(section)
-    await fetchSection(section, { force: true })
+    await fetchSection(section, { force: true, pageType: options?.pageType })
   }
 
   async function updateItem(
     section: AdminSectionKey,
     id: string,
     payload: Record<string, unknown>,
+    options?: PageScopeOptions,
   ) {
     await $fetch(`/api/admin/management/${section}/${id}`, {
       method: 'PATCH',
       body: payload,
+      query: section === 'pages' && options?.pageType ? { pageType: options.pageType } : undefined,
     })
 
     invalidateSection(section)
-    await fetchSection(section, { force: true })
+    await fetchSection(section, { force: true, pageType: options?.pageType })
   }
 
-  async function deleteItem(section: AdminSectionKey, id: string) {
+  async function deleteItem(section: AdminSectionKey, id: string, options?: PageScopeOptions) {
     await $fetch(`/api/admin/management/${section}/${id}`, {
       method: 'DELETE',
+      query: section === 'pages' && options?.pageType ? { pageType: options.pageType } : undefined,
     })
 
     invalidateSection(section)
-    await fetchSection(section, { force: true })
+    await fetchSection(section, { force: true, pageType: options?.pageType })
   }
 
   return {
