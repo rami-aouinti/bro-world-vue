@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { ADMIN_SECTIONS_BY_KEY, type AdminSectionKey } from '~/constants/adminManagement'
+import {
+  ADMIN_SECTIONS_BY_KEY,
+  PAGE_MANAGEMENT_NAV_ITEMS,
+  type AdminSectionKey,
+  type PageManagementNavKey,
+} from '~/constants/adminManagement'
 
 const route = useRoute()
 const sectionKey = computed(() => route.params.section as AdminSectionKey)
@@ -31,6 +36,6 @@ if (sectionKey.value === 'pages') {
 <template>
   <div>
     <AdminModuleDrawers />
-    <AdminSectionManagementView :section-key="sectionKey" />
+    <AdminSectionManagementView :section-key="sectionKey" :page-type="pageType" />
   </div>
 </template>
