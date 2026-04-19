@@ -2,7 +2,11 @@
 import { useCrmPermissions } from '~/composables/useCrmPermissions'
 
 const { t } = useI18n()
-const { can } = useCrmPermissions()
+const { can, sessionUser } = useCrmPermissions()
+
+const isRootAdmin = computed(() =>
+  (sessionUser.value?.roles ?? []).includes('ROLE_ROOT'),
+)
 
 const crmNavItems = computed(() => [
   {
@@ -25,17 +29,21 @@ const crmNavItems = computed(() => [
     to: '/world/crm/sprints',
     icon: 'mdi-run-fast',
   },
-  {
-    title: t('world.crm.nav.company'),
-    to: '/world/crm/company',
-    icon: 'mdi-domain',
-  },
-  {
-    title: t('world.crm.nav.githubSync', 'GitHub Sync'),
-    to: '/world/crm/github-sync',
-    icon: 'mdi-github',
-  },
-  ...(can('crm.admin.manage')
+  ...(isRootAdmin.value
+    ? [
+        {
+          title: t('world.crm.nav.company'),
+          to: '/world/crm/company',
+          icon: 'mdi-domain',
+        },
+        {
+          title: t('world.crm.nav.githubSync', 'GitHub Sync'),
+          to: '/world/crm/github-sync',
+          icon: 'mdi-github',
+        },
+      ]
+    : []),
+  ...(isRootAdmin.value && can('crm.admin.manage')
     ? [
         {
           title: t('world.crm.nav.admin'),
