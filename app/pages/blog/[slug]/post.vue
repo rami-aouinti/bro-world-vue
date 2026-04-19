@@ -237,6 +237,77 @@ const post = computed<BlogPostView | null>(() =>
   normalizePost(postResponse.value),
 )
 
+
+
+function extractDescription(content: string): string {
+  const normalized = content
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+  return normalized.slice(0, 160)
+}
+
+const runtimeConfig = useRuntimeConfig()
+const siteUrl = computed(
+  () => runtimeConfig.public.siteUrl || 'https://bro-world-space.com',
+)
+
+const socialImage = computed(() =>
+  new URL('/social-bro-world.png', siteUrl.value).toString(),
+)
+
+const postTitle = computed(() => {
+  const value = post.value?.title?.trim()
+  return value && value.length > 0 ? value : `Post ${slug.value}`
+})
+
+const postDescription = computed(() => {
+  const postContent = post.value?.content ?? ''
+  const extracted = extractDescription(postContent)
+
+  if (extracted) {
+    return extracted
+  }
+
+  return `Découvrez le post ${postTitle.value} sur Bro World.`
+})
+
+const postImage = computed(() => {
+  const media = post.value?.mediaUrl ?? post.value?.mediaUrls?.[0]
+
+  if (media) {
+    try {
+      return new URL(media, siteUrl.value).toString()
+    } catch {
+      return socialImage.value
+    }
+  }
+
+  return socialImage.value
+})
+
+const postCanonicalUrl = computed(() => {
+  const normalizedPath =
+    route.path === '/' ? '/' : route.path.replace(/\/+$/, '')
+
+  return new URL(normalizedPath || '/', siteUrl.value).toString()
+})
+
+useSeoMeta({
+  title: postTitle,
+  description: postDescription,
+  ogTitle: postTitle,
+  ogDescription: postDescription,
+  ogType: 'article',
+  ogImage: postImage,
+  ogUrl: postCanonicalUrl,
+  twitterTitle: postTitle,
+  twitterDescription: postDescription,
+  twitterImage: postImage,
+  twitterCard: 'summary_large_image',
+})
+
 const reactionTypes = computed<BlogReactionType[]>(() => {
   const root = toRecord(reactionTypesResponse.value)
   const source =
