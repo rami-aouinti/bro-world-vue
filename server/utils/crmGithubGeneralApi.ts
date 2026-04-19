@@ -1,7 +1,7 @@
 import type { H3Event } from 'h3'
 import { getCached, publicCacheKey, setCached } from './apiCache'
 import { resolveCacheTtl } from './apiCacheConfig'
-import { getServerPublicAxios, resolveServerApiUrl } from './http/axiosClient'
+import { getServerPrivateAxios, resolveServerApiUrl } from './http/axiosClient'
 import { invalidateMutationCaches } from './mutationInvalidation'
 
 const CRM_GENERAL_BASE_ENDPOINT = '/crm/general'
@@ -25,7 +25,7 @@ export async function cachedCrmGithubGeneralGet<TResponse = unknown>(
     return cached
   }
 
-  const client = getServerPublicAxios(event)
+  const client = await getServerPrivateAxios(event)
   const response = await client.get<TResponse>(resolveServerApiUrl(event, endpoint), {
     params: query,
   })
@@ -45,7 +45,7 @@ export async function mutateCrmGithubGeneral<TResponse = unknown>(
   },
 ): Promise<TResponse> {
   const endpoint = crmGithubEndpoint(path)
-  const client = getServerPublicAxios(event)
+  const client = await getServerPrivateAxios(event)
 
   const response = await client.request<TResponse>({
     url: resolveServerApiUrl(event, endpoint),
