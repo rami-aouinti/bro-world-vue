@@ -1,6 +1,8 @@
 <script setup lang="ts">
 definePageMeta({
   title: 'appbar.games',
+  description:
+    'Jouez à des jeux multijoueurs sur Bro World : cartes, stratégie, party games et sessions en ligne avec vos amis.',
 })
 
 const { catalogStore, ensureCatalogLoaded, entityRouteValue, tOrFallback } =

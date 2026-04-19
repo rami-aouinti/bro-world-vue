@@ -15,13 +15,20 @@ const shadow = useStorage('theme-shadow', 'none')
 const translateIfKey = (key: unknown) =>
   typeof key === 'string' && key ? t(key) : ''
 
+const siteUrl = computed(
+  () => runtimeConfig.public.siteUrl || 'https://bro-world-space.com',
+)
+
 const canonicalUrl = computed(() => {
-  const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world-space.com'
   const normalizedPath =
     route.path === '/' ? '/' : route.path.replace(/\/+$/, '')
 
-  return new URL(normalizedPath || '/', siteUrl).toString()
+  return new URL(normalizedPath || '/', siteUrl.value).toString()
 })
+
+const defaultOgImage = computed(() =>
+  new URL('/social-bro-world.png', siteUrl.value).toString(),
+)
 
 if (import.meta.client) {
   watchEffect(() => {
@@ -33,6 +40,21 @@ if (import.meta.client) {
 const title = computed(() => {
   const pageTitle = route.meta?.title || route.matched[0]?.meta?.title || ''
   return translateIfKey(pageTitle)
+})
+
+const metaDescription = computed(() => {
+  const routeDescription =
+    typeof route.meta?.description === 'string' ? route.meta.description : ''
+
+  if (routeDescription) {
+    return routeDescription
+  }
+
+  if (title.value) {
+    return `Découvrez ${title.value} sur Bro World: jeux, réseau social, jobs, CRM et outils en ligne.`
+  }
+
+  return 'Bro World propose des jeux, un réseau social, des outils CRM, des offres d\'emploi et des expériences collaboratives.'
 })
 
 useHead({
@@ -75,9 +97,15 @@ if (isTrackingEnabled) {
 
 useSeoMeta({
   viewport: 'width=device-width, initial-scale=1',
-  description: 'Vuetify 3 + Nuxt 3, Opinionated Admin Starter Template',
-  ogImage: '/social-image.png',
-  twitterImage: '/social-image.png',
+  description: metaDescription,
+  ogTitle: title,
+  ogDescription: metaDescription,
+  ogUrl: canonicalUrl,
+  ogType: 'website',
+  ogImage: defaultOgImage,
+  twitterTitle: title,
+  twitterDescription: metaDescription,
+  twitterImage: defaultOgImage,
   twitterCard: 'summary_large_image',
 })
 </script>
