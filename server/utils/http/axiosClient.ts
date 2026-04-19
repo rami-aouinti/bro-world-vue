@@ -13,7 +13,12 @@ function normalizeBase(baseUrl: string) {
   return baseUrl.replace(/\/+$/, '')
 }
 
+function isAbsoluteUrl(endpoint: string) {
+  return /^https?:\/\//i.test(endpoint)
+}
+
 function normalizeEndpoint(endpoint: string) {
+  if (isAbsoluteUrl(endpoint)) return endpoint
   return endpoint.startsWith('/') ? endpoint : `/${endpoint}`
 }
 
@@ -55,6 +60,10 @@ function getBaseUrl(event: H3Event) {
 }
 
 export function resolveServerApiUrl(event: H3Event, endpoint: string) {
+  if (isAbsoluteUrl(endpoint)) {
+    return endpoint
+  }
+
   const baseUrl = getBaseUrl(event)
   return `${baseUrl}${resolveApiPath(baseUrl, endpoint)}`
 }
