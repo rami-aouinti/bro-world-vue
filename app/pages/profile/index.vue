@@ -927,10 +927,7 @@ onUnmounted(() => {
               color="primary"
               variant="tonal"
               prepend-icon="mdi-file-plus-outline"
-              @click="
-                resumeCreateOpen = true
-                resumeCreateStep = 'choice'
-              "
+              @click="() => { resumeCreateOpen = true; resumeCreateStep = 'choice' }"
             >
               New CV
             </v-btn>
