@@ -111,7 +111,7 @@ async function removeItem(item: Record<string, unknown>) {
       <v-card class="pa-4 postcard-gradient-card rounded-xl">
         <div class="d-flex justify-space-between align-center flex-wrap ga-3 mb-4">
           <div>
-            <h1 class="text-h5 mb-1">{{ section.title }}</h1>
+            <h2 class="text-h5 mb-1">{{ section.title }}</h2>
             <p class="text-medium-emphasis mb-0">{{ section.description }}</p>
           </div>
           <div class="d-flex align-center ga-2 flex-wrap">
@@ -144,6 +144,7 @@ async function removeItem(item: Record<string, unknown>) {
             { title: 'Actions', key: 'actions', sortable: false },
           ]"
           :items="filteredRows"
+          :items-per-page="5"
           density="comfortable"
           class="bg-transparent"
         >

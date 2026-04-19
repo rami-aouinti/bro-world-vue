@@ -115,6 +115,7 @@ const postStats = computed(
                 { title: 'Applications', key: 'applicationCount' },
               ]"
               :items="appStats.byPlatform"
+              :items-per-page="5"
               density="comfortable"
               class="bg-transparent"
             />
@@ -131,6 +132,7 @@ const postStats = computed(
                 { title: 'Usage', key: 'usageCount' },
               ]"
               :items="pluginStats.usage"
+              :items-per-page="5"
               density="comfortable"
               class="bg-transparent"
             />
