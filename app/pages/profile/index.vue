@@ -36,6 +36,7 @@ type ResumeSectionKey =
   | 'projects'
   | 'references'
   | 'hobbies'
+type ResumeTemplate = 'modern' | 'elegant' | 'compact'
 
 const { t, locale } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
@@ -64,6 +65,7 @@ const resumeViewerOpen = ref(false)
 const resumeEditorOpen = ref(false)
 const resumeCreateOpen = ref(false)
 const resumeCreateStep = ref<'choice' | 'upload' | 'manual'>('choice')
+const selectedResumeTemplate = ref<ResumeTemplate>('modern')
 const selectedResume = ref<RecruitResume | null>(null)
 const createLoading = ref(false)
 const updateLoading = ref(false)
@@ -103,6 +105,11 @@ const proverbTexts = computed(() => [
 const hasUpcomingEvents = computed(() => upcomingEvents.value.length > 0)
 const hasCoinProducts = computed(() => coinProducts.value.length > 0)
 const hasResumes = computed(() => resumes.value.length > 0)
+const resumeTemplateOptions = [
+  { value: 'modern', label: 'Modern Pro' },
+  { value: 'elegant', label: 'Executive' },
+  { value: 'compact', label: 'Clean Grid' },
+] as const
 const resumeSectionEntries = computed(() => [
   { key: 'experiences', label: 'Experiences' },
   { key: 'educations', label: 'Educations' },
@@ -113,6 +120,34 @@ const resumeSectionEntries = computed(() => [
   { key: 'references', label: 'References' },
   { key: 'hobbies', label: 'Hobbies' },
 ] as Array<{ key: ResumeSectionKey; label: string }>)
+const profileResumeIdentity = computed(() => {
+  const currentProfile = profile.value
+  const completeName =
+    [currentProfile?.firstName, currentProfile?.lastName]
+      .filter(Boolean)
+      .join(' ')
+      .trim() || currentProfile?.username || 'Anonymous Member'
+  const title = currentProfile?.profile?.title || 'Professional Profile'
+  const location = currentProfile?.profile?.location || ''
+  const email = currentProfile?.email || ''
+  const phone = currentProfile?.profile?.phone || ''
+  const summary =
+    currentProfile?.profile?.information ||
+    'Experienced and motivated professional focused on delivering results.'
+  const avatar = currentProfile?.photo || ''
+  const username = currentProfile?.username || ''
+
+  return {
+    completeName,
+    title,
+    location,
+    email,
+    phone,
+    summary,
+    avatar,
+    username,
+  }
+})
 const selectedProduct = computed(() =>
   coinProducts.value.find((product) => product.id === selectedProductId.value),
 )
@@ -274,7 +309,12 @@ function removeResumeLine(section: ResumeSectionKey, index: number) {
 
 function openResume(resume: RecruitResume) {
   selectedResume.value = resume
+  selectedResumeTemplate.value = 'modern'
   resumeViewerOpen.value = true
+}
+
+function hasSectionData(resume: RecruitResume, key: ResumeSectionKey) {
+  return resume[key].length > 0
 }
 
 function openResumeEdit(resume: RecruitResume) {
@@ -799,34 +839,216 @@ onUnmounted(() => {
             style="width: 100%; height: 72vh; border: none; border-radius: 12px"
             title="Resume PDF preview"
           />
-          <v-row v-else>
-            <v-col
-              v-for="entry in resumeSectionEntries"
-              :key="entry.key"
-              cols="12"
-              md="6"
+          <div v-else class="resume-template-shell">
+            <div class="resume-template-picker mb-4">
+              <v-btn-toggle
+                v-model="selectedResumeTemplate"
+                mandatory
+                divided
+                color="primary"
+                variant="outlined"
+                class="resume-template-toggle"
+              >
+                <v-btn
+                  v-for="option in resumeTemplateOptions"
+                  :key="option.value"
+                  :value="option.value"
+                  class="text-none px-5"
+                >
+                  {{ option.label }}
+                </v-btn>
+              </v-btn-toggle>
+            </div>
+
+            <article
+              v-if="selectedResumeTemplate === 'modern'"
+              class="resume-template resume-template-modern"
             >
-              <v-card variant="tonal" rounded="lg" class="postcard-gradient-card">
-                <v-card-title class="text-subtitle-2">{{ entry.label }}</v-card-title>
-                <v-card-text>
+              <header class="resume-header">
+                <div class="d-flex ga-3 align-start">
+                  <v-avatar
+                    v-if="profileResumeIdentity.avatar"
+                    size="76"
+                    class="resume-avatar"
+                  >
+                    <v-img
+                      :src="profileResumeIdentity.avatar"
+                      :alt="profileResumeIdentity.completeName"
+                    />
+                  </v-avatar>
+                  <v-avatar
+                    v-else
+                    size="76"
+                    color="primary"
+                    class="resume-avatar"
+                  >
+                    {{ profileResumeIdentity.completeName.slice(0, 2).toUpperCase() }}
+                  </v-avatar>
+                  <h2 class="text-h4 font-weight-bold mb-1">{{ profileResumeIdentity.completeName }}</h2>
+                </div>
+                <div class="resume-header-main">
+                  <p class="text-subtitle-1 mb-2">{{ profileResumeIdentity.title }}</p>
+                  <p class="mb-0 text-body-2">{{ profileResumeIdentity.summary }}</p>
+                </div>
+                <div class="text-body-2 resume-contact-card">
+                  <p v-if="profileResumeIdentity.location" class="mb-1">{{ profileResumeIdentity.location }}</p>
+                  <p v-if="profileResumeIdentity.phone" class="mb-1">{{ profileResumeIdentity.phone }}</p>
+                  <p v-if="profileResumeIdentity.email" class="mb-0">{{ profileResumeIdentity.email }}</p>
+                </div>
+              </header>
+              <section class="resume-grid">
+                <div>
+                  <section
+                    v-for="entry in resumeSectionEntries.filter((entry) => ['experiences', 'educations', 'projects', 'certifications'].includes(entry.key))"
+                    :key="entry.key"
+                    class="resume-block"
+                  >
+                    <h3>{{ entry.label }}</h3>
+                    <template v-if="hasSectionData(selectedResume, entry.key)">
+                      <div
+                        v-for="item in selectedResume[entry.key]"
+                        :key="item.id || `${entry.key}-${item.title}`"
+                        class="resume-line"
+                      >
+                        <p class="font-weight-bold mb-1">{{ item.title }}</p>
+                        <p class="mb-0">{{ item.description }}</p>
+                      </div>
+                    </template>
+                    <p v-else class="text-medium-emphasis mb-0">Empty</p>
+                  </section>
+                </div>
+                <div>
+                  <section
+                    v-for="entry in resumeSectionEntries.filter((entry) => ['skills', 'languages', 'hobbies', 'references'].includes(entry.key))"
+                    :key="entry.key"
+                    class="resume-block"
+                  >
+                    <h3>{{ entry.label }}</h3>
+                    <template v-if="hasSectionData(selectedResume, entry.key)">
+                      <ul class="resume-list">
+                        <li
+                          v-for="item in selectedResume[entry.key]"
+                          :key="item.id || `${entry.key}-${item.title}`"
+                        >
+                          <span class="font-weight-medium">{{ item.title }}</span>
+                          <span v-if="item.description"> — {{ item.description }}</span>
+                        </li>
+                      </ul>
+                    </template>
+                    <p v-else class="text-medium-emphasis mb-0">Empty</p>
+                  </section>
+                </div>
+              </section>
+            </article>
+
+            <article
+              v-else-if="selectedResumeTemplate === 'elegant'"
+              class="resume-template resume-template-elegant"
+            >
+              <header class="resume-header text-center">
+                <div class="d-flex flex-column align-center mb-3">
+                  <v-avatar
+                    v-if="profileResumeIdentity.avatar"
+                    size="90"
+                    class="resume-avatar-elegant mb-3"
+                  >
+                    <v-img
+                      :src="profileResumeIdentity.avatar"
+                      :alt="profileResumeIdentity.completeName"
+                    />
+                  </v-avatar>
+                  <v-avatar
+                    v-else
+                    size="90"
+                    color="brown-lighten-1"
+                    class="resume-avatar-elegant mb-3"
+                  >
+                    {{ profileResumeIdentity.completeName.slice(0, 2).toUpperCase() }}
+                  </v-avatar>
+                </div>
+                <h2 class="text-h3 font-weight-bold mb-2">{{ profileResumeIdentity.completeName }}</h2>
+                <p class="text-subtitle-1 mb-2">{{ profileResumeIdentity.title }}</p>
+                <p class="mb-0">
+                  {{ [profileResumeIdentity.location, profileResumeIdentity.phone, profileResumeIdentity.email].filter(Boolean).join(' • ') }}
+                </p>
+              </header>
+              <section class="resume-block">
+                <h3>Professional Summary</h3>
+                <p class="mb-0">{{ profileResumeIdentity.summary }}</p>
+              </section>
+              <section
+                v-for="entry in resumeSectionEntries"
+                :key="`elegant-${entry.key}`"
+                class="resume-block"
+              >
+                <h3>{{ entry.label }}</h3>
+                <template v-if="hasSectionData(selectedResume, entry.key)">
                   <div
                     v-for="item in selectedResume[entry.key]"
                     :key="item.id || `${entry.key}-${item.title}`"
-                    class="mb-3"
+                    class="resume-line"
                   >
-                    <p class="font-weight-medium mb-1">{{ item.title }}</p>
-                    <p class="text-medium-emphasis mb-0">{{ item.description }}</p>
+                    <p class="font-weight-bold mb-1">{{ item.title }}</p>
+                    <p class="mb-0">{{ item.description }}</p>
                   </div>
-                  <p
-                    v-if="selectedResume[entry.key].length === 0"
-                    class="text-medium-emphasis mb-0"
+                </template>
+                <p v-else class="text-medium-emphasis mb-0">Empty</p>
+              </section>
+            </article>
+
+            <article v-else class="resume-template resume-template-compact">
+              <header class="resume-header">
+                <div class="d-flex ga-3 align-center">
+                  <v-avatar
+                    v-if="profileResumeIdentity.avatar"
+                    size="64"
+                    class="resume-avatar"
                   >
-                    Empty
-                  </p>
-                </v-card-text>
-              </v-card>
-            </v-col>
-          </v-row>
+                    <v-img
+                      :src="profileResumeIdentity.avatar"
+                      :alt="profileResumeIdentity.completeName"
+                    />
+                  </v-avatar>
+                  <v-avatar v-else size="64" color="blue-grey" class="resume-avatar">
+                    {{ profileResumeIdentity.completeName.slice(0, 2).toUpperCase() }}
+                  </v-avatar>
+                  <h2 class="text-h4 font-weight-bold mb-1">{{ profileResumeIdentity.completeName }}</h2>
+                </div>
+                <p class="mb-0">{{ profileResumeIdentity.title }}</p>
+                <p class="mb-0 text-body-2">
+                  {{ [profileResumeIdentity.location, profileResumeIdentity.phone, profileResumeIdentity.email].filter(Boolean).join(' | ') }}
+                </p>
+              </header>
+              <section class="resume-block">
+                <h3>Summary</h3>
+                <p class="mb-0">{{ profileResumeIdentity.summary }}</p>
+              </section>
+              <v-row>
+                <v-col
+                  v-for="entry in resumeSectionEntries"
+                  :key="`compact-${entry.key}`"
+                  cols="12"
+                  md="6"
+                >
+                  <section class="resume-block h-100">
+                    <h3>{{ entry.label }}</h3>
+                    <template v-if="hasSectionData(selectedResume, entry.key)">
+                      <ul class="resume-list">
+                        <li
+                          v-for="item in selectedResume[entry.key]"
+                          :key="item.id || `${entry.key}-${item.title}`"
+                        >
+                          <span class="font-weight-medium">{{ item.title }}</span>
+                          <span v-if="item.description"> — {{ item.description }}</span>
+                        </li>
+                      </ul>
+                    </template>
+                    <p v-else class="text-medium-emphasis mb-0">Empty</p>
+                  </section>
+                </v-col>
+              </v-row>
+            </article>
+          </div>
       </div>
     </AppModal>
 
@@ -1003,5 +1225,128 @@ onUnmounted(() => {
 .resume-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 18px 32px rgba(0, 0, 0, 0.18);
+}
+
+.resume-template-shell {
+  max-height: 75vh;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.resume-template-picker {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.resume-template-toggle {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
+}
+
+.resume-template {
+  border-radius: 18px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 16px 35px rgba(16, 24, 40, 0.08);
+}
+
+.resume-template-modern {
+  background: linear-gradient(180deg, #f6f9ff 0%, #eef4ff 100%);
+  color: #1d2a52;
+}
+
+.resume-template-elegant {
+  background: linear-gradient(180deg, #f6eeea 0%, #fff9f4 100%);
+  color: #3e2b26;
+}
+
+.resume-template-compact {
+  background: linear-gradient(180deg, #f8fbff 0%, #f1f7ff 100%);
+  color: #1e293b;
+}
+
+.resume-header {
+  border-bottom: 2px solid rgba(106, 125, 175, 0.2);
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.resume-avatar,
+.resume-avatar-elegant {
+  border: 3px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.resume-header-main {
+  flex: 1;
+  min-width: 240px;
+}
+
+.resume-contact-card {
+  min-width: 200px;
+  border-radius: 12px;
+  border: 1px solid rgba(106, 125, 175, 0.22);
+  background: rgba(255, 255, 255, 0.5);
+  padding: 10px 12px;
+}
+
+.resume-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+}
+
+.resume-block {
+  margin-bottom: 14px;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(106, 125, 175, 0.16);
+}
+
+.resume-block h3 {
+  text-transform: uppercase;
+  font-size: 0.86rem;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.resume-line {
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed rgba(106, 125, 175, 0.2);
+}
+
+.resume-line:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.resume-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+@media (max-width: 960px) {
+  .resume-template {
+    padding: 16px;
+  }
+
+  .resume-template-picker {
+    justify-content: stretch;
+  }
+
+  .resume-template-toggle {
+    width: 100%;
+  }
+
+  .resume-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
