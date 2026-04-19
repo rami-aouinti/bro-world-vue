@@ -1,6 +1,7 @@
 import type {
   CrmGithubAttachRepositoryPayload,
   CrmGithubBootstrapPayload,
+  CrmGithubBootstrapResponse,
   CrmGithubCreateBranchPayload,
   CrmGithubCreateIssuePayload,
   CrmGithubCreateProjectBoardPayload,
@@ -219,7 +220,7 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
     getAccountRepositories: (projectId: string, query?: Record<string, unknown>) =>
       get<CrmGithubListResponse>(`${projectBase(projectId)}/account/repositories`, query),
     bootstrapSync: (body: CrmGithubBootstrapPayload) =>
-      mutate('/api/world/crm/general/github/sync/bootstrap', 'POST', {
+      mutate<CrmGithubBootstrapResponse>('/api/world/crm/general/github/sync/bootstrap', 'POST', {
         body,
         invalidatePrefix: '/api/world/crm/general/github/sync/jobs',
       }),
