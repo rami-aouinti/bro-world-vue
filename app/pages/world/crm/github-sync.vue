@@ -5,6 +5,7 @@ import type { CrmGithubSyncJobStatus } from '~/types/world/crmGithub'
 definePageMeta({ title: 'CRM GitHub Sync' })
 
 const { t } = useI18n()
+const { crmNavItems } = useWorldCrmNavItems()
 const githubStore = useWorldCrmGithubStore()
 
 const projectId = ref('')
@@ -174,7 +175,16 @@ watch(
 </script>
 
 <template>
-  <v-container fluid>
+  <div>
+    <WorldModuleDrawers
+      :module-title="t('world.crm.label')"
+      module-icon="mdi-account-group-outline"
+      :module-description="t('world.crm.nav.githubSync', 'GitHub Sync')"
+      :nav-items="crmNavItems"
+      :action-label="t('world.crm.nav.githubSync', 'GitHub Sync')"
+      action-icon="mdi-github"
+    />
+    <v-container fluid>
     <v-card rounded="xl" class="pa-4 mb-4 postcard-gradient-card">
       <h2 class="text-h6 mb-4">{{ t('world.crm.nav.githubSync', 'GitHub Sync') }}</h2>
       <v-row>
@@ -366,7 +376,8 @@ watch(
         <pre class="text-caption">{{ JSON.stringify(syncJob, null, 2) }}</pre>
       </v-card>
     </v-card>
-  </v-container>
+    </v-container>
+  </div>
 </template>
 
 <style scoped>

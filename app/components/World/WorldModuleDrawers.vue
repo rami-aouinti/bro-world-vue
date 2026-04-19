@@ -8,6 +8,10 @@ type WorldModuleNavItem = {
   rootOnly?: boolean
 }
 
+const emit = defineEmits<{
+  action: []
+}>()
+
 const props = defineProps<{
   moduleTitle: string
   moduleIcon: string
@@ -28,6 +32,13 @@ const isRoot = computed(
 const visibleNavItems = computed(() =>
   props.navItems.filter((item) => !item.rootOnly || isRoot.value),
 )
+
+
+const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => true)
+const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
+
+showRightDrawerDesktop.value = false
+showRightDrawerMobile.value = false
 
 const quickCheckItems = computed(() => [
   {
@@ -57,6 +68,7 @@ const quickCheckItems = computed(() => [
           variant="tonal"
           :prepend-icon="actionIcon || 'mdi-plus-circle-outline'"
           block
+          @click="emit('action')"
         >
           {{
             actionLabel ||

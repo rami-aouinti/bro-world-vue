@@ -8,6 +8,7 @@ import type {
 
 const router = useRouter()
 const { t } = useI18n()
+const { crmNavItems } = useWorldCrmNavItems()
 definePageMeta({ title: 'CRM Task Requests' })
 
 const createDialog = ref(false)
@@ -32,11 +33,21 @@ async function createRequest() {
 </script>
 
 <template>
-  <v-container fluid>
-    <div class="d-flex align-center justify-space-between mb-4">
-      <h1 class="text-h5">{{ t('world.crm.taskRequests.list.title') }}</h1>
-      <v-btn color="primary" prepend-icon="mdi-plus" @click="createDialog = true">{{ t('world.crm.taskRequests.actions.new') }}</v-btn>
-    </div>
+  <div>
+    <WorldModuleDrawers
+      :module-title="t('world.crm.label')"
+      module-icon="mdi-account-group-outline"
+      :module-description="t('world.crm.taskRequests.list.title')"
+      :nav-items="crmNavItems"
+      :action-label="t('world.crm.taskRequests.actions.new')"
+      action-icon="mdi-plus"
+      @action="createDialog = true"
+    />
+    <v-container fluid>
+      <div class="d-flex align-center justify-space-between mb-4">
+        <h1 class="text-h5">{{ t('world.crm.taskRequests.list.title') }}</h1>
+        <v-btn color="primary" prepend-icon="mdi-plus" @click="createDialog = true">{{ t('world.crm.taskRequests.actions.new') }}</v-btn>
+      </div>
 
     <v-alert v-if="pending" type="info" variant="tonal">{{ t('world.crm.taskRequests.alerts.loadingList') }}</v-alert>
     <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.taskRequests.alerts.loadListError') }}</v-alert>
@@ -51,17 +62,18 @@ async function createRequest() {
       </v-col>
     </v-row>
 
-    <AppModal v-model="createDialog" :title="t('world.crm.taskRequests.modal.createTitle')" :max-width="720">
-      <v-row>
-        <v-col cols="12" md="6"><v-text-field v-model="payload.taskId" :label="t('world.crm.taskRequests.form.taskId')" required /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="payload.repositoryId" :label="t('world.crm.taskRequests.form.repositoryId')" required /></v-col>
-        <v-col cols="12"><v-text-field v-model="payload.title" :label="t('world.crm.taskRequests.form.title')" required /></v-col>
-        <v-col cols="12"><v-textarea v-model="payload.description" :label="t('world.crm.taskRequests.form.description')" /></v-col>
-      </v-row>
-      <template #actions>
-        <v-btn variant="text" @click="createDialog = false">{{ t('world.crm.taskRequests.actions.cancel') }}</v-btn>
-        <v-btn color="primary" @click="createRequest">{{ t('world.crm.taskRequests.actions.create') }}</v-btn>
-      </template>
-    </AppModal>
-  </v-container>
+      <AppModal v-model="createDialog" :title="t('world.crm.taskRequests.modal.createTitle')" :max-width="720">
+        <v-row>
+          <v-col cols="12" md="6"><v-text-field v-model="payload.taskId" :label="t('world.crm.taskRequests.form.taskId')" required /></v-col>
+          <v-col cols="12" md="6"><v-text-field v-model="payload.repositoryId" :label="t('world.crm.taskRequests.form.repositoryId')" required /></v-col>
+          <v-col cols="12"><v-text-field v-model="payload.title" :label="t('world.crm.taskRequests.form.title')" required /></v-col>
+          <v-col cols="12"><v-textarea v-model="payload.description" :label="t('world.crm.taskRequests.form.description')" /></v-col>
+        </v-row>
+        <template #actions>
+          <v-btn variant="text" @click="createDialog = false">{{ t('world.crm.taskRequests.actions.cancel') }}</v-btn>
+          <v-btn color="primary" @click="createRequest">{{ t('world.crm.taskRequests.actions.create') }}</v-btn>
+        </template>
+      </AppModal>
+    </v-container>
+  </div>
 </template>
