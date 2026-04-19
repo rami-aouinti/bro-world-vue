@@ -21,6 +21,9 @@ export default defineSitemapEventHandler(async (event) => {
     { loc: '/world/learning' },
     { loc: '/world/crm' },
     { loc: '/games' },
+    { loc: '/platform' },
+    { loc: '/applications/quiz' },
+    { loc: '/applications/sports' },
   ]
 
   const blogIndex: Array<{ loc: string; lastmod?: string }> = []
