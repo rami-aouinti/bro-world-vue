@@ -19,6 +19,7 @@ const bootstrapPayload = reactive({
 
 const dashboard = ref<Record<string, unknown> | null>(null)
 const repositories = ref<Array<Record<string, unknown>>>([])
+const activeRepository = ref('')
 const issues = ref<Array<Record<string, unknown>>>([])
 const pullRequests = ref<Array<Record<string, unknown>>>([])
 const branches = ref<Array<Record<string, unknown>>>([])
@@ -80,29 +81,55 @@ async function loadRepositories() {
   if (!projectId.value) return
   const response = await githubStore.getProjectRepositories(projectId.value)
   repositories.value = response.items ?? []
+  if (!activeRepository.value && repositories.value.length) {
+    const firstRepo = repositories.value[0]
+    const fullName = typeof firstRepo?.fullName === 'string' ? firstRepo.fullName : ''
+    if (fullName) activeRepository.value = fullName
+  }
+}
+
+async function resolveRepositoryQuery() {
+  if (!projectId.value) return undefined
+
+  if (!activeRepository.value) {
+    await loadRepositories()
+  }
+
+  if (!activeRepository.value) {
+    return undefined
+  }
+
+  return {
+    repository: activeRepository.value,
+    repo: activeRepository.value,
+  }
 }
 
 async function loadIssues() {
   if (!projectId.value) return
-  const response = await githubStore.getIssues(projectId.value)
+  const query = await resolveRepositoryQuery()
+  const response = await githubStore.getIssues(projectId.value, query)
   issues.value = response.items ?? []
 }
 
 async function loadPullRequests() {
   if (!projectId.value) return
-  const response = await githubStore.getPullRequests(projectId.value)
+  const query = await resolveRepositoryQuery()
+  const response = await githubStore.getPullRequests(projectId.value, query)
   pullRequests.value = response.items ?? []
 }
 
 async function loadBranches() {
   if (!projectId.value) return
-  const response = await githubStore.getBranches(projectId.value)
+  const query = await resolveRepositoryQuery()
+  const response = await githubStore.getBranches(projectId.value, query)
   branches.value = response.items ?? []
 }
 
 async function loadProjectBoards() {
   if (!projectId.value) return
-  const response = await githubStore.getProjectsBoards(projectId.value)
+  const query = await resolveRepositoryQuery()
+  const response = await githubStore.getProjectsBoards(projectId.value, query)
   projectBoards.value = response.items ?? []
 }
 
@@ -140,6 +167,7 @@ watch(
   projectId,
   async (nextProjectId, previousProjectId) => {
     if (!nextProjectId || nextProjectId === previousProjectId) return
+    activeRepository.value = ''
     await loadGithubOverview()
   },
 )
