@@ -111,6 +111,7 @@ function stableQueryString(filters: Record<string, unknown>) {
 }
 
 export const useWorldShopStore = defineStore('world-shop', () => {
+  const nuxtApp = useNuxtApp()
   const items = ref<ShopGeneralProduct[]>([])
   const categories = ref<ShopGeneralCategory[]>([])
   const detail = ref<ShopGeneralProduct | WorldShopCheckoutSession | null>(null)
@@ -144,7 +145,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     i18nKey?: string,
     statusCode?: number | null,
   ) {
-    const { $i18n } = useNuxtApp()
+    const { $i18n } = nuxtApp
     if ($i18n && i18nKey) {
       const translated = $i18n.t(i18nKey, { statusCode: statusCode ?? '' })
       if (typeof translated === 'string' && translated.trim().length > 0) {
