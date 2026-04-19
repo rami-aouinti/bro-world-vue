@@ -304,6 +304,8 @@ async function createResumeFromUpload() {
   try {
     const formData = new FormData()
     formData.append('document', resumeUploadFile.value)
+    formData.append('experiences', JSON.stringify([]))
+    formData.append('skills', JSON.stringify([]))
     const created = await $fetch<{ id: string; documentUrl: string | null }>(
       '/api/recruit/general/resumes',
       { method: 'POST', body: formData },
