@@ -20,15 +20,15 @@ const route = useRoute()
           <v-list-group
             v-if="item.key === 'pages'"
             value="pages-management"
-            :model-value="route.path === item.route"
+            :model-value="route.path.startsWith('/admin/pages')"
           >
             <template #activator="{ props }">
               <v-list-item
                 v-bind="props"
                 :title="item.navTitle"
                 :prepend-icon="item.icon"
-                :to="`${item.route}?pageType=home`"
-                :active="route.path === item.route"
+                to="/admin/pages/home"
+                :active="route.path.startsWith('/admin/pages')"
                 color="primary"
                 rounded="lg"
               />
@@ -39,8 +39,8 @@ const route = useRoute()
               :key="subItem.key"
               :title="subItem.title"
               prepend-icon="mdi-subdirectory-arrow-right"
-              :to="`${item.route}?pageType=${subItem.key}`"
-              :active="route.path === item.route && route.query.pageType === subItem.key"
+              :to="`/admin/pages/${subItem.key}`"
+              :active="route.path === `/admin/pages/${subItem.key}`"
               color="primary"
               rounded="lg"
             />
