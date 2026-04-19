@@ -18,7 +18,45 @@ type PlatformResponse = {
   items: PlatformApplication[]
 }
 
+type PublicPlatform = {
+  id: string
+  name: string
+  description: string
+  platformKey: string
+  photo: string
+}
+
+type PublicPlugin = {
+  id: string
+  name: string
+  description: string
+  pluginKey: string
+  photo: string
+}
+
+type AppConfiguration = {
+  configurationKey: string
+  configurationValue: Record<string, unknown>
+}
+
+type PluginConfiguration = {
+  configurationKey: string
+  configurationValue: Record<string, unknown>
+}
+
+type SelectedPluginConfig = {
+  pluginId: string
+  enabled: boolean
+  cacheTtlSeconds: number
+  mode: 'standard' | 'advanced'
+  notifications: boolean
+}
+
 const PAGE_SIZE = 6
+const PLATFORM_PUBLIC_ENDPOINT = 'https://bro-world.org/api/v1/platform/public'
+const PLUGIN_PUBLIC_ENDPOINT = 'https://bro-world.org/api/v1/plugin/public'
+const CREATE_APPLICATION_ENDPOINT =
+  'https://bro-world.org/api/v1/profile/applications'
 
 const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
@@ -34,6 +72,24 @@ const selectedVisibility = ref<'all' | 'private' | 'public'>('all')
 const selectedOwnership = ref<'all' | 'owner' | 'member'>('all')
 const selectedPlatformId = ref<string | null>(null)
 const currentPage = ref(1)
+
+const isCreateDialogOpen = ref(false)
+const createStep = ref(1)
+const isSubmitting = ref(false)
+const createError = ref('')
+const createSuccess = ref('')
+const publicPlatforms = ref<PublicPlatform[]>([])
+const publicPlugins = ref<PublicPlugin[]>([])
+const publicPlatformsPending = ref(false)
+const publicPluginsPending = ref(false)
+
+const appTitle = ref('')
+const appDescription = ref('')
+const appStatus = ref(true)
+const appPrivate = ref(false)
+const selectedCreatePlatformId = ref<string | null>(null)
+const appTheme = ref<'light' | 'dark'>('light')
+const selectedPlugins = ref<Record<string, SelectedPluginConfig>>({})
 
 const { data, pending, error, refresh } = await useAsyncData(
   'platform-applications',
@@ -64,9 +120,7 @@ const filteredApplications = computed(() => {
   return applications.value.filter((application) => {
     const matchesSearch =
       !searchTerm.value ||
-      application.title
-        .toLowerCase()
-        .includes(searchTerm.value.toLowerCase()) ||
+      application.title.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
       application.platformName
         .toLowerCase()
         .includes(searchTerm.value.toLowerCase()) ||
@@ -108,6 +162,27 @@ const selectedPlatform = computed(
     null,
 )
 
+const selectedCreatePlatform = computed(() => {
+  return (
+    publicPlatforms.value.find((item) => item.id === selectedCreatePlatformId.value) ??
+    null
+  )
+})
+
+const canGoToStepTwo = computed(() => {
+  return appTitle.value.trim().length > 2 && appDescription.value.trim().length > 4
+})
+
+const canGoToStepThree = computed(() => Boolean(selectedCreatePlatformId.value))
+
+const selectedPluginList = computed(() => {
+  return Object.values(selectedPlugins.value).filter((plugin) => plugin.enabled)
+})
+
+const canSubmitCreate = computed(() => {
+  return canGoToStepTwo.value && canGoToStepThree.value && loggedIn.value
+})
+
 watch(
   filteredApplications,
   (items) => {
@@ -147,6 +222,188 @@ function resetFilters() {
   selectedOwnership.value = 'all'
   currentPage.value = 1
 }
+
+function resetCreateForm() {
+  createStep.value = 1
+  createError.value = ''
+  createSuccess.value = ''
+  appTitle.value = ''
+  appDescription.value = ''
+  appStatus.value = true
+  appPrivate.value = false
+  selectedCreatePlatformId.value = null
+  appTheme.value = 'light'
+  selectedPlugins.value = {}
+}
+
+async function openCreateDialog() {
+  isCreateDialogOpen.value = true
+  createError.value = ''
+  createSuccess.value = ''
+
+  if (!publicPlatforms.value.length) {
+    await fetchPublicPlatforms()
+  }
+
+  if (!publicPlugins.value.length) {
+    await fetchPublicPlugins()
+  }
+}
+
+function closeCreateDialog() {
+  isCreateDialogOpen.value = false
+  resetCreateForm()
+}
+
+async function fetchPublicPlatforms() {
+  publicPlatformsPending.value = true
+
+  try {
+    publicPlatforms.value = await $fetch<PublicPlatform[]>(PLATFORM_PUBLIC_ENDPOINT)
+  } catch {
+    createError.value = 'Unable to load platforms. Please retry.'
+  } finally {
+    publicPlatformsPending.value = false
+  }
+}
+
+async function fetchPublicPlugins() {
+  publicPluginsPending.value = true
+
+  try {
+    publicPlugins.value = await $fetch<PublicPlugin[]>(PLUGIN_PUBLIC_ENDPOINT)
+  } catch {
+    createError.value = 'Unable to load plugins. Please retry.'
+  } finally {
+    publicPluginsPending.value = false
+  }
+}
+
+function togglePlugin(plugin: PublicPlugin, enabled: boolean) {
+  const existing = selectedPlugins.value[plugin.id]
+
+  selectedPlugins.value[plugin.id] = {
+    pluginId: plugin.id,
+    enabled,
+    cacheTtlSeconds: existing?.cacheTtlSeconds ?? 120,
+    mode: existing?.mode ?? 'standard',
+    notifications: existing?.notifications ?? true,
+  }
+}
+
+function inferPlatformConfigurations(): AppConfiguration[] {
+  const platformKey = selectedCreatePlatform.value?.platformKey ?? 'generic'
+
+  const defaults: Record<string, AppConfiguration[]> = {
+    crm: [
+      {
+        configurationKey: 'platform.crm.pipeline.defaultStage',
+        configurationValue: { name: 'lead' },
+      },
+      {
+        configurationKey: 'platform.crm.autoReminder.enabled',
+        configurationValue: { enabled: true },
+      },
+    ],
+    recruit: [
+      {
+        configurationKey: 'platform.recruit.interview.mode',
+        configurationValue: { name: 'hybrid' },
+      },
+      {
+        configurationKey: 'platform.recruit.scoring.enabled',
+        configurationValue: { enabled: true },
+      },
+    ],
+    school: [
+      {
+        configurationKey: 'platform.school.grading.scale',
+        configurationValue: { type: 'A-F' },
+      },
+      {
+        configurationKey: 'platform.school.attendance.required',
+        configurationValue: { enabled: true },
+      },
+    ],
+    shop: [
+      {
+        configurationKey: 'platform.shop.currency',
+        configurationValue: { code: 'USD' },
+      },
+      {
+        configurationKey: 'platform.shop.inventory.sync',
+        configurationValue: { enabled: true },
+      },
+    ],
+  }
+
+  return [
+    {
+      configurationKey: 'app.theme',
+      configurationValue: { name: appTheme.value },
+    },
+    ...(defaults[platformKey] ?? []),
+  ]
+}
+
+function inferPluginConfigurations(plugin: SelectedPluginConfig): PluginConfiguration[] {
+  return [
+    {
+      configurationKey: 'plugin.cache.ttl',
+      configurationValue: { seconds: plugin.cacheTtlSeconds },
+    },
+    {
+      configurationKey: 'plugin.mode',
+      configurationValue: { name: plugin.mode },
+    },
+    {
+      configurationKey: 'plugin.notifications.enabled',
+      configurationValue: { enabled: plugin.notifications },
+    },
+  ]
+}
+
+async function submitCreateApplication() {
+  if (!canSubmitCreate.value || !selectedCreatePlatformId.value) {
+    return
+  }
+
+  isSubmitting.value = true
+  createError.value = ''
+  createSuccess.value = ''
+
+  const payload = {
+    platformId: selectedCreatePlatformId.value,
+    title: appTitle.value.trim(),
+    description: appDescription.value.trim(),
+    status: appStatus.value ? 'active' : 'inactive',
+    private: appPrivate.value,
+    configurations: inferPlatformConfigurations(),
+    plugins: selectedPluginList.value.map((plugin) => ({
+      pluginId: plugin.pluginId,
+      configurations: inferPluginConfigurations(plugin),
+    })),
+  }
+
+  try {
+    await privateApi.request(CREATE_APPLICATION_ENDPOINT, {
+      method: 'POST',
+      data: payload,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    createSuccess.value = 'Application created successfully.'
+    await refresh()
+    closeCreateDialog()
+  } catch {
+    createError.value =
+      'Unable to create application. Please verify your data and retry.'
+  } finally {
+    isSubmitting.value = false
+  }
+}
 </script>
 
 <template>
@@ -159,7 +416,7 @@ function resetFilters() {
             variant="tonal"
             color="primary"
             prepend-icon="mdi-plus-outline"
-            @click="resetFilters"
+            @click="openCreateDialog"
           >
             Create Platform
           </v-btn>
@@ -429,6 +686,260 @@ function resetFilters() {
         </v-card>
       </template>
     </v-container>
+
+    <v-dialog v-model="isCreateDialogOpen" max-width="980">
+      <v-card class="pa-2">
+        <v-card-title class="d-flex justify-space-between align-center">
+          <span>Create Application</span>
+          <v-btn icon="mdi-close" variant="text" @click="closeCreateDialog" />
+        </v-card-title>
+
+        <v-card-text>
+          <v-alert
+            v-if="!loggedIn"
+            type="warning"
+            variant="tonal"
+            class="mb-4"
+            text="You must be logged in to create an application."
+          />
+
+          <v-alert
+            v-if="createError"
+            type="error"
+            variant="tonal"
+            class="mb-4"
+            :text="createError"
+          />
+
+          <v-alert
+            v-if="createSuccess"
+            type="success"
+            variant="tonal"
+            class="mb-4"
+            :text="createSuccess"
+          />
+
+          <v-stepper v-model="createStep" flat>
+            <v-stepper-header>
+              <v-stepper-item :value="1" title="Application" />
+              <v-divider />
+              <v-stepper-item :value="2" title="Platform & Configuration" />
+              <v-divider />
+              <v-stepper-item :value="3" title="Plugins" />
+            </v-stepper-header>
+
+            <v-stepper-window>
+              <v-stepper-window-item :value="1">
+                <v-row>
+                  <v-col cols="12" md="6">
+                    <v-text-field
+                      v-model="appTitle"
+                      label="Title"
+                      variant="outlined"
+                      required
+                    />
+                  </v-col>
+                  <v-col cols="12" md="6">
+                    <div class="d-flex flex-column ga-2 pt-1">
+                      <v-switch
+                        v-model="appStatus"
+                        color="success"
+                        inset
+                        :label="`Status: ${appStatus ? 'active' : 'inactive'}`"
+                      />
+                      <v-switch
+                        v-model="appPrivate"
+                        color="primary"
+                        inset
+                        :label="`Private: ${appPrivate ? 'yes' : 'no'}`"
+                      />
+                    </div>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-textarea
+                      v-model="appDescription"
+                      label="Description"
+                      variant="outlined"
+                      rows="3"
+                      required
+                    />
+                  </v-col>
+                </v-row>
+              </v-stepper-window-item>
+
+              <v-stepper-window-item :value="2">
+                <v-row>
+                  <v-col cols="12">
+                    <div class="d-flex align-center justify-space-between mb-2">
+                      <h3 class="text-subtitle-1">Select one platform</h3>
+                      <v-btn
+                        variant="text"
+                        color="primary"
+                        :loading="publicPlatformsPending"
+                        @click="fetchPublicPlatforms"
+                      >
+                        Reload
+                      </v-btn>
+                    </div>
+                  </v-col>
+                </v-row>
+
+                <v-row>
+                  <v-col
+                    v-for="platform in publicPlatforms"
+                    :key="platform.id"
+                    cols="12"
+                    md="6"
+                    class="d-flex"
+                  >
+                    <v-card
+                      variant="outlined"
+                      class="w-100 create-card"
+                      :class="{
+                        'create-card--selected':
+                          selectedCreatePlatformId === platform.id,
+                      }"
+                      @click="selectedCreatePlatformId = platform.id"
+                    >
+                      <v-card-title class="text-subtitle-2 text-wrap">
+                        {{ platform.name }}
+                      </v-card-title>
+                      <v-card-text class="text-body-2 text-medium-emphasis">
+                        {{ platform.description }}
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-chip size="small" color="primary" variant="tonal">
+                          {{ platform.platformKey }}
+                        </v-chip>
+                      </v-card-actions>
+                    </v-card>
+                  </v-col>
+                </v-row>
+
+                <v-divider class="my-4" />
+
+                <h3 class="text-subtitle-1 mb-2">Configuration</h3>
+                <v-switch
+                  v-model="appTheme"
+                  true-value="dark"
+                  false-value="light"
+                  color="primary"
+                  inset
+                  :label="`Theme: ${appTheme}`"
+                />
+              </v-stepper-window-item>
+
+              <v-stepper-window-item :value="3">
+                <v-row>
+                  <v-col cols="12">
+                    <div class="d-flex align-center justify-space-between mb-2">
+                      <h3 class="text-subtitle-1">Plugins (one or more)</h3>
+                      <v-btn
+                        variant="text"
+                        color="primary"
+                        :loading="publicPluginsPending"
+                        @click="fetchPublicPlugins"
+                      >
+                        Reload
+                      </v-btn>
+                    </div>
+                  </v-col>
+
+                  <v-col
+                    v-for="plugin in publicPlugins"
+                    :key="plugin.id"
+                    cols="12"
+                    md="6"
+                    class="d-flex"
+                  >
+                    <v-card variant="outlined" class="w-100 pa-2">
+                      <div class="d-flex justify-space-between align-start ga-2">
+                        <div>
+                          <div class="text-subtitle-2">{{ plugin.name }}</div>
+                          <div class="text-body-2 text-medium-emphasis">
+                            {{ plugin.description }}
+                          </div>
+                        </div>
+                        <v-switch
+                          :model-value="selectedPlugins[plugin.id]?.enabled ?? false"
+                          color="primary"
+                          hide-details
+                          @update:model-value="togglePlugin(plugin, $event)"
+                        />
+                      </div>
+
+                      <template v-if="selectedPlugins[plugin.id]?.enabled">
+                        <v-divider class="my-3" />
+                        <v-text-field
+                          v-model.number="selectedPlugins[plugin.id].cacheTtlSeconds"
+                          label="Cache TTL (seconds)"
+                          type="number"
+                          :min="60"
+                          :max="3600"
+                          :step="30"
+                          variant="outlined"
+                        />
+
+                        <AppSelect
+                          v-model="selectedPlugins[plugin.id].mode"
+                          label="Mode"
+                          :items="[
+                            { title: 'Standard', value: 'standard' },
+                            { title: 'Advanced', value: 'advanced' },
+                          ]"
+                        />
+
+                        <v-switch
+                          v-model="selectedPlugins[plugin.id].notifications"
+                          label="Notifications"
+                          color="primary"
+                          inset
+                        />
+                      </template>
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </v-stepper-window-item>
+            </v-stepper-window>
+          </v-stepper>
+        </v-card-text>
+
+        <v-card-actions class="justify-space-between px-6 pb-4">
+          <div>
+            <v-btn
+              variant="text"
+              :disabled="createStep <= 1"
+              @click="createStep = Math.max(1, createStep - 1)"
+            >
+              Back
+            </v-btn>
+          </div>
+          <div class="d-flex ga-2">
+            <v-btn variant="tonal" @click="closeCreateDialog">Cancel</v-btn>
+            <v-btn
+              v-if="createStep < 3"
+              color="primary"
+              :disabled="
+                (createStep === 1 && !canGoToStepTwo) ||
+                (createStep === 2 && !canGoToStepThree)
+              "
+              @click="createStep += 1"
+            >
+              Continue
+            </v-btn>
+            <v-btn
+              v-else
+              color="primary"
+              :loading="isSubmitting"
+              :disabled="!canSubmitCreate"
+              @click="submitCreateApplication"
+            >
+              Create Application
+            </v-btn>
+          </div>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -486,9 +997,22 @@ function resetFilters() {
   transform: scale(1.03);
 }
 
-.platform-card--selected {
+.platform-card--selected,
+.create-card--selected {
   border-color: rgb(var(--v-theme-primary));
-  box-shadow: 0 16px 38px rgba(var(--v-theme-primary));
+  box-shadow: 0 10px 28px rgba(var(--v-theme-primary), 0.3);
+}
+
+.create-card {
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.create-card:hover {
+  transform: translateY(-2px);
 }
 
 .platform-card__overlay {
