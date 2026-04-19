@@ -18,12 +18,16 @@ export interface CrmGithubSyncJobStatus {
 }
 
 export interface CrmGithubBootstrapPayload {
-  applicationSlug: string
   token: string
   owner: string
   issueTarget?: string
   createPublicProject?: boolean
   dryRun?: boolean
+}
+
+export interface CrmGithubBootstrapResponse {
+  jobId: string
+  status: string
 }
 
 export interface CrmGithubAttachRepositoryPayload {
