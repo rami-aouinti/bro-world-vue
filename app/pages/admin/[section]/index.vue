@@ -21,7 +21,7 @@ const dialogMode = ref<'create' | 'edit'>('create')
 const selectedItemId = ref('')
 const formState = ref<Record<string, string>>({})
 
-await store.fetchSection(sectionKey.value)
+void store.fetchSection(sectionKey.value)
 
 const pending = computed(() => store.pending)
 const totalCount = computed(() => store.countBySection[sectionKey.value] ?? 0)
@@ -52,6 +52,8 @@ const displayedColumns = computed(() => {
     .slice(0, 5)
     .map((key) => ({ title: key, key }))
 })
+
+const skeletonColumns = computed(() => [...displayedColumns.value, { title: 'Actions', key: 'actions' }])
 
 const canMutate = computed(() => section.value.capabilities)
 
@@ -137,8 +139,29 @@ async function removeItem(item: Record<string, unknown>) {
           class="mb-4"
         />
 
+        <template v-if="pending">
+          <v-table class="bg-transparent">
+            <thead>
+              <tr>
+                <th v-for="column in skeletonColumns" :key="`skeleton-head-${column.key}`">
+                  {{ column.title }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="rowIndex in 5" :key="`skeleton-row-${rowIndex}`">
+                <td
+                  v-for="column in skeletonColumns"
+                  :key="`skeleton-cell-${rowIndex}-${column.key}`"
+                >
+                  <v-skeleton-loader type="text" />
+                </td>
+              </tr>
+            </tbody>
+          </v-table>
+        </template>
         <v-data-table
-          :loading="pending"
+          v-else
           :headers="[
             ...displayedColumns,
             { title: 'Actions', key: 'actions', sortable: false },
