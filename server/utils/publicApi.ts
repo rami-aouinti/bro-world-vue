@@ -1,6 +1,7 @@
 import type { H3Event } from 'h3'
 import type { ApiQuery, ApiResponse } from '../types/api/common'
 import { getCached, publicCacheKey, setCached } from './apiCache'
+import { getPersistentCached, setPersistentCached } from './persistentApiCache'
 import {
   resolveCacheDomain,
   resolveCacheTtl,
@@ -14,6 +15,8 @@ type PublicApiOptions = {
 
 type CachedPublicGetOptions = PublicApiOptions & {
   cacheDomain?: CacheDomain
+  ttlSeconds?: number
+  persistent?: boolean
 }
 
 /**
@@ -41,18 +44,32 @@ export async function cachedPublicGet<TResponse extends ApiResponse>(
   options?: CachedPublicGetOptions,
 ): Promise<TResponse> {
   const cacheKey = publicCacheKey(endpoint, options?.query)
+  const domain = options?.cacheDomain ?? resolveCacheDomain(endpoint)
+  const ttl = options?.ttlSeconds ?? resolveCacheTtl(domain)
 
   const cached = await getCached<TResponse>(cacheKey)
   if (cached) {
     return cached
   }
 
+  if (options?.persistent) {
+    const persistentCached = await getPersistentCached<TResponse>(cacheKey)
+    if (persistentCached) {
+      await setCached(cacheKey, persistentCached, ttl)
+      return persistentCached
+    }
+  }
+
   const response = await callPublicApi<TResponse>(event, endpoint, {
     query: options?.query,
   })
 
-  const domain = options?.cacheDomain ?? resolveCacheDomain(endpoint)
-  await setCached(cacheKey, response, resolveCacheTtl(domain))
+  await Promise.all([
+    setCached(cacheKey, response, ttl),
+    options?.persistent
+      ? setPersistentCached(cacheKey, response, ttl)
+      : Promise.resolve(),
+  ])
 
   return response
 }
