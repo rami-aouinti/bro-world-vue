@@ -1,5 +1,5 @@
 import type { CrmTaskItem } from '~~/server/types/api/crm-general'
-import { cachedCrmGeneralGet } from '~~/server/utils/crmGeneralPrivateApi'
+import { fetchCrmGeneral } from '~~/server/utils/crmGeneralApi'
 
 export default defineEventHandler(async (event): Promise<CrmTaskItem> => {
   const task = getRouterParam(event, 'task')
@@ -8,5 +8,5 @@ export default defineEventHandler(async (event): Promise<CrmTaskItem> => {
     throw createError({ statusCode: 400, statusMessage: 'Missing task id' })
   }
 
-  return cachedCrmGeneralGet<CrmTaskItem>(event, `tasks/${task}`)
+  return fetchCrmGeneral<CrmTaskItem>(`tasks/${task}`)
 })

@@ -1,5 +1,5 @@
 import type { CrmSprintItem } from '~~/server/types/api/crm-general'
-import { cachedCrmGeneralGet } from '~~/server/utils/crmGeneralPrivateApi'
+import { fetchCrmGeneral } from '~~/server/utils/crmGeneralApi'
 
 export default defineEventHandler(async (event): Promise<CrmSprintItem> => {
   const sprint = getRouterParam(event, 'sprint')
@@ -8,5 +8,5 @@ export default defineEventHandler(async (event): Promise<CrmSprintItem> => {
     throw createError({ statusCode: 400, statusMessage: 'Missing sprint id' })
   }
 
-  return cachedCrmGeneralGet<CrmSprintItem>(event, `sprints/${sprint}`)
+  return fetchCrmGeneral<CrmSprintItem>(`sprints/${sprint}`)
 })

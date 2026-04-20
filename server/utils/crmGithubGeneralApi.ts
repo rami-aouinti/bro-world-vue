@@ -6,6 +6,7 @@ import { invalidateMutationCaches } from './mutationInvalidation'
 import { getSessionAuth } from './privateApi'
 
 const CRM_GENERAL_BASE_ENDPOINT = '/crm/general'
+const CRM_GENERAL_PUBLIC_BASE_URL = 'https://bro-world.org/api/v1/crm/general'
 const CRM_GITHUB_MUTATION_KEY = 'crm:general:mutate'
 const MONTH_IN_SECONDS = 30 * 24 * 60 * 60
 const CRM_GITHUB_SYNC_CONTEXT_ENDPOINT = 'crm/general/github/sync/context'
@@ -66,6 +67,17 @@ async function saveCrmGithubSyncContext(
   return nextContext
 }
 
+async function saveCrmGithubSyncContextIfAuthenticated(
+  event: H3Event,
+  context: Partial<CrmGithubSyncContext>,
+) {
+  try {
+    await saveCrmGithubSyncContext(event, context)
+  } catch {
+    // Ignore when request is unauthenticated; GET endpoints can be public.
+  }
+}
+
 function crmGithubEndpoint(path: string) {
   const normalizedPath = path.replace(/^\/+/, '')
   return `${CRM_GENERAL_BASE_ENDPOINT}/${normalizedPath}`
@@ -76,30 +88,29 @@ export async function cachedCrmGithubGeneralGet<TResponse = unknown>(
   path: string,
   query?: Record<string, unknown>,
 ): Promise<TResponse> {
-  const { username } = await getSessionAuth(event)
+  const normalizedPath = path.replace(/^\/+/, '')
   const endpoint = crmGithubEndpoint(path)
-  const cacheKey = privateCacheKey(username, endpoint, query)
+  const cacheKey = privateCacheKey('public', endpoint, query)
 
   const cached = await getCached<TResponse>(cacheKey)
   if (cached) {
     return cached
   }
 
-  const client = await getServerPrivateAxios(event)
-  const response = await client.get<TResponse>(resolveServerApiUrl(event, endpoint), {
-    params: query,
+  const response = await $fetch<TResponse>(`${CRM_GENERAL_PUBLIC_BASE_URL}/${normalizedPath}`, {
+    query,
   })
 
   const syncJobId = extractSyncJobIdPath(path)
   if (syncJobId) {
-    const payload = asRecord(response.data)
+    const payload = asRecord(response)
     const applicationSlug = toNonEmptyString(payload?.applicationSlug)
     const owner = toNonEmptyString(payload?.owner)
     const status = toNonEmptyString(payload?.status)
     const id = toNonEmptyString(payload?.id)
 
     if (id || applicationSlug || owner || status) {
-      await saveCrmGithubSyncContext(event, {
+      await saveCrmGithubSyncContextIfAuthenticated(event, {
         jobId: id ?? syncJobId,
         applicationSlug,
         owner,
@@ -108,9 +119,9 @@ export async function cachedCrmGithubGeneralGet<TResponse = unknown>(
     }
   }
 
-  await setCached(cacheKey, response.data, resolveCacheTtl('crm'))
+  await setCached(cacheKey, response, resolveCacheTtl('crm'))
 
-  return response.data
+  return response
 }
 
 export async function mutateCrmGithubGeneral<TResponse = unknown>(
@@ -138,7 +149,7 @@ export async function mutateCrmGithubGeneral<TResponse = unknown>(
     const status = toNonEmptyString(payload?.status)
 
     if (jobId || status) {
-      await saveCrmGithubSyncContext(event, { jobId, status })
+      await saveCrmGithubSyncContextIfAuthenticated(event, { jobId, status })
     }
   }
 
@@ -151,7 +162,7 @@ export async function mutateCrmGithubGeneral<TResponse = unknown>(
     const id = toNonEmptyString(payload?.id)
 
     if (id || applicationSlug || owner || status) {
-      await saveCrmGithubSyncContext(event, {
+      await saveCrmGithubSyncContextIfAuthenticated(event, {
         jobId: id ?? syncJobId,
         applicationSlug,
         owner,
