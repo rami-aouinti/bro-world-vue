@@ -7,12 +7,40 @@ const sessionUser = computed(() => user.value as SessionUser | null)
 const isRoot = computed(
   () => sessionUser.value?.roles?.includes('ROLE_ROOT') ?? false,
 )
+const isAdmin = computed(
+  () => sessionUser.value?.roles?.includes('ROLE_ADMIN') ?? false,
+)
 
 const learningNavItems = computed(() => [
   {
     title: t('world.learning.nav.courses'),
     to: '/world/learning/courses',
     icon: 'mdi-book-open-page-variant-outline',
+  },
+  {
+    title: 'Classes',
+    to: '/world/learning/classes',
+    icon: 'mdi-google-classroom',
+  },
+  {
+    title: 'Teachers',
+    to: '/world/learning/teachers',
+    icon: 'mdi-account-tie',
+  },
+  {
+    title: 'Students',
+    to: '/world/learning/students',
+    icon: 'mdi-account-school',
+  },
+  {
+    title: 'Exams',
+    to: '/world/learning/exams',
+    icon: 'mdi-file-document-outline',
+  },
+  {
+    title: 'Grades',
+    to: '/world/learning/grades',
+    icon: 'mdi-check-decagram-outline',
   },
   {
     title: t('world.learning.nav.levels'),
@@ -24,13 +52,12 @@ const learningNavItems = computed(() => [
     to: '/world/learning/paths',
     icon: 'mdi-map-marker-path',
   },
-  ...(isRoot.value
+  ...(isRoot.value || isAdmin.value
     ? [
         {
           title: t('world.learning.nav.admin'),
           to: '/world/learning/admin',
           icon: 'mdi-shield-crown-outline',
-          rootOnly: true,
         },
       ]
     : []),
