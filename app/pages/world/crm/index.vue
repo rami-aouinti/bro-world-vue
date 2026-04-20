@@ -7,6 +7,36 @@ definePageMeta({
 
 const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
+const { fetch: refreshSession, loggedIn } = useUserSession()
+
+const loginDialogOpen = ref(false)
+const loginLoading = ref(false)
+
+async function onLoginSubmit(payload: {
+  username?: string
+  email: string
+  password: string
+  remember?: boolean
+}) {
+  loginLoading.value = true
+  try {
+    await $fetch('/api/login', {
+      method: 'POST',
+      body: {
+        username: payload.username ?? payload.email,
+        password: payload.password,
+        remember: payload.remember ?? true,
+      },
+    })
+    await refreshSession()
+    loginDialogOpen.value = false
+    Notify.success(t('auth.notifications.loginSuccess'))
+  } catch {
+    Notify.error(t('auth.notifications.loginError'))
+  } finally {
+    loginLoading.value = false
+  }
+}
 
 const documentationSections = [
   {
@@ -63,9 +93,9 @@ const githubSyncSteps = [
       module-icon="mdi-account-group-outline"
       :module-description="t('world.crm.moduleDescription')"
       :nav-items="crmNavItems"
-      action-label="Create Crm"
+      :action-label="loggedIn ? 'Create Crm' : t('appbar.login')"
       action-icon="mdi-plus-circle-outline"
-      @action="navigateTo('/platform/crm/new')"
+      @action="loggedIn ? navigateTo('/platform/crm/new') : (loginDialogOpen = true)"
     >
       <template #right />
     </WorldModuleDrawers>
@@ -82,8 +112,13 @@ const githubSyncSteps = [
                   gouvernance admin et onboarding opérationnel.
                 </p>
               </div>
-              <v-btn color="primary" prepend-icon="mdi-rocket-launch-outline" @click="navigateTo('/platform/crm/new')">
-                Create Crm
+              <v-btn
+                color="primary"
+                :variant="loggedIn ? 'elevated' : 'tonal'"
+                :prepend-icon="loggedIn ? 'mdi-rocket-launch-outline' : 'mdi-login'"
+                @click="loggedIn ? navigateTo('/platform/crm/new') : (loginDialogOpen = true)"
+              >
+                {{ loggedIn ? 'Create Crm' : t('appbar.login') }}
               </v-btn>
             </div>
           </v-card>
@@ -146,6 +181,18 @@ const githubSyncSteps = [
         </v-col>
       </v-row>
     </v-container>
+
+    <AppModal
+      v-model="loginDialogOpen"
+      :title="t('auth.login.title')"
+      :max-width="560"
+    >
+      <AuthFormCard
+        mode="login"
+        :loading="loginLoading"
+        @submit="onLoginSubmit"
+      />
+    </AppModal>
   </div>
 </template>
 

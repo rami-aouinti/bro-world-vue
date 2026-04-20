@@ -24,6 +24,10 @@ definePageMeta({ title: 'CRM Tasks' })
 const { locale, t } = useI18n()
 const router = useRouter()
 const { crmNavItems } = useWorldCrmNavItems()
+const { sessionUser } = useCrmPermissions()
+const isRootAdmin = computed(() =>
+  (sessionUser.value?.roles ?? []).includes('ROLE_ROOT'),
+)
 const createDialog = ref(false)
 const pendingCreate = ref(false)
 const search = ref('')
@@ -78,6 +82,7 @@ function formatDate(value: string | null) {
 }
 
 async function createTask() {
+  if (!isRootAdmin.value) return
   pendingCreate.value = true
   try {
     await $fetch<CrmIdResponse>('/api/crm/general/tasks', {
@@ -99,9 +104,10 @@ async function createTask() {
       module-icon="mdi-account-group-outline"
       :module-description="t('world.crm.tasks.moduleDescription')"
       :nav-items="crmNavItems"
+      :show-action="isRootAdmin"
       :action-label="t('world.crm.tasks.actions.create')"
       action-icon="mdi-plus"
-      @action="createDialog = true"
+      @action="isRootAdmin ? (createDialog = true) : undefined"
     />
 
     <v-container fluid>
@@ -167,7 +173,7 @@ async function createTask() {
       </template>
     </v-container>
 
-    <AppModal v-model="createDialog" :title="t('world.crm.tasks.modal.createTitle')" :max-width="720">
+    <AppModal v-if="isRootAdmin" v-model="createDialog" :title="t('world.crm.tasks.modal.createTitle')" :max-width="720">
       <v-row>
         <v-col cols="12" md="6"><v-text-field v-model="createPayload.projectId" :label="t('world.crm.tasks.form.projectId')" required /></v-col>
         <v-col cols="12" md="6"><v-text-field v-model="createPayload.title" :label="t('world.crm.tasks.form.title')" required /></v-col>

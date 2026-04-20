@@ -21,6 +21,7 @@ const props = defineProps<{
   navItems: WorldModuleNavItem[]
   actionLabel?: string
   actionIcon?: string
+  showAction?: boolean
 }>()
 
 const { t } = useI18n()
@@ -74,12 +75,7 @@ type GeneralPublicItem = {
 const { data: generalApplications } = await useAsyncData(
   'world-public-general-applications',
   () =>
-    $fetch<{ items?: GeneralPublicItem[] }>(
-      'https://bro-world.org/api/v1/application/public/general',
-      {
-        headers: { accept: '*/*' },
-      },
-    ),
+    $fetch<{ items?: GeneralPublicItem[] }>('/api/application/public/general'),
 )
 
 const selectedGeneralApplication = computed(() =>
@@ -151,6 +147,7 @@ const quickCheckItems = computed(() => [
           </div>
         </NuxtLink>
         <v-btn
+          v-if="showAction !== false"
           color="primary"
           variant="tonal"
           :prepend-icon="actionIcon || 'mdi-plus-circle-outline'"

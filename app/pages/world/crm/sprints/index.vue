@@ -19,6 +19,10 @@ definePageMeta({ title: 'CRM Sprints' })
 const { locale, t } = useI18n()
 const router = useRouter()
 const { crmNavItems } = useWorldCrmNavItems()
+const { sessionUser } = useCrmPermissions()
+const isRootAdmin = computed(() =>
+  (sessionUser.value?.roles ?? []).includes('ROLE_ROOT'),
+)
 const createDialog = ref(false)
 const pendingCreate = ref(false)
 const search = ref('')
@@ -68,6 +72,7 @@ function formatDate(value: string) {
 }
 
 async function createSprint() {
+  if (!isRootAdmin.value) return
   pendingCreate.value = true
   try {
     await $fetch<CrmIdResponse>('/api/crm/general/sprints', {
@@ -89,9 +94,10 @@ async function createSprint() {
       module-icon="mdi-account-group-outline"
       :module-description="t('world.crm.sprints.moduleDescription')"
       :nav-items="crmNavItems"
+      :show-action="isRootAdmin"
       :action-label="t('world.crm.sprints.actions.create')"
       action-icon="mdi-plus"
-      @action="createDialog = true"
+      @action="isRootAdmin ? (createDialog = true) : undefined"
     />
 
     <v-container fluid>
@@ -154,7 +160,7 @@ async function createSprint() {
       </template>
     </v-container>
 
-    <AppModal v-model="createDialog" :title="t('world.crm.sprints.modal.createTitle')" :max-width="720">
+    <AppModal v-if="isRootAdmin" v-model="createDialog" :title="t('world.crm.sprints.modal.createTitle')" :max-width="720">
       <v-row>
         <v-col cols="12" md="6"><v-text-field v-model="createPayload.projectId" :label="t('world.crm.sprints.form.projectId')" required /></v-col>
         <v-col cols="12" md="6"><v-text-field v-model="createPayload.name" :label="t('world.crm.sprints.form.name')" required /></v-col>

@@ -10,6 +10,10 @@ const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
+const { sessionUser } = useCrmPermissions()
+const isRootAdmin = computed(() =>
+  (sessionUser.value?.roles ?? []).includes('ROLE_ROOT'),
+)
 const taskId = computed(() => String(route.params.task ?? ''))
 
 definePageMeta({ title: 'CRM Task Detail' })
@@ -74,6 +78,7 @@ watchEffect(() => {
 })
 
 async function save() {
+  if (!isRootAdmin.value) return
   pendingSave.value = true
   try {
     await $fetch<CrmIdResponse>(`/api/crm/general/tasks/${taskId.value}`, {
@@ -87,11 +92,13 @@ async function save() {
 }
 
 async function remove() {
+  if (!isRootAdmin.value) return
   await $fetch(`/api/crm/general/tasks/${taskId.value}`, { method: 'DELETE' })
   await router.push('/world/crm/tasks')
 }
 
 async function attachAssignee() {
+  if (!isRootAdmin.value) return
   if (!assigneeId.value.trim()) return
   await $fetch(`/api/crm/general/tasks/${taskId.value}/assignees/${encodeURIComponent(assigneeId.value.trim())}`, { method: 'PUT' })
   assigneeId.value = ''
@@ -99,11 +106,13 @@ async function attachAssignee() {
 }
 
 async function detachAssignee(userId: string) {
+  if (!isRootAdmin.value) return
   await $fetch(`/api/crm/general/tasks/${taskId.value}/assignees/${encodeURIComponent(userId)}`, { method: 'DELETE' })
   await refresh()
 }
 
 async function createSubtask() {
+  if (!isRootAdmin.value) return
   await $fetch<CrmIdResponse>(`/api/crm/general/tasks/${taskId.value}/subtasks`, {
     method: 'POST',
     body: newSubtask,
@@ -112,6 +121,7 @@ async function createSubtask() {
 }
 
 async function attachSubtask() {
+  if (!isRootAdmin.value) return
   if (!subtaskToAttach.value.trim()) return
   await $fetch(`/api/crm/general/tasks/${taskId.value}/subtasks/${encodeURIComponent(subtaskToAttach.value.trim())}`, { method: 'PUT' })
   subtaskToAttach.value = ''
@@ -119,11 +129,13 @@ async function attachSubtask() {
 }
 
 async function detachSubtask(subtaskId: string) {
+  if (!isRootAdmin.value) return
   await $fetch(`/api/crm/general/tasks/${taskId.value}/subtasks/${encodeURIComponent(subtaskId)}`, { method: 'DELETE' })
   await refresh()
 }
 
 async function attachToSprint() {
+  if (!isRootAdmin.value) return
   if (!sprintToAttach.value) return
   await $fetch(`/api/crm/general/sprints/${encodeURIComponent(sprintToAttach.value)}/tasks/${encodeURIComponent(taskId.value)}`, { method: 'PUT' })
   await refresh()
@@ -154,15 +166,15 @@ async function attachToSprint() {
         <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
           <h2 class="text-h6 mb-4">{{ data.title }}</h2>
           <v-row>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.projectId" :label="t('world.crm.tasks.form.projectId')" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.title" :label="t('world.crm.tasks.form.title')" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.status" :label="t('world.crm.tasks.form.status')" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.priority" :label="t('world.crm.tasks.form.priority')" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.dueAt" :label="t('world.crm.tasks.form.dueAt')" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.estimatedHours" :label="t('world.crm.tasks.form.estimatedHours')" type="number" /></v-col>
-            <v-col cols="12"><v-textarea v-model="payload.description" :label="t('world.crm.tasks.form.description')" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.projectId" :label="t('world.crm.tasks.form.projectId')" :readonly="!isRootAdmin" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.title" :label="t('world.crm.tasks.form.title')" :readonly="!isRootAdmin" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.status" :label="t('world.crm.tasks.form.status')" :readonly="!isRootAdmin" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.priority" :label="t('world.crm.tasks.form.priority')" :readonly="!isRootAdmin" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.dueAt" :label="t('world.crm.tasks.form.dueAt')" :readonly="!isRootAdmin" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.estimatedHours" :label="t('world.crm.tasks.form.estimatedHours')" type="number" :readonly="!isRootAdmin" /></v-col>
+            <v-col cols="12"><v-textarea v-model="payload.description" :label="t('world.crm.tasks.form.description')" :readonly="!isRootAdmin" /></v-col>
           </v-row>
-          <div class="d-flex ga-2">
+          <div v-if="isRootAdmin" class="d-flex ga-2">
             <v-btn color="primary" :loading="pendingSave" @click="save">{{ t('world.crm.tasks.actions.save') }}</v-btn>
             <v-btn color="error" variant="tonal" @click="remove">{{ t('world.crm.tasks.actions.delete') }}</v-btn>
           </div>
@@ -171,11 +183,11 @@ async function attachToSprint() {
         <v-card rounded="xl" class="pa-4 postcard-gradient-card">
           <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.tasks.sections.subtasks') }}</h3>
           <v-row>
-            <v-col cols="12" md="6"><v-text-field v-model="newSubtask.title" :label="t('world.crm.tasks.form.subtaskTitle')" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="newSubtask.status" :label="t('world.crm.tasks.form.status')" /></v-col>
-            <v-col cols="12"><v-textarea v-model="newSubtask.description" :label="t('world.crm.tasks.form.description')" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="newSubtask.title" :label="t('world.crm.tasks.form.subtaskTitle')" :readonly="!isRootAdmin" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="newSubtask.status" :label="t('world.crm.tasks.form.status')" :readonly="!isRootAdmin" /></v-col>
+            <v-col cols="12"><v-textarea v-model="newSubtask.description" :label="t('world.crm.tasks.form.description')" :readonly="!isRootAdmin" /></v-col>
           </v-row>
-          <v-btn color="secondary" variant="tonal" class="mb-3" @click="createSubtask">{{ t('world.crm.tasks.actions.createSubtask') }}</v-btn>
+          <v-btn v-if="isRootAdmin" color="secondary" variant="tonal" class="mb-3" @click="createSubtask">{{ t('world.crm.tasks.actions.createSubtask') }}</v-btn>
 
           <AppSelect
             v-model="subtaskToAttach"
@@ -184,8 +196,9 @@ async function attachToSprint() {
             item-value="value"
             :label="t('world.crm.tasks.form.subtaskIdToAttach')"
             class="mb-2"
+            :disabled="!isRootAdmin"
           />
-          <v-btn color="secondary" variant="tonal" class="mb-3" @click="attachSubtask">{{ t('world.crm.tasks.actions.attachSubtask') }}</v-btn>
+          <v-btn v-if="isRootAdmin" color="secondary" variant="tonal" class="mb-3" @click="attachSubtask">{{ t('world.crm.tasks.actions.attachSubtask') }}</v-btn>
 
           <v-list density="compact" bg-color="transparent">
             <v-list-item
@@ -194,7 +207,7 @@ async function attachToSprint() {
               :title="subtask.title"
               :subtitle="subtask.status"
             >
-              <template #append>
+              <template v-if="isRootAdmin" #append>
                 <v-btn size="small" icon="mdi-link-off" variant="text" color="error" @click="detachSubtask(subtask.id)" />
               </template>
             </v-list-item>
@@ -212,15 +225,16 @@ async function attachToSprint() {
             item-value="value"
             :label="t('world.crm.tasks.form.userId')"
             class="mb-2"
+            :disabled="!isRootAdmin"
           />
-          <v-btn color="secondary" variant="tonal" class="mb-4" @click="attachAssignee">{{ t('world.crm.tasks.actions.attach') }}</v-btn>
+          <v-btn v-if="isRootAdmin" color="secondary" variant="tonal" class="mb-4" @click="attachAssignee">{{ t('world.crm.tasks.actions.attach') }}</v-btn>
           <v-list density="compact" bg-color="transparent">
             <v-list-item
               v-for="assignee in data.assignees"
               :key="String((assignee as any).id ?? assignee)"
               :title="String((assignee as any).username ?? (assignee as any).id ?? assignee)"
             >
-              <template #append>
+              <template v-if="isRootAdmin" #append>
                 <v-btn size="small" color="error" variant="text" icon="mdi-close" @click="detachAssignee(String((assignee as any).id ?? assignee))" />
               </template>
             </v-list-item>
@@ -234,8 +248,9 @@ async function attachToSprint() {
             item-value="value"
             label="Sprint"
             class="mb-2"
+            :disabled="!isRootAdmin"
           />
-          <v-btn color="secondary" variant="tonal" class="mb-4" @click="attachToSprint">Attach sprint</v-btn>
+          <v-btn v-if="isRootAdmin" color="secondary" variant="tonal" class="mb-4" @click="attachToSprint">Attach sprint</v-btn>
         </v-card>
       </v-col>
     </v-row>
