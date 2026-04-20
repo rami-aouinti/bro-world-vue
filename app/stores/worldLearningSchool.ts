@@ -1,12 +1,25 @@
 const SCHOOL_STORE_TTL_MS = 2 * 60 * 1000
-export type SchoolResource = 'exams' | 'classes' | 'teachers' | 'students' | 'grades'
+export type SchoolResource =
+  | 'exams'
+  | 'classes'
+  | 'teachers'
+  | 'students'
+  | 'grades'
+  | 'courses'
 
 type SchoolCollectionResponse = { items: Record<string, unknown>[] }
 type SchoolItemResponse = { item?: Record<string, unknown> } & Record<string, unknown>
 
 function normalizeSchoolResource(resource: string): SchoolResource {
   const value = resource.trim().toLowerCase()
-  if (value === 'exams' || value === 'classes' || value === 'teachers' || value === 'students' || value === 'grades') {
+  if (
+    value === 'exams'
+    || value === 'classes'
+    || value === 'teachers'
+    || value === 'students'
+    || value === 'grades'
+    || value === 'courses'
+  ) {
     return value
   }
 

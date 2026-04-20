@@ -13,50 +13,93 @@ const emit = defineEmits<{
 
 const router = useRouter()
 
-const titleByResource: Record<SchoolResource, string> = {
-  exams: 'Exams',
-  classes: 'Classes',
-  teachers: 'Teachers',
-  students: 'Students',
-  grades: 'Grades',
+type FieldConfig = {
+  key: string
+  label: string
+  type?: 'text' | 'reference' | 'teacher-card'
+  referenceResource?: SchoolResource
 }
 
-const isIdField = (key: string) => /id$/i.test(key)
-
-const relatedResourceByField = (field: string): SchoolResource | null => {
-  const normalized = field.replace(/Id$/i, '').toLowerCase()
-  if (normalized === 'class') return 'classes'
-  if (normalized === 'teacher') return 'teachers'
-  if (normalized === 'student') return 'students'
-  if (normalized === 'exam') return 'exams'
-  if (normalized === 'grade') return 'grades'
-  return null
+const fieldConfigByResource: Record<SchoolResource, FieldConfig[]> = {
+  classes: [
+    { key: 'name', label: 'Name' },
+  ],
+  courses: [
+    { key: 'name', label: 'Name' },
+    { key: 'className', label: 'Class' },
+    { key: 'teacher', label: 'Teacher', type: 'teacher-card' },
+    { key: 'teacherId', label: 'Teacher', type: 'reference', referenceResource: 'teachers' },
+  ],
+  exams: [
+    { key: 'title', label: 'Title' },
+    { key: 'courseName', label: 'Course' },
+    { key: 'courseId', label: 'Course', type: 'reference', referenceResource: 'courses' },
+    { key: 'className', label: 'Class' },
+    { key: 'teacher', label: 'Teacher', type: 'teacher-card' },
+    { key: 'teacherId', label: 'Teacher', type: 'reference', referenceResource: 'teachers' },
+    { key: 'type', label: 'Type' },
+    { key: 'status', label: 'Status' },
+    { key: 'term', label: 'Term' },
+  ],
+  grades: [
+    { key: 'score', label: 'Score' },
+    { key: 'student', label: 'Student' },
+    { key: 'studentId', label: 'Student', type: 'reference', referenceResource: 'students' },
+    { key: 'examTitle', label: 'Exam' },
+    { key: 'examId', label: 'Exam', type: 'reference', referenceResource: 'exams' },
+    { key: 'courseName', label: 'Course' },
+    { key: 'courseId', label: 'Course', type: 'reference', referenceResource: 'courses' },
+  ],
+  students: [
+    { key: 'name', label: 'Name' },
+    { key: 'className', label: 'Class' },
+    { key: 'classId', label: 'Class', type: 'reference', referenceResource: 'classes' },
+  ],
+  teachers: [
+    { key: 'name', label: 'Name' },
+    { key: 'user', label: 'Profile' },
+  ],
 }
 
-const relatedLabelByResource: Record<SchoolResource, string> = {
-  exams: 'Exam',
-  classes: 'Class',
-  teachers: 'Teacher',
-  students: 'Student',
-  grades: 'Grade',
-}
+const fields = computed(() => fieldConfigByResource[props.resource] ?? [])
 
 function onValueClick(item: Record<string, unknown>) {
   const id = item.id
-  if (!id) {
-    return
-  }
-
+  if (!id) return
   router.push(`/world/learning/${props.resource}/${id}`)
 }
 
-function onReferenceClick(field: string, value: unknown) {
-  const resolvedResource = relatedResourceByField(field)
-  if (!resolvedResource || value === null || value === undefined || String(value).trim() === '') {
+function onReferenceClick(resource: SchoolResource, value: unknown) {
+  if (value === null || value === undefined || String(value).trim() === '') {
     return
   }
 
-  emit('openReference', { key: resolvedResource, value: String(value) })
+  emit('openReference', { key: resource, value: String(value) })
+}
+
+function asTeacher(value: unknown) {
+  if (!value || typeof value !== 'object') {
+    return null
+  }
+
+  const teacher = value as Record<string, unknown>
+  return {
+    name: String(teacher.name ?? 'Unknown'),
+    photo: String(teacher.photo ?? ''),
+  }
+}
+
+function formatDefaultValue(value: unknown) {
+  if (value && typeof value === 'object') {
+    const entity = value as Record<string, unknown>
+    if (entity.name) {
+      return String(entity.name)
+    }
+
+    return JSON.stringify(value)
+  }
+
+  return String(value ?? '—')
 }
 </script>
 
@@ -72,19 +115,29 @@ function onReferenceClick(field: string, value: unknown) {
       >
         <v-card rounded="xl" class="h-100 pa-4 postcard-gradient-card">
           <div class="text-caption text-medium-emphasis mb-2">{{ resource.slice(0, -1) }} #{{ item.id ?? index + 1 }}</div>
-          <div class="d-flex flex-column ga-2">
-            <div v-for="(value, key) in item" :key="`${String(item.id ?? index)}-${key}`" class="d-flex align-center justify-space-between ga-3">
-              <span class="text-caption text-medium-emphasis">{{ key }}</span>
+          <div class="d-flex flex-column ga-3">
+            <div v-for="field in fields" :key="`${String(item.id ?? index)}-${field.key}`" class="d-flex align-center justify-space-between ga-3">
+              <span class="text-caption text-medium-emphasis">{{ field.label }}</span>
 
               <v-chip
-                v-if="isIdField(key) && key !== 'id'"
+                v-if="field.type === 'reference' && field.referenceResource"
                 size="small"
                 color="secondary"
                 variant="outlined"
-                @click="onReferenceClick(key, value)"
+                @click="onReferenceClick(field.referenceResource, item[field.key])"
               >
-                {{ relatedLabelByResource[relatedResourceByField(key) ?? resource] }}: {{ value }}
+                {{ item[field.key] }}
               </v-chip>
+
+              <div
+                v-else-if="field.type === 'teacher-card' && asTeacher(item[field.key])"
+                class="d-flex flex-column align-center"
+              >
+                <v-avatar size="36" class="mb-1">
+                  <img :src="asTeacher(item[field.key])?.photo" alt="Teacher" />
+                </v-avatar>
+                <span class="text-caption">{{ asTeacher(item[field.key])?.name }}</span>
+              </div>
 
               <v-btn
                 v-else
@@ -93,7 +146,7 @@ function onReferenceClick(field: string, value: unknown) {
                 class="text-none px-1"
                 @click="onValueClick(item)"
               >
-                {{ value }}
+                {{ formatDefaultValue(item[field.key]) }}
               </v-btn>
             </div>
           </div>
