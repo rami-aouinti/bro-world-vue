@@ -416,9 +416,14 @@
         "saveFailed": "Unable to save this event.",
         "deleteFailed": "Unable to delete this event.",
         "cancelFailed": "Unable to cancel this event.",
-        "moveFailed": "Unable to move this event."
+        "moveFailed": "Unable to move this event.",
+        "googleConnectFailed": "Unable to connect to Google Calendar."
       },
       "presetTitle": "Preset events",
+      "googleConnect": "Connect to Google Calendar",
+      "googleToken": "Google token",
+      "googleEventsTitle": "Google Calendar events",
+      "noGoogleEvents": "No Google Calendar events loaded.",
       "presets": {
         "meeting": "Meeting",
         "party": "Party",
