@@ -135,7 +135,7 @@ async function refreshAll() {
         <v-col cols="12" md="6">
           <v-card class="pa-4 h-100 postcard-gradient-card" rounded="xl">
             <h2 class="text-subtitle-1 mb-3">{{ t('world.crm.repositories.sections.issues', { count: issues.length }) }}</h2>
-            <v-list lines="two" density="compact">
+            <v-list lines="two" density="compact" class="bg-transparent">
               <v-list-item v-for="issue in issues" :key="String(issue.id ?? issue.number)" :title="issue.title ?? `#${issue.number}`" :subtitle="`${t('world.crm.repositories.labels.state', 'State')}: ${issue.state ?? '-'}`" />
             </v-list>
           </v-card>
@@ -144,7 +144,7 @@ async function refreshAll() {
         <v-col cols="12" md="6">
           <v-card class="pa-4 h-100 postcard-gradient-card" rounded="xl">
             <h2 class="text-subtitle-1 mb-3">{{ t('world.crm.repositories.sections.pullRequests', { count: pullRequests.length }) }}</h2>
-            <v-list lines="two" density="compact">
+            <v-list lines="two" density="compact" class="bg-transparent">
               <v-list-item
                 v-for="pullRequest in pullRequests"
                 :key="String(pullRequest.id ?? pullRequest.number)"
@@ -158,7 +158,7 @@ async function refreshAll() {
         <v-col cols="12" md="6">
           <v-card class="pa-4 h-100 postcard-gradient-card" rounded="xl">
             <h2 class="text-subtitle-1 mb-3">{{ t('world.crm.repositories.sections.projects', { count: boards.length }) }}</h2>
-            <v-list lines="one" density="compact">
+            <v-list lines="one" density="compact" class="bg-transparent">
               <v-list-item v-for="board in boards" :key="String(board.id ?? board.title ?? board.name)" :title="board.title ?? board.name ?? String(board.id)" />
             </v-list>
           </v-card>
@@ -167,7 +167,7 @@ async function refreshAll() {
         <v-col cols="12" md="6">
           <v-card class="pa-4 h-100 postcard-gradient-card" rounded="xl">
             <h2 class="text-subtitle-1 mb-3">{{ t('world.crm.repositories.sections.branches', { count: branches.length }) }}</h2>
-            <v-list lines="one" density="compact">
+            <v-list lines="one" density="compact" class="bg-transparent">
               <v-list-item v-for="branch in branches" :key="String(branch.name)" :title="branch.name ?? '-'" />
             </v-list>
           </v-card>

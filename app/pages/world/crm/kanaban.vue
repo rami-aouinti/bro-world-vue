@@ -234,21 +234,9 @@ function profileLink(username: string | null) {
           >
             <div class="d-flex align-start justify-space-between ga-2 mb-2">
               <p class="font-weight-medium mb-0">{{ card.title }}</p>
-              <v-chip size="x-small" :color="priorityColor(card.priority)">
-                {{ card.priority }}
-              </v-chip>
             </div>
 
             <div class="d-flex flex-wrap ga-2 mb-2">
-              <v-chip
-                v-if="card.projectId"
-                size="small"
-                color="secondary"
-                variant="outlined"
-                @click.stop="openProject(card.projectId)"
-              >
-                {{ card.projectName ?? t('world.crm.kanban.project') }}
-              </v-chip>
               <v-chip
                 v-if="card.parentTaskId"
                 size="small"
@@ -259,11 +247,6 @@ function profileLink(username: string | null) {
                 {{ card.parentTaskTitle ?? t('world.crm.kanban.task') }}
               </v-chip>
             </div>
-
-            <p class="text-caption mb-0">
-              {{ t('world.crm.kanban.dueAt') }}: {{ formatDate(card.dueAt) }}
-            </p>
-
             <div class="d-flex flex-wrap ga-2">
               <NuxtLink
                 v-for="assignee in card.assignees"
