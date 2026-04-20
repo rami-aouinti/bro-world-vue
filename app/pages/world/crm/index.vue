@@ -273,17 +273,11 @@ const githubSyncSteps = [
                 <div class="text-subtitle-2 font-weight-bold">
                   {{ crmGeneralApplication?.title || t('world.crm.label') }}
                 </div>
-                <div class="text-caption text-medium-emphasis mb-2">
-                  {{ crmGeneralApplication?.description }}
-                </div>
-                <v-chip size="small" color="success" variant="flat" label>
-                  {{ crmGeneralApplication?.status || 'active' }}
-                </v-chip>
               </div>
             </div>
           </v-card>
 
-          <v-card rounded="xl" class="pa-4">
+          <v-card variant="tonal" color="primary" class="pa-4">
             <div class="text-subtitle-2 font-weight-bold mb-2">
               {{ t('world.crm.generalDrawer.platform.title', 'Platform') }}
             </div>
@@ -292,7 +286,7 @@ const githubSyncSteps = [
             </v-chip>
           </v-card>
 
-          <v-card rounded="xl" class="pa-4">
+          <v-card variant="tonal" color="primary" class="pa-4">
             <div class="text-subtitle-2 font-weight-bold mb-3">
               {{ t('world.crm.generalDrawer.plugins.title', 'Plugins') }}
             </div>
@@ -405,42 +399,45 @@ const githubSyncSteps = [
           :key="configuration.id || configuration.key"
           rounded="lg"
           variant="outlined"
-          class="pa-3"
+          class="pa-3 postcard-gradient-card"
         >
-          <div class="text-subtitle-2 font-weight-medium mb-3">
-            {{ displayConfigurationName(configuration.key) }}
-          </div>
           <div class="d-flex flex-column ga-3">
             <div
               v-for="field in toDisplayFields(configuration.value)"
               :key="field.id"
               class="config-row"
             >
-              <div class="text-caption text-medium-emphasis mb-1">{{ field.label }}</div>
-              <v-switch
-                v-if="field.type === 'boolean'"
-                :model-value="field.booleanValue"
-                color="primary"
-                density="compact"
-                hide-details
-                inset
-                disabled
-              />
-              <div v-else-if="field.type === 'text'" class="text-body-2">
-                {{ field.textValue }}
-              </div>
-              <div v-else class="d-flex flex-wrap ga-2">
-                <v-chip
-                  v-for="item in field.arrayValue ?? []"
-                  :key="`${field.id}-${item}`"
-                  size="small"
-                  color="primary"
-                  variant="tonal"
-                  label
-                >
-                  {{ item }}
-                </v-chip>
-              </div>
+              <v-row>
+                <v-col cols="6">
+                  <div class="text-caption text-medium-emphasis mb-1">{{ field.label }}</div>
+                </v-col>
+                <v-col cols="6">
+                  <v-switch
+                    v-if="field.type === 'boolean'"
+                    :model-value="field.booleanValue"
+                    color="primary"
+                    density="compact"
+                    hide-details
+                    inset
+                    disabled
+                  />
+                  <div v-else-if="field.type === 'text'" class="text-body-2">
+                    {{ field.textValue }}
+                  </div>
+                  <div v-else class="d-flex flex-wrap ga-2">
+                    <v-chip
+                      v-for="item in field.arrayValue ?? []"
+                      :key="`${field.id}-${item}`"
+                      size="small"
+                      color="primary"
+                      variant="tonal"
+                      label
+                    >
+                      {{ item }}
+                    </v-chip>
+                  </div>
+                </v-col>
+              </v-row>
             </div>
           </div>
         </v-card>
@@ -470,42 +467,45 @@ const githubSyncSteps = [
           :key="configuration.id || configuration.key"
           rounded="lg"
           variant="outlined"
-          class="pa-3"
+          class="pa-3 postcard-gradient-card"
         >
-          <div class="text-subtitle-2 font-weight-medium mb-3">
-            {{ displayConfigurationName(configuration.key) }}
-          </div>
           <div class="d-flex flex-column ga-3">
             <div
               v-for="field in toDisplayFields(configuration.value)"
               :key="field.id"
               class="config-row"
             >
-              <div class="text-caption text-medium-emphasis mb-1">{{ field.label }}</div>
-              <v-switch
-                v-if="field.type === 'boolean'"
-                :model-value="field.booleanValue"
-                color="primary"
-                density="compact"
-                hide-details
-                inset
-                disabled
-              />
-              <div v-else-if="field.type === 'text'" class="text-body-2">
-                {{ field.textValue }}
-              </div>
-              <div v-else class="d-flex flex-wrap ga-2">
-                <v-chip
-                  v-for="item in field.arrayValue ?? []"
-                  :key="`${field.id}-${item}`"
-                  size="small"
-                  color="primary"
-                  variant="tonal"
-                  label
-                >
-                  {{ item }}
-                </v-chip>
-              </div>
+              <v-row>
+                <v-col cols="6">
+                  <div class="text-caption text-medium-emphasis mb-1">{{ field.label }}</div>
+                </v-col>
+                <v-col cols="6">
+                  <v-switch
+                    v-if="field.type === 'boolean'"
+                    :model-value="field.booleanValue"
+                    color="primary"
+                    density="compact"
+                    hide-details
+                    inset
+                    disabled
+                  />
+                  <div v-else-if="field.type === 'text'" class="text-body-2">
+                    {{ field.textValue }}
+                  </div>
+                  <div v-else class="d-flex flex-wrap ga-2">
+                    <v-chip
+                      v-for="item in field.arrayValue ?? []"
+                      :key="`${field.id}-${item}`"
+                      size="small"
+                      color="primary"
+                      variant="tonal"
+                      label
+                    >
+                      {{ item }}
+                    </v-chip>
+                  </div>
+                </v-col>
+              </v-row>
             </div>
           </div>
         </v-card>
@@ -546,7 +546,7 @@ const githubSyncSteps = [
   padding: 10px 12px;
   border-radius: 10px;
   border: 1px solid rgba(var(--v-border-color), 0.22);
-  background: rgba(var(--v-theme-surface-variant), 0.22);
+  background: transparent;
 }
 
 @keyframes crmGlow {

@@ -65,30 +65,7 @@ async function openShow(itemId: string) {
   showItem.value = item
   isShowDialogOpen.value = true
 }
-const learningNavItems = [
-  {
-    title: 'Overview Learning',
-    to: '/world/learning',
-    icon: 'mdi-view-dashboard-outline',
-  },
-  {
-    title: 'Courses',
-    to: '/world/learning/courses',
-    icon: 'mdi-book-open-page-variant-outline',
-  },
-  { title: 'Classes', to: '/world/learning/classes', icon: 'mdi-google-classroom' },
-  { title: 'Teachers', to: '/world/learning/teachers', icon: 'mdi-account-tie' },
-  { title: 'Students', to: '/world/learning/students', icon: 'mdi-account-school' },
-  { title: 'Exams', to: '/world/learning/exams', icon: 'mdi-file-document-outline' },
-  { title: 'Grades', to: '/world/learning/grades', icon: 'mdi-check-decagram-outline' },
-  { title: 'Levels', to: '/world/learning/levels', icon: 'mdi-stairs' },
-  { title: 'Paths', to: '/world/learning/paths', icon: 'mdi-map-marker-path' },
-  {
-    title: 'Admin',
-    to: '/world/learning/admin',
-    icon: 'mdi-shield-crown-outline',
-  },
-]
+const { learningNavItems } = useWorldLearningNavItems()
 async function confirmDelete() {
   if (!deleteDialogClass.value) return
   await store.removeClass(deleteDialogClass.value.id)
