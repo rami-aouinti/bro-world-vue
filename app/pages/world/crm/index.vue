@@ -346,68 +346,8 @@ useSeoMeta({
           </v-card>
         </v-col>
 
-        <v-col cols="12" md="5">
-          <v-card rounded="xl" class="pa-5 h-100 floating-card">
-            <h2 class="text-h6 font-weight-bold mb-3">{{ activeDoc.documentationVariablesTitle }}</h2>
-            <p class="text-body-2 text-medium-emphasis mb-4">
-              {{ activeDoc.documentationVariablesText }}
-            </p>
-            <div class="d-flex flex-wrap ga-2 mb-4">
-              <v-chip
-                v-for="variable in documentationVariables"
-                :key="variable"
-                color="primary"
-                variant="tonal"
-                class="variable-chip"
-              >
-                {{ variable }}
-              </v-chip>
-            </div>
-            <v-alert type="info" variant="tonal" border="start" border-color="primary">
-              {{ activeDoc.documentationExample }}
-            </v-alert>
-          </v-card>
-        </v-col>
-
-        <v-col cols="12" md="7">
-          <v-card rounded="xl" class="pa-5 h-100 floating-card">
-            <div class="d-flex flex-wrap align-center justify-space-between ga-3 mb-3">
-              <h2 class="text-h6 font-weight-bold mb-0">{{ activeDoc.docs4Title }}</h2>
-              <v-chip color="success" variant="tonal" prepend-icon="mdi-translate">i18n ready</v-chip>
-            </div>
-
-            <v-btn-toggle v-model="activeLanguage" mandatory divided class="mb-4 w-100 language-toggle">
-              <v-btn
-                v-for="language in languageOptions"
-                :key="language.value"
-                :value="language.value"
-                variant="text"
-              >
-                {{ language.label }}
-              </v-btn>
-            </v-btn-toggle>
-
-            <h3 class="text-subtitle-1 font-weight-bold mb-2">{{ activeDoc.documentationTitle }}</h3>
-            <p class="text-body-2 text-medium-emphasis mb-4">{{ activeDoc.intro }}</p>
-
-            <v-row>
-              <v-col v-for="block in activeDoc.blocks" :key="block.title" cols="12" class="py-2">
-                <v-sheet rounded="lg" class="pa-4 section-card" border>
-                  <div class="d-flex align-start ga-3">
-                    <v-icon :icon="block.icon" color="primary" size="26" class="mt-1" />
-                    <div>
-                      <h4 class="text-subtitle-2 font-weight-bold mb-1">{{ block.title }}</h4>
-                      <p class="text-body-2 mb-0">{{ block.body }}</p>
-                    </div>
-                  </div>
-                </v-sheet>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-
         <v-col cols="12">
-          <v-card rounded="xl" class="pa-5">
+          <v-card rounded="xl" class="pa-5 postcard-gradient-card">
             <h2 class="text-h6 font-weight-bold mb-3">{{ activeDoc.recommendedReferences }}</h2>
             <v-list density="comfortable" class="bg-transparent">
               <v-list-item
