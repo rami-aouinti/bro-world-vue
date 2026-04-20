@@ -24,6 +24,7 @@ const learningNavItems = [
     title: 'Admin',
     to: '/world/learning/admin',
     icon: 'mdi-shield-crown-outline',
+    rootOnly: true,
   },
 ]
 

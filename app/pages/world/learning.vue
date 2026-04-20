@@ -7,9 +7,6 @@ const sessionUser = computed(() => user.value as SessionUser | null)
 const isRoot = computed(
   () => sessionUser.value?.roles?.includes('ROLE_ROOT') ?? false,
 )
-const isAdmin = computed(
-  () => sessionUser.value?.roles?.includes('ROLE_ADMIN') ?? false,
-)
 
 const learningNavItems = computed(() => [
   {
@@ -27,12 +24,13 @@ const learningNavItems = computed(() => [
     to: '/world/learning/paths',
     icon: 'mdi-map-marker-path',
   },
-  ...(isRoot.value || isAdmin.value
+  ...(isRoot.value
     ? [
         {
           title: t('world.learning.nav.admin'),
           to: '/world/learning/admin',
           icon: 'mdi-shield-crown-outline',
+          rootOnly: true,
         },
       ]
     : []),
