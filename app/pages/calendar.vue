@@ -108,7 +108,7 @@ const selectedEventDetails = ref<PrivateCalendarEvent | null>(null)
 const isDetailsLoading = ref(false)
 const isEditMode = ref(false)
 const dialogOpen = ref(false)
-const selectedRangeFilter = ref<CalendarRangeFilter>('next7days')
+const selectedRangeFilter = ref<CalendarRangeFilter | null>(null)
 const presetEventsHost = ref<HTMLElement | null>(null)
 let presetEventsDraggable: Draggable | null = null
 
@@ -144,6 +144,26 @@ const rangeFilterOptions = computed(() => [
 ])
 
 const fullCalendarEvents = computed(() => {
+  if (!selectedRangeFilter.value) {
+    return calendarEvents.value
+      .filter((event) => !event.isCancelled)
+      .map((event) => {
+        return {
+          id: event.id,
+          title: event.title,
+          start: event.startAt,
+          end: event.endAt,
+          allDay: event.isAllDay,
+          backgroundColor: event.backgroundColor || event.color || undefined,
+          borderColor: event.borderColor || event.color || undefined,
+          textColor: event.textColor || undefined,
+          extendedProps: {
+            raw: event,
+          },
+        }
+      })
+  }
+
   const now = Date.now()
   const rangeEnd = new Date()
 
@@ -718,6 +738,17 @@ onUnmounted(() => {
           <v-card-text v-else class="text-medium-emphasis">
             {{ t('pages.calendar.noUpcoming') }}
           </v-card-text>
+          <v-select
+            v-model="selectedRangeFilter"
+            class="mt-3"
+            clearable
+            density="comfortable"
+            variant="outlined"
+            label="Filter events"
+            :items="rangeFilterOptions"
+            item-title="title"
+            item-value="value"
+          />
         </template>
       </template>
     </AppPageDrawers>
