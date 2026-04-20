@@ -248,11 +248,10 @@ async function confirmDelete() {
     />
 
     <v-container fluid>
-      <v-card rounded="xl" class="pa-5">
-        <div class="d-flex align-center justify-space-between mb-4">
+      <v-card rounded="xl" class="pa-3 postcard-gradient-card">
+        <div class="d-flex align-center justify-space-between mb-2">
           <div>
-            <h1 class="text-h5">{{ title }}</h1>
-            <p class="text-medium-emphasis mb-0">Manage {{ resource }} with create, edit and delete actions.</p>
+            <h2 class="text-h5">{{ title }}</h2>
           </div>
           <div class="d-flex ga-2">
             <v-btn variant="tonal" to="/world/learning/admin" prepend-icon="mdi-arrow-left">Back to admin</v-btn>
@@ -263,7 +262,7 @@ async function confirmDelete() {
 
         <v-alert v-if="error" type="error" variant="tonal" class="mb-4" :text="error" />
 
-        <v-data-table :headers="headers" :items="rows" :loading="pending" density="comfortable">
+        <v-data-table :headers="headers" :items="rows" items-per-page="5" :loading="pending" density="comfortable" class="bg-transparent">
           <template
             v-for="key in fieldKeys"
             :key="`cell-${key}`"
