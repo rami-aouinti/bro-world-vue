@@ -1151,7 +1151,8 @@
         "prev": "Anterior",
         "next": "Siguiente",
         "won": "Ganada",
-        "lost": "Perdida"
+        "lost": "Perdida",
+        "createCrm": "Crear CRM"
       },
       "filters": {
         "search": "Buscar",
@@ -1262,7 +1263,8 @@
           "successSave": "Sprint updated successfully.",
           "successDelete": "Sprint deleted successfully.",
           "errorSave": "Failed to save sprint.",
-          "errorDelete": "Failed to delete sprint."
+          "errorDelete": "Failed to delete sprint.",
+          "empty": "No se encontraron sprints."
         }
       },
       "projects": {
@@ -1305,7 +1307,8 @@
           "successSave": "Project updated successfully.",
           "successDelete": "Project deleted successfully.",
           "errorSave": "Failed to save project.",
-          "errorDelete": "Failed to delete project."
+          "errorDelete": "Failed to delete project.",
+          "empty": "No se encontraron proyectos."
         }
       },
       "company": {
@@ -1389,8 +1392,10 @@
           "successSave": "Task updated successfully.",
           "successDelete": "Task deleted successfully.",
           "errorSave": "Failed to save task.",
-          "errorDelete": "Failed to delete task."
-        }
+          "errorDelete": "Failed to delete task.",
+          "empty": "No se encontraron tareas."
+        },
+        "searchLabel": "Buscar tarea"
       },
       "taskRequests": {
         "list": {
@@ -1612,6 +1617,51 @@
           "phone": "Teléfono",
           "city": "Ciudad",
           "score": "Puntuación"
+        }
+      },
+      "documentation": {
+        "heroTitle": "Centro de documentación CRM",
+        "heroDescription": "Documentación completa de CRM World con navegación guiada, sincronización de GitHub, gobernanza admin y onboarding operativo.",
+        "openSection": "Abrir {section}",
+        "sections": {
+          "projects": {
+            "title": "Projects",
+            "description": "La página Projects centraliza los proyectos CRM, su estado, el aprovisionamiento y la visibilidad de repositorios GitHub."
+          },
+          "kanaban": {
+            "title": "Kanaban",
+            "description": "La página Kanaban permite gestionar la entrega diaria con columnas operativas y seguimiento de sprint."
+          },
+          "tasks": {
+            "title": "Tasks",
+            "description": "La página Tasks gestiona tareas padre/hija, prioridades, fechas límite, asignaciones y progreso del equipo."
+          },
+          "taskRequests": {
+            "title": "Task Requests",
+            "description": "La página Task Requests formaliza solicitudes técnicas vinculadas a tareas, incluida la conexión con ramas de GitHub."
+          },
+          "endpoints": {
+            "title": "Endpoints API",
+            "description": "La página Endpoints agrupa todos los endpoints CRM (projects, sprints, tasks...) con ejecución directa."
+          }
+        },
+        "githubSync": {
+          "title": "Sincronización GitHub: pasos",
+          "steps": {
+            "step1": "1. Verifica que el proyecto esté en provisioning ready y tenga repositorios GitHub.",
+            "step2": "2. Abre la página Repositories y valida los repositorios vinculados.",
+            "step3": "3. Desde GitHub Sync, carga los repositorios y selecciona la rama objetivo.",
+            "step4": "4. Crea o vincula ramas desde Task Requests para conectar ejecución de producto y código.",
+            "step5": "5. Supervisa los jobs de sincronización y confirma la trazabilidad PR/commit en CRM."
+          }
+        }
+      },
+      "contacts": {
+        "alerts": {
+          "loadListError": "No se pudieron cargar los contactos."
+        },
+        "actions": {
+          "viewDetails": "Detalle"
         }
       }
     },

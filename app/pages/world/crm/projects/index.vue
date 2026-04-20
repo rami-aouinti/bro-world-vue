@@ -143,7 +143,7 @@ async function createProject() {
           </v-col>
 
           <v-col v-if="paginatedProjects.length === 0" cols="12">
-            <v-alert type="info" variant="tonal">Aucun projet trouvé.</v-alert>
+            <v-alert type="info" variant="tonal">{{ t('world.crm.projects.alerts.empty') }}</v-alert>
           </v-col>
         </v-row>
 

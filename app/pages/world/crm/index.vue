@@ -40,47 +40,42 @@ async function onLoginSubmit(payload: {
 
 const documentationSections = [
   {
-    title: 'Projects',
+    title: t('world.crm.documentation.sections.projects.title'),
     icon: 'mdi-folder-multiple-outline',
-    description:
-      'La page Projects centralise les projets CRM, leur statut, le provisioning et la visibilité des repositories GitHub.',
+    description: t('world.crm.documentation.sections.projects.description'),
     to: '/world/crm/projects',
   },
   {
-    title: 'Kanaban',
+    title: t('world.crm.documentation.sections.kanaban.title'),
     icon: 'mdi-view-kanban-outline',
-    description:
-      'La page Kanaban permet de piloter le delivery au quotidien avec les colonnes opérationnelles et le suivi de sprint.',
+    description: t('world.crm.documentation.sections.kanaban.description'),
     to: '/world/crm/kanaban',
   },
   {
-    title: 'Tasks',
+    title: t('world.crm.documentation.sections.tasks.title'),
     icon: 'mdi-format-list-checks',
-    description:
-      'La page Tasks gère les tâches parent/enfant, priorités, échéances, assignation et progression par équipe.',
+    description: t('world.crm.documentation.sections.tasks.description'),
     to: '/world/crm/tasks',
   },
   {
-    title: 'Task Requests',
+    title: t('world.crm.documentation.sections.taskRequests.title'),
     icon: 'mdi-source-pull',
-    description:
-      'La page Task Requests formalise les demandes techniques liées aux tâches, y compris la connexion aux branches GitHub.',
+    description: t('world.crm.documentation.sections.taskRequests.description'),
     to: '/world/crm/task-requests',
   },
   {
-    title: 'Endpoints API',
+    title: t('world.crm.documentation.sections.endpoints.title'),
     icon: 'mdi-api',
-    description:
-      'La page Endpoints regroupe tous les endpoints CRM (projects, sprints, tasks...) avec exécution directe.',
+    description: t('world.crm.documentation.sections.endpoints.description'),
     to: '/world/crm/endpoints',
   },
 ]
 const githubSyncSteps = [
-  '1. Vérifier que le projet est en provisioning ready et qu’il a des repositories GitHub.',
-  '2. Ouvrir la page Repositories et valider les dépôts rattachés.',
-  '3. Depuis GitHub Sync, charger les repositories et sélectionner la branche cible.',
-  '4. Créer ou lier les branches depuis Task Requests pour connecter exécution produit et code.',
-  '5. Suivre les jobs de synchronisation et confirmer la traçabilité PR/commit dans le CRM.',
+  t('world.crm.documentation.githubSync.steps.step1'),
+  t('world.crm.documentation.githubSync.steps.step2'),
+  t('world.crm.documentation.githubSync.steps.step3'),
+  t('world.crm.documentation.githubSync.steps.step4'),
+  t('world.crm.documentation.githubSync.steps.step5'),
 ]
 </script>
 
@@ -93,7 +88,7 @@ const githubSyncSteps = [
       module-icon="mdi-account-group-outline"
       :module-description="t('world.crm.moduleDescription')"
       :nav-items="crmNavItems"
-      :action-label="loggedIn ? 'Create Crm' : t('appbar.login')"
+      :action-label="loggedIn ? t('world.crm.actions.createCrm') : t('appbar.login')"
       action-icon="mdi-plus-circle-outline"
       @action="loggedIn ? navigateTo('/platform/crm/new') : (loginDialogOpen = true)"
     >
@@ -106,10 +101,9 @@ const githubSyncSteps = [
           <v-card rounded="xl" class="pa-6 postcard-gradient-card crm-doc-hero">
             <div class="d-flex align-center justify-space-between ga-3 flex-wrap">
               <div>
-                <h1 class="text-h5 font-weight-bold mb-2">CRM Documentation Hub</h1>
+                <h1 class="text-h5 font-weight-bold mb-2">{{ t('world.crm.documentation.heroTitle') }}</h1>
                 <p class="text-body-1 mb-0">
-                  Documentation complète du CRM World avec navigation guidée, synchronisation GitHub,
-                  gouvernance admin et onboarding opérationnel.
+                  {{ t('world.crm.documentation.heroDescription') }}
                 </p>
               </div>
               <v-btn
@@ -118,7 +112,7 @@ const githubSyncSteps = [
                 :prepend-icon="loggedIn ? 'mdi-rocket-launch-outline' : 'mdi-login'"
                 @click="loggedIn ? navigateTo('/platform/crm/new') : (loginDialogOpen = true)"
               >
-                {{ loggedIn ? 'Create Crm' : t('appbar.login') }}
+                {{ loggedIn ? t('world.crm.actions.createCrm') : t('appbar.login') }}
               </v-btn>
             </div>
           </v-card>
@@ -132,7 +126,7 @@ const githubSyncSteps = [
             </div>
             <p class="text-body-2 text-medium-emphasis mb-4">{{ section.description }}</p>
             <v-btn color="primary" variant="tonal" append-icon="mdi-arrow-right" :to="section.to">
-              Ouvrir {{ section.title }}
+              {{ t('world.crm.documentation.openSection', { section: section.title }) }}
             </v-btn>
           </v-card>
         </v-col>
@@ -140,7 +134,7 @@ const githubSyncSteps = [
           <v-card rounded="xl" class="pa-5 postcard-gradient-card crm-doc-card h-100">
             <div class="d-flex align-center ga-2 mb-3">
               <v-icon icon="mdi-github" color="primary" />
-              <h2 class="text-h6 mb-0">Synchronisation GitHub: étapes</h2>
+              <h2 class="text-h6 mb-0">{{ t('world.crm.documentation.githubSync.title') }}</h2>
             </div>
             <v-timeline side="end" density="compact" class="crm-sync-timeline">
               <v-timeline-item
@@ -155,7 +149,7 @@ const githubSyncSteps = [
             </v-timeline>
             <div class="d-flex ga-2 flex-wrap mt-2">
               <v-btn color="primary" variant="tonal" append-icon="mdi-arrow-right" to="/world/crm/repositories">
-                Repositories
+                {{ t('world.crm.nav.repositories') }}
               </v-btn>
             </div>
           </v-card>

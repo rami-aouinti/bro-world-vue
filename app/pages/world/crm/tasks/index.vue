@@ -147,7 +147,7 @@ async function createTask() {
           v-model="search"
           class="mb-4"
           prepend-inner-icon="mdi-magnify"
-          label="Rechercher une tâche"
+          :label="t('world.crm.tasks.searchLabel')"
           clearable
           variant="outlined"
         />
@@ -194,7 +194,7 @@ async function createTask() {
           </v-col>
 
           <v-col v-if="paginatedTasks.length === 0" cols="12">
-            <v-alert type="info" variant="tonal">Aucune tâche trouvée.</v-alert>
+            <v-alert type="info" variant="tonal">{{ t('world.crm.tasks.alerts.empty') }}</v-alert>
           </v-col>
         </v-row>
 
