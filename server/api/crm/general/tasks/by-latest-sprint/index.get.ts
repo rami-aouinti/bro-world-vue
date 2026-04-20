@@ -1,5 +1,5 @@
 import type { CrmTaskItem } from '~~/server/types/api/crm-general'
-import { cachedCrmGeneralGet } from '~~/server/utils/crmGeneralPrivateApi'
+import { fetchCrmGeneral } from '~~/server/utils/crmGeneralApi'
 
 interface CrmSprintBucket {
   sprint: {
@@ -20,10 +20,8 @@ interface CrmTasksByLatestSprintResponse {
 }
 
 export default defineEventHandler(async (event): Promise<CrmTasksByLatestSprintResponse> => {
-
-  return cachedCrmGeneralGet<CrmTasksByLatestSprintResponse>(
-    event,
+  return fetchCrmGeneral<CrmTasksByLatestSprintResponse>(
     'tasks/by-latest-sprint',
-    getQuery(event),
+    { query: getQuery(event) as Record<string, string | number | boolean | undefined> },
   )
 })
