@@ -70,20 +70,20 @@ const pullRequestSummary = computed(() => dashboard.value?.pullRequests ?? {})
 
         <v-row class="mb-1">
           <v-col cols="12" md="4">
-            <v-card variant="tonal" class="pa-4">
-              <div class="text-caption text-medium-emphasis">Open PRs</div>
+            <v-card variant="tonal" class="pa-4 postcard-gradient-card">
+              <div class="text-caption text-medium-emphasis">{{ t('world.crm.repositories.labels.openPrs', 'Open PRs') }}</div>
               <div class="text-h5">{{ pullRequestSummary.open ?? 0 }}</div>
             </v-card>
           </v-col>
           <v-col cols="12" md="4">
-            <v-card variant="tonal" class="pa-4">
-              <div class="text-caption text-medium-emphasis">Closed PRs</div>
+            <v-card variant="tonal" class="pa-4 postcard-gradient-card">
+              <div class="text-caption text-medium-emphasis">{{ t('world.crm.repositories.labels.closedPrs', 'Closed PRs') }}</div>
               <div class="text-h5">{{ pullRequestSummary.closed ?? 0 }}</div>
             </v-card>
           </v-col>
           <v-col cols="12" md="4">
-            <v-card variant="tonal" class="pa-4">
-              <div class="text-caption text-medium-emphasis">Merged PRs</div>
+            <v-card variant="tonal" class="pa-4 postcard-gradient-card">
+              <div class="text-caption text-medium-emphasis">{{ t('world.crm.repositories.labels.mergedPrs', 'Merged PRs') }}</div>
               <div class="text-h5">{{ pullRequestSummary.merged ?? 0 }}</div>
             </v-card>
           </v-col>

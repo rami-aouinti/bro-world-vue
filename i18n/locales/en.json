@@ -1807,6 +1807,47 @@
           "githubSyncDescription": "Open synchronization workflows and repository operations."
         }
       },
+      "repositories": {
+        "moduleDescription": "Browse project repositories and GitHub dashboard data.",
+        "projectsTitle": "Projects",
+        "repositoryListTitle": "Repositories",
+        "projectCard": {
+          "githubRepos": "Linked repositories",
+          "provisioning": "Provisioning"
+        },
+        "actions": {
+          "viewRepositories": "View repositories",
+          "viewDashboard": "View dashboard",
+          "backToProjects": "Back to projects",
+          "backToRepositories": "Back to repositories",
+          "refresh": "Refresh"
+        },
+        "alerts": {
+          "loadingProjects": "Loading projects...",
+          "loadingProjectsError": "Unable to load projects.",
+          "emptyProjects": "No projects found.",
+          "loadingRepositories": "Loading repositories...",
+          "loadingRepositoriesError": "Unable to load repositories.",
+          "emptyRepositories": "No repositories found for this project.",
+          "loadingDashboard": "Loading repository dashboard...",
+          "loadingDashboardError": "Unable to load one or more dashboard sections."
+        },
+        "fields": {
+          "jobId": "Job ID (optional)"
+        },
+        "labels": {
+          "state": "State",
+          "openPrs": "Open PRs",
+          "closedPrs": "Closed PRs",
+          "mergedPrs": "Merged PRs"
+        },
+        "sections": {
+          "issues": "Issues ({count})",
+          "pullRequests": "Pull requests ({count})",
+          "projects": "Projects ({count})",
+          "branches": "Branches ({count})"
+        }
+      },
       "contactsDetail": {
         "actions": {
           "backToList": "Back"

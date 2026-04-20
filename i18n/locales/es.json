@@ -1558,6 +1558,47 @@
           "githubSyncDescription": "Abrir flujos de sincronización y operaciones de repositorio."
         }
       },
+      "repositories": {
+        "moduleDescription": "Explora los repositorios del proyecto y los datos del panel de GitHub.",
+        "projectsTitle": "Proyectos",
+        "repositoryListTitle": "Repositorios",
+        "projectCard": {
+          "githubRepos": "Repositorios vinculados",
+          "provisioning": "Provisioning"
+        },
+        "actions": {
+          "viewRepositories": "Ver repositorios",
+          "viewDashboard": "Ver panel",
+          "backToProjects": "Volver a proyectos",
+          "backToRepositories": "Volver a repositorios",
+          "refresh": "Actualizar"
+        },
+        "alerts": {
+          "loadingProjects": "Cargando proyectos...",
+          "loadingProjectsError": "No se pudieron cargar los proyectos.",
+          "emptyProjects": "No se encontraron proyectos.",
+          "loadingRepositories": "Cargando repositorios...",
+          "loadingRepositoriesError": "No se pudieron cargar los repositorios.",
+          "emptyRepositories": "No se encontraron repositorios para este proyecto.",
+          "loadingDashboard": "Cargando panel del repositorio...",
+          "loadingDashboardError": "No se pudo cargar una o más secciones del panel."
+        },
+        "fields": {
+          "jobId": "ID del job (opcional)"
+        },
+        "labels": {
+          "state": "Estado",
+          "openPrs": "PR abiertas",
+          "closedPrs": "PR cerradas",
+          "mergedPrs": "PR fusionadas"
+        },
+        "sections": {
+          "issues": "Issues ({count})",
+          "pullRequests": "Pull requests ({count})",
+          "projects": "Projects ({count})",
+          "branches": "Branches ({count})"
+        }
+      },
       "contactsDetail": {
         "actions": {
           "backToList": "Volver"

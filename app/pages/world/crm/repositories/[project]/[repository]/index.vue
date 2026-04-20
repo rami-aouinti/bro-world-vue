@@ -43,6 +43,7 @@ const jobId = ref<string>(typeof route.query.jobId === 'string' ? route.query.jo
 
 const query = computed(() => ({
   repository: repository.value,
+  repo: repository.value,
   ...(jobId.value ? { jobId: jobId.value } : {}),
 }))
 
@@ -134,8 +135,8 @@ async function refreshAll() {
 
       <v-row>
         <v-col cols="12" md="6">
-          <v-card class="pa-4 h-100" rounded="xl">
-            <h2 class="text-subtitle-1 mb-3">Issues ({{ issues.length }})</h2>
+          <v-card class="pa-4 h-100 postcard-gradient-card" rounded="xl">
+            <h2 class="text-subtitle-1 mb-3">{{ t('world.crm.repositories.sections.issues', { count: issues.length }) }}</h2>
             <v-list lines="two" density="compact">
               <v-list-item v-for="issue in issues" :key="String(issue.id ?? issue.number)" :title="issue.title ?? `#${issue.number}`" :subtitle="`${t('world.crm.repositories.labels.state', 'State')}: ${issue.state ?? '-'}`" />
             </v-list>
@@ -143,8 +144,8 @@ async function refreshAll() {
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-card class="pa-4 h-100" rounded="xl">
-            <h2 class="text-subtitle-1 mb-3">Pull requests ({{ pullRequests.length }})</h2>
+          <v-card class="pa-4 h-100 postcard-gradient-card" rounded="xl">
+            <h2 class="text-subtitle-1 mb-3">{{ t('world.crm.repositories.sections.pullRequests', { count: pullRequests.length }) }}</h2>
             <v-list lines="two" density="compact">
               <v-list-item
                 v-for="pullRequest in pullRequests"
@@ -157,8 +158,8 @@ async function refreshAll() {
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-card class="pa-4 h-100" rounded="xl">
-            <h2 class="text-subtitle-1 mb-3">Projects ({{ boards.length }})</h2>
+          <v-card class="pa-4 h-100 postcard-gradient-card" rounded="xl">
+            <h2 class="text-subtitle-1 mb-3">{{ t('world.crm.repositories.sections.projects', { count: boards.length }) }}</h2>
             <v-list lines="one" density="compact">
               <v-list-item v-for="board in boards" :key="String(board.id ?? board.title ?? board.name)" :title="board.title ?? board.name ?? String(board.id)" />
             </v-list>
@@ -166,8 +167,8 @@ async function refreshAll() {
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-card class="pa-4 h-100" rounded="xl">
-            <h2 class="text-subtitle-1 mb-3">Branches ({{ branches.length }})</h2>
+          <v-card class="pa-4 h-100 postcard-gradient-card" rounded="xl">
+            <h2 class="text-subtitle-1 mb-3">{{ t('world.crm.repositories.sections.branches', { count: branches.length }) }}</h2>
             <v-list lines="one" density="compact">
               <v-list-item v-for="branch in branches" :key="String(branch.name)" :title="branch.name ?? '-'" />
             </v-list>
