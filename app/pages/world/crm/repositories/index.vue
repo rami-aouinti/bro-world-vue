@@ -23,12 +23,31 @@ interface RepositoryListItem extends ProjectDashboardRepository {
   projectStatus: string
 }
 
-const { data: projectsData, pending: pendingProjects, error: projectsError } = await useFetch<ApiListResponse<CrmProjectListItem>>(
+const privateProjectsState = await useFetch<ApiListResponse<CrmProjectListItem>>(
   '/api/crm/general/projects',
 )
 
+const publicProjectsState = await useFetch<ApiListResponse<CrmProjectListItem>>(
+  '/api/world/crm/general/projects',
+)
+
+const pendingProjects = computed(() => privateProjectsState.pending.value || publicProjectsState.pending.value)
+const projectsError = computed(() => privateProjectsState.error.value || publicProjectsState.error.value)
+
+const allProjects = computed(() => {
+  const merged = new Map<string, CrmProjectListItem>()
+
+  for (const project of [...(privateProjectsState.data.value?.items ?? []), ...(publicProjectsState.data.value?.items ?? [])]) {
+    if (!merged.has(project.id)) {
+      merged.set(project.id, project)
+    }
+  }
+
+  return Array.from(merged.values())
+})
+
 const eligibleProjects = computed(() =>
-  (projectsData.value?.items ?? []).filter(
+  allProjects.value.filter(
     project =>
       project.provisioning?.state?.toLowerCase() === 'ready' && project.githubRepositoriesCount > 0,
   ),
@@ -112,7 +131,7 @@ const error = computed(() => projectsError.value || repositoriesError.value)
 
         <v-col v-if="repositoriesData.length === 0" cols="12">
           <v-alert type="info" variant="tonal">
-            {{ t('world.crm.repositories.alerts.emptyRepositories', 'No repositories found for this project.') }}
+            {{ t('world.crm.repositories.alerts.emptyRepositories', 'No repositories found for projects with GitHub repos > 0 and provisioning ready.') }}
           </v-alert>
         </v-col>
       </v-row>
