@@ -221,8 +221,8 @@ function profileLink(username: string | null) {
             v-for="card in crmKanbanStore.cardsByStatus[status]"
             :key="card.id"
             rounded="lg"
-            class="pa-3 mb-2 cursor-pointer"
-            variant="tonal"
+            class="pa-3 mb-2 cursor-pointer postcard-gradient-card"
+            variant="text"
             draggable="true"
             @dragstart="onDragStart(card.id)"
             @click="openTaskRequest(card.id)"
@@ -235,15 +235,6 @@ function profileLink(username: string | null) {
             </div>
 
             <div class="d-flex flex-wrap ga-2 mb-2">
-              <v-chip
-                v-if="card.projectId"
-                size="small"
-                color="secondary"
-                variant="outlined"
-                @click.stop="openProject(card.projectId)"
-              >
-                {{ card.projectName ?? t('world.crm.kanban.project') }}
-              </v-chip>
               <v-chip
                 v-if="card.parentTaskId"
                 size="small"
