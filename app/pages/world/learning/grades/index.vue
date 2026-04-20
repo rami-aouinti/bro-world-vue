@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { SchoolResource } from '~/stores/worldLearningSchool'
 import { useWorldLearningSchoolStore } from '~/stores/worldLearningSchool'
+import LearningResourceCards
+  from "~/components/World/LearningResourceCards.vue";
 
 definePageMeta({ layout: 'learning', title: 'Learning Grades' })
 
