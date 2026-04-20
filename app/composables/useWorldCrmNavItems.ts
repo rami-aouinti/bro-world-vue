@@ -29,20 +29,16 @@ export function useWorldCrmNavItems() {
       to: '/world/crm/sprints',
       icon: 'mdi-run-fast',
     },
-    ...(isRootAdmin.value
-      ? [
-          {
-            title: t('world.crm.taskRequests.list.title'),
-            to: '/world/crm/task-requests',
-            icon: 'mdi-source-pull',
-          },
-          {
-            title: t('world.crm.nav.repositories', 'Repositories'),
-            to: '/world/crm/repositories',
-            icon: 'mdi-source-repository',
-          },
-        ]
-      : []),
+    {
+      title: t('world.crm.taskRequests.list.title'),
+      to: '/world/crm/task-requests',
+      icon: 'mdi-source-pull',
+    },
+    {
+      title: t('world.crm.nav.repositories', 'Repositories'),
+      to: '/world/crm/repositories',
+      icon: 'mdi-source-repository',
+    },
     ...(isRootAdmin.value && can('crm.admin.manage')
       ? [
           {
