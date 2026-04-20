@@ -152,7 +152,7 @@ async function createSprint() {
           </v-col>
 
           <v-col v-if="paginatedSprints.length === 0" cols="12">
-            <v-alert type="info" variant="tonal">Aucun sprint trouvé.</v-alert>
+            <v-alert type="info" variant="tonal">{{ t('world.crm.sprints.alerts.empty') }}</v-alert>
           </v-col>
         </v-row>
 
