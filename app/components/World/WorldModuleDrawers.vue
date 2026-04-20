@@ -35,7 +35,6 @@ const visibleNavItems = computed(() =>
   props.navItems.filter((item) => !item.rootOnly || isRoot.value),
 )
 
-const resolvedModulePath = computed(() => props.modulePath || route.path)
 const resolvedModuleKey = computed(() => {
   if (props.moduleKey) {
     return props.moduleKey
@@ -54,6 +53,13 @@ const resolvedModuleKey = computed(() => {
   }
 
   return 'crm'
+})
+const resolvedModulePath = computed(() => {
+  if (resolvedModuleKey.value === 'crm') {
+    return '/world/crm'
+  }
+
+  return props.modulePath || route.path
 })
 
 type GeneralPublicItem = {

@@ -9,6 +9,7 @@ import type {
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
+const { crmNavItems } = useWorldCrmNavItems()
 const taskId = computed(() => String(route.params.task ?? ''))
 
 definePageMeta({ title: 'CRM Task Detail' })
@@ -130,8 +131,21 @@ async function attachToSprint() {
 </script>
 
 <template>
-  <v-container fluid>
-    <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push('/world/crm/tasks')">{{ t('world.crm.tasks.actions.backToList') }}</v-btn>
+  <div>
+    <WorldModuleDrawers
+      :module-title="t('world.crm.label')"
+      module-key="crm"
+      module-path="/world/crm"
+      module-icon="mdi-account-group-outline"
+      :module-description="t('world.crm.moduleDescription')"
+      :nav-items="crmNavItems"
+      :action-label="t('world.crm.actions.createLead')"
+      action-icon="mdi-account-plus-outline"
+    >
+      <template #right />
+    </WorldModuleDrawers>
+    <v-container fluid>
+      <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push('/world/crm/tasks')">{{ t('world.crm.tasks.actions.backToList') }}</v-btn>
     <v-alert v-if="pending" type="info" variant="tonal">{{ t('world.crm.tasks.alerts.loadingDetail') }}</v-alert>
     <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.tasks.alerts.notFound') }}</v-alert>
 
@@ -225,5 +239,6 @@ async function attachToSprint() {
         </v-card>
       </v-col>
     </v-row>
-  </v-container>
+    </v-container>
+  </div>
 </template>

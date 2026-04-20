@@ -1520,6 +1520,58 @@
           "review": "Review",
           "done": "Done"
         }
+      },
+      "admin": {
+        "moduleDescription": "Panel de administración CRM y acceso rápido a entidades.",
+        "actions": {
+          "refresh": "Actualizar"
+        },
+        "page": {
+          "title": "Centro admin CRM",
+          "description": "Panel global y navegación por tarjetas hacia cada sección admin."
+        },
+        "alerts": {
+          "loadingDashboard": "Cargando panel de CRM..."
+        },
+        "cards": {
+          "companies": "Empresas",
+          "projects": "Proyectos",
+          "tasks": "Tareas",
+          "requestsPending": "Solicitudes pendientes",
+          "requestsApproved": "Solicitudes aprobadas",
+          "requestsRejected": "Solicitudes rechazadas"
+        },
+        "sections": {
+          "title": "Secciones admin",
+          "open": "Abrir sección",
+          "companies": "Empresas",
+          "projects": "Proyectos",
+          "tasks": "Tareas",
+          "taskRequests": "Solicitudes de tareas",
+          "sprints": "Sprints",
+          "billings": "Facturación",
+          "contacts": "Contactos"
+        },
+        "utility": {
+          "title": "Utilidades",
+          "githubSync": "GitHub Sync",
+          "githubSyncDescription": "Abrir flujos de sincronización y operaciones de repositorio."
+        }
+      },
+      "contactsDetail": {
+        "actions": {
+          "backToList": "Volver"
+        },
+        "alerts": {
+          "loading": "Cargando...",
+          "notFound": "No encontrado."
+        },
+        "fields": {
+          "email": "Correo",
+          "phone": "Teléfono",
+          "city": "Ciudad",
+          "score": "Puntuación"
+        }
       }
     },
     "shop": {
