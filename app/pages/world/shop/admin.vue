@@ -4,6 +4,7 @@ import { normalizeHttpError } from '~/utils/httpError'
 
 definePageMeta({ title: 'Shop Admin' })
 const { shopNavItems } = useShopNavItems()
+const { t } = useI18n()
 
 const { user } = useUserSession()
 const sessionUser = computed(() => user.value as SessionUser | null)
@@ -106,9 +107,9 @@ const productFormError = ref<string | null>(null)
 
 const prettyApiError = (err: unknown) => {
   const normalized = normalizeHttpError(err)
-  if (normalized.statusCode === 400) return `Erreur 400: ${normalized.message}. Vérifiez les paramètres transmis.`
-  if (normalized.statusCode === 404) return `Erreur 404: ${normalized.message}. L'élément n'existe plus.`
-  if (normalized.statusCode === 422) return `Erreur 422: ${normalized.message}. Corrigez les champs du formulaire.`
+  if (normalized.statusCode === 400) return `Error 400: ${normalized.message}. Please check the submitted parameters.`
+  if (normalized.statusCode === 404) return `Error 404: ${normalized.message}. The item no longer exists.`
+  if (normalized.statusCode === 422) return `Error 422: ${normalized.message}. Please correct the form fields.`
   return normalized.message
 }
 
@@ -156,28 +157,28 @@ const resetProductForm = () => {
 }
 
 const validateCategoryForm = () => {
-  if (!categoryForm.name.trim()) return 'Le nom de catégorie est requis.'
-  if (!categoryForm.slug.trim()) return 'Le slug de catégorie est requis.'
-  if (!categoryForm.description.trim()) return 'La description est requise.'
-  if (!categoryForm.image.trim()) return 'L\'image est requise.'
+  if (!categoryForm.name.trim()) return 'Category name is required.'
+  if (!categoryForm.slug.trim()) return 'Category slug is required.'
+  if (!categoryForm.description.trim()) return 'Description is required.'
+  if (!categoryForm.image.trim()) return 'Image is required.'
   if (!categoryForm.seoMetaTitle.trim() || !categoryForm.seoMetaDescription.trim()) {
-    return 'Les champs SEO titre et description sont requis.'
+    return 'SEO title and description are required.'
   }
   return null
 }
 
 const validateProductForm = () => {
-  if (!productForm.name.trim()) return 'Le nom produit est requis.'
-  if (!productForm.slug.trim()) return 'Le slug produit est requis.'
-  if (!productForm.baseSku.trim()) return 'Le SKU principal est requis.'
-  if (productForm.price < 0) return 'Le prix doit être positif.'
-  if (productForm.stock < 0) return 'Le stock doit être positif.'
-  if (!productForm.categoryIdsCsv.trim()) return 'Au moins une catégorie est requise.'
+  if (!productForm.name.trim()) return 'Product name is required.'
+  if (!productForm.slug.trim()) return 'Product slug is required.'
+  if (!productForm.baseSku.trim()) return 'Primary SKU is required.'
+  if (productForm.price < 0) return 'Price must be positive.'
+  if (productForm.stock < 0) return 'Stock must be positive.'
+  if (!productForm.categoryIdsCsv.trim()) return 'At least one category is required.'
   if (!productForm.seoMetaTitle.trim() || !productForm.seoMetaDescription.trim()) {
-    return 'Les champs SEO titre et description sont requis.'
+    return 'SEO title and description are required.'
   }
   if (!productForm.variantId.trim() || !productForm.variantSku.trim()) {
-    return 'Au moins une variante (id + sku) est requise.'
+    return 'At least one variant (id + sku) is required.'
   }
   return null
 }
@@ -210,10 +211,10 @@ const submitCategory = async () => {
   try {
     if (editingCategoryId.value) {
       await $fetch(`/api/world/shop/categories/${encodeURIComponent(editingCategoryId.value)}`, { method: 'PATCH', body: payload })
-      actionMessage.value = 'Catégorie mise à jour.'
+      actionMessage.value = 'Category updated.'
     } else {
       await $fetch('/api/world/shop/categories', { method: 'POST', body: payload })
-      actionMessage.value = 'Catégorie créée.'
+      actionMessage.value = 'Category created.'
     }
     resetCategoryForm()
     await loadCatalog()
@@ -260,10 +261,10 @@ const submitProduct = async () => {
   try {
     if (editingProductId.value) {
       await $fetch(`/api/world/shop/products/${encodeURIComponent(editingProductId.value)}`, { method: 'PATCH', body: payload })
-      actionMessage.value = 'Produit mis à jour.'
+      actionMessage.value = 'Product updated.'
     } else {
       await $fetch('/api/world/shop/products', { method: 'POST', body: payload })
-      actionMessage.value = 'Produit créé.'
+      actionMessage.value = 'Product created.'
     }
     resetProductForm()
     await loadCatalog()
@@ -318,7 +319,7 @@ const editProduct = (product: AdminProduct) => {
 const deleteCategory = async (categoryId: string) => {
   try {
     await $fetch(`/api/world/shop/categories/${encodeURIComponent(categoryId)}`, { method: 'DELETE' })
-    actionMessage.value = 'Catégorie supprimée.'
+    actionMessage.value = 'Category deleted.'
     await loadCatalog()
   } catch (err) {
     catalogError.value = prettyApiError(err)
@@ -328,7 +329,7 @@ const deleteCategory = async (categoryId: string) => {
 const deleteProduct = async (productId: string) => {
   try {
     await $fetch(`/api/world/shop/products/${encodeURIComponent(productId)}`, { method: 'DELETE' })
-    actionMessage.value = 'Produit supprimé.'
+    actionMessage.value = 'Product deleted.'
     await loadCatalog()
   } catch (err) {
     catalogError.value = prettyApiError(err)
@@ -339,20 +340,20 @@ const deleteProduct = async (productId: string) => {
 <template>
   <div>
     <WorldModuleDrawers
-      module-title="Shop"
+      :module-title="t('world.shop.label', 'Shop')"
       module-icon="mdi-storefront-outline"
-      module-description="Administration catalogue produits/catégories (CRUD)."
+      :module-description="t('world.shop.admin.moduleDescription', 'Product/category catalog administration (CRUD).')"
       :nav-items="shopNavItems"
-      action-label="Shop Admin"
+      :action-label="t('world.shop.admin.actionLabel', 'Shop Admin')"
       action-icon="mdi-shield-check-outline"
     />
 
     <v-container fluid>
       <v-card rounded="xl" class="pa-5 postcard-gradient-card">
         <template v-if="isRoot">
-          <h2 class="text-h5 mb-2">Shop Admin Center</h2>
+          <h2 class="text-h5 mb-2">{{ t('world.shop.admin.centerTitle', 'Shop Admin Center') }}</h2>
           <p class="text-medium-emphasis mb-4">
-            CRUD produits/catégories avec validation formulaire et gestion d'états standardisés.
+            {{ t('world.shop.admin.centerDescription', 'Category/product CRUD with form validation and standardized status handling.') }}
           </p>
 
           <v-alert v-if="catalogError" type="error" variant="tonal" class="mb-3">{{ catalogError }}</v-alert>
@@ -364,9 +365,9 @@ const deleteProduct = async (productId: string) => {
             <v-row>
               <v-col cols="12" md="6">
                 <v-card variant="outlined" class="pa-4 mb-4">
-                  <h3 class="text-subtitle-1 mb-3">{{ editingCategoryId ? 'Modifier' : 'Créer' }} une catégorie</h3>
+                  <h3 class="text-subtitle-1 mb-3">{{ editingCategoryId ? t('world.shop.admin.actions.edit', 'Edit') : t('world.shop.admin.actions.create', 'Create') }} {{ t('world.shop.admin.entities.category', 'category') }}</h3>
                   <v-alert v-if="categoryFormError" type="error" variant="tonal" class="mb-2">{{ categoryFormError }}</v-alert>
-                  <v-text-field v-model="categoryForm.name" label="Nom" variant="outlined" density="comfortable" class="mb-2" />
+                  <v-text-field v-model="categoryForm.name" :label="t('world.shop.admin.fields.name', 'Name')" variant="outlined" density="comfortable" class="mb-2" />
                   <v-text-field v-model="categoryForm.slug" label="Slug" variant="outlined" density="comfortable" class="mb-2" />
                   <v-textarea v-model="categoryForm.description" label="Description" variant="outlined" density="comfortable" rows="2" class="mb-2" />
                   <v-text-field v-model="categoryForm.image" label="Image URL" variant="outlined" density="comfortable" class="mb-2" />
@@ -390,30 +391,30 @@ const deleteProduct = async (productId: string) => {
                     <v-col cols="6"><v-text-field v-model="categoryForm.facetOptions" label="Facet options (csv)" variant="outlined" density="comfortable" /></v-col>
                   </v-row>
                   <div class="d-flex ga-2">
-                    <v-btn color="primary" @click="submitCategory">{{ editingCategoryId ? 'Mettre à jour' : 'Créer' }}</v-btn>
-                    <v-btn variant="text" @click="resetCategoryForm">Réinitialiser</v-btn>
+                    <v-btn color="primary" @click="submitCategory">{{ editingCategoryId ? t('world.shop.admin.actions.update', 'Update') : t('world.shop.admin.actions.create', 'Create') }}</v-btn>
+                    <v-btn variant="text" @click="resetCategoryForm">{{ t('world.shop.admin.actions.reset', 'Reset') }}</v-btn>
                   </div>
                 </v-card>
 
                 <v-card variant="outlined" class="pa-4">
-                  <h3 class="text-subtitle-1 mb-2">Catégories</h3>
+                  <h3 class="text-subtitle-1 mb-2">{{ t('world.shop.admin.sections.categories', 'Categories') }}</h3>
                   <v-list v-if="categories.length" density="compact">
                     <v-list-item v-for="category in categories" :key="category.id" :title="`${category.name} (${category.slug})`" :subtitle="category.description">
                       <template #append>
                         <div class="d-flex ga-2">
-                          <v-btn size="x-small" variant="text" color="primary" @click="editCategory(category)">Éditer</v-btn>
-                          <v-btn size="x-small" variant="text" color="error" @click="deleteCategory(category.id)">Supprimer</v-btn>
+                          <v-btn size="x-small" variant="text" color="primary" @click="editCategory(category)">{{ t('world.shop.admin.actions.edit', 'Edit') }}</v-btn>
+                          <v-btn size="x-small" variant="text" color="error" @click="deleteCategory(category.id)">{{ t('world.shop.admin.actions.delete', 'Delete') }}</v-btn>
                         </div>
                       </template>
                     </v-list-item>
                   </v-list>
-                  <v-alert v-else type="info" variant="tonal">Aucune catégorie disponible.</v-alert>
+                  <v-alert v-else type="info" variant="tonal">{{ t('world.shop.admin.alerts.noCategory', 'No category available.') }}</v-alert>
                 </v-card>
               </v-col>
 
               <v-col cols="12" md="6">
                 <v-card variant="outlined" class="pa-4 mb-4">
-                  <h3 class="text-subtitle-1 mb-3">{{ editingProductId ? 'Modifier' : 'Créer' }} un produit</h3>
+                  <h3 class="text-subtitle-1 mb-3">{{ editingProductId ? t('world.shop.admin.actions.edit', 'Edit') : t('world.shop.admin.actions.create', 'Create') }} {{ t('world.shop.admin.entities.product', 'product') }}</h3>
                   <v-alert v-if="productFormError" type="error" variant="tonal" class="mb-2">{{ productFormError }}</v-alert>
                   <v-text-field v-model="productForm.name" label="Nom" variant="outlined" density="comfortable" class="mb-2" />
                   <v-text-field v-model="productForm.slug" label="Slug" variant="outlined" density="comfortable" class="mb-2" />
@@ -421,8 +422,8 @@ const deleteProduct = async (productId: string) => {
                   <v-text-field v-model="productForm.baseSku" label="Base SKU" variant="outlined" density="comfortable" class="mb-2" />
                   <v-select v-model="productForm.status" :items="['draft', 'active', 'archived']" label="Status" variant="outlined" density="comfortable" class="mb-2" />
                   <v-row>
-                    <v-col cols="6"><v-text-field v-model.number="productForm.price" label="Prix" type="number" variant="outlined" density="comfortable" /></v-col>
-                    <v-col cols="6"><v-text-field v-model.number="productForm.stock" label="Stock" type="number" variant="outlined" density="comfortable" /></v-col>
+                    <v-col cols="6"><v-text-field v-model.number="productForm.price" :label="t('world.shop.admin.fields.price', 'Price')" type="number" variant="outlined" density="comfortable" /></v-col>
+                    <v-col cols="6"><v-text-field v-model.number="productForm.stock" :label="t('world.shop.admin.fields.stock', 'Stock')" type="number" variant="outlined" density="comfortable" /></v-col>
                   </v-row>
                   <v-text-field v-model="productForm.categoryIdsCsv" label="Category IDs (csv)" variant="outlined" density="comfortable" class="mb-2" />
                   <v-text-field v-model="productForm.image" label="Image URL" variant="outlined" density="comfortable" class="mb-2" />
@@ -434,24 +435,24 @@ const deleteProduct = async (productId: string) => {
                     <v-col cols="6"><v-text-field v-model="productForm.variantSku" label="Variant SKU" variant="outlined" density="comfortable" /></v-col>
                   </v-row>
                   <div class="d-flex ga-2">
-                    <v-btn color="primary" @click="submitProduct">{{ editingProductId ? 'Mettre à jour' : 'Créer' }}</v-btn>
-                    <v-btn variant="text" @click="resetProductForm">Réinitialiser</v-btn>
+                    <v-btn color="primary" @click="submitProduct">{{ editingProductId ? t('world.shop.admin.actions.update', 'Update') : t('world.shop.admin.actions.create', 'Create') }}</v-btn>
+                    <v-btn variant="text" @click="resetProductForm">{{ t('world.shop.admin.actions.reset', 'Reset') }}</v-btn>
                   </div>
                 </v-card>
 
                 <v-card variant="outlined" class="pa-4">
-                  <h3 class="text-subtitle-1 mb-2">Produits</h3>
+                  <h3 class="text-subtitle-1 mb-2">{{ t('world.shop.admin.sections.products', 'Products') }}</h3>
                   <v-list v-if="products.length" density="compact">
                     <v-list-item v-for="product in products" :key="product.id" :title="`${product.name} (${product.status})`" :subtitle="`${product.price}€ • stock ${product.stock}`">
                       <template #append>
                         <div class="d-flex ga-2">
-                          <v-btn size="x-small" variant="text" color="primary" @click="editProduct(product)">Éditer</v-btn>
-                          <v-btn size="x-small" variant="text" color="error" @click="deleteProduct(product.id)">Supprimer</v-btn>
+                          <v-btn size="x-small" variant="text" color="primary" @click="editProduct(product)">{{ t('world.shop.admin.actions.edit', 'Edit') }}</v-btn>
+                          <v-btn size="x-small" variant="text" color="error" @click="deleteProduct(product.id)">{{ t('world.shop.admin.actions.delete', 'Delete') }}</v-btn>
                         </div>
                       </template>
                     </v-list-item>
                   </v-list>
-                  <v-alert v-else type="info" variant="tonal">Aucun produit disponible.</v-alert>
+                  <v-alert v-else type="info" variant="tonal">{{ t('world.shop.admin.alerts.noProduct', 'No product available.') }}</v-alert>
                 </v-card>
               </v-col>
             </v-row>

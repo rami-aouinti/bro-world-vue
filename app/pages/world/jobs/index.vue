@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   title: 'world.jobs.label',
-  description: "Publiez des offres, gérez les candidatures et suivez le recrutement avec Bro World Jobs.",
+  description: 'world.jobs.seo.metaDescription',
 })
 
 const { t } = useI18n()
@@ -11,22 +11,30 @@ const pageUrl = new URL('/world/jobs', siteUrl).toString()
 const seoImage = new URL('/img/platform/general/job.png', siteUrl).toString()
 
 useSeoMeta({
-  title: 'Bro World Jobs | Offres d’emploi et recrutement',
-  description:
-    'Bro World Jobs centralise les offres, candidatures, entretiens et suivi du recrutement en un seul espace.',
-  keywords:
-    "bro world jobs, offres d'emploi, recrutement, candidatures, gestion talents, hr platform",
+  title: t('world.jobs.seo.title', 'Bro World Jobs | Job offers and recruiting'),
+  description: t(
+    'world.jobs.seo.description',
+    'Bro World Jobs centralizes job posts, applications, interviews, and hiring follow-up in one place.',
+  ),
+  keywords: t(
+    'world.jobs.seo.keywords',
+    'bro world jobs, job board, recruiting, applications, talent management, hr platform',
+  ),
   robots: 'index, follow, max-image-preview:large',
-  ogTitle: 'Bro World Jobs | Offres d’emploi et recrutement',
-  ogDescription:
-    'Publiez des offres et gérez vos recrutements efficacement avec Bro World Jobs.',
+  ogTitle: t('world.jobs.seo.ogTitle', 'Bro World Jobs | Job offers and recruiting'),
+  ogDescription: t(
+    'world.jobs.seo.ogDescription',
+    'Publish job offers and manage hiring efficiently with Bro World Jobs.',
+  ),
   ogType: 'website',
   ogUrl: pageUrl,
   ogImage: seoImage,
   ogImageAlt: 'Bro World Jobs recruitment dashboard',
-  twitterTitle: 'Bro World Jobs | Offres d’emploi et recrutement',
-  twitterDescription:
-    'Publiez des offres et gérez vos recrutements efficacement avec Bro World Jobs.',
+  twitterTitle: t('world.jobs.seo.twitterTitle', 'Bro World Jobs | Job offers and recruiting'),
+  twitterDescription: t(
+    'world.jobs.seo.twitterDescription',
+    'Publish job offers and manage hiring efficiently with Bro World Jobs.',
+  ),
   twitterImage: seoImage,
   twitterCard: 'summary_large_image',
 })

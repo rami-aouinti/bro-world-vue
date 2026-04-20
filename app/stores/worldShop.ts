@@ -165,7 +165,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     const configuredShopId = resolveGlobalShopId(runtimeConfig.public)
     if (configuredShopId && !isValidShopId(configuredShopId)) {
       const message =
-        "Configuration shop invalide: 'runtimeConfig.public.shop.globalShopId' est présent mais incorrect."
+        "Invalid shop configuration: 'runtimeConfig.public.shop.globalShopId' is present but malformed."
       error.value = message
       throw new Error(message)
     }
@@ -188,7 +188,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     const shopId = resolvedShopId
     if (!isValidShopId(shopId)) {
       const message =
-        "Impossible de résoudre le shopId global depuis '/api/world/shop/general'."
+        "Unable to resolve the global shopId from '/api/world/shop/general'."
       error.value = message
       throw new Error(message)
     }
@@ -359,7 +359,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
         {
           i18nKey: 'world.shop.errors.productsFetch',
           fallbackMessage:
-            'Impossible de récupérer les produits de la boutique. Merci de réessayer.',
+            'Unable to fetch store products. Please try again.',
         },
       )
       if (!isProductsResponseLike(response)) {
@@ -398,7 +398,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
         {
           i18nKey: 'world.shop.errors.categoriesFetch',
           fallbackMessage:
-            'Impossible de récupérer les catégories de la boutique.',
+            'Unable to fetch store categories.',
         },
       )
       categories.value = response.data
@@ -443,7 +443,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
         {
           i18nKey: 'world.shop.errors.productDetailFetch',
           fallbackMessage:
-            'Impossible de récupérer le détail du produit pour le moment.',
+            'Unable to fetch product details right now.',
         },
       )
 
@@ -680,7 +680,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     } catch (err) {
       const normalized = normalizeHttpError(err)
       const translatedMessage = translateShopErrorMessage(
-        'Impossible de récupérer le panier pour le moment.',
+        'Unable to fetch the cart right now.',
       )
       error.value = `${translatedMessage}${normalized.message ? ` (${normalized.message})` : ''}`
       throw err
@@ -718,7 +718,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
     } catch (err) {
       const normalized = normalizeHttpError(err)
       const translatedMessage = translateShopErrorMessage(
-        "Impossible d'ajouter ce produit au panier pour le moment.",
+        'Unable to add this product to cart right now.',
         'world.shop.errors.addToCart',
         normalized.statusCode,
       )

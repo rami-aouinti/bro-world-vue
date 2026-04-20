@@ -7,7 +7,7 @@ import type {
 
 definePageMeta({
   title: 'world.shop.label',
-  description: 'Explorez la boutique Bro World avec produits, promotions et commandes en ligne.',
+  description: 'world.shop.seo.metaDescription',
 })
 
 const { t, locale } = useI18n()
@@ -17,22 +17,30 @@ const pageUrl = new URL('/world/shop', siteUrl).toString()
 const seoImage = new URL('/img/platform/general/shop.png', siteUrl).toString()
 
 useSeoMeta({
-  title: 'Bro World Shop | Boutique, promotions et achats en ligne',
-  description:
-    'Découvrez Bro World Shop : catalogue produits, catégories, promos et checkout sécurisé pour vos achats.',
-  keywords:
-    'bro world shop, boutique en ligne, ecommerce, catalogue produits, promotions, panier, checkout',
+  title: t('world.shop.seo.title', 'Bro World Shop | Store, promotions, and online shopping'),
+  description: t(
+    'world.shop.seo.description',
+    'Discover Bro World Shop: product catalog, categories, promotions, and secure checkout for your purchases.',
+  ),
+  keywords: t(
+    'world.shop.seo.keywords',
+    'bro world shop, online store, ecommerce, product catalog, promotions, cart, checkout',
+  ),
   robots: 'index, follow, max-image-preview:large',
-  ogTitle: 'Bro World Shop | Boutique, promotions et achats en ligne',
-  ogDescription:
-    'Trouvez vos produits, appliquez des filtres et commandez facilement avec Bro World Shop.',
+  ogTitle: t('world.shop.seo.ogTitle', 'Bro World Shop | Store, promotions, and online shopping'),
+  ogDescription: t(
+    'world.shop.seo.ogDescription',
+    'Find products, apply filters, and order easily with Bro World Shop.',
+  ),
   ogType: 'website',
   ogUrl: pageUrl,
   ogImage: seoImage,
   ogImageAlt: 'Bro World Shop catalogue',
-  twitterTitle: 'Bro World Shop | Boutique, promotions et achats en ligne',
-  twitterDescription:
-    'Trouvez vos produits, appliquez des filtres et commandez facilement avec Bro World Shop.',
+  twitterTitle: t('world.shop.seo.twitterTitle', 'Bro World Shop | Store, promotions, and online shopping'),
+  twitterDescription: t(
+    'world.shop.seo.twitterDescription',
+    'Find products, apply filters, and order easily with Bro World Shop.',
+  ),
   twitterImage: seoImage,
   twitterCard: 'summary_large_image',
 })

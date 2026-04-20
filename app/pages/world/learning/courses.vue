@@ -9,6 +9,7 @@ import type {
 import { useWorldLearningStore } from '~/stores/worldLearning'
 
 definePageMeta({ title: 'Learning Courses' })
+const { t } = useI18n()
 
 const learningNavItems = [
   {
@@ -424,9 +425,9 @@ const toggleAssessmentCompletion = async (
 <template>
   <div>
     <WorldModuleDrawers
-      module-title="Learning"
+      :module-title="t('world.learning.label', 'Learning')"
       module-icon="mdi-school-outline"
-      module-description="Structure Course > Module > Lesson > Assessment avec édition de contenu et suivi de progression."
+      :module-description="t('world.learning.courses.moduleDescription', 'Course > Module > Lesson > Assessment structure with content editing and progress tracking.')"
       :nav-items="learningNavItems"
       action-label="Design curriculum"
     />
@@ -438,7 +439,7 @@ const toggleAssessmentCompletion = async (
         type="info"
         variant="tonal"
         class="mb-4"
-        text="Chargement des cours..."
+        :text="t('world.learning.courses.alerts.loading', 'Loading courses...')"
       />
       <v-alert
         v-else-if="hasError"
@@ -454,13 +455,13 @@ const toggleAssessmentCompletion = async (
         type="warning"
         variant="tonal"
         class="mb-4"
-        text="Aucun cours disponible pour le moment."
+        :text="t('world.learning.courses.alerts.empty', 'No course available for now.')"
       />
 
       <v-row>
         <v-col cols="12" lg="4">
           <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
-            <h3 class="text-h6 mb-3">Créer un course</h3>
+            <h3 class="text-h6 mb-3">{{ t('world.learning.courses.sections.createCourse', 'Create a course') }}</h3>
             <v-text-field
               v-model="createCourseForm.title"
               variant="outlined"
@@ -554,7 +555,7 @@ const toggleAssessmentCompletion = async (
 
         <v-col cols="12" lg="8">
           <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
-            <h3 class="text-h6 mb-3">Structure pédagogique</h3>
+            <h3 class="text-h6 mb-3">{{ t('world.learning.courses.sections.structure', 'Curriculum structure') }}</h3>
             <div v-if="selectedCourse">
               <div class="text-subtitle-1 font-weight-bold mb-3">
                 {{ selectedCourse.title }} · Version
@@ -603,7 +604,7 @@ const toggleAssessmentCompletion = async (
               </v-expansion-panels>
             </div>
             <p v-else class="mb-0 text-medium-emphasis">
-              Aucun course disponible.
+              {{ t('world.learning.courses.alerts.noCourse', 'No course available.') }}
             </p>
           </v-card>
 
@@ -614,7 +615,7 @@ const toggleAssessmentCompletion = async (
           >
             <h3 class="text-h6 mb-1">Content editor (text/video/files)</h3>
             <p class="text-caption text-medium-emphasis mb-4">
-              Lesson sélectionnée: {{ selectedLesson.title }}
+              {{ t('world.learning.courses.labels.selectedLesson', 'Selected lesson') }}: {{ selectedLesson.title }}
             </p>
             <v-row>
               <v-col cols="12" md="6">
@@ -634,7 +635,7 @@ const toggleAssessmentCompletion = async (
                 <v-textarea
                   v-model="contentForm.payload"
                   rows="4"
-                  label="Text, URL vidéo ou fichier"
+                  :label="t('world.learning.courses.fields.contentPayload', 'Text, video URL, or file')"
                   variant="outlined"
                   density="comfortable"
                 />
@@ -709,7 +710,7 @@ const toggleAssessmentCompletion = async (
             rounded="xl"
             class="pa-4 postcard-gradient-card mb-4"
           >
-            <h3 class="text-h6 mb-3">Quiz / Assessment avec barème</h3>
+            <h3 class="text-h6 mb-3">{{ t('world.learning.courses.sections.quiz', 'Quiz / assessment with grading scale') }}</h3>
             <v-row>
               <v-col cols="12" md="4"
                 ><v-text-field
