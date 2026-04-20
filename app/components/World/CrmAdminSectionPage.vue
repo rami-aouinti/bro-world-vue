@@ -39,10 +39,16 @@ const sectionConfig = computed(() => sectionMap[props.section])
 const endpoint = computed(
   () => `/api/crm/general/${sectionConfig.value.endpoint}`,
 )
+const fetchKey = computed(
+  () => `crm-admin-section-${sectionConfig.value.endpoint}`,
+)
 
 const { data, pending, error, refresh } = await useFetch<
   CrmGeneralCollectionResponse<Record<string, unknown>>
->(endpoint)
+>(endpoint, {
+  key: fetchKey,
+  watch: [endpoint],
+})
 
 const filteredItems = computed(() => {
   const query = search.value.trim().toLowerCase()
@@ -69,6 +75,14 @@ const paginatedItems = computed(() => {
 watch([search, filteredItems], () => {
   currentPage.value = 1
 })
+
+watch(
+  () => props.section,
+  () => {
+    search.value = ''
+    currentPage.value = 1
+  },
+)
 
 function itemKey(item: Record<string, unknown>) {
   return String(item.id ?? item.crmId ?? JSON.stringify(item))
@@ -112,11 +126,10 @@ function previewEntries(item: Record<string, unknown>) {
         :label="`Rechercher dans ${sectionConfig.title}`"
         clearable
         variant="outlined"
+        :disabled="pending"
       />
 
-      <v-alert v-if="pending" type="info" variant="tonal" class="mb-4">
-        Chargement en cours...
-      </v-alert>
+      <CrmPageSkeleton v-if="pending" variant="list" :cards="6" />
       <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">
         Erreur lors du chargement.
       </v-alert>
