@@ -42,6 +42,33 @@ const title = computed(() => {
   return translateIfKey(pageTitle)
 })
 
+const metaDescriptionByLocale = {
+  en: {
+    withTitle: (pageTitle: string) =>
+      `Discover ${pageTitle} on Bro World: games, social network, jobs, CRM and online tools.`,
+    fallback:
+      'Bro World offers games, a social network, CRM tools, job opportunities, and collaborative experiences.',
+  },
+  fr: {
+    withTitle: (pageTitle: string) =>
+      `Découvrez ${pageTitle} sur Bro World: jeux, réseau social, jobs, CRM et outils en ligne.`,
+    fallback:
+      "Bro World propose des jeux, un réseau social, des outils CRM, des offres d'emploi et des expériences collaboratives.",
+  },
+  es: {
+    withTitle: (pageTitle: string) =>
+      `Descubre ${pageTitle} en Bro World: juegos, red social, empleo, CRM y herramientas online.`,
+    fallback:
+      'Bro World ofrece juegos, red social, herramientas CRM, ofertas de empleo y experiencias colaborativas.',
+  },
+  de: {
+    withTitle: (pageTitle: string) =>
+      `Entdecke ${pageTitle} auf Bro World: Spiele, soziales Netzwerk, Jobs, CRM und Online-Tools.`,
+    fallback:
+      'Bro World bietet Spiele, ein soziales Netzwerk, CRM-Tools, Jobangebote und kollaborative Erlebnisse.',
+  },
+} as const
+
 const metaDescription = computed(() => {
   const routeDescription =
     typeof route.meta?.description === 'string' ? route.meta.description : ''
@@ -50,11 +77,15 @@ const metaDescription = computed(() => {
     return routeDescription
   }
 
+  const localeDescription =
+    metaDescriptionByLocale[locale.value as keyof typeof metaDescriptionByLocale] ??
+    metaDescriptionByLocale.en
+
   if (title.value) {
-    return `Découvrez ${title.value} sur Bro World: jeux, réseau social, jobs, CRM et outils en ligne.`
+    return localeDescription.withTitle(title.value)
   }
 
-  return 'Bro World propose des jeux, un réseau social, des outils CRM, des offres d\'emploi et des expériences collaboratives.'
+  return localeDescription.fallback
 })
 
 useHead({
