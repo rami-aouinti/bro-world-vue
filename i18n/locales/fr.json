@@ -1900,6 +1900,20 @@
           }
         }
       },
+      "generalDrawer": {
+        "platform": {
+          "title": "Plateforme",
+          "modalTitle": "Détails de la plateforme"
+        },
+        "plugins": {
+          "title": "Plugins",
+          "modalTitle": "Détails du plugin"
+        },
+        "configuration": {
+          "untitled": "Configuration"
+        },
+        "emptyDescription": "Aucune description disponible."
+      },
       "contacts": {
         "alerts": {
           "loadListError": "Erreur de chargement."

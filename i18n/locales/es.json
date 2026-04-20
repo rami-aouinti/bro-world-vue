@@ -1657,6 +1657,20 @@
           }
         }
       },
+      "generalDrawer": {
+        "platform": {
+          "title": "Plataforma",
+          "modalTitle": "Detalles de la plataforma"
+        },
+        "plugins": {
+          "title": "Plugins",
+          "modalTitle": "Detalles del plugin"
+        },
+        "configuration": {
+          "untitled": "Configuración"
+        },
+        "emptyDescription": "No hay descripción disponible."
+      },
       "contacts": {
         "alerts": {
           "loadListError": "No se pudieron cargar los contactos."

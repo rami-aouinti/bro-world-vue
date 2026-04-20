@@ -1682,6 +1682,20 @@
           }
         }
       },
+      "generalDrawer": {
+        "platform": {
+          "title": "Plattform",
+          "modalTitle": "Plattformdetails"
+        },
+        "plugins": {
+          "title": "Plugins",
+          "modalTitle": "Plugin-Details"
+        },
+        "configuration": {
+          "untitled": "Konfiguration"
+        },
+        "emptyDescription": "Keine Beschreibung verfügbar."
+      },
       "contacts": {
         "alerts": {
           "loadListError": "Kontakte konnten nicht geladen werden."

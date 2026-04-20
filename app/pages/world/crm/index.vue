@@ -44,6 +44,142 @@ useSeoMeta({
 const { crmNavItems } = useWorldCrmNavItems()
 const { fetch: refreshSession, loggedIn } = useUserSession()
 
+type GeneralConfigurationItem = {
+  id?: string
+  key?: string
+  value?: unknown
+}
+
+type GeneralPluginItem = {
+  id?: string
+  name?: string
+  key?: string
+  description?: string
+  configurations?: GeneralConfigurationItem[]
+}
+
+type CrmGeneralPublicItem = {
+  id?: string
+  title?: string
+  slug?: string
+  description?: string
+  photo?: string
+  status?: string
+  platform?: {
+    id?: string
+    name?: string
+    key?: string
+    description?: string
+  }
+  configurations?: GeneralConfigurationItem[]
+  plugins?: GeneralPluginItem[]
+}
+
+const { data: generalApplications } = await useAsyncData(
+  'world-public-general-applications-crm-page',
+  () => $fetch<{ items?: CrmGeneralPublicItem[] }>('/api/application/public/general'),
+)
+
+const crmGeneralApplication = computed(() =>
+  (generalApplications.value?.items ?? []).find(item => item.platform?.key === 'crm'),
+)
+
+const pluginModalOpen = ref(false)
+const selectedPlugin = ref<GeneralPluginItem | null>(null)
+const platformModalOpen = ref(false)
+
+function openPluginDetails(plugin: GeneralPluginItem) {
+  selectedPlugin.value = plugin
+  pluginModalOpen.value = true
+}
+
+function openPlatformDetails() {
+  platformModalOpen.value = true
+}
+
+type ConfigurationDisplayField = {
+  id: string
+  label: string
+  type: 'boolean' | 'text' | 'array'
+  booleanValue?: boolean
+  textValue?: string
+  arrayValue?: string[]
+}
+
+function formatLabelSegment(segment: string) {
+  return segment
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/[_-]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\b\w/g, char => char.toUpperCase())
+}
+
+function formatPathLabel(path: string) {
+  return path
+    .split('.')
+    .map(formatLabelSegment)
+    .join(' / ')
+}
+
+function toDisplayFields(value: unknown, parentPath = ''): ConfigurationDisplayField[] {
+  if (value === null || value === undefined) {
+    return []
+  }
+
+  if (Array.isArray(value)) {
+    const normalized = value.map(item =>
+      typeof item === 'string' || typeof item === 'number' || typeof item === 'boolean'
+        ? String(item)
+        : JSON.stringify(item),
+    )
+
+    return [{
+      id: parentPath || 'value',
+      label: formatPathLabel(parentPath || 'value'),
+      type: 'array',
+      arrayValue: normalized,
+    }]
+  }
+
+  if (typeof value === 'boolean') {
+    return [{
+      id: parentPath || 'value',
+      label: formatPathLabel(parentPath || 'value'),
+      type: 'boolean',
+      booleanValue: value,
+    }]
+  }
+
+  if (typeof value === 'string' || typeof value === 'number') {
+    return [{
+      id: parentPath || 'value',
+      label: formatPathLabel(parentPath || 'value'),
+      type: 'text',
+      textValue: String(value),
+    }]
+  }
+
+  if (typeof value !== 'object') {
+    return []
+  }
+
+  const entries = Object.entries(value as Record<string, unknown>)
+
+  return entries.flatMap(([key, nestedValue]) => {
+    const nextPath = parentPath ? `${parentPath}.${key}` : key
+    return toDisplayFields(nestedValue, nextPath)
+  })
+}
+
+function displayConfigurationName(configurationKey?: string) {
+  if (!configurationKey) {
+    return t('world.crm.generalDrawer.configuration.untitled', 'Configuration')
+  }
+
+  return formatPathLabel(configurationKey)
+}
+
 const loginDialogOpen = ref(false)
 const loginLoading = ref(false)
 
@@ -121,7 +257,59 @@ const githubSyncSteps = [
       action-icon="mdi-plus-circle-outline"
       @action="loggedIn ? navigateTo('/platform/crm/new') : (loginDialogOpen = true)"
     >
-      <template #right />
+      <template #right>
+        <div class="d-flex flex-column ga-4">
+          <v-card rounded="xl" variant="tonal" color="primary">
+            <div class="pa-4 d-flex ga-3">
+              <v-avatar size="56" rounded="xl">
+                <v-img
+                  :src="crmGeneralApplication?.photo || '/images/placeholders/platform-media-fallback.svg'"
+                  :alt="crmGeneralApplication?.title || 'CRM'"
+                  cover
+                />
+              </v-avatar>
+              <div class="flex-grow-1">
+                <div class="text-subtitle-2 font-weight-bold">
+                  {{ crmGeneralApplication?.title || t('world.crm.label') }}
+                </div>
+                <div class="text-caption text-medium-emphasis mb-2">
+                  {{ crmGeneralApplication?.description }}
+                </div>
+                <v-chip size="small" color="success" variant="flat" label>
+                  {{ crmGeneralApplication?.status || 'active' }}
+                </v-chip>
+              </div>
+            </div>
+          </v-card>
+
+          <v-card rounded="xl" class="pa-4">
+            <div class="text-subtitle-2 font-weight-bold mb-2">
+              {{ t('world.crm.generalDrawer.platform.title', 'Platform') }}
+            </div>
+            <v-chip color="info" variant="tonal" label @click="openPlatformDetails">
+              {{ crmGeneralApplication?.platform?.name || t('world.crm.label') }}
+            </v-chip>
+          </v-card>
+
+          <v-card rounded="xl" class="pa-4">
+            <div class="text-subtitle-2 font-weight-bold mb-3">
+              {{ t('world.crm.generalDrawer.plugins.title', 'Plugins') }}
+            </div>
+            <div class="d-flex flex-wrap ga-2">
+              <v-chip
+                v-for="plugin in crmGeneralApplication?.plugins ?? []"
+                :key="plugin.id || plugin.key || plugin.name"
+                color="primary"
+                variant="tonal"
+                label
+                @click="openPluginDetails(plugin)"
+              >
+                {{ plugin.name || plugin.key }}
+              </v-chip>
+            </div>
+          </v-card>
+        </div>
+      </template>
     </WorldModuleDrawers>
 
     <v-container fluid>
@@ -197,6 +385,131 @@ const githubSyncSteps = [
         @submit="onLoginSubmit"
       />
     </AppModal>
+
+    <AppModal
+      v-model="platformModalOpen"
+      :title="crmGeneralApplication?.platform?.name || t('world.crm.generalDrawer.platform.modalTitle', 'Platform details')"
+      :max-width="760"
+    >
+      <div class="d-flex flex-column ga-4">
+        <div class="text-body-2 text-medium-emphasis">
+          {{
+            crmGeneralApplication?.platform?.description ||
+            t('world.crm.generalDrawer.emptyDescription', 'No description available.')
+          }}
+        </div>
+
+        <v-card
+          v-for="configuration in crmGeneralApplication?.configurations ?? []"
+          :key="configuration.id || configuration.key"
+          rounded="lg"
+          variant="outlined"
+          class="pa-3"
+        >
+          <div class="text-subtitle-2 font-weight-medium mb-3">
+            {{ displayConfigurationName(configuration.key) }}
+          </div>
+          <div class="d-flex flex-column ga-3">
+            <div
+              v-for="field in toDisplayFields(configuration.value)"
+              :key="field.id"
+              class="config-row"
+            >
+              <div class="text-caption text-medium-emphasis mb-1">{{ field.label }}</div>
+              <v-switch
+                v-if="field.type === 'boolean'"
+                :model-value="field.booleanValue"
+                color="primary"
+                density="compact"
+                hide-details
+                inset
+                disabled
+              />
+              <div v-else-if="field.type === 'text'" class="text-body-2">
+                {{ field.textValue }}
+              </div>
+              <div v-else class="d-flex flex-wrap ga-2">
+                <v-chip
+                  v-for="item in field.arrayValue ?? []"
+                  :key="`${field.id}-${item}`"
+                  size="small"
+                  color="primary"
+                  variant="tonal"
+                  label
+                >
+                  {{ item }}
+                </v-chip>
+              </div>
+            </div>
+          </div>
+        </v-card>
+      </div>
+    </AppModal>
+
+    <AppModal
+      v-model="pluginModalOpen"
+      :title="selectedPlugin?.name || t('world.crm.generalDrawer.plugins.modalTitle', 'Plugin details')"
+      :max-width="760"
+    >
+      <div v-if="selectedPlugin" class="d-flex flex-column ga-4">
+        <div>
+          <div class="text-subtitle-2 font-weight-bold">
+            {{ selectedPlugin.name || selectedPlugin.key }}
+          </div>
+          <div class="text-body-2 text-medium-emphasis mt-1">
+            {{
+              selectedPlugin.description ||
+              t('world.crm.generalDrawer.emptyDescription', 'No description available.')
+            }}
+          </div>
+        </div>
+
+        <v-card
+          v-for="configuration in selectedPlugin.configurations ?? []"
+          :key="configuration.id || configuration.key"
+          rounded="lg"
+          variant="outlined"
+          class="pa-3"
+        >
+          <div class="text-subtitle-2 font-weight-medium mb-3">
+            {{ displayConfigurationName(configuration.key) }}
+          </div>
+          <div class="d-flex flex-column ga-3">
+            <div
+              v-for="field in toDisplayFields(configuration.value)"
+              :key="field.id"
+              class="config-row"
+            >
+              <div class="text-caption text-medium-emphasis mb-1">{{ field.label }}</div>
+              <v-switch
+                v-if="field.type === 'boolean'"
+                :model-value="field.booleanValue"
+                color="primary"
+                density="compact"
+                hide-details
+                inset
+                disabled
+              />
+              <div v-else-if="field.type === 'text'" class="text-body-2">
+                {{ field.textValue }}
+              </div>
+              <div v-else class="d-flex flex-wrap ga-2">
+                <v-chip
+                  v-for="item in field.arrayValue ?? []"
+                  :key="`${field.id}-${item}`"
+                  size="small"
+                  color="primary"
+                  variant="tonal"
+                  label
+                >
+                  {{ item }}
+                </v-chip>
+              </div>
+            </div>
+          </div>
+        </v-card>
+      </div>
+    </AppModal>
   </div>
 </template>
 
@@ -226,6 +539,13 @@ const githubSyncSteps = [
 .crm-doc-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 14px 32px rgba(15, 23, 42, 0.12);
+}
+
+.config-row {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(var(--v-border-color), 0.22);
+  background: rgba(var(--v-theme-surface-variant), 0.22);
 }
 
 @keyframes crmGlow {
