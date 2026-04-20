@@ -1801,6 +1801,47 @@
           "githubSyncDescription": "Ouvrir les workflows de synchronisation et les opérations dépôt."
         }
       },
+      "repositories": {
+        "moduleDescription": "Parcourez les dépôts du projet et les données du tableau de bord GitHub.",
+        "projectsTitle": "Projets",
+        "repositoryListTitle": "Dépôts",
+        "projectCard": {
+          "githubRepos": "Dépôts liés",
+          "provisioning": "Provisioning"
+        },
+        "actions": {
+          "viewRepositories": "Voir les dépôts",
+          "viewDashboard": "Voir le tableau de bord",
+          "backToProjects": "Retour aux projets",
+          "backToRepositories": "Retour aux dépôts",
+          "refresh": "Rafraîchir"
+        },
+        "alerts": {
+          "loadingProjects": "Chargement des projets...",
+          "loadingProjectsError": "Impossible de charger les projets.",
+          "emptyProjects": "Aucun projet trouvé.",
+          "loadingRepositories": "Chargement des dépôts...",
+          "loadingRepositoriesError": "Impossible de charger les dépôts.",
+          "emptyRepositories": "Aucun dépôt trouvé pour ce projet.",
+          "loadingDashboard": "Chargement du tableau de bord du dépôt...",
+          "loadingDashboardError": "Impossible de charger une ou plusieurs sections du tableau de bord."
+        },
+        "fields": {
+          "jobId": "ID du job (optionnel)"
+        },
+        "labels": {
+          "state": "État",
+          "openPrs": "PR ouvertes",
+          "closedPrs": "PR fermées",
+          "mergedPrs": "PR fusionnées"
+        },
+        "sections": {
+          "issues": "Issues ({count})",
+          "pullRequests": "Pull requests ({count})",
+          "projects": "Projects ({count})",
+          "branches": "Branches ({count})"
+        }
+      },
       "contactsDetail": {
         "actions": {
           "backToList": "Retour"

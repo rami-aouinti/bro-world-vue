@@ -1583,6 +1583,47 @@
           "githubSyncDescription": "Synchronisierungsabläufe und Repository-Aktionen öffnen."
         }
       },
+      "repositories": {
+        "moduleDescription": "Durchsuche Projekt-Repositories und GitHub-Dashboard-Daten.",
+        "projectsTitle": "Projekte",
+        "repositoryListTitle": "Repositories",
+        "projectCard": {
+          "githubRepos": "Verknüpfte Repositories",
+          "provisioning": "Provisioning"
+        },
+        "actions": {
+          "viewRepositories": "Repositories anzeigen",
+          "viewDashboard": "Dashboard anzeigen",
+          "backToProjects": "Zurück zu Projekten",
+          "backToRepositories": "Zurück zu Repositories",
+          "refresh": "Aktualisieren"
+        },
+        "alerts": {
+          "loadingProjects": "Projekte werden geladen...",
+          "loadingProjectsError": "Projekte konnten nicht geladen werden.",
+          "emptyProjects": "Keine Projekte gefunden.",
+          "loadingRepositories": "Repositories werden geladen...",
+          "loadingRepositoriesError": "Repositories konnten nicht geladen werden.",
+          "emptyRepositories": "Keine Repositories für dieses Projekt gefunden.",
+          "loadingDashboard": "Repository-Dashboard wird geladen...",
+          "loadingDashboardError": "Ein oder mehrere Dashboard-Bereiche konnten nicht geladen werden."
+        },
+        "fields": {
+          "jobId": "Job-ID (optional)"
+        },
+        "labels": {
+          "state": "Status",
+          "openPrs": "Offene PRs",
+          "closedPrs": "Geschlossene PRs",
+          "mergedPrs": "Gemergte PRs"
+        },
+        "sections": {
+          "issues": "Issues ({count})",
+          "pullRequests": "Pull requests ({count})",
+          "projects": "Projects ({count})",
+          "branches": "Branches ({count})"
+        }
+      },
       "contactsDetail": {
         "actions": {
           "backToList": "Zurück"
