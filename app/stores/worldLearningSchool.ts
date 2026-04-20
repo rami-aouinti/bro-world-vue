@@ -1,9 +1,10 @@
 const SCHOOL_STORE_TTL_MS = 2 * 60 * 1000
+const SCHOOL_PUBLIC_API_BASE_URL = 'https://bro-world.org/api/v1/school/general'
 
 export type SchoolResource = 'exams' | 'classes' | 'teachers' | 'students' | 'grades'
 
 type SchoolCollectionResponse = { items: Record<string, unknown>[] }
-type SchoolItemResponse = { item: Record<string, unknown> }
+type SchoolItemResponse = { item?: Record<string, unknown> } & Record<string, unknown>
 
 function normalizeSchoolResource(resource: string): SchoolResource {
   const value = resource.trim().toLowerCase()
@@ -66,10 +67,11 @@ export const useWorldLearningSchoolStore = defineStore('world-learning-school', 
     loadingKeys.value[cacheKey] = true
     error.value = null
     try {
-      const response = await $fetch<SchoolItemResponse>(`/api/world/learning/public/school/${resource}/${id}`)
-      details.value[cacheKey] = response.item
-      cache.value[cacheKey] = { at: Date.now(), data: response.item }
-      return response.item
+      const response = await $fetch<SchoolItemResponse>(`${SCHOOL_PUBLIC_API_BASE_URL}/${resource}/${id}`)
+      const item = response.item ?? response
+      details.value[cacheKey] = item
+      cache.value[cacheKey] = { at: Date.now(), data: item }
+      return item
     } catch (err) {
       error.value = err instanceof Error ? err.message : `Unable to load ${resource} detail`
       throw err
