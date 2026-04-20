@@ -166,8 +166,8 @@ onUnmounted(() => {
 }
 
 .v-main {
-  padding-top: 104px;
-  padding-bottom: 16px;
+  padding-top: 77px;
+  padding-bottom: 5px;
   overflow-y: visible;
   transition-property: padding;
   min-height: 100vh;

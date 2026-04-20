@@ -18,12 +18,13 @@ definePageMeta({
   title: 'appbar.notifications',
   icon: 'mdi-bell-ring-outline',
   middleware: 'auth',
+  layout: 'profile',
 })
 </script>
 
 <template>
   <v-container>
-    <v-card>
+    <v-card class="postcard-gradient-card">
       <v-card-title>Notification detail</v-card-title>
 
       <v-card-text v-if="notification">

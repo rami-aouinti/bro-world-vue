@@ -8,16 +8,17 @@ await inboxNotificationsStore.fetchNotifications()
 definePageMeta({
   title: 'appbar.notifications',
   middleware: 'auth',
+  layout: 'profile',
 })
 </script>
 
 <template>
   <v-container>
-    <v-card>
+    <v-card class="postcard-gradient-card">
       <v-card-title>{{ t('appbar.notifications') }}</v-card-title>
       <v-card-subtitle>Latest updates</v-card-subtitle>
 
-      <v-list v-if="notificationsSortedDesc.length">
+      <v-list v-if="notificationsSortedDesc.length" class="bg-transparent">
         <v-list-item
           v-for="item in notificationsSortedDesc"
           :key="item.id"
