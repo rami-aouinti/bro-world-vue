@@ -1,0 +1,20 @@
+import { createError } from 'h3'
+import { getSchoolResourceById } from '~~/server/utils/learningPublicSchool'
+
+const supportedResources = new Set(['classes', 'teachers', 'students', 'exams', 'grades'])
+
+export default defineEventHandler(async (event) => {
+  const resource = getRouterParam(event, 'resource')
+  const id = getRouterParam(event, 'id')
+
+  if (!resource || !supportedResources.has(resource)) {
+    throw createError({ statusCode: 404, statusMessage: 'Resource not found' })
+  }
+
+  if (!id) {
+    throw createError({ statusCode: 400, statusMessage: 'Missing item id' })
+  }
+
+  const item = await getSchoolResourceById(event, resource, id)
+  return { item }
+})

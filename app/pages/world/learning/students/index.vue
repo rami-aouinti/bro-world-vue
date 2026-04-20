@@ -1,34 +1,38 @@
 <script setup lang="ts">
+import type { SchoolResource } from '~/stores/worldLearningSchool'
+
 definePageMeta({ layout: 'learning', title: 'Learning Students' })
 
 const { t } = useI18n()
 const { learningNavItems } = useWorldLearningNavItems()
+const schoolStore = useWorldLearningSchoolStore()
+const resource = 'students' as SchoolResource
+
 const search = ref('')
 const selectedField = ref<string | null>(null)
+const referenceDialog = ref(false)
+const selectedReference = ref<{ resource: SchoolResource; id: string } | null>(null)
 
-const { data, pending, error, refresh } = await useAsyncData(
-  'learning-school-students',
-  () => $fetch<{ items: Record<string, unknown>[] }>('/api/world/learning/public/school/students'),
-)
+await schoolStore.fetchCollection(resource)
+
+const items = computed(() => schoolStore.getCollection(resource))
+const loading = computed(() => schoolStore.isLoading(resource))
 
 const headers = computed(() => {
-  const first = (data.value?.items ?? [])[0] ?? {}
-  return Object.keys(first).map(key => ({ title: key, key }))
+  const first = items.value[0] ?? {}
+  return Object.keys(first).map(key => ({ title: key, value: key }))
 })
 
-const availableFields = computed(() =>
-  headers.value.map(header => ({ title: header.title, value: header.key })),
-)
+const availableFields = computed(() => headers.value.map(header => ({ title: header.title, value: header.value })))
 
 const filteredItems = computed(() => {
   const query = search.value.trim().toLowerCase()
-  const items = data.value?.items ?? []
 
   if (!query) {
-    return items
+    return items.value
   }
 
-  return items.filter((item) => {
+  return items.value.filter((item) => {
     if (selectedField.value) {
       return String(item[selectedField.value] ?? '').toLowerCase().includes(query)
     }
@@ -36,6 +40,31 @@ const filteredItems = computed(() => {
     return Object.values(item).some(value => String(value ?? '').toLowerCase().includes(query))
   })
 })
+
+const referenceItem = computed(() => {
+  if (!selectedReference.value) {
+    return null
+  }
+
+  return schoolStore.getDetail(selectedReference.value.resource, selectedReference.value.id)
+})
+
+const referenceLoading = computed(() => {
+  if (!selectedReference.value) {
+    return false
+  }
+
+  return schoolStore.isLoading(selectedReference.value.resource, selectedReference.value.id)
+})
+
+async function openReference(payload: { key: string; value: string }) {
+  selectedReference.value = {
+    resource: payload.key as SchoolResource,
+    id: payload.value,
+  }
+  referenceDialog.value = true
+  await schoolStore.fetchDetail(payload.key, payload.value)
+}
 </script>
 
 <template>
@@ -43,7 +72,7 @@ const filteredItems = computed(() => {
     <WorldModuleDrawers
       :module-title="t('world.learning.label', 'Learning')"
       module-icon="mdi-school-outline"
-      :module-description="'School students catalogue and filters'"
+      :module-description="'School cards view with linked references'"
       :nav-items="learningNavItems"
       :show-action="false"
       activate-right-drawer
@@ -64,26 +93,36 @@ const filteredItems = computed(() => {
     </WorldModuleDrawers>
 
     <v-container fluid>
-      <v-card rounded="xl" class="pa-5">
-        <div class="d-flex align-center justify-space-between mb-4">
-          <div>
-            <h1 class="text-h5">Students</h1>
-            <p class="text-medium-emphasis mb-0">Public school endpoint: /school/general/students</p>
-          </div>
-          <v-btn variant="text" prepend-icon="mdi-refresh" :loading="pending" @click="refresh">
-            Refresh
-          </v-btn>
-        </div>
+      <v-alert
+        v-if="schoolStore.error"
+        type="error"
+        variant="tonal"
+        class="mb-4"
+        :text="schoolStore.error"
+      />
 
-        <v-alert v-if="error" type="error" variant="tonal" class="mb-4" :text="error.message" />
-
-        <v-data-table
-          :headers="headers"
-          :items="filteredItems"
-          :loading="pending"
-          density="comfortable"
-        />
-      </v-card>
+      <LearningResourceCards
+        :resource="resource"
+        :items="filteredItems"
+        :loading="loading"
+        @open-reference="openReference"
+      />
     </v-container>
+
+    <v-dialog v-model="referenceDialog" max-width="720">
+      <v-card rounded="xl">
+        <v-card-title class="d-flex align-center justify-space-between">
+          <span>Détail référence</span>
+          <v-btn icon="mdi-close" variant="text" @click="referenceDialog = false" />
+        </v-card-title>
+        <v-divider />
+        <v-card-text>
+          <div v-if="referenceLoading" class="d-flex justify-center py-8">
+            <v-progress-circular indeterminate color="primary" />
+          </div>
+          <pre v-else class="text-caption">{{ JSON.stringify(referenceItem, null, 2) }}</pre>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
