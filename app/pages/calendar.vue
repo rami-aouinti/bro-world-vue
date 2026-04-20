@@ -104,6 +104,7 @@ const upcomingEvents = ref<PrivateCalendarEvent[]>([])
 const selectedEvent = ref<PrivateCalendarEvent | null>(null)
 const selectedEventDetails = ref<PrivateCalendarEvent | null>(null)
 const isDetailsLoading = ref(false)
+const isEditMode = ref(false)
 const dialogOpen = ref(false)
 const presetEventsHost = ref<HTMLElement | null>(null)
 let presetEventsDraggable: Draggable | null = null
@@ -127,11 +128,11 @@ const eventDescriptionHtml = computed(() =>
 const currentTimezone = computed(
   () => Intl.DateTimeFormat().resolvedOptions().timeZone,
 )
-const maskedGoogleToken = computed(() => {
-  const token = googleToken.value.trim()
-  if (!token) return ''
-  if (token.length <= 8) return token
-  return `${token.slice(0, 4)}...${token.slice(-4)}`
+const canEditForm = computed(() => !isEditing.value || isEditMode.value)
+const formattedEventRange = computed(() => {
+  const event = activeEvent.value
+  if (!event?.startAt || !event?.endAt) return ''
+  return `${new Date(event.startAt).toLocaleString(locale.value)} → ${new Date(event.endAt).toLocaleString(locale.value)}`
 })
 
 const fullCalendarEvents = computed(() => {
@@ -233,6 +234,7 @@ function fillForm(event?: PrivateCalendarEvent) {
 function openCreateDialog(start?: string, end?: string) {
   selectedEvent.value = null
   selectedEventDetails.value = null
+  isEditMode.value = true
   fillForm()
 
   if (start) form.startAt = toInputDateTime(start)
@@ -281,6 +283,7 @@ function formatEventDescriptionAsHtml(rawDescription: string | null) {
 function openEditDialog(event: PrivateCalendarEvent) {
   selectedEvent.value = event
   selectedEventDetails.value = null
+  isEditMode.value = false
   fillForm(event)
   dialogOpen.value = true
   void loadEventDetails(event.id)
@@ -661,14 +664,6 @@ onUnmounted(() => {
           >
             {{ t('pages.calendar.googleConnect') }}
           </v-btn>
-          <v-alert
-            v-if="googleToken"
-            type="success"
-            variant="tonal"
-            class="mt-3"
-          >
-            {{ t('pages.calendar.googleToken') }}: {{ maskedGoogleToken }}
-          </v-alert>
         </template>
       </template>
       <template #right>
@@ -687,25 +682,6 @@ onUnmounted(() => {
           </v-list>
           <v-card-text v-else class="text-medium-emphasis">
             {{ t('pages.calendar.noUpcoming') }}
-          </v-card-text>
-
-          <v-divider class="my-3" />
-          <v-card-title class="text-subtitle-1">
-            {{ t('pages.calendar.googleEventsTitle') }}
-          </v-card-title>
-          <v-list v-if="googleEvents.length">
-            <v-list-item
-              v-for="event in googleEvents"
-              :key="event.id"
-              :title="event.title"
-              :subtitle="new Date(event.startAt).toLocaleString(locale)"
-              prepend-icon="mdi-google-calendar"
-              :href="event.htmlLink || undefined"
-              target="_blank"
-            />
-          </v-list>
-          <v-card-text v-else class="text-medium-emphasis">
-            {{ t('pages.calendar.noGoogleEvents') }}
           </v-card-text>
         </template>
       </template>
@@ -754,6 +730,9 @@ onUnmounted(() => {
                 <!-- eslint-disable-next-line vue/no-v-html -->
                 <div class="event-html-description" v-html="eventDescriptionHtml" />
               </div>
+              <div v-if="formattedEventRange" class="text-medium-emphasis mb-2">
+                Date: {{ formattedEventRange }}
+              </div>
               <div v-if="activeEvent?.organizerEmail" class="text-medium-emphasis">
                 Organisateur: {{ activeEvent.organizerName || activeEvent.organizerEmail }}
               </div>
@@ -763,11 +742,13 @@ onUnmounted(() => {
             v-model="form.title"
             :label="t('pages.calendar.form.title')"
             autofocus
+            :disabled="!canEditForm"
           />
           <v-textarea
             v-model="form.description"
             :label="t('pages.calendar.form.description')"
             rows="3"
+            :disabled="!canEditForm"
           />
           <v-row>
             <v-col cols="12" md="6">
@@ -775,6 +756,7 @@ onUnmounted(() => {
                 v-model="form.startAt"
                 :label="t('pages.calendar.form.start')"
                 type="datetime-local"
+                :disabled="!canEditForm"
               />
             </v-col>
             <v-col cols="12" md="6">
@@ -782,17 +764,20 @@ onUnmounted(() => {
                 v-model="form.endAt"
                 :label="t('pages.calendar.form.end')"
                 type="datetime-local"
+                :disabled="!canEditForm"
               />
             </v-col>
           </v-row>
           <v-text-field
             v-model="form.location"
             :label="t('pages.calendar.form.location')"
+            :disabled="!canEditForm"
           />
           <v-switch
             v-model="form.isAllDay"
             :label="t('pages.calendar.form.allDay')"
             color="primary"
+            :disabled="!canEditForm"
           />
         </v-card-text>
         <v-card-actions>
@@ -801,10 +786,20 @@ onUnmounted(() => {
           </v-btn>
           <v-spacer />
           <v-btn
+            v-if="isEditing && !isEditMode"
+            color="primary"
+            variant="tonal"
+            prepend-icon="mdi-pencil-outline"
+            @click="isEditMode = true"
+          >
+            Edit
+          </v-btn>
+          <v-btn
             v-if="isEditing"
             color="warning"
             variant="text"
             :loading="isSaving"
+            :disabled="!canEditForm"
             @click="cancelEvent"
           >
             {{ t('pages.calendar.cancelEvent') }}
@@ -814,11 +809,12 @@ onUnmounted(() => {
             color="error"
             variant="text"
             :loading="isSaving"
+            :disabled="!canEditForm"
             @click="deleteEvent"
           >
             {{ t('common.delete') }}
           </v-btn>
-          <v-btn color="primary" :loading="isSaving" @click="saveEvent">
+          <v-btn color="primary" :loading="isSaving" :disabled="!canEditForm" @click="saveEvent">
             {{ t('common.save') }}
           </v-btn>
         </v-card-actions>
