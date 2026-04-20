@@ -3,6 +3,7 @@ import type {
   ApiListResponse,
   CrmIdResponse,
   CrmProjectCreatePayload,
+  CrmProjectItem,
   CrmProjectListItem,
 } from '~~/server/types/api/crm-general'
 
@@ -31,6 +32,9 @@ function provisioningColor(state: string | null | undefined) {
 const createDialog = ref(false)
 const pendingCreate = ref(false)
 const search = ref('')
+const statusFilter = ref<string | null>(null)
+const startedAfter = ref<string | null>(null)
+const dueBefore = ref<string | null>(null)
 const currentPage = ref(1)
 const itemsPerPage = 9
 const createPayload = reactive<CrmProjectCreatePayload>({
@@ -51,14 +55,30 @@ const filteredProjects = computed(() => {
   const query = search.value.trim().toLowerCase()
   const items = data.value?.items ?? []
 
-  if (!query) return items
+  return items.filter((project) => {
+    const detailedProject = project as CrmProjectListItem & Partial<CrmProjectItem>
+    const matchesSearch =
+      !query
+      || [project.name, project.status, detailedProject.code, project.id]
+        .filter(Boolean)
+        .some((value) => String(value).toLowerCase().includes(query))
+    const matchesStatus = !statusFilter.value || project.status === statusFilter.value
+    const matchesStartDate
+      = !startedAfter.value
+        || !detailedProject.startedAt
+        || new Date(detailedProject.startedAt) >= new Date(startedAfter.value)
+    const matchesDueDate
+      = !dueBefore.value
+        || !detailedProject.dueAt
+        || new Date(detailedProject.dueAt) <= new Date(dueBefore.value)
 
-  return items.filter((project) =>
-    [project.name, project.status, project.code, project.id]
-      .filter(Boolean)
-      .some((value) => String(value).toLowerCase().includes(query)),
-  )
+    return matchesSearch && matchesStatus && matchesStartDate && matchesDueDate
+  })
 })
+
+const projectStatusOptions = computed(() =>
+  Array.from(new Set((data.value?.items ?? []).map((project) => project.status).filter(Boolean))),
+)
 
 const totalPages = computed(() =>
   Math.max(1, Math.ceil(filteredProjects.value.length / itemsPerPage)),
@@ -69,7 +89,7 @@ const paginatedProjects = computed(() => {
   return filteredProjects.value.slice(start, start + itemsPerPage)
 })
 
-watch([search, filteredProjects], () => {
+watch([search, statusFilter, startedAfter, dueBefore, filteredProjects], () => {
   currentPage.value = 1
 })
 
@@ -101,25 +121,40 @@ async function createProject() {
       :module-description="t('world.crm.projects.moduleDescription')"
       :nav-items="crmNavItems"
       :show-action="isRootAdmin"
+      activate-right-drawer
       :action-label="t('world.crm.projects.actions.newProject')"
       action-icon="mdi-folder-plus-outline"
       @action="isRootAdmin ? (createDialog = true) : undefined"
-    />
+    >
+      <template #right>
+        <div class="d-flex flex-column ga-3">
+          <v-text-field
+            v-model="search"
+            prepend-inner-icon="mdi-magnify"
+            label="Rechercher un projet"
+            clearable
+            variant="outlined"
+            hide-details
+          />
+          <v-select
+            v-model="statusFilter"
+            :items="projectStatusOptions"
+            label="Statut"
+            variant="outlined"
+            clearable
+            hide-details
+          />
+          <v-text-field v-model="startedAfter" type="date" label="Début après" variant="outlined" hide-details clearable />
+          <v-text-field v-model="dueBefore" type="date" label="Fin avant" variant="outlined" hide-details clearable />
+        </div>
+      </template>
+    </WorldModuleDrawers>
 
     <v-container fluid>
       <CrmPageSkeleton v-if="pending" variant="list" :cards="6" />
       <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">{{ t('world.crm.projects.alerts.loadListError') }}</v-alert>
 
       <template v-else>
-        <v-text-field
-          v-model="search"
-          class="mb-4"
-          prepend-inner-icon="mdi-magnify"
-          label="Rechercher un projet"
-          clearable
-          variant="outlined"
-        />
-
         <v-row>
           <v-col v-for="project in paginatedProjects" :key="project.id" cols="12" md="4">
             <v-card rounded="xl" class="pa-4 postcard-gradient-card crm-list-card h-100 d-flex flex-column">
