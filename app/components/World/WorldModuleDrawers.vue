@@ -22,6 +22,7 @@ const props = defineProps<{
   actionLabel?: string
   actionIcon?: string
   showAction?: boolean
+  activateRightDrawer?: boolean
 }>()
 
 const { t } = useI18n()
@@ -97,8 +98,14 @@ const moduleIdentityBadge = computed(
 const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => true)
 const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
 
-showRightDrawerDesktop.value = false
-showRightDrawerMobile.value = false
+watchEffect(() => {
+  if (!props.activateRightDrawer) {
+    return
+  }
+
+  showRightDrawerDesktop.value = true
+  showRightDrawerMobile.value = false
+})
 
 const quickCheckItems = computed(() => [
   {

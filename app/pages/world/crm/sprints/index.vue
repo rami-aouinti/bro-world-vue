@@ -30,6 +30,9 @@ const isAdminOrRoot = computed(() => {
 const createDialog = ref(false)
 const pendingCreate = ref(false)
 const search = ref('')
+const statusFilter = ref<string | null>(null)
+const startAfter = ref<string | null>(null)
+const endBefore = ref<string | null>(null)
 const currentPage = ref(1)
 const itemsPerPage = 9
 const createPayload = reactive<CrmSprintCreatePayload>({
@@ -47,14 +50,23 @@ const filteredSprints = computed(() => {
   const query = search.value.trim().toLowerCase()
   const items = data.value?.items ?? []
 
-  if (!query) return items
+  return items.filter((sprint) => {
+    const matchesSearch
+      = !query
+        || [sprint.name, sprint.status, sprint.projectId, sprint.id]
+          .filter(Boolean)
+          .some((value) => String(value).toLowerCase().includes(query))
+    const matchesStatus = !statusFilter.value || sprint.status === statusFilter.value
+    const matchesStartDate = !startAfter.value || new Date(sprint.startDate) >= new Date(startAfter.value)
+    const matchesEndDate = !endBefore.value || new Date(sprint.endDate) <= new Date(endBefore.value)
 
-  return items.filter((sprint) =>
-    [sprint.name, sprint.status, sprint.projectId, sprint.id]
-      .filter(Boolean)
-      .some((value) => String(value).toLowerCase().includes(query)),
-  )
+    return matchesSearch && matchesStatus && matchesStartDate && matchesEndDate
+  })
 })
+
+const sprintStatusOptions = computed(() =>
+  Array.from(new Set((data.value?.items ?? []).map((sprint) => sprint.status).filter(Boolean))),
+)
 
 const totalPages = computed(() =>
   Math.max(1, Math.ceil(filteredSprints.value.length / itemsPerPage)),
@@ -65,7 +77,7 @@ const paginatedSprints = computed(() => {
   return filteredSprints.value.slice(start, start + itemsPerPage)
 })
 
-watch([search, filteredSprints], () => {
+watch([search, statusFilter, startAfter, endBefore, filteredSprints], () => {
   currentPage.value = 1
 })
 
@@ -99,10 +111,27 @@ async function createSprint() {
       :module-description="t('world.crm.sprints.moduleDescription')"
       :nav-items="crmNavItems"
       :show-action="isRootAdmin"
+      activate-right-drawer
       :action-label="t('world.crm.sprints.actions.create')"
       action-icon="mdi-plus"
       @action="isRootAdmin ? (createDialog = true) : undefined"
-    />
+    >
+      <template #right>
+        <div class="d-flex flex-column ga-3">
+          <v-text-field
+            v-model="search"
+            prepend-inner-icon="mdi-magnify"
+            label="Rechercher un sprint"
+            clearable
+            variant="outlined"
+            hide-details
+          />
+          <v-select v-model="statusFilter" :items="sprintStatusOptions" label="Statut" variant="outlined" clearable hide-details />
+          <v-text-field v-model="startAfter" type="date" label="Début après" variant="outlined" hide-details clearable />
+          <v-text-field v-model="endBefore" type="date" label="Fin avant" variant="outlined" hide-details clearable />
+        </div>
+      </template>
+    </WorldModuleDrawers>
 
     <v-container fluid>
       <CrmPageSkeleton v-if="pending" variant="list" :cards="6" />
@@ -111,15 +140,6 @@ async function createSprint() {
       >
 
       <template v-else>
-        <v-text-field
-          v-model="search"
-          class="mb-4"
-          prepend-inner-icon="mdi-magnify"
-          label="Rechercher un sprint"
-          clearable
-          variant="outlined"
-        />
-
         <v-row>
           <v-col
             v-for="sprint in paginatedSprints"
