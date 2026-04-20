@@ -151,8 +151,8 @@ const githubSyncSteps = [
             </v-btn>
           </v-card>
         </v-col>
-        <v-col cols="12" md="6">
-          <v-card rounded="xl" class="pa-5 postcard-gradient-card crm-doc-card h-100">
+        <v-col cols="12">
+          <v-card rounded="xl" class="pa-5 postcard-gradient-card crm-doc-card">
             <div class="d-flex align-center ga-2 mb-3">
               <v-icon icon="mdi-github" color="primary" />
               <h2 class="text-h6 mb-0">{{ t('world.crm.documentation.githubSync.title') }}</h2>
@@ -218,11 +218,6 @@ const githubSyncSteps = [
 .crm-doc-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 14px 32px rgba(15, 23, 42, 0.12);
-}
-
-.crm-sync-timeline {
-  max-height: 260px;
-  overflow: auto;
 }
 
 @keyframes crmGlow {
