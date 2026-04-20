@@ -13,10 +13,6 @@ interface ProjectDashboardRepository {
   defaultBranch?: string
 }
 
-interface ProjectDashboardResponse {
-  repositories?: ProjectDashboardRepository[]
-}
-
 interface RepositoryListItem extends ProjectDashboardRepository {
   projectId: string
   projectName: string
@@ -58,8 +54,11 @@ const { data: repositoriesData, pending: pendingRepositories, error: repositorie
   async () => {
     const dashboards = await Promise.allSettled(
       eligibleProjects.value.map(async (project) => {
-        const dashboard = await githubStore.getProjectDashboard(project.id) as ProjectDashboardResponse
-        return { project, repositories: dashboard.repositories ?? [] }
+        const repositoriesResponse = await githubStore.getProjectRepositories(project.id, {
+          limit: 100,
+        }) as { items?: ProjectDashboardRepository[] }
+
+        return { project, repositories: repositoriesResponse.items ?? [] }
       }),
     )
 

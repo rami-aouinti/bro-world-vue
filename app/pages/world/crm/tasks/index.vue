@@ -1,19 +1,10 @@
 <script setup lang="ts">
-import type { CrmIdResponse, CrmTaskCreatePayload } from '~~/server/types/api/crm-general'
-
-interface CrmTaskItem {
-  id: string
-  title: string
-  status: string
-  priority: string
-  projectName: string
-  sprintName: string
-  dueAt: string | null
-  estimatedHours: number | null
-  updatedAt: string
-  attachments: Array<{ id?: string }>
-  children: Array<{ id: string; status: string }>
-}
+import type {
+  CrmIdResponse,
+  CrmProjectItem,
+  CrmTaskCreatePayload,
+  CrmTaskItem,
+} from '~~/server/types/api/crm-general'
 
 interface CrmTaskResponse {
   items: CrmTaskItem[]
@@ -28,11 +19,18 @@ const { sessionUser } = useCrmPermissions()
 const isRootAdmin = computed(() =>
   (sessionUser.value?.roles ?? []).includes('ROLE_ROOT'),
 )
+const isAdminOrRoot = computed(() => {
+  const roles = sessionUser.value?.roles ?? []
+  return roles.includes('ROLE_ROOT') || roles.includes('ROLE_ADMIN')
+})
 const createDialog = ref(false)
 const pendingCreate = ref(false)
 const search = ref('')
 const currentPage = ref(1)
 const itemsPerPage = 9
+const projectModalOpen = ref(false)
+const projectModalLoading = ref(false)
+const selectedProject = ref<CrmProjectItem | null>(null)
 const createPayload = reactive<CrmTaskCreatePayload>({
   projectId: '',
   title: '',
@@ -52,7 +50,7 @@ const filteredTasks = computed(() => {
   if (!query) return items
 
   return items.filter((task) =>
-    [task.title, task.status, task.priority, task.projectName, task.sprintName, task.id]
+    [task.title, task.status, task.priority, task.projectName, task.id]
       .filter(Boolean)
       .some((value) => String(value).toLowerCase().includes(query)),
   )
@@ -79,6 +77,34 @@ function formatDate(value: string | null) {
   return new Intl.DateTimeFormat(locale.value, {
     dateStyle: 'medium',
   }).format(new Date(value))
+}
+
+function taskStatusColor(status: string) {
+  if (status === 'done') return 'success'
+  if (status === 'review') return 'info'
+  if (status === 'in_progress' || status === 'progress') return 'warning'
+  if (status === 'pending' || status === 'todo') return 'secondary'
+  return 'primary'
+}
+
+function taskPriorityColor(priority: string) {
+  if (priority === 'high') return 'error'
+  if (priority === 'medium') return 'warning'
+  if (priority === 'low') return 'success'
+  return 'primary'
+}
+
+async function openProject(projectId: string | null) {
+  if (!projectId) return
+
+  projectModalLoading.value = true
+  projectModalOpen.value = true
+
+  try {
+    selectedProject.value = await $fetch<CrmProjectItem>(`/api/crm/general/projects/${projectId}`)
+  } finally {
+    projectModalLoading.value = false
+  }
 }
 
 async function createTask() {
@@ -137,13 +163,18 @@ async function createTask() {
             <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
               <div class="d-flex align-start justify-space-between ga-2 mb-2">
                 <h3 class="text-subtitle-1 mb-0">{{ task.title }}</h3>
-                <v-chip size="small" color="primary" variant="tonal">{{
-                  task.status
-                }}</v-chip>
+                <v-chip size="small" :color="taskStatusColor(task.status)" variant="tonal">
+                  {{ task.status }}
+                </v-chip>
               </div>
-              <p class="text-body-2 mb-1">{{ t('world.crm.tasks.list.project') }}: {{ task.projectName }}</p>
-              <p class="text-body-2 mb-1">{{ t('world.crm.tasks.list.sprint') }}: {{ task.sprintName }}</p>
-              <p class="text-body-2 mb-1">{{ t('world.crm.tasks.list.priority') }}: {{ task.priority }}</p>
+              <div class="d-flex flex-wrap ga-2 mb-2">
+                <v-chip size="small" color="primary" variant="outlined" @click="openProject(task.projectId)">
+                  {{ task.projectName || 'Project' }}
+                </v-chip>
+                <v-chip size="small" :color="taskPriorityColor(task.priority)" variant="tonal">
+                  {{ task.priority }}
+                </v-chip>
+              </div>
               <p class="text-body-2 mb-1">{{ t('world.crm.tasks.list.due') }}: {{ formatDate(task.dueAt) }}</p>
               <p class="text-body-2 mb-0">
                 {{ task.estimatedHours }}h ·
@@ -151,6 +182,7 @@ async function createTask() {
                 {{ task.children.length }} {{ t('world.crm.tasks.list.subtasks') }}
               </p>
               <v-btn
+                v-if="isAdminOrRoot"
                 class="mt-3"
                 color="primary"
                 variant="tonal"
@@ -184,6 +216,17 @@ async function createTask() {
       <template #actions>
         <v-btn variant="text" @click="createDialog = false">{{ t('world.crm.tasks.actions.cancel') }}</v-btn>
         <v-btn color="primary" :loading="pendingCreate" @click="createTask">{{ t('world.crm.tasks.actions.create') }}</v-btn>
+      </template>
+    </AppModal>
+
+    <AppModal v-model="projectModalOpen" title="Project details" :max-width="720">
+      <v-progress-linear v-if="projectModalLoading" indeterminate color="primary" class="mb-4" />
+      <template v-else-if="selectedProject">
+        <p><strong>{{ t('world.crm.projects.form.name') }}:</strong> {{ selectedProject.name }}</p>
+        <p><strong>{{ t('world.crm.projects.form.status') }}:</strong> {{ selectedProject.status }}</p>
+        <p><strong>{{ t('world.crm.projects.list.githubRepos') }}:</strong> {{ selectedProject.githubRepositoriesCount }}</p>
+        <p><strong>{{ t('world.crm.projects.list.provisioning') }}:</strong> {{ selectedProject.provisioning?.state || '—' }}</p>
+        <p><strong>{{ t('world.crm.projects.form.description') }}:</strong> {{ selectedProject.description || '—' }}</p>
       </template>
     </AppModal>
   </div>

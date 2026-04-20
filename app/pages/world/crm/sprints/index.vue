@@ -23,6 +23,10 @@ const { sessionUser } = useCrmPermissions()
 const isRootAdmin = computed(() =>
   (sessionUser.value?.roles ?? []).includes('ROLE_ROOT'),
 )
+const isAdminOrRoot = computed(() => {
+  const roles = sessionUser.value?.roles ?? []
+  return roles.includes('ROLE_ROOT') || roles.includes('ROLE_ADMIN')
+})
 const createDialog = ref(false)
 const pendingCreate = ref(false)
 const search = ref('')
@@ -131,13 +135,12 @@ async function createSprint() {
                   sprint.status
                 }}</v-chip>
               </div>
-              <p class="text-body-2 mb-1">
-                {{ t('world.crm.sprints.list.start') }}: {{ formatDate(sprint.startDate) }}
-              </p>
-              <p class="text-body-2 mb-0">
+              <p class="text-caption text-medium-emphasis mb-0 mt-3">
+                {{ t('world.crm.sprints.list.start') }}: {{ formatDate(sprint.startDate) }} ·
                 {{ t('world.crm.sprints.list.end') }}: {{ formatDate(sprint.endDate) }}
               </p>
               <v-btn
+                v-if="isAdminOrRoot"
                 class="mt-3"
                 color="primary"
                 variant="tonal"

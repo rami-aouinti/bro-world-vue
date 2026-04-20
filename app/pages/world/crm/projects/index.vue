@@ -15,6 +15,18 @@ const { sessionUser } = useCrmPermissions()
 const isRootAdmin = computed(() =>
   (sessionUser.value?.roles ?? []).includes('ROLE_ROOT'),
 )
+const isAdminOrRoot = computed(() => {
+  const roles = sessionUser.value?.roles ?? []
+  return roles.includes('ROLE_ROOT') || roles.includes('ROLE_ADMIN')
+})
+
+function provisioningColor(state: string | null | undefined) {
+  const normalized = String(state ?? '').toLowerCase()
+  if (normalized === 'ready') return 'success'
+  if (normalized === 'pending') return 'warning'
+  if (normalized === 'error') return 'error'
+  return 'secondary'
+}
 
 const createDialog = ref(false)
 const pendingCreate = ref(false)
@@ -115,10 +127,16 @@ async function createProject() {
                 <h3 class="text-subtitle-1 mb-0">{{ project.name }}</h3>
                 <v-chip size="small" color="primary" variant="tonal">{{ project.status }}</v-chip>
               </div>
-              <p class="text-body-2 mb-1">{{ t('world.crm.projects.list.githubRepos') }}: {{ project.githubRepositoriesCount }}</p>
-              <p class="text-body-2 mb-4">{{ t('world.crm.projects.list.provisioning') }}: {{ project.provisioning.state }}</p>
+              <div class="d-flex flex-wrap ga-2 mb-4">
+                <v-chip size="small" color="info" variant="tonal">
+                  {{ t('world.crm.projects.list.githubRepos') }}: {{ project.githubRepositoriesCount }}
+                </v-chip>
+                <v-chip size="small" :color="provisioningColor(project.provisioning?.state)" variant="tonal">
+                  {{ t('world.crm.projects.list.provisioning') }}: {{ project.provisioning.state }}
+                </v-chip>
+              </div>
               <v-spacer />
-              <v-btn color="primary" variant="tonal" prepend-icon="mdi-arrow-right" @click="router.push(`/world/crm/projects/${project.id}`)">
+              <v-btn v-if="isAdminOrRoot" color="primary" variant="tonal" prepend-icon="mdi-arrow-right" @click="router.push(`/world/crm/projects/${project.id}`)">
                 {{ t('world.crm.projects.actions.viewDetails') }}
               </v-btn>
             </v-card>
