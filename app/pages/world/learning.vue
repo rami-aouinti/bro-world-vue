@@ -18,6 +18,31 @@ const learningNavItems = computed(() => [
     icon: 'mdi-book-open-page-variant-outline',
   },
   {
+    title: 'Classes',
+    to: '/world/learning/classes',
+    icon: 'mdi-google-classroom',
+  },
+  {
+    title: 'Teachers',
+    to: '/world/learning/teachers',
+    icon: 'mdi-account-tie',
+  },
+  {
+    title: 'Students',
+    to: '/world/learning/students',
+    icon: 'mdi-account-school',
+  },
+  {
+    title: 'Exams',
+    to: '/world/learning/exams',
+    icon: 'mdi-file-document-outline',
+  },
+  {
+    title: 'Grades',
+    to: '/world/learning/grades',
+    icon: 'mdi-check-decagram-outline',
+  },
+  {
     title: t('world.learning.nav.levels'),
     to: '/world/learning/levels',
     icon: 'mdi-stairs',
