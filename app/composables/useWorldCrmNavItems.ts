@@ -32,11 +32,6 @@ export function useWorldCrmNavItems() {
     ...(isRootAdmin.value
       ? [
           {
-            title: t('world.crm.nav.githubSync', 'GitHub Sync'),
-            to: '/world/crm/github-sync',
-            icon: 'mdi-github',
-          },
-          {
             title: t('world.crm.taskRequests.list.title'),
             to: '/world/crm/task-requests',
             icon: 'mdi-source-pull',

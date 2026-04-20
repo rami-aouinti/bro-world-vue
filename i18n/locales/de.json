@@ -1545,6 +1545,58 @@
           "review": "Review",
           "done": "Done"
         }
+      },
+      "admin": {
+        "moduleDescription": "CRM-Admin-Dashboard und Schnellzugriff auf Entitäten.",
+        "actions": {
+          "refresh": "Aktualisieren"
+        },
+        "page": {
+          "title": "CRM Admin-Center",
+          "description": "Globales Dashboard und kartenbasierte Navigation zu jedem Admin-Bereich."
+        },
+        "alerts": {
+          "loadingDashboard": "CRM-Dashboard wird geladen..."
+        },
+        "cards": {
+          "companies": "Unternehmen",
+          "projects": "Projekte",
+          "tasks": "Aufgaben",
+          "requestsPending": "Anfragen ausstehend",
+          "requestsApproved": "Anfragen genehmigt",
+          "requestsRejected": "Anfragen abgelehnt"
+        },
+        "sections": {
+          "title": "Admin-Bereiche",
+          "open": "Bereich öffnen",
+          "companies": "Unternehmen",
+          "projects": "Projekte",
+          "tasks": "Aufgaben",
+          "taskRequests": "Aufgabenanfragen",
+          "sprints": "Sprints",
+          "billings": "Abrechnungen",
+          "contacts": "Kontakte"
+        },
+        "utility": {
+          "title": "Utilities",
+          "githubSync": "GitHub Sync",
+          "githubSyncDescription": "Synchronisierungsabläufe und Repository-Aktionen öffnen."
+        }
+      },
+      "contactsDetail": {
+        "actions": {
+          "backToList": "Zurück"
+        },
+        "alerts": {
+          "loading": "Lädt...",
+          "notFound": "Nicht gefunden."
+        },
+        "fields": {
+          "email": "E-Mail",
+          "phone": "Telefon",
+          "city": "Stadt",
+          "score": "Score"
+        }
       }
     },
     "shop": {

@@ -1769,6 +1769,58 @@
           "24a": "List tasks by latest sprint",
           "24b": "List tasks by sprint"
         }
+      },
+      "admin": {
+        "moduleDescription": "CRM admin dashboard and quick access to entities.",
+        "actions": {
+          "refresh": "Refresh"
+        },
+        "page": {
+          "title": "CRM Admin center",
+          "description": "Global dashboard and card-based navigation to each admin section."
+        },
+        "alerts": {
+          "loadingDashboard": "Loading CRM dashboard..."
+        },
+        "cards": {
+          "companies": "Companies",
+          "projects": "Projects",
+          "tasks": "Tasks",
+          "requestsPending": "Requests pending",
+          "requestsApproved": "Requests approved",
+          "requestsRejected": "Requests rejected"
+        },
+        "sections": {
+          "title": "Admin sections",
+          "open": "Open section",
+          "companies": "Companies",
+          "projects": "Projects",
+          "tasks": "Tasks",
+          "taskRequests": "Task requests",
+          "sprints": "Sprints",
+          "billings": "Billings",
+          "contacts": "Contacts"
+        },
+        "utility": {
+          "title": "Utilities",
+          "githubSync": "GitHub Sync",
+          "githubSyncDescription": "Open synchronization workflows and repository operations."
+        }
+      },
+      "contactsDetail": {
+        "actions": {
+          "backToList": "Back"
+        },
+        "alerts": {
+          "loading": "Loading...",
+          "notFound": "Not found."
+        },
+        "fields": {
+          "email": "Email",
+          "phone": "Phone",
+          "city": "City",
+          "score": "Score"
+        }
       }
     },
     "shop": {

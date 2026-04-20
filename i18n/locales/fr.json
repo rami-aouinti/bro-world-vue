@@ -1763,6 +1763,58 @@
           "review": "Review",
           "done": "Done"
         }
+      },
+      "admin": {
+        "moduleDescription": "Tableau de bord CRM admin et accès rapide aux entités.",
+        "actions": {
+          "refresh": "Actualiser"
+        },
+        "page": {
+          "title": "Centre admin CRM",
+          "description": "Dashboard global et navigation par cartes vers chaque section admin."
+        },
+        "alerts": {
+          "loadingDashboard": "Chargement du dashboard CRM..."
+        },
+        "cards": {
+          "companies": "Entreprises",
+          "projects": "Projets",
+          "tasks": "Tâches",
+          "requestsPending": "Demandes en attente",
+          "requestsApproved": "Demandes approuvées",
+          "requestsRejected": "Demandes rejetées"
+        },
+        "sections": {
+          "title": "Sections admin",
+          "open": "Ouvrir la section",
+          "companies": "Entreprises",
+          "projects": "Projets",
+          "tasks": "Tâches",
+          "taskRequests": "Demandes de tâches",
+          "sprints": "Sprints",
+          "billings": "Facturations",
+          "contacts": "Contacts"
+        },
+        "utility": {
+          "title": "Outils",
+          "githubSync": "GitHub Sync",
+          "githubSyncDescription": "Ouvrir les workflows de synchronisation et les opérations dépôt."
+        }
+      },
+      "contactsDetail": {
+        "actions": {
+          "backToList": "Retour"
+        },
+        "alerts": {
+          "loading": "Chargement...",
+          "notFound": "Introuvable."
+        },
+        "fields": {
+          "email": "Email",
+          "phone": "Téléphone",
+          "city": "Ville",
+          "score": "Score"
+        }
       }
     },
     "shop": {
