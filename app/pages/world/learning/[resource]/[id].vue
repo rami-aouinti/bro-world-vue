@@ -35,11 +35,7 @@ const loading = computed(() => schoolStore.isLoading(resource.value, id.value))
     />
 
     <v-container fluid>
-      <v-btn class="mb-4" variant="text" prepend-icon="mdi-arrow-left" @click="$router.back()">
-        Retour
-      </v-btn>
-
-      <v-card rounded="xl" class="pa-5">
+      <v-card rounded="xl" class="pa-5 postcard-gradient-card">
         <div class="d-flex align-center justify-space-between mb-3">
           <h1 class="text-h5 text-capitalize">{{ resource.slice(0, -1) }} — {{ id }}</h1>
         </div>

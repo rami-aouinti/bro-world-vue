@@ -62,13 +62,6 @@ function onReferenceClick(field: string, value: unknown) {
 
 <template>
   <div>
-    <div class="d-flex align-center justify-space-between mb-4">
-      <h1 class="text-h5">{{ titleByResource[resource] }}</h1>
-      <v-chip variant="tonal" color="primary">
-        {{ items.length }} éléments
-      </v-chip>
-    </div>
-
     <v-row>
       <v-col
         v-for="(item, index) in items"
@@ -77,7 +70,7 @@ function onReferenceClick(field: string, value: unknown) {
         md="6"
         lg="4"
       >
-        <v-card rounded="xl" class="h-100 pa-4">
+        <v-card rounded="xl" class="h-100 pa-4 postcard-gradient-card">
           <div class="text-caption text-medium-emphasis mb-2">{{ resource.slice(0, -1) }} #{{ item.id ?? index + 1 }}</div>
           <div class="d-flex flex-column ga-2">
             <div v-for="(value, key) in item" :key="`${String(item.id ?? index)}-${key}`" class="d-flex align-center justify-space-between ga-3">
