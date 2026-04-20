@@ -35,8 +35,10 @@ async function onSubmit(payload: { username?: string; password: string }) {
   try {
     await $fetch('/api/login', {
       method: 'POST',
-      username: payload.username,
-      password: payload.password,
+      body: {
+        username: payload.username,
+        password: payload.password,
+      },
     })
 
     await refreshSession()

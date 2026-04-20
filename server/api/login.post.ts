@@ -9,7 +9,7 @@ type LoginBody = {
 }
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody<LoginBody>(event)
+  const body = (await readBody<LoginBody | undefined>(event)) ?? {}
 
   if (!body.username || !body.password) {
     throw createError({
