@@ -67,14 +67,14 @@ const documentationSections = [
       'La page Task Requests formalise les demandes techniques liées aux tâches, y compris la connexion aux branches GitHub.',
     to: '/world/crm/task-requests',
   },
+  {
+    title: 'Endpoints API',
+    icon: 'mdi-api',
+    description:
+      'La page Endpoints regroupe tous les endpoints CRM (projects, sprints, tasks...) avec exécution directe.',
+    to: '/world/crm/endpoints',
+  },
 ]
-
-const adminHighlights = [
-  'Gouvernance des référentiels (companies, projects, sprints, task requests).',
-  'Supervision des rôles et droits d’accès pour sécuriser les opérations CRM.',
-  'Contrôle qualité des statuts, standards de naming et cycle de vie des données.',
-]
-
 const githubSyncSteps = [
   '1. Vérifier que le projet est en provisioning ready et qu’il a des repositories GitHub.',
   '2. Ouvrir la page Repositories et valider les dépôts rattachés.',
@@ -136,22 +136,6 @@ const githubSyncSteps = [
             </v-btn>
           </v-card>
         </v-col>
-
-        <v-col cols="12" md="6">
-          <v-card rounded="xl" class="pa-5 postcard-gradient-card crm-doc-card h-100">
-            <div class="d-flex align-center ga-2 mb-3">
-              <v-icon icon="mdi-shield-account-outline" color="secondary" />
-              <h2 class="text-h6 mb-0">Administration CRM</h2>
-            </div>
-            <v-list class="bg-transparent" density="comfortable">
-              <v-list-item v-for="item in adminHighlights" :key="item" :title="item" prepend-icon="mdi-check-circle-outline" />
-            </v-list>
-            <v-btn class="mt-2" color="secondary" variant="tonal" append-icon="mdi-arrow-right" to="/world/crm/admin">
-              Aller à l’administration
-            </v-btn>
-          </v-card>
-        </v-col>
-
         <v-col cols="12" md="6">
           <v-card rounded="xl" class="pa-5 postcard-gradient-card crm-doc-card h-100">
             <div class="d-flex align-center ga-2 mb-3">
@@ -172,9 +156,6 @@ const githubSyncSteps = [
             <div class="d-flex ga-2 flex-wrap mt-2">
               <v-btn color="primary" variant="tonal" append-icon="mdi-arrow-right" to="/world/crm/repositories">
                 Repositories
-              </v-btn>
-              <v-btn color="primary" variant="tonal" append-icon="mdi-arrow-right" to="/world/crm/github-sync">
-                GitHub Sync
               </v-btn>
             </div>
           </v-card>
