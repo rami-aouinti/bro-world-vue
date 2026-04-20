@@ -27,9 +27,27 @@ const leftDrawerSlotHost = {
   render: () => leftDrawerRenderer.value?.(),
 }
 const fallbackDrawerItems = computed(() =>
-  router.options.routes
-    .filter((route) => route.meta?.icon && !route.path.includes(':'))
-    .sort((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 99)),
+  (() => {
+    const iconRoutes = router.options.routes
+      .filter((item) => item.meta?.icon && !item.path.includes(':'))
+      .sort(
+        (a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 99),
+      )
+
+    const activeRoute = iconRoutes
+      .filter((item) => {
+        if (item.path === '/') {
+          return route.path === '/'
+        }
+
+        return (
+          route.path === item.path || route.path.startsWith(`${item.path}/`)
+        )
+      })
+      .sort((a, b) => b.path.length - a.path.length)[0]
+
+    return activeRoute ? [activeRoute] : iconRoutes
+  })(),
 )
 
 onMounted(() => {
