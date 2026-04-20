@@ -26,6 +26,11 @@ const isAdminOrRoot = computed(() => {
 const createDialog = ref(false)
 const pendingCreate = ref(false)
 const search = ref('')
+const statusFilter = ref<string | null>(null)
+const priorityFilter = ref<string | null>(null)
+const projectFilter = ref<string | null>(null)
+const dueAfter = ref<string | null>(null)
+const dueBefore = ref<string | null>(null)
 const currentPage = ref(1)
 const itemsPerPage = 9
 const projectModalOpen = ref(false)
@@ -47,14 +52,36 @@ const filteredTasks = computed(() => {
   const query = search.value.trim().toLowerCase()
   const items = data.value?.items ?? []
 
-  if (!query) return items
+  return items.filter((task) => {
+    const matchesSearch
+      = !query
+        || [task.title, task.status, task.priority, task.projectName, task.id]
+          .filter(Boolean)
+          .some((value) => String(value).toLowerCase().includes(query))
+    const matchesStatus = !statusFilter.value || task.status === statusFilter.value
+    const matchesPriority = !priorityFilter.value || task.priority === priorityFilter.value
+    const matchesProject = !projectFilter.value || task.projectId === projectFilter.value
+    const matchesDueAfter = !dueAfter.value || !task.dueAt || new Date(task.dueAt) >= new Date(dueAfter.value)
+    const matchesDueDate = !dueBefore.value || !task.dueAt || new Date(task.dueAt) <= new Date(dueBefore.value)
 
-  return items.filter((task) =>
-    [task.title, task.status, task.priority, task.projectName, task.id]
-      .filter(Boolean)
-      .some((value) => String(value).toLowerCase().includes(query)),
-  )
+    return matchesSearch
+      && matchesStatus
+      && matchesPriority
+      && matchesProject
+      && matchesDueAfter
+      && matchesDueDate
+  })
 })
+
+const taskStatusOptions = computed(() =>
+  Array.from(new Set((data.value?.items ?? []).map((task) => task.status).filter(Boolean))),
+)
+const taskPriorityOptions = computed(() =>
+  Array.from(new Set((data.value?.items ?? []).map((task) => task.priority).filter(Boolean))),
+)
+const taskProjectOptions = computed(() =>
+  Array.from(new Set((data.value?.items ?? []).map((task) => task.projectId).filter(Boolean))),
+)
 
 const totalPages = computed(() =>
   Math.max(1, Math.ceil(filteredTasks.value.length / itemsPerPage)),
@@ -65,7 +92,7 @@ const paginatedTasks = computed(() => {
   return filteredTasks.value.slice(start, start + itemsPerPage)
 })
 
-watch([search, filteredTasks], () => {
+watch([search, statusFilter, priorityFilter, projectFilter, dueAfter, dueBefore, filteredTasks], () => {
   currentPage.value = 1
 })
 
@@ -131,10 +158,29 @@ async function createTask() {
       :module-description="t('world.crm.tasks.moduleDescription')"
       :nav-items="crmNavItems"
       :show-action="isRootAdmin"
+      activate-right-drawer
       :action-label="t('world.crm.tasks.actions.create')"
       action-icon="mdi-plus"
       @action="isRootAdmin ? (createDialog = true) : undefined"
-    />
+    >
+      <template #right>
+        <div class="d-flex flex-column ga-3">
+          <v-text-field
+            v-model="search"
+            prepend-inner-icon="mdi-magnify"
+            :label="t('world.crm.tasks.searchLabel')"
+            clearable
+            variant="outlined"
+            hide-details
+          />
+          <AppSelect v-model="statusFilter" :items="taskStatusOptions" label="Statut" clearable />
+          <AppSelect v-model="priorityFilter" :items="taskPriorityOptions" label="Priorité" clearable />
+          <AppSelect v-model="projectFilter" :items="taskProjectOptions" label="Projet" clearable />
+          <v-text-field v-model="dueAfter" type="date" label="Deadline après" variant="outlined" hide-details clearable />
+          <v-text-field v-model="dueBefore" type="date" label="Deadline avant" variant="outlined" hide-details clearable />
+        </div>
+      </template>
+    </WorldModuleDrawers>
 
     <v-container fluid>
       <CrmPageSkeleton v-if="pending" variant="list" :cards="6" />
@@ -143,15 +189,6 @@ async function createTask() {
       >
 
       <template v-else>
-        <v-text-field
-          v-model="search"
-          class="mb-4"
-          prepend-inner-icon="mdi-magnify"
-          :label="t('world.crm.tasks.searchLabel')"
-          clearable
-          variant="outlined"
-        />
-
         <v-row>
           <v-col
             v-for="task in paginatedTasks"
