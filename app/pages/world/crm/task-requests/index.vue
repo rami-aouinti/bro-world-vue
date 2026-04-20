@@ -138,13 +138,18 @@ async function createRequest() {
       :module-description="t('world.crm.taskRequests.list.title')"
       :nav-items="crmNavItems"
       activate-right-drawer
-      :show-action="isRootAdmin"
-      :action-label="t('world.crm.taskRequests.actions.new')"
-      action-icon="mdi-plus"
-      @action="isRootAdmin ? (createDialog = true) : undefined"
     >
       <template #right>
         <div class="d-flex flex-column ga-3">
+          <v-btn
+            v-if="isRootAdmin"
+            color="primary"
+            prepend-icon="mdi-plus"
+            block
+            @click="createDialog = true"
+          >
+            {{ t('world.crm.taskRequests.actions.new') }}
+          </v-btn>
           <v-text-field
             v-model="search"
             prepend-inner-icon="mdi-magnify"

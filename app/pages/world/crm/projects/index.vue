@@ -131,14 +131,19 @@ async function createProject() {
       module-icon="mdi-account-group-outline"
       :module-description="t('world.crm.projects.moduleDescription')"
       :nav-items="crmNavItems"
-      :show-action="isRootAdmin"
       activate-right-drawer
-      :action-label="t('world.crm.projects.actions.newProject')"
-      action-icon="mdi-folder-plus-outline"
-      @action="isRootAdmin ? (createDialog = true) : undefined"
     >
       <template #right>
         <div class="d-flex flex-column ga-3">
+          <v-btn
+            v-if="isRootAdmin"
+            color="primary"
+            prepend-icon="mdi-folder-plus-outline"
+            block
+            @click="createDialog = true"
+          >
+            {{ t('world.crm.projects.actions.newProject') }}
+          </v-btn>
           <v-text-field
             v-model="search"
             prepend-inner-icon="mdi-magnify"
