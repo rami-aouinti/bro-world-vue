@@ -1,6 +1,4 @@
 const SCHOOL_STORE_TTL_MS = 2 * 60 * 1000
-const SCHOOL_PUBLIC_API_BASE_URL = 'https://bro-world.org/api/v1/school/general'
-
 export type SchoolResource = 'exams' | 'classes' | 'teachers' | 'students' | 'grades'
 
 type SchoolCollectionResponse = { items: Record<string, unknown>[] }
@@ -67,7 +65,7 @@ export const useWorldLearningSchoolStore = defineStore('world-learning-school', 
     loadingKeys.value[cacheKey] = true
     error.value = null
     try {
-      const response = await $fetch<SchoolItemResponse>(`${SCHOOL_PUBLIC_API_BASE_URL}/${resource}/${id}`)
+      const response = await $fetch<SchoolItemResponse>(`/api/world/learning/public/school/${resource}/${id}`)
       const item = response.item ?? response
       details.value[cacheKey] = item
       cache.value[cacheKey] = { at: Date.now(), data: item }
