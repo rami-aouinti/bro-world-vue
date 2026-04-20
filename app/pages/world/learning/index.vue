@@ -2,6 +2,7 @@
 import { useWorldLearningStore } from '~/stores/worldLearning'
 
 definePageMeta({
+  layout: 'learning',
   title: 'world.learning.label',
   description: 'world.learning.seo.metaDescription',
 })

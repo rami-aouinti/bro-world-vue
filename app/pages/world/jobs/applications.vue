@@ -2,7 +2,7 @@
 import type { RecruitMyJobsResponse } from '~/types/world/jobs'
 import { privateApi } from '~/utils/http/privateApi'
 
-definePageMeta({ title: 'Jobs Applications' })
+definePageMeta({ layout: 'job', title: 'Jobs Applications' })
 
 const { t } = useI18n()
 

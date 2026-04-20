@@ -8,7 +8,7 @@ import type {
 } from '~/types/world/jobs'
 import { privateApi } from '~/utils/http/privateApi'
 
-definePageMeta({ title: 'Jobs Offer Detail' })
+definePageMeta({ layout: 'job', title: 'Jobs Offer Detail' })
 
 const { t } = useI18n()
 

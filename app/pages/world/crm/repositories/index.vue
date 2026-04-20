@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ApiListResponse, CrmProjectListItem } from '~~/server/types/api/crm-general'
 
-definePageMeta({ title: 'CRM Repositories' })
+definePageMeta({ layout: 'crm', title: 'CRM Repositories' })
 
 const router = useRouter()
 const { t } = useI18n()

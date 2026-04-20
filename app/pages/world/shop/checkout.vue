@@ -2,7 +2,7 @@
 import { useWorldShopStore } from '~/stores/worldShop'
 import type { WorldShopCheckoutAddress } from '~/types/world/shop'
 
-definePageMeta({ title: 'world.shop.checkout.metaTitle' })
+definePageMeta({ layout: 'shop', title: 'world.shop.checkout.metaTitle' })
 
 const { t, locale } = useI18n()
 const { shopNavItems } = useShopNavItems()

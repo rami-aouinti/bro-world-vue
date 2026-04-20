@@ -2,7 +2,7 @@
 import type { SessionUser } from '~/types/session'
 import { useWorldLearningAdminSchoolStore } from '~/stores/worldLearningAdminSchool'
 
-definePageMeta({ title: 'Learning Admin Classes' })
+definePageMeta({ layout: 'learning', title: 'Learning Admin Classes' })
 
 const router = useRouter()
 const { user } = useUserSession()

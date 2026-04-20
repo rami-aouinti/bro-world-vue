@@ -7,7 +7,7 @@ const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
 const contactId = computed(() => String(route.params.contact ?? ''))
 
-definePageMeta({ title: 'CRM Contact Detail' })
+definePageMeta({ layout: 'crm', title: 'CRM Contact Detail' })
 
 const { data, pending, error } = await useFetch<CrmContactItem>(() => `/api/crm/general/contacts/${contactId.value}`)
 </script>

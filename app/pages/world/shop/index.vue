@@ -6,6 +6,7 @@ import type {
 } from '~/types/world/shop'
 
 definePageMeta({
+  layout: 'shop',
   title: 'world.shop.label',
   description: 'world.shop.seo.metaDescription',
 })

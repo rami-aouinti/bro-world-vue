@@ -2,7 +2,7 @@
 import type { ShopGeneralProduct } from '~/types/world/shop'
 import type { SessionUser } from '~/types/session'
 
-definePageMeta({ title: 'world.shop.productDetail.title' })
+definePageMeta({ layout: 'shop', title: 'world.shop.productDetail.title' })
 
 const route = useRoute()
 const { user } = useUserSession()

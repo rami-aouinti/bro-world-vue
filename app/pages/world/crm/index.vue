@@ -2,6 +2,7 @@
 import { useWorldCrmNavItems } from '~/composables/useWorldCrmNavItems'
 
 definePageMeta({
+  layout: 'crm',
   title: 'world.crm.label',
   description: 'world.crm.seo.metaDescription',
 })

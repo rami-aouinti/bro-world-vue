@@ -4,7 +4,7 @@ import type { ApiListResponse, CrmContactItem } from '~~/server/types/api/crm-ge
 const router = useRouter()
 const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
-definePageMeta({ title: 'CRM Contacts' })
+definePageMeta({ layout: 'crm', title: 'CRM Contacts' })
 
 const { data, pending, error } = await useFetch<ApiListResponse<CrmContactItem>>('/api/crm/general/contacts')
 </script>

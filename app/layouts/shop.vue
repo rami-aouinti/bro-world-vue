@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue'
-import ShopDrawer from "~/components/World/ShopDrawer.vue";
+import ShopDrawer from '~/components/World/ShopDrawer.vue'
 
 const showLeftDrawer = useState('show-left-drawer', () => true)
 const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => true)
@@ -109,11 +109,7 @@ onUnmounted(() => {
         <AppRightDrawerLazy v-if="shouldRenderRightDrawer" />
       </ClientOnly>
       <v-main>
-        <AppPageDrawers>
-          <template #left>
-            <ShopDrawer />
-          </template>
-        </AppPageDrawers>
+        <AppPageDrawers :left-component="ShopDrawer" />
         <v-container fluid class="px-2 pt-0 pb-0">
           <v-breadcrumbs v-if="shouldShowBreadcrumbs" :items="breadcrumbs" />
         </v-container>

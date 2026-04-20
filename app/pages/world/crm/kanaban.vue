@@ -2,7 +2,7 @@
 import type { CrmProjectItem, CrmSprintItem, CrmTaskItem, CrmTaskRequestItem } from '~~/server/types/api/crm-general'
 import { useCrmKanbanStore } from '~/stores/crmKanban'
 
-definePageMeta({ title: 'world.crm.label' })
+definePageMeta({ layout: 'crm', title: 'world.crm.label' })
 
 const { t, locale } = useI18n()
 const crmKanbanStore = useCrmKanbanStore()

@@ -15,7 +15,7 @@ const isRootAdmin = computed(() =>
 )
 const sprintId = computed(() => String(route.params.sprint ?? ''))
 
-definePageMeta({ title: 'CRM Sprint Detail' })
+definePageMeta({ layout: 'crm', title: 'CRM Sprint Detail' })
 
 const payload = reactive<CrmSprintUpdatePayload>({})
 const assigneeId = ref('')

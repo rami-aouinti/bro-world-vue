@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ title: 'CRM Admin Section' })
+definePageMeta({ layout: 'crm', title: 'CRM Admin Section' })
 
 const route = useRoute()
 

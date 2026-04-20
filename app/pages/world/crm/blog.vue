@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ title: 'CRM Blog' })
+definePageMeta({ layout: 'crm', title: 'CRM Blog' })
 
 const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()

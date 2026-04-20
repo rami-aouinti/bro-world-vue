@@ -1,4 +1,5 @@
 <script setup lang="ts">
+definePageMeta({ layout: 'shop' })
 const { t } = useI18n()
 const { shopNavItems } = useShopNavItems()
 </script>

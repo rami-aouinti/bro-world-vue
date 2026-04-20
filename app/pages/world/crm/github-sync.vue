@@ -2,7 +2,7 @@
 import { useWorldCrmGithubStore } from '~/stores/worldCrmGithub'
 import type { CrmGithubSyncJobStatus } from '~/types/world/crmGithub'
 
-definePageMeta({ title: 'CRM GitHub Sync' })
+definePageMeta({ layout: 'crm', title: 'CRM GitHub Sync' })
 
 const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()

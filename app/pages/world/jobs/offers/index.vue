@@ -7,7 +7,7 @@ import type {
   RecruitWorkMode,
 } from '~/types/world/jobs'
 
-definePageMeta({ title: 'Jobs Offers' })
+definePageMeta({ layout: 'job', title: 'Jobs Offers' })
 
 const { t } = useI18n()
 

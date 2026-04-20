@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
+import WorldModuleLeftDrawerContent from '~/components/World/WorldModuleLeftDrawerContent.vue'
 
 type WorldModuleNavItem = {
   title: string
@@ -134,64 +135,27 @@ const quickCheckItems = computed(() => [
 </script>
 
 <template>
-  <AppPageDrawers>
-    <template #left>
-      <div class="d-flex flex-column ga-3">
-        <NuxtLink
-          :to="resolvedModulePath"
-          class="module-identity d-flex align-center ga-3 text-decoration-none"
-        >
-          <v-avatar size="56" rounded="xl">
-            <v-img
-              :src="
-                moduleIdentityPhoto ||
-                '/images/placeholders/platform-media-fallback.svg'
-              "
-              :alt="moduleIdentityTitle"
-              cover
-            />
-          </v-avatar>
-          <div>
-            <h3 class="text-subtitle-1 text-high-emphasis mb-1">
-              {{ moduleIdentityTitle }}
-            </h3>
-            <v-chip size="small" color="primary" variant="tonal" label>
-              {{ moduleIdentityBadge }}
-            </v-chip>
-          </div>
-        </NuxtLink>
-        <v-btn
-          v-if="showAction !== false"
-          color="primary"
-          variant="tonal"
-          :prepend-icon="actionIcon || 'mdi-plus-circle-outline'"
-          block
-          @click="emit('action')"
-        >
-          {{
-            actionLabel ||
-            t(
-              'world.common.actions.createInModule',
-              { module: moduleTitle },
-              `Create in ${moduleTitle}`,
-            )
-          }}
-        </v-btn>
-        <v-list nav density="compact" rounded="xl" class="bg-transparent">
-          <v-list-item
-            v-for="item in visibleNavItems"
-            :key="item.to"
-            :title="item.title"
-            :prepend-icon="item.icon"
-            :to="item.to"
-            :active="route.path === item.to"
-            rounded="lg"
-            color="primary"
-          />
-        </v-list>
-      </div>
-    </template>
-
+  <AppPageDrawers
+    :left-component="WorldModuleLeftDrawerContent"
+    :left-props="{
+      moduleTitle,
+      modulePath: resolvedModulePath,
+      moduleIdentityPhoto,
+      moduleIdentityTitle,
+      moduleIdentityBadge,
+      navItems: visibleNavItems,
+      showAction: showAction !== false,
+      actionIcon: actionIcon || 'mdi-plus-circle-outline',
+      actionLabel:
+        actionLabel ||
+        t(
+          'world.common.actions.createInModule',
+          { module: moduleTitle },
+          `Create in ${moduleTitle}`,
+        ),
+      onAction: () => emit('action'),
+    }"
+  >
     <template #right>
       <slot name="right">
         <h3 class="text-subtitle-1 font-weight-bold mb-3">

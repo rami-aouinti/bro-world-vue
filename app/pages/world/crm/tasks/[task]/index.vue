@@ -16,7 +16,7 @@ const isRootAdmin = computed(() =>
 )
 const taskId = computed(() => String(route.params.task ?? ''))
 
-definePageMeta({ title: 'CRM Task Detail' })
+definePageMeta({ layout: 'crm', title: 'CRM Task Detail' })
 
 const payload = reactive<CrmTaskUpdatePayload>({})
 const assigneeId = ref('')
