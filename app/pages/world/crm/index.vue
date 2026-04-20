@@ -62,13 +62,7 @@ const documentationSections = [
     icon: 'mdi-source-pull',
     description: t('world.crm.documentation.sections.taskRequests.description'),
     to: '/world/crm/task-requests',
-  },
-  {
-    title: t('world.crm.documentation.sections.endpoints.title'),
-    icon: 'mdi-api',
-    description: t('world.crm.documentation.sections.endpoints.description'),
-    to: '/world/crm/endpoints',
-  },
+  }
 ]
 const githubSyncSteps = [
   t('world.crm.documentation.githubSync.steps.step1'),
