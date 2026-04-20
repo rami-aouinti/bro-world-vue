@@ -89,15 +89,6 @@ export function useWorldCrmNavItems() {
       to: '/world/crm/task-requests',
       icon: 'mdi-source-pull',
     },
-    ...(pluginKeys.value.has('blog')
-      ? [
-          {
-            title: 'Blog',
-            to: '/world/crm/blog',
-            icon: 'mdi-post-outline',
-          },
-        ]
-      : []),
     ...(pluginKeys.value.has('chat')
       ? [
           {
@@ -138,5 +129,6 @@ export function useWorldCrmNavItems() {
 
   return {
     crmNavItems,
+    hasBlogPlugin: computed(() => pluginKeys.value.has('blog')),
   }
 }
