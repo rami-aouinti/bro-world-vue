@@ -1,4 +1,5 @@
 import type { CrmTaskItem } from '~~/server/types/api/crm-general'
+import { getSessionAuth } from '~~/server/utils/privateApi'
 import { cachedCrmGeneralGet } from '~~/server/utils/crmGeneralPrivateApi'
 
 interface CrmSprintBucket {
@@ -20,6 +21,8 @@ interface CrmTasksByLatestSprintResponse {
 }
 
 export default defineEventHandler(async (event): Promise<CrmTasksByLatestSprintResponse> => {
+  await getSessionAuth(event)
+
   return cachedCrmGeneralGet<CrmTasksByLatestSprintResponse>(
     event,
     'tasks/by-latest-sprint',
