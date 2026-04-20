@@ -9,7 +9,7 @@ import type {
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
-const { crmNavItems } = useWorldCrmNavItems()
+const { crmNavItems, hasBlogPlugin } = useWorldCrmNavItems()
 const { sessionUser } = useCrmPermissions()
 const isRootAdmin = computed(() =>
   (sessionUser.value?.roles ?? []).includes('ROLE_ROOT'),
@@ -251,6 +251,17 @@ async function attachToSprint() {
             :disabled="!isRootAdmin"
           />
           <v-btn v-if="isRootAdmin" color="secondary" variant="tonal" class="mb-4" @click="attachToSprint">Attach sprint</v-btn>
+        </v-card>
+
+        <v-card
+          v-if="hasBlogPlugin"
+          rounded="xl"
+          class="pa-4 postcard-gradient-card mt-4"
+        >
+          <h3 class="text-subtitle-1 mb-2">Blog</h3>
+          <p class="text-body-2 text-medium-emphasis mb-0">
+            Blog plugin is enabled for this CRM workspace.
+          </p>
         </v-card>
       </v-col>
     </v-row>

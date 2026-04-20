@@ -4,7 +4,7 @@ import type { CrmTaskRequestItem, CrmTaskRequestUpdatePayload } from '~~/server/
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
-const { crmNavItems } = useWorldCrmNavItems()
+const { crmNavItems, hasBlogPlugin } = useWorldCrmNavItems()
 const id = computed(() => String(route.params.taskRequest ?? ''))
 
 definePageMeta({ layout: 'crm', title: 'CRM Task Request Detail' })
@@ -51,18 +51,30 @@ async function remove() {
       <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push('/world/crm/task-requests')">{{ t('world.crm.taskRequests.actions.backToList') }}</v-btn>
       <CrmPageSkeleton v-if="pending" variant="detail" />
       <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.taskRequests.alerts.notFound') }}</v-alert>
-      <v-card v-else rounded="xl" class="pa-4 postcard-gradient-card">
-        <v-row>
-          <v-col cols="12"><v-text-field v-model="payload.title" :label="t('world.crm.taskRequests.form.title')" /></v-col>
-          <v-col cols="12"><v-textarea v-model="payload.description" :label="t('world.crm.taskRequests.form.description')" /></v-col>
-          <v-col cols="12" md="6"><v-text-field v-model="payload.status" :label="t('world.crm.taskRequests.form.status')" /></v-col>
-          <v-col cols="12" md="6"><v-text-field v-model="payload.resolvedAt" :label="t('world.crm.taskRequests.form.resolvedAt')" /></v-col>
-        </v-row>
-        <div class="d-flex ga-2">
-          <v-btn color="primary" @click="save">{{ t('world.crm.taskRequests.actions.save') }}</v-btn>
-          <v-btn color="error" variant="tonal" @click="remove">{{ t('world.crm.taskRequests.actions.delete') }}</v-btn>
-        </div>
-      </v-card>
+      <v-row v-else>
+        <v-col cols="12" lg="8">
+          <v-card rounded="xl" class="pa-4 postcard-gradient-card">
+            <v-row>
+              <v-col cols="12"><v-text-field v-model="payload.title" :label="t('world.crm.taskRequests.form.title')" /></v-col>
+              <v-col cols="12"><v-textarea v-model="payload.description" :label="t('world.crm.taskRequests.form.description')" /></v-col>
+              <v-col cols="12" md="6"><v-text-field v-model="payload.status" :label="t('world.crm.taskRequests.form.status')" /></v-col>
+              <v-col cols="12" md="6"><v-text-field v-model="payload.resolvedAt" :label="t('world.crm.taskRequests.form.resolvedAt')" /></v-col>
+            </v-row>
+            <div class="d-flex ga-2">
+              <v-btn color="primary" @click="save">{{ t('world.crm.taskRequests.actions.save') }}</v-btn>
+              <v-btn color="error" variant="tonal" @click="remove">{{ t('world.crm.taskRequests.actions.delete') }}</v-btn>
+            </div>
+          </v-card>
+        </v-col>
+        <v-col v-if="hasBlogPlugin" cols="12" lg="4">
+          <v-card rounded="xl" class="pa-4 postcard-gradient-card">
+            <h3 class="text-subtitle-1 mb-2">Blog</h3>
+            <p class="text-body-2 text-medium-emphasis mb-0">
+              Blog plugin is enabled for this CRM workspace.
+            </p>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
