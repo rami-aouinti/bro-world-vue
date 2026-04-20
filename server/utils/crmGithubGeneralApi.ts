@@ -90,16 +90,29 @@ export async function cachedCrmGithubGeneralGet<TResponse = unknown>(
 ): Promise<TResponse> {
   const normalizedPath = path.replace(/^\/+/, '')
   const endpoint = crmGithubEndpoint(path)
-  const cacheKey = privateCacheKey('public', endpoint, query)
+  const sessionAuth = await getSessionAuth(event).catch(() => null)
+  const cacheScope = sessionAuth?.username ?? 'public'
+  const cacheKey = privateCacheKey(cacheScope, endpoint, query)
 
   const cached = await getCached<TResponse>(cacheKey)
   if (cached) {
     return cached
   }
 
-  const response = await $fetch<TResponse>(`${CRM_GENERAL_PUBLIC_BASE_URL}/${normalizedPath}`, {
-    query,
-  })
+  const response = sessionAuth
+    ? await (async () => {
+      const client = await getServerPrivateAxios(event)
+      const privateResponse = await client.request<TResponse>({
+        url: resolveServerApiUrl(event, endpoint),
+        method: 'GET',
+        params: query,
+      })
+
+      return privateResponse.data
+    })()
+    : await $fetch<TResponse>(`${CRM_GENERAL_PUBLIC_BASE_URL}/${normalizedPath}`, {
+      query,
+    })
 
   const syncJobId = extractSyncJobIdPath(path)
   if (syncJobId) {
