@@ -71,6 +71,7 @@ const adminSections = computed(() => [
 ])
 
 const utilityCards = computed(() => [
+    { label: t('world.crm.endpoints.page.title', 'Endpoints API'), icon: 'mdi-api', to: '/world/crm/endpoints' },
   ...(isRootAdmin.value
     ? [{
         label: t('world.crm.admin.utility.githubSync'),
