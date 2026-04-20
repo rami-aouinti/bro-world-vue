@@ -79,8 +79,7 @@ watch(mobile, (isMobile) => {
         <v-divider class="my-2" />
       </template>
       <div v-if="shouldRenderDrawerSlot" class="app-left-drawer-list">
-        <SkeletonDrawerLeft v-if="isPageSkeletonLoading" />
-        <component :is="leftDrawerSlotHost" v-else />
+        <component :is="leftDrawerSlotHost"  />
       </div>
       <v-list v-else nav density="compact" class="app-left-drawer-list">
         <AppDrawerItem
