@@ -10,6 +10,16 @@ export type SchoolResource =
 type SchoolCollectionResponse = { items: Record<string, unknown>[] }
 type SchoolItemResponse = { item?: Record<string, unknown> } & Record<string, unknown>
 
+function normalizeApiBaseUrl(baseUrl: string) {
+  return baseUrl.replace(/\/+$/, '')
+}
+
+function buildSchoolApiUrl(apiBaseUrl: string, resource: SchoolResource, id?: string) {
+  const baseUrl = normalizeApiBaseUrl(apiBaseUrl)
+  const encodedId = id ? `/${encodeURIComponent(id)}` : ''
+  return `${baseUrl}/school/general/${resource}${encodedId}`
+}
+
 function normalizeSchoolResource(resource: string): SchoolResource {
   const value = resource.trim().toLowerCase()
   if (
@@ -27,6 +37,8 @@ function normalizeSchoolResource(resource: string): SchoolResource {
 }
 
 export const useWorldLearningSchoolStore = defineStore('world-learning-school', () => {
+  const runtimeConfig = useRuntimeConfig()
+  const schoolApiBaseUrl = computed(() => normalizeApiBaseUrl(runtimeConfig.public.apiBaseUrl))
   const collections = ref<Record<string, Record<string, unknown>[]>>({})
   const details = ref<Record<string, Record<string, unknown>>>({})
   const loadingKeys = ref<Record<string, boolean>>({})
@@ -50,7 +62,9 @@ export const useWorldLearningSchoolStore = defineStore('world-learning-school', 
     loadingKeys.value[cacheKey] = true
     error.value = null
     try {
-      const response = await $fetch<SchoolCollectionResponse>(`/api/world/learning/public/school/${resource}`)
+      const response = await $fetch<SchoolCollectionResponse>(
+        buildSchoolApiUrl(schoolApiBaseUrl.value, resource),
+      )
       collections.value[resource] = response.items
       cache.value[cacheKey] = { at: Date.now(), data: response.items }
       return response.items
@@ -78,7 +92,9 @@ export const useWorldLearningSchoolStore = defineStore('world-learning-school', 
     loadingKeys.value[cacheKey] = true
     error.value = null
     try {
-      const response = await $fetch<SchoolItemResponse>(`/api/world/learning/public/school/${resource}/${id}`)
+      const response = await $fetch<SchoolItemResponse>(
+        buildSchoolApiUrl(schoolApiBaseUrl.value, resource, id),
+      )
       const item = response.item ?? response
       details.value[cacheKey] = item
       cache.value[cacheKey] = { at: Date.now(), data: item }
