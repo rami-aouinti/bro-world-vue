@@ -58,6 +58,13 @@ interface GoogleConnectResponse {
   authorizationUrl: string
 }
 
+interface GoogleSyncPayload {
+  accessToken: string
+  calendarId?: string
+  timeMin?: string
+  timeMax?: string
+}
+
 interface GoogleCallbackMessage {
   source: 'google-calendar-oauth'
   token?: string
@@ -79,6 +86,7 @@ const isGoogleConnecting = ref(false)
 const errorMessage = ref('')
 const googleToken = ref('')
 const googleEvents = ref<GoogleCalendarEvent[]>([])
+const lastGoogleSyncToken = ref('')
 const calendarEvents = ref<PrivateCalendarEvent[]>([])
 const upcomingEvents = ref<PrivateCalendarEvent[]>([])
 const selectedEvent = ref<PrivateCalendarEvent | null>(null)
@@ -250,8 +258,26 @@ function buildPayload(): EventMutationPayload {
   }
 }
 
+async function syncGoogleCalendar(payload: GoogleSyncPayload) {
+  return privateApi.request('/api/v1/calendar/private/events/google/sync', {
+    method: 'POST',
+    body: payload,
+  })
+}
+
 async function connectGoogleCalendar() {
   isGoogleConnecting.value = true
+
+  const popup = window.open('', 'google-calendar-oauth', 'width=520,height=720')
+
+  if (!popup) {
+    errorMessage.value = t('pages.calendar.errors.googleConnectFailed')
+    console.error(new Error('Google popup blocked'))
+    isGoogleConnecting.value = false
+    return
+  }
+
+  popup.document.title = 'Google Calendar OAuth'
 
   try {
     const response = await $fetch<GoogleConnectResponse>(
@@ -262,36 +288,67 @@ async function connectGoogleCalendar() {
       throw new Error('Missing Google authorization URL')
     }
 
-    const popup = window.open(
-      response.authorizationUrl,
-      'google-calendar-oauth',
-      'width=520,height=720,noopener,noreferrer',
-    )
-
-    if (!popup) {
-      throw new Error('Google popup blocked')
-    }
+    popup.location.href = response.authorizationUrl
+    popup.focus()
   } catch (error) {
+    popup.close()
     errorMessage.value = t('pages.calendar.errors.googleConnectFailed')
     console.error(error)
     isGoogleConnecting.value = false
   }
 }
 
-function onGoogleOAuthMessage(rawEvent: MessageEvent<unknown>) {
+async function onGoogleOAuthMessage(rawEvent: MessageEvent<unknown>) {
   const data = rawEvent.data as GoogleCallbackMessage | undefined
   if (!data || data.source !== 'google-calendar-oauth') return
 
-  isGoogleConnecting.value = false
-
   if (data.error) {
+    isGoogleConnecting.value = false
     errorMessage.value = t('pages.calendar.errors.googleConnectFailed')
     console.error(data.error)
     return
   }
 
-  googleToken.value = data.token ?? ''
-  googleEvents.value = data.events ?? []
+  const token = data.token?.trim() || ''
+  if (!token) {
+    isGoogleConnecting.value = false
+    errorMessage.value = t('pages.calendar.errors.googleConnectFailed')
+    console.error(new Error('Missing Google OAuth access token'))
+    return
+  }
+
+  googleToken.value = token
+
+  if (lastGoogleSyncToken.value === token) {
+    googleEvents.value = data.events ?? []
+    isGoogleConnecting.value = false
+    return
+  }
+
+  try {
+    await syncGoogleCalendar({ accessToken: token })
+    lastGoogleSyncToken.value = token
+    googleEvents.value = data.events ?? []
+    await loadEvents()
+    errorMessage.value = ''
+  } catch (error) {
+    const status = (error as { response?: { status?: number } }).response
+      ?.status
+
+    if (status === 502) {
+      googleEvents.value = data.events ?? []
+      console.warn(
+        'Google sync endpoint returned 502 after OAuth success. Keeping OAuth token and Google events.',
+        error,
+      )
+      return
+    }
+
+    errorMessage.value = t('pages.calendar.errors.googleConnectFailed')
+    console.error(error)
+  } finally {
+    isGoogleConnecting.value = false
+  }
 }
 
 async function onEventDrop(dropInfo: {
