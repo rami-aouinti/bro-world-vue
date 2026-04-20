@@ -12,6 +12,7 @@ const runtimeConfig = useRuntimeConfig()
 const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world-space.com'
 const pageUrl = new URL('/world/learning', siteUrl).toString()
 const seoImage = new URL('/img/platform/general/learning.png', siteUrl).toString()
+const { learningNavItems } = useWorldLearningNavItems()
 
 useSeoMeta({
   title: t('world.learning.seo.title', 'Bro World Learning | Learning platform and learner tracking'),
@@ -84,6 +85,15 @@ const rows = computed(() =>
 
 <template>
   <div>
+    <WorldModuleDrawers
+      :module-title="t('world.learning.label', 'Learning')"
+      module-icon="mdi-school-outline"
+      :module-description="'School cards view with linked references'"
+      :nav-items="learningNavItems"
+      :show-action="false"
+      activate-right-drawer
+    >
+    </WorldModuleDrawers>
     <v-container fluid>
       <v-row class="mb-4">
         <v-col cols="12" md="3"
