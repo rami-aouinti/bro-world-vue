@@ -1,6 +1,5 @@
 import type { H3Event } from 'h3'
 import { getServerPublicAxios, resolveServerApiUrl } from './http/axiosClient'
-import { getCached, invalidateByPrefix, setCached } from './apiCache'
 import type {
   LearningCourse,
   LearningLesson,
@@ -12,24 +11,24 @@ type PublicCollectionResponse<TItem> = {
   items: TItem[]
 }
 
-export type SchoolClass = {
+type SchoolClass = {
   id: string
   name: string
   schoolId: string
 }
 
-export type SchoolTeacher = {
+type SchoolTeacher = {
   id: string
   name: string
 }
 
-export type SchoolStudent = {
+type SchoolStudent = {
   id: string
   name: string
   classId: string
 }
 
-export type SchoolExam = {
+type SchoolExam = {
   id: string
   title: string
   classId: string
@@ -42,7 +41,7 @@ export type SchoolExam = {
   updatedAt?: string
 }
 
-export type SchoolGrade = {
+type SchoolGrade = {
   id: string
   score: number
   studentId: string
@@ -56,9 +55,6 @@ type SchoolSnapshot = {
   exams: SchoolExam[]
   grades: SchoolGrade[]
 }
-
-const SCHOOL_CACHE_PREFIX = 'learning:school:'
-const SCHOOL_CACHE_TTL_SECONDS = 120
 
 function scoreToStatus(score: number) {
   if (score >= 7) return 'completed' as const
@@ -139,6 +135,7 @@ function mapClassesToCourses(
 
 function mapGradesToProgress(snapshot: SchoolSnapshot): LearningProgress[] {
   const studentsById = new Map(snapshot.students.map((entry) => [entry.id, entry]))
+  const examsById = new Map(snapshot.exams.map((entry) => [entry.id, entry]))
   const gradesByStudent = new Map<string, SchoolGrade[]>()
 
   for (const grade of snapshot.grades) {
@@ -161,6 +158,14 @@ function mapGradesToProgress(snapshot: SchoolSnapshot): LearningProgress[] {
       .map((grade) => grade.examId)
     const totalScore = studentGrades.reduce((sum, grade) => sum + grade.score, 0)
     const averageScore = studentGrades.length > 0 ? totalScore / studentGrades.length : 0
+    const sortedExamIds = studentGrades
+      .map((grade) => examsById.get(grade.examId))
+      .filter((entry): entry is SchoolExam => Boolean(entry))
+      .sort((left, right) =>
+        (left.updatedAt ?? '').localeCompare(right.updatedAt ?? ''),
+      )
+      .map((entry) => entry.id)
+
     return [
       {
         id: `progress-${student.id}`,
@@ -189,20 +194,32 @@ function mapGradesToProgress(snapshot: SchoolSnapshot): LearningProgress[] {
 export async function getSchoolSnapshot(
   event: H3Event,
 ): Promise<SchoolSnapshot> {
+  const client = getServerPublicAxios(event)
+  const basePath = '/school/general'
   const [classes, students, teachers, exams, grades] = await Promise.all([
-    fetchSchoolCollectionCached<SchoolClass>(event, 'classes'),
-    fetchSchoolCollectionCached<SchoolStudent>(event, 'students'),
-    fetchSchoolCollectionCached<SchoolTeacher>(event, 'teachers'),
-    fetchSchoolCollectionCached<SchoolExam>(event, 'exams'),
-    fetchSchoolCollectionCached<SchoolGrade>(event, 'grades'),
+    client.get<PublicCollectionResponse<SchoolClass>>(
+      resolveServerApiUrl(event, `${basePath}/classes`),
+    ),
+    client.get<PublicCollectionResponse<SchoolStudent>>(
+      resolveServerApiUrl(event, `${basePath}/students`),
+    ),
+    client.get<PublicCollectionResponse<SchoolTeacher>>(
+      resolveServerApiUrl(event, `${basePath}/teachers`),
+    ),
+    client.get<PublicCollectionResponse<SchoolExam>>(
+      resolveServerApiUrl(event, `${basePath}/exams`),
+    ),
+    client.get<PublicCollectionResponse<SchoolGrade>>(
+      resolveServerApiUrl(event, `${basePath}/grades`),
+    ),
   ])
 
   return {
-    classes,
-    students,
-    teachers,
-    exams,
-    grades,
+    classes: classes.data.items ?? [],
+    students: students.data.items ?? [],
+    teachers: teachers.data.items ?? [],
+    exams: exams.data.items ?? [],
+    grades: grades.data.items ?? [],
   }
 }
 
@@ -221,92 +238,4 @@ export async function getLearningProgressFromSchool(
 ): Promise<LearningProgress[]> {
   const snapshot = await getSchoolSnapshot(event)
   return mapGradesToProgress(snapshot)
-}
-
-function getSchoolCollectionCacheKey(resource: string) {
-  return `${SCHOOL_CACHE_PREFIX}${resource}`
-}
-
-async function fetchSchoolCollectionCached<TItem>(
-  event: H3Event,
-  resource: 'classes' | 'students' | 'teachers' | 'exams' | 'grades',
-) {
-  const cacheKey = getSchoolCollectionCacheKey(resource)
-  const cached = await getCached<TItem[]>(cacheKey)
-  if (cached) {
-    return cached
-  }
-
-  const client = getServerPublicAxios(event)
-  const response = await client.get<PublicCollectionResponse<TItem>>(
-    resolveServerApiUrl(event, `/school/general/${resource}`),
-  )
-  const items = response.data.items ?? []
-  await setCached(cacheKey, items, SCHOOL_CACHE_TTL_SECONDS)
-  return items
-}
-
-export async function invalidateSchoolCache() {
-  await invalidateByPrefix(SCHOOL_CACHE_PREFIX)
-}
-
-export async function listSchoolClasses(event: H3Event) {
-  return fetchSchoolCollectionCached<SchoolClass>(event, 'classes')
-}
-
-export async function listSchoolTeachers(event: H3Event) {
-  return fetchSchoolCollectionCached<SchoolTeacher>(event, 'teachers')
-}
-
-export async function listSchoolStudents(event: H3Event) {
-  return fetchSchoolCollectionCached<SchoolStudent>(event, 'students')
-}
-
-export async function listSchoolExams(event: H3Event) {
-  return fetchSchoolCollectionCached<SchoolExam>(event, 'exams')
-}
-
-export async function listSchoolGrades(event: H3Event) {
-  return fetchSchoolCollectionCached<SchoolGrade>(event, 'grades')
-}
-
-export async function getSchoolClassById(event: H3Event, classId: string) {
-  const client = getServerPublicAxios(event)
-  const response = await client.get<SchoolClass>(
-    resolveServerApiUrl(event, `/school/general/classes/${classId}`),
-  )
-  return response.data
-}
-
-export async function createSchoolClass(
-  event: H3Event,
-  payload: Pick<SchoolClass, 'name' | 'schoolId'>,
-) {
-  const client = getServerPublicAxios(event)
-  const response = await client.post<SchoolClass>(
-    resolveServerApiUrl(event, '/school/general/classes'),
-    payload,
-  )
-  await invalidateSchoolCache()
-  return response.data
-}
-
-export async function updateSchoolClass(
-  event: H3Event,
-  classId: string,
-  payload: Partial<Pick<SchoolClass, 'name' | 'schoolId'>>,
-) {
-  const client = getServerPublicAxios(event)
-  const response = await client.patch<SchoolClass>(
-    resolveServerApiUrl(event, `/school/general/classes/${classId}`),
-    payload,
-  )
-  await invalidateSchoolCache()
-  return response.data
-}
-
-export async function deleteSchoolClass(event: H3Event, classId: string) {
-  const client = getServerPublicAxios(event)
-  await client.delete(resolveServerApiUrl(event, `/school/general/classes/${classId}`))
-  await invalidateSchoolCache()
 }
