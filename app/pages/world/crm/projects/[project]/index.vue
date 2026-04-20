@@ -9,6 +9,10 @@ const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
+const { sessionUser } = useCrmPermissions()
+const isRootAdmin = computed(() =>
+  (sessionUser.value?.roles ?? []).includes('ROLE_ROOT'),
+)
 const projectId = computed(() => String(route.params.project ?? ''))
 
 definePageMeta({ title: 'CRM Project Detail' })
@@ -47,6 +51,7 @@ watchEffect(() => {
 })
 
 async function saveProject() {
+  if (!isRootAdmin.value) return
   pendingSave.value = true
   try {
     await $fetch<CrmIdResponse>(`/api/crm/general/projects/${projectId.value}`, {
@@ -60,11 +65,13 @@ async function saveProject() {
 }
 
 async function deleteProject() {
+  if (!isRootAdmin.value) return
   await $fetch(`/api/crm/general/projects/${projectId.value}`, { method: 'DELETE' })
   await router.push('/world/crm/projects')
 }
 
 async function attachAssignee() {
+  if (!isRootAdmin.value) return
   if (!assigneeId.value.trim()) return
   await $fetch(`/api/crm/general/projects/${projectId.value}/assignees/${encodeURIComponent(assigneeId.value.trim())}`, { method: 'PUT' })
   assigneeId.value = ''
@@ -72,6 +79,7 @@ async function attachAssignee() {
 }
 
 async function detachAssignee(userId: string) {
+  if (!isRootAdmin.value) return
   await $fetch(`/api/crm/general/projects/${projectId.value}/assignees/${encodeURIComponent(userId)}`, {
     method: 'DELETE',
   })
@@ -104,14 +112,14 @@ async function detachAssignee(userId: string) {
         <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
           <h2 class="text-h6 mb-4">{{ data.name }}</h2>
           <v-row>
-            <v-col cols="12" md="6"><v-text-field v-model="editPayload.name" :label="t('world.crm.projects.form.name')" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="editPayload.code" :label="t('world.crm.projects.form.code')" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="editPayload.status" :label="t('world.crm.projects.form.status')" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="editPayload.startedAt" :label="t('world.crm.projects.form.startedAt')" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="editPayload.dueAt" :label="t('world.crm.projects.form.dueAt')" /></v-col>
-            <v-col cols="12"><v-textarea v-model="editPayload.description" :label="t('world.crm.projects.form.description')" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="editPayload.name" :label="t('world.crm.projects.form.name')" :readonly="!isRootAdmin" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="editPayload.code" :label="t('world.crm.projects.form.code')" :readonly="!isRootAdmin" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="editPayload.status" :label="t('world.crm.projects.form.status')" :readonly="!isRootAdmin" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="editPayload.startedAt" :label="t('world.crm.projects.form.startedAt')" :readonly="!isRootAdmin" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="editPayload.dueAt" :label="t('world.crm.projects.form.dueAt')" :readonly="!isRootAdmin" /></v-col>
+            <v-col cols="12"><v-textarea v-model="editPayload.description" :label="t('world.crm.projects.form.description')" :readonly="!isRootAdmin" /></v-col>
           </v-row>
-          <div class="d-flex ga-2">
+          <div v-if="isRootAdmin" class="d-flex ga-2">
             <v-btn color="primary" :loading="pendingSave" @click="saveProject">{{ t('world.crm.projects.actions.save') }}</v-btn>
             <v-btn color="error" variant="tonal" @click="deleteProject">{{ t('world.crm.projects.actions.delete') }}</v-btn>
           </div>
@@ -128,15 +136,16 @@ async function detachAssignee(userId: string) {
             item-value="value"
             :label="t('world.crm.projects.form.userId')"
             class="mb-2"
+            :disabled="!isRootAdmin"
           />
-          <v-btn color="secondary" variant="tonal" class="mb-4" @click="attachAssignee">{{ t('world.crm.projects.actions.attach') }}</v-btn>
+          <v-btn v-if="isRootAdmin" color="secondary" variant="tonal" class="mb-4" @click="attachAssignee">{{ t('world.crm.projects.actions.attach') }}</v-btn>
           <v-list density="compact" bg-color="transparent">
             <v-list-item
               v-for="assignee in data.assignees"
               :key="String((assignee as any).id ?? assignee)"
               :title="String((assignee as any).username ?? (assignee as any).id ?? assignee)"
             >
-              <template #append>
+              <template v-if="isRootAdmin" #append>
                 <v-btn
                   size="small"
                   color="error"

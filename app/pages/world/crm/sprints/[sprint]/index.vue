@@ -9,6 +9,10 @@ const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
+const { sessionUser } = useCrmPermissions()
+const isRootAdmin = computed(() =>
+  (sessionUser.value?.roles ?? []).includes('ROLE_ROOT'),
+)
 const sprintId = computed(() => String(route.params.sprint ?? ''))
 
 definePageMeta({ title: 'CRM Sprint Detail' })
@@ -54,6 +58,7 @@ watchEffect(() => {
 })
 
 async function save() {
+  if (!isRootAdmin.value) return
   await $fetch<CrmIdResponse>(`/api/crm/general/sprints/${sprintId.value}`, {
     method: 'PATCH',
     body: payload,
@@ -62,29 +67,34 @@ async function save() {
 }
 
 async function remove() {
+  if (!isRootAdmin.value) return
   await $fetch(`/api/crm/general/sprints/${sprintId.value}`, { method: 'DELETE' })
   await router.push('/world/crm/sprints')
 }
 
 async function attachAssignee() {
+  if (!isRootAdmin.value) return
   if (!assigneeId.value.trim()) return
   await $fetch(`/api/crm/general/sprints/${sprintId.value}/assignees/${encodeURIComponent(assigneeId.value.trim())}`, { method: 'PUT' })
   assigneeId.value = ''
 }
 
 async function detachAssignee() {
+  if (!isRootAdmin.value) return
   if (!assigneeId.value.trim()) return
   await $fetch(`/api/crm/general/sprints/${sprintId.value}/assignees/${encodeURIComponent(assigneeId.value.trim())}`, { method: 'DELETE' })
   assigneeId.value = ''
 }
 
 async function attachTask() {
+  if (!isRootAdmin.value) return
   if (!taskId.value.trim()) return
   await $fetch(`/api/crm/general/sprints/${sprintId.value}/tasks/${encodeURIComponent(taskId.value.trim())}`, { method: 'PUT' })
   taskId.value = ''
 }
 
 async function detachTask() {
+  if (!isRootAdmin.value) return
   if (!taskId.value.trim()) return
   await $fetch(`/api/crm/general/sprints/${sprintId.value}/tasks/${encodeURIComponent(taskId.value.trim())}`, { method: 'DELETE' })
   taskId.value = ''
@@ -115,13 +125,13 @@ async function detachTask() {
         <v-card rounded="xl" class="pa-4 postcard-gradient-card">
           <h2 class="text-h6 mb-4">{{ data.name }}</h2>
           <v-row>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.name" :label="t('world.crm.sprints.form.name')" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.status" :label="t('world.crm.sprints.form.status')" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.startDate" :label="t('world.crm.sprints.form.startDate')" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.endDate" :label="t('world.crm.sprints.form.endDate')" /></v-col>
-            <v-col cols="12"><v-textarea v-model="payload.goal" :label="t('world.crm.sprints.form.goal')" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.name" :label="t('world.crm.sprints.form.name')" :readonly="!isRootAdmin" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.status" :label="t('world.crm.sprints.form.status')" :readonly="!isRootAdmin" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.startDate" :label="t('world.crm.sprints.form.startDate')" :readonly="!isRootAdmin" /></v-col>
+            <v-col cols="12" md="6"><v-text-field v-model="payload.endDate" :label="t('world.crm.sprints.form.endDate')" :readonly="!isRootAdmin" /></v-col>
+            <v-col cols="12"><v-textarea v-model="payload.goal" :label="t('world.crm.sprints.form.goal')" :readonly="!isRootAdmin" /></v-col>
           </v-row>
-          <div class="d-flex ga-2">
+          <div v-if="isRootAdmin" class="d-flex ga-2">
             <v-btn color="primary" @click="save">{{ t('world.crm.sprints.actions.save') }}</v-btn>
             <v-btn color="error" variant="tonal" @click="remove">{{ t('world.crm.sprints.actions.delete') }}</v-btn>
           </div>
@@ -137,8 +147,9 @@ async function detachTask() {
             item-title="title"
             item-value="value"
             :label="t('world.crm.sprints.form.userId')"
+            :disabled="!isRootAdmin"
           />
-          <div class="d-flex ga-2">
+          <div v-if="isRootAdmin" class="d-flex ga-2">
             <v-btn size="small" color="secondary" variant="tonal" @click="attachAssignee">{{ t('world.crm.sprints.actions.attach') }}</v-btn>
             <v-btn size="small" color="error" variant="tonal" @click="detachAssignee">{{ t('world.crm.sprints.actions.detach') }}</v-btn>
           </div>
@@ -152,8 +163,9 @@ async function detachTask() {
             item-title="title"
             item-value="value"
             :label="t('world.crm.sprints.form.taskId')"
+            :disabled="!isRootAdmin"
           />
-          <div class="d-flex ga-2">
+          <div v-if="isRootAdmin" class="d-flex ga-2">
             <v-btn size="small" color="secondary" variant="tonal" @click="attachTask">{{ t('world.crm.sprints.actions.attach') }}</v-btn>
             <v-btn size="small" color="error" variant="tonal" @click="detachTask">{{ t('world.crm.sprints.actions.detach') }}</v-btn>
           </div>

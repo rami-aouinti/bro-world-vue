@@ -7,6 +7,10 @@ definePageMeta({ title: 'world.crm.label' })
 const { t, locale } = useI18n()
 const crmKanbanStore = useCrmKanbanStore()
 const { crmNavItems } = useWorldCrmNavItems()
+const { sessionUser } = useCrmPermissions()
+const isRootAdmin = computed(() =>
+  (sessionUser.value?.roles ?? []).includes('ROLE_ROOT'),
+)
 
 const draggingCardId = ref<string | null>(null)
 const projectModalOpen = ref(false)
@@ -57,6 +61,7 @@ function onDragStart(cardId: string) {
 }
 
 async function onDrop(targetStatus: string) {
+  if (!isRootAdmin.value) return
   if (!draggingCardId.value) return
 
   const current = crmKanbanStore.cards.find((card) => card.id === draggingCardId.value)
@@ -223,7 +228,7 @@ function profileLink(username: string | null) {
             rounded="lg"
             class="pa-3 mb-2 cursor-pointer"
             variant="tonal"
-            draggable="true"
+            :draggable="isRootAdmin"
             @dragstart="onDragStart(card.id)"
             @click="openTaskRequest(card.id)"
           >
