@@ -39,6 +39,12 @@ export function useWorldCrmNavItems() {
       to: '/world/crm/repositories',
       icon: 'mdi-source-repository',
     },
+
+    {
+      title: t('world.crm.endpoints.page.title', 'Endpoints API'),
+      to: '/world/crm/endpoints',
+      icon: 'mdi-api',
+    },
     ...(isRootAdmin.value && can('crm.admin.manage')
       ? [
           {
