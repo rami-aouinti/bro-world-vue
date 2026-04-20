@@ -10,11 +10,6 @@ const isRoot = computed(
 
 const learningNavItems = computed(() => [
   {
-    title: t('world.learning.nav.overview'),
-    to: '/world/learning',
-    icon: 'mdi-view-dashboard-outline',
-  },
-  {
     title: t('world.learning.nav.courses'),
     to: '/world/learning/courses',
     icon: 'mdi-book-open-page-variant-outline',
@@ -46,6 +41,8 @@ const learningNavItems = computed(() => [
   <div>
     <WorldModuleDrawers
       :module-title="t('world.learning.label')"
+      module-key="school"
+      module-path="/world/learning"
       module-icon="mdi-school-outline"
       :module-description="t('world.learning.moduleDescription')"
       :nav-items="learningNavItems"

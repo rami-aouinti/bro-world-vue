@@ -10,11 +10,6 @@ const isRoot = computed(
 
 const jobsNavItems = computed(() => [
   {
-    title: t('world.jobs.nav.overview'),
-    to: '/world/jobs',
-    icon: 'mdi-view-dashboard-outline',
-  },
-  {
     title: t('world.jobs.nav.offers'),
     to: '/world/jobs/offers',
     icon: 'mdi-briefcase-outline',
@@ -51,6 +46,8 @@ const jobsNavItems = computed(() => [
   <div>
     <WorldModuleDrawers
       :module-title="t('world.jobs.label')"
+      module-key="recruit"
+      module-path="/world/jobs"
       module-icon="mdi-briefcase-search-outline"
       :module-description="t('world.jobs.moduleDescription')"
       :nav-items="jobsNavItems"

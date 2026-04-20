@@ -10,11 +10,6 @@ export function useShopNavItems() {
 
   const shopNavItems = computed<ShopNavItem[]>(() => [
     {
-      title: t('world.shop.nav.overview', 'Overview Shop'),
-      to: '/world/shop',
-      icon: 'mdi-view-dashboard-outline',
-    },
-    {
       title: t('world.shop.nav.orders', 'Orders'),
       to: '/world/shop/orders',
       icon: 'mdi-receipt-text-outline',

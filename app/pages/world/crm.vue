@@ -9,6 +9,8 @@ const { crmNavItems } = useWorldCrmNavItems()
   <div>
     <WorldModuleDrawers
       :module-title="t('world.crm.label')"
+      module-key="crm"
+      module-path="/world/crm"
       module-icon="mdi-account-group-outline"
       :module-description="t('world.crm.moduleDescription')"
       :nav-items="crmNavItems"
