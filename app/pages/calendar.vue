@@ -253,6 +253,21 @@ function buildPayload(): EventMutationPayload {
 async function connectGoogleCalendar() {
   isGoogleConnecting.value = true
 
+  const popup = window.open(
+    '',
+    'google-calendar-oauth',
+    'width=520,height=720',
+  )
+
+  if (!popup) {
+    errorMessage.value = t('pages.calendar.errors.googleConnectFailed')
+    console.error(new Error('Google popup blocked'))
+    isGoogleConnecting.value = false
+    return
+  }
+
+  popup.document.title = 'Google Calendar OAuth'
+
   try {
     const response = await $fetch<GoogleConnectResponse>(
       '/api/calendar/google/connect',
@@ -262,16 +277,10 @@ async function connectGoogleCalendar() {
       throw new Error('Missing Google authorization URL')
     }
 
-    const popup = window.open(
-      response.authorizationUrl,
-      'google-calendar-oauth',
-      'width=520,height=720,noopener,noreferrer',
-    )
-
-    if (!popup) {
-      throw new Error('Google popup blocked')
-    }
+    popup.location.href = response.authorizationUrl
+    popup.focus()
   } catch (error) {
+    popup.close()
     errorMessage.value = t('pages.calendar.errors.googleConnectFailed')
     console.error(error)
     isGoogleConnecting.value = false
