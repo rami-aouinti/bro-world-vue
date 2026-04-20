@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SchoolResource } from '~/stores/worldLearningSchool'
+import { useWorldLearningSchoolStore } from '~/stores/worldLearningSchool'
 
 definePageMeta({ layout: 'learning', title: 'Learning Detail' })
 
