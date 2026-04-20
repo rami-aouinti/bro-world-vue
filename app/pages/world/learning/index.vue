@@ -1,9 +1,37 @@
 <script setup lang="ts">
 import { useWorldLearningStore } from '~/stores/worldLearning'
 
-definePageMeta({ title: 'world.learning.label' })
+definePageMeta({
+  title: 'world.learning.label',
+  description: 'Suivez les parcours, cours et performances apprenants dans Bro World Learning.',
+})
 
 const { t } = useI18n()
+const runtimeConfig = useRuntimeConfig()
+const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world-space.com'
+const pageUrl = new URL('/world/learning', siteUrl).toString()
+const seoImage = new URL('/img/platform/general/learning.png', siteUrl).toString()
+
+useSeoMeta({
+  title: 'Bro World Learning | Plateforme de formation et suivi des apprenants',
+  description:
+    'Bro World Learning vous aide à piloter cours, parcours pédagogiques, analytics et progression des apprenants.',
+  keywords:
+    'bro world learning, lms, plateforme e-learning, formation en ligne, suivi apprenants, analytics learning',
+  robots: 'index, follow, max-image-preview:large',
+  ogTitle: 'Bro World Learning | Plateforme de formation',
+  ogDescription:
+    'Suivez vos cours, performances et certifications avec Bro World Learning.',
+  ogType: 'website',
+  ogUrl: pageUrl,
+  ogImage: seoImage,
+  ogImageAlt: 'Bro World Learning analytics',
+  twitterTitle: 'Bro World Learning | Plateforme de formation',
+  twitterDescription:
+    'Suivez vos cours, performances et certifications avec Bro World Learning.',
+  twitterImage: seoImage,
+  twitterCard: 'summary_large_image',
+})
 
 const learningStore = useWorldLearningStore()
 await learningStore.fetchCourses()

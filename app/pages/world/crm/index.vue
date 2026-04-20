@@ -3,9 +3,36 @@ import { useWorldCrmNavItems } from '~/composables/useWorldCrmNavItems'
 
 definePageMeta({
   title: 'world.crm.label',
+  description: 'Gérez vos projets, tâches, contacts et automatisations CRM dans Bro World CRM.',
 })
 
 const { t } = useI18n()
+const runtimeConfig = useRuntimeConfig()
+const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world-space.com'
+const pageUrl = new URL('/world/crm', siteUrl).toString()
+const seoImage = new URL('/img/platform/general/crm.png', siteUrl).toString()
+
+useSeoMeta({
+  title: 'Bro World CRM | Gestion projets, tâches et clients',
+  description:
+    'Bro World CRM centralise la gestion de projets, contacts, sprints, tâches et synchronisation GitHub pour vos équipes.',
+  keywords:
+    'bro world crm, crm en ligne, gestion projet, gestion tâches, suivi clients, kanban, sprint, github sync',
+  robots: 'index, follow, max-image-preview:large',
+  ogTitle: 'Bro World CRM | Gestion projets, tâches et clients',
+  ogDescription:
+    'Pilotez vos projets, contacts et workflows CRM avec Bro World CRM.',
+  ogType: 'website',
+  ogUrl: pageUrl,
+  ogImage: seoImage,
+  ogImageAlt: 'Bro World CRM dashboard',
+  twitterTitle: 'Bro World CRM | Gestion projets, tâches et clients',
+  twitterDescription:
+    'Pilotez vos projets, contacts et workflows CRM avec Bro World CRM.',
+  twitterImage: seoImage,
+  twitterCard: 'summary_large_image',
+})
+
 const { crmNavItems } = useWorldCrmNavItems()
 const { fetch: refreshSession, loggedIn } = useUserSession()
 
