@@ -16,7 +16,7 @@ const router = useRouter()
 type FieldConfig = {
   key: string
   label: string
-  type?: 'text' | 'reference' | 'teacher-card'
+  type?: 'text' | 'reference' | 'user-avatar'
   referenceResource?: SchoolResource
 }
 
@@ -27,16 +27,14 @@ const fieldConfigByResource: Record<SchoolResource, FieldConfig[]> = {
   courses: [
     { key: 'name', label: 'Name' },
     { key: 'className', label: 'Class' },
-    { key: 'teacher', label: 'Teacher', type: 'teacher-card' },
-    { key: 'teacherId', label: 'Teacher', type: 'reference', referenceResource: 'teachers' },
+    { key: 'teacher', label: 'Teacher', type: 'user-avatar' },
   ],
   exams: [
     { key: 'title', label: 'Title' },
     { key: 'courseName', label: 'Course' },
     { key: 'courseId', label: 'Course', type: 'reference', referenceResource: 'courses' },
     { key: 'className', label: 'Class' },
-    { key: 'teacher', label: 'Teacher', type: 'teacher-card' },
-    { key: 'teacherId', label: 'Teacher', type: 'reference', referenceResource: 'teachers' },
+    { key: 'teacher', label: 'Teacher', type: 'user-avatar' },
     { key: 'type', label: 'Type' },
     { key: 'status', label: 'Status' },
     { key: 'term', label: 'Term' },
@@ -51,13 +49,12 @@ const fieldConfigByResource: Record<SchoolResource, FieldConfig[]> = {
     { key: 'courseId', label: 'Course', type: 'reference', referenceResource: 'courses' },
   ],
   students: [
-    { key: 'name', label: 'Name' },
+    { key: 'user', label: 'Student', type: 'user-avatar' },
     { key: 'className', label: 'Class' },
     { key: 'classId', label: 'Class', type: 'reference', referenceResource: 'classes' },
   ],
   teachers: [
-    { key: 'name', label: 'Name' },
-    { key: 'user', label: 'Profile' },
+    { key: 'user', label: 'Profile', type: 'user-avatar' },
   ],
 }
 
@@ -77,16 +74,40 @@ function onReferenceClick(resource: SchoolResource, value: unknown) {
   emit('openReference', { key: resource, value: String(value) })
 }
 
-function asTeacher(value: unknown) {
+function asUser(value: unknown) {
   if (!value || typeof value !== 'object') {
     return null
   }
 
-  const teacher = value as Record<string, unknown>
+  const user = value as Record<string, unknown>
   return {
-    name: String(teacher.name ?? 'Unknown'),
-    photo: String(teacher.photo ?? ''),
+    id: String(user.id ?? ''),
+    username: String(user.username ?? ''),
+    photo: String(user.photo ?? user.avatar ?? ''),
+    name: String(user.name ?? `${String(user.firstName ?? '')} ${String(user.lastName ?? '')}`.trim() ?? 'User'),
   }
+}
+
+function profilePathFor(user: ReturnType<typeof asUser>) {
+  if (!user) {
+    return null
+  }
+
+  const identifier = user.username || user.id
+  if (!identifier) {
+    return null
+  }
+
+  return `/user/${identifier}/profile`
+}
+
+function openProfile(user: ReturnType<typeof asUser>) {
+  const path = profilePathFor(user)
+  if (!path) {
+    return
+  }
+
+  router.push(path)
 }
 
 function formatDefaultValue(value: unknown) {
@@ -114,30 +135,33 @@ function formatDefaultValue(value: unknown) {
         lg="4"
       >
         <v-card rounded="xl" class="h-100 pa-4 postcard-gradient-card">
-          <div class="text-caption text-medium-emphasis mb-2">{{ resource.slice(0, -1) }} #{{ item.id ?? index + 1 }}</div>
+          <div class="text-caption text-medium-emphasis mb-2 text-capitalize">{{ resource.slice(0, -1) }}</div>
           <div class="d-flex flex-column ga-3">
             <div v-for="field in fields" :key="`${String(item.id ?? index)}-${field.key}`" class="d-flex align-center justify-space-between ga-3">
               <span class="text-caption text-medium-emphasis">{{ field.label }}</span>
 
-              <v-chip
+              <v-btn
                 v-if="field.type === 'reference' && field.referenceResource"
-                size="small"
+                size="x-small"
                 color="secondary"
                 variant="outlined"
+                class="text-none"
                 @click="onReferenceClick(field.referenceResource, item[field.key])"
               >
-                {{ item[field.key] }}
-              </v-chip>
+                Ouvrir
+              </v-btn>
 
-              <div
-                v-else-if="field.type === 'teacher-card' && asTeacher(item[field.key])"
-                class="d-flex flex-column align-center"
+              <v-btn
+                v-else-if="field.type === 'user-avatar' && asUser(item[field.key])"
+                icon
+                variant="text"
+                size="x-small"
+                @click="openProfile(asUser(item[field.key]))"
               >
-                <v-avatar size="36" class="mb-1">
-                  <img :src="asTeacher(item[field.key])?.photo" alt="Teacher" />
+                <v-avatar size="28">
+                  <img :src="asUser(item[field.key])?.photo" :alt="asUser(item[field.key])?.name || 'User'">
                 </v-avatar>
-                <span class="text-caption">{{ asTeacher(item[field.key])?.name }}</span>
-              </div>
+              </v-btn>
 
               <v-btn
                 v-else

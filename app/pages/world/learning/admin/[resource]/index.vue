@@ -24,8 +24,8 @@ const resourceConfig: Record<SchoolResource, ResourceConfig> = {
     tableFields: ['id', 'name', 'schoolId'],
   },
   courses: {
-    createFields: ['name', 'classId', 'schoolId', 'teacherId'],
-    editFields: ['name', 'classId', 'schoolId', 'teacherId'],
+    createFields: ['name', 'classId', 'teacherId', 'contentHtml'],
+    editFields: ['name', 'classId', 'teacherId', 'contentHtml'],
     tableFields: ['id', 'name', 'className', 'teacher', 'classId', 'teacherId'],
   },
   teachers: {
