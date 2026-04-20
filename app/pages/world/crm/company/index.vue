@@ -49,10 +49,21 @@ async function createCompany() {
       module-icon="mdi-account-group-outline"
       :module-description="t('world.crm.company.moduleDescription')"
       :nav-items="crmNavItems"
-      :action-label="t('world.crm.company.actions.addCompany')"
-      action-icon="mdi-domain-plus"
-      @action="createDialog = true"
-    />
+      activate-right-drawer
+    >
+      <template #right>
+        <div class="d-flex flex-column ga-3">
+          <v-btn
+            color="primary"
+            prepend-icon="mdi-domain-plus"
+            block
+            @click="createDialog = true"
+          >
+            {{ t('world.crm.company.actions.addCompany') }}
+          </v-btn>
+        </div>
+      </template>
+    </WorldModuleDrawers>
 
     <v-container fluid>
       <CrmPageSkeleton v-if="pending" variant="list" :cards="6" />

@@ -157,14 +157,19 @@ async function createTask() {
       module-icon="mdi-account-group-outline"
       :module-description="t('world.crm.tasks.moduleDescription')"
       :nav-items="crmNavItems"
-      :show-action="isRootAdmin"
       activate-right-drawer
-      :action-label="t('world.crm.tasks.actions.create')"
-      action-icon="mdi-plus"
-      @action="isRootAdmin ? (createDialog = true) : undefined"
     >
       <template #right>
         <div class="d-flex flex-column ga-3">
+          <v-btn
+            v-if="isRootAdmin"
+            color="primary"
+            prepend-icon="mdi-plus"
+            block
+            @click="createDialog = true"
+          >
+            {{ t('world.crm.tasks.actions.create') }}
+          </v-btn>
           <v-text-field
             v-model="search"
             prepend-inner-icon="mdi-magnify"
