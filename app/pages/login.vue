@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { usePublicAxios } from '~/utils/http/axiosClient'
 definePageMeta({
   layout: 'auth',
   title: 'appbar.login',
@@ -11,7 +10,6 @@ const { t } = useI18n()
 const { fetch: refreshSession, loggedIn } = useUserSession()
 const route = useRoute()
 const loading = ref(false)
-const publicAxios = usePublicAxios()
 
 const redirectPath = computed(() => {
   const redirectQuery = route.query.redirect
@@ -35,7 +33,8 @@ async function onSubmit(payload: { username?: string; password: string }) {
   loading.value = true
 
   try {
-    await publicAxios.post('/api/login', {
+    await $fetch('/api/login', {
+      method: 'POST',
       username: payload.username,
       password: payload.password,
     })
