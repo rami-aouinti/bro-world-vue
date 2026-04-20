@@ -7,6 +7,8 @@ const { shopNavItems } = useShopNavItems()
   <div>
     <WorldModuleDrawers
       :module-title="t('world.shop.label')"
+      module-key="shop"
+      module-path="/world/shop"
       module-icon="mdi-storefront-outline"
       :module-description="t('world.shop.moduleDescription')"
       :nav-items="shopNavItems"

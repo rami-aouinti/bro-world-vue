@@ -10,11 +10,6 @@ export function useWorldCrmNavItems() {
 
   const crmNavItems = computed(() => [
     {
-      title: t('world.crm.nav.overview'),
-      to: '/world/crm',
-      icon: 'mdi-view-dashboard-outline',
-    },
-    {
       title: t('world.crm.nav.projects'),
       to: '/world/crm/projects',
       icon: 'mdi-folder-outline',

@@ -14,6 +14,8 @@ const emit = defineEmits<{
 
 const props = defineProps<{
   moduleTitle: string
+  moduleKey?: string
+  modulePath?: string
   moduleIcon: string
   moduleDescription: string
   navItems: WorldModuleNavItem[]
@@ -33,6 +35,62 @@ const visibleNavItems = computed(() =>
   props.navItems.filter((item) => !item.rootOnly || isRoot.value),
 )
 
+const resolvedModulePath = computed(() => props.modulePath || route.path)
+const resolvedModuleKey = computed(() => {
+  if (props.moduleKey) {
+    return props.moduleKey
+  }
+
+  if (route.path.startsWith('/world/jobs')) {
+    return 'recruit'
+  }
+
+  if (route.path.startsWith('/world/learning')) {
+    return 'school'
+  }
+
+  if (route.path.startsWith('/world/shop')) {
+    return 'shop'
+  }
+
+  return 'crm'
+})
+
+type GeneralPublicItem = {
+  title?: string
+  photo?: string
+  platform?: {
+    key?: string
+    name?: string
+  }
+}
+
+const { data: generalApplications } = await useAsyncData(
+  'world-public-general-applications',
+  () =>
+    $fetch<{ items?: GeneralPublicItem[] }>(
+      'https://bro-world.org/api/v1/application/public/general',
+      {
+        headers: { accept: '*/*' },
+      },
+    ),
+)
+
+const selectedGeneralApplication = computed(() =>
+  (generalApplications.value?.items ?? []).find(
+    (item) => item.platform?.key === resolvedModuleKey.value,
+  ),
+)
+
+const moduleIdentityTitle = computed(
+  () => selectedGeneralApplication.value?.title || props.moduleTitle,
+)
+const moduleIdentityPhoto = computed(
+  () => selectedGeneralApplication.value?.photo || undefined,
+)
+const moduleIdentityBadge = computed(
+  () => selectedGeneralApplication.value?.platform?.name || props.moduleTitle,
+)
 
 const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => true)
 const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
@@ -63,6 +121,29 @@ const quickCheckItems = computed(() => [
   <AppPageDrawers>
     <template #left>
       <div class="d-flex flex-column ga-3">
+        <NuxtLink
+          :to="resolvedModulePath"
+          class="module-identity d-flex align-center ga-3 text-decoration-none"
+        >
+          <v-avatar size="56" rounded="xl">
+            <v-img
+              :src="
+                moduleIdentityPhoto ||
+                '/images/placeholders/platform-media-fallback.svg'
+              "
+              :alt="moduleIdentityTitle"
+              cover
+            />
+          </v-avatar>
+          <div>
+            <h3 class="text-subtitle-1 text-high-emphasis mb-1">
+              {{ moduleIdentityTitle }}
+            </h3>
+            <v-chip size="small" color="primary" variant="tonal" label>
+              {{ moduleIdentityBadge }}
+            </v-chip>
+          </div>
+        </NuxtLink>
         <v-btn
           color="primary"
           variant="tonal"

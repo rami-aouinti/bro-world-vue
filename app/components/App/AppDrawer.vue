@@ -4,6 +4,7 @@ const drawerState = useState('drawer', () => true)
 
 const { mobile } = useDisplay()
 const router = useRouter()
+const route = useRoute()
 const registry = useDrawerSlotRegistry()
 const drawerModel = computed(() => (mobile.value ? drawerState.value : true))
 
@@ -17,6 +18,11 @@ function handleDrawerModelUpdate(val: boolean) {
 const rail = computed(() => !drawerState.value && !mobile.value)
 const leftDrawerRenderer = computed(() => registry?.left.value ?? null)
 const shouldRenderDrawerSlot = computed(() => Boolean(leftDrawerRenderer.value))
+const shouldHideUserEntry = computed(() =>
+  ['/world/crm', '/world/shop', '/world/jobs', '/world/learning'].some(
+    (prefix) => route.path.startsWith(prefix),
+  ),
+)
 const leftDrawerSlotHost = {
   render: () => leftDrawerRenderer.value?.(),
 }
@@ -50,8 +56,10 @@ watch(mobile, (isMobile) => {
     @update:model-value="handleDrawerModelUpdate"
   >
     <v-card variant="text" class="postcard-gradient-card app-drawer-card">
-      <AppLeftDrawerUserEntry />
-      <v-divider class="my-2" />
+      <template v-if="!shouldHideUserEntry">
+        <AppLeftDrawerUserEntry />
+        <v-divider class="my-2" />
+      </template>
       <div v-if="shouldRenderDrawerSlot" class="app-left-drawer-list">
         <SkeletonDrawerLeft v-if="isPageSkeletonLoading" />
         <component :is="leftDrawerSlotHost" v-else />
