@@ -5,9 +5,38 @@ import type {
   ShopGeneralProduct,
 } from '~/types/world/shop'
 
-definePageMeta({ title: 'world.shop.label' })
+definePageMeta({
+  title: 'world.shop.label',
+  description: 'Explorez la boutique Bro World avec produits, promotions et commandes en ligne.',
+})
 
 const { t, locale } = useI18n()
+const runtimeConfig = useRuntimeConfig()
+const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world-space.com'
+const pageUrl = new URL('/world/shop', siteUrl).toString()
+const seoImage = new URL('/img/platform/general/shop.png', siteUrl).toString()
+
+useSeoMeta({
+  title: 'Bro World Shop | Boutique, promotions et achats en ligne',
+  description:
+    'Découvrez Bro World Shop : catalogue produits, catégories, promos et checkout sécurisé pour vos achats.',
+  keywords:
+    'bro world shop, boutique en ligne, ecommerce, catalogue produits, promotions, panier, checkout',
+  robots: 'index, follow, max-image-preview:large',
+  ogTitle: 'Bro World Shop | Boutique, promotions et achats en ligne',
+  ogDescription:
+    'Trouvez vos produits, appliquez des filtres et commandez facilement avec Bro World Shop.',
+  ogType: 'website',
+  ogUrl: pageUrl,
+  ogImage: seoImage,
+  ogImageAlt: 'Bro World Shop catalogue',
+  twitterTitle: 'Bro World Shop | Boutique, promotions et achats en ligne',
+  twitterDescription:
+    'Trouvez vos produits, appliquez des filtres et commandez facilement avec Bro World Shop.',
+  twitterImage: seoImage,
+  twitterCard: 'summary_large_image',
+})
+
 const { user } = useUserSession()
 const route = useRoute()
 const shopStore = useWorldShopStore()

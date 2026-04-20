@@ -1,7 +1,35 @@
 <script setup lang="ts">
-definePageMeta({ title: 'world.jobs.label' })
+definePageMeta({
+  title: 'world.jobs.label',
+  description: "Publiez des offres, gérez les candidatures et suivez le recrutement avec Bro World Jobs.",
+})
 
 const { t } = useI18n()
+const runtimeConfig = useRuntimeConfig()
+const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world-space.com'
+const pageUrl = new URL('/world/jobs', siteUrl).toString()
+const seoImage = new URL('/img/platform/general/job.png', siteUrl).toString()
+
+useSeoMeta({
+  title: 'Bro World Jobs | Offres d’emploi et recrutement',
+  description:
+    'Bro World Jobs centralise les offres, candidatures, entretiens et suivi du recrutement en un seul espace.',
+  keywords:
+    "bro world jobs, offres d'emploi, recrutement, candidatures, gestion talents, hr platform",
+  robots: 'index, follow, max-image-preview:large',
+  ogTitle: 'Bro World Jobs | Offres d’emploi et recrutement',
+  ogDescription:
+    'Publiez des offres et gérez vos recrutements efficacement avec Bro World Jobs.',
+  ogType: 'website',
+  ogUrl: pageUrl,
+  ogImage: seoImage,
+  ogImageAlt: 'Bro World Jobs recruitment dashboard',
+  twitterTitle: 'Bro World Jobs | Offres d’emploi et recrutement',
+  twitterDescription:
+    'Publiez des offres et gérez vos recrutements efficacement avec Bro World Jobs.',
+  twitterImage: seoImage,
+  twitterCard: 'summary_large_image',
+})
 
 const rows = [
   {
