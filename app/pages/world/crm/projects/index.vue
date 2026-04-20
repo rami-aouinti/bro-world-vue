@@ -33,6 +33,7 @@ const createDialog = ref(false)
 const pendingCreate = ref(false)
 const search = ref('')
 const statusFilter = ref<string | null>(null)
+const provisioningFilter = ref<string | null>(null)
 const startedAfter = ref<string | null>(null)
 const dueBefore = ref<string | null>(null)
 const currentPage = ref(1)
@@ -71,13 +72,23 @@ const filteredProjects = computed(() => {
       = !dueBefore.value
         || !detailedProject.dueAt
         || new Date(detailedProject.dueAt) <= new Date(dueBefore.value)
+    const matchesProvisioning
+      = !provisioningFilter.value
+        || detailedProject.provisioning?.state === provisioningFilter.value
 
-    return matchesSearch && matchesStatus && matchesStartDate && matchesDueDate
+    return matchesSearch
+      && matchesStatus
+      && matchesStartDate
+      && matchesDueDate
+      && matchesProvisioning
   })
 })
 
 const projectStatusOptions = computed(() =>
   Array.from(new Set((data.value?.items ?? []).map((project) => project.status).filter(Boolean))),
+)
+const provisioningOptions = computed(() =>
+  Array.from(new Set((data.value?.items ?? []).map((project) => project.provisioning?.state).filter(Boolean))),
 )
 
 const totalPages = computed(() =>
@@ -89,7 +100,7 @@ const paginatedProjects = computed(() => {
   return filteredProjects.value.slice(start, start + itemsPerPage)
 })
 
-watch([search, statusFilter, startedAfter, dueBefore, filteredProjects], () => {
+watch([search, statusFilter, provisioningFilter, startedAfter, dueBefore, filteredProjects], () => {
   currentPage.value = 1
 })
 
@@ -136,13 +147,17 @@ async function createProject() {
             variant="outlined"
             hide-details
           />
-          <v-select
+          <AppSelect
             v-model="statusFilter"
             :items="projectStatusOptions"
             label="Statut"
-            variant="outlined"
             clearable
-            hide-details
+          />
+          <AppSelect
+            v-model="provisioningFilter"
+            :items="provisioningOptions"
+            label="Provisioning"
+            clearable
           />
           <v-text-field v-model="startedAfter" type="date" label="Début après" variant="outlined" hide-details clearable />
           <v-text-field v-model="dueBefore" type="date" label="Fin avant" variant="outlined" hide-details clearable />

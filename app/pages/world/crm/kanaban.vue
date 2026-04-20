@@ -146,6 +146,7 @@ function profileLink(username: string | null) {
       module-icon="mdi-account-group-outline"
       :module-description="t('world.crm.moduleDescription')"
       :nav-items="crmNavItems"
+      deactivate-right-drawer
       :action-label="t('world.crm.actions.createLead')"
       action-icon="mdi-account-plus-outline"
     />

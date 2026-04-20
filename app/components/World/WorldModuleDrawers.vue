@@ -23,6 +23,7 @@ const props = defineProps<{
   actionIcon?: string
   showAction?: boolean
   activateRightDrawer?: boolean
+  deactivateRightDrawer?: boolean
 }>()
 
 const { t } = useI18n()
@@ -99,6 +100,12 @@ const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => true)
 const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
 
 watchEffect(() => {
+  if (props.deactivateRightDrawer) {
+    showRightDrawerDesktop.value = false
+    showRightDrawerMobile.value = false
+    return
+  }
+
   if (!props.activateRightDrawer) {
     return
   }

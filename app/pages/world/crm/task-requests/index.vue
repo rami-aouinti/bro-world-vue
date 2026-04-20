@@ -26,6 +26,8 @@ const taskModalOpen = ref(false)
 const taskModalLoading = ref(false)
 const search = ref('')
 const statusFilter = ref<string | null>(null)
+const repositoryFilter = ref<string | null>(null)
+const taskFilter = ref<string | null>(null)
 const requestedAfter = ref<string | null>(null)
 const resolvedBefore = ref<string | null>(null)
 const currentPage = ref(1)
@@ -52,6 +54,8 @@ const filteredRequests = computed(() => {
           .filter(Boolean)
           .some((value) => String(value).toLowerCase().includes(query))
     const matchesStatus = !statusFilter.value || request.status === statusFilter.value
+    const matchesRepository = !repositoryFilter.value || request.repositoryId === repositoryFilter.value
+    const matchesTask = !taskFilter.value || request.taskId === taskFilter.value
     const matchesRequestedDate
       = !requestedAfter.value
         || new Date(request.requestedAt) >= new Date(requestedAfter.value)
@@ -60,12 +64,23 @@ const filteredRequests = computed(() => {
         || !request.resolvedAt
         || new Date(request.resolvedAt) <= new Date(resolvedBefore.value)
 
-    return matchesSearch && matchesStatus && matchesRequestedDate && matchesResolvedDate
+    return matchesSearch
+      && matchesStatus
+      && matchesRepository
+      && matchesTask
+      && matchesRequestedDate
+      && matchesResolvedDate
   })
 })
 
 const taskRequestStatusOptions = computed(() =>
   Array.from(new Set((data.value?.items ?? []).map((request) => request.status).filter(Boolean))),
+)
+const taskRequestRepositoryOptions = computed(() =>
+  Array.from(new Set((data.value?.items ?? []).map((request) => request.repositoryId).filter(Boolean))),
+)
+const taskRequestTaskOptions = computed(() =>
+  Array.from(new Set((data.value?.items ?? []).map((request) => request.taskId).filter(Boolean))),
 )
 
 const totalPages = computed(() =>
@@ -77,7 +92,7 @@ const paginatedRequests = computed(() => {
   return filteredRequests.value.slice(start, start + itemsPerPage)
 })
 
-watch([search, statusFilter, requestedAfter, resolvedBefore, filteredRequests], () => {
+watch([search, statusFilter, repositoryFilter, taskFilter, requestedAfter, resolvedBefore, filteredRequests], () => {
   currentPage.value = 1
 })
 
@@ -138,14 +153,14 @@ async function createRequest() {
             variant="outlined"
             hide-details
           />
-          <v-select
+          <AppSelect
             v-model="statusFilter"
             :items="taskRequestStatusOptions"
             label="Statut"
-            variant="outlined"
             clearable
-            hide-details
           />
+          <AppSelect v-model="repositoryFilter" :items="taskRequestRepositoryOptions" label="Repository" clearable />
+          <AppSelect v-model="taskFilter" :items="taskRequestTaskOptions" label="Task" clearable />
           <v-text-field v-model="requestedAfter" type="date" label="Demandée après" variant="outlined" hide-details clearable />
           <v-text-field v-model="resolvedBefore" type="date" label="Résolue avant" variant="outlined" hide-details clearable />
         </div>

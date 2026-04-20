@@ -31,6 +31,7 @@ const createDialog = ref(false)
 const pendingCreate = ref(false)
 const search = ref('')
 const statusFilter = ref<string | null>(null)
+const projectFilter = ref<string | null>(null)
 const startAfter = ref<string | null>(null)
 const endBefore = ref<string | null>(null)
 const currentPage = ref(1)
@@ -57,15 +58,19 @@ const filteredSprints = computed(() => {
           .filter(Boolean)
           .some((value) => String(value).toLowerCase().includes(query))
     const matchesStatus = !statusFilter.value || sprint.status === statusFilter.value
+    const matchesProject = !projectFilter.value || sprint.projectId === projectFilter.value
     const matchesStartDate = !startAfter.value || new Date(sprint.startDate) >= new Date(startAfter.value)
     const matchesEndDate = !endBefore.value || new Date(sprint.endDate) <= new Date(endBefore.value)
 
-    return matchesSearch && matchesStatus && matchesStartDate && matchesEndDate
+    return matchesSearch && matchesStatus && matchesProject && matchesStartDate && matchesEndDate
   })
 })
 
 const sprintStatusOptions = computed(() =>
   Array.from(new Set((data.value?.items ?? []).map((sprint) => sprint.status).filter(Boolean))),
+)
+const sprintProjectOptions = computed(() =>
+  Array.from(new Set((data.value?.items ?? []).map((sprint) => sprint.projectId).filter(Boolean))),
 )
 
 const totalPages = computed(() =>
@@ -77,7 +82,7 @@ const paginatedSprints = computed(() => {
   return filteredSprints.value.slice(start, start + itemsPerPage)
 })
 
-watch([search, statusFilter, startAfter, endBefore, filteredSprints], () => {
+watch([search, statusFilter, projectFilter, startAfter, endBefore, filteredSprints], () => {
   currentPage.value = 1
 })
 
@@ -126,7 +131,8 @@ async function createSprint() {
             variant="outlined"
             hide-details
           />
-          <v-select v-model="statusFilter" :items="sprintStatusOptions" label="Statut" variant="outlined" clearable hide-details />
+          <AppSelect v-model="statusFilter" :items="sprintStatusOptions" label="Statut" clearable />
+          <AppSelect v-model="projectFilter" :items="sprintProjectOptions" label="Projet" clearable />
           <v-text-field v-model="startAfter" type="date" label="Début après" variant="outlined" hide-details clearable />
           <v-text-field v-model="endBefore" type="date" label="Fin avant" variant="outlined" hide-details clearable />
         </div>

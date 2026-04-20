@@ -28,6 +28,8 @@ const pendingCreate = ref(false)
 const search = ref('')
 const statusFilter = ref<string | null>(null)
 const priorityFilter = ref<string | null>(null)
+const projectFilter = ref<string | null>(null)
+const dueAfter = ref<string | null>(null)
 const dueBefore = ref<string | null>(null)
 const currentPage = ref(1)
 const itemsPerPage = 9
@@ -58,9 +60,16 @@ const filteredTasks = computed(() => {
           .some((value) => String(value).toLowerCase().includes(query))
     const matchesStatus = !statusFilter.value || task.status === statusFilter.value
     const matchesPriority = !priorityFilter.value || task.priority === priorityFilter.value
+    const matchesProject = !projectFilter.value || task.projectId === projectFilter.value
+    const matchesDueAfter = !dueAfter.value || !task.dueAt || new Date(task.dueAt) >= new Date(dueAfter.value)
     const matchesDueDate = !dueBefore.value || !task.dueAt || new Date(task.dueAt) <= new Date(dueBefore.value)
 
-    return matchesSearch && matchesStatus && matchesPriority && matchesDueDate
+    return matchesSearch
+      && matchesStatus
+      && matchesPriority
+      && matchesProject
+      && matchesDueAfter
+      && matchesDueDate
   })
 })
 
@@ -69,6 +78,9 @@ const taskStatusOptions = computed(() =>
 )
 const taskPriorityOptions = computed(() =>
   Array.from(new Set((data.value?.items ?? []).map((task) => task.priority).filter(Boolean))),
+)
+const taskProjectOptions = computed(() =>
+  Array.from(new Set((data.value?.items ?? []).map((task) => task.projectId).filter(Boolean))),
 )
 
 const totalPages = computed(() =>
@@ -80,7 +92,7 @@ const paginatedTasks = computed(() => {
   return filteredTasks.value.slice(start, start + itemsPerPage)
 })
 
-watch([search, statusFilter, priorityFilter, dueBefore, filteredTasks], () => {
+watch([search, statusFilter, priorityFilter, projectFilter, dueAfter, dueBefore, filteredTasks], () => {
   currentPage.value = 1
 })
 
@@ -161,8 +173,10 @@ async function createTask() {
             variant="outlined"
             hide-details
           />
-          <v-select v-model="statusFilter" :items="taskStatusOptions" label="Statut" variant="outlined" clearable hide-details />
-          <v-select v-model="priorityFilter" :items="taskPriorityOptions" label="Priorité" variant="outlined" clearable hide-details />
+          <AppSelect v-model="statusFilter" :items="taskStatusOptions" label="Statut" clearable />
+          <AppSelect v-model="priorityFilter" :items="taskPriorityOptions" label="Priorité" clearable />
+          <AppSelect v-model="projectFilter" :items="taskProjectOptions" label="Projet" clearable />
+          <v-text-field v-model="dueAfter" type="date" label="Deadline après" variant="outlined" hide-details clearable />
           <v-text-field v-model="dueBefore" type="date" label="Deadline avant" variant="outlined" hide-details clearable />
         </div>
       </template>
