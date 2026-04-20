@@ -106,7 +106,7 @@ async function refreshAll() {
     />
 
     <v-container fluid>
-      <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push(`/world/crm/repositories/${projectId}`)">
+      <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push('/world/crm/repositories')">
         {{ t('world.crm.repositories.actions.backToRepositories', 'Back to repositories') }}
       </v-btn>
 
