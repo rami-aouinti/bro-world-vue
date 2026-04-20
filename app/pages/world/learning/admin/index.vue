@@ -1,19 +1,24 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
 import { useWorldLearningStore } from '~/stores/worldLearning'
+import { useWorldLearningAdminSchoolStore } from '~/stores/worldLearningAdminSchool'
 
 definePageMeta({ title: 'Learning Admin' })
 const { t } = useI18n()
+const router = useRouter()
 
 const { user } = useUserSession()
 const sessionUser = computed(() => user.value as SessionUser | null)
 const isRoot = computed(
   () => sessionUser.value?.roles?.includes('ROLE_ROOT') ?? false,
 )
-const isMentor = computed(
-  () => sessionUser.value?.roles?.includes('ROLE_MENTOR') ?? false,
+const isAdmin = computed(
+  () => sessionUser.value?.roles?.includes('ROLE_ADMIN') ?? false,
 )
-const canAccessDashboard = computed(() => isRoot.value || isMentor.value)
+const canAccessDashboard = computed(() => isRoot.value || isAdmin.value)
+if (!canAccessDashboard.value) {
+  await router.replace('/world/learning')
+}
 
 const learningNavItems = [
   {
@@ -26,18 +31,26 @@ const learningNavItems = [
     to: '/world/learning/courses',
     icon: 'mdi-book-open-page-variant-outline',
   },
+  { title: 'Classes', to: '/world/learning/classes', icon: 'mdi-google-classroom' },
+  { title: 'Teachers', to: '/world/learning/teachers', icon: 'mdi-account-tie' },
+  { title: 'Students', to: '/world/learning/students', icon: 'mdi-account-school' },
+  { title: 'Exams', to: '/world/learning/exams', icon: 'mdi-file-document-outline' },
+  { title: 'Grades', to: '/world/learning/grades', icon: 'mdi-check-decagram-outline' },
   { title: 'Levels', to: '/world/learning/levels', icon: 'mdi-stairs' },
   { title: 'Paths', to: '/world/learning/paths', icon: 'mdi-map-marker-path' },
   {
     title: 'Admin',
     to: '/world/learning/admin',
     icon: 'mdi-shield-crown-outline',
-    rootOnly: true,
   },
 ]
 
 const learningStore = useWorldLearningStore()
+const schoolAdminStore = useWorldLearningAdminSchoolStore()
 await learningStore.fetchAnalytics()
+if (canAccessDashboard.value) {
+  await schoolAdminStore.fetchSummary()
+}
 
 const analyticsData = computed(() => ({
   items: learningStore.detail ?? {
@@ -51,9 +64,25 @@ const analyticsData = computed(() => ({
 }))
 const pending = computed(() => learningStore.pending)
 const refresh = () => learningStore.fetchAnalytics({ force: true })
+const refreshSummary = () => schoolAdminStore.fetchSummary({ force: true })
 
 const cohortRows = computed(
   () => analyticsData.value?.items?.cohortPerformance ?? [],
+)
+const schoolResources = computed(() =>
+  schoolAdminStore.summary.map((item) => ({
+    ...item,
+    to: `/world/learning/admin/${item.key}`,
+    icon: item.key === 'classes'
+      ? 'mdi-google-classroom'
+      : item.key === 'teachers'
+        ? 'mdi-account-tie'
+        : item.key === 'students'
+          ? 'mdi-account-school'
+          : item.key === 'exams'
+            ? 'mdi-file-document-outline'
+            : 'mdi-check-decagram-outline',
+  })),
 )
 </script>
 
@@ -72,10 +101,48 @@ const cohortRows = computed(
     <v-container fluid>
       <v-card rounded="xl" class="pa-5 postcard-gradient-card">
         <template v-if="canAccessDashboard">
-          <h2 class="text-h5 mb-2">Learning mentor/admin dashboard</h2>
+          <h2 class="text-h5 mb-2">Learning admin dashboard</h2>
           <p class="text-medium-emphasis mb-4">
             {{ t('world.learning.admin.description', 'Track cohort KPIs, level-rule compliance, and certificate issuance.') }}
           </p>
+
+          <div class="d-flex align-center justify-space-between mb-2">
+            <h3 class="text-h6">School resources</h3>
+            <v-btn size="small" variant="text" prepend-icon="mdi-refresh" @click="refreshSummary">
+              Refresh
+            </v-btn>
+          </div>
+          <v-row class="mb-4">
+            <v-col
+              v-for="resource in schoolResources"
+              :key="resource.key"
+              cols="12"
+              md="4"
+            >
+              <v-card
+                rounded="lg"
+                variant="outlined"
+                class="pa-4 h-100 d-flex flex-column justify-space-between"
+                :to="resource.to"
+              >
+                <div class="d-flex align-center ga-3 mb-3">
+                  <v-icon :icon="resource.icon" />
+                  <div>
+                    <div class="text-subtitle-1 font-weight-medium">
+                      {{ resource.label }}
+                    </div>
+                    <div class="text-caption text-medium-emphasis">
+                      Manage {{ resource.label.toLowerCase() }}
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex align-center justify-space-between">
+                  <span class="text-caption">Count</span>
+                  <strong class="text-h6">{{ resource.count }}</strong>
+                </div>
+              </v-card>
+            </v-col>
+          </v-row>
 
           <v-row class="mb-2">
             <v-col cols="12" md="3"
@@ -160,7 +227,7 @@ const cohortRows = computed(
           </v-row>
         </template>
         <p v-else class="text-error mb-0">
-          Access denied. This page requires ROLE_ROOT or ROLE_MENTOR.
+          Access denied. This page requires ROLE_ROOT or ROLE_ADMIN.
         </p>
       </v-card>
     </v-container>
