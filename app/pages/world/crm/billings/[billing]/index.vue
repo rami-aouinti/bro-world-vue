@@ -7,7 +7,7 @@ const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
 const billingId = computed(() => String(route.params.billing ?? ''))
 
-definePageMeta({ title: 'CRM Billing Detail' })
+definePageMeta({ layout: 'crm', title: 'CRM Billing Detail' })
 
 const payload = reactive<CrmBillingUpdatePayload>({})
 const { data, pending, error, refresh } = await useFetch<CrmBillingItem>(() => `/api/crm/general/billings/${billingId.value}`)

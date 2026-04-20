@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useWorldShopStore } from '~/stores/worldShop'
 
-definePageMeta({ title: 'world.shop.payment.metaTitle' })
+definePageMeta({ layout: 'shop', title: 'world.shop.payment.metaTitle' })
 const { t, locale } = useI18n()
 const { shopNavItems } = useShopNavItems()
 

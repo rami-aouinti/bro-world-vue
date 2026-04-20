@@ -3,7 +3,7 @@ import type { SessionUser } from '~/types/session'
 import { useWorldLearningStore } from '~/stores/worldLearning'
 import { useWorldLearningAdminSchoolStore } from '~/stores/worldLearningAdminSchool'
 
-definePageMeta({ title: 'Learning Admin' })
+definePageMeta({ layout: 'learning', title: 'Learning Admin' })
 const { t } = useI18n()
 const router = useRouter()
 

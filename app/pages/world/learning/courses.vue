@@ -8,7 +8,7 @@ import type {
 } from '~~/server/types/api/learning'
 import { useWorldLearningStore } from '~/stores/worldLearning'
 
-definePageMeta({ title: 'Learning Courses' })
+definePageMeta({ layout: 'learning', title: 'Learning Courses' })
 const { t } = useI18n()
 
 const learningNavItems = [

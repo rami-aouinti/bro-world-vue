@@ -7,7 +7,7 @@ const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
 const id = computed(() => String(route.params.taskRequest ?? ''))
 
-definePageMeta({ title: 'CRM Task Request Detail' })
+definePageMeta({ layout: 'crm', title: 'CRM Task Request Detail' })
 
 const payload = reactive<CrmTaskRequestUpdatePayload>({})
 const { data, pending, error, refresh } = await useFetch<CrmTaskRequestItem>(() => `/api/crm/general/task-requests/${id.value}`)

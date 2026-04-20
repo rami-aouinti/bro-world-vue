@@ -11,7 +11,7 @@ const router = useRouter()
 const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
 const { sessionUser } = useCrmPermissions()
-definePageMeta({ title: 'CRM Task Requests' })
+definePageMeta({ layout: 'crm', title: 'CRM Task Requests' })
 
 const isRootAdmin = computed(() =>
   (sessionUser.value?.roles ?? []).includes('ROLE_ROOT'),

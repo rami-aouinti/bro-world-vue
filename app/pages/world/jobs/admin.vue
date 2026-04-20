@@ -7,7 +7,7 @@ import type {
 import { useWorldJobsStore } from '~/stores/worldJobs'
 import type { SessionUser } from '~/types/session'
 
-definePageMeta({ title: 'Jobs Admin' })
+definePageMeta({ layout: 'job', title: 'Jobs Admin' })
 
 const { t } = useI18n()
 const { user } = useUserSession()

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
+definePageMeta({ layout: 'job' })
 
 const { t } = useI18n()
 const { user } = useUserSession()

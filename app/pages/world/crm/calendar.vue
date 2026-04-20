@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ title: 'CRM Calendar' })
+definePageMeta({ layout: 'crm', title: 'CRM Calendar' })
 
 const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()

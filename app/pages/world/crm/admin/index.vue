@@ -10,7 +10,7 @@ interface CrmDashboardResponse {
   }
 }
 
-definePageMeta({ title: 'CRM Admin' })
+definePageMeta({ layout: 'crm', title: 'CRM Admin' })
 
 const router = useRouter()
 const { t } = useI18n()

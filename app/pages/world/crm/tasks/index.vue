@@ -10,7 +10,7 @@ interface CrmTaskResponse {
   items: CrmTaskItem[]
 }
 
-definePageMeta({ title: 'CRM Tasks' })
+definePageMeta({ layout: 'crm', title: 'CRM Tasks' })
 
 const { locale, t } = useI18n()
 const router = useRouter()

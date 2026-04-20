@@ -11,7 +11,7 @@ const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
 const companyId = computed(() => String(route.params.company ?? ''))
 
-definePageMeta({ title: 'CRM Company Detail' })
+definePageMeta({ layout: 'crm', title: 'CRM Company Detail' })
 
 const payload = reactive<CrmCompanyUpdatePayload>({})
 const pendingSave = ref(false)

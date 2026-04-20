@@ -2,7 +2,7 @@
 import type { SessionUser } from '~/types/session'
 import { normalizeHttpError } from '~/utils/httpError'
 
-definePageMeta({ title: 'Shop Admin' })
+definePageMeta({ layout: 'shop', title: 'Shop Admin' })
 const { shopNavItems } = useShopNavItems()
 const { t } = useI18n()
 

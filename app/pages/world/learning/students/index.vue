@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ title: 'Learning Students' })
+definePageMeta({ layout: 'learning', title: 'Learning Students' })
 
 const { t } = useI18n()
 const { learningNavItems } = useWorldLearningNavItems()

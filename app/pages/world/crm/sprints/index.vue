@@ -14,7 +14,7 @@ interface CrmSprintResponse {
   items: CrmSprintItem[]
 }
 
-definePageMeta({ title: 'CRM Sprints' })
+definePageMeta({ layout: 'crm', title: 'CRM Sprints' })
 
 const { locale, t } = useI18n()
 const router = useRouter()

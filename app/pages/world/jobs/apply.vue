@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ title: 'Jobs Apply' })
+definePageMeta({ layout: 'job', title: 'Jobs Apply' })
 
 const { t } = useI18n()
 

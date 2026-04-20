@@ -3,7 +3,7 @@ import type { ShopGeneralOrder } from '~/types/world/shop'
 import { normalizeHttpError } from '~/utils/httpError'
 import type { ChannelOption, OrderRecord, OrderStatus, OrderStatusMeta, SalesChannel } from '~/components/Shop/types'
 
-definePageMeta({ title: 'world.shop.orders.metaTitle' })
+definePageMeta({ layout: 'shop', title: 'world.shop.orders.metaTitle' })
 
 const { t, locale } = useI18n()
 const { shopNavItems } = useShopNavItems()

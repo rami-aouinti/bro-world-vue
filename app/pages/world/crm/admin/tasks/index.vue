@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ title: 'CRM Admin tasks' })
+definePageMeta({ layout: 'crm', title: 'CRM Admin tasks' })
 </script>
 
 <template>

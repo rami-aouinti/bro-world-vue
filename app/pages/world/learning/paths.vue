@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { privateApi } from '~/utils/http/privateApi'
 
-definePageMeta({ title: 'Learning Paths' })
+definePageMeta({ layout: 'learning', title: 'Learning Paths' })
 const { t } = useI18n()
 
 interface CohortSession {

@@ -7,7 +7,7 @@ import type {
   CrmProjectListItem,
 } from '~~/server/types/api/crm-general'
 
-definePageMeta({ title: 'CRM Projects' })
+definePageMeta({ layout: 'crm', title: 'CRM Projects' })
 
 const router = useRouter()
 const { t } = useI18n()

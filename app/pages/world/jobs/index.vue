@@ -1,5 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
+  layout: 'job',
   title: 'world.jobs.label',
   description: 'world.jobs.seo.metaDescription',
 })

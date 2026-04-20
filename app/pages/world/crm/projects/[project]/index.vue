@@ -15,7 +15,7 @@ const isRootAdmin = computed(() =>
 )
 const projectId = computed(() => String(route.params.project ?? ''))
 
-definePageMeta({ title: 'CRM Project Detail' })
+definePageMeta({ layout: 'crm', title: 'CRM Project Detail' })
 
 const editPayload = reactive<CrmProjectUpdatePayload>({})
 const assigneeId = ref('')

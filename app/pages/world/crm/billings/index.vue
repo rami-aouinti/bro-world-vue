@@ -4,7 +4,7 @@ import type { ApiListResponse, CrmBillingItem } from '~~/server/types/api/crm-ge
 const router = useRouter()
 const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
-definePageMeta({ title: 'CRM Billings' })
+definePageMeta({ layout: 'crm', title: 'CRM Billings' })
 
 const { data, pending, error } = await useFetch<ApiListResponse<CrmBillingItem>>('/api/crm/general/billings')
 </script>

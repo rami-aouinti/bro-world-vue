@@ -29,7 +29,7 @@ interface GithubBranch {
   [key: string]: unknown
 }
 
-definePageMeta({ title: 'CRM Repository Dashboard' })
+definePageMeta({ layout: 'crm', title: 'CRM Repository Dashboard' })
 
 const route = useRoute()
 const router = useRouter()

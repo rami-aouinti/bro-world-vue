@@ -9,7 +9,7 @@ import type {
 const router = useRouter()
 const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
-definePageMeta({ title: 'CRM Companies' })
+definePageMeta({ layout: 'crm', title: 'CRM Companies' })
 
 const createDialog = ref(false)
 const pendingCreate = ref(false)

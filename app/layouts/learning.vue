@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue'
-import LearningDrawer from "~/components/World/LearningDrawer.vue";
+import LearningDrawer from '~/components/World/LearningDrawer.vue'
 
 const showLeftDrawer = useState('show-left-drawer', () => true)
 const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => true)
@@ -109,11 +109,7 @@ onUnmounted(() => {
         <AppRightDrawerLazy v-if="shouldRenderRightDrawer" />
       </ClientOnly>
       <v-main>
-        <AppPageDrawers>
-          <template #left>
-            <LearningDrawer />
-          </template>
-        </AppPageDrawers>
+        <AppPageDrawers :left-component="LearningDrawer" />
         <v-container fluid class="px-2 pt-0 pb-0">
           <v-breadcrumbs v-if="shouldShowBreadcrumbs" :items="breadcrumbs" />
         </v-container>

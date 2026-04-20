@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
 
-definePageMeta({ title: 'Learning Admin Resource' })
+definePageMeta({ layout: 'learning', title: 'Learning Admin Resource' })
 
 type RowItem = Record<string, unknown> & { id?: string }
 type SchoolResource = 'classes' | 'teachers' | 'students' | 'exams' | 'grades'
