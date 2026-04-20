@@ -93,6 +93,7 @@ const schoolResources = computed(() =>
       module-icon="mdi-school-outline"
       :module-description="t('world.learning.admin.moduleDescription', 'Mentor/admin dashboard: completion, dropout, and cohort performance.')"
       :nav-items="learningNavItems"
+      deactivate-right-drawer
       :action-label="t('world.learning.admin.actions.refreshAnalytics', 'Refresh analytics')"
       action-icon="mdi-refresh"
       @action="refresh"
