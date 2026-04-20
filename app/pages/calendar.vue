@@ -44,6 +44,27 @@ interface PresetCalendarEvent {
   color: string
 }
 
+interface GoogleCalendarEvent {
+  id: string
+  title: string
+  description: string | null
+  startAt: string
+  endAt: string
+  location: string | null
+  htmlLink: string | null
+}
+
+interface GoogleConnectResponse {
+  authorizationUrl: string
+}
+
+interface GoogleCallbackMessage {
+  source: 'google-calendar-oauth'
+  token?: string
+  events?: GoogleCalendarEvent[]
+  error?: string
+}
+
 const { t, locale } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 
@@ -54,7 +75,10 @@ definePageMeta({
 
 const isLoading = ref(false)
 const isSaving = ref(false)
+const isGoogleConnecting = ref(false)
 const errorMessage = ref('')
+const googleToken = ref('')
+const googleEvents = ref<GoogleCalendarEvent[]>([])
 const calendarEvents = ref<PrivateCalendarEvent[]>([])
 const upcomingEvents = ref<PrivateCalendarEvent[]>([])
 const selectedEvent = ref<PrivateCalendarEvent | null>(null)
@@ -75,6 +99,12 @@ const isEditing = computed(() => Boolean(selectedEvent.value))
 const currentTimezone = computed(
   () => Intl.DateTimeFormat().resolvedOptions().timeZone,
 )
+const maskedGoogleToken = computed(() => {
+  const token = googleToken.value.trim()
+  if (!token) return ''
+  if (token.length <= 8) return token
+  return `${token.slice(0, 4)}...${token.slice(-4)}`
+})
 
 const fullCalendarEvents = computed(() => {
   return calendarEvents.value
@@ -218,6 +248,50 @@ function buildPayload(): EventMutationPayload {
     location: form.location.trim() || null,
     timezone: currentTimezone.value,
   }
+}
+
+async function connectGoogleCalendar() {
+  isGoogleConnecting.value = true
+
+  try {
+    const response = await $fetch<GoogleConnectResponse>(
+      '/api/calendar/google/connect',
+    )
+
+    if (!response.authorizationUrl) {
+      throw new Error('Missing Google authorization URL')
+    }
+
+    const popup = window.open(
+      response.authorizationUrl,
+      'google-calendar-oauth',
+      'width=520,height=720,noopener,noreferrer',
+    )
+
+    if (!popup) {
+      throw new Error('Google popup blocked')
+    }
+  } catch (error) {
+    errorMessage.value = t('pages.calendar.errors.googleConnectFailed')
+    console.error(error)
+    isGoogleConnecting.value = false
+  }
+}
+
+function onGoogleOAuthMessage(rawEvent: MessageEvent<unknown>) {
+  const data = rawEvent.data as GoogleCallbackMessage | undefined
+  if (!data || data.source !== 'google-calendar-oauth') return
+
+  isGoogleConnecting.value = false
+
+  if (data.error) {
+    errorMessage.value = t('pages.calendar.errors.googleConnectFailed')
+    console.error(data.error)
+    return
+  }
+
+  googleToken.value = data.token ?? ''
+  googleEvents.value = data.events ?? []
 }
 
 async function onEventDrop(dropInfo: {
@@ -418,10 +492,12 @@ watch(
 
 onMounted(async () => {
   await loadEvents()
+  window.addEventListener('message', onGoogleOAuthMessage)
   initPresetDraggable()
 })
 
 onUnmounted(() => {
+  window.removeEventListener('message', onGoogleOAuthMessage)
   presetEventsDraggable?.destroy()
   presetEventsDraggable = null
 })
@@ -446,7 +522,7 @@ onUnmounted(() => {
           <v-card-title class="text-subtitle-1 px-0">
             {{ t('pages.calendar.presetTitle') }}
           </v-card-title>
-          <div ref="presetEventsHost" class="d-flex flex-column ga-2">
+          <div ref="presetEventsHost" class="d-flex flex-column ga-2 mb-3">
             <v-chip
               v-for="preset in presetEvents"
               :key="preset.key"
@@ -459,6 +535,23 @@ onUnmounted(() => {
               {{ t(preset.titleKey) }}
             </v-chip>
           </div>
+          <v-btn
+            block
+            color="secondary"
+            prepend-icon="mdi-google"
+            :loading="isGoogleConnecting"
+            @click="connectGoogleCalendar"
+          >
+            {{ t('pages.calendar.googleConnect') }}
+          </v-btn>
+          <v-alert
+            v-if="googleToken"
+            type="success"
+            variant="tonal"
+            class="mt-3"
+          >
+            {{ t('pages.calendar.googleToken') }}: {{ maskedGoogleToken }}
+          </v-alert>
         </template>
       </template>
       <template #right>
@@ -477,6 +570,25 @@ onUnmounted(() => {
           </v-list>
           <v-card-text v-else class="text-medium-emphasis">
             {{ t('pages.calendar.noUpcoming') }}
+          </v-card-text>
+
+          <v-divider class="my-3" />
+          <v-card-title class="text-subtitle-1">
+            {{ t('pages.calendar.googleEventsTitle') }}
+          </v-card-title>
+          <v-list v-if="googleEvents.length">
+            <v-list-item
+              v-for="event in googleEvents"
+              :key="event.id"
+              :title="event.title"
+              :subtitle="new Date(event.startAt).toLocaleString(locale)"
+              prepend-icon="mdi-google-calendar"
+              :href="event.htmlLink || undefined"
+              target="_blank"
+            />
+          </v-list>
+          <v-card-text v-else class="text-medium-emphasis">
+            {{ t('pages.calendar.noGoogleEvents') }}
           </v-card-text>
         </template>
       </template>

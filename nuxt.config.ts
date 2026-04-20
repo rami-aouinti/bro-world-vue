@@ -130,6 +130,11 @@ export default defineNuxtConfig({
       clientId: '',
       clientSecret: '',
     },
+    googleCalendar: {
+      clientId: process.env.GOOGLE_CALENDAR_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CALENDAR_CLIENT_SECRET || '',
+      redirectUri: process.env.GOOGLE_CALENDAR_REDIRECT_URI || '',
+    },
     session: {
       name: 'nuxt-session',
       password: '',

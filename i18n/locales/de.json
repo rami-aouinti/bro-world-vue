@@ -396,9 +396,14 @@
         "saveFailed": "Dieses Ereignis konnte nicht gespeichert werden.",
         "deleteFailed": "Dieses Ereignis konnte nicht gelöscht werden.",
         "cancelFailed": "Dieses Ereignis konnte nicht abgesagt werden.",
-        "moveFailed": "Dieses Ereignis konnte nicht verschoben werden."
+        "moveFailed": "Dieses Ereignis konnte nicht verschoben werden.",
+        "googleConnectFailed": "Verbindung mit Google Calendar nicht möglich."
       },
       "presetTitle": "Vordefinierte Ereignisse",
+      "googleConnect": "Mit Google Calendar verbinden",
+      "googleToken": "Google-Token",
+      "googleEventsTitle": "Google-Calendar-Ereignisse",
+      "noGoogleEvents": "Keine Google-Calendar-Ereignisse geladen.",
       "presets": {
         "meeting": "Meeting",
         "party": "Party",

@@ -405,9 +405,14 @@
         "saveFailed": "Impossible d’enregistrer cet événement.",
         "deleteFailed": "Impossible de supprimer cet événement.",
         "cancelFailed": "Impossible d’annuler cet événement.",
-        "moveFailed": "Impossible de déplacer cet événement."
+        "moveFailed": "Impossible de déplacer cet événement.",
+        "googleConnectFailed": "Impossible de se connecter à Google Calendar."
       },
       "presetTitle": "Événements prédéfinis",
+      "googleConnect": "Connecter Google Calendar",
+      "googleToken": "Jeton Google",
+      "googleEventsTitle": "Événements Google Calendar",
+      "noGoogleEvents": "Aucun événement Google Calendar chargé.",
       "presets": {
         "meeting": "Réunion",
         "party": "Fête",

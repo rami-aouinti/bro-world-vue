@@ -374,6 +374,10 @@
       "title": "Calendario",
       "subtitle": "Tu agenda aparecerá aquí pronto.",
       "presetTitle": "Eventos predefinidos",
+      "googleConnect": "Conectar con Google Calendar",
+      "googleToken": "Token de Google",
+      "googleEventsTitle": "Eventos de Google Calendar",
+      "noGoogleEvents": "No hay eventos de Google Calendar cargados.",
       "presets": {
         "meeting": "Reunión",
         "party": "Fiesta",
