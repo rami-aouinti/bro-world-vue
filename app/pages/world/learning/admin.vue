@@ -3,6 +3,7 @@ import type { SessionUser } from '~/types/session'
 import { useWorldLearningStore } from '~/stores/worldLearning'
 
 definePageMeta({ title: 'Learning Admin' })
+const { t } = useI18n()
 
 const { user } = useUserSession()
 const sessionUser = computed(() => user.value as SessionUser | null)
@@ -59,11 +60,11 @@ const cohortRows = computed(
 <template>
   <div>
     <WorldModuleDrawers
-      module-title="Learning"
+      :module-title="t('world.learning.label', 'Learning')"
       module-icon="mdi-school-outline"
-      module-description="Dashboard mentor/admin: complétion, abandon et performance par cohorte."
+      :module-description="t('world.learning.admin.moduleDescription', 'Mentor/admin dashboard: completion, dropout, and cohort performance.')"
       :nav-items="learningNavItems"
-      action-label="Refresh analytics"
+      :action-label="t('world.learning.admin.actions.refreshAnalytics', 'Refresh analytics')"
       action-icon="mdi-refresh"
       @action="refresh"
     />
@@ -73,8 +74,7 @@ const cohortRows = computed(
         <template v-if="canAccessDashboard">
           <h2 class="text-h5 mb-2">Learning mentor/admin dashboard</h2>
           <p class="text-medium-emphasis mb-4">
-            Pilotage des KPIs de cohorte, conformité des règles de niveau et
-            émissions de certificats.
+            {{ t('world.learning.admin.description', 'Track cohort KPIs, level-rule compliance, and certificate issuance.') }}
           </p>
 
           <v-row class="mb-2">

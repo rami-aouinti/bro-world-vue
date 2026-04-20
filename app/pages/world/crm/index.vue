@@ -3,7 +3,7 @@ import { useWorldCrmNavItems } from '~/composables/useWorldCrmNavItems'
 
 definePageMeta({
   title: 'world.crm.label',
-  description: 'Gérez vos projets, tâches, contacts et automatisations CRM dans Bro World CRM.',
+  description: 'world.crm.seo.metaDescription',
 })
 
 const { t } = useI18n()
@@ -13,22 +13,30 @@ const pageUrl = new URL('/world/crm', siteUrl).toString()
 const seoImage = new URL('/img/platform/general/crm.png', siteUrl).toString()
 
 useSeoMeta({
-  title: 'Bro World CRM | Gestion projets, tâches et clients',
-  description:
-    'Bro World CRM centralise la gestion de projets, contacts, sprints, tâches et synchronisation GitHub pour vos équipes.',
-  keywords:
-    'bro world crm, crm en ligne, gestion projet, gestion tâches, suivi clients, kanban, sprint, github sync',
+  title: t('world.crm.seo.title', 'Bro World CRM | Project, task, and customer management'),
+  description: t(
+    'world.crm.seo.description',
+    'Bro World CRM centralizes project management, contacts, sprints, tasks, and GitHub sync for your teams.',
+  ),
+  keywords: t(
+    'world.crm.seo.keywords',
+    'bro world crm, online crm, project management, task management, customer tracking, kanban, sprint, github sync',
+  ),
   robots: 'index, follow, max-image-preview:large',
-  ogTitle: 'Bro World CRM | Gestion projets, tâches et clients',
-  ogDescription:
-    'Pilotez vos projets, contacts et workflows CRM avec Bro World CRM.',
+  ogTitle: t('world.crm.seo.ogTitle', 'Bro World CRM | Project, task, and customer management'),
+  ogDescription: t(
+    'world.crm.seo.ogDescription',
+    'Manage your projects, contacts, and CRM workflows with Bro World CRM.',
+  ),
   ogType: 'website',
   ogUrl: pageUrl,
   ogImage: seoImage,
   ogImageAlt: 'Bro World CRM dashboard',
-  twitterTitle: 'Bro World CRM | Gestion projets, tâches et clients',
-  twitterDescription:
-    'Pilotez vos projets, contacts et workflows CRM avec Bro World CRM.',
+  twitterTitle: t('world.crm.seo.twitterTitle', 'Bro World CRM | Project, task, and customer management'),
+  twitterDescription: t(
+    'world.crm.seo.twitterDescription',
+    'Manage your projects, contacts, and CRM workflows with Bro World CRM.',
+  ),
   twitterImage: seoImage,
   twitterCard: 'summary_large_image',
 })

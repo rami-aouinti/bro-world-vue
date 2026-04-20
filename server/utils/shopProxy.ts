@@ -1,6 +1,6 @@
 import { isAxiosError } from 'axios'
 
-const PASSTHROUGH_STATUS_CODES = new Set([400, 404, 422])
+const PASSTHROUGH_STATUS_CODES = new Set([400, 401, 403, 404, 422])
 
 export function assertShopNonEmptyString(value: unknown, field: string) {
   if (typeof value !== 'string' || value.trim().length === 0) {

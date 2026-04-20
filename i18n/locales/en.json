@@ -1922,6 +1922,16 @@
         "actions": {
           "viewDetails": "Details"
         }
+      },
+      "seo": {
+        "metaDescription": "Manage your projects, tasks, contacts, and CRM automations in Bro World CRM.",
+        "title": "Bro World CRM | Project, task, and customer management",
+        "description": "Bro World CRM centralizes project management, contacts, sprints, tasks, and GitHub sync for your teams.",
+        "keywords": "bro world crm, online crm, project management, task management, customer tracking, kanban, sprint, github sync",
+        "ogTitle": "Bro World CRM | Project, task, and customer management",
+        "ogDescription": "Manage your projects, contacts, and CRM workflows with Bro World CRM.",
+        "twitterTitle": "Bro World CRM | Project, task, and customer management",
+        "twitterDescription": "Manage your projects, contacts, and CRM workflows with Bro World CRM."
       }
     },
     "shop": {
@@ -2191,6 +2201,46 @@
           "intentFailed": "Failed to create payment intent (order payment).",
           "confirmFailed": "Payment has not been confirmed yet."
         }
+      },
+      "seo": {
+        "metaDescription": "Explore Bro World Shop with products, promotions, and online orders.",
+        "title": "Bro World Shop | Store, promotions, and online shopping",
+        "description": "Discover Bro World Shop: product catalog, categories, promotions, and secure checkout for your purchases.",
+        "keywords": "bro world shop, online store, ecommerce, product catalog, promotions, cart, checkout",
+        "ogTitle": "Bro World Shop | Store, promotions, and online shopping",
+        "ogDescription": "Find products, apply filters, and order easily with Bro World Shop.",
+        "twitterTitle": "Bro World Shop | Store, promotions, and online shopping",
+        "twitterDescription": "Find products, apply filters, and order easily with Bro World Shop."
+      },
+      "admin": {
+        "moduleDescription": "Product/category catalog administration (CRUD).",
+        "actionLabel": "Shop Admin",
+        "centerTitle": "Shop Admin Center",
+        "centerDescription": "Category/product CRUD with form validation and standardized status handling.",
+        "actions": {
+          "edit": "Edit",
+          "create": "Create",
+          "update": "Update",
+          "reset": "Reset",
+          "delete": "Delete"
+        },
+        "entities": {
+          "category": "category",
+          "product": "product"
+        },
+        "fields": {
+          "name": "Name",
+          "price": "Price",
+          "stock": "Stock"
+        },
+        "sections": {
+          "categories": "Categories",
+          "products": "Products"
+        },
+        "alerts": {
+          "noCategory": "No category available.",
+          "noProduct": "No product available."
+        }
       }
     },
     "learning": {
@@ -2233,6 +2283,107 @@
         "score": "Score",
         "timeSpent": "Time spent",
         "attempts": "Attempts"
+      },
+      "seo": {
+        "metaDescription": "Track learning paths, courses, and learner performance in Bro World Learning.",
+        "title": "Bro World Learning | Learning platform and learner tracking",
+        "description": "Bro World Learning helps you manage courses, learning paths, analytics, and learner progress.",
+        "keywords": "bro world learning, lms, e-learning platform, online training, learner tracking, learning analytics",
+        "ogTitle": "Bro World Learning | Learning platform",
+        "ogDescription": "Track your courses, performance, and certifications with Bro World Learning.",
+        "twitterTitle": "Bro World Learning | Learning platform",
+        "twitterDescription": "Track your courses, performance, and certifications with Bro World Learning."
+      },
+      "levels": {
+        "moduleDescription": "Manage level rules, score/time/attempt tracking, and verifiable certificates.",
+        "subtitle": "Per-user progression with score, time spent, attempts, and hashed PDF certificate.",
+        "formDescription": "Each advanced certificate gets a unique ID, SHA-256 hash, and base64 PDF for audit."
+      },
+      "courses": {
+        "moduleDescription": "Course > Module > Lesson > Assessment structure with content editing and progress tracking.",
+        "alerts": {
+          "loading": "Loading courses...",
+          "empty": "No course available for now.",
+          "noCourse": "No course available."
+        },
+        "sections": {
+          "createCourse": "Create a course",
+          "structure": "Curriculum structure",
+          "quiz": "Quiz / assessment with grading scale"
+        },
+        "labels": {
+          "selectedLesson": "Selected lesson"
+        },
+        "fields": {
+          "contentPayload": "Text, video URL, or file"
+        }
+      },
+      "admin": {
+        "moduleDescription": "Mentor/admin dashboard: completion, dropout, and cohort performance.",
+        "actions": {
+          "refreshAnalytics": "Refresh analytics"
+        },
+        "description": "Track cohort KPIs, level-rule compliance, and certificate issuance."
+      },
+      "paths": {
+        "moduleDescription": "Full navigation for the Learning module.",
+        "cohortDescription": "Cohort-based paths with capacity, assigned trainers, and session dates.",
+        "fields": {
+          "path": "Path",
+          "capacity": "Capacity",
+          "trainers": "Trainers (comma-separated)",
+          "sessionTitle": "Session title",
+          "start": "Start",
+          "end": "End",
+          "location": "Room / location",
+          "cohort": "Cohort",
+          "learnerEmail": "Learner email"
+        },
+        "labels": {
+          "syncWith": "Sync with",
+          "calendar": "calendar",
+          "registrationsAndReminders": "manage registrations/waitlist and reminders.",
+          "capacity": "Capacity",
+          "filled": "filled",
+          "assignedTrainers": "Assigned trainers",
+          "lastSync": "Last sync:",
+          "never": "Never",
+          "registered": "Registered",
+          "waitlist": "Waitlist"
+        },
+        "sections": {
+          "newCohort": "New cohort",
+          "addSession": "Add a session",
+          "cohortOperations": "Cohort operations",
+          "scheduledSessions": "Scheduled sessions",
+          "registrationAndWaitlist": "Registrations & waitlist",
+          "automaticNotifications": "Automatic notifications"
+        },
+        "actions": {
+          "createCohort": "Create cohort",
+          "addToDraft": "Add to cohort draft",
+          "syncCalendarAndReminders": "Sync to calendar + reminders",
+          "register": "Register",
+          "promote": "Promote"
+        },
+        "alerts": {
+          "noAssignedTrainer": "No assigned trainer",
+          "noSession": "No session",
+          "addSessionInLeftForm": "Add sessions in the form on the left.",
+          "noRegisteredLearner": "No registered learner",
+          "emptyWaitlist": "No waitlist",
+          "noNotification": "No notification"
+        },
+        "notifications": {
+          "cohortCreatedTitle": "New cohort created",
+          "registrationConfirmedTitle": "Registration confirmed",
+          "waitlistEnabledTitle": "Waitlist enabled",
+          "promotedFromWaitlistTitle": "Promoted from waitlist",
+          "reminderScheduledTitle": "Reminder scheduled",
+          "calendarSyncSuccessTitle": "Calendar sync successful",
+          "calendarSyncErrorTitle": "Sync error",
+          "autoSubtitle": "Notifications are automatically created during registrations, promotions, and calendar synchronizations."
+        }
       }
     },
     "jobs": {
@@ -2559,6 +2710,16 @@
         },
         "info": "API endpoints enforce these rights when reading candidates and pipeline transitions.",
         "accessDenied": "Access denied. This page requires ROLE_ROOT."
+      },
+      "seo": {
+        "metaDescription": "Post job offers, manage applications, and track hiring with Bro World Jobs.",
+        "title": "Bro World Jobs | Job offers and recruiting",
+        "description": "Bro World Jobs centralizes job posts, applications, interviews, and hiring follow-up in one place.",
+        "keywords": "bro world jobs, job board, recruiting, applications, talent management, hr platform",
+        "ogTitle": "Bro World Jobs | Job offers and recruiting",
+        "ogDescription": "Publish job offers and manage hiring efficiently with Bro World Jobs.",
+        "twitterTitle": "Bro World Jobs | Job offers and recruiting",
+        "twitterDescription": "Publish job offers and manage hiring efficiently with Bro World Jobs."
       }
     }
   },
