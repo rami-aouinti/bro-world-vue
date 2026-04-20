@@ -4,14 +4,72 @@ import type { SessionUser } from '~/types/session'
 definePageMeta({ layout: 'learning', title: 'Learning Admin Resource' })
 
 type RowItem = Record<string, unknown> & { id?: string }
-type SchoolResource = 'classes' | 'teachers' | 'students' | 'exams' | 'grades'
+type SchoolResource = 'classes' | 'courses' | 'teachers' | 'students' | 'exams' | 'grades'
+type SelectOption = { title: string; value: string }
+
+type ResourceConfig = {
+  createFields: string[]
+  editFields: string[]
+  tableFields: string[]
+}
 
 const route = useRoute()
 const router = useRouter()
 const resource = computed(() => String(route.params.resource ?? ''))
 
-const allowedResources = new Set(['teachers', 'students', 'exams', 'grades'])
-if (!allowedResources.has(resource.value)) {
+const resourceConfig: Record<SchoolResource, ResourceConfig> = {
+  classes: {
+    createFields: ['name', 'schoolId'],
+    editFields: ['name', 'schoolId'],
+    tableFields: ['id', 'name', 'schoolId'],
+  },
+  courses: {
+    createFields: ['name', 'classId', 'schoolId', 'teacherId'],
+    editFields: ['name', 'classId', 'schoolId', 'teacherId'],
+    tableFields: ['id', 'name', 'className', 'teacher', 'classId', 'teacherId'],
+  },
+  teachers: {
+    createFields: ['userId'],
+    editFields: ['userId'],
+    tableFields: ['id', 'name', 'userId', 'user'],
+  },
+  students: {
+    createFields: ['userId', 'classId'],
+    editFields: ['userId', 'classId'],
+    tableFields: ['id', 'name', 'className', 'userId', 'classId'],
+  },
+  exams: {
+    createFields: ['title', 'classId', 'courseId', 'teacherId', 'type', 'status', 'term'],
+    editFields: ['title', 'classId', 'courseId', 'teacherId', 'type', 'status', 'term'],
+    tableFields: ['id', 'title', 'courseName', 'className', 'teacher', 'courseId', 'classId', 'teacherId', 'type', 'status', 'term'],
+  },
+  grades: {
+    createFields: ['score', 'studentId', 'examId'],
+    editFields: ['score', 'studentId', 'examId'],
+    tableFields: ['id', 'score', 'student', 'examTitle', 'courseName', 'studentId', 'examId'],
+  },
+}
+
+const enumOptions: Record<string, SelectOption[]> = {
+  type: [
+    { title: 'Oral', value: 'ORAL' },
+    { title: 'Written', value: 'WRITTEN' },
+    { title: 'Practical', value: 'PRACTICAL' },
+  ],
+  status: [
+    { title: 'Draft', value: 'DRAFT' },
+    { title: 'Published', value: 'PUBLISHED' },
+    { title: 'Archived', value: 'ARCHIVED' },
+  ],
+  term: [
+    { title: 'Term 1', value: 'TERM_1' },
+    { title: 'Term 2', value: 'TERM_2' },
+    { title: 'Term 3', value: 'TERM_3' },
+  ],
+}
+
+const allResources: SchoolResource[] = ['classes', 'courses', 'teachers', 'students', 'exams', 'grades']
+if (!allResources.includes(resource.value as SchoolResource)) {
   throw createError({ statusCode: 404, statusMessage: 'Resource not found' })
 }
 
@@ -29,12 +87,6 @@ const pending = ref(false)
 const error = ref<string | null>(null)
 const rows = ref<RowItem[]>([])
 
-const isEntityDialogOpen = ref(false)
-const entityModalLoading = ref(false)
-const selectedEntity = ref<Record<string, unknown> | null>(null)
-const selectedEntityTitle = ref('')
-const selectedEntityError = ref<string | null>(null)
-
 const isCreateDialogOpen = ref(false)
 const isEditDialogOpen = ref(false)
 const deleteDialogItem = ref<RowItem | null>(null)
@@ -42,38 +94,15 @@ const createForm = ref<Record<string, string | number | null>>({})
 const editForm = ref<Record<string, string | number | null>>({})
 const editingId = ref<string>('')
 
-const formFieldDefaults: Record<string, string[]> = {
-  teachers: ['name'],
-  students: ['name', 'classId'],
-  exams: ['title', 'classId', 'teacherId', 'type', 'status', 'term'],
-  grades: ['score', 'studentId', 'examId'],
-}
+const usersOptions = ref<SelectOption[]>([])
+const linkedOptions = ref<Partial<Record<SchoolResource, SelectOption[]>>>({})
 
 const { learningNavItems } = useWorldLearningNavItems()
 
-const title = computed(
-  () => resource.value.charAt(0).toUpperCase() + resource.value.slice(1),
-)
-
-const fieldKeys = computed(() => {
-  const keys = rows.value.length > 0
-    ? Array.from(
-      rows.value.reduce((set, row) => {
-        Object.keys(row).forEach((key) => {
-          if (key !== 'id') {
-            set.add(key)
-          }
-        })
-        return set
-      }, new Set<string>()),
-    )
-    : formFieldDefaults[resource.value] ?? []
-
-  return keys
-})
-
+const title = computed(() => resource.value.charAt(0).toUpperCase() + resource.value.slice(1))
+const config = computed(() => resourceConfig[resource.value as SchoolResource])
 const headers = computed(() => [
-  ...fieldKeys.value.map((key) => ({ title: key, key })),
+  ...config.value.tableFields.map((key) => ({ title: key, key })),
   { title: 'Actions', key: 'actions', sortable: false },
 ])
 
@@ -83,7 +112,7 @@ function serializePayload(input: Record<string, string | number | null>) {
       .filter(([, value]) => value !== null && value !== '')
       .map(([key, value]) => {
         const maybeNumeric = typeof value === 'string' ? Number(value) : value
-        if (typeof maybeNumeric === 'number' && Number.isFinite(maybeNumeric) && key.toLowerCase().includes('score')) {
+        if (typeof maybeNumeric === 'number' && Number.isFinite(maybeNumeric) && key === 'score') {
           return [key, maybeNumeric]
         }
         return [key, value]
@@ -91,75 +120,90 @@ function serializePayload(input: Record<string, string | number | null>) {
   )
 }
 
-function buildFormFromItem(item?: RowItem) {
-  return Object.fromEntries(
-    fieldKeys.value.map((key) => [key, item?.[key] == null ? '' : String(item[key])]),
-  )
+function buildFormFromFields(fields: string[], item?: RowItem) {
+  return Object.fromEntries(fields.map((key) => [key, item?.[key] == null ? '' : String(item[key])]))
 }
 
-function isIdField(key: string) {
-  return /id$/i.test(key)
-}
-
-function resolveEntityResource(fieldKey: string): SchoolResource | null {
-  const normalized = fieldKey.replace(/id$/i, '').toLowerCase()
-  if (!normalized) return null
-
-  if (normalized === 'class') return 'classes'
-  if (normalized === 'teacher') return 'teachers'
-  if (normalized === 'student') return 'students'
-  if (normalized === 'exam') return 'exams'
-  if (normalized === 'grade') return 'grades'
-  return null
-}
-
-function entityLabelFromField(fieldKey: string) {
-  const normalized = fieldKey.replace(/id$/i, '')
-  if (!normalized) return 'Entity'
-  return normalized.charAt(0).toUpperCase() + normalized.slice(1)
-}
-
-function isBooleanValue(value: unknown) {
-  return typeof value === 'boolean'
-}
-
-function formatEntityValue(value: unknown) {
-  if (typeof value === 'object' && value !== null) {
-    return JSON.stringify(value, null, 2)
+function getItemValue(item: RowItem, key: string) {
+  const value = item[key]
+  if (value && typeof value === 'object') {
+    const entity = value as Record<string, unknown>
+    return String(entity.name ?? JSON.stringify(value))
   }
   return String(value ?? '—')
 }
 
-async function openEntityModal(fieldKey: string, entityId: string) {
-  const targetResource = resolveEntityResource(fieldKey)
-  if (!targetResource || !entityId) return
+function isFieldSelect(key: string) {
+  return key in enumOptions || key.endsWith('Id')
+}
 
-  selectedEntityTitle.value = `${entityLabelFromField(fieldKey)} #${entityId}`
-  selectedEntity.value = null
-  selectedEntityError.value = null
-  entityModalLoading.value = true
-  isEntityDialogOpen.value = true
+function toEntityOptions(items: Record<string, unknown>[], labelKey = 'name') {
+  return items
+    .map((item) => ({
+      title: String(item[labelKey] ?? item.title ?? item.id ?? 'Unknown'),
+      value: String(item.id ?? ''),
+    }))
+    .filter((entry) => entry.value)
+}
 
-  try {
-    const response = await $fetch<{ item: Record<string, unknown> }>(
-      `/api/world/learning/admin/school/${targetResource}/${entityId}`,
-    )
-    selectedEntity.value = response.item
-  } catch (err) {
-    selectedEntityError.value = err instanceof Error ? err.message : 'Unable to load entity'
-  } finally {
-    entityModalLoading.value = false
+function optionsForField(key: string): SelectOption[] {
+  if (enumOptions[key]) {
+    return enumOptions[key]
   }
+
+  if (key === 'userId') {
+    return usersOptions.value
+  }
+
+  if (key === 'classId') return linkedOptions.value.classes ?? []
+  if (key === 'courseId') return linkedOptions.value.courses ?? []
+  if (key === 'teacherId') return linkedOptions.value.teachers ?? []
+  if (key === 'studentId') return linkedOptions.value.students ?? []
+  if (key === 'examId') return linkedOptions.value.exams ?? []
+
+  return []
+}
+
+async function loadSelectOptions() {
+  const resourcesToFetch = new Set<SchoolResource>()
+  for (const field of [...config.value.createFields, ...config.value.editFields]) {
+    if (field === 'classId') resourcesToFetch.add('classes')
+    if (field === 'courseId') resourcesToFetch.add('courses')
+    if (field === 'teacherId') resourcesToFetch.add('teachers')
+    if (field === 'studentId') resourcesToFetch.add('students')
+    if (field === 'examId') resourcesToFetch.add('exams')
+  }
+
+  const promises = [...resourcesToFetch].map(async (entityResource) => {
+    const response = await $fetch<{ items: RowItem[] }>(`/api/world/learning/admin/school/${entityResource}`)
+    const labelKey = entityResource === 'exams' ? 'title' : 'name'
+    linkedOptions.value[entityResource] = toEntityOptions(response.items, labelKey)
+  })
+
+  if ([...config.value.createFields, ...config.value.editFields].includes('userId')) {
+    promises.push(
+      $fetch<{ items?: Record<string, unknown>[]; data?: Record<string, unknown>[] }>('/api/public/users').then((response) => {
+        const rows = response.items ?? response.data ?? []
+        usersOptions.value = rows
+          .map((entry) => ({
+            title: String(entry.name ?? entry.email ?? entry.username ?? entry.id ?? 'User'),
+            value: String(entry.id ?? ''),
+          }))
+          .filter((entry) => entry.value)
+      }),
+    )
+  }
+
+  await Promise.all(promises)
 }
 
 async function load() {
   pending.value = true
   error.value = null
   try {
-    const response = await $fetch<{ items: RowItem[] }>(
-      `/api/world/learning/admin/school/${resource.value}`,
-    )
+    const response = await $fetch<{ items: RowItem[] }>(`/api/world/learning/admin/school/${resource.value}`)
     rows.value = response.items
+    await loadSelectOptions()
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'Unable to load data'
   } finally {
@@ -170,13 +214,13 @@ async function load() {
 await load()
 
 function openCreate() {
-  createForm.value = buildFormFromItem()
+  createForm.value = buildFormFromFields(config.value.createFields)
   isCreateDialogOpen.value = true
 }
 
 function openEdit(item: RowItem) {
   editingId.value = String(item.id ?? '')
-  editForm.value = buildFormFromItem(item)
+  editForm.value = buildFormFromFields(config.value.editFields, item)
   isEditDialogOpen.value = true
 }
 
@@ -264,30 +308,11 @@ async function confirmDelete() {
 
         <v-data-table :headers="headers" :items="rows" items-per-page="5" :loading="pending" density="comfortable" class="bg-transparent">
           <template
-            v-for="key in fieldKeys"
+            v-for="key in config.tableFields"
             :key="`cell-${key}`"
             #[`item.${key}`]="{ item }"
           >
-            <v-switch
-              v-if="isBooleanValue(item[key])"
-              :model-value="Boolean(item[key])"
-              color="primary"
-              density="compact"
-              hide-details
-              inset
-              disabled
-            />
-            <v-chip
-              v-else-if="isIdField(key) && item[key]"
-              size="small"
-              color="primary"
-              variant="tonal"
-              class="cursor-pointer"
-              @click="openEntityModal(key, String(item[key]))"
-            >
-              {{ entityLabelFromField(key) }}
-            </v-chip>
-            <span v-else>{{ item[key] }}</span>
+            <span>{{ getItemValue(item, key) }}</span>
           </template>
 
           <template #item.actions="{ item }">
@@ -312,14 +337,22 @@ async function confirmDelete() {
       <v-dialog v-model="isCreateDialogOpen" max-width="560">
         <v-card class="pa-4">
           <h2 class="text-h6 mb-3">Create {{ resource.slice(0, -1) }}</h2>
-          <v-text-field
-            v-for="key in fieldKeys"
-            :key="`create-${key}`"
-            v-model="createForm[key]"
-            :label="key"
-            variant="outlined"
-            class="mb-2"
-          />
+          <template v-for="key in config.createFields" :key="`create-${key}`">
+            <AppSelect
+              v-if="isFieldSelect(key)"
+              v-model="createForm[key]"
+              :items="optionsForField(key)"
+              :label="key"
+              class="mb-2"
+            />
+            <v-text-field
+              v-else
+              v-model="createForm[key]"
+              :label="key"
+              variant="outlined"
+              class="mb-2"
+            />
+          </template>
           <div class="d-flex justify-end ga-2 mt-3">
             <v-btn variant="text" @click="isCreateDialogOpen = false">Cancel</v-btn>
             <v-btn color="primary" :loading="pending" @click="submitCreate">Save</v-btn>
@@ -330,14 +363,22 @@ async function confirmDelete() {
       <v-dialog v-model="isEditDialogOpen" max-width="560">
         <v-card class="pa-4">
           <h2 class="text-h6 mb-3">Edit {{ resource.slice(0, -1) }}</h2>
-          <v-text-field
-            v-for="key in fieldKeys"
-            :key="`edit-${key}`"
-            v-model="editForm[key]"
-            :label="key"
-            variant="outlined"
-            class="mb-2"
-          />
+          <template v-for="key in config.editFields" :key="`edit-${key}`">
+            <AppSelect
+              v-if="isFieldSelect(key)"
+              v-model="editForm[key]"
+              :items="optionsForField(key)"
+              :label="key"
+              class="mb-2"
+            />
+            <v-text-field
+              v-else
+              v-model="editForm[key]"
+              :label="key"
+              variant="outlined"
+              class="mb-2"
+            />
+          </template>
           <div class="d-flex justify-end ga-2 mt-3">
             <v-btn variant="text" @click="isEditDialogOpen = false">Cancel</v-btn>
             <v-btn color="primary" :loading="pending" @click="submitEdit">Update</v-btn>
@@ -352,49 +393,6 @@ async function confirmDelete() {
           <div class="d-flex justify-end ga-2 mt-3">
             <v-btn variant="text" @click="deleteDialogItem = null">Cancel</v-btn>
             <v-btn color="error" :loading="pending" @click="confirmDelete">Delete</v-btn>
-          </div>
-        </v-card>
-      </v-dialog>
-
-      <v-dialog
-        v-model="isEntityDialogOpen"
-        max-width="640"
-        @update:model-value="(value) => {
-          if (!value) {
-            selectedEntity = null
-            selectedEntityError = null
-          }
-        }"
-      >
-        <v-card class="pa-4">
-          <h2 class="text-h6 mb-3">{{ selectedEntityTitle }}</h2>
-          <v-progress-linear
-            v-if="entityModalLoading"
-            indeterminate
-            color="primary"
-            class="mb-3"
-          />
-          <v-alert
-            v-else-if="selectedEntityError"
-            type="error"
-            variant="tonal"
-            :text="selectedEntityError"
-          />
-          <div v-else-if="selectedEntity" class="d-flex flex-column ga-2">
-            <v-card
-              v-for="(value, key) in selectedEntity"
-              :key="key"
-              variant="outlined"
-              class="pa-3"
-            >
-              <div class="text-caption text-medium-emphasis">{{ key }}</div>
-              <div class="text-body-2">
-                {{ formatEntityValue(value) }}
-              </div>
-            </v-card>
-          </div>
-          <div class="d-flex justify-end mt-4">
-            <v-btn variant="text" @click="isEntityDialogOpen = false">Close</v-btn>
           </div>
         </v-card>
       </v-dialog>

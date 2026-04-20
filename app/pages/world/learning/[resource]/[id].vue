@@ -9,7 +9,7 @@ const { learningNavItems } = useWorldLearningNavItems()
 const route = useRoute()
 const schoolStore = useWorldLearningSchoolStore()
 
-const allowedResources: SchoolResource[] = ['exams', 'classes', 'teachers', 'students', 'grades']
+const allowedResources: SchoolResource[] = ['exams', 'classes', 'teachers', 'students', 'grades', 'courses']
 
 const resource = computed(() => String(route.params.resource || '').toLowerCase() as SchoolResource)
 const id = computed(() => String(route.params.id || ''))

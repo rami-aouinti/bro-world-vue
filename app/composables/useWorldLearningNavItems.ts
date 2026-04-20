@@ -13,6 +13,11 @@ export function useWorldLearningNavItems() {
       icon: 'mdi-google-classroom',
     },
     {
+      title: t('world.learning.nav.courses', 'Courses'),
+      to: '/world/learning/courses',
+      icon: 'mdi-book-open-variant',
+    },
+    {
       title: t('world.learning.nav.teachers', 'Teachers'),
       to: '/world/learning/teachers',
       icon: 'mdi-account-tie',

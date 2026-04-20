@@ -8,6 +8,7 @@ export default defineEventHandler(async (event) => {
   return {
     items: [
       { key: 'classes', label: 'Classes', count: snapshot.classes.length },
+      { key: 'courses', label: 'Courses', count: snapshot.courses.length },
       { key: 'teachers', label: 'Teachers', count: snapshot.teachers.length },
       { key: 'students', label: 'Students', count: snapshot.students.length },
       { key: 'exams', label: 'Exams', count: snapshot.exams.length },

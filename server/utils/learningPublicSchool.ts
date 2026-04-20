@@ -19,6 +19,24 @@ export type SchoolClass = {
   schoolId: string
 }
 
+export type SchoolCourse = {
+  id: string
+  name: string
+  classId: string
+  className?: string
+  schoolId?: string
+  schoolName?: string
+  teacherId?: string
+  teacher?: {
+    id?: string
+    name?: string
+    photo?: string
+    email?: string
+    firstName?: string
+    lastName?: string
+  }
+}
+
 export type SchoolTeacher = {
   id: string
   name: string
@@ -52,6 +70,7 @@ export type SchoolGrade = {
 
 type SchoolSnapshot = {
   classes: SchoolClass[]
+  courses: SchoolCourse[]
   students: SchoolStudent[]
   teachers: SchoolTeacher[]
   exams: SchoolExam[]
@@ -63,6 +82,7 @@ const SCHOOL_CACHE_TTL_SECONDS = 120
 
 const SCHOOL_RESOURCES = [
   'classes',
+  'courses',
   'students',
   'teachers',
   'exams',
@@ -206,8 +226,9 @@ function mapGradesToProgress(snapshot: SchoolSnapshot): LearningProgress[] {
 export async function getSchoolSnapshot(
   event: H3Event,
 ): Promise<SchoolSnapshot> {
-  const [classes, students, teachers, exams, grades] = await Promise.all([
+  const [classes, courses, students, teachers, exams, grades] = await Promise.all([
     fetchSchoolCollectionCached<SchoolClass>(event, 'classes'),
+    fetchSchoolCollectionCached<SchoolCourse>(event, 'courses'),
     fetchSchoolCollectionCached<SchoolStudent>(event, 'students'),
     fetchSchoolCollectionCached<SchoolTeacher>(event, 'teachers'),
     fetchSchoolCollectionCached<SchoolExam>(event, 'exams'),
@@ -216,6 +237,7 @@ export async function getSchoolSnapshot(
 
   return {
     classes,
+    courses,
     students,
     teachers,
     exams,
@@ -273,6 +295,10 @@ export async function listSchoolClasses(event: H3Event) {
 
 export async function listSchoolTeachers(event: H3Event) {
   return fetchSchoolCollectionCached<SchoolTeacher>(event, 'teachers')
+}
+
+export async function listSchoolCourses(event: H3Event) {
+  return fetchSchoolCollectionCached<SchoolCourse>(event, 'courses')
 }
 
 export async function listSchoolStudents(event: H3Event) {

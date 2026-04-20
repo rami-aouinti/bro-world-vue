@@ -52,6 +52,8 @@ const schoolResources = computed(() =>
     to: `/world/learning/admin/${item.key}`,
     icon: item.key === 'classes'
       ? 'mdi-google-classroom'
+      : item.key === 'courses'
+        ? 'mdi-book-open-variant'
       : item.key === 'teachers'
         ? 'mdi-account-tie'
         : item.key === 'students'
