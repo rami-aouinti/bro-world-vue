@@ -1915,6 +1915,20 @@
           }
         }
       },
+      "generalDrawer": {
+        "platform": {
+          "title": "Platform",
+          "modalTitle": "Platform details"
+        },
+        "plugins": {
+          "title": "Plugins",
+          "modalTitle": "Plugin details"
+        },
+        "configuration": {
+          "untitled": "Configuration"
+        },
+        "emptyDescription": "No description available."
+      },
       "contacts": {
         "alerts": {
           "loadListError": "Unable to load contacts."
