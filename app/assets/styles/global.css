@@ -126,6 +126,52 @@ html.dark {
   );
 }
 
+.crm-list-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(var(--v-theme-primary), 0.12);
+  box-shadow:
+    0 8px 24px rgba(15, 23, 42, 0.08),
+    0 0 0 1px rgba(var(--v-theme-primary), 0.08) inset !important;
+  transition:
+    transform 0.28s ease,
+    box-shadow 0.28s ease,
+    border-color 0.28s ease;
+  animation: crm-card-fade-up 0.45s ease both;
+}
+
+.crm-list-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--v-theme-primary), 0.08) 0%,
+    transparent 45%
+  );
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.crm-list-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(var(--v-theme-primary), 0.26);
+  box-shadow:
+    0 14px 34px rgba(15, 23, 42, 0.14),
+    0 0 0 1px rgba(var(--v-theme-primary), 0.14) inset !important;
+}
+
+@keyframes crm-card-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .content-main {
   height: calc(93dvh - 58px);
   overflow-y: hidden;
