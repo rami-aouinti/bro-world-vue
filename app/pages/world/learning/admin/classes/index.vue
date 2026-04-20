@@ -65,7 +65,30 @@ async function openShow(itemId: string) {
   showItem.value = item
   isShowDialogOpen.value = true
 }
-
+const learningNavItems = [
+  {
+    title: 'Overview Learning',
+    to: '/world/learning',
+    icon: 'mdi-view-dashboard-outline',
+  },
+  {
+    title: 'Courses',
+    to: '/world/learning/courses',
+    icon: 'mdi-book-open-page-variant-outline',
+  },
+  { title: 'Classes', to: '/world/learning/classes', icon: 'mdi-google-classroom' },
+  { title: 'Teachers', to: '/world/learning/teachers', icon: 'mdi-account-tie' },
+  { title: 'Students', to: '/world/learning/students', icon: 'mdi-account-school' },
+  { title: 'Exams', to: '/world/learning/exams', icon: 'mdi-file-document-outline' },
+  { title: 'Grades', to: '/world/learning/grades', icon: 'mdi-check-decagram-outline' },
+  { title: 'Levels', to: '/world/learning/levels', icon: 'mdi-stairs' },
+  { title: 'Paths', to: '/world/learning/paths', icon: 'mdi-map-marker-path' },
+  {
+    title: 'Admin',
+    to: '/world/learning/admin',
+    icon: 'mdi-shield-crown-outline',
+  },
+]
 async function confirmDelete() {
   if (!deleteDialogClass.value) return
   await store.removeClass(deleteDialogClass.value.id)
@@ -74,114 +97,124 @@ async function confirmDelete() {
 </script>
 
 <template>
-  <v-container fluid>
-    <v-card class="pa-5" rounded="xl">
-      <div class="d-flex flex-wrap align-center justify-space-between mb-4 ga-2">
-        <div>
-          <h1 class="text-h5">Classes</h1>
-          <p class="text-medium-emphasis mb-0">
-            Manage classes from the school/general endpoint.
-          </p>
-        </div>
-        <div class="d-flex ga-2">
-          <v-btn variant="tonal" prepend-icon="mdi-arrow-left" to="/world/learning/admin">
-            Back to admin
-          </v-btn>
-          <v-btn color="primary" prepend-icon="mdi-plus" @click="isCreateDialogOpen = true">
-            Add class
-          </v-btn>
-          <v-btn variant="text" prepend-icon="mdi-refresh" :loading="store.pending" @click="refresh">
-            Refresh
-          </v-btn>
-        </div>
-      </div>
-
-      <v-alert
-        v-if="store.error"
-        type="error"
-        variant="tonal"
-        class="mb-4"
-        :text="store.error"
-      />
-
-      <v-data-table
-        :headers="headers"
-        :items="store.classes"
-        :loading="store.pending"
-        density="comfortable"
-      >
-        <template #item.actions="{ item }">
+  <div>
+    <WorldModuleDrawers
+      module-title="Learning"
+      module-icon="mdi-school-outline"
+      module-description="Administration and school resources management."
+      :nav-items="learningNavItems"
+      deactivate-right-drawer
+      :show-action="false"
+    />
+    <v-container fluid>
+      <v-card class="pa-5" rounded="xl">
+        <div class="d-flex flex-wrap align-center justify-space-between mb-4 ga-2">
+          <div>
+            <h1 class="text-h5">Classes</h1>
+            <p class="text-medium-emphasis mb-0">
+              Manage classes from the school/general endpoint.
+            </p>
+          </div>
           <div class="d-flex ga-2">
-            <v-btn size="small" variant="tonal" prepend-icon="mdi-eye" @click="openShow(item.id)">
-              Show
+            <v-btn variant="tonal" prepend-icon="mdi-arrow-left" to="/world/learning/admin">
+              Back to admin
             </v-btn>
-            <v-btn size="small" variant="tonal" prepend-icon="mdi-pencil" @click="openEdit(item)">
-              Edit
+            <v-btn color="primary" prepend-icon="mdi-plus" @click="isCreateDialogOpen = true">
+              Add class
             </v-btn>
-            <v-btn
-              size="small"
-              color="error"
-              variant="tonal"
-              prepend-icon="mdi-delete"
-              @click="deleteDialogClass = { id: item.id, name: item.name }"
-            >
-              Delete
+            <v-btn variant="text" prepend-icon="mdi-refresh" :loading="store.pending" @click="refresh">
+              Refresh
             </v-btn>
           </div>
-        </template>
-      </v-data-table>
-    </v-card>
-
-    <v-dialog v-model="isCreateDialogOpen" max-width="560">
-      <v-card class="pa-4">
-        <h2 class="text-h6 mb-3">Create class</h2>
-        <v-text-field v-model="createForm.name" label="Name" variant="outlined" class="mb-2" />
-        <v-text-field v-model="createForm.schoolId" label="School ID" variant="outlined" />
-        <div class="d-flex justify-end ga-2 mt-3">
-          <v-btn variant="text" @click="isCreateDialogOpen = false">Cancel</v-btn>
-          <v-btn color="primary" :loading="store.pending" @click="submitCreate">Save</v-btn>
         </div>
-      </v-card>
-    </v-dialog>
 
-    <v-dialog v-model="isEditDialogOpen" max-width="560">
-      <v-card class="pa-4">
-        <h2 class="text-h6 mb-3">Edit class</h2>
-        <v-text-field v-model="editForm.name" label="Name" variant="outlined" class="mb-2" />
-        <v-text-field v-model="editForm.schoolId" label="School ID" variant="outlined" />
-        <div class="d-flex justify-end ga-2 mt-3">
-          <v-btn variant="text" @click="isEditDialogOpen = false">Cancel</v-btn>
-          <v-btn color="primary" :loading="store.pending" @click="submitEdit">Update</v-btn>
-        </div>
-      </v-card>
-    </v-dialog>
+        <v-alert
+          v-if="store.error"
+          type="error"
+          variant="tonal"
+          class="mb-4"
+          :text="store.error"
+        />
 
-    <v-dialog v-model="isShowDialogOpen" max-width="560">
-      <v-card class="pa-4">
-        <h2 class="text-h6 mb-3">Class details</h2>
-        <v-list density="comfortable">
-          <v-list-item title="ID" :subtitle="showItem?.id" />
-          <v-list-item title="Name" :subtitle="showItem?.name" />
-          <v-list-item title="School ID" :subtitle="showItem?.schoolId" />
-        </v-list>
-        <div class="d-flex justify-end mt-3">
-          <v-btn color="primary" @click="isShowDialogOpen = false">Close</v-btn>
-        </div>
+        <v-data-table
+          :headers="headers"
+          :items="store.classes"
+          :loading="store.pending"
+          density="comfortable"
+        >
+          <template #item.actions="{ item }">
+            <div class="d-flex ga-2">
+              <v-btn size="small" variant="tonal" prepend-icon="mdi-eye" @click="openShow(item.id)">
+                Show
+              </v-btn>
+              <v-btn size="small" variant="tonal" prepend-icon="mdi-pencil" @click="openEdit(item)">
+                Edit
+              </v-btn>
+              <v-btn
+                size="small"
+                color="error"
+                variant="tonal"
+                prepend-icon="mdi-delete"
+                @click="deleteDialogClass = { id: item.id, name: item.name }"
+              >
+                Delete
+              </v-btn>
+            </div>
+          </template>
+        </v-data-table>
       </v-card>
-    </v-dialog>
 
-    <v-dialog :model-value="!!deleteDialogClass" max-width="460" @update:model-value="(value) => { if (!value) deleteDialogClass = null }">
-      <v-card class="pa-4">
-        <h2 class="text-h6 mb-2">Delete class</h2>
-        <p>
-          Are you sure you want to delete
-          <strong>{{ deleteDialogClass?.name }}</strong>?
-        </p>
-        <div class="d-flex justify-end ga-2 mt-3">
-          <v-btn variant="text" @click="deleteDialogClass = null">Cancel</v-btn>
-          <v-btn color="error" :loading="store.pending" @click="confirmDelete">Delete</v-btn>
-        </div>
-      </v-card>
-    </v-dialog>
-  </v-container>
+      <v-dialog v-model="isCreateDialogOpen" max-width="560">
+        <v-card class="pa-4">
+          <h2 class="text-h6 mb-3">Create class</h2>
+          <v-text-field v-model="createForm.name" label="Name" variant="outlined" class="mb-2" />
+          <v-text-field v-model="createForm.schoolId" label="School ID" variant="outlined" />
+          <div class="d-flex justify-end ga-2 mt-3">
+            <v-btn variant="text" @click="isCreateDialogOpen = false">Cancel</v-btn>
+            <v-btn color="primary" :loading="store.pending" @click="submitCreate">Save</v-btn>
+          </div>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="isEditDialogOpen" max-width="560">
+        <v-card class="pa-4">
+          <h2 class="text-h6 mb-3">Edit class</h2>
+          <v-text-field v-model="editForm.name" label="Name" variant="outlined" class="mb-2" />
+          <v-text-field v-model="editForm.schoolId" label="School ID" variant="outlined" />
+          <div class="d-flex justify-end ga-2 mt-3">
+            <v-btn variant="text" @click="isEditDialogOpen = false">Cancel</v-btn>
+            <v-btn color="primary" :loading="store.pending" @click="submitEdit">Update</v-btn>
+          </div>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="isShowDialogOpen" max-width="560">
+        <v-card class="pa-4">
+          <h2 class="text-h6 mb-3">Class details</h2>
+          <v-list density="comfortable">
+            <v-list-item title="ID" :subtitle="showItem?.id" />
+            <v-list-item title="Name" :subtitle="showItem?.name" />
+            <v-list-item title="School ID" :subtitle="showItem?.schoolId" />
+          </v-list>
+          <div class="d-flex justify-end mt-3">
+            <v-btn color="primary" @click="isShowDialogOpen = false">Close</v-btn>
+          </div>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog :model-value="!!deleteDialogClass" max-width="460" @update:model-value="(value) => { if (!value) deleteDialogClass = null }">
+        <v-card class="pa-4">
+          <h2 class="text-h6 mb-2">Delete class</h2>
+          <p>
+            Are you sure you want to delete
+            <strong>{{ deleteDialogClass?.name }}</strong>?
+          </p>
+          <div class="d-flex justify-end ga-2 mt-3">
+            <v-btn variant="text" @click="deleteDialogClass = null">Cancel</v-btn>
+            <v-btn color="error" :loading="store.pending" @click="confirmDelete">Delete</v-btn>
+          </div>
+        </v-card>
+      </v-dialog>
+    </v-container>
+  </div>
 </template>

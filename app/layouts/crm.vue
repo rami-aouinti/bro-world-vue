@@ -110,9 +110,6 @@ onUnmounted(() => {
       </ClientOnly>
       <v-main>
         <AppPageDrawers :left-component="CrmDrawer" />
-        <v-container fluid class="px-2 pt-0 pb-0">
-          <v-breadcrumbs v-if="shouldShowBreadcrumbs" :items="breadcrumbs" />
-        </v-container>
         <slot />
       </v-main>
       <v-defaults-provider
@@ -163,8 +160,8 @@ onUnmounted(() => {
 }
 
 .v-main {
-  padding-top: 104px;
-  padding-bottom: 16px;
+  padding-top: 77px;
+  padding-bottom: 5px;
   overflow-y: visible;
   transition-property: padding;
   min-height: 100vh;
