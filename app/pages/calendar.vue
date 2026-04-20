@@ -684,6 +684,16 @@ onUnmounted(() => {
           >
             {{ t('pages.calendar.addEvent') }}
           </v-btn>
+          <v-select
+            v-model="selectedRangeFilter"
+            class="mb-3"
+            density="comfortable"
+            variant="outlined"
+            label="Filter"
+            :items="rangeFilterOptions"
+            item-title="title"
+            item-value="value"
+          />
           <v-card-title class="text-subtitle-1 px-0">
             {{ t('pages.calendar.presetTitle') }}
           </v-card-title>
