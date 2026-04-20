@@ -5,11 +5,22 @@ const { isPageSkeletonVisible } = usePageSkeleton()
 definePageMeta({
   title: 'pages.profileOverview.gamesTitle',
   middleware: 'auth',
+  layout: 'profile',
+  auth: {
+    redirect: {
+      unauthenticated: '/login',
+    },
+  },
 })
 </script>
 
 <template>
   <div>
+    <AppPageDrawers>
+      <template #right>
+
+      </template>
+    </AppPageDrawers>
     <v-container fluid>
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
       <template v-else>

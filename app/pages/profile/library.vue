@@ -23,6 +23,13 @@ const {
 definePageMeta({
   title: 'pages.profileOverview.libraryTitle',
   middleware: 'auth',
+  layout: 'profile',
+  breadcrumbs: [
+    {
+      title: 'pages.profileOverview.title',
+      to: { name: 'profile-overview' },
+    }
+  ]
 })
 
 const currentFolderId = ref<string | null>(null)
@@ -307,9 +314,6 @@ const isPreviewPdf = computed(
             @rename="openRenameDialog"
           />
         </v-list>
-      </template>
-      <template #left>
-        <ProfileDrawer />
       </template>
     </AppPageDrawers>
 

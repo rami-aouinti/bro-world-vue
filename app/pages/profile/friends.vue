@@ -275,6 +275,12 @@ watch(storeError, (value) => {
 definePageMeta({
   title: 'appbar.profile',
   middleware: 'auth',
+  layout: 'profile',
+  auth: {
+    redirect: {
+      unauthenticated: '/login',
+    },
+  },
 })
 
 onMounted(async () => {
@@ -343,9 +349,6 @@ onMounted(async () => {
         <v-card-text v-else class="text-medium-emphasis">
           {{ t('pages.friends.suggestions.emptyText') }}
         </v-card-text>
-      </template>
-      <template #left>
-        <ProfileDrawer />
       </template>
     </AppPageDrawers>
 

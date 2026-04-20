@@ -37,6 +37,13 @@ const safeStats = computed<BlogPostStats>(() => {
 definePageMeta({
   title: 'profile.posts.title',
   middleware: 'auth',
+  layout: 'profile',
+  description: 'Voici la liste de vos posts Bro World.',
+  auth: {
+    redirect: {
+      unauthenticated: '/login',
+    },
+  },
 })
 </script>
 
@@ -78,9 +85,6 @@ definePageMeta({
             </div>
           </div>
         </v-card-text>
-      </template>
-      <template #left>
-        <ProfileDrawer />
       </template>
     </AppPageDrawers>
 

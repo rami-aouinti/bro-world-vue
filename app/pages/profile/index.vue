@@ -43,7 +43,7 @@ type ResumeSectionForm = RecruitResumeSection & {
 
 const { t, locale } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
-const { fetch: refreshSession, user } = useUserSession()
+const { user } = useUserSession()
 const profileStore = useProfileStore()
 const shopStore = useWorldShopStore()
 const { profile, loading, error } = storeToRefs(profileStore)
@@ -56,11 +56,9 @@ let typingInterval: ReturnType<typeof setInterval> | null = null
 const coinProducts = ref<ShopGeneralProduct[]>([])
 const selectedProductId = ref('')
 const checkout = ref<WorldShopCheckoutSession | null>(null)
-const selectedProvider = ref<'stripe' | 'paypal'>('stripe')
 const transactionState = ref<TransactionState>('idle')
 const transactionMessage = ref('')
 const buyCoinsStep = ref<BuyCoinsStep>('product')
-const receipts = ref<CoinsReceipt[]>([])
 const resumes = ref<RecruitResume[]>([])
 const resumesLoading = ref(false)
 const resumesError = ref('')
@@ -123,7 +121,6 @@ const proverbTexts = computed(() => [
 ])
 
 const hasUpcomingEvents = computed(() => upcomingEvents.value.length > 0)
-const hasCoinProducts = computed(() => coinProducts.value.length > 0)
 const hasResumes = computed(() => resumes.value.length > 0)
 const resumeTemplateOptions = [
   { value: 'modern', label: 'Modern Pro' },
@@ -197,79 +194,6 @@ const nextEventLabel = computed(() =>
       })
     : '',
 )
-const isBusy = computed(() => loading.value || shopPending.value)
-const canConfirmCart = computed(
-  () => !!selectedProduct.value && transactionState.value !== 'pending',
-)
-const canPay = computed(() => {
-  if (!checkout.value) {
-    return false
-  }
-
-  return (
-    transactionState.value !== 'pending' &&
-    checkout.value.status !== 'failed' &&
-    checkout.value.status !== 'paid'
-  )
-})
-const transactionTone = computed<'info' | 'success' | 'error' | 'warning'>(
-  () => {
-    if (transactionState.value === 'success') {
-      return 'success'
-    }
-
-    if (transactionState.value === 'failure') {
-      return 'error'
-    }
-
-    if (transactionState.value === 'cancelled') {
-      return 'warning'
-    }
-
-    return 'info'
-  },
-)
-const transactionLabel = computed(() => {
-  if (transactionState.value === 'pending') {
-    return t('pages.profile.buyCoins.transaction.pending')
-  }
-
-  if (transactionState.value === 'success') {
-    return t('pages.profile.buyCoins.transaction.success')
-  }
-
-  if (transactionState.value === 'failure') {
-    return t('pages.profile.buyCoins.transaction.failure')
-  }
-
-  if (transactionState.value === 'cancelled') {
-    return t('pages.profile.buyCoins.transaction.cancelled')
-  }
-
-  return t('pages.profile.buyCoins.transaction.idle')
-})
-const flowItems = computed(() => [
-  { title: t('pages.profile.buyCoins.flow.product'), value: 'product' },
-  {
-    title: t('pages.profile.buyCoins.flow.confirmation'),
-    value: 'confirmation',
-  },
-  { title: t('pages.profile.buyCoins.flow.payment'), value: 'payment' },
-  { title: t('pages.profile.buyCoins.flow.validation'), value: 'validation' },
-])
-const checkoutAmountLabel = computed(() => {
-  const amount = selectedProduct.value?.amount ?? 0
-  const currencyCode = selectedProduct.value?.currencyCode || 'USD'
-  return new Intl.NumberFormat(locale.value, {
-    style: 'currency',
-    currency: currencyCode,
-    maximumFractionDigits: 2,
-  }).format(amount)
-})
-
-function buildIdempotencyKey(prefix: string) {
-  return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
-}
 
 function clearTypewriterTimers() {
   if (typingInterval) {
@@ -641,149 +565,6 @@ async function fetchCoinProducts(force = false) {
   }
 }
 
-function selectProduct(productId: string) {
-  selectedProductId.value = productId
-  transactionState.value = 'idle'
-  transactionMessage.value = ''
-  buyCoinsStep.value = 'confirmation'
-}
-
-async function confirmCart() {
-  if (!selectedProduct.value) {
-    return
-  }
-
-  transactionState.value = 'pending'
-  transactionMessage.value = t('pages.profile.buyCoins.messages.confirming')
-  try {
-    const session = await shopStore.createCheckoutSession({
-      currency: selectedProduct.value.currencyCode,
-      cart: [
-        {
-          productId: selectedProduct.value.id,
-          name: selectedProduct.value.name,
-          quantity: 1,
-          unitPrice: selectedProduct.value.amount,
-        },
-      ],
-    })
-    checkout.value = session
-    transactionState.value = 'idle'
-    transactionMessage.value = ''
-    buyCoinsStep.value = 'payment'
-  } catch {
-    transactionState.value = 'failure'
-    transactionMessage.value = t('pages.profile.buyCoins.messages.confirmError')
-  }
-}
-
-async function startPayment() {
-  if (!checkout.value) {
-    return
-  }
-
-  transactionState.value = 'pending'
-  transactionMessage.value = t('pages.profile.buyCoins.messages.paymentPending')
-
-  try {
-    const productSnapshot = selectedProduct.value
-    if (!productSnapshot) {
-      transactionState.value = 'failure'
-      transactionMessage.value = t(
-        'pages.profile.buyCoins.messages.paymentFailed',
-      )
-      return
-    }
-
-    const intent = await shopStore.createPaymentIntent({
-      checkoutId: checkout.value.id,
-      provider: selectedProvider.value,
-      idempotencyKey: buildIdempotencyKey('coins_payment'),
-    })
-
-    const paymentId =
-      intent.attempt.providerPaymentId ||
-      intent.checkout.providerPaymentId ||
-      `manual_${intent.attempt.id}`
-
-    const confirmedCheckout = await shopStore.confirmPayment({
-      checkoutId: intent.checkout.id,
-      providerPaymentId: paymentId,
-      idempotencyKey: buildIdempotencyKey('coins_confirm'),
-    })
-
-    checkout.value = confirmedCheckout
-    buyCoinsStep.value = 'validation'
-
-    if (confirmedCheckout.status === 'paid') {
-      transactionState.value = 'success'
-      transactionMessage.value = t(
-        'pages.profile.buyCoins.messages.paymentSuccess',
-      )
-
-      await Promise.all([refreshSession(), fetchProfile(true)])
-      const sessionUser = user.value as SessionUser | null
-      if (typeof sessionUser?.coins === 'number') {
-        profileStore.setCoins(sessionUser.coins)
-      }
-
-      const nextReceipt: CoinsReceipt = {
-        id: confirmedCheckout.id,
-        createdAt: new Date().toISOString(),
-        status: 'success',
-        productName: productSnapshot.name,
-        coinsAmount: productSnapshot.coinsAmount,
-        amount: confirmedCheckout.totalAmount,
-        currency: confirmedCheckout.currency,
-      }
-      receipts.value = [nextReceipt, ...receipts.value].slice(0, 8)
-      return
-    }
-
-    if (confirmedCheckout.status === 'failed') {
-      transactionState.value = 'failure'
-      transactionMessage.value = t(
-        'pages.profile.buyCoins.messages.paymentFailed',
-      )
-      return
-    }
-
-    transactionState.value = 'cancelled'
-    transactionMessage.value = t(
-      'pages.profile.buyCoins.messages.paymentCancelled',
-    )
-  } catch {
-    transactionState.value = 'failure'
-    transactionMessage.value = t(
-      'pages.profile.buyCoins.messages.paymentFailed',
-    )
-  }
-}
-
-function cancelPurchase() {
-  transactionState.value = 'cancelled'
-  transactionMessage.value = t(
-    'pages.profile.buyCoins.messages.paymentCancelled',
-  )
-  buyCoinsStep.value = 'validation'
-}
-
-function formatReceiptAmount(receipt: CoinsReceipt) {
-  return new Intl.NumberFormat(locale.value, {
-    style: 'currency',
-    currency: receipt.currency,
-    maximumFractionDigits: 2,
-  }).format(receipt.amount)
-}
-
-function formatProductAmount(product: ShopGeneralProduct) {
-  return new Intl.NumberFormat(locale.value, {
-    style: 'currency',
-    currency: product.currencyCode,
-    maximumFractionDigits: 2,
-  }).format(product.amount)
-}
-
 async function fetchProfile(force = false) {
   try {
     await profileStore.fetchProfile(force)
@@ -814,6 +595,7 @@ async function fetchUpcomingEvents() {
 definePageMeta({
   title: 'appbar.profile',
   middleware: 'auth',
+  layout: 'profile',
 })
 
 onMounted(async () => {
@@ -865,9 +647,6 @@ onUnmounted(() => {
             {{ t('pages.profile.rightRail.emptyUpcoming') }}
           </p>
         </v-card-text>
-      </template>
-      <template #left>
-        <ProfileDrawer />
       </template>
     </AppPageDrawers>
 

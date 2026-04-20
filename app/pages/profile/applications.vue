@@ -46,6 +46,13 @@ watch(
 definePageMeta({
   title: 'pages.profileOverview.applicationsTitle',
   middleware: 'auth',
+  layout: 'profile',
+  description: 'Voici la liste de vos applications Bro World.',
+  auth: {
+    redirect: {
+      unauthenticated: '/login',
+    },
+  },
 })
 
 onMounted(() => refreshApplications())
@@ -128,9 +135,6 @@ onMounted(() => refreshApplications())
           variant="tonal"
           :text="t('pages.profileApplications.selectHint')"
         />
-      </template>
-      <template #left>
-        <ProfileDrawer />
       </template>
     </AppPageDrawers>
 

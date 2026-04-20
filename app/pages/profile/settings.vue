@@ -14,6 +14,12 @@ const runtimeConfig = useRuntimeConfig()
 definePageMeta({
   title: 'appbar.settings',
   middleware: 'auth',
+  layout: 'profile',
+  auth: {
+    redirect: {
+      unauthenticated: '/login',
+    },
+  },
 })
 
 interface BasicInfoForm {
@@ -625,9 +631,6 @@ onUnmounted(() => {
             @click.prevent="scrollToSection(section.id)"
           />
         </v-list>
-      </template>
-      <template #left>
-        <ProfileDrawer />
       </template>
     </AppPageDrawers>
 
