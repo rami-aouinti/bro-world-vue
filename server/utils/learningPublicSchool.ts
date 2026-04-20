@@ -1,3 +1,4 @@
+import { createError } from 'h3'
 import type { H3Event } from 'h3'
 import { getServerPublicAxios, resolveServerApiUrl } from './http/axiosClient'
 import { getCached, invalidateByPrefix, setCached } from './apiCache'
@@ -59,6 +60,22 @@ type SchoolSnapshot = {
 
 const SCHOOL_CACHE_PREFIX = 'learning:school:'
 const SCHOOL_CACHE_TTL_SECONDS = 120
+
+const SCHOOL_RESOURCES = [
+  'classes',
+  'students',
+  'teachers',
+  'exams',
+  'grades',
+] as const
+
+type SchoolResource = (typeof SCHOOL_RESOURCES)[number]
+
+function assertSchoolResource(resource: string): asserts resource is SchoolResource {
+  if (!SCHOOL_RESOURCES.includes(resource as SchoolResource)) {
+    throw createError({ statusCode: 400, statusMessage: 'Unsupported school resource' })
+  }
+}
 
 function scoreToStatus(score: number) {
   if (score >= 7) return 'completed' as const
@@ -229,7 +246,7 @@ function getSchoolCollectionCacheKey(resource: string) {
 
 async function fetchSchoolCollectionCached<TItem>(
   event: H3Event,
-  resource: 'classes' | 'students' | 'teachers' | 'exams' | 'grades',
+  resource: SchoolResource,
 ) {
   const cacheKey = getSchoolCollectionCacheKey(resource)
   const cached = await getCached<TItem[]>(cacheKey)
@@ -308,5 +325,61 @@ export async function updateSchoolClass(
 export async function deleteSchoolClass(event: H3Event, classId: string) {
   const client = getServerPublicAxios(event)
   await client.delete(resolveServerApiUrl(event, `/school/general/classes/${classId}`))
+  await invalidateSchoolCache()
+}
+
+
+export async function getSchoolResourceById(
+  event: H3Event,
+  resource: string,
+  id: string,
+) {
+  assertSchoolResource(resource)
+  const client = getServerPublicAxios(event)
+  const response = await client.get<Record<string, unknown>>(
+    resolveServerApiUrl(event, `/school/general/${resource}/${id}`),
+  )
+  return response.data
+}
+
+export async function createSchoolResource(
+  event: H3Event,
+  resource: string,
+  payload: Record<string, unknown>,
+) {
+  assertSchoolResource(resource)
+  const client = getServerPublicAxios(event)
+  const response = await client.post<Record<string, unknown>>(
+    resolveServerApiUrl(event, `/school/general/${resource}`),
+    payload,
+  )
+  await invalidateSchoolCache()
+  return response.data
+}
+
+export async function updateSchoolResource(
+  event: H3Event,
+  resource: string,
+  id: string,
+  payload: Record<string, unknown>,
+) {
+  assertSchoolResource(resource)
+  const client = getServerPublicAxios(event)
+  const response = await client.patch<Record<string, unknown>>(
+    resolveServerApiUrl(event, `/school/general/${resource}/${id}`),
+    payload,
+  )
+  await invalidateSchoolCache()
+  return response.data
+}
+
+export async function deleteSchoolResource(
+  event: H3Event,
+  resource: string,
+  id: string,
+) {
+  assertSchoolResource(resource)
+  const client = getServerPublicAxios(event)
+  await client.delete(resolveServerApiUrl(event, `/school/general/${resource}/${id}`))
   await invalidateSchoolCache()
 }
