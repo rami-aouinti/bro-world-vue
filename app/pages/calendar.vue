@@ -22,6 +22,18 @@ interface PrivateCalendarEvent {
   backgroundColor: string | null
   borderColor: string | null
   textColor: string | null
+  organizerName?: string | null
+  organizerEmail?: string | null
+  attendees?: Array<{
+    email: string
+    displayName?: string | null
+    responseStatus?: string | null
+    optional?: boolean
+    organizer?: boolean
+    self?: boolean
+    resource?: boolean
+  }>
+  metadata?: Record<string, unknown> | null
 }
 
 interface PrivateEventsResponse {
@@ -90,6 +102,8 @@ const lastGoogleSyncToken = ref('')
 const calendarEvents = ref<PrivateCalendarEvent[]>([])
 const upcomingEvents = ref<PrivateCalendarEvent[]>([])
 const selectedEvent = ref<PrivateCalendarEvent | null>(null)
+const selectedEventDetails = ref<PrivateCalendarEvent | null>(null)
+const isDetailsLoading = ref(false)
 const dialogOpen = ref(false)
 const presetEventsHost = ref<HTMLElement | null>(null)
 let presetEventsDraggable: Draggable | null = null
@@ -104,6 +118,12 @@ const form = reactive({
 })
 
 const isEditing = computed(() => Boolean(selectedEvent.value))
+const activeEvent = computed(
+  () => selectedEventDetails.value ?? selectedEvent.value,
+)
+const eventDescriptionHtml = computed(() =>
+  formatEventDescriptionAsHtml(activeEvent.value?.description ?? ''),
+)
 const currentTimezone = computed(
   () => Intl.DateTimeFormat().resolvedOptions().timeZone,
 )
@@ -212,6 +232,7 @@ function fillForm(event?: PrivateCalendarEvent) {
 
 function openCreateDialog(start?: string, end?: string) {
   selectedEvent.value = null
+  selectedEventDetails.value = null
   fillForm()
 
   if (start) form.startAt = toInputDateTime(start)
@@ -220,10 +241,49 @@ function openCreateDialog(start?: string, end?: string) {
   dialogOpen.value = true
 }
 
+async function loadEventDetails(eventId: string) {
+  isDetailsLoading.value = true
+  try {
+    const eventDetails = await privateApi.request<PrivateCalendarEvent>(
+      `/api/v1/calendar/private/events/${eventId}`,
+    )
+    selectedEventDetails.value = eventDetails
+    fillForm(eventDetails)
+  } catch (error) {
+    selectedEventDetails.value = null
+    console.error(error)
+  } finally {
+    isDetailsLoading.value = false
+  }
+}
+
+function escapeHtml(rawText: string) {
+  return rawText
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
+function formatEventDescriptionAsHtml(rawDescription: string | null) {
+  if (!rawDescription) return ''
+
+  const escapedText = escapeHtml(rawDescription)
+  const linkedText = escapedText.replace(
+    /(https?:\/\/[^\s<]+)/g,
+    '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>',
+  )
+
+  return linkedText.replace(/\n/g, '<br>')
+}
+
 function openEditDialog(event: PrivateCalendarEvent) {
   selectedEvent.value = event
+  selectedEventDetails.value = null
   fillForm(event)
   dialogOpen.value = true
+  void loadEventDetails(event.id)
 }
 
 async function loadEvents() {
@@ -680,6 +740,25 @@ onUnmounted(() => {
           }}
         </v-card-title>
         <v-card-text>
+          <v-alert v-if="isDetailsLoading" type="info" variant="tonal" class="mb-3">
+            Chargement des détails de l'événement...
+          </v-alert>
+          <v-card
+            v-if="isEditing && (activeEvent?.description || activeEvent?.organizerEmail)"
+            variant="tonal"
+            class="mb-4"
+          >
+            <v-card-text class="text-body-2">
+              <div v-if="activeEvent?.description" class="mb-2">
+                <div class="font-weight-medium mb-1">Description (HTML)</div>
+                <!-- eslint-disable-next-line vue/no-v-html -->
+                <div class="event-html-description" v-html="eventDescriptionHtml" />
+              </div>
+              <div v-if="activeEvent?.organizerEmail" class="text-medium-emphasis">
+                Organisateur: {{ activeEvent.organizerName || activeEvent.organizerEmail }}
+              </div>
+            </v-card-text>
+          </v-card>
           <v-text-field
             v-model="form.title"
             :label="t('pages.calendar.form.title')"
@@ -792,5 +871,14 @@ onUnmounted(() => {
 
 :deep(.v-theme--dark .fc .fc-col-header-cell-cushion) {
   color: rgb(var(--v-theme-on-surface));
+}
+
+.event-html-description {
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.event-html-description :deep(a) {
+  color: rgb(var(--v-theme-primary));
 }
 </style>
