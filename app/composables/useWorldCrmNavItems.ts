@@ -93,7 +93,7 @@ export function useWorldCrmNavItems() {
       ? [
           {
             title: 'Blog',
-            to: '/blog',
+            to: '/world/crm/blog',
             icon: 'mdi-post-outline',
           },
         ]
@@ -102,7 +102,7 @@ export function useWorldCrmNavItems() {
       ? [
           {
             title: 'Chat',
-            to: '/inbox',
+            to: '/world/crm/chat',
             icon: 'mdi-chat-outline',
           },
         ]
@@ -111,7 +111,7 @@ export function useWorldCrmNavItems() {
       ? [
           {
             title: 'Calendar',
-            to: '/calendar',
+            to: '/world/crm/calendar',
             icon: 'mdi-calendar-month-outline',
           },
         ]
