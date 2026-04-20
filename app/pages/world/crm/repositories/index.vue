@@ -109,8 +109,8 @@ const error = computed(() => projectsError.value || repositoriesError.value)
       </v-alert>
 
       <v-row v-else>
-        <v-col v-for="repository in repositoriesData" :key="`${repository.projectId}-${repository.fullName}`" cols="12" md="6" xl="4">
-          <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100 d-flex flex-column" hover @click="router.push(`/world/crm/repositories/${repository.projectId}/${encodeURIComponent(repository.fullName)}`)">
+        <v-col v-for="repository in repositoriesData" :key="`${repository.projectId}-${repository.fullName}`" cols="12" md="4">
+          <v-card rounded="xl" class="pa-4 postcard-gradient-card crm-list-card h-100 d-flex flex-column" hover @click="router.push(`/world/crm/repositories/${repository.projectId}/${encodeURIComponent(repository.fullName)}`)">
             <div class="d-flex justify-space-between align-start ga-2 mb-2">
               <h3 class="text-subtitle-1 mb-0">{{ repository.fullName }}</h3>
               <v-chip size="small" color="primary" variant="tonal">{{ repository.projectStatus }}</v-chip>

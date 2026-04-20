@@ -157,10 +157,9 @@ async function createTask() {
             v-for="task in paginatedTasks"
             :key="task.id"
             cols="12"
-            md="6"
-            xl="4"
+            md="4"
           >
-            <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
+            <v-card rounded="xl" class="pa-4 postcard-gradient-card crm-list-card h-100">
               <div class="d-flex align-start justify-space-between ga-2 mb-2">
                 <h3 class="text-subtitle-1 mb-0">{{ task.title }}</h3>
                 <v-chip size="small" :color="taskStatusColor(task.status)" variant="tonal">

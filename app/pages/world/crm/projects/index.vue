@@ -121,8 +121,8 @@ async function createProject() {
         />
 
         <v-row>
-          <v-col v-for="project in paginatedProjects" :key="project.id" cols="12" md="6" xl="4">
-            <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100 d-flex flex-column">
+          <v-col v-for="project in paginatedProjects" :key="project.id" cols="12" md="4">
+            <v-card rounded="xl" class="pa-4 postcard-gradient-card crm-list-card h-100 d-flex flex-column">
               <div class="d-flex justify-space-between align-start ga-2 mb-2">
                 <h3 class="text-subtitle-1 mb-0">{{ project.name }}</h3>
                 <v-chip size="small" color="primary" variant="tonal">{{ project.status }}</v-chip>
