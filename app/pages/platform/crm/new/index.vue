@@ -35,9 +35,28 @@ type SelectedPluginConfig = {
   notifications: boolean
 }
 
+type GeneralApplicationTemplate = {
+  platform?: {
+    id?: string
+    key?: string
+    name?: string
+  }
+  configurations?: Array<{
+    key?: string
+    value?: Record<string, unknown> & {
+      migrations?: {
+        github?: boolean
+        google?: boolean
+        azure?: boolean
+      }
+    }
+  }>
+}
+
 const PLATFORM_PUBLIC_ENDPOINT = '/api/platform/public'
 const PLUGIN_PUBLIC_ENDPOINT = '/api/plugin/public'
 const CREATE_APPLICATION_ENDPOINT = '/api/profile/applications'
+const GENERAL_APPLICATIONS_ENDPOINT = '/api/application/public/general'
 
 const { loggedIn } = useUserSession()
 
@@ -51,8 +70,10 @@ const createError = ref('')
 const createSuccess = ref('')
 const publicPlatforms = ref<PublicPlatform[]>([])
 const publicPlugins = ref<PublicPlugin[]>([])
+const generalApplicationTemplates = ref<GeneralApplicationTemplate[]>([])
 const publicPlatformsPending = ref(false)
 const publicPluginsPending = ref(false)
+const generalTemplatesPending = ref(false)
 
 const appTitle = ref('')
 const appDescription = ref('')
@@ -61,6 +82,11 @@ const appPrivate = ref(false)
 const selectedCreatePlatformId = ref<string | null>(null)
 const appTheme = ref<'light' | 'dark'>('light')
 const selectedPlugins = ref<Record<string, SelectedPluginConfig>>({})
+const migrationSettings = ref({
+  github: false,
+  google: false,
+  azure: false,
+})
 
 const crmPlatforms = computed(() =>
   publicPlatforms.value.filter(platform => platform.platformKey.toLowerCase() === 'crm'),
@@ -83,6 +109,30 @@ const selectedPluginList = computed(() => {
   return Object.values(selectedPlugins.value).filter(plugin => plugin.enabled)
 })
 
+const selectedCrmGeneralTemplate = computed(() => {
+  const selectedPlatformId = selectedCreatePlatformId.value
+
+  if (!selectedPlatformId) {
+    return null
+  }
+
+  const byPlatformId = generalApplicationTemplates.value.find(
+    item =>
+      item.platform?.id === selectedPlatformId &&
+      item.platform?.key?.toLowerCase() === 'crm',
+  )
+
+  if (byPlatformId) {
+    return byPlatformId
+  }
+
+  return (
+    generalApplicationTemplates.value.find(
+      item => item.platform?.key?.toLowerCase() === 'crm',
+    ) ?? null
+  )
+})
+
 const canSubmitCreate = computed(() => {
   return canGoToStepTwo.value && canGoToStepThree.value && loggedIn.value
 })
@@ -100,6 +150,12 @@ function togglePlugin(plugin: PublicPlugin, enabled: boolean) {
 }
 
 function inferPlatformConfigurations(): AppConfiguration[] {
+  const templateConfiguration = selectedCrmGeneralTemplate.value?.configurations?.find(
+    configuration => configuration.key === 'application.crm.general',
+  )
+  const templateValue = (templateConfiguration?.value ?? {}) as Record<string, unknown>
+  const templateMigrations = (templateValue.migrations ?? {}) as Record<string, unknown>
+
   return [
     {
       configurationKey: 'app.theme',
@@ -112,6 +168,22 @@ function inferPlatformConfigurations(): AppConfiguration[] {
     {
       configurationKey: 'platform.crm.autoReminder.enabled',
       configurationValue: { enabled: true },
+    },
+    {
+      configurationKey: 'application.crm.general',
+      configurationValue: {
+        ...templateValue,
+        enabled:
+          typeof templateValue.enabled === 'boolean'
+            ? templateValue.enabled
+            : true,
+        migrations: {
+          ...templateMigrations,
+          github: migrationSettings.value.github,
+          google: migrationSettings.value.google,
+          azure: migrationSettings.value.azure,
+        },
+      },
     },
   ]
 }
@@ -161,6 +233,35 @@ async function fetchPublicPlugins() {
   }
 }
 
+function syncMigrationSettingsFromTemplate() {
+  const templateConfiguration = selectedCrmGeneralTemplate.value?.configurations?.find(
+    configuration => configuration.key === 'application.crm.general',
+  )
+  const migrations = templateConfiguration?.value?.migrations
+
+  migrationSettings.value = {
+    github: Boolean(migrations?.github),
+    google: Boolean(migrations?.google),
+    azure: Boolean(migrations?.azure),
+  }
+}
+
+async function fetchGeneralApplicationTemplates() {
+  generalTemplatesPending.value = true
+
+  try {
+    const response = await $fetch<{ items?: GeneralApplicationTemplate[] }>(
+      GENERAL_APPLICATIONS_ENDPOINT,
+    )
+    generalApplicationTemplates.value = response.items ?? []
+    syncMigrationSettingsFromTemplate()
+  } catch {
+    createError.value = 'Unable to load CRM migration templates. Please retry.'
+  } finally {
+    generalTemplatesPending.value = false
+  }
+}
+
 async function submitCreateApplication() {
   if (!canSubmitCreate.value || !selectedCreatePlatformId.value) {
     return
@@ -202,7 +303,15 @@ async function submitCreateApplication() {
   }
 }
 
-await Promise.all([fetchPublicPlatforms(), fetchPublicPlugins()])
+watch(selectedCreatePlatformId, () => {
+  syncMigrationSettingsFromTemplate()
+})
+
+await Promise.all([
+  fetchPublicPlatforms(),
+  fetchPublicPlugins(),
+  fetchGeneralApplicationTemplates(),
+])
 </script>
 
 <template>
@@ -353,6 +462,41 @@ await Promise.all([fetchPublicPlatforms(), fetchPublicPlugins()])
                   color="primary"
                   inset
                   :label="`Theme: ${appTheme}`"
+                />
+
+                <v-divider class="my-4" />
+
+                <div class="d-flex align-center justify-space-between mb-2">
+                  <h3 class="text-subtitle-1 mb-0">Migrations</h3>
+                  <v-btn
+                    variant="text"
+                    color="primary"
+                    :loading="generalTemplatesPending"
+                    @click="fetchGeneralApplicationTemplates"
+                  >
+                    Reload
+                  </v-btn>
+                </div>
+                <p class="text-body-2 text-medium-emphasis mb-2">
+                  Activez les synchronisations disponibles pour GitHub, Google et Azure.
+                </p>
+                <v-switch
+                  v-model="migrationSettings.github"
+                  color="primary"
+                  inset
+                  label="Migration GitHub"
+                />
+                <v-switch
+                  v-model="migrationSettings.google"
+                  color="primary"
+                  inset
+                  label="Migration Google"
+                />
+                <v-switch
+                  v-model="migrationSettings.azure"
+                  color="primary"
+                  inset
+                  label="Migration Azure"
                 />
 
                 <v-alert v-if="selectedCreatePlatform" type="info" variant="tonal" class="mt-3">
