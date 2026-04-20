@@ -126,9 +126,7 @@ async function refreshAll() {
         </v-btn>
       </div>
 
-      <v-alert v-if="isLoading" type="info" variant="tonal" class="mb-4">
-        {{ t('world.crm.repositories.alerts.loadingDashboard', 'Loading repository dashboard...') }}
-      </v-alert>
+      <CrmPageSkeleton v-if="isLoading" variant="dashboard" />
       <v-alert v-else-if="hasError" type="error" variant="tonal" class="mb-4">
         {{ t('world.crm.repositories.alerts.loadingDashboardError', 'Unable to load one or more dashboard sections.') }}
       </v-alert>

@@ -146,7 +146,7 @@ async function attachToSprint() {
     </WorldModuleDrawers>
     <v-container fluid>
       <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push('/world/crm/tasks')">{{ t('world.crm.tasks.actions.backToList') }}</v-btn>
-    <v-alert v-if="pending" type="info" variant="tonal">{{ t('world.crm.tasks.alerts.loadingDetail') }}</v-alert>
+    <CrmPageSkeleton v-if="pending" variant="detail" />
     <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.tasks.alerts.notFound') }}</v-alert>
 
     <v-row v-else-if="data">

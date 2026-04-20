@@ -107,7 +107,7 @@ async function detachTask() {
     </WorldModuleDrawers>
     <v-container fluid>
       <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push('/world/crm/sprints')">{{ t('world.crm.sprints.actions.backToList') }}</v-btn>
-      <v-alert v-if="pending" type="info" variant="tonal">{{ t('world.crm.sprints.alerts.loadingDetail') }}</v-alert>
+      <CrmPageSkeleton v-if="pending" variant="detail" />
       <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.sprints.alerts.notFound') }}</v-alert>
 
     <v-row v-else-if="data">

@@ -55,7 +55,7 @@ async function createCompany() {
     />
 
     <v-container fluid>
-      <v-alert v-if="pending" type="info" variant="tonal">{{ t('world.crm.company.alerts.loadingList') }}</v-alert>
+      <CrmPageSkeleton v-if="pending" variant="list" :cards="6" />
       <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.company.alerts.loadListError') }}</v-alert>
 
       <v-row v-else>
