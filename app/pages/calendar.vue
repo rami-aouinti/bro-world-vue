@@ -56,6 +56,8 @@ interface PresetCalendarEvent {
   color: string
 }
 
+type CalendarRangeFilter = 'next7days' | 'nextMonth' | 'next3months'
+
 interface GoogleCalendarEvent {
   id: string
   title: string
@@ -106,6 +108,7 @@ const selectedEventDetails = ref<PrivateCalendarEvent | null>(null)
 const isDetailsLoading = ref(false)
 const isEditMode = ref(false)
 const dialogOpen = ref(false)
+const selectedRangeFilter = ref<CalendarRangeFilter>('next7days')
 const presetEventsHost = ref<HTMLElement | null>(null)
 let presetEventsDraggable: Draggable | null = null
 
@@ -134,10 +137,32 @@ const formattedEventRange = computed(() => {
   if (!event?.startAt || !event?.endAt) return ''
   return `${new Date(event.startAt).toLocaleString(locale.value)} → ${new Date(event.endAt).toLocaleString(locale.value)}`
 })
+const rangeFilterOptions = computed(() => [
+  { title: 'Next 7 Days', value: 'next7days' as const },
+  { title: 'Next Month', value: 'nextMonth' as const },
+  { title: 'Next 3 Months', value: 'next3months' as const },
+])
 
 const fullCalendarEvents = computed(() => {
+  const now = Date.now()
+  const rangeEnd = new Date()
+
+  if (selectedRangeFilter.value === 'next7days') {
+    rangeEnd.setDate(rangeEnd.getDate() + 7)
+  } else if (selectedRangeFilter.value === 'nextMonth') {
+    rangeEnd.setMonth(rangeEnd.getMonth() + 1)
+  } else {
+    rangeEnd.setMonth(rangeEnd.getMonth() + 3)
+  }
+
+  const rangeEndTime = rangeEnd.getTime()
+
   return calendarEvents.value
-    .filter((event) => !event.isCancelled)
+    .filter((event) => {
+      if (event.isCancelled) return false
+      const eventStart = new Date(event.startAt).getTime()
+      return eventStart >= now && eventStart <= rangeEndTime
+    })
     .map((event) => {
       return {
         id: event.id,
@@ -639,6 +664,16 @@ onUnmounted(() => {
           >
             {{ t('pages.calendar.addEvent') }}
           </v-btn>
+          <v-select
+            v-model="selectedRangeFilter"
+            class="mb-3"
+            density="comfortable"
+            variant="outlined"
+            label="Filter"
+            :items="rangeFilterOptions"
+            item-title="title"
+            item-value="value"
+          />
           <v-card-title class="text-subtitle-1 px-0">
             {{ t('pages.calendar.presetTitle') }}
           </v-card-title>
@@ -706,16 +741,12 @@ onUnmounted(() => {
       </template>
     </v-container>
 
-    <v-dialog v-model="dialogOpen" max-width="560">
-      <v-card>
-        <v-card-title>
-          {{
-            isEditing
-              ? t('pages.calendar.editDialogTitle')
-              : t('pages.calendar.createDialogTitle')
-          }}
-        </v-card-title>
-        <v-card-text>
+    <AppModal
+      v-model="dialogOpen"
+      :title="isEditing ? t('pages.calendar.editDialogTitle') : t('pages.calendar.createDialogTitle')"
+      :max-width="560"
+    >
+      <template #default>
           <v-alert v-if="isDetailsLoading" type="info" variant="tonal" class="mb-3">
             Chargement des détails de l'événement...
           </v-alert>
@@ -779,8 +810,8 @@ onUnmounted(() => {
             color="primary"
             :disabled="!canEditForm"
           />
-        </v-card-text>
-        <v-card-actions>
+      </template>
+      <template #actions>
           <v-btn variant="text" @click="dialogOpen = false">
             {{ t('common.cancel') }}
           </v-btn>
@@ -817,9 +848,8 @@ onUnmounted(() => {
           <v-btn color="primary" :loading="isSaving" :disabled="!canEditForm" @click="saveEvent">
             {{ t('common.save') }}
           </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      </template>
+    </AppModal>
   </div>
 </template>
 
