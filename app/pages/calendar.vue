@@ -22,6 +22,18 @@ interface PrivateCalendarEvent {
   backgroundColor: string | null
   borderColor: string | null
   textColor: string | null
+  organizerName?: string | null
+  organizerEmail?: string | null
+  attendees?: Array<{
+    email: string
+    displayName?: string | null
+    responseStatus?: string | null
+    optional?: boolean
+    organizer?: boolean
+    self?: boolean
+    resource?: boolean
+  }>
+  metadata?: Record<string, unknown> | null
 }
 
 interface PrivateEventsResponse {
@@ -43,6 +55,8 @@ interface PresetCalendarEvent {
   titleKey: string
   color: string
 }
+
+type CalendarRangeFilter = 'next7days' | 'nextMonth' | 'next3months'
 
 interface GoogleCalendarEvent {
   id: string
@@ -90,7 +104,11 @@ const lastGoogleSyncToken = ref('')
 const calendarEvents = ref<PrivateCalendarEvent[]>([])
 const upcomingEvents = ref<PrivateCalendarEvent[]>([])
 const selectedEvent = ref<PrivateCalendarEvent | null>(null)
+const selectedEventDetails = ref<PrivateCalendarEvent | null>(null)
+const isDetailsLoading = ref(false)
+const isEditMode = ref(false)
 const dialogOpen = ref(false)
+const selectedRangeFilter = ref<CalendarRangeFilter>('next7days')
 const presetEventsHost = ref<HTMLElement | null>(null)
 let presetEventsDraggable: Draggable | null = null
 
@@ -104,19 +122,47 @@ const form = reactive({
 })
 
 const isEditing = computed(() => Boolean(selectedEvent.value))
+const activeEvent = computed(
+  () => selectedEventDetails.value ?? selectedEvent.value,
+)
+const eventDescriptionHtml = computed(() =>
+  formatEventDescriptionAsHtml(activeEvent.value?.description ?? ''),
+)
 const currentTimezone = computed(
   () => Intl.DateTimeFormat().resolvedOptions().timeZone,
 )
-const maskedGoogleToken = computed(() => {
-  const token = googleToken.value.trim()
-  if (!token) return ''
-  if (token.length <= 8) return token
-  return `${token.slice(0, 4)}...${token.slice(-4)}`
+const canEditForm = computed(() => !isEditing.value || isEditMode.value)
+const formattedEventRange = computed(() => {
+  const event = activeEvent.value
+  if (!event?.startAt || !event?.endAt) return ''
+  return `${new Date(event.startAt).toLocaleString(locale.value)} → ${new Date(event.endAt).toLocaleString(locale.value)}`
 })
+const rangeFilterOptions = computed(() => [
+  { title: 'Next 7 Days', value: 'next7days' as const },
+  { title: 'Next Month', value: 'nextMonth' as const },
+  { title: 'Next 3 Months', value: 'next3months' as const },
+])
 
 const fullCalendarEvents = computed(() => {
+  const now = Date.now()
+  const rangeEnd = new Date()
+
+  if (selectedRangeFilter.value === 'next7days') {
+    rangeEnd.setDate(rangeEnd.getDate() + 7)
+  } else if (selectedRangeFilter.value === 'nextMonth') {
+    rangeEnd.setMonth(rangeEnd.getMonth() + 1)
+  } else {
+    rangeEnd.setMonth(rangeEnd.getMonth() + 3)
+  }
+
+  const rangeEndTime = rangeEnd.getTime()
+
   return calendarEvents.value
-    .filter((event) => !event.isCancelled)
+    .filter((event) => {
+      if (event.isCancelled) return false
+      const eventStart = new Date(event.startAt).getTime()
+      return eventStart >= now && eventStart <= rangeEndTime
+    })
     .map((event) => {
       return {
         id: event.id,
@@ -212,6 +258,8 @@ function fillForm(event?: PrivateCalendarEvent) {
 
 function openCreateDialog(start?: string, end?: string) {
   selectedEvent.value = null
+  selectedEventDetails.value = null
+  isEditMode.value = true
   fillForm()
 
   if (start) form.startAt = toInputDateTime(start)
@@ -220,10 +268,50 @@ function openCreateDialog(start?: string, end?: string) {
   dialogOpen.value = true
 }
 
+async function loadEventDetails(eventId: string) {
+  isDetailsLoading.value = true
+  try {
+    const eventDetails = await privateApi.request<PrivateCalendarEvent>(
+      `/api/v1/calendar/private/events/${eventId}`,
+    )
+    selectedEventDetails.value = eventDetails
+    fillForm(eventDetails)
+  } catch (error) {
+    selectedEventDetails.value = null
+    console.error(error)
+  } finally {
+    isDetailsLoading.value = false
+  }
+}
+
+function escapeHtml(rawText: string) {
+  return rawText
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
+function formatEventDescriptionAsHtml(rawDescription: string | null) {
+  if (!rawDescription) return ''
+
+  const escapedText = escapeHtml(rawDescription)
+  const linkedText = escapedText.replace(
+    /(https?:\/\/[^\s<]+)/g,
+    '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>',
+  )
+
+  return linkedText.replace(/\n/g, '<br>')
+}
+
 function openEditDialog(event: PrivateCalendarEvent) {
   selectedEvent.value = event
+  selectedEventDetails.value = null
+  isEditMode.value = false
   fillForm(event)
   dialogOpen.value = true
+  void loadEventDetails(event.id)
 }
 
 async function loadEvents() {
@@ -576,6 +664,16 @@ onUnmounted(() => {
           >
             {{ t('pages.calendar.addEvent') }}
           </v-btn>
+          <v-select
+            v-model="selectedRangeFilter"
+            class="mb-3"
+            density="comfortable"
+            variant="outlined"
+            label="Filter"
+            :items="rangeFilterOptions"
+            item-title="title"
+            item-value="value"
+          />
           <v-card-title class="text-subtitle-1 px-0">
             {{ t('pages.calendar.presetTitle') }}
           </v-card-title>
@@ -601,14 +699,6 @@ onUnmounted(() => {
           >
             {{ t('pages.calendar.googleConnect') }}
           </v-btn>
-          <v-alert
-            v-if="googleToken"
-            type="success"
-            variant="tonal"
-            class="mt-3"
-          >
-            {{ t('pages.calendar.googleToken') }}: {{ maskedGoogleToken }}
-          </v-alert>
         </template>
       </template>
       <template #right>
@@ -627,25 +717,6 @@ onUnmounted(() => {
           </v-list>
           <v-card-text v-else class="text-medium-emphasis">
             {{ t('pages.calendar.noUpcoming') }}
-          </v-card-text>
-
-          <v-divider class="my-3" />
-          <v-card-title class="text-subtitle-1">
-            {{ t('pages.calendar.googleEventsTitle') }}
-          </v-card-title>
-          <v-list v-if="googleEvents.length">
-            <v-list-item
-              v-for="event in googleEvents"
-              :key="event.id"
-              :title="event.title"
-              :subtitle="new Date(event.startAt).toLocaleString(locale)"
-              prepend-icon="mdi-google-calendar"
-              :href="event.htmlLink || undefined"
-              target="_blank"
-            />
-          </v-list>
-          <v-card-text v-else class="text-medium-emphasis">
-            {{ t('pages.calendar.noGoogleEvents') }}
           </v-card-text>
         </template>
       </template>
@@ -670,25 +741,45 @@ onUnmounted(() => {
       </template>
     </v-container>
 
-    <v-dialog v-model="dialogOpen" max-width="560">
-      <v-card>
-        <v-card-title>
-          {{
-            isEditing
-              ? t('pages.calendar.editDialogTitle')
-              : t('pages.calendar.createDialogTitle')
-          }}
-        </v-card-title>
-        <v-card-text>
+    <AppModal
+      v-model="dialogOpen"
+      :title="isEditing ? t('pages.calendar.editDialogTitle') : t('pages.calendar.createDialogTitle')"
+      :max-width="560"
+    >
+      <template #default>
+          <v-alert v-if="isDetailsLoading" type="info" variant="tonal" class="mb-3">
+            Chargement des détails de l'événement...
+          </v-alert>
+          <v-card
+            v-if="isEditing && (activeEvent?.description || activeEvent?.organizerEmail)"
+            variant="tonal"
+            class="mb-4"
+          >
+            <v-card-text class="text-body-2">
+              <div v-if="activeEvent?.description" class="mb-2">
+                <div class="font-weight-medium mb-1">Description (HTML)</div>
+                <!-- eslint-disable-next-line vue/no-v-html -->
+                <div class="event-html-description" v-html="eventDescriptionHtml" />
+              </div>
+              <div v-if="formattedEventRange" class="text-medium-emphasis mb-2">
+                Date: {{ formattedEventRange }}
+              </div>
+              <div v-if="activeEvent?.organizerEmail" class="text-medium-emphasis">
+                Organisateur: {{ activeEvent.organizerName || activeEvent.organizerEmail }}
+              </div>
+            </v-card-text>
+          </v-card>
           <v-text-field
             v-model="form.title"
             :label="t('pages.calendar.form.title')"
             autofocus
+            :disabled="!canEditForm"
           />
           <v-textarea
             v-model="form.description"
             :label="t('pages.calendar.form.description')"
             rows="3"
+            :disabled="!canEditForm"
           />
           <v-row>
             <v-col cols="12" md="6">
@@ -696,6 +787,7 @@ onUnmounted(() => {
                 v-model="form.startAt"
                 :label="t('pages.calendar.form.start')"
                 type="datetime-local"
+                :disabled="!canEditForm"
               />
             </v-col>
             <v-col cols="12" md="6">
@@ -703,29 +795,42 @@ onUnmounted(() => {
                 v-model="form.endAt"
                 :label="t('pages.calendar.form.end')"
                 type="datetime-local"
+                :disabled="!canEditForm"
               />
             </v-col>
           </v-row>
           <v-text-field
             v-model="form.location"
             :label="t('pages.calendar.form.location')"
+            :disabled="!canEditForm"
           />
           <v-switch
             v-model="form.isAllDay"
             :label="t('pages.calendar.form.allDay')"
             color="primary"
+            :disabled="!canEditForm"
           />
-        </v-card-text>
-        <v-card-actions>
+      </template>
+      <template #actions>
           <v-btn variant="text" @click="dialogOpen = false">
             {{ t('common.cancel') }}
           </v-btn>
           <v-spacer />
           <v-btn
+            v-if="isEditing && !isEditMode"
+            color="primary"
+            variant="tonal"
+            prepend-icon="mdi-pencil-outline"
+            @click="isEditMode = true"
+          >
+            Edit
+          </v-btn>
+          <v-btn
             v-if="isEditing"
             color="warning"
             variant="text"
             :loading="isSaving"
+            :disabled="!canEditForm"
             @click="cancelEvent"
           >
             {{ t('pages.calendar.cancelEvent') }}
@@ -735,16 +840,16 @@ onUnmounted(() => {
             color="error"
             variant="text"
             :loading="isSaving"
+            :disabled="!canEditForm"
             @click="deleteEvent"
           >
             {{ t('common.delete') }}
           </v-btn>
-          <v-btn color="primary" :loading="isSaving" @click="saveEvent">
+          <v-btn color="primary" :loading="isSaving" :disabled="!canEditForm" @click="saveEvent">
             {{ t('common.save') }}
           </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      </template>
+    </AppModal>
   </div>
 </template>
 
@@ -792,5 +897,14 @@ onUnmounted(() => {
 
 :deep(.v-theme--dark .fc .fc-col-header-cell-cushion) {
   color: rgb(var(--v-theme-on-surface));
+}
+
+.event-html-description {
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.event-html-description :deep(a) {
+  color: rgb(var(--v-theme-primary));
 }
 </style>
