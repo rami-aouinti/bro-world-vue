@@ -95,9 +95,7 @@ async function createSprint() {
     />
 
     <v-container fluid>
-      <v-alert v-if="pending" type="info" variant="tonal" class="mb-4"
-        >{{ t('world.crm.sprints.alerts.loadingList') }}</v-alert
-      >
+      <CrmPageSkeleton v-if="pending" variant="list" :cards="6" />
       <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4"
         >{{ t('world.crm.sprints.alerts.loadListError') }}</v-alert
       >

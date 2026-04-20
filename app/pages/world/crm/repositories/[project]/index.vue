@@ -57,9 +57,7 @@ const pullRequestSummary = computed(() => dashboard.value?.pullRequests ?? {})
         {{ t('world.crm.repositories.actions.backToProjects', 'Back to projects') }}
       </v-btn>
 
-      <v-alert v-if="pendingProject || pendingDashboard" type="info" variant="tonal" class="mb-4">
-        {{ t('world.crm.repositories.alerts.loadingRepositories', 'Loading repositories...') }}
-      </v-alert>
+      <CrmPageSkeleton v-if="pendingProject || pendingDashboard" variant="list" :cards="6" />
       <v-alert v-else-if="projectError || dashboardError" type="error" variant="tonal" class="mb-4">
         {{ t('world.crm.repositories.alerts.loadingRepositoriesError', 'Unable to load repositories.') }}
       </v-alert>

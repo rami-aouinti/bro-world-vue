@@ -104,14 +104,7 @@ const utilityCards = computed(() => [
         </p>
       </v-card>
 
-      <v-alert
-        v-if="dashboardPending"
-        type="info"
-        variant="tonal"
-        class="mb-4"
-      >
-        {{ t('world.crm.admin.alerts.loadingDashboard') }}
-      </v-alert>
+      <CrmPageSkeleton v-if="dashboardPending" variant="dashboard" />
 
       <v-row v-else class="mb-6">
         <v-col

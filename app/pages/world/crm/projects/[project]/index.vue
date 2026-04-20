@@ -96,7 +96,7 @@ async function detachAssignee(userId: string) {
     <v-container fluid>
       <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push('/world/crm/projects')">{{ t('world.crm.projects.actions.backToList') }}</v-btn>
 
-    <v-alert v-if="pending" type="info" variant="tonal">{{ t('world.crm.projects.alerts.loadingDetail') }}</v-alert>
+    <CrmPageSkeleton v-if="pending" variant="detail" />
     <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.projects.alerts.notFound') }}</v-alert>
 
     <v-row v-else-if="data">

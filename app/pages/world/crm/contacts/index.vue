@@ -21,7 +21,7 @@ const { data, pending, error } = await useFetch<ApiListResponse<CrmContactItem>>
     />
     <v-container fluid>
       <h1 class="text-h5 mb-4">{{ t('world.crm.contacts.list.title', 'Contacts') }}</h1>
-      <v-alert v-if="pending" type="info" variant="tonal">Chargement...</v-alert>
+      <CrmPageSkeleton v-if="pending" variant="list" :cards="6" />
       <v-alert v-else-if="error" type="error" variant="tonal">Erreur de chargement.</v-alert>
       <v-row v-else>
         <v-col v-for="contact in data?.items ?? []" :key="contact.id" cols="12" md="6" lg="4">

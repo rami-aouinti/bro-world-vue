@@ -49,7 +49,7 @@ async function createRequest() {
         <v-btn color="primary" prepend-icon="mdi-plus" @click="createDialog = true">{{ t('world.crm.taskRequests.actions.new') }}</v-btn>
       </div>
 
-    <v-alert v-if="pending" type="info" variant="tonal">{{ t('world.crm.taskRequests.alerts.loadingList') }}</v-alert>
+    <CrmPageSkeleton v-if="pending" variant="list" :cards="6" />
     <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.taskRequests.alerts.loadListError') }}</v-alert>
     <v-row v-else>
       <v-col v-for="request in data?.items ?? []" :key="request.id" cols="12" md="6" lg="4">

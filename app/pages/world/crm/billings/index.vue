@@ -21,7 +21,7 @@ const { data, pending, error } = await useFetch<ApiListResponse<CrmBillingItem>>
     />
     <v-container fluid>
       <h1 class="text-h5 mb-4">{{ t('world.crm.billings.list.title') }}</h1>
-      <v-alert v-if="pending" type="info" variant="tonal">{{ t('world.crm.billings.alerts.loading') }}</v-alert>
+      <CrmPageSkeleton v-if="pending" variant="list" :cards="6" />
       <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.billings.alerts.loadError') }}</v-alert>
       <v-row v-else>
         <v-col v-for="billing in data?.items ?? []" :key="billing.id" cols="12" md="6" lg="4">
