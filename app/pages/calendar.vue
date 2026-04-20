@@ -86,6 +86,7 @@ const isGoogleConnecting = ref(false)
 const errorMessage = ref('')
 const googleToken = ref('')
 const googleEvents = ref<GoogleCalendarEvent[]>([])
+const lastGoogleSyncToken = ref('')
 const calendarEvents = ref<PrivateCalendarEvent[]>([])
 const upcomingEvents = ref<PrivateCalendarEvent[]>([])
 const selectedEvent = ref<PrivateCalendarEvent | null>(null)
@@ -318,12 +319,31 @@ async function onGoogleOAuthMessage(rawEvent: MessageEvent<unknown>) {
 
   googleToken.value = token
 
+  if (lastGoogleSyncToken.value === token) {
+    googleEvents.value = data.events ?? []
+    isGoogleConnecting.value = false
+    return
+  }
+
   try {
     await syncGoogleCalendar({ accessToken: token })
+    lastGoogleSyncToken.value = token
     googleEvents.value = data.events ?? []
     await loadEvents()
     errorMessage.value = ''
   } catch (error) {
+    const status = (error as { response?: { status?: number } }).response
+      ?.status
+
+    if (status === 502) {
+      googleEvents.value = data.events ?? []
+      console.warn(
+        'Google sync endpoint returned 502 after OAuth success. Keeping OAuth token and Google events.',
+        error,
+      )
+      return
+    }
+
     errorMessage.value = t('pages.calendar.errors.googleConnectFailed')
     console.error(error)
   } finally {
