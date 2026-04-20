@@ -2,6 +2,7 @@
 import { privateApi } from '~/utils/http/privateApi'
 
 definePageMeta({ title: 'Learning Paths' })
+const { t } = useI18n()
 
 interface CohortSession {
   id: string
@@ -196,8 +197,8 @@ function createCohort() {
   selectedCohortId.value = cohort.id
   addNotification(
     'calendar',
-    'Nouvelle cohorte créée',
-    `La cohorte ${cohort.pathName} est prête avec ${cohort.sessions.length} session(s).`,
+    t('world.learning.paths.notifications.cohortCreatedTitle', 'New cohort created'),
+    `Cohort ${cohort.pathName} is ready with ${cohort.sessions.length} session(s).`,
   )
 
   newCohortForm.pathName = ''
@@ -225,15 +226,15 @@ function registerLearner() {
     cohort.registrations.push(learner)
     addNotification(
       'registration',
-      'Inscription confirmée',
-      `${learner} inscrit(e) sur ${cohort.pathName}.`,
+      t('world.learning.paths.notifications.registrationConfirmedTitle', 'Registration confirmed'),
+      `${learner} registered in ${cohort.pathName}.`,
     )
   } else {
     cohort.waitlist.push(learner)
     addNotification(
       'waitlist',
-      'Liste d’attente activée',
-      `${learner} ajouté(e) en attente sur ${cohort.pathName}.`,
+      t('world.learning.paths.notifications.waitlistEnabledTitle', 'Waitlist enabled'),
+      `${learner} added to waitlist for ${cohort.pathName}.`,
     )
   }
 
@@ -255,8 +256,8 @@ function promoteFromWaitlist() {
   cohort.registrations.push(next)
   addNotification(
     'registration',
-    'Promotion depuis attente',
-    `${next} passe de la liste d’attente aux inscrits sur ${cohort.pathName}.`,
+    t('world.learning.paths.notifications.promotedFromWaitlistTitle', 'Promoted from waitlist'),
+    `${next} moved from waitlist to registrations in ${cohort.pathName}.`,
   )
 }
 
@@ -272,7 +273,7 @@ async function syncSessionsWithCalendar() {
         method: 'POST',
         body: {
           title: `[Learning] ${cohort.pathName} · ${session.title}`,
-          description: `Cohorte ${cohort.id} · Formateurs: ${cohort.trainers.join(', ') || 'TBD'}`,
+          description: `Cohort ${cohort.id} · Trainers: ${cohort.trainers.join(', ') || 'TBD'}`,
           startAt: session.startAt,
           endAt: session.endAt,
           isAllDay: false,
@@ -290,7 +291,7 @@ async function syncSessionsWithCalendar() {
         method: 'POST',
         body: {
           title: `[Reminder] ${cohort.pathName} · ${session.title}`,
-          description: `Rappel automatique J-1 pour la session ${session.title}`,
+          description: `Automatic D-1 reminder for session ${session.title}`,
           startAt: reminderStart.toISOString(),
           endAt: reminderEnd.toISOString(),
           isAllDay: false,
@@ -301,23 +302,23 @@ async function syncSessionsWithCalendar() {
 
       addNotification(
         'reminder',
-        'Rappel planifié',
-        `Rappel automatique créé pour la session ${session.title} (${cohort.pathName}).`,
+        t('world.learning.paths.notifications.reminderScheduledTitle', 'Reminder scheduled'),
+        `Automatic reminder created for session ${session.title} (${cohort.pathName}).`,
       )
     }
 
     cohort.syncedAt = new Date().toISOString()
     addNotification(
       'calendar',
-      'Synchronisation calendrier réussie',
-      `${cohort.sessions.length} session(s) synchronisées vers le module calendrier.`,
+      t('world.learning.paths.notifications.calendarSyncSuccessTitle', 'Calendar sync successful'),
+      `${cohort.sessions.length} session(s) synced to the calendar module.`,
     )
   } catch (error) {
     console.error(error)
     addNotification(
       'calendar',
-      'Erreur de synchronisation',
-      'La synchronisation calendrier a échoué. Vérifie la connectivité API.',
+      t('world.learning.paths.notifications.calendarSyncErrorTitle', 'Sync error'),
+      'Calendar sync failed. Check API connectivity.',
     )
   } finally {
     isSyncingCalendar.value = false
@@ -328,68 +329,67 @@ async function syncSessionsWithCalendar() {
 <template>
   <div>
     <WorldModuleDrawers
-      module-title="Learning"
+      :module-title="t('world.learning.label', 'Learning')"
       module-icon="mdi-school-outline"
-      module-description="Navigation complète du module Learning."
+      :module-description="t('world.learning.paths.moduleDescription', 'Full navigation for the Learning module.')"
       :nav-items="learningNavItems"
-      action-label="Créer une cohorte"
+      :action-label="t('world.learning.paths.actions.createCohort', 'Create cohort')"
     />
 
     <v-container fluid>
       <v-row>
         <v-col cols="12" lg="4">
           <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
-            <h2 class="text-h6 mb-1">Nouvelle cohorte</h2>
+            <h2 class="text-h6 mb-1">{{ t('world.learning.paths.sections.newCohort', 'New cohort') }}</h2>
             <p class="text-medium-emphasis mb-4">
-              Parcours par cohortes avec capacité, formateurs assignés et dates
-              de session.
+              {{ t('world.learning.paths.cohortDescription', 'Cohort-based paths with capacity, assigned trainers, and session dates.') }}
             </p>
             <v-text-field
               v-model="newCohortForm.pathName"
-              label="Parcours"
+              :label="t('world.learning.paths.fields.path', 'Path')"
               variant="outlined"
               class="mb-2"
             />
             <v-text-field
               v-model.number="newCohortForm.capacity"
               type="number"
-              label="Capacité"
+              :label="t('world.learning.paths.fields.capacity', 'Capacity')"
               min="1"
               variant="outlined"
               class="mb-2"
             />
             <v-text-field
               v-model="newCohortForm.trainersInput"
-              label="Formateurs (séparés par des virgules)"
+              :label="t('world.learning.paths.fields.trainers', 'Trainers (comma-separated)')"
               variant="outlined"
               class="mb-4"
             />
 
             <v-divider class="mb-4" />
-            <h3 class="text-subtitle-1 mb-2">Ajouter une session</h3>
+            <h3 class="text-subtitle-1 mb-2">{{ t('world.learning.paths.sections.addSession', 'Add a session') }}</h3>
             <v-text-field
               v-model="newSessionForm.title"
-              label="Titre session"
+              :label="t('world.learning.paths.fields.sessionTitle', 'Session title')"
               variant="outlined"
               class="mb-2"
             />
             <v-text-field
               v-model="newSessionForm.startAt"
               type="datetime-local"
-              label="Début"
+              :label="t('world.learning.paths.fields.start', 'Start')"
               variant="outlined"
               class="mb-2"
             />
             <v-text-field
               v-model="newSessionForm.endAt"
               type="datetime-local"
-              label="Fin"
+              :label="t('world.learning.paths.fields.end', 'End')"
               variant="outlined"
               class="mb-2"
             />
             <v-text-field
               v-model="newSessionForm.location"
-              label="Salle / lieu"
+              :label="t('world.learning.paths.fields.location', 'Room / location')"
               variant="outlined"
               class="mb-2"
             />
@@ -401,7 +401,7 @@ async function syncSessionsWithCalendar() {
               class="mb-3"
               @click="addDraftSession"
             >
-              Ajouter au brouillon de cohortes
+              {{ t('world.learning.paths.actions.addToDraft', 'Add to cohort draft') }}
             </v-btn>
 
             <v-list v-if="draftSessions.length" density="compact" class="mb-4">
@@ -420,7 +420,7 @@ async function syncSessionsWithCalendar() {
               prepend-icon="mdi-content-save"
               @click="createCohort"
             >
-              Créer la cohorte
+              {{ t('world.learning.paths.actions.createCohort', 'Create cohort') }}
             </v-btn>
           </v-card>
         </v-col>
@@ -431,16 +431,15 @@ async function syncSessionsWithCalendar() {
               class="d-flex align-center justify-space-between flex-wrap ga-2 mb-4"
             >
               <div>
-                <h2 class="text-h6 mb-1">Pilotage des cohortes</h2>
+                <h2 class="text-h6 mb-1">{{ t('world.learning.paths.sections.cohortOperations', 'Cohort operations') }}</h2>
                 <p class="text-medium-emphasis mb-0">
-                  Synchronisation avec
-                  <NuxtLink to="/calendar">le calendrier</NuxtLink>, gestion
-                  inscriptions/attente et rappels.
+                  {{ t('world.learning.paths.labels.syncWith', 'Sync with') }}
+                  <NuxtLink to="/calendar">{{ t('world.learning.paths.labels.calendar', 'calendar') }}</NuxtLink>, {{ t('world.learning.paths.labels.registrationsAndReminders', 'manage registrations/waitlist and reminders.') }}
                 </p>
               </div>
               <v-select
                 v-model="selectedCohortId"
-                label="Cohorte"
+                :label="t('world.learning.paths.fields.cohort', 'Cohort')"
                 :items="
                   cohorts.map((cohort) => ({
                     title: `${cohort.pathName} (${cohort.id})`,
@@ -459,7 +458,7 @@ async function syncSessionsWithCalendar() {
                 <v-col cols="12" md="6">
                   <v-card variant="outlined" class="pa-3 h-100">
                     <p class="text-caption text-medium-emphasis mb-1">
-                      Capacité
+                      {{ t('world.learning.paths.labels.capacity', 'Capacity') }}
                     </p>
                     <p class="text-h6 mb-2">
                       {{ selectedCohort.registrations.length }} /
@@ -472,14 +471,14 @@ async function syncSessionsWithCalendar() {
                       rounded
                     />
                     <p class="text-caption mt-2 mb-0">
-                      {{ occupancyRate }}% de remplissage
+                      {{ occupancyRate }}% {{ t('world.learning.paths.labels.filled', 'filled') }}
                     </p>
                   </v-card>
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-card variant="outlined" class="pa-3 h-100">
                     <p class="text-caption text-medium-emphasis mb-1">
-                      Formateurs assignés
+                      {{ t('world.learning.paths.labels.assignedTrainers', 'Assigned trainers') }}
                     </p>
                     <v-chip-group>
                       <v-chip
@@ -495,15 +494,15 @@ async function syncSessionsWithCalendar() {
                         v-if="!selectedCohort.trainers.length"
                         size="small"
                         variant="outlined"
-                        >Aucun formateur assigné</v-chip
+                        >{{ t('world.learning.paths.alerts.noAssignedTrainer', 'No assigned trainer') }}</v-chip
                       >
                     </v-chip-group>
                     <p class="text-caption mt-2 mb-0">
-                      Dernière synchro:
+                      {{ t('world.learning.paths.labels.lastSync', 'Last sync:') }}
                       {{
                         selectedCohort.syncedAt
                           ? new Date(selectedCohort.syncedAt).toLocaleString()
-                          : 'Jamais'
+                          : t('world.learning.paths.labels.never', 'Never')
                       }}
                     </p>
                   </v-card>
@@ -512,7 +511,7 @@ async function syncSessionsWithCalendar() {
 
               <v-divider class="my-4" />
 
-              <h3 class="text-subtitle-1 mb-2">Sessions programmées</h3>
+              <h3 class="text-subtitle-1 mb-2">{{ t('world.learning.paths.sections.scheduledSessions', 'Scheduled sessions') }}</h3>
               <v-list density="comfortable" class="mb-4">
                 <v-list-item
                   v-for="session in selectedCohort.sessions"
@@ -523,8 +522,8 @@ async function syncSessionsWithCalendar() {
                 />
                 <v-list-item
                   v-if="!selectedCohort.sessions.length"
-                  title="Aucune session"
-                  subtitle="Ajoute des sessions dans le formulaire de gauche."
+                  :title="t('world.learning.paths.alerts.noSession', 'No session')"
+                  :subtitle="t('world.learning.paths.alerts.addSessionInLeftForm', 'Add sessions in the form on the left.')"
                 />
               </v-list>
 
@@ -535,19 +534,19 @@ async function syncSessionsWithCalendar() {
                 class="mb-6"
                 @click="syncSessionsWithCalendar"
               >
-                Synchroniser vers calendrier + rappels
+                {{ t('world.learning.paths.actions.syncCalendarAndReminders', 'Sync to calendar + reminders') }}
               </v-btn>
 
               <v-divider class="mb-4" />
 
               <h3 class="text-subtitle-1 mb-2">
-                Inscriptions & liste d’attente
+                {{ t('world.learning.paths.sections.registrationAndWaitlist', 'Registrations & waitlist') }}
               </h3>
               <v-row class="mb-1">
                 <v-col cols="12" md="8">
                   <v-text-field
                     v-model="registrationForm.learnerEmail"
-                    label="Email apprenant"
+                    :label="t('world.learning.paths.fields.learnerEmail', 'Learner email')"
                     type="email"
                     variant="outlined"
                     density="comfortable"
@@ -555,7 +554,7 @@ async function syncSessionsWithCalendar() {
                 </v-col>
                 <v-col cols="12" md="4" class="d-flex ga-2">
                   <v-btn color="primary" block @click="registerLearner"
-                    >Inscrire</v-btn
+                    >{{ t('world.learning.paths.actions.register', 'Register') }}</v-btn
                   >
                 </v-col>
               </v-row>
@@ -564,7 +563,7 @@ async function syncSessionsWithCalendar() {
                 <v-col cols="12" md="6">
                   <v-card variant="outlined" class="pa-3 h-100">
                     <p class="text-caption text-medium-emphasis mb-2">
-                      Inscrits
+                      {{ t('world.learning.paths.labels.registered', 'Registered') }}
                     </p>
                     <v-list density="compact">
                       <v-list-item
@@ -575,7 +574,7 @@ async function syncSessionsWithCalendar() {
                       />
                       <v-list-item
                         v-if="!selectedCohort.registrations.length"
-                        title="Aucun inscrit"
+                        :title="t('world.learning.paths.alerts.noRegisteredLearner', 'No registered learner')"
                       />
                     </v-list>
                   </v-card>
@@ -584,7 +583,7 @@ async function syncSessionsWithCalendar() {
                   <v-card variant="outlined" class="pa-3 h-100">
                     <div class="d-flex align-center justify-space-between mb-2">
                       <p class="text-caption text-medium-emphasis mb-0">
-                        Liste d’attente
+                        {{ t('world.learning.paths.labels.waitlist', 'Waitlist') }}
                       </p>
                       <v-btn
                         size="small"
@@ -592,7 +591,7 @@ async function syncSessionsWithCalendar() {
                         prepend-icon="mdi-account-arrow-up"
                         @click="promoteFromWaitlist"
                       >
-                        Promouvoir
+                        {{ t('world.learning.paths.actions.promote', 'Promote') }}
                       </v-btn>
                     </div>
                     <v-list density="compact">
@@ -604,7 +603,7 @@ async function syncSessionsWithCalendar() {
                       />
                       <v-list-item
                         v-if="!selectedCohort.waitlist.length"
-                        title="Pas d’attente"
+                        :title="t('world.learning.paths.alerts.emptyWaitlist', 'No waitlist')"
                       />
                     </v-list>
                   </v-card>
@@ -614,7 +613,7 @@ async function syncSessionsWithCalendar() {
           </v-card>
 
           <v-card rounded="xl" class="pa-4 postcard-gradient-card">
-            <h3 class="text-subtitle-1 mb-3">Notifications automatiques</h3>
+            <h3 class="text-subtitle-1 mb-3">{{ t('world.learning.paths.sections.automaticNotifications', 'Automatic notifications') }}</h3>
             <v-list density="comfortable">
               <v-list-item
                 v-for="item in sortedNotifications"
@@ -631,8 +630,8 @@ async function syncSessionsWithCalendar() {
               />
               <v-list-item
                 v-if="!sortedNotifications.length"
-                title="Aucune notification"
-                subtitle="Les notifications seront créées automatiquement lors des inscriptions, promotions et synchronisations calendrier."
+                :title="t('world.learning.paths.alerts.noNotification', 'No notification')"
+                :subtitle="t('world.learning.paths.notifications.autoSubtitle', 'Notifications are automatically created during registrations, promotions, and calendar synchronizations.')"
               />
             </v-list>
           </v-card>

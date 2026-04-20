@@ -29,6 +29,7 @@ const learningNavItems = [
 ]
 
 const learningStore = useWorldLearningStore()
+const { t } = useI18n()
 await learningStore.fetchCourses()
 await learningStore.fetchAnalytics()
 const selectedCourseId = computed(() => learningStore.items[0]?.id ?? '')
@@ -117,9 +118,9 @@ const updateTracking = async () => {
 <template>
   <div>
     <WorldModuleDrawers
-      module-title="Learning"
+      :module-title="t('world.learning.label', 'Learning')"
       module-icon="mdi-school-outline"
-      module-description="Gestion des règles de niveau, suivi score/temps/tentatives et certificats vérifiables."
+      :module-description="t('world.learning.levels.moduleDescription', 'Manage level rules, score/time/attempt tracking, and verifiable certificates.')"
       :nav-items="learningNavItems"
       action-label="Track learner"
       action-icon="mdi-chart-line"
@@ -208,9 +209,9 @@ const updateTracking = async () => {
         <v-col cols="12" lg="8">
           <WorldFeatureScaffold
             title="Learning - Levels"
-            subtitle="Progression par utilisateur avec score, temps passé, tentatives et certificat PDF hashé."
+            :subtitle="t('world.learning.levels.subtitle', 'Per-user progression with score, time spent, attempts, and hashed PDF certificate.')"
             form-title="Certificate verification"
-            form-description="Chaque certificat avancé reçoit un ID unique + hash SHA-256 + PDF base64 pour audit."
+            :form-description="t('world.learning.levels.formDescription', 'Each advanced certificate gets a unique ID, SHA-256 hash, and base64 PDF for audit.')"
             :fields="[
               {
                 key: 'verificationId',

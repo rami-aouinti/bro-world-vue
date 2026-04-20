@@ -3,7 +3,7 @@ import { useWorldLearningStore } from '~/stores/worldLearning'
 
 definePageMeta({
   title: 'world.learning.label',
-  description: 'Suivez les parcours, cours et performances apprenants dans Bro World Learning.',
+  description: 'world.learning.seo.metaDescription',
 })
 
 const { t } = useI18n()
@@ -13,22 +13,30 @@ const pageUrl = new URL('/world/learning', siteUrl).toString()
 const seoImage = new URL('/img/platform/general/learning.png', siteUrl).toString()
 
 useSeoMeta({
-  title: 'Bro World Learning | Plateforme de formation et suivi des apprenants',
-  description:
-    'Bro World Learning vous aide à piloter cours, parcours pédagogiques, analytics et progression des apprenants.',
-  keywords:
-    'bro world learning, lms, plateforme e-learning, formation en ligne, suivi apprenants, analytics learning',
+  title: t('world.learning.seo.title', 'Bro World Learning | Learning platform and learner tracking'),
+  description: t(
+    'world.learning.seo.description',
+    'Bro World Learning helps you manage courses, learning paths, analytics, and learner progress.',
+  ),
+  keywords: t(
+    'world.learning.seo.keywords',
+    'bro world learning, lms, e-learning platform, online training, learner tracking, learning analytics',
+  ),
   robots: 'index, follow, max-image-preview:large',
-  ogTitle: 'Bro World Learning | Plateforme de formation',
-  ogDescription:
-    'Suivez vos cours, performances et certifications avec Bro World Learning.',
+  ogTitle: t('world.learning.seo.ogTitle', 'Bro World Learning | Learning platform'),
+  ogDescription: t(
+    'world.learning.seo.ogDescription',
+    'Track your courses, performance, and certifications with Bro World Learning.',
+  ),
   ogType: 'website',
   ogUrl: pageUrl,
   ogImage: seoImage,
   ogImageAlt: 'Bro World Learning analytics',
-  twitterTitle: 'Bro World Learning | Plateforme de formation',
-  twitterDescription:
-    'Suivez vos cours, performances et certifications avec Bro World Learning.',
+  twitterTitle: t('world.learning.seo.twitterTitle', 'Bro World Learning | Learning platform'),
+  twitterDescription: t(
+    'world.learning.seo.twitterDescription',
+    'Track your courses, performance, and certifications with Bro World Learning.',
+  ),
   twitterImage: seoImage,
   twitterCard: 'summary_large_image',
 })
