@@ -114,6 +114,20 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
+    oauth: {
+      facebook: {
+        clientId:
+          process.env.FACEBOOK_APP_ID ||
+          process.env.NUXT_OAUTH_FACEBOOK_CLIENT_ID ||
+          '',
+        clientSecret:
+          process.env.FACEBOOK_APP_SECRET ||
+          process.env.NUXT_OAUTH_FACEBOOK_CLIENT_SECRET ||
+          '',
+        redirectURL: process.env.FACEBOOK_REDIRECT_URI || '',
+        fields: ['id', 'name', 'email'],
+      },
+    },
     databaseUrl: process.env.DATABASE_URL || '',
     redis: {
       url: '',
