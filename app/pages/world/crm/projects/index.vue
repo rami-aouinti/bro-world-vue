@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type {
   ApiListResponse,
+  CrmCompanyItem,
   CrmIdResponse,
   CrmProjectCreatePayload,
   CrmProjectItem,
@@ -54,6 +55,9 @@ const createPayload = reactive<CrmProjectCreatePayload>({
 const { data, pending, error, refresh } = await useFetch<ApiListResponse<CrmProjectListItem>>(
   '/api/crm/general/projects',
 )
+const { data: companiesData } = await useFetch<ApiListResponse<CrmCompanyItem>>(
+  '/api/crm/general/companies',
+)
 
 const filteredProjects = computed(() => {
   const query = search.value.trim().toLowerCase()
@@ -92,6 +96,23 @@ const projectStatusOptions = computed(() =>
 )
 const provisioningOptions = computed(() =>
   Array.from(new Set((data.value?.items ?? []).map((project) => project.provisioning?.state).filter(Boolean))),
+)
+const projectCreateStatusOptions = computed(() =>
+  Array.from(
+    new Set([
+      'planned',
+      'in_progress',
+      'on_hold',
+      'completed',
+      ...projectStatusOptions.value,
+    ]),
+  ),
+)
+const companyOptions = computed(() =>
+  (companiesData.value?.items ?? []).map((company) => ({
+    title: company.name,
+    value: company.id,
+  })),
 )
 
 const totalPages = computed(() =>
@@ -251,13 +272,26 @@ async function deleteProject() {
 
     <AppModal v-if="isRootAdmin" v-model="createDialog" :title="t('world.crm.projects.modal.createTitle')" :max-width="720">
       <v-row>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.companyId" :label="t('world.crm.projects.form.companyId')" required /></v-col>
+        <v-col cols="12" md="6">
+          <AppSelect
+            v-model="createPayload.companyId"
+            :items="companyOptions"
+            :label="t('world.crm.projects.form.companyId')"
+            required
+          />
+        </v-col>
         <v-col cols="12" md="6"><v-text-field v-model="createPayload.name" :label="t('world.crm.projects.form.name')" required /></v-col>
         <v-col cols="12" md="6"><v-text-field v-model="createPayload.code" :label="t('world.crm.projects.form.code')" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.status" :label="t('world.crm.projects.form.status')" /></v-col>
+        <v-col cols="12" md="6">
+          <AppSelect
+            v-model="createPayload.status"
+            :items="projectCreateStatusOptions"
+            :label="t('world.crm.projects.form.status')"
+          />
+        </v-col>
         <v-col cols="12"><v-textarea v-model="createPayload.description" :label="t('world.crm.projects.form.description')" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.startedAt" :label="t('world.crm.projects.form.startedAt')" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.dueAt" :label="t('world.crm.projects.form.dueAt')" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.startedAt" :label="t('world.crm.projects.form.startedAt')" type="date" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.dueAt" :label="t('world.crm.projects.form.dueAt')" type="date" /></v-col>
       </v-row>
       <template #actions>
         <v-btn variant="text" @click="createDialog = false">{{ t('world.crm.projects.actions.cancel') }}</v-btn>

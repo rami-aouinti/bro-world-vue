@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import type { CrmIdResponse, CrmSprintCreatePayload } from '~~/server/types/api/crm-general'
+import type {
+  ApiListResponse,
+  CrmIdResponse,
+  CrmProjectListItem,
+  CrmSprintCreatePayload,
+} from '~~/server/types/api/crm-general'
 
 interface CrmSprintItem {
   id: string
@@ -49,6 +54,9 @@ const createPayload = reactive<CrmSprintCreatePayload>({
 const { data, pending, error } = await useFetch<CrmSprintResponse>(
   '/api/crm/general/sprints',
 )
+const { data: projectsData } = await useFetch<ApiListResponse<CrmProjectListItem>>(
+  '/api/crm/general/projects',
+)
 
 const filteredSprints = computed(() => {
   const query = search.value.trim().toLowerCase()
@@ -74,6 +82,15 @@ const sprintStatusOptions = computed(() =>
 )
 const sprintProjectOptions = computed(() =>
   Array.from(new Set((data.value?.items ?? []).map((sprint) => sprint.projectId).filter(Boolean))),
+)
+const sprintCreateStatusOptions = computed(() =>
+  Array.from(new Set(['planned', 'in_progress', 'completed', ...sprintStatusOptions.value])),
+)
+const sprintCreateProjectOptions = computed(() =>
+  (projectsData.value?.items ?? []).map((project) => ({
+    title: project.name,
+    value: project.id,
+  })),
 )
 
 const totalPages = computed(() =>
@@ -226,12 +243,25 @@ async function deleteSprint() {
 
     <AppModal v-if="isRootAdmin" v-model="createDialog" :title="t('world.crm.sprints.modal.createTitle')" :max-width="720">
       <v-row>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.projectId" :label="t('world.crm.sprints.form.projectId')" required /></v-col>
+        <v-col cols="12" md="6">
+          <AppSelect
+            v-model="createPayload.projectId"
+            :items="sprintCreateProjectOptions"
+            :label="t('world.crm.sprints.form.projectId')"
+            required
+          />
+        </v-col>
         <v-col cols="12" md="6"><v-text-field v-model="createPayload.name" :label="t('world.crm.sprints.form.name')" required /></v-col>
         <v-col cols="12"><v-textarea v-model="createPayload.goal" :label="t('world.crm.sprints.form.goal')" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.status" :label="t('world.crm.sprints.form.status')" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.startDate" :label="t('world.crm.sprints.form.startDate')" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.endDate" :label="t('world.crm.sprints.form.endDate')" /></v-col>
+        <v-col cols="12" md="6">
+          <AppSelect
+            v-model="createPayload.status"
+            :items="sprintCreateStatusOptions"
+            :label="t('world.crm.sprints.form.status')"
+          />
+        </v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.startDate" :label="t('world.crm.sprints.form.startDate')" type="date" /></v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.endDate" :label="t('world.crm.sprints.form.endDate')" type="date" /></v-col>
       </v-row>
       <template #actions>
         <v-btn variant="text" @click="createDialog = false">{{ t('world.crm.sprints.actions.cancel') }}</v-btn>
