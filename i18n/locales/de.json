@@ -2039,7 +2039,8 @@
         "fields": {
           "name": "Name",
           "price": "Preis",
-          "stock": "Bestand"
+          "stock": "Bestand",
+          "productName": "Produktname"
         },
         "sections": {
           "categories": "Kategorien",
