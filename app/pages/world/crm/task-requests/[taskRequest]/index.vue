@@ -46,14 +46,18 @@ async function remove() {
       :action-label="t('world.crm.actions.createLead')"
       action-icon="mdi-account-plus-outline"
     >
-      <template #right />
+      <template #right>
+        <div v-if="isViewMode && data" class="d-flex flex-column ga-2">
+          <p class="text-caption mb-1">{{ t('world.crm.taskRequests.form.description') }}</p>
+          <p class="text-body-2 mb-0">{{ data.description || '—' }}</p>
+        </div>
+      </template>
     </WorldModuleDrawers>
     <v-container fluid>
-      <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push('/world/crm/task-requests')">{{ t('world.crm.taskRequests.actions.backToList') }}</v-btn>
       <CrmPageSkeleton v-if="pending" variant="detail" />
       <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.taskRequests.alerts.notFound') }}</v-alert>
       <v-row v-else>
-        <v-col cols="12" lg="8">
+        <v-col cols="12">
           <v-card rounded="xl" class="pa-4 postcard-gradient-card">
             <template v-if="isViewMode && data">
               <div class="d-flex justify-space-between align-start ga-2 mb-4">
@@ -65,10 +69,6 @@ async function remove() {
                 <v-chip color="secondary" variant="outlined">Repo: {{ data.repositoryId }}</v-chip>
                 <v-chip variant="tonal">Resolved: {{ data.resolvedAt || '—' }}</v-chip>
               </div>
-              <v-card variant="outlined" class="pa-3">
-                <p class="text-caption mb-1">{{ t('world.crm.taskRequests.form.description') }}</p>
-                <p class="text-body-2 mb-0">{{ data.description || '—' }}</p>
-              </v-card>
             </template>
             <template v-else>
               <v-row>
@@ -84,7 +84,7 @@ async function remove() {
             </template>
           </v-card>
         </v-col>
-        <v-col v-if="hasBlogPlugin" cols="12" lg="4">
+        <v-col v-if="hasBlogPlugin" cols="12">
           <v-card rounded="xl" class="pa-4 postcard-gradient-card">
             <h3 class="text-subtitle-1 mb-2">Blog</h3>
             <p class="text-body-2 text-medium-emphasis mb-0">

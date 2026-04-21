@@ -211,19 +211,22 @@ async function deleteSprint() {
                 <v-btn
                   icon="mdi-eye-outline"
                   color="info"
-                  variant="tonal"
+                  variant="text"
+                  size="small"
                   @click="router.push(`/world/crm/sprints/${sprint.id}?mode=view`)"
                 />
                 <v-btn
                   icon="mdi-pencil-outline"
                   color="primary"
-                  variant="tonal"
+                  variant="text"
+                  size="small"
                   @click="router.push(`/world/crm/sprints/${sprint.id}`)"
                 />
                 <v-btn
                   icon="mdi-delete-outline"
                   color="error"
-                  variant="tonal"
+                  variant="text"
+                  size="small"
                   @click="openDeleteDialog(sprint.id)"
                 />
               </div>
