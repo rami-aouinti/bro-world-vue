@@ -432,7 +432,7 @@ async function submitApiAction() {
       body,
     })
 
-    actionFeedback.value = `Action exécutée avec succès.${response ? ' Réponse reçue.' : ''}`
+    actionFeedback.value = `Action executed successfully.${response ? ' Response received.' : ''}`
     await refresh()
   } catch (err) {
     actionFeedback.value = err instanceof Error ? err.message : 'Action failed.'
@@ -475,7 +475,7 @@ async function submitApiAction() {
         v-model="search"
         class="mb-4"
         prepend-inner-icon="mdi-magnify"
-        :label="`Rechercher dans ${sectionConfig.title}`"
+        :label="`Search in ${sectionConfig.title}`"
         clearable
         variant="outlined"
         :disabled="pending"
@@ -552,7 +552,7 @@ async function submitApiAction() {
         </v-col>
 
         <v-col v-if="paginatedItems.length === 0" cols="12">
-          <v-alert type="info" variant="tonal">Aucun résultat.</v-alert>
+          <v-alert type="info" variant="tonal">No result.</v-alert>
         </v-col>
       </v-row>
 

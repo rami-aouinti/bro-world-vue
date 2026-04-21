@@ -53,12 +53,12 @@ const createSeedAssessment = (): LearningAssessment => ({
   questions: [
     {
       id: createId('q'),
-      prompt: 'Quel est l’objectif principal du module ?',
+      prompt: 'What is the main objective of the module?',
       points: 10,
     },
     {
       id: createId('q'),
-      prompt: 'Quelle activité valide la compréhension ?',
+      prompt: 'Which activity validates understanding?',
       points: 10,
     },
   ],
@@ -105,11 +105,11 @@ const createSeedCourse = (): LearningCourse => {
       {
         id: createId('mod'),
         title: 'Module 1 - Foundations',
-        description: 'Bases pédagogiques du parcours',
+        description: 'Program learning fundamentals',
         lessons: [
           createSeedLesson(
             'Lesson 1 - Orientation',
-            'Comprendre les objectifs du cursus.',
+            'Understand the goals of the curriculum.',
           ),
           createSeedLesson(
             'Lesson 2 - Practice Lab',

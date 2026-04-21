@@ -12,7 +12,7 @@ const nowIso = () => new Date().toISOString()
 
 const defaultSeo = (entity: string): ShopSeoFields => ({
   metaTitle: `${entity} | Bro World Shop`,
-  metaDescription: `Découvrir ${entity} sur Bro World Shop.`,
+  metaDescription: `Discover ${entity} on Bro World Shop.`,
   keywords: ['bro-world', 'shop'],
   canonicalUrl: '',
 })
@@ -26,7 +26,7 @@ const seedCatalog = (): ShopCatalogState => {
         id: 'cat-apparel',
         name: 'Apparel',
         slug: 'apparel',
-        description: 'Tous les vêtements.',
+        description: 'All clothing.',
         parentId: null,
         image: '/images/platform-media/shop-premium-hoodie.svg',
         seo: defaultSeo('Apparel'),

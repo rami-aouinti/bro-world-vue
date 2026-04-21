@@ -1190,7 +1190,19 @@
         "owner": "Verantwortlich",
         "industry": "Branche",
         "minAmount": "Min. Betrag",
-        "maxAmount": "Max. Betrag"
+        "maxAmount": "Max. Betrag",
+        "status": "Status",
+        "provisioning": "Provisioning",
+        "priority": "Priorität",
+        "project": "Projekt",
+        "repository": "Repository",
+        "task": "Aufgabe",
+        "startAfter": "Start nach",
+        "endBefore": "Ende vor",
+        "deadlineAfter": "Frist nach",
+        "deadlineBefore": "Frist vor",
+        "requestedAfter": "Angefragt nach",
+        "resolvedBefore": "Gelöst vor"
       },
       "tabs": {
         "pipeline": "Pipeline",
@@ -1296,7 +1308,8 @@
           "errorSave": "Failed to save sprint.",
           "errorDelete": "Failed to delete sprint.",
           "empty": "Keine Sprints gefunden."
-        }
+        },
+        "searchLabel": "Sprint suchen"
       },
       "projects": {
         "moduleDescription": "Complete CRM project management",
@@ -1462,7 +1475,8 @@
           "successDelete": "Request deleted successfully.",
           "errorSave": "Failed to save request.",
           "errorDelete": "Failed to delete request."
-        }
+        },
+        "searchLabel": "Anfrage suchen"
       },
       "endpoints": {
         "nav": {
@@ -1718,6 +1732,9 @@
         "ogDescription": "Manage your projects, contacts, and CRM workflows with Bro World CRM.",
         "twitterTitle": "Bro World CRM | Project, task, and customer management",
         "twitterDescription": "Manage your projects, contacts, and CRM workflows with Bro World CRM."
+      },
+      "placeholders": {
+        "futureModule": "Diese CRM-Seite ist bereit für das zukünftige Modul {module}."
       }
     },
     "shop": {
@@ -2170,6 +2187,12 @@
           "calendarSyncErrorTitle": "Sync error",
           "autoSubtitle": "Notifications are automatically created during registrations, promotions, and calendar synchronizations."
         }
+      },
+      "common": {
+        "field": "Feld",
+        "referenceDetail": "Referenzdetails",
+        "noAttachments": "Keine Anhänge.",
+        "noCourseContent": "Für diesen Kurs ist kein HTML-Inhalt verfügbar."
       }
     },
     "jobs": {

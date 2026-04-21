@@ -129,7 +129,7 @@ async function openReference(payload: { key: string; value: string }) {
           <v-text-field
             v-model="search"
             prepend-inner-icon="mdi-magnify"
-            label="Rechercher"
+            :label="t('world.common.search')"
             clearable
             variant="outlined"
             hide-details
@@ -160,7 +160,7 @@ async function openReference(payload: { key: string; value: string }) {
     <v-dialog v-model="referenceDialog" max-width="720">
       <v-card rounded="xl">
         <v-card-title class="d-flex align-center justify-space-between">
-          <span>Détail référence</span>
+          <span>{{ t('world.learning.common.referenceDetail') }}</span>
           <v-btn icon="mdi-close" variant="text" @click="referenceDialog = false" />
         </v-card-title>
         <v-divider />

@@ -74,7 +74,7 @@ async function openInboxConversation() {
       />
 
       <v-alert v-else-if="error" type="error" variant="tonal">
-        Impossible de charger le profil public de <strong>{{ username }}</strong
+        Unable to load the public profile of <strong>{{ username }}</strong
         >.
       </v-alert>
 

@@ -169,15 +169,15 @@ async function deleteSprint() {
           <v-text-field
             v-model="search"
             prepend-inner-icon="mdi-magnify"
-            label="Rechercher un sprint"
+            :label="t('world.crm.sprints.searchLabel')"
             clearable
             variant="outlined"
             hide-details
           />
-          <AppSelect v-model="statusFilter" :items="sprintStatusOptions" label="Statut" clearable />
-          <AppSelect v-model="projectFilter" :items="sprintProjectOptions" label="Projet" clearable />
-          <v-text-field v-model="startAfter" type="date" label="Début après" variant="outlined" hide-details clearable />
-          <v-text-field v-model="endBefore" type="date" label="Fin avant" variant="outlined" hide-details clearable />
+          <AppSelect v-model="statusFilter" :items="sprintStatusOptions" :label="t('world.crm.filters.status')" clearable />
+          <AppSelect v-model="projectFilter" :items="sprintProjectOptions" :label="t('world.crm.filters.project')" clearable />
+          <v-text-field v-model="startAfter" type="date" :label="t('world.crm.filters.startAfter')" variant="outlined" hide-details clearable />
+          <v-text-field v-model="endBefore" type="date" :label="t('world.crm.filters.endBefore')" variant="outlined" hide-details clearable />
         </div>
       </template>
     </WorldModuleDrawers>

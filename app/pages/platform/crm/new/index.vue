@@ -322,7 +322,7 @@ await Promise.all([
           <div class="d-flex justify-space-between align-center mb-4 flex-wrap ga-2">
             <div>
               <h1 class="text-h5 mb-1">Create CRM Application</h1>
-              <p class="text-body-2 text-medium-emphasis mb-0">Assistant de création avec stepper, configuration et plugins.</p>
+              <p class="text-body-2 text-medium-emphasis mb-0">Creation assistant with stepper, configuration, and plugins.</p>
             </div>
             <v-btn variant="tonal" prepend-icon="mdi-arrow-left" @click="navigateTo('/platform')">Back to Platform</v-btn>
           </div>

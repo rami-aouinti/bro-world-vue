@@ -147,8 +147,8 @@ function mapClassesToCourses(
         id: `${schoolClass.id}-module-${index + 1}`,
         title:
           teacherId === 'teacher-unassigned'
-            ? 'Évaluations'
-            : teachersById.get(teacherId) ?? 'Évaluations',
+            ? 'Assessments'
+            : teachersById.get(teacherId) ?? 'Assessments',
         description: `Exams for ${schoolClass.name}`,
         lessons: teacherExams.map(buildLessonFromExam),
       }),

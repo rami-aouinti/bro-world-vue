@@ -2,7 +2,7 @@
 definePageMeta({
   title: 'appbar.games',
   description:
-    'Jouez à des jeux multijoueurs sur Bro World : cartes, stratégie, party games et sessions en ligne avec vos amis.',
+    'Play multiplayer games on Bro World: card, strategy, party games, and online sessions with friends.',
 })
 
 const { catalogStore, ensureCatalogLoaded, entityRouteValue, tOrFallback } =

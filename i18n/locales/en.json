@@ -1420,7 +1420,22 @@
         "owner": "Owner",
         "industry": "Industry",
         "minAmount": "Min amount",
-        "maxAmount": "Max amount"
+        "maxAmount": "Max amount",
+        "status": "Status",
+        "provisioning": "Provisioning",
+        "priority": "Priority",
+        "project": "Project",
+        "repository": "Repository",
+        "task": "Task",
+        "startAfter": "Start after",
+        "endBefore": "End before",
+        "deadlineAfter": "Deadline after",
+        "deadlineBefore": "Deadline before",
+        "requestedAfter": "Requested after",
+        "resolvedBefore": "Resolved before"
+      },
+      "placeholders": {
+        "futureModule": "This CRM page is ready for the future {module} module."
       },
       "tabs": {
         "pipeline": "Pipeline",
@@ -1543,7 +1558,8 @@
           "errorSave": "Failed to save sprint.",
           "errorDelete": "Failed to delete sprint.",
           "empty": "No sprints found."
-        }
+        },
+        "searchLabel": "Search sprint"
       },
       "projects": {
         "moduleDescription": "Complete CRM project management",
@@ -1709,7 +1725,8 @@
           "successDelete": "Request deleted successfully.",
           "errorSave": "Failed to save request.",
           "errorDelete": "Failed to delete request."
-        }
+        },
+        "searchLabel": "Search request"
       },
       "endpoints": {
         "nav": {
@@ -2282,6 +2299,12 @@
         "courseCompletion": "Course completion",
         "dropoutRate": "Dropout rate",
         "certificatesIssued": "Certificates issued"
+      },
+      "common": {
+        "field": "Field",
+        "referenceDetail": "Reference detail",
+        "noAttachments": "No attachments.",
+        "noCourseContent": "No HTML content available for this course."
       },
       "home": {
         "title": "Learning Hub",

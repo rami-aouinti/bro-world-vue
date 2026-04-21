@@ -426,7 +426,7 @@ async function fetchResumes() {
       '/api/recruit/general/private/me/resumes',
     )
   } catch {
-    resumesError.value = 'Impossible de charger vos CV.'
+    resumesError.value = 'Unable to load your resumes.'
   } finally {
     resumesLoading.value = false
   }
@@ -464,7 +464,7 @@ async function createResumeFromUpload() {
     resumeUploadFile.value = null
     resumeCreateOpen.value = false
   } catch {
-    resumesError.value = "Impossible d'ajouter le CV PDF."
+    resumesError.value = "Unable to add the PDF resume."
   } finally {
     createLoading.value = false
   }
@@ -509,7 +509,7 @@ async function createResumeFromManual() {
     resetResumeForm()
     resumeCreateOpen.value = false
   } catch {
-    resumesError.value = 'Impossible de créer le CV manuel.'
+    resumesError.value = 'Unable to create the manual resume.'
   } finally {
     createLoading.value = false
   }
@@ -531,7 +531,7 @@ async function updateResume() {
     await fetchResumes()
     resumeEditorOpen.value = false
   } catch {
-    resumesError.value = 'Modification du CV impossible.'
+    resumesError.value = 'Unable to update the resume.'
   } finally {
     updateLoading.value = false
   }
@@ -701,14 +701,14 @@ onUnmounted(() => {
 
         <v-card class="postcard-gradient-card mt-6" rounded="xl">
           <v-card-title class="d-flex align-center justify-space-between">
-            <span>My CV</span>
+            <span>My resumes</span>
             <v-btn
               color="primary"
               variant="tonal"
               prepend-icon="mdi-file-plus-outline"
               @click="() => { resumeCreateOpen = true; resumeCreateStep = 'choice' }"
             >
-              New CV
+              New resume
             </v-btn>
           </v-card-title>
           <v-divider />
@@ -731,8 +731,8 @@ onUnmounted(() => {
             <v-empty-state
               v-else-if="!hasResumes"
               icon="mdi-file-document-outline"
-              title="Aucun CV pour le moment"
-              text="Ajoute un CV PDF ou crée-le manuellement."
+              title="No resumes yet"
+              text="Add a PDF resume or create one manually."
             />
 
             <v-row v-else>
@@ -755,7 +755,7 @@ onUnmounted(() => {
                         :color="resume.documentUrl ? 'info' : 'primary'"
                         variant="tonal"
                       >
-                        {{ resume.documentUrl ? 'PDF' : 'Data CV' }}
+                        {{ resume.documentUrl ? 'PDF' : 'Resume data' }}
                       </v-chip>
                       <v-btn
                         v-if="!resume.documentUrl"
@@ -766,13 +766,13 @@ onUnmounted(() => {
                       />
                     </div>
                     <h3 class="text-subtitle-1 font-weight-bold mb-2">
-                      CV #{{ resume.id.slice(0, 8) }}
+                      Resume #{{ resume.id.slice(0, 8) }}
                     </h3>
                     <p class="text-body-2 text-medium-emphasis mb-0">
                       {{
                         resume.documentUrl
-                          ? 'Clique pour prévisualiser le PDF.'
-                          : 'Clique pour voir les sections du CV.'
+                          ? 'Click to preview the PDF.'
+                          : 'Click to view resume sections.'
                       }}
                     </p>
                   </v-card-text>
@@ -784,7 +784,7 @@ onUnmounted(() => {
       </template>
     </v-container>
 
-    <AppModal v-model="resumeViewerOpen" title="Détail CV" :max-width="980">
+    <AppModal v-model="resumeViewerOpen" title="Resume details" :max-width="980">
       <div v-if="selectedResume">
         <iframe
           v-if="selectedResume.documentUrl"
@@ -1142,7 +1142,7 @@ onUnmounted(() => {
       </div>
     </AppModal>
 
-    <AppModal v-model="resumeCreateOpen" title="Create new CV" :max-width="980">
+    <AppModal v-model="resumeCreateOpen" title="Create new resume" :max-width="980">
       <v-row v-if="resumeCreateStep === 'choice'">
         <v-col cols="12" md="6">
           <v-card
@@ -1153,7 +1153,7 @@ onUnmounted(() => {
               <v-icon icon="mdi-file-upload-outline" size="42" class="mb-3" />
               <h3 class="text-h6 mb-2">Upload PDF</h3>
               <p class="text-body-2 text-medium-emphasis mb-0">
-                Importer directement ton CV en PDF.
+                Import your resume directly as PDF.
               </p>
             </v-card-text>
           </v-card>
@@ -1180,7 +1180,7 @@ onUnmounted(() => {
       >
         <v-file-upload
           v-model="resumeUploadFile"
-          label="Upload CV file (PDF)"
+          label="Upload resume file (PDF)"
           accept="application/pdf"
           clearable
           density="default"
@@ -1196,7 +1196,7 @@ onUnmounted(() => {
             :disabled="!resumeUploadFile"
             @click="createResumeFromUpload"
           >
-            Save PDF CV
+            Save PDF resume
           </v-btn>
         </div>
       </div>
@@ -1368,13 +1368,13 @@ onUnmounted(() => {
             :loading="createLoading"
             @click="createResumeFromManual"
           >
-            Save manual CV
+            Save manual resume
           </v-btn>
         </div>
       </div>
     </AppModal>
 
-    <AppModal v-model="resumeEditorOpen" title="Edit CV" :max-width="980">
+    <AppModal v-model="resumeEditorOpen" title="Edit resume" :max-width="980">
       <div
         v-for="entry in resumeSectionEntries"
         :key="`editor-${entry.key}`"

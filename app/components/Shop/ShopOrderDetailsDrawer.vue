@@ -32,16 +32,16 @@ const buildInvoiceText = (order: OrderRecord) => {
     .join('\n')
 
   return [
-    `Facture: ${order.invoiceNumber || 'non générée'}`,
-    `Commande: ${order.id}`,
+    `Invoice: ${order.invoiceNumber || 'not generated'}`,
+    `Order: ${order.id}`,
     `Client: ${order.customer}`,
-    `Date facture: ${order.invoiceGeneratedAt ? new Date(order.invoiceGeneratedAt).toLocaleString('fr-FR') : 'N/A'}`,
+    `Invoice date: ${order.invoiceGeneratedAt ? new Date(order.invoiceGeneratedAt).toLocaleString('en-US') : 'N/A'}`,
     '',
     lineRows,
     '',
     `Total: ${currencyFormat(order.amount)}`,
-    `Déjà remboursé: ${currencyFormat(order.refundedAmount)}`,
-    `Net encaissé: ${currencyFormat(order.amount - order.refundedAmount)}`,
+    `Already refunded: ${currencyFormat(order.refundedAmount)}`,
+    `Net captured: ${currencyFormat(order.amount - order.refundedAmount)}`,
   ].join('\n')
 }
 </script>
@@ -82,13 +82,13 @@ const buildInvoiceText = (order: OrderRecord) => {
             size="small"
           >
             <div class="text-body-2 font-weight-medium">{{ event.label }}</div>
-            <div class="text-caption text-medium-emphasis">{{ new Date(event.at).toLocaleString('fr-FR') }}</div>
+            <div class="text-caption text-medium-emphasis">{{ new Date(event.at).toLocaleString('en-US') }}</div>
             <div v-if="event.note" class="text-caption">{{ event.note }}</div>
           </v-timeline-item>
         </v-timeline>
 
         <div class="d-flex align-center justify-space-between mb-2">
-          <h4 class="text-subtitle-2">Facture</h4>
+          <h4 class="text-subtitle-2">Invoice</h4>
           <v-btn
             size="small"
             color="primary"
@@ -96,7 +96,7 @@ const buildInvoiceText = (order: OrderRecord) => {
             prepend-icon="mdi-file-plus-outline"
             @click="emit('generate-invoice', currentOrder.id)"
           >
-            Générer
+            Generate
           </v-btn>
         </div>
         <v-textarea
@@ -122,7 +122,7 @@ const buildInvoiceText = (order: OrderRecord) => {
           <v-col cols="8" md="3">
             <v-text-field
               :model-value="returnAmount"
-              label="Montant €"
+              label="Amount €"
               type="number"
               density="comfortable"
               hide-details
@@ -131,7 +131,7 @@ const buildInvoiceText = (order: OrderRecord) => {
           </v-col>
           <v-col cols="4" md="2" class="d-flex align-center">
             <v-btn block color="secondary" variant="tonal" @click="emit('add-return', currentOrder.id)">
-              Ajouter
+              Add
             </v-btn>
           </v-col>
         </v-row>
@@ -140,7 +140,7 @@ const buildInvoiceText = (order: OrderRecord) => {
           <v-list-item
             v-for="record in currentOrder.returns"
             :key="record.id"
-            :subtitle="`${new Date(record.createdAt).toLocaleString('fr-FR')} • ${currencyFormat(record.amount)}`"
+            :subtitle="`${new Date(record.createdAt).toLocaleString('en-US')} • ${currencyFormat(record.amount)}`"
           >
             <template #title>{{ record.id }} - {{ record.reason }}</template>
             <template #append>
@@ -155,16 +155,16 @@ const buildInvoiceText = (order: OrderRecord) => {
                   variant="text"
                   @click="emit('approve-refund', currentOrder.id, record.id)"
                 >
-                  Rembourser
+                  Refund
                 </v-btn>
               </div>
             </template>
           </v-list-item>
-          <v-list-item v-if="!currentOrder.returns.length" title="Aucun retour enregistré" />
+          <v-list-item v-if="!currentOrder.returns.length" title="No return recorded" />
         </v-list>
       </template>
       <v-card v-else variant="outlined" rounded="lg" class="pa-4">
-        <p class="mb-0 text-medium-emphasis">Aucune commande sélectionnée.</p>
+        <p class="mb-0 text-medium-emphasis">No order selected.</p>
       </v-card>
     </div>
   </v-navigation-drawer>

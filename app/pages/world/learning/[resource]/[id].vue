@@ -155,7 +155,7 @@ function fileHref(url?: string) {
               </v-btn>
             </v-card>
 
-            <v-alert v-if="courseAttachments.length === 0" type="info" variant="tonal" text="Aucune pièce jointe." />
+            <v-alert v-if="courseAttachments.length === 0" type="info" variant="tonal" :text="t('world.learning.common.noAttachments')" />
           </template>
         </div>
       </template>
@@ -186,7 +186,7 @@ function fileHref(url?: string) {
           <v-card variant="text" rounded="lg" class="pa-4 mb-5 course-content" :class="{ 'text-medium-emphasis': !courseContent }">
             <!-- eslint-disable-next-line vue/no-v-html -->
             <div v-if="courseContent" v-html="courseContent" />
-            <p v-else class="mb-0">Aucun contenu HTML disponible pour ce cours.</p>
+            <p v-else class="mb-0">{{ t('world.learning.common.noCourseContent') }}</p>
           </v-card>
 
         </template>

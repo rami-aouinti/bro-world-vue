@@ -20,7 +20,7 @@ const { crmNavItems } = useWorldCrmNavItems()
       <v-card rounded="xl" class="pa-6 postcard-gradient-card">
         <h1 class="text-h5 mb-2">Calendar</h1>
         <p class="text-body-2 text-medium-emphasis mb-0">
-          Cette page CRM est prête pour le futur module Calendar.
+          {{ t('world.crm.placeholders.futureModule', { module: 'Calendar' }) }}
         </p>
       </v-card>
     </v-container>
