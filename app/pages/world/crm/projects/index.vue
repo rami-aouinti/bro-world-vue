@@ -31,6 +31,9 @@ function provisioningColor(state: string | null | undefined) {
 
 const createDialog = ref(false)
 const pendingCreate = ref(false)
+const pendingDelete = ref(false)
+const deleteDialog = ref(false)
+const projectToDelete = ref<string | null>(null)
 const search = ref('')
 const statusFilter = ref<string | null>(null)
 const provisioningFilter = ref<string | null>(null)
@@ -122,6 +125,24 @@ async function createProject() {
     pendingCreate.value = false
   }
 }
+
+function openDeleteDialog(projectId: string) {
+  projectToDelete.value = projectId
+  deleteDialog.value = true
+}
+
+async function deleteProject() {
+  if (!projectToDelete.value) return
+  pendingDelete.value = true
+  try {
+    await $fetch(`/api/crm/general/projects/${projectToDelete.value}`, { method: 'DELETE' })
+    deleteDialog.value = false
+    projectToDelete.value = null
+    await refresh()
+  } finally {
+    pendingDelete.value = false
+  }
+}
 </script>
 
 <template>
@@ -191,9 +212,26 @@ async function createProject() {
                 </v-chip>
               </div>
               <v-spacer />
-              <v-btn v-if="isAdminOrRoot" color="primary" variant="tonal" prepend-icon="mdi-arrow-right" @click="router.push(`/world/crm/projects/${project.id}`)">
-                {{ t('world.crm.projects.actions.viewDetails') }}
-              </v-btn>
+              <div v-if="isAdminOrRoot" class="d-flex justify-center ga-2 mt-3">
+                <v-btn
+                  icon="mdi-eye-outline"
+                  color="info"
+                  variant="tonal"
+                  @click="router.push(`/world/crm/projects/${project.id}?mode=view`)"
+                />
+                <v-btn
+                  icon="mdi-pencil-outline"
+                  color="primary"
+                  variant="tonal"
+                  @click="router.push(`/world/crm/projects/${project.id}`)"
+                />
+                <v-btn
+                  icon="mdi-delete-outline"
+                  color="error"
+                  variant="tonal"
+                  @click="openDeleteDialog(project.id)"
+                />
+              </div>
             </v-card>
           </v-col>
 
@@ -221,6 +259,14 @@ async function createProject() {
       <template #actions>
         <v-btn variant="text" @click="createDialog = false">{{ t('world.crm.projects.actions.cancel') }}</v-btn>
         <v-btn color="primary" :loading="pendingCreate" @click="createProject">{{ t('world.crm.projects.actions.create') }}</v-btn>
+      </template>
+    </AppModal>
+
+    <AppModal v-model="deleteDialog" title="Delete project" :max-width="460">
+      <p>Are you sure you want to delete this project?</p>
+      <template #actions>
+        <v-btn variant="text" @click="deleteDialog = false">Cancel</v-btn>
+        <v-btn color="error" :loading="pendingDelete" @click="deleteProject">Delete</v-btn>
       </template>
     </AppModal>
   </div>

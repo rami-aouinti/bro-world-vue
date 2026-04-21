@@ -22,6 +22,9 @@ const isAdminOrRoot = computed(() => {
 })
 
 const createDialog = ref(false)
+const pendingDelete = ref(false)
+const deleteDialog = ref(false)
+const requestToDelete = ref<string | null>(null)
 const taskModalOpen = ref(false)
 const taskModalLoading = ref(false)
 const search = ref('')
@@ -128,6 +131,24 @@ async function createRequest() {
   createDialog.value = false
   await refresh()
 }
+
+function openDeleteDialog(requestId: string) {
+  requestToDelete.value = requestId
+  deleteDialog.value = true
+}
+
+async function deleteRequest() {
+  if (!requestToDelete.value) return
+  pendingDelete.value = true
+  try {
+    await $fetch(`/api/crm/general/task-requests/${requestToDelete.value}`, { method: 'DELETE' })
+    deleteDialog.value = false
+    requestToDelete.value = null
+    await refresh()
+  } finally {
+    pendingDelete.value = false
+  }
+}
 </script>
 
 <template>
@@ -187,14 +208,26 @@ async function createRequest() {
               </v-chip>
             </div>
             <v-spacer />
-            <v-btn
-              v-if="isAdminOrRoot"
-              color="primary"
-              variant="tonal"
-              @click="router.push(`/world/crm/task-requests/${request.id}`)"
-            >
-              {{ t('world.crm.taskRequests.actions.viewDetails') }}
-            </v-btn>
+            <div v-if="isAdminOrRoot" class="d-flex justify-center ga-2 mt-3">
+              <v-btn
+                icon="mdi-eye-outline"
+                color="info"
+                variant="tonal"
+                @click="router.push(`/world/crm/task-requests/${request.id}?mode=view`)"
+              />
+              <v-btn
+                icon="mdi-pencil-outline"
+                color="primary"
+                variant="tonal"
+                @click="router.push(`/world/crm/task-requests/${request.id}`)"
+              />
+              <v-btn
+                icon="mdi-delete-outline"
+                color="error"
+                variant="tonal"
+                @click="openDeleteDialog(request.id)"
+              />
+            </div>
           </v-card>
         </v-col>
 
@@ -228,6 +261,14 @@ async function createRequest() {
           <p><strong>{{ t('world.crm.tasks.form.priority') }}:</strong> {{ selectedTask.priority }}</p>
           <p><strong>{{ t('world.crm.tasks.list.project') }}:</strong> {{ selectedTask.projectName || '—' }}</p>
           <p><strong>{{ t('world.crm.tasks.form.description') }}:</strong> {{ selectedTask.description || '—' }}</p>
+        </template>
+      </AppModal>
+
+      <AppModal v-model="deleteDialog" title="Delete task request" :max-width="460">
+        <p>Are you sure you want to delete this task request?</p>
+        <template #actions>
+          <v-btn variant="text" @click="deleteDialog = false">Cancel</v-btn>
+          <v-btn color="error" :loading="pendingDelete" @click="deleteRequest">Delete</v-btn>
         </template>
       </AppModal>
     </v-container>
