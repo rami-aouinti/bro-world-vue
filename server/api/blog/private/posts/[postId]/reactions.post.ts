@@ -1,5 +1,5 @@
 import { mutatingPrivateApiCall } from '../../../../../utils/privateApi'
-import { getRequiredRouterParam } from '../../../utils'
+import { getConnectedBlogAuthor, getRequiredRouterParam } from '../../../utils'
 import type {
   BlogReactionPayload,
   BlogApiResponse,
@@ -8,6 +8,8 @@ import type {
 export default defineEventHandler(async (event): Promise<BlogApiResponse> => {
   const postId = getRequiredRouterParam(event, 'postId', 'post')
   const body = await readBody<BlogReactionPayload>(event)
+  const author = await getConnectedBlogAuthor(event)
+  const payload = author ? { ...body, author } : body
 
   return mutatingPrivateApiCall<BlogApiResponse>(
     event,
@@ -15,7 +17,7 @@ export default defineEventHandler(async (event): Promise<BlogApiResponse> => {
     {
       mutationKey: 'blog:posts:reactions:create',
       method: 'POST',
-      body,
+      body: payload,
     },
   )
 })

@@ -1,4 +1,5 @@
 import { mutatingPrivateApiCall } from '../../../utils/privateApi'
+import { getConnectedBlogAuthor } from '../utils'
 import type {
   CreateBlogPostPayload,
   BlogApiResponse,
@@ -8,8 +9,10 @@ export default defineEventHandler(async (event): Promise<BlogApiResponse> => {
   const payload = await readBody<CreateBlogPostPayload & { blogId?: string }>(
     event,
   )
+  const author = await getConnectedBlogAuthor(event)
   const blogId = payload.blogId?.trim() || 'general'
   const { blogId: _blogId, ...body } = payload
+  const requestBody = author ? { ...body, author } : body
 
   return mutatingPrivateApiCall<BlogApiResponse>(
     event,
@@ -17,7 +20,7 @@ export default defineEventHandler(async (event): Promise<BlogApiResponse> => {
     {
       mutationKey: 'blog:posts:create',
       method: 'POST',
-      body,
+      body: requestBody,
     },
   )
 })

@@ -1,4 +1,5 @@
 import type { H3Event } from 'h3'
+import type { SessionUser } from '~/types/session'
 
 export const MAX_LIMIT = 100
 
@@ -46,4 +47,27 @@ export function getRequiredRouterParam(
   }
 
   return value
+}
+
+export async function getConnectedBlogAuthor(event: H3Event) {
+  const session = await getUserSession(event)
+  const user = (session?.user as SessionUser | null) ?? null
+
+  if (!user) {
+    return null
+  }
+
+  const firstName = user.firstName?.trim() || null
+  const lastName = user.lastName?.trim() || null
+  const username = user.username?.trim() || null
+  const name = [firstName, lastName].filter(Boolean).join(' ').trim()
+
+  return {
+    id: user.id,
+    username,
+    firstName,
+    lastName,
+    photo: user.photo?.trim() || null,
+    name: name || username || null,
+  }
 }
