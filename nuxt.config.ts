@@ -136,6 +136,10 @@ export default defineNuxtConfig({
       siteUrl:
         process.env.NUXT_PUBLIC_SITE_URL || 'https://bro-world-space.com',
       apiBaseUrl: 'https://bro-world.org/api/v1',
+      mercurePublicUrl:
+        process.env.NUXT_PUBLIC_MERCURE_PUBLIC_URL ||
+        process.env.MERCURE_PUBLIC_URL ||
+        'https://bro-world.org/.well-known/mercure',
       shop: {
         globalShopId: process.env.NUXT_PUBLIC_GLOBAL_SHOP_ID || '',
       },
