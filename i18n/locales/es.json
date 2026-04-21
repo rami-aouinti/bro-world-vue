@@ -771,6 +771,9 @@
         "wow": "Guau",
         "sad": "Triste",
         "angry": "Enojado"
+      },
+      "errors": {
+        "loadBySlug": "No se puede cargar la publicación para el slug: {slug}"
       }
     },
     "comment": {

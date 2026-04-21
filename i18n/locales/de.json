@@ -797,6 +797,9 @@
         "wow": "Wow",
         "sad": "Sad",
         "angry": "Angry"
+      },
+      "errors": {
+        "loadBySlug": "Beitrag mit Slug konnte nicht geladen werden: {slug}"
       }
     },
     "comment": {

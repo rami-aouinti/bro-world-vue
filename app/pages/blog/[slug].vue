@@ -86,6 +86,7 @@ const slug = computed(() => {
   )
 })
 const { loggedIn } = useUserSession()
+const { t } = useI18n()
 
 const { comment, react, delete: remove } = useBlogFeed({ mode: 'general' })
 
@@ -488,8 +489,7 @@ async function deleteComment(payload: {
         />
 
         <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">
-          Unable to load post for slug:
-          <strong>{{ slug }}</strong>
+          {{ t('blog.post.errors.loadBySlug', { slug }) }}
         </v-alert>
 
         <BlogPostCard

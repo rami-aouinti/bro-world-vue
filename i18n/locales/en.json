@@ -1026,6 +1026,9 @@
         "wow": "Wow",
         "sad": "Sad",
         "angry": "Angry"
+      },
+      "errors": {
+        "loadBySlug": "Unable to load post for slug: {slug}"
       }
     },
     "comment": {
