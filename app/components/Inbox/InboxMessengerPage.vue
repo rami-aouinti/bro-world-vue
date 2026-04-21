@@ -85,6 +85,8 @@ const route = useRoute()
 const router = useRouter()
 const { locale, t } = useI18n()
 const { user: sessionUser } = useUserSession()
+const runtimeConfig = useRuntimeConfig()
+const inboxNotificationsStore = useInboxNotificationsStore()
 
 const loading = ref(false)
 const messagesLoading = ref(false)
@@ -104,6 +106,7 @@ const reactionUsersDialog = ref(false)
 const selectedReactionUsers = ref<
   Array<{ name: string; reaction: ReactionType; profilePath: string | null }>
 >([])
+const mercureEventSource = shallowRef<EventSource | null>(null)
 
 const sessionUserMeta = computed(() => {
   const raw = (sessionUser.value || {}) as Record<string, unknown>
@@ -377,26 +380,13 @@ async function sendMessage() {
   const content = messageInput.value.trim()
   messageInput.value = ''
 
-  await privateApi.request(`/api/chat/private/conversations/${selectedConversationId.value}/messages`, {
+  await privateApi.request<{ operationId?: string }>(
+    `/api/chat/private/conversations/${selectedConversationId.value}/messages`,
+    {
     method: 'POST',
     body: { content },
-  })
-
-  messages.value.push({
-    id: `tmp-${Date.now()}`,
-    content,
-    sender: {
-      id: currentUserId.value,
-      username: sessionUserMeta.value.username,
-      firstName: sessionUserMeta.value.firstName,
-      lastName: sessionUserMeta.value.lastName,
-      photo: sessionUserMeta.value.photo,
-      owner: true,
     },
-    reactions: [],
-    read: false,
-    createdAt: new Date().toISOString(),
-  })
+  )
 
   upsertConversationPreview(selectedConversationId.value, content)
 
@@ -542,8 +532,102 @@ function openReactionUsers(message: ConversationMessage) {
   reactionUsersDialog.value = true
 }
 
+function closeMercureSubscription() {
+  mercureEventSource.value?.close()
+  mercureEventSource.value = null
+}
+
+function attachMercureSubscription(conversationId: string) {
+  if (!import.meta.client) return
+
+  closeMercureSubscription()
+
+  const mercurePublicUrl = String(runtimeConfig.public.mercurePublicUrl || '').trim()
+  if (!mercurePublicUrl || !conversationId || !currentUserId.value) return
+
+  const url = new URL(mercurePublicUrl)
+  url.searchParams.append('topic', `/conversations/${conversationId}/messages`)
+  url.searchParams.append('topic', `/users/${currentUserId.value}/notifications`)
+
+  const eventSource = new EventSource(url.toString(), { withCredentials: true })
+  mercureEventSource.value = eventSource
+
+  eventSource.onmessage = (event: MessageEvent<string>) => {
+    const raw = event.data?.trim()
+    if (!raw) return
+
+    try {
+      const payload = JSON.parse(raw) as {
+        id?: string
+        conversationId?: string
+        senderId?: string
+        content?: string
+        attachments?: unknown[]
+        createdAt?: string
+        recipientId?: string
+      }
+
+      if (payload.conversationId && payload.conversationId === selectedConversationId.value) {
+        const nextId = String(payload.id || '')
+        if (!nextId || messages.value.some((entry) => entry.id === nextId)) return
+
+        const messageContent = String(payload.content || '')
+        const mine = String(payload.senderId || '') === currentUserId.value
+
+        messages.value.push({
+          id: nextId,
+          content: messageContent,
+          sender: mine
+            ? {
+                id: currentUserId.value,
+                username: sessionUserMeta.value.username,
+                firstName: sessionUserMeta.value.firstName,
+                lastName: sessionUserMeta.value.lastName,
+                photo: sessionUserMeta.value.photo,
+                owner: true,
+              }
+            : {
+                id: String(payload.senderId || ''),
+                owner: false,
+              },
+          reactions: [],
+          read: mine,
+          createdAt: String(payload.createdAt || new Date().toISOString()),
+        })
+
+        upsertConversationPreview(payload.conversationId, messageContent)
+        nextTick(() => scrollToBottom())
+        return
+      }
+
+      if (payload.recipientId && payload.recipientId === currentUserId.value) {
+        void inboxNotificationsStore.fetchNotifications()
+      }
+    } catch {
+      // Ignore non-JSON events.
+    }
+  }
+}
+
 onMounted(async () => {
   await Promise.all([fetchConversations(), fetchPublicUsers()])
+})
+
+watch(
+  [selectedConversationId, currentUserId],
+  ([conversationId, userId]) => {
+    if (!conversationId || !userId) {
+      closeMercureSubscription()
+      return
+    }
+
+    attachMercureSubscription(conversationId)
+  },
+  { immediate: true },
+)
+
+onBeforeUnmount(() => {
+  closeMercureSubscription()
 })
 
 watch(
