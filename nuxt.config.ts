@@ -129,8 +129,6 @@ export default defineNuxtConfig({
       },
     },
     databaseUrl: process.env.DATABASE_URL || '',
-    mercureJwtSecret:
-      process.env.MERCURE_JWT_SECRET || '!ChangeThisMercureJWTSecret!',
     redis: {
       url: '',
     },
