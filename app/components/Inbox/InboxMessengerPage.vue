@@ -549,7 +549,11 @@ function attachMercureSubscription(conversationId: string) {
   url.searchParams.append('topic', `/conversations/${conversationId}/messages`)
   url.searchParams.append('topic', `/users/${currentUserId.value}/notifications`)
 
-  const eventSource = new EventSource(url.toString(), { withCredentials: true })
+  const configuredWithCredentials = runtimeConfig.public.mercureWithCredentials === true
+  const isSameOriginHub = url.origin === window.location.origin
+  const withCredentials = configuredWithCredentials || isSameOriginHub
+
+  const eventSource = new EventSource(url.toString(), { withCredentials })
   mercureEventSource.value = eventSource
 
   eventSource.onmessage = (event: MessageEvent<string>) => {
