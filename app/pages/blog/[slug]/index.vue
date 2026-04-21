@@ -304,7 +304,7 @@ const postDescription = computed(() => {
     return extracted
   }
 
-  return `Découvrez le post ${postTitle.value} sur Bro World.`
+  return `Discover the post ${postTitle.value} on Bro World.`
 })
 
 const postImage = computed(() => {
@@ -488,7 +488,7 @@ async function deleteComment(payload: {
         />
 
         <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">
-          Impossible de charger le post pour le slug:
+          Unable to load post for slug:
           <strong>{{ slug }}</strong>
         </v-alert>
 

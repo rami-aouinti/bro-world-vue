@@ -19,7 +19,7 @@ const emit = defineEmits<{
 const currencyFormat = (value: number) => `${value.toFixed(2)} €`
 
 const statusMeta = (status: OrderStatus, statusCatalog: OrderStatusMeta[]) =>
-  statusCatalog.find((item) => item.value === status) ?? { value: 'all', title: 'Tous', color: 'grey' }
+  statusCatalog.find((item) => item.value === status) ?? { value: 'all', title: 'All', color: 'grey' }
 </script>
 
 <template>
@@ -78,7 +78,7 @@ const statusMeta = (status: OrderStatus, statusCatalog: OrderStatusMeta[]) =>
           />
         </template>
         <v-list density="compact">
-          <v-list-subheader>Mettre à jour statut</v-list-subheader>
+          <v-list-subheader>Update status</v-list-subheader>
           <v-list-item
             v-for="statusOption in statusCatalog.filter((entry) => entry.value !== 'all')"
             :key="statusOption.value"
@@ -87,7 +87,7 @@ const statusMeta = (status: OrderStatus, statusCatalog: OrderStatusMeta[]) =>
           />
           <v-divider class="my-1" />
           <v-list-item
-            title="Générer facture"
+            title="Generate invoice"
             prepend-icon="mdi-file-document-outline"
             @click="emit('generate-invoice', item.id)"
           />
