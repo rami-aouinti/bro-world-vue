@@ -2257,7 +2257,8 @@
         "fields": {
           "name": "Nom",
           "price": "Prix",
-          "stock": "Stock"
+          "stock": "Stock",
+          "productName": "Nom du produit"
         },
         "sections": {
           "categories": "Catégories",
