@@ -37,7 +37,7 @@ const { mobile } = useDisplay()
 const route = useRoute()
 const { t, locale } = useI18n()
 const vision = useStorage<'light' | 'dark'>('color-scheme', 'dark')
-const runtimeConfig = useRuntimeConfig()
+const { subscribe } = useMercure()
 
 const navMenus = [
   {
@@ -407,51 +407,38 @@ function attachMercureSubscription() {
   closeMercureSubscription()
 
   const currentUserId = String(sessionUser.value?.id || '').trim()
-  const mercurePublicUrl = String(runtimeConfig.public.mercurePublicUrl || '').trim()
-  if (!mercurePublicUrl || !currentUserId) return
+  if (!currentUserId) return
 
-  const url = new URL(mercurePublicUrl)
-  url.searchParams.append('topic', `/users/${currentUserId}/notifications`)
+  mercureEventSource.value = subscribe(
+    [`/users/${currentUserId}/notifications`, `/users/${currentUserId}/conversations`],
+    {
+      onMessage: (data) => {
+        const payload = (data || {}) as {
+          id?: string
+          notificationId?: string
+          conversationId?: string
+          recipientId?: string
+        }
 
-  const configuredWithCredentials = runtimeConfig.public.mercureWithCredentials === true
-  const isSameOriginHub = url.origin === window.location.origin
-  const withCredentials = configuredWithCredentials || isSameOriginHub
+        if (
+          payload.recipientId &&
+          String(payload.recipientId) !== currentUserId
+        ) {
+          return
+        }
 
-  const eventSource = new EventSource(url.toString(), { withCredentials })
-  mercureEventSource.value = eventSource
+        const conversationId = String(payload.conversationId || '')
+        if (conversationId) {
+          void inboxNotificationsStore.fetchConversationById(conversationId)
+        }
 
-  eventSource.onmessage = (event: MessageEvent<string>) => {
-    const raw = event.data?.trim()
-    if (!raw) return
-
-    try {
-      const payload = JSON.parse(raw) as {
-        id?: string
-        notificationId?: string
-        conversationId?: string
-        recipientId?: string
-      }
-
-      if (
-        payload.recipientId &&
-        String(payload.recipientId) !== currentUserId
-      ) {
-        return
-      }
-
-      const conversationId = String(payload.conversationId || '')
-      if (conversationId) {
-        void inboxNotificationsStore.fetchConversationById(conversationId)
-      }
-
-      const notificationId = String(payload.notificationId || payload.id || '')
-      if (notificationId && !conversationId) {
-        void inboxNotificationsStore.fetchNotificationById(notificationId)
-      }
-    } catch {
-      // Ignore non-JSON events.
-    }
-  }
+        const notificationId = String(payload.notificationId || payload.id || '')
+        if (notificationId && !conversationId) {
+          void inboxNotificationsStore.fetchNotificationById(notificationId)
+        }
+      },
+    },
+  )
 }
 
 watch(
