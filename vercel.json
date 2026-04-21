@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/internal/cron/cache-refresh?mode=purge&scope=public-non-sports",
+      "schedule": "*/30 * * * *"
+    },
+    {
+      "path": "/api/internal/cron/cache-refresh?mode=warm&scope=public-non-sports",
+      "schedule": "2,32 * * * *"
+    }
+  ]
+}
