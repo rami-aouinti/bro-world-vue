@@ -377,17 +377,46 @@ async function onComboboxUserSelected() {
 async function sendMessage() {
   if (!selectedConversationId.value || !messageInput.value.trim()) return
   const content = messageInput.value.trim()
+  const conversationId = selectedConversationId.value
   messageInput.value = ''
 
-  await privateApi.request<{ operationId?: string }>(
-    `/api/chat/private/conversations/${selectedConversationId.value}/messages`,
+  const response = await privateApi.request<{
+    operationId?: string
+    id?: string
+    messageId?: string
+    data?: { id?: string; messageId?: string }
+  }>(
+    `/api/chat/private/conversations/${conversationId}/messages`,
     {
     method: 'POST',
-    body: { content },
+    body: { content, conversationId },
     },
   )
 
-  upsertConversationPreview(selectedConversationId.value, content)
+  const persistedMessageId = String(
+    response?.messageId || response?.id || response?.data?.messageId || response?.data?.id || '',
+  )
+  const isPersisted = Boolean(persistedMessageId)
+
+  if (!isPersisted) {
+    messages.value.push({
+      id: `local-${Date.now()}`,
+      content,
+      sender: {
+        id: currentUserId.value,
+        username: sessionUserMeta.value.username,
+        firstName: sessionUserMeta.value.firstName,
+        lastName: sessionUserMeta.value.lastName,
+        photo: sessionUserMeta.value.photo,
+        owner: true,
+      },
+      reactions: [],
+      read: true,
+      createdAt: new Date().toISOString(),
+    })
+  }
+
+  upsertConversationPreview(conversationId, content)
 
   await nextTick()
   scrollToBottom()
@@ -572,10 +601,22 @@ function attachMercureSubscription(conversationId: string) {
 
       if (payload.conversationId && payload.conversationId === selectedConversationId.value) {
         const nextId = String(payload.id || '')
-        if (!nextId || messages.value.some((entry) => entry.id === nextId)) return
-
         const messageContent = String(payload.content || '')
         const mine = String(payload.senderId || '') === currentUserId.value
+
+        if (mine) {
+          const localMessage = messages.value.find(
+            (entry) => entry.id.startsWith('local-') && entry.content === messageContent,
+          )
+          if (localMessage && nextId) {
+            localMessage.id = nextId
+            localMessage.createdAt = String(payload.createdAt || localMessage.createdAt)
+            upsertConversationPreview(payload.conversationId, messageContent)
+            return
+          }
+        }
+
+        if (!nextId || messages.value.some((entry) => entry.id === nextId)) return
 
         messages.value.push({
           id: nextId,
