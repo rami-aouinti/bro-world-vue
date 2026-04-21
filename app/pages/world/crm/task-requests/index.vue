@@ -184,21 +184,21 @@ async function deleteRequest() {
           <v-text-field
             v-model="search"
             prepend-inner-icon="mdi-magnify"
-            label="Rechercher une demande"
+            :label="t('world.crm.filters.searchRequest')"
             clearable
             variant="outlined"
             hide-details
           />
-          <AppSelect
+            <AppSelect
             v-model="statusFilter"
             :items="taskRequestStatusOptions"
-            label="Statut"
+            :label="t('world.crm.filters.status')"
             clearable
           />
-          <AppSelect v-model="repositoryFilter" :items="taskRequestRepositoryOptions" label="Repository" clearable />
-          <AppSelect v-model="taskFilter" :items="taskRequestTaskOptions" label="Task" clearable />
-          <v-text-field v-model="requestedAfter" type="date" label="Demandée après" variant="outlined" hide-details clearable />
-          <v-text-field v-model="resolvedBefore" type="date" label="Résolue avant" variant="outlined" hide-details clearable />
+          <AppSelect v-model="repositoryFilter" :items="taskRequestRepositoryOptions" :label="t('world.crm.filters.repository')" clearable />
+          <AppSelect v-model="taskFilter" :items="taskRequestTaskOptions" :label="t('world.crm.filters.task')" clearable />
+          <v-text-field v-model="requestedAfter" type="date" :label="t('world.crm.filters.requestedAfter')" variant="outlined" hide-details clearable />
+          <v-text-field v-model="resolvedBefore" type="date" :label="t('world.crm.filters.resolvedBefore')" variant="outlined" hide-details clearable />
         </div>
       </template>
     </WorldModuleDrawers>

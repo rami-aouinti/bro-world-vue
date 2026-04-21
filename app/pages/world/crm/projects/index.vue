@@ -189,7 +189,7 @@ async function deleteProject() {
           <v-text-field
             v-model="search"
             prepend-inner-icon="mdi-magnify"
-            label="Search"
+            :label="t('world.crm.filters.search')"
             clearable
             variant="outlined"
             hide-details
@@ -197,17 +197,17 @@ async function deleteProject() {
           <AppSelect
             v-model="statusFilter"
             :items="projectStatusOptions"
-            label="Statut"
+            :label="t('world.crm.filters.status')"
             clearable
           />
           <AppSelect
             v-model="provisioningFilter"
             :items="provisioningOptions"
-            label="Provisioning"
+            :label="t('world.crm.filters.provisioning')"
             clearable
           />
-          <v-text-field v-model="startedAfter" type="date" label="Début après" variant="outlined" hide-details clearable />
-          <v-text-field v-model="dueBefore" type="date" label="Fin avant" variant="outlined" hide-details clearable />
+          <v-text-field v-model="startedAfter" type="date" :label="t('world.crm.filters.startAfter')" variant="outlined" hide-details clearable />
+          <v-text-field v-model="dueBefore" type="date" :label="t('world.crm.filters.endBefore')" variant="outlined" hide-details clearable />
         </div>
       </template>
     </WorldModuleDrawers>

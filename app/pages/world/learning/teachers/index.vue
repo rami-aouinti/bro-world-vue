@@ -85,12 +85,12 @@ async function openReference(payload: { key: string; value: string }) {
           <v-text-field
             v-model="search"
             prepend-inner-icon="mdi-magnify"
-            label="Rechercher"
+            :label="t('common.search')"
             clearable
             variant="outlined"
             hide-details
           />
-          <AppSelect v-model="selectedField" :items="availableFields" label="Champ" clearable />
+          <AppSelect v-model="selectedField" :items="availableFields" :label="t('world.learning.common.field')" clearable />
         </div>
       </template>
     </WorldModuleDrawers>
@@ -115,7 +115,7 @@ async function openReference(payload: { key: string; value: string }) {
     <v-dialog v-model="referenceDialog" max-width="720">
       <v-card rounded="xl">
         <v-card-title class="d-flex align-center justify-space-between">
-          <span>Détail référence</span>
+          <span>{{ t('world.learning.common.referenceDetail') }}</span>
           <v-btn icon="mdi-close" variant="text" @click="referenceDialog = false" />
         </v-card-title>
         <v-divider />
