@@ -1548,7 +1548,7 @@
       "projects": {
         "moduleDescription": "Complete CRM project management",
         "list": {
-          "githubRepos": "GitHub repos",
+          "githubRepos": "Repos",
           "provisioning": "Provisioning"
         },
         "modal": {
@@ -1829,7 +1829,7 @@
         "projectsTitle": "Projects",
         "repositoryListTitle": "Repositories",
         "projectCard": {
-          "githubRepos": "Linked repositories",
+          "githubRepos": "Repos",
           "provisioning": "Provisioning"
         },
         "repositoryCard": {

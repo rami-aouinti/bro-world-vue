@@ -147,7 +147,7 @@ async function createProject() {
           <v-text-field
             v-model="search"
             prepend-inner-icon="mdi-magnify"
-            label="Rechercher un projet"
+            label="Search"
             clearable
             variant="outlined"
             hide-details
@@ -179,7 +179,7 @@ async function createProject() {
           <v-col v-for="project in paginatedProjects" :key="project.id" cols="12" md="4">
             <v-card rounded="xl" class="pa-4 postcard-gradient-card crm-list-card h-100 d-flex flex-column">
               <div class="d-flex justify-space-between align-start ga-2 mb-2">
-                <h3 class="text-subtitle-1 mb-0">{{ project.name }}</h3>
+                <h4 class="text-subtitle-1 mb-0">{{ project.name }}</h4>
                 <v-chip size="small" color="primary" variant="tonal">{{ project.status }}</v-chip>
               </div>
               <div class="d-flex flex-wrap ga-2 mb-4">
@@ -187,7 +187,7 @@ async function createProject() {
                   {{ t('world.crm.projects.list.githubRepos') }}: {{ project.githubRepositoriesCount }}
                 </v-chip>
                 <v-chip size="small" :color="provisioningColor(project.provisioning?.state)" variant="tonal">
-                  {{ t('world.crm.projects.list.provisioning') }}: {{ project.provisioning.state }}
+                  {{ project.provisioning.state }}
                 </v-chip>
               </div>
               <v-spacer />
