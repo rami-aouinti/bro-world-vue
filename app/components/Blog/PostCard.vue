@@ -132,7 +132,7 @@ const authorProfilePath = computed(() => {
 })
 const postDetailPath = computed(() => {
   const slug = props.post.slug?.trim()
-  return slug ? `/blog/${encodeURIComponent(slug)}/post` : null
+  return slug ? `/blog/${encodeURIComponent(slug)}` : null
 })
 const normalizedReactions = computed(() =>
   (props.post.reactions || [])
