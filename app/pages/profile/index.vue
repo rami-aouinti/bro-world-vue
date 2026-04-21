@@ -159,8 +159,7 @@ const profileResumeIdentity = computed(() => {
     currentProfile?.username ||
     'Anonymous Member'
   const title = currentProfile?.profile?.title || 'Professional Profile'
-  const location =
-    resumeIdentity?.adresse || currentProfile?.profile?.location || ''
+  const location = resumeIdentity?.address || currentProfile?.profile?.location || ''
   const email = resumeIdentity?.email || currentProfile?.email || ''
   const phone = resumeIdentity?.phone || currentProfile?.profile?.phone || ''
   const summary =
@@ -426,7 +425,7 @@ async function fetchResumes() {
       '/api/recruit/general/private/me/resumes',
     )
   } catch {
-    resumesError.value = 'Impossible de charger vos CV.'
+    resumesError.value = 'Unable to load your resumes.'
   } finally {
     resumesLoading.value = false
   }
@@ -464,7 +463,7 @@ async function createResumeFromUpload() {
     resumeUploadFile.value = null
     resumeCreateOpen.value = false
   } catch {
-    resumesError.value = "Impossible d'ajouter le CV PDF."
+    resumesError.value = 'Unable to upload PDF resume.'
   } finally {
     createLoading.value = false
   }
@@ -509,7 +508,7 @@ async function createResumeFromManual() {
     resetResumeForm()
     resumeCreateOpen.value = false
   } catch {
-    resumesError.value = 'Impossible de créer le CV manuel.'
+    resumesError.value = 'Unable to create manual resume.'
   } finally {
     createLoading.value = false
   }
@@ -531,7 +530,7 @@ async function updateResume() {
     await fetchResumes()
     resumeEditorOpen.value = false
   } catch {
-    resumesError.value = 'Modification du CV impossible.'
+    resumesError.value = 'Unable to update resume.'
   } finally {
     updateLoading.value = false
   }
@@ -731,8 +730,8 @@ onUnmounted(() => {
             <v-empty-state
               v-else-if="!hasResumes"
               icon="mdi-file-document-outline"
-              title="Aucun CV pour le moment"
-              text="Ajoute un CV PDF ou crée-le manuellement."
+              title="No resumes yet"
+              text="Add a PDF resume or create one manually."
             />
 
             <v-row v-else>
@@ -771,8 +770,8 @@ onUnmounted(() => {
                     <p class="text-body-2 text-medium-emphasis mb-0">
                       {{
                         resume.documentUrl
-                          ? 'Clique pour prévisualiser le PDF.'
-                          : 'Clique pour voir les sections du CV.'
+                          ? 'Click to preview the PDF.'
+                          : 'Click to view resume sections.'
                       }}
                     </p>
                   </v-card-text>
@@ -784,7 +783,7 @@ onUnmounted(() => {
       </template>
     </v-container>
 
-    <AppModal v-model="resumeViewerOpen" title="Détail CV" :max-width="980">
+    <AppModal v-model="resumeViewerOpen" title="Resume details" :max-width="980">
       <div v-if="selectedResume">
         <iframe
           v-if="selectedResume.documentUrl"

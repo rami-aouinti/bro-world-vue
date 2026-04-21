@@ -432,7 +432,7 @@ async function submitApiAction() {
       body,
     })
 
-    actionFeedback.value = `Action exécutée avec succès.${response ? ' Réponse reçue.' : ''}`
+    actionFeedback.value = `Action executed successfully.${response ? ' Response received.' : ''}`
     await refresh()
   } catch (err) {
     actionFeedback.value = err instanceof Error ? err.message : 'Action failed.'
@@ -449,7 +449,7 @@ async function submitApiAction() {
       module-icon="mdi-account-group-outline"
       :module-description="`Admin ${sectionConfig.title}`"
       :nav-items="crmNavItems"
-      action-label="Actualiser"
+      action-label="Refresh"
       action-icon="mdi-refresh"
       @action="refresh"
     />
@@ -475,7 +475,7 @@ async function submitApiAction() {
         v-model="search"
         class="mb-4"
         prepend-inner-icon="mdi-magnify"
-        :label="`Rechercher dans ${sectionConfig.title}`"
+        :label="`Search in ${sectionConfig.title}`"
         clearable
         variant="outlined"
         :disabled="pending"
@@ -483,7 +483,7 @@ async function submitApiAction() {
 
       <CrmPageSkeleton v-if="pending" variant="list" :cards="6" />
       <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">
-        Erreur lors du chargement.
+        Error while loading.
       </v-alert>
 
       <v-row v-else>
@@ -502,7 +502,7 @@ async function submitApiAction() {
               <template v-if="isComplexValue(value)">
                 <span class="font-weight-medium">{{ key }}:</span>
                 <v-btn size="x-small" variant="tonal" class="ml-1" @click="openNested(value, key)">
-                  Voir JSON
+                  View JSON
                 </v-btn>
               </template>
               <template v-else>
@@ -552,7 +552,7 @@ async function submitApiAction() {
         </v-col>
 
         <v-col v-if="paginatedItems.length === 0" cols="12">
-          <v-alert type="info" variant="tonal">Aucun résultat.</v-alert>
+          <v-alert type="info" variant="tonal">No results.</v-alert>
         </v-col>
       </v-row>
 

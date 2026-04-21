@@ -4,7 +4,7 @@ import { SPORTS } from '~/types/sports'
 definePageMeta({
   title: 'appbar.sports',
   description:
-    'Suivez les sports sur Bro World : tableaux, matchs, résultats et pages dédiées par discipline.',
+    'Follow sports on Bro World: standings, matches, results, and dedicated pages by discipline.',
 })
 
 const { t } = useI18n()

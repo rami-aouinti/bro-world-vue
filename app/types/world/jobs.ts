@@ -143,7 +143,7 @@ export type RecruitResumeInformation = {
   phone?: string | null
   homepage?: string | null
   repo_profile?: string | null
-  adresse?: string | null
+  address?: string | null
 }
 
 export type RecruitResume = {

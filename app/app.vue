@@ -61,9 +61,9 @@ const metaDescriptionByLocale = {
   },
   fr: {
     withTitle: (pageTitle: string) =>
-      `Découvrez ${pageTitle} sur Bro World: jeux, réseau social, jobs, CRM et outils en ligne.`,
+      `Discover ${pageTitle} on Bro World: games, social network, jobs, CRM and online tools.`,
     fallback:
-      "Bro World propose des jeux, un réseau social, des outils CRM, des offres d'emploi et des expériences collaboratives.",
+      'Bro World offers games, a social network, CRM tools, job opportunities, and collaborative experiences.',
   },
   es: {
     withTitle: (pageTitle: string) =>
