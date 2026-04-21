@@ -219,7 +219,7 @@ const documentationSections = [
   },
   {
     title: t('world.crm.documentation.sections.kanaban.title'),
-    icon: 'mdi-view-kanban-outline',
+    icon: 'mdi-view-dashboard-outline',
     description: t('world.crm.documentation.sections.kanaban.description'),
     to: '/world/crm/kanaban',
   },

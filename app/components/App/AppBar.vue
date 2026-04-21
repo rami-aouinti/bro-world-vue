@@ -190,7 +190,7 @@ const userLabel = computed(() => {
 
   return fullName || sessionUser.value?.username || t('appbar.user')
 })
-const truncateText = (value: string, maxLength = 70): string => {
+const truncateText = (value: string, maxLength = 50): string => {
   const normalized = value.replace(/\s+/g, ' ').trim()
 
   if (normalized.length <= maxLength) return normalized
@@ -224,16 +224,19 @@ const formatRelativeTime = (isoDate: string): string => {
 const allNotificationItems = computed(() => {
   const apiItems = notificationsSortedDesc.value.map((item) => ({
     id: `api-${item.id}`,
-    title: truncateText(item.title),
+    title: truncateText(item.title, 50),
     createdAt: item.createdAt,
     icon: item.type === 'blog_notification' ? null : 'mdi-bell-ring-outline',
     avatar: item.type === 'blog_notification' ? item.from?.photo : null,
     timeLabel: formatRelativeTime(item.createdAt),
-    to: `/notification/${item.id}`,
+    to:
+      item.type === 'blog_notification'
+        ? '/blog/post/9e154792-3d0b-11f1-9d5d-fa97cf25119c'
+        : `/notification/${item.id}`,
   }))
   const localItems = actionNotifications.value.map((item: Notification) => ({
     id: `local-${item.id}`,
-    title: truncateText(item.text),
+    title: truncateText(item.text, 50),
     createdAt: item.time.toISOString(),
     icon: 'mdi-check-circle-outline',
     avatar: null,
@@ -241,9 +244,9 @@ const allNotificationItems = computed(() => {
     to: null,
   }))
 
-  return [...apiItems, ...localItems].sort((a, b) =>
-    b.createdAt.localeCompare(a.createdAt),
-  )
+  return [...apiItems, ...localItems]
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .slice(0, 3)
 })
 const unreadTotalCount = computed(
   () => unreadCount.value + actionNotifications.value.length,
@@ -787,8 +790,14 @@ onBeforeUnmount(() => {
                   {{ item.timeLabel }}
                 </v-list-item-subtitle>
               </v-list-item>
-              <v-divider class="my-1" />
               <v-list-item
+                v-if="allNotificationItems.length === 0"
+                title="Empty notifications"
+                prepend-icon="mdi-bell-off-outline"
+              />
+              <v-divider v-if="allNotificationItems.length > 0" class="my-1" />
+              <v-list-item
+                v-if="allNotificationItems.length > 0"
                 :title="t('actions.showAll')"
                 append-icon="mdi-arrow-right"
                 to="/notification"
