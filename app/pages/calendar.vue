@@ -764,20 +764,15 @@ onUnmounted(() => {
     <AppModal
       v-model="dialogOpen"
       :title="isEditing ? t('pages.calendar.editDialogTitle') : t('pages.calendar.createDialogTitle')"
-      :max-width="560"
     >
       <template #default>
-          <v-alert v-if="isDetailsLoading" type="info" variant="tonal" class="mb-3">
-            Chargement des détails de l'événement...
-          </v-alert>
           <v-card
             v-if="isEditing && (activeEvent?.description || activeEvent?.organizerEmail)"
-            variant="tonal"
-            class="mb-4"
+            variant="text"
+            class="mb-1 postcard-gradient-card"
           >
             <v-card-text class="text-body-2">
               <div v-if="activeEvent?.description" class="mb-2">
-                <div class="font-weight-medium mb-1">Description (HTML)</div>
                 <!-- eslint-disable-next-line vue/no-v-html -->
                 <div class="event-html-description" v-html="eventDescriptionHtml" />
               </div>
