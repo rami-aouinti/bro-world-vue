@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type {
+  ApiListResponse,
   CrmIdResponse,
+  CrmProjectListItem,
   CrmProjectItem,
   CrmTaskCreatePayload,
   CrmTaskItem,
@@ -50,6 +52,9 @@ const createPayload = reactive<CrmTaskCreatePayload>({
 const { data, pending, error } = await useFetch<CrmTaskResponse>(
   '/api/crm/general/tasks',
 )
+const { data: projectsData } = await useFetch<ApiListResponse<CrmProjectListItem>>(
+  '/api/crm/general/projects',
+)
 
 const filteredTasks = computed(() => {
   const query = search.value.trim().toLowerCase()
@@ -84,6 +89,18 @@ const taskPriorityOptions = computed(() =>
 )
 const taskProjectOptions = computed(() =>
   Array.from(new Set((data.value?.items ?? []).map((task) => task.projectId).filter(Boolean))),
+)
+const taskCreateProjectOptions = computed(() =>
+  (projectsData.value?.items ?? []).map((project) => ({
+    title: project.name,
+    value: project.id,
+  })),
+)
+const taskCreateStatusOptions = computed(() =>
+  Array.from(new Set(['todo', 'in_progress', 'review', 'done', ...taskStatusOptions.value])),
+)
+const taskCreatePriorityOptions = computed(() =>
+  Array.from(new Set(['low', 'medium', 'high', ...taskPriorityOptions.value])),
 )
 
 const totalPages = computed(() =>
@@ -279,11 +296,31 @@ async function deleteTask() {
 
     <AppModal v-if="isRootAdmin" v-model="createDialog" :title="t('world.crm.tasks.modal.createTitle')" :max-width="720">
       <v-row>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.projectId" :label="t('world.crm.tasks.form.projectId')" required /></v-col>
+        <v-col cols="12" md="6">
+          <AppSelect
+            v-model="createPayload.projectId"
+            :items="taskCreateProjectOptions"
+            :label="t('world.crm.tasks.form.projectId')"
+            required
+          />
+        </v-col>
         <v-col cols="12" md="6"><v-text-field v-model="createPayload.title" :label="t('world.crm.tasks.form.title')" required /></v-col>
         <v-col cols="12"><v-textarea v-model="createPayload.description" :label="t('world.crm.tasks.form.description')" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.status" :label="t('world.crm.tasks.form.status')" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.priority" :label="t('world.crm.tasks.form.priority')" /></v-col>
+        <v-col cols="12" md="6">
+          <AppSelect
+            v-model="createPayload.status"
+            :items="taskCreateStatusOptions"
+            :label="t('world.crm.tasks.form.status')"
+          />
+        </v-col>
+        <v-col cols="12" md="6">
+          <AppSelect
+            v-model="createPayload.priority"
+            :items="taskCreatePriorityOptions"
+            :label="t('world.crm.tasks.form.priority')"
+          />
+        </v-col>
+        <v-col cols="12" md="6"><v-text-field v-model="createPayload.dueAt" :label="t('world.crm.tasks.form.dueAt')" type="date" /></v-col>
       </v-row>
       <template #actions>
         <v-btn variant="text" @click="createDialog = false">{{ t('world.crm.tasks.actions.cancel') }}</v-btn>

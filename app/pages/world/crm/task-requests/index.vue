@@ -45,6 +45,7 @@ const payload = reactive<CrmTaskRequestCreatePayload>({
 })
 
 const { data, pending, error, refresh } = await useFetch<ApiListResponse<CrmTaskRequestItem>>('/api/crm/general/task-requests')
+const { data: tasksData } = await useFetch<ApiListResponse<CrmTaskItem>>('/api/crm/general/tasks')
 
 const filteredRequests = computed(() => {
   const query = search.value.trim().toLowerCase()
@@ -84,6 +85,15 @@ const taskRequestRepositoryOptions = computed(() =>
 )
 const taskRequestTaskOptions = computed(() =>
   Array.from(new Set((data.value?.items ?? []).map((request) => request.taskId).filter(Boolean))),
+)
+const taskRequestCreateStatusOptions = computed(() =>
+  Array.from(new Set(['pending', 'in_progress', 'approved', 'rejected', ...taskRequestStatusOptions.value])),
+)
+const taskRequestCreateTaskOptions = computed(() =>
+  (tasksData.value?.items ?? []).map((task) => ({
+    title: task.title,
+    value: task.id,
+  })),
 )
 
 const totalPages = computed(() =>
@@ -242,10 +252,31 @@ async function deleteRequest() {
 
       <AppModal v-if="isRootAdmin" v-model="createDialog" :title="t('world.crm.taskRequests.modal.createTitle')" :max-width="720">
         <v-row>
-          <v-col cols="12" md="6"><v-text-field v-model="payload.taskId" :label="t('world.crm.taskRequests.form.taskId')" required /></v-col>
-          <v-col cols="12" md="6"><v-text-field v-model="payload.repositoryId" :label="t('world.crm.taskRequests.form.repositoryId')" required /></v-col>
+          <v-col cols="12" md="6">
+            <AppSelect
+              v-model="payload.taskId"
+              :items="taskRequestCreateTaskOptions"
+              :label="t('world.crm.taskRequests.form.taskId')"
+              required
+            />
+          </v-col>
+          <v-col cols="12" md="6">
+            <AppSelect
+              v-model="payload.repositoryId"
+              :items="taskRequestRepositoryOptions"
+              :label="t('world.crm.taskRequests.form.repositoryId')"
+              required
+            />
+          </v-col>
           <v-col cols="12"><v-text-field v-model="payload.title" :label="t('world.crm.taskRequests.form.title')" required /></v-col>
           <v-col cols="12"><v-textarea v-model="payload.description" :label="t('world.crm.taskRequests.form.description')" /></v-col>
+          <v-col cols="12" md="6">
+            <AppSelect
+              v-model="payload.status"
+              :items="taskRequestCreateStatusOptions"
+              :label="t('world.crm.taskRequests.form.status')"
+            />
+          </v-col>
         </v-row>
         <template #actions>
           <v-btn variant="text" @click="createDialog = false">{{ t('world.crm.taskRequests.actions.cancel') }}</v-btn>
