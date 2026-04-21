@@ -149,7 +149,7 @@ const saveTransition = async () => {
           }}
         </p>
 
-        <v-select
+        <AppSelect
           v-model="selectedId"
           :label="t('world.jobs.pipeline.candidate', 'Candidate')"
           :items="
@@ -163,7 +163,7 @@ const saveTransition = async () => {
           class="mb-3"
         />
 
-        <v-select
+        <AppSelect
           v-model="toStage"
           :label="t('world.jobs.pipeline.newStage', 'New stage')"
           :items="stages"

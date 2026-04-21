@@ -417,10 +417,10 @@
         "deleteFailed": "Unable to delete this event.",
         "cancelFailed": "Unable to cancel this event.",
         "moveFailed": "Unable to move this event.",
-        "googleConnectFailed": "Unable to connect to Google Calendar."
+        "googleConnectFailed": "Unable to connect to Google"
       },
       "presetTitle": "Preset events",
-      "googleConnect": "Connect to Google Calendar",
+      "googleConnect": "Connect to Google",
       "googleToken": "Google token",
       "googleEventsTitle": "Google Calendar events",
       "noGoogleEvents": "No Google Calendar events loaded.",

@@ -177,7 +177,7 @@ function resetForm() {
               />
             </v-col>
             <v-col cols="12" sm="6">
-              <v-select
+              <AppSelect
                 v-model="formState.topic"
                 :label="page.form.fields.topic"
                 :items="page.form.topics"

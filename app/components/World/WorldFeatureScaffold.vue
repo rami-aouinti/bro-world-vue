@@ -98,7 +98,7 @@ const filteredRows = computed(() => {
             cols="12"
             :md="field.type === 'textarea' ? 12 : 6"
           >
-            <v-select
+            <AppSelect
               v-if="field.type === 'select'"
               v-model="form[field.key]"
               :label="field.label"

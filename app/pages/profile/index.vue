@@ -1305,7 +1305,7 @@ onUnmounted(() => {
                   cols="12"
                   md="2"
                 >
-                  <v-select
+                  <AppSelect
                     v-model="line.level"
                     :items="resumeLevelOptions"
                     :label="levelFieldLabel(entry.key)"
@@ -1443,7 +1443,7 @@ onUnmounted(() => {
                 cols="12"
                 md="2"
               >
-                <v-select
+                <AppSelect
                   v-model="line.level"
                   :items="resumeLevelOptions"
                   :label="levelFieldLabel(entry.key)"

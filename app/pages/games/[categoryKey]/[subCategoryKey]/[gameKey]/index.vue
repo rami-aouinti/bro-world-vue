@@ -340,7 +340,7 @@ const rightDrawerSelection = computed(() => [
               >
                 <v-row>
                   <v-col cols="12" md="6">
-                    <v-select
+                    <AppSelect
                       v-model="selectedPlayerCount"
                       :items="playerCountOptions"
                       label="Nombre de joueurs"
@@ -351,7 +351,7 @@ const rightDrawerSelection = computed(() => [
                     />
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-select
+                    <AppSelect
                       v-model="selectedOpponentType"
                       :items="opponentTypeOptions"
                       label="Type d'adversaire"

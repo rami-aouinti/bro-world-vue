@@ -684,7 +684,7 @@ onUnmounted(() => {
           >
             {{ t('pages.calendar.addEvent') }}
           </v-btn>
-          <v-select
+          <AppSelect
             v-model="selectedRangeFilter"
             class="mb-3"
             density="comfortable"
@@ -738,17 +738,6 @@ onUnmounted(() => {
           <v-card-text v-else class="text-medium-emphasis">
             {{ t('pages.calendar.noUpcoming') }}
           </v-card-text>
-          <v-select
-            v-model="selectedRangeFilter"
-            class="mt-3"
-            clearable
-            density="comfortable"
-            variant="outlined"
-            label="Filter events"
-            :items="rangeFilterOptions"
-            item-title="title"
-            item-value="value"
-          />
         </template>
       </template>
     </AppPageDrawers>

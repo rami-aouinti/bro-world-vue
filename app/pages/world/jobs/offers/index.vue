@@ -137,7 +137,7 @@ await fetchJobs()
           {{ t('world.jobs.offers.filters.title') }}
         </h3>
         <div class="d-flex flex-column ga-3">
-          <v-select
+          <AppSelect
             v-model="workMode"
             :items="workModeOptions"
             :label="t('world.jobs.offers.filters.workMode')"
@@ -145,7 +145,7 @@ await fetchJobs()
             clearable
             hide-details
           />
-          <v-select
+          <AppSelect
             v-model="contractType"
             :items="contractTypeOptions"
             :label="t('world.jobs.offers.filters.contractType')"
@@ -153,7 +153,7 @@ await fetchJobs()
             clearable
             hide-details
           />
-          <v-select
+          <AppSelect
             v-model="experienceLevel"
             :items="experienceOptions"
             :label="t('world.jobs.offers.filters.experience')"

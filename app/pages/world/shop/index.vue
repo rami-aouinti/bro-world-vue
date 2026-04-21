@@ -322,7 +322,7 @@ onMounted(async () => {
               @update:model-value="applyFilters"
             />
 
-            <v-select
+            <AppSelect
               v-model="promotionFilter"
               :items="promotionOptions"
               item-title="title"
@@ -522,7 +522,7 @@ onMounted(async () => {
         <v-divider />
 
         <v-card-actions class="justify-space-between flex-wrap ga-4 px-4 py-4">
-          <v-select
+          <AppSelect
             v-model="limit"
             :items="[10, 20, 50]"
             :label="t('world.shop.products.rows')"

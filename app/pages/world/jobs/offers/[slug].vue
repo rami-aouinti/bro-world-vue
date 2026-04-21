@@ -335,7 +335,7 @@ await fetchDetail()
       />
 
       <template v-if="!createResumeMode">
-        <v-select
+        <AppSelect
           v-model="selectedResumeId"
           :label="t('world.jobs.offers.apply.selectResume')"
           :items="

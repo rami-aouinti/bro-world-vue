@@ -380,7 +380,7 @@ const deleteProduct = async (productId: string) => {
                   </v-row>
                   <v-row>
                     <v-col cols="6">
-                      <v-select
+                      <AppSelect
                         v-model="categoryForm.facetType"
                         :items="['term', 'range']"
                         label="Facet type"
@@ -420,7 +420,7 @@ const deleteProduct = async (productId: string) => {
                   <v-text-field v-model="productForm.slug" label="Slug" variant="outlined" density="comfortable" class="mb-2" />
                   <v-textarea v-model="productForm.description" label="Description" variant="outlined" density="comfortable" rows="2" class="mb-2" />
                   <v-text-field v-model="productForm.baseSku" label="Base SKU" variant="outlined" density="comfortable" class="mb-2" />
-                  <v-select v-model="productForm.status" :items="['draft', 'active', 'archived']" label="Status" variant="outlined" density="comfortable" class="mb-2" />
+                  <AppSelect v-model="productForm.status" :items="['draft', 'active', 'archived']" label="Status" variant="outlined" density="comfortable" class="mb-2" />
                   <v-row>
                     <v-col cols="6"><v-text-field v-model.number="productForm.price" :label="t('world.shop.admin.fields.price', 'Price')" type="number" variant="outlined" density="comfortable" /></v-col>
                     <v-col cols="6"><v-text-field v-model.number="productForm.stock" :label="t('world.shop.admin.fields.stock', 'Stock')" type="number" variant="outlined" density="comfortable" /></v-col>

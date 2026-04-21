@@ -481,7 +481,7 @@ const isPreviewPdf = computed(
             variant="outlined"
             density="comfortable"
           />
-          <v-select
+          <AppSelect
             v-model="folderDialog.parentId"
             :items="folderOptions"
             item-title="title"

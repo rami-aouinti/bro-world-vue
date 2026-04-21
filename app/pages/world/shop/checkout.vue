@@ -199,7 +199,7 @@ onMounted(async () => {
                   <v-text-field v-model="phone" :label="t('world.shop.checkout.fields.phone')" />
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-select
+                  <AppSelect
                     v-model="shippingMethod"
                     :items="shippingMethods"
                     item-title="title"

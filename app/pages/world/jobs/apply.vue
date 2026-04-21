@@ -439,7 +439,7 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
 
                 <v-row>
                   <v-col cols="12" md="6">
-                    <v-select
+                    <AppSelect
                       v-model="applicationForm.authorizedToWork"
                       :label="t('world.jobs.apply.form.authorizedToWork')"
                       :items="[
@@ -478,7 +478,7 @@ const updateApplicationStatus = (status: ApplicationStatus, note: string) => {
                     />
                   </v-col>
                   <v-col cols="12">
-                    <v-select
+                    <AppSelect
                       v-model="applicationForm.openToRelocate"
                       :label="t('world.jobs.apply.form.openToRelocation')"
                       :items="[

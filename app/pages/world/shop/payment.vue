@@ -150,7 +150,7 @@ onMounted(async () => {
           <v-col cols="12" md="6">
             <v-card variant="outlined" rounded="lg" class="pa-4 mb-4">
               <h3 class="text-subtitle-1 mb-3">{{ t('world.shop.payment.sections.provider') }}</h3>
-              <v-select
+              <AppSelect
                 v-model="provider"
                 :items="providerOptions"
                 item-title="title"
