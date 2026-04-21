@@ -37,6 +37,7 @@ const { data, pending, error, refresh } = await useFetch<CrmTaskItem>(
 const { data: usersData } = await useFetch<Record<string, any>>('/api/public/users')
 const { data: tasksData } = await useFetch<{ items?: Array<{ id: string; title?: string }> }>('/api/crm/general/tasks')
 const { data: sprintsData } = await useFetch<{ items?: Array<{ id: string; name?: string }> }>('/api/crm/general/sprints')
+const { data: projectsData } = await useFetch<{ items?: Array<{ id: string; name?: string }> }>('/api/crm/general/projects')
 
 const publicUserOptions = computed(() => {
   const list = usersData.value?.users ?? usersData.value?.items ?? []
@@ -63,6 +64,16 @@ const sprintOptions = computed(() =>
     value: sprint.id,
   })),
 )
+
+const projectOptions = computed(() =>
+  (projectsData.value?.items ?? []).map((project) => ({
+    title: project.name ? `${project.name} (${project.id})` : project.id,
+    value: project.id,
+  })),
+)
+
+const statusOptions = ['todo', 'in_progress', 'review', 'done']
+const priorityOptions = ['low', 'medium', 'high']
 
 watchEffect(() => {
   if (!data.value) return
@@ -185,11 +196,20 @@ async function attachToSprint() {
           <template v-else>
             <h2 class="text-h6 mb-4">{{ data.title }}</h2>
             <v-row>
-              <v-col cols="12" md="6"><v-text-field v-model="payload.projectId" :label="t('world.crm.tasks.form.projectId')" :readonly="!isRootAdmin" /></v-col>
+              <v-col cols="12" md="6">
+                <AppSelect
+                  v-model="payload.projectId"
+                  :items="projectOptions"
+                  item-title="title"
+                  item-value="value"
+                  :label="t('world.crm.tasks.form.projectId')"
+                  :disabled="!isRootAdmin"
+                />
+              </v-col>
               <v-col cols="12" md="6"><v-text-field v-model="payload.title" :label="t('world.crm.tasks.form.title')" :readonly="!isRootAdmin" /></v-col>
-              <v-col cols="12" md="6"><v-text-field v-model="payload.status" :label="t('world.crm.tasks.form.status')" :readonly="!isRootAdmin" /></v-col>
-              <v-col cols="12" md="6"><v-text-field v-model="payload.priority" :label="t('world.crm.tasks.form.priority')" :readonly="!isRootAdmin" /></v-col>
-              <v-col cols="12" md="6"><v-text-field v-model="payload.dueAt" :label="t('world.crm.tasks.form.dueAt')" :readonly="!isRootAdmin" /></v-col>
+              <v-col cols="12" md="6"><AppSelect v-model="payload.status" :items="statusOptions" :label="t('world.crm.tasks.form.status')" :disabled="!isRootAdmin" /></v-col>
+              <v-col cols="12" md="6"><AppSelect v-model="payload.priority" :items="priorityOptions" :label="t('world.crm.tasks.form.priority')" :disabled="!isRootAdmin" /></v-col>
+              <v-col cols="12" md="6"><v-text-field v-model="payload.dueAt" :label="t('world.crm.tasks.form.dueAt')" type="date" :readonly="!isRootAdmin" /></v-col>
               <v-col cols="12" md="6"><v-text-field v-model="payload.estimatedHours" :label="t('world.crm.tasks.form.estimatedHours')" type="number" :readonly="!isRootAdmin" /></v-col>
               <v-col cols="12"><v-textarea v-model="payload.description" :label="t('world.crm.tasks.form.description')" :readonly="!isRootAdmin" /></v-col>
             </v-row>

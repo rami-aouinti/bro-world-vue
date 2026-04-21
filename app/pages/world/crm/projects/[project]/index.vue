@@ -21,6 +21,7 @@ definePageMeta({ layout: 'crm', title: 'CRM Project Detail' })
 const editPayload = reactive<CrmProjectUpdatePayload>({})
 const assigneeId = ref('')
 const pendingSave = ref(false)
+const statusOptions = ['planned', 'in_progress', 'on_hold', 'completed']
 const { data: usersData } = await useFetch<Record<string, any>>('/api/public/users')
 
 const publicUserOptions = computed(() => {
@@ -181,9 +182,9 @@ async function detachAssignee(userId: string) {
             <v-row>
               <v-col cols="12" md="6"><v-text-field v-model="editPayload.name" :label="t('world.crm.projects.form.name')" :readonly="!isRootAdmin" /></v-col>
               <v-col cols="12" md="6"><v-text-field v-model="editPayload.code" :label="t('world.crm.projects.form.code')" :readonly="!isRootAdmin" /></v-col>
-              <v-col cols="12" md="6"><v-text-field v-model="editPayload.status" :label="t('world.crm.projects.form.status')" :readonly="!isRootAdmin" /></v-col>
-              <v-col cols="12" md="6"><v-text-field v-model="editPayload.startedAt" :label="t('world.crm.projects.form.startedAt')" :readonly="!isRootAdmin" /></v-col>
-              <v-col cols="12" md="6"><v-text-field v-model="editPayload.dueAt" :label="t('world.crm.projects.form.dueAt')" :readonly="!isRootAdmin" /></v-col>
+              <v-col cols="12" md="6"><AppSelect v-model="editPayload.status" :items="statusOptions" :label="t('world.crm.projects.form.status')" :disabled="!isRootAdmin" /></v-col>
+              <v-col cols="12" md="6"><v-text-field v-model="editPayload.startedAt" :label="t('world.crm.projects.form.startedAt')" type="date" :readonly="!isRootAdmin" /></v-col>
+              <v-col cols="12" md="6"><v-text-field v-model="editPayload.dueAt" :label="t('world.crm.projects.form.dueAt')" type="date" :readonly="!isRootAdmin" /></v-col>
               <v-col cols="12"><v-textarea v-model="editPayload.description" :label="t('world.crm.projects.form.description')" :readonly="!isRootAdmin" /></v-col>
             </v-row>
             <div v-if="isRootAdmin" class="d-flex ga-2">
