@@ -452,9 +452,9 @@ function attachMercureSubscription() {
 }
 
 watch(
-  loggedIn,
-  (isLoggedIn) => {
-    if (!isLoggedIn) {
+  [loggedIn, () => String(sessionUser.value?.id || '')],
+  ([isLoggedIn, userId]) => {
+    if (!isLoggedIn || !userId) {
       closeMercureSubscription()
       return
     }
