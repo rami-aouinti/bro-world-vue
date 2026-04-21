@@ -159,8 +159,7 @@ const profileResumeIdentity = computed(() => {
     currentProfile?.username ||
     'Anonymous Member'
   const title = currentProfile?.profile?.title || 'Professional Profile'
-  const location =
-    resumeIdentity?.adresse || currentProfile?.profile?.location || ''
+  const location = resumeIdentity?.address || currentProfile?.profile?.location || ''
   const email = resumeIdentity?.email || currentProfile?.email || ''
   const phone = resumeIdentity?.phone || currentProfile?.profile?.phone || ''
   const summary =
