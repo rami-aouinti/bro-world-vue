@@ -55,7 +55,36 @@ type BlogReactionType = {
 }
 
 const route = useRoute()
-const slug = computed(() => String(route.params.slug ?? ''))
+
+function getQueryString(value: unknown): string | null {
+  if (typeof value === 'string') {
+    const normalized = value.trim()
+    return normalized.length > 0 ? normalized : null
+  }
+
+  if (Array.isArray(value)) {
+    const firstString = value.find((entry) => typeof entry === 'string')
+    return getQueryString(firstString)
+  }
+
+  return null
+}
+
+const slug = computed(() => {
+  const paramSlug = String(route.params.slug ?? '').trim()
+
+  if (paramSlug.toLowerCase() !== 'postdetail') {
+    return paramSlug
+  }
+
+  return (
+    getQueryString(route.query.slug) ??
+    getQueryString(route.query.postSlug) ??
+    getQueryString(route.query.id) ??
+    getQueryString(route.query.postId) ??
+    ''
+  )
+})
 const { loggedIn } = useUserSession()
 
 const { comment, react, delete: remove } = useBlogFeed({ mode: 'general' })
@@ -214,10 +243,15 @@ function normalizePost(source: unknown): BlogPostView | null {
   }
 }
 
-const fetchPost = async () =>
-  (await ($fetch as any)(
+const fetchPost = async () => {
+  if (!slug.value) {
+    return null
+  }
+
+  return (await ($fetch as any)(
     `/api/blog/posts/${encodeURIComponent(slug.value)}`,
   )) as unknown
+}
 
 const {
   data: postResponse,

@@ -284,11 +284,16 @@ watch(
   async (isLoggedIn) => {
     if (!isLoggedIn) return
     loginDialogOpen.value = false
-    await Promise.all([
+    const results = await Promise.allSettled([
       inboxNotificationsStore.fetchNotifications(),
       inboxNotificationsStore.fetchInboxConversations(),
       shopStore.fetchCart(),
     ])
+
+    const cartResult = results[2]
+    if (cartResult?.status === 'rejected') {
+      shopStore.error = null
+    }
   },
   { immediate: true },
 )
