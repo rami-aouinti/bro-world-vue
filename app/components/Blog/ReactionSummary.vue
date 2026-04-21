@@ -249,12 +249,10 @@ function userProfilePath(user: { username: string | null }) {
   width: 26px;
   height: 26px;
   border-radius: 999px;
-  border: 2px solid rgba(27, 29, 33, 0.95);
   display: grid;
   place-items: center;
   font-size: 0.95rem;
   margin-left: -5px;
-  background: #111;
 }
 
 .reaction-chip:first-child {
