@@ -11,7 +11,8 @@ const schoolStore = useWorldLearningSchoolStore()
 const resource = 'courses' as SchoolResource
 
 const search = ref('')
-const selectedField = ref<string | null>(null)
+const selectedTeacher = ref<string | null>(null)
+const selectedClass = ref<string | null>(null)
 const referenceDialog = ref(false)
 const selectedReference = ref<{ resource: SchoolResource; id: string } | null>(null)
 
@@ -20,23 +21,67 @@ await schoolStore.fetchCollection(resource)
 const items = computed(() => schoolStore.getCollection(resource))
 const loading = computed(() => schoolStore.isLoading(resource))
 
-const headers = computed(() => {
-  const first = items.value[0] ?? {}
-  return Object.keys(first).map(key => ({ title: key, value: key }))
+const teacherOptions = computed(() => {
+  const byId = new Map<string, { title: string; value: string }>()
+  for (const item of items.value) {
+    const teacherRaw = item.teacher
+    if (!teacherRaw || typeof teacherRaw !== 'object') {
+      continue
+    }
+
+    const teacher = teacherRaw as Record<string, unknown>
+    const teacherId = String(teacher.id ?? '')
+    if (!teacherId) {
+      continue
+    }
+
+    const fullName = `${String(teacher.firstName ?? '')} ${String(teacher.lastName ?? '')}`.trim()
+    const teacherName = String(teacher.name ?? fullName ?? teacher.username ?? '')
+    if (!teacherName) {
+      continue
+    }
+
+    byId.set(teacherId, { title: teacherName, value: teacherId })
+  }
+
+  return Array.from(byId.values()).sort((a, b) => a.title.localeCompare(b.title))
 })
 
-const availableFields = computed(() => headers.value.map(header => ({ title: header.title, value: header.value })))
+const classOptions = computed(() => {
+  const byClass = new Map<string, { title: string; value: string }>()
+  for (const item of items.value) {
+    const className = String(item.className ?? '').trim()
+    if (!className) {
+      continue
+    }
+    byClass.set(className, { title: className, value: className })
+  }
+
+  return Array.from(byClass.values()).sort((a, b) => a.title.localeCompare(b.title))
+})
 
 const filteredItems = computed(() => {
   const query = search.value.trim().toLowerCase()
-
-  if (!query) {
-    return items.value
-  }
-
   return items.value.filter((item) => {
-    if (selectedField.value) {
-      return String(item[selectedField.value] ?? '').toLowerCase().includes(query)
+    if (selectedTeacher.value) {
+      const teacherRaw = item.teacher
+      const teacherId = teacherRaw && typeof teacherRaw === 'object'
+        ? String((teacherRaw as Record<string, unknown>).id ?? '')
+        : ''
+      if (teacherId !== selectedTeacher.value) {
+        return false
+      }
+    }
+
+    if (selectedClass.value) {
+      const className = String(item.className ?? '').trim()
+      if (className !== selectedClass.value) {
+        return false
+      }
+    }
+
+    if (!query) {
+      return true
     }
 
     return Object.values(item).some(value => String(value ?? '').toLowerCase().includes(query))
@@ -89,7 +134,8 @@ async function openReference(payload: { key: string; value: string }) {
             variant="outlined"
             hide-details
           />
-          <AppSelect v-model="selectedField" :items="availableFields" label="Champ" clearable />
+          <AppSelect v-model="selectedTeacher" :items="teacherOptions" label="Teacher" clearable />
+          <AppSelect v-model="selectedClass" :items="classOptions" label="Class" clearable />
         </div>
       </template>
     </WorldModuleDrawers>

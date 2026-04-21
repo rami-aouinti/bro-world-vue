@@ -108,7 +108,51 @@ function fileHref(url?: string) {
       :module-description="'School resource detail page'"
       :nav-items="learningNavItems"
       :show-action="false"
-    />
+      :activate-right-drawer="isCourse"
+    >
+      <template v-if="isCourse" #right>
+        <div class="d-flex flex-column ga-3">
+          <h2 class="text-subtitle-1 mb-0">Pièces jointes</h2>
+
+          <div v-if="loading" class="d-flex justify-center py-8">
+            <v-progress-circular indeterminate color="primary" />
+          </div>
+
+          <template v-else>
+            <v-card
+              v-for="(attachment, index) in courseAttachments"
+              :key="`${attachment.url ?? 'attachment'}-${index}`"
+              variant="outlined"
+              rounded="lg"
+              class="pa-3"
+            >
+              <div class="d-flex align-center justify-space-between ga-3 mb-2">
+                <p class="text-body-2 font-weight-medium mb-0 text-truncate">{{ attachment.originalName ?? 'Attachment' }}</p>
+                <v-chip size="x-small" color="primary" variant="tonal">{{ (attachment.extension ?? 'file').toUpperCase() }}</v-chip>
+              </div>
+              <p class="text-caption text-medium-emphasis mb-1">{{ attachment.mimeType ?? 'Unknown type' }}</p>
+              <p class="text-caption text-medium-emphasis mb-3">
+                {{ formatBytes(attachment.size) }}
+                <span v-if="attachment.uploadedAt">• {{ formatDateTimeValue(attachment.uploadedAt) }}</span>
+              </p>
+              <v-btn
+                :href="fileHref(attachment.url)"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="tonal"
+                size="small"
+                prepend-icon="mdi-open-in-new"
+                block
+              >
+                Ouvrir le fichier
+              </v-btn>
+            </v-card>
+
+            <v-alert v-if="courseAttachments.length === 0" type="info" variant="tonal" text="Aucune pièce jointe." />
+          </template>
+        </div>
+      </template>
+    </WorldModuleDrawers>
 
     <v-container fluid>
       <v-card v-if="isCourse" rounded="xl" class="pa-6 postcard-gradient-card course-detail-card">
@@ -150,43 +194,6 @@ function fileHref(url?: string) {
             <p v-else class="mb-0">Aucun contenu HTML disponible pour ce cours.</p>
           </v-card>
 
-          <div>
-            <h2 class="text-h6 mb-3">Pièces jointes</h2>
-            <v-row>
-              <v-col
-                v-for="(attachment, index) in courseAttachments"
-                :key="`${attachment.url ?? 'attachment'}-${index}`"
-                cols="12"
-                md="6"
-              >
-                <v-card variant="outlined" rounded="lg" class="pa-4 h-100">
-                  <div class="d-flex align-center justify-space-between ga-3 mb-2">
-                    <p class="text-body-2 font-weight-medium mb-0 text-truncate">{{ attachment.originalName ?? 'Attachment' }}</p>
-                    <v-chip size="x-small" color="primary" variant="tonal">{{ (attachment.extension ?? 'file').toUpperCase() }}</v-chip>
-                  </div>
-                  <p class="text-caption text-medium-emphasis mb-1">{{ attachment.mimeType ?? 'Unknown type' }}</p>
-                  <p class="text-caption text-medium-emphasis mb-3">
-                    {{ formatBytes(attachment.size) }}
-                    <span v-if="attachment.uploadedAt">• {{ formatDateTimeValue(attachment.uploadedAt) }}</span>
-                  </p>
-                  <v-btn
-                    :href="fileHref(attachment.url)"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    variant="tonal"
-                    size="small"
-                    prepend-icon="mdi-open-in-new"
-                  >
-                    Ouvrir le fichier
-                  </v-btn>
-                </v-card>
-              </v-col>
-
-              <v-col v-if="courseAttachments.length === 0" cols="12">
-                <v-alert type="info" variant="tonal" text="Aucune pièce jointe." />
-              </v-col>
-            </v-row>
-          </div>
         </template>
       </v-card>
 
