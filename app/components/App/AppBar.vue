@@ -35,7 +35,7 @@ const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => true)
 const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
 const { mobile } = useDisplay()
 const route = useRoute()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const vision = useStorage<'light' | 'dark'>('color-scheme', 'dark')
 
 const navMenus = [
@@ -188,19 +188,54 @@ const userLabel = computed(() => {
 
   return fullName || sessionUser.value?.username || t('appbar.user')
 })
+const truncateText = (value: string, maxLength = 70): string => {
+  const normalized = value.replace(/\s+/g, ' ').trim()
+
+  if (normalized.length <= maxLength) return normalized
+  return `${normalized.slice(0, maxLength).trimEnd()}...`
+}
+const formatRelativeTime = (isoDate: string): string => {
+  const timestamp = new Date(isoDate).getTime()
+  if (Number.isNaN(timestamp)) return ''
+
+  const diffSeconds = Math.round((timestamp - Date.now()) / 1000)
+  const ranges: Array<[Intl.RelativeTimeFormatUnit, number]> = [
+    ['year', 60 * 60 * 24 * 365],
+    ['month', 60 * 60 * 24 * 30],
+    ['week', 60 * 60 * 24 * 7],
+    ['day', 60 * 60 * 24],
+    ['hour', 60 * 60],
+    ['minute', 60],
+    ['second', 1],
+  ]
+  const selectedRange =
+    ranges.find(([, seconds]) => Math.abs(diffSeconds) >= seconds) ||
+    ranges[ranges.length - 1]
+
+  if (!selectedRange) return ''
+
+  const [unit, inSeconds] = selectedRange
+  return new Intl.RelativeTimeFormat(locale.value, {
+    numeric: 'auto',
+  }).format(Math.round(diffSeconds / inSeconds), unit)
+}
 const allNotificationItems = computed(() => {
   const apiItems = notificationsSortedDesc.value.map((item) => ({
     id: `api-${item.id}`,
-    title: item.title,
+    title: truncateText(item.title),
     createdAt: item.createdAt,
-    icon: 'mdi-bell-ring-outline',
+    icon: item.type === 'blog_notification' ? null : 'mdi-bell-ring-outline',
+    avatar: item.type === 'blog_notification' ? item.from?.photo : null,
+    timeLabel: formatRelativeTime(item.createdAt),
     to: `/notification/${item.id}`,
   }))
   const localItems = actionNotifications.value.map((item: Notification) => ({
     id: `local-${item.id}`,
-    title: item.text,
+    title: truncateText(item.text),
     createdAt: item.time.toISOString(),
     icon: 'mdi-check-circle-outline',
+    avatar: null,
+    timeLabel: formatRelativeTime(item.time.toISOString()),
     to: null,
   }))
 
@@ -213,13 +248,10 @@ const unreadTotalCount = computed(
 )
 const inboxLatestThreePreview = computed(() =>
   inboxLatestThree.value.map((item) => {
-    const source = `${item.preview || item.content || ''}`.trim()
-    const shortPreview =
-      source.length > 20 ? `${source.slice(0, 20).trimEnd()}...` : source
-
     return {
       ...item,
-      shortPreview: shortPreview || '...',
+      shortPreview: truncateText(item.title, 70) || '...',
+      timeLabel: formatRelativeTime(item.createdAt),
     }
   }),
 )
@@ -659,10 +691,25 @@ function isMenuActive(paths: string[]) {
               <v-list-item
                 v-for="item in allNotificationItems"
                 :key="item.id"
-                :title="item.title"
-                :prepend-icon="item.icon"
                 :to="item.to || undefined"
-              />
+              >
+                <template #prepend>
+                  <v-avatar
+                    v-if="item.avatar"
+                    size="34"
+                    class="app-top-bar__menu-avatar"
+                  >
+                    <v-img :src="item.avatar" :alt="item.title" cover />
+                  </v-avatar>
+                  <v-icon v-else :icon="item.icon || 'mdi-bell-ring-outline'" />
+                </template>
+                <v-list-item-title class="app-top-bar__menu-item-title">
+                  {{ item.title }}
+                </v-list-item-title>
+                <v-list-item-subtitle class="app-top-bar__menu-item-subtitle">
+                  {{ item.timeLabel }}
+                </v-list-item-subtitle>
+              </v-list-item>
               <v-divider class="my-1" />
               <v-list-item
                 :title="t('actions.showAll')"
@@ -772,12 +819,11 @@ function isMenuActive(paths: string[]) {
                 <v-list-item
                   v-for="item in inboxLatestThreePreview"
                   :key="item.id"
-                  :title="item.title"
-                  :subtitle="item.shortPreview"
+                  class="app-top-bar__conversation-item"
                   @click="goToInboxConversation(item.id)"
                 >
                   <template #prepend>
-                    <v-avatar size="32">
+                    <v-avatar size="40" class="app-top-bar__menu-avatar">
                       <v-img
                         v-if="item.avatar"
                         :src="item.avatar"
@@ -787,6 +833,12 @@ function isMenuActive(paths: string[]) {
                       <v-icon v-else icon="mdi-message-text-outline" />
                     </v-avatar>
                   </template>
+                  <v-list-item-title class="app-top-bar__menu-item-title">
+                    {{ item.shortPreview }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle class="app-top-bar__menu-item-subtitle">
+                    {{ item.timeLabel }}
+                  </v-list-item-subtitle>
                 </v-list-item>
                 <v-list-item
                   v-if="inboxLatestThreePreview.length === 0"
@@ -1082,6 +1134,29 @@ function isMenuActive(paths: string[]) {
 
 :deep(.app-top-bar__menu-list .v-list-item) {
   color: rgb(var(--v-theme-on-surface));
+}
+
+:deep(.app-top-bar__menu-list .v-list-item__prepend) {
+  align-self: center;
+}
+
+.app-top-bar__menu-avatar {
+  border: 1px solid rgba(var(--v-border-color), 0.28);
+}
+
+.app-top-bar__menu-item-title {
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: normal;
+}
+
+.app-top-bar__menu-item-subtitle {
+  opacity: 0.8;
+  font-size: 0.78rem;
+}
+
+.app-top-bar__conversation-item {
+  padding-block: 10px;
 }
 
 .app-top-bar__mega-menu-header {
