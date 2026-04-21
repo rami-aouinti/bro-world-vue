@@ -11,6 +11,7 @@ const isViewMode = computed(() => route.query.mode === 'view')
 definePageMeta({ layout: 'crm', title: 'CRM Task Request Detail' })
 
 const payload = reactive<CrmTaskRequestUpdatePayload>({})
+const statusOptions = ['pending', 'in_progress', 'approved', 'rejected']
 const { data, pending, error, refresh } = await useFetch<CrmTaskRequestItem>(() => `/api/crm/general/task-requests/${id.value}`)
 
 watchEffect(() => {
@@ -74,8 +75,8 @@ async function remove() {
               <v-row>
                 <v-col cols="12"><v-text-field v-model="payload.title" :label="t('world.crm.taskRequests.form.title')" /></v-col>
                 <v-col cols="12"><v-textarea v-model="payload.description" :label="t('world.crm.taskRequests.form.description')" /></v-col>
-                <v-col cols="12" md="6"><v-text-field v-model="payload.status" :label="t('world.crm.taskRequests.form.status')" /></v-col>
-                <v-col cols="12" md="6"><v-text-field v-model="payload.resolvedAt" :label="t('world.crm.taskRequests.form.resolvedAt')" /></v-col>
+                <v-col cols="12" md="6"><AppSelect v-model="payload.status" :items="statusOptions" :label="t('world.crm.taskRequests.form.status')" /></v-col>
+                <v-col cols="12" md="6"><v-text-field v-model="payload.resolvedAt" :label="t('world.crm.taskRequests.form.resolvedAt')" type="date" /></v-col>
               </v-row>
               <div class="d-flex ga-2">
                 <v-btn color="primary" @click="save">{{ t('world.crm.taskRequests.actions.save') }}</v-btn>
