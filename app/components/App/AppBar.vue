@@ -224,7 +224,7 @@ const formatRelativeTime = (isoDate: string): string => {
 const allNotificationItems = computed(() => {
   const apiItems = notificationsSortedDesc.value.map((item) => ({
     id: `api-${item.id}`,
-    title: truncateText(item.title, 50),
+    title: truncateText(item.title, 40),
     createdAt: item.createdAt,
     icon: item.type === 'blog_notification' ? null : 'mdi-bell-ring-outline',
     avatar: item.type === 'blog_notification' ? item.from?.photo : null,
