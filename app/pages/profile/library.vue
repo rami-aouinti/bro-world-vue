@@ -445,7 +445,7 @@ const isPreviewPdf = computed(
         </v-card-title>
         <v-card-text>
           <div v-if="isPreviewImage" class="file-preview">
-            <img
+            <v-img
               :src="selectedFile.url"
               :alt="selectedFile.name"
               class="file-preview__image"

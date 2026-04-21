@@ -380,7 +380,7 @@ function openImagePreview(src: string) {
           @click.stop
         >
           <v-avatar size="52" color="grey-darken-2" class="me-3">
-            <img
+            <v-img
               v-if="authorPhoto"
               :src="authorPhoto"
               :alt="`${authorName} avatar`"
@@ -391,7 +391,7 @@ function openImagePreview(src: string) {
         </NuxtLink>
         <div v-else class="post-author-link">
           <v-avatar size="52" color="grey-darken-2" class="me-3">
-            <img
+            <v-img
               v-if="authorPhoto"
               :src="authorPhoto"
               :alt="`${authorName} avatar`"

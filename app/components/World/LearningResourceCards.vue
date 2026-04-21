@@ -159,7 +159,7 @@ function formatDefaultValue(value: unknown) {
                 @click="openProfile(asUser(item[field.key]))"
               >
                 <v-avatar size="28">
-                  <img :src="asUser(item[field.key])?.photo" :alt="asUser(item[field.key])?.name || 'User'">
+                  <v-img :src="asUser(item[field.key])?.photo" :alt="asUser(item[field.key])?.name || 'User'" />
                 </v-avatar>
               </v-btn>
 
