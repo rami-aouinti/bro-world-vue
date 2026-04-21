@@ -216,19 +216,22 @@ async function deleteProject() {
                 <v-btn
                   icon="mdi-eye-outline"
                   color="info"
-                  variant="tonal"
+                  variant="text"
+                  size="small"
                   @click="router.push(`/world/crm/projects/${project.id}?mode=view`)"
                 />
                 <v-btn
                   icon="mdi-pencil-outline"
                   color="primary"
-                  variant="tonal"
+                  variant="text"
+                  size="small"
                   @click="router.push(`/world/crm/projects/${project.id}`)"
                 />
                 <v-btn
                   icon="mdi-delete-outline"
                   color="error"
-                  variant="tonal"
+                  variant="text"
+                  size="small"
                   @click="openDeleteDialog(project.id)"
                 />
               </div>
