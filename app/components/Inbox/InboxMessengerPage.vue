@@ -86,7 +86,6 @@ const router = useRouter()
 const { locale, t } = useI18n()
 const { user: sessionUser } = useUserSession()
 const runtimeConfig = useRuntimeConfig()
-const inboxNotificationsStore = useInboxNotificationsStore()
 
 const loading = ref(false)
 const messagesLoading = ref(false)
@@ -557,7 +556,6 @@ function attachMercureSubscription(conversationId: string) {
   mercureEventSource.value = eventSource
 
   eventSource.onmessage = (event: MessageEvent<string>) => {
-    console.log('sadsa');
     const raw = event.data?.trim()
     if (!raw) return
 
@@ -605,9 +603,6 @@ function attachMercureSubscription(conversationId: string) {
         return
       }
 
-      if (payload.recipientId && payload.recipientId === currentUserId.value) {
-        void inboxNotificationsStore.fetchNotifications()
-      }
     } catch {
       // Ignore non-JSON events.
     }

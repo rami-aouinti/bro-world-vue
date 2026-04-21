@@ -37,6 +37,7 @@ const { mobile } = useDisplay()
 const route = useRoute()
 const { t, locale } = useI18n()
 const vision = useStorage<'light' | 'dark'>('color-scheme', 'dark')
+const runtimeConfig = useRuntimeConfig()
 
 const navMenus = [
   {
@@ -176,6 +177,7 @@ const { notificationsSortedDesc, unreadCount, inboxLatestThree } = storeToRefs(
 const { notifications: actionNotifications } = storeToRefs(notificationStore)
 const notificationMenuOpen = ref(false)
 const inboxMenuOpen = ref(false)
+const mercureEventSource = shallowRef<EventSource | null>(null)
 const mobileFeatureMenuOpen = ref(false)
 const mobileApplicationsMenuOpen = ref(false)
 const mobileWorldMenuOpen = ref(false)
@@ -390,6 +392,81 @@ function isMenuActive(paths: string[]) {
     (path) => route.path === path || route.path.startsWith(`${path}/`),
   )
 }
+
+function closeMercureSubscription() {
+  mercureEventSource.value?.close()
+  mercureEventSource.value = null
+}
+
+function attachMercureSubscription() {
+  if (!import.meta.client) return
+
+  closeMercureSubscription()
+
+  const currentUserId = String(sessionUser.value?.id || '').trim()
+  const mercurePublicUrl = String(runtimeConfig.public.mercurePublicUrl || '').trim()
+  if (!mercurePublicUrl || !currentUserId) return
+
+  const url = new URL(mercurePublicUrl)
+  url.searchParams.append('topic', `/users/${currentUserId}/notifications`)
+
+  const configuredWithCredentials = runtimeConfig.public.mercureWithCredentials === true
+  const isSameOriginHub = url.origin === window.location.origin
+  const withCredentials = configuredWithCredentials || isSameOriginHub
+
+  const eventSource = new EventSource(url.toString(), { withCredentials })
+  mercureEventSource.value = eventSource
+
+  eventSource.onmessage = (event: MessageEvent<string>) => {
+    const raw = event.data?.trim()
+    if (!raw) return
+
+    try {
+      const payload = JSON.parse(raw) as {
+        id?: string
+        notificationId?: string
+        conversationId?: string
+        recipientId?: string
+      }
+
+      if (
+        payload.recipientId &&
+        String(payload.recipientId) !== currentUserId
+      ) {
+        return
+      }
+
+      const conversationId = String(payload.conversationId || '')
+      if (conversationId) {
+        void inboxNotificationsStore.fetchConversationById(conversationId)
+      }
+
+      const notificationId = String(payload.notificationId || payload.id || '')
+      if (notificationId && !conversationId) {
+        void inboxNotificationsStore.fetchNotificationById(notificationId)
+      }
+    } catch {
+      // Ignore non-JSON events.
+    }
+  }
+}
+
+watch(
+  loggedIn,
+  (isLoggedIn) => {
+    if (!isLoggedIn) {
+      closeMercureSubscription()
+      return
+    }
+
+    attachMercureSubscription()
+  },
+  { immediate: true },
+)
+
+onBeforeUnmount(() => {
+  closeMercureSubscription()
+})
 </script>
 
 <template>
