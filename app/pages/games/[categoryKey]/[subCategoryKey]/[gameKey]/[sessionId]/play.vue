@@ -293,7 +293,12 @@ async function onFinish(result: 'win' | 'lose') {
               >
             </v-card-text>
             <v-card-text v-else>
-              Session introuvable. Redirection en cours...
+              {{
+                tOrFallback(
+                  'gamePage.session.notFoundRedirecting',
+                  'Session not found. Redirecting...',
+                )
+              }}
             </v-card-text>
           </v-card>
 

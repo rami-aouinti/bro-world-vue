@@ -3,6 +3,7 @@ import CardTablePlaySurface from '~/components/games/play/CardTablePlaySurface.v
 import type { GameSurfaceProps } from '~/components/games/surfaces/types'
 
 const props = defineProps<GameSurfaceProps>()
+const { t } = useI18n()
 
 const seats = computed(() =>
   props.players.map((player) => ({
@@ -30,7 +31,9 @@ const handPreview = computed(() => {
     class="arena-interactive"
     title="Belote"
     :subtitle="
-      session?.sessionId ? `Session ${session.sessionId}` : 'Table 4 joueurs'
+      session?.sessionId
+        ? `${t('gamePage.session.tableSession')} ${session.sessionId}`
+        : t('gamePage.session.fourPlayersTable')
     "
     :seats="seats"
     :community-cards="trickCards"

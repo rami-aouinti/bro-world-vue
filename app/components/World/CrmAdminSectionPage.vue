@@ -1,12 +1,29 @@
 <script setup lang="ts">
-import type { CrmGeneralCollectionResponse, CrmGeneralMutationResponse } from '~/types/world/crmGeneral'
+import type {
+  CrmGeneralCollectionResponse,
+  CrmGeneralMutationResponse,
+} from '~/types/world/crmGeneral'
 import type { CrmEndpointCatalogResponse } from '~/types/world/crmEndpoints'
 
 const props = defineProps<{
-  section: 'companies' | 'projects' | 'tasks' | 'task-requests' | 'sprints' | 'billings' | 'contacts'
+  section:
+    | 'companies'
+    | 'projects'
+    | 'tasks'
+    | 'task-requests'
+    | 'sprints'
+    | 'billings'
+    | 'contacts'
 }>()
 
-type SectionKey = 'companies' | 'projects' | 'tasks' | 'task-requests' | 'sprints' | 'billings' | 'contacts'
+type SectionKey =
+  | 'companies'
+  | 'projects'
+  | 'tasks'
+  | 'task-requests'
+  | 'sprints'
+  | 'billings'
+  | 'contacts'
 type GenericItem = Record<string, unknown>
 
 type FieldType = 'text' | 'email' | 'number' | 'url' | 'textarea' | 'datetime'
@@ -27,11 +44,16 @@ interface EndpointAction {
 }
 
 const router = useRouter()
+const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
 
 const sectionMap = {
   companies: { title: 'Companies', icon: 'mdi-domain', endpoint: 'companies' },
-  projects: { title: 'Projects', icon: 'mdi-folder-outline', endpoint: 'projects' },
+  projects: {
+    title: 'Projects',
+    icon: 'mdi-folder-outline',
+    endpoint: 'projects',
+  },
   tasks: { title: 'Tasks', icon: 'mdi-format-list-checks', endpoint: 'tasks' },
   'task-requests': {
     title: 'Task requests',
@@ -169,24 +191,55 @@ const { data, pending, error, refresh } = await useFetch<
   watch: [endpoint],
 })
 
-const { data: endpointCatalog } = await useFetch<CrmEndpointCatalogResponse>('/api/world/crm/endpoints')
+const { data: endpointCatalog } = await useFetch<CrmEndpointCatalogResponse>(
+  '/api/world/crm/endpoints',
+)
 
 const relationCache = reactive<Partial<Record<SectionKey, GenericItem[]>>>({})
 
-const rawActions = computed(() => endpointCatalog.value?.groups
-  ?.find((group) => group.key === props.section)
-  ?.endpoints ?? [])
+const rawActions = computed(
+  () =>
+    endpointCatalog.value?.groups?.find((group) => group.key === props.section)
+      ?.endpoints ?? [],
+)
 
-const createAction = computed(() => rawActions.value.find((action) => action.method === 'POST' && action.path === endpoint.value) ?? null)
-const updateAction = computed(() => rawActions.value.find((action) => action.method === 'PATCH' && action.path.startsWith(`${endpoint.value}/`) && pathParams(action.path).length === 1) ?? null)
-const deleteAction = computed(() => rawActions.value.find((action) => action.method === 'DELETE' && action.path.startsWith(`${endpoint.value}/`) && pathParams(action.path).length === 1) ?? null)
+const createAction = computed(
+  () =>
+    rawActions.value.find(
+      (action) => action.method === 'POST' && action.path === endpoint.value,
+    ) ?? null,
+)
+const updateAction = computed(
+  () =>
+    rawActions.value.find(
+      (action) =>
+        action.method === 'PATCH' &&
+        action.path.startsWith(`${endpoint.value}/`) &&
+        pathParams(action.path).length === 1,
+    ) ?? null,
+)
+const deleteAction = computed(
+  () =>
+    rawActions.value.find(
+      (action) =>
+        action.method === 'DELETE' &&
+        action.path.startsWith(`${endpoint.value}/`) &&
+        pathParams(action.path).length === 1,
+    ) ?? null,
+)
 
-const extraItemActions = computed<EndpointAction[]>(() => rawActions.value.filter((action) => {
-  if (action.id === createAction.value?.id || action.id === updateAction.value?.id || action.id === deleteAction.value?.id) {
-    return false
-  }
-  return action.path.includes('{')
-}))
+const extraItemActions = computed<EndpointAction[]>(() =>
+  rawActions.value.filter((action) => {
+    if (
+      action.id === createAction.value?.id ||
+      action.id === updateAction.value?.id ||
+      action.id === deleteAction.value?.id
+    ) {
+      return false
+    }
+    return action.path.includes('{')
+  }),
+)
 
 const filteredItems = computed(() => {
   const query = search.value.trim().toLowerCase()
@@ -229,7 +282,9 @@ function itemKey(item: Record<string, unknown>) {
 }
 
 function itemTitle(item: Record<string, unknown>) {
-  return String(item.name ?? item.title ?? item.label ?? item.id ?? 'Sans titre')
+  return String(
+    item.name ?? item.title ?? item.label ?? item.id ?? 'Sans titre',
+  )
 }
 
 function previewEntries(item: Record<string, unknown>) {
@@ -268,7 +323,9 @@ async function loadRelationOptions(fieldKey: string) {
   if (!relationSection) return
   if (relationCache[relationSection]) return
 
-  const response = await $fetch<CrmGeneralCollectionResponse<GenericItem>>(`/api/crm/general/${sectionMap[relationSection].endpoint}`)
+  const response = await $fetch<CrmGeneralCollectionResponse<GenericItem>>(
+    `/api/crm/general/${sectionMap[relationSection].endpoint}`,
+  )
   relationCache[relationSection] = response.items ?? []
 }
 
@@ -314,7 +371,9 @@ function openNested(value: unknown, key: string) {
 }
 
 function pathParams(path: string) {
-  return Array.from(path.matchAll(/\{([^}]+)\}/g)).map((match) => match[1]).filter(Boolean)
+  return Array.from(path.matchAll(/\{([^}]+)\}/g))
+    .map((match) => match[1])
+    .filter(Boolean)
 }
 
 function paramOptions(param: string) {
@@ -322,7 +381,10 @@ function paramOptions(param: string) {
   if (!relationSection) return []
 
   const items = relationCache[relationSection] ?? []
-  return items.map((item) => ({ title: itemTitle(item), value: getItemId(item) }))
+  return items.map((item) => ({
+    title: itemTitle(item),
+    value: getItemId(item),
+  }))
 }
 
 async function loadParamContext(path: string) {
@@ -330,13 +392,17 @@ async function loadParamContext(path: string) {
   for (const param of params) {
     const relationSection = pathParamSection[param]
     if (!relationSection || relationCache[relationSection]) continue
-    const response = await $fetch<CrmGeneralCollectionResponse<GenericItem>>(`/api/crm/general/${sectionMap[relationSection].endpoint}`)
+    const response = await $fetch<CrmGeneralCollectionResponse<GenericItem>>(
+      `/api/crm/general/${sectionMap[relationSection].endpoint}`,
+    )
     relationCache[relationSection] = response.items ?? []
   }
 }
 
 function resolvePath(path: string, payload: Record<string, string>) {
-  return path.replace(/\{([^}]+)\}/g, (_, key: string) => encodeURIComponent(payload[key] ?? ''))
+  return path.replace(/\{([^}]+)\}/g, (_, key: string) =>
+    encodeURIComponent(payload[key] ?? ''),
+  )
 }
 
 async function submitCreate() {
@@ -353,7 +419,8 @@ async function submitCreate() {
     createDialog.value = false
     await refresh()
   } catch (err) {
-    formError.value = err instanceof Error ? err.message : 'Unable to create item.'
+    formError.value =
+      err instanceof Error ? err.message : 'Unable to create item.'
   } finally {
     formPending.value = false
   }
@@ -366,14 +433,18 @@ async function submitEdit() {
   formError.value = ''
 
   try {
-    await $fetch<CrmGeneralMutationResponse<GenericItem>>(`${endpoint.value}/${getItemId(currentItem.value)}`, {
-      method: 'PATCH',
-      body: formModel.value,
-    })
+    await $fetch<CrmGeneralMutationResponse<GenericItem>>(
+      `${endpoint.value}/${getItemId(currentItem.value)}`,
+      {
+        method: 'PATCH',
+        body: formModel.value,
+      },
+    )
     editDialog.value = false
     await refresh()
   } catch (err) {
-    formError.value = err instanceof Error ? err.message : 'Unable to update item.'
+    formError.value =
+      err instanceof Error ? err.message : 'Unable to update item.'
   } finally {
     formPending.value = false
   }
@@ -406,7 +477,9 @@ function openActionDialog(action: EndpointAction, item: GenericItem) {
   }
 
   const currentId = getItemId(item)
-  const currentParam = Object.keys(pathParamSection).find((key) => pathParamSection[key] === props.section)
+  const currentParam = Object.keys(pathParamSection).find(
+    (key) => pathParamSection[key] === props.section,
+  )
   if (currentParam && currentId) {
     actionParamValues[currentParam] = currentId
   }
@@ -455,9 +528,15 @@ async function submitApiAction() {
     />
 
     <v-container fluid>
-      <div class="d-flex align-center justify-space-between mb-4 ga-3 flex-wrap">
+      <div
+        class="d-flex align-center justify-space-between mb-4 ga-3 flex-wrap"
+      >
         <div class="d-flex align-center ga-2">
-          <v-btn icon="mdi-arrow-left" variant="text" @click="router.push('/world/crm/admin')" />
+          <v-btn
+            icon="mdi-arrow-left"
+            variant="text"
+            @click="router.push('/world/crm/admin')"
+          />
           <h2 class="text-h5 mb-0">{{ sectionConfig.title }}</h2>
         </div>
 
@@ -487,11 +566,19 @@ async function submitApiAction() {
       </v-alert>
 
       <v-row v-else>
-        <v-col v-for="item in paginatedItems" :key="itemKey(item)" cols="12" md="6" xl="4">
+        <v-col
+          v-for="item in paginatedItems"
+          :key="itemKey(item)"
+          cols="12"
+          md="6"
+          xl="4"
+        >
           <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
             <div class="d-flex align-start justify-space-between ga-2 mb-3">
               <h3 class="text-subtitle-1 mb-0">{{ itemTitle(item) }}</h3>
-              <v-chip size="small" color="primary" variant="tonal">{{ item.id ?? 'n/a' }}</v-chip>
+              <v-chip size="small" color="primary" variant="tonal">{{
+                item.id ?? 'n/a'
+              }}</v-chip>
             </div>
 
             <p
@@ -501,17 +588,28 @@ async function submitApiAction() {
             >
               <template v-if="isComplexValue(value)">
                 <span class="font-weight-medium">{{ key }}:</span>
-                <v-btn size="x-small" variant="tonal" class="ml-1" @click="openNested(value, key)">
+                <v-btn
+                  size="x-small"
+                  variant="tonal"
+                  class="ml-1"
+                  @click="openNested(value, key)"
+                >
                   View JSON
                 </v-btn>
               </template>
               <template v-else>
-                <span class="font-weight-medium">{{ key }}:</span> {{ formatPrimitive(value) }}
+                <span class="font-weight-medium">{{ key }}:</span>
+                {{ formatPrimitive(value) }}
               </template>
             </p>
 
             <div class="d-flex flex-wrap ga-2 mt-4">
-              <v-btn size="small" variant="tonal" prepend-icon="mdi-eye-outline" @click="openShowDialog(item)">
+              <v-btn
+                size="small"
+                variant="tonal"
+                prepend-icon="mdi-eye-outline"
+                @click="openShowDialog(item)"
+              >
                 Show
               </v-btn>
               <v-btn
@@ -537,7 +635,10 @@ async function submitApiAction() {
               </v-btn>
             </div>
 
-            <div v-if="extraItemActions.length" class="d-flex flex-wrap ga-2 mt-2">
+            <div
+              v-if="extraItemActions.length"
+              class="d-flex flex-wrap ga-2 mt-2"
+            >
               <v-btn
                 v-for="action in extraItemActions"
                 :key="action.id"
@@ -557,12 +658,22 @@ async function submitApiAction() {
       </v-row>
 
       <div v-if="totalPages > 1" class="d-flex justify-center mt-6">
-        <v-pagination v-model="currentPage" :length="totalPages" rounded="circle" />
+        <v-pagination
+          v-model="currentPage"
+          :length="totalPages"
+          rounded="circle"
+        />
       </div>
     </v-container>
 
-    <AppModal v-model="createDialog" :title="`New ${sectionConfig.title.slice(0, -1)}`" :max-width="840">
-      <v-alert v-if="formError" type="error" variant="tonal" class="mb-3">{{ formError }}</v-alert>
+    <AppModal
+      v-model="createDialog"
+      :title="`New ${sectionConfig.title.slice(0, -1)}`"
+      :max-width="840"
+    >
+      <v-alert v-if="formError" type="error" variant="tonal" class="mb-3">{{
+        formError
+      }}</v-alert>
       <v-row>
         <v-col v-for="field in formFields" :key="field.key" cols="12" md="6">
           <AppSelect
@@ -593,12 +704,20 @@ async function submitApiAction() {
       <template #actions>
         <v-spacer />
         <v-btn variant="text" @click="createDialog = false">Cancel</v-btn>
-        <v-btn color="primary" :loading="formPending" @click="submitCreate">Create</v-btn>
+        <v-btn color="primary" :loading="formPending" @click="submitCreate"
+          >Create</v-btn
+        >
       </template>
     </AppModal>
 
-    <AppModal v-model="editDialog" :title="`Edit ${sectionConfig.title.slice(0, -1)}`" :max-width="840">
-      <v-alert v-if="formError" type="error" variant="tonal" class="mb-3">{{ formError }}</v-alert>
+    <AppModal
+      v-model="editDialog"
+      :title="`Edit ${sectionConfig.title.slice(0, -1)}`"
+      :max-width="840"
+    >
+      <v-alert v-if="formError" type="error" variant="tonal" class="mb-3">{{
+        formError
+      }}</v-alert>
       <v-row>
         <v-col v-for="field in formFields" :key="field.key" cols="12" md="6">
           <AppSelect
@@ -629,7 +748,9 @@ async function submitApiAction() {
       <template #actions>
         <v-spacer />
         <v-btn variant="text" @click="editDialog = false">Cancel</v-btn>
-        <v-btn color="primary" :loading="formPending" @click="submitEdit">Save</v-btn>
+        <v-btn color="primary" :loading="formPending" @click="submitEdit"
+          >Save</v-btn
+        >
       </template>
     </AppModal>
 
@@ -644,7 +765,12 @@ async function submitApiAction() {
           <v-card variant="tonal" class="pa-3 h-100">
             <p class="text-caption text-medium-emphasis mb-1">{{ key }}</p>
             <template v-if="isComplexValue(value)">
-              <v-btn size="small" variant="outlined" @click="openNested(value, key)">Afficher le contenu</v-btn>
+              <v-btn
+                size="small"
+                variant="outlined"
+                @click="openNested(value, key)"
+                >{{ t('world.crm.admin.actions.viewContent') }}</v-btn
+              >
             </template>
             <template v-else>
               <p class="text-body-2 mb-0">{{ formatPrimitive(value) }}</p>
@@ -654,19 +780,30 @@ async function submitApiAction() {
       </v-row>
       <template #actions>
         <v-spacer />
-        <v-btn color="primary" variant="tonal" @click="showDialog = false">Close</v-btn>
+        <v-btn color="primary" variant="tonal" @click="showDialog = false"
+          >Close</v-btn
+        >
       </template>
     </AppModal>
 
     <AppModal v-model="nestedDialog" :title="nestedTitle" :max-width="980">
-      <v-sheet class="pa-3 rounded-lg bg-grey-darken-4 overflow-auto" min-height="120">
-        <pre class="text-body-2 mb-0">{{ JSON.stringify(nestedValue, null, 2) }}</pre>
+      <v-sheet
+        class="pa-3 rounded-lg bg-grey-darken-4 overflow-auto"
+        min-height="120"
+      >
+        <pre class="text-body-2 mb-0">{{
+          JSON.stringify(nestedValue, null, 2)
+        }}</pre>
       </v-sheet>
     </AppModal>
 
     <AppModal
       v-model="apiActionDialog"
-      :title="selectedAction ? `${selectedAction.method} · ${selectedAction.title}` : 'Action API'"
+      :title="
+        selectedAction
+          ? `${selectedAction.method} · ${selectedAction.title}`
+          : 'Action API'
+      "
       :max-width="900"
     >
       <div v-if="selectedAction" class="d-flex flex-column ga-3">
@@ -705,13 +842,17 @@ async function submitApiAction() {
           auto-grow
         />
 
-        <v-alert v-if="actionFeedback" type="info" variant="tonal">{{ actionFeedback }}</v-alert>
+        <v-alert v-if="actionFeedback" type="info" variant="tonal">{{
+          actionFeedback
+        }}</v-alert>
       </div>
 
       <template #actions>
         <v-spacer />
         <v-btn variant="text" @click="apiActionDialog = false">Cancel</v-btn>
-        <v-btn color="primary" :loading="actionPending" @click="submitApiAction">Execute</v-btn>
+        <v-btn color="primary" :loading="actionPending" @click="submitApiAction"
+          >Execute</v-btn
+        >
       </template>
     </AppModal>
   </div>
