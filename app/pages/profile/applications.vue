@@ -47,7 +47,7 @@ definePageMeta({
   title: 'pages.profileOverview.applicationsTitle',
   middleware: 'auth',
   layout: 'profile',
-  description: 'Voici la liste de vos applications Bro World.',
+  description: 'Here is the list of your Bro World applications.',
   auth: {
     redirect: {
       unauthenticated: '/login',
@@ -96,7 +96,11 @@ onMounted(() => refreshApplications())
                 "
                 label
               >
-                {{ selectedApplication.private ? t('common.private') : t('common.public') }}
+                {{
+                  selectedApplication.private
+                    ? t('common.private')
+                    : t('common.public')
+                }}
               </v-chip>
             </div>
 
@@ -197,7 +201,11 @@ onMounted(() => refreshApplications())
                     "
                     label
                   >
-                    {{ application.private ? t('common.private') : t('common.public') }}
+                    {{
+                      application.private
+                        ? t('common.private')
+                        : t('common.public')
+                    }}
                   </v-chip>
                 </div>
               </v-card-text>

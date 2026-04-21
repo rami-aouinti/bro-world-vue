@@ -368,7 +368,8 @@
       "title": "Benachrichtigungen",
       "subtitle": "Neueste Benachrichtigungen",
       "detailTitle": "Benachrichtigung",
-      "detailLabel": "Benachrichtigungs-ID"
+      "detailLabel": "Benachrichtigungs-ID",
+      "notFound": "Benachrichtigung nicht gefunden."
     },
     "calendar": {
       "title": "Kalender",
@@ -856,7 +857,9 @@
       "category": "Kategorie",
       "subCategory": "Unterkategorie",
       "game": "Spiel",
-      "level": "Level"
+      "level": "Level",
+      "playerCount": "Anzahl der Spieler",
+      "opponentType": "Gegnertyp"
     },
     "states": {
       "empty": "Keine Daten verfügbar.",
@@ -876,7 +879,10 @@
       "coins": "Münzen",
       "lastSessionTitle": "Zuletzt beendete Sitzung",
       "finishDemo": "Demo abschließen",
-      "authRequired": "Du musst angemeldet sein, um ein Spiel zu starten."
+      "authRequired": "Du musst angemeldet sein, um ein Spiel zu starten.",
+      "tableSession": "Sitzung",
+      "fourPlayersTable": "4-Spieler-Tisch",
+      "notFoundRedirecting": "Sitzung nicht gefunden. Weiterleitung läuft..."
     },
     "messages": {
       "startSuccess": "Spielsitzung erfolgreich gestartet.",
@@ -1570,7 +1576,8 @@
       "admin": {
         "moduleDescription": "CRM-Admin-Dashboard und Schnellzugriff auf Entitäten.",
         "actions": {
-          "refresh": "Aktualisieren"
+          "refresh": "Aktualisieren",
+          "viewContent": "Inhalt anzeigen"
         },
         "page": {
           "title": "CRM Admin-Center",
@@ -2032,7 +2039,8 @@
         "fields": {
           "name": "Name",
           "price": "Preis",
-          "stock": "Bestand"
+          "stock": "Bestand",
+          "productName": "Produktname"
         },
         "sections": {
           "categories": "Kategorien",

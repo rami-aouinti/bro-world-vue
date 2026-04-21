@@ -388,7 +388,8 @@
       "title": "Notifications",
       "subtitle": "Latest notifications",
       "detailTitle": "Notification",
-      "detailLabel": "Notification ID"
+      "detailLabel": "Notification ID",
+      "notFound": "Notification not found."
     },
     "calendar": {
       "title": "Calendar",
@@ -1085,7 +1086,9 @@
       "category": "Category",
       "subCategory": "Subcategory",
       "game": "Game",
-      "level": "Level"
+      "level": "Level",
+      "playerCount": "Number of players",
+      "opponentType": "Opponent type"
     },
     "states": {
       "empty": "No data available.",
@@ -1106,7 +1109,10 @@
       "lastSessionTitle": "Last finished session",
       "finishDemo": "Finish demo",
       "genericSurfaceFallback": "Generic surface for this game.",
-      "authRequired": "You must be logged in to start a game."
+      "authRequired": "You must be logged in to start a game.",
+      "tableSession": "Session",
+      "fourPlayersTable": "4-player table",
+      "notFoundRedirecting": "Session not found. Redirecting..."
     },
     "messages": {
       "startSuccess": "Game session started successfully.",
@@ -1800,7 +1806,8 @@
       "admin": {
         "moduleDescription": "CRM admin dashboard and quick access to entities.",
         "actions": {
-          "refresh": "Refresh"
+          "refresh": "Refresh",
+          "viewContent": "View content"
         },
         "page": {
           "title": "CRM Admin center",
@@ -2265,7 +2272,8 @@
         "fields": {
           "name": "Name",
           "price": "Price",
-          "stock": "Stock"
+          "stock": "Stock",
+          "productName": "Product name"
         },
         "sections": {
           "categories": "Categories",

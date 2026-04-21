@@ -290,7 +290,10 @@ const rightDrawerSelection = computed(() => [
     </AppPageDrawers>
 
     <v-container fluid>
-      <v-card variant="text" class="content-main postcard-gradient-card mb-3 pa-3">
+      <v-card
+        variant="text"
+        class="content-main postcard-gradient-card mb-3 pa-3"
+      >
         <template v-if="selectedGame">
           <v-breadcrumbs :items="breadcrumbs" class="pa-0 mb-2">
             <template #item="{ item }">
@@ -321,8 +324,8 @@ const rightDrawerSelection = computed(() => [
                     :elevation="selectedLevelValue === level.value ? 12 : 2"
                     :color="selectedLevelValue === level.value ? 'primary' : ''"
                     :variant="
-                    selectedLevelValue === level.value ? 'tonal' : 'text'
-                  "
+                      selectedLevelValue === level.value ? 'tonal' : 'text'
+                    "
                     @click="selectedLevelValue = level.value"
                   >
                     <div class="text-h6">
@@ -343,7 +346,7 @@ const rightDrawerSelection = computed(() => [
                     <AppSelect
                       v-model="selectedPlayerCount"
                       :items="playerCountOptions"
-                      label="Nombre de joueurs"
+                      :label="t('gamePage.selection.playerCount')"
                       item-title="title"
                       item-value="value"
                       density="comfortable"
@@ -354,7 +357,7 @@ const rightDrawerSelection = computed(() => [
                     <AppSelect
                       v-model="selectedOpponentType"
                       :items="opponentTypeOptions"
-                      label="Type d'adversaire"
+                      :label="t('gamePage.selection.opponentType')"
                       item-title="title"
                       item-value="value"
                       density="comfortable"

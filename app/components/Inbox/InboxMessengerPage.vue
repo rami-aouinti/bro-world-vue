@@ -86,7 +86,6 @@ const router = useRouter()
 const { locale, t } = useI18n()
 const { user: sessionUser } = useUserSession()
 const runtimeConfig = useRuntimeConfig()
-const inboxNotificationsStore = useInboxNotificationsStore()
 
 const loading = ref(false)
 const messagesLoading = ref(false)
@@ -107,7 +106,6 @@ const selectedReactionUsers = ref<
   Array<{ name: string; reaction: ReactionType; profilePath: string | null }>
 >([])
 const mercureEventSource = shallowRef<EventSource | null>(null)
-const mercureConnectionSequence = ref(0)
 
 const sessionUserMeta = computed(() => {
   const raw = (sessionUser.value || {}) as Record<string, unknown>
@@ -534,42 +532,21 @@ function openReactionUsers(message: ConversationMessage) {
 }
 
 function closeMercureSubscription() {
-  mercureConnectionSequence.value += 1
   mercureEventSource.value?.close()
   mercureEventSource.value = null
 }
 
-async function fetchMercurePrivateJwt(topics: string[]) {
-  const response = await privateApi.request<{ token?: string }>('/api/mercure/private-jwt', {
-    query: { topic: topics },
-  })
-
-  return String(response?.token || '')
-}
-
-async function attachMercureSubscription(conversationId: string) {
+function attachMercureSubscription(conversationId: string) {
   if (!import.meta.client) return
 
   closeMercureSubscription()
-  const currentSequence = ++mercureConnectionSequence.value
 
   const mercurePublicUrl = String(runtimeConfig.public.mercurePublicUrl || '').trim()
   if (!mercurePublicUrl || !conversationId || !currentUserId.value) return
 
-  const privateTopics = [
-    `/conversations/${conversationId}/messages`,
-    `/users/${currentUserId.value}/notifications`,
-  ]
-
   const url = new URL(mercurePublicUrl)
-  for (const topic of privateTopics) {
-    url.searchParams.append('topic', topic)
-  }
-
-  const mercurePrivateJwt = await fetchMercurePrivateJwt(privateTopics).catch(() => '')
-  if (currentSequence !== mercureConnectionSequence.value || !mercurePrivateJwt) return
-
-  url.searchParams.append('authorization', `Bearer ${mercurePrivateJwt}`)
+  url.searchParams.append('topic', `/conversations/${conversationId}/messages`)
+  url.searchParams.append('topic', `/users/${currentUserId.value}/notifications`)
 
   const configuredWithCredentials = runtimeConfig.public.mercureWithCredentials === true
   const isSameOriginHub = url.origin === window.location.origin
@@ -579,7 +556,6 @@ async function attachMercureSubscription(conversationId: string) {
   mercureEventSource.value = eventSource
 
   eventSource.onmessage = (event: MessageEvent<string>) => {
-    console.log('sadsa');
     const raw = event.data?.trim()
     if (!raw) return
 
@@ -627,9 +603,6 @@ async function attachMercureSubscription(conversationId: string) {
         return
       }
 
-      if (payload.recipientId && payload.recipientId === currentUserId.value) {
-        void inboxNotificationsStore.fetchNotifications()
-      }
     } catch {
       // Ignore non-JSON events.
     }
@@ -648,7 +621,7 @@ watch(
       return
     }
 
-    void attachMercureSubscription(conversationId)
+    attachMercureSubscription(conversationId)
   },
   { immediate: true },
 )

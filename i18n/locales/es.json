@@ -368,7 +368,8 @@
       "title": "Notificaciones",
       "subtitle": "Últimas notificaciones",
       "detailTitle": "Notificación",
-      "detailLabel": "ID de notificación"
+      "detailLabel": "ID de notificación",
+      "notFound": "Notificación no encontrada."
     },
     "calendar": {
       "title": "Calendario",
@@ -830,7 +831,9 @@
       "category": "Categoría",
       "subCategory": "Subcategoría",
       "game": "Juego",
-      "level": "Nivel"
+      "level": "Nivel",
+      "playerCount": "Número de jugadores",
+      "opponentType": "Tipo de oponente"
     },
     "states": {
       "empty": "No hay datos disponibles.",
@@ -850,7 +853,10 @@
       "coins": "monedas",
       "lastSessionTitle": "Última sesión finalizada",
       "finishDemo": "Finalizar demo",
-      "authRequired": "Debes iniciar sesión para comenzar una partida."
+      "authRequired": "Debes iniciar sesión para comenzar una partida.",
+      "tableSession": "Sesión",
+      "fourPlayersTable": "Mesa de 4 jugadores",
+      "notFoundRedirecting": "Sesión no encontrada. Redirigiendo..."
     },
     "messages": {
       "startSuccess": "Sesión de juego iniciada correctamente.",
@@ -1544,7 +1550,8 @@
       "admin": {
         "moduleDescription": "Panel de administración CRM y acceso rápido a entidades.",
         "actions": {
-          "refresh": "Actualizar"
+          "refresh": "Actualizar",
+          "viewContent": "Ver contenido"
         },
         "page": {
           "title": "Centro admin CRM",
@@ -2006,7 +2013,8 @@
         "fields": {
           "name": "Nombre",
           "price": "Precio",
-          "stock": "Stock"
+          "stock": "Stock",
+          "productName": "Nombre del producto"
         },
         "sections": {
           "categories": "Categorías",
