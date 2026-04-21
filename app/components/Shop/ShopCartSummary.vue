@@ -9,9 +9,9 @@ const currencyFormat = (value: number) => `${value.toFixed(2)} €`
 
 <template>
   <v-alert type="info" variant="tonal" class="mb-3">
-    Montant total:
+    Total amount:
     <strong>{{ currencyFormat(totalAmount) }}</strong> •
-    Remboursé:
+    Refunded:
     <strong>{{ currencyFormat(refundedAmount) }}</strong>
   </v-alert>
 </template>

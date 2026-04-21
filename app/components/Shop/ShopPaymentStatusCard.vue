@@ -14,10 +14,10 @@ const statusColor = computed(() => {
 
 <template>
   <v-card variant="tonal" :color="statusColor" rounded="lg" class="pa-3 mb-3">
-    <div class="text-caption text-uppercase">Statut paiement</div>
+    <div class="text-caption text-uppercase">Payment status</div>
     <div class="text-body-1 font-weight-bold">{{ order.status }}</div>
     <div class="text-caption">
-      Net encaissé: {{ netAmount.toFixed(2) }} {{ order.currency }}
+      Net captured: {{ netAmount.toFixed(2) }} {{ order.currency }}
     </div>
   </v-card>
 </template>

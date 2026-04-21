@@ -1187,10 +1187,20 @@
       },
       "filters": {
         "search": "Suche",
-        "owner": "Verantwortlich",
-        "industry": "Branche",
-        "minAmount": "Min. Betrag",
-        "maxAmount": "Max. Betrag"
+        "searchSprint": "Sprint suchen",
+        "searchRequest": "Anfrage suchen",
+        "status": "Status",
+        "priority": "Priorität",
+        "project": "Projekt",
+        "repository": "Repository",
+        "task": "Aufgabe",
+        "provisioning": "Provisionierung",
+        "startAfter": "Start nach",
+        "endBefore": "Ende vor",
+        "deadlineAfter": "Deadline nach",
+        "deadlineBefore": "Deadline vor",
+        "requestedAfter": "Angefragt nach",
+        "resolvedBefore": "Gelöst vor"
       },
       "tabs": {
         "pipeline": "Pipeline",
@@ -1718,6 +1728,11 @@
         "ogDescription": "Manage your projects, contacts, and CRM workflows with Bro World CRM.",
         "twitterTitle": "Bro World CRM | Project, task, and customer management",
         "twitterDescription": "Manage your projects, contacts, and CRM workflows with Bro World CRM."
+      },
+      "comingSoon": {
+        "blog": "Diese CRM-Seite ist für das zukünftige Blog-Modul bereit.",
+        "calendar": "Diese CRM-Seite ist für das zukünftige Calendar-Modul bereit.",
+        "chat": "Diese CRM-Seite ist für das zukünftige Chat-Modul bereit."
       }
     },
     "shop": {
@@ -2170,6 +2185,12 @@
           "calendarSyncErrorTitle": "Sync error",
           "autoSubtitle": "Notifications are automatically created during registrations, promotions, and calendar synchronizations."
         }
+      },
+      "common": {
+        "field": "Feld",
+        "referenceDetail": "Referenzdetail",
+        "noAttachments": "Keine Anhänge.",
+        "noHtmlContent": "Für diesen Kurs ist kein HTML-Inhalt verfügbar."
       }
     },
     "jobs": {

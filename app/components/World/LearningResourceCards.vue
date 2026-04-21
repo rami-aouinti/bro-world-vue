@@ -148,7 +148,7 @@ function formatDefaultValue(value: unknown) {
                 class="text-none"
                 @click="onReferenceClick(field.referenceResource, item[field.key])"
               >
-                Ouvrir
+                Open
               </v-btn>
 
               <v-btn
@@ -178,7 +178,7 @@ function formatDefaultValue(value: unknown) {
       </v-col>
 
       <v-col v-if="!loading && items.length === 0" cols="12">
-        <v-alert type="info" variant="tonal" text="Aucune donnée trouvée." />
+        <v-alert type="info" variant="tonal" text="No data found." />
       </v-col>
     </v-row>
   </div>

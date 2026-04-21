@@ -40,7 +40,7 @@ const local = computed({
           prepend-icon="mdi-filter-off-outline"
           @click="emit('reset')"
         >
-          Reset filtres
+          Reset filters
         </v-btn>
         <v-btn
           color="primary"
@@ -56,7 +56,7 @@ const local = computed({
       <v-col cols="12" md="3">
         <v-text-field
           v-model="local.search"
-          label="Recherche commande/client"
+          label="Search order/customer"
           density="comfortable"
           hide-details
         />
@@ -67,7 +67,7 @@ const local = computed({
           :items="statusCatalog"
           item-title="title"
           item-value="value"
-          label="Statut"
+          label="Status"
           density="comfortable"
         />
       </v-col>
@@ -77,14 +77,14 @@ const local = computed({
           :items="channelCatalog"
           item-title="title"
           item-value="value"
-          label="Canal"
+          label="Channel"
           density="comfortable"
         />
       </v-col>
       <v-col cols="6" md="2">
         <v-text-field
           v-model="local.dateFrom"
-          label="Du"
+          label="From"
           type="date"
           density="comfortable"
           hide-details
@@ -93,7 +93,7 @@ const local = computed({
       <v-col cols="6" md="2">
         <v-text-field
           v-model="local.dateTo"
-          label="Au"
+          label="To"
           type="date"
           density="comfortable"
           hide-details

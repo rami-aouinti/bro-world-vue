@@ -8,7 +8,7 @@ import type {
 definePageMeta({
   title: 'appbar.quiz',
   description:
-    'Testez vos connaissances avec les quiz Bro World : choisissez une catégorie, un niveau et améliorez votre score.',
+    'Test your knowledge with Bro World quizzes: choose a category, a level, and improve your score.',
 })
 
 type QuizStep = 'select-category' | 'select-level' | 'in-quiz' | 'finished'
@@ -466,7 +466,7 @@ onBeforeUnmount(clearTimer)
                 border="start"
                 class="mb-4"
               >
-                Soumission des résultats en cours…
+                Submitting results…
               </v-alert>
 
               <v-row>
