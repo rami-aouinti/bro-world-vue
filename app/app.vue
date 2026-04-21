@@ -30,6 +30,16 @@ const defaultOgImage = computed(() =>
   new URL('/social-bro-world.png', siteUrl.value).toString(),
 )
 
+const facebookPageUrl = 'https://www.facebook.com/profile.php?id=61565251736660'
+
+const organizationSchema = computed(() => ({
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Bro World',
+  url: siteUrl.value,
+  sameAs: [facebookPageUrl],
+}))
+
 if (import.meta.client) {
   watchEffect(() => {
     document.documentElement.dataset.appRounded = rounded.value
@@ -98,6 +108,13 @@ useHead({
   link: [
     { rel: 'icon', href: '/favicon.ico' },
     { rel: 'canonical', href: canonicalUrl },
+    { rel: 'me', href: facebookPageUrl },
+  ],
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify(organizationSchema.value),
+    },
   ],
 })
 
