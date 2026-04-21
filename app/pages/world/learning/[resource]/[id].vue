@@ -112,17 +112,26 @@ function fileHref(url?: string) {
     >
       <template v-if="isCourse" #right>
         <div class="d-flex flex-column ga-3">
-          <h2 class="text-subtitle-1 mb-0">Pièces jointes</h2>
 
           <div v-if="loading" class="d-flex justify-center py-8">
             <v-progress-circular indeterminate color="primary" />
           </div>
 
           <template v-else>
+            <p class="text-body-2 text-medium-emphasis mb-0">{{ courseClassName }}</p>
+            <div v-if="courseTeacher" class="d-flex align-center ga-3">
+              <v-avatar size="42">
+                <v-img :src="courseTeacher.photo" :alt="courseTeacher.name || 'Teacher'"/>
+              </v-avatar>
+              <div>
+                <p class="text-body-2">{{ courseTeacher.name }}</p>
+              </div>
+            </div>
+            <h3 class="text-subtitle-1 mb-0">Attachments</h3>
             <v-card
               v-for="(attachment, index) in courseAttachments"
               :key="`${attachment.url ?? 'attachment'}-${index}`"
-              variant="outlined"
+              variant="text"
               rounded="lg"
               class="pa-3"
             >
@@ -130,10 +139,8 @@ function fileHref(url?: string) {
                 <p class="text-body-2 font-weight-medium mb-0 text-truncate">{{ attachment.originalName ?? 'Attachment' }}</p>
                 <v-chip size="x-small" color="primary" variant="tonal">{{ (attachment.extension ?? 'file').toUpperCase() }}</v-chip>
               </div>
-              <p class="text-caption text-medium-emphasis mb-1">{{ attachment.mimeType ?? 'Unknown type' }}</p>
               <p class="text-caption text-medium-emphasis mb-3">
                 {{ formatBytes(attachment.size) }}
-                <span v-if="attachment.uploadedAt">• {{ formatDateTimeValue(attachment.uploadedAt) }}</span>
               </p>
               <v-btn
                 :href="fileHref(attachment.url)"
@@ -144,7 +151,7 @@ function fileHref(url?: string) {
                 prepend-icon="mdi-open-in-new"
                 block
               >
-                Ouvrir le fichier
+                Open
               </v-btn>
             </v-card>
 
@@ -158,21 +165,9 @@ function fileHref(url?: string) {
       <v-card v-if="isCourse" rounded="xl" class="pa-6 postcard-gradient-card course-detail-card">
         <div class="d-flex flex-wrap align-start justify-space-between ga-4 mb-5">
           <div>
-            <p class="text-caption text-medium-emphasis mb-1">Course</p>
-            <h1 class="text-h4 font-weight-bold mb-1">{{ courseTitle }}</h1>
-            <p class="text-body-2 text-medium-emphasis mb-0">{{ courseClassName }}</p>
+            <h2 class="text-h4 font-weight-bold mb-1">{{ courseTitle }}</h2>
           </div>
 
-          <div v-if="courseTeacher" class="d-flex align-center ga-3">
-            <v-avatar size="42">
-              <img :src="courseTeacher.photo" :alt="courseTeacher.name || 'Teacher'">
-            </v-avatar>
-            <div>
-              <p class="text-caption text-medium-emphasis mb-0">Teacher</p>
-              <p class="text-body-2 mb-0">{{ courseTeacher.name }}</p>
-              <p v-if="courseTeacher.email" class="text-caption text-medium-emphasis mb-0">{{ courseTeacher.email }}</p>
-            </div>
-          </div>
         </div>
 
         <div v-if="loading" class="d-flex justify-center py-8">
@@ -188,7 +183,7 @@ function fileHref(url?: string) {
         />
 
         <template v-else-if="item">
-          <v-card variant="tonal" rounded="lg" class="pa-4 mb-5 course-content" :class="{ 'text-medium-emphasis': !courseContent }">
+          <v-card variant="text" rounded="lg" class="pa-4 mb-5 course-content" :class="{ 'text-medium-emphasis': !courseContent }">
             <!-- eslint-disable-next-line vue/no-v-html -->
             <div v-if="courseContent" v-html="courseContent" />
             <p v-else class="mb-0">Aucun contenu HTML disponible pour ce cours.</p>
