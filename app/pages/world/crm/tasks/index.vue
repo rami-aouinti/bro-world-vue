@@ -216,11 +216,11 @@ async function deleteTask() {
             variant="outlined"
             hide-details
           />
-          <AppSelect v-model="statusFilter" :items="taskStatusOptions" label="Statut" clearable />
-          <AppSelect v-model="priorityFilter" :items="taskPriorityOptions" label="Priorité" clearable />
-          <AppSelect v-model="projectFilter" :items="taskProjectOptions" label="Projet" clearable />
-          <v-text-field v-model="dueAfter" type="date" label="Deadline après" variant="outlined" hide-details clearable />
-          <v-text-field v-model="dueBefore" type="date" label="Deadline avant" variant="outlined" hide-details clearable />
+          <AppSelect v-model="statusFilter" :items="taskStatusOptions" :label="t('world.crm.filters.status')" clearable />
+          <AppSelect v-model="priorityFilter" :items="taskPriorityOptions" :label="t('world.crm.filters.priority')" clearable />
+          <AppSelect v-model="projectFilter" :items="taskProjectOptions" :label="t('world.crm.filters.project')" clearable />
+          <v-text-field v-model="dueAfter" type="date" :label="t('world.crm.filters.deadlineAfter')" variant="outlined" hide-details clearable />
+          <v-text-field v-model="dueBefore" type="date" :label="t('world.crm.filters.deadlineBefore')" variant="outlined" hide-details clearable />
         </div>
       </template>
     </WorldModuleDrawers>
