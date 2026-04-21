@@ -47,7 +47,7 @@ interface ContactPageResponse {
   }
 }
 
-const { locale, t } = useI18n()
+const { locale } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 const publicPagesStore = usePublicPagesStore()
 
@@ -55,7 +55,7 @@ definePageMeta({ title: 'appbar.contact' })
 
 const asyncKey = computed(() => `public-page-contact-${locale.value}`)
 
-const { data, pending, error, refresh } = await useAsyncData(
+const { data, pending, error } = await useAsyncData(
   asyncKey,
   () =>
     publicPagesStore.fetchPage<ContactPageResponse>('contact', locale.value),
@@ -79,6 +79,22 @@ const formState = reactive({
   topic: '',
   message: '',
 })
+const submitPending = ref(false)
+const submitError = ref<string | null>(null)
+const submitSuccessId = ref<string | number | null>(null)
+
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const canSubmit = computed(
+  () =>
+    Boolean(
+      formState.firstName.trim() &&
+        formState.lastName.trim() &&
+        formState.email.trim() &&
+        formState.topic.trim() &&
+        formState.message.trim() &&
+        emailPattern.test(formState.email.trim()),
+    ),
+)
 
 function resetForm() {
   formState.firstName = ''
@@ -86,6 +102,60 @@ function resetForm() {
   formState.email = ''
   formState.topic = ''
   formState.message = ''
+}
+
+function clearFormState() {
+  resetForm()
+  submitError.value = null
+  submitSuccessId.value = null
+}
+
+async function submitContactForm() {
+  submitError.value = null
+  submitSuccessId.value = null
+
+  const payload = {
+    firstName: formState.firstName.trim(),
+    lastName: formState.lastName.trim(),
+    email: formState.email.trim().toLowerCase(),
+    type: formState.topic.trim(),
+    message: formState.message.trim(),
+  }
+
+  if (
+    !payload.firstName ||
+    !payload.lastName ||
+    !payload.email ||
+    !payload.type ||
+    !payload.message
+  ) {
+    submitError.value = 'Tous les champs sont requis.'
+    return
+  }
+
+  if (!emailPattern.test(payload.email)) {
+    submitError.value = 'Adresse email invalide.'
+    return
+  }
+
+  submitPending.value = true
+
+  try {
+    const response = await $fetch<{ id?: string | number; data?: { id?: string | number } }>(
+      '/api/page/public/contact',
+      {
+        method: 'POST',
+        body: payload,
+      },
+    )
+
+    resetForm()
+    submitSuccessId.value = response.id ?? response.data?.id ?? null
+  } catch (err) {
+    submitError.value = (err as Error)?.message || 'Une erreur est survenue.'
+  } finally {
+    submitPending.value = false
+  }
 }
 </script>
 
@@ -200,9 +270,30 @@ function resetForm() {
           <p class="text-caption text-medium-emphasis mb-3">
             {{ page.form.privacyNote }}
           </p>
+          <v-alert
+            v-if="submitError"
+            class="mb-3"
+            type="error"
+            variant="tonal"
+            :text="submitError"
+          />
+          <v-alert
+            v-if="submitSuccessId"
+            class="mb-3"
+            type="success"
+            variant="tonal"
+            :text="`Message envoyé (ID: ${submitSuccessId})`"
+          />
           <div class="d-flex flex-wrap ga-3">
-            <v-btn color="primary">{{ page.form.submit }}</v-btn>
-            <v-btn variant="outlined" @click="resetForm">{{
+            <v-btn
+              color="primary"
+              :disabled="!canSubmit"
+              :loading="submitPending"
+              @click="submitContactForm"
+            >
+              {{ page.form.submit }}
+            </v-btn>
+            <v-btn variant="outlined" @click="clearFormState">{{
               page.form.reset
             }}</v-btn>
           </div>

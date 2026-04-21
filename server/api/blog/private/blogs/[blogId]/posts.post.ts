@@ -1,6 +1,6 @@
 import { getHeader, readMultipartFormData } from 'h3'
 import { mutatingPrivateApiCall } from '../../../../../utils/privateApi'
-import { getRequiredRouterParam } from '../../../utils'
+import { getConnectedBlogAuthor, getRequiredRouterParam } from '../../../utils'
 import type {
   BlogApiResponse,
   CreateBlogPostPayload,
@@ -10,6 +10,7 @@ export default defineEventHandler(async (event): Promise<BlogApiResponse> => {
   const blogId = getRequiredRouterParam(event, 'blogId', 'blog')
   const endpoint = `/api/v1/private/blogs/${encodeURIComponent(blogId)}/posts`
   const contentType = (getHeader(event, 'content-type') || '').toLowerCase()
+  const author = await getConnectedBlogAuthor(event)
 
   if (contentType.includes('multipart/form-data')) {
     const parts = (await readMultipartFormData(event)) || []
@@ -29,6 +30,9 @@ export default defineEventHandler(async (event): Promise<BlogApiResponse> => {
         formData.append(part.name, part.data.toString('utf-8'))
       }
     }
+    if (author) {
+      formData.append('author', JSON.stringify(author))
+    }
 
     return mutatingPrivateApiCall<BlogApiResponse>(event, endpoint, {
       mutationKey: 'blog:posts:create',
@@ -38,10 +42,11 @@ export default defineEventHandler(async (event): Promise<BlogApiResponse> => {
   }
 
   const body = await readBody<CreateBlogPostPayload>(event)
+  const payload = author ? { ...body, author } : body
 
   return mutatingPrivateApiCall<BlogApiResponse>(event, endpoint, {
     mutationKey: 'blog:posts:create',
     method: 'POST',
-    body,
+    body: payload,
   })
 })
