@@ -14,6 +14,7 @@ const isRootAdmin = computed(() =>
   (sessionUser.value?.roles ?? []).includes('ROLE_ROOT'),
 )
 const projectId = computed(() => String(route.params.project ?? ''))
+const isViewMode = computed(() => route.query.mode === 'view')
 
 definePageMeta({ layout: 'crm', title: 'CRM Project Detail' })
 
@@ -110,19 +111,59 @@ async function detachAssignee(userId: string) {
     <v-row v-else-if="data">
       <v-col cols="12" lg="8">
         <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
-          <h2 class="text-h6 mb-4">{{ data.name }}</h2>
-          <v-row>
-            <v-col cols="12" md="6"><v-text-field v-model="editPayload.name" :label="t('world.crm.projects.form.name')" :readonly="!isRootAdmin" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="editPayload.code" :label="t('world.crm.projects.form.code')" :readonly="!isRootAdmin" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="editPayload.status" :label="t('world.crm.projects.form.status')" :readonly="!isRootAdmin" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="editPayload.startedAt" :label="t('world.crm.projects.form.startedAt')" :readonly="!isRootAdmin" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="editPayload.dueAt" :label="t('world.crm.projects.form.dueAt')" :readonly="!isRootAdmin" /></v-col>
-            <v-col cols="12"><v-textarea v-model="editPayload.description" :label="t('world.crm.projects.form.description')" :readonly="!isRootAdmin" /></v-col>
-          </v-row>
-          <div v-if="isRootAdmin" class="d-flex ga-2">
-            <v-btn color="primary" :loading="pendingSave" @click="saveProject">{{ t('world.crm.projects.actions.save') }}</v-btn>
-            <v-btn color="error" variant="tonal" @click="deleteProject">{{ t('world.crm.projects.actions.delete') }}</v-btn>
-          </div>
+          <template v-if="isViewMode">
+            <div class="d-flex justify-space-between align-start ga-2 mb-4">
+              <h2 class="text-h6 mb-0">{{ data.name }}</h2>
+              <v-chip color="primary" variant="tonal">{{ data.status }}</v-chip>
+            </div>
+            <v-row>
+              <v-col cols="12" md="6">
+                <v-card variant="tonal" color="primary" class="pa-3 h-100">
+                  <p class="text-caption mb-1">Code</p>
+                  <p class="text-body-1 mb-0">{{ data.code || '—' }}</p>
+                </v-card>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-card variant="tonal" color="info" class="pa-3 h-100">
+                  <p class="text-caption mb-1">Provisioning</p>
+                  <p class="text-body-1 mb-0">{{ data.provisioning?.state || '—' }}</p>
+                </v-card>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-card variant="tonal" class="pa-3 h-100">
+                  <p class="text-caption mb-1">Start date</p>
+                  <p class="text-body-1 mb-0">{{ data.startedAt || '—' }}</p>
+                </v-card>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-card variant="tonal" class="pa-3 h-100">
+                  <p class="text-caption mb-1">Due date</p>
+                  <p class="text-body-1 mb-0">{{ data.dueAt || '—' }}</p>
+                </v-card>
+              </v-col>
+              <v-col cols="12">
+                <v-card variant="outlined" class="pa-3">
+                  <p class="text-caption mb-1">{{ t('world.crm.projects.form.description') }}</p>
+                  <p class="text-body-2 mb-0">{{ data.description || '—' }}</p>
+                </v-card>
+              </v-col>
+            </v-row>
+          </template>
+          <template v-else>
+            <h2 class="text-h6 mb-4">{{ data.name }}</h2>
+            <v-row>
+              <v-col cols="12" md="6"><v-text-field v-model="editPayload.name" :label="t('world.crm.projects.form.name')" :readonly="!isRootAdmin" /></v-col>
+              <v-col cols="12" md="6"><v-text-field v-model="editPayload.code" :label="t('world.crm.projects.form.code')" :readonly="!isRootAdmin" /></v-col>
+              <v-col cols="12" md="6"><v-text-field v-model="editPayload.status" :label="t('world.crm.projects.form.status')" :readonly="!isRootAdmin" /></v-col>
+              <v-col cols="12" md="6"><v-text-field v-model="editPayload.startedAt" :label="t('world.crm.projects.form.startedAt')" :readonly="!isRootAdmin" /></v-col>
+              <v-col cols="12" md="6"><v-text-field v-model="editPayload.dueAt" :label="t('world.crm.projects.form.dueAt')" :readonly="!isRootAdmin" /></v-col>
+              <v-col cols="12"><v-textarea v-model="editPayload.description" :label="t('world.crm.projects.form.description')" :readonly="!isRootAdmin" /></v-col>
+            </v-row>
+            <div v-if="isRootAdmin" class="d-flex ga-2">
+              <v-btn color="primary" :loading="pendingSave" @click="saveProject">{{ t('world.crm.projects.actions.save') }}</v-btn>
+              <v-btn color="error" variant="tonal" @click="deleteProject">{{ t('world.crm.projects.actions.delete') }}</v-btn>
+            </div>
+          </template>
         </v-card>
       </v-col>
 
@@ -136,16 +177,16 @@ async function detachAssignee(userId: string) {
             item-value="value"
             :label="t('world.crm.projects.form.userId')"
             class="mb-2"
-            :disabled="!isRootAdmin"
+            :disabled="!isRootAdmin || isViewMode"
           />
-          <v-btn v-if="isRootAdmin" color="secondary" variant="tonal" class="mb-4" @click="attachAssignee">{{ t('world.crm.projects.actions.attach') }}</v-btn>
+          <v-btn v-if="isRootAdmin && !isViewMode" color="secondary" variant="tonal" class="mb-4" @click="attachAssignee">{{ t('world.crm.projects.actions.attach') }}</v-btn>
           <v-list density="compact" bg-color="transparent">
             <v-list-item
               v-for="assignee in data.assignees"
               :key="String((assignee as any).id ?? assignee)"
               :title="String((assignee as any).username ?? (assignee as any).id ?? assignee)"
             >
-              <template v-if="isRootAdmin" #append>
+              <template v-if="isRootAdmin && !isViewMode" #append>
                 <v-btn
                   size="small"
                   color="error"

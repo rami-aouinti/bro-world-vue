@@ -29,6 +29,9 @@ const isAdminOrRoot = computed(() => {
 })
 const createDialog = ref(false)
 const pendingCreate = ref(false)
+const pendingDelete = ref(false)
+const deleteDialog = ref(false)
+const sprintToDelete = ref<string | null>(null)
 const search = ref('')
 const statusFilter = ref<string | null>(null)
 const projectFilter = ref<string | null>(null)
@@ -106,6 +109,24 @@ async function createSprint() {
     pendingCreate.value = false
   }
 }
+
+function openDeleteDialog(sprintId: string) {
+  sprintToDelete.value = sprintId
+  deleteDialog.value = true
+}
+
+async function deleteSprint() {
+  if (!sprintToDelete.value) return
+  pendingDelete.value = true
+  try {
+    await $fetch(`/api/crm/general/sprints/${sprintToDelete.value}`, { method: 'DELETE' })
+    deleteDialog.value = false
+    sprintToDelete.value = null
+    await refreshNuxtData('/api/crm/general/sprints')
+  } finally {
+    pendingDelete.value = false
+  }
+}
 </script>
 
 <template>
@@ -169,16 +190,26 @@ async function createSprint() {
                 {{ t('world.crm.sprints.list.start') }}: {{ formatDate(sprint.startDate) }} ·
                 {{ t('world.crm.sprints.list.end') }}: {{ formatDate(sprint.endDate) }}
               </p>
-              <v-btn
-                v-if="isAdminOrRoot"
-                class="mt-3"
-                color="primary"
-                variant="tonal"
-                prepend-icon="mdi-arrow-right"
-                @click="router.push(`/world/crm/sprints/${sprint.id}`)"
-              >
-                {{ t('world.crm.sprints.actions.viewDetails') }}
-              </v-btn>
+              <div v-if="isAdminOrRoot" class="d-flex justify-center ga-2 mt-3">
+                <v-btn
+                  icon="mdi-eye-outline"
+                  color="info"
+                  variant="tonal"
+                  @click="router.push(`/world/crm/sprints/${sprint.id}?mode=view`)"
+                />
+                <v-btn
+                  icon="mdi-pencil-outline"
+                  color="primary"
+                  variant="tonal"
+                  @click="router.push(`/world/crm/sprints/${sprint.id}`)"
+                />
+                <v-btn
+                  icon="mdi-delete-outline"
+                  color="error"
+                  variant="tonal"
+                  @click="openDeleteDialog(sprint.id)"
+                />
+              </div>
             </v-card>
           </v-col>
 
@@ -205,6 +236,14 @@ async function createSprint() {
       <template #actions>
         <v-btn variant="text" @click="createDialog = false">{{ t('world.crm.sprints.actions.cancel') }}</v-btn>
         <v-btn color="primary" :loading="pendingCreate" @click="createSprint">{{ t('world.crm.sprints.actions.create') }}</v-btn>
+      </template>
+    </AppModal>
+
+    <AppModal v-model="deleteDialog" title="Delete sprint" :max-width="460">
+      <p>Are you sure you want to delete this sprint?</p>
+      <template #actions>
+        <v-btn variant="text" @click="deleteDialog = false">Cancel</v-btn>
+        <v-btn color="error" :loading="pendingDelete" @click="deleteSprint">Delete</v-btn>
       </template>
     </AppModal>
   </div>

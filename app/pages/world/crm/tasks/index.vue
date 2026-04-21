@@ -25,6 +25,9 @@ const isAdminOrRoot = computed(() => {
 })
 const createDialog = ref(false)
 const pendingCreate = ref(false)
+const pendingDelete = ref(false)
+const deleteDialog = ref(false)
+const taskToDelete = ref<string | null>(null)
 const search = ref('')
 const statusFilter = ref<string | null>(null)
 const priorityFilter = ref<string | null>(null)
@@ -148,6 +151,24 @@ async function createTask() {
     pendingCreate.value = false
   }
 }
+
+function openDeleteDialog(taskId: string) {
+  taskToDelete.value = taskId
+  deleteDialog.value = true
+}
+
+async function deleteTask() {
+  if (!taskToDelete.value) return
+  pendingDelete.value = true
+  try {
+    await $fetch(`/api/crm/general/tasks/${taskToDelete.value}`, { method: 'DELETE' })
+    deleteDialog.value = false
+    taskToDelete.value = null
+    await refreshNuxtData('/api/crm/general/tasks')
+  } finally {
+    pendingDelete.value = false
+  }
+}
 </script>
 
 <template>
@@ -222,16 +243,26 @@ async function createTask() {
                 {{ task.attachments.length }} {{ t('world.crm.tasks.list.attachments') }} ·
                 {{ task.children.length }} {{ t('world.crm.tasks.list.subtasks') }}
               </p>
-              <v-btn
-                v-if="isAdminOrRoot"
-                class="mt-3"
-                color="primary"
-                variant="tonal"
-                prepend-icon="mdi-arrow-right"
-                @click="router.push(`/world/crm/tasks/${task.id}`)"
-              >
-                {{ t('world.crm.tasks.actions.viewDetails') }}
-              </v-btn>
+              <div v-if="isAdminOrRoot" class="d-flex justify-center ga-2 mt-3">
+                <v-btn
+                  icon="mdi-eye-outline"
+                  color="info"
+                  variant="tonal"
+                  @click="router.push(`/world/crm/tasks/${task.id}?mode=view`)"
+                />
+                <v-btn
+                  icon="mdi-pencil-outline"
+                  color="primary"
+                  variant="tonal"
+                  @click="router.push(`/world/crm/tasks/${task.id}`)"
+                />
+                <v-btn
+                  icon="mdi-delete-outline"
+                  color="error"
+                  variant="tonal"
+                  @click="openDeleteDialog(task.id)"
+                />
+              </div>
             </v-card>
           </v-col>
 
@@ -268,6 +299,14 @@ async function createTask() {
         <p><strong>{{ t('world.crm.projects.list.githubRepos') }}:</strong> {{ selectedProject.githubRepositoriesCount }}</p>
         <p><strong>{{ t('world.crm.projects.list.provisioning') }}:</strong> {{ selectedProject.provisioning?.state || '—' }}</p>
         <p><strong>{{ t('world.crm.projects.form.description') }}:</strong> {{ selectedProject.description || '—' }}</p>
+      </template>
+    </AppModal>
+
+    <AppModal v-model="deleteDialog" title="Delete task" :max-width="460">
+      <p>Are you sure you want to delete this task?</p>
+      <template #actions>
+        <v-btn variant="text" @click="deleteDialog = false">Cancel</v-btn>
+        <v-btn color="error" :loading="pendingDelete" @click="deleteTask">Delete</v-btn>
       </template>
     </AppModal>
   </div>

@@ -15,6 +15,7 @@ const isRootAdmin = computed(() =>
   (sessionUser.value?.roles ?? []).includes('ROLE_ROOT'),
 )
 const taskId = computed(() => String(route.params.task ?? ''))
+const isViewMode = computed(() => route.query.mode === 'view')
 
 definePageMeta({ layout: 'crm', title: 'CRM Task Detail' })
 
@@ -164,23 +165,43 @@ async function attachToSprint() {
     <v-row v-else-if="data">
       <v-col cols="12" lg="8">
         <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
-          <h2 class="text-h6 mb-4">{{ data.title }}</h2>
-          <v-row>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.projectId" :label="t('world.crm.tasks.form.projectId')" :readonly="!isRootAdmin" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.title" :label="t('world.crm.tasks.form.title')" :readonly="!isRootAdmin" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.status" :label="t('world.crm.tasks.form.status')" :readonly="!isRootAdmin" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.priority" :label="t('world.crm.tasks.form.priority')" :readonly="!isRootAdmin" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.dueAt" :label="t('world.crm.tasks.form.dueAt')" :readonly="!isRootAdmin" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.estimatedHours" :label="t('world.crm.tasks.form.estimatedHours')" type="number" :readonly="!isRootAdmin" /></v-col>
-            <v-col cols="12"><v-textarea v-model="payload.description" :label="t('world.crm.tasks.form.description')" :readonly="!isRootAdmin" /></v-col>
-          </v-row>
-          <div v-if="isRootAdmin" class="d-flex ga-2">
-            <v-btn color="primary" :loading="pendingSave" @click="save">{{ t('world.crm.tasks.actions.save') }}</v-btn>
-            <v-btn color="error" variant="tonal" @click="remove">{{ t('world.crm.tasks.actions.delete') }}</v-btn>
-          </div>
+          <template v-if="isViewMode">
+            <div class="d-flex justify-space-between align-start ga-2 mb-4">
+              <h2 class="text-h6 mb-0">{{ data.title }}</h2>
+              <v-chip color="info" variant="tonal">{{ data.status }}</v-chip>
+            </div>
+            <div class="d-flex flex-wrap ga-2 mb-4">
+              <v-chip color="warning" variant="tonal">{{ data.priority }}</v-chip>
+              <v-chip color="primary" variant="outlined">{{ data.projectName || data.projectId }}</v-chip>
+              <v-chip variant="tonal">Due: {{ data.dueAt || '—' }}</v-chip>
+            </div>
+            <v-card variant="outlined" class="pa-3 mb-3">
+              <p class="text-caption mb-1">{{ t('world.crm.tasks.form.description') }}</p>
+              <p class="text-body-2 mb-0">{{ data.description || '—' }}</p>
+            </v-card>
+            <p class="text-body-2 mb-0">
+              {{ data.estimatedHours || 0 }}h · {{ data.attachments.length }} attachments · {{ data.children.length }} subtasks
+            </p>
+          </template>
+          <template v-else>
+            <h2 class="text-h6 mb-4">{{ data.title }}</h2>
+            <v-row>
+              <v-col cols="12" md="6"><v-text-field v-model="payload.projectId" :label="t('world.crm.tasks.form.projectId')" :readonly="!isRootAdmin" /></v-col>
+              <v-col cols="12" md="6"><v-text-field v-model="payload.title" :label="t('world.crm.tasks.form.title')" :readonly="!isRootAdmin" /></v-col>
+              <v-col cols="12" md="6"><v-text-field v-model="payload.status" :label="t('world.crm.tasks.form.status')" :readonly="!isRootAdmin" /></v-col>
+              <v-col cols="12" md="6"><v-text-field v-model="payload.priority" :label="t('world.crm.tasks.form.priority')" :readonly="!isRootAdmin" /></v-col>
+              <v-col cols="12" md="6"><v-text-field v-model="payload.dueAt" :label="t('world.crm.tasks.form.dueAt')" :readonly="!isRootAdmin" /></v-col>
+              <v-col cols="12" md="6"><v-text-field v-model="payload.estimatedHours" :label="t('world.crm.tasks.form.estimatedHours')" type="number" :readonly="!isRootAdmin" /></v-col>
+              <v-col cols="12"><v-textarea v-model="payload.description" :label="t('world.crm.tasks.form.description')" :readonly="!isRootAdmin" /></v-col>
+            </v-row>
+            <div v-if="isRootAdmin" class="d-flex ga-2">
+              <v-btn color="primary" :loading="pendingSave" @click="save">{{ t('world.crm.tasks.actions.save') }}</v-btn>
+              <v-btn color="error" variant="tonal" @click="remove">{{ t('world.crm.tasks.actions.delete') }}</v-btn>
+            </div>
+          </template>
         </v-card>
 
-        <v-card rounded="xl" class="pa-4 postcard-gradient-card">
+        <v-card v-if="!isViewMode" rounded="xl" class="pa-4 postcard-gradient-card">
           <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.tasks.sections.subtasks') }}</h3>
           <v-row>
             <v-col cols="12" md="6"><v-text-field v-model="newSubtask.title" :label="t('world.crm.tasks.form.subtaskTitle')" :readonly="!isRootAdmin" /></v-col>
@@ -225,22 +246,23 @@ async function attachToSprint() {
             item-value="value"
             :label="t('world.crm.tasks.form.userId')"
             class="mb-2"
-            :disabled="!isRootAdmin"
+            :disabled="!isRootAdmin || isViewMode"
           />
-          <v-btn v-if="isRootAdmin" color="secondary" variant="tonal" class="mb-4" @click="attachAssignee">{{ t('world.crm.tasks.actions.attach') }}</v-btn>
+          <v-btn v-if="isRootAdmin && !isViewMode" color="secondary" variant="tonal" class="mb-4" @click="attachAssignee">{{ t('world.crm.tasks.actions.attach') }}</v-btn>
           <v-list density="compact" bg-color="transparent">
             <v-list-item
               v-for="assignee in data.assignees"
               :key="String((assignee as any).id ?? assignee)"
               :title="String((assignee as any).username ?? (assignee as any).id ?? assignee)"
             >
-              <template v-if="isRootAdmin" #append>
+              <template v-if="isRootAdmin && !isViewMode" #append>
                 <v-btn size="small" color="error" variant="text" icon="mdi-close" @click="detachAssignee(String((assignee as any).id ?? assignee))" />
               </template>
             </v-list-item>
           </v-list>
 
-          <h3 class="text-subtitle-1 mt-4 mb-3">Attach to sprint</h3>
+          <template v-if="!isViewMode">
+            <h3 class="text-subtitle-1 mt-4 mb-3">Attach to sprint</h3>
           <AppSelect
             v-model="sprintToAttach"
             :items="sprintOptions"
@@ -251,6 +273,7 @@ async function attachToSprint() {
             :disabled="!isRootAdmin"
           />
           <v-btn v-if="isRootAdmin" color="secondary" variant="tonal" class="mb-4" @click="attachToSprint">Attach sprint</v-btn>
+          </template>
         </v-card>
 
         <v-card

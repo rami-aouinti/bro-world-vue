@@ -14,6 +14,7 @@ const isRootAdmin = computed(() =>
   (sessionUser.value?.roles ?? []).includes('ROLE_ROOT'),
 )
 const sprintId = computed(() => String(route.params.sprint ?? ''))
+const isViewMode = computed(() => route.query.mode === 'view')
 
 definePageMeta({ layout: 'crm', title: 'CRM Sprint Detail' })
 
@@ -123,23 +124,40 @@ async function detachTask() {
     <v-row v-else-if="data">
       <v-col cols="12" lg="8">
         <v-card rounded="xl" class="pa-4 postcard-gradient-card">
-          <h2 class="text-h6 mb-4">{{ data.name }}</h2>
-          <v-row>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.name" :label="t('world.crm.sprints.form.name')" :readonly="!isRootAdmin" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.status" :label="t('world.crm.sprints.form.status')" :readonly="!isRootAdmin" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.startDate" :label="t('world.crm.sprints.form.startDate')" :readonly="!isRootAdmin" /></v-col>
-            <v-col cols="12" md="6"><v-text-field v-model="payload.endDate" :label="t('world.crm.sprints.form.endDate')" :readonly="!isRootAdmin" /></v-col>
-            <v-col cols="12"><v-textarea v-model="payload.goal" :label="t('world.crm.sprints.form.goal')" :readonly="!isRootAdmin" /></v-col>
-          </v-row>
-          <div v-if="isRootAdmin" class="d-flex ga-2">
-            <v-btn color="primary" @click="save">{{ t('world.crm.sprints.actions.save') }}</v-btn>
-            <v-btn color="error" variant="tonal" @click="remove">{{ t('world.crm.sprints.actions.delete') }}</v-btn>
-          </div>
+          <template v-if="isViewMode">
+            <div class="d-flex justify-space-between align-start ga-2 mb-4">
+              <h2 class="text-h6 mb-0">{{ data.name }}</h2>
+              <v-chip color="secondary" variant="tonal">{{ data.status }}</v-chip>
+            </div>
+            <div class="d-flex flex-wrap ga-2 mb-4">
+              <v-chip color="primary" variant="outlined">{{ data.projectId }}</v-chip>
+              <v-chip variant="tonal">Start: {{ data.startDate || '—' }}</v-chip>
+              <v-chip variant="tonal">End: {{ data.endDate || '—' }}</v-chip>
+            </div>
+            <v-card variant="outlined" class="pa-3">
+              <p class="text-caption mb-1">{{ t('world.crm.sprints.form.goal') }}</p>
+              <p class="text-body-2 mb-0">{{ data.goal || '—' }}</p>
+            </v-card>
+          </template>
+          <template v-else>
+            <h2 class="text-h6 mb-4">{{ data.name }}</h2>
+            <v-row>
+              <v-col cols="12" md="6"><v-text-field v-model="payload.name" :label="t('world.crm.sprints.form.name')" :readonly="!isRootAdmin" /></v-col>
+              <v-col cols="12" md="6"><v-text-field v-model="payload.status" :label="t('world.crm.sprints.form.status')" :readonly="!isRootAdmin" /></v-col>
+              <v-col cols="12" md="6"><v-text-field v-model="payload.startDate" :label="t('world.crm.sprints.form.startDate')" :readonly="!isRootAdmin" /></v-col>
+              <v-col cols="12" md="6"><v-text-field v-model="payload.endDate" :label="t('world.crm.sprints.form.endDate')" :readonly="!isRootAdmin" /></v-col>
+              <v-col cols="12"><v-textarea v-model="payload.goal" :label="t('world.crm.sprints.form.goal')" :readonly="!isRootAdmin" /></v-col>
+            </v-row>
+            <div v-if="isRootAdmin" class="d-flex ga-2">
+              <v-btn color="primary" @click="save">{{ t('world.crm.sprints.actions.save') }}</v-btn>
+              <v-btn color="error" variant="tonal" @click="remove">{{ t('world.crm.sprints.actions.delete') }}</v-btn>
+            </div>
+          </template>
         </v-card>
       </v-col>
 
       <v-col cols="12" lg="4">
-        <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
+        <v-card v-if="!isViewMode" rounded="xl" class="pa-4 postcard-gradient-card mb-4">
           <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.sprints.sections.assignees') }}</h3>
           <AppSelect
             v-model="assigneeId"
@@ -155,7 +173,7 @@ async function detachTask() {
           </div>
         </v-card>
 
-        <v-card rounded="xl" class="pa-4 postcard-gradient-card">
+        <v-card v-if="!isViewMode" rounded="xl" class="pa-4 postcard-gradient-card">
           <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.sprints.sections.tasks') }}</h3>
           <AppSelect
             v-model="taskId"
