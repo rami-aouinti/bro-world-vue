@@ -377,7 +377,8 @@
       "title": "Notifications",
       "subtitle": "Dernières notifications",
       "detailTitle": "Notification",
-      "detailLabel": "ID de notification"
+      "detailLabel": "ID de notification",
+      "notFound": "Notification introuvable."
     },
     "calendar": {
       "title": "Calendrier",
@@ -1074,7 +1075,9 @@
       "category": "Catégorie",
       "subCategory": "Sous-catégorie",
       "game": "Jeu",
-      "level": "Niveau"
+      "level": "Niveau",
+      "playerCount": "Nombre de joueurs",
+      "opponentType": "Type d'adversaire"
     },
     "states": {
       "empty": "Aucune donnée disponible.",
@@ -1094,7 +1097,10 @@
       "coins": "pièces",
       "lastSessionTitle": "Dernière session terminée",
       "finishDemo": "Terminer la démo",
-      "authRequired": "Vous devez être connecté pour démarrer une partie."
+      "authRequired": "Vous devez être connecté pour démarrer une partie.",
+      "tableSession": "Session",
+      "fourPlayersTable": "Table à 4 joueurs",
+      "notFoundRedirecting": "Session introuvable. Redirection en cours..."
     },
     "messages": {
       "startSuccess": "Session de jeu démarrée avec succès.",
@@ -1788,7 +1794,8 @@
       "admin": {
         "moduleDescription": "Tableau de bord CRM admin et accès rapide aux entités.",
         "actions": {
-          "refresh": "Actualiser"
+          "refresh": "Actualiser",
+          "viewContent": "Afficher le contenu"
         },
         "page": {
           "title": "Centre admin CRM",

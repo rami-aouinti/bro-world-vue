@@ -2,6 +2,7 @@
 import type { UserNotificationItem } from '~/stores/inboxNotifications'
 
 const route = useRoute()
+const { t } = useI18n()
 const notificationId = computed(() => String(route.params.notification || ''))
 const inboxNotificationsStore = useInboxNotificationsStore()
 
@@ -25,7 +26,7 @@ definePageMeta({
 <template>
   <v-container>
     <v-card class="postcard-gradient-card">
-      <v-card-title>Notification detail</v-card-title>
+      <v-card-title>{{ t('pages.notification.detailTitle') }}</v-card-title>
 
       <v-card-text v-if="notification">
         <div class="text-subtitle-1 font-weight-medium">
@@ -42,7 +43,7 @@ definePageMeta({
           class="d-flex flex-column align-center ga-3 py-8 text-medium-emphasis"
         >
           <v-icon icon="mdi-bell-off-outline" size="40" />
-          <p class="text-body-1">Notification introuvable.</p>
+          <p class="text-body-1">{{ t('pages.notification.notFound') }}</p>
         </div>
       </v-card-text>
     </v-card>

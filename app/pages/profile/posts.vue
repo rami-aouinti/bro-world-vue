@@ -38,7 +38,7 @@ definePageMeta({
   title: 'profile.posts.title',
   middleware: 'auth',
   layout: 'profile',
-  description: 'Voici la liste de vos posts Bro World.',
+  description: 'Here is the list of your Bro World posts.',
   auth: {
     redirect: {
       unauthenticated: '/login',
@@ -69,19 +69,25 @@ definePageMeta({
               <v-chip color="primary" label size="large">
                 {{ safeStats.totalPosts }}
               </v-chip>
-              <p class="text-caption text-medium-emphasis mx-3">{{ t('profile.posts.title') }}</p>
+              <p class="text-caption text-medium-emphasis mx-3">
+                {{ t('profile.posts.title') }}
+              </p>
             </div>
             <div class="d-flex align-center">
               <v-chip color="primary" label size="large">
                 {{ safeStats.totalComments }}
               </v-chip>
-              <p class="text-caption text-medium-emphasis mx-3">{{ t('pages.profilePosts.comments') }}</p>
+              <p class="text-caption text-medium-emphasis mx-3">
+                {{ t('pages.profilePosts.comments') }}
+              </p>
             </div>
             <div class="d-flex align-center">
               <v-chip color="primary" label size="large">
                 {{ safeStats.totalReacts }}
               </v-chip>
-              <p class="text-caption text-medium-emphasis mx-3">{{ t('pages.profilePosts.reacts') }}</p>
+              <p class="text-caption text-medium-emphasis mx-3">
+                {{ t('pages.profilePosts.reacts') }}
+              </p>
             </div>
           </div>
         </v-card-text>
