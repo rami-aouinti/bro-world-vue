@@ -340,11 +340,18 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
         await $fetch<UserNotificationItem>(`/api/notifications/${id}`),
       )
       const index = this.notifications.findIndex((item) => item.id === id)
+      const previous = index >= 0 ? this.notifications[index] : null
 
       if (index >= 0) {
         this.notifications.splice(index, 1, notification)
       } else {
         this.notifications.push(notification)
+      }
+
+      if (!notification.read && (index < 0 || previous?.read)) {
+        this.unreadCount += 1
+      } else if (notification.read && previous && !previous.read) {
+        this.unreadCount = Math.max(0, this.unreadCount - 1)
       }
 
       return notification
