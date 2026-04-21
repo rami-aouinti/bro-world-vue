@@ -557,6 +557,7 @@ function attachMercureSubscription(conversationId: string) {
   mercureEventSource.value = eventSource
 
   eventSource.onmessage = (event: MessageEvent<string>) => {
+    console.log('sadsa');
     const raw = event.data?.trim()
     if (!raw) return
 
