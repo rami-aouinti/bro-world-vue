@@ -116,7 +116,7 @@ async function openReference(payload: { key: string; value: string }) {
 
 <template>
   <div>
-    <WorldModuleDrawers
+    <WorldModuleShell
       :module-title="t('world.learning.label', 'Learning')"
       module-icon="mdi-school-outline"
       :module-description="'School cards view with linked references'"
@@ -138,7 +138,7 @@ async function openReference(payload: { key: string; value: string }) {
           <AppSelect v-model="selectedClass" :items="classOptions" label="Class" clearable />
         </div>
       </template>
-    </WorldModuleDrawers>
+    </WorldModuleShell>
 
     <v-container fluid>
       <v-alert

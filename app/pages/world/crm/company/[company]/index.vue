@@ -52,7 +52,7 @@ async function remove() {
 
 <template>
   <div>
-    <WorldModuleDrawers
+    <WorldModuleShell
       :module-title="t('world.crm.label')"
       module-key="crm"
       module-path="/world/crm"
@@ -63,7 +63,7 @@ async function remove() {
       action-icon="mdi-account-plus-outline"
     >
       <template #right />
-    </WorldModuleDrawers>
+    </WorldModuleShell>
     <v-container fluid>
       <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push('/world/crm/company')">{{ t('world.crm.company.actions.backToList') }}</v-btn>
       <CrmPageSkeleton v-if="pending" variant="detail" />

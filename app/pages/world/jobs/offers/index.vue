@@ -120,7 +120,7 @@ await fetchJobs()
 
 <template>
   <div>
-    <WorldModuleDrawers
+    <WorldModuleShell
       :module-title="t('world.jobs.title')"
       module-path="/world/jobs"
       module-icon="mdi-briefcase-search-outline"
@@ -165,7 +165,7 @@ await fetchJobs()
           </v-btn>
         </div>
       </template>
-    </WorldModuleDrawers>
+    </WorldModuleShell>
 
     <v-container fluid>
       <v-card rounded="xl" class="mb-4 pa-4 postcard-gradient-card">

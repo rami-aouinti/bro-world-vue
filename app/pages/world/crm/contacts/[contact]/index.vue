@@ -14,7 +14,7 @@ const { data, pending, error } = await useFetch<CrmContactItem>(() => `/api/crm/
 
 <template>
   <div>
-    <WorldModuleDrawers
+    <WorldModuleShell
       :module-title="t('world.crm.label')"
       module-key="crm"
       module-path="/world/crm"
@@ -25,7 +25,7 @@ const { data, pending, error } = await useFetch<CrmContactItem>(() => `/api/crm/
       action-icon="mdi-account-plus-outline"
     >
       <template #right />
-    </WorldModuleDrawers>
+    </WorldModuleShell>
     <v-container fluid>
       <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push('/world/crm/contacts')">{{ t('world.crm.contactsDetail.actions.backToList') }}</v-btn>
       <CrmPageSkeleton v-if="pending" variant="detail" />

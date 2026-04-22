@@ -114,7 +114,7 @@ async function detachTask() {
 
 <template>
   <div>
-    <WorldModuleDrawers
+    <WorldModuleShell
       :module-title="t('world.crm.label')"
       module-key="crm"
       module-path="/world/crm"
@@ -125,7 +125,7 @@ async function detachTask() {
       action-icon="mdi-account-plus-outline"
     >
       <template #right />
-    </WorldModuleDrawers>
+    </WorldModuleShell>
     <v-container fluid>
       <CrmPageSkeleton v-if="pending" variant="detail" />
       <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.sprints.alerts.notFound') }}</v-alert>

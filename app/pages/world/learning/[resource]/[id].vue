@@ -102,7 +102,7 @@ function fileHref(url?: string) {
 
 <template>
   <div>
-    <WorldModuleDrawers
+    <WorldModuleShell
       :module-title="t('world.learning.label', 'Learning')"
       module-icon="mdi-school-outline"
       :module-description="'School resource detail page'"
@@ -159,7 +159,7 @@ function fileHref(url?: string) {
           </template>
         </div>
       </template>
-    </WorldModuleDrawers>
+    </WorldModuleShell>
 
     <v-container fluid>
       <v-card v-if="isCourse" rounded="xl" class="pa-6 postcard-gradient-card course-detail-card">

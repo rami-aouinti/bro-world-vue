@@ -138,7 +138,7 @@ onMounted(async () => {
 
 <template>
   <div>
-    <WorldModuleDrawers
+    <WorldModuleShell
       :module-title="t('world.shop.label')"
       module-icon="mdi-storefront-outline"
       :module-description="t('world.shop.checkout.moduleDescription')"
