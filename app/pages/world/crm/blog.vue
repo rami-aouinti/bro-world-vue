@@ -7,7 +7,7 @@ const { crmNavItems } = useWorldCrmNavItems()
 
 <template>
   <div>
-    <WorldModuleDrawers
+    <WorldModuleShell
       :module-title="t('world.crm.label')"
       module-key="crm"
       module-path="/world/crm"

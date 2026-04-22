@@ -148,7 +148,7 @@ async function deleteSprint() {
 
 <template>
   <div>
-    <WorldModuleDrawers
+    <WorldModuleShell
       :module-title="t('world.crm.label')"
       module-icon="mdi-account-group-outline"
       :module-description="t('world.crm.sprints.moduleDescription')"
@@ -180,7 +180,7 @@ async function deleteSprint() {
           <v-text-field v-model="endBefore" type="date" :label="t('world.crm.filters.endBefore')" variant="outlined" hide-details clearable />
         </div>
       </template>
-    </WorldModuleDrawers>
+    </WorldModuleShell>
 
     <v-container fluid>
       <CrmPageSkeleton v-if="pending" variant="list" :cards="6" />

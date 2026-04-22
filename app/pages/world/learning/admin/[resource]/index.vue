@@ -282,7 +282,7 @@ async function confirmDelete() {
 
 <template>
   <div>
-    <WorldModuleDrawers
+    <WorldModuleShell
       module-title="Learning"
       module-icon="mdi-school-outline"
       module-description="Administration and school resources management."

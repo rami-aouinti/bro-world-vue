@@ -410,7 +410,7 @@ const deleteProduct = async (productId: string) => {
 
 <template>
   <div>
-    <WorldModuleDrawers
+    <WorldModuleShell
       :module-title="t('world.shop.label', 'Shop')"
       module-icon="mdi-storefront-outline"
       :module-description="

@@ -67,7 +67,7 @@ const schoolResources = computed(() =>
 
 <template>
   <div>
-    <WorldModuleDrawers
+    <WorldModuleShell
       :module-title="t('world.learning.label', 'Learning')"
       module-icon="mdi-school-outline"
       :module-description="t('world.learning.admin.moduleDescription', 'Mentor/admin dashboard: completion, dropout, and cohort performance.')"

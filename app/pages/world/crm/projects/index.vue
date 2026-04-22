@@ -168,7 +168,7 @@ async function deleteProject() {
 
 <template>
   <div>
-    <WorldModuleDrawers
+    <WorldModuleShell
       :module-title="t('world.crm.label')"
       module-icon="mdi-account-group-outline"
       :module-description="t('world.crm.projects.moduleDescription')"
@@ -210,7 +210,7 @@ async function deleteProject() {
           <v-text-field v-model="dueBefore" type="date" :label="t('world.crm.filters.endBefore')" variant="outlined" hide-details clearable />
         </div>
       </template>
-    </WorldModuleDrawers>
+    </WorldModuleShell>
 
     <v-container fluid>
       <CrmPageSkeleton v-if="pending" variant="list" :cards="6" />

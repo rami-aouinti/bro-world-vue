@@ -163,7 +163,7 @@ async function deleteRequest() {
 
 <template>
   <div>
-    <WorldModuleDrawers
+    <WorldModuleShell
       :module-title="t('world.crm.label')"
       module-icon="mdi-account-group-outline"
       :module-description="t('world.crm.taskRequests.list.title')"
@@ -201,7 +201,7 @@ async function deleteRequest() {
           <v-text-field v-model="resolvedBefore" type="date" :label="t('world.crm.filters.resolvedBefore')" variant="outlined" hide-details clearable />
         </div>
       </template>
-    </WorldModuleDrawers>
+    </WorldModuleShell>
 
     <v-container fluid>
       <CrmPageSkeleton v-if="pending" variant="list" :cards="6" />

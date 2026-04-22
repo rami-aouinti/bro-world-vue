@@ -11,7 +11,7 @@ const { data, pending, error } = await useFetch<ApiListResponse<CrmContactItem>>
 
 <template>
   <div>
-    <WorldModuleDrawers
+    <WorldModuleShell
       :module-title="t('world.crm.label')"
       module-icon="mdi-account-group-outline"
       :module-description="t('world.crm.contacts.list.title', 'Contacts')"
