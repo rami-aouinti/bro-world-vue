@@ -198,12 +198,17 @@ watch(notificationMenuShow, async (isOpen) => {
 })
 
 const allNotificationItems = computed(() => {
+  const isUserAvatarNotification = (type: string) =>
+    type === 'blog_notification' || type === 'friend_notification'
+
   const apiItems = notificationsSortedDesc.value.map((item) => ({
     id: `api-${item.id}`,
     title: truncateText(item.title),
     createdAt: item.createdAt,
-    icon: item.type === 'blog_notification' ? null : 'mdi-bell-ring-outline',
-    avatar: item.type === 'blog_notification' ? item.from?.photo : null,
+    icon: isUserAvatarNotification(item.type) ? null : 'mdi-bell-ring-outline',
+    avatar: isUserAvatarNotification(item.type)
+      ? item.from?.photo || item.fromPhoto || null
+      : null,
     timeLabel: formatRelativeTime(item.createdAt),
     to: `/notification/${item.id}`,
   }))
