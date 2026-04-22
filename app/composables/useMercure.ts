@@ -45,15 +45,18 @@ export function useMercure() {
     const parsedUrl = new URL(url)
     const configuredWithCredentials = runtimeConfig.public.mercureWithCredentials === true
     const isSameOriginHub = parsedUrl.origin === window.location.origin
-    const withCredentials =
-      options?.withCredentials ?? (configuredWithCredentials || isSameOriginHub)
 
     const authorizationToken = String(
       options?.authorizationToken || runtimeConfig.public.mercureSubscriberJwt || '',
     ).trim()
 
+    const resolvedWithCredentials = options?.withCredentials
+      ?? (authorizationToken
+        ? false
+        : isSameOriginHub && configuredWithCredentials)
+
     const init: EventSourceInit & { headers?: Record<string, string> } = {
-      withCredentials,
+      withCredentials: resolvedWithCredentials,
     }
 
     if (authorizationToken) {

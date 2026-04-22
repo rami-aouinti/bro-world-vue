@@ -184,12 +184,12 @@ Configuration côté Nuxt :
 
 ```bash
 NUXT_PUBLIC_MERCURE_PUBLIC_URL="http://localhost:3100/.well-known/mercure"
-NUXT_PUBLIC_MERCURE_WITH_CREDENTIALS="true"
+NUXT_PUBLIC_MERCURE_WITH_CREDENTIALS="false"
 # Optionnel (mode header + polyfill EventSource)
 NUXT_PUBLIC_MERCURE_SUBSCRIBER_JWT=""
 ```
 
-- **Navigateur (recommandé)** : utiliser le cookie `mercureAuthorization` et `withCredentials: true`.
+- **Navigateur (recommandé)** : utiliser le cookie `mercureAuthorization` et `withCredentials: true` uniquement si le hub renvoie `Access-Control-Allow-Origin` explicite (pas `*`).
 - **Polyfill EventSource** : possible via header `Authorization: Bearer <JWT subscriber>`.
 - Le claim `mercure.subscribe` du JWT doit matcher les topics écoutés.
 - **Ne jamais exposer `MERCURE_JWT_SECRET` dans Nuxt** : la signature du token reste côté Symfony.
