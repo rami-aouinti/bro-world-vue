@@ -47,9 +47,21 @@ const scopedQuery = computed(() => ({
   repo: repository.value,
 }))
 
+const repositoryRouteQuery = computed(() =>
+  applicationSlug.value.trim()
+    ? { applicationSlug: applicationSlug.value.trim() }
+    : undefined,
+)
+
 const { data, pending, error } = useAsyncData(
   () => `crm-repository-dashboard-${projectId.value}-${repository.value}-${applicationSlug.value}`,
   async () => {
+    await githubStore.preloadRepositoryCriticalDatasets(
+      projectId.value,
+      repository.value,
+      applicationSlug.value || undefined,
+    )
+
     const [
       collaboratorsResponse,
       branchesResponse,
@@ -102,6 +114,7 @@ const pageCards = computed(() => [
     title: t('world.crm.repositories.sections.branches', 'Branches'),
     icon: 'mdi-source-branch',
     to: `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/branches`,
+    query: repositoryRouteQuery.value,
     items: branches.value.slice(0, 4).map(branch => ({
       primary: branch.name || '-',
       secondary: branch.protected
@@ -114,6 +127,7 @@ const pageCards = computed(() => [
     title: t('world.crm.repositories.sections.commits', 'Commits'),
     icon: 'mdi-source-commit',
     to: `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/commits`,
+    query: repositoryRouteQuery.value,
     items: commits.value.slice(0, 4).map(commit => ({
       primary: commit.message || commit.sha,
       secondary: `${commit.author || '-'} • ${(commit.sha || '').slice(0, 7)}`,
@@ -124,6 +138,7 @@ const pageCards = computed(() => [
     title: t('world.crm.repositories.sections.pullRequests', 'Pull requests'),
     icon: 'mdi-source-pull',
     to: `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/pull-requests`,
+    query: repositoryRouteQuery.value,
     items: pullRequests.value.slice(0, 4).map(pullRequest => ({
       primary: pullRequest.title || `#${pullRequest.number ?? '-'}`,
       secondary: `${pullRequest.state || '-'} • @${pullRequest.user?.login || '-'}`,
@@ -134,6 +149,7 @@ const pageCards = computed(() => [
     title: t('world.crm.repositories.sections.workflows', 'Workflows'),
     icon: 'mdi-robot',
     to: `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/workflows`,
+    query: repositoryRouteQuery.value,
     items: workflows.value.slice(0, 4).map(workflow => ({
       primary: workflow.name || '-',
       secondary: `${workflow.state || '-'} • ${workflow.path || '-'}`,
@@ -144,6 +160,7 @@ const pageCards = computed(() => [
     title: t('world.crm.repositories.sections.itemActions'),
     icon: 'mdi-playlist-check',
     to: actionsRoute.value,
+    query: repositoryRouteQuery.value,
     items: collaborators.value.slice(0, 4).map(collaborator => ({
       primary: collaborator.login || '-',
       secondary: collaborator.type || t('world.crm.repositories.labels.user'),
@@ -241,7 +258,7 @@ const kpis = computed(() => [
               <v-spacer />
 
               <v-btn
-                :to="card.to"
+                :to="{ path: card.to, query: card.query }"
                 color="primary"
                 variant="tonal"
                 append-icon="mdi-arrow-right"

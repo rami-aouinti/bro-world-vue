@@ -30,13 +30,33 @@ import type {
 const CRM_GITHUB_TTL_MS = 3 * 60 * 1000
 
 function buildCacheKey(endpoint: string, query?: Record<string, unknown>) {
+  const normalizedEndpoint = endpoint.trim().replace(/^\/+|\/+$/g, '')
   const normalizedQuery = Object.entries(query ?? {})
     .filter(([, value]) => value !== undefined && value !== null && value !== '')
     .sort(([left], [right]) => left.localeCompare(right))
     .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
     .join('&')
 
-  return normalizedQuery ? `${endpoint}?${normalizedQuery}` : endpoint
+  const applicationMatch = normalizedEndpoint.match(
+    /^api\/world\/crm\/applications\/([^/]+)\/projects\/([^/]+)\/github\/(.+)$/,
+  )
+  const projectMatch = normalizedEndpoint.match(
+    /^api\/world\/crm\/general\/projects\/([^/]+)\/github\/(.+)$/,
+  )
+
+  const keyBase = (() => {
+    if (applicationMatch) {
+      const [, applicationSlug, projectId, resource] = applicationMatch
+      return `github:app=${decodeURIComponent(applicationSlug)}:project=${decodeURIComponent(projectId)}:resource=${resource}`
+    }
+    if (projectMatch) {
+      const [, projectId, resource] = projectMatch
+      return `github:project=${decodeURIComponent(projectId)}:resource=${resource}`
+    }
+    return `github:endpoint=${normalizedEndpoint}`
+  })()
+
+  return normalizedQuery ? `${keyBase}:${normalizedQuery}` : keyBase
 }
 
 export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
@@ -45,6 +65,7 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
   const lastFetchedAt = ref<number | null>(null)
   const cache = ref<Record<string, { fetchedAt: number; data: unknown }>>({})
   const syncContext = ref<CrmGithubSyncContext | null>(null)
+  const repositoryPreloadState = ref<Record<string, boolean>>({})
 
   function withSyncContextQuery(
     endpoint: string,
@@ -87,6 +108,10 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
     cache.value = Object.fromEntries(
       Object.entries(cache.value).filter(([key]) => !key.startsWith(prefix)),
     )
+  }
+
+  function forceRefresh(prefix?: string) {
+    invalidateCache(prefix)
   }
 
   async function get<TResponse = Record<string, unknown>>(
@@ -152,6 +177,26 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
     }
   }
 
+  function buildRepositoryScopedQuery(repositoryName: string, query?: Record<string, unknown>) {
+    return {
+      ...(query ?? {}),
+      repository: repositoryName,
+      repo: repositoryName,
+    }
+  }
+
+  function buildRepositoryPreloadKey(
+    projectId: string,
+    repositoryName: string,
+    applicationSlug?: string,
+  ) {
+    return [
+      `project=${projectId}`,
+      `repository=${repositoryName}`,
+      `applicationSlug=${applicationSlug ?? '-'}`,
+    ].join(':')
+  }
+
   const projectBase = (projectId: string) =>
     `/api/world/crm/general/projects/${projectId}/github`
   const scopedProjectBase = (projectId: string, applicationSlug?: string) =>
@@ -165,6 +210,7 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
     lastFetchedAt,
     syncContext,
     invalidateCache,
+    forceRefresh,
     loadSyncContext: async (options?: { force?: boolean }) => {
       const context = await get<CrmGithubSyncContext | null>(
         '/api/world/crm/general/github/sync/context',
@@ -441,5 +487,29 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
           invalidatePrefix: `/api/world/crm/general/task-requests/${taskRequestId}/github/branches`,
         },
       ),
+    preloadRepositoryCriticalDatasets: async (
+      projectId: string,
+      repositoryName: string,
+      applicationSlug?: string,
+      options?: { force?: boolean },
+    ) => {
+      const preloadKey = buildRepositoryPreloadKey(projectId, repositoryName, applicationSlug)
+      if (repositoryPreloadState.value[preloadKey] && !options?.force) {
+        return
+      }
+
+      const query = buildRepositoryScopedQuery(repositoryName)
+      const basePath = projectBase(projectId)
+      const scopedBasePath = scopedProjectBase(projectId, applicationSlug)
+      await Promise.all([
+        get<CrmGithubListResponse<CrmGithubCollaborator>>(`${basePath}/collaborators`, query),
+        get<CrmGithubListResponse>(`${basePath}/branches`, query),
+        get<CrmGithubListResponse<CrmGithubCommitSummary>>(`${scopedBasePath}/commits`, query),
+        get<CrmGithubListResponse>(`${scopedBasePath}/pull-requests`, query),
+        get<CrmGithubListResponse<CrmGithubWorkflow>>(`${scopedBasePath}/actions/workflows`, query),
+      ])
+
+      repositoryPreloadState.value[preloadKey] = true
+    },
   }
 })

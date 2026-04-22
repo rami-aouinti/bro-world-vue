@@ -1,5 +1,5 @@
 import type { H3Event } from 'h3'
-import { getCached, privateCacheKey, setCached } from './apiCache'
+import { getCached, invalidateByPrefix, privateCacheKey, setCached } from './apiCache'
 import { resolveCacheTtl } from './apiCacheConfig'
 import { getServerPrivateAxios, resolveServerApiUrl } from './http/axiosClient'
 import { invalidateMutationCaches } from './mutationInvalidation'
@@ -10,6 +10,13 @@ const CRM_GENERAL_PUBLIC_BASE_URL = 'https://bro-world.org/api/v1/crm/general'
 const CRM_GITHUB_MUTATION_KEY = 'crm:general:mutate'
 const MONTH_IN_SECONDS = 30 * 24 * 60 * 60
 const CRM_GITHUB_SYNC_CONTEXT_ENDPOINT = 'crm/general/github/sync/context'
+const CRM_CACHE_PREFIX = 'crm'
+
+const CRM_GITHUB_TTL_BY_PATH: Array<{ pattern: RegExp; ttl: number }> = [
+  { pattern: /^projects\/[^/]+\/github\/(commits|branches|pull-requests|collaborators)(\/|$)/, ttl: 60 },
+  { pattern: /^projects\/[^/]+\/github\/actions\/workflows(\/|$)/, ttl: 180 },
+  { pattern: /^projects\/[^/]+\/github\/actions\/runs(\/|$)/, ttl: 45 },
+]
 
 export type CrmGithubSyncContext = {
   jobId?: string
@@ -83,6 +90,74 @@ function crmGithubEndpoint(path: string) {
   return `${CRM_GENERAL_BASE_ENDPOINT}/${normalizedPath}`
 }
 
+function resolveCrmGithubGetTtl(path: string) {
+  const normalizedPath = path.replace(/^\/+/, '')
+  const override = CRM_GITHUB_TTL_BY_PATH.find(({ pattern }) => pattern.test(normalizedPath))
+  return override?.ttl ?? resolveCacheTtl('crm')
+}
+
+function buildCrmPrivateEndpointPrefix(username: string, endpoint: string) {
+  const normalizedUsername = username.trim()
+  const normalizedEndpoint = endpoint.trim().replace(/^\/+|\/+$/g, '')
+  return `api:private:${normalizedUsername}:${CRM_CACHE_PREFIX}:${normalizedEndpoint}:`
+}
+
+function buildCrmPublicEndpointPrefix(endpoint: string) {
+  const normalizedEndpoint = endpoint.trim().replace(/^\/+|\/+$/g, '')
+  return `api:public:${CRM_CACHE_PREFIX}:${normalizedEndpoint}:`
+}
+
+function buildCrmGithubMutationPrefixes(path: string) {
+  const normalizedPath = path.replace(/^\/+/, '')
+  const projectMatch = normalizedPath.match(/^projects\/([^/]+)\/github\/(.+)$/)
+
+  if (!projectMatch) {
+    return []
+  }
+
+  const [, projectId, resourcePath] = projectMatch
+  const firstSegment = resourcePath.split('/')[0]
+  if (!firstSegment) {
+    return []
+  }
+
+  const projectRoot = `crm/general/projects/${projectId}/github`
+  const prefixes = new Set<string>([
+    `${projectRoot}/${firstSegment}`,
+    `${projectRoot}/dashboard`,
+  ])
+
+  if (firstSegment === 'actions') {
+    prefixes.add(`${projectRoot}/actions/workflows`)
+    prefixes.add(`${projectRoot}/actions/runs`)
+  }
+
+  return Array.from(prefixes)
+}
+
+async function invalidateCrmGithubPrefixes(
+  event: H3Event,
+  endpointPrefixes: string[],
+) {
+  if (!endpointPrefixes.length) {
+    return
+  }
+
+  const session = await getSessionAuth(event).catch(() => null)
+
+  await Promise.all(
+    endpointPrefixes.flatMap((endpointPrefix) => {
+      const prefixes = [buildCrmPublicEndpointPrefix(endpointPrefix)]
+
+      if (session?.username) {
+        prefixes.push(buildCrmPrivateEndpointPrefix(session.username, endpointPrefix))
+      }
+
+      return prefixes.map(prefix => invalidateByPrefix(prefix))
+    }),
+  )
+}
+
 export async function cachedCrmGithubGeneralGet<TResponse = unknown>(
   event: H3Event,
   path: string,
@@ -132,7 +207,7 @@ export async function cachedCrmGithubGeneralGet<TResponse = unknown>(
     }
   }
 
-  await setCached(cacheKey, response, resolveCacheTtl('crm'))
+  await setCached(cacheKey, response, resolveCrmGithubGetTtl(path))
 
   return response
 }
@@ -185,6 +260,7 @@ export async function mutateCrmGithubGeneral<TResponse = unknown>(
   }
 
   await invalidateMutationCaches(event, CRM_GITHUB_MUTATION_KEY)
+  await invalidateCrmGithubPrefixes(event, buildCrmGithubMutationPrefixes(path))
 
   return response.data
 }
