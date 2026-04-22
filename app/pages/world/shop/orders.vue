@@ -296,6 +296,8 @@ const onSelectOrder = (orderId: string) => {
 <template>
   <div>
     <WorldModuleDrawers
+      module-path="/world/shop"
+      module-key="shop"
       :module-title="t('world.shop.label')"
       module-icon="mdi-storefront-outline"
       :module-description="t('world.shop.orders.moduleDescription')"

@@ -63,10 +63,47 @@ const rows = [
     status: t('world.jobs.sampleRows.j102.status'),
   },
 ]
+const jobsNavItems = computed(() => [
+  {
+    title: t('world.jobs.nav.offers'),
+    to: '/world/jobs/offers',
+    icon: 'mdi-briefcase-outline',
+  },
+  {
+    title: t('world.jobs.nav.myOffers'),
+    to: '/world/jobs/my-offers',
+    icon: 'mdi-account-tie-outline',
+  },
+  {
+    title: t('world.jobs.nav.applications'),
+    to: '/world/jobs/applications',
+    icon: 'mdi-file-document-outline',
+  },
+  {
+    title: t('world.jobs.nav.apply'),
+    to: '/world/jobs/apply',
+    icon: 'mdi-send-outline',
+  },
+  {
+    title: t('world.jobs.nav.admin'),
+    to: '/world/jobs/admin',
+    icon: 'mdi-shield-crown-outline',
+    rootOnly: true,
+  },
+])
 </script>
 
 <template>
   <div>
+    <WorldModuleDrawers
+      module-path="/world/jobs"
+      module-key="job"
+      :module-title="t('world.jobs.label')"
+      module-icon="mdi-briefcase-search-outline"
+      :module-description="t('world.jobs.moduleDescription')"
+      :nav-items="jobsNavItems"
+      :action-label="t('world.jobs.myOffers.actions.create')"
+    />
     <v-container fluid>
       <v-row class="mb-4">
         <v-col cols="12" md="3"

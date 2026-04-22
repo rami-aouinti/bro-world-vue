@@ -61,6 +61,7 @@ const selectedCategory = ref('')
 const minPriceFilter = ref<number | null>(null)
 const maxPriceFilter = ref<number | null>(null)
 const promotionFilter = ref('')
+const { shopNavItems } = useShopNavItems()
 
 const page = ref(1)
 const limit = ref(20)
@@ -124,11 +125,6 @@ function hasPromotion(product: ShopGeneralProduct) {
 function productImage(product: ShopGeneralProduct) {
   const fallback = '/images/platform-media/shop-premium-hoodie.svg'
   return product.photo?.trim() || fallback
-}
-
-function categoryImage(category: ShopGeneralCategory) {
-  const fallback = '/images/platform-media/shop-premium-hoodie.svg'
-  return category.photo?.trim() || fallback
 }
 
 function goToProductDetail(productId: string) {
@@ -207,15 +203,6 @@ async function applyFilters() {
   await fetchProducts()
 }
 
-async function resetFilters() {
-  qFilter.value = ''
-  selectedCategory.value = ''
-  minPriceFilter.value = null
-  maxPriceFilter.value = null
-  promotionFilter.value = ''
-  await applyFilters()
-}
-
 watch([page, limit], async ([nextPage, nextLimit], [prevPage, prevLimit]) => {
   if (nextPage === prevPage && nextLimit === prevLimit) {
     return
@@ -243,111 +230,15 @@ onMounted(async () => {
 
 <template>
   <div>
-    <AppPageDrawers>
-      <template #right>
-        <v-card class="postcard-gradient-card" rounded="xl" variant="tonal">
-          <v-card-title>{{
-            t('world.shop.filters.categoriesTitle')
-          }}</v-card-title>
-          <v-divider />
-
-          <v-list class="py-0" lines="two">
-            <v-list-item
-              v-for="category in categories"
-              :key="category.id"
-              :active="selectedCategory === category.name"
-              rounded="lg"
-              @click="toggleCategoryFilter(category.name)"
-            >
-              <template #prepend>
-                <v-avatar rounded="lg" size="44">
-                  <v-img
-                    :src="categoryImage(category)"
-                    :alt="category.name"
-                    cover
-                  />
-                </v-avatar>
-              </template>
-
-              <v-list-item-title>{{ category.name }}</v-list-item-title>
-              <v-list-item-subtitle>
-                {{
-                  selectedCategory === category.name
-                    ? t('world.shop.filters.selected')
-                    : t('world.shop.filters.clickToFilter')
-                }}
-              </v-list-item-subtitle>
-            </v-list-item>
-          </v-list>
-
-          <v-card-text v-if="categoriesLoading">
-            <v-skeleton-loader
-              type="list-item-three-line, list-item-three-line"
-            />
-          </v-card-text>
-
-          <v-card-text v-if="!categoriesLoading && categories.length === 0">
-            <v-empty-state
-              icon="mdi-shape-outline"
-              :title="t('world.shop.filters.noCategories')"
-            />
-          </v-card-text>
-
-          <v-divider class="mt-2" />
-
-          <v-card-text class="pt-4">
-            <v-text-field
-              v-model.number="minPriceFilter"
-              type="number"
-              min="0"
-              :label="t('world.shop.filters.minPrice')"
-              variant="outlined"
-              density="comfortable"
-              clearable
-              hide-details
-              class="mb-3"
-              @update:model-value="applyFilters"
-            />
-
-            <v-text-field
-              v-model.number="maxPriceFilter"
-              type="number"
-              min="0"
-              :label="t('world.shop.filters.maxPrice')"
-              variant="outlined"
-              density="comfortable"
-              clearable
-              hide-details
-              class="mb-3"
-              @update:model-value="applyFilters"
-            />
-
-            <AppSelect
-              v-model="promotionFilter"
-              :items="promotionOptions"
-              item-title="title"
-              item-value="value"
-              :label="t('world.shop.filters.promotion')"
-              variant="outlined"
-              density="comfortable"
-              hide-details
-              clearable
-              class="mb-4"
-              @update:model-value="applyFilters"
-            />
-
-            <v-btn
-              block
-              variant="outlined"
-              prepend-icon="mdi-filter-remove-outline"
-              @click="resetFilters"
-            >
-              {{ t('world.shop.filters.reset') }}
-            </v-btn>
-          </v-card-text>
-        </v-card>
-      </template>
-    </AppPageDrawers>
+    <WorldModuleDrawers
+      module-path="/world/shop"
+      module-key="shop"
+      :module-title="t('world.shop.label')"
+      module-icon="mdi-storefront-outline"
+      :module-description="t('world.shop.orders.moduleDescription')"
+      :nav-items="shopNavItems"
+      :action-label="t('world.shop.orders.actionLabel')"
+    />
 
     <v-container fluid>
       <v-alert
