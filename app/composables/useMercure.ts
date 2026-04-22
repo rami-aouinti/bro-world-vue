@@ -7,7 +7,10 @@ type MercureHandlers = {
 type MercureSubscribeOptions = {
   withCredentials?: boolean
   authorizationToken?: string
-  eventSourceFactory?: (url: string, init: EventSourceInit & { headers?: Record<string, string> }) => EventSource
+  eventSourceFactory?: (
+    url: string,
+    init: EventSourceInit & { headers?: Record<string, string> },
+  ) => EventSource
 }
 
 export function useMercure() {
@@ -45,18 +48,31 @@ export function useMercure() {
     const withCredentials =
       options?.withCredentials ?? (configuredWithCredentials || isSameOriginHub)
 
+    const authorizationToken = String(
+      options?.authorizationToken || runtimeConfig.public.mercureSubscriberJwt || '',
+    ).trim()
+
     const init: EventSourceInit & { headers?: Record<string, string> } = {
       withCredentials,
     }
 
-    if (options?.authorizationToken) {
+    if (authorizationToken) {
       init.headers = {
-        Authorization: `Bearer ${options.authorizationToken}`,
+        Authorization: `Bearer ${authorizationToken}`,
       }
     }
 
+    const polyfillConstructor = (globalThis as typeof globalThis & {
+      EventSourcePolyfill?: new (
+        url: string,
+        init: EventSourceInit & { headers?: Record<string, string> },
+      ) => EventSource
+    }).EventSourcePolyfill
+
     const eventSource = options?.eventSourceFactory
       ? options.eventSourceFactory(url, init)
+      : init.headers && polyfillConstructor
+        ? new polyfillConstructor(url, init)
       : new EventSource(url, { withCredentials: init.withCredentials })
 
     eventSource.onopen = (event) => {
