@@ -1,45 +1,140 @@
 <script setup lang="ts">
+import type {
+  CrmGithubCollaborator,
+  CrmGithubCommitSummary,
+  CrmGithubListResponse,
+  CrmGithubWorkflow,
+} from '~/types/world/crmGithub'
+
+type GithubBranch = {
+  name?: string
+  protected?: boolean
+  [key: string]: unknown
+}
+
+type GithubPullRequest = {
+  id?: string | number
+  number?: number
+  title?: string
+  state?: string
+  user?: { login?: string }
+  [key: string]: unknown
+}
+
 definePageMeta({ layout: 'crm', title: 'CRM Repository Detail' })
 
 const route = useRoute()
 const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
+const githubStore = useWorldCrmGithubStore()
 
 const projectId = computed(() => String(route.params.project ?? ''))
 const repository = computed(() => decodeURIComponent(String(route.params.repository ?? '')))
 const encodedRepository = computed(() => encodeURIComponent(repository.value))
+const applicationSlug = ref<string>(typeof route.query.applicationSlug === 'string' ? route.query.applicationSlug : '')
 
-const pages = computed(() => [
-  {
-    title: t('world.crm.repositories.sections.commits', 'Commits'),
-    description: 'Lister les commits et voir les détails (SHA, fichiers, auteur).',
-    icon: 'mdi-source-commit',
-    to: `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/commits`,
+const scopedQuery = computed(() => ({
+  repository: repository.value,
+  repo: repository.value,
+}))
+
+const { data, pending, error } = await useAsyncData(
+  () => `crm-repository-dashboard-${projectId.value}-${repository.value}-${applicationSlug.value}`,
+  async () => {
+    const [
+      collaboratorsResponse,
+      branchesResponse,
+      commitsResponse,
+      pullRequestsResponse,
+      workflowsResponse,
+    ] = await Promise.all([
+      githubStore.getCollaborators(projectId.value, scopedQuery.value),
+      githubStore.getBranches(projectId.value, scopedQuery.value),
+      githubStore.getScopedCommits(projectId.value, scopedQuery.value, applicationSlug.value || undefined),
+      githubStore.getScopedPullRequests(projectId.value, scopedQuery.value, applicationSlug.value || undefined),
+      githubStore.getScopedActionsWorkflows(projectId.value, scopedQuery.value, applicationSlug.value || undefined),
+    ])
+
+    return {
+      collaborators: (collaboratorsResponse as CrmGithubListResponse<CrmGithubCollaborator>).items ?? [],
+      branches: (branchesResponse as CrmGithubListResponse<GithubBranch>).items ?? [],
+      commits: (commitsResponse as CrmGithubListResponse<CrmGithubCommitSummary>).items ?? [],
+      pullRequests: (pullRequestsResponse as CrmGithubListResponse<GithubPullRequest>).items ?? [],
+      workflows: (workflowsResponse as CrmGithubListResponse<CrmGithubWorkflow>).items ?? [],
+    }
   },
+  { watch: [projectId, repository, applicationSlug] },
+)
+
+const collaborators = computed(() => data.value?.collaborators ?? [])
+const branches = computed(() => data.value?.branches ?? [])
+const commits = computed(() => data.value?.commits ?? [])
+const pullRequests = computed(() => data.value?.pullRequests ?? [])
+const workflows = computed(() => data.value?.workflows ?? [])
+
+const actionsRoute = computed(() =>
+  `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/actions`,
+)
+
+const pageCards = computed(() => [
   {
-    title: t('world.crm.repositories.sections.pullRequests', 'Pull requests'),
-    description: 'Lister les PRs et afficher les informations détaillées.',
-    icon: 'mdi-source-pull',
-    to: `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/pull-requests`,
-  },
-  {
+    key: 'branches',
     title: t('world.crm.repositories.sections.branches', 'Branches'),
-    description: 'Lister les branches et consulter les métadonnées disponibles.',
     icon: 'mdi-source-branch',
     to: `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/branches`,
+    items: branches.value.slice(0, 4).map(branch => ({
+      primary: branch.name || '-',
+      secondary: branch.protected ? 'Protected' : 'Standard',
+    })),
   },
   {
+    key: 'commits',
+    title: t('world.crm.repositories.sections.commits', 'Commits'),
+    icon: 'mdi-source-commit',
+    to: `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/commits`,
+    items: commits.value.slice(0, 4).map(commit => ({
+      primary: commit.message || commit.sha,
+      secondary: `${commit.author || '-'} • ${(commit.sha || '').slice(0, 7)}`,
+    })),
+  },
+  {
+    key: 'pull-requests',
+    title: t('world.crm.repositories.sections.pullRequests', 'Pull requests'),
+    icon: 'mdi-source-pull',
+    to: `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/pull-requests`,
+    items: pullRequests.value.slice(0, 4).map(pullRequest => ({
+      primary: pullRequest.title || `#${pullRequest.number ?? '-'}`,
+      secondary: `${pullRequest.state || '-'} • @${pullRequest.user?.login || '-'}`,
+    })),
+  },
+  {
+    key: 'workflows',
     title: t('world.crm.repositories.sections.workflows', 'Workflows'),
-    description: 'Lister les workflows et leurs runs associés.',
     icon: 'mdi-robot',
     to: `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/workflows`,
+    items: workflows.value.slice(0, 4).map(workflow => ({
+      primary: workflow.name || '-',
+      secondary: `${workflow.state || '-'} • ${workflow.path || '-'}`,
+    })),
   },
   {
+    key: 'actions',
     title: t('world.crm.repositories.sections.itemActions', 'Actions'),
-    description: 'Exécuter les actions PR/Issue/Repository avec sélecteurs.',
     icon: 'mdi-playlist-check',
-    to: `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/actions`,
+    to: actionsRoute.value,
+    items: collaborators.value.slice(0, 4).map(collaborator => ({
+      primary: collaborator.login || '-',
+      secondary: collaborator.type || 'User',
+    })),
   },
+])
+
+const kpis = computed(() => [
+  { key: 'collaborators', label: 'Collaborateurs', value: collaborators.value.length, icon: 'mdi-account-multiple-outline' },
+  { key: 'branches', label: 'Branches', value: branches.value.length, icon: 'mdi-source-branch' },
+  { key: 'commits', label: 'Commits', value: commits.value.length, icon: 'mdi-source-commit' },
+  { key: 'pullRequests', label: 'Pull Requests', value: pullRequests.value.length, icon: 'mdi-source-pull' },
+  { key: 'workflows', label: 'Workflows', value: workflows.value.length, icon: 'mdi-robot' },
 ])
 </script>
 
@@ -52,27 +147,89 @@ const pages = computed(() => [
       :nav-items="crmNavItems"
       :action-label="t('world.crm.nav.repositories', 'Repositories')"
       action-icon="mdi-source-repository"
-    />
+    >
+      <template #right>
+        <v-text-field
+          v-model="applicationSlug"
+          label="Application slug (optional)"
+          variant="outlined"
+          density="comfortable"
+          hide-details
+        />
+      </template>
+    </WorldModuleShell>
 
     <v-container fluid>
-      <v-card class="pa-4 postcard-gradient-card" rounded="xl">
-        <h1 class="text-h5 mb-2">{{ repository }}</h1>
-        <p class="text-body-2 text-medium-emphasis mb-4">Choisissez une sous-page pour gérer le repository proprement.</p>
+      <CrmPageSkeleton v-if="pending" variant="dashboard" />
+      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">
+        Impossible de charger le dashboard du repository.
+      </v-alert>
 
-        <v-row>
-          <v-col v-for="page in pages" :key="page.to" cols="12" md="6" lg="4">
-            <v-card variant="tonal" class="pa-4 h-100 d-flex flex-column" rounded="xl">
-              <div class="d-flex align-center ga-2 mb-2">
-                <v-icon :icon="page.icon" />
-                <h2 class="text-subtitle-1 mb-0">{{ page.title }}</h2>
+      <template v-else>
+        <v-card class="pa-4 mb-4 postcard-gradient-card" rounded="xl">
+          <h1 class="text-h5 mb-1">{{ repository }}</h1>
+          <p class="text-body-2 text-medium-emphasis mb-0">
+            Vue d'ensemble des branches, commits, pull requests, workflows et actions.
+          </p>
+        </v-card>
+
+        <v-row class="mb-1">
+          <v-col
+            v-for="kpi in kpis"
+            :key="kpi.key"
+            cols="12"
+            sm="6"
+            md="4"
+            lg="2"
+          >
+            <v-card class="pa-3 h-100" variant="tonal" rounded="xl">
+              <div class="d-flex align-center justify-space-between ga-2">
+                <span class="text-body-2 text-medium-emphasis">{{ kpi.label }}</span>
+                <v-icon :icon="kpi.icon" size="18" />
               </div>
-              <p class="text-body-2 text-medium-emphasis mb-4">{{ page.description }}</p>
-              <v-spacer />
-              <v-btn :to="page.to" color="primary" variant="tonal" append-icon="mdi-arrow-right">Ouvrir</v-btn>
+              <p class="text-h5 mt-2 mb-0">{{ kpi.value }}</p>
             </v-card>
           </v-col>
         </v-row>
-      </v-card>
+
+        <v-row>
+          <v-col v-for="card in pageCards" :key="card.key" cols="12" md="6" lg="4">
+            <WorldCard extra-class="pa-4 platform-style-card h-100 d-flex flex-column">
+              <div class="d-flex align-center ga-2 mb-2">
+                <v-icon :icon="card.icon" />
+                <p class="text-subtitle-1 mb-0">{{ card.title }}</p>
+              </div>
+
+              <v-list class="bg-transparent py-0 mb-2" density="compact" lines="two">
+                <v-list-item
+                  v-for="(item, index) in card.items"
+                  :key="`${card.key}-${index}`"
+                  :title="item.primary"
+                  :subtitle="item.secondary"
+                  class="px-0"
+                />
+                <v-list-item
+                  v-if="!card.items.length"
+                  title="Aucune donnée"
+                  subtitle="Aucun élément disponible pour l'instant."
+                  class="px-0"
+                />
+              </v-list>
+
+              <v-spacer />
+
+              <v-btn
+                :to="card.to"
+                color="primary"
+                variant="tonal"
+                append-icon="mdi-arrow-right"
+              >
+                Voir plus
+              </v-btn>
+            </WorldCard>
+          </v-col>
+        </v-row>
+      </template>
     </v-container>
   </div>
 </template>
