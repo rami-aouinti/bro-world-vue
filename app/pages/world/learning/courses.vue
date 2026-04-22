@@ -21,8 +21,15 @@ await schoolStore.fetchCollection(resource)
 const items = computed(() => schoolStore.getCollection(resource))
 const loading = computed(() => schoolStore.isLoading(resource))
 
+type TeacherOption = {
+  title: string
+  value: string
+  subtitle?: string
+  avatar?: string
+}
+
 const teacherOptions = computed(() => {
-  const byId = new Map<string, { title: string; value: string }>()
+  const byId = new Map<string, TeacherOption>()
   for (const item of items.value) {
     const teacherRaw = item.teacher
     if (!teacherRaw || typeof teacherRaw !== 'object') {
@@ -41,7 +48,12 @@ const teacherOptions = computed(() => {
       continue
     }
 
-    byId.set(teacherId, { title: teacherName, value: teacherId })
+    byId.set(teacherId, {
+      title: teacherName,
+      value: teacherId,
+      subtitle: String(teacher.username ?? ''),
+      avatar: String(teacher.photo ?? teacher.avatar ?? ''),
+    })
   }
 
   return Array.from(byId.values()).sort((a, b) => a.title.localeCompare(b.title))
@@ -134,7 +146,25 @@ async function openReference(payload: { key: string; value: string }) {
             variant="outlined"
             hide-details
           />
-          <AppSelect v-model="selectedTeacher" :items="teacherOptions" label="Teacher" clearable />
+          <AppSelect v-model="selectedTeacher" :items="teacherOptions" label="Teacher" clearable>
+            <template #item="{ props, item }">
+              <v-list-item v-bind="props" :subtitle="item.raw.subtitle">
+                <template #prepend>
+                  <v-avatar size="24">
+                    <v-img :src="item.raw.avatar || '/img/avatar_default.svg'" :alt="item.raw.title" />
+                  </v-avatar>
+                </template>
+              </v-list-item>
+            </template>
+            <template #selection="{ item }">
+              <div class="d-flex align-center ga-2">
+                <v-avatar size="20">
+                  <v-img :src="item.raw.avatar || '/img/avatar_default.svg'" :alt="item.raw.title" />
+                </v-avatar>
+                <span>{{ item.raw.title }}</span>
+              </div>
+            </template>
+          </AppSelect>
           <AppSelect v-model="selectedClass" :items="classOptions" label="Class" clearable />
         </div>
       </template>

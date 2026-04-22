@@ -12,7 +12,6 @@ const schoolStore = useWorldLearningSchoolStore()
 const resource = 'teachers' as SchoolResource
 
 const search = ref('')
-const selectedField = ref<string | null>(null)
 const referenceDialog = ref(false)
 const selectedReference = ref<{ resource: SchoolResource; id: string } | null>(null)
 
@@ -21,13 +20,6 @@ await schoolStore.fetchCollection(resource)
 const items = computed(() => schoolStore.getCollection(resource))
 const loading = computed(() => schoolStore.isLoading(resource))
 
-const headers = computed(() => {
-  const first = items.value[0] ?? {}
-  return Object.keys(first).map(key => ({ title: key, value: key }))
-})
-
-const availableFields = computed(() => headers.value.map(header => ({ title: header.title, value: header.value })))
-
 const filteredItems = computed(() => {
   const query = search.value.trim().toLowerCase()
 
@@ -35,13 +27,7 @@ const filteredItems = computed(() => {
     return items.value
   }
 
-  return items.value.filter((item) => {
-    if (selectedField.value) {
-      return String(item[selectedField.value] ?? '').toLowerCase().includes(query)
-    }
-
-    return Object.values(item).some(value => String(value ?? '').toLowerCase().includes(query))
-  })
+  return items.value.filter(item => Object.values(item).some(value => String(value ?? '').toLowerCase().includes(query)))
 })
 
 const referenceItem = computed(() => {
@@ -90,7 +76,6 @@ async function openReference(payload: { key: string; value: string }) {
             variant="outlined"
             hide-details
           />
-          <AppSelect v-model="selectedField" :items="availableFields" :label="t('world.learning.common.field')" clearable />
         </div>
       </template>
     </WorldModuleShell>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SchoolResource } from '~/stores/worldLearningSchool'
+import WorldCard from '~/components/World/WorldCard.vue'
 
 const props = defineProps<{
   resource: SchoolResource
@@ -134,7 +135,7 @@ function formatDefaultValue(value: unknown) {
         md="6"
         lg="4"
       >
-        <v-card rounded="xl" class="h-100 pa-4 postcard-gradient-card">
+        <WorldCard rounded="xl" extra-class="h-100 pa-4">
           <div class="text-caption text-medium-emphasis mb-2 text-capitalize">{{ resource.slice(0, -1) }}</div>
           <div class="d-flex flex-column ga-3">
             <div v-for="field in fields" :key="`${String(item.id ?? index)}-${field.key}`" class="d-flex align-center justify-space-between ga-3">
@@ -174,7 +175,7 @@ function formatDefaultValue(value: unknown) {
               </v-btn>
             </div>
           </div>
-        </v-card>
+        </WorldCard>
       </v-col>
 
       <v-col v-if="!loading && items.length === 0" cols="12">
