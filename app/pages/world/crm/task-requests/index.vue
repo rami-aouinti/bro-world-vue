@@ -208,7 +208,7 @@ async function deleteRequest() {
       <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.taskRequests.alerts.loadListError') }}</v-alert>
       <v-row v-else>
         <v-col v-for="request in paginatedRequests" :key="request.id" cols="12" md="4">
-          <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100 d-flex flex-column crm-list-card">
+          <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100 d-flex flex-column crm-list-card platform-style-card">
             <p class="text-subtitle-1 mb-2">{{ request.title }}</p>
             <v-chip size="small" :color="requestStatusColor(request.status)" variant="tonal" class="mb-2">{{ request.status }}</v-chip>
             <div class="mb-4">
@@ -249,7 +249,7 @@ async function deleteRequest() {
         </v-col>
       </v-row>
 
-      <div v-if="!pending && !error && totalPages > 1" class="d-flex justify-center mt-6">
+      <div v-if="!pending && !error && totalPages > 1" class="d-flex justify-center mt-6 app-pagination">
         <v-pagination v-model="currentPage" :length="totalPages" rounded="circle" />
       </div>
 

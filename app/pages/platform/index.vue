@@ -675,7 +675,7 @@ async function submitCreateApplication() {
 
           <div
             v-if="!pending && filteredApplications.length"
-            class="platform-page__pagination d-flex justify-center"
+            class="platform-page__pagination d-flex justify-center app-pagination"
           >
             <v-pagination
               v-model="currentPage"
