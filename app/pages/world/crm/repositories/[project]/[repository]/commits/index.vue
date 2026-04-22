@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { CrmGithubCommitDetail, CrmGithubCommitSummary, CrmGithubListResponse } from '~/types/world/crmGithub'
+import RepositoryCommitsCard
+  from "~/components/crm/repositories/RepositoryCommitsCard.vue";
 
 definePageMeta({ layout: 'crm', title: 'CRM Repository Commits' })
 

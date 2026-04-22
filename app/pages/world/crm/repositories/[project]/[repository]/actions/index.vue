@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { CrmGithubListResponse } from '~/types/world/crmGithub'
+import RepositoryItemActionsCard
+  from "~/components/crm/repositories/RepositoryItemActionsCard.vue";
 
 interface GithubIssue {
   id?: string | number
