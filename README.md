@@ -178,6 +178,22 @@ NUXT_SESSION_SECRET=your-super-long-secret-for-session-encryption
 
 Nuxt Auth Utils generates one for you when running Nuxt in development the first time if no `NUXT_SESSION_PASSWORD` is set.
 
+### Mercure (JWT subscriber + cookie/polyfill)
+
+Configuration côté Nuxt :
+
+```bash
+NUXT_PUBLIC_MERCURE_PUBLIC_URL="http://localhost:3100/.well-known/mercure"
+NUXT_PUBLIC_MERCURE_WITH_CREDENTIALS="true"
+# Optionnel (mode header + polyfill EventSource)
+NUXT_PUBLIC_MERCURE_SUBSCRIBER_JWT=""
+```
+
+- **Navigateur (recommandé)** : utiliser le cookie `mercureAuthorization` et `withCredentials: true`.
+- **Polyfill EventSource** : possible via header `Authorization: Bearer <JWT subscriber>`.
+- Le claim `mercure.subscribe` du JWT doit matcher les topics écoutés.
+- **Ne jamais exposer `MERCURE_JWT_SECRET` dans Nuxt** : la signature du token reste côté Symfony.
+
 ### Contribution (section football)
 
 Avant toute merge sur les évolutions des statistiques football (composable + panel de détail), exécuter la commande suivante :
