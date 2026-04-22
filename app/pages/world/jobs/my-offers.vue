@@ -63,11 +63,10 @@ await fetchMyJobs()
   <div>
     <WorldModuleDrawers
       :module-title="t('world.jobs.label')"
-      module-key="job"
       module-icon="mdi-briefcase-search-outline"
       :module-description="t('world.jobs.moduleDescription')"
       :nav-items="jobsNavItems"
-      :action-label="t('world.jobs.myOffers.actions.create')"
+      :action-label="t('world.jobs.applications.actions.create')"
     />
 
     <v-container fluid>

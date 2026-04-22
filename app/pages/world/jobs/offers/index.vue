@@ -122,6 +122,7 @@ await fetchJobs()
   <div>
     <WorldModuleDrawers
       :module-title="t('world.jobs.title')"
+      module-path="/world/jobs"
       module-icon="mdi-briefcase-search-outline"
       :module-description="t('world.jobs.description')"
       :nav-items="jobsNavItems"

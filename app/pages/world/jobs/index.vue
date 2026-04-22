@@ -96,13 +96,12 @@ const jobsNavItems = computed(() => [
 <template>
   <div>
     <WorldModuleDrawers
-      module-path="/world/jobs"
-      module-key="job"
       :module-title="t('world.jobs.label')"
+      module-path="/world/jobs"
       module-icon="mdi-briefcase-search-outline"
       :module-description="t('world.jobs.moduleDescription')"
       :nav-items="jobsNavItems"
-      :action-label="t('world.jobs.myOffers.actions.create')"
+      :action-label="t('world.jobs.applications.actions.create')"
     />
     <v-container fluid>
       <v-row class="mb-4">

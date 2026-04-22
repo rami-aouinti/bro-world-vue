@@ -26,12 +26,12 @@ function handleAction() {
 </script>
 
 <template>
-  <div class="d-flex flex-column ga-3">
+  <div class="d-flex flex-column ga-2">
     <NuxtLink
       :to="modulePath"
       class="module-identity d-flex align-center ga-3 text-decoration-none"
     >
-      <v-avatar size="56" rounded="xl">
+      <v-avatar size="48" rounded="xl">
         <v-img
           :src="
             moduleIdentityPhoto ||
@@ -41,10 +41,10 @@ function handleAction() {
           cover
         />
       </v-avatar>
-      <div>
-        <h3 class="text-subtitle-1 text-high-emphasis mb-1">
+      <div class="pt-0">
+        <h4 class="text-subtitle-1 text-high-emphasis pt-0 mb-1">
           {{ moduleIdentityTitle }}
-        </h3>
+        </h4>
         <v-chip size="small" color="primary" variant="tonal" label>
           {{ moduleIdentityBadge }}
         </v-chip>
