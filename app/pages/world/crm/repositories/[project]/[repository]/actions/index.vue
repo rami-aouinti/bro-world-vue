@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { CrmGithubListResponse } from '~/types/world/crmGithub'
-import RepositoryItemActionsCard
-  from "~/components/crm/repositories/RepositoryItemActionsCard.vue";
+import RepositoryItemActionsCard from '~/components/crm/repositories/RepositoryItemActionsCard.vue'
 
 interface GithubIssue {
   id?: string | number
@@ -25,23 +24,32 @@ const githubStore = useWorldCrmGithubStore()
 
 const projectId = computed(() => String(route.params.project ?? ''))
 const repository = computed(() => decodeURIComponent(String(route.params.repository ?? '')))
-const applicationSlug = ref<string>(typeof route.query.applicationSlug === 'string' ? route.query.applicationSlug : '')
+const applicationSlugInput = ref<string>(typeof route.query.applicationSlug === 'string' ? route.query.applicationSlug : '')
+const applicationSlug = ref(applicationSlugInput.value)
+
+let applicationSlugDebounce: ReturnType<typeof setTimeout> | null = null
+watch(applicationSlugInput, (value) => {
+  if (applicationSlugDebounce) clearTimeout(applicationSlugDebounce)
+  applicationSlugDebounce = setTimeout(() => {
+    applicationSlug.value = value.trim()
+  }, 350)
+})
 
 const query = computed(() => ({
   repository: repository.value,
   repo: repository.value,
 }))
 
-const { data: pullRequestsData, pending: pendingPullRequests } = await useAsyncData<CrmGithubListResponse<GithubPullRequest>>(
+const { data: pullRequestsData, pending: pendingPullRequests, error: pullRequestsError } = useAsyncData<CrmGithubListResponse<GithubPullRequest>>(
   () => `crm-repository-actions-pr-options-${projectId.value}-${repository.value}-${applicationSlug.value}`,
   () => githubStore.getScopedPullRequests(projectId.value, query.value, applicationSlug.value || undefined),
-  { watch: [projectId, repository, applicationSlug] },
+  { watch: [projectId, repository, applicationSlug], lazy: true, server: false, default: () => ({ items: [] }) },
 )
 
-const { data: issuesData, pending: pendingIssues } = await useAsyncData<CrmGithubListResponse<GithubIssue>>(
+const { data: issuesData, pending: pendingIssues, error: issuesError } = useAsyncData<CrmGithubListResponse<GithubIssue>>(
   () => `crm-repository-actions-issue-options-${projectId.value}-${repository.value}`,
   () => githubStore.getIssues(projectId.value, query.value),
-  { watch: [projectId, repository] },
+  { watch: [projectId, repository], lazy: true, server: false, default: () => ({ items: [] }) },
 )
 
 const pullRequestOptions = computed(() =>
@@ -55,6 +63,12 @@ const issueOptions = computed(() =>
     .map(item => ({ title: `#${item.number ?? '-'} · ${item.title ?? 'Untitled'}`, value: String(item.number ?? '') }))
     .filter(item => item.value),
 )
+
+const hasOptions = computed(() => pullRequestOptions.value.length > 0 || issueOptions.value.length > 0)
+const pending = computed(() => pendingPullRequests.value || pendingIssues.value)
+const error = computed(() => pullRequestsError.value || issuesError.value)
+const showInitialSkeleton = computed(() => pending.value && !hasOptions.value)
+const showStaleOverlay = computed(() => pending.value && hasOptions.value)
 </script>
 
 <template>
@@ -78,18 +92,38 @@ const issueOptions = computed(() =>
         Retour au repository
       </v-btn>
 
-      <v-text-field v-model="applicationSlug" label="Application slug (optional)" variant="outlined" density="comfortable" class="mb-4" />
+      <v-text-field v-model="applicationSlugInput" label="Application slug (optional)" variant="outlined" density="comfortable" class="mb-4" />
 
-      <CrmPageSkeleton v-if="pendingPullRequests || pendingIssues" variant="dashboard" />
+      <CrmPageSkeleton v-if="showInitialSkeleton" variant="dashboard" />
+      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">Impossible de charger les options d'actions.</v-alert>
 
-      <RepositoryItemActionsCard
-        v-else
-        :project-id="projectId"
-        :repository="repository"
-        :application-slug="applicationSlug || undefined"
-        :pull-request-options="pullRequestOptions"
-        :issue-options="issueOptions"
-      />
+      <div v-else class="position-relative">
+        <RepositoryItemActionsCard
+          :project-id="projectId"
+          :repository="repository"
+          :application-slug="applicationSlug || undefined"
+          :pull-request-options="pullRequestOptions"
+          :issue-options="issueOptions"
+        />
+
+        <v-fade-transition>
+          <div v-if="showStaleOverlay" class="stale-overlay pa-3 rounded-xl">
+            <v-progress-linear indeterminate color="primary" class="mb-2" />
+            <p class="text-caption mb-0 text-medium-emphasis">{{ t('common.loading', 'Refreshing data...') }}</p>
+          </div>
+        </v-fade-transition>
+      </div>
     </v-container>
   </div>
 </template>
+
+<style scoped>
+.stale-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 220px;
+  background: rgb(var(--v-theme-surface));
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+}
+</style>

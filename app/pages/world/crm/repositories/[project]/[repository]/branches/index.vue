@@ -22,13 +22,16 @@ const repository = computed(() => decodeURIComponent(String(route.params.reposit
 const selectedBranch = ref<GithubBranch | null>(null)
 const detailModalOpen = ref(false)
 
-const { data, pending, error } = await useAsyncData<CrmGithubListResponse<GithubBranch>>(
+const { data, pending, error } = useAsyncData<CrmGithubListResponse<GithubBranch>>(
   () => `crm-repository-branches-page-${projectId.value}-${repository.value}`,
   () => githubStore.getBranches(projectId.value, { repository: repository.value, repo: repository.value }),
-  { watch: [projectId, repository] },
+  { watch: [projectId, repository], lazy: true, server: false, default: () => ({ items: [] }) },
 )
 
 const branches = computed(() => data.value?.items ?? [])
+const hasBranches = computed(() => branches.value.length > 0)
+const showInitialSkeleton = computed(() => pending.value && !hasBranches.value)
+const showStaleOverlay = computed(() => pending.value && hasBranches.value)
 
 function openBranchDetail(branch: GithubBranch) {
   selectedBranch.value = branch
@@ -52,21 +55,30 @@ function openBranchDetail(branch: GithubBranch) {
         Retour au repository
       </v-btn>
 
-      <CrmPageSkeleton v-if="pending" variant="dashboard" />
+      <CrmPageSkeleton v-if="showInitialSkeleton" variant="dashboard" />
       <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">Impossible de charger les branches.</v-alert>
 
-      <v-card v-else class="pa-4 postcard-gradient-card" rounded="xl">
-        <h2 class="text-subtitle-1 mb-3">Branches ({{ branches.length }})</h2>
-        <v-list lines="one" density="compact" class="bg-transparent">
-          <v-list-item
-            v-for="branch in branches"
-            :key="String(branch.name)"
-            :title="branch.name ?? '-'"
-            :subtitle="`SHA: ${branch.commit?.sha ?? '-'} • ${branch.protected ? 'Protected' : 'Unprotected'}`"
-            @click="openBranchDetail(branch)"
-          />
-        </v-list>
-      </v-card>
+      <div v-else class="position-relative">
+        <v-card class="pa-4 postcard-gradient-card" rounded="xl">
+          <h2 class="text-subtitle-1 mb-3">Branches ({{ branches.length }})</h2>
+          <v-list lines="one" density="compact" class="bg-transparent">
+            <v-list-item
+              v-for="branch in branches"
+              :key="String(branch.name)"
+              :title="branch.name ?? '-'"
+              :subtitle="`SHA: ${branch.commit?.sha ?? '-'} • ${branch.protected ? 'Protected' : 'Unprotected'}`"
+              @click="openBranchDetail(branch)"
+            />
+          </v-list>
+        </v-card>
+
+        <v-fade-transition>
+          <div v-if="showStaleOverlay" class="stale-overlay pa-3 rounded-xl">
+            <v-progress-linear indeterminate color="primary" class="mb-2" />
+            <p class="text-caption mb-0 text-medium-emphasis">{{ t('common.loading', 'Refreshing data...') }}</p>
+          </div>
+        </v-fade-transition>
+      </div>
     </v-container>
 
     <RepositoryItemDetailModal
@@ -84,3 +96,14 @@ function openBranchDetail(branch: GithubBranch) {
     </RepositoryItemDetailModal>
   </div>
 </template>
+
+<style scoped>
+.stale-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 220px;
+  background: rgb(var(--v-theme-surface));
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+}
+</style>

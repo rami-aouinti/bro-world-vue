@@ -24,44 +24,82 @@ const githubStore = useWorldCrmGithubStore()
 
 const projectId = computed(() => String(route.params.project ?? ''))
 const repository = computed(() => decodeURIComponent(String(route.params.repository ?? '')))
-const applicationSlug = ref<string>(typeof route.query.applicationSlug === 'string' ? route.query.applicationSlug : '')
-const stateFilter = ref<string>(typeof route.query.state === 'string' ? route.query.state : '')
+const applicationSlugInput = ref<string>(typeof route.query.applicationSlug === 'string' ? route.query.applicationSlug : '')
+const applicationSlug = ref(applicationSlugInput.value)
+const stateFilter = ref<string>(typeof route.query.state === 'string' ? route.query.state.trim() : '')
 const selectedPrNumber = ref<string>('')
 const detailModalOpen = ref(false)
+const selectedPrDetail = ref<Record<string, unknown> | null>(null)
+const pendingDetail = ref(false)
+const detailError = ref<unknown>(null)
+
+let applicationSlugDebounce: ReturnType<typeof setTimeout> | null = null
+watch(applicationSlugInput, (value) => {
+  if (applicationSlugDebounce) clearTimeout(applicationSlugDebounce)
+  applicationSlugDebounce = setTimeout(() => {
+    applicationSlug.value = value.trim()
+  }, 350)
+})
 
 const query = computed(() => ({
   repository: repository.value,
   repo: repository.value,
-  ...(stateFilter.value ? { state: stateFilter.value } : {}),
+  ...(stateFilter.value.trim() ? { state: stateFilter.value.trim() } : {}),
 }))
 
-const { data, pending, error } = await useAsyncData<CrmGithubListResponse<GithubPullRequest>>(
+const { data, pending, error } = useAsyncData<CrmGithubListResponse<GithubPullRequest>>(
   () => `crm-repository-pr-page-${projectId.value}-${repository.value}-${applicationSlug.value}-${stateFilter.value}`,
   () => githubStore.getScopedPullRequests(projectId.value, query.value, applicationSlug.value || undefined),
-  { watch: [projectId, repository, applicationSlug, stateFilter] },
+  {
+    watch: [projectId, repository, query, applicationSlug],
+    lazy: true,
+    server: false,
+    default: () => ({ items: [] }),
+  },
 )
 
 const pullRequests = computed(() => data.value?.items ?? [])
+const hasPullRequests = computed(() => pullRequests.value.length > 0)
+const showInitialSkeleton = computed(() => pending.value && !hasPullRequests.value)
+const showStaleOverlay = computed(() => pending.value && hasPullRequests.value)
 
-const { data: selectedPrDetail, pending: pendingDetail, error: detailError } = await useAsyncData<Record<string, unknown> | null>(
-  () => `crm-repository-pr-detail-page-${projectId.value}-${selectedPrNumber.value}-${detailModalOpen.value}-${applicationSlug.value}`,
-  async () => {
-    if (!selectedPrNumber.value || !detailModalOpen.value) return null
-    return await githubStore.getScopedPullRequestDetail(
+async function loadPrDetail() {
+  if (!selectedPrNumber.value || !detailModalOpen.value) return
+  pendingDetail.value = true
+  detailError.value = null
+
+  try {
+    selectedPrDetail.value = await githubStore.getScopedPullRequestDetail(
       projectId.value,
       selectedPrNumber.value,
       { repo: repository.value },
       applicationSlug.value || undefined,
     ) as Record<string, unknown>
-  },
-  { watch: [projectId, repository, selectedPrNumber, detailModalOpen, applicationSlug] },
-)
+  }
+  catch (err) {
+    detailError.value = err
+  }
+  finally {
+    pendingDetail.value = false
+  }
+}
 
 function openPrDetail(number: string | number | undefined) {
   selectedPrNumber.value = String(number ?? '')
   if (!selectedPrNumber.value) return
   detailModalOpen.value = true
+  loadPrDetail()
 }
+
+watch([applicationSlug, stateFilter], () => {
+  if (detailModalOpen.value) loadPrDetail()
+})
+watch(detailModalOpen, (open) => {
+  if (!open) {
+    selectedPrDetail.value = null
+    detailError.value = null
+  }
+})
 </script>
 
 <template>
@@ -84,24 +122,33 @@ function openPrDetail(number: string | number | undefined) {
         Retour au repository
       </v-btn>
 
-      <v-text-field v-model="applicationSlug" label="Application slug (optional)" variant="outlined" density="comfortable" class="mb-4" />
+      <v-text-field v-model="applicationSlugInput" label="Application slug (optional)" variant="outlined" density="comfortable" class="mb-4" />
 
-      <CrmPageSkeleton v-if="pending" variant="dashboard" />
+      <CrmPageSkeleton v-if="showInitialSkeleton" variant="dashboard" />
       <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">Impossible de charger les pull requests.</v-alert>
 
-      <v-card v-else class="pa-4 postcard-gradient-card" rounded="xl">
-        <h2 class="text-subtitle-1 mb-3">Pull requests ({{ pullRequests.length }})</h2>
-        <v-list lines="two" density="compact" class="bg-transparent">
-          <v-list-item
-            v-for="pullRequest in pullRequests"
-            :key="String(pullRequest.id ?? pullRequest.number)"
-            :active="String(pullRequest.number ?? '') === selectedPrNumber"
-            :title="pullRequest.title ?? `#${pullRequest.number}`"
-            :subtitle="`${pullRequest.state ?? '-'} • #${pullRequest.number ?? '-'} • ${pullRequest.user?.login ?? '-'}`"
-            @click="openPrDetail(pullRequest.number)"
-          />
-        </v-list>
-      </v-card>
+      <div v-else class="position-relative">
+        <v-card class="pa-4 postcard-gradient-card" rounded="xl">
+          <h2 class="text-subtitle-1 mb-3">Pull requests ({{ pullRequests.length }})</h2>
+          <v-list lines="two" density="compact" class="bg-transparent">
+            <v-list-item
+              v-for="pullRequest in pullRequests"
+              :key="String(pullRequest.id ?? pullRequest.number)"
+              :active="String(pullRequest.number ?? '') === selectedPrNumber"
+              :title="pullRequest.title ?? `#${pullRequest.number}`"
+              :subtitle="`${pullRequest.state ?? '-'} • #${pullRequest.number ?? '-'} • ${pullRequest.user?.login ?? '-'}`"
+              @click="openPrDetail(pullRequest.number)"
+            />
+          </v-list>
+        </v-card>
+
+        <v-fade-transition>
+          <div v-if="showStaleOverlay" class="stale-overlay pa-3 rounded-xl">
+            <v-progress-linear indeterminate color="primary" class="mb-2" />
+            <p class="text-caption mb-0 text-medium-emphasis">{{ t('common.loading', 'Refreshing data...') }}</p>
+          </div>
+        </v-fade-transition>
+      </div>
     </v-container>
 
     <RepositoryItemDetailModal
@@ -125,3 +172,14 @@ function openPrDetail(number: string | number | undefined) {
     </RepositoryItemDetailModal>
   </div>
 </template>
+
+<style scoped>
+.stale-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 220px;
+  background: rgb(var(--v-theme-surface));
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+}
+</style>
