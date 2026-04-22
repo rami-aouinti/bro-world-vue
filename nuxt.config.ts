@@ -142,6 +142,8 @@ export default defineNuxtConfig({
         'https://bro-world.org/.well-known/mercure',
       mercureWithCredentials:
         process.env.NUXT_PUBLIC_MERCURE_WITH_CREDENTIALS === 'true',
+      mercureSubscriberJwt:
+        process.env.NUXT_PUBLIC_MERCURE_SUBSCRIBER_JWT || '',
       shop: {
         globalShopId: process.env.NUXT_PUBLIC_GLOBAL_SHOP_ID || '',
       },

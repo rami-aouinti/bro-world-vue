@@ -85,7 +85,7 @@ const route = useRoute()
 const router = useRouter()
 const { locale, t } = useI18n()
 const { user: sessionUser } = useUserSession()
-const runtimeConfig = useRuntimeConfig()
+const { subscribe } = useMercure()
 
 const loading = ref(false)
 const messagesLoading = ref(false)
@@ -570,84 +570,73 @@ function attachMercureSubscription(conversationId: string) {
 
   closeMercureSubscription()
 
-  const mercurePublicUrl = String(runtimeConfig.public.mercurePublicUrl || '').trim()
-  if (!mercurePublicUrl || !conversationId || !currentUserId.value) return
+  if (!conversationId || !currentUserId.value) return
 
-  const url = new URL(mercurePublicUrl)
-  url.searchParams.append('topic', `/conversations/${conversationId}/messages`)
-  url.searchParams.append('topic', `/users/${currentUserId.value}/notifications`)
-
-  const configuredWithCredentials = runtimeConfig.public.mercureWithCredentials === true
-  const isSameOriginHub = url.origin === window.location.origin
-  const withCredentials = configuredWithCredentials || isSameOriginHub
-
-  const eventSource = new EventSource(url.toString(), { withCredentials })
-  mercureEventSource.value = eventSource
-
-  eventSource.onmessage = (event: MessageEvent<string>) => {
-    const raw = event.data?.trim()
-    if (!raw) return
-
-    try {
-      const payload = JSON.parse(raw) as {
-        id?: string
-        conversationId?: string
-        senderId?: string
-        content?: string
-        attachments?: unknown[]
-        createdAt?: string
-        recipientId?: string
-      }
-
-      if (payload.conversationId && payload.conversationId === selectedConversationId.value) {
-        const nextId = String(payload.id || '')
-        const messageContent = String(payload.content || '')
-        const mine = String(payload.senderId || '') === currentUserId.value
-
-        if (mine) {
-          const localMessage = messages.value.find(
-            (entry) => entry.id.startsWith('local-') && entry.content === messageContent,
-          )
-          if (localMessage && nextId) {
-            localMessage.id = nextId
-            localMessage.createdAt = String(payload.createdAt || localMessage.createdAt)
-            upsertConversationPreview(payload.conversationId, messageContent)
-            return
-          }
+  mercureEventSource.value = subscribe(
+    [
+      `/users/${currentUserId.value}/notifications`,
+      `/users/${currentUserId.value}/conversations`,
+      `/conversations/${conversationId}/messages`,
+    ],
+    {
+      onMessage: (data) => {
+        const payload = (data || {}) as {
+          id?: string
+          conversationId?: string
+          senderId?: string
+          content?: string
+          attachments?: unknown[]
+          createdAt?: string
+          recipientId?: string
         }
 
-        if (!nextId || messages.value.some((entry) => entry.id === nextId)) return
+        if (payload.conversationId && payload.conversationId === selectedConversationId.value) {
+          const nextId = String(payload.id || '')
+          const messageContent = String(payload.content || '')
+          const mine = String(payload.senderId || '') === currentUserId.value
 
-        messages.value.push({
-          id: nextId,
-          content: messageContent,
-          sender: mine
-            ? {
-                id: currentUserId.value,
-                username: sessionUserMeta.value.username,
-                firstName: sessionUserMeta.value.firstName,
-                lastName: sessionUserMeta.value.lastName,
-                photo: sessionUserMeta.value.photo,
-                owner: true,
-              }
-            : {
-                id: String(payload.senderId || ''),
-                owner: false,
-              },
-          reactions: [],
-          read: mine,
-          createdAt: String(payload.createdAt || new Date().toISOString()),
-        })
+          if (mine) {
+            const localMessage = messages.value.find(
+              (entry) => entry.id.startsWith('local-') && entry.content === messageContent,
+            )
+            if (localMessage && nextId) {
+              localMessage.id = nextId
+              localMessage.createdAt = String(payload.createdAt || localMessage.createdAt)
+              upsertConversationPreview(payload.conversationId, messageContent)
+              return
+            }
+          }
 
-        upsertConversationPreview(payload.conversationId, messageContent)
-        nextTick(() => scrollToBottom())
-        return
-      }
+          if (!nextId || messages.value.some((entry) => entry.id === nextId)) return
 
-    } catch {
-      // Ignore non-JSON events.
-    }
-  }
+          messages.value.push({
+            id: nextId,
+            content: messageContent,
+            sender: mine
+              ? {
+                  id: currentUserId.value,
+                  username: sessionUserMeta.value.username,
+                  firstName: sessionUserMeta.value.firstName,
+                  lastName: sessionUserMeta.value.lastName,
+                  photo: sessionUserMeta.value.photo,
+                  owner: true,
+                }
+              : {
+                  id: String(payload.senderId || ''),
+                  owner: false,
+                },
+            reactions: [],
+            read: mine,
+            createdAt: String(payload.createdAt || new Date().toISOString()),
+          })
+
+          upsertConversationPreview(payload.conversationId, messageContent)
+          nextTick(() => scrollToBottom())
+          return
+        }
+      },
+    },
+  )
 }
 
 onMounted(async () => {
