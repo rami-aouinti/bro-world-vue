@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import type { CrmGithubListResponse } from '~/types/world/crmGithub'
+import type {
+  CrmGithubCommitDetail,
+  CrmGithubCommitSummary,
+  CrmGithubCollaborator,
+  CrmGithubListResponse,
+  CrmGithubWorkflow,
+  CrmGithubWorkflowRun,
+} from '~/types/world/crmGithub'
 
 interface GithubBoard {
   id?: string | number
@@ -40,10 +47,20 @@ const githubStore = useWorldCrmGithubStore()
 const projectId = computed(() => String(route.params.project ?? ''))
 const repository = computed(() => decodeURIComponent(String(route.params.repository ?? '')))
 const jobId = ref<string>(typeof route.query.jobId === 'string' ? route.query.jobId : '')
+const applicationSlug = ref<string>(typeof route.query.applicationSlug === 'string' ? route.query.applicationSlug : '')
+const branch = ref<string>(typeof route.query.branch === 'string' ? route.query.branch : '')
+const workflowId = ref<string>(typeof route.query.workflowId === 'string' ? route.query.workflowId : '')
+const runStatus = ref<string>(typeof route.query.status === 'string' ? route.query.status : '')
+const page = ref<number>(Number(route.query.page ?? 1) || 1)
+const limit = ref<number>(Number(route.query.limit ?? 20) || 20)
+const selectedCommitSha = ref('')
 
 const query = computed(() => ({
   repository: repository.value,
   repo: repository.value,
+  page: page.value,
+  limit: limit.value,
+  ...(branch.value ? { branch: branch.value } : {}),
   ...(jobId.value ? { jobId: jobId.value } : {}),
 }))
 
@@ -71,18 +88,112 @@ const { data: boardsData, pending: pendingBoards, error: boardsError, refresh: r
   { watch: [projectId, repository, jobId] },
 )
 
+const { data: commitsData, pending: pendingCommits, error: commitsError, refresh: refreshCommits } = await useAsyncData<CrmGithubListResponse<CrmGithubCommitSummary>>(
+  () => `crm-repository-commits-${projectId.value}-${repository.value}-${branch.value}-${page.value}-${limit.value}-${jobId.value}`,
+  () => githubStore.getCommits(projectId.value, query.value),
+  { watch: [projectId, repository, branch, page, limit, jobId] },
+)
+
+const commitDetailQuery = computed(() => ({
+  repo: repository.value,
+}))
+
+const { data: commitDetailData, pending: pendingCommitDetail, error: commitDetailError, refresh: refreshCommitDetail } = await useAsyncData<CrmGithubCommitDetail | null>(
+  () => `crm-repository-commit-${projectId.value}-${repository.value}-${selectedCommitSha.value}`,
+  async () => {
+    if (!selectedCommitSha.value) {
+      return null
+    }
+    return await githubStore.getCommitDetail(projectId.value, selectedCommitSha.value, commitDetailQuery.value)
+  },
+  { watch: [projectId, repository, selectedCommitSha] },
+)
+
+const { data: collaboratorsData, pending: pendingCollaborators, error: collaboratorsError, refresh: refreshCollaborators } = await useAsyncData<CrmGithubListResponse<CrmGithubCollaborator>>(
+  () => `crm-repository-collaborators-${projectId.value}-${repository.value}-${page.value}-${limit.value}-${jobId.value}`,
+  () => githubStore.getCollaborators(projectId.value, query.value),
+  { watch: [projectId, repository, page, limit, jobId] },
+)
+
+const { data: applicationCollaboratorsData, pending: pendingApplicationCollaborators, error: applicationCollaboratorsError, refresh: refreshApplicationCollaborators } = await useAsyncData<CrmGithubListResponse<CrmGithubCollaborator> | null>(
+  () => `crm-repository-application-collaborators-${applicationSlug.value}-${projectId.value}-${repository.value}-${page.value}-${limit.value}`,
+  async () => {
+    if (!applicationSlug.value) {
+      return null
+    }
+    return await githubStore.getApplicationCollaborators(applicationSlug.value, projectId.value, query.value)
+  },
+  { watch: [applicationSlug, projectId, repository, page, limit, jobId] },
+)
+
+const actionsRunsQuery = computed(() => ({
+  ...query.value,
+  ...(workflowId.value ? { workflowId: workflowId.value } : {}),
+  ...(runStatus.value ? { status: runStatus.value } : {}),
+}))
+
+const { data: workflowsData, pending: pendingWorkflows, error: workflowsError, refresh: refreshWorkflows } = await useAsyncData<CrmGithubListResponse<CrmGithubWorkflow>>(
+  () => `crm-repository-workflows-${projectId.value}-${repository.value}-${page.value}-${limit.value}-${jobId.value}`,
+  () => githubStore.getActionsWorkflows(projectId.value, query.value),
+  { watch: [projectId, repository, page, limit, jobId] },
+)
+
+const { data: workflowRunsData, pending: pendingWorkflowRuns, error: workflowRunsError, refresh: refreshWorkflowRuns } = await useAsyncData<CrmGithubListResponse<CrmGithubWorkflowRun>>(
+  () => `crm-repository-workflow-runs-${projectId.value}-${repository.value}-${workflowId.value}-${runStatus.value}-${page.value}-${limit.value}-${jobId.value}`,
+  () => githubStore.getActionsRuns(projectId.value, actionsRunsQuery.value),
+  { watch: [projectId, repository, workflowId, runStatus, page, limit, jobId] },
+)
+
 const isLoading = computed(() =>
-  pendingIssues.value || pendingPullRequests.value || pendingBranches.value || pendingBoards.value,
+  pendingIssues.value
+  || pendingPullRequests.value
+  || pendingBranches.value
+  || pendingBoards.value
+  || pendingCommits.value
+  || pendingCollaborators.value
+  || pendingApplicationCollaborators.value
+  || pendingWorkflows.value
+  || pendingWorkflowRuns.value
+  || pendingCommitDetail.value,
 )
 
 const hasError = computed(() =>
-  issuesError.value || pullRequestsError.value || branchesError.value || boardsError.value,
+  issuesError.value
+  || pullRequestsError.value
+  || branchesError.value
+  || boardsError.value
+  || commitsError.value
+  || collaboratorsError.value
+  || applicationCollaboratorsError.value
+  || workflowsError.value
+  || workflowRunsError.value
+  || commitDetailError.value,
 )
 
 const issues = computed(() => issuesData.value?.items ?? [])
 const pullRequests = computed(() => pullRequestsData.value?.items ?? [])
 const branches = computed(() => branchesData.value?.items ?? [])
 const boards = computed(() => boardsData.value?.items ?? [])
+const commits = computed(() => commitsData.value?.items ?? [])
+const collaborators = computed(() => collaboratorsData.value?.items ?? [])
+const applicationCollaborators = computed(() => applicationCollaboratorsData.value?.items ?? [])
+const workflows = computed(() => workflowsData.value?.items ?? [])
+const workflowRuns = computed(() => workflowRunsData.value?.items ?? [])
+const commitDetail = computed(() => commitDetailData.value)
+
+watch(
+  commits,
+  (nextCommits) => {
+    if (!nextCommits.length) {
+      selectedCommitSha.value = ''
+      return
+    }
+    if (!selectedCommitSha.value || !nextCommits.some((commit) => commit.sha === selectedCommitSha.value)) {
+      selectedCommitSha.value = nextCommits[0]?.sha ?? ''
+    }
+  },
+  { immediate: true },
+)
 
 async function refreshAll() {
   await Promise.all([
@@ -90,6 +201,12 @@ async function refreshAll() {
     refreshPullRequests(),
     refreshBranches(),
     refreshBoards(),
+    refreshCommits(),
+    refreshCommitDetail(),
+    refreshCollaborators(),
+    refreshApplicationCollaborators(),
+    refreshWorkflows(),
+    refreshWorkflowRuns(),
   ])
 }
 </script>
@@ -121,6 +238,38 @@ async function refreshAll() {
           class="repository-job-id"
           :label="t('world.crm.repositories.fields.jobId', 'Job ID (optional)')"
         />
+        <v-text-field
+          v-model="applicationSlug"
+          density="comfortable"
+          variant="outlined"
+          hide-details
+          class="repository-job-id"
+          :label="t('world.crm.repositories.fields.applicationSlug', 'Application slug (optional)')"
+        />
+        <v-text-field
+          v-model="branch"
+          density="comfortable"
+          variant="outlined"
+          hide-details
+          class="repository-job-id"
+          :label="t('world.crm.repositories.fields.branch', 'Branch (optional)')"
+        />
+        <v-text-field
+          v-model="workflowId"
+          density="comfortable"
+          variant="outlined"
+          hide-details
+          class="repository-job-id"
+          :label="t('world.crm.repositories.fields.workflowId', 'Workflow ID (optional)')"
+        />
+        <v-text-field
+          v-model="runStatus"
+          density="comfortable"
+          variant="outlined"
+          hide-details
+          class="repository-job-id"
+          :label="t('world.crm.repositories.fields.status', 'Run status (optional)')"
+        />
         <v-btn color="primary" variant="tonal" prepend-icon="mdi-refresh" :loading="isLoading" @click="refreshAll">
           {{ t('world.crm.repositories.actions.refresh', 'Refresh') }}
         </v-btn>
@@ -132,6 +281,32 @@ async function refreshAll() {
       </v-alert>
 
       <v-row>
+        <v-col cols="12" md="6">
+          <RepositoryCommitsCard
+            :commits="commits"
+            :selected-sha="selectedCommitSha"
+            :commit-detail="commitDetail"
+            :loading="pendingCommitDetail"
+            @select="selectedCommitSha = $event"
+          />
+        </v-col>
+
+        <v-col cols="12" md="6">
+          <RepositoryCollaboratorsCard :collaborators="collaborators" />
+        </v-col>
+
+        <v-col v-if="applicationSlug" cols="12" md="6">
+          <RepositoryCollaboratorsCard :collaborators="applicationCollaborators" />
+        </v-col>
+
+        <v-col cols="12" md="6">
+          <RepositoryWorkflowsCard :workflows="workflows" />
+        </v-col>
+
+        <v-col cols="12" md="6">
+          <RepositoryWorkflowRunsCard :runs="workflowRuns" />
+        </v-col>
+
         <v-col cols="12" md="6">
           <v-card class="pa-4 h-100 postcard-gradient-card" rounded="xl">
             <h2 class="text-subtitle-1 mb-3">{{ t('world.crm.repositories.sections.issues', { count: issues.length }) }}</h2>
@@ -168,7 +343,11 @@ async function refreshAll() {
           <v-card class="pa-4 h-100 postcard-gradient-card" rounded="xl">
             <h2 class="text-subtitle-1 mb-3">{{ t('world.crm.repositories.sections.branches', { count: branches.length }) }}</h2>
             <v-list lines="one" density="compact" class="bg-transparent">
-              <v-list-item v-for="branch in branches" :key="String(branch.name)" :title="branch.name ?? '-'" />
+              <v-list-item
+                v-for="repoBranch in branches"
+                :key="String(repoBranch.name)"
+                :title="repoBranch.name ?? '-'"
+              />
             </v-list>
           </v-card>
         </v-col>

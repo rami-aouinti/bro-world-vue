@@ -3,6 +3,67 @@ export interface CrmGithubListResponse<TItem = Record<string, unknown>> {
   [key: string]: unknown
 }
 
+export interface CrmGithubPagination {
+  page: number
+  limit: number
+  totalItems: number
+  totalPages: number
+}
+
+export interface CrmGithubCommitSummary {
+  sha: string
+  message: string
+  author: string
+  date: string
+  htmlUrl: string
+}
+
+export interface CrmGithubCommitFile {
+  filename: string
+  status: string
+  additions: number
+  deletions: number
+  changes: number
+}
+
+export interface CrmGithubCommitDetail extends CrmGithubCommitSummary {
+  files: CrmGithubCommitFile[]
+}
+
+export interface CrmGithubCollaborator {
+  login: string
+  type: string
+  htmlUrl: string
+  permissions?: {
+    admin?: boolean
+    maintain?: boolean
+    push?: boolean
+    triage?: boolean
+    pull?: boolean
+  }
+}
+
+export interface CrmGithubWorkflow {
+  id: number
+  name: string
+  state: string
+  path: string
+  htmlUrl: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CrmGithubWorkflowRun {
+  id: number
+  name: string
+  status: string
+  conclusion: string | null
+  event: string
+  htmlUrl: string
+  createdAt: string
+  updatedAt: string
+}
+
 export interface CrmGithubSyncJobStatus {
   id: string
   applicationSlug: string
