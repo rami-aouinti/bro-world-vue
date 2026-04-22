@@ -2279,6 +2279,46 @@
         "referenceDetail": "Referenzdetail",
         "noAttachments": "Keine Anhänge.",
         "noHtmlContent": "Für diesen Kurs ist kein HTML-Inhalt verfügbar."
+      },
+      "documentation": {
+        "heroTitle": "Zentralisiere deine Lernpfade",
+        "heroDescription": "Koordiniere Kurse, Lernende und Leistung über einen zentralen operativen Hub.",
+        "sections": {
+          "courses": {
+            "title": "Kurse",
+            "description": "Verwalte Katalog, Veröffentlichung und Lernpfade in einem strukturierten Kursbereich."
+          },
+          "students": {
+            "title": "Lernende",
+            "description": "Behalte Einschreibungen, Fortschritt und Abschlüsse je Kohorte im Blick."
+          },
+          "analytics": {
+            "title": "Lernanalytik",
+            "description": "Prüfe Kennzahlen zu Abschluss, Zertifizierung und Engagement für fundierte Trainingsentscheidungen."
+          }
+        },
+        "cta": {
+          "hero": "Kurse erkunden",
+          "openSection": "{section} öffnen"
+        },
+        "navigation": {
+          "courses": "Kurse",
+          "students": "Lernende",
+          "exams": "Prüfungen"
+        },
+        "labels": {
+          "platformSummaryTitle": "Plattformübersicht",
+          "quickActionsTitle": "Schnellaktionen"
+        }
+      },
+      "references": {
+        "title": "Referenzen",
+        "subtitle": "Öffentliche Übersichten zu den wichtigsten Learning-Seiten.",
+        "cta": "Seite öffnen",
+        "fallback": {
+          "courses": "Diese Referenz ist für Kurse derzeit nicht verfügbar.",
+          "teachers": "Diese Referenz ist für Lehrkräfte derzeit nicht verfügbar."
+        }
       }
     },
     "jobs": {
@@ -2615,6 +2655,45 @@
         "ogDescription": "Publish job offers and manage hiring efficiently with Bro World Jobs.",
         "twitterTitle": "Bro World Jobs | Job offers and recruiting",
         "twitterDescription": "Publish job offers and manage hiring efficiently with Bro World Jobs."
+      },
+      "documentation": {
+        "heroTitle": "Schneller rekrutieren mit einem klaren Hiring-Workspace",
+        "heroDescription": "Greife auf Stellen, Kandidaten-Pipelines und Bewerbungs-Tools über einen zentralen Navigationshub zu.",
+        "sections": {
+          "offers": {
+            "title": "Stellenangebote",
+            "description": "Durchsuche aktive Ausschreibungen, Filter und Rollendetails für fokussiertes Recruiting."
+          },
+          "applications": {
+            "title": "Bewerbungen",
+            "description": "Verfolge eingereichte Bewerbungen, Status und Kandidatenverlauf in einer zentralen Ansicht."
+          },
+          "pipeline": {
+            "title": "Hiring-Pipeline",
+            "description": "Überwache Phasenwechsel, Interview-Bereitschaft und Recruiter-Notizen entlang des gesamten Prozesses."
+          }
+        },
+        "cta": {
+          "hero": "Stellenangebote ansehen",
+          "openSection": "{section} öffnen"
+        },
+        "navigation": {
+          "offers": "Angebote",
+          "applications": "Bewerbungen",
+          "apply": "Bewerben"
+        },
+        "labels": {
+          "quickActionsTitle": "Schnellaktionen"
+        }
+      },
+      "references": {
+        "title": "Referenzen",
+        "subtitle": "Öffentliche Übersichten zu den wichtigsten Jobs-Seiten.",
+        "cta": "Seite öffnen",
+        "fallback": {
+          "offers": "Diese Referenz ist für Stellenangebote derzeit nicht verfügbar.",
+          "applications": "Diese Referenz ist für Bewerbungen derzeit nicht verfügbar."
+        }
       }
     }
   },

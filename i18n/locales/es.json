@@ -2253,6 +2253,46 @@
         "referenceDetail": "Detalle de referencia",
         "noAttachments": "No hay archivos adjuntos.",
         "noHtmlContent": "No hay contenido HTML disponible para este curso."
+      },
+      "documentation": {
+        "heroTitle": "Centraliza tus recorridos de aprendizaje",
+        "heroDescription": "Coordina cursos, estudiantes y rendimiento desde un único centro operativo.",
+        "sections": {
+          "courses": {
+            "title": "Cursos",
+            "description": "Gestiona catálogo, publicación y rutas formativas desde un espacio de cursos estructurado."
+          },
+          "students": {
+            "title": "Estudiantes",
+            "description": "Supervisa inscripciones, progreso y finalización de estudiantes por cohorte."
+          },
+          "analytics": {
+            "title": "Analítica de aprendizaje",
+            "description": "Revisa indicadores de finalización, certificación y participación para orientar decisiones formativas."
+          }
+        },
+        "cta": {
+          "hero": "Explorar cursos",
+          "openSection": "Abrir {section}"
+        },
+        "navigation": {
+          "courses": "Cursos",
+          "students": "Estudiantes",
+          "exams": "Exámenes"
+        },
+        "labels": {
+          "platformSummaryTitle": "Resumen de la plataforma",
+          "quickActionsTitle": "Acciones rápidas"
+        }
+      },
+      "references": {
+        "title": "Referencias",
+        "subtitle": "Vistas públicas de las páginas principales de Learning.",
+        "cta": "Abrir página",
+        "fallback": {
+          "courses": "Esta referencia no está disponible para cursos en este momento.",
+          "teachers": "Esta referencia no está disponible para profesores en este momento."
+        }
       }
     },
     "jobs": {
@@ -2589,6 +2629,45 @@
         "ogDescription": "Publish job offers and manage hiring efficiently with Bro World Jobs.",
         "twitterTitle": "Bro World Jobs | Job offers and recruiting",
         "twitterDescription": "Publish job offers and manage hiring efficiently with Bro World Jobs."
+      },
+      "documentation": {
+        "heroTitle": "Contrata más rápido con un espacio de selección claro",
+        "heroDescription": "Accede a ofertas, pipelines de candidatos y herramientas de postulación desde un único centro.",
+        "sections": {
+          "offers": {
+            "title": "Ofertas laborales",
+            "description": "Consulta vacantes activas, filtros y detalles del puesto para mantener el reclutamiento enfocado."
+          },
+          "applications": {
+            "title": "Postulaciones",
+            "description": "Sigue postulaciones enviadas, estados y cronología de candidatos en una vista unificada."
+          },
+          "pipeline": {
+            "title": "Pipeline de contratación",
+            "description": "Monitorea cambios de etapa, preparación de entrevistas y notas del reclutador en todo el flujo."
+          }
+        },
+        "cta": {
+          "hero": "Explorar ofertas",
+          "openSection": "Abrir {section}"
+        },
+        "navigation": {
+          "offers": "Ofertas",
+          "applications": "Postulaciones",
+          "apply": "Postular"
+        },
+        "labels": {
+          "quickActionsTitle": "Acciones rápidas"
+        }
+      },
+      "references": {
+        "title": "Referencias",
+        "subtitle": "Vistas públicas de las páginas principales de Jobs.",
+        "cta": "Abrir página",
+        "fallback": {
+          "offers": "Esta referencia no está disponible para ofertas en este momento.",
+          "applications": "Esta referencia no está disponible para candidaturas en este momento."
+        }
       }
     }
   },

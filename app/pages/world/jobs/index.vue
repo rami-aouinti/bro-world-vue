@@ -1,106 +1,141 @@
 <script setup lang="ts">
+import type { PublicPageSlug } from '~~/shared/publicPageSlugs'
+
 definePageMeta({
   layout: 'job',
   title: 'world.jobs.label',
   description: 'world.jobs.seo.metaDescription',
 })
 
-const { t } = useI18n()
+type JobsPublicReferencePage = {
+  description?: string
+}
+
+type ReferenceStatus = 'loading' | 'success' | 'unavailable'
+
+// Convention: <module>-<section> slugs are backend-validated public page ids.
+const JOBS_REFERENCE_CONFIG = {
+  '/world/jobs/offers': {
+    publicPageSlug: 'jobs-offers',
+    fallbackI18nKey: 'world.jobs.references.fallback.offers',
+  },
+  '/world/jobs/applications': {
+    publicPageSlug: 'jobs-applications',
+    fallbackI18nKey: 'world.jobs.references.fallback.applications',
+  },
+} as const satisfies Record<string, { publicPageSlug: PublicPageSlug; fallbackI18nKey: string }>
+
+const { locale, t } = useI18n()
 const runtimeConfig = useRuntimeConfig()
 const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world-space.com'
 const pageUrl = new URL('/world/jobs', siteUrl).toString()
 const seoImage = new URL('/img/platform/general/job.png', siteUrl).toString()
+const publicPagesStore = usePublicPagesStore()
+const { jobsNavItems } = useWorldJobsNavItems()
 
 useSeoMeta({
-  title: t('world.jobs.seo.title', 'Bro World Jobs | Job offers and recruiting'),
-  description: t(
-    'world.jobs.seo.description',
-    'Bro World Jobs centralizes job posts, applications, interviews, and hiring follow-up in one place.',
-  ),
-  keywords: t(
-    'world.jobs.seo.keywords',
-    'bro world jobs, job board, recruiting, applications, talent management, hr platform',
-  ),
+  title: t('world.jobs.seo.title'),
+  description: t('world.jobs.seo.description'),
+  keywords: t('world.jobs.seo.keywords'),
   robots: 'index, follow, max-image-preview:large',
-  ogTitle: t('world.jobs.seo.ogTitle', 'Bro World Jobs | Job offers and recruiting'),
-  ogDescription: t(
-    'world.jobs.seo.ogDescription',
-    'Publish job offers and manage hiring efficiently with Bro World Jobs.',
-  ),
+  ogTitle: t('world.jobs.seo.ogTitle'),
+  ogDescription: t('world.jobs.seo.ogDescription'),
   ogType: 'website',
   ogUrl: pageUrl,
   ogImage: seoImage,
   ogImageAlt: 'Bro World Jobs recruitment dashboard',
-  twitterTitle: t('world.jobs.seo.twitterTitle', 'Bro World Jobs | Job offers and recruiting'),
-  twitterDescription: t(
-    'world.jobs.seo.twitterDescription',
-    'Publish job offers and manage hiring efficiently with Bro World Jobs.',
-  ),
+  twitterTitle: t('world.jobs.seo.twitterTitle'),
+  twitterDescription: t('world.jobs.seo.twitterDescription'),
   twitterImage: seoImage,
   twitterCard: 'summary_large_image',
 })
 
-const jobsNavItems = computed(() => [
-  {
-    title: t('world.jobs.nav.offers'),
-    to: '/world/jobs/offers',
-    icon: 'mdi-briefcase-outline',
-  },
-  {
-    title: t('world.jobs.nav.myOffers'),
-    to: '/world/jobs/my-offers',
-    icon: 'mdi-account-tie-outline',
-  },
-  {
-    title: t('world.jobs.nav.applications'),
-    to: '/world/jobs/applications',
-    icon: 'mdi-file-document-outline',
-  },
-  {
-    title: t('world.jobs.nav.apply'),
-    to: '/world/jobs/apply',
-    icon: 'mdi-send-outline',
-  },
-  {
-    title: t('world.jobs.nav.admin'),
-    to: '/world/jobs/admin',
-    icon: 'mdi-shield-crown-outline',
-    rootOnly: true,
-  },
+const quickAccessLinks = computed(() => [
+  { label: t('world.jobs.documentation.navigation.offers'), to: '/world/jobs/offers' },
+  { label: t('world.jobs.documentation.navigation.applications'), to: '/world/jobs/applications' },
+  { label: t('world.jobs.documentation.navigation.apply'), to: '/world/jobs/apply' },
 ])
 
 const documentationSections = computed(() => [
   {
-    title: t('world.jobs.nav.offers'),
-    icon: 'mdi-briefcase-outline',
-    description: t('world.jobs.documentation.offersDescription', 'Explore published opportunities and active recruitments.'),
+    key: 'offers',
     to: '/world/jobs/offers',
+    title: t('world.jobs.documentation.sections.offers.title'),
+    description: t('world.jobs.documentation.sections.offers.description'),
   },
   {
-    title: t('world.jobs.nav.myOffers'),
-    icon: 'mdi-account-tie-outline',
-    description: t('world.jobs.documentation.myOffersDescription', 'Manage your own offers, updates, and hiring workflow.'),
-    to: '/world/jobs/my-offers',
-  },
-  {
-    title: t('world.jobs.nav.applications'),
-    icon: 'mdi-file-document-outline',
-    description: t('world.jobs.documentation.applicationsDescription', 'Review candidate applications and follow interview progress.'),
+    key: 'applications',
     to: '/world/jobs/applications',
+    title: t('world.jobs.documentation.sections.applications.title'),
+    description: t('world.jobs.documentation.sections.applications.description'),
   },
   {
-    title: t('world.jobs.nav.apply'),
-    icon: 'mdi-send-outline',
-    description: t('world.jobs.documentation.applyDescription', 'Submit applications quickly and track your submissions.'),
-    to: '/world/jobs/apply',
+    key: 'pipeline',
+    to: '/world/jobs',
+    title: t('world.jobs.documentation.sections.pipeline.title'),
+    description: t('world.jobs.documentation.sections.pipeline.description'),
   },
 ])
 
-const quickAccessLinks = computed(() => [
-  { label: t('world.jobs.nav.offers'), to: '/world/jobs/offers' },
-  { label: t('world.jobs.nav.applications'), to: '/world/jobs/applications' },
-  { label: t('world.jobs.nav.apply'), to: '/world/jobs/apply' },
-])
+const referenceStatuses = ref<Record<string, ReferenceStatus>>({})
+const referenceDescriptions = ref<Record<string, string>>({})
+
+const referenceNavItems = computed(() =>
+  jobsNavItems.value.filter((item) => item.to in JOBS_REFERENCE_CONFIG),
+)
+
+const referenceCards = computed(() =>
+  referenceNavItems.value.map((item) => {
+    const config = JOBS_REFERENCE_CONFIG[item.to as keyof typeof JOBS_REFERENCE_CONFIG]
+    const status = referenceStatuses.value[item.to] ?? 'loading'
+    const fallback = t(config.fallbackI18nKey)
+
+    return {
+      ...item,
+      status,
+      description:
+        status === 'success'
+          ? referenceDescriptions.value[item.to] ?? fallback
+          : fallback,
+    }
+  }),
+)
+
+async function loadReferences() {
+  const entries = referenceNavItems.value
+
+  await Promise.all(
+    entries.map(async (item) => {
+      const config = JOBS_REFERENCE_CONFIG[item.to as keyof typeof JOBS_REFERENCE_CONFIG]
+
+      referenceStatuses.value[item.to] = 'loading'
+
+      try {
+        const page = await publicPagesStore.fetchPage<JobsPublicReferencePage>(
+          config.publicPageSlug,
+          locale.value,
+        )
+
+        const description =
+          typeof page.description === 'string' ? page.description.trim() : ''
+
+        if (description) {
+          referenceDescriptions.value[item.to] = description
+          referenceStatuses.value[item.to] = 'success'
+          return
+        }
+
+        referenceStatuses.value[item.to] = 'unavailable'
+      } catch {
+        referenceStatuses.value[item.to] = 'unavailable'
+      }
+    }),
+  )
+}
+
+watch([locale, referenceNavItems], () => {
+  loadReferences()
+}, { immediate: true })
 </script>
 
 <template>
@@ -150,7 +185,7 @@ const quickAccessLinks = computed(() => [
 
           <v-card variant="tonal" color="primary" class="pa-4">
             <div class="text-subtitle-2 font-weight-bold mb-2">
-              {{ t('world.jobs.documentation.quickActionsTitle', 'Quick actions') }}
+              {{ t('world.jobs.documentation.labels.quickActionsTitle') }}
             </div>
             <div class="d-flex flex-wrap ga-2">
               <v-chip
@@ -176,53 +211,88 @@ const quickAccessLinks = computed(() => [
             <div class="d-flex align-center justify-space-between ga-3 flex-wrap">
               <div>
                 <h1 class="text-h5 font-weight-bold mb-2">
-                  {{ t('world.jobs.documentation.heroTitle', 'Recruit faster with a clear hiring workspace') }}
+                  {{ t('world.jobs.documentation.heroTitle') }}
                 </h1>
                 <p class="text-body-1 mb-0">
-                  {{ t('world.jobs.documentation.heroDescription', 'Access offers, candidate pipelines, and application tools from one navigation hub.') }}
+                  {{ t('world.jobs.documentation.heroDescription') }}
                 </p>
               </div>
               <v-btn color="primary" prepend-icon="mdi-rocket-launch-outline" to="/world/jobs/offers">
-                {{ t('world.jobs.documentation.heroCta', 'Explore job offers') }}
+                {{ t('world.jobs.documentation.cta.hero') }}
               </v-btn>
             </div>
           </v-card>
         </v-col>
 
-        <v-col v-for="section in documentationSections" :key="section.title" cols="12" md="6">
-          <v-card rounded="xl" class="pa-5 postcard-gradient-card jobs-doc-card h-100">
-            <div class="d-flex align-center ga-2 mb-2">
-              <v-icon :icon="section.icon" color="primary" />
-              <h2 class="text-h6 mb-0">{{ section.title }}</h2>
-            </div>
-            <p class="text-body-2 text-medium-emphasis mb-4">{{ section.description }}</p>
-            <v-btn color="primary" variant="tonal" append-icon="mdi-arrow-right" :to="section.to">
-              {{ t('world.jobs.documentation.openSection', { section: section.title }) }}
-            </v-btn>
+
+        <v-col cols="12">
+          <v-card rounded="xl" class="pa-5 postcard-gradient-card jobs-doc-card">
+            <v-row density="comfortable">
+              <v-col
+                v-for="section in documentationSections"
+                :key="section.key"
+                cols="12"
+                md="4"
+              >
+                <v-card rounded="xl" variant="outlined" class="pa-4 h-100">
+                  <h2 class="text-subtitle-1 font-weight-bold mb-2">{{ section.title }}</h2>
+                  <p class="text-body-2 text-medium-emphasis mb-4">{{ section.description }}</p>
+                  <v-btn color="primary" variant="tonal" append-icon="mdi-arrow-right" :to="section.to">
+                    {{ t('world.jobs.documentation.cta.openSection', { section: section.title }) }}
+                  </v-btn>
+                </v-card>
+              </v-col>
+            </v-row>
           </v-card>
         </v-col>
 
         <v-col cols="12">
           <v-card rounded="xl" class="pa-5 postcard-gradient-card jobs-doc-card">
             <div class="d-flex align-center ga-2 mb-3">
-              <v-icon icon="mdi-lightning-bolt-outline" color="primary" />
-              <h2 class="text-h6 mb-0">{{ t('world.jobs.documentation.quickNavigationTitle', 'Quick navigation') }}</h2>
+              <v-icon icon="mdi-book-open-page-variant-outline" color="primary" />
+              <h2 class="text-h6 mb-0">{{ t('world.jobs.references.title') }}</h2>
             </div>
             <p class="text-body-2 text-medium-emphasis mb-4">
-              {{ t('world.jobs.documentation.quickNavigationDescription', 'Jump directly to the most-used pages of the Jobs module.') }}
+              {{ t('world.jobs.references.subtitle') }}
             </p>
-            <div class="d-flex ga-2 flex-wrap">
-              <v-btn
-                v-for="link in quickAccessLinks"
-                :key="`quick-${link.to}`"
-                color="primary"
-                variant="tonal"
-                append-icon="mdi-arrow-right"
-                :to="link.to"
+
+            <v-row density="comfortable">
+              <v-col
+                v-for="reference in referenceCards"
+                :key="reference.to"
+                cols="12"
+                md="6"
               >
-                {{ link.label }}
-              </v-btn>
-            </div>
+                <v-card rounded="xl" variant="outlined" class="pa-4 h-100">
+                  <div class="d-flex align-center ga-2 mb-2">
+                    <v-icon :icon="reference.icon" color="primary" />
+                    <h3 class="text-subtitle-1 mb-0">{{ reference.title }}</h3>
+                    <v-spacer />
+                    <v-progress-circular
+                      v-if="reference.status === 'loading'"
+                      size="16"
+                      width="2"
+                      indeterminate
+                      color="primary"
+                    />
+                  </div>
+
+                  <p class="text-body-2 text-medium-emphasis mb-4">
+                    {{ reference.description }}
+                  </p>
+
+                  <v-btn
+                    color="primary"
+                    variant="tonal"
+                    append-icon="mdi-arrow-right"
+                    :to="reference.to"
+                    :disabled="reference.status === 'unavailable'"
+                  >
+                    {{ t('world.jobs.references.cta') }}
+                  </v-btn>
+                </v-card>
+              </v-col>
+            </v-row>
           </v-card>
         </v-col>
       </v-row>
@@ -261,20 +331,20 @@ const quickAccessLinks = computed(() => [
 @keyframes jobsGlow {
   0%,
   100% {
-    transform: translateY(0);
+    transform: scale(1);
+    opacity: 0.8;
   }
-
   50% {
-    transform: translateY(24px);
+    transform: scale(1.08);
+    opacity: 0.45;
   }
 }
 
 @keyframes jobsCardIn {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(8px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
