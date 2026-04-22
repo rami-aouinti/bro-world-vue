@@ -64,6 +64,44 @@ export interface CrmGithubWorkflowRun {
   updatedAt: string
 }
 
+export interface CrmGithubPullRequestCreatePayload {
+  repository: string
+  title: string
+  head: string
+  base: string
+  body?: string
+  draft?: boolean
+}
+
+export interface CrmGithubPullRequestPatchPayload {
+  repository: string
+  title?: string
+  body?: string
+  state?: 'open' | 'closed'
+  base?: string
+  maintainerCanModify?: boolean
+}
+
+export interface CrmGithubIssuePatchPayload {
+  repository: string
+  title?: string
+  body?: string
+  state?: 'open' | 'closed'
+  stateReason?: 'completed' | 'not_planned' | 'reopened'
+  labels?: string[]
+  assignees?: string[]
+  milestone?: number
+}
+
+export interface CrmGithubRepositoryPatchPayload {
+  repository: string
+  name?: string
+  description?: string
+  private?: boolean
+  defaultBranch?: string
+  archived?: boolean
+}
+
 export interface CrmGithubSyncJobStatus {
   id: string
   applicationSlug: string

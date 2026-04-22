@@ -80,8 +80,8 @@ const { data: issuesData, pending: pendingIssues, error: issuesError, refresh: r
 
 const { data: pullRequestsData, pending: pendingPullRequests, error: pullRequestsError, refresh: refreshPullRequests } = await useAsyncData<CrmGithubListResponse<GithubPullRequest>>(
   () => `crm-repository-prs-${projectId.value}-${repository.value}-${jobId.value}`,
-  () => githubStore.getPullRequests(projectId.value, query.value),
-  { watch: [projectId, repository, jobId] },
+  () => githubStore.getScopedPullRequests(projectId.value, query.value, applicationSlug.value || undefined),
+  { watch: [projectId, repository, jobId, applicationSlug] },
 )
 
 const { data: branchesData, pending: pendingBranches, error: branchesError, refresh: refreshBranches } = await useAsyncData<CrmGithubListResponse<GithubBranch>>(
@@ -98,8 +98,8 @@ const { data: boardsData, pending: pendingBoards, error: boardsError, refresh: r
 
 const { data: commitsData, pending: pendingCommits, error: commitsError, refresh: refreshCommits } = await useAsyncData<CrmGithubListResponse<CrmGithubCommitSummary>>(
   () => `crm-repository-commits-${projectId.value}-${repository.value}-${branch.value}-${page.value}-${limit.value}-${jobId.value}`,
-  () => githubStore.getCommits(projectId.value, query.value),
-  { watch: [projectId, repository, branch, page, limit, jobId] },
+  () => githubStore.getScopedCommits(projectId.value, query.value, applicationSlug.value || undefined),
+  { watch: [projectId, repository, branch, page, limit, jobId, applicationSlug] },
 )
 
 const commitDetailQuery = computed(() => ({
@@ -112,26 +112,23 @@ const { data: commitDetailData, pending: pendingCommitDetail, error: commitDetai
     if (!selectedCommitSha.value) {
       return null
     }
-    return await githubStore.getCommitDetail(projectId.value, selectedCommitSha.value, commitDetailQuery.value)
+    return await githubStore.getScopedCommitDetail(
+      projectId.value,
+      selectedCommitSha.value,
+      commitDetailQuery.value,
+      applicationSlug.value || undefined,
+    )
   },
-  { watch: [projectId, repository, selectedCommitSha] },
+  { watch: [projectId, repository, selectedCommitSha, applicationSlug] },
 )
 
 const { data: collaboratorsData, pending: pendingCollaborators, error: collaboratorsError, refresh: refreshCollaborators } = await useAsyncData<CrmGithubListResponse<CrmGithubCollaborator>>(
   () => `crm-repository-collaborators-${projectId.value}-${repository.value}-${page.value}-${limit.value}-${jobId.value}`,
-  () => githubStore.getCollaborators(projectId.value, query.value),
-  { watch: [projectId, repository, page, limit, jobId] },
-)
-
-const { data: applicationCollaboratorsData, pending: pendingApplicationCollaborators, error: applicationCollaboratorsError, refresh: refreshApplicationCollaborators } = await useAsyncData<CrmGithubListResponse<CrmGithubCollaborator> | null>(
-  () => `crm-repository-application-collaborators-${applicationSlug.value}-${projectId.value}-${repository.value}-${page.value}-${limit.value}`,
-  async () => {
-    if (!applicationSlug.value) {
-      return null
-    }
-    return await githubStore.getApplicationCollaborators(applicationSlug.value, projectId.value, query.value)
-  },
-  { watch: [applicationSlug, projectId, repository, page, limit, jobId] },
+  () =>
+    applicationSlug.value
+      ? githubStore.getApplicationCollaborators(applicationSlug.value, projectId.value, query.value)
+      : githubStore.getCollaborators(projectId.value, query.value),
+  { watch: [projectId, repository, page, limit, jobId, applicationSlug] },
 )
 
 const actionsRunsQuery = computed(() => ({
@@ -142,14 +139,14 @@ const actionsRunsQuery = computed(() => ({
 
 const { data: workflowsData, pending: pendingWorkflows, error: workflowsError, refresh: refreshWorkflows } = await useAsyncData<CrmGithubListResponse<CrmGithubWorkflow>>(
   () => `crm-repository-workflows-${projectId.value}-${repository.value}-${page.value}-${limit.value}-${jobId.value}`,
-  () => githubStore.getActionsWorkflows(projectId.value, query.value),
-  { watch: [projectId, repository, page, limit, jobId] },
+  () => githubStore.getScopedActionsWorkflows(projectId.value, query.value, applicationSlug.value || undefined),
+  { watch: [projectId, repository, page, limit, jobId, applicationSlug] },
 )
 
 const { data: workflowRunsData, pending: pendingWorkflowRuns, error: workflowRunsError, refresh: refreshWorkflowRuns } = await useAsyncData<CrmGithubListResponse<CrmGithubWorkflowRun>>(
   () => `crm-repository-workflow-runs-${projectId.value}-${repository.value}-${workflowId.value}-${runStatus.value}-${page.value}-${limit.value}-${jobId.value}`,
-  () => githubStore.getActionsRuns(projectId.value, actionsRunsQuery.value),
-  { watch: [projectId, repository, workflowId, runStatus, page, limit, jobId] },
+  () => githubStore.getScopedActionsRuns(projectId.value, actionsRunsQuery.value, applicationSlug.value || undefined),
+  { watch: [projectId, repository, workflowId, runStatus, page, limit, jobId, applicationSlug] },
 )
 
 const isLoading = computed(() =>
@@ -159,7 +156,6 @@ const isLoading = computed(() =>
   || pendingBoards.value
   || pendingCommits.value
   || pendingCollaborators.value
-  || pendingApplicationCollaborators.value
   || pendingWorkflows.value
   || pendingWorkflowRuns.value
   || pendingCommitDetail.value,
@@ -172,7 +168,6 @@ const hasError = computed(() =>
   || boardsError.value
   || commitsError.value
   || collaboratorsError.value
-  || applicationCollaboratorsError.value
   || workflowsError.value
   || workflowRunsError.value
   || commitDetailError.value,
@@ -184,7 +179,6 @@ const branches = computed(() => branchesData.value?.items ?? [])
 const boards = computed(() => boardsData.value?.items ?? [])
 const commits = computed(() => commitsData.value?.items ?? [])
 const collaborators = computed(() => collaboratorsData.value?.items ?? [])
-const applicationCollaborators = computed(() => applicationCollaboratorsData.value?.items ?? [])
 const workflows = computed(() => workflowsData.value?.items ?? [])
 const workflowRuns = computed(() => workflowRunsData.value?.items ?? [])
 const commitDetail = computed(() => commitDetailData.value)
@@ -212,7 +206,6 @@ async function refreshAll() {
     refreshCommits(),
     refreshCommitDetail(),
     refreshCollaborators(),
-    refreshApplicationCollaborators(),
     refreshWorkflows(),
     refreshWorkflowRuns(),
   ])
@@ -303,16 +296,20 @@ async function refreshAll() {
           <RepositoryCollaboratorsCard :collaborators="collaborators" />
         </v-col>
 
-        <v-col v-if="applicationSlug" cols="12" md="6">
-          <RepositoryCollaboratorsCard :collaborators="applicationCollaborators" />
-        </v-col>
-
         <v-col cols="12" md="6">
           <RepositoryWorkflowsCard :workflows="workflows" />
         </v-col>
 
         <v-col cols="12" md="6">
           <RepositoryWorkflowRunsCard :runs="workflowRuns" />
+        </v-col>
+
+        <v-col cols="12">
+          <RepositoryItemActionsCard
+            :project-id="projectId"
+            :repository="repository"
+            :application-slug="applicationSlug || undefined"
+          />
         </v-col>
 
         <v-col cols="12" md="6">

@@ -15,6 +15,10 @@ import type {
   CrmGithubListResponse,
   CrmGithubMoveProjectItemPayload,
   CrmGithubPullRequestActionPayload,
+  CrmGithubPullRequestCreatePayload,
+  CrmGithubPullRequestPatchPayload,
+  CrmGithubIssuePatchPayload,
+  CrmGithubRepositoryPatchPayload,
   CrmGithubSyncJobStatus,
   CrmGithubSyncContext,
   CrmGithubTaskRequestBranchPayload,
@@ -150,6 +154,10 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
 
   const projectBase = (projectId: string) =>
     `/api/world/crm/general/projects/${projectId}/github`
+  const scopedProjectBase = (projectId: string, applicationSlug?: string) =>
+    applicationSlug
+      ? `/api/world/crm/applications/${encodeURIComponent(applicationSlug)}/projects/${projectId}/github`
+      : projectBase(projectId)
 
   return {
     pending,
@@ -237,13 +245,37 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
       }),
     getPullRequests: (projectId: string, query?: Record<string, unknown>) =>
       get<CrmGithubListResponse>(`${projectBase(projectId)}/pull-requests`, query),
+    getScopedPullRequests: (
+      projectId: string,
+      query?: Record<string, unknown>,
+      applicationSlug?: string,
+    ) => get<CrmGithubListResponse>(`${scopedProjectBase(projectId, applicationSlug)}/pull-requests`, query),
     getCommits: (projectId: string, query?: Record<string, unknown>) =>
       get<CrmGithubListResponse<CrmGithubCommitSummary>>(`${projectBase(projectId)}/commits`, query),
+    getScopedCommits: (
+      projectId: string,
+      query?: Record<string, unknown>,
+      applicationSlug?: string,
+    ) =>
+      get<CrmGithubListResponse<CrmGithubCommitSummary>>(
+        `${scopedProjectBase(projectId, applicationSlug)}/commits`,
+        query,
+      ),
     getCommitDetail: (
       projectId: string,
       sha: string,
       query?: Record<string, unknown>,
     ) => get<CrmGithubCommitDetail>(`${projectBase(projectId)}/commits/${encodeURIComponent(sha)}`, query),
+    getScopedCommitDetail: (
+      projectId: string,
+      sha: string,
+      query?: Record<string, unknown>,
+      applicationSlug?: string,
+    ) =>
+      get<CrmGithubCommitDetail>(
+        `${scopedProjectBase(projectId, applicationSlug)}/commits/${encodeURIComponent(sha)}`,
+        query,
+      ),
     getCollaborators: (projectId: string, query?: Record<string, unknown>) =>
       get<CrmGithubListResponse<CrmGithubCollaborator>>(`${projectBase(projectId)}/collaborators`, query),
     getApplicationCollaborators: (
@@ -259,6 +291,72 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
       get<CrmGithubListResponse<CrmGithubWorkflow>>(`${projectBase(projectId)}/actions/workflows`, query),
     getActionsRuns: (projectId: string, query?: Record<string, unknown>) =>
       get<CrmGithubListResponse<CrmGithubWorkflowRun>>(`${projectBase(projectId)}/actions/runs`, query),
+    getScopedActionsWorkflows: (
+      projectId: string,
+      query?: Record<string, unknown>,
+      applicationSlug?: string,
+    ) =>
+      get<CrmGithubListResponse<CrmGithubWorkflow>>(
+        `${scopedProjectBase(projectId, applicationSlug)}/actions/workflows`,
+        query,
+      ),
+    getScopedActionsRuns: (
+      projectId: string,
+      query?: Record<string, unknown>,
+      applicationSlug?: string,
+    ) =>
+      get<CrmGithubListResponse<CrmGithubWorkflowRun>>(
+        `${scopedProjectBase(projectId, applicationSlug)}/actions/runs`,
+        query,
+      ),
+    createPullRequest: (
+      projectId: string,
+      body: CrmGithubPullRequestCreatePayload,
+      applicationSlug?: string,
+    ) =>
+      mutate(`${scopedProjectBase(projectId, applicationSlug)}/pull-requests`, 'POST', {
+        body,
+        invalidatePrefix: `${scopedProjectBase(projectId, applicationSlug)}/pull-requests`,
+      }),
+    patchPullRequest: (
+      projectId: string,
+      number: string | number,
+      body: CrmGithubPullRequestPatchPayload,
+      applicationSlug?: string,
+    ) =>
+      mutate(`${scopedProjectBase(projectId, applicationSlug)}/pull-requests/${number}`, 'PATCH', {
+        body,
+        invalidatePrefix: `${scopedProjectBase(projectId, applicationSlug)}/pull-requests`,
+      }),
+    getPullRequestCommits: (
+      projectId: string,
+      number: string | number,
+      query?: Record<string, unknown>,
+      applicationSlug?: string,
+    ) =>
+      get<CrmGithubListResponse<CrmGithubCommitSummary>>(
+        `${scopedProjectBase(projectId, applicationSlug)}/pull-requests/${number}/commits`,
+        query,
+      ),
+    patchIssueRich: (
+      projectId: string,
+      number: string | number,
+      body: CrmGithubIssuePatchPayload,
+      applicationSlug?: string,
+    ) =>
+      mutate(`${scopedProjectBase(projectId, applicationSlug)}/issues/${number}/patch`, 'PATCH', {
+        body,
+        invalidatePrefix: `${scopedProjectBase(projectId, applicationSlug)}/issues`,
+      }),
+    patchRepository: (
+      projectId: string,
+      body: CrmGithubRepositoryPatchPayload,
+      applicationSlug?: string,
+    ) =>
+      mutate(`${scopedProjectBase(projectId, applicationSlug)}/repositories/patch`, 'PATCH', {
+        body,
+        invalidatePrefix: `${scopedProjectBase(projectId, applicationSlug)}/repositories`,
+      }),
     getPullRequestDetail: (
       projectId: string,
       number: string | number,
