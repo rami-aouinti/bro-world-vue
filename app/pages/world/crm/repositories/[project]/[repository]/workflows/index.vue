@@ -12,35 +12,46 @@ const githubStore = useWorldCrmGithubStore()
 
 const projectId = computed(() => String(route.params.project ?? ''))
 const repository = computed(() => decodeURIComponent(String(route.params.repository ?? '')))
-const applicationSlug = ref<string>(typeof route.query.applicationSlug === 'string' ? route.query.applicationSlug : '')
+const applicationSlugInput = ref<string>(typeof route.query.applicationSlug === 'string' ? route.query.applicationSlug : '')
+const applicationSlug = ref(applicationSlugInput.value)
 const selectedWorkflowId = ref<string>('')
 const detailModalOpen = ref(false)
 const statusFilter = ref<string>('')
+const runsData = ref<CrmGithubListResponse<CrmGithubWorkflowRun>>({ items: [] })
+const pendingRuns = ref(false)
+const runsError = ref<unknown>(null)
+
+let applicationSlugDebounce: ReturnType<typeof setTimeout> | null = null
+watch(applicationSlugInput, (value) => {
+  if (applicationSlugDebounce) clearTimeout(applicationSlugDebounce)
+  applicationSlugDebounce = setTimeout(() => {
+    applicationSlug.value = value.trim()
+  }, 350)
+})
 
 const baseQuery = computed(() => ({ repository: repository.value, repo: repository.value }))
 const runsQuery = computed(() => ({
   ...baseQuery.value,
   ...(selectedWorkflowId.value ? { workflowId: selectedWorkflowId.value } : {}),
-  ...(statusFilter.value ? { status: statusFilter.value } : {}),
+  ...(statusFilter.value.trim() ? { status: statusFilter.value.trim() } : {}),
 }))
 
-const { data: workflowsData, pending: pendingWorkflows, error: workflowsError } = await useAsyncData<CrmGithubListResponse<CrmGithubWorkflow>>(
+const { data: workflowsData, pending: pendingWorkflows, error: workflowsError } = useAsyncData<CrmGithubListResponse<CrmGithubWorkflow>>(
   () => `crm-repository-workflows-page-${projectId.value}-${repository.value}-${applicationSlug.value}`,
   () => githubStore.getScopedActionsWorkflows(projectId.value, baseQuery.value, applicationSlug.value || undefined),
-  { watch: [projectId, repository, applicationSlug] },
-)
-
-const { data: runsData, pending: pendingRuns, error: runsError } = await useAsyncData<CrmGithubListResponse<CrmGithubWorkflowRun>>(
-  () => `crm-repository-workflow-runs-page-${projectId.value}-${repository.value}-${selectedWorkflowId.value}-${statusFilter.value}-${applicationSlug.value}-${detailModalOpen.value}`,
-  async () => {
-    if (!selectedWorkflowId.value || !detailModalOpen.value) return { items: [] }
-    return await githubStore.getScopedActionsRuns(projectId.value, runsQuery.value, applicationSlug.value || undefined)
+  {
+    watch: [projectId, repository, applicationSlug],
+    lazy: true,
+    server: false,
+    default: () => ({ items: [] }),
   },
-  { watch: [projectId, repository, selectedWorkflowId, statusFilter, applicationSlug, detailModalOpen] },
 )
 
 const workflows = computed(() => workflowsData.value?.items ?? [])
 const runs = computed(() => runsData.value?.items ?? [])
+const hasWorkflows = computed(() => workflows.value.length > 0)
+const showInitialSkeleton = computed(() => pendingWorkflows.value && !hasWorkflows.value)
+const showStaleOverlay = computed(() => pendingWorkflows.value && hasWorkflows.value)
 const selectedWorkflowDetail = computed(() => workflows.value.find(item => String(item.id) === selectedWorkflowId.value) ?? null)
 
 const workflowModalPayload = computed<Record<string, unknown> | null>(() => {
@@ -51,10 +62,37 @@ const workflowModalPayload = computed<Record<string, unknown> | null>(() => {
   }
 })
 
+async function loadWorkflowRuns() {
+  if (!selectedWorkflowId.value || !detailModalOpen.value) return
+  pendingRuns.value = true
+  runsError.value = null
+
+  try {
+    runsData.value = await githubStore.getScopedActionsRuns(projectId.value, runsQuery.value, applicationSlug.value || undefined)
+  }
+  catch (err) {
+    runsError.value = err
+  }
+  finally {
+    pendingRuns.value = false
+  }
+}
+
 function openWorkflowDetail(workflowId: string | number) {
   selectedWorkflowId.value = String(workflowId)
   detailModalOpen.value = true
+  loadWorkflowRuns()
 }
+
+watch([statusFilter, applicationSlug], () => {
+  if (detailModalOpen.value) loadWorkflowRuns()
+})
+watch(detailModalOpen, (open) => {
+  if (!open) {
+    runsData.value = { items: [] }
+    runsError.value = null
+  }
+})
 </script>
 
 <template>
@@ -77,24 +115,33 @@ function openWorkflowDetail(workflowId: string | number) {
         {{ t('world.crm.repositories.actions.backToRepository') }}
       </v-btn>
 
-      <v-text-field v-model="applicationSlug" :label="t('world.crm.repositories.fields.applicationSlugOptional')" variant="outlined" density="comfortable" class="mb-4" />
+      <v-text-field v-model="applicationSlugInput" label="Application slug (optional)" variant="outlined" density="comfortable" class="mb-4" />
 
-      <CrmPageSkeleton v-if="pendingWorkflows" variant="dashboard" />
-      <v-alert v-else-if="workflowsError" type="error" variant="tonal" class="mb-4">{{ t('world.crm.repositories.alerts.loadingWorkflowsError') }}</v-alert>
+      <CrmPageSkeleton v-if="showInitialSkeleton" variant="dashboard" />
+      <v-alert v-else-if="workflowsError" type="error" variant="tonal" class="mb-4">Impossible de charger les workflows.</v-alert>
 
-      <v-card v-else class="pa-4 postcard-gradient-card" rounded="xl">
-        <h2 class="text-subtitle-1 mb-3">{{ t('world.crm.repositories.sections.workflows', { count: workflows.length }) }}</h2>
-        <v-list lines="two" density="compact" class="bg-transparent">
-          <v-list-item
-            v-for="workflow in workflows"
-            :key="workflow.id"
-            :active="String(workflow.id) === selectedWorkflowId"
-            :title="workflow.name"
-            :subtitle="`${workflow.state} • ${workflow.path}`"
-            @click="openWorkflowDetail(workflow.id)"
-          />
-        </v-list>
-      </v-card>
+      <div v-else class="position-relative">
+        <v-card class="pa-4 postcard-gradient-card" rounded="xl">
+          <h2 class="text-subtitle-1 mb-3">Workflows ({{ workflows.length }})</h2>
+          <v-list lines="two" density="compact" class="bg-transparent">
+            <v-list-item
+              v-for="workflow in workflows"
+              :key="workflow.id"
+              :active="String(workflow.id) === selectedWorkflowId"
+              :title="workflow.name"
+              :subtitle="`${workflow.state} • ${workflow.path}`"
+              @click="openWorkflowDetail(workflow.id)"
+            />
+          </v-list>
+        </v-card>
+
+        <v-fade-transition>
+          <div v-if="showStaleOverlay" class="stale-overlay pa-3 rounded-xl">
+            <v-progress-linear indeterminate color="primary" class="mb-2" />
+            <p class="text-caption mb-0 text-medium-emphasis">{{ t('common.loading', 'Refreshing data...') }}</p>
+          </div>
+        </v-fade-transition>
+      </div>
     </v-container>
 
     <RepositoryItemDetailModal
@@ -128,3 +175,14 @@ function openWorkflowDetail(workflowId: string | number) {
     </RepositoryItemDetailModal>
   </div>
 </template>
+
+<style scoped>
+.stale-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 220px;
+  background: rgb(var(--v-theme-surface));
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+}
+</style>

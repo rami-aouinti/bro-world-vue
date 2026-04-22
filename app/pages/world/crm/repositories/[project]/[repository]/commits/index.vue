@@ -13,33 +13,45 @@ const githubStore = useWorldCrmGithubStore()
 
 const projectId = computed(() => String(route.params.project ?? ''))
 const repository = computed(() => decodeURIComponent(String(route.params.repository ?? '')))
-const applicationSlug = ref<string>(typeof route.query.applicationSlug === 'string' ? route.query.applicationSlug : '')
-const branch = ref<string>(typeof route.query.branch === 'string' ? route.query.branch : '')
+const applicationSlugInput = ref<string>(typeof route.query.applicationSlug === 'string' ? route.query.applicationSlug : '')
+const applicationSlug = ref(applicationSlugInput.value)
+const branch = ref<string>(typeof route.query.branch === 'string' ? route.query.branch.trim() : '')
 const selectedCommitSha = ref('')
 const detailModalOpen = ref(false)
+const commitDetailData = ref<CrmGithubCommitDetail | null>(null)
+const pendingCommitDetail = ref(false)
+const commitDetailError = ref<unknown>(null)
+
+let applicationSlugDebounce: ReturnType<typeof setTimeout> | null = null
+watch(applicationSlugInput, (value) => {
+  if (applicationSlugDebounce) clearTimeout(applicationSlugDebounce)
+  applicationSlugDebounce = setTimeout(() => {
+    applicationSlug.value = value.trim()
+  }, 350)
+})
 
 const query = computed(() => ({
   repository: repository.value,
   repo: repository.value,
-  ...(branch.value ? { branch: branch.value } : {}),
+  ...(branch.value.trim() ? { branch: branch.value.trim() } : {}),
 }))
 
-const { data: commitsData, pending, error } = await useAsyncData<CrmGithubListResponse<CrmGithubCommitSummary>>(
+const { data: commitsData, pending, error } = useAsyncData<CrmGithubListResponse<CrmGithubCommitSummary>>(
   () => `crm-repository-commits-page-${projectId.value}-${repository.value}-${branch.value}-${applicationSlug.value}`,
   () => githubStore.getScopedCommits(projectId.value, query.value, applicationSlug.value || undefined),
-  { watch: [projectId, repository, branch, applicationSlug] },
-)
-
-const { data: commitDetailData, pending: pendingCommitDetail, error: commitDetailError } = await useAsyncData<CrmGithubCommitDetail | null>(
-  () => `crm-repository-commit-page-${projectId.value}-${repository.value}-${selectedCommitSha.value}-${detailModalOpen.value}`,
-  async () => {
-    if (!selectedCommitSha.value || !detailModalOpen.value) return null
-    return await githubStore.getScopedCommitDetail(projectId.value, selectedCommitSha.value, { repo: repository.value }, applicationSlug.value || undefined)
+  {
+    watch: [projectId, repository, query, applicationSlug],
+    lazy: true,
+    server: false,
+    default: () => ({ items: [] }),
   },
-  { watch: [projectId, repository, selectedCommitSha, applicationSlug, detailModalOpen] },
 )
 
 const commits = computed(() => commitsData.value?.items ?? [])
+const hasCommits = computed(() => commits.value.length > 0)
+const showInitialSkeleton = computed(() => pending.value && !hasCommits.value)
+const showStaleOverlay = computed(() => pending.value && hasCommits.value)
+
 const branchOptions = computed(() => {
   const values = new Set(
     commits.value
@@ -49,10 +61,42 @@ const branchOptions = computed(() => {
   return Array.from(values).map(value => ({ title: value, value }))
 })
 
+async function loadCommitDetail() {
+  if (!selectedCommitSha.value || !detailModalOpen.value) return
+  pendingCommitDetail.value = true
+  commitDetailError.value = null
+
+  try {
+    commitDetailData.value = await githubStore.getScopedCommitDetail(
+      projectId.value,
+      selectedCommitSha.value,
+      { repo: repository.value },
+      applicationSlug.value || undefined,
+    )
+  }
+  catch (err) {
+    commitDetailError.value = err
+  }
+  finally {
+    pendingCommitDetail.value = false
+  }
+}
+
 function openCommitDetail(sha: string) {
   selectedCommitSha.value = sha
   detailModalOpen.value = true
+  loadCommitDetail()
 }
+
+watch([applicationSlug, branch], () => {
+  if (detailModalOpen.value) loadCommitDetail()
+})
+watch(detailModalOpen, (open) => {
+  if (!open) {
+    commitDetailData.value = null
+    commitDetailError.value = null
+  }
+})
 </script>
 
 <template>
@@ -83,17 +127,25 @@ function openCommitDetail(sha: string) {
         {{ t('world.crm.repositories.actions.backToRepository') }}
       </v-btn>
 
-      <v-text-field v-model="applicationSlug" :label="t('world.crm.repositories.fields.applicationSlugOptional')" variant="outlined" density="comfortable" class="mb-4" />
+      <v-text-field v-model="applicationSlugInput" label="Application slug (optional)" variant="outlined" density="comfortable" class="mb-4" />
 
-      <CrmPageSkeleton v-if="pending" variant="dashboard" />
-      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">{{ t('world.crm.repositories.alerts.loadingCommitsError') }}</v-alert>
+      <CrmPageSkeleton v-if="showInitialSkeleton" variant="dashboard" />
+      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">Impossible de charger les commits.</v-alert>
 
-      <RepositoryCommitsCard
-        v-else
-        :commits="commits"
-        :selected-sha="selectedCommitSha"
-        @select="openCommitDetail"
-      />
+      <div v-else class="position-relative">
+        <RepositoryCommitsCard
+          :commits="commits"
+          :selected-sha="selectedCommitSha"
+          @select="openCommitDetail"
+        />
+
+        <v-fade-transition>
+          <div v-if="showStaleOverlay" class="stale-overlay pa-3 rounded-xl">
+            <v-progress-linear indeterminate color="primary" class="mb-2" />
+            <p class="text-caption mb-0 text-medium-emphasis">{{ t('common.loading', 'Refreshing data...') }}</p>
+          </div>
+        </v-fade-transition>
+      </div>
     </v-container>
 
     <RepositoryItemDetailModal
@@ -126,3 +178,14 @@ function openCommitDetail(sha: string) {
     </RepositoryItemDetailModal>
   </div>
 </template>
+
+<style scoped>
+.stale-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 220px;
+  background: rgb(var(--v-theme-surface));
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+}
+</style>

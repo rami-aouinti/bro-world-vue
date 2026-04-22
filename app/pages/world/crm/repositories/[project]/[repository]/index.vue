@@ -31,14 +31,23 @@ const githubStore = useWorldCrmGithubStore()
 const projectId = computed(() => String(route.params.project ?? ''))
 const repository = computed(() => decodeURIComponent(String(route.params.repository ?? '')))
 const encodedRepository = computed(() => encodeURIComponent(repository.value))
-const applicationSlug = ref<string>(typeof route.query.applicationSlug === 'string' ? route.query.applicationSlug : '')
+const applicationSlugInput = ref<string>(typeof route.query.applicationSlug === 'string' ? route.query.applicationSlug : '')
+const applicationSlug = ref(applicationSlugInput.value)
+
+let applicationSlugDebounce: ReturnType<typeof setTimeout> | null = null
+watch(applicationSlugInput, (value) => {
+  if (applicationSlugDebounce) clearTimeout(applicationSlugDebounce)
+  applicationSlugDebounce = setTimeout(() => {
+    applicationSlug.value = value.trim()
+  }, 350)
+})
 
 const scopedQuery = computed(() => ({
   repository: repository.value,
   repo: repository.value,
 }))
 
-const { data, pending, error } = await useAsyncData(
+const { data, pending, error } = useAsyncData(
   () => `crm-repository-dashboard-${projectId.value}-${repository.value}-${applicationSlug.value}`,
   async () => {
     const [
@@ -63,7 +72,12 @@ const { data, pending, error } = await useAsyncData(
       workflows: (workflowsResponse as CrmGithubListResponse<CrmGithubWorkflow>).items ?? [],
     }
   },
-  { watch: [projectId, repository, applicationSlug] },
+  {
+    watch: [projectId, repository, applicationSlug],
+    lazy: true,
+    server: false,
+    default: () => ({ collaborators: [], branches: [], commits: [], pullRequests: [], workflows: [] }),
+  },
 )
 
 const collaborators = computed(() => data.value?.collaborators ?? [])
@@ -75,6 +89,12 @@ const workflows = computed(() => data.value?.workflows ?? [])
 const actionsRoute = computed(() =>
   `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/actions`,
 )
+
+const hasData = computed(() => (
+  collaborators.value.length + branches.value.length + commits.value.length + pullRequests.value.length + workflows.value.length
+) > 0)
+const showInitialSkeleton = computed(() => pending.value && !hasData.value)
+const showStaleOverlay = computed(() => pending.value && hasData.value)
 
 const pageCards = computed(() => [
   {
@@ -152,8 +172,8 @@ const kpis = computed(() => [
     >
       <template #right>
         <v-text-field
-          v-model="applicationSlug"
-          :label="t('world.crm.repositories.fields.applicationSlugOptional')"
+          v-model="applicationSlugInput"
+          label="Application slug (optional)"
           variant="outlined"
           density="comfortable"
           hide-details
@@ -162,12 +182,12 @@ const kpis = computed(() => [
     </WorldModuleShell>
 
     <v-container fluid>
-      <CrmPageSkeleton v-if="pending" variant="dashboard" />
+      <CrmPageSkeleton v-if="showInitialSkeleton" variant="dashboard" />
       <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">
         {{ t('world.crm.repositories.alerts.loadingDashboardError') }}
       </v-alert>
 
-      <template v-else>
+      <div v-else class="position-relative">
         <v-card class="pa-4 mb-4 postcard-gradient-card" rounded="xl">
           <h1 class="text-h5 mb-1">{{ repository }}</h1>
           <p class="text-body-2 text-medium-emphasis mb-0">
@@ -231,7 +251,25 @@ const kpis = computed(() => [
             </WorldCard>
           </v-col>
         </v-row>
-      </template>
+
+        <v-fade-transition>
+          <div v-if="showStaleOverlay" class="stale-overlay pa-3 rounded-xl">
+            <v-progress-linear indeterminate color="primary" class="mb-2" />
+            <p class="text-caption mb-0 text-medium-emphasis">{{ t('common.loading', 'Refreshing data...') }}</p>
+          </div>
+        </v-fade-transition>
+      </div>
     </v-container>
   </div>
 </template>
+
+<style scoped>
+.stale-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 220px;
+  background: rgb(var(--v-theme-surface));
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+}
+</style>
