@@ -196,7 +196,7 @@ async function deleteSprint() {
             cols="12"
             md="4"
           >
-            <v-card rounded="xl" class="pa-4 postcard-gradient-card crm-list-card platform-style-card h-100">
+            <WorldCard extra-class="pa-4 crm-list-card platform-style-card h-100">
               <div class="d-flex align-start justify-space-between ga-2 mb-2">
                 <h3 class="text-subtitle-1 mb-0">{{ sprint.name }}</h3>
                 <v-chip size="small" color="secondary" variant="tonal">{{
@@ -230,7 +230,7 @@ async function deleteSprint() {
                   @click="openDeleteDialog(sprint.id)"
                 />
               </div>
-            </v-card>
+            </WorldCard>
           </v-col>
 
           <v-col v-if="paginatedSprints.length === 0" cols="12">
@@ -239,7 +239,7 @@ async function deleteSprint() {
         </v-row>
 
         <div v-if="totalPages > 1" class="d-flex justify-center mt-6 app-pagination">
-          <v-pagination v-model="currentPage" :length="totalPages" rounded="circle" />
+          <WorldPagination v-model="currentPage" :length="totalPages" />
         </div>
       </template>
     </v-container>

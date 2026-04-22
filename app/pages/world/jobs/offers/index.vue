@@ -168,7 +168,7 @@ await fetchJobs()
     </WorldModuleDrawers>
 
     <v-container fluid>
-      <v-card rounded="xl" class="mb-4 pa-4 postcard-gradient-card">
+      <WorldCard extra-class="mb-4 pa-4">
         <v-text-field
           v-model="q"
           :label="t('world.jobs.offers.search.label')"
@@ -177,7 +177,7 @@ await fetchJobs()
           hide-details
           @keyup.enter="applyFilters"
         />
-      </v-card>
+      </WorldCard>
 
       <v-alert
         v-if="errorMessage"
@@ -192,7 +192,7 @@ await fetchJobs()
 
       <v-row>
         <v-col v-for="job in jobs" :key="job.id" cols="12">
-          <v-card rounded="xl" class="h-100 postcard-gradient-card">
+          <WorldCard extra-class="h-100">
             <v-card-title class="text-wrap pb-1">{{ job.title }}</v-card-title>
             <v-card-subtitle class="pb-0">
               {{ job.company.name }} • {{ job.location }} •
@@ -225,7 +225,7 @@ await fetchJobs()
                 {{ t('world.jobs.offers.actions.viewDetails') }}
               </v-btn>
             </v-card-actions>
-          </v-card>
+          </WorldCard>
         </v-col>
       </v-row>
 
@@ -238,7 +238,7 @@ await fetchJobs()
       </v-card>
 
       <div class="d-flex justify-center py-4">
-        <v-pagination v-model="page" :length="totalPages" :total-visible="7" />
+        <WorldPagination v-model="page" :length="totalPages" />
       </div>
 
       <div class="text-center text-caption text-medium-emphasis pb-6">
