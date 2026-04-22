@@ -274,7 +274,12 @@ async function onFinish(result: 'win' | 'lose') {
 <template>
   <div>
     <AppPageDrawers>
+      <template #left>
+        <GamesDrawersLeftPanel />
+      </template>
       <template #right>
+        <GamesDrawersRightPanel />
+        <v-divider class="my-4" />
         <div class="arena-panel-stack">
           <v-card rounded="xl" class="arena-panel-card arena-interactive">
             <v-card-title>Live session</v-card-title>
