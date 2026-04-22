@@ -190,6 +190,16 @@ function participantForConversation(conversation: ConversationSummary) {
   )
 }
 
+function conversationParticipantUser(
+  conversationId: string,
+  userId: string,
+): ChatUser | undefined {
+  const conversation = conversations.value.find((entry) => entry.id === conversationId)
+  if (!conversation) return undefined
+
+  return conversation.participants.find((participant) => participant.user?.id === userId)?.user
+}
+
 function participantName(conversation: ConversationSummary) {
   const target = participantForConversation(conversation)?.user
   return (
@@ -622,8 +632,13 @@ function attachMercureSubscription(conversationId: string) {
                   owner: true,
                 }
               : {
-                  id: String(payload.senderId || ''),
-                  owner: false,
+                  ...(conversationParticipantUser(
+                    String(payload.conversationId || ''),
+                    String(payload.senderId || ''),
+                  ) || {
+                    id: String(payload.senderId || ''),
+                    owner: false,
+                  }),
                 },
             reactions: [],
             read: mine,
