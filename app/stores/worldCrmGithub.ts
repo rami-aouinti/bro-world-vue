@@ -6,6 +6,9 @@ import type {
   CrmGithubCreateIssuePayload,
   CrmGithubCreateProjectBoardPayload,
   CrmGithubCreateRepositoryPayload,
+  CrmGithubCommitDetail,
+  CrmGithubCommitSummary,
+  CrmGithubCollaborator,
   CrmGithubDeleteBranchPayload,
   CrmGithubIssueCommentPayload,
   CrmGithubIssueStatePayload,
@@ -16,6 +19,8 @@ import type {
   CrmGithubSyncContext,
   CrmGithubTaskRequestBranchPayload,
   CrmGithubUpdateRepositoryBindingPayload,
+  CrmGithubWorkflow,
+  CrmGithubWorkflowRun,
 } from '~/types/world/crmGithub'
 
 const CRM_GITHUB_TTL_MS = 3 * 60 * 1000
@@ -232,6 +237,28 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
       }),
     getPullRequests: (projectId: string, query?: Record<string, unknown>) =>
       get<CrmGithubListResponse>(`${projectBase(projectId)}/pull-requests`, query),
+    getCommits: (projectId: string, query?: Record<string, unknown>) =>
+      get<CrmGithubListResponse<CrmGithubCommitSummary>>(`${projectBase(projectId)}/commits`, query),
+    getCommitDetail: (
+      projectId: string,
+      sha: string,
+      query?: Record<string, unknown>,
+    ) => get<CrmGithubCommitDetail>(`${projectBase(projectId)}/commits/${encodeURIComponent(sha)}`, query),
+    getCollaborators: (projectId: string, query?: Record<string, unknown>) =>
+      get<CrmGithubListResponse<CrmGithubCollaborator>>(`${projectBase(projectId)}/collaborators`, query),
+    getApplicationCollaborators: (
+      applicationSlug: string,
+      projectId: string,
+      query?: Record<string, unknown>,
+    ) =>
+      get<CrmGithubListResponse<CrmGithubCollaborator>>(
+        `/api/world/crm/applications/${encodeURIComponent(applicationSlug)}/projects/${projectId}/github/collaborators`,
+        query,
+      ),
+    getActionsWorkflows: (projectId: string, query?: Record<string, unknown>) =>
+      get<CrmGithubListResponse<CrmGithubWorkflow>>(`${projectBase(projectId)}/actions/workflows`, query),
+    getActionsRuns: (projectId: string, query?: Record<string, unknown>) =>
+      get<CrmGithubListResponse<CrmGithubWorkflowRun>>(`${projectBase(projectId)}/actions/runs`, query),
     getPullRequestDetail: (
       projectId: string,
       number: string | number,
