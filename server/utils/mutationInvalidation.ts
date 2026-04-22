@@ -105,6 +105,7 @@ const MUTATION_INVALIDATION_RULES: MutationInvalidationRule[] = [
     prefixes: ['quiz'],
   },
   { key: 'crm:general:mutate', scope: 'private', prefixes: ['crm'] },
+  { key: 'crm:applications:github:mutate', scope: 'private', prefixes: ['crm'] },
   {
     key: 'recruit-applicants',
     scope: 'private',

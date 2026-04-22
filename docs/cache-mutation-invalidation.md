@@ -113,6 +113,8 @@ Exemples:
 | `calendar:events:delete`             | private | `calendar`               |
 | `notifications:read-all`             | private | `notifications`          |
 | `quiz:submit`                        | public  | `quiz`                   |
+| `crm:general:mutate`                 | private | `crm`                    |
+| `crm:applications:github:mutate`     | private | `crm`                    |
 | `users:block:create`                 | private | `users`                  |
 | `users:block:delete`                 | private | `users`                  |
 | `users:friends:action`               | private | `users`, `notifications` |
@@ -124,3 +126,38 @@ Quand un nouvel endpoint mutation (`POST`, `PUT`, `PATCH`, `DELETE`) est ajouté
 1. Ajouter une règle dans `server/utils/mutationInvalidation.ts`.
 2. Passer `mutationKey` dans le handler (`mutatingPrivateApiCall` ou `createProxyHandler`).
 3. Mettre à jour ce tableau.
+
+## Module CRM GitHub (projects + applications)
+
+### TTL GET côté serveur (`server/utils/crmGithubGeneralApi.ts`)
+
+| Endpoint (pattern) | TTL |
+| --- | --- |
+| `projects/:project/github/commits` | 60s |
+| `projects/:project/github/branches` | 60s |
+| `projects/:project/github/pull-requests` | 60s |
+| `projects/:project/github/collaborators` | 60s |
+| `projects/:project/github/actions/workflows` | 180s |
+| `projects/:project/github/actions/runs` | 45s |
+| autres endpoints CRM GitHub | TTL CRM par défaut (`resolveCacheTtl('crm')`) |
+
+### Invalidation mutation par préfixe (éviter stale data)
+
+- `mutateCrmGithubGeneral` conserve l'invalidation globale `crm:general:mutate` et ajoute une invalidation **ciblée** des préfixes:
+  - `crm/general/projects/:project/github/<first-resource-segment>`
+  - `crm/general/projects/:project/github/dashboard`
+  - et, pour `actions/*`, `actions/workflows` + `actions/runs`
+- `mutateCrmGithubApplications` applique la même logique pour:
+  - `crm/applications/:applicationSlug/projects/:project/github/<first-resource-segment>`
+  - `crm/applications/:applicationSlug/projects/:project/github/dashboard`
+- L'invalidation est exécutée sur cache `private` (scope user) et `public` pour ces préfixes.
+
+### Store `app/stores/worldCrmGithub.ts`
+
+- Clés harmonisées en format stable:
+  - `github:project=<id>:resource=<resource>:<filters triés>`
+  - `github:app=<slug>:project=<id>:resource=<resource>:<filters triés>`
+- `forceRefresh(prefix?)` est exposé et repose sur l'invalidation locale des entrées store.
+- `preloadRepositoryCriticalDatasets(projectId, repository, applicationSlug?)` charge en parallèle une seule fois:
+  - collaborators, branches, commits, pull-requests, workflows
+  - puis les sous-pages réutilisent ces datasets via le cache store.
