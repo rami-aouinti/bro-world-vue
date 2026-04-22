@@ -123,8 +123,6 @@ const error = computed(() => projectsError.value || repositoriesError.value)
     />
 
     <v-container fluid>
-      <h1 class="text-h5 mb-4">{{ t('world.crm.nav.repositories', 'Repositories') }}</h1>
-
       <CrmPageSkeleton v-if="showInitialSkeleton" variant="list" :cards="6" />
       <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">
         {{ t('world.crm.repositories.alerts.loadingRepositoriesError', 'Unable to load repositories.') }}

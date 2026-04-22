@@ -188,13 +188,21 @@ const kpis = computed(() => [
       action-icon="mdi-source-repository"
     >
       <template #right>
-        <v-text-field
-          v-model="applicationSlugInput"
-          label="Application slug (optional)"
-          variant="outlined"
-          density="comfortable"
-          hide-details
-        />
+        <v-row class="mb-1">
+          <v-col
+            v-for="kpi in kpis"
+            :key="kpi.key"
+            cols="12"
+          >
+            <WorldCard class="pa-3 h-100" variant="text" rounded="xl">
+              <div class="d-flex align-center justify-space-between ga-2">
+                <span class="text-body-2 text-medium-emphasis">{{ kpi.label }}</span>
+                <v-icon :icon="kpi.icon" size="18" />
+              </div>
+              <p class="text-h5 mt-2 mb-0">{{ kpi.value }}</p>
+            </WorldCard>
+          </v-col>
+        </v-row>
       </template>
     </WorldModuleShell>
 
@@ -211,25 +219,6 @@ const kpis = computed(() => [
             {{ t('world.crm.repositories.labels.repositoryDashboardDescription') }}
           </p>
         </v-card>
-
-        <v-row class="mb-1">
-          <v-col
-            v-for="kpi in kpis"
-            :key="kpi.key"
-            cols="12"
-            sm="6"
-            md="4"
-            lg="2"
-          >
-            <v-card class="pa-3 h-100" variant="tonal" rounded="xl">
-              <div class="d-flex align-center justify-space-between ga-2">
-                <span class="text-body-2 text-medium-emphasis">{{ kpi.label }}</span>
-                <v-icon :icon="kpi.icon" size="18" />
-              </div>
-              <p class="text-h5 mt-2 mb-0">{{ kpi.value }}</p>
-            </v-card>
-          </v-col>
-        </v-row>
 
         <v-row>
           <v-col v-for="card in pageCards" :key="card.key" cols="12" md="6" lg="4">
