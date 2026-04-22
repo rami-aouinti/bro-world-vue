@@ -2281,11 +2281,35 @@
         "noHtmlContent": "Für diesen Kurs ist kein HTML-Inhalt verfügbar."
       },
       "documentation": {
-        "platformSummaryTitle": "Plattformübersicht",
-        "quickActionsTitle": "Schnellaktionen",
         "heroTitle": "Zentralisiere deine Lernpfade",
-        "heroDescription": "Koordiniere Kurse, Lernende und Leistung über einen zentralen Hub.",
-        "heroCta": "Kurse ansehen"
+        "heroDescription": "Koordiniere Kurse, Lernende und Leistung über einen zentralen operativen Hub.",
+        "sections": {
+          "courses": {
+            "title": "Kurse",
+            "description": "Verwalte Katalog, Veröffentlichung und Lernpfade in einem strukturierten Kursbereich."
+          },
+          "students": {
+            "title": "Lernende",
+            "description": "Behalte Einschreibungen, Fortschritt und Abschlüsse je Kohorte im Blick."
+          },
+          "analytics": {
+            "title": "Lernanalytik",
+            "description": "Prüfe Kennzahlen zu Abschluss, Zertifizierung und Engagement für fundierte Trainingsentscheidungen."
+          }
+        },
+        "cta": {
+          "hero": "Kurse erkunden",
+          "openSection": "{section} öffnen"
+        },
+        "navigation": {
+          "courses": "Kurse",
+          "students": "Lernende",
+          "exams": "Prüfungen"
+        },
+        "labels": {
+          "platformSummaryTitle": "Plattformübersicht",
+          "quickActionsTitle": "Schnellaktionen"
+        }
       },
       "references": {
         "title": "Referenzen",
@@ -2633,10 +2657,34 @@
         "twitterDescription": "Publish job offers and manage hiring efficiently with Bro World Jobs."
       },
       "documentation": {
-        "quickActionsTitle": "Schnellaktionen",
-        "heroTitle": "Schneller rekrutieren mit klarem Bereich",
-        "heroDescription": "Greife auf Angebote, Bewerbungs-Pipeline und Tools über einen zentralen Hub zu.",
-        "heroCta": "Stellenangebote ansehen"
+        "heroTitle": "Schneller rekrutieren mit einem klaren Hiring-Workspace",
+        "heroDescription": "Greife auf Stellen, Kandidaten-Pipelines und Bewerbungs-Tools über einen zentralen Navigationshub zu.",
+        "sections": {
+          "offers": {
+            "title": "Stellenangebote",
+            "description": "Durchsuche aktive Ausschreibungen, Filter und Rollendetails für fokussiertes Recruiting."
+          },
+          "applications": {
+            "title": "Bewerbungen",
+            "description": "Verfolge eingereichte Bewerbungen, Status und Kandidatenverlauf in einer zentralen Ansicht."
+          },
+          "pipeline": {
+            "title": "Hiring-Pipeline",
+            "description": "Überwache Phasenwechsel, Interview-Bereitschaft und Recruiter-Notizen entlang des gesamten Prozesses."
+          }
+        },
+        "cta": {
+          "hero": "Stellenangebote ansehen",
+          "openSection": "{section} öffnen"
+        },
+        "navigation": {
+          "offers": "Angebote",
+          "applications": "Bewerbungen",
+          "apply": "Bewerben"
+        },
+        "labels": {
+          "quickActionsTitle": "Schnellaktionen"
+        }
       },
       "references": {
         "title": "Referenzen",

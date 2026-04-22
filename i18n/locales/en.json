@@ -2511,11 +2511,35 @@
         "noHtmlContent": "No HTML content available for this course."
       },
       "documentation": {
-        "platformSummaryTitle": "Platform summary",
-        "quickActionsTitle": "Quick actions",
         "heroTitle": "Centralize your learning journeys",
         "heroDescription": "Coordinate courses, learners, and performance from a single operational hub.",
-        "heroCta": "Explore courses"
+        "sections": {
+          "courses": {
+            "title": "Courses",
+            "description": "Manage your catalog, publication status, and learning paths from a structured courses workspace."
+          },
+          "students": {
+            "title": "Students",
+            "description": "Follow learner enrollment, progression, and completion metrics across cohorts."
+          },
+          "analytics": {
+            "title": "Learning analytics",
+            "description": "Review completion, certification, and engagement indicators to guide training decisions."
+          }
+        },
+        "cta": {
+          "hero": "Explore courses",
+          "openSection": "Open {section}"
+        },
+        "navigation": {
+          "courses": "Courses",
+          "students": "Students",
+          "exams": "Exams"
+        },
+        "labels": {
+          "platformSummaryTitle": "Platform summary",
+          "quickActionsTitle": "Quick actions"
+        }
       },
       "references": {
         "title": "References",
@@ -2863,10 +2887,34 @@
         "twitterDescription": "Publish job offers and manage hiring efficiently with Bro World Jobs."
       },
       "documentation": {
-        "quickActionsTitle": "Quick actions",
         "heroTitle": "Recruit faster with a clear hiring workspace",
         "heroDescription": "Access offers, candidate pipelines, and application tools from one navigation hub.",
-        "heroCta": "Explore job offers"
+        "sections": {
+          "offers": {
+            "title": "Job offers",
+            "description": "Browse active openings, filters, and detailed role descriptions to keep recruiting focused."
+          },
+          "applications": {
+            "title": "Applications",
+            "description": "Track submitted applications, statuses, and candidate timelines in one consolidated view."
+          },
+          "pipeline": {
+            "title": "Hiring pipeline",
+            "description": "Monitor stage transitions, interview readiness, and recruiter notes across your hiring flow."
+          }
+        },
+        "cta": {
+          "hero": "Explore job offers",
+          "openSection": "Open {section}"
+        },
+        "navigation": {
+          "offers": "Offers",
+          "applications": "Applications",
+          "apply": "Apply"
+        },
+        "labels": {
+          "quickActionsTitle": "Quick actions"
+        }
       },
       "references": {
         "title": "References",
