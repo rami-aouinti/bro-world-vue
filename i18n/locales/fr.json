@@ -1842,7 +1842,14 @@
           "viewDashboard": "Voir le tableau de bord",
           "backToProjects": "Retour aux projets",
           "backToRepositories": "Retour aux dépôts",
-          "refresh": "Rafraîchir"
+          "refresh": "Rafraîchir",
+          "backToRepository": "Retour au repository",
+          "viewMore": "Voir plus",
+          "createPr": "Créer une PR",
+          "patchPr": "Modifier la PR",
+          "getPrCommits": "Voir les commits de la PR",
+          "patchIssue": "Modifier l’issue",
+          "patchRepository": "Modifier le repository"
         },
         "alerts": {
           "loadingProjects": "Chargement des projets...",
@@ -1852,22 +1859,95 @@
           "loadingRepositoriesError": "Impossible de charger les dépôts.",
           "emptyRepositories": "Aucun dépôt trouvé pour ce projet.",
           "loadingDashboard": "Chargement du tableau de bord du dépôt...",
-          "loadingDashboardError": "Impossible de charger une ou plusieurs sections du tableau de bord."
+          "loadingDashboardError": "Impossible de charger une ou plusieurs sections du tableau de bord.",
+          "loadingCommitsError": "Impossible de charger les commits.",
+          "loadingCommitDetails": "Impossible de charger le détail du commit.",
+          "loadingBranchesError": "Impossible de charger les branches.",
+          "loadingWorkflowsError": "Impossible de charger les workflows.",
+          "loadingWorkflowDetailsError": "Impossible de charger le détail du workflow.",
+          "loadingPullRequestsError": "Impossible de charger les pull requests.",
+          "loadingPullRequestDetailsError": "Impossible de charger le détail de la pull request.",
+          "unknownExecutionError": "Erreur d’exécution inconnue"
         },
         "fields": {
-          "jobId": "ID du job (optionnel)"
+          "jobId": "ID du job (optionnel)",
+          "applicationSlugOptional": "Slug de l’application (optionnel)",
+          "prTitle": "Titre de la PR",
+          "prHeadBranch": "Branche source de la PR",
+          "prBaseBranch": "Branche cible de la PR",
+          "newTitleOptional": "Nouveau titre (optionnel)",
+          "description": "Description"
         },
         "labels": {
           "state": "État",
           "openPrs": "PR ouvertes",
           "closedPrs": "PR fermées",
-          "mergedPrs": "PR fusionnées"
+          "mergedPrs": "PR fusionnées",
+          "collaborators": "Collaborateurs",
+          "branches": "Branches",
+          "commits": "Commits",
+          "pullRequests": "Pull requests",
+          "workflows": "Workflows",
+          "branchProtected": "Protégée",
+          "branchStandard": "Standard",
+          "branchUnprotected": "Non protégée",
+          "user": "Utilisateur",
+          "repositoryDashboardDescription": "Vue d’ensemble des branches, commits, pull requests, workflows et actions.",
+          "noData": "Aucune donnée",
+          "noItemsAvailable": "Aucun élément disponible pour le moment.",
+          "availableFilters": "Filtres disponibles",
+          "actionsHint": "Les IDs sont remplacés par des AppSelect sur la page Actions.",
+          "createPr": "Créer une PR",
+          "patchPr": "Modifier la PR",
+          "prCommits": "Commits de la PR",
+          "patchIssue": "Modifier l’issue",
+          "patchRepository": "Modifier le repository",
+          "pullRequest": "Pull request",
+          "issue": "Issue",
+          "response": "Réponse",
+          "debugJson": "JSON de debug",
+          "noDetailAvailable": "Aucun détail disponible pour le moment."
         },
         "sections": {
           "issues": "Issues ({count})",
           "pullRequests": "Pull requests ({count})",
           "projects": "Projects ({count})",
-          "branches": "Branches ({count})"
+          "branches": "Branches ({count})",
+          "commits": "Commits ({count})",
+          "workflows": "Workflows ({count})",
+          "workflowRuns": "Exécutions de workflow ({count})",
+          "collaborators": "Collaborateurs ({count})",
+          "itemActions": "Actions sur les éléments",
+          "itemActionsDescription": "Appliquez des actions POST/PATCH sur les PR, les issues et le repository."
+        },
+        "filters": {
+          "branch": "Filtrer par branche",
+          "state": "Filtrer par état",
+          "runStatus": "Filtrer le statut des exécutions"
+        },
+        "modal": {
+          "commitDetailsTitle": "Détails du commit {sha}",
+          "workflowDetailsTitle": "Détails du workflow #{id}",
+          "prDetailsTitle": "Détails de la PR #{number}",
+          "branchDetailsTitle": "Détails de la branche {name}",
+          "sha": "SHA",
+          "author": "Auteur",
+          "message": "Message",
+          "date": "Date",
+          "changedFiles": "Fichiers modifiés",
+          "id": "ID",
+          "name": "Nom",
+          "path": "Chemin",
+          "createdAt": "Créé le",
+          "updatedAt": "Mis à jour",
+          "pr": "PR",
+          "title": "Titre",
+          "mergedAt": "Fusionnée le",
+          "protection": "Protection",
+          "lastSha": "Dernier SHA"
+        },
+        "repositoryCard": {
+          "defaultBranch": "Branche par défaut"
         }
       },
       "contactsDetail": {

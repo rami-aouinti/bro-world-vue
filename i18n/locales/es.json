@@ -1598,7 +1598,14 @@
           "viewDashboard": "Ver panel",
           "backToProjects": "Volver a proyectos",
           "backToRepositories": "Volver a repositorios",
-          "refresh": "Actualizar"
+          "refresh": "Actualizar",
+          "backToRepository": "Volver al repositorio",
+          "viewMore": "Ver más",
+          "createPr": "Crear PR",
+          "patchPr": "Editar PR",
+          "getPrCommits": "Obtener commits de PR",
+          "patchIssue": "Editar issue",
+          "patchRepository": "Editar repositorio"
         },
         "alerts": {
           "loadingProjects": "Cargando proyectos...",
@@ -1608,22 +1615,95 @@
           "loadingRepositoriesError": "No se pudieron cargar los repositorios.",
           "emptyRepositories": "No se encontraron repositorios para este proyecto.",
           "loadingDashboard": "Cargando panel del repositorio...",
-          "loadingDashboardError": "No se pudo cargar una o más secciones del panel."
+          "loadingDashboardError": "No se pudo cargar una o más secciones del panel.",
+          "loadingCommitsError": "No se pudieron cargar los commits.",
+          "loadingCommitDetails": "No se pudieron cargar los detalles del commit.",
+          "loadingBranchesError": "No se pudieron cargar las ramas.",
+          "loadingWorkflowsError": "No se pudieron cargar los workflows.",
+          "loadingWorkflowDetailsError": "No se pudieron cargar los detalles del workflow.",
+          "loadingPullRequestsError": "No se pudieron cargar las pull requests.",
+          "loadingPullRequestDetailsError": "No se pudieron cargar los detalles de la pull request.",
+          "unknownExecutionError": "Error de ejecución desconocido"
         },
         "fields": {
-          "jobId": "ID del job (opcional)"
+          "jobId": "ID del job (opcional)",
+          "applicationSlugOptional": "Slug de aplicación (opcional)",
+          "prTitle": "Título de PR",
+          "prHeadBranch": "Rama origen de PR",
+          "prBaseBranch": "Rama base de PR",
+          "newTitleOptional": "Nuevo título (opcional)",
+          "description": "Descripción"
         },
         "labels": {
           "state": "Estado",
           "openPrs": "PR abiertas",
           "closedPrs": "PR cerradas",
-          "mergedPrs": "PR fusionadas"
+          "mergedPrs": "PR fusionadas",
+          "collaborators": "Colaboradores",
+          "branches": "Ramas",
+          "commits": "Commits",
+          "pullRequests": "Pull requests",
+          "workflows": "Workflows",
+          "branchProtected": "Protegida",
+          "branchStandard": "Estándar",
+          "branchUnprotected": "Sin protección",
+          "user": "Usuario",
+          "repositoryDashboardDescription": "Resumen de ramas, commits, pull requests, workflows y acciones.",
+          "noData": "Sin datos",
+          "noItemsAvailable": "No hay elementos disponibles todavía.",
+          "availableFilters": "Filtros disponibles",
+          "actionsHint": "Los IDs se reemplazan por AppSelect en la página Acciones.",
+          "createPr": "Crear PR",
+          "patchPr": "Editar PR",
+          "prCommits": "Commits de PR",
+          "patchIssue": "Editar issue",
+          "patchRepository": "Editar repositorio",
+          "pullRequest": "Pull request",
+          "issue": "Issue",
+          "response": "Respuesta",
+          "debugJson": "JSON de depuración",
+          "noDetailAvailable": "No hay detalles disponibles por ahora."
         },
         "sections": {
           "issues": "Issues ({count})",
           "pullRequests": "Pull requests ({count})",
           "projects": "Projects ({count})",
-          "branches": "Branches ({count})"
+          "branches": "Branches ({count})",
+          "commits": "Commits ({count})",
+          "workflows": "Workflows ({count})",
+          "workflowRuns": "Ejecuciones de workflow ({count})",
+          "collaborators": "Colaboradores ({count})",
+          "itemActions": "Acciones de elementos",
+          "itemActionsDescription": "Aplica acciones POST/PATCH en PR, issues y repositorio."
+        },
+        "filters": {
+          "branch": "Filtrar por rama",
+          "state": "Filtrar por estado",
+          "runStatus": "Filtrar estado de ejecución"
+        },
+        "modal": {
+          "commitDetailsTitle": "Detalles del commit {sha}",
+          "workflowDetailsTitle": "Detalles del workflow #{id}",
+          "prDetailsTitle": "Detalles de PR #{number}",
+          "branchDetailsTitle": "Detalles de la rama {name}",
+          "sha": "SHA",
+          "author": "Autor",
+          "message": "Mensaje",
+          "date": "Fecha",
+          "changedFiles": "Archivos modificados",
+          "id": "ID",
+          "name": "Nombre",
+          "path": "Ruta",
+          "createdAt": "Creado el",
+          "updatedAt": "Actualizado el",
+          "pr": "PR",
+          "title": "Título",
+          "mergedAt": "Fusionado el",
+          "protection": "Protección",
+          "lastSha": "Último SHA"
+        },
+        "repositoryCard": {
+          "defaultBranch": "Rama predeterminada"
         }
       },
       "contactsDetail": {

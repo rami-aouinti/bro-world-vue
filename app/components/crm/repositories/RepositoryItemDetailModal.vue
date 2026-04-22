@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
 const props = withDefaults(defineProps<{
   modelValue: boolean
   title: string
@@ -41,7 +43,7 @@ const hasPayload = computed(() => !!props.payload)
       <v-expansion-panels variant="accordion" class="mt-4">
         <v-expansion-panel>
           <v-expansion-panel-title>
-            Debug JSON
+            {{ t('world.crm.repositories.labels.debugJson') }}
           </v-expansion-panel-title>
           <v-expansion-panel-text>
             <pre class="json-preview">{{ JSON.stringify(payload, null, 2) }}</pre>
@@ -51,7 +53,7 @@ const hasPayload = computed(() => !!props.payload)
     </div>
 
     <v-alert v-else type="info" variant="tonal">
-      Aucun détail disponible pour le moment.
+      {{ t('world.crm.repositories.labels.noDetailAvailable') }}
     </v-alert>
   </AppModal>
 </template>
