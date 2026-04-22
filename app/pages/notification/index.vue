@@ -24,7 +24,16 @@ definePageMeta({
           :key="item.id"
           :title="item.title"
           :subtitle="item.description"
-          prepend-icon="mdi-bell-ring-outline"
+          :prepend-icon="
+            item.type === 'blog_notification' || item.type === 'friend_notification'
+              ? undefined
+              : 'mdi-bell-ring-outline'
+          "
+          :prepend-avatar="
+            item.type === 'blog_notification' || item.type === 'friend_notification'
+              ? item.from?.photo || item.fromPhoto
+              : undefined
+          "
           :to="`/notification/${item.id}`"
         />
       </v-list>

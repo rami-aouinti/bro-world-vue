@@ -13,9 +13,10 @@ export interface InboxItem {
 export type NotificationType = 'info' | 'security' | string
 
 export interface NotificationSender {
-  firstName: string
-  lastName: string
-  photo: string
+  id?: string
+  firstName?: string
+  lastName?: string
+  photo?: string
 }
 
 export interface UserNotificationItem {
@@ -26,6 +27,7 @@ export interface UserNotificationItem {
   read: boolean
   createdAt: string
   from: NotificationSender | null
+  fromPhoto?: string
   preview?: string
   content?: string
 }
