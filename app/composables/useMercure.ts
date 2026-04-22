@@ -51,9 +51,7 @@ export function useMercure() {
     ).trim()
 
     const resolvedWithCredentials = options?.withCredentials
-      ?? (authorizationToken
-        ? false
-        : isSameOriginHub && configuredWithCredentials)
+      ?? configuredWithCredentials
 
     const init: EventSourceInit & { headers?: Record<string, string> } = {
       withCredentials: resolvedWithCredentials,

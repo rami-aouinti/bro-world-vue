@@ -438,6 +438,9 @@ function attachMercureSubscription() {
         }
       },
     },
+    {
+      withCredentials: true,
+    },
   )
 }
 
