@@ -1857,7 +1857,14 @@
           "viewDashboard": "View dashboard",
           "backToProjects": "Back to projects",
           "backToRepositories": "Back to repositories",
-          "refresh": "Refresh"
+          "refresh": "Refresh",
+          "backToRepository": "Back to repository",
+          "viewMore": "View more",
+          "createPr": "Create PR",
+          "patchPr": "Patch PR",
+          "getPrCommits": "Get PR commits",
+          "patchIssue": "Patch issue",
+          "patchRepository": "Patch repository"
         },
         "alerts": {
           "loadingProjects": "Loading projects...",
@@ -1867,22 +1874,92 @@
           "loadingRepositoriesError": "Unable to load repositories.",
           "emptyRepositories": "No repositories found for this project.",
           "loadingDashboard": "Loading repository dashboard...",
-          "loadingDashboardError": "Unable to load one or more dashboard sections."
+          "loadingDashboardError": "Unable to load one or more dashboard sections.",
+          "loadingCommitsError": "Unable to load commits.",
+          "loadingCommitDetails": "Unable to load commit details.",
+          "loadingBranchesError": "Unable to load branches.",
+          "loadingWorkflowsError": "Unable to load workflows.",
+          "loadingWorkflowDetailsError": "Unable to load workflow details.",
+          "loadingPullRequestsError": "Unable to load pull requests.",
+          "loadingPullRequestDetailsError": "Unable to load pull request details.",
+          "unknownExecutionError": "Unknown execution error"
         },
         "fields": {
-          "jobId": "Job ID (optional)"
+          "jobId": "Job ID (optional)",
+          "applicationSlugOptional": "Application slug (optional)",
+          "prTitle": "PR title",
+          "prHeadBranch": "PR head branch",
+          "prBaseBranch": "PR base branch",
+          "newTitleOptional": "New title (optional)",
+          "description": "Description"
         },
         "labels": {
           "state": "State",
           "openPrs": "Open PRs",
           "closedPrs": "Closed PRs",
-          "mergedPrs": "Merged PRs"
+          "mergedPrs": "Merged PRs",
+          "collaborators": "Collaborators",
+          "branches": "Branches",
+          "commits": "Commits",
+          "pullRequests": "Pull requests",
+          "workflows": "Workflows",
+          "branchProtected": "Protected",
+          "branchStandard": "Standard",
+          "branchUnprotected": "Unprotected",
+          "user": "User",
+          "repositoryDashboardDescription": "Overview of branches, commits, pull requests, workflows, and actions.",
+          "noData": "No data",
+          "noItemsAvailable": "No items available yet.",
+          "availableFilters": "Available filters",
+          "actionsHint": "IDs are replaced with AppSelect controls on the Actions page.",
+          "createPr": "Create PR",
+          "patchPr": "Patch PR",
+          "prCommits": "PR commits",
+          "patchIssue": "Patch issue",
+          "patchRepository": "Patch repository",
+          "pullRequest": "Pull request",
+          "issue": "Issue",
+          "response": "Response",
+          "debugJson": "Debug JSON",
+          "noDetailAvailable": "No detail available yet."
         },
         "sections": {
           "issues": "Issues ({count})",
           "pullRequests": "Pull requests ({count})",
           "projects": "Projects ({count})",
-          "branches": "Branches ({count})"
+          "branches": "Branches ({count})",
+          "commits": "Commits ({count})",
+          "workflows": "Workflows ({count})",
+          "workflowRuns": "Workflow runs ({count})",
+          "collaborators": "Collaborators ({count})",
+          "itemActions": "Item actions",
+          "itemActionsDescription": "Apply POST/PATCH actions on PRs, issues and repository."
+        },
+        "filters": {
+          "branch": "Filter by branch",
+          "state": "Filter by state",
+          "runStatus": "Filter run status"
+        },
+        "modal": {
+          "commitDetailsTitle": "Commit details {sha}",
+          "workflowDetailsTitle": "Workflow details #{id}",
+          "prDetailsTitle": "PR details #{number}",
+          "branchDetailsTitle": "Branch details {name}",
+          "sha": "SHA",
+          "author": "Author",
+          "message": "Message",
+          "date": "Date",
+          "changedFiles": "Changed files",
+          "id": "ID",
+          "name": "Name",
+          "path": "Path",
+          "createdAt": "Created at",
+          "updatedAt": "Updated at",
+          "pr": "PR",
+          "title": "Title",
+          "mergedAt": "Merged at",
+          "protection": "Protection",
+          "lastSha": "Latest SHA"
         }
       },
       "contactsDetail": {

@@ -44,15 +44,15 @@ function openBranchDetail(branch: GithubBranch) {
     <WorldModuleShell
       :module-title="t('world.crm.label')"
       module-icon="mdi-account-group-outline"
-      :module-description="t('world.crm.repositories.moduleDescription', 'Repository sections')"
+      :module-description="t('world.crm.repositories.moduleDescription')"
       :nav-items="crmNavItems"
-      action-label="Branches"
+      :action-label="t('world.crm.repositories.sections.branches', { count: branches.length })"
       action-icon="mdi-source-branch"
     />
 
     <v-container fluid>
       <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push(`/world/crm/repositories/${projectId}/${encodeURIComponent(repository)}`)">
-        Retour au repository
+        {{ t('world.crm.repositories.actions.backToRepository') }}
       </v-btn>
 
       <CrmPageSkeleton v-if="showInitialSkeleton" variant="dashboard" />
@@ -83,14 +83,14 @@ function openBranchDetail(branch: GithubBranch) {
 
     <RepositoryItemDetailModal
       v-model="detailModalOpen"
-      :title="`Détails branche ${selectedBranch?.name ?? ''}`"
+      :title="t('world.crm.repositories.modal.branchDetailsTitle', { name: selectedBranch?.name ?? '' })"
       :payload="selectedBranch"
     >
       <template #summary="{ payload }">
         <v-row>
-          <v-col cols="12" md="6"><strong>Nom:</strong> {{ payload?.name ?? '-' }}</v-col>
-          <v-col cols="12" md="6"><strong>Protection:</strong> {{ payload?.protected ? 'Oui' : 'Non' }}</v-col>
-          <v-col cols="12"><strong>Dernier SHA:</strong> {{ payload?.commit?.sha ?? '-' }}</v-col>
+          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.name') }}:</strong> {{ payload?.name ?? '-' }}</v-col>
+          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.protection') }}:</strong> {{ payload?.protected ? t('common.yes') : t('common.no') }}</v-col>
+          <v-col cols="12"><strong>{{ t('world.crm.repositories.modal.lastSha') }}:</strong> {{ payload?.commit?.sha ?? '-' }}</v-col>
         </v-row>
       </template>
     </RepositoryItemDetailModal>

@@ -104,9 +104,9 @@ watch(detailModalOpen, (open) => {
     <WorldModuleShell
       :module-title="t('world.crm.label')"
       module-icon="mdi-account-group-outline"
-      :module-description="t('world.crm.repositories.moduleDescription', 'Repository sections')"
+      :module-description="t('world.crm.repositories.moduleDescription')"
       :nav-items="crmNavItems"
-      :action-label="'Commits'"
+      :action-label="t('world.crm.repositories.sections.commits', { count: commits.length })"
       action-icon="mdi-source-commit"
     >
       <template #right>
@@ -115,7 +115,7 @@ watch(detailModalOpen, (open) => {
           :items="branchOptions"
           item-title="title"
           item-value="value"
-          label="Filter by branch"
+          :label="t('world.crm.repositories.filters.branch')"
           clearable
           class="mb-2"
         />
@@ -124,7 +124,7 @@ watch(detailModalOpen, (open) => {
 
     <v-container fluid>
       <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push(`/world/crm/repositories/${projectId}/${encodeURIComponent(repository)}`)">
-        Retour au repository
+        {{ t('world.crm.repositories.actions.backToRepository') }}
       </v-btn>
 
       <v-text-field v-model="applicationSlugInput" label="Application slug (optional)" variant="outlined" density="comfortable" class="mb-4" />
@@ -150,18 +150,18 @@ watch(detailModalOpen, (open) => {
 
     <RepositoryItemDetailModal
       v-model="detailModalOpen"
-      :title="`Détails commit ${selectedCommitSha || ''}`"
+      :title="t('world.crm.repositories.modal.commitDetailsTitle', { sha: selectedCommitSha || '' })"
       :payload="commitDetailData"
       :loading="pendingCommitDetail"
-      :error="commitDetailError ? 'Impossible de charger le détail du commit.' : null"
+      :error="commitDetailError ? t('world.crm.repositories.alerts.loadingCommitDetails') : null"
     >
       <template #summary="{ payload }">
         <v-row dense>
-          <v-col cols="12" md="6"><strong>SHA:</strong> {{ payload?.sha }}</v-col>
-          <v-col cols="12" md="6"><strong>Auteur:</strong> {{ payload?.author }}</v-col>
-          <v-col cols="12"><strong>Message:</strong> {{ payload?.message }}</v-col>
-          <v-col cols="12" md="6"><strong>Date:</strong> {{ payload?.date ? new Date(String(payload.date)).toLocaleString() : '-' }}</v-col>
-          <v-col cols="12" md="6"><strong>Fichiers changés:</strong> {{ Array.isArray(payload?.files) ? payload.files.length : 0 }}</v-col>
+          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.sha') }}:</strong> {{ payload?.sha }}</v-col>
+          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.author') }}:</strong> {{ payload?.author }}</v-col>
+          <v-col cols="12"><strong>{{ t('world.crm.repositories.modal.message') }}:</strong> {{ payload?.message }}</v-col>
+          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.date') }}:</strong> {{ payload?.date ? new Date(String(payload.date)).toLocaleString() : '-' }}</v-col>
+          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.changedFiles') }}:</strong> {{ Array.isArray(payload?.files) ? payload.files.length : 0 }}</v-col>
         </v-row>
 
         <v-divider class="my-3" />

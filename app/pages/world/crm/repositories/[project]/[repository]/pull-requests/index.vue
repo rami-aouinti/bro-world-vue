@@ -107,19 +107,19 @@ watch(detailModalOpen, (open) => {
     <WorldModuleShell
       :module-title="t('world.crm.label')"
       module-icon="mdi-account-group-outline"
-      :module-description="t('world.crm.repositories.moduleDescription', 'Repository sections')"
+      :module-description="t('world.crm.repositories.moduleDescription')"
       :nav-items="crmNavItems"
-      action-label="Pull requests"
+      :action-label="t('world.crm.repositories.sections.pullRequests', { count: pullRequests.length })"
       action-icon="mdi-source-pull"
     >
       <template #right>
-        <AppSelect v-model="stateFilter" :items="['open', 'closed']" label="Filter by state" clearable class="mb-2" />
+        <AppSelect v-model="stateFilter" :items="['open', 'closed']" :label="t('world.crm.repositories.filters.state')" clearable class="mb-2" />
       </template>
     </WorldModuleShell>
 
     <v-container fluid>
       <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push(`/world/crm/repositories/${projectId}/${encodeURIComponent(repository)}`)">
-        Retour au repository
+        {{ t('world.crm.repositories.actions.backToRepository') }}
       </v-btn>
 
       <v-text-field v-model="applicationSlugInput" label="Application slug (optional)" variant="outlined" density="comfortable" class="mb-4" />
@@ -153,20 +153,20 @@ watch(detailModalOpen, (open) => {
 
     <RepositoryItemDetailModal
       v-model="detailModalOpen"
-      :title="`Détails PR #${selectedPrNumber || ''}`"
+      :title="t('world.crm.repositories.modal.prDetailsTitle', { number: selectedPrNumber || '' })"
       :payload="selectedPrDetail"
       :loading="pendingDetail"
-      :error="detailError ? 'Impossible de charger le détail de la PR.' : null"
+      :error="detailError ? t('world.crm.repositories.alerts.loadingPullRequestDetailsError') : null"
     >
       <template #summary="{ payload }">
         <v-row>
-          <v-col cols="12" md="6"><strong>PR:</strong> #{{ payload?.number ?? '-' }}</v-col>
-          <v-col cols="12" md="6"><strong>État:</strong> {{ payload?.state ?? '-' }}</v-col>
-          <v-col cols="12"><strong>Titre:</strong> {{ payload?.title ?? '-' }}</v-col>
-          <v-col cols="12" md="6"><strong>Auteur:</strong> {{ payload?.user && typeof payload.user === 'object' ? (payload.user as Record<string, unknown>).login : '-' }}</v-col>
-          <v-col cols="12" md="6"><strong>Créée le:</strong> {{ payload?.createdAt ? new Date(String(payload.createdAt)).toLocaleString() : '-' }}</v-col>
-          <v-col cols="12" md="6"><strong>Mise à jour:</strong> {{ payload?.updatedAt ? new Date(String(payload.updatedAt)).toLocaleString() : '-' }}</v-col>
-          <v-col cols="12" md="6"><strong>Merge:</strong> {{ payload?.mergedAt ? new Date(String(payload.mergedAt)).toLocaleString() : 'Non' }}</v-col>
+          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.pr') }}:</strong> #{{ payload?.number ?? '-' }}</v-col>
+          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.labels.state') }}:</strong> {{ payload?.state ?? '-' }}</v-col>
+          <v-col cols="12"><strong>{{ t('world.crm.repositories.modal.title') }}:</strong> {{ payload?.title ?? '-' }}</v-col>
+          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.author') }}:</strong> {{ payload?.user && typeof payload.user === 'object' ? (payload.user as Record<string, unknown>).login : '-' }}</v-col>
+          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.createdAt') }}:</strong> {{ payload?.createdAt ? new Date(String(payload.createdAt)).toLocaleString() : '-' }}</v-col>
+          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.updatedAt') }}:</strong> {{ payload?.updatedAt ? new Date(String(payload.updatedAt)).toLocaleString() : '-' }}</v-col>
+          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.mergedAt') }}:</strong> {{ payload?.mergedAt ? new Date(String(payload.mergedAt)).toLocaleString() : t('common.no') }}</v-col>
         </v-row>
       </template>
     </RepositoryItemDetailModal>

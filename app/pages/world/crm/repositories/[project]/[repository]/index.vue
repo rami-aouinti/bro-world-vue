@@ -104,7 +104,9 @@ const pageCards = computed(() => [
     to: `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/branches`,
     items: branches.value.slice(0, 4).map(branch => ({
       primary: branch.name || '-',
-      secondary: branch.protected ? 'Protected' : 'Standard',
+      secondary: branch.protected
+        ? t('world.crm.repositories.labels.branchProtected')
+        : t('world.crm.repositories.labels.branchStandard'),
     })),
   },
   {
@@ -139,22 +141,22 @@ const pageCards = computed(() => [
   },
   {
     key: 'actions',
-    title: t('world.crm.repositories.sections.itemActions', 'Actions'),
+    title: t('world.crm.repositories.sections.itemActions'),
     icon: 'mdi-playlist-check',
     to: actionsRoute.value,
     items: collaborators.value.slice(0, 4).map(collaborator => ({
       primary: collaborator.login || '-',
-      secondary: collaborator.type || 'User',
+      secondary: collaborator.type || t('world.crm.repositories.labels.user'),
     })),
   },
 ])
 
 const kpis = computed(() => [
-  { key: 'collaborators', label: 'Collaborateurs', value: collaborators.value.length, icon: 'mdi-account-multiple-outline' },
-  { key: 'branches', label: 'Branches', value: branches.value.length, icon: 'mdi-source-branch' },
-  { key: 'commits', label: 'Commits', value: commits.value.length, icon: 'mdi-source-commit' },
-  { key: 'pullRequests', label: 'Pull Requests', value: pullRequests.value.length, icon: 'mdi-source-pull' },
-  { key: 'workflows', label: 'Workflows', value: workflows.value.length, icon: 'mdi-robot' },
+  { key: 'collaborators', label: t('world.crm.repositories.labels.collaborators'), value: collaborators.value.length, icon: 'mdi-account-multiple-outline' },
+  { key: 'branches', label: t('world.crm.repositories.labels.branches'), value: branches.value.length, icon: 'mdi-source-branch' },
+  { key: 'commits', label: t('world.crm.repositories.labels.commits'), value: commits.value.length, icon: 'mdi-source-commit' },
+  { key: 'pullRequests', label: t('world.crm.repositories.labels.pullRequests'), value: pullRequests.value.length, icon: 'mdi-source-pull' },
+  { key: 'workflows', label: t('world.crm.repositories.labels.workflows'), value: workflows.value.length, icon: 'mdi-robot' },
 ])
 </script>
 
@@ -182,14 +184,14 @@ const kpis = computed(() => [
     <v-container fluid>
       <CrmPageSkeleton v-if="showInitialSkeleton" variant="dashboard" />
       <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">
-        Impossible de charger le dashboard du repository.
+        {{ t('world.crm.repositories.alerts.loadingDashboardError') }}
       </v-alert>
 
       <div v-else class="position-relative">
         <v-card class="pa-4 mb-4 postcard-gradient-card" rounded="xl">
           <h1 class="text-h5 mb-1">{{ repository }}</h1>
           <p class="text-body-2 text-medium-emphasis mb-0">
-            Vue d'ensemble des branches, commits, pull requests, workflows et actions.
+            {{ t('world.crm.repositories.labels.repositoryDashboardDescription') }}
           </p>
         </v-card>
 
@@ -230,8 +232,8 @@ const kpis = computed(() => [
                 />
                 <v-list-item
                   v-if="!card.items.length"
-                  title="Aucune donnée"
-                  subtitle="Aucun élément disponible pour l'instant."
+                  :title="t('world.crm.repositories.labels.noData')"
+                  :subtitle="t('world.crm.repositories.labels.noItemsAvailable')"
                   class="px-0"
                 />
               </v-list>
@@ -244,7 +246,7 @@ const kpis = computed(() => [
                 variant="tonal"
                 append-icon="mdi-arrow-right"
               >
-                Voir plus
+                {{ t('world.crm.repositories.actions.viewMore') }}
               </v-btn>
             </WorldCard>
           </v-col>
