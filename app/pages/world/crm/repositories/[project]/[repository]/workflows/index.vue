@@ -62,28 +62,28 @@ function openWorkflowDetail(workflowId: string | number) {
     <WorldModuleShell
       :module-title="t('world.crm.label')"
       module-icon="mdi-account-group-outline"
-      :module-description="t('world.crm.repositories.moduleDescription', 'Repository sections')"
+      :module-description="t('world.crm.repositories.moduleDescription')"
       :nav-items="crmNavItems"
-      action-label="Workflows"
+      :action-label="t('world.crm.repositories.sections.workflows', { count: workflows.length })"
       action-icon="mdi-robot"
     >
       <template #right>
-        <AppSelect v-model="statusFilter" :items="['queued', 'in_progress', 'completed']" label="Filter run status" clearable />
+        <AppSelect v-model="statusFilter" :items="['queued', 'in_progress', 'completed']" :label="t('world.crm.repositories.filters.runStatus')" clearable />
       </template>
     </WorldModuleShell>
 
     <v-container fluid>
       <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push(`/world/crm/repositories/${projectId}/${encodeURIComponent(repository)}`)">
-        Retour au repository
+        {{ t('world.crm.repositories.actions.backToRepository') }}
       </v-btn>
 
-      <v-text-field v-model="applicationSlug" label="Application slug (optional)" variant="outlined" density="comfortable" class="mb-4" />
+      <v-text-field v-model="applicationSlug" :label="t('world.crm.repositories.fields.applicationSlugOptional')" variant="outlined" density="comfortable" class="mb-4" />
 
       <CrmPageSkeleton v-if="pendingWorkflows" variant="dashboard" />
-      <v-alert v-else-if="workflowsError" type="error" variant="tonal" class="mb-4">Impossible de charger les workflows.</v-alert>
+      <v-alert v-else-if="workflowsError" type="error" variant="tonal" class="mb-4">{{ t('world.crm.repositories.alerts.loadingWorkflowsError') }}</v-alert>
 
       <v-card v-else class="pa-4 postcard-gradient-card" rounded="xl">
-        <h2 class="text-subtitle-1 mb-3">Workflows ({{ workflows.length }})</h2>
+        <h2 class="text-subtitle-1 mb-3">{{ t('world.crm.repositories.sections.workflows', { count: workflows.length }) }}</h2>
         <v-list lines="two" density="compact" class="bg-transparent">
           <v-list-item
             v-for="workflow in workflows"
@@ -99,23 +99,23 @@ function openWorkflowDetail(workflowId: string | number) {
 
     <RepositoryItemDetailModal
       v-model="detailModalOpen"
-      :title="`Détails workflow #${selectedWorkflowId || ''}`"
+      :title="t('world.crm.repositories.modal.workflowDetailsTitle', { id: selectedWorkflowId || '' })"
       :payload="workflowModalPayload"
       :loading="pendingRuns"
-      :error="runsError ? 'Impossible de charger le détail du workflow.' : null"
+      :error="runsError ? t('world.crm.repositories.alerts.loadingWorkflowDetailsError') : null"
     >
       <template #summary="{ payload }">
         <v-row>
-          <v-col cols="12" md="6"><strong>ID:</strong> {{ payload?.id ?? '-' }}</v-col>
-          <v-col cols="12" md="6"><strong>État:</strong> {{ payload?.state ?? '-' }}</v-col>
-          <v-col cols="12"><strong>Nom:</strong> {{ payload?.name ?? '-' }}</v-col>
-          <v-col cols="12"><strong>Path:</strong> {{ payload?.path ?? '-' }}</v-col>
-          <v-col cols="12" md="6"><strong>Créé le:</strong> {{ payload?.createdAt ? new Date(String(payload.createdAt)).toLocaleString() : '-' }}</v-col>
-          <v-col cols="12" md="6"><strong>Mis à jour:</strong> {{ payload?.updatedAt ? new Date(String(payload.updatedAt)).toLocaleString() : '-' }}</v-col>
+          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.id') }}:</strong> {{ payload?.id ?? '-' }}</v-col>
+          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.labels.state') }}:</strong> {{ payload?.state ?? '-' }}</v-col>
+          <v-col cols="12"><strong>{{ t('world.crm.repositories.modal.name') }}:</strong> {{ payload?.name ?? '-' }}</v-col>
+          <v-col cols="12"><strong>{{ t('world.crm.repositories.modal.path') }}:</strong> {{ payload?.path ?? '-' }}</v-col>
+          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.createdAt') }}:</strong> {{ payload?.createdAt ? new Date(String(payload.createdAt)).toLocaleString() : '-' }}</v-col>
+          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.updatedAt') }}:</strong> {{ payload?.updatedAt ? new Date(String(payload.updatedAt)).toLocaleString() : '-' }}</v-col>
         </v-row>
 
         <v-divider class="my-3" />
-        <h3 class="text-subtitle-2 mb-2">Runs ({{ Array.isArray(payload?.runs) ? payload.runs.length : 0 }})</h3>
+        <h3 class="text-subtitle-2 mb-2">{{ t('world.crm.repositories.sections.workflowRuns', { count: Array.isArray(payload?.runs) ? payload.runs.length : 0 }) }}</h3>
         <v-list lines="two" density="compact" class="bg-transparent">
           <v-list-item
             v-for="run in Array.isArray(payload?.runs) ? payload.runs : []"

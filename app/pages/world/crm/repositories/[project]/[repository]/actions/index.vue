@@ -62,23 +62,23 @@ const issueOptions = computed(() =>
     <WorldModuleShell
       :module-title="t('world.crm.label')"
       module-icon="mdi-account-group-outline"
-      :module-description="t('world.crm.repositories.moduleDescription', 'Repository sections')"
+      :module-description="t('world.crm.repositories.moduleDescription')"
       :nav-items="crmNavItems"
-      action-label="Actions"
+      :action-label="t('world.crm.repositories.sections.itemActions')"
       action-icon="mdi-playlist-check"
     >
       <template #right>
-        <p class="text-caption mb-1">Filtres disponibles</p>
-        <p class="text-body-2 mb-0">Les IDs sont remplacés par des AppSelect sur la page Actions.</p>
+        <p class="text-caption mb-1">{{ t('world.crm.repositories.labels.availableFilters') }}</p>
+        <p class="text-body-2 mb-0">{{ t('world.crm.repositories.labels.actionsHint') }}</p>
       </template>
     </WorldModuleShell>
 
     <v-container fluid>
       <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push(`/world/crm/repositories/${projectId}/${encodeURIComponent(repository)}`)">
-        Retour au repository
+        {{ t('world.crm.repositories.actions.backToRepository') }}
       </v-btn>
 
-      <v-text-field v-model="applicationSlug" label="Application slug (optional)" variant="outlined" density="comfortable" class="mb-4" />
+      <v-text-field v-model="applicationSlug" :label="t('world.crm.repositories.fields.applicationSlugOptional')" variant="outlined" density="comfortable" class="mb-4" />
 
       <CrmPageSkeleton v-if="pendingPullRequests || pendingIssues" variant="dashboard" />
 

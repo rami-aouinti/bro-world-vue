@@ -41,28 +41,28 @@ function openBranchDetail(branch: GithubBranch) {
     <WorldModuleShell
       :module-title="t('world.crm.label')"
       module-icon="mdi-account-group-outline"
-      :module-description="t('world.crm.repositories.moduleDescription', 'Repository sections')"
+      :module-description="t('world.crm.repositories.moduleDescription')"
       :nav-items="crmNavItems"
-      action-label="Branches"
+      :action-label="t('world.crm.repositories.sections.branches', { count: branches.length })"
       action-icon="mdi-source-branch"
     />
 
     <v-container fluid>
       <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push(`/world/crm/repositories/${projectId}/${encodeURIComponent(repository)}`)">
-        Retour au repository
+        {{ t('world.crm.repositories.actions.backToRepository') }}
       </v-btn>
 
       <CrmPageSkeleton v-if="pending" variant="dashboard" />
-      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">Impossible de charger les branches.</v-alert>
+      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">{{ t('world.crm.repositories.alerts.loadingBranchesError') }}</v-alert>
 
       <v-card v-else class="pa-4 postcard-gradient-card" rounded="xl">
-        <h2 class="text-subtitle-1 mb-3">Branches ({{ branches.length }})</h2>
+        <h2 class="text-subtitle-1 mb-3">{{ t('world.crm.repositories.sections.branches', { count: branches.length }) }}</h2>
         <v-list lines="one" density="compact" class="bg-transparent">
           <v-list-item
             v-for="branch in branches"
             :key="String(branch.name)"
             :title="branch.name ?? '-'"
-            :subtitle="`SHA: ${branch.commit?.sha ?? '-'} • ${branch.protected ? 'Protected' : 'Unprotected'}`"
+            :subtitle="`${t('world.crm.repositories.modal.sha')}: ${branch.commit?.sha ?? '-'} • ${branch.protected ? t('world.crm.repositories.labels.branchProtected') : t('world.crm.repositories.labels.branchUnprotected')}`"
             @click="openBranchDetail(branch)"
           />
         </v-list>
@@ -71,14 +71,14 @@ function openBranchDetail(branch: GithubBranch) {
 
     <RepositoryItemDetailModal
       v-model="detailModalOpen"
-      :title="`Détails branche ${selectedBranch?.name ?? ''}`"
+      :title="t('world.crm.repositories.modal.branchDetailsTitle', { name: selectedBranch?.name ?? '' })"
       :payload="selectedBranch"
     >
       <template #summary="{ payload }">
         <v-row>
-          <v-col cols="12" md="6"><strong>Nom:</strong> {{ payload?.name ?? '-' }}</v-col>
-          <v-col cols="12" md="6"><strong>Protection:</strong> {{ payload?.protected ? 'Oui' : 'Non' }}</v-col>
-          <v-col cols="12"><strong>Dernier SHA:</strong> {{ payload?.commit?.sha ?? '-' }}</v-col>
+          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.name') }}:</strong> {{ payload?.name ?? '-' }}</v-col>
+          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.protection') }}:</strong> {{ payload?.protected ? t('common.yes') : t('common.no') }}</v-col>
+          <v-col cols="12"><strong>{{ t('world.crm.repositories.modal.lastSha') }}:</strong> {{ payload?.commit?.sha ?? '-' }}</v-col>
         </v-row>
       </template>
     </RepositoryItemDetailModal>
