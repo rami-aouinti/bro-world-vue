@@ -12,14 +12,21 @@ type JobsPublicReferencePage = {
 }
 
 type ReferenceStatus = 'loading' | 'success' | 'unavailable'
+type JobsRoutePath = `/world/jobs${string}`
+
+const JOBS_BASE_PATH = '/world/jobs' as const
+
+function toJobsRoute(path = ''): JobsRoutePath {
+  return `${JOBS_BASE_PATH}${path}` as JobsRoutePath
+}
 
 // Convention: <module>-<section> slugs are backend-validated public page ids.
 const JOBS_REFERENCE_CONFIG = {
-  '/world/jobs/offers': {
+  [toJobsRoute('/offers')]: {
     publicPageSlug: 'jobs-offers',
     fallbackI18nKey: 'world.jobs.references.fallback.offers',
   },
-  '/world/jobs/applications': {
+  [toJobsRoute('/applications')]: {
     publicPageSlug: 'jobs-applications',
     fallbackI18nKey: 'world.jobs.references.fallback.applications',
   },
@@ -28,7 +35,7 @@ const JOBS_REFERENCE_CONFIG = {
 const { locale, t } = useI18n()
 const runtimeConfig = useRuntimeConfig()
 const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world-space.com'
-const pageUrl = new URL('/world/jobs', siteUrl).toString()
+const pageUrl = new URL(JOBS_BASE_PATH, siteUrl).toString()
 const seoImage = new URL('/img/platform/general/job.png', siteUrl).toString()
 const publicPagesStore = usePublicPagesStore()
 const { jobsNavItems } = useWorldJobsNavItems()
@@ -51,27 +58,27 @@ useSeoMeta({
 })
 
 const quickAccessLinks = computed(() => [
-  { label: t('world.jobs.documentation.navigation.offers'), to: '/world/jobs/offers' },
-  { label: t('world.jobs.documentation.navigation.applications'), to: '/world/jobs/applications' },
-  { label: t('world.jobs.documentation.navigation.apply'), to: '/world/jobs/apply' },
+  { label: t('world.jobs.documentation.navigation.offers'), to: toJobsRoute('/offers') },
+  { label: t('world.jobs.documentation.navigation.applications'), to: toJobsRoute('/applications') },
+  { label: t('world.jobs.documentation.navigation.apply'), to: toJobsRoute('/apply') },
 ])
 
 const documentationSections = computed(() => [
   {
     key: 'offers',
-    to: '/world/jobs/offers',
+    to: toJobsRoute('/offers'),
     title: t('world.jobs.documentation.sections.offers.title'),
     description: t('world.jobs.documentation.sections.offers.description'),
   },
   {
     key: 'applications',
-    to: '/world/jobs/applications',
+    to: toJobsRoute('/applications'),
     title: t('world.jobs.documentation.sections.applications.title'),
     description: t('world.jobs.documentation.sections.applications.description'),
   },
   {
     key: 'pipeline',
-    to: '/world/jobs',
+    to: JOBS_BASE_PATH,
     title: t('world.jobs.documentation.sections.pipeline.title'),
     description: t('world.jobs.documentation.sections.pipeline.description'),
   },
@@ -142,7 +149,7 @@ watch([locale, referenceNavItems], () => {
   <div>
     <WorldModuleDrawers
       :module-title="t('world.jobs.label')"
-      module-path="/world/jobs"
+      :module-path="JOBS_BASE_PATH"
       module-icon="mdi-briefcase-search-outline"
       :module-description="t('world.jobs.moduleDescription')"
       :nav-items="jobsNavItems"
@@ -217,7 +224,7 @@ watch([locale, referenceNavItems], () => {
                   {{ t('world.jobs.documentation.heroDescription') }}
                 </p>
               </div>
-              <v-btn color="primary" prepend-icon="mdi-rocket-launch-outline" to="/world/jobs/offers">
+              <v-btn color="primary" prepend-icon="mdi-rocket-launch-outline" :to="toJobsRoute('/offers')">
                 {{ t('world.jobs.documentation.cta.hero') }}
               </v-btn>
             </div>
