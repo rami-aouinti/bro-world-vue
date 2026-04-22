@@ -51,14 +51,16 @@ const resolvedMenuProps = computed(() => {
 
 <style>
 .app-select-menu-surface {
-  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 90%, #000 10%);
-  border: 1px solid rgba(var(--v-theme-primary), 0.3);
-  border-radius: 14px;
+  background: color-mix(in srgb, rgb(var(--v-theme-primary)) 90%, #000 10%);
   backdrop-filter: blur(6px);
   overflow: hidden;
 }
 
 .app-select-menu-surface .v-list {
-  background: transparent !important;
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.18) 0%,
+    transparent 60%
+  );
 }
 </style>

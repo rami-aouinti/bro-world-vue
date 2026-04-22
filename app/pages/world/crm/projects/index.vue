@@ -219,9 +219,9 @@ async function deleteProject() {
       <template v-else>
         <v-row>
           <v-col v-for="project in paginatedProjects" :key="project.id" cols="12" md="4">
-            <WorldCard extra-class="pa-4 crm-list-card platform-style-card h-100 d-flex flex-column">
+            <WorldCard extra-class="pa-4 platform-style-card h-100 d-flex flex-column">
               <div class="d-flex justify-space-between align-start ga-2 mb-2">
-                <h4 class="text-subtitle-1 mb-0">{{ project.name }}</h4>
+                <p class="text-subtitle-1 text-truncate mb-0">{{ project.name }}</p>
                 <v-chip size="small" color="primary" variant="tonal">{{ project.status }}</v-chip>
               </div>
               <div class="d-flex flex-wrap ga-2 mb-4">

@@ -196,16 +196,15 @@ async function deleteSprint() {
             cols="12"
             md="4"
           >
-            <WorldCard extra-class="pa-4 crm-list-card platform-style-card h-100">
+            <WorldCard extra-class="pa-4 platform-style-card h-100">
               <div class="d-flex align-start justify-space-between ga-2 mb-2">
-                <h3 class="text-subtitle-1 mb-0">{{ sprint.name }}</h3>
+                <p class="text-subtitle-1 text-truncate mb-2">{{ sprint.name }}</p>
                 <v-chip size="small" color="secondary" variant="tonal">{{
                   sprint.status
                 }}</v-chip>
               </div>
-              <p class="text-caption text-medium-emphasis mb-0 mt-3">
-                {{ t('world.crm.sprints.list.start') }}: {{ formatDate(sprint.startDate) }} ·
-                {{ t('world.crm.sprints.list.end') }}: {{ formatDate(sprint.endDate) }}
+              <p class="text-caption text-subtitle-1 text-medium-emphasis mb-0 mt-3">
+               {{ formatDate(sprint.startDate) }} - {{ formatDate(sprint.endDate) }}
               </p>
               <div v-if="isAdminOrRoot" class="d-flex justify-center ga-2 mt-3">
                 <v-btn

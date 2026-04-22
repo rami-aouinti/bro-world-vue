@@ -208,8 +208,8 @@ async function deleteRequest() {
       <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.taskRequests.alerts.loadListError') }}</v-alert>
       <v-row v-else>
         <v-col v-for="request in paginatedRequests" :key="request.id" cols="12" md="4">
-          <WorldCard extra-class="pa-4 h-100 d-flex flex-column crm-list-card platform-style-card">
-            <p class="text-subtitle-1 mb-2">{{ request.title }}</p>
+          <WorldCard extra-class="pa-4 h-100 d-flex flex-column platform-style-card">
+            <p class="text-subtitle-1 text-truncate mb-2">{{ request.title }}</p>
             <v-chip size="small" :color="requestStatusColor(request.status)" variant="tonal" class="mb-2">{{ request.status }}</v-chip>
             <div class="mb-4">
               <span class="text-body-2 text-medium-emphasis mr-2">{{ t('world.crm.taskRequests.list.task') }}:</span>

@@ -971,7 +971,6 @@ async function submitCreateApplication() {
   min-height: 100px;
   max-height: 320px;
   overflow: hidden;
-  border: 1px solid rgba(100, 116, 139, 0.15);
   transition:
     transform 0.25s ease,
     box-shadow 0.25s ease,

@@ -239,9 +239,9 @@ async function deleteTask() {
             cols="12"
             md="4"
           >
-            <WorldCard extra-class="pa-4 crm-list-card platform-style-card h-100">
+            <WorldCard extra-class="pa-4 platform-style-card h-100">
               <div class="d-flex align-start justify-space-between ga-2 mb-2">
-                <h3 class="text-subtitle-1 mb-0">{{ task.title }}</h3>
+                <p class="text-subtitle-1 text-truncate mb-0">{{ task.title }}</p>
                 <v-chip size="small" :color="taskStatusColor(task.status)" variant="tonal">
                   {{ task.status }}
                 </v-chip>
