@@ -362,6 +362,16 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
       number: string | number,
       query?: Record<string, unknown>,
     ) => get(`${projectBase(projectId)}/pull-requests/${number}`, query),
+    getScopedPullRequestDetail: (
+      projectId: string,
+      number: string | number,
+      query?: Record<string, unknown>,
+      applicationSlug?: string,
+    ) =>
+      get(
+        `${scopedProjectBase(projectId, applicationSlug)}/pull-requests/${number}`,
+        query,
+      ),
     pullRequestAction: (
       projectId: string,
       number: string | number,
