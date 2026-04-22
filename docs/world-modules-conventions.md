@@ -61,3 +61,14 @@ Cette règle s’applique à toutes les ressources CRM (projects, tasks, sprints
 - Lors de chaque ajout de ressource CRM:
   1. créer la liste en `<resource>.vue`;
   2. créer le détail en `<resource>/[param]/index.vue`.
+
+## 7) Migration Drawers de page
+
+### Note de migration
+
+- Le composant legacy `app/components/PageDrawers.vue` est supprimé.
+- Utiliser **uniquement** `AppPageDrawers` (source: `app/components/App/PageDrawers.vue`) dans les layouts/pages/composants.
+- Pour les layouts clés (`app/layouts/*.vue`), les usages compatibles sont:
+  - passage d’un composant via `:left-component` / `:right-component`;
+  - slots nommés `#left` / `#right`.
+- Ne pas réintroduire `<PageDrawers>` dans les templates.

@@ -301,7 +301,7 @@ type UseBlogFeedOptions = {
 }
 
 export function useBlogFeed(options: UseBlogFeedOptions = {}) {
-  const { loggedIn } = useUserSession()
+  const { loggedIn, user } = useUserSession()
   const mode = computed<BlogFeedMode>(() => options.mode ?? 'general')
   const optimistic = computed(() => options.optimistic ?? true)
 
@@ -516,6 +516,63 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
     return null
   }
 
+  function buildSessionAuthor(): BlogAuthor | null {
+    const sessionUser = user.value
+    if (!sessionUser?.id) {
+      return null
+    }
+
+    const firstName = pickNullableString(sessionUser.firstName)
+    const lastName = pickNullableString(sessionUser.lastName)
+    const fullName = [firstName, lastName].filter(Boolean).join(' ').trim()
+    const username = pickNullableString(sessionUser.username)
+
+    return {
+      id: sessionUser.id,
+      username,
+      firstName,
+      lastName,
+      photo: pickNullableString(sessionUser.photo),
+      displayName: fullName || username || 'Utilisateur',
+      raw: toRecord(sessionUser),
+    }
+  }
+
+  function removeTemporaryComments(comments: BlogComment[]): BlogComment[] {
+    return comments
+      .filter((entry) => !String(entry.id).startsWith('tmp-'))
+      .map((entry) => ({
+        ...entry,
+        children: removeTemporaryComments(entry.children ?? []),
+      }))
+  }
+
+  function insertCommentInPost(
+    postEntry: BlogPost,
+    commentEntry: BlogComment,
+    parentCommentId: string | number | null,
+  ) {
+    if (parentCommentId === null || parentCommentId === '') {
+      postEntry.comments = [commentEntry, ...postEntry.comments]
+      return
+    }
+
+    const parentLocation = findCommentInTree(postEntry.comments, parentCommentId)
+
+    if (!parentLocation) {
+      postEntry.comments = [commentEntry, ...postEntry.comments]
+      return
+    }
+
+    const parentComment = parentLocation.list[parentLocation.index]
+    if (!parentComment) {
+      postEntry.comments = [commentEntry, ...postEntry.comments]
+      return
+    }
+
+    parentComment.children = [commentEntry, ...(parentComment.children ?? [])]
+  }
+
   function updateEntityById(
     target: 'post' | 'comment',
     id: string | number,
@@ -618,6 +675,13 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
   }
 
   async function comment(postId: string | number, body: UnknownRecord) {
+    const rawParentCommentId = body.parentCommentId
+    const parentCommentId =
+      typeof rawParentCommentId === 'string' ||
+      typeof rawParentCommentId === 'number'
+        ? rawParentCommentId
+        : null
+
     await runMutation(
       optimistic.value
         ? () => {
@@ -633,10 +697,12 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
             const draft = normalizeComment({
               id: `tmp-${Date.now()}`,
               content: pickString(body.content),
+              isAuthor: true,
+              author: buildSessionAuthor(),
               children: [],
               reactions: [],
             })
-            postEntry.comments = [draft, ...postEntry.comments]
+            insertCommentInPost(postEntry, draft, parentCommentId)
           }
         : null,
       async () => {
@@ -667,12 +733,8 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
         }
 
         const commentEntry = normalizeComment(commentPayload)
-        postEntry.comments = [
-          commentEntry,
-          ...postEntry.comments.filter(
-            (entry) => !String(entry.id).startsWith('tmp-'),
-          ),
-        ]
+        postEntry.comments = removeTemporaryComments(postEntry.comments)
+        insertCommentInPost(postEntry, commentEntry, parentCommentId)
 
         await invalidateBlogCaches()
       },

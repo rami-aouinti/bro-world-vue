@@ -141,10 +141,10 @@ const notificationMenuShow = ref(false)
 const inboxMenuShow = ref(false)
 const languageMenuShow = ref(false)
 
-const { loggedIn } = useUserSession()
+const { loggedIn, user } = useUserSession()
 const inboxNotificationsStore = useInboxNotificationsStore()
 const notificationStore = useNotificationStore()
-const { notificationsSortedDesc, unreadCount, inboxLatestThree } = storeToRefs(
+const { notificationsSortedDesc, unreadCount, inboxLatestThree, inboxUnreadCount } = storeToRefs(
   inboxNotificationsStore,
 )
 const { notifications: actionNotifications } = storeToRefs(notificationStore)
@@ -224,6 +224,18 @@ const allNotificationItems = computed(() => {
 
 const unreadTotalCount = computed(
   () => unreadCount.value + actionNotifications.value.length,
+)
+const currentUserId = computed(() => {
+  const rawUser = (user.value || {}) as Record<string, unknown>
+  return String(rawUser.id || '').trim()
+})
+
+watch(
+  currentUserId,
+  (userId) => {
+    inboxNotificationsStore.setCurrentUserId(userId)
+  },
+  { immediate: true },
 )
 
 type SupportedLocale = 'en' | 'fr' | 'es' | 'de'
@@ -318,14 +330,22 @@ const selectedLocale = computed<LocaleOption>(() => {
 
           <v-menu v-model="inboxMenuShow" location="top" offset="12">
             <template #activator="{ props }">
-              <v-btn
-                v-bind="props"
-                icon="mdi-message-text-outline"
-                size="48"
+              <v-badge
+                :model-value="inboxUnreadCount > 0"
+                :content="inboxUnreadCount"
                 color="primary"
-                variant="tonal"
-                :aria-label="t('appbar.inbox')"
-              />
+                offset-x="8"
+                offset-y="8"
+              >
+                <v-btn
+                  v-bind="props"
+                  icon="mdi-message-text-outline"
+                  size="48"
+                  color="primary"
+                  variant="tonal"
+                  :aria-label="t('appbar.inbox')"
+                />
+              </v-badge>
             </template>
             <v-card width="300">
               <v-list class="py-1">
