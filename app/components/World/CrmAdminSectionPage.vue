@@ -658,10 +658,9 @@ async function submitApiAction() {
       </v-row>
 
       <div v-if="totalPages > 1" class="d-flex justify-center mt-6">
-        <v-pagination
+        <WorldPagination
           v-model="currentPage"
           :length="totalPages"
-          rounded="circle"
         />
       </div>
     </v-container>

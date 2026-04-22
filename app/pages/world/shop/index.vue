@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { SessionUser } from '~/types/session'
 import type {
-  ShopGeneralCategory,
   ShopGeneralProduct,
 } from '~/types/world/shop'
 
@@ -70,19 +69,10 @@ const products = computed(() => shopStore.items as ShopGeneralProduct[])
 const totalItems = computed(() => shopStore.pagination.total)
 const totalPages = computed(() => shopStore.pagination.totalPages)
 
-const categories = computed(() => shopStore.categories as ShopGeneralCategory[])
-
 const hasError = computed(() => !!shopStore.error)
 const isEmpty = computed(
   () => !listLoading.value && !hasError.value && products.value.length === 0,
 )
-const promotionOptions = [
-  { title: '10%', value: '10' },
-  { title: '20%', value: '20' },
-  { title: '30%', value: '30' },
-  { title: '40%', value: '40' },
-  { title: '40+', value: '40+' },
-]
 
 function normalizedPromotionFilter() {
   if (!promotionFilter.value) return undefined
@@ -423,10 +413,9 @@ onMounted(async () => {
             style="max-width: 120px"
           />
 
-          <v-pagination
+          <WorldPagination
             v-model="page"
             :length="Math.max(1, totalPages)"
-            total-visible="7"
           />
         </v-card-actions>
       </v-card>

@@ -219,7 +219,7 @@ async function deleteProject() {
       <template v-else>
         <v-row>
           <v-col v-for="project in paginatedProjects" :key="project.id" cols="12" md="4">
-            <v-card rounded="xl" class="pa-4 postcard-gradient-card crm-list-card platform-style-card h-100 d-flex flex-column">
+            <WorldCard extra-class="pa-4 crm-list-card platform-style-card h-100 d-flex flex-column">
               <div class="d-flex justify-space-between align-start ga-2 mb-2">
                 <h4 class="text-subtitle-1 mb-0">{{ project.name }}</h4>
                 <v-chip size="small" color="primary" variant="tonal">{{ project.status }}</v-chip>
@@ -256,7 +256,7 @@ async function deleteProject() {
                   @click="openDeleteDialog(project.id)"
                 />
               </div>
-            </v-card>
+            </WorldCard>
           </v-col>
 
           <v-col v-if="paginatedProjects.length === 0" cols="12">
@@ -265,7 +265,7 @@ async function deleteProject() {
         </v-row>
 
         <div v-if="totalPages > 1" class="d-flex justify-center mt-6 app-pagination">
-          <v-pagination v-model="currentPage" :length="totalPages" rounded="circle" />
+          <WorldPagination v-model="currentPage" :length="totalPages" />
         </div>
       </template>
     </v-container>
