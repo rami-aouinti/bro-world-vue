@@ -1,15 +1,37 @@
 <script setup lang="ts">
+import type { PublicPageSlug } from '~~/shared/publicPageSlugs'
+
 definePageMeta({
   layout: 'job',
   title: 'world.jobs.label',
   description: 'world.jobs.seo.metaDescription',
 })
 
-const { t } = useI18n()
+type JobsPublicReferencePage = {
+  description?: string
+}
+
+type ReferenceStatus = 'loading' | 'success' | 'unavailable'
+
+// Convention: <module>-<section> slugs are backend-validated public page ids.
+const JOBS_REFERENCE_CONFIG = {
+  '/world/jobs/offers': {
+    publicPageSlug: 'jobs-offers',
+    fallbackI18nKey: 'world.jobs.references.fallback.offers',
+  },
+  '/world/jobs/applications': {
+    publicPageSlug: 'jobs-applications',
+    fallbackI18nKey: 'world.jobs.references.fallback.applications',
+  },
+} as const satisfies Record<string, { publicPageSlug: PublicPageSlug; fallbackI18nKey: string }>
+
+const { locale, t } = useI18n()
 const runtimeConfig = useRuntimeConfig()
 const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world-space.com'
 const pageUrl = new URL('/world/jobs', siteUrl).toString()
 const seoImage = new URL('/img/platform/general/job.png', siteUrl).toString()
+const publicPagesStore = usePublicPagesStore()
+const { jobsNavItems } = useWorldJobsNavItems()
 
 useSeoMeta({
   title: t('world.jobs.seo.title', 'Bro World Jobs | Job offers and recruiting'),
@@ -40,67 +62,71 @@ useSeoMeta({
   twitterCard: 'summary_large_image',
 })
 
-const jobsNavItems = computed(() => [
-  {
-    title: t('world.jobs.nav.offers'),
-    to: '/world/jobs/offers',
-    icon: 'mdi-briefcase-outline',
-  },
-  {
-    title: t('world.jobs.nav.myOffers'),
-    to: '/world/jobs/my-offers',
-    icon: 'mdi-account-tie-outline',
-  },
-  {
-    title: t('world.jobs.nav.applications'),
-    to: '/world/jobs/applications',
-    icon: 'mdi-file-document-outline',
-  },
-  {
-    title: t('world.jobs.nav.apply'),
-    to: '/world/jobs/apply',
-    icon: 'mdi-send-outline',
-  },
-  {
-    title: t('world.jobs.nav.admin'),
-    to: '/world/jobs/admin',
-    icon: 'mdi-shield-crown-outline',
-    rootOnly: true,
-  },
-])
-
-const documentationSections = computed(() => [
-  {
-    title: t('world.jobs.nav.offers'),
-    icon: 'mdi-briefcase-outline',
-    description: t('world.jobs.documentation.offersDescription', 'Explore published opportunities and active recruitments.'),
-    to: '/world/jobs/offers',
-  },
-  {
-    title: t('world.jobs.nav.myOffers'),
-    icon: 'mdi-account-tie-outline',
-    description: t('world.jobs.documentation.myOffersDescription', 'Manage your own offers, updates, and hiring workflow.'),
-    to: '/world/jobs/my-offers',
-  },
-  {
-    title: t('world.jobs.nav.applications'),
-    icon: 'mdi-file-document-outline',
-    description: t('world.jobs.documentation.applicationsDescription', 'Review candidate applications and follow interview progress.'),
-    to: '/world/jobs/applications',
-  },
-  {
-    title: t('world.jobs.nav.apply'),
-    icon: 'mdi-send-outline',
-    description: t('world.jobs.documentation.applyDescription', 'Submit applications quickly and track your submissions.'),
-    to: '/world/jobs/apply',
-  },
-])
-
 const quickAccessLinks = computed(() => [
   { label: t('world.jobs.nav.offers'), to: '/world/jobs/offers' },
   { label: t('world.jobs.nav.applications'), to: '/world/jobs/applications' },
   { label: t('world.jobs.nav.apply'), to: '/world/jobs/apply' },
 ])
+
+const referenceStatuses = ref<Record<string, ReferenceStatus>>({})
+const referenceDescriptions = ref<Record<string, string>>({})
+
+const referenceNavItems = computed(() =>
+  jobsNavItems.value.filter((item) => item.to in JOBS_REFERENCE_CONFIG),
+)
+
+const referenceCards = computed(() =>
+  referenceNavItems.value.map((item) => {
+    const config = JOBS_REFERENCE_CONFIG[item.to as keyof typeof JOBS_REFERENCE_CONFIG]
+    const status = referenceStatuses.value[item.to] ?? 'loading'
+    const fallback = t(config.fallbackI18nKey)
+
+    return {
+      ...item,
+      status,
+      description:
+        status === 'success'
+          ? referenceDescriptions.value[item.to] ?? fallback
+          : fallback,
+    }
+  }),
+)
+
+async function loadReferences() {
+  const entries = referenceNavItems.value
+
+  await Promise.all(
+    entries.map(async (item) => {
+      const config = JOBS_REFERENCE_CONFIG[item.to as keyof typeof JOBS_REFERENCE_CONFIG]
+
+      referenceStatuses.value[item.to] = 'loading'
+
+      try {
+        const page = await publicPagesStore.fetchPage<JobsPublicReferencePage>(
+          config.publicPageSlug,
+          locale.value,
+        )
+
+        const description =
+          typeof page.description === 'string' ? page.description.trim() : ''
+
+        if (description) {
+          referenceDescriptions.value[item.to] = description
+          referenceStatuses.value[item.to] = 'success'
+          return
+        }
+
+        referenceStatuses.value[item.to] = 'unavailable'
+      } catch {
+        referenceStatuses.value[item.to] = 'unavailable'
+      }
+    }),
+  )
+}
+
+watch([locale, referenceNavItems], () => {
+  loadReferences()
+}, { immediate: true })
 </script>
 
 <template>
@@ -189,40 +215,53 @@ const quickAccessLinks = computed(() => [
           </v-card>
         </v-col>
 
-        <v-col v-for="section in documentationSections" :key="section.title" cols="12" md="6">
-          <v-card rounded="xl" class="pa-5 postcard-gradient-card jobs-doc-card h-100">
-            <div class="d-flex align-center ga-2 mb-2">
-              <v-icon :icon="section.icon" color="primary" />
-              <h2 class="text-h6 mb-0">{{ section.title }}</h2>
-            </div>
-            <p class="text-body-2 text-medium-emphasis mb-4">{{ section.description }}</p>
-            <v-btn color="primary" variant="tonal" append-icon="mdi-arrow-right" :to="section.to">
-              {{ t('world.jobs.documentation.openSection', { section: section.title }) }}
-            </v-btn>
-          </v-card>
-        </v-col>
-
         <v-col cols="12">
           <v-card rounded="xl" class="pa-5 postcard-gradient-card jobs-doc-card">
             <div class="d-flex align-center ga-2 mb-3">
-              <v-icon icon="mdi-lightning-bolt-outline" color="primary" />
-              <h2 class="text-h6 mb-0">{{ t('world.jobs.documentation.quickNavigationTitle', 'Quick navigation') }}</h2>
+              <v-icon icon="mdi-book-open-page-variant-outline" color="primary" />
+              <h2 class="text-h6 mb-0">{{ t('world.jobs.references.title') }}</h2>
             </div>
             <p class="text-body-2 text-medium-emphasis mb-4">
-              {{ t('world.jobs.documentation.quickNavigationDescription', 'Jump directly to the most-used pages of the Jobs module.') }}
+              {{ t('world.jobs.references.subtitle') }}
             </p>
-            <div class="d-flex ga-2 flex-wrap">
-              <v-btn
-                v-for="link in quickAccessLinks"
-                :key="`quick-${link.to}`"
-                color="primary"
-                variant="tonal"
-                append-icon="mdi-arrow-right"
-                :to="link.to"
+
+            <v-row density="comfortable">
+              <v-col
+                v-for="reference in referenceCards"
+                :key="reference.to"
+                cols="12"
+                md="6"
               >
-                {{ link.label }}
-              </v-btn>
-            </div>
+                <v-card rounded="xl" variant="outlined" class="pa-4 h-100">
+                  <div class="d-flex align-center ga-2 mb-2">
+                    <v-icon :icon="reference.icon" color="primary" />
+                    <h3 class="text-subtitle-1 mb-0">{{ reference.title }}</h3>
+                    <v-spacer />
+                    <v-progress-circular
+                      v-if="reference.status === 'loading'"
+                      size="16"
+                      width="2"
+                      indeterminate
+                      color="primary"
+                    />
+                  </div>
+
+                  <p class="text-body-2 text-medium-emphasis mb-4">
+                    {{ reference.description }}
+                  </p>
+
+                  <v-btn
+                    color="primary"
+                    variant="tonal"
+                    append-icon="mdi-arrow-right"
+                    :to="reference.to"
+                    :disabled="reference.status === 'unavailable'"
+                  >
+                    {{ t('world.jobs.references.cta') }}
+                  </v-btn>
+                </v-card>
+              </v-col>
+            </v-row>
           </v-card>
         </v-col>
       </v-row>
@@ -261,20 +300,20 @@ const quickAccessLinks = computed(() => [
 @keyframes jobsGlow {
   0%,
   100% {
-    transform: translateY(0);
+    transform: scale(1);
+    opacity: 0.8;
   }
-
   50% {
-    transform: translateY(24px);
+    transform: scale(1.08);
+    opacity: 0.45;
   }
 }
 
 @keyframes jobsCardIn {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(8px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);

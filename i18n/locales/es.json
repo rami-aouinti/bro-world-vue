@@ -2253,6 +2253,22 @@
         "referenceDetail": "Detalle de referencia",
         "noAttachments": "No hay archivos adjuntos.",
         "noHtmlContent": "No hay contenido HTML disponible para este curso."
+      },
+      "documentation": {
+        "platformSummaryTitle": "Resumen de plataforma",
+        "quickActionsTitle": "Acciones rápidas",
+        "heroTitle": "Centraliza tus recorridos de aprendizaje",
+        "heroDescription": "Coordina cursos, alumnos y rendimiento desde un solo centro operativo.",
+        "heroCta": "Explorar cursos"
+      },
+      "references": {
+        "title": "Referencias",
+        "subtitle": "Vistas públicas de las páginas principales de Learning.",
+        "cta": "Abrir página",
+        "fallback": {
+          "courses": "Esta referencia no está disponible para cursos en este momento.",
+          "teachers": "Esta referencia no está disponible para profesores en este momento."
+        }
       }
     },
     "jobs": {
@@ -2589,6 +2605,21 @@
         "ogDescription": "Publish job offers and manage hiring efficiently with Bro World Jobs.",
         "twitterTitle": "Bro World Jobs | Job offers and recruiting",
         "twitterDescription": "Publish job offers and manage hiring efficiently with Bro World Jobs."
+      },
+      "documentation": {
+        "quickActionsTitle": "Acciones rápidas",
+        "heroTitle": "Contrata más rápido con un espacio claro",
+        "heroDescription": "Accede a ofertas, pipeline de candidatos y herramientas desde un solo panel.",
+        "heroCta": "Explorar ofertas"
+      },
+      "references": {
+        "title": "Referencias",
+        "subtitle": "Vistas públicas de las páginas principales de Jobs.",
+        "cta": "Abrir página",
+        "fallback": {
+          "offers": "Esta referencia no está disponible para ofertas en este momento.",
+          "applications": "Esta referencia no está disponible para candidaturas en este momento."
+        }
       }
     }
   },
