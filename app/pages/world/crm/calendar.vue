@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import CrmCalendarPanel from '~/components/crm/CrmCalendarPanel.vue'
+
 definePageMeta({ layout: 'crm', title: 'CRM Calendar' })
 
 const { t } = useI18n()
@@ -17,12 +19,7 @@ const { crmNavItems } = useWorldCrmNavItems()
     />
 
     <v-container fluid>
-      <v-card rounded="xl" class="pa-6 postcard-gradient-card">
-        <h1 class="text-h5 mb-2">Calendar</h1>
-        <p class="text-body-2 text-medium-emphasis mb-0">
-          {{ t('world.crm.comingSoon.calendar') }}
-        </p>
-      </v-card>
+      <CrmCalendarPanel />
     </v-container>
   </div>
 </template>

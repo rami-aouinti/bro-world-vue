@@ -82,6 +82,22 @@ const weatherSummary = computed(() => {
   return `${weather.temperatureC.toFixed(1)}°C · ${weather.condition}`
 })
 
+
+function uniqByKey<T>(items: T[], getKey: (item: T) => string) {
+  const seen = new Set<string>()
+
+  return items.filter((item) => {
+    const key = getKey(item)
+
+    if (!key || seen.has(key)) {
+      return false
+    }
+
+    seen.add(key)
+    return true
+  })
+}
+
 function pickRandomItems<T>(items: T[], count: number) {
   const shuffled = [...items]
 
@@ -105,12 +121,15 @@ async function loadRecommendations() {
 
   featuredJobs.value =
     jobsResult.status === 'fulfilled'
-      ? pickRandomItems(jobsResult.value.items ?? [], 2)
+      ? pickRandomItems(
+          uniqByKey(jobsResult.value.items ?? [], item => item.slug || item.id),
+          2,
+        )
       : []
 
   featuredProjects.value =
     projectsResult.status === 'fulfilled'
-      ? pickRandomItems(projectsResult.value.items ?? [], 2)
+      ? pickRandomItems(uniqByKey(projectsResult.value.items ?? [], item => item.id), 2)
       : []
 }
 
