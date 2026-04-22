@@ -12,7 +12,9 @@ const schoolStore = useWorldLearningSchoolStore()
 const resource = 'grades' as SchoolResource
 
 const search = ref('')
-const selectedField = ref<string | null>(null)
+const selectedClass = ref<string | null>(null)
+const selectedCourse = ref<string | null>(null)
+const selectedStudent = ref<string | null>(null)
 const referenceDialog = ref(false)
 const selectedReference = ref<{ resource: SchoolResource; id: string } | null>(null)
 
@@ -21,25 +23,64 @@ await schoolStore.fetchCollection(resource)
 const items = computed(() => schoolStore.getCollection(resource))
 const loading = computed(() => schoolStore.isLoading(resource))
 
-const headers = computed(() => {
-  const first = items.value[0] ?? {}
-  return Object.keys(first).map(key => ({ title: key, value: key }))
+const classOptions = computed(() => {
+  const byClass = new Map<string, { title: string; value: string }>()
+  for (const item of items.value) {
+    const classId = String(item.classId ?? item.className ?? '').trim()
+    const className = String(item.className ?? '').trim()
+    if (!classId || !className) continue
+    byClass.set(classId, { title: className, value: classId })
+  }
+  return Array.from(byClass.values()).sort((a, b) => a.title.localeCompare(b.title))
 })
 
-const availableFields = computed(() => headers.value.map(header => ({ title: header.title, value: header.value })))
+const courseOptions = computed(() => {
+  const byCourse = new Map<string, { title: string; value: string }>()
+  for (const item of items.value) {
+    const courseId = String(item.courseId ?? item.courseName ?? '').trim()
+    const courseName = String(item.courseName ?? '').trim()
+    if (!courseId || !courseName) continue
+    byCourse.set(courseId, { title: courseName, value: courseId })
+  }
+  return Array.from(byCourse.values()).sort((a, b) => a.title.localeCompare(b.title))
+})
+
+const studentOptions = computed(() => {
+  const byStudent = new Map<string, { title: string; value: string }>()
+  for (const item of items.value) {
+    const studentId = String(item.studentId ?? item.student ?? '').trim()
+    const studentName = String(item.student ?? '').trim()
+    if (!studentId || !studentName) continue
+    byStudent.set(studentId, { title: studentName, value: studentId })
+  }
+  return Array.from(byStudent.values()).sort((a, b) => a.title.localeCompare(b.title))
+})
 
 const filteredItems = computed(() => {
   const query = search.value.trim().toLowerCase()
-
-  if (!query) {
-    return items.value
-  }
-
   return items.value.filter((item) => {
-    if (selectedField.value) {
-      return String(item[selectedField.value] ?? '').toLowerCase().includes(query)
+    if (selectedClass.value) {
+      const classValue = String(item.classId ?? item.className ?? '').trim()
+      if (classValue !== selectedClass.value) {
+        return false
+      }
     }
 
+    if (selectedCourse.value) {
+      const courseValue = String(item.courseId ?? item.courseName ?? '').trim()
+      if (courseValue !== selectedCourse.value) {
+        return false
+      }
+    }
+
+    if (selectedStudent.value) {
+      const studentValue = String(item.studentId ?? item.student ?? '').trim()
+      if (studentValue !== selectedStudent.value) {
+        return false
+      }
+    }
+
+    if (!query) return true
     return Object.values(item).some(value => String(value ?? '').toLowerCase().includes(query))
   })
 })
@@ -90,7 +131,9 @@ async function openReference(payload: { key: string; value: string }) {
             variant="outlined"
             hide-details
           />
-          <AppSelect v-model="selectedField" :items="availableFields" :label="t('world.learning.common.field')" clearable />
+          <AppSelect v-model="selectedClass" :items="classOptions" label="Class" clearable />
+          <AppSelect v-model="selectedCourse" :items="courseOptions" label="Course" clearable />
+          <AppSelect v-model="selectedStudent" :items="studentOptions" label="Student" clearable />
         </div>
       </template>
     </WorldModuleShell>

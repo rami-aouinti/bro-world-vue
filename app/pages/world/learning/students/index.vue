@@ -12,7 +12,7 @@ const schoolStore = useWorldLearningSchoolStore()
 const resource = 'students' as SchoolResource
 
 const search = ref('')
-const selectedField = ref<string | null>(null)
+const selectedClass = ref<string | null>(null)
 const referenceDialog = ref(false)
 const selectedReference = ref<{ resource: SchoolResource; id: string } | null>(null)
 
@@ -21,25 +21,24 @@ await schoolStore.fetchCollection(resource)
 const items = computed(() => schoolStore.getCollection(resource))
 const loading = computed(() => schoolStore.isLoading(resource))
 
-const headers = computed(() => {
-  const first = items.value[0] ?? {}
-  return Object.keys(first).map(key => ({ title: key, value: key }))
+const classOptions = computed(() => {
+  const byClass = new Map<string, { title: string; value: string }>()
+  for (const item of items.value) {
+    const classId = String(item.classId ?? '').trim()
+    const className = String(item.className ?? '').trim()
+    if (!classId || !className) continue
+    byClass.set(classId, { title: className, value: classId })
+  }
+  return Array.from(byClass.values()).sort((a, b) => a.title.localeCompare(b.title))
 })
-
-const availableFields = computed(() => headers.value.map(header => ({ title: header.title, value: header.value })))
 
 const filteredItems = computed(() => {
   const query = search.value.trim().toLowerCase()
-
-  if (!query) {
-    return items.value
-  }
-
   return items.value.filter((item) => {
-    if (selectedField.value) {
-      return String(item[selectedField.value] ?? '').toLowerCase().includes(query)
+    if (selectedClass.value && String(item.classId ?? '').trim() !== selectedClass.value) {
+      return false
     }
-
+    if (!query) return true
     return Object.values(item).some(value => String(value ?? '').toLowerCase().includes(query))
   })
 })
@@ -90,7 +89,7 @@ async function openReference(payload: { key: string; value: string }) {
             variant="outlined"
             hide-details
           />
-          <AppSelect v-model="selectedField" :items="availableFields" :label="t('world.learning.common.field')" clearable />
+          <AppSelect v-model="selectedClass" :items="classOptions" label="Class" clearable />
         </div>
       </template>
     </WorldModuleShell>
