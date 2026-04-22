@@ -2499,11 +2499,35 @@
         "noHtmlContent": "Aucun contenu HTML disponible pour ce cours."
       },
       "documentation": {
-        "platformSummaryTitle": "Vue plateforme",
-        "quickActionsTitle": "Actions rapides",
         "heroTitle": "Centralisez vos parcours d’apprentissage",
         "heroDescription": "Coordonnez cours, apprenants et performances depuis un hub opérationnel unique.",
-        "heroCta": "Explorer les cours"
+        "sections": {
+          "courses": {
+            "title": "Cours",
+            "description": "Gérez votre catalogue, la publication et les parcours pédagogiques depuis un espace structuré."
+          },
+          "students": {
+            "title": "Apprenants",
+            "description": "Suivez les inscriptions, la progression et la complétion des apprenants par cohorte."
+          },
+          "analytics": {
+            "title": "Analytique learning",
+            "description": "Analysez les indicateurs de complétion, certification et engagement pour piloter la formation."
+          }
+        },
+        "cta": {
+          "hero": "Explorer les cours",
+          "openSection": "Ouvrir {section}"
+        },
+        "navigation": {
+          "courses": "Cours",
+          "students": "Apprenants",
+          "exams": "Examens"
+        },
+        "labels": {
+          "platformSummaryTitle": "Résumé de la plateforme",
+          "quickActionsTitle": "Actions rapides"
+        }
       },
       "references": {
         "title": "Références",
@@ -2851,10 +2875,34 @@
         "twitterDescription": "Publish job offers and manage hiring efficiently with Bro World Jobs."
       },
       "documentation": {
-        "quickActionsTitle": "Actions rapides",
-        "heroTitle": "Recrutez plus vite avec un espace clair",
-        "heroDescription": "Accédez aux offres, pipelines candidats et outils de candidature depuis un seul hub.",
-        "heroCta": "Explorer les offres"
+        "heroTitle": "Recrutez plus vite avec un espace de recrutement clair",
+        "heroDescription": "Accédez aux offres, pipelines candidats et outils de candidature depuis un seul hub de navigation.",
+        "sections": {
+          "offers": {
+            "title": "Offres d’emploi",
+            "description": "Parcourez les postes ouverts, les filtres et les détails de rôle pour garder un recrutement ciblé."
+          },
+          "applications": {
+            "title": "Candidatures",
+            "description": "Suivez les candidatures envoyées, leurs statuts et le parcours candidat dans une vue unique."
+          },
+          "pipeline": {
+            "title": "Pipeline de recrutement",
+            "description": "Supervisez les changements d’étape, la préparation des entretiens et les notes recruteur."
+          }
+        },
+        "cta": {
+          "hero": "Explorer les offres",
+          "openSection": "Ouvrir {section}"
+        },
+        "navigation": {
+          "offers": "Offres",
+          "applications": "Candidatures",
+          "apply": "Postuler"
+        },
+        "labels": {
+          "quickActionsTitle": "Actions rapides"
+        }
       },
       "references": {
         "title": "Références",

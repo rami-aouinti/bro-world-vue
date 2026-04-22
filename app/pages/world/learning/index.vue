@@ -35,30 +35,18 @@ const { learningNavItems } = useWorldLearningNavItems()
 const publicPagesStore = usePublicPagesStore()
 
 useSeoMeta({
-  title: t('world.learning.seo.title', 'Bro World Learning | Learning platform and learner tracking'),
-  description: t(
-    'world.learning.seo.description',
-    'Bro World Learning helps you manage courses, learning paths, analytics, and learner progress.',
-  ),
-  keywords: t(
-    'world.learning.seo.keywords',
-    'bro world learning, lms, e-learning platform, online training, learner tracking, learning analytics',
-  ),
+  title: t('world.learning.seo.title'),
+  description: t('world.learning.seo.description'),
+  keywords: t('world.learning.seo.keywords'),
   robots: 'index, follow, max-image-preview:large',
-  ogTitle: t('world.learning.seo.ogTitle', 'Bro World Learning | Learning platform'),
-  ogDescription: t(
-    'world.learning.seo.ogDescription',
-    'Track your courses, performance, and certifications with Bro World Learning.',
-  ),
+  ogTitle: t('world.learning.seo.ogTitle'),
+  ogDescription: t('world.learning.seo.ogDescription'),
   ogType: 'website',
   ogUrl: pageUrl,
   ogImage: seoImage,
   ogImageAlt: 'Bro World Learning analytics',
-  twitterTitle: t('world.learning.seo.twitterTitle', 'Bro World Learning | Learning platform'),
-  twitterDescription: t(
-    'world.learning.seo.twitterDescription',
-    'Track your courses, performance, and certifications with Bro World Learning.',
-  ),
+  twitterTitle: t('world.learning.seo.twitterTitle'),
+  twitterDescription: t('world.learning.seo.twitterDescription'),
   twitterImage: seoImage,
   twitterCard: 'summary_large_image',
 })
@@ -88,9 +76,30 @@ const certifiedCount = computed(
 )
 
 const quickAccessLinks = computed(() => [
-  { label: t('world.learning.nav.courses', 'Courses'), to: '/world/learning/courses' },
-  { label: t('world.learning.nav.students', 'Students'), to: '/world/learning/students' },
-  { label: t('world.learning.nav.exams', 'Exams'), to: '/world/learning/exams' },
+  { label: t('world.learning.documentation.navigation.courses'), to: '/world/learning/courses' },
+  { label: t('world.learning.documentation.navigation.students'), to: '/world/learning/students' },
+  { label: t('world.learning.documentation.navigation.exams'), to: '/world/learning/exams' },
+])
+
+const documentationSections = computed(() => [
+  {
+    key: 'courses',
+    to: '/world/learning/courses',
+    title: t('world.learning.documentation.sections.courses.title'),
+    description: t('world.learning.documentation.sections.courses.description'),
+  },
+  {
+    key: 'students',
+    to: '/world/learning/students',
+    title: t('world.learning.documentation.sections.students.title'),
+    description: t('world.learning.documentation.sections.students.description'),
+  },
+  {
+    key: 'analytics',
+    to: '/world/learning',
+    title: t('world.learning.documentation.sections.analytics.title'),
+    description: t('world.learning.documentation.sections.analytics.description'),
+  },
 ])
 
 const referenceStatuses = ref<Record<string, ReferenceStatus>>({})
@@ -156,10 +165,10 @@ watch([locale, referenceNavItems], () => {
 <template>
   <div>
     <WorldModuleDrawers
-      :module-title="t('world.learning.label', 'Learning')"
+      :module-title="t('world.learning.label')"
       module-path="/world/learning"
       module-icon="mdi-school-outline"
-      :module-description="t('world.learning.moduleDescription', 'School cards view with linked references')"
+      :module-description="t('world.learning.moduleDescription')"
       :nav-items="learningNavItems"
       :show-action="false"
       activate-right-drawer
@@ -173,10 +182,10 @@ watch([locale, referenceNavItems], () => {
               </v-avatar>
               <div class="flex-grow-1">
                 <div class="text-subtitle-2 font-weight-bold mb-1">
-                  {{ t('world.learning.label', 'Learning') }}
+                  {{ t('world.learning.label') }}
                 </div>
                 <div class="text-body-2 text-medium-emphasis">
-                  {{ t('world.learning.moduleDescription', 'School cards view with linked references') }}
+                  {{ t('world.learning.moduleDescription') }}
                 </div>
               </div>
             </div>
@@ -184,7 +193,7 @@ watch([locale, referenceNavItems], () => {
 
           <v-card variant="tonal" color="primary" class="pa-4">
             <div class="text-subtitle-2 font-weight-bold mb-2">
-              {{ t('world.learning.documentation.platformSummaryTitle', 'Platform summary') }}
+              {{ t('world.learning.documentation.labels.platformSummaryTitle') }}
             </div>
             <div class="d-flex flex-wrap ga-2">
               <v-chip color="primary" variant="tonal" label>
@@ -201,7 +210,7 @@ watch([locale, referenceNavItems], () => {
 
           <v-card variant="tonal" color="primary" class="pa-4">
             <div class="text-subtitle-2 font-weight-bold mb-2">
-              {{ t('world.learning.documentation.quickActionsTitle', 'Quick actions') }}
+              {{ t('world.learning.documentation.labels.quickActionsTitle') }}
             </div>
             <div class="d-flex flex-wrap ga-2">
               <v-chip
@@ -227,16 +236,38 @@ watch([locale, referenceNavItems], () => {
             <div class="d-flex align-center justify-space-between ga-3 flex-wrap">
               <div>
                 <h1 class="text-h5 font-weight-bold mb-2">
-                  {{ t('world.learning.documentation.heroTitle', 'Centralize your learning journeys') }}
+                  {{ t('world.learning.documentation.heroTitle') }}
                 </h1>
                 <p class="text-body-1 mb-0">
-                  {{ t('world.learning.documentation.heroDescription', 'Coordinate courses, learners, and performance from a single operational hub.') }}
+                  {{ t('world.learning.documentation.heroDescription') }}
                 </p>
               </div>
               <v-btn color="primary" prepend-icon="mdi-compass-outline" to="/world/learning/courses">
-                {{ t('world.learning.documentation.heroCta', 'Explore courses') }}
+                {{ t('world.learning.documentation.cta.hero') }}
               </v-btn>
             </div>
+          </v-card>
+        </v-col>
+
+
+        <v-col cols="12">
+          <v-card rounded="xl" class="pa-5 postcard-gradient-card learning-doc-card">
+            <v-row density="comfortable">
+              <v-col
+                v-for="section in documentationSections"
+                :key="section.key"
+                cols="12"
+                md="4"
+              >
+                <v-card rounded="xl" variant="outlined" class="pa-4 h-100">
+                  <h2 class="text-subtitle-1 font-weight-bold mb-2">{{ section.title }}</h2>
+                  <p class="text-body-2 text-medium-emphasis mb-4">{{ section.description }}</p>
+                  <v-btn color="primary" variant="tonal" append-icon="mdi-arrow-right" :to="section.to">
+                    {{ t('world.learning.documentation.cta.openSection', { section: section.title }) }}
+                  </v-btn>
+                </v-card>
+              </v-col>
+            </v-row>
           </v-card>
         </v-col>
 

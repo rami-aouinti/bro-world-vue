@@ -2255,11 +2255,35 @@
         "noHtmlContent": "No hay contenido HTML disponible para este curso."
       },
       "documentation": {
-        "platformSummaryTitle": "Resumen de plataforma",
-        "quickActionsTitle": "Acciones rápidas",
         "heroTitle": "Centraliza tus recorridos de aprendizaje",
-        "heroDescription": "Coordina cursos, alumnos y rendimiento desde un solo centro operativo.",
-        "heroCta": "Explorar cursos"
+        "heroDescription": "Coordina cursos, estudiantes y rendimiento desde un único centro operativo.",
+        "sections": {
+          "courses": {
+            "title": "Cursos",
+            "description": "Gestiona catálogo, publicación y rutas formativas desde un espacio de cursos estructurado."
+          },
+          "students": {
+            "title": "Estudiantes",
+            "description": "Supervisa inscripciones, progreso y finalización de estudiantes por cohorte."
+          },
+          "analytics": {
+            "title": "Analítica de aprendizaje",
+            "description": "Revisa indicadores de finalización, certificación y participación para orientar decisiones formativas."
+          }
+        },
+        "cta": {
+          "hero": "Explorar cursos",
+          "openSection": "Abrir {section}"
+        },
+        "navigation": {
+          "courses": "Cursos",
+          "students": "Estudiantes",
+          "exams": "Exámenes"
+        },
+        "labels": {
+          "platformSummaryTitle": "Resumen de la plataforma",
+          "quickActionsTitle": "Acciones rápidas"
+        }
       },
       "references": {
         "title": "Referencias",
@@ -2607,10 +2631,34 @@
         "twitterDescription": "Publish job offers and manage hiring efficiently with Bro World Jobs."
       },
       "documentation": {
-        "quickActionsTitle": "Acciones rápidas",
-        "heroTitle": "Contrata más rápido con un espacio claro",
-        "heroDescription": "Accede a ofertas, pipeline de candidatos y herramientas desde un solo panel.",
-        "heroCta": "Explorar ofertas"
+        "heroTitle": "Contrata más rápido con un espacio de selección claro",
+        "heroDescription": "Accede a ofertas, pipelines de candidatos y herramientas de postulación desde un único centro.",
+        "sections": {
+          "offers": {
+            "title": "Ofertas laborales",
+            "description": "Consulta vacantes activas, filtros y detalles del puesto para mantener el reclutamiento enfocado."
+          },
+          "applications": {
+            "title": "Postulaciones",
+            "description": "Sigue postulaciones enviadas, estados y cronología de candidatos en una vista unificada."
+          },
+          "pipeline": {
+            "title": "Pipeline de contratación",
+            "description": "Monitorea cambios de etapa, preparación de entrevistas y notas del reclutador en todo el flujo."
+          }
+        },
+        "cta": {
+          "hero": "Explorar ofertas",
+          "openSection": "Abrir {section}"
+        },
+        "navigation": {
+          "offers": "Ofertas",
+          "applications": "Postulaciones",
+          "apply": "Postular"
+        },
+        "labels": {
+          "quickActionsTitle": "Acciones rápidas"
+        }
       },
       "references": {
         "title": "Referencias",

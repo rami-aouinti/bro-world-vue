@@ -34,38 +34,47 @@ const publicPagesStore = usePublicPagesStore()
 const { jobsNavItems } = useWorldJobsNavItems()
 
 useSeoMeta({
-  title: t('world.jobs.seo.title', 'Bro World Jobs | Job offers and recruiting'),
-  description: t(
-    'world.jobs.seo.description',
-    'Bro World Jobs centralizes job posts, applications, interviews, and hiring follow-up in one place.',
-  ),
-  keywords: t(
-    'world.jobs.seo.keywords',
-    'bro world jobs, job board, recruiting, applications, talent management, hr platform',
-  ),
+  title: t('world.jobs.seo.title'),
+  description: t('world.jobs.seo.description'),
+  keywords: t('world.jobs.seo.keywords'),
   robots: 'index, follow, max-image-preview:large',
-  ogTitle: t('world.jobs.seo.ogTitle', 'Bro World Jobs | Job offers and recruiting'),
-  ogDescription: t(
-    'world.jobs.seo.ogDescription',
-    'Publish job offers and manage hiring efficiently with Bro World Jobs.',
-  ),
+  ogTitle: t('world.jobs.seo.ogTitle'),
+  ogDescription: t('world.jobs.seo.ogDescription'),
   ogType: 'website',
   ogUrl: pageUrl,
   ogImage: seoImage,
   ogImageAlt: 'Bro World Jobs recruitment dashboard',
-  twitterTitle: t('world.jobs.seo.twitterTitle', 'Bro World Jobs | Job offers and recruiting'),
-  twitterDescription: t(
-    'world.jobs.seo.twitterDescription',
-    'Publish job offers and manage hiring efficiently with Bro World Jobs.',
-  ),
+  twitterTitle: t('world.jobs.seo.twitterTitle'),
+  twitterDescription: t('world.jobs.seo.twitterDescription'),
   twitterImage: seoImage,
   twitterCard: 'summary_large_image',
 })
 
 const quickAccessLinks = computed(() => [
-  { label: t('world.jobs.nav.offers'), to: '/world/jobs/offers' },
-  { label: t('world.jobs.nav.applications'), to: '/world/jobs/applications' },
-  { label: t('world.jobs.nav.apply'), to: '/world/jobs/apply' },
+  { label: t('world.jobs.documentation.navigation.offers'), to: '/world/jobs/offers' },
+  { label: t('world.jobs.documentation.navigation.applications'), to: '/world/jobs/applications' },
+  { label: t('world.jobs.documentation.navigation.apply'), to: '/world/jobs/apply' },
+])
+
+const documentationSections = computed(() => [
+  {
+    key: 'offers',
+    to: '/world/jobs/offers',
+    title: t('world.jobs.documentation.sections.offers.title'),
+    description: t('world.jobs.documentation.sections.offers.description'),
+  },
+  {
+    key: 'applications',
+    to: '/world/jobs/applications',
+    title: t('world.jobs.documentation.sections.applications.title'),
+    description: t('world.jobs.documentation.sections.applications.description'),
+  },
+  {
+    key: 'pipeline',
+    to: '/world/jobs',
+    title: t('world.jobs.documentation.sections.pipeline.title'),
+    description: t('world.jobs.documentation.sections.pipeline.description'),
+  },
 ])
 
 const referenceStatuses = ref<Record<string, ReferenceStatus>>({})
@@ -176,7 +185,7 @@ watch([locale, referenceNavItems], () => {
 
           <v-card variant="tonal" color="primary" class="pa-4">
             <div class="text-subtitle-2 font-weight-bold mb-2">
-              {{ t('world.jobs.documentation.quickActionsTitle', 'Quick actions') }}
+              {{ t('world.jobs.documentation.labels.quickActionsTitle') }}
             </div>
             <div class="d-flex flex-wrap ga-2">
               <v-chip
@@ -202,16 +211,38 @@ watch([locale, referenceNavItems], () => {
             <div class="d-flex align-center justify-space-between ga-3 flex-wrap">
               <div>
                 <h1 class="text-h5 font-weight-bold mb-2">
-                  {{ t('world.jobs.documentation.heroTitle', 'Recruit faster with a clear hiring workspace') }}
+                  {{ t('world.jobs.documentation.heroTitle') }}
                 </h1>
                 <p class="text-body-1 mb-0">
-                  {{ t('world.jobs.documentation.heroDescription', 'Access offers, candidate pipelines, and application tools from one navigation hub.') }}
+                  {{ t('world.jobs.documentation.heroDescription') }}
                 </p>
               </div>
               <v-btn color="primary" prepend-icon="mdi-rocket-launch-outline" to="/world/jobs/offers">
-                {{ t('world.jobs.documentation.heroCta', 'Explore job offers') }}
+                {{ t('world.jobs.documentation.cta.hero') }}
               </v-btn>
             </div>
+          </v-card>
+        </v-col>
+
+
+        <v-col cols="12">
+          <v-card rounded="xl" class="pa-5 postcard-gradient-card jobs-doc-card">
+            <v-row density="comfortable">
+              <v-col
+                v-for="section in documentationSections"
+                :key="section.key"
+                cols="12"
+                md="4"
+              >
+                <v-card rounded="xl" variant="outlined" class="pa-4 h-100">
+                  <h2 class="text-subtitle-1 font-weight-bold mb-2">{{ section.title }}</h2>
+                  <p class="text-body-2 text-medium-emphasis mb-4">{{ section.description }}</p>
+                  <v-btn color="primary" variant="tonal" append-icon="mdi-arrow-right" :to="section.to">
+                    {{ t('world.jobs.documentation.cta.openSection', { section: section.title }) }}
+                  </v-btn>
+                </v-card>
+              </v-col>
+            </v-row>
           </v-card>
         </v-col>
 
