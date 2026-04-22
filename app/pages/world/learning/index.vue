@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { PublicPageSlug } from '~~/shared/publicPageSlugs'
 import { useWorldLearningStore } from '~/stores/worldLearning'
 
 definePageMeta({
@@ -7,12 +8,31 @@ definePageMeta({
   description: 'world.learning.seo.metaDescription',
 })
 
-const { t } = useI18n()
+type LearningPublicReferencePage = {
+  description?: string
+}
+
+type ReferenceStatus = 'loading' | 'success' | 'unavailable'
+
+// Convention: <module>-<section> slugs are backend-validated public page ids.
+const LEARNING_REFERENCE_CONFIG = {
+  '/world/learning/courses': {
+    publicPageSlug: 'learning-courses',
+    fallbackI18nKey: 'world.learning.references.fallback.courses',
+  },
+  '/world/learning/teachers': {
+    publicPageSlug: 'learning-teachers',
+    fallbackI18nKey: 'world.learning.references.fallback.teachers',
+  },
+} as const satisfies Record<string, { publicPageSlug: PublicPageSlug; fallbackI18nKey: string }>
+
+const { locale, t } = useI18n()
 const runtimeConfig = useRuntimeConfig()
 const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world-space.com'
 const pageUrl = new URL('/world/learning', siteUrl).toString()
 const seoImage = new URL('/img/platform/general/learning.png', siteUrl).toString()
 const { learningNavItems } = useWorldLearningNavItems()
+const publicPagesStore = usePublicPagesStore()
 
 useSeoMeta({
   title: t('world.learning.seo.title', 'Bro World Learning | Learning platform and learner tracking'),
@@ -67,38 +87,70 @@ const certifiedCount = computed(
   () => progressItems.value.filter((item) => item.certificate).length,
 )
 
-const documentationSections = computed(() => [
-  {
-    title: t('world.learning.nav.courses', 'Courses'),
-    icon: 'mdi-book-open-page-variant-outline',
-    description: t('world.learning.documentation.coursesDescription', 'Browse available courses and learning paths for each cohort.'),
-    to: '/world/learning/courses',
-  },
-  {
-    title: t('world.learning.nav.classes', 'Classes'),
-    icon: 'mdi-google-classroom',
-    description: t('world.learning.documentation.classesDescription', 'Organize classes, sessions, and progression milestones.'),
-    to: '/world/learning/classes',
-  },
-  {
-    title: t('world.learning.nav.students', 'Students'),
-    icon: 'mdi-account-group-outline',
-    description: t('world.learning.documentation.studentsDescription', 'Track student engagement, scores, and completion status.'),
-    to: '/world/learning/students',
-  },
-  {
-    title: t('world.learning.nav.grades', 'Grades'),
-    icon: 'mdi-chart-box-outline',
-    description: t('world.learning.documentation.gradesDescription', 'Review assessments, grades, and certification readiness.'),
-    to: '/world/learning/grades',
-  },
-])
-
 const quickAccessLinks = computed(() => [
   { label: t('world.learning.nav.courses', 'Courses'), to: '/world/learning/courses' },
   { label: t('world.learning.nav.students', 'Students'), to: '/world/learning/students' },
   { label: t('world.learning.nav.exams', 'Exams'), to: '/world/learning/exams' },
 ])
+
+const referenceStatuses = ref<Record<string, ReferenceStatus>>({})
+const referenceDescriptions = ref<Record<string, string>>({})
+
+const referenceNavItems = computed(() =>
+  learningNavItems.value.filter((item) => item.to in LEARNING_REFERENCE_CONFIG),
+)
+
+const referenceCards = computed(() =>
+  referenceNavItems.value.map((item) => {
+    const config = LEARNING_REFERENCE_CONFIG[item.to as keyof typeof LEARNING_REFERENCE_CONFIG]
+    const status = referenceStatuses.value[item.to] ?? 'loading'
+    const fallback = t(config.fallbackI18nKey)
+
+    return {
+      ...item,
+      status,
+      description:
+        status === 'success'
+          ? referenceDescriptions.value[item.to] ?? fallback
+          : fallback,
+    }
+  }),
+)
+
+async function loadReferences() {
+  const entries = referenceNavItems.value
+
+  await Promise.all(
+    entries.map(async (item) => {
+      const config = LEARNING_REFERENCE_CONFIG[item.to as keyof typeof LEARNING_REFERENCE_CONFIG]
+      referenceStatuses.value[item.to] = 'loading'
+
+      try {
+        const page = await publicPagesStore.fetchPage<LearningPublicReferencePage>(
+          config.publicPageSlug,
+          locale.value,
+        )
+
+        const description =
+          typeof page.description === 'string' ? page.description.trim() : ''
+
+        if (description) {
+          referenceDescriptions.value[item.to] = description
+          referenceStatuses.value[item.to] = 'success'
+          return
+        }
+
+        referenceStatuses.value[item.to] = 'unavailable'
+      } catch {
+        referenceStatuses.value[item.to] = 'unavailable'
+      }
+    }),
+  )
+}
+
+watch([locale, referenceNavItems], () => {
+  loadReferences()
+}, { immediate: true })
 </script>
 
 <template>
@@ -188,40 +240,53 @@ const quickAccessLinks = computed(() => [
           </v-card>
         </v-col>
 
-        <v-col v-for="section in documentationSections" :key="section.title" cols="12" md="6">
-          <v-card rounded="xl" class="pa-5 postcard-gradient-card learning-doc-card h-100">
-            <div class="d-flex align-center ga-2 mb-2">
-              <v-icon :icon="section.icon" color="primary" />
-              <h2 class="text-h6 mb-0">{{ section.title }}</h2>
-            </div>
-            <p class="text-body-2 text-medium-emphasis mb-4">{{ section.description }}</p>
-            <v-btn color="primary" variant="tonal" append-icon="mdi-arrow-right" :to="section.to">
-              {{ t('world.learning.documentation.openSection', { section: section.title }) }}
-            </v-btn>
-          </v-card>
-        </v-col>
-
         <v-col cols="12">
           <v-card rounded="xl" class="pa-5 postcard-gradient-card learning-doc-card">
             <div class="d-flex align-center ga-2 mb-3">
-              <v-icon icon="mdi-lightning-bolt-outline" color="primary" />
-              <h2 class="text-h6 mb-0">{{ t('world.learning.documentation.quickNavigationTitle', 'Quick navigation') }}</h2>
+              <v-icon icon="mdi-book-open-page-variant-outline" color="primary" />
+              <h2 class="text-h6 mb-0">{{ t('world.learning.references.title') }}</h2>
             </div>
             <p class="text-body-2 text-medium-emphasis mb-4">
-              {{ t('world.learning.documentation.quickNavigationDescription', 'Jump directly to the pages used daily by instructors and learners.') }}
+              {{ t('world.learning.references.subtitle') }}
             </p>
-            <div class="d-flex ga-2 flex-wrap">
-              <v-btn
-                v-for="link in quickAccessLinks"
-                :key="`quick-${link.to}`"
-                color="primary"
-                variant="tonal"
-                append-icon="mdi-arrow-right"
-                :to="link.to"
+
+            <v-row density="comfortable">
+              <v-col
+                v-for="reference in referenceCards"
+                :key="reference.to"
+                cols="12"
+                md="6"
               >
-                {{ link.label }}
-              </v-btn>
-            </div>
+                <v-card rounded="xl" variant="outlined" class="pa-4 h-100">
+                  <div class="d-flex align-center ga-2 mb-2">
+                    <v-icon :icon="reference.icon" color="primary" />
+                    <h3 class="text-subtitle-1 mb-0">{{ reference.title }}</h3>
+                    <v-spacer />
+                    <v-progress-circular
+                      v-if="reference.status === 'loading'"
+                      size="16"
+                      width="2"
+                      indeterminate
+                      color="primary"
+                    />
+                  </div>
+
+                  <p class="text-body-2 text-medium-emphasis mb-4">
+                    {{ reference.description }}
+                  </p>
+
+                  <v-btn
+                    color="primary"
+                    variant="tonal"
+                    append-icon="mdi-arrow-right"
+                    :to="reference.to"
+                    :disabled="reference.status === 'unavailable'"
+                  >
+                    {{ t('world.learning.references.cta') }}
+                  </v-btn>
+                </v-card>
+              </v-col>
+            </v-row>
           </v-card>
         </v-col>
       </v-row>
@@ -260,20 +325,20 @@ const quickAccessLinks = computed(() => [
 @keyframes learningGlow {
   0%,
   100% {
-    transform: translateY(0);
+    transform: scale(1);
+    opacity: 0.8;
   }
-
   50% {
-    transform: translateY(24px);
+    transform: scale(1.08);
+    opacity: 0.45;
   }
 }
 
 @keyframes learningCardIn {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(8px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);

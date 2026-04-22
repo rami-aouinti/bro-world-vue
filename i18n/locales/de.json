@@ -2279,6 +2279,22 @@
         "referenceDetail": "Referenzdetail",
         "noAttachments": "Keine Anhänge.",
         "noHtmlContent": "Für diesen Kurs ist kein HTML-Inhalt verfügbar."
+      },
+      "documentation": {
+        "platformSummaryTitle": "Plattformübersicht",
+        "quickActionsTitle": "Schnellaktionen",
+        "heroTitle": "Zentralisiere deine Lernpfade",
+        "heroDescription": "Koordiniere Kurse, Lernende und Leistung über einen zentralen Hub.",
+        "heroCta": "Kurse ansehen"
+      },
+      "references": {
+        "title": "Referenzen",
+        "subtitle": "Öffentliche Übersichten zu den wichtigsten Learning-Seiten.",
+        "cta": "Seite öffnen",
+        "fallback": {
+          "courses": "Diese Referenz ist für Kurse derzeit nicht verfügbar.",
+          "teachers": "Diese Referenz ist für Lehrkräfte derzeit nicht verfügbar."
+        }
       }
     },
     "jobs": {
@@ -2615,6 +2631,21 @@
         "ogDescription": "Publish job offers and manage hiring efficiently with Bro World Jobs.",
         "twitterTitle": "Bro World Jobs | Job offers and recruiting",
         "twitterDescription": "Publish job offers and manage hiring efficiently with Bro World Jobs."
+      },
+      "documentation": {
+        "quickActionsTitle": "Schnellaktionen",
+        "heroTitle": "Schneller rekrutieren mit klarem Bereich",
+        "heroDescription": "Greife auf Angebote, Bewerbungs-Pipeline und Tools über einen zentralen Hub zu.",
+        "heroCta": "Stellenangebote ansehen"
+      },
+      "references": {
+        "title": "Referenzen",
+        "subtitle": "Öffentliche Übersichten zu den wichtigsten Jobs-Seiten.",
+        "cta": "Seite öffnen",
+        "fallback": {
+          "offers": "Diese Referenz ist für Stellenangebote derzeit nicht verfügbar.",
+          "applications": "Diese Referenz ist für Bewerbungen derzeit nicht verfügbar."
+        }
       }
     }
   },

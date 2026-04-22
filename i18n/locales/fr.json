@@ -2497,6 +2497,22 @@
         "referenceDetail": "Détail référence",
         "noAttachments": "Aucune pièce jointe.",
         "noHtmlContent": "Aucun contenu HTML disponible pour ce cours."
+      },
+      "documentation": {
+        "platformSummaryTitle": "Vue plateforme",
+        "quickActionsTitle": "Actions rapides",
+        "heroTitle": "Centralisez vos parcours d’apprentissage",
+        "heroDescription": "Coordonnez cours, apprenants et performances depuis un hub opérationnel unique.",
+        "heroCta": "Explorer les cours"
+      },
+      "references": {
+        "title": "Références",
+        "subtitle": "Aperçus publics des pages principales du module Learning.",
+        "cta": "Ouvrir la page",
+        "fallback": {
+          "courses": "Cette référence est actuellement indisponible pour les cours.",
+          "teachers": "Cette référence est actuellement indisponible pour les enseignants."
+        }
       }
     },
     "jobs": {
@@ -2833,6 +2849,21 @@
         "ogDescription": "Publish job offers and manage hiring efficiently with Bro World Jobs.",
         "twitterTitle": "Bro World Jobs | Job offers and recruiting",
         "twitterDescription": "Publish job offers and manage hiring efficiently with Bro World Jobs."
+      },
+      "documentation": {
+        "quickActionsTitle": "Actions rapides",
+        "heroTitle": "Recrutez plus vite avec un espace clair",
+        "heroDescription": "Accédez aux offres, pipelines candidats et outils de candidature depuis un seul hub.",
+        "heroCta": "Explorer les offres"
+      },
+      "references": {
+        "title": "Références",
+        "subtitle": "Aperçus publics des pages principales du module Jobs.",
+        "cta": "Ouvrir la page",
+        "fallback": {
+          "offers": "Cette référence est actuellement indisponible pour les offres.",
+          "applications": "Cette référence est actuellement indisponible pour les candidatures."
+        }
       }
     }
   },

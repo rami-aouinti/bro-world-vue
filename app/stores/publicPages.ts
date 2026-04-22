@@ -1,4 +1,4 @@
-type PublicPageSlug = 'home' | 'about' | 'faq' | 'contact'
+import type { PublicPageSlug } from '~~/shared/publicPageSlugs'
 
 type CachedPublicPage = {
   fetchedAt: number
