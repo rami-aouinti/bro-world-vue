@@ -7,6 +7,14 @@ import type {
   CrmGithubWorkflow,
   CrmGithubWorkflowRun,
 } from '~/types/world/crmGithub'
+import RepositoryCommitsCard
+  from "~/components/crm/repositories/RepositoryCommitsCard.vue";
+import RepositoryCollaboratorsCard
+  from "~/components/crm/repositories/RepositoryCollaboratorsCard.vue";
+import RepositoryWorkflowsCard
+  from "~/components/crm/repositories/RepositoryWorkflowsCard.vue";
+import RepositoryWorkflowRunsCard
+  from "~/components/crm/repositories/RepositoryWorkflowRunsCard.vue";
 
 interface GithubBoard {
   id?: string | number
