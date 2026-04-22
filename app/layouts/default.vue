@@ -161,11 +161,9 @@ onUnmounted(() => {
 }
 
 .v-main {
-  padding-top: 74px;
-  padding-bottom: 16px;
+  padding-top: 60px;
   overflow-y: visible;
   transition-property: padding;
-  min-height: 100vh;
 }
 
 .breadcrumbs-wrapper {
@@ -176,7 +174,6 @@ onUnmounted(() => {
 @media (max-width: 960px) {
   .v-main {
     padding-top: 68px;
-    padding-bottom: 12px;
   }
 }
 </style>

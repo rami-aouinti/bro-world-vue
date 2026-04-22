@@ -945,14 +945,9 @@ async function submitCreateApplication() {
 </template>
 
 <style scoped>
-.platform-page {
-  min-height: calc(90vh - var(--v-layout-top, 0px));
-  display: flex;
-  flex-direction: column;
-}
 
 .platform-page__content {
-  min-height: calc(100vh - 220px);
+  min-height: 0;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -961,7 +956,6 @@ async function submitCreateApplication() {
 .platform-page__pagination {
   margin-top: auto;
   padding-top: 10px;
-  padding-bottom: 5px;
 }
 
 .skeleton-card {

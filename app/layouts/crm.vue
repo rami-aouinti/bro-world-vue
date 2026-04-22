@@ -160,7 +160,7 @@ onUnmounted(() => {
 }
 
 .v-main {
-  padding-top: 77px;
+  padding-top: 60px;
   padding-bottom: 5px;
   overflow-y: visible;
   transition-property: padding;
