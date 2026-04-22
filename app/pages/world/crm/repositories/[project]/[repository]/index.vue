@@ -15,6 +15,8 @@ import RepositoryWorkflowsCard
   from "~/components/crm/repositories/RepositoryWorkflowsCard.vue";
 import RepositoryWorkflowRunsCard
   from "~/components/crm/repositories/RepositoryWorkflowRunsCard.vue";
+import RepositoryItemActionsCard
+  from "~/components/crm/repositories/RepositoryItemActionsCard.vue";
 
 interface GithubBoard {
   id?: string | number
