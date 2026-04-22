@@ -162,6 +162,11 @@ html.dark {
 }
 
 .platform-style-card {
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.38) 0%,
+    transparent 20%
+  );
   cursor: pointer;
   transition:
     transform 0.25s ease,
