@@ -7,6 +7,7 @@ export interface InboxItem {
   avatar?: string
   preview?: string
   content?: string
+  unreadMessagesCount: number
 }
 
 export type NotificationType = 'info' | 'security' | string
@@ -38,6 +39,8 @@ export interface PrivateConversationParticipant {
   id: string
   firstName?: string
   lastName?: string
+  photo?: string
+  owner?: boolean
   user?: {
     id?: string
     firstName?: string
@@ -104,28 +107,46 @@ const getParticipantName = (
 ): string =>
   `${participant.user?.firstName || participant.firstName || ''} ${participant.user?.lastName || participant.lastName || ''}`.trim()
 
-const isParticipantOwner = (
-  participant: PrivateConversationParticipant,
-): boolean => Boolean(participant.user?.owner)
-
 const getParticipantUserId = (
   participant: PrivateConversationParticipant,
 ): string | undefined => participant.user?.id || participant.id
 
-const normalizePrivateConversation = (
+const getParticipantPhoto = (
+  participant: PrivateConversationParticipant,
+): string | undefined => participant.user?.photo || participant.photo
+
+const getParticipantOwnerFlag = (
+  participant: PrivateConversationParticipant,
+): boolean => Boolean(participant.user?.owner ?? participant.owner)
+
+const getTargetParticipant = (
   conversation: PrivateConversation,
-): InboxItem => {
+  currentUserId: string,
+): PrivateConversationParticipant | undefined => {
   const participants = Array.isArray(conversation.participants)
     ? conversation.participants
     : []
-  const participantFallbackTitle =
-    participants.find((participant) => {
-      if (conversation.ownerId) {
-        return getParticipantUserId(participant) !== conversation.ownerId
-      }
+  if (!participants.length) return undefined
 
-      return !isParticipantOwner(participant)
-    }) || participants[0]
+  const notCurrentUser = participants.filter((participant) => {
+    const participantUserId = getParticipantUserId(participant)
+    if (currentUserId) return participantUserId !== currentUserId
+    if (conversation.ownerId) return participantUserId !== conversation.ownerId
+    return !getParticipantOwnerFlag(participant)
+  })
+
+  const candidates = notCurrentUser.length ? notCurrentUser : participants
+  return (
+    candidates.find((participant) => Boolean(getParticipantPhoto(participant))) ||
+    candidates[0]
+  )
+}
+
+const normalizePrivateConversation = (
+  conversation: PrivateConversation,
+  currentUserId = '',
+): InboxItem => {
+  const participantFallbackTitle = getTargetParticipant(conversation, currentUserId)
   const title =
     conversation.title?.trim() ||
     (participantFallbackTitle
@@ -137,9 +158,12 @@ const normalizePrivateConversation = (
     id: conversation.id,
     title,
     createdAt: conversation.lastMessage?.createdAt || conversation.createdAt,
-    avatar: participantFallbackTitle?.user?.photo || undefined,
+    avatar: participantFallbackTitle
+      ? getParticipantPhoto(participantFallbackTitle)
+      : undefined,
     preview: content || undefined,
     content: content || undefined,
+    unreadMessagesCount: Number(conversation.unreadMessagesCount || 0),
   }
 }
 
@@ -149,6 +173,7 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
     conversationsById: {} as Record<string, PrivateConversation>,
     notifications: [] as UserNotificationItem[],
     unreadCount: 0,
+    currentUserId: '',
   }),
   getters: {
     inboxAll: (state) => [...state.inbox],
@@ -162,13 +187,25 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
     inboxLatestThree(): InboxItem[] {
       return this.inboxSortedDesc.slice(0, 3)
     },
+    inboxUnreadCount(): number {
+      return this.inbox.reduce(
+        (total, item) => total + Number(item.unreadMessagesCount || 0),
+        0,
+      )
+    },
     notificationsLatestThree(): UserNotificationItem[] {
       return this.notificationsSortedDesc.slice(0, 3)
     },
   },
   actions: {
+    setCurrentUserId(userId?: string | null) {
+      this.currentUserId = String(userId || '').trim()
+    },
     upsertInboxConversation(conversation: PrivateConversation) {
-      const normalizedConversation = normalizePrivateConversation(conversation)
+      const normalizedConversation = normalizePrivateConversation(
+        conversation,
+        this.currentUserId,
+      )
       const index = this.inbox.findIndex((item) => item.id === conversation.id)
 
       if (index >= 0) {
@@ -202,7 +239,9 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
           )
 
         const items = response.items || []
-        this.inbox = items.map(normalizePrivateConversation)
+        this.inbox = items.map((conversation) =>
+          normalizePrivateConversation(conversation, this.currentUserId),
+        )
         this.conversationsById = Object.fromEntries(
           items.map((conversation) => [conversation.id, conversation]),
         )

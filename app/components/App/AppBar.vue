@@ -171,7 +171,7 @@ const shopStore = useWorldShopStore()
 
 const inboxNotificationsStore = useInboxNotificationsStore()
 const notificationStore = useNotificationStore()
-const { notificationsSortedDesc, unreadCount, inboxLatestThree } = storeToRefs(
+const { notificationsSortedDesc, unreadCount, inboxLatestThree, inboxUnreadCount } = storeToRefs(
   inboxNotificationsStore,
 )
 const { notifications: actionNotifications } = storeToRefs(notificationStore)
@@ -251,6 +251,7 @@ const allNotificationItems = computed(() => {
 const unreadTotalCount = computed(
   () => unreadCount.value + actionNotifications.value.length,
 )
+const currentUserId = computed(() => String(sessionUser.value?.id || '').trim())
 const inboxLatestThreePreview = computed(() =>
   inboxLatestThree.value.map((item) => {
     return {
@@ -331,6 +332,14 @@ watch(
     if (cartResult?.status === 'rejected') {
       shopStore.error = null
     }
+  },
+  { immediate: true },
+)
+
+watch(
+  currentUserId,
+  (userId) => {
+    inboxNotificationsStore.setCurrentUserId(userId)
   },
   { immediate: true },
 )
@@ -881,12 +890,20 @@ onBeforeUnmount(() => {
               content-class="app-top-bar__menu-surface app-top-bar__menu-surface--compact"
             >
               <template #activator="{ props }">
-                <v-btn
-                  v-bind="props"
-                  variant="text"
-                  icon="mdi-message-text-outline"
-                  :aria-label="t('appbar.inbox')"
-                />
+                <v-badge
+                  :model-value="inboxUnreadCount > 0"
+                  :content="inboxUnreadCount"
+                  color="primary"
+                  offset-x="8"
+                  offset-y="8"
+                >
+                  <v-btn
+                    v-bind="props"
+                    variant="text"
+                    icon="mdi-message-text-outline"
+                    :aria-label="t('appbar.inbox')"
+                  />
+                </v-badge>
               </template>
               <v-list min-width="300" class="app-top-bar__menu-list">
                 <v-list-subheader>
