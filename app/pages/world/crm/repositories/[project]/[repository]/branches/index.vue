@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { CrmGithubListResponse } from '~/types/world/crmGithub'
+import RepositoryItemDetailModal from '~/components/crm/repositories/RepositoryItemDetailModal.vue'
 
 interface GithubBranch {
   name?: string
@@ -18,7 +19,8 @@ const githubStore = useWorldCrmGithubStore()
 
 const projectId = computed(() => String(route.params.project ?? ''))
 const repository = computed(() => decodeURIComponent(String(route.params.repository ?? '')))
-const selectedBranch = ref<string>('')
+const selectedBranch = ref<GithubBranch | null>(null)
+const detailModalOpen = ref(false)
 
 const { data, pending, error } = await useAsyncData<CrmGithubListResponse<GithubBranch>>(
   () => `crm-repository-branches-page-${projectId.value}-${repository.value}`,
@@ -27,22 +29,11 @@ const { data, pending, error } = await useAsyncData<CrmGithubListResponse<Github
 )
 
 const branches = computed(() => data.value?.items ?? [])
-const branchOptions = computed(() => branches.value.map(branch => ({ title: branch.name ?? '-', value: branch.name ?? '' })).filter(item => item.value))
-const selectedBranchDetail = computed(() => branches.value.find(branch => branch.name === selectedBranch.value) ?? null)
 
-watch(
-  branches,
-  (items) => {
-    if (!items.length) {
-      selectedBranch.value = ''
-      return
-    }
-    if (!selectedBranch.value || !items.some(item => item.name === selectedBranch.value)) {
-      selectedBranch.value = items[0]?.name ?? ''
-    }
-  },
-  { immediate: true },
-)
+function openBranchDetail(branch: GithubBranch) {
+  selectedBranch.value = branch
+  detailModalOpen.value = true
+}
 </script>
 
 <template>
@@ -54,18 +45,7 @@ watch(
       :nav-items="crmNavItems"
       action-label="Branches"
       action-icon="mdi-source-branch"
-    >
-      <template #right>
-        <AppSelect
-          v-model="selectedBranch"
-          :items="branchOptions"
-          item-title="title"
-          item-value="value"
-          label="Select branch"
-          clearable
-        />
-      </template>
-    </WorldModuleShell>
+    />
 
     <v-container fluid>
       <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push(`/world/crm/repositories/${projectId}/${encodeURIComponent(repository)}`)">
@@ -75,37 +55,32 @@ watch(
       <CrmPageSkeleton v-if="pending" variant="dashboard" />
       <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">Impossible de charger les branches.</v-alert>
 
-      <v-row v-else>
-        <v-col cols="12" md="6">
-          <v-card class="pa-4 h-100 postcard-gradient-card" rounded="xl">
-            <h2 class="text-subtitle-1 mb-3">Branches ({{ branches.length }})</h2>
-            <v-list lines="one" density="compact" class="bg-transparent">
-              <v-list-item
-                v-for="branch in branches"
-                :key="String(branch.name)"
-                :active="branch.name === selectedBranch"
-                :title="branch.name ?? '-'"
-                @click="selectedBranch = branch.name ?? ''"
-              />
-            </v-list>
-          </v-card>
-        </v-col>
-
-        <v-col cols="12" md="6">
-          <v-card class="pa-4 h-100 postcard-gradient-card" rounded="xl">
-            <h2 class="text-subtitle-1 mb-3">Détails branche</h2>
-            <v-alert v-if="!selectedBranchDetail" type="info" variant="tonal">Sélectionnez une branche.</v-alert>
-            <v-table v-else density="compact">
-              <tbody>
-                <tr v-for="(value, key) in selectedBranchDetail" :key="String(key)">
-                  <td class="text-medium-emphasis">{{ key }}</td>
-                  <td>{{ typeof value === 'object' ? JSON.stringify(value) : String(value) }}</td>
-                </tr>
-              </tbody>
-            </v-table>
-          </v-card>
-        </v-col>
-      </v-row>
+      <v-card v-else class="pa-4 postcard-gradient-card" rounded="xl">
+        <h2 class="text-subtitle-1 mb-3">Branches ({{ branches.length }})</h2>
+        <v-list lines="one" density="compact" class="bg-transparent">
+          <v-list-item
+            v-for="branch in branches"
+            :key="String(branch.name)"
+            :title="branch.name ?? '-'"
+            :subtitle="`SHA: ${branch.commit?.sha ?? '-'} • ${branch.protected ? 'Protected' : 'Unprotected'}`"
+            @click="openBranchDetail(branch)"
+          />
+        </v-list>
+      </v-card>
     </v-container>
+
+    <RepositoryItemDetailModal
+      v-model="detailModalOpen"
+      :title="`Détails branche ${selectedBranch?.name ?? ''}`"
+      :payload="selectedBranch"
+    >
+      <template #summary="{ payload }">
+        <v-row>
+          <v-col cols="12" md="6"><strong>Nom:</strong> {{ payload?.name ?? '-' }}</v-col>
+          <v-col cols="12" md="6"><strong>Protection:</strong> {{ payload?.protected ? 'Oui' : 'Non' }}</v-col>
+          <v-col cols="12"><strong>Dernier SHA:</strong> {{ payload?.commit?.sha ?? '-' }}</v-col>
+        </v-row>
+      </template>
+    </RepositoryItemDetailModal>
   </div>
 </template>

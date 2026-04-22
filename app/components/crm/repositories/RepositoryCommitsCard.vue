@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import type { CrmGithubCommitDetail, CrmGithubCommitSummary } from '~/types/world/crmGithub'
+import type { CrmGithubCommitSummary } from '~/types/world/crmGithub'
 
 defineProps<{
   commits: CrmGithubCommitSummary[]
-  selectedSha: string
-  commitDetail: CrmGithubCommitDetail | null
-  loading?: boolean
+  selectedSha?: string
 }>()
 
 const emit = defineEmits<{
@@ -28,24 +26,5 @@ const { t } = useI18n()
         @click="emit('select', commit.sha)"
       />
     </v-list>
-
-    <v-divider class="my-3" />
-
-    <div v-if="loading" class="text-medium-emphasis">
-      {{ t('world.crm.repositories.sections.loadingCommitDetails', 'Loading commit details...') }}
-    </div>
-    <div v-else-if="commitDetail">
-      <p class="text-body-2 mb-2">
-        <strong>{{ t('world.crm.repositories.labels.sha', 'SHA') }}:</strong> {{ commitDetail.sha }}
-      </p>
-      <v-list lines="one" density="compact" class="bg-transparent">
-        <v-list-item
-          v-for="file in commitDetail.files"
-          :key="file.filename"
-          :title="file.filename"
-          :subtitle="`${file.status} • +${file.additions} / -${file.deletions} (${file.changes})`"
-        />
-      </v-list>
-    </div>
   </v-card>
 </template>

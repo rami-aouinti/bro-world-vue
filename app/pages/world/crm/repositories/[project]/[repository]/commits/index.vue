@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { CrmGithubCommitDetail, CrmGithubCommitSummary, CrmGithubListResponse } from '~/types/world/crmGithub'
-import RepositoryCommitsCard
-  from "~/components/crm/repositories/RepositoryCommitsCard.vue";
+import RepositoryCommitsCard from '~/components/crm/repositories/RepositoryCommitsCard.vue'
+import RepositoryItemDetailModal from '~/components/crm/repositories/RepositoryItemDetailModal.vue'
 
 definePageMeta({ layout: 'crm', title: 'CRM Repository Commits' })
 
@@ -16,6 +16,7 @@ const repository = computed(() => decodeURIComponent(String(route.params.reposit
 const applicationSlug = ref<string>(typeof route.query.applicationSlug === 'string' ? route.query.applicationSlug : '')
 const branch = ref<string>(typeof route.query.branch === 'string' ? route.query.branch : '')
 const selectedCommitSha = ref('')
+const detailModalOpen = ref(false)
 
 const query = computed(() => ({
   repository: repository.value,
@@ -29,13 +30,13 @@ const { data: commitsData, pending, error } = await useAsyncData<CrmGithubListRe
   { watch: [projectId, repository, branch, applicationSlug] },
 )
 
-const { data: commitDetailData, pending: pendingCommitDetail } = await useAsyncData<CrmGithubCommitDetail | null>(
-  () => `crm-repository-commit-page-${projectId.value}-${repository.value}-${selectedCommitSha.value}`,
+const { data: commitDetailData, pending: pendingCommitDetail, error: commitDetailError } = await useAsyncData<CrmGithubCommitDetail | null>(
+  () => `crm-repository-commit-page-${projectId.value}-${repository.value}-${selectedCommitSha.value}-${detailModalOpen.value}`,
   async () => {
-    if (!selectedCommitSha.value) return null
+    if (!selectedCommitSha.value || !detailModalOpen.value) return null
     return await githubStore.getScopedCommitDetail(projectId.value, selectedCommitSha.value, { repo: repository.value }, applicationSlug.value || undefined)
   },
-  { watch: [projectId, repository, selectedCommitSha, applicationSlug] },
+  { watch: [projectId, repository, selectedCommitSha, applicationSlug, detailModalOpen] },
 )
 
 const commits = computed(() => commitsData.value?.items ?? [])
@@ -48,19 +49,10 @@ const branchOptions = computed(() => {
   return Array.from(values).map(value => ({ title: value, value }))
 })
 
-watch(
-  commits,
-  (items) => {
-    if (!items.length) {
-      selectedCommitSha.value = ''
-      return
-    }
-    if (!selectedCommitSha.value || !items.some(item => item.sha === selectedCommitSha.value)) {
-      selectedCommitSha.value = items[0]?.sha ?? ''
-    }
-  },
-  { immediate: true },
-)
+function openCommitDetail(sha: string) {
+  selectedCommitSha.value = sha
+  detailModalOpen.value = true
+}
 </script>
 
 <template>
@@ -100,11 +92,37 @@ watch(
         v-else
         :commits="commits"
         :selected-sha="selectedCommitSha"
-        :commit-detail="commitDetailData"
-        :loading="pendingCommitDetail"
-        @select="selectedCommitSha = $event"
+        @select="openCommitDetail"
       />
-
     </v-container>
+
+    <RepositoryItemDetailModal
+      v-model="detailModalOpen"
+      :title="`Détails commit ${selectedCommitSha || ''}`"
+      :payload="commitDetailData"
+      :loading="pendingCommitDetail"
+      :error="commitDetailError ? 'Impossible de charger le détail du commit.' : null"
+    >
+      <template #summary="{ payload }">
+        <v-row dense>
+          <v-col cols="12" md="6"><strong>SHA:</strong> {{ payload?.sha }}</v-col>
+          <v-col cols="12" md="6"><strong>Auteur:</strong> {{ payload?.author }}</v-col>
+          <v-col cols="12"><strong>Message:</strong> {{ payload?.message }}</v-col>
+          <v-col cols="12" md="6"><strong>Date:</strong> {{ payload?.date ? new Date(String(payload.date)).toLocaleString() : '-' }}</v-col>
+          <v-col cols="12" md="6"><strong>Fichiers changés:</strong> {{ Array.isArray(payload?.files) ? payload.files.length : 0 }}</v-col>
+        </v-row>
+
+        <v-divider class="my-3" />
+
+        <v-list lines="two" density="compact" class="bg-transparent">
+          <v-list-item
+            v-for="file in Array.isArray(payload?.files) ? payload.files : []"
+            :key="String((file as Record<string, unknown>).filename ?? '')"
+            :title="String((file as Record<string, unknown>).filename ?? '-')"
+            :subtitle="`${String((file as Record<string, unknown>).status ?? '-')} • +${String((file as Record<string, unknown>).additions ?? 0)} / -${String((file as Record<string, unknown>).deletions ?? 0)}`"
+          />
+        </v-list>
+      </template>
+    </RepositoryItemDetailModal>
   </div>
 </template>
