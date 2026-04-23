@@ -5,6 +5,7 @@ import { privateApi } from '~/utils/http/privateApi'
 definePageMeta({ layout: 'job', title: 'Jobs Applications' })
 
 const { t } = useI18n()
+const { scopedRecruitPath } = useRecruitScopedApi()
 
 const jobsNavItems = computed(() => [
   {
@@ -55,7 +56,7 @@ async function fetchAppliedJobs() {
 
   try {
     const response = await privateApi.request<RecruitMyJobsResponse>(
-      '/api/recruit/general/private/me/jobs',
+      scopedRecruitPath('/private/me/jobs'),
     )
     appliedJobs.value = response.appliedJobs.filter((entry) => entry.job.apply)
   } catch (error) {

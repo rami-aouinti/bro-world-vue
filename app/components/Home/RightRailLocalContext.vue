@@ -55,6 +55,7 @@ interface CrmProjectsResponse {
 }
 
 const { locale, t } = useI18n()
+const { scopedRecruitPath } = useRecruitScopedApi()
 const LOCATION_PROMPTED_KEY = 'home.local-context.prompted'
 const LAST_COORDS_KEY = 'home.local-context.coords'
 
@@ -113,7 +114,7 @@ function pickRandomItems<T>(items: T[], count: number) {
 
 async function loadRecommendations() {
   const [jobsResult, projectsResult] = await Promise.allSettled([
-    $fetch<RecruitJobsListResponse>('/api/recruit/general/jobs', {
+    $fetch<RecruitJobsListResponse>(scopedRecruitPath('/public/jobs'), {
       query: { limit: 12, page: 1 },
     }),
     $fetch<CrmProjectsResponse>('/api/world/crm/general/projects'),

@@ -15,6 +15,7 @@ const resumeForApplicantId = ref('')
 const loading = ref(false)
 const responseBody = ref('')
 const errorMessage = ref('')
+const { scopedRecruitPath: defaultScopedRecruitPath } = useRecruitScopedApi()
 
 async function runPrivateRequest(
   method: 'GET' | 'POST' | 'PATCH' | 'DELETE',
@@ -32,7 +33,7 @@ async function runPrivateRequest(
     responseBody.value = JSON.stringify(data, null, 2)
   } catch (error) {
     console.error(error)
-    errorMessage.value = 'Private request failed.'
+    errorMessage.value = 'Request failed. This endpoint may require authentication or different permissions.'
   } finally {
     loading.value = false
   }
@@ -47,7 +48,7 @@ async function runPublicGet(endpoint: string) {
     responseBody.value = JSON.stringify(data, null, 2)
   } catch (error) {
     console.error(error)
-    errorMessage.value = 'Public request failed.'
+    errorMessage.value = 'Request failed. This endpoint may be private or unavailable.'
   } finally {
     loading.value = false
   }
@@ -55,6 +56,10 @@ async function runPublicGet(endpoint: string) {
 
 function slugRoute(path: string) {
   return `/api/recruit/applications/${encodeURIComponent(applicationSlug.value)}${path}`
+}
+
+function defaultRoute(path: string) {
+  return defaultScopedRecruitPath(path)
 }
 
 function runSlugPrivateGet(path: string) {
@@ -108,15 +113,14 @@ const hasResumeInput = computed(
     <v-divider class="my-2" />
     <p class="text-subtitle-2 mb-2">General endpoints</p>
     <div class="d-flex flex-wrap ga-2 mb-3">
-      <v-btn :loading="loading" variant="tonal" @click="runPublicGet('/api/recruit/general/jobs')">GET general/jobs</v-btn>
-      <v-btn :loading="loading" variant="tonal" @click="runPublicGet(`/api/recruit/general/jobs/${encodeURIComponent(jobSlug)}`)">GET general/jobs/:jobSlug</v-btn>
-      <v-btn :loading="loading" variant="tonal" @click="runPrivateRequest('GET', '/api/recruit/general/private/me/jobs')">GET private/me/jobs</v-btn>
-      <v-btn :loading="loading" variant="tonal" @click="runPrivateRequest('GET', '/api/recruit/general/private/me/resumes')">GET private/me/resumes</v-btn>
-      <v-btn :loading="loading" variant="tonal" @click="runPrivateRequest('GET', '/api/recruit/general/applicants')">GET applicants</v-btn>
-      <v-btn :loading="loading" variant="tonal" @click="runPrivateRequest('GET', `/api/recruit/general/private/job-applications?jobId=${encodeURIComponent(jobId)}`)" :disabled="!hasJobId">GET private/job-applications</v-btn>
-      <v-btn :loading="loading" variant="outlined" @click="runPrivateRequest('POST', '/api/recruit/general/applicants', { resumeId: resumeForApplicantId || resumeId, coverLetter: 'Application from endpoint console' })" :disabled="!hasResumeInput">POST applicants</v-btn>
-      <v-btn :loading="loading" variant="outlined" @click="runPrivateRequest('POST', '/api/recruit/general/applications', baseBody)" :disabled="!hasJobId || !hasApplicantId">POST applications</v-btn>
-      <v-btn :loading="loading" variant="outlined" @click="runPrivateRequest('PATCH', `/api/recruit/general/private/applications/${encodeURIComponent(applicationId)}/status`, { status: 'INTERVIEW_PLANNED', comment: 'Validated from endpoint console' })" :disabled="!hasApplicationId">PATCH application status</v-btn>
+      <v-btn :loading="loading" variant="tonal" @click="runPublicGet(defaultRoute('/public/jobs'))">GET public/jobs</v-btn>
+      <v-btn :loading="loading" variant="tonal" @click="runPublicGet(defaultRoute(`/public/jobs/${encodeURIComponent(jobSlug)}`))">GET public/jobs/:jobSlug</v-btn>
+      <v-btn :loading="loading" variant="tonal" @click="runPrivateRequest('GET', defaultRoute('/private/me/jobs'))">GET private/me/jobs</v-btn>
+      <v-btn :loading="loading" variant="tonal" @click="runPrivateRequest('GET', defaultRoute('/private/me/resumes'))">GET private/me/resumes</v-btn>
+      <v-btn :loading="loading" variant="tonal" @click="runPrivateRequest('GET', defaultRoute('/private/job-applications'))">GET private/job-applications</v-btn>
+      <v-btn :loading="loading" variant="outlined" :disabled="!hasResumeInput" @click="runPrivateRequest('POST', defaultRoute('/applicants'), { resumeId: resumeForApplicantId || resumeId, coverLetter: 'Application from endpoint console' })">POST applicants</v-btn>
+      <v-btn :loading="loading" variant="outlined" :disabled="!hasJobId || !hasApplicantId" @click="runPrivateRequest('POST', defaultRoute('/applications'), baseBody)">POST applications</v-btn>
+      <v-btn :loading="loading" variant="outlined" :disabled="!hasApplicationId" @click="runPrivateRequest('PATCH', `/api/recruit/general/private/applications/${encodeURIComponent(applicationId)}/status`, { status: 'INTERVIEW_PLANNED', comment: 'Validated from endpoint console' })">PATCH application status</v-btn>
     </div>
 
     <v-divider class="my-2" />
@@ -133,29 +137,29 @@ const hasResumeInput = computed(
       <v-btn :loading="loading" variant="outlined" @click="runSlugPrivatePost('/applicants', baseBody)">POST slug/applicants</v-btn>
       <v-btn :loading="loading" variant="outlined" @click="runSlugPrivatePost('/applications', baseBody)">POST slug/applications</v-btn>
       <v-btn :loading="loading" variant="outlined" @click="runSlugPrivatePost('/jobs', baseBody)">POST slug/jobs</v-btn>
-      <v-btn :loading="loading" variant="outlined" @click="runSlugPrivatePatch(`/jobs/${encodeURIComponent(jobId)}`, baseBody)" :disabled="!hasJobId">PATCH slug/jobs/:jobId</v-btn>
-      <v-btn :loading="loading" variant="outlined" color="warning" @click="runSlugPrivateDelete(`/jobs/${encodeURIComponent(jobId)}`)" :disabled="!hasJobId">DELETE slug/jobs/:jobId</v-btn>
-      <v-btn :loading="loading" variant="outlined" @click="runSlugPrivatePatch(`/private/jobs/${encodeURIComponent(jobId)}`, baseBody)" :disabled="!hasJobId">PATCH private/jobs/:jobId</v-btn>
+      <v-btn :loading="loading" variant="outlined" :disabled="!hasJobId" @click="runSlugPrivatePatch(`/jobs/${encodeURIComponent(jobId)}`, baseBody)">PATCH slug/jobs/:jobId</v-btn>
+      <v-btn :loading="loading" variant="outlined" color="warning" :disabled="!hasJobId" @click="runSlugPrivateDelete(`/jobs/${encodeURIComponent(jobId)}`)">DELETE slug/jobs/:jobId</v-btn>
+      <v-btn :loading="loading" variant="outlined" :disabled="!hasJobId" @click="runSlugPrivatePatch(`/private/jobs/${encodeURIComponent(jobId)}`, baseBody)">PATCH private/jobs/:jobId</v-btn>
       <v-btn :loading="loading" variant="outlined" @click="runSlugPrivateGet('/private/me/resumes')">GET private/me/resumes</v-btn>
       <v-btn :loading="loading" variant="outlined" @click="runSlugPrivatePost('/resumes', { skills: [{ title: 'Vue', description: 'Created from console' }] })">POST slug/resumes</v-btn>
-      <v-btn :loading="loading" variant="outlined" @click="runSlugPrivatePatch(`/private/me/resumes/${encodeURIComponent(resumeId)}`, { skills: [{ title: 'TS', description: 'Patched from console' }] })" :disabled="!hasResumeId">PATCH private/me/resumes/:resumeId</v-btn>
-      <v-btn :loading="loading" variant="outlined" color="warning" @click="runSlugPrivateDelete(`/private/me/resumes/${encodeURIComponent(resumeId)}`)" :disabled="!hasResumeId">DELETE private/me/resumes/:resumeId</v-btn>
-      <v-btn :loading="loading" variant="outlined" @click="runSlugPrivateGet(`/private/applications/${encodeURIComponent(applicationId)}/status-history`)" :disabled="!hasApplicationId">GET status-history</v-btn>
-      <v-btn :loading="loading" variant="outlined" color="secondary" @click="runSlugPrivatePost(`/private/applications/${encodeURIComponent(applicationId)}/offers`, { message: 'Offer created from console' })" :disabled="!hasApplicationId">POST offers</v-btn>
-      <v-btn :loading="loading" variant="outlined" color="primary" @click="runSlugPrivatePost(`/private/offers/${encodeURIComponent(offerId)}/send`, { message: 'send' })" :disabled="!hasOfferId">POST offer/send</v-btn>
-      <v-btn :loading="loading" variant="outlined" color="success" @click="runSlugPrivatePost(`/private/offers/${encodeURIComponent(offerId)}/accept`, { message: 'accept' })" :disabled="!hasOfferId">POST offer/accept</v-btn>
-      <v-btn :loading="loading" variant="outlined" color="error" @click="runSlugPrivatePost(`/private/offers/${encodeURIComponent(offerId)}/decline`, { message: 'decline' })" :disabled="!hasOfferId">POST offer/decline</v-btn>
-      <v-btn :loading="loading" variant="outlined" color="warning" @click="runSlugPrivatePost(`/private/offers/${encodeURIComponent(offerId)}/withdraw`, { message: 'withdraw' })" :disabled="!hasOfferId">POST offer/withdraw</v-btn>
+      <v-btn :loading="loading" variant="outlined" :disabled="!hasResumeId" @click="runSlugPrivatePatch(`/private/me/resumes/${encodeURIComponent(resumeId)}`, { skills: [{ title: 'TS', description: 'Patched from console' }] })">PATCH private/me/resumes/:resumeId</v-btn>
+      <v-btn :loading="loading" variant="outlined" color="warning" :disabled="!hasResumeId" @click="runSlugPrivateDelete(`/private/me/resumes/${encodeURIComponent(resumeId)}`)">DELETE private/me/resumes/:resumeId</v-btn>
+      <v-btn :loading="loading" variant="outlined" :disabled="!hasApplicationId" @click="runSlugPrivateGet(`/private/applications/${encodeURIComponent(applicationId)}/status-history`)">GET status-history</v-btn>
+      <v-btn :loading="loading" variant="outlined" color="secondary" :disabled="!hasApplicationId" @click="runSlugPrivatePost(`/private/applications/${encodeURIComponent(applicationId)}/offers`, { message: 'Offer created from console' })">POST offers</v-btn>
+      <v-btn :loading="loading" variant="outlined" color="primary" :disabled="!hasOfferId" @click="runSlugPrivatePost(`/private/offers/${encodeURIComponent(offerId)}/send`, { message: 'send' })">POST offer/send</v-btn>
+      <v-btn :loading="loading" variant="outlined" color="success" :disabled="!hasOfferId" @click="runSlugPrivatePost(`/private/offers/${encodeURIComponent(offerId)}/accept`, { message: 'accept' })">POST offer/accept</v-btn>
+      <v-btn :loading="loading" variant="outlined" color="error" :disabled="!hasOfferId" @click="runSlugPrivatePost(`/private/offers/${encodeURIComponent(offerId)}/decline`, { message: 'decline' })">POST offer/decline</v-btn>
+      <v-btn :loading="loading" variant="outlined" color="warning" :disabled="!hasOfferId" @click="runSlugPrivatePost(`/private/offers/${encodeURIComponent(offerId)}/withdraw`, { message: 'withdraw' })">POST offer/withdraw</v-btn>
     </div>
 
     <v-divider class="my-2" />
     <p class="text-subtitle-2 mb-2">Interviews & decision endpoints</p>
     <div class="d-flex flex-wrap ga-2 mb-3">
-      <v-btn :loading="loading" variant="tonal" @click="runPrivateRequest('GET', `/api/recruit/private/applications/${encodeURIComponent(applicationId)}/interviews`)" :disabled="!hasApplicationId">GET interviews</v-btn>
-      <v-btn :loading="loading" variant="tonal" @click="runPrivateRequest('POST', `/api/recruit/private/applications/${encodeURIComponent(applicationId)}/interviews`, baseBody)" :disabled="!hasApplicationId">POST interviews</v-btn>
-      <v-btn :loading="loading" variant="tonal" @click="runPrivateRequest('PATCH', `/api/recruit/private/interviews/${encodeURIComponent(interviewId)}`, { startsAt: new Date().toISOString(), type: 'VIDEO' })" :disabled="!hasInterviewId">PATCH interview</v-btn>
-      <v-btn :loading="loading" variant="tonal" color="warning" @click="runPrivateRequest('DELETE', `/api/recruit/private/interviews/${encodeURIComponent(interviewId)}`)" :disabled="!hasInterviewId">DELETE interview</v-btn>
-      <v-btn :loading="loading" variant="tonal" @click="runPrivateRequest('GET', `/api/recruit/private/applications/${encodeURIComponent(applicationId)}/decision-summary`)" :disabled="!hasApplicationId">GET decision-summary</v-btn>
+      <v-btn :loading="loading" variant="tonal" :disabled="!hasApplicationId" @click="runPrivateRequest('GET', `/api/recruit/private/applications/${encodeURIComponent(applicationId)}/interviews`)">GET interviews</v-btn>
+      <v-btn :loading="loading" variant="tonal" :disabled="!hasApplicationId" @click="runPrivateRequest('POST', `/api/recruit/private/applications/${encodeURIComponent(applicationId)}/interviews`, baseBody)">POST interviews</v-btn>
+      <v-btn :loading="loading" variant="tonal" :disabled="!hasInterviewId" @click="runPrivateRequest('PATCH', `/api/recruit/private/interviews/${encodeURIComponent(interviewId)}`, { startsAt: new Date().toISOString(), type: 'VIDEO' })">PATCH interview</v-btn>
+      <v-btn :loading="loading" variant="tonal" color="warning" :disabled="!hasInterviewId" @click="runPrivateRequest('DELETE', `/api/recruit/private/interviews/${encodeURIComponent(interviewId)}`)">DELETE interview</v-btn>
+      <v-btn :loading="loading" variant="tonal" :disabled="!hasApplicationId" @click="runPrivateRequest('GET', `/api/recruit/private/applications/${encodeURIComponent(applicationId)}/decision-summary`)">GET decision-summary</v-btn>
     </div>
 
     <v-alert v-if="errorMessage" type="error" variant="tonal" class="mb-3">{{ errorMessage }}</v-alert>

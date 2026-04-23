@@ -11,6 +11,7 @@ import { privateApi } from '~/utils/http/privateApi'
 definePageMeta({ layout: 'job', title: 'Jobs Offer Detail' })
 
 const { t } = useI18n()
+const { scopedRecruitPath } = useRecruitScopedApi()
 
 const route = useRoute()
 const slug = computed(() => String(route.params.slug || ''))
@@ -62,7 +63,7 @@ async function fetchDetail() {
 
   try {
     const response = await $fetch<RecruitJobDetailResponse>(
-      `/api/recruit/general/jobs/${encodeURIComponent(slug.value)}`,
+      scopedRecruitPath(`/public/jobs/${encodeURIComponent(slug.value)}`),
     )
     job.value = response.job
   } catch (error) {
@@ -75,7 +76,7 @@ async function fetchDetail() {
 
 async function fetchMyResumes() {
   resumes.value = await privateApi.request<RecruitResume[]>(
-    '/api/recruit/general/private/me/resumes',
+    scopedRecruitPath('/private/me/resumes'),
   )
   if (!selectedResumeId.value && resumes.value.length) {
     selectedResumeId.value = resumes.value[0].id
@@ -92,7 +93,7 @@ async function createResume(): Promise<string> {
     )
     formData.append('skills', JSON.stringify(toSections(manualResume.skills)))
     const response = await $fetch<{ id: string }>(
-      '/api/recruit/general/resumes',
+      scopedRecruitPath('/resumes'),
       {
         method: 'POST',
         body: formData,
@@ -102,7 +103,7 @@ async function createResume(): Promise<string> {
   }
 
   const response = await $fetch<{ id: string }>(
-    '/api/recruit/general/resumes',
+    scopedRecruitPath('/resumes'),
     {
       method: 'POST',
       body: {
@@ -133,7 +134,7 @@ async function submitApplication() {
     }
 
     const applicant = await $fetch<{ id: string }>(
-      '/api/recruit/general/applicants',
+      scopedRecruitPath('/applicants'),
       {
         method: 'POST',
         body: {
@@ -146,7 +147,7 @@ async function submitApplication() {
     )
 
     const application = await $fetch<RecruitApplicationSummary>(
-      '/api/recruit/general/applications',
+      scopedRecruitPath('/applications'),
       {
         method: 'POST',
         body: {
