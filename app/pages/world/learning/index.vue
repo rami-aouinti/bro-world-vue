@@ -27,6 +27,7 @@ const LEARNING_REFERENCE_CONFIG = {
 } as const satisfies Record<string, { publicPageSlug: PublicPageSlug; fallbackI18nKey: string }>
 
 const { locale, t } = useI18n()
+const { isPageSkeletonVisible } = usePageSkeleton()
 const runtimeConfig = useRuntimeConfig()
 const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world-space.com'
 const pageUrl = new URL('/world/learning', siteUrl).toString()
@@ -52,8 +53,13 @@ useSeoMeta({
 })
 
 const learningStore = useWorldLearningStore()
-await learningStore.fetchCourses()
-await learningStore.fetchAnalytics()
+const { pending: pendingLearningBootstrap } = useAsyncData('world-learning-home-bootstrap', async () => {
+  await Promise.all([
+    learningStore.fetchCourses(),
+    learningStore.fetchAnalytics(),
+  ])
+  return true
+})
 
 const firstCourseId = computed(() => learningStore.items[0]?.id ?? '')
 watch(
@@ -126,6 +132,19 @@ const referenceCards = computed(() =>
   }),
 )
 
+const isReferencesLoading = computed(() =>
+  referenceNavItems.value.length > 0 &&
+  referenceNavItems.value.some((item) => (referenceStatuses.value[item.to] ?? 'loading') === 'loading'),
+)
+
+const isPageLoading = computed(
+  () =>
+    isPageSkeletonVisible.value
+    || pendingLearningBootstrap.value
+    || learningStore.pending
+    || isReferencesLoading.value,
+)
+
 async function loadReferences() {
   const entries = referenceNavItems.value
 
@@ -164,7 +183,14 @@ watch([locale, referenceNavItems], () => {
 
 <template>
   <div>
-    <WorldModuleDrawers
+    <template v-if="isPageLoading">
+      <v-container fluid>
+        <v-skeleton-loader type="card, article, article" />
+      </v-container>
+    </template>
+
+    <template v-else>
+      <WorldModuleDrawers
       :module-title="t('world.learning.label')"
       module-path="/world/learning"
       module-icon="mdi-school-outline"
@@ -322,6 +348,7 @@ watch([locale, referenceNavItems], () => {
         </v-col>
       </v-row>
     </v-container>
+    </template>
   </div>
 </template>
 

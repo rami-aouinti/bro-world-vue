@@ -33,6 +33,7 @@ const JOBS_REFERENCE_CONFIG = {
 } as const satisfies Record<string, { publicPageSlug: PublicPageSlug; fallbackI18nKey: string }>
 
 const { locale, t } = useI18n()
+const { isPageSkeletonVisible } = usePageSkeleton()
 const runtimeConfig = useRuntimeConfig()
 const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world-space.com'
 const pageUrl = new URL(JOBS_BASE_PATH, siteUrl).toString()
@@ -108,6 +109,13 @@ const referenceCards = computed(() =>
   }),
 )
 
+const isReferencesLoading = computed(() =>
+  referenceNavItems.value.length > 0 &&
+  referenceNavItems.value.some((item) => (referenceStatuses.value[item.to] ?? 'loading') === 'loading'),
+)
+
+const isPageLoading = computed(() => isPageSkeletonVisible.value || isReferencesLoading.value)
+
 async function loadReferences() {
   const entries = referenceNavItems.value
 
@@ -147,7 +155,14 @@ watch([locale, referenceNavItems], () => {
 
 <template>
   <div>
-    <WorldModuleDrawers
+    <template v-if="isPageLoading">
+      <v-container fluid>
+        <v-skeleton-loader type="card, article, article" />
+      </v-container>
+    </template>
+
+    <template v-else>
+      <WorldModuleDrawers
       :module-title="t('world.jobs.label')"
       :module-path="JOBS_BASE_PATH"
       module-icon="mdi-briefcase-search-outline"
@@ -304,6 +319,7 @@ watch([locale, referenceNavItems], () => {
         </v-col>
       </v-row>
     </v-container>
+    </template>
   </div>
 </template>
 
