@@ -23,7 +23,7 @@ const selectedSprint = ref<CrmSprintItem | null>(null)
 const selectedTask = ref<CrmTaskItem | null>(null)
 const selectedTaskRequest = ref<CrmTaskRequestItem | null>(null)
 
-await crmKanbanStore.hydrate()
+crmKanbanStore.hydrate()
 
 const sprintOptions = computed(() =>
   crmKanbanStore.sprints.map((sprint) => ({
