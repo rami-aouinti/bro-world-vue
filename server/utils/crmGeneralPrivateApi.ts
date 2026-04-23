@@ -2,12 +2,12 @@ import type { H3Event } from 'h3'
 import type { ApiObject, ApiQuery } from '../types/api/common'
 import { cachedPrivateGet, mutatingPrivateApiCall } from './privateApi'
 
-const CRM_GENERAL_BASE_ENDPOINT = 'https://bro-world.org/api/v1/crm/general'
+const CRM_BASE_ENDPOINT = 'https://bro-world.org/api/v1/crm'
 const CRM_MUTATION_KEY = 'crm:general:mutate'
 
 function crmEndpoint(path: string) {
   const normalizedPath = path.replace(/^\/+/, '')
-  return `${CRM_GENERAL_BASE_ENDPOINT}/${normalizedPath}`
+  return `${CRM_BASE_ENDPOINT}/${normalizedPath}`
 }
 
 export function cachedCrmGeneralGet<TResponse extends ApiObject | ApiObject[]>(
