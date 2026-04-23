@@ -10,7 +10,7 @@ export default defineEventHandler(
 
     return mutatingPrivateApiCall<QuizSubmitApiResponse>(
       event,
-      '/quiz/general/submit',
+      '/api/v1/quiz/submit',
       {
         mutationKey: 'quiz:submit',
         method: 'POST',

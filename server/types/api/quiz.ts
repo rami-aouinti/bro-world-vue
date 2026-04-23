@@ -40,19 +40,36 @@ export interface QuizSubmitPayload extends ApiObject {
 
 export type QuizSubmitApiResponse = ApiObject & {
   attemptId: string
+  attemptUuid?: string
   score: number
   passed: boolean
   totalQuestions: number
   correctAnswers: number
   percentage: number
+  rank?: number | null
   submittedAt?: string
 }
 
 export interface QuizLeaderboardItem extends ApiObject {
   rank: number
-  userId: string
-  username: string
-  score: number
+  userId?: string
+  username?: string
+  score?: number
+  weightedAverageScore?: number
+  averageWeightedScore?: number
+  avgWeightedScore?: number
+  attempts?: number
+  attemptCount?: number
+  totalAttempts?: number
+  profile?: {
+    username?: string
+    avatar?: string
+    photo?: string
+    avatarUrl?: string
+  }
+  avatar?: string
+  photo?: string
+  avatarUrl?: string
 }
 
 export type QuizCategoriesApiResponse = ApiObject & {
