@@ -56,6 +56,24 @@ const gameSurfaceComponentMap = {
   belotetablesurface: defineAsyncComponent(
     () => import('~/components/games/surfaces/BeloteTableSurface.vue'),
   ),
+  chesssurface: defineAsyncComponent(
+    () => import('~/components/games/surfaces/LegacyGameSurface.vue'),
+  ),
+  sudokusurface: defineAsyncComponent(
+    () => import('~/components/games/surfaces/LegacyGameSurface.vue'),
+  ),
+  game2048surface: defineAsyncComponent(
+    () => import('~/components/games/surfaces/LegacyGameSurface.vue'),
+  ),
+  hiddenwordsurface: defineAsyncComponent(
+    () => import('~/components/games/surfaces/LegacyGameSurface.vue'),
+  ),
+  nonogramsurface: defineAsyncComponent(
+    () => import('~/components/games/surfaces/LegacyGameSurface.vue'),
+  ),
+  ludosurface: defineAsyncComponent(
+    () => import('~/components/games/surfaces/LegacyGameSurface.vue'),
+  ),
 } as const
 
 type KnownSurfaceComponentKey = keyof typeof gameSurfaceComponentMap
@@ -84,6 +102,22 @@ function resolveSurfaceComponentKey(
     poker: 'pokertablesurface',
     belote: 'belotetablesurface',
     belotetable: 'belotetablesurface',
+    solitaire: 'pokertablesurface',
+    hearts: 'pokertablesurface',
+    spades: 'pokertablesurface',
+    chess: 'chesssurface',
+    ludo: 'ludosurface',
+    sudoku: 'sudokusurface',
+    game2048: 'game2048surface',
+    hiddenword: 'hiddenwordsurface',
+    nonogram: 'nonogramsurface',
+    flappyrocket: 'checkerssurface',
+    chesssurface: 'chesssurface',
+    sudokusurface: 'sudokusurface',
+    game2048surface: 'game2048surface',
+    hiddenwordsurface: 'hiddenwordsurface',
+    nonogramsurface: 'nonogramsurface',
+    ludosurface: 'ludosurface',
   }
 
   return aliasMap[normalized] || null
@@ -211,6 +245,25 @@ const surfaceProps = computed<GameSurfaceProps>(() => {
         selectedCell: { row: 5, col: 0 },
         possibleMoves: [{ row: 4, col: 1 }],
         lastMove: { from: { row: 2, col: 1 }, to: { row: 3, col: 2 } },
+      },
+    }
+  }
+
+  if (
+    key === 'chesssurface' ||
+    key === 'sudokusurface' ||
+    key === 'game2048surface' ||
+    key === 'hiddenwordsurface' ||
+    key === 'nonogramsurface' ||
+    key === 'ludosurface'
+  ) {
+    return {
+      session: commonSurfaceProps.value.session,
+      players: [],
+      gameState: {
+        gameKey: selectedGame.value?.key || gameParam.value,
+        selectedPlayMode:
+          currentSession.value?.opponentType === 'human_online' ? 'pvp' : 'ai',
       },
     }
   }

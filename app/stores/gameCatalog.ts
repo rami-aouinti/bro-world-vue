@@ -30,6 +30,12 @@ function normalizeSurfaceComponentValue(rawValue: unknown) {
     pokertable: 'pokertablesurface',
     belote: 'belotetablesurface',
     belotetable: 'belotetablesurface',
+    chess: 'chesssurface',
+    sudoku: 'sudokusurface',
+    game2048: 'game2048surface',
+    hiddenword: 'hiddenwordsurface',
+    nonogram: 'nonogramsurface',
+    ludo: 'ludosurface',
   }
 
   return aliasMap[normalized] || normalized
@@ -46,6 +52,12 @@ interface GameItem {
   img?: string | null
   icon?: string | null
   component?: string | null
+  supportedModes?: string[]
+  difficultyKey?: string
+  tags?: string[]
+  features?: string[]
+  categoryKey?: string | null
+  subcategoryKey?: string | null
   enabled?: boolean
   minPlayers?: number
   maxPlayers?: number
@@ -135,6 +147,21 @@ function normalizeGameItem(raw: unknown): GameItem | null {
     maxPlayers,
   )
 
+  const supportedModes = Array.isArray(item.supportedModes)
+    ? item.supportedModes
+        .filter((mode): mode is string => typeof mode === 'string')
+        .map((mode) => mode.trim().toLowerCase())
+    : []
+
+  const supportsAiOpponent =
+    typeof item.supportsAiOpponent === 'boolean'
+      ? item.supportsAiOpponent
+      : supportedModes.includes('ai')
+  const requiresOpponent =
+    typeof item.requiresOpponent === 'boolean'
+      ? item.requiresOpponent
+      : supportedModes.includes('pvp') || supportedModes.includes('versus')
+
   return {
     id: item.id,
     name: typeof item.name === 'string' ? item.name : undefined,
@@ -148,18 +175,29 @@ function normalizeGameItem(raw: unknown): GameItem | null {
     img: typeof item.img === 'string' ? item.img : null,
     icon: typeof item.icon === 'string' ? item.icon : null,
     component: normalizeSurfaceComponentValue(item.component),
+    supportedModes,
+    difficultyKey:
+      typeof item.difficultyKey === 'string' ? item.difficultyKey : undefined,
+    tags: Array.isArray(item.tags)
+      ? item.tags.filter((tag): tag is string => typeof tag === 'string')
+      : [],
+    features: Array.isArray(item.features)
+      ? item.features.filter(
+          (feature): feature is string => typeof feature === 'string',
+        )
+      : [],
+    categoryKey:
+      typeof item.categoryKey === 'string' ? item.categoryKey : undefined,
+    subcategoryKey:
+      typeof item.subcategoryKey === 'string'
+        ? item.subcategoryKey
+        : undefined,
     enabled: typeof item.enabled === 'boolean' ? item.enabled : true,
     minPlayers,
     maxPlayers,
     allowedPlayerCounts,
-    supportsAiOpponent:
-      typeof item.supportsAiOpponent === 'boolean'
-        ? item.supportsAiOpponent
-        : false,
-    requiresOpponent:
-      typeof item.requiresOpponent === 'boolean'
-        ? item.requiresOpponent
-        : false,
+    supportsAiOpponent,
+    requiresOpponent,
     playSurfaceComponent:
       normalizeSurfaceComponentValue(item.playSurfaceComponent) ||
       normalizeSurfaceComponentValue(item.component) ||
