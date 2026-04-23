@@ -118,12 +118,6 @@ watch(detailModalOpen, (open) => {
     </WorldModuleShell>
 
     <v-container fluid>
-      <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push(`/world/crm/repositories/${projectId}/${encodeURIComponent(repository)}`)">
-        {{ t('world.crm.repositories.actions.backToRepository') }}
-      </v-btn>
-
-      <v-text-field v-model="applicationSlugInput" label="Application slug (optional)" variant="outlined" density="comfortable" class="mb-4" />
-
       <CrmPageSkeleton v-if="showInitialSkeleton" variant="dashboard" />
       <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">Impossible de charger les pull requests.</v-alert>
 

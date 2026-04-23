@@ -169,11 +169,11 @@ const pageCards = computed(() => [
 ])
 
 const kpis = computed(() => [
-  { key: 'collaborators', label: t('world.crm.repositories.labels.collaborators'), value: collaborators.value.length, icon: 'mdi-account-multiple-outline' },
-  { key: 'branches', label: t('world.crm.repositories.labels.branches'), value: branches.value.length, icon: 'mdi-source-branch' },
-  { key: 'commits', label: t('world.crm.repositories.labels.commits'), value: commits.value.length, icon: 'mdi-source-commit' },
-  { key: 'pullRequests', label: t('world.crm.repositories.labels.pullRequests'), value: pullRequests.value.length, icon: 'mdi-source-pull' },
-  { key: 'workflows', label: t('world.crm.repositories.labels.workflows'), value: workflows.value.length, icon: 'mdi-robot' },
+  { key: 'collaborators', label: t('world.crm.repositories.labels.collaborators'), value: collaborators.value.length, icon: 'mdi-account-multiple-outline', path: '/' },
+  { key: 'branches', label: t('world.crm.repositories.labels.branches'), value: branches.value.length, icon: 'mdi-source-branch' , path: '/'},
+  { key: 'commits', label: t('world.crm.repositories.labels.commits'), value: commits.value.length, icon: 'mdi-source-commit' , path: '/'},
+  { key: 'pullRequests', label: t('world.crm.repositories.labels.pullRequests'), value: pullRequests.value.length, icon: 'mdi-source-pull' , path: '/'},
+  { key: 'workflows', label: t('world.crm.repositories.labels.workflows'), value: workflows.value.length, icon: 'mdi-robot' , path: '/'},
 ])
 </script>
 
