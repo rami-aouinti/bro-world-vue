@@ -1,3 +1,5 @@
+import { resolveApiUrl } from '~~/server/utils/resolveApiUrl'
+
 const HOP_BY_HOP_HEADERS = new Set([
   'host',
   'connection',
@@ -32,7 +34,7 @@ export default defineEventHandler(async (event) => {
 
   const path = getRouterParam(event, 'path')
   const endpoint = rewriteLegacyEndpoint(path ? `/${path}` : '')
-  const targetUrl = `${baseUrl}${endpoint}`
+  const targetUrl = resolveApiUrl(baseUrl, `/api/v1${endpoint}`)
 
   const method = event.method.toUpperCase()
   const requestHeaders = getRequestHeaders(event)
