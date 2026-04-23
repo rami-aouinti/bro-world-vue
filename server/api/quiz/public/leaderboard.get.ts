@@ -5,7 +5,7 @@ export default defineEventHandler(
   async (event): Promise<QuizLeaderboardApiResponse> => {
     return cachedPublicGet<QuizLeaderboardApiResponse>(
       event,
-      '/public/quiz/general/leaderboard',
+      '/api/v1/public/quiz/general/leaderboard',
       {
         cacheDomain: 'quiz',
       },

@@ -10,7 +10,7 @@ export default defineEventHandler(
 
     return cachedPublicGet<QuizPublicApiResponse>(
       event,
-      '/public/quiz/general',
+      '/api/v1/public/quiz/general',
       {
         query: { category, level },
         cacheDomain: 'quiz',

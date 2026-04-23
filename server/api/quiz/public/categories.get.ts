@@ -5,7 +5,7 @@ export default defineEventHandler(
   async (event): Promise<QuizCategoriesApiResponse> => {
     return cachedPublicGet<QuizCategoriesApiResponse>(
       event,
-      '/public/quiz/general/categories',
+      '/api/v1/public/quiz/general/categories',
       {
         cacheDomain: 'quiz',
       },
