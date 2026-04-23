@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     const response = await client.get(
       resolveServerApiUrl(
         event,
-        `/shop/general/carts/${encodeURIComponent(normalizedShopId)}`,
+        `/api/v1/shop/carts/${encodeURIComponent(normalizedShopId)}`,
       ),
     )
 
