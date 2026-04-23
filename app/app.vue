@@ -40,20 +40,6 @@ const organizationSchema = computed(() => ({
   sameAs: [facebookPageUrl],
 }))
 
-const productSchema = computed(() => ({
-  '@context': 'https://schema.org',
-  '@type': 'Product',
-  name: 'Bro World Space',
-  description:
-    'A simple platform to build and manage your own online community.',
-  brand: {
-    '@type': 'Brand',
-    name: 'Bro World',
-  },
-  url: siteUrl.value,
-  category: 'Community management platform',
-}))
-
 if (import.meta.client) {
   watchEffect(() => {
     document.documentElement.dataset.appRounded = rounded.value
@@ -128,10 +114,6 @@ useHead({
     {
       type: 'application/ld+json',
       children: JSON.stringify(organizationSchema.value),
-    },
-    {
-      type: 'application/ld+json',
-      children: JSON.stringify(productSchema.value),
     },
   ],
 })
