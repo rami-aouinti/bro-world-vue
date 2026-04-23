@@ -52,10 +52,10 @@ const createPayload = reactive<CrmProjectCreatePayload>({
   dueAt: '',
 })
 
-const { data, pending, error, refresh } = await useFetch<ApiListResponse<CrmProjectListItem>>(
+const { data, pending, error, refresh } = useFetch<ApiListResponse<CrmProjectListItem>>(
   '/api/crm/general/projects',
 )
-const { data: companiesData } = await useFetch<ApiListResponse<CrmCompanyItem>>(
+const { data: companiesData } = useFetch<ApiListResponse<CrmCompanyItem>>(
   '/api/crm/general/companies',
 )
 

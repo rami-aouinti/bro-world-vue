@@ -51,10 +51,10 @@ const createPayload = reactive<CrmSprintCreatePayload>({
   status: 'planned',
 })
 
-const { data, pending, error } = await useFetch<CrmSprintResponse>(
+const { data, pending, error } = useFetch<CrmSprintResponse>(
   '/api/crm/general/sprints',
 )
-const { data: projectsData } = await useFetch<ApiListResponse<CrmProjectListItem>>(
+const { data: projectsData } = useFetch<ApiListResponse<CrmProjectListItem>>(
   '/api/crm/general/projects',
 )
 

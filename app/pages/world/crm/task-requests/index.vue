@@ -44,8 +44,8 @@ const payload = reactive<CrmTaskRequestCreatePayload>({
   status: 'pending',
 })
 
-const { data, pending, error, refresh } = await useFetch<ApiListResponse<CrmTaskRequestItem>>('/api/crm/general/task-requests')
-const { data: tasksData } = await useFetch<ApiListResponse<CrmTaskItem>>('/api/crm/general/tasks')
+const { data, pending, error, refresh } = useFetch<ApiListResponse<CrmTaskRequestItem>>('/api/crm/general/task-requests')
+const { data: tasksData } = useFetch<ApiListResponse<CrmTaskItem>>('/api/crm/general/tasks')
 
 const filteredRequests = computed(() => {
   const query = search.value.trim().toLowerCase()

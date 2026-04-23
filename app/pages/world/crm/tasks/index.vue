@@ -49,10 +49,10 @@ const createPayload = reactive<CrmTaskCreatePayload>({
   priority: 'medium',
 })
 
-const { data, pending, error } = await useFetch<CrmTaskResponse>(
+const { data, pending, error } = useFetch<CrmTaskResponse>(
   '/api/crm/general/tasks',
 )
-const { data: projectsData } = await useFetch<ApiListResponse<CrmProjectListItem>>(
+const { data: projectsData } = useFetch<ApiListResponse<CrmProjectListItem>>(
   '/api/crm/general/projects',
 )
 
