@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
     const response = await client.post(
       resolveServerApiUrl(
         event,
-        `/shop/general/carts/${encodeURIComponent(normalizedShopId)}/items`,
+        `/api/v1/shop/carts/${encodeURIComponent(normalizedShopId)}/items`,
       ),
       {
         productId,

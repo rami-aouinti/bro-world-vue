@@ -16,7 +16,7 @@ export default defineEventHandler(
       })
     }
 
-    const endpoint = `/recruit/general/jobs/${encodeURIComponent(slug)}`
+    const endpoint = `/api/v1/recruit/public/jobs/${encodeURIComponent(slug)}`
     const cacheKey = publicCacheKey(endpoint)
     const cached = await getCached<RecruitJobDetailResponse>(cacheKey)
 

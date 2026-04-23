@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
   try {
     const client = await getServerPrivateAxios(event)
     const response = await client.get(
-      resolveServerApiUrl(event, '/shop/general/orders'),
+      resolveServerApiUrl(event, '/api/v1/shop/orders'),
     )
 
     return response.data

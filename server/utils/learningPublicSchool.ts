@@ -278,7 +278,7 @@ async function fetchSchoolCollectionCached<TItem>(
 
   const client = getServerPublicAxios(event)
   const response = await client.get<PublicCollectionResponse<TItem>>(
-    resolveServerApiUrl(event, `/school/general/${resource}`),
+    resolveServerApiUrl(event, `/api/v1/school/${resource}`),
   )
   const items = response.data.items ?? []
   await setCached(cacheKey, items, SCHOOL_CACHE_TTL_SECONDS)
@@ -316,7 +316,7 @@ export async function listSchoolGrades(event: H3Event) {
 export async function getSchoolClassById(event: H3Event, classId: string) {
   const client = getServerPublicAxios(event)
   const response = await client.get<SchoolClass>(
-    resolveServerApiUrl(event, `/school/general/classes/${classId}`),
+    resolveServerApiUrl(event, `/api/v1/school/classes/${classId}`),
   )
   return response.data
 }
@@ -327,7 +327,7 @@ export async function createSchoolClass(
 ) {
   const client = getServerPublicAxios(event)
   const response = await client.post<SchoolClass>(
-    resolveServerApiUrl(event, '/school/general/classes'),
+    resolveServerApiUrl(event, '/api/v1/school/classes'),
     payload,
   )
   await invalidateSchoolCache()
@@ -341,7 +341,7 @@ export async function updateSchoolClass(
 ) {
   const client = getServerPublicAxios(event)
   const response = await client.patch<SchoolClass>(
-    resolveServerApiUrl(event, `/school/general/classes/${classId}`),
+    resolveServerApiUrl(event, `/api/v1/school/classes/${classId}`),
     payload,
   )
   await invalidateSchoolCache()
@@ -350,7 +350,7 @@ export async function updateSchoolClass(
 
 export async function deleteSchoolClass(event: H3Event, classId: string) {
   const client = getServerPublicAxios(event)
-  await client.delete(resolveServerApiUrl(event, `/school/general/classes/${classId}`))
+  await client.delete(resolveServerApiUrl(event, `/api/v1/school/classes/${classId}`))
   await invalidateSchoolCache()
 }
 
@@ -363,7 +363,7 @@ export async function getSchoolResourceById(
   assertSchoolResource(resource)
   const client = getServerPublicAxios(event)
   const response = await client.get<Record<string, unknown>>(
-    resolveServerApiUrl(event, `/school/general/${resource}/${id}`),
+    resolveServerApiUrl(event, `/api/v1/school/${resource}/${id}`),
   )
   return response.data
 }
@@ -376,7 +376,7 @@ export async function createSchoolResource(
   assertSchoolResource(resource)
   const client = getServerPublicAxios(event)
   const response = await client.post<Record<string, unknown>>(
-    resolveServerApiUrl(event, `/school/general/${resource}`),
+    resolveServerApiUrl(event, `/api/v1/school/${resource}`),
     payload,
   )
   await invalidateSchoolCache()
@@ -392,7 +392,7 @@ export async function updateSchoolResource(
   assertSchoolResource(resource)
   const client = getServerPublicAxios(event)
   const response = await client.patch<Record<string, unknown>>(
-    resolveServerApiUrl(event, `/school/general/${resource}/${id}`),
+    resolveServerApiUrl(event, `/api/v1/school/${resource}/${id}`),
     payload,
   )
   await invalidateSchoolCache()
@@ -406,6 +406,6 @@ export async function deleteSchoolResource(
 ) {
   assertSchoolResource(resource)
   const client = getServerPublicAxios(event)
-  await client.delete(resolveServerApiUrl(event, `/school/general/${resource}/${id}`))
+  await client.delete(resolveServerApiUrl(event, `/api/v1/school/${resource}/${id}`))
   await invalidateSchoolCache()
 }

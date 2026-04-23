@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
     const response = await client.post(
       resolveServerApiUrl(
         event,
-        `/shop/general/checkout/${encodeURIComponent(shopId)}`,
+        `/api/v1/shop/checkout/${encodeURIComponent(shopId)}`,
       ),
       payload,
     )
