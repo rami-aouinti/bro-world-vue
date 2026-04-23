@@ -130,7 +130,8 @@ export default defineNuxtConfig({
     },
     databaseUrl: process.env.DATABASE_URL || '',
     cronSecret: process.env.CRON_SECRET || '',
-    blogAutomationToken: process.env.BLOG_AUTOMATION_TOKEN || '',
+    blogAutomationUsername: process.env.BLOG_AUTOMATION_USERNAME || '',
+    blogAutomationPassword: process.env.BLOG_AUTOMATION_PASSWORD || '',
     redis: {
       url: '',
     },

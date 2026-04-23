@@ -1,5 +1,6 @@
 import type { H3Event } from 'h3'
 import { getHeader } from 'h3'
+import { fetchTokenWithPassword } from '~~/server/utils/authSession'
 import { resolveApiUrl } from '~~/server/utils/resolveApiUrl'
 
 type PublicUser = {
@@ -222,17 +223,29 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 
-  const serviceToken =
-    (typeof runtimeConfig.blogAutomationToken === 'string' && runtimeConfig.blogAutomationToken.trim()) ||
-    process.env.BLOG_AUTOMATION_TOKEN ||
+  const automationUsername =
+    (typeof runtimeConfig.blogAutomationUsername === 'string' &&
+      runtimeConfig.blogAutomationUsername.trim()) ||
+    process.env.BLOG_AUTOMATION_USERNAME ||
+    ''
+  const automationPassword =
+    (typeof runtimeConfig.blogAutomationPassword === 'string' &&
+      runtimeConfig.blogAutomationPassword.trim()) ||
+    process.env.BLOG_AUTOMATION_PASSWORD ||
     ''
 
-  if (!serviceToken) {
+  if (!automationUsername || !automationPassword) {
     throw createError({
       statusCode: 500,
-      statusMessage: 'Missing BLOG_AUTOMATION_TOKEN for automated blog posting',
+      statusMessage:
+        'Missing BLOG_AUTOMATION_USERNAME or BLOG_AUTOMATION_PASSWORD for automated blog posting',
     })
   }
+
+  const serviceToken = await fetchTokenWithPassword(event, {
+    username: automationUsername,
+    password: automationPassword,
+  })
 
   const usersResponse = await $fetch<unknown>(
     resolveApiUrl(runtimeConfig.public.apiBaseUrl, '/api/v1/public/users'),
