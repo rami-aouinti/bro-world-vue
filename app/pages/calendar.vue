@@ -528,7 +528,7 @@ async function onExternalDrop(dropInfo: {
   }
 
   try {
-    await privateApi.request('/api/v1/calendar/private/events', {
+    await privateApi.request('/api/calendar/private/events', {
       method: 'POST',
       body: payload,
     })
@@ -581,7 +581,7 @@ async function saveEvent() {
         },
       )
     } else {
-      await privateApi.request('/api/v1/calendar/private/events', {
+      await privateApi.request('/api/calendar/private/events', {
         method: 'POST',
         body: payload,
       })
