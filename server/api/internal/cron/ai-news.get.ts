@@ -29,38 +29,20 @@ type GeneratedArticlesPayload = {
 }
 
 const TOPIC_CATALOG = [
-  {
-    name: 'Symfony',
-    url: 'https://symfony.com/doc/current/index.html',
-  },
-  {
-    name: 'Nuxt',
-    url: 'https://nuxt.com/docs',
-  },
+  { name: 'Symfony', url: 'https://symfony.com/doc/current/index.html' },
+  { name: 'Nuxt', url: 'https://nuxt.com/docs' },
   {
     name: 'Vuetify',
     url: 'https://vuetifyjs.com/en/getting-started/installation/',
   },
-  {
-    name: 'API Design',
-    url: 'https://restfulapi.net/',
-  },
+  { name: 'API Design', url: 'https://restfulapi.net/' },
   {
     name: 'Elasticsearch',
     url: 'https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html',
   },
-  {
-    name: 'RabbitMQ',
-    url: 'https://www.rabbitmq.com/docs',
-  },
-  {
-    name: 'Redis',
-    url: 'https://redis.io/docs/latest/',
-  },
-  {
-    name: 'MongoDB',
-    url: 'https://www.mongodb.com/docs/',
-  },
+  { name: 'RabbitMQ', url: 'https://www.rabbitmq.com/docs' },
+  { name: 'Redis', url: 'https://redis.io/docs/latest/' },
+  { name: 'MongoDB', url: 'https://www.mongodb.com/docs/' },
 ] as const
 
 const DEFAULT_FALLBACK_TITLES = [
@@ -68,6 +50,8 @@ const DEFAULT_FALLBACK_TITLES = [
   'Pourquoi Redis + RabbitMQ accélèrent les APIs',
   'Elasticsearch et MongoDB : duo gagnant pour la recherche produit',
 ] as const
+
+const AI_DAILY_USAGE_KEY = 'internal:cron:ai-news:last-ai-usage-date'
 
 function pickRandomItems<T>(items: T[], count: number) {
   const shuffled = [...items]
@@ -80,6 +64,23 @@ function pickRandomItems<T>(items: T[], count: number) {
   }
 
   return shuffled.slice(0, Math.max(0, Math.min(count, shuffled.length)))
+}
+
+function getUtcDateKey(now = new Date()) {
+  return now.toISOString().slice(0, 10)
+}
+
+async function canUseAiForToday() {
+  const storage = useStorage('cache')
+  const todayKey = getUtcDateKey()
+  const lastUsageDay = String((await storage.getItem(AI_DAILY_USAGE_KEY)) ?? '')
+
+  return {
+    allowed: lastUsageDay !== todayKey,
+    todayKey,
+    lastUsageDay: lastUsageDay || null,
+    storage,
+  }
 }
 
 function readUsersFromResponse(payload: unknown): PublicUser[] {
@@ -136,23 +137,32 @@ function parseArticles(content: string): GeneratedArticle[] {
     .slice(0, 3)
 }
 
-function buildFallbackArticles(): GeneratedArticle[] {
+function buildFallbackArticles(users: PublicUser[]): GeneratedArticle[] {
   const pickedTopics = pickRandomItems([...TOPIC_CATALOG], 3)
+  const pickedUsers = pickRandomItems(users, 3)
 
-  return pickedTopics.map((topic, index) => ({
-    title: DEFAULT_FALLBACK_TITLES[index] ?? `News technique: ${topic.name}`,
-    content:
-      `Point rapide sur ${topic.name}: nouveautés, bonnes pratiques et pièges à éviter côté production. ` +
-      `Ce post a été généré automatiquement par l'agent IA du site.`,
-    sharedUrl: topic.url,
-  }))
+  return pickedTopics.map((topic, index) => {
+    const author = pickedUsers[index]?.displayName || pickedUsers[index]?.username || 'la communauté'
+
+    return {
+      title: DEFAULT_FALLBACK_TITLES[index] ?? `News technique: ${topic.name}`,
+      content:
+        `Point rapide sur ${topic.name}: nouveautés, bonnes pratiques et pièges à éviter côté production. ` +
+        `Rédigé automatiquement pour ${author}.`,
+      sharedUrl: topic.url,
+    }
+  })
 }
 
 function buildPrompt(candidateUsers: PublicUser[]) {
-  return `Tu es un rédacteur tech. Génère strictement du JSON avec la forme {"articles": [{"title": string, "content": string, "sharedUrl": string}]}.\n` +
-    `Contraintes: 3 articles exactement, français, ton clair, 120 à 220 mots par article, chaque article doit parler d'au moins un sujet parmi Symfony, Nuxt, Vuetify, API, Elasticsearch, RabbitMQ, Redis, MongoDB.\n` +
-    `Inclure sharedUrl seulement si tu proposes un lien utile.\n` +
-    `Liste publique d'utilisateurs (choisir un auteur aléatoire à mentionner dans le contenu, sans inventer de nom): ${JSON.stringify(candidateUsers)}\n` +
+  return `Tu es un rédacteur tech. Génère strictement du JSON avec la forme {"articles": [{"title": string, "content": string, "sharedUrl": string}]}.
+` +
+    `Contraintes: 3 articles exactement, français, ton clair, 120 à 220 mots par article, chaque article doit parler d'au moins un sujet parmi Symfony, Nuxt, Vuetify, API, Elasticsearch, RabbitMQ, Redis, MongoDB.
+` +
+    `Inclure sharedUrl seulement si tu proposes un lien utile.
+` +
+    `Liste publique d'utilisateurs (choisir un auteur aléatoire à mentionner dans le contenu, sans inventer de nom): ${JSON.stringify(candidateUsers)}
+` +
     `Liste de références possibles: ${JSON.stringify(TOPIC_CATALOG)}`
 }
 
@@ -162,7 +172,7 @@ async function generateArticlesWithAi(event: H3Event, users: PublicUser[]) {
   const model = runtimeConfig.aiGatewayModel
 
   if (!apiKey || !model) {
-    return buildFallbackArticles()
+    return buildFallbackArticles(users)
   }
 
   const response = await $fetch<AiGatewayResponse>(
@@ -177,14 +187,8 @@ async function generateArticlesWithAi(event: H3Event, users: PublicUser[]) {
         temperature: 0.7,
         response_format: { type: 'json_object' },
         messages: [
-          {
-            role: 'system',
-            content: 'Retourne uniquement du JSON valide.',
-          },
-          {
-            role: 'user',
-            content: buildPrompt(users),
-          },
+          { role: 'system', content: 'Retourne uniquement du JSON valide.' },
+          { role: 'user', content: buildPrompt(users) },
         ],
       },
     },
@@ -193,14 +197,14 @@ async function generateArticlesWithAi(event: H3Event, users: PublicUser[]) {
   const content = response.choices?.[0]?.message?.content?.trim()
 
   if (!content) {
-    return buildFallbackArticles()
+    return buildFallbackArticles(users)
   }
 
   try {
     const parsed = parseArticles(content)
-    return parsed.length > 0 ? parsed : buildFallbackArticles()
+    return parsed.length > 0 ? parsed : buildFallbackArticles(users)
   } catch {
-    return buildFallbackArticles()
+    return buildFallbackArticles(users)
   }
 }
 
@@ -232,14 +236,21 @@ export default defineEventHandler(async (event) => {
 
   const usersResponse = await $fetch<unknown>(
     resolveApiUrl(runtimeConfig.public.apiBaseUrl, '/api/v1/public/users'),
-    {
-      headers: { accept: 'application/json' },
-    },
+    { headers: { accept: 'application/json' } },
   )
 
   const users = readUsersFromResponse(usersResponse)
   const randomUsers = pickRandomItems(users, 3)
-  const articles = await generateArticlesWithAi(event, randomUsers)
+
+  const aiUsage = await canUseAiForToday()
+  const usedAi = aiUsage.allowed
+  const articles = usedAi
+    ? await generateArticlesWithAi(event, randomUsers)
+    : buildFallbackArticles(randomUsers)
+
+  if (usedAi) {
+    await aiUsage.storage.setItem(AI_DAILY_USAGE_KEY, aiUsage.todayKey)
+  }
 
   const creationResults = await Promise.all(
     articles.map(async (article) => {
@@ -282,6 +293,8 @@ export default defineEventHandler(async (event) => {
 
   return {
     ok: true,
+    usedAi,
+    aiAlreadyUsedAtUtcDay: aiUsage.lastUsageDay,
     pickedUsers: randomUsers,
     createdCount: creationResults.length,
     createdTitles: creationResults.map((entry) => entry.title),
