@@ -209,6 +209,22 @@ async function generateArticlesWithAi(event: H3Event, users: PublicUser[]) {
   }
 }
 
+
+function hasValidCronAuth(event: H3Event, expectedToken: string) {
+  const vercelCronHeader = getHeader(event, 'x-vercel-cron')
+  if (vercelCronHeader === '1') {
+    return true
+  }
+
+  if (!expectedToken) {
+    return false
+  }
+
+  const authorization = getHeader(event, 'authorization')
+  const providedToken = authorization?.replace(/^Bearer\s+/i, '').trim() || ''
+  return providedToken === expectedToken
+}
+
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig(event)
   const expectedToken =
@@ -216,11 +232,11 @@ export default defineEventHandler(async (event) => {
     process.env.CRON_SECRET ||
     ''
 
-  const authorization = getHeader(event, 'authorization')
-  const providedToken = authorization?.replace(/^Bearer\s+/i, '').trim() || ''
-
-  if (!expectedToken || providedToken !== expectedToken) {
-    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+  if (!hasValidCronAuth(event, expectedToken)) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized (missing CRON_SECRET bearer token or x-vercel-cron header)',
+    })
   }
 
   const automationUsername =

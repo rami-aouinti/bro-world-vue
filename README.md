@@ -213,7 +213,7 @@ Cette vérification standardisée couvre :
 Un endpoint interne `GET /api/internal/cron/ai-news` crée automatiquement **3 posts tech** (Symfony, Nuxt, Vuetify, API, Elasticsearch, RabbitMQ, Redis, MongoDB) en s'appuyant sur un agent IA.
 
 - Déclenchement: réutilise le cron interne existant en ajoutant `runAiNews=1` sur `/api/internal/cron/cache-refresh` (pas besoin d'ajouter un 3ème cron Vercel).
-- Sécurité: appel protégé par `Authorization: Bearer <CRON_SECRET>`.
+- Sécurité: soit header Vercel `x-vercel-cron: 1`, soit `Authorization: Bearer <CRON_SECRET>` (optionnel).
 - Publication: fait un login technique avec `BLOG_AUTOMATION_USERNAME` + `BLOG_AUTOMATION_PASSWORD`, récupère le token JWT, puis poste sur le blog privé (`/api/v1/private/blogs/general/posts`).
 - Limite d'usage IA: **1 appel IA par jour (UTC)**, les autres déclenchements utilisent un fallback local pour éviter de consommer plus d'un agent IA par jour.
 - Exemple: `/api/internal/cron/cache-refresh?mode=warm&scope=public-non-sports&runAiNews=1`.
@@ -221,7 +221,7 @@ Un endpoint interne `GET /api/internal/cron/ai-news` crée automatiquement **3 p
 Variables à définir:
 
 ```bash
-CRON_SECRET=...
+CRON_SECRET=... # optionnel si vous utilisez x-vercel-cron
 BLOG_AUTOMATION_USERNAME=...
 BLOG_AUTOMATION_PASSWORD=...
 AI_GATEWAY_API_KEY=...

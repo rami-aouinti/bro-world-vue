@@ -1,3 +1,4 @@
+import type { H3Event } from 'h3'
 import { invalidateByPrefix, publicCachePrefix } from '~~/server/utils/apiCache'
 
 type CacheRefreshMode = 'purge' | 'warm'
@@ -192,6 +193,22 @@ function resolveDomains(scope: string | null) {
     .filter((domain) => !EXCLUDED_DOMAINS.has(domain))
 }
 
+
+function hasValidCronAuth(event: H3Event, expectedToken: string) {
+  const vercelCronHeader = getHeader(event, 'x-vercel-cron')
+  if (vercelCronHeader === '1') {
+    return true
+  }
+
+  if (!expectedToken) {
+    return false
+  }
+
+  const authorization = getHeader(event, 'authorization')
+  const providedToken = authorization?.replace(/^Bearer\s+/i, '').trim() || ''
+  return providedToken === expectedToken
+}
+
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   const expectedToken =
@@ -199,11 +216,11 @@ export default defineEventHandler(async (event) => {
     process.env.CRON_SECRET ||
     ''
 
-  const authorization = getHeader(event, 'authorization')
-  const providedToken = authorization?.replace(/^Bearer\s+/i, '').trim() || ''
-
-  if (!expectedToken || providedToken !== expectedToken) {
-    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+  if (!hasValidCronAuth(event, expectedToken)) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized (missing CRON_SECRET bearer token or x-vercel-cron header)',
+    })
   }
 
   const query = getQuery(event)
