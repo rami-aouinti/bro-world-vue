@@ -2181,7 +2181,12 @@
         "courses": "Courses",
         "levels": "Levels",
         "paths": "Paths",
-        "admin": "Admin"
+        "admin": "Admin",
+        "exams": "Exams",
+        "classes": "Classes",
+        "teachers": "Teachers",
+        "students": "Students",
+        "grades": "Grades"
       },
       "actions": {
         "refreshDashboard": "Refresh dashboard",
