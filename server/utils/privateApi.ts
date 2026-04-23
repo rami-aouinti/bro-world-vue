@@ -1,4 +1,5 @@
 import type { H3Event } from 'h3'
+import { isAxiosError } from 'axios'
 import type { SessionUser } from '~/types/session'
 import type { ApiObject, ApiQuery, ApiResponse } from '../types/api/common'
 import { getCached, privateCacheKey, setCached } from './apiCache'
@@ -45,6 +46,45 @@ type PrivateApiOptions = {
   headers?: HeadersInit
 }
 
+type RecruitEndpointRewrite = {
+  nextEndpoint: string
+  legacyEndpoint: string
+}
+
+function rewriteRecruitEndpoint(
+  endpoint: string,
+): RecruitEndpointRewrite | null {
+  const generalMatch = endpoint.match(/^\/api\/v1\/recruit\/general\/(.+)$/)
+  if (generalMatch) {
+    return {
+      nextEndpoint: `/api/v1/recruit/${generalMatch[1]}`,
+      legacyEndpoint: endpoint,
+    }
+  }
+
+  const applicationScopedMatch = endpoint.match(
+    /^\/api\/v1\/recruit\/applications\/[^/]+\/(.+)$/,
+  )
+  if (applicationScopedMatch) {
+    return {
+      nextEndpoint: `/api/v1/recruit/${applicationScopedMatch[1]}`,
+      legacyEndpoint: endpoint,
+    }
+  }
+
+  const pipelineMatch = endpoint.match(
+    /^\/api\/v1\/recruit\/private\/[^/]+\/pipeline$/,
+  )
+  if (pipelineMatch) {
+    return {
+      nextEndpoint: '/api/v1/recruit/private/pipeline',
+      legacyEndpoint: endpoint,
+    }
+  }
+
+  return null
+}
+
 type CachedPrivateGetOptions = {
   query?: ApiQuery
   cacheDomain?: CacheDomain
@@ -55,15 +95,40 @@ export async function callPrivateApi<TResponse extends ApiResponse>(
   endpoint: string,
   options?: PrivateApiOptions,
 ): Promise<TResponse> {
-  const client = await getServerPrivateAxios(event, { headers: options?.headers })
-  const response = await client.request<TResponse>({
-    url: resolveServerApiUrl(event, endpoint),
-    method: options?.method ?? 'GET',
-    params: options?.query,
-    data: options?.body,
+  const client = await getServerPrivateAxios(event, {
+    headers: options?.headers,
   })
 
-  return response.data
+  const recruitRewrite = rewriteRecruitEndpoint(endpoint)
+  const preferredEndpoint = recruitRewrite?.nextEndpoint ?? endpoint
+
+  try {
+    const response = await client.request<TResponse>({
+      url: resolveServerApiUrl(event, preferredEndpoint),
+      method: options?.method ?? 'GET',
+      params: options?.query,
+      data: options?.body,
+    })
+
+    return response.data
+  } catch (error) {
+    if (
+      !recruitRewrite ||
+      !isAxiosError(error) ||
+      error.response?.status !== 404
+    ) {
+      throw error
+    }
+
+    const fallbackResponse = await client.request<TResponse>({
+      url: resolveServerApiUrl(event, recruitRewrite.legacyEndpoint),
+      method: options?.method ?? 'GET',
+      params: options?.query,
+      data: options?.body,
+    })
+
+    return fallbackResponse.data
+  }
 }
 
 export async function cachedPrivateGet<TResponse extends ApiResponse>(

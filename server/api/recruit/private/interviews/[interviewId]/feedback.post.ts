@@ -9,7 +9,10 @@ export default defineEventHandler(
     const interviewId = getRouterParam(event, 'interviewId')
 
     if (!interviewId) {
-      throw createError({ statusCode: 400, statusMessage: 'Missing interview id' })
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Missing interview id',
+      })
     }
 
     const body = await readBody<RecruitInterviewFeedbackPayload>(event)
