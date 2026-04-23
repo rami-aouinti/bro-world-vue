@@ -101,7 +101,8 @@ const isPageLoading = computed(() => isPageSkeletonVisible.value)
       module-icon="mdi-storefront-outline"
       :module-description="t('world.shop.moduleDescription')"
       :nav-items="shopNavItems"
-      :action-label="t('world.shop.actions.checkout')"
+      :action-label="'Create Shop'"
+      @action="navigateTo('/platform/shop/new')"
     >
       <template #right>
         <div class="d-flex flex-column ga-4">

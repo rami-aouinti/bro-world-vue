@@ -168,7 +168,8 @@ watch([locale, referenceNavItems], () => {
       module-icon="mdi-briefcase-search-outline"
       :module-description="t('world.jobs.moduleDescription')"
       :nav-items="jobsNavItems"
-      :action-label="t('world.jobs.applications.actions.create')"
+      :action-label="'Create Job'"
+      @action="navigateTo('/platform/job/new')"
     >
       <template #right>
         <div class="d-flex flex-column ga-4">

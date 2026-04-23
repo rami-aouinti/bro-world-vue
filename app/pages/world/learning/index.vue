@@ -196,7 +196,8 @@ watch([locale, referenceNavItems], () => {
       module-icon="mdi-school-outline"
       :module-description="t('world.learning.moduleDescription')"
       :nav-items="learningNavItems"
-      :show-action="false"
+      :action-label="'Create School'"
+      @action="navigateTo('/platform/school/new')"
       activate-right-drawer
     >
       <template #right>
