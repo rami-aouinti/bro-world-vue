@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
     const response = await client.patch(
       resolveServerApiUrl(
         event,
-        `/shop/general/carts/${encodeURIComponent(normalizedShopId)}/items/${encodeURIComponent(normalizedItemId)}`,
+        `/api/v1/shop/carts/${encodeURIComponent(normalizedShopId)}/items/${encodeURIComponent(normalizedItemId)}`,
       ),
       { quantity },
     )

@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
     const response = await client.post(
       resolveServerApiUrl(
         event,
-        `/shop/general/orders/${encodeURIComponent(orderId)}/payment-confirm`,
+        `/api/v1/shop/orders/${encodeURIComponent(orderId)}/payment-confirm`,
       ),
       body,
     )

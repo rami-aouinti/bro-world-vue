@@ -16,7 +16,7 @@ interface PublicShopCategoriesResponse {
 export default defineEventHandler(async (event) => {
   const response = await callPublicApi<PublicShopCategoriesResponse>(
     event,
-    '/shop/general/categories',
+    '/api/v1/shop/categories',
   )
 
   const data = Array.isArray(response.items)

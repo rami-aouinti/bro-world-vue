@@ -95,7 +95,7 @@ export default defineEventHandler(async (event) => {
 
   const response = await callPublicApi<PublicShopProductsResponse>(
     event,
-    '/shop/general/products',
+    '/api/v1/shop/products',
     {
       query: sentFilters,
     },

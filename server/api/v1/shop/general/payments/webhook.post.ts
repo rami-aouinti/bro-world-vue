@@ -71,7 +71,7 @@ export default defineEventHandler(async (event) => {
 
   const client = getServerPublicAxios(event)
   const response = await client.post(
-    resolveServerApiUrl(event, '/shop/general/payments/webhook'),
+    resolveServerApiUrl(event, '/api/v1/shop/payments/webhook'),
     parsedBody,
     {
       params: { provider },

@@ -7,7 +7,7 @@ export default defineEventHandler(
   async (event): Promise<RecruitJobsListResponse> => {
     const runtimeConfig = useRuntimeConfig(event)
     const query = getQuery(event)
-    const endpoint = '/recruit/general/jobs'
+    const endpoint = '/api/v1/recruit/public/jobs'
     const cacheKey = publicCacheKey(endpoint, query)
 
     const cached = await getCached<RecruitJobsListResponse>(cacheKey)

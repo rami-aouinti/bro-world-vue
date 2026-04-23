@@ -17,7 +17,7 @@ function normalizeApiBaseUrl(baseUrl: string) {
 function buildSchoolApiUrl(apiBaseUrl: string, resource: SchoolResource, id?: string) {
   const baseUrl = normalizeApiBaseUrl(apiBaseUrl)
   const encodedId = id ? `/${encodeURIComponent(id)}` : ''
-  return `${baseUrl}/school/general/${resource}${encodedId}`
+  return `${baseUrl}/api/v1/school/${resource}${encodedId}`
 }
 
 function normalizeSchoolResource(resource: string): SchoolResource {

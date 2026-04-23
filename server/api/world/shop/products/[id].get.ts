@@ -66,7 +66,7 @@ export default defineEventHandler(async (event) => {
 
   const response = await callPublicApi<PublicShopProductDetailResponse>(
     event,
-    `/shop/general/products/${id}`,
+    `/api/v1/shop/products/${id}`,
   )
 
   if (!response.product) {
