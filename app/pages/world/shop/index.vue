@@ -8,6 +8,7 @@ definePageMeta({
 })
 
 const { t } = useI18n()
+const { isPageSkeletonVisible } = usePageSkeleton()
 const runtimeConfig = useRuntimeConfig()
 const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world-space.com'
 const pageUrl = new URL(SHOP_BASE_PATH, siteUrl).toString()
@@ -81,11 +82,20 @@ const referenceCards = computed(() => [
     icon: 'mdi-receipt-text-outline',
   },
 ])
+
+const isPageLoading = computed(() => isPageSkeletonVisible.value)
 </script>
 
 <template>
   <div>
-    <WorldModuleDrawers
+    <template v-if="isPageLoading">
+      <v-container fluid>
+        <v-skeleton-loader type="card, article, article" />
+      </v-container>
+    </template>
+
+    <template v-else>
+      <WorldModuleDrawers
       :module-title="t('world.shop.label')"
       :module-path="SHOP_BASE_PATH"
       module-icon="mdi-storefront-outline"
@@ -265,6 +275,7 @@ const referenceCards = computed(() => [
         </v-col>
       </v-row>
     </v-container>
+    </template>
   </div>
 </template>
 

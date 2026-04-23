@@ -8,6 +8,7 @@ definePageMeta({
 })
 
 const { t } = useI18n()
+const { isPageSkeletonVisible } = usePageSkeleton()
 const runtimeConfig = useRuntimeConfig()
 const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world-space.com'
 const pageUrl = new URL('/world/crm', siteUrl).toString()
@@ -76,13 +77,17 @@ type CrmGeneralPublicItem = {
   plugins?: GeneralPluginItem[]
 }
 
-const { data: generalApplications } = await useAsyncData(
+const { data: generalApplications, pending: pendingGeneralApplications } = useAsyncData(
   'world-public-general-applications-crm-page',
   () => $fetch<{ items?: CrmGeneralPublicItem[] }>('/api/application/public/general'),
 )
 
 const crmGeneralApplication = computed(() =>
   (generalApplications.value?.items ?? []).find(item => item.platform?.key === 'crm'),
+)
+
+const isPageLoading = computed(
+  () => isPageSkeletonVisible.value || pendingGeneralApplications.value,
 )
 
 const pluginModalOpen = ref(false)
@@ -173,14 +178,6 @@ function toDisplayFields(value: unknown, parentPath = ''): ConfigurationDisplayF
   })
 }
 
-function displayConfigurationName(configurationKey?: string) {
-  if (!configurationKey) {
-    return t('world.crm.generalDrawer.configuration.untitled', 'Configuration')
-  }
-
-  return formatPathLabel(configurationKey)
-}
-
 const loginDialogOpen = ref(false)
 const loginLoading = ref(false)
 
@@ -247,7 +244,14 @@ const githubSyncSteps = [
 
 <template>
   <div>
-    <WorldModuleDrawers
+    <template v-if="isPageLoading">
+      <v-container fluid>
+        <v-skeleton-loader type="card, article, article" />
+      </v-container>
+    </template>
+
+    <template v-else>
+      <WorldModuleDrawers
       :module-title="t('world.crm.label')"
       module-key="crm"
       module-path="/world/crm"
@@ -511,6 +515,7 @@ const githubSyncSteps = [
         </v-card>
       </div>
     </AppModal>
+    </template>
   </div>
 </template>
 
