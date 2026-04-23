@@ -1,3 +1,4 @@
+import type { H3Event } from 'h3'
 import { invalidateByPrefix, publicCachePrefix } from '~~/server/utils/apiCache'
 
 type CacheRefreshMode = 'purge' | 'warm'
@@ -155,6 +156,16 @@ async function warmEndpointsInBatches(baseUrl: string, endpoints: string[]) {
   return results
 }
 
+
+function isTruthyFlag(value: unknown) {
+  if (typeof value !== 'string') {
+    return false
+  }
+
+  const normalized = value.trim().toLowerCase()
+  return ['1', 'true', 'yes', 'on'].includes(normalized)
+}
+
 function normalizeScope(scope: unknown) {
   if (typeof scope !== 'string') {
     return null
@@ -182,6 +193,23 @@ function resolveDomains(scope: string | null) {
     .filter((domain) => !EXCLUDED_DOMAINS.has(domain))
 }
 
+
+function hasValidCronAuth(event: H3Event, expectedToken: string) {
+  const vercelCronHeader = getHeader(event, 'x-vercel-cron')
+  const vercelCronFlag = String(vercelCronHeader || '').trim().toLowerCase()
+  if (['1', 'true', 'yes', 'on'].includes(vercelCronFlag)) {
+    return true
+  }
+
+  if (!expectedToken) {
+    return false
+  }
+
+  const authorization = getHeader(event, 'authorization')
+  const providedToken = authorization?.replace(/^Bearer\s+/i, '').trim() || ''
+  return providedToken === expectedToken
+}
+
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   const expectedToken =
@@ -189,11 +217,11 @@ export default defineEventHandler(async (event) => {
     process.env.CRON_SECRET ||
     ''
 
-  const authorization = getHeader(event, 'authorization')
-  const providedToken = authorization?.replace(/^Bearer\s+/i, '').trim() || ''
-
-  if (!expectedToken || providedToken !== expectedToken) {
-    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+  if (!hasValidCronAuth(event, expectedToken)) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized (missing CRON_SECRET bearer token or x-vercel-cron header)',
+    })
   }
 
   const query = getQuery(event)
@@ -209,6 +237,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const invalidatedDomains = mode === 'purge' ? resolveDomains(scope) : []
+  const runAiNews = isTruthyFlag(query.runAiNews)
   const warmSummary = {
     warmed: [] as string[],
     failed: [] as Array<{ endpoint: string; error: string; status?: number }>,
@@ -246,9 +275,62 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  let aiNewsResult: {
+    ok: boolean
+    status?: number
+    error?: string
+    payload?: unknown
+  } | null = null
+
+  if (runAiNews) {
+    const requestUrl = getRequestURL(event)
+    const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`
+
+    try {
+      const inboundVercelCronHeader = getHeader(event, 'x-vercel-cron')
+      const aiNewsHeaders: Record<string, string> = {
+        Accept: 'application/json',
+      }
+
+      if (inboundVercelCronHeader) {
+        aiNewsHeaders['x-vercel-cron'] = inboundVercelCronHeader
+      }
+      else if (expectedToken) {
+        aiNewsHeaders.Authorization = `Bearer ${expectedToken}`
+      }
+
+      const aiNewsResponse = await fetch(`${baseUrl}/api/internal/cron/ai-news`, {
+        method: 'GET',
+        headers: aiNewsHeaders,
+      })
+
+      if (!aiNewsResponse.ok) {
+        aiNewsResult = {
+          ok: false,
+          status: aiNewsResponse.status,
+          error: `HTTP ${aiNewsResponse.status}`,
+        }
+      } else {
+        aiNewsResult = {
+          ok: true,
+          status: aiNewsResponse.status,
+          payload: await aiNewsResponse.json(),
+        }
+      }
+    }
+    catch (error) {
+      aiNewsResult = {
+        ok: false,
+        error: error instanceof Error ? error.message : 'Unknown ai-news error',
+      }
+    }
+  }
+
   return {
     ok: true,
     mode,
+    runAiNews,
+    aiNews: aiNewsResult,
     invalidatedDomains,
     warmed: warmSummary.warmed,
     failed: warmSummary.failed,
