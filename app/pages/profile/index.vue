@@ -42,6 +42,7 @@ type ResumeSectionForm = RecruitResumeSection & {
 }
 
 const { t, locale } = useI18n()
+const { scopedRecruitPath } = useRecruitScopedApi()
 const { isPageSkeletonVisible } = usePageSkeleton()
 const { user } = useUserSession()
 const profileStore = useProfileStore()
@@ -422,7 +423,7 @@ async function fetchResumes() {
   resumesError.value = ''
   try {
     resumes.value = await privateApi.request<RecruitResume[]>(
-      '/api/recruit/general/private/me/resumes',
+      scopedRecruitPath('/private/me/resumes'),
     )
   } catch {
     resumesError.value = 'Unable to load your resumes.'
@@ -441,7 +442,7 @@ async function createResumeFromUpload() {
     formData.append('experiences', JSON.stringify([]))
     formData.append('skills', JSON.stringify([]))
     const created = await $fetch<{ id: string; documentUrl: string | null }>(
-      '/api/recruit/general/resumes',
+      scopedRecruitPath('/resumes'),
       { method: 'POST', body: formData },
     )
     resumes.value = [
@@ -476,7 +477,7 @@ async function createResumeFromManual() {
     const { normalizedBySection, formData } = buildResumeMultipartPayload()
 
     const created = await $fetch<{ id: string; documentUrl: string | null }>(
-      '/api/recruit/general/resumes',
+      scopedRecruitPath('/resumes'),
       {
         method: 'POST',
         body: hasAttachmentFiles() ? formData : normalizedBySection,
@@ -521,7 +522,9 @@ async function updateResume() {
   try {
     const { normalizedBySection, formData } = buildResumeMultipartPayload()
     await privateApi.request(
-      `/api/recruit/general/private/me/resumes/${selectedResume.value.id}`,
+      scopedRecruitPath(
+        `/private/me/resumes/${encodeURIComponent(selectedResume.value.id)}`,
+      ),
       {
         method: 'PATCH',
         body: hasAttachmentFiles() ? formData : normalizedBySection,

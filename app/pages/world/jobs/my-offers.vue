@@ -5,6 +5,7 @@ import { privateApi } from '~/utils/http/privateApi'
 definePageMeta({ layout: 'job', title: 'Jobs My Offers' })
 
 const { t } = useI18n()
+const { scopedRecruitPath } = useRecruitScopedApi()
 
 const jobsNavItems = computed(() => [
   {
@@ -45,7 +46,7 @@ async function fetchMyJobs() {
 
   try {
     const response = await privateApi.request<RecruitMyJobsResponse>(
-      '/api/recruit/general/private/me/jobs',
+      scopedRecruitPath('/private/me/jobs'),
     )
     createdJobs.value = response.createdJobs.filter((job) => job.owner)
   } catch (error) {

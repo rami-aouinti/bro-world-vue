@@ -10,6 +10,7 @@ import type {
 definePageMeta({ layout: 'job', title: 'Jobs Offers' })
 
 const { t } = useI18n()
+const { scopedRecruitPath } = useRecruitScopedApi()
 
 const jobsNavItems = [
   {
@@ -76,7 +77,7 @@ async function fetchJobs() {
 
   try {
     const response = await $fetch<RecruitJobsListResponse>(
-      '/api/recruit/general/jobs',
+      scopedRecruitPath('/public/jobs'),
       {
         query: {
           page: page.value,
