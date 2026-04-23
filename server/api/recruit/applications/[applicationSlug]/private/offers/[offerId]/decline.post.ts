@@ -1,23 +1,27 @@
-import type { RecruitOfferActionPayload, RecruitBasicMessageResponse } from '~~/server/types/api/recruit'
+import type {
+  RecruitOfferActionPayload,
+  RecruitBasicMessageResponse,
+} from '~~/server/types/api/recruit'
 import { mutatingPrivateApiCall } from '~~/server/utils/privateApi'
 
-export default defineEventHandler(async (event): Promise<RecruitBasicMessageResponse> => {
-  const applicationSlug = getRouterParam(event, 'applicationSlug')
-  const offerId = getRouterParam(event, 'offerId')
+export default defineEventHandler(
+  async (event): Promise<RecruitBasicMessageResponse> => {
+    const offerId = getRouterParam(event, 'offerId')
 
-  if (!applicationSlug || !offerId) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing application slug or offer id' })
-  }
+    if (!offerId) {
+      throw createError({ statusCode: 400, statusMessage: 'Missing offer id' })
+    }
 
-  const body = await readBody<RecruitOfferActionPayload>(event)
+    const body = await readBody<RecruitOfferActionPayload>(event)
 
-  return mutatingPrivateApiCall<RecruitBasicMessageResponse>(
-    event,
-    `/api/v1/recruit/applications/${applicationSlug}/private/offers/${offerId}/decline`,
-    {
-      method: 'POST',
-      body,
-      mutationKey: 'recruit-offers',
-    },
-  )
-})
+    return mutatingPrivateApiCall<RecruitBasicMessageResponse>(
+      event,
+      `/api/v1/recruit/private/offers/${offerId}/decline`,
+      {
+        method: 'POST',
+        body,
+        mutationKey: 'recruit-offers',
+      },
+    )
+  },
+)

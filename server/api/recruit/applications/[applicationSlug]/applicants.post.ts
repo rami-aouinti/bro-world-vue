@@ -1,22 +1,21 @@
-import type { RecruitApplicationCreatePayload, RecruitBasicMessageResponse } from '~~/server/types/api/recruit'
+import type {
+  RecruitApplicationCreatePayload,
+  RecruitBasicMessageResponse,
+} from '~~/server/types/api/recruit'
 import { mutatingPrivateApiCall } from '~~/server/utils/privateApi'
 
-export default defineEventHandler(async (event): Promise<RecruitBasicMessageResponse> => {
-  const applicationSlug = getRouterParam(event, 'applicationSlug')
+export default defineEventHandler(
+  async (event): Promise<RecruitBasicMessageResponse> => {
+    const body = await readBody<RecruitApplicationCreatePayload>(event)
 
-  if (!applicationSlug) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing application slug' })
-  }
-
-  const body = await readBody<RecruitApplicationCreatePayload>(event)
-
-  return mutatingPrivateApiCall<RecruitBasicMessageResponse>(
-    event,
-    `/api/v1/recruit/applications/${applicationSlug}/applicants`,
-    {
-      method: 'POST',
-      body,
-      mutationKey: 'recruit-applications',
-    },
-  )
-})
+    return mutatingPrivateApiCall<RecruitBasicMessageResponse>(
+      event,
+      `/api/v1/recruit/applicants`,
+      {
+        method: 'POST',
+        body,
+        mutationKey: 'recruit-applications',
+      },
+    )
+  },
+)
