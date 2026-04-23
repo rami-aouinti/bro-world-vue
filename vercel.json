@@ -7,6 +7,10 @@
     {
       "path": "/api/internal/cron/cache-refresh?mode=warm&scope=public-non-sports",
       "schedule": "30 0 * * *"
+    },
+    {
+      "path": "/api/internal/cron/ai-news",
+      "schedule": "0 */3 * * *"
     }
   ]
 }
