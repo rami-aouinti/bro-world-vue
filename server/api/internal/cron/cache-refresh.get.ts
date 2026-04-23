@@ -196,7 +196,8 @@ function resolveDomains(scope: string | null) {
 
 function hasValidCronAuth(event: H3Event, expectedToken: string) {
   const vercelCronHeader = getHeader(event, 'x-vercel-cron')
-  if (vercelCronHeader === '1') {
+  const vercelCronFlag = String(vercelCronHeader || '').trim().toLowerCase()
+  if (['1', 'true', 'yes', 'on'].includes(vercelCronFlag)) {
     return true
   }
 
@@ -286,12 +287,21 @@ export default defineEventHandler(async (event) => {
     const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`
 
     try {
+      const inboundVercelCronHeader = getHeader(event, 'x-vercel-cron')
+      const aiNewsHeaders: Record<string, string> = {
+        Accept: 'application/json',
+      }
+
+      if (inboundVercelCronHeader) {
+        aiNewsHeaders['x-vercel-cron'] = inboundVercelCronHeader
+      }
+      else if (expectedToken) {
+        aiNewsHeaders.Authorization = `Bearer ${expectedToken}`
+      }
+
       const aiNewsResponse = await fetch(`${baseUrl}/api/internal/cron/ai-news`, {
         method: 'GET',
-        headers: {
-          Authorization: `Bearer ${expectedToken}`,
-          Accept: 'application/json',
-        },
+        headers: aiNewsHeaders,
       })
 
       if (!aiNewsResponse.ok) {

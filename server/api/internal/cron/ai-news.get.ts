@@ -212,7 +212,8 @@ async function generateArticlesWithAi(event: H3Event, users: PublicUser[]) {
 
 function hasValidCronAuth(event: H3Event, expectedToken: string) {
   const vercelCronHeader = getHeader(event, 'x-vercel-cron')
-  if (vercelCronHeader === '1') {
+  const vercelCronFlag = String(vercelCronHeader || '').trim().toLowerCase()
+  if (['1', 'true', 'yes', 'on'].includes(vercelCronFlag)) {
     return true
   }
 
