@@ -9,7 +9,7 @@ import type {
 const PLAY_SURFACE_COMPONENT_BY_GAME_KEY: Record<string, string> = {
   checkers: 'checkerssurface',
   checkerstable: 'checkerssurface',
-  chess: 'checkerssurface',
+  chess: 'chesssurface',
   uno: 'unosurface',
   rami: 'ramisurface',
   ramitable: 'ramisurface',
@@ -20,11 +20,11 @@ const PLAY_SURFACE_COMPONENT_BY_GAME_KEY: Record<string, string> = {
   solitaire: 'pokertablesurface',
   hearts: 'pokertablesurface',
   spades: 'pokertablesurface',
-  ludo: 'checkerssurface',
-  sudoku: 'checkerssurface',
-  game2048: 'checkerssurface',
-  hiddenword: 'checkerssurface',
-  nonogram: 'checkerssurface',
+  ludo: 'ludosurface',
+  sudoku: 'sudokusurface',
+  game2048: 'game2048surface',
+  hiddenword: 'hiddenwordsurface',
+  nonogram: 'nonogramsurface',
   flappyrocket: 'checkerssurface',
 }
 

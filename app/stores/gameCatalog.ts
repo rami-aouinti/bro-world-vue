@@ -30,6 +30,12 @@ function normalizeSurfaceComponentValue(rawValue: unknown) {
     pokertable: 'pokertablesurface',
     belote: 'belotetablesurface',
     belotetable: 'belotetablesurface',
+    chess: 'chesssurface',
+    sudoku: 'sudokusurface',
+    game2048: 'game2048surface',
+    hiddenword: 'hiddenwordsurface',
+    nonogram: 'nonogramsurface',
+    ludo: 'ludosurface',
   }
 
   return aliasMap[normalized] || normalized
