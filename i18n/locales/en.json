@@ -2147,6 +2147,46 @@
           "emptyText": "No recommendations are available for this product."
         }
       },
+      "documentation": {
+        "heroTitle": "Scale your commerce operations",
+        "heroDescription": "Manage catalog, orders, checkout, and payments from one operational control center.",
+        "sections": {
+          "products": {
+            "title": "Products",
+            "description": "Browse and filter the full product catalog, compare promotions, and open product details quickly."
+          },
+          "orders": {
+            "title": "Orders",
+            "description": "Track order lifecycle, monitor statuses, and review commercial performance in real time."
+          },
+          "payments": {
+            "title": "Payments",
+            "description": "Coordinate payment intents, confirmations, and provider handshakes for secure transactions."
+          }
+        },
+        "cta": {
+          "hero": "Browse products",
+          "openSection": "Open {section}"
+        },
+        "navigation": {
+          "products": "Products",
+          "orders": "Orders",
+          "checkout": "Checkout"
+        },
+        "labels": {
+          "platformSummaryTitle": "Commerce summary",
+          "quickActionsTitle": "Quick actions"
+        }
+      },
+      "references": {
+        "title": "References",
+        "subtitle": "Direct access to key Shop workspaces.",
+        "cta": "Open page",
+        "descriptions": {
+          "products": "Access the complete product catalog with filters, pricing, and promotion visibility.",
+          "orders": "Open the order console to monitor statuses, customer channels, and payment outcomes."
+        }
+      },
       "common": {
         "notAvailable": "—"
       },

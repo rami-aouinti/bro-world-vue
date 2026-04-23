@@ -2135,6 +2135,46 @@
           "emptyText": "Aucune recommandation n'est disponible pour ce produit."
         }
       },
+      "documentation": {
+        "heroTitle": "Développez vos opérations e-commerce",
+        "heroDescription": "Pilotez catalogue, commandes, checkout et paiements depuis un centre opérationnel unique.",
+        "sections": {
+          "products": {
+            "title": "Produits",
+            "description": "Parcourez et filtrez tout le catalogue, comparez les promotions et ouvrez rapidement les fiches produit."
+          },
+          "orders": {
+            "title": "Commandes",
+            "description": "Suivez le cycle de vie des commandes, surveillez les statuts et analysez la performance commerciale en temps réel."
+          },
+          "payments": {
+            "title": "Paiements",
+            "description": "Orchestrez intents de paiement, confirmations et retours providers pour des transactions sécurisées."
+          }
+        },
+        "cta": {
+          "hero": "Voir les produits",
+          "openSection": "Ouvrir {section}"
+        },
+        "navigation": {
+          "products": "Produits",
+          "orders": "Commandes",
+          "checkout": "Checkout"
+        },
+        "labels": {
+          "platformSummaryTitle": "Résumé commerce",
+          "quickActionsTitle": "Actions rapides"
+        }
+      },
+      "references": {
+        "title": "Références",
+        "subtitle": "Accès direct aux espaces clés du module Shop.",
+        "cta": "Ouvrir la page",
+        "descriptions": {
+          "products": "Accédez au catalogue complet avec filtres, prix et promotions.",
+          "orders": "Ouvrez la console commandes pour suivre statuts, canaux clients et paiements."
+        }
+      },
       "common": {
         "notAvailable": "—"
       },
