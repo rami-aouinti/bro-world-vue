@@ -5,7 +5,10 @@ export default defineEventHandler(async (event): Promise<ApiObject> => {
   const interviewId = getRouterParam(event, 'interviewId')
 
   if (!interviewId) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing interview id' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing interview id',
+    })
   }
 
   return mutatingPrivateApiCall<ApiObject>(

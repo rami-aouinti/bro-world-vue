@@ -1,16 +1,20 @@
 import type { RecruitStatusHistoryResponse } from '~~/server/types/api/recruit'
 import { cachedPrivateGet } from '~~/server/utils/privateApi'
 
-export default defineEventHandler(async (event): Promise<RecruitStatusHistoryResponse> => {
-  const applicationSlug = getRouterParam(event, 'applicationSlug')
-  const applicationId = getRouterParam(event, 'applicationId')
+export default defineEventHandler(
+  async (event): Promise<RecruitStatusHistoryResponse> => {
+    const applicationId = getRouterParam(event, 'applicationId')
 
-  if (!applicationSlug || !applicationId) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing application slug or id' })
-  }
+    if (!applicationId) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Missing application id',
+      })
+    }
 
-  return cachedPrivateGet<RecruitStatusHistoryResponse>(
-    event,
-    `/api/v1/recruit/applications/${applicationSlug}/private/applications/${applicationId}/status-history`,
-  )
-})
+    return cachedPrivateGet<RecruitStatusHistoryResponse>(
+      event,
+      `/api/v1/recruit/private/applications/${applicationId}/status-history`,
+    )
+  },
+)
