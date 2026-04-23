@@ -14,7 +14,7 @@ const {
   data: stats,
   pending: statsPending,
   error: statsError,
-} = await useAsyncData<BlogPostStats>('profile-posts-stats', () =>
+} =  useAsyncData<BlogPostStats>('profile-posts-stats', () =>
   privateApi.request<BlogPostStats>('/api/blog/private/posts/stats' as string),
 )
 

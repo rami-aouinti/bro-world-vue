@@ -124,14 +124,44 @@ async function detachTask() {
       :action-label="t('world.crm.actions.createLead')"
       action-icon="mdi-account-plus-outline"
     >
-      <template #right />
+      <template #right>
+
+
+        <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.sprints.sections.assignees') }}</h3>
+        <AppSelect
+          v-model="assigneeId"
+          :items="publicUserOptions"
+          item-title="title"
+          item-value="value"
+          :label="t('world.crm.sprints.form.userId')"
+          :disabled="!isRootAdmin"
+        />
+        <div v-if="isRootAdmin" class="d-flex ga-2">
+          <v-btn size="small" color="secondary" variant="tonal" @click="attachAssignee">{{ t('world.crm.sprints.actions.attach') }}</v-btn>
+          <v-btn size="small" color="error" variant="tonal" @click="detachAssignee">{{ t('world.crm.sprints.actions.detach') }}</v-btn>
+        </div>
+
+        <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.sprints.sections.tasks') }}</h3>
+        <AppSelect
+          v-model="taskId"
+          :items="taskOptions"
+          item-title="title"
+          item-value="value"
+          :label="t('world.crm.sprints.form.taskId')"
+          :disabled="!isRootAdmin"
+        />
+        <div v-if="isRootAdmin" class="d-flex ga-2">
+          <v-btn size="small" color="secondary" variant="tonal" @click="attachTask">{{ t('world.crm.sprints.actions.attach') }}</v-btn>
+          <v-btn size="small" color="error" variant="tonal" @click="detachTask">{{ t('world.crm.sprints.actions.detach') }}</v-btn>
+        </div>
+      </template>
     </WorldModuleShell>
     <v-container fluid>
       <CrmPageSkeleton v-if="pending" variant="detail" />
       <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.sprints.alerts.notFound') }}</v-alert>
 
     <v-row v-else-if="data">
-      <v-col cols="12" lg="8">
+      <v-col cols="12">
         <v-card rounded="xl" class="pa-4 postcard-gradient-card">
           <template v-if="isViewMode">
             <div class="d-flex justify-space-between align-start ga-2 mb-4">
@@ -175,39 +205,7 @@ async function detachTask() {
         </v-card>
       </v-col>
 
-      <v-col cols="12" lg="4">
-        <v-card v-if="!isViewMode" rounded="xl" class="pa-4 postcard-gradient-card mb-4">
-          <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.sprints.sections.assignees') }}</h3>
-          <AppSelect
-            v-model="assigneeId"
-            :items="publicUserOptions"
-            item-title="title"
-            item-value="value"
-            :label="t('world.crm.sprints.form.userId')"
-            :disabled="!isRootAdmin"
-          />
-          <div v-if="isRootAdmin" class="d-flex ga-2">
-            <v-btn size="small" color="secondary" variant="tonal" @click="attachAssignee">{{ t('world.crm.sprints.actions.attach') }}</v-btn>
-            <v-btn size="small" color="error" variant="tonal" @click="detachAssignee">{{ t('world.crm.sprints.actions.detach') }}</v-btn>
-          </div>
-        </v-card>
-
-        <v-card v-if="!isViewMode" rounded="xl" class="pa-4 postcard-gradient-card">
-          <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.sprints.sections.tasks') }}</h3>
-          <AppSelect
-            v-model="taskId"
-            :items="taskOptions"
-            item-title="title"
-            item-value="value"
-            :label="t('world.crm.sprints.form.taskId')"
-            :disabled="!isRootAdmin"
-          />
-          <div v-if="isRootAdmin" class="d-flex ga-2">
-            <v-btn size="small" color="secondary" variant="tonal" @click="attachTask">{{ t('world.crm.sprints.actions.attach') }}</v-btn>
-            <v-btn size="small" color="error" variant="tonal" @click="detachTask">{{ t('world.crm.sprints.actions.detach') }}</v-btn>
-          </div>
-        </v-card>
-
+      <v-col cols="12">
         <v-card
           v-if="hasBlogPlugin"
           rounded="xl"

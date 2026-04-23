@@ -166,14 +166,51 @@ async function attachToSprint() {
       :action-label="t('world.crm.actions.createLead')"
       action-icon="mdi-account-plus-outline"
     >
-      <template #right />
+      <template #right>
+        <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.tasks.sections.assignees') }}</h3>
+        <AppSelect
+          v-model="assigneeId"
+          :items="publicUserOptions"
+          item-title="title"
+          item-value="value"
+          :label="t('world.crm.tasks.form.userId')"
+          class="mb-2"
+          :disabled="!isRootAdmin || isViewMode"
+        />
+        <v-btn v-if="isRootAdmin && !isViewMode" color="secondary" variant="tonal" class="mb-4" @click="attachAssignee">{{ t('world.crm.tasks.actions.attach') }}</v-btn>
+        <v-list density="compact" bg-color="transparent">
+          <v-list-item
+            v-for="assignee in data.assignees"
+            :key="String((assignee as any).id ?? assignee)"
+            :title="String((assignee as any).username ?? (assignee as any).id ?? assignee)"
+          >
+            <template v-if="isRootAdmin && !isViewMode" #append>
+              <v-btn size="small" color="error" variant="text" icon="mdi-close" @click="detachAssignee(String((assignee as any).id ?? assignee))" />
+            </template>
+          </v-list-item>
+        </v-list>
+
+        <template v-if="!isViewMode">
+          <h3 class="text-subtitle-1 mt-4 mb-3">Attach to sprint</h3>
+          <AppSelect
+            v-model="sprintToAttach"
+            :items="sprintOptions"
+            item-title="title"
+            item-value="value"
+            label="Sprint"
+            class="mb-2"
+            :disabled="!isRootAdmin"
+          />
+          <v-btn v-if="isRootAdmin" color="secondary" variant="tonal" class="mb-4" @click="attachToSprint">Attach sprint</v-btn>
+        </template>
+      </template>
     </WorldModuleShell>
     <v-container fluid>
     <CrmPageSkeleton v-if="pending" variant="detail" />
     <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.tasks.alerts.notFound') }}</v-alert>
 
     <v-row v-else-if="data">
-      <v-col cols="12" lg="8">
+      <v-col cols="12">
         <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
           <template v-if="isViewMode">
             <div class="d-flex justify-space-between align-start ga-2 mb-4">
@@ -255,46 +292,7 @@ async function attachToSprint() {
         </v-card>
       </v-col>
 
-      <v-col cols="12" lg="4">
-        <v-card rounded="xl" class="pa-4 postcard-gradient-card">
-          <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.tasks.sections.assignees') }}</h3>
-          <AppSelect
-            v-model="assigneeId"
-            :items="publicUserOptions"
-            item-title="title"
-            item-value="value"
-            :label="t('world.crm.tasks.form.userId')"
-            class="mb-2"
-            :disabled="!isRootAdmin || isViewMode"
-          />
-          <v-btn v-if="isRootAdmin && !isViewMode" color="secondary" variant="tonal" class="mb-4" @click="attachAssignee">{{ t('world.crm.tasks.actions.attach') }}</v-btn>
-          <v-list density="compact" bg-color="transparent">
-            <v-list-item
-              v-for="assignee in data.assignees"
-              :key="String((assignee as any).id ?? assignee)"
-              :title="String((assignee as any).username ?? (assignee as any).id ?? assignee)"
-            >
-              <template v-if="isRootAdmin && !isViewMode" #append>
-                <v-btn size="small" color="error" variant="text" icon="mdi-close" @click="detachAssignee(String((assignee as any).id ?? assignee))" />
-              </template>
-            </v-list-item>
-          </v-list>
-
-          <template v-if="!isViewMode">
-            <h3 class="text-subtitle-1 mt-4 mb-3">Attach to sprint</h3>
-          <AppSelect
-            v-model="sprintToAttach"
-            :items="sprintOptions"
-            item-title="title"
-            item-value="value"
-            label="Sprint"
-            class="mb-2"
-            :disabled="!isRootAdmin"
-          />
-          <v-btn v-if="isRootAdmin" color="secondary" variant="tonal" class="mb-4" @click="attachToSprint">Attach sprint</v-btn>
-          </template>
-        </v-card>
-
+      <v-col cols="12">
         <v-card
           v-if="hasBlogPlugin"
           rounded="xl"
