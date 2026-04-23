@@ -197,7 +197,12 @@ function resolveDomains(scope: string | null) {
 function hasValidCronAuth(event: H3Event, expectedToken: string) {
   const vercelCronHeader = getHeader(event, 'x-vercel-cron')
   const vercelCronFlag = String(vercelCronHeader || '').trim().toLowerCase()
-  if (['1', 'true', 'yes', 'on'].includes(vercelCronFlag)) {
+  const userAgent = String(getHeader(event, 'user-agent') || '').trim().toLowerCase()
+
+  if (
+    ['1', 'true', 'yes', 'on'].includes(vercelCronFlag) ||
+    userAgent.startsWith('vercel-cron/')
+  ) {
     return true
   }
 
