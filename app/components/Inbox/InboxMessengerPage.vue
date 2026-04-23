@@ -103,7 +103,12 @@ const editMessageId = ref<string>('')
 const editMessageContent = ref('')
 const reactionUsersDialog = ref(false)
 const selectedReactionUsers = ref<
-  Array<{ name: string; reaction: ReactionType; profilePath: string | null }>
+  Array<{
+    name: string
+    reaction: ReactionType
+    profilePath: string | null
+    photo: string
+  }>
 >([])
 const mercureEventSource = shallowRef<EventSource | null>(null)
 
@@ -566,6 +571,7 @@ function openReactionUsers(message: ConversationMessage) {
       t('pages.inbox.userFallback'),
     reaction: reaction.type,
     profilePath: userProfilePath(reaction.user),
+    photo: reaction.user?.photo || '/img/default-avatar.png',
   }))
   reactionUsersDialog.value = true
 }
@@ -974,6 +980,11 @@ watch(
           :to="entry.profilePath || undefined"
         >
           <template #prepend>
+            <v-avatar size="32">
+              <v-img :src="entry.photo" cover />
+            </v-avatar>
+          </template>
+          <template #append>
             <span class="text-h6">{{ reactionEmoji[entry.reaction] }}</span>
           </template>
         </v-list-item>
