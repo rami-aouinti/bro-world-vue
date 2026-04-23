@@ -186,13 +186,13 @@ async function submitContactForm() {
       <template #left>
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible || pending || !page" />
         <div v-else>
-          <h2 class="text-h6 mb-2">{{ page.availability.title }}</h2>
+          <h2 class="text-h6 mb-2">{{ page.availability?.title }}</h2>
           <p class="text-medium-emphasis mb-3">
-            {{ page.availability.description }}
+            {{ page.availability?.description }}
           </p>
           <v-list bg-color="transparent" density="compact">
             <v-list-item
-              v-for="window in page.availability.windows"
+              v-for="window in page.availability?.windows"
               :key="window.label"
               :title="window.label"
               :subtitle="window.value"
@@ -200,10 +200,10 @@ async function submitContactForm() {
             />
           </v-list>
           <h3 class="text-subtitle-1 mt-4 mb-2">
-            {{ page.availability.escalationTitle }}
+            {{ page.availability?.escalationTitle }}
           </h3>
           <v-chip
-            v-for="step in page.availability.escalationBullets"
+            v-for="step in page.availability?.escalationBullets"
             :key="step"
             class="me-2 mb-2"
             size="small"
@@ -217,14 +217,14 @@ async function submitContactForm() {
       <template #right>
         <SkeletonDrawerRight v-if="isPageSkeletonVisible || pending || !page" />
         <div v-else>
-          <v-chip class="mb-3">{{ page.hero.badge }}</v-chip>
-          <h1 class="text-h3 mb-2">{{ page.hero.title }}</h1>
-          <p class="mb-4">{{ page.hero.subtitle }}</p>
+          <v-chip class="mb-3">{{ page.hero?.badge }}</v-chip>
+          <h1 class="text-h3 mb-2">{{ page.hero?.title }}</h1>
+          <p class="mb-4">{{ page.hero?.subtitle }}</p>
           <div class="d-flex flex-wrap ga-3">
             <v-btn color="primary" variant="flat">{{
-              page.hero.primaryCta
+              page.hero?.primaryCta
             }}</v-btn>
-            <v-btn variant="outlined">{{ page.hero.secondaryCta }}</v-btn>
+            <v-btn variant="outlined">{{ page.hero?.secondaryCta }}</v-btn>
           </div>
         </div>
       </template>
@@ -241,7 +241,7 @@ async function submitContactForm() {
 
       <template v-else-if="page">
         <v-card rounded="xl" class="mb-4 pa-6 postcard-gradient-card">
-          <h1 class="text-h6 mb-2">{{ formContent.title }}</h1>
+          <h1 class="text-h6 mb-2">{{ formContent?.title }}</h1>
           <v-row density="comfortable">
             <v-col cols="12" sm="6">
               <v-text-field
