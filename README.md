@@ -208,6 +208,25 @@ Cette vérification standardisée couvre :
 - le lint ciblé sur `app/composables/useFootballData.ts` et `app/components/Sports/Football/FixtureDetailsPanel.vue`,
 - des règles anti-duplication (`no-redeclare`, `no-dupe-args`, `no-dupe-keys`) et la détection d'erreurs de parsing template (`vue/no-parsing-error`).
 
+### Cron IA (news tech automatisées)
+
+Un endpoint interne `GET /api/internal/cron/ai-news` crée automatiquement **3 posts tech** (Symfony, Nuxt, Vuetify, API, Elasticsearch, RabbitMQ, Redis, MongoDB) en s'appuyant sur un agent IA.
+
+- Déclenchement: réutilise le cron interne existant en ajoutant `runAiNews=1` sur `/api/internal/cron/cache-refresh` (pas besoin d'ajouter un 3ème cron Vercel).
+- Sécurité: appel protégé par `Authorization: Bearer <CRON_SECRET>`.
+- Publication: utilise un token de service `BLOG_AUTOMATION_TOKEN` pour poster sur le blog privé (`/api/v1/private/blogs/general/posts`).
+- Limite d'usage IA: **1 appel IA par jour (UTC)**, les autres déclenchements utilisent un fallback local pour éviter de consommer plus d'un agent IA par jour.
+- Exemple: `/api/internal/cron/cache-refresh?mode=warm&scope=public-non-sports&runAiNews=1`.
+
+Variables à définir:
+
+```bash
+CRON_SECRET=...
+BLOG_AUTOMATION_TOKEN=...
+AI_GATEWAY_API_KEY=...
+AI_GATEWAY_MODEL=openai/gpt-4o-mini
+```
+
 ### Development
 
 Start the development server on http://localhost:3000
