@@ -5,17 +5,8 @@ import { resolveApiUrl } from '~~/server/utils/resolveApiUrl'
 
 export default defineEventHandler(
   async (event): Promise<RecruitBasicMessageResponse> => {
-    const applicationSlug = getRouterParam(event, 'applicationSlug')
-
-    if (!applicationSlug) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Missing application slug',
-      })
-    }
-
     const query = getQuery(event)
-    const endpoint = `/recruit/applications/${applicationSlug}/public/jobs`
+    const endpoint = '/api/v1/recruit/public/jobs'
     const cacheKey = publicCacheKey(endpoint, query)
 
     const cached = await getCached<RecruitBasicMessageResponse>(cacheKey)
