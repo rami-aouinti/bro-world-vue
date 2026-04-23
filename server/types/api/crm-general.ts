@@ -48,6 +48,18 @@ export interface CrmContactItem {
   score: number
 }
 
+export interface CrmContactCreatePayload {
+  companyId: string
+  firstName: string
+  lastName: string
+  email?: string
+  phone?: string
+  jobTitle?: string
+  city?: string
+}
+
+export type CrmContactUpdatePayload = Partial<Omit<CrmContactCreatePayload, 'companyId'>>
+
 export interface CrmProvisioningState {
   state: string
   error: string | null
