@@ -216,7 +216,7 @@ await Promise.all([fetchPublicPlatforms(), fetchPublicPlugins(), fetchGeneralApp
     <AppPageDrawers>
       <template #left>
         <div class="d-flex flex-column ga-4">
-          <v-card variant="tonal" color="primary" class="pa-4">
+          <v-card variant="text" color="primary" class="pa-4">
             <div class="d-flex ga-3 align-start">
               <v-avatar size="56" rounded="xl"><v-img :src="selectedCreatePlatform?.photo || '/images/placeholders/platform-media-fallback.svg'" :alt="selectedCreatePlatform?.name || heading" cover /></v-avatar>
               <div>
@@ -225,7 +225,7 @@ await Promise.all([fetchPublicPlatforms(), fetchPublicPlugins(), fetchGeneralApp
               </div>
             </div>
           </v-card>
-          <v-card variant="tonal" color="primary" class="pa-4">
+          <v-card variant="text" color="primary" class="pa-4">
             <div class="text-subtitle-2 font-weight-bold mb-2">Platform snapshot</div>
             <div class="d-flex flex-column ga-2">
               <v-chip color="primary" variant="tonal" label>Key: {{ selectedCreatePlatform?.platformKey || platformKey }}</v-chip>
@@ -237,7 +237,7 @@ await Promise.all([fetchPublicPlatforms(), fetchPublicPlugins(), fetchGeneralApp
       </template>
       <template #right>
         <div class="d-flex flex-column ga-4">
-          <v-card v-for="plugin in recommendedPlugins" :key="plugin.id" variant="tonal" color="primary" class="pa-4">
+          <v-card v-for="plugin in recommendedPlugins" :key="plugin.id" variant="text" color="primary" class="pa-4">
             <div class="d-flex ga-3 align-start">
               <v-avatar size="52" rounded="xl"><v-img :src="plugin.photo" :alt="plugin.name" cover /></v-avatar>
               <div class="flex-grow-1">
@@ -252,12 +252,11 @@ await Promise.all([fetchPublicPlatforms(), fetchPublicPlugins(), fetchGeneralApp
 
     <v-container class="py-6" fluid>
       <v-row justify="center"><v-col cols="12" xl="10"><v-card class="pa-4 postcard-gradient-card">
-        <div class="d-flex justify-space-between align-center mb-4 flex-wrap ga-2"><div><h1 class="text-h5 mb-1">{{ heading }}</h1><p class="text-body-2 text-medium-emphasis mb-0">{{ subheading }}</p></div><v-btn variant="tonal" prepend-icon="mdi-arrow-left" @click="navigateTo(backPath || '/platform')">Back to Platform</v-btn></div>
         <v-alert v-if="!loggedIn" type="warning" variant="tonal" class="mb-4" text="You must be logged in to create an application." />
         <v-alert v-if="createError" type="error" variant="tonal" class="mb-4" :text="createError" />
         <v-alert v-if="createSuccess" type="success" variant="tonal" class="mb-4" :text="createSuccess" />
 
-        <v-stepper v-model="createStep" flat>
+        <v-stepper v-model="createStep" flat class="postcard-gradient-card">
           <v-stepper-header><v-stepper-item :value="1" title="Application" /><v-divider /><v-stepper-item :value="2" title="Platform & Configuration" /><v-divider /><v-stepper-item :value="3" title="Plugins" /></v-stepper-header>
           <v-stepper-window>
             <v-stepper-window-item :value="1"><v-row><v-col cols="12" md="6"><v-text-field v-model="appTitle" label="Title" variant="outlined" required /></v-col><v-col cols="12" md="6"><div class="d-flex flex-column ga-2 pt-1"><v-switch v-model="appStatus" color="success" inset :label="`Status: ${appStatus ? 'active' : 'inactive'}`" /><v-switch v-model="appPrivate" color="primary" inset :label="`Private: ${appPrivate ? 'yes' : 'no'}`" /></div></v-col><v-col cols="12"><v-textarea v-model="appDescription" label="Description" variant="outlined" rows="3" required /></v-col></v-row></v-stepper-window-item>

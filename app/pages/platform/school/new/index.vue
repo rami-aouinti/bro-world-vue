@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import PlatformPlatformNewApplicationPage from '~/components/Platform/PlatformNewApplicationPage.vue'
+
 definePageMeta({
   title: 'Create School Application',
 })

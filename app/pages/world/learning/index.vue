@@ -11,6 +11,7 @@ definePageMeta({
 type LearningPublicReferencePage = {
   description?: string
 }
+const { fetch: refreshSession, loggedIn } = useUserSession()
 
 type ReferenceStatus = 'loading' | 'success' | 'unavailable'
 
@@ -269,8 +270,13 @@ watch([locale, referenceNavItems], () => {
                   {{ t('world.learning.documentation.heroDescription') }}
                 </p>
               </div>
-              <v-btn color="primary" prepend-icon="mdi-compass-outline" to="/world/learning/courses">
-                {{ t('world.learning.documentation.cta.hero') }}
+              <v-btn
+                color="primary"
+                :variant="loggedIn ? 'elevated' : 'tonal'"
+                :prepend-icon="loggedIn ? 'mdi-rocket-launch-outline' : 'mdi-login'"
+                @click="loggedIn ? navigateTo('/platform/school/new') : (loginDialogOpen = true)"
+              >
+                {{ loggedIn ? 'Create School Application' : t('appbar.login') }}
               </v-btn>
             </div>
           </v-card>

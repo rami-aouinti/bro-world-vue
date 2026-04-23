@@ -10,6 +10,7 @@ definePageMeta({
 type JobsPublicReferencePage = {
   description?: string
 }
+const { fetch: refreshSession, loggedIn } = useUserSession()
 
 type ReferenceStatus = 'loading' | 'success' | 'unavailable'
 type JobsRoutePath = `/world/jobs${string}`
@@ -240,8 +241,13 @@ watch([locale, referenceNavItems], () => {
                   {{ t('world.jobs.documentation.heroDescription') }}
                 </p>
               </div>
-              <v-btn color="primary" prepend-icon="mdi-rocket-launch-outline" :to="toJobsRoute('/offers')">
-                {{ t('world.jobs.documentation.cta.hero') }}
+              <v-btn
+                color="primary"
+                :variant="loggedIn ? 'elevated' : 'tonal'"
+                :prepend-icon="loggedIn ? 'mdi-rocket-launch-outline' : 'mdi-login'"
+                @click="loggedIn ? navigateTo('/platform/job/new') : (loginDialogOpen = true)"
+              >
+                {{ loggedIn ? 'Create Recruit Application' : t('appbar.login') }}
               </v-btn>
             </div>
           </v-card>

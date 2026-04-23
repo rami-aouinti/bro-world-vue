@@ -6,6 +6,7 @@ definePageMeta({
   title: 'world.shop.label',
   description: 'world.shop.seo.metaDescription',
 })
+const { fetch: refreshSession, loggedIn } = useUserSession()
 
 const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
@@ -180,10 +181,11 @@ const isPageLoading = computed(() => isPageSkeletonVisible.value)
               </div>
               <v-btn
                 color="primary"
-                prepend-icon="mdi-store-search-outline"
-                to="/world/shop/products"
+                :variant="loggedIn ? 'elevated' : 'tonal'"
+                :prepend-icon="loggedIn ? 'mdi-rocket-launch-outline' : 'mdi-login'"
+                @click="loggedIn ? navigateTo('/platform/shop/new') : (loginDialogOpen = true)"
               >
-                {{ t('world.shop.documentation.cta.hero') }}
+                {{ loggedIn ? 'Create Shop Application' : t('appbar.login') }}
               </v-btn>
             </div>
           </v-card>
