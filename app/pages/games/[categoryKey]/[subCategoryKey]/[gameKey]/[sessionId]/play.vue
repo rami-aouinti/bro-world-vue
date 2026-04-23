@@ -84,6 +84,16 @@ function resolveSurfaceComponentKey(
     poker: 'pokertablesurface',
     belote: 'belotetablesurface',
     belotetable: 'belotetablesurface',
+    solitaire: 'pokertablesurface',
+    hearts: 'pokertablesurface',
+    spades: 'pokertablesurface',
+    chess: 'checkerssurface',
+    ludo: 'checkerssurface',
+    sudoku: 'checkerssurface',
+    game2048: 'checkerssurface',
+    hiddenword: 'checkerssurface',
+    nonogram: 'checkerssurface',
+    flappyrocket: 'checkerssurface',
   }
 
   return aliasMap[normalized] || null
