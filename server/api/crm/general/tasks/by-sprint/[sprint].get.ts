@@ -17,14 +17,15 @@ interface CrmTasksBySprintResponse {
 }
 
 export default defineEventHandler(async (event): Promise<CrmTasksBySprintResponse> => {
-  const sprintId = getQuery(event).sprintId
+  const sprint = getRouterParam(event, 'sprint')
 
-  if (!sprintId || typeof sprintId !== 'string') {
-    throw createError({ statusCode: 400, statusMessage: 'Missing sprintId query parameter' })
+  if (!sprint) {
+    throw createError({ statusCode: 400, statusMessage: 'Missing sprint id' })
   }
 
   return cachedCrmGeneralGet<CrmTasksBySprintResponse>(
     event,
-    `tasks/by-sprint/${encodeURIComponent(sprintId)}`,
+    `tasks/by-sprint/${encodeURIComponent(sprint)}`,
+    getQuery(event),
   )
 })
