@@ -128,7 +128,7 @@ watch(
         {{ t('world.shop.productDetail.title') }}
       </h1>
       <v-btn
-        to="/world/shop"
+        to="/world/shop/products"
         color="primary"
         prepend-icon="mdi-arrow-left"
         variant="tonal"

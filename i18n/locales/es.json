@@ -1891,6 +1891,46 @@
           "emptyText": "No hay recomendaciones disponibles para este producto."
         }
       },
+      "documentation": {
+        "heroTitle": "Escala tus operaciones de e-commerce",
+        "heroDescription": "Gestiona catálogo, pedidos, checkout y pagos desde un único centro operativo.",
+        "sections": {
+          "products": {
+            "title": "Productos",
+            "description": "Explora y filtra todo el catálogo, compara promociones y abre el detalle de cada producto rápidamente."
+          },
+          "orders": {
+            "title": "Pedidos",
+            "description": "Sigue el ciclo de vida de los pedidos, controla estados y revisa el rendimiento comercial en tiempo real."
+          },
+          "payments": {
+            "title": "Pagos",
+            "description": "Coordina intents de pago, confirmaciones y respuestas del proveedor para transacciones seguras."
+          }
+        },
+        "cta": {
+          "hero": "Ver productos",
+          "openSection": "Abrir {section}"
+        },
+        "navigation": {
+          "products": "Productos",
+          "orders": "Pedidos",
+          "checkout": "Checkout"
+        },
+        "labels": {
+          "platformSummaryTitle": "Resumen comercial",
+          "quickActionsTitle": "Acciones rápidas"
+        }
+      },
+      "references": {
+        "title": "Referencias",
+        "subtitle": "Acceso directo a los espacios clave de Shop.",
+        "cta": "Abrir página",
+        "descriptions": {
+          "products": "Accede al catálogo completo con filtros, precios y visibilidad de promociones.",
+          "orders": "Abre la consola de pedidos para seguir estados, canales de cliente y resultados de pago."
+        }
+      },
       "common": {
         "notAvailable": "—"
       },

@@ -1917,6 +1917,46 @@
           "emptyText": "Für dieses Produkt sind keine Empfehlungen verfügbar."
         }
       },
+      "documentation": {
+        "heroTitle": "Skalieren Sie Ihre Commerce-Abläufe",
+        "heroDescription": "Verwalten Sie Katalog, Bestellungen, Checkout und Zahlungen in einem zentralen Operations-Hub.",
+        "sections": {
+          "products": {
+            "title": "Produkte",
+            "description": "Durchsuchen und filtern Sie den gesamten Katalog, vergleichen Sie Rabatte und öffnen Sie Produktdetails schnell."
+          },
+          "orders": {
+            "title": "Bestellungen",
+            "description": "Verfolgen Sie den Bestell-Lebenszyklus, überwachen Sie Status und prüfen Sie die Performance in Echtzeit."
+          },
+          "payments": {
+            "title": "Zahlungen",
+            "description": "Steuern Sie Payment-Intents, Bestätigungen und Provider-Rückmeldungen für sichere Transaktionen."
+          }
+        },
+        "cta": {
+          "hero": "Produkte ansehen",
+          "openSection": "{section} öffnen"
+        },
+        "navigation": {
+          "products": "Produkte",
+          "orders": "Bestellungen",
+          "checkout": "Checkout"
+        },
+        "labels": {
+          "platformSummaryTitle": "Commerce-Überblick",
+          "quickActionsTitle": "Schnellaktionen"
+        }
+      },
+      "references": {
+        "title": "Referenzen",
+        "subtitle": "Direkter Zugriff auf die wichtigsten Shop-Bereiche.",
+        "cta": "Seite öffnen",
+        "descriptions": {
+          "products": "Öffnen Sie den vollständigen Produktkatalog mit Filtern, Preisen und Rabattübersicht.",
+          "orders": "Öffnen Sie die Bestellkonsole für Status, Kundenkanäle und Zahlungsergebnisse."
+        }
+      },
       "common": {
         "notAvailable": "—"
       },
