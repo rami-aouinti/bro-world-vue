@@ -155,6 +155,16 @@ async function warmEndpointsInBatches(baseUrl: string, endpoints: string[]) {
   return results
 }
 
+
+function isTruthyFlag(value: unknown) {
+  if (typeof value !== 'string') {
+    return false
+  }
+
+  const normalized = value.trim().toLowerCase()
+  return ['1', 'true', 'yes', 'on'].includes(normalized)
+}
+
 function normalizeScope(scope: unknown) {
   if (typeof scope !== 'string') {
     return null
@@ -209,6 +219,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const invalidatedDomains = mode === 'purge' ? resolveDomains(scope) : []
+  const runAiNews = isTruthyFlag(query.runAiNews)
   const warmSummary = {
     warmed: [] as string[],
     failed: [] as Array<{ endpoint: string; error: string; status?: number }>,
@@ -246,9 +257,53 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  let aiNewsResult: {
+    ok: boolean
+    status?: number
+    error?: string
+    payload?: unknown
+  } | null = null
+
+  if (runAiNews) {
+    const requestUrl = getRequestURL(event)
+    const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`
+
+    try {
+      const aiNewsResponse = await fetch(`${baseUrl}/api/internal/cron/ai-news`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${expectedToken}`,
+          Accept: 'application/json',
+        },
+      })
+
+      if (!aiNewsResponse.ok) {
+        aiNewsResult = {
+          ok: false,
+          status: aiNewsResponse.status,
+          error: `HTTP ${aiNewsResponse.status}`,
+        }
+      } else {
+        aiNewsResult = {
+          ok: true,
+          status: aiNewsResponse.status,
+          payload: await aiNewsResponse.json(),
+        }
+      }
+    }
+    catch (error) {
+      aiNewsResult = {
+        ok: false,
+        error: error instanceof Error ? error.message : 'Unknown ai-news error',
+      }
+    }
+  }
+
   return {
     ok: true,
     mode,
+    runAiNews,
+    aiNews: aiNewsResult,
     invalidatedDomains,
     warmed: warmSummary.warmed,
     failed: warmSummary.failed,
