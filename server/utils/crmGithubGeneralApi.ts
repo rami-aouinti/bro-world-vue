@@ -5,11 +5,12 @@ import { getServerPrivateAxios, resolveServerApiUrl } from './http/axiosClient'
 import { invalidateMutationCaches } from './mutationInvalidation'
 import { getSessionAuth } from './privateApi'
 
-const CRM_GENERAL_BASE_ENDPOINT = '/crm/general'
-const CRM_GENERAL_PUBLIC_BASE_URL = 'https://bro-world.org/api/v1/crm/general'
+const CRM_BASE_ENDPOINT = '/crm'
+const CRM_PUBLIC_BASE_URL = 'https://bro-world.org/api/v1/crm'
 const CRM_GITHUB_MUTATION_KEY = 'crm:general:mutate'
 const MONTH_IN_SECONDS = 30 * 24 * 60 * 60
-const CRM_GITHUB_SYNC_CONTEXT_ENDPOINT = 'crm/general/github/sync/context'
+const CRM_GITHUB_SYNC_CONTEXT_ENDPOINT = 'crm/github/sync/context'
+const CRM_GITHUB_SYNC_CONTEXT_LEGACY_ENDPOINT = 'crm/general/github/sync/context'
 const CRM_CACHE_PREFIX = 'crm'
 
 const CRM_GITHUB_TTL_BY_PATH: Array<{ pattern: RegExp; ttl: number }> = [
@@ -51,7 +52,24 @@ async function getSyncContextCacheKey(event: H3Event) {
 
 export async function getCrmGithubSyncContext(event: H3Event) {
   const cacheKey = await getSyncContextCacheKey(event)
-  return await getCached<CrmGithubSyncContext>(cacheKey)
+  const cached = await getCached<CrmGithubSyncContext>(cacheKey)
+  if (cached) {
+    return cached
+  }
+
+  const { username } = await getSessionAuth(event)
+  const legacyCacheKey = privateCacheKey(
+    username,
+    CRM_GITHUB_SYNC_CONTEXT_LEGACY_ENDPOINT,
+  )
+  const legacyCached = await getCached<CrmGithubSyncContext>(legacyCacheKey)
+
+  if (!legacyCached) {
+    return null
+  }
+
+  await setCached(cacheKey, legacyCached, MONTH_IN_SECONDS)
+  return legacyCached
 }
 
 async function saveCrmGithubSyncContext(
@@ -87,7 +105,7 @@ async function saveCrmGithubSyncContextIfAuthenticated(
 
 function crmGithubEndpoint(path: string) {
   const normalizedPath = path.replace(/^\/+/, '')
-  return `${CRM_GENERAL_BASE_ENDPOINT}/${normalizedPath}`
+  return `${CRM_BASE_ENDPOINT}/${normalizedPath}`
 }
 
 function resolveCrmGithubGetTtl(path: string) {
@@ -96,15 +114,38 @@ function resolveCrmGithubGetTtl(path: string) {
   return override?.ttl ?? resolveCacheTtl('crm')
 }
 
-function buildCrmPrivateEndpointPrefix(username: string, endpoint: string) {
+function buildCrmPrivateEndpointPrefix(
+  username: string,
+  endpoint: string,
+  options?: { includeLegacyGeneralPath?: boolean },
+) {
   const normalizedUsername = username.trim()
   const normalizedEndpoint = endpoint.trim().replace(/^\/+|\/+$/g, '')
-  return `api:private:${normalizedUsername}:${CRM_CACHE_PREFIX}:${normalizedEndpoint}:`
+  const prefixes = [
+    `api:private:${normalizedUsername}:${CRM_CACHE_PREFIX}:${normalizedEndpoint}:`,
+  ]
+
+  if (options?.includeLegacyGeneralPath) {
+    prefixes.push(
+      `api:private:${normalizedUsername}:${CRM_CACHE_PREFIX}:crm/general/${normalizedEndpoint}:`,
+    )
+  }
+
+  return prefixes
 }
 
-function buildCrmPublicEndpointPrefix(endpoint: string) {
+function buildCrmPublicEndpointPrefix(
+  endpoint: string,
+  options?: { includeLegacyGeneralPath?: boolean },
+) {
   const normalizedEndpoint = endpoint.trim().replace(/^\/+|\/+$/g, '')
-  return `api:public:${CRM_CACHE_PREFIX}:${normalizedEndpoint}:`
+  const prefixes = [`api:public:${CRM_CACHE_PREFIX}:${normalizedEndpoint}:`]
+
+  if (options?.includeLegacyGeneralPath) {
+    prefixes.push(`api:public:${CRM_CACHE_PREFIX}:crm/general/${normalizedEndpoint}:`)
+  }
+
+  return prefixes
 }
 
 function buildCrmGithubMutationPrefixes(path: string) {
@@ -116,12 +157,16 @@ function buildCrmGithubMutationPrefixes(path: string) {
   }
 
   const [, projectId, resourcePath] = projectMatch
+  if (!resourcePath) {
+    return []
+  }
+
   const firstSegment = resourcePath.split('/')[0]
   if (!firstSegment) {
     return []
   }
 
-  const projectRoot = `crm/general/projects/${projectId}/github`
+  const projectRoot = `crm/projects/${projectId}/github`
   const prefixes = new Set<string>([
     `${projectRoot}/${firstSegment}`,
     `${projectRoot}/dashboard`,
@@ -147,10 +192,16 @@ async function invalidateCrmGithubPrefixes(
 
   await Promise.all(
     endpointPrefixes.flatMap((endpointPrefix) => {
-      const prefixes = [buildCrmPublicEndpointPrefix(endpointPrefix)]
+      const prefixes = buildCrmPublicEndpointPrefix(endpointPrefix, {
+        includeLegacyGeneralPath: true,
+      })
 
       if (session?.username) {
-        prefixes.push(buildCrmPrivateEndpointPrefix(session.username, endpointPrefix))
+        prefixes.push(
+          ...buildCrmPrivateEndpointPrefix(session.username, endpointPrefix, {
+            includeLegacyGeneralPath: true,
+          }),
+        )
       }
 
       return prefixes.map(prefix => invalidateByPrefix(prefix))
@@ -185,7 +236,7 @@ export async function cachedCrmGithubGeneralGet<TResponse = unknown>(
 
       return privateResponse.data
     })()
-    : await $fetch<TResponse>(`${CRM_GENERAL_PUBLIC_BASE_URL}/${normalizedPath}`, {
+    : await $fetch<TResponse>(`${CRM_PUBLIC_BASE_URL}/${normalizedPath}`, {
       query,
     })
 
