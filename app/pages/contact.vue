@@ -47,6 +47,23 @@ interface ContactPageResponse {
   }
 }
 
+const fallbackFormContent: ContactPageResponse['form'] = {
+  title: '',
+  description: '',
+  fields: {
+    firstName: '',
+    lastName: '',
+    email: '',
+    topic: '',
+    message: '',
+    messagePlaceholder: '',
+  },
+  topics: [],
+  privacyNote: '',
+  submit: '',
+  reset: '',
+}
+
 const { locale } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 const publicPagesStore = usePublicPagesStore()
@@ -70,6 +87,10 @@ const page = computed(
   () =>
     data.value ??
     publicPagesStore.getPage<ContactPageResponse>('contact', locale.value),
+)
+
+const formContent = computed(
+  () => page.value?.form ?? fallbackFormContent,
 )
 
 const formState = reactive({
@@ -220,12 +241,12 @@ async function submitContactForm() {
 
       <template v-else-if="page">
         <v-card rounded="xl" class="mb-4 pa-6 postcard-gradient-card">
-          <h1 class="text-h6 mb-2">{{ page.form.title }}</h1>
+          <h1 class="text-h6 mb-2">{{ formContent.title }}</h1>
           <v-row density="comfortable">
             <v-col cols="12" sm="6">
               <v-text-field
                 v-model="formState.firstName"
-                :label="page.form.fields.firstName"
+                :label="formContent.fields.firstName"
                 variant="outlined"
                 density="comfortable"
               />
@@ -233,7 +254,7 @@ async function submitContactForm() {
             <v-col cols="12" sm="6">
               <v-text-field
                 v-model="formState.lastName"
-                :label="page.form.fields.lastName"
+                :label="formContent.fields.lastName"
                 variant="outlined"
                 density="comfortable"
               />
@@ -241,7 +262,7 @@ async function submitContactForm() {
             <v-col cols="12" sm="6">
               <v-text-field
                 v-model="formState.email"
-                :label="page.form.fields.email"
+                :label="formContent.fields.email"
                 variant="outlined"
                 density="comfortable"
               />
@@ -249,8 +270,8 @@ async function submitContactForm() {
             <v-col cols="12" sm="6">
               <AppSelect
                 v-model="formState.topic"
-                :label="page.form.fields.topic"
-                :items="page.form.topics"
+                :label="formContent.fields.topic"
+                :items="formContent.topics"
                 item-title="label"
                 item-value="value"
                 variant="outlined"
@@ -260,15 +281,15 @@ async function submitContactForm() {
             <v-col cols="12">
               <v-textarea
                 v-model="formState.message"
-                :label="page.form.fields.message"
-                :placeholder="page.form.fields.messagePlaceholder"
+                :label="formContent.fields.message"
+                :placeholder="formContent.fields.messagePlaceholder"
                 variant="outlined"
                 rows="4"
               />
             </v-col>
           </v-row>
           <p class="text-caption text-medium-emphasis mb-3">
-            {{ page.form.privacyNote }}
+            {{ formContent.privacyNote }}
           </p>
           <v-alert
             v-if="submitError"
@@ -291,10 +312,10 @@ async function submitContactForm() {
               :loading="submitPending"
               @click="submitContactForm"
             >
-              {{ page.form.submit }}
+              {{ formContent.submit }}
             </v-btn>
             <v-btn variant="outlined" @click="clearFormState">{{
-              page.form.reset
+              formContent.reset
             }}</v-btn>
           </div>
         </v-card>
