@@ -1,16 +1,8 @@
 <script setup lang="ts">
-interface CrmEndpointActionConfig {
-  id: string
-  title: string
-  method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
-  path: string
-  description?: string
-  defaultQuery?: Record<string, unknown>
-  defaultBody?: Record<string, unknown>
-}
+import type { CrmEndpointDefinition } from '~~/app/types/world/crmEndpoints'
 
 const props = defineProps<{
-  config: CrmEndpointActionConfig
+  config: CrmEndpointDefinition
 }>()
 
 const { t } = useI18n()
