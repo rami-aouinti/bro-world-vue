@@ -12,6 +12,10 @@ export default defineSitemapEventHandler(async (event) => {
 
   const staticUrls = [
     { loc: '/' },
+    { loc: '/features' },
+    { loc: '/pricing' },
+    { loc: '/use-cases' },
+    { loc: '/blog' },
     { loc: '/service' },
     { loc: '/about' },
     { loc: '/faq' },
