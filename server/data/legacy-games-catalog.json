@@ -1,0 +1,435 @@
+[
+  {
+    "id": "21000000-0000-1000-8000-000000000001",
+    "key": "cards",
+    "nameKey": "gamePage.catalog.categories.cards.name",
+    "descriptionKey": "gamePage.catalog.categories.cards.description",
+    "img": "/img/game/card-game.png",
+    "icon": "mdi-cards-playing-outline",
+    "subCategories": [
+      {
+        "id": "21000000-0000-1000-8000-000000000011",
+        "key": "classic-cards",
+        "nameKey": "gamePage.catalog.subCategories.classicCards.name",
+        "descriptionKey": "gamePage.catalog.subCategories.classicCards.description",
+        "img": "/img/game/classic-card.png",
+        "icon": "mdi-cards-outline",
+        "games": [
+          {
+            "id": "21000000-0000-1000-8000-000000000101",
+            "key": "rami",
+            "nameKey": "gamePage.catalog.games.rami.name",
+            "descriptionKey": "gamePage.catalog.games.rami.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-cards-diamond-outline",
+            "component": "rami",
+            "supportedModes": ["ai", "pvp"],
+            "categoryKey": "cards",
+            "subcategoryKey": "classic-cards"
+          },
+          {
+            "id": "21000000-0000-1000-8000-000000000102",
+            "key": "belote",
+            "nameKey": "gamePage.catalog.games.belote.name",
+            "descriptionKey": "gamePage.catalog.games.belote.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-cards-club-outline",
+            "component": "belote",
+            "supportedModes": ["ai"],
+            "categoryKey": "cards",
+            "subcategoryKey": "classic-cards"
+          },
+          {
+            "id": "21000000-0000-1000-8000-000000000103",
+            "key": "poker",
+            "nameKey": "gamePage.catalog.games.poker.name",
+            "descriptionKey": "gamePage.catalog.games.poker.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-cards-spade-outline",
+            "component": "poker",
+            "supportedModes": ["ai"],
+            "categoryKey": "cards",
+            "subcategoryKey": "classic-cards"
+          },
+          {
+            "id": "21000000-0000-1000-8000-000000000104",
+            "key": "uno",
+            "nameKey": "gamePage.catalog.games.uno.name",
+            "descriptionKey": "gamePage.catalog.games.uno.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-cards-playing",
+            "component": "uno",
+            "supportedModes": ["ai", "pvp"],
+            "categoryKey": "cards",
+            "subcategoryKey": "classic-cards"
+          }
+        ]
+      },
+      {
+        "id": "21000000-0000-1000-8000-000000000012",
+        "key": "party-cards",
+        "nameKey": "gamePage.catalog.subCategories.partyCards.name",
+        "descriptionKey": "gamePage.catalog.subCategories.partyCards.description",
+        "img": "/img/game/party-card.png",
+        "icon": "mdi-party-popper",
+        "games": [
+          {
+            "id": "21000000-0000-1000-8000-000000000105",
+            "key": "solitaire",
+            "nameKey": "gamePage.catalog.games.solitaire.name",
+            "descriptionKey": "gamePage.catalog.games.solitaire.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-cards-playing-heart-outline",
+            "component": null,
+            "supportedModes": [],
+            "categoryKey": "cards",
+            "subcategoryKey": "party-cards"
+          },
+          {
+            "id": "21000000-0000-1000-8000-000000000106",
+            "key": "hearts",
+            "nameKey": "gamePage.catalog.games.hearts.name",
+            "descriptionKey": "gamePage.catalog.games.hearts.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-cards-heart",
+            "component": null,
+            "supportedModes": [],
+            "categoryKey": "cards",
+            "subcategoryKey": "party-cards"
+          },
+          {
+            "id": "21000000-0000-1000-8000-000000000107",
+            "key": "spades",
+            "nameKey": "gamePage.catalog.games.spades.name",
+            "descriptionKey": "gamePage.catalog.games.spades.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-cards-spade-heart-outline",
+            "component": null,
+            "supportedModes": [],
+            "categoryKey": "cards",
+            "subcategoryKey": "party-cards"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "21000000-0000-1000-8000-000000000002",
+    "key": "board",
+    "nameKey": "gamePage.catalog.categories.board.name",
+    "descriptionKey": "gamePage.catalog.categories.board.description",
+    "img": "/img/game/board-game.png",
+    "icon": "mdi-checkerboard",
+    "subCategories": [
+      {
+        "id": "21000000-0000-1000-8000-000000000013",
+        "key": "table-classic",
+        "nameKey": "gamePage.catalog.subCategories.tableClassic.name",
+        "descriptionKey": "gamePage.catalog.subCategories.tableClassic.description",
+        "img": "/img/game/card-game.png",
+        "icon": "mdi-gamepad-round-outline",
+        "games": [
+          {
+            "id": "21000000-0000-1000-8000-000000000108",
+            "key": "checkers",
+            "nameKey": "gamePage.catalog.games.checkers.name",
+            "descriptionKey": "gamePage.catalog.games.checkers.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-circle-multiple-outline",
+            "component": "checkers",
+            "supportedModes": ["ai", "pvp"],
+            "categoryKey": "board",
+            "subcategoryKey": "table-classic"
+          },
+          {
+            "id": "21000000-0000-1000-8000-000000000109",
+            "key": "chess",
+            "nameKey": "gamePage.catalog.games.chess.name",
+            "descriptionKey": "gamePage.catalog.games.chess.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-chess-knight",
+            "component": "chess",
+            "supportedModes": ["ai", "pvp"],
+            "categoryKey": "gamePage.catalog.categories.board.name",
+            "subcategoryKey": "gamePage.catalog.subCategories.tableClassic.name",
+            "difficultyKey": "gamePage.catalog.difficulties.hard"
+          }
+        ]
+      },
+      {
+        "id": "21000000-0000-1000-8000-000000000014",
+        "key": "family-board",
+        "nameKey": "gamePage.catalog.subCategories.familyBoard.name",
+        "descriptionKey": "gamePage.catalog.subCategories.familyBoard.description",
+        "img": "/img/game/family-board.png",
+        "icon": "mdi-account-group-outline",
+        "games": [
+          {
+            "id": "21000000-0000-1000-8000-000000000110",
+            "key": "ludo",
+            "nameKey": "gamePage.catalog.games.ludo.name",
+            "descriptionKey": "gamePage.catalog.games.ludo.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-dice-multiple-outline",
+            "component": null,
+            "supportedModes": [],
+            "categoryKey": "board",
+            "subcategoryKey": "family-board"
+          },
+          {
+            "id": "21000000-0000-1000-8000-000000000111",
+            "key": "backgammon",
+            "nameKey": "gamePage.catalog.games.backgammon.name",
+            "descriptionKey": "gamePage.catalog.games.backgammon.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-gamepad-variant-outline",
+            "component": null,
+            "supportedModes": [],
+            "categoryKey": "board",
+            "subcategoryKey": "family-board"
+          },
+          {
+            "id": "21000000-0000-1000-8000-000000000112",
+            "key": "dominoes",
+            "nameKey": "gamePage.catalog.games.dominoes.name",
+            "descriptionKey": "gamePage.catalog.games.dominoes.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-domino-mask",
+            "component": null,
+            "supportedModes": [],
+            "categoryKey": "board",
+            "subcategoryKey": "family-board"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "21000000-0000-1000-8000-000000000003",
+    "key": "smart-games",
+    "nameKey": "gamePage.catalog.categories.smartGames.name",
+    "descriptionKey": "gamePage.catalog.categories.smartGames.description",
+    "img": "/img/game/smart-game.png",
+    "icon": "mdi-brain",
+    "subCategories": [
+      {
+        "id": "21000000-0000-1000-8000-000000000015",
+        "key": "logic",
+        "nameKey": "gamePage.catalog.subCategories.logic.name",
+        "descriptionKey": "gamePage.catalog.subCategories.logic.description",
+        "img": "/img/game/logic.png",
+        "icon": "mdi-lightbulb-on-outline",
+        "games": [
+          {
+            "id": "21000000-0000-1000-8000-000000000113",
+            "key": "sudoku",
+            "nameKey": "gamePage.catalog.games.sudoku.name",
+            "descriptionKey": "gamePage.catalog.games.sudoku.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-grid",
+            "component": "sudoku",
+            "supportedModes": ["ai"],
+            "categoryKey": "gamePage.catalog.categories.smartGames.name",
+            "subcategoryKey": "gamePage.catalog.subCategories.logic.name",
+            "difficultyKey": "gamePage.catalog.difficulties.medium"
+          },
+          {
+            "id": "21000000-0000-1000-8000-000000000114",
+            "key": "game-2048",
+            "nameKey": "gamePage.catalog.games.game2048.name",
+            "descriptionKey": "gamePage.catalog.games.game2048.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-numeric-8-box-multiple-outline",
+            "component": "game2048",
+            "supportedModes": ["ai"],
+            "categoryKey": "gamePage.catalog.categories.smartGames.name",
+            "subcategoryKey": "gamePage.catalog.subCategories.logic.name",
+            "difficultyKey": "gamePage.catalog.difficulties.easy"
+          }
+        ]
+      },
+      {
+        "id": "21000000-0000-1000-8000-000000000016",
+        "key": "words-language",
+        "nameKey": "gamePage.catalog.subCategories.wordsLanguage.name",
+        "descriptionKey": "gamePage.catalog.subCategories.wordsLanguage.description",
+        "img": "/img/game/words.png",
+        "icon": "mdi-alphabetical-variant",
+        "games": [
+          {
+            "id": "21000000-0000-1000-8000-000000000115",
+            "key": "hidden-word",
+            "nameKey": "gamePage.catalog.games.hiddenWord.name",
+            "descriptionKey": "gamePage.catalog.games.hiddenWord.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-text-search-variant",
+            "component": "hidden-word",
+            "supportedModes": ["ai"],
+            "categoryKey": "gamePage.catalog.categories.smartGames.name",
+            "subcategoryKey": "gamePage.catalog.subCategories.wordsLanguage.name",
+            "difficultyKey": "gamePage.catalog.difficulties.medium"
+          }
+        ]
+      },
+      {
+        "id": "21000000-0000-1000-8000-000000000017",
+        "key": "grids-puzzles",
+        "nameKey": "gamePage.catalog.subCategories.gridsPuzzles.name",
+        "descriptionKey": "gamePage.catalog.subCategories.gridsPuzzles.description",
+        "img": "/img/game/puzzle.png",
+        "icon": "mdi-grid-large",
+        "games": [
+          {
+            "id": "21000000-0000-1000-8000-000000000116",
+            "key": "nonogram",
+            "nameKey": "gamePage.catalog.games.nonogram.name",
+            "descriptionKey": "gamePage.catalog.games.nonogram.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-view-grid-plus-outline",
+            "component": "nonogram",
+            "supportedModes": ["ai"],
+            "categoryKey": "gamePage.catalog.categories.smartGames.name",
+            "subcategoryKey": "gamePage.catalog.subCategories.gridsPuzzles.name",
+            "difficultyKey": "gamePage.catalog.difficulties.hard"
+          }
+        ]
+      },
+      {
+        "id": "21000000-0000-1000-8000-000000000018",
+        "key": "brain-training",
+        "nameKey": "gamePage.catalog.subCategories.brainTraining.name",
+        "descriptionKey": "gamePage.catalog.subCategories.brainTraining.description",
+        "img": "/img/game/brain.png",
+        "icon": "mdi-head-cog-outline",
+        "games": [
+          {
+            "id": "21000000-0000-1000-8000-000000000117",
+            "key": "memory-match",
+            "nameKey": "gamePage.catalog.games.memoryMatch.name",
+            "descriptionKey": "gamePage.catalog.games.memoryMatch.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-brain",
+            "component": null,
+            "supportedModes": [],
+            "categoryKey": "smart-games",
+            "subcategoryKey": "brain-training"
+          },
+          {
+            "id": "21000000-0000-1000-8000-000000000118",
+            "key": "mastermind",
+            "nameKey": "gamePage.catalog.games.mastermind.name",
+            "descriptionKey": "gamePage.catalog.games.mastermind.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-bullseye-arrow",
+            "component": null,
+            "supportedModes": [],
+            "categoryKey": "smart-games",
+            "subcategoryKey": "brain-training"
+          },
+          {
+            "id": "21000000-0000-1000-8000-000000000119",
+            "key": "minesweeper",
+            "nameKey": "gamePage.catalog.games.minesweeper.name",
+            "descriptionKey": "gamePage.catalog.games.minesweeper.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-bomb",
+            "component": null,
+            "supportedModes": [],
+            "categoryKey": "smart-games",
+            "subcategoryKey": "brain-training"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "21000000-0000-1000-8000-000000000004",
+    "key": "arcade",
+    "nameKey": "gamePage.catalog.categories.arcade.name",
+    "descriptionKey": "gamePage.catalog.categories.arcade.description",
+    "img": "/img/game/arcade-game.png",
+    "icon": "mdi-gamepad-variant-outline",
+    "subCategories": [
+      {
+        "id": "21000000-0000-1000-8000-000000000019",
+        "key": "reaction-arcade",
+        "nameKey": "gamePage.catalog.subCategories.reactionArcade.name",
+        "descriptionKey": "gamePage.catalog.subCategories.reactionArcade.description",
+        "img": "/img/game/card-game.png",
+        "icon": "mdi-lightning-bolt-outline",
+        "games": [
+          {
+            "id": "21000000-0000-1000-8000-000000000120",
+            "key": "flappy-rocket",
+            "nameKey": "gamePage.catalog.games.flappyRocket.name",
+            "descriptionKey": "gamePage.catalog.games.flappyRocket.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-rocket-launch-outline",
+            "component": null,
+            "supportedModes": [],
+            "categoryKey": "arcade",
+            "subcategoryKey": "reaction-arcade"
+          },
+          {
+            "id": "21000000-0000-1000-8000-000000000121",
+            "key": "stack-jump",
+            "nameKey": "gamePage.catalog.games.stackJump.name",
+            "descriptionKey": "gamePage.catalog.games.stackJump.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-cube-outline",
+            "component": null,
+            "supportedModes": [],
+            "categoryKey": "arcade",
+            "subcategoryKey": "reaction-arcade"
+          }
+        ]
+      },
+      {
+        "id": "21000000-0000-1000-8000-000000000020",
+        "key": "classic-arcade",
+        "nameKey": "gamePage.catalog.subCategories.classicArcade.name",
+        "descriptionKey": "gamePage.catalog.subCategories.classicArcade.description",
+        "img": "/img/game/card-game.png",
+        "icon": "mdi-ghost-outline",
+        "games": [
+          {
+            "id": "21000000-0000-1000-8000-000000000122",
+            "key": "space-invaders",
+            "nameKey": "gamePage.catalog.games.spaceInvaders.name",
+            "descriptionKey": "gamePage.catalog.games.spaceInvaders.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-space-invaders",
+            "component": null,
+            "supportedModes": [],
+            "categoryKey": "arcade",
+            "subcategoryKey": "classic-arcade"
+          },
+          {
+            "id": "21000000-0000-1000-8000-000000000123",
+            "key": "brick-breaker",
+            "nameKey": "gamePage.catalog.games.brickBreaker.name",
+            "descriptionKey": "gamePage.catalog.games.brickBreaker.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-view-grid-plus-outline",
+            "component": null,
+            "supportedModes": [],
+            "categoryKey": "arcade",
+            "subcategoryKey": "classic-arcade"
+          },
+          {
+            "id": "21000000-0000-1000-8000-000000000124",
+            "key": "snake",
+            "nameKey": "gamePage.catalog.games.snake.name",
+            "descriptionKey": "gamePage.catalog.games.snake.description",
+            "img": "/img/game/classic-card.png",
+            "icon": "mdi-snake",
+            "component": null,
+            "supportedModes": [],
+            "categoryKey": "arcade",
+            "subcategoryKey": "classic-arcade"
+          }
+        ]
+      }
+    ]
+  }
+]
