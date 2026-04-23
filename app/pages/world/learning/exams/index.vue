@@ -165,10 +165,10 @@ async function openReference(payload: { key: string; value: string }) {
           <AppSelect v-model="selectedClass" :items="classOptions" label="Class" clearable />
           <AppSelect v-model="selectedTeacher" :items="teacherOptions" label="Teacher" clearable>
             <template #item="{ props, item }">
-              <v-list-item v-bind="props" :subtitle="item.raw.subtitle">
+              <v-list-item v-bind="props" :subtitle="item?.raw?.subtitle">
                 <template #prepend>
                   <v-avatar size="24">
-                    <v-img :src="item.raw.avatar || '/img/avatar_default.svg'" :alt="item.raw.title" />
+                    <v-img :src="item?.raw?.avatar || '/img/avatar_default.svg'" :alt="item?.raw?.title" />
                   </v-avatar>
                 </template>
               </v-list-item>
@@ -176,9 +176,9 @@ async function openReference(payload: { key: string; value: string }) {
             <template #selection="{ item }">
               <div class="d-flex align-center ga-2">
                 <v-avatar size="20">
-                  <v-img :src="item.raw.avatar || '/img/avatar_default.svg'" :alt="item.raw.title" />
+                  <v-img :src="item?.raw?.avatar || '/img/avatar_default.svg'" :alt="item?.raw?.title" />
                 </v-avatar>
-                <span>{{ item.raw.title }}</span>
+                <span>{{ item?.raw?.title }}</span>
               </div>
             </template>
           </AppSelect>
