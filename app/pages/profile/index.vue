@@ -423,7 +423,7 @@ async function fetchResumes() {
   resumesError.value = ''
   try {
     resumes.value = await privateApi.request<RecruitResume[]>(
-      scopedRecruitPath('/private/me/resumes'),
+      '/api/recruit/general/private/me/resumes',
     )
   } catch {
     resumesError.value = 'Unable to load your resumes.'
