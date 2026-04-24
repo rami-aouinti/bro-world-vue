@@ -4,25 +4,203 @@ definePageMeta({
   layout: 'resume'
 })
 
-const resume = reactive({
-  role: 'Backend Developer',
-  firstName: 'Mohamed Rami',
-  lastName: 'Aouinti',
-  email: 'rami.aouinti.dourant@gmail.com',
-  phone: '017635587613',
-  city: 'Köln 50859',
-  country: 'Deutschland',
-  profile:
-    'Hardworking Student seeking employment. Ready to utilize my skills and passion to further the mission of a company. Technologically adept, offering experience with many different social media platforms, office technology programs, and advanced computer skills.',
-})
+type Skill = { name: string; level: number }
+type Language = { name: string; level: number }
+type Experience = {
+  role: string
+  company: string
+  city: string
+  start: string
+  end: string
+  bullets: string[]
+}
+type Education = {
+  degree: string
+  school: string
+  city: string
+  start: string
+  end: string
+  note: string
+}
+type Reference = {
+  name: string
+  company: string
+  email: string
+  phone: string
+}
+type Course = {
+  title: string
+  school: string
+  start: string
+  end: string
+}
+type Project = {
+  name: string
+  summary: string
+}
 
-const leftSections = [
-  { title: 'Personal details', hint: 'Renseigne les informations de base de ton profil.' },
-  { title: 'Professional summary', hint: 'Décris ton impact, ta motivation et tes objectifs.' },
-  { title: 'Education', hint: 'Ajoute tes études et formations principales.' },
+type Template = {
+  id: string
+  title: string
+  subtitle: string
+  image: string
+}
+
+type ColorTheme = {
+  name: string
+  sidebar: string
+  accent: string
+  page: string
+}
+
+type RoundedOption = {
+  title: string
+  value: 'none' | 'sm' | 'md' | 'lg'
+  className: string
+}
+
+const activeTab = ref<'edit' | 'template' | 'design'>('edit')
+const selectedTemplate = ref('classic-emerald')
+const selectedTheme = ref('emerald')
+const selectedRounded = ref<'none' | 'sm' | 'md' | 'lg'>('md')
+
+const templates: Template[] = [
+  { id: 'classic-emerald', title: 'Classic Emerald', subtitle: 'Sidebar + clean content', image: '/img/cv/cv-1.png' },
+  { id: 'executive-slate', title: 'Executive Slate', subtitle: 'Elegant and formal layout', image: '/img/cv/cv-2.png' },
+  { id: 'modern-azure', title: 'Modern Azure', subtitle: 'Balanced modern profile', image: '/img/cv/cv-3.png' },
+  { id: 'minimal-graphite', title: 'Minimal Graphite', subtitle: 'Simple and highly readable', image: '/img/cv/cv-4.png' },
 ]
 
-const skills = ['Advanced Communication Skills', 'Office Technology Skills', 'Motivated Attitude', 'Social Media Platforms']
+const colorThemes: ColorTheme[] = [
+  { name: 'emerald', sidebar: '#07564f', accent: '#0f766e', page: '#f8fafc' },
+  { name: 'ocean', sidebar: '#0b3a78', accent: '#2563eb', page: '#eff6ff' },
+  { name: 'plum', sidebar: '#4a1d5e', accent: '#9333ea', page: '#faf5ff' },
+  { name: 'charcoal', sidebar: '#1f2937', accent: '#374151', page: '#f3f4f6' },
+  { name: 'ruby', sidebar: '#7f1d1d', accent: '#dc2626', page: '#fff1f2' },
+  { name: 'amber', sidebar: '#78350f', accent: '#d97706', page: '#fffbeb' },
+]
+
+const roundedOptions: RoundedOption[] = [
+  { title: 'None', value: 'none', className: 'radius-none' },
+  { title: 'Soft', value: 'sm', className: 'radius-sm' },
+  { title: 'Default', value: 'md', className: 'radius-md' },
+  { title: 'Large', value: 'lg', className: 'radius-lg' },
+]
+
+const resume = reactive({
+  role: 'Communication Specialist',
+  firstName: 'Emma',
+  lastName: 'Anderson',
+  email: 'emma.anderson@portfolio.dev',
+  phone: '+1 212-555-0177',
+  city: 'New York',
+  country: 'United States',
+  profile:
+    'Dynamic communication specialist with strong storytelling, editorial planning, and social media execution experience. Passionate about building clear messages that engage audiences and support business goals.',
+  skills: [
+    { name: 'Advanced Communication Skills', level: 100 },
+    { name: 'Office Technology Skills', level: 100 },
+    { name: 'Motivated Attitude', level: 100 },
+    { name: 'Social Media Platforms', level: 100 },
+  ] as Skill[],
+  languages: [
+    { name: 'French', level: 80 },
+    { name: 'Dutch', level: 80 },
+    { name: 'English', level: 95 },
+  ] as Language[],
+  hobbies: ['Photography', 'Reading', 'Traveling', 'Community Volunteering'],
+  experiences: [
+    {
+      role: 'Sales Associate',
+      company: 'Big Apple Bookstore',
+      city: 'New York',
+      start: 'JAN 2018',
+      end: 'DEC 2020',
+      bullets: [
+        'Offered literary suggestions based on customer needs and preferences.',
+        'Followed directions from supervisors and managed projects with precision.',
+        'Organized books and adhered to bookstore policies and standards.',
+      ],
+    },
+    {
+      role: 'Editorial Intern',
+      company: 'NBC News',
+      city: 'New York',
+      start: 'JAN 2016',
+      end: 'DEC 2017',
+      bullets: [
+        'Assisted senior editors with clerical and administrative tasks.',
+        'Suggested story ideas and supported content planning meetings.',
+        'Ran spellchecks and edited stories before publication.',
+      ],
+    },
+  ] as Experience[],
+  education: [
+    {
+      degree: 'Bachelor of Communications',
+      school: 'New York University',
+      city: 'New York',
+      start: 'AUG 2016',
+      end: 'AUG 2021',
+      note: 'Working towards a Communications Degree.',
+    },
+    {
+      degree: 'High School Diploma',
+      school: 'Regis High School',
+      city: 'New York',
+      start: 'SEPT 2012',
+      end: 'MAY 2016',
+      note: 'Graduated with High Honors.',
+    },
+  ] as Education[],
+  references: [
+    {
+      name: 'Dr. Lynn Fogel',
+      company: 'Regis High School',
+      email: 'fogel.l@regishs.edu',
+      phone: '212-334-4775',
+    },
+    {
+      name: 'Ken Bergman',
+      company: 'New York University',
+      email: 'ken.bergman@nyu.edu',
+      phone: '212-055-9772',
+    },
+    {
+      name: 'Leah Anderson',
+      company: 'New York University',
+      email: 'leah.anderson@nyu.edu',
+      phone: '212-833-4521',
+    },
+  ] as Reference[],
+  courses: [
+    {
+      title: 'Advanced Communication Practices',
+      school: 'New York University',
+      start: 'AUG 2015',
+      end: 'MAY 2016',
+    },
+  ] as Course[],
+  projects: [
+    {
+      name: 'Campus Editorial Newsletter',
+      summary: 'Led content calendar and boosted monthly newsletter open rate by 32%.',
+    },
+    {
+      name: 'Student Podcast Launch',
+      summary: 'Created scripts and episode communication plan for a 10-episode launch.',
+    },
+  ] as Project[],
+})
+
+const activeTheme = computed(() => colorThemes.find(theme => theme.name === selectedTheme.value) ?? colorThemes[0])
+const activeRoundedClass = computed(() => roundedOptions.find(item => item.value === selectedRounded.value)?.className ?? 'radius-md')
+
+const previewStyle = computed(() => ({
+  '--cv-sidebar': activeTheme.value.sidebar,
+  '--cv-accent': activeTheme.value.accent,
+  '--cv-page': activeTheme.value.page,
+}))
 
 const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => false)
 const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
@@ -47,62 +225,160 @@ onUnmounted(() => {
           <span>Resume completeness</span>
         </div>
 
-        <article v-for="section in leftSections" :key="section.title" class="form-section mb-4">
-          <header class="d-flex justify-space-between align-center mb-4">
-            <div>
-              <h2>{{ section.title }}</h2>
-              <p>{{ section.hint }}</p>
-            </div>
-            <v-icon icon="mdi-chevron-up" />
-          </header>
+        <v-tabs v-model="activeTab" color="primary" grow class="mb-4">
+          <v-tab value="edit">Edit</v-tab>
+          <v-tab value="template">Template</v-tab>
+          <v-tab value="design">Design</v-tab>
+        </v-tabs>
 
-          <div v-if="section.title === 'Personal details'" class="grid-2">
-            <v-text-field v-model="resume.role" label="Job target" variant="solo-filled" flat hide-details />
-            <v-text-field v-model="resume.firstName" label="First name" variant="solo-filled" flat hide-details />
-            <v-text-field v-model="resume.lastName" label="Last name" variant="solo-filled" flat hide-details />
-            <v-text-field v-model="resume.email" label="Email" variant="solo-filled" flat hide-details />
-            <v-text-field v-model="resume.phone" label="Phone" variant="solo-filled" flat hide-details />
-            <v-text-field v-model="resume.city" label="City" variant="solo-filled" flat hide-details />
-            <v-text-field v-model="resume.country" label="Country" variant="solo-filled" flat hide-details />
-          </div>
+        <v-window v-model="activeTab">
+          <v-window-item value="edit">
+            <article class="form-section mb-4">
+              <header class="mb-4">
+                <h2>Personal details</h2>
+                <p>Renseigne les informations de base de ton profil.</p>
+              </header>
+              <div class="grid-2">
+                <v-text-field v-model="resume.role" label="Job target" variant="solo-filled" flat hide-details />
+                <v-text-field v-model="resume.firstName" label="First name" variant="solo-filled" flat hide-details />
+                <v-text-field v-model="resume.lastName" label="Last name" variant="solo-filled" flat hide-details />
+                <v-text-field v-model="resume.email" label="Email" variant="solo-filled" flat hide-details />
+                <v-text-field v-model="resume.phone" label="Phone" variant="solo-filled" flat hide-details />
+                <v-text-field v-model="resume.city" label="City" variant="solo-filled" flat hide-details />
+                <v-text-field v-model="resume.country" label="Country" variant="solo-filled" flat hide-details />
+              </div>
+            </article>
 
-          <div v-else-if="section.title === 'Professional summary'">
-            <v-textarea
-              v-model="resume.profile"
-              label="Summary"
-              rows="7"
-              variant="solo-filled"
-              flat
-              hide-details
-            />
-          </div>
+            <article class="form-section mb-4">
+              <header class="mb-4">
+                <h2>Professional summary</h2>
+                <p>Décris ton impact, ta motivation et tes objectifs.</p>
+              </header>
+              <v-textarea v-model="resume.profile" label="Summary" rows="5" variant="solo-filled" flat hide-details />
+            </article>
 
-          <div v-else class="grid-2">
-            <v-text-field label="School" model-value="New York University" variant="solo-filled" flat hide-details />
-            <v-text-field label="Degree" model-value="Bachelor of Communications" variant="solo-filled" flat hide-details />
-            <v-text-field label="Start" model-value="Aug, 2016" variant="solo-filled" flat hide-details />
-            <v-text-field label="End" model-value="Aug, 2021" variant="solo-filled" flat hide-details />
-          </div>
-        </article>
+            <article class="form-section mb-4">
+              <header class="mb-3">
+                <h2>Experiences</h2>
+                <p>Toutes les experiences clés du profil.</p>
+              </header>
+              <div v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="edit-row">
+                <strong>{{ experience.role }} · {{ experience.company }}</strong>
+                <small>{{ experience.start }} - {{ experience.end }}</small>
+              </div>
+            </article>
+
+            <article class="form-section mb-4">
+              <header class="mb-3">
+                <h2>Skills, Languages, Hobbies, References, Projects</h2>
+                <p>Ajoutés dans le CV pour enrichir le contenu.</p>
+              </header>
+              <ul class="compact-list">
+                <li><strong>Skills:</strong> {{ resume.skills.map(item => item.name).join(', ') }}</li>
+                <li><strong>Languages:</strong> {{ resume.languages.map(item => item.name).join(', ') }}</li>
+                <li><strong>Hobbies:</strong> {{ resume.hobbies.join(', ') }}</li>
+                <li><strong>References:</strong> {{ resume.references.length }} contacts</li>
+                <li><strong>Projects:</strong> {{ resume.projects.length }} projects</li>
+              </ul>
+            </article>
+          </v-window-item>
+
+          <v-window-item value="template">
+            <article class="form-section mb-4">
+              <header class="mb-4">
+                <h2>Template</h2>
+                <p>Choisis un template. Affichage en 2 cards par ligne.</p>
+              </header>
+              <div class="template-grid">
+                <v-card
+                  v-for="template in templates"
+                  :key="template.id"
+                  class="template-card"
+                  :class="{ 'template-card--active': selectedTemplate === template.id }"
+                  variant="outlined"
+                  @click="selectedTemplate = template.id"
+                >
+                  <v-img :src="template.image" height="120" cover />
+                  <v-card-text>
+                    <strong>{{ template.title }}</strong>
+                    <p class="mb-0">{{ template.subtitle }}</p>
+                  </v-card-text>
+                </v-card>
+              </div>
+            </article>
+          </v-window-item>
+
+          <v-window-item value="design">
+            <article class="form-section mb-4">
+              <header class="mb-4">
+                <h2>Design</h2>
+                <p>Choisis les couleurs et le rounded comme AppSettings.</p>
+              </header>
+
+              <p class="section-label">Color palette</p>
+              <div class="palette-grid mb-4">
+                <button
+                  v-for="theme in colorThemes"
+                  :key="theme.name"
+                  type="button"
+                  class="palette-item"
+                  :class="{ 'palette-item--active': selectedTheme === theme.name }"
+                  @click="selectedTheme = theme.name"
+                >
+                  <span :style="{ background: theme.sidebar }" />
+                  <span :style="{ background: theme.accent }" />
+                  <span :style="{ background: theme.page }" />
+                </button>
+              </div>
+
+              <p class="section-label">Rounded</p>
+              <v-btn-toggle v-model="selectedRounded" mandatory divided class="rounded-toggle" color="primary">
+                <v-btn
+                  v-for="option in roundedOptions"
+                  :key="option.value"
+                  :value="option.value"
+                  variant="text"
+                >
+                  {{ option.title }}
+                </v-btn>
+              </v-btn-toggle>
+            </article>
+          </v-window-item>
+        </v-window>
       </section>
 
       <aside class="builder-preview py-6 px-5 px-md-8">
-        <div class="preview-grid">
+        <div class="preview-grid" :class="activeRoundedClass" :style="previewStyle">
           <section class="preview-sidebar">
             <h1>{{ resume.firstName }}<br>{{ resume.lastName }}</h1>
             <p class="job">{{ resume.role.toUpperCase() }}</p>
 
             <h3>Details</h3>
             <ul>
-              <li>{{ resume.city }}</li>
-              <li>{{ resume.country }}</li>
+              <li>{{ resume.city }}, {{ resume.country }}</li>
               <li>{{ resume.phone }}</li>
               <li>{{ resume.email }}</li>
             </ul>
 
             <h3>Skills</h3>
+            <ul class="level-list">
+              <li v-for="skill in resume.skills" :key="skill.name">
+                <span>{{ skill.name }}</span>
+                <div class="progress"><i :style="{ width: `${skill.level}%` }" /></div>
+              </li>
+            </ul>
+
+            <h3>Languages</h3>
+            <ul class="level-list">
+              <li v-for="language in resume.languages" :key="language.name">
+                <span>{{ language.name }}</span>
+                <div class="progress"><i :style="{ width: `${language.level}%` }" /></div>
+              </li>
+            </ul>
+
+            <h3>Hobbies</h3>
             <ul>
-              <li v-for="skill in skills" :key="skill">{{ skill }}</li>
+              <li v-for="hobby in resume.hobbies" :key="hobby">{{ hobby }}</li>
             </ul>
           </section>
 
@@ -111,16 +387,40 @@ onUnmounted(() => {
             <p>{{ resume.profile }}</p>
 
             <h2>Employment History</h2>
-            <h4>Sales Associate, Big Apple Bookstore, New York</h4>
-            <ul>
-              <li>Greeted customers and assisted them with finding books.</li>
-              <li>Offered literary suggestions based on customer needs.</li>
-              <li>Managed projects with precision and care.</li>
-            </ul>
+            <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="mb-4">
+              <h4>{{ experience.role }}, {{ experience.company }}, {{ experience.city }}</h4>
+              <p class="dates">{{ experience.start }} - {{ experience.end }}</p>
+              <ul>
+                <li v-for="(bullet, bulletIndex) in experience.bullets" :key="bulletIndex">{{ bullet }}</li>
+              </ul>
+            </article>
 
             <h2>Education</h2>
-            <h4>Bachelor of Communications, New York University</h4>
-            <p>Working towards a Communications Degree.</p>
+            <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="mb-4">
+              <h4>{{ item.degree }}, {{ item.school }}, {{ item.city }}</h4>
+              <p class="dates">{{ item.start }} - {{ item.end }}</p>
+              <ul>
+                <li>{{ item.note }}</li>
+              </ul>
+            </article>
+
+            <h2>References</h2>
+            <article v-for="reference in resume.references" :key="reference.email" class="reference-item mb-3">
+              <h4>{{ reference.name }} from {{ reference.company }}</h4>
+              <p>{{ reference.email }} | {{ reference.phone }}</p>
+            </article>
+
+            <h2>Courses</h2>
+            <article v-for="course in resume.courses" :key="course.title" class="mb-4">
+              <h4>{{ course.title }}, {{ course.school }}</h4>
+              <p class="dates">{{ course.start }} - {{ course.end }}</p>
+            </article>
+
+            <h2>Projects</h2>
+            <article v-for="project in resume.projects" :key="project.name" class="mb-3">
+              <h4>{{ project.name }}</h4>
+              <p>{{ project.summary }}</p>
+            </article>
           </section>
         </div>
       </aside>
@@ -131,24 +431,6 @@ onUnmounted(() => {
 <style scoped>
 .resume-create {
   min-height: 100vh;
-}
-
-.builder-topbar {
-  border-bottom: 1px solid #e3e7f2;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  position: sticky;
-  top: 0;
-  z-index: 2;
-}
-
-.topbar-left,
-.topbar-center {
-  display: flex;
-  align-items: center;
-  gap: 12px;
 }
 
 .builder-layout {
@@ -176,9 +458,8 @@ onUnmounted(() => {
 }
 
 .form-section h2 {
-  font-size: 1.65rem;
+  font-size: 1.2rem;
   margin-bottom: 4px;
-  text-transform: capitalize;
 }
 
 .form-section p {
@@ -192,14 +473,82 @@ onUnmounted(() => {
   gap: 12px;
 }
 
+.edit-row {
+  display: flex;
+  justify-content: space-between;
+  border: 1px dashed #ccd7eb;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+
+.compact-list {
+  padding-left: 16px;
+  margin: 0;
+}
+
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.template-card {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.template-card--active {
+  border-color: var(--v-theme-primary);
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.3);
+}
+
+.section-label {
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #1f2a44;
+}
+
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.palette-item {
+  border: 1px solid #d4def2;
+  border-radius: 10px;
+  padding: 6px;
+  display: flex;
+  gap: 4px;
+}
+
+.palette-item span {
+  flex: 1;
+  border-radius: 6px;
+  height: 24px;
+}
+
+.palette-item--active {
+  border-color: var(--v-theme-primary);
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.3);
+}
+
 .preview-grid {
+  --cv-sidebar: #07564f;
+  --cv-accent: #0f766e;
+  --cv-page: #f8fafc;
   display: grid;
   grid-template-columns: 260px 1fr;
   min-height: calc(100vh - 80px);
+  background: var(--cv-page);
+  border-radius: 14px;
+  overflow: hidden;
 }
 
 .preview-sidebar {
-  background: #07564f;
+  background: var(--cv-sidebar);
+  color: #fff;
   padding: 28px 24px;
 }
 
@@ -226,8 +575,20 @@ onUnmounted(() => {
 }
 
 .preview-sidebar li {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   font-size: 0.95rem;
+}
+
+.level-list .progress {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  margin-top: 5px;
+}
+
+.level-list .progress i {
+  display: block;
+  height: 4px;
+  background: #fff;
 }
 
 .preview-content {
@@ -236,12 +597,40 @@ onUnmounted(() => {
 
 .preview-content h2 {
   margin-bottom: 10px;
-  font-size: 2rem;
+  font-size: 1.8rem;
+  color: var(--cv-accent);
 }
 
 .preview-content h4 {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   margin-top: 8px;
+}
+
+.dates {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: #6b7280;
+  text-transform: uppercase;
+}
+
+.reference-item p {
+  color: #334155;
+}
+
+.radius-none {
+  border-radius: 0;
+}
+
+.radius-sm {
+  border-radius: 8px;
+}
+
+.radius-md {
+  border-radius: 14px;
+}
+
+.radius-lg {
+  border-radius: 24px;
 }
 
 @media (max-width: 1120px) {
@@ -256,11 +645,9 @@ onUnmounted(() => {
 }
 
 @media (max-width: 760px) {
-  .topbar-center {
-    display: none;
-  }
-
-  .grid-2 {
+  .grid-2,
+  .template-grid,
+  .palette-grid {
     grid-template-columns: 1fr;
   }
 }
