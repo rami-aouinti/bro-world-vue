@@ -22,24 +22,6 @@ function toggleAll() {
 </script>
 
 <template>
-  <v-tooltip
-    location="top"
-    :aria-label="t('appbar.notification')"
-    :text="t('appbar.notification')"
-    :content-props="{ 'aria-label': t('appbar.notification') }"
-  >
-    <template #activator="{ props }">
-      <v-btn
-        :icon="
-          notifications.length ? 'mdi-bell-badge-outline' : 'mdi-bell-outline'
-        "
-        :aria-label="t('appbar.notification')"
-        :rounded="0"
-        v-bind="props"
-        @click="toggleAll"
-      />
-    </template>
-  </v-tooltip>
   <ClientOnly>
     <teleport to="body">
       <v-card
@@ -125,7 +107,7 @@ function toggleAll() {
   z-index: 1400;
   position: fixed;
   right: 15px;
-  top: calc(var(--v-layout-top, 64px) + 8px);
+  top: calc(var(--v-layout-top, 14px) + 8px);
   max-height: 100vh;
   overflow: visible;
   visibility: hidden;
