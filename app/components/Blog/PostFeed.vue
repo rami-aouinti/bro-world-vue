@@ -25,6 +25,7 @@ type BlogPost = {
   title?: string | null
   content: string
   mediaUrls?: string[]
+  tags?: Array<{ id?: string | number; label?: string | null }>
   reactions?: BlogReaction[]
   comments?: BlogComment[]
   isAuthor?: boolean
@@ -79,6 +80,8 @@ const {
   reactionTypes,
   refresh,
   loadMore,
+  selectedTag,
+  setTagFilter,
   createPost: create,
   comment,
   react,
@@ -251,6 +254,14 @@ async function deleteComment(payload: {
   await remove('comment', payload.comment.id)
 }
 
+async function onTagSelected(tag: string) {
+  await setTagFilter(tag)
+}
+
+async function clearTagFilter() {
+  await setTagFilter(null)
+}
+
 async function submitEdit() {
   const target = editTarget.value
   const content = editContent.value.trim()
@@ -285,6 +296,19 @@ async function submitEdit() {
     <BlogStoriesCarousel v-if="showStories" />
 
     <div class="d-flex flex-column ga-4">
+      <div v-if="selectedTag" class="d-flex align-center">
+        <v-chip color="primary" variant="tonal" size="small">
+          #{{ selectedTag }}
+        </v-chip>
+        <v-btn
+          size="small"
+          variant="text"
+          icon="mdi-close"
+          class="ms-1"
+          @click="clearTagFilter"
+        />
+      </div>
+
       <BlogPostCard
         v-for="post in posts"
         :key="post.id"
@@ -303,6 +327,7 @@ async function submitEdit() {
         @delete-post="deletePost"
         @edit-comment="openCommentEdit"
         @delete-comment="deleteComment"
+        @filter-tag="onTagSelected"
       />
 
       <v-card v-if="!pending && posts.length === 0" rounded="lg">
