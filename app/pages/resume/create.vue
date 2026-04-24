@@ -578,7 +578,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 10px;
-  border: 1px solid #c3dbc9;
+  border: 1px solid rgb(var(--v-theme-primary));
   border-radius: 12px;
   padding: 14px;
 }
@@ -586,7 +586,7 @@ onUnmounted(() => {
 .form-section {
   border-radius: 14px;
   padding: 18px;
-  border: 1px solid #e3e7f2;
+  border: 1px solid rgb(var(--v-theme-primary));
 }
 
 .form-section h2 {
@@ -608,7 +608,7 @@ onUnmounted(() => {
 .edit-row {
   display: flex;
   justify-content: space-between;
-  border: 1px dashed #ccd7eb;
+  border: 1px dashed rgb(var(--v-theme-primary));
   border-radius: 10px;
   padding: 10px 12px;
   margin-bottom: 8px;
@@ -664,7 +664,7 @@ onUnmounted(() => {
 }
 
 .palette-item {
-  border: 1px solid #d4def2;
+  border: 1px solid rgb(var(--v-theme-primary));
   border-radius: 10px;
   padding: 6px;
   display: flex;
