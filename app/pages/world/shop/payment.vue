@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Notify } from '~/stores/notification'
 import { useWorldShopStore } from '~/stores/worldShop'
 
 definePageMeta({ layout: 'shop', title: 'world.shop.payment.metaTitle' })
@@ -13,8 +14,6 @@ const orderId = computed(() =>
 const provider = ref<'stripe' | 'adyen' | 'paypal'>('stripe')
 const shopStore = useWorldShopStore()
 const loading = ref(false)
-const errorMessage = ref('')
-const successMessage = ref('')
 
 const selectedOrder = computed(() => shopStore.selectedOrder)
 const transaction = computed(() => shopStore.transaction)
@@ -62,17 +61,14 @@ async function createPaymentIntent() {
   if (!orderId.value) return
 
   loading.value = true
-  errorMessage.value = ''
-  successMessage.value = ''
 
   try {
     await shopStore.createOrderPaymentIntent(orderId.value, {
       provider: provider.value,
     })
-    successMessage.value = t('world.shop.payment.success.intentCreated')
+    Notify.success(t('world.shop.payment.success.intentCreated'))
   } catch (error: any) {
-    errorMessage.value =
-      error?.statusMessage || t('world.shop.payment.errors.intentFailed')
+    Notify.error(error?.statusMessage || t('world.shop.payment.errors.intentFailed'))
   } finally {
     loading.value = false
   }
@@ -82,8 +78,6 @@ async function confirmOrderPayment() {
   if (!orderId.value) return
 
   loading.value = true
-  errorMessage.value = ''
-  successMessage.value = ''
 
   try {
     await shopStore.confirmOrderPayment(orderId.value, {
@@ -91,10 +85,9 @@ async function confirmOrderPayment() {
       transactionId: transaction.value?.id,
     })
     await refreshOrder()
-    successMessage.value = t('world.shop.payment.success.paymentConfirmed')
+    Notify.success(t('world.shop.payment.success.paymentConfirmed'))
   } catch (error: any) {
-    errorMessage.value =
-      error?.statusMessage || t('world.shop.payment.errors.confirmFailed')
+    Notify.error(error?.statusMessage || t('world.shop.payment.errors.confirmFailed'))
   } finally {
     loading.value = false
   }
@@ -102,14 +95,14 @@ async function confirmOrderPayment() {
 
 onMounted(async () => {
   if (!orderId.value) {
-    errorMessage.value = t('world.shop.payment.errors.missingOrderId')
+    Notify.error(t('world.shop.payment.errors.missingOrderId'))
     return
   }
 
   try {
     await refreshOrder()
   } catch (error: any) {
-    errorMessage.value = error?.statusMessage || t('world.shop.payment.errors.orderNotFound')
+    Notify.error(error?.statusMessage || t('world.shop.payment.errors.orderNotFound'))
   }
 })
 </script>
@@ -130,21 +123,6 @@ onMounted(async () => {
         <p class="text-body-2 text-medium-emphasis mb-4">
           {{ t('world.shop.payment.subtitle') }}
         </p>
-
-        <v-alert
-          v-if="errorMessage"
-          type="error"
-          variant="tonal"
-          class="mb-4"
-          >{{ errorMessage }}</v-alert
-        >
-        <v-alert
-          v-if="successMessage"
-          type="success"
-          variant="tonal"
-          class="mb-4"
-          >{{ successMessage }}</v-alert
-        >
 
         <v-row>
           <v-col cols="12" md="6">
