@@ -125,14 +125,14 @@ function toggleAll() {
   z-index: 1400;
   position: fixed;
   right: 15px;
-  bottom: 16px;
+  top: calc(var(--v-layout-top, 64px) + 8px);
   max-height: 100vh;
   overflow: visible;
   visibility: hidden;
   &.notification-card--open {
     visibility: visible;
     overflow: hidden;
-    max-height: calc(100vh - 200px);
+    max-height: calc(100vh - var(--v-layout-top, 64px) - 24px);
     .notification-box {
       overflow-y: auto;
       pointer-events: auto;
