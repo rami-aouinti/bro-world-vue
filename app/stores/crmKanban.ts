@@ -175,7 +175,7 @@ export const useCrmKanbanStore = defineStore('crm-kanban', () => {
       return
     }
 
-    const response = await $fetch<CrmTasksBySprintResponse>('/api/crm/general/tasks/by-latest-sprint')
+    const response = await $fetch<CrmTasksBySprintResponse>('/api/crm/general/tasks/sprints/by-latest-sprint')
     const flattened = flattenSubtasks(response)
     cards.value = flattened
     currentSprintMeta.value = response.meta?.sprint ?? response.items?.[0]?.sprint ?? null
@@ -197,7 +197,7 @@ export const useCrmKanbanStore = defineStore('crm-kanban', () => {
       return
     }
 
-    const response = await $fetch<CrmTasksBySprintResponse>('/api/crm/general/tasks/by-sprint', {
+    const response = await $fetch<CrmTasksBySprintResponse>('/api/crm/general/tasks/sprints/by-sprint', {
       query: { sprintId },
     })
 
