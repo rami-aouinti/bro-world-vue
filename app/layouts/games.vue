@@ -110,6 +110,7 @@ onUnmounted(() => {
         <AppRightDrawerLazy v-if="shouldRenderRightDrawer" />
       </ClientOnly>
       <v-main>
+        <AppNotification />
         <AppPageDrawers>
           <template #left>
             <AppLeftDrawerUserEntry v-if="isPlayRoute" />

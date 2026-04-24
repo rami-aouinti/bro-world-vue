@@ -108,6 +108,7 @@ onUnmounted(() => {
         <AppRightDrawerLazy v-if="shouldRenderRightDrawer" />
       </ClientOnly>
       <v-main>
+        <AppNotification />
         <v-container fluid class="px-2 pt-0 pb-0">
           <v-breadcrumbs v-if="shouldShowBreadcrumbs" :items="breadcrumbs" />
         </v-container>

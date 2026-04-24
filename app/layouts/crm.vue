@@ -109,6 +109,7 @@ onUnmounted(() => {
         <AppRightDrawerLazy v-if="shouldRenderRightDrawer" />
       </ClientOnly>
       <v-main>
+        <AppNotification />
         <AppPageDrawers :left-component="CrmDrawer" />
         <slot />
       </v-main>
