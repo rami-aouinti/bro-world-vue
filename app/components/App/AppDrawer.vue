@@ -81,13 +81,6 @@ watch(mobile, (isMobile) => {
       <div v-if="shouldRenderDrawerSlot" class="app-left-drawer-list">
         <component :is="leftDrawerSlotHost"  />
       </div>
-      <v-list v-else nav density="compact" class="app-left-drawer-list">
-        <AppDrawerItem
-          v-for="item in fallbackDrawerItems"
-          :key="item.path"
-          :item="item"
-        />
-      </v-list>
     </v-card>
     <v-spacer />
     <template #append>
