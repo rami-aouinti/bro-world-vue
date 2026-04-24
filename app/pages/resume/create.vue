@@ -44,6 +44,26 @@ type Project = {
   summary: string
 }
 
+type ResumeModel = {
+  role: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  city: string
+  country: string
+  profile: string
+  photoUrl: string
+  skills: Skill[]
+  languages: Language[]
+  hobbies: string[]
+  experiences: Experience[]
+  education: Education[]
+  references: Reference[]
+  courses: Course[]
+  projects: Project[]
+}
+
 type Template = {
   id: string
   title: string
@@ -125,7 +145,7 @@ const roundedOptions: RoundedOption[] = [
   { title: 'Large', value: 'lg', className: 'radius-lg' },
 ]
 
-const resume = reactive({
+const resume = reactive<ResumeModel>({
   role: 'Communication Specialist',
   firstName: 'Emma',
   lastName: 'Anderson',
@@ -133,6 +153,7 @@ const resume = reactive({
   phone: '+1 212-555-0177',
   city: 'New York',
   country: 'United States',
+  photoUrl: '/person.png',
   profile:
     'Dynamic communication specialist with strong storytelling, editorial planning, and social media execution experience. Passionate about building clear messages that engage audiences and support business goals.',
   skills: [
@@ -231,6 +252,8 @@ const resume = reactive({
   ] as Project[],
 })
 
+const uploadInput = ref<HTMLInputElement | null>(null)
+
 const filteredTemplates = computed(() => {
   if (selectedTemplateFilter.value === 'all') return templates
 
@@ -257,6 +280,29 @@ const selectedTemplateComponent = computed(() => {
   } as const
   return componentByVariant[selectedTemplateConfig.value.variant]
 })
+
+const templateSupportsPhoto = computed(() => selectedTemplateConfig.value.hasPhoto)
+
+function openPhotoPicker() {
+  uploadInput.value?.click()
+}
+
+function onPhotoSelected(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  const reader = new FileReader()
+  reader.onload = () => {
+    resume.photoUrl = typeof reader.result === 'string' ? reader.result : ''
+  }
+  reader.readAsDataURL(file)
+  input.value = ''
+}
+
+function clearPhoto() {
+  resume.photoUrl = ''
+}
 
 function setExperienceBullets(index: number, value: string) {
   resume.experiences[index].bullets = value
@@ -348,6 +394,24 @@ onUnmounted(() => {
                 <h2>Personal details</h2>
                 <p>Renseigne les informations de base de ton profil comme dans le formulaire CV.</p>
               </header>
+              <div class="mb-4">
+                <p class="section-label mb-2">Photo</p>
+                <div class="photo-uploader">
+                  <v-avatar size="72" rounded="lg">
+                    <v-img :src="resume.photoUrl || '/img/default_avatar.svg'" cover />
+                  </v-avatar>
+                  <div class="photo-actions">
+                    <v-btn size="small" prepend-icon="mdi-upload" variant="tonal" @click="openPhotoPicker">
+                      Upload photo
+                    </v-btn>
+                    <v-btn size="small" prepend-icon="mdi-delete-outline" variant="text" color="error" @click="clearPhoto">
+                      Remove
+                    </v-btn>
+                    <input ref="uploadInput" type="file" accept="image/*" class="d-none" @change="onPhotoSelected">
+                    <p class="text-caption text-medium-emphasis mb-0">Visible uniquement sur les templates avec photo.</p>
+                  </div>
+                </div>
+              </div>
               <div class="grid-2">
                 <v-text-field v-model="resume.role" label="Job target" variant="solo-filled" flat hide-details />
                 <v-text-field v-model="resume.firstName" label="First name" variant="solo-filled" flat hide-details />
@@ -553,7 +617,7 @@ onUnmounted(() => {
 
       <aside class="builder-preview py-6 px-5 px-md-8">
         <div class="preview-grid" :class="activeRoundedClass" :style="previewStyle">
-          <component :is="selectedTemplateComponent" :resume="resume" />
+          <component :is="selectedTemplateComponent" :resume="resume" :show-photo="templateSupportsPhoto" />
         </div>
       </aside>
     </div>
@@ -680,6 +744,19 @@ onUnmounted(() => {
 .palette-item--active {
   border-color: var(--v-theme-primary);
   box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.3);
+}
+
+.photo-uploader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.photo-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .preview-grid {
