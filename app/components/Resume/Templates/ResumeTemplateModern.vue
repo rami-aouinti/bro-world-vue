@@ -1,10 +1,13 @@
 <script setup lang="ts">
-defineProps<{ resume: any }>()
+defineProps<{ resume: any; showPhoto?: boolean }>()
 </script>
 
 <template>
   <div class="modern-template">
     <header class="modern-header">
+      <v-avatar v-if="showPhoto && resume.photoUrl" size="82" class="mb-3">
+        <v-img :src="resume.photoUrl" cover />
+      </v-avatar>
       <h1>{{ resume.firstName }} {{ resume.lastName }}</h1>
       <p>{{ resume.role }}</p>
       <p>{{ resume.city }}, {{ resume.country }} · {{ resume.phone }} · {{ resume.email }}</p>
@@ -35,7 +38,7 @@ defineProps<{ resume: any }>()
       <main>
         <section>
           <h2>Profile</h2>
-          <p>{{ resume.profile }}</p>
+          <p>{{ resume.profile || 'Add a professional summary from the Edit tab.' }}</p>
         </section>
         <section>
           <h2>Employment History</h2>
