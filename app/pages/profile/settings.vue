@@ -2,6 +2,7 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import type { UserSessionInfo } from '~/stores/profile'
+import { Notify } from '~/stores/notification'
 import { privateApi } from '~/utils/http/privateApi'
 
 const { isPageSkeletonVisible } = usePageSkeleton()
@@ -62,25 +63,11 @@ const userProfile = computed(() => profile.value?.profile)
 const isSubmittingProfile = ref(false)
 const isUploadingPhoto = ref(false)
 const sessionsLoading = ref(false)
-const sessionsError = ref('')
 const sessions = ref<UserSessionInfo[]>([])
 const isSessionsDialogOpen = ref(false)
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const isUpdatingPassword = ref(false)
-const passwordFeedback = ref<{ type: 'success' | 'error'; message: string } | null>(
-  null,
-)
-const notificationFeedback = ref<{
-  type: 'success' | 'error'
-  message: string
-} | null>(null)
 const isSavingNotifications = ref(false)
-const profileFeedback = ref<{ type: 'success' | 'error'; message: string } | null>(
-  null,
-)
-const photoFeedback = ref<{ type: 'success' | 'error'; message: string } | null>(
-  null,
-)
 
 const basicInfoForm = ref<BasicInfoForm>({
   firstName: '',
@@ -354,7 +341,6 @@ async function refreshProfileState() {
 
 async function loadSessions() {
   sessionsLoading.value = true
-  sessionsError.value = ''
 
   try {
     sessions.value = await privateApi.request<UserSessionInfo[]>(
@@ -362,16 +348,13 @@ async function loadSessions() {
     )
   } catch (error) {
     sessions.value = []
-    sessionsError.value =
-      error instanceof Error ? error.message : 'Unable to load sessions'
+    Notify.error(error instanceof Error ? error.message : 'Unable to load sessions')
   } finally {
     sessionsLoading.value = false
   }
 }
 
 async function loadNotificationPreferences() {
-  notificationFeedback.value = null
-
   try {
     const response =
       await privateApi.request<NotificationPreferencesResponse>(
@@ -382,19 +365,16 @@ async function loadNotificationPreferences() {
     )
   } catch (error) {
     notificationRows.value = buildNotificationRows([])
-    notificationFeedback.value = {
-      type: 'error',
-      message:
-        error instanceof Error
-          ? error.message
-          : 'Unable to load notification preferences.',
-    }
+    Notify.error(
+      error instanceof Error
+        ? error.message
+        : 'Unable to load notification preferences.',
+    )
   }
 }
 
 async function saveNotificationPreferences() {
   isSavingNotifications.value = true
-  notificationFeedback.value = null
 
   try {
     await privateApi.request('/profile/configuration/user.notifications.preferences', {
@@ -403,18 +383,13 @@ async function saveNotificationPreferences() {
         configurationValue: buildNotificationPayload(),
       },
     })
-    notificationFeedback.value = {
-      type: 'success',
-      message: 'Notification preferences updated.',
-    }
+    Notify.success('Notification preferences updated.')
   } catch (error) {
-    notificationFeedback.value = {
-      type: 'error',
-      message:
-        error instanceof Error
-          ? error.message
-          : 'Unable to update notification preferences.',
-    }
+    Notify.error(
+      error instanceof Error
+        ? error.message
+        : 'Unable to update notification preferences.',
+    )
   } finally {
     isSavingNotifications.value = false
   }
@@ -434,7 +409,6 @@ function onNotificationSwitchChanged(
 
 async function submitBasicInfo() {
   isSubmittingProfile.value = true
-  profileFeedback.value = null
   try {
     const accountPayload = {
       firstName: basicInfoForm.value.firstName.trim(),
@@ -469,36 +443,22 @@ async function submitBasicInfo() {
       })
     }
     await refreshProfileState()
-    profileFeedback.value = {
-      type: 'success',
-      message: 'Profile updated successfully.',
-    }
+    Notify.success('Profile updated successfully.')
   } catch (error) {
-    profileFeedback.value = {
-      type: 'error',
-      message: error instanceof Error ? error.message : 'Unable to update profile.',
-    }
+    Notify.error(error instanceof Error ? error.message : 'Unable to update profile.')
   } finally {
     isSubmittingProfile.value = false
   }
 }
 
 async function submitPasswordChange() {
-  passwordFeedback.value = null
-
   if (!passwordForm.value.currentPassword || !passwordForm.value.newPassword) {
-    passwordFeedback.value = {
-      type: 'error',
-      message: 'Current password and new password are required.',
-    }
+    Notify.error('Current password and new password are required.')
     return
   }
 
   if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
-    passwordFeedback.value = {
-      type: 'error',
-      message: 'New password and confirmation do not match.',
-    }
+    Notify.error('New password and confirmation do not match.')
     return
   }
 
@@ -517,16 +477,11 @@ async function submitPasswordChange() {
       newPassword: '',
       confirmPassword: '',
     }
-    passwordFeedback.value = {
-      type: 'success',
-      message: 'Password updated successfully.',
-    }
+    Notify.success('Password updated successfully.')
   } catch (error) {
-    passwordFeedback.value = {
-      type: 'error',
-      message:
-        error instanceof Error ? error.message : 'Unable to update password.',
-    }
+    Notify.error(
+      error instanceof Error ? error.message : 'Unable to update password.',
+    )
   } finally {
     isUpdatingPassword.value = false
   }
@@ -544,7 +499,6 @@ async function onPhotoSelected(event: Event) {
   formData.append('photo', file)
 
   isUploadingPhoto.value = true
-  photoFeedback.value = null
   try {
     const response = await privateApi.request<{ photo: string }>(
       '/profile/photo',
@@ -561,15 +515,9 @@ async function onPhotoSelected(event: Event) {
       })
     }
     await refreshProfileState()
-    photoFeedback.value = {
-      type: 'success',
-      message: 'Photo updated successfully.',
-    }
+    Notify.success('Photo updated successfully.')
   } catch (error) {
-    photoFeedback.value = {
-      type: 'error',
-      message: error instanceof Error ? error.message : 'Photo upload failed.',
-    }
+    Notify.error(error instanceof Error ? error.message : 'Photo upload failed.')
   } finally {
     isUploadingPhoto.value = false
     input.value = ''
@@ -685,14 +633,6 @@ onUnmounted(() => {
                 />
               </div>
             </div>
-            <v-alert
-              v-if="photoFeedback"
-              class="mt-4"
-              :type="photoFeedback.type"
-              variant="tonal"
-              border="start"
-              :text="photoFeedback.message"
-            />
           </v-card>
 
           <v-card
@@ -732,14 +672,6 @@ onUnmounted(() => {
                 >Save changes</v-btn
               >
             </div>
-            <v-alert
-              v-if="profileFeedback"
-              class="mt-4"
-              :type="profileFeedback.type"
-              variant="tonal"
-              border="start"
-              :text="profileFeedback.message"
-            />
           </v-card>
 
           <v-card
@@ -794,14 +726,6 @@ onUnmounted(() => {
               @click="submitPasswordChange"
               >Update password</v-btn
             >
-            <v-alert
-              v-if="passwordFeedback"
-              class="mt-4"
-              :type="passwordFeedback.type"
-              variant="tonal"
-              border="start"
-              :text="passwordFeedback.message"
-            />
           </v-card>
 
           <v-card
@@ -936,14 +860,6 @@ onUnmounted(() => {
                 </tr>
               </tbody>
             </v-table>
-            <v-alert
-              v-if="notificationFeedback"
-              class="mt-4"
-              :type="notificationFeedback.type"
-              variant="tonal"
-              border="start"
-              :text="notificationFeedback.message"
-            />
           </v-card>
 
           <v-card
@@ -967,14 +883,6 @@ onUnmounted(() => {
               indeterminate
               color="primary"
               class="mb-4"
-            />
-            <v-alert
-              v-else-if="sessionsError"
-              type="error"
-              variant="tonal"
-              border="start"
-              class="mb-4"
-              :text="sessionsError"
             />
             <v-list v-else class="bg-transparent pa-0">
               <v-list-item

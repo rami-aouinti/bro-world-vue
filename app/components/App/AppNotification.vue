@@ -6,7 +6,7 @@ const notificationsShown = computed(() =>
 )
 const showAll = ref(false)
 const { t } = useI18n()
-const timeout = computed(() => (showAll.value ? -1 : 5000))
+const timeout = computed(() => (showAll.value ? -1 : 3000))
 function deleteNotification(id: number) {
   notificationStore.delNotification(id)
 }
@@ -125,14 +125,14 @@ function toggleAll() {
   z-index: 1400;
   position: fixed;
   right: 15px;
-  bottom: 16px;
+  top: calc(var(--v-layout-top, 64px) + 8px);
   max-height: 100vh;
   overflow: visible;
   visibility: hidden;
   &.notification-card--open {
     visibility: visible;
     overflow: hidden;
-    max-height: calc(100vh - 200px);
+    max-height: calc(100vh - var(--v-layout-top, 64px) - 24px);
     .notification-box {
       overflow-y: auto;
       pointer-events: auto;
