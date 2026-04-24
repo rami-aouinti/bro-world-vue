@@ -7,8 +7,8 @@ const { mobile } = useDisplay()
 
 const theme = useTheme()
 const vision = useStorage('color-scheme', 'dark')
-const primary = useStorage('theme-primary', '#e91e63')
-const primaryGradient = useStorage('theme-primary-gradient', '#f06292')
+const primary = useStorage('theme-primary', '#29aeff')
+const primaryGradient = useStorage('theme-primary-gradient', '#3bc0ff')
 const rounded = useStorage('theme-rounded', 'md')
 const shadow = useStorage('theme-shadow', 'none')
 
@@ -127,7 +127,7 @@ const color = computed({
 })
 
 const colors = [
-  ['#0f6ea8', '#ff9800'],
+  ['#29aeff', '#ff9800'],
   ['#4CAF50', '#FF5252'],
   ['#9C27b0', '#E91E63'],
   ['#304156', '#3f51b5'],
