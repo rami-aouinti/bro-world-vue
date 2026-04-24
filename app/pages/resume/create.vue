@@ -23,7 +23,7 @@ const leftSections = [
 
 const skills = ['Advanced Communication Skills', 'Office Technology Skills', 'Motivated Attitude', 'Social Media Platforms']
 
-const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => true)
+const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => false)
 const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
 const previousDesktopRightDrawer = showRightDrawerDesktop.value
 const previousMobileRightDrawer = showRightDrawerMobile.value
@@ -143,11 +143,9 @@ onUnmounted(() => {
 <style scoped>
 .resume-create {
   min-height: 100vh;
-  background: #f5f6fb;
 }
 
 .builder-topbar {
-  background: white;
   border-bottom: 1px solid #e3e7f2;
   display: flex;
   align-items: center;
@@ -179,13 +177,11 @@ onUnmounted(() => {
   align-items: center;
   gap: 10px;
   border: 1px solid #c3dbc9;
-  background: #fff;
   border-radius: 12px;
   padding: 14px;
 }
 
 .form-section {
-  background: #fff;
   border-radius: 14px;
   padding: 18px;
   border: 1px solid #e3e7f2;
@@ -208,10 +204,6 @@ onUnmounted(() => {
   gap: 12px;
 }
 
-.builder-preview {
-  background: #ffffff;
-}
-
 .preview-grid {
   display: grid;
   grid-template-columns: 260px 1fr;
@@ -220,7 +212,6 @@ onUnmounted(() => {
 
 .preview-sidebar {
   background: #07564f;
-  color: #fff;
   padding: 28px 24px;
 }
 
