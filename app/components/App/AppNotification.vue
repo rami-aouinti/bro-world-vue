@@ -6,7 +6,7 @@ const notificationsShown = computed(() =>
 )
 const showAll = ref(false)
 const { t } = useI18n()
-const timeout = computed(() => (showAll.value ? -1 : 5000))
+const timeout = computed(() => (showAll.value ? -1 : 3000))
 function deleteNotification(id: number) {
   notificationStore.delNotification(id)
 }
