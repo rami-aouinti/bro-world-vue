@@ -44,7 +44,15 @@ type Template = {
   title: string
   subtitle: string
   image: string
+  hasPhoto: boolean
+  isTwoColumn: boolean
+  isAts: boolean
+  hasDocx: boolean
+  isCustomized: boolean
+  isFree: boolean
 }
+
+type TemplateFilter = 'all' | 'with-photo' | 'two-column' | 'ats' | 'docx' | 'customized' | 'free'
 
 type ColorTheme = {
   name: string
@@ -60,15 +68,39 @@ type RoundedOption = {
 }
 
 const activeTab = ref<'edit' | 'template' | 'design'>('edit')
-const selectedTemplate = ref('classic-emerald')
+const selectedTemplate = ref('classic')
 const selectedTheme = ref('emerald')
 const selectedRounded = ref<'none' | 'sm' | 'md' | 'lg'>('md')
 
+const selectedTemplateFilter = ref<TemplateFilter>('all')
+
+const templateFilters = [
+  { label: 'All', value: 'all' },
+  { label: 'With photo', value: 'with-photo' },
+  { label: 'Two column', value: 'two-column' },
+  { label: 'ATS', value: 'ats' },
+  { label: 'DOCX', value: 'docx' },
+  { label: 'Customized', value: 'customized' },
+  { label: 'Free', value: 'free' },
+] as const satisfies ReadonlyArray<{ label: string; value: TemplateFilter }>
+
 const templates: Template[] = [
-  { id: 'classic-emerald', title: 'Classic Emerald', subtitle: 'Sidebar + clean content', image: '/img/cv/cv-1.png' },
-  { id: 'executive-slate', title: 'Executive Slate', subtitle: 'Elegant and formal layout', image: '/img/cv/cv-2.png' },
-  { id: 'modern-azure', title: 'Modern Azure', subtitle: 'Balanced modern profile', image: '/img/cv/cv-3.png' },
-  { id: 'minimal-graphite', title: 'Minimal Graphite', subtitle: 'Simple and highly readable', image: '/img/cv/cv-4.png' },
+  { id: 'classic', title: 'Classic', subtitle: 'Simple and readable format', image: '/img/cv/cv-4.png', hasPhoto: false, isTwoColumn: false, isAts: false, hasDocx: true, isCustomized: false, isFree: true },
+  { id: 'traditional', title: 'Traditional', subtitle: 'Formal and timeless structure', image: '/img/cv/cv-2.png', hasPhoto: false, isTwoColumn: false, isAts: false, hasDocx: true, isCustomized: false, isFree: true },
+  { id: 'professional', title: 'Professional', subtitle: 'Sidebar profile with details', image: '/img/cv/cv-1.png', hasPhoto: true, isTwoColumn: true, isAts: false, hasDocx: true, isCustomized: true, isFree: true },
+  { id: 'prime-ats', title: 'Prime ATS', subtitle: 'Optimized for ATS screening', image: '/img/cv/cv-3.png', hasPhoto: true, isTwoColumn: false, isAts: true, hasDocx: true, isCustomized: false, isFree: true },
+  { id: 'pure-ats', title: 'Pure ATS', subtitle: 'Minimal ATS-first template', image: '/img/cv/cv-4.png', hasPhoto: false, isTwoColumn: false, isAts: true, hasDocx: true, isCustomized: false, isFree: true },
+  { id: 'specialist', title: 'Specialist', subtitle: 'Content-focused ATS style', image: '/img/cv/cv-2.png', hasPhoto: false, isTwoColumn: false, isAts: true, hasDocx: true, isCustomized: true, isFree: true },
+  { id: 'clean', title: 'Clean', subtitle: 'Modern clean hierarchy', image: '/img/cv/cv-4.png', hasPhoto: false, isTwoColumn: true, isAts: false, hasDocx: false, isCustomized: true, isFree: true },
+  { id: 'simple-ats', title: 'Simple ATS', subtitle: 'Lightweight ATS-friendly', image: '/img/cv/cv-3.png', hasPhoto: false, isTwoColumn: false, isAts: true, hasDocx: true, isCustomized: false, isFree: true },
+  { id: 'corporate', title: 'Corporate', subtitle: 'Business-centric classic style', image: '/img/cv/cv-2.png', hasPhoto: true, isTwoColumn: false, isAts: false, hasDocx: true, isCustomized: false, isFree: true },
+  { id: 'clear', title: 'Clear', subtitle: 'Photo header and clean body', image: '/img/cv/cv-3.png', hasPhoto: true, isTwoColumn: true, isAts: false, hasDocx: true, isCustomized: true, isFree: true },
+  { id: 'precision-ats', title: 'Precision ATS', subtitle: 'Precise ATS structure', image: '/img/cv/cv-4.png', hasPhoto: false, isTwoColumn: false, isAts: true, hasDocx: true, isCustomized: false, isFree: true },
+  { id: 'two-column-ats', title: 'Two column ATS', subtitle: 'Two-column ATS layout', image: '/img/cv/cv-1.png', hasPhoto: false, isTwoColumn: true, isAts: true, hasDocx: true, isCustomized: true, isFree: true },
+  { id: 'balanced', title: 'Balanced', subtitle: 'Balanced two-column design', image: '/img/cv/cv-1.png', hasPhoto: false, isTwoColumn: true, isAts: false, hasDocx: true, isCustomized: true, isFree: true },
+  { id: 'header-ats', title: 'Header ATS', subtitle: 'Header-focused ATS format', image: '/img/cv/cv-4.png', hasPhoto: false, isTwoColumn: false, isAts: true, hasDocx: true, isCustomized: false, isFree: true },
+  { id: 'essential', title: 'Essential', subtitle: 'Essential details with photo', image: '/img/cv/cv-3.png', hasPhoto: true, isTwoColumn: false, isAts: false, hasDocx: true, isCustomized: false, isFree: true },
+  { id: 'polished', title: 'Polished', subtitle: 'Polished recruiter-ready style', image: '/img/cv/cv-2.png', hasPhoto: true, isTwoColumn: false, isAts: false, hasDocx: false, isCustomized: true, isFree: true },
 ]
 
 const colorThemes: ColorTheme[] = [
@@ -193,6 +225,21 @@ const resume = reactive({
   ] as Project[],
 })
 
+const filteredTemplates = computed(() => {
+  if (selectedTemplateFilter.value === 'all') return templates
+
+  const predicateByFilter: Record<Exclude<TemplateFilter, 'all'>, (template: Template) => boolean> = {
+    'with-photo': template => template.hasPhoto,
+    'two-column': template => template.isTwoColumn,
+    ats: template => template.isAts,
+    docx: template => template.hasDocx,
+    customized: template => template.isCustomized,
+    free: template => template.isFree,
+  }
+
+  return templates.filter(predicateByFilter[selectedTemplateFilter.value])
+})
+
 const activeTheme = computed(() => colorThemes.find(theme => theme.name === selectedTheme.value) ?? colorThemes[0])
 const activeRoundedClass = computed(() => roundedOptions.find(item => item.value === selectedRounded.value)?.className ?? 'radius-md')
 
@@ -287,11 +334,25 @@ onUnmounted(() => {
             <article class="form-section mb-4">
               <header class="mb-4">
                 <h2>Template</h2>
-                <p>Choisis un template. Affichage en 2 cards par ligne.</p>
+                <p>Choisis un template et filtre rapidement selon tes besoins.</p>
               </header>
+              <div class="template-filters mb-4">
+                <v-btn
+                  v-for="filter in templateFilters"
+                  :key="filter.value"
+                  :variant="selectedTemplateFilter === filter.value ? 'flat' : 'outlined'"
+                  :color="selectedTemplateFilter === filter.value ? 'primary' : undefined"
+                  class="template-filter"
+                  rounded="pill"
+                  @click="selectedTemplateFilter = filter.value"
+                >
+                  {{ filter.label }}
+                </v-btn>
+              </div>
+
               <div class="template-grid">
                 <v-card
-                  v-for="template in templates"
+                  v-for="template in filteredTemplates"
                   :key="template.id"
                   class="template-card"
                   :class="{ 'template-card--active': selectedTemplate === template.id }"
@@ -301,7 +362,13 @@ onUnmounted(() => {
                   <v-img :src="template.image" height="120" cover />
                   <v-card-text>
                     <strong>{{ template.title }}</strong>
-                    <p class="mb-0">{{ template.subtitle }}</p>
+                    <p class="mb-2">{{ template.subtitle }}</p>
+                    <div class="template-tags">
+                      <v-chip v-if="template.isAts" size="x-small" color="primary" variant="tonal">ATS</v-chip>
+                      <v-chip v-if="template.hasDocx" size="x-small" color="warning" variant="tonal">DOCX</v-chip>
+                      <v-chip v-if="template.hasPhoto" size="x-small" variant="outlined">Photo</v-chip>
+                      <v-chip v-if="template.isTwoColumn" size="x-small" variant="outlined">2 cols</v-chip>
+                    </div>
                   </v-card-text>
                 </v-card>
               </div>
@@ -391,7 +458,7 @@ onUnmounted(() => {
               <h4 class="text-dark">{{ experience.role }}, {{ experience.company }}, {{ experience.city }}</h4>
               <p class="dates">{{ experience.start }} - {{ experience.end }}</p>
               <ul>
-                <li class="text-dark" v-for="(bullet, bulletIndex) in experience.bullets" :key="bulletIndex">{{ bullet }}</li>
+                <li v-for="(bullet, bulletIndex) in experience.bullets" :key="bulletIndex" class="text-dark">{{ bullet }}</li>
               </ul>
             </article>
 
@@ -487,6 +554,16 @@ onUnmounted(() => {
   margin: 0;
 }
 
+.template-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.template-filter {
+  text-transform: none;
+}
+
 .template-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -501,6 +578,12 @@ onUnmounted(() => {
 .template-card--active {
   border-color: var(--v-theme-primary);
   box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.3);
+}
+
+.template-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .section-label {
