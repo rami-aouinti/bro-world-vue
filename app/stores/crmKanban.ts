@@ -197,9 +197,7 @@ export const useCrmKanbanStore = defineStore('crm-kanban', () => {
       return
     }
 
-    const response = await $fetch<CrmTasksBySprintResponse>('/api/crm/general/tasks/sprints/by-sprint', {
-      query: { sprintId },
-    })
+    const response = await $fetch<CrmTasksBySprintResponse>(`/api/crm/general/tasks/sprints/by-latest-sprint/${encodeURIComponent(sprintId)}`)
 
     const flattened = flattenSubtasks(response)
     cards.value = flattened
