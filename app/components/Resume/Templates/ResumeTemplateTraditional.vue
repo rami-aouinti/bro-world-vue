@@ -1,17 +1,20 @@
 <script setup lang="ts">
-defineProps<{ resume: any }>()
+defineProps<{ resume: any; showPhoto?: boolean }>()
 </script>
 
 <template>
   <article class="traditional-template">
     <header>
+      <v-avatar v-if="showPhoto && resume.photoUrl" size="76" class="mb-3">
+        <v-img :src="resume.photoUrl" cover />
+      </v-avatar>
       <h1>{{ resume.firstName }} {{ resume.lastName }}</h1>
       <p>{{ resume.role }} · {{ resume.city }}, {{ resume.country }} · {{ resume.phone }} · {{ resume.email }}</p>
     </header>
 
     <section>
       <h2>Profile</h2>
-      <p>{{ resume.profile }}</p>
+      <p>{{ resume.profile || 'Add a professional summary from the Edit tab.' }}</p>
     </section>
 
     <section>
