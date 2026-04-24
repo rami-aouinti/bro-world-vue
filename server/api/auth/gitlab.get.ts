@@ -25,16 +25,16 @@ function extractSocialProfileImage(user: Record<string, unknown>) {
   return typeof image === 'string' && image.length > 0 ? image : undefined
 }
 
-export default defineOAuthGitHubEventHandler({
+export default defineOAuthGitLabEventHandler({
   async onSuccess(event, { user }) {
     const payload = ensureSocialPayload({
       email: user.email,
-      providerId: user.id?.toString(),
+      providerId: user.id?.toString() ?? user.sub,
     })
 
     const token = await fetchTokenWithSocialLogin(event, {
       email: payload.email,
-      provider: 'github',
+      provider: 'gitlab',
       providerId: payload.providerId,
       image: extractSocialProfileImage(user),
     })

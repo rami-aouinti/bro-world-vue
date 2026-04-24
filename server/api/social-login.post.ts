@@ -7,6 +7,7 @@ type SocialLoginBody = {
   email?: string
   provider?: string
   providerId?: string
+  image?: string
 }
 
 export default defineEventHandler(async (event) => {
@@ -23,6 +24,7 @@ export default defineEventHandler(async (event) => {
     email: body.email,
     provider: body.provider,
     providerId: body.providerId,
+    image: body.image,
   })
 
   const user = await createSessionFromToken(event, token)

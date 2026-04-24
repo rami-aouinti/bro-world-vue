@@ -324,6 +324,7 @@
     "social": {
       "continueWith": "Weiter mit {provider}",
       "github": "GitHub",
+      "gitlab": "GitLab",
       "google": "Google",
       "facebook": "Facebook",
       "groupAria": "Soziale Anmeldung",

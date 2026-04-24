@@ -20,6 +20,11 @@ function ensureSocialPayload(payload: {
   }
 }
 
+function extractSocialProfileImage(user: Record<string, unknown>) {
+  const image = user.avatar_url ?? user.picture ?? user.avatarUrl ?? user.image
+  return typeof image === 'string' && image.length > 0 ? image : undefined
+}
+
 export default defineOAuthGoogleEventHandler({
   async onSuccess(event, { user }) {
     const payload = ensureSocialPayload({
@@ -31,6 +36,7 @@ export default defineOAuthGoogleEventHandler({
       email: payload.email,
       provider: 'google',
       providerId: payload.providerId,
+      image: extractSocialProfileImage(user),
     })
 
     await createSessionFromToken(event, token)
