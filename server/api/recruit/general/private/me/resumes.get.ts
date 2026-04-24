@@ -4,6 +4,6 @@ import { cachedPrivateGet } from '~~/server/utils/privateApi'
 export default defineEventHandler(async (event): Promise<RecruitResume[]> => {
   return cachedPrivateGet<RecruitResume[]>(
     event,
-    '/api/v1/recruit/general/private/me/resumes',
+    '/api/v1/recruit/private/me/resumes',
   )
 })
