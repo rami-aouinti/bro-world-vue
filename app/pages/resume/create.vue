@@ -434,7 +434,7 @@ onUnmounted(() => {
             <article class="form-section mb-4">
               <header class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap">
                 <div>
-                  <h2>Experiences</h2>
+                  <h2 class="text-dark">Experiences</h2>
                   <p>Toutes les experiences clés du profil.</p>
                 </div>
                 <v-btn prepend-icon="mdi-plus" variant="tonal" size="small" @click="addExperience">Add line</v-btn>
