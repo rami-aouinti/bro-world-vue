@@ -675,10 +675,7 @@ onUnmounted(() => {
             <div class="flex-grow-1">
               <h2 class="text-h5 mb-1">{{ fullName }}</h2>
               <p class="text-body-2 text-medium-emphasis mb-1">
-                @{{ profile.username }}
-              </p>
-              <p class="text-body-2 text-medium-emphasis mb-0">
-                {{ profile.email }}
+                {{ profile?.description }}
               </p>
             </div>
 
