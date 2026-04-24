@@ -1102,7 +1102,7 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <AppModal
+    <v-dialog
       v-model="loginDialogOpen"
       :title="t('auth.login.title')"
       :max-width="560"
@@ -1119,7 +1119,7 @@ onBeforeUnmount(() => {
           </NuxtLink>
         </template>
       </AuthFormCard>
-    </AppModal>
+    </v-dialog>
   </v-app-bar>
 </template>
 
