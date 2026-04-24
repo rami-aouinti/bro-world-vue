@@ -32,6 +32,18 @@ export function getPaginationQuery(event: H3Event, defaultLimit = 20) {
   return { page, limit }
 }
 
+export function getBlogFeedQuery(event: H3Event, defaultLimit = 20) {
+  const { page, limit } = getPaginationQuery(event, defaultLimit)
+  const query = getQuery(event)
+  const rawTag = query.tag
+  const tag =
+    typeof rawTag === 'string' && rawTag.trim().length > 0
+      ? rawTag.trim()
+      : null
+
+  return { page, limit, tag }
+}
+
 export function getRequiredRouterParam(
   event: H3Event,
   name: string,
