@@ -25,6 +25,19 @@ const features = [
     icon: 'mdi-download',
   },
 ]
+
+const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => true)
+const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
+const previousDesktopRightDrawer = showRightDrawerDesktop.value
+const previousMobileRightDrawer = showRightDrawerMobile.value
+
+showRightDrawerDesktop.value = false
+showRightDrawerMobile.value = false
+
+onUnmounted(() => {
+  showRightDrawerDesktop.value = previousDesktopRightDrawer
+  showRightDrawerMobile.value = previousMobileRightDrawer
+})
 </script>
 
 <template>

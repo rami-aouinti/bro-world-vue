@@ -59,6 +59,7 @@
     "applications": "Aplicaciones",
     "sports": "Deportes",
     "quiz": "Cuestionario",
+    "resume": "Currículum",
     "coinCheckout": {
       "title": "Comprar monedas",
       "currentBalance": "Saldo actual: {coins} monedas",
@@ -105,7 +106,8 @@
           "platform": "Accede a tu espacio central con proyectos, métricas y estado de despliegue.",
           "games": "Juega y administra experiencias de juego interactivas desde un solo lugar.",
           "sports": "Sigue apps deportivas, marcadores y módulos para fans en tiempo real.",
-          "quiz": "Crea quizzes atractivos para onboarding, capacitación y comunidad."
+          "quiz": "Crea quizzes atractivos para onboarding, capacitación y comunidad.",
+          "resume": "Crea currículums profesionales con secciones guiadas, vista previa en vivo y formatos listos para exportar."
         }
       },
       "world": {

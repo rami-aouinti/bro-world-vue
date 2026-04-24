@@ -106,6 +106,12 @@ const navMenus = [
         icon: 'mdi-help-box',
         detail: 'appbar.mega.applications.items.quiz',
       },
+      {
+        label: 'appbar.resume',
+        to: '/resume',
+        icon: 'mdi-file-account-outline',
+        detail: 'appbar.mega.applications.items.resume',
+      },
     ],
     twoColumns: true,
     compactCards: true,
