@@ -571,7 +571,7 @@ onUnmounted(() => {
 }
 
 .builder-form {
-  border-right: 1px solid #e3e7f2;
+  border-right: 1px solid rgb(var(--v-theme-primary));
 }
 
 .completion-card {
