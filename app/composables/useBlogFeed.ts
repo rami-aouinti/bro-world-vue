@@ -35,6 +35,11 @@ type BlogComment = {
   raw: UnknownRecord
 }
 
+type BlogTag = {
+  id: string | number
+  label: string
+}
+
 type BlogPost = {
   id: string | number
   slug: string | null
@@ -46,6 +51,7 @@ type BlogPost = {
   mediaUrl: string | null
   mediaUrls: string[]
   sharedUrl: string | null
+  tags: BlogTag[]
   isAuthor: boolean
   comments: BlogComment[]
   reactions: BlogReaction[]
@@ -240,6 +246,22 @@ function normalizePost(input: unknown): BlogPost {
     pickNullableString(payload.filePath) ??
     mediaUrls[0] ??
     null
+  const tags = pickArray(post.tags)
+    .map((entry) => {
+      if (typeof entry === 'string') {
+        return {
+          id: entry,
+          label: entry.trim(),
+        }
+      }
+
+      const record = toRecord(entry)
+      return {
+        id: pickId(record),
+        label: pickString(record.label, pickString(record.name)).trim(),
+      }
+    })
+    .filter((entry) => entry.label.length > 0)
 
   return {
     id: pickId(post),
@@ -253,6 +275,7 @@ function normalizePost(input: unknown): BlogPost {
     mediaUrls,
     sharedUrl:
       pickNullableString(post.sharedUrl) ?? pickNullableString(post.url),
+    tags,
     isAuthor: pickBoolean(post.isAuthor, false),
     comments: readNestedArray(post, ['comments']).map(normalizeComment),
     reactions: readNestedArray(post, ['reactions']).map(normalizeReaction),
@@ -311,6 +334,7 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
   const reactionTypes = ref<BlogReactionType[]>([])
   const pending = ref(false)
   const error = ref<unknown>(null)
+  const selectedTag = ref<string | null>(null)
 
   const feedEndpoint = computed(() => {
     if (mode.value === 'mine') {
@@ -360,6 +384,7 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
       const query = {
         page,
         limit: pagination.value.limit,
+        ...(selectedTag.value ? { tag: selectedTag.value } : {}),
       }
 
       let response: unknown
@@ -411,6 +436,16 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
 
   async function refresh() {
     await fetchPage(1, 'replace')
+  }
+
+  async function setTagFilter(tag: string | null) {
+    const normalizedTag = tag?.trim() || null
+    if (selectedTag.value === normalizedTag) {
+      return
+    }
+
+    selectedTag.value = normalizedTag
+    await refresh()
   }
 
   async function loadMore() {
@@ -942,8 +977,10 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
     reactionTypes,
     pending,
     error,
+    selectedTag,
     loadMore,
     refresh,
+    setTagFilter,
     createPost,
     comment,
     react,

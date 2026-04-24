@@ -48,6 +48,10 @@ type BlogPost = {
   mediaUrl?: string | null
   mediaUrls?: string[]
   sharedUrl?: string | null
+  tags?: Array<{
+    id?: string | number
+    label?: string | null
+  }>
   isAuthor: boolean
   comments?: BlogComment[]
   reactions?: BlogReaction[]
@@ -86,6 +90,7 @@ const emit = defineEmits<{
   deletePost: [post: BlogPost]
   editComment: [payload: { post: BlogPost; comment: BlogComment }]
   deleteComment: [payload: { post: BlogPost; comment: BlogComment }]
+  filterTag: [tag: string]
 }>()
 
 const { locale, t } = useI18n()
@@ -213,6 +218,11 @@ const resolvedMediaEntries = computed<MediaEntry[]>(() =>
   })),
 )
 const hasMedia = computed(() => resolvedMediaEntries.value.length > 0)
+const normalizedTags = computed(() =>
+  (props.post.tags ?? [])
+    .map((entry) => entry.label?.trim() || '')
+    .filter(Boolean),
+)
 
 const normalizedContent = computed(() => props.post.content.trim())
 const contentAsMedia = computed(() => {
@@ -359,6 +369,10 @@ async function goToPostDetail() {
 function openImagePreview(src: string) {
   imagePreviewSrc.value = src
   imagePreviewDialog.value = true
+}
+
+function applyTagFilter(tag: string) {
+  emit('filterTag', tag)
 }
 </script>
 
@@ -532,6 +546,22 @@ function openImagePreview(src: string) {
           />
         </div>
       </div>
+      <div
+        v-if="normalizedTags.length > 0"
+        class="d-flex flex-wrap ga-2 mb-3"
+        @click.stop
+      >
+        <v-btn
+          v-for="tag in normalizedTags"
+          :key="`${post.id}-${tag}`"
+          variant="text"
+          size="small"
+          class="post-tag-btn"
+          @click="applyTagFilter(tag)"
+        >
+          #{{ tag }}
+        </v-btn>
+      </div>
 
       <a
         v-if="post.sharedUrl"
@@ -635,6 +665,13 @@ function openImagePreview(src: string) {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.post-tag-btn {
+  text-transform: none;
+  font-weight: 600;
+  min-width: auto;
+  padding-inline: 6px;
 }
 
 .post-body--clickable {
