@@ -384,42 +384,42 @@ onUnmounted(() => {
 
           <section class="preview-content">
             <h2>Profile</h2>
-            <p>{{ resume.profile }}</p>
+            <p class="text-dark">{{ resume.profile }}</p>
 
             <h2>Employment History</h2>
-            <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="mb-4">
-              <h4>{{ experience.role }}, {{ experience.company }}, {{ experience.city }}</h4>
+            <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="mb-4 tex-dark">
+              <h4 class="text-dark">{{ experience.role }}, {{ experience.company }}, {{ experience.city }}</h4>
               <p class="dates">{{ experience.start }} - {{ experience.end }}</p>
               <ul>
-                <li v-for="(bullet, bulletIndex) in experience.bullets" :key="bulletIndex">{{ bullet }}</li>
+                <li class="text-dark" v-for="(bullet, bulletIndex) in experience.bullets" :key="bulletIndex">{{ bullet }}</li>
               </ul>
             </article>
 
             <h2>Education</h2>
-            <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="mb-4">
-              <h4>{{ item.degree }}, {{ item.school }}, {{ item.city }}</h4>
+            <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="mb-4 text-dark">
+              <h4 class="text-dark">{{ item.degree }}, {{ item.school }}, {{ item.city }}</h4>
               <p class="dates">{{ item.start }} - {{ item.end }}</p>
               <ul>
-                <li>{{ item.note }}</li>
+                <li class="text-dark">{{ item.note }}</li>
               </ul>
             </article>
 
             <h2>References</h2>
-            <article v-for="reference in resume.references" :key="reference.email" class="reference-item mb-3">
-              <h4>{{ reference.name }} from {{ reference.company }}</h4>
-              <p>{{ reference.email }} | {{ reference.phone }}</p>
+            <article v-for="reference in resume.references" :key="reference.email" class="reference-item mb-3 text-dark">
+              <h4 class="text-dark">{{ reference.name }} from {{ reference.company }}</h4>
+              <p class="text-dark">{{ reference.email }} | {{ reference.phone }}</p>
             </article>
 
             <h2>Courses</h2>
-            <article v-for="course in resume.courses" :key="course.title" class="mb-4">
-              <h4>{{ course.title }}, {{ course.school }}</h4>
+            <article v-for="course in resume.courses" :key="course.title" class="mb-4 text-darl">
+              <h4 class="text-dark">{{ course.title }}, {{ course.school }}</h4>
               <p class="dates">{{ course.start }} - {{ course.end }}</p>
             </article>
 
             <h2>Projects</h2>
             <article v-for="project in resume.projects" :key="project.name" class="mb-3">
-              <h4>{{ project.name }}</h4>
-              <p>{{ project.summary }}</p>
+              <h4 class="text-dark">{{ project.name }}</h4>
+              <p class="text-dark">{{ project.summary }}</p>
             </article>
           </section>
         </div>
