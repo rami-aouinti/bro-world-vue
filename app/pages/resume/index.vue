@@ -30,7 +30,6 @@ const features = [
 <template>
   <v-container class="resume-home py-8 py-md-12">
     <section class="hero mb-8 mb-md-12">
-      <p class="hero-kicker">Resume Builder</p>
       <h1 class="hero-title">Crée un résumé professionnel en quelques minutes</h1>
       <p class="hero-subtitle">
         Une page publique pour présenter l'outil, puis une expérience de création inspirée de vos maquettes.
