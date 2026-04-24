@@ -35,7 +35,7 @@ export default defineEventHandler(
 
       return mutatingPrivateApiCall<RecruitBasicMessageResponse>(
         event,
-        `/api/v1/recruit/general/private/me/resumes/${resumeId}`,
+        `/api/v1/recruit/private/me/resumes/${resumeId}`,
         {
           method: 'PATCH',
           body: formData,
@@ -48,7 +48,7 @@ export default defineEventHandler(
 
     return mutatingPrivateApiCall<RecruitBasicMessageResponse>(
       event,
-      `/api/v1/recruit/general/private/me/resumes/${resumeId}`,
+      `/api/v1/recruit/private/me/resumes/${resumeId}`,
       {
         method: 'PATCH',
         body,
