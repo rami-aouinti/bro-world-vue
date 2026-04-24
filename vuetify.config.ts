@@ -62,8 +62,8 @@ export default defineVuetifyConfiguration({
   theme: {
     defaultTheme: 'dark',
     themes: {
-      light: { colors: { primary: '#0f6ea8' } },
-      dark: { colors: { primary: '#0f6ea8' } },
+      light: { colors: { primary: '#29aeff' } },
+      dark: { colors: { primary: '#29aeff' } },
     },
   },
 })
