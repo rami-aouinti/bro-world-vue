@@ -35,7 +35,7 @@ const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => true)
 const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
 const { mobile } = useDisplay()
 const route = useRoute()
-const { t, locale } = useI18n()
+const { t, locale, setLocale } = useI18n({ useScope: 'global' })
 const vision = useStorage<'light' | 'dark'>('color-scheme', 'dark')
 const { subscribe } = useMercure()
 
@@ -182,6 +182,7 @@ const mobileFeatureMenuOpen = ref(false)
 const mobileApplicationsMenuOpen = ref(false)
 const mobileWorldMenuOpen = ref(false)
 const isAdminPage = computed(() => route.path === '/admin')
+const supportedLocales = ['en', 'fr', 'es', 'de'] as const
 
 const userLabel = computed(() => {
   const fullName = [sessionUser.value?.firstName, sessionUser.value?.lastName]
@@ -1034,6 +1035,48 @@ onBeforeUnmount(() => {
                 prepend-icon="mdi-logout"
                 @click="clear"
               />
+            </template>
+            <template v-if="mobile">
+              <v-divider class="my-1" />
+              <v-list-item
+                v-if="loggedIn"
+                :title="t('appbar.notification')"
+                prepend-icon="mdi-bell-outline"
+                to="/notification"
+              />
+              <v-list-item
+                v-if="loggedIn"
+                :title="t('appbar.inbox')"
+                prepend-icon="mdi-message-text-outline"
+                to="/inbox"
+              />
+              <v-list-item
+                :title="
+                  isDark ? t('appbar.switchToLight') : t('appbar.switchToDark')
+                "
+                :prepend-icon="
+                  isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night'
+                "
+                @click="isDark = !isDark"
+              />
+              <v-list-subheader>{{ t('appbar.language') }}</v-list-subheader>
+              <v-list-item
+                v-for="lang in supportedLocales"
+                :key="lang"
+                :title="t(`appbar.languages.${lang}`)"
+                prepend-icon="mdi-translate"
+                :active="locale === lang"
+                @click="setLocale(lang)"
+              >
+                <template #append>
+                  <v-icon
+                    v-if="locale === lang"
+                    icon="mdi-check"
+                    size="18"
+                    color="primary"
+                  />
+                </template>
+              </v-list-item>
             </template>
           </v-list>
         </v-menu>
