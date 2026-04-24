@@ -523,6 +523,23 @@ function applyTagFilter(tag: string) {
       >
         Read more
       </v-btn>
+      <div
+        v-if="normalizedTags.length > 0"
+        class="d-flex flex-wrap ga-2 mb-3"
+        @click.stop
+      >
+        <v-btn
+          v-for="tag in normalizedTags"
+          :key="`${post.id}-${tag}`"
+          variant="text"
+          size="small"
+          color="primary"
+          class="post-tag-btn"
+          @click="applyTagFilter(tag)"
+        >
+          #{{ tag }}
+        </v-btn>
+      </div>
 
       <div v-if="hasMedia" class="post-media-grid mb-3" @click.stop>
         <div
@@ -546,23 +563,6 @@ function applyTagFilter(tag: string) {
           />
         </div>
       </div>
-      <div
-        v-if="normalizedTags.length > 0"
-        class="d-flex flex-wrap ga-2 mb-3"
-        @click.stop
-      >
-        <v-btn
-          v-for="tag in normalizedTags"
-          :key="`${post.id}-${tag}`"
-          variant="text"
-          size="small"
-          class="post-tag-btn"
-          @click="applyTagFilter(tag)"
-        >
-          #{{ tag }}
-        </v-btn>
-      </div>
-
       <a
         v-if="post.sharedUrl"
         :href="post.sharedUrl"
