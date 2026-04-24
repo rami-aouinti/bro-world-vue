@@ -82,11 +82,14 @@ export function useMercure() {
 
     eventSource.onmessage = (event: MessageEvent<string>) => {
       const raw = event.data?.trim()
-      if (!raw) return
+
+      if (!raw || raw === ':' || raw === '::') return
 
       try {
-        handlers?.onMessage?.(JSON.parse(raw), event)
-      } catch {
+        const parsed = JSON.parse(raw)
+        handlers?.onMessage?.(parsed, event)
+      } catch (e) {
+        console.warn('Non JSON Mercure message:', raw)
         handlers?.onMessage?.(raw, event)
       }
     }
