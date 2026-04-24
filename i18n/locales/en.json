@@ -59,6 +59,7 @@
     "applications": "Applications",
     "sports": "Sports",
     "quiz": "Quiz",
+    "resume": "Resume",
     "coinCheckout": {
       "title": "Buy coins",
       "currentBalance": "Current balance: {coins} coins",
@@ -105,7 +106,8 @@
           "platform": "Access your central workspace with projects, metrics, and deployment status.",
           "games": "Play and manage interactive game experiences from one place.",
           "sports": "Track sports apps, scores, and fan-focused modules in real time.",
-          "quiz": "Create engaging quizzes for onboarding, training, and community growth."
+          "quiz": "Create engaging quizzes for onboarding, training, and community growth.",
+          "resume": "Build polished resumes with guided sections, live preview, and export-ready formats."
         }
       },
       "world": {
