@@ -59,6 +59,7 @@
     "applications": "Applications",
     "sports": "Sports",
     "quiz": "Quiz",
+    "resume": "Résumé",
     "coinCheckout": {
       "title": "Acheter des pièces",
       "currentBalance": "Solde actuel : {coins} pièces",
@@ -105,7 +106,8 @@
           "platform": "Accédez à votre espace central avec projets, métriques et état des déploiements.",
           "games": "Jouez et gérez des expériences de jeu interactives depuis un seul endroit.",
           "sports": "Suivez les applications sportives, scores et modules fans en temps réel.",
-          "quiz": "Créez des quiz engageants pour l’onboarding, la formation et la communauté."
+          "quiz": "Créez des quiz engageants pour l’onboarding, la formation et la communauté.",
+          "resume": "Créez un résumé professionnel avec des sections guidées, un aperçu en direct et des exports prêts à l’emploi."
         }
       },
       "world": {

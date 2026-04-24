@@ -59,6 +59,7 @@
     "applications": "Anwendungen",
     "sports": "Sport",
     "quiz": "Quiz",
+    "resume": "Lebenslauf",
     "coinCheckout": {
       "title": "Münzen kaufen",
       "currentBalance": "Aktuelles Guthaben: {coins} Münzen",
@@ -105,7 +106,8 @@
           "platform": "Greife auf deinen zentralen Workspace mit Projekten, Metriken und Deployment-Status zu.",
           "games": "Spiele und verwalte interaktive Spielerlebnisse an einem Ort.",
           "sports": "Verfolge Sport-Apps, Ergebnisse und fanorientierte Module in Echtzeit.",
-          "quiz": "Erstelle spannende Quizze für Onboarding, Schulung und Community-Wachstum."
+          "quiz": "Erstelle spannende Quizze für Onboarding, Schulung und Community-Wachstum.",
+          "resume": "Erstelle professionelle Lebensläufe mit geführten Abschnitten, Live-Vorschau und exportfertigen Formaten."
         }
       },
       "world": {
