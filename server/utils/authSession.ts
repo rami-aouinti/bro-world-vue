@@ -45,7 +45,7 @@ export async function fetchTokenWithPassword(
 
 export async function fetchTokenWithSocialLogin(
   event: H3Event,
-  payload: { email: string; provider: string; providerId: string },
+  payload: { email: string; provider: string; providerId: string; image?: string },
 ): Promise<string> {
   const client = getServerPublicAxios(event)
 

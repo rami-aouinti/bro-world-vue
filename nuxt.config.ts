@@ -127,6 +127,11 @@ export default defineNuxtConfig({
         redirectURL: process.env.FACEBOOK_REDIRECT_URI || '',
         fields: ['id', 'name', 'email'],
       },
+      gitlab: {
+        clientId: process.env.NUXT_OAUTH_GITLAB_CLIENT_ID || '',
+        clientSecret: process.env.NUXT_OAUTH_GITLAB_CLIENT_SECRET || '',
+        redirectURL: process.env.NUXT_OAUTH_GITLAB_REDIRECT_URL || '',
+      },
     },
     databaseUrl: process.env.DATABASE_URL || '',
     cronSecret: process.env.CRON_SECRET || '',

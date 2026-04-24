@@ -292,6 +292,7 @@ const accountProviders = computed(() => {
     { label: 'Google', key: 'google' },
     { label: 'GitHub', key: 'github' },
     { label: 'Facebook', key: 'facebook' },
+    { label: 'GitLab', key: 'gitlab' },
     { label: 'Instagram', key: 'instagram' },
     { label: 'Apple', key: 'apple' },
   ].map((provider) => ({
