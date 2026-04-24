@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   title: 'Create Resume',
+  layout: 'resume'
 })
 
 const resume = reactive({
@@ -39,19 +40,6 @@ onUnmounted(() => {
 
 <template>
   <v-container fluid class="resume-create pa-0">
-    <div class="builder-topbar px-3 px-md-6 py-3">
-      <div class="topbar-left">
-        <v-icon icon="mdi-dots-grid" />
-        <strong>Student</strong>
-      </div>
-      <div class="topbar-center">
-        <v-btn variant="text">Edit</v-btn>
-        <v-btn variant="flat" color="primary">Customize</v-btn>
-        <v-btn variant="text">AI Review</v-btn>
-      </div>
-      <v-btn color="primary" append-icon="mdi-chevron-down">Download</v-btn>
-    </div>
-
     <div class="builder-layout">
       <section class="builder-form px-3 px-md-6 py-4">
         <div class="completion-card mb-4">
@@ -165,7 +153,7 @@ onUnmounted(() => {
 
 .builder-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 1fr);
+  grid-template-columns: minmax(0, 1.1fr) minmax(900px, 1fr);
 }
 
 .builder-form {
