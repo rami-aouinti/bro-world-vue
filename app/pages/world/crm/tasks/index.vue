@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type {
-  ApiListResponse,
   CrmIdResponse,
-  CrmProjectListItem,
   CrmProjectItem,
   CrmTaskCreatePayload,
   CrmTaskItem,
@@ -48,13 +46,12 @@ const createPayload = reactive<CrmTaskCreatePayload>({
   status: 'todo',
   priority: 'medium',
 })
+const crmReferencesStore = useCrmReferenceOptionsStore()
 
 const { data, pending, error } = useFetch<CrmTaskResponse>(
   '/api/crm/general/tasks',
 )
-const { data: projectsData } = useFetch<ApiListResponse<CrmProjectListItem>>(
-  '/api/crm/general/projects',
-)
+await crmReferencesStore.fetchProjects()
 
 const filteredTasks = computed(() => {
   const query = search.value.trim().toLowerCase()
@@ -91,10 +88,7 @@ const taskProjectOptions = computed(() =>
   Array.from(new Set((data.value?.items ?? []).map((task) => task.projectId).filter(Boolean))),
 )
 const taskCreateProjectOptions = computed(() =>
-  (projectsData.value?.items ?? []).map((project) => ({
-    title: project.name,
-    value: project.id,
-  })),
+  crmReferencesStore.projectOptions,
 )
 const taskCreateStatusOptions = computed(() =>
   Array.from(new Set(['todo', 'in_progress', 'review', 'done', ...taskStatusOptions.value])),

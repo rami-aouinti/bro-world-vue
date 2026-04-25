@@ -7,5 +7,5 @@ export default defineEventHandler(async (event): Promise<unknown> => {
     throw createError({ statusCode: 400, statusMessage: 'Missing taskRequest id' })
   }
 
-  return await fetchCrmGeneral(`task-requests/${taskRequestId}`)
+  return await fetchCrmGeneral(event, `task-requests/${taskRequestId}`)
 })

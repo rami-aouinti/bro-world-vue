@@ -7,5 +7,5 @@ export default defineEventHandler(async (event): Promise<unknown> => {
     throw createError({ statusCode: 400, statusMessage: 'Missing contact id' })
   }
 
-  return await fetchCrmGeneral(`contacts/${contactId}`)
+  return await fetchCrmGeneral(event, `contacts/${contactId}`)
 })

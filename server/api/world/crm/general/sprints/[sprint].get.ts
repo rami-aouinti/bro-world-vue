@@ -7,5 +7,5 @@ export default defineEventHandler(async (event): Promise<unknown> => {
     throw createError({ statusCode: 400, statusMessage: 'Missing sprint id' })
   }
 
-  return await fetchCrmGeneral(`sprints/${sprintId}`)
+  return await fetchCrmGeneral(event, `sprints/${sprintId}`)
 })

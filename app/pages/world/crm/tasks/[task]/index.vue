@@ -24,6 +24,7 @@ const assigneeId = ref('')
 const subtaskToAttach = ref('')
 const sprintToAttach = ref('')
 const pendingSave = ref(false)
+const crmReferencesStore = useCrmReferenceOptionsStore()
 const newSubtask = reactive<CrmSubtaskCreatePayload>({
   title: '',
   description: '',
@@ -34,43 +35,18 @@ const newSubtask = reactive<CrmSubtaskCreatePayload>({
 const { data, pending, error, refresh } = await useFetch<CrmTaskItem>(
   () => `/api/crm/general/tasks/${taskId.value}`,
 )
-const { data: usersData } = await useFetch<Record<string, any>>('/api/public/users')
-const { data: tasksData } = await useFetch<{ items?: Array<{ id: string; title?: string }> }>('/api/crm/general/tasks')
-const { data: sprintsData } = await useFetch<{ items?: Array<{ id: string; name?: string }> }>('/api/crm/general/sprints')
-const { data: projectsData } = await useFetch<{ items?: Array<{ id: string; name?: string }> }>('/api/crm/general/projects')
+await Promise.all([
+  crmReferencesStore.fetchEmployees(),
+  crmReferencesStore.fetchTasks(),
+  crmReferencesStore.fetchSprints(),
+  crmReferencesStore.fetchProjects(),
+])
 
-const publicUserOptions = computed(() => {
-  const list = usersData.value?.users ?? usersData.value?.items ?? []
-  if (!Array.isArray(list)) return []
+const publicUserOptions = computed(() => crmReferencesStore.employeeAssigneeOptions)
 
-  return list
-    .map((user: any) => ({
-      title: user.username ?? user.fullName ?? user.name ?? user.email ?? user.id,
-      value: String(user.id ?? ''),
-    }))
-    .filter((item: { value: string }) => item.value)
-})
-
-const taskOptions = computed(() =>
-  (tasksData.value?.items ?? []).map((task) => ({
-    title: task.title ? `${task.title} (${task.id})` : task.id,
-    value: task.id,
-  })),
-)
-
-const sprintOptions = computed(() =>
-  (sprintsData.value?.items ?? []).map((sprint) => ({
-    title: sprint.name ? `${sprint.name} (${sprint.id})` : sprint.id,
-    value: sprint.id,
-  })),
-)
-
-const projectOptions = computed(() =>
-  (projectsData.value?.items ?? []).map((project) => ({
-    title: project.name ? `${project.name} (${project.id})` : project.id,
-    value: project.id,
-  })),
-)
+const taskOptions = computed(() => crmReferencesStore.taskOptions)
+const sprintOptions = computed(() => crmReferencesStore.sprintOptions)
+const projectOptions = computed(() => crmReferencesStore.projectOptions)
 
 const statusOptions = ['todo', 'in_progress', 'review', 'done']
 const priorityOptions = ['low', 'medium', 'high']
@@ -176,7 +152,25 @@ async function attachToSprint() {
           :label="t('world.crm.tasks.form.userId')"
           class="mb-2"
           :disabled="!isRootAdmin || isViewMode"
-        />
+        >
+          <template #item="{ props, item }">
+            <v-list-item v-bind="props" :title="item.raw.title" :subtitle="item.raw.subtitle">
+              <template #prepend>
+                <v-avatar size="24">
+                  <v-img :src="item.raw.avatar || '/img/avatar_default.svg'" :alt="item.raw.title" />
+                </v-avatar>
+              </template>
+            </v-list-item>
+          </template>
+          <template #selection="{ item }">
+            <div class="d-flex align-center ga-2">
+              <v-avatar size="20">
+                <v-img :src="item.raw.avatar || '/img/avatar_default.svg'" :alt="item.raw.title" />
+              </v-avatar>
+              <span>{{ item.raw.title }}</span>
+            </div>
+          </template>
+        </AppSelect>
         <v-btn v-if="isRootAdmin && !isViewMode" color="secondary" variant="tonal" class="mb-4" @click="attachAssignee">{{ t('world.crm.tasks.actions.attach') }}</v-btn>
         <v-list density="compact" bg-color="transparent">
           <v-list-item

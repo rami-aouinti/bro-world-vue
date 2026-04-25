@@ -7,5 +7,5 @@ export default defineEventHandler(async (event): Promise<unknown> => {
     throw createError({ statusCode: 400, statusMessage: 'Missing company id' })
   }
 
-  return await fetchCrmGeneral(`companies/${companyId}`)
+  return await fetchCrmGeneral(event, `companies/${companyId}`)
 })

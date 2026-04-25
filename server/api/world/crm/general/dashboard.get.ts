@@ -1,5 +1,5 @@
 import { fetchCrmGeneral } from '~~/server/utils/crmGeneralApi'
 
-export default defineEventHandler(async (): Promise<unknown> => {
-  return await fetchCrmGeneral('dashboard')
+export default defineEventHandler(async (event): Promise<unknown> => {
+  return await fetchCrmGeneral(event, 'dashboard')
 })
