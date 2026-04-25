@@ -9,32 +9,7 @@ import {
 } from '../../utils/socialProfile'
 
 /**
- * Safe payload validator
- */
-function ensureSocialPayload(payload: {
-  email?: string | null
-  providerId?: string | null
-}) {
-  if (!payload.providerId) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Missing provider id',
-    })
-  }
-
-  if (!payload.email) {
-    // 🔥 fallback safe email (évite crash OAuth)
-    payload.email = `${payload.providerId}@microsoft.local`
-  }
-
-  return {
-    email: payload.email,
-    providerId: payload.providerId,
-  }
-}
-
-/**
- * Decode JWT safely (Microsoft id_token)
+ * Decode Microsoft JWT safely
  */
 function decodeJwtPayload(token?: string | null): Record<string, any> {
   if (!token) return {}
@@ -55,14 +30,14 @@ function decodeJwtPayload(token?: string | null): Record<string, any> {
 }
 
 /**
- * Clean Microsoft email (VERY IMPORTANT)
+ * Normalize email safely
  */
 function normalizeEmail(email?: string | null): string | null {
   if (!email) return null
 
   const cleaned = email.toLowerCase().trim()
 
-  // ignore invalid Azure external format
+  // Azure external guest format
   if (cleaned.includes('#ext#')) return null
 
   if (!cleaned.includes('@')) return null
@@ -71,7 +46,7 @@ function normalizeEmail(email?: string | null): string | null {
 }
 
 /**
- * Extract BEST possible email from Microsoft
+ * Try extract real email from Microsoft
  */
 function resolveMicrosoftEmail(
   user: Record<string, any>,
@@ -86,7 +61,7 @@ function resolveMicrosoftEmail(
     tokenPayload.email,
     tokenPayload.preferred_username,
     Array.isArray(tokenPayload.emails) ? tokenPayload.emails[0] : null,
-    user.userPrincipalName, // fallback last
+    user.userPrincipalName,
   ]
 
   for (const c of candidates) {
@@ -98,7 +73,7 @@ function resolveMicrosoftEmail(
 }
 
 /**
- * Provider ID safe extraction
+ * Provider ID always stable
  */
 function resolveProviderId(user: Record<string, any>): string {
   return (
@@ -107,8 +82,35 @@ function resolveProviderId(user: Record<string, any>): string {
     user.sub ||
     user.userPrincipalName ||
     user.email ||
-    'unknown-provider'
+    cryptoRandomFallback()
   )
+}
+
+/**
+ * fallback safe id (never empty)
+ */
+function cryptoRandomFallback(): string {
+  return `microsoft_${Math.random().toString(36).substring(2, 15)}`
+}
+
+/**
+ * Safe payload
+ */
+function ensureSocialPayload(payload: {
+  email?: string | null
+  providerId?: string | null
+}) {
+  if (!payload.providerId) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing provider id',
+    })
+  }
+
+  return {
+    email: payload.email ?? null,
+    providerId: payload.providerId,
+  }
 }
 
 export default defineOAuthMicrosoftEventHandler({
@@ -125,7 +127,7 @@ export default defineOAuthMicrosoftEventHandler({
 
     try {
       const token = await fetchTokenWithSocialLogin(event, {
-        email: payload.email,
+        email: payload.email, // can be null safely handled downstream
         provider: 'microsoft',
         providerId: payload.providerId,
         image: extractSocialProfileImage(user),
