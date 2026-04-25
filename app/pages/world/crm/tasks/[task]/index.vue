@@ -226,8 +226,31 @@ async function attachToSprint() {
               <p class="text-caption mb-1">{{ t('world.crm.tasks.form.description') }}</p>
               <p class="text-body-2 mb-0">{{ data.description || '—' }}</p>
             </v-card>
+            <div class="mb-4">
+              <h3 class="text-subtitle-1 mb-2">Attachments</h3>
+              <v-list
+                v-if="data.attachments?.length"
+                density="compact"
+                class="bg-transparent pa-0"
+              >
+                <v-list-item
+                  v-for="(attachment, index) in data.attachments"
+                  :key="(attachment as any).id || (attachment as any).url || (attachment as any).name || index"
+                  :title="String((attachment as any).originalName ?? (attachment as any).name ?? (attachment as any).url ?? `Attachment ${index + 1}`)"
+                  :subtitle="String((attachment as any).mimeType ?? '')"
+                  :href="(attachment as any).url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  prepend-icon="mdi-download"
+                  class="px-0"
+                />
+              </v-list>
+              <v-alert v-else type="info" variant="tonal" density="comfortable">
+                No attachments
+              </v-alert>
+            </div>
             <p class="text-body-2 mb-0">
-              {{ data.estimatedHours || 0 }}h · {{ data.attachments.length }} attachments · {{ data.children.length }} subtasks
+              {{ data.estimatedHours || 0 }}h · {{ data.attachments?.length || 0 }} attachments · {{ data.children.length }} subtasks
             </p>
           </template>
           <template v-else>
