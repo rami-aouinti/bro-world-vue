@@ -460,9 +460,9 @@ onUnmounted(() => {
   <v-container fluid class="resume-create pa-0">
     <client-only>
       <teleport to="#app-bar">
-        <v-btn color="primary" size="small" icon="mdi-content-save-outline"></v-btn>
-        <v-btn color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview"></v-btn>
-        <v-btn color="info" size="small" variant="outlined" icon="mdi-download" @click="downloadPdf"></v-btn>
+        <v-btn color="primary" class="mx-2" size="small" icon="mdi-content-save-outline"></v-btn>
+        <v-btn color="secondary" class="mx-2" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview"></v-btn>
+        <v-btn color="info" class="mx-2" size="small" variant="outlined" icon="mdi-download" @click="downloadPdf"></v-btn>
       </teleport>
     </client-only>
     <div class="builder-layout">
