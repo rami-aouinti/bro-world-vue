@@ -2,15 +2,11 @@ import {
   createSessionFromToken,
   fetchTokenWithSocialLogin,
 } from '../../utils/authSession'
-
 import {
   extractSocialProfileImage,
   extractSocialProfileNames,
 } from '../../utils/socialProfile'
 
-/**
- * Validate minimal OAuth payload
- */
 function ensureSocialPayload(payload: {
   email?: string | null
   providerId?: string | null
@@ -28,44 +24,25 @@ function ensureSocialPayload(payload: {
   }
 }
 
-/**
- * Decode JWT safely (Microsoft id_token)
- */
 function decodeJwtPayload(token?: string | null): Record<string, unknown> {
-  if (!token) return {}
+  if (!token) {
+    return {}
+  }
 
   const parts = token.split('.')
-  if (parts.length < 2 || !parts[1]) return {}
+  if (parts.length < 2 || !parts[1]) {
+    return {}
+  }
 
   try {
     const normalized = parts[1].replace(/-/g, '+').replace(/_/g, '/')
     const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, '=')
-
     return JSON.parse(Buffer.from(padded, 'base64').toString('utf8'))
   } catch {
     return {}
   }
 }
 
-/**
- * Clean email (VERY IMPORTANT for Azure #EXT# issue)
- */
-function normalizeEmail(email?: string | null): string | null {
-  if (!email) return null
-
-  const cleaned = email.toLowerCase().trim()
-
-  // Azure external users protection
-  if (cleaned.includes('#ext#')) return null
-
-  if (!cleaned.includes('@')) return null
-
-  return cleaned
-}
-
-/**
- * Extract REAL email from Microsoft OAuth response
- */
 function resolveMicrosoftEmail(
   user: Record<string, any>,
   idToken?: string | null,
@@ -75,7 +52,7 @@ function resolveMicrosoftEmail(
   const candidates = [
     user.mail,
     user.otherMails?.[0],
-    user.preferredEmail,
+    user.userPrincipalName,
     tokenPayload.email,
     tokenPayload.preferred_username,
     Array.isArray(tokenPayload.emails) ? tokenPayload.emails[0] : null,
@@ -83,19 +60,18 @@ function resolveMicrosoftEmail(
 
   for (const candidate of candidates) {
     const email = normalizeEmail(candidate)
+
+    // 🔥 IMPORTANT: accepte même #EXT# si c'est tout ce qu'on a
     if (email) return email
   }
 
   return null
 }
-
 export default defineOAuthMicrosoftEventHandler({
   async onSuccess(event, { user, tokens }) {
-    const email = resolveMicrosoftEmail(user, tokens.id_token)
-
     const payload = ensureSocialPayload({
-      email,
-      providerId: user.id, // 🔥 IMPORTANT: NEVER use userPrincipalName
+      email: resolveMicrosoftEmail(user, tokens.id_token),
+      providerId: user.id ?? user.userPrincipalName,
     })
 
     const names = extractSocialProfileNames(user)
