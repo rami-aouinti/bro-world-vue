@@ -37,8 +37,44 @@ type ResumeSectionKey =
   | 'references'
   | 'hobbies'
 type ResumeTemplate = 'modern' | 'elegant' | 'compact'
+type ResumeCreateStep = 'choice' | 'upload' | 'manual' | 'ai'
 type ResumeSectionForm = RecruitResumeSection & {
   attachmentFiles?: File[]
+}
+type ResumeStructuredUser = {
+  fullName?: string
+  email?: string
+  phone?: string
+  address?: string
+  summary?: string
+  links?: string[]
+}
+type ResumeStructuredItem = {
+  title?: string
+  description?: string
+  startDate?: string
+  endDate?: string
+  company?: string
+  school?: string
+  level?: string
+  link?: string
+  issuer?: string
+  date?: string
+  name?: string
+  contact?: string
+}
+type ResumeStructuredResponse = {
+  data?: {
+    user?: ResumeStructuredUser
+    experiences?: ResumeStructuredItem[]
+    educations?: ResumeStructuredItem[]
+    skills?: Array<string | ResumeStructuredItem>
+    languages?: Array<string | ResumeStructuredItem>
+    certifications?: ResumeStructuredItem[]
+    projects?: ResumeStructuredItem[]
+    references?: ResumeStructuredItem[]
+    hobbies?: Array<string | ResumeStructuredItem>
+  }
 }
 
 const { t, locale } = useI18n()
@@ -66,12 +102,21 @@ const resumesError = ref('')
 const resumeViewerOpen = ref(false)
 const resumeEditorOpen = ref(false)
 const resumeCreateOpen = ref(false)
-const resumeCreateStep = ref<'choice' | 'upload' | 'manual'>('choice')
+const resumeCreateStep = ref<ResumeCreateStep>('choice')
 const selectedResumeTemplate = ref<ResumeTemplate>('modern')
 const selectedResume = ref<RecruitResume | null>(null)
 const createLoading = ref(false)
 const updateLoading = ref(false)
 const resumeUploadFile = ref<File | null>(null)
+const resumeAiOldFile = ref<File | null>(null)
+const resumeAiText = ref('')
+const aiLoading = ref(false)
+const aiError = ref('')
+const aiReview = ref('')
+const aiProgress = ref(0)
+const aiElapsedSeconds = ref(0)
+let aiProgressTimer: ReturnType<typeof setInterval> | null = null
+const resumeIdentityDraft = ref<RecruitResume['resumeInformation']>(null)
 
 function createEmptyResumeSection(): ResumeSectionForm {
   return {
@@ -150,7 +195,8 @@ const resumeSectionEntries = computed(
 )
 const profileResumeIdentity = computed(() => {
   const currentProfile = profile.value
-  const resumeIdentity = selectedResume.value?.resumeInformation
+  const resumeIdentity =
+    selectedResume.value?.resumeInformation || resumeIdentityDraft.value
   const completeName =
     resumeIdentity?.fullName ||
     [currentProfile?.firstName, currentProfile?.lastName]
@@ -160,7 +206,8 @@ const profileResumeIdentity = computed(() => {
     currentProfile?.username ||
     'Anonymous Member'
   const title = currentProfile?.profile?.title || 'Professional Profile'
-  const location = resumeIdentity?.address || currentProfile?.profile?.location || ''
+  const location =
+    resumeIdentity?.address || currentProfile?.profile?.location || ''
   const email = resumeIdentity?.email || currentProfile?.email || ''
   const phone = resumeIdentity?.phone || currentProfile?.profile?.phone || ''
   const summary =
@@ -200,6 +247,28 @@ function clearTypewriterTimers() {
     clearInterval(typingInterval)
     typingInterval = null
   }
+}
+
+function clearAiProgressTimers() {
+  if (aiProgressTimer) {
+    clearInterval(aiProgressTimer)
+    aiProgressTimer = null
+  }
+}
+
+function startAiProgress() {
+  clearAiProgressTimers()
+  aiProgress.value = 3
+  aiElapsedSeconds.value = 0
+  aiProgressTimer = setInterval(() => {
+    aiElapsedSeconds.value += 1
+    aiProgress.value = Math.min(95, aiProgress.value + 1)
+  }, 1200)
+}
+
+function stopAiProgress(isSuccess = true) {
+  clearAiProgressTimers()
+  aiProgress.value = isSuccess ? 100 : 0
 }
 
 function startTypewriter() {
@@ -343,6 +412,76 @@ function resetResumeForm() {
   })
 }
 
+function resetAiAssistant() {
+  aiError.value = ''
+  aiReview.value = ''
+  resumeAiText.value = ''
+  resumeAiOldFile.value = null
+  stopAiProgress(false)
+}
+
+function mapStructuredLines(
+  lines: Array<string | ResumeStructuredItem> | undefined,
+  section: ResumeSectionKey,
+) {
+  const normalized = (lines || [])
+    .map((line) => {
+      if (typeof line === 'string') {
+        return {
+          ...createEmptyResumeSection(),
+          title: line,
+        }
+      }
+
+      return {
+        ...createEmptyResumeSection(),
+        title:
+          line.title ||
+          line.name ||
+          line.issuer ||
+          line.company ||
+          line.school ||
+          '',
+        description: line.description || line.contact || '',
+        startDate: line.startDate || line.date || '',
+        endDate: line.endDate || '',
+        company: line.company || '',
+        school: line.school || '',
+        level: line.level || '',
+        home_page: line.link || '',
+      }
+    })
+    .filter((line) => line.title.trim())
+
+  resumeForm[section] = normalized.length
+    ? normalized
+    : [createEmptyResumeSection()]
+}
+
+function applyStructuredResumeData(payload: ResumeStructuredResponse) {
+  const data = payload.data
+  if (!data) return
+
+  mapStructuredLines(data.experiences, 'experiences')
+  mapStructuredLines(data.educations, 'educations')
+  mapStructuredLines(data.skills, 'skills')
+  mapStructuredLines(data.languages, 'languages')
+  mapStructuredLines(data.certifications, 'certifications')
+  mapStructuredLines(data.projects, 'projects')
+  mapStructuredLines(data.references, 'references')
+  mapStructuredLines(data.hobbies, 'hobbies')
+
+  const links = data.user?.links || []
+  resumeIdentityDraft.value = {
+    fullName: data.user?.fullName || null,
+    email: data.user?.email || null,
+    phone: data.user?.phone || null,
+    address: data.user?.address || null,
+    homepage: links[0] || null,
+    repo_profile: links[1] || null,
+  }
+}
+
 function addResumeLine(section: ResumeSectionKey) {
   resumeForm[section].push(createEmptyResumeSection())
 }
@@ -408,6 +547,12 @@ function openResume(resume: RecruitResume) {
   resumeViewerOpen.value = true
 }
 
+function openResumeCreateModal() {
+  resumeCreateOpen.value = true
+  resumeCreateStep.value = 'choice'
+  resetAiAssistant()
+}
+
 function hasSectionData(resume: RecruitResume, key: ResumeSectionKey) {
   return resume[key].length > 0
 }
@@ -467,6 +612,124 @@ async function createResumeFromUpload() {
     resumesError.value = 'Unable to upload PDF resume.'
   } finally {
     createLoading.value = false
+  }
+}
+
+async function generateResumeFromOldPdf() {
+  if (!resumeAiOldFile.value) return
+
+  aiLoading.value = true
+  aiError.value = ''
+  aiReview.value = ''
+  startAiProgress()
+
+  try {
+    const formData = new FormData()
+    formData.append('document', resumeAiOldFile.value)
+
+    const response = await $fetch<ResumeStructuredResponse>(
+      scopedRecruitPath('/resumes/parse-pdf'),
+      {
+        method: 'POST',
+        body: formData,
+      },
+    )
+
+    applyStructuredResumeData(response)
+    resumeCreateStep.value = 'manual'
+  } catch {
+    aiError.value = 'Unable to parse your previous resume PDF.'
+  } finally {
+    stopAiProgress(!aiError.value)
+    aiLoading.value = false
+  }
+}
+
+async function generateResumeFromText() {
+  if (!resumeAiText.value.trim()) return
+
+  aiLoading.value = true
+  aiError.value = ''
+  aiReview.value = ''
+  startAiProgress()
+
+  try {
+    const response = await $fetch<ResumeStructuredResponse>(
+      scopedRecruitPath('/resumes/structure-from-text'),
+      {
+        method: 'POST',
+        body: {
+          resumeText: resumeAiText.value,
+        },
+      },
+    )
+
+    applyStructuredResumeData(response)
+    resumeCreateStep.value = 'manual'
+  } catch {
+    aiError.value = 'Unable to structure resume data from text.'
+  } finally {
+    stopAiProgress(!aiError.value)
+    aiLoading.value = false
+  }
+}
+
+async function reviewResumeWithAi() {
+  aiLoading.value = true
+  aiError.value = ''
+  aiReview.value = ''
+  startAiProgress()
+
+  try {
+    const { normalizedBySection } = buildResumeMultipartPayload()
+    const reviewResponse = await $fetch<{ review?: string }>(
+      scopedRecruitPath('/resumes/review'),
+      {
+        method: 'POST',
+        body: {
+          resumeData: {
+            contactInformation: {
+              fullName: resumeIdentityDraft.value?.fullName || fullName.value,
+              email:
+                resumeIdentityDraft.value?.email || profile.value?.email || '',
+              phone:
+                resumeIdentityDraft.value?.phone ||
+                profile.value?.profile?.phone ||
+                '',
+              address:
+                resumeIdentityDraft.value?.address ||
+                profile.value?.profile?.location ||
+                '',
+              links: [
+                resumeIdentityDraft.value?.homepage,
+                resumeIdentityDraft.value?.repo_profile,
+              ].filter(Boolean),
+            },
+            experiences: normalizedBySection.experiences || [],
+            educations: normalizedBySection.educations || [],
+            skills: (normalizedBySection.skills || []).map(
+              (entry) => entry.title,
+            ),
+            languages: (normalizedBySection.languages || []).map((entry) => ({
+              name: entry.title,
+              level: entry.level || '',
+            })),
+            certifications: normalizedBySection.certifications || [],
+            projects: normalizedBySection.projects || [],
+            references: normalizedBySection.references || [],
+            hobbies: (normalizedBySection.hobbies || []).map(
+              (entry) => entry.title,
+            ),
+          },
+        },
+      },
+    )
+    aiReview.value = reviewResponse.review || 'No review content returned.'
+  } catch {
+    aiError.value = 'Unable to review this resume with AI.'
+  } finally {
+    stopAiProgress(!aiError.value)
+    aiLoading.value = false
   }
 }
 
@@ -616,6 +879,7 @@ watch([proverbTexts, locale], () => {
 
 onUnmounted(() => {
   clearTypewriterTimers()
+  clearAiProgressTimers()
 })
 </script>
 
@@ -705,7 +969,7 @@ onUnmounted(() => {
               color="primary"
               variant="tonal"
               prepend-icon="mdi-file-plus-outline"
-              @click="() => { resumeCreateOpen = true; resumeCreateStep = 'choice' }"
+              @click="openResumeCreateModal"
             >
               New CV
             </v-btn>
@@ -783,7 +1047,11 @@ onUnmounted(() => {
       </template>
     </v-container>
 
-    <AppModal v-model="resumeViewerOpen" title="Resume details" :max-width="980">
+    <AppModal
+      v-model="resumeViewerOpen"
+      title="Resume details"
+      :max-width="980"
+    >
       <div v-if="selectedResume">
         <iframe
           v-if="selectedResume.documentUrl"
@@ -1171,6 +1439,21 @@ onUnmounted(() => {
             </v-card-text>
           </v-card>
         </v-col>
+        <v-col cols="12">
+          <v-card
+            class="postcard-gradient-card h-100"
+            @click="resumeCreateStep = 'ai'"
+          >
+            <v-card-text class="text-center py-8">
+              <v-icon icon="mdi-robot-outline" size="42" class="mb-3" />
+              <h3 class="text-h6 mb-2">KI Assistant</h3>
+              <p class="text-body-2 text-medium-emphasis mb-0">
+                Import un ancien CV, écris un texte libre ou demande une review
+                IA.
+              </p>
+            </v-card-text>
+          </v-card>
+        </v-col>
       </v-row>
 
       <div
@@ -1200,7 +1483,7 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <div v-else class="manual-resume-form">
+      <div v-else-if="resumeCreateStep === 'manual'" class="manual-resume-form">
         <div
           v-for="entry in resumeSectionEntries"
           :key="entry.key"
@@ -1368,6 +1651,107 @@ onUnmounted(() => {
             @click="createResumeFromManual"
           >
             Save manual CV
+          </v-btn>
+        </div>
+      </div>
+
+      <div v-else class="manual-resume-form">
+        <v-alert
+          type="info"
+          variant="tonal"
+          class="mb-4"
+          text="Les actions KI peuvent prendre environ 2 minutes. Les données retournées seront injectées dans le template CV actuel."
+        />
+
+        <v-alert v-if="aiError" type="error" variant="tonal" class="mb-4">
+          {{ aiError }}
+        </v-alert>
+
+        <v-progress-linear
+          v-if="aiLoading || aiProgress > 0"
+          :model-value="aiProgress"
+          color="primary"
+          height="8"
+          rounded
+          class="mb-2"
+        />
+        <p v-if="aiLoading" class="text-caption text-medium-emphasis mb-4">
+          KI processing... ~{{ aiElapsedSeconds }}s
+        </p>
+
+        <v-card class="mb-4 postcard-gradient-card" variant="tonal">
+          <v-card-title>Import old resume (PDF)</v-card-title>
+          <v-card-text>
+            <v-file-upload
+              v-model="resumeAiOldFile"
+              label="Old resume file (PDF)"
+              accept="application/pdf"
+              clearable
+              density="default"
+              class="mb-3"
+            />
+            <v-btn
+              color="primary"
+              variant="tonal"
+              :loading="aiLoading"
+              :disabled="!resumeAiOldFile"
+              @click="generateResumeFromOldPdf"
+            >
+              Import & apply to template
+            </v-btn>
+          </v-card-text>
+        </v-card>
+
+        <v-card class="mb-4 postcard-gradient-card" variant="tonal">
+          <v-card-title>KI from text</v-card-title>
+          <v-card-text>
+            <v-textarea
+              v-model="resumeAiText"
+              rows="6"
+              auto-grow
+              label="Describe your profile / paste full resume text"
+              variant="outlined"
+              class="mb-3"
+            />
+            <v-btn
+              color="primary"
+              variant="tonal"
+              :loading="aiLoading"
+              :disabled="!resumeAiText.trim()"
+              @click="generateResumeFromText"
+            >
+              Structure text & apply
+            </v-btn>
+          </v-card-text>
+        </v-card>
+
+        <v-card class="mb-4 postcard-gradient-card" variant="tonal">
+          <v-card-title>KI review</v-card-title>
+          <v-card-text>
+            <v-btn
+              color="secondary"
+              variant="tonal"
+              :loading="aiLoading"
+              @click="reviewResumeWithAi"
+            >
+              Review current resume
+            </v-btn>
+            <v-card v-if="aiReview" class="mt-3 pa-4" variant="outlined">
+              <pre class="ai-review-output">{{ aiReview }}</pre>
+            </v-card>
+          </v-card-text>
+        </v-card>
+
+        <div class="d-flex ga-2 justify-end">
+          <v-btn variant="tonal" @click="resumeCreateStep = 'choice'"
+            >Back</v-btn
+          >
+          <v-btn
+            color="primary"
+            variant="tonal"
+            @click="resumeCreateStep = 'manual'"
+          >
+            Continue editing CV
           </v-btn>
         </div>
       </div>
@@ -1659,6 +2043,12 @@ onUnmounted(() => {
 
 .manual-section-card-text {
   padding-bottom: 8px;
+}
+
+.ai-review-output {
+  white-space: pre-wrap;
+  font-family: inherit;
+  margin: 0;
 }
 
 @media (max-width: 960px) {
