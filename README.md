@@ -168,6 +168,12 @@ Add the variables in the `.env` file:
 ```bash
 NUXT_OAUTH_GITHUB_CLIENT_ID="my-github-oauth-app-id"
 NUXT_OAUTH_GITHUB_CLIENT_SECRET="my-github-oauth-app-secret"
+
+# Azure / Microsoft Entra ID (optionnel)
+AZURE_CLIENT_ID="your-azure-client-id"
+AZURE_CLIENT_SECRET="your-azure-client-secret"
+AZURE_TENANT_ID="your-tenant-id"
+AZURE_REDIRECT_URI="https://bro-world-space.com/api/auth/callback/azure-ad"
 ```
 
 To create sealed sessions, you also need to add `NUXT_SESSION_SECRET` in the `.env` with at least 32 characters:
