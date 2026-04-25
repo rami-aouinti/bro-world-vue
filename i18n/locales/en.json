@@ -341,7 +341,8 @@
       "google": "Google",
       "facebook": "Facebook",
       "groupAria": "Social authentication",
-      "comingSoon": "Coming soon"
+      "comingSoon": "Coming soon",
+      "azure": "Azure AD"
     }
   },
   "$vuetify": {
