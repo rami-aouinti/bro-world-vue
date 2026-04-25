@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useWorldCrmAdminNavItems } from '~/composables/useWorldCrmAdminNavItems'
+
 definePageMeta({ layout: 'crm', title: 'CRM Admin reports' })
 
 const { t } = useI18n()

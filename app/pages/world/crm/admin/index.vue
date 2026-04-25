@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useWorldCrmAdminNavItems } from '~/composables/useWorldCrmAdminNavItems'
 import type {
   CrmDashboardExecutiveResponse,
   CrmDashboardResponse,
