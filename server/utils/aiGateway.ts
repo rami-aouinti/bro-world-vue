@@ -65,6 +65,9 @@ export interface AiGatewayChatResponse {
   }>
 }
 
+const AI_GATEWAY_CHAT_COMPLETIONS_URL =
+  'https://ai-gateway.vercel.sh/v1/chat/completions'
+
 function getFetchErrorStatusCode(error: unknown) {
   if (typeof error !== 'object' || !error || !('statusCode' in error)) {
     return NaN
@@ -137,22 +140,49 @@ export async function requestAiGatewayChat(
     })
   }
 
-  return await $fetch<AiGatewayChatResponse>(
-    'https://ai-gateway.vercel.sh/v1/chat/completions',
-    {
+  const baseBody = {
+    model,
+    temperature:
+      typeof payload.temperature === 'number' ? payload.temperature : 0.2,
+    messages: payload.messages,
+  } satisfies Omit<AiGatewayRequestBody, 'response_format'>
+
+  try {
+    return await $fetch<AiGatewayChatResponse>(AI_GATEWAY_CHAT_COMPLETIONS_URL, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${apiKey}`,
       },
-      body: {
-        model,
-        temperature:
-          typeof payload.temperature === 'number' ? payload.temperature : 0.2,
-        response_format: payload.response_format,
-        messages: payload.messages,
-      } satisfies AiGatewayRequestBody,
-    },
-  )
+      body: payload.response_format
+        ? {
+            ...baseBody,
+            response_format: payload.response_format,
+          }
+        : baseBody,
+    })
+  } catch (error) {
+    const statusCode = getFetchErrorStatusCode(error)
+
+    if (statusCode === 400 && payload.response_format) {
+      return await $fetch<AiGatewayChatResponse>(AI_GATEWAY_CHAT_COMPLETIONS_URL, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: baseBody,
+      })
+    }
+
+    if ([401, 403, 404, 429].includes(statusCode)) {
+      throw createError({
+        statusCode: 503,
+        statusMessage:
+          'AI gateway is unavailable. Verify billing and API gateway access in Vercel.',
+      })
+    }
+
+    throw error
+  }
 }
 
 export async function rankEventsWithAiGateway(
@@ -201,7 +231,7 @@ export async function rankEventsWithAiGateway(
 
   try {
     response = await $fetch<AiGatewayResponse>(
-      'https://ai-gateway.vercel.sh/v1/chat/completions',
+      AI_GATEWAY_CHAT_COMPLETIONS_URL,
       {
         method: 'POST',
         headers: {
@@ -228,7 +258,7 @@ export async function rankEventsWithAiGateway(
 
     try {
       response = await $fetch<AiGatewayResponse>(
-        'https://ai-gateway.vercel.sh/v1/chat/completions',
+        AI_GATEWAY_CHAT_COMPLETIONS_URL,
         {
           method: 'POST',
           headers: {
