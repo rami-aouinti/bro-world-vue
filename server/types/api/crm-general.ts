@@ -223,6 +223,56 @@ export interface CrmDashboardResponse {
   }
 }
 
+export interface CrmDashboardExecutiveResponse {
+  kpiTiles: Array<{
+    title: string
+    value: string
+    trend: string
+    tone: string
+    icon: string
+    caption: string
+  }>
+  funnelStages: Array<{
+    label: string
+    deals: number
+    amount: string
+  }>
+  teams: Array<{
+    name: string
+    owner: string
+    velocity: string
+    status: string
+  }>
+  todayAgenda: Array<{
+    time: string
+    event: string
+    owner: string
+  }>
+}
+
+export interface CrmEmployeeItem {
+  id: string
+  firstName: string
+  lastName: string
+  email: string
+  userId: string
+  positionName: string
+  roleName: string
+  photo?: string
+}
+
+export interface CrmEmployeeCreatePayload {
+  firstName: string
+  lastName: string
+  email: string
+  userId: string
+  positionName?: string
+  roleName?: string
+  photo?: string
+}
+
+export type CrmEmployeeUpdatePayload = Partial<CrmEmployeeCreatePayload>
+
 export type CrmReportFormat = 'json' | 'csv' | 'pdf'
 
 export type CrmJsonReportResponse = Record<string, unknown>

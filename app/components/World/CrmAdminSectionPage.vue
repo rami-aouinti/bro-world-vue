@@ -14,6 +14,7 @@ const props = defineProps<{
     | 'sprints'
     | 'billings'
     | 'contacts'
+    | 'employees'
 }>()
 
 type SectionKey =
@@ -24,6 +25,7 @@ type SectionKey =
   | 'sprints'
   | 'billings'
   | 'contacts'
+  | 'employees'
 type GenericItem = Record<string, unknown>
 
 type FieldType = 'text' | 'email' | 'number' | 'url' | 'textarea' | 'datetime'
@@ -46,6 +48,7 @@ interface EndpointAction {
 const router = useRouter()
 const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
+const { adminRightNavItems } = useWorldCrmAdminNavItems()
 
 const sectionMap = {
   companies: { title: 'Companies', icon: 'mdi-domain', endpoint: 'companies' },
@@ -70,6 +73,11 @@ const sectionMap = {
     title: 'Contacts',
     icon: 'mdi-account-box-multiple-outline',
     endpoint: 'contacts',
+  },
+  employees: {
+    title: 'Employees',
+    icon: 'mdi-account-tie-outline',
+    endpoint: 'employees',
   },
 } as const
 
@@ -129,6 +137,15 @@ const sectionFields: Record<SectionKey, SectionField[]> = {
     { key: 'paidAt', label: 'Paid at', type: 'datetime' },
   ],
   contacts: [],
+  employees: [
+    { key: 'firstName', label: 'First name', type: 'text', required: true },
+    { key: 'lastName', label: 'Last name', type: 'text', required: true },
+    { key: 'email', label: 'Email', type: 'email', required: true },
+    { key: 'userId', label: 'User ID', type: 'text', required: true },
+    { key: 'positionName', label: 'Position', type: 'text' },
+    { key: 'roleName', label: 'Role', type: 'text' },
+    { key: 'photo', label: 'Photo URL', type: 'url' },
+  ],
 }
 
 const relationConfig: Record<string, keyof typeof sectionMap> = {
@@ -372,7 +389,7 @@ function openNested(value: unknown, key: string) {
 
 function pathParams(path: string) {
   return Array.from(path.matchAll(/\{([^}]+)\}/g))
-    .map((match) => match[1])
+    .map((match) => match[1] ?? '')
     .filter(Boolean)
 }
 
@@ -517,15 +534,31 @@ async function submitApiAction() {
 
 <template>
   <div>
-    <WorldModuleDrawers
-      module-title="CRM"
+    <WorldModuleShell
+      :module-title="t('world.crm.label')"
+      module-key="crm"
+      module-path="/world/crm"
       module-icon="mdi-account-group-outline"
       :module-description="`Admin ${sectionConfig.title}`"
       :nav-items="crmNavItems"
       action-label="Refresh"
       action-icon="mdi-refresh"
       @action="refresh"
-    />
+    >
+      <template #right>
+        <v-list density="comfortable" bg-color="transparent" nav>
+          <v-list-item
+            v-for="item in adminRightNavItems"
+            :key="item.to"
+            :prepend-icon="item.icon"
+            :title="item.title"
+            :to="item.to"
+            rounded="lg"
+            color="primary"
+          />
+        </v-list>
+      </template>
+    </WorldModuleShell>
 
     <v-container fluid>
       <div

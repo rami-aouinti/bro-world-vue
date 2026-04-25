@@ -116,10 +116,26 @@ export default defineEventHandler(async (event): Promise<CrmEndpointCatalogRespo
         ],
       },
       {
+        key: 'employees',
+        title: 'world.crm.endpoints.groups.employees',
+        endpoints: [
+          { id: '48', title: 'List employees', method: 'GET', path: '/api/v1/crm/employees', defaultQuery: { page: 1, limit: 20 } },
+          { id: '49', title: 'Get employee', method: 'GET', path: '/api/v1/crm/employees/{employee}' },
+          { id: '50', title: 'Create employee', method: 'POST', path: '/api/v1/crm/employees', defaultBody: { firstName: 'John', lastName: 'Doe', email: 'john.doe@acme.test', userId: '20000000-0000-1000-8000-000000000020', positionName: 'Sales Manager', roleName: 'manager' } },
+          { id: '51', title: 'Replace employee', method: 'PUT', path: '/api/v1/crm/employees/{employeeId}', defaultBody: { firstName: 'John', lastName: 'Doe', email: 'john.updated@acme.test', userId: '20000000-0000-1000-8000-000000000020', positionName: 'Head of Sales', roleName: 'manager' } },
+          { id: '52', title: 'Patch employee', method: 'PATCH', path: '/api/v1/crm/employees/{employeeId}', defaultBody: { positionName: 'Head of Revenue' } },
+          { id: '53', title: 'Delete employee', method: 'DELETE', path: '/api/v1/crm/employees/{employeeId}' },
+          { id: '54', title: 'Add employee role', method: 'POST', path: '/api/v1/crm/employees/{employeeId}/roles', defaultBody: { roleName: 'finance' } },
+          { id: '55', title: 'Patch employee role', method: 'PATCH', path: '/api/v1/crm/employees/{employeeId}/roles', defaultBody: { roleName: 'manager' } },
+          { id: '56', title: 'Detach employee role', method: 'DELETE', path: '/api/v1/crm/employees/{employeeId}/roles', defaultBody: { roleName: 'support' } },
+        ],
+      },
+      {
         key: 'dashboard-reports',
         title: 'world.crm.endpoints.groups.dashboardReports',
         endpoints: [
           { id: '46', title: 'Get dashboard', method: 'GET', path: '/api/v1/crm/dashboard' },
+          { id: '46-executive', title: 'Get executive dashboard', method: 'GET', path: '/api/v1/crm/dashboard/executive' },
           { id: '47-json', title: 'Get report JSON', method: 'GET', path: '/api/v1/crm/reports', defaultQuery: { format: 'json' } },
           { id: '47-csv', title: 'Get report CSV', method: 'GET', path: '/api/v1/crm/reports', defaultQuery: { format: 'csv' } },
           { id: '47-pdf', title: 'Get report PDF', method: 'GET', path: '/api/v1/crm/reports', defaultQuery: { format: 'pdf' } },
