@@ -51,7 +51,7 @@ const crmReferencesStore = useCrmReferenceOptionsStore()
 await crmReferencesStore.fetchEmployees()
 const publicUserOptions = computed(() => crmReferencesStore.employeeAssigneeOptions)
 
-const { data, pending, error, refresh } = await useFetch<CrmProjectItem>(
+const { data, pending, error, refresh } = useFetch<CrmProjectItem>(
   () => `/api/crm/general/projects/${projectId.value}`,
 )
 
@@ -201,7 +201,7 @@ async function detachAssignee(userId: string) {
           <v-btn v-if="isRootAdmin && !isViewMode" color="secondary" variant="tonal" class="mb-4" @click="attachAssignee">{{ t('world.crm.projects.actions.attach') }}</v-btn>
           <v-list density="compact" bg-color="transparent">
             <v-list-item
-              v-for="assignee in data.assignees"
+              v-for="assignee in data?.assignees ?? []"
               :key="String((assignee as any).id ?? assignee)"
               :title="String((assignee as any).username ?? (assignee as any).id ?? assignee)"
             >

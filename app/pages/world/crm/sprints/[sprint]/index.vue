@@ -33,7 +33,7 @@ const publicUserOptions = computed(() => crmReferencesStore.employeeAssigneeOpti
 const taskOptions = computed(() => crmReferencesStore.taskOptions)
 const projectOptions = computed(() => crmReferencesStore.projectOptions)
 
-const { data, pending, error, refresh } = await useFetch<CrmSprintItem>(
+const { data, pending, error, refresh } = useFetch<CrmSprintItem>(
   () => `/api/crm/general/sprints/${sprintId.value}`,
 )
 

@@ -32,7 +32,7 @@ const newSubtask = reactive<CrmSubtaskCreatePayload>({
   priority: 'medium',
 })
 
-const { data, pending, error, refresh } = await useFetch<CrmTaskItem>(
+const { data, pending, error, refresh } = useFetch<CrmTaskItem>(
   () => `/api/crm/general/tasks/${taskId.value}`,
 )
 await Promise.all([
@@ -174,7 +174,7 @@ async function attachToSprint() {
         <v-btn v-if="isRootAdmin && !isViewMode" color="secondary" variant="tonal" class="mb-4" @click="attachAssignee">{{ t('world.crm.tasks.actions.attach') }}</v-btn>
         <v-list density="compact" bg-color="transparent">
           <v-list-item
-            v-for="assignee in data.assignees"
+            v-for="assignee in data?.assignees ?? []"
             :key="String((assignee as any).id ?? assignee)"
             :title="String((assignee as any).username ?? (assignee as any).id ?? assignee)"
           >
@@ -244,7 +244,7 @@ async function attachToSprint() {
               </v-alert>
             </div>
             <p class="text-body-2 mb-0">
-              {{ data.estimatedHours || 0 }}h · {{ data.attachments?.length || 0 }} attachments · {{ data.children.length }} subtasks
+              {{ data.estimatedHours || 0 }}h · {{ data.attachments?.length || 0 }} attachments · {{ data.children?.length || 0 }} subtasks
             </p>
           </template>
           <template v-else>

@@ -12,7 +12,7 @@ definePageMeta({ layout: 'crm', title: 'CRM Task Request Detail' })
 
 const payload = reactive<CrmTaskRequestUpdatePayload>({})
 const statusOptions = ['pending', 'in_progress', 'approved', 'rejected']
-const { data, pending, error, refresh } = await useFetch<CrmTaskRequestItem>(() => `/api/crm/general/task-requests/${id.value}`)
+const { data, pending, error, refresh } = useFetch<CrmTaskRequestItem>(() => `/api/crm/general/task-requests/${id.value}`)
 
 watchEffect(() => {
   if (!data.value) return
@@ -57,7 +57,7 @@ async function remove() {
     <v-container fluid>
       <CrmPageSkeleton v-if="pending" variant="detail" />
       <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.taskRequests.alerts.notFound') }}</v-alert>
-      <v-row v-else>
+      <v-row v-else-if="data">
         <v-col cols="12">
           <v-card rounded="xl" class="pa-4 postcard-gradient-card">
             <template v-if="isViewMode && data">
@@ -128,7 +128,7 @@ async function remove() {
                 </v-alert>
               </div>
             </template>
-            <template v-else>
+            <template v-else-if="data">
               <v-row>
                 <v-col cols="12"><v-text-field v-model="payload.title" :label="t('world.crm.taskRequests.form.title')" /></v-col>
                 <v-col cols="12"><v-textarea v-model="payload.description" :label="t('world.crm.taskRequests.form.description')" /></v-col>
