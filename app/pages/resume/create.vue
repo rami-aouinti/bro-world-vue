@@ -458,13 +458,15 @@ onUnmounted(() => {
 
 <template>
   <v-container fluid class="resume-create pa-0">
+    <client-only>
+      <teleport to="#app-bar">
+        <v-btn color="primary" size="small" icon="mdi-content-save-outline"></v-btn>
+        <v-btn color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview"></v-btn>
+        <v-btn color="info" size="small" variant="outlined" icon="mdi-download" @click="downloadPdf"></v-btn>
+      </teleport>
+    </client-only>
     <div class="builder-layout">
       <section class="builder-form px-3 px-md-6 py-4">
-        <div class="builder-actions mb-4">
-          <v-btn color="primary" icon="mdi-content-save-outline"></v-btn>
-          <v-btn color="secondary" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview"></v-btn>
-          <v-btn color="info" variant="outlined" icon="mdi-download" @click="downloadPdf"></v-btn>
-        </div>
         <v-tabs v-model="activeTab" color="primary" grow class="mb-4">
           <v-tab value="edit">Edit</v-tab>
           <v-tab value="template">Template</v-tab>
@@ -474,11 +476,7 @@ onUnmounted(() => {
         <v-window v-model="activeTab">
           <v-window-item value="edit">
             <article class="form-section mb-2">
-              <header class="mb-2">
-                <h2>Personal details</h2>
-              </header>
               <div class="mb-2">
-                <p class="section-label mb-2">Photo</p>
                 <div class="photo-uploader">
                   <v-avatar size="72" rounded="lg">
                     <v-img :src="resume.photoUrl || '/img/default_avatar.svg'" cover />
@@ -491,11 +489,10 @@ onUnmounted(() => {
                       Remove
                     </v-btn>
                     <input ref="uploadInput" type="file" accept="image/*" class="d-none" @change="onPhotoSelected">
-                    <p class="text-caption text-medium-emphasis mb-0">Visible uniquement sur les templates avec photo.</p>
                   </div>
                 </div>
               </div>
-              <div class="grid-2">
+              <div class="grid-2 py-3">
                 <v-text-field v-model="resume.role" label="Job target" flat hide-details />
                 <v-text-field v-model="resume.firstName" label="First name" flat hide-details />
                 <v-text-field v-model="resume.lastName" label="Last name" flat hide-details />
@@ -516,9 +513,9 @@ onUnmounted(() => {
             <article class="form-section mb-4">
               <header class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap">
                 <div>
-                  <h2 class="text-dark">Experiences</h2>
+                  <h2>Experiences</h2>
                 </div>
-                <v-btn prepend-icon="mdi-plus" variant="tonal" size="small" @click="addExperience">Add line</v-btn>
+                <v-btn prepend-icon="mdi-plus" variant="outlined" size="small" @click="addExperience">Add</v-btn>
               </header>
               <v-row v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" >
                 <v-col cols="12" md="6"><v-text-field v-model="experience.role" label="Role" variant="outlined" hide-details /></v-col>
@@ -550,67 +547,63 @@ onUnmounted(() => {
             <article class="form-section mb-4">
               <header class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap">
                 <div>
-                  <h2 class="text-dark">Education</h2>
-                  <p class="text-dark">Ajoute tes diplômes et formations.</p>
+                  <h2>Education</h2>
                 </div>
-                <v-btn prepend-icon="mdi-plus" variant="tonal" size="small" @click="addEducation">Add line</v-btn>
+                <v-btn prepend-icon="mdi-plus" variant="outlined" size="small" @click="addEducation">Add</v-btn>
               </header>
-              <v-card v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" variant="text" class="mb-3">
-                <v-card-text>
-                  <v-row>
-                    <v-col cols="12" md="6"><v-text-field v-model="item.degree" label="Degree" variant="outlined" hide-details /></v-col>
-                    <v-col cols="12" md="6"><v-text-field v-model="item.school" label="School" variant="outlined" hide-details /></v-col>
-                    <v-col cols="12" md="6"><v-text-field v-model="item.city" label="City" variant="outlined" hide-details /></v-col>
-                    <v-col cols="12" md="6"><v-text-field v-model="item.start" label="Start" variant="outlined" hide-details /></v-col>
-                    <v-col cols="12" md="6"><v-text-field v-model="item.end" label="End" variant="outlined" hide-details /></v-col>
-                    <v-col cols="12" md="11"><v-text-field v-model="item.note" label="Note" variant="outlined" hide-details /></v-col>
-                    <v-col cols="12" md="1" class="d-flex align-center">
-                      <div class="d-flex flex-column ga-1">
-                        <v-btn icon="mdi-chevron-up" variant="text" size="x-small" :disabled="index === 0" @click="moveEducation(index, 'up')" />
-                        <v-btn icon="mdi-chevron-down" variant="text" size="x-small" :disabled="index === resume.education.length - 1" @click="moveEducation(index, 'down')" />
-                        <v-btn icon="mdi-delete-outline" color="error" variant="text" size="small" @click="removeEducation(index)" />
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-card-text>
-              </v-card>
+              <v-row v-for="(item, index) in resume.education" :key="`${item.school}-${index}`">
+                <v-col cols="12" md="6"><v-text-field v-model="item.degree" label="Degree" variant="outlined" hide-details /></v-col>
+                <v-col cols="12" md="6"><v-text-field v-model="item.school" label="School" variant="outlined" hide-details /></v-col>
+                <v-col cols="12" md="6"><v-text-field v-model="item.city" label="City" variant="outlined" hide-details /></v-col>
+                <v-col cols="12" md="6"><v-text-field v-model="item.start" label="Start" variant="outlined" hide-details /></v-col>
+                <v-col cols="12" md="6"><v-text-field v-model="item.end" label="End" variant="outlined" hide-details /></v-col>
+                <v-col cols="12" md="10"><v-textarea v-model="item.note" label="Note" rows="8" variant="outlined" hide-details /></v-col>
+                <v-col cols="12" md="2" class="d-flex align-center">
+                  <div class="d-flex flex-column ga-1">
+                    <v-btn icon="mdi-chevron-up" variant="text" size="x-small" :disabled="index === 0" @click="moveEducation(index, 'up')" />
+                    <v-btn icon="mdi-chevron-down" variant="text" size="x-small" :disabled="index === resume.education.length - 1" @click="moveEducation(index, 'down')" />
+                    <v-btn icon="mdi-delete-outline" color="error" variant="text" size="small" @click="removeEducation(index)" />
+                  </div>
+                </v-col>
+              </v-row>
+
             </article>
 
             <article class="form-section mb-4">
               <header class="mb-4">
                 <h2>Skills & Languages</h2>
               </header>
-              <v-card variant="text">
-                <v-card-title class="d-flex align-center justify-space-between">
-                  Skills
-                  <v-btn size="x-small" variant="tonal" prepend-icon="mdi-plus" @click="addSkill">Add</v-btn>
-                </v-card-title>
-                <v-card-text>
+              <div>
+                <div class="d-flex align-center justify-space-between my-4">
+                  <v-chip color="primary">Skills</v-chip>
+                  <v-btn size="small" variant="outlined" prepend-icon="mdi-plus" @click="addSkill">Add</v-btn>
+                </div>
+                <div>
                   <v-row v-for="(skill, index) in resume.skills" :key="`skill-${index}`" class="mb-2">
-                    <v-col cols="7"><v-text-field v-model="skill.name" label="Skill" variant="outlined" hide-details /></v-col>
-                    <v-col cols="4"><v-slider v-model="skill.level" min="0" max="100" step="5" thumb-label color="primary" hide-details /></v-col>
-                    <v-col cols="1" class="d-flex align-center justify-center">
+                    <v-col cols="5"><v-text-field v-model="skill.name" label="Skill" variant="outlined" hide-details /></v-col>
+                    <v-col cols="5"><v-slider v-model="skill.level" min="0" max="100" step="5" thumb-label color="primary" hide-details /></v-col>
+                    <v-col cols="2" class="d-flex align-center justify-center">
                       <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeSkill(index)" />
                     </v-col>
                   </v-row>
-                </v-card-text>
-              </v-card>
+                </div>
+              </div>
 
-              <v-card variant="text">
-                <v-card-title class="d-flex align-center justify-space-between">
-                  Languages
-                  <v-btn size="x-small" variant="tonal" prepend-icon="mdi-plus" @click="addLanguage">Add</v-btn>
-                </v-card-title>
-                <v-card-text>
+              <div class="my-3">
+                <div class="d-flex align-center justify-space-between my-4">
+                  <v-chip color="primary"> Languages</v-chip>
+                  <v-btn size="small" variant="outlined" prepend-icon="mdi-plus" @click="addLanguage">Add</v-btn>
+                </div>
+                <div>
                   <v-row v-for="(language, index) in resume.languages" :key="`language-${index}`" class="mb-2">
-                    <v-col cols="7"><v-text-field v-model="language.name" label="Language" variant="outlined" hide-details /></v-col>
-                    <v-col cols="4"><v-slider v-model="language.level" min="0" max="100" step="5" thumb-label color="primary" hide-details /></v-col>
-                    <v-col cols="1" class="d-flex align-center justify-center">
+                    <v-col cols="5"><v-text-field v-model="language.name" label="Language" variant="outlined" hide-details /></v-col>
+                    <v-col cols="5"><v-slider v-model="language.level" min="0" max="100" step="5" thumb-label color="primary" hide-details /></v-col>
+                    <v-col cols="2" class="d-flex align-center justify-center">
                       <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeLanguage(index)" />
                     </v-col>
                   </v-row>
-                </v-card-text>
-              </v-card>
+                </div>
+              </div>
             </article>
           </v-window-item>
 
