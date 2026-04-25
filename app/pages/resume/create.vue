@@ -631,6 +631,13 @@ onUnmounted(() => {
 
 .builder-form {
   border-right: 1px solid rgb(var(--v-theme-primary));
+  position: sticky;
+  top: 0;
+  align-self: start;
+  max-height: 100vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
 
 .completion-card {
@@ -855,6 +862,9 @@ onUnmounted(() => {
 
   .builder-form {
     border-right: 0;
+    position: static;
+    max-height: none;
+    overflow: visible;
   }
 }
 
