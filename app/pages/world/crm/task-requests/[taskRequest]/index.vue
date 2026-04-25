@@ -17,6 +17,12 @@ definePageMeta({ layout: 'crm', title: 'CRM Task Request Detail' })
 const payload = reactive<CrmTaskRequestUpdatePayload>({})
 const statusOptions = ['pending', 'in_progress', 'approved', 'rejected']
 const { data, pending, error, refresh } = useFetch<CrmTaskRequestItem>(() => `/api/crm/general/task-requests/${id.value}`)
+const isAssignedEmployee = computed(() =>
+  Boolean(
+    data.value?.assignees?.some((assignee) => String(assignee.id) === String(sessionUser.value?.id ?? '')),
+  ),
+)
+const canTrackWork = computed(() => isRootAdmin.value || isAssignedEmployee.value)
 const { data: usersData } = useFetch<Record<string, any>>('/api/public/users')
 const assigneeId = ref('')
 const selectedFile = ref<File | null>(null)
@@ -25,6 +31,36 @@ const branchName = ref('')
 const sourceBranch = ref('develop')
 const branches = ref<Array<Record<string, unknown>>>([])
 const loadingBranches = ref(false)
+const timerElapsedSeconds = ref(0)
+const timerRunning = ref(false)
+const timerAnchor = ref<number | null>(null)
+const timerInterval = ref<ReturnType<typeof setInterval> | null>(null)
+const worklogPending = ref(false)
+const worklogError = ref('')
+const worklogSuccess = ref('')
+
+const timerLabel = computed(() => {
+  const total = timerElapsedSeconds.value
+  const hours = String(Math.floor(total / 3600)).padStart(2, '0')
+  const minutes = String(Math.floor((total % 3600) / 60)).padStart(2, '0')
+  const seconds = String(total % 60).padStart(2, '0')
+  return `${hours}:${minutes}:${seconds}`
+})
+
+const activeEmployeeId = computed(() => {
+  if (!data.value?.assignees?.length) return ''
+  const currentUserAssignee = data.value.assignees.find((assignee) =>
+    String(assignee.id) === String(sessionUser.value?.id ?? ''),
+  )
+  if (currentUserAssignee?.employeeId) return String(currentUserAssignee.employeeId)
+
+  if (isRootAdmin.value) {
+    const assigneeWithEmployee = data.value.assignees.find((assignee) => assignee.employeeId)
+    return String(assigneeWithEmployee?.employeeId ?? '')
+  }
+
+  return ''
+})
 
 const publicUserOptions = computed(() => {
   const list = usersData.value?.users ?? usersData.value?.items ?? []
@@ -153,6 +189,79 @@ async function remove() {
   await $fetch(`/api/crm/general/task-requests/${id.value}`, { method: 'DELETE' })
   await router.push('/world/crm/task-requests')
 }
+
+function clearTimerInterval() {
+  if (!timerInterval.value) return
+  clearInterval(timerInterval.value)
+  timerInterval.value = null
+}
+
+function syncTimerElapsed() {
+  if (!timerAnchor.value) return
+  const diffSeconds = Math.floor((Date.now() - timerAnchor.value) / 1000)
+  timerElapsedSeconds.value = Math.max(0, diffSeconds)
+}
+
+function startTimer() {
+  if (!canTrackWork.value || worklogPending.value) return
+  if (!activeEmployeeId.value) {
+    worklogError.value = 'No employeeId available for this user.'
+    return
+  }
+  if (timerRunning.value) return
+  worklogError.value = ''
+  worklogSuccess.value = ''
+  timerRunning.value = true
+  timerAnchor.value = Date.now() - (timerElapsedSeconds.value * 1000)
+  clearTimerInterval()
+  timerInterval.value = setInterval(syncTimerElapsed, 1000)
+}
+
+async function submitWorklog(reason: 'pause' | 'stop') {
+  if (!canTrackWork.value || worklogPending.value) return
+  if (!activeEmployeeId.value) {
+    worklogError.value = 'No employeeId available for this user.'
+    return
+  }
+
+  syncTimerElapsed()
+  if (!timerElapsedSeconds.value) {
+    timerRunning.value = false
+    clearTimerInterval()
+    return
+  }
+
+  worklogPending.value = true
+  worklogError.value = ''
+  worklogSuccess.value = ''
+
+  try {
+    await $fetch(`/api/crm/general/task-requests/${id.value}/worklogs`, {
+      method: 'POST',
+      body: {
+        employeeId: activeEmployeeId.value,
+        hours: Number((timerElapsedSeconds.value / 3600).toFixed(4)),
+        comment: `Worklog from timer (${reason})`,
+      },
+    })
+    worklogSuccess.value = `Worklog saved (${reason}).`
+    timerRunning.value = false
+    clearTimerInterval()
+    if (reason === 'stop') {
+      timerElapsedSeconds.value = 0
+      timerAnchor.value = null
+    }
+    await refresh()
+  } catch {
+    worklogError.value = 'Unable to save worklog.'
+  } finally {
+    worklogPending.value = false
+  }
+}
+
+onBeforeUnmount(() => {
+  clearTimerInterval()
+})
 </script>
 
 <template>
@@ -169,6 +278,71 @@ async function remove() {
     >
       <template #right>
         <div class="d-flex flex-column ga-4">
+          <div>
+            <h3 class="text-subtitle-1 mb-3">Work timer</h3>
+            <v-alert
+              v-if="!canTrackWork"
+              type="info"
+              variant="tonal"
+              density="comfortable"
+              class="mb-2"
+            >
+              Only root or assigned employee can track time.
+            </v-alert>
+            <p class="text-body-2 mb-2">Timer: <strong>{{ timerLabel }}</strong></p>
+            <v-chip size="small" variant="tonal" class="mb-2">
+              Employee ID: {{ activeEmployeeId || '—' }}
+            </v-chip>
+            <div class="d-flex flex-wrap ga-2 mb-2">
+              <v-btn
+                color="success"
+                prepend-icon="mdi-play"
+                :disabled="!canTrackWork || timerRunning || worklogPending"
+                @click="startTimer"
+              >
+                Play
+              </v-btn>
+              <v-btn
+                color="warning"
+                variant="tonal"
+                prepend-icon="mdi-pause"
+                :disabled="!canTrackWork || !timerRunning || worklogPending"
+                :loading="worklogPending"
+                @click="submitWorklog('pause')"
+              >
+                Pause
+              </v-btn>
+              <v-btn
+                color="error"
+                variant="tonal"
+                prepend-icon="mdi-stop"
+                :disabled="!canTrackWork || (!timerRunning && timerElapsedSeconds === 0) || worklogPending"
+                :loading="worklogPending"
+                @click="submitWorklog('stop')"
+              >
+                Stop
+              </v-btn>
+            </div>
+            <v-alert
+              v-if="worklogError"
+              type="error"
+              variant="tonal"
+              density="comfortable"
+              class="mb-2"
+            >
+              {{ worklogError }}
+            </v-alert>
+            <v-alert
+              v-if="worklogSuccess"
+              type="success"
+              variant="tonal"
+              density="comfortable"
+              class="mb-2"
+            >
+              {{ worklogSuccess }}
+            </v-alert>
+          </div>
+
           <div>
             <h3 class="text-subtitle-1 mb-3">Assignees</h3>
             <AppSelect
@@ -343,6 +517,9 @@ async function remove() {
                 <v-chip variant="tonal">Resolved: {{ data.resolvedAt || '—' }}</v-chip>
                 <v-chip variant="tonal">Assignees: {{ data.assignees?.length || 0 }}</v-chip>
                 <v-chip variant="tonal">Files: {{ data.attachments?.length || 0 }}</v-chip>
+                <v-chip variant="tonal">Planned: {{ data.plannedHours ?? 0 }} h</v-chip>
+                <v-chip variant="tonal">Consumed: {{ data.consumedHours ?? 0 }} h</v-chip>
+                <v-chip variant="tonal">Remaining: {{ data.remainingHours ?? 0 }} h</v-chip>
               </div>
               <div class="mb-4">
                 <h3 class="text-subtitle-1 mb-2">Attachments</h3>

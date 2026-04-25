@@ -215,6 +215,11 @@ async function deleteRequest() {
                 Task
               </v-chip>
             </div>
+            <div class="d-flex flex-wrap ga-2 mb-2">
+              <v-chip size="small" variant="tonal">Planned: {{ request.plannedHours ?? 0 }} h</v-chip>
+              <v-chip size="small" variant="tonal">Consumed: {{ request.consumedHours ?? 0 }} h</v-chip>
+              <v-chip size="small" variant="tonal">Remaining: {{ request.remainingHours ?? 0 }} h</v-chip>
+            </div>
             <v-spacer />
             <div v-if="isAdminOrRoot" class="d-flex justify-center ga-2 mt-3">
               <v-btn
