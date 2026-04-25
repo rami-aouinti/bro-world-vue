@@ -18,7 +18,7 @@ defineProps<{ resume: any; showPhoto?: boolean }>()
         <section>
           <h3>Skills</h3>
           <ul class="bars">
-            <li v-for="skill in resume.skills" :key="skill.name">
+            <li class="text-dark" v-for="skill in resume.skills" :key="skill.name">
               <span>{{ skill.name }}</span>
               <div><i :style="{ width: `${skill.level}%` }" /></div>
             </li>
@@ -27,7 +27,7 @@ defineProps<{ resume: any; showPhoto?: boolean }>()
         <section>
           <h3>Languages</h3>
           <ul class="bars">
-            <li v-for="language in resume.languages" :key="language.name">
+            <li class="text-dark" v-for="language in resume.languages" :key="language.name">
               <span>{{ language.name }}</span>
               <div><i :style="{ width: `${language.level}%` }" /></div>
             </li>
@@ -38,15 +38,15 @@ defineProps<{ resume: any; showPhoto?: boolean }>()
       <main>
         <section>
           <h2>Profile</h2>
-          <p>{{ resume.profile || 'Add a professional summary from the Edit tab.' }}</p>
+          <p class="text-dark">{{ resume.profile || 'Add a professional summary from the Edit tab.' }}</p>
         </section>
         <section>
           <h2>Employment History</h2>
-          <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="entry">
-            <h4>{{ experience.role }}, {{ experience.company }}, {{ experience.city }}</h4>
+          <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="entry text-dark">
+            <h4 class="text-dark">{{ experience.role }}, {{ experience.company }}, {{ experience.city }}</h4>
             <p class="dates">{{ experience.start }} - {{ experience.end }}</p>
             <ul>
-              <li v-for="(bullet, bulletIndex) in experience.bullets" :key="bulletIndex">{{ bullet }}</li>
+              <li class="text-dark" v-for="(bullet, bulletIndex) in experience.bullets" :key="bulletIndex">{{ bullet }}</li>
             </ul>
           </article>
         </section>

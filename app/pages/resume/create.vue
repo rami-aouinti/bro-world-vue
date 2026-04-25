@@ -376,11 +376,6 @@ onUnmounted(() => {
   <v-container fluid class="resume-create pa-0">
     <div class="builder-layout">
       <section class="builder-form px-3 px-md-6 py-4">
-        <div class="completion-card mb-4">
-          <strong>100%</strong>
-          <span>Resume completeness</span>
-        </div>
-
         <v-tabs v-model="activeTab" color="primary" grow class="mb-4">
           <v-tab value="edit">Edit</v-tab>
           <v-tab value="template">Template</v-tab>

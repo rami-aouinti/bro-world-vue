@@ -14,30 +14,30 @@ defineProps<{ resume: any; showPhoto?: boolean }>()
 
     <section>
       <h2>Profile</h2>
-      <p>{{ resume.profile || 'Add a professional summary from the Edit tab.' }}</p>
+      <p class="text-dark">{{ resume.profile || 'Add a professional summary from the Edit tab.' }}</p>
     </section>
 
     <section>
       <h2>Employment History</h2>
-      <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="entry">
+      <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="entry text-dark">
         <div class="entry-head">
-          <h4>{{ experience.role }}, {{ experience.company }}</h4>
+          <h4 class="text-dark">{{ experience.role }}, {{ experience.company }}</h4>
           <span>{{ experience.start }} - {{ experience.end }}</span>
         </div>
         <ul>
-          <li v-for="(bullet, bulletIndex) in experience.bullets" :key="bulletIndex">{{ bullet }}</li>
+          <li class="text-dark" v-for="(bullet, bulletIndex) in experience.bullets" :key="bulletIndex">{{ bullet }}</li>
         </ul>
       </article>
     </section>
 
     <section>
       <h2>Education</h2>
-      <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="entry">
-        <div class="entry-head">
-          <h4>{{ item.degree }}, {{ item.school }}</h4>
+      <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="entry text-dark">
+        <div class="entry-head text-dark">
+          <h4 class="text-dark">{{ item.degree }}, {{ item.school }}</h4>
           <span>{{ item.start }} - {{ item.end }}</span>
         </div>
-        <p>{{ item.note }}</p>
+        <p class="text-dark">{{ item.note }}</p>
       </article>
     </section>
   </article>
