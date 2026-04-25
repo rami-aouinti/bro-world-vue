@@ -528,19 +528,16 @@ onUnmounted(() => {
 
           <v-window-item value="template">
             <article class="form-section mb-4">
-              <div class="template-filters mb-4">
-                <v-btn
-                  v-for="filter in templateFilters"
-                  :key="filter.value"
-                  :variant="selectedTemplateFilter === filter.value ? 'flat' : 'outlined'"
-                  :color="selectedTemplateFilter === filter.value ? 'primary' : undefined"
-                  class="template-filter"
-                  rounded="pill"
-                  @click="selectedTemplateFilter = filter.value"
-                >
-                  {{ filter.label }}
-                </v-btn>
-              </div>
+              <AppSelect
+                v-model="selectedTemplateFilter"
+                :items="templateFilters"
+                item-title="label"
+                item-value="value"
+                label="Template filter"
+                density="comfortable"
+                class="template-filter-select mb-4"
+                hide-details
+              />
 
               <div class="template-grid">
                 <v-card
@@ -683,14 +680,8 @@ onUnmounted(() => {
   margin: 0;
 }
 
-.template-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.template-filter {
-  text-transform: none;
+.template-filter-select {
+  max-width: 320px;
 }
 
 .template-grid {
