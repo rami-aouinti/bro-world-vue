@@ -1,3 +1,5 @@
+import { requestAiGatewayChat } from '~~/server/utils/aiGateway'
+
 interface ChatGatewayRequest {
   temperature?: number
   response_format?: {
@@ -6,14 +8,6 @@ interface ChatGatewayRequest {
   messages?: Array<{
     role?: string
     content?: string
-  }>
-}
-
-interface ChatGatewayResponse {
-  choices?: Array<{
-    message?: {
-      content?: string | null
-    }
   }>
 }
 
@@ -45,18 +39,7 @@ function normalizeMessages(value: unknown) {
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<ChatGatewayRequest>(event)
-  const runtimeConfig = useRuntimeConfig(event)
-
-  const apiKey = String(runtimeConfig.aiGatewayApiKey || '').trim()
-  const model = String(runtimeConfig.aiGatewayModel || 'openai/gpt-4o-mini').trim()
   const messages = normalizeMessages(body.messages)
-
-  if (!apiKey || !model) {
-    throw createError({
-      statusCode: 503,
-      statusMessage: 'AI gateway is not configured',
-    })
-  }
 
   if (!messages.length) {
     throw createError({
@@ -65,8 +48,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const payload: Record<string, unknown> = {
-    model,
+  const payload = {
     temperature: typeof body.temperature === 'number' ? body.temperature : 0.2,
     messages,
   }
@@ -77,11 +59,5 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  return await $fetch<ChatGatewayResponse>('https://ai-gateway.vercel.sh/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: payload,
-  })
+  return await requestAiGatewayChat(event, payload)
 })
