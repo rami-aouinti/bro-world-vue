@@ -4,6 +4,53 @@ export type CrmGeneralEntityKind =
   | 'tasks'
   | 'task-requests'
   | 'sprints'
+  | 'employees'
+
+export interface CrmDashboardResponse {
+  companies: number
+  projects: number
+  tasks: number
+  taskRequests: {
+    pending: number
+    approved: number
+    rejected: number
+  }
+}
+
+export interface CrmDashboardExecutiveKpiTile {
+  title: string
+  value: string
+  trend: string
+  tone: string
+  icon: string
+  caption: string
+}
+
+export interface CrmDashboardExecutiveFunnelStage {
+  label: string
+  deals: number
+  amount: string
+}
+
+export interface CrmDashboardExecutiveTeam {
+  name: string
+  owner: string
+  velocity: string
+  status: string
+}
+
+export interface CrmDashboardExecutiveAgendaItem {
+  time: string
+  event: string
+  owner: string
+}
+
+export interface CrmDashboardExecutiveResponse {
+  kpiTiles: CrmDashboardExecutiveKpiTile[]
+  funnelStages: CrmDashboardExecutiveFunnelStage[]
+  teams: CrmDashboardExecutiveTeam[]
+  todayAgenda: CrmDashboardExecutiveAgendaItem[]
+}
 
 export interface CrmGeneralCollectionResponse<T extends Record<string, unknown>> {
   items: T[]

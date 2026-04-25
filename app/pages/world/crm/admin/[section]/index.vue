@@ -11,6 +11,7 @@ const sectionMap = {
   sprints: true,
   billings: true,
   contacts: true,
+  employees: true,
 } as const
 
 type SectionKey = keyof typeof sectionMap

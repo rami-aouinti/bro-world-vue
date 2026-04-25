@@ -1719,7 +1719,8 @@
           "tasks": "E) Tasks + Subtasks",
           "billings": "F) Billings",
           "taskRequests": "G) Task requests",
-          "dashboardReports": "H) Dashboard / Reports"
+          "employees": "H) Employees",
+          "dashboardReports": "I) Dashboard / Reports"
         },
         "actions": {
           "openAdmin": "Open admin"
@@ -1825,7 +1826,9 @@
           "taskRequests": "Demandes de tâches",
           "sprints": "Sprints",
           "billings": "Facturations",
-          "contacts": "Contacts"
+          "contacts": "Contacts",
+          "employees": "Employees",
+          "reports": "Reports"
         },
         "utility": {
           "title": "Outils",
