@@ -2780,5 +2780,49 @@
       "empty": "Momentan sind keine Ergebnisse verfügbar.",
       "fallbackUser": "Benutzer #{index}"
     }
+  },
+  "resumeBuilder": {
+    "index": {
+      "heroTitle": "Erstelle in wenigen Minuten einen professionellen Lebenslauf",
+      "heroSubtitle": "Eine öffentliche Seite zur Vorstellung des Tools, gefolgt von einer Erstellungserfahrung basierend auf euren Mockups.",
+      "primaryCta": "Jetzt starten",
+      "secondaryCta": "Builder öffnen",
+      "features": {
+        "guidedEditor": {
+          "title": "Geführter Editor",
+          "description": "Vervollständige deinen Lebenslauf Abschnitt für Abschnitt mit einer einfachen, schnellen Oberfläche."
+        },
+        "modernTemplates": {
+          "title": "Moderne Vorlagen",
+          "description": "Wähle einen professionellen Stil und passe Farben, Typografie und Layout an."
+        },
+        "livePreview": {
+          "title": "Live-Vorschau",
+          "description": "Sieh das Endergebnis sofort während der Bearbeitung deiner Inhalte."
+        },
+        "export": {
+          "title": "PDF-/DOCX-Export",
+          "description": "Lade deinen Lebenslauf im idealen Format für Recruiter herunter."
+        }
+      }
+    },
+    "create": {
+      "design": {
+        "description": "Wähle Farben und Rundungsstile wie in AppSettings."
+      },
+      "import": {
+        "description": "Synchronisiere oder importiere einen älteren PDF-Lebenslauf, um die Vorlage vorzufüllen.",
+        "syncWithXing": "Mit Xing synchronisieren",
+        "syncWithLinkedIn": "Mit LinkedIn synchronisieren",
+        "importOldResumePdf": "Alten Lebenslauf importieren (PDF)",
+        "messages": {
+          "extractingPdf": "PDF-Text wird extrahiert...",
+          "analyzingWithAi": "KI-Analyse läuft...",
+          "importSuccess": "Import abgeschlossen. Die Daten wurden auf die Lebenslaufvorlage angewendet.",
+          "importFailed": "Import fehlgeschlagen. Stelle sicher, dass dein PDF auswählbaren Text enthält.",
+          "providerSyncSoon": "Die {provider}-Synchronisierung ist bald verfügbar."
+        }
+      }
+    }
   }
 }
