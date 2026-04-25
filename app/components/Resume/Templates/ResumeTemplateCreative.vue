@@ -1,0 +1,129 @@
+<script setup lang="ts">
+const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean }>(), {
+  showPhoto: false,
+  editable: false,
+})
+
+function updateText(path: string, value: string) {
+  const segments = path.split('.')
+  const last = segments.pop()
+  if (!last) return
+
+  let target: Record<string, any> = props.resume
+  for (const segment of segments) {
+    if (!(segment in target)) return
+    target = target[segment]
+  }
+
+  target[last] = value
+}
+</script>
+
+<template>
+  <div class="creative-template">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Creative profile</p>
+        <h1>
+          <span class="editable-text" :contenteditable="editable" @input="event => updateText('firstName', (event.target as HTMLElement).innerText)">{{ resume.firstName }}</span>
+          <span class="editable-text" :contenteditable="editable" @input="event => updateText('lastName', (event.target as HTMLElement).innerText)">{{ resume.lastName }}</span>
+        </h1>
+        <p class="role editable-text" :contenteditable="editable" @input="event => updateText('role', (event.target as HTMLElement).innerText)">{{ resume.role }}</p>
+      </div>
+      <v-avatar v-if="showPhoto && resume.photoUrl" size="108" class="creative-avatar">
+        <v-img :src="resume.photoUrl" cover />
+      </v-avatar>
+    </header>
+
+    <section class="quick-info">
+      <span class="editable-text" :contenteditable="editable" @input="event => updateText('email', (event.target as HTMLElement).innerText)">{{ resume.email }}</span>
+      <span class="editable-text" :contenteditable="editable" @input="event => updateText('phone', (event.target as HTMLElement).innerText)">{{ resume.phone }}</span>
+      <span>
+        <span class="editable-text" :contenteditable="editable" @input="event => updateText('city', (event.target as HTMLElement).innerText)">{{ resume.city }}</span>,
+        <span class="editable-text" :contenteditable="editable" @input="event => updateText('country', (event.target as HTMLElement).innerText)">{{ resume.country }}</span>
+      </span>
+    </section>
+
+    <section class="content-grid">
+      <article>
+        <h2>Profile</h2>
+        <p class="editable-text" :contenteditable="editable" @input="event => updateText('profile', (event.target as HTMLElement).innerText)">
+          {{ resume.profile || 'Add your personal summary from the Edit tab.' }}
+        </p>
+      </article>
+
+      <article>
+        <h2>Experience</h2>
+        <div v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="timeline-item">
+          <h3>
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.role`, (event.target as HTMLElement).innerText)">{{ experience.role }}</span>
+            ·
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.company`, (event.target as HTMLElement).innerText)">{{ experience.company }}</span>
+          </h3>
+          <p class="dates">
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.start`, (event.target as HTMLElement).innerText)">{{ experience.start }}</span>
+            —
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.end`, (event.target as HTMLElement).innerText)">{{ experience.end }}</span>
+          </p>
+          <ul>
+            <li
+              v-for="(bullet, bulletIndex) in experience.bullets"
+              :key="bulletIndex"
+              class="editable-text"
+              :contenteditable="editable"
+              @input="event => updateText(`experiences.${index}.bullets.${bulletIndex}`, (event.target as HTMLElement).innerText)"
+            >
+              {{ bullet }}
+            </li>
+          </ul>
+        </div>
+      </article>
+
+      <article>
+        <h2>Skills</h2>
+        <div v-for="(skill, index) in resume.skills" :key="skill.name" class="chip-row">
+          <span class="editable-text" :contenteditable="editable" @input="event => updateText(`skills.${index}.name`, (event.target as HTMLElement).innerText)">{{ skill.name }}</span>
+          <small>{{ skill.level }}%</small>
+        </div>
+      </article>
+
+      <article>
+        <h2>Education</h2>
+        <div v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="education-item">
+          <h3>
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</span>
+          </h3>
+          <p>
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</span>
+            ·
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.city`, (event.target as HTMLElement).innerText)">{{ item.city }}</span>
+          </p>
+        </div>
+      </article>
+    </section>
+  </div>
+</template>
+
+<style scoped>
+.creative-template { min-height: calc(100vh - 80px); background: linear-gradient(145deg, #fff, #f0f9ff); border-radius: 20px; overflow: hidden; }
+.hero { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 28px; background: linear-gradient(135deg, var(--cv-accent), color-mix(in srgb, var(--cv-accent) 60%, #8b5cf6)); color: #fff; }
+.eyebrow { letter-spacing: .12em; text-transform: uppercase; font-size: .72rem; margin-bottom: 6px; opacity: .9; }
+h1 { font-size: 2.25rem; line-height: 1.1; margin: 0; }
+.role { margin-top: 10px; font-size: 1.05rem; }
+.creative-avatar { border: 4px solid rgb(255 255 255 / .6); box-shadow: 0 15px 28px rgb(15 23 42 / .3); }
+.quick-info { display: flex; flex-wrap: wrap; gap: 10px 18px; padding: 14px 28px; font-weight: 500; color: #0f172a; background: rgb(255 255 255 / .78); border-bottom: 1px solid #dbeafe; }
+.content-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; padding: 22px 28px 30px; }
+article { background: #fff; border-radius: 16px; padding: 18px; border: 1px solid #e2e8f0; box-shadow: 0 8px 20px rgb(15 23 42 / .05); }
+h2 { margin-bottom: 12px; color: var(--cv-accent); }
+.timeline-item + .timeline-item { margin-top: 14px; padding-top: 14px; border-top: 1px dashed #cbd5e1; }
+.dates { font-size: .78rem; color: #64748b; margin-bottom: 6px; }
+ul { padding-left: 18px; }
+li { margin-bottom: 4px; }
+.chip-row { display: flex; justify-content: space-between; align-items: center; background: #eff6ff; border-radius: 999px; padding: 7px 12px; margin-bottom: 8px; }
+.chip-row small { color: #1e3a8a; font-weight: 700; }
+.education-item + .education-item { margin-top: 10px; }
+.editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
+.editable-text[contenteditable='true']:hover,
+.editable-text[contenteditable='true']:focus { outline-color: color-mix(in srgb, var(--cv-accent) 45%, transparent); }
+@media (max-width: 1080px) { .content-grid { grid-template-columns: 1fr; } }
+</style>

@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import ResumeTemplateClassic from '~/components/Resume/Templates/ResumeTemplateClassic.vue'
+import ResumeTemplateCreative from '~/components/Resume/Templates/ResumeTemplateCreative.vue'
+import ResumeTemplateAurora from '~/components/Resume/Templates/ResumeTemplateAurora.vue'
+import ResumeTemplateExecutive from '~/components/Resume/Templates/ResumeTemplateExecutive.vue'
+import ResumeTemplateMinimalist from '~/components/Resume/Templates/ResumeTemplateMinimalist.vue'
 import ResumeTemplateModern from '~/components/Resume/Templates/ResumeTemplateModern.vue'
 import ResumeTemplateProfessional from '~/components/Resume/Templates/ResumeTemplateProfessional.vue'
 import ResumeTemplateTraditional from '~/components/Resume/Templates/ResumeTemplateTraditional.vue'
@@ -75,7 +79,7 @@ type Template = {
   hasDocx: boolean
   isCustomized: boolean
   isFree: boolean
-  variant: 'classic' | 'modern' | 'professional' | 'traditional'
+  variant: 'classic' | 'modern' | 'professional' | 'traditional' | 'creative' | 'minimalist' | 'aurora' | 'executive'
 }
 
 type TemplateFilter = 'all' | 'with-photo' | 'two-column' | 'ats' | 'docx' | 'customized' | 'free'
@@ -127,6 +131,10 @@ const templates: Template[] = [
   { id: 'header-ats', title: 'Header ATS', subtitle: 'Header-focused ATS format', image: '/img/cv/cv-4.png', hasPhoto: false, isTwoColumn: false, isAts: true, hasDocx: true, isCustomized: false, isFree: true, variant: 'modern' },
   { id: 'essential', title: 'Essential', subtitle: 'Essential details with photo', image: '/img/cv/cv-3.png', hasPhoto: true, isTwoColumn: false, isAts: false, hasDocx: true, isCustomized: false, isFree: true, variant: 'modern' },
   { id: 'polished', title: 'Polished', subtitle: 'Polished recruiter-ready style', image: '/img/cv/cv-2.png', hasPhoto: true, isTwoColumn: false, isAts: false, hasDocx: false, isCustomized: true, isFree: true, variant: 'professional' },
+  { id: 'creative-wave', title: 'Creative Wave', subtitle: 'Gradient hero and dynamic cards', image: '/img/cv/cv-5.png', hasPhoto: true, isTwoColumn: true, isAts: false, hasDocx: false, isCustomized: true, isFree: true, variant: 'creative' },
+  { id: 'minimal-mono', title: 'Minimal Mono', subtitle: 'Monochrome editorial minimalism', image: '/img/cv/cv-4.png', hasPhoto: false, isTwoColumn: false, isAts: true, hasDocx: true, isCustomized: true, isFree: true, variant: 'minimalist' },
+  { id: 'aurora-night', title: 'Aurora Night', subtitle: 'Dark glassmorphism with neon accents', image: '/img/cv/cv-1.png', hasPhoto: true, isTwoColumn: true, isAts: false, hasDocx: false, isCustomized: true, isFree: true, variant: 'aurora' },
+  { id: 'executive-edge', title: 'Executive Edge', subtitle: 'Premium leadership-oriented layout', image: '/img/cv/cv-2.png', hasPhoto: true, isTwoColumn: true, isAts: true, hasDocx: true, isCustomized: true, isFree: true, variant: 'executive' },
 ]
 
 const colorThemes: ColorTheme[] = [
@@ -273,7 +281,11 @@ const selectedTemplateConfig = computed(() => templates.find(template => templat
 
 const selectedTemplateComponent = computed(() => {
   const componentByVariant = {
+    aurora: ResumeTemplateAurora,
     classic: ResumeTemplateClassic,
+    creative: ResumeTemplateCreative,
+    executive: ResumeTemplateExecutive,
+    minimalist: ResumeTemplateMinimalist,
     modern: ResumeTemplateModern,
     professional: ResumeTemplateProfessional,
     traditional: ResumeTemplateTraditional,
