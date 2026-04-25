@@ -1,6 +1,6 @@
 import type { CrmProjectListItem, ApiListResponse } from '~~/server/types/api/crm-general'
-import { fetchCrmGeneral } from '~~/server/utils/crmGeneralApi'
+import { cachedCrmGeneralGet } from '~~/server/utils/crmGeneralPrivateApi'
 
 export default defineEventHandler(async (event): Promise<ApiListResponse<CrmProjectListItem>> => {
-  return fetchCrmGeneral<ApiListResponse<CrmProjectListItem>>('projects', { query: getQuery(event) as Record<string, string | number | boolean | undefined> })
+  return cachedCrmGeneralGet<ApiListResponse<CrmProjectListItem>>(event, 'projects', getQuery(event) as Record<string, string | number | boolean | undefined>)
 })

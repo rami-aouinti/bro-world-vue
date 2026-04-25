@@ -1,4 +1,4 @@
-import { fetchCrmGeneral } from '~~/server/utils/crmGeneralApi'
+import { cachedCrmGeneralGet } from '~~/server/utils/crmGeneralPrivateApi'
 
 export default defineEventHandler(async (event) => {
   const taskRequest = getRouterParam(event, 'taskRequest')
@@ -7,7 +7,5 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Missing task request id' })
   }
 
-  return fetchCrmGeneral(`task-requests/${taskRequest}/gitlab/branches`, {
-    query: getQuery(event) as Record<string, string | number | boolean | undefined>,
-  })
+  return cachedCrmGeneralGet(event, `task-requests/${taskRequest}/gitlab/branches`, getQuery(event) as Record<string, string | number | boolean | undefined>)
 })
