@@ -21,9 +21,9 @@ definePageMeta({ layout: 'crm', title: 'CRM Sprint Detail' })
 const payload = reactive<CrmSprintUpdatePayload>({})
 const assigneeId = ref('')
 const taskId = ref('')
-const { data: usersData } = await useFetch<Record<string, any>>('/api/public/users')
-const { data: tasksData } = await useFetch<{ items?: Array<{ id: string; title?: string }> }>('/api/crm/general/tasks')
-const { data: projectsData } = await useFetch<{ items?: Array<{ id: string; name?: string }> }>('/api/crm/general/projects')
+const { data: usersData } = useFetch<Record<string, any>>('/api/public/users')
+const { data: tasksData } = useFetch<{ items?: Array<{ id: string; title?: string }> }>('/api/crm/general/tasks')
+const { data: projectsData } = useFetch<{ items?: Array<{ id: string; name?: string }> }>('/api/crm/general/projects')
 const statusOptions = ['planned', 'in_progress', 'completed']
 
 const publicUserOptions = computed(() => {
@@ -52,7 +52,7 @@ const projectOptions = computed(() =>
   })),
 )
 
-const { data, pending, error, refresh } = await useFetch<CrmSprintItem>(
+const { data, pending, error, refresh } = useFetch<CrmSprintItem>(
   () => `/api/crm/general/sprints/${sprintId.value}`,
 )
 
