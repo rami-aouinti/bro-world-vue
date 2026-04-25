@@ -74,10 +74,15 @@ const utilityCards = computed(() => [
     { label: t('world.crm.endpoints.page.title', 'Endpoints API'), icon: 'mdi-api', to: '/world/crm/endpoints' },
   ...(isRootAdmin.value
     ? [{
-        label: t('world.crm.admin.utility.githubSync'),
-        description: t('world.crm.admin.utility.githubSyncDescription'),
+        label: t('world.crm.admin.utility.githubSync', 'GitHub Sync'),
+        description: t('world.crm.admin.utility.githubSyncDescription', 'Synchronize CRM data with GitHub endpoints.'),
         icon: 'mdi-github',
         to: '/world/crm/github-sync',
+      }, {
+        label: t('world.crm.admin.utility.gitlabSync', 'GitLab Sync'),
+        description: t('world.crm.admin.utility.gitlabSyncDescription', 'Synchronize CRM data with GitLab endpoints.'),
+        icon: 'mdi-gitlab',
+        to: '/world/crm/gitlab-sync',
       }]
     : []),
 ])

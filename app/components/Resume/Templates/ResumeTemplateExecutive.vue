@@ -1,8 +1,9 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean; useTimeline?: boolean }>(), {
+const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean; useTimeline?: boolean; onPhotoClick?: () => void }>(), {
   showPhoto: false,
   editable: false,
   useTimeline: false,
+  onPhotoClick: undefined,
 })
 
 function updateText(path: string, value: string) {
@@ -23,7 +24,7 @@ function updateText(path: string, value: string) {
 <template>
   <div class="executive-template">
     <aside class="executive-sidebar">
-      <v-avatar v-if="showPhoto && resume.photoUrl" size="92" class="mb-4">
+      <v-avatar v-if="showPhoto && resume.photoUrl" size="92" class="mb-4" @click="onPhotoClick?.()">
         <v-img :src="resume.photoUrl" cover />
       </v-avatar>
       <h1>
