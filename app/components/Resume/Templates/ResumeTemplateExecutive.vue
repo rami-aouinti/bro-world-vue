@@ -1,7 +1,8 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean }>(), {
+const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean; useTimeline?: boolean }>(), {
   showPhoto: false,
   editable: false,
+  useTimeline: false,
 })
 
 function updateText(path: string, value: string) {
@@ -51,19 +52,19 @@ function updateText(path: string, value: string) {
     <main class="executive-main">
       <section>
         <h2>Executive summary</h2>
-        <p class="editable-text" :contenteditable="editable" @input="event => updateText('profile', (event.target as HTMLElement).innerText)">{{ resume.profile }}</p>
+        <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText('profile', (event.target as HTMLElement).innerText)">{{ resume.profile }}</p>
       </section>
 
       <section>
         <h2>Professional experience</h2>
-        <article v-for="(experience, index) in resume.experiences" :key="`executive-exp-${index}`" class="entry">
-          <div class="entry-header">
+        <article v-for="(experience, index) in resume.experiences" :key="`executive-exp-${index}`" class="entry text-dark" :class="{ 'timeline-entry': useTimeline }">
+          <div class="entry-header text-dark">
             <h4>
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.role`, (event.target as HTMLElement).innerText)">{{ experience.role }}</span>
               -
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.company`, (event.target as HTMLElement).innerText)">{{ experience.company }}</span>
             </h4>
-            <p>
+            <p class="text-dark">
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.start`, (event.target as HTMLElement).innerText)">{{ experience.start }}</span>
               to
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.end`, (event.target as HTMLElement).innerText)">{{ experience.end }}</span>
@@ -73,7 +74,7 @@ function updateText(path: string, value: string) {
             <li
               v-for="(bullet, bulletIndex) in experience.bullets"
               :key="bulletIndex"
-              class="editable-text"
+              class="text-dark editable-text"
               :contenteditable="editable"
               @input="event => updateText(`experiences.${index}.bullets.${bulletIndex}`, (event.target as HTMLElement).innerText)"
             >
@@ -95,7 +96,7 @@ function updateText(path: string, value: string) {
         <div>
           <h2>Education</h2>
           <ul>
-            <li v-for="(item, index) in resume.education" :key="`executive-edu-${index}`">
+            <li v-for="(item, index) in resume.education" :key="`executive-edu-${index}`" class="text-dark" :class="{ 'timeline-entry': useTimeline }">
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</span>
               —
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</span>
@@ -122,6 +123,9 @@ h2 { color: var(--cv-accent); margin-bottom: 9px; font-size: 1rem; text-transfor
 .entry + .entry { margin-top: 16px; border-top: 1px solid #e5e7eb; padding-top: 16px; }
 .entry-header { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap; }
 .entry-header p { color: #6b7280; font-size: .8rem; }
+.timeline-entry { position: relative; padding-left: 18px; }
+.timeline-entry::before { content: ''; position: absolute; left: 2px; top: 6px; bottom: 2px; width: 2px; background: #d1d5db; }
+.timeline-entry::after { content: ''; position: absolute; left: -2px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--cv-accent); }
 .skills-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 ul { margin: 0; padding-left: 18px; }
 li { margin-bottom: 6px; }
