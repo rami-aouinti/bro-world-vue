@@ -630,9 +630,9 @@ onUnmounted(() => {
 .builder-form {
   border-right: 1px solid rgb(var(--v-theme-primary));
   position: sticky;
-  top: 0;
+  top: 60px;
   align-self: start;
-  max-height: 100vh;
+  max-height: 80vh;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
