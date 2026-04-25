@@ -7,7 +7,7 @@ const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
 const { adminRightNavItems } = useWorldCrmAdminNavItems()
 
-const { data, pending, error, refresh } = await useFetch<Record<string, any>>(
+const { data, pending, error, refresh } = useFetch<Record<string, any>>(
   '/api/crm/general/reports',
   { query: { format: 'json' } },
 )
