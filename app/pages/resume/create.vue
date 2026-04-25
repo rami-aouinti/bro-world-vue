@@ -10,7 +10,7 @@ import ResumeTemplateTraditional from '~/components/Resume/Templates/ResumeTempl
 
 definePageMeta({
   title: 'Create Resume',
-  layout: 'resume'
+  layout: 'resume',
 })
 
 type Skill = { name: string; level: number }
@@ -47,6 +47,61 @@ type Project = {
   name: string
   summary: string
 }
+type StructuredUser = {
+  fullName?: string
+  email?: string
+  phone?: string
+  address?: string
+  summary?: string
+  links?: string[]
+}
+type StructuredExperience = {
+  title?: string
+  company?: string
+  startDate?: string
+  endDate?: string
+  description?: string
+}
+type StructuredEducation = {
+  title?: string
+  school?: string
+  startDate?: string
+  endDate?: string
+  description?: string
+}
+type StructuredLanguage = {
+  name?: string
+  level?: string
+}
+type StructuredProject = {
+  title?: string
+  description?: string
+  link?: string
+}
+type StructuredReference = {
+  name?: string
+  contact?: string
+  description?: string
+}
+type StructuredCertificate = {
+  title?: string
+  issuer?: string
+  date?: string
+  description?: string
+}
+type StructuredResumeResponse = {
+  data?: {
+    user?: StructuredUser
+    experiences?: StructuredExperience[]
+    educations?: StructuredEducation[]
+    skills?: string[]
+    languages?: StructuredLanguage[]
+    certifications?: StructuredCertificate[]
+    projects?: StructuredProject[]
+    references?: StructuredReference[]
+    hobbies?: string[]
+  }
+}
 
 type ResumeModel = {
   role: string
@@ -80,10 +135,25 @@ type Template = {
   isCustomized: boolean
   isFree: boolean
   useTimeline: boolean
-  variant: 'classic' | 'modern' | 'professional' | 'traditional' | 'creative' | 'minimalist' | 'aurora' | 'executive'
+  variant:
+    | 'classic'
+    | 'modern'
+    | 'professional'
+    | 'traditional'
+    | 'creative'
+    | 'minimalist'
+    | 'aurora'
+    | 'executive'
 }
 
-type TemplateFilter = 'all' | 'with-photo' | 'two-column' | 'ats' | 'docx' | 'customized' | 'free'
+type TemplateFilter =
+  | 'all'
+  | 'with-photo'
+  | 'two-column'
+  | 'ats'
+  | 'docx'
+  | 'customized'
+  | 'free'
 
 type ColorTheme = {
   name: string
@@ -123,14 +193,118 @@ const templateFilters = [
 ] as const satisfies ReadonlyArray<{ label: string; value: TemplateFilter }>
 
 const templates: Template[] = [
-  { id: 'classic', title: 'Classic', subtitle: 'Simple and readable format', image: '/img/cv/cv-4.png', hasPhoto: false, isTwoColumn: false, isAts: false, hasDocx: true, isCustomized: false, isFree: true, useTimeline: false, variant: 'classic' },
-  { id: 'modern', title: 'Modern', subtitle: 'Clean blocks and balanced content', image: '/img/cv/cv-3.png', hasPhoto: true, isTwoColumn: true, isAts: false, hasDocx: true, isCustomized: true, isFree: true, useTimeline: false, variant: 'modern' },
-  { id: 'professional', title: 'Professional', subtitle: 'Sidebar profile with details', image: '/img/cv/cv-1.png', hasPhoto: true, isTwoColumn: true, isAts: false, hasDocx: true, isCustomized: true, isFree: true, useTimeline: false, variant: 'professional' },
-  { id: 'traditional', title: 'Traditional', subtitle: 'Formal and timeless structure', image: '/img/cv/cv-2.png', hasPhoto: false, isTwoColumn: false, isAts: false, hasDocx: true, isCustomized: false, isFree: true, useTimeline: false, variant: 'traditional' },
-  { id: 'creative', title: 'Creative Timeline', subtitle: 'Creative layout with timeline sections', image: '/img/cv/cv-5.png', hasPhoto: true, isTwoColumn: true, isAts: false, hasDocx: false, isCustomized: true, isFree: true, useTimeline: true, variant: 'creative' },
-  { id: 'minimalist', title: 'Minimalist', subtitle: 'Monochrome editorial minimalism', image: '/img/cv/cv-4.png', hasPhoto: false, isTwoColumn: false, isAts: true, hasDocx: true, isCustomized: true, isFree: true, useTimeline: false, variant: 'minimalist' },
-  { id: 'aurora', title: 'Aurora', subtitle: 'Dark glassmorphism with neon accents', image: '/img/cv/cv-1.png', hasPhoto: true, isTwoColumn: true, isAts: false, hasDocx: false, isCustomized: true, isFree: true, useTimeline: false, variant: 'aurora' },
-  { id: 'executive', title: 'Executive Timeline', subtitle: 'Leadership layout with timeline details', image: '/img/cv/cv-2.png', hasPhoto: true, isTwoColumn: true, isAts: true, hasDocx: true, isCustomized: true, isFree: true, useTimeline: true, variant: 'executive' },
+  {
+    id: 'classic',
+    title: 'Classic',
+    subtitle: 'Simple and readable format',
+    image: '/img/cv/cv-4.png',
+    hasPhoto: false,
+    isTwoColumn: false,
+    isAts: false,
+    hasDocx: true,
+    isCustomized: false,
+    isFree: true,
+    useTimeline: false,
+    variant: 'classic',
+  },
+  {
+    id: 'modern',
+    title: 'Modern',
+    subtitle: 'Clean blocks and balanced content',
+    image: '/img/cv/cv-3.png',
+    hasPhoto: true,
+    isTwoColumn: true,
+    isAts: false,
+    hasDocx: true,
+    isCustomized: true,
+    isFree: true,
+    useTimeline: false,
+    variant: 'modern',
+  },
+  {
+    id: 'professional',
+    title: 'Professional',
+    subtitle: 'Sidebar profile with details',
+    image: '/img/cv/cv-1.png',
+    hasPhoto: true,
+    isTwoColumn: true,
+    isAts: false,
+    hasDocx: true,
+    isCustomized: true,
+    isFree: true,
+    useTimeline: false,
+    variant: 'professional',
+  },
+  {
+    id: 'traditional',
+    title: 'Traditional',
+    subtitle: 'Formal and timeless structure',
+    image: '/img/cv/cv-2.png',
+    hasPhoto: false,
+    isTwoColumn: false,
+    isAts: false,
+    hasDocx: true,
+    isCustomized: false,
+    isFree: true,
+    useTimeline: false,
+    variant: 'traditional',
+  },
+  {
+    id: 'creative',
+    title: 'Creative Timeline',
+    subtitle: 'Creative layout with timeline sections',
+    image: '/img/cv/cv-5.png',
+    hasPhoto: true,
+    isTwoColumn: true,
+    isAts: false,
+    hasDocx: false,
+    isCustomized: true,
+    isFree: true,
+    useTimeline: true,
+    variant: 'creative',
+  },
+  {
+    id: 'minimalist',
+    title: 'Minimalist',
+    subtitle: 'Monochrome editorial minimalism',
+    image: '/img/cv/cv-4.png',
+    hasPhoto: false,
+    isTwoColumn: false,
+    isAts: true,
+    hasDocx: true,
+    isCustomized: true,
+    isFree: true,
+    useTimeline: false,
+    variant: 'minimalist',
+  },
+  {
+    id: 'aurora',
+    title: 'Aurora',
+    subtitle: 'Dark glassmorphism with neon accents',
+    image: '/img/cv/cv-1.png',
+    hasPhoto: true,
+    isTwoColumn: true,
+    isAts: false,
+    hasDocx: false,
+    isCustomized: true,
+    isFree: true,
+    useTimeline: false,
+    variant: 'aurora',
+  },
+  {
+    id: 'executive',
+    title: 'Executive Timeline',
+    subtitle: 'Leadership layout with timeline details',
+    image: '/img/cv/cv-2.png',
+    hasPhoto: true,
+    isTwoColumn: true,
+    isAts: true,
+    hasDocx: true,
+    isCustomized: true,
+    isFree: true,
+    useTimeline: true,
+    variant: 'executive',
+  },
 ]
 
 const colorThemes: ColorTheme[] = [
@@ -261,11 +435,13 @@ const resume = reactive<ResumeModel>({
   projects: [
     {
       name: 'Campus Editorial Newsletter',
-      summary: 'Led content calendar and boosted monthly newsletter open rate by 32%.',
+      summary:
+        'Led content calendar and boosted monthly newsletter open rate by 32%.',
     },
     {
       name: 'Student Podcast Launch',
-      summary: 'Created scripts and episode communication plan for a 10-episode launch.',
+      summary:
+        'Created scripts and episode communication plan for a 10-episode launch.',
     },
   ] as Project[],
 })
@@ -276,25 +452,34 @@ const importInProgress = ref(false)
 const importProgress = ref(0)
 const importMessage = ref('')
 const importMessageType = ref<'info' | 'success' | 'error'>('info')
+const importElapsedSeconds = ref(0)
+let importElapsedTimer: ReturnType<typeof setInterval> | null = null
 
 let importProgressTimer: ReturnType<typeof setInterval> | null = null
 
 const filteredTemplates = computed(() => {
   if (selectedTemplateFilter.value === 'all') return templates
 
-  const predicateByFilter: Record<Exclude<TemplateFilter, 'all'>, (template: Template) => boolean> = {
-    'with-photo': template => template.hasPhoto,
-    'two-column': template => template.isTwoColumn,
-    ats: template => template.isAts,
-    docx: template => template.hasDocx,
-    customized: template => template.isCustomized,
-    free: template => template.isFree,
+  const predicateByFilter: Record<
+    Exclude<TemplateFilter, 'all'>,
+    (template: Template) => boolean
+  > = {
+    'with-photo': (template) => template.hasPhoto,
+    'two-column': (template) => template.isTwoColumn,
+    ats: (template) => template.isAts,
+    docx: (template) => template.hasDocx,
+    customized: (template) => template.isCustomized,
+    free: (template) => template.isFree,
   }
 
   return templates.filter(predicateByFilter[selectedTemplateFilter.value])
 })
 
-const selectedTemplateConfig = computed(() => templates.find(template => template.id === selectedTemplate.value) ?? templates[0])
+const selectedTemplateConfig = computed(
+  () =>
+    templates.find((template) => template.id === selectedTemplate.value) ??
+    templates[0],
+)
 
 const selectedTemplateComponent = computed(() => {
   const componentByVariant = {
@@ -310,8 +495,12 @@ const selectedTemplateComponent = computed(() => {
   return componentByVariant[selectedTemplateConfig.value.variant]
 })
 
-const templateSupportsPhoto = computed(() => selectedTemplateConfig.value.hasPhoto)
-const templateUsesTimeline = computed(() => selectedTemplateConfig.value.useTimeline)
+const templateSupportsPhoto = computed(
+  () => selectedTemplateConfig.value.hasPhoto,
+)
+const templateUsesTimeline = computed(
+  () => selectedTemplateConfig.value.useTimeline,
+)
 const pdfModalOpen = ref(false)
 const aiMenuOpen = ref(false)
 const aiCreateModalOpen = ref(false)
@@ -321,7 +510,9 @@ const aiReviewContent = ref('')
 const aiCreateLoading = ref(false)
 const aiReviewLoading = ref(false)
 const aiActionError = ref('')
-const { locale, t } = useI18n()
+const aiElapsedSeconds = ref(0)
+let aiElapsedTimer: ReturnType<typeof setInterval> | null = null
+const { t } = useI18n()
 const { loggedIn, fetch: refreshSession } = useUserSession()
 const loginDialogOpen = ref(false)
 const loginLoading = ref(false)
@@ -351,14 +542,22 @@ function clearPhoto() {
 function setExperienceBullets(index: number, value: string) {
   resume.experiences[index].bullets = value
     .split('\n')
-    .map(item => item.trim())
+    .map((item) => item.trim())
     .filter(Boolean)
 }
 
-const getExperienceBullets = (index: number) => resume.experiences[index].bullets.join('\n')
+const getExperienceBullets = (index: number) =>
+  resume.experiences[index].bullets.join('\n')
 
 function addExperience() {
-  resume.experiences.push({ role: '', company: '', city: '', start: '', end: '', bullets: [] })
+  resume.experiences.push({
+    role: '',
+    company: '',
+    city: '',
+    start: '',
+    end: '',
+    bullets: [],
+  })
 }
 
 function removeExperience(index: number) {
@@ -374,7 +573,14 @@ function moveExperience(index: number, direction: 'up' | 'down') {
 }
 
 function addEducation() {
-  resume.education.push({ degree: '', school: '', city: '', start: '', end: '', note: '' })
+  resume.education.push({
+    degree: '',
+    school: '',
+    city: '',
+    start: '',
+    end: '',
+    note: '',
+  })
 }
 
 function removeEducation(index: number) {
@@ -407,9 +613,21 @@ function removeLanguage(index: number) {
   resume.languages.splice(index, 1)
 }
 
-const activeTheme = computed(() => colorThemes.find(theme => theme.name === selectedTheme.value) ?? colorThemes[0])
-const activeRoundedClass = computed(() => roundedOptions.find(item => item.value === selectedRounded.value)?.className ?? 'radius-md')
-const activeTextStyleClass = computed(() => textStyleOptions.find(item => item.value === selectedTextStyle.value)?.className ?? 'text-style-clean')
+const activeTheme = computed(
+  () =>
+    colorThemes.find((theme) => theme.name === selectedTheme.value) ??
+    colorThemes[0],
+)
+const activeRoundedClass = computed(
+  () =>
+    roundedOptions.find((item) => item.value === selectedRounded.value)
+      ?.className ?? 'radius-md',
+)
+const activeTextStyleClass = computed(
+  () =>
+    textStyleOptions.find((item) => item.value === selectedTextStyle.value)
+      ?.className ?? 'text-style-clean',
+)
 const previewExportRef = ref<HTMLElement | null>(null)
 
 const previewStyle = computed(() => ({
@@ -420,8 +638,10 @@ const previewStyle = computed(() => ({
 
 async function buildResumePdfBlob() {
   if (!previewExportRef.value || !import.meta.client) return ''
-  const stylesheetContent = Array.from(document.querySelectorAll('style,link[rel="stylesheet"]'))
-    .map(node => node.outerHTML)
+  const stylesheetContent = Array.from(
+    document.querySelectorAll('style,link[rel="stylesheet"]'),
+  )
+    .map((node) => node.outerHTML)
     .join('\n')
   const content = previewExportRef.value.outerHTML
 
@@ -522,10 +742,15 @@ async function onLoginSubmit(payload: {
 
 function startImportProgress() {
   importProgress.value = 0
+  importElapsedSeconds.value = 0
   if (importProgressTimer) clearInterval(importProgressTimer)
+  if (importElapsedTimer) clearInterval(importElapsedTimer)
   importProgressTimer = setInterval(() => {
     importProgress.value = Math.min(importProgress.value + 8, 92)
   }, 450)
+  importElapsedTimer = setInterval(() => {
+    importElapsedSeconds.value += 1
+  }, 1000)
 }
 
 function stopImportProgress() {
@@ -533,80 +758,167 @@ function stopImportProgress() {
     clearInterval(importProgressTimer)
     importProgressTimer = null
   }
+  if (importElapsedTimer) {
+    clearInterval(importElapsedTimer)
+    importElapsedTimer = null
+  }
 }
 
-function extractPdfText(raw: string) {
-  const sanitized = Array.from(raw)
-    .map(char => {
-      const code = char.charCodeAt(0)
-      if ((code >= 0 && code <= 8) || code === 11 || code === 12 || (code >= 14 && code <= 31)) return ' '
-      return char
-    })
-    .join('')
-
-  return sanitized
-    .replace(/\s+/g, ' ')
-    .trim()
+function startAiElapsedTimer() {
+  aiElapsedSeconds.value = 0
+  if (aiElapsedTimer) clearInterval(aiElapsedTimer)
+  aiElapsedTimer = setInterval(() => {
+    aiElapsedSeconds.value += 1
+  }, 1000)
 }
 
-function splitListItems(value: string) {
+function stopAiElapsedTimer() {
+  if (aiElapsedTimer) {
+    clearInterval(aiElapsedTimer)
+    aiElapsedTimer = null
+  }
+}
+
+function normalizeDateLabel(value?: string) {
+  if (!value) return ''
   return value
-    .split(/(?:\s*[-•]\s+|\s{2,})/g)
-    .map(item => item.trim())
-    .filter(Boolean)
 }
 
-function applyResumeDataFromText(text: string) {
-  const email = text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0] ?? ''
-  const phone = text.match(/(\+?\d[\d\s().-]{6,}\d)/)?.[0] ?? ''
-  const fullName = text.match(/(?:curriculum vitae|resume)\s*[:-]?\s*([A-Z][A-Za-z-]+(?:\s+[A-Z][A-Za-z-]+)+)/i)?.[1]
-    ?? text.match(/^([A-Z][A-Za-z-]+(?:\s+[A-Z][A-Za-z-]+)+)/)?.[1]
-    ?? ''
+function inferNameParts(fullName?: string) {
+  const normalized = String(fullName || '').trim()
+  if (!normalized)
+    return { firstName: resume.firstName, lastName: resume.lastName }
+  const parts = normalized.split(/\s+/)
+  const firstName = parts.shift() || resume.firstName
+  const lastName = parts.join(' ') || resume.lastName
+  return { firstName, lastName }
+}
 
-  if (fullName) {
-    const parts = fullName.trim().split(/\s+/)
-    resume.firstName = parts.shift() ?? resume.firstName
-    resume.lastName = parts.join(' ') || resume.lastName
-  }
-  if (email) resume.email = email
-  if (phone) resume.phone = phone
+function applyStructuredResumeData(payload: StructuredResumeResponse) {
+  const data = payload.data
+  if (!data) return
 
-  const normalizedText = text.replace(/\s+/g, ' ')
+  const user = data.user || {}
+  const userNames = inferNameParts(user.fullName)
 
-  const summaryMatch = normalizedText.match(/(?:summary|profile|about)\s*[:-]?\s*(.{80,500}?)(?:experience|skills|education|projects|$)/i)
-  if (summaryMatch?.[1]) resume.profile = summaryMatch[1].trim()
+  resume.firstName = userNames.firstName
+  resume.lastName = userNames.lastName
+  resume.email = user.email || resume.email
+  resume.phone = user.phone || resume.phone
+  resume.profile = user.summary || resume.profile
 
-  const skillsMatch = normalizedText.match(/skills?\s*[:-]?\s*(.{20,350}?)(?:languages|experience|education|projects|$)/i)
-  if (skillsMatch?.[1]) {
-    const skillItems = splitListItems(skillsMatch[1]).slice(0, 10)
-    if (skillItems.length) {
-      resume.skills = skillItems.map(name => ({ name, level: 80 }))
+  const location = String(user.address || '').trim()
+  if (location) {
+    const [city, ...countryParts] = location
+      .split(',')
+      .map((part) => part.trim())
+      .filter(Boolean)
+    if (city) resume.city = city
+    if (countryParts.length) {
+      resume.country = countryParts[countryParts.length - 1]
     }
   }
 
-  const languagesMatch = normalizedText.match(/languages?\s*[:-]?\s*(.{10,180}?)(?:experience|education|projects|$)/i)
-  if (languagesMatch?.[1]) {
-    const languageItems = splitListItems(languagesMatch[1]).slice(0, 6)
-    if (languageItems.length) {
-      resume.languages = languageItems.map(name => ({ name, level: 75 }))
-    }
+  if (Array.isArray(data.skills) && data.skills.length) {
+    resume.skills = data.skills.map((name) => ({
+      name: String(name),
+      level: 80,
+    }))
   }
 
-  const expMatch = normalizedText.match(/experience[s]?\s*[:-]?\s*(.{80,650}?)(?:education|projects|skills|$)/i)
-  if (expMatch?.[1]) {
-    const bullets = splitListItems(expMatch[1]).slice(0, 4)
-    if (bullets.length) {
-      resume.experiences = [
-        {
-          role: resume.role || 'Imported role',
-          company: 'Imported company',
-          city: resume.city || '',
-          start: '',
-          end: '',
-          bullets,
-        },
-      ]
-    }
+  if (Array.isArray(data.languages) && data.languages.length) {
+    resume.languages = data.languages
+      .filter((language) => String(language?.name || '').trim().length > 0)
+      .map((language) => ({
+        name: String(language.name),
+        level: Number.parseInt(String(language.level || ''), 10) || 75,
+      }))
+  }
+
+  if (Array.isArray(data.hobbies) && data.hobbies.length) {
+    resume.hobbies = data.hobbies.map((hobby) => String(hobby))
+  }
+
+  if (Array.isArray(data.experiences) && data.experiences.length) {
+    resume.experiences = data.experiences.map((experience) => ({
+      role: String(experience.title || ''),
+      company: String(experience.company || ''),
+      city: '',
+      start: normalizeDateLabel(experience.startDate),
+      end: normalizeDateLabel(experience.endDate),
+      bullets: String(experience.description || '')
+        .split(/\n|•|-/g)
+        .map((bullet) => bullet.trim())
+        .filter(Boolean),
+    }))
+  }
+
+  if (Array.isArray(data.educations) && data.educations.length) {
+    resume.education = data.educations.map((education) => ({
+      degree: String(education.title || ''),
+      school: String(education.school || ''),
+      city: '',
+      start: normalizeDateLabel(education.startDate),
+      end: normalizeDateLabel(education.endDate),
+      note: String(education.description || ''),
+    }))
+  }
+
+  if (Array.isArray(data.certifications) && data.certifications.length) {
+    resume.courses = data.certifications.map((certificate) => ({
+      title: String(certificate.title || ''),
+      school: String(certificate.issuer || ''),
+      start: normalizeDateLabel(certificate.date),
+      end: '',
+    }))
+  }
+
+  if (Array.isArray(data.projects) && data.projects.length) {
+    resume.projects = data.projects.map((project) => ({
+      name: String(project.title || ''),
+      summary: [project.description, project.link].filter(Boolean).join(' • '),
+    }))
+  }
+
+  if (Array.isArray(data.references) && data.references.length) {
+    resume.references = data.references.map((reference) => ({
+      name: String(reference.name || ''),
+      company: String(reference.description || ''),
+      email: String(reference.contact || ''),
+      phone: '',
+    }))
+  }
+}
+
+function buildReviewPayload() {
+  return {
+    resumeData: {
+      contactInformation: {
+        fullName: [resume.firstName, resume.lastName]
+          .filter(Boolean)
+          .join(' ')
+          .trim(),
+        email: resume.email,
+        phone: resume.phone,
+        address: [resume.city, resume.country].filter(Boolean).join(', '),
+        links: [],
+      },
+      experiences: resume.experiences.map((experience) => ({
+        title: experience.role,
+        company: experience.company,
+        startDate: experience.start,
+        endDate: experience.end,
+        description: experience.bullets.join('\n'),
+      })),
+      educations: resume.education.map((education) => ({
+        title: education.degree,
+        school: education.school,
+        startDate: education.start,
+        endDate: education.end,
+        description: education.note,
+      })),
+      skills: resume.skills.map((skill) => skill.name).filter(Boolean),
+    },
   }
 }
 
@@ -621,20 +933,29 @@ async function handlePdfImport(event: Event) {
   startImportProgress()
 
   try {
-    const raw = await file.text()
-    const extracted = extractPdfText(raw)
-    importMessage.value = t('resumeBuilder.create.import.messages.analyzingWithAi')
-    await new Promise(resolve => setTimeout(resolve, 1800))
-    applyResumeDataFromText(extracted)
+    const formData = new FormData()
+    formData.append('document', file)
+
+    importMessage.value = t(
+      'resumeBuilder.create.import.messages.analyzingWithAi',
+    )
+    const response = await $fetch<StructuredResumeResponse>(
+      '/api/recruit/general/resumes/parse-pdf',
+      {
+        method: 'POST',
+        body: formData,
+      },
+    )
+    applyStructuredResumeData(response)
     importProgress.value = 100
     importMessageType.value = 'success'
-    importMessage.value = t('resumeBuilder.create.import.messages.importSuccess')
-  }
-  catch {
+    importMessage.value = t(
+      'resumeBuilder.create.import.messages.importSuccess',
+    )
+  } catch {
     importMessageType.value = 'error'
     importMessage.value = t('resumeBuilder.create.import.messages.importFailed')
-  }
-  finally {
+  } finally {
     stopImportProgress()
     importInProgress.value = false
     input.value = ''
@@ -647,28 +968,10 @@ function triggerPdfImport() {
 
 function syncWithProvider(provider: 'Xing' | 'LinkedIn') {
   importMessageType.value = 'info'
-  importMessage.value = t('resumeBuilder.create.import.messages.providerSyncSoon', { provider })
-}
-
-function applyGeneratedResumePayload(payload: Partial<ResumeModel>) {
-  if (typeof payload.role === 'string') resume.role = payload.role
-  if (typeof payload.firstName === 'string') resume.firstName = payload.firstName
-  if (typeof payload.lastName === 'string') resume.lastName = payload.lastName
-  if (typeof payload.email === 'string') resume.email = payload.email
-  if (typeof payload.phone === 'string') resume.phone = payload.phone
-  if (typeof payload.city === 'string') resume.city = payload.city
-  if (typeof payload.country === 'string') resume.country = payload.country
-  if (typeof payload.profile === 'string') resume.profile = payload.profile
-  if (typeof payload.photoUrl === 'string') resume.photoUrl = payload.photoUrl
-
-  if (Array.isArray(payload.skills)) resume.skills = payload.skills
-  if (Array.isArray(payload.languages)) resume.languages = payload.languages
-  if (Array.isArray(payload.hobbies)) resume.hobbies = payload.hobbies
-  if (Array.isArray(payload.experiences)) resume.experiences = payload.experiences
-  if (Array.isArray(payload.education)) resume.education = payload.education
-  if (Array.isArray(payload.references)) resume.references = payload.references
-  if (Array.isArray(payload.courses)) resume.courses = payload.courses
-  if (Array.isArray(payload.projects)) resume.projects = payload.projects
+  importMessage.value = t(
+    'resumeBuilder.create.import.messages.providerSyncSoon',
+    { provider },
+  )
 }
 
 async function runAiCreate() {
@@ -679,38 +982,27 @@ async function runAiCreate() {
 
   aiCreateLoading.value = true
   aiActionError.value = ''
+  startAiElapsedTimer()
 
   try {
-    const response = await $fetch<{ choices?: Array<{ message?: { content?: string | null } }> }>('/api/ai-gateway/chat', {
-      method: 'POST',
-      body: {
-        temperature: 0.3,
-        response_format: {
-          type: 'json_object',
+    const response = await $fetch<StructuredResumeResponse>(
+      '/api/recruit/general/resumes/structure-from-text',
+      {
+        method: 'POST',
+        body: {
+          resumeText: aiProfilePrompt.value,
         },
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a resume assistant. Return strict JSON only with this exact shape: {"resume": {"role": string, "firstName": string, "lastName": string, "email": string, "phone": string, "city": string, "country": string, "profile": string, "photoUrl": string, "skills": [{"name": string, "level": number}], "languages": [{"name": string, "level": number}], "hobbies": string[], "experiences": [{"role": string, "company": string, "city": string, "start": string, "end": string, "bullets": string[]}], "education": [{"degree": string, "school": string, "city": string, "start": string, "end": string, "note": string}], "references": [{"name": string, "company": string, "email": string, "phone": string}], "courses": [{"title": string, "school": string, "start": string, "end": string}], "projects": [{"name": string, "summary": string}] }}',
-          },
-          {
-            role: 'user',
-            content: `Language: ${locale.value}. Template: ${selectedTemplate.value}. User summary: ${aiProfilePrompt.value}. Current resume draft: ${JSON.stringify(resume)}. Generate a complete and coherent resume in the requested language.`,
-          },
-        ],
       },
-    })
-
-    const content = response.choices?.[0]?.message?.content
-    if (!content) {
-      throw new Error('Empty AI response')
-    }
-    const parsed = JSON.parse(content) as { resume?: Partial<ResumeModel> }
-    applyGeneratedResumePayload(parsed.resume ?? {})
+    )
+    applyStructuredResumeData(response)
     aiCreateModalOpen.value = false
   } catch (error) {
-    aiActionError.value = error instanceof Error ? error.message : 'Unable to generate resume with AI.'
+    aiActionError.value =
+      error instanceof Error
+        ? error.message
+        : 'Unable to generate resume with AI.'
   } finally {
+    stopAiElapsedTimer()
     aiCreateLoading.value = false
   }
 }
@@ -719,38 +1011,37 @@ async function runAiReview() {
   aiReviewLoading.value = true
   aiActionError.value = ''
   aiReviewContent.value = ''
+  startAiElapsedTimer()
 
   try {
-    const response = await $fetch<{ choices?: Array<{ message?: { content?: string | null } }> }>('/api/ai-gateway/chat', {
-      method: 'POST',
-      body: {
-        temperature: 0.2,
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a senior resume reviewer. Return detailed feedback in plain text with these sections: 1) Detected errors, 2) Suggested improvements, 3) Rewritten examples, 4) Priority actions.',
-          },
-          {
-            role: 'user',
-            content: `Review this resume in language "${locale.value}" and adapt recommendations for template "${selectedTemplate.value}". Resume JSON: ${JSON.stringify(resume)}.`,
-          },
-        ],
+    const response = await $fetch<{ review?: string }>(
+      '/api/recruit/general/resumes/review',
+      {
+        method: 'POST',
+        body: buildReviewPayload(),
       },
-    })
+    )
 
-    aiReviewContent.value = String(response.choices?.[0]?.message?.content || '').trim()
+    aiReviewContent.value = String(response.review || '').trim()
     if (!aiReviewContent.value) {
       throw new Error('Empty AI review response')
     }
     aiReviewModalOpen.value = true
   } catch (error) {
-    aiActionError.value = error instanceof Error ? error.message : 'Unable to review resume with AI.'
+    aiActionError.value =
+      error instanceof Error
+        ? error.message
+        : 'Unable to review resume with AI.'
   } finally {
+    stopAiElapsedTimer()
     aiReviewLoading.value = false
   }
 }
 
-const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => false)
+const showRightDrawerDesktop = useState(
+  'show-right-drawer-desktop',
+  () => false,
+)
 const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
 const previousDesktopRightDrawer = showRightDrawerDesktop.value
 const previousMobileRightDrawer = showRightDrawerMobile.value
@@ -760,6 +1051,7 @@ showRightDrawerMobile.value = false
 
 onUnmounted(() => {
   stopImportProgress()
+  stopAiElapsedTimer()
   showRightDrawerDesktop.value = previousDesktopRightDrawer
   showRightDrawerMobile.value = previousMobileRightDrawer
 })
@@ -769,27 +1061,75 @@ onUnmounted(() => {
   <v-container fluid class="resume-create pa-0">
     <client-only>
       <teleport to="#app-bar">
-        <v-btn color="primary" class="mx-2" size="small" icon="mdi-content-save-outline" />
-        <v-btn color="secondary" class="mx-2" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview" />
-        <v-btn color="info" class="mx-2" size="small" variant="outlined" icon="mdi-download" @click="onDownloadPdfClick" />
-        <v-menu v-model="aiMenuOpen" :close-on-content-click="false" location="bottom end">
+        <v-btn
+          color="primary"
+          class="mx-2"
+          size="small"
+          icon="mdi-content-save-outline"
+        />
+        <v-btn
+          color="secondary"
+          class="mx-2"
+          size="small"
+          variant="outlined"
+          icon="mdi-file-pdf-box"
+          @click="openPdfPreview"
+        />
+        <v-btn
+          color="info"
+          class="mx-2"
+          size="small"
+          variant="outlined"
+          icon="mdi-download"
+          @click="onDownloadPdfClick"
+        />
+        <v-menu
+          v-model="aiMenuOpen"
+          :close-on-content-click="false"
+          location="bottom end"
+        >
           <template #activator="{ props }">
-            <v-btn color="deep-purple" class="mx-2" size="small" variant="tonal" prepend-icon="mdi-creation" v-bind="props">
+            <v-btn
+              color="deep-purple"
+              class="mx-2"
+              size="small"
+              variant="tonal"
+              prepend-icon="mdi-creation"
+              v-bind="props"
+            >
               KI
             </v-btn>
           </template>
           <v-card width="420" class="pa-3">
             <div class="ki-menu-grid">
-              <v-card variant="outlined" class="ki-card" @click="aiCreateModalOpen = true; aiMenuOpen = false">
-                <v-card-title class="text-subtitle-1">Create with KI</v-card-title>
+              <v-card
+                variant="outlined"
+                class="ki-card"
+                @click="
+                  aiCreateModalOpen = true
+                  aiMenuOpen = false
+                "
+              >
+                <v-card-title class="text-subtitle-1"
+                  >Create with KI</v-card-title
+                >
                 <v-card-text class="text-body-2">
-                  Generate a complete resume from a short summary of studies and skills.
+                  Generate a complete resume from a short summary of studies and
+                  skills.
                 </v-card-text>
               </v-card>
-              <v-card variant="outlined" class="ki-card" @click="runAiReview(); aiMenuOpen = false">
+              <v-card
+                variant="outlined"
+                class="ki-card"
+                @click="
+                  runAiReview()
+                  aiMenuOpen = false
+                "
+              >
                 <v-card-title class="text-subtitle-1">Review</v-card-title>
                 <v-card-text class="text-body-2">
-                  Ask KI to detect errors and suggest improvements for your current resume.
+                  Ask KI to detect errors and suggest improvements for your
+                  current resume.
                 </v-card-text>
               </v-card>
             </div>
@@ -812,27 +1152,82 @@ onUnmounted(() => {
               <div class="mb-2">
                 <div class="photo-uploader">
                   <v-avatar size="72" rounded="lg">
-                    <v-img :src="resume.photoUrl || '/img/default_avatar.svg'" cover />
+                    <v-img
+                      :src="resume.photoUrl || '/img/default_avatar.svg'"
+                      cover
+                    />
                   </v-avatar>
                   <div class="photo-actions">
-                    <v-btn size="small" prepend-icon="mdi-upload" variant="tonal" @click="openPhotoPicker">
+                    <v-btn
+                      size="small"
+                      prepend-icon="mdi-upload"
+                      variant="tonal"
+                      @click="openPhotoPicker"
+                    >
                       Upload photo
                     </v-btn>
-                    <v-btn size="small" prepend-icon="mdi-delete-outline" variant="text" color="error" @click="clearPhoto">
+                    <v-btn
+                      size="small"
+                      prepend-icon="mdi-delete-outline"
+                      variant="text"
+                      color="error"
+                      @click="clearPhoto"
+                    >
                       Remove
                     </v-btn>
-                    <input ref="uploadInput" type="file" accept="image/*" class="d-none" @change="onPhotoSelected">
+                    <input
+                      ref="uploadInput"
+                      type="file"
+                      accept="image/*"
+                      class="d-none"
+                      @change="onPhotoSelected"
+                    />
                   </div>
                 </div>
               </div>
               <div class="grid-2 py-3">
-                <v-text-field v-model="resume.role" label="Job target" flat hide-details />
-                <v-text-field v-model="resume.firstName" label="First name" flat hide-details />
-                <v-text-field v-model="resume.lastName" label="Last name" flat hide-details />
-                <v-text-field v-model="resume.email" label="Email"  flat hide-details />
-                <v-text-field v-model="resume.phone" label="Phone" flat hide-details />
-                <v-text-field v-model="resume.city" label="City"  flat hide-details />
-                <v-text-field v-model="resume.country" label="Country" flat hide-details />
+                <v-text-field
+                  v-model="resume.role"
+                  label="Job target"
+                  flat
+                  hide-details
+                />
+                <v-text-field
+                  v-model="resume.firstName"
+                  label="First name"
+                  flat
+                  hide-details
+                />
+                <v-text-field
+                  v-model="resume.lastName"
+                  label="Last name"
+                  flat
+                  hide-details
+                />
+                <v-text-field
+                  v-model="resume.email"
+                  label="Email"
+                  flat
+                  hide-details
+                />
+                <v-text-field
+                  v-model="resume.phone"
+                  label="Phone"
+                  flat
+                  hide-details
+                />
+                <v-text-field
+                  v-model="resume.city"
+                  label="City"
+                  flat
+                  hide-details
+                />
+                <v-text-field
+                  v-model="resume.country"
+                  label="Country"
+                  flat
+                  hide-details
+                />
               </div>
             </article>
 
@@ -840,22 +1235,69 @@ onUnmounted(() => {
               <header class="mb-4">
                 <h2>Professional summary</h2>
               </header>
-              <v-textarea v-model="resume.profile" label="Summary" rows="8" flat hide-details />
+              <v-textarea
+                v-model="resume.profile"
+                label="Summary"
+                rows="8"
+                flat
+                hide-details
+              />
             </article>
 
             <article class="form-section mb-4">
-              <header class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap">
+              <header
+                class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap"
+              >
                 <div>
                   <h2>Experiences</h2>
                 </div>
-                <v-btn prepend-icon="mdi-plus" variant="outlined" size="small" @click="addExperience">Add</v-btn>
+                <v-btn
+                  prepend-icon="mdi-plus"
+                  variant="outlined"
+                  size="small"
+                  @click="addExperience"
+                  >Add</v-btn
+                >
               </header>
-              <v-row v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" >
-                <v-col cols="12" md="6"><v-text-field v-model="experience.role" label="Role" variant="outlined" hide-details /></v-col>
-                <v-col cols="12" md="6"><v-text-field v-model="experience.company" label="Company" variant="outlined" hide-details /></v-col>
-                <v-col cols="12" md="6"><v-text-field v-model="experience.city" label="City" variant="outlined" hide-details /></v-col>
-                <v-col cols="12" md="6"><v-text-field v-model="experience.start" label="Start" variant="outlined" hide-details /></v-col>
-                <v-col cols="12" md="6"><v-text-field v-model="experience.end" label="End" variant="outlined" hide-details /></v-col>
+              <v-row
+                v-for="(experience, index) in resume.experiences"
+                :key="`${experience.company}-${index}`"
+              >
+                <v-col cols="12" md="6"
+                  ><v-text-field
+                    v-model="experience.role"
+                    label="Role"
+                    variant="outlined"
+                    hide-details
+                /></v-col>
+                <v-col cols="12" md="6"
+                  ><v-text-field
+                    v-model="experience.company"
+                    label="Company"
+                    variant="outlined"
+                    hide-details
+                /></v-col>
+                <v-col cols="12" md="6"
+                  ><v-text-field
+                    v-model="experience.city"
+                    label="City"
+                    variant="outlined"
+                    hide-details
+                /></v-col>
+                <v-col cols="12" md="6"
+                  ><v-text-field
+                    v-model="experience.start"
+                    label="Start"
+                    variant="outlined"
+                    hide-details
+                /></v-col>
+                <v-col cols="12" md="6"
+                  ><v-text-field
+                    v-model="experience.end"
+                    label="End"
+                    variant="outlined"
+                    hide-details
+                /></v-col>
                 <v-col cols="12" md="10">
                   <v-textarea
                     :model-value="getExperienceBullets(index)"
@@ -863,43 +1305,127 @@ onUnmounted(() => {
                     rows="8"
                     variant="outlined"
                     hide-details
-                    @update:model-value="value => setExperienceBullets(index, String(value))"
+                    @update:model-value="
+                      (value) => setExperienceBullets(index, String(value))
+                    "
                   />
                 </v-col>
                 <v-col cols="12" md="2" class="d-flex align-center">
                   <div class="d-flex flex-column ga-1">
-                    <v-btn icon="mdi-chevron-up" variant="text" size="x-small" :disabled="index === 0" @click="moveExperience(index, 'up')" />
-                    <v-btn icon="mdi-chevron-down" variant="text" size="x-small" :disabled="index === resume.experiences.length - 1" @click="moveExperience(index, 'down')" />
-                    <v-btn icon="mdi-delete-outline" color="error" variant="text" size="small" @click="removeExperience(index)" />
+                    <v-btn
+                      icon="mdi-chevron-up"
+                      variant="text"
+                      size="x-small"
+                      :disabled="index === 0"
+                      @click="moveExperience(index, 'up')"
+                    />
+                    <v-btn
+                      icon="mdi-chevron-down"
+                      variant="text"
+                      size="x-small"
+                      :disabled="index === resume.experiences.length - 1"
+                      @click="moveExperience(index, 'down')"
+                    />
+                    <v-btn
+                      icon="mdi-delete-outline"
+                      color="error"
+                      variant="text"
+                      size="small"
+                      @click="removeExperience(index)"
+                    />
                   </div>
                 </v-col>
               </v-row>
-
             </article>
 
             <article class="form-section mb-4">
-              <header class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap">
+              <header
+                class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap"
+              >
                 <div>
                   <h2>Education</h2>
                 </div>
-                <v-btn prepend-icon="mdi-plus" variant="outlined" size="small" @click="addEducation">Add</v-btn>
+                <v-btn
+                  prepend-icon="mdi-plus"
+                  variant="outlined"
+                  size="small"
+                  @click="addEducation"
+                  >Add</v-btn
+                >
               </header>
-              <v-row v-for="(item, index) in resume.education" :key="`${item.school}-${index}`">
-                <v-col cols="12" md="6"><v-text-field v-model="item.degree" label="Degree" variant="outlined" hide-details /></v-col>
-                <v-col cols="12" md="6"><v-text-field v-model="item.school" label="School" variant="outlined" hide-details /></v-col>
-                <v-col cols="12" md="6"><v-text-field v-model="item.city" label="City" variant="outlined" hide-details /></v-col>
-                <v-col cols="12" md="6"><v-text-field v-model="item.start" label="Start" variant="outlined" hide-details /></v-col>
-                <v-col cols="12" md="6"><v-text-field v-model="item.end" label="End" variant="outlined" hide-details /></v-col>
-                <v-col cols="12" md="10"><v-textarea v-model="item.note" label="Note" rows="8" variant="outlined" hide-details /></v-col>
+              <v-row
+                v-for="(item, index) in resume.education"
+                :key="`${item.school}-${index}`"
+              >
+                <v-col cols="12" md="6"
+                  ><v-text-field
+                    v-model="item.degree"
+                    label="Degree"
+                    variant="outlined"
+                    hide-details
+                /></v-col>
+                <v-col cols="12" md="6"
+                  ><v-text-field
+                    v-model="item.school"
+                    label="School"
+                    variant="outlined"
+                    hide-details
+                /></v-col>
+                <v-col cols="12" md="6"
+                  ><v-text-field
+                    v-model="item.city"
+                    label="City"
+                    variant="outlined"
+                    hide-details
+                /></v-col>
+                <v-col cols="12" md="6"
+                  ><v-text-field
+                    v-model="item.start"
+                    label="Start"
+                    variant="outlined"
+                    hide-details
+                /></v-col>
+                <v-col cols="12" md="6"
+                  ><v-text-field
+                    v-model="item.end"
+                    label="End"
+                    variant="outlined"
+                    hide-details
+                /></v-col>
+                <v-col cols="12" md="10"
+                  ><v-textarea
+                    v-model="item.note"
+                    label="Note"
+                    rows="8"
+                    variant="outlined"
+                    hide-details
+                /></v-col>
                 <v-col cols="12" md="2" class="d-flex align-center">
                   <div class="d-flex flex-column ga-1">
-                    <v-btn icon="mdi-chevron-up" variant="text" size="x-small" :disabled="index === 0" @click="moveEducation(index, 'up')" />
-                    <v-btn icon="mdi-chevron-down" variant="text" size="x-small" :disabled="index === resume.education.length - 1" @click="moveEducation(index, 'down')" />
-                    <v-btn icon="mdi-delete-outline" color="error" variant="text" size="small" @click="removeEducation(index)" />
+                    <v-btn
+                      icon="mdi-chevron-up"
+                      variant="text"
+                      size="x-small"
+                      :disabled="index === 0"
+                      @click="moveEducation(index, 'up')"
+                    />
+                    <v-btn
+                      icon="mdi-chevron-down"
+                      variant="text"
+                      size="x-small"
+                      :disabled="index === resume.education.length - 1"
+                      @click="moveEducation(index, 'down')"
+                    />
+                    <v-btn
+                      icon="mdi-delete-outline"
+                      color="error"
+                      variant="text"
+                      size="small"
+                      @click="removeEducation(index)"
+                    />
                   </div>
                 </v-col>
               </v-row>
-
             </article>
 
             <article class="form-section mb-4">
@@ -909,14 +1435,45 @@ onUnmounted(() => {
               <div>
                 <div class="d-flex align-center justify-space-between my-4">
                   <v-chip color="primary">Skills</v-chip>
-                  <v-btn size="small" variant="outlined" prepend-icon="mdi-plus" @click="addSkill">Add</v-btn>
+                  <v-btn
+                    size="small"
+                    variant="outlined"
+                    prepend-icon="mdi-plus"
+                    @click="addSkill"
+                    >Add</v-btn
+                  >
                 </div>
                 <div>
-                  <v-row v-for="(skill, index) in resume.skills" :key="`skill-${index}`" class="mb-2">
-                    <v-col cols="5"><v-text-field v-model="skill.name" label="Skill" variant="outlined" hide-details /></v-col>
-                    <v-col cols="5"><v-slider v-model="skill.level" min="0" max="100" step="5" thumb-label color="primary" hide-details /></v-col>
+                  <v-row
+                    v-for="(skill, index) in resume.skills"
+                    :key="`skill-${index}`"
+                    class="mb-2"
+                  >
+                    <v-col cols="5"
+                      ><v-text-field
+                        v-model="skill.name"
+                        label="Skill"
+                        variant="outlined"
+                        hide-details
+                    /></v-col>
+                    <v-col cols="5"
+                      ><v-slider
+                        v-model="skill.level"
+                        min="0"
+                        max="100"
+                        step="5"
+                        thumb-label
+                        color="primary"
+                        hide-details
+                    /></v-col>
                     <v-col cols="2" class="d-flex align-center justify-center">
-                      <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeSkill(index)" />
+                      <v-btn
+                        icon="mdi-delete-outline"
+                        size="x-small"
+                        color="error"
+                        variant="text"
+                        @click="removeSkill(index)"
+                      />
                     </v-col>
                   </v-row>
                 </div>
@@ -925,14 +1482,45 @@ onUnmounted(() => {
               <div class="my-3">
                 <div class="d-flex align-center justify-space-between my-4">
                   <v-chip color="primary"> Languages</v-chip>
-                  <v-btn size="small" variant="outlined" prepend-icon="mdi-plus" @click="addLanguage">Add</v-btn>
+                  <v-btn
+                    size="small"
+                    variant="outlined"
+                    prepend-icon="mdi-plus"
+                    @click="addLanguage"
+                    >Add</v-btn
+                  >
                 </div>
                 <div>
-                  <v-row v-for="(language, index) in resume.languages" :key="`language-${index}`" class="mb-2">
-                    <v-col cols="5"><v-text-field v-model="language.name" label="Language" variant="outlined" hide-details /></v-col>
-                    <v-col cols="5"><v-slider v-model="language.level" min="0" max="100" step="5" thumb-label color="primary" hide-details /></v-col>
+                  <v-row
+                    v-for="(language, index) in resume.languages"
+                    :key="`language-${index}`"
+                    class="mb-2"
+                  >
+                    <v-col cols="5"
+                      ><v-text-field
+                        v-model="language.name"
+                        label="Language"
+                        variant="outlined"
+                        hide-details
+                    /></v-col>
+                    <v-col cols="5"
+                      ><v-slider
+                        v-model="language.level"
+                        min="0"
+                        max="100"
+                        step="5"
+                        thumb-label
+                        color="primary"
+                        hide-details
+                    /></v-col>
                     <v-col cols="2" class="d-flex align-center justify-center">
-                      <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeLanguage(index)" />
+                      <v-btn
+                        icon="mdi-delete-outline"
+                        size="x-small"
+                        color="error"
+                        variant="text"
+                        @click="removeLanguage(index)"
+                      />
                     </v-col>
                   </v-row>
                 </div>
@@ -958,7 +1546,9 @@ onUnmounted(() => {
                   v-for="template in filteredTemplates"
                   :key="template.id"
                   class="template-card"
-                  :class="{ 'template-card--active': selectedTemplate === template.id }"
+                  :class="{
+                    'template-card--active': selectedTemplate === template.id,
+                  }"
                   variant="outlined"
                   @click="selectedTemplate = template.id"
                 >
@@ -966,10 +1556,32 @@ onUnmounted(() => {
                   <v-card-text>
                     <strong>{{ template.title }}</strong>
                     <div class="template-tags">
-                      <v-chip v-if="template.isAts" size="x-small" color="primary" variant="tonal">ATS</v-chip>
-                      <v-chip v-if="template.hasDocx" size="x-small" color="warning" variant="tonal">DOCX</v-chip>
-                      <v-chip v-if="template.hasPhoto" size="x-small" variant="outlined">Photo</v-chip>
-                      <v-chip v-if="template.isTwoColumn" size="x-small" variant="outlined">2 cols</v-chip>
+                      <v-chip
+                        v-if="template.isAts"
+                        size="x-small"
+                        color="primary"
+                        variant="tonal"
+                        >ATS</v-chip
+                      >
+                      <v-chip
+                        v-if="template.hasDocx"
+                        size="x-small"
+                        color="warning"
+                        variant="tonal"
+                        >DOCX</v-chip
+                      >
+                      <v-chip
+                        v-if="template.hasPhoto"
+                        size="x-small"
+                        variant="outlined"
+                        >Photo</v-chip
+                      >
+                      <v-chip
+                        v-if="template.isTwoColumn"
+                        size="x-small"
+                        variant="outlined"
+                        >2 cols</v-chip
+                      >
                     </div>
                   </v-card-text>
                 </v-card>
@@ -991,7 +1603,9 @@ onUnmounted(() => {
                   :key="theme.name"
                   type="button"
                   class="palette-item"
-                  :class="{ 'palette-item--active': selectedTheme === theme.name }"
+                  :class="{
+                    'palette-item--active': selectedTheme === theme.name,
+                  }"
                   @click="selectedTheme = theme.name"
                 >
                   <span :style="{ background: theme.sidebar }" />
@@ -1001,7 +1615,13 @@ onUnmounted(() => {
               </div>
 
               <p class="section-label">Rounded</p>
-              <v-btn-toggle v-model="selectedRounded" mandatory divided class="rounded-toggle" color="primary">
+              <v-btn-toggle
+                v-model="selectedRounded"
+                mandatory
+                divided
+                class="rounded-toggle"
+                color="primary"
+              >
                 <v-btn
                   v-for="option in roundedOptions"
                   :key="option.value"
@@ -1033,15 +1653,48 @@ onUnmounted(() => {
               </header>
 
               <div class="d-flex flex-column ga-3">
-                <v-btn prepend-icon="mdi-sync" variant="outlined" color="primary" :text="t('resumeBuilder.create.import.syncWithXing')" @click="syncWithProvider('Xing')" />
-                <v-btn prepend-icon="mdi-linkedin" variant="outlined" color="info" :text="t('resumeBuilder.create.import.syncWithLinkedIn')" @click="syncWithProvider('LinkedIn')" />
-                <v-btn prepend-icon="mdi-file-upload-outline" variant="flat" color="secondary" :text="t('resumeBuilder.create.import.importOldResumePdf')" @click="triggerPdfImport" />
-                <input ref="importPdfInput" type="file" accept="application/pdf" class="d-none" @change="handlePdfImport">
+                <v-btn
+                  prepend-icon="mdi-sync"
+                  variant="outlined"
+                  color="primary"
+                  :text="t('resumeBuilder.create.import.syncWithXing')"
+                  @click="syncWithProvider('Xing')"
+                />
+                <v-btn
+                  prepend-icon="mdi-linkedin"
+                  variant="outlined"
+                  color="info"
+                  :text="t('resumeBuilder.create.import.syncWithLinkedIn')"
+                  @click="syncWithProvider('LinkedIn')"
+                />
+                <v-btn
+                  prepend-icon="mdi-file-upload-outline"
+                  variant="flat"
+                  color="secondary"
+                  :text="t('resumeBuilder.create.import.importOldResumePdf')"
+                  @click="triggerPdfImport"
+                />
+                <input
+                  ref="importPdfInput"
+                  type="file"
+                  accept="application/pdf"
+                  class="d-none"
+                  @change="handlePdfImport"
+                />
               </div>
 
               <div v-if="importInProgress" class="mt-4">
-                <v-progress-linear :model-value="importProgress" color="primary" height="10" rounded striped />
-                <p class="mt-2 mb-0">{{ importMessage }} ({{ importProgress }}%)</p>
+                <v-progress-linear
+                  :model-value="importProgress"
+                  color="primary"
+                  height="10"
+                  rounded
+                  striped
+                />
+                <p class="mt-2 mb-0">
+                  {{ importMessage }} ({{ importProgress }}%) -
+                  {{ importElapsedSeconds }}s
+                </p>
               </div>
 
               <v-alert
@@ -1058,8 +1711,19 @@ onUnmounted(() => {
       </section>
 
       <aside class="builder-preview py-6 px-5 px-md-8">
-        <div ref="previewExportRef" class="preview-grid" :class="[activeRoundedClass, activeTextStyleClass]" :style="previewStyle">
-          <component :is="selectedTemplateComponent" :resume="resume" :show-photo="templateSupportsPhoto" :use-timeline="templateUsesTimeline" editable />
+        <div
+          ref="previewExportRef"
+          class="preview-grid"
+          :class="[activeRoundedClass, activeTextStyleClass]"
+          :style="previewStyle"
+        >
+          <component
+            :is="selectedTemplateComponent"
+            :resume="resume"
+            :show-photo="templateSupportsPhoto"
+            :use-timeline="templateUsesTimeline"
+            editable
+          />
         </div>
       </aside>
     </div>
@@ -1068,12 +1732,26 @@ onUnmounted(() => {
       <v-card>
         <v-card-title class="d-flex align-center justify-space-between">
           <span>Design Preview</span>
-          <v-btn icon="mdi-close" variant="text" @click="pdfModalOpen = false" />
+          <v-btn
+            icon="mdi-close"
+            variant="text"
+            @click="pdfModalOpen = false"
+          />
         </v-card-title>
         <v-divider />
         <v-card-text class="pa-4 preview-modal-body">
-          <div class="preview-grid" :class="[activeRoundedClass, activeTextStyleClass]" :style="previewStyle">
-            <component :is="selectedTemplateComponent" :resume="resume" :show-photo="templateSupportsPhoto" :use-timeline="templateUsesTimeline" editable />
+          <div
+            class="preview-grid"
+            :class="[activeRoundedClass, activeTextStyleClass]"
+            :style="previewStyle"
+          >
+            <component
+              :is="selectedTemplateComponent"
+              :resume="resume"
+              :show-photo="templateSupportsPhoto"
+              :use-timeline="templateUsesTimeline"
+              editable
+            />
           </div>
         </v-card-text>
       </v-card>
@@ -1083,12 +1761,17 @@ onUnmounted(() => {
       <v-card>
         <v-card-title class="d-flex align-center justify-space-between">
           <span>Create Resume with KI</span>
-          <v-btn icon="mdi-close" variant="text" @click="aiCreateModalOpen = false" />
+          <v-btn
+            icon="mdi-close"
+            variant="text"
+            @click="aiCreateModalOpen = false"
+          />
         </v-card-title>
         <v-divider />
         <v-card-text>
           <p class="mb-3">
-            Briefly describe what you studied and your main skills. KI will generate a full resume and apply it to the selected template.
+            Briefly describe what you studied and your main skills. KI will
+            generate a full resume and apply it to the selected template.
           </p>
           <v-textarea
             v-model="aiProfilePrompt"
@@ -1097,13 +1780,34 @@ onUnmounted(() => {
             variant="outlined"
             placeholder="Example: I studied software engineering and I am skilled in Vue, TypeScript, SQL, and project management."
           />
-          <v-alert v-if="aiActionError" type="error" variant="tonal" class="mt-2">
+          <v-alert
+            v-if="aiActionError"
+            type="error"
+            variant="tonal"
+            class="mt-2"
+          >
             {{ aiActionError }}
           </v-alert>
+          <v-progress-linear
+            v-if="aiCreateLoading"
+            indeterminate
+            color="primary"
+            class="mt-4 mb-2"
+          />
+          <p v-if="aiCreateLoading" class="text-caption mb-0">
+            KI processing... {{ aiElapsedSeconds }}s
+          </p>
         </v-card-text>
         <v-card-actions class="justify-end">
-          <v-btn variant="text" @click="aiCreateModalOpen = false">Cancel</v-btn>
-          <v-btn color="primary" :loading="aiCreateLoading" prepend-icon="mdi-robot-outline" @click="runAiCreate">
+          <v-btn variant="text" @click="aiCreateModalOpen = false"
+            >Cancel</v-btn
+          >
+          <v-btn
+            color="primary"
+            :loading="aiCreateLoading"
+            prepend-icon="mdi-robot-outline"
+            @click="runAiCreate"
+          >
             Run
           </v-btn>
         </v-card-actions>
@@ -1114,14 +1818,31 @@ onUnmounted(() => {
       <v-card>
         <v-card-title class="d-flex align-center justify-space-between">
           <span>KI Review</span>
-          <v-btn icon="mdi-close" variant="text" @click="aiReviewModalOpen = false" />
+          <v-btn
+            icon="mdi-close"
+            variant="text"
+            @click="aiReviewModalOpen = false"
+          />
         </v-card-title>
         <v-divider />
         <v-card-text>
-          <v-alert v-if="aiActionError" type="error" variant="tonal" class="mb-3">
+          <v-alert
+            v-if="aiActionError"
+            type="error"
+            variant="tonal"
+            class="mb-3"
+          >
             {{ aiActionError }}
           </v-alert>
-          <v-progress-linear v-if="aiReviewLoading" indeterminate color="primary" class="mb-4" />
+          <v-progress-linear
+            v-if="aiReviewLoading"
+            indeterminate
+            color="primary"
+            class="mb-2"
+          />
+          <p v-if="aiReviewLoading" class="text-caption mb-4">
+            KI processing... {{ aiElapsedSeconds }}s
+          </p>
           <div v-else class="review-text">
             {{ aiReviewContent }}
           </div>
@@ -1249,11 +1970,11 @@ onUnmounted(() => {
 
 .ki-card {
   cursor: pointer;
-  transition: box-shadow .2s ease;
+  transition: box-shadow 0.2s ease;
 }
 
 .ki-card:hover {
-  box-shadow: 0 8px 20px rgba(15, 23, 42, .15);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15);
 }
 
 .review-text {
