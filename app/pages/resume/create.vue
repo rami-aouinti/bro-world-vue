@@ -322,6 +322,10 @@ const aiCreateLoading = ref(false)
 const aiReviewLoading = ref(false)
 const aiActionError = ref('')
 const { locale, t } = useI18n()
+const { loggedIn, fetch: refreshSession } = useUserSession()
+const loginDialogOpen = ref(false)
+const loginLoading = ref(false)
+const pendingPdfDownload = ref(false)
 
 function openPhotoPicker() {
   uploadInput.value?.click()
@@ -471,6 +475,49 @@ async function downloadPdf() {
     iframeWindow.print()
     setTimeout(() => iframe.remove(), 1000)
   }, 350)
+}
+
+async function onDownloadPdfClick() {
+  if (loggedIn.value) {
+    await downloadPdf()
+    return
+  }
+
+  pendingPdfDownload.value = true
+  loginDialogOpen.value = true
+}
+
+async function onLoginSubmit(payload: {
+  username?: string
+  email: string
+  password: string
+  remember?: boolean
+}) {
+  loginLoading.value = true
+
+  try {
+    await $fetch('/api/login', {
+      method: 'POST',
+      body: {
+        username: payload.username ?? payload.email,
+        password: payload.password,
+        remember: payload.remember ?? true,
+      },
+    })
+
+    await refreshSession()
+    loginDialogOpen.value = false
+
+    if (pendingPdfDownload.value) {
+      pendingPdfDownload.value = false
+      await downloadPdf()
+    }
+  } catch {
+    pendingPdfDownload.value = false
+    Notify.error(t('auth.notifications.loginError'))
+  } finally {
+    loginLoading.value = false
+  }
 }
 
 function startImportProgress() {
@@ -724,7 +771,7 @@ onUnmounted(() => {
       <teleport to="#app-bar">
         <v-btn color="primary" class="mx-2" size="small" icon="mdi-content-save-outline" />
         <v-btn color="secondary" class="mx-2" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview" />
-        <v-btn color="info" class="mx-2" size="small" variant="outlined" icon="mdi-download" @click="downloadPdf" />
+        <v-btn color="info" class="mx-2" size="small" variant="outlined" icon="mdi-download" @click="onDownloadPdfClick" />
         <v-menu v-model="aiMenuOpen" :close-on-content-click="false" location="bottom end">
           <template #activator="{ props }">
             <v-btn color="deep-purple" class="mx-2" size="small" variant="tonal" prepend-icon="mdi-creation" v-bind="props">
@@ -1081,6 +1128,18 @@ onUnmounted(() => {
         </v-card-text>
       </v-card>
     </v-dialog>
+
+    <AppModal
+      v-model="loginDialogOpen"
+      :title="t('auth.login.title')"
+      :max-width="560"
+    >
+      <AuthFormCard
+        mode="login"
+        :loading="loginLoading"
+        @submit="onLoginSubmit"
+      />
+    </AppModal>
   </v-container>
 </template>
 

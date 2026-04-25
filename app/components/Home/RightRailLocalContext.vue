@@ -404,6 +404,17 @@ onMounted(() => {
           }}</v-list-item-title>
         </v-list-item>
       </v-list>
+      <div class="px-4 pb-4">
+        <v-btn
+          block
+          color="primary"
+          variant="tonal"
+          prepend-icon="mdi-file-account-outline"
+          to="/resume/create"
+        >
+          Build your resume
+        </v-btn>
+      </div>
     </div>
   </div>
 </template>
