@@ -194,8 +194,10 @@ export interface CrmTaskRequestItem {
   resolvedAt: string | null
   attachments?: Array<{
     id?: string
+    originalName?: string
     name?: string
     url?: string
+    mimeType?: string
   }>
   assignees?: Array<{
     id: string
