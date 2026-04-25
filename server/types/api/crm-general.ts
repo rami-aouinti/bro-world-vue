@@ -192,6 +192,41 @@ export interface CrmTaskRequestItem {
   status: string
   requestedAt: string
   resolvedAt: string | null
+  attachments?: Array<{
+    id?: string
+    name?: string
+    url?: string
+  }>
+  assignees?: Array<{
+    id: string
+    username?: string
+    email?: string
+    firstName?: string
+    lastName?: string
+  }>
+  githubIssue?: unknown | null
+  githubBranches?: Array<Record<string, unknown>>
+  blogId?: string | null
+  blog?: {
+    id: string
+    title: string
+    slug?: string
+    posts?: Array<{
+      id: string
+      title: string
+      slug?: string
+      comments?: Array<{
+        id: string
+        content: string
+        filePath?: string | null
+        children?: Array<{
+          id: string
+          content: string
+          filePath?: string | null
+        }>
+      }>
+    }>
+  } | null
 }
 
 export interface CrmTaskRequestCreatePayload {

@@ -69,6 +69,40 @@ async function remove() {
                 <v-chip color="primary" variant="outlined">Task: {{ data.taskId }}</v-chip>
                 <v-chip color="secondary" variant="outlined">Repo: {{ data.repositoryId }}</v-chip>
                 <v-chip variant="tonal">Resolved: {{ data.resolvedAt || '—' }}</v-chip>
+                <v-chip variant="tonal">Assignees: {{ data.assignees?.length || 0 }}</v-chip>
+                <v-chip variant="tonal">Files: {{ data.attachments?.length || 0 }}</v-chip>
+              </div>
+              <v-divider class="my-4" />
+              <div>
+                <h3 class="text-subtitle-1 mb-2">Blog</h3>
+                <p class="text-body-2 mb-3">
+                  {{ data.blog?.title || '—' }}
+                </p>
+                <div v-if="data.blog?.posts?.length" class="d-flex flex-column ga-3">
+                  <v-card
+                    v-for="post in data.blog.posts"
+                    :key="post.id"
+                    variant="outlined"
+                    rounded="lg"
+                    class="pa-3"
+                  >
+                    <p class="text-subtitle-2 mb-2">{{ post.title }}</p>
+                    <v-list density="compact" class="bg-transparent pa-0">
+                      <v-list-item
+                        v-for="comment in post.comments || []"
+                        :key="comment.id"
+                        class="px-0"
+                      >
+                        <template #title>
+                          <span class="text-body-2">{{ comment.content }}</span>
+                        </template>
+                      </v-list-item>
+                    </v-list>
+                  </v-card>
+                </div>
+                <v-alert v-else type="info" variant="tonal" density="comfortable">
+                  No blog post yet for this task request.
+                </v-alert>
               </div>
             </template>
             <template v-else>
