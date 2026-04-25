@@ -1,7 +1,8 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean }>(), {
+const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean; onPhotoClick?: () => void }>(), {
   showPhoto: false,
   editable: false,
+  onPhotoClick: undefined,
 })
 
 function updateText(path: string, value: string) {
@@ -22,7 +23,7 @@ function updateText(path: string, value: string) {
 <template>
   <div class="modern-template">
     <header class="modern-header">
-      <v-avatar v-if="showPhoto && resume.photoUrl" size="82" class="mb-3">
+      <v-avatar v-if="showPhoto && resume.photoUrl" size="82" class="mb-3 modern-avatar" @click="onPhotoClick?.()">
         <v-img :src="resume.photoUrl" cover />
       </v-avatar>
       <h1>
@@ -82,6 +83,43 @@ function updateText(path: string, value: string) {
             </ul>
           </article>
         </section>
+        <section>
+          <h2>Projects</h2>
+          <article v-for="(project, index) in resume.projects" :key="`project-${index}`" class="entry text-dark">
+            <h4 class="text-dark">
+              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span>
+            </h4>
+            <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
+          </article>
+        </section>
+        <section>
+          <h2>Certifications</h2>
+          <article v-for="(course, index) in resume.courses" :key="`course-${index}`" class="entry text-dark">
+            <h4 class="text-dark">
+              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`courses.${index}.title`, (event.target as HTMLElement).innerText)">{{ course.title }}</span>
+            </h4>
+            <p class="dates">
+              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`courses.${index}.school`, (event.target as HTMLElement).innerText)">{{ course.school }}</span>
+              ·
+              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`courses.${index}.start`, (event.target as HTMLElement).innerText)">{{ course.start }}</span>
+              -
+              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`courses.${index}.end`, (event.target as HTMLElement).innerText)">{{ course.end }}</span>
+            </p>
+          </article>
+        </section>
+        <section>
+          <h2>References</h2>
+          <article v-for="(reference, index) in resume.references" :key="`reference-${index}`" class="entry text-dark">
+            <h4 class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`references.${index}.name`, (event.target as HTMLElement).innerText)">{{ reference.name }}</h4>
+            <p class="text-dark">
+              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`references.${index}.company`, (event.target as HTMLElement).innerText)">{{ reference.company }}</span>
+              ·
+              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`references.${index}.email`, (event.target as HTMLElement).innerText)">{{ reference.email }}</span>
+              ·
+              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`references.${index}.phone`, (event.target as HTMLElement).innerText)">{{ reference.phone }}</span>
+            </p>
+          </article>
+        </section>
       </main>
     </div>
   </div>
@@ -90,6 +128,7 @@ function updateText(path: string, value: string) {
 <style scoped>
 .modern-template { min-height: calc(100vh - 80px); border-radius:14px; overflow:hidden; background: #fff; }
 .modern-header { background: color-mix(in srgb, var(--cv-accent) 85%, white); color: #071325; padding:26px 30px; }
+.modern-avatar { cursor: zoom-in; }
 .modern-header h1 { font-size:2.2rem; margin-bottom:4px; }
 .modern-grid { display:grid; grid-template-columns: 280px 1fr; }
 aside { background:#f8fafc; padding:22px; }

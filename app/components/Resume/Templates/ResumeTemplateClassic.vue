@@ -1,6 +1,7 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{ resume: any; editable?: boolean }>(), {
+const props = withDefaults(defineProps<{ resume: any; editable?: boolean; onPhotoClick?: () => void }>(), {
   editable: false,
+  onPhotoClick: undefined,
 })
 
 function updateText(path: string, value: string) {
@@ -21,6 +22,9 @@ function updateText(path: string, value: string) {
 <template>
   <div class="classic-template">
     <aside class="classic-sidebar">
+      <v-avatar v-if="resume.photoUrl" size="104" class="classic-avatar" @click="onPhotoClick?.()">
+        <v-img :src="resume.photoUrl" cover />
+      </v-avatar>
       <h1>
         <span class="editable-text" :contenteditable="editable" @input="event => updateText('firstName', (event.target as HTMLElement).innerText)">{{ resume.firstName }}</span><br>
         <span class="editable-text" :contenteditable="editable" @input="event => updateText('lastName', (event.target as HTMLElement).innerText)">{{ resume.lastName }}</span>
@@ -89,6 +93,40 @@ function updateText(path: string, value: string) {
           <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.note`, (event.target as HTMLElement).innerText)">{{ item.note }}</p>
         </article>
       </section>
+      <section>
+        <h2>Projects</h2>
+        <article v-for="(project, index) in resume.projects" :key="`project-${index}`" class="entry text-dark">
+          <h4 class="text-dark">
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span>
+          </h4>
+          <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
+        </article>
+      </section>
+      <section>
+        <h2>Certifications</h2>
+        <article v-for="(course, index) in resume.courses" :key="`course-${index}`" class="entry text-dark">
+          <h4 class="text-dark">
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`courses.${index}.title`, (event.target as HTMLElement).innerText)">{{ course.title }}</span>
+          </h4>
+          <p class="dates">
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`courses.${index}.school`, (event.target as HTMLElement).innerText)">{{ course.school }}</span>
+            -
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`courses.${index}.start`, (event.target as HTMLElement).innerText)">{{ course.start }}</span>
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`courses.${index}.end`, (event.target as HTMLElement).innerText)">{{ course.end }}</span>
+          </p>
+        </article>
+      </section>
+      <section>
+        <h2>References</h2>
+        <article v-for="(reference, index) in resume.references" :key="`reference-${index}`" class="entry text-dark">
+          <h4 class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`references.${index}.name`, (event.target as HTMLElement).innerText)">{{ reference.name }}</h4>
+          <p class="text-dark">
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`references.${index}.company`, (event.target as HTMLElement).innerText)">{{ reference.company }}</span> ·
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`references.${index}.email`, (event.target as HTMLElement).innerText)">{{ reference.email }}</span> ·
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`references.${index}.phone`, (event.target as HTMLElement).innerText)">{{ reference.phone }}</span>
+          </p>
+        </article>
+      </section>
     </main>
   </div>
 </template>
@@ -96,6 +134,7 @@ function updateText(path: string, value: string) {
 <style scoped>
 .classic-template { display:grid; grid-template-columns:260px 1fr; min-height: calc(100vh - 80px); background: var(--cv-page); border-radius: 14px; overflow:hidden; }
 .classic-sidebar { background: var(--cv-sidebar); color:#fff; padding:28px 24px; }
+.classic-avatar { margin-bottom: 16px; cursor: zoom-in; }
 .classic-sidebar h1 { font-size:2rem; line-height:1.2; margin-bottom:18px; }
 .job { letter-spacing:.08em; font-size:.8rem; margin-bottom:24px; text-transform: uppercase; }
 .classic-sidebar ul { list-style:none; padding:0; }

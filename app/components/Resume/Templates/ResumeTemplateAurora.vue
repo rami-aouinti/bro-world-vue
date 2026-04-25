@@ -1,7 +1,8 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean }>(), {
+const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean; onPhotoClick?: () => void }>(), {
   showPhoto: false,
   editable: false,
+  onPhotoClick: undefined,
 })
 
 function updateText(path: string, value: string) {
@@ -30,7 +31,7 @@ function updateText(path: string, value: string) {
         </h1>
         <p class="editable-text" :contenteditable="editable" @input="event => updateText('role', (event.target as HTMLElement).innerText)">{{ resume.role }}</p>
       </div>
-      <v-avatar v-if="showPhoto && resume.photoUrl" size="96" class="aurora-avatar">
+      <v-avatar v-if="showPhoto && resume.photoUrl" size="96" class="aurora-avatar" @click="onPhotoClick?.()">
         <v-img :src="resume.photoUrl" cover />
       </v-avatar>
     </header>
