@@ -127,7 +127,7 @@ export default defineOAuthMicrosoftEventHandler({
 
     try {
       const token = await fetchTokenWithSocialLogin(event, {
-        email: payload.email, // can be null safely handled downstream
+        email: payload.email,
         provider: 'microsoft',
         providerId: payload.providerId,
         image: extractSocialProfileImage(user),
