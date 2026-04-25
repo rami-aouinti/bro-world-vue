@@ -132,6 +132,24 @@ export default defineNuxtConfig({
         clientSecret: process.env.NUXT_OAUTH_GITLAB_CLIENT_SECRET || '',
         redirectURL: process.env.NUXT_OAUTH_GITLAB_REDIRECT_URL || '',
       },
+      microsoft: {
+        clientId:
+          process.env.AZURE_CLIENT_ID ||
+          process.env.NUXT_OAUTH_MICROSOFT_CLIENT_ID ||
+          '',
+        clientSecret:
+          process.env.AZURE_CLIENT_SECRET ||
+          process.env.NUXT_OAUTH_MICROSOFT_CLIENT_SECRET ||
+          '',
+        tenant:
+          process.env.AZURE_TENANT_ID ||
+          process.env.NUXT_OAUTH_MICROSOFT_TENANT ||
+          'common',
+        redirectURL:
+          process.env.AZURE_REDIRECT_URI ||
+          process.env.NUXT_OAUTH_MICROSOFT_REDIRECT_URL ||
+          '',
+      },
     },
     databaseUrl: process.env.DATABASE_URL || '',
     cronSecret: process.env.CRON_SECRET || '',

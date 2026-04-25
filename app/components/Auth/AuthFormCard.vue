@@ -1,5 +1,5 @@
 <script setup lang="ts">
-type SocialProvider = 'github' | 'google' | 'facebook' | 'gitlab'
+type SocialProvider = 'github' | 'google' | 'facebook' | 'gitlab' | 'azure-ad'
 
 const props = withDefaults(
   defineProps<{
@@ -59,6 +59,11 @@ const socialProviders: Array<{
     key: 'gitlab',
     icon: 'mdi-gitlab',
     label: t('auth.social.gitlab'),
+  },
+  {
+    key: 'azure-ad',
+    icon: 'mdi-microsoft-azure',
+    label: t('auth.social.azure'),
   },
 ]
 
