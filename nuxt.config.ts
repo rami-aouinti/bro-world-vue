@@ -148,7 +148,7 @@ export default defineNuxtConfig({
         redirectURL:
           process.env.AZURE_REDIRECT_URI ||
           process.env.NUXT_OAUTH_MICROSOFT_REDIRECT_URL ||
-          '',
+          `${process.env.NUXT_PUBLIC_SITE_URL || 'https://bro-world-space.com'}/api/auth/callback/azure-ad`,
       },
     },
     databaseUrl: process.env.DATABASE_URL || '',
