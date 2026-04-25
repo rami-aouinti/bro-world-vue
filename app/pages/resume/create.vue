@@ -676,6 +676,106 @@ async function runAiReview() {
   }
 }
 
+function normalizeResumePayload(payload: Partial<ResumeModel>) {
+  if (typeof payload.role === 'string') resume.role = payload.role
+  if (typeof payload.firstName === 'string') resume.firstName = payload.firstName
+  if (typeof payload.lastName === 'string') resume.lastName = payload.lastName
+  if (typeof payload.email === 'string') resume.email = payload.email
+  if (typeof payload.phone === 'string') resume.phone = payload.phone
+  if (typeof payload.city === 'string') resume.city = payload.city
+  if (typeof payload.country === 'string') resume.country = payload.country
+  if (typeof payload.profile === 'string') resume.profile = payload.profile
+  if (typeof payload.photoUrl === 'string') resume.photoUrl = payload.photoUrl
+
+  if (Array.isArray(payload.skills)) resume.skills = payload.skills
+  if (Array.isArray(payload.languages)) resume.languages = payload.languages
+  if (Array.isArray(payload.hobbies)) resume.hobbies = payload.hobbies
+  if (Array.isArray(payload.experiences)) resume.experiences = payload.experiences
+  if (Array.isArray(payload.education)) resume.education = payload.education
+  if (Array.isArray(payload.references)) resume.references = payload.references
+  if (Array.isArray(payload.courses)) resume.courses = payload.courses
+  if (Array.isArray(payload.projects)) resume.projects = payload.projects
+}
+
+async function runAiCreate() {
+  if (!aiProfilePrompt.value.trim()) {
+    aiActionError.value = 'Please provide a short summary before running AI.'
+    return
+  }
+
+  aiCreateLoading.value = true
+  aiActionError.value = ''
+
+  try {
+    const response = await $fetch<{ choices?: Array<{ message?: { content?: string | null } }> }>('/api/ai-gateway/chat', {
+      method: 'POST',
+      body: {
+        temperature: 0.3,
+        response_format: {
+          type: 'json_object',
+        },
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a resume assistant. Return strict JSON only with this exact shape: {"resume": {"role": string, "firstName": string, "lastName": string, "email": string, "phone": string, "city": string, "country": string, "profile": string, "photoUrl": string, "skills": [{"name": string, "level": number}], "languages": [{"name": string, "level": number}], "hobbies": string[], "experiences": [{"role": string, "company": string, "city": string, "start": string, "end": string, "bullets": string[]}], "education": [{"degree": string, "school": string, "city": string, "start": string, "end": string, "note": string}], "references": [{"name": string, "company": string, "email": string, "phone": string}], "courses": [{"title": string, "school": string, "start": string, "end": string}], "projects": [{"name": string, "summary": string}] }}',
+          },
+          {
+            role: 'user',
+            content: `Language: ${locale.value}. Template: ${selectedTemplate.value}. User summary: ${aiProfilePrompt.value}. Current resume draft: ${JSON.stringify(resume)}. Generate a complete and coherent resume in the requested language.`,
+          },
+        ],
+      },
+    })
+
+    const content = response.choices?.[0]?.message?.content
+    if (!content) {
+      throw new Error('Empty AI response')
+    }
+    const parsed = JSON.parse(content) as { resume?: Partial<ResumeModel> }
+    normalizeResumePayload(parsed.resume ?? {})
+    aiCreateModalOpen.value = false
+  } catch (error) {
+    aiActionError.value = error instanceof Error ? error.message : 'Unable to generate resume with AI.'
+  } finally {
+    aiCreateLoading.value = false
+  }
+}
+
+async function runAiReview() {
+  aiReviewLoading.value = true
+  aiActionError.value = ''
+  aiReviewContent.value = ''
+
+  try {
+    const response = await $fetch<{ choices?: Array<{ message?: { content?: string | null } }> }>('/api/ai-gateway/chat', {
+      method: 'POST',
+      body: {
+        temperature: 0.2,
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a senior resume reviewer. Return detailed feedback in plain text with these sections: 1) Detected errors, 2) Suggested improvements, 3) Rewritten examples, 4) Priority actions.',
+          },
+          {
+            role: 'user',
+            content: `Review this resume in language "${locale.value}" and adapt recommendations for template "${selectedTemplate.value}". Resume JSON: ${JSON.stringify(resume)}.`,
+          },
+        ],
+      },
+    })
+
+    aiReviewContent.value = String(response.choices?.[0]?.message?.content || '').trim()
+    if (!aiReviewContent.value) {
+      throw new Error('Empty AI review response')
+    }
+    aiReviewModalOpen.value = true
+  } catch (error) {
+    aiActionError.value = error instanceof Error ? error.message : 'Unable to review resume with AI.'
+  } finally {
+    aiReviewLoading.value = false
+  }
+}
+
 const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => false)
 const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
 const previousDesktopRightDrawer = showRightDrawerDesktop.value
