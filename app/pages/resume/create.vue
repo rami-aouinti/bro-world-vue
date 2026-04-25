@@ -611,8 +611,11 @@ onUnmounted(() => {
       </section>
 
       <aside class="builder-preview py-6 px-5 px-md-8">
+        <p class="text-caption text-medium-emphasis mb-2">
+          Astuce : clique directement sur le texte du CV à droite pour le modifier.
+        </p>
         <div class="preview-grid" :class="activeRoundedClass" :style="previewStyle">
-          <component :is="selectedTemplateComponent" :resume="resume" :show-photo="templateSupportsPhoto" />
+          <component :is="selectedTemplateComponent" :resume="resume" :show-photo="templateSupportsPhoto" editable />
         </div>
       </aside>
     </div>
