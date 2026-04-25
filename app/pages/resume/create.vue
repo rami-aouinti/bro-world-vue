@@ -306,6 +306,15 @@ const selectedTemplateComponent = computed(() => {
 const templateSupportsPhoto = computed(() => selectedTemplateConfig.value.hasPhoto)
 const templateUsesTimeline = computed(() => selectedTemplateConfig.value.useTimeline)
 const pdfModalOpen = ref(false)
+const aiMenuOpen = ref(false)
+const aiCreateModalOpen = ref(false)
+const aiReviewModalOpen = ref(false)
+const aiProfilePrompt = ref('')
+const aiReviewContent = ref('')
+const aiCreateLoading = ref(false)
+const aiReviewLoading = ref(false)
+const aiActionError = ref('')
+const { locale } = useI18n()
 
 function openPhotoPicker() {
   uploadInput.value?.click()
@@ -442,6 +451,79 @@ async function downloadPdf() {
   }, 300)
 }
 
+function normalizeResumePayload(payload: Partial<ResumeModel>) {
+  if (typeof payload.role === 'string') resume.role = payload.role
+  if (typeof payload.firstName === 'string') resume.firstName = payload.firstName
+  if (typeof payload.lastName === 'string') resume.lastName = payload.lastName
+  if (typeof payload.email === 'string') resume.email = payload.email
+  if (typeof payload.phone === 'string') resume.phone = payload.phone
+  if (typeof payload.city === 'string') resume.city = payload.city
+  if (typeof payload.country === 'string') resume.country = payload.country
+  if (typeof payload.profile === 'string') resume.profile = payload.profile
+  if (typeof payload.photoUrl === 'string') resume.photoUrl = payload.photoUrl
+
+  if (Array.isArray(payload.skills)) resume.skills = payload.skills
+  if (Array.isArray(payload.languages)) resume.languages = payload.languages
+  if (Array.isArray(payload.hobbies)) resume.hobbies = payload.hobbies
+  if (Array.isArray(payload.experiences)) resume.experiences = payload.experiences
+  if (Array.isArray(payload.education)) resume.education = payload.education
+  if (Array.isArray(payload.references)) resume.references = payload.references
+  if (Array.isArray(payload.courses)) resume.courses = payload.courses
+  if (Array.isArray(payload.projects)) resume.projects = payload.projects
+}
+
+async function runAiCreate() {
+  if (!aiProfilePrompt.value.trim()) {
+    aiActionError.value = 'Please provide a short summary before running AI.'
+    return
+  }
+
+  aiCreateLoading.value = true
+  aiActionError.value = ''
+
+  try {
+    const response = await $fetch<{ resume: Partial<ResumeModel> }>('/api/resume/ai/generate', {
+      method: 'POST',
+      body: {
+        language: locale.value,
+        templateId: selectedTemplate.value,
+        userPrompt: aiProfilePrompt.value,
+        currentResume: resume,
+      },
+    })
+
+    normalizeResumePayload(response.resume)
+    aiCreateModalOpen.value = false
+  } catch (error) {
+    aiActionError.value = error instanceof Error ? error.message : 'Unable to generate resume with AI.'
+  } finally {
+    aiCreateLoading.value = false
+  }
+}
+
+async function runAiReview() {
+  aiReviewLoading.value = true
+  aiActionError.value = ''
+  aiReviewContent.value = ''
+
+  try {
+    const response = await $fetch<{ review: string }>('/api/resume/ai/review', {
+      method: 'POST',
+      body: {
+        language: locale.value,
+        templateId: selectedTemplate.value,
+        currentResume: resume,
+      },
+    })
+    aiReviewContent.value = response.review
+    aiReviewModalOpen.value = true
+  } catch (error) {
+    aiActionError.value = error instanceof Error ? error.message : 'Unable to review resume with AI.'
+  } finally {
+    aiReviewLoading.value = false
+  }
+}
+
 const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => false)
 const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
 const previousDesktopRightDrawer = showRightDrawerDesktop.value
@@ -460,9 +542,32 @@ onUnmounted(() => {
   <v-container fluid class="resume-create pa-0">
     <client-only>
       <teleport to="#app-bar">
-        <v-btn color="primary" class="mx-2" size="small" icon="mdi-content-save-outline"></v-btn>
-        <v-btn color="secondary" class="mx-2" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview"></v-btn>
-        <v-btn color="info" class="mx-2" size="small" variant="outlined" icon="mdi-download" @click="downloadPdf"></v-btn>
+        <v-btn color="primary" class="mx-2" size="small" icon="mdi-content-save-outline" />
+        <v-btn color="secondary" class="mx-2" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview" />
+        <v-btn color="info" class="mx-2" size="small" variant="outlined" icon="mdi-download" @click="downloadPdf" />
+        <v-menu v-model="aiMenuOpen" :close-on-content-click="false" location="bottom end">
+          <template #activator="{ props }">
+            <v-btn color="deep-purple" class="mx-2" size="small" variant="tonal" prepend-icon="mdi-creation" v-bind="props">
+              KI
+            </v-btn>
+          </template>
+          <v-card width="420" class="pa-3">
+            <div class="ki-menu-grid">
+              <v-card variant="outlined" class="ki-card" @click="aiCreateModalOpen = true; aiMenuOpen = false">
+                <v-card-title class="text-subtitle-1">Create with KI</v-card-title>
+                <v-card-text class="text-body-2">
+                  Generate a complete resume from a short summary of studies and skills.
+                </v-card-text>
+              </v-card>
+              <v-card variant="outlined" class="ki-card" @click="runAiReview(); aiMenuOpen = false">
+                <v-card-title class="text-subtitle-1">Review</v-card-title>
+                <v-card-text class="text-body-2">
+                  Ask KI to detect errors and suggest improvements for your current resume.
+                </v-card-text>
+              </v-card>
+            </div>
+          </v-card>
+        </v-menu>
       </teleport>
     </client-only>
     <div class="builder-layout">
@@ -715,6 +820,56 @@ onUnmounted(() => {
         </v-card-text>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="aiCreateModalOpen" max-width="720">
+      <v-card>
+        <v-card-title class="d-flex align-center justify-space-between">
+          <span>Create Resume with KI</span>
+          <v-btn icon="mdi-close" variant="text" @click="aiCreateModalOpen = false" />
+        </v-card-title>
+        <v-divider />
+        <v-card-text>
+          <p class="mb-3">
+            Briefly describe what you studied and your main skills. KI will generate a full resume and apply it to the selected template.
+          </p>
+          <v-textarea
+            v-model="aiProfilePrompt"
+            label="Your studies and skills"
+            rows="8"
+            variant="outlined"
+            placeholder="Example: I studied software engineering and I am skilled in Vue, TypeScript, SQL, and project management."
+          />
+          <v-alert v-if="aiActionError" type="error" variant="tonal" class="mt-2">
+            {{ aiActionError }}
+          </v-alert>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn variant="text" @click="aiCreateModalOpen = false">Cancel</v-btn>
+          <v-btn color="primary" :loading="aiCreateLoading" prepend-icon="mdi-robot-outline" @click="runAiCreate">
+            Run
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="aiReviewModalOpen" max-width="760">
+      <v-card>
+        <v-card-title class="d-flex align-center justify-space-between">
+          <span>KI Review</span>
+          <v-btn icon="mdi-close" variant="text" @click="aiReviewModalOpen = false" />
+        </v-card-title>
+        <v-divider />
+        <v-card-text>
+          <v-alert v-if="aiActionError" type="error" variant="tonal" class="mb-3">
+            {{ aiActionError }}
+          </v-alert>
+          <v-progress-linear v-if="aiReviewLoading" indeterminate color="primary" class="mb-4" />
+          <div v-else class="review-text">
+            {{ aiReviewContent }}
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -814,6 +969,26 @@ onUnmounted(() => {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+.ki-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.ki-card {
+  cursor: pointer;
+  transition: box-shadow .2s ease;
+}
+
+.ki-card:hover {
+  box-shadow: 0 8px 20px rgba(15, 23, 42, .15);
+}
+
+.review-text {
+  white-space: pre-wrap;
+  line-height: 1.6;
 }
 
 .section-label {
