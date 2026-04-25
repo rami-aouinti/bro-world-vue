@@ -528,10 +528,6 @@ onUnmounted(() => {
 
           <v-window-item value="template">
             <article class="form-section mb-4">
-              <header class="mb-4">
-                <h2>Template</h2>
-                <p>Choisis un template et filtre rapidement selon tes besoins.</p>
-              </header>
               <div class="template-filters mb-4">
                 <v-btn
                   v-for="filter in templateFilters"
@@ -558,7 +554,6 @@ onUnmounted(() => {
                   <v-img :src="template.image" height="120" cover />
                   <v-card-text>
                     <strong>{{ template.title }}</strong>
-                    <p class="mb-2">{{ template.subtitle }}</p>
                     <div class="template-tags">
                       <v-chip v-if="template.isAts" size="x-small" color="primary" variant="tonal">ATS</v-chip>
                       <v-chip v-if="template.hasDocx" size="x-small" color="warning" variant="tonal">DOCX</v-chip>
