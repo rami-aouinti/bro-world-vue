@@ -98,10 +98,17 @@ type RoundedOption = {
   className: string
 }
 
+type TextStyleOption = {
+  label: string
+  value: 'clean' | 'italic' | 'serif' | 'mono' | 'display'
+  className: string
+}
+
 const activeTab = ref<'edit' | 'template' | 'design'>('edit')
 const selectedTemplate = ref('classic')
 const selectedTheme = ref('emerald')
 const selectedRounded = ref<'none' | 'sm' | 'md' | 'lg'>('md')
+const selectedTextStyle = ref<TextStyleOption['value']>('clean')
 
 const selectedTemplateFilter = ref<TemplateFilter>('all')
 
@@ -133,6 +140,12 @@ const colorThemes: ColorTheme[] = [
   { name: 'charcoal', sidebar: '#1f2937', accent: '#374151', page: '#f3f4f6' },
   { name: 'ruby', sidebar: '#7f1d1d', accent: '#dc2626', page: '#fff1f2' },
   { name: 'amber', sidebar: '#78350f', accent: '#d97706', page: '#fffbeb' },
+  { name: 'sunset', sidebar: '#7c2d12', accent: '#f97316', page: '#fff7ed' },
+  { name: 'slate', sidebar: '#0f172a', accent: '#475569', page: '#f8fafc' },
+  { name: 'teal', sidebar: '#134e4a', accent: '#0d9488', page: '#f0fdfa' },
+  { name: 'violet', sidebar: '#3b0764', accent: '#7c3aed', page: '#f5f3ff' },
+  { name: 'forest', sidebar: '#14532d', accent: '#16a34a', page: '#f0fdf4' },
+  { name: 'rose', sidebar: '#881337', accent: '#e11d48', page: '#fff1f2' },
 ]
 
 const roundedOptions: RoundedOption[] = [
@@ -140,6 +153,14 @@ const roundedOptions: RoundedOption[] = [
   { title: 'Soft', value: 'sm', className: 'radius-sm' },
   { title: 'Default', value: 'md', className: 'radius-md' },
   { title: 'Large', value: 'lg', className: 'radius-lg' },
+]
+
+const textStyleOptions: TextStyleOption[] = [
+  { label: 'Clean (Sans)', value: 'clean', className: 'text-style-clean' },
+  { label: 'Italic', value: 'italic', className: 'text-style-italic' },
+  { label: 'Classic Serif', value: 'serif', className: 'text-style-serif' },
+  { label: 'Mono Tech', value: 'mono', className: 'text-style-mono' },
+  { label: 'Display Bold', value: 'display', className: 'text-style-display' },
 ]
 
 const resume = reactive<ResumeModel>({
@@ -285,7 +306,6 @@ const selectedTemplateComponent = computed(() => {
 const templateSupportsPhoto = computed(() => selectedTemplateConfig.value.hasPhoto)
 const templateUsesTimeline = computed(() => selectedTemplateConfig.value.useTimeline)
 const pdfModalOpen = ref(false)
-const previewPdfUrl = ref('')
 
 function openPhotoPicker() {
   uploadInput.value?.click()
@@ -369,6 +389,8 @@ function removeLanguage(index: number) {
 
 const activeTheme = computed(() => colorThemes.find(theme => theme.name === selectedTheme.value) ?? colorThemes[0])
 const activeRoundedClass = computed(() => roundedOptions.find(item => item.value === selectedRounded.value)?.className ?? 'radius-md')
+const activeTextStyleClass = computed(() => textStyleOptions.find(item => item.value === selectedTextStyle.value)?.className ?? 'text-style-clean')
+const previewExportRef = ref<HTMLElement | null>(null)
 
 const previewStyle = computed(() => ({
   '--cv-sidebar': activeTheme.value.sidebar,
@@ -376,85 +398,49 @@ const previewStyle = computed(() => ({
   '--cv-page': activeTheme.value.page,
 }))
 
-function sanitizePdfText(value: string) {
-  return value
-    .replaceAll('\\', '\\\\')
-    .replaceAll('(', '\\(')
-    .replaceAll(')', '\\)')
-}
-
-function buildResumePdfBlob() {
-  const fullName = `${resume.firstName} ${resume.lastName}`.trim()
-  const lines = [
-    fullName || 'Resume',
-    resume.role,
-    `${resume.email} | ${resume.phone}`,
-    `${resume.city}, ${resume.country}`,
-    '',
-    'PROFILE',
-    resume.profile,
-    '',
-    'EXPERIENCE',
-    ...resume.experiences.flatMap(experience => [
-      `${experience.role} - ${experience.company} (${experience.start} - ${experience.end})`,
-      ...experience.bullets.map(item => `- ${item}`),
-      '',
-    ]),
-    'EDUCATION',
-    ...resume.education.map(item => `${item.degree} - ${item.school} (${item.start} - ${item.end})`),
-  ].filter(Boolean)
-
-  const contentLines = lines.slice(0, 48)
-  const textOperations = contentLines
-    .map((line, index) => `1 0 0 1 50 ${792 - 50 - (index * 14)} Tm (${sanitizePdfText(line)}) Tj`)
+async function buildResumePdfBlob() {
+  if (!previewExportRef.value || !import.meta.client) return ''
+  const stylesheetContent = Array.from(document.querySelectorAll('style,link[rel="stylesheet"]'))
+    .map(node => node.outerHTML)
     .join('\n')
-  const stream = `BT\n/F1 11 Tf\n${textOperations}\nET`
-  const objects = [
-    '1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj',
-    '2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj',
-    '3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >> endobj',
-    '4 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj',
-    `5 0 obj << /Length ${stream.length} >> stream\n${stream}\nendstream endobj`,
-  ]
+  const content = previewExportRef.value.outerHTML
 
-  let pdf = '%PDF-1.4\n'
-  const offsets = [0]
-  for (const object of objects) {
-    offsets.push(pdf.length)
-    pdf += `${object}\n`
-  }
-  const xrefOffset = pdf.length
-  pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`
-  for (const offset of offsets.slice(1)) {
-    pdf += `${String(offset).padStart(10, '0')} 00000 n \n`
-  }
-  pdf += `trailer << /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`
-
-  return new Blob([pdf], { type: 'application/pdf' })
+  return `
+    <!doctype html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Resume</title>
+        ${stylesheetContent}
+        <style>
+          body { margin: 0; padding: 18px; background: #fff; }
+          .preview-grid { min-height: auto !important; border-radius: 0 !important; }
+          @page { size: A4; margin: 12mm; }
+        </style>
+      </head>
+      <body>${content}</body>
+    </html>
+  `
 }
 
-function openPdfPreview() {
-  if (previewPdfUrl.value) {
-    URL.revokeObjectURL(previewPdfUrl.value)
-  }
-  previewPdfUrl.value = URL.createObjectURL(buildResumePdfBlob())
+async function openPdfPreview() {
   pdfModalOpen.value = true
 }
 
-function downloadPdf() {
-  const pdfUrl = URL.createObjectURL(buildResumePdfBlob())
-  const link = document.createElement('a')
-  link.href = pdfUrl
-  link.download = `${resume.firstName || 'resume'}-${resume.lastName || 'profile'}.pdf`.toLowerCase()
-  link.click()
-  setTimeout(() => URL.revokeObjectURL(pdfUrl), 2000)
-}
+async function downloadPdf() {
+  const printMarkup = await buildResumePdfBlob()
+  if (!printMarkup || !import.meta.client) return
+  const printWindow = window.open('', '_blank', 'noopener,noreferrer')
+  if (!printWindow) return
 
-onBeforeUnmount(() => {
-  if (previewPdfUrl.value) {
-    URL.revokeObjectURL(previewPdfUrl.value)
-  }
-})
+  printWindow.document.open()
+  printWindow.document.write(printMarkup)
+  printWindow.document.close()
+  printWindow.focus()
+  setTimeout(() => {
+    printWindow.print()
+  }, 300)
+}
 
 const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => false)
 const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
@@ -703,13 +689,24 @@ onUnmounted(() => {
                   {{ option.title }}
                 </v-btn>
               </v-btn-toggle>
+
+              <p class="section-label mt-4">Text style</p>
+              <AppSelect
+                v-model="selectedTextStyle"
+                :items="textStyleOptions"
+                item-title="label"
+                item-value="value"
+                label="Typography preset"
+                density="comfortable"
+                hide-details
+              />
             </article>
           </v-window-item>
         </v-window>
       </section>
 
       <aside class="builder-preview py-6 px-5 px-md-8">
-        <div class="preview-grid" :class="activeRoundedClass" :style="previewStyle">
+        <div ref="previewExportRef" class="preview-grid" :class="[activeRoundedClass, activeTextStyleClass]" :style="previewStyle">
           <component :is="selectedTemplateComponent" :resume="resume" :show-photo="templateSupportsPhoto" :use-timeline="templateUsesTimeline" editable />
         </div>
       </aside>
@@ -718,12 +715,14 @@ onUnmounted(() => {
     <v-dialog v-model="pdfModalOpen" width="900">
       <v-card>
         <v-card-title class="d-flex align-center justify-space-between">
-          <span>PDF Preview</span>
+          <span>Design Preview</span>
           <v-btn icon="mdi-close" variant="text" @click="pdfModalOpen = false" />
         </v-card-title>
         <v-divider />
-        <v-card-text class="pa-0">
-          <iframe v-if="previewPdfUrl" :src="previewPdfUrl" class="pdf-frame" title="Resume PDF preview" />
+        <v-card-text class="pa-4 preview-modal-body">
+          <div class="preview-grid" :class="[activeRoundedClass, activeTextStyleClass]" :style="previewStyle">
+            <component :is="selectedTemplateComponent" :resume="resume" :show-photo="templateSupportsPhoto" :use-timeline="templateUsesTimeline" editable />
+          </div>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -834,15 +833,14 @@ onUnmounted(() => {
   color: #1f2a44;
 }
 
-.pdf-frame {
-  width: 100%;
-  min-height: 75vh;
-  border: 0;
+.preview-modal-body {
+  max-height: 80vh;
+  overflow: auto;
 }
 
 .palette-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -970,6 +968,29 @@ onUnmounted(() => {
 
 .radius-lg {
   border-radius: 24px;
+}
+
+.text-style-clean {
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  font-style: normal;
+}
+
+.text-style-italic {
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  font-style: italic;
+}
+
+.text-style-serif {
+  font-family: 'Merriweather', Georgia, 'Times New Roman', serif;
+}
+
+.text-style-mono {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+}
+
+.text-style-display {
+  font-family: 'Poppins', 'Avenir Next', 'Segoe UI', sans-serif;
+  font-weight: 600;
 }
 
 @media (max-width: 1120px) {
