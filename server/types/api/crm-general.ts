@@ -120,6 +120,17 @@ export interface CrmSprintCreatePayload {
 
 export type CrmSprintUpdatePayload = Partial<Omit<CrmSprintCreatePayload, 'projectId'>>
 
+export interface CrmAttachmentItem {
+  id?: string
+  url?: string
+  name?: string
+  originalName?: string
+  mimeType?: string
+  size?: number
+  extension?: string
+  uploadedAt?: string
+}
+
 export interface CrmTaskItem {
   id: string
   title: string
@@ -133,7 +144,7 @@ export interface CrmTaskItem {
   dueAt: string | null
   estimatedHours: number | null
   updatedAt: string
-  attachments: unknown[]
+  attachments: CrmAttachmentItem[]
   assignees: unknown[]
   subTasks: CrmTaskItem[]
   children: CrmTaskItem[]
@@ -192,13 +203,7 @@ export interface CrmTaskRequestItem {
   status: string
   requestedAt: string
   resolvedAt: string | null
-  attachments?: Array<{
-    id?: string
-    originalName?: string
-    name?: string
-    url?: string
-    mimeType?: string
-  }>
+  attachments?: CrmAttachmentItem[]
   assignees?: Array<{
     id: string
     username?: string

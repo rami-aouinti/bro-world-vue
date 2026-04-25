@@ -235,10 +235,10 @@ async function attachToSprint() {
               >
                 <v-list-item
                   v-for="(attachment, index) in data.attachments"
-                  :key="(attachment as any).id || (attachment as any).url || (attachment as any).name || index"
-                  :title="String((attachment as any).originalName ?? (attachment as any).name ?? (attachment as any).url ?? `Attachment ${index + 1}`)"
-                  :subtitle="String((attachment as any).mimeType ?? '')"
-                  :href="(attachment as any).url"
+                  :key="attachment.id || attachment.url || attachment.name || index"
+                  :title="String(attachment.originalName ?? attachment.name ?? attachment.url ?? `Attachment ${index + 1}`)"
+                  :subtitle="String(attachment.mimeType ?? '')"
+                  :href="attachment.url"
                   target="_blank"
                   rel="noopener noreferrer"
                   prepend-icon="mdi-download"

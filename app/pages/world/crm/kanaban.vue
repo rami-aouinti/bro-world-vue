@@ -365,9 +365,9 @@ function profileLink(username: string | null) {
             <v-list-item
               v-for="(attachment, index) in selectedTask.attachments"
               :key="index"
-              :title="String((attachment as any).originalName ?? (attachment as any).url ?? `Attachment ${index + 1}`)"
-              :subtitle="String((attachment as any).mimeType ?? '')"
-              :href="(attachment as any).url"
+              :title="String(attachment.originalName ?? attachment.url ?? `Attachment ${index + 1}`)"
+              :subtitle="String(attachment.mimeType ?? '')"
+              :href="attachment.url"
               target="_blank"
               rel="noopener noreferrer"
               prepend-icon="mdi-download"
