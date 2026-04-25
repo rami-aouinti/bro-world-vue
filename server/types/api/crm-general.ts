@@ -210,7 +210,12 @@ export interface CrmTaskRequestItem {
     email?: string
     firstName?: string
     lastName?: string
+    employeeId?: string
+    photo?: string
   }>
+  plannedHours?: number | null
+  consumedHours?: number | null
+  remainingHours?: number | null
   githubIssue?: unknown | null
   githubBranches?: Array<Record<string, unknown>>
   blogId?: string | null
