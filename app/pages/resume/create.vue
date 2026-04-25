@@ -79,6 +79,7 @@ type Template = {
   hasDocx: boolean
   isCustomized: boolean
   isFree: boolean
+  useTimeline: boolean
   variant: 'classic' | 'modern' | 'professional' | 'traditional' | 'creative' | 'minimalist' | 'aurora' | 'executive'
 }
 
@@ -115,26 +116,14 @@ const templateFilters = [
 ] as const satisfies ReadonlyArray<{ label: string; value: TemplateFilter }>
 
 const templates: Template[] = [
-  { id: 'classic', title: 'Classic', subtitle: 'Simple and readable format', image: '/img/cv/cv-4.png', hasPhoto: false, isTwoColumn: false, isAts: false, hasDocx: true, isCustomized: false, isFree: true, variant: 'classic' },
-  { id: 'traditional', title: 'Traditional', subtitle: 'Formal and timeless structure', image: '/img/cv/cv-2.png', hasPhoto: false, isTwoColumn: false, isAts: false, hasDocx: true, isCustomized: false, isFree: true, variant: 'traditional' },
-  { id: 'professional', title: 'Professional', subtitle: 'Sidebar profile with details', image: '/img/cv/cv-1.png', hasPhoto: true, isTwoColumn: true, isAts: false, hasDocx: true, isCustomized: true, isFree: true, variant: 'professional' },
-  { id: 'prime-ats', title: 'Prime ATS', subtitle: 'Optimized for ATS screening', image: '/img/cv/cv-3.png', hasPhoto: true, isTwoColumn: false, isAts: true, hasDocx: true, isCustomized: false, isFree: true, variant: 'traditional' },
-  { id: 'pure-ats', title: 'Pure ATS', subtitle: 'Minimal ATS-first template', image: '/img/cv/cv-4.png', hasPhoto: false, isTwoColumn: false, isAts: true, hasDocx: true, isCustomized: false, isFree: true, variant: 'traditional' },
-  { id: 'specialist', title: 'Specialist', subtitle: 'Content-focused ATS style', image: '/img/cv/cv-2.png', hasPhoto: false, isTwoColumn: false, isAts: true, hasDocx: true, isCustomized: true, isFree: true, variant: 'traditional' },
-  { id: 'clean', title: 'Clean', subtitle: 'Modern clean hierarchy', image: '/img/cv/cv-4.png', hasPhoto: false, isTwoColumn: true, isAts: false, hasDocx: false, isCustomized: true, isFree: true, variant: 'classic' },
-  { id: 'simple-ats', title: 'Simple ATS', subtitle: 'Lightweight ATS-friendly', image: '/img/cv/cv-3.png', hasPhoto: false, isTwoColumn: false, isAts: true, hasDocx: true, isCustomized: false, isFree: true, variant: 'traditional' },
-  { id: 'corporate', title: 'Corporate', subtitle: 'Business-centric classic style', image: '/img/cv/cv-2.png', hasPhoto: true, isTwoColumn: false, isAts: false, hasDocx: true, isCustomized: false, isFree: true, variant: 'traditional' },
-  { id: 'clear', title: 'Clear', subtitle: 'Photo header and clean body', image: '/img/cv/cv-3.png', hasPhoto: true, isTwoColumn: true, isAts: false, hasDocx: true, isCustomized: true, isFree: true, variant: 'modern' },
-  { id: 'precision-ats', title: 'Precision ATS', subtitle: 'Precise ATS structure', image: '/img/cv/cv-4.png', hasPhoto: false, isTwoColumn: false, isAts: true, hasDocx: true, isCustomized: false, isFree: true, variant: 'traditional' },
-  { id: 'two-column-ats', title: 'Two column ATS', subtitle: 'Two-column ATS layout', image: '/img/cv/cv-1.png', hasPhoto: false, isTwoColumn: true, isAts: true, hasDocx: true, isCustomized: true, isFree: true, variant: 'professional' },
-  { id: 'balanced', title: 'Balanced', subtitle: 'Balanced two-column design', image: '/img/cv/cv-1.png', hasPhoto: false, isTwoColumn: true, isAts: false, hasDocx: true, isCustomized: true, isFree: true, variant: 'professional' },
-  { id: 'header-ats', title: 'Header ATS', subtitle: 'Header-focused ATS format', image: '/img/cv/cv-4.png', hasPhoto: false, isTwoColumn: false, isAts: true, hasDocx: true, isCustomized: false, isFree: true, variant: 'modern' },
-  { id: 'essential', title: 'Essential', subtitle: 'Essential details with photo', image: '/img/cv/cv-3.png', hasPhoto: true, isTwoColumn: false, isAts: false, hasDocx: true, isCustomized: false, isFree: true, variant: 'modern' },
-  { id: 'polished', title: 'Polished', subtitle: 'Polished recruiter-ready style', image: '/img/cv/cv-2.png', hasPhoto: true, isTwoColumn: false, isAts: false, hasDocx: false, isCustomized: true, isFree: true, variant: 'professional' },
-  { id: 'creative-wave', title: 'Creative Wave', subtitle: 'Gradient hero and dynamic cards', image: '/img/cv/cv-5.png', hasPhoto: true, isTwoColumn: true, isAts: false, hasDocx: false, isCustomized: true, isFree: true, variant: 'creative' },
-  { id: 'minimal-mono', title: 'Minimal Mono', subtitle: 'Monochrome editorial minimalism', image: '/img/cv/cv-4.png', hasPhoto: false, isTwoColumn: false, isAts: true, hasDocx: true, isCustomized: true, isFree: true, variant: 'minimalist' },
-  { id: 'aurora-night', title: 'Aurora Night', subtitle: 'Dark glassmorphism with neon accents', image: '/img/cv/cv-1.png', hasPhoto: true, isTwoColumn: true, isAts: false, hasDocx: false, isCustomized: true, isFree: true, variant: 'aurora' },
-  { id: 'executive-edge', title: 'Executive Edge', subtitle: 'Premium leadership-oriented layout', image: '/img/cv/cv-2.png', hasPhoto: true, isTwoColumn: true, isAts: true, hasDocx: true, isCustomized: true, isFree: true, variant: 'executive' },
+  { id: 'classic', title: 'Classic', subtitle: 'Simple and readable format', image: '/img/cv/cv-4.png', hasPhoto: false, isTwoColumn: false, isAts: false, hasDocx: true, isCustomized: false, isFree: true, useTimeline: false, variant: 'classic' },
+  { id: 'modern', title: 'Modern', subtitle: 'Clean blocks and balanced content', image: '/img/cv/cv-3.png', hasPhoto: true, isTwoColumn: true, isAts: false, hasDocx: true, isCustomized: true, isFree: true, useTimeline: false, variant: 'modern' },
+  { id: 'professional', title: 'Professional', subtitle: 'Sidebar profile with details', image: '/img/cv/cv-1.png', hasPhoto: true, isTwoColumn: true, isAts: false, hasDocx: true, isCustomized: true, isFree: true, useTimeline: false, variant: 'professional' },
+  { id: 'traditional', title: 'Traditional', subtitle: 'Formal and timeless structure', image: '/img/cv/cv-2.png', hasPhoto: false, isTwoColumn: false, isAts: false, hasDocx: true, isCustomized: false, isFree: true, useTimeline: false, variant: 'traditional' },
+  { id: 'creative', title: 'Creative Timeline', subtitle: 'Creative layout with timeline sections', image: '/img/cv/cv-5.png', hasPhoto: true, isTwoColumn: true, isAts: false, hasDocx: false, isCustomized: true, isFree: true, useTimeline: true, variant: 'creative' },
+  { id: 'minimalist', title: 'Minimalist', subtitle: 'Monochrome editorial minimalism', image: '/img/cv/cv-4.png', hasPhoto: false, isTwoColumn: false, isAts: true, hasDocx: true, isCustomized: true, isFree: true, useTimeline: false, variant: 'minimalist' },
+  { id: 'aurora', title: 'Aurora', subtitle: 'Dark glassmorphism with neon accents', image: '/img/cv/cv-1.png', hasPhoto: true, isTwoColumn: true, isAts: false, hasDocx: false, isCustomized: true, isFree: true, useTimeline: false, variant: 'aurora' },
+  { id: 'executive', title: 'Executive Timeline', subtitle: 'Leadership layout with timeline details', image: '/img/cv/cv-2.png', hasPhoto: true, isTwoColumn: true, isAts: true, hasDocx: true, isCustomized: true, isFree: true, useTimeline: true, variant: 'executive' },
 ]
 
 const colorThemes: ColorTheme[] = [
@@ -294,6 +283,9 @@ const selectedTemplateComponent = computed(() => {
 })
 
 const templateSupportsPhoto = computed(() => selectedTemplateConfig.value.hasPhoto)
+const templateUsesTimeline = computed(() => selectedTemplateConfig.value.useTimeline)
+const pdfModalOpen = ref(false)
+const previewPdfUrl = ref('')
 
 function openPhotoPicker() {
   uploadInput.value?.click()
@@ -334,6 +326,13 @@ function removeExperience(index: number) {
   resume.experiences.splice(index, 1)
 }
 
+function moveExperience(index: number, direction: 'up' | 'down') {
+  const targetIndex = direction === 'up' ? index - 1 : index + 1
+  if (targetIndex < 0 || targetIndex >= resume.experiences.length) return
+  const [item] = resume.experiences.splice(index, 1)
+  resume.experiences.splice(targetIndex, 0, item)
+}
+
 function addEducation() {
   resume.education.push({ degree: '', school: '', city: '', start: '', end: '', note: '' })
 }
@@ -341,6 +340,13 @@ function addEducation() {
 function removeEducation(index: number) {
   if (resume.education.length === 1) return
   resume.education.splice(index, 1)
+}
+
+function moveEducation(index: number, direction: 'up' | 'down') {
+  const targetIndex = direction === 'up' ? index - 1 : index + 1
+  if (targetIndex < 0 || targetIndex >= resume.education.length) return
+  const [item] = resume.education.splice(index, 1)
+  resume.education.splice(targetIndex, 0, item)
 }
 
 function addSkill() {
@@ -370,6 +376,86 @@ const previewStyle = computed(() => ({
   '--cv-page': activeTheme.value.page,
 }))
 
+function sanitizePdfText(value: string) {
+  return value
+    .replaceAll('\\', '\\\\')
+    .replaceAll('(', '\\(')
+    .replaceAll(')', '\\)')
+}
+
+function buildResumePdfBlob() {
+  const fullName = `${resume.firstName} ${resume.lastName}`.trim()
+  const lines = [
+    fullName || 'Resume',
+    resume.role,
+    `${resume.email} | ${resume.phone}`,
+    `${resume.city}, ${resume.country}`,
+    '',
+    'PROFILE',
+    resume.profile,
+    '',
+    'EXPERIENCE',
+    ...resume.experiences.flatMap(experience => [
+      `${experience.role} - ${experience.company} (${experience.start} - ${experience.end})`,
+      ...experience.bullets.map(item => `- ${item}`),
+      '',
+    ]),
+    'EDUCATION',
+    ...resume.education.map(item => `${item.degree} - ${item.school} (${item.start} - ${item.end})`),
+  ].filter(Boolean)
+
+  const contentLines = lines.slice(0, 48)
+  const textOperations = contentLines
+    .map((line, index) => `1 0 0 1 50 ${792 - 50 - (index * 14)} Tm (${sanitizePdfText(line)}) Tj`)
+    .join('\n')
+  const stream = `BT\n/F1 11 Tf\n${textOperations}\nET`
+  const objects = [
+    '1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj',
+    '2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj',
+    '3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >> endobj',
+    '4 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj',
+    `5 0 obj << /Length ${stream.length} >> stream\n${stream}\nendstream endobj`,
+  ]
+
+  let pdf = '%PDF-1.4\n'
+  const offsets = [0]
+  for (const object of objects) {
+    offsets.push(pdf.length)
+    pdf += `${object}\n`
+  }
+  const xrefOffset = pdf.length
+  pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`
+  for (const offset of offsets.slice(1)) {
+    pdf += `${String(offset).padStart(10, '0')} 00000 n \n`
+  }
+  pdf += `trailer << /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`
+
+  return new Blob([pdf], { type: 'application/pdf' })
+}
+
+function openPdfPreview() {
+  if (previewPdfUrl.value) {
+    URL.revokeObjectURL(previewPdfUrl.value)
+  }
+  previewPdfUrl.value = URL.createObjectURL(buildResumePdfBlob())
+  pdfModalOpen.value = true
+}
+
+function downloadPdf() {
+  const pdfUrl = URL.createObjectURL(buildResumePdfBlob())
+  const link = document.createElement('a')
+  link.href = pdfUrl
+  link.download = `${resume.firstName || 'resume'}-${resume.lastName || 'profile'}.pdf`.toLowerCase()
+  link.click()
+  setTimeout(() => URL.revokeObjectURL(pdfUrl), 2000)
+}
+
+onBeforeUnmount(() => {
+  if (previewPdfUrl.value) {
+    URL.revokeObjectURL(previewPdfUrl.value)
+  }
+})
+
 const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => false)
 const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
 const previousDesktopRightDrawer = showRightDrawerDesktop.value
@@ -388,6 +474,11 @@ onUnmounted(() => {
   <v-container fluid class="resume-create pa-0">
     <div class="builder-layout">
       <section class="builder-form px-3 px-md-6 py-4">
+        <div class="builder-actions mb-4">
+          <v-btn color="primary" prepend-icon="mdi-content-save-outline">Save</v-btn>
+          <v-btn color="secondary" variant="outlined" prepend-icon="mdi-file-pdf-box" @click="openPdfPreview">Preview</v-btn>
+          <v-btn color="info" variant="outlined" prepend-icon="mdi-download" @click="downloadPdf">Download</v-btn>
+        </div>
         <v-tabs v-model="activeTab" color="primary" grow class="mb-4">
           <v-tab value="edit">Edit</v-tab>
           <v-tab value="template">Template</v-tab>
@@ -440,6 +531,7 @@ onUnmounted(() => {
               <header class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap">
                 <div>
                   <h2 class="text-dark">Experiences</h2>
+                  <p class="text-dark">Toutes les experiences clés du profil.</p>
                 </div>
                 <v-btn prepend-icon="mdi-plus" variant="tonal" size="small" @click="addExperience">Add line</v-btn>
               </header>
@@ -462,7 +554,11 @@ onUnmounted(() => {
                       />
                     </v-col>
                     <v-col cols="12" md="1" class="d-flex align-center">
-                      <v-btn icon="mdi-delete-outline" color="error" variant="text" size="small" @click="removeExperience(index)" />
+                      <div class="d-flex flex-column ga-1">
+                        <v-btn icon="mdi-chevron-up" variant="text" size="x-small" :disabled="index === 0" @click="moveExperience(index, 'up')" />
+                        <v-btn icon="mdi-chevron-down" variant="text" size="x-small" :disabled="index === resume.experiences.length - 1" @click="moveExperience(index, 'down')" />
+                        <v-btn icon="mdi-delete-outline" color="error" variant="text" size="small" @click="removeExperience(index)" />
+                      </div>
                     </v-col>
                   </v-row>
                 </v-card-text>
@@ -472,7 +568,8 @@ onUnmounted(() => {
             <article class="form-section mb-4">
               <header class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap">
                 <div>
-                  <h2>Education</h2>
+                  <h2 class="text-dark">Education</h2>
+                  <p class="text-dark">Ajoute tes diplômes et formations.</p>
                 </div>
                 <v-btn prepend-icon="mdi-plus" variant="tonal" size="small" @click="addEducation">Add line</v-btn>
               </header>
@@ -486,7 +583,11 @@ onUnmounted(() => {
                     <v-col cols="12" md="6"><v-text-field v-model="item.end" label="End" variant="outlined" hide-details /></v-col>
                     <v-col cols="12" md="11"><v-text-field v-model="item.note" label="Note" variant="outlined" hide-details /></v-col>
                     <v-col cols="12" md="1" class="d-flex align-center">
-                      <v-btn icon="mdi-delete-outline" color="error" variant="text" size="small" @click="removeEducation(index)" />
+                      <div class="d-flex flex-column ga-1">
+                        <v-btn icon="mdi-chevron-up" variant="text" size="x-small" :disabled="index === 0" @click="moveEducation(index, 'up')" />
+                        <v-btn icon="mdi-chevron-down" variant="text" size="x-small" :disabled="index === resume.education.length - 1" @click="moveEducation(index, 'down')" />
+                        <v-btn icon="mdi-delete-outline" color="error" variant="text" size="small" @click="removeEducation(index)" />
+                      </div>
                     </v-col>
                   </v-row>
                 </v-card-text>
@@ -608,14 +709,24 @@ onUnmounted(() => {
       </section>
 
       <aside class="builder-preview py-6 px-5 px-md-8">
-        <p class="text-caption text-medium-emphasis mb-2">
-          Astuce : clique directement sur le texte du CV à droite pour le modifier.
-        </p>
         <div class="preview-grid" :class="activeRoundedClass" :style="previewStyle">
-          <component :is="selectedTemplateComponent" :resume="resume" :show-photo="templateSupportsPhoto" editable />
+          <component :is="selectedTemplateComponent" :resume="resume" :show-photo="templateSupportsPhoto" :use-timeline="templateUsesTimeline" editable />
         </div>
       </aside>
     </div>
+
+    <v-dialog v-model="pdfModalOpen" width="900">
+      <v-card>
+        <v-card-title class="d-flex align-center justify-space-between">
+          <span>PDF Preview</span>
+          <v-btn icon="mdi-close" variant="text" @click="pdfModalOpen = false" />
+        </v-card-title>
+        <v-divider />
+        <v-card-text class="pa-0">
+          <iframe v-if="previewPdfUrl" :src="previewPdfUrl" class="pdf-frame" title="Resume PDF preview" />
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -638,6 +749,12 @@ onUnmounted(() => {
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
+}
+
+.builder-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .completion-card {
@@ -715,6 +832,12 @@ onUnmounted(() => {
   font-weight: 700;
   margin-bottom: 8px;
   color: #1f2a44;
+}
+
+.pdf-frame {
+  width: 100%;
+  min-height: 75vh;
+  border: 0;
 }
 
 .palette-grid {
@@ -863,6 +986,7 @@ onUnmounted(() => {
 }
 
 @media (max-width: 760px) {
+  .builder-actions,
   .grid-2,
   .template-grid,
   .palette-grid {

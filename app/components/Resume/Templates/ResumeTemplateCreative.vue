@@ -1,7 +1,8 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean }>(), {
+const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean; useTimeline?: boolean }>(), {
   showPhoto: false,
   editable: false,
+  useTimeline: false,
 })
 
 function updateText(path: string, value: string) {
@@ -47,14 +48,14 @@ function updateText(path: string, value: string) {
     <section class="content-grid">
       <article>
         <h2>Profile</h2>
-        <p class="editable-text" :contenteditable="editable" @input="event => updateText('profile', (event.target as HTMLElement).innerText)">
+        <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText('profile', (event.target as HTMLElement).innerText)">
           {{ resume.profile || 'Add your personal summary from the Edit tab.' }}
         </p>
       </article>
 
       <article>
         <h2>Experience</h2>
-        <div v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="timeline-item">
+        <div v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="timeline-item text-dark" :class="{ 'timeline-mode': useTimeline }">
           <h3>
             <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.role`, (event.target as HTMLElement).innerText)">{{ experience.role }}</span>
             ·
@@ -69,7 +70,7 @@ function updateText(path: string, value: string) {
             <li
               v-for="(bullet, bulletIndex) in experience.bullets"
               :key="bulletIndex"
-              class="editable-text"
+              class="text-dark editable-text"
               :contenteditable="editable"
               @input="event => updateText(`experiences.${index}.bullets.${bulletIndex}`, (event.target as HTMLElement).innerText)"
             >
@@ -89,7 +90,7 @@ function updateText(path: string, value: string) {
 
       <article>
         <h2>Education</h2>
-        <div v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="education-item">
+        <div v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="education-item text-dark" :class="{ 'timeline-mode': useTimeline }">
           <h3>
             <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</span>
           </h3>
@@ -116,6 +117,9 @@ h1 { font-size: 2.25rem; line-height: 1.1; margin: 0; }
 article { background: #fff; border-radius: 16px; padding: 18px; border: 1px solid #e2e8f0; box-shadow: 0 8px 20px rgb(15 23 42 / .05); }
 h2 { margin-bottom: 12px; color: var(--cv-accent); }
 .timeline-item + .timeline-item { margin-top: 14px; padding-top: 14px; border-top: 1px dashed #cbd5e1; }
+.timeline-mode { position: relative; padding-left: 16px; border-top: 0 !important; }
+.timeline-mode::before { content: ''; position: absolute; left: 3px; top: 2px; bottom: 2px; width: 2px; background: #cbd5e1; }
+.timeline-mode::after { content: ''; position: absolute; left: -1px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--cv-accent); }
 .dates { font-size: .78rem; color: #64748b; margin-bottom: 6px; }
 ul { padding-left: 18px; }
 li { margin-bottom: 4px; }
