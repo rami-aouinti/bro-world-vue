@@ -173,12 +173,14 @@ type TextStyleOption = {
   value: 'clean' | 'italic' | 'serif' | 'mono' | 'display'
   className: string
 }
+type LevelInputMode = 'percent' | 'stars'
 
 const activeTab = ref<'edit' | 'template' | 'design' | 'import'>('edit')
 const selectedTemplate = ref('classic')
 const selectedTheme = ref('emerald')
 const selectedRounded = ref<'none' | 'sm' | 'md' | 'lg'>('md')
 const selectedTextStyle = ref<TextStyleOption['value']>('clean')
+const levelInputMode = ref<LevelInputMode>('percent')
 
 const selectedTemplateFilter = ref<TemplateFilter>('all')
 
@@ -502,6 +504,7 @@ const templateUsesTimeline = computed(
   () => selectedTemplateConfig.value.useTimeline,
 )
 const pdfModalOpen = ref(false)
+const photoDialogOpen = ref(false)
 const aiMenuOpen = ref(false)
 const aiCreateModalOpen = ref(false)
 const aiReviewModalOpen = ref(false)
@@ -520,6 +523,10 @@ const pendingPdfDownload = ref(false)
 
 function openPhotoPicker() {
   uploadInput.value?.click()
+}
+
+function onPreviewPhotoClick() {
+  photoDialogOpen.value = true
 }
 
 function onPhotoSelected(event: Event) {
@@ -611,6 +618,59 @@ function addLanguage() {
 function removeLanguage(index: number) {
   if (resume.languages.length === 1) return
   resume.languages.splice(index, 1)
+}
+
+function getLevelAsStars(level: number) {
+  return Math.max(0, Math.min(5, Math.round(level / 20)))
+}
+
+function setLevelFromStars(
+  collection: 'skills' | 'languages',
+  index: number,
+  stars: number,
+) {
+  const normalized = Math.max(0, Math.min(5, stars))
+  resume[collection][index].level = normalized * 20
+}
+
+function addProject() {
+  resume.projects.push({
+    name: '',
+    summary: '',
+  })
+}
+
+function removeProject(index: number) {
+  if (resume.projects.length === 1) return
+  resume.projects.splice(index, 1)
+}
+
+function addReference() {
+  resume.references.push({
+    name: '',
+    company: '',
+    email: '',
+    phone: '',
+  })
+}
+
+function removeReference(index: number) {
+  if (resume.references.length === 1) return
+  resume.references.splice(index, 1)
+}
+
+function addCertification() {
+  resume.courses.push({
+    title: '',
+    school: '',
+    start: '',
+    end: '',
+  })
+}
+
+function removeCertification(index: number) {
+  if (resume.courses.length === 1) return
+  resume.courses.splice(index, 1)
 }
 
 const activeTheme = computed(
@@ -1426,6 +1486,20 @@ onUnmounted(() => {
               <header class="mb-4">
                 <h2>Skills & Languages</h2>
               </header>
+              <div class="mb-4">
+                <AppSelect
+                  v-model="levelInputMode"
+                  :items="[
+                    { label: 'Percentage slider', value: 'percent' },
+                    { label: 'Stars (level 1-5)', value: 'stars' },
+                  ]"
+                  item-title="label"
+                  item-value="value"
+                  label="Level editor style"
+                  density="comfortable"
+                  hide-details
+                />
+              </div>
               <div>
                 <div class="d-flex align-center justify-space-between my-4">
                   <v-chip color="primary">Skills</v-chip>
@@ -1451,7 +1525,9 @@ onUnmounted(() => {
                         hide-details
                     /></v-col>
                     <v-col cols="5"
-                      ><v-slider
+                    >
+                      <v-slider
+                        v-if="levelInputMode === 'percent'"
                         v-model="skill.level"
                         min="0"
                         max="100"
@@ -1459,7 +1535,16 @@ onUnmounted(() => {
                         thumb-label
                         color="primary"
                         hide-details
-                    /></v-col>
+                      />
+                      <v-rating
+                        v-else
+                        :model-value="getLevelAsStars(skill.level)"
+                        color="amber"
+                        active-color="amber"
+                        density="comfortable"
+                        @update:model-value="setLevelFromStars('skills', index, $event || 0)"
+                      />
+                    </v-col>
                     <v-col cols="2" class="d-flex align-center justify-center">
                       <v-btn
                         icon="mdi-delete-outline"
@@ -1498,7 +1583,9 @@ onUnmounted(() => {
                         hide-details
                     /></v-col>
                     <v-col cols="5"
-                      ><v-slider
+                    >
+                      <v-slider
+                        v-if="levelInputMode === 'percent'"
                         v-model="language.level"
                         min="0"
                         max="100"
@@ -1506,7 +1593,16 @@ onUnmounted(() => {
                         thumb-label
                         color="primary"
                         hide-details
-                    /></v-col>
+                      />
+                      <v-rating
+                        v-else
+                        :model-value="getLevelAsStars(language.level)"
+                        color="amber"
+                        active-color="amber"
+                        density="comfortable"
+                        @update:model-value="setLevelFromStars('languages', index, $event || 0)"
+                      />
+                    </v-col>
                     <v-col cols="2" class="d-flex align-center justify-center">
                       <v-btn
                         icon="mdi-delete-outline"
@@ -1519,6 +1615,72 @@ onUnmounted(() => {
                   </v-row>
                 </div>
               </div>
+            </article>
+
+            <article class="form-section mb-4">
+              <header class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap">
+                <h2>Projects</h2>
+                <v-btn prepend-icon="mdi-plus" variant="outlined" size="small" @click="addProject">Add</v-btn>
+              </header>
+              <v-row v-for="(project, index) in resume.projects" :key="`project-${index}`">
+                <v-col cols="12" md="4">
+                  <v-text-field v-model="project.name" label="Project name" variant="outlined" hide-details />
+                </v-col>
+                <v-col cols="12" md="7">
+                  <v-text-field v-model="project.summary" label="Summary / impact" variant="outlined" hide-details />
+                </v-col>
+                <v-col cols="12" md="1" class="d-flex align-center justify-center">
+                  <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeProject(index)" />
+                </v-col>
+              </v-row>
+            </article>
+
+            <article class="form-section mb-4">
+              <header class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap">
+                <h2>Certifications</h2>
+                <v-btn prepend-icon="mdi-plus" variant="outlined" size="small" @click="addCertification">Add</v-btn>
+              </header>
+              <v-row v-for="(course, index) in resume.courses" :key="`course-${index}`">
+                <v-col cols="12" md="4">
+                  <v-text-field v-model="course.title" label="Certification title" variant="outlined" hide-details />
+                </v-col>
+                <v-col cols="12" md="3">
+                  <v-text-field v-model="course.school" label="Issuer" variant="outlined" hide-details />
+                </v-col>
+                <v-col cols="6" md="2">
+                  <v-text-field v-model="course.start" label="Date start" variant="outlined" hide-details />
+                </v-col>
+                <v-col cols="6" md="2">
+                  <v-text-field v-model="course.end" label="Date end" variant="outlined" hide-details />
+                </v-col>
+                <v-col cols="12" md="1" class="d-flex align-center justify-center">
+                  <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeCertification(index)" />
+                </v-col>
+              </v-row>
+            </article>
+
+            <article class="form-section mb-4">
+              <header class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap">
+                <h2>References</h2>
+                <v-btn prepend-icon="mdi-plus" variant="outlined" size="small" @click="addReference">Add</v-btn>
+              </header>
+              <v-row v-for="(reference, index) in resume.references" :key="`reference-${index}`">
+                <v-col cols="12" md="3">
+                  <v-text-field v-model="reference.name" label="Name" variant="outlined" hide-details />
+                </v-col>
+                <v-col cols="12" md="3">
+                  <v-text-field v-model="reference.company" label="Company" variant="outlined" hide-details />
+                </v-col>
+                <v-col cols="12" md="3">
+                  <v-text-field v-model="reference.email" label="Email" variant="outlined" hide-details />
+                </v-col>
+                <v-col cols="10" md="2">
+                  <v-text-field v-model="reference.phone" label="Phone" variant="outlined" hide-details />
+                </v-col>
+                <v-col cols="2" md="1" class="d-flex align-center justify-center">
+                  <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeReference(index)" />
+                </v-col>
+              </v-row>
             </article>
           </v-window-item>
 
@@ -1716,6 +1878,7 @@ onUnmounted(() => {
             :resume="resume"
             :show-photo="templateSupportsPhoto"
             :use-timeline="templateUsesTimeline"
+            :on-photo-click="onPreviewPhotoClick"
             editable
           />
         </div>
@@ -1744,8 +1907,26 @@ onUnmounted(() => {
               :resume="resume"
               :show-photo="templateSupportsPhoto"
               :use-timeline="templateUsesTimeline"
+              :on-photo-click="onPreviewPhotoClick"
               editable
             />
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="photoDialogOpen" max-width="520">
+      <v-card>
+        <v-card-title class="d-flex align-center justify-space-between">
+          <span>Resume Photo</span>
+          <v-btn icon="mdi-close" variant="text" @click="photoDialogOpen = false" />
+        </v-card-title>
+        <v-divider />
+        <v-card-text>
+          <v-img :src="resume.photoUrl || '/img/default_avatar.svg'" class="rounded-lg mb-4" max-height="380" cover />
+          <div class="d-flex ga-2">
+            <v-btn prepend-icon="mdi-upload" color="primary" variant="tonal" @click="openPhotoPicker">Upload image</v-btn>
+            <v-btn prepend-icon="mdi-delete-outline" color="error" variant="text" @click="clearPhoto">Remove</v-btn>
           </div>
         </v-card-text>
       </v-card>
