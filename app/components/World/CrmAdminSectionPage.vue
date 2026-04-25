@@ -202,16 +202,17 @@ const fetchKey = computed(
   () => `crm-admin-section-${sectionConfig.value.endpoint}`,
 )
 
-const { data, pending, error, refresh } = await useFetch<
+const { data, pending, error, refresh } = useFetch<
   CrmGeneralCollectionResponse<GenericItem>
 >(endpoint, {
   key: fetchKey,
   watch: [endpoint],
 })
 
-const { data: endpointCatalog } = await useFetch<CrmEndpointCatalogResponse>(
-  '/api/world/crm/endpoints',
-)
+const { data: endpointCatalog, pending: endpointCatalogPending } =
+  useFetch<CrmEndpointCatalogResponse>('/api/world/crm/endpoints')
+
+const isLoading = computed(() => pending.value || endpointCatalogPending.value)
 
 const relationCache = reactive<Partial<Record<SectionKey, GenericItem[]>>>({})
 
@@ -591,10 +592,10 @@ async function submitApiAction() {
         :label="`Search in ${sectionConfig.title}`"
         clearable
         variant="outlined"
-        :disabled="pending"
+        :disabled="isLoading"
       />
 
-      <CrmPageSkeleton v-if="pending" variant="list" :cards="6" />
+      <CrmPageSkeleton v-if="isLoading" variant="list" :cards="6" />
       <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">
         Error while loading.
       </v-alert>
