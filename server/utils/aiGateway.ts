@@ -44,6 +44,27 @@ interface AiGatewayRequestBody {
   }>
 }
 
+export interface AiGatewayChatMessage {
+  role: 'system' | 'user'
+  content: string
+}
+
+export interface AiGatewayChatPayload {
+  temperature?: number
+  response_format?: {
+    type: 'json_object'
+  }
+  messages: AiGatewayChatMessage[]
+}
+
+export interface AiGatewayChatResponse {
+  choices?: Array<{
+    message?: {
+      content?: string | null
+    }
+  }>
+}
+
 function getFetchErrorStatusCode(error: unknown) {
   if (typeof error !== 'object' || !error || !('statusCode' in error)) {
     return NaN
@@ -99,6 +120,39 @@ function parseAndValidateRanking(content: string) {
     .filter((event): event is RankedEvent => Boolean(event))
 
   return safeEvents.slice(0, 8)
+}
+
+export async function requestAiGatewayChat(
+  event: H3Event,
+  payload: AiGatewayChatPayload,
+) {
+  const runtimeConfig = useRuntimeConfig(event)
+  const apiKey = runtimeConfig.aiGatewayApiKey
+  const model = runtimeConfig.aiGatewayModel
+
+  if (!apiKey || !model) {
+    throw createError({
+      statusCode: 503,
+      statusMessage: 'AI gateway is not configured',
+    })
+  }
+
+  return await $fetch<AiGatewayChatResponse>(
+    'https://ai-gateway.vercel.sh/v1/chat/completions',
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: {
+        model,
+        temperature:
+          typeof payload.temperature === 'number' ? payload.temperature : 0.2,
+        response_format: payload.response_format,
+        messages: payload.messages,
+      } satisfies AiGatewayRequestBody,
+    },
+  )
 }
 
 export async function rankEventsWithAiGateway(
