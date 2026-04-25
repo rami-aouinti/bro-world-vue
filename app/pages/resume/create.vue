@@ -399,7 +399,6 @@ onUnmounted(() => {
             <article class="form-section mb-4">
               <header class="mb-4">
                 <h2>Personal details</h2>
-                <p>Renseigne les informations de base de ton profil comme dans le formulaire CV.</p>
               </header>
               <div class="mb-4">
                 <p class="section-label mb-2">Photo</p>
@@ -420,45 +419,43 @@ onUnmounted(() => {
                 </div>
               </div>
               <div class="grid-2">
-                <v-text-field v-model="resume.role" label="Job target" variant="solo-filled" flat hide-details />
-                <v-text-field v-model="resume.firstName" label="First name" variant="solo-filled" flat hide-details />
-                <v-text-field v-model="resume.lastName" label="Last name" variant="solo-filled" flat hide-details />
-                <v-text-field v-model="resume.email" label="Email" variant="solo-filled" flat hide-details />
-                <v-text-field v-model="resume.phone" label="Phone" variant="solo-filled" flat hide-details />
-                <v-text-field v-model="resume.city" label="City" variant="solo-filled" flat hide-details />
-                <v-text-field v-model="resume.country" label="Country" variant="solo-filled" flat hide-details />
+                <v-text-field v-model="resume.role" label="Job target" flat hide-details />
+                <v-text-field v-model="resume.firstName" label="First name" flat hide-details />
+                <v-text-field v-model="resume.lastName" label="Last name" flat hide-details />
+                <v-text-field v-model="resume.email" label="Email"  flat hide-details />
+                <v-text-field v-model="resume.phone" label="Phone" flat hide-details />
+                <v-text-field v-model="resume.city" label="City"  flat hide-details />
+                <v-text-field v-model="resume.country" label="Country" flat hide-details />
               </div>
             </article>
 
             <article class="form-section mb-4">
               <header class="mb-4">
                 <h2>Professional summary</h2>
-                <p>Décris ton impact, ta motivation et tes objectifs.</p>
               </header>
-              <v-textarea v-model="resume.profile" label="Summary" rows="5" variant="solo-filled" flat hide-details />
+              <v-textarea v-model="resume.profile" label="Summary" rows="8" flat hide-details />
             </article>
 
             <article class="form-section mb-4">
               <header class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap">
                 <div>
                   <h2 class="text-dark">Experiences</h2>
-                  <p>Toutes les experiences clés du profil.</p>
                 </div>
                 <v-btn prepend-icon="mdi-plus" variant="tonal" size="small" @click="addExperience">Add line</v-btn>
               </header>
-              <v-card v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" variant="tonal" class="mb-3">
+              <v-card v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" variant="text" class="mb-3">
                 <v-card-text>
                   <v-row>
-                    <v-col cols="12" md="3"><v-text-field v-model="experience.role" label="Role" variant="outlined" hide-details /></v-col>
-                    <v-col cols="12" md="3"><v-text-field v-model="experience.company" label="Company" variant="outlined" hide-details /></v-col>
-                    <v-col cols="12" md="2"><v-text-field v-model="experience.city" label="City" variant="outlined" hide-details /></v-col>
-                    <v-col cols="12" md="2"><v-text-field v-model="experience.start" label="Start" variant="outlined" hide-details /></v-col>
-                    <v-col cols="12" md="2"><v-text-field v-model="experience.end" label="End" variant="outlined" hide-details /></v-col>
+                    <v-col cols="12" md="6"><v-text-field v-model="experience.role" label="Role" variant="outlined" hide-details /></v-col>
+                    <v-col cols="12" md="6"><v-text-field v-model="experience.company" label="Company" variant="outlined" hide-details /></v-col>
+                    <v-col cols="12" md="6"><v-text-field v-model="experience.city" label="City" variant="outlined" hide-details /></v-col>
+                    <v-col cols="12" md="6"><v-text-field v-model="experience.start" label="Start" variant="outlined" hide-details /></v-col>
+                    <v-col cols="12" md="6"><v-text-field v-model="experience.end" label="End" variant="outlined" hide-details /></v-col>
                     <v-col cols="12" md="11">
                       <v-textarea
                         :model-value="getExperienceBullets(index)"
                         label="Bullets (1 line = 1 bullet)"
-                        rows="3"
+                        rows="6"
                         variant="outlined"
                         hide-details
                         @update:model-value="value => setExperienceBullets(index, String(value))"
@@ -476,18 +473,17 @@ onUnmounted(() => {
               <header class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap">
                 <div>
                   <h2>Education</h2>
-                  <p>Ajoute tes diplômes et formations.</p>
                 </div>
                 <v-btn prepend-icon="mdi-plus" variant="tonal" size="small" @click="addEducation">Add line</v-btn>
               </header>
-              <v-card v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" variant="tonal" class="mb-3">
+              <v-card v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" variant="text" class="mb-3">
                 <v-card-text>
                   <v-row>
-                    <v-col cols="12" md="4"><v-text-field v-model="item.degree" label="Degree" variant="outlined" hide-details /></v-col>
-                    <v-col cols="12" md="4"><v-text-field v-model="item.school" label="School" variant="outlined" hide-details /></v-col>
-                    <v-col cols="12" md="2"><v-text-field v-model="item.city" label="City" variant="outlined" hide-details /></v-col>
-                    <v-col cols="12" md="1"><v-text-field v-model="item.start" label="Start" variant="outlined" hide-details /></v-col>
-                    <v-col cols="12" md="1"><v-text-field v-model="item.end" label="End" variant="outlined" hide-details /></v-col>
+                    <v-col cols="12" md="6"><v-text-field v-model="item.degree" label="Degree" variant="outlined" hide-details /></v-col>
+                    <v-col cols="12" md="6"><v-text-field v-model="item.school" label="School" variant="outlined" hide-details /></v-col>
+                    <v-col cols="12" md="6"><v-text-field v-model="item.city" label="City" variant="outlined" hide-details /></v-col>
+                    <v-col cols="12" md="6"><v-text-field v-model="item.start" label="Start" variant="outlined" hide-details /></v-col>
+                    <v-col cols="12" md="6"><v-text-field v-model="item.end" label="End" variant="outlined" hide-details /></v-col>
                     <v-col cols="12" md="11"><v-text-field v-model="item.note" label="Note" variant="outlined" hide-details /></v-col>
                     <v-col cols="12" md="1" class="d-flex align-center">
                       <v-btn icon="mdi-delete-outline" color="error" variant="text" size="small" @click="removeEducation(index)" />
@@ -500,41 +496,38 @@ onUnmounted(() => {
             <article class="form-section mb-4">
               <header class="mb-4">
                 <h2>Skills & Languages</h2>
-                <p>Inspiré du modal profil : ajoute/supprime facilement chaque ligne.</p>
               </header>
-              <div class="grid-2">
-                <v-card variant="tonal">
-                  <v-card-title class="d-flex align-center justify-space-between">
-                    Skills
-                    <v-btn size="x-small" variant="tonal" prepend-icon="mdi-plus" @click="addSkill">Add</v-btn>
-                  </v-card-title>
-                  <v-card-text>
-                    <v-row v-for="(skill, index) in resume.skills" :key="`skill-${index}`" class="mb-2">
-                      <v-col cols="7"><v-text-field v-model="skill.name" label="Skill" variant="outlined" hide-details /></v-col>
-                      <v-col cols="4"><v-slider v-model="skill.level" min="0" max="100" step="5" thumb-label color="primary" hide-details /></v-col>
-                      <v-col cols="1" class="d-flex align-center justify-center">
-                        <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeSkill(index)" />
-                      </v-col>
-                    </v-row>
-                  </v-card-text>
-                </v-card>
+              <v-card variant="text">
+                <v-card-title class="d-flex align-center justify-space-between">
+                  Skills
+                  <v-btn size="x-small" variant="tonal" prepend-icon="mdi-plus" @click="addSkill">Add</v-btn>
+                </v-card-title>
+                <v-card-text>
+                  <v-row v-for="(skill, index) in resume.skills" :key="`skill-${index}`" class="mb-2">
+                    <v-col cols="7"><v-text-field v-model="skill.name" label="Skill" variant="outlined" hide-details /></v-col>
+                    <v-col cols="4"><v-slider v-model="skill.level" min="0" max="100" step="5" thumb-label color="primary" hide-details /></v-col>
+                    <v-col cols="1" class="d-flex align-center justify-center">
+                      <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeSkill(index)" />
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
 
-                <v-card variant="tonal">
-                  <v-card-title class="d-flex align-center justify-space-between">
-                    Languages
-                    <v-btn size="x-small" variant="tonal" prepend-icon="mdi-plus" @click="addLanguage">Add</v-btn>
-                  </v-card-title>
-                  <v-card-text>
-                    <v-row v-for="(language, index) in resume.languages" :key="`language-${index}`" class="mb-2">
-                      <v-col cols="7"><v-text-field v-model="language.name" label="Language" variant="outlined" hide-details /></v-col>
-                      <v-col cols="4"><v-slider v-model="language.level" min="0" max="100" step="5" thumb-label color="primary" hide-details /></v-col>
-                      <v-col cols="1" class="d-flex align-center justify-center">
-                        <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeLanguage(index)" />
-                      </v-col>
-                    </v-row>
-                  </v-card-text>
-                </v-card>
-              </div>
+              <v-card variant="text">
+                <v-card-title class="d-flex align-center justify-space-between">
+                  Languages
+                  <v-btn size="x-small" variant="tonal" prepend-icon="mdi-plus" @click="addLanguage">Add</v-btn>
+                </v-card-title>
+                <v-card-text>
+                  <v-row v-for="(language, index) in resume.languages" :key="`language-${index}`" class="mb-2">
+                    <v-col cols="7"><v-text-field v-model="language.name" label="Language" variant="outlined" hide-details /></v-col>
+                    <v-col cols="4"><v-slider v-model="language.level" min="0" max="100" step="5" thumb-label color="primary" hide-details /></v-col>
+                    <v-col cols="1" class="d-flex align-center justify-center">
+                      <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeLanguage(index)" />
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
             </article>
           </v-window-item>
 
@@ -641,7 +634,7 @@ onUnmounted(() => {
   position: sticky;
   top: 60px;
   align-self: start;
-  max-height: 80vh;
+  max-height: 90vh;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
