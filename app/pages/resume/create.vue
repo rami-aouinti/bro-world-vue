@@ -181,8 +181,8 @@ const resume = reactive<ResumeModel>({
     { name: 'Social Media Platforms', level: 100 },
   ] as Skill[],
   languages: [
-    { name: 'French', level: 80 },
-    { name: 'Dutch', level: 80 },
+    { name: 'Spanish', level: 80 },
+    { name: 'German', level: 80 },
     { name: 'English', level: 95 },
   ] as Language[],
   hobbies: ['Photography', 'Reading', 'Traveling', 'Community Volunteering'],
@@ -321,7 +321,7 @@ const aiReviewContent = ref('')
 const aiCreateLoading = ref(false)
 const aiReviewLoading = ref(false)
 const aiActionError = ref('')
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 
 function openPhotoPicker() {
   uploadInput.value?.click()
@@ -570,22 +570,22 @@ async function handlePdfImport(event: Event) {
 
   importInProgress.value = true
   importMessageType.value = 'info'
-  importMessage.value = 'Extraction du PDF en cours...'
+  importMessage.value = t('resumeBuilder.create.import.messages.extractingPdf')
   startImportProgress()
 
   try {
     const raw = await file.text()
     const extracted = extractPdfText(raw)
-    importMessage.value = 'Analyse IA en cours...'
+    importMessage.value = t('resumeBuilder.create.import.messages.analyzingWithAi')
     await new Promise(resolve => setTimeout(resolve, 1800))
     applyResumeDataFromText(extracted)
     importProgress.value = 100
     importMessageType.value = 'success'
-    importMessage.value = 'Import terminé. Les données ont été appliquées au template CV.'
+    importMessage.value = t('resumeBuilder.create.import.messages.importSuccess')
   }
   catch {
     importMessageType.value = 'error'
-    importMessage.value = 'Import échoué. Vérifie que ton fichier PDF contient du texte sélectionnable.'
+    importMessage.value = t('resumeBuilder.create.import.messages.importFailed')
   }
   finally {
     stopImportProgress()
@@ -600,7 +600,7 @@ function triggerPdfImport() {
 
 function syncWithProvider(provider: 'Xing' | 'LinkedIn') {
   importMessageType.value = 'info'
-  importMessage.value = `Synchronisation ${provider} sera bientôt disponible.`
+  importMessage.value = t('resumeBuilder.create.import.messages.providerSyncSoon', { provider })
 }
 
 function applyGeneratedResumePayload(payload: Partial<ResumeModel>) {
@@ -934,7 +934,7 @@ onUnmounted(() => {
             <article class="form-section mb-4">
               <header class="mb-4">
                 <h2>Design</h2>
-                <p>Choisis les couleurs et le rounded comme AppSettings.</p>
+                <p>{{ t('resumeBuilder.create.design.description') }}</p>
               </header>
 
               <p class="section-label">Color palette</p>
@@ -982,13 +982,13 @@ onUnmounted(() => {
             <article class="form-section mb-4">
               <header class="mb-4">
                 <h2>Import</h2>
-                <p>Synchronise ou importe un ancien CV en PDF pour pré-remplir le template.</p>
+                <p>{{ t('resumeBuilder.create.import.description') }}</p>
               </header>
 
               <div class="d-flex flex-column ga-3">
-                <v-btn prepend-icon="mdi-sync" variant="outlined" color="primary" text="Synchronisation with Xing" @click="syncWithProvider('Xing')" />
-                <v-btn prepend-icon="mdi-linkedin" variant="outlined" color="info" text="Synch with LinkedIn" @click="syncWithProvider('LinkedIn')" />
-                <v-btn prepend-icon="mdi-file-upload-outline" variant="flat" color="secondary" text="Import Old Resume (PDF)" @click="triggerPdfImport" />
+                <v-btn prepend-icon="mdi-sync" variant="outlined" color="primary" :text="t('resumeBuilder.create.import.syncWithXing')" @click="syncWithProvider('Xing')" />
+                <v-btn prepend-icon="mdi-linkedin" variant="outlined" color="info" :text="t('resumeBuilder.create.import.syncWithLinkedIn')" @click="syncWithProvider('LinkedIn')" />
+                <v-btn prepend-icon="mdi-file-upload-outline" variant="flat" color="secondary" :text="t('resumeBuilder.create.import.importOldResumePdf')" @click="triggerPdfImport" />
                 <input ref="importPdfInput" type="file" accept="application/pdf" class="d-none" @change="handlePdfImport">
               </div>
 

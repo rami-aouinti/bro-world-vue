@@ -2754,5 +2754,49 @@
       "empty": "No hay resultados disponibles por ahora.",
       "fallbackUser": "Usuario #{index}"
     }
+  },
+  "resumeBuilder": {
+    "index": {
+      "heroTitle": "Crea un currículum profesional en minutos",
+      "heroSubtitle": "Una página pública para presentar la herramienta, seguida de una experiencia de creación inspirada en tus maquetas.",
+      "primaryCta": "Comenzar ahora",
+      "secondaryCta": "Abrir constructor",
+      "features": {
+        "guidedEditor": {
+          "title": "Editor guiado",
+          "description": "Completa tu currículum sección por sección con una interfaz simple y rápida."
+        },
+        "modernTemplates": {
+          "title": "Plantillas modernas",
+          "description": "Elige un estilo profesional y ajusta colores, tipografía y diseño."
+        },
+        "livePreview": {
+          "title": "Vista previa en vivo",
+          "description": "Visualiza al instante el resultado final mientras editas tus datos."
+        },
+        "export": {
+          "title": "Exportar PDF / DOCX",
+          "description": "Descarga tu currículum en el formato ideal para reclutadores."
+        }
+      }
+    },
+    "create": {
+      "design": {
+        "description": "Elige colores y estilos redondeados como en AppSettings."
+      },
+      "import": {
+        "description": "Sincroniza o importa un currículum PDF anterior para rellenar la plantilla.",
+        "syncWithXing": "Sincronizar con Xing",
+        "syncWithLinkedIn": "Sincronizar con LinkedIn",
+        "importOldResumePdf": "Importar currículum anterior (PDF)",
+        "messages": {
+          "extractingPdf": "Extrayendo texto del PDF...",
+          "analyzingWithAi": "Ejecutando análisis con IA...",
+          "importSuccess": "Importación completada. Los datos se aplicaron a la plantilla de currículum.",
+          "importFailed": "La importación falló. Verifica que tu PDF tenga texto seleccionable.",
+          "providerSyncSoon": "La sincronización con {provider} estará disponible pronto."
+        }
+      }
+    }
   }
 }

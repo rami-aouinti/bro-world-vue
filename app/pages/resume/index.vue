@@ -3,25 +3,27 @@ definePageMeta({
   title: 'Resume Builder',
 })
 
+const { t } = useI18n()
+
 const features = [
   {
-    title: 'Éditeur guidé',
-    description: 'Complète ton CV section par section avec une interface simple et rapide.',
+    title: t('resumeBuilder.index.features.guidedEditor.title'),
+    description: t('resumeBuilder.index.features.guidedEditor.description'),
     icon: 'mdi-file-document-edit-outline',
   },
   {
-    title: 'Templates modernes',
-    description: 'Choisis un style professionnel et adapte couleurs, typo et mise en page.',
+    title: t('resumeBuilder.index.features.modernTemplates.title'),
+    description: t('resumeBuilder.index.features.modernTemplates.description'),
     icon: 'mdi-palette-outline',
   },
   {
-    title: 'Aperçu en direct',
-    description: 'Visualise instantanément le rendu final pendant que tu modifies les données.',
+    title: t('resumeBuilder.index.features.livePreview.title'),
+    description: t('resumeBuilder.index.features.livePreview.description'),
     icon: 'mdi-monitor-eye',
   },
   {
-    title: 'Export PDF / DOCX',
-    description: 'Télécharge ton résumé au format idéal pour les recruteurs.',
+    title: t('resumeBuilder.index.features.export.title'),
+    description: t('resumeBuilder.index.features.export.description'),
     icon: 'mdi-download',
   },
 ]
@@ -43,13 +45,13 @@ onUnmounted(() => {
 <template>
   <v-container class="resume-home py-8 py-md-12">
     <section class="hero mb-8 mb-md-12">
-      <h1 class="hero-title">Crée un résumé professionnel en quelques minutes</h1>
+      <h1 class="hero-title">{{ t('resumeBuilder.index.heroTitle') }}</h1>
       <p class="hero-subtitle">
-        Une page publique pour présenter l'outil, puis une expérience de création inspirée de vos maquettes.
+        {{ t('resumeBuilder.index.heroSubtitle') }}
       </p>
       <div class="hero-actions mt-6">
-        <v-btn color="primary" size="large" to="/resume/create">Commencer maintenant</v-btn>
-        <v-btn variant="outlined" size="large" to="/resume/create">Voir le builder</v-btn>
+        <v-btn color="primary" size="large" to="/resume/create">{{ t('resumeBuilder.index.primaryCta') }}</v-btn>
+        <v-btn variant="outlined" size="large" to="/resume/create">{{ t('resumeBuilder.index.secondaryCta') }}</v-btn>
       </div>
     </section>
 

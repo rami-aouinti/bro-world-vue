@@ -3010,5 +3010,49 @@
       "empty": "No results available at the moment.",
       "fallbackUser": "User #{index}"
     }
+  },
+  "resumeBuilder": {
+    "index": {
+      "heroTitle": "Build a professional resume in minutes",
+      "heroSubtitle": "A public page to present the tool, followed by a creation experience inspired by your mockups.",
+      "primaryCta": "Start now",
+      "secondaryCta": "Open builder",
+      "features": {
+        "guidedEditor": {
+          "title": "Guided editor",
+          "description": "Complete your resume section by section with a simple and fast interface."
+        },
+        "modernTemplates": {
+          "title": "Modern templates",
+          "description": "Choose a professional style and customize colors, typography, and layout."
+        },
+        "livePreview": {
+          "title": "Live preview",
+          "description": "Instantly preview the final result while you edit your content."
+        },
+        "export": {
+          "title": "PDF / DOCX export",
+          "description": "Download your resume in the ideal format for recruiters."
+        }
+      }
+    },
+    "create": {
+      "design": {
+        "description": "Choose colors and rounded styles just like in AppSettings."
+      },
+      "import": {
+        "description": "Sync or import an older PDF resume to prefill the template.",
+        "syncWithXing": "Sync with Xing",
+        "syncWithLinkedIn": "Sync with LinkedIn",
+        "importOldResumePdf": "Import old resume (PDF)",
+        "messages": {
+          "extractingPdf": "Extracting text from PDF...",
+          "analyzingWithAi": "Running AI analysis...",
+          "importSuccess": "Import completed. Data has been applied to the resume template.",
+          "importFailed": "Import failed. Make sure your PDF contains selectable text.",
+          "providerSyncSoon": "{provider} sync will be available soon."
+        }
+      }
+    }
   }
 }

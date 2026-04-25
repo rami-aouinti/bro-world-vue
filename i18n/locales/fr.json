@@ -2998,5 +2998,49 @@
       "empty": "Aucun résultat disponible pour le moment.",
       "fallbackUser": "Utilisateur #{index}"
     }
+  },
+  "resumeBuilder": {
+    "index": {
+      "heroTitle": "Créez un résumé professionnel en quelques minutes",
+      "heroSubtitle": "Une page publique pour présenter l'outil, suivie d'une expérience de création inspirée de vos maquettes.",
+      "primaryCta": "Commencer maintenant",
+      "secondaryCta": "Ouvrir le builder",
+      "features": {
+        "guidedEditor": {
+          "title": "Éditeur guidé",
+          "description": "Complétez votre résumé section par section avec une interface simple et rapide."
+        },
+        "modernTemplates": {
+          "title": "Templates modernes",
+          "description": "Choisissez un style professionnel et adaptez les couleurs, la typographie et la mise en page."
+        },
+        "livePreview": {
+          "title": "Aperçu en direct",
+          "description": "Visualisez instantanément le rendu final pendant vos modifications."
+        },
+        "export": {
+          "title": "Export PDF / DOCX",
+          "description": "Téléchargez votre résumé au format idéal pour les recruteurs."
+        }
+      }
+    },
+    "create": {
+      "design": {
+        "description": "Choisissez les couleurs et le style arrondi comme dans AppSettings."
+      },
+      "import": {
+        "description": "Synchronisez ou importez un ancien résumé PDF pour préremplir le template.",
+        "syncWithXing": "Synchroniser avec Xing",
+        "syncWithLinkedIn": "Synchroniser avec LinkedIn",
+        "importOldResumePdf": "Importer un ancien résumé (PDF)",
+        "messages": {
+          "extractingPdf": "Extraction du texte PDF en cours...",
+          "analyzingWithAi": "Analyse IA en cours...",
+          "importSuccess": "Import terminé. Les données ont été appliquées au template de résumé.",
+          "importFailed": "Import échoué. Vérifiez que votre PDF contient du texte sélectionnable.",
+          "providerSyncSoon": "La synchronisation {provider} sera bientôt disponible."
+        }
+      }
+    }
   }
 }
