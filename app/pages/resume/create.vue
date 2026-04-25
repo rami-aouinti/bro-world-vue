@@ -1105,10 +1105,7 @@ onUnmounted(() => {
               <v-card
                 variant="outlined"
                 class="ki-card"
-                @click="
-                  aiCreateModalOpen = true
-                  aiMenuOpen = false
-                "
+                @click="aiCreateModalOpen = true; aiMenuOpen = false"
               >
                 <v-card-title class="text-subtitle-1"
                   >Create with KI</v-card-title
@@ -1121,10 +1118,7 @@ onUnmounted(() => {
               <v-card
                 variant="outlined"
                 class="ki-card"
-                @click="
-                  runAiReview()
-                  aiMenuOpen = false
-                "
+                @click="runAiReview(); aiMenuOpen = false"
               >
                 <v-card-title class="text-subtitle-1">Review</v-card-title>
                 <v-card-text class="text-body-2">
