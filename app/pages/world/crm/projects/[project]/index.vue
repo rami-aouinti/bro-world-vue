@@ -5,6 +5,31 @@ import type {
   CrmProjectUpdatePayload,
 } from '~~/server/types/api/crm-general'
 
+type ProjectTask = {
+  id: string
+  title?: string
+  TITLE?: string
+  description?: string
+  status?: string
+  dueAt?: string | null
+}
+
+type ProjectRepository = {
+  id: string
+  owner?: string
+  name?: string
+  fullName?: string
+  defaultBranch?: string
+  syncStatus?: string
+}
+
+type ProjectWikiPage = {
+  id: string
+  title?: string
+  content?: string
+  createdAt?: string | null
+}
+
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
@@ -39,6 +64,32 @@ const publicUserOptions = computed(() => {
 const { data, pending, error, refresh } = await useFetch<CrmProjectItem>(
   () => `/api/crm/general/projects/${projectId.value}`,
 )
+
+const projectTasks = computed<ProjectTask[]>(() =>
+  Array.isArray(data.value?.tasks) ? (data.value?.tasks as ProjectTask[]) : [],
+)
+const projectRepositories = computed<ProjectRepository[]>(() =>
+  Array.isArray(data.value?.githubRepositories) ? (data.value?.githubRepositories as ProjectRepository[]) : [],
+)
+const projectWikiPages = computed<ProjectWikiPage[]>(() =>
+  Array.isArray(data.value?.wikiPages) ? (data.value?.wikiPages as ProjectWikiPage[]) : [],
+)
+
+function formatDate(value?: string | null) {
+  if (!value) return '—'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+  return date.toLocaleDateString()
+}
+
+function toTaskLabel(task: ProjectTask) {
+  return task.title || task.TITLE || task.id
+}
+
+function repositoryRoute(repository: ProjectRepository) {
+  const rawName = repository.fullName || repository.name || repository.id
+  return `/world/crm/repositories/${projectId.value}/${encodeURIComponent(rawName)}`
+}
 
 watchEffect(() => {
   if (!data.value) return
@@ -104,7 +155,29 @@ async function detachAssignee(userId: string) {
       <template #right>
         <div v-if="isViewMode">
           <p class="text-caption mb-1">{{ t('world.crm.projects.form.description') }}</p>
-          <p class="text-body-2 mb-0">{{ data.description || '—' }}</p>
+          <p class="text-body-2 mb-4">{{ data.description || '—' }}</p>
+
+          <div class="d-flex align-center justify-space-between mb-2">
+            <h3 class="text-subtitle-2 mb-0">Wiki</h3>
+            <v-btn
+              size="small"
+              variant="text"
+              color="primary"
+              :to="`/world/crm/projects/${projectId}/wiki`"
+            >
+              Voir tout
+            </v-btn>
+          </div>
+          <v-list v-if="projectWikiPages.length" density="compact" bg-color="transparent" class="py-0">
+            <v-list-item
+              v-for="wiki in projectWikiPages"
+              :key="wiki.id"
+              :title="wiki.title || wiki.id"
+              :subtitle="formatDate(wiki.createdAt)"
+              :to="`/world/crm/projects/${projectId}/wiki?wiki=${encodeURIComponent(wiki.id)}`"
+            />
+          </v-list>
+          <p v-else class="text-body-2 text-medium-emphasis mb-0">Aucune page wiki.</p>
         </div>
         <div v-else>
           <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.projects.sections.assignees') }}</h3>
@@ -193,6 +266,59 @@ async function detachAssignee(userId: string) {
             </div>
           </template>
         </v-card>
+
+        <v-col v-if="isViewMode" cols="12" md="6">
+          <v-card rounded="xl" class="pa-4 h-100">
+            <div class="d-flex align-center justify-space-between mb-3">
+              <h3 class="text-subtitle-1 mb-0">Tasks</h3>
+              <v-chip size="small" color="primary" variant="tonal">{{ projectTasks.length }}</v-chip>
+            </div>
+            <v-row v-if="projectTasks.length">
+              <v-col v-for="task in projectTasks" :key="task.id" cols="12">
+                <v-card
+                  variant="tonal"
+                  color="primary"
+                  class="pa-3 cursor-pointer"
+                  :to="`/world/crm/tasks/${task.id}?mode=view`"
+                >
+                  <div class="d-flex justify-space-between ga-2">
+                    <p class="text-body-1 mb-1">{{ toTaskLabel(task) }}</p>
+                    <v-chip size="x-small" variant="flat">{{ task.status || '—' }}</v-chip>
+                  </div>
+                  <p class="text-caption mb-0 text-medium-emphasis">
+                    Due: {{ formatDate(task.dueAt) }}
+                  </p>
+                </v-card>
+              </v-col>
+            </v-row>
+            <p v-else class="text-body-2 text-medium-emphasis mb-0">Aucune task liée à ce projet.</p>
+          </v-card>
+        </v-col>
+
+        <v-col v-if="isViewMode" cols="12" md="6">
+          <v-card rounded="xl" class="pa-4 h-100">
+            <div class="d-flex align-center justify-space-between mb-3">
+              <h3 class="text-subtitle-1 mb-0">Repositories</h3>
+              <v-chip size="small" color="info" variant="tonal">{{ projectRepositories.length }}</v-chip>
+            </div>
+            <v-row v-if="projectRepositories.length">
+              <v-col v-for="repository in projectRepositories" :key="repository.id" cols="12">
+                <v-card
+                  variant="tonal"
+                  color="info"
+                  class="pa-3 cursor-pointer"
+                  :to="repositoryRoute(repository)"
+                >
+                  <p class="text-body-1 mb-1">{{ repository.fullName || repository.name || repository.id }}</p>
+                  <p class="text-caption mb-0 text-medium-emphasis">
+                    {{ repository.defaultBranch || '—' }} · {{ repository.syncStatus || '—' }}
+                  </p>
+                </v-card>
+              </v-col>
+            </v-row>
+            <p v-else class="text-body-2 text-medium-emphasis mb-0">Aucun repository lié à ce projet.</p>
+          </v-card>
+        </v-col>
     </v-row>
     </v-container>
   </div>
