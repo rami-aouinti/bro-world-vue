@@ -104,24 +104,22 @@ const rightNavItems = computed(() => [
       @action="reloadNuxtApp()"
     >
       <template #right>
-        <v-card rounded="xl" class="pa-3 postcard-gradient-card">
-          <p class="text-subtitle-2 mb-3">Navigation Admin</p>
-          <v-list density="comfortable" bg-color="transparent" nav>
-            <v-list-item
-              v-for="item in rightNavItems"
-              :key="item.to"
-              :prepend-icon="item.icon"
-              :title="item.title || item.label"
-              :to="item.to"
-              rounded="lg"
-              color="primary"
-            />
-          </v-list>
-        </v-card>
+        <v-list density="comfortable" bg-color="transparent" nav>
+          <v-list-item
+            v-for="item in rightNavItems"
+            :key="item.to"
+            :prepend-icon="item.icon"
+            :title="item.title || item.label"
+            :to="item.to"
+            rounded="lg"
+            color="primary"
+          />
+        </v-list>
       </template>
     </WorldModuleShell>
 
     <v-container fluid>
+
       <v-card rounded="xl" class="pa-4 mb-4 postcard-gradient-card">
         <h2 class="text-h5 mb-2">CRM Pro Dashboard</h2>
         <p class="text-body-2 text-medium-emphasis mb-0">
@@ -129,38 +127,58 @@ const rightNavItems = computed(() => [
         </p>
       </v-card>
 
-      <v-row class="mb-2">
-        <v-col
-          v-for="tile in kpiTiles"
-          :key="tile.title"
-          cols="12"
-          sm="6"
-          lg="3"
-        >
-          <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
-            <div class="d-flex align-center justify-space-between">
-              <div>
-                <p class="text-caption text-medium-emphasis mb-1">{{ tile.title }}</p>
-                <p class="text-h5 font-weight-bold mb-1">{{ tile.value }}</p>
-                <v-chip :color="tile.tone" size="small" label>{{ tile.trend }}</v-chip>
-                <p class="text-caption text-medium-emphasis mt-2 mb-0">{{ tile.caption }}</p>
+      <v-row>
+        <v-col cols="12" lg="6">
+          <v-col
+            v-for="tile in kpiTiles"
+            :key="tile.title"
+            cols="12"
+            lg="6"
+            class="mb-2"
+          >
+            <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
+              <div class="d-flex align-center justify-space-between">
+                <div>
+                  <p class="text-caption text-medium-emphasis mb-1">{{ tile.title }}</p>
+                  <p class="text-h5 font-weight-bold mb-1">{{ tile.value }}</p>
+                  <v-chip :color="tile.tone" size="small" label>{{ tile.trend }}</v-chip>
+                  <p class="text-caption text-medium-emphasis mt-2 mb-0">{{ tile.caption }}</p>
+                </div>
+                <v-avatar color="primary" variant="tonal" size="42">
+                  <v-icon>{{ tile.icon }}</v-icon>
+                </v-avatar>
               </div>
-              <v-avatar color="primary" variant="tonal" size="42">
-                <v-icon>{{ tile.icon }}</v-icon>
-              </v-avatar>
-            </div>
+            </v-card>
+          </v-col>
+        </v-col>
+        <v-col cols="12" lg="6">
+
+          <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
+            <h3 class="text-h6 mb-3">Agenda aujourd'hui</h3>
+            <v-timeline density="compact" side="end" align="start">
+              <v-timeline-item
+                v-for="item in todayAgenda"
+                :key="`${item.time}-${item.event}`"
+                dot-color="primary"
+                size="small"
+              >
+                <div class="text-caption text-medium-emphasis">{{ item.time }}</div>
+                <div class="text-body-2 font-weight-medium">{{ item.event }}</div>
+                <div class="text-caption">{{ item.owner }}</div>
+              </v-timeline-item>
+            </v-timeline>
           </v-card>
         </v-col>
       </v-row>
 
       <v-row>
-        <v-col cols="12" lg="8">
+        <v-col cols="12" lg="12">
           <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
             <div class="d-flex align-center justify-space-between mb-3">
               <h3 class="text-h6 mb-0">Pipeline commercial</h3>
               <v-chip size="small" color="primary" variant="tonal">122 deals actifs</v-chip>
             </div>
-            <v-table density="comfortable">
+            <v-table density="comfortable" class="bg-transparent">
               <thead>
                 <tr>
                   <th>Étape</th>
@@ -178,32 +196,13 @@ const rightNavItems = computed(() => [
             </v-table>
           </v-card>
         </v-col>
-
-        <v-col cols="12" lg="4">
-          <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
-            <h3 class="text-h6 mb-3">Agenda aujourd'hui</h3>
-            <v-timeline density="compact" side="end" align="start">
-              <v-timeline-item
-                v-for="item in todayAgenda"
-                :key="`${item.time}-${item.event}`"
-                dot-color="primary"
-                size="small"
-              >
-                <div class="text-caption text-medium-emphasis">{{ item.time }}</div>
-                <div class="text-body-2 font-weight-medium">{{ item.event }}</div>
-                <div class="text-caption">{{ item.owner }}</div>
-              </v-timeline-item>
-            </v-timeline>
-          </v-card>
-        </v-col>
-
         <v-col cols="12">
           <v-card rounded="xl" class="pa-4 postcard-gradient-card">
             <div class="d-flex align-center justify-space-between mb-3">
               <h3 class="text-h6 mb-0">Performance équipes CRM</h3>
               <v-chip size="small" color="info" variant="tonal">Mise à jour toutes les 4h</v-chip>
             </div>
-            <v-table density="comfortable">
+            <v-table density="comfortable" class="bg-transparent">
               <thead>
                 <tr>
                   <th>Equipe</th>
