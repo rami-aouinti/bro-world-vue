@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type {
-  ApiListResponse,
   CrmIdResponse,
-  CrmProjectListItem,
   CrmSprintCreatePayload,
 } from '~~/server/types/api/crm-general'
 
@@ -50,13 +48,12 @@ const createPayload = reactive<CrmSprintCreatePayload>({
   goal: '',
   status: 'planned',
 })
+const crmReferencesStore = useCrmReferenceOptionsStore()
 
 const { data, pending, error } = useFetch<CrmSprintResponse>(
   '/api/crm/general/sprints',
 )
-const { data: projectsData } = useFetch<ApiListResponse<CrmProjectListItem>>(
-  '/api/crm/general/projects',
-)
+await crmReferencesStore.fetchProjects()
 
 const filteredSprints = computed(() => {
   const query = search.value.trim().toLowerCase()
@@ -87,10 +84,7 @@ const sprintCreateStatusOptions = computed(() =>
   Array.from(new Set(['planned', 'in_progress', 'completed', ...sprintStatusOptions.value])),
 )
 const sprintCreateProjectOptions = computed(() =>
-  (projectsData.value?.items ?? []).map((project) => ({
-    title: project.name,
-    value: project.id,
-  })),
+  crmReferencesStore.projectOptions,
 )
 
 const totalPages = computed(() =>

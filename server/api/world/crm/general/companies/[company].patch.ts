@@ -9,7 +9,7 @@ export default defineEventHandler(async (event): Promise<unknown> => {
 
   const body = await readBody<Record<string, unknown>>(event)
 
-  return await fetchCrmGeneral(`companies/${companyId}`, {
+  return await fetchCrmGeneral(event, `companies/${companyId}`, {
     method: 'PATCH',
     body,
   })

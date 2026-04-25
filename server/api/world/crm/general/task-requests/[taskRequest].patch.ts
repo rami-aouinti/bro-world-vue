@@ -9,7 +9,7 @@ export default defineEventHandler(async (event): Promise<unknown> => {
 
   const body = await readBody<Record<string, unknown>>(event)
 
-  return await fetchCrmGeneral(`task-requests/${taskRequestId}`, {
+  return await fetchCrmGeneral(event, `task-requests/${taskRequestId}`, {
     method: 'PATCH',
     body,
   })

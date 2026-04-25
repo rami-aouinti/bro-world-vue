@@ -24,9 +24,9 @@ const emptyBillingsResponse: {
   },
 }
 
-export default defineEventHandler(async (): Promise<unknown> => {
+export default defineEventHandler(async (event): Promise<unknown> => {
   try {
-    return await fetchCrmGeneral('billings')
+    return await fetchCrmGeneral(event, 'billings')
   } catch {
     return emptyBillingsResponse
   }

@@ -47,19 +47,9 @@ const editPayload = reactive<CrmProjectUpdatePayload>({})
 const assigneeId = ref('')
 const pendingSave = ref(false)
 const statusOptions = ['planned', 'in_progress', 'on_hold', 'completed']
-const { data: usersData } = useFetch<Record<string, any>>('/api/public/users')
-
-const publicUserOptions = computed(() => {
-  const list = usersData.value?.users ?? usersData.value?.items ?? []
-  if (!Array.isArray(list)) return []
-
-  return list
-    .map((user: any) => ({
-      title: user.username ?? user.fullName ?? user.name ?? user.email ?? user.id,
-      value: String(user.id ?? ''),
-    }))
-    .filter((item: { value: string }) => item.value)
-})
+const crmReferencesStore = useCrmReferenceOptionsStore()
+await crmReferencesStore.fetchEmployees()
+const publicUserOptions = computed(() => crmReferencesStore.employeeAssigneeOptions)
 
 const { data, pending, error, refresh } = useFetch<CrmProjectItem>(
   () => `/api/crm/general/projects/${projectId.value}`,
@@ -189,7 +179,25 @@ async function detachAssignee(userId: string) {
             :label="t('world.crm.projects.form.userId')"
             class="mb-2"
             :disabled="!isRootAdmin || isViewMode"
-          />
+          >
+            <template #item="{ props, item }">
+              <v-list-item v-bind="props" :title="item.raw.title" :subtitle="item.raw.subtitle">
+                <template #prepend>
+                  <v-avatar size="24">
+                    <v-img :src="item.raw.avatar || '/img/avatar_default.svg'" :alt="item.raw.title" />
+                  </v-avatar>
+                </template>
+              </v-list-item>
+            </template>
+            <template #selection="{ item }">
+              <div class="d-flex align-center ga-2">
+                <v-avatar size="20">
+                  <v-img :src="item.raw.avatar || '/img/avatar_default.svg'" :alt="item.raw.title" />
+                </v-avatar>
+                <span>{{ item.raw.title }}</span>
+              </div>
+            </template>
+          </AppSelect>
           <v-btn v-if="isRootAdmin && !isViewMode" color="secondary" variant="tonal" class="mb-4" @click="attachAssignee">{{ t('world.crm.projects.actions.attach') }}</v-btn>
           <v-list density="compact" bg-color="transparent">
             <v-list-item

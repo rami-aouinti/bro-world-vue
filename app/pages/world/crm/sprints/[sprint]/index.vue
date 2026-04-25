@@ -21,36 +21,17 @@ definePageMeta({ layout: 'crm', title: 'CRM Sprint Detail' })
 const payload = reactive<CrmSprintUpdatePayload>({})
 const assigneeId = ref('')
 const taskId = ref('')
-const { data: usersData } = useFetch<Record<string, any>>('/api/public/users')
-const { data: tasksData } = useFetch<{ items?: Array<{ id: string; title?: string }> }>('/api/crm/general/tasks')
-const { data: projectsData } = useFetch<{ items?: Array<{ id: string; name?: string }> }>('/api/crm/general/projects')
+const crmReferencesStore = useCrmReferenceOptionsStore()
+await Promise.all([
+  crmReferencesStore.fetchEmployees(),
+  crmReferencesStore.fetchTasks(),
+  crmReferencesStore.fetchProjects(),
+])
 const statusOptions = ['planned', 'in_progress', 'completed']
 
-const publicUserOptions = computed(() => {
-  const list = usersData.value?.users ?? usersData.value?.items ?? []
-  if (!Array.isArray(list)) return []
-
-  return list
-    .map((user: any) => ({
-      title: user.username ?? user.fullName ?? user.name ?? user.email ?? user.id,
-      value: String(user.id ?? ''),
-    }))
-    .filter((item: { value: string }) => item.value)
-})
-
-const taskOptions = computed(() =>
-  (tasksData.value?.items ?? []).map((task) => ({
-    title: task.title ? `${task.title} (${task.id})` : task.id,
-    value: task.id,
-  })),
-)
-
-const projectOptions = computed(() =>
-  (projectsData.value?.items ?? []).map((project) => ({
-    title: project.name ? `${project.name} (${project.id})` : project.id,
-    value: project.id,
-  })),
-)
+const publicUserOptions = computed(() => crmReferencesStore.employeeAssigneeOptions)
+const taskOptions = computed(() => crmReferencesStore.taskOptions)
+const projectOptions = computed(() => crmReferencesStore.projectOptions)
 
 const { data, pending, error, refresh } = useFetch<CrmSprintItem>(
   () => `/api/crm/general/sprints/${sprintId.value}`,
@@ -135,7 +116,25 @@ async function detachTask() {
           item-value="value"
           :label="t('world.crm.sprints.form.userId')"
           :disabled="!isRootAdmin"
-        />
+        >
+          <template #item="{ props, item }">
+            <v-list-item v-bind="props" :title="item.raw.title" :subtitle="item.raw.subtitle">
+              <template #prepend>
+                <v-avatar size="24">
+                  <v-img :src="item.raw.avatar || '/img/avatar_default.svg'" :alt="item.raw.title" />
+                </v-avatar>
+              </template>
+            </v-list-item>
+          </template>
+          <template #selection="{ item }">
+            <div class="d-flex align-center ga-2">
+              <v-avatar size="20">
+                <v-img :src="item.raw.avatar || '/img/avatar_default.svg'" :alt="item.raw.title" />
+              </v-avatar>
+              <span>{{ item.raw.title }}</span>
+            </div>
+          </template>
+        </AppSelect>
         <div v-if="isRootAdmin" class="d-flex ga-2">
           <v-btn size="small" color="secondary" variant="tonal" @click="attachAssignee">{{ t('world.crm.sprints.actions.attach') }}</v-btn>
           <v-btn size="small" color="error" variant="tonal" @click="detachAssignee">{{ t('world.crm.sprints.actions.detach') }}</v-btn>

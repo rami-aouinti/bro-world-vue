@@ -43,9 +43,10 @@ const payload = reactive<CrmTaskRequestCreatePayload>({
   description: '',
   status: 'pending',
 })
+const crmReferencesStore = useCrmReferenceOptionsStore()
 
 const { data, pending, error, refresh } = useFetch<ApiListResponse<CrmTaskRequestItem>>('/api/crm/general/task-requests')
-const { data: tasksData } = useFetch<ApiListResponse<CrmTaskItem>>('/api/crm/general/tasks')
+await crmReferencesStore.fetchTasks()
 
 const filteredRequests = computed(() => {
   const query = search.value.trim().toLowerCase()
@@ -90,10 +91,7 @@ const taskRequestCreateStatusOptions = computed(() =>
   Array.from(new Set(['pending', 'in_progress', 'approved', 'rejected', ...taskRequestStatusOptions.value])),
 )
 const taskRequestCreateTaskOptions = computed(() =>
-  (tasksData.value?.items ?? []).map((task) => ({
-    title: task.title,
-    value: task.id,
-  })),
+  crmReferencesStore.taskOptions,
 )
 
 const totalPages = computed(() =>

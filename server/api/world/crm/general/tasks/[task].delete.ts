@@ -7,7 +7,7 @@ export default defineEventHandler(async (event): Promise<unknown> => {
     throw createError({ statusCode: 400, statusMessage: 'Missing task id' })
   }
 
-  return await fetchCrmGeneral(`tasks/${taskId}`, {
+  return await fetchCrmGeneral(event, `tasks/${taskId}`, {
     method: 'DELETE',
   })
 })
