@@ -104,7 +104,7 @@ type TextStyleOption = {
   className: string
 }
 
-const activeTab = ref<'edit' | 'template' | 'design'>('edit')
+const activeTab = ref<'edit' | 'template' | 'design' | 'import'>('edit')
 const selectedTemplate = ref('classic')
 const selectedTheme = ref('emerald')
 const selectedRounded = ref<'none' | 'sm' | 'md' | 'lg'>('md')
@@ -271,6 +271,13 @@ const resume = reactive<ResumeModel>({
 })
 
 const uploadInput = ref<HTMLInputElement | null>(null)
+const importPdfInput = ref<HTMLInputElement | null>(null)
+const importInProgress = ref(false)
+const importProgress = ref(0)
+const importMessage = ref('')
+const importMessageType = ref<'info' | 'success' | 'error'>('info')
+
+let importProgressTimer: ReturnType<typeof setInterval> | null = null
 
 const filteredTemplates = computed(() => {
   if (selectedTemplateFilter.value === 'all') return templates
@@ -439,16 +446,434 @@ async function openPdfPreview() {
 async function downloadPdf() {
   const printMarkup = await buildResumePdfBlob()
   if (!printMarkup || !import.meta.client) return
-  const printWindow = window.open('', '_blank', 'noopener,noreferrer')
-  if (!printWindow) return
+  const iframe = document.createElement('iframe')
+  iframe.style.position = 'fixed'
+  iframe.style.right = '0'
+  iframe.style.bottom = '0'
+  iframe.style.width = '0'
+  iframe.style.height = '0'
+  iframe.style.border = '0'
+  iframe.setAttribute('aria-hidden', 'true')
+  document.body.appendChild(iframe)
 
-  printWindow.document.open()
-  printWindow.document.write(printMarkup)
-  printWindow.document.close()
-  printWindow.focus()
+  const iframeWindow = iframe.contentWindow
+  if (!iframeWindow) {
+    iframe.remove()
+    return
+  }
+
+  iframeWindow.document.open()
+  iframeWindow.document.write(printMarkup)
+  iframeWindow.document.close()
+
   setTimeout(() => {
-    printWindow.print()
-  }, 300)
+    iframeWindow.focus()
+    iframeWindow.print()
+    setTimeout(() => iframe.remove(), 1000)
+  }, 350)
+}
+
+function startImportProgress() {
+  importProgress.value = 0
+  if (importProgressTimer) clearInterval(importProgressTimer)
+  importProgressTimer = setInterval(() => {
+    importProgress.value = Math.min(importProgress.value + 8, 92)
+  }, 450)
+}
+
+function stopImportProgress() {
+  if (importProgressTimer) {
+    clearInterval(importProgressTimer)
+    importProgressTimer = null
+  }
+}
+
+function extractPdfText(raw: string) {
+  const sanitized = Array.from(raw)
+    .map(char => {
+      const code = char.charCodeAt(0)
+      if ((code >= 0 && code <= 8) || code === 11 || code === 12 || (code >= 14 && code <= 31)) return ' '
+      return char
+    })
+    .join('')
+
+  return sanitized
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function splitListItems(value: string) {
+  return value
+    .split(/(?:\s*[-•]\s+|\s{2,})/g)
+    .map(item => item.trim())
+    .filter(Boolean)
+}
+
+function applyResumeDataFromText(text: string) {
+  const email = text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0] ?? ''
+  const phone = text.match(/(\+?\d[\d\s().-]{6,}\d)/)?.[0] ?? ''
+  const fullName = text.match(/(?:curriculum vitae|resume)\s*[:-]?\s*([A-Z][A-Za-z-]+(?:\s+[A-Z][A-Za-z-]+)+)/i)?.[1]
+    ?? text.match(/^([A-Z][A-Za-z-]+(?:\s+[A-Z][A-Za-z-]+)+)/)?.[1]
+    ?? ''
+
+  if (fullName) {
+    const parts = fullName.trim().split(/\s+/)
+    resume.firstName = parts.shift() ?? resume.firstName
+    resume.lastName = parts.join(' ') || resume.lastName
+  }
+  if (email) resume.email = email
+  if (phone) resume.phone = phone
+
+  const normalizedText = text.replace(/\s+/g, ' ')
+
+  const summaryMatch = normalizedText.match(/(?:summary|profile|about)\s*[:-]?\s*(.{80,500}?)(?:experience|skills|education|projects|$)/i)
+  if (summaryMatch?.[1]) resume.profile = summaryMatch[1].trim()
+
+  const skillsMatch = normalizedText.match(/skills?\s*[:-]?\s*(.{20,350}?)(?:languages|experience|education|projects|$)/i)
+  if (skillsMatch?.[1]) {
+    const skillItems = splitListItems(skillsMatch[1]).slice(0, 10)
+    if (skillItems.length) {
+      resume.skills = skillItems.map(name => ({ name, level: 80 }))
+    }
+  }
+
+  const languagesMatch = normalizedText.match(/languages?\s*[:-]?\s*(.{10,180}?)(?:experience|education|projects|$)/i)
+  if (languagesMatch?.[1]) {
+    const languageItems = splitListItems(languagesMatch[1]).slice(0, 6)
+    if (languageItems.length) {
+      resume.languages = languageItems.map(name => ({ name, level: 75 }))
+    }
+  }
+
+  const expMatch = normalizedText.match(/experience[s]?\s*[:-]?\s*(.{80,650}?)(?:education|projects|skills|$)/i)
+  if (expMatch?.[1]) {
+    const bullets = splitListItems(expMatch[1]).slice(0, 4)
+    if (bullets.length) {
+      resume.experiences = [
+        {
+          role: resume.role || 'Imported role',
+          company: 'Imported company',
+          city: resume.city || '',
+          start: '',
+          end: '',
+          bullets,
+        },
+      ]
+    }
+  }
+}
+
+async function handlePdfImport(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  importInProgress.value = true
+  importMessageType.value = 'info'
+  importMessage.value = 'Extraction du PDF en cours...'
+  startImportProgress()
+
+  try {
+    const raw = await file.text()
+    const extracted = extractPdfText(raw)
+    importMessage.value = 'Analyse IA en cours...'
+    await new Promise(resolve => setTimeout(resolve, 1800))
+    applyResumeDataFromText(extracted)
+    importProgress.value = 100
+    importMessageType.value = 'success'
+    importMessage.value = 'Import terminé. Les données ont été appliquées au template CV.'
+  }
+  catch {
+    importMessageType.value = 'error'
+    importMessage.value = 'Import échoué. Vérifie que ton fichier PDF contient du texte sélectionnable.'
+  }
+  finally {
+    stopImportProgress()
+    importInProgress.value = false
+    input.value = ''
+  }
+}
+
+function triggerPdfImport() {
+  importPdfInput.value?.click()
+}
+
+function syncWithProvider(provider: 'Xing' | 'LinkedIn') {
+  importMessageType.value = 'info'
+  importMessage.value = `Synchronisation ${provider} sera bientôt disponible.`
+}
+
+function normalizeResumePayload(payload: Partial<ResumeModel>) {
+  if (typeof payload.role === 'string') resume.role = payload.role
+  if (typeof payload.firstName === 'string') resume.firstName = payload.firstName
+  if (typeof payload.lastName === 'string') resume.lastName = payload.lastName
+  if (typeof payload.email === 'string') resume.email = payload.email
+  if (typeof payload.phone === 'string') resume.phone = payload.phone
+  if (typeof payload.city === 'string') resume.city = payload.city
+  if (typeof payload.country === 'string') resume.country = payload.country
+  if (typeof payload.profile === 'string') resume.profile = payload.profile
+  if (typeof payload.photoUrl === 'string') resume.photoUrl = payload.photoUrl
+
+  if (Array.isArray(payload.skills)) resume.skills = payload.skills
+  if (Array.isArray(payload.languages)) resume.languages = payload.languages
+  if (Array.isArray(payload.hobbies)) resume.hobbies = payload.hobbies
+  if (Array.isArray(payload.experiences)) resume.experiences = payload.experiences
+  if (Array.isArray(payload.education)) resume.education = payload.education
+  if (Array.isArray(payload.references)) resume.references = payload.references
+  if (Array.isArray(payload.courses)) resume.courses = payload.courses
+  if (Array.isArray(payload.projects)) resume.projects = payload.projects
+}
+
+async function runAiCreate() {
+  if (!aiProfilePrompt.value.trim()) {
+    aiActionError.value = 'Please provide a short summary before running AI.'
+    return
+  }
+
+  aiCreateLoading.value = true
+  aiActionError.value = ''
+
+  try {
+    const response = await $fetch<{ resume: Partial<ResumeModel> }>('/api/resume/ai/generate', {
+      method: 'POST',
+      body: {
+        language: locale.value,
+        templateId: selectedTemplate.value,
+        userPrompt: aiProfilePrompt.value,
+        currentResume: resume,
+      },
+    })
+
+    normalizeResumePayload(response.resume)
+    aiCreateModalOpen.value = false
+  } catch (error) {
+    aiActionError.value = error instanceof Error ? error.message : 'Unable to generate resume with AI.'
+  } finally {
+    aiCreateLoading.value = false
+  }
+}
+
+async function runAiReview() {
+  aiReviewLoading.value = true
+  aiActionError.value = ''
+  aiReviewContent.value = ''
+
+  try {
+    const response = await $fetch<{ review: string }>('/api/resume/ai/review', {
+      method: 'POST',
+      body: {
+        language: locale.value,
+        templateId: selectedTemplate.value,
+        currentResume: resume,
+      },
+    })
+    aiReviewContent.value = response.review
+    aiReviewModalOpen.value = true
+  } catch (error) {
+    aiActionError.value = error instanceof Error ? error.message : 'Unable to review resume with AI.'
+  } finally {
+    aiReviewLoading.value = false
+  }
+}
+
+function normalizeResumePayload(payload: Partial<ResumeModel>) {
+  if (typeof payload.role === 'string') resume.role = payload.role
+  if (typeof payload.firstName === 'string') resume.firstName = payload.firstName
+  if (typeof payload.lastName === 'string') resume.lastName = payload.lastName
+  if (typeof payload.email === 'string') resume.email = payload.email
+  if (typeof payload.phone === 'string') resume.phone = payload.phone
+  if (typeof payload.city === 'string') resume.city = payload.city
+  if (typeof payload.country === 'string') resume.country = payload.country
+  if (typeof payload.profile === 'string') resume.profile = payload.profile
+  if (typeof payload.photoUrl === 'string') resume.photoUrl = payload.photoUrl
+
+  if (Array.isArray(payload.skills)) resume.skills = payload.skills
+  if (Array.isArray(payload.languages)) resume.languages = payload.languages
+  if (Array.isArray(payload.hobbies)) resume.hobbies = payload.hobbies
+  if (Array.isArray(payload.experiences)) resume.experiences = payload.experiences
+  if (Array.isArray(payload.education)) resume.education = payload.education
+  if (Array.isArray(payload.references)) resume.references = payload.references
+  if (Array.isArray(payload.courses)) resume.courses = payload.courses
+  if (Array.isArray(payload.projects)) resume.projects = payload.projects
+}
+
+async function runAiCreate() {
+  if (!aiProfilePrompt.value.trim()) {
+    aiActionError.value = 'Please provide a short summary before running AI.'
+    return
+  }
+
+  aiCreateLoading.value = true
+  aiActionError.value = ''
+
+  try {
+    const response = await $fetch<{ choices?: Array<{ message?: { content?: string | null } }> }>('/api/ai-gateway/chat', {
+      method: 'POST',
+      body: {
+        temperature: 0.3,
+        response_format: {
+          type: 'json_object',
+        },
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a resume assistant. Return strict JSON only with this exact shape: {"resume": {"role": string, "firstName": string, "lastName": string, "email": string, "phone": string, "city": string, "country": string, "profile": string, "photoUrl": string, "skills": [{"name": string, "level": number}], "languages": [{"name": string, "level": number}], "hobbies": string[], "experiences": [{"role": string, "company": string, "city": string, "start": string, "end": string, "bullets": string[]}], "education": [{"degree": string, "school": string, "city": string, "start": string, "end": string, "note": string}], "references": [{"name": string, "company": string, "email": string, "phone": string}], "courses": [{"title": string, "school": string, "start": string, "end": string}], "projects": [{"name": string, "summary": string}] }}',
+          },
+          {
+            role: 'user',
+            content: `Language: ${locale.value}. Template: ${selectedTemplate.value}. User summary: ${aiProfilePrompt.value}. Current resume draft: ${JSON.stringify(resume)}. Generate a complete and coherent resume in the requested language.`,
+          },
+        ],
+      },
+    })
+
+    const content = response.choices?.[0]?.message?.content
+    if (!content) {
+      throw new Error('Empty AI response')
+    }
+    const parsed = JSON.parse(content) as { resume?: Partial<ResumeModel> }
+    normalizeResumePayload(parsed.resume ?? {})
+    aiCreateModalOpen.value = false
+  } catch (error) {
+    aiActionError.value = error instanceof Error ? error.message : 'Unable to generate resume with AI.'
+  } finally {
+    aiCreateLoading.value = false
+  }
+}
+
+async function runAiReview() {
+  aiReviewLoading.value = true
+  aiActionError.value = ''
+  aiReviewContent.value = ''
+
+  try {
+    const response = await $fetch<{ choices?: Array<{ message?: { content?: string | null } }> }>('/api/ai-gateway/chat', {
+      method: 'POST',
+      body: {
+        temperature: 0.2,
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a senior resume reviewer. Return detailed feedback in plain text with these sections: 1) Detected errors, 2) Suggested improvements, 3) Rewritten examples, 4) Priority actions.',
+          },
+          {
+            role: 'user',
+            content: `Review this resume in language "${locale.value}" and adapt recommendations for template "${selectedTemplate.value}". Resume JSON: ${JSON.stringify(resume)}.`,
+          },
+        ],
+      },
+    })
+
+    aiReviewContent.value = String(response.choices?.[0]?.message?.content || '').trim()
+    if (!aiReviewContent.value) {
+      throw new Error('Empty AI review response')
+    }
+    aiReviewModalOpen.value = true
+  } catch (error) {
+    aiActionError.value = error instanceof Error ? error.message : 'Unable to review resume with AI.'
+  } finally {
+    aiReviewLoading.value = false
+  }
+}
+
+function applyGeneratedResumePayload(payload: Partial<ResumeModel>) {
+  if (typeof payload.role === 'string') resume.role = payload.role
+  if (typeof payload.firstName === 'string') resume.firstName = payload.firstName
+  if (typeof payload.lastName === 'string') resume.lastName = payload.lastName
+  if (typeof payload.email === 'string') resume.email = payload.email
+  if (typeof payload.phone === 'string') resume.phone = payload.phone
+  if (typeof payload.city === 'string') resume.city = payload.city
+  if (typeof payload.country === 'string') resume.country = payload.country
+  if (typeof payload.profile === 'string') resume.profile = payload.profile
+  if (typeof payload.photoUrl === 'string') resume.photoUrl = payload.photoUrl
+
+  if (Array.isArray(payload.skills)) resume.skills = payload.skills
+  if (Array.isArray(payload.languages)) resume.languages = payload.languages
+  if (Array.isArray(payload.hobbies)) resume.hobbies = payload.hobbies
+  if (Array.isArray(payload.experiences)) resume.experiences = payload.experiences
+  if (Array.isArray(payload.education)) resume.education = payload.education
+  if (Array.isArray(payload.references)) resume.references = payload.references
+  if (Array.isArray(payload.courses)) resume.courses = payload.courses
+  if (Array.isArray(payload.projects)) resume.projects = payload.projects
+}
+
+async function runAiCreate() {
+  if (!aiProfilePrompt.value.trim()) {
+    aiActionError.value = 'Please provide a short summary before running AI.'
+    return
+  }
+
+  aiCreateLoading.value = true
+  aiActionError.value = ''
+
+  try {
+    const response = await $fetch<{ choices?: Array<{ message?: { content?: string | null } }> }>('/api/ai-gateway/chat', {
+      method: 'POST',
+      body: {
+        temperature: 0.3,
+        response_format: {
+          type: 'json_object',
+        },
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a resume assistant. Return strict JSON only with this exact shape: {"resume": {"role": string, "firstName": string, "lastName": string, "email": string, "phone": string, "city": string, "country": string, "profile": string, "photoUrl": string, "skills": [{"name": string, "level": number}], "languages": [{"name": string, "level": number}], "hobbies": string[], "experiences": [{"role": string, "company": string, "city": string, "start": string, "end": string, "bullets": string[]}], "education": [{"degree": string, "school": string, "city": string, "start": string, "end": string, "note": string}], "references": [{"name": string, "company": string, "email": string, "phone": string}], "courses": [{"title": string, "school": string, "start": string, "end": string}], "projects": [{"name": string, "summary": string}] }}',
+          },
+          {
+            role: 'user',
+            content: `Language: ${locale.value}. Template: ${selectedTemplate.value}. User summary: ${aiProfilePrompt.value}. Current resume draft: ${JSON.stringify(resume)}. Generate a complete and coherent resume in the requested language.`,
+          },
+        ],
+      },
+    })
+
+    const content = response.choices?.[0]?.message?.content
+    if (!content) {
+      throw new Error('Empty AI response')
+    }
+    const parsed = JSON.parse(content) as { resume?: Partial<ResumeModel> }
+    applyGeneratedResumePayload(parsed.resume ?? {})
+    aiCreateModalOpen.value = false
+  } catch (error) {
+    aiActionError.value = error instanceof Error ? error.message : 'Unable to generate resume with AI.'
+  } finally {
+    aiCreateLoading.value = false
+  }
+}
+
+async function runAiReview() {
+  aiReviewLoading.value = true
+  aiActionError.value = ''
+  aiReviewContent.value = ''
+
+  try {
+    const response = await $fetch<{ choices?: Array<{ message?: { content?: string | null } }> }>('/api/ai-gateway/chat', {
+      method: 'POST',
+      body: {
+        temperature: 0.2,
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a senior resume reviewer. Return detailed feedback in plain text with these sections: 1) Detected errors, 2) Suggested improvements, 3) Rewritten examples, 4) Priority actions.',
+          },
+          {
+            role: 'user',
+            content: `Review this resume in language "${locale.value}" and adapt recommendations for template "${selectedTemplate.value}". Resume JSON: ${JSON.stringify(resume)}.`,
+          },
+        ],
+      },
+    })
+
+    aiReviewContent.value = String(response.choices?.[0]?.message?.content || '').trim()
+    if (!aiReviewContent.value) {
+      throw new Error('Empty AI review response')
+    }
+    aiReviewModalOpen.value = true
+  } catch (error) {
+    aiActionError.value = error instanceof Error ? error.message : 'Unable to review resume with AI.'
+  } finally {
+    aiReviewLoading.value = false
+  }
 }
 
 function applyGeneratedResumePayload(payload: Partial<ResumeModel>) {
@@ -560,6 +985,7 @@ showRightDrawerDesktop.value = false
 showRightDrawerMobile.value = false
 
 onUnmounted(() => {
+  stopImportProgress()
   showRightDrawerDesktop.value = previousDesktopRightDrawer
   showRightDrawerMobile.value = previousMobileRightDrawer
 })
@@ -603,6 +1029,7 @@ onUnmounted(() => {
           <v-tab value="edit">Edit</v-tab>
           <v-tab value="template">Template</v-tab>
           <v-tab value="design">Design</v-tab>
+          <v-tab value="import">Import</v-tab>
         </v-tabs>
 
         <v-window v-model="activeTab">
@@ -821,6 +1248,36 @@ onUnmounted(() => {
                 density="comfortable"
                 hide-details
               />
+            </article>
+          </v-window-item>
+
+          <v-window-item value="import">
+            <article class="form-section mb-4">
+              <header class="mb-4">
+                <h2>Import</h2>
+                <p>Synchronise ou importe un ancien CV en PDF pour pré-remplir le template.</p>
+              </header>
+
+              <div class="d-flex flex-column ga-3">
+                <v-btn prepend-icon="mdi-sync" variant="outlined" color="primary" text="Synchronisation with Xing" @click="syncWithProvider('Xing')" />
+                <v-btn prepend-icon="mdi-linkedin" variant="outlined" color="info" text="Synch with LinkedIn" @click="syncWithProvider('LinkedIn')" />
+                <v-btn prepend-icon="mdi-file-upload-outline" variant="flat" color="secondary" text="Import Old Resume (PDF)" @click="triggerPdfImport" />
+                <input ref="importPdfInput" type="file" accept="application/pdf" class="d-none" @change="handlePdfImport">
+              </div>
+
+              <div v-if="importInProgress" class="mt-4">
+                <v-progress-linear :model-value="importProgress" color="primary" height="10" rounded striped />
+                <p class="mt-2 mb-0">{{ importMessage }} ({{ importProgress }}%)</p>
+              </div>
+
+              <v-alert
+                v-if="importMessage"
+                class="mt-4"
+                :type="importInProgress ? 'info' : importMessageType"
+                variant="tonal"
+              >
+                {{ importMessage }}
+              </v-alert>
             </article>
           </v-window-item>
         </v-window>
