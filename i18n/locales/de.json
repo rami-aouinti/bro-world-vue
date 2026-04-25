@@ -330,7 +330,8 @@
       "google": "Google",
       "facebook": "Facebook",
       "groupAria": "Soziale Anmeldung",
-      "comingSoon": "Demnächst verfügbar"
+      "comingSoon": "Demnächst verfügbar",
+      "azure": "Azure AD"
     }
   },
   "$vuetify": {
