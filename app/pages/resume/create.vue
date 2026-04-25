@@ -763,12 +763,7 @@ onUnmounted(() => {
   --cv-sidebar: #07564f;
   --cv-accent: #0f766e;
   --cv-page: #f8fafc;
-  display: grid;
-  grid-template-columns: 260px 1fr;
   min-height: calc(100vh - 80px);
-  background: var(--cv-page);
-  border-radius: 14px;
-  overflow: hidden;
 }
 
 .preview-sidebar {
@@ -859,8 +854,7 @@ onUnmounted(() => {
 }
 
 @media (max-width: 1120px) {
-  .builder-layout,
-  .preview-grid {
+  .builder-layout {
     grid-template-columns: 1fr;
   }
 
