@@ -676,27 +676,6 @@ async function runAiReview() {
   }
 }
 
-function normalizeResumePayload(payload: Partial<ResumeModel>) {
-  if (typeof payload.role === 'string') resume.role = payload.role
-  if (typeof payload.firstName === 'string') resume.firstName = payload.firstName
-  if (typeof payload.lastName === 'string') resume.lastName = payload.lastName
-  if (typeof payload.email === 'string') resume.email = payload.email
-  if (typeof payload.phone === 'string') resume.phone = payload.phone
-  if (typeof payload.city === 'string') resume.city = payload.city
-  if (typeof payload.country === 'string') resume.country = payload.country
-  if (typeof payload.profile === 'string') resume.profile = payload.profile
-  if (typeof payload.photoUrl === 'string') resume.photoUrl = payload.photoUrl
-
-  if (Array.isArray(payload.skills)) resume.skills = payload.skills
-  if (Array.isArray(payload.languages)) resume.languages = payload.languages
-  if (Array.isArray(payload.hobbies)) resume.hobbies = payload.hobbies
-  if (Array.isArray(payload.experiences)) resume.experiences = payload.experiences
-  if (Array.isArray(payload.education)) resume.education = payload.education
-  if (Array.isArray(payload.references)) resume.references = payload.references
-  if (Array.isArray(payload.courses)) resume.courses = payload.courses
-  if (Array.isArray(payload.projects)) resume.projects = payload.projects
-}
-
 async function runAiCreate() {
   if (!aiProfilePrompt.value.trim()) {
     aiActionError.value = 'Please provide a short summary before running AI.'
