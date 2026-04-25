@@ -475,9 +475,9 @@ onUnmounted(() => {
     <div class="builder-layout">
       <section class="builder-form px-3 px-md-6 py-4">
         <div class="builder-actions mb-4">
-          <v-btn color="primary" prepend-icon="mdi-content-save-outline">Save</v-btn>
-          <v-btn color="secondary" variant="outlined" prepend-icon="mdi-file-pdf-box" @click="openPdfPreview">Preview</v-btn>
-          <v-btn color="info" variant="outlined" prepend-icon="mdi-download" @click="downloadPdf">Download</v-btn>
+          <v-btn color="primary" icon="mdi-content-save-outline"></v-btn>
+          <v-btn color="secondary" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview"></v-btn>
+          <v-btn color="info" variant="outlined" icon="mdi-download" @click="downloadPdf"></v-btn>
         </div>
         <v-tabs v-model="activeTab" color="primary" grow class="mb-4">
           <v-tab value="edit">Edit</v-tab>
@@ -487,11 +487,11 @@ onUnmounted(() => {
 
         <v-window v-model="activeTab">
           <v-window-item value="edit">
-            <article class="form-section mb-4">
-              <header class="mb-4">
+            <article class="form-section mb-2">
+              <header class="mb-2">
                 <h2>Personal details</h2>
               </header>
-              <div class="mb-4">
+              <div class="mb-2">
                 <p class="section-label mb-2">Photo</p>
                 <div class="photo-uploader">
                   <v-avatar size="72" rounded="lg">
@@ -531,38 +531,34 @@ onUnmounted(() => {
               <header class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap">
                 <div>
                   <h2 class="text-dark">Experiences</h2>
-                  <p class="text-dark">Toutes les experiences clés du profil.</p>
                 </div>
                 <v-btn prepend-icon="mdi-plus" variant="tonal" size="small" @click="addExperience">Add line</v-btn>
               </header>
-              <v-card v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" variant="text" class="mb-3">
-                <v-card-text>
-                  <v-row>
-                    <v-col cols="12" md="6"><v-text-field v-model="experience.role" label="Role" variant="outlined" hide-details /></v-col>
-                    <v-col cols="12" md="6"><v-text-field v-model="experience.company" label="Company" variant="outlined" hide-details /></v-col>
-                    <v-col cols="12" md="6"><v-text-field v-model="experience.city" label="City" variant="outlined" hide-details /></v-col>
-                    <v-col cols="12" md="6"><v-text-field v-model="experience.start" label="Start" variant="outlined" hide-details /></v-col>
-                    <v-col cols="12" md="6"><v-text-field v-model="experience.end" label="End" variant="outlined" hide-details /></v-col>
-                    <v-col cols="12" md="11">
-                      <v-textarea
-                        :model-value="getExperienceBullets(index)"
-                        label="Bullets (1 line = 1 bullet)"
-                        rows="6"
-                        variant="outlined"
-                        hide-details
-                        @update:model-value="value => setExperienceBullets(index, String(value))"
-                      />
-                    </v-col>
-                    <v-col cols="12" md="1" class="d-flex align-center">
-                      <div class="d-flex flex-column ga-1">
-                        <v-btn icon="mdi-chevron-up" variant="text" size="x-small" :disabled="index === 0" @click="moveExperience(index, 'up')" />
-                        <v-btn icon="mdi-chevron-down" variant="text" size="x-small" :disabled="index === resume.experiences.length - 1" @click="moveExperience(index, 'down')" />
-                        <v-btn icon="mdi-delete-outline" color="error" variant="text" size="small" @click="removeExperience(index)" />
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-card-text>
-              </v-card>
+              <v-row v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" >
+                <v-col cols="12" md="6"><v-text-field v-model="experience.role" label="Role" variant="outlined" hide-details /></v-col>
+                <v-col cols="12" md="6"><v-text-field v-model="experience.company" label="Company" variant="outlined" hide-details /></v-col>
+                <v-col cols="12" md="6"><v-text-field v-model="experience.city" label="City" variant="outlined" hide-details /></v-col>
+                <v-col cols="12" md="6"><v-text-field v-model="experience.start" label="Start" variant="outlined" hide-details /></v-col>
+                <v-col cols="12" md="6"><v-text-field v-model="experience.end" label="End" variant="outlined" hide-details /></v-col>
+                <v-col cols="12" md="10">
+                  <v-textarea
+                    :model-value="getExperienceBullets(index)"
+                    label="Bullets (1 line = 1 bullet)"
+                    rows="8"
+                    variant="outlined"
+                    hide-details
+                    @update:model-value="value => setExperienceBullets(index, String(value))"
+                  />
+                </v-col>
+                <v-col cols="12" md="2" class="d-flex align-center">
+                  <div class="d-flex flex-column ga-1">
+                    <v-btn icon="mdi-chevron-up" variant="text" size="x-small" :disabled="index === 0" @click="moveExperience(index, 'up')" />
+                    <v-btn icon="mdi-chevron-down" variant="text" size="x-small" :disabled="index === resume.experiences.length - 1" @click="moveExperience(index, 'down')" />
+                    <v-btn icon="mdi-delete-outline" color="error" variant="text" size="small" @click="removeExperience(index)" />
+                  </div>
+                </v-col>
+              </v-row>
+
             </article>
 
             <article class="form-section mb-4">
@@ -752,6 +748,7 @@ onUnmounted(() => {
 }
 
 .builder-actions {
+  align-content: center;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
@@ -768,8 +765,7 @@ onUnmounted(() => {
 
 .form-section {
   border-radius: 14px;
-  padding: 18px;
-  border: 1px solid rgb(var(--v-theme-primary));
+  padding: 8px;
 }
 
 .form-section h2 {
