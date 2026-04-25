@@ -72,6 +72,29 @@ async function remove() {
                 <v-chip variant="tonal">Assignees: {{ data.assignees?.length || 0 }}</v-chip>
                 <v-chip variant="tonal">Files: {{ data.attachments?.length || 0 }}</v-chip>
               </div>
+              <div class="mb-4">
+                <h3 class="text-subtitle-1 mb-2">Attachments</h3>
+                <v-list
+                  v-if="data.attachments?.length"
+                  density="compact"
+                  class="bg-transparent pa-0"
+                >
+                  <v-list-item
+                    v-for="(attachment, index) in data.attachments || []"
+                    :key="attachment.id || attachment.url || attachment.name || index"
+                    :title="attachment.originalName || attachment.name || attachment.url || `Attachment ${index + 1}`"
+                    :subtitle="attachment.mimeType || ''"
+                    :href="attachment.url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    prepend-icon="mdi-download"
+                    class="px-0"
+                  />
+                </v-list>
+                <v-alert v-else type="info" variant="tonal" density="comfortable">
+                  No attachments
+                </v-alert>
+              </div>
               <v-divider class="my-4" />
               <div>
                 <h3 class="text-subtitle-1 mb-2">Blog</h3>
