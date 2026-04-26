@@ -78,7 +78,7 @@ const sprintStatusOptions = computed(() =>
   Array.from(new Set((data.value?.items ?? []).map((sprint) => sprint.status).filter(Boolean))),
 )
 const sprintProjectOptions = computed(() =>
-  Array.from(new Set((data.value?.items ?? []).map((sprint) => sprint.projectId).filter(Boolean))),
+  crmReferencesStore.projectOptions,
 )
 const sprintCreateStatusOptions = computed(() =>
   Array.from(new Set(['planned', 'in_progress', 'completed', ...sprintStatusOptions.value])),
