@@ -4,6 +4,71 @@ definePageMeta({
 })
 
 const { t } = useI18n()
+const router = useRouter()
+
+type DocumentTemplate = {
+  id: string
+  title: string
+  image: string
+  type: 'resume' | 'cover-page' | 'cover-letter'
+  templateId: string
+}
+
+const activeTemplateTab = ref<'cover-page' | 'cover-letter' | 'resume'>('resume')
+
+const documentTabs = computed(() => [
+  { label: t('resumeBuilder.index.tabs.cover'), value: 'cover-page' as const },
+  { label: t('resumeBuilder.index.tabs.letter'), value: 'cover-letter' as const },
+  { label: t('resumeBuilder.index.tabs.resume'), value: 'resume' as const },
+])
+
+const imagePool = ['/img/cv/cv-1.png', '/img/cv/cv-2.png', '/img/cv/cv-3.png', '/img/cv/cv-4.png', '/img/cv/cv-5.png']
+
+const allTemplates = computed<DocumentTemplate[]>(() => {
+  const resumeTemplates: DocumentTemplate[] = [
+    { id: 'resume-terra', title: 'Resume · Terra Sidebar', image: '/img/cv/cv-1.png', type: 'resume', templateId: 'terra' },
+    { id: 'resume-corporate-blue', title: 'Resume · Corporate Blue', image: '/img/cv/cv-2.png', type: 'resume', templateId: 'corporate-blue' },
+    { id: 'resume-ocean-split', title: 'Resume · Ocean Split', image: '/img/cv/cv-3.png', type: 'resume', templateId: 'ocean-split' },
+  ]
+
+  const coverPageTemplates: DocumentTemplate[] = Array.from({ length: 10 }, (_, index) => ({
+    id: `cover-page-template-${index + 1}`,
+    title: `Cover Page · Template ${index + 1}`,
+    image: imagePool[index % imagePool.length],
+    type: 'cover-page',
+    templateId: `cover-page-template-${index + 1}`,
+  }))
+
+  const coverLetterTemplates: DocumentTemplate[] = Array.from({ length: 10 }, (_, index) => ({
+    id: `cover-letter-template-${index + 1}`,
+    title: `Cover Letter · Template ${index + 1}`,
+    image: imagePool[(index + 2) % imagePool.length],
+    type: 'cover-letter',
+    templateId: `cover-letter-template-${index + 1}`,
+  }))
+
+  return [...resumeTemplates, ...coverPageTemplates, ...coverLetterTemplates]
+})
+
+const displayedTemplates = computed(() =>
+  allTemplates.value.filter((template) => template.type === activeTemplateTab.value),
+)
+
+const openTemplateInWriteMode = (template: DocumentTemplate) => {
+  const pathByType = {
+    resume: '/resume/create',
+    'cover-page': '/resume/cover-page/create',
+    'cover-letter': '/resume/cover-letter/create',
+  } as const
+
+  router.push({
+    path: pathByType[template.type],
+    query: {
+      template: template.templateId,
+      mode: 'write',
+    },
+  })
+}
 
 const journeySteps = computed(() => [
   {
@@ -69,16 +134,28 @@ onUnmounted(() => {
       </div>
 
       <div class="hero-tabs mt-7">
-        <span>{{ t('resumeBuilder.index.tabs.cover') }}</span>
-        <span>{{ t('resumeBuilder.index.tabs.letter') }}</span>
-        <span>{{ t('resumeBuilder.index.tabs.resume') }}</span>
-        <span class="active">{{ t('resumeBuilder.index.tabs.applicationPack') }}</span>
+        <span>{{ t('resumeBuilder.index.tabs.applicationPack') }}</span>
       </div>
 
-      <div class="hero-preview mt-8">
-        <img src="/img/cv/cv-4.png" alt="Resume template left" class="preview-card left">
-        <img src="/img/cv/cv-1.png" alt="Resume template center" class="preview-card center">
-        <img src="/img/cv/cv-2.png" alt="Resume template right" class="preview-card right">
+      <div class="templates-showcase mt-8">
+        <v-tabs v-model="activeTemplateTab" color="primary" grow class="templates-tabs">
+          <v-tab v-for="tab in documentTabs" :key="tab.value" :value="tab.value">
+            {{ tab.label }}
+          </v-tab>
+        </v-tabs>
+
+        <div class="templates-slider mt-4">
+          <button
+            v-for="templateCard in displayedTemplates"
+            :key="templateCard.id"
+            type="button"
+            class="template-slide"
+            @click="openTemplateInWriteMode(templateCard)"
+          >
+            <img :src="templateCard.image" :alt="templateCard.title">
+            <span>{{ templateCard.title }}</span>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -128,11 +205,25 @@ onUnmounted(() => {
 .hero-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; border-bottom: 1px solid; padding-bottom: 10px; }
 .hero-tabs span { font-size: 1.1rem; }
 .hero-tabs .active { color: rgb(var(--v-theme-primary)); border-bottom: 3px solid rgb(var(--v-theme-primary)); padding-bottom: 8px; }
-.hero-preview { position: relative; min-height: 320px; }
-.preview-card { position: absolute; top: 0; width: min(40vw, 320px); border-radius: 8px; box-shadow: 0 18px 36px rgba(0, 0, 0, .14); }
-.preview-card.left { left: 10%; opacity: .7; transform: scale(.88); }
-.preview-card.center { left: 50%; transform: translateX(-50%); z-index: 2; }
-.preview-card.right { right: 10%; opacity: .7; transform: scale(.88); }
+.templates-showcase { max-width: 1100px; margin: 0 auto; }
+.templates-tabs { border-bottom: 1px solid rgba(var(--v-theme-on-surface), .2); }
+.templates-slider { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; }
+.template-slide {
+  min-width: 260px;
+  max-width: 260px;
+  border: 1px solid rgba(var(--v-theme-on-surface), .2);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(var(--v-theme-surface), 1);
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  scroll-snap-align: start;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.template-slide:hover { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(0, 0, 0, .18); }
+.template-slide img { width: 100%; height: 180px; object-fit: cover; display: block; }
+.template-slide span { display: block; padding: 10px 12px; font-weight: 600; }
 .journey h2, .benefits h2 { font-size: clamp(1.8rem, 3vw, 3rem); margin-bottom: 12px; }
 .journey p, .benefits p { max-width: 780px; margin: 0 auto; color: rgba(var(--v-theme-on-surface), .8); }
 .journey-grid, .benefits-grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
@@ -144,10 +235,6 @@ onUnmounted(() => {
 .benefit-card a { display: inline-block; margin-top: 10px; color: rgb(var(--v-theme-primary)); }
 
 @media (max-width: 960px) {
-  .hero-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .hero-preview { min-height: 220px; }
-  .preview-card { width: 45%; }
-  .preview-card.left { left: 0; }
-  .preview-card.right { right: 0; }
+  .hero-tabs { grid-template-columns: 1fr; }
 }
 </style>
