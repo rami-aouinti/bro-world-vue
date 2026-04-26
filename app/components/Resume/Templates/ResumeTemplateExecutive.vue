@@ -22,7 +22,7 @@ function updateText(path: string, value: string) {
 </script>
 
 <template>
-  <div class="executive-template cv-template-base">
+  <div class="executive-template cv-template-base text-dark">
     <aside class="executive-sidebar cv-sidebar-surface cv-gradient-sidebar">
       <v-avatar v-if="showPhoto && resume.photoUrl" size="92" class="mb-4" @click="onPhotoClick?.()">
         <v-img :src="resume.photoUrl" cover />

@@ -21,7 +21,7 @@ function updateText(path: string, value: string) {
 </script>
 
 <template>
-  <div class="minimal-template cv-template-base">
+  <div class="minimal-template cv-template-base text-dark">
     <header class="minimal-header">
       <div>
         <h1>

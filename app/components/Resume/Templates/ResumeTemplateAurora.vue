@@ -21,7 +21,7 @@ function updateText(path: string, value: string) {
 </script>
 
 <template>
-  <div class="aurora-template cv-template-base">
+  <div class="aurora-template cv-template-base text-dark">
     <div class="aurora-bg" />
     <header>
       <div>

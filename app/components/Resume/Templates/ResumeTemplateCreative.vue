@@ -22,7 +22,7 @@ function updateText(path: string, value: string) {
 </script>
 
 <template>
-  <div class="creative-template cv-template-base cv-gradient-page">
+  <div class="creative-template cv-template-base cv-gradient-page text-dark">
     <header class="hero cv-gradient-hero">
       <div>
         <p class="eyebrow">Creative profile</p>

@@ -30,7 +30,7 @@ withDefaults(defineProps<{
 
 <template>
   <article
-    class="cover-letter-classic"
+    class="cover-letter-classic text-dark"
     :class="`cover-letter-classic--${typography}`"
     :style="{
       '--cl-page': palette.page,

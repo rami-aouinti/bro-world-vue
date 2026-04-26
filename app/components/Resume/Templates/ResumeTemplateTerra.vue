@@ -61,7 +61,7 @@ const articleStyle = computed(() => ({
 </script>
 
 <template>
-  <div class="terra-template cv-template-base" :style="layoutStyle">
+  <div class="terra-template cv-template-base text-dark" :style="layoutStyle">
     <aside class="cv-sidebar-surface" :style="sidebarStyle">
       <v-avatar v-if="showPhoto && resume.photoUrl" class="mb-5 terra-photo" :style="photoStyle" @click="onPhotoClick?.()">
         <v-img :src="resume.photoUrl" cover />

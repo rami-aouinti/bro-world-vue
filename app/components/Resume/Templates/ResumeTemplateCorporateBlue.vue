@@ -57,7 +57,7 @@ const photoStyle = computed(() => ({
 </script>
 
 <template>
-  <div class="corporate-template cv-template-base">
+  <div class="corporate-template cv-template-base text-dark">
     <header>
       <h1>
         <span class="editable-text" :contenteditable="editable" @input="event => updateText('firstName', (event.target as HTMLElement).innerText)">{{ resume.firstName }}</span>
