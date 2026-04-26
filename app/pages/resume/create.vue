@@ -555,6 +555,16 @@ const templateSupportsPhoto = computed(
 const templateUsesTimeline = computed(
   () => selectedTemplateConfig.value.useTimeline,
 )
+const sharedSectionsHiddenByTemplate = computed(() => {
+  const hiddenSectionsByVariant = {
+    classic: ['languages', 'projects', 'courses', 'references'],
+    modern: ['languages', 'projects', 'courses', 'references'],
+    executive: ['languages'],
+    minimalist: ['languages'],
+  } as const
+
+  return hiddenSectionsByVariant[selectedTemplateConfig.value.variant] ?? []
+})
 const pdfModalOpen = ref(false)
 const photoDialogOpen = ref(false)
 const aiMenuOpen = ref(false)
@@ -1906,7 +1916,11 @@ onUnmounted(() => {
             :on-photo-click="onPreviewPhotoClick"
             editable
           />
-          <ResumeTemplateSharedSections :resume="resume" :editable="true" />
+          <ResumeTemplateSharedSections
+            :resume="resume"
+            :editable="true"
+            :hidden-sections="sharedSectionsHiddenByTemplate"
+          />
         </div>
       </aside>
     </div>
@@ -1936,7 +1950,11 @@ onUnmounted(() => {
               :on-photo-click="onPreviewPhotoClick"
               editable
             />
-            <ResumeTemplateSharedSections :resume="resume" :editable="true" />
+            <ResumeTemplateSharedSections
+              :resume="resume"
+              :editable="true"
+              :hidden-sections="sharedSectionsHiddenByTemplate"
+            />
           </div>
         </v-card-text>
       </v-card>

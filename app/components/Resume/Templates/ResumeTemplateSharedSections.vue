@@ -1,6 +1,14 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{ resume: any; editable?: boolean }>(), {
+type SharedSectionKey =
+  | 'languages'
+  | 'projects'
+  | 'courses'
+  | 'references'
+  | 'hobbies'
+
+const props = withDefaults(defineProps<{ resume: any; editable?: boolean; hiddenSections?: SharedSectionKey[] }>(), {
   editable: false,
+  hiddenSections: () => [],
 })
 
 function updateText(path: string, value: string) {
@@ -16,11 +24,15 @@ function updateText(path: string, value: string) {
 
   target[last] = value
 }
+
+function isVisible(section: SharedSectionKey) {
+  return !props.hiddenSections.includes(section)
+}
 </script>
 
 <template>
   <section class="shared-extra text-dark">
-    <div>
+    <div v-if="isVisible('languages') && resume.languages?.length">
       <h3>Languages</h3>
       <ul>
         <li v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`">
@@ -30,7 +42,7 @@ function updateText(path: string, value: string) {
       </ul>
     </div>
 
-    <div>
+    <div v-if="isVisible('projects') && resume.projects?.length">
       <h3>Projects</h3>
       <ul>
         <li v-for="(project, index) in resume.projects" :key="`${project.name}-${index}`">
@@ -40,7 +52,7 @@ function updateText(path: string, value: string) {
       </ul>
     </div>
 
-    <div>
+    <div v-if="isVisible('courses') && resume.courses?.length">
       <h3>Certifications</h3>
       <ul>
         <li v-for="(course, index) in resume.courses" :key="`${course.title}-${index}`">
@@ -50,7 +62,7 @@ function updateText(path: string, value: string) {
       </ul>
     </div>
 
-    <div>
+    <div v-if="isVisible('references') && resume.references?.length">
       <h3>References</h3>
       <ul>
         <li v-for="(reference, index) in resume.references" :key="`${reference.name}-${index}`">
@@ -60,7 +72,7 @@ function updateText(path: string, value: string) {
       </ul>
     </div>
 
-    <div>
+    <div v-if="isVisible('hobbies') && resume.hobbies?.length">
       <h3>Interests</h3>
       <ul>
         <li v-for="(hobby, index) in resume.hobbies" :key="`${hobby}-${index}`" class="editable-text" :contenteditable="editable" @input="event => updateText(`hobbies.${index}`, (event.target as HTMLElement).innerText)">{{ hobby }}</li>
