@@ -6,9 +6,16 @@ type SharedSectionKey =
   | 'references'
   | 'hobbies'
 
-const props = withDefaults(defineProps<{ resume: any; editable?: boolean; hiddenSections?: SharedSectionKey[] }>(), {
+const props = withDefaults(defineProps<{ resume: any; editable?: boolean; hiddenSections?: SharedSectionKey[]; tone?: 'light' | 'dark' | 'auto' }>(), {
   editable: false,
   hiddenSections: () => [],
+  tone: 'auto',
+})
+
+const toneClass = computed(() => {
+  if (props.tone === 'light') return 'shared-extra--light'
+  if (props.tone === 'dark') return 'shared-extra--dark'
+  return 'shared-extra--auto'
 })
 
 function updateText(path: string, value: string) {
@@ -31,7 +38,7 @@ function isVisible(section: SharedSectionKey) {
 </script>
 
 <template>
-  <section class="shared-extra text-dark">
+  <section class="shared-extra text-dark" :class="toneClass">
     <div v-if="isVisible('languages') && resume.languages?.length">
       <h3>Languages</h3>
       <ul>
@@ -83,10 +90,45 @@ function isVisible(section: SharedSectionKey) {
 
 <style scoped>
 /* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
-.shared-extra { margin-top: 16px; background: color-mix(in srgb, var(--cv-page) 90%, white); border: 1px solid color-mix(in srgb, var(--cv-accent) 16%, var(--cv-page)); border-radius: inherit; padding: 16px; display: grid; gap: 14px; }
-.shared-extra h3 { color: var(--cv-accent); font-size: 1rem; margin-bottom: 6px; }
+.shared-extra {
+  --shared-panel-bg: color-mix(in srgb, var(--cv-page) 92%, white);
+  --shared-panel-text: var(--cv-secondary, color-mix(in srgb, var(--cv-sidebar) 70%, black));
+  --shared-panel-border: color-mix(in srgb, var(--cv-accent) 20%, var(--cv-page));
+  --shared-title-color: var(--cv-title, var(--cv-accent));
+  margin-top: 0;
+  padding-top: 18px;
+  border-top: 1px solid color-mix(in srgb, var(--cv-accent) 22%, var(--cv-page));
+  background: var(--shared-panel-bg);
+  color: var(--shared-panel-text);
+  border-inline: 1px solid var(--shared-panel-border);
+  border-bottom: 1px solid var(--shared-panel-border);
+  border-radius: 0 0 inherit inherit;
+  padding: 16px;
+  display: grid;
+  gap: 14px;
+}
+.shared-extra--light {
+  --shared-panel-bg: color-mix(in srgb, var(--cv-page) 95%, white);
+}
+.shared-extra--dark {
+  --shared-panel-bg: color-mix(in srgb, var(--cv-sidebar) 70%, black);
+  --shared-panel-text: var(--cv-on-sidebar, color-mix(in srgb, var(--cv-page) 92%, white));
+  --shared-panel-border: color-mix(in srgb, var(--cv-page) 26%, transparent);
+  --shared-title-color: var(--cv-on-sidebar, var(--cv-accent));
+}
+.shared-extra--auto {
+  --shared-panel-bg: color-mix(in srgb, var(--cv-page) 90%, white);
+}
+.shared-extra h3 {
+  color: var(--shared-title-color);
+  font-size: 1rem;
+  margin-bottom: 6px;
+  border-bottom: 1px solid color-mix(in srgb, var(--shared-title-color) 24%, transparent);
+  padding-bottom: 4px;
+}
 .shared-extra ul { margin: 0; padding-left: 18px; }
 .shared-extra p { margin: 4px 0 0; }
+.shared-extra small { color: color-mix(in srgb, var(--shared-panel-text) 84%, transparent); }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
 .editable-text[contenteditable='true']:focus { outline-color: color-mix(in srgb, var(--cv-accent) 42%, transparent); }

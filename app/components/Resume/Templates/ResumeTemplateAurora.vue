@@ -90,7 +90,7 @@ h1 { font-size: 2.15rem; margin: 0 0 6px; }
 .aurora-avatar { border: 3px solid color-mix(in srgb, var(--cv-page) 35%, transparent); }
 main { display: grid; grid-template-columns: 1.5fr .9fr; gap: 18px; padding: 22px 28px 30px; }
 .panel { background: color-mix(in srgb, var(--cv-sidebar) 65%, transparent); border: 1px solid color-mix(in srgb, var(--cv-page) 22%, transparent); border-radius: 18px; padding: 18px; backdrop-filter: blur(8px); }
-.panel h2 { font-size: .9rem; text-transform: uppercase; letter-spacing: .08em; color: var(--cv-accent); margin-bottom: 10px; }
+.panel h2 { font-size: .9rem; text-transform: uppercase; letter-spacing: .08em; color: var(--cv-title); margin-bottom: 10px; }
 .highlight + .highlight { margin-top: 14px; padding-top: 14px; border-top: 1px solid color-mix(in srgb, var(--cv-page) 20%, transparent); }
 .highlight h3 { font-size: 1rem; margin-bottom: 7px; color: color-mix(in srgb, var(--cv-page) 94%, white); }
 ul { margin: 0; padding-left: 18px; }
@@ -99,7 +99,7 @@ li { margin-bottom: 4px; color: color-mix(in srgb, var(--cv-page) 74%, var(--cv-
 .meter { margin-top: 4px; height: 6px; border-radius: 999px; background: color-mix(in srgb, var(--cv-page) 20%, transparent); overflow: hidden; }
 .meter i { display: block; height: 100%; background: linear-gradient(90deg, var(--cv-accent), color-mix(in srgb, var(--cv-accent) 55%, var(--cv-page))); }
 .education + .education { margin-top: 8px; }
-.education small { color: #94a3b8; /* Intentional neutral gray metadata. */ }
+.education small { color: var(--cv-secondary); /* Intentional neutral gray metadata. */ }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
 .editable-text[contenteditable='true']:focus { outline-color: color-mix(in srgb, var(--cv-accent) 70%, transparent); }
