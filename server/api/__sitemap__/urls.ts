@@ -9,22 +9,26 @@ type BlogListResponse = {
 
 export default defineSitemapEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig(event)
+  const base = runtimeConfig.public.siteUrl
 
+  // ✅ Pages publiques uniquement (SEO)
   const staticUrls = [
-    { loc: '/' },
-    { loc: '/service' },
-    { loc: '/about' },
-    { loc: '/faq' },
-    { loc: '/contact' },
-    { loc: '/world' },
-    { loc: '/world/shop' },
-    { loc: '/world/learning' },
-    { loc: '/world/crm' },
-    { loc: '/games' },
-    { loc: '/platform' },
-    { loc: '/quiz' },
-    { loc: '/applications/quiz' },
-    { loc: '/applications/sports' },
+    { loc: `${base}/`, lastmod: new Date().toISOString() },
+    { loc: `${base}/about`, lastmod: new Date().toISOString() },
+    { loc: `${base}/contact`, lastmod: new Date().toISOString() },
+    { loc: `${base}/faq`, lastmod: new Date().toISOString() },
+    { loc: `${base}/service`, lastmod: new Date().toISOString() },
+
+    // pages utiles uniquement
+    { loc: `${base}/world` },
+    { loc: `${base}/world/shop` },
+    { loc: `${base}/world/learning` },
+    { loc: `${base}/world/crm` },
+
+    { loc: `${base}/applications/quiz` },
+    { loc: `${base}/applications/sports` },
+
+    { loc: `${base}/games` },
   ]
 
   const blogIndex: Array<{ loc: string; lastmod?: string }> = []
@@ -40,17 +44,16 @@ export default defineSitemapEventHandler(async (event) => {
 
     for (const post of posts) {
       const slug = post.slug?.trim()
-      if (!slug) {
-        continue
-      }
+
+      if (!slug || slug.length > 120) continue
 
       blogIndex.push({
-        loc: `/blog/${encodeURIComponent(slug)}/post`,
+        loc: `${base}/blog/${encodeURIComponent(slug)}/post`,
         lastmod: post.updatedAt ?? post.createdAt ?? undefined,
       })
     }
   } catch {
-    // Ignore remote blog indexing issues and keep static sitemap URLs.
+    // fallback propre si API KO
   }
 
   return [...staticUrls, ...blogIndex]
