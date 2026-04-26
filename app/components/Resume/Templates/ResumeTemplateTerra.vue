@@ -50,7 +50,7 @@ const headingStyle = computed(() => ({
 const sectionHeadingStyle = computed(() => ({
   borderTop: props.layoutSettings?.sectionDividerStyle === 'none'
     ? 'none'
-    : `${props.layoutSettings?.sectionDividerStyle === 'thick' ? 3 : 1}px solid #d4d4d8`,
+    : `${props.layoutSettings?.sectionDividerStyle === 'thick' ? 3 : 1}px solid color-mix(in srgb, var(--cv-accent) 24%, var(--cv-page))`,
 }))
 const periodStyle = computed(() => ({
   minWidth: `${props.layoutSettings?.dateColumnWidth ?? 120}px`,
@@ -121,17 +121,18 @@ const articleStyle = computed(() => ({
 </template>
 
 <style scoped>
-.terra-template { min-height: calc(100vh - 80px); display: grid; grid-template-columns: 270px 1fr; background: #f4f4f5; border-radius: 14px; overflow: hidden; }
-aside { background: #d4d4d8; padding: 28px 20px; }
-.terra-photo { border: 6px solid #fff; box-shadow: 0 10px 20px rgba(0, 0, 0, .12); }
-aside h3 { margin: 18px 0 8px; padding: 8px; background: #fff; font-size: .88rem; text-transform: uppercase; letter-spacing: .07em; }
+/* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
+.terra-template { min-height: calc(100vh - 80px); display: grid; grid-template-columns: 270px 1fr; background: var(--cv-page); border-radius: 14px; overflow: hidden; }
+aside { background: color-mix(in srgb, var(--cv-sidebar) 18%, var(--cv-page)); padding: 28px 20px; }
+.terra-photo { border: 6px solid color-mix(in srgb, var(--cv-page) 96%, white); box-shadow: 0 10px 20px color-mix(in srgb, var(--cv-sidebar) 16%, transparent); }
+aside h3 { margin: 18px 0 8px; padding: 8px; background: color-mix(in srgb, var(--cv-page) 88%, var(--cv-sidebar)); font-size: .88rem; text-transform: uppercase; letter-spacing: .07em; }
 aside ul { padding-left: 16px; }
-main { padding: 28px 34px; background: linear-gradient(165deg, #b67f72 0 14%, #f4f4f5 14%); }
-header h1 { color: #b67f72; font-size: 2.5rem; line-height: 1; margin-bottom: 6px; }
-header p { color: #9d6f63; margin-bottom: 18px; }
-h2 { color: #b67f72; border-top: 1px solid #d4d4d8; padding-top: 12px; margin-bottom: 12px; }
+main { padding: 28px 34px; background: linear-gradient(165deg, color-mix(in srgb, var(--cv-accent) 65%, var(--cv-sidebar)) 0 14%, var(--cv-page) 14%); }
+header h1 { color: var(--cv-accent); font-size: 2.5rem; line-height: 1; margin-bottom: 6px; }
+header p { color: color-mix(in srgb, var(--cv-accent) 72%, var(--cv-sidebar)); margin-bottom: 18px; }
+h2 { color: var(--cv-accent); border-top: 1px solid color-mix(in srgb, var(--cv-accent) 24%, var(--cv-page)); padding-top: 12px; margin-bottom: 12px; }
 article { margin-bottom: 14px; }
-.period { color: #71717a; font-size: .8rem; }
+.period { color: #71717a; /* Intentional neutral gray metadata. */ font-size: .8rem; }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
 .editable-text[contenteditable='true']:focus { outline-color: color-mix(in srgb, var(--cv-accent) 45%, transparent); }

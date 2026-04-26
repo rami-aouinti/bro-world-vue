@@ -83,13 +83,14 @@ function updateText(path: string, value: string) {
 </template>
 
 <style scoped>
-.traditional-template { min-height: calc(100vh - 80px); background: #fff; color: #111827; border-radius:14px; padding: 34px; }
-header { text-align:center; border-bottom:2px solid #d1d5db; padding-bottom:14px; margin-bottom:20px; }
+/* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
+.traditional-template { min-height: calc(100vh - 80px); background: var(--cv-page); color: color-mix(in srgb, var(--cv-sidebar) 78%, black); border-radius:14px; padding: 34px; }
+header { text-align:center; border-bottom:2px solid color-mix(in srgb, var(--cv-accent) 22%, var(--cv-page)); padding-bottom:14px; margin-bottom:20px; }
 h1 { font-size: 2rem; letter-spacing: .06em; }
-h2 { font-size:1.1rem; letter-spacing: .08em; text-transform: uppercase; border-bottom:1px solid #cbd5e1; padding-bottom:6px; margin-bottom:10px; }
+h2 { font-size:1.1rem; letter-spacing: .08em; text-transform: uppercase; border-bottom:1px solid color-mix(in srgb, var(--cv-accent) 18%, var(--cv-page)); padding-bottom:6px; margin-bottom:10px; }
 .entry { margin-bottom: 14px; }
 .entry-head { display:flex; justify-content:space-between; gap:10px; }
-.entry-head span { color:#6b7280; font-size:.85rem; }
+.entry-head span { color:#6b7280; /* Intentional neutral gray for metadata readability. */ font-size:.85rem; }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
 .editable-text[contenteditable='true']:focus { outline-color: color-mix(in srgb, var(--cv-accent) 50%, transparent); }

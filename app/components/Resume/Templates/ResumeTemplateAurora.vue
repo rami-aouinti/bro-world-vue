@@ -81,26 +81,27 @@ function updateText(path: string, value: string) {
 </template>
 
 <style scoped>
-.aurora-template { position: relative; min-height: calc(100vh - 80px); color: #e2e8f0; background: #020617; border-radius: 20px; overflow: hidden; }
-.aurora-bg { position: absolute; inset: -25%; background: radial-gradient(circle at 20% 30%, rgb(16 185 129 / .35), transparent 45%), radial-gradient(circle at 80% 20%, rgb(59 130 246 / .35), transparent 40%), radial-gradient(circle at 50% 80%, rgb(168 85 247 / .35), transparent 40%); filter: blur(10px); }
+/* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
+.aurora-template { position: relative; min-height: calc(100vh - 80px); color: color-mix(in srgb, var(--cv-page) 82%, var(--cv-accent)); background: color-mix(in srgb, var(--cv-sidebar) 88%, black); border-radius: 20px; overflow: hidden; }
+.aurora-bg { position: absolute; inset: -25%; background: radial-gradient(circle at 20% 30%, color-mix(in srgb, var(--cv-accent) 35%, transparent), transparent 45%), radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--cv-sidebar) 35%, var(--cv-accent)), transparent 40%), radial-gradient(circle at 50% 80%, color-mix(in srgb, var(--cv-accent) 55%, var(--cv-page)), transparent 40%); filter: blur(10px); }
 header, main { position: relative; z-index: 1; }
-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 28px; border-bottom: 1px solid rgb(148 163 184 / .25); }
+header { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 28px; border-bottom: 1px solid color-mix(in srgb, var(--cv-page) 25%, transparent); }
 h1 { font-size: 2.15rem; margin: 0 0 6px; }
-.aurora-avatar { border: 3px solid rgb(226 232 240 / .35); }
+.aurora-avatar { border: 3px solid color-mix(in srgb, var(--cv-page) 35%, transparent); }
 main { display: grid; grid-template-columns: 1.5fr .9fr; gap: 18px; padding: 22px 28px 30px; }
-.panel { background: rgb(15 23 42 / .65); border: 1px solid rgb(148 163 184 / .22); border-radius: 18px; padding: 18px; backdrop-filter: blur(8px); }
-.panel h2 { font-size: .9rem; text-transform: uppercase; letter-spacing: .08em; color: #a5f3fc; margin-bottom: 10px; }
-.highlight + .highlight { margin-top: 14px; padding-top: 14px; border-top: 1px solid rgb(148 163 184 / .2); }
-.highlight h3 { font-size: 1rem; margin-bottom: 7px; color: #f8fafc; }
+.panel { background: color-mix(in srgb, var(--cv-sidebar) 65%, transparent); border: 1px solid color-mix(in srgb, var(--cv-page) 22%, transparent); border-radius: 18px; padding: 18px; backdrop-filter: blur(8px); }
+.panel h2 { font-size: .9rem; text-transform: uppercase; letter-spacing: .08em; color: var(--cv-accent); margin-bottom: 10px; }
+.highlight + .highlight { margin-top: 14px; padding-top: 14px; border-top: 1px solid color-mix(in srgb, var(--cv-page) 20%, transparent); }
+.highlight h3 { font-size: 1rem; margin-bottom: 7px; color: color-mix(in srgb, var(--cv-page) 94%, white); }
 ul { margin: 0; padding-left: 18px; }
-li { margin-bottom: 4px; color: #cbd5e1; }
+li { margin-bottom: 4px; color: color-mix(in srgb, var(--cv-page) 74%, var(--cv-accent)); }
 .metric { margin-bottom: 10px; }
-.meter { margin-top: 4px; height: 6px; border-radius: 999px; background: rgb(148 163 184 / .2); overflow: hidden; }
-.meter i { display: block; height: 100%; background: linear-gradient(90deg, #22d3ee, #c084fc); }
+.meter { margin-top: 4px; height: 6px; border-radius: 999px; background: color-mix(in srgb, var(--cv-page) 20%, transparent); overflow: hidden; }
+.meter i { display: block; height: 100%; background: linear-gradient(90deg, var(--cv-accent), color-mix(in srgb, var(--cv-accent) 55%, var(--cv-page))); }
 .education + .education { margin-top: 8px; }
-.education small { color: #94a3b8; }
+.education small { color: #94a3b8; /* Intentional neutral gray metadata. */ }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
-.editable-text[contenteditable='true']:focus { outline-color: rgb(125 211 252 / .7); }
+.editable-text[contenteditable='true']:focus { outline-color: color-mix(in srgb, var(--cv-accent) 70%, transparent); }
 @media (max-width: 1024px) { main { grid-template-columns: 1fr; } }
 </style>
