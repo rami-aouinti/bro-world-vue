@@ -46,10 +46,14 @@ export default defineNuxtConfig({
     sources: ['/api/__sitemap__/urls'],
   },
   robots: {
-    UserAgent: '*',
-    Allow: '/',
-    Disallow: ['/admin', '/dashboard'],
-    Sitemap: 'https://bro-world-space.com/sitemap.xml',
+    sitemap: 'https://bro-world-space.com/sitemap.xml',
+    groups: [
+      {
+        userAgent: '*',
+        allow: ['/', '/world', '/platform', '/applications', '/resume'],
+        disallow: ['/admin', '/dashboard', '/login', '/register'],
+      },
+    ],
   },
   css: [
     'vuetify/styles',
