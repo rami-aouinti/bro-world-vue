@@ -11,6 +11,7 @@ import ResumeTemplateTraditional from '~/components/Resume/Templates/ResumeTempl
 import ResumeTemplateOceanSplit from '~/components/Resume/Templates/ResumeTemplateOceanSplit.vue'
 import ResumeTemplateCorporateBlue from '~/components/Resume/Templates/ResumeTemplateCorporateBlue.vue'
 import ResumeTemplateSharedSections from '~/components/Resume/Templates/ResumeTemplateSharedSections.vue'
+import { COVER_LETTER_TEMPLATES, COVER_PAGE_TEMPLATES } from '~/constants/resumeTemplates'
 
 definePageMeta({
   title: 'Create Resume',
@@ -205,6 +206,38 @@ const templateFilters = [
   { label: 'Free', value: 'free' },
 ] as const satisfies ReadonlyArray<{ label: string; value: TemplateFilter }>
 
+const coverPageTemplateCards: Template[] = COVER_PAGE_TEMPLATES.map(template => ({
+  id: template.id,
+  title: template.title,
+  subtitle: template.subtitle,
+  image: template.image,
+  documentType: 'cover-page',
+  hasPhoto: template.id === 'cover-page-terra',
+  isTwoColumn: false,
+  isAts: true,
+  hasDocx: true,
+  isCustomized: true,
+  isFree: true,
+  useTimeline: false,
+  variant: template.id === 'cover-page-terra' ? 'classic' : 'minimalist',
+}))
+
+const coverLetterTemplateCards: Template[] = COVER_LETTER_TEMPLATES.map(template => ({
+  id: template.id,
+  title: template.title,
+  subtitle: template.subtitle,
+  image: template.image,
+  documentType: 'cover-letter',
+  hasPhoto: template.id === 'cover-letter-modern',
+  isTwoColumn: false,
+  isAts: true,
+  hasDocx: true,
+  isCustomized: true,
+  isFree: true,
+  useTimeline: false,
+  variant: template.id === 'cover-letter-classic' ? 'traditional' : 'modern',
+}))
+
 const templates: Template[] = [
   {
     id: 'terra',
@@ -371,66 +404,8 @@ const templates: Template[] = [
     useTimeline: true,
     variant: 'executive',
   },
-  {
-    id: 'cover-page-terra',
-    title: 'Cover Page Terra',
-    subtitle: 'Page de garde simple avec titre et photo',
-    image: '/img/cv/cv-4.png',
-    documentType: 'cover-page',
-    hasPhoto: true,
-    isTwoColumn: false,
-    isAts: true,
-    hasDocx: true,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: 'classic',
-  },
-  {
-    id: 'cover-page-elegant',
-    title: 'Cover Page Elegant',
-    subtitle: 'Page de garde élégante centrée',
-    image: '/img/cv/cv-5.png',
-    documentType: 'cover-page',
-    hasPhoto: false,
-    isTwoColumn: false,
-    isAts: true,
-    hasDocx: true,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: 'minimalist',
-  },
-  {
-    id: 'cover-letter-classic',
-    title: 'Cover Letter Classic',
-    subtitle: 'Lettre classique prête à personnaliser',
-    image: '/img/cv/cv-1.png',
-    documentType: 'cover-letter',
-    hasPhoto: false,
-    isTwoColumn: false,
-    isAts: true,
-    hasDocx: true,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: 'traditional',
-  },
-  {
-    id: 'cover-letter-modern',
-    title: 'Cover Letter Modern',
-    subtitle: 'Lettre moderne avec mise en avant du profil',
-    image: '/img/cv/cv-3.png',
-    documentType: 'cover-letter',
-    hasPhoto: true,
-    isTwoColumn: false,
-    isAts: true,
-    hasDocx: true,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: 'modern',
-  },
+  ...coverPageTemplateCards,
+  ...coverLetterTemplateCards,
 ]
 
 const colorThemes: ColorTheme[] = [

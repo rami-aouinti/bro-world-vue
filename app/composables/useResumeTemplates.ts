@@ -1,3 +1,5 @@
+import { COVER_LETTER_TEMPLATES, COVER_PAGE_TEMPLATES } from '~/constants/resumeTemplates'
+
 export type ResumeDocumentType = 'resume' | 'cover-page' | 'cover-letter'
 
 export type ResumeTemplate = {
@@ -8,8 +10,6 @@ export type ResumeTemplate = {
   templateId: string
 }
 
-const imagePool = ['/img/cv/cv-1.png', '/img/cv/cv-2.png', '/img/cv/cv-3.png', '/img/cv/cv-4.png', '/img/cv/cv-5.png']
-
 export function useResumeTemplates() {
   const resumeTemplates = computed<ResumeTemplate[]>(() => [
     { id: 'resume-terra', title: 'Resume · Terra Sidebar', image: '/img/cv/cv-1.png', type: 'resume', templateId: 'terra' },
@@ -18,22 +18,22 @@ export function useResumeTemplates() {
   ])
 
   const coverPageTemplates = computed<ResumeTemplate[]>(() =>
-    Array.from({ length: 10 }, (_, index) => ({
-      id: `cover-page-template-${index + 1}`,
-      title: `Cover Page · Template ${index + 1}`,
-      image: imagePool[index % imagePool.length],
+    COVER_PAGE_TEMPLATES.map(template => ({
+      id: template.id,
+      title: template.title,
+      image: template.image,
       type: 'cover-page',
-      templateId: `cover-page-template-${index + 1}`,
+      templateId: template.id,
     })),
   )
 
   const coverLetterTemplates = computed<ResumeTemplate[]>(() =>
-    Array.from({ length: 10 }, (_, index) => ({
-      id: `cover-letter-template-${index + 1}`,
-      title: `Cover Letter · Template ${index + 1}`,
-      image: imagePool[(index + 2) % imagePool.length],
+    COVER_LETTER_TEMPLATES.map(template => ({
+      id: template.id,
+      title: template.title,
+      image: template.image,
       type: 'cover-letter',
-      templateId: `cover-letter-template-${index + 1}`,
+      templateId: template.id,
     })),
   )
 
