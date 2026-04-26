@@ -244,6 +244,7 @@ async function addToCart(product: ShopGeneralProduct) {
     v-else
     block
     color="primary"
+    variant="tonal"
     prepend-icon="mdi-login"
     class="text-none"
     @click="navigateToLogin"
