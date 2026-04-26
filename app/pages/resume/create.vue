@@ -132,6 +132,7 @@ type Template = {
   title: string
   subtitle: string
   image: string
+  documentType: 'resume' | 'cover-page' | 'cover-letter'
   hasPhoto: boolean
   isTwoColumn: boolean
   isAts: boolean
@@ -184,7 +185,9 @@ type LevelInputMode = 'percent' | 'stars'
 type PhotoShape = 'square' | 'semi' | 'circle'
 
 const activeTab = ref<'edit' | 'template' | 'design' | 'import'>('edit')
+const route = useRoute()
 const selectedTemplate = ref('classic')
+const selectedDocumentType = ref<'resume' | 'cover-page' | 'cover-letter'>('resume')
 const selectedTheme = ref('ocean')
 const selectedRounded = ref<'none' | 'sm' | 'md' | 'lg'>('md')
 const selectedTextStyle = ref<TextStyleOption['value']>('clean')
@@ -208,6 +211,7 @@ const templates: Template[] = [
     title: 'Terra Sidebar',
     subtitle: 'Warm sidebar profile in French style',
     image: '/img/cv/cv-1.png',
+    documentType: 'resume',
     hasPhoto: true,
     isTwoColumn: true,
     isAts: false,
@@ -222,6 +226,7 @@ const templates: Template[] = [
     title: 'Ocean Split',
     subtitle: 'Diagonal split with textured blue panel',
     image: '/img/cv/cv-3.png',
+    documentType: 'resume',
     hasPhoto: true,
     isTwoColumn: true,
     isAts: false,
@@ -236,6 +241,7 @@ const templates: Template[] = [
     title: 'Corporate Blue',
     subtitle: 'Executive header with information sidebar',
     image: '/img/cv/cv-2.png',
+    documentType: 'resume',
     hasPhoto: true,
     isTwoColumn: true,
     isAts: true,
@@ -250,6 +256,7 @@ const templates: Template[] = [
     title: 'Classic',
     subtitle: 'Simple and readable format',
     image: '/img/cv/cv-4.png',
+    documentType: 'resume',
     hasPhoto: false,
     isTwoColumn: false,
     isAts: false,
@@ -264,6 +271,7 @@ const templates: Template[] = [
     title: 'Modern',
     subtitle: 'Clean blocks and balanced content',
     image: '/img/cv/cv-3.png',
+    documentType: 'resume',
     hasPhoto: true,
     isTwoColumn: true,
     isAts: false,
@@ -278,6 +286,7 @@ const templates: Template[] = [
     title: 'Professional',
     subtitle: 'Sidebar profile with details',
     image: '/img/cv/cv-1.png',
+    documentType: 'resume',
     hasPhoto: true,
     isTwoColumn: true,
     isAts: false,
@@ -292,6 +301,7 @@ const templates: Template[] = [
     title: 'Traditional',
     subtitle: 'Formal and timeless structure',
     image: '/img/cv/cv-2.png',
+    documentType: 'resume',
     hasPhoto: false,
     isTwoColumn: false,
     isAts: false,
@@ -306,6 +316,7 @@ const templates: Template[] = [
     title: 'Creative Timeline',
     subtitle: 'Creative layout with timeline sections',
     image: '/img/cv/cv-5.png',
+    documentType: 'resume',
     hasPhoto: true,
     isTwoColumn: true,
     isAts: false,
@@ -320,6 +331,7 @@ const templates: Template[] = [
     title: 'Minimalist',
     subtitle: 'Monochrome editorial minimalism',
     image: '/img/cv/cv-4.png',
+    documentType: 'resume',
     hasPhoto: false,
     isTwoColumn: false,
     isAts: true,
@@ -334,6 +346,7 @@ const templates: Template[] = [
     title: 'Aurora',
     subtitle: 'Dark glassmorphism with neon accents',
     image: '/img/cv/cv-1.png',
+    documentType: 'resume',
     hasPhoto: true,
     isTwoColumn: true,
     isAts: false,
@@ -348,6 +361,7 @@ const templates: Template[] = [
     title: 'Executive Timeline',
     subtitle: 'Leadership layout with timeline details',
     image: '/img/cv/cv-2.png',
+    documentType: 'resume',
     hasPhoto: true,
     isTwoColumn: true,
     isAts: true,
@@ -356,6 +370,66 @@ const templates: Template[] = [
     isFree: true,
     useTimeline: true,
     variant: 'executive',
+  },
+  {
+    id: 'cover-page-terra',
+    title: 'Cover Page Terra',
+    subtitle: 'Page de garde simple avec titre et photo',
+    image: '/img/cv/cv-4.png',
+    documentType: 'cover-page',
+    hasPhoto: true,
+    isTwoColumn: false,
+    isAts: true,
+    hasDocx: true,
+    isCustomized: true,
+    isFree: true,
+    useTimeline: false,
+    variant: 'classic',
+  },
+  {
+    id: 'cover-page-elegant',
+    title: 'Cover Page Elegant',
+    subtitle: 'Page de garde élégante centrée',
+    image: '/img/cv/cv-5.png',
+    documentType: 'cover-page',
+    hasPhoto: false,
+    isTwoColumn: false,
+    isAts: true,
+    hasDocx: true,
+    isCustomized: true,
+    isFree: true,
+    useTimeline: false,
+    variant: 'minimalist',
+  },
+  {
+    id: 'cover-letter-classic',
+    title: 'Cover Letter Classic',
+    subtitle: 'Lettre classique prête à personnaliser',
+    image: '/img/cv/cv-1.png',
+    documentType: 'cover-letter',
+    hasPhoto: false,
+    isTwoColumn: false,
+    isAts: true,
+    hasDocx: true,
+    isCustomized: true,
+    isFree: true,
+    useTimeline: false,
+    variant: 'traditional',
+  },
+  {
+    id: 'cover-letter-modern',
+    title: 'Cover Letter Modern',
+    subtitle: 'Lettre moderne avec mise en avant du profil',
+    image: '/img/cv/cv-3.png',
+    documentType: 'cover-letter',
+    hasPhoto: true,
+    isTwoColumn: false,
+    isAts: true,
+    hasDocx: true,
+    isCustomized: true,
+    isFree: true,
+    useTimeline: false,
+    variant: 'modern',
   },
 ]
 
@@ -509,8 +583,12 @@ let importElapsedTimer: ReturnType<typeof setInterval> | null = null
 
 let importProgressTimer: ReturnType<typeof setInterval> | null = null
 
+const templatesByDocumentType = computed(() =>
+  templates.filter((template) => template.documentType === selectedDocumentType.value),
+)
+
 const filteredTemplates = computed(() => {
-  if (selectedTemplateFilter.value === 'all') return templates
+  if (selectedTemplateFilter.value === 'all') return templatesByDocumentType.value
 
   const predicateByFilter: Record<
     Exclude<TemplateFilter, 'all'>,
@@ -524,14 +602,39 @@ const filteredTemplates = computed(() => {
     free: (template) => template.isFree,
   }
 
-  return templates.filter(predicateByFilter[selectedTemplateFilter.value])
+  return templatesByDocumentType.value.filter(predicateByFilter[selectedTemplateFilter.value])
 })
 
 const selectedTemplateConfig = computed(
   () =>
-    templates.find((template) => template.id === selectedTemplate.value) ??
+    templatesByDocumentType.value.find((template) => template.id === selectedTemplate.value) ??
+    templatesByDocumentType.value[0] ??
     templates[0],
 )
+
+watch(selectedDocumentType, () => {
+  const firstTemplate = templatesByDocumentType.value[0]
+  if (firstTemplate)
+    selectedTemplate.value = firstTemplate.id
+})
+
+onMounted(() => {
+  const docType = route.query.docType
+  const templateFromQuery = route.query.template
+  const mode = route.query.mode
+
+  if (docType === 'resume' || docType === 'cover-page' || docType === 'cover-letter')
+    selectedDocumentType.value = docType
+
+  if (typeof templateFromQuery === 'string') {
+    const exists = templates.some((template) => template.id === templateFromQuery)
+    if (exists)
+      selectedTemplate.value = templateFromQuery
+  }
+
+  if (mode === 'write')
+    activeTab.value = 'edit'
+})
 
 const selectedTemplateComponent = computed(() => {
   const componentByVariant = {
@@ -1845,6 +1948,17 @@ onUnmounted(() => {
 
           <v-window-item value="template">
             <article class="form-section mb-4">
+              <v-btn-toggle
+                v-model="selectedDocumentType"
+                mandatory
+                color="primary"
+                class="mb-4"
+              >
+                <v-btn value="cover-page">Cover page</v-btn>
+                <v-btn value="cover-letter">Cover letter</v-btn>
+                <v-btn value="resume">Resume</v-btn>
+              </v-btn-toggle>
+
               <AppSelect
                 v-model="selectedTemplateFilter"
                 :items="templateFilters"
