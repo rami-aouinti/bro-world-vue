@@ -1938,6 +1938,17 @@ onUnmounted(() => {
 
           <v-window-item value="template">
             <article class="form-section mb-4">
+              <v-btn-toggle
+                v-model="selectedDocumentType"
+                mandatory
+                color="primary"
+                class="mb-4"
+              >
+                <v-btn value="cover-page">Cover page</v-btn>
+                <v-btn value="cover-letter">Cover letter</v-btn>
+                <v-btn value="resume">Resume</v-btn>
+              </v-btn-toggle>
+
               <AppSelect
                 v-model="selectedTemplateFilter"
                 :items="templateFilters"
