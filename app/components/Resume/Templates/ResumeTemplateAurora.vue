@@ -21,7 +21,7 @@ function updateText(path: string, value: string) {
 </script>
 
 <template>
-  <div class="aurora-template">
+  <div class="aurora-template cv-template-base">
     <div class="aurora-bg" />
     <header>
       <div>
@@ -83,7 +83,7 @@ function updateText(path: string, value: string) {
 <style scoped>
 /* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
 .aurora-template { font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif); font-style: var(--cv-font-style, normal); font-weight: var(--cv-font-weight, 400); position: relative; min-height: calc(100vh - 80px); color: color-mix(in srgb, var(--cv-page) 82%, var(--cv-accent)); background: color-mix(in srgb, var(--cv-sidebar) 88%, black); border-radius: var(--cv-radius, 20px); overflow: hidden; }
-.aurora-bg { position: absolute; inset: -25%; background: radial-gradient(circle at 20% 30%, color-mix(in srgb, var(--cv-accent) 35%, transparent), transparent 45%), radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--cv-sidebar) 35%, var(--cv-accent)), transparent 40%), radial-gradient(circle at 50% 80%, color-mix(in srgb, var(--cv-accent) 55%, var(--cv-page)), transparent 40%); filter: blur(10px); }
+.aurora-bg { position: absolute; inset: -25%; background: var(--cv-gradient-aurora); filter: blur(10px); }
 header, main { position: relative; z-index: 1; }
 header { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 28px; border-bottom: 1px solid color-mix(in srgb, var(--cv-page) 25%, transparent); }
 h1 { font-size: 2.15rem; margin: 0 0 6px; }

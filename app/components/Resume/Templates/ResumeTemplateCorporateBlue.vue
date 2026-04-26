@@ -57,7 +57,7 @@ const photoStyle = computed(() => ({
 </script>
 
 <template>
-  <div class="corporate-template">
+  <div class="corporate-template cv-template-base">
     <header>
       <h1>
         <span class="editable-text" :contenteditable="editable" @input="event => updateText('firstName', (event.target as HTMLElement).innerText)">{{ resume.firstName }}</span>
@@ -70,7 +70,7 @@ const photoStyle = computed(() => ({
       <main>
         <p class="intro editable-text" :contenteditable="editable" @input="event => updateText('profile', (event.target as HTMLElement).innerText)">{{ resume.profile }}</p>
         <section>
-          <h2 :style="[headingStyle, sectionStyle]">Expérience professionnelle</h2>
+          <h2 class="cv-heading-section cv-divider-bottom" :style="[headingStyle, sectionStyle]">Expérience professionnelle</h2>
           <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" :style="articleStyle">
             <h4>
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.company`, (event.target as HTMLElement).innerText)">{{ experience.company }}</span>,
@@ -85,7 +85,7 @@ const photoStyle = computed(() => ({
         </section>
 
         <section>
-          <h2 :style="[headingStyle, sectionStyle]">Formation</h2>
+          <h2 class="cv-heading-section cv-divider-bottom" :style="[headingStyle, sectionStyle]">Formation</h2>
           <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" :style="articleStyle">
             <h4 class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</h4>
             <p class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</p>
@@ -93,7 +93,7 @@ const photoStyle = computed(() => ({
         </section>
       </main>
 
-      <aside :style="sidebarStyle">
+      <aside class="cv-sidebar-surface" :style="sidebarStyle">
         <v-img v-if="showPhoto && resume.photoUrl" :src="resume.photoUrl" class="mb-6 avatar" :style="photoStyle" cover @click="onPhotoClick?.()" />
         <h3 :style="[headingStyle, sectionStyle]">Informations personnelles</h3>
         <p class="editable-text" :contenteditable="editable" @input="event => updateText('city', (event.target as HTMLElement).innerText)">{{ resume.city }}</p>
@@ -122,7 +122,7 @@ main { padding: 24px; }
 h2 { color: var(--cv-title); border-bottom: 1px solid color-mix(in srgb, var(--cv-accent) 20%, var(--cv-page)); margin-bottom: 10px; padding-bottom: 6px; }
 article { margin-bottom: 14px; }
 .period { color: var(--cv-secondary); /* Intentional neutral gray metadata. */ font-size: .85rem; }
-aside { background: linear-gradient(90deg, color-mix(in srgb, var(--cv-sidebar) 14%, var(--cv-page)), var(--cv-page)); padding: 16px 20px; }
+aside { background: var(--cv-gradient-corporate-sidebar, linear-gradient(90deg, color-mix(in srgb, var(--cv-sidebar) 14%, var(--cv-page)), var(--cv-page))); padding: 16px 20px; }
 .avatar { border: 1px solid color-mix(in srgb, var(--cv-accent) 20%, var(--cv-page)); height: 310px; }
 aside h3 { color: var(--cv-title); margin: 8px 0; border-bottom: 1px solid color-mix(in srgb, var(--cv-accent) 20%, var(--cv-page)); padding-bottom: 4px; }
 .dot-row { margin-bottom: 8px; }

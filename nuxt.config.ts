@@ -60,6 +60,7 @@ export default defineNuxtConfig({
     '~/assets/styles/material-dashboard.scss',
     '~/assets/styles/football-dashboard.scss',
     '~/assets/styles/index.css',
+    '~/assets/styles/resume-template-utils.css',
   ],
   experimental: { typedPages: true },
   typescript: {

@@ -22,8 +22,8 @@ function updateText(path: string, value: string) {
 </script>
 
 <template>
-  <div class="creative-template">
-    <header class="hero">
+  <div class="creative-template cv-template-base cv-gradient-page">
+    <header class="hero cv-gradient-hero">
       <div>
         <p class="eyebrow">Creative profile</p>
         <h1>
@@ -47,15 +47,15 @@ function updateText(path: string, value: string) {
     </section>
 
     <section class="content-grid">
-      <article>
-        <h2>Profile</h2>
+      <article class="cv-card-surface">
+        <h2 class="cv-heading-section">Profile</h2>
         <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText('profile', (event.target as HTMLElement).innerText)">
           {{ resume.profile || 'Add your personal summary from the Edit tab.' }}
         </p>
       </article>
 
-      <article>
-        <h2>Experience</h2>
+      <article class="cv-card-surface">
+        <h2 class="cv-heading-section">Experience</h2>
         <div v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="timeline-item text-dark" :class="{ 'timeline-mode': useTimeline }">
           <h3>
             <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.role`, (event.target as HTMLElement).innerText)">{{ experience.role }}</span>
@@ -81,16 +81,16 @@ function updateText(path: string, value: string) {
         </div>
       </article>
 
-      <article>
-        <h2>Skills</h2>
+      <article class="cv-card-surface">
+        <h2 class="cv-heading-section">Skills</h2>
         <div v-for="(skill, index) in resume.skills" :key="skill.name" class="chip-row">
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`skills.${index}.name`, (event.target as HTMLElement).innerText)">{{ skill.name }}</span>
           <small>{{ skill.level }}%</small>
         </div>
       </article>
 
-      <article>
-        <h2>Education</h2>
+      <article class="cv-card-surface">
+        <h2 class="cv-heading-section">Education</h2>
         <div v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="education-item text-dark" :class="{ 'timeline-mode': useTimeline }">
           <h3>
             <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</span>
@@ -108,8 +108,8 @@ function updateText(path: string, value: string) {
 
 <style scoped>
 /* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
-.creative-template { font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif); font-style: var(--cv-font-style, normal); font-weight: var(--cv-font-weight, 400); min-height: calc(100vh - 80px); background: linear-gradient(145deg, var(--cv-page), color-mix(in srgb, var(--cv-page) 82%, var(--cv-accent))); border-radius: var(--cv-radius, 20px); overflow: hidden; }
-.hero { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 28px; background: linear-gradient(135deg, var(--cv-accent), color-mix(in srgb, var(--cv-accent) 72%, var(--cv-sidebar))); color: color-mix(in srgb, var(--cv-page) 95%, white); }
+.creative-template { font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif); font-style: var(--cv-font-style, normal); font-weight: var(--cv-font-weight, 400); min-height: calc(100vh - 80px); background: var(--cv-gradient-page); border-radius: var(--cv-radius, 20px); overflow: hidden; }
+.hero { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 28px; background: var(--cv-gradient-hero); color: color-mix(in srgb, var(--cv-page) 95%, white); }
 .eyebrow { letter-spacing: .12em; text-transform: uppercase; font-size: .72rem; margin-bottom: 6px; opacity: .9; }
 h1 { font-size: 2.25rem; line-height: 1.1; margin: 0; }
 .role { margin-top: 10px; font-size: 1.05rem; }

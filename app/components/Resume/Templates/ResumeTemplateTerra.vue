@@ -61,8 +61,8 @@ const articleStyle = computed(() => ({
 </script>
 
 <template>
-  <div class="terra-template" :style="layoutStyle">
-    <aside :style="sidebarStyle">
+  <div class="terra-template cv-template-base" :style="layoutStyle">
+    <aside class="cv-sidebar-surface" :style="sidebarStyle">
       <v-avatar v-if="showPhoto && resume.photoUrl" class="mb-5 terra-photo" :style="photoStyle" @click="onPhotoClick?.()">
         <v-img :src="resume.photoUrl" cover />
       </v-avatar>
@@ -127,7 +127,7 @@ aside { background: color-mix(in srgb, var(--cv-sidebar) 18%, var(--cv-page)); p
 .terra-photo { border: 6px solid color-mix(in srgb, var(--cv-page) 96%, white); box-shadow: 0 10px 20px color-mix(in srgb, var(--cv-sidebar) 16%, transparent); }
 aside h3 { margin: 18px 0 8px; padding: 8px; background: color-mix(in srgb, var(--cv-page) 88%, var(--cv-sidebar)); font-size: .88rem; text-transform: uppercase; letter-spacing: .07em; }
 aside ul { padding-left: 16px; }
-main { padding: 28px 34px; background: linear-gradient(165deg, color-mix(in srgb, var(--cv-accent) 65%, var(--cv-sidebar)) 0 14%, var(--cv-page) 14%); }
+main { padding: 28px 34px; background: var(--cv-gradient-terra-main, linear-gradient(165deg, color-mix(in srgb, var(--cv-accent) 65%, var(--cv-sidebar)) 0 14%, var(--cv-page) 14%)); }
 header h1 { color: var(--cv-title); font-size: 2.5rem; line-height: 1; margin-bottom: 6px; }
 header p { color: color-mix(in srgb, var(--cv-accent) 72%, var(--cv-sidebar)); margin-bottom: 18px; }
 h2 { color: var(--cv-title); border-top: 1px solid color-mix(in srgb, var(--cv-accent) 24%, var(--cv-page)); padding-top: 12px; margin-bottom: 12px; }

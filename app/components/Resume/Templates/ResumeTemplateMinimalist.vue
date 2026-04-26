@@ -21,7 +21,7 @@ function updateText(path: string, value: string) {
 </script>
 
 <template>
-  <div class="minimal-template">
+  <div class="minimal-template cv-template-base">
     <header class="minimal-header">
       <div>
         <h1>
@@ -45,12 +45,12 @@ function updateText(path: string, value: string) {
 
     <section class="minimal-body">
       <article>
-        <h2>Summary</h2>
+        <h2 class="cv-heading-section">Summary</h2>
         <p class="editable-text" :contenteditable="editable" @input="event => updateText('profile', (event.target as HTMLElement).innerText)">{{ resume.profile }}</p>
       </article>
 
       <article>
-        <h2>Experience</h2>
+        <h2 class="cv-heading-section">Experience</h2>
         <div v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="experience-row">
           <p class="meta">
             <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.start`, (event.target as HTMLElement).innerText)">{{ experience.start }}</span>
@@ -67,7 +67,7 @@ function updateText(path: string, value: string) {
 
       <article class="split">
         <div>
-          <h2>Skills</h2>
+          <h2 class="cv-heading-section">Skills</h2>
           <ul>
             <li v-for="(skill, index) in resume.skills" :key="`skill-${index}`">
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`skills.${index}.name`, (event.target as HTMLElement).innerText)">{{ skill.name }}</span>
@@ -75,7 +75,7 @@ function updateText(path: string, value: string) {
           </ul>
         </div>
         <div>
-          <h2>Languages</h2>
+          <h2 class="cv-heading-section">Languages</h2>
           <ul>
             <li v-for="(language, index) in resume.languages" :key="`language-${index}`">
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>

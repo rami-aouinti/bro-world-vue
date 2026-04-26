@@ -21,7 +21,7 @@ function updateText(path: string, value: string) {
 </script>
 
 <template>
-  <article class="traditional-template">
+  <article class="traditional-template cv-template-base">
     <header>
       <v-avatar v-if="showPhoto && resume.photoUrl" size="76" class="mb-3" @click="onPhotoClick?.()">
         <v-img :src="resume.photoUrl" cover />
@@ -40,12 +40,12 @@ function updateText(path: string, value: string) {
     </header>
 
     <section>
-      <h2>Profile</h2>
+      <h2 class="cv-heading-section">Profile</h2>
       <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText('profile', (event.target as HTMLElement).innerText)">{{ resume.profile || 'Add a professional summary from the Edit tab.' }}</p>
     </section>
 
     <section>
-      <h2>Employment History</h2>
+      <h2 class="cv-heading-section">Employment History</h2>
       <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="entry text-dark">
         <div class="entry-head">
           <h4 class="text-dark">
@@ -64,7 +64,7 @@ function updateText(path: string, value: string) {
     </section>
 
     <section>
-      <h2>Education</h2>
+      <h2 class="cv-heading-section">Education</h2>
       <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="entry text-dark">
         <div class="entry-head text-dark">
           <h4 class="text-dark">

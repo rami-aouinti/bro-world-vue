@@ -22,8 +22,8 @@ function updateText(path: string, value: string) {
 </script>
 
 <template>
-  <div class="executive-template">
-    <aside class="executive-sidebar">
+  <div class="executive-template cv-template-base">
+    <aside class="executive-sidebar cv-sidebar-surface cv-gradient-sidebar">
       <v-avatar v-if="showPhoto && resume.photoUrl" size="92" class="mb-4" @click="onPhotoClick?.()">
         <v-img :src="resume.photoUrl" cover />
       </v-avatar>
@@ -95,7 +95,7 @@ function updateText(path: string, value: string) {
           </ul>
         </div>
         <div>
-          <h2>Education</h2>
+          <h2 class="cv-heading-section">Education</h2>
           <ul>
             <li v-for="(item, index) in resume.education" :key="`executive-edu-${index}`" class="text-dark" :class="{ 'timeline-entry': useTimeline }">
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</span>
@@ -112,7 +112,7 @@ function updateText(path: string, value: string) {
 <style scoped>
 /* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
 .executive-template { font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif); font-style: var(--cv-font-style, normal); font-weight: var(--cv-font-weight, 400); min-height: calc(100vh - 80px); display: grid; grid-template-columns: 280px 1fr; border-radius: var(--cv-radius, 18px); overflow: hidden; background: var(--cv-page); }
-.executive-sidebar { background: linear-gradient(180deg, var(--cv-sidebar), color-mix(in srgb, var(--cv-sidebar) 82%, black)); color: color-mix(in srgb, var(--cv-page) 94%, white); padding: 28px 22px; }
+.executive-sidebar { background: var(--cv-gradient-sidebar); color: color-mix(in srgb, var(--cv-page) 94%, white); padding: 28px 22px; }
 .executive-sidebar h1 { line-height: 1.1; margin-bottom: 10px; font-size: 1.9rem; }
 .title { font-size: .95rem; opacity: .9; margin-bottom: 20px; }
 .contact p { margin-bottom: 7px; color: color-mix(in srgb, var(--cv-page) 86%, var(--cv-accent)); }

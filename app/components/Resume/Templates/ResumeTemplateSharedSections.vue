@@ -38,9 +38,9 @@ function isVisible(section: SharedSectionKey) {
 </script>
 
 <template>
-  <section class="shared-extra text-dark" :class="toneClass">
+  <section class="shared-extra cv-card-surface text-dark" :class="toneClass">
     <div v-if="isVisible('languages') && resume.languages?.length">
-      <h3>Languages</h3>
+      <h3 class="cv-heading-section cv-divider-bottom">Languages</h3>
       <ul>
         <li v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`">
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
@@ -50,7 +50,7 @@ function isVisible(section: SharedSectionKey) {
     </div>
 
     <div v-if="isVisible('projects') && resume.projects?.length">
-      <h3>Projects</h3>
+      <h3 class="cv-heading-section cv-divider-bottom">Projects</h3>
       <ul>
         <li v-for="(project, index) in resume.projects" :key="`${project.name}-${index}`">
           <strong class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</strong>
@@ -60,7 +60,7 @@ function isVisible(section: SharedSectionKey) {
     </div>
 
     <div v-if="isVisible('courses') && resume.courses?.length">
-      <h3>Certifications</h3>
+      <h3 class="cv-heading-section cv-divider-bottom">Certifications</h3>
       <ul>
         <li v-for="(course, index) in resume.courses" :key="`${course.title}-${index}`">
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`courses.${index}.title`, (event.target as HTMLElement).innerText)">{{ course.title }}</span>
@@ -70,7 +70,7 @@ function isVisible(section: SharedSectionKey) {
     </div>
 
     <div v-if="isVisible('references') && resume.references?.length">
-      <h3>References</h3>
+      <h3 class="cv-heading-section cv-divider-bottom">References</h3>
       <ul>
         <li v-for="(reference, index) in resume.references" :key="`${reference.name}-${index}`">
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`references.${index}.name`, (event.target as HTMLElement).innerText)">{{ reference.name }}</span>
@@ -80,7 +80,7 @@ function isVisible(section: SharedSectionKey) {
     </div>
 
     <div v-if="isVisible('hobbies') && resume.hobbies?.length">
-      <h3>Interests</h3>
+      <h3 class="cv-heading-section cv-divider-bottom">Interests</h3>
       <ul>
         <li v-for="(hobby, index) in resume.hobbies" :key="`${hobby}-${index}`" class="editable-text" :contenteditable="editable" @input="event => updateText(`hobbies.${index}`, (event.target as HTMLElement).innerText)">{{ hobby }}</li>
       </ul>
