@@ -119,12 +119,14 @@ export const useCrmReferenceOptionsStore = defineStore('crm-reference-options', 
   }
 
   const employeeAssigneeOptions = computed<EmployeeSelectOption[]>(() =>
-    employees.value.map((employee) => ({
-      title: employeeDisplayName(employee),
-      value: employee.userId,
-      avatar: employee.photo,
-      subtitle: employee.email,
-    })),
+    employees.value
+      .filter((employee) => String(employee.userId ?? '').trim().length > 0)
+      .map((employee) => ({
+        title: employeeDisplayName(employee),
+        value: String(employee.userId),
+        avatar: employee.photo,
+        subtitle: employee.email,
+      })),
   )
 
   const projectOptions = computed<SelectOption[]>(() =>

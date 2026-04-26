@@ -370,7 +370,7 @@ onBeforeUnmount(() => {
               :disabled="!isRootAdmin"
               @click="attachAssignee"
             >
-              Assign user
+              Assign employee
             </v-btn>
             <v-list density="compact" bg-color="transparent">
               <v-list-item
