@@ -89,78 +89,42 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <v-container fluid class="resume-home pa-0">
-    <section class="hero px-4 px-md-8 py-8 py-md-12">
-      <h1 class="hero-title">{{ t('resumeBuilder.index.heroTitle') }}</h1>
-      <p class="hero-subtitle">{{ t('resumeBuilder.index.heroSubtitle') }}</p>
+  <div>
+    <AppPageDrawers>
+      <template #left>
+        <h3>{{ t('resumeBuilder.index.heroTitle') }}</h3>
+        <p class="hero-subtitle">{{ t('resumeBuilder.index.heroSubtitle') }}</p>
+        <v-btn
+          color="primary"
+          size="large"
+          to="/resume/create"
+          class="mt-3"
+        >
+          {{ step.cta }}
+        </v-btn>
+      </template>
+    </AppPageDrawers>
+    <v-container fluid class="resume-home pa-0">
+      <section class="hero px-4 px-md-8 py-8 py-md-12">
+        <div class="templates-showcase mt-8">
+          <v-tabs v-model="activeTemplateTab" color="primary" grow class="templates-tabs">
+            <v-tab v-for="tab in documentTabs" :key="tab.value" :value="tab.value">
+              {{ tab.label }}
+            </v-tab>
+          </v-tabs>
 
-      <div class="trust-strip mt-6">
-        <strong>{{ t('resumeBuilder.index.rating.label') }}</strong>
-        <span>{{ t('resumeBuilder.index.rating.score') }}</span>
-      </div>
-
-      <div class="hero-tabs mt-7">
-        <span>Resume → Cover Page → Cover Letter</span>
-      </div>
-
-      <div class="templates-showcase mt-8">
-        <v-tabs v-model="activeTemplateTab" color="primary" grow class="templates-tabs">
-          <v-tab v-for="tab in documentTabs" :key="tab.value" :value="tab.value">
-            {{ tab.label }}
-          </v-tab>
-        </v-tabs>
-
-        <div class="templates-slider mt-4">
-          <button
-            v-for="templateCard in displayedTemplates"
-            :key="templateCard.id"
-            type="button"
-            class="template-slide"
-            @click="openTemplateInWriteMode(templateCard)"
-          >
-            <img :src="templateCard.image" :alt="templateCard.title">
-            <span>{{ templateCard.title }}</span>
-          </button>
+          <div class="templates-slider mt-4">
+            <v-card v-for="templateCard in displayedTemplates"
+                    :key="templateCard.id"
+                    @click="openTemplateInWriteMode(templateCard)" class="postcard-gradient-card template-slide">
+              <v-img :src="templateCard.image" :alt="templateCard.title" />
+              <span>{{ templateCard.title }}</span>
+            </v-card>
+          </div>
         </div>
-      </div>
-    </section>
-
-    <section class="journey px-4 px-md-8 py-10 py-md-14">
-      <h2>{{ t('resumeBuilder.index.journey.title') }}</h2>
-      <p>{{ t('resumeBuilder.index.journey.subtitle') }}</p>
-
-      <div class="journey-grid mt-7">
-        <article v-for="(step, index) in journeySteps" :key="step.title" class="journey-card">
-          <img :src="step.image" :alt="step.title" class="journey-image">
-          <h3>{{ step.title }}</h3>
-          <p>{{ step.description }}</p>
-          <v-btn
-            v-if="index === 0"
-            color="primary"
-            size="large"
-            to="/resume/create"
-            class="mt-3"
-          >
-            {{ step.cta }}
-          </v-btn>
-        </article>
-      </div>
-    </section>
-
-    <section class="benefits px-4 px-md-8 py-10 py-md-14">
-      <h2>{{ t('resumeBuilder.index.benefits.title') }}</h2>
-      <p>{{ t('resumeBuilder.index.benefits.subtitle') }}</p>
-
-      <div class="benefits-grid mt-7">
-        <article v-for="benefit in benefits" :key="benefit.title" class="benefit-card">
-          <v-icon :icon="benefit.icon" size="34" color="primary" class="mb-4" />
-          <h3>{{ benefit.title }}</h3>
-          <p>{{ benefit.description }}</p>
-          <a v-if="benefit.link" href="#">{{ benefit.link }}</a>
-        </article>
-      </div>
-    </section>
-  </v-container>
+      </section>
+    </v-container>
+  </div>
 </template>
 
 <style scoped>
