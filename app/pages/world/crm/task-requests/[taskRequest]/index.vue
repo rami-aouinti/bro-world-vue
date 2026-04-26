@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import type { CrmTaskRequestItem, CrmTaskRequestUpdatePayload } from '~~/server/types/api/crm-general'
+import type {
+  CrmTaskRequestItem,
+  CrmTaskRequestUpdatePayload,
+} from '~~/server/types/api/crm-general'
 
 const route = useRoute()
 const router = useRouter()
@@ -16,15 +19,24 @@ definePageMeta({ layout: 'crm', title: 'CRM Task Request Detail' })
 
 const payload = reactive<CrmTaskRequestUpdatePayload>({})
 const statusOptions = ['pending', 'in_progress', 'approved', 'rejected']
-const { data, pending, error, refresh } = useFetch<CrmTaskRequestItem>(() => `/api/crm/general/task-requests/${id.value}`)
+const { data, pending, error, refresh } = useFetch<CrmTaskRequestItem>(
+  () => `/api/crm/general/task-requests/${id.value}`,
+)
 const isAssignedEmployee = computed(() =>
   Boolean(
-    data.value?.assignees?.some((assignee) => String(assignee.id) === String(sessionUser.value?.id ?? '')),
+    data.value?.assignees?.some(
+      (assignee) => String(assignee.id) === String(sessionUser.value?.id ?? ''),
+    ),
   ),
 )
-const canTrackWork = computed(() => isRootAdmin.value || isAssignedEmployee.value)
+const canTrackWork = computed(
+  () => isRootAdmin.value || isAssignedEmployee.value,
+)
 const crmReferencesStore = useCrmReferenceOptionsStore()
-await crmReferencesStore.fetchEmployees()
+await Promise.all([
+  crmReferencesStore.fetchEmployees(),
+  crmReferencesStore.fetchTasks(),
+])
 const assigneeId = ref('')
 const selectedFile = ref<File | null>(null)
 const branchProvider = ref<'github' | 'gitlab'>('github')
@@ -50,26 +62,45 @@ const timerLabel = computed(() => {
 
 const activeEmployeeId = computed(() => {
   if (!data.value?.assignees?.length) return ''
-  const currentUserAssignee = data.value.assignees.find((assignee) =>
-    String(assignee.id) === String(sessionUser.value?.id ?? ''),
+  const currentUserAssignee = data.value.assignees.find(
+    (assignee) => String(assignee.id) === String(sessionUser.value?.id ?? ''),
   )
-  if (currentUserAssignee?.employeeId) return String(currentUserAssignee.employeeId)
+  if (currentUserAssignee?.employeeId)
+    return String(currentUserAssignee.employeeId)
 
   if (isRootAdmin.value) {
-    const assigneeWithEmployee = data.value.assignees.find((assignee) => assignee.employeeId)
+    const assigneeWithEmployee = data.value.assignees.find(
+      (assignee) => assignee.employeeId,
+    )
     return String(assigneeWithEmployee?.employeeId ?? '')
   }
 
   return ''
 })
 
-const publicUserOptions = computed(() => crmReferencesStore.employeeAssigneeOptions)
+const publicUserOptions = computed(
+  () => crmReferencesStore.employeeAssigneeOptions,
+)
+const taskTitleById = computed<Record<string, string>>(() =>
+  Object.fromEntries(
+    crmReferencesStore.tasks.map((task) => [task.id, task.title]),
+  ),
+)
 
 function assigneeDisplayName(assignee: any) {
-  const firstName = String(assignee?.firstName ?? assignee?.userFirstName ?? '').trim()
-  const lastName = String(assignee?.lastName ?? assignee?.userLastName ?? '').trim()
+  const firstName = String(
+    assignee?.firstName ?? assignee?.userFirstName ?? '',
+  ).trim()
+  const lastName = String(
+    assignee?.lastName ?? assignee?.userLastName ?? '',
+  ).trim()
   const fullName = `${firstName} ${lastName}`.trim()
-  return fullName || String(assignee?.username ?? assignee?.email ?? assignee?.id ?? assignee ?? '—')
+  return (
+    fullName ||
+    String(
+      assignee?.username ?? assignee?.email ?? assignee?.id ?? assignee ?? '—',
+    )
+  )
 }
 
 watchEffect(() => {
@@ -83,21 +114,30 @@ watchEffect(() => {
 })
 
 async function save() {
-  await $fetch(`/api/crm/general/task-requests/${id.value}`, { method: 'PATCH', body: payload })
+  await $fetch(`/api/crm/general/task-requests/${id.value}`, {
+    method: 'PATCH',
+    body: payload,
+  })
   await refresh()
 }
 
 async function attachAssignee() {
   if (!isRootAdmin.value) return
   if (!assigneeId.value.trim()) return
-  await $fetch(`/api/crm/general/task-requests/${id.value}/assignees/${encodeURIComponent(assigneeId.value.trim())}`, { method: 'PUT' })
+  await $fetch(
+    `/api/crm/general/task-requests/${id.value}/assignees/${encodeURIComponent(assigneeId.value.trim())}`,
+    { method: 'PUT' },
+  )
   assigneeId.value = ''
   await refresh()
 }
 
 async function detachAssignee(userId: string) {
   if (!isRootAdmin.value) return
-  await $fetch(`/api/crm/general/task-requests/${id.value}/assignees/${encodeURIComponent(userId)}`, { method: 'DELETE' })
+  await $fetch(
+    `/api/crm/general/task-requests/${id.value}/assignees/${encodeURIComponent(userId)}`,
+    { method: 'DELETE' },
+  )
   await refresh()
 }
 
@@ -117,7 +157,9 @@ async function uploadFile() {
 
 async function removeAttachment(index: number) {
   if (!isRootAdmin.value || !data.value?.attachments) return
-  const nextAttachments = data.value.attachments.filter((_, currentIndex) => currentIndex !== index)
+  const nextAttachments = data.value.attachments.filter(
+    (_, currentIndex) => currentIndex !== index,
+  )
   await $fetch(`/api/crm/general/task-requests/${id.value}`, {
     method: 'PATCH',
     body: {
@@ -132,7 +174,9 @@ function branchRecordId(branch: Record<string, unknown>) {
 }
 
 function branchRecordLabel(branch: Record<string, unknown>) {
-  return String(branch.name ?? branch.branch ?? branch.ref ?? branch.id ?? 'Unknown branch')
+  return String(
+    branch.name ?? branch.branch ?? branch.ref ?? branch.id ?? 'Unknown branch',
+  )
 }
 
 async function loadBranches() {
@@ -151,14 +195,17 @@ async function loadBranches() {
 async function createBranch() {
   if (!isRootAdmin.value) return
   if (!branchName.value.trim()) return
-  await $fetch(`/api/crm/general/task-requests/${id.value}/${branchProvider.value}/branches`, {
-    method: 'POST',
-    body: {
-      name: branchName.value.trim(),
-      sourceBranch: sourceBranch.value.trim() || undefined,
-      postCommentOnIssue: true,
+  await $fetch(
+    `/api/crm/general/task-requests/${id.value}/${branchProvider.value}/branches`,
+    {
+      method: 'POST',
+      body: {
+        name: branchName.value.trim(),
+        sourceBranch: sourceBranch.value.trim() || undefined,
+        postCommentOnIssue: true,
+      },
     },
-  })
+  )
   branchName.value = ''
   await loadBranches()
   await refresh()
@@ -168,9 +215,12 @@ async function deleteBranch(branch: Record<string, unknown>) {
   if (!isRootAdmin.value) return
   const branchId = branchRecordId(branch)
   if (!branchId) return
-  await $fetch(`/api/crm/general/task-requests/${id.value}/${branchProvider.value}/branches/${encodeURIComponent(branchId)}`, {
-    method: 'DELETE',
-  })
+  await $fetch(
+    `/api/crm/general/task-requests/${id.value}/${branchProvider.value}/branches/${encodeURIComponent(branchId)}`,
+    {
+      method: 'DELETE',
+    },
+  )
   await loadBranches()
   await refresh()
 }
@@ -179,12 +229,18 @@ watch(branchProvider, () => {
   loadBranches()
 })
 
-watch(id, () => {
-  loadBranches()
-}, { immediate: true })
+watch(
+  id,
+  () => {
+    loadBranches()
+  },
+  { immediate: true },
+)
 
 async function remove() {
-  await $fetch(`/api/crm/general/task-requests/${id.value}`, { method: 'DELETE' })
+  await $fetch(`/api/crm/general/task-requests/${id.value}`, {
+    method: 'DELETE',
+  })
   await router.push('/world/crm/task-requests')
 }
 
@@ -210,7 +266,7 @@ function startTimer() {
   worklogError.value = ''
   worklogSuccess.value = ''
   timerRunning.value = true
-  timerAnchor.value = Date.now() - (timerElapsedSeconds.value * 1000)
+  timerAnchor.value = Date.now() - timerElapsedSeconds.value * 1000
   clearTimerInterval()
   timerInterval.value = setInterval(syncTimerElapsed, 1000)
 }
@@ -287,7 +343,9 @@ onBeforeUnmount(() => {
             >
               Only root or assigned employee can track time.
             </v-alert>
-            <p class="text-body-2 mb-2">Timer: <strong>{{ timerLabel }}</strong></p>
+            <p class="text-body-2 mb-2">
+              Timer: <strong>{{ timerLabel }}</strong>
+            </p>
             <v-chip size="small" variant="tonal" class="mb-2">
               Employee ID: {{ activeEmployeeId || '—' }}
             </v-chip>
@@ -314,7 +372,11 @@ onBeforeUnmount(() => {
                 color="error"
                 variant="tonal"
                 prepend-icon="mdi-stop"
-                :disabled="!canTrackWork || (!timerRunning && timerElapsedSeconds === 0) || worklogPending"
+                :disabled="
+                  !canTrackWork ||
+                  (!timerRunning && timerElapsedSeconds === 0) ||
+                  worklogPending
+                "
                 :loading="worklogPending"
                 @click="submitWorklog('stop')"
               >
@@ -353,10 +415,17 @@ onBeforeUnmount(() => {
               :disabled="!isRootAdmin"
             >
               <template #item="{ props, item }">
-                <v-list-item v-bind="props" :title="item?.raw?.title || undefined" :subtitle="item?.raw?.subtitle || undefined">
+                <v-list-item
+                  v-bind="props"
+                  :title="item?.raw?.title || undefined"
+                  :subtitle="item?.raw?.subtitle || undefined"
+                >
                   <template #prepend>
                     <v-avatar size="24">
-                      <v-img :src="item?.raw?.avatar || '/img/avatar_default.svg'" :alt="item?.raw?.title || 'Employee avatar'" />
+                      <v-img
+                        :src="item?.raw?.avatar || '/img/avatar_default.svg'"
+                        :alt="item?.raw?.title || 'Employee avatar'"
+                      />
                     </v-avatar>
                   </template>
                 </v-list-item>
@@ -364,7 +433,10 @@ onBeforeUnmount(() => {
               <template #selection="{ item }">
                 <div class="d-flex align-center ga-2">
                   <v-avatar size="20">
-                    <v-img :src="item?.raw?.avatar || '/img/avatar_default.svg'" :alt="item?.raw?.title || 'Employee avatar'" />
+                    <v-img
+                      :src="item?.raw?.avatar || '/img/avatar_default.svg'"
+                      :alt="item?.raw?.title || 'Employee avatar'"
+                    />
                   </v-avatar>
                   <span v-if="item?.raw?.title">{{ item?.raw?.title }}</span>
                 </div>
@@ -388,7 +460,10 @@ onBeforeUnmount(() => {
               >
                 <template #prepend>
                   <v-avatar size="24">
-                    <v-img :src="String(assignee.photo ?? '/img/avatar_default.svg')" :alt="assigneeDisplayName(assignee)" />
+                    <v-img
+                      :src="String(assignee.photo ?? '/img/avatar_default.svg')"
+                      :alt="assigneeDisplayName(assignee)"
+                    />
                   </v-avatar>
                 </template>
                 <template v-if="isRootAdmin" #append>
@@ -427,8 +502,17 @@ onBeforeUnmount(() => {
             <v-list density="compact" bg-color="transparent">
               <v-list-item
                 v-for="(attachment, index) in data?.attachments ?? []"
-                :key="attachment.id || attachment.url || attachment.name || index"
-                :title="String(attachment.originalName ?? attachment.name ?? attachment.url ?? `Attachment ${index + 1}`)"
+                :key="
+                  attachment.id || attachment.url || attachment.name || index
+                "
+                :title="
+                  String(
+                    attachment.originalName ??
+                      attachment.name ??
+                      attachment.url ??
+                      `Attachment ${index + 1}`,
+                  )
+                "
                 :subtitle="String(attachment.mimeType ?? '')"
               >
                 <template #append>
@@ -515,15 +599,19 @@ onBeforeUnmount(() => {
           </div>
 
           <div v-if="isViewMode && data">
-          <p class="text-caption mb-1">{{ t('world.crm.taskRequests.form.description') }}</p>
-          <p class="text-body-2 mb-0">{{ data.description || '—' }}</p>
+            <p class="text-caption mb-1">
+              {{ t('world.crm.taskRequests.form.description') }}
+            </p>
+            <p class="text-body-2 mb-0">{{ data.description || '—' }}</p>
           </div>
         </div>
       </template>
     </WorldModuleShell>
     <v-container fluid>
       <CrmPageSkeleton v-if="pending" variant="detail" />
-      <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.taskRequests.alerts.notFound') }}</v-alert>
+      <v-alert v-else-if="error" type="error" variant="tonal">{{
+        t('world.crm.taskRequests.alerts.notFound')
+      }}</v-alert>
       <v-row v-else-if="data">
         <v-col cols="12">
           <v-card rounded="xl" class="pa-4 postcard-gradient-card">
@@ -533,14 +621,39 @@ onBeforeUnmount(() => {
                 <v-chip color="info" variant="tonal">{{ data.status }}</v-chip>
               </div>
               <div class="d-flex flex-wrap ga-2 mb-4">
-                <v-chip color="primary" variant="outlined">Task: {{ data.taskId }}</v-chip>
-                <v-chip color="secondary" variant="outlined">Repo: {{ data.repositoryId }}</v-chip>
-                <v-chip variant="tonal">Resolved: {{ data.resolvedAt || '—' }}</v-chip>
-                <v-chip variant="tonal">Assignees: {{ data.assignees?.length || 0 }}</v-chip>
-                <v-chip variant="tonal">Files: {{ data.attachments?.length || 0 }}</v-chip>
-                <v-chip variant="tonal">Planned: {{ data.plannedHours ?? 0 }} h</v-chip>
-                <v-chip variant="tonal">Consumed: {{ data.consumedHours ?? 0 }} h</v-chip>
-                <v-chip variant="tonal">Remaining: {{ data.remainingHours ?? 0 }} h</v-chip>
+                <v-chip color="primary" variant="outlined">
+                  <span class="d-flex align-center ga-2">
+                    <CrmEntityAvatar
+                      :label="taskTitleById[data.taskId] || data.taskId"
+                      :size="18"
+                    />
+                    Task: {{ taskTitleById[data.taskId] || data.taskId }}
+                  </span>
+                </v-chip>
+                <v-chip color="secondary" variant="outlined">
+                  <span class="d-flex align-center ga-2">
+                    <CrmEntityAvatar :label="data.repositoryId" :size="18" />
+                    Repo: {{ data.repositoryId }}
+                  </span>
+                </v-chip>
+                <v-chip variant="tonal"
+                  >Resolved: {{ data.resolvedAt || '—' }}</v-chip
+                >
+                <v-chip variant="tonal"
+                  >Assignees: {{ data.assignees?.length || 0 }}</v-chip
+                >
+                <v-chip variant="tonal"
+                  >Files: {{ data.attachments?.length || 0 }}</v-chip
+                >
+                <v-chip variant="tonal"
+                  >Planned: {{ data.plannedHours ?? 0 }} h</v-chip
+                >
+                <v-chip variant="tonal"
+                  >Consumed: {{ data.consumedHours ?? 0 }} h</v-chip
+                >
+                <v-chip variant="tonal"
+                  >Remaining: {{ data.remainingHours ?? 0 }} h</v-chip
+                >
               </div>
               <div class="mb-4">
                 <h3 class="text-subtitle-1 mb-2">Attachments</h3>
@@ -551,8 +664,18 @@ onBeforeUnmount(() => {
                 >
                   <v-list-item
                     v-for="(attachment, index) in data.attachments || []"
-                    :key="attachment.id || attachment.url || attachment.name || index"
-                    :title="attachment.originalName || attachment.name || attachment.url || `Attachment ${index + 1}`"
+                    :key="
+                      attachment.id ||
+                      attachment.url ||
+                      attachment.name ||
+                      index
+                    "
+                    :title="
+                      attachment.originalName ||
+                      attachment.name ||
+                      attachment.url ||
+                      `Attachment ${index + 1}`
+                    "
                     :subtitle="attachment.mimeType || ''"
                     :href="attachment.url"
                     target="_blank"
@@ -561,7 +684,12 @@ onBeforeUnmount(() => {
                     class="px-0"
                   />
                 </v-list>
-                <v-alert v-else type="info" variant="tonal" density="comfortable">
+                <v-alert
+                  v-else
+                  type="info"
+                  variant="tonal"
+                  density="comfortable"
+                >
                   No attachments
                 </v-alert>
               </div>
@@ -571,7 +699,10 @@ onBeforeUnmount(() => {
                 <p class="text-body-2 mb-3">
                   {{ data.blog?.title || '—' }}
                 </p>
-                <div v-if="data.blog?.posts?.length" class="d-flex flex-column ga-3">
+                <div
+                  v-if="data.blog?.posts?.length"
+                  class="d-flex flex-column ga-3"
+                >
                   <v-card
                     v-for="post in data.blog.posts"
                     :key="post.id"
@@ -593,21 +724,48 @@ onBeforeUnmount(() => {
                     </v-list>
                   </v-card>
                 </div>
-                <v-alert v-else type="info" variant="tonal" density="comfortable">
+                <v-alert
+                  v-else
+                  type="info"
+                  variant="tonal"
+                  density="comfortable"
+                >
                   No blog post yet for this task request.
                 </v-alert>
               </div>
             </template>
             <template v-else-if="data">
               <v-row>
-                <v-col cols="12"><v-text-field v-model="payload.title" :label="t('world.crm.taskRequests.form.title')" /></v-col>
-                <v-col cols="12"><v-textarea v-model="payload.description" :label="t('world.crm.taskRequests.form.description')" /></v-col>
-                <v-col cols="12" md="6"><AppSelect v-model="payload.status" :items="statusOptions" :label="t('world.crm.taskRequests.form.status')" /></v-col>
-                <v-col cols="12" md="6"><v-text-field v-model="payload.resolvedAt" :label="t('world.crm.taskRequests.form.resolvedAt')" type="date" /></v-col>
+                <v-col cols="12"
+                  ><v-text-field
+                    v-model="payload.title"
+                    :label="t('world.crm.taskRequests.form.title')"
+                /></v-col>
+                <v-col cols="12"
+                  ><v-textarea
+                    v-model="payload.description"
+                    :label="t('world.crm.taskRequests.form.description')"
+                /></v-col>
+                <v-col cols="12" md="6"
+                  ><AppSelect
+                    v-model="payload.status"
+                    :items="statusOptions"
+                    :label="t('world.crm.taskRequests.form.status')"
+                /></v-col>
+                <v-col cols="12" md="6"
+                  ><v-text-field
+                    v-model="payload.resolvedAt"
+                    :label="t('world.crm.taskRequests.form.resolvedAt')"
+                    type="date"
+                /></v-col>
               </v-row>
               <div class="d-flex ga-2">
-                <v-btn color="primary" @click="save">{{ t('world.crm.taskRequests.actions.save') }}</v-btn>
-                <v-btn color="error" variant="tonal" @click="remove">{{ t('world.crm.taskRequests.actions.delete') }}</v-btn>
+                <v-btn color="primary" @click="save">{{
+                  t('world.crm.taskRequests.actions.save')
+                }}</v-btn>
+                <v-btn color="error" variant="tonal" @click="remove">{{
+                  t('world.crm.taskRequests.actions.delete')
+                }}</v-btn>
               </div>
             </template>
           </v-card>
