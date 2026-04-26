@@ -108,7 +108,7 @@ function updateText(path: string, value: string) {
 
 <style scoped>
 /* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
-.creative-template { min-height: calc(100vh - 80px); background: linear-gradient(145deg, var(--cv-page), color-mix(in srgb, var(--cv-page) 82%, var(--cv-accent))); border-radius: 20px; overflow: hidden; }
+.creative-template { font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif); font-style: var(--cv-font-style, normal); font-weight: var(--cv-font-weight, 400); min-height: calc(100vh - 80px); background: linear-gradient(145deg, var(--cv-page), color-mix(in srgb, var(--cv-page) 82%, var(--cv-accent))); border-radius: var(--cv-radius, 20px); overflow: hidden; }
 .hero { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 28px; background: linear-gradient(135deg, var(--cv-accent), color-mix(in srgb, var(--cv-accent) 72%, var(--cv-sidebar))); color: color-mix(in srgb, var(--cv-page) 95%, white); }
 .eyebrow { letter-spacing: .12em; text-transform: uppercase; font-size: .72rem; margin-bottom: 6px; opacity: .9; }
 h1 { font-size: 2.25rem; line-height: 1.1; margin: 0; }

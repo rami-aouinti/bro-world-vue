@@ -82,14 +82,14 @@ function updateText(path: string, value: string) {
 
 <style scoped>
 /* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
-.aurora-template { position: relative; min-height: calc(100vh - 80px); color: color-mix(in srgb, var(--cv-page) 82%, var(--cv-accent)); background: color-mix(in srgb, var(--cv-sidebar) 88%, black); border-radius: 20px; overflow: hidden; }
+.aurora-template { font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif); font-style: var(--cv-font-style, normal); font-weight: var(--cv-font-weight, 400); position: relative; min-height: calc(100vh - 80px); color: color-mix(in srgb, var(--cv-page) 82%, var(--cv-accent)); background: color-mix(in srgb, var(--cv-sidebar) 88%, black); border-radius: var(--cv-radius, 20px); overflow: hidden; }
 .aurora-bg { position: absolute; inset: -25%; background: radial-gradient(circle at 20% 30%, color-mix(in srgb, var(--cv-accent) 35%, transparent), transparent 45%), radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--cv-sidebar) 35%, var(--cv-accent)), transparent 40%), radial-gradient(circle at 50% 80%, color-mix(in srgb, var(--cv-accent) 55%, var(--cv-page)), transparent 40%); filter: blur(10px); }
 header, main { position: relative; z-index: 1; }
 header { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 28px; border-bottom: 1px solid color-mix(in srgb, var(--cv-page) 25%, transparent); }
 h1 { font-size: 2.15rem; margin: 0 0 6px; }
 .aurora-avatar { border: 3px solid color-mix(in srgb, var(--cv-page) 35%, transparent); }
 main { display: grid; grid-template-columns: 1.5fr .9fr; gap: 18px; padding: 22px 28px 30px; }
-.panel { background: color-mix(in srgb, var(--cv-sidebar) 65%, transparent); border: 1px solid color-mix(in srgb, var(--cv-page) 22%, transparent); border-radius: 18px; padding: 18px; backdrop-filter: blur(8px); }
+.panel { background: color-mix(in srgb, var(--cv-sidebar) 65%, transparent); border: 1px solid color-mix(in srgb, var(--cv-page) 22%, transparent); border-radius: var(--cv-radius, 18px); padding: 18px; backdrop-filter: blur(8px); }
 .panel h2 { font-size: .9rem; text-transform: uppercase; letter-spacing: .08em; color: var(--cv-title); margin-bottom: 10px; }
 .highlight + .highlight { margin-top: 14px; padding-top: 14px; border-top: 1px solid color-mix(in srgb, var(--cv-page) 20%, transparent); }
 .highlight h3 { font-size: 1rem; margin-bottom: 7px; color: color-mix(in srgb, var(--cv-page) 94%, white); }

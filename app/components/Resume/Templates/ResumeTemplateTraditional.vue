@@ -84,7 +84,7 @@ function updateText(path: string, value: string) {
 
 <style scoped>
 /* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
-.traditional-template { min-height: calc(100vh - 80px); background: var(--cv-page); color: color-mix(in srgb, var(--cv-sidebar) 78%, black); border-radius:14px; padding: 34px; }
+.traditional-template { font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif); font-style: var(--cv-font-style, normal); font-weight: var(--cv-font-weight, 400); min-height: calc(100vh - 80px); background: var(--cv-page); color: color-mix(in srgb, var(--cv-sidebar) 78%, black); border-radius: var(--cv-radius, 14px); padding: 34px; }
 header { text-align:center; border-bottom:2px solid color-mix(in srgb, var(--cv-accent) 22%, var(--cv-page)); padding-bottom:14px; margin-bottom:20px; }
 h1 { font-size: 2rem; letter-spacing: .06em; }
 h2 { font-size:1.1rem; letter-spacing: .08em; text-transform: uppercase; border-bottom:1px solid color-mix(in srgb, var(--cv-accent) 18%, var(--cv-page)); padding-bottom:6px; margin-bottom:10px; }
