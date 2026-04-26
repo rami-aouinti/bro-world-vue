@@ -18,7 +18,12 @@ const taskId = computed(() => String(route.params.task ?? ''))
 const isViewMode = computed(() => route.query.mode === 'view')
 
 definePageMeta({ layout: 'crm', title: 'CRM Task Detail' })
-
+function formatDate(value?: string | null) {
+  if (!value) return '—'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+  return date.toLocaleDateString()
+}
 const payload = reactive<CrmTaskUpdatePayload>({})
 const assigneeId = ref('')
 const subtaskToAttach = ref('')
@@ -301,12 +306,12 @@ async function attachToSprint() {
                   <span class="d-flex align-center ga-2">
                     <CrmEntityAvatar
                       :label="data.projectName || data.projectId"
-                      :size="18"
+                      :size="36"
                     />
                     {{ data.projectName || data.projectId }}
                   </span>
                 </v-chip>
-                <v-chip variant="tonal">Due: {{ data.dueAt || '—' }}</v-chip>
+                <v-chip variant="tonal">Due: {{ formatDate(data.dueAt) || '—' }}</v-chip>
               </div>
               <v-card variant="outlined" class="pa-3 mb-3">
                 <p class="text-caption mb-1">
@@ -480,7 +485,7 @@ async function attachToSprint() {
               >{{ t('world.crm.tasks.actions.attachSubtask') }}</v-btn
             >
 
-            <v-list density="compact" bg-color="transparent">
+            <v-list density="compact" class="bg-transparent">
               <v-list-item
                 v-for="subtask in data.subTasks"
                 :key="subtask.id"

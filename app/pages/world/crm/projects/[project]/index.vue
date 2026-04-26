@@ -301,108 +301,151 @@ async function detachAssignee(userId: string) {
       }}</v-alert>
 
       <v-row v-else-if="data">
-        <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
-          <template v-if="isViewMode">
-            <div class="d-flex justify-space-between align-start ga-2 mb-4">
-              <div class="d-flex align-center ga-2">
-                <CrmEntityAvatar :label="data.name" :size="26" />
-                <h2 class="text-h6 mb-0">{{ data.name }}</h2>
-              </div>
-              <v-chip color="primary" variant="tonal">{{ data.status }}</v-chip>
-            </div>
-            <v-row>
-              <v-col cols="12" md="6">
-                <v-card variant="tonal" color="primary" class="pa-3 h-100">
-                  <p class="text-caption mb-1">Code</p>
-                  <p class="text-body-1 mb-0">{{ data.code || '—' }}</p>
-                </v-card>
-              </v-col>
-              <v-col cols="12" md="6">
-                <v-card variant="tonal" color="info" class="pa-3 h-100">
-                  <p class="text-caption mb-1">Provisioning</p>
-                  <p class="text-body-1 mb-0">
-                    {{ data.provisioning?.state || '—' }}
-                  </p>
-                </v-card>
-              </v-col>
-              <v-col cols="12" md="6">
-                <v-card variant="text" class="pa-3 h-100">
-                  <p class="text-caption mb-1">Start date</p>
-                  <p class="text-body-1 mb-0">{{ data.startedAt || '—' }}</p>
-                </v-card>
-              </v-col>
-              <v-col cols="12" md="6">
-                <v-card variant="text" class="pa-3 h-100">
-                  <p class="text-caption mb-1">Due date</p>
-                  <p class="text-body-1 mb-0">{{ data.dueAt || '—' }}</p>
-                </v-card>
-              </v-col>
-            </v-row>
-          </template>
-          <template v-else>
-            <h2 class="text-h6 mb-4">{{ data.name }}</h2>
-            <v-row>
-              <v-col cols="12" md="6"
-                ><v-text-field
-                  v-model="editPayload.name"
-                  :label="t('world.crm.projects.form.name')"
-                  :readonly="!isRootAdmin"
-              /></v-col>
-              <v-col cols="12" md="6"
-                ><v-text-field
-                  v-model="editPayload.code"
-                  :label="t('world.crm.projects.form.code')"
-                  :readonly="!isRootAdmin"
-              /></v-col>
-              <v-col cols="12" md="6"
-                ><AppSelect
-                  v-model="editPayload.status"
-                  :items="statusOptions"
-                  :label="t('world.crm.projects.form.status')"
-                  :disabled="!isRootAdmin"
-              /></v-col>
-              <v-col cols="12" md="6"
-                ><v-text-field
-                  v-model="editPayload.startedAt"
-                  :label="t('world.crm.projects.form.startedAt')"
-                  type="date"
-                  :readonly="!isRootAdmin"
-              /></v-col>
-              <v-col cols="12" md="6"
-                ><v-text-field
-                  v-model="editPayload.dueAt"
-                  :label="t('world.crm.projects.form.dueAt')"
-                  type="date"
-                  :readonly="!isRootAdmin"
-              /></v-col>
-              <v-col cols="12"
-                ><v-textarea
-                  v-model="editPayload.description"
-                  :label="t('world.crm.projects.form.description')"
-                  :readonly="!isRootAdmin"
-              /></v-col>
-            </v-row>
-            <div v-if="isRootAdmin" class="d-flex ga-2">
-              <v-btn
-                color="primary"
-                :loading="pendingSave"
-                @click="saveProject"
-                >{{ t('world.crm.projects.actions.save') }}</v-btn
-              >
-              <v-btn color="error" variant="tonal" @click="deleteProject">{{
-                t('world.crm.projects.actions.delete')
-              }}</v-btn>
-            </div>
-          </template>
-        </v-card>
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-card rounded="xl" class="pa-4 postcard-gradient-card mb-4">
+              <template v-if="isViewMode">
+                <div class="d-flex justify-space-between align-start ga-2 mb-4">
+                  <div class="d-flex align-center ga-2">
+                    <CrmEntityAvatar :label="data.name" :size="36" />
+                    <h2 class="text-h6">{{ data.name }}</h2>
+                  </div>
+                  <v-chip color="primary" variant="tonal">{{ data.status }}</v-chip>
+                </div>
+                <v-row>
+                  <v-col cols="12" md="6">
+                    <v-card variant="tonal" color="primary" class="pa-3 h-100">
+                      <p class="text-caption mb-1">Code</p>
+                      <p class="text-body-1 mb-0">{{ data.code || '—' }}</p>
+                    </v-card>
+                  </v-col>
+                  <v-col cols="12" md="6">
+                    <v-card variant="tonal" color="info" class="pa-3 h-100">
+                      <p class="text-caption mb-1">Provisioning</p>
+                      <p class="text-body-1 mb-0">
+                        {{ data.provisioning?.state || '—' }}
+                      </p>
+                    </v-card>
+                  </v-col>
+                  <v-col cols="12" md="6">
+                    <v-card variant="text" class="pa-3 h-100">
+                      <p class="text-caption mb-1">Start date</p>
+                      <p class="text-body-1 mb-0">{{ formatDate(data.startedAt) || '—' }}</p>
+                    </v-card>
+                  </v-col>
+                  <v-col cols="12" md="6">
+                    <v-card variant="text" class="pa-3 h-100">
+                      <p class="text-caption mb-1">Due date</p>
+                      <p class="text-body-1 mb-0">{{ formatDate(data.dueAt) || '—' }}</p>
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </template>
+              <template v-else>
+                <h2 class="text-h6 mb-4">{{ data.name }}</h2>
+                <v-row>
+                  <v-col cols="12" md="6"
+                  ><v-text-field
+                    v-model="editPayload.name"
+                    :label="t('world.crm.projects.form.name')"
+                    :readonly="!isRootAdmin"
+                  /></v-col>
+                  <v-col cols="12" md="6"
+                  ><v-text-field
+                    v-model="editPayload.code"
+                    :label="t('world.crm.projects.form.code')"
+                    :readonly="!isRootAdmin"
+                  /></v-col>
+                  <v-col cols="12" md="6"
+                  ><AppSelect
+                    v-model="editPayload.status"
+                    :items="statusOptions"
+                    :label="t('world.crm.projects.form.status')"
+                    :disabled="!isRootAdmin"
+                  /></v-col>
+                  <v-col cols="12" md="6"
+                  ><v-text-field
+                    v-model="editPayload.startedAt"
+                    :label="t('world.crm.projects.form.startedAt')"
+                    type="date"
+                    :readonly="!isRootAdmin"
+                  /></v-col>
+                  <v-col cols="12" md="6"
+                  ><v-text-field
+                    v-model="editPayload.dueAt"
+                    :label="t('world.crm.projects.form.dueAt')"
+                    type="date"
+                    :readonly="!isRootAdmin"
+                  /></v-col>
+                  <v-col cols="12"
+                  ><v-textarea
+                    v-model="editPayload.description"
+                    :label="t('world.crm.projects.form.description')"
+                    :readonly="!isRootAdmin"
+                  /></v-col>
+                </v-row>
+                <div v-if="isRootAdmin" class="d-flex ga-2">
+                  <v-btn
+                    color="primary"
+                    :loading="pendingSave"
+                    @click="saveProject"
+                  >{{ t('world.crm.projects.actions.save') }}</v-btn
+                  >
+                  <v-btn color="error" variant="tonal" @click="deleteProject">{{
+                      t('world.crm.projects.actions.delete')
+                    }}</v-btn>
+                </div>
+              </template>
+            </v-card>
 
-        <v-col v-if="isViewMode" cols="12" md="6">
-          <v-card rounded="xl" class="pa-4 h-100">
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
+              <div class="d-flex align-center justify-space-between mb-3">
+                <h3 class="text-subtitle-1 mb-0">Repositories</h3>
+                <v-chip size="small" color="info" variant="tonal">{{
+                    projectRepositories.length
+                  }}</v-chip>
+              </div>
+              <v-row v-if="projectRepositories.length">
+                <v-col
+                  v-for="repository in projectRepositories"
+                  :key="repository.id"
+                  cols="12"
+                >
+                  <v-card
+                    variant="tonal"
+                    color="info"
+                    class="pa-3 cursor-pointer"
+                    :to="repositoryRoute(repository)"
+                  >
+                    <p class="text-body-1 mb-1">
+                      {{
+                        repository.fullName || repository.name || repository.id
+                      }}
+                    </p>
+                    <p class="text-caption mb-0 text-medium-emphasis">
+                      {{ repository.defaultBranch || '—' }} ·
+                      {{ repository.syncStatus || '—' }}
+                    </p>
+                  </v-card>
+                </v-col>
+              </v-row>
+              <p v-else class="text-body-2 text-medium-emphasis mb-0">
+                Aucun repository lié à ce projet.
+              </p>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-row>
+      <v-row>
+        <v-col v-if="isViewMode">
+          <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
             <div class="d-flex align-center justify-space-between mb-3">
               <h3 class="text-subtitle-1 mb-0">Tasks</h3>
               <v-chip size="small" color="primary" variant="tonal">{{
-                projectTasks.length
-              }}</v-chip>
+                  projectTasks.length
+                }}</v-chip>
             </div>
             <v-row v-if="projectTasks.length">
               <v-col v-for="task in projectTasks" :key="task.id" cols="12">
@@ -412,16 +455,18 @@ async function detachAssignee(userId: string) {
                   class="pa-3 cursor-pointer"
                   :to="`/world/crm/tasks/${task.id}?mode=view`"
                 >
+                  <div class="text-end">
+                    <v-chip size="x-small" variant="flat">{{
+                        task.status || '—'
+                      }}</v-chip>
+                  </div>
                   <div class="d-flex justify-space-between ga-2">
                     <p class="text-body-1 mb-1 d-flex align-center ga-2">
-                      <CrmEntityAvatar :label="toTaskLabel(task)" :size="18" />
+                      <CrmEntityAvatar :label="toTaskLabel(task)" :size="36" />
                       {{ toTaskLabel(task) }}
                     </p>
-                    <v-chip size="x-small" variant="flat">{{
-                      task.status || '—'
-                    }}</v-chip>
                   </div>
-                  <p class="text-caption mb-0 text-medium-emphasis">
+                  <p class="text-caption text-sm mb-0 text-medium-emphasis">
                     Due: {{ formatDate(task.dueAt) }}
                   </p>
                 </v-card>
@@ -429,44 +474,6 @@ async function detachAssignee(userId: string) {
             </v-row>
             <p v-else class="text-body-2 text-medium-emphasis mb-0">
               Aucune task liée à ce projet.
-            </p>
-          </v-card>
-        </v-col>
-
-        <v-col v-if="isViewMode" cols="12" md="6">
-          <v-card rounded="xl" class="pa-4 h-100">
-            <div class="d-flex align-center justify-space-between mb-3">
-              <h3 class="text-subtitle-1 mb-0">Repositories</h3>
-              <v-chip size="small" color="info" variant="tonal">{{
-                projectRepositories.length
-              }}</v-chip>
-            </div>
-            <v-row v-if="projectRepositories.length">
-              <v-col
-                v-for="repository in projectRepositories"
-                :key="repository.id"
-                cols="12"
-              >
-                <v-card
-                  variant="tonal"
-                  color="info"
-                  class="pa-3 cursor-pointer"
-                  :to="repositoryRoute(repository)"
-                >
-                  <p class="text-body-1 mb-1">
-                    {{
-                      repository.fullName || repository.name || repository.id
-                    }}
-                  </p>
-                  <p class="text-caption mb-0 text-medium-emphasis">
-                    {{ repository.defaultBranch || '—' }} ·
-                    {{ repository.syncStatus || '—' }}
-                  </p>
-                </v-card>
-              </v-col>
-            </v-row>
-            <p v-else class="text-body-2 text-medium-emphasis mb-0">
-              Aucun repository lié à ce projet.
             </p>
           </v-card>
         </v-col>

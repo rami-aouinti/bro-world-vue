@@ -16,7 +16,12 @@ const id = computed(() => String(route.params.taskRequest ?? ''))
 const isViewMode = computed(() => route.query.mode === 'view')
 
 definePageMeta({ layout: 'crm', title: 'CRM Task Request Detail' })
-
+function formatDate(value?: string | null) {
+  if (!value) return '—'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+  return date.toLocaleDateString()
+}
 const payload = reactive<CrmTaskRequestUpdatePayload>({})
 const statusOptions = ['pending', 'in_progress', 'approved', 'rejected']
 const { data, pending, error, refresh } = useFetch<CrmTaskRequestItem>(
@@ -632,12 +637,12 @@ onBeforeUnmount(() => {
                 </v-chip>
                 <v-chip color="secondary" variant="outlined">
                   <span class="d-flex align-center ga-2">
-                    <CrmEntityAvatar :label="data.repositoryId" :size="18" />
+                    <CrmEntityAvatar :label="data.repositoryId" :size="36" />
                     Repo: {{ data.repositoryId }}
                   </span>
                 </v-chip>
                 <v-chip variant="tonal"
-                  >Resolved: {{ data.resolvedAt || '—' }}</v-chip
+                  >Resolved: {{ formatDate(data.resolvedAt) || '—' }}</v-chip
                 >
                 <v-chip variant="tonal"
                   >Assignees: {{ data.assignees?.length || 0 }}</v-chip

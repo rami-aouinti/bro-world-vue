@@ -338,15 +338,9 @@ async function deleteTask() {
                   {{ task.priority }}
                 </v-chip>
               </div>
-              <p class="text-body-2 mb-1">
+              <p class="text-body-2 text-sm mb-1">
                 {{ t('world.crm.tasks.list.due') }}:
                 {{ formatDate(task.dueAt) }}
-              </p>
-              <p class="text-body-2 mb-0">
-                {{ task.estimatedHours }}h · {{ task.attachments.length }}
-                {{ t('world.crm.tasks.list.attachments') }} ·
-                {{ task.children.length }}
-                {{ t('world.crm.tasks.list.subtasks') }}
               </p>
               <v-spacer />
               <div v-if="isAdminOrRoot" class="d-flex justify-center ga-1 mt-2">
@@ -354,21 +348,24 @@ async function deleteTask() {
                   icon="mdi-eye-outline"
                   color="info"
                   variant="text"
-                  size="x-small"
+                  class="mx-1"
+                  size="small"
                   @click="router.push(`/world/crm/tasks/${task.id}?mode=view`)"
                 />
                 <v-btn
                   icon="mdi-pencil-outline"
                   color="primary"
                   variant="text"
-                  size="x-small"
+                  class="mx-1"
+                  size="small"
                   @click="router.push(`/world/crm/tasks/${task.id}`)"
                 />
                 <v-btn
                   icon="mdi-delete-outline"
                   color="error"
                   variant="text"
-                  size="x-small"
+                  class="mx-1"
+                  size="small"
                   @click="openDeleteDialog(task.id)"
                 />
               </div>
