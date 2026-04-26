@@ -1,7 +1,14 @@
 {
   "app": {
     "name": "Bro World",
-    "welcome": "Welcome"
+    "welcome": "Welcome",
+    "cookieConsent": {
+      "title": "Todo es mejor con cookies.",
+      "description": "Para mejorar tu experiencia, usamos cookies y píxeles de seguimiento para contenido personalizado, medición de audiencia y funcionamiento esencial del sitio. Puedes actualizar o retirar tu consentimiento en cualquier momento desde la página de política de privacidad.",
+      "customize": "Personalizar",
+      "rejectAll": "Rechazar todo",
+      "acceptAll": "Aceptar todas"
+    }
   },
   "appbar": {
     "home": "Inicio",
