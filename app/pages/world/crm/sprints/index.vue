@@ -239,7 +239,7 @@ async function deleteSprint() {
             cols="12"
             md="4"
           >
-            <WorldCard extra-class="pa-4 platform-style-card h-100">
+            <WorldCard extra-class="pa-4 platform-style-card h-100 d-flex flex-column">
               <div class="d-flex align-start justify-space-between ga-2 mb-2">
                 <div class="d-flex align-center ga-2">
                   <CrmEntityAvatar :label="sprint.name" :size="24" />
@@ -257,12 +257,13 @@ async function deleteSprint() {
                 {{ formatDate(sprint.startDate) }} -
                 {{ formatDate(sprint.endDate) }}
               </p>
-              <div v-if="isAdminOrRoot" class="d-flex justify-center ga-2 mt-3">
+              <v-spacer />
+              <div v-if="isAdminOrRoot" class="d-flex justify-center ga-1 mt-2">
                 <v-btn
                   icon="mdi-eye-outline"
                   color="info"
                   variant="text"
-                  size="small"
+                  size="x-small"
                   @click="
                     router.push(`/world/crm/sprints/${sprint.id}?mode=view`)
                   "
@@ -271,14 +272,14 @@ async function deleteSprint() {
                   icon="mdi-pencil-outline"
                   color="primary"
                   variant="text"
-                  size="small"
+                  size="x-small"
                   @click="router.push(`/world/crm/sprints/${sprint.id}`)"
                 />
                 <v-btn
                   icon="mdi-delete-outline"
                   color="error"
                   variant="text"
-                  size="small"
+                  size="x-small"
                   @click="openDeleteDialog(sprint.id)"
                 />
               </div>

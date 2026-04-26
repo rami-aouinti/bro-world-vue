@@ -46,6 +46,21 @@ function resolveRawItem(item: any) {
   return item?.raw ?? item
 }
 
+function resolveItemTitle(item: any, fallback?: string) {
+  const raw = resolveRawItem(item)
+  if (typeof raw === 'string' || typeof raw === 'number') {
+    return String(raw)
+  }
+  return (
+    raw?.title ??
+    raw?.label ??
+    raw?.name ??
+    raw?.text ??
+    fallback ??
+    ''
+  )
+}
+
 const passthroughSlotNames = computed(() =>
   Object.keys(useSlots()).filter(
     (slotName) => slotName !== 'item' && slotName !== 'selection',
@@ -66,7 +81,7 @@ const passthroughSlotNames = computed(() =>
       <slot name="item" v-bind="slotProps">
         <v-list-item
           v-bind="slotProps.props"
-          :title="resolveRawItem(slotProps.item)?.title"
+          :title="resolveItemTitle(slotProps.item)"
           :subtitle="resolveRawItem(slotProps.item)?.subtitle"
         >
           <template
@@ -84,9 +99,9 @@ const passthroughSlotNames = computed(() =>
             </v-avatar>
             <crm-entity-avatar
               v-else
-              :label="
-                resolveRawItem(slotProps.item)?.avatarLabel ||
-                resolveRawItem(slotProps.item)?.title
+                :label="
+                  resolveRawItem(slotProps.item)?.avatarLabel ||
+                resolveItemTitle(slotProps.item)
               "
               :size="24"
             />
@@ -111,14 +126,14 @@ const passthroughSlotNames = computed(() =>
             </v-avatar>
             <crm-entity-avatar
               v-else
-              :label="
-                resolveRawItem(slotProps.item)?.avatarLabel ||
-                resolveRawItem(slotProps.item)?.title
+                :label="
+                  resolveRawItem(slotProps.item)?.avatarLabel ||
+                resolveItemTitle(slotProps.item)
               "
               :size="20"
             />
           </template>
-          <span>{{ resolveRawItem(slotProps.item)?.title }}</span>
+          <span>{{ resolveItemTitle(slotProps.item) }}</span>
         </div>
       </slot>
     </template>
