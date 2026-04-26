@@ -1,31 +1,33 @@
 import type { ApiObject } from './common'
 
 export interface QuizCategory extends ApiObject {
-  id: string
-  value: string
-  label: string
+  slug: string
+  name: string
+  position?: number
   color: string
-  description?: string | null
 }
 
 export interface QuizLevel extends ApiObject {
-  id: string
   value: string
-  label: string
   color: string
-  description?: string | null
 }
 
 export interface QuizAnswer extends ApiObject {
   id: string
-  text: string
+  label: string
+  position?: number
 }
 
 export interface QuizQuestion extends ApiObject {
   id: string
+  title: string
   category: string
+  categoryColor?: string
   level: string
-  question: string
+  levelColor?: string
+  position?: number
+  points?: number
+  explanation?: string
   answers: QuizAnswer[]
 }
 
@@ -40,14 +42,16 @@ export interface QuizSubmitPayload extends ApiObject {
 
 export type QuizSubmitApiResponse = ApiObject & {
   attemptId: string
-  attemptUuid?: string
+  quizId?: string
+  applicationSlug?: string
+  passScore?: number
   score: number
   passed: boolean
   totalQuestions: number
+  answeredQuestions?: number
   correctAnswers: number
-  percentage: number
-  rank?: number | null
-  submittedAt?: string
+  totalPoints?: number
+  earnedPoints?: number
 }
 
 export interface QuizLeaderboardItem extends ApiObject {
@@ -85,6 +89,17 @@ export type QuizLeaderboardApiResponse = ApiObject & {
 }
 
 export interface QuizPayload extends ApiObject {
+  id: string
+  title: string
+  description?: string
+  passScore?: number
+  isPublished?: boolean
+  applicationSlug?: string
+  configuration?: {
+    shuffleQuestions?: boolean
+    timerSec?: number
+    showInstantCorrection?: boolean
+  }
   category?: string
   level?: string
   questions: QuizQuestion[]
