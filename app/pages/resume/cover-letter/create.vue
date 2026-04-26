@@ -6,21 +6,9 @@ definePageMeta({
 
 const route = useRoute()
 
-type CoverLetterTemplate = {
-  id: string
-  title: string
-  image: string
-}
+const { coverLetterTemplates } = useResumeTemplates()
 
-const imagePool = ['/img/cv/cv-1.png', '/img/cv/cv-2.png', '/img/cv/cv-3.png', '/img/cv/cv-4.png', '/img/cv/cv-5.png']
-
-const templates = computed<CoverLetterTemplate[]>(() =>
-  Array.from({ length: 10 }, (_, index) => ({
-    id: `cover-letter-template-${index + 1}`,
-    title: `Cover Letter Template ${index + 1}`,
-    image: imagePool[index % imagePool.length],
-  })),
-)
+const templates = computed(() => coverLetterTemplates.value)
 
 const selectedTemplate = ref('cover-letter-template-1')
 const letterContent = ref('')
