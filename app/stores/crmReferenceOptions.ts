@@ -123,7 +123,7 @@ export const useCrmReferenceOptionsStore = defineStore('crm-reference-options', 
         title: employeeDisplayName(employee),
         value: String(employee.userId),
         avatar: employee.photo,
-        subtitle: employee.email,
+        subtitle: employee.email ?? undefined,
       })),
   )
 

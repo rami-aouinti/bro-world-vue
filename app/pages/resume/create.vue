@@ -6,7 +6,11 @@ import ResumeTemplateExecutive from '~/components/Resume/Templates/ResumeTemplat
 import ResumeTemplateMinimalist from '~/components/Resume/Templates/ResumeTemplateMinimalist.vue'
 import ResumeTemplateModern from '~/components/Resume/Templates/ResumeTemplateModern.vue'
 import ResumeTemplateProfessional from '~/components/Resume/Templates/ResumeTemplateProfessional.vue'
+import ResumeTemplateTerra from '~/components/Resume/Templates/ResumeTemplateTerra.vue'
 import ResumeTemplateTraditional from '~/components/Resume/Templates/ResumeTemplateTraditional.vue'
+import ResumeTemplateOceanSplit from '~/components/Resume/Templates/ResumeTemplateOceanSplit.vue'
+import ResumeTemplateCorporateBlue from '~/components/Resume/Templates/ResumeTemplateCorporateBlue.vue'
+import ResumeTemplateSharedSections from '~/components/Resume/Templates/ResumeTemplateSharedSections.vue'
 
 definePageMeta({
   title: 'Create Resume',
@@ -144,6 +148,9 @@ type Template = {
     | 'minimalist'
     | 'aurora'
     | 'executive'
+    | 'terra'
+    | 'ocean-split'
+    | 'corporate-blue'
 }
 
 type TemplateFilter =
@@ -177,7 +184,7 @@ type LevelInputMode = 'percent' | 'stars'
 
 const activeTab = ref<'edit' | 'template' | 'design' | 'import'>('edit')
 const selectedTemplate = ref('classic')
-const selectedTheme = ref('emerald')
+const selectedTheme = ref('ocean')
 const selectedRounded = ref<'none' | 'sm' | 'md' | 'lg'>('md')
 const selectedTextStyle = ref<TextStyleOption['value']>('clean')
 const levelInputMode = ref<LevelInputMode>('percent')
@@ -195,6 +202,48 @@ const templateFilters = [
 ] as const satisfies ReadonlyArray<{ label: string; value: TemplateFilter }>
 
 const templates: Template[] = [
+  {
+    id: 'terra',
+    title: 'Terra Sidebar',
+    subtitle: 'Warm sidebar profile in French style',
+    image: '/img/cv/cv-1.png',
+    hasPhoto: true,
+    isTwoColumn: true,
+    isAts: false,
+    hasDocx: true,
+    isCustomized: true,
+    isFree: true,
+    useTimeline: false,
+    variant: 'terra',
+  },
+  {
+    id: 'ocean-split',
+    title: 'Ocean Split',
+    subtitle: 'Diagonal split with textured blue panel',
+    image: '/img/cv/cv-3.png',
+    hasPhoto: true,
+    isTwoColumn: true,
+    isAts: false,
+    hasDocx: false,
+    isCustomized: true,
+    isFree: true,
+    useTimeline: false,
+    variant: 'ocean-split',
+  },
+  {
+    id: 'corporate-blue',
+    title: 'Corporate Blue',
+    subtitle: 'Executive header with information sidebar',
+    image: '/img/cv/cv-2.png',
+    hasPhoto: true,
+    isTwoColumn: true,
+    isAts: true,
+    hasDocx: true,
+    isCustomized: true,
+    isFree: true,
+    useTimeline: false,
+    variant: 'corporate-blue',
+  },
   {
     id: 'classic',
     title: 'Classic',
@@ -310,7 +359,7 @@ const templates: Template[] = [
 ]
 
 const colorThemes: ColorTheme[] = [
-  { name: 'emerald', sidebar: '#07564f', accent: '#0f766e', page: '#f8fafc' },
+  { name: 'emerald', sidebar: '#0b3a78', accent: '#2563eb', page: '#eff6ff' },
   { name: 'ocean', sidebar: '#0b3a78', accent: '#2563eb', page: '#eff6ff' },
   { name: 'plum', sidebar: '#4a1d5e', accent: '#9333ea', page: '#faf5ff' },
   { name: 'charcoal', sidebar: '#1f2937', accent: '#374151', page: '#f3f4f6' },
@@ -491,7 +540,10 @@ const selectedTemplateComponent = computed(() => {
     executive: ResumeTemplateExecutive,
     minimalist: ResumeTemplateMinimalist,
     modern: ResumeTemplateModern,
+    'ocean-split': ResumeTemplateOceanSplit,
     professional: ResumeTemplateProfessional,
+    'corporate-blue': ResumeTemplateCorporateBlue,
+    terra: ResumeTemplateTerra,
     traditional: ResumeTemplateTraditional,
   } as const
   return componentByVariant[selectedTemplateConfig.value.variant]
@@ -715,6 +767,27 @@ async function buildResumePdfBlob() {
         <style>
           body { margin: 0; padding: 18px; background: #fff; }
           .preview-grid { min-height: auto !important; border-radius: 0 !important; }
+          .preview-grid .terra-template,
+          .preview-grid .ocean-template,
+          .preview-grid .corporate-template,
+          .preview-grid .professional-template,
+          .preview-grid .classic-template,
+          .preview-grid .executive-template {
+            grid-template-columns: minmax(220px, 32%) 1fr !important;
+          }
+          .preview-grid .modern-template {
+            grid-template-columns: 1fr 280px !important;
+          }
+          @media print {
+            .preview-grid .terra-template,
+            .preview-grid .ocean-template,
+            .preview-grid .corporate-template,
+            .preview-grid .professional-template,
+            .preview-grid .classic-template,
+            .preview-grid .executive-template {
+              grid-template-columns: minmax(220px, 32%) 1fr !important;
+            }
+          }
           @page { size: A4; margin: 12mm; }
         </style>
       </head>
@@ -1119,80 +1192,32 @@ onUnmounted(() => {
 
 <template>
   <v-container fluid class="resume-create pa-0">
-    <client-only>
-      <teleport to="#app-bar">
-        <v-btn
-          color="primary"
-          class="mx-2"
-          size="small"
-          icon="mdi-content-save-outline"
-        />
-        <v-btn
-          color="secondary"
-          class="mx-2"
-          size="small"
-          variant="outlined"
-          icon="mdi-file-pdf-box"
-          @click="openPdfPreview"
-        />
-        <v-btn
-          color="info"
-          class="mx-2"
-          size="small"
-          variant="outlined"
-          icon="mdi-download"
-          @click="onDownloadPdfClick"
-        />
-        <v-menu
-          v-model="aiMenuOpen"
-          :close-on-content-click="false"
-          location="bottom end"
-        >
-          <template #activator="{ props }">
-            <v-btn
-              color="deep-purple"
-              class="mx-2"
-              size="small"
-              variant="tonal"
-              prepend-icon="mdi-creation"
-              v-bind="props"
-            >
-              KI
-            </v-btn>
-          </template>
-          <v-card width="420" class="pa-3">
-            <div class="ki-menu-grid">
-              <v-card
-                variant="outlined"
-                class="ki-card"
-                @click="aiCreateModalOpen = true; aiMenuOpen = false"
-              >
-                <v-card-title class="text-subtitle-1"
-                  >Create with KI</v-card-title
-                >
-                <v-card-text class="text-body-2">
-                  Generate a complete resume from a short summary of studies and
-                  skills.
-                </v-card-text>
-              </v-card>
-              <v-card
-                variant="outlined"
-                class="ki-card"
-                @click="runAiReview(); aiMenuOpen = false"
-              >
-                <v-card-title class="text-subtitle-1">Review</v-card-title>
-                <v-card-text class="text-body-2">
-                  Ask KI to detect errors and suggest improvements for your
-                  current resume.
-                </v-card-text>
-              </v-card>
-            </div>
-          </v-card>
-        </v-menu>
-      </teleport>
-    </client-only>
     <div class="builder-layout">
       <section class="builder-form px-3 px-md-6 py-4">
+        <div class="local-toolbar-actions mb-4">
+          <div class="local-toolbar-actions__row">
+            <v-btn color="primary" size="small" icon="mdi-content-save-outline" />
+            <v-btn color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview" />
+            <v-btn color="info" size="small" variant="outlined" icon="mdi-download" @click="onDownloadPdfClick" />
+            <v-menu v-model="aiMenuOpen" :close-on-content-click="false" location="bottom end">
+              <template #activator="{ props }">
+                <v-btn color="deep-purple" size="small" variant="tonal" prepend-icon="mdi-creation" v-bind="props">KI</v-btn>
+              </template>
+              <v-card width="420" class="pa-3">
+                <div class="ki-menu-grid">
+                  <v-card variant="outlined" class="ki-card" @click="aiCreateModalOpen = true; aiMenuOpen = false">
+                    <v-card-title class="text-subtitle-1">Create with KI</v-card-title>
+                    <v-card-text class="text-body-2">Generate a complete resume from a short summary of studies and skills.</v-card-text>
+                  </v-card>
+                  <v-card variant="outlined" class="ki-card" @click="runAiReview(); aiMenuOpen = false">
+                    <v-card-title class="text-subtitle-1">Review</v-card-title>
+                    <v-card-text class="text-body-2">Ask KI to detect errors and suggest improvements for your current resume.</v-card-text>
+                  </v-card>
+                </div>
+              </v-card>
+            </v-menu>
+          </div>
+        </div>
         <v-tabs v-model="activeTab" color="primary" grow class="mb-4">
           <v-tab value="edit">Edit</v-tab>
           <v-tab value="template">Template</v-tab>
@@ -1881,6 +1906,7 @@ onUnmounted(() => {
             :on-photo-click="onPreviewPhotoClick"
             editable
           />
+          <ResumeTemplateSharedSections :resume="resume" :editable="true" />
         </div>
       </aside>
     </div>
@@ -1910,6 +1936,7 @@ onUnmounted(() => {
               :on-photo-click="onPreviewPhotoClick"
               editable
             />
+            <ResumeTemplateSharedSections :resume="resume" :editable="true" />
           </div>
         </v-card-text>
       </v-card>
@@ -2206,11 +2233,27 @@ onUnmounted(() => {
   gap: 8px;
 }
 
+.local-toolbar-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.local-toolbar-actions__row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
 .preview-grid {
-  --cv-sidebar: #07564f;
-  --cv-accent: #0f766e;
-  --cv-page: #f8fafc;
+  --cv-sidebar: #0b3a78;
+  --cv-accent: #2563eb;
+  --cv-page: #eff6ff;
   min-height: calc(100vh - 80px);
+}
+
+.preview-grid .text-dark {
+  color: #111827 !important;
 }
 
 .preview-sidebar {
@@ -2342,6 +2385,10 @@ onUnmounted(() => {
   .template-grid,
   .palette-grid {
     grid-template-columns: 1fr;
+  }
+
+  .local-toolbar-actions {
+    justify-content: center;
   }
 }
 </style>

@@ -65,6 +65,13 @@ const activeEmployeeId = computed(() => {
 
 const publicUserOptions = computed(() => crmReferencesStore.employeeAssigneeOptions)
 
+function assigneeDisplayName(assignee: any) {
+  const firstName = String(assignee?.firstName ?? assignee?.userFirstName ?? '').trim()
+  const lastName = String(assignee?.lastName ?? assignee?.userLastName ?? '').trim()
+  const fullName = `${firstName} ${lastName}`.trim()
+  return fullName || String(assignee?.username ?? assignee?.email ?? assignee?.id ?? assignee ?? '—')
+}
+
 watchEffect(() => {
   if (!data.value) return
   Object.assign(payload, {
@@ -376,9 +383,14 @@ onBeforeUnmount(() => {
               <v-list-item
                 v-for="assignee in data?.assignees ?? []"
                 :key="String(assignee.id)"
-                :title="String(assignee.username ?? assignee.email ?? assignee.id)"
+                :title="assigneeDisplayName(assignee)"
                 :subtitle="String(assignee.email ?? '')"
               >
+                <template #prepend>
+                  <v-avatar size="24">
+                    <v-img :src="String(assignee.photo ?? '/img/avatar_default.svg')" :alt="assigneeDisplayName(assignee)" />
+                  </v-avatar>
+                </template>
                 <template v-if="isRootAdmin" #append>
                   <v-btn
                     size="small"

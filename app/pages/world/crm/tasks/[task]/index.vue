@@ -51,6 +51,13 @@ const projectOptions = computed(() => crmReferencesStore.projectOptions)
 const statusOptions = ['todo', 'in_progress', 'review', 'done']
 const priorityOptions = ['low', 'medium', 'high']
 
+function assigneeDisplayName(assignee: any) {
+  const firstName = String(assignee?.firstName ?? assignee?.userFirstName ?? '').trim()
+  const lastName = String(assignee?.lastName ?? assignee?.userLastName ?? '').trim()
+  const fullName = `${firstName} ${lastName}`.trim()
+  return fullName || String(assignee?.username ?? assignee?.email ?? assignee?.id ?? assignee ?? '—')
+}
+
 watchEffect(() => {
   if (!data.value) return
   Object.assign(payload, {
@@ -176,8 +183,13 @@ async function attachToSprint() {
           <v-list-item
             v-for="assignee in data?.assignees ?? []"
             :key="String((assignee as any).id ?? assignee)"
-            :title="String((assignee as any).username ?? (assignee as any).id ?? assignee)"
+            :title="assigneeDisplayName(assignee)"
           >
+            <template #prepend>
+              <v-avatar size="24">
+                <v-img :src="String((assignee as any).photo ?? '/img/avatar_default.svg')" :alt="assigneeDisplayName(assignee)" />
+              </v-avatar>
+            </template>
             <template v-if="isRootAdmin && !isViewMode" #append>
               <v-btn size="small" color="error" variant="text" icon="mdi-close" @click="detachAssignee(String((assignee as any).id ?? assignee))" />
             </template>
