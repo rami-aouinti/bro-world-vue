@@ -51,11 +51,18 @@ function resolveItemTitle(item: any, fallback?: string) {
   if (typeof raw === 'string' || typeof raw === 'number') {
     return String(raw)
   }
+
+  const firstName = String(raw?.firstName ?? raw?.userFirstName ?? '').trim()
+  const lastName = String(raw?.lastName ?? raw?.userLastName ?? '').trim()
+  const fullName = `${firstName} ${lastName}`.trim()
+  const fallbackIdentity = fullName || raw?.username || raw?.email
+
   return (
     raw?.title ??
     raw?.label ??
     raw?.name ??
     raw?.text ??
+    fallbackIdentity ??
     fallback ??
     ''
   )
