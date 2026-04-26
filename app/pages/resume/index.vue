@@ -121,12 +121,11 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-.resume-home { background: #f5f6f8; }
 .hero, .journey, .benefits { max-width: 1200px; margin: 0 auto; text-align: center; }
 .hero-title { font-size: clamp(2rem, 4vw, 3.7rem); line-height: 1.1; margin-bottom: 10px; }
 .hero-subtitle { max-width: 880px; margin: 0 auto; font-size: 1.1rem; color: rgba(var(--v-theme-on-surface), .75); }
-.trust-strip { display: inline-flex; gap: 16px; align-items: center; padding: 10px 20px; border-radius: 12px; background: #e7eaef; }
-.hero-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; border-bottom: 1px solid #d5d9de; padding-bottom: 10px; }
+.trust-strip { display: inline-flex; gap: 16px; align-items: center; padding: 10px 20px; border-radius: 12px;}
+.hero-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; border-bottom: 1px solid; padding-bottom: 10px; }
 .hero-tabs span { font-size: 1.1rem; }
 .hero-tabs .active { color: rgb(var(--v-theme-primary)); border-bottom: 3px solid rgb(var(--v-theme-primary)); padding-bottom: 8px; }
 .hero-preview { position: relative; min-height: 320px; }
@@ -137,7 +136,7 @@ onUnmounted(() => {
 .journey h2, .benefits h2 { font-size: clamp(1.8rem, 3vw, 3rem); margin-bottom: 12px; }
 .journey p, .benefits p { max-width: 780px; margin: 0 auto; color: rgba(var(--v-theme-on-surface), .8); }
 .journey-grid, .benefits-grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-.journey-card, .benefit-card { border: 1px solid rgba(var(--v-theme-on-surface), .13); border-radius: 16px; padding: 20px; background: white; }
+.journey-card, .benefit-card { border: 1px solid rgba(var(--v-theme-on-surface), .13); border-radius: 16px; padding: 20px; }
 .journey-image { width: 100%; max-width: 220px; margin: 0 auto 16px; border-radius: 8px; box-shadow: 0 12px 24px rgba(0, 0, 0, .1); }
 .journey-card h3, .benefit-card h3 { margin-bottom: 10px; }
 .benefit-card { text-align: left; }
