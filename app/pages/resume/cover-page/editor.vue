@@ -23,7 +23,9 @@ type CoverPageModel = {
 }
 
 const route = useRoute()
+const router = useRouter()
 const { coverPageTemplates } = useResumeTemplates()
+const { parseCoverFlowQuery, toCoverLetterQuery } = useResumeCoverFlow()
 
 const tabs = [
   { value: 'edit', label: 'Edit' },
@@ -43,10 +45,12 @@ const selectedTemplate = ref(fallbackTemplateId)
 const selectedPalette = ref<PaletteId>('ocean')
 const selectedTypography = ref<Typography>('sans')
 
+const importedFlow = parseCoverFlowQuery(route.query)
+
 const model = reactive<CoverPageModel>({
-  fullName: typeof route.query.coverPageTitle === 'string' ? route.query.coverPageTitle : 'John Doe',
-  role: 'Full Stack Developer',
-  summary: typeof route.query.coverPageSummary === 'string' ? route.query.coverPageSummary : 'Professional application pack cover page.',
+  fullName: importedFlow.title || 'John Doe',
+  role: importedFlow.subtitle || 'Full Stack Developer',
+  summary: importedFlow.summary || 'Professional application pack cover page.',
   location: 'Paris, France',
   email: 'john@example.com',
   phone: '+33 6 00 00 00 00',
@@ -62,9 +66,30 @@ const templateComponents = {
 const activeTemplateComponent = computed(() => templateComponents[selectedTemplate.value as keyof typeof templateComponents] ?? CoverPageTemplateTerra)
 const activePalette = computed(() => palettes[selectedPalette.value])
 
+const continueToCoverLetter = async () => {
+  await router.push({
+    path: '/resume/cover-letter/editor',
+    query: toCoverLetterQuery({
+      template: selectedTemplate.value,
+      title: model.fullName,
+      subtitle: model.role,
+      summary: model.summary,
+      draftId: importedFlow.draftId || '',
+    }),
+  })
+}
+
 onMounted(() => {
-  if (typeof route.query.template === 'string' && COVER_PAGE_TEMPLATE_IDS.includes(route.query.template)) {
-    selectedTemplate.value = route.query.template
+  const queryTemplate = typeof route.query.template === 'string' ? route.query.template : ''
+  const flowTemplate = importedFlow.template
+
+  if (queryTemplate && COVER_PAGE_TEMPLATE_IDS.includes(queryTemplate)) {
+    selectedTemplate.value = queryTemplate
+    return
+  }
+
+  if (flowTemplate && COVER_PAGE_TEMPLATE_IDS.includes(flowTemplate)) {
+    selectedTemplate.value = flowTemplate
   }
 })
 </script>
@@ -142,6 +167,10 @@ onMounted(() => {
             </v-card>
           </v-window-item>
         </v-window>
+
+        <v-btn color="primary" size="large" class="mt-2" block @click="continueToCoverLetter">
+          Continuer vers Cover Letter
+        </v-btn>
       </section>
 
       <aside class="builder-preview py-6 px-5 px-md-8">
