@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { COVER_PAGE_TEMPLATE_IDS } from '~/constants/resumeTemplates'
+
 definePageMeta({
   title: 'Resume · Cover Page Editor',
   layout: 'resume',
@@ -10,14 +12,19 @@ const { coverPageTemplates } = useResumeTemplates()
 
 const templates = computed(() => coverPageTemplates.value)
 
-const selectedTemplate = ref('cover-page-template-1')
+const fallbackTemplateId = COVER_PAGE_TEMPLATE_IDS[0] ?? ''
+const selectedTemplate = ref(fallbackTemplateId)
 const coverTitle = ref('John Doe')
 const coverSubtitle = ref('Full Stack Developer')
 const coverSummary = ref('Professional application pack cover page.')
 
 onMounted(() => {
-  if (typeof route.query.template === 'string')
+  if (typeof route.query.template === 'string' && COVER_PAGE_TEMPLATE_IDS.includes(route.query.template)) {
     selectedTemplate.value = route.query.template
+    return
+  }
+
+  selectedTemplate.value = fallbackTemplateId
 })
 </script>
 
