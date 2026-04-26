@@ -3025,7 +3025,7 @@
   "resumeBuilder": {
     "index": {
       "heroTitle": "Build a professional resume in minutes",
-      "heroSubtitle": "A public page to present the tool, followed by a creation experience inspired by your mockups.",
+      "heroSubtitle": "Create your complete application package with guided templates, smart editing, and instant export.",
       "primaryCta": "Start now",
       "secondaryCta": "Open builder",
       "features": {
@@ -3044,6 +3044,54 @@
         "export": {
           "title": "PDF / DOCX export",
           "description": "Download your resume in the ideal format for recruiters."
+        }
+      },
+      "rating": {
+        "label": "Excellent",
+        "score": "4.5 out of 5 based on 1,389 reviews · Trustpilot"
+      },
+      "tabs": {
+        "cover": "Cover page",
+        "letter": "Cover letter",
+        "resume": "Resume",
+        "applicationPack": "Application pack"
+      },
+      "journey": {
+        "title": "Create your resume in 3 steps",
+        "subtitle": "Pick a template, personalize your content, then download and apply with confidence.",
+        "steps": {
+          "template": {
+            "title": "Templates that fit your style",
+            "description": "From modern to classic layouts, choose the design that matches your profile.",
+            "cta": "Create my resume"
+          },
+          "fill": {
+            "title": "Fill it in. Make it yours.",
+            "description": "Add your experience, skills, and education with clear guided sections."
+          },
+          "export": {
+            "title": "Download, send, done.",
+            "description": "Export a polished PDF and keep every version saved in your account."
+          }
+        }
+      },
+      "benefits": {
+        "title": "Why creators choose our editor",
+        "subtitle": "Build faster with professional tools designed for hiring success.",
+        "items": {
+          "attachments": {
+            "title": "Add attachments easily",
+            "description": "Include certificates and supporting documents to complete your application."
+          },
+          "allInOne": {
+            "title": "All-in-one application flow",
+            "description": "Create your resume, cover letter, and final package in one workspace."
+          },
+          "flexibility": {
+            "title": "More flexibility with Premium",
+            "description": "Manage multiple versions and track progress at your own pace.",
+            "link": "Learn more about Premium"
+          }
         }
       }
     },

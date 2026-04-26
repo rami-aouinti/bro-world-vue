@@ -3012,8 +3012,8 @@
   },
   "resumeBuilder": {
     "index": {
-      "heroTitle": "Créez un résumé professionnel en quelques minutes",
-      "heroSubtitle": "Une page publique pour présenter l'outil, suivie d'une expérience de création inspirée de vos maquettes.",
+      "heroTitle": "Créez un CV professionnel en quelques minutes",
+      "heroSubtitle": "Créez votre dossier de candidature complet avec des modèles guidés, un éditeur intelligent et un export instantané.",
       "primaryCta": "Commencer maintenant",
       "secondaryCta": "Ouvrir le builder",
       "features": {
@@ -3032,6 +3032,54 @@
         "export": {
           "title": "Export PDF / DOCX",
           "description": "Téléchargez votre résumé au format idéal pour les recruteurs."
+        }
+      },
+      "rating": {
+        "label": "Excellent",
+        "score": "4,5 sur 5 basé sur 1 389 avis · Trustpilot"
+      },
+      "tabs": {
+        "cover": "Page de garde",
+        "letter": "Lettre de motivation",
+        "resume": "CV",
+        "applicationPack": "Dossier de candidature"
+      },
+      "journey": {
+        "title": "Créez votre CV en 3 étapes",
+        "subtitle": "Choisissez un modèle, personnalisez votre contenu puis téléchargez et envoyez.",
+        "steps": {
+          "template": {
+            "title": "Des modèles adaptés à votre style",
+            "description": "Moderne ou classique : choisissez la mise en page qui vous correspond.",
+            "cta": "Créer mon CV"
+          },
+          "fill": {
+            "title": "Remplissez-le, personnalisez-le",
+            "description": "Ajoutez vos expériences, compétences et formations avec un parcours guidé."
+          },
+          "export": {
+            "title": "Téléchargez, envoyez, terminé",
+            "description": "Exportez un PDF soigné et conservez chaque version dans votre compte."
+          }
+        }
+      },
+      "benefits": {
+        "title": "Pourquoi choisir notre éditeur",
+        "subtitle": "Créez plus vite avec des outils professionnels conçus pour réussir vos candidatures.",
+        "items": {
+          "attachments": {
+            "title": "Ajoutez facilement des pièces jointes",
+            "description": "Incluez certificats et justificatifs pour compléter votre candidature."
+          },
+          "allInOne": {
+            "title": "Flux de candidature tout-en-un",
+            "description": "Créez CV, lettre de motivation et dossier final dans un seul espace."
+          },
+          "flexibility": {
+            "title": "Plus de flexibilité avec Premium",
+            "description": "Gérez plusieurs versions et suivez votre progression à votre rythme.",
+            "link": "En savoir plus sur Premium"
+          }
         }
       }
     },
