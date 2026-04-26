@@ -26,10 +26,10 @@ function updateText(path: string, value: string) {
     <header>
       <div>
         <h1>
-          <span class="editable-text" :contenteditable="editable" @input="event => updateText('firstName', (event.target as HTMLElement).innerText)">{{ resume.firstName }}</span>
-          <span class="editable-text" :contenteditable="editable" @input="event => updateText('lastName', (event.target as HTMLElement).innerText)">{{ resume.lastName }}</span>
+          <span class="editable-text text-white" :contenteditable="editable" @input="event => updateText('firstName', (event.target as HTMLElement).innerText)">{{ resume.firstName }}</span>
+          <span class="editable-text text-white" :contenteditable="editable" @input="event => updateText('lastName', (event.target as HTMLElement).innerText)">{{ resume.lastName }}</span>
         </h1>
-        <p class="editable-text" :contenteditable="editable" @input="event => updateText('role', (event.target as HTMLElement).innerText)">{{ resume.role }}</p>
+        <p class="editable-text text-white" :contenteditable="editable" @input="event => updateText('role', (event.target as HTMLElement).innerText)">{{ resume.role }}</p>
       </div>
       <v-avatar v-if="showPhoto && resume.photoUrl" size="96" class="aurora-avatar" @click="onPhotoClick?.()">
         <v-img :src="resume.photoUrl" cover />
@@ -62,17 +62,17 @@ function updateText(path: string, value: string) {
       <section class="panel small">
         <h2>Core skills</h2>
         <div v-for="(skill, index) in resume.skills" :key="`aurora-skill-${index}`" class="metric">
-          <span class="editable-text" :contenteditable="editable" @input="event => updateText(`skills.${index}.name`, (event.target as HTMLElement).innerText)">{{ skill.name }}</span>
+          <span class="editable-text text-white" :contenteditable="editable" @input="event => updateText(`skills.${index}.name`, (event.target as HTMLElement).innerText)">{{ skill.name }}</span>
           <div class="meter"><i :style="{ width: `${skill.level}%` }" /></div>
         </div>
 
         <h2 class="mt-4">Education</h2>
-        <div v-for="(item, index) in resume.education" :key="`aurora-edu-${index}`" class="education">
+        <div v-for="(item, index) in resume.education" :key="`aurora-edu-${index}`" class="education text-white">
           <p>
-            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</span>
+            <span class="editable-text text-white" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</span>
           </p>
           <small>
-            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</span>
+            <span class="editable-text text-white" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</span>
           </small>
         </div>
       </section>

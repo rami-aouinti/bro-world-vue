@@ -63,35 +63,35 @@ const articleStyle = computed(() => ({
         <v-img :src="resume.photoUrl" cover />
       </v-avatar>
       <h1>
-        <span class="editable-text" :contenteditable="editable" @input="event => updateText('firstName', (event.target as HTMLElement).innerText)">{{ resume.firstName }}</span>
-        <span class="editable-text" :contenteditable="editable" @input="event => updateText('lastName', (event.target as HTMLElement).innerText)">{{ resume.lastName }}</span>
+        <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText('firstName', (event.target as HTMLElement).innerText)">{{ resume.firstName }}</span>
+        <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText('lastName', (event.target as HTMLElement).innerText)">{{ resume.lastName }}</span>
       </h1>
-      <p class="role editable-text" :contenteditable="editable" @input="event => updateText('role', (event.target as HTMLElement).innerText)">{{ resume.role }}</p>
-      <p class="summary editable-text" :contenteditable="editable" @input="event => updateText('profile', (event.target as HTMLElement).innerText)">{{ resume.profile }}</p>
+      <p class="role editable-text text-dark" :contenteditable="editable" @input="event => updateText('role', (event.target as HTMLElement).innerText)">{{ resume.role }}</p>
+      <p class="summary editable-text text-dark" :contenteditable="editable" @input="event => updateText('profile', (event.target as HTMLElement).innerText)">{{ resume.profile }}</p>
       <h3 :style="[headingStyle, sectionStyle]">Contact</h3>
-      <p class="editable-text" :contenteditable="editable" @input="event => updateText('phone', (event.target as HTMLElement).innerText)">{{ resume.phone }}</p>
-      <p class="editable-text" :contenteditable="editable" @input="event => updateText('email', (event.target as HTMLElement).innerText)">{{ resume.email }}</p>
+      <p class="editable-text text-dark" :contenteditable="editable" @input="event => updateText('phone', (event.target as HTMLElement).innerText)">{{ resume.phone }}</p>
+      <p class="editable-text text-dark" :contenteditable="editable" @input="event => updateText('email', (event.target as HTMLElement).innerText)">{{ resume.email }}</p>
     </section>
 
     <section class="right">
       <div>
-        <h2 :style="[headingStyle, sectionStyle]">Education</h2>
+        <h2 class="text-dark" :style="[headingStyle, sectionStyle]">Education</h2>
         <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" :style="articleStyle">
-          <h4 class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</h4>
-          <p class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</p>
+          <h4 class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</h4>
+          <p class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</p>
         </article>
       </div>
       <div>
-        <h2 :style="[headingStyle, sectionStyle]">Experience</h2>
+        <h2 class="text-dark" :style="[headingStyle, sectionStyle]">Experience</h2>
         <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" :style="articleStyle">
-          <h4 class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.company`, (event.target as HTMLElement).innerText)">{{ experience.company }}</h4>
-          <p class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.role`, (event.target as HTMLElement).innerText)">{{ experience.role }}</p>
+          <h4 class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`experiences.${index}.company`, (event.target as HTMLElement).innerText)">{{ experience.company }}</h4>
+          <p class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`experiences.${index}.role`, (event.target as HTMLElement).innerText)">{{ experience.role }}</p>
         </article>
       </div>
       <div>
-        <h2 :style="[headingStyle, sectionStyle]">Skills</h2>
+        <h2 class="text-dark" :style="[headingStyle, sectionStyle]">Skills</h2>
         <div v-for="(skill, index) in resume.skills" :key="skill.name" class="skill-line">
-          <span class="editable-text" :contenteditable="editable" @input="event => updateText(`skills.${index}.name`, (event.target as HTMLElement).innerText)">{{ skill.name }}</span>
+          <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`skills.${index}.name`, (event.target as HTMLElement).innerText)">{{ skill.name }}</span>
           <i :style="{ width: `${skill.level}%` }" />
         </div>
       </div>
