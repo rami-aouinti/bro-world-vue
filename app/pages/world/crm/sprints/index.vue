@@ -60,31 +60,51 @@ const filteredSprints = computed(() => {
   const items = data.value?.items ?? []
 
   return items.filter((sprint) => {
-    const matchesSearch
-      = !query
-        || [sprint.name, sprint.status, sprint.projectId, sprint.id]
-          .filter(Boolean)
-          .some((value) => String(value).toLowerCase().includes(query))
-    const matchesStatus = !statusFilter.value || sprint.status === statusFilter.value
-    const matchesProject = !projectFilter.value || sprint.projectId === projectFilter.value
-    const matchesStartDate = !startAfter.value || new Date(sprint.startDate) >= new Date(startAfter.value)
-    const matchesEndDate = !endBefore.value || new Date(sprint.endDate) <= new Date(endBefore.value)
+    const matchesSearch =
+      !query ||
+      [sprint.name, sprint.status, sprint.projectId, sprint.id]
+        .filter(Boolean)
+        .some((value) => String(value).toLowerCase().includes(query))
+    const matchesStatus =
+      !statusFilter.value || sprint.status === statusFilter.value
+    const matchesProject =
+      !projectFilter.value || sprint.projectId === projectFilter.value
+    const matchesStartDate =
+      !startAfter.value ||
+      new Date(sprint.startDate) >= new Date(startAfter.value)
+    const matchesEndDate =
+      !endBefore.value || new Date(sprint.endDate) <= new Date(endBefore.value)
 
-    return matchesSearch && matchesStatus && matchesProject && matchesStartDate && matchesEndDate
+    return (
+      matchesSearch &&
+      matchesStatus &&
+      matchesProject &&
+      matchesStartDate &&
+      matchesEndDate
+    )
   })
 })
 
 const sprintStatusOptions = computed(() =>
-  Array.from(new Set((data.value?.items ?? []).map((sprint) => sprint.status).filter(Boolean))),
+  Array.from(
+    new Set(
+      (data.value?.items ?? []).map((sprint) => sprint.status).filter(Boolean),
+    ),
+  ),
 )
-const sprintProjectOptions = computed(() =>
-  crmReferencesStore.projectOptions,
-)
+const sprintProjectOptions = computed(() => crmReferencesStore.projectOptions)
 const sprintCreateStatusOptions = computed(() =>
-  Array.from(new Set(['planned', 'in_progress', 'completed', ...sprintStatusOptions.value])),
+  Array.from(
+    new Set([
+      'planned',
+      'in_progress',
+      'completed',
+      ...sprintStatusOptions.value,
+    ]),
+  ),
 )
-const sprintCreateProjectOptions = computed(() =>
-  crmReferencesStore.projectOptions,
+const sprintCreateProjectOptions = computed(
+  () => crmReferencesStore.projectOptions,
 )
 
 const totalPages = computed(() =>
@@ -96,9 +116,12 @@ const paginatedSprints = computed(() => {
   return filteredSprints.value.slice(start, start + itemsPerPage)
 })
 
-watch([search, statusFilter, projectFilter, startAfter, endBefore, filteredSprints], () => {
-  currentPage.value = 1
-})
+watch(
+  [search, statusFilter, projectFilter, startAfter, endBefore, filteredSprints],
+  () => {
+    currentPage.value = 1
+  },
+)
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat(locale.value, {
@@ -130,7 +153,9 @@ async function deleteSprint() {
   if (!sprintToDelete.value) return
   pendingDelete.value = true
   try {
-    await $fetch(`/api/crm/general/sprints/${sprintToDelete.value}`, { method: 'DELETE' })
+    await $fetch(`/api/crm/general/sprints/${sprintToDelete.value}`, {
+      method: 'DELETE',
+    })
     deleteDialog.value = false
     sprintToDelete.value = null
     await refreshNuxtData('/api/crm/general/sprints')
@@ -168,19 +193,43 @@ async function deleteSprint() {
             variant="outlined"
             hide-details
           />
-          <AppSelect v-model="statusFilter" :items="sprintStatusOptions" :label="t('world.crm.filters.status')" clearable />
-          <AppSelect v-model="projectFilter" :items="sprintProjectOptions" :label="t('world.crm.filters.project')" clearable />
-          <v-text-field v-model="startAfter" type="date" :label="t('world.crm.filters.startAfter')" variant="outlined" hide-details clearable />
-          <v-text-field v-model="endBefore" type="date" :label="t('world.crm.filters.endBefore')" variant="outlined" hide-details clearable />
+          <AppSelect
+            v-model="statusFilter"
+            :items="sprintStatusOptions"
+            :label="t('world.crm.filters.status')"
+            clearable
+          />
+          <AppSelect
+            v-model="projectFilter"
+            :items="sprintProjectOptions"
+            :label="t('world.crm.filters.project')"
+            clearable
+          />
+          <v-text-field
+            v-model="startAfter"
+            type="date"
+            :label="t('world.crm.filters.startAfter')"
+            variant="outlined"
+            hide-details
+            clearable
+          />
+          <v-text-field
+            v-model="endBefore"
+            type="date"
+            :label="t('world.crm.filters.endBefore')"
+            variant="outlined"
+            hide-details
+            clearable
+          />
         </div>
       </template>
     </WorldModuleShell>
 
     <v-container fluid>
       <CrmPageSkeleton v-if="pending" variant="list" :cards="6" />
-      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4"
-        >{{ t('world.crm.sprints.alerts.loadListError') }}</v-alert
-      >
+      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">{{
+        t('world.crm.sprints.alerts.loadListError')
+      }}</v-alert>
 
       <template v-else>
         <v-row>
@@ -192,13 +241,21 @@ async function deleteSprint() {
           >
             <WorldCard extra-class="pa-4 platform-style-card h-100">
               <div class="d-flex align-start justify-space-between ga-2 mb-2">
-                <p class="text-subtitle-1 text-truncate mb-2">{{ sprint.name }}</p>
+                <div class="d-flex align-center ga-2">
+                  <CrmEntityAvatar :label="sprint.name" :size="24" />
+                  <p class="text-subtitle-1 text-truncate mb-0">
+                    {{ sprint.name }}
+                  </p>
+                </div>
                 <v-chip size="small" color="secondary" variant="tonal">{{
                   sprint.status
                 }}</v-chip>
               </div>
-              <p class="text-caption text-subtitle-1 text-medium-emphasis mb-0 mt-3">
-               {{ formatDate(sprint.startDate) }} - {{ formatDate(sprint.endDate) }}
+              <p
+                class="text-caption text-subtitle-1 text-medium-emphasis mb-0 mt-3"
+              >
+                {{ formatDate(sprint.startDate) }} -
+                {{ formatDate(sprint.endDate) }}
               </p>
               <div v-if="isAdminOrRoot" class="d-flex justify-center ga-2 mt-3">
                 <v-btn
@@ -206,7 +263,9 @@ async function deleteSprint() {
                   color="info"
                   variant="text"
                   size="small"
-                  @click="router.push(`/world/crm/sprints/${sprint.id}?mode=view`)"
+                  @click="
+                    router.push(`/world/crm/sprints/${sprint.id}?mode=view`)
+                  "
                 />
                 <v-btn
                   icon="mdi-pencil-outline"
@@ -227,17 +286,27 @@ async function deleteSprint() {
           </v-col>
 
           <v-col v-if="paginatedSprints.length === 0" cols="12">
-            <v-alert type="info" variant="tonal">{{ t('world.crm.sprints.alerts.empty') }}</v-alert>
+            <v-alert type="info" variant="tonal">{{
+              t('world.crm.sprints.alerts.empty')
+            }}</v-alert>
           </v-col>
         </v-row>
 
-        <div v-if="totalPages > 1" class="d-flex justify-center mt-6 app-pagination">
+        <div
+          v-if="totalPages > 1"
+          class="d-flex justify-center mt-6 app-pagination"
+        >
           <WorldPagination v-model="currentPage" :length="totalPages" />
         </div>
       </template>
     </v-container>
 
-    <AppModal v-if="isRootAdmin" v-model="createDialog" :title="t('world.crm.sprints.modal.createTitle')" :max-width="720">
+    <AppModal
+      v-if="isRootAdmin"
+      v-model="createDialog"
+      :title="t('world.crm.sprints.modal.createTitle')"
+      :max-width="720"
+    >
       <v-row>
         <v-col cols="12" md="6">
           <AppSelect
@@ -247,8 +316,17 @@ async function deleteSprint() {
             required
           />
         </v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.name" :label="t('world.crm.sprints.form.name')" required /></v-col>
-        <v-col cols="12"><v-textarea v-model="createPayload.goal" :label="t('world.crm.sprints.form.goal')" /></v-col>
+        <v-col cols="12" md="6"
+          ><v-text-field
+            v-model="createPayload.name"
+            :label="t('world.crm.sprints.form.name')"
+            required
+        /></v-col>
+        <v-col cols="12"
+          ><v-textarea
+            v-model="createPayload.goal"
+            :label="t('world.crm.sprints.form.goal')"
+        /></v-col>
         <v-col cols="12" md="6">
           <AppSelect
             v-model="createPayload.status"
@@ -256,12 +334,26 @@ async function deleteSprint() {
             :label="t('world.crm.sprints.form.status')"
           />
         </v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.startDate" :label="t('world.crm.sprints.form.startDate')" type="date" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.endDate" :label="t('world.crm.sprints.form.endDate')" type="date" /></v-col>
+        <v-col cols="12" md="6"
+          ><v-text-field
+            v-model="createPayload.startDate"
+            :label="t('world.crm.sprints.form.startDate')"
+            type="date"
+        /></v-col>
+        <v-col cols="12" md="6"
+          ><v-text-field
+            v-model="createPayload.endDate"
+            :label="t('world.crm.sprints.form.endDate')"
+            type="date"
+        /></v-col>
       </v-row>
       <template #actions>
-        <v-btn variant="text" @click="createDialog = false">{{ t('world.crm.sprints.actions.cancel') }}</v-btn>
-        <v-btn color="primary" :loading="pendingCreate" @click="createSprint">{{ t('world.crm.sprints.actions.create') }}</v-btn>
+        <v-btn variant="text" @click="createDialog = false">{{
+          t('world.crm.sprints.actions.cancel')
+        }}</v-btn>
+        <v-btn color="primary" :loading="pendingCreate" @click="createSprint">{{
+          t('world.crm.sprints.actions.create')
+        }}</v-btn>
       </template>
     </AppModal>
 
@@ -269,7 +361,9 @@ async function deleteSprint() {
       <p>Are you sure you want to delete this sprint?</p>
       <template #actions>
         <v-btn variant="text" @click="deleteDialog = false">Cancel</v-btn>
-        <v-btn color="error" :loading="pendingDelete" @click="deleteSprint">Delete</v-btn>
+        <v-btn color="error" :loading="pendingDelete" @click="deleteSprint"
+          >Delete</v-btn
+        >
       </template>
     </AppModal>
   </div>

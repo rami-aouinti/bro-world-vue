@@ -52,9 +52,9 @@ const createPayload = reactive<CrmProjectCreatePayload>({
   dueAt: '',
 })
 
-const { data, pending, error, refresh } = useFetch<ApiListResponse<CrmProjectListItem>>(
-  '/api/crm/general/projects',
-)
+const { data, pending, error, refresh } = useFetch<
+  ApiListResponse<CrmProjectListItem>
+>('/api/crm/general/projects')
 const { data: companiesData } = useFetch<ApiListResponse<CrmCompanyItem>>(
   '/api/crm/general/companies',
 )
@@ -64,38 +64,54 @@ const filteredProjects = computed(() => {
   const items = data.value?.items ?? []
 
   return items.filter((project) => {
-    const detailedProject = project as CrmProjectListItem & Partial<CrmProjectItem>
+    const detailedProject = project as CrmProjectListItem &
+      Partial<CrmProjectItem>
     const matchesSearch =
-      !query
-      || [project.name, project.status, detailedProject.code, project.id]
+      !query ||
+      [project.name, project.status, detailedProject.code, project.id]
         .filter(Boolean)
         .some((value) => String(value).toLowerCase().includes(query))
-    const matchesStatus = !statusFilter.value || project.status === statusFilter.value
-    const matchesStartDate
-      = !startedAfter.value
-        || !detailedProject.startedAt
-        || new Date(detailedProject.startedAt) >= new Date(startedAfter.value)
-    const matchesDueDate
-      = !dueBefore.value
-        || !detailedProject.dueAt
-        || new Date(detailedProject.dueAt) <= new Date(dueBefore.value)
-    const matchesProvisioning
-      = !provisioningFilter.value
-        || detailedProject.provisioning?.state === provisioningFilter.value
+    const matchesStatus =
+      !statusFilter.value || project.status === statusFilter.value
+    const matchesStartDate =
+      !startedAfter.value ||
+      !detailedProject.startedAt ||
+      new Date(detailedProject.startedAt) >= new Date(startedAfter.value)
+    const matchesDueDate =
+      !dueBefore.value ||
+      !detailedProject.dueAt ||
+      new Date(detailedProject.dueAt) <= new Date(dueBefore.value)
+    const matchesProvisioning =
+      !provisioningFilter.value ||
+      detailedProject.provisioning?.state === provisioningFilter.value
 
-    return matchesSearch
-      && matchesStatus
-      && matchesStartDate
-      && matchesDueDate
-      && matchesProvisioning
+    return (
+      matchesSearch &&
+      matchesStatus &&
+      matchesStartDate &&
+      matchesDueDate &&
+      matchesProvisioning
+    )
   })
 })
 
 const projectStatusOptions = computed(() =>
-  Array.from(new Set((data.value?.items ?? []).map((project) => project.status).filter(Boolean))),
+  Array.from(
+    new Set(
+      (data.value?.items ?? [])
+        .map((project) => project.status)
+        .filter(Boolean),
+    ),
+  ),
 )
 const provisioningOptions = computed(() =>
-  Array.from(new Set((data.value?.items ?? []).map((project) => project.provisioning?.state).filter(Boolean))),
+  Array.from(
+    new Set(
+      (data.value?.items ?? [])
+        .map((project) => project.provisioning?.state)
+        .filter(Boolean),
+    ),
+  ),
 )
 const projectCreateStatusOptions = computed(() =>
   Array.from(
@@ -124,9 +140,19 @@ const paginatedProjects = computed(() => {
   return filteredProjects.value.slice(start, start + itemsPerPage)
 })
 
-watch([search, statusFilter, provisioningFilter, startedAfter, dueBefore, filteredProjects], () => {
-  currentPage.value = 1
-})
+watch(
+  [
+    search,
+    statusFilter,
+    provisioningFilter,
+    startedAfter,
+    dueBefore,
+    filteredProjects,
+  ],
+  () => {
+    currentPage.value = 1
+  },
+)
 
 async function createProject() {
   if (!isRootAdmin.value) return
@@ -156,7 +182,9 @@ async function deleteProject() {
   if (!projectToDelete.value) return
   pendingDelete.value = true
   try {
-    await $fetch(`/api/crm/general/projects/${projectToDelete.value}`, { method: 'DELETE' })
+    await $fetch(`/api/crm/general/projects/${projectToDelete.value}`, {
+      method: 'DELETE',
+    })
     deleteDialog.value = false
     projectToDelete.value = null
     await refresh()
@@ -206,29 +234,64 @@ async function deleteProject() {
             :label="t('world.crm.filters.provisioning')"
             clearable
           />
-          <v-text-field v-model="startedAfter" type="date" :label="t('world.crm.filters.startAfter')" variant="outlined" hide-details clearable />
-          <v-text-field v-model="dueBefore" type="date" :label="t('world.crm.filters.endBefore')" variant="outlined" hide-details clearable />
+          <v-text-field
+            v-model="startedAfter"
+            type="date"
+            :label="t('world.crm.filters.startAfter')"
+            variant="outlined"
+            hide-details
+            clearable
+          />
+          <v-text-field
+            v-model="dueBefore"
+            type="date"
+            :label="t('world.crm.filters.endBefore')"
+            variant="outlined"
+            hide-details
+            clearable
+          />
         </div>
       </template>
     </WorldModuleShell>
 
     <v-container fluid>
       <CrmPageSkeleton v-if="pending" variant="list" :cards="6" />
-      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">{{ t('world.crm.projects.alerts.loadListError') }}</v-alert>
+      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">{{
+        t('world.crm.projects.alerts.loadListError')
+      }}</v-alert>
 
       <template v-else>
         <v-row>
-          <v-col v-for="project in paginatedProjects" :key="project.id" cols="12" md="4">
-            <WorldCard extra-class="pa-4 platform-style-card h-100 d-flex flex-column">
+          <v-col
+            v-for="project in paginatedProjects"
+            :key="project.id"
+            cols="12"
+            md="4"
+          >
+            <WorldCard
+              extra-class="pa-4 platform-style-card h-100 d-flex flex-column"
+            >
               <div class="d-flex justify-space-between align-start ga-2 mb-2">
-                <p class="text-subtitle-1 text-truncate mb-0">{{ project.name }}</p>
-                <v-chip size="small" color="primary" variant="tonal">{{ project.status }}</v-chip>
+                <div class="d-flex align-center ga-2">
+                  <CrmEntityAvatar :label="project.name" :size="24" />
+                  <p class="text-subtitle-1 text-truncate mb-0">
+                    {{ project.name }}
+                  </p>
+                </div>
+                <v-chip size="small" color="primary" variant="tonal">{{
+                  project.status
+                }}</v-chip>
               </div>
               <div class="d-flex flex-wrap ga-2 mb-4">
                 <v-chip size="small" color="info" variant="tonal">
-                  {{ t('world.crm.projects.list.githubRepos') }}: {{ project.githubRepositoriesCount }}
+                  {{ t('world.crm.projects.list.githubRepos') }}:
+                  {{ project.githubRepositoriesCount }}
                 </v-chip>
-                <v-chip size="small" :color="provisioningColor(project.provisioning?.state)" variant="tonal">
+                <v-chip
+                  size="small"
+                  :color="provisioningColor(project.provisioning?.state)"
+                  variant="tonal"
+                >
                   {{ project.provisioning.state }}
                 </v-chip>
               </div>
@@ -239,7 +302,9 @@ async function deleteProject() {
                   color="info"
                   variant="text"
                   size="small"
-                  @click="router.push(`/world/crm/projects/${project.id}?mode=view`)"
+                  @click="
+                    router.push(`/world/crm/projects/${project.id}?mode=view`)
+                  "
                 />
                 <v-btn
                   icon="mdi-pencil-outline"
@@ -260,17 +325,27 @@ async function deleteProject() {
           </v-col>
 
           <v-col v-if="paginatedProjects.length === 0" cols="12">
-            <v-alert type="info" variant="tonal">{{ t('world.crm.projects.alerts.empty') }}</v-alert>
+            <v-alert type="info" variant="tonal">{{
+              t('world.crm.projects.alerts.empty')
+            }}</v-alert>
           </v-col>
         </v-row>
 
-        <div v-if="totalPages > 1" class="d-flex justify-center mt-6 app-pagination">
+        <div
+          v-if="totalPages > 1"
+          class="d-flex justify-center mt-6 app-pagination"
+        >
           <WorldPagination v-model="currentPage" :length="totalPages" />
         </div>
       </template>
     </v-container>
 
-    <AppModal v-if="isRootAdmin" v-model="createDialog" :title="t('world.crm.projects.modal.createTitle')" :max-width="720">
+    <AppModal
+      v-if="isRootAdmin"
+      v-model="createDialog"
+      :title="t('world.crm.projects.modal.createTitle')"
+      :max-width="720"
+    >
       <v-row>
         <v-col cols="12" md="6">
           <AppSelect
@@ -280,8 +355,17 @@ async function deleteProject() {
             required
           />
         </v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.name" :label="t('world.crm.projects.form.name')" required /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.code" :label="t('world.crm.projects.form.code')" /></v-col>
+        <v-col cols="12" md="6"
+          ><v-text-field
+            v-model="createPayload.name"
+            :label="t('world.crm.projects.form.name')"
+            required
+        /></v-col>
+        <v-col cols="12" md="6"
+          ><v-text-field
+            v-model="createPayload.code"
+            :label="t('world.crm.projects.form.code')"
+        /></v-col>
         <v-col cols="12" md="6">
           <AppSelect
             v-model="createPayload.status"
@@ -289,13 +373,34 @@ async function deleteProject() {
             :label="t('world.crm.projects.form.status')"
           />
         </v-col>
-        <v-col cols="12"><v-textarea v-model="createPayload.description" :label="t('world.crm.projects.form.description')" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.startedAt" :label="t('world.crm.projects.form.startedAt')" type="date" /></v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.dueAt" :label="t('world.crm.projects.form.dueAt')" type="date" /></v-col>
+        <v-col cols="12"
+          ><v-textarea
+            v-model="createPayload.description"
+            :label="t('world.crm.projects.form.description')"
+        /></v-col>
+        <v-col cols="12" md="6"
+          ><v-text-field
+            v-model="createPayload.startedAt"
+            :label="t('world.crm.projects.form.startedAt')"
+            type="date"
+        /></v-col>
+        <v-col cols="12" md="6"
+          ><v-text-field
+            v-model="createPayload.dueAt"
+            :label="t('world.crm.projects.form.dueAt')"
+            type="date"
+        /></v-col>
       </v-row>
       <template #actions>
-        <v-btn variant="text" @click="createDialog = false">{{ t('world.crm.projects.actions.cancel') }}</v-btn>
-        <v-btn color="primary" :loading="pendingCreate" @click="createProject">{{ t('world.crm.projects.actions.create') }}</v-btn>
+        <v-btn variant="text" @click="createDialog = false">{{
+          t('world.crm.projects.actions.cancel')
+        }}</v-btn>
+        <v-btn
+          color="primary"
+          :loading="pendingCreate"
+          @click="createProject"
+          >{{ t('world.crm.projects.actions.create') }}</v-btn
+        >
       </template>
     </AppModal>
 
@@ -303,7 +408,9 @@ async function deleteProject() {
       <p>Are you sure you want to delete this project?</p>
       <template #actions>
         <v-btn variant="text" @click="deleteDialog = false">Cancel</v-btn>
-        <v-btn color="error" :loading="pendingDelete" @click="deleteProject">Delete</v-btn>
+        <v-btn color="error" :loading="pendingDelete" @click="deleteProject"
+          >Delete</v-btn
+        >
       </template>
     </AppModal>
   </div>

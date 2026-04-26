@@ -46,7 +46,9 @@ const payload = reactive<CrmTaskRequestCreatePayload>({
 })
 const crmReferencesStore = useCrmReferenceOptionsStore()
 
-const { data, pending, error, refresh } = useFetch<ApiListResponse<CrmTaskRequestItem>>('/api/crm/general/task-requests')
+const { data, pending, error, refresh } = useFetch<
+  ApiListResponse<CrmTaskRequestItem>
+>('/api/crm/general/task-requests')
 await Promise.all([
   crmReferencesStore.fetchTasks(),
   crmReferencesStore.fetchTaskRequests(),
@@ -57,46 +59,84 @@ const filteredRequests = computed(() => {
   const items = data.value?.items ?? []
 
   return items.filter((request) => {
-    const matchesSearch
-      = !query
-        || [request.title, request.status, request.taskId, request.repositoryId, request.id]
-          .filter(Boolean)
-          .some((value) => String(value).toLowerCase().includes(query))
-    const matchesStatus = !statusFilter.value || request.status === statusFilter.value
-    const matchesRepository = !repositoryFilter.value || request.repositoryId === repositoryFilter.value
+    const matchesSearch =
+      !query ||
+      [
+        request.title,
+        request.status,
+        request.taskId,
+        request.repositoryId,
+        request.id,
+      ]
+        .filter(Boolean)
+        .some((value) => String(value).toLowerCase().includes(query))
+    const matchesStatus =
+      !statusFilter.value || request.status === statusFilter.value
+    const matchesRepository =
+      !repositoryFilter.value || request.repositoryId === repositoryFilter.value
     const matchesTask = !taskFilter.value || request.taskId === taskFilter.value
-    const matchesTaskRequest = !taskRequestFilter.value || request.id === taskRequestFilter.value
-    const matchesRequestedDate
-      = !requestedAfter.value
-        || new Date(request.requestedAt) >= new Date(requestedAfter.value)
-    const matchesResolvedDate
-      = !resolvedBefore.value
-        || !request.resolvedAt
-        || new Date(request.resolvedAt) <= new Date(resolvedBefore.value)
+    const matchesTaskRequest =
+      !taskRequestFilter.value || request.id === taskRequestFilter.value
+    const matchesRequestedDate =
+      !requestedAfter.value ||
+      new Date(request.requestedAt) >= new Date(requestedAfter.value)
+    const matchesResolvedDate =
+      !resolvedBefore.value ||
+      !request.resolvedAt ||
+      new Date(request.resolvedAt) <= new Date(resolvedBefore.value)
 
-    return matchesSearch
-      && matchesStatus
-      && matchesRepository
-      && matchesTask
-      && matchesTaskRequest
-      && matchesRequestedDate
-      && matchesResolvedDate
+    return (
+      matchesSearch &&
+      matchesStatus &&
+      matchesRepository &&
+      matchesTask &&
+      matchesTaskRequest &&
+      matchesRequestedDate &&
+      matchesResolvedDate
+    )
   })
 })
 
 const taskRequestStatusOptions = computed(() =>
-  Array.from(new Set((data.value?.items ?? []).map((request) => request.status).filter(Boolean))),
+  Array.from(
+    new Set(
+      (data.value?.items ?? [])
+        .map((request) => request.status)
+        .filter(Boolean),
+    ),
+  ),
 )
 const taskRequestRepositoryOptions = computed(() =>
-  Array.from(new Set((data.value?.items ?? []).map((request) => request.repositoryId).filter(Boolean))),
+  Array.from(
+    new Set(
+      (data.value?.items ?? [])
+        .map((request) => request.repositoryId)
+        .filter(Boolean),
+    ),
+  ),
 )
 const taskRequestTaskOptions = computed(() => crmReferencesStore.taskOptions)
-const taskRequestTitleOptions = computed(() => crmReferencesStore.taskRequestOptions)
-const taskRequestCreateStatusOptions = computed(() =>
-  Array.from(new Set(['pending', 'in_progress', 'approved', 'rejected', ...taskRequestStatusOptions.value])),
+const taskRequestTitleOptions = computed(
+  () => crmReferencesStore.taskRequestOptions,
 )
-const taskRequestCreateTaskOptions = computed(() =>
-  crmReferencesStore.taskOptions,
+const taskRequestCreateStatusOptions = computed(() =>
+  Array.from(
+    new Set([
+      'pending',
+      'in_progress',
+      'approved',
+      'rejected',
+      ...taskRequestStatusOptions.value,
+    ]),
+  ),
+)
+const taskRequestCreateTaskOptions = computed(
+  () => crmReferencesStore.taskOptions,
+)
+const taskTitleById = computed<Record<string, string>>(() =>
+  Object.fromEntries(
+    crmReferencesStore.tasks.map((task) => [task.id, task.title]),
+  ),
 )
 
 const totalPages = computed(() =>
@@ -108,9 +148,21 @@ const paginatedRequests = computed(() => {
   return filteredRequests.value.slice(start, start + itemsPerPage)
 })
 
-watch([search, statusFilter, repositoryFilter, taskFilter, taskRequestFilter, requestedAfter, resolvedBefore, filteredRequests], () => {
-  currentPage.value = 1
-})
+watch(
+  [
+    search,
+    statusFilter,
+    repositoryFilter,
+    taskFilter,
+    taskRequestFilter,
+    requestedAfter,
+    resolvedBefore,
+    filteredRequests,
+  ],
+  () => {
+    currentPage.value = 1
+  },
+)
 
 function requestStatusColor(status: string) {
   if (status === 'done' || status === 'approved') return 'success'
@@ -128,7 +180,9 @@ async function openTask(taskId: string | null) {
   taskModalOpen.value = true
 
   try {
-    selectedTask.value = await $fetch<CrmTaskItem>(`/api/crm/general/tasks/${taskId}`)
+    selectedTask.value = await $fetch<CrmTaskItem>(
+      `/api/crm/general/tasks/${taskId}`,
+    )
   } finally {
     taskModalLoading.value = false
   }
@@ -154,7 +208,9 @@ async function deleteRequest() {
   if (!requestToDelete.value) return
   pendingDelete.value = true
   try {
-    await $fetch(`/api/crm/general/task-requests/${requestToDelete.value}`, { method: 'DELETE' })
+    await $fetch(`/api/crm/general/task-requests/${requestToDelete.value}`, {
+      method: 'DELETE',
+    })
     deleteDialog.value = false
     requestToDelete.value = null
     await refresh()
@@ -192,39 +248,107 @@ async function deleteRequest() {
             variant="outlined"
             hide-details
           />
-            <AppSelect
+          <AppSelect
             v-model="statusFilter"
             :items="taskRequestStatusOptions"
             :label="t('world.crm.filters.status')"
             clearable
           />
-          <AppSelect v-model="repositoryFilter" :items="taskRequestRepositoryOptions" :label="t('world.crm.filters.repository')" clearable />
-          <AppSelect v-model="taskFilter" :items="taskRequestTaskOptions" :label="t('world.crm.filters.task')" clearable />
-          <AppSelect v-model="taskRequestFilter" :items="taskRequestTitleOptions" :label="t('world.crm.taskRequests.form.title')" clearable />
-          <v-text-field v-model="requestedAfter" type="date" :label="t('world.crm.filters.requestedAfter')" variant="outlined" hide-details clearable />
-          <v-text-field v-model="resolvedBefore" type="date" :label="t('world.crm.filters.resolvedBefore')" variant="outlined" hide-details clearable />
+          <AppSelect
+            v-model="repositoryFilter"
+            :items="taskRequestRepositoryOptions"
+            :label="t('world.crm.filters.repository')"
+            clearable
+          />
+          <AppSelect
+            v-model="taskFilter"
+            :items="taskRequestTaskOptions"
+            :label="t('world.crm.filters.task')"
+            clearable
+          />
+          <AppSelect
+            v-model="taskRequestFilter"
+            :items="taskRequestTitleOptions"
+            :label="t('world.crm.taskRequests.form.title')"
+            clearable
+          />
+          <v-text-field
+            v-model="requestedAfter"
+            type="date"
+            :label="t('world.crm.filters.requestedAfter')"
+            variant="outlined"
+            hide-details
+            clearable
+          />
+          <v-text-field
+            v-model="resolvedBefore"
+            type="date"
+            :label="t('world.crm.filters.resolvedBefore')"
+            variant="outlined"
+            hide-details
+            clearable
+          />
         </div>
       </template>
     </WorldModuleShell>
 
     <v-container fluid>
       <CrmPageSkeleton v-if="pending" variant="list" :cards="6" />
-      <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.taskRequests.alerts.loadListError') }}</v-alert>
+      <v-alert v-else-if="error" type="error" variant="tonal">{{
+        t('world.crm.taskRequests.alerts.loadListError')
+      }}</v-alert>
       <v-row v-else>
-        <v-col v-for="request in paginatedRequests" :key="request.id" cols="12" md="4">
-          <WorldCard extra-class="pa-4 h-100 d-flex flex-column platform-style-card">
-            <p class="text-subtitle-1 text-truncate mb-2">{{ request.title }}</p>
-            <v-chip size="small" :color="requestStatusColor(request.status)" variant="tonal" class="mb-2">{{ request.status }}</v-chip>
+        <v-col
+          v-for="request in paginatedRequests"
+          :key="request.id"
+          cols="12"
+          md="4"
+        >
+          <WorldCard
+            extra-class="pa-4 h-100 d-flex flex-column platform-style-card"
+          >
+            <div class="d-flex align-center ga-2 mb-2">
+              <CrmEntityAvatar :label="request.title" :size="24" />
+              <p class="text-subtitle-1 text-truncate mb-0">
+                {{ request.title }}
+              </p>
+            </div>
+            <v-chip
+              size="small"
+              :color="requestStatusColor(request.status)"
+              variant="tonal"
+              class="mb-2"
+              >{{ request.status }}</v-chip
+            >
             <div class="mb-4">
-              <span class="text-body-2 text-medium-emphasis mr-2">{{ t('world.crm.taskRequests.list.task') }}:</span>
-              <v-chip size="small" color="primary" variant="outlined" @click="openTask(request.taskId)">
-                Task
+              <span class="text-body-2 text-medium-emphasis mr-2"
+                >{{ t('world.crm.taskRequests.list.task') }}:</span
+              >
+              <v-chip
+                size="small"
+                color="primary"
+                variant="outlined"
+                @click="openTask(request.taskId)"
+              >
+                <span class="d-flex align-center ga-2">
+                  <CrmEntityAvatar
+                    :label="taskTitleById[request.taskId] || request.taskId"
+                    :size="18"
+                  />
+                  {{ taskTitleById[request.taskId] || request.taskId }}
+                </span>
               </v-chip>
             </div>
             <div class="d-flex flex-wrap ga-2 mb-2">
-              <v-chip size="small" variant="tonal">Planned: {{ request.plannedHours ?? 0 }} h</v-chip>
-              <v-chip size="small" variant="tonal">Consumed: {{ request.consumedHours ?? 0 }} h</v-chip>
-              <v-chip size="small" variant="tonal">Remaining: {{ request.remainingHours ?? 0 }} h</v-chip>
+              <v-chip size="small" variant="tonal"
+                >Planned: {{ request.plannedHours ?? 0 }} h</v-chip
+              >
+              <v-chip size="small" variant="tonal"
+                >Consumed: {{ request.consumedHours ?? 0 }} h</v-chip
+              >
+              <v-chip size="small" variant="tonal"
+                >Remaining: {{ request.remainingHours ?? 0 }} h</v-chip
+              >
             </div>
             <v-spacer />
             <div v-if="isAdminOrRoot" class="d-flex justify-center ga-2 mt-3">
@@ -233,7 +357,11 @@ async function deleteRequest() {
                 color="info"
                 variant="text"
                 size="small"
-                @click="router.push(`/world/crm/task-requests/${request.id}?mode=view`)"
+                @click="
+                  router.push(
+                    `/world/crm/task-requests/${request.id}?mode=view`,
+                  )
+                "
               />
               <v-btn
                 icon="mdi-pencil-outline"
@@ -254,15 +382,25 @@ async function deleteRequest() {
         </v-col>
 
         <v-col v-if="paginatedRequests.length === 0" cols="12">
-          <v-alert type="info" variant="tonal">{{ t('world.crm.taskRequests.alerts.empty') }}</v-alert>
+          <v-alert type="info" variant="tonal">{{
+            t('world.crm.taskRequests.alerts.empty')
+          }}</v-alert>
         </v-col>
       </v-row>
 
-      <div v-if="!pending && !error && totalPages > 1" class="d-flex justify-center mt-6 app-pagination">
+      <div
+        v-if="!pending && !error && totalPages > 1"
+        class="d-flex justify-center mt-6 app-pagination"
+      >
         <WorldPagination v-model="currentPage" :length="totalPages" />
       </div>
 
-      <AppModal v-if="isRootAdmin" v-model="createDialog" :title="t('world.crm.taskRequests.modal.createTitle')" :max-width="720">
+      <AppModal
+        v-if="isRootAdmin"
+        v-model="createDialog"
+        :title="t('world.crm.taskRequests.modal.createTitle')"
+        :max-width="720"
+      >
         <v-row>
           <v-col cols="12" md="6">
             <AppSelect
@@ -280,8 +418,17 @@ async function deleteRequest() {
               required
             />
           </v-col>
-          <v-col cols="12"><v-text-field v-model="payload.title" :label="t('world.crm.taskRequests.form.title')" required /></v-col>
-          <v-col cols="12"><v-textarea v-model="payload.description" :label="t('world.crm.taskRequests.form.description')" /></v-col>
+          <v-col cols="12"
+            ><v-text-field
+              v-model="payload.title"
+              :label="t('world.crm.taskRequests.form.title')"
+              required
+          /></v-col>
+          <v-col cols="12"
+            ><v-textarea
+              v-model="payload.description"
+              :label="t('world.crm.taskRequests.form.description')"
+          /></v-col>
           <v-col cols="12" md="6">
             <AppSelect
               v-model="payload.status"
@@ -291,27 +438,57 @@ async function deleteRequest() {
           </v-col>
         </v-row>
         <template #actions>
-          <v-btn variant="text" @click="createDialog = false">{{ t('world.crm.taskRequests.actions.cancel') }}</v-btn>
-          <v-btn color="primary" @click="createRequest">{{ t('world.crm.taskRequests.actions.create') }}</v-btn>
+          <v-btn variant="text" @click="createDialog = false">{{
+            t('world.crm.taskRequests.actions.cancel')
+          }}</v-btn>
+          <v-btn color="primary" @click="createRequest">{{
+            t('world.crm.taskRequests.actions.create')
+          }}</v-btn>
         </template>
       </AppModal>
 
       <AppModal v-model="taskModalOpen" title="Task details" :max-width="720">
-        <v-progress-linear v-if="taskModalLoading" indeterminate color="primary" class="mb-4" />
+        <v-progress-linear
+          v-if="taskModalLoading"
+          indeterminate
+          color="primary"
+          class="mb-4"
+        />
         <template v-else-if="selectedTask">
-          <p><strong>{{ t('world.crm.tasks.form.title') }}:</strong> {{ selectedTask.title }}</p>
-          <p><strong>{{ t('world.crm.tasks.form.status') }}:</strong> {{ selectedTask.status }}</p>
-          <p><strong>{{ t('world.crm.tasks.form.priority') }}:</strong> {{ selectedTask.priority }}</p>
-          <p><strong>{{ t('world.crm.tasks.list.project') }}:</strong> {{ selectedTask.projectName || '—' }}</p>
-          <p><strong>{{ t('world.crm.tasks.form.description') }}:</strong> {{ selectedTask.description || '—' }}</p>
+          <p>
+            <strong>{{ t('world.crm.tasks.form.title') }}:</strong>
+            {{ selectedTask.title }}
+          </p>
+          <p>
+            <strong>{{ t('world.crm.tasks.form.status') }}:</strong>
+            {{ selectedTask.status }}
+          </p>
+          <p>
+            <strong>{{ t('world.crm.tasks.form.priority') }}:</strong>
+            {{ selectedTask.priority }}
+          </p>
+          <p>
+            <strong>{{ t('world.crm.tasks.list.project') }}:</strong>
+            {{ selectedTask.projectName || '—' }}
+          </p>
+          <p>
+            <strong>{{ t('world.crm.tasks.form.description') }}:</strong>
+            {{ selectedTask.description || '—' }}
+          </p>
         </template>
       </AppModal>
 
-      <AppModal v-model="deleteDialog" title="Delete task request" :max-width="460">
+      <AppModal
+        v-model="deleteDialog"
+        title="Delete task request"
+        :max-width="460"
+      >
         <p>Are you sure you want to delete this task request?</p>
         <template #actions>
           <v-btn variant="text" @click="deleteDialog = false">Cancel</v-btn>
-          <v-btn color="error" :loading="pendingDelete" @click="deleteRequest">Delete</v-btn>
+          <v-btn color="error" :loading="pendingDelete" @click="deleteRequest"
+            >Delete</v-btn
+          >
         </template>
       </AppModal>
     </v-container>

@@ -58,40 +58,65 @@ const filteredTasks = computed(() => {
   const items = data.value?.items ?? []
 
   return items.filter((task) => {
-    const matchesSearch
-      = !query
-        || [task.title, task.status, task.priority, task.projectName, task.id]
-          .filter(Boolean)
-          .some((value) => String(value).toLowerCase().includes(query))
-    const matchesStatus = !statusFilter.value || task.status === statusFilter.value
-    const matchesPriority = !priorityFilter.value || task.priority === priorityFilter.value
-    const matchesProject = !projectFilter.value || task.projectId === projectFilter.value
-    const matchesDueAfter = !dueAfter.value || !task.dueAt || new Date(task.dueAt) >= new Date(dueAfter.value)
-    const matchesDueDate = !dueBefore.value || !task.dueAt || new Date(task.dueAt) <= new Date(dueBefore.value)
+    const matchesSearch =
+      !query ||
+      [task.title, task.status, task.priority, task.projectName, task.id]
+        .filter(Boolean)
+        .some((value) => String(value).toLowerCase().includes(query))
+    const matchesStatus =
+      !statusFilter.value || task.status === statusFilter.value
+    const matchesPriority =
+      !priorityFilter.value || task.priority === priorityFilter.value
+    const matchesProject =
+      !projectFilter.value || task.projectId === projectFilter.value
+    const matchesDueAfter =
+      !dueAfter.value ||
+      !task.dueAt ||
+      new Date(task.dueAt) >= new Date(dueAfter.value)
+    const matchesDueDate =
+      !dueBefore.value ||
+      !task.dueAt ||
+      new Date(task.dueAt) <= new Date(dueBefore.value)
 
-    return matchesSearch
-      && matchesStatus
-      && matchesPriority
-      && matchesProject
-      && matchesDueAfter
-      && matchesDueDate
+    return (
+      matchesSearch &&
+      matchesStatus &&
+      matchesPriority &&
+      matchesProject &&
+      matchesDueAfter &&
+      matchesDueDate
+    )
   })
 })
 
 const taskStatusOptions = computed(() =>
-  Array.from(new Set((data.value?.items ?? []).map((task) => task.status).filter(Boolean))),
+  Array.from(
+    new Set(
+      (data.value?.items ?? []).map((task) => task.status).filter(Boolean),
+    ),
+  ),
 )
 const taskPriorityOptions = computed(() =>
-  Array.from(new Set((data.value?.items ?? []).map((task) => task.priority).filter(Boolean))),
+  Array.from(
+    new Set(
+      (data.value?.items ?? []).map((task) => task.priority).filter(Boolean),
+    ),
+  ),
 )
-const taskProjectOptions = computed(() =>
-  crmReferencesStore.projectOptions,
-)
-const taskCreateProjectOptions = computed(() =>
-  crmReferencesStore.projectOptions,
+const taskProjectOptions = computed(() => crmReferencesStore.projectOptions)
+const taskCreateProjectOptions = computed(
+  () => crmReferencesStore.projectOptions,
 )
 const taskCreateStatusOptions = computed(() =>
-  Array.from(new Set(['todo', 'in_progress', 'review', 'done', ...taskStatusOptions.value])),
+  Array.from(
+    new Set([
+      'todo',
+      'in_progress',
+      'review',
+      'done',
+      ...taskStatusOptions.value,
+    ]),
+  ),
 )
 const taskCreatePriorityOptions = computed(() =>
   Array.from(new Set(['low', 'medium', 'high', ...taskPriorityOptions.value])),
@@ -106,9 +131,20 @@ const paginatedTasks = computed(() => {
   return filteredTasks.value.slice(start, start + itemsPerPage)
 })
 
-watch([search, statusFilter, priorityFilter, projectFilter, dueAfter, dueBefore, filteredTasks], () => {
-  currentPage.value = 1
-})
+watch(
+  [
+    search,
+    statusFilter,
+    priorityFilter,
+    projectFilter,
+    dueAfter,
+    dueBefore,
+    filteredTasks,
+  ],
+  () => {
+    currentPage.value = 1
+  },
+)
 
 function formatDate(value: string | null) {
   if (!value) {
@@ -142,7 +178,9 @@ async function openProject(projectId: string | null) {
   projectModalOpen.value = true
 
   try {
-    selectedProject.value = await $fetch<CrmProjectItem>(`/api/crm/general/projects/${projectId}`)
+    selectedProject.value = await $fetch<CrmProjectItem>(
+      `/api/crm/general/projects/${projectId}`,
+    )
   } finally {
     projectModalLoading.value = false
   }
@@ -172,7 +210,9 @@ async function deleteTask() {
   if (!taskToDelete.value) return
   pendingDelete.value = true
   try {
-    await $fetch(`/api/crm/general/tasks/${taskToDelete.value}`, { method: 'DELETE' })
+    await $fetch(`/api/crm/general/tasks/${taskToDelete.value}`, {
+      method: 'DELETE',
+    })
     deleteDialog.value = false
     taskToDelete.value = null
     await refreshNuxtData('/api/crm/general/tasks')
@@ -210,49 +250,101 @@ async function deleteTask() {
             variant="outlined"
             hide-details
           />
-          <AppSelect v-model="statusFilter" :items="taskStatusOptions" :label="t('world.crm.filters.status')" clearable />
-          <AppSelect v-model="priorityFilter" :items="taskPriorityOptions" :label="t('world.crm.filters.priority')" clearable />
-          <AppSelect v-model="projectFilter" :items="taskProjectOptions" :label="t('world.crm.filters.project')" clearable />
-          <v-text-field v-model="dueAfter" type="date" :label="t('world.crm.filters.deadlineAfter')" variant="outlined" hide-details clearable />
-          <v-text-field v-model="dueBefore" type="date" :label="t('world.crm.filters.deadlineBefore')" variant="outlined" hide-details clearable />
+          <AppSelect
+            v-model="statusFilter"
+            :items="taskStatusOptions"
+            :label="t('world.crm.filters.status')"
+            clearable
+          />
+          <AppSelect
+            v-model="priorityFilter"
+            :items="taskPriorityOptions"
+            :label="t('world.crm.filters.priority')"
+            clearable
+          />
+          <AppSelect
+            v-model="projectFilter"
+            :items="taskProjectOptions"
+            :label="t('world.crm.filters.project')"
+            clearable
+          />
+          <v-text-field
+            v-model="dueAfter"
+            type="date"
+            :label="t('world.crm.filters.deadlineAfter')"
+            variant="outlined"
+            hide-details
+            clearable
+          />
+          <v-text-field
+            v-model="dueBefore"
+            type="date"
+            :label="t('world.crm.filters.deadlineBefore')"
+            variant="outlined"
+            hide-details
+            clearable
+          />
         </div>
       </template>
     </WorldModuleShell>
 
     <v-container fluid>
       <CrmPageSkeleton v-if="pending" variant="list" :cards="6" />
-      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4"
-        >{{ t('world.crm.tasks.alerts.loadListError') }}</v-alert
-      >
+      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">{{
+        t('world.crm.tasks.alerts.loadListError')
+      }}</v-alert>
 
       <template v-else>
         <v-row>
-          <v-col
-            v-for="task in paginatedTasks"
-            :key="task.id"
-            cols="12"
-            md="4"
-          >
+          <v-col v-for="task in paginatedTasks" :key="task.id" cols="12" md="4">
             <WorldCard extra-class="pa-4 platform-style-card h-100">
               <div class="d-flex align-start justify-space-between ga-2 mb-2">
-                <p class="text-subtitle-1 text-truncate mb-0">{{ task.title }}</p>
-                <v-chip size="small" :color="taskStatusColor(task.status)" variant="tonal">
+                <div class="d-flex align-center ga-2">
+                  <CrmEntityAvatar :label="task.title" :size="24" />
+                  <p class="text-subtitle-1 text-truncate mb-0">
+                    {{ task.title }}
+                  </p>
+                </div>
+                <v-chip
+                  size="small"
+                  :color="taskStatusColor(task.status)"
+                  variant="tonal"
+                >
                   {{ task.status }}
                 </v-chip>
               </div>
               <div class="d-flex flex-wrap ga-2 mb-2">
-                <v-chip size="small" color="primary" variant="outlined" @click="openProject(task.projectId)">
-                  {{ task.projectName || 'Project' }}
+                <v-chip
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                  @click="openProject(task.projectId)"
+                >
+                  <span class="d-flex align-center ga-2">
+                    <CrmEntityAvatar
+                      :label="task.projectName || task.projectId"
+                      :size="18"
+                    />
+                    {{ task.projectName || task.projectId }}
+                  </span>
                 </v-chip>
-                <v-chip size="small" :color="taskPriorityColor(task.priority)" variant="tonal">
+                <v-chip
+                  size="small"
+                  :color="taskPriorityColor(task.priority)"
+                  variant="tonal"
+                >
                   {{ task.priority }}
                 </v-chip>
               </div>
-              <p class="text-body-2 mb-1">{{ t('world.crm.tasks.list.due') }}: {{ formatDate(task.dueAt) }}</p>
+              <p class="text-body-2 mb-1">
+                {{ t('world.crm.tasks.list.due') }}:
+                {{ formatDate(task.dueAt) }}
+              </p>
               <p class="text-body-2 mb-0">
-                {{ task.estimatedHours }}h ·
-                {{ task.attachments.length }} {{ t('world.crm.tasks.list.attachments') }} ·
-                {{ task.children.length }} {{ t('world.crm.tasks.list.subtasks') }}
+                {{ task.estimatedHours }}h · {{ task.attachments.length }}
+                {{ t('world.crm.tasks.list.attachments') }} ·
+                {{ task.children.length }}
+                {{ t('world.crm.tasks.list.subtasks') }}
               </p>
               <div v-if="isAdminOrRoot" class="d-flex justify-center ga-2 mt-3">
                 <v-btn
@@ -281,17 +373,27 @@ async function deleteTask() {
           </v-col>
 
           <v-col v-if="paginatedTasks.length === 0" cols="12">
-            <v-alert type="info" variant="tonal">{{ t('world.crm.tasks.alerts.empty') }}</v-alert>
+            <v-alert type="info" variant="tonal">{{
+              t('world.crm.tasks.alerts.empty')
+            }}</v-alert>
           </v-col>
         </v-row>
 
-        <div v-if="totalPages > 1" class="d-flex justify-center mt-6 app-pagination">
+        <div
+          v-if="totalPages > 1"
+          class="d-flex justify-center mt-6 app-pagination"
+        >
           <WorldPagination v-model="currentPage" :length="totalPages" />
         </div>
       </template>
     </v-container>
 
-    <AppModal v-if="isRootAdmin" v-model="createDialog" :title="t('world.crm.tasks.modal.createTitle')" :max-width="720">
+    <AppModal
+      v-if="isRootAdmin"
+      v-model="createDialog"
+      :title="t('world.crm.tasks.modal.createTitle')"
+      :max-width="720"
+    >
       <v-row>
         <v-col cols="12" md="6">
           <AppSelect
@@ -301,8 +403,17 @@ async function deleteTask() {
             required
           />
         </v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.title" :label="t('world.crm.tasks.form.title')" required /></v-col>
-        <v-col cols="12"><v-textarea v-model="createPayload.description" :label="t('world.crm.tasks.form.description')" /></v-col>
+        <v-col cols="12" md="6"
+          ><v-text-field
+            v-model="createPayload.title"
+            :label="t('world.crm.tasks.form.title')"
+            required
+        /></v-col>
+        <v-col cols="12"
+          ><v-textarea
+            v-model="createPayload.description"
+            :label="t('world.crm.tasks.form.description')"
+        /></v-col>
         <v-col cols="12" md="6">
           <AppSelect
             v-model="createPayload.status"
@@ -317,22 +428,55 @@ async function deleteTask() {
             :label="t('world.crm.tasks.form.priority')"
           />
         </v-col>
-        <v-col cols="12" md="6"><v-text-field v-model="createPayload.dueAt" :label="t('world.crm.tasks.form.dueAt')" type="date" /></v-col>
+        <v-col cols="12" md="6"
+          ><v-text-field
+            v-model="createPayload.dueAt"
+            :label="t('world.crm.tasks.form.dueAt')"
+            type="date"
+        /></v-col>
       </v-row>
       <template #actions>
-        <v-btn variant="text" @click="createDialog = false">{{ t('world.crm.tasks.actions.cancel') }}</v-btn>
-        <v-btn color="primary" :loading="pendingCreate" @click="createTask">{{ t('world.crm.tasks.actions.create') }}</v-btn>
+        <v-btn variant="text" @click="createDialog = false">{{
+          t('world.crm.tasks.actions.cancel')
+        }}</v-btn>
+        <v-btn color="primary" :loading="pendingCreate" @click="createTask">{{
+          t('world.crm.tasks.actions.create')
+        }}</v-btn>
       </template>
     </AppModal>
 
-    <AppModal v-model="projectModalOpen" title="Project details" :max-width="720">
-      <v-progress-linear v-if="projectModalLoading" indeterminate color="primary" class="mb-4" />
+    <AppModal
+      v-model="projectModalOpen"
+      title="Project details"
+      :max-width="720"
+    >
+      <v-progress-linear
+        v-if="projectModalLoading"
+        indeterminate
+        color="primary"
+        class="mb-4"
+      />
       <template v-else-if="selectedProject">
-        <p><strong>{{ t('world.crm.projects.form.name') }}:</strong> {{ selectedProject.name }}</p>
-        <p><strong>{{ t('world.crm.projects.form.status') }}:</strong> {{ selectedProject.status }}</p>
-        <p><strong>{{ t('world.crm.projects.list.githubRepos') }}:</strong> {{ selectedProject.githubRepositoriesCount }}</p>
-        <p><strong>{{ t('world.crm.projects.list.provisioning') }}:</strong> {{ selectedProject.provisioning?.state || '—' }}</p>
-        <p><strong>{{ t('world.crm.projects.form.description') }}:</strong> {{ selectedProject.description || '—' }}</p>
+        <p>
+          <strong>{{ t('world.crm.projects.form.name') }}:</strong>
+          {{ selectedProject.name }}
+        </p>
+        <p>
+          <strong>{{ t('world.crm.projects.form.status') }}:</strong>
+          {{ selectedProject.status }}
+        </p>
+        <p>
+          <strong>{{ t('world.crm.projects.list.githubRepos') }}:</strong>
+          {{ selectedProject.githubRepositoriesCount }}
+        </p>
+        <p>
+          <strong>{{ t('world.crm.projects.list.provisioning') }}:</strong>
+          {{ selectedProject.provisioning?.state || '—' }}
+        </p>
+        <p>
+          <strong>{{ t('world.crm.projects.form.description') }}:</strong>
+          {{ selectedProject.description || '—' }}
+        </p>
       </template>
     </AppModal>
 
@@ -340,7 +484,9 @@ async function deleteTask() {
       <p>Are you sure you want to delete this task?</p>
       <template #actions>
         <v-btn variant="text" @click="deleteDialog = false">Cancel</v-btn>
-        <v-btn color="error" :loading="pendingDelete" @click="deleteTask">Delete</v-btn>
+        <v-btn color="error" :loading="pendingDelete" @click="deleteTask"
+          >Delete</v-btn
+        >
       </template>
     </AppModal>
   </div>

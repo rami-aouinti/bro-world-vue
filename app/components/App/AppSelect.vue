@@ -9,7 +9,14 @@ const props = withDefaults(
   defineProps<{
     hideDetails?: boolean | 'auto'
     density?: 'default' | 'comfortable' | 'compact'
-    variant?: 'filled' | 'underlined' | 'outlined' | 'plain' | 'solo' | 'solo-filled' | 'solo-inverted'
+    variant?:
+      | 'filled'
+      | 'underlined'
+      | 'outlined'
+      | 'plain'
+      | 'solo'
+      | 'solo-filled'
+      | 'solo-inverted'
     menuProps?: Record<string, unknown> & { contentClass?: string }
     menuClass?: string
   }>(),
@@ -24,7 +31,9 @@ const props = withDefaults(
 
 const resolvedMenuProps = computed(() => {
   const contentClass = [props.menuClass, props.menuProps?.contentClass]
-    .filter((value): value is string => typeof value === 'string' && value.length > 0)
+    .filter(
+      (value): value is string => typeof value === 'string' && value.length > 0,
+    )
     .join(' ')
 
   return {
@@ -32,6 +41,16 @@ const resolvedMenuProps = computed(() => {
     contentClass,
   }
 })
+
+function resolveRawItem(item: any) {
+  return item?.raw ?? item
+}
+
+const passthroughSlotNames = computed(() =>
+  Object.keys(useSlots()).filter(
+    (slotName) => slotName !== 'item' && slotName !== 'selection',
+  ),
+)
 </script>
 
 <template>
@@ -43,7 +62,71 @@ const resolvedMenuProps = computed(() => {
     :menu-props="resolvedMenuProps"
     v-bind="$attrs"
   >
-    <template v-for="(_, slotName) in $slots" :key="slotName" #[slotName]="slotProps">
+    <template #item="slotProps">
+      <slot name="item" v-bind="slotProps">
+        <v-list-item
+          v-bind="slotProps.props"
+          :title="resolveRawItem(slotProps.item)?.title"
+          :subtitle="resolveRawItem(slotProps.item)?.subtitle"
+        >
+          <template
+            v-if="
+              resolveRawItem(slotProps.item)?.avatar ||
+              resolveRawItem(slotProps.item)?.avatarLabel
+            "
+            #prepend
+          >
+            <v-avatar v-if="resolveRawItem(slotProps.item)?.avatar" size="24">
+              <v-img
+                :src="resolveRawItem(slotProps.item)?.avatar"
+                :alt="resolveRawItem(slotProps.item)?.title || 'Avatar'"
+              />
+            </v-avatar>
+            <crm-entity-avatar
+              v-else
+              :label="
+                resolveRawItem(slotProps.item)?.avatarLabel ||
+                resolveRawItem(slotProps.item)?.title
+              "
+              :size="24"
+            />
+          </template>
+        </v-list-item>
+      </slot>
+    </template>
+    <template #selection="slotProps">
+      <slot name="selection" v-bind="slotProps">
+        <div class="d-flex align-center ga-2">
+          <template
+            v-if="
+              resolveRawItem(slotProps.item)?.avatar ||
+              resolveRawItem(slotProps.item)?.avatarLabel
+            "
+          >
+            <v-avatar v-if="resolveRawItem(slotProps.item)?.avatar" size="20">
+              <v-img
+                :src="resolveRawItem(slotProps.item)?.avatar"
+                :alt="resolveRawItem(slotProps.item)?.title || 'Avatar'"
+              />
+            </v-avatar>
+            <crm-entity-avatar
+              v-else
+              :label="
+                resolveRawItem(slotProps.item)?.avatarLabel ||
+                resolveRawItem(slotProps.item)?.title
+              "
+              :size="20"
+            />
+          </template>
+          <span>{{ resolveRawItem(slotProps.item)?.title }}</span>
+        </div>
+      </slot>
+    </template>
+    <template
+      v-for="slotName in passthroughSlotNames"
+      :key="slotName"
+      #[slotName]="slotProps"
+    >
       <slot :name="slotName" v-bind="slotProps || {}" />
     </template>
   </v-select>
