@@ -149,10 +149,10 @@ export const useCrmReferenceOptionsStore = defineStore(
 
     const employeeAssigneeOptions = computed<EmployeeSelectOption[]>(() =>
       employees.value
-        .filter((employee) => String(employee.userId ?? '').trim().length > 0)
+        .filter((employee) => String(employee.id ?? '').trim().length > 0)
         .map((employee) => ({
           title: employeeDisplayName(employee),
-          value: String(employee.userId),
+          value: String(employee.id),
           avatar: employee.photo,
           avatarLabel: employeeDisplayName(employee),
           subtitle: employee.email ?? undefined,
