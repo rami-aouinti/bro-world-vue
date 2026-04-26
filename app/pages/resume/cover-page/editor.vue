@@ -9,7 +9,7 @@ definePageMeta({
 })
 
 type Typography = 'sans' | 'serif'
-type PaletteId = 'ocean' | 'terra' | 'midnight'
+type PaletteId = 'ocean' | 'terra' | 'midnight' | 'forest' | 'sunset' | 'lavender'
 
 type CoverPageModel = {
   fullName: string
@@ -37,6 +37,9 @@ const palettes = {
   ocean: { page: '#f8fafc', soft: '#dbeafe', accent: '#1d4ed8', text: '#0f172a' },
   terra: { page: '#fffaf6', soft: '#f5e2d8', accent: '#9a3412', text: '#431407' },
   midnight: { page: '#f8fafc', soft: '#dbe4ff', accent: '#312e81', text: '#1f2937' },
+  forest: { page: '#f7fdf8', soft: '#d9f3df', accent: '#166534', text: '#052e16' },
+  sunset: { page: '#fffaf5', soft: '#ffe4d6', accent: '#ea580c', text: '#7c2d12' },
+  lavender: { page: '#faf7ff', soft: '#ede9fe', accent: '#7c3aed', text: '#3b0764' },
 } as const
 
 const activeTab = ref<'edit' | 'template' | 'design'>('edit')
@@ -192,7 +195,7 @@ onMounted(() => {
 .template-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
 .template-card { cursor: pointer; transition: .2s ease; }
 .template-card--active { border-color: rgb(var(--v-theme-primary)); box-shadow: 0 0 0 1px rgb(var(--v-theme-primary)); }
-.palette-grid { display: grid; grid-template-columns: repeat(3, minmax(68px, 1fr)); gap: 12px; }
+.palette-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(68px, 1fr)); gap: 12px; }
 .palette-item { border: 1px solid rgba(15, 23, 42, .15); border-radius: 12px; padding: 6px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: transparent; }
 .palette-item span { border-radius: 8px; height: 20px; }
 .palette-item--active { border-color: rgb(var(--v-theme-primary)); box-shadow: 0 0 0 1px rgb(var(--v-theme-primary)); }

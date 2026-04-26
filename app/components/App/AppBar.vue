@@ -156,6 +156,17 @@ const navMenus = [
 const featureMenu = navMenus[0]!
 const applicationsMenu = navMenus[1]!
 const worldMenu = navMenus[2]!
+const resumeEditorRoutes = [
+  '/resume/create',
+  '/resume/cover-page/editor',
+  '/resume/cover-letter/editor',
+] as const
+const resumeEditorNavButtons = [
+  { label: 'Resume', to: '/resume/create' },
+  { label: 'Cover page', to: '/resume/cover-page/editor' },
+  { label: 'Cover letter', to: '/resume/cover-letter/editor' },
+] as const
+const isResumeEditorRoute = computed(() => resumeEditorRoutes.includes(route.path as typeof resumeEditorRoutes[number]))
 
 const isDark = computed({
   get() {
@@ -566,7 +577,7 @@ onBeforeUnmount(() => {
         </div>
       </v-menu>
 
-      <v-menu v-model="mobileApplicationsMenuOpen" location="bottom">
+      <v-menu v-if="!isResumeEditorRoute" v-model="mobileApplicationsMenuOpen" location="bottom">
         <template #activator="{ props }">
           <v-btn
             v-bind="props"
@@ -617,7 +628,7 @@ onBeforeUnmount(() => {
         </div>
       </v-menu>
 
-      <v-menu v-model="mobileWorldMenuOpen" location="bottom">
+      <v-menu v-if="!isResumeEditorRoute" v-model="mobileWorldMenuOpen" location="bottom">
         <template #activator="{ props }">
           <v-btn
             v-bind="props"
@@ -667,10 +678,38 @@ onBeforeUnmount(() => {
           </div>
         </div>
       </v-menu>
+      <div v-if="isResumeEditorRoute" class="app-top-bar__resume-nav-mobile">
+        <v-btn
+          v-for="button in resumeEditorNavButtons"
+          :key="button.to"
+          :to="button.to"
+          variant="text"
+          size="small"
+          rounded="lg"
+          class="app-top-bar__resume-nav-btn"
+          :color="route.path === button.to ? 'primary' : undefined"
+        >
+          {{ button.label }}
+        </v-btn>
+      </div>
     </div>
 
     <div v-else class="app-top-bar__nav d-none d-md-flex">
-      <v-menu v-for="menu in navMenus" :key="menu.label" location="bottom">
+      <template v-if="isResumeEditorRoute">
+        <v-btn
+          v-for="button in resumeEditorNavButtons"
+          :key="button.to"
+          :to="button.to"
+          variant="text"
+          size="small"
+          rounded="lg"
+          class="app-top-bar__nav-btn"
+          :color="route.path === button.to ? 'primary' : undefined"
+        >
+          {{ button.label }}
+        </v-btn>
+      </template>
+      <v-menu v-else v-for="menu in navMenus" :key="menu.label" location="bottom">
         <template #activator="{ props }">
           <v-btn
             v-bind="props"
@@ -1190,6 +1229,17 @@ onBeforeUnmount(() => {
   padding-inline: 14px;
 }
 
+.app-top-bar__resume-nav-mobile {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.app-top-bar__resume-nav-btn {
+  min-width: 0;
+  padding-inline: 8px;
+}
+
 .app-top-bar__nav-icon-btn {
   min-width: 40px;
 }
@@ -1434,6 +1484,11 @@ onBeforeUnmount(() => {
 
   .app-top-bar__mega-menu-grid--two-columns {
     grid-template-columns: 1fr;
+  }
+
+  .app-top-bar__resume-nav-mobile {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .app-top-bar__mega-menu--mobile {

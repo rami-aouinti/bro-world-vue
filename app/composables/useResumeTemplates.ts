@@ -1,4 +1,4 @@
-import { COVER_LETTER_TEMPLATES, COVER_PAGE_TEMPLATES } from '~/constants/resumeTemplates'
+import { COVER_LETTER_TEMPLATES, COVER_PAGE_TEMPLATES, RESUME_TEMPLATES } from '~/constants/resumeTemplates'
 
 export type ResumeDocumentType = 'resume' | 'cover-page' | 'cover-letter'
 
@@ -11,11 +11,15 @@ export type ResumeTemplate = {
 }
 
 export function useResumeTemplates() {
-  const resumeTemplates = computed<ResumeTemplate[]>(() => [
-    { id: 'resume-terra', title: 'Resume · Terra Sidebar', image: '/img/cv/cv-1.png', type: 'resume', templateId: 'terra' },
-    { id: 'resume-corporate-blue', title: 'Resume · Corporate Blue', image: '/img/cv/cv-2.png', type: 'resume', templateId: 'corporate-blue' },
-    { id: 'resume-ocean-split', title: 'Resume · Ocean Split', image: '/img/cv/cv-3.png', type: 'resume', templateId: 'ocean-split' },
-  ])
+  const resumeTemplates = computed<ResumeTemplate[]>(() =>
+    RESUME_TEMPLATES.map(template => ({
+      id: `resume-${template.id}`,
+      title: `Resume · ${template.title}`,
+      image: template.image,
+      type: 'resume',
+      templateId: template.id,
+    })),
+  )
 
   const coverPageTemplates = computed<ResumeTemplate[]>(() =>
     COVER_PAGE_TEMPLATES.map(template => ({

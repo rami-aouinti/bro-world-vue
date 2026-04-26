@@ -11,7 +11,13 @@ import ResumeTemplateTraditional from '~/components/Resume/Templates/ResumeTempl
 import ResumeTemplateOceanSplit from '~/components/Resume/Templates/ResumeTemplateOceanSplit.vue'
 import ResumeTemplateCorporateBlue from '~/components/Resume/Templates/ResumeTemplateCorporateBlue.vue'
 import ResumeTemplateSharedSections from '~/components/Resume/Templates/ResumeTemplateSharedSections.vue'
-import { COVER_LETTER_TEMPLATES, COVER_PAGE_TEMPLATES } from '~/constants/resumeTemplates'
+import {
+  COVER_LETTER_TEMPLATES,
+  COVER_PAGE_TEMPLATES,
+  DEFAULT_RESUME_TEMPLATE_ID,
+  RESUME_TEMPLATES,
+  type ResumeTemplateVariant,
+} from '~/constants/resumeTemplates'
 
 definePageMeta({
   title: 'Create Resume',
@@ -141,18 +147,7 @@ type Template = {
   isCustomized: boolean
   isFree: boolean
   useTimeline: boolean
-  variant:
-    | 'classic'
-    | 'modern'
-    | 'professional'
-    | 'traditional'
-    | 'creative'
-    | 'minimalist'
-    | 'aurora'
-    | 'executive'
-    | 'terra'
-    | 'ocean-split'
-    | 'corporate-blue'
+  variant: ResumeTemplateVariant
 }
 
 type TemplateFilter =
@@ -183,11 +178,26 @@ type TextStyleOption = {
   className: string
 }
 type LevelInputMode = 'percent' | 'stars'
-type PhotoShape = 'square' | 'semi' | 'circle'
+type PhotoShape = 'square' | 'rounded' | 'circle' | 'portrait-card' | 'soft-blob' | 'hex'
+type PhotoShapeOption = {
+  label: string
+  value: PhotoShape
+  icon: string
+}
+type LayoutSettings = {
+  photoSize: number
+  photoBorderWidth: number
+  photoPosition: 'left' | 'center' | 'right'
+  sidebarWidth: number
+  sectionDividerStyle: 'none' | 'line' | 'thick'
+  headingCase: 'normal' | 'uppercase'
+  dateColumnWidth: number
+  lineDensity: 'compact' | 'comfortable'
+}
 
 const activeTab = ref<'edit' | 'template' | 'design' | 'import'>('edit')
 const route = useRoute()
-const selectedTemplate = ref('classic')
+const selectedTemplate = ref(DEFAULT_RESUME_TEMPLATE_ID)
 const selectedDocumentType = ref<'resume'>('resume')
 const selectedTheme = ref('ocean')
 const selectedRounded = ref<'none' | 'sm' | 'md' | 'lg'>('md')
@@ -195,6 +205,24 @@ const selectedTextStyle = ref<TextStyleOption['value']>('clean')
 const levelInputMode = ref<LevelInputMode>('percent')
 
 const selectedTemplateFilter = ref<TemplateFilter>('all')
+const layoutSettings = reactive<LayoutSettings>({
+  photoSize: 140,
+  photoBorderWidth: 6,
+  photoPosition: 'center',
+  sidebarWidth: 280,
+  sectionDividerStyle: 'line',
+  headingCase: 'normal',
+  dateColumnWidth: 120,
+  lineDensity: 'comfortable',
+})
+const photoShapeOptions = [
+  { label: 'Carré', value: 'square', icon: '□' },
+  { label: 'Arrondi', value: 'rounded', icon: '▢' },
+  { label: 'Cercle', value: 'circle', icon: '◯' },
+  { label: 'Portrait', value: 'portrait-card', icon: '▮' },
+  { label: 'Blob', value: 'soft-blob', icon: '⬭' },
+  { label: 'Hex', value: 'hex', icon: '⬢' },
+] as const satisfies ReadonlyArray<PhotoShapeOption>
 
 const templateFilters = [
   { label: 'All', value: 'all' },
@@ -238,172 +266,24 @@ const coverLetterTemplateCards: Template[] = COVER_LETTER_TEMPLATES.map(template
   variant: template.id === 'cover-letter-classic' ? 'traditional' : 'modern',
 }))
 
+const resumeTemplateCards: Template[] = RESUME_TEMPLATES.map(template => ({
+  id: template.id,
+  title: template.title,
+  subtitle: template.subtitle,
+  image: template.image,
+  documentType: 'resume',
+  hasPhoto: template.flags.photo,
+  isTwoColumn: template.flags.twoColumn,
+  isAts: template.flags.ats,
+  hasDocx: template.flags.docx,
+  isCustomized: template.flags.customized,
+  isFree: template.flags.free,
+  useTimeline: template.flags.timeline,
+  variant: template.variant,
+}))
+
 const templates: Template[] = [
-  {
-    id: 'terra',
-    title: 'Terra Sidebar',
-    subtitle: 'Warm sidebar profile in French style',
-    image: '/img/cv/cv-1.png',
-    documentType: 'resume',
-    hasPhoto: true,
-    isTwoColumn: true,
-    isAts: false,
-    hasDocx: true,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: 'terra',
-  },
-  {
-    id: 'ocean-split',
-    title: 'Ocean Split',
-    subtitle: 'Diagonal split with textured blue panel',
-    image: '/img/cv/cv-3.png',
-    documentType: 'resume',
-    hasPhoto: true,
-    isTwoColumn: true,
-    isAts: false,
-    hasDocx: false,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: 'ocean-split',
-  },
-  {
-    id: 'corporate-blue',
-    title: 'Corporate Blue',
-    subtitle: 'Executive header with information sidebar',
-    image: '/img/cv/cv-2.png',
-    documentType: 'resume',
-    hasPhoto: true,
-    isTwoColumn: true,
-    isAts: true,
-    hasDocx: true,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: 'corporate-blue',
-  },
-  {
-    id: 'classic',
-    title: 'Classic',
-    subtitle: 'Simple and readable format',
-    image: '/img/cv/cv-4.png',
-    documentType: 'resume',
-    hasPhoto: false,
-    isTwoColumn: false,
-    isAts: false,
-    hasDocx: true,
-    isCustomized: false,
-    isFree: true,
-    useTimeline: false,
-    variant: 'classic',
-  },
-  {
-    id: 'modern',
-    title: 'Modern',
-    subtitle: 'Clean blocks and balanced content',
-    image: '/img/cv/cv-3.png',
-    documentType: 'resume',
-    hasPhoto: true,
-    isTwoColumn: true,
-    isAts: false,
-    hasDocx: true,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: 'modern',
-  },
-  {
-    id: 'professional',
-    title: 'Professional',
-    subtitle: 'Sidebar profile with details',
-    image: '/img/cv/cv-1.png',
-    documentType: 'resume',
-    hasPhoto: true,
-    isTwoColumn: true,
-    isAts: false,
-    hasDocx: true,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: 'professional',
-  },
-  {
-    id: 'traditional',
-    title: 'Traditional',
-    subtitle: 'Formal and timeless structure',
-    image: '/img/cv/cv-2.png',
-    documentType: 'resume',
-    hasPhoto: false,
-    isTwoColumn: false,
-    isAts: false,
-    hasDocx: true,
-    isCustomized: false,
-    isFree: true,
-    useTimeline: false,
-    variant: 'traditional',
-  },
-  {
-    id: 'creative',
-    title: 'Creative Timeline',
-    subtitle: 'Creative layout with timeline sections',
-    image: '/img/cv/cv-5.png',
-    documentType: 'resume',
-    hasPhoto: true,
-    isTwoColumn: true,
-    isAts: false,
-    hasDocx: false,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: true,
-    variant: 'creative',
-  },
-  {
-    id: 'minimalist',
-    title: 'Minimalist',
-    subtitle: 'Monochrome editorial minimalism',
-    image: '/img/cv/cv-4.png',
-    documentType: 'resume',
-    hasPhoto: false,
-    isTwoColumn: false,
-    isAts: true,
-    hasDocx: true,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: 'minimalist',
-  },
-  {
-    id: 'aurora',
-    title: 'Aurora',
-    subtitle: 'Dark glassmorphism with neon accents',
-    image: '/img/cv/cv-1.png',
-    documentType: 'resume',
-    hasPhoto: true,
-    isTwoColumn: true,
-    isAts: false,
-    hasDocx: false,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: 'aurora',
-  },
-  {
-    id: 'executive',
-    title: 'Executive Timeline',
-    subtitle: 'Leadership layout with timeline details',
-    image: '/img/cv/cv-2.png',
-    documentType: 'resume',
-    hasPhoto: true,
-    isTwoColumn: true,
-    isAts: true,
-    hasDocx: true,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: true,
-    variant: 'executive',
-  },
+  ...resumeTemplateCards,
   ...coverPageTemplateCards,
   ...coverLetterTemplateCards,
 ]
@@ -593,8 +473,7 @@ onMounted(() => {
 
   if (typeof templateFromQuery === 'string') {
     const exists = templatesByDocumentType.value.some((template) => template.id === templateFromQuery)
-    if (exists)
-      selectedTemplate.value = templateFromQuery
+    selectedTemplate.value = exists ? templateFromQuery : DEFAULT_RESUME_TEMPLATE_ID
   }
 
   if (mode === 'write')
@@ -649,7 +528,12 @@ const signatureDialogOpen = ref(false)
 const signatureDataUrl = ref('')
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 const isDrawingSignature = ref(false)
-const selectedPhotoShape = ref<PhotoShape>('square')
+const selectedPhotoShape = ref<string>('square')
+const safePhotoShape = computed<PhotoShape>(() => (
+  photoShapeOptions.some(option => option.value === selectedPhotoShape.value)
+    ? (selectedPhotoShape.value as PhotoShape)
+    : 'square'
+))
 const previewToolsVisible = ref(false)
 const previewToolsTop = ref(20)
 let aiElapsedTimer: ReturnType<typeof setInterval> | null = null
@@ -1381,6 +1265,23 @@ onUnmounted(() => {
   showRightDrawerDesktop.value = previousDesktopRightDrawer
   showRightDrawerMobile.value = previousMobileRightDrawer
 })
+
+if (import.meta.client) {
+  const STORAGE_KEY = 'resume-layout-settings-v1'
+  const raw = localStorage.getItem(STORAGE_KEY)
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw) as Partial<LayoutSettings>
+      Object.assign(layoutSettings, parsed)
+    } catch {
+      localStorage.removeItem(STORAGE_KEY)
+    }
+  }
+
+  watch(layoutSettings, (value) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(value))
+  }, { deep: true })
+}
 </script>
 
 <template>
@@ -1460,9 +1361,14 @@ onUnmounted(() => {
                 <div class="photo-shape-picker mt-2">
                   <span class="text-caption">Forme image</span>
                   <v-btn-toggle v-model="selectedPhotoShape" mandatory density="compact" color="primary">
-                    <v-btn value="square" size="x-small">Carré</v-btn>
-                    <v-btn value="semi" size="x-small">Demi-cercle</v-btn>
-                    <v-btn value="circle" size="x-small">Cercle</v-btn>
+                    <v-btn
+                      v-for="shape in photoShapeOptions"
+                      :key="`photo-shape-picker-${shape.value}`"
+                      :value="shape.value"
+                      size="x-small"
+                    >
+                      {{ shape.label }}
+                    </v-btn>
                   </v-btn-toggle>
                 </div>
               </div>
@@ -2036,6 +1942,91 @@ onUnmounted(() => {
                 density="comfortable"
                 hide-details
               />
+
+              <v-divider class="my-4" />
+              <p class="section-label">Layout settings</p>
+              <v-slider
+                v-model="layoutSettings.photoSize"
+                label="Photo size"
+                min="100"
+                max="220"
+                step="2"
+                thumb-label
+                hide-details="auto"
+              />
+              <v-slider
+                v-model="layoutSettings.photoBorderWidth"
+                label="Photo border"
+                min="0"
+                max="16"
+                step="1"
+                thumb-label
+                hide-details="auto"
+              />
+              <AppSelect
+                v-model="layoutSettings.photoPosition"
+                :items="[
+                  { label: 'Left', value: 'left' },
+                  { label: 'Center', value: 'center' },
+                  { label: 'Right', value: 'right' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Photo position"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <v-slider
+                v-model="layoutSettings.sidebarWidth"
+                label="Sidebar width"
+                min="220"
+                max="360"
+                step="2"
+                thumb-label
+                hide-details="auto"
+              />
+              <AppSelect
+                v-model="layoutSettings.sectionDividerStyle"
+                :items="[
+                  { label: 'None', value: 'none' },
+                  { label: 'Line', value: 'line' },
+                  { label: 'Thick', value: 'thick' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Section divider"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <v-switch
+                v-model="layoutSettings.headingCase"
+                false-value="normal"
+                true-value="uppercase"
+                label="Uppercase headings"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
+              <v-slider
+                v-model="layoutSettings.dateColumnWidth"
+                label="Date column width"
+                min="80"
+                max="180"
+                step="2"
+                thumb-label
+                hide-details="auto"
+              />
+              <v-switch
+                v-model="layoutSettings.lineDensity"
+                false-value="comfortable"
+                true-value="compact"
+                label="Compact line density"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
             </article>
           </v-window-item>
 
@@ -2108,7 +2099,7 @@ onUnmounted(() => {
         <div
           ref="previewExportRef"
           class="preview-grid"
-          :class="[activeRoundedClass, activeTextStyleClass, `photo-shape-${selectedPhotoShape}`]"
+          :class="[activeRoundedClass, activeTextStyleClass, `photo-shape-${safePhotoShape}`]"
           :style="previewStyle"
           @mouseenter="onPreviewMouseEnter"
           @mouseleave="onPreviewMouseLeave"
@@ -2174,9 +2165,16 @@ onUnmounted(() => {
             </v-btn>
           </div>
           <div class="preview-image-shapes" :class="{ 'preview-image-shapes--active': previewToolsVisible }">
-            <v-btn size="x-small" variant="tonal" :color="selectedPhotoShape === 'square' ? 'primary' : undefined" @click="selectedPhotoShape = 'square'">□</v-btn>
-            <v-btn size="x-small" variant="tonal" :color="selectedPhotoShape === 'semi' ? 'primary' : undefined" @click="selectedPhotoShape = 'semi'">◠</v-btn>
-            <v-btn size="x-small" variant="tonal" :color="selectedPhotoShape === 'circle' ? 'primary' : undefined" @click="selectedPhotoShape = 'circle'">◯</v-btn>
+            <v-btn
+              v-for="shape in photoShapeOptions"
+              :key="`preview-photo-shape-${shape.value}`"
+              size="x-small"
+              variant="tonal"
+              :color="safePhotoShape === shape.value ? 'primary' : undefined"
+              @click="selectedPhotoShape = shape.value"
+            >
+              {{ shape.icon }}
+            </v-btn>
           </div>
           <component
             :is="selectedTemplateComponent"
@@ -2184,6 +2182,7 @@ onUnmounted(() => {
             :show-photo="templateSupportsPhoto"
             :use-timeline="templateUsesTimeline"
             :on-photo-click="onPreviewPhotoClick"
+            :layout-settings="layoutSettings"
             editable
           />
           <ResumeTemplateSharedSections
@@ -2221,6 +2220,7 @@ onUnmounted(() => {
               :show-photo="templateSupportsPhoto"
               :use-timeline="templateUsesTimeline"
               :on-photo-click="onPreviewPhotoClick"
+              :layout-settings="layoutSettings"
               editable
             />
             <ResumeTemplateSharedSections
@@ -2662,18 +2662,46 @@ onUnmounted(() => {
 }
 
 .preview-grid.photo-shape-square :deep(.v-avatar),
-.preview-grid.photo-shape-square :deep(.avatar) {
+.preview-grid.photo-shape-square :deep(.avatar),
+.preview-grid.photo-shape-square :deep(img.avatar),
+.preview-grid.photo-shape-square :deep(img[class*='photo']) {
   border-radius: 8px !important;
 }
 
-.preview-grid.photo-shape-semi :deep(.v-avatar),
-.preview-grid.photo-shape-semi :deep(.avatar) {
-  border-radius: 999px 999px 18px 18px !important;
+.preview-grid.photo-shape-rounded :deep(.v-avatar),
+.preview-grid.photo-shape-rounded :deep(.avatar),
+.preview-grid.photo-shape-rounded :deep(img.avatar),
+.preview-grid.photo-shape-rounded :deep(img[class*='photo']) {
+  border-radius: 18px !important;
 }
 
 .preview-grid.photo-shape-circle :deep(.v-avatar),
-.preview-grid.photo-shape-circle :deep(.avatar) {
+.preview-grid.photo-shape-circle :deep(.avatar),
+.preview-grid.photo-shape-circle :deep(img.avatar),
+.preview-grid.photo-shape-circle :deep(img[class*='photo']) {
   border-radius: 50% !important;
+}
+
+.preview-grid.photo-shape-portrait-card :deep(.v-avatar),
+.preview-grid.photo-shape-portrait-card :deep(.avatar),
+.preview-grid.photo-shape-portrait-card :deep(img.avatar),
+.preview-grid.photo-shape-portrait-card :deep(img[class*='photo']) {
+  border-radius: 22px !important;
+}
+
+.preview-grid.photo-shape-soft-blob :deep(.v-avatar),
+.preview-grid.photo-shape-soft-blob :deep(.avatar),
+.preview-grid.photo-shape-soft-blob :deep(img.avatar),
+.preview-grid.photo-shape-soft-blob :deep(img[class*='photo']) {
+  border-radius: 62% 38% 48% 52% / 44% 58% 42% 56% !important;
+}
+
+.preview-grid.photo-shape-hex :deep(.v-avatar),
+.preview-grid.photo-shape-hex :deep(.avatar),
+.preview-grid.photo-shape-hex :deep(img.avatar),
+.preview-grid.photo-shape-hex :deep(img[class*='photo']) {
+  clip-path: polygon(25% 6%, 75% 6%, 100% 50%, 75% 94%, 25% 94%, 0 50%);
+  border-radius: 0 !important;
 }
 
 .preview-grid .text-dark {
