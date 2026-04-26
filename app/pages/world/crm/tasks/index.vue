@@ -297,7 +297,7 @@ async function deleteTask() {
       <template v-else>
         <v-row>
           <v-col v-for="task in paginatedTasks" :key="task.id" cols="12" md="4">
-            <WorldCard extra-class="pa-4 platform-style-card h-100">
+            <WorldCard extra-class="pa-4 platform-style-card h-100 d-flex flex-column">
               <div class="d-flex align-start justify-space-between ga-2 mb-2">
                 <div class="d-flex align-center ga-2">
                   <CrmEntityAvatar :label="task.title" :size="24" />
@@ -346,26 +346,27 @@ async function deleteTask() {
                 {{ task.children.length }}
                 {{ t('world.crm.tasks.list.subtasks') }}
               </p>
-              <div v-if="isAdminOrRoot" class="d-flex justify-center ga-2 mt-3">
+              <v-spacer />
+              <div v-if="isAdminOrRoot" class="d-flex justify-center ga-1 mt-2">
                 <v-btn
                   icon="mdi-eye-outline"
                   color="info"
                   variant="text"
-                  size="small"
+                  size="x-small"
                   @click="router.push(`/world/crm/tasks/${task.id}?mode=view`)"
                 />
                 <v-btn
                   icon="mdi-pencil-outline"
                   color="primary"
                   variant="text"
-                  size="small"
+                  size="x-small"
                   @click="router.push(`/world/crm/tasks/${task.id}`)"
                 />
                 <v-btn
                   icon="mdi-delete-outline"
                   color="error"
                   variant="text"
-                  size="small"
+                  size="x-small"
                   @click="openDeleteDialog(task.id)"
                 />
               </div>

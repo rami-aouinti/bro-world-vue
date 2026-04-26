@@ -296,12 +296,12 @@ async function deleteProject() {
                 </v-chip>
               </div>
               <v-spacer />
-              <div v-if="isAdminOrRoot" class="d-flex justify-center ga-2 mt-3">
+              <div v-if="isAdminOrRoot" class="d-flex justify-center ga-1 mt-1">
                 <v-btn
                   icon="mdi-eye-outline"
                   color="info"
                   variant="text"
-                  size="small"
+                  size="x-small"
                   @click="
                     router.push(`/world/crm/projects/${project.id}?mode=view`)
                   "
@@ -310,14 +310,14 @@ async function deleteProject() {
                   icon="mdi-pencil-outline"
                   color="primary"
                   variant="text"
-                  size="small"
+                  size="x-small"
                   @click="router.push(`/world/crm/projects/${project.id}`)"
                 />
                 <v-btn
                   icon="mdi-delete-outline"
                   color="error"
                   variant="text"
-                  size="small"
+                  size="x-small"
                   @click="openDeleteDialog(project.id)"
                 />
               </div>

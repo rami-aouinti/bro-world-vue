@@ -307,19 +307,20 @@ async function deleteRequest() {
           <WorldCard
             extra-class="pa-4 h-100 d-flex flex-column platform-style-card"
           >
-            <div class="d-flex align-center ga-2 mb-2">
-              <CrmEntityAvatar :label="request.title" :size="24" />
-              <p class="text-subtitle-1 text-truncate mb-0">
-                {{ request.title }}
-              </p>
+            <div class="d-flex align-start justify-space-between ga-2 mb-2">
+              <div class="d-flex align-center ga-2 min-w-0">
+                <CrmEntityAvatar :label="request.title" :size="24" />
+                <p class="text-subtitle-1 text-truncate mb-0">
+                  {{ request.title }}
+                </p>
+              </div>
+              <v-chip
+                size="small"
+                :color="requestStatusColor(request.status)"
+                variant="tonal"
+              >{{ request.status }}</v-chip>
             </div>
-            <v-chip
-              size="small"
-              :color="requestStatusColor(request.status)"
-              variant="tonal"
-              class="mb-2"
-              >{{ request.status }}</v-chip
-            >
+
             <div class="mb-4">
               <span class="text-body-2 text-medium-emphasis mr-2"
                 >{{ t('world.crm.taskRequests.list.task') }}:</span
@@ -351,12 +352,12 @@ async function deleteRequest() {
               >
             </div>
             <v-spacer />
-            <div v-if="isAdminOrRoot" class="d-flex justify-center ga-2 mt-3">
+            <div v-if="isAdminOrRoot" class="d-flex justify-center ga-1 mt-2">
               <v-btn
                 icon="mdi-eye-outline"
                 color="info"
                 variant="text"
-                size="small"
+                size="x-small"
                 @click="
                   router.push(
                     `/world/crm/task-requests/${request.id}?mode=view`,
@@ -367,14 +368,14 @@ async function deleteRequest() {
                 icon="mdi-pencil-outline"
                 color="primary"
                 variant="text"
-                size="small"
+                size="x-small"
                 @click="router.push(`/world/crm/task-requests/${request.id}`)"
               />
               <v-btn
                 icon="mdi-delete-outline"
                 color="error"
                 variant="text"
-                size="small"
+                size="x-small"
                 @click="openDeleteDialog(request.id)"
               />
             </div>

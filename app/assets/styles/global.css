@@ -164,10 +164,9 @@ html.dark {
 .platform-style-card {
   background: linear-gradient(
     240deg,
-    rgba(var(--v-theme-primary), 0.38) 0%,
-    transparent 20%
+    rgba(var(--v-theme-primary), 0.2) 0%,
+    transparent 26%
   );
-  cursor: pointer;
   transition:
     transform 0.25s ease,
     box-shadow 0.25s ease,
@@ -176,12 +175,8 @@ html.dark {
 }
 
 .platform-style-card:hover {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
-}
-
-.platform-style-card:hover {
-  transform: scale(1.03);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
 }
 
 .platform-style-card--selected {
