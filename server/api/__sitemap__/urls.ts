@@ -11,32 +11,59 @@ export default defineSitemapEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig(event)
   const base = runtimeConfig.public.siteUrl
 
-  // ✅ Pages publiques uniquement (SEO)
-  const staticUrls = [
-    { loc: `${base}/`, lastmod: new Date().toISOString() },
-    { loc: `${base}/about`, lastmod: new Date().toISOString() },
-    { loc: `${base}/contact`, lastmod: new Date().toISOString() },
-    { loc: `${base}/faq`, lastmod: new Date().toISOString() },
-    { loc: `${base}/service`, lastmod: new Date().toISOString() },
+  // 🚨 ROUTES À EXCLURE (APP / PRIVATE / ADMIN)
+  const blockedPrefixes = [
+    '/profile',
+    '/settings',
+    '/inbox',
+    '/notification',
+    '/auth',
+    '/forgot-password',
 
-    // pages utiles uniquement
-    { loc: `${base}/world` },
-    { loc: `${base}/world/shop` },
-    { loc: `${base}/world/learning` },
-    { loc: `${base}/world/crm` },
+    '/world/crm',
+    '/world/jobs',
+    '/world/shop/checkout',
+    '/world/shop/payment',
+    '/world/learning/admin',
 
-    { loc: `${base}/applications/quiz` },
-    { loc: `${base}/applications/sports` },
-    { loc: `${base}/platform`  },
-    { loc: `${base}/games` },
+    '/platform',
+    '/resume',
   ]
+
+  const isBlocked = (url: string) =>
+    blockedPrefixes.some((p) => url.startsWith(p))
+
+  // ✅ SEO ONLY (public pages)
+  const staticUrls = [
+    '/',
+    '/about',
+    '/contact',
+    '/faq',
+    '/service',
+
+    '/world',
+    '/world/shop',
+    '/world/learning',
+
+    '/applications/quiz',
+    '/applications/sports',
+    '/games',
+  ]
+    .filter((url) => !isBlocked(url))
+    .map((url) => ({
+      loc: `${base}${url}`,
+      lastmod: new Date().toISOString(),
+    }))
 
   const blogIndex: Array<{ loc: string; lastmod?: string }> = []
 
   try {
     const endpoint = withQuery(
-      new URL('/api/v1/public/blogs/general', runtimeConfig.public.apiBaseUrl).toString(),
-      { page: 1, limit: 200 },
+      new URL(
+        '/api/v1/public/blogs/general',
+        runtimeConfig.public.apiBaseUrl,
+      ).toString(),
+      { page: 1, limit: 100 },
     )
 
     const payload = await $fetch<BlogListResponse>(endpoint)
@@ -45,15 +72,20 @@ export default defineSitemapEventHandler(async (event) => {
     for (const post of posts) {
       const slug = post.slug?.trim()
 
-      if (!slug || slug.length > 120) continue
+      // sécurité SEO
+      if (!slug || slug.length < 10 || slug.length > 120) continue
+
+      const url = `/blog/${encodeURIComponent(slug)}/post`
+
+      if (isBlocked(url)) continue
 
       blogIndex.push({
-        loc: `${base}/blog/${encodeURIComponent(slug)}/post`,
+        loc: `${base}${url}`,
         lastmod: post.updatedAt ?? post.createdAt ?? undefined,
       })
     }
   } catch {
-    // fallback propre si API KO
+    // fallback safe
   }
 
   return [...staticUrls, ...blogIndex]
