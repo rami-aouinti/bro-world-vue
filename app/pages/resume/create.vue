@@ -183,7 +183,12 @@ type TextStyleOption = {
   className: string
 }
 type LevelInputMode = 'percent' | 'stars'
-type PhotoShape = 'square' | 'semi' | 'circle'
+type PhotoShape = 'square' | 'rounded' | 'circle' | 'portrait-card' | 'soft-blob' | 'hex'
+type PhotoShapeOption = {
+  label: string
+  value: PhotoShape
+  icon: string
+}
 
 const activeTab = ref<'edit' | 'template' | 'design' | 'import'>('edit')
 const route = useRoute()
@@ -195,6 +200,14 @@ const selectedTextStyle = ref<TextStyleOption['value']>('clean')
 const levelInputMode = ref<LevelInputMode>('percent')
 
 const selectedTemplateFilter = ref<TemplateFilter>('all')
+const photoShapeOptions = [
+  { label: 'Carré', value: 'square', icon: '□' },
+  { label: 'Arrondi', value: 'rounded', icon: '▢' },
+  { label: 'Cercle', value: 'circle', icon: '◯' },
+  { label: 'Portrait', value: 'portrait-card', icon: '▮' },
+  { label: 'Blob', value: 'soft-blob', icon: '⬭' },
+  { label: 'Hex', value: 'hex', icon: '⬢' },
+] as const satisfies ReadonlyArray<PhotoShapeOption>
 
 const templateFilters = [
   { label: 'All', value: 'all' },
@@ -649,7 +662,12 @@ const signatureDialogOpen = ref(false)
 const signatureDataUrl = ref('')
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 const isDrawingSignature = ref(false)
-const selectedPhotoShape = ref<PhotoShape>('square')
+const selectedPhotoShape = ref<string>('square')
+const safePhotoShape = computed<PhotoShape>(() => (
+  photoShapeOptions.some(option => option.value === selectedPhotoShape.value)
+    ? (selectedPhotoShape.value as PhotoShape)
+    : 'square'
+))
 const previewToolsVisible = ref(false)
 const previewToolsTop = ref(20)
 let aiElapsedTimer: ReturnType<typeof setInterval> | null = null
@@ -1460,9 +1478,14 @@ onUnmounted(() => {
                 <div class="photo-shape-picker mt-2">
                   <span class="text-caption">Forme image</span>
                   <v-btn-toggle v-model="selectedPhotoShape" mandatory density="compact" color="primary">
-                    <v-btn value="square" size="x-small">Carré</v-btn>
-                    <v-btn value="semi" size="x-small">Demi-cercle</v-btn>
-                    <v-btn value="circle" size="x-small">Cercle</v-btn>
+                    <v-btn
+                      v-for="shape in photoShapeOptions"
+                      :key="`photo-shape-picker-${shape.value}`"
+                      :value="shape.value"
+                      size="x-small"
+                    >
+                      {{ shape.label }}
+                    </v-btn>
                   </v-btn-toggle>
                 </div>
               </div>
@@ -2108,7 +2131,7 @@ onUnmounted(() => {
         <div
           ref="previewExportRef"
           class="preview-grid"
-          :class="[activeRoundedClass, activeTextStyleClass, `photo-shape-${selectedPhotoShape}`]"
+          :class="[activeRoundedClass, activeTextStyleClass, `photo-shape-${safePhotoShape}`]"
           :style="previewStyle"
           @mouseenter="onPreviewMouseEnter"
           @mouseleave="onPreviewMouseLeave"
@@ -2174,9 +2197,16 @@ onUnmounted(() => {
             </v-btn>
           </div>
           <div class="preview-image-shapes" :class="{ 'preview-image-shapes--active': previewToolsVisible }">
-            <v-btn size="x-small" variant="tonal" :color="selectedPhotoShape === 'square' ? 'primary' : undefined" @click="selectedPhotoShape = 'square'">□</v-btn>
-            <v-btn size="x-small" variant="tonal" :color="selectedPhotoShape === 'semi' ? 'primary' : undefined" @click="selectedPhotoShape = 'semi'">◠</v-btn>
-            <v-btn size="x-small" variant="tonal" :color="selectedPhotoShape === 'circle' ? 'primary' : undefined" @click="selectedPhotoShape = 'circle'">◯</v-btn>
+            <v-btn
+              v-for="shape in photoShapeOptions"
+              :key="`preview-photo-shape-${shape.value}`"
+              size="x-small"
+              variant="tonal"
+              :color="safePhotoShape === shape.value ? 'primary' : undefined"
+              @click="selectedPhotoShape = shape.value"
+            >
+              {{ shape.icon }}
+            </v-btn>
           </div>
           <component
             :is="selectedTemplateComponent"
@@ -2662,18 +2692,46 @@ onUnmounted(() => {
 }
 
 .preview-grid.photo-shape-square :deep(.v-avatar),
-.preview-grid.photo-shape-square :deep(.avatar) {
+.preview-grid.photo-shape-square :deep(.avatar),
+.preview-grid.photo-shape-square :deep(img.avatar),
+.preview-grid.photo-shape-square :deep(img[class*='photo']) {
   border-radius: 8px !important;
 }
 
-.preview-grid.photo-shape-semi :deep(.v-avatar),
-.preview-grid.photo-shape-semi :deep(.avatar) {
-  border-radius: 999px 999px 18px 18px !important;
+.preview-grid.photo-shape-rounded :deep(.v-avatar),
+.preview-grid.photo-shape-rounded :deep(.avatar),
+.preview-grid.photo-shape-rounded :deep(img.avatar),
+.preview-grid.photo-shape-rounded :deep(img[class*='photo']) {
+  border-radius: 18px !important;
 }
 
 .preview-grid.photo-shape-circle :deep(.v-avatar),
-.preview-grid.photo-shape-circle :deep(.avatar) {
+.preview-grid.photo-shape-circle :deep(.avatar),
+.preview-grid.photo-shape-circle :deep(img.avatar),
+.preview-grid.photo-shape-circle :deep(img[class*='photo']) {
   border-radius: 50% !important;
+}
+
+.preview-grid.photo-shape-portrait-card :deep(.v-avatar),
+.preview-grid.photo-shape-portrait-card :deep(.avatar),
+.preview-grid.photo-shape-portrait-card :deep(img.avatar),
+.preview-grid.photo-shape-portrait-card :deep(img[class*='photo']) {
+  border-radius: 22px !important;
+}
+
+.preview-grid.photo-shape-soft-blob :deep(.v-avatar),
+.preview-grid.photo-shape-soft-blob :deep(.avatar),
+.preview-grid.photo-shape-soft-blob :deep(img.avatar),
+.preview-grid.photo-shape-soft-blob :deep(img[class*='photo']) {
+  border-radius: 62% 38% 48% 52% / 44% 58% 42% 56% !important;
+}
+
+.preview-grid.photo-shape-hex :deep(.v-avatar),
+.preview-grid.photo-shape-hex :deep(.avatar),
+.preview-grid.photo-shape-hex :deep(img.avatar),
+.preview-grid.photo-shape-hex :deep(img[class*='photo']) {
+  clip-path: polygon(25% 6%, 75% 6%, 100% 50%, 75% 94%, 25% 94%, 0 50%);
+  border-radius: 0 !important;
 }
 
 .preview-grid .text-dark {
