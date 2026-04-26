@@ -187,7 +187,7 @@ type PhotoShape = 'square' | 'semi' | 'circle'
 const activeTab = ref<'edit' | 'template' | 'design' | 'import'>('edit')
 const route = useRoute()
 const selectedTemplate = ref('classic')
-const selectedDocumentType = ref<'resume' | 'cover-page' | 'cover-letter'>('resume')
+const selectedDocumentType = ref<'resume'>('resume')
 const selectedTheme = ref('ocean')
 const selectedRounded = ref<'none' | 'sm' | 'md' | 'lg'>('md')
 const selectedTextStyle = ref<TextStyleOption['value']>('clean')
@@ -612,22 +612,12 @@ const selectedTemplateConfig = computed(
     templates[0],
 )
 
-watch(selectedDocumentType, () => {
-  const firstTemplate = templatesByDocumentType.value[0]
-  if (firstTemplate)
-    selectedTemplate.value = firstTemplate.id
-})
-
 onMounted(() => {
-  const docType = route.query.docType
   const templateFromQuery = route.query.template
   const mode = route.query.mode
 
-  if (docType === 'resume' || docType === 'cover-page' || docType === 'cover-letter')
-    selectedDocumentType.value = docType
-
   if (typeof templateFromQuery === 'string') {
-    const exists = templates.some((template) => template.id === templateFromQuery)
+    const exists = templatesByDocumentType.value.some((template) => template.id === templateFromQuery)
     if (exists)
       selectedTemplate.value = templateFromQuery
   }
