@@ -25,9 +25,15 @@ const selectedTaskRequest = ref<CrmTaskRequestItem | null>(null)
 
 crmKanbanStore.hydrate()
 
+function truncateLabel(value: string | null | undefined, max = 30) {
+  const normalized = String(value ?? '').trim()
+  if (!normalized) return '—'
+  return normalized.length > max ? `${normalized.slice(0, max - 1)}…` : normalized
+}
+
 const sprintOptions = computed(() =>
   crmKanbanStore.sprints.map((sprint) => ({
-    title: sprint.name,
+    title: truncateLabel(sprint.name, 30),
     value: sprint.id,
   })),
 )
@@ -40,12 +46,6 @@ function formatDate(value: string | null) {
   return new Intl.DateTimeFormat(locale.value, {
     dateStyle: 'medium',
   }).format(new Date(value))
-}
-
-function priorityColor(priority: string) {
-  if (priority === 'high') return 'error'
-  if (priority === 'medium') return 'warning'
-  return 'primary'
 }
 
 function statusLabel(status: string) {
