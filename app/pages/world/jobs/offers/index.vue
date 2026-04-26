@@ -194,11 +194,31 @@ await fetchJobs()
       <v-row>
         <v-col v-for="job in jobs" :key="job.id" cols="12">
           <WorldCard extra-class="h-100">
-            <v-card-title class="text-wrap pb-1">{{ job.title }}</v-card-title>
-            <v-card-subtitle class="pb-0">
-              {{ job.company.name }} • {{ job.location }} •
-              {{ job.postedAtLabel }}
-            </v-card-subtitle>
+            <div class="d-flex align-start ga-4 pa-4 pb-0">
+              <v-avatar
+                size="72"
+                rounded="lg"
+                color="surface-variant"
+                class="job-company-logo"
+              >
+                <v-img
+                  v-if="job.company.logo"
+                  :src="job.company.logo"
+                  :alt="`${job.company.name} logo`"
+                  cover
+                />
+                <v-icon v-else icon="mdi-domain" size="34" />
+              </v-avatar>
+              <div class="flex-grow-1">
+                <v-card-title class="text-wrap pb-1 px-0 pt-0">
+                  {{ job.title }}
+                </v-card-title>
+                <v-card-subtitle class="pb-0 px-0">
+                  {{ job.company.name }} • {{ job.location }} •
+                  {{ job.postedAtLabel }}
+                </v-card-subtitle>
+              </div>
+            </div>
             <v-card-text>
               <div class="d-flex ga-2 flex-wrap mb-2">
                 <v-chip size="small" color="primary" variant="tonal">
@@ -269,5 +289,10 @@ await fetchJobs()
 
 :deep(.jobs-offers-filter-menu .v-list) {
   background: transparent !important;
+}
+
+.job-company-logo {
+  border: 1px solid rgba(var(--v-border-color), 0.28);
+  flex-shrink: 0;
 }
 </style>
