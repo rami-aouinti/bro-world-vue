@@ -349,7 +349,7 @@ async function deleteTask() {
                   color="info"
                   variant="text"
                   class="mx-1"
-                  size="small"
+                  size="x-small"
                   @click="router.push(`/world/crm/tasks/${task.id}?mode=view`)"
                 />
                 <v-btn
@@ -357,7 +357,7 @@ async function deleteTask() {
                   color="primary"
                   variant="text"
                   class="mx-1"
-                  size="small"
+                  size="x-small"
                   @click="router.push(`/world/crm/tasks/${task.id}`)"
                 />
                 <v-btn
@@ -365,7 +365,7 @@ async function deleteTask() {
                   color="error"
                   variant="text"
                   class="mx-1"
-                  size="small"
+                  size="x-small"
                   @click="openDeleteDialog(task.id)"
                 />
               </div>

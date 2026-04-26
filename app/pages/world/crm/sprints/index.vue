@@ -266,7 +266,7 @@ async function deleteSprint() {
                   color="info"
                   variant="text"
                   class="mx-1"
-                  size="sm"
+                  size="x-small"
                   @click="
                     router.push(`/world/crm/sprints/${sprint.id}?mode=view`)
                   "
@@ -276,7 +276,7 @@ async function deleteSprint() {
                   color="primary"
                   variant="text"
                   class="mx-1"
-                  size="sm"
+                  size="x-small"
                   @click="router.push(`/world/crm/sprints/${sprint.id}`)"
                 />
                 <v-btn
@@ -284,7 +284,7 @@ async function deleteSprint() {
                   color="error"
                   variant="text"
                   class="mx-1"
-                  size="sm"
+                  size="x-small"
                   @click="openDeleteDialog(sprint.id)"
                 />
               </div>
