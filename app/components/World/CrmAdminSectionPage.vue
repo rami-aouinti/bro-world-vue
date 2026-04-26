@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useWorldCrmAdminNavItems } from '~/composables/useWorldCrmAdminNavItems'
+import { useCrmAdminActionsStore } from '~/stores/crmAdminActions'
+import type { CrmAdminActionFormField, EndpointAction } from '~/types/crmAdmin'
 import type {
   CrmGeneralCollectionResponse,
   CrmGeneralMutationResponse,
@@ -38,18 +40,11 @@ interface SectionField {
   required?: boolean
 }
 
-interface EndpointAction {
-  id: string
-  title: string
-  method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
-  path: string
-  defaultBody?: Record<string, unknown>
-}
-
 const router = useRouter()
 const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
 const { adminRightNavItems } = useWorldCrmAdminNavItems()
+const crmAdminActionsStore = useCrmAdminActionsStore()
 
 const sectionMap = {
   companies: { title: 'Companies', icon: 'mdi-domain', endpoint: 'companies' },
@@ -175,23 +170,21 @@ const itemsPerPage = 12
 const createDialog = ref(false)
 const editDialog = ref(false)
 const showDialog = ref(false)
-const nestedDialog = ref(false)
 const apiActionDialog = ref(false)
 const deletePendingId = ref<string | null>(null)
 
 const currentItem = ref<GenericItem | null>(null)
-const nestedValue = ref<unknown>(null)
-const nestedTitle = ref('Details')
 
 const formModel = ref<Record<string, unknown>>({})
 const formPending = ref(false)
 const formError = ref('')
 
 const actionParamValues = reactive<Record<string, string>>({})
-const actionBody = ref('{}')
 const actionPending = ref(false)
 const actionFeedback = ref('')
 const selectedAction = ref<EndpointAction | null>(null)
+const actionFormFields = ref<CrmAdminActionFormField[]>([])
+const actionFormModel = ref<Record<string, string | number>>({})
 
 const sectionConfig = computed(() => sectionMap[props.section])
 
@@ -316,6 +309,37 @@ function isComplexValue(value: unknown) {
   return typeof value === 'object' && value !== null
 }
 
+function flattenComplexValue(value: unknown): Array<{ key: string; value: string }> {
+  if (!isComplexValue(value)) return []
+
+  if (Array.isArray(value)) {
+    return value.map((entry, index) => ({
+      key: `Item ${index + 1}`,
+      value: isComplexValue(entry) ? 'Structured content' : formatPrimitive(entry),
+    }))
+  }
+
+  return Object.entries(value as Record<string, unknown>).map(([key, nestedValue]) => ({
+    key,
+    value: isComplexValue(nestedValue) ? 'Structured content' : formatPrimitive(nestedValue),
+  }))
+}
+
+function inferFieldType(value: unknown): CrmAdminActionFormField['type'] {
+  if (typeof value === 'number') return 'number'
+  if (typeof value === 'boolean') return 'boolean'
+  return 'text'
+}
+
+function buildActionLabel(action: EndpointAction) {
+  const title = action.title?.trim()
+  if (title) return title
+  if (action.method === 'POST') return `Add ${sectionConfig.value.title.slice(0, -1)}`
+  if (action.method === 'PATCH' || action.method === 'PUT') return `Update ${sectionConfig.value.title.slice(0, -1)}`
+  if (action.method === 'DELETE') return `Delete ${sectionConfig.value.title.slice(0, -1)}`
+  return 'Open action'
+}
+
 function formatPrimitive(value: unknown) {
   if (value === null || value === undefined) return '—'
   if (typeof value === 'boolean') return value ? 'Yes' : 'No'
@@ -381,12 +405,6 @@ function openEditDialog(item: GenericItem) {
 function openShowDialog(item: GenericItem) {
   currentItem.value = item
   showDialog.value = true
-}
-
-function openNested(value: unknown, key: string) {
-  nestedTitle.value = key
-  nestedValue.value = value
-  nestedDialog.value = true
 }
 
 function pathParams(path: string) {
@@ -489,7 +507,14 @@ function openActionDialog(action: EndpointAction, item: GenericItem) {
   selectedAction.value = action
   actionFeedback.value = ''
   currentItem.value = item
-  actionBody.value = JSON.stringify(action.defaultBody ?? {}, null, 2)
+  actionFormFields.value = Object.entries(action.defaultBody ?? {}).map(([key, value]) => ({
+    key,
+    label: key,
+    type: inferFieldType(value),
+  }))
+  actionFormModel.value = Object.fromEntries(
+    Object.entries(action.defaultBody ?? {}).map(([key, value]) => [key, typeof value === 'boolean' ? Number(value) : String(value ?? '')]),
+  )
 
   for (const param of pathParams(action.path)) {
     actionParamValues[param] = ''
@@ -504,6 +529,7 @@ function openActionDialog(action: EndpointAction, item: GenericItem) {
   }
 
   loadParamContext(action.path)
+  crmAdminActionsStore.rememberAction(props.section, action.id)
   apiActionDialog.value = true
 }
 
@@ -515,7 +541,18 @@ async function submitApiAction() {
 
   try {
     const body = ['POST', 'PUT', 'PATCH'].includes(selectedAction.value.method)
-      ? JSON.parse(actionBody.value || '{}')
+      ? Object.fromEntries(
+          actionFormFields.value.map((field) => {
+            const rawValue = actionFormModel.value[field.key]
+            if (field.type === 'number') {
+              return [field.key, Number(rawValue || 0)]
+            }
+            if (field.type === 'boolean') {
+              return [field.key, rawValue === 1 || rawValue === '1' || rawValue === true]
+            }
+            return [field.key, rawValue]
+          }),
+        )
       : undefined
 
     const path = resolvePath(selectedAction.value.path, actionParamValues)
@@ -621,16 +658,9 @@ async function submitApiAction() {
               :key="key"
               class="text-body-2 mb-1"
             >
-              <template v-if="isComplexValue(value)">
+            <template v-if="isComplexValue(value)">
                 <span class="font-weight-medium">{{ key }}:</span>
-                <v-btn
-                  size="x-small"
-                  variant="tonal"
-                  class="ml-1"
-                  @click="openNested(value, key)"
-                >
-                  View JSON
-                </v-btn>
+                <span class="text-caption text-medium-emphasis ml-1">Structured content</span>
               </template>
               <template v-else>
                 <span class="font-weight-medium">{{ key }}:</span>
@@ -642,32 +672,26 @@ async function submitApiAction() {
               <v-btn
                 size="small"
                 variant="tonal"
-                prepend-icon="mdi-eye-outline"
+                icon="mdi-eye-outline"
                 @click="openShowDialog(item)"
-              >
-                Show
-              </v-btn>
+              />
               <v-btn
                 v-if="updateAction"
                 size="small"
                 variant="tonal"
                 color="info"
-                prepend-icon="mdi-pencil-outline"
+                icon="mdi-pencil-outline"
                 @click="openEditDialog(item)"
-              >
-                Edit
-              </v-btn>
+              />
               <v-btn
                 v-if="deleteAction"
                 size="small"
                 variant="tonal"
                 color="error"
-                prepend-icon="mdi-delete-outline"
+                icon="mdi-delete-outline"
                 :loading="deletePendingId === getItemId(item)"
                 @click="submitDelete(item)"
-              >
-                Delete
-              </v-btn>
+              />
             </div>
 
             <div
@@ -681,7 +705,7 @@ async function submitApiAction() {
                 variant="outlined"
                 @click="openActionDialog(action, item)"
               >
-                {{ action.method }} · {{ action.title }}
+                {{ buildActionLabel(action) }}
               </v-btn>
             </div>
           </v-card>
@@ -799,12 +823,15 @@ async function submitApiAction() {
           <v-card variant="tonal" class="pa-3 h-100">
             <p class="text-caption text-medium-emphasis mb-1">{{ key }}</p>
             <template v-if="isComplexValue(value)">
-              <v-btn
-                size="small"
-                variant="outlined"
-                @click="openNested(value, key)"
-                >{{ t('world.crm.admin.actions.viewContent') }}</v-btn
-              >
+              <v-sheet class="pa-2 rounded bg-grey-lighten-4">
+                <div
+                  v-for="entry in flattenComplexValue(value)"
+                  :key="`${key}-${entry.key}`"
+                  class="text-body-2 mb-1"
+                >
+                  <span class="font-weight-medium">{{ entry.key }}:</span> {{ entry.value }}
+                </div>
+              </v-sheet>
             </template>
             <template v-else>
               <p class="text-body-2 mb-0">{{ formatPrimitive(value) }}</p>
@@ -818,17 +845,6 @@ async function submitApiAction() {
           >Close</v-btn
         >
       </template>
-    </AppModal>
-
-    <AppModal v-model="nestedDialog" :title="nestedTitle" :max-width="980">
-      <v-sheet
-        class="pa-3 rounded-lg bg-grey-darken-4 overflow-auto"
-        min-height="120"
-      >
-        <pre class="text-body-2 mb-0">{{
-          JSON.stringify(nestedValue, null, 2)
-        }}</pre>
-      </v-sheet>
     </AppModal>
 
     <AppModal
@@ -867,14 +883,32 @@ async function submitApiAction() {
           </v-col>
         </v-row>
 
-        <v-textarea
-          v-if="['POST', 'PUT', 'PATCH'].includes(selectedAction.method)"
-          v-model="actionBody"
-          label="JSON body"
-          variant="outlined"
-          rows="7"
-          auto-grow
-        />
+        <v-row v-if="['POST', 'PUT', 'PATCH'].includes(selectedAction.method)">
+          <v-col
+            v-for="field in actionFormFields"
+            :key="field.key"
+            cols="12"
+            md="6"
+          >
+            <v-select
+              v-if="field.type === 'boolean'"
+              v-model="actionFormModel[field.key]"
+              :items="[
+                { title: 'No', value: 0 },
+                { title: 'Yes', value: 1 },
+              ]"
+              :label="field.label"
+              variant="outlined"
+            />
+            <v-text-field
+              v-else
+              v-model="actionFormModel[field.key]"
+              :label="field.label"
+              variant="outlined"
+              :type="field.type === 'number' ? 'number' : 'text'"
+            />
+          </v-col>
+        </v-row>
 
         <v-alert v-if="actionFeedback" type="info" variant="tonal">{{
           actionFeedback
