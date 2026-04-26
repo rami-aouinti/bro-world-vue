@@ -162,4 +162,6 @@ useSeoMeta({
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
+
+  <AppCookieConsent />
 </template>
