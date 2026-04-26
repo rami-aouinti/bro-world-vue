@@ -1,8 +1,20 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean; onPhotoClick?: () => void }>(), {
+type LayoutSettings = {
+  photoSize?: number
+  photoBorderWidth?: number
+  photoPosition?: 'left' | 'center' | 'right'
+  sidebarWidth?: number
+  sectionDividerStyle?: 'none' | 'line' | 'thick'
+  headingCase?: 'normal' | 'uppercase'
+  dateColumnWidth?: number
+  lineDensity?: 'compact' | 'comfortable'
+}
+
+const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean; onPhotoClick?: () => void; layoutSettings?: LayoutSettings }>(), {
   showPhoto: true,
   editable: false,
   onPhotoClick: undefined,
+  layoutSettings: () => ({}),
 })
 
 function updateText(path: string, value: string) {
@@ -16,6 +28,32 @@ function updateText(path: string, value: string) {
   }
   target[last] = value
 }
+
+const sidebarStyle = computed(() => ({
+  width: `${props.layoutSettings?.sidebarWidth ?? 300}px`,
+}))
+const bodyStyle = computed(() => ({
+  gridTemplateColumns: `1fr ${props.layoutSettings?.sidebarWidth ?? 300}px`,
+}))
+const headingStyle = computed(() => ({
+  textTransform: props.layoutSettings?.headingCase === 'uppercase' ? 'uppercase' : 'none',
+}))
+const sectionStyle = computed(() => ({
+  borderBottom: props.layoutSettings?.sectionDividerStyle === 'none'
+    ? 'none'
+    : `${props.layoutSettings?.sectionDividerStyle === 'thick' ? 3 : 1}px solid #d1d5db`,
+}))
+const periodStyle = computed(() => ({
+  display: 'inline-block',
+  minWidth: `${props.layoutSettings?.dateColumnWidth ?? 120}px`,
+}))
+const articleStyle = computed(() => ({
+  marginBottom: props.layoutSettings?.lineDensity === 'compact' ? '8px' : '14px',
+}))
+const photoStyle = computed(() => ({
+  height: `${(props.layoutSettings?.photoSize ?? 140) * 2.2}px`,
+  borderWidth: `${props.layoutSettings?.photoBorderWidth ?? 1}px`,
+}))
 </script>
 
 <template>
@@ -28,17 +66,17 @@ function updateText(path: string, value: string) {
       <p class="editable-text" :contenteditable="editable" @input="event => updateText('role', (event.target as HTMLElement).innerText)">{{ resume.role }}</p>
     </header>
 
-    <div class="body">
+    <div class="body" :style="bodyStyle">
       <main>
         <p class="intro editable-text" :contenteditable="editable" @input="event => updateText('profile', (event.target as HTMLElement).innerText)">{{ resume.profile }}</p>
         <section>
-          <h2>Expérience professionnelle</h2>
-          <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`">
+          <h2 :style="[headingStyle, sectionStyle]">Expérience professionnelle</h2>
+          <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" :style="articleStyle">
             <h4>
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.company`, (event.target as HTMLElement).innerText)">{{ experience.company }}</span>,
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.city`, (event.target as HTMLElement).innerText)">{{ experience.city }}</span>
             </h4>
-            <p class="period">
+            <p class="period" :style="periodStyle">
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.start`, (event.target as HTMLElement).innerText)">{{ experience.start }}</span> -
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.end`, (event.target as HTMLElement).innerText)">{{ experience.end }}</span>
             </p>
@@ -47,22 +85,22 @@ function updateText(path: string, value: string) {
         </section>
 
         <section>
-          <h2>Formation</h2>
-          <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`">
+          <h2 :style="[headingStyle, sectionStyle]">Formation</h2>
+          <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" :style="articleStyle">
             <h4 class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</h4>
             <p class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</p>
           </article>
         </section>
       </main>
 
-      <aside>
-        <v-img v-if="showPhoto && resume.photoUrl" :src="resume.photoUrl" class="mb-6 avatar" cover @click="onPhotoClick?.()" />
-        <h3>Informations personnelles</h3>
+      <aside :style="sidebarStyle">
+        <v-img v-if="showPhoto && resume.photoUrl" :src="resume.photoUrl" class="mb-6 avatar" :style="photoStyle" cover @click="onPhotoClick?.()" />
+        <h3 :style="[headingStyle, sectionStyle]">Informations personnelles</h3>
         <p class="editable-text" :contenteditable="editable" @input="event => updateText('city', (event.target as HTMLElement).innerText)">{{ resume.city }}</p>
         <p class="editable-text" :contenteditable="editable" @input="event => updateText('phone', (event.target as HTMLElement).innerText)">{{ resume.phone }}</p>
         <p class="editable-text" :contenteditable="editable" @input="event => updateText('email', (event.target as HTMLElement).innerText)">{{ resume.email }}</p>
 
-        <h3>Informatique</h3>
+        <h3 :style="[headingStyle, sectionStyle]">Informatique</h3>
         <div v-for="(skill, index) in resume.skills" :key="skill.name" class="dot-row">
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`skills.${index}.name`, (event.target as HTMLElement).innerText)">{{ skill.name }}</span>
           <b :style="{ '--dots': Math.max(1, Math.round(skill.level / 20)) }" />
