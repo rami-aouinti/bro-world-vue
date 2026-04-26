@@ -189,6 +189,16 @@ type PhotoShapeOption = {
   value: PhotoShape
   icon: string
 }
+type LayoutSettings = {
+  photoSize: number
+  photoBorderWidth: number
+  photoPosition: 'left' | 'center' | 'right'
+  sidebarWidth: number
+  sectionDividerStyle: 'none' | 'line' | 'thick'
+  headingCase: 'normal' | 'uppercase'
+  dateColumnWidth: number
+  lineDensity: 'compact' | 'comfortable'
+}
 
 const activeTab = ref<'edit' | 'template' | 'design' | 'import'>('edit')
 const route = useRoute()
@@ -200,6 +210,16 @@ const selectedTextStyle = ref<TextStyleOption['value']>('clean')
 const levelInputMode = ref<LevelInputMode>('percent')
 
 const selectedTemplateFilter = ref<TemplateFilter>('all')
+const layoutSettings = reactive<LayoutSettings>({
+  photoSize: 140,
+  photoBorderWidth: 6,
+  photoPosition: 'center',
+  sidebarWidth: 280,
+  sectionDividerStyle: 'line',
+  headingCase: 'normal',
+  dateColumnWidth: 120,
+  lineDensity: 'comfortable',
+})
 const photoShapeOptions = [
   { label: 'Carré', value: 'square', icon: '□' },
   { label: 'Arrondi', value: 'rounded', icon: '▢' },
@@ -1399,6 +1419,23 @@ onUnmounted(() => {
   showRightDrawerDesktop.value = previousDesktopRightDrawer
   showRightDrawerMobile.value = previousMobileRightDrawer
 })
+
+if (import.meta.client) {
+  const STORAGE_KEY = 'resume-layout-settings-v1'
+  const raw = localStorage.getItem(STORAGE_KEY)
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw) as Partial<LayoutSettings>
+      Object.assign(layoutSettings, parsed)
+    } catch {
+      localStorage.removeItem(STORAGE_KEY)
+    }
+  }
+
+  watch(layoutSettings, (value) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(value))
+  }, { deep: true })
+}
 </script>
 
 <template>
@@ -2059,6 +2096,91 @@ onUnmounted(() => {
                 density="comfortable"
                 hide-details
               />
+
+              <v-divider class="my-4" />
+              <p class="section-label">Layout settings</p>
+              <v-slider
+                v-model="layoutSettings.photoSize"
+                label="Photo size"
+                min="100"
+                max="220"
+                step="2"
+                thumb-label
+                hide-details="auto"
+              />
+              <v-slider
+                v-model="layoutSettings.photoBorderWidth"
+                label="Photo border"
+                min="0"
+                max="16"
+                step="1"
+                thumb-label
+                hide-details="auto"
+              />
+              <AppSelect
+                v-model="layoutSettings.photoPosition"
+                :items="[
+                  { label: 'Left', value: 'left' },
+                  { label: 'Center', value: 'center' },
+                  { label: 'Right', value: 'right' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Photo position"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <v-slider
+                v-model="layoutSettings.sidebarWidth"
+                label="Sidebar width"
+                min="220"
+                max="360"
+                step="2"
+                thumb-label
+                hide-details="auto"
+              />
+              <AppSelect
+                v-model="layoutSettings.sectionDividerStyle"
+                :items="[
+                  { label: 'None', value: 'none' },
+                  { label: 'Line', value: 'line' },
+                  { label: 'Thick', value: 'thick' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Section divider"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <v-switch
+                v-model="layoutSettings.headingCase"
+                false-value="normal"
+                true-value="uppercase"
+                label="Uppercase headings"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
+              <v-slider
+                v-model="layoutSettings.dateColumnWidth"
+                label="Date column width"
+                min="80"
+                max="180"
+                step="2"
+                thumb-label
+                hide-details="auto"
+              />
+              <v-switch
+                v-model="layoutSettings.lineDensity"
+                false-value="comfortable"
+                true-value="compact"
+                label="Compact line density"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
             </article>
           </v-window-item>
 
@@ -2214,6 +2336,7 @@ onUnmounted(() => {
             :show-photo="templateSupportsPhoto"
             :use-timeline="templateUsesTimeline"
             :on-photo-click="onPreviewPhotoClick"
+            :layout-settings="layoutSettings"
             editable
           />
           <ResumeTemplateSharedSections
@@ -2251,6 +2374,7 @@ onUnmounted(() => {
               :show-photo="templateSupportsPhoto"
               :use-timeline="templateUsesTimeline"
               :on-photo-click="onPreviewPhotoClick"
+              :layout-settings="layoutSettings"
               editable
             />
             <ResumeTemplateSharedSections
