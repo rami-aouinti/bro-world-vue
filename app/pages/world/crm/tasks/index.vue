@@ -298,13 +298,7 @@ async function deleteTask() {
         <v-row>
           <v-col v-for="task in paginatedTasks" :key="task.id" cols="12" md="4">
             <WorldCard extra-class="pa-4 platform-style-card h-100 d-flex flex-column">
-              <div class="d-flex align-start justify-space-between ga-2 mb-2">
-                <div class="d-flex align-center ga-2">
-                  <CrmEntityAvatar :label="task.title" :size="24" />
-                  <p class="text-subtitle-1 text-truncate mb-0">
-                    {{ task.title }}
-                  </p>
-                </div>
+              <div class="text-end">
                 <v-chip
                   size="small"
                   :color="taskStatusColor(task.status)"
@@ -312,6 +306,14 @@ async function deleteTask() {
                 >
                   {{ task.status }}
                 </v-chip>
+              </div>
+              <div class="d-flex align-start justify-space-between ga-2 mb-2">
+                <div class="d-flex align-center ga-2">
+                  <CrmEntityAvatar :label="task.title" :size="36" />
+                  <p class="text-subtitle-1 text-truncate">
+                    {{ task.title }}
+                  </p>
+                </div>
               </div>
               <div class="d-flex flex-wrap ga-2 mb-2">
                 <v-chip

@@ -271,16 +271,19 @@ async function deleteProject() {
             <WorldCard
               extra-class="pa-4 platform-style-card h-100 d-flex flex-column"
             >
+              <div class="text-end">
+                <v-chip size="small" color="primary" variant="tonal">{{
+                    project.status
+                  }}</v-chip>
+              </div>
               <div class="d-flex justify-space-between align-start ga-2 mb-2">
                 <div class="d-flex align-center ga-2">
-                  <CrmEntityAvatar :label="project.name" :size="24" />
-                  <p class="text-subtitle-1 text-truncate mb-0">
+                  <CrmEntityAvatar :label="project.name" :size="36" />
+                  <p class="text-subtitle-1 text-truncate">
                     {{ project.name }}
                   </p>
                 </div>
-                <v-chip size="small" color="primary" variant="tonal">{{
-                  project.status
-                }}</v-chip>
+
               </div>
               <div class="d-flex flex-wrap ga-2 mb-4">
                 <v-chip size="small" color="info" variant="tonal">

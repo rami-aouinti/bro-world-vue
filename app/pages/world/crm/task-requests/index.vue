@@ -307,18 +307,20 @@ async function deleteRequest() {
           <WorldCard
             extra-class="pa-4 h-100 d-flex flex-column platform-style-card"
           >
-            <div class="d-flex align-start justify-space-between ga-2 mb-2">
-              <div class="d-flex align-center ga-2 min-w-0">
-                <CrmEntityAvatar :label="request.title" :size="24" />
-                <p class="text-subtitle-1 text-truncate mb-0">
-                  {{ request.title }}
-                </p>
-              </div>
+            <div class="text-end">
               <v-chip
                 size="small"
                 :color="requestStatusColor(request.status)"
                 variant="tonal"
               >{{ request.status }}</v-chip>
+            </div>
+            <div class="d-flex align-start justify-space-between ga-2 mb-2">
+              <div class="d-flex align-center ga-2 min-w-0">
+                <CrmEntityAvatar :label="request.title" :size="36" />
+                <p class="text-subtitle-1 text-truncate">
+                  {{ request.title }}
+                </p>
+              </div>
             </div>
 
             <div class="mb-4">
@@ -340,24 +342,14 @@ async function deleteRequest() {
                 </span>
               </v-chip>
             </div>
-            <div class="d-flex flex-wrap ga-2 mb-2">
-              <v-chip size="small" variant="tonal"
-                >Planned: {{ request.plannedHours ?? 0 }} h</v-chip
-              >
-              <v-chip size="small" variant="tonal"
-                >Consumed: {{ request.consumedHours ?? 0 }} h</v-chip
-              >
-              <v-chip size="small" variant="tonal"
-                >Remaining: {{ request.remainingHours ?? 0 }} h</v-chip
-              >
-            </div>
             <v-spacer />
             <div v-if="isAdminOrRoot" class="d-flex justify-center ga-1 mt-2">
               <v-btn
                 icon="mdi-eye-outline"
                 color="info"
                 variant="text"
-                size="x-small"
+                class="mx-1"
+                size="sm"
                 @click="
                   router.push(
                     `/world/crm/task-requests/${request.id}?mode=view`,
@@ -368,14 +360,16 @@ async function deleteRequest() {
                 icon="mdi-pencil-outline"
                 color="primary"
                 variant="text"
-                size="x-small"
+                class="mx-1"
+                size="sm"
                 @click="router.push(`/world/crm/task-requests/${request.id}`)"
               />
               <v-btn
                 icon="mdi-delete-outline"
                 color="error"
                 variant="text"
-                size="x-small"
+                class="mx-1"
+                size="sm"
                 @click="openDeleteDialog(request.id)"
               />
             </div>

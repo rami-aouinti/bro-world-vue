@@ -240,19 +240,21 @@ async function deleteSprint() {
             md="4"
           >
             <WorldCard extra-class="pa-4 platform-style-card h-100 d-flex flex-column">
+              <div class="text-end">
+                <v-chip size="small" color="secondary" variant="tonal">{{
+                    sprint.status
+                  }}</v-chip>
+              </div>
               <div class="d-flex align-start justify-space-between ga-2 mb-2">
                 <div class="d-flex align-center ga-2">
-                  <CrmEntityAvatar :label="sprint.name" :size="24" />
-                  <p class="text-subtitle-1 text-truncate mb-0">
+                  <CrmEntityAvatar :label="sprint.name" :size="36" />
+                  <p class="text-subtitle-1 text-truncate">
                     {{ sprint.name }}
                   </p>
                 </div>
-                <v-chip size="small" color="secondary" variant="tonal">{{
-                  sprint.status
-                }}</v-chip>
               </div>
               <p
-                class="text-caption text-subtitle-1 text-medium-emphasis mb-0 mt-3"
+                class="text-caption text-sm text-medium-emphasis mb-0 mt-3"
               >
                 {{ formatDate(sprint.startDate) }} -
                 {{ formatDate(sprint.endDate) }}
@@ -263,7 +265,8 @@ async function deleteSprint() {
                   icon="mdi-eye-outline"
                   color="info"
                   variant="text"
-                  size="x-small"
+                  class="mx-1"
+                  size="sm"
                   @click="
                     router.push(`/world/crm/sprints/${sprint.id}?mode=view`)
                   "
@@ -272,14 +275,16 @@ async function deleteSprint() {
                   icon="mdi-pencil-outline"
                   color="primary"
                   variant="text"
-                  size="x-small"
+                  class="mx-1"
+                  size="sm"
                   @click="router.push(`/world/crm/sprints/${sprint.id}`)"
                 />
                 <v-btn
                   icon="mdi-delete-outline"
                   color="error"
                   variant="text"
-                  size="x-small"
+                  class="mx-1"
+                  size="sm"
                   @click="openDeleteDialog(sprint.id)"
                 />
               </div>
