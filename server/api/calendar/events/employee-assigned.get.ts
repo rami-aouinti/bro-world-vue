@@ -1,11 +1,16 @@
-import { getQuery } from 'h3'
-import { cachedPrivateGet } from '../../../utils/privateApi'
+import { getQuery, readBody } from 'h3'
+import { callPrivateApi } from '../../../utils/privateApi'
 import type { CalendarApiResponse } from '~~/server/types/api/calendar'
 
 export default defineEventHandler(
   async (event): Promise<CalendarApiResponse> => {
+    const payload = await readBody<{ applicationSlug?: string }>(event).catch(
+      () => ({}),
+    )
     const query = getQuery(event)
-    const applicationSlug = String(query.applicationSlug || '').trim()
+    const applicationSlug = String(
+      payload?.applicationSlug || query.applicationSlug || '',
+    ).trim()
 
     if (!applicationSlug) {
       throw createError({
@@ -14,14 +19,14 @@ export default defineEventHandler(
       })
     }
 
-    return cachedPrivateGet<CalendarApiResponse>(
+    return callPrivateApi<CalendarApiResponse>(
       event,
       '/calendar/events/employee-assigned',
       {
-        query: {
+        method: 'GET',
+        body: {
           applicationSlug,
         },
-        cacheDomain: 'calendar',
       },
     )
   },

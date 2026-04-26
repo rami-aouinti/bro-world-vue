@@ -63,9 +63,12 @@ async function loadCalendarEvents() {
   errorMessage.value = ''
 
   try {
-    const response = await privateApi.request<CrmCalendarResponse>(
-      `/api/calendar/events/employee-assigned?applicationSlug=${encodeURIComponent(crmApplicationSlug.value)}`,
-    )
+    const response = await privateApi.request<CrmCalendarResponse>('/api/calendar/events/employee-assigned', {
+      method: 'GET',
+      body: {
+        applicationSlug: crmApplicationSlug.value,
+      },
+    })
     events.value = response.items ?? []
   } catch (error) {
     errorMessage.value =

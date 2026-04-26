@@ -279,10 +279,17 @@ async function fetchConversations() {
   loading.value = true
   try {
     const applicationSlug = pageProps.applicationSlug.trim()
-    const endpoint = applicationSlug
-      ? `/api/chat/private/applications/conversations?applicationSlug=${encodeURIComponent(applicationSlug)}`
-      : '/api/chat/private/conversations'
-    const response = await privateApi.request<ConversationListResponse>(endpoint)
+    const response = applicationSlug
+      ? await privateApi.request<ConversationListResponse>(
+          '/api/chat/private/applications/conversations',
+          {
+            method: 'GET',
+            body: {
+              applicationSlug,
+            },
+          },
+        )
+      : await privateApi.request<ConversationListResponse>('/api/chat/private/conversations')
     conversations.value = response.items || []
 
     const queryConversationId = String(route.query.conversation || '')
