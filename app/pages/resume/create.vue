@@ -11,7 +11,13 @@ import ResumeTemplateTraditional from '~/components/Resume/Templates/ResumeTempl
 import ResumeTemplateOceanSplit from '~/components/Resume/Templates/ResumeTemplateOceanSplit.vue'
 import ResumeTemplateCorporateBlue from '~/components/Resume/Templates/ResumeTemplateCorporateBlue.vue'
 import ResumeTemplateSharedSections from '~/components/Resume/Templates/ResumeTemplateSharedSections.vue'
-import { COVER_LETTER_TEMPLATES, COVER_PAGE_TEMPLATES } from '~/constants/resumeTemplates'
+import {
+  COVER_LETTER_TEMPLATES,
+  COVER_PAGE_TEMPLATES,
+  DEFAULT_RESUME_TEMPLATE_ID,
+  RESUME_TEMPLATES,
+  type ResumeTemplateVariant,
+} from '~/constants/resumeTemplates'
 
 definePageMeta({
   title: 'Create Resume',
@@ -141,18 +147,7 @@ type Template = {
   isCustomized: boolean
   isFree: boolean
   useTimeline: boolean
-  variant:
-    | 'classic'
-    | 'modern'
-    | 'professional'
-    | 'traditional'
-    | 'creative'
-    | 'minimalist'
-    | 'aurora'
-    | 'executive'
-    | 'terra'
-    | 'ocean-split'
-    | 'corporate-blue'
+  variant: ResumeTemplateVariant
 }
 
 type TemplateFilter =
@@ -202,7 +197,7 @@ type LayoutSettings = {
 
 const activeTab = ref<'edit' | 'template' | 'design' | 'import'>('edit')
 const route = useRoute()
-const selectedTemplate = ref('classic')
+const selectedTemplate = ref(DEFAULT_RESUME_TEMPLATE_ID)
 const selectedDocumentType = ref<'resume'>('resume')
 const selectedTheme = ref('ocean')
 const selectedRounded = ref<'none' | 'sm' | 'md' | 'lg'>('md')
@@ -271,172 +266,24 @@ const coverLetterTemplateCards: Template[] = COVER_LETTER_TEMPLATES.map(template
   variant: template.id === 'cover-letter-classic' ? 'traditional' : 'modern',
 }))
 
+const resumeTemplateCards: Template[] = RESUME_TEMPLATES.map(template => ({
+  id: template.id,
+  title: template.title,
+  subtitle: template.subtitle,
+  image: template.image,
+  documentType: 'resume',
+  hasPhoto: template.flags.photo,
+  isTwoColumn: template.flags.twoColumn,
+  isAts: template.flags.ats,
+  hasDocx: template.flags.docx,
+  isCustomized: template.flags.customized,
+  isFree: template.flags.free,
+  useTimeline: template.flags.timeline,
+  variant: template.variant,
+}))
+
 const templates: Template[] = [
-  {
-    id: 'terra',
-    title: 'Terra Sidebar',
-    subtitle: 'Warm sidebar profile in French style',
-    image: '/img/cv/cv-1.png',
-    documentType: 'resume',
-    hasPhoto: true,
-    isTwoColumn: true,
-    isAts: false,
-    hasDocx: true,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: 'terra',
-  },
-  {
-    id: 'ocean-split',
-    title: 'Ocean Split',
-    subtitle: 'Diagonal split with textured blue panel',
-    image: '/img/cv/cv-3.png',
-    documentType: 'resume',
-    hasPhoto: true,
-    isTwoColumn: true,
-    isAts: false,
-    hasDocx: false,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: 'ocean-split',
-  },
-  {
-    id: 'corporate-blue',
-    title: 'Corporate Blue',
-    subtitle: 'Executive header with information sidebar',
-    image: '/img/cv/cv-2.png',
-    documentType: 'resume',
-    hasPhoto: true,
-    isTwoColumn: true,
-    isAts: true,
-    hasDocx: true,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: 'corporate-blue',
-  },
-  {
-    id: 'classic',
-    title: 'Classic',
-    subtitle: 'Simple and readable format',
-    image: '/img/cv/cv-4.png',
-    documentType: 'resume',
-    hasPhoto: false,
-    isTwoColumn: false,
-    isAts: false,
-    hasDocx: true,
-    isCustomized: false,
-    isFree: true,
-    useTimeline: false,
-    variant: 'classic',
-  },
-  {
-    id: 'modern',
-    title: 'Modern',
-    subtitle: 'Clean blocks and balanced content',
-    image: '/img/cv/cv-3.png',
-    documentType: 'resume',
-    hasPhoto: true,
-    isTwoColumn: true,
-    isAts: false,
-    hasDocx: true,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: 'modern',
-  },
-  {
-    id: 'professional',
-    title: 'Professional',
-    subtitle: 'Sidebar profile with details',
-    image: '/img/cv/cv-1.png',
-    documentType: 'resume',
-    hasPhoto: true,
-    isTwoColumn: true,
-    isAts: false,
-    hasDocx: true,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: 'professional',
-  },
-  {
-    id: 'traditional',
-    title: 'Traditional',
-    subtitle: 'Formal and timeless structure',
-    image: '/img/cv/cv-2.png',
-    documentType: 'resume',
-    hasPhoto: false,
-    isTwoColumn: false,
-    isAts: false,
-    hasDocx: true,
-    isCustomized: false,
-    isFree: true,
-    useTimeline: false,
-    variant: 'traditional',
-  },
-  {
-    id: 'creative',
-    title: 'Creative Timeline',
-    subtitle: 'Creative layout with timeline sections',
-    image: '/img/cv/cv-5.png',
-    documentType: 'resume',
-    hasPhoto: true,
-    isTwoColumn: true,
-    isAts: false,
-    hasDocx: false,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: true,
-    variant: 'creative',
-  },
-  {
-    id: 'minimalist',
-    title: 'Minimalist',
-    subtitle: 'Monochrome editorial minimalism',
-    image: '/img/cv/cv-4.png',
-    documentType: 'resume',
-    hasPhoto: false,
-    isTwoColumn: false,
-    isAts: true,
-    hasDocx: true,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: 'minimalist',
-  },
-  {
-    id: 'aurora',
-    title: 'Aurora',
-    subtitle: 'Dark glassmorphism with neon accents',
-    image: '/img/cv/cv-1.png',
-    documentType: 'resume',
-    hasPhoto: true,
-    isTwoColumn: true,
-    isAts: false,
-    hasDocx: false,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: 'aurora',
-  },
-  {
-    id: 'executive',
-    title: 'Executive Timeline',
-    subtitle: 'Leadership layout with timeline details',
-    image: '/img/cv/cv-2.png',
-    documentType: 'resume',
-    hasPhoto: true,
-    isTwoColumn: true,
-    isAts: true,
-    hasDocx: true,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: true,
-    variant: 'executive',
-  },
+  ...resumeTemplateCards,
   ...coverPageTemplateCards,
   ...coverLetterTemplateCards,
 ]
@@ -626,8 +473,7 @@ onMounted(() => {
 
   if (typeof templateFromQuery === 'string') {
     const exists = templatesByDocumentType.value.some((template) => template.id === templateFromQuery)
-    if (exists)
-      selectedTemplate.value = templateFromQuery
+    selectedTemplate.value = exists ? templateFromQuery : DEFAULT_RESUME_TEMPLATE_ID
   }
 
   if (mode === 'write')
