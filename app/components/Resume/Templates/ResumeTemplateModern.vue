@@ -127,7 +127,7 @@ function updateText(path: string, value: string) {
 
 <style scoped>
 /* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
-.modern-template { min-height: calc(100vh - 80px); border-radius:14px; overflow:hidden; background: var(--cv-page); }
+.modern-template { font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif); font-style: var(--cv-font-style, normal); font-weight: var(--cv-font-weight, 400); min-height: calc(100vh - 80px); border-radius: var(--cv-radius, 14px); overflow:hidden; background: var(--cv-page); }
 .modern-header { background: color-mix(in srgb, var(--cv-accent) 85%, white); color: color-mix(in srgb, var(--cv-sidebar) 78%, black); padding:26px 30px; }
 .modern-avatar { cursor: zoom-in; }
 .modern-header h1 { font-size:2.2rem; margin-bottom:4px; }

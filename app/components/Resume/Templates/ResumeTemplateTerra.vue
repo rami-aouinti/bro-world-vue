@@ -122,7 +122,7 @@ const articleStyle = computed(() => ({
 
 <style scoped>
 /* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
-.terra-template { min-height: calc(100vh - 80px); display: grid; grid-template-columns: 270px 1fr; background: var(--cv-page); border-radius: 14px; overflow: hidden; }
+.terra-template { font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif); font-style: var(--cv-font-style, normal); font-weight: var(--cv-font-weight, 400); min-height: calc(100vh - 80px); display: grid; grid-template-columns: 270px 1fr; background: var(--cv-page); border-radius: var(--cv-radius, 14px); overflow: hidden; }
 aside { background: color-mix(in srgb, var(--cv-sidebar) 18%, var(--cv-page)); padding: 28px 20px; }
 .terra-photo { border: 6px solid color-mix(in srgb, var(--cv-page) 96%, white); box-shadow: 0 10px 20px color-mix(in srgb, var(--cv-sidebar) 16%, transparent); }
 aside h3 { margin: 18px 0 8px; padding: 8px; background: color-mix(in srgb, var(--cv-page) 88%, var(--cv-sidebar)); font-size: .88rem; text-transform: uppercase; letter-spacing: .07em; }

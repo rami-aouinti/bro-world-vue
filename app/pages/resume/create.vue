@@ -177,6 +177,12 @@ type TextStyleOption = {
   value: 'clean' | 'italic' | 'serif' | 'mono' | 'display'
   className: string
 }
+type TemplateStyleSupport = {
+  theme: boolean
+  rounded: boolean
+  textStyle: boolean
+  sharedSections: boolean
+}
 type LevelInputMode = 'percent' | 'stars'
 type PhotoShape = 'square' | 'rounded' | 'circle' | 'portrait-card' | 'soft-blob' | 'hex'
 type PhotoShapeOption = {
@@ -317,6 +323,32 @@ const textStyleOptions: TextStyleOption[] = [
   { label: 'Mono Tech', value: 'mono', className: 'text-style-mono' },
   { label: 'Display Bold', value: 'display', className: 'text-style-display' },
 ]
+const roundedPxByValue: Record<RoundedOption['value'], string> = {
+  none: '0px',
+  sm: '8px',
+  md: '14px',
+  lg: '24px',
+}
+const textStyleVarsByValue: Record<TextStyleOption['value'], { family: string; style: string; weight: string }> = {
+  clean: { family: "'Inter', 'Segoe UI', Arial, sans-serif", style: 'normal', weight: '400' },
+  italic: { family: "'Inter', 'Segoe UI', Arial, sans-serif", style: 'italic', weight: '400' },
+  serif: { family: "'Merriweather', Georgia, 'Times New Roman', serif", style: 'normal', weight: '400' },
+  mono: { family: "'IBM Plex Mono', 'Courier New', monospace", style: 'normal', weight: '400' },
+  display: { family: "'Poppins', 'Avenir Next', 'Segoe UI', sans-serif", style: 'normal', weight: '600' },
+}
+const resumeTemplateSupportByVariant: Record<ResumeTemplateVariant, TemplateStyleSupport> = {
+  aurora: { theme: true, rounded: true, textStyle: true, sharedSections: true },
+  classic: { theme: true, rounded: true, textStyle: true, sharedSections: true },
+  creative: { theme: true, rounded: true, textStyle: true, sharedSections: true },
+  executive: { theme: true, rounded: true, textStyle: true, sharedSections: true },
+  minimalist: { theme: true, rounded: true, textStyle: true, sharedSections: true },
+  modern: { theme: true, rounded: true, textStyle: true, sharedSections: true },
+  'ocean-split': { theme: true, rounded: true, textStyle: true, sharedSections: true },
+  professional: { theme: true, rounded: true, textStyle: true, sharedSections: true },
+  'corporate-blue': { theme: true, rounded: true, textStyle: true, sharedSections: true },
+  terra: { theme: true, rounded: true, textStyle: true, sharedSections: true },
+  traditional: { theme: true, rounded: true, textStyle: true, sharedSections: true },
+}
 
 const resume = reactive<ResumeModel>({
   role: 'Communication Specialist',
@@ -858,6 +890,10 @@ const sharedSectionsTone = computed<'light' | 'dark' | 'auto'>(() => {
 })
 
 const previewStyle = computed(() => ({
+  '--cv-radius': roundedPxByValue[selectedRounded.value],
+  '--cv-font-family': textStyleVarsByValue[selectedTextStyle.value].family,
+  '--cv-font-style': textStyleVarsByValue[selectedTextStyle.value].style,
+  '--cv-font-weight': textStyleVarsByValue[selectedTextStyle.value].weight,
   '--cv-sidebar': activeTheme.value.sidebar,
   '--cv-accent': activeTheme.value.accent,
   '--cv-page': activeTheme.value.page,
@@ -866,6 +902,15 @@ const previewStyle = computed(() => ({
   '--cv-on-sidebar': bestAaTextColor(activeTheme.value.sidebar, activeTheme.value.page, 4.5),
   '--cv-on-accent': bestAaTextColor(activeTheme.value.accent, activeTheme.value.page, 4.5),
 }))
+const selectedTemplateSupport = computed<TemplateStyleSupport | null>(() => {
+  if (selectedTemplateConfig.value.documentType !== 'resume') return null
+  return resumeTemplateSupportByVariant[selectedTemplateConfig.value.variant]
+})
+const selectedTemplateHasPartialSupport = computed(() => {
+  if (!selectedTemplateSupport.value) return false
+  const support = selectedTemplateSupport.value
+  return !(support.theme && support.rounded && support.textStyle && support.sharedSections)
+})
 
 const canRemoveExperience = computed(() => resume.experiences.length > 1)
 const canRemoveEducation = computed(() => resume.education.length > 1)
@@ -1943,6 +1988,26 @@ if (import.meta.client) {
                         variant="outlined"
                         >2 cols</v-chip
                       >
+                      <v-chip
+                        v-if="template.documentType === 'resume'"
+                        size="x-small"
+                        :color="resumeTemplateSupportByVariant[template.variant].theme
+                          && resumeTemplateSupportByVariant[template.variant].rounded
+                          && resumeTemplateSupportByVariant[template.variant].textStyle
+                          && resumeTemplateSupportByVariant[template.variant].sharedSections
+                          ? 'success'
+                          : 'warning'"
+                        variant="tonal"
+                      >
+                        {{
+                          resumeTemplateSupportByVariant[template.variant].theme
+                            && resumeTemplateSupportByVariant[template.variant].rounded
+                            && resumeTemplateSupportByVariant[template.variant].textStyle
+                            && resumeTemplateSupportByVariant[template.variant].sharedSections
+                            ? 'Support complet'
+                            : 'Support partiel'
+                        }}
+                      </v-chip>
                     </div>
                   </v-card-text>
                 </v-card>
@@ -2166,6 +2231,15 @@ if (import.meta.client) {
           @mouseleave="onPreviewMouseLeave"
           @mousemove="onPreviewMouseMove"
         >
+          <v-alert
+            v-if="selectedTemplateHasPartialSupport"
+            type="warning"
+            density="compact"
+            variant="tonal"
+            class="preview-support-alert"
+          >
+            Ce template est en support partiel pour certains réglages de design.
+          </v-alert>
           <div class="preview-hover-tools" :class="{ 'preview-hover-tools--active': previewToolsVisible }" :style="{ top: `${previewToolsTop}px` }">
             <v-btn
               size="x-small"
@@ -2699,6 +2773,15 @@ if (import.meta.client) {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
+}
+
+.preview-support-alert {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9;
+  max-width: min(520px, calc(100% - 32px));
 }
 
 .signature-overlay {

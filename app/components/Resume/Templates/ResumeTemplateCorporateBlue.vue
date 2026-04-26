@@ -112,7 +112,7 @@ const photoStyle = computed(() => ({
 
 <style scoped>
 /* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
-.corporate-template { min-height: calc(100vh - 80px); background: var(--cv-page); border-radius: 14px; overflow: hidden; }
+.corporate-template { font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif); font-style: var(--cv-font-style, normal); font-weight: var(--cv-font-weight, 400); min-height: calc(100vh - 80px); background: var(--cv-page); border-radius: var(--cv-radius, 14px); overflow: hidden; }
 header { background: var(--cv-sidebar); color: color-mix(in srgb, var(--cv-page) 94%, white); padding: 20px 26px; }
 header h1 { font-size: 3rem; line-height: 1; margin-bottom: 4px; }
 header p { font-size: 1.8rem; }

@@ -90,7 +90,7 @@ function isVisible(section: SharedSectionKey) {
 
 <style scoped>
 /* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
-.shared-extra {
+.shared-extra { font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif); font-style: var(--cv-font-style, normal); font-weight: var(--cv-font-weight, 400);
   --shared-panel-bg: color-mix(in srgb, var(--cv-page) 92%, white);
   --shared-panel-text: var(--cv-secondary, color-mix(in srgb, var(--cv-sidebar) 70%, black));
   --shared-panel-border: color-mix(in srgb, var(--cv-accent) 20%, var(--cv-page));
@@ -102,7 +102,7 @@ function isVisible(section: SharedSectionKey) {
   color: var(--shared-panel-text);
   border-inline: 1px solid var(--shared-panel-border);
   border-bottom: 1px solid var(--shared-panel-border);
-  border-radius: 0 0 inherit inherit;
+  border-radius: 0 0 var(--cv-radius, 14px) var(--cv-radius, 14px);
   padding: 16px;
   display: grid;
   gap: 14px;

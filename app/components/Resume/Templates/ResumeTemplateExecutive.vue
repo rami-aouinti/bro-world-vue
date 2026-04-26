@@ -111,7 +111,7 @@ function updateText(path: string, value: string) {
 
 <style scoped>
 /* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
-.executive-template { min-height: calc(100vh - 80px); display: grid; grid-template-columns: 280px 1fr; border-radius: 18px; overflow: hidden; background: var(--cv-page); }
+.executive-template { font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif); font-style: var(--cv-font-style, normal); font-weight: var(--cv-font-weight, 400); min-height: calc(100vh - 80px); display: grid; grid-template-columns: 280px 1fr; border-radius: var(--cv-radius, 18px); overflow: hidden; background: var(--cv-page); }
 .executive-sidebar { background: linear-gradient(180deg, var(--cv-sidebar), color-mix(in srgb, var(--cv-sidebar) 82%, black)); color: color-mix(in srgb, var(--cv-page) 94%, white); padding: 28px 22px; }
 .executive-sidebar h1 { line-height: 1.1; margin-bottom: 10px; font-size: 1.9rem; }
 .title { font-size: .95rem; opacity: .9; margin-bottom: 20px; }
@@ -134,5 +134,5 @@ li { margin-bottom: 6px; }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
 .editable-text[contenteditable='true']:focus { outline-color: color-mix(in srgb, var(--cv-accent) 40%, transparent); }
-@media (max-width: 1080px) { .executive-template { grid-template-columns: 1fr; } .skills-grid { grid-template-columns: 1fr; } }
+@media (max-width: 1080px) { .executive-template { font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif); font-style: var(--cv-font-style, normal); font-weight: var(--cv-font-weight, 400); grid-template-columns: 1fr; } .skills-grid { grid-template-columns: 1fr; } }
 </style>

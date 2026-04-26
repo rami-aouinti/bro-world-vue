@@ -89,7 +89,7 @@ function updateText(path: string, value: string) {
 
 <style scoped>
 /* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
-.minimal-template { min-height: calc(100vh - 80px); padding: 36px; background: var(--cv-page); color: color-mix(in srgb, var(--cv-sidebar) 78%, black); }
+.minimal-template { font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif); font-style: var(--cv-font-style, normal); font-weight: var(--cv-font-weight, 400); min-height: calc(100vh - 80px); padding: 36px; background: var(--cv-page); color: color-mix(in srgb, var(--cv-sidebar) 78%, black); border-radius: var(--cv-radius, 14px); overflow: hidden; }
 .minimal-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 2px solid color-mix(in srgb, var(--cv-accent) 16%, var(--cv-page)); padding-bottom: 18px; }
 h1 { margin: 0 0 4px; font-size: 2rem; letter-spacing: -.02em; }
 .minimal-contact { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; color: var(--cv-secondary); /* Intentional neutral gray for secondary contact text. */ margin: 14px 0 22px; }
@@ -105,5 +105,5 @@ li { margin-bottom: 6px; }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
 .editable-text[contenteditable='true']:focus { outline-color: color-mix(in srgb, var(--cv-accent) 45%, transparent); }
-@media (max-width: 900px) { .minimal-template { padding: 22px; } .split { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .minimal-template { font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif); font-style: var(--cv-font-style, normal); font-weight: var(--cv-font-weight, 400); padding: 22px; } .split { grid-template-columns: 1fr; } }
 </style>
