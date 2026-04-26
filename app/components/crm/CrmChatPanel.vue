@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import InboxMessengerPage from '~/components/Inbox/InboxMessengerPage.vue'
+const { crmApplicationSlug } = useCrmGeneralApplicationSlug()
 </script>
 
 <template>
-  <InboxMessengerPage />
+  <InboxMessengerPage
+    :application-slug="crmApplicationSlug"
+    route-path="/world/crm/chat"
+  />
 </template>

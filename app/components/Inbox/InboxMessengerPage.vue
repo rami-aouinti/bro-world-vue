@@ -86,6 +86,13 @@ const router = useRouter()
 const { locale, t } = useI18n()
 const { user: sessionUser } = useUserSession()
 const { subscribe } = useMercure()
+const pageProps = withDefaults(defineProps<{
+  applicationSlug?: string
+  routePath?: string
+}>(), {
+  applicationSlug: '',
+  routePath: '/inbox',
+})
 
 const loading = ref(false)
 const messagesLoading = ref(false)
@@ -271,7 +278,11 @@ function refreshRightSuggestions() {
 async function fetchConversations() {
   loading.value = true
   try {
-    const response = await privateApi.request<ConversationListResponse>('/api/chat/private/conversations')
+    const applicationSlug = pageProps.applicationSlug.trim()
+    const endpoint = applicationSlug
+      ? `/api/chat/private/applications/conversations?applicationSlug=${encodeURIComponent(applicationSlug)}`
+      : '/api/chat/private/conversations'
+    const response = await privateApi.request<ConversationListResponse>(endpoint)
     conversations.value = response.items || []
 
     const queryConversationId = String(route.query.conversation || '')
@@ -322,7 +333,7 @@ async function openConversation(conversationId: string, syncRoute = true) {
     scrollToBottom()
 
     if (syncRoute && route.query.conversation !== conversationId) {
-      await router.push({ path: '/inbox', query: { conversation: conversationId } })
+      await router.push({ path: pageProps.routePath, query: { conversation: conversationId } })
     }
   } finally {
     messagesLoading.value = false
@@ -557,7 +568,7 @@ async function deleteSelectedConversation() {
     } else {
       selectedConversationId.value = ''
       messages.value = []
-      await router.push({ path: '/inbox' })
+      await router.push({ path: pageProps.routePath })
     }
   } finally {
     deletingConversation.value = false
