@@ -58,7 +58,7 @@ export const useCrmReferenceOptionsStore = defineStore('crm-reference-options', 
       return employees.value
     }
 
-    const response = await $fetch<ApiListResponse<CrmEmployeeItem>>('/api/crm/general/employees', {
+    const response = await $fetch<ApiListResponse<CrmEmployeeItem>>('/api/world/crm/general/employees', {
       query: { page: DEFAULT_PAGE, limit: DEFAULT_LIMIT },
     })
     employees.value = response.items ?? []
@@ -84,7 +84,7 @@ export const useCrmReferenceOptionsStore = defineStore('crm-reference-options', 
       return tasks.value
     }
 
-    const response = await $fetch<ApiListResponse<CrmTaskItem>>('/api/crm/general/tasks', {
+    const response = await $fetch<ApiListResponse<CrmTaskItem>>('/api/world/crm/general/tasks', {
       query: { page: DEFAULT_PAGE, limit: DEFAULT_LIMIT },
     })
     tasks.value = response.items ?? []
@@ -97,7 +97,7 @@ export const useCrmReferenceOptionsStore = defineStore('crm-reference-options', 
       return taskRequests.value
     }
 
-    const response = await $fetch<ApiListResponse<CrmTaskRequestItem>>('/api/crm/general/task-requests', {
+    const response = await $fetch<ApiListResponse<CrmTaskRequestItem>>('/api/world/crm/general/task-requests', {
       query: { page: DEFAULT_PAGE, limit: DEFAULT_LIMIT },
     })
     taskRequests.value = response.items ?? []
@@ -110,7 +110,7 @@ export const useCrmReferenceOptionsStore = defineStore('crm-reference-options', 
       return sprints.value
     }
 
-    const response = await $fetch<ApiListResponse<CrmSprintItem>>('/api/crm/general/sprints', {
+    const response = await $fetch<ApiListResponse<CrmSprintItem>>('/api/world/crm/general/sprints', {
       query: { page: DEFAULT_PAGE, limit: DEFAULT_LIMIT },
     })
     sprints.value = response.items ?? []

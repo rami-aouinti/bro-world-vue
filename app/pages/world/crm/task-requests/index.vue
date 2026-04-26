@@ -31,6 +31,7 @@ const search = ref('')
 const statusFilter = ref<string | null>(null)
 const repositoryFilter = ref<string | null>(null)
 const taskFilter = ref<string | null>(null)
+const taskRequestFilter = ref<string | null>(null)
 const requestedAfter = ref<string | null>(null)
 const resolvedBefore = ref<string | null>(null)
 const currentPage = ref(1)
@@ -46,7 +47,10 @@ const payload = reactive<CrmTaskRequestCreatePayload>({
 const crmReferencesStore = useCrmReferenceOptionsStore()
 
 const { data, pending, error, refresh } = useFetch<ApiListResponse<CrmTaskRequestItem>>('/api/crm/general/task-requests')
-await crmReferencesStore.fetchTasks()
+await Promise.all([
+  crmReferencesStore.fetchTasks(),
+  crmReferencesStore.fetchTaskRequests(),
+])
 
 const filteredRequests = computed(() => {
   const query = search.value.trim().toLowerCase()
@@ -61,6 +65,7 @@ const filteredRequests = computed(() => {
     const matchesStatus = !statusFilter.value || request.status === statusFilter.value
     const matchesRepository = !repositoryFilter.value || request.repositoryId === repositoryFilter.value
     const matchesTask = !taskFilter.value || request.taskId === taskFilter.value
+    const matchesTaskRequest = !taskRequestFilter.value || request.id === taskRequestFilter.value
     const matchesRequestedDate
       = !requestedAfter.value
         || new Date(request.requestedAt) >= new Date(requestedAfter.value)
@@ -73,6 +78,7 @@ const filteredRequests = computed(() => {
       && matchesStatus
       && matchesRepository
       && matchesTask
+      && matchesTaskRequest
       && matchesRequestedDate
       && matchesResolvedDate
   })
@@ -84,9 +90,8 @@ const taskRequestStatusOptions = computed(() =>
 const taskRequestRepositoryOptions = computed(() =>
   Array.from(new Set((data.value?.items ?? []).map((request) => request.repositoryId).filter(Boolean))),
 )
-const taskRequestTaskOptions = computed(() =>
-  Array.from(new Set((data.value?.items ?? []).map((request) => request.taskId).filter(Boolean))),
-)
+const taskRequestTaskOptions = computed(() => crmReferencesStore.taskOptions)
+const taskRequestTitleOptions = computed(() => crmReferencesStore.taskRequestOptions)
 const taskRequestCreateStatusOptions = computed(() =>
   Array.from(new Set(['pending', 'in_progress', 'approved', 'rejected', ...taskRequestStatusOptions.value])),
 )
@@ -103,7 +108,7 @@ const paginatedRequests = computed(() => {
   return filteredRequests.value.slice(start, start + itemsPerPage)
 })
 
-watch([search, statusFilter, repositoryFilter, taskFilter, requestedAfter, resolvedBefore, filteredRequests], () => {
+watch([search, statusFilter, repositoryFilter, taskFilter, taskRequestFilter, requestedAfter, resolvedBefore, filteredRequests], () => {
   currentPage.value = 1
 })
 
@@ -195,6 +200,7 @@ async function deleteRequest() {
           />
           <AppSelect v-model="repositoryFilter" :items="taskRequestRepositoryOptions" :label="t('world.crm.filters.repository')" clearable />
           <AppSelect v-model="taskFilter" :items="taskRequestTaskOptions" :label="t('world.crm.filters.task')" clearable />
+          <AppSelect v-model="taskRequestFilter" :items="taskRequestTitleOptions" :label="t('world.crm.taskRequests.form.title')" clearable />
           <v-text-field v-model="requestedAfter" type="date" :label="t('world.crm.filters.requestedAfter')" variant="outlined" hide-details clearable />
           <v-text-field v-model="resolvedBefore" type="date" :label="t('world.crm.filters.resolvedBefore')" variant="outlined" hide-details clearable />
         </div>
