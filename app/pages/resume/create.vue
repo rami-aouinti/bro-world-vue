@@ -6,7 +6,10 @@ import ResumeTemplateExecutive from '~/components/Resume/Templates/ResumeTemplat
 import ResumeTemplateMinimalist from '~/components/Resume/Templates/ResumeTemplateMinimalist.vue'
 import ResumeTemplateModern from '~/components/Resume/Templates/ResumeTemplateModern.vue'
 import ResumeTemplateProfessional from '~/components/Resume/Templates/ResumeTemplateProfessional.vue'
+import ResumeTemplateTerra from '~/components/Resume/Templates/ResumeTemplateTerra.vue'
 import ResumeTemplateTraditional from '~/components/Resume/Templates/ResumeTemplateTraditional.vue'
+import ResumeTemplateOceanSplit from '~/components/Resume/Templates/ResumeTemplateOceanSplit.vue'
+import ResumeTemplateCorporateBlue from '~/components/Resume/Templates/ResumeTemplateCorporateBlue.vue'
 
 definePageMeta({
   title: 'Create Resume',
@@ -144,6 +147,9 @@ type Template = {
     | 'minimalist'
     | 'aurora'
     | 'executive'
+    | 'terra'
+    | 'ocean-split'
+    | 'corporate-blue'
 }
 
 type TemplateFilter =
@@ -195,6 +201,48 @@ const templateFilters = [
 ] as const satisfies ReadonlyArray<{ label: string; value: TemplateFilter }>
 
 const templates: Template[] = [
+  {
+    id: 'terra',
+    title: 'Terra Sidebar',
+    subtitle: 'Warm sidebar profile in French style',
+    image: '/img/cv/cv-1.png',
+    hasPhoto: true,
+    isTwoColumn: true,
+    isAts: false,
+    hasDocx: true,
+    isCustomized: true,
+    isFree: true,
+    useTimeline: false,
+    variant: 'terra',
+  },
+  {
+    id: 'ocean-split',
+    title: 'Ocean Split',
+    subtitle: 'Diagonal split with textured blue panel',
+    image: '/img/cv/cv-3.png',
+    hasPhoto: true,
+    isTwoColumn: true,
+    isAts: false,
+    hasDocx: false,
+    isCustomized: true,
+    isFree: true,
+    useTimeline: false,
+    variant: 'ocean-split',
+  },
+  {
+    id: 'corporate-blue',
+    title: 'Corporate Blue',
+    subtitle: 'Executive header with information sidebar',
+    image: '/img/cv/cv-2.png',
+    hasPhoto: true,
+    isTwoColumn: true,
+    isAts: true,
+    hasDocx: true,
+    isCustomized: true,
+    isFree: true,
+    useTimeline: false,
+    variant: 'corporate-blue',
+  },
   {
     id: 'classic',
     title: 'Classic',
@@ -491,7 +539,10 @@ const selectedTemplateComponent = computed(() => {
     executive: ResumeTemplateExecutive,
     minimalist: ResumeTemplateMinimalist,
     modern: ResumeTemplateModern,
+    'ocean-split': ResumeTemplateOceanSplit,
     professional: ResumeTemplateProfessional,
+    'corporate-blue': ResumeTemplateCorporateBlue,
+    terra: ResumeTemplateTerra,
     traditional: ResumeTemplateTraditional,
   } as const
   return componentByVariant[selectedTemplateConfig.value.variant]
