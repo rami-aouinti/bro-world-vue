@@ -299,12 +299,14 @@ export interface CrmDashboardExecutiveResponse {
 
 export interface CrmEmployeeItem {
   id: string
-  firstName: string
-  lastName: string
-  email: string
+  firstName: string | null
+  lastName: string | null
+  userFirstName?: string | null
+  userLastName?: string | null
+  email: string | null
   userId: string
-  positionName: string
-  roleName: string
+  positionName: string | null
+  roleName: string | null
   photo?: string
 }
 

@@ -35,7 +35,11 @@ function truncateLabel(value: string | null | undefined, max = 30) {
 }
 
 function employeeDisplayName(employee: CrmEmployeeItem) {
-  return `${employee.firstName ?? ''} ${employee.lastName ?? ''}`.trim()
+  const firstName = String(employee.firstName ?? employee.userFirstName ?? '').trim()
+  const lastName = String(employee.lastName ?? employee.userLastName ?? '').trim()
+  const fullName = `${firstName} ${lastName}`.trim()
+
+  return fullName || employee.email || employee.userId
 }
 
 export const useCrmReferenceOptionsStore = defineStore('crm-reference-options', () => {
@@ -123,7 +127,7 @@ export const useCrmReferenceOptionsStore = defineStore('crm-reference-options', 
         title: employeeDisplayName(employee),
         value: String(employee.userId),
         avatar: employee.photo,
-        subtitle: employee.email,
+        subtitle: employee.email ?? undefined,
       })),
   )
 

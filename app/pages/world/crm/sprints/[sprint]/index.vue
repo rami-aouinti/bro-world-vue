@@ -33,6 +33,13 @@ const publicUserOptions = computed(() => crmReferencesStore.employeeAssigneeOpti
 const taskOptions = computed(() => crmReferencesStore.taskOptions)
 const projectOptions = computed(() => crmReferencesStore.projectOptions)
 
+function assigneeDisplayName(assignee: any) {
+  const firstName = String(assignee?.firstName ?? assignee?.userFirstName ?? '').trim()
+  const lastName = String(assignee?.lastName ?? assignee?.userLastName ?? '').trim()
+  const fullName = `${firstName} ${lastName}`.trim()
+  return fullName || String(assignee?.username ?? assignee?.email ?? assignee?.id ?? assignee ?? '—')
+}
+
 const { data, pending, error, refresh } = useFetch<CrmSprintItem>(
   () => `/api/crm/general/sprints/${sprintId.value}`,
 )
@@ -139,6 +146,19 @@ async function detachTask() {
           <v-btn size="small" color="secondary" variant="tonal" @click="attachAssignee">{{ t('world.crm.sprints.actions.attach') }}</v-btn>
           <v-btn size="small" color="error" variant="tonal" @click="detachAssignee">{{ t('world.crm.sprints.actions.detach') }}</v-btn>
         </div>
+        <v-list density="compact" bg-color="transparent">
+          <v-list-item
+            v-for="assignee in data?.assignees ?? []"
+            :key="String((assignee as any).id ?? assignee)"
+            :title="assigneeDisplayName(assignee)"
+          >
+            <template #prepend>
+              <v-avatar size="24">
+                <v-img :src="String((assignee as any).photo ?? '/img/avatar_default.svg')" :alt="assigneeDisplayName(assignee)" />
+              </v-avatar>
+            </template>
+          </v-list-item>
+        </v-list>
 
         <h3 class="text-subtitle-1 mb-3">{{ t('world.crm.sprints.sections.tasks') }}</h3>
         <AppSelect

@@ -65,6 +65,13 @@ const activeEmployeeId = computed(() => {
 
 const publicUserOptions = computed(() => crmReferencesStore.employeeAssigneeOptions)
 
+function assigneeDisplayName(assignee: any) {
+  const firstName = String(assignee?.firstName ?? assignee?.userFirstName ?? '').trim()
+  const lastName = String(assignee?.lastName ?? assignee?.userLastName ?? '').trim()
+  const fullName = `${firstName} ${lastName}`.trim()
+  return fullName || String(assignee?.username ?? assignee?.email ?? assignee?.id ?? assignee ?? '—')
+}
+
 watchEffect(() => {
   if (!data.value) return
   Object.assign(payload, {
@@ -346,10 +353,10 @@ onBeforeUnmount(() => {
               :disabled="!isRootAdmin"
             >
               <template #item="{ props, item }">
-                <v-list-item v-bind="props" :title="item?.raw?.title || undefined" :subtitle="item?.raw?.subtitle || undefined">
+                <v-list-item v-bind="props" :title="item.raw.title" :subtitle="item.raw.subtitle">
                   <template #prepend>
                     <v-avatar size="24">
-                      <v-img :src="item?.raw?.avatar || '/img/avatar_default.svg'" :alt="item?.raw?.title || 'Employee avatar'" />
+                      <v-img :src="item.raw.avatar || '/img/avatar_default.svg'" :alt="item.raw.title" />
                     </v-avatar>
                   </template>
                 </v-list-item>
@@ -357,9 +364,9 @@ onBeforeUnmount(() => {
               <template #selection="{ item }">
                 <div class="d-flex align-center ga-2">
                   <v-avatar size="20">
-                    <v-img :src="item?.raw?.avatar || '/img/avatar_default.svg'" :alt="item?.raw?.title || 'Employee avatar'" />
+                    <v-img :src="item.raw.avatar || '/img/avatar_default.svg'" :alt="item.raw.title" />
                   </v-avatar>
-                  <span v-if="item?.raw?.title">{{ item.raw.title }}</span>
+                  <span>{{ item.raw.title }}</span>
                 </div>
               </template>
             </AppSelect>
@@ -376,9 +383,14 @@ onBeforeUnmount(() => {
               <v-list-item
                 v-for="assignee in data?.assignees ?? []"
                 :key="String(assignee.id)"
-                :title="String(assignee.username ?? assignee.email ?? assignee.id)"
+                :title="assigneeDisplayName(assignee)"
                 :subtitle="String(assignee.email ?? '')"
               >
+                <template #prepend>
+                  <v-avatar size="24">
+                    <v-img :src="String(assignee.photo ?? '/img/avatar_default.svg')" :alt="assigneeDisplayName(assignee)" />
+                  </v-avatar>
+                </template>
                 <template v-if="isRootAdmin" #append>
                   <v-btn
                     size="small"
