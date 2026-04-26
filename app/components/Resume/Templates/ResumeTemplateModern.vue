@@ -21,7 +21,7 @@ function updateText(path: string, value: string) {
 </script>
 
 <template>
-  <div class="modern-template">
+  <div class="modern-template cv-template-base">
     <header class="modern-header">
       <v-avatar v-if="showPhoto && resume.photoUrl" size="82" class="mb-3 modern-avatar" @click="onPhotoClick?.()">
         <v-img :src="resume.photoUrl" cover />
@@ -40,7 +40,7 @@ function updateText(path: string, value: string) {
     </header>
 
     <div class="modern-grid">
-      <aside>
+      <aside class="cv-sidebar-surface">
         <section>
           <h3>Skills</h3>
           <ul class="bars">
@@ -63,11 +63,11 @@ function updateText(path: string, value: string) {
 
       <main>
         <section>
-          <h2>Profile</h2>
+          <h2 class="cv-heading-section">Profile</h2>
           <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText('profile', (event.target as HTMLElement).innerText)">{{ resume.profile || 'Add a professional summary from the Edit tab.' }}</p>
         </section>
         <section>
-          <h2>Employment History</h2>
+          <h2 class="cv-heading-section">Employment History</h2>
           <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="entry text-dark">
             <h4 class="text-dark">
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.role`, (event.target as HTMLElement).innerText)">{{ experience.role }}</span>,
@@ -84,7 +84,7 @@ function updateText(path: string, value: string) {
           </article>
         </section>
         <section>
-          <h2>Projects</h2>
+          <h2 class="cv-heading-section">Projects</h2>
           <article v-for="(project, index) in resume.projects" :key="`project-${index}`" class="entry text-dark">
             <h4 class="text-dark">
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span>
@@ -93,7 +93,7 @@ function updateText(path: string, value: string) {
           </article>
         </section>
         <section>
-          <h2>Certifications</h2>
+          <h2 class="cv-heading-section">Certifications</h2>
           <article v-for="(course, index) in resume.courses" :key="`course-${index}`" class="entry text-dark">
             <h4 class="text-dark">
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`courses.${index}.title`, (event.target as HTMLElement).innerText)">{{ course.title }}</span>
@@ -108,7 +108,7 @@ function updateText(path: string, value: string) {
           </article>
         </section>
         <section>
-          <h2>References</h2>
+          <h2 class="cv-heading-section">References</h2>
           <article v-for="(reference, index) in resume.references" :key="`reference-${index}`" class="entry text-dark">
             <h4 class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`references.${index}.name`, (event.target as HTMLElement).innerText)">{{ reference.name }}</h4>
             <p class="text-dark">

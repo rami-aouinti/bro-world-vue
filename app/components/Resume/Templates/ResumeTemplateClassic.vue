@@ -20,8 +20,8 @@ function updateText(path: string, value: string) {
 </script>
 
 <template>
-  <div class="classic-template">
-    <aside class="classic-sidebar">
+  <div class="classic-template cv-template-base">
+    <aside class="classic-sidebar cv-sidebar-surface">
       <v-avatar v-if="resume.photoUrl" size="104" class="classic-avatar" @click="onPhotoClick?.()">
         <v-img :src="resume.photoUrl" cover />
       </v-avatar>
@@ -59,11 +59,11 @@ function updateText(path: string, value: string) {
 
     <main class="classic-content">
       <section>
-        <h2>Profile</h2>
+        <h2 class="cv-heading-section">Profile</h2>
         <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText('profile', (event.target as HTMLElement).innerText)">{{ resume.profile }}</p>
       </section>
       <section>
-        <h2>Employment History</h2>
+        <h2 class="cv-heading-section">Employment History</h2>
         <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="entry text-dark">
           <h4 class="text-dark">
             <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.role`, (event.target as HTMLElement).innerText)">{{ experience.role }}</span>,
@@ -80,7 +80,7 @@ function updateText(path: string, value: string) {
         </article>
       </section>
       <section>
-        <h2>Education</h2>
+        <h2 class="cv-heading-section">Education</h2>
         <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="entry text-dark">
           <h4 class="text-dark">
             <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</span>,
@@ -94,7 +94,7 @@ function updateText(path: string, value: string) {
         </article>
       </section>
       <section>
-        <h2>Projects</h2>
+        <h2 class="cv-heading-section">Projects</h2>
         <article v-for="(project, index) in resume.projects" :key="`project-${index}`" class="entry text-dark">
           <h4 class="text-dark">
             <span class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span>
@@ -103,7 +103,7 @@ function updateText(path: string, value: string) {
         </article>
       </section>
       <section>
-        <h2>Certifications</h2>
+        <h2 class="cv-heading-section">Certifications</h2>
         <article v-for="(course, index) in resume.courses" :key="`course-${index}`" class="entry text-dark">
           <h4 class="text-dark">
             <span class="editable-text" :contenteditable="editable" @input="event => updateText(`courses.${index}.title`, (event.target as HTMLElement).innerText)">{{ course.title }}</span>
@@ -117,7 +117,7 @@ function updateText(path: string, value: string) {
         </article>
       </section>
       <section>
-        <h2>References</h2>
+        <h2 class="cv-heading-section">References</h2>
         <article v-for="(reference, index) in resume.references" :key="`reference-${index}`" class="entry text-dark">
           <h4 class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`references.${index}.name`, (event.target as HTMLElement).innerText)">{{ reference.name }}</h4>
           <p class="text-dark">

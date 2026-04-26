@@ -1,0 +1,67 @@
+/* Resume template design system utilities.
+ * All visual theming must be derived from --cv-* variables.
+ */
+
+.cv-template-base {
+  font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif);
+  font-style: var(--cv-font-style, normal);
+  font-weight: var(--cv-font-weight, 400);
+  min-height: calc(100vh - 80px);
+  background: var(--cv-page);
+  border-radius: var(--cv-radius, 14px);
+  overflow: hidden;
+}
+
+.cv-sidebar-surface {
+  background: var(--cv-sidebar-surface, var(--cv-sidebar));
+  color: var(--cv-on-sidebar, color-mix(in srgb, var(--cv-page) 92%, white));
+}
+
+.cv-heading-section {
+  color: var(--cv-title);
+  margin-bottom: 10px;
+}
+
+.cv-divider-bottom {
+  border-bottom: var(--cv-divider-width, 1px) solid var(--cv-divider-color, color-mix(in srgb, var(--cv-accent) 20%, var(--cv-page)));
+  padding-bottom: var(--cv-divider-padding, 6px);
+}
+
+.cv-divider-top {
+  border-top: var(--cv-divider-width, 1px) solid var(--cv-divider-color, color-mix(in srgb, var(--cv-accent) 20%, var(--cv-page)));
+  padding-top: var(--cv-divider-padding, 10px);
+}
+
+.cv-card-surface {
+  background: var(--cv-card-bg, var(--cv-page));
+  border: 1px solid var(--cv-card-border, color-mix(in srgb, var(--cv-accent) 14%, var(--cv-page)));
+  border-radius: var(--cv-card-radius, 16px);
+  box-shadow: var(--cv-card-shadow, 0 8px 20px color-mix(in srgb, var(--cv-sidebar) 8%, transparent));
+}
+
+.cv-gradient-page {
+  background: var(--cv-gradient-page, linear-gradient(145deg, var(--cv-page), color-mix(in srgb, var(--cv-page) 82%, var(--cv-accent))));
+}
+
+.cv-gradient-hero {
+  background: var(--cv-gradient-hero, linear-gradient(135deg, var(--cv-accent), color-mix(in srgb, var(--cv-accent) 72%, var(--cv-sidebar))));
+}
+
+.cv-gradient-sidebar {
+  background: var(--cv-gradient-sidebar, linear-gradient(180deg, var(--cv-sidebar), color-mix(in srgb, var(--cv-sidebar) 82%, black)));
+}
+
+.cv-gradient-split-left {
+  background: var(--cv-gradient-split-left, linear-gradient(147deg, color-mix(in srgb, var(--cv-accent) 54%, var(--cv-sidebar)) 0%, var(--cv-page) 47%));
+}
+
+.cv-gradient-split-right {
+  background: var(--cv-gradient-split-right, linear-gradient(135deg, color-mix(in srgb, var(--cv-sidebar) 72%, var(--cv-accent)), var(--cv-sidebar)));
+}
+
+.cv-gradient-aurora {
+  background: var(--cv-gradient-aurora,
+    radial-gradient(circle at 20% 30%, color-mix(in srgb, var(--cv-accent) 35%, transparent), transparent 45%),
+    radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--cv-sidebar) 35%, var(--cv-accent)), transparent 40%),
+    radial-gradient(circle at 50% 80%, color-mix(in srgb, var(--cv-accent) 55%, var(--cv-page)), transparent 40%));
+}
