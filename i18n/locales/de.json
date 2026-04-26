@@ -2792,7 +2792,7 @@
   "resumeBuilder": {
     "index": {
       "heroTitle": "Erstelle in wenigen Minuten einen professionellen Lebenslauf",
-      "heroSubtitle": "Eine öffentliche Seite zur Vorstellung des Tools, gefolgt von einer Erstellungserfahrung basierend auf euren Mockups.",
+      "heroSubtitle": "Erstelle deine komplette Bewerbungsmappe mit geführten Vorlagen, smartem Editor und sofortigem Export.",
       "primaryCta": "Jetzt starten",
       "secondaryCta": "Builder öffnen",
       "features": {
@@ -2811,6 +2811,54 @@
         "export": {
           "title": "PDF-/DOCX-Export",
           "description": "Lade deinen Lebenslauf im idealen Format für Recruiter herunter."
+        }
+      },
+      "rating": {
+        "label": "Hervorragend",
+        "score": "4,5 von 5 basierend auf 1.389 Bewertungen · Trustpilot"
+      },
+      "tabs": {
+        "cover": "Deckblatt",
+        "letter": "Anschreiben",
+        "resume": "Lebenslauf",
+        "applicationPack": "Bewerbungsmappe"
+      },
+      "journey": {
+        "title": "Erstelle deinen Lebenslauf in 3 Schritten",
+        "subtitle": "Vorlage auswählen, Inhalt personalisieren und anschließend direkt herunterladen und versenden.",
+        "steps": {
+          "template": {
+            "title": "Vorlagen, die zu dir passen",
+            "description": "Modern oder klassisch: Wähle das Design, das zu deinem Profil passt.",
+            "cta": "Lebenslauf erstellen"
+          },
+          "fill": {
+            "title": "Ausfüllen und personalisieren",
+            "description": "Füge Berufserfahrung, Fähigkeiten und Ausbildung in klaren Schritten hinzu."
+          },
+          "export": {
+            "title": "Herunterladen, abschicken, fertig",
+            "description": "Exportiere ein professionelles PDF und speichere alle Versionen in deinem Konto."
+          }
+        }
+      },
+      "benefits": {
+        "title": "Diese Vorteile bietet dir unser Editor",
+        "subtitle": "Arbeite schneller mit professionellen Tools für erfolgreiche Bewerbungen.",
+        "items": {
+          "attachments": {
+            "title": "Anhänge einfach ergänzen",
+            "description": "Füge Zeugnisse und Nachweise hinzu, um deine Bewerbung vollständig zu machen."
+          },
+          "allInOne": {
+            "title": "All-in-one Bewerbung",
+            "description": "Erstelle Lebenslauf, Anschreiben und finale Mappe in einem Workflow."
+          },
+          "flexibility": {
+            "title": "Mehr Flexibilität mit Premium",
+            "description": "Verwalte mehrere Versionen und behalte deinen Fortschritt jederzeit im Blick.",
+            "link": "Mehr über Premium erfahren"
+          }
         }
       }
     },
