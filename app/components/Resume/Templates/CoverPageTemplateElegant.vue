@@ -28,7 +28,7 @@ withDefaults(defineProps<{
 
 <template>
   <article
-    class="cover-page-elegant"
+    class="cover-page-elegant text-dark"
     :class="`cover-page-elegant--${typography}`"
     :style="{
       '--cp-page': palette.page,

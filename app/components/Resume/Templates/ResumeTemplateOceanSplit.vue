@@ -57,7 +57,7 @@ const articleStyle = computed(() => ({
 </script>
 
 <template>
-  <div class="ocean-template cv-template-base" :style="layoutStyle">
+  <div class="ocean-template cv-template-base text-dark" :style="layoutStyle">
     <section class="left" :style="leftStyle">
       <v-avatar v-if="showPhoto && resume.photoUrl" class="ocean-photo" :style="photoStyle" @click="onPhotoClick?.()">
         <v-img :src="resume.photoUrl" cover />
