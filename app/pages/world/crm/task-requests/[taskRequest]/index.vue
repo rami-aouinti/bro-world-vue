@@ -23,7 +23,8 @@ const isAssignedEmployee = computed(() =>
   ),
 )
 const canTrackWork = computed(() => isRootAdmin.value || isAssignedEmployee.value)
-const { data: usersData } = useFetch<Record<string, any>>('/api/public/users')
+const crmReferencesStore = useCrmReferenceOptionsStore()
+await crmReferencesStore.fetchEmployees()
 const assigneeId = ref('')
 const selectedFile = ref<File | null>(null)
 const branchProvider = ref<'github' | 'gitlab'>('github')
@@ -62,17 +63,14 @@ const activeEmployeeId = computed(() => {
   return ''
 })
 
-const publicUserOptions = computed(() => {
-  const list = usersData.value?.users ?? usersData.value?.items ?? []
-  if (!Array.isArray(list)) return []
+const publicUserOptions = computed(() => crmReferencesStore.employeeAssigneeOptions)
 
-  return list
-    .map((user: any) => ({
-      title: user.username ?? user.fullName ?? user.name ?? user.email ?? user.id,
-      value: String(user.id ?? ''),
-    }))
-    .filter((item: { value: string }) => item.value)
-})
+function assigneeDisplayName(assignee: any) {
+  const firstName = String(assignee?.firstName ?? assignee?.userFirstName ?? '').trim()
+  const lastName = String(assignee?.lastName ?? assignee?.userLastName ?? '').trim()
+  const fullName = `${firstName} ${lastName}`.trim()
+  return fullName || String(assignee?.username ?? assignee?.email ?? assignee?.id ?? assignee ?? '—')
+}
 
 watchEffect(() => {
   if (!data.value) return
@@ -353,7 +351,25 @@ onBeforeUnmount(() => {
               label="Employee"
               class="mb-2"
               :disabled="!isRootAdmin"
-            />
+            >
+              <template #item="{ props, item }">
+                <v-list-item v-bind="props" :title="item.raw.title" :subtitle="item.raw.subtitle">
+                  <template #prepend>
+                    <v-avatar size="24">
+                      <v-img :src="item.raw.avatar || '/img/avatar_default.svg'" :alt="item.raw.title" />
+                    </v-avatar>
+                  </template>
+                </v-list-item>
+              </template>
+              <template #selection="{ item }">
+                <div class="d-flex align-center ga-2">
+                  <v-avatar size="20">
+                    <v-img :src="item.raw.avatar || '/img/avatar_default.svg'" :alt="item.raw.title" />
+                  </v-avatar>
+                  <span>{{ item.raw.title }}</span>
+                </div>
+              </template>
+            </AppSelect>
             <v-btn
               color="secondary"
               variant="tonal"
@@ -361,15 +377,20 @@ onBeforeUnmount(() => {
               :disabled="!isRootAdmin"
               @click="attachAssignee"
             >
-              Assign user
+              Assign employee
             </v-btn>
             <v-list density="compact" bg-color="transparent">
               <v-list-item
                 v-for="assignee in data?.assignees ?? []"
                 :key="String(assignee.id)"
-                :title="String(assignee.username ?? assignee.email ?? assignee.id)"
+                :title="assigneeDisplayName(assignee)"
                 :subtitle="String(assignee.email ?? '')"
               >
+                <template #prepend>
+                  <v-avatar size="24">
+                    <v-img :src="String(assignee.photo ?? '/img/avatar_default.svg')" :alt="assigneeDisplayName(assignee)" />
+                  </v-avatar>
+                </template>
                 <template v-if="isRootAdmin" #append>
                   <v-btn
                     size="small"

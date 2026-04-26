@@ -85,7 +85,7 @@ const taskPriorityOptions = computed(() =>
   Array.from(new Set((data.value?.items ?? []).map((task) => task.priority).filter(Boolean))),
 )
 const taskProjectOptions = computed(() =>
-  Array.from(new Set((data.value?.items ?? []).map((task) => task.projectId).filter(Boolean))),
+  crmReferencesStore.projectOptions,
 )
 const taskCreateProjectOptions = computed(() =>
   crmReferencesStore.projectOptions,
