@@ -25,7 +25,9 @@ type CoverLetterModel = {
 }
 
 const route = useRoute()
+const router = useRouter()
 const { coverLetterTemplates } = useResumeTemplates()
+const { parseCoverFlowQuery, toCoverLetterQuery } = useResumeCoverFlow()
 
 const tabs = [
   { value: 'edit', label: 'Edit' },
@@ -46,9 +48,11 @@ const selectedTemplate = ref(fallbackTemplateId)
 const selectedPalette = ref<PaletteId>('ocean')
 const selectedTypography = ref<Typography>('sans')
 
+const importedFlow = computed(() => parseCoverFlowQuery(route.query))
+
 const model = reactive<CoverLetterModel>({
-  fullName: typeof route.query.coverPageTitle === 'string' ? route.query.coverPageTitle.split('·')[0]?.trim() ?? 'John Doe' : 'John Doe',
-  role: 'Full Stack Developer',
+  fullName: importedFlow.value.title || 'John Doe',
+  role: importedFlow.value.subtitle || 'Full Stack Developer',
   recipient: 'Hiring Manager',
   company: 'Company Name',
   date: new Date().toLocaleDateString('fr-FR'),
@@ -60,14 +64,27 @@ const model = reactive<CoverLetterModel>({
 })
 
 const selectedCoverPageBase = computed(() => ({
-  templateId: typeof route.query.coverPageTemplate === 'string'
-    && COVER_PAGE_TEMPLATE_IDS.includes(route.query.coverPageTemplate)
-    ? route.query.coverPageTemplate
+  templateId: importedFlow.value.template && COVER_PAGE_TEMPLATE_IDS.includes(importedFlow.value.template)
+    ? importedFlow.value.template
     : fallbackCoverPageTemplateId,
-  summary: typeof route.query.coverPageSummary === 'string'
-    ? route.query.coverPageSummary
-    : 'Professional application pack cover page.',
+  title: importedFlow.value.title || 'John Doe',
+  subtitle: importedFlow.value.subtitle || 'Full Stack Developer',
+  summary: importedFlow.value.summary || 'Professional application pack cover page.',
+  draftId: importedFlow.value.draftId,
 }))
+
+const goBackToCoverPage = async () => {
+  await router.push({
+    path: '/resume/cover-page/editor',
+    query: toCoverLetterQuery({
+      template: selectedCoverPageBase.value.templateId,
+      title: selectedCoverPageBase.value.title,
+      subtitle: selectedCoverPageBase.value.subtitle,
+      summary: selectedCoverPageBase.value.summary,
+      draftId: selectedCoverPageBase.value.draftId,
+    }),
+  })
+}
 
 const templateComponents = {
   'cover-letter-classic': CoverLetterTemplateClassic,
@@ -89,10 +106,15 @@ onMounted(() => {
     <div class="builder-layout">
       <section class="builder-form px-3 px-md-6 py-4">
         <v-card class="form-card mb-4" variant="outlined">
-          <v-card-title>Base Cover Page</v-card-title>
-          <v-card-text class="d-grid ga-1">
+          <v-card-title>Base importée</v-card-title>
+          <v-card-text class="d-grid ga-2">
             <div><strong>Template:</strong> {{ selectedCoverPageBase.templateId }}</div>
+            <div><strong>Titre:</strong> {{ selectedCoverPageBase.title }}</div>
+            <div><strong>Sous-titre:</strong> {{ selectedCoverPageBase.subtitle }}</div>
             <div><strong>Résumé:</strong> {{ selectedCoverPageBase.summary }}</div>
+            <v-btn variant="text" color="primary" class="justify-start px-0" @click="goBackToCoverPage">
+              Retour vers Cover Page
+            </v-btn>
           </v-card-text>
         </v-card>
 
