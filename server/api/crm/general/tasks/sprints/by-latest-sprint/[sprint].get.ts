@@ -1,5 +1,5 @@
 import type { CrmTaskItem } from '~~/server/types/api/crm-general'
-import { cachedCrmGeneralGet } from '~~/server/utils/crmGeneralPrivateApi'
+import { fetchCrmGeneral } from '~~/server/utils/crmGeneralApi'
 
 interface CrmSprintMeta {
   id: string | null
@@ -28,9 +28,9 @@ export default defineEventHandler((event): Promise<CrmTasksBySprintResponse> => 
     throw createError({ statusCode: 400, statusMessage: 'Missing sprint id' })
   }
 
-  return cachedCrmGeneralGet<CrmTasksBySprintResponse>(
+  return fetchCrmGeneral<CrmTasksBySprintResponse>(
     event,
     `tasks/sprints/by-latest-sprint/${encodeURIComponent(sprintId)}`,
-    getQuery(event),
+    { query: getQuery(event) as Record<string, string | number | boolean | undefined> },
   )
 })
