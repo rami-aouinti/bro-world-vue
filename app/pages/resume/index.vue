@@ -6,13 +6,7 @@ definePageMeta({
 const { t } = useI18n()
 const router = useRouter()
 
-type DocumentTemplate = {
-  id: string
-  title: string
-  image: string
-  type: 'resume' | 'cover-page' | 'cover-letter'
-  templateId: string
-}
+const { allTemplates } = useResumeTemplates()
 
 const activeTemplateTab = ref<'cover-page' | 'cover-letter' | 'resume'>('resume')
 
@@ -22,39 +16,11 @@ const documentTabs = computed(() => [
   { label: t('resumeBuilder.index.tabs.resume'), value: 'resume' as const },
 ])
 
-const imagePool = ['/img/cv/cv-1.png', '/img/cv/cv-2.png', '/img/cv/cv-3.png', '/img/cv/cv-4.png', '/img/cv/cv-5.png']
-
-const allTemplates = computed<DocumentTemplate[]>(() => {
-  const resumeTemplates: DocumentTemplate[] = [
-    { id: 'resume-terra', title: 'Resume · Terra Sidebar', image: '/img/cv/cv-1.png', type: 'resume', templateId: 'terra' },
-    { id: 'resume-corporate-blue', title: 'Resume · Corporate Blue', image: '/img/cv/cv-2.png', type: 'resume', templateId: 'corporate-blue' },
-    { id: 'resume-ocean-split', title: 'Resume · Ocean Split', image: '/img/cv/cv-3.png', type: 'resume', templateId: 'ocean-split' },
-  ]
-
-  const coverPageTemplates: DocumentTemplate[] = Array.from({ length: 10 }, (_, index) => ({
-    id: `cover-page-template-${index + 1}`,
-    title: `Cover Page · Template ${index + 1}`,
-    image: imagePool[index % imagePool.length],
-    type: 'cover-page',
-    templateId: `cover-page-template-${index + 1}`,
-  }))
-
-  const coverLetterTemplates: DocumentTemplate[] = Array.from({ length: 10 }, (_, index) => ({
-    id: `cover-letter-template-${index + 1}`,
-    title: `Cover Letter · Template ${index + 1}`,
-    image: imagePool[(index + 2) % imagePool.length],
-    type: 'cover-letter',
-    templateId: `cover-letter-template-${index + 1}`,
-  }))
-
-  return [...resumeTemplates, ...coverPageTemplates, ...coverLetterTemplates]
-})
-
 const displayedTemplates = computed(() =>
   allTemplates.value.filter((template) => template.type === activeTemplateTab.value),
 )
 
-const openTemplateInWriteMode = (template: DocumentTemplate) => {
+const openTemplateInWriteMode = (template: { type: "resume" | "cover-page" | "cover-letter"; templateId: string }) => {
   const pathByType = {
     resume: '/resume/create',
     'cover-page': '/resume/cover-page/create',
