@@ -758,6 +758,25 @@ const previewStyle = computed(() => ({
   '--cv-page': activeTheme.value.page,
 }))
 
+const canRemoveExperience = computed(() => resume.experiences.length > 1)
+const canRemoveEducation = computed(() => resume.education.length > 1)
+const canRemoveSkill = computed(() => resume.skills.length > 1)
+
+function removeLastExperience() {
+  if (!canRemoveExperience.value) return
+  removeExperience(resume.experiences.length - 1)
+}
+
+function removeLastEducation() {
+  if (!canRemoveEducation.value) return
+  removeEducation(resume.education.length - 1)
+}
+
+function removeLastSkill() {
+  if (!canRemoveSkill.value) return
+  removeSkill(resume.skills.length - 1)
+}
+
 async function buildResumePdfBlob() {
   if (!previewExportRef.value || !import.meta.client) return ''
   const stylesheetContent = Array.from(
@@ -1908,6 +1927,65 @@ onUnmounted(() => {
           :class="[activeRoundedClass, activeTextStyleClass]"
           :style="previewStyle"
         >
+          <div class="preview-hover-tools">
+            <v-btn
+              size="x-small"
+              color="primary"
+              prepend-icon="mdi-plus"
+              variant="flat"
+              @click="addExperience"
+            >
+              Experience
+            </v-btn>
+            <v-btn
+              size="x-small"
+              color="primary"
+              prepend-icon="mdi-plus"
+              variant="flat"
+              @click="addEducation"
+            >
+              Education
+            </v-btn>
+            <v-btn
+              size="x-small"
+              color="primary"
+              prepend-icon="mdi-plus"
+              variant="flat"
+              @click="addSkill"
+            >
+              Skill
+            </v-btn>
+            <v-btn
+              size="x-small"
+              color="error"
+              prepend-icon="mdi-delete-outline"
+              variant="tonal"
+              :disabled="!canRemoveExperience"
+              @click="removeLastExperience"
+            >
+              Exp
+            </v-btn>
+            <v-btn
+              size="x-small"
+              color="error"
+              prepend-icon="mdi-delete-outline"
+              variant="tonal"
+              :disabled="!canRemoveEducation"
+              @click="removeLastEducation"
+            >
+              Edu
+            </v-btn>
+            <v-btn
+              size="x-small"
+              color="error"
+              prepend-icon="mdi-delete-outline"
+              variant="tonal"
+              :disabled="!canRemoveSkill"
+              @click="removeLastSkill"
+            >
+              Skill
+            </v-btn>
+          </div>
           <component
             :is="selectedTemplateComponent"
             :resume="resume"
@@ -2268,6 +2346,34 @@ onUnmounted(() => {
   --cv-accent: #2563eb;
   --cv-page: #eff6ff;
   min-height: calc(100vh - 80px);
+  position: relative;
+}
+
+.preview-hover-tools {
+  position: sticky;
+  top: 12px;
+  z-index: 8;
+  margin: 0 12px 12px auto;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--cv-accent) 30%, #cbd5e1);
+  background: color-mix(in srgb, white 86%, var(--cv-page));
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.preview-grid:hover .preview-hover-tools,
+.preview-grid:focus-within .preview-hover-tools {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .preview-grid .text-dark {
