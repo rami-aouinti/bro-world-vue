@@ -1225,12 +1225,12 @@ onUnmounted(() => {
       <section class="builder-form px-3 px-md-6 py-4">
         <div class="local-toolbar-actions mb-4">
           <div class="local-toolbar-actions__row">
-            <v-btn color="primary" size="small" icon="mdi-content-save-outline" />
-            <v-btn color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview" />
-            <v-btn color="info" size="small" variant="outlined" icon="mdi-download" @click="onDownloadPdfClick" />
+            <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" />
+            <v-btn class="local-toolbar-btn" color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview" />
+            <v-btn class="local-toolbar-btn" color="info" size="small" variant="outlined" icon="mdi-download" @click="onDownloadPdfClick" />
             <v-menu v-model="aiMenuOpen" :close-on-content-click="false" location="bottom end">
               <template #activator="{ props }">
-                <v-btn color="deep-purple" size="small" variant="tonal" prepend-icon="mdi-creation" v-bind="props">KI</v-btn>
+                <v-btn class="local-toolbar-btn local-toolbar-btn--ki" color="deep-purple" size="small" variant="tonal" prepend-icon="mdi-creation" v-bind="props">KI</v-btn>
               </template>
               <v-card width="420" class="pa-3">
                 <div class="ki-menu-grid">
@@ -2331,14 +2331,26 @@ onUnmounted(() => {
 
 .local-toolbar-actions {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 .local-toolbar-actions__row {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
   gap: 8px;
+}
+
+.local-toolbar-btn {
+  height: 56px !important;
+  min-width: 56px !important;
+  border-radius: 16px !important;
+}
+
+.local-toolbar-btn--ki {
+  min-width: 96px !important;
+  padding-inline: 18px !important;
 }
 
 .preview-grid {
