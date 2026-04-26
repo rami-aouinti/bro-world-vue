@@ -132,19 +132,20 @@ function updateText(path: string, value: string) {
 </template>
 
 <style scoped>
+/* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
 .classic-template { display:grid; grid-template-columns:260px 1fr; min-height: calc(100vh - 80px); background: var(--cv-page); border-radius: 14px; overflow:hidden; }
-.classic-sidebar { background: var(--cv-sidebar); color:#fff; padding:28px 24px; }
+.classic-sidebar { background: var(--cv-sidebar); color:color-mix(in srgb, var(--cv-page) 92%, white); padding:28px 24px; }
 .classic-avatar { margin-bottom: 16px; cursor: zoom-in; }
 .classic-sidebar h1 { font-size:2rem; line-height:1.2; margin-bottom:18px; }
 .job { letter-spacing:.08em; font-size:.8rem; margin-bottom:24px; text-transform: uppercase; }
 .classic-sidebar ul { list-style:none; padding:0; }
 .classic-sidebar li { margin-bottom:10px; }
-.level-list .progress { height:4px; background:rgba(255,255,255,.3); margin-top:4px; }
-.level-list .progress i { display:block; height:4px; background:#fff; }
+.level-list .progress { height:4px; background:color-mix(in srgb, var(--cv-page) 34%, transparent); margin-top:4px; }
+.level-list .progress i { display:block; height:4px; background:color-mix(in srgb, var(--cv-page) 95%, white); }
 .classic-content { padding:28px; }
 .classic-content h2 { color: var(--cv-accent); margin-bottom: 8px; }
 .entry { margin-bottom: 16px; }
-.dates { font-size:.75rem; text-transform:uppercase; color:#6b7280; letter-spacing:.08em; }
+.dates { font-size:.75rem; text-transform:uppercase; color:#6b7280; /* Intentional neutral gray for date labels. */ letter-spacing:.08em; }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
 .editable-text[contenteditable='true']:focus { outline-color: color-mix(in srgb, var(--cv-accent) 50%, transparent); }

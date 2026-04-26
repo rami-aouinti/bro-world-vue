@@ -84,15 +84,16 @@ function updateText(path: string, value: string) {
 </template>
 
 <style scoped>
-.professional-template { min-height: calc(100vh - 80px); display:grid; grid-template-columns: 300px 1fr; border-radius:14px; overflow:hidden; background:#fff; }
-aside { background: var(--cv-sidebar); color: #fff; padding: 30px 24px; }
+/* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
+.professional-template { min-height: calc(100vh - 80px); display:grid; grid-template-columns: 300px 1fr; border-radius:14px; overflow:hidden; background:var(--cv-page); }
+aside { background: var(--cv-sidebar); color: color-mix(in srgb, var(--cv-page) 92%, white); padding: 30px 24px; }
 aside h1 { font-size: 2rem; line-height: 1.2; }
 .role { text-transform: uppercase; letter-spacing: .08em; margin: 8px 0 22px; }
 aside ul { padding-left: 16px; }
 main { padding: 28px; }
 main h2 { color: var(--cv-accent); margin-bottom: 8px; }
 .entry { margin-bottom: 16px; }
-.dates { color:#64748b; font-size:.75rem; text-transform:uppercase; }
+.dates { color:#64748b; /* Intentional neutral gray for dates. */ font-size:.75rem; text-transform:uppercase; }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
 .editable-text[contenteditable='true']:focus { outline-color: color-mix(in srgb, var(--cv-accent) 50%, transparent); }

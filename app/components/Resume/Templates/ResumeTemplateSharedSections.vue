@@ -82,7 +82,8 @@ function isVisible(section: SharedSectionKey) {
 </template>
 
 <style scoped>
-.shared-extra { margin-top: 16px; background: color-mix(in srgb, var(--cv-page) 90%, white); border: 1px solid color-mix(in srgb, var(--cv-accent) 16%, #d1d5db); border-radius: inherit; padding: 16px; display: grid; gap: 14px; }
+/* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
+.shared-extra { margin-top: 16px; background: color-mix(in srgb, var(--cv-page) 90%, white); border: 1px solid color-mix(in srgb, var(--cv-accent) 16%, var(--cv-page)); border-radius: inherit; padding: 16px; display: grid; gap: 14px; }
 .shared-extra h3 { color: var(--cv-accent); font-size: 1rem; margin-bottom: 6px; }
 .shared-extra ul { margin: 0; padding-left: 18px; }
 .shared-extra p { margin: 4px 0 0; }

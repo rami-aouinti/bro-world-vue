@@ -126,19 +126,20 @@ function updateText(path: string, value: string) {
 </template>
 
 <style scoped>
-.modern-template { min-height: calc(100vh - 80px); border-radius:14px; overflow:hidden; background: #fff; }
-.modern-header { background: color-mix(in srgb, var(--cv-accent) 85%, white); color: #071325; padding:26px 30px; }
+/* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
+.modern-template { min-height: calc(100vh - 80px); border-radius:14px; overflow:hidden; background: var(--cv-page); }
+.modern-header { background: color-mix(in srgb, var(--cv-accent) 85%, white); color: color-mix(in srgb, var(--cv-sidebar) 78%, black); padding:26px 30px; }
 .modern-avatar { cursor: zoom-in; }
 .modern-header h1 { font-size:2.2rem; margin-bottom:4px; }
 .modern-grid { display:grid; grid-template-columns: 280px 1fr; }
-aside { background:#f8fafc; padding:22px; }
+aside { background:color-mix(in srgb, var(--cv-sidebar) 12%, var(--cv-page)); padding:22px; }
 main { padding:24px; }
 h2,h3 { color:var(--cv-accent); margin-bottom:8px; }
 .bars { list-style:none; padding:0; }
 .bars li { margin-bottom:10px; }
-.bars div { height:4px; background:#d1d5db; margin-top:4px; }
+.bars div { height:4px; background:color-mix(in srgb, var(--cv-accent) 22%, var(--cv-page)); margin-top:4px; }
 .bars i { display:block; height:4px; background:var(--cv-accent); }
-.dates { font-size:.75rem; color:#6b7280; text-transform: uppercase; }
+.dates { font-size:.75rem; color:#6b7280; /* Intentional neutral gray for dates. */ text-transform: uppercase; }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
 .editable-text[contenteditable='true']:focus { outline-color: color-mix(in srgb, var(--cv-accent) 50%, transparent); }

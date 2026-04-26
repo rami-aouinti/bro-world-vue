@@ -107,25 +107,26 @@ function updateText(path: string, value: string) {
 </template>
 
 <style scoped>
-.creative-template { min-height: calc(100vh - 80px); background: linear-gradient(145deg, #fff, #f0f9ff); border-radius: 20px; overflow: hidden; }
-.hero { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 28px; background: linear-gradient(135deg, var(--cv-accent), color-mix(in srgb, var(--cv-accent) 60%, #8b5cf6)); color: #fff; }
+/* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
+.creative-template { min-height: calc(100vh - 80px); background: linear-gradient(145deg, var(--cv-page), color-mix(in srgb, var(--cv-page) 82%, var(--cv-accent))); border-radius: 20px; overflow: hidden; }
+.hero { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 28px; background: linear-gradient(135deg, var(--cv-accent), color-mix(in srgb, var(--cv-accent) 72%, var(--cv-sidebar))); color: color-mix(in srgb, var(--cv-page) 95%, white); }
 .eyebrow { letter-spacing: .12em; text-transform: uppercase; font-size: .72rem; margin-bottom: 6px; opacity: .9; }
 h1 { font-size: 2.25rem; line-height: 1.1; margin: 0; }
 .role { margin-top: 10px; font-size: 1.05rem; }
-.creative-avatar { border: 4px solid rgb(255 255 255 / .6); box-shadow: 0 15px 28px rgb(15 23 42 / .3); }
-.quick-info { display: flex; flex-wrap: wrap; gap: 10px 18px; padding: 14px 28px; font-weight: 500; color: #0f172a; background: rgb(255 255 255 / .78); border-bottom: 1px solid #dbeafe; }
+.creative-avatar { border: 4px solid color-mix(in srgb, var(--cv-page) 60%, transparent); box-shadow: 0 15px 28px color-mix(in srgb, var(--cv-sidebar) 30%, transparent); }
+.quick-info { display: flex; flex-wrap: wrap; gap: 10px 18px; padding: 14px 28px; font-weight: 500; color: color-mix(in srgb, var(--cv-sidebar) 80%, black); background: color-mix(in srgb, var(--cv-page) 78%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--cv-accent) 18%, var(--cv-page)); }
 .content-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; padding: 22px 28px 30px; }
-article { background: #fff; border-radius: 16px; padding: 18px; border: 1px solid #e2e8f0; box-shadow: 0 8px 20px rgb(15 23 42 / .05); }
+article { background: var(--cv-page); border-radius: 16px; padding: 18px; border: 1px solid color-mix(in srgb, var(--cv-accent) 14%, var(--cv-page)); box-shadow: 0 8px 20px color-mix(in srgb, var(--cv-sidebar) 8%, transparent); }
 h2 { margin-bottom: 12px; color: var(--cv-accent); }
-.timeline-item + .timeline-item { margin-top: 14px; padding-top: 14px; border-top: 1px dashed #cbd5e1; }
+.timeline-item + .timeline-item { margin-top: 14px; padding-top: 14px; border-top: 1px dashed color-mix(in srgb, var(--cv-accent) 24%, var(--cv-page)); }
 .timeline-mode { position: relative; padding-left: 16px; border-top: 0 !important; }
-.timeline-mode::before { content: ''; position: absolute; left: 3px; top: 2px; bottom: 2px; width: 2px; background: #cbd5e1; }
+.timeline-mode::before { content: ''; position: absolute; left: 3px; top: 2px; bottom: 2px; width: 2px; background: color-mix(in srgb, var(--cv-accent) 24%, var(--cv-page)); }
 .timeline-mode::after { content: ''; position: absolute; left: -1px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--cv-accent); }
-.dates { font-size: .78rem; color: #64748b; margin-bottom: 6px; }
+.dates { font-size: .78rem; color: #64748b; /* Intentional neutral gray metadata. */ margin-bottom: 6px; }
 ul { padding-left: 18px; }
 li { margin-bottom: 4px; }
-.chip-row { display: flex; justify-content: space-between; align-items: center; background: #eff6ff; border-radius: 999px; padding: 7px 12px; margin-bottom: 8px; }
-.chip-row small { color: #1e3a8a; font-weight: 700; }
+.chip-row { display: flex; justify-content: space-between; align-items: center; background: color-mix(in srgb, var(--cv-accent) 12%, var(--cv-page)); border-radius: 999px; padding: 7px 12px; margin-bottom: 8px; }
+.chip-row small { color: var(--cv-accent); font-weight: 700; }
 .education-item + .education-item { margin-top: 10px; }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
