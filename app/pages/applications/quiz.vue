@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type {
+  QuizPublicApiResponse,
   QuizCategoriesApiResponse,
   QuizLevelsApiResponse,
   QuizSubmitApiResponse,
@@ -14,27 +15,23 @@ definePageMeta({
 type QuizStep = 'select-category' | 'select-level' | 'in-quiz' | 'finished'
 
 type QuizCategory = {
-  id: string
-  value: string
-  title: string
-  description: string
+  slug: string
+  name: string
+  position: number
   color: string
-  icon: string
+  icon?: string
 }
 
 type QuizLevelUi = {
-  id: string
   value: string
-  label: string
   color: string
-  description?: string | null
   timeLimit: number
 }
 
 type QuizQuestionUi = {
   id: string
-  question: string
-  answers: Array<{ id: string; text: string }>
+  title: string
+  answers: Array<{ id: string; label: string }>
 }
 
 const { t } = useI18n()
@@ -67,7 +64,7 @@ const primaryColor = computed(
 )
 
 const selectedCategory = computed(() =>
-  categories.value.find((c) => c.id === selectedCategoryId.value),
+  categories.value.find((c) => c.slug === selectedCategoryId.value),
 )
 
 const selectedLevel = computed(() =>
@@ -83,7 +80,7 @@ const progressValue = computed(() => {
   return Math.round((currentQuestionIndex.value / questions.value.length) * 100)
 })
 
-const scorePercent = computed(() => submitResult.value?.percentage ?? 0)
+const scorePercent = computed(() => submitResult.value?.score ?? 0)
 const hasPassed = computed(() => submitResult.value?.passed ?? false)
 const totalDuration = computed(() => selectedLevel.value?.timeLimit || 60)
 
@@ -140,8 +137,13 @@ async function loadQuizSetup() {
       $fetch<QuizLevelsApiResponse>('/api/quiz/public/levels'),
     ])
 
-    categories.value = catRes.items || []
-    levels.value = lvlRes.items || []
+    categories.value = (catRes.items || []).sort(
+      (a, b) => (a.position ?? 0) - (b.position ?? 0),
+    )
+    levels.value = (lvlRes.items || []).map((level) => ({
+      ...level,
+      timeLimit: 30,
+    }))
   } catch (e: any) {
     errorMessage.value = e.message || 'Error'
   } finally {
@@ -167,14 +169,20 @@ async function launchQuiz() {
   isLoading.value = true
 
   try {
-    const res = await $fetch('/api/quiz/public', {
+    const res = await $fetch<QuizPublicApiResponse>('/api/quiz/public', {
       query: {
-        category: selectedCategory.value.value,
+        category: selectedCategory.value.slug,
         level: selectedLevel.value.value,
       },
     })
 
     questions.value = res.questions || []
+    if (
+      typeof res.configuration?.timerSec === 'number' &&
+      res.configuration.timerSec > 0
+    ) {
+      selectedLevel.value.timeLimit = res.configuration.timerSec
+    }
     quizStep.value = 'in-quiz'
     startTimer()
   } finally {
@@ -281,7 +289,7 @@ onBeforeUnmount(clearTimer)
                       backgroundImage: categoryGradient(category),
                       animationDelay: `${index * 80}ms`,
                     }"
-                    @click="selectCategory(category.id)"
+                    @click="selectCategory(category.slug)"
                   >
                     <v-card-text>
                       <div class="d-flex align-center mb-3">
@@ -320,7 +328,7 @@ onBeforeUnmount(clearTimer)
             <v-row>
               <v-col
                 v-for="(level, index) in levels"
-                :key="level.id"
+                :key="level.value"
                 cols="12"
                 sm="6"
                 md="4"
@@ -369,7 +377,7 @@ onBeforeUnmount(clearTimer)
                     })
                   }}
                 </div>
-                <h3 class="text-h6 mb-0">{{ selectedCategory?.title }}</h3>
+                <h3 class="text-h6 mb-0">{{ selectedCategory?.name }}</h3>
               </div>
 
               <v-chip
@@ -477,7 +485,7 @@ onBeforeUnmount(clearTimer)
                     </div>
                     <div class="text-h4 font-weight-bold">
                       {{ submitResult?.score ?? 0 }}/{{
-                        submitResult?.totalQuestions ?? questions.length
+                        submitResult?.totalPoints ?? questions.length
                       }}
                     </div>
                   </v-sheet>
