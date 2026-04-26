@@ -8,12 +8,12 @@ const router = useRouter()
 
 const { allTemplates } = useResumeTemplates()
 
-const activeTemplateTab = ref<'cover-page' | 'cover-letter' | 'resume'>('resume')
+const activeTemplateTab = ref<'resume' | 'cover-page' | 'cover-letter'>('resume')
 
 const documentTabs = computed(() => [
-  { label: t('resumeBuilder.index.tabs.cover'), value: 'cover-page' as const },
-  { label: t('resumeBuilder.index.tabs.letter'), value: 'cover-letter' as const },
-  { label: t('resumeBuilder.index.tabs.resume'), value: 'resume' as const },
+  { label: `Resume · ${t('resumeBuilder.index.tabs.resume')}`, value: 'resume' as const },
+  { label: `Cover Page · ${t('resumeBuilder.index.tabs.cover')}`, value: 'cover-page' as const },
+  { label: `Cover Letter · ${t('resumeBuilder.index.tabs.letter')}`, value: 'cover-letter' as const },
 ])
 
 const displayedTemplates = computed(() =>
@@ -23,8 +23,8 @@ const displayedTemplates = computed(() =>
 const openTemplateInWriteMode = (template: { type: "resume" | "cover-page" | "cover-letter"; templateId: string }) => {
   const pathByType = {
     resume: '/resume/create',
-    'cover-page': '/resume/cover-page/create',
-    'cover-letter': '/resume/cover-letter/create',
+    'cover-page': '/resume/cover-page/editor',
+    'cover-letter': '/resume/cover-letter/editor',
   } as const
 
   router.push({
@@ -100,7 +100,7 @@ onUnmounted(() => {
       </div>
 
       <div class="hero-tabs mt-7">
-        <span>{{ t('resumeBuilder.index.tabs.applicationPack') }}</span>
+        <span>Resume → Cover Page → Cover Letter</span>
       </div>
 
       <div class="templates-showcase mt-8">
