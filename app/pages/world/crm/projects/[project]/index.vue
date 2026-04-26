@@ -201,7 +201,7 @@ async function detachAssignee(userId: string) {
                 <v-avatar size="20">
                   <v-img :src="item?.raw?.avatar || '/img/avatar_default.svg'" :alt="item?.raw?.title || 'Employee avatar'" />
                 </v-avatar>
-                <span v-if="item?.raw?.title">{{ item.raw.title }}</span>
+                <span v-if="item?.raw?.title">{{ item?.raw?.title }}</span>
               </div>
             </template>
           </AppSelect>
