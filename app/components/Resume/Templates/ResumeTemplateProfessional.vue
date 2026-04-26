@@ -91,9 +91,9 @@ aside h1 { font-size: 2rem; line-height: 1.2; }
 .role { text-transform: uppercase; letter-spacing: .08em; margin: 8px 0 22px; }
 aside ul { padding-left: 16px; }
 main { padding: 28px; }
-main h2 { color: var(--cv-accent); margin-bottom: 8px; }
+main h2 { color: var(--cv-title); margin-bottom: 8px; }
 .entry { margin-bottom: 16px; }
-.dates { color:#64748b; /* Intentional neutral gray for dates. */ font-size:.75rem; text-transform:uppercase; }
+.dates { color:var(--cv-secondary); /* Intentional neutral gray for dates. */ font-size:.75rem; text-transform:uppercase; }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
 .editable-text[contenteditable='true']:focus { outline-color: color-mix(in srgb, var(--cv-accent) 50%, transparent); }

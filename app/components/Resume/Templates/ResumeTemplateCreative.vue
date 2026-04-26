@@ -117,16 +117,16 @@ h1 { font-size: 2.25rem; line-height: 1.1; margin: 0; }
 .quick-info { display: flex; flex-wrap: wrap; gap: 10px 18px; padding: 14px 28px; font-weight: 500; color: color-mix(in srgb, var(--cv-sidebar) 80%, black); background: color-mix(in srgb, var(--cv-page) 78%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--cv-accent) 18%, var(--cv-page)); }
 .content-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; padding: 22px 28px 30px; }
 article { background: var(--cv-page); border-radius: 16px; padding: 18px; border: 1px solid color-mix(in srgb, var(--cv-accent) 14%, var(--cv-page)); box-shadow: 0 8px 20px color-mix(in srgb, var(--cv-sidebar) 8%, transparent); }
-h2 { margin-bottom: 12px; color: var(--cv-accent); }
+h2 { margin-bottom: 12px; color: var(--cv-title); }
 .timeline-item + .timeline-item { margin-top: 14px; padding-top: 14px; border-top: 1px dashed color-mix(in srgb, var(--cv-accent) 24%, var(--cv-page)); }
 .timeline-mode { position: relative; padding-left: 16px; border-top: 0 !important; }
 .timeline-mode::before { content: ''; position: absolute; left: 3px; top: 2px; bottom: 2px; width: 2px; background: color-mix(in srgb, var(--cv-accent) 24%, var(--cv-page)); }
 .timeline-mode::after { content: ''; position: absolute; left: -1px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--cv-accent); }
-.dates { font-size: .78rem; color: #64748b; /* Intentional neutral gray metadata. */ margin-bottom: 6px; }
+.dates { font-size: .78rem; color: var(--cv-secondary); /* Intentional neutral gray metadata. */ margin-bottom: 6px; }
 ul { padding-left: 18px; }
 li { margin-bottom: 4px; }
 .chip-row { display: flex; justify-content: space-between; align-items: center; background: color-mix(in srgb, var(--cv-accent) 12%, var(--cv-page)); border-radius: 999px; padding: 7px 12px; margin-bottom: 8px; }
-.chip-row small { color: var(--cv-accent); font-weight: 700; }
+.chip-row small { color: var(--cv-title); font-weight: 700; }
 .education-item + .education-item { margin-top: 10px; }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,

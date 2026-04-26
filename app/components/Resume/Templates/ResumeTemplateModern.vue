@@ -134,12 +134,12 @@ function updateText(path: string, value: string) {
 .modern-grid { display:grid; grid-template-columns: 280px 1fr; }
 aside { background:color-mix(in srgb, var(--cv-sidebar) 12%, var(--cv-page)); padding:22px; }
 main { padding:24px; }
-h2,h3 { color:var(--cv-accent); margin-bottom:8px; }
+h2,h3 { color:var(--cv-title); margin-bottom:8px; }
 .bars { list-style:none; padding:0; }
 .bars li { margin-bottom:10px; }
 .bars div { height:4px; background:color-mix(in srgb, var(--cv-accent) 22%, var(--cv-page)); margin-top:4px; }
 .bars i { display:block; height:4px; background:var(--cv-accent); }
-.dates { font-size:.75rem; color:#6b7280; /* Intentional neutral gray for dates. */ text-transform: uppercase; }
+.dates { font-size:.75rem; color:var(--cv-secondary); /* Intentional neutral gray for dates. */ text-transform: uppercase; }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
 .editable-text[contenteditable='true']:focus { outline-color: color-mix(in srgb, var(--cv-accent) 50%, transparent); }

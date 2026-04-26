@@ -90,7 +90,7 @@ h1 { font-size: 2rem; letter-spacing: .06em; }
 h2 { font-size:1.1rem; letter-spacing: .08em; text-transform: uppercase; border-bottom:1px solid color-mix(in srgb, var(--cv-accent) 18%, var(--cv-page)); padding-bottom:6px; margin-bottom:10px; }
 .entry { margin-bottom: 14px; }
 .entry-head { display:flex; justify-content:space-between; gap:10px; }
-.entry-head span { color:#6b7280; /* Intentional neutral gray for metadata readability. */ font-size:.85rem; }
+.entry-head span { color:var(--cv-secondary); /* Intentional neutral gray for metadata readability. */ font-size:.85rem; }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
 .editable-text[contenteditable='true']:focus { outline-color: color-mix(in srgb, var(--cv-accent) 50%, transparent); }

@@ -800,10 +800,71 @@ const activeTextStyleClass = computed(
 )
 const previewExportRef = ref<HTMLElement | null>(null)
 
+function hexToRgb(hex: string) {
+  const normalized = hex.replace('#', '')
+  const safeHex =
+    normalized.length === 3
+      ? normalized
+          .split('')
+          .map((char) => `${char}${char}`)
+          .join('')
+      : normalized
+
+  if (!/^[\da-fA-F]{6}$/.test(safeHex)) return null
+  return {
+    r: Number.parseInt(safeHex.slice(0, 2), 16),
+    g: Number.parseInt(safeHex.slice(2, 4), 16),
+    b: Number.parseInt(safeHex.slice(4, 6), 16),
+  }
+}
+
+function relativeLuminance(hex: string) {
+  const rgb = hexToRgb(hex)
+  if (!rgb) return 1
+
+  const channelToLinear = (value: number) => {
+    const normalized = value / 255
+    return normalized <= 0.03928
+      ? normalized / 12.92
+      : ((normalized + 0.055) / 1.055) ** 2.4
+  }
+
+  const r = channelToLinear(rgb.r)
+  const g = channelToLinear(rgb.g)
+  const b = channelToLinear(rgb.b)
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+
+function contrastRatio(colorA: string, colorB: string) {
+  const lumA = relativeLuminance(colorA)
+  const lumB = relativeLuminance(colorB)
+  const brightest = Math.max(lumA, lumB)
+  const darkest = Math.min(lumA, lumB)
+  return (brightest + 0.05) / (darkest + 0.05)
+}
+
+function bestAaTextColor(background: string, preferred: string, minimum = 4.5) {
+  const candidates = [preferred, '#111827', '#0f172a', '#f8fafc', '#ffffff']
+  const passing = candidates.find(color => contrastRatio(background, color) >= minimum)
+  if (passing) return passing
+  return candidates.sort((a, b) => contrastRatio(background, b) - contrastRatio(background, a))[0]
+}
+
+const sharedSectionsTone = computed<'light' | 'dark' | 'auto'>(() => {
+  const darkVariants: ResumeTemplateVariant[] = ['aurora', 'executive', 'ocean-split']
+  const variant = selectedTemplateConfig.value?.variant
+  if (!variant) return 'auto'
+  return darkVariants.includes(variant) ? 'dark' : 'light'
+})
+
 const previewStyle = computed(() => ({
   '--cv-sidebar': activeTheme.value.sidebar,
   '--cv-accent': activeTheme.value.accent,
   '--cv-page': activeTheme.value.page,
+  '--cv-title': bestAaTextColor(activeTheme.value.page, activeTheme.value.accent, 4.5),
+  '--cv-secondary': bestAaTextColor(activeTheme.value.page, activeTheme.value.sidebar, 4.5),
+  '--cv-on-sidebar': bestAaTextColor(activeTheme.value.sidebar, activeTheme.value.page, 4.5),
+  '--cv-on-accent': bestAaTextColor(activeTheme.value.accent, activeTheme.value.page, 4.5),
 }))
 
 const canRemoveExperience = computed(() => resume.experiences.length > 1)
@@ -2189,6 +2250,7 @@ if (import.meta.client) {
             :resume="resume"
             :editable="true"
             :hidden-sections="sharedSectionsHiddenByTemplate"
+            :tone="sharedSectionsTone"
           />
           <div v-if="signatureDataUrl" class="signature-overlay">
             <img :src="signatureDataUrl" alt="Signature" />
@@ -2227,6 +2289,7 @@ if (import.meta.client) {
               :resume="resume"
               :editable="true"
               :hidden-sections="sharedSectionsHiddenByTemplate"
+              :tone="sharedSectionsTone"
             />
           </div>
         </v-card-text>
@@ -2580,6 +2643,10 @@ if (import.meta.client) {
   --cv-sidebar: #0b3a78;
   --cv-accent: #2563eb;
   --cv-page: #eff6ff;
+  --cv-title: #1d4ed8;
+  --cv-secondary: #334155;
+  --cv-on-sidebar: #f8fafc;
+  --cv-on-accent: #f8fafc;
   min-height: calc(100vh - 80px);
   position: relative;
 }
@@ -2705,7 +2772,7 @@ if (import.meta.client) {
 }
 
 .preview-grid .text-dark {
-  color: #111827 !important;
+  color: var(--cv-secondary) !important;
 }
 
 .preview-sidebar {
@@ -2771,12 +2838,12 @@ if (import.meta.client) {
 .dates {
   font-size: 0.78rem;
   letter-spacing: 0.08em;
-  color: #6b7280;
+  color: var(--cv-secondary);
   text-transform: uppercase;
 }
 
 .reference-item p {
-  color: #334155;
+  color: var(--cv-secondary);
 }
 
 .radius-none {

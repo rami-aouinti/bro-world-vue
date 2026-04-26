@@ -128,11 +128,11 @@ aside { background: color-mix(in srgb, var(--cv-sidebar) 18%, var(--cv-page)); p
 aside h3 { margin: 18px 0 8px; padding: 8px; background: color-mix(in srgb, var(--cv-page) 88%, var(--cv-sidebar)); font-size: .88rem; text-transform: uppercase; letter-spacing: .07em; }
 aside ul { padding-left: 16px; }
 main { padding: 28px 34px; background: linear-gradient(165deg, color-mix(in srgb, var(--cv-accent) 65%, var(--cv-sidebar)) 0 14%, var(--cv-page) 14%); }
-header h1 { color: var(--cv-accent); font-size: 2.5rem; line-height: 1; margin-bottom: 6px; }
+header h1 { color: var(--cv-title); font-size: 2.5rem; line-height: 1; margin-bottom: 6px; }
 header p { color: color-mix(in srgb, var(--cv-accent) 72%, var(--cv-sidebar)); margin-bottom: 18px; }
-h2 { color: var(--cv-accent); border-top: 1px solid color-mix(in srgb, var(--cv-accent) 24%, var(--cv-page)); padding-top: 12px; margin-bottom: 12px; }
+h2 { color: var(--cv-title); border-top: 1px solid color-mix(in srgb, var(--cv-accent) 24%, var(--cv-page)); padding-top: 12px; margin-bottom: 12px; }
 article { margin-bottom: 14px; }
-.period { color: #71717a; /* Intentional neutral gray metadata. */ font-size: .8rem; }
+.period { color: var(--cv-secondary); /* Intentional neutral gray metadata. */ font-size: .8rem; }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
 .editable-text[contenteditable='true']:focus { outline-color: color-mix(in srgb, var(--cv-accent) 45%, transparent); }

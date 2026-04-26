@@ -143,9 +143,9 @@ function updateText(path: string, value: string) {
 .level-list .progress { height:4px; background:color-mix(in srgb, var(--cv-page) 34%, transparent); margin-top:4px; }
 .level-list .progress i { display:block; height:4px; background:color-mix(in srgb, var(--cv-page) 95%, white); }
 .classic-content { padding:28px; }
-.classic-content h2 { color: var(--cv-accent); margin-bottom: 8px; }
+.classic-content h2 { color: var(--cv-title); margin-bottom: 8px; }
 .entry { margin-bottom: 16px; }
-.dates { font-size:.75rem; text-transform:uppercase; color:#6b7280; /* Intentional neutral gray for date labels. */ letter-spacing:.08em; }
+.dates { font-size:.75rem; text-transform:uppercase; color:var(--cv-secondary); /* Intentional neutral gray for date labels. */ letter-spacing:.08em; }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
 .editable-text[contenteditable='true']:focus { outline-color: color-mix(in srgb, var(--cv-accent) 50%, transparent); }
