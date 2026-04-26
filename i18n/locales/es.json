@@ -2766,7 +2766,7 @@
   "resumeBuilder": {
     "index": {
       "heroTitle": "Crea un currículum profesional en minutos",
-      "heroSubtitle": "Una página pública para presentar la herramienta, seguida de una experiencia de creación inspirada en tus maquetas.",
+      "heroSubtitle": "Crea tu paquete de candidatura completo con plantillas guiadas, edición inteligente y exportación instantánea.",
       "primaryCta": "Comenzar ahora",
       "secondaryCta": "Abrir constructor",
       "features": {
@@ -2785,6 +2785,54 @@
         "export": {
           "title": "Exportar PDF / DOCX",
           "description": "Descarga tu currículum en el formato ideal para reclutadores."
+        }
+      },
+      "rating": {
+        "label": "Excelente",
+        "score": "4,5 de 5 basado en 1.389 reseñas · Trustpilot"
+      },
+      "tabs": {
+        "cover": "Portada",
+        "letter": "Carta de presentación",
+        "resume": "Currículum",
+        "applicationPack": "Dossier de candidatura"
+      },
+      "journey": {
+        "title": "Crea tu currículum en 3 pasos",
+        "subtitle": "Elige una plantilla, personaliza el contenido y luego descarga y envía.",
+        "steps": {
+          "template": {
+            "title": "Plantillas que encajan contigo",
+            "description": "Desde diseños modernos hasta clásicos, elige el estilo que mejor te represente.",
+            "cta": "Crear mi currículum"
+          },
+          "fill": {
+            "title": "Complétalo y personalízalo",
+            "description": "Añade experiencia, habilidades y formación con secciones guiadas."
+          },
+          "export": {
+            "title": "Descarga, envía y listo",
+            "description": "Exporta un PDF profesional y guarda todas las versiones en tu cuenta."
+          }
+        }
+      },
+      "benefits": {
+        "title": "Ventajas de nuestro editor",
+        "subtitle": "Crea más rápido con herramientas profesionales diseñadas para destacar.",
+        "items": {
+          "attachments": {
+            "title": "Añade adjuntos fácilmente",
+            "description": "Incluye certificados y documentos de respaldo para completar tu candidatura."
+          },
+          "allInOne": {
+            "title": "Flujo todo en uno",
+            "description": "Crea currículum, carta y paquete final en un único espacio de trabajo."
+          },
+          "flexibility": {
+            "title": "Más flexibilidad con Premium",
+            "description": "Gestiona múltiples versiones y sigue tu progreso a tu ritmo.",
+            "link": "Más información sobre Premium"
+          }
         }
       }
     },

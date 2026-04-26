@@ -181,6 +181,7 @@ type TextStyleOption = {
   className: string
 }
 type LevelInputMode = 'percent' | 'stars'
+type PhotoShape = 'square' | 'semi' | 'circle'
 
 const activeTab = ref<'edit' | 'template' | 'design' | 'import'>('edit')
 const selectedTemplate = ref('classic')
@@ -576,6 +577,13 @@ const aiCreateLoading = ref(false)
 const aiReviewLoading = ref(false)
 const aiActionError = ref('')
 const aiElapsedSeconds = ref(0)
+const signatureDialogOpen = ref(false)
+const signatureDataUrl = ref('')
+const signatureCanvas = ref<HTMLCanvasElement | null>(null)
+const isDrawingSignature = ref(false)
+const selectedPhotoShape = ref<PhotoShape>('square')
+const previewToolsVisible = ref(false)
+const previewToolsTop = ref(20)
 let aiElapsedTimer: ReturnType<typeof setInterval> | null = null
 const { t } = useI18n()
 const { loggedIn, fetch: refreshSession } = useUserSession()
@@ -606,6 +614,94 @@ function onPhotoSelected(event: Event) {
 
 function clearPhoto() {
   resume.photoUrl = ''
+}
+
+function onPreviewMouseEnter() {
+  previewToolsVisible.value = true
+}
+
+function onPreviewMouseLeave() {
+  previewToolsVisible.value = false
+}
+
+function onPreviewMouseMove(event: MouseEvent) {
+  const target = event.currentTarget as HTMLElement | null
+  if (!target) return
+  const { top, height } = target.getBoundingClientRect()
+  const nextTop = event.clientY - top + 12
+  previewToolsTop.value = Math.max(12, Math.min(nextTop, height - 64))
+}
+
+function openSignatureDialog() {
+  signatureDialogOpen.value = true
+  nextTick(() => {
+    const canvas = signatureCanvas.value
+    if (!canvas) return
+    const context = canvas.getContext('2d')
+    if (!context) return
+    context.fillStyle = '#ffffff'
+    context.fillRect(0, 0, canvas.width, canvas.height)
+    context.strokeStyle = '#111827'
+    context.lineWidth = 2
+    context.lineCap = 'round'
+    context.lineJoin = 'round'
+  })
+}
+
+function signaturePoint(event: MouseEvent | TouchEvent) {
+  const canvas = signatureCanvas.value
+  if (!canvas) return null
+  const rect = canvas.getBoundingClientRect()
+  const touch = 'touches' in event ? event.touches[0] : null
+  const clientX = touch ? touch.clientX : (event as MouseEvent).clientX
+  const clientY = touch ? touch.clientY : (event as MouseEvent).clientY
+  return {
+    x: clientX - rect.left,
+    y: clientY - rect.top,
+  }
+}
+
+function startDrawingSignature(event: MouseEvent | TouchEvent) {
+  const canvas = signatureCanvas.value
+  if (!canvas) return
+  const context = canvas.getContext('2d')
+  const point = signaturePoint(event)
+  if (!context || !point) return
+  isDrawingSignature.value = true
+  context.beginPath()
+  context.moveTo(point.x, point.y)
+}
+
+function drawSignature(event: MouseEvent | TouchEvent) {
+  if (!isDrawingSignature.value) return
+  const canvas = signatureCanvas.value
+  if (!canvas) return
+  const context = canvas.getContext('2d')
+  const point = signaturePoint(event)
+  if (!context || !point) return
+  if ('touches' in event) event.preventDefault()
+  context.lineTo(point.x, point.y)
+  context.stroke()
+}
+
+function stopDrawingSignature() {
+  isDrawingSignature.value = false
+}
+
+function clearSignature() {
+  const canvas = signatureCanvas.value
+  if (!canvas) return
+  const context = canvas.getContext('2d')
+  if (!context) return
+  context.fillStyle = '#ffffff'
+  context.fillRect(0, 0, canvas.width, canvas.height)
+}
+
+function saveSignature() {
+  const canvas = signatureCanvas.value
+  if (!canvas) return
+  signatureDataUrl.value = canvas.toDataURL('image/png')
+  signatureDialogOpen.value = false
 }
 
 function setExperienceBullets(index: number, value: string) {
@@ -1228,6 +1324,7 @@ onUnmounted(() => {
             <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" />
             <v-btn class="local-toolbar-btn" color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview" />
             <v-btn class="local-toolbar-btn" color="info" size="small" variant="outlined" icon="mdi-download" @click="onDownloadPdfClick" />
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" icon="mdi-draw" @click="openSignatureDialog"></v-btn>
             <v-menu v-model="aiMenuOpen" :close-on-content-click="false" location="bottom end">
               <template #activator="{ props }">
                 <v-btn class="local-toolbar-btn local-toolbar-btn--ki" color="deep-purple" size="small" variant="tonal" prepend-icon="mdi-creation" v-bind="props">KI</v-btn>
@@ -1291,6 +1388,14 @@ onUnmounted(() => {
                       @change="onPhotoSelected"
                     />
                   </div>
+                </div>
+                <div class="photo-shape-picker mt-2">
+                  <span class="text-caption">Forme image</span>
+                  <v-btn-toggle v-model="selectedPhotoShape" mandatory density="compact" color="primary">
+                    <v-btn value="square" size="x-small">Carré</v-btn>
+                    <v-btn value="semi" size="x-small">Demi-cercle</v-btn>
+                    <v-btn value="circle" size="x-small">Cercle</v-btn>
+                  </v-btn-toggle>
                 </div>
               </div>
               <div class="grid-2 py-3">
@@ -1924,10 +2029,13 @@ onUnmounted(() => {
         <div
           ref="previewExportRef"
           class="preview-grid"
-          :class="[activeRoundedClass, activeTextStyleClass]"
+          :class="[activeRoundedClass, activeTextStyleClass, `photo-shape-${selectedPhotoShape}`]"
           :style="previewStyle"
+          @mouseenter="onPreviewMouseEnter"
+          @mouseleave="onPreviewMouseLeave"
+          @mousemove="onPreviewMouseMove"
         >
-          <div class="preview-hover-tools">
+          <div class="preview-hover-tools" :class="{ 'preview-hover-tools--active': previewToolsVisible }" :style="{ top: `${previewToolsTop}px` }">
             <v-btn
               size="x-small"
               color="primary"
@@ -1986,6 +2094,11 @@ onUnmounted(() => {
               Skill
             </v-btn>
           </div>
+          <div class="preview-image-shapes" :class="{ 'preview-image-shapes--active': previewToolsVisible }">
+            <v-btn size="x-small" variant="tonal" :color="selectedPhotoShape === 'square' ? 'primary' : undefined" @click="selectedPhotoShape = 'square'">□</v-btn>
+            <v-btn size="x-small" variant="tonal" :color="selectedPhotoShape === 'semi' ? 'primary' : undefined" @click="selectedPhotoShape = 'semi'">◠</v-btn>
+            <v-btn size="x-small" variant="tonal" :color="selectedPhotoShape === 'circle' ? 'primary' : undefined" @click="selectedPhotoShape = 'circle'">◯</v-btn>
+          </div>
           <component
             :is="selectedTemplateComponent"
             :resume="resume"
@@ -1999,6 +2112,9 @@ onUnmounted(() => {
             :editable="true"
             :hidden-sections="sharedSectionsHiddenByTemplate"
           />
+          <div v-if="signatureDataUrl" class="signature-overlay">
+            <img :src="signatureDataUrl" alt="Signature" />
+          </div>
         </div>
       </aside>
     </div>
@@ -2145,6 +2261,34 @@ onUnmounted(() => {
             {{ aiReviewContent }}
           </div>
         </v-card-text>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="signatureDialogOpen" max-width="760">
+      <v-card>
+        <v-card-title class="d-flex align-center justify-space-between">
+          <span>Ajouter une signature</span>
+          <v-btn icon="mdi-close" variant="text" @click="signatureDialogOpen = false" />
+        </v-card-title>
+        <v-divider />
+        <v-card-text>
+          <canvas
+            ref="signatureCanvas"
+            width="680"
+            height="220"
+            class="signature-canvas"
+            @mousedown="startDrawingSignature"
+            @mousemove="drawSignature"
+            @mouseup="stopDrawingSignature"
+            @mouseleave="stopDrawingSignature"
+            @touchstart="startDrawingSignature"
+            @touchmove="drawSignature"
+            @touchend="stopDrawingSignature"
+          />
+        </v-card-text>
+        <v-card-actions class="justify-space-between">
+          <v-btn prepend-icon="mdi-eraser" variant="text" @click="clearSignature">Effacer</v-btn>
+          <v-btn color="primary" prepend-icon="mdi-content-save-outline" @click="saveSignature">Ajouter au CV</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
 
@@ -2362,10 +2506,10 @@ onUnmounted(() => {
 }
 
 .preview-hover-tools {
-  position: sticky;
-  top: 12px;
+  position: absolute;
+  right: 12px;
   z-index: 8;
-  margin: 0 12px 12px auto;
+  margin: 0;
   display: inline-flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -2381,11 +2525,76 @@ onUnmounted(() => {
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.preview-grid:hover .preview-hover-tools,
-.preview-grid:focus-within .preview-hover-tools {
+.preview-hover-tools--active {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
+}
+
+.preview-image-shapes {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 8;
+  display: inline-flex;
+  gap: 4px;
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--cv-accent) 30%, #cbd5e1);
+  background: color-mix(in srgb, white 86%, var(--cv-page));
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.preview-image-shapes--active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.signature-overlay {
+  position: absolute;
+  right: 30px;
+  bottom: 24px;
+  width: 190px;
+  z-index: 7;
+}
+
+.signature-overlay img {
+  width: 100%;
+  object-fit: contain;
+}
+
+.photo-shape-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.signature-canvas {
+  width: 100%;
+  border: 1px dashed #94a3b8;
+  border-radius: 12px;
+  background: #fff;
+  touch-action: none;
+}
+
+.preview-grid.photo-shape-square :deep(.v-avatar),
+.preview-grid.photo-shape-square :deep(.avatar) {
+  border-radius: 8px !important;
+}
+
+.preview-grid.photo-shape-semi :deep(.v-avatar),
+.preview-grid.photo-shape-semi :deep(.avatar) {
+  border-radius: 999px 999px 18px 18px !important;
+}
+
+.preview-grid.photo-shape-circle :deep(.v-avatar),
+.preview-grid.photo-shape-circle :deep(.avatar) {
+  border-radius: 50% !important;
 }
 
 .preview-grid .text-dark {
