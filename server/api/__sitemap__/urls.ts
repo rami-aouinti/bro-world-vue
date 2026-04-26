@@ -27,7 +27,7 @@ export default defineSitemapEventHandler(async (event) => {
 
     { loc: `${base}/applications/quiz` },
     { loc: `${base}/applications/sports` },
-
+    { loc: `${base}/platform`  },
     { loc: `${base}/games` },
   ]
 
