@@ -181,10 +181,10 @@ async function detachAssignee(userId: string) {
             :disabled="!isRootAdmin || isViewMode"
           >
             <template #item="{ props, item }">
-              <v-list-item v-bind="props" :title="item.raw.title" :subtitle="item.raw.subtitle">
+              <v-list-item v-bind="props" :title="item?.raw?.title || undefined" :subtitle="item?.raw?.subtitle || undefined">
                 <template #prepend>
                   <v-avatar size="24">
-                    <v-img :src="item.raw.avatar || '/img/avatar_default.svg'" :alt="item.raw.title" />
+                    <v-img :src="item?.raw?.avatar || '/img/avatar_default.svg'" :alt="item?.raw?.title || 'Employee avatar'" />
                   </v-avatar>
                 </template>
               </v-list-item>
@@ -192,9 +192,9 @@ async function detachAssignee(userId: string) {
             <template #selection="{ item }">
               <div class="d-flex align-center ga-2">
                 <v-avatar size="20">
-                  <v-img :src="item.raw.avatar || '/img/avatar_default.svg'" :alt="item.raw.title" />
+                  <v-img :src="item?.raw?.avatar || '/img/avatar_default.svg'" :alt="item?.raw?.title || 'Employee avatar'" />
                 </v-avatar>
-                <span>{{ item.raw.title }}</span>
+                <span v-if="item?.raw?.title">{{ item?.raw?.title }}</span>
               </div>
             </template>
           </AppSelect>
