@@ -9,7 +9,8 @@ type SharedSectionKey =
   | 'references'
   | 'hobbies'
 
-type PreviewSectionKey = 'experience' | 'education' | 'language' | 'project'
+type ReorderableSectionKey = 'experience' | 'education' | 'language' | 'project'
+type SharedSectionActionKey = ReorderableSectionKey | 'course' | 'certification' | 'reference' | 'hobby'
 type SectionLayoutVariant = {
   experience: 'detailed' | 'bullets' | 'compact'
   education: 'classic' | 'timeline' | 'two-column'
@@ -38,9 +39,9 @@ const props = withDefaults(defineProps<{
   levelInputMode: 'percent',
 })
 const emit = defineEmits<{
-  (event: 'add-item', sectionKey: string): void
-  (event: 'change-variant', sectionKey: string, variant: string): void
-  (event: 'move-section', sectionKey: string, direction: 'up' | 'down'): void
+  (event: 'add-item', sectionKey: SharedSectionActionKey): void
+  (event: 'change-variant', sectionKey: ReorderableSectionKey, variant: string): void
+  (event: 'move-section', sectionKey: ReorderableSectionKey, direction: 'up' | 'down'): void
 }>()
 
 const toneClass = computed(() => {
@@ -86,7 +87,7 @@ const projectVariant = computed<'list' | 'cards' | 'two-column'>(() => {
     : 'list'
 })
 
-function canMove(sectionKey: PreviewSectionKey, direction: 'up' | 'down') {
+function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
   const target = props.sectionLayout.find(section => section.key === sectionKey)
   if (!target?.region) return false
   const regionSections = props.sectionLayout.filter(section => section.region === target.region)
@@ -179,7 +180,11 @@ function canMove(sectionKey: PreviewSectionKey, direction: 'up' | 'down') {
       </div>
     </div>
 
-    <div v-if="isVisible('courses') && resume.courses?.length">
+    <div v-if="isVisible('courses') && resume.courses?.length" class="resume-section-hoverable shared-section">
+      <SectionToolbar
+        section-key="course"
+        @add-item="() => emit('add-item', 'course')"
+      />
       <h3 class="cv-heading-section cv-divider-bottom text-dark">Certifications</h3>
       <ul>
         <li v-for="(course, index) in resume.courses" :key="`${course.title}-${index}`">
@@ -189,7 +194,11 @@ function canMove(sectionKey: PreviewSectionKey, direction: 'up' | 'down') {
       </ul>
     </div>
 
-    <div v-if="isVisible('references') && resume.references?.length">
+    <div v-if="isVisible('references') && resume.references?.length" class="resume-section-hoverable shared-section">
+      <SectionToolbar
+        section-key="reference"
+        @add-item="() => emit('add-item', 'reference')"
+      />
       <h3 class="cv-heading-section cv-divider-bottom text-dark">References</h3>
       <ul>
         <li v-for="(reference, index) in resume.references" :key="`${reference.name}-${index}`">
@@ -199,7 +208,11 @@ function canMove(sectionKey: PreviewSectionKey, direction: 'up' | 'down') {
       </ul>
     </div>
 
-    <div v-if="isVisible('hobbies') && resume.hobbies?.length">
+    <div v-if="isVisible('hobbies') && resume.hobbies?.length" class="resume-section-hoverable shared-section">
+      <SectionToolbar
+        section-key="hobby"
+        @add-item="() => emit('add-item', 'hobby')"
+      />
       <h3 class="cv-heading-section cv-divider-bottom text-dark">Interests</h3>
       <ul>
         <li v-for="(hobby, index) in resume.hobbies" :key="`${hobby}-${index}`" class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`hobbies.${index}`, (event.target as HTMLElement).innerText)">{{ hobby }}</li>

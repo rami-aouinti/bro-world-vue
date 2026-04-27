@@ -204,6 +204,7 @@ type AddSectionType =
   | 'certification'
   | 'reference'
 type PreviewSectionKey = 'experience' | 'education' | 'language' | 'project'
+type SharedSectionActionKey = PreviewSectionKey | 'course' | 'certification' | 'reference' | 'hobby'
 type SectionLayoutVariant = {
   experience: 'detailed' | 'bullets' | 'compact'
   education: 'classic' | 'timeline' | 'two-column'
@@ -1122,7 +1123,15 @@ function submitSectionItemDialog() {
   sectionItemDialogOpen.value = false
 }
 
-function addItemToPreviewSection(section: PreviewSectionKey) {
+function addItemToPreviewSection(section: SharedSectionActionKey) {
+  if (section === 'course') {
+    openAddSectionDialog('certification')
+    return
+  }
+  if (section === 'certification' || section === 'reference' || section === 'hobby') {
+    openAddSectionDialog(section)
+    return
+  }
   openSectionItemDialog(section)
 }
 
@@ -2847,7 +2856,7 @@ if (import.meta.client) {
             :level-input-mode="levelInputMode"
             :hidden-sections="sharedSectionsHiddenByTemplate"
             :tone="sharedSectionsTone"
-            @add-item="(section) => addItemToPreviewSection(section as PreviewSectionKey)"
+            @add-item="(section) => addItemToPreviewSection(section as SharedSectionActionKey)"
             @change-variant="(section, variant) => setSectionVariant(section as PreviewSectionKey, variant as string)"
             @move-section="(section, direction) => moveSection(section as PreviewSectionKey, direction)"
           />
@@ -3051,7 +3060,7 @@ if (import.meta.client) {
               :editable="true"
               :hidden-sections="sharedSectionsHiddenByTemplate"
               :tone="sharedSectionsTone"
-              @add-item="(section) => addItemToPreviewSection(section as PreviewSectionKey)"
+              @add-item="(section) => addItemToPreviewSection(section as SharedSectionActionKey)"
               @change-variant="(section, variant) => setSectionVariant(section as PreviewSectionKey, variant as string)"
               @move-section="(section, direction) => moveSection(section as PreviewSectionKey, direction)"
             />
