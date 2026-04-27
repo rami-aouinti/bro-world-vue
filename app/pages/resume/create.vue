@@ -1473,22 +1473,82 @@ if (import.meta.client) {
               Templates
             </v-btn>
           </template>
-          <v-list density="compact" min-width="240">
-            <v-list-item
-              v-for="template in templatesByDocumentType"
-              :key="`toolbar-template-${template.id}`"
-              :title="template.title"
-              :subtitle="template.subtitle"
-              @click="applyTemplateFromToolbar(template.id)"
-            />
-          </v-list>
+          <v-card class="toolbar-menu-card">
+            <div class="toolbar-template-grid">
+              <v-card
+                v-for="template in templatesByDocumentType"
+                :key="`toolbar-template-${template.id}`"
+                class="template-card"
+                :class="{ 'template-card--active': selectedTemplate === template.id }"
+                variant="outlined"
+                @click="applyTemplateFromToolbar(template.id)"
+              >
+                <v-img :src="template.image" height="96" cover />
+                <v-card-text class="py-2 text-caption">{{ template.title }}</v-card-text>
+              </v-card>
+            </div>
+          </v-card>
         </v-menu>
-        <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-palette-outline" @click="openToolbarTab('design')">
-          Design
-        </v-btn>
-        <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-file-import-outline" @click="openToolbarTab('import')">
-          Import
-        </v-btn>
+        <v-menu location="bottom" max-width="560">
+          <template #activator="{ props }">
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-palette-outline" v-bind="props" @click="openToolbarTab('design')">
+              Design
+            </v-btn>
+          </template>
+          <v-card class="toolbar-menu-card">
+            <v-card-title class="text-subtitle-2">Design</v-card-title>
+            <v-card-text>
+              <p class="section-label">Color palette</p>
+              <div class="palette-grid mb-3">
+                <button
+                  v-for="theme in colorThemes"
+                  :key="`toolbar-design-${theme.name}`"
+                  type="button"
+                  class="palette-item"
+                  :class="{ 'palette-item--active': selectedTheme === theme.name }"
+                  @click="selectedTheme = theme.name"
+                >
+                  <span :style="{ background: theme.sidebar }" />
+                  <span :style="{ background: theme.accent }" />
+                  <span :style="{ background: theme.page }" />
+                </button>
+              </div>
+              <AppSelect
+                v-model="selectedTextStyle"
+                :items="textStyleOptions"
+                item-title="label"
+                item-value="value"
+                label="Typography preset"
+                density="comfortable"
+                hide-details
+                class="mb-3"
+              />
+              <v-btn-toggle v-model="selectedRounded" mandatory divided color="primary" class="rounded-toggle w-100">
+                <v-btn v-for="option in roundedOptions" :key="`toolbar-rounded-${option.value}`" :value="option.value" variant="text">
+                  {{ option.title }}
+                </v-btn>
+              </v-btn-toggle>
+            </v-card-text>
+          </v-card>
+        </v-menu>
+        <v-menu location="bottom" max-width="560">
+          <template #activator="{ props }">
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-file-import-outline" v-bind="props" @click="openToolbarTab('import')">
+              Import
+            </v-btn>
+          </template>
+          <v-card class="toolbar-menu-card">
+            <v-card-title class="text-subtitle-2">Import</v-card-title>
+            <v-card-text class="d-flex flex-column ga-2">
+              <v-btn prepend-icon="mdi-sync" variant="outlined" color="primary" :text="t('resumeBuilder.create.import.syncWithXing')" @click="syncWithProvider('Xing')" />
+              <v-btn prepend-icon="mdi-linkedin" variant="outlined" color="info" :text="t('resumeBuilder.create.import.syncWithLinkedIn')" @click="syncWithProvider('LinkedIn')" />
+              <v-btn prepend-icon="mdi-file-upload-outline" variant="flat" color="secondary" :text="t('resumeBuilder.create.import.importOldResumePdf')" @click="triggerPdfImport" />
+              <div v-if="importInProgress" class="mt-2">
+                <v-progress-linear :model-value="importProgress" color="primary" height="8" rounded striped />
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-menu>
         <v-menu v-model="toolbarSectionMenuOpen" location="bottom">
           <template #activator="{ props }">
             <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-list-outline" v-bind="props">
@@ -1526,68 +1586,6 @@ if (import.meta.client) {
     </div>
     <div class="builder-layout">
       <section class="builder-form px-3 px-md-6 py-4">
-        <div class="local-toolbar-actions mb-4">
-          <div class="local-toolbar-actions__row">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" />
-            <v-btn class="local-toolbar-btn" color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview" />
-            <v-btn class="local-toolbar-btn" color="info" size="small" variant="outlined" icon="mdi-download" @click="onDownloadPdfClick" />
-            <v-menu v-model="toolbarTemplateMenuOpen" location="bottom">
-              <template #activator="{ props }">
-                <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-grid-outline" v-bind="props">
-                  Templates
-                </v-btn>
-              </template>
-              <v-list density="compact" min-width="240">
-                <v-list-item
-                  v-for="template in templatesByDocumentType"
-                  :key="`toolbar-template-form-${template.id}`"
-                  :title="template.title"
-                  :subtitle="template.subtitle"
-                  @click="applyTemplateFromToolbar(template.id)"
-                />
-              </v-list>
-            </v-menu>
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-palette-outline" @click="openToolbarTab('design')">
-              Design
-            </v-btn>
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-file-import-outline" @click="openToolbarTab('import')">
-              Import
-            </v-btn>
-            <v-menu v-model="toolbarSectionMenuOpen" location="bottom">
-              <template #activator="{ props }">
-                <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-list-outline" v-bind="props">
-                  Add section
-                </v-btn>
-              </template>
-              <v-list density="compact" min-width="220">
-                <v-list-item
-                  v-for="section in addSectionOptions"
-                  :key="`toolbar-add-form-${section.value}`"
-                  :title="section.label"
-                  @click="openAddSectionDialog(section.value)"
-                />
-              </v-list>
-            </v-menu>
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" icon="mdi-draw" @click="openSignatureDialog"></v-btn>
-            <v-menu v-model="aiMenuOpen" :close-on-content-click="false" location="bottom end">
-              <template #activator="{ props }">
-                <v-btn class="local-toolbar-btn local-toolbar-btn--ki" color="deep-purple" size="small" variant="tonal" prepend-icon="mdi-creation" v-bind="props">KI</v-btn>
-              </template>
-              <v-card width="420" class="pa-3">
-                <div class="ki-menu-grid">
-                  <v-card variant="outlined" class="ki-card" @click="aiCreateModalOpen = true; aiMenuOpen = false">
-                    <v-card-title class="text-subtitle-1">Create with KI</v-card-title>
-                    <v-card-text class="text-body-2">Generate a complete resume from a short summary of studies and skills.</v-card-text>
-                  </v-card>
-                  <v-card variant="outlined" class="ki-card" @click="runAiReview(); aiMenuOpen = false">
-                    <v-card-title class="text-subtitle-1">Review</v-card-title>
-                    <v-card-text class="text-body-2">Ask KI to detect errors and suggest improvements for your current resume.</v-card-text>
-                  </v-card>
-                </div>
-              </v-card>
-            </v-menu>
-          </div>
-        </div>
         <v-tabs v-model="activeTab" color="primary" grow class="mb-4">
           <v-tab value="edit">Edit</v-tab>
           <v-tab value="template">Template</v-tab>
@@ -2962,6 +2960,19 @@ if (import.meta.client) {
 .local-toolbar-btn--ki {
   min-width: 96px !important;
   padding-inline: 18px !important;
+}
+
+.toolbar-menu-card {
+  width: min(92vw, 980px);
+  max-height: min(76vh, 760px);
+  overflow: auto;
+}
+
+.toolbar-template-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 12px;
 }
 
 .preview-grid {
