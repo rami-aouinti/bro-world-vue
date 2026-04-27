@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { buildCoverDesignVars, type CoverLayoutSettings } from '~/composables/useResumeCoverDesign'
+
 type Palette = {
   page: string
   accent: string
@@ -19,54 +21,57 @@ type CoverLetterModel = {
   phone: string
 }
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   model: CoverLetterModel
   palette: Palette
   typography?: 'sans' | 'serif'
+  textStyle?: 'clean' | 'italic' | 'serif' | 'mono' | 'display'
   rounded?: string
+  layoutSettings?: CoverLayoutSettings
 }>(), {
   typography: 'sans',
-  rounded: '14px',
+  textStyle: 'clean',
+  rounded: 'md',
+  layoutSettings: () => ({}),
 })
+
+const designVars = computed(() => buildCoverDesignVars('cl', props))
 </script>
 
 <template>
   <article
     class="cover-letter-premium text-dark"
-    :class="`cover-letter-premium--${typography}`"
     :style="{
-      '--cl-page': palette.page,
-      '--cl-accent': palette.accent,
-      '--cl-soft': palette.soft,
-      '--cl-text': palette.text,
-      '--cl-rounded': rounded,
+      '--cl-page': props.palette.page,
+      '--cl-accent': props.palette.accent,
+      '--cl-soft': props.palette.soft,
+      '--cl-text': props.palette.text,
+      ...designVars,
     }"
   >
     <header>
-      <p>{{ model.date }}</p>
-      <h1>{{ model.fullName }}</h1>
-      <h2>{{ model.role }}</h2>
+      <p>{{ props.model.date }}</p>
+      <h1>{{ props.model.fullName }}</h1>
+      <h2>{{ props.model.role }}</h2>
     </header>
 
     <section>
-      <p>{{ model.recipient }}</p>
-      <p>{{ model.company }}</p>
-      <p>{{ model.intro }}</p>
-      <p>{{ model.body }}</p>
-      <p>{{ model.closing }}</p>
+      <p>{{ props.model.recipient }}</p>
+      <p>{{ props.model.company }}</p>
+      <p>{{ props.model.intro }}</p>
+      <p>{{ props.model.body }}</p>
+      <p>{{ props.model.closing }}</p>
     </section>
 
-    <footer>{{ model.email }} · {{ model.phone }}</footer>
+    <footer>{{ props.model.email }} · {{ props.model.phone }}</footer>
   </article>
 </template>
 
 <style scoped>
-.cover-letter-premium { min-height: 100%; border-radius: var(--cl-rounded); background: linear-gradient(170deg, color-mix(in srgb, var(--cl-soft) 75%, var(--cl-page)) 0 26%, var(--cl-page) 26%); color: var(--cl-text); padding: 44px 48px; display: grid; grid-template-rows: auto 1fr auto; gap: 20px; }
+.cover-letter-premium { font-family: var(--cl-font-family, 'Inter', 'Segoe UI', sans-serif); font-style: var(--cl-font-style, normal); font-weight: var(--cl-font-weight, 400); min-height: 100%; border-radius: var(--cl-rounded); background: linear-gradient(170deg, color-mix(in srgb, var(--cl-soft) 75%, var(--cl-page)) 0 26%, var(--cl-page) 26%); color: var(--cl-text); padding: 44px 48px; display: grid; grid-template-rows: auto 1fr auto; gap: 20px; }
 .cover-letter-premium header p { letter-spacing: .08em; text-transform: uppercase; font-size: .75rem; }
 .cover-letter-premium h1 { color: var(--cl-accent); font-size: 2.15rem; }
 .cover-letter-premium h2 { text-transform: uppercase; letter-spacing: .06em; font-size: .88rem; }
 .cover-letter-premium section { display: grid; gap: 12px; line-height: 1.62; }
-.cover-letter-premium footer { padding-top: 14px; border-top: 1px solid color-mix(in srgb, var(--cl-accent) 20%, transparent); }
-.cover-letter-premium--serif { font-family: Georgia, 'Times New Roman', serif; }
-.cover-letter-premium--sans { font-family: Inter, 'Segoe UI', sans-serif; }
+.cover-letter-premium footer { padding-top: 14px; border-top: var(--cl-divider-width) var(--cl-divider-style) color-mix(in srgb, var(--cl-accent) 20%, transparent); }
 </style>

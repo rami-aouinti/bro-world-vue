@@ -40,7 +40,11 @@ const selectedTemplate = ref(fallbackTemplateId)
 const selectedTheme = ref('ocean')
 const selectedRounded = ref<'none' | 'sm' | 'md' | 'lg'>('md')
 const selectedTextStyle = ref<ResumeTextStyleOption['value']>('clean')
-const { colorThemes, roundedOptions, textStyleOptions, roundedPxByValue, toCoverPalette, toCoverTypography } = useResumeDesignControls()
+const { colorThemes, roundedOptions, textStyleOptions, toCoverPalette } = useResumeDesignControls()
+const coverLayoutSettings = reactive({
+  dividerStyle: 'solid' as const,
+  dividerWeight: 'thin' as const,
+})
 
 const importedFlow = parseCoverFlowQuery(route.query)
 
@@ -65,8 +69,6 @@ const templateComponents = {
 
 const activeTemplateComponent = computed(() => templateComponents[selectedTemplate.value as keyof typeof templateComponents] ?? CoverPageTemplateTerra)
 const activePalette = computed(() => toCoverPalette(selectedTheme.value))
-const activeTypography = computed(() => toCoverTypography(selectedTextStyle.value))
-const activeRounded = computed(() => roundedPxByValue[selectedRounded.value])
 
 const continueToCoverLetter = async () => {
   await router.push({
@@ -195,8 +197,9 @@ onMounted(() => {
             :is="activeTemplateComponent"
             :model="model"
             :palette="activePalette"
-            :typography="activeTypography"
-            :rounded="activeRounded"
+            :text-style="selectedTextStyle"
+            :rounded="selectedRounded"
+            :layout-settings="coverLayoutSettings"
           />
         </div>
       </aside>
