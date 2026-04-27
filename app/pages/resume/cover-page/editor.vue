@@ -121,7 +121,7 @@ onMounted(() => {
         <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" />
         <v-btn class="local-toolbar-btn" color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" />
         <v-btn class="local-toolbar-btn" color="info" size="small" variant="outlined" icon="mdi-download" />
-        <v-menu v-model="toolbarTemplateMenuOpen" location="bottom">
+        <v-menu v-model="toolbarTemplateMenuOpen" location="bottom center" origin="top center">
           <template #activator="{ props }">
             <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-grid-outline" v-bind="props" @click="openToolbarTab('template')">Templates</v-btn>
           </template>
@@ -141,7 +141,7 @@ onMounted(() => {
             </div>
           </v-card>
         </v-menu>
-        <v-menu location="bottom" max-width="520">
+        <v-menu location="bottom center" origin="top center" max-width="520">
           <template #activator="{ props }">
             <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-palette-outline" v-bind="props" @click="openToolbarTab('design')">Design</v-btn>
           </template>
@@ -165,7 +165,7 @@ onMounted(() => {
             </v-card-text>
           </v-card>
         </v-menu>
-        <v-menu location="bottom" max-width="460">
+        <v-menu location="bottom center" origin="top center" max-width="460">
           <template #activator="{ props }">
             <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-file-import-outline" v-bind="props">Import</v-btn>
           </template>

@@ -187,10 +187,12 @@ type LayoutSettings = {
   lineDensity: 'compact' | 'comfortable'
 }
 type AddSectionType =
+  | 'profile'
   | 'experience'
   | 'education'
   | 'skill'
   | 'language'
+  | 'hobby'
   | 'project'
   | 'certification'
   | 'reference'
@@ -243,10 +245,12 @@ const templateFilters = [
   { label: 'Free', value: 'free' },
 ] as const satisfies ReadonlyArray<{ label: string; value: TemplateFilter }>
 const addSectionOptions = [
+  { label: 'Profile', value: 'profile' },
   { label: 'Experience', value: 'experience' },
   { label: 'Education', value: 'education' },
   { label: 'Skill', value: 'skill' },
   { label: 'Language', value: 'language' },
+  { label: 'Hobby', value: 'hobby' },
   { label: 'Project', value: 'project' },
   { label: 'Certification', value: 'certification' },
   { label: 'Reference', value: 'reference' },
@@ -547,10 +551,12 @@ const pendingPdfDownload = ref(false)
 const addSectionDialogOpen = ref(false)
 const addSectionType = ref<AddSectionType>('experience')
 const addSectionDraft = reactive({
+  profile: { profile: '' },
   experience: { role: '', company: '', city: '', start: '', end: '', bullets: '' },
   education: { degree: '', school: '', city: '', start: '', end: '', note: '' },
   skill: { name: '', level: 80 },
   language: { name: '', level: 80 },
+  hobby: { name: '' },
   project: { name: '', summary: '' },
   certification: { title: '', school: '', start: '', end: '' },
   reference: { name: '', company: '', email: '', phone: '' },
@@ -808,6 +814,9 @@ function applyTemplateFromToolbar(templateId: string) {
 
 function resetSectionDraft(section: AddSectionType) {
   switch (section) {
+    case 'profile':
+      addSectionDraft.profile = { profile: '' }
+      break
     case 'experience':
       addSectionDraft.experience = { role: '', company: '', city: '', start: '', end: '', bullets: '' }
       break
@@ -819,6 +828,9 @@ function resetSectionDraft(section: AddSectionType) {
       break
     case 'language':
       addSectionDraft.language = { name: '', level: 80 }
+      break
+    case 'hobby':
+      addSectionDraft.hobby = { name: '' }
       break
     case 'project':
       addSectionDraft.project = { name: '', summary: '' }
@@ -841,6 +853,9 @@ function openAddSectionDialog(section: AddSectionType) {
 
 function submitAddSection() {
   switch (addSectionType.value) {
+    case 'profile':
+      resume.profile = addSectionDraft.profile.profile.trim()
+      break
     case 'experience':
       resume.experiences.push({
         role: addSectionDraft.experience.role,
@@ -869,6 +884,11 @@ function submitAddSection() {
       break
     case 'language':
       resume.languages.push({ ...addSectionDraft.language })
+      break
+    case 'hobby':
+      if (addSectionDraft.hobby.name.trim()) {
+        resume.hobbies.push(addSectionDraft.hobby.name.trim())
+      }
       break
     case 'project':
       resume.projects.push({ ...addSectionDraft.project })
@@ -1467,7 +1487,7 @@ if (import.meta.client) {
         <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" />
         <v-btn class="local-toolbar-btn" color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview" />
         <v-btn class="local-toolbar-btn" color="info" size="small" variant="outlined" icon="mdi-download" @click="onDownloadPdfClick" />
-        <v-menu v-model="toolbarTemplateMenuOpen" location="bottom">
+        <v-menu v-model="toolbarTemplateMenuOpen" location="bottom center" origin="top center">
           <template #activator="{ props }">
             <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-grid-outline" v-bind="props">
               Templates
@@ -1489,7 +1509,7 @@ if (import.meta.client) {
             </div>
           </v-card>
         </v-menu>
-        <v-menu location="bottom" max-width="560">
+        <v-menu location="bottom center" origin="top center" max-width="560">
           <template #activator="{ props }">
             <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-palette-outline" v-bind="props" @click="openToolbarTab('design')">
               Design
@@ -1630,7 +1650,7 @@ if (import.meta.client) {
             </v-card-text>
           </v-card>
         </v-menu>
-        <v-menu location="bottom" max-width="560">
+        <v-menu location="bottom center" origin="top center" max-width="560">
           <template #activator="{ props }">
             <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-file-import-outline" v-bind="props" @click="openToolbarTab('import')">
               Import
@@ -1648,7 +1668,7 @@ if (import.meta.client) {
             </v-card-text>
           </v-card>
         </v-menu>
-        <v-menu v-model="toolbarSectionMenuOpen" location="bottom">
+        <v-menu v-model="toolbarSectionMenuOpen" location="bottom center" origin="top center">
           <template #activator="{ props }">
             <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-list-outline" v-bind="props">
               Add section
@@ -1664,7 +1684,7 @@ if (import.meta.client) {
           </v-list>
         </v-menu>
         <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" icon="mdi-draw" @click="openSignatureDialog" />
-        <v-menu v-model="aiMenuOpen" :close-on-content-click="false" location="bottom end">
+        <v-menu v-model="aiMenuOpen" :close-on-content-click="false" location="bottom center" origin="top center">
           <template #activator="{ props }">
             <v-btn class="local-toolbar-btn local-toolbar-btn--ki" color="deep-purple" size="small" variant="tonal" prepend-icon="mdi-creation" v-bind="props">KI</v-btn>
           </template>
@@ -2607,7 +2627,17 @@ if (import.meta.client) {
         </v-card-title>
         <v-divider />
         <v-card-text class="d-grid ga-3">
-          <template v-if="addSectionType === 'experience'">
+          <template v-if="addSectionType === 'profile'">
+            <v-textarea
+              v-model="addSectionDraft.profile.profile"
+              label="Profile summary"
+              rows="6"
+              variant="outlined"
+              hide-details
+            />
+          </template>
+
+          <template v-else-if="addSectionType === 'experience'">
             <v-text-field v-model="addSectionDraft.experience.role" label="Role" variant="outlined" hide-details />
             <v-text-field v-model="addSectionDraft.experience.company" label="Company" variant="outlined" hide-details />
             <v-text-field v-model="addSectionDraft.experience.city" label="City" variant="outlined" hide-details />
@@ -2637,6 +2667,10 @@ if (import.meta.client) {
           <template v-else-if="addSectionType === 'language'">
             <v-text-field v-model="addSectionDraft.language.name" label="Language name" variant="outlined" hide-details />
             <v-slider v-model="addSectionDraft.language.level" min="0" max="100" step="5" color="primary" thumb-label />
+          </template>
+
+          <template v-else-if="addSectionType === 'hobby'">
+            <v-text-field v-model="addSectionDraft.hobby.name" label="Hobby" variant="outlined" hide-details />
           </template>
 
           <template v-else-if="addSectionType === 'project'">
