@@ -3,6 +3,7 @@ import ResumeSectionExperience from '~/components/Resume/Sections/ResumeSectionE
 import ResumeSectionEducation from '~/components/Resume/Sections/ResumeSectionEducation.vue'
 import ResumeSectionLanguage from '~/components/Resume/Sections/ResumeSectionLanguage.vue'
 import ResumeSectionProject from '~/components/Resume/Sections/ResumeSectionProject.vue'
+import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 import type { ResumeRendererLayoutEntry, ResumeSectionKey, ResumeTemplateSkin } from '~/constants/resumeTemplateSkins'
 
 type SectionLayoutVariant = {
@@ -148,7 +149,8 @@ function updateText(path: string, value: string) {
           <p class="editable-text" :contenteditable="editable" @input="event => updateText('profile', (event.target as HTMLElement).innerText)">{{ resume.profile }}</p>
         </section>
 
-        <section v-if="templateSkin.showSkillsInAside">
+        <section v-if="templateSkin.showSkillsInAside" class="resume-section-hoverable resume-skin__skills-section">
+          <SectionToolbar section-key="skill" />
           <h3 class="cv-heading-section">Skills</h3>
           <ul class="resume-skin__skills">
             <li v-for="(skill, index) in resume.skills" :key="`${skill.name}-${index}`">
@@ -209,6 +211,7 @@ function updateText(path: string, value: string) {
 .resume-skin__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .resume-skin__header-contact { font-size: .9rem; opacity: .8; }
 .resume-skin__skills { list-style: none; padding: 0; }
+.resume-skin__skills-section { position: relative; }
 .progress { height: 4px; background: color-mix(in srgb, var(--cv-accent) 22%, var(--cv-page)); margin-top: 4px; }
 .progress i { display: block; height: 100%; background: var(--cv-accent); }
 .resume-skin__main,
