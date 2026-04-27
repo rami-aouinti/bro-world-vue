@@ -1,4 +1,4 @@
-import { readBody } from 'h3'
+import { getQuery, readBody } from 'h3'
 import { callPrivateApi } from '../../../../../utils/privateApi'
 
 type ApplicationScopedConversationsPayload = {
@@ -9,7 +9,10 @@ export default defineEventHandler(async (event) => {
   const payload = await readBody<ApplicationScopedConversationsPayload>(event).catch(
     () => ({}),
   )
-  const applicationSlug = String(payload?.applicationSlug || '').trim()
+  const query = getQuery(event)
+  const applicationSlug = String(
+    payload?.applicationSlug || query.applicationSlug || '',
+  ).trim()
 
   if (!applicationSlug) {
     throw createError({

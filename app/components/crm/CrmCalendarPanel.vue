@@ -65,6 +65,9 @@ async function loadCalendarEvents() {
   try {
     const response = await privateApi.request<CrmCalendarResponse>('/api/calendar/events/employee-assigned', {
       method: 'GET',
+      params: {
+        applicationSlug: crmApplicationSlug.value,
+      },
       body: {
         applicationSlug: crmApplicationSlug.value,
       },

@@ -284,6 +284,9 @@ async function fetchConversations() {
           '/api/chat/private/applications/conversations',
           {
             method: 'GET',
+            params: {
+              applicationSlug,
+            },
             body: {
               applicationSlug,
             },
