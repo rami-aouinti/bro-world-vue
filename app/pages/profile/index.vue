@@ -36,7 +36,7 @@ type ResumeSectionKey =
   | 'projects'
   | 'references'
   | 'hobbies'
-type ResumeTemplate = 'modern' | 'elegant' | 'compact'
+type ResumeSectionDisplayStyle = 'detailed' | 'compact' | 'minimal'
 type ResumeSectionForm = RecruitResumeSection & {
   attachmentFiles?: File[]
 }
@@ -67,11 +67,22 @@ const resumeViewerOpen = ref(false)
 const resumeEditorOpen = ref(false)
 const resumeCreateOpen = ref(false)
 const resumeCreateStep = ref<'choice' | 'upload' | 'manual'>('choice')
-const selectedResumeTemplate = ref<ResumeTemplate>('modern')
 const selectedResume = ref<RecruitResume | null>(null)
 const createLoading = ref(false)
 const updateLoading = ref(false)
 const resumeUploadFile = ref<File | null>(null)
+const resumeSectionDisplayStyle = reactive<
+  Record<ResumeSectionKey, ResumeSectionDisplayStyle>
+>({
+  experiences: 'detailed',
+  educations: 'detailed',
+  skills: 'compact',
+  languages: 'compact',
+  certifications: 'detailed',
+  projects: 'detailed',
+  references: 'minimal',
+  hobbies: 'minimal',
+})
 
 function createEmptyResumeSection(): ResumeSectionForm {
   return {
@@ -123,10 +134,10 @@ const proverbTexts = computed(() => [
 
 const hasUpcomingEvents = computed(() => upcomingEvents.value.length > 0)
 const hasResumes = computed(() => resumes.value.length > 0)
-const resumeTemplateOptions = [
-  { value: 'modern', label: 'Modern Pro' },
-  { value: 'elegant', label: 'Executive' },
-  { value: 'compact', label: 'Clean Grid' },
+const resumeSectionStyleOptions = [
+  { value: 'detailed', label: 'Detailed' },
+  { value: 'compact', label: 'Compact' },
+  { value: 'minimal', label: 'Minimal' },
 ] as const
 const resumeLevelOptions = [
   'Beginner',
@@ -160,7 +171,8 @@ const profileResumeIdentity = computed(() => {
     currentProfile?.username ||
     'Anonymous Member'
   const title = currentProfile?.profile?.title || 'Professional Profile'
-  const location = resumeIdentity?.address || currentProfile?.profile?.location || ''
+  const location =
+    resumeIdentity?.address || currentProfile?.profile?.location || ''
   const email = resumeIdentity?.email || currentProfile?.email || ''
   const phone = resumeIdentity?.phone || currentProfile?.profile?.phone || ''
   const summary =
@@ -404,7 +416,16 @@ function buildResumeMultipartPayload() {
 
 function openResume(resume: RecruitResume) {
   selectedResume.value = resume
-  selectedResumeTemplate.value = 'modern'
+  resumeSectionEntries.value.forEach(({ key }) => {
+    resumeSectionDisplayStyle[key] = [
+      'skills',
+      'languages',
+      'references',
+      'hobbies',
+    ].includes(key)
+      ? 'compact'
+      : 'detailed'
+  })
   resumeViewerOpen.value = true
 }
 
@@ -705,7 +726,12 @@ onUnmounted(() => {
               color="primary"
               variant="tonal"
               prepend-icon="mdi-file-plus-outline"
-              @click="() => { resumeCreateOpen = true; resumeCreateStep = 'choice' }"
+              @click="
+                () => {
+                  resumeCreateOpen = true
+                  resumeCreateStep = 'choice'
+                }
+              "
             >
               New CV
             </v-btn>
@@ -783,7 +809,11 @@ onUnmounted(() => {
       </template>
     </v-container>
 
-    <AppModal v-model="resumeViewerOpen" title="Resume details" :max-width="980">
+    <AppModal
+      v-model="resumeViewerOpen"
+      title="Resume details"
+      :max-width="980"
+    >
       <div v-if="selectedResume">
         <iframe
           v-if="selectedResume.documentUrl"
@@ -792,30 +822,7 @@ onUnmounted(() => {
           title="Resume PDF preview"
         />
         <div v-else class="resume-template-shell">
-          <div class="resume-template-picker mb-4">
-            <v-btn-toggle
-              v-model="selectedResumeTemplate"
-              mandatory
-              divided
-              color="primary"
-              variant="outlined"
-              class="resume-template-toggle"
-            >
-              <v-btn
-                v-for="option in resumeTemplateOptions"
-                :key="option.value"
-                :value="option.value"
-                class="text-none px-5"
-              >
-                {{ option.label }}
-              </v-btn>
-            </v-btn-toggle>
-          </div>
-
-          <article
-            v-if="selectedResumeTemplate === 'modern'"
-            class="resume-template resume-template-modern"
-          >
+          <article class="resume-template resume-template-modern">
             <header class="resume-header">
               <div class="d-flex ga-3 align-start">
                 <v-avatar
@@ -881,34 +888,90 @@ onUnmounted(() => {
                   )"
                   :key="entry.key"
                   class="resume-block"
+                  :class="`resume-block--${resumeSectionDisplayStyle[entry.key]}`"
                 >
-                  <h3>{{ entry.label }}</h3>
-                  <template v-if="hasSectionData(selectedResume, entry.key)">
-                    <div
-                      v-for="item in selectedResume[entry.key]"
-                      :key="item.id || `${entry.key}-${item.title}`"
-                      class="resume-line"
+                  <div
+                    class="d-flex justify-space-between align-center ga-3 mb-2"
+                  >
+                    <h3 class="mb-0">{{ entry.label }}</h3>
+                    <v-btn-toggle
+                      v-model="resumeSectionDisplayStyle[entry.key]"
+                      mandatory
+                      divided
+                      color="primary"
+                      density="comfortable"
+                      variant="text"
+                      class="resume-section-style-toggle"
                     >
-                      <p class="font-weight-bold mb-1">{{ item.title }}</p>
-                      <p
-                        v-if="formatResumeDateRange(item)"
-                        class="mb-1 text-caption"
+                      <v-btn
+                        v-for="option in resumeSectionStyleOptions"
+                        :key="`${entry.key}-${option.value}`"
+                        :value="option.value"
+                        size="x-small"
+                        class="text-none"
                       >
-                        {{ formatResumeDateRange(item) }}
-                      </p>
-                      <p v-if="sectionMeta(item)" class="mb-1 text-caption">
-                        {{ sectionMeta(item) }}
-                      </p>
-                      <p class="mb-0">{{ item.description }}</p>
-                      <p v-if="item.home_page" class="mb-0 text-caption">
-                        {{ item.home_page }}
-                      </p>
-                      <p
-                        v-if="item.attachments?.length"
-                        class="mb-0 text-caption"
+                        {{ option.label }}
+                      </v-btn>
+                    </v-btn-toggle>
+                  </div>
+                  <template v-if="hasSectionData(selectedResume, entry.key)">
+                    <ul
+                      v-if="resumeSectionDisplayStyle[entry.key] === 'minimal'"
+                      class="resume-list"
+                    >
+                      <li
+                        v-for="item in selectedResume[entry.key]"
+                        :key="item.id || `${entry.key}-${item.title}`"
                       >
-                        Attachments: {{ item.attachments.join(', ') }}
-                      </p>
+                        {{ item.title }}
+                      </li>
+                    </ul>
+                    <ul
+                      v-else-if="
+                        resumeSectionDisplayStyle[entry.key] === 'compact'
+                      "
+                      class="resume-list"
+                    >
+                      <li
+                        v-for="item in selectedResume[entry.key]"
+                        :key="item.id || `${entry.key}-${item.title}`"
+                      >
+                        <span class="font-weight-medium">{{ item.title }}</span>
+                        <span v-if="formatResumeDateRange(item)">
+                          ({{ formatResumeDateRange(item) }})</span
+                        >
+                        <span v-if="sectionMeta(item)">
+                          • {{ sectionMeta(item) }}</span
+                        >
+                      </li>
+                    </ul>
+                    <div v-else>
+                      <div
+                        v-for="item in selectedResume[entry.key]"
+                        :key="item.id || `${entry.key}-${item.title}`"
+                        class="resume-line"
+                      >
+                        <p class="font-weight-bold mb-1">{{ item.title }}</p>
+                        <p
+                          v-if="formatResumeDateRange(item)"
+                          class="mb-1 text-caption"
+                        >
+                          {{ formatResumeDateRange(item) }}
+                        </p>
+                        <p v-if="sectionMeta(item)" class="mb-1 text-caption">
+                          {{ sectionMeta(item) }}
+                        </p>
+                        <p class="mb-0">{{ item.description }}</p>
+                        <p v-if="item.home_page" class="mb-0 text-caption">
+                          {{ item.home_page }}
+                        </p>
+                        <p
+                          v-if="item.attachments?.length"
+                          class="mb-0 text-caption"
+                        >
+                          Attachments: {{ item.attachments.join(', ') }}
+                        </p>
+                      </div>
                     </div>
                   </template>
                   <p v-else class="text-medium-emphasis mb-0">Empty</p>
@@ -923,192 +986,45 @@ onUnmounted(() => {
                   )"
                   :key="entry.key"
                   class="resume-block"
+                  :class="`resume-block--${resumeSectionDisplayStyle[entry.key]}`"
                 >
-                  <h3>{{ entry.label }}</h3>
-                  <template v-if="hasSectionData(selectedResume, entry.key)">
-                    <ul class="resume-list">
-                      <li
-                        v-for="item in selectedResume[entry.key]"
-                        :key="item.id || `${entry.key}-${item.title}`"
-                      >
-                        <span class="font-weight-medium">{{ item.title }}</span>
-                        <span v-if="item.description">
-                          — {{ item.description }}</span
-                        >
-                        <span v-if="formatResumeDateRange(item)">
-                          ({{ formatResumeDateRange(item) }})</span
-                        >
-                        <span v-if="sectionMeta(item)">
-                          • {{ sectionMeta(item) }}</span
-                        >
-                      </li>
-                    </ul>
-                  </template>
-                  <p v-else class="text-medium-emphasis mb-0">Empty</p>
-                </section>
-              </div>
-            </section>
-          </article>
-
-          <article
-            v-else-if="selectedResumeTemplate === 'elegant'"
-            class="resume-template resume-template-elegant"
-          >
-            <header class="resume-header text-center">
-              <div class="d-flex flex-column align-center mb-3">
-                <v-avatar
-                  v-if="profileResumeIdentity.avatar"
-                  size="90"
-                  class="resume-avatar-elegant mb-3"
-                >
-                  <v-img
-                    :src="profileResumeIdentity.avatar"
-                    :alt="profileResumeIdentity.completeName"
-                  />
-                </v-avatar>
-                <v-avatar
-                  v-else
-                  size="90"
-                  color="brown-lighten-1"
-                  class="resume-avatar-elegant mb-3"
-                >
-                  {{
-                    profileResumeIdentity.completeName.slice(0, 2).toUpperCase()
-                  }}
-                </v-avatar>
-              </div>
-              <h2 class="text-h3 font-weight-bold mb-2">
-                {{ profileResumeIdentity.completeName }}
-              </h2>
-              <p class="text-subtitle-1 mb-2">
-                {{ profileResumeIdentity.title }}
-              </p>
-              <p class="mb-0">
-                {{
-                  [
-                    profileResumeIdentity.location,
-                    profileResumeIdentity.phone,
-                    profileResumeIdentity.email,
-                  ]
-                    .filter(Boolean)
-                    .join(' • ')
-                }}
-              </p>
-              <p class="mb-0 text-body-2">
-                {{
-                  [
-                    profileResumeIdentity.homepage,
-                    profileResumeIdentity.repoProfile,
-                  ]
-                    .filter(Boolean)
-                    .join(' • ')
-                }}
-              </p>
-            </header>
-            <section class="resume-block">
-              <h3>Professional Summary</h3>
-              <p class="mb-0">{{ profileResumeIdentity.summary }}</p>
-            </section>
-            <section
-              v-for="entry in resumeSectionEntries"
-              :key="`elegant-${entry.key}`"
-              class="resume-block"
-            >
-              <h3>{{ entry.label }}</h3>
-              <template v-if="hasSectionData(selectedResume, entry.key)">
-                <div
-                  v-for="item in selectedResume[entry.key]"
-                  :key="item.id || `${entry.key}-${item.title}`"
-                  class="resume-line"
-                >
-                  <p class="font-weight-bold mb-1">{{ item.title }}</p>
-                  <p
-                    v-if="formatResumeDateRange(item)"
-                    class="mb-1 text-caption"
+                  <div
+                    class="d-flex justify-space-between align-center ga-3 mb-2"
                   >
-                    {{ formatResumeDateRange(item) }}
-                  </p>
-                  <p v-if="sectionMeta(item)" class="mb-1 text-caption">
-                    {{ sectionMeta(item) }}
-                  </p>
-                  <p class="mb-0">{{ item.description }}</p>
-                  <p v-if="item.home_page" class="mb-0 text-caption">
-                    {{ item.home_page }}
-                  </p>
-                  <p v-if="item.attachments?.length" class="mb-0 text-caption">
-                    Attachments: {{ item.attachments.join(', ') }}
-                  </p>
-                </div>
-              </template>
-              <p v-else class="text-medium-emphasis mb-0">Empty</p>
-            </section>
-          </article>
-
-          <article v-else class="resume-template resume-template-compact">
-            <header class="resume-header">
-              <div class="d-flex ga-3 align-center">
-                <v-avatar
-                  v-if="profileResumeIdentity.avatar"
-                  size="64"
-                  class="resume-avatar"
-                >
-                  <v-img
-                    :src="profileResumeIdentity.avatar"
-                    :alt="profileResumeIdentity.completeName"
-                  />
-                </v-avatar>
-                <v-avatar
-                  v-else
-                  size="64"
-                  color="blue-grey"
-                  class="resume-avatar"
-                >
-                  {{
-                    profileResumeIdentity.completeName.slice(0, 2).toUpperCase()
-                  }}
-                </v-avatar>
-                <h2 class="text-h4 font-weight-bold mb-1">
-                  {{ profileResumeIdentity.completeName }}
-                </h2>
-              </div>
-              <p class="mb-0">{{ profileResumeIdentity.title }}</p>
-              <p class="mb-0 text-body-2">
-                {{
-                  [
-                    profileResumeIdentity.location,
-                    profileResumeIdentity.phone,
-                    profileResumeIdentity.email,
-                  ]
-                    .filter(Boolean)
-                    .join(' | ')
-                }}
-              </p>
-              <p class="mb-0 text-body-2">
-                {{
-                  [
-                    profileResumeIdentity.homepage,
-                    profileResumeIdentity.repoProfile,
-                  ]
-                    .filter(Boolean)
-                    .join(' | ')
-                }}
-              </p>
-            </header>
-            <section class="resume-block">
-              <h3>Summary</h3>
-              <p class="mb-0">{{ profileResumeIdentity.summary }}</p>
-            </section>
-            <v-row>
-              <v-col
-                v-for="entry in resumeSectionEntries"
-                :key="`compact-${entry.key}`"
-                cols="12"
-                md="6"
-              >
-                <section class="resume-block h-100">
-                  <h3>{{ entry.label }}</h3>
+                    <h3 class="mb-0">{{ entry.label }}</h3>
+                    <v-btn-toggle
+                      v-model="resumeSectionDisplayStyle[entry.key]"
+                      mandatory
+                      divided
+                      color="primary"
+                      density="comfortable"
+                      variant="text"
+                      class="resume-section-style-toggle"
+                    >
+                      <v-btn
+                        v-for="option in resumeSectionStyleOptions"
+                        :key="`${entry.key}-${option.value}`"
+                        :value="option.value"
+                        size="x-small"
+                        class="text-none"
+                      >
+                        {{ option.label }}
+                      </v-btn>
+                    </v-btn-toggle>
+                  </div>
                   <template v-if="hasSectionData(selectedResume, entry.key)">
-                    <ul class="resume-list">
+                    <ul
+                      v-if="resumeSectionDisplayStyle[entry.key] === 'minimal'"
+                      class="resume-list"
+                    >
+                      <li
+                        v-for="item in selectedResume[entry.key]"
+                        :key="item.id || `${entry.key}-${item.title}`"
+                      >
+                        {{ item.title }}
+                      </li>
+                    </ul>
+                    <ul v-else class="resume-list">
                       <li
                         v-for="item in selectedResume[entry.key]"
                         :key="item.id || `${entry.key}-${item.title}`"
@@ -1123,19 +1039,13 @@ onUnmounted(() => {
                         <span v-if="sectionMeta(item)">
                           • {{ sectionMeta(item) }}</span
                         >
-                        <span v-if="item.home_page">
-                          • {{ item.home_page }}</span
-                        >
-                        <span v-if="item.attachments?.length">
-                          • {{ item.attachments.join(', ') }}</span
-                        >
                       </li>
                     </ul>
                   </template>
                   <p v-else class="text-medium-emphasis mb-0">Empty</p>
                 </section>
-              </v-col>
-            </v-row>
+              </div>
+            </section>
           </article>
         </div>
       </div>
@@ -1539,16 +1449,6 @@ onUnmounted(() => {
   padding-right: 4px;
 }
 
-.resume-template-picker {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.resume-template-toggle {
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 12px;
-}
-
 .resume-template {
   border-radius: 18px;
   padding: 24px;
@@ -1559,16 +1459,6 @@ onUnmounted(() => {
 .resume-template-modern {
   background: linear-gradient(180deg, #f6f9ff 0%, #eef4ff 100%);
   color: #1d2a52;
-}
-
-.resume-template-elegant {
-  background: linear-gradient(180deg, #f6eeea 0%, #fff9f4 100%);
-  color: #3e2b26;
-}
-
-.resume-template-compact {
-  background: linear-gradient(180deg, #f8fbff 0%, #f1f7ff 100%);
-  color: #1e293b;
 }
 
 .resume-header {
@@ -1618,7 +1508,16 @@ onUnmounted(() => {
   text-transform: uppercase;
   font-size: 0.86rem;
   letter-spacing: 0.08em;
-  margin-bottom: 8px;
+}
+
+.resume-section-style-toggle {
+  border-radius: 999px;
+  border: 1px solid rgba(106, 125, 175, 0.25);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.resume-block--minimal {
+  background: rgba(255, 255, 255, 0.32);
 }
 
 .resume-line {
@@ -1666,16 +1565,12 @@ onUnmounted(() => {
     padding: 16px;
   }
 
-  .resume-template-picker {
-    justify-content: stretch;
-  }
-
-  .resume-template-toggle {
-    width: 100%;
-  }
-
   .resume-grid {
     grid-template-columns: 1fr;
+  }
+
+  .resume-section-style-toggle {
+    width: 100%;
   }
 }
 </style>
