@@ -61,6 +61,7 @@ type Course = {
 type Project = {
   name: string
   summary: string
+  link?: string
 }
 type StructuredUser = {
   fullName?: string
@@ -198,8 +199,8 @@ type AddSectionType =
   | 'reference'
 type PreviewSectionKey = 'experience' | 'education' | 'language' | 'project'
 type SectionLayoutVariant = {
-  experience: 'detailed' | 'bullets' | 'compact'
-  education: 'classic' | 'timeline' | 'two-column'
+  experience: 'timeline' | 'bullets' | 'compact'
+  education: 'classic' | 'one-column' | 'two-column'
   language: 'text-level' | 'stars' | 'progress'
   project: 'list' | 'cards' | 'two-column'
 }
@@ -267,27 +268,30 @@ const addSectionOptions = [
   { label: 'Certification', value: 'certification' },
   { label: 'Reference', value: 'reference' },
 ] as const satisfies ReadonlyArray<{ label: string; value: AddSectionType }>
+const sectionVariants: { [K in PreviewSectionKey]: SectionLayoutVariant[K][] } = {
+  experience: ['timeline', 'bullets', 'compact'],
+  education: ['classic', 'one-column', 'two-column'],
+  language: ['stars', 'text-level', 'progress'],
+  project: ['cards', 'list', 'two-column'],
+}
+const sectionVariantLabels: Record<string, string> = {
+  timeline: 'Timeline',
+  bullets: 'Bullets',
+  compact: 'Compact',
+  classic: 'Classic',
+  'one-column': 'One-column',
+  'two-column': 'Two-column',
+  stars: 'Stars',
+  'text-level': 'Text level',
+  progress: 'Progress',
+  cards: 'Cards',
+  list: 'List',
+}
 const sectionVariantOptions: { [K in PreviewSectionKey]: Array<{ label: string; value: SectionLayoutVariant[K] }> } = {
-  experience: [
-    { label: 'Detailed', value: 'detailed' },
-    { label: 'Bullets', value: 'bullets' },
-    { label: 'Compact', value: 'compact' },
-  ],
-  education: [
-    { label: 'Classic', value: 'classic' },
-    { label: 'Timeline', value: 'timeline' },
-    { label: 'Two-column', value: 'two-column' },
-  ],
-  language: [
-    { label: 'Text level', value: 'text-level' },
-    { label: 'Stars', value: 'stars' },
-    { label: 'Progress', value: 'progress' },
-  ],
-  project: [
-    { label: 'List', value: 'list' },
-    { label: 'Cards', value: 'cards' },
-    { label: 'Two-column', value: 'two-column' },
-  ],
+  experience: sectionVariants.experience.map(variant => ({ label: sectionVariantLabels[variant], value: variant })),
+  education: sectionVariants.education.map(variant => ({ label: sectionVariantLabels[variant], value: variant })),
+  language: sectionVariants.language.map(variant => ({ label: sectionVariantLabels[variant], value: variant })),
+  project: sectionVariants.project.map(variant => ({ label: sectionVariantLabels[variant], value: variant })),
 }
 
 const coverPageTemplateCards: Template[] = COVER_PAGE_TEMPLATES.map(template => ({
@@ -583,11 +587,20 @@ const pendingPdfDownload = ref(false)
 const addSectionDialogOpen = ref(false)
 const addSectionType = ref<AddSectionType>('experience')
 const sectionLayout = ref<SectionLayoutEntry[]>([
-  { key: 'experience', label: 'Expérience', variant: 'detailed' },
+  { key: 'experience', label: 'Expérience', variant: 'timeline' },
   { key: 'education', label: 'Education', variant: 'classic' },
-  { key: 'language', label: 'Language', variant: 'text-level' },
-  { key: 'project', label: 'Project', variant: 'list' },
+  { key: 'language', label: 'Language', variant: 'stars' },
+  { key: 'project', label: 'Project', variant: 'cards' },
 ])
+const sectionItemDialogOpen = ref(false)
+const activeSectionKey = ref<PreviewSectionKey>('experience')
+const activeVariant = ref<SectionLayoutVariant[PreviewSectionKey]>('timeline')
+const sectionItemDraft = reactive({
+  experience: { role: '', company: '', city: '', start: '', end: '', bullets: '' },
+  education: { degree: '', school: '', city: '', start: '', end: '', note: '' },
+  language: { name: '', level: 80, stars: 4 },
+  project: { name: '', summary: '', link: '' },
+})
 const addSectionDraft = reactive({
   profile: { profile: '' },
   experience: { role: '', company: '', city: '', start: '', end: '', bullets: '' },
@@ -929,21 +942,76 @@ function submitAddSection() {
 
 const orderedPreviewSections = computed(() => sectionLayout.value)
 
-function addItemToPreviewSection(section: PreviewSectionKey) {
+function resetSectionItemDraft(section: PreviewSectionKey) {
   switch (section) {
     case 'experience':
-      addExperience()
+      sectionItemDraft.experience = { role: '', company: '', city: '', start: '', end: '', bullets: '' }
       break
     case 'education':
-      addEducation()
+      sectionItemDraft.education = { degree: '', school: '', city: '', start: '', end: '', note: '' }
       break
     case 'language':
-      addLanguage()
+      sectionItemDraft.language = { name: '', level: 80, stars: 4 }
       break
     case 'project':
-      addProject()
+      sectionItemDraft.project = { name: '', summary: '', link: '' }
       break
   }
+}
+
+function openSectionItemDialog(section: PreviewSectionKey) {
+  activeSectionKey.value = section
+  activeVariant.value = sectionLayout.value.find(item => item.key === section)?.variant ?? sectionVariants[section][0]
+  resetSectionItemDraft(section)
+  sectionItemDialogOpen.value = true
+}
+
+function submitSectionItemDialog() {
+  switch (activeSectionKey.value) {
+    case 'experience':
+      resume.experiences.push({
+        role: sectionItemDraft.experience.role,
+        company: sectionItemDraft.experience.company,
+        city: sectionItemDraft.experience.city,
+        start: sectionItemDraft.experience.start,
+        end: sectionItemDraft.experience.end,
+        bullets: sectionItemDraft.experience.bullets
+          .split('\n')
+          .map(line => line.trim())
+          .filter(Boolean),
+      })
+      break
+    case 'education':
+      resume.education.push({
+        degree: sectionItemDraft.education.degree,
+        school: sectionItemDraft.education.school,
+        city: sectionItemDraft.education.city,
+        start: sectionItemDraft.education.start,
+        end: sectionItemDraft.education.end,
+        note: sectionItemDraft.education.note,
+      })
+      break
+    case 'language':
+      resume.languages.push({
+        name: sectionItemDraft.language.name,
+        level: activeVariant.value === 'stars'
+          ? Math.max(0, Math.min(5, sectionItemDraft.language.stars)) * 20
+          : sectionItemDraft.language.level,
+      })
+      break
+    case 'project':
+      resume.projects.push({
+        name: sectionItemDraft.project.name,
+        summary: sectionItemDraft.project.summary,
+        ...(sectionItemDraft.project.link.trim() ? { link: sectionItemDraft.project.link.trim() } : {}),
+      })
+      break
+  }
+  sectionItemDialogOpen.value = false
+}
+
+function addItemToPreviewSection(section: PreviewSectionKey) {
+  openSectionItemDialog(section)
 }
 
 function moveSection(sectionKey: PreviewSectionKey, direction: 'up' | 'down') {
@@ -959,6 +1027,9 @@ function setSectionVariant<K extends PreviewSectionKey>(key: K, variant: Section
   const target = sectionLayout.value.find(section => section.key === key)
   if (!target) return
   target.variant = variant
+  if (activeSectionKey.value === key) {
+    activeVariant.value = variant
+  }
 }
 
 const activeTheme = computed(
@@ -2762,6 +2833,80 @@ if (import.meta.client) {
         <v-card-actions class="justify-end">
           <v-btn variant="text" @click="addSectionDialogOpen = false">Cancel</v-btn>
           <v-btn color="primary" prepend-icon="mdi-plus" @click="submitAddSection">Add section</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="sectionItemDialogOpen" max-width="680">
+      <v-card>
+        <v-card-title class="d-flex align-center justify-space-between">
+          <span>
+            Add {{ orderedPreviewSections.find(section => section.key === activeSectionKey)?.label }} item
+            <v-chip size="x-small" class="ml-2" color="primary" variant="tonal">
+              {{ sectionVariantLabels[String(activeVariant)] }}
+            </v-chip>
+          </span>
+          <v-btn icon="mdi-close" variant="text" @click="sectionItemDialogOpen = false" />
+        </v-card-title>
+        <v-divider />
+        <v-card-text class="d-grid ga-3">
+          <template v-if="activeSectionKey === 'experience'">
+            <v-text-field v-model="sectionItemDraft.experience.role" label="Role" variant="outlined" hide-details />
+            <v-text-field v-model="sectionItemDraft.experience.company" label="Company" variant="outlined" hide-details />
+            <v-text-field v-model="sectionItemDraft.experience.city" label="City" variant="outlined" hide-details />
+            <div class="grid-2">
+              <v-text-field v-model="sectionItemDraft.experience.start" label="Start" variant="outlined" hide-details />
+              <v-text-field v-model="sectionItemDraft.experience.end" label="End" variant="outlined" hide-details />
+            </div>
+            <v-textarea v-model="sectionItemDraft.experience.bullets" label="Bullets (one per line)" rows="4" variant="outlined" hide-details />
+          </template>
+
+          <template v-else-if="activeSectionKey === 'education'">
+            <v-text-field v-model="sectionItemDraft.education.degree" label="Degree" variant="outlined" hide-details />
+            <v-text-field v-model="sectionItemDraft.education.school" label="School" variant="outlined" hide-details />
+            <v-text-field v-model="sectionItemDraft.education.city" label="City" variant="outlined" hide-details />
+            <div class="grid-2">
+              <v-text-field v-model="sectionItemDraft.education.start" label="Start" variant="outlined" hide-details />
+              <v-text-field v-model="sectionItemDraft.education.end" label="End" variant="outlined" hide-details />
+            </div>
+            <v-textarea v-model="sectionItemDraft.education.note" label="Note" rows="3" variant="outlined" hide-details />
+          </template>
+
+          <template v-else-if="activeSectionKey === 'language'">
+            <v-text-field v-model="sectionItemDraft.language.name" label="Language name" variant="outlined" hide-details />
+            <v-rating
+              v-if="activeVariant === 'stars'"
+              v-model="sectionItemDraft.language.stars"
+              color="amber"
+              active-color="amber"
+              length="5"
+            />
+            <v-slider
+              v-else
+              v-model="sectionItemDraft.language.level"
+              min="0"
+              max="100"
+              step="5"
+              color="primary"
+              thumb-label
+            />
+          </template>
+
+          <template v-else-if="activeSectionKey === 'project'">
+            <v-text-field v-model="sectionItemDraft.project.name" label="Project name" variant="outlined" hide-details />
+            <v-textarea v-model="sectionItemDraft.project.summary" label="Project summary" rows="4" variant="outlined" hide-details />
+            <v-text-field
+              v-if="activeVariant === 'cards' || activeVariant === 'list'"
+              v-model="sectionItemDraft.project.link"
+              label="Project link (optional)"
+              variant="outlined"
+              hide-details
+            />
+          </template>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn variant="text" @click="sectionItemDialogOpen = false">Cancel</v-btn>
+          <v-btn color="primary" prepend-icon="mdi-content-save-outline" @click="submitSectionItemDialog">Save item</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
