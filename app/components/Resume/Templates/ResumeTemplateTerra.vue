@@ -10,12 +10,42 @@ type LayoutSettings = {
   lineDensity?: 'compact' | 'comfortable'
 }
 
+type SectionKey = 'experience' | 'education' | 'language' | 'project'
+
 const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean; onPhotoClick?: () => void; layoutSettings?: LayoutSettings }>(), {
   showPhoto: true,
   editable: false,
   onPhotoClick: undefined,
   layoutSettings: () => ({}),
 })
+const emit = defineEmits<{
+  (event: 'add-item', sectionKey: SectionKey): void
+  (event: 'change-variant', sectionKey: SectionKey, variant: string): void
+  (event: 'move-section', sectionKey: SectionKey, direction: 'up' | 'down'): void
+}>()
+
+const sectionVariantOptions: Record<SectionKey, { label: string; value: string }[]> = {
+  experience: [
+    { label: 'Detailed', value: 'detailed' },
+    { label: 'Bullets', value: 'bullets' },
+    { label: 'Compact', value: 'compact' },
+  ],
+  education: [
+    { label: 'Classic', value: 'classic' },
+    { label: 'Timeline', value: 'timeline' },
+    { label: 'Two columns', value: 'two-column' },
+  ],
+  language: [
+    { label: 'Text level', value: 'text-level' },
+    { label: 'Stars', value: 'stars' },
+    { label: 'Progress', value: 'progress' },
+  ],
+  project: [
+    { label: 'List', value: 'list' },
+    { label: 'Cards', value: 'cards' },
+    { label: 'Two columns', value: 'two-column' },
+  ],
+}
 
 function updateText(path: string, value: string) {
   const segments = path.split('.')
@@ -90,6 +120,25 @@ const articleStyle = computed(() => ({
       </header>
 
       <section>
+        <div class="cv-section" tabindex="-1">
+          <div class="cv-section-toolbar" role="toolbar" aria-label="Section experiences actions">
+            <v-btn icon size="x-small" variant="text" @click="emit('add-item', 'experience')">+</v-btn>
+            <v-menu>
+              <template #activator="{ props: menuProps }">
+                <v-btn size="x-small" variant="text" v-bind="menuProps">Template</v-btn>
+              </template>
+              <v-list density="compact">
+                <v-list-item
+                  v-for="option in sectionVariantOptions.experience"
+                  :key="option.value"
+                  :title="option.label"
+                  @click="emit('change-variant', 'experience', option.value)"
+                />
+              </v-list>
+            </v-menu>
+            <v-btn icon size="x-small" variant="text" @click="emit('move-section', 'experience', 'up')">↑</v-btn>
+            <v-btn icon size="x-small" variant="text" @click="emit('move-section', 'experience', 'down')">↓</v-btn>
+          </div>
         <h2 :style="[headingStyle, sectionHeadingStyle]">Expériences professionnelles</h2>
         <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" :style="articleStyle">
           <h4>
@@ -103,9 +152,29 @@ const articleStyle = computed(() => ({
             <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`experiences.${index}.end`, (event.target as HTMLElement).innerText)">{{ experience.end }}</span>
           </p>
         </article>
+        </div>
       </section>
 
       <section>
+        <div class="cv-section" tabindex="-1">
+          <div class="cv-section-toolbar" role="toolbar" aria-label="Section education actions">
+            <v-btn icon size="x-small" variant="text" @click="emit('add-item', 'education')">+</v-btn>
+            <v-menu>
+              <template #activator="{ props: menuProps }">
+                <v-btn size="x-small" variant="text" v-bind="menuProps">Template</v-btn>
+              </template>
+              <v-list density="compact">
+                <v-list-item
+                  v-for="option in sectionVariantOptions.education"
+                  :key="option.value"
+                  :title="option.label"
+                  @click="emit('change-variant', 'education', option.value)"
+                />
+              </v-list>
+            </v-menu>
+            <v-btn icon size="x-small" variant="text" @click="emit('move-section', 'education', 'up')">↑</v-btn>
+            <v-btn icon size="x-small" variant="text" @click="emit('move-section', 'education', 'down')">↓</v-btn>
+          </div>
         <h2 :style="[headingStyle, sectionHeadingStyle]">Formations & diplômes</h2>
         <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" :style="articleStyle">
           <h4 class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</h4>
@@ -115,6 +184,65 @@ const articleStyle = computed(() => ({
             <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`education.${index}.city`, (event.target as HTMLElement).innerText)">{{ item.city }}</span>
           </p>
         </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="cv-section" tabindex="-1">
+          <div class="cv-section-toolbar" role="toolbar" aria-label="Section language actions">
+            <v-btn icon size="x-small" variant="text" @click="emit('add-item', 'language')">+</v-btn>
+            <v-menu>
+              <template #activator="{ props: menuProps }">
+                <v-btn size="x-small" variant="text" v-bind="menuProps">Template</v-btn>
+              </template>
+              <v-list density="compact">
+                <v-list-item
+                  v-for="option in sectionVariantOptions.language"
+                  :key="option.value"
+                  :title="option.label"
+                  @click="emit('change-variant', 'language', option.value)"
+                />
+              </v-list>
+            </v-menu>
+            <v-btn icon size="x-small" variant="text" @click="emit('move-section', 'language', 'up')">↑</v-btn>
+            <v-btn icon size="x-small" variant="text" @click="emit('move-section', 'language', 'down')">↓</v-btn>
+          </div>
+          <h2 :style="[headingStyle, sectionHeadingStyle]">Languages</h2>
+          <article v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" :style="articleStyle">
+            <h4>
+              <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+            </h4>
+            <p class="period" :style="periodStyle">{{ language.level }}%</p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="cv-section" tabindex="-1">
+          <div class="cv-section-toolbar" role="toolbar" aria-label="Section project actions">
+            <v-btn icon size="x-small" variant="text" @click="emit('add-item', 'project')">+</v-btn>
+            <v-menu>
+              <template #activator="{ props: menuProps }">
+                <v-btn size="x-small" variant="text" v-bind="menuProps">Template</v-btn>
+              </template>
+              <v-list density="compact">
+                <v-list-item
+                  v-for="option in sectionVariantOptions.project"
+                  :key="option.value"
+                  :title="option.label"
+                  @click="emit('change-variant', 'project', option.value)"
+                />
+              </v-list>
+            </v-menu>
+            <v-btn icon size="x-small" variant="text" @click="emit('move-section', 'project', 'up')">↑</v-btn>
+            <v-btn icon size="x-small" variant="text" @click="emit('move-section', 'project', 'down')">↓</v-btn>
+          </div>
+          <h2 :style="[headingStyle, sectionHeadingStyle]">Projects</h2>
+          <article v-for="(project, index) in resume.projects" :key="`${project.name}-${index}`" :style="articleStyle">
+            <h4 class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</h4>
+            <p class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
+          </article>
+        </div>
       </section>
     </main>
   </div>
@@ -132,6 +260,26 @@ header h1 { color: var(--cv-title); font-size: 2.5rem; line-height: 1; margin-bo
 header p { color: color-mix(in srgb, var(--cv-accent) 72%, var(--cv-sidebar)); margin-bottom: 18px; }
 h2 { color: var(--cv-title); border-top: 1px solid color-mix(in srgb, var(--cv-accent) 24%, var(--cv-page)); padding-top: 12px; margin-bottom: 12px; }
 article { margin-bottom: 14px; }
+.cv-section { position: relative; }
+.cv-section-toolbar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease;
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  background: color-mix(in srgb, var(--cv-page) 82%, transparent);
+  border-radius: 8px;
+  padding: 4px;
+}
+.cv-section:hover .cv-section-toolbar,
+.cv-section:focus-within .cv-section-toolbar {
+  opacity: 1;
+  pointer-events: auto;
+}
 .period { color: var(--cv-secondary); /* Intentional neutral gray metadata. */ font-size: .8rem; }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
