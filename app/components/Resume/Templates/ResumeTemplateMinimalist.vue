@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { levelToText } from '~/utils/resumeLanguageLevel'
+
 const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean; onPhotoClick?: () => void }>(), {
   showPhoto: false,
   editable: false,
@@ -78,6 +80,7 @@ function updateText(path: string, value: string) {
           <h2 class="cv-heading-section">Languages</h2>
           <ul>
             <li v-for="(language, index) in resume.languages" :key="`language-${index}`">
+              <small>{{ levelToText(language.level) }} — </small>
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
             </li>
           </ul>
