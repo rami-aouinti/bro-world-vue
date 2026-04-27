@@ -65,6 +65,11 @@ function isVisible(section: SharedSectionKey) {
   return !props.hiddenSections.includes(section)
 }
 
+function levelToStarsText(level: number | string) {
+  const stars = levelToStars(level)
+  return `${'★'.repeat(stars)}${'☆'.repeat(5 - stars)}`
+}
+
 const languageVariant = computed<'text-level' | 'stars' | 'progress'>(() => {
   const selected = props.sectionLayout.find(section => section.key === 'language')
   return selected?.variant === 'stars' || selected?.variant === 'progress' || selected?.variant === 'text-level'
@@ -104,15 +109,7 @@ const projectVariant = computed<'list' | 'cards' | 'two-column'>(() => {
       </ul>
       <div v-else-if="languageVariant === 'stars'" class="language-stars-list">
         <div v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" class="language-stars-item">
-          <v-rating
-            :model-value="levelToStars(language.level)"
-            readonly
-            length="5"
-            size="16"
-            color="amber"
-            density="compact"
-            half-increments
-          />
+          <small>{{ levelToStarsText(language.level) }} — </small>
           <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
         </div>
       </div>
@@ -120,7 +117,7 @@ const projectVariant = computed<'list' | 'cards' | 'two-column'>(() => {
         <div v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" class="language-progress-item">
           <div class="d-flex align-center justify-space-between ga-2">
             <div class="d-flex align-center ga-2">
-              <small>{{ levelToPercent(language.level) }}%</small>
+              <small>{{ levelToPercent(language.level) }}% — </small>
               <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
             </div>
           </div>
