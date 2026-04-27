@@ -200,8 +200,8 @@ type AddSectionType =
   | 'reference'
 type PreviewSectionKey = 'experience' | 'education' | 'language' | 'project'
 type SectionLayoutVariant = {
-  experience: 'timeline' | 'bullets' | 'compact'
-  education: 'classic' | 'one-column' | 'two-column'
+  experience: 'detailed' | 'bullets' | 'compact'
+  education: 'classic' | 'timeline' | 'two-column'
   language: 'text-level' | 'stars' | 'progress'
   project: 'list' | 'cards' | 'two-column'
 }
@@ -270,24 +270,46 @@ const addSectionOptions = [
   { label: 'Certification', value: 'certification' },
   { label: 'Reference', value: 'reference' },
 ] as const satisfies ReadonlyArray<{ label: string; value: AddSectionType }>
-const sectionVariants: { [K in PreviewSectionKey]: SectionLayoutVariant[K][] } = {
-  experience: ['timeline', 'bullets', 'compact'],
-  education: ['classic', 'one-column', 'two-column'],
-  language: ['stars', 'text-level', 'progress'],
-  project: ['cards', 'list', 'two-column'],
-}
 const sectionVariantLabels: Record<string, string> = {
-  timeline: 'Timeline',
+  detailed: 'Detailed',
   bullets: 'Bullets',
   compact: 'Compact',
   classic: 'Classic',
-  'one-column': 'One-column',
+  timeline: 'Timeline',
   'two-column': 'Two-column',
   stars: 'Stars',
   'text-level': 'Text level',
   progress: 'Progress',
   cards: 'Cards',
   list: 'List',
+}
+const sectionConfig: {
+  [K in PreviewSectionKey]: {
+    label: string
+    collection: 'experiences' | 'education' | 'languages' | 'projects'
+    variants: SectionLayoutVariant[K][]
+  }
+} = {
+  experience: {
+    label: 'Experience',
+    collection: 'experiences',
+    variants: ['detailed', 'bullets', 'compact'],
+  },
+  education: {
+    label: 'Education',
+    collection: 'education',
+    variants: ['classic', 'timeline', 'two-column'],
+  },
+  language: {
+    label: 'Language',
+    collection: 'languages',
+    variants: ['stars', 'text-level', 'progress'],
+  },
+  project: {
+    label: 'Project',
+    collection: 'projects',
+    variants: ['list', 'cards', 'two-column'],
+  },
 }
 const coverPageTemplateCards: Template[] = COVER_PAGE_TEMPLATES.map(template => ({
   id: template.id,
@@ -582,14 +604,14 @@ const pendingPdfDownload = ref(false)
 const addSectionDialogOpen = ref(false)
 const addSectionType = ref<AddSectionType>('experience')
 const sectionLayout = ref<SectionLayoutEntry[]>([
-  { key: 'experience', label: 'Expérience', variant: 'timeline', region: 'main' },
+  { key: 'experience', label: 'Expérience', variant: 'detailed', region: 'main' },
   { key: 'education', label: 'Education', variant: 'classic', region: 'main' },
   { key: 'language', label: 'Language', variant: 'stars', region: 'aside' },
   { key: 'project', label: 'Project', variant: 'cards', region: 'main' },
 ])
 const sectionItemDialogOpen = ref(false)
 const activeSectionKey = ref<PreviewSectionKey>('experience')
-const activeVariant = ref<SectionLayoutVariant[PreviewSectionKey]>('timeline')
+const activeVariant = ref<SectionLayoutVariant[PreviewSectionKey]>('detailed')
 const sectionItemDraft = reactive({
   experience: { role: '', company: '', city: '', start: '', end: '', bullets: '' },
   education: { degree: '', school: '', city: '', start: '', end: '', note: '' },
@@ -955,15 +977,16 @@ function resetSectionItemDraft(section: PreviewSectionKey) {
 
 function openSectionItemDialog(section: PreviewSectionKey) {
   activeSectionKey.value = section
-  activeVariant.value = sectionLayout.value.find(item => item.key === section)?.variant ?? sectionVariants[section][0]
+  activeVariant.value = sectionLayout.value.find(item => item.key === section)?.variant ?? sectionConfig[section].variants[0]
   resetSectionItemDraft(section)
   sectionItemDialogOpen.value = true
 }
 
 function submitSectionItemDialog() {
+  let item: Record<string, unknown> | null = null
   switch (activeSectionKey.value) {
     case 'experience':
-      resume.experiences.push({
+      item = {
         role: sectionItemDraft.experience.role,
         company: sectionItemDraft.experience.company,
         city: sectionItemDraft.experience.city,
@@ -973,33 +996,37 @@ function submitSectionItemDialog() {
           .split('\n')
           .map(line => line.trim())
           .filter(Boolean),
-      })
+      }
       break
     case 'education':
-      resume.education.push({
+      item = {
         degree: sectionItemDraft.education.degree,
         school: sectionItemDraft.education.school,
         city: sectionItemDraft.education.city,
         start: sectionItemDraft.education.start,
         end: sectionItemDraft.education.end,
         note: sectionItemDraft.education.note,
-      })
+      }
       break
     case 'language':
-      resume.languages.push({
+      item = {
         name: sectionItemDraft.language.name,
         level: activeVariant.value === 'stars'
           ? Math.max(0, Math.min(5, sectionItemDraft.language.stars)) * 20
           : sectionItemDraft.language.level,
-      })
+      }
       break
     case 'project':
-      resume.projects.push({
+      item = {
         name: sectionItemDraft.project.name,
         summary: sectionItemDraft.project.summary,
         ...(sectionItemDraft.project.link.trim() ? { link: sectionItemDraft.project.link.trim() } : {}),
-      })
+      }
       break
+  }
+  if (item) {
+    const collection = sectionConfig[activeSectionKey.value].collection
+    ;(resume[collection] as Array<Record<string, unknown>>).push(item)
   }
   sectionItemDialogOpen.value = false
 }
@@ -1049,6 +1076,13 @@ function setSectionVariant<K extends PreviewSectionKey>(key: K, variant: Section
   if (activeSectionKey.value === key) {
     activeVariant.value = variant
   }
+}
+
+function isValidSectionVariant<K extends PreviewSectionKey>(
+  key: K,
+  value: unknown,
+): value is SectionLayoutVariant[K] {
+  return typeof value === 'string' && sectionConfig[key].variants.includes(value as SectionLayoutVariant[K])
 }
 
 const activeTheme = computed(
@@ -1614,7 +1648,12 @@ if (import.meta.client) {
         .map((item, index) => ({
           key: item.key as PreviewSectionKey,
           label: item.label || fallback[index]?.label || fallbackByKey[item.key as PreviewSectionKey].label,
-          variant: (item.variant || fallbackByKey[item.key as PreviewSectionKey].variant) as SectionLayoutVariant[PreviewSectionKey],
+          variant: isValidSectionVariant(
+            item.key as PreviewSectionKey,
+            item.variant,
+          )
+            ? item.variant
+            : fallbackByKey[item.key as PreviewSectionKey].variant,
           region: item.region === 'aside' ? 'aside' : fallbackByKey[item.key as PreviewSectionKey].region,
         }))
 
