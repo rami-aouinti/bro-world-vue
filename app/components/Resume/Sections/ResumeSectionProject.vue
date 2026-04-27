@@ -4,7 +4,7 @@ import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 const props = withDefaults(defineProps<{
   resume: any
   editable?: boolean
-  variant?: 'list' | 'cards' | 'two-column' | string
+  variant?: 'classic' | 'list' | 'cards' | 'two-column' | string
   themeTokens?: Record<string, string | number>
   layoutDensity?: 'compact' | 'normal' | 'spacious' | string
   toolbarEnabled?: boolean
@@ -27,6 +27,15 @@ const emit = defineEmits<{
   (event: 'move-section', sectionKey: 'project', direction: 'up' | 'down'): void
 }>()
 const sectionStyle = computed(() => ({ ...props.themeTokens }))
+const safeVariant = computed<'classic' | 'list' | 'cards' | 'two-column'>(() => {
+  if (props.variant === 'classic' || props.variant === 'list' || props.variant === 'cards' || props.variant === 'two-column') {
+    return props.variant
+  }
+  if (import.meta.dev) {
+    console.warn(`[resume-section:project] Unknown variant "${String(props.variant)}"; fallback to "classic".`)
+  }
+  return 'classic'
+})
 function updateText(path: string, value: string) {
   const segments = path.split('.')
   const last = segments.pop()
@@ -41,10 +50,15 @@ function updateText(path: string, value: string) {
 </script>
 <template>
   <section :class="[`density-${layoutDensity}`]" :style="sectionStyle">
-    <SectionToolbar v-if="toolbarEnabled" section-key="project" :variants="[{ label: 'List', value: 'list' }, { label: 'Cards', value: 'cards' }, { label: 'Two columns', value: 'two-column' }]" :current-variant="variant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'project')" @change-variant="(_, next) => emit('change-variant', 'project', next)" @move-up="() => emit('move-section', 'project', 'up')" @move-down="() => emit('move-section', 'project', 'down')" />
+    <SectionToolbar v-if="toolbarEnabled" section-key="project" :variants="[{ label: 'List', value: 'list' }, { label: 'Cards', value: 'cards' }, { label: 'Two columns', value: 'two-column' }]" :current-variant="safeVariant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'project')" @change-variant="(_, next) => emit('change-variant', 'project', next)" @move-up="() => emit('move-section', 'project', 'up')" @move-down="() => emit('move-section', 'project', 'down')" />
     <h2 class="cv-heading-section">{{ title }}</h2>
-    <div :class="['project-grid', { 'project-grid--two-column': variant === 'two-column' }]">
-      <article v-for="(project, index) in resume.projects" :key="`${project.name}-${index}`" class="entry text-dark" :class="{ 'project-card': variant !== 'list' }">
+    <div :class="['project-grid', { 'project-grid--two-column': safeVariant === 'two-column' }]">
+      <article
+        v-for="(project, index) in resume.projects"
+        :key="`${project.name}-${index}`"
+        class="entry text-dark"
+        :class="{ 'project-card': safeVariant === 'cards' || safeVariant === 'two-column' }"
+      >
         <h4 class="text-dark"><span class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span></h4>
         <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
       </article>

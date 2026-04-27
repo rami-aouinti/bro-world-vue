@@ -27,6 +27,15 @@ const emit = defineEmits<{
   (event: 'move-section', sectionKey: 'education', direction: 'up' | 'down'): void
 }>()
 const sectionStyle = computed(() => ({ ...props.themeTokens }))
+const safeVariant = computed<'classic' | 'timeline' | 'two-column'>(() => {
+  if (props.variant === 'classic' || props.variant === 'timeline' || props.variant === 'two-column') {
+    return props.variant
+  }
+  if (import.meta.dev) {
+    console.warn(`[resume-section:education] Unknown variant "${String(props.variant)}"; fallback to "classic".`)
+  }
+  return 'classic'
+})
 function updateText(path: string, value: string) {
   const segments = path.split('.')
   const last = segments.pop()
@@ -40,10 +49,10 @@ function updateText(path: string, value: string) {
 }
 </script>
 <template>
-  <section :class="['education', `density-${layoutDensity}`, { 'education-grid': variant === 'two-column' }]" :style="sectionStyle">
-    <SectionToolbar v-if="toolbarEnabled" section-key="education" :variants="[{ label: 'Classic', value: 'classic' }, { label: 'Timeline', value: 'timeline' }, { label: 'Two columns', value: 'two-column' }]" :current-variant="variant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'education')" @change-variant="(_, next) => emit('change-variant', 'education', next)" @move-up="() => emit('move-section', 'education', 'up')" @move-down="() => emit('move-section', 'education', 'down')" />
+  <section :class="['education', `density-${layoutDensity}`, { 'education-grid': safeVariant === 'two-column' }]" :style="sectionStyle">
+    <SectionToolbar v-if="toolbarEnabled" section-key="education" :variants="[{ label: 'Classic', value: 'classic' }, { label: 'Timeline', value: 'timeline' }, { label: 'Two columns', value: 'two-column' }]" :current-variant="safeVariant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'education')" @change-variant="(_, next) => emit('change-variant', 'education', next)" @move-up="() => emit('move-section', 'education', 'up')" @move-down="() => emit('move-section', 'education', 'down')" />
     <h2 class="cv-heading-section">{{ title }}</h2>
-    <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="entry text-dark" :class="{ 'timeline-entry': variant === 'timeline' }">
+    <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="entry text-dark" :class="{ 'timeline-entry': safeVariant === 'timeline' }">
       <h4 class="text-dark">
         <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</span>,
         <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</span>
