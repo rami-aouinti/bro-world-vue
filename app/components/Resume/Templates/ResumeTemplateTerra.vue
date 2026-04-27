@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { levelToPercent, levelToStars, levelToText } from '~/utils/resumeLanguageLevel'
+
 type LayoutSettings = {
   photoSize?: number
   photoBorderWidth?: number
@@ -192,7 +194,22 @@ const sectionHeadingByKey: Record<SectionKey, string> = {
               <h4>
                 <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
               </h4>
-              <p class="period" :style="periodStyle">{{ language.level }}%</p>
+              <v-rating
+                v-if="section.variant === 'stars'"
+                :model-value="levelToStars(language.level)"
+                readonly
+                length="5"
+                density="compact"
+                color="amber"
+                size="16"
+              />
+              <template v-else-if="section.variant === 'progress'">
+                <div class="d-flex align-center ga-2">
+                  <v-progress-linear class="terra-language-progress" :model-value="levelToPercent(language.level)" height="8" rounded color="primary" />
+                  <small class="text-dark">{{ levelToPercent(language.level) }}%</small>
+                </div>
+              </template>
+              <p v-else class="period" :style="periodStyle">{{ levelToText(language.level) }}</p>
             </article>
           </template>
           <template v-else>

@@ -22,6 +22,7 @@ import {
 import {
   useResumeDesignControls,
 } from '~/composables/useResumeDesignControls'
+import { levelToStars, starsToPercent } from '~/utils/resumeLanguageLevel'
 
 definePageMeta({
   title: 'Create Resume',
@@ -785,7 +786,7 @@ function removeLanguage(index: number) {
 }
 
 function getLevelAsStars(level: number) {
-  return Math.max(0, Math.min(5, Math.round(level / 20)))
+  return levelToStars(level)
 }
 
 function setLevelFromStars(
@@ -793,8 +794,7 @@ function setLevelFromStars(
   index: number,
   stars: number,
 ) {
-  const normalized = Math.max(0, Math.min(5, stars))
-  resume[collection][index].level = normalized * 20
+  resume[collection][index].level = starsToPercent(stars)
 }
 
 function addProject() {
