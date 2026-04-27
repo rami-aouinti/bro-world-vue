@@ -2866,42 +2866,42 @@ if (import.meta.client) {
 .preview-grid.photo-shape-square :deep(.v-avatar),
 .preview-grid.photo-shape-square :deep(.avatar),
 .preview-grid.photo-shape-square :deep(img.avatar),
-.preview-grid.photo-shape-square :deep(img[class*='photo']) {
+.preview-grid.photo-shape-square :deep(img[class*="photo"]) {
   border-radius: 8px !important;
 }
 
 .preview-grid.photo-shape-rounded :deep(.v-avatar),
 .preview-grid.photo-shape-rounded :deep(.avatar),
 .preview-grid.photo-shape-rounded :deep(img.avatar),
-.preview-grid.photo-shape-rounded :deep(img[class*='photo']) {
+.preview-grid.photo-shape-rounded :deep(img[class*="photo"]) {
   border-radius: 18px !important;
 }
 
 .preview-grid.photo-shape-circle :deep(.v-avatar),
 .preview-grid.photo-shape-circle :deep(.avatar),
 .preview-grid.photo-shape-circle :deep(img.avatar),
-.preview-grid.photo-shape-circle :deep(img[class*='photo']) {
+.preview-grid.photo-shape-circle :deep(img[class*="photo"]) {
   border-radius: 50% !important;
 }
 
 .preview-grid.photo-shape-portrait-card :deep(.v-avatar),
 .preview-grid.photo-shape-portrait-card :deep(.avatar),
 .preview-grid.photo-shape-portrait-card :deep(img.avatar),
-.preview-grid.photo-shape-portrait-card :deep(img[class*='photo']) {
+.preview-grid.photo-shape-portrait-card :deep(img[class*="photo"]) {
   border-radius: 22px !important;
 }
 
 .preview-grid.photo-shape-soft-blob :deep(.v-avatar),
 .preview-grid.photo-shape-soft-blob :deep(.avatar),
 .preview-grid.photo-shape-soft-blob :deep(img.avatar),
-.preview-grid.photo-shape-soft-blob :deep(img[class*='photo']) {
+.preview-grid.photo-shape-soft-blob :deep(img[class*="photo"]) {
   border-radius: 62% 38% 48% 52% / 44% 58% 42% 56% !important;
 }
 
 .preview-grid.photo-shape-hex :deep(.v-avatar),
 .preview-grid.photo-shape-hex :deep(.avatar),
 .preview-grid.photo-shape-hex :deep(img.avatar),
-.preview-grid.photo-shape-hex :deep(img[class*='photo']) {
+.preview-grid.photo-shape-hex :deep(img[class*="photo"]) {
   clip-path: polygon(25% 6%, 75% 6%, 100% 50%, 75% 94%, 25% 94%, 0 50%);
   border-radius: 0 !important;
 }
