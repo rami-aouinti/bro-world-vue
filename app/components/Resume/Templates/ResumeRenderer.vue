@@ -4,17 +4,26 @@ import ResumeSectionEducation from '~/components/Resume/Sections/ResumeSectionEd
 import ResumeSectionLanguage from '~/components/Resume/Sections/ResumeSectionLanguage.vue'
 import ResumeSectionProject from '~/components/Resume/Sections/ResumeSectionProject.vue'
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
-import type { ResumeRendererLayoutEntry, ResumeSectionKey, ResumeTemplateSkin } from '~/constants/resumeTemplateSkins'
+import type { ResumeSectionKey, ResumeTemplateSkin } from '~/constants/resumeTemplateSkins'
 
 type SectionLayoutVariant = {
   experience: 'detailed' | 'bullets' | 'compact'
   education: 'classic' | 'timeline' | 'two-column'
   language: 'classic' | 'text-level' | 'stars' | 'progress'
   project: 'classic' | 'list' | 'cards' | 'two-column'
+  skill: 'classic'
+  reference: 'classic'
+  hobby: 'classic'
+  certification: 'classic'
 }
 
-type SectionLayoutEntry<K extends ResumeSectionKey = ResumeSectionKey> = ResumeRendererLayoutEntry & {
+type ResumeSectionActionKey = ResumeSectionKey | 'skill' | 'course' | 'reference' | 'hobby' | 'certification'
+type ResumeSectionLayoutKey = Exclude<ResumeSectionActionKey, 'course'>
+
+type SectionLayoutEntry<K extends ResumeSectionLayoutKey = ResumeSectionLayoutKey> = {
   key: K
+  region: 'main' | 'aside'
+  order: number
   variant: SectionLayoutVariant[K]
 }
 
@@ -24,7 +33,7 @@ const props = withDefaults(defineProps<{
   showPhoto?: boolean
   onPhotoClick?: () => void
   sectionLayout?: SectionLayoutEntry[]
-  sectionVariants?: Partial<Record<ResumeSectionKey, string>>
+  sectionVariants?: Partial<Record<ResumeSectionLayoutKey, string>>
   themeTokens?: Record<string, string>
   templateSkin: ResumeTemplateSkin
 }>(), {
@@ -37,9 +46,9 @@ const props = withDefaults(defineProps<{
 })
 
 const emit = defineEmits<{
-  (event: 'add-item', sectionKey: ResumeSectionKey): void
-  (event: 'change-variant', sectionKey: ResumeSectionKey, variant: string): void
-  (event: 'move-section', sectionKey: ResumeSectionKey, direction: 'up' | 'down'): void
+  (event: 'add-item', sectionKey: ResumeSectionActionKey): void
+  (event: 'change-variant', sectionKey: ResumeSectionActionKey, variant: string): void
+  (event: 'move-section', sectionKey: ResumeSectionActionKey, direction: 'up' | 'down'): void
 }>()
 
 const componentBySectionKey = {
@@ -54,13 +63,25 @@ const normalizedSectionLayout = computed<SectionLayoutEntry[]>(() => {
   return props.templateSkin.defaultSectionLayout.map((entry) => ({ ...entry, variant: fallbackVariant(entry.key) })) as SectionLayoutEntry[]
 })
 
-const mainSections = computed(() => normalizedSectionLayout.value.filter(section => section.region === 'main'))
-const asideSections = computed(() => normalizedSectionLayout.value.filter(section => section.region === 'aside'))
+const isRendererSection = (
+  sectionKey: ResumeSectionLayoutKey,
+): sectionKey is ResumeSectionKey => sectionKey in componentBySectionKey
 
-function fallbackVariant(sectionKey: ResumeSectionKey): string {
+type RenderableSectionLayoutEntry = SectionLayoutEntry<ResumeSectionKey>
+const renderableSections = computed<RenderableSectionLayoutEntry[]>(() => (
+  normalizedSectionLayout.value.filter(
+    (section): section is RenderableSectionLayoutEntry => isRendererSection(section.key),
+  )
+))
+
+const mainSections = computed(() => renderableSections.value.filter(section => section.region === 'main'))
+const asideSections = computed(() => renderableSections.value.filter(section => section.region === 'aside'))
+
+function fallbackVariant(sectionKey: ResumeSectionLayoutKey): string {
   if (sectionKey === 'experience') return 'detailed'
   if (sectionKey === 'education') return 'classic'
   if (sectionKey === 'language') return 'text-level'
+  if (sectionKey === 'skill' || sectionKey === 'reference' || sectionKey === 'hobby' || sectionKey === 'certification') return 'classic'
   return 'list'
 }
 
@@ -68,7 +89,7 @@ function sectionVariant(section: SectionLayoutEntry) {
   return props.sectionVariants[section.key] ?? section.variant ?? fallbackVariant(section.key)
 }
 
-function canMove(sectionKey: ResumeSectionKey, direction: 'up' | 'down') {
+function canMove(sectionKey: ResumeSectionLayoutKey, direction: 'up' | 'down') {
   const target = normalizedSectionLayout.value.find(section => section.key === sectionKey)
   if (!target) return false
   const regionSections = normalizedSectionLayout.value.filter(section => section.region === target.region)
@@ -86,15 +107,15 @@ function mergedSectionTokens(sectionKey: ResumeSectionKey) {
 }
 
 
-function onSectionAddItem(sectionKey: ResumeSectionKey) {
+function onSectionAddItem(sectionKey: ResumeSectionActionKey) {
   emit('add-item', sectionKey)
 }
 
-function onSectionVariantChange(sectionKey: ResumeSectionKey, variant: string) {
+function onSectionVariantChange(sectionKey: ResumeSectionActionKey, variant: string) {
   emit('change-variant', sectionKey, variant)
 }
 
-function onSectionMove(sectionKey: ResumeSectionKey, direction: 'up' | 'down') {
+function onSectionMove(sectionKey: ResumeSectionActionKey, direction: 'up' | 'down') {
   emit('move-section', sectionKey, direction)
 }
 
@@ -150,7 +171,17 @@ function updateText(path: string, value: string) {
         </section>
 
         <section v-if="templateSkin.showSkillsInAside" class="resume-section-hoverable resume-skin__skills-section">
-          <SectionToolbar section-key="skill" />
+          <SectionToolbar
+            section-key="skill"
+            :variants="[{ label: 'Classic', value: 'classic' }]"
+            current-variant="classic"
+            :can-move-up="canMove('skill', 'up')"
+            :can-move-down="canMove('skill', 'down')"
+            @add-item="() => emit('add-item', 'skill')"
+            @change-variant="(_, variant) => emit('change-variant', 'skill', variant)"
+            @move-up="() => emit('move-section', 'skill', 'up')"
+            @move-down="() => emit('move-section', 'skill', 'down')"
+          />
           <h3 class="cv-heading-section">Skills</h3>
           <ul class="resume-skin__skills">
             <li v-for="(skill, index) in resume.skills" :key="`${skill.name}-${index}`">

@@ -9,19 +9,24 @@ type SharedSectionKey =
   | 'references'
   | 'hobbies'
 
-type ReorderableSectionKey = 'experience' | 'education' | 'language' | 'project'
-type SharedSectionActionKey = ReorderableSectionKey | 'course' | 'certification' | 'reference' | 'hobby'
+type ReorderableSectionKey = 'experience' | 'education' | 'language' | 'project' | 'skill' | 'certification' | 'reference' | 'hobby'
+type SharedSectionActionKey = ReorderableSectionKey | 'course'
 type SectionLayoutVariant = {
   experience: 'detailed' | 'bullets' | 'compact'
   education: 'classic' | 'timeline' | 'two-column'
   language: 'text-level' | 'stars' | 'progress'
   project: 'list' | 'cards' | 'two-column'
+  skill: 'classic'
+  certification: 'classic'
+  reference: 'classic'
+  hobby: 'classic'
 }
-type SectionLayoutEntry<K extends PreviewSectionKey = PreviewSectionKey> = {
+type SectionLayoutEntry<K extends ReorderableSectionKey = ReorderableSectionKey> = {
   key: K
   label: string
   variant: SectionLayoutVariant[K]
   region?: 'main' | 'aside'
+  order?: number
 }
 
 const props = withDefaults(defineProps<{
@@ -90,7 +95,9 @@ const projectVariant = computed<'list' | 'cards' | 'two-column'>(() => {
 function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
   const target = props.sectionLayout.find(section => section.key === sectionKey)
   if (!target?.region) return false
-  const regionSections = props.sectionLayout.filter(section => section.region === target.region)
+  const regionSections = [...props.sectionLayout]
+    .filter(section => section.region === target.region)
+    .sort((left, right) => (left.order ?? 0) - (right.order ?? 0))
   const index = regionSections.findIndex(section => section.key === sectionKey)
   if (index < 0) return false
   return direction === 'up'
@@ -182,8 +189,15 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
 
     <div v-if="isVisible('courses') && resume.courses?.length" class="resume-section-hoverable shared-section">
       <SectionToolbar
-        section-key="course"
+        section-key="certification"
+        :variants="[{ label: 'Classic', value: 'classic' }]"
+        current-variant="classic"
+        :can-move-up="canMove('certification', 'up')"
+        :can-move-down="canMove('certification', 'down')"
         @add-item="() => emit('add-item', 'course')"
+        @change-variant="(_, variant) => emit('change-variant', 'certification', variant)"
+        @move-up="() => emit('move-section', 'certification', 'up')"
+        @move-down="() => emit('move-section', 'certification', 'down')"
       />
       <h3 class="cv-heading-section cv-divider-bottom text-dark">Certifications</h3>
       <ul>
@@ -197,7 +211,14 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
     <div v-if="isVisible('references') && resume.references?.length" class="resume-section-hoverable shared-section">
       <SectionToolbar
         section-key="reference"
+        :variants="[{ label: 'Classic', value: 'classic' }]"
+        current-variant="classic"
+        :can-move-up="canMove('reference', 'up')"
+        :can-move-down="canMove('reference', 'down')"
         @add-item="() => emit('add-item', 'reference')"
+        @change-variant="(_, variant) => emit('change-variant', 'reference', variant)"
+        @move-up="() => emit('move-section', 'reference', 'up')"
+        @move-down="() => emit('move-section', 'reference', 'down')"
       />
       <h3 class="cv-heading-section cv-divider-bottom text-dark">References</h3>
       <ul>
@@ -211,7 +232,14 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
     <div v-if="isVisible('hobbies') && resume.hobbies?.length" class="resume-section-hoverable shared-section">
       <SectionToolbar
         section-key="hobby"
+        :variants="[{ label: 'Classic', value: 'classic' }]"
+        current-variant="classic"
+        :can-move-up="canMove('hobby', 'up')"
+        :can-move-down="canMove('hobby', 'down')"
         @add-item="() => emit('add-item', 'hobby')"
+        @change-variant="(_, variant) => emit('change-variant', 'hobby', variant)"
+        @move-up="() => emit('move-section', 'hobby', 'up')"
+        @move-down="() => emit('move-section', 'hobby', 'down')"
       />
       <h3 class="cv-heading-section cv-divider-bottom text-dark">Interests</h3>
       <ul>
