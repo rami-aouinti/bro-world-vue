@@ -517,13 +517,8 @@ const safePhotoShape = computed<PhotoShape>(() => (
     ? (selectedPhotoShape.value as PhotoShape)
     : 'square'
 ))
-type PreviewSection = 'experience' | 'education' | 'skill'
 const previewToolsVisible = ref(false)
 const previewToolsTop = ref(20)
-const previewActiveSection = ref<PreviewSection | null>(null)
-const previewPhotoToolsVisible = ref(false)
-const previewPhotoToolsTop = ref(16)
-const previewPhotoToolsLeft = ref(16)
 let aiElapsedTimer: ReturnType<typeof setInterval> | null = null
 const { t } = useI18n()
 const { loggedIn, fetch: refreshSession } = useUserSession()
@@ -557,112 +552,19 @@ function clearPhoto() {
 }
 
 function onPreviewMouseEnter() {
-  previewToolsVisible.value = false
+  previewToolsVisible.value = true
 }
 
 function onPreviewMouseLeave() {
   previewToolsVisible.value = false
-  previewActiveSection.value = null
-  previewPhotoToolsVisible.value = false
-}
-
-function normalizeSectionLabel(value: string) {
-  return value
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
-    .trim()
-    .toLowerCase()
-}
-
-function getSectionTypeFromLabel(value: string): PreviewSection | null {
-  const label = normalizeSectionLabel(value)
-  if (label.includes('experience')) return 'experience'
-  if (label.includes('education') || label.includes('formation') || label.includes('diplome')) return 'education'
-  if (label.includes('skill') || label.includes('competence')) return 'skill'
-  return null
-}
-
-function findPreviewSectionAtCursor(root: HTMLElement, clientY: number) {
-  const rootRect = root.getBoundingClientRect()
-  const cursorY = clientY - rootRect.top
-  const headingNodes = [...root.querySelectorAll<HTMLElement>('h2, h3')]
-    .map((node) => {
-      const section = getSectionTypeFromLabel(node.textContent || '')
-      if (!section) return null
-      const rect = node.getBoundingClientRect()
-      return {
-        section,
-        top: rect.top - rootRect.top,
-      }
-    })
-    .filter((node): node is { section: PreviewSection, top: number } => node !== null)
-    .sort((a, b) => a.top - b.top)
-
-  if (!headingNodes.length) return null
-
-  for (let index = 0; index < headingNodes.length; index += 1) {
-    const current = headingNodes[index]
-    const next = headingNodes[index + 1]
-    const bottom = next ? next.top : rootRect.height
-    if (cursorY >= current.top && cursorY < bottom) {
-      return {
-        section: current.section,
-        top: current.top + 8,
-      }
-    }
-  }
-
-  return null
-}
-
-function isPreviewPhotoElement(element: HTMLElement | null) {
-  if (!element) return false
-  return Boolean(
-    element.closest('.v-avatar')
-    || element.closest('[class*="photo"]')
-    || element.closest('[class*="avatar"]'),
-  )
-}
-
-function updatePreviewPhotoTools(root: HTMLElement, target: HTMLElement | null) {
-  if (!isPreviewPhotoElement(target)) {
-    previewPhotoToolsVisible.value = false
-    return
-  }
-
-  const photoContainer = target?.closest<HTMLElement>('.v-avatar, [class*="photo"], [class*="avatar"]')
-  if (!photoContainer) {
-    previewPhotoToolsVisible.value = false
-    return
-  }
-
-  const rootRect = root.getBoundingClientRect()
-  const photoRect = photoContainer.getBoundingClientRect()
-  previewPhotoToolsTop.value = Math.max(12, photoRect.top - rootRect.top + 8)
-  previewPhotoToolsLeft.value = Math.max(12, photoRect.left - rootRect.left + 8)
-  previewPhotoToolsVisible.value = true
 }
 
 function onPreviewMouseMove(event: MouseEvent) {
   const target = event.currentTarget as HTMLElement | null
   if (!target) return
-  const sectionAtCursor = findPreviewSectionAtCursor(target, event.clientY)
-  previewActiveSection.value = sectionAtCursor?.section || null
-  previewToolsVisible.value = Boolean(sectionAtCursor)
-  if (sectionAtCursor) previewToolsTop.value = sectionAtCursor.top
-  updatePreviewPhotoTools(target, event.target as HTMLElement | null)
-}
-
-function addSectionItem(section: PreviewSection) {
-  if (section === 'experience') {
-    addExperience()
-    return
-  }
-  if (section === 'education') {
-    addEducation()
-    return
-  }
-  addSkill()
+  const { top, height } = target.getBoundingClientRect()
+  const nextTop = event.clientY - top + 12
+  previewToolsTop.value = Math.max(12, Math.min(nextTop, height - 64))
 }
 
 function openSignatureDialog() {
@@ -960,6 +862,25 @@ const selectedTemplateHasPartialSupport = computed(() => {
   const support = selectedTemplateSupport.value
   return !(support.theme && support.rounded && support.textStyle && support.sharedSections)
 })
+
+const canRemoveExperience = computed(() => resume.experiences.length > 1)
+const canRemoveEducation = computed(() => resume.education.length > 1)
+const canRemoveSkill = computed(() => resume.skills.length > 1)
+
+function removeLastExperience() {
+  if (!canRemoveExperience.value) return
+  removeExperience(resume.experiences.length - 1)
+}
+
+function removeLastEducation() {
+  if (!canRemoveEducation.value) return
+  removeEducation(resume.education.length - 1)
+}
+
+function removeLastSkill() {
+  if (!canRemoveSkill.value) return
+  removeSkill(resume.skills.length - 1)
+}
 
 async function buildResumePdfBlob() {
   if (!previewExportRef.value || !import.meta.client) return ''
@@ -1454,7 +1375,7 @@ if (import.meta.client) {
             <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" />
             <v-btn class="local-toolbar-btn" color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview" />
             <v-btn class="local-toolbar-btn" color="info" size="small" variant="outlined" icon="mdi-download" @click="onDownloadPdfClick" />
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" icon="mdi-draw" @click="openSignatureDialog" />
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" icon="mdi-draw" @click="openSignatureDialog"></v-btn>
             <v-menu v-model="aiMenuOpen" :close-on-content-click="false" location="bottom end">
               <template #activator="{ props }">
                 <v-btn class="local-toolbar-btn local-toolbar-btn--ki" color="deep-purple" size="small" variant="tonal" prepend-icon="mdi-creation" v-bind="props">KI</v-btn>
@@ -2297,35 +2218,70 @@ if (import.meta.client) {
           </v-alert>
           <div class="preview-hover-tools" :class="{ 'preview-hover-tools--active': previewToolsVisible }" :style="{ top: `${previewToolsTop}px` }">
             <v-btn
-              v-if="previewActiveSection"
-              size="small"
+              size="x-small"
               color="primary"
               prepend-icon="mdi-plus"
               variant="flat"
-              class="preview-hover-tools__btn"
-              @click="addSectionItem(previewActiveSection)"
+              @click="addExperience"
             >
-              Add {{
-                previewActiveSection === 'experience'
-                  ? 'Experience'
-                  : previewActiveSection === 'education'
-                    ? 'Education'
-                    : 'Skill'
-              }}
+              Experience
+            </v-btn>
+            <v-btn
+              size="x-small"
+              color="primary"
+              prepend-icon="mdi-plus"
+              variant="flat"
+              @click="addEducation"
+            >
+              Education
+            </v-btn>
+            <v-btn
+              size="x-small"
+              color="primary"
+              prepend-icon="mdi-plus"
+              variant="flat"
+              @click="addSkill"
+            >
+              Skill
+            </v-btn>
+            <v-btn
+              size="x-small"
+              color="error"
+              prepend-icon="mdi-delete-outline"
+              variant="tonal"
+              :disabled="!canRemoveExperience"
+              @click="removeLastExperience"
+            >
+              Exp
+            </v-btn>
+            <v-btn
+              size="x-small"
+              color="error"
+              prepend-icon="mdi-delete-outline"
+              variant="tonal"
+              :disabled="!canRemoveEducation"
+              @click="removeLastEducation"
+            >
+              Edu
+            </v-btn>
+            <v-btn
+              size="x-small"
+              color="error"
+              prepend-icon="mdi-delete-outline"
+              variant="tonal"
+              :disabled="!canRemoveSkill"
+              @click="removeLastSkill"
+            >
+              Skill
             </v-btn>
           </div>
-          <div
-            class="preview-image-shapes"
-            :class="{ 'preview-image-shapes--active': previewPhotoToolsVisible }"
-            :style="{ top: `${previewPhotoToolsTop}px`, left: `${previewPhotoToolsLeft}px` }"
-          >
+          <div class="preview-image-shapes" :class="{ 'preview-image-shapes--active': previewToolsVisible }">
             <v-btn
               v-for="shape in photoShapeOptions"
               :key="`preview-photo-shape-${shape.value}`"
-              size="small"
+              size="x-small"
               variant="tonal"
               :color="safePhotoShape === shape.value ? 'primary' : undefined"
-              class="preview-image-shapes__btn"
               @click="selectedPhotoShape = shape.value"
             >
               {{ shape.icon }}
@@ -2761,15 +2717,15 @@ if (import.meta.client) {
 
 .preview-hover-tools {
   position: absolute;
-  right: 16px;
+  right: 12px;
   z-index: 8;
   margin: 0;
   display: inline-flex;
-  flex-wrap: nowrap;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 6px;
   align-items: center;
-  padding: 10px;
-  border-radius: 14px;
+  padding: 8px;
+  border-radius: 12px;
   border: 1px solid color-mix(in srgb, var(--cv-accent) 30%, #cbd5e1);
   background: color-mix(in srgb, white 86%, var(--cv-page));
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
@@ -2785,18 +2741,15 @@ if (import.meta.client) {
   pointer-events: auto;
 }
 
-.preview-hover-tools__btn {
-  min-height: 40px !important;
-  font-weight: 700;
-}
-
 .preview-image-shapes {
   position: absolute;
+  left: 12px;
+  top: 12px;
   z-index: 8;
   display: inline-flex;
-  gap: 8px;
-  padding: 10px;
-  border-radius: 14px;
+  gap: 4px;
+  padding: 6px;
+  border-radius: 12px;
   border: 1px solid color-mix(in srgb, var(--cv-accent) 30%, #cbd5e1);
   background: color-mix(in srgb, white 86%, var(--cv-page));
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
@@ -2810,20 +2763,6 @@ if (import.meta.client) {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
-}
-
-.preview-image-shapes__btn {
-  min-width: 42px !important;
-  min-height: 42px !important;
-  font-size: 1rem !important;
-  font-weight: 700;
-}
-
-:global(.v-theme--dark) .preview-hover-tools,
-:global(.v-theme--dark) .preview-image-shapes {
-  border-color: color-mix(in srgb, rgb(var(--v-theme-primary)) 56%, #334155);
-  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 90%, #0f172a);
-  box-shadow: 0 12px 28px rgba(2, 6, 23, 0.55);
 }
 
 .preview-support-alert {
