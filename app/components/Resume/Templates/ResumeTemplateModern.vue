@@ -3,6 +3,7 @@ import ResumeSectionExperience from '~/components/Resume/Sections/ResumeSectionE
 import ResumeSectionEducation from '~/components/Resume/Sections/ResumeSectionEducation.vue'
 import ResumeSectionLanguage from '~/components/Resume/Sections/ResumeSectionLanguage.vue'
 import ResumeSectionProject from '~/components/Resume/Sections/ResumeSectionProject.vue'
+import { RESUME_SECTION_DESIGN_PRESETS, type ResumeSectionDesignPreset } from '~/constants/resumeSectionDesign'
 
 type SectionKey = 'experience' | 'education' | 'language' | 'project'
 type SectionLayoutEntry = { key: SectionKey; label: string; variant: string; region: 'main' | 'aside' }
@@ -39,7 +40,9 @@ const normalizedSectionLayout = computed<SectionLayoutEntry[]>(() => (
 const mainSections = computed(() => normalizedSectionLayout.value.filter(section => section.region === 'main'))
 const asideSections = computed(() => normalizedSectionLayout.value.filter(section => section.region === 'aside'))
 function currentVariant(sectionKey: SectionKey) {
-  return normalizedSectionLayout.value.find(section => section.key === sectionKey)?.variant ?? sectionVariantOptions[sectionKey][0]?.value
+  return normalizedSectionLayout.value.find(section => section.key === sectionKey)?.variant
+    ?? getSectionBindings(sectionKey).variant
+    ?? sectionVariantOptions[sectionKey][0]?.value
 }
 function canMoveUp(sectionKey: SectionKey) {
   const targetSection = normalizedSectionLayout.value.find(section => section.key === sectionKey)
@@ -67,6 +70,51 @@ function updateText(path: string, value: string) {
   }
 
   target[last] = value
+}
+
+const sectionDesignPresets = RESUME_SECTION_DESIGN_PRESETS.modern
+function mapPresetToThemeTokens(preset: ResumeSectionDesignPreset) {
+  const spacingByDensity = {
+    compact: '8px',
+    normal: '12px',
+    spacious: '16px',
+  } as const
+  const headingByStyle = {
+    underline: { '--rs-heading-border-bottom': '1px solid color-mix(in srgb, var(--cv-accent) 24%, transparent)' },
+    badge: { '--rs-heading-bg': 'color-mix(in srgb, var(--cv-accent) 15%, white)', '--rs-heading-padding': '3px 10px', '--rs-heading-radius': '999px' },
+    minimal: {},
+  } as const
+  const separatorByStyle = {
+    none: 'none',
+    line: '1px solid color-mix(in srgb, var(--cv-accent) 14%, transparent)',
+    thick: '2px solid color-mix(in srgb, var(--cv-accent) 24%, transparent)',
+  } as const
+  const cardByStyle = {
+    flat: {},
+    soft: { '--rs-card-bg': 'color-mix(in srgb, var(--cv-accent) 8%, white)', '--rs-card-padding': '10px 12px', '--rs-card-radius': '10px' },
+    outlined: { '--rs-card-border': '1px solid color-mix(in srgb, var(--cv-accent) 20%, transparent)', '--rs-card-padding': '10px 12px', '--rs-card-radius': '10px' },
+  } as const
+  const accentByStyle = {
+    dot: { '--rs-marker-size': '7px', '--rs-marker-radius': '999px' },
+    bar: { '--rs-marker-height': '14px', '--rs-marker-width': '3px', '--rs-marker-radius': '3px' },
+    'left-border': { '--rs-entry-border-left': '2px solid color-mix(in srgb, var(--cv-accent) 32%, transparent)', '--rs-entry-padding-left': '10px' },
+  } as const
+
+  return {
+    '--entry-gap': spacingByDensity[preset.spacingDensity],
+    '--rs-section-separator': separatorByStyle[preset.separators],
+    ...headingByStyle[preset.headingStyle],
+    ...cardByStyle[preset.cardStyle],
+    ...accentByStyle[preset.accentMarker],
+  }
+}
+function getSectionBindings(sectionKey: SectionKey) {
+  const preset = sectionDesignPresets[sectionKey]
+  return {
+    variant: preset.variant,
+    layoutDensity: preset.spacingDensity,
+    themeTokens: mapPresetToThemeTokens(preset),
+  }
 }
 </script>
 
@@ -113,8 +161,8 @@ function updateText(path: string, value: string) {
             :toolbar-enabled="true"
             :can-move-up="canMoveUp('language')"
             :can-move-down="canMoveDown('language')"
-            :theme-tokens="{ '--entry-gap': '10px' }"
-            layout-density="normal"
+            :layout-density="getSectionBindings('language').layoutDensity"
+            :theme-tokens="getSectionBindings('language').themeTokens"
             title="Languages"
             @add-item="() => emit('add-item', 'language')"
             @change-variant="(_, variant) => emit('change-variant', 'language', variant)"
@@ -141,8 +189,8 @@ function updateText(path: string, value: string) {
             :toolbar-enabled="true"
             :can-move-up="canMoveUp('experience')"
             :can-move-down="canMoveDown('experience')"
-            :theme-tokens="{ '--entry-gap': '16px' }"
-            layout-density="normal"
+            :layout-density="getSectionBindings('experience').layoutDensity"
+            :theme-tokens="getSectionBindings('experience').themeTokens"
             title="Employment History"
             @add-item="() => emit('add-item', 'experience')"
             @change-variant="(_, variant) => emit('change-variant', 'experience', variant)"
@@ -156,8 +204,8 @@ function updateText(path: string, value: string) {
             :toolbar-enabled="true"
             :can-move-up="canMoveUp('education')"
             :can-move-down="canMoveDown('education')"
-            :theme-tokens="{ '--entry-gap': '16px' }"
-            layout-density="normal"
+            :layout-density="getSectionBindings('education').layoutDensity"
+            :theme-tokens="getSectionBindings('education').themeTokens"
             title="Education"
             @add-item="() => emit('add-item', 'education')"
             @change-variant="(_, variant) => emit('change-variant', 'education', variant)"
@@ -171,8 +219,8 @@ function updateText(path: string, value: string) {
             :toolbar-enabled="true"
             :can-move-up="canMoveUp('project')"
             :can-move-down="canMoveDown('project')"
-            :theme-tokens="{ '--entry-gap': '12px' }"
-            layout-density="normal"
+            :layout-density="getSectionBindings('project').layoutDensity"
+            :theme-tokens="getSectionBindings('project').themeTokens"
             title="Projects"
             @add-item="() => emit('add-item', 'project')"
             @change-variant="(_, variant) => emit('change-variant', 'project', variant)"

@@ -3,6 +3,7 @@ import ResumeSectionExperience from '~/components/Resume/Sections/ResumeSectionE
 import ResumeSectionEducation from '~/components/Resume/Sections/ResumeSectionEducation.vue'
 import ResumeSectionLanguage from '~/components/Resume/Sections/ResumeSectionLanguage.vue'
 import ResumeSectionProject from '~/components/Resume/Sections/ResumeSectionProject.vue'
+import { RESUME_SECTION_DESIGN_PRESETS, type ResumeSectionDesignPreset } from '~/constants/resumeSectionDesign'
 
 type LayoutSettings = {
   photoSize?: number
@@ -98,6 +99,57 @@ const sectionHeadingByKey: Record<SectionKey, string> = {
   language: 'Languages',
   project: 'Projects',
 }
+const sectionDesignPresets = RESUME_SECTION_DESIGN_PRESETS.terra
+
+function mapPresetToThemeTokens(preset: ResumeSectionDesignPreset, isCompact: boolean) {
+  const spacingByDensity = {
+    compact: isCompact ? '8px' : '10px',
+    normal: isCompact ? '8px' : '14px',
+    spacious: isCompact ? '12px' : '18px',
+  } as const
+  const headingByStyle = {
+    underline: { '--rs-heading-border-bottom': '1px solid color-mix(in srgb, var(--cv-accent) 24%, var(--cv-page))' },
+    badge: { '--rs-heading-bg': 'color-mix(in srgb, var(--cv-accent) 14%, var(--cv-page))', '--rs-heading-padding': '3px 10px', '--rs-heading-radius': '999px' },
+    minimal: {},
+  } as const
+  const separatorByStyle = {
+    none: 'none',
+    line: '1px solid color-mix(in srgb, var(--cv-accent) 18%, transparent)',
+    thick: '2px solid color-mix(in srgb, var(--cv-accent) 30%, transparent)',
+  } as const
+  const cardByStyle = {
+    flat: {},
+    soft: { '--rs-card-bg': 'color-mix(in srgb, var(--cv-page) 88%, var(--cv-accent))', '--rs-card-padding': '10px 12px', '--rs-card-radius': '10px' },
+    outlined: { '--rs-card-border': '1px solid color-mix(in srgb, var(--cv-accent) 24%, transparent)', '--rs-card-padding': '10px 12px', '--rs-card-radius': '10px' },
+  } as const
+  const accentByStyle = {
+    dot: { '--rs-marker-size': '7px', '--rs-marker-radius': '999px' },
+    bar: { '--rs-marker-height': '14px', '--rs-marker-width': '3px', '--rs-marker-radius': '3px' },
+    'left-border': { '--rs-entry-border-left': '2px solid color-mix(in srgb, var(--cv-accent) 38%, transparent)', '--rs-entry-padding-left': '10px' },
+  } as const
+
+  return {
+    '--entry-gap': spacingByDensity[preset.spacingDensity],
+    '--rs-section-separator': separatorByStyle[preset.separators],
+    ...headingByStyle[preset.headingStyle],
+    ...cardByStyle[preset.cardStyle],
+    ...accentByStyle[preset.accentMarker],
+  }
+}
+
+function getSectionBindings(sectionKey: SectionKey) {
+  const preset = sectionDesignPresets[sectionKey]
+  const isCompact = props.layoutSettings?.lineDensity === 'compact'
+  return {
+    variant: preset.variant,
+    layoutDensity: preset.spacingDensity === 'spacious'
+      ? 'spacious'
+      : isCompact
+        ? 'compact'
+        : preset.spacingDensity,
+    themeTokens: mapPresetToThemeTokens(preset, isCompact),
+  }
+}
 </script>
 
 <template>
@@ -127,12 +179,12 @@ const sectionHeadingByKey: Record<SectionKey, string> = {
           v-if="section.key === 'language'"
           :resume="resume"
           :editable="editable"
-          :variant="section.variant"
+          :variant="section.variant || getSectionBindings('language').variant"
           :toolbar-enabled="true"
           :can-move-up="canMoveUp('language')"
           :can-move-down="canMoveDown('language')"
-          :layout-density="props.layoutSettings?.lineDensity === 'compact' ? 'compact' : 'normal'"
-          :theme-tokens="{ '--entry-gap': props.layoutSettings?.lineDensity === 'compact' ? '6px' : '10px' }"
+          :layout-density="getSectionBindings('language').layoutDensity"
+          :theme-tokens="getSectionBindings('language').themeTokens"
           :title="sectionHeadingByKey.language"
           @add-item="() => emit('add-item', 'language')"
           @change-variant="(_, variant) => emit('change-variant', 'language', variant)"
@@ -156,12 +208,12 @@ const sectionHeadingByKey: Record<SectionKey, string> = {
             v-if="section.key === 'experience'"
             :resume="resume"
             :editable="editable"
-            :variant="section.variant"
+            :variant="section.variant || getSectionBindings('experience').variant"
             :toolbar-enabled="true"
             :can-move-up="canMoveUp('experience')"
             :can-move-down="canMoveDown('experience')"
-            :layout-density="props.layoutSettings?.lineDensity === 'compact' ? 'compact' : 'normal'"
-            :theme-tokens="{ '--entry-gap': props.layoutSettings?.lineDensity === 'compact' ? '8px' : '14px' }"
+            :layout-density="getSectionBindings('experience').layoutDensity"
+            :theme-tokens="getSectionBindings('experience').themeTokens"
             :title="sectionHeadingByKey.experience"
             @add-item="() => emit('add-item', 'experience')"
             @change-variant="(_, variant) => emit('change-variant', 'experience', variant)"
@@ -171,12 +223,12 @@ const sectionHeadingByKey: Record<SectionKey, string> = {
             v-else-if="section.key === 'education'"
             :resume="resume"
             :editable="editable"
-            :variant="section.variant"
+            :variant="section.variant || getSectionBindings('education').variant"
             :toolbar-enabled="true"
             :can-move-up="canMoveUp('education')"
             :can-move-down="canMoveDown('education')"
-            :layout-density="props.layoutSettings?.lineDensity === 'compact' ? 'compact' : 'normal'"
-            :theme-tokens="{ '--entry-gap': props.layoutSettings?.lineDensity === 'compact' ? '8px' : '14px' }"
+            :layout-density="getSectionBindings('education').layoutDensity"
+            :theme-tokens="getSectionBindings('education').themeTokens"
             :title="sectionHeadingByKey.education"
             @add-item="() => emit('add-item', 'education')"
             @change-variant="(_, variant) => emit('change-variant', 'education', variant)"
@@ -186,12 +238,12 @@ const sectionHeadingByKey: Record<SectionKey, string> = {
             v-else
             :resume="resume"
             :editable="editable"
-            :variant="section.variant"
+            :variant="section.variant || getSectionBindings('project').variant"
             :toolbar-enabled="true"
             :can-move-up="canMoveUp('project')"
             :can-move-down="canMoveDown('project')"
-            :layout-density="props.layoutSettings?.lineDensity === 'compact' ? 'compact' : 'normal'"
-            :theme-tokens="{ '--entry-gap': props.layoutSettings?.lineDensity === 'compact' ? '8px' : '14px' }"
+            :layout-density="getSectionBindings('project').layoutDensity"
+            :theme-tokens="getSectionBindings('project').themeTokens"
             :title="sectionHeadingByKey.project"
             @add-item="() => emit('add-item', 'project')"
             @change-variant="(_, variant) => emit('change-variant', 'project', variant)"

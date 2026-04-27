@@ -49,7 +49,7 @@ function updateText(path: string, value: string) {
 }
 </script>
 <template>
-  <section :class="[`density-${layoutDensity}`]" :style="sectionStyle">
+  <section :class="['project-section', `density-${layoutDensity}`]" :style="sectionStyle">
     <SectionToolbar v-if="toolbarEnabled" section-key="project" :variants="[{ label: 'List', value: 'list' }, { label: 'Cards', value: 'cards' }, { label: 'Two columns', value: 'two-column' }]" :current-variant="safeVariant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'project')" @change-variant="(_, next) => emit('change-variant', 'project', next)" @move-up="() => emit('move-section', 'project', 'up')" @move-down="() => emit('move-section', 'project', 'down')" />
     <h2 class="cv-heading-section">{{ title }}</h2>
     <div :class="['project-grid', { 'project-grid--two-column': safeVariant === 'two-column' }]">
@@ -66,8 +66,40 @@ function updateText(path: string, value: string) {
   </section>
 </template>
 <style scoped>
+.project-section {
+  border-bottom: var(--rs-section-separator, none);
+  padding-bottom: var(--rs-section-padding-bottom, 0);
+}
+.cv-heading-section {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: var(--rs-heading-border-bottom, 0);
+  background: var(--rs-heading-bg, transparent);
+  border-radius: var(--rs-heading-radius, 0);
+  padding: var(--rs-heading-padding, 0);
+}
 .project-grid { display: grid; gap: var(--entry-gap, 10px); }
 .project-grid--two-column { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.entry {
+  position: relative;
+  border: var(--rs-card-border, none);
+  background: var(--rs-card-bg, transparent);
+  border-radius: var(--rs-card-radius, 0);
+  padding: var(--rs-card-padding, 0);
+  border-left: var(--rs-entry-border-left, none);
+  padding-left: var(--rs-entry-padding-left, 0);
+}
+.entry::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: .55rem;
+  width: var(--rs-marker-width, var(--rs-marker-size, 0));
+  height: var(--rs-marker-height, var(--rs-marker-size, 0));
+  border-radius: var(--rs-marker-radius, 0);
+  background: color-mix(in srgb, var(--cv-accent) 55%, transparent);
+}
 .project-card { border: 1px solid color-mix(in srgb, var(--cv-accent) 22%, transparent); border-radius: 10px; padding: 10px; }
 .density-compact { --entry-gap: 8px; }
 .density-normal { --entry-gap: 12px; }
