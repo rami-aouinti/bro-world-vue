@@ -171,11 +171,6 @@ type TemplateStyleSupport = {
   textStyle: boolean
   sharedSections: boolean
 }
-type TemplateCapabilities = {
-  ownsAllSections: boolean
-  supportsSectionToolbar: boolean
-  supportsSectionVariants: boolean
-}
 type LevelInputMode = 'percent' | 'stars'
 type PhotoShape = 'square' | 'rounded' | 'circle' | 'portrait-card' | 'soft-blob' | 'hex'
 type PhotoShapeOption = {
@@ -576,84 +571,74 @@ const templateSupportsPhoto = computed(
 const templateUsesTimeline = computed(
   () => selectedTemplateConfig.value.useTimeline,
 )
-const defaultTemplateCapabilities: TemplateCapabilities = {
-  ownsAllSections: false,
-  supportsSectionToolbar: true,
-  supportsSectionVariants: true,
+type TemplateResponsibilitySection =
+  | 'experience'
+  | 'education'
+  | 'language'
+  | 'project'
+  | 'courses'
+  | 'references'
+  | 'hobbies'
+type SharedSectionKey = 'languages' | 'projects' | 'courses' | 'references' | 'hobbies'
+type TemplateId = Template['id']
+
+type TemplateSectionResponsibilityMatrix = Record<TemplateId, Record<TemplateResponsibilitySection, boolean>>
+type TemplateSectionToolbarSupportMatrix = Record<TemplateId, Record<TemplateResponsibilitySection, boolean>>
+
+const templateSectionResponsibilityMatrix: TemplateSectionResponsibilityMatrix = {
+  aurora: { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
+  classic: { experience: true, education: true, language: true, project: true, courses: true, references: true, hobbies: false },
+  'corporate-blue': { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
+  creative: { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
+  executive: { experience: true, education: true, language: true, project: false, courses: false, references: false, hobbies: false },
+  minimalist: { experience: true, education: true, language: true, project: false, courses: false, references: false, hobbies: false },
+  modern: { experience: true, education: true, language: true, project: true, courses: true, references: true, hobbies: false },
+  'ocean-split': { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
+  professional: { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
+  terra: { experience: true, education: true, language: true, project: true, courses: false, references: false, hobbies: false },
+  traditional: { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
 }
-const templateCapabilities: Record<string, TemplateCapabilities> = {
-  aurora: {
-    ownsAllSections: false,
-    supportsSectionToolbar: true,
-    supportsSectionVariants: true,
-  },
-  classic: {
-    ownsAllSections: true,
-    supportsSectionToolbar: true,
-    supportsSectionVariants: true,
-  },
-  'corporate-blue': {
-    ownsAllSections: false,
-    supportsSectionToolbar: true,
-    supportsSectionVariants: true,
-  },
-  creative: {
-    ownsAllSections: false,
-    supportsSectionToolbar: true,
-    supportsSectionVariants: true,
-  },
-  executive: {
-    ownsAllSections: false,
-    supportsSectionToolbar: true,
-    supportsSectionVariants: true,
-  },
-  minimalist: {
-    ownsAllSections: false,
-    supportsSectionToolbar: true,
-    supportsSectionVariants: true,
-  },
-  modern: {
-    ownsAllSections: true,
-    supportsSectionToolbar: true,
-    supportsSectionVariants: true,
-  },
-  'ocean-split': {
-    ownsAllSections: false,
-    supportsSectionToolbar: true,
-    supportsSectionVariants: true,
-  },
-  professional: {
-    ownsAllSections: false,
-    supportsSectionToolbar: true,
-    supportsSectionVariants: true,
-  },
-  terra: {
-    ownsAllSections: false,
-    supportsSectionToolbar: true,
-    supportsSectionVariants: true,
-  },
-  traditional: {
-    ownsAllSections: false,
-    supportsSectionToolbar: true,
-    supportsSectionVariants: true,
-  },
+
+const templateSectionToolbarSupportMatrix: TemplateSectionToolbarSupportMatrix = {
+  aurora: { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
+  classic: { experience: false, education: false, language: false, project: false, courses: false, references: false, hobbies: false },
+  'corporate-blue': { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
+  creative: { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
+  executive: { experience: false, education: false, language: false, project: false, courses: false, references: false, hobbies: false },
+  minimalist: { experience: false, education: false, language: false, project: false, courses: false, references: false, hobbies: false },
+  modern: { experience: true, education: true, language: true, project: true, courses: false, references: false, hobbies: false },
+  'ocean-split': { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
+  professional: { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
+  terra: { experience: true, education: true, language: true, project: true, courses: false, references: false, hobbies: false },
+  traditional: { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
 }
-const sharedSectionsOwnedByTemplate: Record<string, Array<'languages' | 'projects' | 'courses' | 'references'>> = {
-  classic: ['languages', 'projects', 'courses', 'references'],
-  modern: ['languages', 'projects', 'courses', 'references'],
-  executive: ['languages'],
-  minimalist: ['languages'],
-  terra: ['languages', 'projects'],
+
+const sharedSectionMap: Record<SharedSectionKey, TemplateResponsibilitySection> = {
+  languages: 'language',
+  projects: 'project',
+  courses: 'courses',
+  references: 'references',
+  hobbies: 'hobbies',
 }
-const selectedTemplateCapabilities = computed<TemplateCapabilities>(() =>
-  templateCapabilities[selectedTemplate.value] ?? defaultTemplateCapabilities,
-)
-const shouldRenderSharedSections = computed(
-  () => !selectedTemplateCapabilities.value.ownsAllSections,
-)
-const sharedSectionsHiddenByTemplate = computed(() => {
-  return sharedSectionsOwnedByTemplate[selectedTemplate.value] ?? []
+
+function isSectionOwnedByTemplate(templateId: TemplateId, section: TemplateResponsibilitySection) {
+  const templateResponsibility = templateSectionResponsibilityMatrix[templateId]?.[section]
+  const supportsToolbar = templateSectionToolbarSupportMatrix[templateId]?.[section]
+
+  return Boolean(templateResponsibility && supportsToolbar)
+}
+
+const sharedSectionsHiddenByTemplate = computed<SharedSectionKey[]>(() => {
+  const templateId = selectedTemplate.value as TemplateId
+
+  return (Object.keys(sharedSectionMap) as SharedSectionKey[]).filter((sharedSection) => {
+    const section = sharedSectionMap[sharedSection]
+    return isSectionOwnedByTemplate(templateId, section)
+  })
 })
+const shouldRenderSharedSections = computed(
+  () => sharedSectionsHiddenByTemplate.value.length < Object.keys(sharedSectionMap).length,
+)
 const pdfModalOpen = ref(false)
 const photoDialogOpen = ref(false)
 const aiMenuOpen = ref(false)
