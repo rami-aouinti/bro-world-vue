@@ -1,16 +1,4 @@
 <script setup lang="ts">
-import ResumeTemplateClassic from '~/components/Resume/Templates/ResumeTemplateClassic.vue'
-import ResumeTemplateCreative from '~/components/Resume/Templates/ResumeTemplateCreative.vue'
-import ResumeTemplateAurora from '~/components/Resume/Templates/ResumeTemplateAurora.vue'
-import ResumeTemplateExecutive from '~/components/Resume/Templates/ResumeTemplateExecutive.vue'
-import ResumeTemplateMinimalist from '~/components/Resume/Templates/ResumeTemplateMinimalist.vue'
-import ResumeTemplateModern from '~/components/Resume/Templates/ResumeTemplateModern.vue'
-import ResumeTemplateProfessional from '~/components/Resume/Templates/ResumeTemplateProfessional.vue'
-import ResumeTemplateTerra from '~/components/Resume/Templates/ResumeTemplateTerra.vue'
-import ResumeTemplateTraditional from '~/components/Resume/Templates/ResumeTemplateTraditional.vue'
-import ResumeTemplateOceanSplit from '~/components/Resume/Templates/ResumeTemplateOceanSplit.vue'
-import ResumeTemplateCorporateBlue from '~/components/Resume/Templates/ResumeTemplateCorporateBlue.vue'
-import ResumeTemplateSharedSections from '~/components/Resume/Templates/ResumeTemplateSharedSections.vue'
 import type { RoundedOptionId, Typography } from '~/constants/resumeDesign'
 import {
   COVER_LETTER_TEMPLATES,
@@ -19,6 +7,7 @@ import {
   RESUME_TEMPLATES,
   type ResumeTemplateVariant,
 } from '~/constants/resumeTemplates'
+import { RESUME_TEMPLATE_SKINS } from '~/constants/resumeTemplateSkins'
 import {
   useResumeDesignControls,
 } from '~/composables/useResumeDesignControls'
@@ -548,96 +537,11 @@ onMounted(() => {
     activeTab.value = 'edit'
 })
 
-const selectedTemplateComponent = computed(() => {
-  const componentByVariant = {
-    aurora: ResumeTemplateAurora,
-    classic: ResumeTemplateClassic,
-    creative: ResumeTemplateCreative,
-    executive: ResumeTemplateExecutive,
-    minimalist: ResumeTemplateMinimalist,
-    modern: ResumeTemplateModern,
-    'ocean-split': ResumeTemplateOceanSplit,
-    professional: ResumeTemplateProfessional,
-    'corporate-blue': ResumeTemplateCorporateBlue,
-    terra: ResumeTemplateTerra,
-    traditional: ResumeTemplateTraditional,
-  } as const
-  return componentByVariant[selectedTemplateConfig.value.variant]
-})
-
 const templateSupportsPhoto = computed(
   () => selectedTemplateConfig.value.hasPhoto,
 )
-const templateUsesTimeline = computed(
-  () => selectedTemplateConfig.value.useTimeline,
-)
-type TemplateResponsibilitySection =
-  | 'experience'
-  | 'education'
-  | 'language'
-  | 'project'
-  | 'courses'
-  | 'references'
-  | 'hobbies'
-type SharedSectionKey = 'languages' | 'projects' | 'courses' | 'references' | 'hobbies'
-type TemplateId = Template['id']
-
-type TemplateSectionResponsibilityMatrix = Record<TemplateId, Record<TemplateResponsibilitySection, boolean>>
-type TemplateSectionToolbarSupportMatrix = Record<TemplateId, Record<TemplateResponsibilitySection, boolean>>
-
-const templateSectionResponsibilityMatrix: TemplateSectionResponsibilityMatrix = {
-  aurora: { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
-  classic: { experience: true, education: true, language: true, project: true, courses: true, references: true, hobbies: false },
-  'corporate-blue': { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
-  creative: { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
-  executive: { experience: true, education: true, language: true, project: false, courses: false, references: false, hobbies: false },
-  minimalist: { experience: true, education: true, language: true, project: false, courses: false, references: false, hobbies: false },
-  modern: { experience: true, education: true, language: true, project: true, courses: true, references: true, hobbies: false },
-  'ocean-split': { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
-  professional: { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
-  terra: { experience: true, education: true, language: true, project: true, courses: false, references: false, hobbies: false },
-  traditional: { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
-}
-
-const templateSectionToolbarSupportMatrix: TemplateSectionToolbarSupportMatrix = {
-  aurora: { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
-  classic: { experience: false, education: false, language: false, project: false, courses: false, references: false, hobbies: false },
-  'corporate-blue': { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
-  creative: { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
-  executive: { experience: false, education: false, language: false, project: false, courses: false, references: false, hobbies: false },
-  minimalist: { experience: false, education: false, language: false, project: false, courses: false, references: false, hobbies: false },
-  modern: { experience: true, education: true, language: true, project: true, courses: false, references: false, hobbies: false },
-  'ocean-split': { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
-  professional: { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
-  terra: { experience: true, education: true, language: true, project: true, courses: false, references: false, hobbies: false },
-  traditional: { experience: true, education: true, language: false, project: false, courses: false, references: false, hobbies: false },
-}
-
-const sharedSectionMap: Record<SharedSectionKey, TemplateResponsibilitySection> = {
-  languages: 'language',
-  projects: 'project',
-  courses: 'courses',
-  references: 'references',
-  hobbies: 'hobbies',
-}
-
-function isSectionOwnedByTemplate(templateId: TemplateId, section: TemplateResponsibilitySection) {
-  const templateResponsibility = templateSectionResponsibilityMatrix[templateId]?.[section]
-  const supportsToolbar = templateSectionToolbarSupportMatrix[templateId]?.[section]
-
-  return Boolean(templateResponsibility && supportsToolbar)
-}
-
-const sharedSectionsHiddenByTemplate = computed<SharedSectionKey[]>(() => {
-  const templateId = selectedTemplate.value as TemplateId
-
-  return (Object.keys(sharedSectionMap) as SharedSectionKey[]).filter((sharedSection) => {
-    const section = sharedSectionMap[sharedSection]
-    return isSectionOwnedByTemplate(templateId, section)
-  })
-})
-const shouldRenderSharedSections = computed(
-  () => sharedSectionsHiddenByTemplate.value.length < Object.keys(sharedSectionMap).length,
+const selectedTemplateSkin = computed(
+  () => RESUME_TEMPLATE_SKINS[selectedTemplateConfig.value.variant],
 )
 const pdfModalOpen = ref(false)
 const photoDialogOpen = ref(false)
@@ -1031,6 +935,10 @@ const orderedPreviewSections = computed(() =>
   }),
 )
 
+const sectionVariantByKey = computed(() => (
+  Object.fromEntries(sectionLayout.value.map(section => [section.key, section.variant]))
+))
+
 function sectionDisplayLabel(sectionKey: PreviewSectionKey) {
   return sectionConfig[sectionKey].label
 }
@@ -1247,12 +1155,6 @@ function bestAaTextColor(background: string, preferred: string, minimum = 4.5) {
   return candidates.sort((a, b) => contrastRatio(background, b) - contrastRatio(background, a))[0]
 }
 
-const sharedSectionsTone = computed<'light' | 'dark' | 'auto'>(() => {
-  const darkVariants: ResumeTemplateVariant[] = ['aurora', 'executive', 'ocean-split']
-  const variant = selectedTemplateConfig.value?.variant
-  if (!variant) return 'auto'
-  return darkVariants.includes(variant) ? 'dark' : 'light'
-})
 
 const previewStyle = computed(() => ({
   '--cv-radius': roundedPxByValue[selectedRounded.value],
@@ -2820,30 +2722,17 @@ if (import.meta.client) {
               {{ shape.icon }}
             </v-btn>
           </div>
-          <component
-            :is="selectedTemplateComponent"
+          <ResumeRenderer
             :resume="resume"
             :show-photo="templateSupportsPhoto"
-            :use-timeline="templateUsesTimeline"
             :section-layout="orderedPreviewSections"
+            :section-variants="sectionVariantByKey"
             :on-photo-click="onPreviewPhotoClick"
-            :layout-settings="layoutSettings"
+            :template-skin="selectedTemplateSkin"
             editable
             @add-item="addItemToPreviewSection"
             @change-variant="setSectionVariant"
             @move-section="moveSection"
-          />
-          <ResumeTemplateSharedSections
-            v-if="shouldRenderSharedSections"
-            :resume="resume"
-            :editable="true"
-            :section-layout="orderedPreviewSections"
-            :level-input-mode="levelInputMode"
-            :hidden-sections="sharedSectionsHiddenByTemplate"
-            :tone="sharedSectionsTone"
-            @add-item="(section) => addItemToPreviewSection(section as SharedSectionActionKey)"
-            @change-variant="(section, variant) => setSectionVariant(section as PreviewSectionKey, variant as string)"
-            @move-section="(section, direction) => moveSection(section as PreviewSectionKey, direction)"
           />
           <div v-if="signatureDataUrl" class="signature-overlay">
             <img :src="signatureDataUrl" alt="Signature" />
@@ -3025,29 +2914,17 @@ if (import.meta.client) {
             :class="[activeRoundedClass, activeTextStyleClass]"
             :style="previewStyle"
           >
-            <component
-              :is="selectedTemplateComponent"
+            <ResumeRenderer
               :resume="resume"
               :show-photo="templateSupportsPhoto"
-              :use-timeline="templateUsesTimeline"
               :section-layout="orderedPreviewSections"
+              :section-variants="sectionVariantByKey"
               :on-photo-click="onPreviewPhotoClick"
-              :layout-settings="layoutSettings"
+              :template-skin="selectedTemplateSkin"
               editable
               @add-item="addItemToPreviewSection"
               @change-variant="setSectionVariant"
               @move-section="moveSection"
-            />
-            <ResumeTemplateSharedSections
-              v-if="shouldRenderSharedSections"
-              :resume="resume"
-              :section-layout="orderedPreviewSections"
-              :editable="true"
-              :hidden-sections="sharedSectionsHiddenByTemplate"
-              :tone="sharedSectionsTone"
-              @add-item="(section) => addItemToPreviewSection(section as SharedSectionActionKey)"
-              @change-variant="(section, variant) => setSectionVariant(section as PreviewSectionKey, variant as string)"
-              @move-section="(section, direction) => moveSection(section as PreviewSectionKey, direction)"
             />
           </div>
         </v-card-text>
