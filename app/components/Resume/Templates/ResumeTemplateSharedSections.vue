@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { levelToPercent, levelToStars, levelToText } from '~/utils/resumeLanguageLevel'
+
 type SharedSectionKey =
   | 'languages'
   | 'projects'
@@ -72,9 +74,6 @@ const projectVariant = computed<'list' | 'cards' | 'two-column'>(() => {
     : 'list'
 })
 
-function languageStars(level: number) {
-  return Math.max(0, Math.min(5, Math.round(level / 20)))
-}
 </script>
 
 <template>
@@ -84,14 +83,14 @@ function languageStars(level: number) {
       <ul v-if="languageVariant === 'text-level'">
         <li v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`">
           <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
-          <small class="ms-2">({{ language.level }}%)</small>
+          <small class="ms-2">({{ levelToText(language.level) }})</small>
         </li>
       </ul>
       <div v-else-if="languageVariant === 'stars'" class="language-stars-list">
         <div v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" class="language-stars-item">
           <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
           <v-rating
-            :model-value="languageStars(language.level)"
+            :model-value="levelToStars(language.level)"
             readonly
             length="5"
             size="16"
@@ -105,9 +104,9 @@ function languageStars(level: number) {
         <div v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" class="language-progress-item">
           <div class="d-flex align-center justify-space-between ga-2">
             <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
-            <small>{{ language.level }}%</small>
+            <small>{{ levelToPercent(language.level) }}%</small>
           </div>
-          <v-progress-linear :model-value="language.level" height="8" rounded color="primary" />
+          <v-progress-linear :model-value="levelToPercent(language.level)" height="8" rounded color="primary" />
         </div>
       </div>
     </div>
