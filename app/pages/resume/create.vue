@@ -207,14 +207,14 @@ type PreviewSectionKey = 'experience' | 'education' | 'language' | 'project'
 type SectionLayoutVariant = {
   experience: 'detailed' | 'bullets' | 'compact'
   education: 'classic' | 'timeline' | 'two-column'
-  language: 'text-level' | 'stars' | 'progress'
-  project: 'list' | 'cards' | 'two-column'
+  language: 'classic' | 'text-level' | 'stars' | 'progress'
+  project: 'classic' | 'list' | 'cards' | 'two-column'
 }
 type SectionLayoutEntry<K extends PreviewSectionKey = PreviewSectionKey> = {
   key: K
-  label: string
   variant: SectionLayoutVariant[K]
   region: 'main' | 'aside'
+  order: number
 }
 
 const activeTab = ref<'edit' | 'template' | 'design' | 'import'>('edit')
@@ -292,29 +292,35 @@ const sectionConfig: {
   [K in PreviewSectionKey]: {
     label: string
     collection: 'experiences' | 'education' | 'languages' | 'projects'
-    variants: SectionLayoutVariant[K][]
   }
 } = {
   experience: {
     label: 'Experience',
     collection: 'experiences',
-    variants: ['detailed', 'bullets', 'compact'],
   },
   education: {
     label: 'Education',
     collection: 'education',
-    variants: ['classic', 'timeline', 'two-column'],
   },
   language: {
     label: 'Language',
     collection: 'languages',
-    variants: ['stars', 'text-level', 'progress'],
   },
   project: {
     label: 'Project',
     collection: 'projects',
-    variants: ['list', 'cards', 'two-column'],
   },
+}
+const variantRegistry: {
+  [K in PreviewSectionKey]: {
+    allowed: SectionLayoutVariant[K][]
+    fallback: SectionLayoutVariant[K]
+  }
+} = {
+  experience: { allowed: ['detailed', 'bullets', 'compact'], fallback: 'detailed' },
+  education: { allowed: ['classic', 'timeline', 'two-column'], fallback: 'classic' },
+  language: { allowed: ['classic', 'text-level', 'stars', 'progress'], fallback: 'classic' },
+  project: { allowed: ['classic', 'list', 'cards', 'two-column'], fallback: 'classic' },
 }
 const coverPageTemplateCards: Template[] = COVER_PAGE_TEMPLATES.map(template => ({
   id: template.id,
@@ -646,12 +652,15 @@ const loginLoading = ref(false)
 const pendingPdfDownload = ref(false)
 const addSectionDialogOpen = ref(false)
 const addSectionType = ref<AddSectionType>('experience')
-const sectionLayout = ref<SectionLayoutEntry[]>([
-  { key: 'experience', label: 'Expérience', variant: 'detailed', region: 'main' },
-  { key: 'education', label: 'Education', variant: 'classic', region: 'main' },
-  { key: 'language', label: 'Language', variant: 'stars', region: 'aside' },
-  { key: 'project', label: 'Project', variant: 'cards', region: 'main' },
-])
+const defaultSectionLayout: SectionLayoutEntry[] = [
+  { key: 'experience', variant: 'detailed', region: 'main', order: 0 },
+  { key: 'education', variant: 'classic', region: 'main', order: 1 },
+  { key: 'project', variant: 'classic', region: 'main', order: 2 },
+  { key: 'language', variant: 'classic', region: 'aside', order: 0 },
+]
+const sectionLayout = ref<SectionLayoutEntry[]>(
+  defaultSectionLayout.map(entry => ({ ...entry })),
+)
 const sectionItemDialogOpen = ref(false)
 const activeSectionKey = ref<PreviewSectionKey>('experience')
 const activeVariant = ref<SectionLayoutVariant[PreviewSectionKey]>('detailed')
@@ -999,7 +1008,16 @@ function submitAddSection() {
   activeTab.value = 'edit'
 }
 
-const orderedPreviewSections = computed(() => sectionLayout.value)
+const orderedPreviewSections = computed(() =>
+  [...sectionLayout.value].sort((left, right) => {
+    if (left.region === right.region) return left.order - right.order
+    return left.region === 'main' ? -1 : 1
+  }),
+)
+
+function sectionDisplayLabel(sectionKey: PreviewSectionKey) {
+  return sectionConfig[sectionKey].label
+}
 
 function resetSectionItemDraft(section: PreviewSectionKey) {
   switch (section) {
@@ -1020,7 +1038,7 @@ function resetSectionItemDraft(section: PreviewSectionKey) {
 
 function openSectionItemDialog(section: PreviewSectionKey) {
   activeSectionKey.value = section
-  activeVariant.value = sectionLayout.value.find(item => item.key === section)?.variant ?? sectionConfig[section].variants[0]
+  activeVariant.value = sectionLayout.value.find(item => item.key === section)?.variant ?? variantRegistry[section].fallback
   resetSectionItemDraft(section)
   sectionItemDialogOpen.value = true
 }
@@ -1078,30 +1096,46 @@ function addItemToPreviewSection(section: PreviewSectionKey) {
   openSectionItemDialog(section)
 }
 
+function normalizeSectionVariant<K extends PreviewSectionKey>(
+  key: K,
+  variant: unknown,
+): SectionLayoutVariant[K] {
+  const registry = variantRegistry[key]
+  if (typeof variant === 'string' && registry.allowed.includes(variant as SectionLayoutVariant[K])) {
+    return variant as SectionLayoutVariant[K]
+  }
+  if (import.meta.dev) {
+    console.warn(`[resume-builder] Unknown "${key}" variant "${String(variant)}"; fallback to "${registry.fallback}".`)
+  }
+  return registry.fallback
+}
+
 function moveSectionUp(sectionKey: PreviewSectionKey) {
-  const currentIndex = sectionLayout.value.findIndex(item => item.key === sectionKey)
-  if (currentIndex < 0) return
-  const currentSection = sectionLayout.value[currentIndex]
-  const regionEntries = sectionLayout.value.filter(item => item.region === currentSection.region)
+  const currentSection = sectionLayout.value.find(item => item.key === sectionKey)
+  if (!currentSection) return
+  const regionEntries = [...sectionLayout.value]
+    .filter(item => item.region === currentSection.region)
+    .sort((left, right) => left.order - right.order)
   const regionIndex = regionEntries.findIndex(item => item.key === sectionKey)
   if (regionIndex <= 0) return
-  const targetSection = regionEntries[regionIndex - 1]
-  const targetIndex = sectionLayout.value.findIndex(item => item.key === targetSection.key)
-  const [movedSection] = sectionLayout.value.splice(currentIndex, 1)
-  sectionLayout.value.splice(targetIndex, 0, movedSection)
+  const previous = regionEntries[regionIndex - 1]
+  const originalOrder = currentSection.order
+  currentSection.order = previous.order
+  previous.order = originalOrder
 }
 
 function moveSectionDown(sectionKey: PreviewSectionKey) {
-  const currentIndex = sectionLayout.value.findIndex(item => item.key === sectionKey)
-  if (currentIndex < 0) return
-  const currentSection = sectionLayout.value[currentIndex]
-  const regionEntries = sectionLayout.value.filter(item => item.region === currentSection.region)
+  const currentSection = sectionLayout.value.find(item => item.key === sectionKey)
+  if (!currentSection) return
+  const regionEntries = [...sectionLayout.value]
+    .filter(item => item.region === currentSection.region)
+    .sort((left, right) => left.order - right.order)
   const regionIndex = regionEntries.findIndex(item => item.key === sectionKey)
   if (regionIndex < 0 || regionIndex >= regionEntries.length - 1) return
-  const targetSection = regionEntries[regionIndex + 1]
-  const targetIndex = sectionLayout.value.findIndex(item => item.key === targetSection.key)
-  const [movedSection] = sectionLayout.value.splice(currentIndex, 1)
-  sectionLayout.value.splice(targetIndex, 0, movedSection)
+  const next = regionEntries[regionIndex + 1]
+  const originalOrder = currentSection.order
+  currentSection.order = next.order
+  next.order = originalOrder
 }
 
 function moveSection(sectionKey: PreviewSectionKey, direction: 'up' | 'down') {
@@ -1112,20 +1146,14 @@ function moveSection(sectionKey: PreviewSectionKey, direction: 'up' | 'down') {
   moveSectionDown(sectionKey)
 }
 
-function setSectionVariant<K extends PreviewSectionKey>(key: K, variant: SectionLayoutVariant[K]) {
+function setSectionVariant<K extends PreviewSectionKey>(key: K, variant: SectionLayoutVariant[K] | string) {
   const target = sectionLayout.value.find(section => section.key === key)
   if (!target) return
-  target.variant = variant
+  const normalizedVariant = normalizeSectionVariant(key, variant)
+  target.variant = normalizedVariant
   if (activeSectionKey.value === key) {
-    activeVariant.value = variant
+    activeVariant.value = normalizedVariant
   }
-}
-
-function isValidSectionVariant<K extends PreviewSectionKey>(
-  key: K,
-  value: unknown,
-): value is SectionLayoutVariant[K] {
-  return typeof value === 'string' && sectionConfig[key].variants.includes(value as SectionLayoutVariant[K])
 }
 
 function handleSharedSectionAdd(section: PreviewSectionKey) {
@@ -1135,10 +1163,10 @@ function handleSharedSectionAdd(section: PreviewSectionKey) {
 
 function handleSharedSectionVariantChange(
   section: PreviewSectionKey,
-  variant: SectionLayoutVariant[PreviewSectionKey],
+  variant: SectionLayoutVariant[PreviewSectionKey] | string,
 ) {
   if (!selectedTemplateCapabilities.value.supportsSectionVariants) return
-  setSectionVariant(section, variant)
+  setSectionVariant(section, variant as SectionLayoutVariant[typeof section])
 }
 
 const activeTheme = computed(
@@ -1695,27 +1723,23 @@ if (import.meta.client) {
   if (rawSectionLayout) {
     try {
       const parsed = JSON.parse(rawSectionLayout) as Array<Partial<SectionLayoutEntry>>
-      const fallback = sectionLayout.value
-      const fallbackByKey = Object.fromEntries(
-        fallback.map(item => [item.key, item]),
-      ) as Record<PreviewSectionKey, SectionLayoutEntry>
-      const normalized = parsed
-        .filter(item => item?.key && item.key in fallbackByKey)
-        .map((item, index) => ({
-          key: item.key as PreviewSectionKey,
-          label: item.label || fallback[index]?.label || fallbackByKey[item.key as PreviewSectionKey].label,
-          variant: isValidSectionVariant(
-            item.key as PreviewSectionKey,
-            item.variant,
-          )
-            ? item.variant
-            : fallbackByKey[item.key as PreviewSectionKey].variant,
-          region: item.region === 'aside' ? 'aside' : fallbackByKey[item.key as PreviewSectionKey].region,
-        }))
+      const parsedByKey = new Map(
+        parsed
+          .filter(item => item?.key)
+          .map(item => [item.key as PreviewSectionKey, item]),
+      )
 
-      if (normalized.length === fallback.length) {
-        sectionLayout.value = normalized
-      }
+      sectionLayout.value = defaultSectionLayout.map((fallback) => {
+        const persisted = parsedByKey.get(fallback.key)
+        return {
+          key: fallback.key,
+          variant: normalizeSectionVariant(fallback.key, persisted?.variant ?? fallback.variant),
+          region: persisted?.region === 'main' || persisted?.region === 'aside'
+            ? persisted.region
+            : fallback.region,
+          order: typeof persisted?.order === 'number' ? persisted.order : fallback.order,
+        }
+      })
     } catch {
       localStorage.removeItem(SECTION_LAYOUT_KEY)
     }
@@ -2790,7 +2814,7 @@ if (import.meta.client) {
             :resume="resume"
             :show-photo="templateSupportsPhoto"
             :use-timeline="templateUsesTimeline"
-            :section-layout="sectionLayout"
+            :section-layout="orderedPreviewSections"
             :on-photo-click="onPreviewPhotoClick"
             :layout-settings="layoutSettings"
             editable
@@ -2802,7 +2826,7 @@ if (import.meta.client) {
             v-if="shouldRenderSharedSections"
             :resume="resume"
             :editable="selectedTemplateCapabilities.supportsSectionToolbar"
-            :section-layout="sectionLayout"
+            :section-layout="orderedPreviewSections"
             :level-input-mode="levelInputMode"
             :hidden-sections="sharedSectionsHiddenByTemplate"
             :tone="sharedSectionsTone"
@@ -2902,7 +2926,7 @@ if (import.meta.client) {
       <v-card>
         <v-card-title class="d-flex align-center justify-space-between">
           <span>
-            Add {{ orderedPreviewSections.find(section => section.key === activeSectionKey)?.label }} item
+            Add {{ sectionDisplayLabel(activeSectionKey) }} item
             <v-chip size="x-small" class="ml-2" color="primary" variant="tonal">
               {{ sectionVariantLabels[String(activeVariant)] }}
             </v-chip>
@@ -2994,7 +3018,7 @@ if (import.meta.client) {
               :resume="resume"
               :show-photo="templateSupportsPhoto"
               :use-timeline="templateUsesTimeline"
-              :section-layout="sectionLayout"
+              :section-layout="orderedPreviewSections"
               :on-photo-click="onPreviewPhotoClick"
               :layout-settings="layoutSettings"
               editable
@@ -3005,7 +3029,7 @@ if (import.meta.client) {
             <ResumeTemplateSharedSections
               v-if="shouldRenderSharedSections"
               :resume="resume"
-              :section-layout="sectionLayout"
+              :section-layout="orderedPreviewSections"
               :editable="selectedTemplateCapabilities.supportsSectionToolbar"
               :hidden-sections="sharedSectionsHiddenByTemplate"
               :tone="sharedSectionsTone"
