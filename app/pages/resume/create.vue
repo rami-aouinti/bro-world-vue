@@ -1156,19 +1156,6 @@ function setSectionVariant<K extends PreviewSectionKey>(key: K, variant: Section
   }
 }
 
-function handleSharedSectionAdd(section: PreviewSectionKey) {
-  if (!selectedTemplateCapabilities.value.supportsSectionToolbar) return
-  addItemToPreviewSection(section)
-}
-
-function handleSharedSectionVariantChange(
-  section: PreviewSectionKey,
-  variant: SectionLayoutVariant[PreviewSectionKey] | string,
-) {
-  if (!selectedTemplateCapabilities.value.supportsSectionVariants) return
-  setSectionVariant(section, variant as SectionLayoutVariant[typeof section])
-}
-
 const activeTheme = computed(
   () =>
     colorThemes.find((theme) => theme.name === selectedTheme.value) ??
@@ -2830,8 +2817,9 @@ if (import.meta.client) {
             :level-input-mode="levelInputMode"
             :hidden-sections="sharedSectionsHiddenByTemplate"
             :tone="sharedSectionsTone"
-            @add-item="(section) => handleSharedSectionAdd(section as PreviewSectionKey)"
-            @change-variant="(section, variant) => handleSharedSectionVariantChange(section as PreviewSectionKey, variant as SectionLayoutVariant[PreviewSectionKey])"
+            @add-item="(section) => addItemToPreviewSection(section as PreviewSectionKey)"
+            @change-variant="(section, variant) => setSectionVariant(section as PreviewSectionKey, variant as string)"
+            @move-section="(section, direction) => moveSection(section as PreviewSectionKey, direction)"
           />
           <div v-if="signatureDataUrl" class="signature-overlay">
             <img :src="signatureDataUrl" alt="Signature" />
@@ -3033,8 +3021,9 @@ if (import.meta.client) {
               :editable="selectedTemplateCapabilities.supportsSectionToolbar"
               :hidden-sections="sharedSectionsHiddenByTemplate"
               :tone="sharedSectionsTone"
-              @add-item="(section) => handleSharedSectionAdd(section as PreviewSectionKey)"
-              @change-variant="(section, variant) => handleSharedSectionVariantChange(section as PreviewSectionKey, variant as SectionLayoutVariant[PreviewSectionKey])"
+              @add-item="(section) => addItemToPreviewSection(section as PreviewSectionKey)"
+              @change-variant="(section, variant) => setSectionVariant(section as PreviewSectionKey, variant as string)"
+              @move-section="(section, direction) => moveSection(section as PreviewSectionKey, direction)"
             />
           </div>
         </v-card-text>
