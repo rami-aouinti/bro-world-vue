@@ -1392,33 +1392,33 @@ if (import.meta.client) {
 
 <template>
   <v-container fluid class="resume-create pa-0">
+    <div class="local-toolbar-actions">
+      <div class="local-toolbar-actions__row">
+        <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" />
+        <v-btn class="local-toolbar-btn" color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview" />
+        <v-btn class="local-toolbar-btn" color="info" size="small" variant="outlined" icon="mdi-download" @click="onDownloadPdfClick" />
+        <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" icon="mdi-draw" @click="openSignatureDialog" />
+        <v-menu v-model="aiMenuOpen" :close-on-content-click="false" location="bottom end">
+          <template #activator="{ props }">
+            <v-btn class="local-toolbar-btn local-toolbar-btn--ki" color="deep-purple" size="small" variant="tonal" prepend-icon="mdi-creation" v-bind="props">KI</v-btn>
+          </template>
+          <v-card width="420" class="pa-3">
+            <div class="ki-menu-grid">
+              <v-card variant="outlined" class="ki-card" @click="aiCreateModalOpen = true; aiMenuOpen = false">
+                <v-card-title class="text-subtitle-1">Create with KI</v-card-title>
+                <v-card-text class="text-body-2">Generate a complete resume from a short summary of studies and skills.</v-card-text>
+              </v-card>
+              <v-card variant="outlined" class="ki-card" @click="runAiReview(); aiMenuOpen = false">
+                <v-card-title class="text-subtitle-1">Review</v-card-title>
+                <v-card-text class="text-body-2">Ask KI to detect errors and suggest improvements for your current resume.</v-card-text>
+              </v-card>
+            </div>
+          </v-card>
+        </v-menu>
+      </div>
+    </div>
     <div class="builder-layout">
       <section class="builder-form px-3 px-md-6 py-4">
-        <div class="local-toolbar-actions mb-4">
-          <div class="local-toolbar-actions__row">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" />
-            <v-btn class="local-toolbar-btn" color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview" />
-            <v-btn class="local-toolbar-btn" color="info" size="small" variant="outlined" icon="mdi-download" @click="onDownloadPdfClick" />
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" icon="mdi-draw" @click="openSignatureDialog"></v-btn>
-            <v-menu v-model="aiMenuOpen" :close-on-content-click="false" location="bottom end">
-              <template #activator="{ props }">
-                <v-btn class="local-toolbar-btn local-toolbar-btn--ki" color="deep-purple" size="small" variant="tonal" prepend-icon="mdi-creation" v-bind="props">KI</v-btn>
-              </template>
-              <v-card width="420" class="pa-3">
-                <div class="ki-menu-grid">
-                  <v-card variant="outlined" class="ki-card" @click="aiCreateModalOpen = true; aiMenuOpen = false">
-                    <v-card-title class="text-subtitle-1">Create with KI</v-card-title>
-                    <v-card-text class="text-body-2">Generate a complete resume from a short summary of studies and skills.</v-card-text>
-                  </v-card>
-                  <v-card variant="outlined" class="ki-card" @click="runAiReview(); aiMenuOpen = false">
-                    <v-card-title class="text-subtitle-1">Review</v-card-title>
-                    <v-card-text class="text-body-2">Ask KI to detect errors and suggest improvements for your current resume.</v-card-text>
-                  </v-card>
-                </div>
-              </v-card>
-            </v-menu>
-          </div>
-        </div>
         <v-tabs v-model="activeTab" color="primary" grow class="mb-4">
           <v-tab value="edit">Edit</v-tab>
           <v-tab value="template">Template</v-tab>
@@ -2525,6 +2525,7 @@ if (import.meta.client) {
 <style scoped>
 .resume-create {
   min-height: 100vh;
+  padding-top: 108px;
 }
 
 .builder-layout {
@@ -2690,8 +2691,15 @@ if (import.meta.client) {
 }
 
 .local-toolbar-actions {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
   display: flex;
   justify-content: center;
+  width: min(100%, 560px);
+  padding-inline: 12px;
 }
 
 .local-toolbar-actions__row {
@@ -2700,6 +2708,12 @@ if (import.meta.client) {
   justify-content: center;
   align-items: center;
   gap: 8px;
+  padding: 10px 12px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-primary)) 30%, transparent);
+  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 84%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.22);
 }
 
 .local-toolbar-btn {
@@ -2991,6 +3005,8 @@ if (import.meta.client) {
 
   .local-toolbar-actions {
     justify-content: center;
+    top: 66px;
+    width: calc(100% - 20px);
   }
 }
 </style>
