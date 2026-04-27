@@ -1447,7 +1447,8 @@
         "deadlineAfter": "Deadline after",
         "deadlineBefore": "Deadline before",
         "requestedAfter": "Requested after",
-        "resolvedBefore": "Resolved before"
+        "resolvedBefore": "Resolved before",
+        "assignedToMe": "Assigned to me"
       },
       "tabs": {
         "pipeline": "Pipeline",
