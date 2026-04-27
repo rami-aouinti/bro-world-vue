@@ -169,25 +169,34 @@ const sectionHeadingByKey: Record<SectionKey, string> = {
           />
           <h3 class="text-dark" :style="headingStyle">{{ sectionHeadingByKey.language }}</h3>
           <article v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" :style="articleStyle">
-            <h4>
-              <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
-            </h4>
-            <v-rating
-              v-if="section.variant === 'stars'"
-              :model-value="levelToStars(language.level)"
-              readonly
-              length="5"
-              density="compact"
-              color="amber"
-              size="16"
-            />
-            <template v-else-if="section.variant === 'progress'">
+            <template v-if="section.variant === 'stars'">
               <div class="d-flex align-center ga-2">
-                <v-progress-linear class="terra-language-progress" :model-value="levelToPercent(language.level)" height="8" rounded color="primary" />
-                <small class="text-dark">{{ levelToPercent(language.level) }}%</small>
+                <v-rating
+                  :model-value="levelToStars(language.level)"
+                  readonly
+                  length="5"
+                  density="compact"
+                  color="amber"
+                  size="16"
+                />
+                <h4>
+                  <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+                </h4>
               </div>
             </template>
-            <p v-else class="period" :style="periodStyle">{{ levelToText(language.level) }}</p>
+            <template v-else-if="section.variant === 'progress'">
+              <h4 class="d-flex align-center ga-2">
+                <small class="text-dark">{{ levelToPercent(language.level) }}%</small>
+                <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+              </h4>
+              <div class="d-flex align-center ga-2">
+                <v-progress-linear class="terra-language-progress" :model-value="levelToPercent(language.level)" height="8" rounded color="primary" />
+              </div>
+            </template>
+            <h4 v-else>
+              <span class="period" :style="periodStyle">{{ levelToText(language.level) }} — </span>
+              <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+            </h4>
           </article>
         </template>
       </section>

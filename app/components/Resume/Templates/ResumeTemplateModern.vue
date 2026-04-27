@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { levelToPercent, levelToStars, levelToText } from '~/utils/resumeLanguageLevel'
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 
 type SectionKey = 'experience' | 'education' | 'language' | 'project'
@@ -105,10 +106,25 @@ function updateText(path: string, value: string) {
           <template v-if="section.key === 'language'">
             <SectionToolbar section-key="language" :variants="sectionVariantOptions.language" :current-variant="currentVariant('language')" :can-move-up="canMoveUp('language')" :can-move-down="canMoveDown('language')" @add-item="() => emit('add-item', 'language')" @change-variant="(_, variant) => emit('change-variant', 'language', variant)" @move-up="() => emit('move-section', 'language', 'up')" @move-down="() => emit('move-section', 'language', 'down')" />
             <h3>Languages</h3>
-            <ul class="bars">
+            <ul v-if="currentVariant('language') === 'text-level'" class="bars">
               <li v-for="(language, index) in resume.languages" :key="language.name" class="text-dark">
+                <small>{{ levelToText(language.level) }} — </small>
                 <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
-                <div><i :style="{ width: `${language.level}%` }" /></div>
+              </li>
+            </ul>
+            <ul v-else-if="currentVariant('language') === 'stars'" class="bars">
+              <li v-for="(language, index) in resume.languages" :key="language.name" class="text-dark d-flex align-center ga-2">
+                <v-rating :model-value="levelToStars(language.level)" readonly length="5" density="compact" color="amber" size="16" />
+                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+              </li>
+            </ul>
+            <ul v-else class="bars">
+              <li v-for="(language, index) in resume.languages" :key="language.name" class="text-dark">
+                <div class="d-flex align-center ga-2">
+                  <small>{{ levelToPercent(language.level) }}%</small>
+                  <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+                </div>
+                <div><i :style="{ width: `${levelToPercent(language.level)}%` }" /></div>
               </li>
             </ul>
           </template>

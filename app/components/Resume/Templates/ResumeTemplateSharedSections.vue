@@ -98,13 +98,12 @@ const projectVariant = computed<'list' | 'cards' | 'two-column'>(() => {
       <h3 class="cv-heading-section cv-divider-bottom text-dark">Languages</h3>
       <ul v-if="languageVariant === 'text-level'">
         <li v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`">
+          <small>{{ levelToText(language.level) }} — </small>
           <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
-          <small class="ms-2">({{ levelToText(language.level) }})</small>
         </li>
       </ul>
       <div v-else-if="languageVariant === 'stars'" class="language-stars-list">
         <div v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" class="language-stars-item">
-          <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
           <v-rating
             :model-value="levelToStars(language.level)"
             readonly
@@ -114,13 +113,16 @@ const projectVariant = computed<'list' | 'cards' | 'two-column'>(() => {
             density="compact"
             half-increments
           />
+          <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
         </div>
       </div>
       <div v-else class="language-progress-list">
         <div v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" class="language-progress-item">
           <div class="d-flex align-center justify-space-between ga-2">
-            <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
-            <small>{{ levelToPercent(language.level) }}%</small>
+            <div class="d-flex align-center ga-2">
+              <small>{{ levelToPercent(language.level) }}%</small>
+              <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+            </div>
           </div>
           <v-progress-linear :model-value="levelToPercent(language.level)" height="8" rounded color="primary" />
         </div>
