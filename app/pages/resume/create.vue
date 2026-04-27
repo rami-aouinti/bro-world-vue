@@ -577,31 +577,61 @@ const templateUsesTimeline = computed(
 )
 const defaultTemplateCapabilities: TemplateCapabilities = {
   ownsAllSections: false,
-  supportsSectionToolbar: false,
-  supportsSectionVariants: false,
+  supportsSectionToolbar: true,
+  supportsSectionVariants: true,
 }
 const templateCapabilities: Record<string, TemplateCapabilities> = {
+  aurora: {
+    ownsAllSections: false,
+    supportsSectionToolbar: true,
+    supportsSectionVariants: true,
+  },
   classic: {
     ownsAllSections: true,
-    supportsSectionToolbar: false,
-    supportsSectionVariants: false,
+    supportsSectionToolbar: true,
+    supportsSectionVariants: true,
+  },
+  'corporate-blue': {
+    ownsAllSections: false,
+    supportsSectionToolbar: true,
+    supportsSectionVariants: true,
+  },
+  creative: {
+    ownsAllSections: false,
+    supportsSectionToolbar: true,
+    supportsSectionVariants: true,
+  },
+  executive: {
+    ownsAllSections: false,
+    supportsSectionToolbar: true,
+    supportsSectionVariants: true,
+  },
+  minimalist: {
+    ownsAllSections: false,
+    supportsSectionToolbar: true,
+    supportsSectionVariants: true,
   },
   modern: {
     ownsAllSections: true,
     supportsSectionToolbar: true,
     supportsSectionVariants: true,
   },
-  executive: {
+  'ocean-split': {
     ownsAllSections: false,
-    supportsSectionToolbar: false,
-    supportsSectionVariants: false,
+    supportsSectionToolbar: true,
+    supportsSectionVariants: true,
   },
-  minimalist: {
+  professional: {
     ownsAllSections: false,
-    supportsSectionToolbar: false,
-    supportsSectionVariants: false,
+    supportsSectionToolbar: true,
+    supportsSectionVariants: true,
   },
   terra: {
+    ownsAllSections: false,
+    supportsSectionToolbar: true,
+    supportsSectionVariants: true,
+  },
+  traditional: {
     ownsAllSections: false,
     supportsSectionToolbar: true,
     supportsSectionVariants: true,
@@ -2812,7 +2842,7 @@ if (import.meta.client) {
           <ResumeTemplateSharedSections
             v-if="shouldRenderSharedSections"
             :resume="resume"
-            :editable="selectedTemplateCapabilities.supportsSectionToolbar"
+            :editable="true"
             :section-layout="orderedPreviewSections"
             :level-input-mode="levelInputMode"
             :hidden-sections="sharedSectionsHiddenByTemplate"
@@ -3018,7 +3048,7 @@ if (import.meta.client) {
               v-if="shouldRenderSharedSections"
               :resume="resume"
               :section-layout="orderedPreviewSections"
-              :editable="selectedTemplateCapabilities.supportsSectionToolbar"
+              :editable="true"
               :hidden-sections="sharedSectionsHiddenByTemplate"
               :tone="sharedSectionsTone"
               @add-item="(section) => addItemToPreviewSection(section as PreviewSectionKey)"
