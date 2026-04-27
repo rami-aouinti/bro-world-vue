@@ -20,6 +20,7 @@ type SectionLayoutEntry<K extends PreviewSectionKey = PreviewSectionKey> = {
   key: K
   label: string
   variant: SectionLayoutVariant[K]
+  region?: 'main' | 'aside'
 }
 
 const props = withDefaults(defineProps<{
@@ -39,6 +40,7 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
   (event: 'add-item', sectionKey: string): void
   (event: 'change-variant', sectionKey: string, variant: string): void
+  (event: 'move-section', sectionKey: string, direction: 'up' | 'down'): void
 }>()
 
 const toneClass = computed(() => {
@@ -84,6 +86,17 @@ const projectVariant = computed<'list' | 'cards' | 'two-column'>(() => {
     : 'list'
 })
 
+function canMove(sectionKey: PreviewSectionKey, direction: 'up' | 'down') {
+  const target = props.sectionLayout.find(section => section.key === sectionKey)
+  if (!target?.region) return false
+  const regionSections = props.sectionLayout.filter(section => section.region === target.region)
+  const index = regionSections.findIndex(section => section.key === sectionKey)
+  if (index < 0) return false
+  return direction === 'up'
+    ? index > 0
+    : index < regionSections.length - 1
+}
+
 </script>
 
 <template>
@@ -97,8 +110,12 @@ const projectVariant = computed<'list' | 'cards' | 'two-column'>(() => {
           { label: 'Progress', value: 'progress' },
         ]"
         :current-variant="languageVariant"
+        :can-move-up="canMove('language', 'up')"
+        :can-move-down="canMove('language', 'down')"
         @add-item="() => emit('add-item', 'language')"
         @change-variant="(_, variant) => emit('change-variant', 'language', variant)"
+        @move-up="() => emit('move-section', 'language', 'up')"
+        @move-down="() => emit('move-section', 'language', 'down')"
       />
       <h3 class="cv-heading-section cv-divider-bottom text-dark">Languages</h3>
       <ul v-if="languageVariant === 'text-level'">
@@ -135,8 +152,12 @@ const projectVariant = computed<'list' | 'cards' | 'two-column'>(() => {
           { label: 'Two columns', value: 'two-column' },
         ]"
         :current-variant="projectVariant"
+        :can-move-up="canMove('project', 'up')"
+        :can-move-down="canMove('project', 'down')"
         @add-item="() => emit('add-item', 'project')"
         @change-variant="(_, variant) => emit('change-variant', 'project', variant)"
+        @move-up="() => emit('move-section', 'project', 'up')"
+        @move-down="() => emit('move-section', 'project', 'down')"
       />
       <h3 class="cv-heading-section cv-divider-bottom text-dark">Projects</h3>
       <ul v-if="projectVariant === 'list'">
