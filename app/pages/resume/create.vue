@@ -171,6 +171,11 @@ type TemplateStyleSupport = {
   textStyle: boolean
   sharedSections: boolean
 }
+type TemplateCapabilities = {
+  ownsAllSections: boolean
+  supportsSectionToolbar: boolean
+  supportsSectionVariants: boolean
+}
 type LevelInputMode = 'percent' | 'stars'
 type PhotoShape = 'square' | 'rounded' | 'circle' | 'portrait-card' | 'soft-blob' | 'hex'
 type PhotoShapeOption = {
@@ -564,15 +569,53 @@ const templateSupportsPhoto = computed(
 const templateUsesTimeline = computed(
   () => selectedTemplateConfig.value.useTimeline,
 )
+const defaultTemplateCapabilities: TemplateCapabilities = {
+  ownsAllSections: false,
+  supportsSectionToolbar: false,
+  supportsSectionVariants: false,
+}
+const templateCapabilities: Record<string, TemplateCapabilities> = {
+  classic: {
+    ownsAllSections: true,
+    supportsSectionToolbar: false,
+    supportsSectionVariants: false,
+  },
+  modern: {
+    ownsAllSections: true,
+    supportsSectionToolbar: true,
+    supportsSectionVariants: true,
+  },
+  executive: {
+    ownsAllSections: false,
+    supportsSectionToolbar: false,
+    supportsSectionVariants: false,
+  },
+  minimalist: {
+    ownsAllSections: false,
+    supportsSectionToolbar: false,
+    supportsSectionVariants: false,
+  },
+  terra: {
+    ownsAllSections: false,
+    supportsSectionToolbar: true,
+    supportsSectionVariants: true,
+  },
+}
+const sharedSectionsOwnedByTemplate: Record<string, Array<'languages' | 'projects' | 'courses' | 'references'>> = {
+  classic: ['languages', 'projects', 'courses', 'references'],
+  modern: ['languages', 'projects', 'courses', 'references'],
+  executive: ['languages'],
+  minimalist: ['languages'],
+  terra: ['languages', 'projects'],
+}
+const selectedTemplateCapabilities = computed<TemplateCapabilities>(() =>
+  templateCapabilities[selectedTemplate.value] ?? defaultTemplateCapabilities,
+)
+const shouldRenderSharedSections = computed(
+  () => !selectedTemplateCapabilities.value.ownsAllSections,
+)
 const sharedSectionsHiddenByTemplate = computed(() => {
-  const hiddenSectionsByVariant = {
-    classic: ['languages', 'projects', 'courses', 'references'],
-    modern: ['languages', 'projects', 'courses', 'references'],
-    executive: ['languages'],
-    minimalist: ['languages'],
-  } as const
-
-  return hiddenSectionsByVariant[selectedTemplateConfig.value.variant] ?? []
+  return sharedSectionsOwnedByTemplate[selectedTemplate.value] ?? []
 })
 const pdfModalOpen = ref(false)
 const photoDialogOpen = ref(false)
@@ -1083,6 +1126,19 @@ function isValidSectionVariant<K extends PreviewSectionKey>(
   value: unknown,
 ): value is SectionLayoutVariant[K] {
   return typeof value === 'string' && sectionConfig[key].variants.includes(value as SectionLayoutVariant[K])
+}
+
+function handleSharedSectionAdd(section: PreviewSectionKey) {
+  if (!selectedTemplateCapabilities.value.supportsSectionToolbar) return
+  addItemToPreviewSection(section)
+}
+
+function handleSharedSectionVariantChange(
+  section: PreviewSectionKey,
+  variant: SectionLayoutVariant[PreviewSectionKey],
+) {
+  if (!selectedTemplateCapabilities.value.supportsSectionVariants) return
+  setSectionVariant(section, variant)
 }
 
 const activeTheme = computed(
@@ -2743,14 +2799,15 @@ if (import.meta.client) {
             @move-section="moveSection"
           />
           <ResumeTemplateSharedSections
+            v-if="shouldRenderSharedSections"
             :resume="resume"
-            :editable="true"
+            :editable="selectedTemplateCapabilities.supportsSectionToolbar"
             :section-layout="sectionLayout"
             :level-input-mode="levelInputMode"
             :hidden-sections="sharedSectionsHiddenByTemplate"
             :tone="sharedSectionsTone"
-            @add-item="addItemToPreviewSection"
-            @change-variant="setSectionVariant"
+            @add-item="(section) => handleSharedSectionAdd(section as PreviewSectionKey)"
+            @change-variant="(section, variant) => handleSharedSectionVariantChange(section as PreviewSectionKey, variant as SectionLayoutVariant[PreviewSectionKey])"
           />
           <div v-if="signatureDataUrl" class="signature-overlay">
             <img :src="signatureDataUrl" alt="Signature" />
@@ -2946,13 +3003,14 @@ if (import.meta.client) {
               @move-section="moveSection"
             />
             <ResumeTemplateSharedSections
+              v-if="shouldRenderSharedSections"
               :resume="resume"
               :section-layout="sectionLayout"
-              :editable="true"
+              :editable="selectedTemplateCapabilities.supportsSectionToolbar"
               :hidden-sections="sharedSectionsHiddenByTemplate"
               :tone="sharedSectionsTone"
-              @add-item="addItemToPreviewSection"
-              @change-variant="setSectionVariant"
+              @add-item="(section) => handleSharedSectionAdd(section as PreviewSectionKey)"
+              @change-variant="(section, variant) => handleSharedSectionVariantChange(section as PreviewSectionKey, variant as SectionLayoutVariant[PreviewSectionKey])"
             />
           </div>
         </v-card-text>
