@@ -11,6 +11,7 @@ import ResumeTemplateTraditional from '~/components/Resume/Templates/ResumeTempl
 import ResumeTemplateOceanSplit from '~/components/Resume/Templates/ResumeTemplateOceanSplit.vue'
 import ResumeTemplateCorporateBlue from '~/components/Resume/Templates/ResumeTemplateCorporateBlue.vue'
 import ResumeTemplateSharedSections from '~/components/Resume/Templates/ResumeTemplateSharedSections.vue'
+import type { RoundedOptionId, Typography } from '~/constants/resumeDesign'
 import {
   COVER_LETTER_TEMPLATES,
   COVER_PAGE_TEMPLATES,
@@ -20,7 +21,6 @@ import {
 } from '~/constants/resumeTemplates'
 import {
   useResumeDesignControls,
-  type ResumeTextStyleOption as TextStyleOption,
 } from '~/composables/useResumeDesignControls'
 
 definePageMeta({
@@ -192,8 +192,8 @@ const route = useRoute()
 const selectedTemplate = ref(DEFAULT_RESUME_TEMPLATE_ID)
 const selectedDocumentType = ref<'resume'>('resume')
 const selectedTheme = ref('ocean')
-const selectedRounded = ref<'none' | 'sm' | 'md' | 'lg'>('md')
-const selectedTextStyle = ref<TextStyleOption['value']>('clean')
+const selectedRounded = ref<RoundedOptionId>('md')
+const selectedTextStyle = ref<Typography>('clean')
 const levelInputMode = ref<LevelInputMode>('percent')
 
 const selectedTemplateFilter = ref<TemplateFilter>('all')
