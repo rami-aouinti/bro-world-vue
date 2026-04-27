@@ -66,8 +66,40 @@ function updateText(path: string, value: string) {
   </section>
 </template>
 <style scoped>
+.education {
+  border-bottom: var(--rs-section-separator, none);
+  padding-bottom: var(--rs-section-padding-bottom, 0);
+}
+.cv-heading-section {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: var(--rs-heading-border-bottom, 0);
+  background: var(--rs-heading-bg, transparent);
+  border-radius: var(--rs-heading-radius, 0);
+  padding: var(--rs-heading-padding, 0);
+}
 .education-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .entry { margin-bottom: var(--entry-gap, 16px); }
+.entry {
+  position: relative;
+  border: var(--rs-card-border, none);
+  background: var(--rs-card-bg, transparent);
+  border-radius: var(--rs-card-radius, 0);
+  padding: var(--rs-card-padding, 0);
+  border-left: var(--rs-entry-border-left, none);
+  padding-left: var(--rs-entry-padding-left, 0);
+}
+.entry::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: .55rem;
+  width: var(--rs-marker-width, var(--rs-marker-size, 0));
+  height: var(--rs-marker-height, var(--rs-marker-size, 0));
+  border-radius: var(--rs-marker-radius, 0);
+  background: color-mix(in srgb, var(--cv-accent) 55%, transparent);
+}
 .timeline-entry { border-left: 2px solid color-mix(in srgb, var(--cv-accent) 38%, transparent); padding-left: 10px; }
 .density-compact { --entry-gap: 10px; }
 .density-normal { --entry-gap: 16px; }
