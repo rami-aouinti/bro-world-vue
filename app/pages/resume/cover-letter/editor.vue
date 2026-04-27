@@ -2,14 +2,12 @@
 import CoverLetterTemplateClassic from '~/components/Resume/Templates/CoverLetterTemplateClassic.vue'
 import CoverLetterTemplateModern from '~/components/Resume/Templates/CoverLetterTemplateModern.vue'
 import { COVER_LETTER_TEMPLATE_IDS, COVER_PAGE_TEMPLATE_IDS } from '~/constants/resumeTemplates'
+import { useResumeDesignControls, type ResumeTextStyleOption } from '~/composables/useResumeDesignControls'
 
 definePageMeta({
   title: 'Resume · Cover Letter Editor',
   layout: 'resume',
 })
-
-type Typography = 'sans' | 'serif'
-type PaletteId = 'ocean' | 'terra' | 'midnight' | 'forest' | 'sunset' | 'lavender'
 
 type CoverLetterModel = {
   fullName: string
@@ -35,21 +33,14 @@ const tabs = [
   { value: 'design', label: 'Design' },
 ] as const
 
-const palettes = {
-  ocean: { page: '#f8fafc', soft: '#dbeafe', accent: '#1d4ed8', text: '#0f172a' },
-  terra: { page: '#fffaf6', soft: '#f5e2d8', accent: '#9a3412', text: '#431407' },
-  midnight: { page: '#f8fafc', soft: '#dbe4ff', accent: '#312e81', text: '#1f2937' },
-  forest: { page: '#f7fdf8', soft: '#d9f3df', accent: '#166534', text: '#052e16' },
-  sunset: { page: '#fffaf5', soft: '#ffe4d6', accent: '#ea580c', text: '#7c2d12' },
-  lavender: { page: '#faf7ff', soft: '#ede9fe', accent: '#7c3aed', text: '#3b0764' },
-} as const
-
 const activeTab = ref<'edit' | 'template' | 'design'>('edit')
 const fallbackTemplateId = COVER_LETTER_TEMPLATE_IDS[0] ?? 'cover-letter-classic'
 const fallbackCoverPageTemplateId = COVER_PAGE_TEMPLATE_IDS[0] ?? ''
 const selectedTemplate = ref(fallbackTemplateId)
-const selectedPalette = ref<PaletteId>('ocean')
-const selectedTypography = ref<Typography>('sans')
+const selectedTheme = ref('ocean')
+const selectedRounded = ref<'none' | 'sm' | 'md' | 'lg'>('md')
+const selectedTextStyle = ref<ResumeTextStyleOption['value']>('clean')
+const { colorThemes, roundedOptions, textStyleOptions, roundedPxByValue, toCoverPalette, toCoverTypography } = useResumeDesignControls()
 
 const importedFlow = computed(() => parseCoverFlowQuery(route.query))
 
@@ -95,7 +86,9 @@ const templateComponents = {
 } as const
 
 const activeTemplateComponent = computed(() => templateComponents[selectedTemplate.value as keyof typeof templateComponents] ?? CoverLetterTemplateClassic)
-const activePalette = computed(() => palettes[selectedPalette.value])
+const activePalette = computed(() => toCoverPalette(selectedTheme.value))
+const activeTypography = computed(() => toCoverTypography(selectedTextStyle.value))
+const activeRounded = computed(() => roundedPxByValue[selectedRounded.value])
 
 onMounted(() => {
   if (typeof route.query.template === 'string' && COVER_LETTER_TEMPLATE_IDS.includes(route.query.template)) {
@@ -163,39 +156,59 @@ onMounted(() => {
           </v-window-item>
 
           <v-window-item value="design">
-            <v-card class="form-card mb-4" variant="outlined">
-              <v-card-title>Design minimal</v-card-title>
-              <v-card-text>
-                <p class="text-subtitle-2 mb-2">Palette</p>
-                <div class="palette-grid mb-4">
-                  <button
-                    v-for="(palette, id) in palettes"
-                    :key="id"
-                    type="button"
-                    class="palette-item"
-                    :class="{ 'palette-item--active': selectedPalette === id }"
-                    @click="selectedPalette = id as PaletteId"
-                  >
-                    <span :style="{ background: palette.soft }" />
-                    <span :style="{ background: palette.accent }" />
-                    <span :style="{ background: palette.page }" />
-                  </button>
-                </div>
+            <article class="form-section mb-4">
+              <header class="mb-4">
+                <h2>Design</h2>
+                <p>Ajustez rapidement les réglages visuels pour aligner la lettre de motivation avec votre CV.</p>
+              </header>
 
-                <p class="text-subtitle-2 mb-2">Typographie</p>
-                <v-btn-toggle v-model="selectedTypography" mandatory divided color="primary">
-                  <v-btn value="sans">Sans</v-btn>
-                  <v-btn value="serif">Serif</v-btn>
-                </v-btn-toggle>
-              </v-card-text>
-            </v-card>
+              <p class="section-label">Color palette</p>
+              <div class="palette-grid mb-4">
+                <button
+                  v-for="theme in colorThemes"
+                  :key="theme.name"
+                  type="button"
+                  class="palette-item"
+                  :class="{ 'palette-item--active': selectedTheme === theme.name }"
+                  @click="selectedTheme = theme.name"
+                >
+                  <span :style="{ background: theme.sidebar }" />
+                  <span :style="{ background: theme.accent }" />
+                  <span :style="{ background: theme.page }" />
+                </button>
+              </div>
+
+              <p class="section-label">Rounded</p>
+              <v-btn-toggle v-model="selectedRounded" mandatory divided class="rounded-toggle" color="primary">
+                <v-btn v-for="option in roundedOptions" :key="option.value" :value="option.value" variant="text">
+                  {{ option.title }}
+                </v-btn>
+              </v-btn-toggle>
+
+              <p class="section-label mt-4">Text style</p>
+              <AppSelect
+                v-model="selectedTextStyle"
+                :items="textStyleOptions"
+                item-title="label"
+                item-value="value"
+                label="Typography preset"
+                density="comfortable"
+                hide-details
+              />
+            </article>
           </v-window-item>
         </v-window>
       </section>
 
       <aside class="builder-preview py-6 px-5 px-md-8">
         <div class="preview-grid">
-          <component :is="activeTemplateComponent" :model="model" :palette="activePalette" :typography="selectedTypography" />
+          <component
+            :is="activeTemplateComponent"
+            :model="model"
+            :palette="activePalette"
+            :typography="activeTypography"
+            :rounded="activeRounded"
+          />
         </div>
       </aside>
     </div>
@@ -212,6 +225,10 @@ onMounted(() => {
 .template-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
 .template-card { cursor: pointer; transition: .2s ease; }
 .template-card--active { border-color: rgb(var(--v-theme-primary)); box-shadow: 0 0 0 1px rgb(var(--v-theme-primary)); }
+.form-section { border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity)); border-radius: 14px; padding: 18px; background: rgb(var(--v-theme-surface)); }
+.form-section h2 { margin: 0; font-size: 1.1rem; }
+.form-section p { color: rgba(var(--v-theme-on-surface), .72); }
+.section-label { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: rgba(var(--v-theme-on-surface), .65); margin-bottom: 10px; }
 .palette-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(68px, 1fr)); gap: 12px; }
 .palette-item { border: 1px solid rgba(15, 23, 42, .15); border-radius: 12px; padding: 6px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: transparent; }
 .palette-item span { border-radius: 8px; height: 20px; }

@@ -21,8 +21,10 @@ withDefaults(defineProps<{
   model: CoverPageModel
   palette: Palette
   typography?: 'sans' | 'serif'
+  rounded?: string
 }>(), {
   typography: 'sans',
+  rounded: '14px',
 })
 </script>
 
@@ -35,6 +37,7 @@ withDefaults(defineProps<{
       '--cp-accent': palette.accent,
       '--cp-soft': palette.soft,
       '--cp-text': palette.text,
+      '--cp-rounded': rounded,
     }"
   >
     <aside class="cover-page-terra__sidebar">
@@ -56,7 +59,7 @@ withDefaults(defineProps<{
 </template>
 
 <style scoped>
-.cover-page-terra { display: grid; grid-template-columns: 180px 1fr; background: var(--cp-page); color: var(--cp-text); min-height: 100%; border-radius: 14px; overflow: hidden; }
+.cover-page-terra { display: grid; grid-template-columns: 180px 1fr; background: var(--cp-page); color: var(--cp-text); min-height: 100%; border-radius: var(--cp-rounded); overflow: hidden; }
 .cover-page-terra__sidebar { background: var(--cp-soft); padding: 28px 18px; display: flex; flex-direction: column; gap: 8px; }
 .cover-page-terra__content { padding: 38px; display: flex; flex-direction: column; gap: 14px; }
 .cover-page-terra__date { color: color-mix(in srgb, var(--cp-text) 70%, white); }
