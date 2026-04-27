@@ -4,8 +4,9 @@ import CoverPageTemplateHeroCentered from '~/components/Resume/Templates/CoverPa
 import CoverPageTemplateSidebarPulse from '~/components/Resume/Templates/CoverPageTemplateSidebarPulse.vue'
 import CoverPageTemplateSplitEditorial from '~/components/Resume/Templates/CoverPageTemplateSplitEditorial.vue'
 import CoverPageTemplateTerra from '~/components/Resume/Templates/CoverPageTemplateTerra.vue'
+import type { RoundedOptionId, Typography } from '~/constants/resumeDesign'
 import { COVER_PAGE_TEMPLATE_IDS } from '~/constants/resumeTemplates'
-import { useResumeDesignControls, type ResumeTextStyleOption } from '~/composables/useResumeDesignControls'
+import { useResumeDesignControls } from '~/composables/useResumeDesignControls'
 
 definePageMeta({
   title: 'Resume · Cover Page Editor',
@@ -38,8 +39,8 @@ const activeTab = ref<'edit' | 'template' | 'design'>('edit')
 const fallbackTemplateId = COVER_PAGE_TEMPLATE_IDS[0] ?? 'cover-page-terra'
 const selectedTemplate = ref(fallbackTemplateId)
 const selectedTheme = ref('ocean')
-const selectedRounded = ref<'none' | 'sm' | 'md' | 'lg'>('md')
-const selectedTextStyle = ref<ResumeTextStyleOption['value']>('clean')
+const selectedRounded = ref<RoundedOptionId>('md')
+const selectedTextStyle = ref<Typography>('clean')
 const { colorThemes, roundedOptions, textStyleOptions, toCoverPalette } = useResumeDesignControls()
 const coverLayoutSettings = reactive({
   dividerStyle: 'solid' as const,

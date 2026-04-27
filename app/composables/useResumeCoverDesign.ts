@@ -1,4 +1,4 @@
-import { roundedPxByValue, textStyleVarsByValue, type ResumeTextStyleOption } from '~/composables/useResumeDesignControls'
+import { roundedPxByValue, textStyleVarsByValue, type Typography } from '~/constants/resumeDesign'
 
 type CoverTypography = 'sans' | 'serif'
 type CoverRounded = 'none' | 'sm' | 'md' | 'lg' | string
@@ -9,7 +9,7 @@ type CoverLayoutSettings = {
 }
 
 type CoverDesignOptions = {
-  textStyle?: ResumeTextStyleOption['value']
+  textStyle?: Typography
   typography?: CoverTypography
   rounded?: CoverRounded
   layoutSettings?: CoverLayoutSettings
@@ -23,7 +23,7 @@ const dividerWidthByWeight: Record<NonNullable<CoverLayoutSettings['dividerWeigh
 
 const roundedKeySet = new Set<keyof typeof roundedPxByValue>(['none', 'sm', 'md', 'lg'])
 
-function resolveTextStyle(textStyle?: ResumeTextStyleOption['value'], typography?: CoverTypography): ResumeTextStyleOption['value'] {
+function resolveTextStyle(textStyle?: Typography, typography?: CoverTypography): Typography {
   if (textStyle && textStyle in textStyleVarsByValue) return textStyle
   if (typography === 'serif') return 'serif'
   return 'clean'
