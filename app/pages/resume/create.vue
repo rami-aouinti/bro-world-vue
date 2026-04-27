@@ -196,6 +196,8 @@ type AddSectionType =
   | 'project'
   | 'certification'
   | 'reference'
+type PreviewSectionKey = 'experience' | 'education' | 'language' | 'project'
+type PreviewSectionTemplate = 'bullets' | 'one-column' | 'two-columns'
 
 const activeTab = ref<'edit' | 'template' | 'design' | 'import'>('edit')
 const toolbarTemplateMenuOpen = ref(false)
@@ -255,6 +257,11 @@ const addSectionOptions = [
   { label: 'Certification', value: 'certification' },
   { label: 'Reference', value: 'reference' },
 ] as const satisfies ReadonlyArray<{ label: string; value: AddSectionType }>
+const previewSectionTemplateOptions = [
+  { label: 'Bullets', value: 'bullets' },
+  { label: '1 col', value: 'one-column' },
+  { label: '2 cols', value: 'two-columns' },
+] as const satisfies ReadonlyArray<{ label: string; value: PreviewSectionTemplate }>
 
 const coverPageTemplateCards: Template[] = COVER_PAGE_TEMPLATES.map(template => ({
   id: template.id,
@@ -548,6 +555,13 @@ const loginLoading = ref(false)
 const pendingPdfDownload = ref(false)
 const addSectionDialogOpen = ref(false)
 const addSectionType = ref<AddSectionType>('experience')
+const previewSectionOrder = ref<PreviewSectionKey[]>(['experience', 'education', 'language', 'project'])
+const previewSectionTemplate = reactive<Record<PreviewSectionKey, PreviewSectionTemplate>>({
+  experience: 'bullets',
+  education: 'one-column',
+  language: 'bullets',
+  project: 'two-columns',
+})
 const addSectionDraft = reactive({
   profile: { profile: '' },
   experience: { role: '', company: '', city: '', start: '', end: '', bullets: '' },
@@ -885,6 +899,45 @@ function submitAddSection() {
 
   addSectionDialogOpen.value = false
   activeTab.value = 'edit'
+}
+
+const previewSectionLabelByKey: Record<PreviewSectionKey, string> = {
+  experience: 'Expérience',
+  education: 'Education',
+  language: 'Language',
+  project: 'Project',
+}
+
+const orderedPreviewSections = computed(() => previewSectionOrder.value.map((key) => ({
+  key,
+  label: previewSectionLabelByKey[key],
+  template: previewSectionTemplate[key],
+})))
+
+function addItemToPreviewSection(section: PreviewSectionKey) {
+  switch (section) {
+    case 'experience':
+      addExperience()
+      break
+    case 'education':
+      addEducation()
+      break
+    case 'language':
+      addLanguage()
+      break
+    case 'project':
+      addProject()
+      break
+  }
+}
+
+function movePreviewSection(section: PreviewSectionKey, direction: 'up' | 'down') {
+  const currentIndex = previewSectionOrder.value.indexOf(section)
+  if (currentIndex < 0) return
+  const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1
+  if (targetIndex < 0 || targetIndex >= previewSectionOrder.value.length) return
+  const [movedSection] = previewSectionOrder.value.splice(currentIndex, 1)
+  previewSectionOrder.value.splice(targetIndex, 0, movedSection)
 }
 
 const activeTheme = computed(
@@ -2498,6 +2551,63 @@ if (import.meta.client) {
               {{ shape.icon }}
             </v-btn>
           </div>
+          <div class="preview-section-ui-layer" aria-label="Preview section controls">
+            <div
+              v-for="(section, index) in orderedPreviewSections"
+              :key="`preview-ui-${section.key}`"
+              class="preview-section-ui-wrapper"
+              tabindex="0"
+              :aria-label="`Zone de contrôle section ${section.label}`"
+            >
+              <span class="preview-section-ui-label">{{ section.label }}</span>
+              <div class="preview-section-ui-panel">
+                <v-btn
+                  size="x-small"
+                  icon="mdi-plus"
+                  variant="tonal"
+                  :aria-label="`Ajouter un item dans ${section.label}`"
+                  @click="addItemToPreviewSection(section.key)"
+                />
+                <v-menu location="bottom end" origin="top end">
+                  <template #activator="{ props }">
+                    <v-btn
+                      size="x-small"
+                      icon="mdi-view-grid-outline"
+                      variant="tonal"
+                      :aria-label="`Choisir le template de section ${section.label}`"
+                      v-bind="props"
+                    />
+                  </template>
+                  <v-list density="compact" min-width="170">
+                    <v-list-subheader>Template {{ section.label }}</v-list-subheader>
+                    <v-list-item
+                      v-for="option in previewSectionTemplateOptions"
+                      :key="`section-template-${section.key}-${option.value}`"
+                      :title="option.label"
+                      :active="previewSectionTemplate[section.key] === option.value"
+                      @click="previewSectionTemplate[section.key] = option.value"
+                    />
+                  </v-list>
+                </v-menu>
+                <v-btn
+                  size="x-small"
+                  icon="mdi-chevron-up"
+                  variant="tonal"
+                  :disabled="index === 0"
+                  :aria-label="`Monter la section ${section.label}`"
+                  @click="movePreviewSection(section.key, 'up')"
+                />
+                <v-btn
+                  size="x-small"
+                  icon="mdi-chevron-down"
+                  variant="tonal"
+                  :disabled="index === orderedPreviewSections.length - 1"
+                  :aria-label="`Descendre la section ${section.label}`"
+                  @click="movePreviewSection(section.key, 'down')"
+                />
+              </div>
+            </div>
+          </div>
           <component
             :is="selectedTemplateComponent"
             :resume="resume"
@@ -3042,6 +3152,54 @@ if (import.meta.client) {
   transform: translateX(-50%);
   z-index: 9;
   max-width: min(520px, calc(100% - 32px));
+}
+
+.preview-section-ui-layer {
+  position: absolute;
+  top: 72px;
+  right: 12px;
+  z-index: 9;
+  display: grid;
+  gap: 8px;
+}
+
+.preview-section-ui-wrapper {
+  position: relative;
+  min-width: 140px;
+  border-radius: 10px;
+  outline: none;
+}
+
+.preview-section-ui-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #1e293b;
+}
+
+.preview-section-ui-panel {
+  margin-top: 4px;
+  display: inline-flex;
+  gap: 4px;
+  justify-content: flex-end;
+  width: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-2px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.preview-section-ui-wrapper:hover .preview-section-ui-panel,
+.preview-section-ui-wrapper:focus-within .preview-section-ui-panel,
+.preview-section-ui-wrapper:focus-visible .preview-section-ui-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .signature-overlay {
