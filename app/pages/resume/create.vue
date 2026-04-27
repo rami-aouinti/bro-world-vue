@@ -540,8 +540,6 @@ const safePhotoShape = computed<PhotoShape>(() => (
     ? (selectedPhotoShape.value as PhotoShape)
     : 'square'
 ))
-const previewToolsVisible = ref(false)
-const previewToolsTop = ref(20)
 let aiElapsedTimer: ReturnType<typeof setInterval> | null = null
 const { t } = useI18n()
 const { loggedIn, fetch: refreshSession } = useUserSession()
@@ -585,22 +583,6 @@ function onPhotoSelected(event: Event) {
 
 function clearPhoto() {
   resume.photoUrl = ''
-}
-
-function onPreviewMouseEnter() {
-  previewToolsVisible.value = true
-}
-
-function onPreviewMouseLeave() {
-  previewToolsVisible.value = false
-}
-
-function onPreviewMouseMove(event: MouseEvent) {
-  const target = event.currentTarget as HTMLElement | null
-  if (!target) return
-  const { top, height } = target.getBoundingClientRect()
-  const nextTop = event.clientY - top + 12
-  previewToolsTop.value = Math.max(12, Math.min(nextTop, height - 64))
 }
 
 function openSignatureDialog() {
@@ -1001,25 +983,6 @@ const selectedTemplateHasPartialSupport = computed(() => {
   const support = selectedTemplateSupport.value
   return !(support.theme && support.rounded && support.textStyle && support.sharedSections)
 })
-
-const canRemoveExperience = computed(() => resume.experiences.length > 1)
-const canRemoveEducation = computed(() => resume.education.length > 1)
-const canRemoveSkill = computed(() => resume.skills.length > 1)
-
-function removeLastExperience() {
-  if (!canRemoveExperience.value) return
-  removeExperience(resume.experiences.length - 1)
-}
-
-function removeLastEducation() {
-  if (!canRemoveEducation.value) return
-  removeEducation(resume.education.length - 1)
-}
-
-function removeLastSkill() {
-  if (!canRemoveSkill.value) return
-  removeSkill(resume.skills.length - 1)
-}
 
 async function buildResumePdfBlob() {
   if (!previewExportRef.value || !import.meta.client) return ''
@@ -2513,9 +2476,6 @@ if (import.meta.client) {
           class="preview-grid"
           :class="[activeRoundedClass, activeTextStyleClass, `photo-shape-${safePhotoShape}`]"
           :style="previewStyle"
-          @mouseenter="onPreviewMouseEnter"
-          @mouseleave="onPreviewMouseLeave"
-          @mousemove="onPreviewMouseMove"
         >
           <v-alert
             v-if="selectedTemplateHasPartialSupport"
@@ -2526,66 +2486,7 @@ if (import.meta.client) {
           >
             Ce template est en support partiel pour certains réglages de design.
           </v-alert>
-          <div class="preview-hover-tools" :class="{ 'preview-hover-tools--active': previewToolsVisible }" :style="{ top: `${previewToolsTop}px` }">
-            <v-btn
-              size="x-small"
-              color="primary"
-              prepend-icon="mdi-plus"
-              variant="flat"
-              @click="addExperience"
-            >
-              Experience
-            </v-btn>
-            <v-btn
-              size="x-small"
-              color="primary"
-              prepend-icon="mdi-plus"
-              variant="flat"
-              @click="addEducation"
-            >
-              Education
-            </v-btn>
-            <v-btn
-              size="x-small"
-              color="primary"
-              prepend-icon="mdi-plus"
-              variant="flat"
-              @click="addSkill"
-            >
-              Skill
-            </v-btn>
-            <v-btn
-              size="x-small"
-              color="error"
-              prepend-icon="mdi-delete-outline"
-              variant="tonal"
-              :disabled="!canRemoveExperience"
-              @click="removeLastExperience"
-            >
-              Exp
-            </v-btn>
-            <v-btn
-              size="x-small"
-              color="error"
-              prepend-icon="mdi-delete-outline"
-              variant="tonal"
-              :disabled="!canRemoveEducation"
-              @click="removeLastEducation"
-            >
-              Edu
-            </v-btn>
-            <v-btn
-              size="x-small"
-              color="error"
-              prepend-icon="mdi-delete-outline"
-              variant="tonal"
-              :disabled="!canRemoveSkill"
-              @click="removeLastSkill"
-            >
-              Skill
-            </v-btn>
-          </div>
-          <div class="preview-image-shapes" :class="{ 'preview-image-shapes--active': previewToolsVisible }">
+          <div class="preview-image-shapes">
             <v-btn
               v-for="shape in photoShapeOptions"
               :key="`preview-photo-shape-${shape.value}`"
@@ -3120,32 +3021,6 @@ if (import.meta.client) {
   position: relative;
 }
 
-.preview-hover-tools {
-  position: absolute;
-  right: 12px;
-  z-index: 8;
-  margin: 0;
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  align-items: center;
-  padding: 8px;
-  border-radius: 12px;
-  border: 1px solid color-mix(in srgb, var(--cv-accent) 30%, #cbd5e1);
-  background: color-mix(in srgb, white 86%, var(--cv-page));
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
-  opacity: 0;
-  transform: translateY(-6px);
-  pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.preview-hover-tools--active {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
 .preview-image-shapes {
   position: absolute;
   left: 12px;
@@ -3158,16 +3033,6 @@ if (import.meta.client) {
   border: 1px solid color-mix(in srgb, var(--cv-accent) 30%, #cbd5e1);
   background: color-mix(in srgb, white 86%, var(--cv-page));
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
-  opacity: 0;
-  transform: translateY(-4px);
-  pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.preview-image-shapes--active {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
 }
 
 .preview-support-alert {
