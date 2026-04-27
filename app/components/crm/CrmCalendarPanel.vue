@@ -23,6 +23,7 @@ interface CrmCalendarResponse {
 }
 
 const { t } = useI18n()
+const { crmApplicationSlug } = useCrmGeneralApplicationSlug()
 
 const isLoading = ref(true)
 const errorMessage = ref('')
@@ -62,9 +63,15 @@ async function loadCalendarEvents() {
   errorMessage.value = ''
 
   try {
-    const response = await privateApi.request<CrmCalendarResponse>(
-      '/api/calendar/private/events',
-    )
+    const response = await privateApi.request<CrmCalendarResponse>('/api/calendar/events/employee-assigned', {
+      method: 'GET',
+      params: {
+        applicationSlug: crmApplicationSlug.value,
+      },
+      body: {
+        applicationSlug: crmApplicationSlug.value,
+      },
+    })
     events.value = response.items ?? []
   } catch (error) {
     errorMessage.value =
