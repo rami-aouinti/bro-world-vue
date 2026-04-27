@@ -1,9 +1,38 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean; onPhotoClick?: () => void }>(), {
+import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+
+type SectionKey = 'experience' | 'education' | 'language' | 'project'
+type SectionLayoutEntry = { key: SectionKey; label: string; variant: string }
+
+const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean; onPhotoClick?: () => void; sectionLayout?: SectionLayoutEntry[] }>(), {
   showPhoto: false,
   editable: false,
   onPhotoClick: undefined,
+  sectionLayout: () => [],
 })
+const emit = defineEmits<{
+  (event: 'add-item', sectionKey: SectionKey): void
+  (event: 'change-variant', sectionKey: SectionKey, variant: string): void
+  (event: 'move-section', sectionKey: SectionKey, direction: 'up' | 'down'): void
+}>()
+
+const sectionVariantOptions: Record<SectionKey, { label: string; value: string }[]> = {
+  experience: [{ label: 'Detailed', value: 'detailed' }, { label: 'Bullets', value: 'bullets' }, { label: 'Compact', value: 'compact' }],
+  education: [{ label: 'Classic', value: 'classic' }, { label: 'Timeline', value: 'timeline' }, { label: 'Two columns', value: 'two-column' }],
+  language: [{ label: 'Text level', value: 'text-level' }, { label: 'Stars', value: 'stars' }, { label: 'Progress', value: 'progress' }],
+  project: [{ label: 'List', value: 'list' }, { label: 'Cards', value: 'cards' }, { label: 'Two columns', value: 'two-column' }],
+}
+const orderedPreviewSections: SectionKey[] = ['experience', 'education', 'language', 'project']
+function currentVariant(sectionKey: SectionKey) {
+  return props.sectionLayout.find(section => section.key === sectionKey)?.variant ?? sectionVariantOptions[sectionKey][0]?.value
+}
+function canMoveUp(sectionKey: SectionKey) {
+  return orderedPreviewSections.indexOf(sectionKey) > 0
+}
+function canMoveDown(sectionKey: SectionKey) {
+  const index = orderedPreviewSections.indexOf(sectionKey)
+  return index > -1 && index < orderedPreviewSections.length - 1
+}
 
 function updateText(path: string, value: string) {
   const segments = path.split('.')
@@ -50,7 +79,8 @@ function updateText(path: string, value: string) {
             </li>
           </ul>
         </section>
-        <section>
+        <section class="resume-section-hoverable resume-section-block">
+          <SectionToolbar section-key="language" :variants="sectionVariantOptions.language" :current-variant="currentVariant('language')" @add-item="() => emit('add-item', 'language')" @change-variant="(_, variant) => emit('change-variant', 'language', variant)" @move-up="() => emit('move-section', 'language', 'up')" @move-down="() => emit('move-section', 'language', 'down')" />
           <h3>Languages</h3>
           <ul class="bars">
             <li v-for="(language, index) in resume.languages" :key="language.name" class="text-dark">
@@ -66,8 +96,9 @@ function updateText(path: string, value: string) {
           <h2 class="cv-heading-section">Profile</h2>
           <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText('profile', (event.target as HTMLElement).innerText)">{{ resume.profile || 'Add a professional summary from the Edit tab.' }}</p>
         </section>
-        <section>
+        <section class="resume-section-hoverable resume-section-block">
           <h2 class="cv-heading-section">Employment History</h2>
+          <SectionToolbar section-key="experience" :variants="sectionVariantOptions.experience" :current-variant="currentVariant('experience')" :can-move-up="canMoveUp('experience')" :can-move-down="canMoveDown('experience')" @add-item="() => emit('add-item', 'experience')" @change-variant="(_, variant) => emit('change-variant', 'experience', variant)" @move-up="() => emit('move-section', 'experience', 'up')" @move-down="() => emit('move-section', 'experience', 'down')" />
           <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="entry text-dark">
             <h4 class="text-dark">
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.role`, (event.target as HTMLElement).innerText)">{{ experience.role }}</span>,
@@ -83,8 +114,9 @@ function updateText(path: string, value: string) {
             </ul>
           </article>
         </section>
-        <section>
+        <section class="resume-section-hoverable resume-section-block">
           <h2 class="cv-heading-section">Projects</h2>
+          <SectionToolbar section-key="project" :variants="sectionVariantOptions.project" :current-variant="currentVariant('project')" :can-move-up="canMoveUp('project')" :can-move-down="canMoveDown('project')" @add-item="() => emit('add-item', 'project')" @change-variant="(_, variant) => emit('change-variant', 'project', variant)" @move-up="() => emit('move-section', 'project', 'up')" @move-down="() => emit('move-section', 'project', 'down')" />
           <article v-for="(project, index) in resume.projects" :key="`project-${index}`" class="entry text-dark">
             <h4 class="text-dark">
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span>
@@ -134,6 +166,7 @@ function updateText(path: string, value: string) {
 .modern-grid { display:grid; grid-template-columns: 280px 1fr; }
 aside { background:color-mix(in srgb, var(--cv-sidebar) 12%, var(--cv-page)); padding:22px; }
 main { padding:24px; }
+.resume-section-block { position: relative; }
 h2,h3 { color:var(--cv-title); margin-bottom:8px; }
 .bars { list-style:none; padding:0; }
 .bars li { margin-bottom:10px; }

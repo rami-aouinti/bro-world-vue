@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { levelToPercent, levelToStars, levelToText } from '~/utils/resumeLanguageLevel'
+import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 
 type LayoutSettings = {
   photoSize?: number
@@ -145,25 +146,18 @@ const sectionHeadingByKey: Record<SectionKey, string> = {
       </header>
 
       <section v-for="section in visibleSections" :key="section.key">
-        <div class="cv-section" tabindex="-1">
-          <div class="cv-section-toolbar" role="toolbar" aria-label="Section experiences actions">
-            <v-btn icon size="x-small" variant="text" @click="emit('add-item', section.key)">+</v-btn>
-            <v-menu>
-              <template #activator="{ props: menuProps }">
-                <v-btn size="x-small" variant="text" v-bind="menuProps">Template</v-btn>
-              </template>
-              <v-list density="compact">
-                <v-list-item
-                  v-for="option in sectionVariantOptions[section.key]"
-                  :key="option.value"
-                  :title="option.label"
-                  @click="emit('change-variant', section.key, option.value)"
-                />
-              </v-list>
-            </v-menu>
-            <v-btn icon size="x-small" variant="text" @click="emit('move-section', section.key, 'up')">↑</v-btn>
-            <v-btn icon size="x-small" variant="text" @click="emit('move-section', section.key, 'down')">↓</v-btn>
-          </div>
+        <div class="cv-section resume-section-hoverable" tabindex="-1">
+          <SectionToolbar
+            :section-key="section.key"
+            :can-move-up="visibleSections.findIndex(item => item.key === section.key) > 0"
+            :can-move-down="visibleSections.findIndex(item => item.key === section.key) < visibleSections.length - 1"
+            :variants="sectionVariantOptions[section.key]"
+            :current-variant="section.variant"
+            @add-item="(sectionKey) => emit('add-item', sectionKey as SectionKey)"
+            @change-variant="(sectionKey, variant) => emit('change-variant', sectionKey as SectionKey, variant)"
+            @move-up="(sectionKey) => emit('move-section', sectionKey as SectionKey, 'up')"
+            @move-down="(sectionKey) => emit('move-section', sectionKey as SectionKey, 'down')"
+          />
           <h2 :style="[headingStyle, sectionHeadingStyle]">{{ sectionHeadingByKey[section.key] }}</h2>
           <template v-if="section.key === 'experience'">
             <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" :style="articleStyle">
@@ -237,25 +231,6 @@ header p { color: color-mix(in srgb, var(--cv-accent) 72%, var(--cv-sidebar)); m
 h2 { color: var(--cv-title); border-top: 1px solid color-mix(in srgb, var(--cv-accent) 24%, var(--cv-page)); padding-top: 12px; margin-bottom: 12px; }
 article { margin-bottom: 14px; }
 .cv-section { position: relative; }
-.cv-section-toolbar {
-  position: absolute;
-  top: 0;
-  right: 0;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .2s ease;
-  display: inline-flex;
-  gap: 4px;
-  align-items: center;
-  background: color-mix(in srgb, var(--cv-page) 82%, transparent);
-  border-radius: 8px;
-  padding: 4px;
-}
-.cv-section:hover .cv-section-toolbar,
-.cv-section:focus-within .cv-section-toolbar {
-  opacity: 1;
-  pointer-events: auto;
-}
 .period { color: var(--cv-secondary); /* Intentional neutral gray metadata. */ font-size: .8rem; }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
