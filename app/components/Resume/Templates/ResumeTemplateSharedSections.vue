@@ -6,10 +6,32 @@ type SharedSectionKey =
   | 'references'
   | 'hobbies'
 
-const props = withDefaults(defineProps<{ resume: any; editable?: boolean; hiddenSections?: SharedSectionKey[]; tone?: 'light' | 'dark' | 'auto' }>(), {
+type PreviewSectionKey = 'experience' | 'education' | 'language' | 'project'
+type SectionLayoutVariant = {
+  experience: 'detailed' | 'bullets' | 'compact'
+  education: 'classic' | 'timeline' | 'two-column'
+  language: 'text-level' | 'stars' | 'progress'
+  project: 'list' | 'cards' | 'two-column'
+}
+type SectionLayoutEntry<K extends PreviewSectionKey = PreviewSectionKey> = {
+  key: K
+  order: number
+  variant: SectionLayoutVariant[K]
+}
+
+const props = withDefaults(defineProps<{
+  resume: any
+  editable?: boolean
+  hiddenSections?: SharedSectionKey[]
+  tone?: 'light' | 'dark' | 'auto'
+  sectionLayout?: SectionLayoutEntry[]
+  levelInputMode?: 'percent' | 'stars'
+}>(), {
   editable: false,
   hiddenSections: () => [],
   tone: 'auto',
+  sectionLayout: () => [],
+  levelInputMode: 'percent',
 })
 
 const toneClass = computed(() => {
@@ -35,28 +57,80 @@ function updateText(path: string, value: string) {
 function isVisible(section: SharedSectionKey) {
   return !props.hiddenSections.includes(section)
 }
+
+const languageVariant = computed<'text-level' | 'stars' | 'progress'>(() => {
+  const selected = props.sectionLayout.find(section => section.key === 'language')
+  return selected?.variant === 'stars' || selected?.variant === 'progress' || selected?.variant === 'text-level'
+    ? selected.variant
+    : (props.levelInputMode === 'stars' ? 'stars' : 'text-level')
+})
+
+const projectVariant = computed<'list' | 'cards' | 'two-column'>(() => {
+  const selected = props.sectionLayout.find(section => section.key === 'project')
+  return selected?.variant === 'cards' || selected?.variant === 'two-column' || selected?.variant === 'list'
+    ? selected.variant
+    : 'list'
+})
+
+function languageStars(level: number) {
+  return Math.max(0, Math.min(5, Math.round(level / 20)))
+}
 </script>
 
 <template>
   <section class="shared-extra cv-card-surface text-dark" :class="toneClass">
     <div v-if="isVisible('languages') && resume.languages?.length">
       <h3 class="cv-heading-section cv-divider-bottom text-dark">Languages</h3>
-      <ul>
+      <ul v-if="languageVariant === 'text-level'">
         <li v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`">
           <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
           <small class="ms-2">({{ language.level }}%)</small>
         </li>
       </ul>
+      <div v-else-if="languageVariant === 'stars'" class="language-stars-list">
+        <div v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" class="language-stars-item">
+          <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+          <v-rating
+            :model-value="languageStars(language.level)"
+            readonly
+            length="5"
+            size="16"
+            color="amber"
+            density="compact"
+            half-increments
+          />
+        </div>
+      </div>
+      <div v-else class="language-progress-list">
+        <div v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" class="language-progress-item">
+          <div class="d-flex align-center justify-space-between ga-2">
+            <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+            <small>{{ language.level }}%</small>
+          </div>
+          <v-progress-linear :model-value="language.level" height="8" rounded color="primary" />
+        </div>
+      </div>
     </div>
 
     <div v-if="isVisible('projects') && resume.projects?.length">
       <h3 class="cv-heading-section cv-divider-bottom text-dark">Projects</h3>
-      <ul>
+      <ul v-if="projectVariant === 'list'">
         <li v-for="(project, index) in resume.projects" :key="`${project.name}-${index}`">
           <strong class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</strong>
           <p class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
         </li>
       </ul>
+      <div v-else :class="['project-grid', { 'project-grid--two-column': projectVariant === 'two-column' }]">
+        <article
+          v-for="(project, index) in resume.projects"
+          :key="`${project.name}-${index}`"
+          class="project-card"
+          :class="{ 'project-card--soft': projectVariant === 'cards' }"
+        >
+          <strong class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</strong>
+          <p class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
+        </article>
+      </div>
     </div>
 
     <div v-if="isVisible('courses') && resume.courses?.length">
@@ -127,6 +201,31 @@ function isVisible(section: SharedSectionKey) {
 .shared-extra ul { margin: 0; padding-left: 18px; }
 .shared-extra p { margin: 4px 0 0; }
 .shared-extra small { color: color-mix(in srgb, var(--shared-panel-text) 84%, transparent); }
+.language-stars-list,
+.language-progress-list {
+  display: grid;
+  gap: 8px;
+}
+.language-stars-item,
+.language-progress-item {
+  display: grid;
+  gap: 4px;
+}
+.project-grid {
+  display: grid;
+  gap: 10px;
+}
+.project-grid--two-column {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.project-card {
+  border: 1px solid color-mix(in srgb, var(--cv-accent) 22%, transparent);
+  border-radius: 10px;
+  padding: 10px;
+}
+.project-card--soft {
+  background: color-mix(in srgb, var(--cv-page) 96%, white);
+}
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
 .editable-text[contenteditable='true']:focus { outline-color: color-mix(in srgb, var(--cv-accent) 42%, transparent); }

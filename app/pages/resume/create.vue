@@ -197,7 +197,17 @@ type AddSectionType =
   | 'certification'
   | 'reference'
 type PreviewSectionKey = 'experience' | 'education' | 'language' | 'project'
-type PreviewSectionTemplate = 'bullets' | 'one-column' | 'two-columns'
+type SectionLayoutVariant = {
+  experience: 'detailed' | 'bullets' | 'compact'
+  education: 'classic' | 'timeline' | 'two-column'
+  language: 'text-level' | 'stars' | 'progress'
+  project: 'list' | 'cards' | 'two-column'
+}
+type SectionLayoutEntry<K extends PreviewSectionKey = PreviewSectionKey> = {
+  key: K
+  order: number
+  variant: SectionLayoutVariant[K]
+}
 
 const activeTab = ref<'edit' | 'template' | 'design' | 'import'>('edit')
 const toolbarTemplateMenuOpen = ref(false)
@@ -257,11 +267,28 @@ const addSectionOptions = [
   { label: 'Certification', value: 'certification' },
   { label: 'Reference', value: 'reference' },
 ] as const satisfies ReadonlyArray<{ label: string; value: AddSectionType }>
-const previewSectionTemplateOptions = [
-  { label: 'Bullets', value: 'bullets' },
-  { label: '1 col', value: 'one-column' },
-  { label: '2 cols', value: 'two-columns' },
-] as const satisfies ReadonlyArray<{ label: string; value: PreviewSectionTemplate }>
+const sectionVariantOptions: { [K in PreviewSectionKey]: Array<{ label: string; value: SectionLayoutVariant[K] }> } = {
+  experience: [
+    { label: 'Detailed', value: 'detailed' },
+    { label: 'Bullets', value: 'bullets' },
+    { label: 'Compact', value: 'compact' },
+  ],
+  education: [
+    { label: 'Classic', value: 'classic' },
+    { label: 'Timeline', value: 'timeline' },
+    { label: 'Two-column', value: 'two-column' },
+  ],
+  language: [
+    { label: 'Text level', value: 'text-level' },
+    { label: 'Stars', value: 'stars' },
+    { label: 'Progress', value: 'progress' },
+  ],
+  project: [
+    { label: 'List', value: 'list' },
+    { label: 'Cards', value: 'cards' },
+    { label: 'Two-column', value: 'two-column' },
+  ],
+}
 
 const coverPageTemplateCards: Template[] = COVER_PAGE_TEMPLATES.map(template => ({
   id: template.id,
@@ -555,13 +582,12 @@ const loginLoading = ref(false)
 const pendingPdfDownload = ref(false)
 const addSectionDialogOpen = ref(false)
 const addSectionType = ref<AddSectionType>('experience')
-const previewSectionOrder = ref<PreviewSectionKey[]>(['experience', 'education', 'language', 'project'])
-const previewSectionTemplate = reactive<Record<PreviewSectionKey, PreviewSectionTemplate>>({
-  experience: 'bullets',
-  education: 'one-column',
-  language: 'bullets',
-  project: 'two-columns',
-})
+const sectionLayout = ref<SectionLayoutEntry[]>([
+  { key: 'experience', order: 0, variant: 'detailed' },
+  { key: 'education', order: 1, variant: 'classic' },
+  { key: 'language', order: 2, variant: 'text-level' },
+  { key: 'project', order: 3, variant: 'list' },
+])
 const addSectionDraft = reactive({
   profile: { profile: '' },
   experience: { role: '', company: '', city: '', start: '', end: '', bullets: '' },
@@ -908,11 +934,14 @@ const previewSectionLabelByKey: Record<PreviewSectionKey, string> = {
   project: 'Project',
 }
 
-const orderedPreviewSections = computed(() => previewSectionOrder.value.map((key) => ({
-  key,
-  label: previewSectionLabelByKey[key],
-  template: previewSectionTemplate[key],
-})))
+const orderedPreviewSections = computed(() =>
+  [...sectionLayout.value]
+    .sort((a, b) => a.order - b.order)
+    .map((section) => ({
+      ...section,
+      label: previewSectionLabelByKey[section.key],
+    })),
+)
 
 function addItemToPreviewSection(section: PreviewSectionKey) {
   switch (section) {
@@ -931,13 +960,21 @@ function addItemToPreviewSection(section: PreviewSectionKey) {
   }
 }
 
-function movePreviewSection(section: PreviewSectionKey, direction: 'up' | 'down') {
-  const currentIndex = previewSectionOrder.value.indexOf(section)
+function moveSection(section: PreviewSectionKey, direction: 'up' | 'down') {
+  const sortedSections = [...sectionLayout.value].sort((a, b) => a.order - b.order)
+  const currentIndex = sortedSections.findIndex(item => item.key === section)
   if (currentIndex < 0) return
   const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1
-  if (targetIndex < 0 || targetIndex >= previewSectionOrder.value.length) return
-  const [movedSection] = previewSectionOrder.value.splice(currentIndex, 1)
-  previewSectionOrder.value.splice(targetIndex, 0, movedSection)
+  if (targetIndex < 0 || targetIndex >= sortedSections.length) return
+  const [movedSection] = sortedSections.splice(currentIndex, 1)
+  sortedSections.splice(targetIndex, 0, movedSection)
+  sectionLayout.value = sortedSections.map((item, index) => ({ ...item, order: index }))
+}
+
+function setSectionVariant<K extends PreviewSectionKey>(key: K, variant: SectionLayoutVariant[K]) {
+  const target = sectionLayout.value.find(section => section.key === key)
+  if (!target) return
+  target.variant = variant
 }
 
 const activeTheme = computed(
@@ -1480,7 +1517,9 @@ onUnmounted(() => {
 
 if (import.meta.client) {
   const STORAGE_KEY = 'resume-layout-settings-v1'
+  const SECTION_LAYOUT_KEY = 'resume-section-layout-v1'
   const raw = localStorage.getItem(STORAGE_KEY)
+  const rawSectionLayout = localStorage.getItem(SECTION_LAYOUT_KEY)
   if (raw) {
     try {
       const parsed = JSON.parse(raw) as Partial<LayoutSettings>
@@ -1489,9 +1528,34 @@ if (import.meta.client) {
       localStorage.removeItem(STORAGE_KEY)
     }
   }
+  if (rawSectionLayout) {
+    try {
+      const parsed = JSON.parse(rawSectionLayout) as SectionLayoutEntry[]
+      const fallback = sectionLayout.value
+      const fallbackByKey = Object.fromEntries(
+        fallback.map(item => [item.key, item]),
+      ) as Record<PreviewSectionKey, SectionLayoutEntry>
+      const normalized = parsed
+        .filter(item => item?.key && item.key in fallbackByKey)
+        .map((item, index) => ({
+          key: item.key as PreviewSectionKey,
+          order: index,
+          variant: (item.variant || fallbackByKey[item.key as PreviewSectionKey].variant) as SectionLayoutVariant[PreviewSectionKey],
+        }))
+
+      if (normalized.length === fallback.length) {
+        sectionLayout.value = normalized
+      }
+    } catch {
+      localStorage.removeItem(SECTION_LAYOUT_KEY)
+    }
+  }
 
   watch(layoutSettings, (value) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(value))
+  }, { deep: true })
+  watch(sectionLayout, (value) => {
+    localStorage.setItem(SECTION_LAYOUT_KEY, JSON.stringify(value))
   }, { deep: true })
 }
 </script>
@@ -2578,14 +2642,14 @@ if (import.meta.client) {
                       v-bind="props"
                     />
                   </template>
-                  <v-list density="compact" min-width="170">
-                    <v-list-subheader>Template {{ section.label }}</v-list-subheader>
+                    <v-list density="compact" min-width="170">
+                    <v-list-subheader>Variant {{ section.label }}</v-list-subheader>
                     <v-list-item
-                      v-for="option in previewSectionTemplateOptions"
+                      v-for="option in sectionVariantOptions[section.key]"
                       :key="`section-template-${section.key}-${option.value}`"
                       :title="option.label"
-                      :active="previewSectionTemplate[section.key] === option.value"
-                      @click="previewSectionTemplate[section.key] = option.value"
+                      :active="section.variant === option.value"
+                      @click="setSectionVariant(section.key, option.value)"
                     />
                   </v-list>
                 </v-menu>
@@ -2595,7 +2659,7 @@ if (import.meta.client) {
                   variant="tonal"
                   :disabled="index === 0"
                   :aria-label="`Monter la section ${section.label}`"
-                  @click="movePreviewSection(section.key, 'up')"
+                  @click="moveSection(section.key, 'up')"
                 />
                 <v-btn
                   size="x-small"
@@ -2603,7 +2667,7 @@ if (import.meta.client) {
                   variant="tonal"
                   :disabled="index === orderedPreviewSections.length - 1"
                   :aria-label="`Descendre la section ${section.label}`"
-                  @click="movePreviewSection(section.key, 'down')"
+                  @click="moveSection(section.key, 'down')"
                 />
               </div>
             </div>
@@ -2613,6 +2677,7 @@ if (import.meta.client) {
             :resume="resume"
             :show-photo="templateSupportsPhoto"
             :use-timeline="templateUsesTimeline"
+            :section-layout="sectionLayout"
             :on-photo-click="onPreviewPhotoClick"
             :layout-settings="layoutSettings"
             editable
@@ -2620,6 +2685,8 @@ if (import.meta.client) {
           <ResumeTemplateSharedSections
             :resume="resume"
             :editable="true"
+            :section-layout="sectionLayout"
+            :level-input-mode="levelInputMode"
             :hidden-sections="sharedSectionsHiddenByTemplate"
             :tone="sharedSectionsTone"
           />
