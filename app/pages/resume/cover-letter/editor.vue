@@ -38,6 +38,7 @@ const tabs = [
 ] as const
 
 const activeTab = ref<'edit' | 'template' | 'design'>('edit')
+const toolbarTemplateMenuOpen = ref(false)
 const fallbackTemplateId = COVER_LETTER_TEMPLATE_IDS[0] ?? 'cover-letter-classic'
 const fallbackCoverPageTemplateId = COVER_PAGE_TEMPLATE_IDS[0] ?? ''
 const selectedTemplate = ref(fallbackTemplateId)
@@ -99,6 +100,20 @@ const templateComponents = {
 const activeTemplateComponent = computed(() => templateComponents[selectedTemplate.value as keyof typeof templateComponents] ?? CoverLetterTemplateClassic)
 const activePalette = computed(() => toCoverPalette(selectedTheme.value))
 
+const openToolbarTab = (tab: 'template' | 'design') => {
+  activeTab.value = tab
+}
+
+const applyTemplateFromToolbar = (templateId: string) => {
+  selectedTemplate.value = templateId
+  activeTab.value = 'template'
+  toolbarTemplateMenuOpen.value = false
+}
+
+const goToImportFlow = async () => {
+  await router.push('/resume/create?tab=import')
+}
+
 onMounted(() => {
   if (typeof route.query.template === 'string' && COVER_LETTER_TEMPLATE_IDS.includes(route.query.template)) {
     selectedTemplate.value = route.query.template
@@ -108,6 +123,69 @@ onMounted(() => {
 
 <template>
   <v-container fluid class="editor-shell pa-0">
+    <div class="local-toolbar-actions">
+      <div class="local-toolbar-actions__row">
+        <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" />
+        <v-btn class="local-toolbar-btn" color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" />
+        <v-btn class="local-toolbar-btn" color="info" size="small" variant="outlined" icon="mdi-download" />
+        <v-menu v-model="toolbarTemplateMenuOpen" location="bottom center" origin="top center">
+          <template #activator="{ props }">
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-grid-outline" v-bind="props" @click="openToolbarTab('template')">Templates</v-btn>
+          </template>
+          <v-card class="toolbar-menu-card">
+            <div class="toolbar-template-grid">
+              <v-card
+                v-for="template in coverLetterTemplates"
+                :key="`toolbar-cover-letter-${template.id}`"
+                class="template-card"
+                :class="{ 'template-card--active': selectedTemplate === template.id }"
+                variant="outlined"
+                @click="applyTemplateFromToolbar(template.id)"
+              >
+                <v-img :src="template.image" height="96" cover />
+                <v-card-text class="py-2 text-caption">{{ template.title }}</v-card-text>
+              </v-card>
+            </div>
+          </v-card>
+        </v-menu>
+        <v-menu location="bottom center" origin="top center" max-width="520">
+          <template #activator="{ props }">
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-palette-outline" v-bind="props" @click="openToolbarTab('design')">Design</v-btn>
+          </template>
+          <v-card class="toolbar-menu-card">
+            <v-card-title class="text-subtitle-2">Design</v-card-title>
+            <v-card-text>
+              <p class="section-label">Color palette</p>
+              <div class="palette-grid mb-4">
+                <button v-for="theme in colorThemes" :key="`toolbar-theme-${theme.name}`" type="button" class="palette-item" :class="{ 'palette-item--active': selectedTheme === theme.name }" @click="selectedTheme = theme.name">
+                  <span :style="{ background: theme.sidebar }" />
+                  <span :style="{ background: theme.accent }" />
+                  <span :style="{ background: theme.page }" />
+                </button>
+              </div>
+              <p class="section-label">Rounded</p>
+              <v-btn-toggle v-model="selectedRounded" mandatory divided class="rounded-toggle" color="primary">
+                <v-btn v-for="option in roundedOptions" :key="`toolbar-rounded-${option.value}`" :value="option.value" variant="text">{{ option.title }}</v-btn>
+              </v-btn-toggle>
+              <p class="section-label mt-4">Text style</p>
+              <AppSelect v-model="selectedTextStyle" :items="textStyleOptions" item-title="label" item-value="value" label="Typography preset" density="comfortable" hide-details />
+            </v-card-text>
+          </v-card>
+        </v-menu>
+        <v-menu location="bottom center" origin="top center" max-width="460">
+          <template #activator="{ props }">
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-file-import-outline" v-bind="props">Import</v-btn>
+          </template>
+          <v-card class="toolbar-menu-card">
+            <v-card-title class="text-subtitle-2">Import</v-card-title>
+            <v-card-text class="d-flex flex-column ga-2">
+              <v-btn prepend-icon="mdi-file-document-edit-outline" color="primary" variant="outlined" text="Open resume import page" @click="goToImportFlow" />
+            </v-card-text>
+          </v-card>
+        </v-menu>
+        <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" icon="mdi-creation" />
+      </div>
+    </div>
     <div class="builder-layout">
       <section class="builder-form px-3 px-md-6 py-4">
         <v-card class="form-card mb-4" variant="outlined">
@@ -243,5 +321,10 @@ onMounted(() => {
 .palette-item { border: 1px solid rgba(15, 23, 42, .15); border-radius: 12px; padding: 6px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: transparent; }
 .palette-item span { border-radius: 8px; height: 20px; }
 .palette-item--active { border-color: rgb(var(--v-theme-primary)); box-shadow: 0 0 0 1px rgb(var(--v-theme-primary)); }
+.local-toolbar-actions { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 20; display: flex; justify-content: center; width: min(100%, 980px); padding-inline: 12px; }
+.local-toolbar-actions__row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 20px; border: 1px solid color-mix(in srgb, rgb(var(--v-theme-primary)) 30%, transparent); background: color-mix(in srgb, rgb(var(--v-theme-surface)) 84%, transparent); backdrop-filter: blur(10px); box-shadow: 0 10px 28px rgba(15, 23, 42, 0.22); }
+.local-toolbar-btn { height: 56px !important; min-width: 56px !important; border-radius: 16px !important; }
+.toolbar-menu-card { width: min(92vw, 980px); max-height: min(76vh, 760px); overflow: auto; }
+.toolbar-template-grid { display: grid; gap: 10px; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 12px; }
 @media (max-width: 1260px) { .builder-layout { grid-template-columns: 1fr; } .builder-form { border-right: 0; border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity)); } }
 </style>
