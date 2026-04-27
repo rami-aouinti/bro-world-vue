@@ -186,8 +186,18 @@ type LayoutSettings = {
   dateColumnWidth: number
   lineDensity: 'compact' | 'comfortable'
 }
+type AddSectionType =
+  | 'experience'
+  | 'education'
+  | 'skill'
+  | 'language'
+  | 'project'
+  | 'certification'
+  | 'reference'
 
 const activeTab = ref<'edit' | 'template' | 'design' | 'import'>('edit')
+const toolbarTemplateMenuOpen = ref(false)
+const toolbarSectionMenuOpen = ref(false)
 const route = useRoute()
 const selectedTemplate = ref(DEFAULT_RESUME_TEMPLATE_ID)
 const selectedDocumentType = ref<'resume'>('resume')
@@ -232,6 +242,15 @@ const templateFilters = [
   { label: 'Customized', value: 'customized' },
   { label: 'Free', value: 'free' },
 ] as const satisfies ReadonlyArray<{ label: string; value: TemplateFilter }>
+const addSectionOptions = [
+  { label: 'Experience', value: 'experience' },
+  { label: 'Education', value: 'education' },
+  { label: 'Skill', value: 'skill' },
+  { label: 'Language', value: 'language' },
+  { label: 'Project', value: 'project' },
+  { label: 'Certification', value: 'certification' },
+  { label: 'Reference', value: 'reference' },
+] as const satisfies ReadonlyArray<{ label: string; value: AddSectionType }>
 
 const coverPageTemplateCards: Template[] = COVER_PAGE_TEMPLATES.map(template => ({
   id: template.id,
@@ -525,6 +544,17 @@ const { loggedIn, fetch: refreshSession } = useUserSession()
 const loginDialogOpen = ref(false)
 const loginLoading = ref(false)
 const pendingPdfDownload = ref(false)
+const addSectionDialogOpen = ref(false)
+const addSectionType = ref<AddSectionType>('experience')
+const addSectionDraft = reactive({
+  experience: { role: '', company: '', city: '', start: '', end: '', bullets: '' },
+  education: { degree: '', school: '', city: '', start: '', end: '', note: '' },
+  skill: { name: '', level: 80 },
+  language: { name: '', level: 80 },
+  project: { name: '', summary: '' },
+  certification: { title: '', school: '', start: '', end: '' },
+  reference: { name: '', company: '', email: '', phone: '' },
+})
 
 function openPhotoPicker() {
   uploadInput.value?.click()
@@ -764,6 +794,95 @@ function addCertification() {
 function removeCertification(index: number) {
   if (resume.courses.length === 1) return
   resume.courses.splice(index, 1)
+}
+
+function openToolbarTab(tab: 'template' | 'design' | 'import') {
+  activeTab.value = tab
+}
+
+function applyTemplateFromToolbar(templateId: string) {
+  selectedTemplate.value = templateId
+  activeTab.value = 'template'
+  toolbarTemplateMenuOpen.value = false
+}
+
+function resetSectionDraft(section: AddSectionType) {
+  switch (section) {
+    case 'experience':
+      addSectionDraft.experience = { role: '', company: '', city: '', start: '', end: '', bullets: '' }
+      break
+    case 'education':
+      addSectionDraft.education = { degree: '', school: '', city: '', start: '', end: '', note: '' }
+      break
+    case 'skill':
+      addSectionDraft.skill = { name: '', level: 80 }
+      break
+    case 'language':
+      addSectionDraft.language = { name: '', level: 80 }
+      break
+    case 'project':
+      addSectionDraft.project = { name: '', summary: '' }
+      break
+    case 'certification':
+      addSectionDraft.certification = { title: '', school: '', start: '', end: '' }
+      break
+    case 'reference':
+      addSectionDraft.reference = { name: '', company: '', email: '', phone: '' }
+      break
+  }
+}
+
+function openAddSectionDialog(section: AddSectionType) {
+  addSectionType.value = section
+  resetSectionDraft(section)
+  toolbarSectionMenuOpen.value = false
+  addSectionDialogOpen.value = true
+}
+
+function submitAddSection() {
+  switch (addSectionType.value) {
+    case 'experience':
+      resume.experiences.push({
+        role: addSectionDraft.experience.role,
+        company: addSectionDraft.experience.company,
+        city: addSectionDraft.experience.city,
+        start: addSectionDraft.experience.start,
+        end: addSectionDraft.experience.end,
+        bullets: addSectionDraft.experience.bullets
+          .split('\n')
+          .map(line => line.trim())
+          .filter(Boolean),
+      })
+      break
+    case 'education':
+      resume.education.push({
+        degree: addSectionDraft.education.degree,
+        school: addSectionDraft.education.school,
+        city: addSectionDraft.education.city,
+        start: addSectionDraft.education.start,
+        end: addSectionDraft.education.end,
+        note: addSectionDraft.education.note,
+      })
+      break
+    case 'skill':
+      resume.skills.push({ ...addSectionDraft.skill })
+      break
+    case 'language':
+      resume.languages.push({ ...addSectionDraft.language })
+      break
+    case 'project':
+      resume.projects.push({ ...addSectionDraft.project })
+      break
+    case 'certification':
+      resume.courses.push({ ...addSectionDraft.certification })
+      break
+    case 'reference':
+      resume.references.push({ ...addSectionDraft.reference })
+      break
+  }
+
+  addSectionDialogOpen.value = false
+  activeTab.value = 'edit'
 }
 
 const activeTheme = computed(
@@ -1348,6 +1467,202 @@ if (import.meta.client) {
         <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" />
         <v-btn class="local-toolbar-btn" color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview" />
         <v-btn class="local-toolbar-btn" color="info" size="small" variant="outlined" icon="mdi-download" @click="onDownloadPdfClick" />
+        <v-menu v-model="toolbarTemplateMenuOpen" location="bottom">
+          <template #activator="{ props }">
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-grid-outline" v-bind="props">
+              Templates
+            </v-btn>
+          </template>
+          <v-card class="toolbar-menu-card">
+            <div class="toolbar-template-grid">
+              <v-card
+                v-for="template in templatesByDocumentType"
+                :key="`toolbar-template-${template.id}`"
+                class="template-card"
+                :class="{ 'template-card--active': selectedTemplate === template.id }"
+                variant="outlined"
+                @click="applyTemplateFromToolbar(template.id)"
+              >
+                <v-img :src="template.image" height="96" cover />
+                <v-card-text class="py-2 text-caption">{{ template.title }}</v-card-text>
+              </v-card>
+            </div>
+          </v-card>
+        </v-menu>
+        <v-menu location="bottom" max-width="560">
+          <template #activator="{ props }">
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-palette-outline" v-bind="props" @click="openToolbarTab('design')">
+              Design
+            </v-btn>
+          </template>
+          <v-card class="toolbar-menu-card">
+            <v-card-title class="text-subtitle-2">Design</v-card-title>
+            <v-card-text>
+              <p class="section-label">Color palette</p>
+              <div class="palette-grid mb-4">
+                <button
+                  v-for="theme in colorThemes"
+                  :key="`toolbar-design-${theme.name}`"
+                  type="button"
+                  class="palette-item"
+                  :class="{ 'palette-item--active': selectedTheme === theme.name }"
+                  @click="selectedTheme = theme.name"
+                >
+                  <span :style="{ background: theme.sidebar }" />
+                  <span :style="{ background: theme.accent }" />
+                  <span :style="{ background: theme.page }" />
+                </button>
+              </div>
+
+              <p class="section-label">Rounded</p>
+              <v-btn-toggle
+                v-model="selectedRounded"
+                mandatory
+                divided
+                class="rounded-toggle w-100"
+                color="primary"
+              >
+                <v-btn
+                  v-for="option in roundedOptions"
+                  :key="`toolbar-rounded-${option.value}`"
+                  :value="option.value"
+                  variant="text"
+                >
+                  {{ option.title }}
+                </v-btn>
+              </v-btn-toggle>
+
+              <p class="section-label mt-4">Text style</p>
+              <AppSelect
+                v-model="selectedTextStyle"
+                :items="textStyleOptions"
+                item-title="label"
+                item-value="value"
+                label="Typography preset"
+                density="comfortable"
+                hide-details
+              />
+
+              <v-divider class="my-4" />
+              <p class="section-label">Layout settings</p>
+              <v-slider
+                v-model="layoutSettings.photoSize"
+                label="Photo size"
+                min="100"
+                max="220"
+                step="2"
+                thumb-label
+                hide-details="auto"
+              />
+              <v-slider
+                v-model="layoutSettings.photoBorderWidth"
+                label="Photo border"
+                min="0"
+                max="16"
+                step="1"
+                thumb-label
+                hide-details="auto"
+              />
+              <AppSelect
+                v-model="layoutSettings.photoPosition"
+                :items="[
+                  { label: 'Left', value: 'left' },
+                  { label: 'Center', value: 'center' },
+                  { label: 'Right', value: 'right' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Photo position"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <v-slider
+                v-model="layoutSettings.sidebarWidth"
+                label="Sidebar width"
+                min="220"
+                max="360"
+                step="2"
+                thumb-label
+                hide-details="auto"
+              />
+              <AppSelect
+                v-model="layoutSettings.sectionDividerStyle"
+                :items="[
+                  { label: 'None', value: 'none' },
+                  { label: 'Line', value: 'line' },
+                  { label: 'Thick', value: 'thick' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Section divider"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <v-switch
+                v-model="layoutSettings.headingCase"
+                false-value="normal"
+                true-value="uppercase"
+                label="Uppercase headings"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
+              <v-slider
+                v-model="layoutSettings.dateColumnWidth"
+                label="Date column width"
+                min="80"
+                max="180"
+                step="2"
+                thumb-label
+                hide-details="auto"
+              />
+              <v-switch
+                v-model="layoutSettings.lineDensity"
+                false-value="comfortable"
+                true-value="compact"
+                label="Compact line density"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
+            </v-card-text>
+          </v-card>
+        </v-menu>
+        <v-menu location="bottom" max-width="560">
+          <template #activator="{ props }">
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-file-import-outline" v-bind="props" @click="openToolbarTab('import')">
+              Import
+            </v-btn>
+          </template>
+          <v-card class="toolbar-menu-card">
+            <v-card-title class="text-subtitle-2">Import</v-card-title>
+            <v-card-text class="d-flex flex-column ga-2">
+              <v-btn prepend-icon="mdi-sync" variant="outlined" color="primary" :text="t('resumeBuilder.create.import.syncWithXing')" @click="syncWithProvider('Xing')" />
+              <v-btn prepend-icon="mdi-linkedin" variant="outlined" color="info" :text="t('resumeBuilder.create.import.syncWithLinkedIn')" @click="syncWithProvider('LinkedIn')" />
+              <v-btn prepend-icon="mdi-file-upload-outline" variant="flat" color="secondary" :text="t('resumeBuilder.create.import.importOldResumePdf')" @click="triggerPdfImport" />
+              <div v-if="importInProgress" class="mt-2">
+                <v-progress-linear :model-value="importProgress" color="primary" height="8" rounded striped />
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-menu>
+        <v-menu v-model="toolbarSectionMenuOpen" location="bottom">
+          <template #activator="{ props }">
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-list-outline" v-bind="props">
+              Add section
+            </v-btn>
+          </template>
+          <v-list density="compact" min-width="220">
+            <v-list-item
+              v-for="section in addSectionOptions"
+              :key="`toolbar-add-${section.value}`"
+              :title="section.label"
+              @click="openAddSectionDialog(section.value)"
+            />
+          </v-list>
+        </v-menu>
         <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" icon="mdi-draw" @click="openSignatureDialog" />
         <v-menu v-model="aiMenuOpen" :close-on-content-click="false" location="bottom end">
           <template #activator="{ props }">
@@ -1370,31 +1685,6 @@ if (import.meta.client) {
     </div>
     <div class="builder-layout">
       <section class="builder-form px-3 px-md-6 py-4">
-        <div class="local-toolbar-actions mb-4">
-          <div class="local-toolbar-actions__row">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" />
-            <v-btn class="local-toolbar-btn" color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview" />
-            <v-btn class="local-toolbar-btn" color="info" size="small" variant="outlined" icon="mdi-download" @click="onDownloadPdfClick" />
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" icon="mdi-draw" @click="openSignatureDialog"></v-btn>
-            <v-menu v-model="aiMenuOpen" :close-on-content-click="false" location="bottom end">
-              <template #activator="{ props }">
-                <v-btn class="local-toolbar-btn local-toolbar-btn--ki" color="deep-purple" size="small" variant="tonal" prepend-icon="mdi-creation" v-bind="props">KI</v-btn>
-              </template>
-              <v-card width="420" class="pa-3">
-                <div class="ki-menu-grid">
-                  <v-card variant="outlined" class="ki-card" @click="aiCreateModalOpen = true; aiMenuOpen = false">
-                    <v-card-title class="text-subtitle-1">Create with KI</v-card-title>
-                    <v-card-text class="text-body-2">Generate a complete resume from a short summary of studies and skills.</v-card-text>
-                  </v-card>
-                  <v-card variant="outlined" class="ki-card" @click="runAiReview(); aiMenuOpen = false">
-                    <v-card-title class="text-subtitle-1">Review</v-card-title>
-                    <v-card-text class="text-body-2">Ask KI to detect errors and suggest improvements for your current resume.</v-card-text>
-                  </v-card>
-                </div>
-              </v-card>
-            </v-menu>
-          </div>
-        </div>
         <v-tabs v-model="activeTab" color="primary" grow class="mb-4">
           <v-tab value="edit">Edit</v-tab>
           <v-tab value="template">Template</v-tab>
@@ -2309,6 +2599,74 @@ if (import.meta.client) {
       </aside>
     </div>
 
+    <v-dialog v-model="addSectionDialogOpen" max-width="760">
+      <v-card>
+        <v-card-title class="d-flex align-center justify-space-between">
+          <span>Add {{ addSectionOptions.find(section => section.value === addSectionType)?.label }}</span>
+          <v-btn icon="mdi-close" variant="text" @click="addSectionDialogOpen = false" />
+        </v-card-title>
+        <v-divider />
+        <v-card-text class="d-grid ga-3">
+          <template v-if="addSectionType === 'experience'">
+            <v-text-field v-model="addSectionDraft.experience.role" label="Role" variant="outlined" hide-details />
+            <v-text-field v-model="addSectionDraft.experience.company" label="Company" variant="outlined" hide-details />
+            <v-text-field v-model="addSectionDraft.experience.city" label="City" variant="outlined" hide-details />
+            <div class="grid-2">
+              <v-text-field v-model="addSectionDraft.experience.start" label="Start" variant="outlined" hide-details />
+              <v-text-field v-model="addSectionDraft.experience.end" label="End" variant="outlined" hide-details />
+            </div>
+            <v-textarea v-model="addSectionDraft.experience.bullets" label="Bullets (one per line)" rows="4" variant="outlined" hide-details />
+          </template>
+
+          <template v-else-if="addSectionType === 'education'">
+            <v-text-field v-model="addSectionDraft.education.degree" label="Degree" variant="outlined" hide-details />
+            <v-text-field v-model="addSectionDraft.education.school" label="School" variant="outlined" hide-details />
+            <v-text-field v-model="addSectionDraft.education.city" label="City" variant="outlined" hide-details />
+            <div class="grid-2">
+              <v-text-field v-model="addSectionDraft.education.start" label="Start" variant="outlined" hide-details />
+              <v-text-field v-model="addSectionDraft.education.end" label="End" variant="outlined" hide-details />
+            </div>
+            <v-textarea v-model="addSectionDraft.education.note" label="Note" rows="3" variant="outlined" hide-details />
+          </template>
+
+          <template v-else-if="addSectionType === 'skill'">
+            <v-text-field v-model="addSectionDraft.skill.name" label="Skill name" variant="outlined" hide-details />
+            <v-slider v-model="addSectionDraft.skill.level" min="0" max="100" step="5" color="primary" thumb-label />
+          </template>
+
+          <template v-else-if="addSectionType === 'language'">
+            <v-text-field v-model="addSectionDraft.language.name" label="Language name" variant="outlined" hide-details />
+            <v-slider v-model="addSectionDraft.language.level" min="0" max="100" step="5" color="primary" thumb-label />
+          </template>
+
+          <template v-else-if="addSectionType === 'project'">
+            <v-text-field v-model="addSectionDraft.project.name" label="Project name" variant="outlined" hide-details />
+            <v-textarea v-model="addSectionDraft.project.summary" label="Project summary" rows="4" variant="outlined" hide-details />
+          </template>
+
+          <template v-else-if="addSectionType === 'certification'">
+            <v-text-field v-model="addSectionDraft.certification.title" label="Title" variant="outlined" hide-details />
+            <v-text-field v-model="addSectionDraft.certification.school" label="Issuer" variant="outlined" hide-details />
+            <div class="grid-2">
+              <v-text-field v-model="addSectionDraft.certification.start" label="Start" variant="outlined" hide-details />
+              <v-text-field v-model="addSectionDraft.certification.end" label="End" variant="outlined" hide-details />
+            </div>
+          </template>
+
+          <template v-else-if="addSectionType === 'reference'">
+            <v-text-field v-model="addSectionDraft.reference.name" label="Name" variant="outlined" hide-details />
+            <v-text-field v-model="addSectionDraft.reference.company" label="Company" variant="outlined" hide-details />
+            <v-text-field v-model="addSectionDraft.reference.email" label="Email" variant="outlined" hide-details />
+            <v-text-field v-model="addSectionDraft.reference.phone" label="Phone" variant="outlined" hide-details />
+          </template>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn variant="text" @click="addSectionDialogOpen = false">Cancel</v-btn>
+          <v-btn color="primary" prepend-icon="mdi-plus" @click="submitAddSection">Add section</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-dialog v-model="pdfModalOpen" width="900">
       <v-card>
         <v-card-title class="d-flex align-center justify-space-between">
@@ -2674,7 +3032,7 @@ if (import.meta.client) {
   z-index: 20;
   display: flex;
   justify-content: center;
-  width: min(100%, 560px);
+  width: min(100%, 980px);
   padding-inline: 12px;
 }
 
@@ -2701,6 +3059,19 @@ if (import.meta.client) {
 .local-toolbar-btn--ki {
   min-width: 96px !important;
   padding-inline: 18px !important;
+}
+
+.toolbar-menu-card {
+  width: min(92vw, 980px);
+  max-height: min(76vh, 760px);
+  overflow: auto;
+}
+
+.toolbar-template-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 12px;
 }
 
 .preview-grid {
