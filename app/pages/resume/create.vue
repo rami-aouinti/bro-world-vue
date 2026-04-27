@@ -7,10 +7,11 @@ import {
   RESUME_TEMPLATES,
   type ResumeTemplateVariant,
 } from '~/constants/resumeTemplates'
-import { RESUME_TEMPLATE_SKINS } from '~/constants/resumeTemplateSkins'
+import { resolveTemplateSkin } from '~/constants/resumeTemplateSkins'
 import {
   useResumeDesignControls,
 } from '~/composables/useResumeDesignControls'
+import { useResumeDocumentState } from '~/composables/useResumeDocumentState'
 import { levelToStars, starsToPercent } from '~/utils/resumeLanguageLevel'
 
 definePageMeta({
@@ -380,6 +381,7 @@ const resumeTemplateSupportByVariant: Record<ResumeTemplateVariant, TemplateStyl
   'ocean-split': { theme: true, rounded: true, textStyle: true, sharedSections: true },
   professional: { theme: true, rounded: true, textStyle: true, sharedSections: true },
   'corporate-blue': { theme: true, rounded: true, textStyle: true, sharedSections: true },
+  'grid-slate': { theme: true, rounded: true, textStyle: true, sharedSections: true },
   terra: { theme: true, rounded: true, textStyle: true, sharedSections: true },
   traditional: { theme: true, rounded: true, textStyle: true, sharedSections: true },
 }
@@ -550,7 +552,10 @@ const templateSupportsPhoto = computed(
   () => selectedTemplateConfig.value.hasPhoto,
 )
 const selectedTemplateSkin = computed(
-  () => RESUME_TEMPLATE_SKINS[selectedTemplateConfig.value.variant],
+  () => resolveTemplateSkin(selectedTemplateConfig.value.variant),
+)
+const { state: resumeDocumentState, defaultSectionOrder, hydrateFromStorage, migrateLegacyStorage, persist } = useResumeDocumentState(
+  computed(() => selectedTemplateConfig.value.variant),
 )
 const pdfModalOpen = ref(false)
 const photoDialogOpen = ref(false)
@@ -581,16 +586,7 @@ const loginLoading = ref(false)
 const pendingPdfDownload = ref(false)
 const addSectionDialogOpen = ref(false)
 const addSectionType = ref<AddSectionType>('experience')
-const defaultSectionLayout: SectionLayoutEntry[] = [
-  { key: 'experience', variant: 'detailed', region: 'main', order: 0 },
-  { key: 'education', variant: 'classic', region: 'main', order: 1 },
-  { key: 'project', variant: 'classic', region: 'main', order: 2 },
-  { key: 'certification', variant: 'classic', region: 'main', order: 3 },
-  { key: 'skill', variant: 'classic', region: 'aside', order: 0 },
-  { key: 'language', variant: 'classic', region: 'aside', order: 1 },
-  { key: 'reference', variant: 'classic', region: 'aside', order: 2 },
-  { key: 'hobby', variant: 'classic', region: 'aside', order: 3 },
-]
+const defaultSectionLayout: SectionLayoutEntry[] = defaultSectionOrder.map(entry => ({ ...entry }))
 const sectionLayout = ref<SectionLayoutEntry[]>(
   defaultSectionLayout.map(entry => ({ ...entry })),
 )
@@ -1634,48 +1630,54 @@ onUnmounted(() => {
 })
 
 if (import.meta.client) {
-  const STORAGE_KEY = 'resume-layout-settings-v1'
-  const SECTION_LAYOUT_KEY = 'resume-section-layout-v1'
-  const raw = localStorage.getItem(STORAGE_KEY)
-  const rawSectionLayout = localStorage.getItem(SECTION_LAYOUT_KEY)
-  if (raw) {
-    try {
-      const parsed = JSON.parse(raw) as Partial<LayoutSettings>
-      Object.assign(layoutSettings, parsed)
-    } catch {
-      localStorage.removeItem(STORAGE_KEY)
-    }
-  }
-  if (rawSectionLayout) {
-    try {
-      const parsed = JSON.parse(rawSectionLayout) as Array<Partial<SectionLayoutEntry>>
-      const parsedByKey = new Map(
-        parsed
-          .filter(item => item?.key)
-          .map(item => [item.key as EditableSectionKey, item]),
-      )
+  const LEGACY_LAYOUT_KEY = 'resume-layout-settings-v1'
+  const LEGACY_SECTION_LAYOUT_KEY = 'resume-section-layout-v1'
+  const rawLegacyLayout = localStorage.getItem(LEGACY_LAYOUT_KEY)
+  const rawLegacySectionLayout = localStorage.getItem(LEGACY_SECTION_LAYOUT_KEY)
 
-      sectionLayout.value = defaultSectionLayout.map((fallback) => {
-        const persisted = parsedByKey.get(fallback.key)
-        return {
-          key: fallback.key,
-          variant: normalizeSectionVariant(fallback.key, persisted?.variant ?? fallback.variant),
-          region: persisted?.region === 'main' || persisted?.region === 'aside'
-            ? persisted.region
-            : fallback.region,
-          order: typeof persisted?.order === 'number' ? persisted.order : fallback.order,
-        }
-      })
-    } catch {
-      localStorage.removeItem(SECTION_LAYOUT_KEY)
-    }
-  }
+  hydrateFromStorage()
+  migrateLegacyStorage(rawLegacyLayout, rawLegacySectionLayout)
 
-  watch(layoutSettings, (value) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(value))
-  }, { deep: true })
+  const customization = resumeDocumentState.value.customization
+  selectedTheme.value = customization.style.palette
+  selectedRounded.value = customization.style.radius
+  selectedTextStyle.value = customization.style.typography
+  layoutSettings.lineDensity = customization.style.density
+  sectionLayout.value = customization.sectionOrder.map((entry) => ({
+    ...entry,
+    variant: normalizeSectionVariant(entry.key, entry.variant),
+  }))
+
+  watch([selectedTheme, selectedRounded, selectedTextStyle], () => {
+    resumeDocumentState.value.customization = {
+      ...resumeDocumentState.value.customization,
+      style: {
+        ...resumeDocumentState.value.customization.style,
+        palette: selectedTheme.value,
+        radius: selectedRounded.value,
+        typography: selectedTextStyle.value,
+      },
+    }
+    persist()
+  })
+
+  watch(() => layoutSettings.lineDensity, (density) => {
+    resumeDocumentState.value.customization = {
+      ...resumeDocumentState.value.customization,
+      style: {
+        ...resumeDocumentState.value.customization.style,
+        density,
+      },
+    }
+    persist()
+  })
+
   watch(sectionLayout, (value) => {
-    localStorage.setItem(SECTION_LAYOUT_KEY, JSON.stringify(value))
+    resumeDocumentState.value.customization = {
+      ...resumeDocumentState.value.customization,
+      sectionOrder: value.map(section => ({ ...section })),
+    }
+    persist()
   }, { deep: true })
 }
 </script>

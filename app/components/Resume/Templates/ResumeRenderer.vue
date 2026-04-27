@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import ResumeSectionExperience from '~/components/Resume/Sections/ResumeSectionExperience.vue'
-import ResumeSectionEducation from '~/components/Resume/Sections/ResumeSectionEducation.vue'
-import ResumeSectionLanguage from '~/components/Resume/Sections/ResumeSectionLanguage.vue'
-import ResumeSectionProject from '~/components/Resume/Sections/ResumeSectionProject.vue'
+import SectionRenderer from '~/components/Resume/Sections/SectionRenderer.vue'
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 import type { ResumeSectionKey, ResumeTemplateSkin } from '~/constants/resumeTemplateSkins'
 
@@ -51,27 +48,19 @@ const emit = defineEmits<{
   (event: 'move-section', sectionKey: ResumeSectionActionKey, direction: 'up' | 'down'): void
 }>()
 
-const componentBySectionKey = {
-  experience: ResumeSectionExperience,
-  education: ResumeSectionEducation,
-  language: ResumeSectionLanguage,
-  project: ResumeSectionProject,
-} as const
-
 const normalizedSectionLayout = computed<SectionLayoutEntry[]>(() => {
   if (props.sectionLayout.length) return props.sectionLayout
   return props.templateSkin.defaultSectionLayout.map((entry) => ({ ...entry, variant: fallbackVariant(entry.key) })) as SectionLayoutEntry[]
 })
 
-const isRendererSection = (
-  sectionKey: ResumeSectionLayoutKey,
-): sectionKey is ResumeSectionKey => sectionKey in componentBySectionKey
-
 type RenderableSectionLayoutEntry = SectionLayoutEntry<ResumeSectionKey>
 const renderableSections = computed<RenderableSectionLayoutEntry[]>(() => (
-  normalizedSectionLayout.value.filter(
-    (section): section is RenderableSectionLayoutEntry => isRendererSection(section.key),
-  )
+  normalizedSectionLayout.value.filter(section => (
+    section.key === 'experience'
+    || section.key === 'education'
+    || section.key === 'language'
+    || section.key === 'project'
+  )) as RenderableSectionLayoutEntry[]
 ))
 
 const mainSections = computed(() => renderableSections.value.filter(section => section.region === 'main'))
@@ -191,10 +180,10 @@ function updateText(path: string, value: string) {
           </ul>
         </section>
 
-        <component
-          :is="componentBySectionKey[section.key]"
+        <SectionRenderer
           v-for="section in asideSections"
           :key="`aside-${section.key}`"
+          :section-key="section.key"
           :resume="resume"
           :editable="editable"
           :variant="sectionVariant(section)"
@@ -215,10 +204,10 @@ function updateText(path: string, value: string) {
           <p class="editable-text" :contenteditable="editable" @input="event => updateText('profile', (event.target as HTMLElement).innerText)">{{ resume.profile }}</p>
         </section>
 
-        <component
-          :is="componentBySectionKey[section.key]"
+        <SectionRenderer
           v-for="section in mainSections"
           :key="`main-${section.key}`"
+          :section-key="section.key"
           :resume="resume"
           :editable="editable"
           :variant="sectionVariant(section)"
