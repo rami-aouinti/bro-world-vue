@@ -34,6 +34,7 @@ const priorityFilter = ref<string | null>(null)
 const projectFilter = ref<string | null>(null)
 const dueAfter = ref<string | null>(null)
 const dueBefore = ref<string | null>(null)
+const assignedToMe = ref(false)
 const currentPage = ref(1)
 const itemsPerPage = 9
 const projectModalOpen = ref(false)
@@ -48,8 +49,12 @@ const createPayload = reactive<CrmTaskCreatePayload>({
 })
 const crmReferencesStore = useCrmReferenceOptionsStore()
 
-const { data, pending, error } = useFetch<CrmTaskResponse>(
-  '/api/crm/general/tasks',
+const tasksEndpoint = computed(() =>
+  assignedToMe.value ? '/api/crm/me/assigned-tasks' : '/api/crm/general/tasks',
+)
+
+const { data, pending, error, refresh } = useFetch<CrmTaskResponse>(
+  () => tasksEndpoint.value,
 )
 await crmReferencesStore.fetchProjects()
 
@@ -195,7 +200,7 @@ async function createTask() {
       body: createPayload,
     })
     createDialog.value = false
-    await refreshNuxtData('/api/crm/general/tasks')
+    await refresh()
   } finally {
     pendingCreate.value = false
   }
@@ -215,7 +220,7 @@ async function deleteTask() {
     })
     deleteDialog.value = false
     taskToDelete.value = null
-    await refreshNuxtData('/api/crm/general/tasks')
+    await refresh()
   } finally {
     pendingDelete.value = false
   }
@@ -283,6 +288,12 @@ async function deleteTask() {
             variant="outlined"
             hide-details
             clearable
+          />
+          <v-checkbox
+            v-model="assignedToMe"
+            :label="t('world.crm.filters.assignedToMe')"
+            hide-details
+            density="compact"
           />
         </div>
       </template>

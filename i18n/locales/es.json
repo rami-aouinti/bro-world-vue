@@ -1191,7 +1191,8 @@
         "deadlineAfter": "Fecha límite después de",
         "deadlineBefore": "Fecha límite antes de",
         "requestedAfter": "Solicitada después de",
-        "resolvedBefore": "Resuelta antes de"
+        "resolvedBefore": "Resuelta antes de",
+        "assignedToMe": "Asignado a mí"
       },
       "tabs": {
         "pipeline": "Pipeline",

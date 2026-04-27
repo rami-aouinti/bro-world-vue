@@ -34,6 +34,7 @@ const taskFilter = ref<string | null>(null)
 const taskRequestFilter = ref<string | null>(null)
 const requestedAfter = ref<string | null>(null)
 const resolvedBefore = ref<string | null>(null)
+const assignedToMe = ref(false)
 const currentPage = ref(1)
 const itemsPerPage = 9
 const selectedTask = ref<CrmTaskItem | null>(null)
@@ -46,9 +47,15 @@ const payload = reactive<CrmTaskRequestCreatePayload>({
 })
 const crmReferencesStore = useCrmReferenceOptionsStore()
 
+const taskRequestsEndpoint = computed(() =>
+  assignedToMe.value
+    ? '/api/crm/me/assigned-task-requests'
+    : '/api/crm/general/task-requests',
+)
+
 const { data, pending, error, refresh } = useFetch<
   ApiListResponse<CrmTaskRequestItem>
->('/api/crm/general/task-requests')
+>(() => taskRequestsEndpoint.value)
 await Promise.all([
   crmReferencesStore.fetchTasks(),
   crmReferencesStore.fetchTaskRequests(),
@@ -287,6 +294,12 @@ async function deleteRequest() {
             variant="outlined"
             hide-details
             clearable
+          />
+          <v-checkbox
+            v-model="assignedToMe"
+            :label="t('world.crm.filters.assignedToMe')"
+            hide-details
+            density="compact"
           />
         </div>
       </template>
