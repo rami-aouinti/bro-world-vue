@@ -2,7 +2,7 @@
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 
 type SectionKey = 'experience' | 'education' | 'language' | 'project'
-type SectionLayoutEntry = { key: SectionKey; label: string; variant: string }
+type SectionLayoutEntry = { key: SectionKey; label: string; variant: string; region: 'main' | 'aside' }
 
 const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean; onPhotoClick?: () => void; sectionLayout?: SectionLayoutEntry[] }>(), {
   showPhoto: false,
@@ -22,16 +22,34 @@ const sectionVariantOptions: Record<SectionKey, { label: string; value: string }
   language: [{ label: 'Text level', value: 'text-level' }, { label: 'Stars', value: 'stars' }, { label: 'Progress', value: 'progress' }],
   project: [{ label: 'List', value: 'list' }, { label: 'Cards', value: 'cards' }, { label: 'Two columns', value: 'two-column' }],
 }
-const orderedPreviewSections: SectionKey[] = ['experience', 'education', 'language', 'project']
+const defaultSectionLayout: SectionLayoutEntry[] = [
+  { key: 'experience', label: 'Expérience', variant: 'detailed', region: 'main' },
+  { key: 'education', label: 'Education', variant: 'classic', region: 'main' },
+  { key: 'language', label: 'Language', variant: 'text-level', region: 'aside' },
+  { key: 'project', label: 'Project', variant: 'list', region: 'main' },
+]
+const normalizedSectionLayout = computed<SectionLayoutEntry[]>(() => (
+  props.sectionLayout.length
+    ? props.sectionLayout
+    : defaultSectionLayout
+))
+const mainSections = computed(() => normalizedSectionLayout.value.filter(section => section.region === 'main'))
+const asideSections = computed(() => normalizedSectionLayout.value.filter(section => section.region === 'aside'))
 function currentVariant(sectionKey: SectionKey) {
-  return props.sectionLayout.find(section => section.key === sectionKey)?.variant ?? sectionVariantOptions[sectionKey][0]?.value
+  return normalizedSectionLayout.value.find(section => section.key === sectionKey)?.variant ?? sectionVariantOptions[sectionKey][0]?.value
 }
 function canMoveUp(sectionKey: SectionKey) {
-  return orderedPreviewSections.indexOf(sectionKey) > 0
+  const targetSection = normalizedSectionLayout.value.find(section => section.key === sectionKey)
+  if (!targetSection) return false
+  const regionSections = normalizedSectionLayout.value.filter(section => section.region === targetSection.region)
+  return regionSections.findIndex(section => section.key === sectionKey) > 0
 }
 function canMoveDown(sectionKey: SectionKey) {
-  const index = orderedPreviewSections.indexOf(sectionKey)
-  return index > -1 && index < orderedPreviewSections.length - 1
+  const targetSection = normalizedSectionLayout.value.find(section => section.key === sectionKey)
+  if (!targetSection) return false
+  const regionSections = normalizedSectionLayout.value.filter(section => section.region === targetSection.region)
+  const index = regionSections.findIndex(section => section.key === sectionKey)
+  return index > -1 && index < regionSections.length - 1
 }
 
 function updateText(path: string, value: string) {
@@ -79,15 +97,21 @@ function updateText(path: string, value: string) {
             </li>
           </ul>
         </section>
-        <section class="resume-section-hoverable resume-section-block">
-          <SectionToolbar section-key="language" :variants="sectionVariantOptions.language" :current-variant="currentVariant('language')" @add-item="() => emit('add-item', 'language')" @change-variant="(_, variant) => emit('change-variant', 'language', variant)" @move-up="() => emit('move-section', 'language', 'up')" @move-down="() => emit('move-section', 'language', 'down')" />
-          <h3>Languages</h3>
-          <ul class="bars">
-            <li v-for="(language, index) in resume.languages" :key="language.name" class="text-dark">
-              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
-              <div><i :style="{ width: `${language.level}%` }" /></div>
-            </li>
-          </ul>
+        <section
+          v-for="section in asideSections"
+          :key="`aside-${section.key}`"
+          class="resume-section-hoverable resume-section-block"
+        >
+          <template v-if="section.key === 'language'">
+            <SectionToolbar section-key="language" :variants="sectionVariantOptions.language" :current-variant="currentVariant('language')" :can-move-up="canMoveUp('language')" :can-move-down="canMoveDown('language')" @add-item="() => emit('add-item', 'language')" @change-variant="(_, variant) => emit('change-variant', 'language', variant)" @move-up="() => emit('move-section', 'language', 'up')" @move-down="() => emit('move-section', 'language', 'down')" />
+            <h3>Languages</h3>
+            <ul class="bars">
+              <li v-for="(language, index) in resume.languages" :key="language.name" class="text-dark">
+                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+                <div><i :style="{ width: `${language.level}%` }" /></div>
+              </li>
+            </ul>
+          </template>
         </section>
       </aside>
 
@@ -96,33 +120,53 @@ function updateText(path: string, value: string) {
           <h2 class="cv-heading-section">Profile</h2>
           <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText('profile', (event.target as HTMLElement).innerText)">{{ resume.profile || 'Add a professional summary from the Edit tab.' }}</p>
         </section>
-        <section class="resume-section-hoverable resume-section-block">
-          <h2 class="cv-heading-section">Employment History</h2>
-          <SectionToolbar section-key="experience" :variants="sectionVariantOptions.experience" :current-variant="currentVariant('experience')" :can-move-up="canMoveUp('experience')" :can-move-down="canMoveDown('experience')" @add-item="() => emit('add-item', 'experience')" @change-variant="(_, variant) => emit('change-variant', 'experience', variant)" @move-up="() => emit('move-section', 'experience', 'up')" @move-down="() => emit('move-section', 'experience', 'down')" />
-          <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="entry text-dark">
-            <h4 class="text-dark">
-              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.role`, (event.target as HTMLElement).innerText)">{{ experience.role }}</span>,
-              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.company`, (event.target as HTMLElement).innerText)">{{ experience.company }}</span>,
-              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.city`, (event.target as HTMLElement).innerText)">{{ experience.city }}</span>
-            </h4>
-            <p class="dates">
-              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.start`, (event.target as HTMLElement).innerText)">{{ experience.start }}</span> -
-              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.end`, (event.target as HTMLElement).innerText)">{{ experience.end }}</span>
-            </p>
-            <ul>
-              <li v-for="(bullet, bulletIndex) in experience.bullets" :key="bulletIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.bullets.${bulletIndex}`, (event.target as HTMLElement).innerText)">{{ bullet }}</li>
-            </ul>
-          </article>
-        </section>
-        <section class="resume-section-hoverable resume-section-block">
-          <h2 class="cv-heading-section">Projects</h2>
-          <SectionToolbar section-key="project" :variants="sectionVariantOptions.project" :current-variant="currentVariant('project')" :can-move-up="canMoveUp('project')" :can-move-down="canMoveDown('project')" @add-item="() => emit('add-item', 'project')" @change-variant="(_, variant) => emit('change-variant', 'project', variant)" @move-up="() => emit('move-section', 'project', 'up')" @move-down="() => emit('move-section', 'project', 'down')" />
-          <article v-for="(project, index) in resume.projects" :key="`project-${index}`" class="entry text-dark">
-            <h4 class="text-dark">
-              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span>
-            </h4>
-            <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
-          </article>
+        <section
+          v-for="section in mainSections"
+          :key="`main-${section.key}`"
+          class="resume-section-hoverable resume-section-block"
+        >
+          <template v-if="section.key === 'experience'">
+            <h2 class="cv-heading-section">Employment History</h2>
+            <SectionToolbar section-key="experience" :variants="sectionVariantOptions.experience" :current-variant="currentVariant('experience')" :can-move-up="canMoveUp('experience')" :can-move-down="canMoveDown('experience')" @add-item="() => emit('add-item', 'experience')" @change-variant="(_, variant) => emit('change-variant', 'experience', variant)" @move-up="() => emit('move-section', 'experience', 'up')" @move-down="() => emit('move-section', 'experience', 'down')" />
+            <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="entry text-dark">
+              <h4 class="text-dark">
+                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.role`, (event.target as HTMLElement).innerText)">{{ experience.role }}</span>,
+                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.company`, (event.target as HTMLElement).innerText)">{{ experience.company }}</span>,
+                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.city`, (event.target as HTMLElement).innerText)">{{ experience.city }}</span>
+              </h4>
+              <p class="dates">
+                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.start`, (event.target as HTMLElement).innerText)">{{ experience.start }}</span> -
+                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.end`, (event.target as HTMLElement).innerText)">{{ experience.end }}</span>
+              </p>
+              <ul>
+                <li v-for="(bullet, bulletIndex) in experience.bullets" :key="bulletIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.bullets.${bulletIndex}`, (event.target as HTMLElement).innerText)">{{ bullet }}</li>
+              </ul>
+            </article>
+          </template>
+          <template v-else-if="section.key === 'education'">
+            <h2 class="cv-heading-section">Education</h2>
+            <SectionToolbar section-key="education" :variants="sectionVariantOptions.education" :current-variant="currentVariant('education')" :can-move-up="canMoveUp('education')" :can-move-down="canMoveDown('education')" @add-item="() => emit('add-item', 'education')" @change-variant="(_, variant) => emit('change-variant', 'education', variant)" @move-up="() => emit('move-section', 'education', 'up')" @move-down="() => emit('move-section', 'education', 'down')" />
+            <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="entry text-dark">
+              <h4 class="text-dark">
+                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</span>,
+                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</span>
+              </h4>
+              <p class="dates">
+                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.start`, (event.target as HTMLElement).innerText)">{{ item.start }}</span> -
+                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.end`, (event.target as HTMLElement).innerText)">{{ item.end }}</span>
+              </p>
+            </article>
+          </template>
+          <template v-else-if="section.key === 'project'">
+            <h2 class="cv-heading-section">Projects</h2>
+            <SectionToolbar section-key="project" :variants="sectionVariantOptions.project" :current-variant="currentVariant('project')" :can-move-up="canMoveUp('project')" :can-move-down="canMoveDown('project')" @add-item="() => emit('add-item', 'project')" @change-variant="(_, variant) => emit('change-variant', 'project', variant)" @move-up="() => emit('move-section', 'project', 'up')" @move-down="() => emit('move-section', 'project', 'down')" />
+            <article v-for="(project, index) in resume.projects" :key="`project-${index}`" class="entry text-dark">
+              <h4 class="text-dark">
+                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span>
+              </h4>
+              <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
+            </article>
+          </template>
         </section>
         <section>
           <h2 class="cv-heading-section">Certifications</h2>

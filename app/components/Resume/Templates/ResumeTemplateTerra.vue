@@ -18,6 +18,7 @@ type SectionLayoutEntry = {
   key: SectionKey
   label: string
   variant: string
+  region: 'main' | 'aside'
 }
 
 const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean; onPhotoClick?: () => void; layoutSettings?: LayoutSettings; sectionLayout?: SectionLayoutEntry[] }>(), {
@@ -98,16 +99,31 @@ const articleStyle = computed(() => ({
   marginBottom: props.layoutSettings?.lineDensity === 'compact' ? '8px' : '14px',
 }))
 const defaultSectionLayout: SectionLayoutEntry[] = [
-  { key: 'experience', label: 'Expérience', variant: 'detailed' },
-  { key: 'education', label: 'Education', variant: 'classic' },
-  { key: 'language', label: 'Language', variant: 'text-level' },
-  { key: 'project', label: 'Project', variant: 'list' },
+  { key: 'experience', label: 'Expérience', variant: 'detailed', region: 'main' },
+  { key: 'education', label: 'Education', variant: 'classic', region: 'main' },
+  { key: 'language', label: 'Language', variant: 'text-level', region: 'aside' },
+  { key: 'project', label: 'Project', variant: 'list', region: 'main' },
 ]
 const visibleSections = computed(() => (
   props.sectionLayout.length
     ? props.sectionLayout
     : defaultSectionLayout
 ))
+const mainSections = computed(() => visibleSections.value.filter(section => section.region === 'main'))
+const asideSections = computed(() => visibleSections.value.filter(section => section.region === 'aside'))
+function canMoveUp(sectionKey: SectionKey) {
+  const currentSection = visibleSections.value.find(section => section.key === sectionKey)
+  if (!currentSection) return false
+  const regionSections = visibleSections.value.filter(section => section.region === currentSection.region)
+  return regionSections.findIndex(section => section.key === sectionKey) > 0
+}
+function canMoveDown(sectionKey: SectionKey) {
+  const currentSection = visibleSections.value.find(section => section.key === sectionKey)
+  if (!currentSection) return false
+  const regionSections = visibleSections.value.filter(section => section.region === currentSection.region)
+  const index = regionSections.findIndex(section => section.key === sectionKey)
+  return index > -1 && index < regionSections.length - 1
+}
 const sectionHeadingByKey: Record<SectionKey, string> = {
   experience: 'Expériences professionnelles',
   education: 'Formations & diplômes',
@@ -134,6 +150,47 @@ const sectionHeadingByKey: Record<SectionKey, string> = {
       <ul>
         <li v-for="(skill, index) in resume.skills" :key="skill.name" class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`skills.${index}.name`, (event.target as HTMLElement).innerText)">{{ skill.name }}</li>
       </ul>
+      <section
+        v-for="section in asideSections"
+        :key="`aside-${section.key}`"
+        class="cv-section resume-section-hoverable mt-4"
+      >
+        <template v-if="section.key === 'language'">
+          <SectionToolbar
+            section-key="language"
+            :can-move-up="canMoveUp('language')"
+            :can-move-down="canMoveDown('language')"
+            :variants="sectionVariantOptions.language"
+            :current-variant="section.variant"
+            @add-item="(sectionKey) => emit('add-item', sectionKey as SectionKey)"
+            @change-variant="(sectionKey, variant) => emit('change-variant', sectionKey as SectionKey, variant)"
+            @move-up="(sectionKey) => emit('move-section', sectionKey as SectionKey, 'up')"
+            @move-down="(sectionKey) => emit('move-section', sectionKey as SectionKey, 'down')"
+          />
+          <h3 class="text-dark" :style="headingStyle">{{ sectionHeadingByKey.language }}</h3>
+          <article v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" :style="articleStyle">
+            <h4>
+              <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+            </h4>
+            <v-rating
+              v-if="section.variant === 'stars'"
+              :model-value="levelToStars(language.level)"
+              readonly
+              length="5"
+              density="compact"
+              color="amber"
+              size="16"
+            />
+            <template v-else-if="section.variant === 'progress'">
+              <div class="d-flex align-center ga-2">
+                <v-progress-linear class="terra-language-progress" :model-value="levelToPercent(language.level)" height="8" rounded color="primary" />
+                <small class="text-dark">{{ levelToPercent(language.level) }}%</small>
+              </div>
+            </template>
+            <p v-else class="period" :style="periodStyle">{{ levelToText(language.level) }}</p>
+          </article>
+        </template>
+      </section>
     </aside>
 
     <main>
@@ -145,12 +202,12 @@ const sectionHeadingByKey: Record<SectionKey, string> = {
         <p class="editable-text text-dark" :contenteditable="editable" @input="event => updateText('role', (event.target as HTMLElement).innerText)">{{ resume.role }}</p>
       </header>
 
-      <section v-for="section in visibleSections" :key="section.key">
+      <section v-for="section in mainSections" :key="section.key">
         <div class="cv-section resume-section-hoverable" tabindex="-1">
           <SectionToolbar
             :section-key="section.key"
-            :can-move-up="visibleSections.findIndex(item => item.key === section.key) > 0"
-            :can-move-down="visibleSections.findIndex(item => item.key === section.key) < visibleSections.length - 1"
+            :can-move-up="canMoveUp(section.key)"
+            :can-move-down="canMoveDown(section.key)"
             :variants="sectionVariantOptions[section.key]"
             :current-variant="section.variant"
             @add-item="(sectionKey) => emit('add-item', sectionKey as SectionKey)"
@@ -181,29 +238,6 @@ const sectionHeadingByKey: Record<SectionKey, string> = {
                 —
                 <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`education.${index}.city`, (event.target as HTMLElement).innerText)">{{ item.city }}</span>
               </p>
-            </article>
-          </template>
-          <template v-else-if="section.key === 'language'">
-            <article v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" :style="articleStyle">
-              <h4>
-                <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
-              </h4>
-              <v-rating
-                v-if="section.variant === 'stars'"
-                :model-value="levelToStars(language.level)"
-                readonly
-                length="5"
-                density="compact"
-                color="amber"
-                size="16"
-              />
-              <template v-else-if="section.variant === 'progress'">
-                <div class="d-flex align-center ga-2">
-                  <v-progress-linear class="terra-language-progress" :model-value="levelToPercent(language.level)" height="8" rounded color="primary" />
-                  <small class="text-dark">{{ levelToPercent(language.level) }}%</small>
-                </div>
-              </template>
-              <p v-else class="period" :style="periodStyle">{{ levelToText(language.level) }}</p>
             </article>
           </template>
           <template v-else>

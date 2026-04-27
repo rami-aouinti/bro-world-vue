@@ -209,6 +209,7 @@ type SectionLayoutEntry<K extends PreviewSectionKey = PreviewSectionKey> = {
   key: K
   label: string
   variant: SectionLayoutVariant[K]
+  region: 'main' | 'aside'
 }
 
 const activeTab = ref<'edit' | 'template' | 'design' | 'import'>('edit')
@@ -581,10 +582,10 @@ const pendingPdfDownload = ref(false)
 const addSectionDialogOpen = ref(false)
 const addSectionType = ref<AddSectionType>('experience')
 const sectionLayout = ref<SectionLayoutEntry[]>([
-  { key: 'experience', label: 'Expérience', variant: 'timeline' },
-  { key: 'education', label: 'Education', variant: 'classic' },
-  { key: 'language', label: 'Language', variant: 'stars' },
-  { key: 'project', label: 'Project', variant: 'cards' },
+  { key: 'experience', label: 'Expérience', variant: 'timeline', region: 'main' },
+  { key: 'education', label: 'Education', variant: 'classic', region: 'main' },
+  { key: 'language', label: 'Language', variant: 'stars', region: 'aside' },
+  { key: 'project', label: 'Project', variant: 'cards', region: 'main' },
 ])
 const sectionItemDialogOpen = ref(false)
 const activeSectionKey = ref<PreviewSectionKey>('experience')
@@ -1007,13 +1008,38 @@ function addItemToPreviewSection(section: PreviewSectionKey) {
   openSectionItemDialog(section)
 }
 
-function moveSection(sectionKey: PreviewSectionKey, direction: 'up' | 'down') {
+function moveSectionUp(sectionKey: PreviewSectionKey) {
   const currentIndex = sectionLayout.value.findIndex(item => item.key === sectionKey)
   if (currentIndex < 0) return
-  const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1
-  if (targetIndex < 0 || targetIndex >= sectionLayout.value.length) return
+  const currentSection = sectionLayout.value[currentIndex]
+  const regionEntries = sectionLayout.value.filter(item => item.region === currentSection.region)
+  const regionIndex = regionEntries.findIndex(item => item.key === sectionKey)
+  if (regionIndex <= 0) return
+  const targetSection = regionEntries[regionIndex - 1]
+  const targetIndex = sectionLayout.value.findIndex(item => item.key === targetSection.key)
   const [movedSection] = sectionLayout.value.splice(currentIndex, 1)
   sectionLayout.value.splice(targetIndex, 0, movedSection)
+}
+
+function moveSectionDown(sectionKey: PreviewSectionKey) {
+  const currentIndex = sectionLayout.value.findIndex(item => item.key === sectionKey)
+  if (currentIndex < 0) return
+  const currentSection = sectionLayout.value[currentIndex]
+  const regionEntries = sectionLayout.value.filter(item => item.region === currentSection.region)
+  const regionIndex = regionEntries.findIndex(item => item.key === sectionKey)
+  if (regionIndex < 0 || regionIndex >= regionEntries.length - 1) return
+  const targetSection = regionEntries[regionIndex + 1]
+  const targetIndex = sectionLayout.value.findIndex(item => item.key === targetSection.key)
+  const [movedSection] = sectionLayout.value.splice(currentIndex, 1)
+  sectionLayout.value.splice(targetIndex, 0, movedSection)
+}
+
+function moveSection(sectionKey: PreviewSectionKey, direction: 'up' | 'down') {
+  if (direction === 'up') {
+    moveSectionUp(sectionKey)
+    return
+  }
+  moveSectionDown(sectionKey)
 }
 
 function setSectionVariant<K extends PreviewSectionKey>(key: K, variant: SectionLayoutVariant[K]) {
@@ -1589,6 +1615,7 @@ if (import.meta.client) {
           key: item.key as PreviewSectionKey,
           label: item.label || fallback[index]?.label || fallbackByKey[item.key as PreviewSectionKey].label,
           variant: (item.variant || fallbackByKey[item.key as PreviewSectionKey].variant) as SectionLayoutVariant[PreviewSectionKey],
+          region: item.region === 'aside' ? 'aside' : fallbackByKey[item.key as PreviewSectionKey].region,
         }))
 
       if (normalized.length === fallback.length) {
