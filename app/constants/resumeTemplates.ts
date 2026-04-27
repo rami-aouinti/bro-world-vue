@@ -143,6 +143,24 @@ export const COVER_PAGE_TEMPLATES: CoverTemplateDefinition[] = [
     subtitle: 'Page de garde élégante centrée',
     image: '/img/cv/cv-5.png',
   },
+  {
+    id: 'cover-page-hero-centered',
+    title: 'Cover Page Hero Centered',
+    subtitle: 'Hero centré avec identité visuelle forte',
+    image: '/img/cv/cv-2.png',
+  },
+  {
+    id: 'cover-page-sidebar-pulse',
+    title: 'Cover Page Sidebar Pulse',
+    subtitle: 'Mise en page latérale pour contexte et contacts',
+    image: '/img/cv/cv-1.png',
+  },
+  {
+    id: 'cover-page-split-editorial',
+    title: 'Cover Page Split Editorial',
+    subtitle: 'Split vertical premium de style éditorial',
+    image: '/img/cv/cv-3.png',
+  },
 ]
 
 export const COVER_LETTER_TEMPLATES: CoverTemplateDefinition[] = [
@@ -157,6 +175,24 @@ export const COVER_LETTER_TEMPLATES: CoverTemplateDefinition[] = [
     title: 'Cover Letter Modern',
     subtitle: 'Lettre moderne avec mise en avant du profil',
     image: '/img/cv/cv-3.png',
+  },
+  {
+    id: 'cover-letter-ats-minimal',
+    title: 'Cover Letter ATS Minimal',
+    subtitle: 'Structure minimale optimisée lecture ATS',
+    image: '/img/cv/cv-4.png',
+  },
+  {
+    id: 'cover-letter-premium-editorial',
+    title: 'Cover Letter Premium Editorial',
+    subtitle: 'Style premium avec rythme éditorial',
+    image: '/img/cv/cv-5.png',
+  },
+  {
+    id: 'cover-letter-split-focus',
+    title: 'Cover Letter Split Focus',
+    subtitle: 'Split latéral pour focus profil et argumentaire',
+    image: '/img/cv/cv-2.png',
   },
 ]
 
