@@ -10,6 +10,7 @@ export type ResumeTemplateVariant =
   | 'terra'
   | 'ocean-split'
   | 'corporate-blue'
+  | 'grid-slate'
 
 export type ResumeTemplateFlags = {
   photo: boolean
