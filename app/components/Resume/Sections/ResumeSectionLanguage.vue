@@ -50,7 +50,7 @@ function updateText(path: string, value: string) {
 }
 </script>
 <template>
-  <section :class="['language-section', `density-${layoutDensity}`]" :style="sectionStyle">
+  <section :class="['language-section', 'resume-section-hoverable', `density-${layoutDensity}`]" :style="sectionStyle">
     <SectionToolbar v-if="toolbarEnabled" section-key="language" :variants="[{ label: 'Text level', value: 'text-level' }, { label: 'Stars', value: 'stars' }, { label: 'Progress', value: 'progress' }]" :current-variant="safeVariant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'language')" @change-variant="(_, next) => emit('change-variant', 'language', next)" @move-up="() => emit('move-section', 'language', 'up')" @move-down="() => emit('move-section', 'language', 'down')" />
     <h3 class="cv-heading-section">{{ title }}</h3>
     <ul v-if="safeVariant === 'classic' || safeVariant === 'text-level'" class="bars">
@@ -78,6 +78,7 @@ function updateText(path: string, value: string) {
 </template>
 <style scoped>
 .language-section {
+  position: relative;
   border-bottom: var(--rs-section-separator, none);
   padding-bottom: var(--rs-section-padding-bottom, 0);
 }

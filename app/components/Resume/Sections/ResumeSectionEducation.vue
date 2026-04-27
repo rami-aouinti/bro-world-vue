@@ -49,7 +49,7 @@ function updateText(path: string, value: string) {
 }
 </script>
 <template>
-  <section :class="['education', `density-${layoutDensity}`, { 'education-grid': safeVariant === 'two-column' }]" :style="sectionStyle">
+  <section :class="['education', 'resume-section-hoverable', `density-${layoutDensity}`, { 'education-grid': safeVariant === 'two-column' }]" :style="sectionStyle">
     <SectionToolbar v-if="toolbarEnabled" section-key="education" :variants="[{ label: 'Classic', value: 'classic' }, { label: 'Timeline', value: 'timeline' }, { label: 'Two columns', value: 'two-column' }]" :current-variant="safeVariant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'education')" @change-variant="(_, next) => emit('change-variant', 'education', next)" @move-up="() => emit('move-section', 'education', 'up')" @move-down="() => emit('move-section', 'education', 'down')" />
     <h2 class="cv-heading-section">{{ title }}</h2>
     <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="entry text-dark" :class="{ 'timeline-entry': safeVariant === 'timeline' }">
@@ -67,6 +67,7 @@ function updateText(path: string, value: string) {
 </template>
 <style scoped>
 .education {
+  position: relative;
   border-bottom: var(--rs-section-separator, none);
   padding-bottom: var(--rs-section-padding-bottom, 0);
 }

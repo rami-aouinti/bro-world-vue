@@ -49,7 +49,7 @@ function updateText(path: string, value: string) {
 }
 </script>
 <template>
-  <section :class="['project-section', `density-${layoutDensity}`]" :style="sectionStyle">
+  <section :class="['project-section', 'resume-section-hoverable', `density-${layoutDensity}`]" :style="sectionStyle">
     <SectionToolbar v-if="toolbarEnabled" section-key="project" :variants="[{ label: 'List', value: 'list' }, { label: 'Cards', value: 'cards' }, { label: 'Two columns', value: 'two-column' }]" :current-variant="safeVariant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'project')" @change-variant="(_, next) => emit('change-variant', 'project', next)" @move-up="() => emit('move-section', 'project', 'up')" @move-down="() => emit('move-section', 'project', 'down')" />
     <h2 class="cv-heading-section">{{ title }}</h2>
     <div :class="['project-grid', { 'project-grid--two-column': safeVariant === 'two-column' }]">
@@ -67,6 +67,7 @@ function updateText(path: string, value: string) {
 </template>
 <style scoped>
 .project-section {
+  position: relative;
   border-bottom: var(--rs-section-separator, none);
   padding-bottom: var(--rs-section-padding-bottom, 0);
 }

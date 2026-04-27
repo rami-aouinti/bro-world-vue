@@ -44,7 +44,7 @@ function updateText(path: string, value: string) {
 </script>
 
 <template>
-  <section class="resume-section experience" :class="`density-${layoutDensity}`" :style="sectionStyle">
+  <section class="resume-section resume-section-hoverable experience" :class="`density-${layoutDensity}`" :style="sectionStyle">
     <SectionToolbar v-if="toolbarEnabled" section-key="experience" :variants="[{ label: 'Detailed', value: 'detailed' }, { label: 'Bullets', value: 'bullets' }, { label: 'Compact', value: 'compact' }]" :current-variant="variant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'experience')" @change-variant="(_, next) => emit('change-variant', 'experience', next)" @move-up="() => emit('move-section', 'experience', 'up')" @move-down="() => emit('move-section', 'experience', 'down')" />
     <h2 class="cv-heading-section">{{ title }}</h2>
     <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="entry text-dark">
@@ -69,6 +69,7 @@ function updateText(path: string, value: string) {
 
 <style scoped>
 .resume-section {
+  position: relative;
   border-bottom: var(--rs-section-separator, none);
   padding-bottom: var(--rs-section-padding-bottom, 0);
 }
