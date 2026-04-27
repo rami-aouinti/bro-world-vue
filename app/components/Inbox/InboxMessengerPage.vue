@@ -103,7 +103,6 @@ const selectedConversationId = ref<string>('')
 const search = ref('')
 const selectedUserId = ref<string | null>(null)
 const publicUsers = ref<PublicUser[]>([])
-const suggestedRightUsers = ref<PublicUser[]>([])
 const messageInput = ref('')
 const messagesContainerRef = ref<HTMLElement | null>(null)
 const editMessageId = ref<string>('')
@@ -136,6 +135,12 @@ const selectedConversation = computed(() =>
   conversations.value.find((conversation) => conversation.id === selectedConversationId.value),
 )
 
+function isGroupConversation(conversation?: ConversationSummary | null) {
+  if (!conversation) return false
+  if (String(conversation.type || '').toLowerCase().includes('group')) return true
+  return conversation.participants.length > 2
+}
+
 const targetParticipant = computed(() => {
   const participants = selectedConversation.value?.participants || []
   return (
@@ -146,6 +151,7 @@ const targetParticipant = computed(() => {
 })
 
 const selectedConversationName = computed(() => {
+  if (isGroupConversation(selectedConversation.value)) return 'General'
   const target = targetParticipant.value?.user
   const fullName = [target?.firstName, target?.lastName].filter(Boolean).join(' ')
   return fullName || t('pages.inbox.conversationFallback')
@@ -213,11 +219,22 @@ function conversationParticipantUser(
 }
 
 function participantName(conversation: ConversationSummary) {
+  if (isGroupConversation(conversation)) return 'General'
   const target = participantForConversation(conversation)?.user
   return (
     [target?.firstName, target?.lastName].filter(Boolean).join(' ') ||
     t('pages.inbox.conversationFallback')
   )
+}
+
+function conversationParticipantsPhotos(conversation?: ConversationSummary | null) {
+  if (!conversation) return []
+  return conversation.participants
+    .map((participant) => participant.user)
+    .filter((user): user is ChatUser => Boolean(user))
+    .filter((user) => user.id !== currentUserId.value)
+    .map((user) => user.photo || '/img/default-avatar.png')
+    .slice(0, 4)
 }
 
 function isMine(message: ConversationMessage) {
@@ -251,28 +268,6 @@ function upsertConversationPreview(conversationId: string, content: string) {
     target.lastMessage.content = content
     target.lastMessage.createdAt = new Date().toISOString()
   }
-}
-
-function shuffleUsers(items: PublicUser[]) {
-  const shuffled = [...items]
-
-  for (let index = shuffled.length - 1; index > 0; index -= 1) {
-    const randomIndex = Math.floor(Math.random() * (index + 1))
-    const current = shuffled[index]
-    const randomItem = shuffled[randomIndex]
-
-    if (!current || !randomItem) continue
-
-    shuffled[index] = randomItem
-    shuffled[randomIndex] = current
-  }
-
-  return shuffled
-}
-
-function refreshRightSuggestions() {
-  const baseUsers = publicUsers.value.filter((entry) => entry.id !== currentUserId.value)
-  suggestedRightUsers.value = shuffleUsers(baseUsers).slice(0, 5)
 }
 
 async function fetchConversations() {
@@ -316,7 +311,6 @@ async function fetchConversations() {
 async function fetchPublicUsers() {
   const response = await $fetch<PublicUsersResponse>('/api/public/users')
   publicUsers.value = response.users || response.items || []
-  refreshRightSuggestions()
 }
 
 async function openConversation(conversationId: string, syncRoute = true) {
@@ -737,77 +731,55 @@ watch(
 
         <v-progress-linear v-if="loading" indeterminate color="primary" class="mb-3" />
 
-      <v-list class="inbox-conversation-list">
-        <v-list-item
-          v-for="conversation in sortedConversations"
-          :key="conversation.id"
-          :active="conversation.id === selectedConversationId"
-          rounded="xl"
-          class="mb-2 conversation-item"
-          @click="openConversation(conversation.id)"
-        >
-          <template #prepend>
-            <v-avatar size="48">
-              <v-img
-                :src="participantForConversation(conversation)?.user?.photo || '/img/default-avatar.png'"
-                cover
-              />
-            </v-avatar>
-          </template>
-
-          <v-list-item-title class="font-weight-bold text-body-1">
-            {{ participantName(conversation) }}
-          </v-list-item-title>
-          <v-list-item-subtitle class="text-caption mb-1">
-            {{ messageTime(conversation.lastMessage?.createdAt || conversation.createdAt) }}
-          </v-list-item-subtitle>
-          <v-list-item-subtitle class="text-body-2 text-truncate">
-            {{ conversation.lastMessage?.content || '...' }}
-          </v-list-item-subtitle>
-
-          <template #append>
-            <v-badge
-              v-if="(conversation.unreadMessagesCount || 0) > 0"
-              :content="conversation.unreadMessagesCount"
-              color="primary"
-              inline
-            />
-          </template>
-        </v-list-item>
-      </v-list>
+      <v-alert type="info" variant="tonal" density="comfortable">
+        {{ t('pages.inbox.selectConversation') }}
+      </v-alert>
     </template>
 
     <template #right>
-        <v-list density="compact" class="bg-transparent">
+        <v-list class="inbox-conversation-list bg-transparent">
           <v-list-item
-            v-for="entry in suggestedRightUsers"
-            :key="entry.id"
-            :title="
-              [entry.firstName, entry.lastName].filter(Boolean).join(' ') ||
-              entry.username ||
-              t('pages.inbox.userFallback')
-            "
+            v-for="conversation in sortedConversations"
+            :key="conversation.id"
+            :active="conversation.id === selectedConversationId"
+            rounded="xl"
+            class="mb-2 conversation-item"
+            @click="openConversation(conversation.id)"
           >
             <template #prepend>
-              <v-avatar size="30">
-                <v-img :src="entry.photo || '/img/default-avatar.png'" cover />
+              <v-avatar v-if="!isGroupConversation(conversation)" size="44">
+                <v-img
+                  :src="participantForConversation(conversation)?.user?.photo || '/img/default-avatar.png'"
+                  cover
+                />
               </v-avatar>
+              <div v-else class="group-avatar">
+                <img
+                  v-for="(photo, index) in conversationParticipantsPhotos(conversation)"
+                  :key="`${conversation.id}-${index}`"
+                  :src="photo"
+                  class="group-avatar__img"
+                  alt=""
+                >
+              </div>
             </template>
+
+            <v-list-item-title class="font-weight-bold text-body-1">
+              {{ participantName(conversation) }}
+            </v-list-item-title>
+            <v-list-item-subtitle class="text-caption mb-1">
+              {{ messageTime(conversation.lastMessage?.createdAt || conversation.createdAt) }}
+            </v-list-item-subtitle>
+            <v-list-item-subtitle class="text-body-2 text-truncate">
+              {{ conversation.lastMessage?.content || '...' }}
+            </v-list-item-subtitle>
+
             <template #append>
-              <v-btn
-                icon="mdi-message-text-outline"
-                size="small"
-                variant="text"
+              <v-badge
+                v-if="(conversation.unreadMessagesCount || 0) > 0"
+                :content="conversation.unreadMessagesCount"
                 color="primary"
-                :aria-label="
-                  t('pages.inbox.openConversationWith', {
-                    name:
-                      [entry.firstName, entry.lastName].filter(Boolean).join(' ') ||
-                      entry.username ||
-                      t('pages.inbox.userFallback'),
-                  })
-                "
-                @click="startConversationWithUser(entry)"
+                inline
               />
             </template>
           </v-list-item>
@@ -825,7 +797,7 @@ watch(
         <v-sheet color="primary" rounded="xl" class="pa-4 text-white d-flex align-center justify-space-between mb-4 chat-header">
           <div class="d-flex align-center ga-3">
             <NuxtLink
-              v-if="userProfilePath(targetParticipant?.user)"
+              v-if="!isGroupConversation(selectedConversation) && userProfilePath(targetParticipant?.user)"
               :to="userProfilePath(targetParticipant?.user)!"
               class="inbox-user-link"
             >
@@ -833,12 +805,21 @@ watch(
                 <v-img :src="targetParticipant?.user?.photo || '/img/default-avatar.png'" cover />
               </v-avatar>
             </NuxtLink>
-            <v-avatar v-else size="56">
+            <v-avatar v-else-if="!isGroupConversation(selectedConversation)" size="56">
               <v-img :src="targetParticipant?.user?.photo || '/img/default-avatar.png'" cover />
             </v-avatar>
+            <div v-else class="group-avatar group-avatar--lg">
+              <img
+                v-for="(photo, index) in conversationParticipantsPhotos(selectedConversation)"
+                :key="`${selectedConversation.id}-${index}`"
+                :src="photo"
+                class="group-avatar__img"
+                alt=""
+              >
+            </div>
             <div>
               <NuxtLink
-                v-if="userProfilePath(targetParticipant?.user)"
+                v-if="!isGroupConversation(selectedConversation) && userProfilePath(targetParticipant?.user)"
                 :to="userProfilePath(targetParticipant?.user)!"
                 class="inbox-user-link inbox-user-link--name"
               >
@@ -1066,6 +1047,28 @@ watch(
 .inbox-user-link--name {
   font-size: 1.25rem;
   font-weight: 700;
+}
+
+.group-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  background: rgb(var(--v-theme-surface));
+}
+
+.group-avatar--lg {
+  width: 56px;
+  height: 56px;
+}
+
+.group-avatar__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 :deep(.v-list-item--active.conversation-item) {
