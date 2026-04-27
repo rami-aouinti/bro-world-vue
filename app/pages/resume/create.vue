@@ -2683,6 +2683,8 @@ if (import.meta.client) {
             :level-input-mode="levelInputMode"
             :hidden-sections="sharedSectionsHiddenByTemplate"
             :tone="sharedSectionsTone"
+            @add-item="addItemToPreviewSection"
+            @change-variant="setSectionVariant"
           />
           <div v-if="signatureDataUrl" class="signature-overlay">
             <img :src="signatureDataUrl" alt="Signature" />
@@ -2879,9 +2881,12 @@ if (import.meta.client) {
             />
             <ResumeTemplateSharedSections
               :resume="resume"
+              :section-layout="sectionLayout"
               :editable="true"
               :hidden-sections="sharedSectionsHiddenByTemplate"
               :tone="sharedSectionsTone"
+              @add-item="addItemToPreviewSection"
+              @change-variant="setSectionVariant"
             />
           </div>
         </v-card-text>

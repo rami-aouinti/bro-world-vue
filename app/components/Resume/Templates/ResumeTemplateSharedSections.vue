@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { levelToPercent, levelToStars, levelToText } from '~/utils/resumeLanguageLevel'
+import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 
 type SharedSectionKey =
   | 'languages'
@@ -35,6 +36,10 @@ const props = withDefaults(defineProps<{
   sectionLayout: () => [],
   levelInputMode: 'percent',
 })
+const emit = defineEmits<{
+  (event: 'add-item', sectionKey: string): void
+  (event: 'change-variant', sectionKey: string, variant: string): void
+}>()
 
 const toneClass = computed(() => {
   if (props.tone === 'light') return 'shared-extra--light'
@@ -78,7 +83,18 @@ const projectVariant = computed<'list' | 'cards' | 'two-column'>(() => {
 
 <template>
   <section class="shared-extra cv-card-surface text-dark" :class="toneClass">
-    <div v-if="isVisible('languages') && resume.languages?.length">
+    <div v-if="isVisible('languages') && resume.languages?.length" class="resume-section-hoverable shared-section">
+      <SectionToolbar
+        section-key="language"
+        :variants="[
+          { label: 'Text level', value: 'text-level' },
+          { label: 'Stars', value: 'stars' },
+          { label: 'Progress', value: 'progress' },
+        ]"
+        :current-variant="languageVariant"
+        @add-item="() => emit('add-item', 'language')"
+        @change-variant="(_, variant) => emit('change-variant', 'language', variant)"
+      />
       <h3 class="cv-heading-section cv-divider-bottom text-dark">Languages</h3>
       <ul v-if="languageVariant === 'text-level'">
         <li v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`">
@@ -111,7 +127,18 @@ const projectVariant = computed<'list' | 'cards' | 'two-column'>(() => {
       </div>
     </div>
 
-    <div v-if="isVisible('projects') && resume.projects?.length">
+    <div v-if="isVisible('projects') && resume.projects?.length" class="resume-section-hoverable shared-section">
+      <SectionToolbar
+        section-key="project"
+        :variants="[
+          { label: 'List', value: 'list' },
+          { label: 'Cards', value: 'cards' },
+          { label: 'Two columns', value: 'two-column' },
+        ]"
+        :current-variant="projectVariant"
+        @add-item="() => emit('add-item', 'project')"
+        @change-variant="(_, variant) => emit('change-variant', 'project', variant)"
+      />
       <h3 class="cv-heading-section cv-divider-bottom text-dark">Projects</h3>
       <ul v-if="projectVariant === 'list'">
         <li v-for="(project, index) in resume.projects" :key="`${project.name}-${index}`">
@@ -224,6 +251,9 @@ const projectVariant = computed<'list' | 'cards' | 'two-column'>(() => {
 }
 .project-card--soft {
   background: color-mix(in srgb, var(--cv-page) 96%, white);
+}
+.shared-section {
+  position: relative;
 }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
