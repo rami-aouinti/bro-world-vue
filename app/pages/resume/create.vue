@@ -1499,7 +1499,7 @@ if (import.meta.client) {
             <v-card-title class="text-subtitle-2">Design</v-card-title>
             <v-card-text>
               <p class="section-label">Color palette</p>
-              <div class="palette-grid mb-3">
+              <div class="palette-grid mb-4">
                 <button
                   v-for="theme in colorThemes"
                   :key="`toolbar-design-${theme.name}`"
@@ -1513,6 +1513,26 @@ if (import.meta.client) {
                   <span :style="{ background: theme.page }" />
                 </button>
               </div>
+
+              <p class="section-label">Rounded</p>
+              <v-btn-toggle
+                v-model="selectedRounded"
+                mandatory
+                divided
+                class="rounded-toggle w-100"
+                color="primary"
+              >
+                <v-btn
+                  v-for="option in roundedOptions"
+                  :key="`toolbar-rounded-${option.value}`"
+                  :value="option.value"
+                  variant="text"
+                >
+                  {{ option.title }}
+                </v-btn>
+              </v-btn-toggle>
+
+              <p class="section-label mt-4">Text style</p>
               <AppSelect
                 v-model="selectedTextStyle"
                 :items="textStyleOptions"
@@ -1521,13 +1541,92 @@ if (import.meta.client) {
                 label="Typography preset"
                 density="comfortable"
                 hide-details
-                class="mb-3"
               />
-              <v-btn-toggle v-model="selectedRounded" mandatory divided color="primary" class="rounded-toggle w-100">
-                <v-btn v-for="option in roundedOptions" :key="`toolbar-rounded-${option.value}`" :value="option.value" variant="text">
-                  {{ option.title }}
-                </v-btn>
-              </v-btn-toggle>
+
+              <v-divider class="my-4" />
+              <p class="section-label">Layout settings</p>
+              <v-slider
+                v-model="layoutSettings.photoSize"
+                label="Photo size"
+                min="100"
+                max="220"
+                step="2"
+                thumb-label
+                hide-details="auto"
+              />
+              <v-slider
+                v-model="layoutSettings.photoBorderWidth"
+                label="Photo border"
+                min="0"
+                max="16"
+                step="1"
+                thumb-label
+                hide-details="auto"
+              />
+              <AppSelect
+                v-model="layoutSettings.photoPosition"
+                :items="[
+                  { label: 'Left', value: 'left' },
+                  { label: 'Center', value: 'center' },
+                  { label: 'Right', value: 'right' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Photo position"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <v-slider
+                v-model="layoutSettings.sidebarWidth"
+                label="Sidebar width"
+                min="220"
+                max="360"
+                step="2"
+                thumb-label
+                hide-details="auto"
+              />
+              <AppSelect
+                v-model="layoutSettings.sectionDividerStyle"
+                :items="[
+                  { label: 'None', value: 'none' },
+                  { label: 'Line', value: 'line' },
+                  { label: 'Thick', value: 'thick' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Section divider"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <v-switch
+                v-model="layoutSettings.headingCase"
+                false-value="normal"
+                true-value="uppercase"
+                label="Uppercase headings"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
+              <v-slider
+                v-model="layoutSettings.dateColumnWidth"
+                label="Date column width"
+                min="80"
+                max="180"
+                step="2"
+                thumb-label
+                hide-details="auto"
+              />
+              <v-switch
+                v-model="layoutSettings.lineDensity"
+                false-value="comfortable"
+                true-value="compact"
+                label="Compact line density"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
             </v-card-text>
           </v-card>
         </v-menu>
