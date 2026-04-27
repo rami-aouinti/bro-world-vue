@@ -188,14 +188,19 @@ type AddSectionType =
   | 'certification'
   | 'reference'
 type PreviewSectionKey = 'experience' | 'education' | 'language' | 'project'
-type SharedSectionActionKey = PreviewSectionKey | 'course' | 'certification' | 'reference' | 'hobby'
+type EditableSectionKey = PreviewSectionKey | 'skill' | 'reference' | 'hobby' | 'certification'
+type SharedSectionActionKey = EditableSectionKey | 'course'
 type SectionLayoutVariant = {
   experience: 'detailed' | 'bullets' | 'compact'
   education: 'classic' | 'timeline' | 'two-column'
   language: 'classic' | 'text-level' | 'stars' | 'progress'
   project: 'classic' | 'list' | 'cards' | 'two-column'
+  skill: 'classic'
+  reference: 'classic'
+  hobby: 'classic'
+  certification: 'classic'
 }
-type SectionLayoutEntry<K extends PreviewSectionKey = PreviewSectionKey> = {
+type SectionLayoutEntry<K extends EditableSectionKey = EditableSectionKey> = {
   key: K
   variant: SectionLayoutVariant[K]
   region: 'main' | 'aside'
@@ -297,7 +302,7 @@ const sectionConfig: {
   },
 }
 const variantRegistry: {
-  [K in PreviewSectionKey]: {
+  [K in EditableSectionKey]: {
     allowed: SectionLayoutVariant[K][]
     fallback: SectionLayoutVariant[K]
   }
@@ -306,6 +311,10 @@ const variantRegistry: {
   education: { allowed: ['classic', 'timeline', 'two-column'], fallback: 'classic' },
   language: { allowed: ['classic', 'text-level', 'stars', 'progress'], fallback: 'classic' },
   project: { allowed: ['classic', 'list', 'cards', 'two-column'], fallback: 'classic' },
+  skill: { allowed: ['classic'], fallback: 'classic' },
+  reference: { allowed: ['classic'], fallback: 'classic' },
+  hobby: { allowed: ['classic'], fallback: 'classic' },
+  certification: { allowed: ['classic'], fallback: 'classic' },
 }
 const coverPageTemplateCards: Template[] = COVER_PAGE_TEMPLATES.map(template => ({
   id: template.id,
@@ -576,7 +585,11 @@ const defaultSectionLayout: SectionLayoutEntry[] = [
   { key: 'experience', variant: 'detailed', region: 'main', order: 0 },
   { key: 'education', variant: 'classic', region: 'main', order: 1 },
   { key: 'project', variant: 'classic', region: 'main', order: 2 },
-  { key: 'language', variant: 'classic', region: 'aside', order: 0 },
+  { key: 'certification', variant: 'classic', region: 'main', order: 3 },
+  { key: 'skill', variant: 'classic', region: 'aside', order: 0 },
+  { key: 'language', variant: 'classic', region: 'aside', order: 1 },
+  { key: 'reference', variant: 'classic', region: 'aside', order: 2 },
+  { key: 'hobby', variant: 'classic', region: 'aside', order: 3 },
 ]
 const sectionLayout = ref<SectionLayoutEntry[]>(
   defaultSectionLayout.map(entry => ({ ...entry })),
@@ -935,7 +948,7 @@ const orderedPreviewSections = computed(() =>
   }),
 )
 
-const sectionVariantByKey = computed(() => (
+const sectionVariantByKey = computed<Partial<Record<EditableSectionKey, string>>>(() => (
   Object.fromEntries(sectionLayout.value.map(section => [section.key, section.variant]))
 ))
 
@@ -1021,14 +1034,14 @@ function addItemToPreviewSection(section: SharedSectionActionKey) {
     openAddSectionDialog('certification')
     return
   }
-  if (section === 'certification' || section === 'reference' || section === 'hobby') {
+  if (section === 'certification' || section === 'reference' || section === 'hobby' || section === 'skill') {
     openAddSectionDialog(section)
     return
   }
   openSectionItemDialog(section)
 }
 
-function normalizeSectionVariant<K extends PreviewSectionKey>(
+function normalizeSectionVariant<K extends EditableSectionKey>(
   key: K,
   variant: unknown,
 ): SectionLayoutVariant[K] {
@@ -1042,7 +1055,7 @@ function normalizeSectionVariant<K extends PreviewSectionKey>(
   return registry.fallback
 }
 
-function moveSectionUp(sectionKey: PreviewSectionKey) {
+function moveSectionUp(sectionKey: EditableSectionKey) {
   const currentSection = sectionLayout.value.find(item => item.key === sectionKey)
   if (!currentSection) return
   const regionEntries = [...sectionLayout.value]
@@ -1056,7 +1069,7 @@ function moveSectionUp(sectionKey: PreviewSectionKey) {
   previous.order = originalOrder
 }
 
-function moveSectionDown(sectionKey: PreviewSectionKey) {
+function moveSectionDown(sectionKey: EditableSectionKey) {
   const currentSection = sectionLayout.value.find(item => item.key === sectionKey)
   if (!currentSection) return
   const regionEntries = [...sectionLayout.value]
@@ -1070,7 +1083,7 @@ function moveSectionDown(sectionKey: PreviewSectionKey) {
   next.order = originalOrder
 }
 
-function moveSection(sectionKey: PreviewSectionKey, direction: 'up' | 'down') {
+function moveSection(sectionKey: EditableSectionKey, direction: 'up' | 'down') {
   if (direction === 'up') {
     moveSectionUp(sectionKey)
     return
@@ -1078,7 +1091,7 @@ function moveSection(sectionKey: PreviewSectionKey, direction: 'up' | 'down') {
   moveSectionDown(sectionKey)
 }
 
-function setSectionVariant<K extends PreviewSectionKey>(key: K, variant: SectionLayoutVariant[K] | string) {
+function setSectionVariant<K extends EditableSectionKey>(key: K, variant: SectionLayoutVariant[K] | string) {
   const target = sectionLayout.value.find(section => section.key === key)
   if (!target) return
   const normalizedVariant = normalizeSectionVariant(key, variant)
@@ -1639,7 +1652,7 @@ if (import.meta.client) {
       const parsedByKey = new Map(
         parsed
           .filter(item => item?.key)
-          .map(item => [item.key as PreviewSectionKey, item]),
+          .map(item => [item.key as EditableSectionKey, item]),
       )
 
       sectionLayout.value = defaultSectionLayout.map((fallback) => {
