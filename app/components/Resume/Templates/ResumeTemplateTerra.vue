@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { levelToPercent, levelToStars, levelToText } from '~/utils/resumeLanguageLevel'
-import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import ResumeSectionExperience from '~/components/Resume/Sections/ResumeSectionExperience.vue'
+import ResumeSectionEducation from '~/components/Resume/Sections/ResumeSectionEducation.vue'
+import ResumeSectionLanguage from '~/components/Resume/Sections/ResumeSectionLanguage.vue'
+import ResumeSectionProject from '~/components/Resume/Sections/ResumeSectionProject.vue'
 
 type LayoutSettings = {
   photoSize?: number
@@ -34,29 +36,6 @@ const emit = defineEmits<{
   (event: 'move-section', sectionKey: SectionKey, direction: 'up' | 'down'): void
 }>()
 
-const sectionVariantOptions: Record<SectionKey, { label: string; value: string }[]> = {
-  experience: [
-    { label: 'Detailed', value: 'detailed' },
-    { label: 'Bullets', value: 'bullets' },
-    { label: 'Compact', value: 'compact' },
-  ],
-  education: [
-    { label: 'Classic', value: 'classic' },
-    { label: 'Timeline', value: 'timeline' },
-    { label: 'Two columns', value: 'two-column' },
-  ],
-  language: [
-    { label: 'Text level', value: 'text-level' },
-    { label: 'Stars', value: 'stars' },
-    { label: 'Progress', value: 'progress' },
-  ],
-  project: [
-    { label: 'List', value: 'list' },
-    { label: 'Cards', value: 'cards' },
-    { label: 'Two columns', value: 'two-column' },
-  ],
-}
-
 function updateText(path: string, value: string) {
   const segments = path.split('.')
   const last = segments.pop()
@@ -86,17 +65,6 @@ const photoStyle = computed(() => ({
 }))
 const headingStyle = computed(() => ({
   textTransform: props.layoutSettings?.headingCase === 'uppercase' ? 'uppercase' : 'none',
-}))
-const sectionHeadingStyle = computed(() => ({
-  borderTop: props.layoutSettings?.sectionDividerStyle === 'none'
-    ? 'none'
-    : `${props.layoutSettings?.sectionDividerStyle === 'thick' ? 3 : 1}px solid color-mix(in srgb, var(--cv-accent) 24%, var(--cv-page))`,
-}))
-const periodStyle = computed(() => ({
-  minWidth: `${props.layoutSettings?.dateColumnWidth ?? 120}px`,
-}))
-const articleStyle = computed(() => ({
-  marginBottom: props.layoutSettings?.lineDensity === 'compact' ? '8px' : '14px',
 }))
 const defaultSectionLayout: SectionLayoutEntry[] = [
   { key: 'experience', label: 'Expérience', variant: 'detailed', region: 'main' },
@@ -155,50 +123,21 @@ const sectionHeadingByKey: Record<SectionKey, string> = {
         :key="`aside-${section.key}`"
         class="cv-section resume-section-hoverable mt-4"
       >
-        <template v-if="section.key === 'language'">
-          <SectionToolbar
-            section-key="language"
-            :can-move-up="canMoveUp('language')"
-            :can-move-down="canMoveDown('language')"
-            :variants="sectionVariantOptions.language"
-            :current-variant="section.variant"
-            @add-item="(sectionKey) => emit('add-item', sectionKey as SectionKey)"
-            @change-variant="(sectionKey, variant) => emit('change-variant', sectionKey as SectionKey, variant)"
-            @move-up="(sectionKey) => emit('move-section', sectionKey as SectionKey, 'up')"
-            @move-down="(sectionKey) => emit('move-section', sectionKey as SectionKey, 'down')"
-          />
-          <h3 class="text-dark" :style="headingStyle">{{ sectionHeadingByKey.language }}</h3>
-          <article v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" :style="articleStyle">
-            <template v-if="section.variant === 'stars'">
-              <div class="d-flex align-center ga-2">
-                <v-rating
-                  :model-value="levelToStars(language.level)"
-                  readonly
-                  length="5"
-                  density="compact"
-                  color="amber"
-                  size="16"
-                />
-                <h4>
-                  <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
-                </h4>
-              </div>
-            </template>
-            <template v-else-if="section.variant === 'progress'">
-              <h4 class="d-flex align-center ga-2">
-                <small class="text-dark">{{ levelToPercent(language.level) }}%</small>
-                <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
-              </h4>
-              <div class="d-flex align-center ga-2">
-                <v-progress-linear class="terra-language-progress" :model-value="levelToPercent(language.level)" height="8" rounded color="primary" />
-              </div>
-            </template>
-            <h4 v-else>
-              <span class="period" :style="periodStyle">{{ levelToText(language.level) }} — </span>
-              <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
-            </h4>
-          </article>
-        </template>
+        <ResumeSectionLanguage
+          v-if="section.key === 'language'"
+          :resume="resume"
+          :editable="editable"
+          :variant="section.variant"
+          :toolbar-enabled="true"
+          :can-move-up="canMoveUp('language')"
+          :can-move-down="canMoveDown('language')"
+          :layout-density="props.layoutSettings?.lineDensity === 'compact' ? 'compact' : 'normal'"
+          :theme-tokens="{ '--entry-gap': props.layoutSettings?.lineDensity === 'compact' ? '6px' : '10px' }"
+          :title="sectionHeadingByKey.language"
+          @add-item="() => emit('add-item', 'language')"
+          @change-variant="(_, variant) => emit('change-variant', 'language', variant)"
+          @move-section="(_, direction) => emit('move-section', 'language', direction)"
+        />
       </section>
     </aside>
 
@@ -213,48 +152,51 @@ const sectionHeadingByKey: Record<SectionKey, string> = {
 
       <section v-for="section in mainSections" :key="section.key">
         <div class="cv-section resume-section-hoverable" tabindex="-1">
-          <SectionToolbar
-            :section-key="section.key"
-            :can-move-up="canMoveUp(section.key)"
-            :can-move-down="canMoveDown(section.key)"
-            :variants="sectionVariantOptions[section.key]"
-            :current-variant="section.variant"
-            @add-item="(sectionKey) => emit('add-item', sectionKey as SectionKey)"
-            @change-variant="(sectionKey, variant) => emit('change-variant', sectionKey as SectionKey, variant)"
-            @move-up="(sectionKey) => emit('move-section', sectionKey as SectionKey, 'up')"
-            @move-down="(sectionKey) => emit('move-section', sectionKey as SectionKey, 'down')"
+          <ResumeSectionExperience
+            v-if="section.key === 'experience'"
+            :resume="resume"
+            :editable="editable"
+            :variant="section.variant"
+            :toolbar-enabled="true"
+            :can-move-up="canMoveUp('experience')"
+            :can-move-down="canMoveDown('experience')"
+            :layout-density="props.layoutSettings?.lineDensity === 'compact' ? 'compact' : 'normal'"
+            :theme-tokens="{ '--entry-gap': props.layoutSettings?.lineDensity === 'compact' ? '8px' : '14px' }"
+            :title="sectionHeadingByKey.experience"
+            @add-item="() => emit('add-item', 'experience')"
+            @change-variant="(_, variant) => emit('change-variant', 'experience', variant)"
+            @move-section="(_, direction) => emit('move-section', 'experience', direction)"
           />
-          <h2 :style="[headingStyle, sectionHeadingStyle]">{{ sectionHeadingByKey[section.key] }}</h2>
-          <template v-if="section.key === 'experience'">
-            <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" :style="articleStyle">
-              <h4>
-                <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`experiences.${index}.role`, (event.target as HTMLElement).innerText)">{{ experience.role }}</span>
-                –
-                <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`experiences.${index}.company`, (event.target as HTMLElement).innerText)">{{ experience.company }}</span>
-              </h4>
-              <p class="period" :style="periodStyle">
-                <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`experiences.${index}.start`, (event.target as HTMLElement).innerText)">{{ experience.start }}</span>
-                ·
-                <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`experiences.${index}.end`, (event.target as HTMLElement).innerText)">{{ experience.end }}</span>
-              </p>
-            </article>
-          </template>
-          <template v-else-if="section.key === 'education'">
-            <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" :style="articleStyle">
-              <h4 class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</h4>
-              <p>
-                <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</span>
-                —
-                <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`education.${index}.city`, (event.target as HTMLElement).innerText)">{{ item.city }}</span>
-              </p>
-            </article>
-          </template>
-          <template v-else>
-            <article v-for="(project, index) in resume.projects" :key="`${project.name}-${index}`" :style="articleStyle">
-              <h4 class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</h4>
-              <p class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
-            </article>
-          </template>
+          <ResumeSectionEducation
+            v-else-if="section.key === 'education'"
+            :resume="resume"
+            :editable="editable"
+            :variant="section.variant"
+            :toolbar-enabled="true"
+            :can-move-up="canMoveUp('education')"
+            :can-move-down="canMoveDown('education')"
+            :layout-density="props.layoutSettings?.lineDensity === 'compact' ? 'compact' : 'normal'"
+            :theme-tokens="{ '--entry-gap': props.layoutSettings?.lineDensity === 'compact' ? '8px' : '14px' }"
+            :title="sectionHeadingByKey.education"
+            @add-item="() => emit('add-item', 'education')"
+            @change-variant="(_, variant) => emit('change-variant', 'education', variant)"
+            @move-section="(_, direction) => emit('move-section', 'education', direction)"
+          />
+          <ResumeSectionProject
+            v-else
+            :resume="resume"
+            :editable="editable"
+            :variant="section.variant"
+            :toolbar-enabled="true"
+            :can-move-up="canMoveUp('project')"
+            :can-move-down="canMoveDown('project')"
+            :layout-density="props.layoutSettings?.lineDensity === 'compact' ? 'compact' : 'normal'"
+            :theme-tokens="{ '--entry-gap': props.layoutSettings?.lineDensity === 'compact' ? '8px' : '14px' }"
+            :title="sectionHeadingByKey.project"
+            @add-item="() => emit('add-item', 'project')"
+            @change-variant="(_, variant) => emit('change-variant', 'project', variant)"
+            @move-section="(_, direction) => emit('move-section', 'project', direction)"
+          />
         </div>
       </section>
     </main>

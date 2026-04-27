@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { levelToPercent, levelToStars, levelToText } from '~/utils/resumeLanguageLevel'
-import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import ResumeSectionExperience from '~/components/Resume/Sections/ResumeSectionExperience.vue'
+import ResumeSectionEducation from '~/components/Resume/Sections/ResumeSectionEducation.vue'
+import ResumeSectionLanguage from '~/components/Resume/Sections/ResumeSectionLanguage.vue'
+import ResumeSectionProject from '~/components/Resume/Sections/ResumeSectionProject.vue'
 
 type SectionKey = 'experience' | 'education' | 'language' | 'project'
 type SectionLayoutEntry = { key: SectionKey; label: string; variant: string; region: 'main' | 'aside' }
@@ -103,31 +105,21 @@ function updateText(path: string, value: string) {
           :key="`aside-${section.key}`"
           class="resume-section-hoverable resume-section-block"
         >
-          <template v-if="section.key === 'language'">
-            <SectionToolbar section-key="language" :variants="sectionVariantOptions.language" :current-variant="currentVariant('language')" :can-move-up="canMoveUp('language')" :can-move-down="canMoveDown('language')" @add-item="() => emit('add-item', 'language')" @change-variant="(_, variant) => emit('change-variant', 'language', variant)" @move-up="() => emit('move-section', 'language', 'up')" @move-down="() => emit('move-section', 'language', 'down')" />
-            <h3>Languages</h3>
-            <ul v-if="currentVariant('language') === 'text-level'" class="bars">
-              <li v-for="(language, index) in resume.languages" :key="language.name" class="text-dark">
-                <small>{{ levelToText(language.level) }} — </small>
-                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
-              </li>
-            </ul>
-            <ul v-else-if="currentVariant('language') === 'stars'" class="bars">
-              <li v-for="(language, index) in resume.languages" :key="language.name" class="text-dark d-flex align-center ga-2">
-                <v-rating :model-value="levelToStars(language.level)" readonly length="5" density="compact" color="amber" size="16" />
-                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
-              </li>
-            </ul>
-            <ul v-else class="bars">
-              <li v-for="(language, index) in resume.languages" :key="language.name" class="text-dark">
-                <div class="d-flex align-center ga-2">
-                  <small>{{ levelToPercent(language.level) }}%</small>
-                  <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
-                </div>
-                <div><i :style="{ width: `${levelToPercent(language.level)}%` }" /></div>
-              </li>
-            </ul>
-          </template>
+          <ResumeSectionLanguage
+            v-if="section.key === 'language'"
+            :resume="resume"
+            :editable="editable"
+            :variant="currentVariant('language')"
+            :toolbar-enabled="true"
+            :can-move-up="canMoveUp('language')"
+            :can-move-down="canMoveDown('language')"
+            :theme-tokens="{ '--entry-gap': '10px' }"
+            layout-density="normal"
+            title="Languages"
+            @add-item="() => emit('add-item', 'language')"
+            @change-variant="(_, variant) => emit('change-variant', 'language', variant)"
+            @move-section="(_, direction) => emit('move-section', 'language', direction)"
+          />
         </section>
       </aside>
 
@@ -141,48 +133,51 @@ function updateText(path: string, value: string) {
           :key="`main-${section.key}`"
           class="resume-section-hoverable resume-section-block"
         >
-          <template v-if="section.key === 'experience'">
-            <h2 class="cv-heading-section">Employment History</h2>
-            <SectionToolbar section-key="experience" :variants="sectionVariantOptions.experience" :current-variant="currentVariant('experience')" :can-move-up="canMoveUp('experience')" :can-move-down="canMoveDown('experience')" @add-item="() => emit('add-item', 'experience')" @change-variant="(_, variant) => emit('change-variant', 'experience', variant)" @move-up="() => emit('move-section', 'experience', 'up')" @move-down="() => emit('move-section', 'experience', 'down')" />
-            <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="entry text-dark">
-              <h4 class="text-dark">
-                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.role`, (event.target as HTMLElement).innerText)">{{ experience.role }}</span>,
-                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.company`, (event.target as HTMLElement).innerText)">{{ experience.company }}</span>,
-                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.city`, (event.target as HTMLElement).innerText)">{{ experience.city }}</span>
-              </h4>
-              <p class="dates">
-                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.start`, (event.target as HTMLElement).innerText)">{{ experience.start }}</span> -
-                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.end`, (event.target as HTMLElement).innerText)">{{ experience.end }}</span>
-              </p>
-              <ul>
-                <li v-for="(bullet, bulletIndex) in experience.bullets" :key="bulletIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.bullets.${bulletIndex}`, (event.target as HTMLElement).innerText)">{{ bullet }}</li>
-              </ul>
-            </article>
-          </template>
-          <template v-else-if="section.key === 'education'">
-            <h2 class="cv-heading-section">Education</h2>
-            <SectionToolbar section-key="education" :variants="sectionVariantOptions.education" :current-variant="currentVariant('education')" :can-move-up="canMoveUp('education')" :can-move-down="canMoveDown('education')" @add-item="() => emit('add-item', 'education')" @change-variant="(_, variant) => emit('change-variant', 'education', variant)" @move-up="() => emit('move-section', 'education', 'up')" @move-down="() => emit('move-section', 'education', 'down')" />
-            <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="entry text-dark">
-              <h4 class="text-dark">
-                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</span>,
-                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</span>
-              </h4>
-              <p class="dates">
-                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.start`, (event.target as HTMLElement).innerText)">{{ item.start }}</span> -
-                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.end`, (event.target as HTMLElement).innerText)">{{ item.end }}</span>
-              </p>
-            </article>
-          </template>
-          <template v-else-if="section.key === 'project'">
-            <h2 class="cv-heading-section">Projects</h2>
-            <SectionToolbar section-key="project" :variants="sectionVariantOptions.project" :current-variant="currentVariant('project')" :can-move-up="canMoveUp('project')" :can-move-down="canMoveDown('project')" @add-item="() => emit('add-item', 'project')" @change-variant="(_, variant) => emit('change-variant', 'project', variant)" @move-up="() => emit('move-section', 'project', 'up')" @move-down="() => emit('move-section', 'project', 'down')" />
-            <article v-for="(project, index) in resume.projects" :key="`project-${index}`" class="entry text-dark">
-              <h4 class="text-dark">
-                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span>
-              </h4>
-              <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
-            </article>
-          </template>
+          <ResumeSectionExperience
+            v-if="section.key === 'experience'"
+            :resume="resume"
+            :editable="editable"
+            :variant="currentVariant('experience')"
+            :toolbar-enabled="true"
+            :can-move-up="canMoveUp('experience')"
+            :can-move-down="canMoveDown('experience')"
+            :theme-tokens="{ '--entry-gap': '16px' }"
+            layout-density="normal"
+            title="Employment History"
+            @add-item="() => emit('add-item', 'experience')"
+            @change-variant="(_, variant) => emit('change-variant', 'experience', variant)"
+            @move-section="(_, direction) => emit('move-section', 'experience', direction)"
+          />
+          <ResumeSectionEducation
+            v-else-if="section.key === 'education'"
+            :resume="resume"
+            :editable="editable"
+            :variant="currentVariant('education')"
+            :toolbar-enabled="true"
+            :can-move-up="canMoveUp('education')"
+            :can-move-down="canMoveDown('education')"
+            :theme-tokens="{ '--entry-gap': '16px' }"
+            layout-density="normal"
+            title="Education"
+            @add-item="() => emit('add-item', 'education')"
+            @change-variant="(_, variant) => emit('change-variant', 'education', variant)"
+            @move-section="(_, direction) => emit('move-section', 'education', direction)"
+          />
+          <ResumeSectionProject
+            v-else-if="section.key === 'project'"
+            :resume="resume"
+            :editable="editable"
+            :variant="currentVariant('project')"
+            :toolbar-enabled="true"
+            :can-move-up="canMoveUp('project')"
+            :can-move-down="canMoveDown('project')"
+            :theme-tokens="{ '--entry-gap': '12px' }"
+            layout-density="normal"
+            title="Projects"
+            @add-item="() => emit('add-item', 'project')"
+            @change-variant="(_, variant) => emit('change-variant', 'project', variant)"
+            @move-section="(_, direction) => emit('move-section', 'project', direction)"
+          />
         </section>
         <section>
           <h2 class="cv-heading-section">Certifications</h2>
