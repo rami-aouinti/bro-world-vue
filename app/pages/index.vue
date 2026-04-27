@@ -10,6 +10,7 @@ definePageMeta({
   title: 'appbar.home',
 })
 
+
 onMounted(() => {
   requestAnimationFrame(() => {
     deferredInteractiveReady.value = true
