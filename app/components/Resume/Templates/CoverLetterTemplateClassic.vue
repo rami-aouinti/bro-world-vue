@@ -23,8 +23,10 @@ withDefaults(defineProps<{
   model: CoverLetterModel
   palette: Palette
   typography?: 'sans' | 'serif'
+  rounded?: string
 }>(), {
   typography: 'sans',
+  rounded: '14px',
 })
 </script>
 
@@ -37,6 +39,7 @@ withDefaults(defineProps<{
       '--cl-accent': palette.accent,
       '--cl-soft': palette.soft,
       '--cl-text': palette.text,
+      '--cl-rounded': rounded,
     }"
   >
     <header>
@@ -59,7 +62,7 @@ withDefaults(defineProps<{
 </template>
 
 <style scoped>
-.cover-letter-classic { background: var(--cl-page); color: var(--cl-text); min-height: 100%; padding: 40px 46px; border-radius: 14px; }
+.cover-letter-classic { background: var(--cl-page); color: var(--cl-text); min-height: 100%; padding: 40px 46px; border-radius: var(--cl-rounded); }
 .cover-letter-classic header { border-bottom: 2px solid var(--cl-soft); padding-bottom: 14px; margin-bottom: 24px; }
 .cover-letter-classic h1 { color: var(--cl-accent); font-size: 1.9rem; }
 .cover-letter-classic__recipient { margin-bottom: 18px; }

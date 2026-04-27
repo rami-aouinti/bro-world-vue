@@ -21,8 +21,10 @@ withDefaults(defineProps<{
   model: CoverPageModel
   palette: Palette
   typography?: 'sans' | 'serif'
+  rounded?: string
 }>(), {
   typography: 'sans',
+  rounded: '14px',
 })
 </script>
 
@@ -35,6 +37,7 @@ withDefaults(defineProps<{
       '--cp-accent': palette.accent,
       '--cp-soft': palette.soft,
       '--cp-text': palette.text,
+      '--cp-rounded': rounded,
     }"
   >
     <p class="cover-page-elegant__date">{{ model.date }}</p>
@@ -50,7 +53,7 @@ withDefaults(defineProps<{
 </template>
 
 <style scoped>
-.cover-page-elegant { min-height: 100%; padding: 56px 64px; background: linear-gradient(160deg, var(--cp-soft) 0 28%, var(--cp-page) 28%); color: var(--cp-text); border-radius: 14px; display: flex; flex-direction: column; gap: 16px; justify-content: center; }
+.cover-page-elegant { min-height: 100%; padding: 56px 64px; background: linear-gradient(160deg, var(--cp-soft) 0 28%, var(--cp-page) 28%); color: var(--cp-text); border-radius: var(--cp-rounded); display: flex; flex-direction: column; gap: 16px; justify-content: center; }
 .cover-page-elegant__date { text-transform: uppercase; letter-spacing: .06em; }
 .cover-page-elegant h1 { font-size: 2.4rem; color: var(--cp-accent); }
 .cover-page-elegant h2 { text-transform: uppercase; letter-spacing: .08em; font-size: .9rem; }
