@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import CoverPageTemplateElegant from '~/components/Resume/Templates/CoverPageTemplateElegant.vue'
+import CoverPageTemplateHeroCentered from '~/components/Resume/Templates/CoverPageTemplateHeroCentered.vue'
+import CoverPageTemplateSidebarPulse from '~/components/Resume/Templates/CoverPageTemplateSidebarPulse.vue'
+import CoverPageTemplateSplitEditorial from '~/components/Resume/Templates/CoverPageTemplateSplitEditorial.vue'
 import CoverPageTemplateTerra from '~/components/Resume/Templates/CoverPageTemplateTerra.vue'
 import { COVER_PAGE_TEMPLATE_IDS } from '~/constants/resumeTemplates'
 import { useResumeDesignControls, type ResumeTextStyleOption } from '~/composables/useResumeDesignControls'
@@ -55,6 +58,9 @@ const model = reactive<CoverPageModel>({
 const templateComponents = {
   'cover-page-terra': CoverPageTemplateTerra,
   'cover-page-elegant': CoverPageTemplateElegant,
+  'cover-page-hero-centered': CoverPageTemplateHeroCentered,
+  'cover-page-sidebar-pulse': CoverPageTemplateSidebarPulse,
+  'cover-page-split-editorial': CoverPageTemplateSplitEditorial,
 } as const
 
 const activeTemplateComponent = computed(() => templateComponents[selectedTemplate.value as keyof typeof templateComponents] ?? CoverPageTemplateTerra)

@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import CoverLetterTemplateAtsMinimal from '~/components/Resume/Templates/CoverLetterTemplateAtsMinimal.vue'
 import CoverLetterTemplateClassic from '~/components/Resume/Templates/CoverLetterTemplateClassic.vue'
 import CoverLetterTemplateModern from '~/components/Resume/Templates/CoverLetterTemplateModern.vue'
+import CoverLetterTemplatePremiumEditorial from '~/components/Resume/Templates/CoverLetterTemplatePremiumEditorial.vue'
+import CoverLetterTemplateSplitFocus from '~/components/Resume/Templates/CoverLetterTemplateSplitFocus.vue'
 import { COVER_LETTER_TEMPLATE_IDS, COVER_PAGE_TEMPLATE_IDS } from '~/constants/resumeTemplates'
 import { useResumeDesignControls, type ResumeTextStyleOption } from '~/composables/useResumeDesignControls'
 
@@ -83,6 +86,9 @@ const goBackToCoverPage = async () => {
 const templateComponents = {
   'cover-letter-classic': CoverLetterTemplateClassic,
   'cover-letter-modern': CoverLetterTemplateModern,
+  'cover-letter-ats-minimal': CoverLetterTemplateAtsMinimal,
+  'cover-letter-premium-editorial': CoverLetterTemplatePremiumEditorial,
+  'cover-letter-split-focus': CoverLetterTemplateSplitFocus,
 } as const
 
 const activeTemplateComponent = computed(() => templateComponents[selectedTemplate.value as keyof typeof templateComponents] ?? CoverLetterTemplateClassic)
