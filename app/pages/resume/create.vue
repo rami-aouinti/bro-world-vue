@@ -205,7 +205,7 @@ type SectionLayoutVariant = {
 }
 type SectionLayoutEntry<K extends PreviewSectionKey = PreviewSectionKey> = {
   key: K
-  order: number
+  label: string
   variant: SectionLayoutVariant[K]
 }
 
@@ -583,10 +583,10 @@ const pendingPdfDownload = ref(false)
 const addSectionDialogOpen = ref(false)
 const addSectionType = ref<AddSectionType>('experience')
 const sectionLayout = ref<SectionLayoutEntry[]>([
-  { key: 'experience', order: 0, variant: 'detailed' },
-  { key: 'education', order: 1, variant: 'classic' },
-  { key: 'language', order: 2, variant: 'text-level' },
-  { key: 'project', order: 3, variant: 'list' },
+  { key: 'experience', label: 'Expérience', variant: 'detailed' },
+  { key: 'education', label: 'Education', variant: 'classic' },
+  { key: 'language', label: 'Language', variant: 'text-level' },
+  { key: 'project', label: 'Project', variant: 'list' },
 ])
 const addSectionDraft = reactive({
   profile: { profile: '' },
@@ -927,21 +927,7 @@ function submitAddSection() {
   activeTab.value = 'edit'
 }
 
-const previewSectionLabelByKey: Record<PreviewSectionKey, string> = {
-  experience: 'Expérience',
-  education: 'Education',
-  language: 'Language',
-  project: 'Project',
-}
-
-const orderedPreviewSections = computed(() =>
-  [...sectionLayout.value]
-    .sort((a, b) => a.order - b.order)
-    .map((section) => ({
-      ...section,
-      label: previewSectionLabelByKey[section.key],
-    })),
-)
+const orderedPreviewSections = computed(() => sectionLayout.value)
 
 function addItemToPreviewSection(section: PreviewSectionKey) {
   switch (section) {
@@ -960,15 +946,13 @@ function addItemToPreviewSection(section: PreviewSectionKey) {
   }
 }
 
-function moveSection(section: PreviewSectionKey, direction: 'up' | 'down') {
-  const sortedSections = [...sectionLayout.value].sort((a, b) => a.order - b.order)
-  const currentIndex = sortedSections.findIndex(item => item.key === section)
+function moveSection(sectionKey: PreviewSectionKey, direction: 'up' | 'down') {
+  const currentIndex = sectionLayout.value.findIndex(item => item.key === sectionKey)
   if (currentIndex < 0) return
   const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1
-  if (targetIndex < 0 || targetIndex >= sortedSections.length) return
-  const [movedSection] = sortedSections.splice(currentIndex, 1)
-  sortedSections.splice(targetIndex, 0, movedSection)
-  sectionLayout.value = sortedSections.map((item, index) => ({ ...item, order: index }))
+  if (targetIndex < 0 || targetIndex >= sectionLayout.value.length) return
+  const [movedSection] = sectionLayout.value.splice(currentIndex, 1)
+  sectionLayout.value.splice(targetIndex, 0, movedSection)
 }
 
 function setSectionVariant<K extends PreviewSectionKey>(key: K, variant: SectionLayoutVariant[K]) {
@@ -1530,7 +1514,7 @@ if (import.meta.client) {
   }
   if (rawSectionLayout) {
     try {
-      const parsed = JSON.parse(rawSectionLayout) as SectionLayoutEntry[]
+      const parsed = JSON.parse(rawSectionLayout) as Array<Partial<SectionLayoutEntry>>
       const fallback = sectionLayout.value
       const fallbackByKey = Object.fromEntries(
         fallback.map(item => [item.key, item]),
@@ -1539,7 +1523,7 @@ if (import.meta.client) {
         .filter(item => item?.key && item.key in fallbackByKey)
         .map((item, index) => ({
           key: item.key as PreviewSectionKey,
-          order: index,
+          label: item.label || fallback[index]?.label || fallbackByKey[item.key as PreviewSectionKey].label,
           variant: (item.variant || fallbackByKey[item.key as PreviewSectionKey].variant) as SectionLayoutVariant[PreviewSectionKey],
         }))
 
@@ -2681,6 +2665,9 @@ if (import.meta.client) {
             :on-photo-click="onPreviewPhotoClick"
             :layout-settings="layoutSettings"
             editable
+            @add-item="addItemToPreviewSection"
+            @change-variant="setSectionVariant"
+            @move-section="moveSection"
           />
           <ResumeTemplateSharedSections
             :resume="resume"
@@ -2801,9 +2788,13 @@ if (import.meta.client) {
               :resume="resume"
               :show-photo="templateSupportsPhoto"
               :use-timeline="templateUsesTimeline"
+              :section-layout="sectionLayout"
               :on-photo-click="onPreviewPhotoClick"
               :layout-settings="layoutSettings"
               editable
+              @add-item="addItemToPreviewSection"
+              @change-variant="setSectionVariant"
+              @move-section="moveSection"
             />
             <ResumeTemplateSharedSections
               :resume="resume"

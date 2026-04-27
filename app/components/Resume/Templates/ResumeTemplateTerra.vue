@@ -11,12 +11,18 @@ type LayoutSettings = {
 }
 
 type SectionKey = 'experience' | 'education' | 'language' | 'project'
+type SectionLayoutEntry = {
+  key: SectionKey
+  label: string
+  variant: string
+}
 
-const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean; onPhotoClick?: () => void; layoutSettings?: LayoutSettings }>(), {
+const props = withDefaults(defineProps<{ resume: any; showPhoto?: boolean; editable?: boolean; onPhotoClick?: () => void; layoutSettings?: LayoutSettings; sectionLayout?: SectionLayoutEntry[] }>(), {
   showPhoto: true,
   editable: false,
   onPhotoClick: undefined,
   layoutSettings: () => ({}),
+  sectionLayout: () => [],
 })
 const emit = defineEmits<{
   (event: 'add-item', sectionKey: SectionKey): void
@@ -88,6 +94,23 @@ const periodStyle = computed(() => ({
 const articleStyle = computed(() => ({
   marginBottom: props.layoutSettings?.lineDensity === 'compact' ? '8px' : '14px',
 }))
+const defaultSectionLayout: SectionLayoutEntry[] = [
+  { key: 'experience', label: 'Expérience', variant: 'detailed' },
+  { key: 'education', label: 'Education', variant: 'classic' },
+  { key: 'language', label: 'Language', variant: 'text-level' },
+  { key: 'project', label: 'Project', variant: 'list' },
+]
+const visibleSections = computed(() => (
+  props.sectionLayout.length
+    ? props.sectionLayout
+    : defaultSectionLayout
+))
+const sectionHeadingByKey: Record<SectionKey, string> = {
+  experience: 'Expériences professionnelles',
+  education: 'Formations & diplômes',
+  language: 'Languages',
+  project: 'Projects',
+}
 </script>
 
 <template>
@@ -119,129 +142,65 @@ const articleStyle = computed(() => ({
         <p class="editable-text text-dark" :contenteditable="editable" @input="event => updateText('role', (event.target as HTMLElement).innerText)">{{ resume.role }}</p>
       </header>
 
-      <section>
+      <section v-for="section in visibleSections" :key="section.key">
         <div class="cv-section" tabindex="-1">
           <div class="cv-section-toolbar" role="toolbar" aria-label="Section experiences actions">
-            <v-btn icon size="x-small" variant="text" @click="emit('add-item', 'experience')">+</v-btn>
+            <v-btn icon size="x-small" variant="text" @click="emit('add-item', section.key)">+</v-btn>
             <v-menu>
               <template #activator="{ props: menuProps }">
                 <v-btn size="x-small" variant="text" v-bind="menuProps">Template</v-btn>
               </template>
               <v-list density="compact">
                 <v-list-item
-                  v-for="option in sectionVariantOptions.experience"
+                  v-for="option in sectionVariantOptions[section.key]"
                   :key="option.value"
                   :title="option.label"
-                  @click="emit('change-variant', 'experience', option.value)"
+                  @click="emit('change-variant', section.key, option.value)"
                 />
               </v-list>
             </v-menu>
-            <v-btn icon size="x-small" variant="text" @click="emit('move-section', 'experience', 'up')">↑</v-btn>
-            <v-btn icon size="x-small" variant="text" @click="emit('move-section', 'experience', 'down')">↓</v-btn>
+            <v-btn icon size="x-small" variant="text" @click="emit('move-section', section.key, 'up')">↑</v-btn>
+            <v-btn icon size="x-small" variant="text" @click="emit('move-section', section.key, 'down')">↓</v-btn>
           </div>
-        <h2 :style="[headingStyle, sectionHeadingStyle]">Expériences professionnelles</h2>
-        <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" :style="articleStyle">
-          <h4>
-            <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`experiences.${index}.role`, (event.target as HTMLElement).innerText)">{{ experience.role }}</span>
-            –
-            <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`experiences.${index}.company`, (event.target as HTMLElement).innerText)">{{ experience.company }}</span>
-          </h4>
-          <p class="period" :style="periodStyle">
-            <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`experiences.${index}.start`, (event.target as HTMLElement).innerText)">{{ experience.start }}</span>
-            ·
-            <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`experiences.${index}.end`, (event.target as HTMLElement).innerText)">{{ experience.end }}</span>
-          </p>
-        </article>
-        </div>
-      </section>
-
-      <section>
-        <div class="cv-section" tabindex="-1">
-          <div class="cv-section-toolbar" role="toolbar" aria-label="Section education actions">
-            <v-btn icon size="x-small" variant="text" @click="emit('add-item', 'education')">+</v-btn>
-            <v-menu>
-              <template #activator="{ props: menuProps }">
-                <v-btn size="x-small" variant="text" v-bind="menuProps">Template</v-btn>
-              </template>
-              <v-list density="compact">
-                <v-list-item
-                  v-for="option in sectionVariantOptions.education"
-                  :key="option.value"
-                  :title="option.label"
-                  @click="emit('change-variant', 'education', option.value)"
-                />
-              </v-list>
-            </v-menu>
-            <v-btn icon size="x-small" variant="text" @click="emit('move-section', 'education', 'up')">↑</v-btn>
-            <v-btn icon size="x-small" variant="text" @click="emit('move-section', 'education', 'down')">↓</v-btn>
-          </div>
-        <h2 :style="[headingStyle, sectionHeadingStyle]">Formations & diplômes</h2>
-        <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" :style="articleStyle">
-          <h4 class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</h4>
-          <p>
-            <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</span>
-            —
-            <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`education.${index}.city`, (event.target as HTMLElement).innerText)">{{ item.city }}</span>
-          </p>
-        </article>
-        </div>
-      </section>
-
-      <section>
-        <div class="cv-section" tabindex="-1">
-          <div class="cv-section-toolbar" role="toolbar" aria-label="Section language actions">
-            <v-btn icon size="x-small" variant="text" @click="emit('add-item', 'language')">+</v-btn>
-            <v-menu>
-              <template #activator="{ props: menuProps }">
-                <v-btn size="x-small" variant="text" v-bind="menuProps">Template</v-btn>
-              </template>
-              <v-list density="compact">
-                <v-list-item
-                  v-for="option in sectionVariantOptions.language"
-                  :key="option.value"
-                  :title="option.label"
-                  @click="emit('change-variant', 'language', option.value)"
-                />
-              </v-list>
-            </v-menu>
-            <v-btn icon size="x-small" variant="text" @click="emit('move-section', 'language', 'up')">↑</v-btn>
-            <v-btn icon size="x-small" variant="text" @click="emit('move-section', 'language', 'down')">↓</v-btn>
-          </div>
-          <h2 :style="[headingStyle, sectionHeadingStyle]">Languages</h2>
-          <article v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" :style="articleStyle">
-            <h4>
-              <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
-            </h4>
-            <p class="period" :style="periodStyle">{{ language.level }}%</p>
-          </article>
-        </div>
-      </section>
-
-      <section>
-        <div class="cv-section" tabindex="-1">
-          <div class="cv-section-toolbar" role="toolbar" aria-label="Section project actions">
-            <v-btn icon size="x-small" variant="text" @click="emit('add-item', 'project')">+</v-btn>
-            <v-menu>
-              <template #activator="{ props: menuProps }">
-                <v-btn size="x-small" variant="text" v-bind="menuProps">Template</v-btn>
-              </template>
-              <v-list density="compact">
-                <v-list-item
-                  v-for="option in sectionVariantOptions.project"
-                  :key="option.value"
-                  :title="option.label"
-                  @click="emit('change-variant', 'project', option.value)"
-                />
-              </v-list>
-            </v-menu>
-            <v-btn icon size="x-small" variant="text" @click="emit('move-section', 'project', 'up')">↑</v-btn>
-            <v-btn icon size="x-small" variant="text" @click="emit('move-section', 'project', 'down')">↓</v-btn>
-          </div>
-          <h2 :style="[headingStyle, sectionHeadingStyle]">Projects</h2>
-          <article v-for="(project, index) in resume.projects" :key="`${project.name}-${index}`" :style="articleStyle">
-            <h4 class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</h4>
-            <p class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
-          </article>
+          <h2 :style="[headingStyle, sectionHeadingStyle]">{{ sectionHeadingByKey[section.key] }}</h2>
+          <template v-if="section.key === 'experience'">
+            <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" :style="articleStyle">
+              <h4>
+                <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`experiences.${index}.role`, (event.target as HTMLElement).innerText)">{{ experience.role }}</span>
+                –
+                <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`experiences.${index}.company`, (event.target as HTMLElement).innerText)">{{ experience.company }}</span>
+              </h4>
+              <p class="period" :style="periodStyle">
+                <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`experiences.${index}.start`, (event.target as HTMLElement).innerText)">{{ experience.start }}</span>
+                ·
+                <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`experiences.${index}.end`, (event.target as HTMLElement).innerText)">{{ experience.end }}</span>
+              </p>
+            </article>
+          </template>
+          <template v-else-if="section.key === 'education'">
+            <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" :style="articleStyle">
+              <h4 class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</h4>
+              <p>
+                <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</span>
+                —
+                <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`education.${index}.city`, (event.target as HTMLElement).innerText)">{{ item.city }}</span>
+              </p>
+            </article>
+          </template>
+          <template v-else-if="section.key === 'language'">
+            <article v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" :style="articleStyle">
+              <h4>
+                <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+              </h4>
+              <p class="period" :style="periodStyle">{{ language.level }}%</p>
+            </article>
+          </template>
+          <template v-else>
+            <article v-for="(project, index) in resume.projects" :key="`${project.name}-${index}`" :style="articleStyle">
+              <h4 class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</h4>
+              <p class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
+            </article>
+          </template>
         </div>
       </section>
     </main>
