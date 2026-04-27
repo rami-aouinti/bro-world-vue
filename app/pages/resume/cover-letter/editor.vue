@@ -4,8 +4,9 @@ import CoverLetterTemplateClassic from '~/components/Resume/Templates/CoverLette
 import CoverLetterTemplateModern from '~/components/Resume/Templates/CoverLetterTemplateModern.vue'
 import CoverLetterTemplatePremiumEditorial from '~/components/Resume/Templates/CoverLetterTemplatePremiumEditorial.vue'
 import CoverLetterTemplateSplitFocus from '~/components/Resume/Templates/CoverLetterTemplateSplitFocus.vue'
+import type { RoundedOptionId, Typography } from '~/constants/resumeDesign'
 import { COVER_LETTER_TEMPLATE_IDS, COVER_PAGE_TEMPLATE_IDS } from '~/constants/resumeTemplates'
-import { useResumeDesignControls, type ResumeTextStyleOption } from '~/composables/useResumeDesignControls'
+import { useResumeDesignControls } from '~/composables/useResumeDesignControls'
 
 definePageMeta({
   title: 'Resume · Cover Letter Editor',
@@ -41,8 +42,8 @@ const fallbackTemplateId = COVER_LETTER_TEMPLATE_IDS[0] ?? 'cover-letter-classic
 const fallbackCoverPageTemplateId = COVER_PAGE_TEMPLATE_IDS[0] ?? ''
 const selectedTemplate = ref(fallbackTemplateId)
 const selectedTheme = ref('ocean')
-const selectedRounded = ref<'none' | 'sm' | 'md' | 'lg'>('md')
-const selectedTextStyle = ref<ResumeTextStyleOption['value']>('clean')
+const selectedRounded = ref<RoundedOptionId>('md')
+const selectedTextStyle = ref<Typography>('clean')
 const { colorThemes, roundedOptions, textStyleOptions, toCoverPalette } = useResumeDesignControls()
 const coverLayoutSettings = reactive({
   dividerStyle: 'solid' as const,
