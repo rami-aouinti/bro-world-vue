@@ -15,7 +15,7 @@ type SectionLayoutVariant = {
 }
 type SectionLayoutEntry<K extends PreviewSectionKey = PreviewSectionKey> = {
   key: K
-  order: number
+  label: string
   variant: SectionLayoutVariant[K]
 }
 
