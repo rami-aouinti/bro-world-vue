@@ -43,7 +43,11 @@ const selectedTemplate = ref(fallbackTemplateId)
 const selectedTheme = ref('ocean')
 const selectedRounded = ref<'none' | 'sm' | 'md' | 'lg'>('md')
 const selectedTextStyle = ref<ResumeTextStyleOption['value']>('clean')
-const { colorThemes, roundedOptions, textStyleOptions, roundedPxByValue, toCoverPalette, toCoverTypography } = useResumeDesignControls()
+const { colorThemes, roundedOptions, textStyleOptions, toCoverPalette } = useResumeDesignControls()
+const coverLayoutSettings = reactive({
+  dividerStyle: 'solid' as const,
+  dividerWeight: 'thin' as const,
+})
 
 const importedFlow = computed(() => parseCoverFlowQuery(route.query))
 
@@ -93,8 +97,6 @@ const templateComponents = {
 
 const activeTemplateComponent = computed(() => templateComponents[selectedTemplate.value as keyof typeof templateComponents] ?? CoverLetterTemplateClassic)
 const activePalette = computed(() => toCoverPalette(selectedTheme.value))
-const activeTypography = computed(() => toCoverTypography(selectedTextStyle.value))
-const activeRounded = computed(() => roundedPxByValue[selectedRounded.value])
 
 onMounted(() => {
   if (typeof route.query.template === 'string' && COVER_LETTER_TEMPLATE_IDS.includes(route.query.template)) {
@@ -212,8 +214,9 @@ onMounted(() => {
             :is="activeTemplateComponent"
             :model="model"
             :palette="activePalette"
-            :typography="activeTypography"
-            :rounded="activeRounded"
+            :text-style="selectedTextStyle"
+            :rounded="selectedRounded"
+            :layout-settings="coverLayoutSettings"
           />
         </div>
       </aside>
