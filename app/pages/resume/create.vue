@@ -22,7 +22,7 @@ definePageMeta({
 
 type Skill = { name: string; level: number }
 type Language = { name: string; level: number; countryCode?: string; flag?: string }
-type ContentStyle = 'points' | 'dashes' | 'timeline'
+type ContentStyle = 'paragraph' | 'points' | 'dashes' | 'timeline'
 type TimelineEvent = { label: string; detail: string }
 type Experience = {
   role: string
@@ -313,10 +313,10 @@ const addSectionOptions = [
 ] as const satisfies ReadonlyArray<{ label: string; value: AddSectionType }>
 const experienceContentStyleOptions = [
   { label: 'Paragraph', value: 'paragraph' },
-  { label: 'Bullets', value: 'bullets' },
-  { label: 'Dashes', value: 'dashes' },
-  { label: 'Timeline note', value: 'timeline-note' },
-] as const satisfies ReadonlyArray<{ label: string; value: ExperienceContentStyle }>
+  { label: 'Points', value: 'points' },
+  { label: 'Tirets', value: 'dashes' },
+  { label: 'Timeline', value: 'timeline' },
+] as const satisfies ReadonlyArray<{ label: string; value: ContentStyle }>
 const sectionVariantLabels: Record<string, string> = {
   detailed: 'Detailed',
   bullets: 'Bullets',
@@ -954,6 +954,13 @@ function parseMultilineList(value: string) {
     .filter(Boolean)
 }
 
+function splitParagraphToList(value: string) {
+  return value
+    .split(/\n+|(?<=[.!?])\s+/)
+    .map(item => item.trim())
+    .filter(Boolean)
+}
+
 function parseTimelineEvents(value: string): TimelineEvent[] {
   return parseMultilineList(value).map((line) => {
     const [label, ...detailParts] = line.split('|')
@@ -972,20 +979,49 @@ function applyContentFields(
   model: { contentStyle?: ContentStyle; points?: string[]; dashes?: string[]; timelineEvents?: TimelineEvent[] },
   rawMultiline: string,
 ) {
-  const parsedLines = parseMultilineList(rawMultiline)
+  const parsedLines = model.contentStyle === 'paragraph'
+    ? splitParagraphToList(rawMultiline)
+    : parseMultilineList(rawMultiline)
   const parsedTimelineEvents = parseTimelineEvents(rawMultiline)
-  model.points = model.contentStyle === 'points' ? parsedLines : []
+  model.points = model.contentStyle === 'points' || model.contentStyle === 'paragraph' ? parsedLines : []
   model.dashes = model.contentStyle === 'dashes' ? parsedLines : []
   model.timelineEvents = model.contentStyle === 'timeline' ? parsedTimelineEvents : []
+}
+
+function changeExperienceContentStyle(index: number, nextStyle: ContentStyle) {
+  const experience = resume.experiences[index]
+  const currentText = getExperienceBullets(index)
+  experience.contentStyle = nextStyle
+  setExperienceBullets(index, currentText)
+}
+
+function changeEducationContentStyle(index: number, nextStyle: ContentStyle) {
+  const education = resume.education[index]
+  const currentText = getEducationContent(index)
+  education.contentStyle = nextStyle
+  setEducationContent(index, currentText)
+}
+
+function changeProjectContentStyle(index: number, nextStyle: ContentStyle) {
+  const project = resume.projects[index]
+  const currentText = getProjectContent(index)
+  project.contentStyle = nextStyle
+  setProjectContent(index, currentText)
 }
 
 function setExperienceBullets(index: number, value: string) {
   const experience = resume.experiences[index]
   const parsedLines = parseMultilineList(value)
+  const parsedParagraph = splitParagraphToList(value)
   experience.bullets = parsedLines
-  if (!experience.contentStyle || experience.contentStyle === 'points') {
+  if (!experience.contentStyle) {
     experience.contentStyle = 'points'
+  }
+  if (experience.contentStyle === 'points') {
     experience.points = parsedLines
+  }
+  if (experience.contentStyle === 'paragraph') {
+    experience.points = parsedParagraph
   }
   if (experience.contentStyle === 'dashes') {
     experience.dashes = parsedLines
@@ -1000,6 +1036,8 @@ const getExperienceBullets = (index: number) =>
     ? (resume.experiences[index].timelineEvents || [])
       .map(event => [event.label, event.detail].filter(Boolean).join(' | '))
       .join('\n')
+    : resume.experiences[index].contentStyle === 'paragraph'
+      ? (resume.experiences[index].points || []).join(' ')
     : (resume.experiences[index].contentStyle === 'dashes'
       ? (resume.experiences[index].dashes || [])
       : (resume.experiences[index].points?.length ? resume.experiences[index].points : resume.experiences[index].bullets)
@@ -1017,6 +1055,7 @@ function getEducationContent(index: number) {
   if (education.contentStyle === 'timeline') {
     return (education.timelineEvents || []).map(event => [event.label, event.detail].filter(Boolean).join(' | ')).join('\n')
   }
+  if (education.contentStyle === 'paragraph') return education.note
   if (education.contentStyle === 'dashes') return (education.dashes || []).join('\n')
   if (education.points?.length) return education.points.join('\n')
   return education.note
@@ -1034,6 +1073,7 @@ function getProjectContent(index: number) {
   if (project.contentStyle === 'timeline') {
     return (project.timelineEvents || []).map(event => [event.label, event.detail].filter(Boolean).join(' | ')).join('\n')
   }
+  if (project.contentStyle === 'paragraph') return project.summary
   if (project.contentStyle === 'dashes') return (project.dashes || []).join('\n')
   if (project.points?.length) return project.points.join('\n')
   return project.summary
@@ -2830,14 +2870,16 @@ if (import.meta.client) {
                   <v-select
                     v-model="experience.contentStyle"
                     :items="[
+                      { title: 'Paragraph', value: 'paragraph' },
                       { title: 'Points', value: 'points' },
-                      { title: 'Dashes', value: 'dashes' },
+                      { title: 'Tirets', value: 'dashes' },
                       { title: 'Timeline', value: 'timeline' },
                     ]"
                     label="Content style"
                     variant="outlined"
                     hide-details
                     class="mb-2"
+                    @update:model-value="(value) => changeExperienceContentStyle(index, String(value) as ContentStyle)"
                   />
                   <v-textarea
                     :model-value="getExperienceBullets(index)"
@@ -2964,14 +3006,16 @@ if (import.meta.client) {
                   ><v-select
                     v-model="item.contentStyle"
                     :items="[
+                      { title: 'Paragraph', value: 'paragraph' },
                       { title: 'Points', value: 'points' },
-                      { title: 'Dashes', value: 'dashes' },
+                      { title: 'Tirets', value: 'dashes' },
                       { title: 'Timeline', value: 'timeline' },
                     ]"
                     label="Content style"
                     variant="outlined"
                     hide-details
                     class="mb-2"
+                    @update:model-value="(value) => changeEducationContentStyle(index, String(value) as ContentStyle)"
                   /><v-textarea
                     :model-value="getEducationContent(index)"
                     label="Content (1 line = 1 item, timeline: Label | Detail)"
@@ -3175,14 +3219,16 @@ if (import.meta.client) {
                   <v-select
                     v-model="project.contentStyle"
                     :items="[
+                      { title: 'Paragraph', value: 'paragraph' },
                       { title: 'Points', value: 'points' },
-                      { title: 'Dashes', value: 'dashes' },
+                      { title: 'Tirets', value: 'dashes' },
                       { title: 'Timeline', value: 'timeline' },
                     ]"
                     label="Content style"
                     variant="outlined"
                     hide-details
                     class="mb-2"
+                    @update:model-value="(value) => changeProjectContentStyle(index, String(value) as ContentStyle)"
                   />
                   <v-textarea
                     :model-value="getProjectContent(index)"
