@@ -1,6 +1,13 @@
 import type { ResumeTemplateVariant } from '~/constants/resumeTemplates'
 
-export type ResumeSectionKey = 'experience' | 'education' | 'language' | 'project'
+export type ResumeSectionKey =
+  | 'experience'
+  | 'education'
+  | 'language'
+  | 'project'
+  | 'hobby'
+  | 'certification'
+  | 'reference'
 export type TemplateSkinId = ResumeTemplateVariant | 'grid-slate'
 
 export type ResumeRendererLayoutEntry = {
@@ -61,6 +68,9 @@ function withSkin(id: TemplateSkinId, overrides: Partial<ResumeTemplateSkin> = {
       education: 'Education',
       language: 'Languages',
       project: 'Projects',
+      hobby: 'Interests',
+      certification: 'Certifications',
+      reference: 'References',
     },
     themeTokens: {},
     sectionTokens: {},

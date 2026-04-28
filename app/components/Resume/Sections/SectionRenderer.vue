@@ -3,6 +3,9 @@ import ResumeSectionExperience from '~/components/Resume/Sections/ResumeSectionE
 import ResumeSectionEducation from '~/components/Resume/Sections/ResumeSectionEducation.vue'
 import ResumeSectionLanguage from '~/components/Resume/Sections/ResumeSectionLanguage.vue'
 import ResumeSectionProject from '~/components/Resume/Sections/ResumeSectionProject.vue'
+import ResumeSectionHobby from '~/components/Resume/Sections/ResumeSectionHobby.vue'
+import ResumeSectionCertification from '~/components/Resume/Sections/ResumeSectionCertification.vue'
+import ResumeSectionReference from '~/components/Resume/Sections/ResumeSectionReference.vue'
 import type { ResumeSectionKey } from '~/constants/resumeTemplateSkins'
 
 const props = withDefaults(defineProps<{
@@ -37,6 +40,9 @@ const componentBySectionKey = {
   education: ResumeSectionEducation,
   language: ResumeSectionLanguage,
   project: ResumeSectionProject,
+  hobby: ResumeSectionHobby,
+  certification: ResumeSectionCertification,
+  reference: ResumeSectionReference,
 } as const
 
 const sectionComponent = computed(() => componentBySectionKey[props.sectionKey])

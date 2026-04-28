@@ -127,7 +127,10 @@ const renderableSections = computed<RenderableSectionLayoutEntry[]>(
         section.key === 'experience' ||
         section.key === 'education' ||
         section.key === 'language' ||
-        section.key === 'project',
+        section.key === 'project' ||
+        section.key === 'hobby' ||
+        section.key === 'certification' ||
+        section.key === 'reference',
     ) as RenderableSectionLayoutEntry[],
 )
 
