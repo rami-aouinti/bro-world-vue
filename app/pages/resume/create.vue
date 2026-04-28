@@ -208,7 +208,7 @@ type SectionLayoutVariant = {
   education: 'classic' | 'timeline' | 'two-column'
   language: 'classic' | 'text-level' | 'stars' | 'progress' | 'flags'
   project: 'classic' | 'list' | 'cards' | 'two-column'
-  skill: 'classic'
+  skill: 'classic' | 'text-level' | 'stars' | 'dots' | 'progress'
   reference: 'classic'
   hobby: 'classic'
   certification: 'classic'
@@ -297,6 +297,7 @@ const sectionVariantLabels: Record<string, string> = {
   stars: 'Stars',
   'text-level': 'Text level',
   progress: 'Progress',
+  dots: 'Dots',
   flags: 'Flags',
   cards: 'Cards',
   list: 'List',
@@ -334,7 +335,7 @@ const variantRegistry: {
   education: { allowed: ['classic', 'timeline', 'two-column'], fallback: 'classic' },
   language: { allowed: ['classic', 'text-level', 'stars', 'progress', 'flags'], fallback: 'classic' },
   project: { allowed: ['classic', 'list', 'cards', 'two-column'], fallback: 'classic' },
-  skill: { allowed: ['classic'], fallback: 'classic' },
+  skill: { allowed: ['classic', 'text-level', 'stars', 'dots', 'progress'], fallback: 'progress' },
   reference: { allowed: ['classic'], fallback: 'classic' },
   hobby: { allowed: ['classic'], fallback: 'classic' },
   certification: { allowed: ['classic'], fallback: 'classic' },
@@ -344,7 +345,7 @@ const defaultSectionLayoutEntries: SectionLayoutEntry[] = [
   { key: 'education', variant: 'classic', region: 'main', order: 1 },
   { key: 'project', variant: 'classic', region: 'main', order: 2 },
   { key: 'certification', variant: 'classic', region: 'main', order: 3 },
-  { key: 'skill', variant: 'classic', region: 'aside', order: 0 },
+  { key: 'skill', variant: 'progress', region: 'aside', order: 0 },
   { key: 'language', variant: 'classic', region: 'aside', order: 1 },
   { key: 'reference', variant: 'classic', region: 'aside', order: 2 },
   { key: 'hobby', variant: 'classic', region: 'aside', order: 3 },
