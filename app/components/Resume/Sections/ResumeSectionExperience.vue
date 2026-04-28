@@ -7,7 +7,6 @@ import {
 import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
 import { formatResumeMonthYear } from '~/utils/resumeDateFormat'
 
-
 const props = withDefaults(
   defineProps<{
     resume: any
