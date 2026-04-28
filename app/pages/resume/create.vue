@@ -192,12 +192,6 @@ type TemplateFilter =
   | 'customized'
   | 'free'
 
-type TemplateStyleSupport = {
-  theme: boolean
-  rounded: boolean
-  textStyle: boolean
-  sharedSections: boolean
-}
 type LevelInputMode = 'percent' | 'stars'
 type PhotoShape = 'square' | 'rounded' | 'circle' | 'portrait-card' | 'soft-blob' | 'hex'
 type PhotoShapeOption = {
@@ -454,21 +448,6 @@ const templates: Template[] = [
   ...coverPageTemplateCards,
   ...coverLetterTemplateCards,
 ]
-
-const resumeTemplateSupportByVariant: Record<ResumeTemplateVariant, TemplateStyleSupport> = {
-  aurora: { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  classic: { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  creative: { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  executive: { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  minimalist: { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  modern: { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  'ocean-split': { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  professional: { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  'corporate-blue': { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  'grid-slate': { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  terra: { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  traditional: { theme: true, rounded: true, textStyle: true, sharedSections: true },
-}
 
 const resume = reactive<ResumeModel>({
   role: 'Communication Specialist',
@@ -1812,16 +1791,6 @@ const resumeRendererDesignState = computed(() => ({
   photoBorderWidth: layoutSettings.photoBorderWidth,
   photoPosition: layoutSettings.photoPosition,
 }))
-const selectedTemplateSupport = computed<TemplateStyleSupport | null>(() => {
-  if (selectedTemplateConfig.value.documentType !== 'resume') return null
-  return resumeTemplateSupportByVariant[selectedTemplateConfig.value.variant]
-})
-const selectedTemplateHasPartialSupport = computed(() => {
-  if (!selectedTemplateSupport.value) return false
-  const support = selectedTemplateSupport.value
-  return !(support.theme && support.rounded && support.textStyle && support.sharedSections)
-})
-
 async function buildResumePdfBlob() {
   if (!previewExportRef.value || !import.meta.client) return ''
   const stylesheetContent = Array.from(
@@ -3160,26 +3129,6 @@ if (import.meta.client) {
                         variant="outlined"
                         >2 cols</v-chip
                       >
-                      <v-chip
-                        v-if="template.documentType === 'resume'"
-                        size="x-small"
-                        :color="resumeTemplateSupportByVariant[template.variant].theme
-                          && resumeTemplateSupportByVariant[template.variant].rounded
-                          && resumeTemplateSupportByVariant[template.variant].textStyle
-                          && resumeTemplateSupportByVariant[template.variant].sharedSections
-                          ? 'success'
-                          : 'warning'"
-                        variant="tonal"
-                      >
-                        {{
-                          resumeTemplateSupportByVariant[template.variant].theme
-                            && resumeTemplateSupportByVariant[template.variant].rounded
-                            && resumeTemplateSupportByVariant[template.variant].textStyle
-                            && resumeTemplateSupportByVariant[template.variant].sharedSections
-                            ? 'Support complet'
-                            : 'Support partiel'
-                        }}
-                      </v-chip>
                     </div>
                   </v-card-text>
                 </v-card>
@@ -3476,15 +3425,6 @@ if (import.meta.client) {
           :style="previewStyle"
         >
           <div class="cv-page-shell" :class="previewDesignClasses">
-            <v-alert
-              v-if="selectedTemplateHasPartialSupport"
-              type="warning"
-              density="compact"
-              variant="tonal"
-              class="preview-support-alert"
-            >
-              Ce template est en support partiel pour certains réglages de design.
-            </v-alert>
             <template v-if="rendererReady">
               <ResumeRenderer
                 :class="previewDesignClasses"

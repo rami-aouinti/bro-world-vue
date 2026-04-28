@@ -23,8 +23,13 @@ Templates CV à vérifier:
 Composants de référence:
 
 - Renderer: `ResumeRenderer.vue`
-- Templates legacy: `ResumeTemplate*.vue`
-- Shared sections: `ResumeTemplateSharedSections.vue`
+- Dispatcher de sections: `SectionRenderer.vue`
+- Sections atomiques: `ResumeSection*.vue`
+- Templates skin/layout: `ResumeTemplate*.vue`
+
+Pipeline attendu (à préserver lors des refactors):
+
+`state -> ResumeRenderer -> SectionRenderer -> ResumeSection*`
 
 ## Pré-requis
 
@@ -44,7 +49,7 @@ Pour chaque template listé dans "Portée", exécuter les checks ci-dessous.
   - fond principal / fond sidebar changent,
   - couleur d'accent (titres, tags, barres) change,
   - contraste texte reste lisible.
-- Résultat attendu: le changement est visible sur la page 1 **et** les sections partagées (pages suivantes).
+- Résultat attendu: le changement est visible sur toute la sortie via le pipeline unique (`ResumeRenderer` + `SectionRenderer` + `ResumeSection*`).
 
 ### 2) Rounded
 
@@ -61,7 +66,7 @@ Pour chaque template listé dans "Portée", exécuter les checks ci-dessous.
   - famille de police change,
   - poids/gras perçu des headings + body change,
   - retours à la ligne restent acceptables (pas de collision majeure).
-- Résultat attendu: police et poids changent sur header, sections principales et sections partagées.
+- Résultat attendu: police et poids changent sur header et sur toutes les sections rendues par `SectionRenderer`.
 
 ### 4) Density + Dividers
 
