@@ -67,6 +67,14 @@ function updateText(path: string, value: string) {
 </template>
 <style scoped>
 .project-section {
+  --cv-space-1: var(--cv-space-1, 4px);
+  --cv-space-2: var(--cv-space-2, 8px);
+  --cv-space-3: var(--cv-space-3, 12px);
+  --cv-space-4: var(--cv-space-4, 16px);
+  --cv-space-5: var(--cv-space-5, 20px);
+  --cv-marker-accent: color-mix(in srgb, var(--cv-accent) 55%, transparent);
+  --cv-card-border-soft: color-mix(in srgb, var(--cv-accent) 22%, transparent);
+
   position: relative;
   border-bottom: var(--rs-section-separator, none);
   padding-bottom: var(--rs-section-padding-bottom, 0);
@@ -74,13 +82,13 @@ function updateText(path: string, value: string) {
 .cv-heading-section {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--cv-space-2);
   border-bottom: var(--rs-heading-border-bottom, 0);
   background: var(--rs-heading-bg, transparent);
   border-radius: var(--rs-heading-radius, 0);
   padding: var(--rs-heading-padding, 0);
 }
-.project-grid { display: grid; gap: var(--entry-gap, 10px); }
+.project-grid { display: grid; gap: var(--entry-gap, calc(var(--cv-space-2) + var(--cv-space-1) / 2)); }
 .project-grid--two-column { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .entry {
   position: relative;
@@ -94,15 +102,15 @@ function updateText(path: string, value: string) {
 .entry::before {
   content: '';
   position: absolute;
-  left: -10px;
+  left: calc((var(--cv-space-2) + var(--cv-space-1)) * -1);
   top: .55rem;
   width: var(--rs-marker-width, var(--rs-marker-size, 0));
   height: var(--rs-marker-height, var(--rs-marker-size, 0));
   border-radius: var(--rs-marker-radius, 0);
-  background: color-mix(in srgb, var(--cv-accent) 55%, transparent);
+  background: var(--cv-marker-accent);
 }
-.project-card { border: 1px solid color-mix(in srgb, var(--cv-accent) 22%, transparent); border-radius: 10px; padding: 10px; }
-.density-compact { --entry-gap: 8px; }
-.density-normal { --entry-gap: 12px; }
-.density-spacious { --entry-gap: 16px; }
+.project-card { border: 1px solid var(--cv-card-border-soft); border-radius: calc(var(--cv-space-2) + var(--cv-space-1) / 2); padding: calc(var(--cv-space-2) + var(--cv-space-1) / 2); }
+.density-compact { --entry-gap: var(--cv-space-2); }
+.density-normal { --entry-gap: var(--cv-space-3); }
+.density-spacious { --entry-gap: var(--cv-space-4); }
 </style>

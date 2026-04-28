@@ -10,6 +10,7 @@ const props = withDefaults(defineProps<{
   resume: any
   editable?: boolean
   variant: string
+  layoutDensity?: 'compact' | 'normal' | 'spacious' | string
   title?: string
   toolbarEnabled?: boolean
   canMoveUp?: boolean
@@ -17,6 +18,7 @@ const props = withDefaults(defineProps<{
   themeTokens?: Record<string, string>
 }>(), {
   editable: false,
+  layoutDensity: 'normal',
   title: undefined,
   toolbarEnabled: true,
   canMoveUp: false,
@@ -54,6 +56,7 @@ function onMoveSection(_: ResumeSectionKey, direction: 'up' | 'down') {
     :resume="resume"
     :editable="editable"
     :variant="variant"
+    :layout-density="layoutDensity"
     :title="title"
     :toolbar-enabled="toolbarEnabled"
     :can-move-up="canMoveUp"

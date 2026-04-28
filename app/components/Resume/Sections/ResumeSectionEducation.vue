@@ -69,6 +69,17 @@ function updateText(path: string, value: string) {
 </template>
 <style scoped>
 .education {
+  --cv-space-1: var(--cv-space-1, 4px);
+  --cv-space-2: var(--cv-space-2, 8px);
+  --cv-space-3: var(--cv-space-3, 12px);
+  --cv-space-4: var(--cv-space-4, 16px);
+  --cv-space-5: var(--cv-space-5, 20px);
+  --cv-space-6: var(--cv-space-6, 24px);
+  --cv-marker-accent: color-mix(in srgb, var(--cv-accent) 55%, transparent);
+  --cv-timeline-line: color-mix(in srgb, var(--cv-accent) 38%, transparent);
+  --cv-card-border-soft: color-mix(in srgb, var(--cv-accent) 18%, transparent);
+  --cv-card-bg-soft: color-mix(in srgb, var(--cv-accent) 4%, transparent);
+
   position: relative;
   border-bottom: var(--rs-section-separator, none);
   padding-bottom: var(--rs-section-padding-bottom, 0);
@@ -76,7 +87,7 @@ function updateText(path: string, value: string) {
 .cv-heading-section {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--cv-space-2);
   border-bottom: var(--rs-heading-border-bottom, 0);
   background: var(--rs-heading-bg, transparent);
   border-radius: var(--rs-heading-radius, 0);
@@ -86,7 +97,7 @@ function updateText(path: string, value: string) {
   display: block;
 }
 .entry {
-  margin-bottom: var(--entry-gap, 16px);
+  margin-bottom: var(--entry-gap, var(--cv-space-4));
   position: relative;
   border: var(--rs-card-border, none);
   background: var(--rs-card-bg, transparent);
@@ -102,25 +113,25 @@ function updateText(path: string, value: string) {
 
 /* Timeline variant */
 .education--timeline .entry {
-  border-left: 2px solid color-mix(in srgb, var(--cv-accent) 38%, transparent);
-  padding-left: 10px;
+  border-left: 2px solid var(--cv-timeline-line);
+  padding-left: calc(var(--cv-space-2) + var(--cv-space-1) / 2);
 }
 .education--timeline .entry::before {
   content: '';
   position: absolute;
-  left: -10px;
+  left: calc((var(--cv-space-2) + var(--cv-space-1)) * -1);
   top: .55rem;
   width: var(--rs-marker-width, var(--rs-marker-size, 0));
   height: var(--rs-marker-height, var(--rs-marker-size, 0));
   border-radius: var(--rs-marker-radius, 0);
-  background: color-mix(in srgb, var(--cv-accent) 55%, transparent);
+  background: var(--cv-marker-accent);
 }
 
 /* Two-column variant */
 .education--two-column .education-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px 24px;
+  gap: var(--cv-space-4) var(--cv-space-6);
 }
 .education--two-column .entry {
   width: 100%;
@@ -128,11 +139,11 @@ function updateText(path: string, value: string) {
   margin-bottom: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  border: var(--rs-card-border, 1px solid color-mix(in srgb, var(--cv-accent) 18%, transparent));
-  border-radius: var(--rs-card-radius, 8px);
-  background: var(--rs-card-bg, color-mix(in srgb, var(--cv-accent) 4%, transparent));
-  padding: var(--rs-card-padding, 12px);
+  gap: calc(var(--cv-space-2) - var(--cv-space-1) / 2);
+  border: var(--rs-card-border, 1px solid var(--cv-card-border-soft));
+  border-radius: var(--rs-card-radius, var(--cv-space-2));
+  background: var(--rs-card-bg, var(--cv-card-bg-soft));
+  padding: var(--rs-card-padding, var(--cv-space-3));
 }
 @media (max-width: 900px) {
   .education--two-column .education-list {
@@ -140,7 +151,7 @@ function updateText(path: string, value: string) {
   }
 }
 
-.density-compact { --entry-gap: 10px; }
-.density-normal { --entry-gap: 16px; }
-.density-spacious { --entry-gap: 22px; }
+.density-compact { --entry-gap: calc(var(--cv-space-2) + var(--cv-space-1) / 2); }
+.density-normal { --entry-gap: var(--cv-space-4); }
+.density-spacious { --entry-gap: calc(var(--cv-space-4) + var(--cv-space-2) - var(--cv-space-1) / 2); }
 </style>

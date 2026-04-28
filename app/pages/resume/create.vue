@@ -3493,18 +3493,28 @@ if (import.meta.client) {
   --cv-secondary: #334155;
   --cv-on-sidebar: #f8fafc;
   --cv-on-accent: #f8fafc;
+  --cv-space-1: 4px;
+  --cv-space-2: 8px;
+  --cv-space-3: 12px;
+  --cv-space-4: 16px;
+  --cv-space-6: 24px;
+  --cv-space-9: 36px;
+  --cv-radius: 14px;
+  --cv-font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  --cv-font-style: normal;
+  --cv-font-weight: 400;
   min-height: calc(100vh - 80px);
   display: flex;
   justify-content: center;
-  padding: 16px;
+  padding: var(--cv-space-4);
 }
 
 .cv-page-shell {
   width: min(100%, 794px);
-  background: #fcfdff;
-  border: 1px solid rgba(15, 23, 42, 0.12);
-  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.14);
-  border-radius: 6px;
+  background: color-mix(in srgb, var(--cv-page) 80%, white);
+  border: 1px solid color-mix(in srgb, var(--cv-secondary) 18%, transparent);
+  box-shadow: 0 var(--cv-space-4) var(--cv-space-9) color-mix(in srgb, var(--cv-secondary) 20%, transparent);
+  border-radius: calc(var(--cv-space-1) + var(--cv-space-2) / 4);
   overflow: hidden;
   position: relative;
 }
@@ -3524,8 +3534,8 @@ if (import.meta.client) {
 
 .signature-overlay {
   position: absolute;
-  right: 18px;
-  bottom: 18px;
+  right: calc(var(--cv-space-4) + var(--cv-space-1) / 2);
+  bottom: calc(var(--cv-space-4) + var(--cv-space-1) / 2);
   width: 190px;
   z-index: 7;
   max-width: calc(100% - 36px);
@@ -3544,9 +3554,9 @@ if (import.meta.client) {
 
 .signature-canvas {
   width: 100%;
-  border: 1px dashed #94a3b8;
-  border-radius: 12px;
-  background: #fff;
+  border: 1px dashed color-mix(in srgb, var(--cv-secondary) 45%, var(--cv-page));
+  border-radius: var(--cv-space-3);
+  background: color-mix(in srgb, var(--cv-page) 88%, white);
   touch-action: none;
 }
 
@@ -3593,7 +3603,7 @@ if (import.meta.client) {
   border-radius: 0 !important;
 }
 
-.preview-grid .text-dark {
+.preview-grid :deep(.text-dark) {
   color: var(--cv-secondary) !important;
 }
 
@@ -3668,43 +3678,65 @@ if (import.meta.client) {
   color: var(--cv-secondary);
 }
 
-.radius-none {
-  border-radius: 0;
+.preview-grid.radius-none {
+  --cv-radius: 0px;
 }
 
-.radius-sm {
-  border-radius: 8px;
+.preview-grid.radius-sm {
+  --cv-radius: var(--cv-space-2);
 }
 
-.radius-md {
-  border-radius: 14px;
+.preview-grid.radius-md {
+  --cv-radius: calc(var(--cv-space-3) + var(--cv-space-1) / 2);
 }
 
-.radius-lg {
-  border-radius: 24px;
+.preview-grid.radius-lg {
+  --cv-radius: var(--cv-space-6);
 }
 
-.text-style-clean {
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-  font-style: normal;
+.preview-grid.text-style-clean {
+  --cv-font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  --cv-font-style: normal;
+  --cv-font-weight: 400;
 }
 
-.text-style-italic {
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-  font-style: italic;
+.preview-grid.text-style-italic {
+  --cv-font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  --cv-font-style: italic;
+  --cv-font-weight: 400;
 }
 
-.text-style-serif {
-  font-family: 'Merriweather', Georgia, 'Times New Roman', serif;
+.preview-grid.text-style-serif {
+  --cv-font-family: 'Merriweather', Georgia, 'Times New Roman', serif;
+  --cv-font-style: normal;
+  --cv-font-weight: 400;
 }
 
-.text-style-mono {
-  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+.preview-grid.text-style-mono {
+  --cv-font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  --cv-font-style: normal;
+  --cv-font-weight: 400;
 }
 
-.text-style-display {
-  font-family: 'Poppins', 'Avenir Next', 'Segoe UI', sans-serif;
-  font-weight: 600;
+.preview-grid.text-style-display {
+  --cv-font-family: 'Poppins', 'Avenir Next', 'Segoe UI', sans-serif;
+  --cv-font-style: normal;
+  --cv-font-weight: 600;
+}
+
+.preview-grid :deep(.resume-skin),
+.preview-grid :deep(.resume-skin__header),
+.preview-grid :deep(.resume-section),
+.preview-grid :deep(.cv-heading-section) {
+  font-family: var(--cv-font-family);
+  font-style: var(--cv-font-style);
+  font-weight: var(--cv-font-weight);
+}
+
+.preview-grid :deep(.resume-skin),
+.preview-grid :deep(.resume-template),
+.preview-grid :deep(.template-shell) {
+  border-radius: var(--cv-radius);
 }
 
 @media (max-width: 1120px) {
