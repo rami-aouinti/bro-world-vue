@@ -121,6 +121,10 @@ type ResumeModel = {
   country: string
   profile: string
   photoUrl: string
+  photoOffsetX: number
+  photoOffsetY: number
+  photoScale: number
+  photoHidden: boolean
   skills: Skill[]
   languages: Language[]
   hobbies: string[]
@@ -400,6 +404,10 @@ const resume = reactive<ResumeModel>({
   city: 'New York',
   country: 'United States',
   photoUrl: '/person.png',
+  photoOffsetX: 0,
+  photoOffsetY: 0,
+  photoScale: 1,
+  photoHidden: false,
   profile:
     'Dynamic communication specialist with strong storytelling, editorial planning, and social media execution experience. Passionate about building clear messages that engage audiences and support business goals.',
   skills: [
@@ -615,6 +623,25 @@ const addSectionDraft = reactive({
   certification: { title: '', school: '', start: '', end: '' },
   reference: { name: '', company: '', email: '', phone: '' },
 })
+
+const PHOTO_MOVE_STEP = 4
+const PHOTO_OFFSET_LIMIT = 48
+
+function movePhoto(direction: 'left' | 'right' | 'up' | 'down') {
+  if (direction === 'left') {
+    resume.photoOffsetX = Math.max(-PHOTO_OFFSET_LIMIT, resume.photoOffsetX - PHOTO_MOVE_STEP)
+    return
+  }
+  if (direction === 'right') {
+    resume.photoOffsetX = Math.min(PHOTO_OFFSET_LIMIT, resume.photoOffsetX + PHOTO_MOVE_STEP)
+    return
+  }
+  if (direction === 'up') {
+    resume.photoOffsetY = Math.max(-PHOTO_OFFSET_LIMIT, resume.photoOffsetY - PHOTO_MOVE_STEP)
+    return
+  }
+  resume.photoOffsetY = Math.min(PHOTO_OFFSET_LIMIT, resume.photoOffsetY + PHOTO_MOVE_STEP)
+}
 
 function openPhotoPicker() {
   uploadInput.value?.click()
@@ -2861,6 +2888,10 @@ if (import.meta.client) {
                 :photo-size="layoutSettings.photoSize"
                 :photo-border-width="layoutSettings.photoBorderWidth"
                 :photo-position="layoutSettings.photoPosition"
+                :photo-offset-x="resume.photoOffsetX"
+                :photo-offset-y="resume.photoOffsetY"
+                :photo-scale="resume.photoScale"
+                :photo-hidden="resume.photoHidden"
                 :section-layout="orderedPreviewSections"
                 :section-variants="sectionVariantByKey"
                 :photo-shape-options="photoShapeOptions"
@@ -2871,6 +2902,7 @@ if (import.meta.client) {
                 editable
                 @add-item="addItemToPreviewSection"
                 @change-variant="setSectionVariant"
+                @move-photo="movePhoto"
                 @move-section="moveSection"
               />
             </template>
@@ -3092,6 +3124,10 @@ if (import.meta.client) {
                   :photo-size="layoutSettings.photoSize"
                   :photo-border-width="layoutSettings.photoBorderWidth"
                   :photo-position="layoutSettings.photoPosition"
+                  :photo-offset-x="resume.photoOffsetX"
+                  :photo-offset-y="resume.photoOffsetY"
+                  :photo-scale="resume.photoScale"
+                  :photo-hidden="resume.photoHidden"
                   :section-layout="orderedPreviewSections"
                   :section-variants="sectionVariantByKey"
                   :on-photo-click="onPreviewPhotoClick"
@@ -3099,6 +3135,7 @@ if (import.meta.client) {
                   editable
                   @add-item="addItemToPreviewSection"
                   @change-variant="setSectionVariant"
+                  @move-photo="movePhoto"
                   @move-section="moveSection"
                 />
               </template>

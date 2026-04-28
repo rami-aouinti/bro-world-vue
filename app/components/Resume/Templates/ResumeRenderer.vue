@@ -62,6 +62,10 @@ const props = withDefaults(
     photoSize?: number
     photoBorderWidth?: number
     photoPosition?: 'left' | 'center' | 'right'
+    photoOffsetX?: number
+    photoOffsetY?: number
+    photoScale?: number
+    photoHidden?: boolean
     templateSkin: ResumeTemplateSkin
   }>(),
   {
@@ -82,6 +86,10 @@ const props = withDefaults(
     photoSize: 96,
     photoBorderWidth: 4,
     photoPosition: 'right',
+    photoOffsetX: 0,
+    photoOffsetY: 0,
+    photoScale: 1,
+    photoHidden: false,
   },
 )
 
@@ -97,6 +105,7 @@ const emit = defineEmits<{
     sectionKey: ResumeSectionActionKey,
     direction: 'up' | 'down',
   ): void
+  (event: 'move-photo', direction: 'left' | 'right' | 'up' | 'down'): void
 }>()
 
 const normalizedSectionLayout = computed<SectionLayoutEntry[]>(() => {
@@ -126,7 +135,7 @@ const asideSections = computed(() =>
   renderableSections.value.filter((section) => section.region === 'aside'),
 )
 const hasRenderedAvatar = computed(() =>
-  Boolean(props.showPhoto && props.resume?.photoUrl),
+  Boolean(props.showPhoto && props.resume?.photoUrl && !props.photoHidden),
 )
 const rootDesignClasses = computed(() => [
   props.roundedClass,
@@ -142,6 +151,10 @@ const avatarStyle = computed(() => ({
   width: `${props.photoSize}px`,
   height: `${props.photoSize}px`,
   borderWidth: `${props.photoBorderWidth}px`,
+}))
+const avatarImageStyle = computed(() => ({
+  transform: `translate(${props.photoOffsetX}px, ${props.photoOffsetY}px) scale(${props.photoScale})`,
+  transformOrigin: 'center',
 }))
 const sectionLayoutDensity = computed<'compact' | 'normal' | 'spacious'>(() =>
   props.density === 'compact' ? 'compact' : 'normal',
@@ -301,13 +314,14 @@ function updateText(path: string, value: string) {
           :options="photoShapeOptions"
           :selected-value="selectedPhotoShape"
           @select="onPhotoShapeSelect?.($event)"
+          @move="emit('move-photo', $event)"
         />
         <v-avatar
           class="resume-skin__avatar"
           :style="avatarStyle"
           @click="onPhotoClick?.()"
         >
-          <v-img :src="resume.photoUrl" cover />
+          <v-img :src="resume.photoUrl" :style="avatarImageStyle" cover />
         </v-avatar>
       </div>
     </header>
