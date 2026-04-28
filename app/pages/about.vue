@@ -159,7 +159,6 @@ const page = computed(
             <v-btn variant="outlined">{{ page.hero.secondaryCta }}</v-btn>
           </div>
         </v-card>
-
         <h2 class="text-h5 font-weight-bold mb-4">{{ page.metricsTitle }}</h2>
         <v-row class="mb-8" density="comfortable">
           <v-col
