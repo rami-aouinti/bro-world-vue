@@ -163,6 +163,9 @@ function resolveLanguageFlag(language: Record<string, unknown>) {
   border-radius: var(--rs-marker-radius, 0);
   background: var(--cv-marker-accent);
 }
+.bars li:last-child {
+  margin-bottom: 0;
+}
 .progress { height: var(--cv-space-1); background: var(--cv-progress-bg); margin-top: var(--cv-space-1); }
 .progress i { display: block; height: 4px; background: var(--cv-accent); }
 .progress i { height: var(--cv-space-1); }

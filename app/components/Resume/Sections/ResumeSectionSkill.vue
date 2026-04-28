@@ -158,6 +158,9 @@ function levelToDots(level: number | string) {
   border-left: var(--rs-entry-border-left, none);
   padding-left: var(--rs-entry-padding-left, 0);
 }
+.bars li:last-child {
+  margin-bottom: 0;
+}
 
 .bars li::before {
   content: '';

@@ -199,6 +199,9 @@ function onCompanyLogoError(index: number, companyImageUrl?: string) {
   --cv-body-line-height: 1.52;
   --cv-list-indent: calc(var(--cv-space-4) + var(--cv-space-2));
   --cv-dash-marker-width: 1.35em;
+  --entry-title-to-date-gap: var(--cv-space-1);
+  --entry-date-to-description-gap: var(--cv-space-2);
+  --entry-description-to-list-gap: var(--cv-space-2);
 
   position: relative;
   border-bottom: var(--rs-section-separator, none);
@@ -246,8 +249,23 @@ function onCompanyLogoError(index: number, companyImageUrl?: string) {
   border-radius: var(--rs-card-radius, 0);
   padding: var(--rs-card-padding, 0);
 }
+.entry:last-child {
+  margin-bottom: 0;
+}
 .date-column {
   color: color-mix(in srgb, var(--cv-text, currentColor) 78%, transparent);
+}
+.experience-heading {
+  margin: 0;
+}
+.entry .date-column > .dates {
+  margin: var(--entry-title-to-date-gap) 0 0;
+}
+.content-column > h4 {
+  margin: 0;
+}
+.content-column > p {
+  margin: var(--entry-date-to-description-gap) 0 0;
 }
 .content-column {
   position: relative;
@@ -292,12 +310,27 @@ function onCompanyLogoError(index: number, companyImageUrl?: string) {
   line-height: var(--cv-body-line-height);
 }
 .entry ul {
-  margin: var(--cv-space-2) 0 0;
+  margin: var(--entry-description-to-list-gap) 0 0;
   padding-inline-start: var(--cv-list-indent);
 }
-.density-compact { --entry-gap: calc(var(--cv-space-2) + var(--cv-space-1) / 2); }
-.density-normal { --entry-gap: var(--cv-space-4); }
-.density-spacious { --entry-gap: calc(var(--cv-space-4) + var(--cv-space-2) - var(--cv-space-1) / 2); }
+.density-compact {
+  --entry-gap: calc(var(--cv-space-2) + var(--cv-space-1) / 2);
+  --entry-title-to-date-gap: calc(var(--cv-space-1) - 1px);
+  --entry-date-to-description-gap: calc(var(--cv-space-1) + 1px);
+  --entry-description-to-list-gap: calc(var(--cv-space-1) + 1px);
+}
+.density-normal {
+  --entry-gap: var(--cv-space-4);
+  --entry-title-to-date-gap: var(--cv-space-1);
+  --entry-date-to-description-gap: var(--cv-space-2);
+  --entry-description-to-list-gap: var(--cv-space-2);
+}
+.density-spacious {
+  --entry-gap: calc(var(--cv-space-4) + var(--cv-space-2) - var(--cv-space-1) / 2);
+  --entry-title-to-date-gap: calc(var(--cv-space-1) + 1px);
+  --entry-date-to-description-gap: var(--cv-space-3);
+  --entry-description-to-list-gap: var(--cv-space-3);
+}
 .dash-list {
   list-style: none;
   padding-inline-start: var(--cv-list-indent);
