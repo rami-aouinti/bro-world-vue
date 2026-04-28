@@ -26,6 +26,8 @@ export type ResumeSectionIconStyle = {
   variant: ResumeSectionIconStyleVariant
 }
 
+export type ResumeLayoutMode = 'aside-left' | 'aside-right' | 'no-aside'
+
 export type TemplateSkinProfile = {
   grid: 'single' | 'split' | 'magazine'
   typography: 'classic' | 'clean' | 'editorial' | 'neo-grotesk'
@@ -37,6 +39,7 @@ export type TemplateSkinProfile = {
 
 export type ResumeTemplateSkin = {
   id: TemplateSkinId
+  layoutMode: ResumeLayoutMode
   rootClass: string
   wrapperClass: string
   mainClass: string
@@ -65,6 +68,7 @@ const defaultLayout: ResumeRendererLayoutEntry[] = [
 function withSkin(id: TemplateSkinId, overrides: Partial<ResumeTemplateSkin> = {}): ResumeTemplateSkin {
   return {
     id,
+    layoutMode: 'aside-left',
     rootClass: `resume-skin resume-skin--${id}`,
     wrapperClass: 'resume-skin__layout',
     mainClass: 'resume-skin__main',
@@ -108,7 +112,10 @@ function withSkin(id: TemplateSkinId, overrides: Partial<ResumeTemplateSkin> = {
 
 export const RESUME_TEMPLATE_SKINS: Record<TemplateSkinId, ResumeTemplateSkin> = {
   classic: withSkin('classic', { profile: { grid: 'single', typography: 'classic', spacing: 'balanced', colors: 'light', cards: 'flat', separators: 'line' } }),
-  modern: withSkin('modern', { profile: { grid: 'split', typography: 'clean', spacing: 'balanced', colors: 'light', cards: 'soft', separators: 'line' } }),
+  modern: withSkin('modern', {
+    layoutMode: 'aside-right',
+    profile: { grid: 'split', typography: 'clean', spacing: 'balanced', colors: 'light', cards: 'soft', separators: 'line' },
+  }),
   professional: withSkin('professional', { profile: { grid: 'split', typography: 'clean', spacing: 'balanced', colors: 'light', cards: 'soft', separators: 'line' } }),
   traditional: withSkin('traditional', {
     showContactInHeader: true,
@@ -121,6 +128,7 @@ export const RESUME_TEMPLATE_SKINS: Record<TemplateSkinId, ResumeTemplateSkin> =
     profile: { grid: 'magazine', typography: 'editorial', spacing: 'airy', colors: 'contrast', cards: 'elevated', separators: 'accent' },
   }),
   minimalist: withSkin('minimalist', {
+    layoutMode: 'no-aside',
     showSectionIcons: false,
     showContactInHeader: true,
     showContactInAside: false,
