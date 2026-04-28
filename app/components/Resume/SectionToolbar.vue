@@ -49,7 +49,7 @@ const spacingPresets: StylePresetOption[] = [
 const cardPresets: StylePresetOption[] = [
   { label: 'None', value: 'none', tokens: { '--rs-card-border': 'none', '--rs-card-bg': 'transparent', '--rs-card-radius': '0', '--rs-card-padding': '0' } },
   { label: 'Soft', value: 'soft', tokens: { '--rs-card-border': '1px solid color-mix(in srgb, var(--cv-accent) 14%, transparent)', '--rs-card-bg': 'color-mix(in srgb, var(--cv-page) 90%, var(--cv-accent) 10%)', '--rs-card-radius': '12px', '--rs-card-padding': '10px 12px' } },
-  { label: 'Elevated', value: 'elevated', tokens: { '--rs-card-border': '1px solid color-mix(in srgb, #111827 8%, transparent)', '--rs-card-bg': 'color-mix(in srgb, white 82%, var(--cv-page) 18%)', '--rs-card-radius': '14px', '--rs-card-padding': '12px 14px' } },
+  { label: 'Elevated', value: 'elevated', tokens: { '--rs-card-border': '1px solid color-mix(in srgb, var(--cv-secondary) 10%, transparent)', '--rs-card-bg': 'color-mix(in srgb, var(--cv-page) 88%, var(--cv-secondary) 12%)', '--rs-card-radius': '14px', '--rs-card-padding': '12px 14px' } },
 ]
 
 const dividerPresets: StylePresetOption[] = [
@@ -222,9 +222,9 @@ watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySe
 
 <style scoped>
 .section-toolbar {
-  --cv-toolbar-border: var(--cv-toolbar-border-color, color-mix(in srgb, var(--cv-surface-contrast, #1e293b) 34%, transparent));
-  --cv-toolbar-bg: var(--cv-toolbar-bg-color, color-mix(in srgb, var(--cv-surface, #ffffff) 76%, var(--cv-surface-contrast, #0f172a) 24%));
-  --cv-toolbar-shadow: var(--cv-toolbar-shadow-color, color-mix(in srgb, #020617 16%, transparent));
+  --cv-toolbar-border: var(--cv-toolbar-border-color, color-mix(in srgb, var(--cv-secondary) 22%, transparent));
+  --cv-toolbar-bg: var(--cv-toolbar-bg-color, color-mix(in srgb, var(--cv-page) 86%, var(--cv-sidebar) 14%));
+  --cv-toolbar-shadow: var(--cv-toolbar-shadow-color, color-mix(in srgb, var(--cv-secondary) 14%, transparent));
 
   position: absolute;
   top: 8px;

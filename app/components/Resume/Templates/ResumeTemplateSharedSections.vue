@@ -250,10 +250,10 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
 </template>
 
 <style scoped>
-/* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page) (+ color-mix). No hardcoded theme colors. */
+/* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page), var(--cv-secondary) (+ color-mix). */
 .shared-extra { font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif); font-style: var(--cv-font-style, normal); font-weight: var(--cv-font-weight, 400);
-  --shared-panel-bg: color-mix(in srgb, var(--cv-page) 92%, white);
-  --shared-panel-text: var(--cv-secondary, color-mix(in srgb, var(--cv-sidebar) 70%, black));
+  --shared-panel-bg: color-mix(in srgb, var(--cv-page) 92%, var(--cv-sidebar));
+  --shared-panel-text: var(--cv-secondary);
   --shared-panel-border: color-mix(in srgb, var(--cv-accent) 20%, var(--cv-page));
   --shared-title-color: var(--cv-title, var(--cv-accent));
   margin-top: 0;
@@ -267,16 +267,16 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
   gap: 14px;
 }
 .shared-extra--light {
-  --shared-panel-bg: color-mix(in srgb, var(--cv-page) 95%, white);
+  --shared-panel-bg: color-mix(in srgb, var(--cv-page) 95%, var(--cv-sidebar));
 }
 .shared-extra--dark {
-  --shared-panel-bg: color-mix(in srgb, var(--cv-sidebar) 70%, black);
-  --shared-panel-text: var(--cv-on-sidebar, color-mix(in srgb, var(--cv-page) 92%, white));
-  --shared-panel-border: color-mix(in srgb, var(--cv-page) 26%, transparent);
-  --shared-title-color: var(--cv-on-sidebar, var(--cv-accent));
+  --shared-panel-bg: color-mix(in srgb, var(--cv-page) 86%, var(--cv-sidebar));
+  --shared-panel-text: var(--cv-secondary);
+  --shared-panel-border: color-mix(in srgb, var(--cv-accent) 24%, var(--cv-page));
+  --shared-title-color: var(--cv-title, var(--cv-accent));
 }
 .shared-extra--auto {
-  --shared-panel-bg: color-mix(in srgb, var(--cv-page) 90%, white);
+  --shared-panel-bg: color-mix(in srgb, var(--cv-page) 90%, var(--cv-sidebar));
 }
 .shared-extra h3 {
   color: var(--shared-title-color);
@@ -311,7 +311,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
   padding: 10px;
 }
 .project-card--soft {
-  background: color-mix(in srgb, var(--cv-page) 96%, white);
+  background: color-mix(in srgb, var(--cv-page) 96%, var(--cv-sidebar));
 }
 .shared-section {
   position: relative;
