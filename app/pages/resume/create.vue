@@ -1114,6 +1114,65 @@ const activeTextStyleClass = computed(
       ?.className ?? 'text-style-clean',
 )
 const previewExportRef = ref<HTMLElement | null>(null)
+const rendererReady = ref(true)
+const rendererError = ref<string | null>(null)
+
+const previewFallbackSections = computed(() => {
+  const sections: Array<{ title: string; items: string[] }> = []
+
+  if (resume.profile.trim()) {
+    sections.push({
+      title: 'Profil',
+      items: [resume.profile.trim()],
+    })
+  }
+
+  if (resume.experiences.length) {
+    sections.push({
+      title: 'Expériences',
+      items: resume.experiences
+        .slice(0, 2)
+        .map(item => [item.role, item.company].filter(Boolean).join(' — ') || 'Expérience'),
+    })
+  }
+
+  if (resume.education.length) {
+    sections.push({
+      title: 'Formations',
+      items: resume.education
+        .slice(0, 2)
+        .map(item => [item.degree, item.school].filter(Boolean).join(' — ') || 'Formation'),
+    })
+  }
+
+  if (resume.skills.length) {
+    sections.push({
+      title: 'Compétences',
+      items: resume.skills.slice(0, 6).map(item => item.name).filter(Boolean),
+    })
+  }
+
+  return sections
+})
+
+function resetRendererGuard() {
+  rendererReady.value = true
+  rendererError.value = null
+}
+
+watch(selectedTemplate, () => {
+  resetRendererGuard()
+})
+
+onErrorCaptured((error, instance, info) => {
+  const componentName = instance?.type && typeof instance.type === 'object' && 'name' in instance.type
+    ? String(instance.type.name || 'unknown')
+    : 'unknown'
+  console.error('[resume-preview] render error', error)
+  rendererError.value = `Le rendu de la prévisualisation a échoué (${componentName}: ${info}).`
+  rendererReady.value = false
+  return false
+})
 
 function hexToRgb(hex: string) {
   const normalized = hex.replace('#', '')
@@ -2738,18 +2797,42 @@ if (import.meta.client) {
               {{ shape.icon }}
             </v-btn>
           </div>
-          <ResumeRenderer
-            :resume="resume"
-            :show-photo="templateSupportsPhoto"
-            :section-layout="orderedPreviewSections"
-            :section-variants="sectionVariantByKey"
-            :on-photo-click="onPreviewPhotoClick"
-            :template-skin="selectedTemplateSkin"
-            editable
-            @add-item="addItemToPreviewSection"
-            @change-variant="setSectionVariant"
-            @move-section="moveSection"
-          />
+          <template v-if="rendererReady">
+            <ResumeRenderer
+              :resume="resume"
+              :show-photo="templateSupportsPhoto"
+              :section-layout="orderedPreviewSections"
+              :section-variants="sectionVariantByKey"
+              :on-photo-click="onPreviewPhotoClick"
+              :template-skin="selectedTemplateSkin"
+              editable
+              @add-item="addItemToPreviewSection"
+              @change-variant="setSectionVariant"
+              @move-section="moveSection"
+            />
+          </template>
+          <div v-else class="preview-fallback">
+            <v-alert type="error" variant="tonal" density="comfortable" class="mb-3">
+              {{ rendererError || 'La prévisualisation n’est pas disponible pour le moment.' }}
+            </v-alert>
+            <h2 class="text-h5 mb-2">{{ `${resume.firstName} ${resume.lastName}`.trim() || 'Votre nom' }}</h2>
+            <p class="text-body-2 mb-4">{{ resume.role || 'Titre du poste' }}</p>
+            <section
+              v-for="section in previewFallbackSections"
+              :key="`preview-fallback-${section.title}`"
+              class="mb-3"
+            >
+              <h3 class="text-subtitle-2 mb-1">{{ section.title }}</h3>
+              <ul class="pl-4">
+                <li v-for="item in section.items" :key="`${section.title}-${item}`">
+                  {{ item }}
+                </li>
+              </ul>
+            </section>
+            <v-btn size="small" variant="outlined" prepend-icon="mdi-refresh" @click="resetRendererGuard">
+              Réessayer le rendu
+            </v-btn>
+          </div>
           <div v-if="signatureDataUrl" class="signature-overlay">
             <img :src="signatureDataUrl" alt="Signature" />
           </div>
@@ -2930,18 +3013,25 @@ if (import.meta.client) {
             :class="[activeRoundedClass, activeTextStyleClass]"
             :style="previewStyle"
           >
-            <ResumeRenderer
-              :resume="resume"
-              :show-photo="templateSupportsPhoto"
-              :section-layout="orderedPreviewSections"
-              :section-variants="sectionVariantByKey"
-              :on-photo-click="onPreviewPhotoClick"
-              :template-skin="selectedTemplateSkin"
-              editable
-              @add-item="addItemToPreviewSection"
-              @change-variant="setSectionVariant"
-              @move-section="moveSection"
-            />
+            <template v-if="rendererReady">
+              <ResumeRenderer
+                :resume="resume"
+                :show-photo="templateSupportsPhoto"
+                :section-layout="orderedPreviewSections"
+                :section-variants="sectionVariantByKey"
+                :on-photo-click="onPreviewPhotoClick"
+                :template-skin="selectedTemplateSkin"
+                editable
+                @add-item="addItemToPreviewSection"
+                @change-variant="setSectionVariant"
+                @move-section="moveSection"
+              />
+            </template>
+            <div v-else class="preview-fallback">
+              <v-alert type="error" variant="tonal" density="comfortable">
+                {{ rendererError || 'La prévisualisation n’est pas disponible pour le moment.' }}
+              </v-alert>
+            </div>
           </div>
         </v-card-text>
       </v-card>
@@ -3350,6 +3440,10 @@ if (import.meta.client) {
   transform: translateX(-50%);
   z-index: 9;
   max-width: min(520px, calc(100% - 32px));
+}
+
+.preview-fallback {
+  padding: 72px 20px 20px;
 }
 
 .signature-overlay {
