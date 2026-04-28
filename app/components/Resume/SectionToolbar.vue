@@ -261,16 +261,16 @@ watch(
     class="section-toolbar"
     :class="{ 'is-pinned': pinEnabled }"
     role="toolbar"
-    :aria-label="`Actions de la section ${props.sectionKey}`"
+    :aria-label="`Section actions ${props.sectionKey}`"
   >
-    <v-tooltip v-if="enabledActions.has('add-item')" text="Ajouter un élément">
+    <v-tooltip v-if="enabledActions.has('add-item')" text="Add item">
       <template #activator="{ props: tooltipProps }">
         <v-btn
           class="toolbar-btn"
           icon
           size="default"
           variant="tonal"
-          :aria-label="`Ajouter un élément à la section ${props.sectionKey}`"
+          :aria-label="`Add item à la section ${props.sectionKey}`"
           v-bind="tooltipProps"
           @click="emit('add-item', props.sectionKey)"
         >
@@ -290,7 +290,7 @@ watch(
               icon
               size="default"
               variant="tonal"
-              :aria-label="`Changer la variante de la section ${props.sectionKey}`"
+              :aria-label="`Change section variant ${props.sectionKey}`"
               v-bind="mergeProps(menuProps, tooltipProps)"
             >
               <v-icon icon="mdi-view-dashboard-outline" />
@@ -323,7 +323,7 @@ watch(
               icon
               size="default"
               variant="tonal"
-              :aria-label="`Changer le style de contenu de la section ${props.sectionKey}`"
+              :aria-label="`Change content style for section ${props.sectionKey}`"
               v-bind="mergeProps(menuProps, tooltipProps)"
             >
               <v-icon icon="mdi-format-list-bulleted-type" />
@@ -358,7 +358,7 @@ watch(
               icon
               size="default"
               variant="tonal"
-              :aria-label="`Ouvrir le panneau de style de la section ${props.sectionKey}`"
+              :aria-label="`Open section style panel ${props.sectionKey}`"
               v-bind="mergeProps(menuProps, tooltipProps)"
             >
               <v-icon icon="mdi-brush-variant" />
@@ -431,14 +431,14 @@ watch(
             density="compact"
             hide-details
             inset
-            label="Mode édition épinglé"
+            label="Pinned edit mode"
             @update:model-value="setPin(Boolean($event))"
           />
         </v-card-text>
       </v-card>
     </v-menu>
 
-    <v-tooltip v-if="enabledActions.has('move-up')" text="Monter la section">
+    <v-tooltip v-if="enabledActions.has('move-up')" text="Move section up">
       <template #activator="{ props: tooltipProps }">
         <v-btn
           class="toolbar-btn"
@@ -446,7 +446,7 @@ watch(
           size="default"
           variant="tonal"
           :disabled="!props.canMoveUp"
-          :aria-label="`Déplacer la section ${props.sectionKey} vers le haut`"
+          :aria-label="`Move section ${props.sectionKey} up`"
           v-bind="tooltipProps"
           @click="emit('move-up', props.sectionKey)"
         >
@@ -457,7 +457,7 @@ watch(
 
     <v-tooltip
       v-if="enabledActions.has('move-down')"
-      text="Descendre la section"
+      text="Move section down"
     >
       <template #activator="{ props: tooltipProps }">
         <v-btn
@@ -466,7 +466,7 @@ watch(
           size="default"
           variant="tonal"
           :disabled="!props.canMoveDown"
-          :aria-label="`Déplacer la section ${props.sectionKey} vers le bas`"
+          :aria-label="`Move section ${props.sectionKey} down`"
           v-bind="tooltipProps"
           @click="emit('move-down', props.sectionKey)"
         >
@@ -477,7 +477,7 @@ watch(
 
     <v-tooltip
       v-if="enabledActions.has('delete-item')"
-      text="Supprimer l'élément"
+      text="Delete item"
     >
       <template #activator="{ props: tooltipProps }">
         <v-btn
@@ -486,7 +486,7 @@ watch(
           size="default"
           variant="tonal"
           color="error"
-          :aria-label="`Supprimer un élément de la section ${props.sectionKey}`"
+          :aria-label="`Delete item from section ${props.sectionKey}`"
           v-bind="tooltipProps"
           @click="emit('delete-item', props.sectionKey)"
         >
@@ -497,7 +497,7 @@ watch(
 
     <v-tooltip
       v-if="enabledActions.has('delete-section')"
-      text="Supprimer la section"
+      text="Delete section"
     >
       <template #activator="{ props: tooltipProps }">
         <v-btn
@@ -506,7 +506,7 @@ watch(
           size="default"
           variant="tonal"
           color="error"
-          :aria-label="`Supprimer la section ${props.sectionKey}`"
+          :aria-label="`Delete section ${props.sectionKey}`"
           v-bind="tooltipProps"
           @click="emit('delete-section', props.sectionKey)"
         >

@@ -148,7 +148,7 @@ function removeSkill(index: number) {
           size="x-small"
           variant="text"
           color="error"
-          aria-label="Supprimer cette compétence"
+          aria-label="Delete this skill"
           @click="removeSkill(index)"
         >
           <v-icon icon="mdi-close" size="14" />
@@ -181,7 +181,7 @@ function removeSkill(index: number) {
           size="x-small"
           variant="text"
           color="error"
-          aria-label="Supprimer cette compétence"
+          aria-label="Delete this skill"
           @click="removeSkill(index)"
         >
           <v-icon icon="mdi-close" size="14" />
@@ -217,7 +217,7 @@ function removeSkill(index: number) {
           size="x-small"
           variant="text"
           color="error"
-          aria-label="Supprimer cette compétence"
+          aria-label="Delete this skill"
           @click="removeSkill(index)"
         >
           <v-icon icon="mdi-close" size="14" />
@@ -257,7 +257,7 @@ function removeSkill(index: number) {
           size="x-small"
           variant="text"
           color="error"
-          aria-label="Supprimer cette compétence"
+          aria-label="Delete this skill"
           @click="removeSkill(index)"
         >
           <v-icon icon="mdi-close" size="14" />

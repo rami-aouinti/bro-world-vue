@@ -2879,6 +2879,43 @@
           "importFailed": "Import fehlgeschlagen. Stelle sicher, dass dein PDF auswählbaren Text enthält.",
           "providerSyncSoon": "Die {provider}-Synchronisierung ist bald verfügbar."
         }
+      },
+      "messages": {
+        "resumeDeleted": "Resume deleted successfully.",
+        "resumeDeleteFailed": "Failed to delete resume.",
+        "resumeReplaced": "Resume replaced successfully.",
+        "resumeCreated": "New resume created successfully.",
+        "resumeReplaceFailed": "Failed to replace resume.",
+        "resumeCreateFailed": "Failed to create resume."
+      },
+      "previewFallback": {
+        "profileTitle": "Profile",
+        "experiencesTitle": "Experiences",
+        "experienceItem": "Experience",
+        "educationTitle": "Education",
+        "educationItem": "Education",
+        "skillsTitle": "Skills",
+        "renderFailed": "Preview render failed ({componentName}: {info}).",
+        "unavailable": "Preview is unavailable right now.",
+        "yourName": "Your name",
+        "jobTitle": "Job title",
+        "retryRender": "Retry render"
+      },
+      "saveModal": {
+        "title": "Save resume",
+        "optionReplace": "Option A: Replace an existing resume",
+        "optionCreate": "Option B: Create a new resume",
+        "resumeToReplace": "Resume to replace",
+        "replaceWarning": "This action will permanently replace the selected resume.",
+        "confirmReplace": "Confirm replacement",
+        "replace": "Replace",
+        "create": "Create",
+        "deleteConfirm": "Delete this resume permanently?"
+      },
+      "signature": {
+        "title": "Add signature",
+        "clear": "Clear",
+        "addToResume": "Add to resume"
       }
     }
   }

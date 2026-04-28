@@ -193,7 +193,7 @@ function removeExperience(index: number) {
         size="x-small"
         variant="text"
         color="error"
-        aria-label="Supprimer cette expérience"
+        aria-label="Delete this experience"
         @click="removeExperience(index)"
       >
         <v-icon icon="mdi-close" size="14" />

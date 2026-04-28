@@ -470,9 +470,9 @@ const decorativeShapeTypeOptions = [
   { label: 'Bar', value: 'bar' },
 ] as const
 const photoShapeOptions = [
-  { label: 'Carré', value: 'square', icon: '□' },
-  { label: 'Arrondi', value: 'rounded', icon: '▢' },
-  { label: 'Cercle', value: 'circle', icon: '◯' },
+  { label: 'Square', value: 'square', icon: '□' },
+  { label: 'Rounded', value: 'rounded', icon: '▢' },
+  { label: 'Circle', value: 'circle', icon: '◯' },
   { label: 'Portrait', value: 'portrait-card', icon: '▮' },
   { label: 'Blob', value: 'soft-blob', icon: '⬭' },
   { label: 'Hex', value: 'hex', icon: '⬢' },
@@ -1374,9 +1374,9 @@ async function confirmDeleteRemoteResume() {
       selectedRemoteResumeId.value = remoteResumes.value.at(0)?.id ?? null
     }
 
-    showToast('CV supprimé avec succès.', 'success')
+    showToast(t('resumeBuilder.create.messages.resumeDeleted'), 'success')
   } catch {
-    showToast('Échec de suppression du CV.', 'error')
+    showToast(t('resumeBuilder.create.messages.resumeDeleteFailed'), 'error')
   } finally {
     deleteConfirmModalOpen.value = false
     resumeIdPendingDeletion.value = null
@@ -2529,40 +2529,40 @@ const previewFallbackSections = computed(() => {
 
   if (resume.profile.trim()) {
     sections.push({
-      title: 'Profil',
+      title: t('resumeBuilder.create.previewFallback.profileTitle'),
       items: [resume.profile.trim()],
     })
   }
 
   if (resume.experiences.length) {
     sections.push({
-      title: 'Expériences',
+      title: t('resumeBuilder.create.previewFallback.experiencesTitle'),
       items: resume.experiences
         .slice(0, 2)
         .map(
           (item) =>
             [item.role, item.company].filter(Boolean).join(' — ') ||
-            'Expérience',
+            t('resumeBuilder.create.previewFallback.experienceItem'),
         ),
     })
   }
 
   if (resume.education.length) {
     sections.push({
-      title: 'Formations',
+      title: t('resumeBuilder.create.previewFallback.educationTitle'),
       items: resume.education
         .slice(0, 2)
         .map(
           (item) =>
             [item.degree, item.school].filter(Boolean).join(' — ') ||
-            'Formation',
+            t('resumeBuilder.create.previewFallback.educationItem'),
         ),
     })
   }
 
   if (resume.skills.length) {
     sections.push({
-      title: 'Compétences',
+      title: t('resumeBuilder.create.previewFallback.skillsTitle'),
       items: resume.skills
         .slice(0, 6)
         .map((item) => item.name)
@@ -2599,7 +2599,10 @@ onErrorCaptured((error, instance, info) => {
       ? String(instance.type.name || 'unknown')
       : 'unknown'
   console.error('[resume-preview] render error', error)
-  rendererError.value = `Le rendu de la prévisualisation a échoué (${componentName}: ${info}).`
+  rendererError.value = t('resumeBuilder.create.previewFallback.renderFailed', {
+    componentName,
+    info,
+  })
   rendererReady.value = false
   return false
 })
@@ -3208,7 +3211,7 @@ async function submitSaveAction() {
     if (shouldUpdate && selectedRemoteResumeId.value) {
       await updateResume(selectedRemoteResumeId.value, payload)
       saveStatus.value = 'success'
-      saveStatusMessage.value = 'CV remplacé avec succès.'
+      saveStatusMessage.value = t('resumeBuilder.create.messages.resumeReplaced')
       replaceConfirmStep.value = false
       return
     }
@@ -3218,12 +3221,12 @@ async function submitSaveAction() {
       selectedRemoteResumeId.value = createdResume.id
     }
     saveStatus.value = 'success'
-    saveStatusMessage.value = 'Nouveau CV créé avec succès.'
+    saveStatusMessage.value = t('resumeBuilder.create.messages.resumeCreated')
   } catch {
     saveStatus.value = 'error'
     saveStatusMessage.value = selectedRemoteResumeId.value
-      ? 'Échec du remplacement du CV.'
-      : 'Échec de création du nouveau CV.'
+      ? t('resumeBuilder.create.messages.resumeReplaceFailed')
+      : t('resumeBuilder.create.messages.resumeCreateFailed')
   } finally {
     saveLoading.value = false
   }
@@ -4138,17 +4141,17 @@ if (import.meta.client) {
                         >
                           {{
                             rendererError ||
-                            'La prévisualisation n’est pas disponible pour le moment.'
+                            t('resumeBuilder.create.previewFallback.unavailable')
                           }}
                         </v-alert>
                         <h2 class="text-h5 mb-2">
                           {{
                             `${resume.firstName} ${resume.lastName}`.trim() ||
-                            'Votre nom'
+                            t('resumeBuilder.create.previewFallback.yourName')
                           }}
                         </h2>
                         <p class="text-body-2 mb-4">
-                          {{ resume.role || 'Titre du poste' }}
+                          {{ resume.role || t('resumeBuilder.create.previewFallback.jobTitle') }}
                         </p>
                         <section
                           v-for="section in previewFallbackSections"
@@ -4173,7 +4176,7 @@ if (import.meta.client) {
                           prepend-icon="mdi-refresh"
                           @click="resetRendererGuard"
                         >
-                          Réessayer le rendu
+                          Retry render
                         </v-btn>
                       </div>
                       <div v-if="signatureDataUrl" class="signature-overlay">
@@ -4892,7 +4895,7 @@ if (import.meta.client) {
       <v-dialog v-model="saveModalOpen" max-width="620">
         <v-card>
           <v-card-title class="d-flex align-center justify-space-between">
-            <span>Sauvegarder le CV</span>
+            <span>{{ t('resumeBuilder.create.saveModal.title') }}</span>
             <v-btn
               icon="mdi-close"
               variant="text"
@@ -4909,9 +4912,9 @@ if (import.meta.client) {
             >
               <v-radio
                 value="replace"
-                label="Option A: Remplacer un CV existant"
+                :label="t('resumeBuilder.create.saveModal.optionReplace')"
               />
-              <v-radio value="create" label="Option B: Créer un nouveau CV" />
+              <v-radio value="create" :label="t('resumeBuilder.create.saveModal.optionCreate')" />
             </v-radio-group>
 
             <div v-if="saveMode === 'replace'" class="d-grid ga-2">
@@ -4925,7 +4928,7 @@ if (import.meta.client) {
                 "
                 item-title="title"
                 item-value="value"
-                label="CV à remplacer"
+                :label="t('resumeBuilder.create.saveModal.resumeToReplace')"
                 variant="outlined"
                 :disabled="saveLoading"
                 hide-details
@@ -4961,7 +4964,7 @@ if (import.meta.client) {
                 variant="tonal"
                 density="comfortable"
               >
-                Cette action remplacera définitivement le CV sélectionné.
+                {{ t('resumeBuilder.create.saveModal.replaceWarning') }}
               </v-alert>
             </div>
 
@@ -4985,7 +4988,7 @@ if (import.meta.client) {
               variant="text"
               :disabled="saveLoading"
               @click="saveModalOpen = false"
-              >Annuler</v-btn
+               >{{ t('common.cancel') }}</v-btn
             >
             <v-btn
               v-if="saveMode === 'replace' && !replaceConfirmStep"
@@ -5002,7 +5005,7 @@ if (import.meta.client) {
               :disabled="saveMode === 'replace' && !selectedRemoteResumeId"
               @click="submitSaveAction"
             >
-              {{ saveMode === 'replace' ? 'Remplacer' : 'Créer' }}
+              {{ saveMode === 'replace' ? t('resumeBuilder.create.saveModal.replace') : t('resumeBuilder.create.saveModal.create') }}
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -5010,11 +5013,11 @@ if (import.meta.client) {
 
       <v-dialog v-model="deleteConfirmModalOpen" max-width="460">
         <v-card>
-          <v-card-title>Confirmation</v-card-title>
-          <v-card-text>Supprimer définitivement ce CV ?</v-card-text>
+          <v-card-title>{{ t('common.confirmation') }}</v-card-title>
+          <v-card-text>{{ t('resumeBuilder.create.saveModal.deleteConfirm') }}</v-card-text>
           <v-card-actions class="justify-end">
             <v-btn variant="text" @click="deleteConfirmModalOpen = false"
-              >Annuler</v-btn
+               >{{ t('common.cancel') }}</v-btn
             >
             <v-btn color="error" @click="confirmDeleteRemoteResume"
               >Delete</v-btn
@@ -5097,7 +5100,7 @@ if (import.meta.client) {
                     <v-alert type="error" variant="tonal" density="comfortable">
                       {{
                         rendererError ||
-                        'La prévisualisation n’est pas disponible pour le moment.'
+                        t('resumeBuilder.create.previewFallback.unavailable')
                       }}
                     </v-alert>
                   </div>
@@ -5252,7 +5255,7 @@ if (import.meta.client) {
       <v-dialog v-model="signatureDialogOpen" max-width="760">
         <v-card>
           <v-card-title class="d-flex align-center justify-space-between">
-            <span>Ajouter une signature</span>
+            <span>{{ t('resumeBuilder.create.signature.title') }}</span>
             <v-btn
               icon="mdi-close"
               variant="text"
@@ -5280,13 +5283,13 @@ if (import.meta.client) {
               prepend-icon="mdi-eraser"
               variant="text"
               @click="clearSignature"
-              >Effacer</v-btn
+               >{{ t('resumeBuilder.create.signature.clear') }}</v-btn
             >
             <v-btn
               color="primary"
               prepend-icon="mdi-content-save-outline"
               @click="saveSignature"
-              >Ajouter au CV</v-btn
+               >{{ t('resumeBuilder.create.signature.addToResume') }}</v-btn
             >
           </v-card-actions>
         </v-card>
