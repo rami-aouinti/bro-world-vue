@@ -7,7 +7,7 @@ import {
   RESUME_TEMPLATES,
   type ResumeTemplateVariant,
 } from '~/constants/resumeTemplates'
-import { resolveTemplateSkin, type ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
+import { resolveTemplateSkin, type ResumeLayoutMode, type ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
 import { RESUME_CONTENT_STYLE_OPTIONS, RESUME_SECTION_REGISTRY } from '~/constants/resumeSectionRegistry'
 import {
   useResumeDesignControls,
@@ -238,6 +238,10 @@ type PhotoShapeOption = {
   value: PhotoShape
   icon: string
 }
+type LayoutModeOption = {
+  label: string
+  value: ResumeLayoutMode
+}
 type LayoutSettings = {
   photoSize: number
   photoBorderWidth: number
@@ -252,6 +256,7 @@ type LayoutSettings = {
   sectionIconStyle: ResumeSectionIconStyleVariant
   iconSize: 's' | 'm' | 'l'
   iconColor: 'accent' | 'neutral'
+  layoutMode: ResumeLayoutMode
 }
 type AddSectionType =
   | 'profile'
@@ -316,6 +321,7 @@ const layoutSettings = reactive<LayoutSettings>({
   sectionIconStyle: 'outline',
   iconSize: 'm',
   iconColor: 'accent',
+  layoutMode: resolveTemplateSkin(DEFAULT_RESUME_TEMPLATE_ID).layoutMode,
 })
 const photoShapeOptions = [
   { label: 'Carré', value: 'square', icon: '□' },
@@ -325,6 +331,11 @@ const photoShapeOptions = [
   { label: 'Blob', value: 'soft-blob', icon: '⬭' },
   { label: 'Hex', value: 'hex', icon: '⬢' },
 ] as const satisfies ReadonlyArray<PhotoShapeOption>
+const layoutModeOptions = [
+  { label: 'Aside left', value: 'aside-left' },
+  { label: 'Aside right', value: 'aside-right' },
+  { label: 'No aside', value: 'no-aside' },
+] as const satisfies ReadonlyArray<LayoutModeOption>
 
 const templateFilters = [
   { label: 'All', value: 'all' },
@@ -2007,6 +2018,7 @@ const resumeRendererDesignState = computed(() => ({
   sectionIconStyleVariant: layoutSettings.sectionIconStyle,
   iconSizeVariant: layoutSettings.iconSize,
   iconColorMode: layoutSettings.iconColor,
+  layoutMode: layoutSettings.layoutMode,
   sidebarWidth: layoutSettings.sidebarWidth,
   photoSize: layoutSettings.photoSize,
   photoBorderWidth: layoutSettings.photoBorderWidth,
@@ -2611,9 +2623,10 @@ if (import.meta.client) {
   layoutSettings.sectionIconStyle = customization.style.sectionIconStyle
   layoutSettings.iconSize = customization.style.iconSize
   layoutSettings.iconColor = customization.style.iconColor
+  layoutSettings.layoutMode = customization.style.layoutMode
   sectionLayout.value = normalizeSectionLayout(customization.sectionOrder)
 
-  watch([selectedTheme, selectedPageBackground, selectedRounded, selectedTextStyle, () => layoutSettings.showSectionIcons, () => layoutSettings.showContactIcons, () => layoutSettings.sectionIconStyle, () => layoutSettings.iconSize, () => layoutSettings.iconColor], () => {
+  watch([selectedTheme, selectedPageBackground, selectedRounded, selectedTextStyle, () => layoutSettings.showSectionIcons, () => layoutSettings.showContactIcons, () => layoutSettings.sectionIconStyle, () => layoutSettings.iconSize, () => layoutSettings.iconColor, () => layoutSettings.layoutMode], () => {
     resumeDocumentState.value.customization = {
       ...resumeDocumentState.value.customization,
       style: {
@@ -2627,6 +2640,7 @@ if (import.meta.client) {
         sectionIconStyle: layoutSettings.sectionIconStyle,
         iconSize: layoutSettings.iconSize,
         iconColor: layoutSettings.iconColor,
+        layoutMode: layoutSettings.layoutMode,
       },
     }
     persist()
@@ -2673,6 +2687,7 @@ if (import.meta.client) {
                       :resume="resume"
                       :show-photo="templateSupportsPhoto"
                       :design-state="resumeRendererDesignState"
+                      :layout-mode="layoutSettings.layoutMode"
                       :photo-offset-x="resume.photoOffsetX"
                       :photo-offset-y="resume.photoOffsetY"
                       :photo-scale="resume.photoScale"
@@ -2823,6 +2838,16 @@ if (import.meta.client) {
                 density="comfortable"
                 hide-details
               />
+              <AppSelect
+                v-model="layoutSettings.layoutMode"
+                :items="layoutModeOptions"
+                item-title="label"
+                item-value="value"
+                label="Layout"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
             </v-card-text>
           </v-card>
         </v-menu>
@@ -2895,7 +2920,36 @@ if (import.meta.client) {
       </div>
     </div>
     <div class="builder-layout">
-      <section class="builder-form px-3 px-md-6 py-4">
+      <section class="builder-form builder-left-rail px-3 px-md-4 py-4">
+            <article class="form-section mb-4">
+              <header class="mb-3">
+                <h2>Templates</h2>
+                <p>Choisissez rapidement un modèle dans la colonne gauche.</p>
+              </header>
+              <AppSelect
+                v-model="selectedTemplateFilter"
+                :items="templateFilters"
+                item-title="label"
+                item-value="value"
+                label="Template filter"
+                density="comfortable"
+                hide-details
+                class="mb-3"
+              />
+              <div class="side-template-list">
+                <v-card
+                  v-for="template in filteredTemplates"
+                  :key="`left-rail-template-${template.id}`"
+                  class="template-card"
+                  :class="{ 'template-card--active': selectedTemplate === template.id }"
+                  variant="outlined"
+                  @click="applyTemplateFromToolbar(template.id)"
+                >
+                  <v-img :src="template.image" height="84" cover />
+                  <v-card-text class="py-2 text-caption">{{ template.title }}</v-card-text>
+                </v-card>
+              </div>
+            </article>
             <article class="form-section mb-2">
               <div class="mb-2">
                 <div class="photo-uploader">
@@ -3537,6 +3591,122 @@ if (import.meta.client) {
 
       </section>
 
+      <aside class="builder-preview-pane py-6 px-2">
+        <div class="builder-preview resume-preview-drawer">
+          <div class="resume-preview-wrapper">
+            <div
+              ref="previewExportRef"
+              class="preview-grid resume-preview-frame"
+              :class="[...previewDesignClasses, `photo-shape-${safePhotoShape}`]"
+              :style="previewStyle"
+            >
+              <div class="cv-preview-stage" :class="{ 'cv-preview-stage--bordered': selectedRounded !== 'none' }">
+                <div class="cv-page-shell" :class="previewDesignClasses">
+                  <template v-if="rendererReady">
+                    <ResumeRenderer
+                      :class="previewDesignClasses"
+                      :resume="resume"
+                      :show-photo="templateSupportsPhoto"
+                      :design-state="resumeRendererDesignState"
+                      :photo-offset-x="resume.photoOffsetX"
+                      :photo-offset-y="resume.photoOffsetY"
+                      :photo-scale="resume.photoScale"
+                      :photo-hidden="resume.photoHidden"
+                      :section-layout="orderedPreviewSections"
+                      :section-variants="sectionVariantByKey"
+                      :photo-shape-options="photoShapeOptions"
+                      :selected-photo-shape="safePhotoShape"
+                      :on-photo-click="onPreviewPhotoClick"
+                      :on-photo-shape-select="(shape) => selectedPhotoShape = shape"
+                      :template-skin="selectedTemplateSkin"
+                      editable
+                      @add-item="addItemToPreviewSection"
+                      @change-variant="setSectionVariant"
+                      @move-photo="movePhoto"
+                      @open-photo-picker="openPhotoPicker"
+                      @update:photo-size="layoutSettings.photoSize = $event"
+                      @update:photo-border-width="layoutSettings.photoBorderWidth = $event"
+                      @update:photo-position="layoutSettings.photoPosition = $event"
+                      @move-section="moveSection"
+                    />
+                  </template>
+                  <div v-else class="preview-fallback">
+                    <v-alert type="error" variant="tonal" density="comfortable" class="mb-3">
+                      {{ rendererError || 'La prévisualisation n’est pas disponible pour le moment.' }}
+                    </v-alert>
+                    <h2 class="text-h5 mb-2">{{ `${resume.firstName} ${resume.lastName}`.trim() || 'Votre nom' }}</h2>
+                    <p class="text-body-2 mb-4">{{ resume.role || 'Titre du poste' }}</p>
+                    <section
+                      v-for="section in previewFallbackSections"
+                      :key="`preview-fallback-${section.title}`"
+                      class="mb-3"
+                    >
+                      <h3 class="text-subtitle-2 mb-1">{{ section.title }}</h3>
+                      <ul class="pl-4">
+                        <li v-for="item in section.items" :key="`${section.title}-${item}`">
+                          {{ item }}
+                        </li>
+                      </ul>
+                    </section>
+                    <v-btn size="small" variant="outlined" prepend-icon="mdi-refresh" @click="resetRendererGuard">
+                      Réessayer le rendu
+                    </v-btn>
+                  </div>
+                  <div v-if="signatureDataUrl" class="signature-overlay">
+                    <img :src="signatureDataUrl" alt="Signature" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <aside class="builder-form builder-right-rail px-3 px-md-4 py-4">
+        <article class="form-section mb-4">
+          <header class="mb-3">
+            <h2>Template options</h2>
+            <p>Paramètres liés au modèle actif.</p>
+          </header>
+          <v-alert type="info" variant="tonal" density="compact" class="mb-3">
+            Modèle actif: <strong>{{ selectedTemplateCard?.title || selectedTemplate }}</strong>
+          </v-alert>
+          <AppSelect
+            v-model="layoutSettings.layoutMode"
+            :items="layoutModeOptions"
+            item-title="label"
+            item-value="value"
+            label="Layout"
+            density="comfortable"
+            hide-details
+            class="mb-3"
+          />
+          <AppSelect
+            v-model="selectedTextStyle"
+            :items="textStyleOptions"
+            item-title="label"
+            item-value="value"
+            label="Typography preset"
+            density="comfortable"
+            hide-details
+            class="mb-3"
+          />
+          <div class="side-template-list">
+            <v-card
+              v-for="template in filteredTemplates"
+              :key="`right-rail-template-${template.id}`"
+              class="template-card"
+              :class="{ 'template-card--active': selectedTemplate === template.id }"
+              variant="outlined"
+              @click="applyTemplateFromToolbar(template.id)"
+            >
+              <v-img :src="template.image" height="84" cover />
+              <v-card-text class="py-2 text-caption">{{ template.title }}</v-card-text>
+            </v-card>
+          </div>
+        </article>
+      </aside>
+
     </div>
 
     <v-dialog v-model="addSectionDialogOpen" max-width="760">
@@ -4025,6 +4195,7 @@ if (import.meta.client) {
                     :resume="resume"
                     :show-photo="templateSupportsPhoto"
                     :design-state="resumeRendererDesignState"
+                    :layout-mode="layoutSettings.layoutMode"
                     :photo-offset-x="resume.photoOffsetX"
                     :photo-offset-y="resume.photoOffsetY"
                     :photo-scale="resume.photoScale"
@@ -4221,11 +4392,15 @@ if (import.meta.client) {
 }
 
 .builder-layout {
-  display: block;
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(560px, 1.3fr) minmax(280px, 1fr);
+  align-items: start;
+  gap: 12px;
 }
 
 .builder-form {
-  border-right: 1px solid rgb(var(--v-theme-primary));
+  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-primary)) 24%, transparent);
+  border-radius: 14px;
   position: sticky;
   top: 60px;
   align-self: start;
@@ -4233,6 +4408,25 @@ if (import.meta.client) {
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
+}
+
+.builder-preview-pane {
+  position: sticky;
+  top: 60px;
+  align-self: start;
+  display: flex;
+  justify-content: center;
+}
+
+.builder-left-rail,
+.builder-right-rail {
+  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 94%, white);
+}
+
+.side-template-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
 }
 
 .completion-card {
@@ -4696,11 +4890,21 @@ if (import.meta.client) {
 }
 
 @media (max-width: 1120px) {
+  .builder-layout {
+    grid-template-columns: 1fr;
+  }
+
   .builder-form {
-    border-right: 0;
+    border: 0;
     position: static;
     max-height: none;
     overflow: visible;
+  }
+
+  .builder-preview-pane {
+    position: static;
+    top: auto;
+    padding-top: 0;
   }
 }
 

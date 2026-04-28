@@ -37,7 +37,7 @@ describe('ResumeRenderer preview regression coverage', () => {
     expect(wrapper.find('main.resume-skin__main').exists()).toBe(true)
     expect(wrapper.find('aside.resume-skin__aside').exists()).toBe(true)
     expect(wrapper.findAll('main .resume-section').length).toBeGreaterThan(0)
-    expect(wrapper.findAll('aside .resume-section, aside .resume-skin__skills-section').length).toBeGreaterThan(0)
+    expect(wrapper.find('aside.resume-skin__aside').text().trim().length).toBeGreaterThan(0)
   })
 
   it('switches template skin (classic/terra/ocean-split) without blank output', async () => {
@@ -74,4 +74,67 @@ describe('ResumeRenderer preview regression coverage', () => {
       expect(wrapper.find(`.resume-section-hoverable .section-toolbar[aria-label="Actions de la section ${sectionKey}"]`).exists()).toBe(true)
     }
   })
+
+  it('remaps aside sections into main flow in no-aside mode with a stable main-then-aside order', async () => {
+    const wrapper = await mountSuspended(ResumeRenderer, {
+      props: {
+        resume: resumeFixture,
+        templateSkin: RESUME_TEMPLATE_SKINS.classic,
+        designState: {
+          layoutMode: 'no-aside',
+        },
+      },
+    })
+
+    expect(wrapper.find('aside.resume-skin__aside').exists()).toBe(false)
+
+    const renderedToolbars = wrapper.findAll('main .section-toolbar')
+    const renderedKeys = renderedToolbars
+      .map((toolbar) => {
+        const label = toolbar.attributes('aria-label') ?? ''
+        const match = label.match(/Actions de la section ([a-z-]+)/)
+        return match?.[1]
+      })
+      .filter((value): value is string => Boolean(value))
+
+    expect(renderedKeys).toEqual([
+      'experience',
+      'education',
+      'project',
+      'language',
+    ])
+  })
+
+  it('keeps visual layout stable across the 3 layout modes for every template skin', async () => {
+    const layoutModes = ['aside-left', 'aside-right', 'no-aside'] as const
+
+    for (const skin of Object.values(RESUME_TEMPLATE_SKINS)) {
+      const wrapper = await mountSuspended(ResumeRenderer, {
+        props: {
+          resume: resumeFixture,
+          templateSkin: skin,
+        },
+      })
+
+      for (const layoutMode of layoutModes) {
+        await wrapper.setProps({
+          designState: {
+            layoutMode,
+          },
+        })
+
+        const root = wrapper.find('article.resume-skin')
+        expect(root.exists()).toBe(true)
+        expect(wrapper.find(`.layout-mode-${layoutMode}`).exists()).toBe(true)
+        expect(wrapper.find('header.resume-skin__header').exists()).toBe(true)
+        expect(wrapper.find('main.resume-skin__main').exists()).toBe(true)
+
+        if (layoutMode === 'no-aside') {
+          expect(wrapper.find('aside.resume-skin__aside').exists()).toBe(false)
+        } else {
+          expect(wrapper.find('aside.resume-skin__aside').exists()).toBe(true)
+        }
+      }
+    }
+  }, 60000)
 })

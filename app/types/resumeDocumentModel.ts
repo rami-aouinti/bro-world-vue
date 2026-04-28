@@ -1,5 +1,5 @@
 import type { PageBackgroundId, RoundedOptionId, Typography } from '~/constants/resumeDesign'
-import type { ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
+import type { ResumeLayoutMode, ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
 import type { ResumeTemplateVariant } from '~/constants/resumeTemplates'
 
 export type ResumeLayoutDensity = 'compact' | 'comfortable'
@@ -71,6 +71,7 @@ export type ResumeStylePreferences = {
   sectionIconStyle: ResumeSectionIconStyleVariant
   iconSize: 's' | 'm' | 'l'
   iconColor: 'accent' | 'neutral'
+  layoutMode: ResumeLayoutMode
 }
 
 export type ResumeDocumentModel = {
