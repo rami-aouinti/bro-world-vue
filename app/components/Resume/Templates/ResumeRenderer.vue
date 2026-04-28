@@ -36,6 +36,23 @@ type SectionLayoutEntry<
   variant: SectionLayoutVariant[K]
 }
 
+type ResumeRendererDesignState = {
+  themeTokens?: Record<string, string>
+  roundedClass?: string
+  textStyleClass?: string
+  density?: 'compact' | 'comfortable'
+  dividerStyle?: 'none' | 'line' | 'thick'
+  sidebarWidth?: number
+  photoSize?: number
+  photoBorderWidth?: number
+  photoPosition?: 'left' | 'center' | 'right'
+  showSectionIcons?: boolean
+  showContactIcons?: boolean
+  sectionIconStyleVariant?: ResumeSectionIconStyleVariant
+  iconSizeVariant?: 's' | 'm' | 'l'
+  iconColorMode?: 'accent' | 'neutral'
+}
+
 const props = withDefaults(
   defineProps<{
     resume: any
@@ -47,6 +64,7 @@ const props = withDefaults(
     onPhotoShapeSelect?: (shape: string) => void
     sectionLayout?: SectionLayoutEntry[]
     sectionVariants?: Partial<Record<ResumeSectionLayoutKey, string>>
+    designState?: ResumeRendererDesignState
     themeTokens?: Record<string, string>
     roundedClass?: string
     textStyleClass?: string
@@ -76,6 +94,7 @@ const props = withDefaults(
     onPhotoShapeSelect: undefined,
     sectionLayout: () => [],
     sectionVariants: () => ({}),
+    designState: undefined,
     themeTokens: () => ({}),
     roundedClass: 'radius-md',
     textStyleClass: 'text-style-clean',
@@ -148,34 +167,50 @@ const asideSections = computed(() =>
 const hasRenderedAvatar = computed(() =>
   Boolean(props.showPhoto && props.resume?.photoUrl && !props.photoHidden),
 )
+const resolvedDesignState = computed(() => ({
+  themeTokens: props.designState?.themeTokens ?? props.themeTokens,
+  roundedClass: props.designState?.roundedClass ?? props.roundedClass,
+  textStyleClass: props.designState?.textStyleClass ?? props.textStyleClass,
+  density: props.designState?.density ?? props.density,
+  dividerStyle: props.designState?.dividerStyle ?? props.dividerStyle,
+  sidebarWidth: props.designState?.sidebarWidth ?? props.sidebarWidth,
+  photoSize: props.designState?.photoSize ?? props.photoSize,
+  photoBorderWidth: props.designState?.photoBorderWidth ?? props.photoBorderWidth,
+  photoPosition: props.designState?.photoPosition ?? props.photoPosition,
+  showSectionIcons: props.designState?.showSectionIcons ?? props.showSectionIcons,
+  showContactIcons: props.designState?.showContactIcons ?? props.showContactIcons,
+  sectionIconStyleVariant: props.designState?.sectionIconStyleVariant ?? props.sectionIconStyleVariant,
+  iconSizeVariant: props.designState?.iconSizeVariant ?? props.iconSizeVariant,
+  iconColorMode: props.designState?.iconColorMode ?? props.iconColorMode,
+}))
 const rootDesignClasses = computed(() => [
-  props.roundedClass,
-  props.textStyleClass,
-  `density-${props.density}`,
-  `divider-${props.dividerStyle}`,
-  `photo-position-${props.photoPosition}`,
+  resolvedDesignState.value.roundedClass,
+  resolvedDesignState.value.textStyleClass,
+  `density-${resolvedDesignState.value.density}`,
+  `divider-${resolvedDesignState.value.dividerStyle}`,
+  `photo-position-${resolvedDesignState.value.photoPosition}`,
 ])
 const layoutStyle = computed(() => ({
-  '--resume-sidebar-width': `${props.sidebarWidth}px`,
+  '--resume-sidebar-width': `${resolvedDesignState.value.sidebarWidth}px`,
 }))
 const avatarStyle = computed(() => ({
-  width: `${props.photoSize}px`,
-  height: `${props.photoSize}px`,
-  borderWidth: `${props.photoBorderWidth}px`,
+  width: `${resolvedDesignState.value.photoSize}px`,
+  height: `${resolvedDesignState.value.photoSize}px`,
+  borderWidth: `${resolvedDesignState.value.photoBorderWidth}px`,
 }))
 const avatarImageStyle = computed(() => ({
   transform: `translate(${props.photoOffsetX}px, ${props.photoOffsetY}px) scale(${props.photoScale})`,
   transformOrigin: 'center',
 }))
 const sectionLayoutDensity = computed<'compact' | 'normal' | 'spacious'>(() =>
-  props.density === 'compact' ? 'compact' : 'normal',
+  resolvedDesignState.value.density === 'compact' ? 'compact' : 'normal',
 )
 const shouldShowSectionIcons = computed(() =>
-  props.showSectionIcons ?? props.templateSkin.showSectionIcons,
+  resolvedDesignState.value.showSectionIcons ?? props.templateSkin.showSectionIcons,
 )
 const resolvedSectionIconStyle = computed(() => {
   const style = props.templateSkin.sectionIconStyle
-  const variant = props.sectionIconStyleVariant ?? style.variant
+  const variant = resolvedDesignState.value.sectionIconStyleVariant ?? style.variant
   const iconSizeByVariant = { s: 16, m: 18, l: 22 } as const
   const iconColorByMode = {
     accent: 'var(--cv-accent)',
@@ -185,16 +220,16 @@ const resolvedSectionIconStyle = computed(() => {
   return {
     ...style,
     variant,
-    size: iconSizeByVariant[props.iconSizeVariant] ?? style.size,
-    color: iconColorByMode[props.iconColorMode] ?? style.color,
+    size: iconSizeByVariant[resolvedDesignState.value.iconSizeVariant] ?? style.size,
+    color: iconColorByMode[resolvedDesignState.value.iconColorMode] ?? style.color,
   }
 })
 const contactIconSize = computed(() => {
   const sizeByVariant = { s: 14, m: 16, l: 20 } as const
-  return sizeByVariant[props.iconSizeVariant] ?? sizeByVariant.m
+  return sizeByVariant[resolvedDesignState.value.iconSizeVariant] ?? sizeByVariant.m
 })
 const contactIconColor = computed(() =>
-  props.iconColorMode === 'neutral' ? 'var(--cv-secondary)' : 'var(--cv-accent)',
+  resolvedDesignState.value.iconColorMode === 'neutral' ? 'var(--cv-secondary)' : 'var(--cv-accent)',
 )
 const sectionIconCssVars = computed<Record<string, string>>(() => ({
   '--resume-section-icon-size': `${resolvedSectionIconStyle.value.size}px`,
@@ -244,7 +279,7 @@ function canMove(sectionKey: ResumeSectionLayoutKey, direction: 'up' | 'down') {
 
 function mergedSectionTokens(sectionKey: ResumeEditableSectionKey) {
   return {
-    ...props.themeTokens,
+    ...resolvedDesignState.value.themeTokens,
     ...(props.templateSkin.themeTokens ?? {}),
     ...(sectionKey === 'skill' ? {} : (props.templateSkin.sectionTokens?.[sectionKey] ?? {})),
   }
