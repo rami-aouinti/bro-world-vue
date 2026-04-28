@@ -2590,18 +2590,8 @@ if (import.meta.client) {
   <div>
     <AppPageDrawers>
       <template #left>
-        <h3>{{ t('resumeBuilder.index.heroTitle') }}</h3>
-        <p class="hero-subtitle">{{ t('resumeBuilder.index.heroSubtitle') }}</p>
-        <v-btn color="primary" size="large" to="/resume/create" class="mt-3">
-          {{ t('resumeBuilder.index.journey.steps.template.cta') }}
-        </v-btn>
       </template>
       <template #right>
-        <h3>{{ t('resumeBuilder.index.heroTitle') }}</h3>
-        <p class="hero-subtitle">{{ t('resumeBuilder.index.heroSubtitle') }}</p>
-        <v-btn color="primary" size="large" to="/resume/create" class="mt-3">
-          {{ t('resumeBuilder.index.journey.steps.template.cta') }}
-        </v-btn>
       </template>
     </AppPageDrawers>
     <v-container fluid>
