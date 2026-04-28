@@ -211,7 +211,7 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
 .entry {
   margin-bottom: var(--entry-gap, var(--cv-space-4));
   display: grid;
-  grid-template-columns: minmax(0, var(--resume-date-column-width, 140px)) minmax(0, 1fr);
+  grid-template-columns: minmax(140px, var(--resume-date-column-width, 140px)) minmax(0, 1fr);
   column-gap: var(--cv-space-4);
   align-items: start;
   position: relative;
@@ -225,6 +225,7 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
 }
 .content-column {
   position: relative;
+  min-width: 0;
 }
 .entry-heading {
   display: flex;
@@ -242,7 +243,7 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
 
 /* Classic variant */
 .education--classic .entry {
-  grid-template-columns: minmax(0, var(--resume-date-column-width, 140px)) minmax(0, 1fr);
+  grid-template-columns: minmax(140px, var(--resume-date-column-width, 140px)) minmax(0, 1fr);
 }
 .education--classic .content-column {
   border-left: var(--rs-entry-border-left, none);
@@ -288,13 +289,19 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
     grid-template-columns: minmax(0, 1fr);
   }
 }
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .entry {
     grid-template-columns: minmax(0, 1fr);
     row-gap: var(--cv-space-2);
   }
 }
 
+.entry li,
+.entry p,
+.entry strong {
+  max-width: none;
+  min-width: 0;
+}
 .density-compact { --entry-gap: calc(var(--cv-space-2) + var(--cv-space-1) / 2); }
 .density-normal { --entry-gap: var(--cv-space-4); }
 .density-spacious { --entry-gap: calc(var(--cv-space-4) + var(--cv-space-2) - var(--cv-space-1) / 2); }
