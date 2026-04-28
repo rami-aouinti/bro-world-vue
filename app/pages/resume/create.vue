@@ -110,7 +110,6 @@ type StructuredResumeResponse = {
     hobbies?: string[]
   }
 }
-
 type ResumeModel = {
   role: string
   firstName: string
