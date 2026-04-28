@@ -222,6 +222,7 @@ type Template = {
   useTimeline: boolean
   variant: ResumeTemplateVariant
 }
+type TemplateQuickFilter = 'all' | 'photo' | 'two-column' | 'ats' | 'free' | 'timeline'
 
 type LevelInputMode = 'percent' | 'stars'
 type PhotoShape = 'square' | 'rounded' | 'circle' | 'portrait-card' | 'soft-blob' | 'hex'
@@ -623,6 +624,29 @@ let importProgressTimer: ReturnType<typeof setInterval> | null = null
 const templatesByDocumentType = computed(() =>
   templates.filter((template) => template.documentType === selectedDocumentType.value),
 )
+const templateQuickFilter = ref<TemplateQuickFilter>('all')
+const templateQuickFilterOptions: Array<{ label: string; value: TemplateQuickFilter }> = [
+  { label: 'Tous', value: 'all' },
+  { label: 'Photo', value: 'photo' },
+  { label: '2 colonnes', value: 'two-column' },
+  { label: 'ATS', value: 'ats' },
+  { label: 'Gratuit', value: 'free' },
+  { label: 'Timeline', value: 'timeline' },
+]
+const filteredTemplatesByDrawer = computed(() => {
+  if (templateQuickFilter.value === 'all') {
+    return templatesByDocumentType.value
+  }
+
+  return templatesByDocumentType.value.filter((template) => {
+    if (templateQuickFilter.value === 'photo') return template.hasPhoto
+    if (templateQuickFilter.value === 'two-column') return template.isTwoColumn
+    if (templateQuickFilter.value === 'ats') return template.isAts
+    if (templateQuickFilter.value === 'free') return template.isFree
+    if (templateQuickFilter.value === 'timeline') return template.useTimeline
+    return true
+  })
+})
 
 const selectedTemplateConfig = computed(
   () =>
@@ -630,6 +654,17 @@ const selectedTemplateConfig = computed(
     templatesByDocumentType.value[0] ??
     templates[0],
 )
+
+function applyTemplateSelection(templateId: string) {
+  selectedTemplate.value = templateId
+}
+
+function onTemplateQuickFilterChange(value: unknown) {
+  const nextValue = typeof value === 'string' ? value : 'all'
+  templateQuickFilter.value = templateQuickFilterOptions.some(option => option.value === nextValue as TemplateQuickFilter)
+    ? (nextValue as TemplateQuickFilter)
+    : 'all'
+}
 
 function hasRemoteSectionContent(sections?: RemoteResumeSection[]) {
   return Array.isArray(sections) && sections.some(section =>
@@ -2549,74 +2584,73 @@ if (import.meta.client) {
 <template>
   <v-container fluid class="resume-create pa-0">
     <AppPageDrawers>
-      <template #right>
-        <div class="builder-preview resume-preview-drawer py-6 px-2">
-          <div class="resume-preview-wrapper">
-            <div
-              ref="previewExportRef"
-              class="preview-grid resume-preview-frame"
-              :class="[...previewDesignClasses, `photo-shape-${safePhotoShape}`]"
-              :style="previewStyle"
+      <template #left>
+        <div class="template-drawer py-4 px-2">
+          <h3 class="text-subtitle-1 mb-2">Templates</h3>
+          <v-chip-group
+            :model-value="templateQuickFilter"
+            selected-class="text-primary"
+            column
+            class="mb-3"
+            @update:model-value="onTemplateQuickFilterChange"
+          >
+            <v-chip
+              v-for="filterOption in templateQuickFilterOptions"
+              :key="`left-template-filter-${filterOption.value}`"
+              :value="filterOption.value"
+              size="small"
+              label
             >
-              <div class="cv-preview-stage" :class="{ 'cv-preview-stage--bordered': selectedRounded !== 'none' }">
-                <div class="cv-page-shell" :class="previewDesignClasses">
-                  <template v-if="rendererReady">
-                    <ResumeRenderer
-                      :class="previewDesignClasses"
-                      :resume="resume"
-                      :show-photo="templateSupportsPhoto"
-                      :design-state="resumeRendererDesignState"
-                      :layout-mode="layoutSettings.layoutMode"
-                      :photo-offset-x="resume.photoOffsetX"
-                      :photo-offset-y="resume.photoOffsetY"
-                      :photo-scale="resume.photoScale"
-                      :photo-hidden="resume.photoHidden"
-                      :section-layout="orderedPreviewSections"
-                      :section-variants="sectionVariantByKey"
-                      :photo-shape-options="photoShapeOptions"
-                      :selected-photo-shape="safePhotoShape"
-                      :on-photo-click="onPreviewPhotoClick"
-                      :on-photo-shape-select="(shape) => selectedPhotoShape = shape"
-                      :template-skin="selectedTemplateSkin"
-                      editable
-                      @add-item="addItemToPreviewSection"
-                      @change-variant="setSectionVariant"
-                      @move-photo="movePhoto"
-                      @open-photo-picker="openPhotoPicker"
-                      @update:photo-size="layoutSettings.photoSize = $event"
-                      @update:photo-border-width="layoutSettings.photoBorderWidth = $event"
-                      @update:photo-position="layoutSettings.photoPosition = $event"
-                      @move-section="moveSection"
-                    />
-                  </template>
-                  <div v-else class="preview-fallback">
-                    <v-alert type="error" variant="tonal" density="comfortable" class="mb-3">
-                      {{ rendererError || 'La prévisualisation n’est pas disponible pour le moment.' }}
-                    </v-alert>
-                    <h2 class="text-h5 mb-2">{{ `${resume.firstName} ${resume.lastName}`.trim() || 'Votre nom' }}</h2>
-                    <p class="text-body-2 mb-4">{{ resume.role || 'Titre du poste' }}</p>
-                    <section
-                      v-for="section in previewFallbackSections"
-                      :key="`preview-fallback-${section.title}`"
-                      class="mb-3"
-                    >
-                      <h3 class="text-subtitle-2 mb-1">{{ section.title }}</h3>
-                      <ul class="pl-4">
-                        <li v-for="item in section.items" :key="`${section.title}-${item}`">
-                          {{ item }}
-                        </li>
-                      </ul>
-                    </section>
-                    <v-btn size="small" variant="outlined" prepend-icon="mdi-refresh" @click="resetRendererGuard">
-                      Réessayer le rendu
-                    </v-btn>
-                  </div>
-                  <div v-if="signatureDataUrl" class="signature-overlay">
-                    <img :src="signatureDataUrl" alt="Signature" />
-                  </div>
-                </div>
-              </div>
-            </div>
+              {{ filterOption.label }}
+            </v-chip>
+          </v-chip-group>
+          <div class="template-drawer__grid">
+            <button
+              v-for="templateCard in filteredTemplatesByDrawer"
+              :key="`left-template-card-${templateCard.id}`"
+              type="button"
+              class="template-drawer__item"
+              :class="{ 'template-drawer__item--active': selectedTemplate === templateCard.id }"
+              @click="applyTemplateSelection(templateCard.id)"
+            >
+              <v-img :src="templateCard.image" :alt="templateCard.title" height="110" cover class="template-drawer__thumb" />
+              <span class="template-drawer__label">{{ templateCard.title }}</span>
+            </button>
+          </div>
+        </div>
+      </template>
+      <template #right>
+        <div class="template-drawer py-4 px-2">
+          <h3 class="text-subtitle-1 mb-2">Templates</h3>
+          <v-chip-group
+            :model-value="templateQuickFilter"
+            selected-class="text-primary"
+            column
+            class="mb-3"
+            @update:model-value="onTemplateQuickFilterChange"
+          >
+            <v-chip
+              v-for="filterOption in templateQuickFilterOptions"
+              :key="`right-template-filter-${filterOption.value}`"
+              :value="filterOption.value"
+              size="small"
+              label
+            >
+              {{ filterOption.label }}
+            </v-chip>
+          </v-chip-group>
+          <div class="template-drawer__grid">
+            <button
+              v-for="templateCard in filteredTemplatesByDrawer"
+              :key="`right-template-card-${templateCard.id}`"
+              type="button"
+              class="template-drawer__item"
+              :class="{ 'template-drawer__item--active': selectedTemplate === templateCard.id }"
+              @click="applyTemplateSelection(templateCard.id)"
+            >
+              <v-img :src="templateCard.image" :alt="templateCard.title" height="110" cover class="template-drawer__thumb" />
+              <span class="template-drawer__label">{{ templateCard.title }}</span>
+            </button>
           </div>
         </div>
       </template>
@@ -4619,6 +4653,42 @@ if (import.meta.client) {
 .preview-grid :deep(.resume-template),
 .preview-grid :deep(.template-shell) {
   border-radius: var(--cv-radius);
+}
+
+.template-drawer__grid {
+  display: grid;
+  gap: 10px;
+}
+
+.template-drawer__item {
+  width: 100%;
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.2);
+  border-radius: 10px;
+  padding: 6px;
+  background: rgba(var(--v-theme-surface), 0.92);
+  text-align: left;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.template-drawer__item:hover {
+  transform: translateY(-1px);
+  border-color: rgba(var(--v-theme-primary), 0.45);
+}
+
+.template-drawer__item--active {
+  border-color: rgb(var(--v-theme-primary));
+  box-shadow: 0 0 0 1px rgba(var(--v-theme-primary), 0.25);
+}
+
+.template-drawer__thumb {
+  border-radius: 8px;
+}
+
+.template-drawer__label {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
 }
 
 @media (max-width: 1120px) {
