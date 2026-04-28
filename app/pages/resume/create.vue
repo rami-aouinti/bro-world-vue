@@ -13,7 +13,7 @@ import {
   useResumeDesignControls,
 } from '~/composables/useResumeDesignControls'
 import { useResumeDocumentState } from '~/composables/useResumeDocumentState'
-import { fromApiResumeToBuilderModel } from '~/utils/resumeApiMapper'
+import { fromApiResumeToBuilderModel, fromBuilderModelToApiPayload } from '~/utils/resumeApiMapper'
 import { levelToStars, starsToPercent } from '~/utils/resumeLanguageLevel'
 import ResumeRenderer from '~/components/Resume/Templates/ResumeRenderer.vue'
 import {
@@ -765,9 +765,16 @@ const safePhotoShape = computed<PhotoShape>(() => (
 let aiElapsedTimer: ReturnType<typeof setInterval> | null = null
 const { t } = useI18n()
 const { loggedIn, fetch: refreshSession } = useUserSession()
+const { scopedRecruitPath } = useRecruitScopedApi()
 const remoteResumes = ref<RemoteResume[]>([])
 const selectedRemoteResumeId = ref<string | null>(null)
 const loadedFromApi = ref(false)
+const saveModalOpen = ref(false)
+const saveMode = ref<'replace' | 'create'>('replace')
+const saveLoading = ref(false)
+const saveStatus = ref<'idle' | 'success' | 'error'>('idle')
+const saveStatusMessage = ref('')
+const replaceConfirmStep = ref(false)
 const loginDialogOpen = ref(false)
 const loginLoading = ref(false)
 const pendingPdfDownload = ref(false)
@@ -779,6 +786,16 @@ const sectionLayout = ref<SectionLayoutEntry[]>(
 const sectionItemDialogOpen = ref(false)
 const activeSectionKey = ref<ResumePreviewSectionKey>('experience')
 const activeVariant = ref<SectionLayoutVariant[ResumePreviewSectionKey]>('detailed')
+
+watch(saveMode, () => {
+  replaceConfirmStep.value = false
+  saveStatus.value = 'idle'
+  saveStatusMessage.value = ''
+})
+
+watch(selectedRemoteResumeId, () => {
+  replaceConfirmStep.value = false
+})
 // single source of truth: canonical section draft factories (used for init + reset)
 const createProfileDraft = () => ({ profile: '' })
 const createExperienceDraft = () => ({
@@ -2289,6 +2306,126 @@ function buildReviewPayload() {
   }
 }
 
+function buildResumeSavePayload() {
+  return fromBuilderModelToApiPayload({
+    firstName: resume.firstName,
+    lastName: resume.lastName,
+    email: resume.email,
+    phone: resume.phone,
+    city: resume.city,
+    country: resume.country,
+    experiences: resume.experiences.map(experience => ({
+      role: experience.role,
+      company: experience.company,
+      city: experience.city,
+      start: experience.start,
+      end: experience.end,
+      bullets: experience.bullets,
+    })),
+    education: resume.education.map(education => ({
+      degree: education.degree,
+      school: education.school,
+      city: education.city,
+      start: education.start,
+      end: education.end,
+      note: education.note,
+    })),
+    skills: resume.skills.map(skill => ({
+      name: skill.name,
+      level: skill.level,
+    })),
+    languages: resume.languages.map(language => ({
+      name: language.name,
+      level: language.level,
+      countryCode: language.countryCode,
+      flag: language.flag,
+    })),
+    courses: resume.courses.map(course => ({
+      title: course.title,
+      school: course.school,
+      start: course.start,
+      end: course.end,
+    })),
+    projects: resume.projects.map(project => ({
+      name: project.name,
+      summary: project.summary,
+      repositoryUrl: project.repositoryUrl,
+    })),
+    references: resume.references.map(reference => ({
+      name: reference.name,
+      company: reference.company,
+      email: reference.email,
+      phone: reference.phone,
+    })),
+    hobbies: [...resume.hobbies],
+    documentUrl: null,
+    resumeInformation: {
+      fullName: `${resume.firstName} ${resume.lastName}`.trim(),
+      email: resume.email,
+      phone: resume.phone,
+      address: [resume.city, resume.country].filter(Boolean).join(', '),
+    },
+  })
+}
+
+function openSaveModal() {
+  saveMode.value = selectedRemoteResumeId.value ? 'replace' : 'create'
+  saveStatus.value = 'idle'
+  saveStatusMessage.value = ''
+  replaceConfirmStep.value = false
+  saveModalOpen.value = true
+}
+
+async function submitSaveAction() {
+  saveLoading.value = true
+  saveStatus.value = 'idle'
+  saveStatusMessage.value = ''
+
+  try {
+    const payload = buildResumeSavePayload()
+
+    if (saveMode.value === 'replace') {
+      if (!selectedRemoteResumeId.value) {
+        saveStatus.value = 'error'
+        saveStatusMessage.value = 'Veuillez sélectionner un CV à remplacer.'
+        return
+      }
+
+      await privateApi.request(
+        scopedRecruitPath(`/private/me/resumes/${encodeURIComponent(selectedRemoteResumeId.value)}`),
+        {
+          method: 'PATCH',
+          body: payload,
+        },
+      )
+      saveStatus.value = 'success'
+      saveStatusMessage.value = 'CV remplacé avec succès.'
+      replaceConfirmStep.value = false
+      return
+    }
+
+    const createdResume = await privateApi.request<{ id?: string }>(
+      scopedRecruitPath('/resumes'),
+      {
+        method: 'POST',
+        body: payload,
+      },
+    )
+    if (createdResume?.id) {
+      selectedRemoteResumeId.value = createdResume.id
+    }
+    saveStatus.value = 'success'
+    saveStatusMessage.value = 'Nouveau CV créé avec succès.'
+  } catch {
+    saveStatus.value = 'error'
+    saveStatusMessage.value = saveMode.value === 'replace'
+      ? 'Échec du remplacement du CV.'
+      : 'Échec de création du nouveau CV.'
+  } finally {
+    saveLoading.value = false
+  }
+}
+
 async function handlePdfImport(event: Event) {
   const input = event.target as HTMLInputElement
   const file = input.files?.[0]
@@ -2489,7 +2626,7 @@ if (import.meta.client) {
   <v-container fluid class="resume-create pa-0">
     <div class="local-toolbar-actions">
       <div class="local-toolbar-actions__row">
-        <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" />
+        <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" @click="openSaveModal" />
         <v-btn class="local-toolbar-btn" color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview" />
         <v-btn class="local-toolbar-btn" color="info" size="small" variant="outlined" icon="mdi-download" @click="onDownloadPdfClick" />
         <v-menu v-model="toolbarTemplateMenuOpen" location="bottom center" origin="top center">
@@ -3992,6 +4129,73 @@ if (import.meta.client) {
         <v-card-actions class="justify-end">
           <v-btn variant="text" @click="sectionItemDialogOpen = false">Cancel</v-btn>
           <v-btn color="primary" prepend-icon="mdi-content-save-outline" @click="submitSectionItemDialog">Save item</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="saveModalOpen" max-width="620">
+      <v-card>
+        <v-card-title class="d-flex align-center justify-space-between">
+          <span>Sauvegarder le CV</span>
+          <v-btn icon="mdi-close" variant="text" :disabled="saveLoading" @click="saveModalOpen = false" />
+        </v-card-title>
+        <v-divider />
+        <v-card-text class="d-grid ga-4">
+          <v-radio-group v-model="saveMode" :disabled="saveLoading" hide-details>
+            <v-radio value="replace" label="Option A: Remplacer un CV existant" />
+            <v-radio value="create" label="Option B: Créer un nouveau CV" />
+          </v-radio-group>
+
+          <div v-if="saveMode === 'replace'" class="d-grid ga-2">
+            <v-select
+              v-model="selectedRemoteResumeId"
+              :items="remoteResumes.map((item) => ({ title: item.resumeInformation?.fullName || item.id, value: item.id }))"
+              item-title="title"
+              item-value="value"
+              label="CV à remplacer"
+              variant="outlined"
+              :disabled="saveLoading"
+              hide-details
+            />
+            <v-alert
+              v-if="replaceConfirmStep"
+              type="warning"
+              variant="tonal"
+              density="comfortable"
+            >
+              Cette action remplacera définitivement le CV sélectionné.
+            </v-alert>
+          </div>
+
+          <v-progress-linear
+            v-if="saveLoading"
+            indeterminate
+            color="primary"
+          />
+
+          <v-alert v-if="saveStatus !== 'idle'" :type="saveStatus" variant="tonal" density="comfortable">
+            {{ saveStatusMessage }}
+          </v-alert>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn variant="text" :disabled="saveLoading" @click="saveModalOpen = false">Annuler</v-btn>
+          <v-btn
+            v-if="saveMode === 'replace' && !replaceConfirmStep"
+            color="warning"
+            :disabled="!selectedRemoteResumeId || saveLoading"
+            @click="replaceConfirmStep = true"
+          >
+            Confirmer le remplacement
+          </v-btn>
+          <v-btn
+            v-else
+            color="primary"
+            :loading="saveLoading"
+            :disabled="saveMode === 'replace' && !selectedRemoteResumeId"
+            @click="submitSaveAction"
+          >
+            {{ saveMode === 'replace' ? 'Remplacer' : 'Créer' }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
