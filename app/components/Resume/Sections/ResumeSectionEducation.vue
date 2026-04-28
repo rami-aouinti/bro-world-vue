@@ -274,20 +274,6 @@ function removeEducationItem(index: number) {
               >
             </h4>
           </div>
-          <p
-            v-if="item.note && !resolvePoints(item).length"
-            class="text-dark editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateText(
-                  `education.${index}.note`,
-                  (event.target as HTMLElement).innerText,
-                )
-            "
-          >
-            {{ item.note }}
-          </p>
           <template v-if="resolveContentStyle(item) === 'timeline'">
             <div class="timeline-block">
               <div

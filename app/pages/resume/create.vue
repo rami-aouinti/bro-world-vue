@@ -3061,7 +3061,7 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
       city: '',
       start: normalizeDateLabel(education.startDate),
       end: normalizeDateLabel(education.endDate),
-      note: String(education.description || ''),
+      note: '',
       contentStyle: 'points',
       points: parseMultilineList(String(education.description || '')),
     }))
