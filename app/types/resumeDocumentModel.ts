@@ -66,7 +66,7 @@ export type ResumeStylePreferences = {
   density: ResumeLayoutDensity
   radius: RoundedOptionId
   typography: Typography
-  photoPosition: 'left' | 'center' | 'right'
+  photoPosition: 'left' | 'right'
   asideWidth: number
   showSectionIcons: boolean
   showContactIcons: boolean

@@ -272,7 +272,7 @@ type PhotoShapeOption = {
 type LayoutSettings = {
   photoSize: number
   photoBorderWidth: number
-  photoPosition: 'left' | 'center' | 'right'
+  photoPosition: 'left' | 'right'
   sidebarWidth: number
   sectionDividerStyle: 'none' | 'line' | 'thick'
   headingCase: 'normal' | 'uppercase'
@@ -332,7 +332,7 @@ const createDefaultDesignSettings = (): DesignSettings => ({
   layout: {
     photoSize: 140,
     photoBorderWidth: 6,
-    photoPosition: 'center',
+    photoPosition: 'right',
     sidebarWidth: 280,
     sectionDividerStyle: 'line',
     headingCase: 'normal',
@@ -397,7 +397,6 @@ const layoutModeOptions = [
 ] as const
 const photoPositionOptions = [
   { label: 'Left', value: 'left' },
-  { label: 'Center', value: 'center' },
   { label: 'Right', value: 'right' },
 ] as const
 const sectionIconStyleOptions = [
@@ -3570,6 +3569,7 @@ if (import.meta.client) {
                           @change-variant="setSectionVariant"
                           @move-photo="movePhoto"
                           @open-photo-picker="openPhotoPicker"
+                          @remove-photo="clearPhoto"
                           @update:photo-size="layoutSettings.photoSize = $event"
                           @update:photo-border-width="
                             layoutSettings.photoBorderWidth = $event
@@ -4532,6 +4532,7 @@ if (import.meta.client) {
                       @change-variant="setSectionVariant"
                       @move-photo="movePhoto"
                       @open-photo-picker="openPhotoPicker"
+                      @remove-photo="clearPhoto"
                       @update:photo-size="layoutSettings.photoSize = $event"
                       @update:photo-border-width="
                         layoutSettings.photoBorderWidth = $event
@@ -4559,6 +4560,14 @@ if (import.meta.client) {
           </v-card-text>
         </v-card>
       </v-dialog>
+
+      <input
+        ref="uploadInput"
+        type="file"
+        accept="image/png,image/jpeg,image/webp,image/svg+xml"
+        class="d-none"
+        @change="onPhotoSelected"
+      />
 
       <v-dialog v-model="photoDialogOpen" max-width="520">
         <v-card>

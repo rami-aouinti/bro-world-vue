@@ -56,7 +56,7 @@ function normalizeModel(source: unknown, templateVariant: ResumeTemplateVariant)
         density: 'comfortable',
         radius: 'md',
         typography: 'clean',
-        photoPosition: 'center',
+        photoPosition: 'right',
         asideWidth: 280,
         showSectionIcons: true,
         showContactIcons: true,
@@ -81,7 +81,7 @@ function normalizeModel(source: unknown, templateVariant: ResumeTemplateVariant)
       density: style.density === 'compact' ? 'compact' : 'comfortable',
       radius: (style.radius as ResumeDocumentModel['style']['radius']) ?? 'md',
       typography: (style.typography as ResumeDocumentModel['style']['typography']) ?? 'clean',
-      photoPosition: style.photoPosition === 'left' || style.photoPosition === 'right' ? style.photoPosition : 'center',
+      photoPosition: style.photoPosition === 'left' ? 'left' : 'right',
       asideWidth: typeof style.asideWidth === 'number' && Number.isFinite(style.asideWidth)
         ? Math.min(380, Math.max(220, Math.round(style.asideWidth)))
         : 280,
