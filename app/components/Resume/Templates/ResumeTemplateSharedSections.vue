@@ -180,42 +180,6 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
       </div>
     </div>
 
-    <div v-if="isVisible('projects') && resume.projects?.length" class="resume-section-hoverable shared-section">
-      <SectionToolbar
-        section-key="project"
-        :variants="[
-          { label: 'List', value: 'list' },
-          { label: 'Cards', value: 'cards' },
-          { label: 'Two columns', value: 'two-column' },
-        ]"
-        :current-variant="projectVariant"
-        :can-move-up="canMove('project', 'up')"
-        :can-move-down="canMove('project', 'down')"
-        @add-item="() => emit('add-item', 'project')"
-        @change-variant="(_, variant) => emit('change-variant', 'project', variant)"
-        @move-up="() => emit('move-section', 'project', 'up')"
-        @move-down="() => emit('move-section', 'project', 'down')"
-      />
-      <h3 class="cv-heading-section cv-divider-bottom text-dark">Projects</h3>
-      <ul v-if="projectVariant === 'list'">
-        <li v-for="(project, index) in resume.projects" :key="`${project.name}-${index}`">
-          <strong class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</strong>
-          <p class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
-        </li>
-      </ul>
-      <div v-else :class="['project-grid', { 'project-grid--two-column': projectVariant === 'two-column' }]">
-        <article
-          v-for="(project, index) in resume.projects"
-          :key="`${project.name}-${index}`"
-          class="project-card"
-          :class="{ 'project-card--soft': projectVariant === 'cards' }"
-        >
-          <strong class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</strong>
-          <p class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
-        </article>
-      </div>
-    </div>
-
     <div v-if="isVisible('courses') && resume.courses?.length" class="resume-section-hoverable shared-section">
       <SectionToolbar
         section-key="certification"
@@ -235,6 +199,42 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
           <small class="ms-2 editable-text" :contenteditable="editable" @input="event => updateText(`courses.${index}.school`, (event.target as HTMLElement).innerText)">{{ course.school }}</small>
         </li>
       </ul>
+    </div>
+
+    <div v-if="isVisible('projects') && resume.projects?.length" class="resume-section-hoverable shared-section">
+      <SectionToolbar
+        section-key="project"
+        :variants="[
+          { label: 'List', value: 'list' },
+          { label: 'Cards', value: 'cards' },
+          { label: 'Two columns', value: 'two-column' },
+        ]"
+        :current-variant="projectVariant"
+        :can-move-up="canMove('project', 'up')"
+        :can-move-down="canMove('project', 'down')"
+        @add-item="() => emit('add-item', 'project')"
+        @change-variant="(_, variant) => emit('change-variant', 'project', variant)"
+        @move-up="() => emit('move-section', 'project', 'up')"
+        @move-down="() => emit('move-section', 'project', 'down')"
+      />
+      <h3 class="cv-heading-section cv-divider-bottom text-dark">Projects</h3>
+      <ul v-if="projectVariant === 'list'" class="project-list project-list--enhanced">
+        <li v-for="(project, index) in resume.projects" :key="`${project.name}-${index}`">
+          <strong class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</strong>
+          <p class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
+        </li>
+      </ul>
+      <div v-else :class="['project-grid', { 'project-grid--two-column': projectVariant === 'two-column' }]">
+        <article
+          v-for="(project, index) in resume.projects"
+          :key="`${project.name}-${index}`"
+          class="project-card"
+          :class="{ 'project-card--soft': projectVariant === 'cards' }"
+        >
+          <strong class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</strong>
+          <p class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
+        </article>
+      </div>
     </div>
 
     <div v-if="isVisible('references') && resume.references?.length" class="resume-section-hoverable shared-section">
@@ -317,6 +317,18 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
 .shared-extra ul { margin: 0; padding-left: 18px; }
 .shared-extra p { margin: 4px 0 0; }
 .shared-extra small { color: color-mix(in srgb, var(--shared-panel-text) 84%, transparent); }
+.project-list--enhanced {
+  display: grid;
+  gap: 10px;
+  list-style: none;
+  padding-left: 0;
+}
+.project-list--enhanced li {
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--shared-panel-border) 78%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--shared-panel-bg) 92%, transparent);
+}
 .language-stars-list,
 .language-progress-list {
   display: grid;

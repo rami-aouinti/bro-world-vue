@@ -41,14 +41,13 @@ const props = withDefaults(
   },
 )
 const emit = defineEmits<{
-  (event: 'add-item', sectionKey: 'education'): void
+  (event: 'add-item' | 'delete-section', sectionKey: 'education'): void
   (event: 'change-variant', sectionKey: 'education', variant: string): void
   (
     event: 'move-section',
     sectionKey: 'education',
     direction: 'up' | 'down',
   ): void
-  (event: 'delete-section', sectionKey: 'education'): void
 }>()
 const sectionStyle = computed(() => {
   const width = props.layoutSettings?.dateColumnWidth
@@ -275,7 +274,7 @@ function removeEducationItem(index: number) {
             </h4>
           </div>
           <p
-            v-if="item.note"
+            v-if="item.note && !resolvePoints(item).length"
             class="text-dark editable-text"
             :contenteditable="editable"
             @input="
