@@ -92,6 +92,9 @@ type StructuredProject = {
   title?: string
   description?: string
   link?: string
+  imageUrl?: string
+  repositoryUrl?: string
+  repositoryProvider?: 'github' | 'gitlab' | 'other'
 }
 type StructuredReference = {
   name?: string
@@ -660,7 +663,7 @@ const sectionItemDraft = reactive({
   experience: { role: '', company: '', companyImageUrl: '', city: '', start: '', end: '', bullets: '' },
   education: { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' },
   language: { name: '', level: 80, stars: 4, countryCode: '', flag: '' },
-  project: { name: '', summary: '', imageUrl: '', repositoryUrl: '' },
+  project: { name: '', summary: '', imageUrl: '', repositoryUrl: '', repositoryProvider: undefined as Project['repositoryProvider'] },
 })
 const addSectionDraft = reactive({
   profile: { profile: '' },
@@ -669,7 +672,7 @@ const addSectionDraft = reactive({
   skill: { name: '', level: 80 },
   language: { name: '', level: 80, countryCode: '', flag: '' },
   hobby: { name: '' },
-  project: { name: '', summary: '', imageUrl: '', repositoryUrl: '' },
+  project: { name: '', summary: '', imageUrl: '', repositoryUrl: '', repositoryProvider: undefined as Project['repositoryProvider'] },
   certification: { title: '', school: '', start: '', end: '' },
   reference: { name: '', company: '', email: '', phone: '' },
 })
@@ -1136,7 +1139,7 @@ function resetSectionDraft(section: AddSectionType) {
       addSectionDraft.hobby = { name: '' }
       break
     case 'project':
-      addSectionDraft.project = { name: '', summary: '', imageUrl: '', repositoryUrl: '' }
+      addSectionDraft.project = { name: '', summary: '', imageUrl: '', repositoryUrl: '', repositoryProvider: undefined }
       break
     case 'certification':
       addSectionDraft.certification = { title: '', school: '', start: '', end: '' }
@@ -1198,7 +1201,7 @@ function submitAddSection() {
     case 'project':
       resume.projects.push({
         ...addSectionDraft.project,
-        repositoryProvider: detectRepositoryProvider(addSectionDraft.project.repositoryUrl),
+        repositoryProvider: addSectionDraft.project.repositoryProvider || detectRepositoryProvider(addSectionDraft.project.repositoryUrl),
       })
       break
     case 'certification':
@@ -1223,6 +1226,9 @@ const orderedPreviewSections = computed(() =>
 const sectionVariantByKey = computed<Partial<Record<EditableSectionKey, string>>>(() => (
   Object.fromEntries(sectionLayout.value.map(section => [section.key, section.variant]))
 ))
+const skillVariantFromLayout = computed(() => (
+  String(sectionVariantByKey.value.skill || variantRegistry.skill.fallback)
+))
 
 function sectionDisplayLabel(sectionKey: PreviewSectionKey) {
   return sectionConfig[sectionKey].label
@@ -1241,7 +1247,7 @@ function resetSectionItemDraft(section: PreviewSectionKey) {
       sectionItemDraft.language = { name: '', level: 80, stars: 4, countryCode: '', flag: '' }
       break
     case 'project':
-      sectionItemDraft.project = { name: '', summary: '', imageUrl: '', repositoryUrl: '' }
+      sectionItemDraft.project = { name: '', summary: '', imageUrl: '', repositoryUrl: '', repositoryProvider: undefined }
       break
   }
 }
@@ -1297,7 +1303,7 @@ function submitSectionItemDialog() {
         summary: sectionItemDraft.project.summary,
         imageUrl: sectionItemDraft.project.imageUrl.trim(),
         repositoryUrl: sectionItemDraft.project.repositoryUrl.trim(),
-        repositoryProvider: detectRepositoryProvider(sectionItemDraft.project.repositoryUrl.trim()),
+        repositoryProvider: sectionItemDraft.project.repositoryProvider || detectRepositoryProvider(sectionItemDraft.project.repositoryUrl.trim()),
       }
       break
   }
@@ -1378,6 +1384,10 @@ function setSectionVariant<K extends EditableSectionKey>(key: K, variant: Sectio
   if (activeSectionKey.value === key) {
     activeVariant.value = normalizedVariant
   }
+}
+
+function updateSkillVariantFromToolbar(nextVariant: string) {
+  setSectionVariant('skill', nextVariant)
 }
 
 const activeTheme = computed(
@@ -1813,8 +1823,9 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
     resume.projects = data.projects.map((project) => ({
       name: String(project.title || ''),
       summary: String(project.description || ''),
-      repositoryUrl: String(project.link || ''),
-      repositoryProvider: detectRepositoryProvider(String(project.link || '')),
+      imageUrl: String(project.imageUrl || ''),
+      repositoryUrl: String(project.repositoryUrl || project.link || ''),
+      repositoryProvider: project.repositoryProvider || detectRepositoryProvider(String(project.repositoryUrl || project.link || '')),
     }))
   }
 
@@ -2155,6 +2166,21 @@ if (import.meta.client) {
                 label="Typography preset"
                 density="comfortable"
                 hide-details
+              />
+              <AppSelect
+                :model-value="skillVariantFromLayout"
+                :items="[
+                  { label: 'Skills · Progress', value: 'progress' },
+                  { label: 'Skills · Stars', value: 'stars' },
+                  { label: 'Skills · Dots', value: 'dots' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Skills display"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+                @update:model-value="updateSkillVariantFromToolbar"
               />
 
               <v-divider class="my-4" />
@@ -3531,6 +3557,18 @@ if (import.meta.client) {
               placeholder="https://github.com/org/repo"
               variant="outlined"
               :rules="[validateHttpRepositoryUrl]"
+              @blur="addSectionDraft.project.repositoryProvider = detectRepositoryProvider(addSectionDraft.project.repositoryUrl)"
+            />
+            <v-select
+              v-model="addSectionDraft.project.repositoryProvider"
+              :items="[
+                { title: 'GitHub', value: 'github' },
+                { title: 'GitLab', value: 'gitlab' },
+                { title: 'Other', value: 'other' },
+              ]"
+              label="Repository provider (optional)"
+              variant="outlined"
+              hide-details
             />
           </template>
 
@@ -3664,6 +3702,18 @@ if (import.meta.client) {
               placeholder="https://github.com/org/repo"
               variant="outlined"
               :rules="[validateHttpRepositoryUrl]"
+              @blur="sectionItemDraft.project.repositoryProvider = detectRepositoryProvider(sectionItemDraft.project.repositoryUrl)"
+            />
+            <v-select
+              v-model="sectionItemDraft.project.repositoryProvider"
+              :items="[
+                { title: 'GitHub', value: 'github' },
+                { title: 'GitLab', value: 'gitlab' },
+                { title: 'Other', value: 'other' },
+              ]"
+              label="Repository provider (optional)"
+              variant="outlined"
+              hide-details
             />
           </template>
         </v-card-text>
