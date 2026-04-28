@@ -21,6 +21,11 @@ export type ApiResume = {
     phone?: string | null
     address?: string | null
     adresse?: string | null
+    homepage?: string | null
+    repo_profile?: string | null
+    birthDate?: string | null
+    birthPlace?: string | null
+    profileText?: string | null
   } | null
   experiences?: ApiResumeSection[]
   educations?: ApiResumeSection[]
@@ -39,6 +44,11 @@ export type BuilderResumeModel = {
   phone: string
   city: string
   country: string
+  profile: string
+  birthDate: string
+  birthPlace: string
+  homepage: string
+  repoProfile: string
   experiences: Array<{ role: string; company: string; city: string; start: string; end: string; bullets: string[] }>
   education: Array<{ degree: string; school: string; city: string; start: string; end: string; note: string }>
   skills: Array<{ name: string; level: number }>
@@ -137,6 +147,11 @@ export function fromApiResumeToBuilderModel(apiResume: ApiResume): BuilderResume
     phone: normalizeText(info.phone),
     city,
     country,
+    profile: normalizeText(info.profileText),
+    birthDate: normalizeText(info.birthDate),
+    birthPlace: normalizeText(info.birthPlace),
+    homepage: normalizeText(info.homepage),
+    repoProfile: normalizeText(info.repo_profile),
     experiences: asArray(apiResume.experiences).map(section => ({
       role: normalizeText(section.title),
       company: normalizeText(section.company),
@@ -191,6 +206,11 @@ export function fromApiResumeToBuilderModel(apiResume: ApiResume): BuilderResume
       email: normalizeText(info.email),
       phone: normalizeText(info.phone),
       address,
+      homepage: normalizeText(info.homepage),
+      repo_profile: normalizeText(info.repo_profile),
+      birthDate: normalizeText(info.birthDate),
+      birthPlace: normalizeText(info.birthPlace),
+      profileText: normalizeText(info.profileText),
     },
   }
 }
@@ -206,6 +226,11 @@ export function fromBuilderModelToApiPayload(builderResume: BuilderResumeModel):
       email: normalizeText(builderResume.email),
       phone: normalizeText(builderResume.phone),
       adresse: address || null,
+      homepage: normalizeText(builderResume.homepage) || null,
+      repo_profile: normalizeText(builderResume.repoProfile) || null,
+      birthDate: normalizeText(builderResume.birthDate) || null,
+      birthPlace: normalizeText(builderResume.birthPlace) || null,
+      profileText: normalizeText(builderResume.profile) || null,
     },
     experiences: builderResume.experiences.map((experience) => ({
       title: normalizeText(experience.role),

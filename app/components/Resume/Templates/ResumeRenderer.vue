@@ -469,12 +469,21 @@ const contactFieldOrder: ContactFieldKey[] = [
 const hasContactDetails = computed(() =>
   Boolean(
     (props.resume.birthDate ?? props.resume.birthday ?? '').trim() ||
+    props.resume.birthPlace?.trim() ||
     props.resume.city?.trim() ||
     props.resume.country?.trim() ||
     props.resume.phone?.trim() ||
-    props.resume.email?.trim(),
+    props.resume.email?.trim() ||
+    props.resume.homepage?.trim() ||
+    props.resume.repoProfile?.trim(),
   ),
 )
+const contactBirthLine = computed(() => {
+  const birthDate = (props.resume.birthDate ?? props.resume.birthday ?? '').trim()
+  const birthPlace = (props.resume.birthPlace ?? '').trim()
+  if (birthDate && birthPlace) return `${birthDate}, ${birthPlace}`
+  return birthDate || birthPlace
+})
 
 function removeContactItem(field: ContactFieldKey) {
   if (field === 'birthDate') {
@@ -578,7 +587,7 @@ function updateText(path: string, value: string) {
                     (event.target as HTMLElement).innerText,
                   )
               "
-              >{{ resume.birthDate ?? resume.birthday ?? '' }}</span
+              >{{ contactBirthLine }}</span
             >
           </div>
           <div class="resume-skin__contact-item">
@@ -648,6 +657,14 @@ function updateText(path: string, value: string) {
               >{{ resume.email }}</span
             >
           </div>
+          <div v-if="resume.homepage" class="resume-skin__contact-item">
+            <v-icon v-if="showContactIcons" class="resume-skin__contact-icon" icon="mdi-web" :size="contactIconSize" />
+            <a :href="resume.homepage" target="_blank" rel="noopener noreferrer">Home Page</a>
+          </div>
+          <div v-if="resume.repoProfile" class="resume-skin__contact-item">
+            <v-icon v-if="showContactIcons" class="resume-skin__contact-icon" icon="mdi-github" :size="contactIconSize" />
+            <a :href="resume.repoProfile" target="_blank" rel="noopener noreferrer">Github Repo</a>
+          </div>
         </div>
       </div>
       <div v-if="hasRenderedAvatar" class="photo-frame" tabindex="0">
@@ -713,7 +730,7 @@ function updateText(path: string, value: string) {
                       (event.target as HTMLElement).innerText,
                     )
                 "
-                >{{ resume.birthDate ?? resume.birthday ?? '' }}</span
+                >{{ contactBirthLine }}</span
               >
               <v-btn
                 v-if="editable"
@@ -837,6 +854,31 @@ function updateText(path: string, value: string) {
                 <v-icon icon="mdi-close" size="14" />
               </v-btn>
             </div>
+            <div v-if="resume.homepage" class="resume-skin__contact-item">
+              <v-icon
+                v-if="showContactIcons"
+                class="resume-skin__contact-icon"
+                icon="mdi-web"
+                :size="contactIconSize"
+              />
+              <a :href="resume.homepage" target="_blank" rel="noopener noreferrer"
+                >Home Page</a
+              >
+            </div>
+            <div v-if="resume.repoProfile" class="resume-skin__contact-item">
+              <v-icon
+                v-if="showContactIcons"
+                class="resume-skin__contact-icon"
+                icon="mdi-github"
+                :size="contactIconSize"
+              />
+              <a
+                :href="resume.repoProfile"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Github Repo</a
+              >
+            </div>
           </div>
         </section>
 
@@ -904,7 +946,7 @@ function updateText(path: string, value: string) {
                       (event.target as HTMLElement).innerText,
                     )
                 "
-                >{{ resume.birthDate ?? resume.birthday ?? '' }}</span
+                >{{ contactBirthLine }}</span
               >
             </div>
             <div class="resume-skin__contact-item">
@@ -975,6 +1017,31 @@ function updateText(path: string, value: string) {
                     updateText('email', (event.target as HTMLElement).innerText)
                 "
                 >{{ resume.email }}</span
+              >
+            </div>
+            <div v-if="resume.homepage" class="resume-skin__contact-item">
+              <v-icon
+                v-if="showContactIcons"
+                class="resume-skin__contact-icon"
+                icon="mdi-web"
+                :size="contactIconSize"
+              />
+              <a :href="resume.homepage" target="_blank" rel="noopener noreferrer"
+                >Home Page</a
+              >
+            </div>
+            <div v-if="resume.repoProfile" class="resume-skin__contact-item">
+              <v-icon
+                v-if="showContactIcons"
+                class="resume-skin__contact-icon"
+                icon="mdi-github"
+                :size="contactIconSize"
+              />
+              <a
+                :href="resume.repoProfile"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Github Repo</a
               >
             </div>
           </div>

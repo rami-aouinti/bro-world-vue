@@ -218,6 +218,10 @@ type ResumeModel = {
   phone: string
   city: string
   country: string
+  birthDate: string
+  birthPlace: string
+  homepage: string
+  repoProfile: string
   profile: string
   photoUrl: string
   photoOffsetX: number
@@ -903,6 +907,10 @@ const resume = reactive<ResumeModel>({
   phone: '+1 212-555-0177',
   city: 'New York',
   country: 'United States',
+  birthDate: '',
+  birthPlace: '',
+  homepage: '',
+  repoProfile: '',
   photoUrl: '/person.png',
   photoOffsetX: 0,
   photoOffsetY: 0,
@@ -1524,6 +1532,11 @@ function applyBuilderResumeData(
   resume.phone = payload.phone || resume.phone
   resume.city = payload.city || resume.city
   resume.country = payload.country || resume.country
+  resume.birthDate = payload.birthDate || ''
+  resume.birthPlace = payload.birthPlace || ''
+  resume.homepage = payload.homepage || ''
+  resume.repoProfile = payload.repoProfile || ''
+  resume.profile = payload.profile || resume.profile
 
   if (payload.skills.length) {
     resume.skills = payload.skills.map((skill) => ({ ...skill }))
