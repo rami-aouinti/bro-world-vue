@@ -371,91 +371,93 @@ function updateSectionOption(optionKey: string, value: boolean) {
           >
             {{ project.summary }}
           </p>
-        </div>
-        <template v-if="resolveContentStyle(project) === 'timeline'">
-          <div
+          <template v-if="resolveContentStyle(project) === 'timeline'">
+            <div
+              :class="[
+                'timeline-block',
+                {
+                  'project-content-with-summary': shouldDisplaySummary(project),
+                },
+              ]"
+            >
+              <div
+                v-for="(event, eventIndex) in resolveTimelineEvents(project)"
+                :key="eventIndex"
+                class="timeline-event"
+              >
+                <strong
+                  class="editable-text"
+                  :contenteditable="editable"
+                  @input="
+                    (entry) =>
+                      updateText(
+                        `projects.${index}.timelineEvents.${eventIndex}.label`,
+                        (entry.target as HTMLElement).innerText,
+                      )
+                  "
+                  >{{ event.label }}</strong
+                >
+                <span
+                  class="editable-text"
+                  :contenteditable="editable"
+                  @input="
+                    (entry) =>
+                      updateText(
+                        `projects.${index}.timelineEvents.${eventIndex}.detail`,
+                        (entry.target as HTMLElement).innerText,
+                      )
+                  "
+                  >{{ event.detail }}</span
+                >
+              </div>
+            </div>
+          </template>
+          <ul
+            v-else-if="resolveContentStyle(project) === 'dashes'"
             :class="[
-              'timeline-block',
+              'dash-list',
               { 'project-content-with-summary': shouldDisplaySummary(project) },
             ]"
           >
-            <div
-              v-for="(event, eventIndex) in resolveTimelineEvents(project)"
-              :key="eventIndex"
-              class="timeline-event"
+            <li
+              v-for="(dash, dashIndex) in resolveDashes(project)"
+              :key="dashIndex"
+              class="text-dark editable-text"
+              :contenteditable="editable"
+              @input="
+                (event) =>
+                  updateText(
+                    `projects.${index}.dashes.${dashIndex}`,
+                    (event.target as HTMLElement).innerText,
+                  )
+              "
             >
-              <strong
-                class="editable-text"
-                :contenteditable="editable"
-                @input="
-                  (entry) =>
-                    updateText(
-                      `projects.${index}.timelineEvents.${eventIndex}.label`,
-                      (entry.target as HTMLElement).innerText,
-                    )
-                "
-                >{{ event.label }}</strong
-              >
-              <span
-                class="editable-text"
-                :contenteditable="editable"
-                @input="
-                  (entry) =>
-                    updateText(
-                      `projects.${index}.timelineEvents.${eventIndex}.detail`,
-                      (entry.target as HTMLElement).innerText,
-                    )
-                "
-                >{{ event.detail }}</span
-              >
-            </div>
-          </div>
-        </template>
-        <ul
-          v-else-if="resolveContentStyle(project) === 'dashes'"
-          :class="[
-            'dash-list',
-            { 'project-content-with-summary': shouldDisplaySummary(project) },
-          ]"
-        >
-          <li
-            v-for="(dash, dashIndex) in resolveDashes(project)"
-            :key="dashIndex"
-            class="text-dark editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateText(
-                  `projects.${index}.dashes.${dashIndex}`,
-                  (event.target as HTMLElement).innerText,
-                )
-            "
+              {{ dash }}
+            </li>
+          </ul>
+          <ul
+            v-else
+            :class="{
+              'project-content-with-summary': shouldDisplaySummary(project),
+            }"
           >
-            {{ dash }}
-          </li>
-        </ul>
-        <ul
-          v-else
-          :class="{
-            'project-content-with-summary': shouldDisplaySummary(project),
-          }"
-        >
-          <li
-            v-for="(point, pointIndex) in resolvePoints(project)"
-            :key="pointIndex"
-            class="text-dark editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateText(
-                  `projects.${index}.points.${pointIndex}`,
-                  (event.target as HTMLElement).innerText,
-                )
-            "
-          >
-            {{ point }}
-          </li>
-        </ul>
+            <li
+              v-for="(point, pointIndex) in resolvePoints(project)"
+              :key="pointIndex"
+              class="text-dark editable-text"
+              :contenteditable="editable"
+              @input="
+                (event) =>
+                  updateText(
+                    `projects.${index}.points.${pointIndex}`,
+                    (event.target as HTMLElement).innerText,
+                  )
+              "
+            >
+              {{ point }}
+            </li>
+          </ul>
+        </div>
       </article>
     </div>
   </section>

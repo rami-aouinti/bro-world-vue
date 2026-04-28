@@ -5,6 +5,7 @@ import {
   getSectionRegistryEntry,
 } from '~/constants/resumeSectionRegistry'
 import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
+import { formatResumeMonthYear } from '~/utils/resumeDateFormat'
 
 const props = withDefaults(
   defineProps<{
@@ -100,6 +101,9 @@ function updateText(path: string, value: string) {
   }
   target[last] = value
 }
+function updateDateText(path: string, value: string) {
+  updateText(path, formatResumeMonthYear(value))
+}
 
 function resolveContentStyle(item: Record<string, unknown>) {
   return item.contentStyle === 'dashes' || item.contentStyle === 'timeline'
@@ -172,12 +176,12 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
             :contenteditable="editable"
             @input="
               (event) =>
-                updateText(
+                updateDateText(
                   `education.${index}.start`,
                   (event.target as HTMLElement).innerText,
                 )
             "
-            >{{ item.start }}</span
+            >{{ formatResumeMonthYear(item.start) }}</span
           >
           -
           <span
@@ -185,12 +189,12 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
             :contenteditable="editable"
             @input="
               (event) =>
-                updateText(
+                updateDateText(
                   `education.${index}.end`,
                   (event.target as HTMLElement).innerText,
                 )
             "
-            >{{ item.end }}</span
+            >{{ formatResumeMonthYear(item.end) }}</span
           >
         </p>
         <div
