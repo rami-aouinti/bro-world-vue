@@ -6,6 +6,12 @@ type ToolbarVariantOption = {
   value: string
 }
 
+type StylePresetOption = {
+  label: string
+  value: string
+  tokens: Record<string, string>
+}
+
 const props = withDefaults(defineProps<{
   sectionKey: string
   canMoveUp?: boolean
@@ -23,16 +29,92 @@ const emit = defineEmits<{
   (event: 'add-item' | 'move-up' | 'move-down', sectionKey: string): void
   (event: 'change-variant', sectionKey: string, variant: string): void
 }>()
+
+const toolbarRef = ref<HTMLElement | null>(null)
+const styleMenuOpen = ref(false)
+const pinEnabled = ref(false)
+
+const headingPresets: StylePresetOption[] = [
+  { label: 'Underline', value: 'underline', tokens: { '--rs-heading-border-bottom': '1px solid color-mix(in srgb, var(--cv-accent) 36%, transparent)', '--rs-heading-padding': '0 0 6px 0' } },
+  { label: 'Pill', value: 'pill', tokens: { '--rs-heading-bg': 'color-mix(in srgb, var(--cv-accent) 11%, var(--cv-page))', '--rs-heading-radius': '999px', '--rs-heading-padding': '4px 12px' } },
+  { label: 'Minimal', value: 'minimal', tokens: { '--rs-heading-border-bottom': '0', '--rs-heading-bg': 'transparent', '--rs-heading-radius': '0', '--rs-heading-padding': '0' } },
+]
+
+const spacingPresets: StylePresetOption[] = [
+  { label: 'Compact', value: 'compact', tokens: { '--entry-gap': '10px', '--rs-section-padding-bottom': '6px' } },
+  { label: 'Balanced', value: 'balanced', tokens: { '--entry-gap': '16px', '--rs-section-padding-bottom': '12px' } },
+  { label: 'Airy', value: 'airy', tokens: { '--entry-gap': '22px', '--rs-section-padding-bottom': '18px' } },
+]
+
+const cardPresets: StylePresetOption[] = [
+  { label: 'None', value: 'none', tokens: { '--rs-card-border': 'none', '--rs-card-bg': 'transparent', '--rs-card-radius': '0', '--rs-card-padding': '0' } },
+  { label: 'Soft', value: 'soft', tokens: { '--rs-card-border': '1px solid color-mix(in srgb, var(--cv-accent) 14%, transparent)', '--rs-card-bg': 'color-mix(in srgb, var(--cv-page) 90%, var(--cv-accent) 10%)', '--rs-card-radius': '12px', '--rs-card-padding': '10px 12px' } },
+  { label: 'Elevated', value: 'elevated', tokens: { '--rs-card-border': '1px solid color-mix(in srgb, #111827 8%, transparent)', '--rs-card-bg': 'color-mix(in srgb, white 82%, var(--cv-page) 18%)', '--rs-card-radius': '14px', '--rs-card-padding': '12px 14px' } },
+]
+
+const dividerPresets: StylePresetOption[] = [
+  { label: 'None', value: 'none', tokens: { '--rs-section-separator': 'none' } },
+  { label: 'Fine', value: 'fine', tokens: { '--rs-section-separator': '1px solid color-mix(in srgb, var(--cv-accent) 20%, transparent)' } },
+  { label: 'Strong', value: 'strong', tokens: { '--rs-section-separator': '2px solid color-mix(in srgb, var(--cv-accent) 42%, transparent)' } },
+]
+
+const selectedHeading = ref('minimal')
+const selectedSpacing = ref('balanced')
+const selectedCard = ref('none')
+const selectedDivider = ref('none')
+
+const sectionStorageKey = computed(() => `resume:section-toolbar:pin:${props.sectionKey}`)
+
+function getSectionElement() {
+  return toolbarRef.value?.closest('.resume-section-hoverable') as HTMLElement | null
+}
+
+function findPreset(presets: StylePresetOption[], value: string) {
+  return presets.find(option => option.value === value)
+}
+
+function applySectionStylePreview() {
+  const sectionElement = getSectionElement()
+  if (!sectionElement) return
+
+  const picked = [
+    findPreset(headingPresets, selectedHeading.value),
+    findPreset(spacingPresets, selectedSpacing.value),
+    findPreset(cardPresets, selectedCard.value),
+    findPreset(dividerPresets, selectedDivider.value),
+  ].filter((preset): preset is StylePresetOption => Boolean(preset))
+
+  for (const preset of picked) {
+    for (const [token, tokenValue] of Object.entries(preset.tokens)) {
+      sectionElement.style.setProperty(token, tokenValue)
+    }
+  }
+}
+
+function setPin(nextValue: boolean) {
+  pinEnabled.value = nextValue
+  if (import.meta.client) {
+    localStorage.setItem(sectionStorageKey.value, String(nextValue))
+  }
+}
+
+onMounted(() => {
+  if (!import.meta.client) return
+  pinEnabled.value = localStorage.getItem(sectionStorageKey.value) === 'true'
+  applySectionStylePreview()
+})
+
+watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySectionStylePreview, { flush: 'post' })
 </script>
 
 <template>
-  <div class="section-toolbar" role="toolbar" :aria-label="`Actions de la section ${props.sectionKey}`">
+  <div ref="toolbarRef" class="section-toolbar" :class="{ 'is-pinned': pinEnabled }" role="toolbar" :aria-label="`Actions de la section ${props.sectionKey}`">
     <v-tooltip text="Ajouter un élément">
       <template #activator="{ props: tooltipProps }">
         <v-btn
           class="toolbar-btn"
           icon
-          size="small"
+          size="default"
           variant="tonal"
           :aria-label="`Ajouter un élément à la section ${props.sectionKey}`"
           v-bind="tooltipProps"
@@ -45,17 +127,17 @@ const emit = defineEmits<{
 
     <v-menu v-if="props.variants.length">
       <template #activator="{ props: menuProps }">
-        <v-tooltip text="Changer la variante">
+        <v-tooltip text="Changer la mise en page">
           <template #activator="{ props: tooltipProps }">
             <v-btn
               class="toolbar-btn"
               icon
-              size="small"
+              size="default"
               variant="tonal"
               :aria-label="`Changer la variante de la section ${props.sectionKey}`"
               v-bind="mergeProps(menuProps, tooltipProps)"
             >
-              <v-icon icon="mdi-tune-variant" />
+              <v-icon icon="mdi-view-dashboard-outline" />
             </v-btn>
           </template>
         </v-tooltip>
@@ -72,19 +154,49 @@ const emit = defineEmits<{
       </v-list>
     </v-menu>
 
+    <v-menu v-model="styleMenuOpen" :close-on-content-click="false" location="bottom end" offset="10">
+      <template #activator="{ props: menuProps }">
+        <v-tooltip text="Section Style">
+          <template #activator="{ props: tooltipProps }">
+            <v-btn
+              class="toolbar-btn"
+              icon
+              size="default"
+              variant="tonal"
+              :aria-label="`Ouvrir le panneau de style de la section ${props.sectionKey}`"
+              v-bind="mergeProps(menuProps, tooltipProps)"
+            >
+              <v-icon icon="mdi-brush-variant" />
+            </v-btn>
+          </template>
+        </v-tooltip>
+      </template>
+
+      <v-card class="section-style-popover" elevation="8">
+        <v-card-title class="text-subtitle-2">Section Style</v-card-title>
+        <v-card-text class="d-grid ga-3 pt-2">
+          <v-select v-model="selectedHeading" :items="headingPresets" item-title="label" item-value="value" label="Heading style" density="compact" hide-details />
+          <v-select v-model="selectedSpacing" :items="spacingPresets" item-title="label" item-value="value" label="Spacing" density="compact" hide-details />
+          <v-select v-model="selectedCard" :items="cardPresets" item-title="label" item-value="value" label="Card style" density="compact" hide-details />
+          <v-select v-model="selectedDivider" :items="dividerPresets" item-title="label" item-value="value" label="Divider style" density="compact" hide-details />
+          <v-switch :model-value="pinEnabled" color="primary" density="compact" hide-details inset label="Mode édition épinglé" @update:model-value="setPin(Boolean($event))" />
+        </v-card-text>
+      </v-card>
+    </v-menu>
+
     <v-tooltip text="Monter la section">
       <template #activator="{ props: tooltipProps }">
         <v-btn
           class="toolbar-btn"
           icon
-          size="small"
+          size="default"
           variant="tonal"
           :disabled="!props.canMoveUp"
           :aria-label="`Déplacer la section ${props.sectionKey} vers le haut`"
           v-bind="tooltipProps"
           @click="emit('move-up', props.sectionKey)"
         >
-          <v-icon icon="mdi-chevron-up" />
+          <v-icon icon="mdi-arrow-up" />
         </v-btn>
       </template>
     </v-tooltip>
@@ -94,14 +206,14 @@ const emit = defineEmits<{
         <v-btn
           class="toolbar-btn"
           icon
-          size="small"
+          size="default"
           variant="tonal"
           :disabled="!props.canMoveDown"
           :aria-label="`Déplacer la section ${props.sectionKey} vers le bas`"
           v-bind="tooltipProps"
           @click="emit('move-down', props.sectionKey)"
         >
-          <v-icon icon="mdi-chevron-down" />
+          <v-icon icon="mdi-arrow-down" />
         </v-btn>
       </template>
     </v-tooltip>
@@ -110,42 +222,48 @@ const emit = defineEmits<{
 
 <style scoped>
 .section-toolbar {
-  --cv-toolbar-border: var(--cv-toolbar-border-color, color-mix(in srgb, var(--cv-surface-contrast, #1e293b) 30%, transparent));
-  --cv-toolbar-bg: var(--cv-toolbar-bg-color, color-mix(in srgb, var(--cv-surface, #ffffff) 88%, var(--cv-surface-contrast, #0f172a) 12%));
-  --cv-toolbar-shadow: var(--cv-toolbar-shadow-color, color-mix(in srgb, #000000 18%, transparent));
+  --cv-toolbar-border: var(--cv-toolbar-border-color, color-mix(in srgb, var(--cv-surface-contrast, #1e293b) 34%, transparent));
+  --cv-toolbar-bg: var(--cv-toolbar-bg-color, color-mix(in srgb, var(--cv-surface, #ffffff) 76%, var(--cv-surface-contrast, #0f172a) 24%));
+  --cv-toolbar-shadow: var(--cv-toolbar-shadow-color, color-mix(in srgb, #020617 16%, transparent));
 
   position: absolute;
   top: 8px;
   right: 8px;
-  z-index: 3;
+  z-index: 6;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px;
+  gap: 6px;
+  padding: 6px;
   border-radius: 999px;
   border: 1px solid var(--cv-toolbar-border);
   background: var(--cv-toolbar-bg);
-  box-shadow: 0 4px 12px var(--cv-toolbar-shadow);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 8px 20px var(--cv-toolbar-shadow);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   opacity: 0;
   pointer-events: none;
-  transform: translateY(-4px);
-  transition: opacity .2s ease, transform .2s ease;
+  transform: translate3d(0, -5px, 0);
+  transition: opacity .16s ease, transform .16s ease;
 }
 
 .toolbar-btn {
-  min-width: 30px;
-  width: 30px;
-  height: 30px;
+  min-width: 38px;
+  width: 38px;
+  height: 38px;
+}
+
+.section-style-popover {
+  width: min(320px, calc(100vw - 24px));
+  border-radius: 14px;
 }
 
 :global(.resume-section-hoverable:hover > .section-toolbar),
 :global(.resume-section-hoverable:focus-within > .section-toolbar),
 :global(.resume-section-hoverable:has(:focus-visible) > .section-toolbar),
-.section-toolbar:focus-within {
+.section-toolbar:focus-within,
+.section-toolbar.is-pinned {
   opacity: 1;
   pointer-events: auto;
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0);
 }
 </style>
