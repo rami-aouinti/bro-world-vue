@@ -355,7 +355,10 @@ const selectedTemplate = toRef(builderPanelState, 'selectedTemplate')
 const selectedDocumentType = toRef(builderPanelState, 'selectedDocumentType')
 const designSettings = toRef(builderPanelState, 'designSettings')
 const selectedTheme = toRef(designSettings.value, 'selectedTheme')
-const selectedPageBackground = toRef(designSettings.value, 'selectedPageBackground')
+const selectedPageBackground = toRef(
+  designSettings.value,
+  'selectedPageBackground',
+)
 const selectedRounded = toRef(designSettings.value, 'selectedRounded')
 const selectedTextStyle = toRef(designSettings.value, 'selectedTextStyle')
 const layoutSettings = designSettings.value.layout
@@ -853,10 +856,13 @@ const resumeTemplateQuickFilterOptions: Array<{
   { label: 'Timeline', value: 'timeline' },
 ]
 const templateQuickFilterOptions = computed(() =>
-  selectedDocumentType.value === 'resume' ? resumeTemplateQuickFilterOptions : [],
+  selectedDocumentType.value === 'resume'
+    ? resumeTemplateQuickFilterOptions
+    : [],
 )
 const filteredTemplates = computed(() => {
-  if (selectedDocumentType.value !== 'resume') return templatesByDocumentType.value
+  if (selectedDocumentType.value !== 'resume')
+    return templatesByDocumentType.value
   if (templateQuickFilter.value === 'all') return templatesByDocumentType.value
 
   return templatesByDocumentType.value.filter((template) => {
@@ -887,8 +893,7 @@ const designMenuSupportsPhotoPosition = computed(
   () => isResumeDocument.value && selectedTemplateConfig.value.hasPhoto,
 )
 const designMenuSupportsAsideWidth = computed(
-  () =>
-    isResumeDocument.value && layoutSettings.layoutMode !== 'no-aside',
+  () => isResumeDocument.value && layoutSettings.layoutMode !== 'no-aside',
 )
 
 function applyTemplateSelection(templateId: string) {
@@ -2216,6 +2221,12 @@ function moveSection(
   moveSectionDown(sectionKey)
 }
 
+function deleteSection(sectionKey: ResumeEditableSectionKey) {
+  sectionLayout.value = sectionLayout.value.filter(
+    (section) => section.key !== sectionKey,
+  )
+}
+
 function setSectionVariant<K extends ResumeEditableSectionKey>(
   key: K,
   variant: SectionLayoutVariant[K] | string,
@@ -3126,9 +3137,8 @@ if (import.meta.client) {
                       type="button"
                       class="palette-item"
                       :class="{
-                            'palette-item--active':
-                              selectedTheme === theme.name,
-                          }"
+                        'palette-item--active': selectedTheme === theme.name,
+                      }"
                       @click="selectedTheme = theme.name"
                     >
                       <span :style="{ background: theme.sidebar }" />
@@ -3145,15 +3155,15 @@ if (import.meta.client) {
                       type="button"
                       class="palette-item"
                       :class="{
-                            'palette-item--active':
-                              selectedPageBackground === option.value,
-                          }"
+                        'palette-item--active':
+                          selectedPageBackground === option.value,
+                      }"
                       :disabled="option.blocked"
                       :title="
-                            option.blocked
-                              ? 'Fond trop sombre ou contraste insuffisant'
-                              : option.label
-                          "
+                        option.blocked
+                          ? 'Fond trop sombre ou contraste insuffisant'
+                          : option.label
+                      "
                       @click="selectedPageBackground = option.value"
                     >
                       <span :style="{ background: option.page }" />
@@ -3161,8 +3171,6 @@ if (import.meta.client) {
                       <span :style="{ background: activeTheme.sidebar }" />
                     </button>
                   </div>
-
-
 
                   <p class="section-label mt-4">Rounded</p>
                   <v-btn-toggle
@@ -3188,9 +3196,9 @@ if (import.meta.client) {
                     density="comfortable"
                     class="mt-3"
                   >
-                    Cover page and cover letter templates hide layout
-                    controls that do not apply (aside width, photo alignment
-                    without photo, resume layout mode).
+                    Cover page and cover letter templates hide layout controls
+                    that do not apply (aside width, photo alignment without
+                    photo, resume layout mode).
                   </v-alert>
 
                   <p class="section-label mt-4">Icons</p>
@@ -3268,9 +3276,8 @@ if (import.meta.client) {
                       type="button"
                       class="palette-item"
                       :class="{
-                            'palette-item--active':
-                              selectedTheme === theme.name,
-                          }"
+                        'palette-item--active': selectedTheme === theme.name,
+                      }"
                       @click="selectedTheme = theme.name"
                     >
                       <span :style="{ background: theme.sidebar }" />
@@ -3287,15 +3294,15 @@ if (import.meta.client) {
                       type="button"
                       class="palette-item"
                       :class="{
-                            'palette-item--active':
-                              selectedPageBackground === option.value,
-                          }"
+                        'palette-item--active':
+                          selectedPageBackground === option.value,
+                      }"
                       :disabled="option.blocked"
                       :title="
-                            option.blocked
-                              ? 'Fond trop sombre ou contraste insuffisant'
-                              : option.label
-                          "
+                        option.blocked
+                          ? 'Fond trop sombre ou contraste insuffisant'
+                          : option.label
+                      "
                       @click="selectedPageBackground = option.value"
                     >
                       <span :style="{ background: option.page }" />
@@ -3303,8 +3310,6 @@ if (import.meta.client) {
                       <span :style="{ background: activeTheme.sidebar }" />
                     </button>
                   </div>
-
-
 
                   <p class="section-label mt-4">Rounded</p>
                   <v-btn-toggle
@@ -3330,9 +3335,9 @@ if (import.meta.client) {
                     density="comfortable"
                     class="mt-3"
                   >
-                    Cover page and cover letter templates hide layout
-                    controls that do not apply (aside width, photo alignment
-                    without photo, resume layout mode).
+                    Cover page and cover letter templates hide layout controls
+                    that do not apply (aside width, photo alignment without
+                    photo, resume layout mode).
                   </v-alert>
 
                   <p class="section-label mt-4">Icons</p>
@@ -3410,9 +3415,8 @@ if (import.meta.client) {
                       type="button"
                       class="palette-item"
                       :class="{
-                            'palette-item--active':
-                              selectedTheme === theme.name,
-                          }"
+                        'palette-item--active': selectedTheme === theme.name,
+                      }"
                       @click="selectedTheme = theme.name"
                     >
                       <span :style="{ background: theme.sidebar }" />
@@ -3429,15 +3433,15 @@ if (import.meta.client) {
                       type="button"
                       class="palette-item"
                       :class="{
-                            'palette-item--active':
-                              selectedPageBackground === option.value,
-                          }"
+                        'palette-item--active':
+                          selectedPageBackground === option.value,
+                      }"
                       :disabled="option.blocked"
                       :title="
-                            option.blocked
-                              ? 'Fond trop sombre ou contraste insuffisant'
-                              : option.label
-                          "
+                        option.blocked
+                          ? 'Fond trop sombre ou contraste insuffisant'
+                          : option.label
+                      "
                       @click="selectedPageBackground = option.value"
                     >
                       <span :style="{ background: option.page }" />
@@ -3445,8 +3449,6 @@ if (import.meta.client) {
                       <span :style="{ background: activeTheme.sidebar }" />
                     </button>
                   </div>
-
-
 
                   <p class="section-label mt-4">Rounded</p>
                   <v-btn-toggle
@@ -3472,9 +3474,9 @@ if (import.meta.client) {
                     density="comfortable"
                     class="mt-3"
                   >
-                    Cover page and cover letter templates hide layout
-                    controls that do not apply (aside width, photo alignment
-                    without photo, resume layout mode).
+                    Cover page and cover letter templates hide layout controls
+                    that do not apply (aside width, photo alignment without
+                    photo, resume layout mode).
                   </v-alert>
 
                   <p class="section-label mt-4">Icons</p>
@@ -3529,8 +3531,8 @@ if (import.meta.client) {
             <div class="d-flex align-center justify-space-between mb-1">
               <span class="text-caption">Aside width</span>
               <span class="text-caption font-weight-medium">
-                            {{ layoutSettings.sidebarWidth }} px
-                          </span>
+                {{ layoutSettings.sidebarWidth }} px
+              </span>
             </div>
             <v-slider
               v-model="layoutSettings.sidebarWidth"
@@ -3617,9 +3619,8 @@ if (import.meta.client) {
             type="button"
             class="template-drawer__item"
             :class="{
-                    'template-drawer__item--active':
-                      selectedTemplate === template.id,
-                  }"
+              'template-drawer__item--active': selectedTemplate === template.id,
+            }"
             @click="applyTemplateSelection(template.id)"
           >
             <v-img
@@ -3629,9 +3630,7 @@ if (import.meta.client) {
               cover
               class="template-drawer__thumb"
             />
-            <span class="template-drawer__label">{{
-                template.title
-              }}</span>
+            <span class="template-drawer__label">{{ template.title }}</span>
           </button>
         </div>
       </template>
@@ -3822,6 +3821,7 @@ if (import.meta.client) {
                             layoutSettings.photoPosition = $event
                           "
                           @move-section="moveSection"
+                          @delete-section="deleteSection"
                         />
                       </template>
                       <div v-else class="preview-fallback">
@@ -4785,6 +4785,7 @@ if (import.meta.client) {
                         layoutSettings.photoPosition = $event
                       "
                       @move-section="moveSection"
+                      @delete-section="deleteSection"
                     />
                   </template>
                   <div v-else class="preview-fallback">
