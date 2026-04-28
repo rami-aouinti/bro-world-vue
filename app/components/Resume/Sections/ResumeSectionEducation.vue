@@ -194,6 +194,7 @@ function removeEducationItem(index: number) {
           <v-icon icon="mdi-close" size="14" />
         </v-btn>
         <p class="dates date-column">
+          <span class="date-chip">
           <span
             class="editable-text"
             :contenteditable="editable"
@@ -218,7 +219,7 @@ function removeEducationItem(index: number) {
                 )
             "
             >{{ formatResumeMonthYear(item.end) }}</span
-          >
+          ></span>
         </p>
         <div
           v-if="safeVariant === 'timeline'"
@@ -238,13 +239,13 @@ function removeEducationItem(index: number) {
         </div>
         <div class="content-column">
           <div class="entry-heading">
-            <v-avatar class="school-logo" rounded="lg" size="30">
-              <v-img
-                v-if="item.schoolImageUrl"
-                :src="item.schoolImageUrl"
-                alt="School logo"
-                cover
-              />
+            <v-avatar
+              v-if="item.schoolImageUrl"
+              class="school-logo"
+              rounded="lg"
+              size="30"
+            >
+              <v-img :src="item.schoolImageUrl" alt="School logo" cover />
             </v-avatar>
             <h4 class="text-dark">
               <span
@@ -378,7 +379,7 @@ function removeEducationItem(index: number) {
   --cv-body-line-height: 1.52;
   --cv-list-indent: calc(var(--cv-space-4) + var(--cv-space-2));
   --cv-dash-marker-width: 1.35em;
-  --entry-title-to-date-gap: var(--cv-space-1);
+  --entry-title-to-date-gap: var(--cv-space-2);
   --entry-date-to-description-gap: var(--cv-space-2);
   --entry-description-to-list-gap: var(--cv-space-2);
   --education-timeline-dot-offset: 10px;
@@ -455,6 +456,16 @@ function removeEducationItem(index: number) {
 .date-column {
   color: color-mix(in srgb, var(--cv-text, currentColor) 78%, transparent);
   margin: var(--entry-title-to-date-gap) 0 0;
+}
+
+.date-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cv-accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cv-accent) 24%, transparent);
 }
 .content-column {
   position: relative;
@@ -599,7 +610,7 @@ function removeEducationItem(index: number) {
 }
 .density-normal {
   --entry-gap: var(--cv-space-4);
-  --entry-title-to-date-gap: var(--cv-space-1);
+  --entry-title-to-date-gap: var(--cv-space-2);
   --entry-date-to-description-gap: var(--cv-space-2);
   --entry-description-to-list-gap: var(--cv-space-2);
 }

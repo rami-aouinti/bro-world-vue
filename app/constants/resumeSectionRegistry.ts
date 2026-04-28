@@ -236,7 +236,7 @@ export const RESUME_SECTION_REGISTRY: Record<
     icon: 'mdi-certificate-outline',
     variants: [{ label: 'Classic', value: 'classic' }],
     defaultVariant: 'classic',
-    defaultRegion: 'main',
+    defaultRegion: 'aside',
     toolbarActions: [
       'add-item',
       'change-variant',
