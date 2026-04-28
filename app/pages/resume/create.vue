@@ -2920,7 +2920,36 @@ if (import.meta.client) {
       </div>
     </div>
     <div class="builder-layout">
-      <section class="builder-form px-3 px-md-6 py-4">
+      <section class="builder-form builder-left-rail px-3 px-md-4 py-4">
+            <article class="form-section mb-4">
+              <header class="mb-3">
+                <h2>Templates</h2>
+                <p>Choisissez rapidement un modèle dans la colonne gauche.</p>
+              </header>
+              <AppSelect
+                v-model="selectedTemplateFilter"
+                :items="templateFilters"
+                item-title="label"
+                item-value="value"
+                label="Template filter"
+                density="comfortable"
+                hide-details
+                class="mb-3"
+              />
+              <div class="side-template-list">
+                <v-card
+                  v-for="template in filteredTemplates"
+                  :key="`left-rail-template-${template.id}`"
+                  class="template-card"
+                  :class="{ 'template-card--active': selectedTemplate === template.id }"
+                  variant="outlined"
+                  @click="applyTemplateFromToolbar(template.id)"
+                >
+                  <v-img :src="template.image" height="84" cover />
+                  <v-card-text class="py-2 text-caption">{{ template.title }}</v-card-text>
+                </v-card>
+              </div>
+            </article>
             <article class="form-section mb-2">
               <div class="mb-2">
                 <div class="photo-uploader">
@@ -3633,6 +3662,51 @@ if (import.meta.client) {
         </div>
       </aside>
 
+      <aside class="builder-form builder-right-rail px-3 px-md-4 py-4">
+        <article class="form-section mb-4">
+          <header class="mb-3">
+            <h2>Template options</h2>
+            <p>Paramètres liés au modèle actif.</p>
+          </header>
+          <v-alert type="info" variant="tonal" density="compact" class="mb-3">
+            Modèle actif: <strong>{{ selectedTemplateCard?.title || selectedTemplate }}</strong>
+          </v-alert>
+          <AppSelect
+            v-model="layoutSettings.layoutMode"
+            :items="layoutModeOptions"
+            item-title="label"
+            item-value="value"
+            label="Layout"
+            density="comfortable"
+            hide-details
+            class="mb-3"
+          />
+          <AppSelect
+            v-model="selectedTextStyle"
+            :items="textStyleOptions"
+            item-title="label"
+            item-value="value"
+            label="Typography preset"
+            density="comfortable"
+            hide-details
+            class="mb-3"
+          />
+          <div class="side-template-list">
+            <v-card
+              v-for="template in filteredTemplates"
+              :key="`right-rail-template-${template.id}`"
+              class="template-card"
+              :class="{ 'template-card--active': selectedTemplate === template.id }"
+              variant="outlined"
+              @click="applyTemplateFromToolbar(template.id)"
+            >
+              <v-img :src="template.image" height="84" cover />
+              <v-card-text class="py-2 text-caption">{{ template.title }}</v-card-text>
+            </v-card>
+          </div>
+        </article>
+      </aside>
+
     </div>
 
     <v-dialog v-model="addSectionDialogOpen" max-width="760">
@@ -4319,13 +4393,14 @@ if (import.meta.client) {
 
 .builder-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 46%);
+  grid-template-columns: minmax(280px, 1fr) minmax(560px, 1.3fr) minmax(280px, 1fr);
   align-items: start;
   gap: 12px;
 }
 
 .builder-form {
-  border-right: 1px solid rgb(var(--v-theme-primary));
+  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-primary)) 24%, transparent);
+  border-radius: 14px;
   position: sticky;
   top: 60px;
   align-self: start;
@@ -4341,6 +4416,17 @@ if (import.meta.client) {
   align-self: start;
   display: flex;
   justify-content: center;
+}
+
+.builder-left-rail,
+.builder-right-rail {
+  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 94%, white);
+}
+
+.side-template-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
 }
 
 .completion-card {
@@ -4809,7 +4895,7 @@ if (import.meta.client) {
   }
 
   .builder-form {
-    border-right: 0;
+    border: 0;
     position: static;
     max-height: none;
     overflow: visible;
