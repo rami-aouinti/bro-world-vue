@@ -231,10 +231,6 @@ type PhotoShapeOption = {
   value: PhotoShape
   icon: string
 }
-type LayoutModeOption = {
-  label: string
-  value: ResumeLayoutMode
-}
 type LayoutSettings = {
   photoSize: number
   photoBorderWidth: number
@@ -315,6 +311,34 @@ const layoutSettings = reactive<LayoutSettings>({
   iconColor: 'accent',
   layoutMode: resolveTemplateSkin(DEFAULT_RESUME_TEMPLATE_ID).layoutMode,
 })
+const lineDensityOptions = [
+  { label: 'Compact', value: 'compact' },
+  { label: 'Comfortable', value: 'comfortable' },
+] as const
+const sectionDividerStyleOptions = [
+  { label: 'Line', value: 'line' },
+  { label: 'Soft', value: 'soft' },
+  { label: 'None', value: 'none' },
+] as const
+const layoutModeOptions = [
+  { label: 'Aside left', value: 'aside-left' },
+  { label: 'Aside right', value: 'aside-right' },
+  { label: 'No aside', value: 'no-aside' },
+] as const
+const sectionIconStyleOptions = [
+  { label: 'Outline', value: 'outline' },
+  { label: 'Filled', value: 'filled' },
+  { label: 'Rounded', value: 'rounded' },
+] as const
+const iconSizeOptions = [
+  { label: 'Small', value: 's' },
+  { label: 'Medium', value: 'm' },
+  { label: 'Large', value: 'l' },
+] as const
+const iconColorOptions = [
+  { label: 'Accent', value: 'accent' },
+  { label: 'Neutral', value: 'neutral' },
+] as const
 const photoShapeOptions = [
   { label: 'Carré', value: 'square', icon: '□' },
   { label: 'Arrondi', value: 'rounded', icon: '▢' },
@@ -323,12 +347,6 @@ const photoShapeOptions = [
   { label: 'Blob', value: 'soft-blob', icon: '⬭' },
   { label: 'Hex', value: 'hex', icon: '⬢' },
 ] as const satisfies ReadonlyArray<PhotoShapeOption>
-const layoutModeOptions = [
-  { label: 'Aside left', value: 'aside-left' },
-  { label: 'Aside right', value: 'aside-right' },
-  { label: 'No aside', value: 'no-aside' },
-] as const satisfies ReadonlyArray<LayoutModeOption>
-
 const addSectionOptions = [
   { label: 'Profile', value: 'profile' },
   { label: 'Experience', value: 'experience' },
@@ -2499,22 +2517,9 @@ async function runAiCreate() {
   }
 }
 
-const showRightDrawerDesktop = useState(
-  'show-right-drawer-desktop',
-  () => false,
-)
-const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
-const previousDesktopRightDrawer = showRightDrawerDesktop.value
-const previousMobileRightDrawer = showRightDrawerMobile.value
-
-showRightDrawerDesktop.value = false
-showRightDrawerMobile.value = false
-
 onUnmounted(() => {
   stopImportProgress()
   stopAiElapsedTimer()
-  showRightDrawerDesktop.value = previousDesktopRightDrawer
-  showRightDrawerMobile.value = previousMobileRightDrawer
 })
 
 if (import.meta.client) {
@@ -2583,930 +2588,303 @@ if (import.meta.client) {
 
 <template>
   <v-container fluid class="resume-create pa-0">
-    <AppPageDrawers>
-      <template #left>
-        <div class="template-drawer py-4 px-2">
-          <h3 class="text-subtitle-1 mb-2">Templates</h3>
-          <v-chip-group
-            :model-value="templateQuickFilter"
-            selected-class="text-primary"
-            column
-            class="mb-3"
-            @update:model-value="onTemplateQuickFilterChange"
-          >
-            <v-chip
-              v-for="filterOption in templateQuickFilterOptions"
-              :key="`left-template-filter-${filterOption.value}`"
-              :value="filterOption.value"
-              size="small"
-              label
-            >
-              {{ filterOption.label }}
-            </v-chip>
-          </v-chip-group>
-          <div class="template-drawer__grid">
-            <button
-              v-for="templateCard in filteredTemplatesByDrawer"
-              :key="`left-template-card-${templateCard.id}`"
-              type="button"
-              class="template-drawer__item"
-              :class="{ 'template-drawer__item--active': selectedTemplate === templateCard.id }"
-              @click="applyTemplateSelection(templateCard.id)"
-            >
-              <v-img :src="templateCard.image" :alt="templateCard.title" height="110" cover class="template-drawer__thumb" />
-              <span class="template-drawer__label">{{ templateCard.title }}</span>
-            </button>
-          </div>
-        </div>
-      </template>
-      <template #right>
-        <div class="template-drawer py-4 px-2">
-          <h3 class="text-subtitle-1 mb-2">Templates</h3>
-          <v-chip-group
-            :model-value="templateQuickFilter"
-            selected-class="text-primary"
-            column
-            class="mb-3"
-            @update:model-value="onTemplateQuickFilterChange"
-          >
-            <v-chip
-              v-for="filterOption in templateQuickFilterOptions"
-              :key="`right-template-filter-${filterOption.value}`"
-              :value="filterOption.value"
-              size="small"
-              label
-            >
-              {{ filterOption.label }}
-            </v-chip>
-          </v-chip-group>
-          <div class="template-drawer__grid">
-            <button
-              v-for="templateCard in filteredTemplatesByDrawer"
-              :key="`right-template-card-${templateCard.id}`"
-              type="button"
-              class="template-drawer__item"
-              :class="{ 'template-drawer__item--active': selectedTemplate === templateCard.id }"
-              @click="applyTemplateSelection(templateCard.id)"
-            >
-              <v-img :src="templateCard.image" :alt="templateCard.title" height="110" cover class="template-drawer__thumb" />
-              <span class="template-drawer__label">{{ templateCard.title }}</span>
-            </button>
-          </div>
-        </div>
-      </template>
-    </AppPageDrawers>
-
-    <div class="local-toolbar-actions">
-      <div class="local-toolbar-actions__row">
-        <v-menu v-model="toolbarSaveImportMenuOpen" location="bottom center" origin="top center" max-width="560">
-          <template #activator="{ props }">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-content-save-cog-outline" v-bind="props">
-              Save / Import
-            </v-btn>
-          </template>
-          <v-card class="toolbar-menu-card">
-            <v-card-title class="text-subtitle-2">Save / Import</v-card-title>
-            <v-card-text class="d-flex flex-column ga-2">
-              <v-btn prepend-icon="mdi-content-save-outline" color="primary" variant="flat" text="Save draft" @click="openSaveModal" />
-              <v-btn prepend-icon="mdi-file-pdf-box" color="secondary" variant="outlined" text="Preview PDF" @click="openPdfPreview" />
-              <v-btn prepend-icon="mdi-download" color="info" variant="outlined" text="Download PDF" @click="onDownloadPdfClick" />
-              <v-divider class="my-2" />
-              <v-btn prepend-icon="mdi-sync" variant="outlined" color="primary" :text="t('resumeBuilder.create.import.syncWithXing')" @click="syncWithProvider('Xing')" />
-              <v-btn prepend-icon="mdi-linkedin" variant="outlined" color="info" :text="t('resumeBuilder.create.import.syncWithLinkedIn')" @click="syncWithProvider('LinkedIn')" />
-              <v-btn prepend-icon="mdi-file-upload-outline" variant="flat" color="secondary" :text="t('resumeBuilder.create.import.importOldResumePdf')" @click="triggerPdfImport" />
-              <input
-                ref="importPdfInput"
-                type="file"
-                accept="application/pdf"
-                class="d-none"
-                @change="handlePdfImport"
-              />
-              <div v-if="importInProgress" class="mt-2">
-                <v-progress-linear :model-value="importProgress" color="primary" height="8" rounded striped />
-              </div>
-              <v-alert
-                v-if="importMessage"
-                class="mt-2"
-                :type="importInProgress ? 'info' : importMessageType"
-                variant="tonal"
-              >
-                {{ importMessage }}
-              </v-alert>
-            </v-card-text>
-          </v-card>
-        </v-menu>
-        <v-menu location="bottom center" origin="top center" max-width="620">
-          <template #activator="{ props }">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-palette-outline" v-bind="props">
-              Design
-            </v-btn>
-          </template>
-          <v-card class="toolbar-menu-card">
-            <v-card-title class="text-subtitle-2">Design</v-card-title>
-            <v-card-text>
-              <p class="section-label">Color palette</p>
-              <div class="palette-grid mb-4">
-                <button
-                  v-for="theme in colorThemes"
-                  :key="`toolbar-theme-${theme.name}`"
-                  type="button"
-                  class="palette-item"
-                  :class="{
-                    'palette-item--active': selectedTheme === theme.name,
-                  }"
-                  @click="selectedTheme = theme.name"
-                >
-                  <span :style="{ background: theme.sidebar }" />
-                  <span :style="{ background: theme.accent }" />
-                  <span :style="{ background: theme.page }" />
-                </button>
-              </div>
-
-              <p class="section-label">Page background</p>
-              <div class="palette-grid mb-4">
-                <button
-                  v-for="option in pageBackgroundValidation"
-                  :key="`toolbar-bg-${option.value}`"
-                  type="button"
-                  class="palette-item"
-                  :class="{
-                    'palette-item--active': selectedPageBackground === option.value,
-                  }"
-                  :disabled="option.blocked"
-                  :title="option.blocked ? 'Fond trop sombre ou contraste insuffisant' : option.label"
-                  @click="selectedPageBackground = option.value"
-                >
-                  <span :style="{ background: option.page }" />
-                  <span :style="{ background: activeTheme.accent }" />
-                  <span :style="{ background: activeTheme.sidebar }" />
-                </button>
-              </div>
-
-              <AppSelect
-                v-model="selectedTextStyle"
-                :items="textStyleOptions"
-                item-title="label"
-                item-value="value"
-                label="Typography preset"
-                density="comfortable"
-                hide-details
-              />
-            </v-card-text>
-          </v-card>
-        </v-menu>
-        <v-menu location="bottom center" origin="top center" max-width="360">
-          <template #activator="{ props }">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-column-outline" v-bind="props">
-              Layout mode
-            </v-btn>
-          </template>
-          <v-card class="toolbar-menu-card">
-            <v-card-title class="text-subtitle-2">Layout mode</v-card-title>
-            <v-card-text>
-              <AppSelect
-                v-model="layoutSettings.layoutMode"
-                :items="layoutModeOptions"
-                item-title="label"
-                item-value="value"
-                label="Layout"
-                density="comfortable"
-                hide-details
-              />
-            </v-card-text>
-          </v-card>
-        </v-menu>
-        <v-menu v-model="toolbarSectionMenuOpen" location="bottom center" origin="top center">
-          <template #activator="{ props }">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-list-outline" v-bind="props">
-              Sections
-            </v-btn>
-          </template>
-          <v-list density="compact" min-width="220">
-            <v-list-item
-              v-for="section in addSectionOptions"
-              :key="`toolbar-add-${section.value}`"
-              :title="section.label"
-              @click="openAddSectionDialog(section.value)"
-            />
-          </v-list>
-        </v-menu>
-      </div>
-    </div>
-    <div class="builder-layout">
-      <section class="builder-form builder-left-rail px-3 px-md-4 py-4">
-            <article class="form-section mb-2">
-              <div class="mb-2">
-                <div class="photo-uploader">
-                  <v-avatar size="72" rounded="lg">
-                    <v-img
-                      :src="resume.photoUrl || '/img/default_avatar.svg'"
-                      cover
-                    />
-                  </v-avatar>
-                  <div class="photo-actions">
-                    <v-btn
-                      size="small"
-                      prepend-icon="mdi-upload"
-                      variant="tonal"
-                      @click="openPhotoPicker"
-                    >
-                      Upload photo
-                    </v-btn>
-                    <v-btn
-                      size="small"
-                      prepend-icon="mdi-delete-outline"
-                      variant="text"
-                      color="error"
-                      @click="clearPhoto"
-                    >
-                      Remove
-                    </v-btn>
+    <main class="resume-content-main">
+      <div class="resume-page-content">
+        <div class="resume-control-panels">
+          <div class="local-toolbar-actions">
+            <div class="local-toolbar-actions__row">
+              <v-menu v-model="toolbarSaveImportMenuOpen" location="bottom center" origin="top center" max-width="560">
+                <template #activator="{ props }">
+                  <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-content-save-cog-outline" v-bind="props">
+                    Save / Import
+                  </v-btn>
+                </template>
+                <v-card class="toolbar-menu-card">
+                  <v-card-title class="text-subtitle-2">Save / Import</v-card-title>
+                  <v-card-text class="d-flex flex-column ga-2">
+                    <v-btn prepend-icon="mdi-content-save-outline" color="primary" variant="flat" text="Save draft" @click="openSaveModal" />
+                    <v-btn prepend-icon="mdi-file-pdf-box" color="secondary" variant="outlined" text="Preview PDF" @click="openPdfPreview" />
+                    <v-btn prepend-icon="mdi-download" color="info" variant="outlined" text="Download PDF" @click="onDownloadPdfClick" />
+                    <v-divider class="my-2" />
+                    <v-btn prepend-icon="mdi-sync" variant="outlined" color="primary" :text="t('resumeBuilder.create.import.syncWithXing')" @click="syncWithProvider('Xing')" />
+                    <v-btn prepend-icon="mdi-linkedin" variant="outlined" color="info" :text="t('resumeBuilder.create.import.syncWithLinkedIn')" @click="syncWithProvider('LinkedIn')" />
+                    <v-btn prepend-icon="mdi-file-upload-outline" variant="flat" color="secondary" :text="t('resumeBuilder.create.import.importOldResumePdf')" @click="triggerPdfImport" />
                     <input
-                      ref="uploadInput"
+                      ref="importPdfInput"
                       type="file"
-                      accept="image/*"
+                      accept="application/pdf"
                       class="d-none"
-                      @change="onPhotoSelected"
-                    />
-                  </div>
-                </div>
-                <div class="photo-shape-picker mt-2">
-                  <span class="text-caption">Forme image</span>
-                  <v-btn-toggle v-model="selectedPhotoShape" mandatory density="compact" color="primary">
-                    <v-btn
-                      v-for="shape in photoShapeOptions"
-                      :key="`photo-shape-picker-${shape.value}`"
-                      :value="shape.value"
-                      size="x-small"
+                      @change="handlePdfImport"
                     >
-                      {{ shape.label }}
-                    </v-btn>
-                  </v-btn-toggle>
-                </div>
-              </div>
-              <div class="grid-2 py-3">
-                <v-text-field
-                  v-model="resume.role"
-                  label="Job target"
-                  flat
-                  hide-details
-                />
-                <v-text-field
-                  v-model="resume.firstName"
-                  label="First name"
-                  flat
-                  hide-details
-                />
-                <v-text-field
-                  v-model="resume.lastName"
-                  label="Last name"
-                  flat
-                  hide-details
-                />
-                <v-text-field
-                  v-model="resume.email"
-                  label="Email"
-                  flat
-                  hide-details
-                />
-                <v-text-field
-                  v-model="resume.phone"
-                  label="Phone"
-                  flat
-                  hide-details
-                />
-                <v-text-field
-                  v-model="resume.city"
-                  label="City"
-                  flat
-                  hide-details
-                />
-                <v-text-field
-                  v-model="resume.country"
-                  label="Country"
-                  flat
-                  hide-details
-                />
-              </div>
-            </article>
-
-            <article class="form-section mb-4">
-              <header class="mb-4">
-                <h2>Professional summary</h2>
-              </header>
-              <v-textarea
-                v-model="resume.profile"
-                label="Summary"
-                rows="8"
-                flat
-                hide-details
-              />
-            </article>
-
-            <article class="form-section mb-4">
-              <header
-                class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap"
-              >
-                <div>
-                  <h2>Experiences</h2>
-                </div>
-                <v-btn
-                  prepend-icon="mdi-plus"
-                  variant="outlined"
-                  size="small"
-                  @click="addExperience"
-                  >Add</v-btn
-                >
-              </header>
-              <v-row
-                v-for="(experience, index) in resume.experiences"
-                :key="`${experience.company}-${index}`"
-              >
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="experience.role"
-                    label="Role"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="experience.company"
-                    label="Company"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="experience.companyImageUrl"
-                    label="Company logo URL"
-                    variant="outlined"
-                    :error-messages="getExperienceLogoError(`resume-${index}`)"
-                    @update:model-value="setExperienceLogoError(`resume-${index}`)"
-                  />
-                </v-col>
-                <v-col cols="12" md="6" class="d-flex align-center ga-2 flex-wrap">
-                  <v-btn
-                    prepend-icon="mdi-image-plus-outline"
-                    size="small"
-                    variant="tonal"
-                    @click="openExperienceLogoPicker('resume', index)"
-                  >
-                    Upload logo
-                  </v-btn>
-                  <input
-                    :id="`experience-logo-input-${index}`"
-                    type="file"
-                    accept="image/png,image/jpeg,image/webp,image/svg+xml"
-                    class="d-none"
-                    @change="event => onResumeExperienceLogoSelected(event, index)"
-                  >
-                </v-col>
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="experience.city"
-                    label="City"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="experience.start"
-                    label="Start"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="experience.end"
-                    label="End"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="10">
-                  <v-select
-                    v-model="experience.contentStyle"
-                    :items="resumeContentStyleSelectItems"
-                    label="Content style"
-                    variant="outlined"
-                    hide-details
-                    class="mb-2"
-                    @update:model-value="(value) => changeExperienceContentStyle(index, String(value) as ContentStyle)"
-                  />
-                  <v-textarea
-                    :model-value="getExperienceBullets(index)"
-                    label="Content (1 line = 1 item, timeline: Label | Detail)"
-                    rows="8"
-                    variant="outlined"
-                    hide-details
-                    @update:model-value="
-                      (value) => setExperienceBullets(index, String(value))
-                    "
-                  />
-                </v-col>
-                <v-col cols="12" md="2" class="d-flex align-center">
-                  <div class="d-flex flex-column ga-1">
-                    <v-btn
-                      icon="mdi-chevron-up"
-                      variant="text"
-                      size="x-small"
-                      :disabled="index === 0"
-                      @click="moveExperience(index, 'up')"
-                    />
-                    <v-btn
-                      icon="mdi-chevron-down"
-                      variant="text"
-                      size="x-small"
-                      :disabled="index === resume.experiences.length - 1"
-                      @click="moveExperience(index, 'down')"
-                    />
-                    <v-btn
-                      icon="mdi-delete-outline"
-                      color="error"
-                      variant="text"
-                      size="small"
-                      @click="removeExperience(index)"
-                    />
-                  </div>
-                </v-col>
-              </v-row>
-            </article>
-
-            <article class="form-section mb-4">
-              <header
-                class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap"
-              >
-                <div>
-                  <h2>Education</h2>
-                </div>
-                <v-btn
-                  prepend-icon="mdi-plus"
-                  variant="outlined"
-                  size="small"
-                  @click="addEducation"
-                  >Add</v-btn
-                >
-              </header>
-              <v-row
-                v-for="(item, index) in resume.education"
-                :key="`${item.school}-${index}`"
-              >
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="item.degree"
-                    label="Degree"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="item.school"
-                    label="School"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="8">
-                  <v-text-field
-                    v-model="item.schoolImageUrl"
-                    label="School logo URL (optional)"
-                    variant="outlined"
-                    hide-details
-                  />
-                </v-col>
-                <v-col cols="12" md="4" class="d-flex align-center ga-2">
-                  <input
-                    :id="`education-image-input-${index}`"
-                    type="file"
-                    accept="image/*"
-                    class="d-none"
-                    @change="event => onEducationImageSelected(event, 'resume', index)"
-                  >
-                  <v-btn
-                    prepend-icon="mdi-image-plus-outline"
-                    variant="outlined"
-                    size="small"
-                    @click="triggerFileInputById(`education-image-input-${index}`)"
-                  >
-                    Upload logo
-                  </v-btn>
-                  <v-avatar v-if="item.schoolImageUrl" rounded="lg" size="40">
-                    <v-img :src="item.schoolImageUrl" alt="School logo preview" cover />
-                  </v-avatar>
-                </v-col>
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="item.city"
-                    label="City"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="item.start"
-                    label="Start"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="item.end"
-                    label="End"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="10"
-                  ><v-select
-                    v-model="item.contentStyle"
-                    :items="resumeContentStyleSelectItems"
-                    label="Content style"
-                    variant="outlined"
-                    hide-details
-                    class="mb-2"
-                    @update:model-value="(value) => changeEducationContentStyle(index, String(value) as ContentStyle)"
-                  /><v-textarea
-                    :model-value="getEducationContent(index)"
-                    label="Content (1 line = 1 item, timeline: Label | Detail)"
-                    rows="8"
-                    variant="outlined"
-                    hide-details
-                    @update:model-value="(value) => setEducationContent(index, String(value))"
-                /></v-col>
-                <v-col cols="12" md="2" class="d-flex align-center">
-                  <div class="d-flex flex-column ga-1">
-                    <v-btn
-                      icon="mdi-chevron-up"
-                      variant="text"
-                      size="x-small"
-                      :disabled="index === 0"
-                      @click="moveEducation(index, 'up')"
-                    />
-                    <v-btn
-                      icon="mdi-chevron-down"
-                      variant="text"
-                      size="x-small"
-                      :disabled="index === resume.education.length - 1"
-                      @click="moveEducation(index, 'down')"
-                    />
-                    <v-btn
-                      icon="mdi-delete-outline"
-                      color="error"
-                      variant="text"
-                      size="small"
-                      @click="removeEducation(index)"
-                    />
-                  </div>
-                </v-col>
-              </v-row>
-            </article>
-
-            <article class="form-section mb-4">
-              <header class="mb-4">
-                <h2>Skills & Languages</h2>
-              </header>
-              <div class="mb-4">
-                <AppSelect
-                  v-model="levelInputMode"
-                  :items="[
-                    { label: 'Percentage slider', value: 'percent' },
-                    { label: 'Stars (level 1-5)', value: 'stars' },
-                  ]"
-                  item-title="label"
-                  item-value="value"
-                  label="Level editor style"
-                  density="comfortable"
-                  hide-details
-                />
-              </div>
-              <div>
-                <div class="d-flex align-center justify-space-between my-4">
-                  <v-chip color="primary">Skills</v-chip>
-                  <v-btn
-                    size="small"
-                    variant="outlined"
-                    prepend-icon="mdi-plus"
-                    @click="addSkill"
-                    >Add</v-btn
-                  >
-                </div>
-                <div>
-                  <v-row
-                    v-for="(skill, index) in resume.skills"
-                    :key="`skill-${index}`"
-                    class="mb-2"
-                  >
-                    <v-col cols="5"
-                      ><v-text-field
-                        v-model="skill.name"
-                        label="Skill"
-                        variant="outlined"
-                        hide-details
-                    /></v-col>
-                    <v-col cols="5"
+                    <div v-if="importInProgress" class="mt-2">
+                      <v-progress-linear :model-value="importProgress" color="primary" height="8" rounded striped />
+                    </div>
+                    <v-alert
+                      v-if="importMessage"
+                      class="mt-2"
+                      :type="importInProgress ? 'info' : importMessageType"
+                      variant="tonal"
                     >
-                      <v-slider
-                        v-if="levelInputMode === 'percent'"
-                        v-model="skill.level"
-                        min="0"
-                        max="100"
-                        step="5"
-                        thumb-label
-                        color="primary"
-                        hide-details
-                      />
-                      <v-rating
-                        v-else
-                        :model-value="getLevelAsStars(skill.level)"
-                        color="amber"
-                        active-color="amber"
-                        density="comfortable"
-                        @update:model-value="setLevelFromStars('skills', index, $event || 0)"
-                      />
-                    </v-col>
-                    <v-col cols="2" class="d-flex align-center justify-center">
-                      <v-btn
-                        icon="mdi-delete-outline"
-                        size="x-small"
-                        color="error"
-                        variant="text"
-                        @click="removeSkill(index)"
-                      />
-                    </v-col>
-                  </v-row>
-                </div>
-              </div>
-
-              <div class="my-3">
-                <div class="d-flex align-center justify-space-between my-4">
-                  <v-chip color="primary"> Languages</v-chip>
-                  <v-btn
-                    size="small"
-                    variant="outlined"
-                    prepend-icon="mdi-plus"
-                    @click="addLanguage"
-                    >Add</v-btn
-                  >
-                </div>
-                <div>
-                  <v-row
-                    v-for="(language, index) in resume.languages"
-                    :key="`language-${index}`"
-                    class="mb-2"
-                  >
-                    <v-col cols="3"
-                      ><v-text-field
-                        v-model="language.name"
-                        label="Language"
-                        variant="outlined"
-                        hide-details
-                    /></v-col>
-                    <v-col cols="2">
-                      <v-text-field
-                        v-model="language.countryCode"
-                        label="Country code"
-                        placeholder="FR"
-                        maxlength="2"
-                        variant="outlined"
-                        hide-details
-                      />
-                    </v-col>
-                    <v-col cols="2">
-                      <v-text-field
-                        v-model="language.flag"
-                        label="Flag"
-                        placeholder="🇫🇷"
-                        variant="outlined"
-                        hide-details
-                      />
-                    </v-col>
-                    <v-col cols="4"
-                    >
-                      <v-slider
-                        v-if="levelInputMode === 'percent'"
-                        v-model="language.level"
-                        min="0"
-                        max="100"
-                        step="5"
-                        thumb-label
-                        color="primary"
-                        hide-details
-                      />
-                      <v-rating
-                        v-else
-                        :model-value="getLevelAsStars(language.level)"
-                        color="amber"
-                        active-color="amber"
-                        density="comfortable"
-                        @update:model-value="setLevelFromStars('languages', index, $event || 0)"
-                      />
-                    </v-col>
-                    <v-col cols="1" class="d-flex align-center justify-center">
-                      <v-btn
-                        icon="mdi-delete-outline"
-                        size="x-small"
-                        color="error"
-                        variant="text"
-                        @click="removeLanguage(index)"
-                      />
-                    </v-col>
-                  </v-row>
-                </div>
-              </div>
-            </article>
-
-            <article class="form-section mb-4">
-              <header class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap">
-                <h2>Projects</h2>
-                <v-btn prepend-icon="mdi-plus" variant="outlined" size="small" @click="addProject">Add</v-btn>
-              </header>
-              <v-row v-for="(project, index) in resume.projects" :key="`project-${index}`">
-                <v-col cols="12" md="4">
-                  <v-text-field v-model="project.name" label="Project name" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="12" md="8">
-                  <v-select
-                    v-model="project.contentStyle"
-                    :items="resumeContentStyleSelectItems"
-                    label="Content style"
-                    variant="outlined"
-                    hide-details
-                    class="mb-2"
-                    @update:model-value="(value) => changeProjectContentStyle(index, String(value) as ContentStyle)"
-                  />
-                  <v-textarea
-                    :model-value="getProjectContent(index)"
-                    label="Summary / impact (1 line = 1 item, timeline: Label | Detail)"
-                    rows="4"
-                    variant="outlined"
-                    hide-details
-                    @update:model-value="(value) => setProjectContent(index, String(value))"
-                  />
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-text-field v-model="project.imageUrl" label="Image URL (optional)" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="12" md="5" class="d-flex align-center ga-2">
-                  <v-btn prepend-icon="mdi-image-plus" variant="tonal" size="small" @click="openProjectImagePicker(index)">
-                    Upload image
-                  </v-btn>
-                  <input
-                    :ref="(el) => setProjectImageInputRef(index, el)"
-                    type="file"
-                    accept="image/*"
-                    class="d-none"
-                    @change="onProjectImageSelected(index, $event)"
-                  />
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="project.repositoryUrl"
-                    label="Repository URL (optional)"
-                    placeholder="https://github.com/org/repo"
-                    variant="outlined"
-                    :rules="[validateHttpRepositoryUrl]"
-                    @blur="updateProjectRepositoryProvider(project)"
-                  />
-                </v-col>
-                <v-col cols="12" md="5">
-                  <v-select
-                    v-model="project.repositoryProvider"
-                    :items="[
-                      { title: 'GitHub', value: 'github' },
-                      { title: 'GitLab', value: 'gitlab' },
-                      { title: 'Other', value: 'other' },
-                    ]"
-                    label="Repository provider (optional)"
-                    variant="outlined"
-                    hide-details
-                  />
-                </v-col>
-                <v-col cols="12" md="1" class="d-flex align-center justify-center">
-                  <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeProject(index)" />
-                </v-col>
-              </v-row>
-            </article>
-
-            <article class="form-section mb-4">
-              <header class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap">
-                <h2>Certifications</h2>
-                <v-btn prepend-icon="mdi-plus" variant="outlined" size="small" @click="addCertification">Add</v-btn>
-              </header>
-              <v-row v-for="(course, index) in resume.courses" :key="`course-${index}`">
-                <v-col cols="12" md="4">
-                  <v-text-field v-model="course.title" label="Certification title" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="12" md="3">
-                  <v-text-field v-model="course.school" label="Issuer" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="6" md="2">
-                  <v-text-field v-model="course.start" label="Date start" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="6" md="2">
-                  <v-text-field v-model="course.end" label="Date end" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="12" md="1" class="d-flex align-center justify-center">
-                  <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeCertification(index)" />
-                </v-col>
-              </v-row>
-            </article>
-
-            <article class="form-section mb-4">
-              <header class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap">
-                <h2>References</h2>
-                <v-btn prepend-icon="mdi-plus" variant="outlined" size="small" @click="addReference">Add</v-btn>
-              </header>
-              <v-row v-for="(reference, index) in resume.references" :key="`reference-${index}`">
-                <v-col cols="12" md="3">
-                  <v-text-field v-model="reference.name" label="Name" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="12" md="3">
-                  <v-text-field v-model="reference.company" label="Company" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="12" md="3">
-                  <v-text-field v-model="reference.email" label="Email" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="10" md="2">
-                  <v-text-field v-model="reference.phone" label="Phone" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="2" md="1" class="d-flex align-center justify-center">
-                  <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeReference(index)" />
-                </v-col>
-              </v-row>
-            </article>
-
-      </section>
-
-      <aside class="builder-preview-pane py-6 px-2">
-        <div class="builder-preview resume-preview-drawer">
-          <div class="resume-preview-wrapper">
-            <div
-              ref="previewExportRef"
-              class="preview-grid resume-preview-frame"
-              :class="[...previewDesignClasses, `photo-shape-${safePhotoShape}`]"
-              :style="previewStyle"
-            >
-              <div class="cv-preview-stage" :class="{ 'cv-preview-stage--bordered': selectedRounded !== 'none' }">
-                <div class="cv-page-shell" :class="previewDesignClasses">
-                  <template v-if="rendererReady">
-                    <ResumeRenderer
-                      :class="previewDesignClasses"
-                      :resume="resume"
-                      :show-photo="templateSupportsPhoto"
-                      :design-state="resumeRendererDesignState"
-                      :photo-offset-x="resume.photoOffsetX"
-                      :photo-offset-y="resume.photoOffsetY"
-                      :photo-scale="resume.photoScale"
-                      :photo-hidden="resume.photoHidden"
-                      :section-layout="orderedPreviewSections"
-                      :section-variants="sectionVariantByKey"
-                      :photo-shape-options="photoShapeOptions"
-                      :selected-photo-shape="safePhotoShape"
-                      :on-photo-click="onPreviewPhotoClick"
-                      :on-photo-shape-select="(shape) => selectedPhotoShape = shape"
-                      :template-skin="selectedTemplateSkin"
-                      editable
-                      @add-item="addItemToPreviewSection"
-                      @change-variant="setSectionVariant"
-                      @move-photo="movePhoto"
-                      @open-photo-picker="openPhotoPicker"
-                      @update:photo-size="layoutSettings.photoSize = $event"
-                      @update:photo-border-width="layoutSettings.photoBorderWidth = $event"
-                      @update:photo-position="layoutSettings.photoPosition = $event"
-                      @move-section="moveSection"
-                    />
-                  </template>
-                  <div v-else class="preview-fallback">
-                    <v-alert type="error" variant="tonal" density="comfortable" class="mb-3">
-                      {{ rendererError || 'La prévisualisation n’est pas disponible pour le moment.' }}
+                      {{ importMessage }}
                     </v-alert>
-                    <h2 class="text-h5 mb-2">{{ `${resume.firstName} ${resume.lastName}`.trim() || 'Votre nom' }}</h2>
-                    <p class="text-body-2 mb-4">{{ resume.role || 'Titre du poste' }}</p>
-                    <section
-                      v-for="section in previewFallbackSections"
-                      :key="`preview-fallback-${section.title}`"
+                  </v-card-text>
+                </v-card>
+              </v-menu>
+              <v-menu location="bottom center" origin="top center" max-width="620">
+                <template #activator="{ props }">
+                  <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-palette-outline" v-bind="props">
+                    Design
+                  </v-btn>
+                </template>
+                <v-card class="toolbar-menu-card">
+                  <v-card-title class="text-subtitle-2">Design</v-card-title>
+                  <v-card-text>
+                    <p class="section-label">Color palette</p>
+                    <div class="palette-grid mb-4">
+                      <button
+                        v-for="theme in colorThemes"
+                        :key="`toolbar-theme-${theme.name}`"
+                        type="button"
+                        class="palette-item"
+                        :class="{
+                          'palette-item--active': selectedTheme === theme.name,
+                        }"
+                        @click="selectedTheme = theme.name"
+                      >
+                        <span :style="{ background: theme.sidebar }" />
+                        <span :style="{ background: theme.accent }" />
+                        <span :style="{ background: theme.page }" />
+                      </button>
+                    </div>
+
+                    <p class="section-label">Page background</p>
+                    <div class="palette-grid mb-4">
+                      <button
+                        v-for="option in pageBackgroundValidation"
+                        :key="`toolbar-bg-${option.value}`"
+                        type="button"
+                        class="palette-item"
+                        :class="{
+                          'palette-item--active': selectedPageBackground === option.value,
+                        }"
+                        :disabled="option.blocked"
+                        :title="option.blocked ? 'Fond trop sombre ou contraste insuffisant' : option.label"
+                        @click="selectedPageBackground = option.value"
+                      >
+                        <span :style="{ background: option.page }" />
+                        <span :style="{ background: activeTheme.accent }" />
+                        <span :style="{ background: activeTheme.sidebar }" />
+                      </button>
+                    </div>
+
+                    <AppSelect
+                      v-model="selectedTextStyle"
+                      :items="textStyleOptions"
+                      item-title="label"
+                      item-value="value"
+                      label="Typography preset"
+                      density="comfortable"
+                      hide-details
+                    />
+
+                    <p class="section-label mt-4">Rounded</p>
+                    <v-btn-toggle v-model="selectedRounded" mandatory divided class="rounded-toggle" color="primary">
+                      <v-btn v-for="option in roundedOptions" :key="`toolbar-rounded-${option.value}`" :value="option.value" variant="text">
+                        {{ option.title }}
+                      </v-btn>
+                    </v-btn-toggle>
+
+                    <p class="section-label mt-4">Layout</p>
+                    <AppSelect
+                      v-model="layoutSettings.layoutMode"
+                      :items="layoutModeOptions"
+                      item-title="label"
+                      item-value="value"
+                      label="Layout mode"
+                      density="comfortable"
+                      hide-details
                       class="mb-3"
-                    >
-                      <h3 class="text-subtitle-2 mb-1">{{ section.title }}</h3>
-                      <ul class="pl-4">
-                        <li v-for="item in section.items" :key="`${section.title}-${item}`">
-                          {{ item }}
-                        </li>
-                      </ul>
-                    </section>
-                    <v-btn size="small" variant="outlined" prepend-icon="mdi-refresh" @click="resetRendererGuard">
-                      Réessayer le rendu
-                    </v-btn>
-                  </div>
-                  <div v-if="signatureDataUrl" class="signature-overlay">
-                    <img :src="signatureDataUrl" alt="Signature" />
+                    />
+                    <AppSelect
+                      v-model="layoutSettings.lineDensity"
+                      :items="lineDensityOptions"
+                      item-title="label"
+                      item-value="value"
+                      label="Density"
+                      density="comfortable"
+                      hide-details
+                      class="mb-3"
+                    />
+                    <AppSelect
+                      v-model="layoutSettings.sectionDividerStyle"
+                      :items="sectionDividerStyleOptions"
+                      item-title="label"
+                      item-value="value"
+                      label="Section dividers"
+                      density="comfortable"
+                      hide-details
+                    />
+
+                    <p class="section-label mt-4">Icons</p>
+                    <div class="d-grid ga-3">
+                      <v-switch v-model="layoutSettings.showSectionIcons" label="Show section icons" color="primary" hide-details inset />
+                      <v-switch v-model="layoutSettings.showContactIcons" label="Show contact icons" color="primary" hide-details inset />
+                      <AppSelect
+                        v-model="layoutSettings.sectionIconStyle"
+                        :items="sectionIconStyleOptions"
+                        item-title="label"
+                        item-value="value"
+                        label="Icon style"
+                        density="comfortable"
+                        hide-details
+                      />
+                      <AppSelect
+                        v-model="layoutSettings.iconSize"
+                        :items="iconSizeOptions"
+                        item-title="label"
+                        item-value="value"
+                        label="Icon size"
+                        density="comfortable"
+                        hide-details
+                      />
+                      <AppSelect
+                        v-model="layoutSettings.iconColor"
+                        :items="iconColorOptions"
+                        item-title="label"
+                        item-value="value"
+                        label="Icon color"
+                        density="comfortable"
+                        hide-details
+                      />
+                    </div>
+                  </v-card-text>
+                </v-card>
+              </v-menu>
+              <v-menu v-model="toolbarSectionMenuOpen" location="bottom center" origin="top center">
+                <template #activator="{ props }">
+                  <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-list-outline" v-bind="props">
+                    Sections
+                  </v-btn>
+                </template>
+                <v-list density="compact" min-width="220">
+                  <v-list-item
+                    v-for="section in addSectionOptions"
+                    :key="`toolbar-add-${section.value}`"
+                    :title="section.label"
+                    @click="openAddSectionDialog(section.value)"
+                  />
+                </v-list>
+              </v-menu>
+            </div>
+          </div>
+
+          <aside class="template-control-panel">
+            <h3 class="text-subtitle-1 font-weight-bold mb-3">Templates</h3>
+            <v-chip-group
+              :model-value="templateQuickFilter"
+              selected-class="text-primary"
+              column
+              class="mb-3"
+              @update:model-value="onTemplateQuickFilterChange"
+            >
+              <v-chip
+                v-for="filterOption in templateQuickFilterOptions"
+                :key="`toolbar-template-filter-${filterOption.value}`"
+                :value="filterOption.value"
+                size="small"
+                label
+              >
+                {{ filterOption.label }}
+              </v-chip>
+            </v-chip-group>
+            <div class="template-drawer__grid">
+              <button
+                v-for="templateCard in filteredTemplatesByDrawer"
+                :key="`toolbar-template-card-${templateCard.id}`"
+                type="button"
+                class="template-drawer__item"
+                :class="{ 'template-drawer__item--active': selectedTemplate === templateCard.id }"
+                @click="applyTemplateSelection(templateCard.id)"
+              >
+                <v-img :src="templateCard.image" :alt="templateCard.title" height="96" cover class="template-drawer__thumb" />
+                <span class="template-drawer__label">{{ templateCard.title }}</span>
+              </button>
+            </div>
+          </aside>
+        </div>
+
+        <section class="builder-preview-pane py-6 px-2">
+          <div class="builder-preview resume-preview-drawer">
+            <div class="resume-preview-wrapper">
+              <div
+                ref="previewExportRef"
+                class="preview-grid resume-preview-frame"
+                :class="[...previewDesignClasses, `photo-shape-${safePhotoShape}`]"
+                :style="previewStyle"
+              >
+                <div class="cv-preview-stage" :class="{ 'cv-preview-stage--bordered': selectedRounded !== 'none' }">
+                  <div class="cv-page-shell" :class="previewDesignClasses">
+                    <template v-if="rendererReady">
+                      <ResumeRenderer
+                        :class="previewDesignClasses"
+                        :resume="resume"
+                        :show-photo="templateSupportsPhoto"
+                        :design-state="resumeRendererDesignState"
+                        :photo-offset-x="resume.photoOffsetX"
+                        :photo-offset-y="resume.photoOffsetY"
+                        :photo-scale="resume.photoScale"
+                        :photo-hidden="resume.photoHidden"
+                        :section-layout="orderedPreviewSections"
+                        :section-variants="sectionVariantByKey"
+                        :photo-shape-options="photoShapeOptions"
+                        :selected-photo-shape="safePhotoShape"
+                        :on-photo-click="onPreviewPhotoClick"
+                        :on-photo-shape-select="(shape) => selectedPhotoShape = shape"
+                        :template-skin="selectedTemplateSkin"
+                        editable
+                        @add-item="addItemToPreviewSection"
+                        @change-variant="setSectionVariant"
+                        @move-photo="movePhoto"
+                        @open-photo-picker="openPhotoPicker"
+                        @update:photo-size="layoutSettings.photoSize = $event"
+                        @update:photo-border-width="layoutSettings.photoBorderWidth = $event"
+                        @update:photo-position="layoutSettings.photoPosition = $event"
+                        @move-section="moveSection"
+                      />
+                    </template>
+                    <div v-else class="preview-fallback">
+                      <v-alert type="error" variant="tonal" density="comfortable" class="mb-3">
+                        {{ rendererError || 'La prévisualisation n’est pas disponible pour le moment.' }}
+                      </v-alert>
+                      <h2 class="text-h5 mb-2">{{ `${resume.firstName} ${resume.lastName}`.trim() || 'Votre nom' }}</h2>
+                      <p class="text-body-2 mb-4">{{ resume.role || 'Titre du poste' }}</p>
+                      <section
+                        v-for="section in previewFallbackSections"
+                        :key="`preview-fallback-${section.title}`"
+                        class="mb-3"
+                      >
+                        <h3 class="text-subtitle-2 mb-1">{{ section.title }}</h3>
+                        <ul class="pl-4">
+                          <li v-for="item in section.items" :key="`${section.title}-${item}`">
+                            {{ item }}
+                          </li>
+                        </ul>
+                      </section>
+                      <v-btn size="small" variant="outlined" prepend-icon="mdi-refresh" @click="resetRendererGuard">
+                        Réessayer le rendu
+                      </v-btn>
+                    </div>
+                    <div v-if="signatureDataUrl" class="signature-overlay">
+                      <img :src="signatureDataUrl" alt="Signature" />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </aside>
-
-    </div>
+        </section>
+      </div>
+    </main>
 
     <v-dialog v-model="addSectionDialogOpen" max-width="760">
       <v-card>
@@ -4191,14 +3569,39 @@ if (import.meta.client) {
   --preview-shell-padding: 16px;
   --preview-shell-max-width: calc(var(--preview-page-width) + (var(--preview-shell-padding) * 2));
   min-height: 100vh;
-  padding-top: 108px;
 }
 
-.builder-layout {
+.resume-content-main {
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding: 104px 0 24px;
+}
+
+.resume-page-content {
+  width: min(100%, var(--preview-shell-max-width));
+  max-width: var(--preview-shell-max-width);
+  margin: 0 auto;
+}
+
+.resume-control-panels {
+  position: sticky;
+  top: 70px;
+  z-index: 20;
   display: grid;
-  grid-template-columns: minmax(280px, 1fr) minmax(560px, 1.3fr);
-  align-items: start;
-  gap: var(--builder-column-gap);
+  gap: 10px;
+  justify-items: center;
+  padding-inline: 12px;
+}
+
+.template-control-panel {
+  width: min(100%, 760px);
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-primary)) 24%, transparent);
+  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 92%, transparent);
+  backdrop-filter: blur(8px);
 }
 
 .builder-form {
@@ -4214,9 +3617,7 @@ if (import.meta.client) {
 }
 
 .builder-preview-pane {
-  position: sticky;
-  top: 60px;
-  align-self: start;
+  width: 100%;
   display: flex;
   justify-content: center;
   padding-inline: calc(var(--builder-column-gap) / 2);
@@ -4311,6 +3712,11 @@ if (import.meta.client) {
   box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.3);
 }
 
+.rounded-toggle {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .photo-uploader {
   display: flex;
   align-items: center;
@@ -4325,15 +3731,9 @@ if (import.meta.client) {
 }
 
 .local-toolbar-actions {
-  position: fixed;
-  top: 70px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 20;
   display: flex;
   justify-content: center;
-  width: min(100%, 980px);
-  padding-inline: 12px;
+  width: 100%;
 }
 
 .local-toolbar-actions__row {
@@ -4363,6 +3763,9 @@ if (import.meta.client) {
 }
 
 .preview-grid {
+  width: min(100%, var(--preview-shell-max-width));
+  max-width: var(--preview-shell-max-width);
+  margin: 0 auto;
   --cv-sidebar: #0b3a78;
   --cv-accent: #2563eb;
   --cv-page: #eff6ff;
@@ -4692,10 +4095,6 @@ if (import.meta.client) {
 }
 
 @media (max-width: 1120px) {
-  .builder-layout {
-    grid-template-columns: 1fr;
-  }
-
   .builder-form {
     border: 0;
     position: static;
@@ -4716,10 +4115,17 @@ if (import.meta.client) {
     grid-template-columns: 1fr;
   }
 
-  .local-toolbar-actions {
-    justify-content: center;
+  .resume-control-panels {
     top: 66px;
-    width: calc(100% - 20px);
+    padding-inline: 10px;
+  }
+
+  .template-control-panel {
+    width: 100%;
+  }
+
+  .resume-content-main {
+    height: calc(100vh - 68px);
   }
 }
 </style>

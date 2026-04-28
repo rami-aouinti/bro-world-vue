@@ -256,55 +256,91 @@ onBeforeUnmount(clearTimer)
 </script>
 
 <template>
-  <v-container fluid>
+  <div>
     <AppPageDrawers>
       <template #left>
         <QuizLeaderboardPanel />
       </template>
+
+      <template #right>
+        <div class="pa-4 d-flex flex-column ga-4">
+          <v-card rounded="xl" variant="tonal" color="primary">
+            <v-card-item>
+              <v-card-title class="text-subtitle-1">
+                {{ t('appbar.quiz') }}
+              </v-card-title>
+              <v-card-subtitle>
+                {{ t('pages.applications.quiz.selectCategoryTitle') }}
+              </v-card-subtitle>
+            </v-card-item>
+          </v-card>
+
+          <v-list density="comfortable" class="app-right-drawer-list">
+            <v-list-item
+              prepend-icon="mdi-shape-outline"
+              :title="t('pages.applications.quiz.selectCategoryTitle')"
+            />
+            <v-list-item
+              prepend-icon="mdi-tune-vertical"
+              :title="t('pages.applications.quiz.selectLevelTitle')"
+            />
+            <v-list-item
+              prepend-icon="mdi-timer-outline"
+              :title="t('pages.applications.quiz.timeLeft', { time: remainingTime })"
+            />
+            <v-list-item
+              prepend-icon="mdi-flag-checkered"
+              :title="t('pages.applications.quiz.questionCounter', { current: currentQuestionIndex + 1, total: Math.max(questions.length, 1) })"
+            />
+          </v-list>
+        </div>
+      </template>
     </AppPageDrawers>
-    <v-card
-      variant="text"
-      class="content-main postcard-gradient-card mb-3 pa-3 quiz-page-card"
-      rounded="xl"
-    >
-      <v-fade-transition>
-        <div>
-          <section v-if="quizStep === 'select-category'">
-            <h3 class="text-h6 mb-4">
-              {{ t('pages.applications.quiz.selectCategoryTitle') }}
-            </h3>
-            <v-row>
-              <v-col
-                v-for="(category, index) in categories"
-                :key="category.id"
-                cols="12"
-                sm="6"
-                lg="4"
-              >
-                <v-slide-y-transition :appear="true">
-                  <v-card
-                    class="quiz-card category-card"
-                    rounded="xl"
-                    :style="{
-                      backgroundImage: categoryGradient(category),
-                      animationDelay: `${index * 80}ms`,
-                    }"
-                    @click="selectCategory(category.slug)"
-                  >
-                    <v-card-text>
-                      <div class="d-flex align-center mb-3">
-                        <v-icon
-                          :icon="category.icon || 'mdi-shape-outline'"
-                          size="32"
-                        />
-                        <div class="text-h6 mx-3">{{ category.name }}</div>
-                      </div>
-                    </v-card-text>
-                  </v-card>
-                </v-slide-y-transition>
-              </v-col>
-            </v-row>
-          </section>
+
+    <v-container fluid>
+      <v-card
+        variant="text"
+        class="content-main postcard-gradient-card mb-3 pa-3 quiz-page-card"
+        rounded="xl"
+      >
+        <v-fade-transition>
+          <div>
+            <section v-if="quizStep === 'select-category'">
+              <h3 class="text-h6 mb-4">
+                {{ t('pages.applications.quiz.selectCategoryTitle') }}
+              </h3>
+              <v-row>
+                <v-col
+                  v-for="(category, index) in categories"
+                  :key="category.id"
+                  cols="12"
+                  sm="6"
+                  lg="4"
+                >
+                  <v-slide-y-transition :appear="true">
+                    <v-card
+                      class="quiz-card category-card"
+                      rounded="xl"
+                      :style="{
+                        backgroundImage: categoryGradient(category),
+                        animationDelay: `${index * 80}ms`,
+                      }"
+                      @click="selectCategory(category.slug)"
+                    >
+                      <v-card-text>
+                        <div class="d-flex align-center mb-3">
+                          <v-icon
+                            :icon="category.icon || 'mdi-shape-outline'"
+                            size="32"
+                          />
+                          <div class="text-h6 mx-3">{{ category.name }}</div>
+                        </div>
+                      </v-card-text>
+                    </v-card>
+                  </v-slide-y-transition>
+                </v-col>
+              </v-row>
+            </section>
 
           <section
             v-else-if="quizStep === 'select-level'"
@@ -362,7 +398,7 @@ onBeforeUnmount(clearTimer)
                 {{ t('pages.applications.quiz.startQuiz') }}
               </v-btn>
             </div>
-          </section>
+            </section>
 
           <section v-else-if="quizStep === 'in-quiz' && currentQuestion">
             <div
@@ -535,10 +571,11 @@ onBeforeUnmount(clearTimer)
               </div>
             </v-card>
           </section>
-        </div>
-      </v-fade-transition>
-    </v-card>
-  </v-container>
+          </div>
+        </v-fade-transition>
+      </v-card>
+    </v-container>
+  </div>
 </template>
 
 <style scoped>
