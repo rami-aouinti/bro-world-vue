@@ -53,6 +53,14 @@ const props = withDefaults(
     sectionLayout?: SectionLayoutEntry[]
     sectionVariants?: Partial<Record<ResumeSectionLayoutKey, string>>
     themeTokens?: Record<string, string>
+    roundedClass?: string
+    textStyleClass?: string
+    density?: 'compact' | 'comfortable'
+    dividerStyle?: 'none' | 'line' | 'thick'
+    sidebarWidth?: number
+    photoSize?: number
+    photoBorderWidth?: number
+    photoPosition?: 'left' | 'center' | 'right'
     templateSkin: ResumeTemplateSkin
   }>(),
   {
@@ -65,6 +73,14 @@ const props = withDefaults(
     sectionLayout: () => [],
     sectionVariants: () => ({}),
     themeTokens: () => ({}),
+    roundedClass: 'radius-md',
+    textStyleClass: 'text-style-clean',
+    density: 'comfortable',
+    dividerStyle: 'line',
+    sidebarWidth: 280,
+    photoSize: 96,
+    photoBorderWidth: 4,
+    photoPosition: 'right',
   },
 )
 
@@ -112,6 +128,21 @@ const photoControlsVisible = ref(false)
 const hasRenderedAvatar = computed(() =>
   Boolean(props.showPhoto && props.resume?.photoUrl),
 )
+const rootDesignClasses = computed(() => [
+  props.roundedClass,
+  props.textStyleClass,
+  `density-${props.density}`,
+  `divider-${props.dividerStyle}`,
+  `photo-position-${props.photoPosition}`,
+])
+const layoutStyle = computed(() => ({
+  '--resume-sidebar-width': `${props.sidebarWidth}px`,
+}))
+const avatarStyle = computed(() => ({
+  width: `${props.photoSize}px`,
+  height: `${props.photoSize}px`,
+  borderWidth: `${props.photoBorderWidth}px`,
+}))
 
 function fallbackVariant(sectionKey: ResumeSectionLayoutKey): string {
   if (sectionKey === 'experience') return 'detailed'
@@ -199,7 +230,7 @@ function onPhotoFrameFocusOut(event: FocusEvent) {
 </script>
 
 <template>
-  <article :class="templateSkin.rootClass" :style="themeTokens">
+  <article :class="[templateSkin.rootClass, ...rootDesignClasses]" :style="themeTokens">
     <header class="resume-skin__header">
       <div>
         <h1>
@@ -296,8 +327,8 @@ function onPhotoFrameFocusOut(event: FocusEvent) {
           </v-btn>
         </div>
         <v-avatar
-          size="96"
           class="resume-skin__avatar"
+          :style="avatarStyle"
           @click="onPhotoClick?.()"
         >
           <v-img :src="resume.photoUrl" cover />
@@ -305,7 +336,7 @@ function onPhotoFrameFocusOut(event: FocusEvent) {
       </div>
     </header>
 
-    <div :class="templateSkin.wrapperClass">
+    <div :class="templateSkin.wrapperClass" :style="layoutStyle">
       <aside :class="templateSkin.asideClass">
         <section v-if="templateSkin.showContactInAside">
           <h3 class="cv-heading-section">Contact</h3>
@@ -480,6 +511,8 @@ function onPhotoFrameFocusOut(event: FocusEvent) {
 .resume-skin__avatar {
   position: relative;
   z-index: 1;
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--cv-accent) 28%, var(--cv-page));
 }
 
 .photo-shape-picker {
@@ -551,5 +584,62 @@ function onPhotoFrameFocusOut(event: FocusEvent) {
 .resume-skin__aside {
   display: grid;
   gap: 14px;
+}
+
+.resume-skin__layout {
+  grid-template-columns: var(--resume-sidebar-width, 280px) minmax(0, 1fr);
+}
+
+.density-compact .resume-skin__header {
+  margin-bottom: 8px;
+}
+
+.density-compact .resume-skin__main,
+.density-compact .resume-skin__aside {
+  gap: 10px;
+}
+
+.density-comfortable .resume-skin__header {
+  margin-bottom: 12px;
+}
+
+.density-comfortable .resume-skin__main,
+.density-comfortable .resume-skin__aside {
+  gap: 14px;
+}
+
+.photo-position-left .resume-skin__header {
+  justify-content: flex-start;
+  gap: 16px;
+}
+
+.photo-position-center .resume-skin__header {
+  justify-content: center;
+  gap: 16px;
+}
+
+.photo-position-right .resume-skin__header {
+  justify-content: space-between;
+}
+
+.divider-line :deep(.resume-section),
+.divider-line .resume-skin__main > section,
+.divider-line .resume-skin__aside > section {
+  border-bottom: 1px solid color-mix(in srgb, var(--cv-secondary) 20%, transparent);
+  padding-bottom: 10px;
+}
+
+.divider-thick :deep(.resume-section),
+.divider-thick .resume-skin__main > section,
+.divider-thick .resume-skin__aside > section {
+  border-bottom: 2px solid color-mix(in srgb, var(--cv-accent) 24%, transparent);
+  padding-bottom: 12px;
+}
+
+.divider-none :deep(.resume-section),
+.divider-none .resume-skin__main > section,
+.divider-none .resume-skin__aside > section {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 </style>
