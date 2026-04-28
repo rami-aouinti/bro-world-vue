@@ -12,6 +12,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (event: 'select', value: string): void
+  (event: 'move', direction: 'left' | 'right' | 'up' | 'down'): void
 }>()
 </script>
 
@@ -28,6 +29,15 @@ const emit = defineEmits<{
       >
         {{ shape.icon ?? shape.label }}
       </v-btn>
+    </div>
+
+    <div class="photo-move-controls">
+      <v-btn icon="mdi-arrow-up" size="x-small" variant="tonal" @click="emit('move', 'up')" />
+      <div class="photo-move-controls__row">
+        <v-btn icon="mdi-arrow-left" size="x-small" variant="tonal" @click="emit('move', 'left')" />
+        <v-btn icon="mdi-arrow-right" size="x-small" variant="tonal" @click="emit('move', 'right')" />
+      </div>
+      <v-btn icon="mdi-arrow-down" size="x-small" variant="tonal" @click="emit('move', 'down')" />
     </div>
   </div>
 </template>
@@ -79,5 +89,27 @@ const emit = defineEmits<{
   place-items: center;
   font-size: 0.72rem;
   line-height: 1;
+}
+
+
+.photo-move-controls {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-top: auto;
+  margin-bottom: 8px;
+  padding: 3px;
+  border-radius: calc(var(--picker-radius) - 2px);
+  border: 1px solid var(--picker-border);
+  background: var(--picker-surface);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 var(--cv-space-2) var(--cv-space-4) var(--cv-shadow-soft);
+}
+
+.photo-move-controls__row {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
 }
 </style>
