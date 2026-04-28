@@ -7,7 +7,7 @@ import ResumeSectionHobby from '~/components/Resume/Sections/ResumeSectionHobby.
 import ResumeSectionCertification from '~/components/Resume/Sections/ResumeSectionCertification.vue'
 import ResumeSectionReference from '~/components/Resume/Sections/ResumeSectionReference.vue'
 import ResumeSectionSkill from '~/components/Resume/Sections/ResumeSectionSkill.vue'
-import type { ResumeSectionKey } from '~/constants/resumeTemplateSkins'
+import type { ResumeSectionIconStyle, ResumeSectionKey } from '~/constants/resumeTemplateSkins'
 
 const props = withDefaults(defineProps<{
   sectionKey: ResumeSectionKey | 'skill'
@@ -22,6 +22,7 @@ const props = withDefaults(defineProps<{
   themeTokens?: Record<string, string>
   sectionIcon?: string
   showSectionIcon?: boolean
+  sectionIconStyle?: ResumeSectionIconStyle
 }>(), {
   editable: false,
   layoutDensity: 'normal',
@@ -32,6 +33,7 @@ const props = withDefaults(defineProps<{
   themeTokens: () => ({}),
   sectionIcon: undefined,
   showSectionIcon: true,
+  sectionIconStyle: undefined,
 })
 
 const emit = defineEmits<{
@@ -64,6 +66,7 @@ const sectionHeadingProps = computed(() => {
     return {
       sectionIcon: props.sectionIcon,
       showSectionIcon: props.showSectionIcon,
+      sectionIconStyle: props.sectionIconStyle,
     }
   }
 
