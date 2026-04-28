@@ -51,6 +51,25 @@ function updateText(path: string, value: string) {
   }
   target[last] = value
 }
+
+function detectProvider(project: Record<string, any>): 'github' | 'gitlab' | 'other' | null {
+  if (project.repositoryProvider === 'github' || project.repositoryProvider === 'gitlab' || project.repositoryProvider === 'other') {
+    return project.repositoryProvider
+  }
+  const repositoryUrl = String(project.repositoryUrl || '').toLowerCase()
+  if (!repositoryUrl) return null
+  if (repositoryUrl.includes('github.com')) return 'github'
+  if (repositoryUrl.includes('gitlab.com')) return 'gitlab'
+  return 'other'
+}
+
+function providerIcon(project: Record<string, any>) {
+  const provider = detectProvider(project)
+  if (provider === 'github') return 'mdi-github'
+  if (provider === 'gitlab') return 'mdi-gitlab'
+  if (provider === 'other') return 'mdi-source-repository'
+  return ''
+}
 </script>
 <template>
   <section :class="['project-section', 'resume-section-hoverable', `density-${layoutDensity}`]" :style="sectionStyle">
@@ -66,7 +85,24 @@ function updateText(path: string, value: string) {
         class="entry text-dark"
         :class="{ 'project-card': safeVariant === 'cards' || safeVariant === 'two-column' }"
       >
-        <h4 class="text-dark"><span class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span></h4>
+        <div class="project-heading-row">
+          <v-avatar v-if="project.imageUrl || project.company?.logo" size="40" rounded="lg" class="project-thumb">
+            <v-img :src="project.imageUrl || project.company?.logo" cover />
+          </v-avatar>
+          <h4 class="text-dark project-title">
+            <a
+              v-if="project.repositoryUrl"
+              :href="project.repositoryUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="project-title-link"
+            >
+              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span>
+              <v-icon v-if="providerIcon(project)" :icon="providerIcon(project)" size="16" class="ml-1" />
+            </a>
+            <span v-else class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span>
+          </h4>
+        </div>
         <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
       </article>
     </div>
@@ -97,6 +133,11 @@ function updateText(path: string, value: string) {
 }
 .project-grid { display: grid; gap: var(--entry-gap, calc(var(--cv-space-2) + var(--cv-space-1) / 2)); }
 .project-grid--two-column { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.project-heading-row { display: flex; align-items: center; gap: var(--cv-space-2); margin-bottom: var(--cv-space-2); }
+.project-thumb { flex-shrink: 0; border: 1px solid color-mix(in srgb, var(--cv-accent) 20%, transparent); }
+.project-title { margin: 0; }
+.project-title-link { color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 2px; }
+.project-title-link:hover { text-decoration: underline; }
 .entry {
   position: relative;
   border: var(--rs-card-border, none);

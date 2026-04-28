@@ -53,7 +53,9 @@ type Course = {
 type Project = {
   name: string
   summary: string
-  link?: string
+  imageUrl?: string
+  repositoryUrl?: string
+  repositoryProvider?: 'github' | 'gitlab' | 'other'
 }
 type StructuredUser = {
   fullName?: string
@@ -527,16 +529,21 @@ const resume = reactive<ResumeModel>({
       name: 'Campus Editorial Newsletter',
       summary:
         'Led content calendar and boosted monthly newsletter open rate by 32%.',
+      repositoryUrl: 'https://github.com/example/campus-editorial-newsletter',
+      repositoryProvider: 'github',
     },
     {
       name: 'Student Podcast Launch',
       summary:
         'Created scripts and episode communication plan for a 10-episode launch.',
+      repositoryUrl: 'https://gitlab.com/example/student-podcast-launch',
+      repositoryProvider: 'gitlab',
     },
   ] as Project[],
 })
 
 const uploadInput = ref<HTMLInputElement | null>(null)
+const projectImageInputs = ref<Record<number, HTMLInputElement | null>>({})
 const importPdfInput = ref<HTMLInputElement | null>(null)
 const importInProgress = ref(false)
 const importProgress = ref(0)
@@ -637,7 +644,7 @@ const sectionItemDraft = reactive({
   experience: { role: '', company: '', city: '', start: '', end: '', bullets: '' },
   education: { degree: '', school: '', city: '', start: '', end: '', note: '' },
   language: { name: '', level: 80, stars: 4, countryCode: '', flag: '' },
-  project: { name: '', summary: '', link: '' },
+  project: { name: '', summary: '', imageUrl: '', repositoryUrl: '' },
 })
 const addSectionDraft = reactive({
   profile: { profile: '' },
@@ -646,7 +653,7 @@ const addSectionDraft = reactive({
   skill: { name: '', level: 80 },
   language: { name: '', level: 80, countryCode: '', flag: '' },
   hobby: { name: '' },
-  project: { name: '', summary: '' },
+  project: { name: '', summary: '', imageUrl: '', repositoryUrl: '' },
   certification: { title: '', school: '', start: '', end: '' },
   reference: { name: '', company: '', email: '', phone: '' },
 })
@@ -689,6 +696,51 @@ function onPhotoSelected(event: Event) {
   }
   reader.readAsDataURL(file)
   input.value = ''
+}
+
+function setProjectImageInputRef(index: number, element: Element | null) {
+  projectImageInputs.value[index] = element as HTMLInputElement | null
+}
+
+function openProjectImagePicker(index: number) {
+  projectImageInputs.value[index]?.click()
+}
+
+function onProjectImageSelected(index: number, event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  const reader = new FileReader()
+  reader.onload = () => {
+    const imageUrl = typeof reader.result === 'string' ? reader.result : ''
+    resume.projects[index].imageUrl = imageUrl
+  }
+  reader.readAsDataURL(file)
+  input.value = ''
+}
+
+function detectRepositoryProvider(repositoryUrl?: string): Project['repositoryProvider'] {
+  if (!repositoryUrl) return undefined
+  const normalizedUrl = repositoryUrl.toLowerCase()
+  if (normalizedUrl.includes('github.com')) return 'github'
+  if (normalizedUrl.includes('gitlab.com')) return 'gitlab'
+  return 'other'
+}
+
+function validateHttpRepositoryUrl(value?: string) {
+  if (!value) return true
+  try {
+    const parsed = new URL(value)
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:' || 'Repository URL must start with http:// or https://'
+  }
+  catch {
+    return 'Repository URL must be a valid URL (http/https).'
+  }
+}
+
+function updateProjectRepositoryProvider(project: Project) {
+  project.repositoryProvider = detectRepositoryProvider(project.repositoryUrl)
 }
 
 function clearPhoto() {
@@ -857,6 +909,9 @@ function addProject() {
   resume.projects.push({
     name: '',
     summary: '',
+    imageUrl: '',
+    repositoryUrl: '',
+    repositoryProvider: undefined,
   })
 }
 
@@ -924,7 +979,7 @@ function resetSectionDraft(section: AddSectionType) {
       addSectionDraft.hobby = { name: '' }
       break
     case 'project':
-      addSectionDraft.project = { name: '', summary: '' }
+      addSectionDraft.project = { name: '', summary: '', imageUrl: '', repositoryUrl: '' }
       break
     case 'certification':
       addSectionDraft.certification = { title: '', school: '', start: '', end: '' }
@@ -982,7 +1037,10 @@ function submitAddSection() {
       }
       break
     case 'project':
-      resume.projects.push({ ...addSectionDraft.project })
+      resume.projects.push({
+        ...addSectionDraft.project,
+        repositoryProvider: detectRepositoryProvider(addSectionDraft.project.repositoryUrl),
+      })
       break
     case 'certification':
       resume.courses.push({ ...addSectionDraft.certification })
@@ -1023,7 +1081,7 @@ function resetSectionItemDraft(section: PreviewSectionKey) {
       sectionItemDraft.language = { name: '', level: 80, stars: 4, countryCode: '', flag: '' }
       break
     case 'project':
-      sectionItemDraft.project = { name: '', summary: '', link: '' }
+      sectionItemDraft.project = { name: '', summary: '', imageUrl: '', repositoryUrl: '' }
       break
   }
 }
@@ -1075,7 +1133,9 @@ function submitSectionItemDialog() {
       item = {
         name: sectionItemDraft.project.name,
         summary: sectionItemDraft.project.summary,
-        ...(sectionItemDraft.project.link.trim() ? { link: sectionItemDraft.project.link.trim() } : {}),
+        imageUrl: sectionItemDraft.project.imageUrl.trim(),
+        repositoryUrl: sectionItemDraft.project.repositoryUrl.trim(),
+        repositoryProvider: detectRepositoryProvider(sectionItemDraft.project.repositoryUrl.trim()),
       }
       break
   }
@@ -1588,7 +1648,9 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
   if (Array.isArray(data.projects) && data.projects.length) {
     resume.projects = data.projects.map((project) => ({
       name: String(project.title || ''),
-      summary: [project.description, project.link].filter(Boolean).join(' • '),
+      summary: String(project.description || ''),
+      repositoryUrl: String(project.link || ''),
+      repositoryProvider: detectRepositoryProvider(String(project.link || '')),
     }))
   }
 
@@ -2528,8 +2590,46 @@ if (import.meta.client) {
                 <v-col cols="12" md="4">
                   <v-text-field v-model="project.name" label="Project name" variant="outlined" hide-details />
                 </v-col>
-                <v-col cols="12" md="7">
+                <v-col cols="12" md="8">
                   <v-text-field v-model="project.summary" label="Summary / impact" variant="outlined" hide-details />
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field v-model="project.imageUrl" label="Image URL (optional)" variant="outlined" hide-details />
+                </v-col>
+                <v-col cols="12" md="5" class="d-flex align-center ga-2">
+                  <v-btn prepend-icon="mdi-image-plus" variant="tonal" size="small" @click="openProjectImagePicker(index)">
+                    Upload image
+                  </v-btn>
+                  <input
+                    :ref="(el) => setProjectImageInputRef(index, el)"
+                    type="file"
+                    accept="image/*"
+                    class="d-none"
+                    @change="onProjectImageSelected(index, $event)"
+                  />
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    v-model="project.repositoryUrl"
+                    label="Repository URL (optional)"
+                    placeholder="https://github.com/org/repo"
+                    variant="outlined"
+                    :rules="[validateHttpRepositoryUrl]"
+                    @blur="updateProjectRepositoryProvider(project)"
+                  />
+                </v-col>
+                <v-col cols="12" md="5">
+                  <v-select
+                    v-model="project.repositoryProvider"
+                    :items="[
+                      { title: 'GitHub', value: 'github' },
+                      { title: 'GitLab', value: 'gitlab' },
+                      { title: 'Other', value: 'other' },
+                    ]"
+                    label="Repository provider (optional)"
+                    variant="outlined"
+                    hide-details
+                  />
                 </v-col>
                 <v-col cols="12" md="1" class="d-flex align-center justify-center">
                   <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeProject(index)" />
@@ -3046,6 +3146,14 @@ if (import.meta.client) {
           <template v-else-if="addSectionType === 'project'">
             <v-text-field v-model="addSectionDraft.project.name" label="Project name" variant="outlined" hide-details />
             <v-textarea v-model="addSectionDraft.project.summary" label="Project summary" rows="4" variant="outlined" hide-details />
+            <v-text-field v-model="addSectionDraft.project.imageUrl" label="Image URL (optional)" variant="outlined" hide-details />
+            <v-text-field
+              v-model="addSectionDraft.project.repositoryUrl"
+              label="Repository URL (optional)"
+              placeholder="https://github.com/org/repo"
+              variant="outlined"
+              :rules="[validateHttpRepositoryUrl]"
+            />
           </template>
 
           <template v-else-if="addSectionType === 'certification'">
@@ -3132,11 +3240,17 @@ if (import.meta.client) {
             <v-text-field v-model="sectionItemDraft.project.name" label="Project name" variant="outlined" hide-details />
             <v-textarea v-model="sectionItemDraft.project.summary" label="Project summary" rows="4" variant="outlined" hide-details />
             <v-text-field
-              v-if="activeVariant === 'cards' || activeVariant === 'list'"
-              v-model="sectionItemDraft.project.link"
-              label="Project link (optional)"
+              v-model="sectionItemDraft.project.imageUrl"
+              label="Image URL (optional)"
               variant="outlined"
               hide-details
+            />
+            <v-text-field
+              v-model="sectionItemDraft.project.repositoryUrl"
+              label="Repository URL (optional)"
+              placeholder="https://github.com/org/repo"
+              variant="outlined"
+              :rules="[validateHttpRepositoryUrl]"
             />
           </template>
         </v-card-text>
