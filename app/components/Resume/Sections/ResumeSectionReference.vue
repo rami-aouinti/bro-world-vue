@@ -3,47 +3,58 @@ import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 import { getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
 import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
 
-const props = withDefaults(defineProps<{
-  resume: any
-  editable?: boolean
-  variant?: 'classic' | string
-  themeTokens?: Record<string, string | number>
-  layoutDensity?: 'compact' | 'normal' | 'spacious' | string
-  toolbarEnabled?: boolean
-  title?: string
-  canMoveUp?: boolean
-  canMoveDown?: boolean
-  sectionIcon?: string
-  showSectionIcon?: boolean
-  sectionIconStyle?: ResumeSectionIconStyle
-}>(), {
-  editable: false,
-  variant: 'classic',
-  themeTokens: () => ({}),
-  layoutDensity: 'normal',
-  toolbarEnabled: false,
-  title: 'References',
-  canMoveUp: false,
-  canMoveDown: false,
-  sectionIcon: undefined,
-  showSectionIcon: true,
-  sectionIconStyle: undefined,
-})
+const props = withDefaults(
+  defineProps<{
+    resume: any
+    editable?: boolean
+    variant?: 'classic' | string
+    themeTokens?: Record<string, string | number>
+    layoutDensity?: 'compact' | 'normal' | 'spacious' | string
+    toolbarEnabled?: boolean
+    title?: string
+    canMoveUp?: boolean
+    canMoveDown?: boolean
+    sectionIcon?: string
+    showSectionIcon?: boolean
+    sectionIconStyle?: ResumeSectionIconStyle
+  }>(),
+  {
+    editable: false,
+    variant: 'classic',
+    themeTokens: () => ({}),
+    layoutDensity: 'normal',
+    toolbarEnabled: false,
+    title: 'References',
+    canMoveUp: false,
+    canMoveDown: false,
+    sectionIcon: undefined,
+    showSectionIcon: true,
+    sectionIconStyle: undefined,
+  },
+)
 
 const emit = defineEmits<{
   (event: 'add-item', sectionKey: 'reference'): void
   (event: 'change-variant', sectionKey: 'reference', variant: string): void
-  (event: 'move-section', sectionKey: 'reference', direction: 'up' | 'down'): void
+  (
+    event: 'move-section',
+    sectionKey: 'reference',
+    direction: 'up' | 'down',
+  ): void
+  (event: 'delete-section', sectionKey: 'reference'): void
 }>()
 
 const sectionStyle = computed(() => ({ ...props.themeTokens }))
 const sectionRegistry = getSectionRegistryEntry('reference')
 const iconVariantClass = computed(() =>
-  props.sectionIconStyle?.variant ? `section-icon--${props.sectionIconStyle.variant}` : 'section-icon--outline',
+  props.sectionIconStyle?.variant
+    ? `section-icon--${props.sectionIconStyle.variant}`
+    : 'section-icon--outline',
 )
 const iconStyle = computed(() => ({
   '--resume-section-icon-size': `${props.sectionIconStyle?.size ?? 18}px`,
-  '--resume-section-icon-color': props.sectionIconStyle?.color ?? 'var(--cv-accent)',
+  '--resume-section-icon-color':
+    props.sectionIconStyle?.color ?? 'var(--cv-accent)',
   '--resume-section-icon-gap': `${props.sectionIconStyle?.spacing ?? 8}px`,
 }))
 
@@ -61,7 +72,14 @@ function updateText(path: string, value: string) {
 </script>
 
 <template>
-  <section :class="['reference-section', 'resume-section-hoverable', `density-${layoutDensity}`]" :style="sectionStyle">
+  <section
+    :class="[
+      'reference-section',
+      'resume-section-hoverable',
+      `density-${layoutDensity}`,
+    ]"
+    :style="sectionStyle"
+  >
     <SectionToolbar
       v-if="toolbarEnabled"
       section-key="reference"
@@ -74,26 +92,63 @@ function updateText(path: string, value: string) {
       @change-variant="(_, next) => emit('change-variant', 'reference', next)"
       @move-up="() => emit('move-section', 'reference', 'up')"
       @move-down="() => emit('move-section', 'reference', 'down')"
+      @delete-section="() => emit('delete-section', 'reference')"
     />
 
     <h3 class="cv-heading-section">
-      <span v-if="showSectionIcon && sectionIcon" class="section-icon" :class="iconVariantClass" :style="iconStyle">
+      <span
+        v-if="showSectionIcon && sectionIcon"
+        class="section-icon"
+        :class="iconVariantClass"
+        :style="iconStyle"
+      >
         <v-icon :icon="sectionIcon" :size="sectionIconStyle?.size ?? 18" />
       </span>
       <span>{{ title }}</span>
     </h3>
     <ul class="entry-list">
-      <li v-for="(reference, index) in resume.references" :key="`${reference.name}-${index}`">
-        <span class="editable-text" :contenteditable="editable" @input="event => updateText(`references.${index}.name`, (event.target as HTMLElement).innerText)">{{ reference.name }}</span>
-        <small class="ms-2 editable-text" :contenteditable="editable" @input="event => updateText(`references.${index}.company`, (event.target as HTMLElement).innerText)">{{ reference.company }}</small>
+      <li
+        v-for="(reference, index) in resume.references"
+        :key="`${reference.name}-${index}`"
+      >
+        <span
+          class="editable-text"
+          :contenteditable="editable"
+          @input="
+            (event) =>
+              updateText(
+                `references.${index}.name`,
+                (event.target as HTMLElement).innerText,
+              )
+          "
+          >{{ reference.name }}</span
+        >
+        <small
+          class="ms-2 editable-text"
+          :contenteditable="editable"
+          @input="
+            (event) =>
+              updateText(
+                `references.${index}.company`,
+                (event.target as HTMLElement).innerText,
+              )
+          "
+          >{{ reference.company }}</small
+        >
       </li>
     </ul>
   </section>
 </template>
 
 <style scoped>
-.reference-section { position: relative; }
-.cv-heading-section { display: inline-flex; align-items: center; gap: var(--resume-section-icon-gap, var(--cv-space-2, 8px)); }
+.reference-section {
+  position: relative;
+}
+.cv-heading-section {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--resume-section-icon-gap, var(--cv-space-2, 8px));
+}
 .section-icon {
   display: inline-flex;
   align-items: center;
@@ -115,10 +170,24 @@ function updateText(path: string, value: string) {
   border-radius: calc(var(--resume-section-icon-radius, 8px) + 2px);
   background: color-mix(in srgb, currentColor 18%, transparent);
 }
-.entry-list { margin: 0; padding: 0; list-style: none; }
-.entry-list li { margin-bottom: var(--entry-gap, var(--cv-space-2, 8px)); }
-.entry-list li:last-child { margin-bottom: 0; }
-.density-compact { --entry-gap: calc(var(--cv-space-2, 8px) - 2px); }
-.density-normal { --entry-gap: var(--cv-space-2, 8px); }
-.density-spacious { --entry-gap: var(--cv-space-3, 12px); }
+.entry-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.entry-list li {
+  margin-bottom: var(--entry-gap, var(--cv-space-2, 8px));
+}
+.entry-list li:last-child {
+  margin-bottom: 0;
+}
+.density-compact {
+  --entry-gap: calc(var(--cv-space-2, 8px) - 2px);
+}
+.density-normal {
+  --entry-gap: var(--cv-space-2, 8px);
+}
+.density-spacious {
+  --entry-gap: var(--cv-space-3, 12px);
+}
 </style>

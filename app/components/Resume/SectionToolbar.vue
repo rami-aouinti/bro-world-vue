@@ -6,7 +6,15 @@ type ToolbarVariantOption = {
   value: string
 }
 type ToolbarContentStyleOption = ToolbarVariantOption
-type ToolbarAction = 'add-item' | 'change-variant' | 'change-content-style' | 'style-panel' | 'move-up' | 'move-down'
+type ToolbarAction =
+  | 'add-item'
+  | 'change-variant'
+  | 'change-content-style'
+  | 'style-panel'
+  | 'move-up'
+  | 'move-down'
+  | 'delete-item'
+  | 'delete-section'
 
 type StylePresetOption = {
   label: string
@@ -20,31 +28,58 @@ type ToolbarSectionOption = {
   modelValue: boolean
 }
 
-const props = withDefaults(defineProps<{
-  sectionKey: string
-  canMoveUp?: boolean
-  canMoveDown?: boolean
-  variants?: ToolbarVariantOption[]
-  currentVariant?: string
-  contentStyles?: ToolbarContentStyleOption[]
-  currentContentStyle?: string
-  actions?: ToolbarAction[]
-  sectionOptions?: ToolbarSectionOption[]
-}>(), {
-  canMoveUp: false,
-  canMoveDown: false,
-  variants: () => [],
-  currentVariant: '',
-  contentStyles: () => [],
-  currentContentStyle: '',
-  actions: () => ['add-item', 'change-variant', 'change-content-style', 'style-panel', 'move-up', 'move-down'],
-  sectionOptions: () => [],
-})
+const props = withDefaults(
+  defineProps<{
+    sectionKey: string
+    canMoveUp?: boolean
+    canMoveDown?: boolean
+    variants?: ToolbarVariantOption[]
+    currentVariant?: string
+    contentStyles?: ToolbarContentStyleOption[]
+    currentContentStyle?: string
+    actions?: ToolbarAction[]
+    sectionOptions?: ToolbarSectionOption[]
+  }>(),
+  {
+    canMoveUp: false,
+    canMoveDown: false,
+    variants: () => [],
+    currentVariant: '',
+    contentStyles: () => [],
+    currentContentStyle: '',
+    actions: () => [
+      'add-item',
+      'change-variant',
+      'change-content-style',
+      'style-panel',
+      'move-up',
+      'move-down',
+    ],
+    sectionOptions: () => [],
+  },
+)
 
 const emit = defineEmits<{
-  (event: 'add-item' | 'move-up' | 'move-down', sectionKey: string): void
-  (event: 'change-variant' | 'change-content-style', sectionKey: string, value: string): void
-  (event: 'update-section-option', sectionKey: string, optionKey: string, value: boolean): void
+  (
+    event:
+      | 'add-item'
+      | 'move-up'
+      | 'move-down'
+      | 'delete-item'
+      | 'delete-section',
+    sectionKey: string,
+  ): void
+  (
+    event: 'change-variant' | 'change-content-style',
+    sectionKey: string,
+    value: string,
+  ): void
+  (
+    event: 'update-section-option',
+    sectionKey: string,
+    optionKey: string,
+    value: boolean,
+  ): void
 }>()
 
 const toolbarRef = ref<HTMLElement | null>(null)
@@ -52,27 +87,114 @@ const styleMenuOpen = ref(false)
 const pinEnabled = ref(false)
 
 const headingPresets: StylePresetOption[] = [
-  { label: 'Underline', value: 'underline', tokens: { '--rs-heading-border-bottom': '1px solid color-mix(in srgb, var(--cv-accent) 36%, transparent)', '--rs-heading-padding': '0 0 6px 0' } },
-  { label: 'Pill', value: 'pill', tokens: { '--rs-heading-bg': 'color-mix(in srgb, var(--cv-accent) 11%, var(--cv-page))', '--rs-heading-radius': '999px', '--rs-heading-padding': '4px 12px' } },
-  { label: 'Minimal', value: 'minimal', tokens: { '--rs-heading-border-bottom': '0', '--rs-heading-bg': 'transparent', '--rs-heading-radius': '0', '--rs-heading-padding': '0' } },
+  {
+    label: 'Underline',
+    value: 'underline',
+    tokens: {
+      '--rs-heading-border-bottom':
+        '1px solid color-mix(in srgb, var(--cv-accent) 36%, transparent)',
+      '--rs-heading-padding': '0 0 6px 0',
+    },
+  },
+  {
+    label: 'Pill',
+    value: 'pill',
+    tokens: {
+      '--rs-heading-bg':
+        'color-mix(in srgb, var(--cv-accent) 11%, var(--cv-page))',
+      '--rs-heading-radius': '999px',
+      '--rs-heading-padding': '4px 12px',
+    },
+  },
+  {
+    label: 'Minimal',
+    value: 'minimal',
+    tokens: {
+      '--rs-heading-border-bottom': '0',
+      '--rs-heading-bg': 'transparent',
+      '--rs-heading-radius': '0',
+      '--rs-heading-padding': '0',
+    },
+  },
 ]
 
 const spacingPresets: StylePresetOption[] = [
-  { label: 'Compact', value: 'compact', tokens: { '--entry-gap': '10px', '--rs-section-padding-bottom': '6px' } },
-  { label: 'Balanced', value: 'balanced', tokens: { '--entry-gap': '16px', '--rs-section-padding-bottom': '12px' } },
-  { label: 'Airy', value: 'airy', tokens: { '--entry-gap': '22px', '--rs-section-padding-bottom': '18px' } },
+  {
+    label: 'Compact',
+    value: 'compact',
+    tokens: { '--entry-gap': '10px', '--rs-section-padding-bottom': '6px' },
+  },
+  {
+    label: 'Balanced',
+    value: 'balanced',
+    tokens: { '--entry-gap': '16px', '--rs-section-padding-bottom': '12px' },
+  },
+  {
+    label: 'Airy',
+    value: 'airy',
+    tokens: { '--entry-gap': '22px', '--rs-section-padding-bottom': '18px' },
+  },
 ]
 
 const cardPresets: StylePresetOption[] = [
-  { label: 'None', value: 'none', tokens: { '--rs-card-border': 'none', '--rs-card-bg': 'transparent', '--rs-card-radius': '0', '--rs-card-padding': '0' } },
-  { label: 'Soft', value: 'soft', tokens: { '--rs-card-border': '1px solid color-mix(in srgb, var(--cv-accent) 14%, transparent)', '--rs-card-bg': 'color-mix(in srgb, var(--cv-page) 90%, var(--cv-accent) 10%)', '--rs-card-radius': '12px', '--rs-card-padding': '10px 12px' } },
-  { label: 'Elevated', value: 'elevated', tokens: { '--rs-card-border': '1px solid color-mix(in srgb, var(--cv-secondary) 10%, transparent)', '--rs-card-bg': 'color-mix(in srgb, var(--cv-page) 88%, var(--cv-secondary) 12%)', '--rs-card-radius': '14px', '--rs-card-padding': '12px 14px' } },
+  {
+    label: 'None',
+    value: 'none',
+    tokens: {
+      '--rs-card-border': 'none',
+      '--rs-card-bg': 'transparent',
+      '--rs-card-radius': '0',
+      '--rs-card-padding': '0',
+    },
+  },
+  {
+    label: 'Soft',
+    value: 'soft',
+    tokens: {
+      '--rs-card-border':
+        '1px solid color-mix(in srgb, var(--cv-accent) 14%, transparent)',
+      '--rs-card-bg':
+        'color-mix(in srgb, var(--cv-page) 90%, var(--cv-accent) 10%)',
+      '--rs-card-radius': '12px',
+      '--rs-card-padding': '10px 12px',
+    },
+  },
+  {
+    label: 'Elevated',
+    value: 'elevated',
+    tokens: {
+      '--rs-card-border':
+        '1px solid color-mix(in srgb, var(--cv-secondary) 10%, transparent)',
+      '--rs-card-bg':
+        'color-mix(in srgb, var(--cv-page) 88%, var(--cv-secondary) 12%)',
+      '--rs-card-radius': '14px',
+      '--rs-card-padding': '12px 14px',
+    },
+  },
 ]
 
 const dividerPresets: StylePresetOption[] = [
-  { label: 'None', value: 'none', tokens: { '--rs-section-separator': 'none' } },
-  { label: 'Fine', value: 'fine', tokens: { '--rs-section-separator': '1px solid color-mix(in srgb, var(--cv-accent) 20%, transparent)' } },
-  { label: 'Strong', value: 'strong', tokens: { '--rs-section-separator': '2px solid color-mix(in srgb, var(--cv-accent) 42%, transparent)' } },
+  {
+    label: 'None',
+    value: 'none',
+    tokens: { '--rs-section-separator': 'none' },
+  },
+  {
+    label: 'Fine',
+    value: 'fine',
+    tokens: {
+      '--rs-section-separator':
+        '1px solid color-mix(in srgb, var(--cv-accent) 20%, transparent)',
+    },
+  },
+  {
+    label: 'Strong',
+    value: 'strong',
+    tokens: {
+      '--rs-section-separator':
+        '2px solid color-mix(in srgb, var(--cv-accent) 42%, transparent)',
+    },
+  },
 ]
 
 const selectedHeading = ref('minimal')
@@ -80,15 +202,19 @@ const selectedSpacing = ref('balanced')
 const selectedCard = ref('none')
 const selectedDivider = ref('none')
 
-const sectionStorageKey = computed(() => `resume:section-toolbar:pin:${props.sectionKey}`)
+const sectionStorageKey = computed(
+  () => `resume:section-toolbar:pin:${props.sectionKey}`,
+)
 const enabledActions = computed(() => new Set(props.actions))
 
 function getSectionElement() {
-  return toolbarRef.value?.closest('.resume-section-hoverable') as HTMLElement | null
+  return toolbarRef.value?.closest(
+    '.resume-section-hoverable',
+  ) as HTMLElement | null
 }
 
 function findPreset(presets: StylePresetOption[], value: string) {
-  return presets.find(option => option.value === value)
+  return presets.find((option) => option.value === value)
 }
 
 function applySectionStylePreview() {
@@ -122,11 +248,21 @@ onMounted(() => {
   applySectionStylePreview()
 })
 
-watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySectionStylePreview, { flush: 'post' })
+watch(
+  [selectedHeading, selectedSpacing, selectedCard, selectedDivider],
+  applySectionStylePreview,
+  { flush: 'post' },
+)
 </script>
 
 <template>
-  <div ref="toolbarRef" class="section-toolbar" :class="{ 'is-pinned': pinEnabled }" role="toolbar" :aria-label="`Actions de la section ${props.sectionKey}`">
+  <div
+    ref="toolbarRef"
+    class="section-toolbar"
+    :class="{ 'is-pinned': pinEnabled }"
+    role="toolbar"
+    :aria-label="`Actions de la section ${props.sectionKey}`"
+  >
     <v-tooltip v-if="enabledActions.has('add-item')" text="Ajouter un élément">
       <template #activator="{ props: tooltipProps }">
         <v-btn
@@ -143,7 +279,9 @@ watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySe
       </template>
     </v-tooltip>
 
-    <v-menu v-if="enabledActions.has('change-variant') && props.variants.length">
+    <v-menu
+      v-if="enabledActions.has('change-variant') && props.variants.length"
+    >
       <template #activator="{ props: menuProps }">
         <v-tooltip text="Change Layout">
           <template #activator="{ props: tooltipProps }">
@@ -172,7 +310,11 @@ watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySe
       </v-list>
     </v-menu>
 
-    <v-menu v-if="enabledActions.has('change-content-style') && props.contentStyles.length">
+    <v-menu
+      v-if="
+        enabledActions.has('change-content-style') && props.contentStyles.length
+      "
+    >
       <template #activator="{ props: menuProps }">
         <v-tooltip text="Content style">
           <template #activator="{ props: tooltipProps }">
@@ -201,7 +343,13 @@ watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySe
       </v-list>
     </v-menu>
 
-    <v-menu v-if="enabledActions.has('style-panel')" v-model="styleMenuOpen" :close-on-content-click="false" location="bottom end" offset="10">
+    <v-menu
+      v-if="enabledActions.has('style-panel')"
+      v-model="styleMenuOpen"
+      :close-on-content-click="false"
+      location="bottom end"
+      offset="10"
+    >
       <template #activator="{ props: menuProps }">
         <v-tooltip text="Section Style">
           <template #activator="{ props: tooltipProps }">
@@ -222,10 +370,42 @@ watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySe
       <v-card class="section-style-popover" elevation="8">
         <v-card-title class="text-subtitle-2">Section Style</v-card-title>
         <v-card-text class="d-grid ga-3 pt-2">
-          <v-select v-model="selectedHeading" :items="headingPresets" item-title="label" item-value="value" label="Heading style" density="compact" hide-details />
-          <v-select v-model="selectedSpacing" :items="spacingPresets" item-title="label" item-value="value" label="Spacing" density="compact" hide-details />
-          <v-select v-model="selectedCard" :items="cardPresets" item-title="label" item-value="value" label="Card style" density="compact" hide-details />
-          <v-select v-model="selectedDivider" :items="dividerPresets" item-title="label" item-value="value" label="Divider style" density="compact" hide-details />
+          <v-select
+            v-model="selectedHeading"
+            :items="headingPresets"
+            item-title="label"
+            item-value="value"
+            label="Heading style"
+            density="compact"
+            hide-details
+          />
+          <v-select
+            v-model="selectedSpacing"
+            :items="spacingPresets"
+            item-title="label"
+            item-value="value"
+            label="Spacing"
+            density="compact"
+            hide-details
+          />
+          <v-select
+            v-model="selectedCard"
+            :items="cardPresets"
+            item-title="label"
+            item-value="value"
+            label="Card style"
+            density="compact"
+            hide-details
+          />
+          <v-select
+            v-model="selectedDivider"
+            :items="dividerPresets"
+            item-title="label"
+            item-value="value"
+            label="Divider style"
+            density="compact"
+            hide-details
+          />
           <v-divider v-if="props.sectionOptions.length" />
           <v-switch
             v-for="option in props.sectionOptions"
@@ -236,9 +416,24 @@ watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySe
             hide-details
             inset
             :label="option.label"
-            @update:model-value="emit('update-section-option', props.sectionKey, option.key, Boolean($event))"
+            @update:model-value="
+              emit(
+                'update-section-option',
+                props.sectionKey,
+                option.key,
+                Boolean($event),
+              )
+            "
           />
-          <v-switch :model-value="pinEnabled" color="primary" density="compact" hide-details inset label="Mode édition épinglé" @update:model-value="setPin(Boolean($event))" />
+          <v-switch
+            :model-value="pinEnabled"
+            color="primary"
+            density="compact"
+            hide-details
+            inset
+            label="Mode édition épinglé"
+            @update:model-value="setPin(Boolean($event))"
+          />
         </v-card-text>
       </v-card>
     </v-menu>
@@ -260,7 +455,10 @@ watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySe
       </template>
     </v-tooltip>
 
-    <v-tooltip v-if="enabledActions.has('move-down')" text="Descendre la section">
+    <v-tooltip
+      v-if="enabledActions.has('move-down')"
+      text="Descendre la section"
+    >
       <template #activator="{ props: tooltipProps }">
         <v-btn
           class="toolbar-btn"
@@ -276,14 +474,63 @@ watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySe
         </v-btn>
       </template>
     </v-tooltip>
+
+    <v-tooltip
+      v-if="enabledActions.has('delete-item')"
+      text="Supprimer l'élément"
+    >
+      <template #activator="{ props: tooltipProps }">
+        <v-btn
+          class="toolbar-btn"
+          icon
+          size="default"
+          variant="tonal"
+          color="error"
+          :aria-label="`Supprimer un élément de la section ${props.sectionKey}`"
+          v-bind="tooltipProps"
+          @click="emit('delete-item', props.sectionKey)"
+        >
+          <v-icon icon="mdi-delete-outline" />
+        </v-btn>
+      </template>
+    </v-tooltip>
+
+    <v-tooltip
+      v-if="enabledActions.has('delete-section')"
+      text="Supprimer la section"
+    >
+      <template #activator="{ props: tooltipProps }">
+        <v-btn
+          class="toolbar-btn"
+          icon
+          size="default"
+          variant="tonal"
+          color="error"
+          :aria-label="`Supprimer la section ${props.sectionKey}`"
+          v-bind="tooltipProps"
+          @click="emit('delete-section', props.sectionKey)"
+        >
+          <v-icon icon="mdi-trash-can-outline" />
+        </v-btn>
+      </template>
+    </v-tooltip>
   </div>
 </template>
 
 <style scoped>
 .section-toolbar {
-  --cv-toolbar-border: var(--cv-toolbar-border-color, color-mix(in srgb, var(--cv-secondary) 22%, transparent));
-  --cv-toolbar-bg: var(--cv-toolbar-bg-color, color-mix(in srgb, var(--cv-page) 16%, var(--cv-sidebar) 74%));
-  --cv-toolbar-shadow: var(--cv-toolbar-shadow-color, color-mix(in srgb, var(--cv-secondary) 14%, transparent));
+  --cv-toolbar-border: var(
+    --cv-toolbar-border-color,
+    color-mix(in srgb, var(--cv-secondary) 22%, transparent)
+  );
+  --cv-toolbar-bg: var(
+    --cv-toolbar-bg-color,
+    color-mix(in srgb, var(--cv-page) 16%, var(--cv-sidebar) 74%)
+  );
+  --cv-toolbar-shadow: var(
+    --cv-toolbar-shadow-color,
+    color-mix(in srgb, var(--cv-secondary) 14%, transparent)
+  );
 
   position: absolute;
   top: 8px;
@@ -302,7 +549,9 @@ watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySe
   opacity: 0;
   pointer-events: none;
   transform: translate3d(0, -5px, 0);
-  transition: opacity .16s ease, transform .16s ease;
+  transition:
+    opacity 0.16s ease,
+    transform 0.16s ease;
 }
 
 .toolbar-btn {

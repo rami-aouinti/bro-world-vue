@@ -1,42 +1,53 @@
 <script setup lang="ts">
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
-import { RESUME_CONTENT_STYLE_OPTIONS, getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
+import {
+  RESUME_CONTENT_STYLE_OPTIONS,
+  getSectionRegistryEntry,
+} from '~/constants/resumeSectionRegistry'
 import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
 
-const props = withDefaults(defineProps<{
-  resume: any
-  editable?: boolean
-  variant?: 'classic' | 'timeline' | 'two-column' | string
-  layoutSettings?: {
-    dateColumnWidth?: number | string
-  }
-  themeTokens?: Record<string, string | number>
-  layoutDensity?: 'compact' | 'normal' | 'spacious' | string
-  toolbarEnabled?: boolean
-  title?: string
-  canMoveUp?: boolean
-  canMoveDown?: boolean
-  sectionIcon?: string
-  showSectionIcon?: boolean
-  sectionIconStyle?: ResumeSectionIconStyle
-}>(), {
-  editable: false,
-  variant: 'classic',
-  layoutSettings: () => ({}),
-  themeTokens: () => ({}),
-  layoutDensity: 'normal',
-  toolbarEnabled: false,
-  title: 'Education',
-  canMoveUp: false,
-  canMoveDown: false,
-  sectionIcon: undefined,
-  showSectionIcon: true,
-  sectionIconStyle: undefined,
-})
+const props = withDefaults(
+  defineProps<{
+    resume: any
+    editable?: boolean
+    variant?: 'classic' | 'timeline' | 'two-column' | string
+    layoutSettings?: {
+      dateColumnWidth?: number | string
+    }
+    themeTokens?: Record<string, string | number>
+    layoutDensity?: 'compact' | 'normal' | 'spacious' | string
+    toolbarEnabled?: boolean
+    title?: string
+    canMoveUp?: boolean
+    canMoveDown?: boolean
+    sectionIcon?: string
+    showSectionIcon?: boolean
+    sectionIconStyle?: ResumeSectionIconStyle
+  }>(),
+  {
+    editable: false,
+    variant: 'classic',
+    layoutSettings: () => ({}),
+    themeTokens: () => ({}),
+    layoutDensity: 'normal',
+    toolbarEnabled: false,
+    title: 'Education',
+    canMoveUp: false,
+    canMoveDown: false,
+    sectionIcon: undefined,
+    showSectionIcon: true,
+    sectionIconStyle: undefined,
+  },
+)
 const emit = defineEmits<{
   (event: 'add-item', sectionKey: 'education'): void
   (event: 'change-variant', sectionKey: 'education', variant: string): void
-  (event: 'move-section', sectionKey: 'education', direction: 'up' | 'down'): void
+  (
+    event: 'move-section',
+    sectionKey: 'education',
+    direction: 'up' | 'down',
+  ): void
+  (event: 'delete-section', sectionKey: 'education'): void
 }>()
 const sectionStyle = computed(() => {
   const width = props.layoutSettings?.dateColumnWidth
@@ -47,25 +58,36 @@ const sectionStyle = computed(() => {
   }
 })
 const iconVariantClass = computed(() =>
-  props.sectionIconStyle?.variant ? `section-icon--${props.sectionIconStyle.variant}` : 'section-icon--outline',
+  props.sectionIconStyle?.variant
+    ? `section-icon--${props.sectionIconStyle.variant}`
+    : 'section-icon--outline',
 )
 const iconStyle = computed(() => ({
   '--resume-section-icon-size': `${props.sectionIconStyle?.size ?? 18}px`,
-  '--resume-section-icon-color': props.sectionIconStyle?.color ?? 'var(--cv-accent)',
+  '--resume-section-icon-color':
+    props.sectionIconStyle?.color ?? 'var(--cv-accent)',
   '--resume-section-icon-gap': `${props.sectionIconStyle?.spacing ?? 8}px`,
 }))
 const safeVariant = computed<'classic' | 'timeline' | 'two-column'>(() => {
-  if (props.variant === 'classic' || props.variant === 'timeline' || props.variant === 'two-column') {
+  if (
+    props.variant === 'classic' ||
+    props.variant === 'timeline' ||
+    props.variant === 'two-column'
+  ) {
     return props.variant
   }
   if (import.meta.dev) {
-    console.warn(`[resume-section:education] Unknown variant "${String(props.variant)}"; fallback to "classic".`)
+    console.warn(
+      `[resume-section:education] Unknown variant "${String(props.variant)}"; fallback to "classic".`,
+    )
   }
   return 'classic'
 })
 const sectionRegistry = getSectionRegistryEntry('education')
 const contentStyles = computed(() =>
-  RESUME_CONTENT_STYLE_OPTIONS.filter(option => sectionRegistry.contentStyles.includes(option.value)),
+  RESUME_CONTENT_STYLE_OPTIONS.filter((option) =>
+    sectionRegistry.contentStyles.includes(option.value),
+  ),
 )
 function updateText(path: string, value: string) {
   const segments = path.split('.')
@@ -80,7 +102,9 @@ function updateText(path: string, value: string) {
 }
 
 function resolveContentStyle(item: Record<string, unknown>) {
-  return item.contentStyle === 'dashes' || item.contentStyle === 'timeline' ? item.contentStyle : 'points'
+  return item.contentStyle === 'dashes' || item.contentStyle === 'timeline'
+    ? item.contentStyle
+    : 'points'
 }
 
 function resolvePoints(item: Record<string, unknown>) {
@@ -95,12 +119,21 @@ function resolveDashes(item: Record<string, unknown>) {
 }
 
 function resolveTimelineEvents(item: Record<string, unknown>) {
-  if (Array.isArray(item.timelineEvents) && item.timelineEvents.length) return item.timelineEvents
-  return resolvePoints(item).map(detail => ({ label: '', detail }))
+  if (Array.isArray(item.timelineEvents) && item.timelineEvents.length)
+    return item.timelineEvents
+  return resolvePoints(item).map((detail) => ({ label: '', detail }))
 }
 </script>
 <template>
-  <section :class="['education', 'resume-section-hoverable', `density-${layoutDensity}`, `education--${safeVariant}`]" :style="sectionStyle">
+  <section
+    :class="[
+      'education',
+      'resume-section-hoverable',
+      `density-${layoutDensity}`,
+      `education--${safeVariant}`,
+    ]"
+    :style="sectionStyle"
+  >
     <SectionToolbar
       v-if="toolbarEnabled"
       section-key="education"
@@ -114,51 +147,190 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
       @change-variant="(_, next) => emit('change-variant', 'education', next)"
       @move-up="() => emit('move-section', 'education', 'up')"
       @move-down="() => emit('move-section', 'education', 'down')"
+      @delete-section="() => emit('delete-section', 'education')"
     />
     <h2 class="cv-heading-section">
-      <span v-if="showSectionIcon && sectionIcon" class="section-icon" :class="iconVariantClass" :style="iconStyle">
+      <span
+        v-if="showSectionIcon && sectionIcon"
+        class="section-icon"
+        :class="iconVariantClass"
+        :style="iconStyle"
+      >
         <v-icon :icon="sectionIcon" :size="sectionIconStyle?.size ?? 18" />
       </span>
       <span>{{ title }}</span>
     </h2>
     <div class="education-list">
-      <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="entry text-dark">
+      <article
+        v-for="(item, index) in resume.education"
+        :key="`${item.school}-${index}`"
+        class="entry text-dark"
+      >
         <p class="dates date-column">
-          <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.start`, (event.target as HTMLElement).innerText)">{{ item.start }}</span> -
-          <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.end`, (event.target as HTMLElement).innerText)">{{ item.end }}</span>
+          <span
+            class="editable-text"
+            :contenteditable="editable"
+            @input="
+              (event) =>
+                updateText(
+                  `education.${index}.start`,
+                  (event.target as HTMLElement).innerText,
+                )
+            "
+            >{{ item.start }}</span
+          >
+          -
+          <span
+            class="editable-text"
+            :contenteditable="editable"
+            @input="
+              (event) =>
+                updateText(
+                  `education.${index}.end`,
+                  (event.target as HTMLElement).innerText,
+                )
+            "
+            >{{ item.end }}</span
+          >
         </p>
-        <div v-if="safeVariant === 'timeline'" class="education-timeline-rail" aria-hidden="true">
+        <div
+          v-if="safeVariant === 'timeline'"
+          class="education-timeline-rail"
+          aria-hidden="true"
+        >
           <span class="education-timeline-dot" />
           <v-avatar class="education-timeline-icon" rounded="lg" size="30">
-            <v-img v-if="item.schoolImageUrl" :src="item.schoolImageUrl" alt="School logo" cover />
+            <v-img
+              v-if="item.schoolImageUrl"
+              :src="item.schoolImageUrl"
+              alt="School logo"
+              cover
+            />
             <v-icon v-else icon="mdi-school-outline" size="17" />
           </v-avatar>
         </div>
         <div class="content-column">
           <div class="entry-heading">
             <v-avatar class="school-logo" rounded="lg" size="30">
-              <v-img v-if="item.schoolImageUrl" :src="item.schoolImageUrl" alt="School logo" cover />
+              <v-img
+                v-if="item.schoolImageUrl"
+                :src="item.schoolImageUrl"
+                alt="School logo"
+                cover
+              />
               <v-icon v-else icon="mdi-school-outline" size="17" />
             </v-avatar>
             <h4 class="text-dark">
-              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</span>,
-              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</span>
+              <span
+                class="editable-text"
+                :contenteditable="editable"
+                @input="
+                  (event) =>
+                    updateText(
+                      `education.${index}.degree`,
+                      (event.target as HTMLElement).innerText,
+                    )
+                "
+                >{{ item.degree }}</span
+              >,
+              <span
+                class="editable-text"
+                :contenteditable="editable"
+                @input="
+                  (event) =>
+                    updateText(
+                      `education.${index}.school`,
+                      (event.target as HTMLElement).innerText,
+                    )
+                "
+                >{{ item.school }}</span
+              >
             </h4>
           </div>
-          <p v-if="item.note" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.note`, (event.target as HTMLElement).innerText)">{{ item.note }}</p>
+          <p
+            v-if="item.note"
+            class="text-dark editable-text"
+            :contenteditable="editable"
+            @input="
+              (event) =>
+                updateText(
+                  `education.${index}.note`,
+                  (event.target as HTMLElement).innerText,
+                )
+            "
+          >
+            {{ item.note }}
+          </p>
           <template v-if="resolveContentStyle(item) === 'timeline'">
             <div class="timeline-block">
-              <div v-for="(event, eventIndex) in resolveTimelineEvents(item)" :key="eventIndex" class="timeline-event">
-                <strong class="editable-text" :contenteditable="editable" @input="entry => updateText(`education.${index}.timelineEvents.${eventIndex}.label`, (entry.target as HTMLElement).innerText)">{{ event.label }}</strong>
-                <span class="editable-text" :contenteditable="editable" @input="entry => updateText(`education.${index}.timelineEvents.${eventIndex}.detail`, (entry.target as HTMLElement).innerText)">{{ event.detail }}</span>
+              <div
+                v-for="(event, eventIndex) in resolveTimelineEvents(item)"
+                :key="eventIndex"
+                class="timeline-event"
+              >
+                <strong
+                  class="editable-text"
+                  :contenteditable="editable"
+                  @input="
+                    (entry) =>
+                      updateText(
+                        `education.${index}.timelineEvents.${eventIndex}.label`,
+                        (entry.target as HTMLElement).innerText,
+                      )
+                  "
+                  >{{ event.label }}</strong
+                >
+                <span
+                  class="editable-text"
+                  :contenteditable="editable"
+                  @input="
+                    (entry) =>
+                      updateText(
+                        `education.${index}.timelineEvents.${eventIndex}.detail`,
+                        (entry.target as HTMLElement).innerText,
+                      )
+                  "
+                  >{{ event.detail }}</span
+                >
               </div>
             </div>
           </template>
-          <ul v-else-if="resolveContentStyle(item) === 'dashes'" class="dash-list">
-            <li v-for="(dash, dashIndex) in resolveDashes(item)" :key="dashIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.dashes.${dashIndex}`, (event.target as HTMLElement).innerText)">{{ dash }}</li>
+          <ul
+            v-else-if="resolveContentStyle(item) === 'dashes'"
+            class="dash-list"
+          >
+            <li
+              v-for="(dash, dashIndex) in resolveDashes(item)"
+              :key="dashIndex"
+              class="text-dark editable-text"
+              :contenteditable="editable"
+              @input="
+                (event) =>
+                  updateText(
+                    `education.${index}.dashes.${dashIndex}`,
+                    (event.target as HTMLElement).innerText,
+                  )
+              "
+            >
+              {{ dash }}
+            </li>
           </ul>
           <ul v-else-if="resolvePoints(item).length">
-            <li v-for="(point, pointIndex) in resolvePoints(item)" :key="pointIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.points.${pointIndex}`, (event.target as HTMLElement).innerText)">{{ point }}</li>
+            <li
+              v-for="(point, pointIndex) in resolvePoints(item)"
+              :key="pointIndex"
+              class="text-dark editable-text"
+              :contenteditable="editable"
+              @input="
+                (event) =>
+                  updateText(
+                    `education.${index}.points.${pointIndex}`,
+                    (event.target as HTMLElement).innerText,
+                  )
+              "
+            >
+              {{ point }}
+            </li>
           </ul>
         </div>
       </article>
@@ -227,7 +399,9 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
 .entry {
   margin-bottom: var(--entry-gap, var(--cv-space-4));
   display: grid;
-  grid-template-columns: minmax(140px, var(--resume-date-column-width, 140px)) minmax(0, 1fr);
+  grid-template-columns:
+    minmax(140px, var(--resume-date-column-width, 140px))
+    minmax(0, 1fr);
   column-gap: var(--cv-space-4);
   align-items: start;
   position: relative;
@@ -263,7 +437,9 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
 
 /* Classic variant */
 .education--classic .entry {
-  grid-template-columns: minmax(140px, var(--resume-date-column-width, 140px)) minmax(0, 1fr);
+  grid-template-columns:
+    minmax(140px, var(--resume-date-column-width, 140px))
+    minmax(0, 1fr);
 }
 .education--classic .content-column {
   border-left: var(--rs-entry-border-left, none);
@@ -389,7 +565,9 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
   --entry-description-to-list-gap: var(--cv-space-2);
 }
 .density-spacious {
-  --entry-gap: calc(var(--cv-space-4) + var(--cv-space-2) - var(--cv-space-1) / 2);
+  --entry-gap: calc(
+    var(--cv-space-4) + var(--cv-space-2) - var(--cv-space-1) / 2
+  );
   --entry-title-to-date-gap: calc(var(--cv-space-1) + 1px);
   --entry-date-to-description-gap: var(--cv-space-3);
   --entry-description-to-list-gap: var(--cv-space-3);
@@ -408,6 +586,14 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
   inset-inline-start: 0;
   width: var(--cv-dash-marker-width);
 }
-.timeline-block { display: grid; gap: 6px; }
-.timeline-event { display: grid; gap: 2px; border-left: 2px solid var(--cv-marker-accent); padding-left: 8px; }
+.timeline-block {
+  display: grid;
+  gap: 6px;
+}
+.timeline-event {
+  display: grid;
+  gap: 2px;
+  border-left: 2px solid var(--cv-marker-accent);
+  padding-left: 8px;
+}
 </style>

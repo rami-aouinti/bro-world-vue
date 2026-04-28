@@ -1,42 +1,49 @@
 <script setup lang="ts">
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
-import { RESUME_CONTENT_STYLE_OPTIONS, getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
+import {
+  RESUME_CONTENT_STYLE_OPTIONS,
+  getSectionRegistryEntry,
+} from '~/constants/resumeSectionRegistry'
 import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
 
-const props = withDefaults(defineProps<{
-  resume: any
-  editable?: boolean
-  variant?: 'classic' | 'list' | 'cards' | 'two-column' | 'timeline' | string
-  layoutSettings?: {
-    dateColumnWidth?: number | string
-  }
-  themeTokens?: Record<string, string | number>
-  layoutDensity?: 'compact' | 'normal' | 'spacious' | string
-  toolbarEnabled?: boolean
-  title?: string
-  canMoveUp?: boolean
-  canMoveDown?: boolean
-  sectionIcon?: string
-  showSectionIcon?: boolean
-  sectionIconStyle?: ResumeSectionIconStyle
-}>(), {
-  editable: false,
-  variant: 'list',
-  layoutSettings: () => ({}),
-  themeTokens: () => ({}),
-  layoutDensity: 'normal',
-  toolbarEnabled: false,
-  title: 'Projects',
-  canMoveUp: false,
-  canMoveDown: false,
-  sectionIcon: undefined,
-  showSectionIcon: true,
-  sectionIconStyle: undefined,
-})
+const props = withDefaults(
+  defineProps<{
+    resume: any
+    editable?: boolean
+    variant?: 'classic' | 'list' | 'cards' | 'two-column' | 'timeline' | string
+    layoutSettings?: {
+      dateColumnWidth?: number | string
+    }
+    themeTokens?: Record<string, string | number>
+    layoutDensity?: 'compact' | 'normal' | 'spacious' | string
+    toolbarEnabled?: boolean
+    title?: string
+    canMoveUp?: boolean
+    canMoveDown?: boolean
+    sectionIcon?: string
+    showSectionIcon?: boolean
+    sectionIconStyle?: ResumeSectionIconStyle
+  }>(),
+  {
+    editable: false,
+    variant: 'list',
+    layoutSettings: () => ({}),
+    themeTokens: () => ({}),
+    layoutDensity: 'normal',
+    toolbarEnabled: false,
+    title: 'Projects',
+    canMoveUp: false,
+    canMoveDown: false,
+    sectionIcon: undefined,
+    showSectionIcon: true,
+    sectionIconStyle: undefined,
+  },
+)
 const emit = defineEmits<{
   (event: 'add-item', sectionKey: 'project'): void
   (event: 'change-variant', sectionKey: 'project', variant: string): void
   (event: 'move-section', sectionKey: 'project', direction: 'up' | 'down'): void
+  (event: 'delete-section', sectionKey: 'project'): void
 }>()
 const sectionStyle = computed(() => {
   const width = props.layoutSettings?.dateColumnWidth
@@ -47,36 +54,57 @@ const sectionStyle = computed(() => {
   }
 })
 const iconVariantClass = computed(() =>
-  props.sectionIconStyle?.variant ? `section-icon--${props.sectionIconStyle.variant}` : 'section-icon--outline',
+  props.sectionIconStyle?.variant
+    ? `section-icon--${props.sectionIconStyle.variant}`
+    : 'section-icon--outline',
 )
 const iconStyle = computed(() => ({
   '--resume-section-icon-size': `${props.sectionIconStyle?.size ?? 18}px`,
-  '--resume-section-icon-color': props.sectionIconStyle?.color ?? 'var(--cv-accent)',
+  '--resume-section-icon-color':
+    props.sectionIconStyle?.color ?? 'var(--cv-accent)',
   '--resume-section-icon-gap': `${props.sectionIconStyle?.spacing ?? 8}px`,
 }))
-const safeVariant = computed<'classic' | 'list' | 'cards' | 'two-column' | 'timeline'>(() => {
-  if (props.variant === 'classic' || props.variant === 'list' || props.variant === 'cards' || props.variant === 'two-column' || props.variant === 'timeline') {
+const safeVariant = computed<
+  'classic' | 'list' | 'cards' | 'two-column' | 'timeline'
+>(() => {
+  if (
+    props.variant === 'classic' ||
+    props.variant === 'list' ||
+    props.variant === 'cards' ||
+    props.variant === 'two-column' ||
+    props.variant === 'timeline'
+  ) {
     return props.variant
   }
   if (import.meta.dev) {
-    console.warn(`[resume-section:project] Unknown variant "${String(props.variant)}"; fallback to "classic".`)
+    console.warn(
+      `[resume-section:project] Unknown variant "${String(props.variant)}"; fallback to "classic".`,
+    )
   }
   return 'classic'
 })
 const isTimelineVariant = computed(() => safeVariant.value === 'timeline')
 const sectionRegistry = getSectionRegistryEntry('project')
 const contentStyles = computed(() =>
-  RESUME_CONTENT_STYLE_OPTIONS.filter(option => sectionRegistry.contentStyles.includes(option.value)),
+  RESUME_CONTENT_STYLE_OPTIONS.filter((option) =>
+    sectionRegistry.contentStyles.includes(option.value),
+  ),
 )
 
 const showSummary = computed({
   get: () => props.resume?.sectionOptions?.project?.showSummary !== false,
   set: (value: boolean) => {
     const resumeModel = props.resume as Record<string, any>
-    if (!resumeModel.sectionOptions || typeof resumeModel.sectionOptions !== 'object') {
+    if (
+      !resumeModel.sectionOptions ||
+      typeof resumeModel.sectionOptions !== 'object'
+    ) {
       resumeModel.sectionOptions = {}
     }
-    if (!resumeModel.sectionOptions.project || typeof resumeModel.sectionOptions.project !== 'object') {
+    if (
+      !resumeModel.sectionOptions.project ||
+      typeof resumeModel.sectionOptions.project !== 'object'
+    ) {
       resumeModel.sectionOptions.project = {}
     }
     resumeModel.sectionOptions.project.showSummary = value
@@ -98,8 +126,14 @@ function updateText(path: string, value: string) {
   target[last] = value
 }
 
-function detectProvider(project: Record<string, any>): 'github' | 'gitlab' | 'other' | null {
-  if (project.repositoryProvider === 'github' || project.repositoryProvider === 'gitlab' || project.repositoryProvider === 'other') {
+function detectProvider(
+  project: Record<string, any>,
+): 'github' | 'gitlab' | 'other' | null {
+  if (
+    project.repositoryProvider === 'github' ||
+    project.repositoryProvider === 'gitlab' ||
+    project.repositoryProvider === 'other'
+  ) {
     return project.repositoryProvider
   }
   const repositoryUrl = String(project.repositoryUrl || '').toLowerCase()
@@ -118,7 +152,9 @@ function providerIcon(project: Record<string, any>) {
 }
 
 function resolveContentStyle(item: Record<string, unknown>) {
-  return item.contentStyle === 'dashes' || item.contentStyle === 'timeline' ? item.contentStyle : 'points'
+  return item.contentStyle === 'dashes' || item.contentStyle === 'timeline'
+    ? item.contentStyle
+    : 'points'
 }
 
 function resolvePoints(item: Record<string, unknown>) {
@@ -133,8 +169,9 @@ function resolveDashes(item: Record<string, unknown>) {
 }
 
 function resolveTimelineEvents(item: Record<string, unknown>) {
-  if (Array.isArray(item.timelineEvents) && item.timelineEvents.length) return item.timelineEvents
-  return resolvePoints(item).map(detail => ({ label: '', detail }))
+  if (Array.isArray(item.timelineEvents) && item.timelineEvents.length)
+    return item.timelineEvents
+  return resolvePoints(item).map((detail) => ({ label: '', detail }))
 }
 
 function normalizeText(value: string) {
@@ -151,16 +188,19 @@ function hasNearIdenticalSummary(item: Record<string, unknown>) {
   const summary = normalizeText(String(item.summary || ''))
   if (!summary) return false
   const style = resolveContentStyle(item)
-  const source = style === 'dashes'
-    ? resolveDashes(item)
-    : style === 'timeline'
-      ? resolveTimelineEvents(item).map(event => `${event.label || ''} ${event.detail || ''}`)
-      : resolvePoints(item)
+  const source =
+    style === 'dashes'
+      ? resolveDashes(item)
+      : style === 'timeline'
+        ? resolveTimelineEvents(item).map(
+            (event) => `${event.label || ''} ${event.detail || ''}`,
+          )
+        : resolvePoints(item)
   const normalizedLines = source
-    .map(line => normalizeText(String(line)))
+    .map((line) => normalizeText(String(line)))
     .filter(Boolean)
   if (!normalizedLines.length) return false
-  if (normalizedLines.some(line => line === summary)) return true
+  if (normalizedLines.some((line) => line === summary)) return true
   return normalizedLines.join(' ') === summary
 }
 
@@ -182,7 +222,15 @@ function updateSectionOption(optionKey: string, value: boolean) {
 }
 </script>
 <template>
-  <section :class="['project-section', 'resume-section-hoverable', `density-${layoutDensity}`, { 'project-section--timeline': isTimelineVariant }]" :style="sectionStyle">
+  <section
+    :class="[
+      'project-section',
+      'resume-section-hoverable',
+      `density-${layoutDensity}`,
+      { 'project-section--timeline': isTimelineVariant },
+    ]"
+    :style="sectionStyle"
+  >
     <SectionToolbar
       v-if="toolbarEnabled"
       section-key="project"
@@ -195,33 +243,76 @@ function updateSectionOption(optionKey: string, value: boolean) {
       :can-move-down="canMoveDown"
       @add-item="() => emit('add-item', 'project')"
       @change-variant="(_, next) => emit('change-variant', 'project', next)"
-      @update-section-option="(_, optionKey, value) => updateSectionOption(optionKey, value)"
+      @update-section-option="
+        (_, optionKey, value) => updateSectionOption(optionKey, value)
+      "
       @move-up="() => emit('move-section', 'project', 'up')"
       @move-down="() => emit('move-section', 'project', 'down')"
+      @delete-section="() => emit('delete-section', 'project')"
     />
     <h2 class="cv-heading-section">
-      <span v-if="showSectionIcon && sectionIcon" class="section-icon" :class="iconVariantClass" :style="iconStyle">
+      <span
+        v-if="showSectionIcon && sectionIcon"
+        class="section-icon"
+        :class="iconVariantClass"
+        :style="iconStyle"
+      >
         <v-icon :icon="sectionIcon" :size="sectionIconStyle?.size ?? 18" />
       </span>
       <span>{{ title }}</span>
     </h2>
-    <div :class="['project-grid', { 'project-grid--two-column': safeVariant === 'two-column' }]">
+    <div
+      :class="[
+        'project-grid',
+        { 'project-grid--two-column': safeVariant === 'two-column' },
+      ]"
+    >
       <article
         v-for="(project, index) in resume.projects"
         :key="`${project.name}-${index}`"
         class="entry text-dark"
-        :class="{ 'project-card': safeVariant === 'cards' || safeVariant === 'two-column' }"
+        :class="{
+          'project-card':
+            safeVariant === 'cards' || safeVariant === 'two-column',
+        }"
       >
         <div class="date-column dates">
-          <span class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.start`, (event.target as HTMLElement).innerText)">{{ project.start || project.period || '' }}</span>
+          <span
+            class="editable-text"
+            :contenteditable="editable"
+            @input="
+              (event) =>
+                updateText(
+                  `projects.${index}.start`,
+                  (event.target as HTMLElement).innerText,
+                )
+            "
+            >{{ project.start || project.period || '' }}</span
+          >
           <template v-if="project.end || project.periodEnd">
             -
-            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.end`, (event.target as HTMLElement).innerText)">{{ project.end || project.periodEnd }}</span>
+            <span
+              class="editable-text"
+              :contenteditable="editable"
+              @input="
+                (event) =>
+                  updateText(
+                    `projects.${index}.end`,
+                    (event.target as HTMLElement).innerText,
+                  )
+              "
+              >{{ project.end || project.periodEnd }}</span
+            >
           </template>
         </div>
         <div class="content-column">
           <div class="project-heading-row">
-            <v-avatar v-if="project.imageUrl || project.company?.logo" size="40" rounded="lg" class="project-thumb">
+            <v-avatar
+              v-if="project.imageUrl || project.company?.logo"
+              size="40"
+              rounded="lg"
+              class="project-thumb"
+            >
               <v-img :src="project.imageUrl || project.company?.logo" cover />
             </v-avatar>
             <h4 class="text-dark project-title">
@@ -232,27 +323,138 @@ function updateSectionOption(optionKey: string, value: boolean) {
                 rel="noopener noreferrer"
                 class="project-title-link"
               >
-                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span>
-                <v-icon v-if="providerIcon(project)" :icon="providerIcon(project)" size="16" class="ml-1" />
+                <span
+                  class="editable-text"
+                  :contenteditable="editable"
+                  @input="
+                    (event) =>
+                      updateText(
+                        `projects.${index}.name`,
+                        (event.target as HTMLElement).innerText,
+                      )
+                  "
+                  >{{ project.name }}</span
+                >
+                <v-icon
+                  v-if="providerIcon(project)"
+                  :icon="providerIcon(project)"
+                  size="16"
+                  class="ml-1"
+                />
               </a>
-              <span v-else class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span>
+              <span
+                v-else
+                class="editable-text"
+                :contenteditable="editable"
+                @input="
+                  (event) =>
+                    updateText(
+                      `projects.${index}.name`,
+                      (event.target as HTMLElement).innerText,
+                    )
+                "
+                >{{ project.name }}</span
+              >
             </h4>
           </div>
-          <p v-if="shouldDisplaySummary(project)" class="text-dark editable-text project-summary" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
+          <p
+            v-if="shouldDisplaySummary(project)"
+            class="text-dark editable-text project-summary"
+            :contenteditable="editable"
+            @input="
+              (event) =>
+                updateText(
+                  `projects.${index}.summary`,
+                  (event.target as HTMLElement).innerText,
+                )
+            "
+          >
+            {{ project.summary }}
+          </p>
         </div>
         <template v-if="resolveContentStyle(project) === 'timeline'">
-          <div :class="['timeline-block', { 'project-content-with-summary': shouldDisplaySummary(project) }]">
-            <div v-for="(event, eventIndex) in resolveTimelineEvents(project)" :key="eventIndex" class="timeline-event">
-              <strong class="editable-text" :contenteditable="editable" @input="entry => updateText(`projects.${index}.timelineEvents.${eventIndex}.label`, (entry.target as HTMLElement).innerText)">{{ event.label }}</strong>
-              <span class="editable-text" :contenteditable="editable" @input="entry => updateText(`projects.${index}.timelineEvents.${eventIndex}.detail`, (entry.target as HTMLElement).innerText)">{{ event.detail }}</span>
+          <div
+            :class="[
+              'timeline-block',
+              { 'project-content-with-summary': shouldDisplaySummary(project) },
+            ]"
+          >
+            <div
+              v-for="(event, eventIndex) in resolveTimelineEvents(project)"
+              :key="eventIndex"
+              class="timeline-event"
+            >
+              <strong
+                class="editable-text"
+                :contenteditable="editable"
+                @input="
+                  (entry) =>
+                    updateText(
+                      `projects.${index}.timelineEvents.${eventIndex}.label`,
+                      (entry.target as HTMLElement).innerText,
+                    )
+                "
+                >{{ event.label }}</strong
+              >
+              <span
+                class="editable-text"
+                :contenteditable="editable"
+                @input="
+                  (entry) =>
+                    updateText(
+                      `projects.${index}.timelineEvents.${eventIndex}.detail`,
+                      (entry.target as HTMLElement).innerText,
+                    )
+                "
+                >{{ event.detail }}</span
+              >
             </div>
           </div>
         </template>
-        <ul v-else-if="resolveContentStyle(project) === 'dashes'" :class="['dash-list', { 'project-content-with-summary': shouldDisplaySummary(project) }]">
-          <li v-for="(dash, dashIndex) in resolveDashes(project)" :key="dashIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.dashes.${dashIndex}`, (event.target as HTMLElement).innerText)">{{ dash }}</li>
+        <ul
+          v-else-if="resolveContentStyle(project) === 'dashes'"
+          :class="[
+            'dash-list',
+            { 'project-content-with-summary': shouldDisplaySummary(project) },
+          ]"
+        >
+          <li
+            v-for="(dash, dashIndex) in resolveDashes(project)"
+            :key="dashIndex"
+            class="text-dark editable-text"
+            :contenteditable="editable"
+            @input="
+              (event) =>
+                updateText(
+                  `projects.${index}.dashes.${dashIndex}`,
+                  (event.target as HTMLElement).innerText,
+                )
+            "
+          >
+            {{ dash }}
+          </li>
         </ul>
-        <ul v-else :class="{ 'project-content-with-summary': shouldDisplaySummary(project) }">
-          <li v-for="(point, pointIndex) in resolvePoints(project)" :key="pointIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.points.${pointIndex}`, (event.target as HTMLElement).innerText)">{{ point }}</li>
+        <ul
+          v-else
+          :class="{
+            'project-content-with-summary': shouldDisplaySummary(project),
+          }"
+        >
+          <li
+            v-for="(point, pointIndex) in resolvePoints(project)"
+            :key="pointIndex"
+            class="text-dark editable-text"
+            :contenteditable="editable"
+            @input="
+              (event) =>
+                updateText(
+                  `projects.${index}.points.${pointIndex}`,
+                  (event.target as HTMLElement).innerText,
+                )
+            "
+          >
+            {{ point }}
+          </li>
         </ul>
       </article>
     </div>
@@ -308,16 +510,41 @@ function updateSectionOption(optionKey: string, value: boolean) {
   border-radius: calc(var(--resume-section-icon-radius, 8px) + 2px);
   background: color-mix(in srgb, currentColor 18%, transparent);
 }
-.project-grid { display: grid; gap: var(--entry-gap, calc(var(--cv-space-2) + var(--cv-space-1) / 2)); }
-.project-grid--two-column { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.project-heading-row { display: flex; align-items: center; gap: var(--cv-space-2); margin-bottom: var(--cv-space-2); }
-.project-thumb { flex-shrink: 0; border: 1px solid color-mix(in srgb, var(--cv-accent) 20%, transparent); }
-.project-title { margin: 0; }
-.project-title-link { color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 2px; }
-.project-title-link:hover { text-decoration: underline; }
+.project-grid {
+  display: grid;
+  gap: var(--entry-gap, calc(var(--cv-space-2) + var(--cv-space-1) / 2));
+}
+.project-grid--two-column {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.project-heading-row {
+  display: flex;
+  align-items: center;
+  gap: var(--cv-space-2);
+  margin-bottom: var(--cv-space-2);
+}
+.project-thumb {
+  flex-shrink: 0;
+  border: 1px solid color-mix(in srgb, var(--cv-accent) 20%, transparent);
+}
+.project-title {
+  margin: 0;
+}
+.project-title-link {
+  color: inherit;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.project-title-link:hover {
+  text-decoration: underline;
+}
 .entry {
   display: grid;
-  grid-template-columns: minmax(140px, var(--resume-date-column-width, 140px)) minmax(0, 1fr);
+  grid-template-columns:
+    minmax(140px, var(--resume-date-column-width, 140px))
+    minmax(0, 1fr);
   column-gap: var(--cv-space-4);
   align-items: start;
   position: relative;
@@ -340,13 +567,17 @@ function updateSectionOption(optionKey: string, value: boolean) {
   content: '';
   position: absolute;
   left: calc((var(--cv-space-2) + var(--cv-space-1)) * -1);
-  top: .55rem;
+  top: 0.55rem;
   width: var(--rs-marker-width, var(--rs-marker-size, 0));
   height: var(--rs-marker-height, var(--rs-marker-size, 0));
   border-radius: var(--rs-marker-radius, 0);
   background: var(--cv-marker-accent);
 }
-.project-card { border: 1px solid var(--cv-card-border-soft); border-radius: calc(var(--resume-section-icon-radius, 8px) + 2px); padding: calc(var(--cv-space-2) + var(--cv-space-1) / 2); }
+.project-card {
+  border: 1px solid var(--cv-card-border-soft);
+  border-radius: calc(var(--resume-section-icon-radius, 8px) + 2px);
+  padding: calc(var(--cv-space-2) + var(--cv-space-1) / 2);
+}
 .project-section--timeline .content-column {
   border-left: 2px solid color-mix(in srgb, var(--cv-accent) 38%, transparent);
   padding-left: calc(var(--cv-space-2) + var(--cv-space-1) / 2);
@@ -401,7 +632,10 @@ function updateSectionOption(optionKey: string, value: boolean) {
   --entry-date-to-description-gap: var(--cv-space-3);
   --entry-description-to-list-gap: var(--cv-space-3);
 }
-.dash-list { list-style: none; padding-inline-start: var(--cv-list-indent); }
+.dash-list {
+  list-style: none;
+  padding-inline-start: var(--cv-list-indent);
+}
 .dash-list li {
   position: relative;
   padding-inline-start: var(--cv-dash-marker-width);
@@ -412,6 +646,15 @@ function updateSectionOption(optionKey: string, value: boolean) {
   inset-inline-start: 0;
   width: var(--cv-dash-marker-width);
 }
-.timeline-block { display: grid; gap: 6px; margin-top: var(--entry-description-to-list-gap); }
-.timeline-event { display: grid; gap: 2px; border-left: 2px solid var(--cv-marker-accent); padding-left: 8px; }
+.timeline-block {
+  display: grid;
+  gap: 6px;
+  margin-top: var(--entry-description-to-list-gap);
+}
+.timeline-event {
+  display: grid;
+  gap: 2px;
+  border-left: 2px solid var(--cv-marker-accent);
+  padding-left: 8px;
+}
 </style>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SectionRenderer from '~/components/Resume/Sections/SectionRenderer.vue'
+import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 import AvatarOverlayControls from '~/components/Resume/Templates/AvatarOverlayControls.vue'
 import type {
   ResumeLayoutMode,
@@ -7,7 +8,10 @@ import type {
   ResumeTemplateSkin,
 } from '~/constants/resumeTemplateSkins'
 import { RESUME_SECTION_ICONS } from '~/constants/resumeSectionIcons'
-import type { ResumeEditableSectionKey, ResumeSectionActionKey } from '~/types/resumeDocumentModel'
+import type {
+  ResumeEditableSectionKey,
+  ResumeSectionActionKey,
+} from '~/types/resumeDocumentModel'
 
 type SectionLayoutVariant = {
   experience: 'detailed' | 'bullets' | 'compact'
@@ -132,9 +136,13 @@ const emit = defineEmits<{
     sectionKey: ResumeSectionActionKey,
     direction: 'up' | 'down',
   ): void
+  (event: 'delete-section', sectionKey: ResumeEditableSectionKey): void
   (event: 'move-photo', direction: 'left' | 'right' | 'up' | 'down'): void
   (event: 'open-photo-picker'): void
-  (event: 'update:photo-size' | 'update:photo-border-width', value: number): void
+  (
+    event: 'update:photo-size' | 'update:photo-border-width',
+    value: number,
+  ): void
   (event: 'update:photo-position', value: 'left' | 'right'): void
   (event: 'remove-photo'): void
 }>()
@@ -180,7 +188,9 @@ const sectionsByRegion = computed(() => ({
     .filter((section) => section.region === 'main' && isSectionVisible(section))
     .sort(compareSectionOrder),
   aside: renderableSections.value
-    .filter((section) => section.region === 'aside' && isSectionVisible(section))
+    .filter(
+      (section) => section.region === 'aside' && isSectionVisible(section),
+    )
     .sort(compareSectionOrder),
 }))
 
@@ -197,18 +207,27 @@ const resolvedDesignState = computed(() => ({
   dividerStyle: props.designState?.dividerStyle ?? props.dividerStyle,
   sidebarWidth: props.designState?.sidebarWidth ?? props.sidebarWidth,
   photoSize: props.designState?.photoSize ?? props.photoSize,
-  photoBorderWidth: props.designState?.photoBorderWidth ?? props.photoBorderWidth,
-  photoPosition: props.designState?.photoPosition === 'left' || props.designState?.photoPosition === 'right'
-    ? props.designState.photoPosition
-    : props.photoPosition === 'left' || props.photoPosition === 'right'
-      ? props.photoPosition
-      : 'right',
-  showSectionIcons: props.designState?.showSectionIcons ?? props.showSectionIcons,
-  showContactIcons: props.designState?.showContactIcons ?? props.showContactIcons,
-  sectionIconStyleVariant: props.designState?.sectionIconStyleVariant ?? props.sectionIconStyleVariant,
+  photoBorderWidth:
+    props.designState?.photoBorderWidth ?? props.photoBorderWidth,
+  photoPosition:
+    props.designState?.photoPosition === 'left' ||
+    props.designState?.photoPosition === 'right'
+      ? props.designState.photoPosition
+      : props.photoPosition === 'left' || props.photoPosition === 'right'
+        ? props.photoPosition
+        : 'right',
+  showSectionIcons:
+    props.designState?.showSectionIcons ?? props.showSectionIcons,
+  showContactIcons:
+    props.designState?.showContactIcons ?? props.showContactIcons,
+  sectionIconStyleVariant:
+    props.designState?.sectionIconStyleVariant ?? props.sectionIconStyleVariant,
   iconSizeVariant: props.designState?.iconSizeVariant ?? props.iconSizeVariant,
   iconColorMode: props.designState?.iconColorMode ?? props.iconColorMode,
-  layoutMode: props.designState?.layoutMode ?? props.layoutMode ?? props.templateSkin.layoutMode,
+  layoutMode:
+    props.designState?.layoutMode ??
+    props.layoutMode ??
+    props.templateSkin.layoutMode,
 }))
 const rootDesignClasses = computed(() => [
   resolvedDesignState.value.roundedClass,
@@ -226,15 +245,14 @@ const layoutModeClass = computed(
 const shouldRenderAside = computed(
   () =>
     resolvedDesignState.value.layoutMode !== 'no-aside' &&
-    (
-      props.templateSkin.showContactInAside ||
+    (props.templateSkin.showContactInAside ||
       props.templateSkin.showProfileInAside ||
-      asideSections.value.length > 0
-    ),
+      asideSections.value.length > 0),
 )
 const noAsideSectionOrderPolicy = 'main-first-then-aside' as const
 const visibleMainSections = computed(() => {
-  if (resolvedDesignState.value.layoutMode !== 'no-aside') return mainSections.value
+  if (resolvedDesignState.value.layoutMode !== 'no-aside')
+    return mainSections.value
 
   // In no-aside mode we remap aside sections into the main flow.
   // Ordering rule: keep main sections first (by order), then aside sections (by order).
@@ -243,7 +261,9 @@ const visibleMainSections = computed(() => {
     return [...mainSections.value, ...asideSections.value]
   }
 
-  return [...mainSections.value, ...asideSections.value].sort(compareSectionOrder)
+  return [...mainSections.value, ...asideSections.value].sort(
+    compareSectionOrder,
+  )
 })
 const avatarStyle = computed(() => ({
   width: `${resolvedDesignState.value.photoSize}px`,
@@ -261,12 +281,15 @@ const sectionLayoutDensity = computed<'compact' | 'normal' | 'spacious'>(() =>
       ? 'spacious'
       : 'normal',
 )
-const shouldShowSectionIcons = computed(() =>
-  resolvedDesignState.value.showSectionIcons ?? props.templateSkin.showSectionIcons,
+const shouldShowSectionIcons = computed(
+  () =>
+    resolvedDesignState.value.showSectionIcons ??
+    props.templateSkin.showSectionIcons,
 )
 const resolvedSectionIconStyle = computed(() => {
   const style = props.templateSkin.sectionIconStyle
-  const variant = resolvedDesignState.value.sectionIconStyleVariant ?? style.variant
+  const variant =
+    resolvedDesignState.value.sectionIconStyleVariant ?? style.variant
   const iconSizeByVariant = { s: 16, m: 18, l: 22 } as const
   const iconColorByMode = {
     accent: 'var(--cv-accent)',
@@ -276,22 +299,32 @@ const resolvedSectionIconStyle = computed(() => {
   return {
     ...style,
     variant,
-    size: iconSizeByVariant[resolvedDesignState.value.iconSizeVariant] ?? style.size,
-    color: iconColorByMode[resolvedDesignState.value.iconColorMode] ?? style.color,
+    size:
+      iconSizeByVariant[resolvedDesignState.value.iconSizeVariant] ??
+      style.size,
+    color:
+      iconColorByMode[resolvedDesignState.value.iconColorMode] ?? style.color,
   }
 })
 const contactIconSize = computed(() => {
   const sizeByVariant = { s: 14, m: 16, l: 20 } as const
-  return sizeByVariant[resolvedDesignState.value.iconSizeVariant] ?? sizeByVariant.m
+  return (
+    sizeByVariant[resolvedDesignState.value.iconSizeVariant] ?? sizeByVariant.m
+  )
 })
 const contactIconColor = computed(() =>
-  resolvedDesignState.value.iconColorMode === 'neutral' ? 'var(--cv-secondary)' : 'var(--cv-accent)',
+  resolvedDesignState.value.iconColorMode === 'neutral'
+    ? 'var(--cv-secondary)'
+    : 'var(--cv-accent)',
 )
 const sectionIconCssVars = computed<Record<string, string>>(() => ({
   '--resume-section-icon-size': `${resolvedSectionIconStyle.value.size}px`,
   '--resume-section-icon-color': resolvedSectionIconStyle.value.color,
   '--resume-section-icon-gap': `${resolvedSectionIconStyle.value.spacing}px`,
-  '--resume-section-icon-radius': resolvedSectionIconStyle.value.roundedBackground ? '999px' : '8px',
+  '--resume-section-icon-radius': resolvedSectionIconStyle.value
+    .roundedBackground
+    ? '999px'
+    : '8px',
   '--resume-contact-icon-size': `${contactIconSize.value}px`,
   '--resume-contact-icon-color': contactIconColor.value,
 }))
@@ -337,7 +370,9 @@ function mergedSectionTokens(sectionKey: ResumeEditableSectionKey) {
   return {
     ...resolvedDesignState.value.themeTokens,
     ...(props.templateSkin.themeTokens ?? {}),
-    ...(sectionKey === 'skill' ? {} : (props.templateSkin.sectionTokens?.[sectionKey] ?? {})),
+    ...(sectionKey === 'skill'
+      ? {}
+      : (props.templateSkin.sectionTokens?.[sectionKey] ?? {})),
   }
 }
 
@@ -359,6 +394,47 @@ function onSectionMove(
   emit('move-section', sectionKey, direction)
 }
 
+function onSectionDelete(sectionKey: ResumeEditableSectionKey) {
+  emit('delete-section', sectionKey)
+}
+
+type ContactFieldKey = 'birthDate' | 'location' | 'phone' | 'email'
+const contactFieldOrder: ContactFieldKey[] = [
+  'birthDate',
+  'location',
+  'phone',
+  'email',
+]
+const hasContactDetails = computed(() =>
+  Boolean(
+    (props.resume.birthDate ?? props.resume.birthday ?? '').trim() ||
+    props.resume.city?.trim() ||
+    props.resume.country?.trim() ||
+    props.resume.phone?.trim() ||
+    props.resume.email?.trim(),
+  ),
+)
+
+function removeContactItem(field: ContactFieldKey) {
+  if (field === 'birthDate') {
+    updateText('birthDate', '')
+    updateText('birthday', '')
+    return
+  }
+  if (field === 'location') {
+    updateText('city', '')
+    updateText('country', '')
+    return
+  }
+  updateText(field, '')
+}
+
+function removeContactSection() {
+  for (const field of contactFieldOrder) {
+    removeContactItem(field)
+  }
+}
+
 function updateText(path: string, value: string) {
   const segments = path.split('.')
   const last = segments.pop()
@@ -372,11 +448,13 @@ function updateText(path: string, value: string) {
 
   target[last] = value
 }
-
 </script>
 
 <template>
-  <article :class="[templateSkin.rootClass, ...rootDesignClasses]" :style="{ ...themeTokens, ...sectionIconCssVars }">
+  <article
+    :class="[templateSkin.rootClass, ...rootDesignClasses]"
+    :style="{ ...themeTokens, ...sectionIconCssVars }"
+  >
     <header class="resume-skin__header">
       <div>
         <h1>
@@ -528,12 +606,27 @@ function updateText(path: string, value: string) {
       </div>
     </header>
 
-    <div :class="[templateSkin.wrapperClass, layoutModeClass]" :style="layoutStyle">
+    <div
+      :class="[templateSkin.wrapperClass, layoutModeClass]"
+      :style="layoutStyle"
+    >
       <aside v-if="shouldRenderAside" :class="templateSkin.asideClass">
-        <section v-if="templateSkin.showContactInAside">
+        <section
+          v-if="templateSkin.showContactInAside && hasContactDetails"
+          class="resume-section-hoverable resume-contact-section"
+        >
+          <SectionToolbar
+            v-if="editable"
+            section-key="contact"
+            :actions="['delete-section']"
+            @delete-section="removeContactSection"
+          />
           <h3 class="cv-heading-section">Contact</h3>
           <div class="resume-skin__contact-grid">
-            <div class="resume-skin__contact-item">
+            <div
+              v-if="resume.birthDate ?? resume.birthday"
+              class="resume-skin__contact-item"
+            >
               <v-icon
                 v-if="showContactIcons"
                 class="resume-skin__contact-icon"
@@ -552,8 +645,23 @@ function updateText(path: string, value: string) {
                 "
                 >{{ resume.birthDate ?? resume.birthday ?? '' }}</span
               >
+              <v-btn
+                v-if="editable"
+                class="resume-contact-item-delete"
+                icon
+                size="x-small"
+                variant="text"
+                color="error"
+                aria-label="Supprimer la date de naissance"
+                @click="removeContactItem('birthDate')"
+              >
+                <v-icon icon="mdi-close" size="14" />
+              </v-btn>
             </div>
-            <div class="resume-skin__contact-item">
+            <div
+              v-if="resume.city || resume.country"
+              class="resume-skin__contact-item"
+            >
               <v-icon
                 v-if="showContactIcons"
                 class="resume-skin__contact-icon"
@@ -566,7 +674,10 @@ function updateText(path: string, value: string) {
                   :contenteditable="editable"
                   @input="
                     (event) =>
-                      updateText('city', (event.target as HTMLElement).innerText)
+                      updateText(
+                        'city',
+                        (event.target as HTMLElement).innerText,
+                      )
                   "
                   >{{ resume.city }}</span
                 >
@@ -585,8 +696,20 @@ function updateText(path: string, value: string) {
                   >{{ resume.country }}</span
                 >
               </span>
+              <v-btn
+                v-if="editable"
+                class="resume-contact-item-delete"
+                icon
+                size="x-small"
+                variant="text"
+                color="error"
+                aria-label="Supprimer la localisation"
+                @click="removeContactItem('location')"
+              >
+                <v-icon icon="mdi-close" size="14" />
+              </v-btn>
             </div>
-            <div class="resume-skin__contact-item">
+            <div v-if="resume.phone" class="resume-skin__contact-item">
               <v-icon
                 v-if="showContactIcons"
                 class="resume-skin__contact-icon"
@@ -602,8 +725,20 @@ function updateText(path: string, value: string) {
                 "
                 >{{ resume.phone }}</span
               >
+              <v-btn
+                v-if="editable"
+                class="resume-contact-item-delete"
+                icon
+                size="x-small"
+                variant="text"
+                color="error"
+                aria-label="Supprimer le téléphone"
+                @click="removeContactItem('phone')"
+              >
+                <v-icon icon="mdi-close" size="14" />
+              </v-btn>
             </div>
-            <div class="resume-skin__contact-item">
+            <div v-if="resume.email" class="resume-skin__contact-item">
               <v-icon
                 v-if="showContactIcons"
                 class="resume-skin__contact-icon"
@@ -619,6 +754,18 @@ function updateText(path: string, value: string) {
                 "
                 >{{ resume.email }}</span
               >
+              <v-btn
+                v-if="editable"
+                class="resume-contact-item-delete"
+                icon
+                size="x-small"
+                variant="text"
+                color="error"
+                aria-label="Supprimer l'email"
+                @click="removeContactItem('email')"
+              >
+                <v-icon icon="mdi-close" size="14" />
+              </v-btn>
             </div>
           </div>
         </section>
@@ -656,12 +803,17 @@ function updateText(path: string, value: string) {
           @add-item="onSectionAddItem"
           @change-variant="onSectionVariantChange"
           @move-section="onSectionMove"
+          @delete-section="onSectionDelete"
         />
       </aside>
 
       <main :class="templateSkin.mainClass">
         <section
-          v-if="resolvedDesignState.layoutMode === 'no-aside' && templateSkin.showContactInAside"
+          v-if="
+            resolvedDesignState.layoutMode === 'no-aside' &&
+            templateSkin.showContactInAside &&
+            hasContactDetails
+          "
         >
           <h2 class="cv-heading-section">Contact</h2>
           <div class="resume-skin__contact-grid">
@@ -698,7 +850,10 @@ function updateText(path: string, value: string) {
                   :contenteditable="editable"
                   @input="
                     (event) =>
-                      updateText('city', (event.target as HTMLElement).innerText)
+                      updateText(
+                        'city',
+                        (event.target as HTMLElement).innerText,
+                      )
                   "
                   >{{ resume.city }}</span
                 >
@@ -756,7 +911,10 @@ function updateText(path: string, value: string) {
         </section>
 
         <section
-          v-if="resolvedDesignState.layoutMode === 'no-aside' && templateSkin.showProfileInAside"
+          v-if="
+            resolvedDesignState.layoutMode === 'no-aside' &&
+            templateSkin.showProfileInAside
+          "
         >
           <h2 class="cv-heading-section">Profile</h2>
           <p
@@ -804,6 +962,7 @@ function updateText(path: string, value: string) {
           @add-item="onSectionAddItem"
           @change-variant="onSectionVariantChange"
           @move-section="onSectionMove"
+          @delete-section="onSectionDelete"
         />
       </main>
     </div>
@@ -851,18 +1010,37 @@ function updateText(path: string, value: string) {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--cv-space-2) var(--cv-space-4);
 }
+.resume-contact-section {
+  position: relative;
+  container-type: inline-size;
+}
+.resume-contact-section .resume-skin__contact-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
 .resume-skin__contact-item {
   display: inline-flex;
   align-items: center;
   gap: var(--cv-space-2);
   min-width: 0;
+  position: relative;
+}
+.resume-contact-item-delete {
+  margin-left: auto;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease;
+}
+.resume-skin__contact-item:hover .resume-contact-item-delete,
+.resume-skin__contact-item:focus-within .resume-contact-item-delete {
+  opacity: 1;
+  pointer-events: auto;
 }
 .resume-skin__contact-item .editable-text {
   min-width: 0;
 }
 .resume-skin__contact-icon {
   color: var(--resume-contact-icon-color, var(--cv-accent));
-  transition: color .2s ease;
+  transition: color 0.2s ease;
 }
 .photo-frame {
   position: relative;
@@ -985,6 +1163,12 @@ function updateText(path: string, value: string) {
 .divider-none .resume-skin__aside > section {
   border-bottom: none;
   padding-bottom: 0;
+}
+
+@container (min-width: 381px) {
+  .resume-contact-section .resume-skin__contact-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 768px) {

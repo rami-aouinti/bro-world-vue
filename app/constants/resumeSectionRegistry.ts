@@ -1,4 +1,7 @@
-import type { ResumeEditableSectionKey, ResumeSectionRegion } from '~/types/resumeDocumentModel'
+import type {
+  ResumeEditableSectionKey,
+  ResumeSectionRegion,
+} from '~/types/resumeDocumentModel'
 
 export type ResumeToolbarAction =
   | 'add-item'
@@ -7,13 +10,14 @@ export type ResumeToolbarAction =
   | 'move-up'
   | 'move-down'
   | 'style-panel'
+  | 'delete-section'
 
 export type ResumeContentStyle = 'points' | 'dashes' | 'timeline'
 
 export type ResumeSectionRegistryEntry = {
   label: string
   icon: string
-  variants: Array<{ label: string, value: string }>
+  variants: Array<{ label: string; value: string }>
   defaultVariant: string
   defaultRegion: ResumeSectionRegion
   toolbarActions: ResumeToolbarAction[]
@@ -29,13 +33,19 @@ export type ResumeSectionRegistryEntry = {
   contentStyles: ResumeContentStyle[]
 }
 
-export const RESUME_CONTENT_STYLE_OPTIONS: Array<{ label: string, value: ResumeContentStyle }> = [
+export const RESUME_CONTENT_STYLE_OPTIONS: Array<{
+  label: string
+  value: ResumeContentStyle
+}> = [
   { label: 'Points', value: 'points' },
   { label: 'Tirets', value: 'dashes' },
   { label: 'Timeline', value: 'timeline' },
 ]
 
-export const RESUME_SECTION_REGISTRY: Record<ResumeEditableSectionKey, ResumeSectionRegistryEntry> = {
+export const RESUME_SECTION_REGISTRY: Record<
+  ResumeEditableSectionKey,
+  ResumeSectionRegistryEntry
+> = {
   experience: {
     label: 'Experience',
     icon: 'mdi-briefcase-outline',
@@ -46,8 +56,24 @@ export const RESUME_SECTION_REGISTRY: Record<ResumeEditableSectionKey, ResumeSec
     ],
     defaultVariant: 'detailed',
     defaultRegion: 'main',
-    toolbarActions: ['add-item', 'change-variant', 'move-up', 'move-down', 'style-panel'],
-    formFields: ['role', 'company', 'companyImageUrl', 'city', 'start', 'end', 'contentStyle', 'points'],
+    toolbarActions: [
+      'add-item',
+      'change-variant',
+      'move-up',
+      'move-down',
+      'style-panel',
+      'delete-section',
+    ],
+    formFields: [
+      'role',
+      'company',
+      'companyImageUrl',
+      'city',
+      'start',
+      'end',
+      'contentStyle',
+      'points',
+    ],
     mediaCapabilities: { logo: true, image: false },
     linkCapabilities: { github: false, gitlab: false },
     contentStyles: ['points', 'dashes', 'timeline'],
@@ -62,8 +88,24 @@ export const RESUME_SECTION_REGISTRY: Record<ResumeEditableSectionKey, ResumeSec
     ],
     defaultVariant: 'classic',
     defaultRegion: 'main',
-    toolbarActions: ['add-item', 'change-variant', 'move-up', 'move-down', 'style-panel'],
-    formFields: ['degree', 'school', 'schoolImageUrl', 'city', 'start', 'end', 'contentStyle', 'points'],
+    toolbarActions: [
+      'add-item',
+      'change-variant',
+      'move-up',
+      'move-down',
+      'style-panel',
+      'delete-section',
+    ],
+    formFields: [
+      'degree',
+      'school',
+      'schoolImageUrl',
+      'city',
+      'start',
+      'end',
+      'contentStyle',
+      'points',
+    ],
     mediaCapabilities: { logo: true, image: false },
     linkCapabilities: { github: false, gitlab: false },
     contentStyles: ['points', 'dashes', 'timeline'],
@@ -80,7 +122,14 @@ export const RESUME_SECTION_REGISTRY: Record<ResumeEditableSectionKey, ResumeSec
     ],
     defaultVariant: 'classic',
     defaultRegion: 'aside',
-    toolbarActions: ['add-item', 'change-variant', 'move-up', 'move-down', 'style-panel'],
+    toolbarActions: [
+      'add-item',
+      'change-variant',
+      'move-up',
+      'move-down',
+      'style-panel',
+      'delete-section',
+    ],
     formFields: ['name', 'level', 'countryCode', 'flag'],
     mediaCapabilities: { logo: false, image: false },
     linkCapabilities: { github: false, gitlab: false },
@@ -98,8 +147,23 @@ export const RESUME_SECTION_REGISTRY: Record<ResumeEditableSectionKey, ResumeSec
     ],
     defaultVariant: 'classic',
     defaultRegion: 'main',
-    toolbarActions: ['add-item', 'change-variant', 'move-up', 'move-down', 'style-panel'],
-    formFields: ['name', 'summary', 'imageUrl', 'repositoryUrl', 'repositoryProvider', 'contentStyle', 'points'],
+    toolbarActions: [
+      'add-item',
+      'change-variant',
+      'move-up',
+      'move-down',
+      'style-panel',
+      'delete-section',
+    ],
+    formFields: [
+      'name',
+      'summary',
+      'imageUrl',
+      'repositoryUrl',
+      'repositoryProvider',
+      'contentStyle',
+      'points',
+    ],
     mediaCapabilities: { logo: false, image: true },
     linkCapabilities: { github: true, gitlab: true },
     contentStyles: ['points', 'dashes', 'timeline'],
@@ -116,7 +180,14 @@ export const RESUME_SECTION_REGISTRY: Record<ResumeEditableSectionKey, ResumeSec
     ],
     defaultVariant: 'progress',
     defaultRegion: 'aside',
-    toolbarActions: ['add-item', 'change-variant', 'move-up', 'move-down', 'style-panel'],
+    toolbarActions: [
+      'add-item',
+      'change-variant',
+      'move-up',
+      'move-down',
+      'style-panel',
+      'delete-section',
+    ],
     formFields: ['name', 'level'],
     mediaCapabilities: { logo: false, image: false },
     linkCapabilities: { github: false, gitlab: false },
@@ -128,7 +199,14 @@ export const RESUME_SECTION_REGISTRY: Record<ResumeEditableSectionKey, ResumeSec
     variants: [{ label: 'Classic', value: 'classic' }],
     defaultVariant: 'classic',
     defaultRegion: 'aside',
-    toolbarActions: ['add-item', 'change-variant', 'move-up', 'move-down', 'style-panel'],
+    toolbarActions: [
+      'add-item',
+      'change-variant',
+      'move-up',
+      'move-down',
+      'style-panel',
+      'delete-section',
+    ],
     formFields: ['name', 'company', 'email', 'phone'],
     mediaCapabilities: { logo: false, image: false },
     linkCapabilities: { github: false, gitlab: false },
@@ -140,7 +218,14 @@ export const RESUME_SECTION_REGISTRY: Record<ResumeEditableSectionKey, ResumeSec
     variants: [{ label: 'Classic', value: 'classic' }],
     defaultVariant: 'classic',
     defaultRegion: 'aside',
-    toolbarActions: ['add-item', 'change-variant', 'move-up', 'move-down', 'style-panel'],
+    toolbarActions: [
+      'add-item',
+      'change-variant',
+      'move-up',
+      'move-down',
+      'style-panel',
+      'delete-section',
+    ],
     formFields: ['name'],
     mediaCapabilities: { logo: false, image: false },
     linkCapabilities: { github: false, gitlab: false },
@@ -152,7 +237,14 @@ export const RESUME_SECTION_REGISTRY: Record<ResumeEditableSectionKey, ResumeSec
     variants: [{ label: 'Classic', value: 'classic' }],
     defaultVariant: 'classic',
     defaultRegion: 'main',
-    toolbarActions: ['add-item', 'change-variant', 'move-up', 'move-down', 'style-panel'],
+    toolbarActions: [
+      'add-item',
+      'change-variant',
+      'move-up',
+      'move-down',
+      'style-panel',
+      'delete-section',
+    ],
     formFields: ['title', 'school', 'start', 'end'],
     mediaCapabilities: { logo: false, image: false },
     linkCapabilities: { github: false, gitlab: false },

@@ -1,41 +1,63 @@
 <script setup lang="ts">
-import { levelToPercent, levelToStars, levelToText } from '~/utils/resumeLanguageLevel'
+import {
+  levelToPercent,
+  levelToStars,
+  levelToText,
+} from '~/utils/resumeLanguageLevel'
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 import { getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
 
-const props = withDefaults(defineProps<{
-  resume: any
-  editable?: boolean
-  variant?: 'classic' | 'text-level' | 'stars' | 'progress' | 'flags' | string
-  themeTokens?: Record<string, string | number>
-  layoutDensity?: 'compact' | 'normal' | 'spacious' | string
-  toolbarEnabled?: boolean
-  title?: string
-  canMoveUp?: boolean
-  canMoveDown?: boolean
-}>(), {
-  editable: false,
-  variant: 'text-level',
-  themeTokens: () => ({}),
-  layoutDensity: 'normal',
-  toolbarEnabled: false,
-  title: 'Languages',
-  canMoveUp: false,
-  canMoveDown: false,
-})
+const props = withDefaults(
+  defineProps<{
+    resume: any
+    editable?: boolean
+    variant?: 'classic' | 'text-level' | 'stars' | 'progress' | 'flags' | string
+    themeTokens?: Record<string, string | number>
+    layoutDensity?: 'compact' | 'normal' | 'spacious' | string
+    toolbarEnabled?: boolean
+    title?: string
+    canMoveUp?: boolean
+    canMoveDown?: boolean
+  }>(),
+  {
+    editable: false,
+    variant: 'text-level',
+    themeTokens: () => ({}),
+    layoutDensity: 'normal',
+    toolbarEnabled: false,
+    title: 'Languages',
+    canMoveUp: false,
+    canMoveDown: false,
+  },
+)
 const emit = defineEmits<{
   (event: 'add-item', sectionKey: 'language'): void
   (event: 'change-variant', sectionKey: 'language', variant: string): void
-  (event: 'move-section', sectionKey: 'language', direction: 'up' | 'down'): void
+  (
+    event: 'move-section',
+    sectionKey: 'language',
+    direction: 'up' | 'down',
+  ): void
+  (event: 'delete-section', sectionKey: 'language'): void
 }>()
 const sectionStyle = computed(() => ({ ...props.themeTokens }))
 const sectionRegistry = getSectionRegistryEntry('language')
-const safeVariant = computed<'classic' | 'text-level' | 'stars' | 'progress' | 'flags'>(() => {
-  if (props.variant === 'classic' || props.variant === 'text-level' || props.variant === 'stars' || props.variant === 'progress' || props.variant === 'flags') {
+const safeVariant = computed<
+  'classic' | 'text-level' | 'stars' | 'progress' | 'flags'
+>(() => {
+  if (
+    props.variant === 'classic' ||
+    props.variant === 'text-level' ||
+    props.variant === 'stars' ||
+    props.variant === 'progress' ||
+    props.variant === 'flags'
+  ) {
     return props.variant
   }
   if (import.meta.dev) {
-    console.warn(`[resume-section:language] Unknown variant "${String(props.variant)}"; fallback to "classic".`)
+    console.warn(
+      `[resume-section:language] Unknown variant "${String(props.variant)}"; fallback to "classic".`,
+    )
   }
   return 'classic'
 })
@@ -56,7 +78,7 @@ function toFlagEmoji(countryCode: string) {
   if (!/^[A-Z]{2}$/.test(normalized)) return ''
   return normalized
     .split('')
-    .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
+    .map((char) => String.fromCodePoint(127397 + char.charCodeAt(0)))
     .join('')
 }
 
@@ -69,7 +91,14 @@ function resolveLanguageFlag(language: Record<string, unknown>) {
 }
 </script>
 <template>
-  <section :class="['language-section', 'resume-section-hoverable', `density-${layoutDensity}`]" :style="sectionStyle">
+  <section
+    :class="[
+      'language-section',
+      'resume-section-hoverable',
+      `density-${layoutDensity}`,
+    ]"
+    :style="sectionStyle"
+  >
     <SectionToolbar
       v-if="toolbarEnabled"
       section-key="language"
@@ -82,38 +111,128 @@ function resolveLanguageFlag(language: Record<string, unknown>) {
       @change-variant="(_, next) => emit('change-variant', 'language', next)"
       @move-up="() => emit('move-section', 'language', 'up')"
       @move-down="() => emit('move-section', 'language', 'down')"
+      @delete-section="() => emit('delete-section', 'language')"
     />
     <h3 class="cv-heading-section">{{ title }}</h3>
-    <ul v-if="safeVariant === 'classic' || safeVariant === 'text-level'" class="bars">
-      <li v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`">
+    <ul
+      v-if="safeVariant === 'classic' || safeVariant === 'text-level'"
+      class="bars"
+    >
+      <li
+        v-for="(language, index) in resume.languages"
+        :key="`${language.name}-${index}`"
+      >
         <small>{{ levelToText(language.level) }} — </small>
-        <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+        <span
+          class="editable-text"
+          :contenteditable="editable"
+          @input="
+            (event) =>
+              updateText(
+                `languages.${index}.name`,
+                (event.target as HTMLElement).innerText,
+              )
+          "
+          >{{ language.name }}</span
+        >
       </li>
     </ul>
     <ul v-else-if="safeVariant === 'stars'" class="bars">
-      <li v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" class="d-flex align-center ga-2">
-        <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
-        <v-rating :model-value="levelToStars(language.level)" readonly length="5" density="compact" color="amber" size="16" />
+      <li
+        v-for="(language, index) in resume.languages"
+        :key="`${language.name}-${index}`"
+        class="d-flex align-center ga-2"
+      >
+        <span
+          class="editable-text"
+          :contenteditable="editable"
+          @input="
+            (event) =>
+              updateText(
+                `languages.${index}.name`,
+                (event.target as HTMLElement).innerText,
+              )
+          "
+          >{{ language.name }}</span
+        >
+        <v-rating
+          :model-value="levelToStars(language.level)"
+          readonly
+          length="5"
+          density="compact"
+          color="amber"
+          size="16"
+        />
       </li>
     </ul>
     <ul v-else-if="safeVariant === 'progress'" class="bars">
-      <li v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`">
+      <li
+        v-for="(language, index) in resume.languages"
+        :key="`${language.name}-${index}`"
+      >
         <div class="d-flex align-center ga-2">
           <small>{{ levelToPercent(language.level) }}%</small>
-          <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+          <span
+            class="editable-text"
+            :contenteditable="editable"
+            @input="
+              (event) =>
+                updateText(
+                  `languages.${index}.name`,
+                  (event.target as HTMLElement).innerText,
+                )
+            "
+            >{{ language.name }}</span
+          >
         </div>
-        <div class="progress"><i :style="{ width: `${levelToPercent(language.level)}%` }" /></div>
+        <div class="progress">
+          <i :style="{ width: `${levelToPercent(language.level)}%` }" />
+        </div>
       </li>
     </ul>
     <ul v-else class="bars">
-      <li v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`">
+      <li
+        v-for="(language, index) in resume.languages"
+        :key="`${language.name}-${index}`"
+      >
         <div class="d-flex align-center ga-2 justify-space-between">
           <div class="d-flex align-center ga-2">
-            <span v-if="resolveLanguageFlag(language)" class="language-flag" :aria-label="`${language.name} flag`">{{ resolveLanguageFlag(language) }}</span>
-            <span v-else class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
-            <span v-if="resolveLanguageFlag(language)" class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+            <span
+              v-if="resolveLanguageFlag(language)"
+              class="language-flag"
+              :aria-label="`${language.name} flag`"
+              >{{ resolveLanguageFlag(language) }}</span
+            >
+            <span
+              v-else
+              class="editable-text"
+              :contenteditable="editable"
+              @input="
+                (event) =>
+                  updateText(
+                    `languages.${index}.name`,
+                    (event.target as HTMLElement).innerText,
+                  )
+              "
+              >{{ language.name }}</span
+            >
+            <span
+              v-if="resolveLanguageFlag(language)"
+              class="editable-text"
+              :contenteditable="editable"
+              @input="
+                (event) =>
+                  updateText(
+                    `languages.${index}.name`,
+                    (event.target as HTMLElement).innerText,
+                  )
+              "
+              >{{ language.name }}</span
+            >
           </div>
-          <small v-if="levelToStars(language.level) > 0">{{ `${'★'.repeat(levelToStars(language.level))}${'☆'.repeat(5 - levelToStars(language.level))}` }}</small>
+          <small v-if="levelToStars(language.level) > 0">{{
+            `${'★'.repeat(levelToStars(language.level))}${'☆'.repeat(5 - levelToStars(language.level))}`
+          }}</small>
           <small v-else>{{ levelToText(language.level) }}</small>
         </div>
       </li>
@@ -142,10 +261,17 @@ function resolveLanguageFlag(language: Record<string, unknown>) {
   border-radius: var(--rs-heading-radius, 0);
   padding: var(--rs-heading-padding, 0);
 }
-.bars { list-style: none; padding: 0; margin: 0; }
+.bars {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 .bars li {
   position: relative;
-  margin-bottom: var(--entry-gap, calc(var(--cv-space-2) + var(--cv-space-1) / 2));
+  margin-bottom: var(
+    --entry-gap,
+    calc(var(--cv-space-2) + var(--cv-space-1) / 2)
+  );
   border: var(--rs-card-border, none);
   background: var(--rs-card-bg, transparent);
   border-radius: var(--rs-card-radius, 0);
@@ -157,7 +283,7 @@ function resolveLanguageFlag(language: Record<string, unknown>) {
   content: '';
   position: absolute;
   left: calc((var(--cv-space-2) + var(--cv-space-1)) * -1);
-  top: .45rem;
+  top: 0.45rem;
   width: var(--rs-marker-width, var(--rs-marker-size, 0));
   height: var(--rs-marker-height, var(--rs-marker-size, 0));
   border-radius: var(--rs-marker-radius, 0);
@@ -166,14 +292,30 @@ function resolveLanguageFlag(language: Record<string, unknown>) {
 .bars li:last-child {
   margin-bottom: 0;
 }
-.progress { height: var(--cv-space-1); background: var(--cv-progress-bg); margin-top: var(--cv-space-1); }
-.progress i { display: block; height: 4px; background: var(--cv-accent); }
-.progress i { height: var(--cv-space-1); }
+.progress {
+  height: var(--cv-space-1);
+  background: var(--cv-progress-bg);
+  margin-top: var(--cv-space-1);
+}
+.progress i {
+  display: block;
+  height: 4px;
+  background: var(--cv-accent);
+}
+.progress i {
+  height: var(--cv-space-1);
+}
 .language-flag {
   font-size: 1.1em;
   line-height: 1;
 }
-.density-compact { --entry-gap: calc(var(--cv-space-2) - var(--cv-space-1) / 2); }
-.density-normal { --entry-gap: calc(var(--cv-space-2) + var(--cv-space-1) / 2); }
-.density-spacious { --entry-gap: calc(var(--cv-space-3) + var(--cv-space-1) / 2); }
+.density-compact {
+  --entry-gap: calc(var(--cv-space-2) - var(--cv-space-1) / 2);
+}
+.density-normal {
+  --entry-gap: calc(var(--cv-space-2) + var(--cv-space-1) / 2);
+}
+.density-spacious {
+  --entry-gap: calc(var(--cv-space-3) + var(--cv-space-1) / 2);
+}
 </style>

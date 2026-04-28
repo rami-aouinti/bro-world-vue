@@ -11,37 +11,49 @@ import { getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
 import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
 import type { ResumeEditableSectionKey } from '~/types/resumeDocumentModel'
 
-const props = withDefaults(defineProps<{
-  sectionKey: ResumeEditableSectionKey
-  resume: any
-  editable?: boolean
-  variant: string
-  layoutDensity?: 'compact' | 'normal' | 'spacious' | string
-  title?: string
-  toolbarEnabled?: boolean
-  canMoveUp?: boolean
-  canMoveDown?: boolean
-  themeTokens?: Record<string, string>
-  sectionIcon?: string
-  showSectionIcon?: boolean
-  sectionIconStyle?: ResumeSectionIconStyle
-}>(), {
-  editable: false,
-  layoutDensity: 'normal',
-  title: undefined,
-  toolbarEnabled: true,
-  canMoveUp: false,
-  canMoveDown: false,
-  themeTokens: () => ({}),
-  sectionIcon: undefined,
-  showSectionIcon: true,
-  sectionIconStyle: undefined,
-})
+const props = withDefaults(
+  defineProps<{
+    sectionKey: ResumeEditableSectionKey
+    resume: any
+    editable?: boolean
+    variant: string
+    layoutDensity?: 'compact' | 'normal' | 'spacious' | string
+    title?: string
+    toolbarEnabled?: boolean
+    canMoveUp?: boolean
+    canMoveDown?: boolean
+    themeTokens?: Record<string, string>
+    sectionIcon?: string
+    showSectionIcon?: boolean
+    sectionIconStyle?: ResumeSectionIconStyle
+  }>(),
+  {
+    editable: false,
+    layoutDensity: 'normal',
+    title: undefined,
+    toolbarEnabled: true,
+    canMoveUp: false,
+    canMoveDown: false,
+    themeTokens: () => ({}),
+    sectionIcon: undefined,
+    showSectionIcon: true,
+    sectionIconStyle: undefined,
+  },
+)
 
 const emit = defineEmits<{
   (event: 'add-item', sectionKey: ResumeEditableSectionKey): void
-  (event: 'change-variant', sectionKey: ResumeEditableSectionKey, variant: string): void
-  (event: 'move-section', sectionKey: ResumeEditableSectionKey, direction: 'up' | 'down'): void
+  (
+    event: 'change-variant',
+    sectionKey: ResumeEditableSectionKey,
+    variant: string,
+  ): void
+  (
+    event: 'move-section',
+    sectionKey: ResumeEditableSectionKey,
+    direction: 'up' | 'down',
+  ): void
+  (event: 'delete-section', sectionKey: ResumeEditableSectionKey): void
 }>()
 
 const componentBySectionKey = {
@@ -95,5 +107,6 @@ function onMoveSection(_: ResumeEditableSectionKey, direction: 'up' | 'down') {
     @add-item="emit('add-item', sectionKey)"
     @change-variant="onVariantChange"
     @move-section="onMoveSection"
+    @delete-section="emit('delete-section', sectionKey)"
   />
 </template>
