@@ -14,6 +14,12 @@ type StylePresetOption = {
   tokens: Record<string, string>
 }
 
+type ToolbarSectionOption = {
+  key: string
+  label: string
+  modelValue: boolean
+}
+
 const props = withDefaults(defineProps<{
   sectionKey: string
   canMoveUp?: boolean
@@ -23,6 +29,7 @@ const props = withDefaults(defineProps<{
   contentStyles?: ToolbarContentStyleOption[]
   currentContentStyle?: string
   actions?: ToolbarAction[]
+  sectionOptions?: ToolbarSectionOption[]
 }>(), {
   canMoveUp: false,
   canMoveDown: false,
@@ -31,11 +38,13 @@ const props = withDefaults(defineProps<{
   contentStyles: () => [],
   currentContentStyle: '',
   actions: () => ['add-item', 'change-variant', 'change-content-style', 'style-panel', 'move-up', 'move-down'],
+  sectionOptions: () => [],
 })
 
 const emit = defineEmits<{
   (event: 'add-item' | 'move-up' | 'move-down', sectionKey: string): void
   (event: 'change-variant' | 'change-content-style', sectionKey: string, value: string): void
+  (event: 'update-section-option', sectionKey: string, optionKey: string, value: boolean): void
 }>()
 
 const toolbarRef = ref<HTMLElement | null>(null)
@@ -217,6 +226,18 @@ watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySe
           <v-select v-model="selectedSpacing" :items="spacingPresets" item-title="label" item-value="value" label="Spacing" density="compact" hide-details />
           <v-select v-model="selectedCard" :items="cardPresets" item-title="label" item-value="value" label="Card style" density="compact" hide-details />
           <v-select v-model="selectedDivider" :items="dividerPresets" item-title="label" item-value="value" label="Divider style" density="compact" hide-details />
+          <v-divider v-if="props.sectionOptions.length" />
+          <v-switch
+            v-for="option in props.sectionOptions"
+            :key="option.key"
+            :model-value="option.modelValue"
+            color="primary"
+            density="compact"
+            hide-details
+            inset
+            :label="option.label"
+            @update:model-value="emit('update-section-option', props.sectionKey, option.key, Boolean($event))"
+          />
           <v-switch :model-value="pinEnabled" color="primary" density="compact" hide-details inset label="Mode édition épinglé" @update:model-value="setPin(Boolean($event))" />
         </v-card-text>
       </v-card>
