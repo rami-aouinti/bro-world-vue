@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import SectionRenderer from '~/components/Resume/Sections/SectionRenderer.vue'
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import AvatarOverlayControls from '~/components/Resume/Templates/AvatarOverlayControls.vue'
 import type {
   ResumeSectionKey,
   ResumeTemplateSkin,
@@ -124,7 +125,6 @@ const mainSections = computed(() =>
 const asideSections = computed(() =>
   renderableSections.value.filter((section) => section.region === 'aside'),
 )
-const photoControlsVisible = ref(false)
 const hasRenderedAvatar = computed(() =>
   Boolean(props.showPhoto && props.resume?.photoUrl),
 )
@@ -224,12 +224,6 @@ function updateText(path: string, value: string) {
   target[last] = value
 }
 
-function onPhotoFrameFocusOut(event: FocusEvent) {
-  const currentTarget = event.currentTarget as HTMLElement | null
-  const relatedTarget = event.relatedTarget as Node | null
-  if (currentTarget?.contains(relatedTarget)) return
-  photoControlsVisible.value = false
-}
 </script>
 
 <template>
@@ -301,34 +295,13 @@ function onPhotoFrameFocusOut(event: FocusEvent) {
           >
         </p>
       </div>
-      <div
-        v-if="hasRenderedAvatar"
-        class="photo-frame"
-        tabindex="0"
-        @mouseenter="photoControlsVisible = true"
-        @mouseleave="photoControlsVisible = false"
-        @focusin="photoControlsVisible = true"
-        @focusout="onPhotoFrameFocusOut"
-      >
-        <div
+      <div v-if="hasRenderedAvatar" class="photo-frame" tabindex="0">
+        <AvatarOverlayControls
           v-if="photoShapeOptions.length"
-          class="photo-shape-picker"
-          :class="{
-            'photo-shape-picker--visible':
-              photoControlsVisible && hasRenderedAvatar,
-          }"
-        >
-          <v-btn
-            v-for="shape in photoShapeOptions"
-            :key="`preview-photo-shape-${shape.value}`"
-            size="x-small"
-            variant="tonal"
-            :color="selectedPhotoShape === shape.value ? 'primary' : undefined"
-            @click="onPhotoShapeSelect?.(shape.value)"
-          >
-            {{ shape.icon ?? shape.label }}
-          </v-btn>
-        </div>
+          :options="photoShapeOptions"
+          :selected-value="selectedPhotoShape"
+          @select="onPhotoShapeSelect?.($event)"
+        />
         <v-avatar
           class="resume-skin__avatar"
           :style="avatarStyle"
@@ -538,53 +511,15 @@ function onPhotoFrameFocusOut(event: FocusEvent) {
   border-color: color-mix(in srgb, var(--cv-accent) 28%, var(--cv-page));
 }
 
-.photo-shape-picker {
-  --picker-radius: var(--cv-radius, 14px);
-  --picker-border: color-mix(in srgb, var(--cv-accent) 16%, var(--cv-page));
-  --picker-surface: var(--cv-surface-soft);
-
-  position: absolute;
-  top: 8px;
-  left: 50%;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  min-height: 28px;
-  padding: 3px;
-  border-radius: calc(var(--picker-radius) - 2px);
-  border: 1px solid var(--picker-border);
-  background: var(--picker-surface);
-  backdrop-filter: blur(6px);
-  box-shadow: 0 var(--cv-space-2) var(--cv-space-4) var(--cv-shadow-soft);
-  opacity: 0;
-  transform: translate(-50%, -8px) scale(0.98);
-  pointer-events: none;
-  transition:
-    opacity 180ms ease,
-    transform 200ms ease;
-}
-
-.photo-shape-picker--visible {
+.photo-frame:hover :deep(.avatar-overlay-controls),
+.photo-frame:focus-within :deep(.avatar-overlay-controls) {
   opacity: 1;
-  transform: translate(-50%, 0) scale(1);
   pointer-events: auto;
 }
 
-.photo-shape-picker :deep(.v-btn) {
-  width: 24px;
-  min-width: 24px;
-  height: 24px;
-  border-radius: calc(var(--picker-radius) - 6px);
-  padding: 0;
-}
-
-.photo-shape-picker :deep(.v-btn__content) {
-  display: grid;
-  place-items: center;
-  font-size: 0.72rem;
-  line-height: 1;
+.photo-frame:hover :deep(.avatar-overlay-controls .photo-shape-picker),
+.photo-frame:focus-within :deep(.avatar-overlay-controls .photo-shape-picker) {
+  transform: translateY(0) scale(1);
 }
 .resume-skin__skills {
   list-style: none;
