@@ -326,6 +326,34 @@ const variantRegistry: {
   hobby: { allowed: ['classic'], fallback: 'classic' },
   certification: { allowed: ['classic'], fallback: 'classic' },
 }
+const defaultSectionLayoutEntries: SectionLayoutEntry[] = [
+  { key: 'experience', variant: 'detailed', region: 'main', order: 0 },
+  { key: 'education', variant: 'classic', region: 'main', order: 1 },
+  { key: 'project', variant: 'classic', region: 'main', order: 2 },
+  { key: 'certification', variant: 'classic', region: 'main', order: 3 },
+  { key: 'skill', variant: 'classic', region: 'aside', order: 0 },
+  { key: 'language', variant: 'classic', region: 'aside', order: 1 },
+  { key: 'reference', variant: 'classic', region: 'aside', order: 2 },
+  { key: 'hobby', variant: 'classic', region: 'aside', order: 3 },
+]
+
+function normalizeSectionLayout(entries: Array<Partial<SectionLayoutEntry>> | SectionLayoutEntry[]) {
+  const entryByKey = new Map<EditableSectionKey, Partial<SectionLayoutEntry>>()
+  for (const entry of entries) {
+    if (!entry || typeof entry.key !== 'string' || !(entry.key in variantRegistry)) continue
+    entryByKey.set(entry.key as EditableSectionKey, entry)
+  }
+
+  return defaultSectionLayoutEntries.map((fallback) => {
+    const entry = entryByKey.get(fallback.key)
+    return {
+      key: fallback.key,
+      variant: normalizeSectionVariant(fallback.key, entry?.variant ?? fallback.variant),
+      region: entry?.region === 'main' || entry?.region === 'aside' ? entry.region : fallback.region,
+      order: typeof entry?.order === 'number' ? entry.order : fallback.order,
+    }
+  })
+}
 const coverPageTemplateCards: Template[] = COVER_PAGE_TEMPLATES.map(template => ({
   id: template.id,
   title: template.title,
@@ -567,7 +595,7 @@ const templateSupportsPhoto = computed(
 const selectedTemplateSkin = computed(
   () => resolveTemplateSkin(selectedTemplateConfig.value.variant),
 )
-const { state: resumeDocumentState, defaultSectionOrder, hydrateFromStorage, migrateLegacyStorage, persist } = useResumeDocumentState(
+const { state: resumeDocumentState, hydrateFromStorage, migrateLegacyStorage, persist } = useResumeDocumentState(
   computed(() => selectedTemplateConfig.value.variant),
 )
 const pdfModalOpen = ref(false)
@@ -599,9 +627,8 @@ const loginLoading = ref(false)
 const pendingPdfDownload = ref(false)
 const addSectionDialogOpen = ref(false)
 const addSectionType = ref<AddSectionType>('experience')
-const defaultSectionLayout: SectionLayoutEntry[] = defaultSectionOrder.map(entry => ({ ...entry }))
 const sectionLayout = ref<SectionLayoutEntry[]>(
-  defaultSectionLayout.map(entry => ({ ...entry })),
+  normalizeSectionLayout(defaultSectionLayoutEntries),
 )
 const sectionItemDialogOpen = ref(false)
 const activeSectionKey = ref<PreviewSectionKey>('experience')
@@ -1752,10 +1779,7 @@ if (import.meta.client) {
   selectedRounded.value = customization.style.radius
   selectedTextStyle.value = customization.style.typography
   layoutSettings.lineDensity = customization.style.density
-  sectionLayout.value = customization.sectionOrder.map((entry) => ({
-    ...entry,
-    variant: normalizeSectionVariant(entry.key, entry.variant),
-  }))
+  sectionLayout.value = normalizeSectionLayout(customization.sectionOrder)
 
   watch([selectedTheme, selectedPageBackground, selectedRounded, selectedTextStyle], () => {
     resumeDocumentState.value.customization = {
