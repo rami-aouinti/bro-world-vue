@@ -2684,6 +2684,29 @@ const previewStyle = computed(() => ({
     4.5,
   ),
 }))
+const decorativeShapes = computed(() => [
+  {
+    id: 'a',
+    ...layoutSettings.decorativeShapeA,
+  },
+  {
+    id: 'b',
+    ...layoutSettings.decorativeShapeB,
+  },
+])
+const decorativeShapeStyle = (shape: DecorativeShapeSettings) => {
+  const width = shape.type === 'circle' || shape.type === 'ring' ? shape.size : shape.width
+  const height = shape.type === 'circle' || shape.type === 'ring' ? shape.size : shape.height
+  return {
+    '--shape-color': shape.color,
+    '--shape-opacity': String(shape.opacity),
+    width: `${width}px`,
+    height: `${height}px`,
+    left: `${shape.x}%`,
+    top: `${shape.y}%`,
+    transform: `translate(-50%, -50%) rotate(${shape.rotation}deg)`,
+  }
+}
 const resumeRendererDesignState = computed(() => ({
   themeTokens: previewStyle.value,
   roundedClass: activeRoundedClass.value,
@@ -4110,6 +4133,16 @@ if (import.meta.client) {
                   ]"
                   :style="previewStyle"
                 >
+                  <div class="preview-shapes" aria-hidden="true">
+                    <span
+                      v-for="shape in decorativeShapes"
+                      v-show="shape.enabled"
+                      :key="`preview-shape-${shape.id}`"
+                      class="preview-shape"
+                      :class="`preview-shape--${shape.type}`"
+                      :style="decorativeShapeStyle(shape)"
+                    />
+                  </div>
                   <div
                     class="cv-preview-stage"
                     :class="{
@@ -5581,6 +5614,40 @@ if (import.meta.client) {
   max-width: 100%;
   min-height: calc(100vh - 80px);
   flex: 0 0 auto;
+  position: relative;
+}
+
+.preview-shapes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.preview-shape {
+  position: absolute;
+  background: var(--shape-color);
+  opacity: var(--shape-opacity);
+  z-index: 0;
+}
+
+.preview-shape--circle {
+  border-radius: 999px;
+}
+
+.preview-shape--square {
+  border-radius: 10px;
+}
+
+.preview-shape--ring {
+  border-radius: 999px;
+  background: transparent;
+  border: 8px solid color-mix(in srgb, var(--shape-color) 90%, white);
+}
+
+.preview-shape--bar {
+  border-radius: 999px;
 }
 
 .cv-preview-stage {
@@ -5590,6 +5657,8 @@ if (import.meta.client) {
   padding: var(--preview-shell-padding);
   background: color-mix(in srgb, var(--cv-page) 68%, white);
   border-radius: calc(var(--cv-space-2) + var(--cv-space-1) / 2);
+  position: relative;
+  z-index: 1;
 }
 
 .cv-preview-stage--bordered {

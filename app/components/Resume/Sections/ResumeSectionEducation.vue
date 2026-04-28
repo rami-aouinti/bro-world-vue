@@ -246,7 +246,6 @@ function removeEducationItem(index: number) {
                 alt="School logo"
                 cover
               />
-              <v-icon v-else icon="mdi-school-outline" size="17" />
             </v-avatar>
             <h4 class="text-dark">
               <span
