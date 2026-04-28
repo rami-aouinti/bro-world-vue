@@ -74,6 +74,30 @@ export type ResumeStylePreferences = {
   iconSize: 's' | 'm' | 'l'
   iconColor: 'accent' | 'neutral'
   layoutMode: ResumeLayoutMode
+  decorativeShapeA: {
+    enabled: boolean
+    type: 'circle' | 'square' | 'ring' | 'bar'
+    width: number
+    height: number
+    size: number
+    color: string
+    opacity: number
+    x: number
+    y: number
+    rotation: number
+  }
+  decorativeShapeB: {
+    enabled: boolean
+    type: 'circle' | 'square' | 'ring' | 'bar'
+    width: number
+    height: number
+    size: number
+    color: string
+    opacity: number
+    x: number
+    y: number
+    rotation: number
+  }
 }
 
 export type ResumeDocumentModel = {

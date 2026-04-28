@@ -269,6 +269,19 @@ type PhotoShapeOption = {
   value: PhotoShape
   icon: string
 }
+type DecorativeShapeType = 'circle' | 'square' | 'ring' | 'bar'
+type DecorativeShapeSettings = {
+  enabled: boolean
+  type: DecorativeShapeType
+  width: number
+  height: number
+  size: number
+  color: string
+  opacity: number
+  x: number
+  y: number
+  rotation: number
+}
 type LayoutSettings = {
   photoSize: number
   photoBorderWidth: number
@@ -284,6 +297,8 @@ type LayoutSettings = {
   iconSize: 's' | 'm' | 'l'
   iconColor: 'accent' | 'neutral'
   layoutMode: ResumeLayoutMode
+  decorativeShapeA: DecorativeShapeSettings
+  decorativeShapeB: DecorativeShapeSettings
 }
 type AddSectionType =
   | 'profile'
@@ -352,6 +367,30 @@ const createDefaultDesignSettings = (): DesignSettings => ({
     iconSize: 'm',
     iconColor: 'accent',
     layoutMode: resolveTemplateSkin(DEFAULT_RESUME_TEMPLATE_ID).layoutMode,
+    decorativeShapeA: {
+      enabled: true,
+      type: 'circle',
+      width: 120,
+      height: 120,
+      size: 120,
+      color: '#1d4ed8',
+      opacity: 0.15,
+      x: 86,
+      y: 10,
+      rotation: 0,
+    },
+    decorativeShapeB: {
+      enabled: true,
+      type: 'square',
+      width: 180,
+      height: 48,
+      size: 120,
+      color: '#0f172a',
+      opacity: 0.1,
+      x: 6,
+      y: 86,
+      rotation: -12,
+    },
   },
 })
 const builderPanelState = reactive({
@@ -423,6 +462,12 @@ const iconSizeOptions = [
 const iconColorOptions = [
   { label: 'Accent', value: 'accent' },
   { label: 'Neutral', value: 'neutral' },
+] as const
+const decorativeShapeTypeOptions = [
+  { label: 'Circle', value: 'circle' },
+  { label: 'Square', value: 'square' },
+  { label: 'Ring', value: 'ring' },
+  { label: 'Bar', value: 'bar' },
 ] as const
 const photoShapeOptions = [
   { label: 'Carré', value: 'square', icon: '□' },
@@ -2567,6 +2612,29 @@ const previewStyle = computed(() => ({
     4.5,
   ),
 }))
+const decorativeShapes = computed(() => [
+  {
+    id: 'a',
+    ...layoutSettings.decorativeShapeA,
+  },
+  {
+    id: 'b',
+    ...layoutSettings.decorativeShapeB,
+  },
+])
+const decorativeShapeStyle = (shape: DecorativeShapeSettings) => {
+  const width = shape.type === 'circle' || shape.type === 'ring' ? shape.size : shape.width
+  const height = shape.type === 'circle' || shape.type === 'ring' ? shape.size : shape.height
+  return {
+    '--shape-color': shape.color,
+    '--shape-opacity': String(shape.opacity),
+    width: `${width}px`,
+    height: `${height}px`,
+    left: `${shape.x}%`,
+    top: `${shape.y}%`,
+    transform: `translate(-50%, -50%) rotate(${shape.rotation}deg)`,
+  }
+}
 const resumeRendererDesignState = computed(() => ({
   themeTokens: previewStyle.value,
   roundedClass: activeRoundedClass.value,
@@ -2584,6 +2652,25 @@ const resumeRendererDesignState = computed(() => ({
   photoBorderWidth: layoutSettings.photoBorderWidth,
   photoPosition: layoutSettings.photoPosition,
 }))
+
+watch(
+  () => [layoutSettings.decorativeShapeA, layoutSettings.decorativeShapeB],
+  () => {
+    for (const shape of [
+      layoutSettings.decorativeShapeA,
+      layoutSettings.decorativeShapeB,
+    ]) {
+      shape.width = Math.min(360, Math.max(30, Math.round(shape.width)))
+      shape.height = Math.min(360, Math.max(30, Math.round(shape.height)))
+      shape.size = Math.min(360, Math.max(30, Math.round(shape.size)))
+      shape.opacity = Math.min(1, Math.max(0.05, Number(shape.opacity)))
+      shape.x = Math.min(100, Math.max(0, Math.round(shape.x)))
+      shape.y = Math.min(100, Math.max(0, Math.round(shape.y)))
+      shape.rotation = Math.min(180, Math.max(-180, Math.round(shape.rotation)))
+    }
+  },
+  { deep: true },
+)
 
 watch(
   () => layoutSettings.sidebarWidth,
@@ -3153,6 +3240,14 @@ if (import.meta.client) {
   layoutSettings.layoutMode = customization.style.layoutMode
   layoutSettings.photoPosition = customization.style.photoPosition
   layoutSettings.sidebarWidth = customization.style.asideWidth
+  layoutSettings.decorativeShapeA = {
+    ...layoutSettings.decorativeShapeA,
+    ...customization.style.decorativeShapeA,
+  }
+  layoutSettings.decorativeShapeB = {
+    ...layoutSettings.decorativeShapeB,
+    ...customization.style.decorativeShapeB,
+  }
   sectionLayout.value = normalizeSectionLayout(customization.sectionOrder)
 
   watch(
@@ -3169,6 +3264,8 @@ if (import.meta.client) {
       () => layoutSettings.layoutMode,
       () => layoutSettings.photoPosition,
       () => layoutSettings.sidebarWidth,
+      () => layoutSettings.decorativeShapeA,
+      () => layoutSettings.decorativeShapeB,
     ],
     () => {
       resumeDocumentState.value.customization = {
@@ -3187,10 +3284,13 @@ if (import.meta.client) {
           layoutMode: layoutSettings.layoutMode,
           photoPosition: layoutSettings.photoPosition,
           asideWidth: layoutSettings.sidebarWidth,
+          decorativeShapeA: { ...layoutSettings.decorativeShapeA },
+          decorativeShapeB: { ...layoutSettings.decorativeShapeB },
         },
       }
       persist()
     },
+    { deep: true },
   )
 
   watch(
@@ -3370,6 +3470,184 @@ if (import.meta.client) {
                       item-value="value"
                       label="Icon color"
                       density="comfortable"
+                      hide-details
+                    />
+                  </div>
+
+                  <p class="section-label mt-4">Shapes</p>
+                  <div class="d-grid ga-3">
+                    <v-switch
+                      v-model="layoutSettings.decorativeShapeA.enabled"
+                      label="Shape A visible"
+                      color="primary"
+                      hide-details
+                      inset
+                    />
+                    <AppSelect
+                      v-model="layoutSettings.decorativeShapeA.type"
+                      :items="decorativeShapeTypeOptions"
+                      item-title="label"
+                      item-value="value"
+                      label="Shape A type"
+                      density="comfortable"
+                      hide-details
+                    />
+                    <v-text-field
+                      v-model="layoutSettings.decorativeShapeA.color"
+                      label="Shape A color"
+                      type="color"
+                      density="comfortable"
+                      hide-details
+                    />
+                    <v-slider
+                      v-model="layoutSettings.decorativeShapeA.opacity"
+                      :min="0.05"
+                      :max="1"
+                      :step="0.05"
+                      label="Shape A opacity"
+                      thumb-label
+                      hide-details
+                    />
+                    <v-slider
+                      v-model="layoutSettings.decorativeShapeA.size"
+                      :min="30"
+                      :max="360"
+                      :step="2"
+                      label="Shape A size"
+                      thumb-label
+                      hide-details
+                    />
+                    <v-slider
+                      v-model="layoutSettings.decorativeShapeA.width"
+                      :min="30"
+                      :max="360"
+                      :step="2"
+                      label="Shape A width"
+                      thumb-label
+                      hide-details
+                    />
+                    <v-slider
+                      v-model="layoutSettings.decorativeShapeA.height"
+                      :min="30"
+                      :max="360"
+                      :step="2"
+                      label="Shape A height"
+                      thumb-label
+                      hide-details
+                    />
+                    <v-slider
+                      v-model="layoutSettings.decorativeShapeA.x"
+                      :min="0"
+                      :max="100"
+                      :step="1"
+                      label="Shape A horizontal position"
+                      thumb-label
+                      hide-details
+                    />
+                    <v-slider
+                      v-model="layoutSettings.decorativeShapeA.y"
+                      :min="0"
+                      :max="100"
+                      :step="1"
+                      label="Shape A vertical position"
+                      thumb-label
+                      hide-details
+                    />
+                    <v-slider
+                      v-model="layoutSettings.decorativeShapeA.rotation"
+                      :min="-180"
+                      :max="180"
+                      :step="1"
+                      label="Shape A rotation"
+                      thumb-label
+                      hide-details
+                    />
+
+                    <v-divider class="my-2" />
+                    <v-switch
+                      v-model="layoutSettings.decorativeShapeB.enabled"
+                      label="Shape B visible"
+                      color="primary"
+                      hide-details
+                      inset
+                    />
+                    <AppSelect
+                      v-model="layoutSettings.decorativeShapeB.type"
+                      :items="decorativeShapeTypeOptions"
+                      item-title="label"
+                      item-value="value"
+                      label="Shape B type"
+                      density="comfortable"
+                      hide-details
+                    />
+                    <v-text-field
+                      v-model="layoutSettings.decorativeShapeB.color"
+                      label="Shape B color"
+                      type="color"
+                      density="comfortable"
+                      hide-details
+                    />
+                    <v-slider
+                      v-model="layoutSettings.decorativeShapeB.opacity"
+                      :min="0.05"
+                      :max="1"
+                      :step="0.05"
+                      label="Shape B opacity"
+                      thumb-label
+                      hide-details
+                    />
+                    <v-slider
+                      v-model="layoutSettings.decorativeShapeB.size"
+                      :min="30"
+                      :max="360"
+                      :step="2"
+                      label="Shape B size"
+                      thumb-label
+                      hide-details
+                    />
+                    <v-slider
+                      v-model="layoutSettings.decorativeShapeB.width"
+                      :min="30"
+                      :max="360"
+                      :step="2"
+                      label="Shape B width"
+                      thumb-label
+                      hide-details
+                    />
+                    <v-slider
+                      v-model="layoutSettings.decorativeShapeB.height"
+                      :min="30"
+                      :max="360"
+                      :step="2"
+                      label="Shape B height"
+                      thumb-label
+                      hide-details
+                    />
+                    <v-slider
+                      v-model="layoutSettings.decorativeShapeB.x"
+                      :min="0"
+                      :max="100"
+                      :step="1"
+                      label="Shape B horizontal position"
+                      thumb-label
+                      hide-details
+                    />
+                    <v-slider
+                      v-model="layoutSettings.decorativeShapeB.y"
+                      :min="0"
+                      :max="100"
+                      :step="1"
+                      label="Shape B vertical position"
+                      thumb-label
+                      hide-details
+                    />
+                    <v-slider
+                      v-model="layoutSettings.decorativeShapeB.rotation"
+                      :min="-180"
+                      :max="180"
+                      :step="1"
+                      label="Shape B rotation"
+                      thumb-label
                       hide-details
                     />
                   </div>
@@ -3781,6 +4059,16 @@ if (import.meta.client) {
                   ]"
                   :style="previewStyle"
                 >
+                  <div class="preview-shapes" aria-hidden="true">
+                    <span
+                      v-for="shape in decorativeShapes"
+                      v-show="shape.enabled"
+                      :key="`preview-shape-${shape.id}`"
+                      class="preview-shape"
+                      :class="`preview-shape--${shape.type}`"
+                      :style="decorativeShapeStyle(shape)"
+                    />
+                  </div>
                   <div
                     class="cv-preview-stage"
                     :class="{
@@ -5252,6 +5540,40 @@ if (import.meta.client) {
   max-width: 100%;
   min-height: calc(100vh - 80px);
   flex: 0 0 auto;
+  position: relative;
+}
+
+.preview-shapes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.preview-shape {
+  position: absolute;
+  background: var(--shape-color);
+  opacity: var(--shape-opacity);
+  z-index: 0;
+}
+
+.preview-shape--circle {
+  border-radius: 999px;
+}
+
+.preview-shape--square {
+  border-radius: 10px;
+}
+
+.preview-shape--ring {
+  border-radius: 999px;
+  background: transparent;
+  border: 8px solid color-mix(in srgb, var(--shape-color) 90%, white);
+}
+
+.preview-shape--bar {
+  border-radius: 999px;
 }
 
 .cv-preview-stage {
@@ -5261,6 +5583,8 @@ if (import.meta.client) {
   padding: var(--preview-shell-padding);
   background: color-mix(in srgb, var(--cv-page) 68%, white);
   border-radius: calc(var(--cv-space-2) + var(--cv-space-1) / 2);
+  position: relative;
+  z-index: 1;
 }
 
 .cv-preview-stage--bordered {

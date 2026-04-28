@@ -64,6 +64,30 @@ function normalizeModel(source: unknown, templateVariant: ResumeTemplateVariant)
         iconSize: 'm',
         iconColor: 'accent',
         layoutMode: defaultLayoutMode,
+        decorativeShapeA: {
+          enabled: true,
+          type: 'circle',
+          width: 120,
+          height: 120,
+          size: 120,
+          color: '#1d4ed8',
+          opacity: 0.15,
+          x: 86,
+          y: 10,
+          rotation: 0,
+        },
+        decorativeShapeB: {
+          enabled: true,
+          type: 'square',
+          width: 180,
+          height: 48,
+          size: 120,
+          color: '#0f172a',
+          opacity: 0.1,
+          x: 6,
+          y: 86,
+          rotation: -12,
+        },
       },
     }
   }
@@ -93,6 +117,66 @@ function normalizeModel(source: unknown, templateVariant: ResumeTemplateVariant)
       layoutMode: style.layoutMode === 'aside-left' || style.layoutMode === 'aside-right' || style.layoutMode === 'no-aside'
         ? style.layoutMode
         : defaultLayoutMode,
+      decorativeShapeA: isRecord(style.decorativeShapeA)
+        ? {
+            enabled: typeof style.decorativeShapeA.enabled === 'boolean' ? style.decorativeShapeA.enabled : true,
+            type:
+              style.decorativeShapeA.type === 'square' ||
+              style.decorativeShapeA.type === 'ring' ||
+              style.decorativeShapeA.type === 'bar'
+                ? style.decorativeShapeA.type
+                : 'circle',
+            width: typeof style.decorativeShapeA.width === 'number' ? Math.min(360, Math.max(30, style.decorativeShapeA.width)) : 120,
+            height: typeof style.decorativeShapeA.height === 'number' ? Math.min(360, Math.max(30, style.decorativeShapeA.height)) : 120,
+            size: typeof style.decorativeShapeA.size === 'number' ? Math.min(360, Math.max(30, style.decorativeShapeA.size)) : 120,
+            color: typeof style.decorativeShapeA.color === 'string' ? style.decorativeShapeA.color : '#1d4ed8',
+            opacity: typeof style.decorativeShapeA.opacity === 'number' ? Math.min(1, Math.max(0.05, style.decorativeShapeA.opacity)) : 0.15,
+            x: typeof style.decorativeShapeA.x === 'number' ? Math.min(100, Math.max(0, style.decorativeShapeA.x)) : 86,
+            y: typeof style.decorativeShapeA.y === 'number' ? Math.min(100, Math.max(0, style.decorativeShapeA.y)) : 10,
+            rotation: typeof style.decorativeShapeA.rotation === 'number' ? Math.min(180, Math.max(-180, style.decorativeShapeA.rotation)) : 0,
+          }
+        : {
+            enabled: true,
+            type: 'circle',
+            width: 120,
+            height: 120,
+            size: 120,
+            color: '#1d4ed8',
+            opacity: 0.15,
+            x: 86,
+            y: 10,
+            rotation: 0,
+          },
+      decorativeShapeB: isRecord(style.decorativeShapeB)
+        ? {
+            enabled: typeof style.decorativeShapeB.enabled === 'boolean' ? style.decorativeShapeB.enabled : true,
+            type:
+              style.decorativeShapeB.type === 'circle' ||
+              style.decorativeShapeB.type === 'ring' ||
+              style.decorativeShapeB.type === 'bar'
+                ? style.decorativeShapeB.type
+                : 'square',
+            width: typeof style.decorativeShapeB.width === 'number' ? Math.min(360, Math.max(30, style.decorativeShapeB.width)) : 180,
+            height: typeof style.decorativeShapeB.height === 'number' ? Math.min(360, Math.max(30, style.decorativeShapeB.height)) : 48,
+            size: typeof style.decorativeShapeB.size === 'number' ? Math.min(360, Math.max(30, style.decorativeShapeB.size)) : 120,
+            color: typeof style.decorativeShapeB.color === 'string' ? style.decorativeShapeB.color : '#0f172a',
+            opacity: typeof style.decorativeShapeB.opacity === 'number' ? Math.min(1, Math.max(0.05, style.decorativeShapeB.opacity)) : 0.1,
+            x: typeof style.decorativeShapeB.x === 'number' ? Math.min(100, Math.max(0, style.decorativeShapeB.x)) : 6,
+            y: typeof style.decorativeShapeB.y === 'number' ? Math.min(100, Math.max(0, style.decorativeShapeB.y)) : 86,
+            rotation: typeof style.decorativeShapeB.rotation === 'number' ? Math.min(180, Math.max(-180, style.decorativeShapeB.rotation)) : -12,
+          }
+        : {
+            enabled: true,
+            type: 'square',
+            width: 180,
+            height: 48,
+            size: 120,
+            color: '#0f172a',
+            opacity: 0.1,
+            x: 6,
+            y: 86,
+            rotation: -12,
+          },
     },
   }
 }
