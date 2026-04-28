@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import { RESUME_CONTENT_STYLE_OPTIONS, getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
 import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
 
 const props = withDefaults(defineProps<{
@@ -39,7 +40,6 @@ const emit = defineEmits<{
   (event: 'move-section', sectionKey: 'experience', direction: 'up' | 'down'): void
 }>()
 
-const sectionStyle = computed(() => ({ ...props.themeTokens }))
 const brokenLogoByKey = reactive<Record<string, boolean>>({})
 const iconVariantClass = computed(() =>
   props.sectionIconStyle?.variant ? `section-icon--${props.sectionIconStyle.variant}` : 'section-icon--outline',
@@ -58,6 +58,10 @@ const sectionLayoutStyle = computed(() => {
   }
 })
 const isTimelineVariant = computed(() => props.variant === 'timeline')
+const sectionRegistry = getSectionRegistryEntry('experience')
+const contentStyles = computed(() =>
+  RESUME_CONTENT_STYLE_OPTIONS.filter(option => sectionRegistry.contentStyles.includes(option.value)),
+)
 
 function updateText(path: string, value: string) {
   const segments = path.split('.')
@@ -89,6 +93,8 @@ function resolveDashes(item: Record<string, unknown>) {
 function resolveTimelineEvents(item: Record<string, unknown>) {
   if (Array.isArray(item.timelineEvents) && item.timelineEvents.length) return item.timelineEvents
   return resolvePoints(item).map(detail => ({ label: '', detail }))
+}
+
 function logoKey(index: number, url: string) {
   return `${index}-${url}`
 }
@@ -108,7 +114,20 @@ function onCompanyLogoError(index: number, companyImageUrl?: string) {
 
 <template>
   <section class="resume-section resume-section-hoverable experience" :class="[`density-${layoutDensity}`, { 'experience--timeline': isTimelineVariant }]" :style="sectionLayoutStyle">
-    <SectionToolbar v-if="toolbarEnabled" section-key="experience" :variants="[{ label: 'Detailed', value: 'detailed' }, { label: 'Bullets', value: 'bullets' }, { label: 'Compact', value: 'compact' }]" :current-variant="variant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'experience')" @change-variant="(_, next) => emit('change-variant', 'experience', next)" @move-up="() => emit('move-section', 'experience', 'up')" @move-down="() => emit('move-section', 'experience', 'down')" />
+    <SectionToolbar
+      v-if="toolbarEnabled"
+      section-key="experience"
+      :variants="sectionRegistry.variants"
+      :content-styles="contentStyles"
+      :actions="sectionRegistry.toolbarActions"
+      :current-variant="variant"
+      :can-move-up="canMoveUp"
+      :can-move-down="canMoveDown"
+      @add-item="() => emit('add-item', 'experience')"
+      @change-variant="(_, next) => emit('change-variant', 'experience', next)"
+      @move-up="() => emit('move-section', 'experience', 'up')"
+      @move-down="() => emit('move-section', 'experience', 'down')"
+    />
     <h2 class="cv-heading-section">
       <span v-if="showSectionIcon && sectionIcon" class="section-icon" :class="iconVariantClass" :style="iconStyle">
         <v-icon :icon="sectionIcon" :size="sectionIconStyle?.size ?? 18" />

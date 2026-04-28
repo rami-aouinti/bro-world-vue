@@ -6,6 +6,7 @@ type ToolbarVariantOption = {
   value: string
 }
 type ToolbarContentStyleOption = ToolbarVariantOption
+type ToolbarAction = 'add-item' | 'change-variant' | 'change-content-style' | 'style-panel' | 'move-up' | 'move-down'
 
 type StylePresetOption = {
   label: string
@@ -21,6 +22,7 @@ const props = withDefaults(defineProps<{
   currentVariant?: string
   contentStyles?: ToolbarContentStyleOption[]
   currentContentStyle?: string
+  actions?: ToolbarAction[]
 }>(), {
   canMoveUp: false,
   canMoveDown: false,
@@ -28,6 +30,7 @@ const props = withDefaults(defineProps<{
   currentVariant: '',
   contentStyles: () => [],
   currentContentStyle: '',
+  actions: () => ['add-item', 'change-variant', 'change-content-style', 'style-panel', 'move-up', 'move-down'],
 })
 
 const emit = defineEmits<{
@@ -69,6 +72,7 @@ const selectedCard = ref('none')
 const selectedDivider = ref('none')
 
 const sectionStorageKey = computed(() => `resume:section-toolbar:pin:${props.sectionKey}`)
+const enabledActions = computed(() => new Set(props.actions))
 
 function getSectionElement() {
   return toolbarRef.value?.closest('.resume-section-hoverable') as HTMLElement | null
@@ -114,7 +118,7 @@ watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySe
 
 <template>
   <div ref="toolbarRef" class="section-toolbar" :class="{ 'is-pinned': pinEnabled }" role="toolbar" :aria-label="`Actions de la section ${props.sectionKey}`">
-    <v-tooltip text="Ajouter un élément">
+    <v-tooltip v-if="enabledActions.has('add-item')" text="Ajouter un élément">
       <template #activator="{ props: tooltipProps }">
         <v-btn
           class="toolbar-btn"
@@ -130,7 +134,7 @@ watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySe
       </template>
     </v-tooltip>
 
-    <v-menu v-if="props.variants.length">
+    <v-menu v-if="enabledActions.has('change-variant') && props.variants.length">
       <template #activator="{ props: menuProps }">
         <v-tooltip text="Changer la mise en page">
           <template #activator="{ props: tooltipProps }">
@@ -159,7 +163,7 @@ watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySe
       </v-list>
     </v-menu>
 
-    <v-menu v-if="props.contentStyles.length">
+    <v-menu v-if="enabledActions.has('change-content-style') && props.contentStyles.length">
       <template #activator="{ props: menuProps }">
         <v-tooltip text="Content style">
           <template #activator="{ props: tooltipProps }">
@@ -188,7 +192,7 @@ watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySe
       </v-list>
     </v-menu>
 
-    <v-menu v-model="styleMenuOpen" :close-on-content-click="false" location="bottom end" offset="10">
+    <v-menu v-if="enabledActions.has('style-panel')" v-model="styleMenuOpen" :close-on-content-click="false" location="bottom end" offset="10">
       <template #activator="{ props: menuProps }">
         <v-tooltip text="Section Style">
           <template #activator="{ props: tooltipProps }">
@@ -218,7 +222,7 @@ watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySe
       </v-card>
     </v-menu>
 
-    <v-tooltip text="Monter la section">
+    <v-tooltip v-if="enabledActions.has('move-up')" text="Monter la section">
       <template #activator="{ props: tooltipProps }">
         <v-btn
           class="toolbar-btn"
@@ -235,7 +239,7 @@ watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySe
       </template>
     </v-tooltip>
 
-    <v-tooltip text="Descendre la section">
+    <v-tooltip v-if="enabledActions.has('move-down')" text="Descendre la section">
       <template #activator="{ props: tooltipProps }">
         <v-btn
           class="toolbar-btn"

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import { RESUME_CONTENT_STYLE_OPTIONS, getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
 import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
 
 const props = withDefaults(defineProps<{
@@ -62,6 +63,10 @@ const safeVariant = computed<'classic' | 'timeline' | 'two-column'>(() => {
   }
   return 'classic'
 })
+const sectionRegistry = getSectionRegistryEntry('education')
+const contentStyles = computed(() =>
+  RESUME_CONTENT_STYLE_OPTIONS.filter(option => sectionRegistry.contentStyles.includes(option.value)),
+)
 function updateText(path: string, value: string) {
   const segments = path.split('.')
   const last = segments.pop()
@@ -96,7 +101,20 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
 </script>
 <template>
   <section :class="['education', 'resume-section-hoverable', `density-${layoutDensity}`, `education--${safeVariant}`]" :style="sectionStyle">
-    <SectionToolbar v-if="toolbarEnabled" section-key="education" :variants="[{ label: 'Classic', value: 'classic' }, { label: 'Timeline', value: 'timeline' }, { label: 'Two columns', value: 'two-column' }]" :current-variant="safeVariant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'education')" @change-variant="(_, next) => emit('change-variant', 'education', next)" @move-up="() => emit('move-section', 'education', 'up')" @move-down="() => emit('move-section', 'education', 'down')" />
+    <SectionToolbar
+      v-if="toolbarEnabled"
+      section-key="education"
+      :variants="sectionRegistry.variants"
+      :content-styles="contentStyles"
+      :actions="sectionRegistry.toolbarActions"
+      :current-variant="safeVariant"
+      :can-move-up="canMoveUp"
+      :can-move-down="canMoveDown"
+      @add-item="() => emit('add-item', 'education')"
+      @change-variant="(_, next) => emit('change-variant', 'education', next)"
+      @move-up="() => emit('move-section', 'education', 'up')"
+      @move-down="() => emit('move-section', 'education', 'down')"
+    />
     <h2 class="cv-heading-section">
       <span v-if="showSectionIcon && sectionIcon" class="section-icon" :class="iconVariantClass" :style="iconStyle">
         <v-icon :icon="sectionIcon" :size="sectionIconStyle?.size ?? 18" />
