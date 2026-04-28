@@ -16,6 +16,16 @@ export type ResumeRendererLayoutEntry = {
   order: number
 }
 
+export type ResumeSectionIconStyleVariant = 'outline' | 'filled' | 'rounded'
+
+export type ResumeSectionIconStyle = {
+  size: number
+  color: string
+  roundedBackground: boolean
+  spacing: number
+  variant: ResumeSectionIconStyleVariant
+}
+
 export type TemplateSkinProfile = {
   grid: 'single' | 'split' | 'magazine'
   typography: 'classic' | 'clean' | 'editorial' | 'neo-grotesk'
@@ -36,6 +46,8 @@ export type ResumeTemplateSkin = {
   showSkillsInAside: boolean
   showContactInAside: boolean
   showContactInHeader: boolean
+  showSectionIcons: boolean
+  sectionIconStyle: ResumeSectionIconStyle
   defaultSectionLayout: ResumeRendererLayoutEntry[]
   sectionTitles?: Partial<Record<ResumeSectionKey, string>>
   themeTokens?: Record<string, string>
@@ -62,6 +74,14 @@ function withSkin(id: TemplateSkinId, overrides: Partial<ResumeTemplateSkin> = {
     showSkillsInAside: true,
     showContactInAside: true,
     showContactInHeader: false,
+    showSectionIcons: true,
+    sectionIconStyle: {
+      size: 18,
+      color: 'var(--cv-accent)',
+      roundedBackground: true,
+      spacing: 8,
+      variant: 'outline',
+    },
     defaultSectionLayout: defaultLayout,
     sectionTitles: {
       experience: 'Experience',
@@ -101,6 +121,7 @@ export const RESUME_TEMPLATE_SKINS: Record<TemplateSkinId, ResumeTemplateSkin> =
     profile: { grid: 'magazine', typography: 'editorial', spacing: 'airy', colors: 'contrast', cards: 'elevated', separators: 'accent' },
   }),
   minimalist: withSkin('minimalist', {
+    showSectionIcons: false,
     showContactInHeader: true,
     showContactInAside: false,
     showSkillsInAside: false,

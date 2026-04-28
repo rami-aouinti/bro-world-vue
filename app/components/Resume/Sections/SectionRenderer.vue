@@ -6,10 +6,13 @@ import ResumeSectionProject from '~/components/Resume/Sections/ResumeSectionProj
 import ResumeSectionHobby from '~/components/Resume/Sections/ResumeSectionHobby.vue'
 import ResumeSectionCertification from '~/components/Resume/Sections/ResumeSectionCertification.vue'
 import ResumeSectionReference from '~/components/Resume/Sections/ResumeSectionReference.vue'
-import type { ResumeSectionKey } from '~/constants/resumeTemplateSkins'
+import ResumeSectionSkill from '~/components/Resume/Sections/ResumeSectionSkill.vue'
+import { getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
+import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
+import type { ResumeEditableSectionKey } from '~/types/resumeDocumentModel'
 
 const props = withDefaults(defineProps<{
-  sectionKey: ResumeSectionKey
+  sectionKey: ResumeEditableSectionKey
   resume: any
   editable?: boolean
   variant: string
@@ -19,6 +22,9 @@ const props = withDefaults(defineProps<{
   canMoveUp?: boolean
   canMoveDown?: boolean
   themeTokens?: Record<string, string>
+  sectionIcon?: string
+  showSectionIcon?: boolean
+  sectionIconStyle?: ResumeSectionIconStyle
 }>(), {
   editable: false,
   layoutDensity: 'normal',
@@ -27,12 +33,15 @@ const props = withDefaults(defineProps<{
   canMoveUp: false,
   canMoveDown: false,
   themeTokens: () => ({}),
+  sectionIcon: undefined,
+  showSectionIcon: true,
+  sectionIconStyle: undefined,
 })
 
 const emit = defineEmits<{
-  (event: 'add-item', sectionKey: ResumeSectionKey): void
-  (event: 'change-variant', sectionKey: ResumeSectionKey, variant: string): void
-  (event: 'move-section', sectionKey: ResumeSectionKey, direction: 'up' | 'down'): void
+  (event: 'add-item', sectionKey: ResumeEditableSectionKey): void
+  (event: 'change-variant', sectionKey: ResumeEditableSectionKey, variant: string): void
+  (event: 'move-section', sectionKey: ResumeEditableSectionKey, direction: 'up' | 'down'): void
 }>()
 
 const componentBySectionKey = {
@@ -43,15 +52,29 @@ const componentBySectionKey = {
   hobby: ResumeSectionHobby,
   certification: ResumeSectionCertification,
   reference: ResumeSectionReference,
+  skill: ResumeSectionSkill,
 } as const
 
 const sectionComponent = computed(() => componentBySectionKey[props.sectionKey])
 
-function onVariantChange(_: ResumeSectionKey, variant: string) {
+const sectionHeadingProps = computed(() => {
+  const sectionRegistry = getSectionRegistryEntry(props.sectionKey)
+  if (sectionRegistry.icon) {
+    return {
+      sectionIcon: props.sectionIcon,
+      showSectionIcon: props.showSectionIcon,
+      sectionIconStyle: props.sectionIconStyle,
+    }
+  }
+
+  return {}
+})
+
+function onVariantChange(_: ResumeEditableSectionKey, variant: string) {
   emit('change-variant', props.sectionKey, variant)
 }
 
-function onMoveSection(_: ResumeSectionKey, direction: 'up' | 'down') {
+function onMoveSection(_: ResumeEditableSectionKey, direction: 'up' | 'down') {
   emit('move-section', props.sectionKey, direction)
 }
 </script>
@@ -68,6 +91,7 @@ function onMoveSection(_: ResumeSectionKey, direction: 'up' | 'down') {
     :can-move-up="canMoveUp"
     :can-move-down="canMoveDown"
     :theme-tokens="themeTokens"
+    v-bind="sectionHeadingProps"
     @add-item="emit('add-item', sectionKey)"
     @change-variant="onVariantChange"
     @move-section="onMoveSection"

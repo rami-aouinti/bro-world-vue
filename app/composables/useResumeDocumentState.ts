@@ -47,7 +47,18 @@ function normalizeModel(source: unknown, templateVariant: ResumeTemplateVariant)
     return {
       templateVariant,
       sectionOrder: DEFAULT_SECTION_ORDER.map(entry => ({ ...entry })),
-      style: { palette: 'ocean', pageBackground: 'white', density: 'comfortable', radius: 'md', typography: 'clean' },
+      style: {
+        palette: 'ocean',
+        pageBackground: 'white',
+        density: 'comfortable',
+        radius: 'md',
+        typography: 'clean',
+        showSectionIcons: true,
+        showContactIcons: true,
+        sectionIconStyle: 'outline',
+        iconSize: 'm',
+        iconColor: 'accent',
+      },
     }
   }
 
@@ -64,6 +75,11 @@ function normalizeModel(source: unknown, templateVariant: ResumeTemplateVariant)
       density: style.density === 'compact' ? 'compact' : 'comfortable',
       radius: (style.radius as ResumeDocumentModel['style']['radius']) ?? 'md',
       typography: (style.typography as ResumeDocumentModel['style']['typography']) ?? 'clean',
+      showSectionIcons: typeof style.showSectionIcons === 'boolean' ? style.showSectionIcons : true,
+      showContactIcons: typeof style.showContactIcons === 'boolean' ? style.showContactIcons : true,
+      sectionIconStyle: style.sectionIconStyle === 'filled' || style.sectionIconStyle === 'rounded' ? style.sectionIconStyle : 'outline',
+      iconSize: style.iconSize === 's' || style.iconSize === 'l' ? style.iconSize : 'm',
+      iconColor: style.iconColor === 'neutral' ? 'neutral' : 'accent',
     },
   }
 }

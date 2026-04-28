@@ -7,13 +7,20 @@ import {
   RESUME_TEMPLATES,
   type ResumeTemplateVariant,
 } from '~/constants/resumeTemplates'
-import { resolveTemplateSkin } from '~/constants/resumeTemplateSkins'
+import { resolveTemplateSkin, type ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
+import { RESUME_CONTENT_STYLE_OPTIONS, RESUME_SECTION_REGISTRY } from '~/constants/resumeSectionRegistry'
 import {
   useResumeDesignControls,
 } from '~/composables/useResumeDesignControls'
 import { useResumeDocumentState } from '~/composables/useResumeDocumentState'
 import { levelToStars, starsToPercent } from '~/utils/resumeLanguageLevel'
 import ResumeRenderer from '~/components/Resume/Templates/ResumeRenderer.vue'
+import {
+  isResumeEditableSectionKey,
+  type ResumeEditableSectionKey,
+  type ResumePreviewSectionKey,
+  type ResumeSectionActionKey,
+} from '~/types/resumeDocumentModel'
 
 definePageMeta({
   title: 'Create Resume',
@@ -22,21 +29,38 @@ definePageMeta({
 
 type Skill = { name: string; level: number }
 type Language = { name: string; level: number; countryCode?: string; flag?: string }
+type ContentStyle = 'paragraph' | 'points' | 'dashes' | 'timeline'
+type TimelineEvent = { label: string; detail: string }
 type Experience = {
   role: string
   company: string
+  companyImageUrl?: string
   city: string
   start: string
   end: string
+  contentStyle?: ExperienceContentStyle
   bullets: string[]
+  contentStyle?: ContentStyle
+  points?: string[]
+  dashes?: string[]
+  timelineEvents?: TimelineEvent[]
+  timelineEventTitle?: string
+  timelineDateRange?: string
+  timelineDescription?: string
 }
+type ExperienceContentStyle = 'paragraph' | 'bullets' | 'dashes' | 'timeline-note'
 type Education = {
   degree: string
   school: string
+  schoolImageUrl?: string
   city: string
   start: string
   end: string
   note: string
+  contentStyle?: ContentStyle
+  points?: string[]
+  dashes?: string[]
+  timelineEvents?: TimelineEvent[]
 }
 type Reference = {
   name: string
@@ -53,7 +77,13 @@ type Course = {
 type Project = {
   name: string
   summary: string
-  link?: string
+  imageUrl?: string
+  repositoryUrl?: string
+  repositoryProvider?: 'github' | 'gitlab' | 'other'
+  contentStyle?: ContentStyle
+  points?: string[]
+  dashes?: string[]
+  timelineEvents?: TimelineEvent[]
 }
 type StructuredUser = {
   fullName?: string
@@ -66,6 +96,7 @@ type StructuredUser = {
 type StructuredExperience = {
   title?: string
   company?: string
+  companyImageUrl?: string
   startDate?: string
   endDate?: string
   description?: string
@@ -87,6 +118,9 @@ type StructuredProject = {
   title?: string
   description?: string
   link?: string
+  imageUrl?: string
+  repositoryUrl?: string
+  repositoryProvider?: 'github' | 'gitlab' | 'other'
 }
 type StructuredReference = {
   name?: string
@@ -159,12 +193,6 @@ type TemplateFilter =
   | 'customized'
   | 'free'
 
-type TemplateStyleSupport = {
-  theme: boolean
-  rounded: boolean
-  textStyle: boolean
-  sharedSections: boolean
-}
 type LevelInputMode = 'percent' | 'stars'
 type PhotoShape = 'square' | 'rounded' | 'circle' | 'portrait-card' | 'soft-blob' | 'hex'
 type PhotoShapeOption = {
@@ -181,6 +209,11 @@ type LayoutSettings = {
   headingCase: 'normal' | 'uppercase'
   dateColumnWidth: number
   lineDensity: 'compact' | 'comfortable'
+  showSectionIcons: boolean
+  showContactIcons: boolean
+  sectionIconStyle: ResumeSectionIconStyleVariant
+  iconSize: 's' | 'm' | 'l'
+  iconColor: 'accent' | 'neutral'
 }
 type AddSectionType =
   | 'profile'
@@ -192,20 +225,17 @@ type AddSectionType =
   | 'project'
   | 'certification'
   | 'reference'
-type PreviewSectionKey = 'experience' | 'education' | 'language' | 'project'
-type EditableSectionKey = PreviewSectionKey | 'skill' | 'reference' | 'hobby' | 'certification'
-type SharedSectionActionKey = EditableSectionKey | 'course'
 type SectionLayoutVariant = {
   experience: 'detailed' | 'bullets' | 'compact'
   education: 'classic' | 'timeline' | 'two-column'
   language: 'classic' | 'text-level' | 'stars' | 'progress' | 'flags'
   project: 'classic' | 'list' | 'cards' | 'two-column'
-  skill: 'classic'
+  skill: 'classic' | 'text-level' | 'stars' | 'dots' | 'progress'
   reference: 'classic'
   hobby: 'classic'
   certification: 'classic'
 }
-type SectionLayoutEntry<K extends EditableSectionKey = EditableSectionKey> = {
+type SectionLayoutEntry<K extends ResumeEditableSectionKey = ResumeEditableSectionKey> = {
   key: K
   variant: SectionLayoutVariant[K]
   region: 'main' | 'aside'
@@ -244,6 +274,11 @@ const layoutSettings = reactive<LayoutSettings>({
   headingCase: 'normal',
   dateColumnWidth: 120,
   lineDensity: 'comfortable',
+  showSectionIcons: true,
+  showContactIcons: true,
+  sectionIconStyle: 'outline',
+  iconSize: 'm',
+  iconColor: 'accent',
 })
 const photoShapeOptions = [
   { label: 'Carré', value: 'square', icon: '□' },
@@ -274,22 +309,18 @@ const addSectionOptions = [
   { label: 'Certification', value: 'certification' },
   { label: 'Reference', value: 'reference' },
 ] as const satisfies ReadonlyArray<{ label: string; value: AddSectionType }>
-const sectionVariantLabels: Record<string, string> = {
-  detailed: 'Detailed',
-  bullets: 'Bullets',
-  compact: 'Compact',
-  classic: 'Classic',
-  timeline: 'Timeline',
-  'two-column': 'Two-column',
-  stars: 'Stars',
-  'text-level': 'Text level',
-  progress: 'Progress',
-  flags: 'Flags',
-  cards: 'Cards',
-  list: 'List',
-}
+const sectionVariantLabels = Object.values(RESUME_SECTION_REGISTRY)
+  .flatMap(section => section.variants)
+  .reduce<Record<string, string>>((accumulator, option) => {
+    accumulator[option.value] = option.label
+    return accumulator
+  }, {})
+const resumeContentStyleSelectItems = RESUME_CONTENT_STYLE_OPTIONS.map(option => ({
+  title: option.label,
+  value: option.value,
+}))
 const sectionConfig: {
-  [K in PreviewSectionKey]: {
+  [K in ResumePreviewSectionKey]: {
     label: string
     collection: 'experiences' | 'education' | 'languages' | 'projects'
   }
@@ -312,36 +343,36 @@ const sectionConfig: {
   },
 }
 const variantRegistry: {
-  [K in EditableSectionKey]: {
+  [K in ResumeEditableSectionKey]: {
     allowed: SectionLayoutVariant[K][]
     fallback: SectionLayoutVariant[K]
   }
 } = {
-  experience: { allowed: ['detailed', 'bullets', 'compact'], fallback: 'detailed' },
-  education: { allowed: ['classic', 'timeline', 'two-column'], fallback: 'classic' },
-  language: { allowed: ['classic', 'text-level', 'stars', 'progress', 'flags'], fallback: 'classic' },
-  project: { allowed: ['classic', 'list', 'cards', 'two-column'], fallback: 'classic' },
-  skill: { allowed: ['classic'], fallback: 'classic' },
-  reference: { allowed: ['classic'], fallback: 'classic' },
-  hobby: { allowed: ['classic'], fallback: 'classic' },
-  certification: { allowed: ['classic'], fallback: 'classic' },
+  experience: { allowed: RESUME_SECTION_REGISTRY.experience.variants.map(option => option.value) as SectionLayoutVariant['experience'][], fallback: RESUME_SECTION_REGISTRY.experience.defaultVariant as SectionLayoutVariant['experience'] },
+  education: { allowed: RESUME_SECTION_REGISTRY.education.variants.map(option => option.value) as SectionLayoutVariant['education'][], fallback: RESUME_SECTION_REGISTRY.education.defaultVariant as SectionLayoutVariant['education'] },
+  language: { allowed: RESUME_SECTION_REGISTRY.language.variants.map(option => option.value) as SectionLayoutVariant['language'][], fallback: RESUME_SECTION_REGISTRY.language.defaultVariant as SectionLayoutVariant['language'] },
+  project: { allowed: RESUME_SECTION_REGISTRY.project.variants.map(option => option.value) as SectionLayoutVariant['project'][], fallback: RESUME_SECTION_REGISTRY.project.defaultVariant as SectionLayoutVariant['project'] },
+  skill: { allowed: RESUME_SECTION_REGISTRY.skill.variants.map(option => option.value) as SectionLayoutVariant['skill'][], fallback: RESUME_SECTION_REGISTRY.skill.defaultVariant as SectionLayoutVariant['skill'] },
+  reference: { allowed: RESUME_SECTION_REGISTRY.reference.variants.map(option => option.value) as SectionLayoutVariant['reference'][], fallback: RESUME_SECTION_REGISTRY.reference.defaultVariant as SectionLayoutVariant['reference'] },
+  hobby: { allowed: RESUME_SECTION_REGISTRY.hobby.variants.map(option => option.value) as SectionLayoutVariant['hobby'][], fallback: RESUME_SECTION_REGISTRY.hobby.defaultVariant as SectionLayoutVariant['hobby'] },
+  certification: { allowed: RESUME_SECTION_REGISTRY.certification.variants.map(option => option.value) as SectionLayoutVariant['certification'][], fallback: RESUME_SECTION_REGISTRY.certification.defaultVariant as SectionLayoutVariant['certification'] },
 }
 const defaultSectionLayoutEntries: SectionLayoutEntry[] = [
-  { key: 'experience', variant: 'detailed', region: 'main', order: 0 },
-  { key: 'education', variant: 'classic', region: 'main', order: 1 },
-  { key: 'project', variant: 'classic', region: 'main', order: 2 },
-  { key: 'certification', variant: 'classic', region: 'main', order: 3 },
-  { key: 'skill', variant: 'classic', region: 'aside', order: 0 },
-  { key: 'language', variant: 'classic', region: 'aside', order: 1 },
-  { key: 'reference', variant: 'classic', region: 'aside', order: 2 },
-  { key: 'hobby', variant: 'classic', region: 'aside', order: 3 },
+  { key: 'experience', variant: RESUME_SECTION_REGISTRY.experience.defaultVariant as SectionLayoutVariant['experience'], region: RESUME_SECTION_REGISTRY.experience.defaultRegion, order: 0 },
+  { key: 'education', variant: RESUME_SECTION_REGISTRY.education.defaultVariant as SectionLayoutVariant['education'], region: RESUME_SECTION_REGISTRY.education.defaultRegion, order: 1 },
+  { key: 'project', variant: RESUME_SECTION_REGISTRY.project.defaultVariant as SectionLayoutVariant['project'], region: RESUME_SECTION_REGISTRY.project.defaultRegion, order: 2 },
+  { key: 'certification', variant: RESUME_SECTION_REGISTRY.certification.defaultVariant as SectionLayoutVariant['certification'], region: RESUME_SECTION_REGISTRY.certification.defaultRegion, order: 3 },
+  { key: 'skill', variant: RESUME_SECTION_REGISTRY.skill.defaultVariant as SectionLayoutVariant['skill'], region: RESUME_SECTION_REGISTRY.skill.defaultRegion, order: 0 },
+  { key: 'language', variant: RESUME_SECTION_REGISTRY.language.defaultVariant as SectionLayoutVariant['language'], region: RESUME_SECTION_REGISTRY.language.defaultRegion, order: 1 },
+  { key: 'reference', variant: RESUME_SECTION_REGISTRY.reference.defaultVariant as SectionLayoutVariant['reference'], region: RESUME_SECTION_REGISTRY.reference.defaultRegion, order: 2 },
+  { key: 'hobby', variant: RESUME_SECTION_REGISTRY.hobby.defaultVariant as SectionLayoutVariant['hobby'], region: RESUME_SECTION_REGISTRY.hobby.defaultRegion, order: 3 },
 ]
 
 function normalizeSectionLayout(entries: Array<Partial<SectionLayoutEntry>> | SectionLayoutEntry[]) {
-  const entryByKey = new Map<EditableSectionKey, Partial<SectionLayoutEntry>>()
+  const entryByKey = new Map<ResumeEditableSectionKey, Partial<SectionLayoutEntry>>()
   for (const entry of entries) {
-    if (!entry || typeof entry.key !== 'string' || !(entry.key in variantRegistry)) continue
-    entryByKey.set(entry.key as EditableSectionKey, entry)
+    if (!entry || typeof entry.key !== 'string' || !isResumeEditableSectionKey(entry.key)) continue
+    entryByKey.set(entry.key, entry)
   }
 
   return defaultSectionLayoutEntries.map((fallback) => {
@@ -408,21 +439,6 @@ const templates: Template[] = [
   ...coverLetterTemplateCards,
 ]
 
-const resumeTemplateSupportByVariant: Record<ResumeTemplateVariant, TemplateStyleSupport> = {
-  aurora: { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  classic: { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  creative: { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  executive: { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  minimalist: { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  modern: { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  'ocean-split': { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  professional: { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  'corporate-blue': { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  'grid-slate': { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  terra: { theme: true, rounded: true, textStyle: true, sharedSections: true },
-  traditional: { theme: true, rounded: true, textStyle: true, sharedSections: true },
-}
-
 const resume = reactive<ResumeModel>({
   role: 'Communication Specialist',
   firstName: 'Emma',
@@ -454,10 +470,17 @@ const resume = reactive<ResumeModel>({
     {
       role: 'Sales Associate',
       company: 'Big Apple Bookstore',
+      companyImageUrl: '',
       city: 'New York',
       start: 'JAN 2018',
       end: 'DEC 2020',
+      contentStyle: 'points',
       bullets: [
+        'Offered literary suggestions based on customer needs and preferences.',
+        'Followed directions from supervisors and managed projects with precision.',
+        'Organized books and adhered to bookstore policies and standards.',
+      ],
+      points: [
         'Offered literary suggestions based on customer needs and preferences.',
         'Followed directions from supervisors and managed projects with precision.',
         'Organized books and adhered to bookstore policies and standards.',
@@ -466,10 +489,17 @@ const resume = reactive<ResumeModel>({
     {
       role: 'Editorial Intern',
       company: 'NBC News',
+      companyImageUrl: '',
       city: 'New York',
       start: 'JAN 2016',
       end: 'DEC 2017',
+      contentStyle: 'points',
       bullets: [
+        'Assisted senior editors with clerical and administrative tasks.',
+        'Suggested story ideas and supported content planning meetings.',
+        'Ran spellchecks and edited stories before publication.',
+      ],
+      points: [
         'Assisted senior editors with clerical and administrative tasks.',
         'Suggested story ideas and supported content planning meetings.',
         'Ran spellchecks and edited stories before publication.',
@@ -484,6 +514,8 @@ const resume = reactive<ResumeModel>({
       start: 'AUG 2016',
       end: 'AUG 2021',
       note: 'Working towards a Communications Degree.',
+      contentStyle: 'points',
+      points: ['Working towards a Communications Degree.'],
     },
     {
       degree: 'High School Diploma',
@@ -492,6 +524,8 @@ const resume = reactive<ResumeModel>({
       start: 'SEPT 2012',
       end: 'MAY 2016',
       note: 'Graduated with High Honors.',
+      contentStyle: 'points',
+      points: ['Graduated with High Honors.'],
     },
   ] as Education[],
   references: [
@@ -527,16 +561,25 @@ const resume = reactive<ResumeModel>({
       name: 'Campus Editorial Newsletter',
       summary:
         'Led content calendar and boosted monthly newsletter open rate by 32%.',
+      repositoryUrl: 'https://github.com/example/campus-editorial-newsletter',
+      repositoryProvider: 'github',
+      contentStyle: 'points',
+      points: ['Led content calendar and boosted monthly newsletter open rate by 32%.'],
     },
     {
       name: 'Student Podcast Launch',
       summary:
         'Created scripts and episode communication plan for a 10-episode launch.',
+      repositoryUrl: 'https://gitlab.com/example/student-podcast-launch',
+      repositoryProvider: 'gitlab',
+      contentStyle: 'points',
+      points: ['Created scripts and episode communication plan for a 10-episode launch.'],
     },
   ] as Project[],
 })
 
 const uploadInput = ref<HTMLInputElement | null>(null)
+const projectImageInputs = ref<Record<number, HTMLInputElement | null>>({})
 const importPdfInput = ref<HTMLInputElement | null>(null)
 const importInProgress = ref(false)
 const importProgress = ref(0)
@@ -631,25 +674,81 @@ const sectionLayout = ref<SectionLayoutEntry[]>(
   normalizeSectionLayout(defaultSectionLayoutEntries),
 )
 const sectionItemDialogOpen = ref(false)
-const activeSectionKey = ref<PreviewSectionKey>('experience')
-const activeVariant = ref<SectionLayoutVariant[PreviewSectionKey]>('detailed')
+const activeSectionKey = ref<ResumePreviewSectionKey>('experience')
+const activeVariant = ref<SectionLayoutVariant[ResumePreviewSectionKey]>('detailed')
+// single source of truth: canonical section draft factories (used for init + reset)
+const createProfileDraft = () => ({ profile: '' })
+const createExperienceDraft = () => ({
+  role: '',
+  company: '',
+  companyImageUrl: '',
+  city: '',
+  start: '',
+  end: '',
+  bullets: '',
+  contentStyle: 'points' as ContentStyle,
+})
+const createSectionItemExperienceDraft = () => ({
+  role: '',
+  company: '',
+  companyImageUrl: '',
+  city: '',
+  start: '',
+  end: '',
+  bullets: '',
+  contentStyle: 'paragraph' as ExperienceContentStyle,
+  paragraph: '',
+  lines: '',
+  timelineEventTitle: '',
+  timelineDateRange: '',
+  timelineDescription: '',
+})
+const createEducationDraft = () => ({
+  degree: '',
+  school: '',
+  schoolImageUrl: '',
+  city: '',
+  start: '',
+  end: '',
+  note: '',
+  contentStyle: 'points' as ContentStyle,
+})
+const createSkillDraft = () => ({ name: '', level: 80 })
+const createAddLanguageDraft = () => ({ name: '', level: 80, countryCode: '', flag: '' })
+const createSectionItemLanguageDraft = () => ({ name: '', level: 80, stars: 4, countryCode: '', flag: '' })
+const createHobbyDraft = () => ({ name: '' })
+const createProjectDraft = () => ({
+  name: '',
+  summary: '',
+  imageUrl: '',
+  repositoryUrl: '',
+  repositoryProvider: undefined as Project['repositoryProvider'],
+  contentStyle: 'points' as ContentStyle,
+})
+const createCertificationDraft = () => ({ title: '', school: '', start: '', end: '' })
+const createReferenceDraft = () => ({ name: '', company: '', email: '', phone: '' })
 const sectionItemDraft = reactive({
-  experience: { role: '', company: '', city: '', start: '', end: '', bullets: '' },
-  education: { degree: '', school: '', city: '', start: '', end: '', note: '' },
-  language: { name: '', level: 80, stars: 4, countryCode: '', flag: '' },
-  project: { name: '', summary: '', link: '' },
+  experience: createSectionItemExperienceDraft(),
+  education: createEducationDraft(),
+  language: createSectionItemLanguageDraft(),
+  project: createProjectDraft(),
 })
 const addSectionDraft = reactive({
-  profile: { profile: '' },
-  experience: { role: '', company: '', city: '', start: '', end: '', bullets: '' },
-  education: { degree: '', school: '', city: '', start: '', end: '', note: '' },
-  skill: { name: '', level: 80 },
-  language: { name: '', level: 80, countryCode: '', flag: '' },
-  hobby: { name: '' },
-  project: { name: '', summary: '' },
-  certification: { title: '', school: '', start: '', end: '' },
-  reference: { name: '', company: '', email: '', phone: '' },
+  profile: createProfileDraft(),
+  experience: createExperienceDraft(),
+  education: createEducationDraft(),
+  skill: createSkillDraft(),
+  language: createAddLanguageDraft(),
+  hobby: createHobbyDraft(),
+  project: createProjectDraft(),
+  certification: createCertificationDraft(),
+  reference: createReferenceDraft(),
 })
+const EXPERIENCE_LOGO_MAX_FILE_SIZE = 2 * 1024 * 1024
+const EXPERIENCE_LOGO_ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml']
+const experienceLogoErrors = reactive<Record<string, string>>({})
+const addSectionExperienceLogoInput = ref<HTMLInputElement | null>(null)
+const sectionItemExperienceLogoInput = ref<HTMLInputElement | null>(null)
 
 const PHOTO_MOVE_STEP = 4
 const PHOTO_OFFSET_LIMIT = 48
@@ -691,8 +790,93 @@ function onPhotoSelected(event: Event) {
   input.value = ''
 }
 
+function setProjectImageInputRef(index: number, element: Element | null) {
+  projectImageInputs.value[index] = element as HTMLInputElement | null
+}
+
+function openProjectImagePicker(index: number) {
+  projectImageInputs.value[index]?.click()
+}
+
+function onProjectImageSelected(index: number, event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  const reader = new FileReader()
+  reader.onload = () => {
+    const imageUrl = typeof reader.result === 'string' ? reader.result : ''
+    resume.projects[index].imageUrl = imageUrl
+  }
+  reader.readAsDataURL(file)
+  input.value = ''
+}
+
+function detectRepositoryProvider(repositoryUrl?: string): Project['repositoryProvider'] {
+  if (!repositoryUrl) return undefined
+  const normalizedUrl = repositoryUrl.toLowerCase()
+  if (normalizedUrl.includes('github.com')) return 'github'
+  if (normalizedUrl.includes('gitlab.com')) return 'gitlab'
+  return 'other'
+}
+
+function validateHttpRepositoryUrl(value?: string) {
+  if (!value) return true
+  try {
+    const parsed = new URL(value)
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:' || 'Repository URL must start with http:// or https://'
+  }
+  catch {
+    return 'Repository URL must be a valid URL (http/https).'
+  }
+}
+
+function updateProjectRepositoryProvider(project: Project) {
+  project.repositoryProvider = detectRepositoryProvider(project.repositoryUrl)
+}
+
 function clearPhoto() {
   resume.photoUrl = ''
+}
+
+function triggerFileInputById(id: string) {
+  const input = document.getElementById(id)
+  if (!(input instanceof HTMLInputElement)) return
+  input.click()
+}
+
+function updateEducationImageUrl(
+  target: 'resume' | 'add' | 'section',
+  url: string,
+  index?: number,
+) {
+  if (target === 'resume') {
+    if (typeof index !== 'number' || !resume.education[index]) return
+    resume.education[index].schoolImageUrl = url
+    return
+  }
+  if (target === 'add') {
+    addSectionDraft.education.schoolImageUrl = url
+    return
+  }
+  sectionItemDraft.education.schoolImageUrl = url
+}
+
+function onEducationImageSelected(
+  event: Event,
+  target: 'resume' | 'add' | 'section',
+  index?: number,
+) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  const reader = new FileReader()
+  reader.onload = () => {
+    updateEducationImageUrl(target, typeof reader.result === 'string' ? reader.result : '', index)
+  }
+  reader.readAsDataURL(file)
+  input.value = ''
 }
 
 function openSignatureDialog() {
@@ -767,25 +951,245 @@ function saveSignature() {
   signatureDialogOpen.value = false
 }
 
-function setExperienceBullets(index: number, value: string) {
-  resume.experiences[index].bullets = value
+function parseMultilineList(value: string) {
+  return value
     .split('\n')
-    .map((item) => item.trim())
+    .map(item => item.trim())
     .filter(Boolean)
 }
 
+function splitParagraphToList(value: string) {
+  return value
+    .split(/\n+|(?<=[.!?])\s+/)
+    .map(item => item.trim())
+    .filter(Boolean)
+}
+
+function parseTimelineEvents(value: string): TimelineEvent[] {
+  return parseMultilineList(value).map((line) => {
+    const [label, ...detailParts] = line.split('|')
+    if (detailParts.length === 0) {
+      const [fallbackLabel, ...fallbackDetailParts] = line.split(':')
+      if (fallbackDetailParts.length === 0) {
+        return { label: '', detail: line }
+      }
+      return { label: fallbackLabel.trim(), detail: fallbackDetailParts.join(':').trim() }
+    }
+    return { label: label.trim(), detail: detailParts.join('|').trim() }
+  })
+}
+
+function applyContentFields(
+  model: { contentStyle?: ContentStyle; points?: string[]; dashes?: string[]; timelineEvents?: TimelineEvent[] },
+  rawMultiline: string,
+) {
+  const parsedLines = model.contentStyle === 'paragraph'
+    ? splitParagraphToList(rawMultiline)
+    : parseMultilineList(rawMultiline)
+  const parsedTimelineEvents = parseTimelineEvents(rawMultiline)
+  model.points = model.contentStyle === 'points' || model.contentStyle === 'paragraph' ? parsedLines : []
+  model.dashes = model.contentStyle === 'dashes' ? parsedLines : []
+  model.timelineEvents = model.contentStyle === 'timeline' ? parsedTimelineEvents : []
+}
+
+function changeExperienceContentStyle(index: number, nextStyle: ContentStyle) {
+  const experience = resume.experiences[index]
+  const currentText = getExperienceBullets(index)
+  experience.contentStyle = nextStyle
+  setExperienceBullets(index, currentText)
+}
+
+function changeEducationContentStyle(index: number, nextStyle: ContentStyle) {
+  const education = resume.education[index]
+  const currentText = getEducationContent(index)
+  education.contentStyle = nextStyle
+  setEducationContent(index, currentText)
+}
+
+function changeProjectContentStyle(index: number, nextStyle: ContentStyle) {
+  const project = resume.projects[index]
+  const currentText = getProjectContent(index)
+  project.contentStyle = nextStyle
+  setProjectContent(index, currentText)
+}
+
+function setExperienceBullets(index: number, value: string) {
+  const experience = resume.experiences[index]
+  const parsedLines = parseMultilineList(value)
+  const parsedParagraph = splitParagraphToList(value)
+  experience.bullets = parsedLines
+  if (!experience.contentStyle) {
+    experience.contentStyle = 'points'
+  }
+  if (experience.contentStyle === 'points') {
+    experience.points = parsedLines
+  }
+  if (experience.contentStyle === 'paragraph') {
+    experience.points = parsedParagraph
+  }
+  if (experience.contentStyle === 'dashes') {
+    experience.dashes = parsedLines
+  }
+  if (experience.contentStyle === 'timeline') {
+    experience.timelineEvents = parseTimelineEvents(value)
+  }
+}
+
 const getExperienceBullets = (index: number) =>
-  resume.experiences[index].bullets.join('\n')
+  (resume.experiences[index].contentStyle === 'timeline'
+    ? (resume.experiences[index].timelineEvents || [])
+      .map(event => [event.label, event.detail].filter(Boolean).join(' | '))
+      .join('\n')
+    : resume.experiences[index].contentStyle === 'paragraph'
+      ? (resume.experiences[index].points || []).join(' ')
+    : (resume.experiences[index].contentStyle === 'dashes'
+      ? (resume.experiences[index].dashes || [])
+      : (resume.experiences[index].points?.length ? resume.experiences[index].points : resume.experiences[index].bullets)
+    ).join('\n'))
+
+function setEducationContent(index: number, value: string) {
+  const education = resume.education[index]
+  education.note = value
+  if (!education.contentStyle) education.contentStyle = 'points'
+  applyContentFields(education, value)
+}
+
+function getEducationContent(index: number) {
+  const education = resume.education[index]
+  if (education.contentStyle === 'timeline') {
+    return (education.timelineEvents || []).map(event => [event.label, event.detail].filter(Boolean).join(' | ')).join('\n')
+  }
+  if (education.contentStyle === 'paragraph') return education.note
+  if (education.contentStyle === 'dashes') return (education.dashes || []).join('\n')
+  if (education.points?.length) return education.points.join('\n')
+  return education.note
+}
+
+function setProjectContent(index: number, value: string) {
+  const project = resume.projects[index]
+  project.summary = value
+  if (!project.contentStyle) project.contentStyle = 'points'
+  applyContentFields(project, value)
+}
+
+function getProjectContent(index: number) {
+  const project = resume.projects[index]
+  if (project.contentStyle === 'timeline') {
+    return (project.timelineEvents || []).map(event => [event.label, event.detail].filter(Boolean).join(' | ')).join('\n')
+  }
+  if (project.contentStyle === 'paragraph') return project.summary
+  if (project.contentStyle === 'dashes') return (project.dashes || []).join('\n')
+  if (project.points?.length) return project.points.join('\n')
+  return project.summary
+}
 
 function addExperience() {
   resume.experiences.push({
     role: '',
     company: '',
+    companyImageUrl: '',
     city: '',
     start: '',
     end: '',
+    contentStyle: 'points',
     bullets: [],
+    points: [],
+    dashes: [],
+    timelineEvents: [],
   })
+}
+
+function setExperienceLogoError(targetKey: string, message = '') {
+  experienceLogoErrors[targetKey] = message
+}
+
+function getExperienceLogoError(targetKey: string) {
+  return experienceLogoErrors[targetKey] || ''
+}
+
+function validateExperienceLogoFile(file: File) {
+  if (!EXPERIENCE_LOGO_ALLOWED_TYPES.includes(file.type)) {
+    return 'Format invalide. Utilise PNG, JPEG, WEBP ou SVG.'
+  }
+  if (file.size > EXPERIENCE_LOGO_MAX_FILE_SIZE) {
+    return 'Fichier trop volumineux (max 2MB).'
+  }
+  return ''
+}
+
+function readFileAsDataUrl(file: File) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : '')
+    reader.onerror = () => reject(new Error('Impossible de lire le fichier logo.'))
+    reader.readAsDataURL(file)
+  })
+}
+
+async function applyExperienceLogoFromFile(
+  file: File,
+  target: { key: string; set: (dataUrl: string) => void },
+) {
+  const validationMessage = validateExperienceLogoFile(file)
+  if (validationMessage) {
+    setExperienceLogoError(target.key, validationMessage)
+    return
+  }
+  try {
+    const dataUrl = await readFileAsDataUrl(file)
+    target.set(dataUrl)
+    setExperienceLogoError(target.key)
+  }
+  catch {
+    setExperienceLogoError(target.key, 'Impossible de charger ce logo.')
+  }
+}
+
+function openExperienceLogoPicker(target: 'add-section' | 'section-item' | 'resume', index?: number) {
+  if (target === 'add-section') {
+    addSectionExperienceLogoInput.value?.click()
+    return
+  }
+  if (target === 'section-item') {
+    sectionItemExperienceLogoInput.value?.click()
+    return
+  }
+  if (typeof index !== 'number') return
+  const input = document.getElementById(`experience-logo-input-${index}`) as HTMLInputElement | null
+  input?.click()
+}
+
+async function onResumeExperienceLogoSelected(event: Event, index: number) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  await applyExperienceLogoFromFile(file, {
+    key: `resume-${index}`,
+    set: (dataUrl) => { resume.experiences[index].companyImageUrl = dataUrl },
+  })
+  input.value = ''
+}
+
+async function onAddSectionExperienceLogoSelected(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  await applyExperienceLogoFromFile(file, {
+    key: 'add-section',
+    set: (dataUrl) => { addSectionDraft.experience.companyImageUrl = dataUrl },
+  })
+  input.value = ''
+}
+
+async function onSectionItemExperienceLogoSelected(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  await applyExperienceLogoFromFile(file, {
+    key: 'section-item',
+    set: (dataUrl) => { sectionItemDraft.experience.companyImageUrl = dataUrl },
+  })
+  input.value = ''
 }
 
 function removeExperience(index: number) {
@@ -804,10 +1208,15 @@ function addEducation() {
   resume.education.push({
     degree: '',
     school: '',
+    schoolImageUrl: '',
     city: '',
     start: '',
     end: '',
     note: '',
+    contentStyle: 'points',
+    points: [],
+    dashes: [],
+    timelineEvents: [],
   })
 }
 
@@ -857,6 +1266,13 @@ function addProject() {
   resume.projects.push({
     name: '',
     summary: '',
+    imageUrl: '',
+    repositoryUrl: '',
+    repositoryProvider: undefined,
+    contentStyle: 'points',
+    points: [],
+    dashes: [],
+    timelineEvents: [],
   })
 }
 
@@ -906,31 +1322,32 @@ function applyTemplateFromToolbar(templateId: string) {
 function resetSectionDraft(section: AddSectionType) {
   switch (section) {
     case 'profile':
-      addSectionDraft.profile = { profile: '' }
+      addSectionDraft.profile = createProfileDraft()
       break
     case 'experience':
-      addSectionDraft.experience = { role: '', company: '', city: '', start: '', end: '', bullets: '' }
+      addSectionDraft.experience = createExperienceDraft()
+      setExperienceLogoError('add-section')
       break
     case 'education':
-      addSectionDraft.education = { degree: '', school: '', city: '', start: '', end: '', note: '' }
+      addSectionDraft.education = createEducationDraft()
       break
     case 'skill':
-      addSectionDraft.skill = { name: '', level: 80 }
+      addSectionDraft.skill = createSkillDraft()
       break
     case 'language':
-      addSectionDraft.language = { name: '', level: 80, countryCode: '', flag: '' }
+      addSectionDraft.language = createAddLanguageDraft()
       break
     case 'hobby':
-      addSectionDraft.hobby = { name: '' }
+      addSectionDraft.hobby = createHobbyDraft()
       break
     case 'project':
-      addSectionDraft.project = { name: '', summary: '' }
+      addSectionDraft.project = createProjectDraft()
       break
     case 'certification':
-      addSectionDraft.certification = { title: '', school: '', start: '', end: '' }
+      addSectionDraft.certification = createCertificationDraft()
       break
     case 'reference':
-      addSectionDraft.reference = { name: '', company: '', email: '', phone: '' }
+      addSectionDraft.reference = createReferenceDraft()
       break
   }
 }
@@ -948,27 +1365,36 @@ function submitAddSection() {
       resume.profile = addSectionDraft.profile.profile.trim()
       break
     case 'experience':
-      resume.experiences.push({
-        role: addSectionDraft.experience.role,
-        company: addSectionDraft.experience.company,
-        city: addSectionDraft.experience.city,
-        start: addSectionDraft.experience.start,
-        end: addSectionDraft.experience.end,
-        bullets: addSectionDraft.experience.bullets
-          .split('\n')
-          .map(line => line.trim())
-          .filter(Boolean),
-      })
+      {
+        const experience: Experience = {
+          role: addSectionDraft.experience.role,
+          company: addSectionDraft.experience.company,
+          companyImageUrl: addSectionDraft.experience.companyImageUrl?.trim(),
+          city: addSectionDraft.experience.city,
+          start: addSectionDraft.experience.start,
+          end: addSectionDraft.experience.end,
+          bullets: parseMultilineList(addSectionDraft.experience.bullets),
+          contentStyle: addSectionDraft.experience.contentStyle,
+        }
+        applyContentFields(experience, addSectionDraft.experience.bullets)
+        resume.experiences.push(experience)
+      }
       break
     case 'education':
-      resume.education.push({
-        degree: addSectionDraft.education.degree,
-        school: addSectionDraft.education.school,
-        city: addSectionDraft.education.city,
-        start: addSectionDraft.education.start,
-        end: addSectionDraft.education.end,
-        note: addSectionDraft.education.note,
-      })
+      {
+        const education: Education = {
+          degree: addSectionDraft.education.degree,
+          school: addSectionDraft.education.school,
+          schoolImageUrl: addSectionDraft.education.schoolImageUrl.trim(),
+          city: addSectionDraft.education.city,
+          start: addSectionDraft.education.start,
+          end: addSectionDraft.education.end,
+          note: addSectionDraft.education.note,
+          contentStyle: addSectionDraft.education.contentStyle,
+        }
+        applyContentFields(education, addSectionDraft.education.note)
+        resume.education.push(education)
+      }
       break
     case 'skill':
       resume.skills.push({ ...addSectionDraft.skill })
@@ -982,7 +1408,14 @@ function submitAddSection() {
       }
       break
     case 'project':
-      resume.projects.push({ ...addSectionDraft.project })
+      {
+        const project: Project = {
+          ...addSectionDraft.project,
+          repositoryProvider: addSectionDraft.project.repositoryProvider || detectRepositoryProvider(addSectionDraft.project.repositoryUrl),
+        }
+        applyContentFields(project, addSectionDraft.project.summary)
+        resume.projects.push(project)
+      }
       break
     case 'certification':
       resume.courses.push({ ...addSectionDraft.certification })
@@ -1003,32 +1436,33 @@ const orderedPreviewSections = computed(() =>
   }),
 )
 
-const sectionVariantByKey = computed<Partial<Record<EditableSectionKey, string>>>(() => (
+const sectionVariantByKey = computed<Partial<Record<ResumeEditableSectionKey, string>>>(() => (
   Object.fromEntries(sectionLayout.value.map(section => [section.key, section.variant]))
 ))
 
-function sectionDisplayLabel(sectionKey: PreviewSectionKey) {
+function sectionDisplayLabel(sectionKey: ResumePreviewSectionKey) {
   return sectionConfig[sectionKey].label
 }
 
-function resetSectionItemDraft(section: PreviewSectionKey) {
+function resetSectionItemDraft(section: ResumePreviewSectionKey) {
   switch (section) {
     case 'experience':
-      sectionItemDraft.experience = { role: '', company: '', city: '', start: '', end: '', bullets: '' }
+      sectionItemDraft.experience = createSectionItemExperienceDraft()
+      setExperienceLogoError('section-item')
       break
     case 'education':
-      sectionItemDraft.education = { degree: '', school: '', city: '', start: '', end: '', note: '' }
+      sectionItemDraft.education = createEducationDraft()
       break
     case 'language':
-      sectionItemDraft.language = { name: '', level: 80, stars: 4, countryCode: '', flag: '' }
+      sectionItemDraft.language = createSectionItemLanguageDraft()
       break
     case 'project':
-      sectionItemDraft.project = { name: '', summary: '', link: '' }
+      sectionItemDraft.project = createProjectDraft()
       break
   }
 }
 
-function openSectionItemDialog(section: PreviewSectionKey) {
+function openSectionItemDialog(section: ResumePreviewSectionKey) {
   activeSectionKey.value = section
   activeVariant.value = sectionLayout.value.find(item => item.key === section)?.variant ?? variantRegistry[section].fallback
   resetSectionItemDraft(section)
@@ -1039,26 +1473,35 @@ function submitSectionItemDialog() {
   let item: Record<string, unknown> | null = null
   switch (activeSectionKey.value) {
     case 'experience':
-      item = {
-        role: sectionItemDraft.experience.role,
-        company: sectionItemDraft.experience.company,
-        city: sectionItemDraft.experience.city,
-        start: sectionItemDraft.experience.start,
-        end: sectionItemDraft.experience.end,
-        bullets: sectionItemDraft.experience.bullets
-          .split('\n')
-          .map(line => line.trim())
-          .filter(Boolean),
+      {
+        const experience: Experience = {
+          role: sectionItemDraft.experience.role,
+          company: sectionItemDraft.experience.company,
+          companyImageUrl: sectionItemDraft.experience.companyImageUrl?.trim(),
+          city: sectionItemDraft.experience.city,
+          start: sectionItemDraft.experience.start,
+          end: sectionItemDraft.experience.end,
+          bullets: parseMultilineList(sectionItemDraft.experience.bullets),
+          contentStyle: sectionItemDraft.experience.contentStyle,
+        }
+        applyContentFields(experience, sectionItemDraft.experience.bullets)
+        item = experience
       }
       break
     case 'education':
-      item = {
-        degree: sectionItemDraft.education.degree,
-        school: sectionItemDraft.education.school,
-        city: sectionItemDraft.education.city,
-        start: sectionItemDraft.education.start,
-        end: sectionItemDraft.education.end,
-        note: sectionItemDraft.education.note,
+      {
+        const education: Education = {
+          degree: sectionItemDraft.education.degree,
+          school: sectionItemDraft.education.school,
+          schoolImageUrl: sectionItemDraft.education.schoolImageUrl.trim(),
+          city: sectionItemDraft.education.city,
+          start: sectionItemDraft.education.start,
+          end: sectionItemDraft.education.end,
+          note: sectionItemDraft.education.note,
+          contentStyle: sectionItemDraft.education.contentStyle,
+        }
+        applyContentFields(education, sectionItemDraft.education.note)
+        item = education
       }
       break
     case 'language':
@@ -1072,10 +1515,17 @@ function submitSectionItemDialog() {
       }
       break
     case 'project':
-      item = {
-        name: sectionItemDraft.project.name,
-        summary: sectionItemDraft.project.summary,
-        ...(sectionItemDraft.project.link.trim() ? { link: sectionItemDraft.project.link.trim() } : {}),
+      {
+        const project: Project = {
+          name: sectionItemDraft.project.name,
+          summary: sectionItemDraft.project.summary,
+          imageUrl: sectionItemDraft.project.imageUrl.trim(),
+          repositoryUrl: sectionItemDraft.project.repositoryUrl.trim(),
+          repositoryProvider: sectionItemDraft.project.repositoryProvider || detectRepositoryProvider(sectionItemDraft.project.repositoryUrl.trim()),
+          contentStyle: sectionItemDraft.project.contentStyle,
+        }
+        applyContentFields(project, sectionItemDraft.project.summary)
+        item = project
       }
       break
   }
@@ -1086,7 +1536,7 @@ function submitSectionItemDialog() {
   sectionItemDialogOpen.value = false
 }
 
-function addItemToPreviewSection(section: SharedSectionActionKey) {
+function addItemToPreviewSection(section: ResumeSectionActionKey) {
   if (section === 'course') {
     openAddSectionDialog('certification')
     return
@@ -1098,7 +1548,7 @@ function addItemToPreviewSection(section: SharedSectionActionKey) {
   openSectionItemDialog(section)
 }
 
-function normalizeSectionVariant<K extends EditableSectionKey>(
+function normalizeSectionVariant<K extends ResumeEditableSectionKey>(
   key: K,
   variant: unknown,
 ): SectionLayoutVariant[K] {
@@ -1112,7 +1562,7 @@ function normalizeSectionVariant<K extends EditableSectionKey>(
   return registry.fallback
 }
 
-function moveSectionUp(sectionKey: EditableSectionKey) {
+function moveSectionUp(sectionKey: ResumeEditableSectionKey) {
   const currentSection = sectionLayout.value.find(item => item.key === sectionKey)
   if (!currentSection) return
   const regionEntries = [...sectionLayout.value]
@@ -1126,7 +1576,7 @@ function moveSectionUp(sectionKey: EditableSectionKey) {
   previous.order = originalOrder
 }
 
-function moveSectionDown(sectionKey: EditableSectionKey) {
+function moveSectionDown(sectionKey: ResumeEditableSectionKey) {
   const currentSection = sectionLayout.value.find(item => item.key === sectionKey)
   if (!currentSection) return
   const regionEntries = [...sectionLayout.value]
@@ -1140,7 +1590,7 @@ function moveSectionDown(sectionKey: EditableSectionKey) {
   next.order = originalOrder
 }
 
-function moveSection(sectionKey: EditableSectionKey, direction: 'up' | 'down') {
+function moveSection(sectionKey: ResumeEditableSectionKey, direction: 'up' | 'down') {
   if (direction === 'up') {
     moveSectionUp(sectionKey)
     return
@@ -1148,7 +1598,7 @@ function moveSection(sectionKey: EditableSectionKey, direction: 'up' | 'down') {
   moveSectionDown(sectionKey)
 }
 
-function setSectionVariant<K extends EditableSectionKey>(key: K, variant: SectionLayoutVariant[K] | string) {
+function setSectionVariant<K extends ResumeEditableSectionKey>(key: K, variant: SectionLayoutVariant[K] | string) {
   const target = sectionLayout.value.find(section => section.key === key)
   if (!target) return
   const normalizedVariant = normalizeSectionVariant(key, variant)
@@ -1315,16 +1765,22 @@ const previewStyle = computed(() => ({
   '--cv-on-sidebar': bestAaTextColor(activeTheme.value.sidebar, activePageBackground.value.page, 4.5),
   '--cv-on-accent': bestAaTextColor(activeTheme.value.accent, activePageBackground.value.page, 4.5),
 }))
-const selectedTemplateSupport = computed<TemplateStyleSupport | null>(() => {
-  if (selectedTemplateConfig.value.documentType !== 'resume') return null
-  return resumeTemplateSupportByVariant[selectedTemplateConfig.value.variant]
-})
-const selectedTemplateHasPartialSupport = computed(() => {
-  if (!selectedTemplateSupport.value) return false
-  const support = selectedTemplateSupport.value
-  return !(support.theme && support.rounded && support.textStyle && support.sharedSections)
-})
-
+const resumeRendererDesignState = computed(() => ({
+  themeTokens: previewStyle.value,
+  roundedClass: activeRoundedClass.value,
+  textStyleClass: activeTextStyleClass.value,
+  density: layoutSettings.lineDensity,
+  dividerStyle: layoutSettings.sectionDividerStyle,
+  showSectionIcons: layoutSettings.showSectionIcons,
+  showContactIcons: layoutSettings.showContactIcons,
+  sectionIconStyleVariant: layoutSettings.sectionIconStyle,
+  iconSizeVariant: layoutSettings.iconSize,
+  iconColorMode: layoutSettings.iconColor,
+  sidebarWidth: layoutSettings.sidebarWidth,
+  photoSize: layoutSettings.photoSize,
+  photoBorderWidth: layoutSettings.photoBorderWidth,
+  photoPosition: layoutSettings.photoPosition,
+}))
 async function buildResumePdfBlob() {
   if (!previewExportRef.value || !import.meta.client) return ''
   const stylesheetContent = Array.from(
@@ -1555,13 +2011,13 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
     resume.experiences = data.experiences.map((experience) => ({
       role: String(experience.title || ''),
       company: String(experience.company || ''),
+      companyImageUrl: String(experience.companyImageUrl || ''),
       city: '',
       start: normalizeDateLabel(experience.startDate),
       end: normalizeDateLabel(experience.endDate),
-      bullets: String(experience.description || '')
-        .split(/\n|•|-/g)
-        .map((bullet) => bullet.trim())
-        .filter(Boolean),
+      bullets: String(experience.description || '').split(/\n|•|-/g).map((bullet) => bullet.trim()).filter(Boolean),
+      contentStyle: 'points',
+      points: String(experience.description || '').split(/\n|•|-/g).map((bullet) => bullet.trim()).filter(Boolean),
     }))
   }
 
@@ -1569,10 +2025,13 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
     resume.education = data.educations.map((education) => ({
       degree: String(education.title || ''),
       school: String(education.school || ''),
+      schoolImageUrl: '',
       city: '',
       start: normalizeDateLabel(education.startDate),
       end: normalizeDateLabel(education.endDate),
       note: String(education.description || ''),
+      contentStyle: 'points',
+      points: parseMultilineList(String(education.description || '')),
     }))
   }
 
@@ -1588,7 +2047,14 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
   if (Array.isArray(data.projects) && data.projects.length) {
     resume.projects = data.projects.map((project) => ({
       name: String(project.title || ''),
-      summary: [project.description, project.link].filter(Boolean).join(' • '),
+      summary: String(project.description || ''),
+      imageUrl: String(project.imageUrl || ''),
+      repositoryUrl: String(project.repositoryUrl || project.link || ''),
+      repositoryProvider: project.repositoryProvider || detectRepositoryProvider(String(project.repositoryUrl || project.link || '')),
+      repositoryUrl: String(project.link || ''),
+      repositoryProvider: detectRepositoryProvider(String(project.link || '')),
+      contentStyle: 'points',
+      points: parseMultilineList(String(project.description || '')),
     }))
   }
 
@@ -1783,9 +2249,14 @@ if (import.meta.client) {
   selectedRounded.value = customization.style.radius
   selectedTextStyle.value = customization.style.typography
   layoutSettings.lineDensity = customization.style.density
+  layoutSettings.showSectionIcons = customization.style.showSectionIcons
+  layoutSettings.showContactIcons = customization.style.showContactIcons
+  layoutSettings.sectionIconStyle = customization.style.sectionIconStyle
+  layoutSettings.iconSize = customization.style.iconSize
+  layoutSettings.iconColor = customization.style.iconColor
   sectionLayout.value = normalizeSectionLayout(customization.sectionOrder)
 
-  watch([selectedTheme, selectedPageBackground, selectedRounded, selectedTextStyle], () => {
+  watch([selectedTheme, selectedPageBackground, selectedRounded, selectedTextStyle, () => layoutSettings.showSectionIcons, () => layoutSettings.showContactIcons, () => layoutSettings.sectionIconStyle, () => layoutSettings.iconSize, () => layoutSettings.iconColor], () => {
     resumeDocumentState.value.customization = {
       ...resumeDocumentState.value.customization,
       style: {
@@ -1794,6 +2265,11 @@ if (import.meta.client) {
         pageBackground: selectedPageBackground.value,
         radius: selectedRounded.value,
         typography: selectedTextStyle.value,
+        showSectionIcons: layoutSettings.showSectionIcons,
+        showContactIcons: layoutSettings.showContactIcons,
+        sectionIconStyle: layoutSettings.sectionIconStyle,
+        iconSize: layoutSettings.iconSize,
+        iconColor: layoutSettings.iconColor,
       },
     }
     persist()
@@ -1849,165 +2325,16 @@ if (import.meta.client) {
             </div>
           </v-card>
         </v-menu>
-        <v-menu location="bottom center" origin="top center" max-width="560">
-          <template #activator="{ props }">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-palette-outline" v-bind="props" @click="openToolbarTab('design')">
-              Design
-            </v-btn>
-          </template>
-          <v-card class="toolbar-menu-card">
-            <v-card-title class="text-subtitle-2">Design</v-card-title>
-            <v-card-text>
-              <p class="section-label">Color palette</p>
-              <div class="palette-grid mb-4">
-                <button
-                  v-for="theme in colorThemes"
-                  :key="`toolbar-design-${theme.name}`"
-                  type="button"
-                  class="palette-item"
-                  :class="{ 'palette-item--active': selectedTheme === theme.name }"
-                  @click="selectedTheme = theme.name"
-                >
-                  <span :style="{ background: theme.sidebar }" />
-                  <span :style="{ background: theme.accent }" />
-                  <span :style="{ background: theme.page }" />
-                </button>
-              </div>
-
-              <p class="section-label">Page background</p>
-              <div class="palette-grid mb-4">
-                <button
-                  v-for="option in pageBackgroundValidation"
-                  :key="`toolbar-page-bg-${option.value}`"
-                  type="button"
-                  class="palette-item"
-                  :class="{ 'palette-item--active': selectedPageBackground === option.value }"
-                  :disabled="option.blocked"
-                  :title="option.blocked ? 'Fond trop sombre ou contraste insuffisant' : option.label"
-                  @click="selectedPageBackground = option.value"
-                >
-                  <span :style="{ background: option.page }" />
-                  <span :style="{ background: activeTheme.accent }" />
-                  <span :style="{ background: activeTheme.sidebar }" />
-                </button>
-              </div>
-
-              <p class="section-label">Rounded</p>
-              <v-btn-toggle
-                v-model="selectedRounded"
-                mandatory
-                divided
-                class="rounded-toggle w-100"
-                color="primary"
-              >
-                <v-btn
-                  v-for="option in roundedOptions"
-                  :key="`toolbar-rounded-${option.value}`"
-                  :value="option.value"
-                  variant="text"
-                >
-                  {{ option.title }}
-                </v-btn>
-              </v-btn-toggle>
-
-              <p class="section-label mt-4">Text style</p>
-              <AppSelect
-                v-model="selectedTextStyle"
-                :items="textStyleOptions"
-                item-title="label"
-                item-value="value"
-                label="Typography preset"
-                density="comfortable"
-                hide-details
-              />
-
-              <v-divider class="my-4" />
-              <p class="section-label">Layout settings</p>
-              <v-slider
-                v-model="layoutSettings.photoSize"
-                label="Photo size"
-                min="100"
-                max="220"
-                step="2"
-                thumb-label
-                hide-details="auto"
-              />
-              <v-slider
-                v-model="layoutSettings.photoBorderWidth"
-                label="Photo border"
-                min="0"
-                max="16"
-                step="1"
-                thumb-label
-                hide-details="auto"
-              />
-              <AppSelect
-                v-model="layoutSettings.photoPosition"
-                :items="[
-                  { label: 'Left', value: 'left' },
-                  { label: 'Center', value: 'center' },
-                  { label: 'Right', value: 'right' },
-                ]"
-                item-title="label"
-                item-value="value"
-                label="Photo position"
-                density="comfortable"
-                hide-details
-                class="mt-3"
-              />
-              <v-slider
-                v-model="layoutSettings.sidebarWidth"
-                label="Sidebar width"
-                min="220"
-                max="360"
-                step="2"
-                thumb-label
-                hide-details="auto"
-              />
-              <AppSelect
-                v-model="layoutSettings.sectionDividerStyle"
-                :items="[
-                  { label: 'None', value: 'none' },
-                  { label: 'Line', value: 'line' },
-                  { label: 'Thick', value: 'thick' },
-                ]"
-                item-title="label"
-                item-value="value"
-                label="Section divider"
-                density="comfortable"
-                hide-details
-                class="mt-3"
-              />
-              <v-switch
-                v-model="layoutSettings.headingCase"
-                false-value="normal"
-                true-value="uppercase"
-                label="Uppercase headings"
-                color="primary"
-                hide-details
-                class="mt-2"
-              />
-              <v-slider
-                v-model="layoutSettings.dateColumnWidth"
-                label="Date column width"
-                min="80"
-                max="180"
-                step="2"
-                thumb-label
-                hide-details="auto"
-              />
-              <v-switch
-                v-model="layoutSettings.lineDensity"
-                false-value="comfortable"
-                true-value="compact"
-                label="Compact line density"
-                color="primary"
-                hide-details
-                class="mt-2"
-              />
-            </v-card-text>
-          </v-card>
-        </v-menu>
+        <v-btn
+          class="local-toolbar-btn"
+          color="primary"
+          size="small"
+          variant="outlined"
+          prepend-icon="mdi-palette-outline"
+          @click="openToolbarTab('design')"
+        >
+          Design
+        </v-btn>
         <v-menu location="bottom center" origin="top center" max-width="560">
           <template #activator="{ props }">
             <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-file-import-outline" v-bind="props" @click="openToolbarTab('import')">
@@ -2214,6 +2541,32 @@ if (import.meta.client) {
                     variant="outlined"
                     hide-details
                 /></v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    v-model="experience.companyImageUrl"
+                    label="Company logo URL"
+                    variant="outlined"
+                    :error-messages="getExperienceLogoError(`resume-${index}`)"
+                    @update:model-value="setExperienceLogoError(`resume-${index}`)"
+                  />
+                </v-col>
+                <v-col cols="12" md="6" class="d-flex align-center ga-2 flex-wrap">
+                  <v-btn
+                    prepend-icon="mdi-image-plus-outline"
+                    size="small"
+                    variant="tonal"
+                    @click="openExperienceLogoPicker('resume', index)"
+                  >
+                    Upload logo
+                  </v-btn>
+                  <input
+                    :id="`experience-logo-input-${index}`"
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                    class="d-none"
+                    @change="event => onResumeExperienceLogoSelected(event, index)"
+                  >
+                </v-col>
                 <v-col cols="12" md="6"
                   ><v-text-field
                     v-model="experience.city"
@@ -2236,9 +2589,18 @@ if (import.meta.client) {
                     hide-details
                 /></v-col>
                 <v-col cols="12" md="10">
+                  <v-select
+                    v-model="experience.contentStyle"
+                    :items="resumeContentStyleSelectItems"
+                    label="Content style"
+                    variant="outlined"
+                    hide-details
+                    class="mb-2"
+                    @update:model-value="(value) => changeExperienceContentStyle(index, String(value) as ContentStyle)"
+                  />
                   <v-textarea
                     :model-value="getExperienceBullets(index)"
-                    label="Bullets (1 line = 1 bullet)"
+                    label="Content (1 line = 1 item, timeline: Label | Detail)"
                     rows="8"
                     variant="outlined"
                     hide-details
@@ -2308,6 +2670,34 @@ if (import.meta.client) {
                     variant="outlined"
                     hide-details
                 /></v-col>
+                <v-col cols="12" md="8">
+                  <v-text-field
+                    v-model="item.schoolImageUrl"
+                    label="School logo URL (optional)"
+                    variant="outlined"
+                    hide-details
+                  />
+                </v-col>
+                <v-col cols="12" md="4" class="d-flex align-center ga-2">
+                  <input
+                    :id="`education-image-input-${index}`"
+                    type="file"
+                    accept="image/*"
+                    class="d-none"
+                    @change="event => onEducationImageSelected(event, 'resume', index)"
+                  >
+                  <v-btn
+                    prepend-icon="mdi-image-plus-outline"
+                    variant="outlined"
+                    size="small"
+                    @click="triggerFileInputById(`education-image-input-${index}`)"
+                  >
+                    Upload logo
+                  </v-btn>
+                  <v-avatar v-if="item.schoolImageUrl" rounded="lg" size="40">
+                    <v-img :src="item.schoolImageUrl" alt="School logo preview" cover />
+                  </v-avatar>
+                </v-col>
                 <v-col cols="12" md="6"
                   ><v-text-field
                     v-model="item.city"
@@ -2330,12 +2720,21 @@ if (import.meta.client) {
                     hide-details
                 /></v-col>
                 <v-col cols="12" md="10"
-                  ><v-textarea
-                    v-model="item.note"
-                    label="Note"
+                  ><v-select
+                    v-model="item.contentStyle"
+                    :items="resumeContentStyleSelectItems"
+                    label="Content style"
+                    variant="outlined"
+                    hide-details
+                    class="mb-2"
+                    @update:model-value="(value) => changeEducationContentStyle(index, String(value) as ContentStyle)"
+                  /><v-textarea
+                    :model-value="getEducationContent(index)"
+                    label="Content (1 line = 1 item, timeline: Label | Detail)"
                     rows="8"
                     variant="outlined"
                     hide-details
+                    @update:model-value="(value) => setEducationContent(index, String(value))"
                 /></v-col>
                 <v-col cols="12" md="2" class="d-flex align-center">
                   <div class="d-flex flex-column ga-1">
@@ -2528,8 +2927,62 @@ if (import.meta.client) {
                 <v-col cols="12" md="4">
                   <v-text-field v-model="project.name" label="Project name" variant="outlined" hide-details />
                 </v-col>
-                <v-col cols="12" md="7">
-                  <v-text-field v-model="project.summary" label="Summary / impact" variant="outlined" hide-details />
+                <v-col cols="12" md="8">
+                  <v-select
+                    v-model="project.contentStyle"
+                    :items="resumeContentStyleSelectItems"
+                    label="Content style"
+                    variant="outlined"
+                    hide-details
+                    class="mb-2"
+                    @update:model-value="(value) => changeProjectContentStyle(index, String(value) as ContentStyle)"
+                  />
+                  <v-textarea
+                    :model-value="getProjectContent(index)"
+                    label="Summary / impact (1 line = 1 item, timeline: Label | Detail)"
+                    rows="4"
+                    variant="outlined"
+                    hide-details
+                    @update:model-value="(value) => setProjectContent(index, String(value))"
+                  />
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field v-model="project.imageUrl" label="Image URL (optional)" variant="outlined" hide-details />
+                </v-col>
+                <v-col cols="12" md="5" class="d-flex align-center ga-2">
+                  <v-btn prepend-icon="mdi-image-plus" variant="tonal" size="small" @click="openProjectImagePicker(index)">
+                    Upload image
+                  </v-btn>
+                  <input
+                    :ref="(el) => setProjectImageInputRef(index, el)"
+                    type="file"
+                    accept="image/*"
+                    class="d-none"
+                    @change="onProjectImageSelected(index, $event)"
+                  />
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    v-model="project.repositoryUrl"
+                    label="Repository URL (optional)"
+                    placeholder="https://github.com/org/repo"
+                    variant="outlined"
+                    :rules="[validateHttpRepositoryUrl]"
+                    @blur="updateProjectRepositoryProvider(project)"
+                  />
+                </v-col>
+                <v-col cols="12" md="5">
+                  <v-select
+                    v-model="project.repositoryProvider"
+                    :items="[
+                      { title: 'GitHub', value: 'github' },
+                      { title: 'GitLab', value: 'gitlab' },
+                      { title: 'Other', value: 'other' },
+                    ]"
+                    label="Repository provider (optional)"
+                    variant="outlined"
+                    hide-details
+                  />
                 </v-col>
                 <v-col cols="12" md="1" class="d-flex align-center justify-center">
                   <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeProject(index)" />
@@ -2651,26 +3104,6 @@ if (import.meta.client) {
                         variant="outlined"
                         >2 cols</v-chip
                       >
-                      <v-chip
-                        v-if="template.documentType === 'resume'"
-                        size="x-small"
-                        :color="resumeTemplateSupportByVariant[template.variant].theme
-                          && resumeTemplateSupportByVariant[template.variant].rounded
-                          && resumeTemplateSupportByVariant[template.variant].textStyle
-                          && resumeTemplateSupportByVariant[template.variant].sharedSections
-                          ? 'success'
-                          : 'warning'"
-                        variant="tonal"
-                      >
-                        {{
-                          resumeTemplateSupportByVariant[template.variant].theme
-                            && resumeTemplateSupportByVariant[template.variant].rounded
-                            && resumeTemplateSupportByVariant[template.variant].textStyle
-                            && resumeTemplateSupportByVariant[template.variant].sharedSections
-                            ? 'Support complet'
-                            : 'Support partiel'
-                        }}
-                      </v-chip>
                     </div>
                   </v-card-text>
                 </v-card>
@@ -2810,6 +3243,61 @@ if (import.meta.client) {
                 class="mt-3"
               />
               <v-switch
+                v-model="layoutSettings.showSectionIcons"
+                label="Show section icons"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
+              <v-switch
+                v-model="layoutSettings.showContactIcons"
+                label="Show contact icons"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
+              <AppSelect
+                v-model="layoutSettings.sectionIconStyle"
+                :items="[
+                  { label: 'Outline', value: 'outline' },
+                  { label: 'Filled', value: 'filled' },
+                  { label: 'Rounded', value: 'rounded' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Icon style"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <AppSelect
+                v-model="layoutSettings.iconSize"
+                :items="[
+                  { label: 'Small (S)', value: 's' },
+                  { label: 'Medium (M)', value: 'm' },
+                  { label: 'Large (L)', value: 'l' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Icon size"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <AppSelect
+                v-model="layoutSettings.iconColor"
+                :items="[
+                  { label: 'Accent', value: 'accent' },
+                  { label: 'Neutral', value: 'neutral' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Icon color"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <v-switch
                 v-model="layoutSettings.headingCase"
                 false-value="normal"
                 true-value="uppercase"
@@ -2912,29 +3400,12 @@ if (import.meta.client) {
           :style="previewStyle"
         >
           <div class="cv-page-shell" :class="previewDesignClasses">
-            <v-alert
-              v-if="selectedTemplateHasPartialSupport"
-              type="warning"
-              density="compact"
-              variant="tonal"
-              class="preview-support-alert"
-            >
-              Ce template est en support partiel pour certains réglages de design.
-            </v-alert>
             <template v-if="rendererReady">
               <ResumeRenderer
                 :class="previewDesignClasses"
                 :resume="resume"
                 :show-photo="templateSupportsPhoto"
-                :theme-tokens="previewStyle"
-                :rounded-class="activeRoundedClass"
-                :text-style-class="activeTextStyleClass"
-                :density="layoutSettings.lineDensity"
-                :divider-style="layoutSettings.sectionDividerStyle"
-                :sidebar-width="layoutSettings.sidebarWidth"
-                :photo-size="layoutSettings.photoSize"
-                :photo-border-width="layoutSettings.photoBorderWidth"
-                :photo-position="layoutSettings.photoPosition"
+                :design-state="resumeRendererDesignState"
                 :photo-offset-x="resume.photoOffsetX"
                 :photo-offset-y="resume.photoOffsetY"
                 :photo-scale="resume.photoScale"
@@ -3008,23 +3479,72 @@ if (import.meta.client) {
           <template v-else-if="addSectionType === 'experience'">
             <v-text-field v-model="addSectionDraft.experience.role" label="Role" variant="outlined" hide-details />
             <v-text-field v-model="addSectionDraft.experience.company" label="Company" variant="outlined" hide-details />
+            <v-text-field
+              v-model="addSectionDraft.experience.companyImageUrl"
+              label="Company logo URL"
+              variant="outlined"
+              :error-messages="getExperienceLogoError('add-section')"
+              @update:model-value="setExperienceLogoError('add-section')"
+            />
+            <div class="d-flex align-center ga-2">
+              <v-btn prepend-icon="mdi-image-plus-outline" size="small" variant="tonal" @click="openExperienceLogoPicker('add-section')">
+                Upload logo
+              </v-btn>
+              <input
+                ref="addSectionExperienceLogoInput"
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                class="d-none"
+                @change="onAddSectionExperienceLogoSelected"
+              >
+            </div>
             <v-text-field v-model="addSectionDraft.experience.city" label="City" variant="outlined" hide-details />
             <div class="grid-2">
               <v-text-field v-model="addSectionDraft.experience.start" label="Start" variant="outlined" hide-details />
               <v-text-field v-model="addSectionDraft.experience.end" label="End" variant="outlined" hide-details />
             </div>
-            <v-textarea v-model="addSectionDraft.experience.bullets" label="Bullets (one per line)" rows="4" variant="outlined" hide-details />
+            <v-select
+              v-model="addSectionDraft.experience.contentStyle"
+              :items="resumeContentStyleSelectItems"
+              label="Content style"
+              variant="outlined"
+              hide-details
+            />
+            <v-textarea v-model="addSectionDraft.experience.bullets" label="Content (one per line, timeline: Label | Detail)" rows="4" variant="outlined" hide-details />
           </template>
 
           <template v-else-if="addSectionType === 'education'">
             <v-text-field v-model="addSectionDraft.education.degree" label="Degree" variant="outlined" hide-details />
             <v-text-field v-model="addSectionDraft.education.school" label="School" variant="outlined" hide-details />
+            <v-text-field v-model="addSectionDraft.education.schoolImageUrl" label="School logo URL (optional)" variant="outlined" hide-details />
+            <div class="d-flex align-center ga-2">
+              <input
+                id="education-image-input-add"
+                type="file"
+                accept="image/*"
+                class="d-none"
+                @change="event => onEducationImageSelected(event, 'add')"
+              >
+              <v-btn prepend-icon="mdi-image-plus-outline" variant="outlined" size="small" @click="triggerFileInputById('education-image-input-add')">
+                Upload logo
+              </v-btn>
+              <v-avatar v-if="addSectionDraft.education.schoolImageUrl" rounded="lg" size="40">
+                <v-img :src="addSectionDraft.education.schoolImageUrl" alt="School logo preview" cover />
+              </v-avatar>
+            </div>
             <v-text-field v-model="addSectionDraft.education.city" label="City" variant="outlined" hide-details />
             <div class="grid-2">
               <v-text-field v-model="addSectionDraft.education.start" label="Start" variant="outlined" hide-details />
               <v-text-field v-model="addSectionDraft.education.end" label="End" variant="outlined" hide-details />
             </div>
-            <v-textarea v-model="addSectionDraft.education.note" label="Note" rows="3" variant="outlined" hide-details />
+            <v-select
+              v-model="addSectionDraft.education.contentStyle"
+              :items="resumeContentStyleSelectItems"
+              label="Content style"
+              variant="outlined"
+              hide-details
+            />
+            <v-textarea v-model="addSectionDraft.education.note" label="Content (one per line, timeline: Label | Detail)" rows="3" variant="outlined" hide-details />
           </template>
 
           <template v-else-if="addSectionType === 'skill'">
@@ -3045,7 +3565,34 @@ if (import.meta.client) {
 
           <template v-else-if="addSectionType === 'project'">
             <v-text-field v-model="addSectionDraft.project.name" label="Project name" variant="outlined" hide-details />
-            <v-textarea v-model="addSectionDraft.project.summary" label="Project summary" rows="4" variant="outlined" hide-details />
+            <v-select
+              v-model="addSectionDraft.project.contentStyle"
+              :items="resumeContentStyleSelectItems"
+              label="Content style"
+              variant="outlined"
+              hide-details
+            />
+            <v-textarea v-model="addSectionDraft.project.summary" label="Project content (one per line, timeline: Label | Detail)" rows="4" variant="outlined" hide-details />
+            <v-text-field v-model="addSectionDraft.project.imageUrl" label="Image URL (optional)" variant="outlined" hide-details />
+            <v-text-field
+              v-model="addSectionDraft.project.repositoryUrl"
+              label="Repository URL (optional)"
+              placeholder="https://github.com/org/repo"
+              variant="outlined"
+              :rules="[validateHttpRepositoryUrl]"
+              @blur="addSectionDraft.project.repositoryProvider = detectRepositoryProvider(addSectionDraft.project.repositoryUrl)"
+            />
+            <v-select
+              v-model="addSectionDraft.project.repositoryProvider"
+              :items="[
+                { title: 'GitHub', value: 'github' },
+                { title: 'GitLab', value: 'gitlab' },
+                { title: 'Other', value: 'other' },
+              ]"
+              label="Repository provider (optional)"
+              variant="outlined"
+              hide-details
+            />
           </template>
 
           <template v-else-if="addSectionType === 'certification'">
@@ -3087,23 +3634,111 @@ if (import.meta.client) {
           <template v-if="activeSectionKey === 'experience'">
             <v-text-field v-model="sectionItemDraft.experience.role" label="Role" variant="outlined" hide-details />
             <v-text-field v-model="sectionItemDraft.experience.company" label="Company" variant="outlined" hide-details />
+            <v-text-field
+              v-model="sectionItemDraft.experience.companyImageUrl"
+              label="Company logo URL"
+              variant="outlined"
+              :error-messages="getExperienceLogoError('section-item')"
+              @update:model-value="setExperienceLogoError('section-item')"
+            />
+            <div class="d-flex align-center ga-2">
+              <v-btn prepend-icon="mdi-image-plus-outline" size="small" variant="tonal" @click="openExperienceLogoPicker('section-item')">
+                Upload logo
+              </v-btn>
+              <input
+                ref="sectionItemExperienceLogoInput"
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                class="d-none"
+                @change="onSectionItemExperienceLogoSelected"
+              >
+            </div>
             <v-text-field v-model="sectionItemDraft.experience.city" label="City" variant="outlined" hide-details />
             <div class="grid-2">
               <v-text-field v-model="sectionItemDraft.experience.start" label="Start" variant="outlined" hide-details />
               <v-text-field v-model="sectionItemDraft.experience.end" label="End" variant="outlined" hide-details />
             </div>
-            <v-textarea v-model="sectionItemDraft.experience.bullets" label="Bullets (one per line)" rows="4" variant="outlined" hide-details />
+            <v-select
+              v-model="sectionItemDraft.experience.contentStyle"
+              :items="resumeContentStyleSelectItems"
+              item-title="label"
+              item-value="value"
+              label="Content style"
+              variant="outlined"
+              hide-details
+            />
+            <v-textarea v-model="sectionItemDraft.experience.bullets" label="Content (one per line, timeline: Label | Detail)" rows="4" variant="outlined" hide-details />
+            <v-textarea
+              v-if="sectionItemDraft.experience.contentStyle === 'paragraph'"
+              v-model="sectionItemDraft.experience.paragraph"
+              label="Paragraph"
+              rows="4"
+              variant="outlined"
+              hide-details
+            />
+            <v-textarea
+              v-else-if="sectionItemDraft.experience.contentStyle === 'bullets' || sectionItemDraft.experience.contentStyle === 'dashes'"
+              v-model="sectionItemDraft.experience.lines"
+              :label="sectionItemDraft.experience.contentStyle === 'bullets' ? 'Bullets (one per line)' : 'Dashes (one per line)'"
+              rows="4"
+              variant="outlined"
+              hide-details
+            />
+            <template v-else>
+              <v-text-field
+                v-model="sectionItemDraft.experience.timelineEventTitle"
+                label="Event title"
+                variant="outlined"
+                hide-details
+              />
+              <v-text-field
+                v-model="sectionItemDraft.experience.timelineDateRange"
+                label="Date range"
+                variant="outlined"
+                hide-details
+              />
+              <v-textarea
+                v-model="sectionItemDraft.experience.timelineDescription"
+                label="Short description"
+                rows="3"
+                variant="outlined"
+                hide-details
+              />
+            </template>
           </template>
 
           <template v-else-if="activeSectionKey === 'education'">
             <v-text-field v-model="sectionItemDraft.education.degree" label="Degree" variant="outlined" hide-details />
             <v-text-field v-model="sectionItemDraft.education.school" label="School" variant="outlined" hide-details />
+            <v-text-field v-model="sectionItemDraft.education.schoolImageUrl" label="School logo URL (optional)" variant="outlined" hide-details />
+            <div class="d-flex align-center ga-2">
+              <input
+                id="education-image-input-section-item"
+                type="file"
+                accept="image/*"
+                class="d-none"
+                @change="event => onEducationImageSelected(event, 'section')"
+              >
+              <v-btn prepend-icon="mdi-image-plus-outline" variant="outlined" size="small" @click="triggerFileInputById('education-image-input-section-item')">
+                Upload logo
+              </v-btn>
+              <v-avatar v-if="sectionItemDraft.education.schoolImageUrl" rounded="lg" size="40">
+                <v-img :src="sectionItemDraft.education.schoolImageUrl" alt="School logo preview" cover />
+              </v-avatar>
+            </div>
             <v-text-field v-model="sectionItemDraft.education.city" label="City" variant="outlined" hide-details />
             <div class="grid-2">
               <v-text-field v-model="sectionItemDraft.education.start" label="Start" variant="outlined" hide-details />
               <v-text-field v-model="sectionItemDraft.education.end" label="End" variant="outlined" hide-details />
             </div>
-            <v-textarea v-model="sectionItemDraft.education.note" label="Note" rows="3" variant="outlined" hide-details />
+            <v-select
+              v-model="sectionItemDraft.education.contentStyle"
+              :items="resumeContentStyleSelectItems"
+              label="Content style"
+              variant="outlined"
+              hide-details
+            />
+            <v-textarea v-model="sectionItemDraft.education.note" label="Content (one per line, timeline: Label | Detail)" rows="3" variant="outlined" hide-details />
           </template>
 
           <template v-else-if="activeSectionKey === 'language'">
@@ -3130,11 +3765,36 @@ if (import.meta.client) {
 
           <template v-else-if="activeSectionKey === 'project'">
             <v-text-field v-model="sectionItemDraft.project.name" label="Project name" variant="outlined" hide-details />
-            <v-textarea v-model="sectionItemDraft.project.summary" label="Project summary" rows="4" variant="outlined" hide-details />
+            <v-select
+              v-model="sectionItemDraft.project.contentStyle"
+              :items="resumeContentStyleSelectItems"
+              label="Content style"
+              variant="outlined"
+              hide-details
+            />
+            <v-textarea v-model="sectionItemDraft.project.summary" label="Project content (one per line, timeline: Label | Detail)" rows="4" variant="outlined" hide-details />
             <v-text-field
-              v-if="activeVariant === 'cards' || activeVariant === 'list'"
-              v-model="sectionItemDraft.project.link"
-              label="Project link (optional)"
+              v-model="sectionItemDraft.project.imageUrl"
+              label="Image URL (optional)"
+              variant="outlined"
+              hide-details
+            />
+            <v-text-field
+              v-model="sectionItemDraft.project.repositoryUrl"
+              label="Repository URL (optional)"
+              placeholder="https://github.com/org/repo"
+              variant="outlined"
+              :rules="[validateHttpRepositoryUrl]"
+              @blur="sectionItemDraft.project.repositoryProvider = detectRepositoryProvider(sectionItemDraft.project.repositoryUrl)"
+            />
+            <v-select
+              v-model="sectionItemDraft.project.repositoryProvider"
+              :items="[
+                { title: 'GitHub', value: 'github' },
+                { title: 'GitLab', value: 'gitlab' },
+                { title: 'Other', value: 'other' },
+              ]"
+              label="Repository provider (optional)"
               variant="outlined"
               hide-details
             />
@@ -3170,15 +3830,7 @@ if (import.meta.client) {
                   :class="previewDesignClasses"
                   :resume="resume"
                   :show-photo="templateSupportsPhoto"
-                  :theme-tokens="previewStyle"
-                  :rounded-class="activeRoundedClass"
-                  :text-style-class="activeTextStyleClass"
-                  :density="layoutSettings.lineDensity"
-                  :divider-style="layoutSettings.sectionDividerStyle"
-                  :sidebar-width="layoutSettings.sidebarWidth"
-                  :photo-size="layoutSettings.photoSize"
-                  :photo-border-width="layoutSettings.photoBorderWidth"
-                  :photo-position="layoutSettings.photoPosition"
+                  :design-state="resumeRendererDesignState"
                   :photo-offset-x="resume.photoOffsetX"
                   :photo-offset-y="resume.photoOffsetY"
                   :photo-scale="resume.photoScale"

@@ -1,4 +1,5 @@
 import type { PageBackgroundId, RoundedOptionId, Typography } from '~/constants/resumeDesign'
+import type { ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
 import type { ResumeTemplateVariant } from '~/constants/resumeTemplates'
 
 export type ResumeLayoutDensity = 'compact' | 'comfortable'
@@ -13,6 +14,30 @@ export type ResumeEditableSectionKey =
   | 'reference'
   | 'hobby'
   | 'certification'
+
+export type ResumePreviewSectionKey = Extract<
+  ResumeEditableSectionKey,
+  'experience' | 'education' | 'language' | 'project'
+>
+
+export type ResumeSectionActionKey = ResumeEditableSectionKey | 'course'
+
+export const RESUME_EDITABLE_SECTION_KEYS = [
+  'experience',
+  'education',
+  'language',
+  'project',
+  'skill',
+  'reference',
+  'hobby',
+  'certification',
+] as const satisfies ReadonlyArray<ResumeEditableSectionKey>
+
+export function isResumeEditableSectionKey(
+  value: string,
+): value is ResumeEditableSectionKey {
+  return RESUME_EDITABLE_SECTION_KEYS.includes(value as ResumeEditableSectionKey)
+}
 
 export type ResumeSectionVariant =
   | 'detailed'
@@ -41,6 +66,11 @@ export type ResumeStylePreferences = {
   density: ResumeLayoutDensity
   radius: RoundedOptionId
   typography: Typography
+  showSectionIcons: boolean
+  showContactIcons: boolean
+  sectionIconStyle: ResumeSectionIconStyleVariant
+  iconSize: 's' | 'm' | 'l'
+  iconColor: 'accent' | 'neutral'
 }
 
 export type ResumeDocumentModel = {
