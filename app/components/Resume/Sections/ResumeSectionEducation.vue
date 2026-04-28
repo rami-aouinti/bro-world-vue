@@ -6,6 +6,9 @@ const props = withDefaults(defineProps<{
   resume: any
   editable?: boolean
   variant?: 'classic' | 'timeline' | 'two-column' | string
+  layoutSettings?: {
+    dateColumnWidth?: number | string
+  }
   themeTokens?: Record<string, string | number>
   layoutDensity?: 'compact' | 'normal' | 'spacious' | string
   toolbarEnabled?: boolean
@@ -18,6 +21,7 @@ const props = withDefaults(defineProps<{
 }>(), {
   editable: false,
   variant: 'classic',
+  layoutSettings: () => ({}),
   themeTokens: () => ({}),
   layoutDensity: 'normal',
   toolbarEnabled: false,
@@ -33,7 +37,14 @@ const emit = defineEmits<{
   (event: 'change-variant', sectionKey: 'education', variant: string): void
   (event: 'move-section', sectionKey: 'education', direction: 'up' | 'down'): void
 }>()
-const sectionStyle = computed(() => ({ ...props.themeTokens }))
+const sectionStyle = computed(() => {
+  const width = props.layoutSettings?.dateColumnWidth
+  const normalized = typeof width === 'number' ? `${width}px` : width
+  return {
+    ...props.themeTokens,
+    '--resume-date-column-width': normalized || '140px',
+  }
+})
 const iconVariantClass = computed(() =>
   props.sectionIconStyle?.variant ? `section-icon--${props.sectionIconStyle.variant}` : 'section-icon--outline',
 )
@@ -74,21 +85,23 @@ function updateText(path: string, value: string) {
     </h2>
     <div class="education-list">
       <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="entry text-dark">
-        <div class="entry-heading">
-          <v-avatar class="school-logo" rounded="lg" size="30">
-            <v-img v-if="item.schoolImageUrl" :src="item.schoolImageUrl" alt="School logo" cover />
-            <v-icon v-else icon="mdi-school-outline" size="17" />
-          </v-avatar>
-          <h4 class="text-dark">
-            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</span>,
-            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</span>
-          </h4>
-        </div>
-        <p class="dates">
+        <p class="dates date-column">
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.start`, (event.target as HTMLElement).innerText)">{{ item.start }}</span> -
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.end`, (event.target as HTMLElement).innerText)">{{ item.end }}</span>
         </p>
-        <p v-if="item.note" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.note`, (event.target as HTMLElement).innerText)">{{ item.note }}</p>
+        <div class="content-column">
+          <div class="entry-heading">
+            <v-avatar class="school-logo" rounded="lg" size="30">
+              <v-img v-if="item.schoolImageUrl" :src="item.schoolImageUrl" alt="School logo" cover />
+              <v-icon v-else icon="mdi-school-outline" size="17" />
+            </v-avatar>
+            <h4 class="text-dark">
+              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</span>,
+              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</span>
+            </h4>
+          </div>
+          <p v-if="item.note" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.note`, (event.target as HTMLElement).innerText)">{{ item.note }}</p>
+        </div>
       </article>
     </div>
   </section>
@@ -145,11 +158,21 @@ function updateText(path: string, value: string) {
 }
 .entry {
   margin-bottom: var(--entry-gap, var(--cv-space-4));
+  display: grid;
+  grid-template-columns: minmax(0, var(--resume-date-column-width, 140px)) minmax(0, 1fr);
+  column-gap: var(--cv-space-4);
+  align-items: start;
   position: relative;
   border: var(--rs-card-border, none);
   background: var(--rs-card-bg, transparent);
   border-radius: var(--rs-card-radius, 0);
   padding: var(--rs-card-padding, 0);
+}
+.date-column {
+  color: color-mix(in srgb, var(--cv-text, currentColor) 78%, transparent);
+}
+.content-column {
+  position: relative;
 }
 .entry-heading {
   display: flex;
@@ -167,24 +190,27 @@ function updateText(path: string, value: string) {
 
 /* Classic variant */
 .education--classic .entry {
+  grid-template-columns: minmax(0, var(--resume-date-column-width, 140px)) minmax(0, 1fr);
+}
+.education--classic .content-column {
   border-left: var(--rs-entry-border-left, none);
   padding-left: var(--rs-entry-padding-left, 0);
 }
 
 /* Timeline variant */
-.education--timeline .entry {
+.education--timeline .content-column {
   border-left: 2px solid var(--cv-timeline-line);
   padding-left: calc(var(--cv-space-2) + var(--cv-space-1) / 2);
 }
-.education--timeline .entry::before {
+.education--timeline .content-column::before {
   content: '';
   position: absolute;
   left: calc((var(--cv-space-2) + var(--cv-space-1)) * -1);
   top: .55rem;
-  width: var(--rs-marker-width, var(--rs-marker-size, 0));
-  height: var(--rs-marker-height, var(--rs-marker-size, 0));
-  border-radius: var(--rs-marker-radius, 0);
-  background: var(--cv-marker-accent);
+  width: max(8px, var(--rs-marker-width, var(--rs-marker-size, 8px)));
+  height: max(8px, var(--rs-marker-height, var(--rs-marker-size, 8px)));
+  border-radius: 999px;
+  background: var(--cv-accent);
 }
 
 /* Two-column variant */
@@ -208,6 +234,12 @@ function updateText(path: string, value: string) {
 @media (max-width: 900px) {
   .education--two-column .education-list {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .entry {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--cv-space-2);
   }
 }
 
