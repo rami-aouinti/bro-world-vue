@@ -5,6 +5,7 @@ type ToolbarVariantOption = {
   label: string
   value: string
 }
+type ToolbarContentStyleOption = ToolbarVariantOption
 
 type StylePresetOption = {
   label: string
@@ -18,16 +19,20 @@ const props = withDefaults(defineProps<{
   canMoveDown?: boolean
   variants?: ToolbarVariantOption[]
   currentVariant?: string
+  contentStyles?: ToolbarContentStyleOption[]
+  currentContentStyle?: string
 }>(), {
   canMoveUp: false,
   canMoveDown: false,
   variants: () => [],
   currentVariant: '',
+  contentStyles: () => [],
+  currentContentStyle: '',
 })
 
 const emit = defineEmits<{
   (event: 'add-item' | 'move-up' | 'move-down', sectionKey: string): void
-  (event: 'change-variant', sectionKey: string, variant: string): void
+  (event: 'change-variant' | 'change-content-style', sectionKey: string, value: string): void
 }>()
 
 const toolbarRef = ref<HTMLElement | null>(null)
@@ -148,6 +153,35 @@ watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySe
           :key="option.value"
           :active="option.value === props.currentVariant"
           @click="emit('change-variant', props.sectionKey, option.value)"
+        >
+          <v-list-item-title>{{ option.label }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+
+    <v-menu v-if="props.contentStyles.length">
+      <template #activator="{ props: menuProps }">
+        <v-tooltip text="Content style">
+          <template #activator="{ props: tooltipProps }">
+            <v-btn
+              class="toolbar-btn"
+              icon
+              size="default"
+              variant="tonal"
+              :aria-label="`Changer le style de contenu de la section ${props.sectionKey}`"
+              v-bind="mergeProps(menuProps, tooltipProps)"
+            >
+              <v-icon icon="mdi-format-list-bulleted-type" />
+            </v-btn>
+          </template>
+        </v-tooltip>
+      </template>
+      <v-list density="compact">
+        <v-list-item
+          v-for="option in props.contentStyles"
+          :key="option.value"
+          :active="option.value === props.currentContentStyle"
+          @click="emit('change-content-style', props.sectionKey, option.value)"
         >
           <v-list-item-title>{{ option.label }}</v-list-item-title>
         </v-list-item>
