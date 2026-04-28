@@ -311,6 +311,34 @@ const layoutSettings = reactive<LayoutSettings>({
   iconColor: 'accent',
   layoutMode: resolveTemplateSkin(DEFAULT_RESUME_TEMPLATE_ID).layoutMode,
 })
+const lineDensityOptions = [
+  { label: 'Compact', value: 'compact' },
+  { label: 'Comfortable', value: 'comfortable' },
+] as const
+const sectionDividerStyleOptions = [
+  { label: 'Line', value: 'line' },
+  { label: 'Soft', value: 'soft' },
+  { label: 'None', value: 'none' },
+] as const
+const layoutModeOptions = [
+  { label: 'Aside left', value: 'aside-left' },
+  { label: 'Aside right', value: 'aside-right' },
+  { label: 'No aside', value: 'no-aside' },
+] as const
+const sectionIconStyleOptions = [
+  { label: 'Outline', value: 'outline' },
+  { label: 'Filled', value: 'filled' },
+  { label: 'Rounded', value: 'rounded' },
+] as const
+const iconSizeOptions = [
+  { label: 'Small', value: 's' },
+  { label: 'Medium', value: 'm' },
+  { label: 'Large', value: 'l' },
+] as const
+const iconColorOptions = [
+  { label: 'Accent', value: 'accent' },
+  { label: 'Neutral', value: 'neutral' },
+] as const
 const photoShapeOptions = [
   { label: 'Carré', value: 'square', icon: '□' },
   { label: 'Arrondi', value: 'rounded', icon: '▢' },
@@ -2657,6 +2685,77 @@ if (import.meta.client) {
                     density="comfortable"
                     hide-details
                   />
+
+                  <p class="section-label mt-4">Rounded</p>
+                  <v-btn-toggle v-model="selectedRounded" mandatory divided class="rounded-toggle" color="primary">
+                    <v-btn v-for="option in roundedOptions" :key="`toolbar-rounded-${option.value}`" :value="option.value" variant="text">
+                      {{ option.title }}
+                    </v-btn>
+                  </v-btn-toggle>
+
+                  <p class="section-label mt-4">Layout</p>
+                  <AppSelect
+                    v-model="layoutSettings.layoutMode"
+                    :items="layoutModeOptions"
+                    item-title="label"
+                    item-value="value"
+                    label="Layout mode"
+                    density="comfortable"
+                    hide-details
+                    class="mb-3"
+                  />
+                  <AppSelect
+                    v-model="layoutSettings.lineDensity"
+                    :items="lineDensityOptions"
+                    item-title="label"
+                    item-value="value"
+                    label="Density"
+                    density="comfortable"
+                    hide-details
+                    class="mb-3"
+                  />
+                  <AppSelect
+                    v-model="layoutSettings.sectionDividerStyle"
+                    :items="sectionDividerStyleOptions"
+                    item-title="label"
+                    item-value="value"
+                    label="Section dividers"
+                    density="comfortable"
+                    hide-details
+                  />
+
+                  <p class="section-label mt-4">Icons</p>
+                  <div class="d-grid ga-3">
+                    <v-switch v-model="layoutSettings.showSectionIcons" label="Show section icons" color="primary" hide-details inset />
+                    <v-switch v-model="layoutSettings.showContactIcons" label="Show contact icons" color="primary" hide-details inset />
+                    <AppSelect
+                      v-model="layoutSettings.sectionIconStyle"
+                      :items="sectionIconStyleOptions"
+                      item-title="label"
+                      item-value="value"
+                      label="Icon style"
+                      density="comfortable"
+                      hide-details
+                    />
+                    <AppSelect
+                      v-model="layoutSettings.iconSize"
+                      :items="iconSizeOptions"
+                      item-title="label"
+                      item-value="value"
+                      label="Icon size"
+                      density="comfortable"
+                      hide-details
+                    />
+                    <AppSelect
+                      v-model="layoutSettings.iconColor"
+                      :items="iconColorOptions"
+                      item-title="label"
+                      item-value="value"
+                      label="Icon color"
+                      density="comfortable"
+                      hide-details
+                    />
+                  </div>
                 </v-card-text>
               </v-card>
             </v-menu>
@@ -3585,6 +3684,11 @@ if (import.meta.client) {
 .palette-item--active {
   border-color: var(--v-theme-primary);
   box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.3);
+}
+
+.rounded-toggle {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .photo-uploader {
