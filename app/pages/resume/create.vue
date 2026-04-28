@@ -817,7 +817,7 @@ const templatesByDocumentType = computed(() =>
   ),
 )
 const templateQuickFilter = ref<TemplateQuickFilter>('all')
-const templateQuickFilterOptions: Array<{
+const resumeTemplateQuickFilterOptions: Array<{
   label: string
   value: TemplateQuickFilter
 }> = [
@@ -828,10 +828,12 @@ const templateQuickFilterOptions: Array<{
   { label: 'Gratuit', value: 'free' },
   { label: 'Timeline', value: 'timeline' },
 ]
-const filteredTemplatesByDrawer = computed(() => {
-  if (templateQuickFilter.value === 'all') {
-    return templatesByDocumentType.value
-  }
+const templateQuickFilterOptions = computed(() =>
+  selectedDocumentType.value === 'resume' ? resumeTemplateQuickFilterOptions : [],
+)
+const filteredTemplates = computed(() => {
+  if (selectedDocumentType.value !== 'resume') return templatesByDocumentType.value
+  if (templateQuickFilter.value === 'all') return templatesByDocumentType.value
 
   return templatesByDocumentType.value.filter((template) => {
     if (templateQuickFilter.value === 'photo') return template.hasPhoto
@@ -858,7 +860,7 @@ function applyTemplateSelection(templateId: string) {
 
 function onTemplateQuickFilterChange(value: unknown) {
   const nextValue = typeof value === 'string' ? value : 'all'
-  templateQuickFilter.value = templateQuickFilterOptions.some(
+  templateQuickFilter.value = resumeTemplateQuickFilterOptions.some(
     (option) => option.value === (nextValue as TemplateQuickFilter),
   )
     ? (nextValue as TemplateQuickFilter)
@@ -3061,8 +3063,16 @@ if (import.meta.client) {
                   </v-tab>
                 </v-tabs>
               </div>
-
+            </v-card-text>
+          </v-card>
+        </div>
+      </template>
+      <template #right>
+        <div class="template-drawer">
+          <v-card variant="outlined" class="template-drawer__card">
+            <v-card-text class="d-grid ga-3">
               <AppSelect
+                v-if="selectedDocumentType === 'resume'"
                 :model-value="templateQuickFilter"
                 :items="templateQuickFilterOptions"
                 item-title="label"
@@ -3075,7 +3085,7 @@ if (import.meta.client) {
 
               <div class="template-drawer__grid">
                 <button
-                  v-for="template in filteredTemplatesByDrawer"
+                  v-for="template in filteredTemplates"
                   :key="`drawer-template-${template.id}`"
                   type="button"
                   class="template-drawer__item"
@@ -3101,7 +3111,6 @@ if (import.meta.client) {
           </v-card>
         </div>
       </template>
-      <template #right />
     </AppPageDrawers>
     <v-container fluid>
       <main class="resume-content-main">
