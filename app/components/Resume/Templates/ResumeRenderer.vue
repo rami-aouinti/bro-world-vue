@@ -77,6 +77,8 @@ const renderableSections = computed<RenderableSectionLayoutEntry[]>(() => (
 
 const mainSections = computed(() => renderableSections.value.filter(section => section.region === 'main'))
 const asideSections = computed(() => renderableSections.value.filter(section => section.region === 'aside'))
+const photoControlsVisible = ref(false)
+const hasRenderedAvatar = computed(() => Boolean(props.showPhoto && props.resume?.photoUrl))
 
 function fallbackVariant(sectionKey: ResumeSectionLayoutKey): string {
   if (sectionKey === 'experience') return 'detailed'
@@ -133,6 +135,13 @@ function updateText(path: string, value: string) {
 
   target[last] = value
 }
+
+function onPhotoFrameFocusOut(event: FocusEvent) {
+  const currentTarget = event.currentTarget as HTMLElement | null
+  const relatedTarget = event.relatedTarget as Node | null
+  if (currentTarget?.contains(relatedTarget)) return
+  photoControlsVisible.value = false
+}
 </script>
 
 <template>
@@ -152,8 +161,16 @@ function updateText(path: string, value: string) {
           <span class="editable-text" :contenteditable="editable" @input="event => updateText('phone', (event.target as HTMLElement).innerText)">{{ resume.phone }}</span>
         </p>
       </div>
-      <div v-if="showPhoto && resume.photoUrl" class="photo-frame">
-        <div v-if="photoShapeOptions.length" class="photo-shape-picker">
+      <div
+        v-if="hasRenderedAvatar"
+        class="photo-frame"
+        tabindex="0"
+        @mouseenter="photoControlsVisible = true"
+        @mouseleave="photoControlsVisible = false"
+        @focusin="photoControlsVisible = true"
+        @focusout="onPhotoFrameFocusOut"
+      >
+        <div v-if="photoShapeOptions.length" v-show="photoControlsVisible && hasRenderedAvatar" class="photo-shape-picker">
           <v-btn
             v-for="shape in photoShapeOptions"
             :key="`preview-photo-shape-${shape.value}`"
