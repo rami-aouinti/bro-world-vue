@@ -149,6 +149,7 @@ export const RESUME_TEMPLATE_SKINS: Record<TemplateSkinId, ResumeTemplateSkin> =
   }),
   'corporate-blue': withSkin('corporate-blue', {
     showContactInHeader: true,
+    showContactInAside: false,
     profile: { grid: 'split', typography: 'clean', spacing: 'compact', colors: 'contrast', cards: 'flat', separators: 'line' },
   }),
   'grid-slate': withSkin('grid-slate', {
