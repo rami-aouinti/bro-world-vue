@@ -22,7 +22,7 @@ import {
   type ResumePreviewSectionKey,
   type ResumeSectionActionKey,
 } from '~/types/resumeDocumentModel'
-import { createResume, listMyResumes, updateResume } from '~/services/resumeApi'
+import { createResume, deleteResume, listMyResumes, updateResume } from '~/services/resumeApi'
 
 definePageMeta({
   title: 'Create Resume',
@@ -774,6 +774,11 @@ const saveLoading = ref(false)
 const saveStatus = ref<'idle' | 'success' | 'error'>('idle')
 const saveStatusMessage = ref('')
 const replaceConfirmStep = ref(false)
+const deleteConfirmModalOpen = ref(false)
+const resumeIdPendingDeletion = ref<string | null>(null)
+const toastOpen = ref(false)
+const toastMessage = ref('')
+const toastColor = ref<'success' | 'error'>('success')
 const loginDialogOpen = ref(false)
 const loginLoading = ref(false)
 const pendingPdfDownload = ref(false)
@@ -795,6 +800,38 @@ watch(saveMode, () => {
 watch(selectedRemoteResumeId, () => {
   replaceConfirmStep.value = false
 })
+
+function showToast(message: string, color: 'success' | 'error') {
+  toastMessage.value = message
+  toastColor.value = color
+  toastOpen.value = true
+}
+
+function openDeleteResumeConfirmation(resumeId: string) {
+  resumeIdPendingDeletion.value = resumeId
+  deleteConfirmModalOpen.value = true
+}
+
+async function confirmDeleteRemoteResume() {
+  if (!resumeIdPendingDeletion.value) return
+
+  const resumeId = resumeIdPendingDeletion.value
+  try {
+    await deleteResume(resumeId)
+    remoteResumes.value = remoteResumes.value.filter(item => item.id !== resumeId)
+
+    if (selectedRemoteResumeId.value === resumeId) {
+      selectedRemoteResumeId.value = remoteResumes.value.at(0)?.id ?? null
+    }
+
+    showToast('CV supprimé avec succès.', 'success')
+  } catch {
+    showToast('Échec de suppression du CV.', 'error')
+  } finally {
+    deleteConfirmModalOpen.value = false
+    resumeIdPendingDeletion.value = null
+  }
+}
 // single source of truth: canonical section draft factories (used for init + reset)
 const createProfileDraft = () => ({ profile: '' })
 const createExperienceDraft = () => ({
@@ -4162,6 +4199,31 @@ if (import.meta.client) {
               :disabled="saveLoading"
               hide-details
             />
+            <v-list
+              v-if="remoteResumes.length"
+              density="comfortable"
+              class="border rounded"
+            >
+              <v-list-item
+                v-for="item in remoteResumes"
+                :key="item.id"
+                :title="item.resumeInformation?.fullName || item.id"
+                :subtitle="item.id"
+                @click="selectedRemoteResumeId = item.id"
+              >
+                <template #append>
+                  <v-btn
+                    color="error"
+                    size="small"
+                    variant="text"
+                    :disabled="saveLoading"
+                    @click.stop="openDeleteResumeConfirmation(item.id)"
+                  >
+                    Delete
+                  </v-btn>
+                </template>
+              </v-list-item>
+            </v-list>
             <v-alert
               v-if="replaceConfirmStep"
               type="warning"
@@ -4204,6 +4266,26 @@ if (import.meta.client) {
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="deleteConfirmModalOpen" max-width="460">
+      <v-card>
+        <v-card-title>Confirmation</v-card-title>
+        <v-card-text>Supprimer définitivement ce CV ?</v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn variant="text" @click="deleteConfirmModalOpen = false">Annuler</v-btn>
+          <v-btn color="error" @click="confirmDeleteRemoteResume">Delete</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-snackbar
+      v-model="toastOpen"
+      :color="toastColor"
+      timeout="3200"
+      location="top right"
+    >
+      {{ toastMessage }}
+    </v-snackbar>
 
     <v-dialog v-model="pdfModalOpen" width="900">
       <v-card>
