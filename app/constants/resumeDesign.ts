@@ -14,6 +14,7 @@ export type PaletteId =
 
 export type RoundedOptionId = 'none' | 'sm' | 'md' | 'lg'
 export type Typography = 'clean' | 'italic' | 'serif' | 'mono' | 'display'
+export type PageBackgroundId = 'white' | 'sky-light' | 'pearl-light' | 'ivory-light'
 
 export type ResumeColorTheme = {
   name: PaletteId
@@ -32,6 +33,12 @@ export type ResumeTextStyleOption = {
   label: string
   value: Typography
   className: string
+}
+
+export type ResumePageBackgroundOption = {
+  label: string
+  value: PageBackgroundId
+  page: string
 }
 
 export type CoverPalette = {
@@ -69,6 +76,13 @@ export const RESUME_TEXT_STYLE_OPTIONS: ResumeTextStyleOption[] = [
   { label: 'Classic Serif', value: 'serif', className: 'text-style-serif' },
   { label: 'Mono Tech', value: 'mono', className: 'text-style-mono' },
   { label: 'Display Bold', value: 'display', className: 'text-style-display' },
+]
+
+export const RESUME_PAGE_BACKGROUND_OPTIONS: ResumePageBackgroundOption[] = [
+  { label: 'Blanc', value: 'white', page: '#ffffff' },
+  { label: 'Bleu ciel léger', value: 'sky-light', page: '#f2f8ff' },
+  { label: 'Gris perle clair', value: 'pearl-light', page: '#f5f6f8' },
+  { label: 'Ivoire clair', value: 'ivory-light', page: '#fffdf4' },
 ]
 
 export const roundedPxByValue: Record<RoundedOptionId, string> = {

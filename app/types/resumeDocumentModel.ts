@@ -1,4 +1,4 @@
-import type { RoundedOptionId, Typography } from '~/constants/resumeDesign'
+import type { PageBackgroundId, RoundedOptionId, Typography } from '~/constants/resumeDesign'
 import type { ResumeTemplateVariant } from '~/constants/resumeTemplates'
 
 export type ResumeLayoutDensity = 'compact' | 'comfortable'
@@ -36,6 +36,7 @@ export type ResumeSectionLayoutModel = {
 
 export type ResumeStylePreferences = {
   palette: string
+  pageBackground: PageBackgroundId
   density: ResumeLayoutDensity
   radius: RoundedOptionId
   typography: Typography
