@@ -5112,6 +5112,20 @@ if (import.meta.client) {
   color: var(--cv-secondary) !important;
 }
 
+.preview-grid :deep(.resume-skin__aside .text-dark),
+.preview-grid :deep(.resume-skin__aside .editable-text) {
+  color: var(--cv-on-sidebar) !important;
+}
+
+.preview-grid :deep(.resume-skin__main .text-dark),
+.preview-grid :deep(.resume-skin__main .editable-text) {
+  color: var(--cv-secondary) !important;
+}
+
+.preview-grid :deep(.cv-heading-section) {
+  color: var(--cv-accent) !important;
+}
+
 .preview-sidebar {
   background: var(--cv-sidebar);
   color: #fff;
@@ -5241,6 +5255,23 @@ if (import.meta.client) {
   font-family: var(--cv-font-family);
   font-style: var(--cv-font-style);
   font-weight: var(--cv-font-weight);
+}
+
+.preview-grid :deep(.resume-skin) {
+  font-size: clamp(0.8rem, 0.2vw + 0.74rem, 0.94rem);
+}
+
+.preview-grid :deep(.resume-skin h1) {
+  font-size: clamp(1.45rem, 1.2vw + 1rem, 2rem);
+}
+
+.preview-grid :deep(.resume-skin h2),
+.preview-grid :deep(.resume-skin h3) {
+  font-size: clamp(1.05rem, 0.6vw + 0.82rem, 1.45rem);
+}
+
+.preview-grid :deep(.resume-skin h4) {
+  font-size: clamp(0.9rem, 0.35vw + 0.75rem, 1.12rem);
 }
 
 .preview-grid :deep(.resume-skin),
