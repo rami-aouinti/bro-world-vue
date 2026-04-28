@@ -18,6 +18,8 @@ const props = withDefaults(
     title?: string
     canMoveUp?: boolean
     canMoveDown?: boolean
+    sectionIcon?: string
+    showSectionIcon?: boolean
   }>(),
   {
     editable: false,
@@ -28,6 +30,8 @@ const props = withDefaults(
     title: 'Languages',
     canMoveUp: false,
     canMoveDown: false,
+    sectionIcon: undefined,
+    showSectionIcon: true,
   },
 )
 const emit = defineEmits<{
@@ -123,7 +127,12 @@ function removeLanguage(index: number) {
       @move-down="() => emit('move-section', 'language', 'down')"
       @delete-section="() => emit('delete-section', 'language')"
     />
-    <h3 class="cv-heading-section">{{ title }}</h3>
+    <h3 class="cv-heading-section">
+      <span v-if="showSectionIcon && sectionIcon" class="section-icon">
+        <v-icon :icon="sectionIcon" size="16" />
+      </span>
+      <span>{{ title }}</span>
+    </h3>
     <ul
       v-if="safeVariant === 'classic' || safeVariant === 'text-level'"
       class="bars"
@@ -389,4 +398,8 @@ function removeLanguage(index: number) {
 .density-spacious {
   --entry-gap: calc(var(--cv-space-3) + var(--cv-space-1) / 2);
 }
+</style>
+
+<style scoped>
+.section-icon { display:inline-flex; align-items:center; justify-content:center; color: var(--resume-section-icon-color, var(--cv-accent)); margin-right: 6px; }
 </style>

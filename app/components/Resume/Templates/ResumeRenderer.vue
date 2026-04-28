@@ -63,7 +63,7 @@ type ResumeRendererDesignState = {
 
 type DecorativeShapeSettings = {
   enabled: boolean
-  type: 'circle' | 'square' | 'ring' | 'bar'
+  type: 'circle' | 'square' | 'ring' | 'bar' | 'diamond' | 'triangle' | 'pill'
   width: number
   height: number
   size: number
@@ -299,11 +299,19 @@ const noAsideRightSections = computed(() =>
   ),
 )
 const noAsideRemainingSections = computed(() =>
-  visibleMainSections.value.filter(
-    (section) =>
-      !noAsideLeftColumnKeys.includes(section.key) &&
-      !noAsideRightColumnKeys.includes(section.key),
-  ),
+  visibleMainSections.value
+    .filter(
+      (section) =>
+        !noAsideLeftColumnKeys.includes(section.key) &&
+        !noAsideRightColumnKeys.includes(section.key),
+    )
+    .sort((left, right) => {
+      if (left.key === 'certification' && right.key !== 'certification')
+        return 1
+      if (right.key === 'certification' && left.key !== 'certification')
+        return -1
+      return compareSectionOrder(left, right)
+    }),
 )
 const avatarStyle = computed(() => ({
   width: `${resolvedDesignState.value.photoSize}px`,
@@ -375,9 +383,9 @@ const decorativeShapes = computed<DecorativeShapeSettings[]>(() => [
 
 function decorativeShapeStyle(shape: DecorativeShapeSettings) {
   const width =
-    shape.type === 'circle' || shape.type === 'ring' ? shape.size : shape.width
+    shape.type === 'circle' || shape.type === 'ring' || shape.type === 'diamond' || shape.type === 'triangle' ? shape.size : shape.width
   const height =
-    shape.type === 'circle' || shape.type === 'ring' ? shape.size : shape.height
+    shape.type === 'circle' || shape.type === 'ring' || shape.type === 'diamond' || shape.type === 'triangle' ? shape.size : shape.height
 
   return {
     '--shape-color': shape.color,
@@ -386,6 +394,8 @@ function decorativeShapeStyle(shape: DecorativeShapeSettings) {
     height: `${height}px`,
     left: `${shape.x}%`,
     top: `${shape.y}%`,
+    '--shape-size': `${shape.size}px`,
+    '--shape-transform': `translate(-50%, -50%) rotate(${shape.rotation}deg)`,
     transform: `translate(-50%, -50%) rotate(${shape.rotation}deg)`,
   }
 }
@@ -1225,6 +1235,22 @@ function updateText(path: string, value: string) {
   border: 8px solid color-mix(in srgb, var(--shape-color) 90%, white);
 }
 .resume-skin__shape--bar {
+  border-radius: 999px;
+}
+
+.resume-skin__shape--diamond {
+  border-radius: 12px;
+  transform: var(--shape-transform, translate(-50%, -50%)) rotate(45deg);
+}
+.resume-skin__shape--triangle {
+  width: 0 !important;
+  height: 0 !important;
+  border-left: calc(var(--shape-size, 100px) / 2) solid transparent;
+  border-right: calc(var(--shape-size, 100px) / 2) solid transparent;
+  border-bottom: var(--shape-size, 100px) solid var(--shape-color);
+  background: transparent;
+}
+.resume-skin__shape--pill {
   border-radius: 999px;
 }
 .resume-skin__layout {
