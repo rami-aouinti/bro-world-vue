@@ -280,7 +280,6 @@ type SectionLayoutEntry<K extends ResumeEditableSectionKey = ResumeEditableSecti
   order: number
 }
 
-const activeTab = ref<'edit' | 'template' | 'design' | 'import'>('edit')
 const toolbarTemplateMenuOpen = ref(false)
 const toolbarSectionMenuOpen = ref(false)
 const route = useRoute()
@@ -696,15 +695,11 @@ function extractRemoteResumeCreatedAtValue(resumeItem: RemoteResume) {
 
 onMounted(async () => {
   const templateFromQuery = route.query.template
-  const mode = route.query.mode
 
   if (typeof templateFromQuery === 'string') {
     const exists = templatesByDocumentType.value.some((template) => template.id === templateFromQuery)
     selectedTemplate.value = exists ? templateFromQuery : DEFAULT_RESUME_TEMPLATE_ID
   }
-
-  if (mode === 'write')
-    activeTab.value = 'edit'
 
   if (!loggedIn.value) {
     await refreshSession()
@@ -1551,13 +1546,8 @@ function removeCertification(index: number) {
   resume.courses.splice(index, 1)
 }
 
-function openToolbarTab(tab: 'template' | 'design' | 'import') {
-  activeTab.value = tab
-}
-
 function applyTemplateFromToolbar(templateId: string) {
   selectedTemplate.value = templateId
-  activeTab.value = 'template'
   toolbarTemplateMenuOpen.value = false
 }
 
@@ -1668,7 +1658,6 @@ function submitAddSection() {
   }
 
   addSectionDialogOpen.value = false
-  activeTab.value = 'edit'
 }
 
 const orderedPreviewSections = computed(() =>
@@ -2678,9 +2667,21 @@ if (import.meta.client) {
             </v-btn>
           </template>
           <v-card class="toolbar-menu-card">
+            <v-card-title class="text-subtitle-2">Templates</v-card-title>
+            <v-card-text class="pb-0">
+              <AppSelect
+                v-model="selectedTemplateFilter"
+                :items="templateFilters"
+                item-title="label"
+                item-value="value"
+                label="Template filter"
+                density="comfortable"
+                hide-details
+              />
+            </v-card-text>
             <div class="toolbar-template-grid">
               <v-card
-                v-for="template in templatesByDocumentType"
+                v-for="template in filteredTemplates"
                 :key="`toolbar-template-${template.id}`"
                 class="template-card"
                 :class="{ 'template-card--active': selectedTemplate === template.id }"
@@ -2693,19 +2694,68 @@ if (import.meta.client) {
             </div>
           </v-card>
         </v-menu>
-        <v-btn
-          class="local-toolbar-btn"
-          color="primary"
-          size="small"
-          variant="outlined"
-          prepend-icon="mdi-palette-outline"
-          @click="openToolbarTab('design')"
-        >
-          Design
-        </v-btn>
+        <v-menu location="bottom center" origin="top center" max-width="620">
+          <template #activator="{ props }">
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-palette-outline" v-bind="props">
+              Design
+            </v-btn>
+          </template>
+          <v-card class="toolbar-menu-card">
+            <v-card-title class="text-subtitle-2">Design</v-card-title>
+            <v-card-text>
+              <p class="section-label">Color palette</p>
+              <div class="palette-grid mb-4">
+                <button
+                  v-for="theme in colorThemes"
+                  :key="`toolbar-theme-${theme.name}`"
+                  type="button"
+                  class="palette-item"
+                  :class="{
+                    'palette-item--active': selectedTheme === theme.name,
+                  }"
+                  @click="selectedTheme = theme.name"
+                >
+                  <span :style="{ background: theme.sidebar }" />
+                  <span :style="{ background: theme.accent }" />
+                  <span :style="{ background: theme.page }" />
+                </button>
+              </div>
+
+              <p class="section-label">Page background</p>
+              <div class="palette-grid mb-4">
+                <button
+                  v-for="option in pageBackgroundValidation"
+                  :key="`toolbar-bg-${option.value}`"
+                  type="button"
+                  class="palette-item"
+                  :class="{
+                    'palette-item--active': selectedPageBackground === option.value,
+                  }"
+                  :disabled="option.blocked"
+                  :title="option.blocked ? 'Fond trop sombre ou contraste insuffisant' : option.label"
+                  @click="selectedPageBackground = option.value"
+                >
+                  <span :style="{ background: option.page }" />
+                  <span :style="{ background: activeTheme.accent }" />
+                  <span :style="{ background: activeTheme.sidebar }" />
+                </button>
+              </div>
+
+              <AppSelect
+                v-model="selectedTextStyle"
+                :items="textStyleOptions"
+                item-title="label"
+                item-value="value"
+                label="Typography preset"
+                density="comfortable"
+                hide-details
+              />
+            </v-card-text>
+          </v-card>
+        </v-menu>
         <v-menu location="bottom center" origin="top center" max-width="560">
           <template #activator="{ props }">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-file-import-outline" v-bind="props" @click="openToolbarTab('import')">
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-file-import-outline" v-bind="props">
               Import
             </v-btn>
           </template>
@@ -2715,9 +2765,24 @@ if (import.meta.client) {
               <v-btn prepend-icon="mdi-sync" variant="outlined" color="primary" :text="t('resumeBuilder.create.import.syncWithXing')" @click="syncWithProvider('Xing')" />
               <v-btn prepend-icon="mdi-linkedin" variant="outlined" color="info" :text="t('resumeBuilder.create.import.syncWithLinkedIn')" @click="syncWithProvider('LinkedIn')" />
               <v-btn prepend-icon="mdi-file-upload-outline" variant="flat" color="secondary" :text="t('resumeBuilder.create.import.importOldResumePdf')" @click="triggerPdfImport" />
+              <input
+                ref="importPdfInput"
+                type="file"
+                accept="application/pdf"
+                class="d-none"
+                @change="handlePdfImport"
+              />
               <div v-if="importInProgress" class="mt-2">
                 <v-progress-linear :model-value="importProgress" color="primary" height="8" rounded striped />
               </div>
+              <v-alert
+                v-if="importMessage"
+                class="mt-2"
+                :type="importInProgress ? 'info' : importMessageType"
+                variant="tonal"
+              >
+                {{ importMessage }}
+              </v-alert>
             </v-card-text>
           </v-card>
         </v-menu>
@@ -2758,15 +2823,6 @@ if (import.meta.client) {
     </div>
     <div class="builder-layout">
       <section class="builder-form px-3 px-md-6 py-4">
-        <v-tabs v-model="activeTab" color="primary" grow class="mb-4">
-          <v-tab value="edit">Edit</v-tab>
-          <v-tab value="template">Template</v-tab>
-          <v-tab value="design">Design</v-tab>
-          <v-tab value="import">Import</v-tab>
-        </v-tabs>
-
-        <v-window v-model="activeTab">
-          <v-window-item value="edit">
             <article class="form-section mb-2">
               <div class="mb-2">
                 <div class="photo-uploader">
@@ -3405,359 +3461,7 @@ if (import.meta.client) {
                 </v-col>
               </v-row>
             </article>
-          </v-window-item>
 
-          <v-window-item value="template">
-            <article class="form-section mb-4">
-              <v-btn-toggle
-                v-model="selectedDocumentType"
-                mandatory
-                color="primary"
-                class="mb-4"
-              >
-                <v-btn value="cover-page">Cover page</v-btn>
-                <v-btn value="cover-letter">Cover letter</v-btn>
-                <v-btn value="resume">Resume</v-btn>
-              </v-btn-toggle>
-
-              <AppSelect
-                v-model="selectedTemplateFilter"
-                :items="templateFilters"
-                item-title="label"
-                item-value="value"
-                label="Template filter"
-                density="comfortable"
-                class="template-filter-select mb-4"
-                hide-details
-              />
-
-              <div class="template-grid">
-                <v-card
-                  v-for="template in filteredTemplates"
-                  :key="template.id"
-                  class="template-card"
-                  :class="{
-                    'template-card--active': selectedTemplate === template.id,
-                  }"
-                  variant="outlined"
-                  @click="selectedTemplate = template.id"
-                >
-                  <v-img :src="template.image" height="120" cover />
-                  <v-card-text>
-                    <strong>{{ template.title }}</strong>
-                    <div class="template-tags">
-                      <v-chip
-                        v-if="template.isAts"
-                        size="x-small"
-                        color="primary"
-                        variant="tonal"
-                        >ATS</v-chip
-                      >
-                      <v-chip
-                        v-if="template.hasDocx"
-                        size="x-small"
-                        color="warning"
-                        variant="tonal"
-                        >DOCX</v-chip
-                      >
-                      <v-chip
-                        v-if="template.hasPhoto"
-                        size="x-small"
-                        variant="outlined"
-                        >Photo</v-chip
-                      >
-                      <v-chip
-                        v-if="template.isTwoColumn"
-                        size="x-small"
-                        variant="outlined"
-                        >2 cols</v-chip
-                      >
-                    </div>
-                  </v-card-text>
-                </v-card>
-              </div>
-            </article>
-          </v-window-item>
-
-          <v-window-item value="design">
-            <article class="form-section mb-4">
-              <header class="mb-4">
-                <h2>Design</h2>
-                <p>{{ t('resumeBuilder.create.design.description') }}</p>
-              </header>
-
-              <p class="section-label">Color palette</p>
-              <div class="palette-grid mb-4">
-                <button
-                  v-for="theme in colorThemes"
-                  :key="theme.name"
-                  type="button"
-                  class="palette-item"
-                  :class="{
-                    'palette-item--active': selectedTheme === theme.name,
-                  }"
-                  @click="selectedTheme = theme.name"
-                >
-                  <span :style="{ background: theme.sidebar }" />
-                  <span :style="{ background: theme.accent }" />
-                  <span :style="{ background: theme.page }" />
-                </button>
-              </div>
-
-              <p class="section-label">Page background</p>
-              <div class="palette-grid mb-4">
-                <button
-                  v-for="option in pageBackgroundValidation"
-                  :key="option.value"
-                  type="button"
-                  class="palette-item"
-                  :class="{
-                    'palette-item--active': selectedPageBackground === option.value,
-                  }"
-                  :disabled="option.blocked"
-                  :title="option.blocked ? 'Fond trop sombre ou contraste insuffisant' : option.label"
-                  @click="selectedPageBackground = option.value"
-                >
-                  <span :style="{ background: option.page }" />
-                  <span :style="{ background: activeTheme.accent }" />
-                  <span :style="{ background: activeTheme.sidebar }" />
-                </button>
-              </div>
-
-              <p class="section-label">Rounded</p>
-              <v-btn-toggle
-                v-model="selectedRounded"
-                mandatory
-                divided
-                class="rounded-toggle"
-                color="primary"
-              >
-                <v-btn
-                  v-for="option in roundedOptions"
-                  :key="option.value"
-                  :value="option.value"
-                  variant="text"
-                >
-                  {{ option.title }}
-                </v-btn>
-              </v-btn-toggle>
-
-              <p class="section-label mt-4">Text style</p>
-              <AppSelect
-                v-model="selectedTextStyle"
-                :items="textStyleOptions"
-                item-title="label"
-                item-value="value"
-                label="Typography preset"
-                density="comfortable"
-                hide-details
-              />
-
-              <v-divider class="my-4" />
-              <p class="section-label">Layout settings</p>
-              <v-slider
-                v-model="layoutSettings.photoSize"
-                label="Photo size"
-                min="100"
-                max="220"
-                step="2"
-                thumb-label
-                hide-details="auto"
-              />
-              <v-slider
-                v-model="layoutSettings.photoBorderWidth"
-                label="Photo border"
-                min="0"
-                max="16"
-                step="1"
-                thumb-label
-                hide-details="auto"
-              />
-              <AppSelect
-                v-model="layoutSettings.photoPosition"
-                :items="[
-                  { label: 'Left', value: 'left' },
-                  { label: 'Center', value: 'center' },
-                  { label: 'Right', value: 'right' },
-                ]"
-                item-title="label"
-                item-value="value"
-                label="Photo position"
-                density="comfortable"
-                hide-details
-                class="mt-3"
-              />
-              <v-slider
-                v-model="layoutSettings.sidebarWidth"
-                label="Sidebar width"
-                min="220"
-                max="360"
-                step="2"
-                thumb-label
-                hide-details="auto"
-              />
-              <AppSelect
-                v-model="layoutSettings.sectionDividerStyle"
-                :items="[
-                  { label: 'None', value: 'none' },
-                  { label: 'Line', value: 'line' },
-                  { label: 'Thick', value: 'thick' },
-                ]"
-                item-title="label"
-                item-value="value"
-                label="Section divider"
-                density="comfortable"
-                hide-details
-                class="mt-3"
-              />
-              <v-switch
-                v-model="layoutSettings.showSectionIcons"
-                label="Show section icons"
-                color="primary"
-                hide-details
-                class="mt-2"
-              />
-              <v-switch
-                v-model="layoutSettings.showContactIcons"
-                label="Show contact icons"
-                color="primary"
-                hide-details
-                class="mt-2"
-              />
-              <AppSelect
-                v-model="layoutSettings.sectionIconStyle"
-                :items="[
-                  { label: 'Outline', value: 'outline' },
-                  { label: 'Filled', value: 'filled' },
-                  { label: 'Rounded', value: 'rounded' },
-                ]"
-                item-title="label"
-                item-value="value"
-                label="Icon style"
-                density="comfortable"
-                hide-details
-                class="mt-3"
-              />
-              <AppSelect
-                v-model="layoutSettings.iconSize"
-                :items="[
-                  { label: 'Small (S)', value: 's' },
-                  { label: 'Medium (M)', value: 'm' },
-                  { label: 'Large (L)', value: 'l' },
-                ]"
-                item-title="label"
-                item-value="value"
-                label="Icon size"
-                density="comfortable"
-                hide-details
-                class="mt-3"
-              />
-              <AppSelect
-                v-model="layoutSettings.iconColor"
-                :items="[
-                  { label: 'Accent', value: 'accent' },
-                  { label: 'Neutral', value: 'neutral' },
-                ]"
-                item-title="label"
-                item-value="value"
-                label="Icon color"
-                density="comfortable"
-                hide-details
-                class="mt-3"
-              />
-              <v-switch
-                v-model="layoutSettings.headingCase"
-                false-value="normal"
-                true-value="uppercase"
-                label="Uppercase headings"
-                color="primary"
-                hide-details
-                class="mt-2"
-              />
-              <v-slider
-                v-model="layoutSettings.dateColumnWidth"
-                label="Date column width"
-                min="80"
-                max="180"
-                step="2"
-                thumb-label
-                hide-details="auto"
-              />
-              <v-switch
-                v-model="layoutSettings.lineDensity"
-                false-value="comfortable"
-                true-value="compact"
-                label="Compact line density"
-                color="primary"
-                hide-details
-                class="mt-2"
-              />
-            </article>
-          </v-window-item>
-
-          <v-window-item value="import">
-            <article class="form-section mb-4">
-              <header class="mb-4">
-                <h2>Import</h2>
-                <p>{{ t('resumeBuilder.create.import.description') }}</p>
-              </header>
-
-              <div class="d-flex flex-column ga-3">
-                <v-btn
-                  prepend-icon="mdi-sync"
-                  variant="outlined"
-                  color="primary"
-                  :text="t('resumeBuilder.create.import.syncWithXing')"
-                  @click="syncWithProvider('Xing')"
-                />
-                <v-btn
-                  prepend-icon="mdi-linkedin"
-                  variant="outlined"
-                  color="info"
-                  :text="t('resumeBuilder.create.import.syncWithLinkedIn')"
-                  @click="syncWithProvider('LinkedIn')"
-                />
-                <v-btn
-                  prepend-icon="mdi-file-upload-outline"
-                  variant="flat"
-                  color="secondary"
-                  :text="t('resumeBuilder.create.import.importOldResumePdf')"
-                  @click="triggerPdfImport"
-                />
-                <input
-                  ref="importPdfInput"
-                  type="file"
-                  accept="application/pdf"
-                  class="d-none"
-                  @change="handlePdfImport"
-                />
-              </div>
-
-              <div v-if="importInProgress" class="mt-4">
-                <v-progress-linear
-                  :model-value="importProgress"
-                  color="primary"
-                  height="10"
-                  rounded
-                  striped
-                />
-                <p class="mt-2 mb-0">
-                  {{ importMessage }} ({{ importProgress }}%) -
-                  {{ importElapsedSeconds }}s
-                </p>
-              </div>
-
-              <v-alert
-                v-if="importMessage"
-                class="mt-4"
-                :type="importInProgress ? 'info' : importMessageType"
-                variant="tonal"
-              >
-                {{ importMessage }}
-              </v-alert>
-            </article>
-          </v-window-item>
-        </v-window>
       </section>
 
       <aside class="builder-preview py-6 px-5 px-md-8">
@@ -4521,13 +4225,6 @@ if (import.meta.client) {
   scrollbar-gutter: stable;
 }
 
-.builder-actions {
-  align-content: center;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-
 .completion-card {
   display: flex;
   align-items: center;
@@ -4572,16 +4269,6 @@ if (import.meta.client) {
   margin: 0;
 }
 
-.template-filter-select {
-  max-width: 320px;
-}
-
-.template-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
 .template-card {
   cursor: pointer;
   transition: all 0.2s ease;
@@ -4590,12 +4277,6 @@ if (import.meta.client) {
 .template-card--active {
   border-color: var(--v-theme-primary);
   box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.3);
-}
-
-.template-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
 }
 
 .ki-menu-grid {
@@ -4990,9 +4671,7 @@ if (import.meta.client) {
 }
 
 @media (max-width: 760px) {
-  .builder-actions,
   .grid-2,
-  .template-grid,
   .palette-grid {
     grid-template-columns: 1fr;
   }
