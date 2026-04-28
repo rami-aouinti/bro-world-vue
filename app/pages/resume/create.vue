@@ -222,14 +222,7 @@ type Template = {
   useTimeline: boolean
   variant: ResumeTemplateVariant
 }
-type TemplateFilter =
-  | 'all'
-  | 'with-photo'
-  | 'two-column'
-  | 'ats'
-  | 'docx'
-  | 'customized'
-  | 'free'
+type TemplateQuickFilter = 'all' | 'photo' | 'two-column' | 'ats' | 'free' | 'timeline'
 
 type LevelInputMode = 'percent' | 'stars'
 type PhotoShape = 'square' | 'rounded' | 'circle' | 'portrait-card' | 'soft-blob' | 'hex'
@@ -285,7 +278,7 @@ type SectionLayoutEntry<K extends ResumeEditableSectionKey = ResumeEditableSecti
   order: number
 }
 
-const toolbarTemplateMenuOpen = ref(false)
+const toolbarSaveImportMenuOpen = ref(false)
 const toolbarSectionMenuOpen = ref(false)
 const route = useRoute()
 const selectedTemplate = ref(DEFAULT_RESUME_TEMPLATE_ID)
@@ -296,7 +289,6 @@ const selectedRounded = ref<RoundedOptionId>('md')
 const selectedTextStyle = ref<Typography>('clean')
 const levelInputMode = ref<LevelInputMode>('percent')
 
-const selectedTemplateFilter = ref<TemplateFilter>('all')
 const {
   colorThemes,
   pageBackgroundOptions,
@@ -337,15 +329,6 @@ const layoutModeOptions = [
   { label: 'No aside', value: 'no-aside' },
 ] as const satisfies ReadonlyArray<LayoutModeOption>
 
-const templateFilters = [
-  { label: 'All', value: 'all' },
-  { label: 'With photo', value: 'with-photo' },
-  { label: 'Two column', value: 'two-column' },
-  { label: 'ATS', value: 'ats' },
-  { label: 'DOCX', value: 'docx' },
-  { label: 'Customized', value: 'customized' },
-  { label: 'Free', value: 'free' },
-] as const satisfies ReadonlyArray<{ label: string; value: TemplateFilter }>
 const addSectionOptions = [
   { label: 'Profile', value: 'profile' },
   { label: 'Experience', value: 'experience' },
@@ -641,23 +624,28 @@ let importProgressTimer: ReturnType<typeof setInterval> | null = null
 const templatesByDocumentType = computed(() =>
   templates.filter((template) => template.documentType === selectedDocumentType.value),
 )
-
-const filteredTemplates = computed(() => {
-  if (selectedTemplateFilter.value === 'all') return templatesByDocumentType.value
-
-  const predicateByFilter: Record<
-    Exclude<TemplateFilter, 'all'>,
-    (template: Template) => boolean
-  > = {
-    'with-photo': (template) => template.hasPhoto,
-    'two-column': (template) => template.isTwoColumn,
-    ats: (template) => template.isAts,
-    docx: (template) => template.hasDocx,
-    customized: (template) => template.isCustomized,
-    free: (template) => template.isFree,
+const templateQuickFilter = ref<TemplateQuickFilter>('all')
+const templateQuickFilterOptions: Array<{ label: string; value: TemplateQuickFilter }> = [
+  { label: 'Tous', value: 'all' },
+  { label: 'Photo', value: 'photo' },
+  { label: '2 colonnes', value: 'two-column' },
+  { label: 'ATS', value: 'ats' },
+  { label: 'Gratuit', value: 'free' },
+  { label: 'Timeline', value: 'timeline' },
+]
+const filteredTemplatesByDrawer = computed(() => {
+  if (templateQuickFilter.value === 'all') {
+    return templatesByDocumentType.value
   }
 
-  return templatesByDocumentType.value.filter(predicateByFilter[selectedTemplateFilter.value])
+  return templatesByDocumentType.value.filter((template) => {
+    if (templateQuickFilter.value === 'photo') return template.hasPhoto
+    if (templateQuickFilter.value === 'two-column') return template.isTwoColumn
+    if (templateQuickFilter.value === 'ats') return template.isAts
+    if (templateQuickFilter.value === 'free') return template.isFree
+    if (templateQuickFilter.value === 'timeline') return template.useTimeline
+    return true
+  })
 })
 
 const selectedTemplateConfig = computed(
@@ -666,6 +654,17 @@ const selectedTemplateConfig = computed(
     templatesByDocumentType.value[0] ??
     templates[0],
 )
+
+function applyTemplateSelection(templateId: string) {
+  selectedTemplate.value = templateId
+}
+
+function onTemplateQuickFilterChange(value: unknown) {
+  const nextValue = typeof value === 'string' ? value : 'all'
+  templateQuickFilter.value = templateQuickFilterOptions.some(option => option.value === nextValue as TemplateQuickFilter)
+    ? (nextValue as TemplateQuickFilter)
+    : 'all'
+}
 
 function hasRemoteSectionContent(sections?: RemoteResumeSection[]) {
   return Array.isArray(sections) && sections.some(section =>
@@ -749,7 +748,6 @@ const { state: resumeDocumentState, hydrateFromStorage, migrateLegacyStorage, pe
 )
 const pdfModalOpen = ref(false)
 const photoDialogOpen = ref(false)
-const aiMenuOpen = ref(false)
 const aiCreateModalOpen = ref(false)
 const aiReviewModalOpen = ref(false)
 const aiProfilePrompt = ref('')
@@ -1125,22 +1123,6 @@ function onEducationImageSelected(
   }
   reader.readAsDataURL(file)
   input.value = ''
-}
-
-function openSignatureDialog() {
-  signatureDialogOpen.value = true
-  nextTick(() => {
-    const canvas = signatureCanvas.value
-    if (!canvas) return
-    const context = canvas.getContext('2d')
-    if (!context) return
-    context.fillStyle = '#ffffff'
-    context.fillRect(0, 0, canvas.width, canvas.height)
-    context.strokeStyle = '#111827'
-    context.lineWidth = 2
-    context.lineCap = 'round'
-    context.lineJoin = 'round'
-  })
 }
 
 function signaturePoint(event: MouseEvent | TouchEvent) {
@@ -1555,11 +1537,6 @@ function addCertification() {
 function removeCertification(index: number) {
   if (resume.courses.length === 1) return
   resume.courses.splice(index, 1)
-}
-
-function applyTemplateFromToolbar(templateId: string) {
-  selectedTemplate.value = templateId
-  toolbarTemplateMenuOpen.value = false
 }
 
 function resetSectionDraft(section: AddSectionType) {
@@ -2311,38 +2288,6 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
   }
 }
 
-function buildReviewPayload() {
-  return {
-    resumeData: {
-      contactInformation: {
-        fullName: [resume.firstName, resume.lastName]
-          .filter(Boolean)
-          .join(' ')
-          .trim(),
-        email: resume.email,
-        phone: resume.phone,
-        address: [resume.city, resume.country].filter(Boolean).join(', '),
-        links: [],
-      },
-      experiences: resume.experiences.map((experience) => ({
-        title: experience.role,
-        company: experience.company,
-        startDate: experience.start,
-        endDate: experience.end,
-        description: experience.bullets.join('\n'),
-      })),
-      educations: resume.education.map((education) => ({
-        title: education.degree,
-        school: education.school,
-        startDate: education.start,
-        endDate: education.end,
-        description: education.note,
-      })),
-      skills: resume.skills.map((skill) => skill.name).filter(Boolean),
-    },
-  }
-}
-
 function buildResumeSavePayload() {
   const payload = fromBuilderModelToApiPayload({
     firstName: resume.firstName,
@@ -2554,37 +2499,6 @@ async function runAiCreate() {
   }
 }
 
-async function runAiReview() {
-  aiReviewLoading.value = true
-  aiActionError.value = ''
-  aiReviewContent.value = ''
-  startAiElapsedTimer()
-
-  try {
-    const response = await $fetch<{ review?: string }>(
-      '/api/recruit/general/resumes/review',
-      {
-        method: 'POST',
-        body: buildReviewPayload(),
-      },
-    )
-
-    aiReviewContent.value = String(response.review || '').trim()
-    if (!aiReviewContent.value) {
-      throw new Error('Empty AI review response')
-    }
-    aiReviewModalOpen.value = true
-  } catch (error) {
-    aiActionError.value =
-      error instanceof Error
-        ? error.message
-        : 'Unable to review resume with AI.'
-  } finally {
-    stopAiElapsedTimer()
-    aiReviewLoading.value = false
-  }
-}
-
 const showRightDrawerDesktop = useState(
   'show-right-drawer-desktop',
   () => false,
@@ -2670,74 +2584,73 @@ if (import.meta.client) {
 <template>
   <v-container fluid class="resume-create pa-0">
     <AppPageDrawers>
-      <template #right>
-        <div class="builder-preview resume-preview-drawer py-6 px-2">
-          <div class="resume-preview-wrapper">
-            <div
-              ref="previewExportRef"
-              class="preview-grid resume-preview-frame"
-              :class="[...previewDesignClasses, `photo-shape-${safePhotoShape}`]"
-              :style="previewStyle"
+      <template #left>
+        <div class="template-drawer py-4 px-2">
+          <h3 class="text-subtitle-1 mb-2">Templates</h3>
+          <v-chip-group
+            :model-value="templateQuickFilter"
+            selected-class="text-primary"
+            column
+            class="mb-3"
+            @update:model-value="onTemplateQuickFilterChange"
+          >
+            <v-chip
+              v-for="filterOption in templateQuickFilterOptions"
+              :key="`left-template-filter-${filterOption.value}`"
+              :value="filterOption.value"
+              size="small"
+              label
             >
-              <div class="cv-preview-stage" :class="{ 'cv-preview-stage--bordered': selectedRounded !== 'none' }">
-                <div class="cv-page-shell" :class="previewDesignClasses">
-                  <template v-if="rendererReady">
-                    <ResumeRenderer
-                      :class="previewDesignClasses"
-                      :resume="resume"
-                      :show-photo="templateSupportsPhoto"
-                      :design-state="resumeRendererDesignState"
-                      :layout-mode="layoutSettings.layoutMode"
-                      :photo-offset-x="resume.photoOffsetX"
-                      :photo-offset-y="resume.photoOffsetY"
-                      :photo-scale="resume.photoScale"
-                      :photo-hidden="resume.photoHidden"
-                      :section-layout="orderedPreviewSections"
-                      :section-variants="sectionVariantByKey"
-                      :photo-shape-options="photoShapeOptions"
-                      :selected-photo-shape="safePhotoShape"
-                      :on-photo-click="onPreviewPhotoClick"
-                      :on-photo-shape-select="(shape) => selectedPhotoShape = shape"
-                      :template-skin="selectedTemplateSkin"
-                      editable
-                      @add-item="addItemToPreviewSection"
-                      @change-variant="setSectionVariant"
-                      @move-photo="movePhoto"
-                      @open-photo-picker="openPhotoPicker"
-                      @update:photo-size="layoutSettings.photoSize = $event"
-                      @update:photo-border-width="layoutSettings.photoBorderWidth = $event"
-                      @update:photo-position="layoutSettings.photoPosition = $event"
-                      @move-section="moveSection"
-                    />
-                  </template>
-                  <div v-else class="preview-fallback">
-                    <v-alert type="error" variant="tonal" density="comfortable" class="mb-3">
-                      {{ rendererError || 'La prévisualisation n’est pas disponible pour le moment.' }}
-                    </v-alert>
-                    <h2 class="text-h5 mb-2">{{ `${resume.firstName} ${resume.lastName}`.trim() || 'Votre nom' }}</h2>
-                    <p class="text-body-2 mb-4">{{ resume.role || 'Titre du poste' }}</p>
-                    <section
-                      v-for="section in previewFallbackSections"
-                      :key="`preview-fallback-${section.title}`"
-                      class="mb-3"
-                    >
-                      <h3 class="text-subtitle-2 mb-1">{{ section.title }}</h3>
-                      <ul class="pl-4">
-                        <li v-for="item in section.items" :key="`${section.title}-${item}`">
-                          {{ item }}
-                        </li>
-                      </ul>
-                    </section>
-                    <v-btn size="small" variant="outlined" prepend-icon="mdi-refresh" @click="resetRendererGuard">
-                      Réessayer le rendu
-                    </v-btn>
-                  </div>
-                  <div v-if="signatureDataUrl" class="signature-overlay">
-                    <img :src="signatureDataUrl" alt="Signature" />
-                  </div>
-                </div>
-              </div>
-            </div>
+              {{ filterOption.label }}
+            </v-chip>
+          </v-chip-group>
+          <div class="template-drawer__grid">
+            <button
+              v-for="templateCard in filteredTemplatesByDrawer"
+              :key="`left-template-card-${templateCard.id}`"
+              type="button"
+              class="template-drawer__item"
+              :class="{ 'template-drawer__item--active': selectedTemplate === templateCard.id }"
+              @click="applyTemplateSelection(templateCard.id)"
+            >
+              <v-img :src="templateCard.image" :alt="templateCard.title" height="110" cover class="template-drawer__thumb" />
+              <span class="template-drawer__label">{{ templateCard.title }}</span>
+            </button>
+          </div>
+        </div>
+      </template>
+      <template #right>
+        <div class="template-drawer py-4 px-2">
+          <h3 class="text-subtitle-1 mb-2">Templates</h3>
+          <v-chip-group
+            :model-value="templateQuickFilter"
+            selected-class="text-primary"
+            column
+            class="mb-3"
+            @update:model-value="onTemplateQuickFilterChange"
+          >
+            <v-chip
+              v-for="filterOption in templateQuickFilterOptions"
+              :key="`right-template-filter-${filterOption.value}`"
+              :value="filterOption.value"
+              size="small"
+              label
+            >
+              {{ filterOption.label }}
+            </v-chip>
+          </v-chip-group>
+          <div class="template-drawer__grid">
+            <button
+              v-for="templateCard in filteredTemplatesByDrawer"
+              :key="`right-template-card-${templateCard.id}`"
+              type="button"
+              class="template-drawer__item"
+              :class="{ 'template-drawer__item--active': selectedTemplate === templateCard.id }"
+              @click="applyTemplateSelection(templateCard.id)"
+            >
+              <v-img :src="templateCard.image" :alt="templateCard.title" height="110" cover class="template-drawer__thumb" />
+              <span class="template-drawer__label">{{ templateCard.title }}</span>
+            </button>
           </div>
         </div>
       </template>
@@ -2745,41 +2658,41 @@ if (import.meta.client) {
 
     <div class="local-toolbar-actions">
       <div class="local-toolbar-actions__row">
-        <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" @click="openSaveModal" />
-        <v-btn class="local-toolbar-btn" color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview" />
-        <v-btn class="local-toolbar-btn" color="info" size="small" variant="outlined" icon="mdi-download" @click="onDownloadPdfClick" />
-        <v-menu v-model="toolbarTemplateMenuOpen" location="bottom center" origin="top center">
+        <v-menu v-model="toolbarSaveImportMenuOpen" location="bottom center" origin="top center" max-width="560">
           <template #activator="{ props }">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-grid-outline" v-bind="props">
-              Templates
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-content-save-cog-outline" v-bind="props">
+              Save / Import
             </v-btn>
           </template>
           <v-card class="toolbar-menu-card">
-            <v-card-title class="text-subtitle-2">Templates</v-card-title>
-            <v-card-text class="pb-0">
-              <AppSelect
-                v-model="selectedTemplateFilter"
-                :items="templateFilters"
-                item-title="label"
-                item-value="value"
-                label="Template filter"
-                density="comfortable"
-                hide-details
+            <v-card-title class="text-subtitle-2">Save / Import</v-card-title>
+            <v-card-text class="d-flex flex-column ga-2">
+              <v-btn prepend-icon="mdi-content-save-outline" color="primary" variant="flat" text="Save draft" @click="openSaveModal" />
+              <v-btn prepend-icon="mdi-file-pdf-box" color="secondary" variant="outlined" text="Preview PDF" @click="openPdfPreview" />
+              <v-btn prepend-icon="mdi-download" color="info" variant="outlined" text="Download PDF" @click="onDownloadPdfClick" />
+              <v-divider class="my-2" />
+              <v-btn prepend-icon="mdi-sync" variant="outlined" color="primary" :text="t('resumeBuilder.create.import.syncWithXing')" @click="syncWithProvider('Xing')" />
+              <v-btn prepend-icon="mdi-linkedin" variant="outlined" color="info" :text="t('resumeBuilder.create.import.syncWithLinkedIn')" @click="syncWithProvider('LinkedIn')" />
+              <v-btn prepend-icon="mdi-file-upload-outline" variant="flat" color="secondary" :text="t('resumeBuilder.create.import.importOldResumePdf')" @click="triggerPdfImport" />
+              <input
+                ref="importPdfInput"
+                type="file"
+                accept="application/pdf"
+                class="d-none"
+                @change="handlePdfImport"
               />
-            </v-card-text>
-            <div class="toolbar-template-grid">
-              <v-card
-                v-for="template in filteredTemplates"
-                :key="`toolbar-template-${template.id}`"
-                class="template-card"
-                :class="{ 'template-card--active': selectedTemplate === template.id }"
-                variant="outlined"
-                @click="applyTemplateFromToolbar(template.id)"
+              <div v-if="importInProgress" class="mt-2">
+                <v-progress-linear :model-value="importProgress" color="primary" height="8" rounded striped />
+              </div>
+              <v-alert
+                v-if="importMessage"
+                class="mt-2"
+                :type="importInProgress ? 'info' : importMessageType"
+                variant="tonal"
               >
-                <v-img :src="template.image" height="96" cover />
-                <v-card-text class="py-2 text-caption">{{ template.title }}</v-card-text>
-              </v-card>
-            </div>
+                {{ importMessage }}
+              </v-alert>
+            </v-card-text>
           </v-card>
         </v-menu>
         <v-menu location="bottom center" origin="top center" max-width="620">
@@ -2838,6 +2751,18 @@ if (import.meta.client) {
                 density="comfortable"
                 hide-details
               />
+            </v-card-text>
+          </v-card>
+        </v-menu>
+        <v-menu location="bottom center" origin="top center" max-width="360">
+          <template #activator="{ props }">
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-column-outline" v-bind="props">
+              Layout mode
+            </v-btn>
+          </template>
+          <v-card class="toolbar-menu-card">
+            <v-card-title class="text-subtitle-2">Layout mode</v-card-title>
+            <v-card-text>
               <AppSelect
                 v-model="layoutSettings.layoutMode"
                 :items="layoutModeOptions"
@@ -2846,48 +2771,14 @@ if (import.meta.client) {
                 label="Layout"
                 density="comfortable"
                 hide-details
-                class="mt-3"
               />
-            </v-card-text>
-          </v-card>
-        </v-menu>
-        <v-menu location="bottom center" origin="top center" max-width="560">
-          <template #activator="{ props }">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-file-import-outline" v-bind="props">
-              Import
-            </v-btn>
-          </template>
-          <v-card class="toolbar-menu-card">
-            <v-card-title class="text-subtitle-2">Import</v-card-title>
-            <v-card-text class="d-flex flex-column ga-2">
-              <v-btn prepend-icon="mdi-sync" variant="outlined" color="primary" :text="t('resumeBuilder.create.import.syncWithXing')" @click="syncWithProvider('Xing')" />
-              <v-btn prepend-icon="mdi-linkedin" variant="outlined" color="info" :text="t('resumeBuilder.create.import.syncWithLinkedIn')" @click="syncWithProvider('LinkedIn')" />
-              <v-btn prepend-icon="mdi-file-upload-outline" variant="flat" color="secondary" :text="t('resumeBuilder.create.import.importOldResumePdf')" @click="triggerPdfImport" />
-              <input
-                ref="importPdfInput"
-                type="file"
-                accept="application/pdf"
-                class="d-none"
-                @change="handlePdfImport"
-              />
-              <div v-if="importInProgress" class="mt-2">
-                <v-progress-linear :model-value="importProgress" color="primary" height="8" rounded striped />
-              </div>
-              <v-alert
-                v-if="importMessage"
-                class="mt-2"
-                :type="importInProgress ? 'info' : importMessageType"
-                variant="tonal"
-              >
-                {{ importMessage }}
-              </v-alert>
             </v-card-text>
           </v-card>
         </v-menu>
         <v-menu v-model="toolbarSectionMenuOpen" location="bottom center" origin="top center">
           <template #activator="{ props }">
             <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-list-outline" v-bind="props">
-              Add section
+              Sections
             </v-btn>
           </template>
           <v-list density="compact" min-width="220">
@@ -2899,57 +2790,10 @@ if (import.meta.client) {
             />
           </v-list>
         </v-menu>
-        <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" icon="mdi-draw" @click="openSignatureDialog" />
-        <v-menu v-model="aiMenuOpen" :close-on-content-click="false" location="bottom center" origin="top center">
-          <template #activator="{ props }">
-            <v-btn class="local-toolbar-btn local-toolbar-btn--ki" color="deep-purple" size="small" variant="tonal" prepend-icon="mdi-creation" v-bind="props">KI</v-btn>
-          </template>
-          <v-card width="420" class="pa-3">
-            <div class="ki-menu-grid">
-              <v-card variant="outlined" class="ki-card" @click="aiCreateModalOpen = true; aiMenuOpen = false">
-                <v-card-title class="text-subtitle-1">Create with KI</v-card-title>
-                <v-card-text class="text-body-2">Generate a complete resume from a short summary of studies and skills.</v-card-text>
-              </v-card>
-              <v-card variant="outlined" class="ki-card" @click="runAiReview(); aiMenuOpen = false">
-                <v-card-title class="text-subtitle-1">Review</v-card-title>
-                <v-card-text class="text-body-2">Ask KI to detect errors and suggest improvements for your current resume.</v-card-text>
-              </v-card>
-            </div>
-          </v-card>
-        </v-menu>
       </div>
     </div>
     <div class="builder-layout">
       <section class="builder-form builder-left-rail px-3 px-md-4 py-4">
-            <article class="form-section mb-4">
-              <header class="mb-3">
-                <h2>Templates</h2>
-                <p>Choisissez rapidement un modèle dans la colonne gauche.</p>
-              </header>
-              <AppSelect
-                v-model="selectedTemplateFilter"
-                :items="templateFilters"
-                item-title="label"
-                item-value="value"
-                label="Template filter"
-                density="comfortable"
-                hide-details
-                class="mb-3"
-              />
-              <div class="side-template-list">
-                <v-card
-                  v-for="template in filteredTemplates"
-                  :key="`left-rail-template-${template.id}`"
-                  class="template-card"
-                  :class="{ 'template-card--active': selectedTemplate === template.id }"
-                  variant="outlined"
-                  @click="applyTemplateFromToolbar(template.id)"
-                >
-                  <v-img :src="template.image" height="84" cover />
-                  <v-card-text class="py-2 text-caption">{{ template.title }}</v-card-text>
-                </v-card>
-              </div>
-            </article>
             <article class="form-section mb-2">
               <div class="mb-2">
                 <div class="photo-uploader">
@@ -3662,51 +3506,6 @@ if (import.meta.client) {
         </div>
       </aside>
 
-      <aside class="builder-form builder-right-rail px-3 px-md-4 py-4">
-        <article class="form-section mb-4">
-          <header class="mb-3">
-            <h2>Template options</h2>
-            <p>Paramètres liés au modèle actif.</p>
-          </header>
-          <v-alert type="info" variant="tonal" density="compact" class="mb-3">
-            Modèle actif: <strong>{{ selectedTemplateCard?.title || selectedTemplate }}</strong>
-          </v-alert>
-          <AppSelect
-            v-model="layoutSettings.layoutMode"
-            :items="layoutModeOptions"
-            item-title="label"
-            item-value="value"
-            label="Layout"
-            density="comfortable"
-            hide-details
-            class="mb-3"
-          />
-          <AppSelect
-            v-model="selectedTextStyle"
-            :items="textStyleOptions"
-            item-title="label"
-            item-value="value"
-            label="Typography preset"
-            density="comfortable"
-            hide-details
-            class="mb-3"
-          />
-          <div class="side-template-list">
-            <v-card
-              v-for="template in filteredTemplates"
-              :key="`right-rail-template-${template.id}`"
-              class="template-card"
-              :class="{ 'template-card--active': selectedTemplate === template.id }"
-              variant="outlined"
-              @click="applyTemplateFromToolbar(template.id)"
-            >
-              <v-img :src="template.image" height="84" cover />
-              <v-card-text class="py-2 text-caption">{{ template.title }}</v-card-text>
-            </v-card>
-          </div>
-        </article>
-      </aside>
-
     </div>
 
     <v-dialog v-model="addSectionDialogOpen" max-width="760">
@@ -4387,15 +4186,19 @@ if (import.meta.client) {
 
 <style scoped>
 .resume-create {
+  --builder-column-gap: 16px;
+  --preview-page-width: 860px;
+  --preview-shell-padding: 16px;
+  --preview-shell-max-width: calc(var(--preview-page-width) + (var(--preview-shell-padding) * 2));
   min-height: 100vh;
   padding-top: 108px;
 }
 
 .builder-layout {
   display: grid;
-  grid-template-columns: minmax(280px, 1fr) minmax(560px, 1.3fr) minmax(280px, 1fr);
+  grid-template-columns: minmax(280px, 1fr) minmax(560px, 1.3fr);
   align-items: start;
-  gap: 12px;
+  gap: var(--builder-column-gap);
 }
 
 .builder-form {
@@ -4416,17 +4219,11 @@ if (import.meta.client) {
   align-self: start;
   display: flex;
   justify-content: center;
+  padding-inline: calc(var(--builder-column-gap) / 2);
 }
 
-.builder-left-rail,
-.builder-right-rail {
+.builder-left-rail {
   background: color-mix(in srgb, rgb(var(--v-theme-surface)) 94%, white);
-}
-
-.side-template-list {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
 }
 
 .completion-card {
@@ -4471,31 +4268,6 @@ if (import.meta.client) {
 .compact-list {
   padding-left: 16px;
   margin: 0;
-}
-
-.template-card {
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.template-card--active {
-  border-color: var(--v-theme-primary);
-  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.3);
-}
-
-.ki-menu-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.ki-card {
-  cursor: pointer;
-  transition: box-shadow 0.2s ease;
-}
-
-.ki-card:hover {
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15);
 }
 
 .review-text {
@@ -4584,22 +4356,10 @@ if (import.meta.client) {
   border-radius: 16px !important;
 }
 
-.local-toolbar-btn--ki {
-  min-width: 96px !important;
-  padding-inline: 18px !important;
-}
-
 .toolbar-menu-card {
   width: min(92vw, 980px);
   max-height: min(76vh, 760px);
   overflow: auto;
-}
-
-.toolbar-template-grid {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  padding: 12px;
 }
 
 .preview-grid {
@@ -4630,22 +4390,28 @@ if (import.meta.client) {
 }
 
 .resume-preview-wrapper {
-  width: 100%;
+  width: min(100%, var(--preview-shell-max-width));
+  max-width: var(--preview-shell-max-width);
+  margin-inline: auto;
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  gap: var(--builder-column-gap);
+  scrollbar-gutter: stable both-edges;
 }
 
 .resume-preview-frame {
-  width: min(100%, 860px);
+  width: var(--preview-shell-max-width);
+  max-width: 100%;
   min-height: calc(100vh - 80px);
+  flex: 0 0 auto;
 }
 
 .cv-preview-stage {
-  width: min(100%, 860px);
-  max-width: 860px;
+  width: 100%;
+  max-width: var(--preview-page-width);
   margin: 0 auto;
-  padding: 16px;
+  padding: var(--preview-shell-padding);
   background: color-mix(in srgb, var(--cv-page) 68%, white);
   border-radius: calc(var(--cv-space-2) + var(--cv-space-1) / 2);
 }
@@ -4887,6 +4653,42 @@ if (import.meta.client) {
 .preview-grid :deep(.resume-template),
 .preview-grid :deep(.template-shell) {
   border-radius: var(--cv-radius);
+}
+
+.template-drawer__grid {
+  display: grid;
+  gap: 10px;
+}
+
+.template-drawer__item {
+  width: 100%;
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.2);
+  border-radius: 10px;
+  padding: 6px;
+  background: rgba(var(--v-theme-surface), 0.92);
+  text-align: left;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.template-drawer__item:hover {
+  transform: translateY(-1px);
+  border-color: rgba(var(--v-theme-primary), 0.45);
+}
+
+.template-drawer__item--active {
+  border-color: rgb(var(--v-theme-primary));
+  box-shadow: 0 0 0 1px rgba(var(--v-theme-primary), 0.25);
+}
+
+.template-drawer__thumb {
+  border-radius: 8px;
+}
+
+.template-drawer__label {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
 }
 
 @media (max-width: 1120px) {
