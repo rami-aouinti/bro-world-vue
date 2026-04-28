@@ -36,6 +36,7 @@ const emit = defineEmits<{
 }>()
 
 const sectionStyle = computed(() => ({ ...props.themeTokens }))
+const brokenLogoByKey = reactive<Record<string, boolean>>({})
 const iconVariantClass = computed(() =>
   props.sectionIconStyle?.variant ? `section-icon--${props.sectionIconStyle.variant}` : 'section-icon--outline',
 )
@@ -56,6 +57,22 @@ function updateText(path: string, value: string) {
   }
   target[last] = value
 }
+
+function logoKey(index: number, url: string) {
+  return `${index}-${url}`
+}
+
+function showCompanyLogo(index: number, companyImageUrl?: string) {
+  const normalizedUrl = String(companyImageUrl || '').trim()
+  if (!normalizedUrl) return false
+  return !brokenLogoByKey[logoKey(index, normalizedUrl)]
+}
+
+function onCompanyLogoError(index: number, companyImageUrl?: string) {
+  const normalizedUrl = String(companyImageUrl || '').trim()
+  if (!normalizedUrl) return
+  brokenLogoByKey[logoKey(index, normalizedUrl)] = true
+}
 </script>
 
 <template>
@@ -68,9 +85,18 @@ function updateText(path: string, value: string) {
       <span>{{ title }}</span>
     </h2>
     <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="entry text-dark">
-      <h4 class="text-dark">
+      <h4 class="text-dark experience-heading">
         <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.role`, (event.target as HTMLElement).innerText)">{{ experience.role }}</span>,
-        <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.company`, (event.target as HTMLElement).innerText)">{{ experience.company }}</span>
+        <span class="company-line">
+          <img
+            v-if="showCompanyLogo(index, experience.companyImageUrl)"
+            :src="experience.companyImageUrl"
+            alt=""
+            class="company-logo"
+            @error="onCompanyLogoError(index, experience.companyImageUrl)"
+          >
+          <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.company`, (event.target as HTMLElement).innerText)">{{ experience.company }}</span>
+        </span>
         <template v-if="variant !== 'compact' && experience.city">,
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.city`, (event.target as HTMLElement).innerText)">{{ experience.city }}</span>
         </template>
@@ -153,4 +179,21 @@ function updateText(path: string, value: string) {
 .density-compact { --entry-gap: calc(var(--cv-space-2) + var(--cv-space-1) / 2); }
 .density-normal { --entry-gap: var(--cv-space-4); }
 .density-spacious { --entry-gap: calc(var(--cv-space-4) + var(--cv-space-2) - var(--cv-space-1) / 2); }
+.experience-heading {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.company-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.company-logo {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  border-radius: 4px;
+}
 </style>

@@ -43,7 +43,10 @@ export type ResumeStylePreferences = {
   radius: RoundedOptionId
   typography: Typography
   showSectionIcons: boolean
+  showContactIcons: boolean
   sectionIconStyle: ResumeSectionIconStyleVariant
+  iconSize: 's' | 'm' | 'l'
+  iconColor: 'accent' | 'neutral'
 }
 
 export type ResumeDocumentModel = {
