@@ -182,7 +182,10 @@ type LayoutSettings = {
   dateColumnWidth: number
   lineDensity: 'compact' | 'comfortable'
   showSectionIcons: boolean
+  showContactIcons: boolean
   sectionIconStyle: ResumeSectionIconStyleVariant
+  iconSize: 's' | 'm' | 'l'
+  iconColor: 'accent' | 'neutral'
 }
 type AddSectionType =
   | 'profile'
@@ -247,7 +250,10 @@ const layoutSettings = reactive<LayoutSettings>({
   dateColumnWidth: 120,
   lineDensity: 'comfortable',
   showSectionIcons: true,
+  showContactIcons: true,
   sectionIconStyle: 'outline',
+  iconSize: 'm',
+  iconColor: 'accent',
 })
 const photoShapeOptions = [
   { label: 'Carré', value: 'square', icon: '□' },
@@ -1788,10 +1794,13 @@ if (import.meta.client) {
   selectedTextStyle.value = customization.style.typography
   layoutSettings.lineDensity = customization.style.density
   layoutSettings.showSectionIcons = customization.style.showSectionIcons
+  layoutSettings.showContactIcons = customization.style.showContactIcons
   layoutSettings.sectionIconStyle = customization.style.sectionIconStyle
+  layoutSettings.iconSize = customization.style.iconSize
+  layoutSettings.iconColor = customization.style.iconColor
   sectionLayout.value = normalizeSectionLayout(customization.sectionOrder)
 
-  watch([selectedTheme, selectedPageBackground, selectedRounded, selectedTextStyle, () => layoutSettings.showSectionIcons, () => layoutSettings.sectionIconStyle], () => {
+  watch([selectedTheme, selectedPageBackground, selectedRounded, selectedTextStyle, () => layoutSettings.showSectionIcons, () => layoutSettings.showContactIcons, () => layoutSettings.sectionIconStyle, () => layoutSettings.iconSize, () => layoutSettings.iconColor], () => {
     resumeDocumentState.value.customization = {
       ...resumeDocumentState.value.customization,
       style: {
@@ -1801,7 +1810,10 @@ if (import.meta.client) {
         radius: selectedRounded.value,
         typography: selectedTextStyle.value,
         showSectionIcons: layoutSettings.showSectionIcons,
+        showContactIcons: layoutSettings.showContactIcons,
         sectionIconStyle: layoutSettings.sectionIconStyle,
+        iconSize: layoutSettings.iconSize,
+        iconColor: layoutSettings.iconColor,
       },
     }
     persist()
@@ -1993,6 +2005,13 @@ if (import.meta.client) {
                 hide-details
                 class="mt-2"
               />
+              <v-switch
+                v-model="layoutSettings.showContactIcons"
+                label="Show contact icons"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
               <AppSelect
                 v-model="layoutSettings.sectionIconStyle"
                 :items="[
@@ -2003,6 +2022,33 @@ if (import.meta.client) {
                 item-title="label"
                 item-value="value"
                 label="Icon style"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <AppSelect
+                v-model="layoutSettings.iconSize"
+                :items="[
+                  { label: 'Small (S)', value: 's' },
+                  { label: 'Medium (M)', value: 'm' },
+                  { label: 'Large (L)', value: 'l' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Icon size"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <AppSelect
+                v-model="layoutSettings.iconColor"
+                :items="[
+                  { label: 'Accent', value: 'accent' },
+                  { label: 'Neutral', value: 'neutral' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Icon color"
                 density="comfortable"
                 hide-details
                 class="mt-3"
@@ -2845,6 +2891,13 @@ if (import.meta.client) {
                 hide-details
                 class="mt-2"
               />
+              <v-switch
+                v-model="layoutSettings.showContactIcons"
+                label="Show contact icons"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
               <AppSelect
                 v-model="layoutSettings.sectionIconStyle"
                 :items="[
@@ -2855,6 +2908,33 @@ if (import.meta.client) {
                 item-title="label"
                 item-value="value"
                 label="Icon style"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <AppSelect
+                v-model="layoutSettings.iconSize"
+                :items="[
+                  { label: 'Small (S)', value: 's' },
+                  { label: 'Medium (M)', value: 'm' },
+                  { label: 'Large (L)', value: 'l' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Icon size"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <AppSelect
+                v-model="layoutSettings.iconColor"
+                :items="[
+                  { label: 'Accent', value: 'accent' },
+                  { label: 'Neutral', value: 'neutral' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Icon color"
                 density="comfortable"
                 hide-details
                 class="mt-3"
@@ -2982,7 +3062,10 @@ if (import.meta.client) {
                 :density="layoutSettings.lineDensity"
                 :divider-style="layoutSettings.sectionDividerStyle"
                 :show-section-icons="layoutSettings.showSectionIcons"
+                :show-contact-icons="layoutSettings.showContactIcons"
                 :section-icon-style-variant="layoutSettings.sectionIconStyle"
+                :icon-size-variant="layoutSettings.iconSize"
+                :icon-color-mode="layoutSettings.iconColor"
                 :sidebar-width="layoutSettings.sidebarWidth"
                 :photo-size="layoutSettings.photoSize"
                 :photo-border-width="layoutSettings.photoBorderWidth"
@@ -3228,7 +3311,10 @@ if (import.meta.client) {
                   :density="layoutSettings.lineDensity"
                   :divider-style="layoutSettings.sectionDividerStyle"
                   :show-section-icons="layoutSettings.showSectionIcons"
+                  :show-contact-icons="layoutSettings.showContactIcons"
                   :section-icon-style-variant="layoutSettings.sectionIconStyle"
+                  :icon-size-variant="layoutSettings.iconSize"
+                  :icon-color-mode="layoutSettings.iconColor"
                   :sidebar-width="layoutSettings.sidebarWidth"
                   :photo-size="layoutSettings.photoSize"
                   :photo-border-width="layoutSettings.photoBorderWidth"
