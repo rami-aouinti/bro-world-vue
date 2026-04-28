@@ -61,8 +61,8 @@ function updateText(path: string, value: string) {
     </ul>
     <ul v-else-if="safeVariant === 'stars'" class="bars">
       <li v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" class="d-flex align-center ga-2">
-        <v-rating :model-value="levelToStars(language.level)" readonly length="5" density="compact" color="amber" size="16" />
         <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+        <v-rating :model-value="levelToStars(language.level)" readonly length="5" density="compact" color="amber" size="16" />
       </li>
     </ul>
     <ul v-else class="bars">
