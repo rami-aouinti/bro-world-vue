@@ -74,10 +74,16 @@ function updateText(path: string, value: string) {
     </h2>
     <div class="education-list">
       <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="entry text-dark">
-        <h4 class="text-dark">
-          <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</span>,
-          <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</span>
-        </h4>
+        <div class="entry-heading">
+          <v-avatar class="school-logo" rounded="lg" size="30">
+            <v-img v-if="item.schoolImageUrl" :src="item.schoolImageUrl" alt="School logo" cover />
+            <v-icon v-else icon="mdi-school-outline" size="17" />
+          </v-avatar>
+          <h4 class="text-dark">
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</span>,
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</span>
+          </h4>
+        </div>
         <p class="dates">
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.start`, (event.target as HTMLElement).innerText)">{{ item.start }}</span> -
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.end`, (event.target as HTMLElement).innerText)">{{ item.end }}</span>
@@ -144,6 +150,19 @@ function updateText(path: string, value: string) {
   background: var(--rs-card-bg, transparent);
   border-radius: var(--rs-card-radius, 0);
   padding: var(--rs-card-padding, 0);
+}
+.entry-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--cv-space-2);
+}
+.entry-heading h4 {
+  margin: 0;
+}
+.school-logo {
+  flex-shrink: 0;
+  border: 1px solid color-mix(in srgb, var(--cv-accent) 20%, transparent);
+  background: color-mix(in srgb, var(--cv-accent) 6%, transparent);
 }
 
 /* Classic variant */
