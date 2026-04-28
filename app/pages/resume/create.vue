@@ -130,7 +130,6 @@ type ResumeModel = {
   courses: Course[]
   projects: Project[]
 }
-
 type Template = {
   id: string
   title: string
@@ -146,7 +145,6 @@ type Template = {
   useTimeline: boolean
   variant: ResumeTemplateVariant
 }
-
 type TemplateFilter =
   | 'all'
   | 'with-photo'
