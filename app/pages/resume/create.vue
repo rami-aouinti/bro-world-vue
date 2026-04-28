@@ -25,11 +25,17 @@ type Language = { name: string; level: number; countryCode?: string; flag?: stri
 type Experience = {
   role: string
   company: string
+  companyImageUrl?: string
   city: string
   start: string
   end: string
+  contentStyle?: ExperienceContentStyle
   bullets: string[]
+  timelineEventTitle?: string
+  timelineDateRange?: string
+  timelineDescription?: string
 }
+type ExperienceContentStyle = 'paragraph' | 'bullets' | 'dashes' | 'timeline-note'
 type Education = {
   degree: string
   school: string
@@ -69,6 +75,7 @@ type StructuredUser = {
 type StructuredExperience = {
   title?: string
   company?: string
+  companyImageUrl?: string
   startDate?: string
   endDate?: string
   description?: string
@@ -185,7 +192,10 @@ type LayoutSettings = {
   dateColumnWidth: number
   lineDensity: 'compact' | 'comfortable'
   showSectionIcons: boolean
+  showContactIcons: boolean
   sectionIconStyle: ResumeSectionIconStyleVariant
+  iconSize: 's' | 'm' | 'l'
+  iconColor: 'accent' | 'neutral'
 }
 type AddSectionType =
   | 'profile'
@@ -205,7 +215,7 @@ type SectionLayoutVariant = {
   education: 'classic' | 'timeline' | 'two-column'
   language: 'classic' | 'text-level' | 'stars' | 'progress' | 'flags'
   project: 'classic' | 'list' | 'cards' | 'two-column'
-  skill: 'classic'
+  skill: 'classic' | 'text-level' | 'stars' | 'dots' | 'progress'
   reference: 'classic'
   hobby: 'classic'
   certification: 'classic'
@@ -250,7 +260,10 @@ const layoutSettings = reactive<LayoutSettings>({
   dateColumnWidth: 120,
   lineDensity: 'comfortable',
   showSectionIcons: true,
+  showContactIcons: true,
   sectionIconStyle: 'outline',
+  iconSize: 'm',
+  iconColor: 'accent',
 })
 const photoShapeOptions = [
   { label: 'Carré', value: 'square', icon: '□' },
@@ -281,6 +294,12 @@ const addSectionOptions = [
   { label: 'Certification', value: 'certification' },
   { label: 'Reference', value: 'reference' },
 ] as const satisfies ReadonlyArray<{ label: string; value: AddSectionType }>
+const experienceContentStyleOptions = [
+  { label: 'Paragraph', value: 'paragraph' },
+  { label: 'Bullets', value: 'bullets' },
+  { label: 'Dashes', value: 'dashes' },
+  { label: 'Timeline note', value: 'timeline-note' },
+] as const satisfies ReadonlyArray<{ label: string; value: ExperienceContentStyle }>
 const sectionVariantLabels: Record<string, string> = {
   detailed: 'Detailed',
   bullets: 'Bullets',
@@ -291,6 +310,7 @@ const sectionVariantLabels: Record<string, string> = {
   stars: 'Stars',
   'text-level': 'Text level',
   progress: 'Progress',
+  dots: 'Dots',
   flags: 'Flags',
   cards: 'Cards',
   list: 'List',
@@ -328,7 +348,7 @@ const variantRegistry: {
   education: { allowed: ['classic', 'timeline', 'two-column'], fallback: 'classic' },
   language: { allowed: ['classic', 'text-level', 'stars', 'progress', 'flags'], fallback: 'classic' },
   project: { allowed: ['classic', 'list', 'cards', 'two-column'], fallback: 'classic' },
-  skill: { allowed: ['classic'], fallback: 'classic' },
+  skill: { allowed: ['classic', 'text-level', 'stars', 'dots', 'progress'], fallback: 'progress' },
   reference: { allowed: ['classic'], fallback: 'classic' },
   hobby: { allowed: ['classic'], fallback: 'classic' },
   certification: { allowed: ['classic'], fallback: 'classic' },
@@ -338,7 +358,7 @@ const defaultSectionLayoutEntries: SectionLayoutEntry[] = [
   { key: 'education', variant: 'classic', region: 'main', order: 1 },
   { key: 'project', variant: 'classic', region: 'main', order: 2 },
   { key: 'certification', variant: 'classic', region: 'main', order: 3 },
-  { key: 'skill', variant: 'classic', region: 'aside', order: 0 },
+  { key: 'skill', variant: 'progress', region: 'aside', order: 0 },
   { key: 'language', variant: 'classic', region: 'aside', order: 1 },
   { key: 'reference', variant: 'classic', region: 'aside', order: 2 },
   { key: 'hobby', variant: 'classic', region: 'aside', order: 3 },
@@ -461,6 +481,7 @@ const resume = reactive<ResumeModel>({
     {
       role: 'Sales Associate',
       company: 'Big Apple Bookstore',
+      companyImageUrl: '',
       city: 'New York',
       start: 'JAN 2018',
       end: 'DEC 2020',
@@ -473,6 +494,7 @@ const resume = reactive<ResumeModel>({
     {
       role: 'Editorial Intern',
       company: 'NBC News',
+      companyImageUrl: '',
       city: 'New York',
       start: 'JAN 2016',
       end: 'DEC 2017',
@@ -646,14 +668,27 @@ const sectionItemDialogOpen = ref(false)
 const activeSectionKey = ref<PreviewSectionKey>('experience')
 const activeVariant = ref<SectionLayoutVariant[PreviewSectionKey]>('detailed')
 const sectionItemDraft = reactive({
-  experience: { role: '', company: '', city: '', start: '', end: '', bullets: '' },
+  experience: {
+    role: '',
+    company: '',
+    city: '',
+    companyImageUrl: '',
+    start: '',
+    end: '',
+    contentStyle: 'paragraph' as ExperienceContentStyle,
+    paragraph: '',
+    lines: '',
+    timelineEventTitle: '',
+    timelineDateRange: '',
+    timelineDescription: '',
+  },
   education: { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' },
   language: { name: '', level: 80, stars: 4, countryCode: '', flag: '' },
   project: { name: '', summary: '', imageUrl: '', repositoryUrl: '' },
 })
 const addSectionDraft = reactive({
   profile: { profile: '' },
-  experience: { role: '', company: '', city: '', start: '', end: '', bullets: '' },
+  experience: { role: '', company: '', companyImageUrl: '', city: '', start: '', end: '', bullets: '' },
   education: { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' },
   skill: { name: '', level: 80 },
   language: { name: '', level: 80, countryCode: '', flag: '' },
@@ -662,6 +697,11 @@ const addSectionDraft = reactive({
   certification: { title: '', school: '', start: '', end: '' },
   reference: { name: '', company: '', email: '', phone: '' },
 })
+const EXPERIENCE_LOGO_MAX_FILE_SIZE = 2 * 1024 * 1024
+const EXPERIENCE_LOGO_ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml']
+const experienceLogoErrors = reactive<Record<string, string>>({})
+const addSectionExperienceLogoInput = ref<HTMLInputElement | null>(null)
+const sectionItemExperienceLogoInput = ref<HTMLInputElement | null>(null)
 
 const PHOTO_MOVE_STEP = 4
 const PHOTO_OFFSET_LIMIT = 48
@@ -878,11 +918,105 @@ function addExperience() {
   resume.experiences.push({
     role: '',
     company: '',
+    companyImageUrl: '',
     city: '',
     start: '',
     end: '',
     bullets: [],
   })
+}
+
+function setExperienceLogoError(targetKey: string, message = '') {
+  experienceLogoErrors[targetKey] = message
+}
+
+function getExperienceLogoError(targetKey: string) {
+  return experienceLogoErrors[targetKey] || ''
+}
+
+function validateExperienceLogoFile(file: File) {
+  if (!EXPERIENCE_LOGO_ALLOWED_TYPES.includes(file.type)) {
+    return 'Format invalide. Utilise PNG, JPEG, WEBP ou SVG.'
+  }
+  if (file.size > EXPERIENCE_LOGO_MAX_FILE_SIZE) {
+    return 'Fichier trop volumineux (max 2MB).'
+  }
+  return ''
+}
+
+function readFileAsDataUrl(file: File) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : '')
+    reader.onerror = () => reject(new Error('Impossible de lire le fichier logo.'))
+    reader.readAsDataURL(file)
+  })
+}
+
+async function applyExperienceLogoFromFile(
+  file: File,
+  target: { key: string; set: (dataUrl: string) => void },
+) {
+  const validationMessage = validateExperienceLogoFile(file)
+  if (validationMessage) {
+    setExperienceLogoError(target.key, validationMessage)
+    return
+  }
+  try {
+    const dataUrl = await readFileAsDataUrl(file)
+    target.set(dataUrl)
+    setExperienceLogoError(target.key)
+  }
+  catch {
+    setExperienceLogoError(target.key, 'Impossible de charger ce logo.')
+  }
+}
+
+function openExperienceLogoPicker(target: 'add-section' | 'section-item' | 'resume', index?: number) {
+  if (target === 'add-section') {
+    addSectionExperienceLogoInput.value?.click()
+    return
+  }
+  if (target === 'section-item') {
+    sectionItemExperienceLogoInput.value?.click()
+    return
+  }
+  if (typeof index !== 'number') return
+  const input = document.getElementById(`experience-logo-input-${index}`) as HTMLInputElement | null
+  input?.click()
+}
+
+async function onResumeExperienceLogoSelected(event: Event, index: number) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  await applyExperienceLogoFromFile(file, {
+    key: `resume-${index}`,
+    set: (dataUrl) => { resume.experiences[index].companyImageUrl = dataUrl },
+  })
+  input.value = ''
+}
+
+async function onAddSectionExperienceLogoSelected(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  await applyExperienceLogoFromFile(file, {
+    key: 'add-section',
+    set: (dataUrl) => { addSectionDraft.experience.companyImageUrl = dataUrl },
+  })
+  input.value = ''
+}
+
+async function onSectionItemExperienceLogoSelected(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  await applyExperienceLogoFromFile(file, {
+    key: 'section-item',
+    set: (dataUrl) => { sectionItemDraft.experience.companyImageUrl = dataUrl },
+  })
+  input.value = ''
 }
 
 function removeExperience(index: number) {
@@ -1010,7 +1144,8 @@ function resetSectionDraft(section: AddSectionType) {
       addSectionDraft.profile = { profile: '' }
       break
     case 'experience':
-      addSectionDraft.experience = { role: '', company: '', city: '', start: '', end: '', bullets: '' }
+      addSectionDraft.experience = { role: '', company: '', companyImageUrl: '', city: '', start: '', end: '', bullets: '' }
+      setExperienceLogoError('add-section')
       break
     case 'education':
       addSectionDraft.education = { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' }
@@ -1052,6 +1187,7 @@ function submitAddSection() {
       resume.experiences.push({
         role: addSectionDraft.experience.role,
         company: addSectionDraft.experience.company,
+        companyImageUrl: addSectionDraft.experience.companyImageUrl?.trim(),
         city: addSectionDraft.experience.city,
         start: addSectionDraft.experience.start,
         end: addSectionDraft.experience.end,
@@ -1119,7 +1255,21 @@ function sectionDisplayLabel(sectionKey: PreviewSectionKey) {
 function resetSectionItemDraft(section: PreviewSectionKey) {
   switch (section) {
     case 'experience':
-      sectionItemDraft.experience = { role: '', company: '', city: '', start: '', end: '', bullets: '' }
+      sectionItemDraft.experience = {
+        role: '',
+        company: '',
+        companyImageUrl: '',
+        city: '',
+        start: '',
+        end: '',
+        contentStyle: 'paragraph',
+        paragraph: '',
+        lines: '',
+        timelineEventTitle: '',
+        timelineDateRange: '',
+        timelineDescription: '',
+      }
+      setExperienceLogoError('section-item')
       break
     case 'education':
       sectionItemDraft.education = { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' }
@@ -1133,6 +1283,43 @@ function resetSectionItemDraft(section: PreviewSectionKey) {
   }
 }
 
+function splitTextToLines(value: string) {
+  return value
+    .split('\n')
+    .map(line => line.trim())
+    .filter(Boolean)
+}
+
+function buildExperienceContentFromDraft(draft: typeof sectionItemDraft.experience) {
+  if (draft.contentStyle === 'timeline-note') {
+    const description = draft.timelineDescription.trim()
+    return {
+      contentStyle: 'timeline-note' as ExperienceContentStyle,
+      bullets: description ? [description] : [],
+      timelineEventTitle: draft.timelineEventTitle.trim(),
+      timelineDateRange: draft.timelineDateRange.trim(),
+      timelineDescription: description,
+    }
+  }
+  if (draft.contentStyle === 'bullets' || draft.contentStyle === 'dashes') {
+    return {
+      contentStyle: draft.contentStyle,
+      bullets: splitTextToLines(draft.lines),
+      timelineEventTitle: '',
+      timelineDateRange: '',
+      timelineDescription: '',
+    }
+  }
+  const paragraph = draft.paragraph.trim()
+  return {
+    contentStyle: 'paragraph' as ExperienceContentStyle,
+    bullets: paragraph ? [paragraph] : [],
+    timelineEventTitle: '',
+    timelineDateRange: '',
+    timelineDescription: '',
+  }
+}
+
 function openSectionItemDialog(section: PreviewSectionKey) {
   activeSectionKey.value = section
   activeVariant.value = sectionLayout.value.find(item => item.key === section)?.variant ?? variantRegistry[section].fallback
@@ -1143,19 +1330,19 @@ function openSectionItemDialog(section: PreviewSectionKey) {
 function submitSectionItemDialog() {
   let item: Record<string, unknown> | null = null
   switch (activeSectionKey.value) {
-    case 'experience':
+    case 'experience': {
+      const experienceContent = buildExperienceContentFromDraft(sectionItemDraft.experience)
       item = {
         role: sectionItemDraft.experience.role,
         company: sectionItemDraft.experience.company,
+        companyImageUrl: sectionItemDraft.experience.companyImageUrl?.trim(),
         city: sectionItemDraft.experience.city,
         start: sectionItemDraft.experience.start,
         end: sectionItemDraft.experience.end,
-        bullets: sectionItemDraft.experience.bullets
-          .split('\n')
-          .map(line => line.trim())
-          .filter(Boolean),
+        ...experienceContent,
       }
       break
+    }
     case 'education':
       item = {
         degree: sectionItemDraft.education.degree,
@@ -1663,6 +1850,7 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
     resume.experiences = data.experiences.map((experience) => ({
       role: String(experience.title || ''),
       company: String(experience.company || ''),
+      companyImageUrl: String(experience.companyImageUrl || ''),
       city: '',
       start: normalizeDateLabel(experience.startDate),
       end: normalizeDateLabel(experience.endDate),
@@ -1895,10 +2083,13 @@ if (import.meta.client) {
   selectedTextStyle.value = customization.style.typography
   layoutSettings.lineDensity = customization.style.density
   layoutSettings.showSectionIcons = customization.style.showSectionIcons
+  layoutSettings.showContactIcons = customization.style.showContactIcons
   layoutSettings.sectionIconStyle = customization.style.sectionIconStyle
+  layoutSettings.iconSize = customization.style.iconSize
+  layoutSettings.iconColor = customization.style.iconColor
   sectionLayout.value = normalizeSectionLayout(customization.sectionOrder)
 
-  watch([selectedTheme, selectedPageBackground, selectedRounded, selectedTextStyle, () => layoutSettings.showSectionIcons, () => layoutSettings.sectionIconStyle], () => {
+  watch([selectedTheme, selectedPageBackground, selectedRounded, selectedTextStyle, () => layoutSettings.showSectionIcons, () => layoutSettings.showContactIcons, () => layoutSettings.sectionIconStyle, () => layoutSettings.iconSize, () => layoutSettings.iconColor], () => {
     resumeDocumentState.value.customization = {
       ...resumeDocumentState.value.customization,
       style: {
@@ -1908,7 +2099,10 @@ if (import.meta.client) {
         radius: selectedRounded.value,
         typography: selectedTextStyle.value,
         showSectionIcons: layoutSettings.showSectionIcons,
+        showContactIcons: layoutSettings.showContactIcons,
         sectionIconStyle: layoutSettings.sectionIconStyle,
+        iconSize: layoutSettings.iconSize,
+        iconColor: layoutSettings.iconColor,
       },
     }
     persist()
@@ -2100,6 +2294,13 @@ if (import.meta.client) {
                 hide-details
                 class="mt-2"
               />
+              <v-switch
+                v-model="layoutSettings.showContactIcons"
+                label="Show contact icons"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
               <AppSelect
                 v-model="layoutSettings.sectionIconStyle"
                 :items="[
@@ -2110,6 +2311,33 @@ if (import.meta.client) {
                 item-title="label"
                 item-value="value"
                 label="Icon style"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <AppSelect
+                v-model="layoutSettings.iconSize"
+                :items="[
+                  { label: 'Small (S)', value: 's' },
+                  { label: 'Medium (M)', value: 'm' },
+                  { label: 'Large (L)', value: 'l' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Icon size"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <AppSelect
+                v-model="layoutSettings.iconColor"
+                :items="[
+                  { label: 'Accent', value: 'accent' },
+                  { label: 'Neutral', value: 'neutral' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Icon color"
                 density="comfortable"
                 hide-details
                 class="mt-3"
@@ -2350,6 +2578,32 @@ if (import.meta.client) {
                     variant="outlined"
                     hide-details
                 /></v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    v-model="experience.companyImageUrl"
+                    label="Company logo URL"
+                    variant="outlined"
+                    :error-messages="getExperienceLogoError(`resume-${index}`)"
+                    @update:model-value="setExperienceLogoError(`resume-${index}`)"
+                  />
+                </v-col>
+                <v-col cols="12" md="6" class="d-flex align-center ga-2 flex-wrap">
+                  <v-btn
+                    prepend-icon="mdi-image-plus-outline"
+                    size="small"
+                    variant="tonal"
+                    @click="openExperienceLogoPicker('resume', index)"
+                  >
+                    Upload logo
+                  </v-btn>
+                  <input
+                    :id="`experience-logo-input-${index}`"
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                    class="d-none"
+                    @change="event => onResumeExperienceLogoSelected(event, index)"
+                  >
+                </v-col>
                 <v-col cols="12" md="6"
                   ><v-text-field
                     v-model="experience.city"
@@ -3018,6 +3272,13 @@ if (import.meta.client) {
                 hide-details
                 class="mt-2"
               />
+              <v-switch
+                v-model="layoutSettings.showContactIcons"
+                label="Show contact icons"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
               <AppSelect
                 v-model="layoutSettings.sectionIconStyle"
                 :items="[
@@ -3028,6 +3289,33 @@ if (import.meta.client) {
                 item-title="label"
                 item-value="value"
                 label="Icon style"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <AppSelect
+                v-model="layoutSettings.iconSize"
+                :items="[
+                  { label: 'Small (S)', value: 's' },
+                  { label: 'Medium (M)', value: 'm' },
+                  { label: 'Large (L)', value: 'l' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Icon size"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <AppSelect
+                v-model="layoutSettings.iconColor"
+                :items="[
+                  { label: 'Accent', value: 'accent' },
+                  { label: 'Neutral', value: 'neutral' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Icon color"
                 density="comfortable"
                 hide-details
                 class="mt-3"
@@ -3155,7 +3443,10 @@ if (import.meta.client) {
                 :density="layoutSettings.lineDensity"
                 :divider-style="layoutSettings.sectionDividerStyle"
                 :show-section-icons="layoutSettings.showSectionIcons"
+                :show-contact-icons="layoutSettings.showContactIcons"
                 :section-icon-style-variant="layoutSettings.sectionIconStyle"
+                :icon-size-variant="layoutSettings.iconSize"
+                :icon-color-mode="layoutSettings.iconColor"
                 :sidebar-width="layoutSettings.sidebarWidth"
                 :photo-size="layoutSettings.photoSize"
                 :photo-border-width="layoutSettings.photoBorderWidth"
@@ -3233,6 +3524,25 @@ if (import.meta.client) {
           <template v-else-if="addSectionType === 'experience'">
             <v-text-field v-model="addSectionDraft.experience.role" label="Role" variant="outlined" hide-details />
             <v-text-field v-model="addSectionDraft.experience.company" label="Company" variant="outlined" hide-details />
+            <v-text-field
+              v-model="addSectionDraft.experience.companyImageUrl"
+              label="Company logo URL"
+              variant="outlined"
+              :error-messages="getExperienceLogoError('add-section')"
+              @update:model-value="setExperienceLogoError('add-section')"
+            />
+            <div class="d-flex align-center ga-2">
+              <v-btn prepend-icon="mdi-image-plus-outline" size="small" variant="tonal" @click="openExperienceLogoPicker('add-section')">
+                Upload logo
+              </v-btn>
+              <input
+                ref="addSectionExperienceLogoInput"
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                class="d-none"
+                @change="onAddSectionExperienceLogoSelected"
+              >
+            </div>
             <v-text-field v-model="addSectionDraft.experience.city" label="City" variant="outlined" hide-details />
             <div class="grid-2">
               <v-text-field v-model="addSectionDraft.experience.start" label="Start" variant="outlined" hide-details />
@@ -3336,12 +3646,76 @@ if (import.meta.client) {
           <template v-if="activeSectionKey === 'experience'">
             <v-text-field v-model="sectionItemDraft.experience.role" label="Role" variant="outlined" hide-details />
             <v-text-field v-model="sectionItemDraft.experience.company" label="Company" variant="outlined" hide-details />
+            <v-text-field
+              v-model="sectionItemDraft.experience.companyImageUrl"
+              label="Company logo URL"
+              variant="outlined"
+              :error-messages="getExperienceLogoError('section-item')"
+              @update:model-value="setExperienceLogoError('section-item')"
+            />
+            <div class="d-flex align-center ga-2">
+              <v-btn prepend-icon="mdi-image-plus-outline" size="small" variant="tonal" @click="openExperienceLogoPicker('section-item')">
+                Upload logo
+              </v-btn>
+              <input
+                ref="sectionItemExperienceLogoInput"
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                class="d-none"
+                @change="onSectionItemExperienceLogoSelected"
+              >
+            </div>
             <v-text-field v-model="sectionItemDraft.experience.city" label="City" variant="outlined" hide-details />
             <div class="grid-2">
               <v-text-field v-model="sectionItemDraft.experience.start" label="Start" variant="outlined" hide-details />
               <v-text-field v-model="sectionItemDraft.experience.end" label="End" variant="outlined" hide-details />
             </div>
-            <v-textarea v-model="sectionItemDraft.experience.bullets" label="Bullets (one per line)" rows="4" variant="outlined" hide-details />
+            <v-select
+              v-model="sectionItemDraft.experience.contentStyle"
+              :items="experienceContentStyleOptions"
+              item-title="label"
+              item-value="value"
+              label="Content style"
+              variant="outlined"
+              hide-details
+            />
+            <v-textarea
+              v-if="sectionItemDraft.experience.contentStyle === 'paragraph'"
+              v-model="sectionItemDraft.experience.paragraph"
+              label="Paragraph"
+              rows="4"
+              variant="outlined"
+              hide-details
+            />
+            <v-textarea
+              v-else-if="sectionItemDraft.experience.contentStyle === 'bullets' || sectionItemDraft.experience.contentStyle === 'dashes'"
+              v-model="sectionItemDraft.experience.lines"
+              :label="sectionItemDraft.experience.contentStyle === 'bullets' ? 'Bullets (one per line)' : 'Dashes (one per line)'"
+              rows="4"
+              variant="outlined"
+              hide-details
+            />
+            <template v-else>
+              <v-text-field
+                v-model="sectionItemDraft.experience.timelineEventTitle"
+                label="Event title"
+                variant="outlined"
+                hide-details
+              />
+              <v-text-field
+                v-model="sectionItemDraft.experience.timelineDateRange"
+                label="Date range"
+                variant="outlined"
+                hide-details
+              />
+              <v-textarea
+                v-model="sectionItemDraft.experience.timelineDescription"
+                label="Short description"
+                rows="3"
+                variant="outlined"
+                hide-details
+              />
+            </template>
           </template>
 
           <template v-else-if="activeSectionKey === 'education'">
@@ -3447,7 +3821,10 @@ if (import.meta.client) {
                   :density="layoutSettings.lineDensity"
                   :divider-style="layoutSettings.sectionDividerStyle"
                   :show-section-icons="layoutSettings.showSectionIcons"
+                  :show-contact-icons="layoutSettings.showContactIcons"
                   :section-icon-style-variant="layoutSettings.sectionIconStyle"
+                  :icon-size-variant="layoutSettings.iconSize"
+                  :icon-color-mode="layoutSettings.iconColor"
                   :sidebar-width="layoutSettings.sidebarWidth"
                   :photo-size="layoutSettings.photoSize"
                   :photo-border-width="layoutSettings.photoBorderWidth"

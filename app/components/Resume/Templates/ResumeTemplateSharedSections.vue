@@ -16,7 +16,7 @@ type SectionLayoutVariant = {
   education: 'classic' | 'timeline' | 'two-column'
   language: 'text-level' | 'stars' | 'progress' | 'flags'
   project: 'list' | 'cards' | 'two-column'
-  skill: 'classic'
+  skill: 'classic' | 'text-level' | 'stars' | 'dots' | 'progress'
   certification: 'classic'
   reference: 'classic'
   hobby: 'classic'

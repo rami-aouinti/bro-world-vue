@@ -6,10 +6,11 @@ import ResumeSectionProject from '~/components/Resume/Sections/ResumeSectionProj
 import ResumeSectionHobby from '~/components/Resume/Sections/ResumeSectionHobby.vue'
 import ResumeSectionCertification from '~/components/Resume/Sections/ResumeSectionCertification.vue'
 import ResumeSectionReference from '~/components/Resume/Sections/ResumeSectionReference.vue'
+import ResumeSectionSkill from '~/components/Resume/Sections/ResumeSectionSkill.vue'
 import type { ResumeSectionIconStyle, ResumeSectionKey } from '~/constants/resumeTemplateSkins'
 
 const props = withDefaults(defineProps<{
-  sectionKey: ResumeSectionKey
+  sectionKey: ResumeSectionKey | 'skill'
   resume: any
   editable?: boolean
   variant: string
@@ -36,9 +37,9 @@ const props = withDefaults(defineProps<{
 })
 
 const emit = defineEmits<{
-  (event: 'add-item', sectionKey: ResumeSectionKey): void
-  (event: 'change-variant', sectionKey: ResumeSectionKey, variant: string): void
-  (event: 'move-section', sectionKey: ResumeSectionKey, direction: 'up' | 'down'): void
+  (event: 'add-item', sectionKey: ResumeSectionKey | 'skill'): void
+  (event: 'change-variant', sectionKey: ResumeSectionKey | 'skill', variant: string): void
+  (event: 'move-section', sectionKey: ResumeSectionKey | 'skill', direction: 'up' | 'down'): void
 }>()
 
 const componentBySectionKey = {
@@ -49,6 +50,7 @@ const componentBySectionKey = {
   hobby: ResumeSectionHobby,
   certification: ResumeSectionCertification,
   reference: ResumeSectionReference,
+  skill: ResumeSectionSkill,
 } as const
 
 const sectionComponent = computed(() => componentBySectionKey[props.sectionKey])
@@ -71,11 +73,11 @@ const sectionHeadingProps = computed(() => {
   return {}
 })
 
-function onVariantChange(_: ResumeSectionKey, variant: string) {
+function onVariantChange(_: ResumeSectionKey | 'skill', variant: string) {
   emit('change-variant', props.sectionKey, variant)
 }
 
-function onMoveSection(_: ResumeSectionKey, direction: 'up' | 'down') {
+function onMoveSection(_: ResumeSectionKey | 'skill', direction: 'up' | 'down') {
   emit('move-section', props.sectionKey, direction)
 }
 </script>
