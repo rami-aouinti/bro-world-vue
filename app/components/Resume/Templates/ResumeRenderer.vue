@@ -376,7 +376,7 @@ function updateText(path: string, value: string) {
       <div>
         <h1>
           <span
-            class="editable-text"
+            class="editable-text text-dark"
             :contenteditable="editable"
             @input="
               (event) =>
@@ -385,7 +385,7 @@ function updateText(path: string, value: string) {
             >{{ resume.firstName }}</span
           >
           <span
-            class="editable-text"
+            class="editable-text text-dark mx-3"
             :contenteditable="editable"
             @input="
               (event) =>
@@ -395,7 +395,7 @@ function updateText(path: string, value: string) {
           >
         </h1>
         <p
-          class="editable-text"
+          class="editable-text text-dark"
           :contenteditable="editable"
           @input="
             (event) =>
@@ -416,7 +416,7 @@ function updateText(path: string, value: string) {
               :size="contactIconSize"
             />
             <span
-              class="editable-text"
+              class="editable-text text-dark"
               :contenteditable="editable"
               @input="
                 (event) =>
@@ -437,7 +437,7 @@ function updateText(path: string, value: string) {
             />
             <span>
               <span
-                class="editable-text"
+                class="editable-text text-dark"
                 :contenteditable="editable"
                 @input="
                   (event) =>
@@ -448,7 +448,7 @@ function updateText(path: string, value: string) {
               <span v-if="resume.country">, </span>
               <span
                 v-if="resume.country"
-                class="editable-text"
+                class="editable-text text-dark"
                 :contenteditable="editable"
                 @input="
                   (event) =>
@@ -469,7 +469,7 @@ function updateText(path: string, value: string) {
               :size="contactIconSize"
             />
             <span
-              class="editable-text"
+              class="editable-text text-dark"
               :contenteditable="editable"
               @input="
                 (event) =>
@@ -486,7 +486,7 @@ function updateText(path: string, value: string) {
               :size="contactIconSize"
             />
             <span
-              class="editable-text"
+              class="editable-text text-dark"
               :contenteditable="editable"
               @input="
                 (event) =>
