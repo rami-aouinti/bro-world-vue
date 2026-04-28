@@ -143,6 +143,9 @@ const avatarStyle = computed(() => ({
   height: `${props.photoSize}px`,
   borderWidth: `${props.photoBorderWidth}px`,
 }))
+const sectionLayoutDensity = computed<'compact' | 'normal' | 'spacious'>(() =>
+  props.density === 'compact' ? 'compact' : 'normal',
+)
 
 function fallbackVariant(sectionKey: ResumeSectionLayoutKey): string {
   if (sectionKey === 'experience') return 'detailed'
@@ -435,6 +438,7 @@ function onPhotoFrameFocusOut(event: FocusEvent) {
           :resume="resume"
           :editable="editable"
           :variant="sectionVariant(section)"
+          :layout-density="sectionLayoutDensity"
           :title="templateSkin.sectionTitles?.[section.key]"
           :toolbar-enabled="true"
           :can-move-up="canMove(section.key, 'up')"
@@ -468,6 +472,7 @@ function onPhotoFrameFocusOut(event: FocusEvent) {
           :resume="resume"
           :editable="editable"
           :variant="sectionVariant(section)"
+          :layout-density="sectionLayoutDensity"
           :title="templateSkin.sectionTitles?.[section.key]"
           :toolbar-enabled="true"
           :can-move-up="canMove(section.key, 'up')"
@@ -484,6 +489,24 @@ function onPhotoFrameFocusOut(event: FocusEvent) {
 
 <style scoped>
 .resume-skin {
+  --cv-space-1: var(--cv-space-1, 4px);
+  --cv-space-2: var(--cv-space-2, 8px);
+  --cv-space-3: var(--cv-space-3, 12px);
+  --cv-space-4: var(--cv-space-4, 16px);
+  --cv-space-5: var(--cv-space-5, 20px);
+  --cv-space-6: var(--cv-space-6, 24px);
+  --cv-space-7: var(--cv-space-7, 28px);
+  --cv-space-8: var(--cv-space-8, 32px);
+  --cv-space-9: var(--cv-space-9, 36px);
+  --cv-border-soft: color-mix(in srgb, var(--cv-secondary) 20%, transparent);
+  --cv-border-strong: color-mix(in srgb, var(--cv-accent) 24%, transparent);
+  --cv-surface-soft: color-mix(in srgb, var(--cv-page) 78%, transparent);
+  --cv-shadow-soft: color-mix(in srgb, var(--cv-sidebar) 12%, transparent);
+  --cv-progress-bg: color-mix(in srgb, var(--cv-accent) 22%, var(--cv-page));
+
+  font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif);
+  font-style: var(--cv-font-style, normal);
+  font-weight: var(--cv-font-weight, 400);
   padding: 18px;
 }
 .resume-skin__layout {
@@ -518,7 +541,7 @@ function onPhotoFrameFocusOut(event: FocusEvent) {
 .photo-shape-picker {
   --picker-radius: var(--cv-radius, 14px);
   --picker-border: color-mix(in srgb, var(--cv-accent) 16%, var(--cv-page));
-  --picker-surface: color-mix(in srgb, var(--cv-page) 78%, transparent);
+  --picker-surface: var(--cv-surface-soft);
 
   position: absolute;
   top: 8px;
@@ -534,7 +557,7 @@ function onPhotoFrameFocusOut(event: FocusEvent) {
   border: 1px solid var(--picker-border);
   background: var(--picker-surface);
   backdrop-filter: blur(6px);
-  box-shadow: 0 8px 16px color-mix(in srgb, var(--cv-sidebar) 12%, transparent);
+  box-shadow: 0 var(--cv-space-2) var(--cv-space-4) var(--cv-shadow-soft);
   opacity: 0;
   transform: translate(-50%, -8px) scale(0.98);
   pointer-events: none;
@@ -572,8 +595,8 @@ function onPhotoFrameFocusOut(event: FocusEvent) {
 }
 .progress {
   height: 4px;
-  background: color-mix(in srgb, var(--cv-accent) 22%, var(--cv-page));
-  margin-top: 4px;
+  background: var(--cv-progress-bg);
+  margin-top: var(--cv-space-1);
 }
 .progress i {
   display: block;
@@ -583,7 +606,7 @@ function onPhotoFrameFocusOut(event: FocusEvent) {
 .resume-skin__main,
 .resume-skin__aside {
   display: grid;
-  gap: 14px;
+  gap: var(--cv-space-3);
 }
 
 .resume-skin__layout {
@@ -605,17 +628,17 @@ function onPhotoFrameFocusOut(event: FocusEvent) {
 
 .density-comfortable .resume-skin__main,
 .density-comfortable .resume-skin__aside {
-  gap: 14px;
+  gap: var(--cv-space-3);
 }
 
 .photo-position-left .resume-skin__header {
   justify-content: flex-start;
-  gap: 16px;
+  gap: var(--cv-space-4);
 }
 
 .photo-position-center .resume-skin__header {
   justify-content: center;
-  gap: 16px;
+  gap: var(--cv-space-4);
 }
 
 .photo-position-right .resume-skin__header {
@@ -625,15 +648,15 @@ function onPhotoFrameFocusOut(event: FocusEvent) {
 .divider-line :deep(.resume-section),
 .divider-line .resume-skin__main > section,
 .divider-line .resume-skin__aside > section {
-  border-bottom: 1px solid color-mix(in srgb, var(--cv-secondary) 20%, transparent);
-  padding-bottom: 10px;
+  border-bottom: 1px solid var(--cv-border-soft);
+  padding-bottom: calc(var(--cv-space-2) + var(--cv-space-1) / 2);
 }
 
 .divider-thick :deep(.resume-section),
 .divider-thick .resume-skin__main > section,
 .divider-thick .resume-skin__aside > section {
-  border-bottom: 2px solid color-mix(in srgb, var(--cv-accent) 24%, transparent);
-  padding-bottom: 12px;
+  border-bottom: 2px solid var(--cv-border-strong);
+  padding-bottom: var(--cv-space-3);
 }
 
 .divider-none :deep(.resume-section),

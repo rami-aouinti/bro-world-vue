@@ -78,6 +78,13 @@ function updateText(path: string, value: string) {
 </template>
 <style scoped>
 .language-section {
+  --cv-space-1: var(--cv-space-1, 4px);
+  --cv-space-2: var(--cv-space-2, 8px);
+  --cv-space-3: var(--cv-space-3, 12px);
+  --cv-space-4: var(--cv-space-4, 16px);
+  --cv-marker-accent: color-mix(in srgb, var(--cv-accent) 55%, transparent);
+  --cv-progress-bg: color-mix(in srgb, var(--cv-accent) 22%, var(--cv-page));
+
   position: relative;
   border-bottom: var(--rs-section-separator, none);
   padding-bottom: var(--rs-section-padding-bottom, 0);
@@ -85,7 +92,7 @@ function updateText(path: string, value: string) {
 .cv-heading-section {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--cv-space-2);
   border-bottom: var(--rs-heading-border-bottom, 0);
   background: var(--rs-heading-bg, transparent);
   border-radius: var(--rs-heading-radius, 0);
@@ -94,7 +101,7 @@ function updateText(path: string, value: string) {
 .bars { list-style: none; padding: 0; margin: 0; }
 .bars li {
   position: relative;
-  margin-bottom: var(--entry-gap, 10px);
+  margin-bottom: var(--entry-gap, calc(var(--cv-space-2) + var(--cv-space-1) / 2));
   border: var(--rs-card-border, none);
   background: var(--rs-card-bg, transparent);
   border-radius: var(--rs-card-radius, 0);
@@ -105,16 +112,17 @@ function updateText(path: string, value: string) {
 .bars li::before {
   content: '';
   position: absolute;
-  left: -10px;
+  left: calc((var(--cv-space-2) + var(--cv-space-1)) * -1);
   top: .45rem;
   width: var(--rs-marker-width, var(--rs-marker-size, 0));
   height: var(--rs-marker-height, var(--rs-marker-size, 0));
   border-radius: var(--rs-marker-radius, 0);
-  background: color-mix(in srgb, var(--cv-accent) 55%, transparent);
+  background: var(--cv-marker-accent);
 }
-.progress { height: 4px; background: color-mix(in srgb, var(--cv-accent) 22%, var(--cv-page)); margin-top: 4px; }
+.progress { height: var(--cv-space-1); background: var(--cv-progress-bg); margin-top: var(--cv-space-1); }
 .progress i { display: block; height: 4px; background: var(--cv-accent); }
-.density-compact { --entry-gap: 6px; }
-.density-normal { --entry-gap: 10px; }
-.density-spacious { --entry-gap: 14px; }
+.progress i { height: var(--cv-space-1); }
+.density-compact { --entry-gap: calc(var(--cv-space-2) - var(--cv-space-1) / 2); }
+.density-normal { --entry-gap: calc(var(--cv-space-2) + var(--cv-space-1) / 2); }
+.density-spacious { --entry-gap: calc(var(--cv-space-3) + var(--cv-space-1) / 2); }
 </style>
