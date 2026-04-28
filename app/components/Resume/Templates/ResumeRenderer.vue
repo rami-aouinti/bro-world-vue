@@ -1095,6 +1095,42 @@ function updateText(path: string, value: string) {
 
 .resume-skin__aside {
   grid-area: aside;
+  --resume-aside-text-color: color-mix(in srgb, var(--cv-page) 92%, white);
+  --resume-aside-decor-color: var(--cv-secondary);
+  color: var(--resume-aside-text-color);
+}
+
+.resume-skin__aside :deep(.cv-heading-section),
+.resume-skin__aside :deep(.text-dark),
+.resume-skin__aside :deep(.editable-text),
+.resume-skin__aside :deep(p),
+.resume-skin__aside :deep(li),
+.resume-skin__aside :deep(small),
+.resume-skin__aside :deep(strong),
+.resume-skin__aside :deep(h2),
+.resume-skin__aside :deep(h3),
+.resume-skin__aside :deep(h4),
+.resume-skin__aside :deep(a) {
+  color: var(--resume-aside-text-color) !important;
+}
+
+.resume-skin__aside :deep(.section-icon),
+.resume-skin__aside :deep(.resume-skin__contact-icon) {
+  color: var(--resume-aside-text-color);
+}
+
+.resume-skin__aside :deep(.progress) {
+  background: color-mix(in srgb, var(--resume-aside-decor-color) 24%, transparent);
+}
+
+.resume-skin__aside :deep(.progress i) {
+  background: var(--resume-aside-decor-color);
+}
+
+.resume-skin__aside :deep(.v-rating .v-icon),
+.resume-skin__aside :deep(.language-stars-value),
+.resume-skin__aside :deep(.bars small:last-child) {
+  color: var(--resume-aside-decor-color) !important;
 }
 
 .layout-mode-aside-left {
@@ -1118,6 +1154,18 @@ function updateText(path: string, value: string) {
 .layout-mode-no-aside {
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas: 'main';
+}
+
+.layout-mode-no-aside :deep(.project-grid--two-column),
+.layout-mode-no-aside :deep(.education--two-column .education-list) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.layout-mode-no-aside :deep(.experience .entry),
+.layout-mode-no-aside :deep(.education .entry),
+.layout-mode-no-aside :deep(.project-section .entry) {
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--cv-space-2);
 }
 
 .density-compact {
