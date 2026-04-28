@@ -38,30 +38,82 @@ function handleMove(direction: MoveDirection) {
     role="toolbar"
     aria-label="Contrôles de photo"
   >
-    <div class="controls-row controls-row--top">
-      <v-tooltip text="Menu photo">
-        <template #activator="{ props: tooltipProps }">
-          <v-btn
-            icon
-            size="small"
-            variant="elevated"
-            color="surface"
-            aria-label="Ouvrir le menu photo"
-            v-bind="tooltipProps"
-            @click="emit('open-menu')"
-          >
-            <v-icon icon="mdi-dots-horizontal" />
-          </v-btn>
-        </template>
-      </v-tooltip>
+    <v-tooltip text="Déplacer vers le haut">
+      <template #activator="{ props: tooltipProps }">
+        <v-btn
+          icon
+          variant="elevated"
+          color="surface"
+          class="overlay-btn overlay-btn--move overlay-btn--up"
+          :disabled="!props.canMove"
+          aria-label="Déplacer vers le haut"
+          v-bind="tooltipProps"
+          @click="handleMove('up')"
+        >
+          <v-icon icon="mdi-arrow-up" />
+        </v-btn>
+      </template>
+    </v-tooltip>
 
+    <v-tooltip text="Déplacer vers la droite">
+      <template #activator="{ props: tooltipProps }">
+        <v-btn
+          icon
+          variant="elevated"
+          color="surface"
+          class="overlay-btn overlay-btn--move overlay-btn--right"
+          :disabled="!props.canMove"
+          aria-label="Déplacer vers la droite"
+          v-bind="tooltipProps"
+          @click="handleMove('right')"
+        >
+          <v-icon icon="mdi-arrow-right" />
+        </v-btn>
+      </template>
+    </v-tooltip>
+
+    <v-tooltip text="Déplacer vers le bas">
+      <template #activator="{ props: tooltipProps }">
+        <v-btn
+          icon
+          variant="elevated"
+          color="surface"
+          class="overlay-btn overlay-btn--move overlay-btn--down"
+          :disabled="!props.canMove"
+          aria-label="Déplacer vers le bas"
+          v-bind="tooltipProps"
+          @click="handleMove('down')"
+        >
+          <v-icon icon="mdi-arrow-down" />
+        </v-btn>
+      </template>
+    </v-tooltip>
+
+    <v-tooltip text="Déplacer vers la gauche">
+      <template #activator="{ props: tooltipProps }">
+        <v-btn
+          icon
+          variant="elevated"
+          color="surface"
+          class="overlay-btn overlay-btn--move overlay-btn--left"
+          :disabled="!props.canMove"
+          aria-label="Déplacer vers la gauche"
+          v-bind="tooltipProps"
+          @click="handleMove('left')"
+        >
+          <v-icon icon="mdi-arrow-left" />
+        </v-btn>
+      </template>
+    </v-tooltip>
+
+    <div class="actions-column" role="group" aria-label="Actions photo">
       <v-tooltip text="Téléverser une photo">
         <template #activator="{ props: tooltipProps }">
           <v-btn
             icon
-            size="small"
             variant="elevated"
             color="surface"
+            class="overlay-btn"
             aria-label="Téléverser une photo"
             v-bind="tooltipProps"
             @click="emit('upload')"
@@ -75,9 +127,9 @@ function handleMove(direction: MoveDirection) {
         <template #activator="{ props: tooltipProps }">
           <v-btn
             icon
-            size="small"
             variant="elevated"
             color="error"
+            class="overlay-btn"
             aria-label="Supprimer la photo"
             v-bind="tooltipProps"
             @click="emit('remove')"
@@ -86,105 +138,70 @@ function handleMove(direction: MoveDirection) {
           </v-btn>
         </template>
       </v-tooltip>
-    </div>
 
-    <div class="controls-row controls-row--middle">
-      <div class="move-pad" role="group" aria-label="Déplacement photo">
-        <v-btn
-          icon
-          size="small"
-          variant="elevated"
-          color="surface"
-          :disabled="!props.canMove"
-          aria-label="Déplacer vers le haut"
-          class="move-btn move-btn--up"
-          @click="handleMove('up')"
-        >
-          <v-icon icon="mdi-arrow-up" />
-        </v-btn>
+      <v-tooltip text="Zoom avant">
+        <template #activator="{ props: tooltipProps }">
+          <v-btn
+            icon
+            variant="elevated"
+            color="surface"
+            class="overlay-btn"
+            aria-label="Zoom avant"
+            v-bind="tooltipProps"
+            @click="emit('zoom', 'in')"
+          >
+            <v-icon icon="mdi-magnify-plus-outline" />
+          </v-btn>
+        </template>
+      </v-tooltip>
 
-        <v-btn
-          icon
-          size="small"
-          variant="elevated"
-          color="surface"
-          :disabled="!props.canMove"
-          aria-label="Déplacer vers la gauche"
-          class="move-btn move-btn--left"
-          @click="handleMove('left')"
-        >
-          <v-icon icon="mdi-arrow-left" />
-        </v-btn>
+      <v-tooltip text="Zoom arrière">
+        <template #activator="{ props: tooltipProps }">
+          <v-btn
+            icon
+            variant="elevated"
+            color="surface"
+            class="overlay-btn"
+            aria-label="Zoom arrière"
+            v-bind="tooltipProps"
+            @click="emit('zoom', 'out')"
+          >
+            <v-icon icon="mdi-magnify-minus-outline" />
+          </v-btn>
+        </template>
+      </v-tooltip>
 
-        <div class="move-indicator" :class="{ 'is-disabled': !props.canMove }">
-          <span>{{ Math.round(props.photoState.x) }}, {{ Math.round(props.photoState.y) }}</span>
-        </div>
+      <v-tooltip :text="hideShowLabel">
+        <template #activator="{ props: tooltipProps }">
+          <v-btn
+            icon
+            variant="elevated"
+            color="surface"
+            class="overlay-btn"
+            :aria-label="hideShowLabel"
+            v-bind="tooltipProps"
+            @click="emit('toggle-visibility')"
+          >
+            <v-icon :icon="props.photoState.hidden ? 'mdi-eye-outline' : 'mdi-eye-off-outline'" />
+          </v-btn>
+        </template>
+      </v-tooltip>
 
-        <v-btn
-          icon
-          size="small"
-          variant="elevated"
-          color="surface"
-          :disabled="!props.canMove"
-          aria-label="Déplacer vers la droite"
-          class="move-btn move-btn--right"
-          @click="handleMove('right')"
-        >
-          <v-icon icon="mdi-arrow-right" />
-        </v-btn>
-
-        <v-btn
-          icon
-          size="small"
-          variant="elevated"
-          color="surface"
-          :disabled="!props.canMove"
-          aria-label="Déplacer vers le bas"
-          class="move-btn move-btn--down"
-          @click="handleMove('down')"
-        >
-          <v-icon icon="mdi-arrow-down" />
-        </v-btn>
-      </div>
-
-      <div class="zoom-controls" role="group" aria-label="Zoom photo">
-        <v-btn
-          icon
-          size="small"
-          variant="elevated"
-          color="surface"
-          aria-label="Zoom avant"
-          @click="emit('zoom', 'in')"
-        >
-          <v-icon icon="mdi-magnify-plus-outline" />
-        </v-btn>
-
-        <div class="zoom-value">{{ Math.round(props.photoState.scale * 100) }}%</div>
-
-        <v-btn
-          icon
-          size="small"
-          variant="elevated"
-          color="surface"
-          aria-label="Zoom arrière"
-          @click="emit('zoom', 'out')"
-        >
-          <v-icon icon="mdi-magnify-minus-outline" />
-        </v-btn>
-      </div>
-    </div>
-
-    <div class="controls-row controls-row--bottom">
-      <v-btn
-        variant="elevated"
-        color="surface"
-        size="small"
-        class="visibility-btn"
-        :prepend-icon="props.photoState.hidden ? 'mdi-eye-outline' : 'mdi-eye-off-outline'"
-        @click="emit('toggle-visibility')"
-      >
-        {{ hideShowLabel }}
-      </v-btn>
+      <v-tooltip text="Menu photo">
+        <template #activator="{ props: tooltipProps }">
+          <v-btn
+            icon
+            variant="elevated"
+            color="surface"
+            class="overlay-btn"
+            aria-label="Ouvrir le menu photo"
+            v-bind="tooltipProps"
+            @click="emit('open-menu')"
+          >
+            <v-icon icon="mdi-dots-horizontal" />
+          </v-btn>
+        </template>
+      </v-tooltip>
     </div>
   </div>
 </template>
@@ -193,109 +210,97 @@ function handleMove(direction: MoveDirection) {
 .avatar-overlay-controls {
   position: absolute;
   inset: 0;
-  z-index: 20;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 10px;
+  z-index: 4;
+  isolation: isolate;
   pointer-events: none;
 }
 
-.controls-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.overlay-btn {
+  --overlay-btn-size: 42px;
+
+  position: absolute;
+  width: var(--overlay-btn-size);
+  height: var(--overlay-btn-size);
+  min-width: var(--overlay-btn-size);
+  border-radius: 12px;
   pointer-events: auto;
+  color: rgb(var(--v-theme-on-surface));
+  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 84%, rgb(var(--v-theme-on-surface)) 16%);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
+  transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
 }
 
-.controls-row--top {
-  justify-content: flex-end;
+.overlay-btn--move {
+  transform: translate(-50%, -50%);
 }
 
-.controls-row--middle {
-  justify-content: space-between;
-  align-items: flex-end;
+.overlay-btn--up {
+  top: 0;
+  left: 50%;
 }
 
-.controls-row--bottom {
-  justify-content: center;
+.overlay-btn--right {
+  top: 50%;
+  right: 0;
+  transform: translate(50%, -50%);
 }
 
-.move-pad {
-  display: grid;
-  grid-template-columns: repeat(3, 34px);
-  grid-template-rows: repeat(3, 34px);
-  align-items: center;
-  justify-items: center;
-  gap: 6px;
+.overlay-btn--down {
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 50%);
+}
+
+.overlay-btn--left {
+  top: 50%;
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+.actions-column {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   padding: 8px;
   border-radius: 14px;
-  background: color-mix(in srgb, var(--v-theme-surface) 72%, transparent);
-  backdrop-filter: blur(3px);
+  pointer-events: auto;
+  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 86%, rgb(var(--v-theme-on-surface)) 14%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
 }
 
-.move-btn--up {
-  grid-column: 2;
-  grid-row: 1;
+.overlay-btn:is(:hover, :focus-visible) {
+  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 60%, rgb(var(--v-theme-primary)) 40%);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.28);
 }
 
-.move-btn--left {
-  grid-column: 1;
-  grid-row: 2;
+.overlay-btn:active {
+  transform: scale(0.96);
 }
 
-.move-btn--right {
-  grid-column: 3;
-  grid-row: 2;
+.overlay-btn--move:active {
+  transform: translate(-50%, -50%) scale(0.96);
 }
 
-.move-btn--down {
-  grid-column: 2;
-  grid-row: 3;
+.overlay-btn--right:active {
+  transform: translate(50%, -50%) scale(0.96);
 }
 
-.move-indicator {
-  grid-column: 2;
-  grid-row: 2;
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 9px;
-  font-weight: 700;
-  line-height: 1;
-  text-align: center;
-  color: rgb(var(--v-theme-on-surface));
-  background: color-mix(in srgb, var(--v-theme-surface) 88%, var(--v-theme-primary) 12%);
+.overlay-btn--down:active {
+  transform: translate(-50%, 50%) scale(0.96);
 }
 
-.move-indicator.is-disabled {
-  opacity: 0.55;
+.overlay-btn--left:active {
+  transform: translate(-50%, -50%) scale(0.96);
 }
 
-.zoom-controls {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px;
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--v-theme-surface) 72%, transparent);
-  backdrop-filter: blur(3px);
+.overlay-btn:deep(.v-btn__overlay) {
+  opacity: 0;
 }
 
-.zoom-value {
-  min-width: 48px;
-  text-align: center;
-  font-size: 11px;
-  font-weight: 700;
-  color: rgb(var(--v-theme-on-surface));
-}
-
-.visibility-btn {
-  text-transform: none;
-  font-weight: 600;
+.overlay-btn:deep(.v-btn__content) {
+  font-size: 1rem;
 }
 </style>
