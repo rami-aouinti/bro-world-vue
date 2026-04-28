@@ -21,7 +21,7 @@ definePageMeta({
 })
 
 type Skill = { name: string; level: number }
-type Language = { name: string; level: number }
+type Language = { name: string; level: number; countryCode?: string; flag?: string }
 type Experience = {
   role: string
   company: string
@@ -80,6 +80,8 @@ type StructuredEducation = {
 type StructuredLanguage = {
   name?: string
   level?: string
+  countryCode?: string
+  flag?: string
 }
 type StructuredProject = {
   title?: string
@@ -197,7 +199,7 @@ type SharedSectionActionKey = EditableSectionKey | 'course'
 type SectionLayoutVariant = {
   experience: 'detailed' | 'bullets' | 'compact'
   education: 'classic' | 'timeline' | 'two-column'
-  language: 'classic' | 'text-level' | 'stars' | 'progress'
+  language: 'classic' | 'text-level' | 'stars' | 'progress' | 'flags'
   project: 'classic' | 'list' | 'cards' | 'two-column'
   skill: 'classic'
   reference: 'classic'
@@ -283,6 +285,7 @@ const sectionVariantLabels: Record<string, string> = {
   stars: 'Stars',
   'text-level': 'Text level',
   progress: 'Progress',
+  flags: 'Flags',
   cards: 'Cards',
   list: 'List',
 }
@@ -317,7 +320,7 @@ const variantRegistry: {
 } = {
   experience: { allowed: ['detailed', 'bullets', 'compact'], fallback: 'detailed' },
   education: { allowed: ['classic', 'timeline', 'two-column'], fallback: 'classic' },
-  language: { allowed: ['classic', 'text-level', 'stars', 'progress'], fallback: 'classic' },
+  language: { allowed: ['classic', 'text-level', 'stars', 'progress', 'flags'], fallback: 'classic' },
   project: { allowed: ['classic', 'list', 'cards', 'two-column'], fallback: 'classic' },
   skill: { allowed: ['classic'], fallback: 'classic' },
   reference: { allowed: ['classic'], fallback: 'classic' },
@@ -443,9 +446,9 @@ const resume = reactive<ResumeModel>({
     { name: 'Social Media Platforms', level: 100 },
   ] as Skill[],
   languages: [
-    { name: 'Spanish', level: 80 },
-    { name: 'German', level: 80 },
-    { name: 'English', level: 95 },
+    { name: 'Spanish', level: 80, countryCode: 'ES' },
+    { name: 'German', level: 80, countryCode: 'DE' },
+    { name: 'English', level: 95, countryCode: 'US' },
   ] as Language[],
   hobbies: ['Photography', 'Reading', 'Traveling', 'Community Volunteering'],
   experiences: [
@@ -634,7 +637,7 @@ const activeVariant = ref<SectionLayoutVariant[PreviewSectionKey]>('detailed')
 const sectionItemDraft = reactive({
   experience: { role: '', company: '', city: '', start: '', end: '', bullets: '' },
   education: { degree: '', school: '', city: '', start: '', end: '', note: '' },
-  language: { name: '', level: 80, stars: 4 },
+  language: { name: '', level: 80, stars: 4, countryCode: '', flag: '' },
   project: { name: '', summary: '', link: '' },
 })
 const addSectionDraft = reactive({
@@ -642,7 +645,7 @@ const addSectionDraft = reactive({
   experience: { role: '', company: '', city: '', start: '', end: '', bullets: '' },
   education: { degree: '', school: '', city: '', start: '', end: '', note: '' },
   skill: { name: '', level: 80 },
-  language: { name: '', level: 80 },
+  language: { name: '', level: 80, countryCode: '', flag: '' },
   hobby: { name: '' },
   project: { name: '', summary: '' },
   certification: { title: '', school: '', start: '', end: '' },
@@ -831,7 +834,7 @@ function removeSkill(index: number) {
 }
 
 function addLanguage() {
-  resume.languages.push({ name: '', level: 75 })
+  resume.languages.push({ name: '', level: 75, countryCode: '', flag: '' })
 }
 
 function removeLanguage(index: number) {
@@ -916,7 +919,7 @@ function resetSectionDraft(section: AddSectionType) {
       addSectionDraft.skill = { name: '', level: 80 }
       break
     case 'language':
-      addSectionDraft.language = { name: '', level: 80 }
+      addSectionDraft.language = { name: '', level: 80, countryCode: '', flag: '' }
       break
     case 'hobby':
       addSectionDraft.hobby = { name: '' }
@@ -1018,7 +1021,7 @@ function resetSectionItemDraft(section: PreviewSectionKey) {
       sectionItemDraft.education = { degree: '', school: '', city: '', start: '', end: '', note: '' }
       break
     case 'language':
-      sectionItemDraft.language = { name: '', level: 80, stars: 4 }
+      sectionItemDraft.language = { name: '', level: 80, stars: 4, countryCode: '', flag: '' }
       break
     case 'project':
       sectionItemDraft.project = { name: '', summary: '', link: '' }
@@ -1065,6 +1068,8 @@ function submitSectionItemDialog() {
         level: activeVariant.value === 'stars'
           ? Math.max(0, Math.min(5, sectionItemDraft.language.stars)) * 20
           : sectionItemDraft.language.level,
+        countryCode: sectionItemDraft.language.countryCode.trim(),
+        flag: sectionItemDraft.language.flag.trim(),
       }
       break
     case 'project':
@@ -1538,6 +1543,8 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
       .map((language) => ({
         name: String(language.name),
         level: Number.parseInt(String(language.level || ''), 10) || 75,
+        countryCode: String(language.countryCode || '').trim(),
+        flag: String(language.flag || '').trim(),
       }))
   }
 
@@ -2452,14 +2459,33 @@ if (import.meta.client) {
                     :key="`language-${index}`"
                     class="mb-2"
                   >
-                    <v-col cols="5"
+                    <v-col cols="3"
                       ><v-text-field
                         v-model="language.name"
                         label="Language"
                         variant="outlined"
                         hide-details
                     /></v-col>
-                    <v-col cols="5"
+                    <v-col cols="2">
+                      <v-text-field
+                        v-model="language.countryCode"
+                        label="Country code"
+                        placeholder="FR"
+                        maxlength="2"
+                        variant="outlined"
+                        hide-details
+                      />
+                    </v-col>
+                    <v-col cols="2">
+                      <v-text-field
+                        v-model="language.flag"
+                        label="Flag"
+                        placeholder="🇫🇷"
+                        variant="outlined"
+                        hide-details
+                      />
+                    </v-col>
+                    <v-col cols="4"
                     >
                       <v-slider
                         v-if="levelInputMode === 'percent'"
@@ -2480,7 +2506,7 @@ if (import.meta.client) {
                         @update:model-value="setLevelFromStars('languages', index, $event || 0)"
                       />
                     </v-col>
-                    <v-col cols="2" class="d-flex align-center justify-center">
+                    <v-col cols="1" class="d-flex align-center justify-center">
                       <v-btn
                         icon="mdi-delete-outline"
                         size="x-small"
@@ -3009,6 +3035,8 @@ if (import.meta.client) {
 
           <template v-else-if="addSectionType === 'language'">
             <v-text-field v-model="addSectionDraft.language.name" label="Language name" variant="outlined" hide-details />
+            <v-text-field v-model="addSectionDraft.language.countryCode" label="Country code (optional)" placeholder="FR" maxlength="2" variant="outlined" hide-details />
+            <v-text-field v-model="addSectionDraft.language.flag" label="Flag (optional)" placeholder="🇫🇷" variant="outlined" hide-details />
             <v-slider v-model="addSectionDraft.language.level" min="0" max="100" step="5" color="primary" thumb-label />
           </template>
 
@@ -3081,6 +3109,8 @@ if (import.meta.client) {
 
           <template v-else-if="activeSectionKey === 'language'">
             <v-text-field v-model="sectionItemDraft.language.name" label="Language name" variant="outlined" hide-details />
+            <v-text-field v-model="sectionItemDraft.language.countryCode" label="Country code (optional)" placeholder="FR" maxlength="2" variant="outlined" hide-details />
+            <v-text-field v-model="sectionItemDraft.language.flag" label="Flag (optional)" placeholder="🇫🇷" variant="outlined" hide-details />
             <v-rating
               v-if="activeVariant === 'stars'"
               v-model="sectionItemDraft.language.stars"

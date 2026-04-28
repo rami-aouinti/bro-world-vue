@@ -10,7 +10,7 @@ import type {
 type SectionLayoutVariant = {
   experience: 'detailed' | 'bullets' | 'compact'
   education: 'classic' | 'timeline' | 'two-column'
-  language: 'classic' | 'text-level' | 'stars' | 'progress'
+  language: 'classic' | 'text-level' | 'stars' | 'progress' | 'flags'
   project: 'classic' | 'list' | 'cards' | 'two-column'
   skill: 'classic'
   reference: 'classic'
