@@ -69,7 +69,10 @@ const props = withDefaults(
     photoScale?: number
     photoHidden?: boolean
     showSectionIcons?: boolean
+    showContactIcons?: boolean
     sectionIconStyleVariant?: ResumeSectionIconStyleVariant
+    iconSizeVariant?: 's' | 'm' | 'l'
+    iconColorMode?: 'accent' | 'neutral'
     templateSkin: ResumeTemplateSkin
   }>(),
   {
@@ -95,7 +98,10 @@ const props = withDefaults(
     photoScale: 1,
     photoHidden: false,
     showSectionIcons: undefined,
+    showContactIcons: true,
     sectionIconStyleVariant: undefined,
+    iconSizeVariant: 'm',
+    iconColorMode: 'accent',
   },
 )
 
@@ -177,17 +183,33 @@ const shouldShowSectionIcons = computed(() =>
 const resolvedSectionIconStyle = computed(() => {
   const style = props.templateSkin.sectionIconStyle
   const variant = props.sectionIconStyleVariant ?? style.variant
+  const iconSizeByVariant = { s: 16, m: 18, l: 22 } as const
+  const iconColorByMode = {
+    accent: 'var(--cv-accent)',
+    neutral: 'var(--cv-secondary)',
+  } as const
 
   return {
     ...style,
     variant,
+    size: iconSizeByVariant[props.iconSizeVariant] ?? style.size,
+    color: iconColorByMode[props.iconColorMode] ?? style.color,
   }
 })
+const contactIconSize = computed(() => {
+  const sizeByVariant = { s: 14, m: 16, l: 20 } as const
+  return sizeByVariant[props.iconSizeVariant] ?? sizeByVariant.m
+})
+const contactIconColor = computed(() =>
+  props.iconColorMode === 'neutral' ? 'var(--cv-secondary)' : 'var(--cv-accent)',
+)
 const sectionIconCssVars = computed<Record<string, string>>(() => ({
   '--resume-section-icon-size': `${resolvedSectionIconStyle.value.size}px`,
   '--resume-section-icon-color': resolvedSectionIconStyle.value.color,
   '--resume-section-icon-gap': `${resolvedSectionIconStyle.value.spacing}px`,
   '--resume-section-icon-radius': resolvedSectionIconStyle.value.roundedBackground ? '999px' : '8px',
+  '--resume-contact-icon-size': `${contactIconSize.value}px`,
+  '--resume-contact-icon-color': contactIconColor.value,
 }))
 
 function fallbackVariant(sectionKey: ResumeSectionLayoutKey): string {
@@ -308,7 +330,12 @@ function updateText(path: string, value: string) {
           class="resume-skin__contact-grid resume-skin__header-contact"
         >
           <div class="resume-skin__contact-item">
-            <v-icon icon="mdi-calendar-month-outline" size="16" />
+            <v-icon
+              v-if="showContactIcons"
+              class="resume-skin__contact-icon"
+              icon="mdi-calendar-month-outline"
+              :size="contactIconSize"
+            />
             <span
               class="editable-text"
               :contenteditable="editable"
@@ -323,7 +350,12 @@ function updateText(path: string, value: string) {
             >
           </div>
           <div class="resume-skin__contact-item">
-            <v-icon icon="mdi-map-marker-outline" size="16" />
+            <v-icon
+              v-if="showContactIcons"
+              class="resume-skin__contact-icon"
+              icon="mdi-map-marker-outline"
+              :size="contactIconSize"
+            />
             <span>
               <span
                 class="editable-text"
@@ -351,7 +383,12 @@ function updateText(path: string, value: string) {
             </span>
           </div>
           <div class="resume-skin__contact-item">
-            <v-icon icon="mdi-phone-outline" size="16" />
+            <v-icon
+              v-if="showContactIcons"
+              class="resume-skin__contact-icon"
+              icon="mdi-phone-outline"
+              :size="contactIconSize"
+            />
             <span
               class="editable-text"
               :contenteditable="editable"
@@ -363,7 +400,12 @@ function updateText(path: string, value: string) {
             >
           </div>
           <div class="resume-skin__contact-item">
-            <v-icon icon="mdi-email-outline" size="16" />
+            <v-icon
+              v-if="showContactIcons"
+              class="resume-skin__contact-icon"
+              icon="mdi-email-outline"
+              :size="contactIconSize"
+            />
             <span
               class="editable-text"
               :contenteditable="editable"
@@ -407,7 +449,12 @@ function updateText(path: string, value: string) {
           <h3 class="cv-heading-section">Contact</h3>
           <div class="resume-skin__contact-grid">
             <div class="resume-skin__contact-item">
-              <v-icon icon="mdi-calendar-month-outline" size="16" />
+              <v-icon
+                v-if="showContactIcons"
+                class="resume-skin__contact-icon"
+                icon="mdi-calendar-month-outline"
+                :size="contactIconSize"
+              />
               <span
                 class="editable-text"
                 :contenteditable="editable"
@@ -422,7 +469,12 @@ function updateText(path: string, value: string) {
               >
             </div>
             <div class="resume-skin__contact-item">
-              <v-icon icon="mdi-map-marker-outline" size="16" />
+              <v-icon
+                v-if="showContactIcons"
+                class="resume-skin__contact-icon"
+                icon="mdi-map-marker-outline"
+                :size="contactIconSize"
+              />
               <span>
                 <span
                   class="editable-text"
@@ -450,7 +502,12 @@ function updateText(path: string, value: string) {
               </span>
             </div>
             <div class="resume-skin__contact-item">
-              <v-icon icon="mdi-phone-outline" size="16" />
+              <v-icon
+                v-if="showContactIcons"
+                class="resume-skin__contact-icon"
+                icon="mdi-phone-outline"
+                :size="contactIconSize"
+              />
               <span
                 class="editable-text"
                 :contenteditable="editable"
@@ -462,7 +519,12 @@ function updateText(path: string, value: string) {
               >
             </div>
             <div class="resume-skin__contact-item">
-              <v-icon icon="mdi-email-outline" size="16" />
+              <v-icon
+                v-if="showContactIcons"
+                class="resume-skin__contact-icon"
+                icon="mdi-email-outline"
+                :size="contactIconSize"
+              />
               <span
                 class="editable-text"
                 :contenteditable="editable"
@@ -644,6 +706,10 @@ function updateText(path: string, value: string) {
 }
 .resume-skin__contact-item .editable-text {
   min-width: 0;
+}
+.resume-skin__contact-icon {
+  color: var(--resume-contact-icon-color, var(--cv-accent));
+  transition: color .2s ease;
 }
 .photo-frame {
   position: relative;
