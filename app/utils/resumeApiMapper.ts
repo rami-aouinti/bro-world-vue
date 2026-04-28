@@ -26,6 +26,7 @@ export type ApiResume = {
     birthDate?: string | null
     birthPlace?: string | null
     profileText?: string | null
+    title?: string | null
   } | null
   experiences?: ApiResumeSection[]
   educations?: ApiResumeSection[]
@@ -143,6 +144,7 @@ export function fromApiResumeToBuilderModel(apiResume: ApiResume): BuilderResume
   return {
     firstName,
     lastName,
+    role: normalizeText(info.title),
     email: normalizeText(info.email),
     phone: normalizeText(info.phone),
     city,

@@ -13,6 +13,8 @@ const props = withDefaults(
     title?: string
     canMoveUp?: boolean
     canMoveDown?: boolean
+    sectionIcon?: string
+    showSectionIcon?: boolean
   }>(),
   {
     editable: false,
@@ -23,6 +25,8 @@ const props = withDefaults(
     title: 'Interests',
     canMoveUp: false,
     canMoveDown: false,
+    sectionIcon: undefined,
+    showSectionIcon: true,
   },
 )
 
@@ -83,7 +87,12 @@ function removeHobby(index: number) {
       @delete-section="() => emit('delete-section', 'hobby')"
     />
 
-    <h3 class="cv-heading-section">{{ title }}</h3>
+    <h3 class="cv-heading-section">
+      <span v-if="showSectionIcon && sectionIcon" class="section-icon">
+        <v-icon :icon="sectionIcon" size="16" />
+      </span>
+      <span>{{ title }}</span>
+    </h3>
     <ul class="entry-list">
       <li
         v-for="(hobby, index) in resume.hobbies"
@@ -154,4 +163,6 @@ function removeHobby(index: number) {
 .density-spacious {
   --entry-gap: var(--cv-space-3, 12px);
 }
+
+.section-icon { display:inline-flex; align-items:center; justify-content:center; color: var(--resume-section-icon-color, var(--cv-accent)); margin-right: 6px; }
 </style>

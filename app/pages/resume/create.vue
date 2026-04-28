@@ -188,6 +188,7 @@ type RemoteResumeSection = {
 }
 type RemoteResumeInformation = {
   fullName?: string | null
+  title?: string | null
   email?: string | null
   phone?: string | null
   address?: string | null
@@ -273,7 +274,7 @@ type PhotoShapeOption = {
   value: PhotoShape
   icon: string
 }
-type DecorativeShapeType = 'circle' | 'square' | 'ring' | 'bar'
+type DecorativeShapeType = 'circle' | 'square' | 'ring' | 'bar' | 'diamond' | 'triangle' | 'pill'
 type DecorativeShapeSettings = {
   enabled: boolean
   type: DecorativeShapeType
@@ -472,6 +473,9 @@ const decorativeShapeTypeOptions = [
   { label: 'Square', value: 'square' },
   { label: 'Ring', value: 'ring' },
   { label: 'Bar', value: 'bar' },
+  { label: 'Diamond', value: 'diamond' },
+  { label: 'Triangle', value: 'triangle' },
+  { label: 'Pill', value: 'pill' },
 ] as const
 const photoShapeOptions = [
   { label: 'Square', value: 'square', icon: '□' },
@@ -1120,7 +1124,7 @@ function applyTemplateSelection(templateId: string) {
   selectedTemplate.value = templateId
 }
 
-const templateShapeTypeCycle: DecorativeShapeType[] = ['circle', 'ring', 'square', 'bar']
+const templateShapeTypeCycle: DecorativeShapeType[] = ['circle', 'ring', 'square', 'bar', 'diamond', 'triangle', 'pill']
 
 function applyShapeAForTemplate() {
   if (selectedDocumentType.value !== 'resume') return
@@ -2988,6 +2992,9 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
 
   resume.firstName = userNames.firstName
   resume.lastName = userNames.lastName
+  if (String(user.title || '').trim()) {
+    resume.role = String(user.title || '').trim()
+  }
   resume.email = user.email || resume.email
   resume.phone = user.phone || resume.phone
   resume.profile = user.summary || resume.profile
