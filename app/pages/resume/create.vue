@@ -4152,6 +4152,10 @@ if (import.meta.client) {
 
 <style scoped>
 .resume-create {
+  --builder-column-gap: 16px;
+  --preview-page-width: 860px;
+  --preview-shell-padding: 16px;
+  --preview-shell-max-width: calc(var(--preview-page-width) + (var(--preview-shell-padding) * 2));
   min-height: 100vh;
   padding-top: 108px;
 }
@@ -4160,7 +4164,7 @@ if (import.meta.client) {
   display: grid;
   grid-template-columns: minmax(280px, 1fr) minmax(560px, 1.3fr);
   align-items: start;
-  gap: 12px;
+  gap: var(--builder-column-gap);
 }
 
 .builder-form {
@@ -4181,6 +4185,7 @@ if (import.meta.client) {
   align-self: start;
   display: flex;
   justify-content: center;
+  padding-inline: calc(var(--builder-column-gap) / 2);
 }
 
 .builder-left-rail {
@@ -4351,22 +4356,28 @@ if (import.meta.client) {
 }
 
 .resume-preview-wrapper {
-  width: 100%;
+  width: min(100%, var(--preview-shell-max-width));
+  max-width: var(--preview-shell-max-width);
+  margin-inline: auto;
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  gap: var(--builder-column-gap);
+  scrollbar-gutter: stable both-edges;
 }
 
 .resume-preview-frame {
-  width: min(100%, 860px);
+  width: var(--preview-shell-max-width);
+  max-width: 100%;
   min-height: calc(100vh - 80px);
+  flex: 0 0 auto;
 }
 
 .cv-preview-stage {
-  width: min(100%, 860px);
-  max-width: 860px;
+  width: 100%;
+  max-width: var(--preview-page-width);
   margin: 0 auto;
-  padding: 16px;
+  padding: var(--preview-shell-padding);
   background: color-mix(in srgb, var(--cv-page) 68%, white);
   border-radius: calc(var(--cv-space-2) + var(--cv-space-1) / 2);
 }
