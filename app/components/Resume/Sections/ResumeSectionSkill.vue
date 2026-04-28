@@ -252,13 +252,7 @@ function removeSkill(index: number) {
           "
           >{{ skill.name }}</span
         >
-        <v-progress-linear
-          indeterminate
-          color="primary"
-          size="{{ levelToDots(skill.level) }}"
-          class="mr-3"
-        />
-        <small class="text-dark">{{ levelToDots(skill.level) }}</small>
+        <small class="text-dark skill-dots">{{ levelToDots(skill.level) }}</small>
         <v-btn
           v-if="editable"
           class="resume-item-delete"
@@ -334,6 +328,9 @@ function removeSkill(index: number) {
 }
 .bars li:last-child {
   margin-bottom: 0;
+}
+.skill-dots {
+  letter-spacing: 1px;
 }
 
 .bars li::before {

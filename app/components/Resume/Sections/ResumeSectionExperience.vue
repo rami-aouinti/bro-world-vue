@@ -198,33 +198,35 @@ function removeExperience(index: number) {
         <v-icon icon="mdi-close" size="14" />
       </v-btn>
       <div class="date-column dates">
-        <p class="dates">
-          <span
-            class="editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateDateText(
-                  `experiences.${index}.start`,
-                  (event.target as HTMLElement).innerText,
-                )
-            "
-            >{{ formatResumeMonthYear(experience.start) }}</span
-          >
-          -
-          <span
-            class="editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateDateText(
-                  `experiences.${index}.end`,
-                  (event.target as HTMLElement).innerText,
-                )
-            "
-            >{{ formatResumeMonthYear(experience.end) }}</span
-          >
-        </p>
+        <div class="dates-chip-wrap">
+          <v-chip size="small" color="primary" variant="tonal" class="dates-chip">
+            <span
+              class="editable-text"
+              :contenteditable="editable"
+              @input="
+                (event) =>
+                  updateDateText(
+                    `experiences.${index}.start`,
+                    (event.target as HTMLElement).innerText,
+                  )
+              "
+              >{{ formatResumeMonthYear(experience.start) }}</span
+            >
+            -
+            <span
+              class="editable-text"
+              :contenteditable="editable"
+              @input="
+                (event) =>
+                  updateDateText(
+                    `experiences.${index}.end`,
+                    (event.target as HTMLElement).innerText,
+                  )
+              "
+              >{{ formatResumeMonthYear(experience.end) }}</span
+            >
+          </v-chip>
+        </div>
         <h4 class="text-dark experience-heading">
           <span
             class="editable-text"
@@ -452,8 +454,11 @@ function removeExperience(index: number) {
 .experience-heading {
   margin: 0;
 }
-.entry .date-column > .dates {
+.entry .date-column > .dates-chip-wrap {
   margin: var(--entry-title-to-date-gap) 0 0;
+}
+.dates-chip {
+  font-weight: 500;
 }
 .content-column > h4 {
   margin: 0;
