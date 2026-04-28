@@ -25,6 +25,7 @@ type Language = { name: string; level: number; countryCode?: string; flag?: stri
 type Experience = {
   role: string
   company: string
+  companyImageUrl?: string
   city: string
   start: string
   end: string
@@ -66,6 +67,7 @@ type StructuredUser = {
 type StructuredExperience = {
   title?: string
   company?: string
+  companyImageUrl?: string
   startDate?: string
   endDate?: string
   description?: string
@@ -454,6 +456,7 @@ const resume = reactive<ResumeModel>({
     {
       role: 'Sales Associate',
       company: 'Big Apple Bookstore',
+      companyImageUrl: '',
       city: 'New York',
       start: 'JAN 2018',
       end: 'DEC 2020',
@@ -466,6 +469,7 @@ const resume = reactive<ResumeModel>({
     {
       role: 'Editorial Intern',
       company: 'NBC News',
+      companyImageUrl: '',
       city: 'New York',
       start: 'JAN 2016',
       end: 'DEC 2017',
@@ -634,14 +638,14 @@ const sectionItemDialogOpen = ref(false)
 const activeSectionKey = ref<PreviewSectionKey>('experience')
 const activeVariant = ref<SectionLayoutVariant[PreviewSectionKey]>('detailed')
 const sectionItemDraft = reactive({
-  experience: { role: '', company: '', city: '', start: '', end: '', bullets: '' },
+  experience: { role: '', company: '', companyImageUrl: '', city: '', start: '', end: '', bullets: '' },
   education: { degree: '', school: '', city: '', start: '', end: '', note: '' },
   language: { name: '', level: 80, stars: 4, countryCode: '', flag: '' },
   project: { name: '', summary: '', link: '' },
 })
 const addSectionDraft = reactive({
   profile: { profile: '' },
-  experience: { role: '', company: '', city: '', start: '', end: '', bullets: '' },
+  experience: { role: '', company: '', companyImageUrl: '', city: '', start: '', end: '', bullets: '' },
   education: { degree: '', school: '', city: '', start: '', end: '', note: '' },
   skill: { name: '', level: 80 },
   language: { name: '', level: 80, countryCode: '', flag: '' },
@@ -650,6 +654,11 @@ const addSectionDraft = reactive({
   certification: { title: '', school: '', start: '', end: '' },
   reference: { name: '', company: '', email: '', phone: '' },
 })
+const EXPERIENCE_LOGO_MAX_FILE_SIZE = 2 * 1024 * 1024
+const EXPERIENCE_LOGO_ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml']
+const experienceLogoErrors = reactive<Record<string, string>>({})
+const addSectionExperienceLogoInput = ref<HTMLInputElement | null>(null)
+const sectionItemExperienceLogoInput = ref<HTMLInputElement | null>(null)
 
 const PHOTO_MOVE_STEP = 4
 const PHOTO_OFFSET_LIMIT = 48
@@ -781,11 +790,105 @@ function addExperience() {
   resume.experiences.push({
     role: '',
     company: '',
+    companyImageUrl: '',
     city: '',
     start: '',
     end: '',
     bullets: [],
   })
+}
+
+function setExperienceLogoError(targetKey: string, message = '') {
+  experienceLogoErrors[targetKey] = message
+}
+
+function getExperienceLogoError(targetKey: string) {
+  return experienceLogoErrors[targetKey] || ''
+}
+
+function validateExperienceLogoFile(file: File) {
+  if (!EXPERIENCE_LOGO_ALLOWED_TYPES.includes(file.type)) {
+    return 'Format invalide. Utilise PNG, JPEG, WEBP ou SVG.'
+  }
+  if (file.size > EXPERIENCE_LOGO_MAX_FILE_SIZE) {
+    return 'Fichier trop volumineux (max 2MB).'
+  }
+  return ''
+}
+
+function readFileAsDataUrl(file: File) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : '')
+    reader.onerror = () => reject(new Error('Impossible de lire le fichier logo.'))
+    reader.readAsDataURL(file)
+  })
+}
+
+async function applyExperienceLogoFromFile(
+  file: File,
+  target: { key: string; set: (dataUrl: string) => void },
+) {
+  const validationMessage = validateExperienceLogoFile(file)
+  if (validationMessage) {
+    setExperienceLogoError(target.key, validationMessage)
+    return
+  }
+  try {
+    const dataUrl = await readFileAsDataUrl(file)
+    target.set(dataUrl)
+    setExperienceLogoError(target.key)
+  }
+  catch {
+    setExperienceLogoError(target.key, 'Impossible de charger ce logo.')
+  }
+}
+
+function openExperienceLogoPicker(target: 'add-section' | 'section-item' | 'resume', index?: number) {
+  if (target === 'add-section') {
+    addSectionExperienceLogoInput.value?.click()
+    return
+  }
+  if (target === 'section-item') {
+    sectionItemExperienceLogoInput.value?.click()
+    return
+  }
+  if (typeof index !== 'number') return
+  const input = document.getElementById(`experience-logo-input-${index}`) as HTMLInputElement | null
+  input?.click()
+}
+
+async function onResumeExperienceLogoSelected(event: Event, index: number) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  await applyExperienceLogoFromFile(file, {
+    key: `resume-${index}`,
+    set: (dataUrl) => { resume.experiences[index].companyImageUrl = dataUrl },
+  })
+  input.value = ''
+}
+
+async function onAddSectionExperienceLogoSelected(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  await applyExperienceLogoFromFile(file, {
+    key: 'add-section',
+    set: (dataUrl) => { addSectionDraft.experience.companyImageUrl = dataUrl },
+  })
+  input.value = ''
+}
+
+async function onSectionItemExperienceLogoSelected(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  await applyExperienceLogoFromFile(file, {
+    key: 'section-item',
+    set: (dataUrl) => { sectionItemDraft.experience.companyImageUrl = dataUrl },
+  })
+  input.value = ''
 }
 
 function removeExperience(index: number) {
@@ -909,7 +1012,8 @@ function resetSectionDraft(section: AddSectionType) {
       addSectionDraft.profile = { profile: '' }
       break
     case 'experience':
-      addSectionDraft.experience = { role: '', company: '', city: '', start: '', end: '', bullets: '' }
+      addSectionDraft.experience = { role: '', company: '', companyImageUrl: '', city: '', start: '', end: '', bullets: '' }
+      setExperienceLogoError('add-section')
       break
     case 'education':
       addSectionDraft.education = { degree: '', school: '', city: '', start: '', end: '', note: '' }
@@ -951,6 +1055,7 @@ function submitAddSection() {
       resume.experiences.push({
         role: addSectionDraft.experience.role,
         company: addSectionDraft.experience.company,
+        companyImageUrl: addSectionDraft.experience.companyImageUrl?.trim(),
         city: addSectionDraft.experience.city,
         start: addSectionDraft.experience.start,
         end: addSectionDraft.experience.end,
@@ -1014,7 +1119,8 @@ function sectionDisplayLabel(sectionKey: PreviewSectionKey) {
 function resetSectionItemDraft(section: PreviewSectionKey) {
   switch (section) {
     case 'experience':
-      sectionItemDraft.experience = { role: '', company: '', city: '', start: '', end: '', bullets: '' }
+      sectionItemDraft.experience = { role: '', company: '', companyImageUrl: '', city: '', start: '', end: '', bullets: '' }
+      setExperienceLogoError('section-item')
       break
     case 'education':
       sectionItemDraft.education = { degree: '', school: '', city: '', start: '', end: '', note: '' }
@@ -1042,6 +1148,7 @@ function submitSectionItemDialog() {
       item = {
         role: sectionItemDraft.experience.role,
         company: sectionItemDraft.experience.company,
+        companyImageUrl: sectionItemDraft.experience.companyImageUrl?.trim(),
         city: sectionItemDraft.experience.city,
         start: sectionItemDraft.experience.start,
         end: sectionItemDraft.experience.end,
@@ -1555,6 +1662,7 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
     resume.experiences = data.experiences.map((experience) => ({
       role: String(experience.title || ''),
       company: String(experience.company || ''),
+      companyImageUrl: String(experience.companyImageUrl || ''),
       city: '',
       start: normalizeDateLabel(experience.startDate),
       end: normalizeDateLabel(experience.endDate),
@@ -2214,6 +2322,32 @@ if (import.meta.client) {
                     variant="outlined"
                     hide-details
                 /></v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    v-model="experience.companyImageUrl"
+                    label="Company logo URL"
+                    variant="outlined"
+                    :error-messages="getExperienceLogoError(`resume-${index}`)"
+                    @update:model-value="setExperienceLogoError(`resume-${index}`)"
+                  />
+                </v-col>
+                <v-col cols="12" md="6" class="d-flex align-center ga-2 flex-wrap">
+                  <v-btn
+                    prepend-icon="mdi-image-plus-outline"
+                    size="small"
+                    variant="tonal"
+                    @click="openExperienceLogoPicker('resume', index)"
+                  >
+                    Upload logo
+                  </v-btn>
+                  <input
+                    :id="`experience-logo-input-${index}`"
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                    class="d-none"
+                    @change="event => onResumeExperienceLogoSelected(event, index)"
+                  >
+                </v-col>
                 <v-col cols="12" md="6"
                   ><v-text-field
                     v-model="experience.city"
@@ -3008,6 +3142,25 @@ if (import.meta.client) {
           <template v-else-if="addSectionType === 'experience'">
             <v-text-field v-model="addSectionDraft.experience.role" label="Role" variant="outlined" hide-details />
             <v-text-field v-model="addSectionDraft.experience.company" label="Company" variant="outlined" hide-details />
+            <v-text-field
+              v-model="addSectionDraft.experience.companyImageUrl"
+              label="Company logo URL"
+              variant="outlined"
+              :error-messages="getExperienceLogoError('add-section')"
+              @update:model-value="setExperienceLogoError('add-section')"
+            />
+            <div class="d-flex align-center ga-2">
+              <v-btn prepend-icon="mdi-image-plus-outline" size="small" variant="tonal" @click="openExperienceLogoPicker('add-section')">
+                Upload logo
+              </v-btn>
+              <input
+                ref="addSectionExperienceLogoInput"
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                class="d-none"
+                @change="onAddSectionExperienceLogoSelected"
+              >
+            </div>
             <v-text-field v-model="addSectionDraft.experience.city" label="City" variant="outlined" hide-details />
             <div class="grid-2">
               <v-text-field v-model="addSectionDraft.experience.start" label="Start" variant="outlined" hide-details />
@@ -3087,6 +3240,25 @@ if (import.meta.client) {
           <template v-if="activeSectionKey === 'experience'">
             <v-text-field v-model="sectionItemDraft.experience.role" label="Role" variant="outlined" hide-details />
             <v-text-field v-model="sectionItemDraft.experience.company" label="Company" variant="outlined" hide-details />
+            <v-text-field
+              v-model="sectionItemDraft.experience.companyImageUrl"
+              label="Company logo URL"
+              variant="outlined"
+              :error-messages="getExperienceLogoError('section-item')"
+              @update:model-value="setExperienceLogoError('section-item')"
+            />
+            <div class="d-flex align-center ga-2">
+              <v-btn prepend-icon="mdi-image-plus-outline" size="small" variant="tonal" @click="openExperienceLogoPicker('section-item')">
+                Upload logo
+              </v-btn>
+              <input
+                ref="sectionItemExperienceLogoInput"
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                class="d-none"
+                @change="onSectionItemExperienceLogoSelected"
+              >
+            </div>
             <v-text-field v-model="sectionItemDraft.experience.city" label="City" variant="outlined" hide-details />
             <div class="grid-2">
               <v-text-field v-model="sectionItemDraft.experience.start" label="Start" variant="outlined" hide-details />
