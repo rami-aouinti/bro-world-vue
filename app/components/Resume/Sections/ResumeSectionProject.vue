@@ -81,6 +81,26 @@ function providerIcon(project: Record<string, any>) {
   if (provider === 'other') return 'mdi-source-repository'
   return ''
 }
+
+function resolveContentStyle(item: Record<string, unknown>) {
+  return item.contentStyle === 'dashes' || item.contentStyle === 'timeline' ? item.contentStyle : 'points'
+}
+
+function resolvePoints(item: Record<string, unknown>) {
+  if (Array.isArray(item.points) && item.points.length) return item.points
+  const summary = String(item.summary || '').trim()
+  return summary ? [summary] : []
+}
+
+function resolveDashes(item: Record<string, unknown>) {
+  if (Array.isArray(item.dashes) && item.dashes.length) return item.dashes
+  return resolvePoints(item)
+}
+
+function resolveTimelineEvents(item: Record<string, unknown>) {
+  if (Array.isArray(item.timelineEvents) && item.timelineEvents.length) return item.timelineEvents
+  return resolvePoints(item).map(detail => ({ label: '', detail }))
+}
 </script>
 <template>
   <section :class="['project-section', 'resume-section-hoverable', `density-${layoutDensity}`]" :style="sectionStyle">
@@ -116,7 +136,20 @@ function providerIcon(project: Record<string, any>) {
             <span v-else class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span>
           </h4>
         </div>
-        <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
+        <template v-if="resolveContentStyle(project) === 'timeline'">
+          <div class="timeline-block">
+            <div v-for="(event, eventIndex) in resolveTimelineEvents(project)" :key="eventIndex" class="timeline-event">
+              <strong class="editable-text" :contenteditable="editable" @input="entry => updateText(`projects.${index}.timelineEvents.${eventIndex}.label`, (entry.target as HTMLElement).innerText)">{{ event.label }}</strong>
+              <span class="editable-text" :contenteditable="editable" @input="entry => updateText(`projects.${index}.timelineEvents.${eventIndex}.detail`, (entry.target as HTMLElement).innerText)">{{ event.detail }}</span>
+            </div>
+          </div>
+        </template>
+        <ul v-else-if="resolveContentStyle(project) === 'dashes'" class="dash-list">
+          <li v-for="(dash, dashIndex) in resolveDashes(project)" :key="dashIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.dashes.${dashIndex}`, (event.target as HTMLElement).innerText)">{{ dash }}</li>
+        </ul>
+        <ul v-else>
+          <li v-for="(point, pointIndex) in resolvePoints(project)" :key="pointIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.points.${pointIndex}`, (event.target as HTMLElement).innerText)">{{ point }}</li>
+        </ul>
       </article>
     </div>
   </section>
@@ -195,4 +228,8 @@ function providerIcon(project: Record<string, any>) {
 .density-compact { --entry-gap: var(--cv-space-2); }
 .density-normal { --entry-gap: var(--cv-space-3); }
 .density-spacious { --entry-gap: var(--cv-space-4); }
+.dash-list { list-style: none; padding-left: 0; margin: 6px 0 0; }
+.dash-list li::before { content: '— '; }
+.timeline-block { display: grid; gap: 6px; margin-top: 6px; }
+.timeline-event { display: grid; gap: 2px; border-left: 2px solid var(--cv-marker-accent); padding-left: 8px; }
 </style>

@@ -62,6 +62,26 @@ function updateText(path: string, value: string) {
   }
   target[last] = value
 }
+
+function resolveContentStyle(item: Record<string, unknown>) {
+  return item.contentStyle === 'dashes' || item.contentStyle === 'timeline' ? item.contentStyle : 'points'
+}
+
+function resolvePoints(item: Record<string, unknown>) {
+  if (Array.isArray(item.points) && item.points.length) return item.points
+  const note = String(item.note || '').trim()
+  return note ? [note] : []
+}
+
+function resolveDashes(item: Record<string, unknown>) {
+  if (Array.isArray(item.dashes) && item.dashes.length) return item.dashes
+  return resolvePoints(item)
+}
+
+function resolveTimelineEvents(item: Record<string, unknown>) {
+  if (Array.isArray(item.timelineEvents) && item.timelineEvents.length) return item.timelineEvents
+  return resolvePoints(item).map(detail => ({ label: '', detail }))
+}
 </script>
 <template>
   <section :class="['education', 'resume-section-hoverable', `density-${layoutDensity}`, `education--${safeVariant}`]" :style="sectionStyle">
@@ -88,7 +108,20 @@ function updateText(path: string, value: string) {
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.start`, (event.target as HTMLElement).innerText)">{{ item.start }}</span> -
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.end`, (event.target as HTMLElement).innerText)">{{ item.end }}</span>
         </p>
-        <p v-if="item.note" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.note`, (event.target as HTMLElement).innerText)">{{ item.note }}</p>
+        <template v-if="resolveContentStyle(item) === 'timeline'">
+          <div class="timeline-block">
+            <div v-for="(event, eventIndex) in resolveTimelineEvents(item)" :key="eventIndex" class="timeline-event">
+              <strong class="editable-text" :contenteditable="editable" @input="entry => updateText(`education.${index}.timelineEvents.${eventIndex}.label`, (entry.target as HTMLElement).innerText)">{{ event.label }}</strong>
+              <span class="editable-text" :contenteditable="editable" @input="entry => updateText(`education.${index}.timelineEvents.${eventIndex}.detail`, (entry.target as HTMLElement).innerText)">{{ event.detail }}</span>
+            </div>
+          </div>
+        </template>
+        <ul v-else-if="resolveContentStyle(item) === 'dashes'" class="dash-list">
+          <li v-for="(dash, dashIndex) in resolveDashes(item)" :key="dashIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.dashes.${dashIndex}`, (event.target as HTMLElement).innerText)">{{ dash }}</li>
+        </ul>
+        <ul v-else-if="resolvePoints(item).length">
+          <li v-for="(point, pointIndex) in resolvePoints(item)" :key="pointIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.points.${pointIndex}`, (event.target as HTMLElement).innerText)">{{ point }}</li>
+        </ul>
       </article>
     </div>
   </section>
@@ -214,4 +247,8 @@ function updateText(path: string, value: string) {
 .density-compact { --entry-gap: calc(var(--cv-space-2) + var(--cv-space-1) / 2); }
 .density-normal { --entry-gap: var(--cv-space-4); }
 .density-spacious { --entry-gap: calc(var(--cv-space-4) + var(--cv-space-2) - var(--cv-space-1) / 2); }
+.dash-list { list-style: none; padding-left: 0; }
+.dash-list li::before { content: '— '; }
+.timeline-block { display: grid; gap: 6px; }
+.timeline-event { display: grid; gap: 2px; border-left: 2px solid var(--cv-marker-accent); padding-left: 8px; }
 </style>
