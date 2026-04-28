@@ -46,7 +46,7 @@ type ResumeRendererDesignState = {
   sidebarWidth?: number
   photoSize?: number
   photoBorderWidth?: number
-  photoPosition?: 'left' | 'center' | 'right'
+  photoPosition?: 'left' | 'right'
   showSectionIcons?: boolean
   showContactIcons?: boolean
   sectionIconStyleVariant?: ResumeSectionIconStyleVariant
@@ -75,7 +75,7 @@ const props = withDefaults(
     sidebarWidth?: number
     photoSize?: number
     photoBorderWidth?: number
-    photoPosition?: 'left' | 'center' | 'right'
+    photoPosition?: 'left' | 'right'
     photoOffsetX?: number
     photoOffsetY?: number
     photoScale?: number
@@ -135,7 +135,8 @@ const emit = defineEmits<{
   (event: 'move-photo', direction: 'left' | 'right' | 'up' | 'down'): void
   (event: 'open-photo-picker'): void
   (event: 'update:photo-size' | 'update:photo-border-width', value: number): void
-  (event: 'update:photo-position', value: 'left' | 'center' | 'right'): void
+  (event: 'update:photo-position', value: 'left' | 'right'): void
+  (event: 'remove-photo'): void
 }>()
 
 const normalizedSectionLayout = computed<SectionLayoutEntry[]>(() => {
@@ -197,7 +198,11 @@ const resolvedDesignState = computed(() => ({
   sidebarWidth: props.designState?.sidebarWidth ?? props.sidebarWidth,
   photoSize: props.designState?.photoSize ?? props.photoSize,
   photoBorderWidth: props.designState?.photoBorderWidth ?? props.photoBorderWidth,
-  photoPosition: props.designState?.photoPosition ?? props.photoPosition,
+  photoPosition: props.designState?.photoPosition === 'left' || props.designState?.photoPosition === 'right'
+    ? props.designState.photoPosition
+    : props.photoPosition === 'left' || props.photoPosition === 'right'
+      ? props.photoPosition
+      : 'right',
   showSectionIcons: props.designState?.showSectionIcons ?? props.showSectionIcons,
   showContactIcons: props.designState?.showContactIcons ?? props.showContactIcons,
   sectionIconStyleVariant: props.designState?.sectionIconStyleVariant ?? props.sectionIconStyleVariant,
@@ -504,9 +509,10 @@ function updateText(path: string, value: string) {
           :selected-value="selectedPhotoShape"
           :photo-size="photoSize"
           :photo-border-width="photoBorderWidth"
-          :photo-position="photoPosition"
+          :photo-position="resolvedDesignState.photoPosition"
           @select="onPhotoShapeSelect?.($event)"
           @upload="emit('open-photo-picker')"
+          @remove="emit('remove-photo')"
           @update:photo-size="emit('update:photo-size', $event)"
           @update:photo-border-width="emit('update:photo-border-width', $event)"
           @update:photo-position="emit('update:photo-position', $event)"
@@ -948,18 +954,16 @@ function updateText(path: string, value: string) {
   --resume-section-gap: 16px;
 }
 
-.photo-position-left .resume-skin__header {
-  justify-content: flex-start;
-  gap: var(--cv-space-4);
-}
-
-.photo-position-center .resume-skin__header {
-  justify-content: center;
-  gap: var(--cv-space-4);
-}
-
 .photo-position-right .resume-skin__header {
   justify-content: space-between;
+}
+
+.photo-position-left .resume-skin__header {
+  justify-content: space-between;
+}
+
+.photo-position-left .photo-frame {
+  order: -1;
 }
 
 .divider-line :deep(.resume-section),
