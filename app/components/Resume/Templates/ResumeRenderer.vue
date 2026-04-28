@@ -106,6 +106,9 @@ const emit = defineEmits<{
     direction: 'up' | 'down',
   ): void
   (event: 'move-photo', direction: 'left' | 'right' | 'up' | 'down'): void
+  (event: 'open-photo-picker'): void
+  (event: 'update:photo-size' | 'update:photo-border-width', value: number): void
+  (event: 'update:photo-position', value: 'left' | 'center' | 'right'): void
 }>()
 
 const normalizedSectionLayout = computed<SectionLayoutEntry[]>(() => {
@@ -313,7 +316,14 @@ function updateText(path: string, value: string) {
           v-if="photoShapeOptions.length"
           :options="photoShapeOptions"
           :selected-value="selectedPhotoShape"
+          :photo-size="photoSize"
+          :photo-border-width="photoBorderWidth"
+          :photo-position="photoPosition"
           @select="onPhotoShapeSelect?.($event)"
+          @upload="emit('open-photo-picker')"
+          @update:photo-size="emit('update:photo-size', $event)"
+          @update:photo-border-width="emit('update:photo-border-width', $event)"
+          @update:photo-position="emit('update:photo-position', $event)"
           @move="emit('move-photo', $event)"
         />
         <v-avatar
@@ -529,11 +539,6 @@ function updateText(path: string, value: string) {
 .photo-frame:focus-within :deep(.avatar-overlay-controls) {
   opacity: 1;
   pointer-events: auto;
-}
-
-.photo-frame:hover :deep(.avatar-overlay-controls .photo-shape-picker),
-.photo-frame:focus-within :deep(.avatar-overlay-controls .photo-shape-picker) {
-  transform: translateY(0) scale(1);
 }
 .resume-skin__skills {
   list-style: none;

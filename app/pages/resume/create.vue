@@ -2903,6 +2903,10 @@ if (import.meta.client) {
                 @add-item="addItemToPreviewSection"
                 @change-variant="setSectionVariant"
                 @move-photo="movePhoto"
+                @open-photo-picker="openPhotoPicker"
+                @update:photo-size="layoutSettings.photoSize = $event"
+                @update:photo-border-width="layoutSettings.photoBorderWidth = $event"
+                @update:photo-position="layoutSettings.photoPosition = $event"
                 @move-section="moveSection"
               />
             </template>
@@ -3130,12 +3134,19 @@ if (import.meta.client) {
                   :photo-hidden="resume.photoHidden"
                   :section-layout="orderedPreviewSections"
                   :section-variants="sectionVariantByKey"
+                  :photo-shape-options="photoShapeOptions"
+                  :selected-photo-shape="safePhotoShape"
+                  :on-photo-shape-select="(shape) => selectedPhotoShape = shape"
                   :on-photo-click="onPreviewPhotoClick"
                   :template-skin="selectedTemplateSkin"
                   editable
                   @add-item="addItemToPreviewSection"
                   @change-variant="setSectionVariant"
                   @move-photo="movePhoto"
+                  @open-photo-picker="openPhotoPicker"
+                  @update:photo-size="layoutSettings.photoSize = $event"
+                  @update:photo-border-width="layoutSettings.photoBorderWidth = $event"
+                  @update:photo-position="layoutSettings.photoPosition = $event"
                   @move-section="moveSection"
                 />
               </template>
