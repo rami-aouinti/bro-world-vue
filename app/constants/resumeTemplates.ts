@@ -33,6 +33,46 @@ export type ResumeTemplateDefinition = {
 
 export const RESUME_TEMPLATES: ResumeTemplateDefinition[] = [
   {
+    id: 'executive-portrait',
+    title: 'Executive Portrait',
+    subtitle: 'Large hero name with rounded portrait focus',
+    image: '/img/cv/cv-1.png',
+    variant: 'corporate-blue',
+    flags: { photo: true, twoColumn: true, ats: true, docx: true, customized: true, free: true, timeline: false },
+  },
+  {
+    id: 'midnight-banner',
+    title: 'Midnight Banner',
+    subtitle: 'Dark header band with profile image and split details',
+    image: '/img/cv/cv-2.png',
+    variant: 'executive',
+    flags: { photo: true, twoColumn: true, ats: false, docx: true, customized: true, free: true, timeline: true },
+  },
+  {
+    id: 'minimal-profile',
+    title: 'Minimal Profile',
+    subtitle: 'Clean profile block with light sidebar and compact details',
+    image: '/img/cv/cv-4.png',
+    variant: 'minimalist',
+    flags: { photo: true, twoColumn: true, ats: true, docx: true, customized: true, free: true, timeline: false },
+  },
+  {
+    id: 'left-profile-stripe',
+    title: 'Left Profile Stripe',
+    subtitle: 'Profile photo stripe on the left with structured rows',
+    image: '/img/cv/cv-3.png',
+    variant: 'professional',
+    flags: { photo: true, twoColumn: true, ats: false, docx: true, customized: true, free: true, timeline: false },
+  },
+  {
+    id: 'accent-circle',
+    title: 'Accent Circle',
+    subtitle: 'Bold accent title with circular avatar and clean table lines',
+    image: '/img/cv/cv-5.png',
+    variant: 'terra',
+    flags: { photo: true, twoColumn: true, ats: true, docx: true, customized: true, free: true, timeline: false },
+  },
+  {
     id: 'terra',
     title: 'Terra Sidebar',
     subtitle: 'Warm sidebar profile in French style',

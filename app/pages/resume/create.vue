@@ -324,6 +324,14 @@ type DesignSettings = {
   selectedTextStyle: Typography
   layout: LayoutSettings
 }
+type TemplateDesignPreset = {
+  theme?: string
+  pageBackground?: PageBackgroundId
+  rounded?: RoundedOptionId
+  textStyle?: Typography
+  photoShape?: PhotoShape
+  layout?: Partial<LayoutSettings>
+}
 const createDefaultDesignSettings = (): DesignSettings => ({
   selectedTheme: 'ocean',
   selectedPageBackground: 'white',
@@ -683,6 +691,93 @@ const templates: Template[] = [
   ...coverLetterTemplateCards,
 ]
 
+const templateDesignPresets: Record<string, TemplateDesignPreset> = {
+  'executive-portrait': {
+    theme: 'ocean',
+    pageBackground: 'pearl-light',
+    rounded: 'lg',
+    textStyle: 'clean',
+    photoShape: 'circle',
+    layout: {
+      layoutMode: 'no-aside',
+      photoSize: 164,
+      photoBorderWidth: 4,
+      photoPosition: 'right',
+      sectionDividerStyle: 'line',
+      lineDensity: 'comfortable',
+      showSectionIcons: true,
+      showContactIcons: true,
+    },
+  },
+  'midnight-banner': {
+    theme: 'slate',
+    pageBackground: 'white',
+    rounded: 'sm',
+    textStyle: 'display',
+    photoShape: 'circle',
+    layout: {
+      layoutMode: 'no-aside',
+      photoSize: 132,
+      photoBorderWidth: 3,
+      photoPosition: 'left',
+      sectionDividerStyle: 'line',
+      lineDensity: 'compact',
+      sectionIconStyle: 'filled',
+      showSectionIcons: true,
+    },
+  },
+  'minimal-profile': {
+    theme: 'charcoal',
+    pageBackground: 'white',
+    rounded: 'none',
+    textStyle: 'clean',
+    photoShape: 'square',
+    layout: {
+      layoutMode: 'aside-left',
+      sidebarWidth: 230,
+      photoSize: 120,
+      photoBorderWidth: 2,
+      photoPosition: 'left',
+      sectionDividerStyle: 'line',
+      lineDensity: 'compact',
+      showSectionIcons: true,
+    },
+  },
+  'left-profile-stripe': {
+    theme: 'teal',
+    pageBackground: 'sky-light',
+    rounded: 'md',
+    textStyle: 'clean',
+    photoShape: 'rounded',
+    layout: {
+      layoutMode: 'aside-left',
+      sidebarWidth: 245,
+      photoSize: 128,
+      photoBorderWidth: 3,
+      photoPosition: 'left',
+      sectionDividerStyle: 'line',
+      lineDensity: 'comfortable',
+      sectionIconStyle: 'outline',
+    },
+  },
+  'accent-circle': {
+    theme: 'amber',
+    pageBackground: 'ivory-light',
+    rounded: 'md',
+    textStyle: 'serif',
+    photoShape: 'circle',
+    layout: {
+      layoutMode: 'no-aside',
+      photoSize: 116,
+      photoBorderWidth: 4,
+      photoPosition: 'right',
+      sectionDividerStyle: 'thick',
+      lineDensity: 'comfortable',
+      sectionIconStyle: 'rounded',
+    },
+  },
+}
+
 const resume = reactive<ResumeModel>({
   role: 'Communication Specialist',
   firstName: 'Emma',
@@ -900,6 +995,19 @@ function applyTemplateSelection(templateId: string) {
   selectedTemplate.value = templateId
 }
 
+function applyDesignPresetForSelectedTemplate() {
+  if (selectedDocumentType.value !== 'resume') return
+  const preset = templateDesignPresets[selectedTemplate.value]
+  if (!preset) return
+
+  if (preset.theme) selectedTheme.value = preset.theme
+  if (preset.pageBackground) selectedPageBackground.value = preset.pageBackground
+  if (preset.rounded) selectedRounded.value = preset.rounded
+  if (preset.textStyle) selectedTextStyle.value = preset.textStyle
+  if (preset.photoShape) selectedPhotoShape.value = preset.photoShape
+  if (preset.layout) Object.assign(layoutSettings, preset.layout)
+}
+
 function onTemplateQuickFilterChange(value: unknown) {
   const nextValue = typeof value === 'string' ? value : 'all'
   templateQuickFilter.value = resumeTemplateQuickFilterOptions.some(
@@ -988,6 +1096,7 @@ onMounted(async () => {
       : (templatesByDocumentType.value[0]?.id ?? DEFAULT_RESUME_TEMPLATE_ID)
   }
   selectValidTemplateForCurrentDocumentType()
+  applyDesignPresetForSelectedTemplate()
 
   if (!loggedIn.value) {
     await refreshSession()
@@ -2320,11 +2429,13 @@ function resetRendererGuard() {
 watch(selectedDocumentType, (value) => {
   templateQuickFilter.value = 'all'
   selectValidTemplateForCurrentDocumentType()
+  applyDesignPresetForSelectedTemplate()
   localStorage.setItem(DOCUMENT_TYPE_STORAGE_KEY, value)
 })
 
 watch(selectedTemplate, () => {
   selectValidTemplateForCurrentDocumentType()
+  applyDesignPresetForSelectedTemplate()
   resetRendererGuard()
 })
 
