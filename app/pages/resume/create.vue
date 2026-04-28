@@ -3097,22 +3097,84 @@ if (import.meta.client) {
   <div>
     <AppPageDrawers>
       <template #left>
-        <v-list
-          v-model="selectedDocumentType"
-          color="primary"
+        <p class="section-label mt-4">Layout</p>
+        <AppSelect
+          v-if="isResumeDocument"
+          v-model="layoutSettings.layoutMode"
+          :items="layoutModeOptions"
+          item-title="label"
+          item-value="value"
+          label="Layout mode"
           density="comfortable"
-          grow
-          class="bg-transparent"
+          hide-details
+          class="mb-3"
+        />
+        <AppSelect
+          v-model="layoutSettings.lineDensity"
+          :items="lineDensityOptions"
+          item-title="label"
+          item-value="value"
+          label="Density"
+          density="comfortable"
+          hide-details
+          class="mb-3"
+        />
+        <AppSelect
+          v-model="layoutSettings.sectionDividerStyle"
+          :items="sectionDividerStyleOptions"
+          item-title="label"
+          item-value="value"
+          label="Section dividers"
+          density="comfortable"
+          hide-details
+        />
+        <AppSelect
+          v-if="designMenuSupportsPhotoPosition"
+          v-model="layoutSettings.photoPosition"
+          :items="photoPositionOptions"
+          item-title="label"
+          item-value="value"
+          label="Photo alignment"
+          density="comfortable"
+          hide-details
+          class="mt-3"
+        />
+        <v-alert
+          v-else-if="isResumeDocument"
+          type="info"
+          variant="tonal"
+          density="comfortable"
+          class="mt-3"
         >
-          <v-list-item
-            v-for="option in documentTypeTabOptions"
-            :key="`document-type-${option.value}`"
-            :value="option.value"
-            class="text-lowercase"
-          >
-            {{ option.label }}
-          </v-list-item>
-        </v-list>
+          Photo alignment is hidden because this template does not
+          include a profile photo.
+        </v-alert>
+        <div v-if="designMenuSupportsAsideWidth" class="mt-3">
+          <div class="d-flex align-center justify-space-between mb-1">
+            <span class="text-caption">Aside width</span>
+            <span class="text-caption font-weight-medium">
+                            {{ layoutSettings.sidebarWidth }} px
+                          </span>
+          </div>
+          <v-slider
+            v-model="layoutSettings.sidebarWidth"
+            min="220"
+            max="380"
+            step="2"
+            color="primary"
+            hide-details
+          />
+        </div>
+        <v-alert
+          v-else-if="isResumeDocument"
+          type="info"
+          variant="tonal"
+          density="comfortable"
+          class="mt-3"
+        >
+          Aside width is hidden when layout mode is set to “No
+          aside”.
+        </v-alert>
       </template>
       <template #right>
         <v-chip color="primary" variant="tonal">Templates</v-chip>
@@ -3349,95 +3411,6 @@ if (import.meta.client) {
                           {{ option.title }}
                         </v-btn>
                       </v-btn-toggle>
-
-                      <p class="section-label mt-4">Layout</p>
-                      <AppSelect
-                        v-if="isResumeDocument"
-                        v-model="layoutSettings.layoutMode"
-                        :items="layoutModeOptions"
-                        item-title="label"
-                        item-value="value"
-                        label="Layout mode"
-                        density="comfortable"
-                        hide-details
-                        class="mb-3"
-                      />
-                      <AppSelect
-                        v-model="layoutSettings.lineDensity"
-                        :items="lineDensityOptions"
-                        item-title="label"
-                        item-value="value"
-                        label="Density"
-                        density="comfortable"
-                        hide-details
-                        class="mb-3"
-                      />
-                      <AppSelect
-                        v-model="layoutSettings.sectionDividerStyle"
-                        :items="sectionDividerStyleOptions"
-                        item-title="label"
-                        item-value="value"
-                        label="Section dividers"
-                        density="comfortable"
-                        hide-details
-                      />
-                      <AppSelect
-                        v-if="designMenuSupportsPhotoPosition"
-                        v-model="layoutSettings.photoPosition"
-                        :items="photoPositionOptions"
-                        item-title="label"
-                        item-value="value"
-                        label="Photo alignment"
-                        density="comfortable"
-                        hide-details
-                        class="mt-3"
-                      />
-                      <v-alert
-                        v-else-if="isResumeDocument"
-                        type="info"
-                        variant="tonal"
-                        density="comfortable"
-                        class="mt-3"
-                      >
-                        Photo alignment is hidden because this template does not
-                        include a profile photo.
-                      </v-alert>
-                      <div v-if="designMenuSupportsAsideWidth" class="mt-3">
-                        <div class="d-flex align-center justify-space-between mb-1">
-                          <span class="text-caption">Aside width</span>
-                          <span class="text-caption font-weight-medium">
-                            {{ layoutSettings.sidebarWidth }} px
-                          </span>
-                        </div>
-                        <v-slider
-                          v-model="layoutSettings.sidebarWidth"
-                          min="220"
-                          max="380"
-                          step="2"
-                          color="primary"
-                          hide-details
-                        />
-                        <v-text-field
-                          v-model.number="layoutSettings.sidebarWidth"
-                          type="number"
-                          min="220"
-                          max="380"
-                          step="2"
-                          label="Aside width (px)"
-                          density="comfortable"
-                          hide-details
-                        />
-                      </div>
-                      <v-alert
-                        v-else-if="isResumeDocument"
-                        type="info"
-                        variant="tonal"
-                        density="comfortable"
-                        class="mt-3"
-                      >
-                        Aside width is hidden when layout mode is set to “No
-                        aside”.
-                      </v-alert>
                       <v-alert
                         v-if="isCoverDocument"
                         type="info"
