@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import type { PageBackgroundId, RoundedOptionId, Typography } from '~/constants/resumeDesign'
+import type {
+  PageBackgroundId,
+  RoundedOptionId,
+  Typography,
+} from '~/constants/resumeDesign'
 import {
   COVER_LETTER_TEMPLATES,
   COVER_PAGE_TEMPLATES,
@@ -7,13 +11,21 @@ import {
   RESUME_TEMPLATES,
   type ResumeTemplateVariant,
 } from '~/constants/resumeTemplates'
-import { resolveTemplateSkin, type ResumeLayoutMode, type ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
-import { RESUME_CONTENT_STYLE_OPTIONS, RESUME_SECTION_REGISTRY } from '~/constants/resumeSectionRegistry'
 import {
-  useResumeDesignControls,
-} from '~/composables/useResumeDesignControls'
+  resolveTemplateSkin,
+  type ResumeLayoutMode,
+  type ResumeSectionIconStyleVariant,
+} from '~/constants/resumeTemplateSkins'
+import {
+  RESUME_CONTENT_STYLE_OPTIONS,
+  RESUME_SECTION_REGISTRY,
+} from '~/constants/resumeSectionRegistry'
+import { useResumeDesignControls } from '~/composables/useResumeDesignControls'
 import { useResumeDocumentState } from '~/composables/useResumeDocumentState'
-import { fromApiResumeToBuilderModel, fromBuilderModelToApiPayload } from '~/utils/resumeApiMapper'
+import {
+  fromApiResumeToBuilderModel,
+  fromBuilderModelToApiPayload,
+} from '~/utils/resumeApiMapper'
 import { levelToStars, starsToPercent } from '~/utils/resumeLanguageLevel'
 import ResumeRenderer from '~/components/Resume/Templates/ResumeRenderer.vue'
 import {
@@ -22,7 +34,12 @@ import {
   type ResumePreviewSectionKey,
   type ResumeSectionActionKey,
 } from '~/types/resumeDocumentModel'
-import { createResume, deleteResume, listMyResumes, updateResume } from '~/services/resumeApi'
+import {
+  createResume,
+  deleteResume,
+  listMyResumes,
+  updateResume,
+} from '~/services/resumeApi'
 
 definePageMeta({
   title: 'Create Resume',
@@ -30,7 +47,12 @@ definePageMeta({
 })
 
 type Skill = { name: string; level: number }
-type Language = { name: string; level: number; countryCode?: string; flag?: string }
+type Language = {
+  name: string
+  level: number
+  countryCode?: string
+  flag?: string
+}
 type ContentStyle = 'paragraph' | 'points' | 'dashes' | 'timeline'
 type TimelineEvent = { label: string; detail: string }
 type Experience = {
@@ -50,7 +72,11 @@ type Experience = {
   timelineDateRange?: string
   timelineDescription?: string
 }
-type ExperienceContentStyle = 'paragraph' | 'bullets' | 'dashes' | 'timeline-note'
+type ExperienceContentStyle =
+  | 'paragraph'
+  | 'bullets'
+  | 'dashes'
+  | 'timeline-note'
 type Education = {
   degree: string
   school: string
@@ -222,10 +248,22 @@ type Template = {
   useTimeline: boolean
   variant: ResumeTemplateVariant
 }
-type TemplateQuickFilter = 'all' | 'photo' | 'two-column' | 'ats' | 'free' | 'timeline'
+type TemplateQuickFilter =
+  | 'all'
+  | 'photo'
+  | 'two-column'
+  | 'ats'
+  | 'free'
+  | 'timeline'
 
 type LevelInputMode = 'percent' | 'stars'
-type PhotoShape = 'square' | 'rounded' | 'circle' | 'portrait-card' | 'soft-blob' | 'hex'
+type PhotoShape =
+  | 'square'
+  | 'rounded'
+  | 'circle'
+  | 'portrait-card'
+  | 'soft-blob'
+  | 'hex'
 type PhotoShapeOption = {
   label: string
   value: PhotoShape
@@ -267,7 +305,9 @@ type SectionLayoutVariant = {
   hobby: 'classic'
   certification: 'classic'
 }
-type SectionLayoutEntry<K extends ResumeEditableSectionKey = ResumeEditableSectionKey> = {
+type SectionLayoutEntry<
+  K extends ResumeEditableSectionKey = ResumeEditableSectionKey,
+> = {
   key: K
   variant: SectionLayoutVariant[K]
   region: 'main' | 'aside'
@@ -278,12 +318,22 @@ const toolbarSaveImportMenuOpen = ref(false)
 const toolbarSectionMenuOpen = ref(false)
 const route = useRoute()
 const selectedTemplate = ref(DEFAULT_RESUME_TEMPLATE_ID)
-const selectedDocumentType = ref<'resume'>('resume')
+const selectedDocumentType = ref<Template['documentType']>('resume')
 const selectedTheme = ref('ocean')
 const selectedPageBackground = ref<PageBackgroundId>('white')
 const selectedRounded = ref<RoundedOptionId>('md')
 const selectedTextStyle = ref<Typography>('clean')
 const levelInputMode = ref<LevelInputMode>('percent')
+
+const DOCUMENT_TYPE_STORAGE_KEY = 'resume-builder:selected-document-type'
+const documentTypeTabOptions: Array<{
+  label: string
+  value: Template['documentType']
+}> = [
+  { label: 'resume', value: 'resume' },
+  { label: 'cover-page', value: 'cover-page' },
+  { label: 'cover-letter', value: 'cover-letter' },
+]
 
 const {
   colorThemes,
@@ -359,15 +409,17 @@ const addSectionOptions = [
   { label: 'Reference', value: 'reference' },
 ] as const satisfies ReadonlyArray<{ label: string; value: AddSectionType }>
 const sectionVariantLabels = Object.values(RESUME_SECTION_REGISTRY)
-  .flatMap(section => section.variants)
+  .flatMap((section) => section.variants)
   .reduce<Record<string, string>>((accumulator, option) => {
     accumulator[option.value] = option.label
     return accumulator
   }, {})
-const resumeContentStyleSelectItems = RESUME_CONTENT_STYLE_OPTIONS.map(option => ({
-  title: option.label,
-  value: option.value,
-}))
+const resumeContentStyleSelectItems = RESUME_CONTENT_STYLE_OPTIONS.map(
+  (option) => ({
+    title: option.label,
+    value: option.value,
+  }),
+)
 const sectionConfig: {
   [K in ResumePreviewSectionKey]: {
     label: string
@@ -397,30 +449,136 @@ const variantRegistry: {
     fallback: SectionLayoutVariant[K]
   }
 } = {
-  experience: { allowed: RESUME_SECTION_REGISTRY.experience.variants.map(option => option.value) as SectionLayoutVariant['experience'][], fallback: RESUME_SECTION_REGISTRY.experience.defaultVariant as SectionLayoutVariant['experience'] },
-  education: { allowed: RESUME_SECTION_REGISTRY.education.variants.map(option => option.value) as SectionLayoutVariant['education'][], fallback: RESUME_SECTION_REGISTRY.education.defaultVariant as SectionLayoutVariant['education'] },
-  language: { allowed: RESUME_SECTION_REGISTRY.language.variants.map(option => option.value) as SectionLayoutVariant['language'][], fallback: RESUME_SECTION_REGISTRY.language.defaultVariant as SectionLayoutVariant['language'] },
-  project: { allowed: RESUME_SECTION_REGISTRY.project.variants.map(option => option.value) as SectionLayoutVariant['project'][], fallback: RESUME_SECTION_REGISTRY.project.defaultVariant as SectionLayoutVariant['project'] },
-  skill: { allowed: RESUME_SECTION_REGISTRY.skill.variants.map(option => option.value) as SectionLayoutVariant['skill'][], fallback: RESUME_SECTION_REGISTRY.skill.defaultVariant as SectionLayoutVariant['skill'] },
-  reference: { allowed: RESUME_SECTION_REGISTRY.reference.variants.map(option => option.value) as SectionLayoutVariant['reference'][], fallback: RESUME_SECTION_REGISTRY.reference.defaultVariant as SectionLayoutVariant['reference'] },
-  hobby: { allowed: RESUME_SECTION_REGISTRY.hobby.variants.map(option => option.value) as SectionLayoutVariant['hobby'][], fallback: RESUME_SECTION_REGISTRY.hobby.defaultVariant as SectionLayoutVariant['hobby'] },
-  certification: { allowed: RESUME_SECTION_REGISTRY.certification.variants.map(option => option.value) as SectionLayoutVariant['certification'][], fallback: RESUME_SECTION_REGISTRY.certification.defaultVariant as SectionLayoutVariant['certification'] },
+  experience: {
+    allowed: RESUME_SECTION_REGISTRY.experience.variants.map(
+      (option) => option.value,
+    ) as SectionLayoutVariant['experience'][],
+    fallback: RESUME_SECTION_REGISTRY.experience
+      .defaultVariant as SectionLayoutVariant['experience'],
+  },
+  education: {
+    allowed: RESUME_SECTION_REGISTRY.education.variants.map(
+      (option) => option.value,
+    ) as SectionLayoutVariant['education'][],
+    fallback: RESUME_SECTION_REGISTRY.education
+      .defaultVariant as SectionLayoutVariant['education'],
+  },
+  language: {
+    allowed: RESUME_SECTION_REGISTRY.language.variants.map(
+      (option) => option.value,
+    ) as SectionLayoutVariant['language'][],
+    fallback: RESUME_SECTION_REGISTRY.language
+      .defaultVariant as SectionLayoutVariant['language'],
+  },
+  project: {
+    allowed: RESUME_SECTION_REGISTRY.project.variants.map(
+      (option) => option.value,
+    ) as SectionLayoutVariant['project'][],
+    fallback: RESUME_SECTION_REGISTRY.project
+      .defaultVariant as SectionLayoutVariant['project'],
+  },
+  skill: {
+    allowed: RESUME_SECTION_REGISTRY.skill.variants.map(
+      (option) => option.value,
+    ) as SectionLayoutVariant['skill'][],
+    fallback: RESUME_SECTION_REGISTRY.skill
+      .defaultVariant as SectionLayoutVariant['skill'],
+  },
+  reference: {
+    allowed: RESUME_SECTION_REGISTRY.reference.variants.map(
+      (option) => option.value,
+    ) as SectionLayoutVariant['reference'][],
+    fallback: RESUME_SECTION_REGISTRY.reference
+      .defaultVariant as SectionLayoutVariant['reference'],
+  },
+  hobby: {
+    allowed: RESUME_SECTION_REGISTRY.hobby.variants.map(
+      (option) => option.value,
+    ) as SectionLayoutVariant['hobby'][],
+    fallback: RESUME_SECTION_REGISTRY.hobby
+      .defaultVariant as SectionLayoutVariant['hobby'],
+  },
+  certification: {
+    allowed: RESUME_SECTION_REGISTRY.certification.variants.map(
+      (option) => option.value,
+    ) as SectionLayoutVariant['certification'][],
+    fallback: RESUME_SECTION_REGISTRY.certification
+      .defaultVariant as SectionLayoutVariant['certification'],
+  },
 }
 const defaultSectionLayoutEntries: SectionLayoutEntry[] = [
-  { key: 'experience', variant: RESUME_SECTION_REGISTRY.experience.defaultVariant as SectionLayoutVariant['experience'], region: RESUME_SECTION_REGISTRY.experience.defaultRegion, order: 0 },
-  { key: 'education', variant: RESUME_SECTION_REGISTRY.education.defaultVariant as SectionLayoutVariant['education'], region: RESUME_SECTION_REGISTRY.education.defaultRegion, order: 1 },
-  { key: 'project', variant: RESUME_SECTION_REGISTRY.project.defaultVariant as SectionLayoutVariant['project'], region: RESUME_SECTION_REGISTRY.project.defaultRegion, order: 2 },
-  { key: 'certification', variant: RESUME_SECTION_REGISTRY.certification.defaultVariant as SectionLayoutVariant['certification'], region: RESUME_SECTION_REGISTRY.certification.defaultRegion, order: 3 },
-  { key: 'skill', variant: RESUME_SECTION_REGISTRY.skill.defaultVariant as SectionLayoutVariant['skill'], region: RESUME_SECTION_REGISTRY.skill.defaultRegion, order: 0 },
-  { key: 'language', variant: RESUME_SECTION_REGISTRY.language.defaultVariant as SectionLayoutVariant['language'], region: RESUME_SECTION_REGISTRY.language.defaultRegion, order: 1 },
-  { key: 'reference', variant: RESUME_SECTION_REGISTRY.reference.defaultVariant as SectionLayoutVariant['reference'], region: RESUME_SECTION_REGISTRY.reference.defaultRegion, order: 2 },
-  { key: 'hobby', variant: RESUME_SECTION_REGISTRY.hobby.defaultVariant as SectionLayoutVariant['hobby'], region: RESUME_SECTION_REGISTRY.hobby.defaultRegion, order: 3 },
+  {
+    key: 'experience',
+    variant: RESUME_SECTION_REGISTRY.experience
+      .defaultVariant as SectionLayoutVariant['experience'],
+    region: RESUME_SECTION_REGISTRY.experience.defaultRegion,
+    order: 0,
+  },
+  {
+    key: 'education',
+    variant: RESUME_SECTION_REGISTRY.education
+      .defaultVariant as SectionLayoutVariant['education'],
+    region: RESUME_SECTION_REGISTRY.education.defaultRegion,
+    order: 1,
+  },
+  {
+    key: 'project',
+    variant: RESUME_SECTION_REGISTRY.project
+      .defaultVariant as SectionLayoutVariant['project'],
+    region: RESUME_SECTION_REGISTRY.project.defaultRegion,
+    order: 2,
+  },
+  {
+    key: 'certification',
+    variant: RESUME_SECTION_REGISTRY.certification
+      .defaultVariant as SectionLayoutVariant['certification'],
+    region: RESUME_SECTION_REGISTRY.certification.defaultRegion,
+    order: 3,
+  },
+  {
+    key: 'skill',
+    variant: RESUME_SECTION_REGISTRY.skill
+      .defaultVariant as SectionLayoutVariant['skill'],
+    region: RESUME_SECTION_REGISTRY.skill.defaultRegion,
+    order: 0,
+  },
+  {
+    key: 'language',
+    variant: RESUME_SECTION_REGISTRY.language
+      .defaultVariant as SectionLayoutVariant['language'],
+    region: RESUME_SECTION_REGISTRY.language.defaultRegion,
+    order: 1,
+  },
+  {
+    key: 'reference',
+    variant: RESUME_SECTION_REGISTRY.reference
+      .defaultVariant as SectionLayoutVariant['reference'],
+    region: RESUME_SECTION_REGISTRY.reference.defaultRegion,
+    order: 2,
+  },
+  {
+    key: 'hobby',
+    variant: RESUME_SECTION_REGISTRY.hobby
+      .defaultVariant as SectionLayoutVariant['hobby'],
+    region: RESUME_SECTION_REGISTRY.hobby.defaultRegion,
+    order: 3,
+  },
 ]
 
-function normalizeSectionLayout(entries: Array<Partial<SectionLayoutEntry>> | SectionLayoutEntry[]) {
-  const entryByKey = new Map<ResumeEditableSectionKey, Partial<SectionLayoutEntry>>()
+function normalizeSectionLayout(
+  entries: Array<Partial<SectionLayoutEntry>> | SectionLayoutEntry[],
+) {
+  const entryByKey = new Map<
+    ResumeEditableSectionKey,
+    Partial<SectionLayoutEntry>
+  >()
   for (const entry of entries) {
-    if (!entry || typeof entry.key !== 'string' || !isResumeEditableSectionKey(entry.key)) continue
+    if (
+      !entry ||
+      typeof entry.key !== 'string' ||
+      !isResumeEditableSectionKey(entry.key)
+    )
+      continue
     entryByKey.set(entry.key, entry)
   }
 
@@ -428,45 +586,55 @@ function normalizeSectionLayout(entries: Array<Partial<SectionLayoutEntry>> | Se
     const entry = entryByKey.get(fallback.key)
     return {
       key: fallback.key,
-      variant: normalizeSectionVariant(fallback.key, entry?.variant ?? fallback.variant),
-      region: entry?.region === 'main' || entry?.region === 'aside' ? entry.region : fallback.region,
+      variant: normalizeSectionVariant(
+        fallback.key,
+        entry?.variant ?? fallback.variant,
+      ),
+      region:
+        entry?.region === 'main' || entry?.region === 'aside'
+          ? entry.region
+          : fallback.region,
       order: typeof entry?.order === 'number' ? entry.order : fallback.order,
     }
   })
 }
-const coverPageTemplateCards: Template[] = COVER_PAGE_TEMPLATES.map(template => ({
-  id: template.id,
-  title: template.title,
-  subtitle: template.subtitle,
-  image: template.image,
-  documentType: 'cover-page',
-  hasPhoto: template.id === 'cover-page-terra',
-  isTwoColumn: false,
-  isAts: true,
-  hasDocx: true,
-  isCustomized: true,
-  isFree: true,
-  useTimeline: false,
-  variant: template.id === 'cover-page-terra' ? 'classic' : 'minimalist',
-}))
+const coverPageTemplateCards: Template[] = COVER_PAGE_TEMPLATES.map(
+  (template) => ({
+    id: template.id,
+    title: template.title,
+    subtitle: template.subtitle,
+    image: template.image,
+    documentType: 'cover-page',
+    hasPhoto: template.id === 'cover-page-terra',
+    isTwoColumn: false,
+    isAts: true,
+    hasDocx: true,
+    isCustomized: true,
+    isFree: true,
+    useTimeline: false,
+    variant: template.id === 'cover-page-terra' ? 'classic' : 'minimalist',
+  }),
+)
 
-const coverLetterTemplateCards: Template[] = COVER_LETTER_TEMPLATES.map(template => ({
-  id: template.id,
-  title: template.title,
-  subtitle: template.subtitle,
-  image: template.image,
-  documentType: 'cover-letter',
-  hasPhoto: template.id === 'cover-letter-modern',
-  isTwoColumn: false,
-  isAts: true,
-  hasDocx: true,
-  isCustomized: true,
-  isFree: true,
-  useTimeline: false,
-  variant: template.id === 'cover-letter-classic' ? 'traditional' : 'modern',
-}))
+const coverLetterTemplateCards: Template[] = COVER_LETTER_TEMPLATES.map(
+  (template) => ({
+    id: template.id,
+    title: template.title,
+    subtitle: template.subtitle,
+    image: template.image,
+    documentType: 'cover-letter',
+    hasPhoto: template.id === 'cover-letter-modern',
+    isTwoColumn: false,
+    isAts: true,
+    hasDocx: true,
+    isCustomized: true,
+    isFree: true,
+    useTimeline: false,
+    variant: template.id === 'cover-letter-classic' ? 'traditional' : 'modern',
+  }),
+)
 
-const resumeTemplateCards: Template[] = RESUME_TEMPLATES.map(template => ({
+const resumeTemplateCards: Template[] = RESUME_TEMPLATES.map((template) => ({
   id: template.id,
   title: template.title,
   subtitle: template.subtitle,
@@ -613,7 +781,9 @@ const resume = reactive<ResumeModel>({
       repositoryUrl: 'https://github.com/example/campus-editorial-newsletter',
       repositoryProvider: 'github',
       contentStyle: 'points',
-      points: ['Led content calendar and boosted monthly newsletter open rate by 32%.'],
+      points: [
+        'Led content calendar and boosted monthly newsletter open rate by 32%.',
+      ],
     },
     {
       name: 'Student Podcast Launch',
@@ -622,7 +792,9 @@ const resume = reactive<ResumeModel>({
       repositoryUrl: 'https://gitlab.com/example/student-podcast-launch',
       repositoryProvider: 'gitlab',
       contentStyle: 'points',
-      points: ['Created scripts and episode communication plan for a 10-episode launch.'],
+      points: [
+        'Created scripts and episode communication plan for a 10-episode launch.',
+      ],
     },
   ] as Project[],
 })
@@ -640,10 +812,15 @@ let importElapsedTimer: ReturnType<typeof setInterval> | null = null
 let importProgressTimer: ReturnType<typeof setInterval> | null = null
 
 const templatesByDocumentType = computed(() =>
-  templates.filter((template) => template.documentType === selectedDocumentType.value),
+  templates.filter(
+    (template) => template.documentType === selectedDocumentType.value,
+  ),
 )
 const templateQuickFilter = ref<TemplateQuickFilter>('all')
-const templateQuickFilterOptions: Array<{ label: string; value: TemplateQuickFilter }> = [
+const templateQuickFilterOptions: Array<{
+  label: string
+  value: TemplateQuickFilter
+}> = [
   { label: 'Tous', value: 'all' },
   { label: 'Photo', value: 'photo' },
   { label: '2 colonnes', value: 'two-column' },
@@ -668,7 +845,9 @@ const filteredTemplatesByDrawer = computed(() => {
 
 const selectedTemplateConfig = computed(
   () =>
-    templatesByDocumentType.value.find((template) => template.id === selectedTemplate.value) ??
+    templatesByDocumentType.value.find(
+      (template) => template.id === selectedTemplate.value,
+    ) ??
     templatesByDocumentType.value[0] ??
     templates[0],
 )
@@ -679,55 +858,92 @@ function applyTemplateSelection(templateId: string) {
 
 function onTemplateQuickFilterChange(value: unknown) {
   const nextValue = typeof value === 'string' ? value : 'all'
-  templateQuickFilter.value = templateQuickFilterOptions.some(option => option.value === nextValue as TemplateQuickFilter)
+  templateQuickFilter.value = templateQuickFilterOptions.some(
+    (option) => option.value === (nextValue as TemplateQuickFilter),
+  )
     ? (nextValue as TemplateQuickFilter)
     : 'all'
 }
 
+function selectValidTemplateForCurrentDocumentType() {
+  const isCurrentTemplateValid = templatesByDocumentType.value.some(
+    (template) => template.id === selectedTemplate.value,
+  )
+
+  if (isCurrentTemplateValid) return
+
+  const fallbackTemplate = templatesByDocumentType.value[0] ?? templates[0]
+
+  if (fallbackTemplate) {
+    selectedTemplate.value = fallbackTemplate.id
+  }
+}
+
 function hasRemoteSectionContent(sections?: RemoteResumeSection[]) {
-  return Array.isArray(sections) && sections.some(section =>
-    [
-      section?.title,
-      section?.description,
-      section?.company,
-      section?.school,
-      section?.location,
-      section?.level,
-      section?.startDate,
-      section?.endDate,
-      section?.home_page,
-    ].some(value => String(value || '').trim().length > 0)
-      || (Array.isArray(section?.attachments) && section.attachments.length > 0),
+  return (
+    Array.isArray(sections) &&
+    sections.some(
+      (section) =>
+        [
+          section?.title,
+          section?.description,
+          section?.company,
+          section?.school,
+          section?.location,
+          section?.level,
+          section?.startDate,
+          section?.endDate,
+          section?.home_page,
+        ].some((value) => String(value || '').trim().length > 0) ||
+        (Array.isArray(section?.attachments) && section.attachments.length > 0),
+    )
   )
 }
 
 function hasRemoteResumeContent(resumeItem: RemoteResume) {
-  return ([
-    resumeItem.experiences,
-    resumeItem.educations,
-    resumeItem.skills,
-    resumeItem.languages,
-    resumeItem.certifications,
-    resumeItem.projects,
-    resumeItem.references,
-    resumeItem.hobbies,
-  ] as Array<RemoteResumeSection[] | undefined>).some(hasRemoteSectionContent)
+  return (
+    [
+      resumeItem.experiences,
+      resumeItem.educations,
+      resumeItem.skills,
+      resumeItem.languages,
+      resumeItem.certifications,
+      resumeItem.projects,
+      resumeItem.references,
+      resumeItem.hobbies,
+    ] as Array<RemoteResumeSection[] | undefined>
+  ).some(hasRemoteSectionContent)
 }
 
 function extractRemoteResumeCreatedAtValue(resumeItem: RemoteResume) {
   const createdAt = resumeItem.createdAt
   if (typeof createdAt === 'string') return createdAt
-  if (createdAt && typeof createdAt === 'object') return String(createdAt.date || '')
+  if (createdAt && typeof createdAt === 'object')
+    return String(createdAt.date || '')
   return ''
 }
 
 onMounted(async () => {
+  const storedDocumentType = localStorage.getItem(DOCUMENT_TYPE_STORAGE_KEY)
+  if (
+    storedDocumentType === 'resume' ||
+    storedDocumentType === 'cover-page' ||
+    storedDocumentType === 'cover-letter'
+  ) {
+    selectedDocumentType.value = storedDocumentType
+  }
+
   const templateFromQuery = route.query.template
 
   if (typeof templateFromQuery === 'string') {
-    const exists = templatesByDocumentType.value.some((template) => template.id === templateFromQuery)
-    selectedTemplate.value = exists ? templateFromQuery : DEFAULT_RESUME_TEMPLATE_ID
+    const exists = templatesByDocumentType.value.some(
+      (template) => template.id === templateFromQuery,
+    )
+    selectedTemplate.value = exists
+      ? templateFromQuery
+      : (templatesByDocumentType.value[0]?.id ?? DEFAULT_RESUME_TEMPLATE_ID)
   }
+  selectValidTemplateForCurrentDocumentType()
 
   if (!loggedIn.value) {
     await refreshSession()
@@ -738,13 +954,21 @@ onMounted(async () => {
     const apiResumes = await listMyResumes()
     remoteResumes.value = Array.isArray(apiResumes) ? apiResumes : []
 
-    const sortedByCreatedAt = [...remoteResumes.value].sort((a, b) =>
-      Date.parse(extractRemoteResumeCreatedAtValue(a)) - Date.parse(extractRemoteResumeCreatedAtValue(b)))
+    const sortedByCreatedAt = [...remoteResumes.value].sort(
+      (a, b) =>
+        Date.parse(extractRemoteResumeCreatedAtValue(a)) -
+        Date.parse(extractRemoteResumeCreatedAtValue(b)),
+    )
     const latestResume = sortedByCreatedAt.at(-1) || remoteResumes.value.at(-1)
 
     selectedRemoteResumeId.value = latestResume?.id || null
 
-    if (!latestResume || latestResume.documentUrl !== null || !hasRemoteResumeContent(latestResume)) return
+    if (
+      !latestResume ||
+      latestResume.documentUrl !== null ||
+      !hasRemoteResumeContent(latestResume)
+    )
+      return
 
     applyBuilderResumeData(fromApiResumeToBuilderModel(latestResume))
     loadedFromApi.value = true
@@ -758,12 +982,15 @@ onMounted(async () => {
 const templateSupportsPhoto = computed(
   () => selectedTemplateConfig.value.hasPhoto,
 )
-const selectedTemplateSkin = computed(
-  () => resolveTemplateSkin(selectedTemplateConfig.value.variant),
+const selectedTemplateSkin = computed(() =>
+  resolveTemplateSkin(selectedTemplateConfig.value.variant),
 )
-const { state: resumeDocumentState, hydrateFromStorage, migrateLegacyStorage, persist } = useResumeDocumentState(
-  computed(() => selectedTemplateConfig.value.variant),
-)
+const {
+  state: resumeDocumentState,
+  hydrateFromStorage,
+  migrateLegacyStorage,
+  persist,
+} = useResumeDocumentState(computed(() => selectedTemplateConfig.value.variant))
 const pdfModalOpen = ref(false)
 const photoDialogOpen = ref(false)
 const aiCreateModalOpen = ref(false)
@@ -779,11 +1006,11 @@ const signatureDataUrl = ref('')
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 const isDrawingSignature = ref(false)
 const selectedPhotoShape = ref<string>('square')
-const safePhotoShape = computed<PhotoShape>(() => (
-  photoShapeOptions.some(option => option.value === selectedPhotoShape.value)
+const safePhotoShape = computed<PhotoShape>(() =>
+  photoShapeOptions.some((option) => option.value === selectedPhotoShape.value)
     ? (selectedPhotoShape.value as PhotoShape)
-    : 'square'
-))
+    : 'square',
+)
 let aiElapsedTimer: ReturnType<typeof setInterval> | null = null
 const { t } = useI18n()
 const { loggedIn, fetch: refreshSession } = useUserSession()
@@ -811,7 +1038,8 @@ const sectionLayout = ref<SectionLayoutEntry[]>(
 )
 const sectionItemDialogOpen = ref(false)
 const activeSectionKey = ref<ResumePreviewSectionKey>('experience')
-const activeVariant = ref<SectionLayoutVariant[ResumePreviewSectionKey]>('detailed')
+const activeVariant =
+  ref<SectionLayoutVariant[ResumePreviewSectionKey]>('detailed')
 
 watch(saveMode, () => {
   replaceConfirmStep.value = false
@@ -840,7 +1068,9 @@ async function confirmDeleteRemoteResume() {
   const resumeId = resumeIdPendingDeletion.value
   try {
     await deleteResume(resumeId)
-    remoteResumes.value = remoteResumes.value.filter(item => item.id !== resumeId)
+    remoteResumes.value = remoteResumes.value.filter(
+      (item) => item.id !== resumeId,
+    )
 
     if (selectedRemoteResumeId.value === resumeId) {
       selectedRemoteResumeId.value = remoteResumes.value.at(0)?.id ?? null
@@ -892,8 +1122,19 @@ const createEducationDraft = () => ({
   contentStyle: 'points' as ContentStyle,
 })
 const createSkillDraft = () => ({ name: '', level: 80 })
-const createAddLanguageDraft = () => ({ name: '', level: 80, countryCode: '', flag: '' })
-const createSectionItemLanguageDraft = () => ({ name: '', level: 80, stars: 4, countryCode: '', flag: '' })
+const createAddLanguageDraft = () => ({
+  name: '',
+  level: 80,
+  countryCode: '',
+  flag: '',
+})
+const createSectionItemLanguageDraft = () => ({
+  name: '',
+  level: 80,
+  stars: 4,
+  countryCode: '',
+  flag: '',
+})
 const createHobbyDraft = () => ({ name: '' })
 const createProjectDraft = () => ({
   name: '',
@@ -903,8 +1144,18 @@ const createProjectDraft = () => ({
   repositoryProvider: undefined as Project['repositoryProvider'],
   contentStyle: 'points' as ContentStyle,
 })
-const createCertificationDraft = () => ({ title: '', school: '', start: '', end: '' })
-const createReferenceDraft = () => ({ name: '', company: '', email: '', phone: '' })
+const createCertificationDraft = () => ({
+  title: '',
+  school: '',
+  start: '',
+  end: '',
+})
+const createReferenceDraft = () => ({
+  name: '',
+  company: '',
+  email: '',
+  phone: '',
+})
 const sectionItemDraft = reactive({
   experience: createSectionItemExperienceDraft(),
   education: createEducationDraft(),
@@ -923,7 +1174,12 @@ const addSectionDraft = reactive({
   reference: createReferenceDraft(),
 })
 const EXPERIENCE_LOGO_MAX_FILE_SIZE = 2 * 1024 * 1024
-const EXPERIENCE_LOGO_ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml']
+const EXPERIENCE_LOGO_ALLOWED_TYPES = [
+  'image/png',
+  'image/jpeg',
+  'image/webp',
+  'image/svg+xml',
+]
 const experienceLogoErrors = reactive<Record<string, string>>({})
 const addSectionExperienceLogoInput = ref<HTMLInputElement | null>(null)
 const sectionItemExperienceLogoInput = ref<HTMLInputElement | null>(null)
@@ -933,21 +1189,35 @@ const PHOTO_OFFSET_LIMIT = 48
 
 function movePhoto(direction: 'left' | 'right' | 'up' | 'down') {
   if (direction === 'left') {
-    resume.photoOffsetX = Math.max(-PHOTO_OFFSET_LIMIT, resume.photoOffsetX - PHOTO_MOVE_STEP)
+    resume.photoOffsetX = Math.max(
+      -PHOTO_OFFSET_LIMIT,
+      resume.photoOffsetX - PHOTO_MOVE_STEP,
+    )
     return
   }
   if (direction === 'right') {
-    resume.photoOffsetX = Math.min(PHOTO_OFFSET_LIMIT, resume.photoOffsetX + PHOTO_MOVE_STEP)
+    resume.photoOffsetX = Math.min(
+      PHOTO_OFFSET_LIMIT,
+      resume.photoOffsetX + PHOTO_MOVE_STEP,
+    )
     return
   }
   if (direction === 'up') {
-    resume.photoOffsetY = Math.max(-PHOTO_OFFSET_LIMIT, resume.photoOffsetY - PHOTO_MOVE_STEP)
+    resume.photoOffsetY = Math.max(
+      -PHOTO_OFFSET_LIMIT,
+      resume.photoOffsetY - PHOTO_MOVE_STEP,
+    )
     return
   }
-  resume.photoOffsetY = Math.min(PHOTO_OFFSET_LIMIT, resume.photoOffsetY + PHOTO_MOVE_STEP)
+  resume.photoOffsetY = Math.min(
+    PHOTO_OFFSET_LIMIT,
+    resume.photoOffsetY + PHOTO_MOVE_STEP,
+  )
 }
 
-function applyBuilderResumeData(payload: ReturnType<typeof fromApiResumeToBuilderModel>) {
+function applyBuilderResumeData(
+  payload: ReturnType<typeof fromApiResumeToBuilderModel>,
+) {
   const userNames = inferNameParts(payload.resumeInformation.fullName)
 
   resume.firstName = userNames.firstName || resume.firstName
@@ -958,11 +1228,11 @@ function applyBuilderResumeData(payload: ReturnType<typeof fromApiResumeToBuilde
   resume.country = payload.country || resume.country
 
   if (payload.skills.length) {
-    resume.skills = payload.skills.map(skill => ({ ...skill }))
+    resume.skills = payload.skills.map((skill) => ({ ...skill }))
   }
 
   if (payload.languages.length) {
-    resume.languages = payload.languages.map(language => ({
+    resume.languages = payload.languages.map((language) => ({
       name: language.name,
       level: Number(language.level) || 75,
       countryCode: String(language.countryCode || '').trim(),
@@ -975,7 +1245,7 @@ function applyBuilderResumeData(payload: ReturnType<typeof fromApiResumeToBuilde
   }
 
   if (payload.experiences.length) {
-    resume.experiences = payload.experiences.map(experience => ({
+    resume.experiences = payload.experiences.map((experience) => ({
       role: experience.role,
       company: experience.company,
       companyImageUrl: '',
@@ -989,7 +1259,7 @@ function applyBuilderResumeData(payload: ReturnType<typeof fromApiResumeToBuilde
   }
 
   if (payload.education.length) {
-    resume.education = payload.education.map(education => ({
+    resume.education = payload.education.map((education) => ({
       degree: education.degree,
       school: education.school,
       schoolImageUrl: '',
@@ -1003,7 +1273,7 @@ function applyBuilderResumeData(payload: ReturnType<typeof fromApiResumeToBuilde
   }
 
   if (payload.courses.length) {
-    resume.courses = payload.courses.map(course => ({
+    resume.courses = payload.courses.map((course) => ({
       title: course.title,
       school: course.school,
       start: course.start,
@@ -1012,7 +1282,7 @@ function applyBuilderResumeData(payload: ReturnType<typeof fromApiResumeToBuilde
   }
 
   if (payload.projects.length) {
-    resume.projects = payload.projects.map(project => ({
+    resume.projects = payload.projects.map((project) => ({
       name: project.name,
       summary: project.summary,
       imageUrl: '',
@@ -1024,7 +1294,7 @@ function applyBuilderResumeData(payload: ReturnType<typeof fromApiResumeToBuilde
   }
 
   if (payload.references.length) {
-    resume.references = payload.references.map(reference => ({
+    resume.references = payload.references.map((reference) => ({
       name: reference.name,
       company: reference.company,
       email: reference.email,
@@ -1076,7 +1346,9 @@ function onProjectImageSelected(index: number, event: Event) {
   input.value = ''
 }
 
-function detectRepositoryProvider(repositoryUrl?: string): Project['repositoryProvider'] {
+function detectRepositoryProvider(
+  repositoryUrl?: string,
+): Project['repositoryProvider'] {
   if (!repositoryUrl) return undefined
   const normalizedUrl = repositoryUrl.toLowerCase()
   if (normalizedUrl.includes('github.com')) return 'github'
@@ -1088,9 +1360,12 @@ function validateHttpRepositoryUrl(value?: string) {
   if (!value) return true
   try {
     const parsed = new URL(value)
-    return parsed.protocol === 'http:' || parsed.protocol === 'https:' || 'Repository URL must start with http:// or https://'
-  }
-  catch {
+    return (
+      parsed.protocol === 'http:' ||
+      parsed.protocol === 'https:' ||
+      'Repository URL must start with http:// or https://'
+    )
+  } catch {
     return 'Repository URL must be a valid URL (http/https).'
   }
 }
@@ -1137,7 +1412,11 @@ function onEducationImageSelected(
 
   const reader = new FileReader()
   reader.onload = () => {
-    updateEducationImageUrl(target, typeof reader.result === 'string' ? reader.result : '', index)
+    updateEducationImageUrl(
+      target,
+      typeof reader.result === 'string' ? reader.result : '',
+      index,
+    )
   }
   reader.readAsDataURL(file)
   input.value = ''
@@ -1202,14 +1481,14 @@ function saveSignature() {
 function parseMultilineList(value: string) {
   return value
     .split('\n')
-    .map(item => item.trim())
+    .map((item) => item.trim())
     .filter(Boolean)
 }
 
 function splitParagraphToList(value: string) {
   return value
     .split(/\n+|(?<=[.!?])\s+/)
-    .map(item => item.trim())
+    .map((item) => item.trim())
     .filter(Boolean)
 }
 
@@ -1221,23 +1500,36 @@ function parseTimelineEvents(value: string): TimelineEvent[] {
       if (fallbackDetailParts.length === 0) {
         return { label: '', detail: line }
       }
-      return { label: fallbackLabel.trim(), detail: fallbackDetailParts.join(':').trim() }
+      return {
+        label: fallbackLabel.trim(),
+        detail: fallbackDetailParts.join(':').trim(),
+      }
     }
     return { label: label.trim(), detail: detailParts.join('|').trim() }
   })
 }
 
 function applyContentFields(
-  model: { contentStyle?: ContentStyle; points?: string[]; dashes?: string[]; timelineEvents?: TimelineEvent[] },
+  model: {
+    contentStyle?: ContentStyle
+    points?: string[]
+    dashes?: string[]
+    timelineEvents?: TimelineEvent[]
+  },
   rawMultiline: string,
 ) {
-  const parsedLines = model.contentStyle === 'paragraph'
-    ? splitParagraphToList(rawMultiline)
-    : parseMultilineList(rawMultiline)
+  const parsedLines =
+    model.contentStyle === 'paragraph'
+      ? splitParagraphToList(rawMultiline)
+      : parseMultilineList(rawMultiline)
   const parsedTimelineEvents = parseTimelineEvents(rawMultiline)
-  model.points = model.contentStyle === 'points' || model.contentStyle === 'paragraph' ? parsedLines : []
+  model.points =
+    model.contentStyle === 'points' || model.contentStyle === 'paragraph'
+      ? parsedLines
+      : []
   model.dashes = model.contentStyle === 'dashes' ? parsedLines : []
-  model.timelineEvents = model.contentStyle === 'timeline' ? parsedTimelineEvents : []
+  model.timelineEvents =
+    model.contentStyle === 'timeline' ? parsedTimelineEvents : []
 }
 
 function changeExperienceContentStyle(index: number, nextStyle: ContentStyle) {
@@ -1284,16 +1576,18 @@ function setExperienceBullets(index: number, value: string) {
 }
 
 const getExperienceBullets = (index: number) =>
-  (resume.experiences[index].contentStyle === 'timeline'
+  resume.experiences[index].contentStyle === 'timeline'
     ? (resume.experiences[index].timelineEvents || [])
-      .map(event => [event.label, event.detail].filter(Boolean).join(' | '))
-      .join('\n')
+        .map((event) => [event.label, event.detail].filter(Boolean).join(' | '))
+        .join('\n')
     : resume.experiences[index].contentStyle === 'paragraph'
       ? (resume.experiences[index].points || []).join(' ')
-    : (resume.experiences[index].contentStyle === 'dashes'
-      ? (resume.experiences[index].dashes || [])
-      : (resume.experiences[index].points?.length ? resume.experiences[index].points : resume.experiences[index].bullets)
-    ).join('\n'))
+      : (resume.experiences[index].contentStyle === 'dashes'
+          ? resume.experiences[index].dashes || []
+          : resume.experiences[index].points?.length
+            ? resume.experiences[index].points
+            : resume.experiences[index].bullets
+        ).join('\n')
 
 function setEducationContent(index: number, value: string) {
   const education = resume.education[index]
@@ -1305,10 +1599,13 @@ function setEducationContent(index: number, value: string) {
 function getEducationContent(index: number) {
   const education = resume.education[index]
   if (education.contentStyle === 'timeline') {
-    return (education.timelineEvents || []).map(event => [event.label, event.detail].filter(Boolean).join(' | ')).join('\n')
+    return (education.timelineEvents || [])
+      .map((event) => [event.label, event.detail].filter(Boolean).join(' | '))
+      .join('\n')
   }
   if (education.contentStyle === 'paragraph') return education.note
-  if (education.contentStyle === 'dashes') return (education.dashes || []).join('\n')
+  if (education.contentStyle === 'dashes')
+    return (education.dashes || []).join('\n')
   if (education.points?.length) return education.points.join('\n')
   return education.note
 }
@@ -1323,10 +1620,13 @@ function setProjectContent(index: number, value: string) {
 function getProjectContent(index: number) {
   const project = resume.projects[index]
   if (project.contentStyle === 'timeline') {
-    return (project.timelineEvents || []).map(event => [event.label, event.detail].filter(Boolean).join(' | ')).join('\n')
+    return (project.timelineEvents || [])
+      .map((event) => [event.label, event.detail].filter(Boolean).join(' | '))
+      .join('\n')
   }
   if (project.contentStyle === 'paragraph') return project.summary
-  if (project.contentStyle === 'dashes') return (project.dashes || []).join('\n')
+  if (project.contentStyle === 'dashes')
+    return (project.dashes || []).join('\n')
   if (project.points?.length) return project.points.join('\n')
   return project.summary
 }
@@ -1368,8 +1668,10 @@ function validateExperienceLogoFile(file: File) {
 function readFileAsDataUrl(file: File) {
   return new Promise<string>((resolve, reject) => {
     const reader = new FileReader()
-    reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : '')
-    reader.onerror = () => reject(new Error('Impossible de lire le fichier logo.'))
+    reader.onload = () =>
+      resolve(typeof reader.result === 'string' ? reader.result : '')
+    reader.onerror = () =>
+      reject(new Error('Impossible de lire le fichier logo.'))
     reader.readAsDataURL(file)
   })
 }
@@ -1387,13 +1689,15 @@ async function applyExperienceLogoFromFile(
     const dataUrl = await readFileAsDataUrl(file)
     target.set(dataUrl)
     setExperienceLogoError(target.key)
-  }
-  catch {
+  } catch {
     setExperienceLogoError(target.key, 'Impossible de charger ce logo.')
   }
 }
 
-function openExperienceLogoPicker(target: 'add-section' | 'section-item' | 'resume', index?: number) {
+function openExperienceLogoPicker(
+  target: 'add-section' | 'section-item' | 'resume',
+  index?: number,
+) {
   if (target === 'add-section') {
     addSectionExperienceLogoInput.value?.click()
     return
@@ -1403,7 +1707,9 @@ function openExperienceLogoPicker(target: 'add-section' | 'section-item' | 'resu
     return
   }
   if (typeof index !== 'number') return
-  const input = document.getElementById(`experience-logo-input-${index}`) as HTMLInputElement | null
+  const input = document.getElementById(
+    `experience-logo-input-${index}`,
+  ) as HTMLInputElement | null
   input?.click()
 }
 
@@ -1413,7 +1719,9 @@ async function onResumeExperienceLogoSelected(event: Event, index: number) {
   if (!file) return
   await applyExperienceLogoFromFile(file, {
     key: `resume-${index}`,
-    set: (dataUrl) => { resume.experiences[index].companyImageUrl = dataUrl },
+    set: (dataUrl) => {
+      resume.experiences[index].companyImageUrl = dataUrl
+    },
   })
   input.value = ''
 }
@@ -1424,7 +1732,9 @@ async function onAddSectionExperienceLogoSelected(event: Event) {
   if (!file) return
   await applyExperienceLogoFromFile(file, {
     key: 'add-section',
-    set: (dataUrl) => { addSectionDraft.experience.companyImageUrl = dataUrl },
+    set: (dataUrl) => {
+      addSectionDraft.experience.companyImageUrl = dataUrl
+    },
   })
   input.value = ''
 }
@@ -1435,7 +1745,9 @@ async function onSectionItemExperienceLogoSelected(event: Event) {
   if (!file) return
   await applyExperienceLogoFromFile(file, {
     key: 'section-item',
-    set: (dataUrl) => { sectionItemDraft.experience.companyImageUrl = dataUrl },
+    set: (dataUrl) => {
+      sectionItemDraft.experience.companyImageUrl = dataUrl
+    },
   })
   input.value = ''
 }
@@ -1649,7 +1961,9 @@ function submitAddSection() {
       {
         const project: Project = {
           ...addSectionDraft.project,
-          repositoryProvider: addSectionDraft.project.repositoryProvider || detectRepositoryProvider(addSectionDraft.project.repositoryUrl),
+          repositoryProvider:
+            addSectionDraft.project.repositoryProvider ||
+            detectRepositoryProvider(addSectionDraft.project.repositoryUrl),
         }
         applyContentFields(project, addSectionDraft.project.summary)
         resume.projects.push(project)
@@ -1673,9 +1987,13 @@ const orderedPreviewSections = computed(() =>
   }),
 )
 
-const sectionVariantByKey = computed<Partial<Record<ResumeEditableSectionKey, string>>>(() => (
-  Object.fromEntries(sectionLayout.value.map(section => [section.key, section.variant]))
-))
+const sectionVariantByKey = computed<
+  Partial<Record<ResumeEditableSectionKey, string>>
+>(() =>
+  Object.fromEntries(
+    sectionLayout.value.map((section) => [section.key, section.variant]),
+  ),
+)
 
 function sectionDisplayLabel(sectionKey: ResumePreviewSectionKey) {
   return sectionConfig[sectionKey].label
@@ -1701,7 +2019,9 @@ function resetSectionItemDraft(section: ResumePreviewSectionKey) {
 
 function openSectionItemDialog(section: ResumePreviewSectionKey) {
   activeSectionKey.value = section
-  activeVariant.value = sectionLayout.value.find(item => item.key === section)?.variant ?? variantRegistry[section].fallback
+  activeVariant.value =
+    sectionLayout.value.find((item) => item.key === section)?.variant ??
+    variantRegistry[section].fallback
   resetSectionItemDraft(section)
   sectionItemDialogOpen.value = true
 }
@@ -1744,9 +2064,10 @@ function submitSectionItemDialog() {
     case 'language':
       item = {
         name: sectionItemDraft.language.name,
-        level: activeVariant.value === 'stars'
-          ? Math.max(0, Math.min(5, sectionItemDraft.language.stars)) * 20
-          : sectionItemDraft.language.level,
+        level:
+          activeVariant.value === 'stars'
+            ? Math.max(0, Math.min(5, sectionItemDraft.language.stars)) * 20
+            : sectionItemDraft.language.level,
         countryCode: sectionItemDraft.language.countryCode.trim(),
         flag: sectionItemDraft.language.flag.trim(),
       }
@@ -1758,7 +2079,11 @@ function submitSectionItemDialog() {
           summary: sectionItemDraft.project.summary,
           imageUrl: sectionItemDraft.project.imageUrl.trim(),
           repositoryUrl: sectionItemDraft.project.repositoryUrl.trim(),
-          repositoryProvider: sectionItemDraft.project.repositoryProvider || detectRepositoryProvider(sectionItemDraft.project.repositoryUrl.trim()),
+          repositoryProvider:
+            sectionItemDraft.project.repositoryProvider ||
+            detectRepositoryProvider(
+              sectionItemDraft.project.repositoryUrl.trim(),
+            ),
           contentStyle: sectionItemDraft.project.contentStyle,
         }
         applyContentFields(project, sectionItemDraft.project.summary)
@@ -1778,7 +2103,12 @@ function addItemToPreviewSection(section: ResumeSectionActionKey) {
     openAddSectionDialog('certification')
     return
   }
-  if (section === 'certification' || section === 'reference' || section === 'hobby' || section === 'skill') {
+  if (
+    section === 'certification' ||
+    section === 'reference' ||
+    section === 'hobby' ||
+    section === 'skill'
+  ) {
     openAddSectionDialog(section)
     return
   }
@@ -1790,22 +2120,29 @@ function normalizeSectionVariant<K extends ResumeEditableSectionKey>(
   variant: unknown,
 ): SectionLayoutVariant[K] {
   const registry = variantRegistry[key]
-  if (typeof variant === 'string' && registry.allowed.includes(variant as SectionLayoutVariant[K])) {
+  if (
+    typeof variant === 'string' &&
+    registry.allowed.includes(variant as SectionLayoutVariant[K])
+  ) {
     return variant as SectionLayoutVariant[K]
   }
   if (import.meta.dev) {
-    console.warn(`[resume-builder] Unknown "${key}" variant "${String(variant)}"; fallback to "${registry.fallback}".`)
+    console.warn(
+      `[resume-builder] Unknown "${key}" variant "${String(variant)}"; fallback to "${registry.fallback}".`,
+    )
   }
   return registry.fallback
 }
 
 function moveSectionUp(sectionKey: ResumeEditableSectionKey) {
-  const currentSection = sectionLayout.value.find(item => item.key === sectionKey)
+  const currentSection = sectionLayout.value.find(
+    (item) => item.key === sectionKey,
+  )
   if (!currentSection) return
   const regionEntries = [...sectionLayout.value]
-    .filter(item => item.region === currentSection.region)
+    .filter((item) => item.region === currentSection.region)
     .sort((left, right) => left.order - right.order)
-  const regionIndex = regionEntries.findIndex(item => item.key === sectionKey)
+  const regionIndex = regionEntries.findIndex((item) => item.key === sectionKey)
   if (regionIndex <= 0) return
   const previous = regionEntries[regionIndex - 1]
   const originalOrder = currentSection.order
@@ -1814,12 +2151,14 @@ function moveSectionUp(sectionKey: ResumeEditableSectionKey) {
 }
 
 function moveSectionDown(sectionKey: ResumeEditableSectionKey) {
-  const currentSection = sectionLayout.value.find(item => item.key === sectionKey)
+  const currentSection = sectionLayout.value.find(
+    (item) => item.key === sectionKey,
+  )
   if (!currentSection) return
   const regionEntries = [...sectionLayout.value]
-    .filter(item => item.region === currentSection.region)
+    .filter((item) => item.region === currentSection.region)
     .sort((left, right) => left.order - right.order)
-  const regionIndex = regionEntries.findIndex(item => item.key === sectionKey)
+  const regionIndex = regionEntries.findIndex((item) => item.key === sectionKey)
   if (regionIndex < 0 || regionIndex >= regionEntries.length - 1) return
   const next = regionEntries[regionIndex + 1]
   const originalOrder = currentSection.order
@@ -1827,7 +2166,10 @@ function moveSectionDown(sectionKey: ResumeEditableSectionKey) {
   next.order = originalOrder
 }
 
-function moveSection(sectionKey: ResumeEditableSectionKey, direction: 'up' | 'down') {
+function moveSection(
+  sectionKey: ResumeEditableSectionKey,
+  direction: 'up' | 'down',
+) {
   if (direction === 'up') {
     moveSectionUp(sectionKey)
     return
@@ -1835,8 +2177,11 @@ function moveSection(sectionKey: ResumeEditableSectionKey, direction: 'up' | 'do
   moveSectionDown(sectionKey)
 }
 
-function setSectionVariant<K extends ResumeEditableSectionKey>(key: K, variant: SectionLayoutVariant[K] | string) {
-  const target = sectionLayout.value.find(section => section.key === key)
+function setSectionVariant<K extends ResumeEditableSectionKey>(
+  key: K,
+  variant: SectionLayoutVariant[K] | string,
+) {
+  const target = sectionLayout.value.find((section) => section.key === key)
   if (!target) return
   const normalizedVariant = normalizeSectionVariant(key, variant)
   target.variant = normalizedVariant
@@ -1850,9 +2195,13 @@ const activeTheme = computed(
     colorThemes.find((theme) => theme.name === selectedTheme.value) ??
     colorThemes[0],
 )
-const activePageBackground = computed(() => resolvePageBackground(selectedPageBackground.value))
+const activePageBackground = computed(() =>
+  resolvePageBackground(selectedPageBackground.value),
+)
 const designClassMap = computed(() => ({
-  rounded: roundedOptions.find((item) => item.value === selectedRounded.value)?.className ?? 'radius-md',
+  rounded:
+    roundedOptions.find((item) => item.value === selectedRounded.value)
+      ?.className ?? 'radius-md',
   textStyle: `font-${selectedTextStyle.value}`,
   spacingDensity: `density-${layoutSettings.lineDensity}`,
   dividerStyle: `divider-${layoutSettings.sectionDividerStyle}`,
@@ -1879,7 +2228,11 @@ const previewFallbackSections = computed(() => {
       title: 'Expériences',
       items: resume.experiences
         .slice(0, 2)
-        .map(item => [item.role, item.company].filter(Boolean).join(' — ') || 'Expérience'),
+        .map(
+          (item) =>
+            [item.role, item.company].filter(Boolean).join(' — ') ||
+            'Expérience',
+        ),
     })
   }
 
@@ -1888,14 +2241,21 @@ const previewFallbackSections = computed(() => {
       title: 'Formations',
       items: resume.education
         .slice(0, 2)
-        .map(item => [item.degree, item.school].filter(Boolean).join(' — ') || 'Formation'),
+        .map(
+          (item) =>
+            [item.degree, item.school].filter(Boolean).join(' — ') ||
+            'Formation',
+        ),
     })
   }
 
   if (resume.skills.length) {
     sections.push({
       title: 'Compétences',
-      items: resume.skills.slice(0, 6).map(item => item.name).filter(Boolean),
+      items: resume.skills
+        .slice(0, 6)
+        .map((item) => item.name)
+        .filter(Boolean),
     })
   }
 
@@ -1907,14 +2267,23 @@ function resetRendererGuard() {
   rendererError.value = null
 }
 
+watch(selectedDocumentType, (value) => {
+  templateQuickFilter.value = 'all'
+  selectValidTemplateForCurrentDocumentType()
+  localStorage.setItem(DOCUMENT_TYPE_STORAGE_KEY, value)
+})
+
 watch(selectedTemplate, () => {
   resetRendererGuard()
 })
 
 onErrorCaptured((error, instance, info) => {
-  const componentName = instance?.type && typeof instance.type === 'object' && 'name' in instance.type
-    ? String(instance.type.name || 'unknown')
-    : 'unknown'
+  const componentName =
+    instance?.type &&
+    typeof instance.type === 'object' &&
+    'name' in instance.type
+      ? String(instance.type.name || 'unknown')
+      : 'unknown'
   console.error('[resume-preview] render error', error)
   rendererError.value = `Le rendu de la prévisualisation a échoué (${componentName}: ${info}).`
   rendererReady.value = false
@@ -1966,28 +2335,39 @@ function contrastRatio(colorA: string, colorB: string) {
 
 function bestAaTextColor(background: string, preferred: string, minimum = 4.5) {
   const candidates = [preferred, '#111827', '#0f172a', '#f8fafc', '#ffffff']
-  const passing = candidates.find(color => contrastRatio(background, color) >= minimum)
+  const passing = candidates.find(
+    (color) => contrastRatio(background, color) >= minimum,
+  )
   if (passing) return passing
-  return candidates.sort((a, b) => contrastRatio(background, b) - contrastRatio(background, a))[0]
+  return candidates.sort(
+    (a, b) => contrastRatio(background, b) - contrastRatio(background, a),
+  )[0]
 }
 
 const minimumReadableContrast = 4.5
-const pageBackgroundValidation = computed(() => pageBackgroundOptions.map(option => {
-  const darkBlocked = !isAllowedPageBackground(option.page)
-  const textContrast = contrastRatio(option.page, '#111827')
-  return {
-    ...option,
-    blocked: darkBlocked || textContrast < minimumReadableContrast,
-  }
-}))
+const pageBackgroundValidation = computed(() =>
+  pageBackgroundOptions.map((option) => {
+    const darkBlocked = !isAllowedPageBackground(option.page)
+    const textContrast = contrastRatio(option.page, '#111827')
+    return {
+      ...option,
+      blocked: darkBlocked || textContrast < minimumReadableContrast,
+    }
+  }),
+)
 
-watch(pageBackgroundValidation, (options) => {
-  const selected = options.find(option => option.value === selectedPageBackground.value)
-  if (selected && !selected.blocked) return
-  const fallback = options.find(option => !option.blocked)
-  if (fallback) selectedPageBackground.value = fallback.value
-}, { immediate: true })
-
+watch(
+  pageBackgroundValidation,
+  (options) => {
+    const selected = options.find(
+      (option) => option.value === selectedPageBackground.value,
+    )
+    if (selected && !selected.blocked) return
+    const fallback = options.find((option) => !option.blocked)
+    if (fallback) selectedPageBackground.value = fallback.value
+  },
+  { immediate: true },
+)
 
 const previewStyle = computed(() => ({
   '--cv-radius': roundedPxByValue[selectedRounded.value],
@@ -1997,10 +2377,26 @@ const previewStyle = computed(() => ({
   '--cv-sidebar': activeTheme.value.sidebar,
   '--cv-accent': activeTheme.value.accent,
   '--cv-page': activePageBackground.value.page,
-  '--cv-title': bestAaTextColor(activePageBackground.value.page, activeTheme.value.accent, 4.5),
-  '--cv-secondary': bestAaTextColor(activePageBackground.value.page, activeTheme.value.sidebar, 4.5),
-  '--cv-on-sidebar': bestAaTextColor(activeTheme.value.sidebar, activePageBackground.value.page, 4.5),
-  '--cv-on-accent': bestAaTextColor(activeTheme.value.accent, activePageBackground.value.page, 4.5),
+  '--cv-title': bestAaTextColor(
+    activePageBackground.value.page,
+    activeTheme.value.accent,
+    4.5,
+  ),
+  '--cv-secondary': bestAaTextColor(
+    activePageBackground.value.page,
+    activeTheme.value.sidebar,
+    4.5,
+  ),
+  '--cv-on-sidebar': bestAaTextColor(
+    activeTheme.value.sidebar,
+    activePageBackground.value.page,
+    4.5,
+  ),
+  '--cv-on-accent': bestAaTextColor(
+    activeTheme.value.accent,
+    activePageBackground.value.page,
+    4.5,
+  ),
 }))
 const resumeRendererDesignState = computed(() => ({
   themeTokens: previewStyle.value,
@@ -2253,9 +2649,15 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
       city: '',
       start: normalizeDateLabel(experience.startDate),
       end: normalizeDateLabel(experience.endDate),
-      bullets: String(experience.description || '').split(/\n|•|-/g).map((bullet) => bullet.trim()).filter(Boolean),
+      bullets: String(experience.description || '')
+        .split(/\n|•|-/g)
+        .map((bullet) => bullet.trim())
+        .filter(Boolean),
       contentStyle: 'points',
-      points: String(experience.description || '').split(/\n|•|-/g).map((bullet) => bullet.trim()).filter(Boolean),
+      points: String(experience.description || '')
+        .split(/\n|•|-/g)
+        .map((bullet) => bullet.trim())
+        .filter(Boolean),
     }))
   }
 
@@ -2288,7 +2690,11 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
       summary: String(project.description || ''),
       imageUrl: String(project.imageUrl || ''),
       repositoryUrl: String(project.repositoryUrl || project.link || ''),
-      repositoryProvider: project.repositoryProvider || detectRepositoryProvider(String(project.repositoryUrl || project.link || '')),
+      repositoryProvider:
+        project.repositoryProvider ||
+        detectRepositoryProvider(
+          String(project.repositoryUrl || project.link || ''),
+        ),
       repositoryUrl: String(project.link || ''),
       repositoryProvider: detectRepositoryProvider(String(project.link || '')),
       contentStyle: 'points',
@@ -2314,7 +2720,7 @@ function buildResumeSavePayload() {
     phone: resume.phone,
     city: resume.city,
     country: resume.country,
-    experiences: resume.experiences.map(experience => ({
+    experiences: resume.experiences.map((experience) => ({
       role: experience.role,
       company: experience.company,
       city: experience.city,
@@ -2322,11 +2728,11 @@ function buildResumeSavePayload() {
       end: experience.end,
       bullets: experience.bullets,
     })),
-    skills: resume.skills.map(skill => ({
+    skills: resume.skills.map((skill) => ({
       name: skill.name,
       level: skill.level,
     })),
-    education: resume.education.map(education => ({
+    education: resume.education.map((education) => ({
       degree: education.degree,
       school: education.school,
       city: education.city,
@@ -2334,24 +2740,24 @@ function buildResumeSavePayload() {
       end: education.end,
       note: education.note,
     })),
-    languages: resume.languages.map(language => ({
+    languages: resume.languages.map((language) => ({
       name: language.name,
       level: language.level,
       countryCode: language.countryCode,
       flag: language.flag,
     })),
-    courses: resume.courses.map(course => ({
+    courses: resume.courses.map((course) => ({
       title: course.title,
       school: course.school,
       start: course.start,
       end: course.end,
     })),
-    projects: resume.projects.map(project => ({
+    projects: resume.projects.map((project) => ({
       name: project.name,
       summary: project.summary,
       repositoryUrl: project.repositoryUrl,
     })),
-    references: resume.references.map(reference => ({
+    references: resume.references.map((reference) => ({
       name: reference.name,
       company: reference.company,
       email: reference.email,
@@ -2367,25 +2773,47 @@ function buildResumeSavePayload() {
     },
   })
 
-  const hasSectionContent = (section?: RemoteResumeSection[] | null) => Array.isArray(section)
-    && section.some(item =>
-      [item.title, item.description, item.startDate, item.endDate, item.company, item.school, item.location, item.level]
-        .some(value => typeof value === 'string' && value.trim().length > 0))
+  const hasSectionContent = (section?: RemoteResumeSection[] | null) =>
+    Array.isArray(section) &&
+    section.some((item) =>
+      [
+        item.title,
+        item.description,
+        item.startDate,
+        item.endDate,
+        item.company,
+        item.school,
+        item.location,
+        item.level,
+      ].some((value) => typeof value === 'string' && value.trim().length > 0),
+    )
 
   return {
     documentUrl: payload.documentUrl ?? null,
-    experiences: hasSectionContent(payload.experiences) ? payload.experiences : [],
+    experiences: hasSectionContent(payload.experiences)
+      ? payload.experiences
+      : [],
     skills: hasSectionContent(payload.skills) ? payload.skills : [],
-    ...(hasSectionContent(payload.educations) ? { educations: payload.educations } : {}),
-    ...(hasSectionContent(payload.languages) ? { languages: payload.languages } : {}),
-    ...(hasSectionContent(payload.certifications) ? { certifications: payload.certifications } : {}),
-    ...(hasSectionContent(payload.projects) ? { projects: payload.projects } : {}),
-    ...(hasSectionContent(payload.references) ? { references: payload.references } : {}),
+    ...(hasSectionContent(payload.educations)
+      ? { educations: payload.educations }
+      : {}),
+    ...(hasSectionContent(payload.languages)
+      ? { languages: payload.languages }
+      : {}),
+    ...(hasSectionContent(payload.certifications)
+      ? { certifications: payload.certifications }
+      : {}),
+    ...(hasSectionContent(payload.projects)
+      ? { projects: payload.projects }
+      : {}),
+    ...(hasSectionContent(payload.references)
+      ? { references: payload.references }
+      : {}),
     ...(hasSectionContent(payload.hobbies) ? { hobbies: payload.hobbies } : {}),
-    ...(payload.resumeInformation?.fullName?.trim()
-      || payload.resumeInformation?.email?.trim()
-      || payload.resumeInformation?.phone?.trim()
-      || payload.resumeInformation?.adresse?.trim()
+    ...(payload.resumeInformation?.fullName?.trim() ||
+    payload.resumeInformation?.email?.trim() ||
+    payload.resumeInformation?.phone?.trim() ||
+    payload.resumeInformation?.adresse?.trim()
       ? { resumeInformation: payload.resumeInformation }
       : {}),
   }
@@ -2545,44 +2973,65 @@ if (import.meta.client) {
   layoutSettings.layoutMode = customization.style.layoutMode
   sectionLayout.value = normalizeSectionLayout(customization.sectionOrder)
 
-  watch([selectedTheme, selectedPageBackground, selectedRounded, selectedTextStyle, () => layoutSettings.showSectionIcons, () => layoutSettings.showContactIcons, () => layoutSettings.sectionIconStyle, () => layoutSettings.iconSize, () => layoutSettings.iconColor, () => layoutSettings.layoutMode], () => {
-    resumeDocumentState.value.customization = {
-      ...resumeDocumentState.value.customization,
-      style: {
-        ...resumeDocumentState.value.customization.style,
-        palette: selectedTheme.value,
-        pageBackground: selectedPageBackground.value,
-        radius: selectedRounded.value,
-        typography: selectedTextStyle.value,
-        showSectionIcons: layoutSettings.showSectionIcons,
-        showContactIcons: layoutSettings.showContactIcons,
-        sectionIconStyle: layoutSettings.sectionIconStyle,
-        iconSize: layoutSettings.iconSize,
-        iconColor: layoutSettings.iconColor,
-        layoutMode: layoutSettings.layoutMode,
-      },
-    }
-    persist()
-  })
+  watch(
+    [
+      selectedTheme,
+      selectedPageBackground,
+      selectedRounded,
+      selectedTextStyle,
+      () => layoutSettings.showSectionIcons,
+      () => layoutSettings.showContactIcons,
+      () => layoutSettings.sectionIconStyle,
+      () => layoutSettings.iconSize,
+      () => layoutSettings.iconColor,
+      () => layoutSettings.layoutMode,
+    ],
+    () => {
+      resumeDocumentState.value.customization = {
+        ...resumeDocumentState.value.customization,
+        style: {
+          ...resumeDocumentState.value.customization.style,
+          palette: selectedTheme.value,
+          pageBackground: selectedPageBackground.value,
+          radius: selectedRounded.value,
+          typography: selectedTextStyle.value,
+          showSectionIcons: layoutSettings.showSectionIcons,
+          showContactIcons: layoutSettings.showContactIcons,
+          sectionIconStyle: layoutSettings.sectionIconStyle,
+          iconSize: layoutSettings.iconSize,
+          iconColor: layoutSettings.iconColor,
+          layoutMode: layoutSettings.layoutMode,
+        },
+      }
+      persist()
+    },
+  )
 
-  watch(() => layoutSettings.lineDensity, (density) => {
-    resumeDocumentState.value.customization = {
-      ...resumeDocumentState.value.customization,
-      style: {
-        ...resumeDocumentState.value.customization.style,
-        density,
-      },
-    }
-    persist()
-  })
+  watch(
+    () => layoutSettings.lineDensity,
+    (density) => {
+      resumeDocumentState.value.customization = {
+        ...resumeDocumentState.value.customization,
+        style: {
+          ...resumeDocumentState.value.customization.style,
+          density,
+        },
+      }
+      persist()
+    },
+  )
 
-  watch(sectionLayout, (value) => {
-    resumeDocumentState.value.customization = {
-      ...resumeDocumentState.value.customization,
-      sectionOrder: value.map(section => ({ ...section })),
-    }
-    persist()
-  }, { deep: true })
+  watch(
+    sectionLayout,
+    (value) => {
+      resumeDocumentState.value.customization = {
+        ...resumeDocumentState.value.customization,
+        sectionOrder: value.map((section) => ({ ...section })),
+      }
+      persist()
+    },
+    { deep: true },
+  )
 }
 </script>
 
@@ -2590,9 +3039,69 @@ if (import.meta.client) {
   <div>
     <AppPageDrawers>
       <template #left>
+        <div class="template-drawer">
+          <v-card variant="outlined" class="template-drawer__card">
+            <v-card-text class="d-grid ga-3">
+              <div>
+                <p class="text-caption font-weight-bold mb-2">Document</p>
+                <v-tabs
+                  v-model="selectedDocumentType"
+                  color="primary"
+                  density="comfortable"
+                  grow
+                  class="template-drawer__tabs"
+                >
+                  <v-tab
+                    v-for="option in documentTypeTabOptions"
+                    :key="`document-type-${option.value}`"
+                    :value="option.value"
+                    class="text-lowercase"
+                  >
+                    {{ option.label }}
+                  </v-tab>
+                </v-tabs>
+              </div>
+
+              <AppSelect
+                :model-value="templateQuickFilter"
+                :items="templateQuickFilterOptions"
+                item-title="label"
+                item-value="value"
+                label="Filtre template"
+                density="comfortable"
+                hide-details
+                @update:model-value="onTemplateQuickFilterChange"
+              />
+
+              <div class="template-drawer__grid">
+                <button
+                  v-for="template in filteredTemplatesByDrawer"
+                  :key="`drawer-template-${template.id}`"
+                  type="button"
+                  class="template-drawer__item"
+                  :class="{
+                    'template-drawer__item--active':
+                      selectedTemplate === template.id,
+                  }"
+                  @click="applyTemplateSelection(template.id)"
+                >
+                  <v-img
+                    :src="template.image"
+                    :alt="template.title"
+                    height="92"
+                    cover
+                    class="template-drawer__thumb"
+                  />
+                  <span class="template-drawer__label">{{
+                    template.title
+                  }}</span>
+                </button>
+              </div>
+            </v-card-text>
+          </v-card>
+        </div>
       </template>
-      <template #right>
-      </template>
+      <template #right />
     </AppPageDrawers>
     <v-container fluid>
       <main class="resume-content-main">
@@ -2600,31 +3109,91 @@ if (import.meta.client) {
           <div class="resume-control-panels">
             <div class="local-toolbar-actions">
               <div class="local-toolbar-actions__row">
-                <v-menu v-model="toolbarSaveImportMenuOpen" location="bottom center" origin="top center" max-width="560">
+                <v-menu
+                  v-model="toolbarSaveImportMenuOpen"
+                  location="bottom center"
+                  origin="top center"
+                  max-width="560"
+                >
                   <template #activator="{ props }">
-                    <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-content-save-cog-outline" v-bind="props">
+                    <v-btn
+                      class="local-toolbar-btn"
+                      color="primary"
+                      size="small"
+                      variant="outlined"
+                      prepend-icon="mdi-content-save-cog-outline"
+                      v-bind="props"
+                    >
                       Save / Import
                     </v-btn>
                   </template>
                   <v-card class="toolbar-menu-card">
-                    <v-card-title class="text-subtitle-2">Save / Import</v-card-title>
+                    <v-card-title class="text-subtitle-2"
+                      >Save / Import</v-card-title
+                    >
                     <v-card-text class="d-flex flex-column ga-2">
-                      <v-btn prepend-icon="mdi-content-save-outline" color="primary" variant="flat" text="Save draft" @click="openSaveModal" />
-                      <v-btn prepend-icon="mdi-file-pdf-box" color="secondary" variant="outlined" text="Preview PDF" @click="openPdfPreview" />
-                      <v-btn prepend-icon="mdi-download" color="info" variant="outlined" text="Download PDF" @click="onDownloadPdfClick" />
+                      <v-btn
+                        prepend-icon="mdi-content-save-outline"
+                        color="primary"
+                        variant="flat"
+                        text="Save draft"
+                        @click="openSaveModal"
+                      />
+                      <v-btn
+                        prepend-icon="mdi-file-pdf-box"
+                        color="secondary"
+                        variant="outlined"
+                        text="Preview PDF"
+                        @click="openPdfPreview"
+                      />
+                      <v-btn
+                        prepend-icon="mdi-download"
+                        color="info"
+                        variant="outlined"
+                        text="Download PDF"
+                        @click="onDownloadPdfClick"
+                      />
                       <v-divider class="my-2" />
-                      <v-btn prepend-icon="mdi-sync" variant="outlined" color="primary" :text="t('resumeBuilder.create.import.syncWithXing')" @click="syncWithProvider('Xing')" />
-                      <v-btn prepend-icon="mdi-linkedin" variant="outlined" color="info" :text="t('resumeBuilder.create.import.syncWithLinkedIn')" @click="syncWithProvider('LinkedIn')" />
-                      <v-btn prepend-icon="mdi-file-upload-outline" variant="flat" color="secondary" :text="t('resumeBuilder.create.import.importOldResumePdf')" @click="triggerPdfImport" />
+                      <v-btn
+                        prepend-icon="mdi-sync"
+                        variant="outlined"
+                        color="primary"
+                        :text="t('resumeBuilder.create.import.syncWithXing')"
+                        @click="syncWithProvider('Xing')"
+                      />
+                      <v-btn
+                        prepend-icon="mdi-linkedin"
+                        variant="outlined"
+                        color="info"
+                        :text="
+                          t('resumeBuilder.create.import.syncWithLinkedIn')
+                        "
+                        @click="syncWithProvider('LinkedIn')"
+                      />
+                      <v-btn
+                        prepend-icon="mdi-file-upload-outline"
+                        variant="flat"
+                        color="secondary"
+                        :text="
+                          t('resumeBuilder.create.import.importOldResumePdf')
+                        "
+                        @click="triggerPdfImport"
+                      />
                       <input
                         ref="importPdfInput"
                         type="file"
                         accept="application/pdf"
                         class="d-none"
                         @change="handlePdfImport"
-                      >
+                      />
                       <div v-if="importInProgress" class="mt-2">
-                        <v-progress-linear :model-value="importProgress" color="primary" height="8" rounded striped />
+                        <v-progress-linear
+                          :model-value="importProgress"
+                          color="primary"
+                          height="8"
+                          rounded
+                          striped
+                        />
                       </div>
                       <v-alert
                         v-if="importMessage"
@@ -2637,9 +3206,20 @@ if (import.meta.client) {
                     </v-card-text>
                   </v-card>
                 </v-menu>
-                <v-menu location="bottom center" origin="top center" max-width="620">
+                <v-menu
+                  location="bottom center"
+                  origin="top center"
+                  max-width="620"
+                >
                   <template #activator="{ props }">
-                    <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-palette-outline" v-bind="props">
+                    <v-btn
+                      class="local-toolbar-btn"
+                      color="primary"
+                      size="small"
+                      variant="outlined"
+                      prepend-icon="mdi-palette-outline"
+                      v-bind="props"
+                    >
                       Design
                     </v-btn>
                   </template>
@@ -2654,8 +3234,9 @@ if (import.meta.client) {
                           type="button"
                           class="palette-item"
                           :class="{
-                          'palette-item--active': selectedTheme === theme.name,
-                        }"
+                            'palette-item--active':
+                              selectedTheme === theme.name,
+                          }"
                           @click="selectedTheme = theme.name"
                         >
                           <span :style="{ background: theme.sidebar }" />
@@ -2672,10 +3253,15 @@ if (import.meta.client) {
                           type="button"
                           class="palette-item"
                           :class="{
-                          'palette-item--active': selectedPageBackground === option.value,
-                        }"
+                            'palette-item--active':
+                              selectedPageBackground === option.value,
+                          }"
                           :disabled="option.blocked"
-                          :title="option.blocked ? 'Fond trop sombre ou contraste insuffisant' : option.label"
+                          :title="
+                            option.blocked
+                              ? 'Fond trop sombre ou contraste insuffisant'
+                              : option.label
+                          "
                           @click="selectedPageBackground = option.value"
                         >
                           <span :style="{ background: option.page }" />
@@ -2695,8 +3281,19 @@ if (import.meta.client) {
                       />
 
                       <p class="section-label mt-4">Rounded</p>
-                      <v-btn-toggle v-model="selectedRounded" mandatory divided class="rounded-toggle" color="primary">
-                        <v-btn v-for="option in roundedOptions" :key="`toolbar-rounded-${option.value}`" :value="option.value" variant="text">
+                      <v-btn-toggle
+                        v-model="selectedRounded"
+                        mandatory
+                        divided
+                        class="rounded-toggle"
+                        color="primary"
+                      >
+                        <v-btn
+                          v-for="option in roundedOptions"
+                          :key="`toolbar-rounded-${option.value}`"
+                          :value="option.value"
+                          variant="text"
+                        >
                           {{ option.title }}
                         </v-btn>
                       </v-btn-toggle>
@@ -2734,8 +3331,20 @@ if (import.meta.client) {
 
                       <p class="section-label mt-4">Icons</p>
                       <div class="d-grid ga-3">
-                        <v-switch v-model="layoutSettings.showSectionIcons" label="Show section icons" color="primary" hide-details inset />
-                        <v-switch v-model="layoutSettings.showContactIcons" label="Show contact icons" color="primary" hide-details inset />
+                        <v-switch
+                          v-model="layoutSettings.showSectionIcons"
+                          label="Show section icons"
+                          color="primary"
+                          hide-details
+                          inset
+                        />
+                        <v-switch
+                          v-model="layoutSettings.showContactIcons"
+                          label="Show contact icons"
+                          color="primary"
+                          hide-details
+                          inset
+                        />
                         <AppSelect
                           v-model="layoutSettings.sectionIconStyle"
                           :items="sectionIconStyleOptions"
@@ -2767,9 +3376,20 @@ if (import.meta.client) {
                     </v-card-text>
                   </v-card>
                 </v-menu>
-                <v-menu v-model="toolbarSectionMenuOpen" location="bottom center" origin="top center">
+                <v-menu
+                  v-model="toolbarSectionMenuOpen"
+                  location="bottom center"
+                  origin="top center"
+                >
                   <template #activator="{ props }">
-                    <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-list-outline" v-bind="props">
+                    <v-btn
+                      class="local-toolbar-btn"
+                      color="primary"
+                      size="small"
+                      variant="outlined"
+                      prepend-icon="mdi-view-list-outline"
+                      v-bind="props"
+                    >
                       Sections
                     </v-btn>
                   </template>
@@ -2792,10 +3412,18 @@ if (import.meta.client) {
                 <div
                   ref="previewExportRef"
                   class="preview-grid resume-preview-frame"
-                  :class="[...previewDesignClasses, `photo-shape-${safePhotoShape}`]"
+                  :class="[
+                    ...previewDesignClasses,
+                    `photo-shape-${safePhotoShape}`,
+                  ]"
                   :style="previewStyle"
                 >
-                  <div class="cv-preview-stage" :class="{ 'cv-preview-stage--bordered': selectedRounded !== 'none' }">
+                  <div
+                    class="cv-preview-stage"
+                    :class="{
+                      'cv-preview-stage--bordered': selectedRounded !== 'none',
+                    }"
+                  >
                     <div class="cv-page-shell" :class="previewDesignClasses">
                       <template v-if="rendererReady">
                         <ResumeRenderer
@@ -2812,7 +3440,9 @@ if (import.meta.client) {
                           :photo-shape-options="photoShapeOptions"
                           :selected-photo-shape="safePhotoShape"
                           :on-photo-click="onPreviewPhotoClick"
-                          :on-photo-shape-select="(shape) => selectedPhotoShape = shape"
+                          :on-photo-shape-select="
+                            (shape) => (selectedPhotoShape = shape)
+                          "
                           :template-skin="selectedTemplateSkin"
                           editable
                           @add-item="addItemToPreviewSection"
@@ -2820,30 +3450,59 @@ if (import.meta.client) {
                           @move-photo="movePhoto"
                           @open-photo-picker="openPhotoPicker"
                           @update:photo-size="layoutSettings.photoSize = $event"
-                          @update:photo-border-width="layoutSettings.photoBorderWidth = $event"
-                          @update:photo-position="layoutSettings.photoPosition = $event"
+                          @update:photo-border-width="
+                            layoutSettings.photoBorderWidth = $event
+                          "
+                          @update:photo-position="
+                            layoutSettings.photoPosition = $event
+                          "
                           @move-section="moveSection"
                         />
                       </template>
                       <div v-else class="preview-fallback">
-                        <v-alert type="error" variant="tonal" density="comfortable" class="mb-3">
-                          {{ rendererError || 'La prévisualisation n’est pas disponible pour le moment.' }}
+                        <v-alert
+                          type="error"
+                          variant="tonal"
+                          density="comfortable"
+                          class="mb-3"
+                        >
+                          {{
+                            rendererError ||
+                            'La prévisualisation n’est pas disponible pour le moment.'
+                          }}
                         </v-alert>
-                        <h2 class="text-h5 mb-2">{{ `${resume.firstName} ${resume.lastName}`.trim() || 'Votre nom' }}</h2>
-                        <p class="text-body-2 mb-4">{{ resume.role || 'Titre du poste' }}</p>
+                        <h2 class="text-h5 mb-2">
+                          {{
+                            `${resume.firstName} ${resume.lastName}`.trim() ||
+                            'Votre nom'
+                          }}
+                        </h2>
+                        <p class="text-body-2 mb-4">
+                          {{ resume.role || 'Titre du poste' }}
+                        </p>
                         <section
                           v-for="section in previewFallbackSections"
                           :key="`preview-fallback-${section.title}`"
                           class="mb-3"
                         >
-                          <h3 class="text-subtitle-2 mb-1">{{ section.title }}</h3>
+                          <h3 class="text-subtitle-2 mb-1">
+                            {{ section.title }}
+                          </h3>
                           <ul class="pl-4">
-                            <li v-for="item in section.items" :key="`${section.title}-${item}`">
+                            <li
+                              v-for="item in section.items"
+                              :key="`${section.title}-${item}`"
+                            >
                               {{ item }}
                             </li>
                           </ul>
                         </section>
-                        <v-btn size="small" variant="outlined" prepend-icon="mdi-refresh" @click="resetRendererGuard">
+                        <v-btn
+                          size="small"
+                          variant="outlined"
+                          prepend-icon="mdi-refresh"
+                          @click="resetRendererGuard"
+                        >
                           Réessayer le rendu
                         </v-btn>
                       </div>
@@ -2862,8 +3521,19 @@ if (import.meta.client) {
       <v-dialog v-model="addSectionDialogOpen" max-width="760">
         <v-card>
           <v-card-title class="d-flex align-center justify-space-between">
-            <span>Add {{ addSectionOptions.find(section => section.value === addSectionType)?.label }}</span>
-            <v-btn icon="mdi-close" variant="text" @click="addSectionDialogOpen = false" />
+            <span
+              >Add
+              {{
+                addSectionOptions.find(
+                  (section) => section.value === addSectionType,
+                )?.label
+              }}</span
+            >
+            <v-btn
+              icon="mdi-close"
+              variant="text"
+              @click="addSectionDialogOpen = false"
+            />
           </v-card-title>
           <v-divider />
           <v-card-text class="d-grid ga-3">
@@ -2878,8 +3548,18 @@ if (import.meta.client) {
             </template>
 
             <template v-else-if="addSectionType === 'experience'">
-              <v-text-field v-model="addSectionDraft.experience.role" label="Role" variant="outlined" hide-details />
-              <v-text-field v-model="addSectionDraft.experience.company" label="Company" variant="outlined" hide-details />
+              <v-text-field
+                v-model="addSectionDraft.experience.role"
+                label="Role"
+                variant="outlined"
+                hide-details
+              />
+              <v-text-field
+                v-model="addSectionDraft.experience.company"
+                label="Company"
+                variant="outlined"
+                hide-details
+              />
               <v-text-field
                 v-model="addSectionDraft.experience.companyImageUrl"
                 label="Company logo URL"
@@ -2888,7 +3568,12 @@ if (import.meta.client) {
                 @update:model-value="setExperienceLogoError('add-section')"
               />
               <div class="d-flex align-center ga-2">
-                <v-btn prepend-icon="mdi-image-plus-outline" size="small" variant="tonal" @click="openExperienceLogoPicker('add-section')">
+                <v-btn
+                  prepend-icon="mdi-image-plus-outline"
+                  size="small"
+                  variant="tonal"
+                  @click="openExperienceLogoPicker('add-section')"
+                >
                   Upload logo
                 </v-btn>
                 <input
@@ -2897,12 +3582,27 @@ if (import.meta.client) {
                   accept="image/png,image/jpeg,image/webp,image/svg+xml"
                   class="d-none"
                   @change="onAddSectionExperienceLogoSelected"
-                >
+                />
               </div>
-              <v-text-field v-model="addSectionDraft.experience.city" label="City" variant="outlined" hide-details />
+              <v-text-field
+                v-model="addSectionDraft.experience.city"
+                label="City"
+                variant="outlined"
+                hide-details
+              />
               <div class="grid-2">
-                <v-text-field v-model="addSectionDraft.experience.start" label="Start" variant="outlined" hide-details />
-                <v-text-field v-model="addSectionDraft.experience.end" label="End" variant="outlined" hide-details />
+                <v-text-field
+                  v-model="addSectionDraft.experience.start"
+                  label="Start"
+                  variant="outlined"
+                  hide-details
+                />
+                <v-text-field
+                  v-model="addSectionDraft.experience.end"
+                  label="End"
+                  variant="outlined"
+                  hide-details
+                />
               </div>
               <v-select
                 v-model="addSectionDraft.experience.contentStyle"
@@ -2911,32 +3611,81 @@ if (import.meta.client) {
                 variant="outlined"
                 hide-details
               />
-              <v-textarea v-model="addSectionDraft.experience.bullets" label="Content (one per line, timeline: Label | Detail)" rows="4" variant="outlined" hide-details />
+              <v-textarea
+                v-model="addSectionDraft.experience.bullets"
+                label="Content (one per line, timeline: Label | Detail)"
+                rows="4"
+                variant="outlined"
+                hide-details
+              />
             </template>
 
             <template v-else-if="addSectionType === 'education'">
-              <v-text-field v-model="addSectionDraft.education.degree" label="Degree" variant="outlined" hide-details />
-              <v-text-field v-model="addSectionDraft.education.school" label="School" variant="outlined" hide-details />
-              <v-text-field v-model="addSectionDraft.education.schoolImageUrl" label="School logo URL (optional)" variant="outlined" hide-details />
+              <v-text-field
+                v-model="addSectionDraft.education.degree"
+                label="Degree"
+                variant="outlined"
+                hide-details
+              />
+              <v-text-field
+                v-model="addSectionDraft.education.school"
+                label="School"
+                variant="outlined"
+                hide-details
+              />
+              <v-text-field
+                v-model="addSectionDraft.education.schoolImageUrl"
+                label="School logo URL (optional)"
+                variant="outlined"
+                hide-details
+              />
               <div class="d-flex align-center ga-2">
                 <input
                   id="education-image-input-add"
                   type="file"
                   accept="image/*"
                   class="d-none"
-                  @change="event => onEducationImageSelected(event, 'add')"
+                  @change="(event) => onEducationImageSelected(event, 'add')"
+                />
+                <v-btn
+                  prepend-icon="mdi-image-plus-outline"
+                  variant="outlined"
+                  size="small"
+                  @click="triggerFileInputById('education-image-input-add')"
                 >
-                <v-btn prepend-icon="mdi-image-plus-outline" variant="outlined" size="small" @click="triggerFileInputById('education-image-input-add')">
                   Upload logo
                 </v-btn>
-                <v-avatar v-if="addSectionDraft.education.schoolImageUrl" rounded="lg" size="40">
-                  <v-img :src="addSectionDraft.education.schoolImageUrl" alt="School logo preview" cover />
+                <v-avatar
+                  v-if="addSectionDraft.education.schoolImageUrl"
+                  rounded="lg"
+                  size="40"
+                >
+                  <v-img
+                    :src="addSectionDraft.education.schoolImageUrl"
+                    alt="School logo preview"
+                    cover
+                  />
                 </v-avatar>
               </div>
-              <v-text-field v-model="addSectionDraft.education.city" label="City" variant="outlined" hide-details />
+              <v-text-field
+                v-model="addSectionDraft.education.city"
+                label="City"
+                variant="outlined"
+                hide-details
+              />
               <div class="grid-2">
-                <v-text-field v-model="addSectionDraft.education.start" label="Start" variant="outlined" hide-details />
-                <v-text-field v-model="addSectionDraft.education.end" label="End" variant="outlined" hide-details />
+                <v-text-field
+                  v-model="addSectionDraft.education.start"
+                  label="Start"
+                  variant="outlined"
+                  hide-details
+                />
+                <v-text-field
+                  v-model="addSectionDraft.education.end"
+                  label="End"
+                  variant="outlined"
+                  hide-details
+                />
               </div>
               <v-select
                 v-model="addSectionDraft.education.contentStyle"
@@ -2945,27 +3694,80 @@ if (import.meta.client) {
                 variant="outlined"
                 hide-details
               />
-              <v-textarea v-model="addSectionDraft.education.note" label="Content (one per line, timeline: Label | Detail)" rows="3" variant="outlined" hide-details />
+              <v-textarea
+                v-model="addSectionDraft.education.note"
+                label="Content (one per line, timeline: Label | Detail)"
+                rows="3"
+                variant="outlined"
+                hide-details
+              />
             </template>
 
             <template v-else-if="addSectionType === 'skill'">
-              <v-text-field v-model="addSectionDraft.skill.name" label="Skill name" variant="outlined" hide-details />
-              <v-slider v-model="addSectionDraft.skill.level" min="0" max="100" step="5" color="primary" thumb-label />
+              <v-text-field
+                v-model="addSectionDraft.skill.name"
+                label="Skill name"
+                variant="outlined"
+                hide-details
+              />
+              <v-slider
+                v-model="addSectionDraft.skill.level"
+                min="0"
+                max="100"
+                step="5"
+                color="primary"
+                thumb-label
+              />
             </template>
 
             <template v-else-if="addSectionType === 'language'">
-              <v-text-field v-model="addSectionDraft.language.name" label="Language name" variant="outlined" hide-details />
-              <v-text-field v-model="addSectionDraft.language.countryCode" label="Country code (optional)" placeholder="FR" maxlength="2" variant="outlined" hide-details />
-              <v-text-field v-model="addSectionDraft.language.flag" label="Flag (optional)" placeholder="🇫🇷" variant="outlined" hide-details />
-              <v-slider v-model="addSectionDraft.language.level" min="0" max="100" step="5" color="primary" thumb-label />
+              <v-text-field
+                v-model="addSectionDraft.language.name"
+                label="Language name"
+                variant="outlined"
+                hide-details
+              />
+              <v-text-field
+                v-model="addSectionDraft.language.countryCode"
+                label="Country code (optional)"
+                placeholder="FR"
+                maxlength="2"
+                variant="outlined"
+                hide-details
+              />
+              <v-text-field
+                v-model="addSectionDraft.language.flag"
+                label="Flag (optional)"
+                placeholder="🇫🇷"
+                variant="outlined"
+                hide-details
+              />
+              <v-slider
+                v-model="addSectionDraft.language.level"
+                min="0"
+                max="100"
+                step="5"
+                color="primary"
+                thumb-label
+              />
             </template>
 
             <template v-else-if="addSectionType === 'hobby'">
-              <v-text-field v-model="addSectionDraft.hobby.name" label="Hobby" variant="outlined" hide-details />
+              <v-text-field
+                v-model="addSectionDraft.hobby.name"
+                label="Hobby"
+                variant="outlined"
+                hide-details
+              />
             </template>
 
             <template v-else-if="addSectionType === 'project'">
-              <v-text-field v-model="addSectionDraft.project.name" label="Project name" variant="outlined" hide-details />
+              <v-text-field
+                v-model="addSectionDraft.project.name"
+                label="Project name"
+                variant="outlined"
+                hide-details
+              />
               <v-select
                 v-model="addSectionDraft.project.contentStyle"
                 :items="resumeContentStyleSelectItems"
@@ -2973,23 +3775,39 @@ if (import.meta.client) {
                 variant="outlined"
                 hide-details
               />
-              <v-textarea v-model="addSectionDraft.project.summary" label="Project content (one per line, timeline: Label | Detail)" rows="4" variant="outlined" hide-details />
-              <v-text-field v-model="addSectionDraft.project.imageUrl" label="Image URL (optional)" variant="outlined" hide-details />
+              <v-textarea
+                v-model="addSectionDraft.project.summary"
+                label="Project content (one per line, timeline: Label | Detail)"
+                rows="4"
+                variant="outlined"
+                hide-details
+              />
+              <v-text-field
+                v-model="addSectionDraft.project.imageUrl"
+                label="Image URL (optional)"
+                variant="outlined"
+                hide-details
+              />
               <v-text-field
                 v-model="addSectionDraft.project.repositoryUrl"
                 label="Repository URL (optional)"
                 placeholder="https://github.com/org/repo"
                 variant="outlined"
                 :rules="[validateHttpRepositoryUrl]"
-                @blur="addSectionDraft.project.repositoryProvider = detectRepositoryProvider(addSectionDraft.project.repositoryUrl)"
+                @blur="
+                  addSectionDraft.project.repositoryProvider =
+                    detectRepositoryProvider(
+                      addSectionDraft.project.repositoryUrl,
+                    )
+                "
               />
               <v-select
                 v-model="addSectionDraft.project.repositoryProvider"
                 :items="[
-                { title: 'GitHub', value: 'github' },
-                { title: 'GitLab', value: 'gitlab' },
-                { title: 'Other', value: 'other' },
-              ]"
+                  { title: 'GitHub', value: 'github' },
+                  { title: 'GitLab', value: 'gitlab' },
+                  { title: 'Other', value: 'other' },
+                ]"
                 label="Repository provider (optional)"
                 variant="outlined"
                 hide-details
@@ -2997,24 +3815,71 @@ if (import.meta.client) {
             </template>
 
             <template v-else-if="addSectionType === 'certification'">
-              <v-text-field v-model="addSectionDraft.certification.title" label="Title" variant="outlined" hide-details />
-              <v-text-field v-model="addSectionDraft.certification.school" label="Issuer" variant="outlined" hide-details />
+              <v-text-field
+                v-model="addSectionDraft.certification.title"
+                label="Title"
+                variant="outlined"
+                hide-details
+              />
+              <v-text-field
+                v-model="addSectionDraft.certification.school"
+                label="Issuer"
+                variant="outlined"
+                hide-details
+              />
               <div class="grid-2">
-                <v-text-field v-model="addSectionDraft.certification.start" label="Start" variant="outlined" hide-details />
-                <v-text-field v-model="addSectionDraft.certification.end" label="End" variant="outlined" hide-details />
+                <v-text-field
+                  v-model="addSectionDraft.certification.start"
+                  label="Start"
+                  variant="outlined"
+                  hide-details
+                />
+                <v-text-field
+                  v-model="addSectionDraft.certification.end"
+                  label="End"
+                  variant="outlined"
+                  hide-details
+                />
               </div>
             </template>
 
             <template v-else-if="addSectionType === 'reference'">
-              <v-text-field v-model="addSectionDraft.reference.name" label="Name" variant="outlined" hide-details />
-              <v-text-field v-model="addSectionDraft.reference.company" label="Company" variant="outlined" hide-details />
-              <v-text-field v-model="addSectionDraft.reference.email" label="Email" variant="outlined" hide-details />
-              <v-text-field v-model="addSectionDraft.reference.phone" label="Phone" variant="outlined" hide-details />
+              <v-text-field
+                v-model="addSectionDraft.reference.name"
+                label="Name"
+                variant="outlined"
+                hide-details
+              />
+              <v-text-field
+                v-model="addSectionDraft.reference.company"
+                label="Company"
+                variant="outlined"
+                hide-details
+              />
+              <v-text-field
+                v-model="addSectionDraft.reference.email"
+                label="Email"
+                variant="outlined"
+                hide-details
+              />
+              <v-text-field
+                v-model="addSectionDraft.reference.phone"
+                label="Phone"
+                variant="outlined"
+                hide-details
+              />
             </template>
           </v-card-text>
           <v-card-actions class="justify-end">
-            <v-btn variant="text" @click="addSectionDialogOpen = false">Cancel</v-btn>
-            <v-btn color="primary" prepend-icon="mdi-plus" @click="submitAddSection">Add section</v-btn>
+            <v-btn variant="text" @click="addSectionDialogOpen = false"
+              >Cancel</v-btn
+            >
+            <v-btn
+              color="primary"
+              prepend-icon="mdi-plus"
+              @click="submitAddSection"
+              >Add section</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -3022,19 +3887,38 @@ if (import.meta.client) {
       <v-dialog v-model="sectionItemDialogOpen" max-width="680">
         <v-card>
           <v-card-title class="d-flex align-center justify-space-between">
-          <span>
-            Add {{ sectionDisplayLabel(activeSectionKey) }} item
-            <v-chip size="x-small" class="ml-2" color="primary" variant="tonal">
-              {{ sectionVariantLabels[String(activeVariant)] }}
-            </v-chip>
-          </span>
-            <v-btn icon="mdi-close" variant="text" @click="sectionItemDialogOpen = false" />
+            <span>
+              Add {{ sectionDisplayLabel(activeSectionKey) }} item
+              <v-chip
+                size="x-small"
+                class="ml-2"
+                color="primary"
+                variant="tonal"
+              >
+                {{ sectionVariantLabels[String(activeVariant)] }}
+              </v-chip>
+            </span>
+            <v-btn
+              icon="mdi-close"
+              variant="text"
+              @click="sectionItemDialogOpen = false"
+            />
           </v-card-title>
           <v-divider />
           <v-card-text class="d-grid ga-3">
             <template v-if="activeSectionKey === 'experience'">
-              <v-text-field v-model="sectionItemDraft.experience.role" label="Role" variant="outlined" hide-details />
-              <v-text-field v-model="sectionItemDraft.experience.company" label="Company" variant="outlined" hide-details />
+              <v-text-field
+                v-model="sectionItemDraft.experience.role"
+                label="Role"
+                variant="outlined"
+                hide-details
+              />
+              <v-text-field
+                v-model="sectionItemDraft.experience.company"
+                label="Company"
+                variant="outlined"
+                hide-details
+              />
               <v-text-field
                 v-model="sectionItemDraft.experience.companyImageUrl"
                 label="Company logo URL"
@@ -3043,7 +3927,12 @@ if (import.meta.client) {
                 @update:model-value="setExperienceLogoError('section-item')"
               />
               <div class="d-flex align-center ga-2">
-                <v-btn prepend-icon="mdi-image-plus-outline" size="small" variant="tonal" @click="openExperienceLogoPicker('section-item')">
+                <v-btn
+                  prepend-icon="mdi-image-plus-outline"
+                  size="small"
+                  variant="tonal"
+                  @click="openExperienceLogoPicker('section-item')"
+                >
                   Upload logo
                 </v-btn>
                 <input
@@ -3052,12 +3941,27 @@ if (import.meta.client) {
                   accept="image/png,image/jpeg,image/webp,image/svg+xml"
                   class="d-none"
                   @change="onSectionItemExperienceLogoSelected"
-                >
+                />
               </div>
-              <v-text-field v-model="sectionItemDraft.experience.city" label="City" variant="outlined" hide-details />
+              <v-text-field
+                v-model="sectionItemDraft.experience.city"
+                label="City"
+                variant="outlined"
+                hide-details
+              />
               <div class="grid-2">
-                <v-text-field v-model="sectionItemDraft.experience.start" label="Start" variant="outlined" hide-details />
-                <v-text-field v-model="sectionItemDraft.experience.end" label="End" variant="outlined" hide-details />
+                <v-text-field
+                  v-model="sectionItemDraft.experience.start"
+                  label="Start"
+                  variant="outlined"
+                  hide-details
+                />
+                <v-text-field
+                  v-model="sectionItemDraft.experience.end"
+                  label="End"
+                  variant="outlined"
+                  hide-details
+                />
               </div>
               <v-select
                 v-model="sectionItemDraft.experience.contentStyle"
@@ -3068,7 +3972,13 @@ if (import.meta.client) {
                 variant="outlined"
                 hide-details
               />
-              <v-textarea v-model="sectionItemDraft.experience.bullets" label="Content (one per line, timeline: Label | Detail)" rows="4" variant="outlined" hide-details />
+              <v-textarea
+                v-model="sectionItemDraft.experience.bullets"
+                label="Content (one per line, timeline: Label | Detail)"
+                rows="4"
+                variant="outlined"
+                hide-details
+              />
               <v-textarea
                 v-if="sectionItemDraft.experience.contentStyle === 'paragraph'"
                 v-model="sectionItemDraft.experience.paragraph"
@@ -3078,9 +3988,16 @@ if (import.meta.client) {
                 hide-details
               />
               <v-textarea
-                v-else-if="sectionItemDraft.experience.contentStyle === 'bullets' || sectionItemDraft.experience.contentStyle === 'dashes'"
+                v-else-if="
+                  sectionItemDraft.experience.contentStyle === 'bullets' ||
+                  sectionItemDraft.experience.contentStyle === 'dashes'
+                "
                 v-model="sectionItemDraft.experience.lines"
-                :label="sectionItemDraft.experience.contentStyle === 'bullets' ? 'Bullets (one per line)' : 'Dashes (one per line)'"
+                :label="
+                  sectionItemDraft.experience.contentStyle === 'bullets'
+                    ? 'Bullets (one per line)'
+                    : 'Dashes (one per line)'
+                "
                 rows="4"
                 variant="outlined"
                 hide-details
@@ -3109,28 +4026,75 @@ if (import.meta.client) {
             </template>
 
             <template v-else-if="activeSectionKey === 'education'">
-              <v-text-field v-model="sectionItemDraft.education.degree" label="Degree" variant="outlined" hide-details />
-              <v-text-field v-model="sectionItemDraft.education.school" label="School" variant="outlined" hide-details />
-              <v-text-field v-model="sectionItemDraft.education.schoolImageUrl" label="School logo URL (optional)" variant="outlined" hide-details />
+              <v-text-field
+                v-model="sectionItemDraft.education.degree"
+                label="Degree"
+                variant="outlined"
+                hide-details
+              />
+              <v-text-field
+                v-model="sectionItemDraft.education.school"
+                label="School"
+                variant="outlined"
+                hide-details
+              />
+              <v-text-field
+                v-model="sectionItemDraft.education.schoolImageUrl"
+                label="School logo URL (optional)"
+                variant="outlined"
+                hide-details
+              />
               <div class="d-flex align-center ga-2">
                 <input
                   id="education-image-input-section-item"
                   type="file"
                   accept="image/*"
                   class="d-none"
-                  @change="event => onEducationImageSelected(event, 'section')"
+                  @change="
+                    (event) => onEducationImageSelected(event, 'section')
+                  "
+                />
+                <v-btn
+                  prepend-icon="mdi-image-plus-outline"
+                  variant="outlined"
+                  size="small"
+                  @click="
+                    triggerFileInputById('education-image-input-section-item')
+                  "
                 >
-                <v-btn prepend-icon="mdi-image-plus-outline" variant="outlined" size="small" @click="triggerFileInputById('education-image-input-section-item')">
                   Upload logo
                 </v-btn>
-                <v-avatar v-if="sectionItemDraft.education.schoolImageUrl" rounded="lg" size="40">
-                  <v-img :src="sectionItemDraft.education.schoolImageUrl" alt="School logo preview" cover />
+                <v-avatar
+                  v-if="sectionItemDraft.education.schoolImageUrl"
+                  rounded="lg"
+                  size="40"
+                >
+                  <v-img
+                    :src="sectionItemDraft.education.schoolImageUrl"
+                    alt="School logo preview"
+                    cover
+                  />
                 </v-avatar>
               </div>
-              <v-text-field v-model="sectionItemDraft.education.city" label="City" variant="outlined" hide-details />
+              <v-text-field
+                v-model="sectionItemDraft.education.city"
+                label="City"
+                variant="outlined"
+                hide-details
+              />
               <div class="grid-2">
-                <v-text-field v-model="sectionItemDraft.education.start" label="Start" variant="outlined" hide-details />
-                <v-text-field v-model="sectionItemDraft.education.end" label="End" variant="outlined" hide-details />
+                <v-text-field
+                  v-model="sectionItemDraft.education.start"
+                  label="Start"
+                  variant="outlined"
+                  hide-details
+                />
+                <v-text-field
+                  v-model="sectionItemDraft.education.end"
+                  label="End"
+                  variant="outlined"
+                  hide-details
+                />
               </div>
               <v-select
                 v-model="sectionItemDraft.education.contentStyle"
@@ -3139,13 +4103,37 @@ if (import.meta.client) {
                 variant="outlined"
                 hide-details
               />
-              <v-textarea v-model="sectionItemDraft.education.note" label="Content (one per line, timeline: Label | Detail)" rows="3" variant="outlined" hide-details />
+              <v-textarea
+                v-model="sectionItemDraft.education.note"
+                label="Content (one per line, timeline: Label | Detail)"
+                rows="3"
+                variant="outlined"
+                hide-details
+              />
             </template>
 
             <template v-else-if="activeSectionKey === 'language'">
-              <v-text-field v-model="sectionItemDraft.language.name" label="Language name" variant="outlined" hide-details />
-              <v-text-field v-model="sectionItemDraft.language.countryCode" label="Country code (optional)" placeholder="FR" maxlength="2" variant="outlined" hide-details />
-              <v-text-field v-model="sectionItemDraft.language.flag" label="Flag (optional)" placeholder="🇫🇷" variant="outlined" hide-details />
+              <v-text-field
+                v-model="sectionItemDraft.language.name"
+                label="Language name"
+                variant="outlined"
+                hide-details
+              />
+              <v-text-field
+                v-model="sectionItemDraft.language.countryCode"
+                label="Country code (optional)"
+                placeholder="FR"
+                maxlength="2"
+                variant="outlined"
+                hide-details
+              />
+              <v-text-field
+                v-model="sectionItemDraft.language.flag"
+                label="Flag (optional)"
+                placeholder="🇫🇷"
+                variant="outlined"
+                hide-details
+              />
               <v-rating
                 v-if="activeVariant === 'stars'"
                 v-model="sectionItemDraft.language.stars"
@@ -3165,7 +4153,12 @@ if (import.meta.client) {
             </template>
 
             <template v-else-if="activeSectionKey === 'project'">
-              <v-text-field v-model="sectionItemDraft.project.name" label="Project name" variant="outlined" hide-details />
+              <v-text-field
+                v-model="sectionItemDraft.project.name"
+                label="Project name"
+                variant="outlined"
+                hide-details
+              />
               <v-select
                 v-model="sectionItemDraft.project.contentStyle"
                 :items="resumeContentStyleSelectItems"
@@ -3173,7 +4166,13 @@ if (import.meta.client) {
                 variant="outlined"
                 hide-details
               />
-              <v-textarea v-model="sectionItemDraft.project.summary" label="Project content (one per line, timeline: Label | Detail)" rows="4" variant="outlined" hide-details />
+              <v-textarea
+                v-model="sectionItemDraft.project.summary"
+                label="Project content (one per line, timeline: Label | Detail)"
+                rows="4"
+                variant="outlined"
+                hide-details
+              />
               <v-text-field
                 v-model="sectionItemDraft.project.imageUrl"
                 label="Image URL (optional)"
@@ -3186,15 +4185,20 @@ if (import.meta.client) {
                 placeholder="https://github.com/org/repo"
                 variant="outlined"
                 :rules="[validateHttpRepositoryUrl]"
-                @blur="sectionItemDraft.project.repositoryProvider = detectRepositoryProvider(sectionItemDraft.project.repositoryUrl)"
+                @blur="
+                  sectionItemDraft.project.repositoryProvider =
+                    detectRepositoryProvider(
+                      sectionItemDraft.project.repositoryUrl,
+                    )
+                "
               />
               <v-select
                 v-model="sectionItemDraft.project.repositoryProvider"
                 :items="[
-                { title: 'GitHub', value: 'github' },
-                { title: 'GitLab', value: 'gitlab' },
-                { title: 'Other', value: 'other' },
-              ]"
+                  { title: 'GitHub', value: 'github' },
+                  { title: 'GitLab', value: 'gitlab' },
+                  { title: 'Other', value: 'other' },
+                ]"
                 label="Repository provider (optional)"
                 variant="outlined"
                 hide-details
@@ -3202,8 +4206,15 @@ if (import.meta.client) {
             </template>
           </v-card-text>
           <v-card-actions class="justify-end">
-            <v-btn variant="text" @click="sectionItemDialogOpen = false">Cancel</v-btn>
-            <v-btn color="primary" prepend-icon="mdi-content-save-outline" @click="submitSectionItemDialog">Save item</v-btn>
+            <v-btn variant="text" @click="sectionItemDialogOpen = false"
+              >Cancel</v-btn
+            >
+            <v-btn
+              color="primary"
+              prepend-icon="mdi-content-save-outline"
+              @click="submitSectionItemDialog"
+              >Save item</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -3212,19 +4223,36 @@ if (import.meta.client) {
         <v-card>
           <v-card-title class="d-flex align-center justify-space-between">
             <span>Sauvegarder le CV</span>
-            <v-btn icon="mdi-close" variant="text" :disabled="saveLoading" @click="saveModalOpen = false" />
+            <v-btn
+              icon="mdi-close"
+              variant="text"
+              :disabled="saveLoading"
+              @click="saveModalOpen = false"
+            />
           </v-card-title>
           <v-divider />
           <v-card-text class="d-grid ga-4">
-            <v-radio-group v-model="saveMode" :disabled="saveLoading" hide-details>
-              <v-radio value="replace" label="Option A: Remplacer un CV existant" />
+            <v-radio-group
+              v-model="saveMode"
+              :disabled="saveLoading"
+              hide-details
+            >
+              <v-radio
+                value="replace"
+                label="Option A: Remplacer un CV existant"
+              />
               <v-radio value="create" label="Option B: Créer un nouveau CV" />
             </v-radio-group>
 
             <div v-if="saveMode === 'replace'" class="d-grid ga-2">
               <v-select
                 v-model="selectedRemoteResumeId"
-                :items="remoteResumes.map((item) => ({ title: item.resumeInformation?.fullName || item.id, value: item.id }))"
+                :items="
+                  remoteResumes.map((item) => ({
+                    title: item.resumeInformation?.fullName || item.id,
+                    value: item.id,
+                  }))
+                "
                 item-title="title"
                 item-value="value"
                 label="CV à remplacer"
@@ -3273,12 +4301,22 @@ if (import.meta.client) {
               color="primary"
             />
 
-            <v-alert v-if="saveStatus !== 'idle'" :type="saveStatus" variant="tonal" density="comfortable">
+            <v-alert
+              v-if="saveStatus !== 'idle'"
+              :type="saveStatus"
+              variant="tonal"
+              density="comfortable"
+            >
               {{ saveStatusMessage }}
             </v-alert>
           </v-card-text>
           <v-card-actions class="justify-end">
-            <v-btn variant="text" :disabled="saveLoading" @click="saveModalOpen = false">Annuler</v-btn>
+            <v-btn
+              variant="text"
+              :disabled="saveLoading"
+              @click="saveModalOpen = false"
+              >Annuler</v-btn
+            >
             <v-btn
               v-if="saveMode === 'replace' && !replaceConfirmStep"
               color="warning"
@@ -3305,8 +4343,12 @@ if (import.meta.client) {
           <v-card-title>Confirmation</v-card-title>
           <v-card-text>Supprimer définitivement ce CV ?</v-card-text>
           <v-card-actions class="justify-end">
-            <v-btn variant="text" @click="deleteConfirmModalOpen = false">Annuler</v-btn>
-            <v-btn color="error" @click="confirmDeleteRemoteResume">Delete</v-btn>
+            <v-btn variant="text" @click="deleteConfirmModalOpen = false"
+              >Annuler</v-btn
+            >
+            <v-btn color="error" @click="confirmDeleteRemoteResume"
+              >Delete</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -3337,7 +4379,12 @@ if (import.meta.client) {
               :class="previewDesignClasses"
               :style="previewStyle"
             >
-              <div class="cv-preview-stage" :class="{ 'cv-preview-stage--bordered': selectedRounded !== 'none' }">
+              <div
+                class="cv-preview-stage"
+                :class="{
+                  'cv-preview-stage--bordered': selectedRounded !== 'none',
+                }"
+              >
                 <div class="cv-page-shell" :class="previewDesignClasses">
                   <template v-if="rendererReady">
                     <ResumeRenderer
@@ -3354,7 +4401,9 @@ if (import.meta.client) {
                       :section-variants="sectionVariantByKey"
                       :photo-shape-options="photoShapeOptions"
                       :selected-photo-shape="safePhotoShape"
-                      :on-photo-shape-select="(shape) => selectedPhotoShape = shape"
+                      :on-photo-shape-select="
+                        (shape) => (selectedPhotoShape = shape)
+                      "
                       :on-photo-click="onPreviewPhotoClick"
                       :template-skin="selectedTemplateSkin"
                       editable
@@ -3363,14 +4412,21 @@ if (import.meta.client) {
                       @move-photo="movePhoto"
                       @open-photo-picker="openPhotoPicker"
                       @update:photo-size="layoutSettings.photoSize = $event"
-                      @update:photo-border-width="layoutSettings.photoBorderWidth = $event"
-                      @update:photo-position="layoutSettings.photoPosition = $event"
+                      @update:photo-border-width="
+                        layoutSettings.photoBorderWidth = $event
+                      "
+                      @update:photo-position="
+                        layoutSettings.photoPosition = $event
+                      "
                       @move-section="moveSection"
                     />
                   </template>
                   <div v-else class="preview-fallback">
                     <v-alert type="error" variant="tonal" density="comfortable">
-                      {{ rendererError || 'La prévisualisation n’est pas disponible pour le moment.' }}
+                      {{
+                        rendererError ||
+                        'La prévisualisation n’est pas disponible pour le moment.'
+                      }}
                     </v-alert>
                   </div>
                   <div v-if="signatureDataUrl" class="signature-overlay">
@@ -3387,14 +4443,35 @@ if (import.meta.client) {
         <v-card>
           <v-card-title class="d-flex align-center justify-space-between">
             <span>Resume Photo</span>
-            <v-btn icon="mdi-close" variant="text" @click="photoDialogOpen = false" />
+            <v-btn
+              icon="mdi-close"
+              variant="text"
+              @click="photoDialogOpen = false"
+            />
           </v-card-title>
           <v-divider />
           <v-card-text>
-            <v-img :src="resume.photoUrl || '/img/default_avatar.svg'" class="rounded-lg mb-4" max-height="380" cover />
+            <v-img
+              :src="resume.photoUrl || '/img/default_avatar.svg'"
+              class="rounded-lg mb-4"
+              max-height="380"
+              cover
+            />
             <div class="d-flex ga-2">
-              <v-btn prepend-icon="mdi-upload" color="primary" variant="tonal" @click="openPhotoPicker">Upload image</v-btn>
-              <v-btn prepend-icon="mdi-delete-outline" color="error" variant="text" @click="clearPhoto">Remove</v-btn>
+              <v-btn
+                prepend-icon="mdi-upload"
+                color="primary"
+                variant="tonal"
+                @click="openPhotoPicker"
+                >Upload image</v-btn
+              >
+              <v-btn
+                prepend-icon="mdi-delete-outline"
+                color="error"
+                variant="text"
+                @click="clearPhoto"
+                >Remove</v-btn
+              >
             </div>
           </v-card-text>
         </v-card>
@@ -3443,7 +4520,7 @@ if (import.meta.client) {
           </v-card-text>
           <v-card-actions class="justify-end">
             <v-btn variant="text" @click="aiCreateModalOpen = false"
-            >Cancel</v-btn
+              >Cancel</v-btn
             >
             <v-btn
               color="primary"
@@ -3496,7 +4573,11 @@ if (import.meta.client) {
         <v-card>
           <v-card-title class="d-flex align-center justify-space-between">
             <span>Ajouter une signature</span>
-            <v-btn icon="mdi-close" variant="text" @click="signatureDialogOpen = false" />
+            <v-btn
+              icon="mdi-close"
+              variant="text"
+              @click="signatureDialogOpen = false"
+            />
           </v-card-title>
           <v-divider />
           <v-card-text>
@@ -3515,8 +4596,18 @@ if (import.meta.client) {
             />
           </v-card-text>
           <v-card-actions class="justify-space-between">
-            <v-btn prepend-icon="mdi-eraser" variant="text" @click="clearSignature">Effacer</v-btn>
-            <v-btn color="primary" prepend-icon="mdi-content-save-outline" @click="saveSignature">Ajouter au CV</v-btn>
+            <v-btn
+              prepend-icon="mdi-eraser"
+              variant="text"
+              @click="clearSignature"
+              >Effacer</v-btn
+            >
+            <v-btn
+              color="primary"
+              prepend-icon="mdi-content-save-outline"
+              @click="saveSignature"
+              >Ajouter au CV</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -3541,7 +4632,9 @@ if (import.meta.client) {
   --builder-column-gap: 16px;
   --preview-page-width: 860px;
   --preview-shell-padding: 16px;
-  --preview-shell-max-width: calc(var(--preview-page-width) + (var(--preview-shell-padding) * 2));
+  --preview-shell-max-width: calc(
+    var(--preview-page-width) + (var(--preview-shell-padding) * 2)
+  );
   min-height: 100vh;
 }
 
@@ -3572,13 +4665,15 @@ if (import.meta.client) {
   width: min(100%, 760px);
   padding: 12px;
   border-radius: 16px;
-  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-primary)) 24%, transparent);
+  border: 1px solid
+    color-mix(in srgb, rgb(var(--v-theme-primary)) 24%, transparent);
   background: color-mix(in srgb, rgb(var(--v-theme-surface)) 92%, transparent);
   backdrop-filter: blur(8px);
 }
 
 .builder-form {
-  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-primary)) 24%, transparent);
+  border: 1px solid
+    color-mix(in srgb, rgb(var(--v-theme-primary)) 24%, transparent);
   border-radius: 14px;
   position: sticky;
   top: 60px;
@@ -3717,7 +4812,8 @@ if (import.meta.client) {
   gap: 8px;
   padding: 10px 12px;
   border-radius: 20px;
-  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-primary)) 30%, transparent);
+  border: 1px solid
+    color-mix(in srgb, rgb(var(--v-theme-primary)) 30%, transparent);
   background: color-mix(in srgb, rgb(var(--v-theme-surface)) 84%, transparent);
   backdrop-filter: blur(10px);
   box-shadow: 0 10px 28px rgba(15, 23, 42, 0.22);
@@ -3800,7 +4896,8 @@ if (import.meta.client) {
   width: 100%;
   background: color-mix(in srgb, var(--cv-page) 80%, white);
   border: 1px solid color-mix(in srgb, var(--cv-secondary) 18%, transparent);
-  box-shadow: 0 var(--cv-space-4) var(--cv-space-9) color-mix(in srgb, var(--cv-secondary) 20%, transparent);
+  box-shadow: 0 var(--cv-space-4) var(--cv-space-9)
+    color-mix(in srgb, var(--cv-secondary) 20%, transparent);
   border-radius: calc(var(--cv-space-1) + var(--cv-space-2) / 4);
   overflow: hidden;
   position: relative;
@@ -3850,42 +4947,42 @@ if (import.meta.client) {
 .preview-grid.photo-shape-square :deep(.v-avatar),
 .preview-grid.photo-shape-square :deep(.avatar),
 .preview-grid.photo-shape-square :deep(img.avatar),
-.preview-grid.photo-shape-square :deep(img[class*="photo"]) {
+.preview-grid.photo-shape-square :deep(img[class*='photo']) {
   border-radius: 8px !important;
 }
 
 .preview-grid.photo-shape-rounded :deep(.v-avatar),
 .preview-grid.photo-shape-rounded :deep(.avatar),
 .preview-grid.photo-shape-rounded :deep(img.avatar),
-.preview-grid.photo-shape-rounded :deep(img[class*="photo"]) {
+.preview-grid.photo-shape-rounded :deep(img[class*='photo']) {
   border-radius: 18px !important;
 }
 
 .preview-grid.photo-shape-circle :deep(.v-avatar),
 .preview-grid.photo-shape-circle :deep(.avatar),
 .preview-grid.photo-shape-circle :deep(img.avatar),
-.preview-grid.photo-shape-circle :deep(img[class*="photo"]) {
+.preview-grid.photo-shape-circle :deep(img[class*='photo']) {
   border-radius: 50% !important;
 }
 
 .preview-grid.photo-shape-portrait-card :deep(.v-avatar),
 .preview-grid.photo-shape-portrait-card :deep(.avatar),
 .preview-grid.photo-shape-portrait-card :deep(img.avatar),
-.preview-grid.photo-shape-portrait-card :deep(img[class*="photo"]) {
+.preview-grid.photo-shape-portrait-card :deep(img[class*='photo']) {
   border-radius: 22px !important;
 }
 
 .preview-grid.photo-shape-soft-blob :deep(.v-avatar),
 .preview-grid.photo-shape-soft-blob :deep(.avatar),
 .preview-grid.photo-shape-soft-blob :deep(img.avatar),
-.preview-grid.photo-shape-soft-blob :deep(img[class*="photo"]) {
+.preview-grid.photo-shape-soft-blob :deep(img[class*='photo']) {
   border-radius: 62% 38% 48% 52% / 44% 58% 42% 56% !important;
 }
 
 .preview-grid.photo-shape-hex :deep(.v-avatar),
 .preview-grid.photo-shape-hex :deep(.avatar),
 .preview-grid.photo-shape-hex :deep(img.avatar),
-.preview-grid.photo-shape-hex :deep(img[class*="photo"]) {
+.preview-grid.photo-shape-hex :deep(img[class*='photo']) {
   clip-path: polygon(25% 6%, 75% 6%, 100% 50%, 75% 94%, 25% 94%, 0 50%);
   border-radius: 0 !important;
 }
@@ -4031,6 +5128,21 @@ if (import.meta.client) {
   border-radius: var(--cv-radius);
 }
 
+.template-drawer {
+  padding: 16px 12px;
+}
+
+.template-drawer__card {
+  border-radius: 14px;
+  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 94%, transparent);
+}
+
+.template-drawer__tabs {
+  border: 1px solid
+    color-mix(in srgb, rgb(var(--v-theme-primary)) 18%, transparent);
+  border-radius: 12px;
+}
+
 .template-drawer__grid {
   display: grid;
   gap: 10px;
@@ -4043,7 +5155,9 @@ if (import.meta.client) {
   padding: 6px;
   background: rgba(var(--v-theme-surface), 0.92);
   text-align: left;
-  transition: border-color 0.15s ease, transform 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    transform 0.15s ease;
 }
 
 .template-drawer__item:hover {
