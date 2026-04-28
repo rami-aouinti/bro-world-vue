@@ -101,6 +101,9 @@ onUnmounted(() => {
 
     <v-app :class="{ 'layout-shell--loading': !isLayoutReady }">
       <AppBar />
+      <ClientOnly>
+        <AppDrawerLazy v-if="shouldRenderLeftDrawer" />
+      </ClientOnly>
       <v-main>
         <AppNotification />
         <v-container fluid class="px-2 pt-0 pb-0">
