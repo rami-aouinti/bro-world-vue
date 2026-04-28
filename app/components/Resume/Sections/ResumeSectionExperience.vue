@@ -5,6 +5,7 @@ import {
   getSectionRegistryEntry,
 } from '~/constants/resumeSectionRegistry'
 import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
+import { formatResumeMonthYear } from '~/utils/resumeDateFormat'
 
 const props = withDefaults(
   defineProps<{
@@ -91,6 +92,10 @@ function updateText(path: string, value: string) {
   target[last] = value
 }
 
+function updateDateText(path: string, value: string) {
+  updateText(path, formatResumeMonthYear(value))
+}
+
 function resolveContentStyle(item: Record<string, unknown>) {
   return item.contentStyle === 'dashes' || item.contentStyle === 'timeline'
     ? item.contentStyle
@@ -114,17 +119,17 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
   return resolvePoints(item).map((detail) => ({ label: '', detail }))
 }
 
-function logoKey(index: number, url: string) {
-  return `${index}-${url}`
+function logoKey(index: number, url: unknown) {
+  return `${index}-${String(url)}`
 }
 
-function showCompanyLogo(index: number, companyImageUrl?: string) {
+function showCompanyLogo(index: number, companyImageUrl?: unknown) {
   const normalizedUrl = String(companyImageUrl || '').trim()
   if (!normalizedUrl) return false
   return !brokenLogoByKey[logoKey(index, normalizedUrl)]
 }
 
-function onCompanyLogoError(index: number, companyImageUrl?: string) {
+function onCompanyLogoError(index: number, companyImageUrl?: unknown) {
   const normalizedUrl = String(companyImageUrl || '').trim()
   if (!normalizedUrl) return
   brokenLogoByKey[logoKey(index, normalizedUrl)] = true
@@ -228,12 +233,12 @@ function onCompanyLogoError(index: number, companyImageUrl?: string) {
             :contenteditable="editable"
             @input="
               (event) =>
-                updateText(
+                updateDateText(
                   `experiences.${index}.start`,
                   (event.target as HTMLElement).innerText,
                 )
             "
-            >{{ experience.start }}</span
+            >{{ formatResumeMonthYear(experience.start) }}</span
           >
           -
           <span
@@ -241,14 +246,57 @@ function onCompanyLogoError(index: number, companyImageUrl?: string) {
             :contenteditable="editable"
             @input="
               (event) =>
-                updateText(
+                updateDateText(
                   `experiences.${index}.end`,
                   (event.target as HTMLElement).innerText,
                 )
             "
-            >{{ experience.end }}</span
+            >{{ formatResumeMonthYear(experience.end) }}</span
           >
         </p>
+      </div>
+      <div class="content-column">
+        <h4 class="text-dark">
+          <span
+            class="editable-text"
+            :contenteditable="editable"
+            @input="
+              (event) =>
+                updateText(
+                  `experiences.${index}.role`,
+                  (event.target as HTMLElement).innerText,
+                )
+            "
+            >{{ experience.role }}</span
+          >,
+          <span
+            class="editable-text"
+            :contenteditable="editable"
+            @input="
+              (event) =>
+                updateText(
+                  `experiences.${index}.company`,
+                  (event.target as HTMLElement).innerText,
+                )
+            "
+            >{{ experience.company }}</span
+          >
+          <template v-if="variant !== 'compact' && experience.city"
+            >,
+            <span
+              class="editable-text"
+              :contenteditable="editable"
+              @input="
+                (event) =>
+                  updateText(
+                    `experiences.${index}.city`,
+                    (event.target as HTMLElement).innerText,
+                  )
+              "
+              >{{ experience.city }}</span
+            >
+          </template>
+        </h4>
         <template v-if="resolveContentStyle(experience) === 'timeline'">
           <div class="timeline-block">
             <div
@@ -303,7 +351,7 @@ function onCompanyLogoError(index: number, companyImageUrl?: string) {
             {{ dash }}
           </li>
         </ul>
-        <ul v-else>
+        <ul v-else-if="variant !== 'compact'">
           <li
             v-for="(bullet, bulletIndex) in resolvePoints(experience)"
             :key="bulletIndex"
@@ -313,66 +361,6 @@ function onCompanyLogoError(index: number, companyImageUrl?: string) {
               (event) =>
                 updateText(
                   `experiences.${index}.points.${bulletIndex}`,
-                  (event.target as HTMLElement).innerText,
-                )
-            "
-          >
-            {{ bullet }}
-          </li>
-        </ul>
-      </div>
-      <div class="content-column">
-        <h4 class="text-dark">
-          <span
-            class="editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateText(
-                  `experiences.${index}.role`,
-                  (event.target as HTMLElement).innerText,
-                )
-            "
-            >{{ experience.role }}</span
-          >,
-          <span
-            class="editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateText(
-                  `experiences.${index}.company`,
-                  (event.target as HTMLElement).innerText,
-                )
-            "
-            >{{ experience.company }}</span
-          >
-          <template v-if="variant !== 'compact' && experience.city"
-            >,
-            <span
-              class="editable-text"
-              :contenteditable="editable"
-              @input="
-                (event) =>
-                  updateText(
-                    `experiences.${index}.city`,
-                    (event.target as HTMLElement).innerText,
-                  )
-              "
-              >{{ experience.city }}</span
-            >
-          </template>
-        </h4>
-        <ul v-if="variant !== 'compact'">
-          <li
-            v-for="(bullet, bulletIndex) in experience.bullets"
-            :key="bulletIndex"
-            class="text-dark editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateText(
-                  `experiences.${index}.bullets.${bulletIndex}`,
                   (event.target as HTMLElement).innerText,
                 )
             "
@@ -392,7 +380,7 @@ function onCompanyLogoError(index: number, companyImageUrl?: string) {
               )
           "
         >
-          {{ experience.bullets?.[0] }}
+          {{ resolvePoints(experience)?.[0] }}
         </p>
       </div>
     </article>
