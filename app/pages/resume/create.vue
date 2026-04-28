@@ -375,6 +375,11 @@ const layoutModeOptions = [
   { label: 'Aside right', value: 'aside-right' },
   { label: 'No aside', value: 'no-aside' },
 ] as const
+const photoPositionOptions = [
+  { label: 'Left', value: 'left' },
+  { label: 'Center', value: 'center' },
+  { label: 'Right', value: 'right' },
+] as const
 const sectionIconStyleOptions = [
   { label: 'Outline', value: 'outline' },
   { label: 'Filled', value: 'filled' },
@@ -2417,6 +2422,17 @@ const resumeRendererDesignState = computed(() => ({
   photoBorderWidth: layoutSettings.photoBorderWidth,
   photoPosition: layoutSettings.photoPosition,
 }))
+
+watch(
+  () => layoutSettings.sidebarWidth,
+  (value) => {
+    const clampedValue = Math.min(380, Math.max(220, Math.round(value)))
+    if (clampedValue !== value) {
+      layoutSettings.sidebarWidth = clampedValue
+    }
+  },
+)
+
 async function buildResumePdfBlob() {
   if (!previewExportRef.value || !import.meta.client) return ''
   const stylesheetContent = Array.from(
@@ -2973,6 +2989,8 @@ if (import.meta.client) {
   layoutSettings.iconSize = customization.style.iconSize
   layoutSettings.iconColor = customization.style.iconColor
   layoutSettings.layoutMode = customization.style.layoutMode
+  layoutSettings.photoPosition = customization.style.photoPosition
+  layoutSettings.sidebarWidth = customization.style.asideWidth
   sectionLayout.value = normalizeSectionLayout(customization.sectionOrder)
 
   watch(
@@ -2987,6 +3005,8 @@ if (import.meta.client) {
       () => layoutSettings.iconSize,
       () => layoutSettings.iconColor,
       () => layoutSettings.layoutMode,
+      () => layoutSettings.photoPosition,
+      () => layoutSettings.sidebarWidth,
     ],
     () => {
       resumeDocumentState.value.customization = {
@@ -3003,6 +3023,8 @@ if (import.meta.client) {
           iconSize: layoutSettings.iconSize,
           iconColor: layoutSettings.iconColor,
           layoutMode: layoutSettings.layoutMode,
+          photoPosition: layoutSettings.photoPosition,
+          asideWidth: layoutSettings.sidebarWidth,
         },
       }
       persist()
@@ -3337,6 +3359,44 @@ if (import.meta.client) {
                         density="comfortable"
                         hide-details
                       />
+                      <AppSelect
+                        v-model="layoutSettings.photoPosition"
+                        :items="photoPositionOptions"
+                        item-title="label"
+                        item-value="value"
+                        label="Photo alignment"
+                        density="comfortable"
+                        hide-details
+                        class="mt-3"
+                      />
+                      <div class="mt-3">
+                        <div class="d-flex align-center justify-space-between mb-1">
+                          <span class="text-caption">Aside width</span>
+                          <span class="text-caption font-weight-medium">
+                            {{ layoutSettings.sidebarWidth }} px
+                          </span>
+                        </div>
+                        <v-slider
+                          v-model="layoutSettings.sidebarWidth"
+                          min="220"
+                          max="380"
+                          step="2"
+                          color="primary"
+                          hide-details
+                          :disabled="layoutSettings.layoutMode === 'no-aside'"
+                        />
+                        <v-text-field
+                          v-model.number="layoutSettings.sidebarWidth"
+                          type="number"
+                          min="220"
+                          max="380"
+                          step="2"
+                          label="Aside width (px)"
+                          density="comfortable"
+                          hide-details
+                          :disabled="layoutSettings.layoutMode === 'no-aside'"
+                        />
+                      </div>
 
                       <p class="section-label mt-4">Icons</p>
                       <div class="d-grid ga-3">
