@@ -17,6 +17,12 @@ type SectionLayoutVariant = {
 type ResumeSectionActionKey = ResumeSectionKey | 'skill' | 'course' | 'reference' | 'hobby' | 'certification'
 type ResumeSectionLayoutKey = Exclude<ResumeSectionActionKey, 'course'>
 
+type PhotoShapeOption = {
+  label: string
+  value: string
+  icon?: string
+}
+
 type SectionLayoutEntry<K extends ResumeSectionLayoutKey = ResumeSectionLayoutKey> = {
   key: K
   region: 'main' | 'aside'
@@ -29,6 +35,9 @@ const props = withDefaults(defineProps<{
   editable?: boolean
   showPhoto?: boolean
   onPhotoClick?: () => void
+  photoShapeOptions?: PhotoShapeOption[]
+  selectedPhotoShape?: string
+  onPhotoShapeSelect?: (shape: string) => void
   sectionLayout?: SectionLayoutEntry[]
   sectionVariants?: Partial<Record<ResumeSectionLayoutKey, string>>
   themeTokens?: Record<string, string>
@@ -37,6 +46,9 @@ const props = withDefaults(defineProps<{
   editable: false,
   showPhoto: true,
   onPhotoClick: undefined,
+  photoShapeOptions: () => [],
+  selectedPhotoShape: 'circle',
+  onPhotoShapeSelect: undefined,
   sectionLayout: () => [],
   sectionVariants: () => ({}),
   themeTokens: () => ({}),
@@ -140,9 +152,23 @@ function updateText(path: string, value: string) {
           <span class="editable-text" :contenteditable="editable" @input="event => updateText('phone', (event.target as HTMLElement).innerText)">{{ resume.phone }}</span>
         </p>
       </div>
-      <v-avatar v-if="showPhoto && resume.photoUrl" size="96" class="resume-skin__avatar" @click="onPhotoClick?.()">
-        <v-img :src="resume.photoUrl" cover />
-      </v-avatar>
+      <div v-if="showPhoto && resume.photoUrl" class="photo-frame">
+        <div v-if="photoShapeOptions.length" class="photo-shape-picker">
+          <v-btn
+            v-for="shape in photoShapeOptions"
+            :key="`preview-photo-shape-${shape.value}`"
+            size="x-small"
+            variant="tonal"
+            :color="selectedPhotoShape === shape.value ? 'primary' : undefined"
+            @click="onPhotoShapeSelect?.(shape.value)"
+          >
+            {{ shape.icon ?? shape.label }}
+          </v-btn>
+        </div>
+        <v-avatar size="96" class="resume-skin__avatar" @click="onPhotoClick?.()">
+          <v-img :src="resume.photoUrl" cover />
+        </v-avatar>
+      </div>
     </header>
 
     <div :class="templateSkin.wrapperClass">
@@ -230,6 +256,8 @@ function updateText(path: string, value: string) {
 .resume-skin__layout { display: grid; grid-template-columns: 280px 1fr; gap: 20px; }
 .resume-skin__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .resume-skin__header-contact { font-size: .9rem; opacity: .8; }
+.photo-frame { position: relative; display: inline-flex; }
+.photo-shape-picker { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); z-index: 2; display: inline-flex; gap: 4px; padding: 4px; border-radius: 10px; border: 1px solid color-mix(in srgb, var(--cv-accent) 30%, #cbd5e1); background: color-mix(in srgb, white 86%, var(--cv-page)); box-shadow: 0 6px 18px rgba(15, 23, 42, 0.14); }
 .resume-skin__skills { list-style: none; padding: 0; }
 .resume-skin__skills-section { position: relative; }
 .progress { height: 4px; background: color-mix(in srgb, var(--cv-accent) 22%, var(--cv-page)); margin-top: 4px; }

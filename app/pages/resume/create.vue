@@ -2785,25 +2785,16 @@ if (import.meta.client) {
           >
             Ce template est en support partiel pour certains réglages de design.
           </v-alert>
-          <div class="preview-image-shapes">
-            <v-btn
-              v-for="shape in photoShapeOptions"
-              :key="`preview-photo-shape-${shape.value}`"
-              size="x-small"
-              variant="tonal"
-              :color="safePhotoShape === shape.value ? 'primary' : undefined"
-              @click="selectedPhotoShape = shape.value"
-            >
-              {{ shape.icon }}
-            </v-btn>
-          </div>
           <template v-if="rendererReady">
             <ResumeRenderer
               :resume="resume"
               :show-photo="templateSupportsPhoto"
               :section-layout="orderedPreviewSections"
               :section-variants="sectionVariantByKey"
+              :photo-shape-options="photoShapeOptions"
+              :selected-photo-shape="safePhotoShape"
               :on-photo-click="onPreviewPhotoClick"
+              :on-photo-shape-select="(shape) => selectedPhotoShape = shape"
               :template-skin="selectedTemplateSkin"
               editable
               @add-item="addItemToPreviewSection"
@@ -3419,19 +3410,6 @@ if (import.meta.client) {
   position: relative;
 }
 
-.preview-image-shapes {
-  position: absolute;
-  left: 12px;
-  top: 12px;
-  z-index: 8;
-  display: inline-flex;
-  gap: 4px;
-  padding: 6px;
-  border-radius: 12px;
-  border: 1px solid color-mix(in srgb, var(--cv-accent) 30%, #cbd5e1);
-  background: color-mix(in srgb, white 86%, var(--cv-page));
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
-}
 
 .preview-support-alert {
   position: absolute;
