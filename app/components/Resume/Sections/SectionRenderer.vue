@@ -19,6 +19,8 @@ const props = withDefaults(defineProps<{
   canMoveUp?: boolean
   canMoveDown?: boolean
   themeTokens?: Record<string, string>
+  sectionIcon?: string
+  showSectionIcon?: boolean
 }>(), {
   editable: false,
   layoutDensity: 'normal',
@@ -27,6 +29,8 @@ const props = withDefaults(defineProps<{
   canMoveUp: false,
   canMoveDown: false,
   themeTokens: () => ({}),
+  sectionIcon: undefined,
+  showSectionIcon: true,
 })
 
 const emit = defineEmits<{
@@ -46,6 +50,23 @@ const componentBySectionKey = {
 } as const
 
 const sectionComponent = computed(() => componentBySectionKey[props.sectionKey])
+
+const sectionHeadingProps = computed(() => {
+  if (
+    props.sectionKey === 'education' ||
+    props.sectionKey === 'experience' ||
+    props.sectionKey === 'project' ||
+    props.sectionKey === 'reference' ||
+    props.sectionKey === 'certification'
+  ) {
+    return {
+      sectionIcon: props.sectionIcon,
+      showSectionIcon: props.showSectionIcon,
+    }
+  }
+
+  return {}
+})
 
 function onVariantChange(_: ResumeSectionKey, variant: string) {
   emit('change-variant', props.sectionKey, variant)
@@ -68,6 +89,7 @@ function onMoveSection(_: ResumeSectionKey, direction: 'up' | 'down') {
     :can-move-up="canMoveUp"
     :can-move-down="canMoveDown"
     :theme-tokens="themeTokens"
+    v-bind="sectionHeadingProps"
     @add-item="emit('add-item', sectionKey)"
     @change-variant="onVariantChange"
     @move-section="onMoveSection"

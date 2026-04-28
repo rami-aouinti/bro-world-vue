@@ -6,6 +6,7 @@ import type {
   ResumeSectionKey,
   ResumeTemplateSkin,
 } from '~/constants/resumeTemplateSkins'
+import { RESUME_SECTION_ICONS } from '~/constants/resumeSectionIcons'
 
 type SectionLayoutVariant = {
   experience: 'detailed' | 'bullets' | 'compact'
@@ -444,6 +445,8 @@ function updateText(path: string, value: string) {
           :can-move-up="canMove(section.key, 'up')"
           :can-move-down="canMove(section.key, 'down')"
           :theme-tokens="mergedSectionTokens(section.key)"
+          :section-icon="RESUME_SECTION_ICONS[section.key]"
+          :show-section-icon="templateSkin.showSectionIcons"
           @add-item="onSectionAddItem"
           @change-variant="onSectionVariantChange"
           @move-section="onSectionMove"
@@ -478,6 +481,8 @@ function updateText(path: string, value: string) {
           :can-move-up="canMove(section.key, 'up')"
           :can-move-down="canMove(section.key, 'down')"
           :theme-tokens="mergedSectionTokens(section.key)"
+          :section-icon="RESUME_SECTION_ICONS[section.key]"
+          :show-section-icon="templateSkin.showSectionIcons"
           @add-item="onSectionAddItem"
           @change-variant="onSectionVariantChange"
           @move-section="onSectionMove"

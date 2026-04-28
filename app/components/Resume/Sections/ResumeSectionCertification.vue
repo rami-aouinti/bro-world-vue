@@ -11,6 +11,8 @@ const props = withDefaults(defineProps<{
   title?: string
   canMoveUp?: boolean
   canMoveDown?: boolean
+  sectionIcon?: string
+  showSectionIcon?: boolean
 }>(), {
   editable: false,
   variant: 'classic',
@@ -20,6 +22,8 @@ const props = withDefaults(defineProps<{
   title: 'Certifications',
   canMoveUp: false,
   canMoveDown: false,
+  sectionIcon: undefined,
+  showSectionIcon: true,
 })
 
 const emit = defineEmits<{
@@ -58,7 +62,10 @@ function updateText(path: string, value: string) {
       @move-down="() => emit('move-section', 'certification', 'down')"
     />
 
-    <h3 class="cv-heading-section">{{ title }}</h3>
+    <h3 class="cv-heading-section">
+      <v-icon v-if="showSectionIcon && sectionIcon" :icon="sectionIcon" size="18" />
+      <span>{{ title }}</span>
+    </h3>
     <ul class="entry-list">
       <li v-for="(course, index) in resume.courses" :key="`${course.title}-${index}`">
         <span class="editable-text" :contenteditable="editable" @input="event => updateText(`courses.${index}.title`, (event.target as HTMLElement).innerText)">{{ course.title }}</span>
@@ -70,6 +77,7 @@ function updateText(path: string, value: string) {
 
 <style scoped>
 .certification-section { position: relative; }
+.cv-heading-section { display: inline-flex; align-items: center; gap: var(--cv-space-2, 8px); }
 .entry-list { margin: 0; padding: 0; list-style: none; }
 .entry-list li { margin-bottom: var(--cv-space-2, 8px); }
 </style>

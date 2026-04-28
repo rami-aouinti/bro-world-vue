@@ -36,6 +36,7 @@ export type ResumeTemplateSkin = {
   showSkillsInAside: boolean
   showContactInAside: boolean
   showContactInHeader: boolean
+  showSectionIcons: boolean
   defaultSectionLayout: ResumeRendererLayoutEntry[]
   sectionTitles?: Partial<Record<ResumeSectionKey, string>>
   themeTokens?: Record<string, string>
@@ -62,6 +63,7 @@ function withSkin(id: TemplateSkinId, overrides: Partial<ResumeTemplateSkin> = {
     showSkillsInAside: true,
     showContactInAside: true,
     showContactInHeader: false,
+    showSectionIcons: true,
     defaultSectionLayout: defaultLayout,
     sectionTitles: {
       experience: 'Experience',
@@ -101,6 +103,7 @@ export const RESUME_TEMPLATE_SKINS: Record<TemplateSkinId, ResumeTemplateSkin> =
     profile: { grid: 'magazine', typography: 'editorial', spacing: 'airy', colors: 'contrast', cards: 'elevated', separators: 'accent' },
   }),
   minimalist: withSkin('minimalist', {
+    showSectionIcons: false,
     showContactInHeader: true,
     showContactInAside: false,
     showSkillsInAside: false,
