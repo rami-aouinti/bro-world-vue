@@ -74,4 +74,34 @@ describe('ResumeRenderer preview regression coverage', () => {
       expect(wrapper.find(`.resume-section-hoverable .section-toolbar[aria-label="Actions de la section ${sectionKey}"]`).exists()).toBe(true)
     }
   })
+
+  it('remaps aside sections into main flow in no-aside mode with a stable main-then-aside order', async () => {
+    const wrapper = await mountSuspended(ResumeRenderer, {
+      props: {
+        resume: resumeFixture,
+        templateSkin: RESUME_TEMPLATE_SKINS.classic,
+        designState: {
+          layoutMode: 'no-aside',
+        },
+      },
+    })
+
+    expect(wrapper.find('aside.resume-skin__aside').exists()).toBe(false)
+
+    const renderedToolbars = wrapper.findAll('main .section-toolbar')
+    const renderedKeys = renderedToolbars
+      .map((toolbar) => {
+        const label = toolbar.attributes('aria-label') ?? ''
+        const match = label.match(/Actions de la section ([a-z-]+)/)
+        return match?.[1]
+      })
+      .filter((value): value is string => Boolean(value))
+
+    expect(renderedKeys).toEqual([
+      'experience',
+      'education',
+      'project',
+      'language',
+    ])
+  })
 })
