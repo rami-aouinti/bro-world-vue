@@ -3401,6 +3401,7 @@ if (import.meta.client) {
       </div>
     </div>
 
+    <main class="resume-content-main">
       <section class="builder-preview-pane py-6 px-2">
         <div class="builder-preview resume-preview-drawer">
           <div class="resume-preview-wrapper">
@@ -3471,6 +3472,7 @@ if (import.meta.client) {
           </div>
         </div>
       </section>
+    </main>
 
     <v-dialog v-model="addSectionDialogOpen" max-width="760">
       <v-card>
@@ -4155,7 +4157,14 @@ if (import.meta.client) {
   --preview-shell-padding: 16px;
   --preview-shell-max-width: calc(var(--preview-page-width) + (var(--preview-shell-padding) * 2));
   min-height: 100vh;
-  padding-top: 108px;
+}
+
+.resume-content-main {
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding: 104px 0 24px;
 }
 
 .builder-form {
@@ -4171,9 +4180,7 @@ if (import.meta.client) {
 }
 
 .builder-preview-pane {
-  position: sticky;
-  top: 60px;
-  align-self: start;
+  width: 100%;
   display: flex;
   justify-content: center;
   padding-inline: calc(var(--builder-column-gap) / 2);
@@ -4673,6 +4680,10 @@ if (import.meta.client) {
     justify-content: center;
     top: 66px;
     width: calc(100% - 20px);
+  }
+
+  .resume-content-main {
+    height: calc(100vh - 68px);
   }
 }
 </style>
