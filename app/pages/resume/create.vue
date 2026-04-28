@@ -33,6 +33,7 @@ type Experience = {
 type Education = {
   degree: string
   school: string
+  schoolImageUrl?: string
   city: string
   start: string
   end: string
@@ -635,14 +636,14 @@ const activeSectionKey = ref<PreviewSectionKey>('experience')
 const activeVariant = ref<SectionLayoutVariant[PreviewSectionKey]>('detailed')
 const sectionItemDraft = reactive({
   experience: { role: '', company: '', city: '', start: '', end: '', bullets: '' },
-  education: { degree: '', school: '', city: '', start: '', end: '', note: '' },
+  education: { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' },
   language: { name: '', level: 80, stars: 4, countryCode: '', flag: '' },
   project: { name: '', summary: '', link: '' },
 })
 const addSectionDraft = reactive({
   profile: { profile: '' },
   experience: { role: '', company: '', city: '', start: '', end: '', bullets: '' },
-  education: { degree: '', school: '', city: '', start: '', end: '', note: '' },
+  education: { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' },
   skill: { name: '', level: 80 },
   language: { name: '', level: 80, countryCode: '', flag: '' },
   hobby: { name: '' },
@@ -693,6 +694,46 @@ function onPhotoSelected(event: Event) {
 
 function clearPhoto() {
   resume.photoUrl = ''
+}
+
+function triggerFileInputById(id: string) {
+  const input = document.getElementById(id)
+  if (!(input instanceof HTMLInputElement)) return
+  input.click()
+}
+
+function updateEducationImageUrl(
+  target: 'resume' | 'add' | 'section',
+  url: string,
+  index?: number,
+) {
+  if (target === 'resume') {
+    if (typeof index !== 'number' || !resume.education[index]) return
+    resume.education[index].schoolImageUrl = url
+    return
+  }
+  if (target === 'add') {
+    addSectionDraft.education.schoolImageUrl = url
+    return
+  }
+  sectionItemDraft.education.schoolImageUrl = url
+}
+
+function onEducationImageSelected(
+  event: Event,
+  target: 'resume' | 'add' | 'section',
+  index?: number,
+) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  const reader = new FileReader()
+  reader.onload = () => {
+    updateEducationImageUrl(target, typeof reader.result === 'string' ? reader.result : '', index)
+  }
+  reader.readAsDataURL(file)
+  input.value = ''
 }
 
 function openSignatureDialog() {
@@ -804,6 +845,7 @@ function addEducation() {
   resume.education.push({
     degree: '',
     school: '',
+    schoolImageUrl: '',
     city: '',
     start: '',
     end: '',
@@ -912,7 +954,7 @@ function resetSectionDraft(section: AddSectionType) {
       addSectionDraft.experience = { role: '', company: '', city: '', start: '', end: '', bullets: '' }
       break
     case 'education':
-      addSectionDraft.education = { degree: '', school: '', city: '', start: '', end: '', note: '' }
+      addSectionDraft.education = { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' }
       break
     case 'skill':
       addSectionDraft.skill = { name: '', level: 80 }
@@ -964,6 +1006,7 @@ function submitAddSection() {
       resume.education.push({
         degree: addSectionDraft.education.degree,
         school: addSectionDraft.education.school,
+        schoolImageUrl: addSectionDraft.education.schoolImageUrl.trim(),
         city: addSectionDraft.education.city,
         start: addSectionDraft.education.start,
         end: addSectionDraft.education.end,
@@ -1017,7 +1060,7 @@ function resetSectionItemDraft(section: PreviewSectionKey) {
       sectionItemDraft.experience = { role: '', company: '', city: '', start: '', end: '', bullets: '' }
       break
     case 'education':
-      sectionItemDraft.education = { degree: '', school: '', city: '', start: '', end: '', note: '' }
+      sectionItemDraft.education = { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' }
       break
     case 'language':
       sectionItemDraft.language = { name: '', level: 80, stars: 4, countryCode: '', flag: '' }
@@ -1055,6 +1098,7 @@ function submitSectionItemDialog() {
       item = {
         degree: sectionItemDraft.education.degree,
         school: sectionItemDraft.education.school,
+        schoolImageUrl: sectionItemDraft.education.schoolImageUrl.trim(),
         city: sectionItemDraft.education.city,
         start: sectionItemDraft.education.start,
         end: sectionItemDraft.education.end,
@@ -1569,6 +1613,7 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
     resume.education = data.educations.map((education) => ({
       degree: String(education.title || ''),
       school: String(education.school || ''),
+      schoolImageUrl: '',
       city: '',
       start: normalizeDateLabel(education.startDate),
       end: normalizeDateLabel(education.endDate),
@@ -2308,6 +2353,34 @@ if (import.meta.client) {
                     variant="outlined"
                     hide-details
                 /></v-col>
+                <v-col cols="12" md="8">
+                  <v-text-field
+                    v-model="item.schoolImageUrl"
+                    label="School logo URL (optional)"
+                    variant="outlined"
+                    hide-details
+                  />
+                </v-col>
+                <v-col cols="12" md="4" class="d-flex align-center ga-2">
+                  <input
+                    :id="`education-image-input-${index}`"
+                    type="file"
+                    accept="image/*"
+                    class="d-none"
+                    @change="event => onEducationImageSelected(event, 'resume', index)"
+                  >
+                  <v-btn
+                    prepend-icon="mdi-image-plus-outline"
+                    variant="outlined"
+                    size="small"
+                    @click="triggerFileInputById(`education-image-input-${index}`)"
+                  >
+                    Upload logo
+                  </v-btn>
+                  <v-avatar v-if="item.schoolImageUrl" rounded="lg" size="40">
+                    <v-img :src="item.schoolImageUrl" alt="School logo preview" cover />
+                  </v-avatar>
+                </v-col>
                 <v-col cols="12" md="6"
                   ><v-text-field
                     v-model="item.city"
@@ -3019,6 +3092,22 @@ if (import.meta.client) {
           <template v-else-if="addSectionType === 'education'">
             <v-text-field v-model="addSectionDraft.education.degree" label="Degree" variant="outlined" hide-details />
             <v-text-field v-model="addSectionDraft.education.school" label="School" variant="outlined" hide-details />
+            <v-text-field v-model="addSectionDraft.education.schoolImageUrl" label="School logo URL (optional)" variant="outlined" hide-details />
+            <div class="d-flex align-center ga-2">
+              <input
+                id="education-image-input-add"
+                type="file"
+                accept="image/*"
+                class="d-none"
+                @change="event => onEducationImageSelected(event, 'add')"
+              >
+              <v-btn prepend-icon="mdi-image-plus-outline" variant="outlined" size="small" @click="triggerFileInputById('education-image-input-add')">
+                Upload logo
+              </v-btn>
+              <v-avatar v-if="addSectionDraft.education.schoolImageUrl" rounded="lg" size="40">
+                <v-img :src="addSectionDraft.education.schoolImageUrl" alt="School logo preview" cover />
+              </v-avatar>
+            </div>
             <v-text-field v-model="addSectionDraft.education.city" label="City" variant="outlined" hide-details />
             <div class="grid-2">
               <v-text-field v-model="addSectionDraft.education.start" label="Start" variant="outlined" hide-details />
@@ -3098,6 +3187,22 @@ if (import.meta.client) {
           <template v-else-if="activeSectionKey === 'education'">
             <v-text-field v-model="sectionItemDraft.education.degree" label="Degree" variant="outlined" hide-details />
             <v-text-field v-model="sectionItemDraft.education.school" label="School" variant="outlined" hide-details />
+            <v-text-field v-model="sectionItemDraft.education.schoolImageUrl" label="School logo URL (optional)" variant="outlined" hide-details />
+            <div class="d-flex align-center ga-2">
+              <input
+                id="education-image-input-section-item"
+                type="file"
+                accept="image/*"
+                class="d-none"
+                @change="event => onEducationImageSelected(event, 'section')"
+              >
+              <v-btn prepend-icon="mdi-image-plus-outline" variant="outlined" size="small" @click="triggerFileInputById('education-image-input-section-item')">
+                Upload logo
+              </v-btn>
+              <v-avatar v-if="sectionItemDraft.education.schoolImageUrl" rounded="lg" size="40">
+                <v-img :src="sectionItemDraft.education.schoolImageUrl" alt="School logo preview" cover />
+              </v-avatar>
+            </div>
             <v-text-field v-model="sectionItemDraft.education.city" label="City" variant="outlined" hide-details />
             <div class="grid-2">
               <v-text-field v-model="sectionItemDraft.education.start" label="Start" variant="outlined" hide-details />
