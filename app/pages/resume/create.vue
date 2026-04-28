@@ -2585,214 +2585,6 @@ if (import.meta.client) {
   <v-container fluid class="resume-create pa-0">
     <AppPageDrawers>
       <template #left>
-        <div class="template-drawer py-4 px-2">
-          <h3 class="text-subtitle-1 mb-2">Templates</h3>
-          <v-chip-group
-            :model-value="templateQuickFilter"
-            selected-class="text-primary"
-            column
-            class="mb-3"
-            @update:model-value="onTemplateQuickFilterChange"
-          >
-            <v-chip
-              v-for="filterOption in templateQuickFilterOptions"
-              :key="`left-template-filter-${filterOption.value}`"
-              :value="filterOption.value"
-              size="small"
-              label
-            >
-              {{ filterOption.label }}
-            </v-chip>
-          </v-chip-group>
-          <div class="template-drawer__grid">
-            <button
-              v-for="templateCard in filteredTemplatesByDrawer"
-              :key="`left-template-card-${templateCard.id}`"
-              type="button"
-              class="template-drawer__item"
-              :class="{ 'template-drawer__item--active': selectedTemplate === templateCard.id }"
-              @click="applyTemplateSelection(templateCard.id)"
-            >
-              <v-img :src="templateCard.image" :alt="templateCard.title" height="110" cover class="template-drawer__thumb" />
-              <span class="template-drawer__label">{{ templateCard.title }}</span>
-            </button>
-          </div>
-        </div>
-      </template>
-      <template #right>
-        <div class="template-drawer py-4 px-2">
-          <h3 class="text-subtitle-1 mb-2">Templates</h3>
-          <v-chip-group
-            :model-value="templateQuickFilter"
-            selected-class="text-primary"
-            column
-            class="mb-3"
-            @update:model-value="onTemplateQuickFilterChange"
-          >
-            <v-chip
-              v-for="filterOption in templateQuickFilterOptions"
-              :key="`right-template-filter-${filterOption.value}`"
-              :value="filterOption.value"
-              size="small"
-              label
-            >
-              {{ filterOption.label }}
-            </v-chip>
-          </v-chip-group>
-          <div class="template-drawer__grid">
-            <button
-              v-for="templateCard in filteredTemplatesByDrawer"
-              :key="`right-template-card-${templateCard.id}`"
-              type="button"
-              class="template-drawer__item"
-              :class="{ 'template-drawer__item--active': selectedTemplate === templateCard.id }"
-              @click="applyTemplateSelection(templateCard.id)"
-            >
-              <v-img :src="templateCard.image" :alt="templateCard.title" height="110" cover class="template-drawer__thumb" />
-              <span class="template-drawer__label">{{ templateCard.title }}</span>
-            </button>
-          </div>
-        </div>
-      </template>
-    </AppPageDrawers>
-
-    <div class="local-toolbar-actions">
-      <div class="local-toolbar-actions__row">
-        <v-menu v-model="toolbarSaveImportMenuOpen" location="bottom center" origin="top center" max-width="560">
-          <template #activator="{ props }">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-content-save-cog-outline" v-bind="props">
-              Save / Import
-            </v-btn>
-          </template>
-          <v-card class="toolbar-menu-card">
-            <v-card-title class="text-subtitle-2">Save / Import</v-card-title>
-            <v-card-text class="d-flex flex-column ga-2">
-              <v-btn prepend-icon="mdi-content-save-outline" color="primary" variant="flat" text="Save draft" @click="openSaveModal" />
-              <v-btn prepend-icon="mdi-file-pdf-box" color="secondary" variant="outlined" text="Preview PDF" @click="openPdfPreview" />
-              <v-btn prepend-icon="mdi-download" color="info" variant="outlined" text="Download PDF" @click="onDownloadPdfClick" />
-              <v-divider class="my-2" />
-              <v-btn prepend-icon="mdi-sync" variant="outlined" color="primary" :text="t('resumeBuilder.create.import.syncWithXing')" @click="syncWithProvider('Xing')" />
-              <v-btn prepend-icon="mdi-linkedin" variant="outlined" color="info" :text="t('resumeBuilder.create.import.syncWithLinkedIn')" @click="syncWithProvider('LinkedIn')" />
-              <v-btn prepend-icon="mdi-file-upload-outline" variant="flat" color="secondary" :text="t('resumeBuilder.create.import.importOldResumePdf')" @click="triggerPdfImport" />
-              <input
-                ref="importPdfInput"
-                type="file"
-                accept="application/pdf"
-                class="d-none"
-                @change="handlePdfImport"
-              />
-              <div v-if="importInProgress" class="mt-2">
-                <v-progress-linear :model-value="importProgress" color="primary" height="8" rounded striped />
-              </div>
-              <v-alert
-                v-if="importMessage"
-                class="mt-2"
-                :type="importInProgress ? 'info' : importMessageType"
-                variant="tonal"
-              >
-                {{ importMessage }}
-              </v-alert>
-            </v-card-text>
-          </v-card>
-        </v-menu>
-        <v-menu location="bottom center" origin="top center" max-width="620">
-          <template #activator="{ props }">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-palette-outline" v-bind="props">
-              Design
-            </v-btn>
-          </template>
-          <v-card class="toolbar-menu-card">
-            <v-card-title class="text-subtitle-2">Design</v-card-title>
-            <v-card-text>
-              <p class="section-label">Color palette</p>
-              <div class="palette-grid mb-4">
-                <button
-                  v-for="theme in colorThemes"
-                  :key="`toolbar-theme-${theme.name}`"
-                  type="button"
-                  class="palette-item"
-                  :class="{
-                    'palette-item--active': selectedTheme === theme.name,
-                  }"
-                  @click="selectedTheme = theme.name"
-                >
-                  <span :style="{ background: theme.sidebar }" />
-                  <span :style="{ background: theme.accent }" />
-                  <span :style="{ background: theme.page }" />
-                </button>
-              </div>
-
-              <p class="section-label">Page background</p>
-              <div class="palette-grid mb-4">
-                <button
-                  v-for="option in pageBackgroundValidation"
-                  :key="`toolbar-bg-${option.value}`"
-                  type="button"
-                  class="palette-item"
-                  :class="{
-                    'palette-item--active': selectedPageBackground === option.value,
-                  }"
-                  :disabled="option.blocked"
-                  :title="option.blocked ? 'Fond trop sombre ou contraste insuffisant' : option.label"
-                  @click="selectedPageBackground = option.value"
-                >
-                  <span :style="{ background: option.page }" />
-                  <span :style="{ background: activeTheme.accent }" />
-                  <span :style="{ background: activeTheme.sidebar }" />
-                </button>
-              </div>
-
-              <AppSelect
-                v-model="selectedTextStyle"
-                :items="textStyleOptions"
-                item-title="label"
-                item-value="value"
-                label="Typography preset"
-                density="comfortable"
-                hide-details
-              />
-            </v-card-text>
-          </v-card>
-        </v-menu>
-        <v-menu location="bottom center" origin="top center" max-width="360">
-          <template #activator="{ props }">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-column-outline" v-bind="props">
-              Layout mode
-            </v-btn>
-          </template>
-          <v-card class="toolbar-menu-card">
-            <v-card-title class="text-subtitle-2">Layout mode</v-card-title>
-            <v-card-text>
-              <AppSelect
-                v-model="layoutSettings.layoutMode"
-                :items="layoutModeOptions"
-                item-title="label"
-                item-value="value"
-                label="Layout"
-                density="comfortable"
-                hide-details
-              />
-            </v-card-text>
-          </v-card>
-        </v-menu>
-        <v-menu v-model="toolbarSectionMenuOpen" location="bottom center" origin="top center">
-          <template #activator="{ props }">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-list-outline" v-bind="props">
-              Sections
-            </v-btn>
-          </template>
-          <v-list density="compact" min-width="220">
-            <v-list-item
-              v-for="section in addSectionOptions"
-              :key="`toolbar-add-${section.value}`"
-              :title="section.label"
-              @click="openAddSectionDialog(section.value)"
-            />
-          </v-list>
-        </v-menu>
-      </div>
-    </div>
-    <div class="builder-layout">
       <section class="builder-form builder-left-rail px-3 px-md-4 py-4">
             <article class="form-section mb-2">
               <div class="mb-2">
@@ -3434,8 +3226,182 @@ if (import.meta.client) {
             </article>
 
       </section>
+      </template>
+      <template #right>
+        <div class="template-drawer py-4 px-2">
+          <h3 class="text-subtitle-1 mb-2">Templates</h3>
+          <v-chip-group
+            :model-value="templateQuickFilter"
+            selected-class="text-primary"
+            column
+            class="mb-3"
+            @update:model-value="onTemplateQuickFilterChange"
+          >
+            <v-chip
+              v-for="filterOption in templateQuickFilterOptions"
+              :key="`right-template-filter-${filterOption.value}`"
+              :value="filterOption.value"
+              size="small"
+              label
+            >
+              {{ filterOption.label }}
+            </v-chip>
+          </v-chip-group>
+          <div class="template-drawer__grid">
+            <button
+              v-for="templateCard in filteredTemplatesByDrawer"
+              :key="`right-template-card-${templateCard.id}`"
+              type="button"
+              class="template-drawer__item"
+              :class="{ 'template-drawer__item--active': selectedTemplate === templateCard.id }"
+              @click="applyTemplateSelection(templateCard.id)"
+            >
+              <v-img :src="templateCard.image" :alt="templateCard.title" height="110" cover class="template-drawer__thumb" />
+              <span class="template-drawer__label">{{ templateCard.title }}</span>
+            </button>
+          </div>
+        </div>
+      </template>
+    </AppPageDrawers>
 
-      <aside class="builder-preview-pane py-6 px-2">
+    <div class="local-toolbar-actions">
+      <div class="local-toolbar-actions__row">
+        <v-menu v-model="toolbarSaveImportMenuOpen" location="bottom center" origin="top center" max-width="560">
+          <template #activator="{ props }">
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-content-save-cog-outline" v-bind="props">
+              Save / Import
+            </v-btn>
+          </template>
+          <v-card class="toolbar-menu-card">
+            <v-card-title class="text-subtitle-2">Save / Import</v-card-title>
+            <v-card-text class="d-flex flex-column ga-2">
+              <v-btn prepend-icon="mdi-content-save-outline" color="primary" variant="flat" text="Save draft" @click="openSaveModal" />
+              <v-btn prepend-icon="mdi-file-pdf-box" color="secondary" variant="outlined" text="Preview PDF" @click="openPdfPreview" />
+              <v-btn prepend-icon="mdi-download" color="info" variant="outlined" text="Download PDF" @click="onDownloadPdfClick" />
+              <v-divider class="my-2" />
+              <v-btn prepend-icon="mdi-sync" variant="outlined" color="primary" :text="t('resumeBuilder.create.import.syncWithXing')" @click="syncWithProvider('Xing')" />
+              <v-btn prepend-icon="mdi-linkedin" variant="outlined" color="info" :text="t('resumeBuilder.create.import.syncWithLinkedIn')" @click="syncWithProvider('LinkedIn')" />
+              <v-btn prepend-icon="mdi-file-upload-outline" variant="flat" color="secondary" :text="t('resumeBuilder.create.import.importOldResumePdf')" @click="triggerPdfImport" />
+              <input
+                ref="importPdfInput"
+                type="file"
+                accept="application/pdf"
+                class="d-none"
+                @change="handlePdfImport"
+              />
+              <div v-if="importInProgress" class="mt-2">
+                <v-progress-linear :model-value="importProgress" color="primary" height="8" rounded striped />
+              </div>
+              <v-alert
+                v-if="importMessage"
+                class="mt-2"
+                :type="importInProgress ? 'info' : importMessageType"
+                variant="tonal"
+              >
+                {{ importMessage }}
+              </v-alert>
+            </v-card-text>
+          </v-card>
+        </v-menu>
+        <v-menu location="bottom center" origin="top center" max-width="620">
+          <template #activator="{ props }">
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-palette-outline" v-bind="props">
+              Design
+            </v-btn>
+          </template>
+          <v-card class="toolbar-menu-card">
+            <v-card-title class="text-subtitle-2">Design</v-card-title>
+            <v-card-text>
+              <p class="section-label">Color palette</p>
+              <div class="palette-grid mb-4">
+                <button
+                  v-for="theme in colorThemes"
+                  :key="`toolbar-theme-${theme.name}`"
+                  type="button"
+                  class="palette-item"
+                  :class="{
+                    'palette-item--active': selectedTheme === theme.name,
+                  }"
+                  @click="selectedTheme = theme.name"
+                >
+                  <span :style="{ background: theme.sidebar }" />
+                  <span :style="{ background: theme.accent }" />
+                  <span :style="{ background: theme.page }" />
+                </button>
+              </div>
+
+              <p class="section-label">Page background</p>
+              <div class="palette-grid mb-4">
+                <button
+                  v-for="option in pageBackgroundValidation"
+                  :key="`toolbar-bg-${option.value}`"
+                  type="button"
+                  class="palette-item"
+                  :class="{
+                    'palette-item--active': selectedPageBackground === option.value,
+                  }"
+                  :disabled="option.blocked"
+                  :title="option.blocked ? 'Fond trop sombre ou contraste insuffisant' : option.label"
+                  @click="selectedPageBackground = option.value"
+                >
+                  <span :style="{ background: option.page }" />
+                  <span :style="{ background: activeTheme.accent }" />
+                  <span :style="{ background: activeTheme.sidebar }" />
+                </button>
+              </div>
+
+              <AppSelect
+                v-model="selectedTextStyle"
+                :items="textStyleOptions"
+                item-title="label"
+                item-value="value"
+                label="Typography preset"
+                density="comfortable"
+                hide-details
+              />
+            </v-card-text>
+          </v-card>
+        </v-menu>
+        <v-menu location="bottom center" origin="top center" max-width="360">
+          <template #activator="{ props }">
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-column-outline" v-bind="props">
+              Layout mode
+            </v-btn>
+          </template>
+          <v-card class="toolbar-menu-card">
+            <v-card-title class="text-subtitle-2">Layout mode</v-card-title>
+            <v-card-text>
+              <AppSelect
+                v-model="layoutSettings.layoutMode"
+                :items="layoutModeOptions"
+                item-title="label"
+                item-value="value"
+                label="Layout"
+                density="comfortable"
+                hide-details
+              />
+            </v-card-text>
+          </v-card>
+        </v-menu>
+        <v-menu v-model="toolbarSectionMenuOpen" location="bottom center" origin="top center">
+          <template #activator="{ props }">
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-list-outline" v-bind="props">
+              Sections
+            </v-btn>
+          </template>
+          <v-list density="compact" min-width="220">
+            <v-list-item
+              v-for="section in addSectionOptions"
+              :key="`toolbar-add-${section.value}`"
+              :title="section.label"
+              @click="openAddSectionDialog(section.value)"
+            />
+          </v-list>
+        </v-menu>
+      </div>
+    </div>
+
+      <section class="builder-preview-pane py-6 px-2">
         <div class="builder-preview resume-preview-drawer">
           <div class="resume-preview-wrapper">
             <div
@@ -3504,9 +3470,7 @@ if (import.meta.client) {
             </div>
           </div>
         </div>
-      </aside>
-
-    </div>
+      </section>
 
     <v-dialog v-model="addSectionDialogOpen" max-width="760">
       <v-card>
@@ -4194,13 +4158,6 @@ if (import.meta.client) {
   padding-top: 108px;
 }
 
-.builder-layout {
-  display: grid;
-  grid-template-columns: minmax(280px, 1fr) minmax(560px, 1.3fr);
-  align-items: start;
-  gap: var(--builder-column-gap);
-}
-
 .builder-form {
   border: 1px solid color-mix(in srgb, rgb(var(--v-theme-primary)) 24%, transparent);
   border-radius: 14px;
@@ -4692,10 +4649,6 @@ if (import.meta.client) {
 }
 
 @media (max-width: 1120px) {
-  .builder-layout {
-    grid-template-columns: 1fr;
-  }
-
   .builder-form {
     border: 0;
     position: static;
