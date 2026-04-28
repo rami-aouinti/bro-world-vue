@@ -21,6 +21,8 @@ const emit = defineEmits<{
   (event: 'update:photo-position', value: 'left' | 'center' | 'right'): void
 }>()
 
+const isMenuOpen = ref(false)
+
 function handlePhotoPositionUpdate(value: unknown) {
   if (value === 'left' || value === 'center' || value === 'right') {
     emit('update:photo-position', value)
@@ -29,8 +31,14 @@ function handlePhotoPositionUpdate(value: unknown) {
 </script>
 
 <template>
-  <div class="avatar-overlay-controls">
-    <v-menu location="bottom end" offset="8" :close-on-content-click="false">
+  <div class="avatar-overlay-controls" :class="{ 'avatar-overlay-controls--menu-open': isMenuOpen }">
+    <v-menu
+      v-model="isMenuOpen"
+      location="bottom end"
+      offset="8"
+      :close-on-content-click="false"
+      scroll-strategy="reposition"
+    >
       <template #activator="{ props: menuProps }">
         <v-btn
           icon="mdi-dots-vertical"
@@ -138,17 +146,25 @@ function handlePhotoPositionUpdate(value: unknown) {
   transition: opacity 180ms ease;
 }
 
+.avatar-overlay-controls--menu-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .photo-menu-trigger {
   pointer-events: auto;
 }
 
 .photo-menu {
   width: min(270px, calc(100vw - 48px));
+  max-height: min(560px, calc(100vh - 64px));
 }
 
 .photo-menu__content {
   display: grid;
   gap: 10px;
+  max-height: inherit;
+  overflow-y: auto;
   padding: 12px;
 }
 
