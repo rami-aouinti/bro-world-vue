@@ -1615,6 +1615,13 @@ function stopDrawingSignature() {
   isDrawingSignature.value = false
 }
 
+function openSignatureDialog() {
+  signatureDialogOpen.value = true
+  requestAnimationFrame(() => {
+    clearSignature()
+  })
+}
+
 function clearSignature() {
   const canvas = signatureCanvas.value
   if (!canvas) return
@@ -3876,6 +3883,17 @@ if (import.meta.client) {
                     />
                   </v-list>
                 </v-menu>
+
+                <v-btn
+                  class="local-toolbar-btn"
+                  color="primary"
+                  size="small"
+                  variant="outlined"
+                  prepend-icon="mdi-signature-freehand"
+                  @click="openSignatureDialog"
+                >
+                  Signature
+                </v-btn>
               </div>
             </div>
           </div>
