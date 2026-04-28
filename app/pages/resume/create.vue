@@ -231,10 +231,6 @@ type PhotoShapeOption = {
   value: PhotoShape
   icon: string
 }
-type LayoutModeOption = {
-  label: string
-  value: ResumeLayoutMode
-}
 type LayoutSettings = {
   photoSize: number
   photoBorderWidth: number
@@ -323,12 +319,6 @@ const photoShapeOptions = [
   { label: 'Blob', value: 'soft-blob', icon: '⬭' },
   { label: 'Hex', value: 'hex', icon: '⬢' },
 ] as const satisfies ReadonlyArray<PhotoShapeOption>
-const layoutModeOptions = [
-  { label: 'Aside left', value: 'aside-left' },
-  { label: 'Aside right', value: 'aside-right' },
-  { label: 'No aside', value: 'no-aside' },
-] as const satisfies ReadonlyArray<LayoutModeOption>
-
 const addSectionOptions = [
   { label: 'Profile', value: 'profile' },
   { label: 'Experience', value: 'experience' },
@@ -2499,22 +2489,9 @@ async function runAiCreate() {
   }
 }
 
-const showRightDrawerDesktop = useState(
-  'show-right-drawer-desktop',
-  () => false,
-)
-const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
-const previousDesktopRightDrawer = showRightDrawerDesktop.value
-const previousMobileRightDrawer = showRightDrawerMobile.value
-
-showRightDrawerDesktop.value = false
-showRightDrawerMobile.value = false
-
 onUnmounted(() => {
   stopImportProgress()
   stopAiElapsedTimer()
-  showRightDrawerDesktop.value = previousDesktopRightDrawer
-  showRightDrawerMobile.value = previousMobileRightDrawer
 })
 
 if (import.meta.client) {
@@ -2583,687 +2560,6 @@ if (import.meta.client) {
 
 <template>
   <v-container fluid class="resume-create pa-0">
-    <AppPageDrawers>
-      <template #left>
-      <section class="builder-form builder-left-rail px-3 px-md-4 py-4">
-            <article class="form-section mb-2">
-              <div class="mb-2">
-                <div class="photo-uploader">
-                  <v-avatar size="72" rounded="lg">
-                    <v-img
-                      :src="resume.photoUrl || '/img/default_avatar.svg'"
-                      cover
-                    />
-                  </v-avatar>
-                  <div class="photo-actions">
-                    <v-btn
-                      size="small"
-                      prepend-icon="mdi-upload"
-                      variant="tonal"
-                      @click="openPhotoPicker"
-                    >
-                      Upload photo
-                    </v-btn>
-                    <v-btn
-                      size="small"
-                      prepend-icon="mdi-delete-outline"
-                      variant="text"
-                      color="error"
-                      @click="clearPhoto"
-                    >
-                      Remove
-                    </v-btn>
-                    <input
-                      ref="uploadInput"
-                      type="file"
-                      accept="image/*"
-                      class="d-none"
-                      @change="onPhotoSelected"
-                    />
-                  </div>
-                </div>
-                <div class="photo-shape-picker mt-2">
-                  <span class="text-caption">Forme image</span>
-                  <v-btn-toggle v-model="selectedPhotoShape" mandatory density="compact" color="primary">
-                    <v-btn
-                      v-for="shape in photoShapeOptions"
-                      :key="`photo-shape-picker-${shape.value}`"
-                      :value="shape.value"
-                      size="x-small"
-                    >
-                      {{ shape.label }}
-                    </v-btn>
-                  </v-btn-toggle>
-                </div>
-              </div>
-              <div class="grid-2 py-3">
-                <v-text-field
-                  v-model="resume.role"
-                  label="Job target"
-                  flat
-                  hide-details
-                />
-                <v-text-field
-                  v-model="resume.firstName"
-                  label="First name"
-                  flat
-                  hide-details
-                />
-                <v-text-field
-                  v-model="resume.lastName"
-                  label="Last name"
-                  flat
-                  hide-details
-                />
-                <v-text-field
-                  v-model="resume.email"
-                  label="Email"
-                  flat
-                  hide-details
-                />
-                <v-text-field
-                  v-model="resume.phone"
-                  label="Phone"
-                  flat
-                  hide-details
-                />
-                <v-text-field
-                  v-model="resume.city"
-                  label="City"
-                  flat
-                  hide-details
-                />
-                <v-text-field
-                  v-model="resume.country"
-                  label="Country"
-                  flat
-                  hide-details
-                />
-              </div>
-            </article>
-
-            <article class="form-section mb-4">
-              <header class="mb-4">
-                <h2>Professional summary</h2>
-              </header>
-              <v-textarea
-                v-model="resume.profile"
-                label="Summary"
-                rows="8"
-                flat
-                hide-details
-              />
-            </article>
-
-            <article class="form-section mb-4">
-              <header
-                class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap"
-              >
-                <div>
-                  <h2>Experiences</h2>
-                </div>
-                <v-btn
-                  prepend-icon="mdi-plus"
-                  variant="outlined"
-                  size="small"
-                  @click="addExperience"
-                  >Add</v-btn
-                >
-              </header>
-              <v-row
-                v-for="(experience, index) in resume.experiences"
-                :key="`${experience.company}-${index}`"
-              >
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="experience.role"
-                    label="Role"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="experience.company"
-                    label="Company"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="experience.companyImageUrl"
-                    label="Company logo URL"
-                    variant="outlined"
-                    :error-messages="getExperienceLogoError(`resume-${index}`)"
-                    @update:model-value="setExperienceLogoError(`resume-${index}`)"
-                  />
-                </v-col>
-                <v-col cols="12" md="6" class="d-flex align-center ga-2 flex-wrap">
-                  <v-btn
-                    prepend-icon="mdi-image-plus-outline"
-                    size="small"
-                    variant="tonal"
-                    @click="openExperienceLogoPicker('resume', index)"
-                  >
-                    Upload logo
-                  </v-btn>
-                  <input
-                    :id="`experience-logo-input-${index}`"
-                    type="file"
-                    accept="image/png,image/jpeg,image/webp,image/svg+xml"
-                    class="d-none"
-                    @change="event => onResumeExperienceLogoSelected(event, index)"
-                  >
-                </v-col>
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="experience.city"
-                    label="City"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="experience.start"
-                    label="Start"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="experience.end"
-                    label="End"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="10">
-                  <v-select
-                    v-model="experience.contentStyle"
-                    :items="resumeContentStyleSelectItems"
-                    label="Content style"
-                    variant="outlined"
-                    hide-details
-                    class="mb-2"
-                    @update:model-value="(value) => changeExperienceContentStyle(index, String(value) as ContentStyle)"
-                  />
-                  <v-textarea
-                    :model-value="getExperienceBullets(index)"
-                    label="Content (1 line = 1 item, timeline: Label | Detail)"
-                    rows="8"
-                    variant="outlined"
-                    hide-details
-                    @update:model-value="
-                      (value) => setExperienceBullets(index, String(value))
-                    "
-                  />
-                </v-col>
-                <v-col cols="12" md="2" class="d-flex align-center">
-                  <div class="d-flex flex-column ga-1">
-                    <v-btn
-                      icon="mdi-chevron-up"
-                      variant="text"
-                      size="x-small"
-                      :disabled="index === 0"
-                      @click="moveExperience(index, 'up')"
-                    />
-                    <v-btn
-                      icon="mdi-chevron-down"
-                      variant="text"
-                      size="x-small"
-                      :disabled="index === resume.experiences.length - 1"
-                      @click="moveExperience(index, 'down')"
-                    />
-                    <v-btn
-                      icon="mdi-delete-outline"
-                      color="error"
-                      variant="text"
-                      size="small"
-                      @click="removeExperience(index)"
-                    />
-                  </div>
-                </v-col>
-              </v-row>
-            </article>
-
-            <article class="form-section mb-4">
-              <header
-                class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap"
-              >
-                <div>
-                  <h2>Education</h2>
-                </div>
-                <v-btn
-                  prepend-icon="mdi-plus"
-                  variant="outlined"
-                  size="small"
-                  @click="addEducation"
-                  >Add</v-btn
-                >
-              </header>
-              <v-row
-                v-for="(item, index) in resume.education"
-                :key="`${item.school}-${index}`"
-              >
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="item.degree"
-                    label="Degree"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="item.school"
-                    label="School"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="8">
-                  <v-text-field
-                    v-model="item.schoolImageUrl"
-                    label="School logo URL (optional)"
-                    variant="outlined"
-                    hide-details
-                  />
-                </v-col>
-                <v-col cols="12" md="4" class="d-flex align-center ga-2">
-                  <input
-                    :id="`education-image-input-${index}`"
-                    type="file"
-                    accept="image/*"
-                    class="d-none"
-                    @change="event => onEducationImageSelected(event, 'resume', index)"
-                  >
-                  <v-btn
-                    prepend-icon="mdi-image-plus-outline"
-                    variant="outlined"
-                    size="small"
-                    @click="triggerFileInputById(`education-image-input-${index}`)"
-                  >
-                    Upload logo
-                  </v-btn>
-                  <v-avatar v-if="item.schoolImageUrl" rounded="lg" size="40">
-                    <v-img :src="item.schoolImageUrl" alt="School logo preview" cover />
-                  </v-avatar>
-                </v-col>
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="item.city"
-                    label="City"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="item.start"
-                    label="Start"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="6"
-                  ><v-text-field
-                    v-model="item.end"
-                    label="End"
-                    variant="outlined"
-                    hide-details
-                /></v-col>
-                <v-col cols="12" md="10"
-                  ><v-select
-                    v-model="item.contentStyle"
-                    :items="resumeContentStyleSelectItems"
-                    label="Content style"
-                    variant="outlined"
-                    hide-details
-                    class="mb-2"
-                    @update:model-value="(value) => changeEducationContentStyle(index, String(value) as ContentStyle)"
-                  /><v-textarea
-                    :model-value="getEducationContent(index)"
-                    label="Content (1 line = 1 item, timeline: Label | Detail)"
-                    rows="8"
-                    variant="outlined"
-                    hide-details
-                    @update:model-value="(value) => setEducationContent(index, String(value))"
-                /></v-col>
-                <v-col cols="12" md="2" class="d-flex align-center">
-                  <div class="d-flex flex-column ga-1">
-                    <v-btn
-                      icon="mdi-chevron-up"
-                      variant="text"
-                      size="x-small"
-                      :disabled="index === 0"
-                      @click="moveEducation(index, 'up')"
-                    />
-                    <v-btn
-                      icon="mdi-chevron-down"
-                      variant="text"
-                      size="x-small"
-                      :disabled="index === resume.education.length - 1"
-                      @click="moveEducation(index, 'down')"
-                    />
-                    <v-btn
-                      icon="mdi-delete-outline"
-                      color="error"
-                      variant="text"
-                      size="small"
-                      @click="removeEducation(index)"
-                    />
-                  </div>
-                </v-col>
-              </v-row>
-            </article>
-
-            <article class="form-section mb-4">
-              <header class="mb-4">
-                <h2>Skills & Languages</h2>
-              </header>
-              <div class="mb-4">
-                <AppSelect
-                  v-model="levelInputMode"
-                  :items="[
-                    { label: 'Percentage slider', value: 'percent' },
-                    { label: 'Stars (level 1-5)', value: 'stars' },
-                  ]"
-                  item-title="label"
-                  item-value="value"
-                  label="Level editor style"
-                  density="comfortable"
-                  hide-details
-                />
-              </div>
-              <div>
-                <div class="d-flex align-center justify-space-between my-4">
-                  <v-chip color="primary">Skills</v-chip>
-                  <v-btn
-                    size="small"
-                    variant="outlined"
-                    prepend-icon="mdi-plus"
-                    @click="addSkill"
-                    >Add</v-btn
-                  >
-                </div>
-                <div>
-                  <v-row
-                    v-for="(skill, index) in resume.skills"
-                    :key="`skill-${index}`"
-                    class="mb-2"
-                  >
-                    <v-col cols="5"
-                      ><v-text-field
-                        v-model="skill.name"
-                        label="Skill"
-                        variant="outlined"
-                        hide-details
-                    /></v-col>
-                    <v-col cols="5"
-                    >
-                      <v-slider
-                        v-if="levelInputMode === 'percent'"
-                        v-model="skill.level"
-                        min="0"
-                        max="100"
-                        step="5"
-                        thumb-label
-                        color="primary"
-                        hide-details
-                      />
-                      <v-rating
-                        v-else
-                        :model-value="getLevelAsStars(skill.level)"
-                        color="amber"
-                        active-color="amber"
-                        density="comfortable"
-                        @update:model-value="setLevelFromStars('skills', index, $event || 0)"
-                      />
-                    </v-col>
-                    <v-col cols="2" class="d-flex align-center justify-center">
-                      <v-btn
-                        icon="mdi-delete-outline"
-                        size="x-small"
-                        color="error"
-                        variant="text"
-                        @click="removeSkill(index)"
-                      />
-                    </v-col>
-                  </v-row>
-                </div>
-              </div>
-
-              <div class="my-3">
-                <div class="d-flex align-center justify-space-between my-4">
-                  <v-chip color="primary"> Languages</v-chip>
-                  <v-btn
-                    size="small"
-                    variant="outlined"
-                    prepend-icon="mdi-plus"
-                    @click="addLanguage"
-                    >Add</v-btn
-                  >
-                </div>
-                <div>
-                  <v-row
-                    v-for="(language, index) in resume.languages"
-                    :key="`language-${index}`"
-                    class="mb-2"
-                  >
-                    <v-col cols="3"
-                      ><v-text-field
-                        v-model="language.name"
-                        label="Language"
-                        variant="outlined"
-                        hide-details
-                    /></v-col>
-                    <v-col cols="2">
-                      <v-text-field
-                        v-model="language.countryCode"
-                        label="Country code"
-                        placeholder="FR"
-                        maxlength="2"
-                        variant="outlined"
-                        hide-details
-                      />
-                    </v-col>
-                    <v-col cols="2">
-                      <v-text-field
-                        v-model="language.flag"
-                        label="Flag"
-                        placeholder="🇫🇷"
-                        variant="outlined"
-                        hide-details
-                      />
-                    </v-col>
-                    <v-col cols="4"
-                    >
-                      <v-slider
-                        v-if="levelInputMode === 'percent'"
-                        v-model="language.level"
-                        min="0"
-                        max="100"
-                        step="5"
-                        thumb-label
-                        color="primary"
-                        hide-details
-                      />
-                      <v-rating
-                        v-else
-                        :model-value="getLevelAsStars(language.level)"
-                        color="amber"
-                        active-color="amber"
-                        density="comfortable"
-                        @update:model-value="setLevelFromStars('languages', index, $event || 0)"
-                      />
-                    </v-col>
-                    <v-col cols="1" class="d-flex align-center justify-center">
-                      <v-btn
-                        icon="mdi-delete-outline"
-                        size="x-small"
-                        color="error"
-                        variant="text"
-                        @click="removeLanguage(index)"
-                      />
-                    </v-col>
-                  </v-row>
-                </div>
-              </div>
-            </article>
-
-            <article class="form-section mb-4">
-              <header class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap">
-                <h2>Projects</h2>
-                <v-btn prepend-icon="mdi-plus" variant="outlined" size="small" @click="addProject">Add</v-btn>
-              </header>
-              <v-row v-for="(project, index) in resume.projects" :key="`project-${index}`">
-                <v-col cols="12" md="4">
-                  <v-text-field v-model="project.name" label="Project name" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="12" md="8">
-                  <v-select
-                    v-model="project.contentStyle"
-                    :items="resumeContentStyleSelectItems"
-                    label="Content style"
-                    variant="outlined"
-                    hide-details
-                    class="mb-2"
-                    @update:model-value="(value) => changeProjectContentStyle(index, String(value) as ContentStyle)"
-                  />
-                  <v-textarea
-                    :model-value="getProjectContent(index)"
-                    label="Summary / impact (1 line = 1 item, timeline: Label | Detail)"
-                    rows="4"
-                    variant="outlined"
-                    hide-details
-                    @update:model-value="(value) => setProjectContent(index, String(value))"
-                  />
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-text-field v-model="project.imageUrl" label="Image URL (optional)" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="12" md="5" class="d-flex align-center ga-2">
-                  <v-btn prepend-icon="mdi-image-plus" variant="tonal" size="small" @click="openProjectImagePicker(index)">
-                    Upload image
-                  </v-btn>
-                  <input
-                    :ref="(el) => setProjectImageInputRef(index, el)"
-                    type="file"
-                    accept="image/*"
-                    class="d-none"
-                    @change="onProjectImageSelected(index, $event)"
-                  />
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="project.repositoryUrl"
-                    label="Repository URL (optional)"
-                    placeholder="https://github.com/org/repo"
-                    variant="outlined"
-                    :rules="[validateHttpRepositoryUrl]"
-                    @blur="updateProjectRepositoryProvider(project)"
-                  />
-                </v-col>
-                <v-col cols="12" md="5">
-                  <v-select
-                    v-model="project.repositoryProvider"
-                    :items="[
-                      { title: 'GitHub', value: 'github' },
-                      { title: 'GitLab', value: 'gitlab' },
-                      { title: 'Other', value: 'other' },
-                    ]"
-                    label="Repository provider (optional)"
-                    variant="outlined"
-                    hide-details
-                  />
-                </v-col>
-                <v-col cols="12" md="1" class="d-flex align-center justify-center">
-                  <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeProject(index)" />
-                </v-col>
-              </v-row>
-            </article>
-
-            <article class="form-section mb-4">
-              <header class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap">
-                <h2>Certifications</h2>
-                <v-btn prepend-icon="mdi-plus" variant="outlined" size="small" @click="addCertification">Add</v-btn>
-              </header>
-              <v-row v-for="(course, index) in resume.courses" :key="`course-${index}`">
-                <v-col cols="12" md="4">
-                  <v-text-field v-model="course.title" label="Certification title" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="12" md="3">
-                  <v-text-field v-model="course.school" label="Issuer" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="6" md="2">
-                  <v-text-field v-model="course.start" label="Date start" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="6" md="2">
-                  <v-text-field v-model="course.end" label="Date end" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="12" md="1" class="d-flex align-center justify-center">
-                  <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeCertification(index)" />
-                </v-col>
-              </v-row>
-            </article>
-
-            <article class="form-section mb-4">
-              <header class="mb-4 d-flex align-center justify-space-between ga-3 flex-wrap">
-                <h2>References</h2>
-                <v-btn prepend-icon="mdi-plus" variant="outlined" size="small" @click="addReference">Add</v-btn>
-              </header>
-              <v-row v-for="(reference, index) in resume.references" :key="`reference-${index}`">
-                <v-col cols="12" md="3">
-                  <v-text-field v-model="reference.name" label="Name" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="12" md="3">
-                  <v-text-field v-model="reference.company" label="Company" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="12" md="3">
-                  <v-text-field v-model="reference.email" label="Email" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="10" md="2">
-                  <v-text-field v-model="reference.phone" label="Phone" variant="outlined" hide-details />
-                </v-col>
-                <v-col cols="2" md="1" class="d-flex align-center justify-center">
-                  <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeReference(index)" />
-                </v-col>
-              </v-row>
-            </article>
-
-      </section>
-      </template>
-      <template #right>
-        <div class="template-drawer py-4 px-2">
-          <h3 class="text-subtitle-1 mb-2">Templates</h3>
-          <v-chip-group
-            :model-value="templateQuickFilter"
-            selected-class="text-primary"
-            column
-            class="mb-3"
-            @update:model-value="onTemplateQuickFilterChange"
-          >
-            <v-chip
-              v-for="filterOption in templateQuickFilterOptions"
-              :key="`right-template-filter-${filterOption.value}`"
-              :value="filterOption.value"
-              size="small"
-              label
-            >
-              {{ filterOption.label }}
-            </v-chip>
-          </v-chip-group>
-          <div class="template-drawer__grid">
-            <button
-              v-for="templateCard in filteredTemplatesByDrawer"
-              :key="`right-template-card-${templateCard.id}`"
-              type="button"
-              class="template-drawer__item"
-              :class="{ 'template-drawer__item--active': selectedTemplate === templateCard.id }"
-              @click="applyTemplateSelection(templateCard.id)"
-            >
-              <v-img :src="templateCard.image" :alt="templateCard.title" height="110" cover class="template-drawer__thumb" />
-              <span class="template-drawer__label">{{ templateCard.title }}</span>
-            </button>
-          </div>
-        </div>
-      </template>
-    </AppPageDrawers>
-
     <div class="local-toolbar-actions">
       <div class="local-toolbar-actions__row">
         <v-menu v-model="toolbarSaveImportMenuOpen" location="bottom center" origin="top center" max-width="560">
@@ -3300,6 +2596,48 @@ if (import.meta.client) {
               >
                 {{ importMessage }}
               </v-alert>
+            </v-card-text>
+          </v-card>
+        </v-menu>
+        <v-menu location="bottom center" origin="top center" max-width="520">
+          <template #activator="{ props }">
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-file-document-multiple-outline" v-bind="props">
+              Templates
+            </v-btn>
+          </template>
+          <v-card class="toolbar-menu-card">
+            <v-card-title class="text-subtitle-2">Templates</v-card-title>
+            <v-card-text>
+              <v-chip-group
+                :model-value="templateQuickFilter"
+                selected-class="text-primary"
+                column
+                class="mb-3"
+                @update:model-value="onTemplateQuickFilterChange"
+              >
+                <v-chip
+                  v-for="filterOption in templateQuickFilterOptions"
+                  :key="`toolbar-template-filter-${filterOption.value}`"
+                  :value="filterOption.value"
+                  size="small"
+                  label
+                >
+                  {{ filterOption.label }}
+                </v-chip>
+              </v-chip-group>
+              <div class="template-drawer__grid">
+                <button
+                  v-for="templateCard in filteredTemplatesByDrawer"
+                  :key="`toolbar-template-card-${templateCard.id}`"
+                  type="button"
+                  class="template-drawer__item"
+                  :class="{ 'template-drawer__item--active': selectedTemplate === templateCard.id }"
+                  @click="applyTemplateSelection(templateCard.id)"
+                >
+                  <v-img :src="templateCard.image" :alt="templateCard.title" height="96" cover class="template-drawer__thumb" />
+                  <span class="template-drawer__label">{{ templateCard.title }}</span>
+                </button>
+              </div>
             </v-card-text>
           </v-card>
         </v-menu>
@@ -3356,27 +2694,6 @@ if (import.meta.client) {
                 item-title="label"
                 item-value="value"
                 label="Typography preset"
-                density="comfortable"
-                hide-details
-              />
-            </v-card-text>
-          </v-card>
-        </v-menu>
-        <v-menu location="bottom center" origin="top center" max-width="360">
-          <template #activator="{ props }">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-column-outline" v-bind="props">
-              Layout mode
-            </v-btn>
-          </template>
-          <v-card class="toolbar-menu-card">
-            <v-card-title class="text-subtitle-2">Layout mode</v-card-title>
-            <v-card-text>
-              <AppSelect
-                v-model="layoutSettings.layoutMode"
-                :items="layoutModeOptions"
-                item-title="label"
-                item-value="value"
-                label="Layout"
                 density="comfortable"
                 hide-details
               />
