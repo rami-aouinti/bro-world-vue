@@ -57,6 +57,21 @@ type ResumeRendererDesignState = {
   iconSizeVariant?: 's' | 'm' | 'l'
   iconColorMode?: 'accent' | 'neutral'
   layoutMode?: ResumeLayoutMode
+  decorativeShapeA?: DecorativeShapeSettings
+  decorativeShapeB?: DecorativeShapeSettings
+}
+
+type DecorativeShapeSettings = {
+  enabled: boolean
+  type: 'circle' | 'square' | 'ring' | 'bar'
+  width: number
+  height: number
+  size: number
+  color: string
+  opacity: number
+  x: number
+  y: number
+  rotation: number
 }
 
 const props = withDefaults(
@@ -224,6 +239,8 @@ const resolvedDesignState = computed(() => ({
     props.designState?.sectionIconStyleVariant ?? props.sectionIconStyleVariant,
   iconSizeVariant: props.designState?.iconSizeVariant ?? props.iconSizeVariant,
   iconColorMode: props.designState?.iconColorMode ?? props.iconColorMode,
+  decorativeShapeA: props.designState?.decorativeShapeA,
+  decorativeShapeB: props.designState?.decorativeShapeB,
   layoutMode:
     props.designState?.layoutMode ??
     props.layoutMode ??
@@ -328,6 +345,27 @@ const sectionIconCssVars = computed<Record<string, string>>(() => ({
   '--resume-contact-icon-size': `${contactIconSize.value}px`,
   '--resume-contact-icon-color': contactIconColor.value,
 }))
+const decorativeShapes = computed<DecorativeShapeSettings[]>(() => [
+  resolvedDesignState.value.decorativeShapeA,
+  resolvedDesignState.value.decorativeShapeB,
+].filter((shape): shape is DecorativeShapeSettings => Boolean(shape?.enabled)))
+
+function decorativeShapeStyle(shape: DecorativeShapeSettings) {
+  const width =
+    shape.type === 'circle' || shape.type === 'ring' ? shape.size : shape.width
+  const height =
+    shape.type === 'circle' || shape.type === 'ring' ? shape.size : shape.height
+
+  return {
+    '--shape-color': shape.color,
+    '--shape-opacity': String(shape.opacity),
+    width: `${width}px`,
+    height: `${height}px`,
+    left: `${shape.x}%`,
+    top: `${shape.y}%`,
+    transform: `translate(-50%, -50%) rotate(${shape.rotation}deg)`,
+  }
+}
 
 function fallbackVariant(sectionKey: ResumeSectionLayoutKey): string {
   if (sectionKey === 'experience') return 'detailed'
@@ -455,6 +493,15 @@ function updateText(path: string, value: string) {
     :class="[templateSkin.rootClass, ...rootDesignClasses]"
     :style="{ ...themeTokens, ...sectionIconCssVars }"
   >
+    <div v-if="decorativeShapes.length" class="resume-skin__decorative-layer">
+      <span
+        v-for="(shape, index) in decorativeShapes"
+        :key="`resume-shape-${index}-${shape.type}`"
+        class="resume-skin__shape"
+        :class="`resume-skin__shape--${shape.type}`"
+        :style="decorativeShapeStyle(shape)"
+      />
+    </div>
     <header class="resume-skin__header">
       <div>
         <h1>
@@ -990,12 +1037,41 @@ function updateText(path: string, value: string) {
   font-style: var(--cv-font-style, normal);
   font-weight: var(--cv-font-weight, 400);
   padding: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.resume-skin__decorative-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.resume-skin__shape {
+  position: absolute;
+  background: var(--shape-color);
+  opacity: var(--shape-opacity);
+}
+.resume-skin__shape--circle {
+  border-radius: 999px;
+}
+.resume-skin__shape--square {
+  border-radius: 10px;
+}
+.resume-skin__shape--ring {
+  border-radius: 999px;
+  background: transparent;
+  border: 8px solid color-mix(in srgb, var(--shape-color) 90%, white);
+}
+.resume-skin__shape--bar {
+  border-radius: 999px;
 }
 .resume-skin__layout {
   display: grid;
   gap: 20px;
 }
 .resume-skin__header {
+  position: relative;
+  z-index: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
