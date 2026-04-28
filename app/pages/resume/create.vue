@@ -3406,6 +3406,7 @@ if (import.meta.client) {
               location="bottom center"
               origin="top center"
               max-width="320"
+              :close-on-content-click="false"
             >
               <template #activator="{ props }">
                 <v-btn
@@ -3471,6 +3472,7 @@ if (import.meta.client) {
               location="bottom center"
               origin="top center"
               max-width="320"
+              :close-on-content-click="false"
             >
               <template #activator="{ props }">
                 <v-btn

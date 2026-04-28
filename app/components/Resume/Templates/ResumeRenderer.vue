@@ -282,6 +282,29 @@ const visibleMainSections = computed(() => {
     compareSectionOrder,
   )
 })
+const noAsideLeftColumnKeys: ResumeEditableSectionKey[] = [
+  'language',
+  'reference',
+  'hobby',
+]
+const noAsideRightColumnKeys: ResumeEditableSectionKey[] = ['skill']
+const noAsideLeftSections = computed(() =>
+  visibleMainSections.value.filter((section) =>
+    noAsideLeftColumnKeys.includes(section.key),
+  ),
+)
+const noAsideRightSections = computed(() =>
+  visibleMainSections.value.filter((section) =>
+    noAsideRightColumnKeys.includes(section.key),
+  ),
+)
+const noAsideRemainingSections = computed(() =>
+  visibleMainSections.value.filter(
+    (section) =>
+      !noAsideLeftColumnKeys.includes(section.key) &&
+      !noAsideRightColumnKeys.includes(section.key),
+  ),
+)
 const avatarStyle = computed(() => ({
   width: `${resolvedDesignState.value.photoSize}px`,
   height: `${resolvedDesignState.value.photoSize}px`,
@@ -990,7 +1013,79 @@ function updateText(path: string, value: string) {
           </p>
         </section>
 
+        <template v-if="resolvedDesignState.layoutMode === 'no-aside'">
+          <SectionRenderer
+            v-for="section in noAsideRemainingSections"
+            :key="`main-no-aside-top-${section.key}`"
+            :section-key="section.key"
+            :resume="resume"
+            :editable="editable"
+            :variant="sectionVariant(section)"
+            :layout-density="sectionLayoutDensity"
+            :title="templateSkin.sectionTitles?.[section.key]"
+            :toolbar-enabled="true"
+            :can-move-up="canMove(section.key, 'up')"
+            :can-move-down="canMove(section.key, 'down')"
+            :theme-tokens="mergedSectionTokens(section.key)"
+            :section-icon="RESUME_SECTION_ICONS[section.key]"
+            :show-section-icon="shouldShowSectionIcons"
+            :section-icon-style="resolvedSectionIconStyle"
+            @add-item="onSectionAddItem"
+            @change-variant="onSectionVariantChange"
+            @move-section="onSectionMove"
+            @delete-section="onSectionDelete"
+          />
+          <div class="resume-skin__no-aside-columns">
+            <div>
+              <SectionRenderer
+                v-for="section in noAsideLeftSections"
+                :key="`main-no-aside-left-${section.key}`"
+                :section-key="section.key"
+                :resume="resume"
+                :editable="editable"
+                :variant="sectionVariant(section)"
+                :layout-density="sectionLayoutDensity"
+                :title="templateSkin.sectionTitles?.[section.key]"
+                :toolbar-enabled="true"
+                :can-move-up="canMove(section.key, 'up')"
+                :can-move-down="canMove(section.key, 'down')"
+                :theme-tokens="mergedSectionTokens(section.key)"
+                :section-icon="RESUME_SECTION_ICONS[section.key]"
+                :show-section-icon="shouldShowSectionIcons"
+                :section-icon-style="resolvedSectionIconStyle"
+                @add-item="onSectionAddItem"
+                @change-variant="onSectionVariantChange"
+                @move-section="onSectionMove"
+                @delete-section="onSectionDelete"
+              />
+            </div>
+            <div>
+              <SectionRenderer
+                v-for="section in noAsideRightSections"
+                :key="`main-no-aside-right-${section.key}`"
+                :section-key="section.key"
+                :resume="resume"
+                :editable="editable"
+                :variant="sectionVariant(section)"
+                :layout-density="sectionLayoutDensity"
+                :title="templateSkin.sectionTitles?.[section.key]"
+                :toolbar-enabled="true"
+                :can-move-up="canMove(section.key, 'up')"
+                :can-move-down="canMove(section.key, 'down')"
+                :theme-tokens="mergedSectionTokens(section.key)"
+                :section-icon="RESUME_SECTION_ICONS[section.key]"
+                :show-section-icon="shouldShowSectionIcons"
+                :section-icon-style="resolvedSectionIconStyle"
+                @add-item="onSectionAddItem"
+                @change-variant="onSectionVariantChange"
+                @move-section="onSectionMove"
+                @delete-section="onSectionDelete"
+              />
+            </div>
+          </div>
+        </template>
         <SectionRenderer
+          v-else
           v-for="section in visibleMainSections"
           :key="`main-${section.key}`"
           :section-key="section.key"
@@ -1230,6 +1325,11 @@ function updateText(path: string, value: string) {
 .layout-mode-no-aside {
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas: 'main';
+}
+.resume-skin__no-aside-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--cv-space-4);
 }
 
 .layout-mode-no-aside :deep(.project-grid--two-column),
