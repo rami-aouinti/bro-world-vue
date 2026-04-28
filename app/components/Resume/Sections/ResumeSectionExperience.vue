@@ -11,6 +11,8 @@ const props = withDefaults(defineProps<{
   title?: string
   canMoveUp?: boolean
   canMoveDown?: boolean
+  sectionIcon?: string
+  showSectionIcon?: boolean
 }>(), {
   editable: false,
   variant: 'detailed',
@@ -20,6 +22,8 @@ const props = withDefaults(defineProps<{
   title: 'Experience',
   canMoveUp: false,
   canMoveDown: false,
+  sectionIcon: undefined,
+  showSectionIcon: true,
 })
 
 const emit = defineEmits<{
@@ -46,7 +50,10 @@ function updateText(path: string, value: string) {
 <template>
   <section class="resume-section resume-section-hoverable experience" :class="`density-${layoutDensity}`" :style="sectionStyle">
     <SectionToolbar v-if="toolbarEnabled" section-key="experience" :variants="[{ label: 'Detailed', value: 'detailed' }, { label: 'Bullets', value: 'bullets' }, { label: 'Compact', value: 'compact' }]" :current-variant="variant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'experience')" @change-variant="(_, next) => emit('change-variant', 'experience', next)" @move-up="() => emit('move-section', 'experience', 'up')" @move-down="() => emit('move-section', 'experience', 'down')" />
-    <h2 class="cv-heading-section">{{ title }}</h2>
+    <h2 class="cv-heading-section">
+      <v-icon v-if="showSectionIcon && sectionIcon" :icon="sectionIcon" size="18" />
+      <span>{{ title }}</span>
+    </h2>
     <article v-for="(experience, index) in resume.experiences" :key="`${experience.company}-${index}`" class="entry text-dark">
       <h4 class="text-dark">
         <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.role`, (event.target as HTMLElement).innerText)">{{ experience.role }}</span>,

@@ -11,6 +11,8 @@ const props = withDefaults(defineProps<{
   title?: string
   canMoveUp?: boolean
   canMoveDown?: boolean
+  sectionIcon?: string
+  showSectionIcon?: boolean
 }>(), {
   editable: false,
   variant: 'classic',
@@ -20,6 +22,8 @@ const props = withDefaults(defineProps<{
   title: 'Education',
   canMoveUp: false,
   canMoveDown: false,
+  sectionIcon: undefined,
+  showSectionIcon: true,
 })
 const emit = defineEmits<{
   (event: 'add-item', sectionKey: 'education'): void
@@ -51,7 +55,10 @@ function updateText(path: string, value: string) {
 <template>
   <section :class="['education', 'resume-section-hoverable', `density-${layoutDensity}`, `education--${safeVariant}`]" :style="sectionStyle">
     <SectionToolbar v-if="toolbarEnabled" section-key="education" :variants="[{ label: 'Classic', value: 'classic' }, { label: 'Timeline', value: 'timeline' }, { label: 'Two columns', value: 'two-column' }]" :current-variant="safeVariant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'education')" @change-variant="(_, next) => emit('change-variant', 'education', next)" @move-up="() => emit('move-section', 'education', 'up')" @move-down="() => emit('move-section', 'education', 'down')" />
-    <h2 class="cv-heading-section">{{ title }}</h2>
+    <h2 class="cv-heading-section">
+      <v-icon v-if="showSectionIcon && sectionIcon" :icon="sectionIcon" size="18" />
+      <span>{{ title }}</span>
+    </h2>
     <div class="education-list">
       <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="entry text-dark">
         <h4 class="text-dark">
