@@ -114,7 +114,7 @@ const projectSectionOptions = computed(() => [
   { key: 'showSummary', label: 'Show summary', modelValue: showSummary.value },
 ])
 
-function updateText(path: string, value: string) {
+function updateText(path: string, value: unknown) {
   const segments = path.split('.')
   const last = segments.pop()
   if (!last) return
@@ -220,6 +220,16 @@ function updateSectionOption(optionKey: string, value: boolean) {
     showSummary.value = value
   }
 }
+
+function removeProject(index: number) {
+  const projects = Array.isArray(props.resume.projects)
+    ? props.resume.projects
+    : []
+  updateText(
+    'projects',
+    projects.filter((_: unknown, itemIndex: number) => itemIndex !== index),
+  )
+}
 </script>
 <template>
   <section
@@ -276,6 +286,18 @@ function updateSectionOption(optionKey: string, value: boolean) {
             safeVariant === 'cards' || safeVariant === 'two-column',
         }"
       >
+        <v-btn
+          v-if="editable"
+          class="resume-item-delete"
+          icon
+          size="x-small"
+          variant="text"
+          color="error"
+          aria-label="Supprimer ce projet"
+          @click="removeProject(index)"
+        >
+          <v-icon icon="mdi-close" size="14" />
+        </v-btn>
         <div class="date-column dates">
           <span
             class="editable-text"
@@ -554,6 +576,19 @@ function updateSectionOption(optionKey: string, value: boolean) {
   background: var(--rs-card-bg, transparent);
   border-radius: var(--rs-card-radius, 0);
   padding: var(--rs-card-padding, 0);
+}
+.resume-item-delete {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease;
+}
+.entry:hover .resume-item-delete,
+.entry:focus-within .resume-item-delete {
+  opacity: 1;
+  pointer-events: auto;
 }
 .date-column {
   color: color-mix(in srgb, var(--cv-text, currentColor) 78%, transparent);

@@ -90,7 +90,7 @@ const contentStyles = computed(() =>
     sectionRegistry.contentStyles.includes(option.value),
   ),
 )
-function updateText(path: string, value: string) {
+function updateText(path: string, value: unknown) {
   const segments = path.split('.')
   const last = segments.pop()
   if (!last) return
@@ -126,6 +126,18 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
   if (Array.isArray(item.timelineEvents) && item.timelineEvents.length)
     return item.timelineEvents
   return resolvePoints(item).map((detail) => ({ label: '', detail }))
+}
+
+function removeEducationItem(index: number) {
+  const educationItems = Array.isArray(props.resume.education)
+    ? props.resume.education
+    : []
+  updateText(
+    'education',
+    educationItems.filter(
+      (_: unknown, itemIndex: number) => itemIndex !== index,
+    ),
+  )
 }
 </script>
 <template>
@@ -170,6 +182,18 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
         :key="`${item.school}-${index}`"
         class="entry text-dark"
       >
+        <v-btn
+          v-if="editable"
+          class="resume-item-delete"
+          icon
+          size="x-small"
+          variant="text"
+          color="error"
+          aria-label="Supprimer cette formation"
+          @click="removeEducationItem(index)"
+        >
+          <v-icon icon="mdi-close" size="14" />
+        </v-btn>
         <p class="dates date-column">
           <span
             class="editable-text"
@@ -416,6 +440,19 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
 }
 .entry:last-child {
   margin-bottom: 0;
+}
+.resume-item-delete {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease;
+}
+.entry:hover .resume-item-delete,
+.entry:focus-within .resume-item-delete {
+  opacity: 1;
+  pointer-events: auto;
 }
 .date-column {
   color: color-mix(in srgb, var(--cv-text, currentColor) 78%, transparent);
