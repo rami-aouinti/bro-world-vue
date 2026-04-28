@@ -2776,56 +2776,58 @@ if (import.meta.client) {
           :class="[activeRoundedClass, activeTextStyleClass, `photo-shape-${safePhotoShape}`]"
           :style="previewStyle"
         >
-          <v-alert
-            v-if="selectedTemplateHasPartialSupport"
-            type="warning"
-            density="compact"
-            variant="tonal"
-            class="preview-support-alert"
-          >
-            Ce template est en support partiel pour certains réglages de design.
-          </v-alert>
-          <template v-if="rendererReady">
-            <ResumeRenderer
-              :resume="resume"
-              :show-photo="templateSupportsPhoto"
-              :section-layout="orderedPreviewSections"
-              :section-variants="sectionVariantByKey"
-              :photo-shape-options="photoShapeOptions"
-              :selected-photo-shape="safePhotoShape"
-              :on-photo-click="onPreviewPhotoClick"
-              :on-photo-shape-select="(shape) => selectedPhotoShape = shape"
-              :template-skin="selectedTemplateSkin"
-              editable
-              @add-item="addItemToPreviewSection"
-              @change-variant="setSectionVariant"
-              @move-section="moveSection"
-            />
-          </template>
-          <div v-else class="preview-fallback">
-            <v-alert type="error" variant="tonal" density="comfortable" class="mb-3">
-              {{ rendererError || 'La prévisualisation n’est pas disponible pour le moment.' }}
-            </v-alert>
-            <h2 class="text-h5 mb-2">{{ `${resume.firstName} ${resume.lastName}`.trim() || 'Votre nom' }}</h2>
-            <p class="text-body-2 mb-4">{{ resume.role || 'Titre du poste' }}</p>
-            <section
-              v-for="section in previewFallbackSections"
-              :key="`preview-fallback-${section.title}`"
-              class="mb-3"
+          <div class="cv-page-shell">
+            <v-alert
+              v-if="selectedTemplateHasPartialSupport"
+              type="warning"
+              density="compact"
+              variant="tonal"
+              class="preview-support-alert"
             >
-              <h3 class="text-subtitle-2 mb-1">{{ section.title }}</h3>
-              <ul class="pl-4">
-                <li v-for="item in section.items" :key="`${section.title}-${item}`">
-                  {{ item }}
-                </li>
-              </ul>
-            </section>
-            <v-btn size="small" variant="outlined" prepend-icon="mdi-refresh" @click="resetRendererGuard">
-              Réessayer le rendu
-            </v-btn>
-          </div>
-          <div v-if="signatureDataUrl" class="signature-overlay">
-            <img :src="signatureDataUrl" alt="Signature" />
+              Ce template est en support partiel pour certains réglages de design.
+            </v-alert>
+            <template v-if="rendererReady">
+              <ResumeRenderer
+                :resume="resume"
+                :show-photo="templateSupportsPhoto"
+                :section-layout="orderedPreviewSections"
+                :section-variants="sectionVariantByKey"
+                :photo-shape-options="photoShapeOptions"
+                :selected-photo-shape="safePhotoShape"
+                :on-photo-click="onPreviewPhotoClick"
+                :on-photo-shape-select="(shape) => selectedPhotoShape = shape"
+                :template-skin="selectedTemplateSkin"
+                editable
+                @add-item="addItemToPreviewSection"
+                @change-variant="setSectionVariant"
+                @move-section="moveSection"
+              />
+            </template>
+            <div v-else class="preview-fallback">
+              <v-alert type="error" variant="tonal" density="comfortable" class="mb-3">
+                {{ rendererError || 'La prévisualisation n’est pas disponible pour le moment.' }}
+              </v-alert>
+              <h2 class="text-h5 mb-2">{{ `${resume.firstName} ${resume.lastName}`.trim() || 'Votre nom' }}</h2>
+              <p class="text-body-2 mb-4">{{ resume.role || 'Titre du poste' }}</p>
+              <section
+                v-for="section in previewFallbackSections"
+                :key="`preview-fallback-${section.title}`"
+                class="mb-3"
+              >
+                <h3 class="text-subtitle-2 mb-1">{{ section.title }}</h3>
+                <ul class="pl-4">
+                  <li v-for="item in section.items" :key="`${section.title}-${item}`">
+                    {{ item }}
+                  </li>
+                </ul>
+              </section>
+              <v-btn size="small" variant="outlined" prepend-icon="mdi-refresh" @click="resetRendererGuard">
+                Réessayer le rendu
+              </v-btn>
+            </div>
+            <div v-if="signatureDataUrl" class="signature-overlay">
+              <img :src="signatureDataUrl" alt="Signature" />
+            </div>
           </div>
         </div>
       </aside>
@@ -3004,24 +3006,29 @@ if (import.meta.client) {
             :class="[activeRoundedClass, activeTextStyleClass]"
             :style="previewStyle"
           >
-            <template v-if="rendererReady">
-              <ResumeRenderer
-                :resume="resume"
-                :show-photo="templateSupportsPhoto"
-                :section-layout="orderedPreviewSections"
-                :section-variants="sectionVariantByKey"
-                :on-photo-click="onPreviewPhotoClick"
-                :template-skin="selectedTemplateSkin"
-                editable
-                @add-item="addItemToPreviewSection"
-                @change-variant="setSectionVariant"
-                @move-section="moveSection"
-              />
-            </template>
-            <div v-else class="preview-fallback">
-              <v-alert type="error" variant="tonal" density="comfortable">
-                {{ rendererError || 'La prévisualisation n’est pas disponible pour le moment.' }}
-              </v-alert>
+            <div class="cv-page-shell">
+              <template v-if="rendererReady">
+                <ResumeRenderer
+                  :resume="resume"
+                  :show-photo="templateSupportsPhoto"
+                  :section-layout="orderedPreviewSections"
+                  :section-variants="sectionVariantByKey"
+                  :on-photo-click="onPreviewPhotoClick"
+                  :template-skin="selectedTemplateSkin"
+                  editable
+                  @add-item="addItemToPreviewSection"
+                  @change-variant="setSectionVariant"
+                  @move-section="moveSection"
+                />
+              </template>
+              <div v-else class="preview-fallback">
+                <v-alert type="error" variant="tonal" density="comfortable">
+                  {{ rendererError || 'La prévisualisation n’est pas disponible pour le moment.' }}
+                </v-alert>
+              </div>
+              <div v-if="signatureDataUrl" class="signature-overlay">
+                <img :src="signatureDataUrl" alt="Signature" />
+              </div>
             </div>
           </div>
         </v-card-text>
@@ -3407,9 +3414,20 @@ if (import.meta.client) {
   --cv-on-sidebar: #f8fafc;
   --cv-on-accent: #f8fafc;
   min-height: calc(100vh - 80px);
-  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
 }
 
+.cv-page-shell {
+  width: min(100%, 794px);
+  background: #fcfdff;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.14);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
 
 .preview-support-alert {
   position: absolute;
@@ -3426,10 +3444,11 @@ if (import.meta.client) {
 
 .signature-overlay {
   position: absolute;
-  right: 30px;
-  bottom: 24px;
+  right: 18px;
+  bottom: 18px;
   width: 190px;
   z-index: 7;
+  max-width: calc(100% - 36px);
 }
 
 .signature-overlay img {
