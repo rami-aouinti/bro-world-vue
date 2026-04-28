@@ -42,14 +42,13 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (event: 'add-item', sectionKey: 'experience'): void
+  (event: 'add-item' | 'delete-section', sectionKey: 'experience'): void
   (event: 'change-variant', sectionKey: 'experience', variant: string): void
   (
     event: 'move-section',
     sectionKey: 'experience',
     direction: 'up' | 'down',
   ): void
-  (event: 'delete-section', sectionKey: 'experience'): void
 }>()
 
 const brokenLogoByKey = reactive<Record<string, boolean>>({})
@@ -199,6 +198,33 @@ function removeExperience(index: number) {
         <v-icon icon="mdi-close" size="14" />
       </v-btn>
       <div class="date-column dates">
+        <p class="dates">
+          <span
+            class="editable-text"
+            :contenteditable="editable"
+            @input="
+              (event) =>
+                updateDateText(
+                  `experiences.${index}.start`,
+                  (event.target as HTMLElement).innerText,
+                )
+            "
+            >{{ formatResumeMonthYear(experience.start) }}</span
+          >
+          -
+          <span
+            class="editable-text"
+            :contenteditable="editable"
+            @input="
+              (event) =>
+                updateDateText(
+                  `experiences.${index}.end`,
+                  (event.target as HTMLElement).innerText,
+                )
+            "
+            >{{ formatResumeMonthYear(experience.end) }}</span
+          >
+        </p>
         <h4 class="text-dark experience-heading">
           <span
             class="editable-text"
@@ -249,33 +275,6 @@ function removeExperience(index: number) {
             >
           </template>
         </h4>
-        <p class="dates">
-          <span
-            class="editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateDateText(
-                  `experiences.${index}.start`,
-                  (event.target as HTMLElement).innerText,
-                )
-            "
-            >{{ formatResumeMonthYear(experience.start) }}</span
-          >
-          -
-          <span
-            class="editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateDateText(
-                  `experiences.${index}.end`,
-                  (event.target as HTMLElement).innerText,
-                )
-            "
-            >{{ formatResumeMonthYear(experience.end) }}</span
-          >
-        </p>
       </div>
       <div class="content-column">
         <template v-if="resolveContentStyle(experience) === 'timeline'">
