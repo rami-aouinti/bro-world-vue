@@ -22,7 +22,7 @@ import {
   type ResumePreviewSectionKey,
   type ResumeSectionActionKey,
 } from '~/types/resumeDocumentModel'
-import { privateApi } from '~/utils/http/privateApi'
+import { createResume, listMyResumes, updateResume } from '~/services/resumeApi'
 
 definePageMeta({
   title: 'Create Resume',
@@ -712,7 +712,7 @@ onMounted(async () => {
   if (!loggedIn.value) return
 
   try {
-    const apiResumes = await privateApi.request<RemoteResume[]>('/api/v1/recruit/private/me/resumes')
+    const apiResumes = await listMyResumes()
     remoteResumes.value = Array.isArray(apiResumes) ? apiResumes : []
 
     const sortedByCreatedAt = [...remoteResumes.value].sort((a, b) =>
@@ -765,7 +765,6 @@ const safePhotoShape = computed<PhotoShape>(() => (
 let aiElapsedTimer: ReturnType<typeof setInterval> | null = null
 const { t } = useI18n()
 const { loggedIn, fetch: refreshSession } = useUserSession()
-const { scopedRecruitPath } = useRecruitScopedApi()
 const remoteResumes = ref<RemoteResume[]>([])
 const selectedRemoteResumeId = ref<string | null>(null)
 const loadedFromApi = ref(false)
@@ -2307,7 +2306,7 @@ function buildReviewPayload() {
 }
 
 function buildResumeSavePayload() {
-  return fromBuilderModelToApiPayload({
+  const payload = fromBuilderModelToApiPayload({
     firstName: resume.firstName,
     lastName: resume.lastName,
     email: resume.email,
@@ -2322,6 +2321,10 @@ function buildResumeSavePayload() {
       end: experience.end,
       bullets: experience.bullets,
     })),
+    skills: resume.skills.map(skill => ({
+      name: skill.name,
+      level: skill.level,
+    })),
     education: resume.education.map(education => ({
       degree: education.degree,
       school: education.school,
@@ -2329,10 +2332,6 @@ function buildResumeSavePayload() {
       start: education.start,
       end: education.end,
       note: education.note,
-    })),
-    skills: resume.skills.map(skill => ({
-      name: skill.name,
-      level: skill.level,
     })),
     languages: resume.languages.map(language => ({
       name: language.name,
@@ -2366,6 +2365,29 @@ function buildResumeSavePayload() {
       address: [resume.city, resume.country].filter(Boolean).join(', '),
     },
   })
+
+  const hasSectionContent = (section?: RemoteResumeSection[] | null) => Array.isArray(section)
+    && section.some(item =>
+      [item.title, item.description, item.startDate, item.endDate, item.company, item.school, item.location, item.level]
+        .some(value => typeof value === 'string' && value.trim().length > 0))
+
+  return {
+    documentUrl: payload.documentUrl ?? null,
+    experiences: hasSectionContent(payload.experiences) ? payload.experiences : [],
+    skills: hasSectionContent(payload.skills) ? payload.skills : [],
+    ...(hasSectionContent(payload.educations) ? { educations: payload.educations } : {}),
+    ...(hasSectionContent(payload.languages) ? { languages: payload.languages } : {}),
+    ...(hasSectionContent(payload.certifications) ? { certifications: payload.certifications } : {}),
+    ...(hasSectionContent(payload.projects) ? { projects: payload.projects } : {}),
+    ...(hasSectionContent(payload.references) ? { references: payload.references } : {}),
+    ...(hasSectionContent(payload.hobbies) ? { hobbies: payload.hobbies } : {}),
+    ...(payload.resumeInformation?.fullName?.trim()
+      || payload.resumeInformation?.email?.trim()
+      || payload.resumeInformation?.phone?.trim()
+      || payload.resumeInformation?.adresse?.trim()
+      ? { resumeInformation: payload.resumeInformation }
+      : {}),
+  }
 }
 
 function openSaveModal() {
@@ -2383,34 +2405,17 @@ async function submitSaveAction() {
 
   try {
     const payload = buildResumeSavePayload()
+    const shouldUpdate = Boolean(selectedRemoteResumeId.value)
 
-    if (saveMode.value === 'replace') {
-      if (!selectedRemoteResumeId.value) {
-        saveStatus.value = 'error'
-        saveStatusMessage.value = 'Veuillez sélectionner un CV à remplacer.'
-        return
-      }
-
-      await privateApi.request(
-        scopedRecruitPath(`/private/me/resumes/${encodeURIComponent(selectedRemoteResumeId.value)}`),
-        {
-          method: 'PATCH',
-          body: payload,
-        },
-      )
+    if (shouldUpdate && selectedRemoteResumeId.value) {
+      await updateResume(selectedRemoteResumeId.value, payload)
       saveStatus.value = 'success'
       saveStatusMessage.value = 'CV remplacé avec succès.'
       replaceConfirmStep.value = false
       return
     }
 
-    const createdResume = await privateApi.request<{ id?: string }>(
-      scopedRecruitPath('/resumes'),
-      {
-        method: 'POST',
-        body: payload,
-      },
-    )
+    const createdResume = await createResume(payload)
     if (createdResume?.id) {
       selectedRemoteResumeId.value = createdResume.id
     }
@@ -2418,7 +2423,7 @@ async function submitSaveAction() {
     saveStatusMessage.value = 'Nouveau CV créé avec succès.'
   } catch {
     saveStatus.value = 'error'
-    saveStatusMessage.value = saveMode.value === 'replace'
+    saveStatusMessage.value = selectedRemoteResumeId.value
       ? 'Échec du remplacement du CV.'
       : 'Échec de création du nouveau CV.'
   } finally {
