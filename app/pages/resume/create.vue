@@ -3379,49 +3379,6 @@ if (import.meta.client) {
               <v-card class="toolbar-menu-card">
                 <v-card-title class="text-subtitle-2">Design</v-card-title>
                 <v-card-text>
-                  <p class="section-label">Color palette</p>
-                  <div class="palette-grid mb-4">
-                    <button
-                      v-for="theme in colorThemes"
-                      :key="`toolbar-theme-${theme.name}`"
-                      type="button"
-                      class="palette-item"
-                      :class="{
-                        'palette-item--active': selectedTheme === theme.name,
-                      }"
-                      @click="selectedTheme = theme.name"
-                    >
-                      <span :style="{ background: theme.sidebar }" />
-                      <span :style="{ background: theme.accent }" />
-                      <span :style="{ background: theme.page }" />
-                    </button>
-                  </div>
-
-                  <p class="section-label">Page background</p>
-                  <div class="palette-grid mb-4">
-                    <button
-                      v-for="option in pageBackgroundValidation"
-                      :key="`toolbar-bg-${option.value}`"
-                      type="button"
-                      class="palette-item"
-                      :class="{
-                        'palette-item--active':
-                          selectedPageBackground === option.value,
-                      }"
-                      :disabled="option.blocked"
-                      :title="
-                        option.blocked
-                          ? 'Fond trop sombre ou contraste insuffisant'
-                          : option.label
-                      "
-                      @click="selectedPageBackground = option.value"
-                    >
-                      <span :style="{ background: option.page }" />
-                      <span :style="{ background: activeTheme.accent }" />
-                      <span :style="{ background: activeTheme.sidebar }" />
-                    </button>
-                  </div>
-
                   <p class="section-label mt-4">Rounded</p>
                   <v-btn-toggle
                     v-model="selectedRounded"
@@ -3439,18 +3396,6 @@ if (import.meta.client) {
                       {{ option.title }}
                     </v-btn>
                   </v-btn-toggle>
-                  <v-alert
-                    v-if="isCoverDocument"
-                    type="info"
-                    variant="tonal"
-                    density="comfortable"
-                    class="mt-3"
-                  >
-                    Cover page and cover letter templates hide layout controls
-                    that do not apply (aside width, photo alignment without
-                    photo, resume layout mode).
-                  </v-alert>
-
                   <p class="section-label mt-4">Icons</p>
                   <div class="d-grid ga-3">
                     <v-switch
