@@ -166,13 +166,21 @@ function isSectionVisible(section: RenderableSectionLayoutEntry) {
   return section.key !== 'skill' || props.templateSkin.showSkillsInAside
 }
 
+function compareSectionOrder(
+  left: RenderableSectionLayoutEntry,
+  right: RenderableSectionLayoutEntry,
+) {
+  if (left.order !== right.order) return left.order - right.order
+  return left.key.localeCompare(right.key)
+}
+
 const sectionsByRegion = computed(() => ({
   main: renderableSections.value
     .filter((section) => section.region === 'main' && isSectionVisible(section))
-    .sort((left, right) => left.order - right.order),
+    .sort(compareSectionOrder),
   aside: renderableSections.value
     .filter((section) => section.region === 'aside' && isSectionVisible(section))
-    .sort((left, right) => left.order - right.order),
+    .sort(compareSectionOrder),
 }))
 
 const mainSections = computed(() => sectionsByRegion.value.main)
@@ -219,14 +227,18 @@ const shouldRenderAside = computed(
       asideSections.value.length > 0
     ),
 )
+const noAsideSectionOrderPolicy = 'main-first-then-aside' as const
 const visibleMainSections = computed(() => {
   if (resolvedDesignState.value.layoutMode !== 'no-aside') return mainSections.value
 
-  return [...mainSections.value, ...asideSections.value]
-    .sort((left, right) => {
-      if (left.order !== right.order) return left.order - right.order
-      return left.region === right.region ? 0 : left.region === 'main' ? -1 : 1
-    })
+  // In no-aside mode we remap aside sections into the main flow.
+  // Ordering rule: keep main sections first (by order), then aside sections (by order).
+  // This avoids cross-column ordering jumps while preserving predictable reordering.
+  if (noAsideSectionOrderPolicy === 'main-first-then-aside') {
+    return [...mainSections.value, ...asideSections.value]
+  }
+
+  return [...mainSections.value, ...asideSections.value].sort(compareSectionOrder)
 })
 const avatarStyle = computed(() => ({
   width: `${resolvedDesignState.value.photoSize}px`,
