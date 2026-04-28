@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { RoundedOptionId, Typography } from '~/constants/resumeDesign'
+import type { PageBackgroundId, RoundedOptionId, Typography } from '~/constants/resumeDesign'
 import {
   COVER_LETTER_TEMPLATES,
   COVER_PAGE_TEMPLATES,
@@ -216,6 +216,7 @@ const route = useRoute()
 const selectedTemplate = ref(DEFAULT_RESUME_TEMPLATE_ID)
 const selectedDocumentType = ref<'resume'>('resume')
 const selectedTheme = ref('ocean')
+const selectedPageBackground = ref<PageBackgroundId>('white')
 const selectedRounded = ref<RoundedOptionId>('md')
 const selectedTextStyle = ref<Typography>('clean')
 const levelInputMode = ref<LevelInputMode>('percent')
@@ -223,8 +224,11 @@ const levelInputMode = ref<LevelInputMode>('percent')
 const selectedTemplateFilter = ref<TemplateFilter>('all')
 const {
   colorThemes,
+  pageBackgroundOptions,
   roundedOptions,
   textStyleOptions,
+  resolvePageBackground,
+  isAllowedPageBackground,
   roundedPxByValue,
   textStyleVarsByValue,
 } = useResumeDesignControls()
@@ -1103,6 +1107,7 @@ const activeTheme = computed(
     colorThemes.find((theme) => theme.name === selectedTheme.value) ??
     colorThemes[0],
 )
+const activePageBackground = computed(() => resolvePageBackground(selectedPageBackground.value))
 const activeRoundedClass = computed(
   () =>
     roundedOptions.find((item) => item.value === selectedRounded.value)
@@ -1224,6 +1229,23 @@ function bestAaTextColor(background: string, preferred: string, minimum = 4.5) {
   return candidates.sort((a, b) => contrastRatio(background, b) - contrastRatio(background, a))[0]
 }
 
+const minimumReadableContrast = 4.5
+const pageBackgroundValidation = computed(() => pageBackgroundOptions.map(option => {
+  const darkBlocked = !isAllowedPageBackground(option.page)
+  const textContrast = contrastRatio(option.page, '#111827')
+  return {
+    ...option,
+    blocked: darkBlocked || textContrast < minimumReadableContrast,
+  }
+}))
+
+watch(pageBackgroundValidation, (options) => {
+  const selected = options.find(option => option.value === selectedPageBackground.value)
+  if (selected && !selected.blocked) return
+  const fallback = options.find(option => !option.blocked)
+  if (fallback) selectedPageBackground.value = fallback.value
+}, { immediate: true })
+
 
 const previewStyle = computed(() => ({
   '--cv-radius': roundedPxByValue[selectedRounded.value],
@@ -1232,11 +1254,11 @@ const previewStyle = computed(() => ({
   '--cv-font-weight': textStyleVarsByValue[selectedTextStyle.value].weight,
   '--cv-sidebar': activeTheme.value.sidebar,
   '--cv-accent': activeTheme.value.accent,
-  '--cv-page': activeTheme.value.page,
-  '--cv-title': bestAaTextColor(activeTheme.value.page, activeTheme.value.accent, 4.5),
-  '--cv-secondary': bestAaTextColor(activeTheme.value.page, activeTheme.value.sidebar, 4.5),
-  '--cv-on-sidebar': bestAaTextColor(activeTheme.value.sidebar, activeTheme.value.page, 4.5),
-  '--cv-on-accent': bestAaTextColor(activeTheme.value.accent, activeTheme.value.page, 4.5),
+  '--cv-page': activePageBackground.value.page,
+  '--cv-title': bestAaTextColor(activePageBackground.value.page, activeTheme.value.accent, 4.5),
+  '--cv-secondary': bestAaTextColor(activePageBackground.value.page, activeTheme.value.sidebar, 4.5),
+  '--cv-on-sidebar': bestAaTextColor(activeTheme.value.sidebar, activePageBackground.value.page, 4.5),
+  '--cv-on-accent': bestAaTextColor(activeTheme.value.accent, activePageBackground.value.page, 4.5),
 }))
 const selectedTemplateSupport = computed<TemplateStyleSupport | null>(() => {
   if (selectedTemplateConfig.value.documentType !== 'resume') return null
@@ -1700,6 +1722,7 @@ if (import.meta.client) {
 
   const customization = resumeDocumentState.value.customization
   selectedTheme.value = customization.style.palette
+  selectedPageBackground.value = customization.style.pageBackground
   selectedRounded.value = customization.style.radius
   selectedTextStyle.value = customization.style.typography
   layoutSettings.lineDensity = customization.style.density
@@ -1708,12 +1731,13 @@ if (import.meta.client) {
     variant: normalizeSectionVariant(entry.key, entry.variant),
   }))
 
-  watch([selectedTheme, selectedRounded, selectedTextStyle], () => {
+  watch([selectedTheme, selectedPageBackground, selectedRounded, selectedTextStyle], () => {
     resumeDocumentState.value.customization = {
       ...resumeDocumentState.value.customization,
       style: {
         ...resumeDocumentState.value.customization.style,
         palette: selectedTheme.value,
+        pageBackground: selectedPageBackground.value,
         radius: selectedRounded.value,
         typography: selectedTextStyle.value,
       },
@@ -1793,6 +1817,24 @@ if (import.meta.client) {
                   <span :style="{ background: theme.sidebar }" />
                   <span :style="{ background: theme.accent }" />
                   <span :style="{ background: theme.page }" />
+                </button>
+              </div>
+
+              <p class="section-label">Page background</p>
+              <div class="palette-grid mb-4">
+                <button
+                  v-for="option in pageBackgroundValidation"
+                  :key="`toolbar-page-bg-${option.value}`"
+                  type="button"
+                  class="palette-item"
+                  :class="{ 'palette-item--active': selectedPageBackground === option.value }"
+                  :disabled="option.blocked"
+                  :title="option.blocked ? 'Fond trop sombre ou contraste insuffisant' : option.label"
+                  @click="selectedPageBackground = option.value"
+                >
+                  <span :style="{ background: option.page }" />
+                  <span :style="{ background: activeTheme.accent }" />
+                  <span :style="{ background: activeTheme.sidebar }" />
                 </button>
               </div>
 
@@ -2585,6 +2627,26 @@ if (import.meta.client) {
                   <span :style="{ background: theme.sidebar }" />
                   <span :style="{ background: theme.accent }" />
                   <span :style="{ background: theme.page }" />
+                </button>
+              </div>
+
+              <p class="section-label">Page background</p>
+              <div class="palette-grid mb-4">
+                <button
+                  v-for="option in pageBackgroundValidation"
+                  :key="option.value"
+                  type="button"
+                  class="palette-item"
+                  :class="{
+                    'palette-item--active': selectedPageBackground === option.value,
+                  }"
+                  :disabled="option.blocked"
+                  :title="option.blocked ? 'Fond trop sombre ou contraste insuffisant' : option.label"
+                  @click="selectedPageBackground = option.value"
+                >
+                  <span :style="{ background: option.page }" />
+                  <span :style="{ background: activeTheme.accent }" />
+                  <span :style="{ background: activeTheme.sidebar }" />
                 </button>
               </div>
 

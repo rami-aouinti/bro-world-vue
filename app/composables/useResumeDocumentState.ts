@@ -47,7 +47,7 @@ function normalizeModel(source: unknown, templateVariant: ResumeTemplateVariant)
     return {
       templateVariant,
       sectionOrder: DEFAULT_SECTION_ORDER.map(entry => ({ ...entry })),
-      style: { palette: 'ocean', density: 'comfortable', radius: 'md', typography: 'clean' },
+      style: { palette: 'ocean', pageBackground: 'white', density: 'comfortable', radius: 'md', typography: 'clean' },
     }
   }
 
@@ -60,6 +60,7 @@ function normalizeModel(source: unknown, templateVariant: ResumeTemplateVariant)
     sectionOrder: normalizeSectionOrder(source.sectionOrder),
     style: {
       palette: typeof style.palette === 'string' ? style.palette : 'ocean',
+      pageBackground: style.pageBackground === 'sky-light' || style.pageBackground === 'pearl-light' || style.pageBackground === 'ivory-light' ? style.pageBackground : 'white',
       density: style.density === 'compact' ? 'compact' : 'comfortable',
       radius: (style.radius as ResumeDocumentModel['style']['radius']) ?? 'md',
       typography: (style.typography as ResumeDocumentModel['style']['typography']) ?? 'clean',
