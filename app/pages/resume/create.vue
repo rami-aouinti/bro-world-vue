@@ -29,8 +29,13 @@ type Experience = {
   city: string
   start: string
   end: string
+  contentStyle?: ExperienceContentStyle
   bullets: string[]
+  timelineEventTitle?: string
+  timelineDateRange?: string
+  timelineDescription?: string
 }
+type ExperienceContentStyle = 'paragraph' | 'bullets' | 'dashes' | 'timeline-note'
 type Education = {
   degree: string
   school: string
@@ -289,6 +294,12 @@ const addSectionOptions = [
   { label: 'Certification', value: 'certification' },
   { label: 'Reference', value: 'reference' },
 ] as const satisfies ReadonlyArray<{ label: string; value: AddSectionType }>
+const experienceContentStyleOptions = [
+  { label: 'Paragraph', value: 'paragraph' },
+  { label: 'Bullets', value: 'bullets' },
+  { label: 'Dashes', value: 'dashes' },
+  { label: 'Timeline note', value: 'timeline-note' },
+] as const satisfies ReadonlyArray<{ label: string; value: ExperienceContentStyle }>
 const sectionVariantLabels: Record<string, string> = {
   detailed: 'Detailed',
   bullets: 'Bullets',
@@ -657,7 +668,20 @@ const sectionItemDialogOpen = ref(false)
 const activeSectionKey = ref<PreviewSectionKey>('experience')
 const activeVariant = ref<SectionLayoutVariant[PreviewSectionKey]>('detailed')
 const sectionItemDraft = reactive({
-  experience: { role: '', company: '', companyImageUrl: '', city: '', start: '', end: '', bullets: '' },
+  experience: {
+    role: '',
+    company: '',
+    city: '',
+    companyImageUrl: '',
+    start: '',
+    end: '',
+    contentStyle: 'paragraph' as ExperienceContentStyle,
+    paragraph: '',
+    lines: '',
+    timelineEventTitle: '',
+    timelineDateRange: '',
+    timelineDescription: '',
+  },
   education: { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' },
   language: { name: '', level: 80, stars: 4, countryCode: '', flag: '' },
   project: { name: '', summary: '', imageUrl: '', repositoryUrl: '' },
@@ -1231,7 +1255,20 @@ function sectionDisplayLabel(sectionKey: PreviewSectionKey) {
 function resetSectionItemDraft(section: PreviewSectionKey) {
   switch (section) {
     case 'experience':
-      sectionItemDraft.experience = { role: '', company: '', companyImageUrl: '', city: '', start: '', end: '', bullets: '' }
+      sectionItemDraft.experience = {
+        role: '',
+        company: '',
+        companyImageUrl: '',
+        city: '',
+        start: '',
+        end: '',
+        contentStyle: 'paragraph',
+        paragraph: '',
+        lines: '',
+        timelineEventTitle: '',
+        timelineDateRange: '',
+        timelineDescription: '',
+      }
       setExperienceLogoError('section-item')
       break
     case 'education':
@@ -1246,6 +1283,43 @@ function resetSectionItemDraft(section: PreviewSectionKey) {
   }
 }
 
+function splitTextToLines(value: string) {
+  return value
+    .split('\n')
+    .map(line => line.trim())
+    .filter(Boolean)
+}
+
+function buildExperienceContentFromDraft(draft: typeof sectionItemDraft.experience) {
+  if (draft.contentStyle === 'timeline-note') {
+    const description = draft.timelineDescription.trim()
+    return {
+      contentStyle: 'timeline-note' as ExperienceContentStyle,
+      bullets: description ? [description] : [],
+      timelineEventTitle: draft.timelineEventTitle.trim(),
+      timelineDateRange: draft.timelineDateRange.trim(),
+      timelineDescription: description,
+    }
+  }
+  if (draft.contentStyle === 'bullets' || draft.contentStyle === 'dashes') {
+    return {
+      contentStyle: draft.contentStyle,
+      bullets: splitTextToLines(draft.lines),
+      timelineEventTitle: '',
+      timelineDateRange: '',
+      timelineDescription: '',
+    }
+  }
+  const paragraph = draft.paragraph.trim()
+  return {
+    contentStyle: 'paragraph' as ExperienceContentStyle,
+    bullets: paragraph ? [paragraph] : [],
+    timelineEventTitle: '',
+    timelineDateRange: '',
+    timelineDescription: '',
+  }
+}
+
 function openSectionItemDialog(section: PreviewSectionKey) {
   activeSectionKey.value = section
   activeVariant.value = sectionLayout.value.find(item => item.key === section)?.variant ?? variantRegistry[section].fallback
@@ -1256,7 +1330,8 @@ function openSectionItemDialog(section: PreviewSectionKey) {
 function submitSectionItemDialog() {
   let item: Record<string, unknown> | null = null
   switch (activeSectionKey.value) {
-    case 'experience':
+    case 'experience': {
+      const experienceContent = buildExperienceContentFromDraft(sectionItemDraft.experience)
       item = {
         role: sectionItemDraft.experience.role,
         company: sectionItemDraft.experience.company,
@@ -1264,12 +1339,10 @@ function submitSectionItemDialog() {
         city: sectionItemDraft.experience.city,
         start: sectionItemDraft.experience.start,
         end: sectionItemDraft.experience.end,
-        bullets: sectionItemDraft.experience.bullets
-          .split('\n')
-          .map(line => line.trim())
-          .filter(Boolean),
+        ...experienceContent,
       }
       break
+    }
     case 'education':
       item = {
         degree: sectionItemDraft.education.degree,
@@ -3597,7 +3670,52 @@ if (import.meta.client) {
               <v-text-field v-model="sectionItemDraft.experience.start" label="Start" variant="outlined" hide-details />
               <v-text-field v-model="sectionItemDraft.experience.end" label="End" variant="outlined" hide-details />
             </div>
-            <v-textarea v-model="sectionItemDraft.experience.bullets" label="Bullets (one per line)" rows="4" variant="outlined" hide-details />
+            <v-select
+              v-model="sectionItemDraft.experience.contentStyle"
+              :items="experienceContentStyleOptions"
+              item-title="label"
+              item-value="value"
+              label="Content style"
+              variant="outlined"
+              hide-details
+            />
+            <v-textarea
+              v-if="sectionItemDraft.experience.contentStyle === 'paragraph'"
+              v-model="sectionItemDraft.experience.paragraph"
+              label="Paragraph"
+              rows="4"
+              variant="outlined"
+              hide-details
+            />
+            <v-textarea
+              v-else-if="sectionItemDraft.experience.contentStyle === 'bullets' || sectionItemDraft.experience.contentStyle === 'dashes'"
+              v-model="sectionItemDraft.experience.lines"
+              :label="sectionItemDraft.experience.contentStyle === 'bullets' ? 'Bullets (one per line)' : 'Dashes (one per line)'"
+              rows="4"
+              variant="outlined"
+              hide-details
+            />
+            <template v-else>
+              <v-text-field
+                v-model="sectionItemDraft.experience.timelineEventTitle"
+                label="Event title"
+                variant="outlined"
+                hide-details
+              />
+              <v-text-field
+                v-model="sectionItemDraft.experience.timelineDateRange"
+                label="Date range"
+                variant="outlined"
+                hide-details
+              />
+              <v-textarea
+                v-model="sectionItemDraft.experience.timelineDescription"
+                label="Short description"
+                rows="3"
+                variant="outlined"
+                hide-details
+              />
+            </template>
           </template>
 
           <template v-else-if="activeSectionKey === 'education'">
