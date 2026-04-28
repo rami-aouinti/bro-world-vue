@@ -62,7 +62,7 @@ const safeVariant = computed<SkillVariant>(() => {
   return 'classic'
 })
 
-function updateText(path: string, value: string) {
+function updateText(path: string, value: unknown) {
   const segments = path.split('.')
   const last = segments.pop()
   if (!last) return
@@ -78,6 +78,14 @@ function updateText(path: string, value: string) {
 
 function levelToDots(level: number | string) {
   return `${'●'.repeat(levelToStars(level))}${'○'.repeat(5 - levelToStars(level))}`
+}
+
+function removeSkill(index: number) {
+  const skills = Array.isArray(props.resume.skills) ? props.resume.skills : []
+  updateText(
+    'skills',
+    skills.filter((_: unknown, itemIndex: number) => itemIndex !== index),
+  )
 }
 </script>
 
@@ -133,6 +141,18 @@ function levelToDots(level: number | string) {
         <div class="progress text-dark">
           <i :style="{ width: `${levelToPercent(skill.level)}%` }" />
         </div>
+        <v-btn
+          v-if="editable"
+          class="resume-item-delete"
+          icon
+          size="x-small"
+          variant="text"
+          color="error"
+          aria-label="Supprimer cette compétence"
+          @click="removeSkill(index)"
+        >
+          <v-icon icon="mdi-close" size="14" />
+        </v-btn>
       </li>
     </ul>
 
@@ -154,6 +174,18 @@ function levelToDots(level: number | string) {
           >{{ skill.name }}</span
         >
         <small class="text-dark mx-3">{{ levelToText(skill.level) }} </small>
+        <v-btn
+          v-if="editable"
+          class="resume-item-delete"
+          icon
+          size="x-small"
+          variant="text"
+          color="error"
+          aria-label="Supprimer cette compétence"
+          @click="removeSkill(index)"
+        >
+          <v-icon icon="mdi-close" size="14" />
+        </v-btn>
       </li>
     </ul>
 
@@ -178,6 +210,18 @@ function levelToDots(level: number | string) {
         <small class="text-dark">{{
           `${'★'.repeat(levelToStars(skill.level))}${'☆'.repeat(5 - levelToStars(skill.level))}`
         }}</small>
+        <v-btn
+          v-if="editable"
+          class="resume-item-delete"
+          icon
+          size="x-small"
+          variant="text"
+          color="error"
+          aria-label="Supprimer cette compétence"
+          @click="removeSkill(index)"
+        >
+          <v-icon icon="mdi-close" size="14" />
+        </v-btn>
       </li>
     </ul>
 
@@ -206,6 +250,18 @@ function levelToDots(level: number | string) {
           class="mr-3"
         />
         <small class="text-dark">{{ levelToDots(skill.level) }}</small>
+        <v-btn
+          v-if="editable"
+          class="resume-item-delete"
+          icon
+          size="x-small"
+          variant="text"
+          color="error"
+          aria-label="Supprimer cette compétence"
+          @click="removeSkill(index)"
+        >
+          <v-icon icon="mdi-close" size="14" />
+        </v-btn>
       </li>
     </ul>
   </section>
@@ -253,6 +309,19 @@ function levelToDots(level: number | string) {
   padding: var(--rs-card-padding, 0);
   border-left: var(--rs-entry-border-left, none);
   padding-left: var(--rs-entry-padding-left, 0);
+}
+.resume-item-delete {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease;
+}
+.bars li:hover .resume-item-delete,
+.bars li:focus-within .resume-item-delete {
+  opacity: 1;
+  pointer-events: auto;
 }
 .bars li:last-child {
   margin-bottom: 0;

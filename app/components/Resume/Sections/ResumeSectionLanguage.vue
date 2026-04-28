@@ -61,7 +61,7 @@ const safeVariant = computed<
   }
   return 'classic'
 })
-function updateText(path: string, value: string) {
+function updateText(path: string, value: unknown) {
   const segments = path.split('.')
   const last = segments.pop()
   if (!last) return
@@ -88,6 +88,16 @@ function resolveLanguageFlag(language: Record<string, unknown>) {
   const countryCode = String(language.countryCode || '').trim()
   const emojiFlag = toFlagEmoji(countryCode)
   return emojiFlag || ''
+}
+
+function removeLanguage(index: number) {
+  const languages = Array.isArray(props.resume.languages)
+    ? props.resume.languages
+    : []
+  updateText(
+    'languages',
+    languages.filter((_: unknown, itemIndex: number) => itemIndex !== index),
+  )
 }
 </script>
 <template>
@@ -135,6 +145,18 @@ function resolveLanguageFlag(language: Record<string, unknown>) {
           "
           >{{ language.name }}</span
         >
+        <v-btn
+          v-if="editable"
+          class="resume-item-delete"
+          icon
+          size="x-small"
+          variant="text"
+          color="error"
+          aria-label="Supprimer cette langue"
+          @click="removeLanguage(index)"
+        >
+          <v-icon icon="mdi-close" size="14" />
+        </v-btn>
       </li>
     </ul>
     <ul v-else-if="safeVariant === 'stars'" class="bars">
@@ -163,6 +185,18 @@ function resolveLanguageFlag(language: Record<string, unknown>) {
           color="amber"
           size="16"
         />
+        <v-btn
+          v-if="editable"
+          class="resume-item-delete"
+          icon
+          size="x-small"
+          variant="text"
+          color="error"
+          aria-label="Supprimer cette langue"
+          @click="removeLanguage(index)"
+        >
+          <v-icon icon="mdi-close" size="14" />
+        </v-btn>
       </li>
     </ul>
     <ul v-else-if="safeVariant === 'progress'" class="bars">
@@ -188,6 +222,18 @@ function resolveLanguageFlag(language: Record<string, unknown>) {
         <div class="progress">
           <i :style="{ width: `${levelToPercent(language.level)}%` }" />
         </div>
+        <v-btn
+          v-if="editable"
+          class="resume-item-delete"
+          icon
+          size="x-small"
+          variant="text"
+          color="error"
+          aria-label="Supprimer cette langue"
+          @click="removeLanguage(index)"
+        >
+          <v-icon icon="mdi-close" size="14" />
+        </v-btn>
       </li>
     </ul>
     <ul v-else class="bars">
@@ -235,6 +281,18 @@ function resolveLanguageFlag(language: Record<string, unknown>) {
           }}</small>
           <small v-else>{{ levelToText(language.level) }}</small>
         </div>
+        <v-btn
+          v-if="editable"
+          class="resume-item-delete"
+          icon
+          size="x-small"
+          variant="text"
+          color="error"
+          aria-label="Supprimer cette langue"
+          @click="removeLanguage(index)"
+        >
+          <v-icon icon="mdi-close" size="14" />
+        </v-btn>
       </li>
     </ul>
   </section>
@@ -278,6 +336,19 @@ function resolveLanguageFlag(language: Record<string, unknown>) {
   padding: var(--rs-card-padding, 0);
   border-left: var(--rs-entry-border-left, none);
   padding-left: var(--rs-entry-padding-left, 0);
+}
+.resume-item-delete {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease;
+}
+.bars li:hover .resume-item-delete,
+.bars li:focus-within .resume-item-delete {
+  opacity: 1;
+  pointer-events: auto;
 }
 .bars li::before {
   content: '';

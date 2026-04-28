@@ -58,7 +58,7 @@ const iconStyle = computed(() => ({
   '--resume-section-icon-gap': `${props.sectionIconStyle?.spacing ?? 8}px`,
 }))
 
-function updateText(path: string, value: string) {
+function updateText(path: string, value: unknown) {
   const segments = path.split('.')
   const last = segments.pop()
   if (!last) return
@@ -68,6 +68,16 @@ function updateText(path: string, value: string) {
     target = target[segment]
   }
   target[last] = value
+}
+
+function removeCertification(index: number) {
+  const courses = Array.isArray(props.resume.courses)
+    ? props.resume.courses
+    : []
+  updateText(
+    'courses',
+    courses.filter((_: unknown, itemIndex: number) => itemIndex !== index),
+  )
 }
 </script>
 
@@ -137,6 +147,18 @@ function updateText(path: string, value: string) {
           "
           >{{ course.school }}</small
         >
+        <v-btn
+          v-if="editable"
+          class="resume-item-delete"
+          icon
+          size="x-small"
+          variant="text"
+          color="error"
+          aria-label="Supprimer cette certification"
+          @click="removeCertification(index)"
+        >
+          <v-icon icon="mdi-close" size="14" />
+        </v-btn>
       </li>
     </ul>
   </section>
@@ -179,6 +201,20 @@ function updateText(path: string, value: string) {
 }
 .entry-list li {
   margin-bottom: var(--entry-gap, var(--cv-space-2, 8px));
+  position: relative;
+}
+.resume-item-delete {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease;
+}
+.entry-list li:hover .resume-item-delete,
+.entry-list li:focus-within .resume-item-delete {
+  opacity: 1;
+  pointer-events: auto;
 }
 .entry-list li:last-child {
   margin-bottom: 0;

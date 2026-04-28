@@ -80,7 +80,7 @@ const contentStyles = computed(() =>
   ),
 )
 
-function updateText(path: string, value: string) {
+function updateText(path: string, value: unknown) {
   const segments = path.split('.')
   const last = segments.pop()
   if (!last) return
@@ -134,6 +134,16 @@ function onCompanyLogoError(index: number, companyImageUrl?: unknown) {
   if (!normalizedUrl) return
   brokenLogoByKey[logoKey(index, normalizedUrl)] = true
 }
+
+function removeExperience(index: number) {
+  const experiences = Array.isArray(props.resume.experiences)
+    ? props.resume.experiences
+    : []
+  updateText(
+    'experiences',
+    experiences.filter((_: unknown, itemIndex: number) => itemIndex !== index),
+  )
+}
 </script>
 
 <template>
@@ -176,6 +186,18 @@ function onCompanyLogoError(index: number, companyImageUrl?: unknown) {
       :key="`${experience.company}-${index}`"
       class="entry text-dark"
     >
+      <v-btn
+        v-if="editable"
+        class="resume-item-delete"
+        icon
+        size="x-small"
+        variant="text"
+        color="error"
+        aria-label="Supprimer cette expérience"
+        @click="removeExperience(index)"
+      >
+        <v-icon icon="mdi-close" size="14" />
+      </v-btn>
       <div class="date-column dates">
         <h4 class="text-dark experience-heading">
           <span
@@ -452,6 +474,19 @@ function onCompanyLogoError(index: number, companyImageUrl?: unknown) {
 }
 .entry:last-child {
   margin-bottom: 0;
+}
+.resume-item-delete {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease;
+}
+.entry:hover .resume-item-delete,
+.entry:focus-within .resume-item-delete {
+  opacity: 1;
+  pointer-events: auto;
 }
 .date-column {
   color: color-mix(in srgb, var(--cv-text, currentColor) 78%, transparent);
