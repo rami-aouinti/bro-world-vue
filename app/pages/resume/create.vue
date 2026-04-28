@@ -22,6 +22,8 @@ definePageMeta({
 
 type Skill = { name: string; level: number }
 type Language = { name: string; level: number; countryCode?: string; flag?: string }
+type ContentStyle = 'points' | 'dashes' | 'timeline'
+type TimelineEvent = { label: string; detail: string }
 type Experience = {
   role: string
   company: string
@@ -31,6 +33,10 @@ type Experience = {
   end: string
   contentStyle?: ExperienceContentStyle
   bullets: string[]
+  contentStyle?: ContentStyle
+  points?: string[]
+  dashes?: string[]
+  timelineEvents?: TimelineEvent[]
   timelineEventTitle?: string
   timelineDateRange?: string
   timelineDescription?: string
@@ -44,6 +50,10 @@ type Education = {
   start: string
   end: string
   note: string
+  contentStyle?: ContentStyle
+  points?: string[]
+  dashes?: string[]
+  timelineEvents?: TimelineEvent[]
 }
 type Reference = {
   name: string
@@ -63,6 +73,10 @@ type Project = {
   imageUrl?: string
   repositoryUrl?: string
   repositoryProvider?: 'github' | 'gitlab' | 'other'
+  contentStyle?: ContentStyle
+  points?: string[]
+  dashes?: string[]
+  timelineEvents?: TimelineEvent[]
 }
 type StructuredUser = {
   fullName?: string
@@ -485,7 +499,13 @@ const resume = reactive<ResumeModel>({
       city: 'New York',
       start: 'JAN 2018',
       end: 'DEC 2020',
+      contentStyle: 'points',
       bullets: [
+        'Offered literary suggestions based on customer needs and preferences.',
+        'Followed directions from supervisors and managed projects with precision.',
+        'Organized books and adhered to bookstore policies and standards.',
+      ],
+      points: [
         'Offered literary suggestions based on customer needs and preferences.',
         'Followed directions from supervisors and managed projects with precision.',
         'Organized books and adhered to bookstore policies and standards.',
@@ -498,7 +518,13 @@ const resume = reactive<ResumeModel>({
       city: 'New York',
       start: 'JAN 2016',
       end: 'DEC 2017',
+      contentStyle: 'points',
       bullets: [
+        'Assisted senior editors with clerical and administrative tasks.',
+        'Suggested story ideas and supported content planning meetings.',
+        'Ran spellchecks and edited stories before publication.',
+      ],
+      points: [
         'Assisted senior editors with clerical and administrative tasks.',
         'Suggested story ideas and supported content planning meetings.',
         'Ran spellchecks and edited stories before publication.',
@@ -513,6 +539,8 @@ const resume = reactive<ResumeModel>({
       start: 'AUG 2016',
       end: 'AUG 2021',
       note: 'Working towards a Communications Degree.',
+      contentStyle: 'points',
+      points: ['Working towards a Communications Degree.'],
     },
     {
       degree: 'High School Diploma',
@@ -521,6 +549,8 @@ const resume = reactive<ResumeModel>({
       start: 'SEPT 2012',
       end: 'MAY 2016',
       note: 'Graduated with High Honors.',
+      contentStyle: 'points',
+      points: ['Graduated with High Honors.'],
     },
   ] as Education[],
   references: [
@@ -558,6 +588,8 @@ const resume = reactive<ResumeModel>({
         'Led content calendar and boosted monthly newsletter open rate by 32%.',
       repositoryUrl: 'https://github.com/example/campus-editorial-newsletter',
       repositoryProvider: 'github',
+      contentStyle: 'points',
+      points: ['Led content calendar and boosted monthly newsletter open rate by 32%.'],
     },
     {
       name: 'Student Podcast Launch',
@@ -565,6 +597,8 @@ const resume = reactive<ResumeModel>({
         'Created scripts and episode communication plan for a 10-episode launch.',
       repositoryUrl: 'https://gitlab.com/example/student-podcast-launch',
       repositoryProvider: 'gitlab',
+      contentStyle: 'points',
+      points: ['Created scripts and episode communication plan for a 10-episode launch.'],
     },
   ] as Project[],
 })
@@ -668,6 +702,8 @@ const sectionItemDialogOpen = ref(false)
 const activeSectionKey = ref<PreviewSectionKey>('experience')
 const activeVariant = ref<SectionLayoutVariant[PreviewSectionKey]>('detailed')
 const sectionItemDraft = reactive({
+  experience: { role: '', company: '', city: '', start: '', end: '', bullets: '', contentStyle: 'points' as ContentStyle },
+  education: { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '', contentStyle: 'points' as ContentStyle },
   experience: {
     role: '',
     company: '',
@@ -684,16 +720,18 @@ const sectionItemDraft = reactive({
   },
   education: { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' },
   language: { name: '', level: 80, stars: 4, countryCode: '', flag: '' },
-  project: { name: '', summary: '', imageUrl: '', repositoryUrl: '' },
+  project: { name: '', summary: '', imageUrl: '', repositoryUrl: '', contentStyle: 'points' as ContentStyle },
 })
 const addSectionDraft = reactive({
   profile: { profile: '' },
+  experience: { role: '', company: '', city: '', start: '', end: '', bullets: '', contentStyle: 'points' as ContentStyle },
+  education: { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '', contentStyle: 'points' as ContentStyle },
   experience: { role: '', company: '', companyImageUrl: '', city: '', start: '', end: '', bullets: '' },
   education: { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' },
   skill: { name: '', level: 80 },
   language: { name: '', level: 80, countryCode: '', flag: '' },
   hobby: { name: '' },
-  project: { name: '', summary: '', imageUrl: '', repositoryUrl: '' },
+  project: { name: '', summary: '', imageUrl: '', repositoryUrl: '', contentStyle: 'points' as ContentStyle },
   certification: { title: '', school: '', start: '', end: '' },
   reference: { name: '', company: '', email: '', phone: '' },
 })
@@ -904,15 +942,97 @@ function saveSignature() {
   signatureDialogOpen.value = false
 }
 
-function setExperienceBullets(index: number, value: string) {
-  resume.experiences[index].bullets = value
+function parseMultilineList(value: string) {
+  return value
     .split('\n')
-    .map((item) => item.trim())
+    .map(item => item.trim())
     .filter(Boolean)
 }
 
+function parseTimelineEvents(value: string): TimelineEvent[] {
+  return parseMultilineList(value).map((line) => {
+    const [label, ...detailParts] = line.split('|')
+    if (detailParts.length === 0) {
+      const [fallbackLabel, ...fallbackDetailParts] = line.split(':')
+      if (fallbackDetailParts.length === 0) {
+        return { label: '', detail: line }
+      }
+      return { label: fallbackLabel.trim(), detail: fallbackDetailParts.join(':').trim() }
+    }
+    return { label: label.trim(), detail: detailParts.join('|').trim() }
+  })
+}
+
+function applyContentFields(
+  model: { contentStyle?: ContentStyle; points?: string[]; dashes?: string[]; timelineEvents?: TimelineEvent[] },
+  rawMultiline: string,
+) {
+  const parsedLines = parseMultilineList(rawMultiline)
+  const parsedTimelineEvents = parseTimelineEvents(rawMultiline)
+  model.points = model.contentStyle === 'points' ? parsedLines : []
+  model.dashes = model.contentStyle === 'dashes' ? parsedLines : []
+  model.timelineEvents = model.contentStyle === 'timeline' ? parsedTimelineEvents : []
+}
+
+function setExperienceBullets(index: number, value: string) {
+  const experience = resume.experiences[index]
+  const parsedLines = parseMultilineList(value)
+  experience.bullets = parsedLines
+  if (!experience.contentStyle || experience.contentStyle === 'points') {
+    experience.contentStyle = 'points'
+    experience.points = parsedLines
+  }
+  if (experience.contentStyle === 'dashes') {
+    experience.dashes = parsedLines
+  }
+  if (experience.contentStyle === 'timeline') {
+    experience.timelineEvents = parseTimelineEvents(value)
+  }
+}
+
 const getExperienceBullets = (index: number) =>
-  resume.experiences[index].bullets.join('\n')
+  (resume.experiences[index].contentStyle === 'timeline'
+    ? (resume.experiences[index].timelineEvents || [])
+      .map(event => [event.label, event.detail].filter(Boolean).join(' | '))
+      .join('\n')
+    : (resume.experiences[index].contentStyle === 'dashes'
+      ? (resume.experiences[index].dashes || [])
+      : (resume.experiences[index].points?.length ? resume.experiences[index].points : resume.experiences[index].bullets)
+    ).join('\n'))
+
+function setEducationContent(index: number, value: string) {
+  const education = resume.education[index]
+  education.note = value
+  if (!education.contentStyle) education.contentStyle = 'points'
+  applyContentFields(education, value)
+}
+
+function getEducationContent(index: number) {
+  const education = resume.education[index]
+  if (education.contentStyle === 'timeline') {
+    return (education.timelineEvents || []).map(event => [event.label, event.detail].filter(Boolean).join(' | ')).join('\n')
+  }
+  if (education.contentStyle === 'dashes') return (education.dashes || []).join('\n')
+  if (education.points?.length) return education.points.join('\n')
+  return education.note
+}
+
+function setProjectContent(index: number, value: string) {
+  const project = resume.projects[index]
+  project.summary = value
+  if (!project.contentStyle) project.contentStyle = 'points'
+  applyContentFields(project, value)
+}
+
+function getProjectContent(index: number) {
+  const project = resume.projects[index]
+  if (project.contentStyle === 'timeline') {
+    return (project.timelineEvents || []).map(event => [event.label, event.detail].filter(Boolean).join(' | ')).join('\n')
+  }
+  if (project.contentStyle === 'dashes') return (project.dashes || []).join('\n')
+  if (project.points?.length) return project.points.join('\n')
+  return project.summary
+}
 
 function addExperience() {
   resume.experiences.push({
@@ -922,7 +1042,11 @@ function addExperience() {
     city: '',
     start: '',
     end: '',
+    contentStyle: 'points',
     bullets: [],
+    points: [],
+    dashes: [],
+    timelineEvents: [],
   })
 }
 
@@ -1040,6 +1164,10 @@ function addEducation() {
     start: '',
     end: '',
     note: '',
+    contentStyle: 'points',
+    points: [],
+    dashes: [],
+    timelineEvents: [],
   })
 }
 
@@ -1092,6 +1220,10 @@ function addProject() {
     imageUrl: '',
     repositoryUrl: '',
     repositoryProvider: undefined,
+    contentStyle: 'points',
+    points: [],
+    dashes: [],
+    timelineEvents: [],
   })
 }
 
@@ -1144,11 +1276,12 @@ function resetSectionDraft(section: AddSectionType) {
       addSectionDraft.profile = { profile: '' }
       break
     case 'experience':
+      addSectionDraft.experience = { role: '', company: '', city: '', start: '', end: '', bullets: '', contentStyle: 'points' }
       addSectionDraft.experience = { role: '', company: '', companyImageUrl: '', city: '', start: '', end: '', bullets: '' }
       setExperienceLogoError('add-section')
       break
     case 'education':
-      addSectionDraft.education = { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' }
+      addSectionDraft.education = { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '', contentStyle: 'points' }
       break
     case 'skill':
       addSectionDraft.skill = { name: '', level: 80 }
@@ -1160,7 +1293,7 @@ function resetSectionDraft(section: AddSectionType) {
       addSectionDraft.hobby = { name: '' }
       break
     case 'project':
-      addSectionDraft.project = { name: '', summary: '', imageUrl: '', repositoryUrl: '' }
+      addSectionDraft.project = { name: '', summary: '', imageUrl: '', repositoryUrl: '', contentStyle: 'points' }
       break
     case 'certification':
       addSectionDraft.certification = { title: '', school: '', start: '', end: '' }
@@ -1184,21 +1317,24 @@ function submitAddSection() {
       resume.profile = addSectionDraft.profile.profile.trim()
       break
     case 'experience':
-      resume.experiences.push({
+      {
+        const experience: Experience = {
         role: addSectionDraft.experience.role,
         company: addSectionDraft.experience.company,
         companyImageUrl: addSectionDraft.experience.companyImageUrl?.trim(),
         city: addSectionDraft.experience.city,
         start: addSectionDraft.experience.start,
         end: addSectionDraft.experience.end,
-        bullets: addSectionDraft.experience.bullets
-          .split('\n')
-          .map(line => line.trim())
-          .filter(Boolean),
-      })
+        bullets: parseMultilineList(addSectionDraft.experience.bullets),
+        contentStyle: addSectionDraft.experience.contentStyle,
+      }
+        applyContentFields(experience, addSectionDraft.experience.bullets)
+        resume.experiences.push(experience)
+      }
       break
     case 'education':
-      resume.education.push({
+      {
+        const education: Education = {
         degree: addSectionDraft.education.degree,
         school: addSectionDraft.education.school,
         schoolImageUrl: addSectionDraft.education.schoolImageUrl.trim(),
@@ -1206,7 +1342,11 @@ function submitAddSection() {
         start: addSectionDraft.education.start,
         end: addSectionDraft.education.end,
         note: addSectionDraft.education.note,
-      })
+        contentStyle: addSectionDraft.education.contentStyle,
+      }
+        applyContentFields(education, addSectionDraft.education.note)
+        resume.education.push(education)
+      }
       break
     case 'skill':
       resume.skills.push({ ...addSectionDraft.skill })
@@ -1220,10 +1360,14 @@ function submitAddSection() {
       }
       break
     case 'project':
-      resume.projects.push({
+      {
+        const project: Project = {
         ...addSectionDraft.project,
         repositoryProvider: detectRepositoryProvider(addSectionDraft.project.repositoryUrl),
-      })
+      }
+        applyContentFields(project, addSectionDraft.project.summary)
+        resume.projects.push(project)
+      }
       break
     case 'certification':
       resume.courses.push({ ...addSectionDraft.certification })
@@ -1255,6 +1399,7 @@ function sectionDisplayLabel(sectionKey: PreviewSectionKey) {
 function resetSectionItemDraft(section: PreviewSectionKey) {
   switch (section) {
     case 'experience':
+      sectionItemDraft.experience = { role: '', company: '', city: '', start: '', end: '', bullets: '', contentStyle: 'points' }
       sectionItemDraft.experience = {
         role: '',
         company: '',
@@ -1272,13 +1417,13 @@ function resetSectionItemDraft(section: PreviewSectionKey) {
       setExperienceLogoError('section-item')
       break
     case 'education':
-      sectionItemDraft.education = { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' }
+      sectionItemDraft.education = { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '', contentStyle: 'points' }
       break
     case 'language':
       sectionItemDraft.language = { name: '', level: 80, stars: 4, countryCode: '', flag: '' }
       break
     case 'project':
-      sectionItemDraft.project = { name: '', summary: '', imageUrl: '', repositoryUrl: '' }
+      sectionItemDraft.project = { name: '', summary: '', imageUrl: '', repositoryUrl: '', contentStyle: 'points' }
       break
   }
 }
@@ -1330,6 +1475,9 @@ function openSectionItemDialog(section: PreviewSectionKey) {
 function submitSectionItemDialog() {
   let item: Record<string, unknown> | null = null
   switch (activeSectionKey.value) {
+    case 'experience':
+      {
+        const experience: Experience = {
     case 'experience': {
       const experienceContent = buildExperienceContentFromDraft(sectionItemDraft.experience)
       item = {
@@ -1339,12 +1487,18 @@ function submitSectionItemDialog() {
         city: sectionItemDraft.experience.city,
         start: sectionItemDraft.experience.start,
         end: sectionItemDraft.experience.end,
+        bullets: parseMultilineList(sectionItemDraft.experience.bullets),
+        contentStyle: sectionItemDraft.experience.contentStyle,
+      }
+        applyContentFields(experience, sectionItemDraft.experience.bullets)
+        item = experience
         ...experienceContent,
       }
       break
     }
     case 'education':
-      item = {
+      {
+        const education: Education = {
         degree: sectionItemDraft.education.degree,
         school: sectionItemDraft.education.school,
         schoolImageUrl: sectionItemDraft.education.schoolImageUrl.trim(),
@@ -1352,6 +1506,10 @@ function submitSectionItemDialog() {
         start: sectionItemDraft.education.start,
         end: sectionItemDraft.education.end,
         note: sectionItemDraft.education.note,
+        contentStyle: sectionItemDraft.education.contentStyle,
+      }
+        applyContentFields(education, sectionItemDraft.education.note)
+        item = education
       }
       break
     case 'language':
@@ -1365,12 +1523,17 @@ function submitSectionItemDialog() {
       }
       break
     case 'project':
-      item = {
+      {
+        const project: Project = {
         name: sectionItemDraft.project.name,
         summary: sectionItemDraft.project.summary,
         imageUrl: sectionItemDraft.project.imageUrl.trim(),
         repositoryUrl: sectionItemDraft.project.repositoryUrl.trim(),
         repositoryProvider: detectRepositoryProvider(sectionItemDraft.project.repositoryUrl.trim()),
+        contentStyle: sectionItemDraft.project.contentStyle,
+      }
+        applyContentFields(project, sectionItemDraft.project.summary)
+        item = project
       }
       break
   }
@@ -1854,10 +2017,9 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
       city: '',
       start: normalizeDateLabel(experience.startDate),
       end: normalizeDateLabel(experience.endDate),
-      bullets: String(experience.description || '')
-        .split(/\n|•|-/g)
-        .map((bullet) => bullet.trim())
-        .filter(Boolean),
+      bullets: String(experience.description || '').split(/\n|•|-/g).map((bullet) => bullet.trim()).filter(Boolean),
+      contentStyle: 'points',
+      points: String(experience.description || '').split(/\n|•|-/g).map((bullet) => bullet.trim()).filter(Boolean),
     }))
   }
 
@@ -1870,6 +2032,8 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
       start: normalizeDateLabel(education.startDate),
       end: normalizeDateLabel(education.endDate),
       note: String(education.description || ''),
+      contentStyle: 'points',
+      points: parseMultilineList(String(education.description || '')),
     }))
   }
 
@@ -1888,6 +2052,8 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
       summary: String(project.description || ''),
       repositoryUrl: String(project.link || ''),
       repositoryProvider: detectRepositoryProvider(String(project.link || '')),
+      contentStyle: 'points',
+      points: parseMultilineList(String(project.description || '')),
     }))
   }
 
@@ -2626,9 +2792,21 @@ if (import.meta.client) {
                     hide-details
                 /></v-col>
                 <v-col cols="12" md="10">
+                  <v-select
+                    v-model="experience.contentStyle"
+                    :items="[
+                      { title: 'Points', value: 'points' },
+                      { title: 'Dashes', value: 'dashes' },
+                      { title: 'Timeline', value: 'timeline' },
+                    ]"
+                    label="Content style"
+                    variant="outlined"
+                    hide-details
+                    class="mb-2"
+                  />
                   <v-textarea
                     :model-value="getExperienceBullets(index)"
-                    label="Bullets (1 line = 1 bullet)"
+                    label="Content (1 line = 1 item, timeline: Label | Detail)"
                     rows="8"
                     variant="outlined"
                     hide-details
@@ -2748,12 +2926,24 @@ if (import.meta.client) {
                     hide-details
                 /></v-col>
                 <v-col cols="12" md="10"
-                  ><v-textarea
-                    v-model="item.note"
-                    label="Note"
+                  ><v-select
+                    v-model="item.contentStyle"
+                    :items="[
+                      { title: 'Points', value: 'points' },
+                      { title: 'Dashes', value: 'dashes' },
+                      { title: 'Timeline', value: 'timeline' },
+                    ]"
+                    label="Content style"
+                    variant="outlined"
+                    hide-details
+                    class="mb-2"
+                  /><v-textarea
+                    :model-value="getEducationContent(index)"
+                    label="Content (1 line = 1 item, timeline: Label | Detail)"
                     rows="8"
                     variant="outlined"
                     hide-details
+                    @update:model-value="(value) => setEducationContent(index, String(value))"
                 /></v-col>
                 <v-col cols="12" md="2" class="d-flex align-center">
                   <div class="d-flex flex-column ga-1">
@@ -2947,7 +3137,26 @@ if (import.meta.client) {
                   <v-text-field v-model="project.name" label="Project name" variant="outlined" hide-details />
                 </v-col>
                 <v-col cols="12" md="8">
-                  <v-text-field v-model="project.summary" label="Summary / impact" variant="outlined" hide-details />
+                  <v-select
+                    v-model="project.contentStyle"
+                    :items="[
+                      { title: 'Points', value: 'points' },
+                      { title: 'Dashes', value: 'dashes' },
+                      { title: 'Timeline', value: 'timeline' },
+                    ]"
+                    label="Content style"
+                    variant="outlined"
+                    hide-details
+                    class="mb-2"
+                  />
+                  <v-textarea
+                    :model-value="getProjectContent(index)"
+                    label="Summary / impact (1 line = 1 item, timeline: Label | Detail)"
+                    rows="4"
+                    variant="outlined"
+                    hide-details
+                    @update:model-value="(value) => setProjectContent(index, String(value))"
+                  />
                 </v-col>
                 <v-col cols="12" md="6">
                   <v-text-field v-model="project.imageUrl" label="Image URL (optional)" variant="outlined" hide-details />
@@ -3548,7 +3757,18 @@ if (import.meta.client) {
               <v-text-field v-model="addSectionDraft.experience.start" label="Start" variant="outlined" hide-details />
               <v-text-field v-model="addSectionDraft.experience.end" label="End" variant="outlined" hide-details />
             </div>
-            <v-textarea v-model="addSectionDraft.experience.bullets" label="Bullets (one per line)" rows="4" variant="outlined" hide-details />
+            <v-select
+              v-model="addSectionDraft.experience.contentStyle"
+              :items="[
+                { title: 'Points', value: 'points' },
+                { title: 'Dashes', value: 'dashes' },
+                { title: 'Timeline', value: 'timeline' },
+              ]"
+              label="Content style"
+              variant="outlined"
+              hide-details
+            />
+            <v-textarea v-model="addSectionDraft.experience.bullets" label="Content (one per line, timeline: Label | Detail)" rows="4" variant="outlined" hide-details />
           </template>
 
           <template v-else-if="addSectionType === 'education'">
@@ -3575,7 +3795,18 @@ if (import.meta.client) {
               <v-text-field v-model="addSectionDraft.education.start" label="Start" variant="outlined" hide-details />
               <v-text-field v-model="addSectionDraft.education.end" label="End" variant="outlined" hide-details />
             </div>
-            <v-textarea v-model="addSectionDraft.education.note" label="Note" rows="3" variant="outlined" hide-details />
+            <v-select
+              v-model="addSectionDraft.education.contentStyle"
+              :items="[
+                { title: 'Points', value: 'points' },
+                { title: 'Dashes', value: 'dashes' },
+                { title: 'Timeline', value: 'timeline' },
+              ]"
+              label="Content style"
+              variant="outlined"
+              hide-details
+            />
+            <v-textarea v-model="addSectionDraft.education.note" label="Content (one per line, timeline: Label | Detail)" rows="3" variant="outlined" hide-details />
           </template>
 
           <template v-else-if="addSectionType === 'skill'">
@@ -3596,7 +3827,18 @@ if (import.meta.client) {
 
           <template v-else-if="addSectionType === 'project'">
             <v-text-field v-model="addSectionDraft.project.name" label="Project name" variant="outlined" hide-details />
-            <v-textarea v-model="addSectionDraft.project.summary" label="Project summary" rows="4" variant="outlined" hide-details />
+            <v-select
+              v-model="addSectionDraft.project.contentStyle"
+              :items="[
+                { title: 'Points', value: 'points' },
+                { title: 'Dashes', value: 'dashes' },
+                { title: 'Timeline', value: 'timeline' },
+              ]"
+              label="Content style"
+              variant="outlined"
+              hide-details
+            />
+            <v-textarea v-model="addSectionDraft.project.summary" label="Project content (one per line, timeline: Label | Detail)" rows="4" variant="outlined" hide-details />
             <v-text-field v-model="addSectionDraft.project.imageUrl" label="Image URL (optional)" variant="outlined" hide-details />
             <v-text-field
               v-model="addSectionDraft.project.repositoryUrl"
@@ -3672,6 +3914,11 @@ if (import.meta.client) {
             </div>
             <v-select
               v-model="sectionItemDraft.experience.contentStyle"
+              :items="[
+                { title: 'Points', value: 'points' },
+                { title: 'Dashes', value: 'dashes' },
+                { title: 'Timeline', value: 'timeline' },
+              ]"
               :items="experienceContentStyleOptions"
               item-title="label"
               item-value="value"
@@ -3679,6 +3926,7 @@ if (import.meta.client) {
               variant="outlined"
               hide-details
             />
+            <v-textarea v-model="sectionItemDraft.experience.bullets" label="Content (one per line, timeline: Label | Detail)" rows="4" variant="outlined" hide-details />
             <v-textarea
               v-if="sectionItemDraft.experience.contentStyle === 'paragraph'"
               v-model="sectionItemDraft.experience.paragraph"
@@ -3742,7 +3990,18 @@ if (import.meta.client) {
               <v-text-field v-model="sectionItemDraft.education.start" label="Start" variant="outlined" hide-details />
               <v-text-field v-model="sectionItemDraft.education.end" label="End" variant="outlined" hide-details />
             </div>
-            <v-textarea v-model="sectionItemDraft.education.note" label="Note" rows="3" variant="outlined" hide-details />
+            <v-select
+              v-model="sectionItemDraft.education.contentStyle"
+              :items="[
+                { title: 'Points', value: 'points' },
+                { title: 'Dashes', value: 'dashes' },
+                { title: 'Timeline', value: 'timeline' },
+              ]"
+              label="Content style"
+              variant="outlined"
+              hide-details
+            />
+            <v-textarea v-model="sectionItemDraft.education.note" label="Content (one per line, timeline: Label | Detail)" rows="3" variant="outlined" hide-details />
           </template>
 
           <template v-else-if="activeSectionKey === 'language'">
@@ -3769,7 +4028,18 @@ if (import.meta.client) {
 
           <template v-else-if="activeSectionKey === 'project'">
             <v-text-field v-model="sectionItemDraft.project.name" label="Project name" variant="outlined" hide-details />
-            <v-textarea v-model="sectionItemDraft.project.summary" label="Project summary" rows="4" variant="outlined" hide-details />
+            <v-select
+              v-model="sectionItemDraft.project.contentStyle"
+              :items="[
+                { title: 'Points', value: 'points' },
+                { title: 'Dashes', value: 'dashes' },
+                { title: 'Timeline', value: 'timeline' },
+              ]"
+              label="Content style"
+              variant="outlined"
+              hide-details
+            />
+            <v-textarea v-model="sectionItemDraft.project.summary" label="Project content (one per line, timeline: Label | Detail)" rows="4" variant="outlined" hide-details />
             <v-text-field
               v-model="sectionItemDraft.project.imageUrl"
               label="Image URL (optional)"

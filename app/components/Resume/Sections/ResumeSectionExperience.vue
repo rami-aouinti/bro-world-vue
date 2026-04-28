@@ -71,6 +71,24 @@ function updateText(path: string, value: string) {
   target[last] = value
 }
 
+function resolveContentStyle(item: Record<string, unknown>) {
+  return item.contentStyle === 'dashes' || item.contentStyle === 'timeline' ? item.contentStyle : 'points'
+}
+
+function resolvePoints(item: Record<string, unknown>) {
+  if (Array.isArray(item.points) && item.points.length) return item.points
+  if (Array.isArray(item.bullets) && item.bullets.length) return item.bullets
+  return []
+}
+
+function resolveDashes(item: Record<string, unknown>) {
+  if (Array.isArray(item.dashes) && item.dashes.length) return item.dashes
+  return resolvePoints(item)
+}
+
+function resolveTimelineEvents(item: Record<string, unknown>) {
+  if (Array.isArray(item.timelineEvents) && item.timelineEvents.length) return item.timelineEvents
+  return resolvePoints(item).map(detail => ({ label: '', detail }))
 function logoKey(index: number, url: string) {
   return `${index}-${url}`
 }
@@ -118,6 +136,21 @@ function onCompanyLogoError(index: number, companyImageUrl?: string) {
       <p class="dates">
         <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.start`, (event.target as HTMLElement).innerText)">{{ experience.start }}</span> -
         <span class="editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.end`, (event.target as HTMLElement).innerText)">{{ experience.end }}</span>
+      </p>
+      <template v-if="resolveContentStyle(experience) === 'timeline'">
+        <div class="timeline-block">
+          <div v-for="(event, eventIndex) in resolveTimelineEvents(experience)" :key="eventIndex" class="timeline-event">
+            <strong class="editable-text" :contenteditable="editable" @input="entry => updateText(`experiences.${index}.timelineEvents.${eventIndex}.label`, (entry.target as HTMLElement).innerText)">{{ event.label }}</strong>
+            <span class="editable-text" :contenteditable="editable" @input="entry => updateText(`experiences.${index}.timelineEvents.${eventIndex}.detail`, (entry.target as HTMLElement).innerText)">{{ event.detail }}</span>
+          </div>
+        </div>
+      </template>
+      <ul v-else-if="resolveContentStyle(experience) === 'dashes'" class="dash-list">
+        <li v-for="(dash, dashIndex) in resolveDashes(experience)" :key="dashIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.dashes.${dashIndex}`, (event.target as HTMLElement).innerText)">{{ dash }}</li>
+      </ul>
+      <ul v-else>
+        <li v-for="(bullet, bulletIndex) in resolvePoints(experience)" :key="bulletIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`experiences.${index}.points.${bulletIndex}`, (event.target as HTMLElement).innerText)">{{ bullet }}</li>
+      </ul>
       </div>
       <div class="content-column">
         <h4 class="text-dark">
@@ -228,6 +261,10 @@ function onCompanyLogoError(index: number, companyImageUrl?: string) {
 .density-compact { --entry-gap: calc(var(--cv-space-2) + var(--cv-space-1) / 2); }
 .density-normal { --entry-gap: var(--cv-space-4); }
 .density-spacious { --entry-gap: calc(var(--cv-space-4) + var(--cv-space-2) - var(--cv-space-1) / 2); }
+.dash-list { list-style: none; padding-left: 0; }
+.dash-list li::before { content: '— '; }
+.timeline-block { display: grid; gap: 6px; }
+.timeline-event { display: grid; gap: 2px; border-left: 2px solid var(--cv-marker-accent); padding-left: 8px; }
 .experience-heading {
   display: flex;
   align-items: center;
