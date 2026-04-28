@@ -116,5 +116,9 @@ function updateText(path: string, value: string) {
   background: color-mix(in srgb, currentColor 18%, transparent);
 }
 .entry-list { margin: 0; padding: 0; list-style: none; }
-.entry-list li { margin-bottom: var(--cv-space-2, 8px); }
+.entry-list li { margin-bottom: var(--entry-gap, var(--cv-space-2, 8px)); }
+.entry-list li:last-child { margin-bottom: 0; }
+.density-compact { --entry-gap: calc(var(--cv-space-2, 8px) - 2px); }
+.density-normal { --entry-gap: var(--cv-space-2, 8px); }
+.density-spacious { --entry-gap: var(--cv-space-3, 12px); }
 </style>

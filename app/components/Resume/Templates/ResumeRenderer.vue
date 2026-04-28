@@ -40,7 +40,7 @@ type ResumeRendererDesignState = {
   themeTokens?: Record<string, string>
   roundedClass?: string
   textStyleClass?: string
-  density?: 'compact' | 'comfortable'
+  density?: 'compact' | 'normal' | 'spacious' | 'comfortable'
   dividerStyle?: 'none' | 'line' | 'thick'
   sidebarWidth?: number
   photoSize?: number
@@ -68,7 +68,7 @@ const props = withDefaults(
     themeTokens?: Record<string, string>
     roundedClass?: string
     textStyleClass?: string
-    density?: 'compact' | 'comfortable'
+    density?: 'compact' | 'normal' | 'spacious' | 'comfortable'
     dividerStyle?: 'none' | 'line' | 'thick'
     sidebarWidth?: number
     photoSize?: number
@@ -203,7 +203,11 @@ const avatarImageStyle = computed(() => ({
   transformOrigin: 'center',
 }))
 const sectionLayoutDensity = computed<'compact' | 'normal' | 'spacious'>(() =>
-  resolvedDesignState.value.density === 'compact' ? 'compact' : 'normal',
+  resolvedDesignState.value.density === 'compact'
+    ? 'compact'
+    : resolvedDesignState.value.density === 'spacious'
+      ? 'spacious'
+      : 'normal',
 )
 const shouldShowSectionIcons = computed(() =>
   resolvedDesignState.value.showSectionIcons ?? props.templateSkin.showSectionIcons,
