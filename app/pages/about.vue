@@ -160,7 +160,6 @@ const page = computed(
           </div>
         </v-card>
 
-
         <h2 class="text-h5 font-weight-bold mb-4">{{ page.metricsTitle }}</h2>
         <v-row class="mb-8" density="comfortable">
           <v-col
