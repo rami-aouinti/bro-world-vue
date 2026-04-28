@@ -906,7 +906,7 @@ const resume = reactive<ResumeModel>({
   email: 'emma.anderson@portfolio.dev',
   phone: '+1 212-555-0177',
   city: 'New York',
-  country: 'United States',
+  country: '',
   birthDate: '',
   birthPlace: '',
   homepage: '',
