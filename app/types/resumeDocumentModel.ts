@@ -24,6 +24,7 @@ export type ResumeSectionVariant =
   | 'text-level'
   | 'stars'
   | 'progress'
+  | 'flags'
   | 'list'
   | 'cards'
 

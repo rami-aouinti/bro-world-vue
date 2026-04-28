@@ -10,7 +10,7 @@ import type {
 type SectionLayoutVariant = {
   experience: 'detailed' | 'bullets' | 'compact'
   education: 'classic' | 'timeline' | 'two-column'
-  language: 'classic' | 'text-level' | 'stars' | 'progress'
+  language: 'classic' | 'text-level' | 'stars' | 'progress' | 'flags'
   project: 'classic' | 'list' | 'cards' | 'two-column'
   skill: 'classic'
   reference: 'classic'
@@ -518,7 +518,6 @@ function updateText(path: string, value: string) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
 }
 .resume-skin__header-contact {
   font-size: 0.9rem;
@@ -563,29 +562,25 @@ function updateText(path: string, value: string) {
 .resume-skin__main,
 .resume-skin__aside {
   display: grid;
-  gap: var(--cv-space-3);
+  gap: var(--resume-section-gap, var(--cv-space-3));
+  padding: var(--resume-column-padding, 0);
 }
 
 .resume-skin__layout {
   grid-template-columns: var(--resume-sidebar-width, 280px) minmax(0, 1fr);
+  margin-top: var(--resume-header-content-gap, 12px);
 }
 
-.density-compact .resume-skin__header {
-  margin-bottom: 8px;
+.density-compact {
+  --resume-header-content-gap: 12px;
+  --resume-column-padding: 10px;
+  --resume-section-gap: 10px;
 }
 
-.density-compact .resume-skin__main,
-.density-compact .resume-skin__aside {
-  gap: 10px;
-}
-
-.density-comfortable .resume-skin__header {
-  margin-bottom: 12px;
-}
-
-.density-comfortable .resume-skin__main,
-.density-comfortable .resume-skin__aside {
-  gap: var(--cv-space-3);
+.density-comfortable {
+  --resume-header-content-gap: 20px;
+  --resume-column-padding: 16px;
+  --resume-section-gap: 16px;
 }
 
 .photo-position-left .resume-skin__header {

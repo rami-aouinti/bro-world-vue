@@ -5,7 +5,7 @@ import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 const props = withDefaults(defineProps<{
   resume: any
   editable?: boolean
-  variant?: 'classic' | 'text-level' | 'stars' | 'progress' | string
+  variant?: 'classic' | 'text-level' | 'stars' | 'progress' | 'flags' | string
   themeTokens?: Record<string, string | number>
   layoutDensity?: 'compact' | 'normal' | 'spacious' | string
   toolbarEnabled?: boolean
@@ -28,8 +28,8 @@ const emit = defineEmits<{
   (event: 'move-section', sectionKey: 'language', direction: 'up' | 'down'): void
 }>()
 const sectionStyle = computed(() => ({ ...props.themeTokens }))
-const safeVariant = computed<'classic' | 'text-level' | 'stars' | 'progress'>(() => {
-  if (props.variant === 'classic' || props.variant === 'text-level' || props.variant === 'stars' || props.variant === 'progress') {
+const safeVariant = computed<'classic' | 'text-level' | 'stars' | 'progress' | 'flags'>(() => {
+  if (props.variant === 'classic' || props.variant === 'text-level' || props.variant === 'stars' || props.variant === 'progress' || props.variant === 'flags') {
     return props.variant
   }
   if (import.meta.dev) {
@@ -48,10 +48,27 @@ function updateText(path: string, value: string) {
   }
   target[last] = value
 }
+
+function toFlagEmoji(countryCode: string) {
+  const normalized = countryCode.trim().toUpperCase()
+  if (!/^[A-Z]{2}$/.test(normalized)) return ''
+  return normalized
+    .split('')
+    .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
+    .join('')
+}
+
+function resolveLanguageFlag(language: Record<string, unknown>) {
+  const explicitFlag = String(language.flag || '').trim()
+  if (explicitFlag) return explicitFlag
+  const countryCode = String(language.countryCode || '').trim()
+  const emojiFlag = toFlagEmoji(countryCode)
+  return emojiFlag || ''
+}
 </script>
 <template>
   <section :class="['language-section', 'resume-section-hoverable', `density-${layoutDensity}`]" :style="sectionStyle">
-    <SectionToolbar v-if="toolbarEnabled" section-key="language" :variants="[{ label: 'Text level', value: 'text-level' }, { label: 'Stars', value: 'stars' }, { label: 'Progress', value: 'progress' }]" :current-variant="safeVariant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'language')" @change-variant="(_, next) => emit('change-variant', 'language', next)" @move-up="() => emit('move-section', 'language', 'up')" @move-down="() => emit('move-section', 'language', 'down')" />
+    <SectionToolbar v-if="toolbarEnabled" section-key="language" :variants="[{ label: 'Text level', value: 'text-level' }, { label: 'Stars', value: 'stars' }, { label: 'Progress', value: 'progress' }, { label: 'Flags', value: 'flags' }]" :current-variant="safeVariant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'language')" @change-variant="(_, next) => emit('change-variant', 'language', next)" @move-up="() => emit('move-section', 'language', 'up')" @move-down="() => emit('move-section', 'language', 'down')" />
     <h3 class="cv-heading-section">{{ title }}</h3>
     <ul v-if="safeVariant === 'classic' || safeVariant === 'text-level'" class="bars">
       <li v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`">
@@ -61,17 +78,30 @@ function updateText(path: string, value: string) {
     </ul>
     <ul v-else-if="safeVariant === 'stars'" class="bars">
       <li v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" class="d-flex align-center ga-2">
-        <v-rating :model-value="levelToStars(language.level)" readonly length="5" density="compact" color="amber" size="16" />
         <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+        <v-rating :model-value="levelToStars(language.level)" readonly length="5" density="compact" color="amber" size="16" />
       </li>
     </ul>
-    <ul v-else class="bars">
+    <ul v-else-if="safeVariant === 'progress'" class="bars">
       <li v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`">
         <div class="d-flex align-center ga-2">
           <small>{{ levelToPercent(language.level) }}%</small>
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
         </div>
         <div class="progress"><i :style="{ width: `${levelToPercent(language.level)}%` }" /></div>
+      </li>
+    </ul>
+    <ul v-else class="bars">
+      <li v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`">
+        <div class="d-flex align-center ga-2 justify-space-between">
+          <div class="d-flex align-center ga-2">
+            <span v-if="resolveLanguageFlag(language)" class="language-flag" :aria-label="`${language.name} flag`">{{ resolveLanguageFlag(language) }}</span>
+            <span v-else class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+            <span v-if="resolveLanguageFlag(language)" class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+          </div>
+          <small v-if="levelToStars(language.level) > 0">{{ `${'★'.repeat(levelToStars(language.level))}${'☆'.repeat(5 - levelToStars(language.level))}` }}</small>
+          <small v-else>{{ levelToText(language.level) }}</small>
+        </div>
       </li>
     </ul>
   </section>
@@ -122,6 +152,10 @@ function updateText(path: string, value: string) {
 .progress { height: var(--cv-space-1); background: var(--cv-progress-bg); margin-top: var(--cv-space-1); }
 .progress i { display: block; height: 4px; background: var(--cv-accent); }
 .progress i { height: var(--cv-space-1); }
+.language-flag {
+  font-size: 1.1em;
+  line-height: 1;
+}
 .density-compact { --entry-gap: calc(var(--cv-space-2) - var(--cv-space-1) / 2); }
 .density-normal { --entry-gap: calc(var(--cv-space-2) + var(--cv-space-1) / 2); }
 .density-spacious { --entry-gap: calc(var(--cv-space-3) + var(--cv-space-1) / 2); }

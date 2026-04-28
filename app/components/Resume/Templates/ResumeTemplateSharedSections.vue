@@ -14,7 +14,7 @@ type SharedSectionActionKey = ReorderableSectionKey | 'course'
 type SectionLayoutVariant = {
   experience: 'detailed' | 'bullets' | 'compact'
   education: 'classic' | 'timeline' | 'two-column'
-  language: 'text-level' | 'stars' | 'progress'
+  language: 'text-level' | 'stars' | 'progress' | 'flags'
   project: 'list' | 'cards' | 'two-column'
   skill: 'classic'
   certification: 'classic'
@@ -78,9 +78,26 @@ function levelToStarsText(level: number | string) {
   return `${'★'.repeat(stars)}${'☆'.repeat(5 - stars)}`
 }
 
-const languageVariant = computed<'text-level' | 'stars' | 'progress'>(() => {
+function toFlagEmoji(countryCode: string) {
+  const normalized = countryCode.trim().toUpperCase()
+  if (!/^[A-Z]{2}$/.test(normalized)) return ''
+  return normalized
+    .split('')
+    .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
+    .join('')
+}
+
+function resolveLanguageFlag(language: Record<string, unknown>) {
+  const explicitFlag = String(language.flag || '').trim()
+  if (explicitFlag) return explicitFlag
+  const countryCode = String(language.countryCode || '').trim()
+  const emojiFlag = toFlagEmoji(countryCode)
+  return emojiFlag || ''
+}
+
+const languageVariant = computed<'text-level' | 'stars' | 'progress' | 'flags'>(() => {
   const selected = props.sectionLayout.find(section => section.key === 'language')
-  return selected?.variant === 'stars' || selected?.variant === 'progress' || selected?.variant === 'text-level'
+  return selected?.variant === 'stars' || selected?.variant === 'progress' || selected?.variant === 'text-level' || selected?.variant === 'flags'
     ? selected.variant
     : (props.levelInputMode === 'stars' ? 'stars' : 'text-level')
 })
@@ -116,6 +133,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
           { label: 'Text level', value: 'text-level' },
           { label: 'Stars', value: 'stars' },
           { label: 'Progress', value: 'progress' },
+          { label: 'Flags', value: 'flags' },
         ]"
         :current-variant="languageVariant"
         :can-move-up="canMove('language', 'up')"
@@ -134,11 +152,11 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
       </ul>
       <div v-else-if="languageVariant === 'stars'" class="language-stars-list">
         <div v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" class="language-stars-item">
-          <small>{{ levelToStarsText(language.level) }} — </small>
           <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+          <small class="language-stars-value">{{ levelToStarsText(language.level) }}</small>
         </div>
       </div>
-      <div v-else class="language-progress-list">
+      <div v-else-if="languageVariant === 'progress'" class="language-progress-list">
         <div v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" class="language-progress-item">
           <div class="d-flex align-center justify-space-between ga-2">
             <div class="d-flex align-center ga-2">
@@ -147,6 +165,17 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
             </div>
           </div>
           <v-progress-linear :model-value="levelToPercent(language.level)" height="8" rounded color="primary" />
+        </div>
+      </div>
+      <div v-else class="language-progress-list">
+        <div v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" class="language-progress-item">
+          <div class="d-flex align-center justify-space-between ga-2">
+            <div class="d-flex align-center ga-2">
+              <span v-if="resolveLanguageFlag(language)" class="language-flag">{{ resolveLanguageFlag(language) }}</span>
+              <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+            </div>
+            <small>{{ levelToText(language.level) }} · {{ levelToStarsText(language.level) }}</small>
+          </div>
         </div>
       </div>
     </div>
@@ -293,10 +322,21 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
   display: grid;
   gap: 8px;
 }
-.language-stars-item,
 .language-progress-item {
   display: grid;
   gap: 4px;
+}
+.language-stars-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.language-stars-value {
+  letter-spacing: .04em;
+}
+.language-flag {
+  font-size: 1.1em;
+  line-height: 1;
 }
 .project-grid {
   display: grid;
