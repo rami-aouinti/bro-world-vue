@@ -280,40 +280,78 @@ function updateText(path: string, value: string) {
         >
           {{ resume.role }}
         </p>
-        <p
+        <div
           v-if="templateSkin.showContactInHeader"
-          class="resume-skin__header-contact"
+          class="resume-skin__contact-grid resume-skin__header-contact"
         >
-          <span
-            class="editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateText('city', (event.target as HTMLElement).innerText)
-            "
-            >{{ resume.city }}</span
-          >
-          ·
-          <span
-            class="editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateText('email', (event.target as HTMLElement).innerText)
-            "
-            >{{ resume.email }}</span
-          >
-          ·
-          <span
-            class="editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateText('phone', (event.target as HTMLElement).innerText)
-            "
-            >{{ resume.phone }}</span
-          >
-        </p>
+          <div class="resume-skin__contact-item">
+            <v-icon icon="mdi-calendar-month-outline" size="16" />
+            <span
+              class="editable-text"
+              :contenteditable="editable"
+              @input="
+                (event) =>
+                  updateText(
+                    'birthDate',
+                    (event.target as HTMLElement).innerText,
+                  )
+              "
+              >{{ resume.birthDate ?? resume.birthday ?? '' }}</span
+            >
+          </div>
+          <div class="resume-skin__contact-item">
+            <v-icon icon="mdi-map-marker-outline" size="16" />
+            <span>
+              <span
+                class="editable-text"
+                :contenteditable="editable"
+                @input="
+                  (event) =>
+                    updateText('city', (event.target as HTMLElement).innerText)
+                "
+                >{{ resume.city }}</span
+              >
+              <span v-if="resume.country">, </span>
+              <span
+                v-if="resume.country"
+                class="editable-text"
+                :contenteditable="editable"
+                @input="
+                  (event) =>
+                    updateText(
+                      'country',
+                      (event.target as HTMLElement).innerText,
+                    )
+                "
+                >{{ resume.country }}</span
+              >
+            </span>
+          </div>
+          <div class="resume-skin__contact-item">
+            <v-icon icon="mdi-phone-outline" size="16" />
+            <span
+              class="editable-text"
+              :contenteditable="editable"
+              @input="
+                (event) =>
+                  updateText('phone', (event.target as HTMLElement).innerText)
+              "
+              >{{ resume.phone }}</span
+            >
+          </div>
+          <div class="resume-skin__contact-item">
+            <v-icon icon="mdi-email-outline" size="16" />
+            <span
+              class="editable-text"
+              :contenteditable="editable"
+              @input="
+                (event) =>
+                  updateText('email', (event.target as HTMLElement).innerText)
+              "
+              >{{ resume.email }}</span
+            >
+          </div>
+        </div>
       </div>
       <div v-if="hasRenderedAvatar" class="photo-frame" tabindex="0">
         <AvatarOverlayControls
@@ -344,36 +382,75 @@ function updateText(path: string, value: string) {
       <aside :class="templateSkin.asideClass">
         <section v-if="templateSkin.showContactInAside">
           <h3 class="cv-heading-section">Contact</h3>
-          <p
-            class="editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateText('city', (event.target as HTMLElement).innerText)
-            "
-          >
-            {{ resume.city }}, {{ resume.country }}
-          </p>
-          <p
-            class="editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateText('phone', (event.target as HTMLElement).innerText)
-            "
-          >
-            {{ resume.phone }}
-          </p>
-          <p
-            class="editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateText('email', (event.target as HTMLElement).innerText)
-            "
-          >
-            {{ resume.email }}
-          </p>
+          <div class="resume-skin__contact-grid">
+            <div class="resume-skin__contact-item">
+              <v-icon icon="mdi-calendar-month-outline" size="16" />
+              <span
+                class="editable-text"
+                :contenteditable="editable"
+                @input="
+                  (event) =>
+                    updateText(
+                      'birthDate',
+                      (event.target as HTMLElement).innerText,
+                    )
+                "
+                >{{ resume.birthDate ?? resume.birthday ?? '' }}</span
+              >
+            </div>
+            <div class="resume-skin__contact-item">
+              <v-icon icon="mdi-map-marker-outline" size="16" />
+              <span>
+                <span
+                  class="editable-text"
+                  :contenteditable="editable"
+                  @input="
+                    (event) =>
+                      updateText('city', (event.target as HTMLElement).innerText)
+                  "
+                  >{{ resume.city }}</span
+                >
+                <span v-if="resume.country">, </span>
+                <span
+                  v-if="resume.country"
+                  class="editable-text"
+                  :contenteditable="editable"
+                  @input="
+                    (event) =>
+                      updateText(
+                        'country',
+                        (event.target as HTMLElement).innerText,
+                      )
+                  "
+                  >{{ resume.country }}</span
+                >
+              </span>
+            </div>
+            <div class="resume-skin__contact-item">
+              <v-icon icon="mdi-phone-outline" size="16" />
+              <span
+                class="editable-text"
+                :contenteditable="editable"
+                @input="
+                  (event) =>
+                    updateText('phone', (event.target as HTMLElement).innerText)
+                "
+                >{{ resume.phone }}</span
+              >
+            </div>
+            <div class="resume-skin__contact-item">
+              <v-icon icon="mdi-email-outline" size="16" />
+              <span
+                class="editable-text"
+                :contenteditable="editable"
+                @input="
+                  (event) =>
+                    updateText('email', (event.target as HTMLElement).innerText)
+                "
+                >{{ resume.email }}</span
+              >
+            </div>
+          </div>
         </section>
 
         <section v-if="templateSkin.showProfileInAside">
@@ -527,6 +604,21 @@ function updateText(path: string, value: string) {
 .resume-skin__header-contact {
   font-size: 0.9rem;
   opacity: 0.8;
+  margin-top: var(--cv-space-2);
+}
+.resume-skin__contact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--cv-space-2) var(--cv-space-4);
+}
+.resume-skin__contact-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cv-space-2);
+  min-width: 0;
+}
+.resume-skin__contact-item .editable-text {
+  min-width: 0;
 }
 .photo-frame {
   position: relative;
@@ -621,5 +713,11 @@ function updateText(path: string, value: string) {
 .divider-none .resume-skin__aside > section {
   border-bottom: none;
   padding-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .resume-skin__contact-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 </style>
