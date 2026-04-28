@@ -234,7 +234,7 @@ function onCompanyLogoError(index: number, companyImageUrl?: string) {
 .entry {
   margin-bottom: var(--entry-gap, var(--cv-space-4));
   display: grid;
-  grid-template-columns: minmax(0, var(--resume-date-column-width, 140px)) minmax(0, 1fr);
+  grid-template-columns: minmax(140px, var(--resume-date-column-width, 140px)) minmax(0, 1fr);
   column-gap: var(--cv-space-4);
   align-items: start;
   position: relative;
@@ -248,6 +248,7 @@ function onCompanyLogoError(index: number, companyImageUrl?: string) {
 }
 .content-column {
   position: relative;
+  min-width: 0;
   border-left: var(--rs-entry-border-left, none);
   padding-left: var(--rs-entry-padding-left, 0);
 }
@@ -271,11 +272,17 @@ function onCompanyLogoError(index: number, companyImageUrl?: string) {
   border-radius: 999px;
   background: var(--cv-accent);
 }
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .entry {
     grid-template-columns: minmax(0, 1fr);
     row-gap: var(--cv-space-2);
   }
+}
+.entry li,
+.entry p,
+.entry strong {
+  max-width: none;
+  min-width: 0;
 }
 .density-compact { --entry-gap: calc(var(--cv-space-2) + var(--cv-space-1) / 2); }
 .density-normal { --entry-gap: var(--cv-space-4); }
