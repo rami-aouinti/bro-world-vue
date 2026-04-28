@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
 
 const props = withDefaults(defineProps<{
   resume: any
@@ -13,6 +14,7 @@ const props = withDefaults(defineProps<{
   canMoveDown?: boolean
   sectionIcon?: string
   showSectionIcon?: boolean
+  sectionIconStyle?: ResumeSectionIconStyle
 }>(), {
   editable: false,
   variant: 'list',
@@ -24,6 +26,7 @@ const props = withDefaults(defineProps<{
   canMoveDown: false,
   sectionIcon: undefined,
   showSectionIcon: true,
+  sectionIconStyle: undefined,
 })
 const emit = defineEmits<{
   (event: 'add-item', sectionKey: 'project'): void
@@ -31,6 +34,14 @@ const emit = defineEmits<{
   (event: 'move-section', sectionKey: 'project', direction: 'up' | 'down'): void
 }>()
 const sectionStyle = computed(() => ({ ...props.themeTokens }))
+const iconVariantClass = computed(() =>
+  props.sectionIconStyle?.variant ? `section-icon--${props.sectionIconStyle.variant}` : 'section-icon--outline',
+)
+const iconStyle = computed(() => ({
+  '--resume-section-icon-size': `${props.sectionIconStyle?.size ?? 18}px`,
+  '--resume-section-icon-color': props.sectionIconStyle?.color ?? 'var(--cv-accent)',
+  '--resume-section-icon-gap': `${props.sectionIconStyle?.spacing ?? 8}px`,
+}))
 const safeVariant = computed<'classic' | 'list' | 'cards' | 'two-column'>(() => {
   if (props.variant === 'classic' || props.variant === 'list' || props.variant === 'cards' || props.variant === 'two-column') {
     return props.variant
@@ -56,7 +67,9 @@ function updateText(path: string, value: string) {
   <section :class="['project-section', 'resume-section-hoverable', `density-${layoutDensity}`]" :style="sectionStyle">
     <SectionToolbar v-if="toolbarEnabled" section-key="project" :variants="[{ label: 'List', value: 'list' }, { label: 'Cards', value: 'cards' }, { label: 'Two columns', value: 'two-column' }]" :current-variant="safeVariant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'project')" @change-variant="(_, next) => emit('change-variant', 'project', next)" @move-up="() => emit('move-section', 'project', 'up')" @move-down="() => emit('move-section', 'project', 'down')" />
     <h2 class="cv-heading-section">
-      <v-icon v-if="showSectionIcon && sectionIcon" :icon="sectionIcon" size="18" />
+      <span v-if="showSectionIcon && sectionIcon" class="section-icon" :class="iconVariantClass" :style="iconStyle">
+        <v-icon :icon="sectionIcon" :size="sectionIconStyle?.size ?? 18" />
+      </span>
       <span>{{ title }}</span>
     </h2>
     <div :class="['project-grid', { 'project-grid--two-column': safeVariant === 'two-column' }]">
@@ -89,11 +102,32 @@ function updateText(path: string, value: string) {
 .cv-heading-section {
   display: inline-flex;
   align-items: center;
-  gap: var(--cv-space-2);
+  gap: var(--resume-section-icon-gap, var(--cv-space-2));
   border-bottom: var(--rs-heading-border-bottom, 0);
   background: var(--rs-heading-bg, transparent);
   border-radius: var(--rs-heading-radius, 0);
   padding: var(--rs-heading-padding, 0);
+}
+.section-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--resume-section-icon-size, 18px) + 8px);
+  height: calc(var(--resume-section-icon-size, 18px) + 8px);
+  color: var(--resume-section-icon-color, var(--cv-accent));
+}
+.section-icon--outline {
+  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+  border-radius: var(--resume-section-icon-radius, 999px);
+}
+.section-icon--filled {
+  border-radius: var(--resume-section-icon-radius, 999px);
+  background: color-mix(in srgb, currentColor 88%, white);
+  color: #fff;
+}
+.section-icon--rounded {
+  border-radius: calc(var(--resume-section-icon-radius, 8px) + 2px);
+  background: color-mix(in srgb, currentColor 18%, transparent);
 }
 .project-grid { display: grid; gap: var(--entry-gap, calc(var(--cv-space-2) + var(--cv-space-1) / 2)); }
 .project-grid--two-column { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -116,7 +150,7 @@ function updateText(path: string, value: string) {
   border-radius: var(--rs-marker-radius, 0);
   background: var(--cv-marker-accent);
 }
-.project-card { border: 1px solid var(--cv-card-border-soft); border-radius: calc(var(--cv-space-2) + var(--cv-space-1) / 2); padding: calc(var(--cv-space-2) + var(--cv-space-1) / 2); }
+.project-card { border: 1px solid var(--cv-card-border-soft); border-radius: calc(var(--resume-section-icon-radius, 8px) + 2px); padding: calc(var(--cv-space-2) + var(--cv-space-1) / 2); }
 .density-compact { --entry-gap: var(--cv-space-2); }
 .density-normal { --entry-gap: var(--cv-space-3); }
 .density-spacious { --entry-gap: var(--cv-space-4); }
