@@ -2587,9 +2587,9 @@ if (import.meta.client) {
 </script>
 
 <template>
-  <div>
-    <AppPageDrawers>
-      <template #left>
+  <v-container fluid class="resume-create pa-0">
+    <main class="resume-content-main">
+      <div class="resume-page-content">
         <div class="resume-control-panels">
           <div class="local-toolbar-actions">
             <div class="local-toolbar-actions__row">
@@ -2777,124 +2777,116 @@ if (import.meta.client) {
               </v-menu>
             </div>
           </div>
+
+          <aside class="template-control-panel">
+            <h3 class="text-subtitle-1 font-weight-bold mb-3">Templates</h3>
+            <v-chip-group
+              :model-value="templateQuickFilter"
+              selected-class="text-primary"
+              column
+              class="mb-3"
+              @update:model-value="onTemplateQuickFilterChange"
+            >
+              <v-chip
+                v-for="filterOption in templateQuickFilterOptions"
+                :key="`toolbar-template-filter-${filterOption.value}`"
+                :value="filterOption.value"
+                size="small"
+                label
+              >
+                {{ filterOption.label }}
+              </v-chip>
+            </v-chip-group>
+            <div class="template-drawer__grid">
+              <button
+                v-for="templateCard in filteredTemplatesByDrawer"
+                :key="`toolbar-template-card-${templateCard.id}`"
+                type="button"
+                class="template-drawer__item"
+                :class="{ 'template-drawer__item--active': selectedTemplate === templateCard.id }"
+                @click="applyTemplateSelection(templateCard.id)"
+              >
+                <v-img :src="templateCard.image" :alt="templateCard.title" height="96" cover class="template-drawer__thumb" />
+                <span class="template-drawer__label">{{ templateCard.title }}</span>
+              </button>
+            </div>
+          </aside>
         </div>
-      </template>
 
-      <template #right>
-        <aside class="template-control-panel">
-          <h3 class="text-subtitle-1 font-weight-bold mb-3">Templates</h3>
-          <v-chip-group
-            :model-value="templateQuickFilter"
-            selected-class="text-primary"
-            column
-            class="mb-3"
-            @update:model-value="onTemplateQuickFilterChange"
-          >
-            <v-chip
-              v-for="filterOption in templateQuickFilterOptions"
-              :key="`toolbar-template-filter-${filterOption.value}`"
-              :value="filterOption.value"
-              size="small"
-              label
-            >
-              {{ filterOption.label }}
-            </v-chip>
-          </v-chip-group>
-          <div class="template-drawer__grid">
-            <button
-              v-for="templateCard in filteredTemplatesByDrawer"
-              :key="`toolbar-template-card-${templateCard.id}`"
-              type="button"
-              class="template-drawer__item"
-              :class="{ 'template-drawer__item--active': selectedTemplate === templateCard.id }"
-              @click="applyTemplateSelection(templateCard.id)"
-            >
-              <v-img :src="templateCard.image" :alt="templateCard.title" height="96" cover class="template-drawer__thumb" />
-              <span class="template-drawer__label">{{ templateCard.title }}</span>
-            </button>
-          </div>
-        </aside>
-      </template>
-    </AppPageDrawers>
-
-    <v-container fluid class="resume-create pa-0">
-      <main class="resume-content-main">
-        <div class="resume-page-content">
-
-          <section class="builder-preview-pane py-6 px-2">
-            <div class="builder-preview resume-preview-drawer">
-              <div class="resume-preview-wrapper">
-                <div
-                  ref="previewExportRef"
-                  class="preview-grid resume-preview-frame"
-                  :class="[...previewDesignClasses, `photo-shape-${safePhotoShape}`]"
-                  :style="previewStyle"
-                >
-                  <div class="cv-preview-stage" :class="{ 'cv-preview-stage--bordered': selectedRounded !== 'none' }">
-                    <div class="cv-page-shell" :class="previewDesignClasses">
-                      <template v-if="rendererReady">
-                        <ResumeRenderer
-                          :class="previewDesignClasses"
-                          :resume="resume"
-                          :show-photo="templateSupportsPhoto"
-                          :design-state="resumeRendererDesignState"
-                          :photo-offset-x="resume.photoOffsetX"
-                          :photo-offset-y="resume.photoOffsetY"
-                          :photo-scale="resume.photoScale"
-                          :photo-hidden="resume.photoHidden"
-                          :section-layout="orderedPreviewSections"
-                          :section-variants="sectionVariantByKey"
-                          :photo-shape-options="photoShapeOptions"
-                          :selected-photo-shape="safePhotoShape"
-                          :on-photo-click="onPreviewPhotoClick"
-                          :on-photo-shape-select="(shape) => selectedPhotoShape = shape"
-                          :template-skin="selectedTemplateSkin"
-                          editable
-                          @add-item="addItemToPreviewSection"
-                          @change-variant="setSectionVariant"
-                          @move-photo="movePhoto"
-                          @open-photo-picker="openPhotoPicker"
-                          @update:photo-size="layoutSettings.photoSize = $event"
-                          @update:photo-border-width="layoutSettings.photoBorderWidth = $event"
-                          @update:photo-position="layoutSettings.photoPosition = $event"
-                          @move-section="moveSection"
-                        />
-                      </template>
-                      <div v-else class="preview-fallback">
-                        <v-alert type="error" variant="tonal" density="comfortable" class="mb-3">
-                          {{ rendererError || 'La prévisualisation n’est pas disponible pour le moment.' }}
-                        </v-alert>
-                        <h2 class="text-h5 mb-2">{{ `${resume.firstName} ${resume.lastName}`.trim() || 'Votre nom' }}</h2>
-                        <p class="text-body-2 mb-4">{{ resume.role || 'Titre du poste' }}</p>
-                        <section
-                          v-for="section in previewFallbackSections"
-                          :key="`preview-fallback-${section.title}`"
-                          class="mb-3"
-                        >
-                          <h3 class="text-subtitle-2 mb-1">{{ section.title }}</h3>
-                          <ul class="pl-4">
-                            <li v-for="item in section.items" :key="`${section.title}-${item}`">
-                              {{ item }}
-                            </li>
-                          </ul>
-                        </section>
-                        <v-btn size="small" variant="outlined" prepend-icon="mdi-refresh" @click="resetRendererGuard">
-                          Réessayer le rendu
-                        </v-btn>
-                      </div>
-                      <div v-if="signatureDataUrl" class="signature-overlay">
-                        <img :src="signatureDataUrl" alt="Signature" />
-                      </div>
+        <section class="builder-preview-pane py-6 px-2">
+          <div class="builder-preview resume-preview-drawer">
+            <div class="resume-preview-wrapper">
+              <div
+                ref="previewExportRef"
+                class="preview-grid resume-preview-frame"
+                :class="[...previewDesignClasses, `photo-shape-${safePhotoShape}`]"
+                :style="previewStyle"
+              >
+                <div class="cv-preview-stage" :class="{ 'cv-preview-stage--bordered': selectedRounded !== 'none' }">
+                  <div class="cv-page-shell" :class="previewDesignClasses">
+                    <template v-if="rendererReady">
+                      <ResumeRenderer
+                        :class="previewDesignClasses"
+                        :resume="resume"
+                        :show-photo="templateSupportsPhoto"
+                        :design-state="resumeRendererDesignState"
+                        :photo-offset-x="resume.photoOffsetX"
+                        :photo-offset-y="resume.photoOffsetY"
+                        :photo-scale="resume.photoScale"
+                        :photo-hidden="resume.photoHidden"
+                        :section-layout="orderedPreviewSections"
+                        :section-variants="sectionVariantByKey"
+                        :photo-shape-options="photoShapeOptions"
+                        :selected-photo-shape="safePhotoShape"
+                        :on-photo-click="onPreviewPhotoClick"
+                        :on-photo-shape-select="(shape) => selectedPhotoShape = shape"
+                        :template-skin="selectedTemplateSkin"
+                        editable
+                        @add-item="addItemToPreviewSection"
+                        @change-variant="setSectionVariant"
+                        @move-photo="movePhoto"
+                        @open-photo-picker="openPhotoPicker"
+                        @update:photo-size="layoutSettings.photoSize = $event"
+                        @update:photo-border-width="layoutSettings.photoBorderWidth = $event"
+                        @update:photo-position="layoutSettings.photoPosition = $event"
+                        @move-section="moveSection"
+                      />
+                    </template>
+                    <div v-else class="preview-fallback">
+                      <v-alert type="error" variant="tonal" density="comfortable" class="mb-3">
+                        {{ rendererError || 'La prévisualisation n’est pas disponible pour le moment.' }}
+                      </v-alert>
+                      <h2 class="text-h5 mb-2">{{ `${resume.firstName} ${resume.lastName}`.trim() || 'Votre nom' }}</h2>
+                      <p class="text-body-2 mb-4">{{ resume.role || 'Titre du poste' }}</p>
+                      <section
+                        v-for="section in previewFallbackSections"
+                        :key="`preview-fallback-${section.title}`"
+                        class="mb-3"
+                      >
+                        <h3 class="text-subtitle-2 mb-1">{{ section.title }}</h3>
+                        <ul class="pl-4">
+                          <li v-for="item in section.items" :key="`${section.title}-${item}`">
+                            {{ item }}
+                          </li>
+                        </ul>
+                      </section>
+                      <v-btn size="small" variant="outlined" prepend-icon="mdi-refresh" @click="resetRendererGuard">
+                        Réessayer le rendu
+                      </v-btn>
+                    </div>
+                    <div v-if="signatureDataUrl" class="signature-overlay">
+                      <img :src="signatureDataUrl" alt="Signature" />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </section>
-        </div>
-      </main>
+          </div>
+        </section>
+      </div>
+    </main>
 
-      <v-dialog v-model="addSectionDialogOpen" max-width="760">
+    <v-dialog v-model="addSectionDialogOpen" max-width="760">
       <v-card>
         <v-card-title class="d-flex align-center justify-space-between">
           <span>Add {{ addSectionOptions.find(section => section.value === addSectionType)?.label }}</span>
@@ -3568,7 +3560,6 @@ if (import.meta.client) {
       />
     </AppModal>
   </v-container>
-  </div>
 </template>
 
 <style scoped>
