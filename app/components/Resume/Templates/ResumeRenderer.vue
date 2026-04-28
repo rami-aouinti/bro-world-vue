@@ -166,12 +166,17 @@ function isSectionVisible(section: RenderableSectionLayoutEntry) {
   return section.key !== 'skill' || props.templateSkin.showSkillsInAside
 }
 
-const mainSections = computed(() =>
-  renderableSections.value.filter((section) => section.region === 'main' && isSectionVisible(section)),
-)
-const asideSections = computed(() =>
-  renderableSections.value.filter((section) => section.region === 'aside' && isSectionVisible(section)),
-)
+const sectionsByRegion = computed(() => ({
+  main: renderableSections.value
+    .filter((section) => section.region === 'main' && isSectionVisible(section))
+    .sort((left, right) => left.order - right.order),
+  aside: renderableSections.value
+    .filter((section) => section.region === 'aside' && isSectionVisible(section))
+    .sort((left, right) => left.order - right.order),
+}))
+
+const mainSections = computed(() => sectionsByRegion.value.main)
+const asideSections = computed(() => sectionsByRegion.value.aside)
 const hasRenderedAvatar = computed(() =>
   Boolean(props.showPhoto && props.resume?.photoUrl && !props.photoHidden),
 )
@@ -301,9 +306,9 @@ function canMove(sectionKey: ResumeSectionLayoutKey, direction: 'up' | 'down') {
     (section) => section.key === sectionKey,
   )
   if (!target) return false
-  const regionSections = normalizedSectionLayout.value.filter(
-    (section) => section.region === target.region,
-  )
+  const regionSections = normalizedSectionLayout.value
+    .filter((section) => section.region === target.region)
+    .sort((left, right) => left.order - right.order)
   const index = regionSections.findIndex(
     (section) => section.key === sectionKey,
   )
@@ -904,6 +909,14 @@ function updateText(path: string, value: string) {
 .layout-mode-aside-right {
   grid-template-columns: minmax(0, 1fr) var(--resume-sidebar-width, 280px);
   grid-template-areas: 'main aside';
+}
+
+.layout-mode-aside-right .resume-skin__main {
+  order: 1;
+}
+
+.layout-mode-aside-right .resume-skin__aside {
+  order: 2;
 }
 
 .layout-mode-no-aside {
