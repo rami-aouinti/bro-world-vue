@@ -13,6 +13,7 @@ import {
   useResumeDesignControls,
 } from '~/composables/useResumeDesignControls'
 import { useResumeDocumentState } from '~/composables/useResumeDocumentState'
+import { fromApiResumeToBuilderModel } from '~/utils/resumeApiMapper'
 import { levelToStars, starsToPercent } from '~/utils/resumeLanguageLevel'
 import ResumeRenderer from '~/components/Resume/Templates/ResumeRenderer.vue'
 import {
@@ -693,58 +694,6 @@ function extractRemoteResumeCreatedAtValue(resumeItem: RemoteResume) {
   return ''
 }
 
-function mapRemoteResumeToStructuredPayload(resumeItem: RemoteResume): StructuredResumeResponse {
-  const info = resumeItem.resumeInformation || {}
-  const mapSections = (sections?: RemoteResumeSection[]) => (Array.isArray(sections) ? sections : [])
-
-  return {
-    data: {
-      user: {
-        fullName: String(info.fullName || '').trim(),
-        email: String(info.email || '').trim(),
-        phone: String(info.phone || '').trim(),
-        address: String(info.address || info.adresse || '').trim(),
-      },
-      experiences: mapSections(resumeItem.experiences).map(section => ({
-        title: String(section.title || ''),
-        company: String(section.company || ''),
-        startDate: String(section.startDate || ''),
-        endDate: String(section.endDate || ''),
-        description: String(section.description || ''),
-      })),
-      educations: mapSections(resumeItem.educations).map(section => ({
-        title: String(section.title || ''),
-        school: String(section.school || ''),
-        startDate: String(section.startDate || ''),
-        endDate: String(section.endDate || ''),
-        description: String(section.description || ''),
-      })),
-      skills: mapSections(resumeItem.skills).map(section => String(section.title || '').trim()).filter(Boolean),
-      languages: mapSections(resumeItem.languages).map(section => ({
-        name: String(section.title || ''),
-        level: String(section.level || ''),
-      })),
-      certifications: mapSections(resumeItem.certifications).map(section => ({
-        title: String(section.title || ''),
-        issuer: String(section.school || section.company || ''),
-        date: String(section.startDate || section.endDate || ''),
-        description: String(section.description || ''),
-      })),
-      projects: mapSections(resumeItem.projects).map(section => ({
-        title: String(section.title || ''),
-        description: String(section.description || ''),
-        link: String(section.home_page || ''),
-      })),
-      references: mapSections(resumeItem.references).map(section => ({
-        name: String(section.title || ''),
-        contact: String(section.description || ''),
-        description: String(section.company || section.school || ''),
-      })),
-      hobbies: mapSections(resumeItem.hobbies).map(section => String(section.title || '').trim()).filter(Boolean),
-    },
-  }
-}
-
 onMounted(async () => {
   const templateFromQuery = route.query.template
   const mode = route.query.mode
@@ -774,7 +723,7 @@ onMounted(async () => {
 
     if (!latestResume || latestResume.documentUrl !== null || !hasRemoteResumeContent(latestResume)) return
 
-    applyStructuredResumeData(mapRemoteResumeToStructuredPayload(latestResume))
+    applyBuilderResumeData(fromApiResumeToBuilderModel(latestResume))
     loadedFromApi.value = true
   } catch {
     remoteResumes.value = []
@@ -921,6 +870,92 @@ function movePhoto(direction: 'left' | 'right' | 'up' | 'down') {
     return
   }
   resume.photoOffsetY = Math.min(PHOTO_OFFSET_LIMIT, resume.photoOffsetY + PHOTO_MOVE_STEP)
+}
+
+function applyBuilderResumeData(payload: ReturnType<typeof fromApiResumeToBuilderModel>) {
+  const userNames = inferNameParts(payload.resumeInformation.fullName)
+
+  resume.firstName = userNames.firstName || resume.firstName
+  resume.lastName = userNames.lastName || resume.lastName
+  resume.email = payload.email || resume.email
+  resume.phone = payload.phone || resume.phone
+  resume.city = payload.city || resume.city
+  resume.country = payload.country || resume.country
+
+  if (payload.skills.length) {
+    resume.skills = payload.skills.map(skill => ({ ...skill }))
+  }
+
+  if (payload.languages.length) {
+    resume.languages = payload.languages.map(language => ({
+      name: language.name,
+      level: Number(language.level) || 75,
+      countryCode: String(language.countryCode || '').trim(),
+      flag: String(language.flag || '').trim(),
+    }))
+  }
+
+  if (payload.hobbies.length) {
+    resume.hobbies = [...payload.hobbies]
+  }
+
+  if (payload.experiences.length) {
+    resume.experiences = payload.experiences.map(experience => ({
+      role: experience.role,
+      company: experience.company,
+      companyImageUrl: '',
+      city: experience.city,
+      start: experience.start,
+      end: experience.end,
+      bullets: [...experience.bullets],
+      contentStyle: 'points',
+      points: [...experience.bullets],
+    }))
+  }
+
+  if (payload.education.length) {
+    resume.education = payload.education.map(education => ({
+      degree: education.degree,
+      school: education.school,
+      schoolImageUrl: '',
+      city: education.city,
+      start: education.start,
+      end: education.end,
+      note: education.note,
+      contentStyle: 'points',
+      points: parseMultilineList(String(education.note || '')),
+    }))
+  }
+
+  if (payload.courses.length) {
+    resume.courses = payload.courses.map(course => ({
+      title: course.title,
+      school: course.school,
+      start: course.start,
+      end: course.end,
+    }))
+  }
+
+  if (payload.projects.length) {
+    resume.projects = payload.projects.map(project => ({
+      name: project.name,
+      summary: project.summary,
+      imageUrl: '',
+      repositoryUrl: project.repositoryUrl || '',
+      repositoryProvider: inferRepositoryProvider(project.repositoryUrl || ''),
+      contentStyle: 'points',
+      points: parseMultilineList(String(project.summary || '')),
+    }))
+  }
+
+  if (payload.references.length) {
+    resume.references = payload.references.map(reference => ({
+      name: reference.name,
+      company: reference.company,
+      email: reference.email,
+      phone: reference.phone,
+    }))
+  }
 }
 
 function openPhotoPicker() {
