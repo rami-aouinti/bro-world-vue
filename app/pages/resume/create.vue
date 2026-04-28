@@ -238,6 +238,10 @@ type PhotoShapeOption = {
   value: PhotoShape
   icon: string
 }
+type LayoutModeOption = {
+  label: string
+  value: ResumeLayoutMode
+}
 type LayoutSettings = {
   photoSize: number
   photoBorderWidth: number
@@ -327,6 +331,11 @@ const photoShapeOptions = [
   { label: 'Blob', value: 'soft-blob', icon: '⬭' },
   { label: 'Hex', value: 'hex', icon: '⬢' },
 ] as const satisfies ReadonlyArray<PhotoShapeOption>
+const layoutModeOptions = [
+  { label: 'Aside left', value: 'aside-left' },
+  { label: 'Aside right', value: 'aside-right' },
+  { label: 'No aside', value: 'no-aside' },
+] as const satisfies ReadonlyArray<LayoutModeOption>
 
 const templateFilters = [
   { label: 'All', value: 'all' },
@@ -1907,10 +1916,6 @@ watch(selectedTemplate, () => {
   resetRendererGuard()
 })
 
-watch(selectedTemplateSkin, (skin) => {
-  layoutSettings.layoutMode = skin.layoutMode
-}, { immediate: true })
-
 onErrorCaptured((error, instance, info) => {
   const componentName = instance?.type && typeof instance.type === 'object' && 'name' in instance.type
     ? String(instance.type.name || 'unknown')
@@ -2682,6 +2687,7 @@ if (import.meta.client) {
                       :resume="resume"
                       :show-photo="templateSupportsPhoto"
                       :design-state="resumeRendererDesignState"
+                      :layout-mode="layoutSettings.layoutMode"
                       :photo-offset-x="resume.photoOffsetX"
                       :photo-offset-y="resume.photoOffsetY"
                       :photo-scale="resume.photoScale"
@@ -2831,6 +2837,16 @@ if (import.meta.client) {
                 label="Typography preset"
                 density="comfortable"
                 hide-details
+              />
+              <AppSelect
+                v-model="layoutSettings.layoutMode"
+                :items="layoutModeOptions"
+                item-title="label"
+                item-value="value"
+                label="Layout"
+                density="comfortable"
+                hide-details
+                class="mt-3"
               />
             </v-card-text>
           </v-card>
@@ -4034,6 +4050,7 @@ if (import.meta.client) {
                     :resume="resume"
                     :show-photo="templateSupportsPhoto"
                     :design-state="resumeRendererDesignState"
+                    :layout-mode="layoutSettings.layoutMode"
                     :photo-offset-x="resume.photoOffsetX"
                     :photo-offset-y="resume.photoOffsetY"
                     :photo-scale="resume.photoScale"
