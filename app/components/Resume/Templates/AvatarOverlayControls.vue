@@ -10,21 +10,22 @@ const props = defineProps<{
   selectedValue: string
   photoSize: number
   photoBorderWidth: number
-  photoPosition: 'left' | 'center' | 'right'
+  photoPosition: 'left' | 'right'
 }>()
 
 const emit = defineEmits<{
   (event: 'select', value: string): void
   (event: 'move', direction: 'left' | 'right' | 'up' | 'down'): void
   (event: 'upload'): void
+  (event: 'remove'): void
   (event: 'update:photo-size' | 'update:photo-border-width', value: number): void
-  (event: 'update:photo-position', value: 'left' | 'center' | 'right'): void
+  (event: 'update:photo-position', value: 'left' | 'right'): void
 }>()
 
 const isMenuOpen = ref(false)
 
 function handlePhotoPositionUpdate(value: unknown) {
-  if (value === 'left' || value === 'center' || value === 'right') {
+  if (value === 'left' || value === 'right') {
     emit('update:photo-position', value)
   }
 }
@@ -52,14 +53,24 @@ function handlePhotoPositionUpdate(value: unknown) {
 
       <v-card class="photo-menu" elevation="10">
         <v-card-text class="photo-menu__content">
-          <v-btn
-            size="small"
-            variant="tonal"
-            color="primary"
-            prepend-icon="mdi-upload"
-            text="Upload / Remplacer"
-            @click="emit('upload')"
-          />
+          <div class="photo-menu__actions">
+            <v-btn
+              size="small"
+              variant="tonal"
+              color="primary"
+              prepend-icon="mdi-upload"
+              text="Upload / Remplacer"
+              @click="emit('upload')"
+            />
+            <v-btn
+              size="small"
+              variant="text"
+              color="error"
+              prepend-icon="mdi-delete-outline"
+              text="Retirer"
+              @click="emit('remove')"
+            />
+          </div>
 
           <div class="photo-menu__section">
             <p class="photo-menu__label">Forme avatar</p>
@@ -113,7 +124,6 @@ function handlePhotoPositionUpdate(value: unknown) {
               @update:model-value="handlePhotoPositionUpdate"
             >
               <v-btn value="left" size="x-small">G</v-btn>
-              <v-btn value="center" size="x-small">C</v-btn>
               <v-btn value="right" size="x-small">D</v-btn>
             </v-btn-toggle>
           </div>
@@ -171,6 +181,17 @@ function handlePhotoPositionUpdate(value: unknown) {
 .photo-menu__section {
   display: grid;
   gap: 4px;
+  padding: 8px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--cv-surface-soft) 85%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cv-accent) 8%, transparent);
+}
+
+.photo-menu__actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .photo-menu__label {
