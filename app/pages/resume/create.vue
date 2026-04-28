@@ -14,6 +14,12 @@ import {
 import { useResumeDocumentState } from '~/composables/useResumeDocumentState'
 import { levelToStars, starsToPercent } from '~/utils/resumeLanguageLevel'
 import ResumeRenderer from '~/components/Resume/Templates/ResumeRenderer.vue'
+import {
+  isResumeEditableSectionKey,
+  type ResumeEditableSectionKey,
+  type ResumePreviewSectionKey,
+  type ResumeSectionActionKey,
+} from '~/types/resumeDocumentModel'
 
 definePageMeta({
   title: 'Create Resume',
@@ -224,9 +230,6 @@ type AddSectionType =
   | 'project'
   | 'certification'
   | 'reference'
-type PreviewSectionKey = 'experience' | 'education' | 'language' | 'project'
-type EditableSectionKey = PreviewSectionKey | 'skill' | 'reference' | 'hobby' | 'certification'
-type SharedSectionActionKey = EditableSectionKey | 'course'
 type SectionLayoutVariant = {
   experience: 'detailed' | 'bullets' | 'compact'
   education: 'classic' | 'timeline' | 'two-column'
@@ -237,7 +240,7 @@ type SectionLayoutVariant = {
   hobby: 'classic'
   certification: 'classic'
 }
-type SectionLayoutEntry<K extends EditableSectionKey = EditableSectionKey> = {
+type SectionLayoutEntry<K extends ResumeEditableSectionKey = ResumeEditableSectionKey> = {
   key: K
   variant: SectionLayoutVariant[K]
   region: 'main' | 'aside'
@@ -333,7 +336,7 @@ const sectionVariantLabels: Record<string, string> = {
   list: 'List',
 }
 const sectionConfig: {
-  [K in PreviewSectionKey]: {
+  [K in ResumePreviewSectionKey]: {
     label: string
     collection: 'experiences' | 'education' | 'languages' | 'projects'
   }
@@ -356,7 +359,7 @@ const sectionConfig: {
   },
 }
 const variantRegistry: {
-  [K in EditableSectionKey]: {
+  [K in ResumeEditableSectionKey]: {
     allowed: SectionLayoutVariant[K][]
     fallback: SectionLayoutVariant[K]
   }
@@ -382,10 +385,10 @@ const defaultSectionLayoutEntries: SectionLayoutEntry[] = [
 ]
 
 function normalizeSectionLayout(entries: Array<Partial<SectionLayoutEntry>> | SectionLayoutEntry[]) {
-  const entryByKey = new Map<EditableSectionKey, Partial<SectionLayoutEntry>>()
+  const entryByKey = new Map<ResumeEditableSectionKey, Partial<SectionLayoutEntry>>()
   for (const entry of entries) {
-    if (!entry || typeof entry.key !== 'string' || !(entry.key in variantRegistry)) continue
-    entryByKey.set(entry.key as EditableSectionKey, entry)
+    if (!entry || typeof entry.key !== 'string' || !isResumeEditableSectionKey(entry.key)) continue
+    entryByKey.set(entry.key, entry)
   }
 
   return defaultSectionLayoutEntries.map((fallback) => {
@@ -702,8 +705,8 @@ const sectionLayout = ref<SectionLayoutEntry[]>(
   normalizeSectionLayout(defaultSectionLayoutEntries),
 )
 const sectionItemDialogOpen = ref(false)
-const activeSectionKey = ref<PreviewSectionKey>('experience')
-const activeVariant = ref<SectionLayoutVariant[PreviewSectionKey]>('detailed')
+const activeSectionKey = ref<ResumePreviewSectionKey>('experience')
+const activeVariant = ref<SectionLayoutVariant[ResumePreviewSectionKey]>('detailed')
 // single source of truth: canonical section draft factories (used for init + reset)
 const createProfileDraft = () => ({ profile: '' })
 const createExperienceDraft = () => ({
@@ -1466,18 +1469,18 @@ const orderedPreviewSections = computed(() =>
   }),
 )
 
-const sectionVariantByKey = computed<Partial<Record<EditableSectionKey, string>>>(() => (
+const sectionVariantByKey = computed<Partial<Record<ResumeEditableSectionKey, string>>>(() => (
   Object.fromEntries(sectionLayout.value.map(section => [section.key, section.variant]))
 ))
 const skillVariantFromLayout = computed(() => (
   String(sectionVariantByKey.value.skill || variantRegistry.skill.fallback)
 ))
 
-function sectionDisplayLabel(sectionKey: PreviewSectionKey) {
+function sectionDisplayLabel(sectionKey: ResumePreviewSectionKey) {
   return sectionConfig[sectionKey].label
 }
 
-function resetSectionItemDraft(section: PreviewSectionKey) {
+function resetSectionItemDraft(section: ResumePreviewSectionKey) {
   switch (section) {
     case 'experience':
       sectionItemDraft.experience = createSectionItemExperienceDraft()
@@ -1532,7 +1535,7 @@ function buildExperienceContentFromDraft(draft: typeof sectionItemDraft.experien
   }
 }
 
-function openSectionItemDialog(section: PreviewSectionKey) {
+function openSectionItemDialog(section: ResumePreviewSectionKey) {
   activeSectionKey.value = section
   activeVariant.value = sectionLayout.value.find(item => item.key === section)?.variant ?? variantRegistry[section].fallback
   resetSectionItemDraft(section)
@@ -1612,7 +1615,7 @@ function submitSectionItemDialog() {
   sectionItemDialogOpen.value = false
 }
 
-function addItemToPreviewSection(section: SharedSectionActionKey) {
+function addItemToPreviewSection(section: ResumeSectionActionKey) {
   if (section === 'course') {
     openAddSectionDialog('certification')
     return
@@ -1624,7 +1627,7 @@ function addItemToPreviewSection(section: SharedSectionActionKey) {
   openSectionItemDialog(section)
 }
 
-function normalizeSectionVariant<K extends EditableSectionKey>(
+function normalizeSectionVariant<K extends ResumeEditableSectionKey>(
   key: K,
   variant: unknown,
 ): SectionLayoutVariant[K] {
@@ -1638,7 +1641,7 @@ function normalizeSectionVariant<K extends EditableSectionKey>(
   return registry.fallback
 }
 
-function moveSectionUp(sectionKey: EditableSectionKey) {
+function moveSectionUp(sectionKey: ResumeEditableSectionKey) {
   const currentSection = sectionLayout.value.find(item => item.key === sectionKey)
   if (!currentSection) return
   const regionEntries = [...sectionLayout.value]
@@ -1652,7 +1655,7 @@ function moveSectionUp(sectionKey: EditableSectionKey) {
   previous.order = originalOrder
 }
 
-function moveSectionDown(sectionKey: EditableSectionKey) {
+function moveSectionDown(sectionKey: ResumeEditableSectionKey) {
   const currentSection = sectionLayout.value.find(item => item.key === sectionKey)
   if (!currentSection) return
   const regionEntries = [...sectionLayout.value]
@@ -1666,7 +1669,7 @@ function moveSectionDown(sectionKey: EditableSectionKey) {
   next.order = originalOrder
 }
 
-function moveSection(sectionKey: EditableSectionKey, direction: 'up' | 'down') {
+function moveSection(sectionKey: ResumeEditableSectionKey, direction: 'up' | 'down') {
   if (direction === 'up') {
     moveSectionUp(sectionKey)
     return
@@ -1674,7 +1677,7 @@ function moveSection(sectionKey: EditableSectionKey, direction: 'up' | 'down') {
   moveSectionDown(sectionKey)
 }
 
-function setSectionVariant<K extends EditableSectionKey>(key: K, variant: SectionLayoutVariant[K] | string) {
+function setSectionVariant<K extends ResumeEditableSectionKey>(key: K, variant: SectionLayoutVariant[K] | string) {
   const target = sectionLayout.value.find(section => section.key === key)
   if (!target) return
   const normalizedVariant = normalizeSectionVariant(key, variant)

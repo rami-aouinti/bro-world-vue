@@ -7,10 +7,11 @@ import ResumeSectionHobby from '~/components/Resume/Sections/ResumeSectionHobby.
 import ResumeSectionCertification from '~/components/Resume/Sections/ResumeSectionCertification.vue'
 import ResumeSectionReference from '~/components/Resume/Sections/ResumeSectionReference.vue'
 import ResumeSectionSkill from '~/components/Resume/Sections/ResumeSectionSkill.vue'
-import type { ResumeSectionIconStyle, ResumeSectionKey } from '~/constants/resumeTemplateSkins'
+import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
+import type { ResumeEditableSectionKey } from '~/types/resumeDocumentModel'
 
 const props = withDefaults(defineProps<{
-  sectionKey: ResumeSectionKey | 'skill'
+  sectionKey: ResumeEditableSectionKey
   resume: any
   editable?: boolean
   variant: string
@@ -37,9 +38,9 @@ const props = withDefaults(defineProps<{
 })
 
 const emit = defineEmits<{
-  (event: 'add-item', sectionKey: ResumeSectionKey | 'skill'): void
-  (event: 'change-variant', sectionKey: ResumeSectionKey | 'skill', variant: string): void
-  (event: 'move-section', sectionKey: ResumeSectionKey | 'skill', direction: 'up' | 'down'): void
+  (event: 'add-item', sectionKey: ResumeEditableSectionKey): void
+  (event: 'change-variant', sectionKey: ResumeEditableSectionKey, variant: string): void
+  (event: 'move-section', sectionKey: ResumeEditableSectionKey, direction: 'up' | 'down'): void
 }>()
 
 const componentBySectionKey = {
@@ -73,11 +74,11 @@ const sectionHeadingProps = computed(() => {
   return {}
 })
 
-function onVariantChange(_: ResumeSectionKey | 'skill', variant: string) {
+function onVariantChange(_: ResumeEditableSectionKey, variant: string) {
   emit('change-variant', props.sectionKey, variant)
 }
 
-function onMoveSection(_: ResumeSectionKey | 'skill', direction: 'up' | 'down') {
+function onMoveSection(_: ResumeEditableSectionKey, direction: 'up' | 'down') {
   emit('move-section', props.sectionKey, direction)
 }
 </script>
