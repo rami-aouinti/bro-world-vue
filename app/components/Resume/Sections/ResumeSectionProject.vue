@@ -5,7 +5,10 @@ import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
 const props = withDefaults(defineProps<{
   resume: any
   editable?: boolean
-  variant?: 'classic' | 'list' | 'cards' | 'two-column' | string
+  variant?: 'classic' | 'list' | 'cards' | 'two-column' | 'timeline' | string
+  layoutSettings?: {
+    dateColumnWidth?: number | string
+  }
   themeTokens?: Record<string, string | number>
   layoutDensity?: 'compact' | 'normal' | 'spacious' | string
   toolbarEnabled?: boolean
@@ -18,6 +21,7 @@ const props = withDefaults(defineProps<{
 }>(), {
   editable: false,
   variant: 'list',
+  layoutSettings: () => ({}),
   themeTokens: () => ({}),
   layoutDensity: 'normal',
   toolbarEnabled: false,
@@ -33,7 +37,14 @@ const emit = defineEmits<{
   (event: 'change-variant', sectionKey: 'project', variant: string): void
   (event: 'move-section', sectionKey: 'project', direction: 'up' | 'down'): void
 }>()
-const sectionStyle = computed(() => ({ ...props.themeTokens }))
+const sectionStyle = computed(() => {
+  const width = props.layoutSettings?.dateColumnWidth
+  const normalized = typeof width === 'number' ? `${width}px` : width
+  return {
+    ...props.themeTokens,
+    '--resume-date-column-width': normalized || '140px',
+  }
+})
 const iconVariantClass = computed(() =>
   props.sectionIconStyle?.variant ? `section-icon--${props.sectionIconStyle.variant}` : 'section-icon--outline',
 )
@@ -42,8 +53,8 @@ const iconStyle = computed(() => ({
   '--resume-section-icon-color': props.sectionIconStyle?.color ?? 'var(--cv-accent)',
   '--resume-section-icon-gap': `${props.sectionIconStyle?.spacing ?? 8}px`,
 }))
-const safeVariant = computed<'classic' | 'list' | 'cards' | 'two-column'>(() => {
-  if (props.variant === 'classic' || props.variant === 'list' || props.variant === 'cards' || props.variant === 'two-column') {
+const safeVariant = computed<'classic' | 'list' | 'cards' | 'two-column' | 'timeline'>(() => {
+  if (props.variant === 'classic' || props.variant === 'list' || props.variant === 'cards' || props.variant === 'two-column' || props.variant === 'timeline') {
     return props.variant
   }
   if (import.meta.dev) {
@@ -51,6 +62,7 @@ const safeVariant = computed<'classic' | 'list' | 'cards' | 'two-column'>(() => 
   }
   return 'classic'
 })
+const isTimelineVariant = computed(() => safeVariant.value === 'timeline')
 function updateText(path: string, value: string) {
   const segments = path.split('.')
   const last = segments.pop()
@@ -81,10 +93,30 @@ function providerIcon(project: Record<string, any>) {
   if (provider === 'other') return 'mdi-source-repository'
   return ''
 }
+
+function resolveContentStyle(item: Record<string, unknown>) {
+  return item.contentStyle === 'dashes' || item.contentStyle === 'timeline' ? item.contentStyle : 'points'
+}
+
+function resolvePoints(item: Record<string, unknown>) {
+  if (Array.isArray(item.points) && item.points.length) return item.points
+  const summary = String(item.summary || '').trim()
+  return summary ? [summary] : []
+}
+
+function resolveDashes(item: Record<string, unknown>) {
+  if (Array.isArray(item.dashes) && item.dashes.length) return item.dashes
+  return resolvePoints(item)
+}
+
+function resolveTimelineEvents(item: Record<string, unknown>) {
+  if (Array.isArray(item.timelineEvents) && item.timelineEvents.length) return item.timelineEvents
+  return resolvePoints(item).map(detail => ({ label: '', detail }))
+}
 </script>
 <template>
-  <section :class="['project-section', 'resume-section-hoverable', `density-${layoutDensity}`]" :style="sectionStyle">
-    <SectionToolbar v-if="toolbarEnabled" section-key="project" :variants="[{ label: 'List', value: 'list' }, { label: 'Cards', value: 'cards' }, { label: 'Two columns', value: 'two-column' }]" :current-variant="safeVariant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'project')" @change-variant="(_, next) => emit('change-variant', 'project', next)" @move-up="() => emit('move-section', 'project', 'up')" @move-down="() => emit('move-section', 'project', 'down')" />
+  <section :class="['project-section', 'resume-section-hoverable', `density-${layoutDensity}`, { 'project-section--timeline': isTimelineVariant }]" :style="sectionStyle">
+    <SectionToolbar v-if="toolbarEnabled" section-key="project" :variants="[{ label: 'List', value: 'list' }, { label: 'Timeline', value: 'timeline' }, { label: 'Cards', value: 'cards' }, { label: 'Two columns', value: 'two-column' }]" :current-variant="safeVariant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'project')" @change-variant="(_, next) => emit('change-variant', 'project', next)" @move-up="() => emit('move-section', 'project', 'up')" @move-down="() => emit('move-section', 'project', 'down')" />
     <h2 class="cv-heading-section">
       <span v-if="showSectionIcon && sectionIcon" class="section-icon" :class="iconVariantClass" :style="iconStyle">
         <v-icon :icon="sectionIcon" :size="sectionIconStyle?.size ?? 18" />
@@ -98,25 +130,48 @@ function providerIcon(project: Record<string, any>) {
         class="entry text-dark"
         :class="{ 'project-card': safeVariant === 'cards' || safeVariant === 'two-column' }"
       >
-        <div class="project-heading-row">
-          <v-avatar v-if="project.imageUrl || project.company?.logo" size="40" rounded="lg" class="project-thumb">
-            <v-img :src="project.imageUrl || project.company?.logo" cover />
-          </v-avatar>
-          <h4 class="text-dark project-title">
-            <a
-              v-if="project.repositoryUrl"
-              :href="project.repositoryUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="project-title-link"
-            >
-              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span>
-              <v-icon v-if="providerIcon(project)" :icon="providerIcon(project)" size="16" class="ml-1" />
-            </a>
-            <span v-else class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span>
-          </h4>
+        <div class="date-column dates">
+          <span class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.start`, (event.target as HTMLElement).innerText)">{{ project.start || project.period || '' }}</span>
+          <template v-if="project.end || project.periodEnd">
+            -
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.end`, (event.target as HTMLElement).innerText)">{{ project.end || project.periodEnd }}</span>
+          </template>
         </div>
-        <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
+        <div class="content-column">
+          <div class="project-heading-row">
+            <v-avatar v-if="project.imageUrl || project.company?.logo" size="40" rounded="lg" class="project-thumb">
+              <v-img :src="project.imageUrl || project.company?.logo" cover />
+            </v-avatar>
+            <h4 class="text-dark project-title">
+              <a
+                v-if="project.repositoryUrl"
+                :href="project.repositoryUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="project-title-link"
+              >
+                <span class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span>
+                <v-icon v-if="providerIcon(project)" :icon="providerIcon(project)" size="16" class="ml-1" />
+              </a>
+              <span v-else class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span>
+            </h4>
+          </div>
+          <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
+        </div>
+        <template v-if="resolveContentStyle(project) === 'timeline'">
+          <div class="timeline-block">
+            <div v-for="(event, eventIndex) in resolveTimelineEvents(project)" :key="eventIndex" class="timeline-event">
+              <strong class="editable-text" :contenteditable="editable" @input="entry => updateText(`projects.${index}.timelineEvents.${eventIndex}.label`, (entry.target as HTMLElement).innerText)">{{ event.label }}</strong>
+              <span class="editable-text" :contenteditable="editable" @input="entry => updateText(`projects.${index}.timelineEvents.${eventIndex}.detail`, (entry.target as HTMLElement).innerText)">{{ event.detail }}</span>
+            </div>
+          </div>
+        </template>
+        <ul v-else-if="resolveContentStyle(project) === 'dashes'" class="dash-list">
+          <li v-for="(dash, dashIndex) in resolveDashes(project)" :key="dashIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.dashes.${dashIndex}`, (event.target as HTMLElement).innerText)">{{ dash }}</li>
+        </ul>
+        <ul v-else>
+          <li v-for="(point, pointIndex) in resolvePoints(project)" :key="pointIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.points.${pointIndex}`, (event.target as HTMLElement).innerText)">{{ point }}</li>
+        </ul>
       </article>
     </div>
   </section>
@@ -173,15 +228,25 @@ function providerIcon(project: Record<string, any>) {
 .project-title-link { color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 2px; }
 .project-title-link:hover { text-decoration: underline; }
 .entry {
+  display: grid;
+  grid-template-columns: minmax(0, var(--resume-date-column-width, 140px)) minmax(0, 1fr);
+  column-gap: var(--cv-space-4);
+  align-items: start;
   position: relative;
   border: var(--rs-card-border, none);
   background: var(--rs-card-bg, transparent);
   border-radius: var(--rs-card-radius, 0);
   padding: var(--rs-card-padding, 0);
+}
+.date-column {
+  color: color-mix(in srgb, var(--cv-text, currentColor) 78%, transparent);
+}
+.content-column {
+  position: relative;
   border-left: var(--rs-entry-border-left, none);
   padding-left: var(--rs-entry-padding-left, 0);
 }
-.entry::before {
+.content-column::before {
   content: '';
   position: absolute;
   left: calc((var(--cv-space-2) + var(--cv-space-1)) * -1);
@@ -192,7 +257,27 @@ function providerIcon(project: Record<string, any>) {
   background: var(--cv-marker-accent);
 }
 .project-card { border: 1px solid var(--cv-card-border-soft); border-radius: calc(var(--resume-section-icon-radius, 8px) + 2px); padding: calc(var(--cv-space-2) + var(--cv-space-1) / 2); }
+.project-section--timeline .content-column {
+  border-left: 2px solid color-mix(in srgb, var(--cv-accent) 38%, transparent);
+  padding-left: calc(var(--cv-space-2) + var(--cv-space-1) / 2);
+}
+.project-section--timeline .content-column::before {
+  width: max(8px, var(--rs-marker-width, var(--rs-marker-size, 8px)));
+  height: max(8px, var(--rs-marker-height, var(--rs-marker-size, 8px)));
+  border-radius: 999px;
+  background: var(--cv-accent);
+}
+@media (max-width: 760px) {
+  .entry {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--cv-space-2);
+  }
+}
 .density-compact { --entry-gap: var(--cv-space-2); }
 .density-normal { --entry-gap: var(--cv-space-3); }
 .density-spacious { --entry-gap: var(--cv-space-4); }
+.dash-list { list-style: none; padding-left: 0; margin: 6px 0 0; }
+.dash-list li::before { content: '— '; }
+.timeline-block { display: grid; gap: 6px; margin-top: 6px; }
+.timeline-event { display: grid; gap: 2px; border-left: 2px solid var(--cv-marker-accent); padding-left: 8px; }
 </style>
