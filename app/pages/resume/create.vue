@@ -238,6 +238,10 @@ type PhotoShapeOption = {
   value: PhotoShape
   icon: string
 }
+type LayoutModeOption = {
+  label: string
+  value: ResumeLayoutMode
+}
 type LayoutSettings = {
   photoSize: number
   photoBorderWidth: number
@@ -327,6 +331,11 @@ const photoShapeOptions = [
   { label: 'Blob', value: 'soft-blob', icon: '⬭' },
   { label: 'Hex', value: 'hex', icon: '⬢' },
 ] as const satisfies ReadonlyArray<PhotoShapeOption>
+const layoutModeOptions = [
+  { label: 'Aside left', value: 'aside-left' },
+  { label: 'Aside right', value: 'aside-right' },
+  { label: 'No aside', value: 'no-aside' },
+] as const satisfies ReadonlyArray<LayoutModeOption>
 
 const templateFilters = [
   { label: 'All', value: 'all' },
@@ -1907,10 +1916,6 @@ watch(selectedTemplate, () => {
   resetRendererGuard()
 })
 
-watch(selectedTemplateSkin, (skin) => {
-  layoutSettings.layoutMode = skin.layoutMode
-}, { immediate: true })
-
 onErrorCaptured((error, instance, info) => {
   const componentName = instance?.type && typeof instance.type === 'object' && 'name' in instance.type
     ? String(instance.type.name || 'unknown')
@@ -2664,6 +2669,80 @@ if (import.meta.client) {
 
 <template>
   <v-container fluid class="resume-create pa-0">
+    <AppPageDrawers>
+      <template #right>
+        <div class="builder-preview resume-preview-drawer py-6 px-2">
+          <div class="resume-preview-wrapper">
+            <div
+              ref="previewExportRef"
+              class="preview-grid resume-preview-frame"
+              :class="[...previewDesignClasses, `photo-shape-${safePhotoShape}`]"
+              :style="previewStyle"
+            >
+              <div class="cv-preview-stage" :class="{ 'cv-preview-stage--bordered': selectedRounded !== 'none' }">
+                <div class="cv-page-shell" :class="previewDesignClasses">
+                  <template v-if="rendererReady">
+                    <ResumeRenderer
+                      :class="previewDesignClasses"
+                      :resume="resume"
+                      :show-photo="templateSupportsPhoto"
+                      :design-state="resumeRendererDesignState"
+                      :layout-mode="layoutSettings.layoutMode"
+                      :photo-offset-x="resume.photoOffsetX"
+                      :photo-offset-y="resume.photoOffsetY"
+                      :photo-scale="resume.photoScale"
+                      :photo-hidden="resume.photoHidden"
+                      :section-layout="orderedPreviewSections"
+                      :section-variants="sectionVariantByKey"
+                      :photo-shape-options="photoShapeOptions"
+                      :selected-photo-shape="safePhotoShape"
+                      :on-photo-click="onPreviewPhotoClick"
+                      :on-photo-shape-select="(shape) => selectedPhotoShape = shape"
+                      :template-skin="selectedTemplateSkin"
+                      editable
+                      @add-item="addItemToPreviewSection"
+                      @change-variant="setSectionVariant"
+                      @move-photo="movePhoto"
+                      @open-photo-picker="openPhotoPicker"
+                      @update:photo-size="layoutSettings.photoSize = $event"
+                      @update:photo-border-width="layoutSettings.photoBorderWidth = $event"
+                      @update:photo-position="layoutSettings.photoPosition = $event"
+                      @move-section="moveSection"
+                    />
+                  </template>
+                  <div v-else class="preview-fallback">
+                    <v-alert type="error" variant="tonal" density="comfortable" class="mb-3">
+                      {{ rendererError || 'La prévisualisation n’est pas disponible pour le moment.' }}
+                    </v-alert>
+                    <h2 class="text-h5 mb-2">{{ `${resume.firstName} ${resume.lastName}`.trim() || 'Votre nom' }}</h2>
+                    <p class="text-body-2 mb-4">{{ resume.role || 'Titre du poste' }}</p>
+                    <section
+                      v-for="section in previewFallbackSections"
+                      :key="`preview-fallback-${section.title}`"
+                      class="mb-3"
+                    >
+                      <h3 class="text-subtitle-2 mb-1">{{ section.title }}</h3>
+                      <ul class="pl-4">
+                        <li v-for="item in section.items" :key="`${section.title}-${item}`">
+                          {{ item }}
+                        </li>
+                      </ul>
+                    </section>
+                    <v-btn size="small" variant="outlined" prepend-icon="mdi-refresh" @click="resetRendererGuard">
+                      Réessayer le rendu
+                    </v-btn>
+                  </div>
+                  <div v-if="signatureDataUrl" class="signature-overlay">
+                    <img :src="signatureDataUrl" alt="Signature" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </AppPageDrawers>
+
     <div class="local-toolbar-actions">
       <div class="local-toolbar-actions__row">
         <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" @click="openSaveModal" />
@@ -2758,6 +2837,16 @@ if (import.meta.client) {
                 label="Typography preset"
                 density="comfortable"
                 hide-details
+              />
+              <AppSelect
+                v-model="layoutSettings.layoutMode"
+                :items="layoutModeOptions"
+                item-title="label"
+                item-value="value"
+                label="Layout"
+                density="comfortable"
+                hide-details
+                class="mt-3"
               />
             </v-card-text>
           </v-card>
@@ -4032,6 +4121,7 @@ if (import.meta.client) {
                     :resume="resume"
                     :show-photo="templateSupportsPhoto"
                     :design-state="resumeRendererDesignState"
+                    :layout-mode="layoutSettings.layoutMode"
                     :photo-offset-x="resume.photoOffsetX"
                     :photo-offset-y="resume.photoOffsetY"
                     :photo-scale="resume.photoScale"
