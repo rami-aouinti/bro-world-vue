@@ -1398,15 +1398,15 @@ function submitAddSection() {
     case 'experience':
       {
         const experience: Experience = {
-        role: addSectionDraft.experience.role,
-        company: addSectionDraft.experience.company,
-        companyImageUrl: addSectionDraft.experience.companyImageUrl?.trim(),
-        city: addSectionDraft.experience.city,
-        start: addSectionDraft.experience.start,
-        end: addSectionDraft.experience.end,
-        bullets: parseMultilineList(addSectionDraft.experience.bullets),
-        contentStyle: addSectionDraft.experience.contentStyle,
-      }
+          role: addSectionDraft.experience.role,
+          company: addSectionDraft.experience.company,
+          companyImageUrl: addSectionDraft.experience.companyImageUrl?.trim(),
+          city: addSectionDraft.experience.city,
+          start: addSectionDraft.experience.start,
+          end: addSectionDraft.experience.end,
+          bullets: parseMultilineList(addSectionDraft.experience.bullets),
+          contentStyle: addSectionDraft.experience.contentStyle,
+        }
         applyContentFields(experience, addSectionDraft.experience.bullets)
         resume.experiences.push(experience)
       }
@@ -1414,15 +1414,15 @@ function submitAddSection() {
     case 'education':
       {
         const education: Education = {
-        degree: addSectionDraft.education.degree,
-        school: addSectionDraft.education.school,
-        schoolImageUrl: addSectionDraft.education.schoolImageUrl.trim(),
-        city: addSectionDraft.education.city,
-        start: addSectionDraft.education.start,
-        end: addSectionDraft.education.end,
-        note: addSectionDraft.education.note,
-        contentStyle: addSectionDraft.education.contentStyle,
-      }
+          degree: addSectionDraft.education.degree,
+          school: addSectionDraft.education.school,
+          schoolImageUrl: addSectionDraft.education.schoolImageUrl.trim(),
+          city: addSectionDraft.education.city,
+          start: addSectionDraft.education.start,
+          end: addSectionDraft.education.end,
+          note: addSectionDraft.education.note,
+          contentStyle: addSectionDraft.education.contentStyle,
+        }
         applyContentFields(education, addSectionDraft.education.note)
         resume.education.push(education)
       }
@@ -1441,11 +1441,9 @@ function submitAddSection() {
     case 'project':
       {
         const project: Project = {
-        ...addSectionDraft.project,
-        repositoryProvider: addSectionDraft.project.repositoryProvider || detectRepositoryProvider(addSectionDraft.project.repositoryUrl),
-      })
-        repositoryProvider: detectRepositoryProvider(addSectionDraft.project.repositoryUrl),
-      }
+          ...addSectionDraft.project,
+          repositoryProvider: addSectionDraft.project.repositoryProvider || detectRepositoryProvider(addSectionDraft.project.repositoryUrl),
+        }
         applyContentFields(project, addSectionDraft.project.summary)
         resume.projects.push(project)
       }
@@ -1472,9 +1470,6 @@ const orderedPreviewSections = computed(() =>
 const sectionVariantByKey = computed<Partial<Record<ResumeEditableSectionKey, string>>>(() => (
   Object.fromEntries(sectionLayout.value.map(section => [section.key, section.variant]))
 ))
-const skillVariantFromLayout = computed(() => (
-  String(sectionVariantByKey.value.skill || variantRegistry.skill.fallback)
-))
 
 function sectionDisplayLabel(sectionKey: ResumePreviewSectionKey) {
   return sectionConfig[sectionKey].label
@@ -1498,43 +1493,6 @@ function resetSectionItemDraft(section: ResumePreviewSectionKey) {
   }
 }
 
-function splitTextToLines(value: string) {
-  return value
-    .split('\n')
-    .map(line => line.trim())
-    .filter(Boolean)
-}
-
-function buildExperienceContentFromDraft(draft: typeof sectionItemDraft.experience) {
-  if (draft.contentStyle === 'timeline-note') {
-    const description = draft.timelineDescription.trim()
-    return {
-      contentStyle: 'timeline-note' as ExperienceContentStyle,
-      bullets: description ? [description] : [],
-      timelineEventTitle: draft.timelineEventTitle.trim(),
-      timelineDateRange: draft.timelineDateRange.trim(),
-      timelineDescription: description,
-    }
-  }
-  if (draft.contentStyle === 'bullets' || draft.contentStyle === 'dashes') {
-    return {
-      contentStyle: draft.contentStyle,
-      bullets: splitTextToLines(draft.lines),
-      timelineEventTitle: '',
-      timelineDateRange: '',
-      timelineDescription: '',
-    }
-  }
-  const paragraph = draft.paragraph.trim()
-  return {
-    contentStyle: 'paragraph' as ExperienceContentStyle,
-    bullets: paragraph ? [paragraph] : [],
-    timelineEventTitle: '',
-    timelineDateRange: '',
-    timelineDescription: '',
-  }
-}
-
 function openSectionItemDialog(section: ResumePreviewSectionKey) {
   activeSectionKey.value = section
   activeVariant.value = sectionLayout.value.find(item => item.key === section)?.variant ?? variantRegistry[section].fallback
@@ -1548,36 +1506,31 @@ function submitSectionItemDialog() {
     case 'experience':
       {
         const experience: Experience = {
-    case 'experience': {
-      const experienceContent = buildExperienceContentFromDraft(sectionItemDraft.experience)
-      item = {
-        role: sectionItemDraft.experience.role,
-        company: sectionItemDraft.experience.company,
-        companyImageUrl: sectionItemDraft.experience.companyImageUrl?.trim(),
-        city: sectionItemDraft.experience.city,
-        start: sectionItemDraft.experience.start,
-        end: sectionItemDraft.experience.end,
-        bullets: parseMultilineList(sectionItemDraft.experience.bullets),
-        contentStyle: sectionItemDraft.experience.contentStyle,
-      }
+          role: sectionItemDraft.experience.role,
+          company: sectionItemDraft.experience.company,
+          companyImageUrl: sectionItemDraft.experience.companyImageUrl?.trim(),
+          city: sectionItemDraft.experience.city,
+          start: sectionItemDraft.experience.start,
+          end: sectionItemDraft.experience.end,
+          bullets: parseMultilineList(sectionItemDraft.experience.bullets),
+          contentStyle: sectionItemDraft.experience.contentStyle,
+        }
         applyContentFields(experience, sectionItemDraft.experience.bullets)
         item = experience
-        ...experienceContent,
       }
       break
-    }
     case 'education':
       {
         const education: Education = {
-        degree: sectionItemDraft.education.degree,
-        school: sectionItemDraft.education.school,
-        schoolImageUrl: sectionItemDraft.education.schoolImageUrl.trim(),
-        city: sectionItemDraft.education.city,
-        start: sectionItemDraft.education.start,
-        end: sectionItemDraft.education.end,
-        note: sectionItemDraft.education.note,
-        contentStyle: sectionItemDraft.education.contentStyle,
-      }
+          degree: sectionItemDraft.education.degree,
+          school: sectionItemDraft.education.school,
+          schoolImageUrl: sectionItemDraft.education.schoolImageUrl.trim(),
+          city: sectionItemDraft.education.city,
+          start: sectionItemDraft.education.start,
+          end: sectionItemDraft.education.end,
+          note: sectionItemDraft.education.note,
+          contentStyle: sectionItemDraft.education.contentStyle,
+        }
         applyContentFields(education, sectionItemDraft.education.note)
         item = education
       }
@@ -1595,14 +1548,13 @@ function submitSectionItemDialog() {
     case 'project':
       {
         const project: Project = {
-        name: sectionItemDraft.project.name,
-        summary: sectionItemDraft.project.summary,
-        imageUrl: sectionItemDraft.project.imageUrl.trim(),
-        repositoryUrl: sectionItemDraft.project.repositoryUrl.trim(),
-        repositoryProvider: sectionItemDraft.project.repositoryProvider || detectRepositoryProvider(sectionItemDraft.project.repositoryUrl.trim()),
-        repositoryProvider: detectRepositoryProvider(sectionItemDraft.project.repositoryUrl.trim()),
-        contentStyle: sectionItemDraft.project.contentStyle,
-      }
+          name: sectionItemDraft.project.name,
+          summary: sectionItemDraft.project.summary,
+          imageUrl: sectionItemDraft.project.imageUrl.trim(),
+          repositoryUrl: sectionItemDraft.project.repositoryUrl.trim(),
+          repositoryProvider: sectionItemDraft.project.repositoryProvider || detectRepositoryProvider(sectionItemDraft.project.repositoryUrl.trim()),
+          contentStyle: sectionItemDraft.project.contentStyle,
+        }
         applyContentFields(project, sectionItemDraft.project.summary)
         item = project
       }
@@ -1685,10 +1637,6 @@ function setSectionVariant<K extends ResumeEditableSectionKey>(key: K, variant: 
   if (activeSectionKey.value === key) {
     activeVariant.value = normalizedVariant
   }
-}
-
-function updateSkillVariantFromToolbar(nextVariant: string) {
-  setSectionVariant('skill', nextVariant)
 }
 
 const activeTheme = computed(
@@ -1847,6 +1795,22 @@ const previewStyle = computed(() => ({
   '--cv-secondary': bestAaTextColor(activePageBackground.value.page, activeTheme.value.sidebar, 4.5),
   '--cv-on-sidebar': bestAaTextColor(activeTheme.value.sidebar, activePageBackground.value.page, 4.5),
   '--cv-on-accent': bestAaTextColor(activeTheme.value.accent, activePageBackground.value.page, 4.5),
+}))
+const resumeRendererDesignState = computed(() => ({
+  themeTokens: previewStyle.value,
+  roundedClass: activeRoundedClass.value,
+  textStyleClass: activeTextStyleClass.value,
+  density: layoutSettings.lineDensity,
+  dividerStyle: layoutSettings.sectionDividerStyle,
+  showSectionIcons: layoutSettings.showSectionIcons,
+  showContactIcons: layoutSettings.showContactIcons,
+  sectionIconStyleVariant: layoutSettings.sectionIconStyle,
+  iconSizeVariant: layoutSettings.iconSize,
+  iconColorMode: layoutSettings.iconColor,
+  sidebarWidth: layoutSettings.sidebarWidth,
+  photoSize: layoutSettings.photoSize,
+  photoBorderWidth: layoutSettings.photoBorderWidth,
+  photoPosition: layoutSettings.photoPosition,
 }))
 const selectedTemplateSupport = computed<TemplateStyleSupport | null>(() => {
   if (selectedTemplateConfig.value.documentType !== 'resume') return null
@@ -2402,235 +2366,16 @@ if (import.meta.client) {
             </div>
           </v-card>
         </v-menu>
-        <v-menu location="bottom center" origin="top center" max-width="560">
-          <template #activator="{ props }">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-palette-outline" v-bind="props" @click="openToolbarTab('design')">
-              Design
-            </v-btn>
-          </template>
-          <v-card class="toolbar-menu-card">
-            <v-card-title class="text-subtitle-2">Design</v-card-title>
-            <v-card-text>
-              <p class="section-label">Color palette</p>
-              <div class="palette-grid mb-4">
-                <button
-                  v-for="theme in colorThemes"
-                  :key="`toolbar-design-${theme.name}`"
-                  type="button"
-                  class="palette-item"
-                  :class="{ 'palette-item--active': selectedTheme === theme.name }"
-                  @click="selectedTheme = theme.name"
-                >
-                  <span :style="{ background: theme.sidebar }" />
-                  <span :style="{ background: theme.accent }" />
-                  <span :style="{ background: theme.page }" />
-                </button>
-              </div>
-
-              <p class="section-label">Page background</p>
-              <div class="palette-grid mb-4">
-                <button
-                  v-for="option in pageBackgroundValidation"
-                  :key="`toolbar-page-bg-${option.value}`"
-                  type="button"
-                  class="palette-item"
-                  :class="{ 'palette-item--active': selectedPageBackground === option.value }"
-                  :disabled="option.blocked"
-                  :title="option.blocked ? 'Fond trop sombre ou contraste insuffisant' : option.label"
-                  @click="selectedPageBackground = option.value"
-                >
-                  <span :style="{ background: option.page }" />
-                  <span :style="{ background: activeTheme.accent }" />
-                  <span :style="{ background: activeTheme.sidebar }" />
-                </button>
-              </div>
-
-              <p class="section-label">Rounded</p>
-              <v-btn-toggle
-                v-model="selectedRounded"
-                mandatory
-                divided
-                class="rounded-toggle w-100"
-                color="primary"
-              >
-                <v-btn
-                  v-for="option in roundedOptions"
-                  :key="`toolbar-rounded-${option.value}`"
-                  :value="option.value"
-                  variant="text"
-                >
-                  {{ option.title }}
-                </v-btn>
-              </v-btn-toggle>
-
-              <p class="section-label mt-4">Text style</p>
-              <AppSelect
-                v-model="selectedTextStyle"
-                :items="textStyleOptions"
-                item-title="label"
-                item-value="value"
-                label="Typography preset"
-                density="comfortable"
-                hide-details
-              />
-              <AppSelect
-                :model-value="skillVariantFromLayout"
-                :items="[
-                  { label: 'Skills · Progress', value: 'progress' },
-                  { label: 'Skills · Stars', value: 'stars' },
-                  { label: 'Skills · Dots', value: 'dots' },
-                ]"
-                item-title="label"
-                item-value="value"
-                label="Skills display"
-                density="comfortable"
-                hide-details
-                class="mt-3"
-                @update:model-value="updateSkillVariantFromToolbar"
-              />
-
-              <v-divider class="my-4" />
-              <p class="section-label">Layout settings</p>
-              <v-slider
-                v-model="layoutSettings.photoSize"
-                label="Photo size"
-                min="100"
-                max="220"
-                step="2"
-                thumb-label
-                hide-details="auto"
-              />
-              <v-slider
-                v-model="layoutSettings.photoBorderWidth"
-                label="Photo border"
-                min="0"
-                max="16"
-                step="1"
-                thumb-label
-                hide-details="auto"
-              />
-              <AppSelect
-                v-model="layoutSettings.photoPosition"
-                :items="[
-                  { label: 'Left', value: 'left' },
-                  { label: 'Center', value: 'center' },
-                  { label: 'Right', value: 'right' },
-                ]"
-                item-title="label"
-                item-value="value"
-                label="Photo position"
-                density="comfortable"
-                hide-details
-                class="mt-3"
-              />
-              <v-slider
-                v-model="layoutSettings.sidebarWidth"
-                label="Sidebar width"
-                min="220"
-                max="360"
-                step="2"
-                thumb-label
-                hide-details="auto"
-              />
-              <AppSelect
-                v-model="layoutSettings.sectionDividerStyle"
-                :items="[
-                  { label: 'None', value: 'none' },
-                  { label: 'Line', value: 'line' },
-                  { label: 'Thick', value: 'thick' },
-                ]"
-                item-title="label"
-                item-value="value"
-                label="Section divider"
-                density="comfortable"
-                hide-details
-                class="mt-3"
-              />
-              <v-switch
-                v-model="layoutSettings.showSectionIcons"
-                label="Show section icons"
-                color="primary"
-                hide-details
-                class="mt-2"
-              />
-              <v-switch
-                v-model="layoutSettings.showContactIcons"
-                label="Show contact icons"
-                color="primary"
-                hide-details
-                class="mt-2"
-              />
-              <AppSelect
-                v-model="layoutSettings.sectionIconStyle"
-                :items="[
-                  { label: 'Outline', value: 'outline' },
-                  { label: 'Filled', value: 'filled' },
-                  { label: 'Rounded', value: 'rounded' },
-                ]"
-                item-title="label"
-                item-value="value"
-                label="Icon style"
-                density="comfortable"
-                hide-details
-                class="mt-3"
-              />
-              <AppSelect
-                v-model="layoutSettings.iconSize"
-                :items="[
-                  { label: 'Small (S)', value: 's' },
-                  { label: 'Medium (M)', value: 'm' },
-                  { label: 'Large (L)', value: 'l' },
-                ]"
-                item-title="label"
-                item-value="value"
-                label="Icon size"
-                density="comfortable"
-                hide-details
-                class="mt-3"
-              />
-              <AppSelect
-                v-model="layoutSettings.iconColor"
-                :items="[
-                  { label: 'Accent', value: 'accent' },
-                  { label: 'Neutral', value: 'neutral' },
-                ]"
-                item-title="label"
-                item-value="value"
-                label="Icon color"
-                density="comfortable"
-                hide-details
-                class="mt-3"
-              />
-              <v-switch
-                v-model="layoutSettings.headingCase"
-                false-value="normal"
-                true-value="uppercase"
-                label="Uppercase headings"
-                color="primary"
-                hide-details
-                class="mt-2"
-              />
-              <v-slider
-                v-model="layoutSettings.dateColumnWidth"
-                label="Date column width"
-                min="80"
-                max="180"
-                step="2"
-                thumb-label
-                hide-details="auto"
-              />
-              <v-switch
-                v-model="layoutSettings.lineDensity"
-                false-value="comfortable"
-                true-value="compact"
-                label="Compact line density"
-                color="primary"
-                hide-details
-                class="mt-2"
-              />
-            </v-card-text>
-          </v-card>
-        </v-menu>
+        <v-btn
+          class="local-toolbar-btn"
+          color="primary"
+          size="small"
+          variant="outlined"
+          prepend-icon="mdi-palette-outline"
+          @click="openToolbarTab('design')"
+        >
+          Design
+        </v-btn>
         <v-menu location="bottom center" origin="top center" max-width="560">
           <template #activator="{ props }">
             <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-file-import-outline" v-bind="props" @click="openToolbarTab('import')">
@@ -3745,20 +3490,7 @@ if (import.meta.client) {
                 :class="previewDesignClasses"
                 :resume="resume"
                 :show-photo="templateSupportsPhoto"
-                :theme-tokens="previewStyle"
-                :rounded-class="activeRoundedClass"
-                :text-style-class="activeTextStyleClass"
-                :density="layoutSettings.lineDensity"
-                :divider-style="layoutSettings.sectionDividerStyle"
-                :show-section-icons="layoutSettings.showSectionIcons"
-                :show-contact-icons="layoutSettings.showContactIcons"
-                :section-icon-style-variant="layoutSettings.sectionIconStyle"
-                :icon-size-variant="layoutSettings.iconSize"
-                :icon-color-mode="layoutSettings.iconColor"
-                :sidebar-width="layoutSettings.sidebarWidth"
-                :photo-size="layoutSettings.photoSize"
-                :photo-border-width="layoutSettings.photoBorderWidth"
-                :photo-position="layoutSettings.photoPosition"
+                :design-state="resumeRendererDesignState"
                 :photo-offset-x="resume.photoOffsetX"
                 :photo-offset-y="resume.photoOffsetY"
                 :photo-scale="resume.photoScale"
@@ -4025,11 +3757,6 @@ if (import.meta.client) {
             </div>
             <v-select
               v-model="sectionItemDraft.experience.contentStyle"
-              :items="[
-                { title: 'Points', value: 'points' },
-                { title: 'Dashes', value: 'dashes' },
-                { title: 'Timeline', value: 'timeline' },
-              ]"
               :items="experienceContentStyleOptions"
               item-title="label"
               item-value="value"
@@ -4208,20 +3935,7 @@ if (import.meta.client) {
                   :class="previewDesignClasses"
                   :resume="resume"
                   :show-photo="templateSupportsPhoto"
-                  :theme-tokens="previewStyle"
-                  :rounded-class="activeRoundedClass"
-                  :text-style-class="activeTextStyleClass"
-                  :density="layoutSettings.lineDensity"
-                  :divider-style="layoutSettings.sectionDividerStyle"
-                  :show-section-icons="layoutSettings.showSectionIcons"
-                  :show-contact-icons="layoutSettings.showContactIcons"
-                  :section-icon-style-variant="layoutSettings.sectionIconStyle"
-                  :icon-size-variant="layoutSettings.iconSize"
-                  :icon-color-mode="layoutSettings.iconColor"
-                  :sidebar-width="layoutSettings.sidebarWidth"
-                  :photo-size="layoutSettings.photoSize"
-                  :photo-border-width="layoutSettings.photoBorderWidth"
-                  :photo-position="layoutSettings.photoPosition"
+                  :design-state="resumeRendererDesignState"
                   :photo-offset-x="resume.photoOffsetX"
                   :photo-offset-y="resume.photoOffsetY"
                   :photo-scale="resume.photoScale"
