@@ -3097,74 +3097,61 @@ if (import.meta.client) {
   <div>
     <AppPageDrawers>
       <template #left>
-        <div class="template-drawer">
-          <v-card variant="outlined" class="template-drawer__card">
-            <v-card-text class="d-grid ga-3">
-              <div>
-                <p class="text-caption font-weight-bold mb-2">Document</p>
-                <v-tabs
-                  v-model="selectedDocumentType"
-                  color="primary"
-                  density="comfortable"
-                  grow
-                  class="template-drawer__tabs"
-                >
-                  <v-tab
-                    v-for="option in documentTypeTabOptions"
-                    :key="`document-type-${option.value}`"
-                    :value="option.value"
-                    class="text-lowercase"
-                  >
-                    {{ option.label }}
-                  </v-tab>
-                </v-tabs>
-              </div>
-            </v-card-text>
-          </v-card>
-        </div>
+        <v-list
+          v-model="selectedDocumentType"
+          color="primary"
+          density="comfortable"
+          grow
+          class="bg-transparent"
+        >
+          <v-list-item
+            v-for="option in documentTypeTabOptions"
+            :key="`document-type-${option.value}`"
+            :value="option.value"
+            class="text-lowercase"
+          >
+            {{ option.label }}
+          </v-list-item>
+        </v-list>
       </template>
       <template #right>
-        <div class="template-drawer">
-          <v-card variant="outlined" class="template-drawer__card">
-            <v-card-text class="d-grid ga-3">
-              <AppSelect
-                v-if="selectedDocumentType === 'resume'"
-                :model-value="templateQuickFilter"
-                :items="templateQuickFilterOptions"
-                item-title="label"
-                item-value="value"
-                label="Filtre template"
-                density="comfortable"
-                hide-details
-                @update:model-value="onTemplateQuickFilterChange"
-              />
+        <v-chip color="primary" variant="tonal">Templates</v-chip>
+        <AppSelect
+          v-if="selectedDocumentType === 'resume'"
+          :model-value="templateQuickFilter"
+          :items="templateQuickFilterOptions"
+          item-title="label"
+          item-value="value"
+          label="Filtre template"
+          density="comfortable"
+          class="my-2"
+          hide-details
+          @update:model-value="onTemplateQuickFilterChange"
+        />
 
-              <div class="template-drawer__grid">
-                <button
-                  v-for="template in filteredTemplates"
-                  :key="`drawer-template-${template.id}`"
-                  type="button"
-                  class="template-drawer__item"
-                  :class="{
+        <div class="template-drawer__grid">
+          <button
+            v-for="template in filteredTemplates"
+            :key="`drawer-template-${template.id}`"
+            type="button"
+            class="template-drawer__item"
+            :class="{
                     'template-drawer__item--active':
                       selectedTemplate === template.id,
                   }"
-                  @click="applyTemplateSelection(template.id)"
-                >
-                  <v-img
-                    :src="template.image"
-                    :alt="template.title"
-                    height="92"
-                    cover
-                    class="template-drawer__thumb"
-                  />
-                  <span class="template-drawer__label">{{
-                    template.title
-                  }}</span>
-                </button>
-              </div>
-            </v-card-text>
-          </v-card>
+            @click="applyTemplateSelection(template.id)"
+          >
+            <v-img
+              :src="template.image"
+              :alt="template.title"
+              height="92"
+              cover
+              class="template-drawer__thumb"
+            />
+            <span class="template-drawer__label">{{
+                template.title
+              }}</span>
+          </button>
         </div>
       </template>
     </AppPageDrawers>
@@ -4773,7 +4760,7 @@ if (import.meta.client) {
 }
 
 .resume-content-main {
-  height: calc(100vh - 60px);
+  height: calc(100vh - 93px);
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
