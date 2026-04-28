@@ -667,7 +667,6 @@ onUnmounted(() => {
   presetEventsDraggable = null
 })
 </script>
-
 <template>
   <div>
     <AppPageDrawers>
