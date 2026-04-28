@@ -1108,16 +1108,15 @@ const activeTheme = computed(
     colorThemes[0],
 )
 const activePageBackground = computed(() => resolvePageBackground(selectedPageBackground.value))
-const activeRoundedClass = computed(
-  () =>
-    roundedOptions.find((item) => item.value === selectedRounded.value)
-      ?.className ?? 'radius-md',
-)
-const activeTextStyleClass = computed(
-  () =>
-    textStyleOptions.find((item) => item.value === selectedTextStyle.value)
-      ?.className ?? 'text-style-clean',
-)
+const designClassMap = computed(() => ({
+  rounded: roundedOptions.find((item) => item.value === selectedRounded.value)?.className ?? 'radius-md',
+  textStyle: `font-${selectedTextStyle.value}`,
+  spacingDensity: `density-${layoutSettings.lineDensity}`,
+  dividerStyle: `divider-${layoutSettings.sectionDividerStyle}`,
+}))
+const previewDesignClasses = computed(() => Object.values(designClassMap.value))
+const activeRoundedClass = computed(() => designClassMap.value.rounded)
+const activeTextStyleClass = computed(() => designClassMap.value.textStyle)
 const previewExportRef = ref<HTMLElement | null>(null)
 const rendererReady = ref(true)
 const rendererError = ref<string | null>(null)
@@ -2835,10 +2834,10 @@ if (import.meta.client) {
         <div
           ref="previewExportRef"
           class="preview-grid"
-          :class="[activeRoundedClass, activeTextStyleClass, `photo-shape-${safePhotoShape}`]"
+          :class="[...previewDesignClasses, `photo-shape-${safePhotoShape}`]"
           :style="previewStyle"
         >
-          <div class="cv-page-shell">
+          <div class="cv-page-shell" :class="previewDesignClasses">
             <v-alert
               v-if="selectedTemplateHasPartialSupport"
               type="warning"
@@ -2850,6 +2849,7 @@ if (import.meta.client) {
             </v-alert>
             <template v-if="rendererReady">
               <ResumeRenderer
+                :class="previewDesignClasses"
                 :resume="resume"
                 :show-photo="templateSupportsPhoto"
                 :theme-tokens="previewStyle"
@@ -3074,12 +3074,13 @@ if (import.meta.client) {
         <v-card-text class="pa-4 preview-modal-body">
           <div
             class="preview-grid"
-            :class="[activeRoundedClass, activeTextStyleClass]"
+            :class="previewDesignClasses"
             :style="previewStyle"
           >
-            <div class="cv-page-shell">
+            <div class="cv-page-shell" :class="previewDesignClasses">
               <template v-if="rendererReady">
                 <ResumeRenderer
+                  :class="previewDesignClasses"
                   :resume="resume"
                   :show-photo="templateSupportsPhoto"
                   :theme-tokens="previewStyle"
@@ -3694,31 +3695,36 @@ if (import.meta.client) {
   --cv-radius: var(--cv-space-6);
 }
 
-.preview-grid.text-style-clean {
+.preview-grid.text-style-clean,
+.preview-grid.font-clean {
   --cv-font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
   --cv-font-style: normal;
   --cv-font-weight: 400;
 }
 
-.preview-grid.text-style-italic {
+.preview-grid.text-style-italic,
+.preview-grid.font-italic {
   --cv-font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
   --cv-font-style: italic;
   --cv-font-weight: 400;
 }
 
-.preview-grid.text-style-serif {
+.preview-grid.text-style-serif,
+.preview-grid.font-serif {
   --cv-font-family: 'Merriweather', Georgia, 'Times New Roman', serif;
   --cv-font-style: normal;
   --cv-font-weight: 400;
 }
 
-.preview-grid.text-style-mono {
+.preview-grid.text-style-mono,
+.preview-grid.font-mono {
   --cv-font-family: 'IBM Plex Mono', 'Courier New', monospace;
   --cv-font-style: normal;
   --cv-font-weight: 400;
 }
 
-.preview-grid.text-style-display {
+.preview-grid.text-style-display,
+.preview-grid.font-display {
   --cv-font-family: 'Poppins', 'Avenir Next', 'Segoe UI', sans-serif;
   --cv-font-style: normal;
   --cv-font-weight: 600;
