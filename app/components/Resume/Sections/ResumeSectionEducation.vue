@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
 
 const props = withDefaults(defineProps<{
   resume: any
@@ -13,6 +14,7 @@ const props = withDefaults(defineProps<{
   canMoveDown?: boolean
   sectionIcon?: string
   showSectionIcon?: boolean
+  sectionIconStyle?: ResumeSectionIconStyle
 }>(), {
   editable: false,
   variant: 'classic',
@@ -24,6 +26,7 @@ const props = withDefaults(defineProps<{
   canMoveDown: false,
   sectionIcon: undefined,
   showSectionIcon: true,
+  sectionIconStyle: undefined,
 })
 const emit = defineEmits<{
   (event: 'add-item', sectionKey: 'education'): void
@@ -31,6 +34,14 @@ const emit = defineEmits<{
   (event: 'move-section', sectionKey: 'education', direction: 'up' | 'down'): void
 }>()
 const sectionStyle = computed(() => ({ ...props.themeTokens }))
+const iconVariantClass = computed(() =>
+  props.sectionIconStyle?.variant ? `section-icon--${props.sectionIconStyle.variant}` : 'section-icon--outline',
+)
+const iconStyle = computed(() => ({
+  '--resume-section-icon-size': `${props.sectionIconStyle?.size ?? 18}px`,
+  '--resume-section-icon-color': props.sectionIconStyle?.color ?? 'var(--cv-accent)',
+  '--resume-section-icon-gap': `${props.sectionIconStyle?.spacing ?? 8}px`,
+}))
 const safeVariant = computed<'classic' | 'timeline' | 'two-column'>(() => {
   if (props.variant === 'classic' || props.variant === 'timeline' || props.variant === 'two-column') {
     return props.variant
@@ -56,15 +67,23 @@ function updateText(path: string, value: string) {
   <section :class="['education', 'resume-section-hoverable', `density-${layoutDensity}`, `education--${safeVariant}`]" :style="sectionStyle">
     <SectionToolbar v-if="toolbarEnabled" section-key="education" :variants="[{ label: 'Classic', value: 'classic' }, { label: 'Timeline', value: 'timeline' }, { label: 'Two columns', value: 'two-column' }]" :current-variant="safeVariant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'education')" @change-variant="(_, next) => emit('change-variant', 'education', next)" @move-up="() => emit('move-section', 'education', 'up')" @move-down="() => emit('move-section', 'education', 'down')" />
     <h2 class="cv-heading-section">
-      <v-icon v-if="showSectionIcon && sectionIcon" :icon="sectionIcon" size="18" />
+      <span v-if="showSectionIcon && sectionIcon" class="section-icon" :class="iconVariantClass" :style="iconStyle">
+        <v-icon :icon="sectionIcon" :size="sectionIconStyle?.size ?? 18" />
+      </span>
       <span>{{ title }}</span>
     </h2>
     <div class="education-list">
       <article v-for="(item, index) in resume.education" :key="`${item.school}-${index}`" class="entry text-dark">
-        <h4 class="text-dark">
-          <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</span>,
-          <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</span>
-        </h4>
+        <div class="entry-heading">
+          <v-avatar class="school-logo" rounded="lg" size="30">
+            <v-img v-if="item.schoolImageUrl" :src="item.schoolImageUrl" alt="School logo" cover />
+            <v-icon v-else icon="mdi-school-outline" size="17" />
+          </v-avatar>
+          <h4 class="text-dark">
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.degree`, (event.target as HTMLElement).innerText)">{{ item.degree }}</span>,
+            <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.school`, (event.target as HTMLElement).innerText)">{{ item.school }}</span>
+          </h4>
+        </div>
         <p class="dates">
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.start`, (event.target as HTMLElement).innerText)">{{ item.start }}</span> -
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.end`, (event.target as HTMLElement).innerText)">{{ item.end }}</span>
@@ -94,11 +113,32 @@ function updateText(path: string, value: string) {
 .cv-heading-section {
   display: inline-flex;
   align-items: center;
-  gap: var(--cv-space-2);
+  gap: var(--resume-section-icon-gap, var(--cv-space-2));
   border-bottom: var(--rs-heading-border-bottom, 0);
   background: var(--rs-heading-bg, transparent);
   border-radius: var(--rs-heading-radius, 0);
   padding: var(--rs-heading-padding, 0);
+}
+.section-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--resume-section-icon-size, 18px) + 8px);
+  height: calc(var(--resume-section-icon-size, 18px) + 8px);
+  color: var(--resume-section-icon-color, var(--cv-accent));
+}
+.section-icon--outline {
+  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+  border-radius: var(--resume-section-icon-radius, 999px);
+}
+.section-icon--filled {
+  border-radius: var(--resume-section-icon-radius, 999px);
+  background: color-mix(in srgb, currentColor 88%, white);
+  color: #fff;
+}
+.section-icon--rounded {
+  border-radius: calc(var(--resume-section-icon-radius, 8px) + 2px);
+  background: color-mix(in srgb, currentColor 18%, transparent);
 }
 .education-list {
   display: block;
@@ -110,6 +150,19 @@ function updateText(path: string, value: string) {
   background: var(--rs-card-bg, transparent);
   border-radius: var(--rs-card-radius, 0);
   padding: var(--rs-card-padding, 0);
+}
+.entry-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--cv-space-2);
+}
+.entry-heading h4 {
+  margin: 0;
+}
+.school-logo {
+  flex-shrink: 0;
+  border: 1px solid color-mix(in srgb, var(--cv-accent) 20%, transparent);
+  background: color-mix(in srgb, var(--cv-accent) 6%, transparent);
 }
 
 /* Classic variant */

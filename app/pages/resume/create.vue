@@ -7,7 +7,7 @@ import {
   RESUME_TEMPLATES,
   type ResumeTemplateVariant,
 } from '~/constants/resumeTemplates'
-import { resolveTemplateSkin } from '~/constants/resumeTemplateSkins'
+import { resolveTemplateSkin, type ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
 import {
   useResumeDesignControls,
 } from '~/composables/useResumeDesignControls'
@@ -34,6 +34,7 @@ type Experience = {
 type Education = {
   degree: string
   school: string
+  schoolImageUrl?: string
   city: string
   start: string
   end: string
@@ -54,7 +55,9 @@ type Course = {
 type Project = {
   name: string
   summary: string
-  link?: string
+  imageUrl?: string
+  repositoryUrl?: string
+  repositoryProvider?: 'github' | 'gitlab' | 'other'
 }
 type StructuredUser = {
   fullName?: string
@@ -183,6 +186,11 @@ type LayoutSettings = {
   headingCase: 'normal' | 'uppercase'
   dateColumnWidth: number
   lineDensity: 'compact' | 'comfortable'
+  showSectionIcons: boolean
+  showContactIcons: boolean
+  sectionIconStyle: ResumeSectionIconStyleVariant
+  iconSize: 's' | 'm' | 'l'
+  iconColor: 'accent' | 'neutral'
 }
 type AddSectionType =
   | 'profile'
@@ -202,7 +210,7 @@ type SectionLayoutVariant = {
   education: 'classic' | 'timeline' | 'two-column'
   language: 'classic' | 'text-level' | 'stars' | 'progress' | 'flags'
   project: 'classic' | 'list' | 'cards' | 'two-column'
-  skill: 'classic'
+  skill: 'classic' | 'text-level' | 'stars' | 'dots' | 'progress'
   reference: 'classic'
   hobby: 'classic'
   certification: 'classic'
@@ -246,6 +254,11 @@ const layoutSettings = reactive<LayoutSettings>({
   headingCase: 'normal',
   dateColumnWidth: 120,
   lineDensity: 'comfortable',
+  showSectionIcons: true,
+  showContactIcons: true,
+  sectionIconStyle: 'outline',
+  iconSize: 'm',
+  iconColor: 'accent',
 })
 const photoShapeOptions = [
   { label: 'Carré', value: 'square', icon: '□' },
@@ -286,6 +299,7 @@ const sectionVariantLabels: Record<string, string> = {
   stars: 'Stars',
   'text-level': 'Text level',
   progress: 'Progress',
+  dots: 'Dots',
   flags: 'Flags',
   cards: 'Cards',
   list: 'List',
@@ -323,7 +337,7 @@ const variantRegistry: {
   education: { allowed: ['classic', 'timeline', 'two-column'], fallback: 'classic' },
   language: { allowed: ['classic', 'text-level', 'stars', 'progress', 'flags'], fallback: 'classic' },
   project: { allowed: ['classic', 'list', 'cards', 'two-column'], fallback: 'classic' },
-  skill: { allowed: ['classic'], fallback: 'classic' },
+  skill: { allowed: ['classic', 'text-level', 'stars', 'dots', 'progress'], fallback: 'progress' },
   reference: { allowed: ['classic'], fallback: 'classic' },
   hobby: { allowed: ['classic'], fallback: 'classic' },
   certification: { allowed: ['classic'], fallback: 'classic' },
@@ -333,7 +347,7 @@ const defaultSectionLayoutEntries: SectionLayoutEntry[] = [
   { key: 'education', variant: 'classic', region: 'main', order: 1 },
   { key: 'project', variant: 'classic', region: 'main', order: 2 },
   { key: 'certification', variant: 'classic', region: 'main', order: 3 },
-  { key: 'skill', variant: 'classic', region: 'aside', order: 0 },
+  { key: 'skill', variant: 'progress', region: 'aside', order: 0 },
   { key: 'language', variant: 'classic', region: 'aside', order: 1 },
   { key: 'reference', variant: 'classic', region: 'aside', order: 2 },
   { key: 'hobby', variant: 'classic', region: 'aside', order: 3 },
@@ -531,16 +545,21 @@ const resume = reactive<ResumeModel>({
       name: 'Campus Editorial Newsletter',
       summary:
         'Led content calendar and boosted monthly newsletter open rate by 32%.',
+      repositoryUrl: 'https://github.com/example/campus-editorial-newsletter',
+      repositoryProvider: 'github',
     },
     {
       name: 'Student Podcast Launch',
       summary:
         'Created scripts and episode communication plan for a 10-episode launch.',
+      repositoryUrl: 'https://gitlab.com/example/student-podcast-launch',
+      repositoryProvider: 'gitlab',
     },
   ] as Project[],
 })
 
 const uploadInput = ref<HTMLInputElement | null>(null)
+const projectImageInputs = ref<Record<number, HTMLInputElement | null>>({})
 const importPdfInput = ref<HTMLInputElement | null>(null)
 const importInProgress = ref(false)
 const importProgress = ref(0)
@@ -639,18 +658,18 @@ const activeSectionKey = ref<PreviewSectionKey>('experience')
 const activeVariant = ref<SectionLayoutVariant[PreviewSectionKey]>('detailed')
 const sectionItemDraft = reactive({
   experience: { role: '', company: '', companyImageUrl: '', city: '', start: '', end: '', bullets: '' },
-  education: { degree: '', school: '', city: '', start: '', end: '', note: '' },
+  education: { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' },
   language: { name: '', level: 80, stars: 4, countryCode: '', flag: '' },
-  project: { name: '', summary: '', link: '' },
+  project: { name: '', summary: '', imageUrl: '', repositoryUrl: '' },
 })
 const addSectionDraft = reactive({
   profile: { profile: '' },
   experience: { role: '', company: '', companyImageUrl: '', city: '', start: '', end: '', bullets: '' },
-  education: { degree: '', school: '', city: '', start: '', end: '', note: '' },
+  education: { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' },
   skill: { name: '', level: 80 },
   language: { name: '', level: 80, countryCode: '', flag: '' },
   hobby: { name: '' },
-  project: { name: '', summary: '' },
+  project: { name: '', summary: '', imageUrl: '', repositoryUrl: '' },
   certification: { title: '', school: '', start: '', end: '' },
   reference: { name: '', company: '', email: '', phone: '' },
 })
@@ -700,8 +719,93 @@ function onPhotoSelected(event: Event) {
   input.value = ''
 }
 
+function setProjectImageInputRef(index: number, element: Element | null) {
+  projectImageInputs.value[index] = element as HTMLInputElement | null
+}
+
+function openProjectImagePicker(index: number) {
+  projectImageInputs.value[index]?.click()
+}
+
+function onProjectImageSelected(index: number, event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  const reader = new FileReader()
+  reader.onload = () => {
+    const imageUrl = typeof reader.result === 'string' ? reader.result : ''
+    resume.projects[index].imageUrl = imageUrl
+  }
+  reader.readAsDataURL(file)
+  input.value = ''
+}
+
+function detectRepositoryProvider(repositoryUrl?: string): Project['repositoryProvider'] {
+  if (!repositoryUrl) return undefined
+  const normalizedUrl = repositoryUrl.toLowerCase()
+  if (normalizedUrl.includes('github.com')) return 'github'
+  if (normalizedUrl.includes('gitlab.com')) return 'gitlab'
+  return 'other'
+}
+
+function validateHttpRepositoryUrl(value?: string) {
+  if (!value) return true
+  try {
+    const parsed = new URL(value)
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:' || 'Repository URL must start with http:// or https://'
+  }
+  catch {
+    return 'Repository URL must be a valid URL (http/https).'
+  }
+}
+
+function updateProjectRepositoryProvider(project: Project) {
+  project.repositoryProvider = detectRepositoryProvider(project.repositoryUrl)
+}
+
 function clearPhoto() {
   resume.photoUrl = ''
+}
+
+function triggerFileInputById(id: string) {
+  const input = document.getElementById(id)
+  if (!(input instanceof HTMLInputElement)) return
+  input.click()
+}
+
+function updateEducationImageUrl(
+  target: 'resume' | 'add' | 'section',
+  url: string,
+  index?: number,
+) {
+  if (target === 'resume') {
+    if (typeof index !== 'number' || !resume.education[index]) return
+    resume.education[index].schoolImageUrl = url
+    return
+  }
+  if (target === 'add') {
+    addSectionDraft.education.schoolImageUrl = url
+    return
+  }
+  sectionItemDraft.education.schoolImageUrl = url
+}
+
+function onEducationImageSelected(
+  event: Event,
+  target: 'resume' | 'add' | 'section',
+  index?: number,
+) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  const reader = new FileReader()
+  reader.onload = () => {
+    updateEducationImageUrl(target, typeof reader.result === 'string' ? reader.result : '', index)
+  }
+  reader.readAsDataURL(file)
+  input.value = ''
 }
 
 function openSignatureDialog() {
@@ -907,6 +1011,7 @@ function addEducation() {
   resume.education.push({
     degree: '',
     school: '',
+    schoolImageUrl: '',
     city: '',
     start: '',
     end: '',
@@ -960,6 +1065,9 @@ function addProject() {
   resume.projects.push({
     name: '',
     summary: '',
+    imageUrl: '',
+    repositoryUrl: '',
+    repositoryProvider: undefined,
   })
 }
 
@@ -1016,7 +1124,7 @@ function resetSectionDraft(section: AddSectionType) {
       setExperienceLogoError('add-section')
       break
     case 'education':
-      addSectionDraft.education = { degree: '', school: '', city: '', start: '', end: '', note: '' }
+      addSectionDraft.education = { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' }
       break
     case 'skill':
       addSectionDraft.skill = { name: '', level: 80 }
@@ -1028,7 +1136,7 @@ function resetSectionDraft(section: AddSectionType) {
       addSectionDraft.hobby = { name: '' }
       break
     case 'project':
-      addSectionDraft.project = { name: '', summary: '' }
+      addSectionDraft.project = { name: '', summary: '', imageUrl: '', repositoryUrl: '' }
       break
     case 'certification':
       addSectionDraft.certification = { title: '', school: '', start: '', end: '' }
@@ -1069,6 +1177,7 @@ function submitAddSection() {
       resume.education.push({
         degree: addSectionDraft.education.degree,
         school: addSectionDraft.education.school,
+        schoolImageUrl: addSectionDraft.education.schoolImageUrl.trim(),
         city: addSectionDraft.education.city,
         start: addSectionDraft.education.start,
         end: addSectionDraft.education.end,
@@ -1087,7 +1196,10 @@ function submitAddSection() {
       }
       break
     case 'project':
-      resume.projects.push({ ...addSectionDraft.project })
+      resume.projects.push({
+        ...addSectionDraft.project,
+        repositoryProvider: detectRepositoryProvider(addSectionDraft.project.repositoryUrl),
+      })
       break
     case 'certification':
       resume.courses.push({ ...addSectionDraft.certification })
@@ -1123,13 +1235,13 @@ function resetSectionItemDraft(section: PreviewSectionKey) {
       setExperienceLogoError('section-item')
       break
     case 'education':
-      sectionItemDraft.education = { degree: '', school: '', city: '', start: '', end: '', note: '' }
+      sectionItemDraft.education = { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' }
       break
     case 'language':
       sectionItemDraft.language = { name: '', level: 80, stars: 4, countryCode: '', flag: '' }
       break
     case 'project':
-      sectionItemDraft.project = { name: '', summary: '', link: '' }
+      sectionItemDraft.project = { name: '', summary: '', imageUrl: '', repositoryUrl: '' }
       break
   }
 }
@@ -1162,6 +1274,7 @@ function submitSectionItemDialog() {
       item = {
         degree: sectionItemDraft.education.degree,
         school: sectionItemDraft.education.school,
+        schoolImageUrl: sectionItemDraft.education.schoolImageUrl.trim(),
         city: sectionItemDraft.education.city,
         start: sectionItemDraft.education.start,
         end: sectionItemDraft.education.end,
@@ -1182,7 +1295,9 @@ function submitSectionItemDialog() {
       item = {
         name: sectionItemDraft.project.name,
         summary: sectionItemDraft.project.summary,
-        ...(sectionItemDraft.project.link.trim() ? { link: sectionItemDraft.project.link.trim() } : {}),
+        imageUrl: sectionItemDraft.project.imageUrl.trim(),
+        repositoryUrl: sectionItemDraft.project.repositoryUrl.trim(),
+        repositoryProvider: detectRepositoryProvider(sectionItemDraft.project.repositoryUrl.trim()),
       }
       break
   }
@@ -1677,6 +1792,7 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
     resume.education = data.educations.map((education) => ({
       degree: String(education.title || ''),
       school: String(education.school || ''),
+      schoolImageUrl: '',
       city: '',
       start: normalizeDateLabel(education.startDate),
       end: normalizeDateLabel(education.endDate),
@@ -1696,7 +1812,9 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
   if (Array.isArray(data.projects) && data.projects.length) {
     resume.projects = data.projects.map((project) => ({
       name: String(project.title || ''),
-      summary: [project.description, project.link].filter(Boolean).join(' • '),
+      summary: String(project.description || ''),
+      repositoryUrl: String(project.link || ''),
+      repositoryProvider: detectRepositoryProvider(String(project.link || '')),
     }))
   }
 
@@ -1891,9 +2009,14 @@ if (import.meta.client) {
   selectedRounded.value = customization.style.radius
   selectedTextStyle.value = customization.style.typography
   layoutSettings.lineDensity = customization.style.density
+  layoutSettings.showSectionIcons = customization.style.showSectionIcons
+  layoutSettings.showContactIcons = customization.style.showContactIcons
+  layoutSettings.sectionIconStyle = customization.style.sectionIconStyle
+  layoutSettings.iconSize = customization.style.iconSize
+  layoutSettings.iconColor = customization.style.iconColor
   sectionLayout.value = normalizeSectionLayout(customization.sectionOrder)
 
-  watch([selectedTheme, selectedPageBackground, selectedRounded, selectedTextStyle], () => {
+  watch([selectedTheme, selectedPageBackground, selectedRounded, selectedTextStyle, () => layoutSettings.showSectionIcons, () => layoutSettings.showContactIcons, () => layoutSettings.sectionIconStyle, () => layoutSettings.iconSize, () => layoutSettings.iconColor], () => {
     resumeDocumentState.value.customization = {
       ...resumeDocumentState.value.customization,
       style: {
@@ -1902,6 +2025,11 @@ if (import.meta.client) {
         pageBackground: selectedPageBackground.value,
         radius: selectedRounded.value,
         typography: selectedTextStyle.value,
+        showSectionIcons: layoutSettings.showSectionIcons,
+        showContactIcons: layoutSettings.showContactIcons,
+        sectionIconStyle: layoutSettings.sectionIconStyle,
+        iconSize: layoutSettings.iconSize,
+        iconColor: layoutSettings.iconColor,
       },
     }
     persist()
@@ -2082,6 +2210,61 @@ if (import.meta.client) {
                 item-title="label"
                 item-value="value"
                 label="Section divider"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <v-switch
+                v-model="layoutSettings.showSectionIcons"
+                label="Show section icons"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
+              <v-switch
+                v-model="layoutSettings.showContactIcons"
+                label="Show contact icons"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
+              <AppSelect
+                v-model="layoutSettings.sectionIconStyle"
+                :items="[
+                  { label: 'Outline', value: 'outline' },
+                  { label: 'Filled', value: 'filled' },
+                  { label: 'Rounded', value: 'rounded' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Icon style"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <AppSelect
+                v-model="layoutSettings.iconSize"
+                :items="[
+                  { label: 'Small (S)', value: 's' },
+                  { label: 'Medium (M)', value: 'm' },
+                  { label: 'Large (L)', value: 'l' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Icon size"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <AppSelect
+                v-model="layoutSettings.iconColor"
+                :items="[
+                  { label: 'Accent', value: 'accent' },
+                  { label: 'Neutral', value: 'neutral' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Icon color"
                 density="comfortable"
                 hide-details
                 class="mt-3"
@@ -2442,6 +2625,34 @@ if (import.meta.client) {
                     variant="outlined"
                     hide-details
                 /></v-col>
+                <v-col cols="12" md="8">
+                  <v-text-field
+                    v-model="item.schoolImageUrl"
+                    label="School logo URL (optional)"
+                    variant="outlined"
+                    hide-details
+                  />
+                </v-col>
+                <v-col cols="12" md="4" class="d-flex align-center ga-2">
+                  <input
+                    :id="`education-image-input-${index}`"
+                    type="file"
+                    accept="image/*"
+                    class="d-none"
+                    @change="event => onEducationImageSelected(event, 'resume', index)"
+                  >
+                  <v-btn
+                    prepend-icon="mdi-image-plus-outline"
+                    variant="outlined"
+                    size="small"
+                    @click="triggerFileInputById(`education-image-input-${index}`)"
+                  >
+                    Upload logo
+                  </v-btn>
+                  <v-avatar v-if="item.schoolImageUrl" rounded="lg" size="40">
+                    <v-img :src="item.schoolImageUrl" alt="School logo preview" cover />
+                  </v-avatar>
+                </v-col>
                 <v-col cols="12" md="6"
                   ><v-text-field
                     v-model="item.city"
@@ -2662,8 +2873,46 @@ if (import.meta.client) {
                 <v-col cols="12" md="4">
                   <v-text-field v-model="project.name" label="Project name" variant="outlined" hide-details />
                 </v-col>
-                <v-col cols="12" md="7">
+                <v-col cols="12" md="8">
                   <v-text-field v-model="project.summary" label="Summary / impact" variant="outlined" hide-details />
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field v-model="project.imageUrl" label="Image URL (optional)" variant="outlined" hide-details />
+                </v-col>
+                <v-col cols="12" md="5" class="d-flex align-center ga-2">
+                  <v-btn prepend-icon="mdi-image-plus" variant="tonal" size="small" @click="openProjectImagePicker(index)">
+                    Upload image
+                  </v-btn>
+                  <input
+                    :ref="(el) => setProjectImageInputRef(index, el)"
+                    type="file"
+                    accept="image/*"
+                    class="d-none"
+                    @change="onProjectImageSelected(index, $event)"
+                  />
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    v-model="project.repositoryUrl"
+                    label="Repository URL (optional)"
+                    placeholder="https://github.com/org/repo"
+                    variant="outlined"
+                    :rules="[validateHttpRepositoryUrl]"
+                    @blur="updateProjectRepositoryProvider(project)"
+                  />
+                </v-col>
+                <v-col cols="12" md="5">
+                  <v-select
+                    v-model="project.repositoryProvider"
+                    :items="[
+                      { title: 'GitHub', value: 'github' },
+                      { title: 'GitLab', value: 'gitlab' },
+                      { title: 'Other', value: 'other' },
+                    ]"
+                    label="Repository provider (optional)"
+                    variant="outlined"
+                    hide-details
+                  />
                 </v-col>
                 <v-col cols="12" md="1" class="d-flex align-center justify-center">
                   <v-btn icon="mdi-delete-outline" size="x-small" color="error" variant="text" @click="removeProject(index)" />
@@ -2944,6 +3193,61 @@ if (import.meta.client) {
                 class="mt-3"
               />
               <v-switch
+                v-model="layoutSettings.showSectionIcons"
+                label="Show section icons"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
+              <v-switch
+                v-model="layoutSettings.showContactIcons"
+                label="Show contact icons"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
+              <AppSelect
+                v-model="layoutSettings.sectionIconStyle"
+                :items="[
+                  { label: 'Outline', value: 'outline' },
+                  { label: 'Filled', value: 'filled' },
+                  { label: 'Rounded', value: 'rounded' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Icon style"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <AppSelect
+                v-model="layoutSettings.iconSize"
+                :items="[
+                  { label: 'Small (S)', value: 's' },
+                  { label: 'Medium (M)', value: 'm' },
+                  { label: 'Large (L)', value: 'l' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Icon size"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <AppSelect
+                v-model="layoutSettings.iconColor"
+                :items="[
+                  { label: 'Accent', value: 'accent' },
+                  { label: 'Neutral', value: 'neutral' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Icon color"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <v-switch
                 v-model="layoutSettings.headingCase"
                 false-value="normal"
                 true-value="uppercase"
@@ -3065,6 +3369,11 @@ if (import.meta.client) {
                 :text-style-class="activeTextStyleClass"
                 :density="layoutSettings.lineDensity"
                 :divider-style="layoutSettings.sectionDividerStyle"
+                :show-section-icons="layoutSettings.showSectionIcons"
+                :show-contact-icons="layoutSettings.showContactIcons"
+                :section-icon-style-variant="layoutSettings.sectionIconStyle"
+                :icon-size-variant="layoutSettings.iconSize"
+                :icon-color-mode="layoutSettings.iconColor"
                 :sidebar-width="layoutSettings.sidebarWidth"
                 :photo-size="layoutSettings.photoSize"
                 :photo-border-width="layoutSettings.photoBorderWidth"
@@ -3172,6 +3481,22 @@ if (import.meta.client) {
           <template v-else-if="addSectionType === 'education'">
             <v-text-field v-model="addSectionDraft.education.degree" label="Degree" variant="outlined" hide-details />
             <v-text-field v-model="addSectionDraft.education.school" label="School" variant="outlined" hide-details />
+            <v-text-field v-model="addSectionDraft.education.schoolImageUrl" label="School logo URL (optional)" variant="outlined" hide-details />
+            <div class="d-flex align-center ga-2">
+              <input
+                id="education-image-input-add"
+                type="file"
+                accept="image/*"
+                class="d-none"
+                @change="event => onEducationImageSelected(event, 'add')"
+              >
+              <v-btn prepend-icon="mdi-image-plus-outline" variant="outlined" size="small" @click="triggerFileInputById('education-image-input-add')">
+                Upload logo
+              </v-btn>
+              <v-avatar v-if="addSectionDraft.education.schoolImageUrl" rounded="lg" size="40">
+                <v-img :src="addSectionDraft.education.schoolImageUrl" alt="School logo preview" cover />
+              </v-avatar>
+            </div>
             <v-text-field v-model="addSectionDraft.education.city" label="City" variant="outlined" hide-details />
             <div class="grid-2">
               <v-text-field v-model="addSectionDraft.education.start" label="Start" variant="outlined" hide-details />
@@ -3199,6 +3524,14 @@ if (import.meta.client) {
           <template v-else-if="addSectionType === 'project'">
             <v-text-field v-model="addSectionDraft.project.name" label="Project name" variant="outlined" hide-details />
             <v-textarea v-model="addSectionDraft.project.summary" label="Project summary" rows="4" variant="outlined" hide-details />
+            <v-text-field v-model="addSectionDraft.project.imageUrl" label="Image URL (optional)" variant="outlined" hide-details />
+            <v-text-field
+              v-model="addSectionDraft.project.repositoryUrl"
+              label="Repository URL (optional)"
+              placeholder="https://github.com/org/repo"
+              variant="outlined"
+              :rules="[validateHttpRepositoryUrl]"
+            />
           </template>
 
           <template v-else-if="addSectionType === 'certification'">
@@ -3270,6 +3603,22 @@ if (import.meta.client) {
           <template v-else-if="activeSectionKey === 'education'">
             <v-text-field v-model="sectionItemDraft.education.degree" label="Degree" variant="outlined" hide-details />
             <v-text-field v-model="sectionItemDraft.education.school" label="School" variant="outlined" hide-details />
+            <v-text-field v-model="sectionItemDraft.education.schoolImageUrl" label="School logo URL (optional)" variant="outlined" hide-details />
+            <div class="d-flex align-center ga-2">
+              <input
+                id="education-image-input-section-item"
+                type="file"
+                accept="image/*"
+                class="d-none"
+                @change="event => onEducationImageSelected(event, 'section')"
+              >
+              <v-btn prepend-icon="mdi-image-plus-outline" variant="outlined" size="small" @click="triggerFileInputById('education-image-input-section-item')">
+                Upload logo
+              </v-btn>
+              <v-avatar v-if="sectionItemDraft.education.schoolImageUrl" rounded="lg" size="40">
+                <v-img :src="sectionItemDraft.education.schoolImageUrl" alt="School logo preview" cover />
+              </v-avatar>
+            </div>
             <v-text-field v-model="sectionItemDraft.education.city" label="City" variant="outlined" hide-details />
             <div class="grid-2">
               <v-text-field v-model="sectionItemDraft.education.start" label="Start" variant="outlined" hide-details />
@@ -3304,11 +3653,17 @@ if (import.meta.client) {
             <v-text-field v-model="sectionItemDraft.project.name" label="Project name" variant="outlined" hide-details />
             <v-textarea v-model="sectionItemDraft.project.summary" label="Project summary" rows="4" variant="outlined" hide-details />
             <v-text-field
-              v-if="activeVariant === 'cards' || activeVariant === 'list'"
-              v-model="sectionItemDraft.project.link"
-              label="Project link (optional)"
+              v-model="sectionItemDraft.project.imageUrl"
+              label="Image URL (optional)"
               variant="outlined"
               hide-details
+            />
+            <v-text-field
+              v-model="sectionItemDraft.project.repositoryUrl"
+              label="Repository URL (optional)"
+              placeholder="https://github.com/org/repo"
+              variant="outlined"
+              :rules="[validateHttpRepositoryUrl]"
             />
           </template>
         </v-card-text>
@@ -3347,6 +3702,11 @@ if (import.meta.client) {
                   :text-style-class="activeTextStyleClass"
                   :density="layoutSettings.lineDensity"
                   :divider-style="layoutSettings.sectionDividerStyle"
+                  :show-section-icons="layoutSettings.showSectionIcons"
+                  :show-contact-icons="layoutSettings.showContactIcons"
+                  :section-icon-style-variant="layoutSettings.sectionIconStyle"
+                  :icon-size-variant="layoutSettings.iconSize"
+                  :icon-color-mode="layoutSettings.iconColor"
                   :sidebar-width="layoutSettings.sidebarWidth"
                   :photo-size="layoutSettings.photoSize"
                   :photo-border-width="layoutSettings.photoBorderWidth"

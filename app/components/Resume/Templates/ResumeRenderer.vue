@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import SectionRenderer from '~/components/Resume/Sections/SectionRenderer.vue'
-import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 import AvatarOverlayControls from '~/components/Resume/Templates/AvatarOverlayControls.vue'
 import type {
   ResumeSectionKey,
+  ResumeSectionIconStyleVariant,
   ResumeTemplateSkin,
 } from '~/constants/resumeTemplateSkins'
 import { RESUME_SECTION_ICONS } from '~/constants/resumeSectionIcons'
@@ -13,7 +13,7 @@ type SectionLayoutVariant = {
   education: 'classic' | 'timeline' | 'two-column'
   language: 'classic' | 'text-level' | 'stars' | 'progress' | 'flags'
   project: 'classic' | 'list' | 'cards' | 'two-column'
-  skill: 'classic'
+  skill: 'classic' | 'text-level' | 'stars' | 'dots' | 'progress'
   reference: 'classic'
   hobby: 'classic'
   certification: 'classic'
@@ -67,6 +67,11 @@ const props = withDefaults(
     photoOffsetY?: number
     photoScale?: number
     photoHidden?: boolean
+    showSectionIcons?: boolean
+    showContactIcons?: boolean
+    sectionIconStyleVariant?: ResumeSectionIconStyleVariant
+    iconSizeVariant?: 's' | 'm' | 'l'
+    iconColorMode?: 'accent' | 'neutral'
     templateSkin: ResumeTemplateSkin
   }>(),
   {
@@ -91,6 +96,11 @@ const props = withDefaults(
     photoOffsetY: 0,
     photoScale: 1,
     photoHidden: false,
+    showSectionIcons: undefined,
+    showContactIcons: true,
+    sectionIconStyleVariant: undefined,
+    iconSizeVariant: 'm',
+    iconColorMode: 'accent',
   },
 )
 
@@ -120,7 +130,7 @@ const normalizedSectionLayout = computed<SectionLayoutEntry[]>(() => {
   })) as SectionLayoutEntry[]
 })
 
-type RenderableSectionLayoutEntry = SectionLayoutEntry<ResumeSectionKey>
+type RenderableSectionLayoutEntry = SectionLayoutEntry<ResumeSectionKey | 'skill'>
 const renderableSections = computed<RenderableSectionLayoutEntry[]>(
   () =>
     normalizedSectionLayout.value.filter(
@@ -129,6 +139,7 @@ const renderableSections = computed<RenderableSectionLayoutEntry[]>(
         section.key === 'education' ||
         section.key === 'language' ||
         section.key === 'project' ||
+        section.key === 'skill' ||
         section.key === 'hobby' ||
         section.key === 'certification' ||
         section.key === 'reference',
@@ -136,10 +147,10 @@ const renderableSections = computed<RenderableSectionLayoutEntry[]>(
 )
 
 const mainSections = computed(() =>
-  renderableSections.value.filter((section) => section.region === 'main'),
+  renderableSections.value.filter((section) => section.region === 'main' && (section.key !== 'skill' || props.templateSkin.showSkillsInAside)),
 )
 const asideSections = computed(() =>
-  renderableSections.value.filter((section) => section.region === 'aside'),
+  renderableSections.value.filter((section) => section.region === 'aside' && (section.key !== 'skill' || props.templateSkin.showSkillsInAside)),
 )
 const hasRenderedAvatar = computed(() =>
   Boolean(props.showPhoto && props.resume?.photoUrl && !props.photoHidden),
@@ -166,13 +177,47 @@ const avatarImageStyle = computed(() => ({
 const sectionLayoutDensity = computed<'compact' | 'normal' | 'spacious'>(() =>
   props.density === 'compact' ? 'compact' : 'normal',
 )
+const shouldShowSectionIcons = computed(() =>
+  props.showSectionIcons ?? props.templateSkin.showSectionIcons,
+)
+const resolvedSectionIconStyle = computed(() => {
+  const style = props.templateSkin.sectionIconStyle
+  const variant = props.sectionIconStyleVariant ?? style.variant
+  const iconSizeByVariant = { s: 16, m: 18, l: 22 } as const
+  const iconColorByMode = {
+    accent: 'var(--cv-accent)',
+    neutral: 'var(--cv-secondary)',
+  } as const
+
+  return {
+    ...style,
+    variant,
+    size: iconSizeByVariant[props.iconSizeVariant] ?? style.size,
+    color: iconColorByMode[props.iconColorMode] ?? style.color,
+  }
+})
+const contactIconSize = computed(() => {
+  const sizeByVariant = { s: 14, m: 16, l: 20 } as const
+  return sizeByVariant[props.iconSizeVariant] ?? sizeByVariant.m
+})
+const contactIconColor = computed(() =>
+  props.iconColorMode === 'neutral' ? 'var(--cv-secondary)' : 'var(--cv-accent)',
+)
+const sectionIconCssVars = computed<Record<string, string>>(() => ({
+  '--resume-section-icon-size': `${resolvedSectionIconStyle.value.size}px`,
+  '--resume-section-icon-color': resolvedSectionIconStyle.value.color,
+  '--resume-section-icon-gap': `${resolvedSectionIconStyle.value.spacing}px`,
+  '--resume-section-icon-radius': resolvedSectionIconStyle.value.roundedBackground ? '999px' : '8px',
+  '--resume-contact-icon-size': `${contactIconSize.value}px`,
+  '--resume-contact-icon-color': contactIconColor.value,
+}))
 
 function fallbackVariant(sectionKey: ResumeSectionLayoutKey): string {
   if (sectionKey === 'experience') return 'detailed'
   if (sectionKey === 'education') return 'classic'
   if (sectionKey === 'language') return 'text-level'
+  if (sectionKey === 'skill') return 'progress'
   if (
-    sectionKey === 'skill' ||
     sectionKey === 'reference' ||
     sectionKey === 'hobby' ||
     sectionKey === 'certification'
@@ -204,11 +249,11 @@ function canMove(sectionKey: ResumeSectionLayoutKey, direction: 'up' | 'down') {
   return direction === 'up' ? index > 0 : index < regionSections.length - 1
 }
 
-function mergedSectionTokens(sectionKey: ResumeSectionKey) {
+function mergedSectionTokens(sectionKey: ResumeSectionKey | 'skill') {
   return {
     ...props.themeTokens,
     ...(props.templateSkin.themeTokens ?? {}),
-    ...(props.templateSkin.sectionTokens?.[sectionKey] ?? {}),
+    ...(sectionKey === 'skill' ? {} : (props.templateSkin.sectionTokens?.[sectionKey] ?? {})),
   }
 }
 
@@ -247,7 +292,7 @@ function updateText(path: string, value: string) {
 </script>
 
 <template>
-  <article :class="[templateSkin.rootClass, ...rootDesignClasses]" :style="themeTokens">
+  <article :class="[templateSkin.rootClass, ...rootDesignClasses]" :style="{ ...themeTokens, ...sectionIconCssVars }">
     <header class="resume-skin__header">
       <div>
         <h1>
@@ -285,7 +330,12 @@ function updateText(path: string, value: string) {
           class="resume-skin__contact-grid resume-skin__header-contact"
         >
           <div class="resume-skin__contact-item">
-            <v-icon icon="mdi-calendar-month-outline" size="16" />
+            <v-icon
+              v-if="showContactIcons"
+              class="resume-skin__contact-icon"
+              icon="mdi-calendar-month-outline"
+              :size="contactIconSize"
+            />
             <span
               class="editable-text"
               :contenteditable="editable"
@@ -300,7 +350,12 @@ function updateText(path: string, value: string) {
             >
           </div>
           <div class="resume-skin__contact-item">
-            <v-icon icon="mdi-map-marker-outline" size="16" />
+            <v-icon
+              v-if="showContactIcons"
+              class="resume-skin__contact-icon"
+              icon="mdi-map-marker-outline"
+              :size="contactIconSize"
+            />
             <span>
               <span
                 class="editable-text"
@@ -328,7 +383,12 @@ function updateText(path: string, value: string) {
             </span>
           </div>
           <div class="resume-skin__contact-item">
-            <v-icon icon="mdi-phone-outline" size="16" />
+            <v-icon
+              v-if="showContactIcons"
+              class="resume-skin__contact-icon"
+              icon="mdi-phone-outline"
+              :size="contactIconSize"
+            />
             <span
               class="editable-text"
               :contenteditable="editable"
@@ -340,7 +400,12 @@ function updateText(path: string, value: string) {
             >
           </div>
           <div class="resume-skin__contact-item">
-            <v-icon icon="mdi-email-outline" size="16" />
+            <v-icon
+              v-if="showContactIcons"
+              class="resume-skin__contact-icon"
+              icon="mdi-email-outline"
+              :size="contactIconSize"
+            />
             <span
               class="editable-text"
               :contenteditable="editable"
@@ -384,7 +449,12 @@ function updateText(path: string, value: string) {
           <h3 class="cv-heading-section">Contact</h3>
           <div class="resume-skin__contact-grid">
             <div class="resume-skin__contact-item">
-              <v-icon icon="mdi-calendar-month-outline" size="16" />
+              <v-icon
+                v-if="showContactIcons"
+                class="resume-skin__contact-icon"
+                icon="mdi-calendar-month-outline"
+                :size="contactIconSize"
+              />
               <span
                 class="editable-text"
                 :contenteditable="editable"
@@ -399,7 +469,12 @@ function updateText(path: string, value: string) {
               >
             </div>
             <div class="resume-skin__contact-item">
-              <v-icon icon="mdi-map-marker-outline" size="16" />
+              <v-icon
+                v-if="showContactIcons"
+                class="resume-skin__contact-icon"
+                icon="mdi-map-marker-outline"
+                :size="contactIconSize"
+              />
               <span>
                 <span
                   class="editable-text"
@@ -427,7 +502,12 @@ function updateText(path: string, value: string) {
               </span>
             </div>
             <div class="resume-skin__contact-item">
-              <v-icon icon="mdi-phone-outline" size="16" />
+              <v-icon
+                v-if="showContactIcons"
+                class="resume-skin__contact-icon"
+                icon="mdi-phone-outline"
+                :size="contactIconSize"
+              />
               <span
                 class="editable-text"
                 :contenteditable="editable"
@@ -439,7 +519,12 @@ function updateText(path: string, value: string) {
               >
             </div>
             <div class="resume-skin__contact-item">
-              <v-icon icon="mdi-email-outline" size="16" />
+              <v-icon
+                v-if="showContactIcons"
+                class="resume-skin__contact-icon"
+                icon="mdi-email-outline"
+                :size="contactIconSize"
+              />
               <span
                 class="editable-text"
                 :contenteditable="editable"
@@ -467,48 +552,6 @@ function updateText(path: string, value: string) {
           </p>
         </section>
 
-        <section
-          v-if="templateSkin.showSkillsInAside"
-          class="resume-section-hoverable resume-skin__skills-section"
-        >
-          <SectionToolbar
-            section-key="skill"
-            :variants="[{ label: 'Classic', value: 'classic' }]"
-            current-variant="classic"
-            :can-move-up="canMove('skill', 'up')"
-            :can-move-down="canMove('skill', 'down')"
-            @add-item="() => emit('add-item', 'skill')"
-            @change-variant="
-              (_, variant) => emit('change-variant', 'skill', variant)
-            "
-            @move-up="() => emit('move-section', 'skill', 'up')"
-            @move-down="() => emit('move-section', 'skill', 'down')"
-          />
-          <h3 class="cv-heading-section">Skills</h3>
-          <ul class="resume-skin__skills">
-            <li
-              v-for="(skill, index) in resume.skills"
-              :key="`${skill.name}-${index}`"
-            >
-              <span
-                class="editable-text"
-                :contenteditable="editable"
-                @input="
-                  (event) =>
-                    updateText(
-                      `skills.${index}.name`,
-                      (event.target as HTMLElement).innerText,
-                    )
-                "
-                >{{ skill.name }}</span
-              >
-              <div class="progress">
-                <i :style="{ width: `${skill.level}%` }" />
-              </div>
-            </li>
-          </ul>
-        </section>
-
         <SectionRenderer
           v-for="section in asideSections"
           :key="`aside-${section.key}`"
@@ -523,7 +566,8 @@ function updateText(path: string, value: string) {
           :can-move-down="canMove(section.key, 'down')"
           :theme-tokens="mergedSectionTokens(section.key)"
           :section-icon="RESUME_SECTION_ICONS[section.key]"
-          :show-section-icon="templateSkin.showSectionIcons"
+          :show-section-icon="shouldShowSectionIcons"
+          :section-icon-style="resolvedSectionIconStyle"
           @add-item="onSectionAddItem"
           @change-variant="onSectionVariantChange"
           @move-section="onSectionMove"
@@ -559,7 +603,8 @@ function updateText(path: string, value: string) {
           :can-move-down="canMove(section.key, 'down')"
           :theme-tokens="mergedSectionTokens(section.key)"
           :section-icon="RESUME_SECTION_ICONS[section.key]"
-          :show-section-icon="templateSkin.showSectionIcons"
+          :show-section-icon="shouldShowSectionIcons"
+          :section-icon-style="resolvedSectionIconStyle"
           @add-item="onSectionAddItem"
           @change-variant="onSectionVariantChange"
           @move-section="onSectionMove"
@@ -619,6 +664,10 @@ function updateText(path: string, value: string) {
 }
 .resume-skin__contact-item .editable-text {
   min-width: 0;
+}
+.resume-skin__contact-icon {
+  color: var(--resume-contact-icon-color, var(--cv-accent));
+  transition: color .2s ease;
 }
 .photo-frame {
   position: relative;
