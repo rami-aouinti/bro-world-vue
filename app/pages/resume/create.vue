@@ -317,12 +317,48 @@ type SectionLayoutEntry<
 const toolbarSaveImportMenuOpen = ref(false)
 const toolbarSectionMenuOpen = ref(false)
 const route = useRoute()
-const selectedTemplate = ref(DEFAULT_RESUME_TEMPLATE_ID)
-const selectedDocumentType = ref<Template['documentType']>('resume')
-const selectedTheme = ref('ocean')
-const selectedPageBackground = ref<PageBackgroundId>('white')
-const selectedRounded = ref<RoundedOptionId>('md')
-const selectedTextStyle = ref<Typography>('clean')
+type DesignSettings = {
+  selectedTheme: string
+  selectedPageBackground: PageBackgroundId
+  selectedRounded: RoundedOptionId
+  selectedTextStyle: Typography
+  layout: LayoutSettings
+}
+const createDefaultDesignSettings = (): DesignSettings => ({
+  selectedTheme: 'ocean',
+  selectedPageBackground: 'white',
+  selectedRounded: 'md',
+  selectedTextStyle: 'clean',
+  layout: {
+    photoSize: 140,
+    photoBorderWidth: 6,
+    photoPosition: 'center',
+    sidebarWidth: 280,
+    sectionDividerStyle: 'line',
+    headingCase: 'normal',
+    dateColumnWidth: 120,
+    lineDensity: 'comfortable',
+    showSectionIcons: true,
+    showContactIcons: true,
+    sectionIconStyle: 'outline',
+    iconSize: 'm',
+    iconColor: 'accent',
+    layoutMode: resolveTemplateSkin(DEFAULT_RESUME_TEMPLATE_ID).layoutMode,
+  },
+})
+const builderPanelState = reactive({
+  selectedTemplate: DEFAULT_RESUME_TEMPLATE_ID,
+  selectedDocumentType: 'resume' as Template['documentType'],
+  designSettings: createDefaultDesignSettings(),
+})
+const selectedTemplate = toRef(builderPanelState, 'selectedTemplate')
+const selectedDocumentType = toRef(builderPanelState, 'selectedDocumentType')
+const designSettings = toRef(builderPanelState, 'designSettings')
+const selectedTheme = toRef(designSettings.value, 'selectedTheme')
+const selectedPageBackground = toRef(designSettings.value, 'selectedPageBackground')
+const selectedRounded = toRef(designSettings.value, 'selectedRounded')
+const selectedTextStyle = toRef(designSettings.value, 'selectedTextStyle')
+const layoutSettings = designSettings.value.layout
 const levelInputMode = ref<LevelInputMode>('percent')
 
 const DOCUMENT_TYPE_STORAGE_KEY = 'resume-builder:selected-document-type'
@@ -345,22 +381,6 @@ const {
   roundedPxByValue,
   textStyleVarsByValue,
 } = useResumeDesignControls()
-const layoutSettings = reactive<LayoutSettings>({
-  photoSize: 140,
-  photoBorderWidth: 6,
-  photoPosition: 'center',
-  sidebarWidth: 280,
-  sectionDividerStyle: 'line',
-  headingCase: 'normal',
-  dateColumnWidth: 120,
-  lineDensity: 'comfortable',
-  showSectionIcons: true,
-  showContactIcons: true,
-  sectionIconStyle: 'outline',
-  iconSize: 'm',
-  iconColor: 'accent',
-  layoutMode: resolveTemplateSkin(DEFAULT_RESUME_TEMPLATE_ID).layoutMode,
-})
 const lineDensityOptions = [
   { label: 'Compact', value: 'compact' },
   { label: 'Comfortable', value: 'comfortable' },
@@ -2294,6 +2314,7 @@ watch(selectedDocumentType, (value) => {
 })
 
 watch(selectedTemplate, () => {
+  selectValidTemplateForCurrentDocumentType()
   resetRendererGuard()
 })
 
