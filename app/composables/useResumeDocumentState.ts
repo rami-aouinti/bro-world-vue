@@ -1,4 +1,5 @@
 import type { ResumeTemplateVariant } from '~/constants/resumeTemplates'
+import { resolveTemplateSkin } from '~/constants/resumeTemplateSkins'
 import type {
   ResumeDocumentCustomizationState,
   ResumeDocumentModel,
@@ -43,6 +44,8 @@ function normalizeSectionOrder(sectionOrder: unknown): ResumeSectionLayoutModel[
 }
 
 function normalizeModel(source: unknown, templateVariant: ResumeTemplateVariant): ResumeDocumentModel {
+  const defaultLayoutMode = resolveTemplateSkin(templateVariant).layoutMode
+
   if (!isRecord(source)) {
     return {
       templateVariant,
@@ -58,7 +61,7 @@ function normalizeModel(source: unknown, templateVariant: ResumeTemplateVariant)
         sectionIconStyle: 'outline',
         iconSize: 'm',
         iconColor: 'accent',
-        layoutMode: 'aside-left',
+        layoutMode: defaultLayoutMode,
       },
     }
   }
@@ -81,7 +84,9 @@ function normalizeModel(source: unknown, templateVariant: ResumeTemplateVariant)
       sectionIconStyle: style.sectionIconStyle === 'filled' || style.sectionIconStyle === 'rounded' ? style.sectionIconStyle : 'outline',
       iconSize: style.iconSize === 's' || style.iconSize === 'l' ? style.iconSize : 'm',
       iconColor: style.iconColor === 'neutral' ? 'neutral' : 'accent',
-      layoutMode: style.layoutMode === 'aside-right' || style.layoutMode === 'no-aside' ? style.layoutMode : 'aside-left',
+      layoutMode: style.layoutMode === 'aside-left' || style.layoutMode === 'aside-right' || style.layoutMode === 'no-aside'
+        ? style.layoutMode
+        : defaultLayoutMode,
     },
   }
 }

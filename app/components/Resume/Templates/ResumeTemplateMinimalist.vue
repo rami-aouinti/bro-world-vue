@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { RESUME_TEMPLATE_SKINS } from '~/constants/resumeTemplateSkins'
+import { RESUME_TEMPLATE_SKINS, type ResumeLayoutMode } from '~/constants/resumeTemplateSkins'
 import ResumeRenderer from '~/components/Resume/Templates/ResumeRenderer.vue'
 
 type SectionKey = 'experience' | 'education' | 'language' | 'project'
 type SectionLayoutEntry = { key: SectionKey; variant: string; region: 'main' | 'aside'; order?: number }
 
-const { resume, showPhoto, editable, onPhotoClick, sectionLayout, sectionVariants, themeTokens } = withDefaults(defineProps<{
+const { resume, showPhoto, editable, onPhotoClick, sectionLayout, sectionVariants, themeTokens, layoutMode } = withDefaults(defineProps<{
   resume: any
   showPhoto?: boolean
   editable?: boolean
@@ -13,6 +13,7 @@ const { resume, showPhoto, editable, onPhotoClick, sectionLayout, sectionVariant
   sectionLayout?: SectionLayoutEntry[]
   sectionVariants?: Partial<Record<SectionKey, string>>
   themeTokens?: Record<string, string>
+  layoutMode?: ResumeLayoutMode
 }>(), {
   showPhoto: true,
   editable: false,
@@ -20,6 +21,7 @@ const { resume, showPhoto, editable, onPhotoClick, sectionLayout, sectionVariant
   sectionLayout: () => [],
   sectionVariants: () => ({}),
   themeTokens: () => ({}),
+  layoutMode: undefined,
 })
 
 const emit = defineEmits<{
@@ -53,6 +55,7 @@ const templateSkin = computed(() => RESUME_TEMPLATE_SKINS['minimalist'])
     :section-layout="sectionLayout"
     :section-variants="sectionVariants"
     :theme-tokens="themeTokens"
+    :layout-mode="layoutMode"
     :template-skin="templateSkin"
     @add-item="forwardAddItem"
     @change-variant="forwardChangeVariant"

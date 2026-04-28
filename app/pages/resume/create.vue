@@ -321,7 +321,7 @@ const layoutSettings = reactive<LayoutSettings>({
   sectionIconStyle: 'outline',
   iconSize: 'm',
   iconColor: 'accent',
-  layoutMode: 'aside-left',
+  layoutMode: resolveTemplateSkin(DEFAULT_RESUME_TEMPLATE_ID).layoutMode,
 })
 const photoShapeOptions = [
   { label: 'Carré', value: 'square', icon: '□' },
