@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RESUME_TEMPLATE_SKINS } from '~/constants/resumeTemplateSkins'
+import ResumeRenderer from '~/components/Resume/Templates/ResumeRenderer.vue'
 
 type SectionKey = 'experience' | 'education' | 'language' | 'project'
 type SectionLayoutEntry = { key: SectionKey; variant: string; region: 'main' | 'aside'; order?: number }
