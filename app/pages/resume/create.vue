@@ -21,6 +21,7 @@ import {
   type ResumePreviewSectionKey,
   type ResumeSectionActionKey,
 } from '~/types/resumeDocumentModel'
+import { privateApi } from '~/utils/http/privateApi'
 
 definePageMeta({
   title: 'Create Resume',
@@ -145,6 +146,42 @@ type StructuredResumeResponse = {
     references?: StructuredReference[]
     hobbies?: string[]
   }
+}
+type RemoteResumeSection = {
+  title?: string | null
+  description?: string | null
+  startDate?: string | null
+  endDate?: string | null
+  company?: string | null
+  school?: string | null
+  location?: string | null
+  level?: string | null
+  attachments?: string[] | null
+  home_page?: string | null
+}
+type RemoteResumeInformation = {
+  fullName?: string | null
+  email?: string | null
+  phone?: string | null
+  address?: string | null
+  adresse?: string | null
+}
+type RemoteResumeDateMeta = {
+  date?: string | null
+}
+type RemoteResume = {
+  id: string
+  documentUrl: string | null
+  createdAt?: string | RemoteResumeDateMeta | null
+  resumeInformation?: RemoteResumeInformation | null
+  experiences?: RemoteResumeSection[]
+  educations?: RemoteResumeSection[]
+  skills?: RemoteResumeSection[]
+  languages?: RemoteResumeSection[]
+  certifications?: RemoteResumeSection[]
+  projects?: RemoteResumeSection[]
+  references?: RemoteResumeSection[]
+  hobbies?: RemoteResumeSection[]
 }
 type ResumeModel = {
   role: string
@@ -619,7 +656,96 @@ const selectedTemplateConfig = computed(
     templates[0],
 )
 
-onMounted(() => {
+function hasRemoteSectionContent(sections?: RemoteResumeSection[]) {
+  return Array.isArray(sections) && sections.some(section =>
+    [
+      section?.title,
+      section?.description,
+      section?.company,
+      section?.school,
+      section?.location,
+      section?.level,
+      section?.startDate,
+      section?.endDate,
+      section?.home_page,
+    ].some(value => String(value || '').trim().length > 0)
+      || (Array.isArray(section?.attachments) && section.attachments.length > 0),
+  )
+}
+
+function hasRemoteResumeContent(resumeItem: RemoteResume) {
+  return ([
+    resumeItem.experiences,
+    resumeItem.educations,
+    resumeItem.skills,
+    resumeItem.languages,
+    resumeItem.certifications,
+    resumeItem.projects,
+    resumeItem.references,
+    resumeItem.hobbies,
+  ] as Array<RemoteResumeSection[] | undefined>).some(hasRemoteSectionContent)
+}
+
+function extractRemoteResumeCreatedAtValue(resumeItem: RemoteResume) {
+  const createdAt = resumeItem.createdAt
+  if (typeof createdAt === 'string') return createdAt
+  if (createdAt && typeof createdAt === 'object') return String(createdAt.date || '')
+  return ''
+}
+
+function mapRemoteResumeToStructuredPayload(resumeItem: RemoteResume): StructuredResumeResponse {
+  const info = resumeItem.resumeInformation || {}
+  const mapSections = (sections?: RemoteResumeSection[]) => (Array.isArray(sections) ? sections : [])
+
+  return {
+    data: {
+      user: {
+        fullName: String(info.fullName || '').trim(),
+        email: String(info.email || '').trim(),
+        phone: String(info.phone || '').trim(),
+        address: String(info.address || info.adresse || '').trim(),
+      },
+      experiences: mapSections(resumeItem.experiences).map(section => ({
+        title: String(section.title || ''),
+        company: String(section.company || ''),
+        startDate: String(section.startDate || ''),
+        endDate: String(section.endDate || ''),
+        description: String(section.description || ''),
+      })),
+      educations: mapSections(resumeItem.educations).map(section => ({
+        title: String(section.title || ''),
+        school: String(section.school || ''),
+        startDate: String(section.startDate || ''),
+        endDate: String(section.endDate || ''),
+        description: String(section.description || ''),
+      })),
+      skills: mapSections(resumeItem.skills).map(section => String(section.title || '').trim()).filter(Boolean),
+      languages: mapSections(resumeItem.languages).map(section => ({
+        name: String(section.title || ''),
+        level: String(section.level || ''),
+      })),
+      certifications: mapSections(resumeItem.certifications).map(section => ({
+        title: String(section.title || ''),
+        issuer: String(section.school || section.company || ''),
+        date: String(section.startDate || section.endDate || ''),
+        description: String(section.description || ''),
+      })),
+      projects: mapSections(resumeItem.projects).map(section => ({
+        title: String(section.title || ''),
+        description: String(section.description || ''),
+        link: String(section.home_page || ''),
+      })),
+      references: mapSections(resumeItem.references).map(section => ({
+        name: String(section.title || ''),
+        contact: String(section.description || ''),
+        description: String(section.company || section.school || ''),
+      })),
+      hobbies: mapSections(resumeItem.hobbies).map(section => String(section.title || '').trim()).filter(Boolean),
+    },
+  }
+}
+
+onMounted(async () => {
   const templateFromQuery = route.query.template
   const mode = route.query.mode
 
@@ -630,6 +756,31 @@ onMounted(() => {
 
   if (mode === 'write')
     activeTab.value = 'edit'
+
+  if (!loggedIn.value) {
+    await refreshSession()
+  }
+  if (!loggedIn.value) return
+
+  try {
+    const apiResumes = await privateApi.request<RemoteResume[]>('/api/v1/recruit/private/me/resumes')
+    remoteResumes.value = Array.isArray(apiResumes) ? apiResumes : []
+
+    const sortedByCreatedAt = [...remoteResumes.value].sort((a, b) =>
+      Date.parse(extractRemoteResumeCreatedAtValue(a)) - Date.parse(extractRemoteResumeCreatedAtValue(b)))
+    const latestResume = sortedByCreatedAt.at(-1) || remoteResumes.value.at(-1)
+
+    selectedRemoteResumeId.value = latestResume?.id || null
+
+    if (!latestResume || latestResume.documentUrl !== null || !hasRemoteResumeContent(latestResume)) return
+
+    applyStructuredResumeData(mapRemoteResumeToStructuredPayload(latestResume))
+    loadedFromApi.value = true
+  } catch {
+    remoteResumes.value = []
+    selectedRemoteResumeId.value = null
+    loadedFromApi.value = false
+  }
 })
 
 const templateSupportsPhoto = computed(
@@ -665,6 +816,9 @@ const safePhotoShape = computed<PhotoShape>(() => (
 let aiElapsedTimer: ReturnType<typeof setInterval> | null = null
 const { t } = useI18n()
 const { loggedIn, fetch: refreshSession } = useUserSession()
+const remoteResumes = ref<RemoteResume[]>([])
+const selectedRemoteResumeId = ref<string | null>(null)
+const loadedFromApi = ref(false)
 const loginDialogOpen = ref(false)
 const loginLoading = ref(false)
 const pendingPdfDownload = ref(false)
