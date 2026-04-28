@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   title: 'Resume Builder',
+  layout: 'resume',
 })
 
 const { t } = useI18n()
@@ -52,25 +53,6 @@ const openTemplateInWriteMode = (template: {
   })
 }
 
-const journeySteps = computed(() => [
-  {
-    title: t('resumeBuilder.index.journey.steps.template.title'),
-    description: t('resumeBuilder.index.journey.steps.template.description'),
-    image: '/img/cv/cv-1.png',
-    cta: t('resumeBuilder.index.journey.steps.template.cta'),
-  },
-  {
-    title: t('resumeBuilder.index.journey.steps.fill.title'),
-    description: t('resumeBuilder.index.journey.steps.fill.description'),
-    image: '/img/cv/cv-2.png',
-  },
-  {
-    title: t('resumeBuilder.index.journey.steps.export.title'),
-    description: t('resumeBuilder.index.journey.steps.export.description'),
-    image: '/img/cv/cv-3.png',
-  },
-])
-
 const benefits = computed(() => [
   {
     title: t('resumeBuilder.index.benefits.items.attachments.title'),
@@ -99,7 +81,7 @@ const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
 const previousDesktopRightDrawer = showRightDrawerDesktop.value
 const previousMobileRightDrawer = showRightDrawerMobile.value
 
-showRightDrawerDesktop.value = false
+showRightDrawerDesktop.value = true
 showRightDrawerMobile.value = false
 
 onUnmounted(() => {
@@ -118,9 +100,16 @@ onUnmounted(() => {
           {{ t('resumeBuilder.index.journey.steps.template.cta') }}
         </v-btn>
       </template>
+      <template #right>
+        <h3>{{ t('resumeBuilder.index.heroTitle') }}</h3>
+        <p class="hero-subtitle">{{ t('resumeBuilder.index.heroSubtitle') }}</p>
+        <v-btn color="primary" size="large" to="/resume/create" class="mt-3">
+          {{ t('resumeBuilder.index.journey.steps.template.cta') }}
+        </v-btn>
+      </template>
     </AppPageDrawers>
-    <v-container fluid class="resume-home pa-0">
-      <section class="hero px-4 px-md-8 py-8 py-md-12">
+    <v-container fluid>
+      <section class="hero px-4 px-md-8">
         <div class="templates-showcase mt-8">
           <v-tabs
             v-model="activeTemplateTab"

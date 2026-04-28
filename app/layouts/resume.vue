@@ -104,6 +104,9 @@ onUnmounted(() => {
       <ClientOnly>
         <AppDrawerLazy v-if="shouldRenderLeftDrawer" />
       </ClientOnly>
+      <ClientOnly>
+        <AppRightDrawerLazy v-if="shouldRenderRightDrawer" />
+      </ClientOnly>
       <v-main>
         <AppNotification />
         <v-container fluid class="px-2 pt-0 pb-0">
