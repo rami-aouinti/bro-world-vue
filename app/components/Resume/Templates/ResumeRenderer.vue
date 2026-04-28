@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import SectionRenderer from '~/components/Resume/Sections/SectionRenderer.vue'
-import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 import AvatarOverlayControls from '~/components/Resume/Templates/AvatarOverlayControls.vue'
 import type {
   ResumeSectionKey,
@@ -13,7 +12,7 @@ type SectionLayoutVariant = {
   education: 'classic' | 'timeline' | 'two-column'
   language: 'classic' | 'text-level' | 'stars' | 'progress' | 'flags'
   project: 'classic' | 'list' | 'cards' | 'two-column'
-  skill: 'classic'
+  skill: 'classic' | 'text-level' | 'stars' | 'dots' | 'progress'
   reference: 'classic'
   hobby: 'classic'
   certification: 'classic'
@@ -120,7 +119,7 @@ const normalizedSectionLayout = computed<SectionLayoutEntry[]>(() => {
   })) as SectionLayoutEntry[]
 })
 
-type RenderableSectionLayoutEntry = SectionLayoutEntry<ResumeSectionKey>
+type RenderableSectionLayoutEntry = SectionLayoutEntry<ResumeSectionKey | 'skill'>
 const renderableSections = computed<RenderableSectionLayoutEntry[]>(
   () =>
     normalizedSectionLayout.value.filter(
@@ -129,6 +128,7 @@ const renderableSections = computed<RenderableSectionLayoutEntry[]>(
         section.key === 'education' ||
         section.key === 'language' ||
         section.key === 'project' ||
+        section.key === 'skill' ||
         section.key === 'hobby' ||
         section.key === 'certification' ||
         section.key === 'reference',
@@ -136,10 +136,10 @@ const renderableSections = computed<RenderableSectionLayoutEntry[]>(
 )
 
 const mainSections = computed(() =>
-  renderableSections.value.filter((section) => section.region === 'main'),
+  renderableSections.value.filter((section) => section.region === 'main' && (section.key !== 'skill' || props.templateSkin.showSkillsInAside)),
 )
 const asideSections = computed(() =>
-  renderableSections.value.filter((section) => section.region === 'aside'),
+  renderableSections.value.filter((section) => section.region === 'aside' && (section.key !== 'skill' || props.templateSkin.showSkillsInAside)),
 )
 const hasRenderedAvatar = computed(() =>
   Boolean(props.showPhoto && props.resume?.photoUrl && !props.photoHidden),
@@ -171,8 +171,8 @@ function fallbackVariant(sectionKey: ResumeSectionLayoutKey): string {
   if (sectionKey === 'experience') return 'detailed'
   if (sectionKey === 'education') return 'classic'
   if (sectionKey === 'language') return 'text-level'
+  if (sectionKey === 'skill') return 'progress'
   if (
-    sectionKey === 'skill' ||
     sectionKey === 'reference' ||
     sectionKey === 'hobby' ||
     sectionKey === 'certification'
@@ -204,11 +204,11 @@ function canMove(sectionKey: ResumeSectionLayoutKey, direction: 'up' | 'down') {
   return direction === 'up' ? index > 0 : index < regionSections.length - 1
 }
 
-function mergedSectionTokens(sectionKey: ResumeSectionKey) {
+function mergedSectionTokens(sectionKey: ResumeSectionKey | 'skill') {
   return {
     ...props.themeTokens,
     ...(props.templateSkin.themeTokens ?? {}),
-    ...(props.templateSkin.sectionTokens?.[sectionKey] ?? {}),
+    ...(sectionKey === 'skill' ? {} : (props.templateSkin.sectionTokens?.[sectionKey] ?? {})),
   }
 }
 
@@ -465,48 +465,6 @@ function updateText(path: string, value: string) {
           >
             {{ resume.profile }}
           </p>
-        </section>
-
-        <section
-          v-if="templateSkin.showSkillsInAside"
-          class="resume-section-hoverable resume-skin__skills-section"
-        >
-          <SectionToolbar
-            section-key="skill"
-            :variants="[{ label: 'Classic', value: 'classic' }]"
-            current-variant="classic"
-            :can-move-up="canMove('skill', 'up')"
-            :can-move-down="canMove('skill', 'down')"
-            @add-item="() => emit('add-item', 'skill')"
-            @change-variant="
-              (_, variant) => emit('change-variant', 'skill', variant)
-            "
-            @move-up="() => emit('move-section', 'skill', 'up')"
-            @move-down="() => emit('move-section', 'skill', 'down')"
-          />
-          <h3 class="cv-heading-section">Skills</h3>
-          <ul class="resume-skin__skills">
-            <li
-              v-for="(skill, index) in resume.skills"
-              :key="`${skill.name}-${index}`"
-            >
-              <span
-                class="editable-text"
-                :contenteditable="editable"
-                @input="
-                  (event) =>
-                    updateText(
-                      `skills.${index}.name`,
-                      (event.target as HTMLElement).innerText,
-                    )
-                "
-                >{{ skill.name }}</span
-              >
-              <div class="progress">
-                <i :style="{ width: `${skill.level}%` }" />
-              </div>
-            </li>
-          </ul>
         </section>
 
         <SectionRenderer
