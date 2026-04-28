@@ -4,6 +4,7 @@ import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 import AvatarOverlayControls from '~/components/Resume/Templates/AvatarOverlayControls.vue'
 import type {
   ResumeSectionKey,
+  ResumeSectionIconStyleVariant,
   ResumeTemplateSkin,
 } from '~/constants/resumeTemplateSkins'
 import { RESUME_SECTION_ICONS } from '~/constants/resumeSectionIcons'
@@ -67,6 +68,8 @@ const props = withDefaults(
     photoOffsetY?: number
     photoScale?: number
     photoHidden?: boolean
+    showSectionIcons?: boolean
+    sectionIconStyleVariant?: ResumeSectionIconStyleVariant
     templateSkin: ResumeTemplateSkin
   }>(),
   {
@@ -91,6 +94,8 @@ const props = withDefaults(
     photoOffsetY: 0,
     photoScale: 1,
     photoHidden: false,
+    showSectionIcons: undefined,
+    sectionIconStyleVariant: undefined,
   },
 )
 
@@ -166,6 +171,24 @@ const avatarImageStyle = computed(() => ({
 const sectionLayoutDensity = computed<'compact' | 'normal' | 'spacious'>(() =>
   props.density === 'compact' ? 'compact' : 'normal',
 )
+const shouldShowSectionIcons = computed(() =>
+  props.showSectionIcons ?? props.templateSkin.showSectionIcons,
+)
+const resolvedSectionIconStyle = computed(() => {
+  const style = props.templateSkin.sectionIconStyle
+  const variant = props.sectionIconStyleVariant ?? style.variant
+
+  return {
+    ...style,
+    variant,
+  }
+})
+const sectionIconCssVars = computed<Record<string, string>>(() => ({
+  '--resume-section-icon-size': `${resolvedSectionIconStyle.value.size}px`,
+  '--resume-section-icon-color': resolvedSectionIconStyle.value.color,
+  '--resume-section-icon-gap': `${resolvedSectionIconStyle.value.spacing}px`,
+  '--resume-section-icon-radius': resolvedSectionIconStyle.value.roundedBackground ? '999px' : '8px',
+}))
 
 function fallbackVariant(sectionKey: ResumeSectionLayoutKey): string {
   if (sectionKey === 'experience') return 'detailed'
@@ -247,7 +270,7 @@ function updateText(path: string, value: string) {
 </script>
 
 <template>
-  <article :class="[templateSkin.rootClass, ...rootDesignClasses]" :style="themeTokens">
+  <article :class="[templateSkin.rootClass, ...rootDesignClasses]" :style="{ ...themeTokens, ...sectionIconCssVars }">
     <header class="resume-skin__header">
       <div>
         <h1>
@@ -523,7 +546,8 @@ function updateText(path: string, value: string) {
           :can-move-down="canMove(section.key, 'down')"
           :theme-tokens="mergedSectionTokens(section.key)"
           :section-icon="RESUME_SECTION_ICONS[section.key]"
-          :show-section-icon="templateSkin.showSectionIcons"
+          :show-section-icon="shouldShowSectionIcons"
+          :section-icon-style="resolvedSectionIconStyle"
           @add-item="onSectionAddItem"
           @change-variant="onSectionVariantChange"
           @move-section="onSectionMove"
@@ -559,7 +583,8 @@ function updateText(path: string, value: string) {
           :can-move-down="canMove(section.key, 'down')"
           :theme-tokens="mergedSectionTokens(section.key)"
           :section-icon="RESUME_SECTION_ICONS[section.key]"
-          :show-section-icon="templateSkin.showSectionIcons"
+          :show-section-icon="shouldShowSectionIcons"
+          :section-icon-style="resolvedSectionIconStyle"
           @add-item="onSectionAddItem"
           @change-variant="onSectionVariantChange"
           @move-section="onSectionMove"

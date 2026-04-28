@@ -7,7 +7,7 @@ import {
   RESUME_TEMPLATES,
   type ResumeTemplateVariant,
 } from '~/constants/resumeTemplates'
-import { resolveTemplateSkin } from '~/constants/resumeTemplateSkins'
+import { resolveTemplateSkin, type ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
 import {
   useResumeDesignControls,
 } from '~/composables/useResumeDesignControls'
@@ -181,6 +181,8 @@ type LayoutSettings = {
   headingCase: 'normal' | 'uppercase'
   dateColumnWidth: number
   lineDensity: 'compact' | 'comfortable'
+  showSectionIcons: boolean
+  sectionIconStyle: ResumeSectionIconStyleVariant
 }
 type AddSectionType =
   | 'profile'
@@ -244,6 +246,8 @@ const layoutSettings = reactive<LayoutSettings>({
   headingCase: 'normal',
   dateColumnWidth: 120,
   lineDensity: 'comfortable',
+  showSectionIcons: true,
+  sectionIconStyle: 'outline',
 })
 const photoShapeOptions = [
   { label: 'Carré', value: 'square', icon: '□' },
@@ -1783,9 +1787,11 @@ if (import.meta.client) {
   selectedRounded.value = customization.style.radius
   selectedTextStyle.value = customization.style.typography
   layoutSettings.lineDensity = customization.style.density
+  layoutSettings.showSectionIcons = customization.style.showSectionIcons
+  layoutSettings.sectionIconStyle = customization.style.sectionIconStyle
   sectionLayout.value = normalizeSectionLayout(customization.sectionOrder)
 
-  watch([selectedTheme, selectedPageBackground, selectedRounded, selectedTextStyle], () => {
+  watch([selectedTheme, selectedPageBackground, selectedRounded, selectedTextStyle, () => layoutSettings.showSectionIcons, () => layoutSettings.sectionIconStyle], () => {
     resumeDocumentState.value.customization = {
       ...resumeDocumentState.value.customization,
       style: {
@@ -1794,6 +1800,8 @@ if (import.meta.client) {
         pageBackground: selectedPageBackground.value,
         radius: selectedRounded.value,
         typography: selectedTextStyle.value,
+        showSectionIcons: layoutSettings.showSectionIcons,
+        sectionIconStyle: layoutSettings.sectionIconStyle,
       },
     }
     persist()
@@ -1974,6 +1982,27 @@ if (import.meta.client) {
                 item-title="label"
                 item-value="value"
                 label="Section divider"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <v-switch
+                v-model="layoutSettings.showSectionIcons"
+                label="Show section icons"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
+              <AppSelect
+                v-model="layoutSettings.sectionIconStyle"
+                :items="[
+                  { label: 'Outline', value: 'outline' },
+                  { label: 'Filled', value: 'filled' },
+                  { label: 'Rounded', value: 'rounded' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Icon style"
                 density="comfortable"
                 hide-details
                 class="mt-3"
@@ -2810,6 +2839,27 @@ if (import.meta.client) {
                 class="mt-3"
               />
               <v-switch
+                v-model="layoutSettings.showSectionIcons"
+                label="Show section icons"
+                color="primary"
+                hide-details
+                class="mt-2"
+              />
+              <AppSelect
+                v-model="layoutSettings.sectionIconStyle"
+                :items="[
+                  { label: 'Outline', value: 'outline' },
+                  { label: 'Filled', value: 'filled' },
+                  { label: 'Rounded', value: 'rounded' },
+                ]"
+                item-title="label"
+                item-value="value"
+                label="Icon style"
+                density="comfortable"
+                hide-details
+                class="mt-3"
+              />
+              <v-switch
                 v-model="layoutSettings.headingCase"
                 false-value="normal"
                 true-value="uppercase"
@@ -2931,6 +2981,8 @@ if (import.meta.client) {
                 :text-style-class="activeTextStyleClass"
                 :density="layoutSettings.lineDensity"
                 :divider-style="layoutSettings.sectionDividerStyle"
+                :show-section-icons="layoutSettings.showSectionIcons"
+                :section-icon-style-variant="layoutSettings.sectionIconStyle"
                 :sidebar-width="layoutSettings.sidebarWidth"
                 :photo-size="layoutSettings.photoSize"
                 :photo-border-width="layoutSettings.photoBorderWidth"
@@ -3175,6 +3227,8 @@ if (import.meta.client) {
                   :text-style-class="activeTextStyleClass"
                   :density="layoutSettings.lineDensity"
                   :divider-style="layoutSettings.sectionDividerStyle"
+                  :show-section-icons="layoutSettings.showSectionIcons"
+                  :section-icon-style-variant="layoutSettings.sectionIconStyle"
                   :sidebar-width="layoutSettings.sidebarWidth"
                   :photo-size="layoutSettings.photoSize"
                   :photo-border-width="layoutSettings.photoBorderWidth"

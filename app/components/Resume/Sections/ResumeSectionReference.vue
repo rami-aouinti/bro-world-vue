@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
 
 const props = withDefaults(defineProps<{
   resume: any
@@ -13,6 +14,7 @@ const props = withDefaults(defineProps<{
   canMoveDown?: boolean
   sectionIcon?: string
   showSectionIcon?: boolean
+  sectionIconStyle?: ResumeSectionIconStyle
 }>(), {
   editable: false,
   variant: 'classic',
@@ -24,6 +26,7 @@ const props = withDefaults(defineProps<{
   canMoveDown: false,
   sectionIcon: undefined,
   showSectionIcon: true,
+  sectionIconStyle: undefined,
 })
 
 const emit = defineEmits<{
@@ -33,6 +36,14 @@ const emit = defineEmits<{
 }>()
 
 const sectionStyle = computed(() => ({ ...props.themeTokens }))
+const iconVariantClass = computed(() =>
+  props.sectionIconStyle?.variant ? `section-icon--${props.sectionIconStyle.variant}` : 'section-icon--outline',
+)
+const iconStyle = computed(() => ({
+  '--resume-section-icon-size': `${props.sectionIconStyle?.size ?? 18}px`,
+  '--resume-section-icon-color': props.sectionIconStyle?.color ?? 'var(--cv-accent)',
+  '--resume-section-icon-gap': `${props.sectionIconStyle?.spacing ?? 8}px`,
+}))
 
 function updateText(path: string, value: string) {
   const segments = path.split('.')
@@ -63,7 +74,9 @@ function updateText(path: string, value: string) {
     />
 
     <h3 class="cv-heading-section">
-      <v-icon v-if="showSectionIcon && sectionIcon" :icon="sectionIcon" size="18" />
+      <span v-if="showSectionIcon && sectionIcon" class="section-icon" :class="iconVariantClass" :style="iconStyle">
+        <v-icon :icon="sectionIcon" :size="sectionIconStyle?.size ?? 18" />
+      </span>
       <span>{{ title }}</span>
     </h3>
     <ul class="entry-list">
@@ -77,7 +90,28 @@ function updateText(path: string, value: string) {
 
 <style scoped>
 .reference-section { position: relative; }
-.cv-heading-section { display: inline-flex; align-items: center; gap: var(--cv-space-2, 8px); }
+.cv-heading-section { display: inline-flex; align-items: center; gap: var(--resume-section-icon-gap, var(--cv-space-2, 8px)); }
+.section-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--resume-section-icon-size, 18px) + 8px);
+  height: calc(var(--resume-section-icon-size, 18px) + 8px);
+  color: var(--resume-section-icon-color, var(--cv-accent));
+}
+.section-icon--outline {
+  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+  border-radius: var(--resume-section-icon-radius, 999px);
+}
+.section-icon--filled {
+  border-radius: var(--resume-section-icon-radius, 999px);
+  background: color-mix(in srgb, currentColor 88%, white);
+  color: #fff;
+}
+.section-icon--rounded {
+  border-radius: calc(var(--resume-section-icon-radius, 8px) + 2px);
+  background: color-mix(in srgb, currentColor 18%, transparent);
+}
 .entry-list { margin: 0; padding: 0; list-style: none; }
 .entry-list li { margin-bottom: var(--cv-space-2, 8px); }
 </style>
