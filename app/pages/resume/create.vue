@@ -3096,84 +3096,504 @@ if (import.meta.client) {
   <div>
     <AppPageDrawers>
       <template #left>
-        <p class="section-label mt-4">Layout</p>
-        <AppSelect
-          v-if="isResumeDocument"
-          v-model="layoutSettings.layoutMode"
-          :items="layoutModeOptions"
-          item-title="label"
-          item-value="value"
-          label="Layout mode"
-          density="comfortable"
-          hide-details
-          class="mb-3"
-        />
-        <AppSelect
-          v-model="layoutSettings.lineDensity"
-          :items="lineDensityOptions"
-          item-title="label"
-          item-value="value"
-          label="Density"
-          density="comfortable"
-          hide-details
-          class="mb-3"
-        />
-        <AppSelect
-          v-model="layoutSettings.sectionDividerStyle"
-          :items="sectionDividerStyleOptions"
-          item-title="label"
-          item-value="value"
-          label="Section dividers"
-          density="comfortable"
-          hide-details
-        />
-        <AppSelect
-          v-if="designMenuSupportsPhotoPosition"
-          v-model="layoutSettings.photoPosition"
-          :items="photoPositionOptions"
-          item-title="label"
-          item-value="value"
-          label="Photo alignment"
-          density="comfortable"
-          hide-details
-          class="mt-3"
-        />
-        <v-alert
-          v-else-if="isResumeDocument"
-          type="info"
-          variant="tonal"
-          density="comfortable"
-          class="mt-3"
-        >
-          Photo alignment is hidden because this template does not
-          include a profile photo.
-        </v-alert>
-        <div v-if="designMenuSupportsAsideWidth" class="mt-3">
-          <div class="d-flex align-center justify-space-between mb-1">
-            <span class="text-caption">Aside width</span>
-            <span class="text-caption font-weight-medium">
+        <div style="min-height: 400px; overflow-y: auto">
+          <div class="d-flex align-content-center">
+            <v-menu
+              class="mt-2"
+              location="bottom center"
+              origin="top center"
+              max-width="320"
+            >
+              <template #activator="{ props }">
+                <v-btn
+                  class="local-toolbar-btn my-2 mx-2"
+                  color="primary"
+                  size="small"
+                  variant="outlined"
+                  icon="mdi-palette-outline"
+                  v-bind="props"
+                >
+                </v-btn>
+              </template>
+              <v-card class="toolbar-menu-card">
+                <v-card-title class="text-subtitle-2">Design</v-card-title>
+                <v-card-text>
+                  <p class="section-label">Color palette</p>
+                  <div class="palette-grid mb-4">
+                    <button
+                      v-for="theme in colorThemes"
+                      :key="`toolbar-theme-${theme.name}`"
+                      type="button"
+                      class="palette-item"
+                      :class="{
+                            'palette-item--active':
+                              selectedTheme === theme.name,
+                          }"
+                      @click="selectedTheme = theme.name"
+                    >
+                      <span :style="{ background: theme.sidebar }" />
+                      <span :style="{ background: theme.accent }" />
+                      <span :style="{ background: theme.page }" />
+                    </button>
+                  </div>
+
+                  <p class="section-label">Page background</p>
+                  <div class="palette-grid mb-4">
+                    <button
+                      v-for="option in pageBackgroundValidation"
+                      :key="`toolbar-bg-${option.value}`"
+                      type="button"
+                      class="palette-item"
+                      :class="{
+                            'palette-item--active':
+                              selectedPageBackground === option.value,
+                          }"
+                      :disabled="option.blocked"
+                      :title="
+                            option.blocked
+                              ? 'Fond trop sombre ou contraste insuffisant'
+                              : option.label
+                          "
+                      @click="selectedPageBackground = option.value"
+                    >
+                      <span :style="{ background: option.page }" />
+                      <span :style="{ background: activeTheme.accent }" />
+                      <span :style="{ background: activeTheme.sidebar }" />
+                    </button>
+                  </div>
+
+
+
+                  <p class="section-label mt-4">Rounded</p>
+                  <v-btn-toggle
+                    v-model="selectedRounded"
+                    mandatory
+                    divided
+                    class="rounded-toggle"
+                    color="primary"
+                  >
+                    <v-btn
+                      v-for="option in roundedOptions"
+                      :key="`toolbar-rounded-${option.value}`"
+                      :value="option.value"
+                      variant="text"
+                    >
+                      {{ option.title }}
+                    </v-btn>
+                  </v-btn-toggle>
+                  <v-alert
+                    v-if="isCoverDocument"
+                    type="info"
+                    variant="tonal"
+                    density="comfortable"
+                    class="mt-3"
+                  >
+                    Cover page and cover letter templates hide layout
+                    controls that do not apply (aside width, photo alignment
+                    without photo, resume layout mode).
+                  </v-alert>
+
+                  <p class="section-label mt-4">Icons</p>
+                  <div class="d-grid ga-3">
+                    <v-switch
+                      v-model="layoutSettings.showSectionIcons"
+                      label="Show section icons"
+                      color="primary"
+                      hide-details
+                      inset
+                    />
+                    <v-switch
+                      v-model="layoutSettings.showContactIcons"
+                      label="Show contact icons"
+                      color="primary"
+                      hide-details
+                      inset
+                    />
+                    <AppSelect
+                      v-model="layoutSettings.sectionIconStyle"
+                      :items="sectionIconStyleOptions"
+                      item-title="label"
+                      item-value="value"
+                      label="Icon style"
+                      density="comfortable"
+                      hide-details
+                    />
+                    <AppSelect
+                      v-model="layoutSettings.iconSize"
+                      :items="iconSizeOptions"
+                      item-title="label"
+                      item-value="value"
+                      label="Icon size"
+                      density="comfortable"
+                      hide-details
+                    />
+                    <AppSelect
+                      v-model="layoutSettings.iconColor"
+                      :items="iconColorOptions"
+                      item-title="label"
+                      item-value="value"
+                      label="Icon color"
+                      density="comfortable"
+                      hide-details
+                    />
+                  </div>
+                </v-card-text>
+              </v-card>
+            </v-menu>
+            <v-menu
+              class="mt-2 mx-1"
+              location="bottom center"
+              origin="top center"
+              max-width="320"
+            >
+              <template #activator="{ props }">
+                <v-btn
+                  class="local-toolbar-btn my-2 mx-2"
+                  color="primary"
+                  size="small"
+                  variant="outlined"
+                  icon="mdi-palette-outline"
+                  v-bind="props"
+                >
+                </v-btn>
+              </template>
+              <v-card class="toolbar-menu-card">
+                <v-card-title class="text-subtitle-2">Design</v-card-title>
+                <v-card-text>
+                  <p class="section-label">Color palette</p>
+                  <div class="palette-grid mb-4">
+                    <button
+                      v-for="theme in colorThemes"
+                      :key="`toolbar-theme-${theme.name}`"
+                      type="button"
+                      class="palette-item"
+                      :class="{
+                            'palette-item--active':
+                              selectedTheme === theme.name,
+                          }"
+                      @click="selectedTheme = theme.name"
+                    >
+                      <span :style="{ background: theme.sidebar }" />
+                      <span :style="{ background: theme.accent }" />
+                      <span :style="{ background: theme.page }" />
+                    </button>
+                  </div>
+
+                  <p class="section-label">Page background</p>
+                  <div class="palette-grid mb-4">
+                    <button
+                      v-for="option in pageBackgroundValidation"
+                      :key="`toolbar-bg-${option.value}`"
+                      type="button"
+                      class="palette-item"
+                      :class="{
+                            'palette-item--active':
+                              selectedPageBackground === option.value,
+                          }"
+                      :disabled="option.blocked"
+                      :title="
+                            option.blocked
+                              ? 'Fond trop sombre ou contraste insuffisant'
+                              : option.label
+                          "
+                      @click="selectedPageBackground = option.value"
+                    >
+                      <span :style="{ background: option.page }" />
+                      <span :style="{ background: activeTheme.accent }" />
+                      <span :style="{ background: activeTheme.sidebar }" />
+                    </button>
+                  </div>
+
+
+
+                  <p class="section-label mt-4">Rounded</p>
+                  <v-btn-toggle
+                    v-model="selectedRounded"
+                    mandatory
+                    divided
+                    class="rounded-toggle"
+                    color="primary"
+                  >
+                    <v-btn
+                      v-for="option in roundedOptions"
+                      :key="`toolbar-rounded-${option.value}`"
+                      :value="option.value"
+                      variant="text"
+                    >
+                      {{ option.title }}
+                    </v-btn>
+                  </v-btn-toggle>
+                  <v-alert
+                    v-if="isCoverDocument"
+                    type="info"
+                    variant="tonal"
+                    density="comfortable"
+                    class="mt-3"
+                  >
+                    Cover page and cover letter templates hide layout
+                    controls that do not apply (aside width, photo alignment
+                    without photo, resume layout mode).
+                  </v-alert>
+
+                  <p class="section-label mt-4">Icons</p>
+                  <div class="d-grid ga-3">
+                    <v-switch
+                      v-model="layoutSettings.showSectionIcons"
+                      label="Show section icons"
+                      color="primary"
+                      hide-details
+                      inset
+                    />
+                    <v-switch
+                      v-model="layoutSettings.showContactIcons"
+                      label="Show contact icons"
+                      color="primary"
+                      hide-details
+                      inset
+                    />
+                    <AppSelect
+                      v-model="layoutSettings.sectionIconStyle"
+                      :items="sectionIconStyleOptions"
+                      item-title="label"
+                      item-value="value"
+                      label="Icon style"
+                      density="comfortable"
+                      hide-details
+                    />
+                    <AppSelect
+                      v-model="layoutSettings.iconSize"
+                      :items="iconSizeOptions"
+                      item-title="label"
+                      item-value="value"
+                      label="Icon size"
+                      density="comfortable"
+                      hide-details
+                    />
+                    <AppSelect
+                      v-model="layoutSettings.iconColor"
+                      :items="iconColorOptions"
+                      item-title="label"
+                      item-value="value"
+                      label="Icon color"
+                      density="comfortable"
+                      hide-details
+                    />
+                  </div>
+                </v-card-text>
+              </v-card>
+            </v-menu>
+            <v-menu
+              class="mt-2 mx-1"
+              location="bottom center"
+              origin="top center"
+              max-width="320"
+            >
+              <template #activator="{ props }">
+                <v-btn
+                  class="local-toolbar-btn my-2 mx-2"
+                  color="primary"
+                  size="small"
+                  variant="outlined"
+                  icon="mdi-palette-outline"
+                  v-bind="props"
+                >
+                </v-btn>
+              </template>
+              <v-card class="toolbar-menu-card">
+                <v-card-title class="text-subtitle-2">Design</v-card-title>
+                <v-card-text>
+                  <p class="section-label">Color palette</p>
+                  <div class="palette-grid mb-4">
+                    <button
+                      v-for="theme in colorThemes"
+                      :key="`toolbar-theme-${theme.name}`"
+                      type="button"
+                      class="palette-item"
+                      :class="{
+                            'palette-item--active':
+                              selectedTheme === theme.name,
+                          }"
+                      @click="selectedTheme = theme.name"
+                    >
+                      <span :style="{ background: theme.sidebar }" />
+                      <span :style="{ background: theme.accent }" />
+                      <span :style="{ background: theme.page }" />
+                    </button>
+                  </div>
+
+                  <p class="section-label">Page background</p>
+                  <div class="palette-grid mb-4">
+                    <button
+                      v-for="option in pageBackgroundValidation"
+                      :key="`toolbar-bg-${option.value}`"
+                      type="button"
+                      class="palette-item"
+                      :class="{
+                            'palette-item--active':
+                              selectedPageBackground === option.value,
+                          }"
+                      :disabled="option.blocked"
+                      :title="
+                            option.blocked
+                              ? 'Fond trop sombre ou contraste insuffisant'
+                              : option.label
+                          "
+                      @click="selectedPageBackground = option.value"
+                    >
+                      <span :style="{ background: option.page }" />
+                      <span :style="{ background: activeTheme.accent }" />
+                      <span :style="{ background: activeTheme.sidebar }" />
+                    </button>
+                  </div>
+
+
+
+                  <p class="section-label mt-4">Rounded</p>
+                  <v-btn-toggle
+                    v-model="selectedRounded"
+                    mandatory
+                    divided
+                    class="rounded-toggle"
+                    color="primary"
+                  >
+                    <v-btn
+                      v-for="option in roundedOptions"
+                      :key="`toolbar-rounded-${option.value}`"
+                      :value="option.value"
+                      variant="text"
+                    >
+                      {{ option.title }}
+                    </v-btn>
+                  </v-btn-toggle>
+                  <v-alert
+                    v-if="isCoverDocument"
+                    type="info"
+                    variant="tonal"
+                    density="comfortable"
+                    class="mt-3"
+                  >
+                    Cover page and cover letter templates hide layout
+                    controls that do not apply (aside width, photo alignment
+                    without photo, resume layout mode).
+                  </v-alert>
+
+                  <p class="section-label mt-4">Icons</p>
+                  <div class="d-grid ga-3">
+                    <v-switch
+                      v-model="layoutSettings.showSectionIcons"
+                      label="Show section icons"
+                      color="primary"
+                      hide-details
+                      inset
+                    />
+                    <v-switch
+                      v-model="layoutSettings.showContactIcons"
+                      label="Show contact icons"
+                      color="primary"
+                      hide-details
+                      inset
+                    />
+                    <AppSelect
+                      v-model="layoutSettings.sectionIconStyle"
+                      :items="sectionIconStyleOptions"
+                      item-title="label"
+                      item-value="value"
+                      label="Icon style"
+                      density="comfortable"
+                      hide-details
+                    />
+                    <AppSelect
+                      v-model="layoutSettings.iconSize"
+                      :items="iconSizeOptions"
+                      item-title="label"
+                      item-value="value"
+                      label="Icon size"
+                      density="comfortable"
+                      hide-details
+                    />
+                    <AppSelect
+                      v-model="layoutSettings.iconColor"
+                      :items="iconColorOptions"
+                      item-title="label"
+                      item-value="value"
+                      label="Icon color"
+                      density="comfortable"
+                      hide-details
+                    />
+                  </div>
+                </v-card-text>
+              </v-card>
+            </v-menu>
+          </div>
+          <div v-if="designMenuSupportsAsideWidth" class="mt-3">
+            <div class="d-flex align-center justify-space-between mb-1">
+              <span class="text-caption">Aside width</span>
+              <span class="text-caption font-weight-medium">
                             {{ layoutSettings.sidebarWidth }} px
                           </span>
+            </div>
+            <v-slider
+              v-model="layoutSettings.sidebarWidth"
+              min="220"
+              max="380"
+              step="2"
+              color="primary"
+              hide-details
+            />
           </div>
-          <v-slider
-            v-model="layoutSettings.sidebarWidth"
-            min="220"
-            max="380"
-            step="2"
-            color="primary"
+          <AppSelect
+            v-if="isResumeDocument"
+            v-model="layoutSettings.layoutMode"
+            :items="layoutModeOptions"
+            item-title="label"
+            item-value="value"
+            label="Layout mode"
+            density="comfortable"
+            hide-details
+            class="mb-3"
+          />
+          <AppSelect
+            v-model="layoutSettings.lineDensity"
+            :items="lineDensityOptions"
+            item-title="label"
+            item-value="value"
+            label="Density"
+            density="comfortable"
+            hide-details
+            class="mt-3"
+          />
+          <AppSelect
+            v-model="layoutSettings.sectionDividerStyle"
+            :items="sectionDividerStyleOptions"
+            item-title="label"
+            item-value="value"
+            label="Section dividers"
+            density="comfortable"
+            class="mt-3"
             hide-details
           />
+          <AppSelect
+            v-if="designMenuSupportsPhotoPosition"
+            v-model="layoutSettings.photoPosition"
+            :items="photoPositionOptions"
+            item-title="label"
+            item-value="value"
+            label="Photo alignment"
+            density="comfortable"
+            hide-details
+            class="mt-3"
+          />
+          <AppSelect
+            v-model="selectedTextStyle"
+            :items="textStyleOptions"
+            item-title="label"
+            item-value="value"
+            label="Typography preset"
+            density="comfortable"
+            hide-details
+            class="mt-3"
+          />
         </div>
-        <v-alert
-          v-else-if="isResumeDocument"
-          type="info"
-          variant="tonal"
-          density="comfortable"
-          class="mt-3"
-        >
-          Aside width is hidden when layout mode is set to “No
-          aside”.
-        </v-alert>
       </template>
       <template #right>
         <v-chip color="primary" variant="tonal">Templates</v-chip>
@@ -3319,156 +3739,7 @@ if (import.meta.client) {
                     </v-card-text>
                   </v-card>
                 </v-menu>
-                <v-menu
-                  location="bottom center"
-                  origin="top center"
-                  max-width="620"
-                >
-                  <template #activator="{ props }">
-                    <v-btn
-                      class="local-toolbar-btn"
-                      color="primary"
-                      size="small"
-                      variant="outlined"
-                      prepend-icon="mdi-palette-outline"
-                      v-bind="props"
-                    >
-                      Design
-                    </v-btn>
-                  </template>
-                  <v-card class="toolbar-menu-card">
-                    <v-card-title class="text-subtitle-2">Design</v-card-title>
-                    <v-card-text>
-                      <p class="section-label">Color palette</p>
-                      <div class="palette-grid mb-4">
-                        <button
-                          v-for="theme in colorThemes"
-                          :key="`toolbar-theme-${theme.name}`"
-                          type="button"
-                          class="palette-item"
-                          :class="{
-                            'palette-item--active':
-                              selectedTheme === theme.name,
-                          }"
-                          @click="selectedTheme = theme.name"
-                        >
-                          <span :style="{ background: theme.sidebar }" />
-                          <span :style="{ background: theme.accent }" />
-                          <span :style="{ background: theme.page }" />
-                        </button>
-                      </div>
 
-                      <p class="section-label">Page background</p>
-                      <div class="palette-grid mb-4">
-                        <button
-                          v-for="option in pageBackgroundValidation"
-                          :key="`toolbar-bg-${option.value}`"
-                          type="button"
-                          class="palette-item"
-                          :class="{
-                            'palette-item--active':
-                              selectedPageBackground === option.value,
-                          }"
-                          :disabled="option.blocked"
-                          :title="
-                            option.blocked
-                              ? 'Fond trop sombre ou contraste insuffisant'
-                              : option.label
-                          "
-                          @click="selectedPageBackground = option.value"
-                        >
-                          <span :style="{ background: option.page }" />
-                          <span :style="{ background: activeTheme.accent }" />
-                          <span :style="{ background: activeTheme.sidebar }" />
-                        </button>
-                      </div>
-
-                      <AppSelect
-                        v-model="selectedTextStyle"
-                        :items="textStyleOptions"
-                        item-title="label"
-                        item-value="value"
-                        label="Typography preset"
-                        density="comfortable"
-                        hide-details
-                      />
-
-                      <p class="section-label mt-4">Rounded</p>
-                      <v-btn-toggle
-                        v-model="selectedRounded"
-                        mandatory
-                        divided
-                        class="rounded-toggle"
-                        color="primary"
-                      >
-                        <v-btn
-                          v-for="option in roundedOptions"
-                          :key="`toolbar-rounded-${option.value}`"
-                          :value="option.value"
-                          variant="text"
-                        >
-                          {{ option.title }}
-                        </v-btn>
-                      </v-btn-toggle>
-                      <v-alert
-                        v-if="isCoverDocument"
-                        type="info"
-                        variant="tonal"
-                        density="comfortable"
-                        class="mt-3"
-                      >
-                        Cover page and cover letter templates hide layout
-                        controls that do not apply (aside width, photo alignment
-                        without photo, resume layout mode).
-                      </v-alert>
-
-                      <p class="section-label mt-4">Icons</p>
-                      <div class="d-grid ga-3">
-                        <v-switch
-                          v-model="layoutSettings.showSectionIcons"
-                          label="Show section icons"
-                          color="primary"
-                          hide-details
-                          inset
-                        />
-                        <v-switch
-                          v-model="layoutSettings.showContactIcons"
-                          label="Show contact icons"
-                          color="primary"
-                          hide-details
-                          inset
-                        />
-                        <AppSelect
-                          v-model="layoutSettings.sectionIconStyle"
-                          :items="sectionIconStyleOptions"
-                          item-title="label"
-                          item-value="value"
-                          label="Icon style"
-                          density="comfortable"
-                          hide-details
-                        />
-                        <AppSelect
-                          v-model="layoutSettings.iconSize"
-                          :items="iconSizeOptions"
-                          item-title="label"
-                          item-value="value"
-                          label="Icon size"
-                          density="comfortable"
-                          hide-details
-                        />
-                        <AppSelect
-                          v-model="layoutSettings.iconColor"
-                          :items="iconColorOptions"
-                          item-title="label"
-                          item-value="value"
-                          label="Icon color"
-                          density="comfortable"
-                          hide-details
-                        />
-                      </div>
-                    </v-card-text>
-                  </v-card>
-                </v-menu>
                 <v-menu
                   v-model="toolbarSectionMenuOpen"
                   location="bottom center"

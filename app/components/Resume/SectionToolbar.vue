@@ -145,7 +145,7 @@ watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySe
 
     <v-menu v-if="enabledActions.has('change-variant') && props.variants.length">
       <template #activator="{ props: menuProps }">
-        <v-tooltip text="Changer la mise en page">
+        <v-tooltip text="Change Layout">
           <template #activator="{ props: tooltipProps }">
             <v-btn
               class="toolbar-btn"
@@ -282,7 +282,7 @@ watch([selectedHeading, selectedSpacing, selectedCard, selectedDivider], applySe
 <style scoped>
 .section-toolbar {
   --cv-toolbar-border: var(--cv-toolbar-border-color, color-mix(in srgb, var(--cv-secondary) 22%, transparent));
-  --cv-toolbar-bg: var(--cv-toolbar-bg-color, color-mix(in srgb, var(--cv-page) 86%, var(--cv-sidebar) 14%));
+  --cv-toolbar-bg: var(--cv-toolbar-bg-color, color-mix(in srgb, var(--cv-page) 16%, var(--cv-sidebar) 74%));
   --cv-toolbar-shadow: var(--cv-toolbar-shadow-color, color-mix(in srgb, var(--cv-secondary) 14%, transparent));
 
   position: absolute;

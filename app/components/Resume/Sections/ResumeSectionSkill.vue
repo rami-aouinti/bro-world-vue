@@ -92,31 +92,32 @@ function levelToDots(level: number | string) {
     <ul v-if="safeVariant === 'classic' || safeVariant === 'progress'" class="bars">
       <li v-for="(skill, index) in resume.skills" :key="`${skill.name}-${index}`">
         <div class="d-flex align-center ga-2 justify-space-between">
-          <span class="editable-text" :contenteditable="editable" @input="event => updateText(`skills.${index}.name`, (event.target as HTMLElement).innerText)">{{ skill.name }}</span>
-          <small>{{ levelToPercent(skill.level) }}%</small>
+          <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`skills.${index}.name`, (event.target as HTMLElement).innerText)">{{ skill.name }}</span>
+          <small class="text-dark">{{ levelToPercent(skill.level) }}%</small>
         </div>
-        <div class="progress"><i :style="{ width: `${levelToPercent(skill.level)}%` }" /></div>
+        <div class="progress text-dark"><i :style="{ width: `${levelToPercent(skill.level)}%` }" /></div>
       </li>
     </ul>
 
     <ul v-else-if="safeVariant === 'text-level'" class="bars">
       <li v-for="(skill, index) in resume.skills" :key="`${skill.name}-${index}`">
-        <small>{{ levelToText(skill.level) }} — </small>
-        <span class="editable-text" :contenteditable="editable" @input="event => updateText(`skills.${index}.name`, (event.target as HTMLElement).innerText)">{{ skill.name }}</span>
+        <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`skills.${index}.name`, (event.target as HTMLElement).innerText)">{{ skill.name }}</span>
+        <small class="text-dark mx-3">{{ levelToText(skill.level) }} </small>
       </li>
     </ul>
 
     <ul v-else-if="safeVariant === 'stars'" class="bars">
       <li v-for="(skill, index) in resume.skills" :key="`${skill.name}-${index}`" class="d-flex align-center ga-2 justify-space-between">
-        <span class="editable-text" :contenteditable="editable" @input="event => updateText(`skills.${index}.name`, (event.target as HTMLElement).innerText)">{{ skill.name }}</span>
-        <small>{{ `${'★'.repeat(levelToStars(skill.level))}${'☆'.repeat(5 - levelToStars(skill.level))}` }}</small>
+        <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`skills.${index}.name`, (event.target as HTMLElement).innerText)">{{ skill.name }}</span>
+        <small class="text-dark">{{ `${'★'.repeat(levelToStars(skill.level))}${'☆'.repeat(5 - levelToStars(skill.level))}` }}</small>
       </li>
     </ul>
 
     <ul v-else class="bars">
       <li v-for="(skill, index) in resume.skills" :key="`${skill.name}-${index}`" class="d-flex align-center ga-2 justify-space-between">
-        <span class="editable-text" :contenteditable="editable" @input="event => updateText(`skills.${index}.name`, (event.target as HTMLElement).innerText)">{{ skill.name }}</span>
-        <small>{{ levelToDots(skill.level) }}</small>
+        <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`skills.${index}.name`, (event.target as HTMLElement).innerText)">{{ skill.name }}</span>
+        <v-progress-linear indeterminate color="primary" size="{{ levelToDots(skill.level) }}" class="mr-3" />
+        <small class="text-dark">{{ levelToDots(skill.level) }}</small>
       </li>
     </ul>
   </section>
