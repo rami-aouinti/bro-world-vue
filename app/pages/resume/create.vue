@@ -13,6 +13,7 @@ import {
 } from '~/composables/useResumeDesignControls'
 import { useResumeDocumentState } from '~/composables/useResumeDocumentState'
 import { levelToStars, starsToPercent } from '~/utils/resumeLanguageLevel'
+import ResumeRenderer from '~/components/Resume/Templates/ResumeRenderer.vue'
 
 definePageMeta({
   title: 'Create Resume',
