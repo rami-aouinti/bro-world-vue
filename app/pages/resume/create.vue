@@ -7,7 +7,7 @@ import {
   RESUME_TEMPLATES,
   type ResumeTemplateVariant,
 } from '~/constants/resumeTemplates'
-import { resolveTemplateSkin, type ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
+import { resolveTemplateSkin, type ResumeLayoutMode, type ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
 import { RESUME_CONTENT_STYLE_OPTIONS, RESUME_SECTION_REGISTRY } from '~/constants/resumeSectionRegistry'
 import {
   useResumeDesignControls,
@@ -252,6 +252,7 @@ type LayoutSettings = {
   sectionIconStyle: ResumeSectionIconStyleVariant
   iconSize: 's' | 'm' | 'l'
   iconColor: 'accent' | 'neutral'
+  layoutMode: ResumeLayoutMode
 }
 type AddSectionType =
   | 'profile'
@@ -316,6 +317,7 @@ const layoutSettings = reactive<LayoutSettings>({
   sectionIconStyle: 'outline',
   iconSize: 'm',
   iconColor: 'accent',
+  layoutMode: 'aside-left',
 })
 const photoShapeOptions = [
   { label: 'Carré', value: 'square', icon: '□' },
@@ -1905,6 +1907,10 @@ watch(selectedTemplate, () => {
   resetRendererGuard()
 })
 
+watch(selectedTemplateSkin, (skin) => {
+  layoutSettings.layoutMode = skin.layoutMode
+}, { immediate: true })
+
 onErrorCaptured((error, instance, info) => {
   const componentName = instance?.type && typeof instance.type === 'object' && 'name' in instance.type
     ? String(instance.type.name || 'unknown')
@@ -2007,6 +2013,7 @@ const resumeRendererDesignState = computed(() => ({
   sectionIconStyleVariant: layoutSettings.sectionIconStyle,
   iconSizeVariant: layoutSettings.iconSize,
   iconColorMode: layoutSettings.iconColor,
+  layoutMode: layoutSettings.layoutMode,
   sidebarWidth: layoutSettings.sidebarWidth,
   photoSize: layoutSettings.photoSize,
   photoBorderWidth: layoutSettings.photoBorderWidth,
@@ -2611,9 +2618,10 @@ if (import.meta.client) {
   layoutSettings.sectionIconStyle = customization.style.sectionIconStyle
   layoutSettings.iconSize = customization.style.iconSize
   layoutSettings.iconColor = customization.style.iconColor
+  layoutSettings.layoutMode = customization.style.layoutMode
   sectionLayout.value = normalizeSectionLayout(customization.sectionOrder)
 
-  watch([selectedTheme, selectedPageBackground, selectedRounded, selectedTextStyle, () => layoutSettings.showSectionIcons, () => layoutSettings.showContactIcons, () => layoutSettings.sectionIconStyle, () => layoutSettings.iconSize, () => layoutSettings.iconColor], () => {
+  watch([selectedTheme, selectedPageBackground, selectedRounded, selectedTextStyle, () => layoutSettings.showSectionIcons, () => layoutSettings.showContactIcons, () => layoutSettings.sectionIconStyle, () => layoutSettings.iconSize, () => layoutSettings.iconColor, () => layoutSettings.layoutMode], () => {
     resumeDocumentState.value.customization = {
       ...resumeDocumentState.value.customization,
       style: {
@@ -2627,6 +2635,7 @@ if (import.meta.client) {
         sectionIconStyle: layoutSettings.sectionIconStyle,
         iconSize: layoutSettings.iconSize,
         iconColor: layoutSettings.iconColor,
+        layoutMode: layoutSettings.layoutMode,
       },
     }
     persist()

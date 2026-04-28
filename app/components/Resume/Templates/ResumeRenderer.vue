@@ -2,6 +2,7 @@
 import SectionRenderer from '~/components/Resume/Sections/SectionRenderer.vue'
 import AvatarOverlayControls from '~/components/Resume/Templates/AvatarOverlayControls.vue'
 import type {
+  ResumeLayoutMode,
   ResumeSectionIconStyleVariant,
   ResumeTemplateSkin,
 } from '~/constants/resumeTemplateSkins'
@@ -51,6 +52,7 @@ type ResumeRendererDesignState = {
   sectionIconStyleVariant?: ResumeSectionIconStyleVariant
   iconSizeVariant?: 's' | 'm' | 'l'
   iconColorMode?: 'accent' | 'neutral'
+  layoutMode?: ResumeLayoutMode
 }
 
 const props = withDefaults(
@@ -83,6 +85,7 @@ const props = withDefaults(
     sectionIconStyleVariant?: ResumeSectionIconStyleVariant
     iconSizeVariant?: 's' | 'm' | 'l'
     iconColorMode?: 'accent' | 'neutral'
+    layoutMode?: ResumeLayoutMode
     templateSkin: ResumeTemplateSkin
   }>(),
   {
@@ -113,6 +116,7 @@ const props = withDefaults(
     sectionIconStyleVariant: undefined,
     iconSizeVariant: 'm',
     iconColorMode: 'accent',
+    layoutMode: undefined,
   },
 )
 
@@ -158,11 +162,15 @@ const renderableSections = computed<RenderableSectionLayoutEntry[]>(
     ) as RenderableSectionLayoutEntry[],
 )
 
+function isSectionVisible(section: RenderableSectionLayoutEntry) {
+  return section.key !== 'skill' || props.templateSkin.showSkillsInAside
+}
+
 const mainSections = computed(() =>
-  renderableSections.value.filter((section) => section.region === 'main' && (section.key !== 'skill' || props.templateSkin.showSkillsInAside)),
+  renderableSections.value.filter((section) => section.region === 'main' && isSectionVisible(section)),
 )
 const asideSections = computed(() =>
-  renderableSections.value.filter((section) => section.region === 'aside' && (section.key !== 'skill' || props.templateSkin.showSkillsInAside)),
+  renderableSections.value.filter((section) => section.region === 'aside' && isSectionVisible(section)),
 )
 const hasRenderedAvatar = computed(() =>
   Boolean(props.showPhoto && props.resume?.photoUrl && !props.photoHidden),
@@ -182,6 +190,7 @@ const resolvedDesignState = computed(() => ({
   sectionIconStyleVariant: props.designState?.sectionIconStyleVariant ?? props.sectionIconStyleVariant,
   iconSizeVariant: props.designState?.iconSizeVariant ?? props.iconSizeVariant,
   iconColorMode: props.designState?.iconColorMode ?? props.iconColorMode,
+  layoutMode: props.designState?.layoutMode ?? props.layoutMode ?? props.templateSkin.layoutMode,
 }))
 const rootDesignClasses = computed(() => [
   resolvedDesignState.value.roundedClass,
@@ -193,6 +202,27 @@ const rootDesignClasses = computed(() => [
 const layoutStyle = computed(() => ({
   '--resume-sidebar-width': `${resolvedDesignState.value.sidebarWidth}px`,
 }))
+const layoutModeClass = computed(
+  () => `layout-mode-${resolvedDesignState.value.layoutMode}`,
+)
+const shouldRenderAside = computed(
+  () =>
+    resolvedDesignState.value.layoutMode !== 'no-aside' &&
+    (
+      props.templateSkin.showContactInAside ||
+      props.templateSkin.showProfileInAside ||
+      asideSections.value.length > 0
+    ),
+)
+const visibleMainSections = computed(() => {
+  if (resolvedDesignState.value.layoutMode !== 'no-aside') return mainSections.value
+
+  return [...mainSections.value, ...asideSections.value]
+    .sort((left, right) => {
+      if (left.order !== right.order) return left.order - right.order
+      return left.region === right.region ? 0 : left.region === 'main' ? -1 : 1
+    })
+})
 const avatarStyle = computed(() => ({
   width: `${resolvedDesignState.value.photoSize}px`,
   height: `${resolvedDesignState.value.photoSize}px`,
@@ -475,8 +505,8 @@ function updateText(path: string, value: string) {
       </div>
     </header>
 
-    <div :class="templateSkin.wrapperClass" :style="layoutStyle">
-      <aside :class="templateSkin.asideClass">
+    <div :class="[templateSkin.wrapperClass, layoutModeClass]" :style="layoutStyle">
+      <aside v-if="shouldRenderAside" :class="templateSkin.asideClass">
         <section v-if="templateSkin.showContactInAside">
           <h3 class="cv-heading-section">Contact</h3>
           <div class="resume-skin__contact-grid">
@@ -607,6 +637,117 @@ function updateText(path: string, value: string) {
       </aside>
 
       <main :class="templateSkin.mainClass">
+        <section
+          v-if="resolvedDesignState.layoutMode === 'no-aside' && templateSkin.showContactInAside"
+        >
+          <h2 class="cv-heading-section">Contact</h2>
+          <div class="resume-skin__contact-grid">
+            <div class="resume-skin__contact-item">
+              <v-icon
+                v-if="showContactIcons"
+                class="resume-skin__contact-icon"
+                icon="mdi-calendar-month-outline"
+                :size="contactIconSize"
+              />
+              <span
+                class="editable-text"
+                :contenteditable="editable"
+                @input="
+                  (event) =>
+                    updateText(
+                      'birthDate',
+                      (event.target as HTMLElement).innerText,
+                    )
+                "
+                >{{ resume.birthDate ?? resume.birthday ?? '' }}</span
+              >
+            </div>
+            <div class="resume-skin__contact-item">
+              <v-icon
+                v-if="showContactIcons"
+                class="resume-skin__contact-icon"
+                icon="mdi-map-marker-outline"
+                :size="contactIconSize"
+              />
+              <span>
+                <span
+                  class="editable-text"
+                  :contenteditable="editable"
+                  @input="
+                    (event) =>
+                      updateText('city', (event.target as HTMLElement).innerText)
+                  "
+                  >{{ resume.city }}</span
+                >
+                <span v-if="resume.country">, </span>
+                <span
+                  v-if="resume.country"
+                  class="editable-text"
+                  :contenteditable="editable"
+                  @input="
+                    (event) =>
+                      updateText(
+                        'country',
+                        (event.target as HTMLElement).innerText,
+                      )
+                  "
+                  >{{ resume.country }}</span
+                >
+              </span>
+            </div>
+            <div class="resume-skin__contact-item">
+              <v-icon
+                v-if="showContactIcons"
+                class="resume-skin__contact-icon"
+                icon="mdi-phone-outline"
+                :size="contactIconSize"
+              />
+              <span
+                class="editable-text"
+                :contenteditable="editable"
+                @input="
+                  (event) =>
+                    updateText('phone', (event.target as HTMLElement).innerText)
+                "
+                >{{ resume.phone }}</span
+              >
+            </div>
+            <div class="resume-skin__contact-item">
+              <v-icon
+                v-if="showContactIcons"
+                class="resume-skin__contact-icon"
+                icon="mdi-email-outline"
+                :size="contactIconSize"
+              />
+              <span
+                class="editable-text"
+                :contenteditable="editable"
+                @input="
+                  (event) =>
+                    updateText('email', (event.target as HTMLElement).innerText)
+                "
+                >{{ resume.email }}</span
+              >
+            </div>
+          </div>
+        </section>
+
+        <section
+          v-if="resolvedDesignState.layoutMode === 'no-aside' && templateSkin.showProfileInAside"
+        >
+          <h2 class="cv-heading-section">Profile</h2>
+          <p
+            class="editable-text"
+            :contenteditable="editable"
+            @input="
+              (event) =>
+                updateText('profile', (event.target as HTMLElement).innerText)
+            "
+          >
+            {{ resume.profile }}
+          </p>
+        </section>
+
         <section v-if="templateSkin.showProfileInMain">
           <h2 class="cv-heading-section">Profile</h2>
           <p
@@ -622,7 +763,7 @@ function updateText(path: string, value: string) {
         </section>
 
         <SectionRenderer
-          v-for="section in mainSections"
+          v-for="section in visibleMainSections"
           :key="`main-${section.key}`"
           :section-key="section.key"
           :resume="resume"
@@ -670,7 +811,6 @@ function updateText(path: string, value: string) {
 }
 .resume-skin__layout {
   display: grid;
-  grid-template-columns: 280px 1fr;
   gap: 20px;
 }
 .resume-skin__header {
@@ -745,8 +885,30 @@ function updateText(path: string, value: string) {
 }
 
 .resume-skin__layout {
-  grid-template-columns: var(--resume-sidebar-width, 280px) minmax(0, 1fr);
   margin-top: var(--resume-header-content-gap, 12px);
+}
+
+.resume-skin__main {
+  grid-area: main;
+}
+
+.resume-skin__aside {
+  grid-area: aside;
+}
+
+.layout-mode-aside-left {
+  grid-template-columns: var(--resume-sidebar-width, 280px) minmax(0, 1fr);
+  grid-template-areas: 'aside main';
+}
+
+.layout-mode-aside-right {
+  grid-template-columns: minmax(0, 1fr) var(--resume-sidebar-width, 280px);
+  grid-template-areas: 'main aside';
+}
+
+.layout-mode-no-aside {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'main';
 }
 
 .density-compact {

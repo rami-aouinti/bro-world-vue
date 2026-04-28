@@ -58,6 +58,7 @@ function normalizeModel(source: unknown, templateVariant: ResumeTemplateVariant)
         sectionIconStyle: 'outline',
         iconSize: 'm',
         iconColor: 'accent',
+        layoutMode: 'aside-left',
       },
     }
   }
@@ -80,6 +81,7 @@ function normalizeModel(source: unknown, templateVariant: ResumeTemplateVariant)
       sectionIconStyle: style.sectionIconStyle === 'filled' || style.sectionIconStyle === 'rounded' ? style.sectionIconStyle : 'outline',
       iconSize: style.iconSize === 's' || style.iconSize === 'l' ? style.iconSize : 'm',
       iconColor: style.iconColor === 'neutral' ? 'neutral' : 'accent',
+      layoutMode: style.layoutMode === 'aside-right' || style.layoutMode === 'no-aside' ? style.layoutMode : 'aside-left',
     },
   }
 }
