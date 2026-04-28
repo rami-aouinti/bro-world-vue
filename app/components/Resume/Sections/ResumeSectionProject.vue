@@ -68,6 +68,24 @@ const sectionRegistry = getSectionRegistryEntry('project')
 const contentStyles = computed(() =>
   RESUME_CONTENT_STYLE_OPTIONS.filter(option => sectionRegistry.contentStyles.includes(option.value)),
 )
+
+const showSummary = computed({
+  get: () => props.resume?.sectionOptions?.project?.showSummary !== false,
+  set: (value: boolean) => {
+    const resumeModel = props.resume as Record<string, any>
+    if (!resumeModel.sectionOptions || typeof resumeModel.sectionOptions !== 'object') {
+      resumeModel.sectionOptions = {}
+    }
+    if (!resumeModel.sectionOptions.project || typeof resumeModel.sectionOptions.project !== 'object') {
+      resumeModel.sectionOptions.project = {}
+    }
+    resumeModel.sectionOptions.project.showSummary = value
+  },
+})
+const projectSectionOptions = computed(() => [
+  { key: 'showSummary', label: 'Show summary', modelValue: showSummary.value },
+])
+
 function updateText(path: string, value: string) {
   const segments = path.split('.')
   const last = segments.pop()
@@ -118,6 +136,50 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
   if (Array.isArray(item.timelineEvents) && item.timelineEvents.length) return item.timelineEvents
   return resolvePoints(item).map(detail => ({ label: '', detail }))
 }
+
+function normalizeText(value: string) {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function hasNearIdenticalSummary(item: Record<string, unknown>) {
+  const summary = normalizeText(String(item.summary || ''))
+  if (!summary) return false
+  const style = resolveContentStyle(item)
+  const source = style === 'dashes'
+    ? resolveDashes(item)
+    : style === 'timeline'
+      ? resolveTimelineEvents(item).map(event => `${event.label || ''} ${event.detail || ''}`)
+      : resolvePoints(item)
+  const normalizedLines = source
+    .map(line => normalizeText(String(line)))
+    .filter(Boolean)
+  if (!normalizedLines.length) return false
+  if (normalizedLines.some(line => line === summary)) return true
+  return normalizedLines.join(' ') === summary
+}
+
+function shouldDisplaySummary(item: Record<string, unknown>) {
+  if (!showSummary.value) return false
+  const summary = String(item.summary || '').trim()
+  if (!summary) return false
+  const style = resolveContentStyle(item)
+  if (style === 'points' || style === 'dashes' || style === 'timeline') {
+    return !hasNearIdenticalSummary(item)
+  }
+  return true
+}
+
+function updateSectionOption(optionKey: string, value: boolean) {
+  if (optionKey === 'showSummary') {
+    showSummary.value = value
+  }
+}
 </script>
 <template>
   <section :class="['project-section', 'resume-section-hoverable', `density-${layoutDensity}`, { 'project-section--timeline': isTimelineVariant }]" :style="sectionStyle">
@@ -126,12 +188,14 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
       section-key="project"
       :variants="sectionRegistry.variants"
       :content-styles="contentStyles"
+      :section-options="projectSectionOptions"
       :actions="sectionRegistry.toolbarActions"
       :current-variant="safeVariant"
       :can-move-up="canMoveUp"
       :can-move-down="canMoveDown"
       @add-item="() => emit('add-item', 'project')"
       @change-variant="(_, next) => emit('change-variant', 'project', next)"
+      @update-section-option="(_, optionKey, value) => updateSectionOption(optionKey, value)"
       @move-up="() => emit('move-section', 'project', 'up')"
       @move-down="() => emit('move-section', 'project', 'down')"
     />
@@ -174,20 +238,20 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
               <span v-else class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</span>
             </h4>
           </div>
-          <p class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
+          <p v-if="shouldDisplaySummary(project)" class="text-dark editable-text project-summary" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
         </div>
         <template v-if="resolveContentStyle(project) === 'timeline'">
-          <div class="timeline-block">
+          <div :class="['timeline-block', { 'project-content-with-summary': shouldDisplaySummary(project) }]">
             <div v-for="(event, eventIndex) in resolveTimelineEvents(project)" :key="eventIndex" class="timeline-event">
               <strong class="editable-text" :contenteditable="editable" @input="entry => updateText(`projects.${index}.timelineEvents.${eventIndex}.label`, (entry.target as HTMLElement).innerText)">{{ event.label }}</strong>
               <span class="editable-text" :contenteditable="editable" @input="entry => updateText(`projects.${index}.timelineEvents.${eventIndex}.detail`, (entry.target as HTMLElement).innerText)">{{ event.detail }}</span>
             </div>
           </div>
         </template>
-        <ul v-else-if="resolveContentStyle(project) === 'dashes'" class="dash-list">
+        <ul v-else-if="resolveContentStyle(project) === 'dashes'" :class="['dash-list', { 'project-content-with-summary': shouldDisplaySummary(project) }]">
           <li v-for="(dash, dashIndex) in resolveDashes(project)" :key="dashIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.dashes.${dashIndex}`, (event.target as HTMLElement).innerText)">{{ dash }}</li>
         </ul>
-        <ul v-else>
+        <ul v-else :class="{ 'project-content-with-summary': shouldDisplaySummary(project) }">
           <li v-for="(point, pointIndex) in resolvePoints(project)" :key="pointIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.points.${pointIndex}`, (event.target as HTMLElement).innerText)">{{ point }}</li>
         </ul>
       </article>
@@ -304,6 +368,12 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
 .entry p,
 .entry li {
   line-height: var(--cv-body-line-height);
+}
+.project-summary {
+  margin: 0;
+}
+.project-content-with-summary {
+  margin-top: var(--cv-space-3) !important;
 }
 .entry ul {
   margin: var(--cv-space-2) 0 0;
