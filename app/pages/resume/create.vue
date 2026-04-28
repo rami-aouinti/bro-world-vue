@@ -13,6 +13,7 @@ import {
   useResumeDesignControls,
 } from '~/composables/useResumeDesignControls'
 import { useResumeDocumentState } from '~/composables/useResumeDocumentState'
+import { fromApiResumeToBuilderModel, fromBuilderModelToApiPayload } from '~/utils/resumeApiMapper'
 import { levelToStars, starsToPercent } from '~/utils/resumeLanguageLevel'
 import ResumeRenderer from '~/components/Resume/Templates/ResumeRenderer.vue'
 import {
@@ -21,6 +22,7 @@ import {
   type ResumePreviewSectionKey,
   type ResumeSectionActionKey,
 } from '~/types/resumeDocumentModel'
+import { createResume, deleteResume, listMyResumes, updateResume } from '~/services/resumeApi'
 
 definePageMeta({
   title: 'Create Resume',
@@ -145,6 +147,42 @@ type StructuredResumeResponse = {
     references?: StructuredReference[]
     hobbies?: string[]
   }
+}
+type RemoteResumeSection = {
+  title?: string | null
+  description?: string | null
+  startDate?: string | null
+  endDate?: string | null
+  company?: string | null
+  school?: string | null
+  location?: string | null
+  level?: string | null
+  attachments?: string[] | null
+  home_page?: string | null
+}
+type RemoteResumeInformation = {
+  fullName?: string | null
+  email?: string | null
+  phone?: string | null
+  address?: string | null
+  adresse?: string | null
+}
+type RemoteResumeDateMeta = {
+  date?: string | null
+}
+type RemoteResume = {
+  id: string
+  documentUrl: string | null
+  createdAt?: string | RemoteResumeDateMeta | null
+  resumeInformation?: RemoteResumeInformation | null
+  experiences?: RemoteResumeSection[]
+  educations?: RemoteResumeSection[]
+  skills?: RemoteResumeSection[]
+  languages?: RemoteResumeSection[]
+  certifications?: RemoteResumeSection[]
+  projects?: RemoteResumeSection[]
+  references?: RemoteResumeSection[]
+  hobbies?: RemoteResumeSection[]
 }
 type ResumeModel = {
   role: string
@@ -619,7 +657,44 @@ const selectedTemplateConfig = computed(
     templates[0],
 )
 
-onMounted(() => {
+function hasRemoteSectionContent(sections?: RemoteResumeSection[]) {
+  return Array.isArray(sections) && sections.some(section =>
+    [
+      section?.title,
+      section?.description,
+      section?.company,
+      section?.school,
+      section?.location,
+      section?.level,
+      section?.startDate,
+      section?.endDate,
+      section?.home_page,
+    ].some(value => String(value || '').trim().length > 0)
+      || (Array.isArray(section?.attachments) && section.attachments.length > 0),
+  )
+}
+
+function hasRemoteResumeContent(resumeItem: RemoteResume) {
+  return ([
+    resumeItem.experiences,
+    resumeItem.educations,
+    resumeItem.skills,
+    resumeItem.languages,
+    resumeItem.certifications,
+    resumeItem.projects,
+    resumeItem.references,
+    resumeItem.hobbies,
+  ] as Array<RemoteResumeSection[] | undefined>).some(hasRemoteSectionContent)
+}
+
+function extractRemoteResumeCreatedAtValue(resumeItem: RemoteResume) {
+  const createdAt = resumeItem.createdAt
+  if (typeof createdAt === 'string') return createdAt
+  if (createdAt && typeof createdAt === 'object') return String(createdAt.date || '')
+  return ''
+}
+
+onMounted(async () => {
   const templateFromQuery = route.query.template
   const mode = route.query.mode
 
@@ -630,6 +705,31 @@ onMounted(() => {
 
   if (mode === 'write')
     activeTab.value = 'edit'
+
+  if (!loggedIn.value) {
+    await refreshSession()
+  }
+  if (!loggedIn.value) return
+
+  try {
+    const apiResumes = await listMyResumes()
+    remoteResumes.value = Array.isArray(apiResumes) ? apiResumes : []
+
+    const sortedByCreatedAt = [...remoteResumes.value].sort((a, b) =>
+      Date.parse(extractRemoteResumeCreatedAtValue(a)) - Date.parse(extractRemoteResumeCreatedAtValue(b)))
+    const latestResume = sortedByCreatedAt.at(-1) || remoteResumes.value.at(-1)
+
+    selectedRemoteResumeId.value = latestResume?.id || null
+
+    if (!latestResume || latestResume.documentUrl !== null || !hasRemoteResumeContent(latestResume)) return
+
+    applyBuilderResumeData(fromApiResumeToBuilderModel(latestResume))
+    loadedFromApi.value = true
+  } catch {
+    remoteResumes.value = []
+    selectedRemoteResumeId.value = null
+    loadedFromApi.value = false
+  }
 })
 
 const templateSupportsPhoto = computed(
@@ -665,6 +765,20 @@ const safePhotoShape = computed<PhotoShape>(() => (
 let aiElapsedTimer: ReturnType<typeof setInterval> | null = null
 const { t } = useI18n()
 const { loggedIn, fetch: refreshSession } = useUserSession()
+const remoteResumes = ref<RemoteResume[]>([])
+const selectedRemoteResumeId = ref<string | null>(null)
+const loadedFromApi = ref(false)
+const saveModalOpen = ref(false)
+const saveMode = ref<'replace' | 'create'>('replace')
+const saveLoading = ref(false)
+const saveStatus = ref<'idle' | 'success' | 'error'>('idle')
+const saveStatusMessage = ref('')
+const replaceConfirmStep = ref(false)
+const deleteConfirmModalOpen = ref(false)
+const resumeIdPendingDeletion = ref<string | null>(null)
+const toastOpen = ref(false)
+const toastMessage = ref('')
+const toastColor = ref<'success' | 'error'>('success')
 const loginDialogOpen = ref(false)
 const loginLoading = ref(false)
 const pendingPdfDownload = ref(false)
@@ -676,6 +790,48 @@ const sectionLayout = ref<SectionLayoutEntry[]>(
 const sectionItemDialogOpen = ref(false)
 const activeSectionKey = ref<ResumePreviewSectionKey>('experience')
 const activeVariant = ref<SectionLayoutVariant[ResumePreviewSectionKey]>('detailed')
+
+watch(saveMode, () => {
+  replaceConfirmStep.value = false
+  saveStatus.value = 'idle'
+  saveStatusMessage.value = ''
+})
+
+watch(selectedRemoteResumeId, () => {
+  replaceConfirmStep.value = false
+})
+
+function showToast(message: string, color: 'success' | 'error') {
+  toastMessage.value = message
+  toastColor.value = color
+  toastOpen.value = true
+}
+
+function openDeleteResumeConfirmation(resumeId: string) {
+  resumeIdPendingDeletion.value = resumeId
+  deleteConfirmModalOpen.value = true
+}
+
+async function confirmDeleteRemoteResume() {
+  if (!resumeIdPendingDeletion.value) return
+
+  const resumeId = resumeIdPendingDeletion.value
+  try {
+    await deleteResume(resumeId)
+    remoteResumes.value = remoteResumes.value.filter(item => item.id !== resumeId)
+
+    if (selectedRemoteResumeId.value === resumeId) {
+      selectedRemoteResumeId.value = remoteResumes.value.at(0)?.id ?? null
+    }
+
+    showToast('CV supprimé avec succès.', 'success')
+  } catch {
+    showToast('Échec de suppression du CV.', 'error')
+  } finally {
+    deleteConfirmModalOpen.value = false
+    resumeIdPendingDeletion.value = null
+  }
+}
 // single source of truth: canonical section draft factories (used for init + reset)
 const createProfileDraft = () => ({ profile: '' })
 const createExperienceDraft = () => ({
@@ -767,6 +923,92 @@ function movePhoto(direction: 'left' | 'right' | 'up' | 'down') {
     return
   }
   resume.photoOffsetY = Math.min(PHOTO_OFFSET_LIMIT, resume.photoOffsetY + PHOTO_MOVE_STEP)
+}
+
+function applyBuilderResumeData(payload: ReturnType<typeof fromApiResumeToBuilderModel>) {
+  const userNames = inferNameParts(payload.resumeInformation.fullName)
+
+  resume.firstName = userNames.firstName || resume.firstName
+  resume.lastName = userNames.lastName || resume.lastName
+  resume.email = payload.email || resume.email
+  resume.phone = payload.phone || resume.phone
+  resume.city = payload.city || resume.city
+  resume.country = payload.country || resume.country
+
+  if (payload.skills.length) {
+    resume.skills = payload.skills.map(skill => ({ ...skill }))
+  }
+
+  if (payload.languages.length) {
+    resume.languages = payload.languages.map(language => ({
+      name: language.name,
+      level: Number(language.level) || 75,
+      countryCode: String(language.countryCode || '').trim(),
+      flag: String(language.flag || '').trim(),
+    }))
+  }
+
+  if (payload.hobbies.length) {
+    resume.hobbies = [...payload.hobbies]
+  }
+
+  if (payload.experiences.length) {
+    resume.experiences = payload.experiences.map(experience => ({
+      role: experience.role,
+      company: experience.company,
+      companyImageUrl: '',
+      city: experience.city,
+      start: experience.start,
+      end: experience.end,
+      bullets: [...experience.bullets],
+      contentStyle: 'points',
+      points: [...experience.bullets],
+    }))
+  }
+
+  if (payload.education.length) {
+    resume.education = payload.education.map(education => ({
+      degree: education.degree,
+      school: education.school,
+      schoolImageUrl: '',
+      city: education.city,
+      start: education.start,
+      end: education.end,
+      note: education.note,
+      contentStyle: 'points',
+      points: parseMultilineList(String(education.note || '')),
+    }))
+  }
+
+  if (payload.courses.length) {
+    resume.courses = payload.courses.map(course => ({
+      title: course.title,
+      school: course.school,
+      start: course.start,
+      end: course.end,
+    }))
+  }
+
+  if (payload.projects.length) {
+    resume.projects = payload.projects.map(project => ({
+      name: project.name,
+      summary: project.summary,
+      imageUrl: '',
+      repositoryUrl: project.repositoryUrl || '',
+      repositoryProvider: inferRepositoryProvider(project.repositoryUrl || ''),
+      contentStyle: 'points',
+      points: parseMultilineList(String(project.summary || '')),
+    }))
+  }
+
+  if (payload.references.length) {
+    resume.references = payload.references.map(reference => ({
+      name: reference.name,
+      company: reference.company,
+      email: reference.email,
+      phone: reference.phone,
+    }))
+  }
 }
 
 function openPhotoPicker() {
@@ -2100,6 +2342,132 @@ function buildReviewPayload() {
   }
 }
 
+function buildResumeSavePayload() {
+  const payload = fromBuilderModelToApiPayload({
+    firstName: resume.firstName,
+    lastName: resume.lastName,
+    email: resume.email,
+    phone: resume.phone,
+    city: resume.city,
+    country: resume.country,
+    experiences: resume.experiences.map(experience => ({
+      role: experience.role,
+      company: experience.company,
+      city: experience.city,
+      start: experience.start,
+      end: experience.end,
+      bullets: experience.bullets,
+    })),
+    skills: resume.skills.map(skill => ({
+      name: skill.name,
+      level: skill.level,
+    })),
+    education: resume.education.map(education => ({
+      degree: education.degree,
+      school: education.school,
+      city: education.city,
+      start: education.start,
+      end: education.end,
+      note: education.note,
+    })),
+    languages: resume.languages.map(language => ({
+      name: language.name,
+      level: language.level,
+      countryCode: language.countryCode,
+      flag: language.flag,
+    })),
+    courses: resume.courses.map(course => ({
+      title: course.title,
+      school: course.school,
+      start: course.start,
+      end: course.end,
+    })),
+    projects: resume.projects.map(project => ({
+      name: project.name,
+      summary: project.summary,
+      repositoryUrl: project.repositoryUrl,
+    })),
+    references: resume.references.map(reference => ({
+      name: reference.name,
+      company: reference.company,
+      email: reference.email,
+      phone: reference.phone,
+    })),
+    hobbies: [...resume.hobbies],
+    documentUrl: null,
+    resumeInformation: {
+      fullName: `${resume.firstName} ${resume.lastName}`.trim(),
+      email: resume.email,
+      phone: resume.phone,
+      address: [resume.city, resume.country].filter(Boolean).join(', '),
+    },
+  })
+
+  const hasSectionContent = (section?: RemoteResumeSection[] | null) => Array.isArray(section)
+    && section.some(item =>
+      [item.title, item.description, item.startDate, item.endDate, item.company, item.school, item.location, item.level]
+        .some(value => typeof value === 'string' && value.trim().length > 0))
+
+  return {
+    documentUrl: payload.documentUrl ?? null,
+    experiences: hasSectionContent(payload.experiences) ? payload.experiences : [],
+    skills: hasSectionContent(payload.skills) ? payload.skills : [],
+    ...(hasSectionContent(payload.educations) ? { educations: payload.educations } : {}),
+    ...(hasSectionContent(payload.languages) ? { languages: payload.languages } : {}),
+    ...(hasSectionContent(payload.certifications) ? { certifications: payload.certifications } : {}),
+    ...(hasSectionContent(payload.projects) ? { projects: payload.projects } : {}),
+    ...(hasSectionContent(payload.references) ? { references: payload.references } : {}),
+    ...(hasSectionContent(payload.hobbies) ? { hobbies: payload.hobbies } : {}),
+    ...(payload.resumeInformation?.fullName?.trim()
+      || payload.resumeInformation?.email?.trim()
+      || payload.resumeInformation?.phone?.trim()
+      || payload.resumeInformation?.adresse?.trim()
+      ? { resumeInformation: payload.resumeInformation }
+      : {}),
+  }
+}
+
+function openSaveModal() {
+  saveMode.value = selectedRemoteResumeId.value ? 'replace' : 'create'
+  saveStatus.value = 'idle'
+  saveStatusMessage.value = ''
+  replaceConfirmStep.value = false
+  saveModalOpen.value = true
+}
+
+async function submitSaveAction() {
+  saveLoading.value = true
+  saveStatus.value = 'idle'
+  saveStatusMessage.value = ''
+
+  try {
+    const payload = buildResumeSavePayload()
+    const shouldUpdate = Boolean(selectedRemoteResumeId.value)
+
+    if (shouldUpdate && selectedRemoteResumeId.value) {
+      await updateResume(selectedRemoteResumeId.value, payload)
+      saveStatus.value = 'success'
+      saveStatusMessage.value = 'CV remplacé avec succès.'
+      replaceConfirmStep.value = false
+      return
+    }
+
+    const createdResume = await createResume(payload)
+    if (createdResume?.id) {
+      selectedRemoteResumeId.value = createdResume.id
+    }
+    saveStatus.value = 'success'
+    saveStatusMessage.value = 'Nouveau CV créé avec succès.'
+  } catch {
+    saveStatus.value = 'error'
+    saveStatusMessage.value = selectedRemoteResumeId.value
+      ? 'Échec du remplacement du CV.'
+      : 'Échec de création du nouveau CV.'
+  } finally {
+    saveLoading.value = false
+  }
+}
+
 async function handlePdfImport(event: Event) {
   const input = event.target as HTMLInputElement
   const file = input.files?.[0]
@@ -2300,7 +2668,7 @@ if (import.meta.client) {
   <v-container fluid class="resume-create pa-0">
     <div class="local-toolbar-actions">
       <div class="local-toolbar-actions__row">
-        <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" />
+        <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" @click="openSaveModal" />
         <v-btn class="local-toolbar-btn" color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" @click="openPdfPreview" />
         <v-btn class="local-toolbar-btn" color="info" size="small" variant="outlined" icon="mdi-download" @click="onDownloadPdfClick" />
         <v-menu v-model="toolbarTemplateMenuOpen" location="bottom center" origin="top center">
@@ -3806,6 +4174,118 @@ if (import.meta.client) {
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="saveModalOpen" max-width="620">
+      <v-card>
+        <v-card-title class="d-flex align-center justify-space-between">
+          <span>Sauvegarder le CV</span>
+          <v-btn icon="mdi-close" variant="text" :disabled="saveLoading" @click="saveModalOpen = false" />
+        </v-card-title>
+        <v-divider />
+        <v-card-text class="d-grid ga-4">
+          <v-radio-group v-model="saveMode" :disabled="saveLoading" hide-details>
+            <v-radio value="replace" label="Option A: Remplacer un CV existant" />
+            <v-radio value="create" label="Option B: Créer un nouveau CV" />
+          </v-radio-group>
+
+          <div v-if="saveMode === 'replace'" class="d-grid ga-2">
+            <v-select
+              v-model="selectedRemoteResumeId"
+              :items="remoteResumes.map((item) => ({ title: item.resumeInformation?.fullName || item.id, value: item.id }))"
+              item-title="title"
+              item-value="value"
+              label="CV à remplacer"
+              variant="outlined"
+              :disabled="saveLoading"
+              hide-details
+            />
+            <v-list
+              v-if="remoteResumes.length"
+              density="comfortable"
+              class="border rounded"
+            >
+              <v-list-item
+                v-for="item in remoteResumes"
+                :key="item.id"
+                :title="item.resumeInformation?.fullName || item.id"
+                :subtitle="item.id"
+                @click="selectedRemoteResumeId = item.id"
+              >
+                <template #append>
+                  <v-btn
+                    color="error"
+                    size="small"
+                    variant="text"
+                    :disabled="saveLoading"
+                    @click.stop="openDeleteResumeConfirmation(item.id)"
+                  >
+                    Delete
+                  </v-btn>
+                </template>
+              </v-list-item>
+            </v-list>
+            <v-alert
+              v-if="replaceConfirmStep"
+              type="warning"
+              variant="tonal"
+              density="comfortable"
+            >
+              Cette action remplacera définitivement le CV sélectionné.
+            </v-alert>
+          </div>
+
+          <v-progress-linear
+            v-if="saveLoading"
+            indeterminate
+            color="primary"
+          />
+
+          <v-alert v-if="saveStatus !== 'idle'" :type="saveStatus" variant="tonal" density="comfortable">
+            {{ saveStatusMessage }}
+          </v-alert>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn variant="text" :disabled="saveLoading" @click="saveModalOpen = false">Annuler</v-btn>
+          <v-btn
+            v-if="saveMode === 'replace' && !replaceConfirmStep"
+            color="warning"
+            :disabled="!selectedRemoteResumeId || saveLoading"
+            @click="replaceConfirmStep = true"
+          >
+            Confirmer le remplacement
+          </v-btn>
+          <v-btn
+            v-else
+            color="primary"
+            :loading="saveLoading"
+            :disabled="saveMode === 'replace' && !selectedRemoteResumeId"
+            @click="submitSaveAction"
+          >
+            {{ saveMode === 'replace' ? 'Remplacer' : 'Créer' }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="deleteConfirmModalOpen" max-width="460">
+      <v-card>
+        <v-card-title>Confirmation</v-card-title>
+        <v-card-text>Supprimer définitivement ce CV ?</v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn variant="text" @click="deleteConfirmModalOpen = false">Annuler</v-btn>
+          <v-btn color="error" @click="confirmDeleteRemoteResume">Delete</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-snackbar
+      v-model="toastOpen"
+      :color="toastColor"
+      timeout="3200"
+      location="top right"
+    >
+      {{ toastMessage }}
+    </v-snackbar>
 
     <v-dialog v-model="pdfModalOpen" width="900">
       <v-card>

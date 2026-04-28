@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import axios, { type AxiosError } from 'axios'
 import type { SessionUser } from '~/types/session'
+import { privateApi } from '~/utils/http/privateApi'
 
 definePageMeta({ layout: 'learning', title: 'Learning Admin Resource' })
 
@@ -84,8 +86,12 @@ if (!canAccess.value) {
 }
 
 const pending = ref(false)
+const isSavingCreate = ref(false)
+const isSavingEdit = ref(false)
+const isDeleting = ref(false)
 const error = ref<string | null>(null)
 const rows = ref<RowItem[]>([])
+const retryAction = ref<null | (() => Promise<void>)>(null)
 
 const isCreateDialogOpen = ref(false)
 const isEditDialogOpen = ref(false)
@@ -175,7 +181,7 @@ async function loadSelectOptions() {
   }
 
   const promises = [...resourcesToFetch].map(async (entityResource) => {
-    const response = await $fetch<{ items: RowItem[] }>(`/api/world/learning/admin/school/${entityResource}`)
+    const response = await privateApi.request<{ items: RowItem[] }>(`/api/world/learning/admin/school/${entityResource}`)
     const labelKey = entityResource === 'exams' ? 'title' : 'name'
     linkedOptions.value[entityResource] = toEntityOptions(response.items, labelKey)
   })
@@ -200,8 +206,9 @@ async function loadSelectOptions() {
 async function load() {
   pending.value = true
   error.value = null
+  retryAction.value = null
   try {
-    const response = await $fetch<{ items: RowItem[] }>(`/api/world/learning/admin/school/${resource.value}`)
+    const response = await privateApi.request<{ items: RowItem[] }>(`/api/world/learning/admin/school/${resource.value}`)
     rows.value = response.items
     await loadSelectOptions()
   } catch (err) {
@@ -224,38 +231,99 @@ function openEdit(item: RowItem) {
   isEditDialogOpen.value = true
 }
 
+function extractStatus(err: unknown): number | null {
+  if (axios.isAxiosError(err)) {
+    return err.response?.status ?? null
+  }
+
+  const maybeFetchError = err as { statusCode?: unknown; status?: unknown }
+  const statusCode =
+    typeof maybeFetchError.statusCode === 'number'
+      ? maybeFetchError.statusCode
+      : typeof maybeFetchError.status === 'number'
+        ? maybeFetchError.status
+        : null
+  return statusCode
+}
+
+async function handleMutationError(
+  err: unknown,
+  retry: () => Promise<void>,
+  options?: { reloadOnNotFound?: boolean },
+) {
+  const status = extractStatus(err)
+
+  if (status === 401 || status === 403) {
+    error.value = 'Session expirée ou accès refusé. Veuillez vous reconnecter.'
+    retryAction.value = null
+    return
+  }
+
+  if (status === 404 && options?.reloadOnNotFound) {
+    error.value = 'Ressource introuvable. La liste a été rechargée.'
+    retryAction.value = null
+    await load()
+    return
+  }
+
+  if (status !== null && status >= 500) {
+    error.value = 'Erreur serveur temporaire. Veuillez réessayer.'
+    retryAction.value = retry
+    return
+  }
+
+  retryAction.value = null
+  if (axios.isAxiosError(err)) {
+    const axiosError = err as AxiosError<{ message?: string }>
+    error.value =
+      axiosError.response?.data?.message ?? axiosError.message ?? 'Erreur inattendue.'
+    return
+  }
+
+  error.value = err instanceof Error ? err.message : 'Erreur inattendue.'
+}
+
 async function submitCreate() {
+  if (isSavingCreate.value) return
+
+  isSavingCreate.value = true
   pending.value = true
   error.value = null
+  retryAction.value = null
   try {
-    await $fetch(`/api/world/learning/admin/school/${resource.value}`, {
+    await privateApi.request(`/api/world/learning/admin/school/${resource.value}`, {
       method: 'POST',
       body: serializePayload(createForm.value),
     })
     isCreateDialogOpen.value = false
     await load()
   } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Unable to create item'
+    await handleMutationError(err, submitCreate)
   } finally {
+    isSavingCreate.value = false
     pending.value = false
   }
 }
 
 async function submitEdit() {
   if (!editingId.value) return
+  if (isSavingEdit.value) return
 
+  isSavingEdit.value = true
   pending.value = true
   error.value = null
+  retryAction.value = null
   try {
-    await $fetch(`/api/world/learning/admin/school/${resource.value}/${editingId.value}`, {
+    await privateApi.request(`/api/world/learning/admin/school/${resource.value}/${editingId.value}`, {
       method: 'PATCH',
       body: serializePayload(editForm.value),
     })
     isEditDialogOpen.value = false
     await load()
   } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Unable to update item'
+    await handleMutationError(err, submitEdit, { reloadOnNotFound: true })
   } finally {
+    isSavingEdit.value = false
     pending.value = false
   }
 }
@@ -263,20 +331,29 @@ async function submitEdit() {
 async function confirmDelete() {
   const id = deleteDialogItem.value?.id
   if (!id) return
+  if (isDeleting.value) return
 
+  isDeleting.value = true
   pending.value = true
   error.value = null
+  retryAction.value = null
   try {
-    await $fetch(`/api/world/learning/admin/school/${resource.value}/${String(id)}`, {
+    await privateApi.request(`/api/world/learning/admin/school/${resource.value}/${String(id)}`, {
       method: 'DELETE',
     })
     deleteDialogItem.value = null
     await load()
   } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Unable to delete item'
+    await handleMutationError(err, confirmDelete, { reloadOnNotFound: true })
   } finally {
+    isDeleting.value = false
     pending.value = false
   }
+}
+
+async function retryLastAction() {
+  if (!retryAction.value) return
+  await retryAction.value()
 }
 </script>
 
@@ -304,7 +381,20 @@ async function confirmDelete() {
           </div>
         </div>
 
-        <v-alert v-if="error" type="error" variant="tonal" class="mb-4" :text="error" />
+        <v-alert v-if="error" type="error" variant="tonal" class="mb-4">
+          <div class="d-flex align-center justify-space-between ga-3 flex-wrap">
+            <span>{{ error }}</span>
+            <v-btn
+              v-if="retryAction"
+              size="small"
+              variant="outlined"
+              :disabled="isSavingCreate || isSavingEdit || isDeleting"
+              @click="retryLastAction"
+            >
+              Retry
+            </v-btn>
+          </div>
+        </v-alert>
 
         <v-data-table :headers="headers" :items="rows" items-per-page="5" :loading="pending" density="comfortable" class="bg-transparent">
           <template
@@ -355,7 +445,7 @@ async function confirmDelete() {
           </template>
           <div class="d-flex justify-end ga-2 mt-3">
             <v-btn variant="text" @click="isCreateDialogOpen = false">Cancel</v-btn>
-            <v-btn color="primary" :loading="pending" @click="submitCreate">Save</v-btn>
+            <v-btn color="primary" :loading="isSavingCreate" :disabled="isSavingCreate" @click="submitCreate">Save</v-btn>
           </div>
         </v-card>
       </v-dialog>
@@ -381,7 +471,7 @@ async function confirmDelete() {
           </template>
           <div class="d-flex justify-end ga-2 mt-3">
             <v-btn variant="text" @click="isEditDialogOpen = false">Cancel</v-btn>
-            <v-btn color="primary" :loading="pending" @click="submitEdit">Update</v-btn>
+            <v-btn color="primary" :loading="isSavingEdit" :disabled="isSavingEdit" @click="submitEdit">Update</v-btn>
           </div>
         </v-card>
       </v-dialog>
@@ -392,7 +482,7 @@ async function confirmDelete() {
           <p>Are you sure you want to delete this item?</p>
           <div class="d-flex justify-end ga-2 mt-3">
             <v-btn variant="text" @click="deleteDialogItem = null">Cancel</v-btn>
-            <v-btn color="error" :loading="pending" @click="confirmDelete">Delete</v-btn>
+            <v-btn color="error" :loading="isDeleting" :disabled="isDeleting" @click="confirmDelete">Delete</v-btn>
           </div>
         </v-card>
       </v-dialog>
