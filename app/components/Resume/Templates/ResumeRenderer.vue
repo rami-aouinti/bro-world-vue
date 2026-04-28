@@ -2,11 +2,11 @@
 import SectionRenderer from '~/components/Resume/Sections/SectionRenderer.vue'
 import AvatarOverlayControls from '~/components/Resume/Templates/AvatarOverlayControls.vue'
 import type {
-  ResumeSectionKey,
   ResumeSectionIconStyleVariant,
   ResumeTemplateSkin,
 } from '~/constants/resumeTemplateSkins'
 import { RESUME_SECTION_ICONS } from '~/constants/resumeSectionIcons'
+import type { ResumeEditableSectionKey, ResumeSectionActionKey } from '~/types/resumeDocumentModel'
 
 type SectionLayoutVariant = {
   experience: 'detailed' | 'bullets' | 'compact'
@@ -19,14 +19,7 @@ type SectionLayoutVariant = {
   certification: 'classic'
 }
 
-type ResumeSectionActionKey =
-  | ResumeSectionKey
-  | 'skill'
-  | 'course'
-  | 'reference'
-  | 'hobby'
-  | 'certification'
-type ResumeSectionLayoutKey = Exclude<ResumeSectionActionKey, 'course'>
+type ResumeSectionLayoutKey = ResumeEditableSectionKey
 
 type PhotoShapeOption = {
   label: string
@@ -130,7 +123,7 @@ const normalizedSectionLayout = computed<SectionLayoutEntry[]>(() => {
   })) as SectionLayoutEntry[]
 })
 
-type RenderableSectionLayoutEntry = SectionLayoutEntry<ResumeSectionKey | 'skill'>
+type RenderableSectionLayoutEntry = SectionLayoutEntry<ResumeEditableSectionKey>
 const renderableSections = computed<RenderableSectionLayoutEntry[]>(
   () =>
     normalizedSectionLayout.value.filter(
@@ -249,7 +242,7 @@ function canMove(sectionKey: ResumeSectionLayoutKey, direction: 'up' | 'down') {
   return direction === 'up' ? index > 0 : index < regionSections.length - 1
 }
 
-function mergedSectionTokens(sectionKey: ResumeSectionKey | 'skill') {
+function mergedSectionTokens(sectionKey: ResumeEditableSectionKey) {
   return {
     ...props.themeTokens,
     ...(props.templateSkin.themeTokens ?? {}),

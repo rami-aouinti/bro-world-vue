@@ -15,6 +15,30 @@ export type ResumeEditableSectionKey =
   | 'hobby'
   | 'certification'
 
+export type ResumePreviewSectionKey = Extract<
+  ResumeEditableSectionKey,
+  'experience' | 'education' | 'language' | 'project'
+>
+
+export type ResumeSectionActionKey = ResumeEditableSectionKey | 'course'
+
+export const RESUME_EDITABLE_SECTION_KEYS = [
+  'experience',
+  'education',
+  'language',
+  'project',
+  'skill',
+  'reference',
+  'hobby',
+  'certification',
+] as const satisfies ReadonlyArray<ResumeEditableSectionKey>
+
+export function isResumeEditableSectionKey(
+  value: string,
+): value is ResumeEditableSectionKey {
+  return RESUME_EDITABLE_SECTION_KEYS.includes(value as ResumeEditableSectionKey)
+}
+
 export type ResumeSectionVariant =
   | 'detailed'
   | 'bullets'
