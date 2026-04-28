@@ -203,6 +203,9 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
   --cv-space-5: var(--cv-space-5, 20px);
   --cv-marker-accent: color-mix(in srgb, var(--cv-accent) 55%, transparent);
   --cv-card-border-soft: color-mix(in srgb, var(--cv-accent) 22%, transparent);
+  --cv-body-line-height: 1.52;
+  --cv-list-indent: calc(var(--cv-space-4) + var(--cv-space-2));
+  --cv-dash-marker-width: 1.35em;
 
   position: relative;
   border-bottom: var(--rs-section-separator, none);
@@ -298,11 +301,32 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
   max-width: none;
   min-width: 0;
 }
+.entry p,
+.entry li {
+  line-height: var(--cv-body-line-height);
+}
+.entry ul {
+  margin: var(--cv-space-2) 0 0;
+  padding-inline-start: var(--cv-list-indent);
+}
 .density-compact { --entry-gap: var(--cv-space-2); }
 .density-normal { --entry-gap: var(--cv-space-3); }
 .density-spacious { --entry-gap: var(--cv-space-4); }
-.dash-list { list-style: none; padding-left: 0; margin: 6px 0 0; }
-.dash-list li::before { content: '— '; }
+.dash-list {
+  list-style: none;
+  margin: 6px 0 0;
+  padding-inline-start: var(--cv-list-indent);
+}
+.dash-list li {
+  position: relative;
+  padding-inline-start: var(--cv-dash-marker-width);
+}
+.dash-list li::before {
+  content: '—';
+  position: absolute;
+  inset-inline-start: 0;
+  width: var(--cv-dash-marker-width);
+}
 .timeline-block { display: grid; gap: 6px; margin-top: 6px; }
 .timeline-event { display: grid; gap: 2px; border-left: 2px solid var(--cv-marker-accent); padding-left: 8px; }
 </style>
