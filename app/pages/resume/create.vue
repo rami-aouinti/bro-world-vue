@@ -858,6 +858,19 @@ const selectedTemplateConfig = computed(
     templatesByDocumentType.value[0] ??
     templates[0],
 )
+const isResumeDocument = computed(() => selectedDocumentType.value === 'resume')
+const isCoverDocument = computed(
+  () =>
+    selectedDocumentType.value === 'cover-page' ||
+    selectedDocumentType.value === 'cover-letter',
+)
+const designMenuSupportsPhotoPosition = computed(
+  () => isResumeDocument.value && selectedTemplateConfig.value.hasPhoto,
+)
+const designMenuSupportsAsideWidth = computed(
+  () =>
+    isResumeDocument.value && layoutSettings.layoutMode !== 'no-aside',
+)
 
 function applyTemplateSelection(templateId: string) {
   selectedTemplate.value = templateId
@@ -3331,6 +3344,7 @@ if (import.meta.client) {
 
                       <p class="section-label mt-4">Layout</p>
                       <AppSelect
+                        v-if="isResumeDocument"
                         v-model="layoutSettings.layoutMode"
                         :items="layoutModeOptions"
                         item-title="label"
@@ -3360,6 +3374,7 @@ if (import.meta.client) {
                         hide-details
                       />
                       <AppSelect
+                        v-if="designMenuSupportsPhotoPosition"
                         v-model="layoutSettings.photoPosition"
                         :items="photoPositionOptions"
                         item-title="label"
@@ -3369,7 +3384,17 @@ if (import.meta.client) {
                         hide-details
                         class="mt-3"
                       />
-                      <div class="mt-3">
+                      <v-alert
+                        v-else-if="isResumeDocument"
+                        type="info"
+                        variant="tonal"
+                        density="comfortable"
+                        class="mt-3"
+                      >
+                        Photo alignment is hidden because this template does not
+                        include a profile photo.
+                      </v-alert>
+                      <div v-if="designMenuSupportsAsideWidth" class="mt-3">
                         <div class="d-flex align-center justify-space-between mb-1">
                           <span class="text-caption">Aside width</span>
                           <span class="text-caption font-weight-medium">
@@ -3383,7 +3408,6 @@ if (import.meta.client) {
                           step="2"
                           color="primary"
                           hide-details
-                          :disabled="layoutSettings.layoutMode === 'no-aside'"
                         />
                         <v-text-field
                           v-model.number="layoutSettings.sidebarWidth"
@@ -3394,9 +3418,29 @@ if (import.meta.client) {
                           label="Aside width (px)"
                           density="comfortable"
                           hide-details
-                          :disabled="layoutSettings.layoutMode === 'no-aside'"
                         />
                       </div>
+                      <v-alert
+                        v-else-if="isResumeDocument"
+                        type="info"
+                        variant="tonal"
+                        density="comfortable"
+                        class="mt-3"
+                      >
+                        Aside width is hidden when layout mode is set to “No
+                        aside”.
+                      </v-alert>
+                      <v-alert
+                        v-if="isCoverDocument"
+                        type="info"
+                        variant="tonal"
+                        density="comfortable"
+                        class="mt-3"
+                      >
+                        Cover page and cover letter templates hide layout
+                        controls that do not apply (aside width, photo alignment
+                        without photo, resume layout mode).
+                      </v-alert>
 
                       <p class="section-label mt-4">Icons</p>
                       <div class="d-grid ga-3">
