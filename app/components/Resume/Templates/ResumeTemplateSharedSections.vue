@@ -134,8 +134,8 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
       </ul>
       <div v-else-if="languageVariant === 'stars'" class="language-stars-list">
         <div v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" class="language-stars-item">
-          <small>{{ levelToStarsText(language.level) }} — </small>
           <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+          <small class="language-stars-value">{{ levelToStarsText(language.level) }}</small>
         </div>
       </div>
       <div v-else class="language-progress-list">
@@ -293,10 +293,17 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
   display: grid;
   gap: 8px;
 }
-.language-stars-item,
 .language-progress-item {
   display: grid;
   gap: 4px;
+}
+.language-stars-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.language-stars-value {
+  letter-spacing: .04em;
 }
 .project-grid {
   display: grid;
