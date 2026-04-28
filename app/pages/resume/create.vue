@@ -3247,7 +3247,7 @@ if (import.meta.client) {
               <v-card class="toolbar-menu-card">
                 <v-card-title class="text-subtitle-2">Design</v-card-title>
                 <v-card-text>
-                  <p class="section-label">Color palette</p>
+                  <p class="section-label text-primary">Color palette</p>
                   <div class="palette-grid mb-4">
                     <button
                       v-for="theme in colorThemes"
@@ -3265,7 +3265,7 @@ if (import.meta.client) {
                     </button>
                   </div>
 
-                  <p class="section-label">Page background</p>
+                  <p class="section-label text-primary">Page background</p>
                   <div class="palette-grid mb-4">
                     <button
                       v-for="option in pageBackgroundValidation"
@@ -3289,80 +3289,6 @@ if (import.meta.client) {
                       <span :style="{ background: activeTheme.sidebar }" />
                     </button>
                   </div>
-
-                  <p class="section-label mt-4">Rounded</p>
-                  <v-btn-toggle
-                    v-model="selectedRounded"
-                    mandatory
-                    divided
-                    class="rounded-toggle"
-                    color="primary"
-                  >
-                    <v-btn
-                      v-for="option in roundedOptions"
-                      :key="`toolbar-rounded-${option.value}`"
-                      :value="option.value"
-                      variant="text"
-                    >
-                      {{ option.title }}
-                    </v-btn>
-                  </v-btn-toggle>
-                  <v-alert
-                    v-if="isCoverDocument"
-                    type="info"
-                    variant="tonal"
-                    density="comfortable"
-                    class="mt-3"
-                  >
-                    Cover page and cover letter templates hide layout controls
-                    that do not apply (aside width, photo alignment without
-                    photo, resume layout mode).
-                  </v-alert>
-
-                  <p class="section-label mt-4">Icons</p>
-                  <div class="d-grid ga-3">
-                    <v-switch
-                      v-model="layoutSettings.showSectionIcons"
-                      label="Show section icons"
-                      color="primary"
-                      hide-details
-                      inset
-                    />
-                    <v-switch
-                      v-model="layoutSettings.showContactIcons"
-                      label="Show contact icons"
-                      color="primary"
-                      hide-details
-                      inset
-                    />
-                    <AppSelect
-                      v-model="layoutSettings.sectionIconStyle"
-                      :items="sectionIconStyleOptions"
-                      item-title="label"
-                      item-value="value"
-                      label="Icon style"
-                      density="comfortable"
-                      hide-details
-                    />
-                    <AppSelect
-                      v-model="layoutSettings.iconSize"
-                      :items="iconSizeOptions"
-                      item-title="label"
-                      item-value="value"
-                      label="Icon size"
-                      density="comfortable"
-                      hide-details
-                    />
-                    <AppSelect
-                      v-model="layoutSettings.iconColor"
-                      :items="iconColorOptions"
-                      item-title="label"
-                      item-value="value"
-                      label="Icon color"
-                      density="comfortable"
-                      hide-details
-                    />
-                  </div>
                 </v-card-text>
               </v-card>
             </v-menu>
@@ -3378,7 +3304,7 @@ if (import.meta.client) {
                   color="primary"
                   size="small"
                   variant="outlined"
-                  icon="mdi-palette-outline"
+                  icon="mdi-format-list-numbers"
                   v-bind="props"
                 >
                 </v-btn>
@@ -3462,7 +3388,7 @@ if (import.meta.client) {
                   color="primary"
                   size="small"
                   variant="outlined"
-                  icon="mdi-palette-outline"
+                  icon="mdi-shape-plus"
                   v-bind="props"
                 >
                 </v-btn>
@@ -5275,7 +5201,7 @@ if (import.meta.client) {
 }
 
 .toolbar-menu-card {
-  width: min(92vw, 980px);
+  width: min(92vw, 480px);
   max-height: min(76vh, 760px);
   overflow: auto;
 }
