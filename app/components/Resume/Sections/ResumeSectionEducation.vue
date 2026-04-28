@@ -127,20 +127,13 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.start`, (event.target as HTMLElement).innerText)">{{ item.start }}</span> -
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.end`, (event.target as HTMLElement).innerText)">{{ item.end }}</span>
         </p>
-        <template v-if="resolveContentStyle(item) === 'timeline'">
-          <div class="timeline-block">
-            <div v-for="(event, eventIndex) in resolveTimelineEvents(item)" :key="eventIndex" class="timeline-event">
-              <strong class="editable-text" :contenteditable="editable" @input="entry => updateText(`education.${index}.timelineEvents.${eventIndex}.label`, (entry.target as HTMLElement).innerText)">{{ event.label }}</strong>
-              <span class="editable-text" :contenteditable="editable" @input="entry => updateText(`education.${index}.timelineEvents.${eventIndex}.detail`, (entry.target as HTMLElement).innerText)">{{ event.detail }}</span>
-            </div>
-          </div>
-        </template>
-        <ul v-else-if="resolveContentStyle(item) === 'dashes'" class="dash-list">
-          <li v-for="(dash, dashIndex) in resolveDashes(item)" :key="dashIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.dashes.${dashIndex}`, (event.target as HTMLElement).innerText)">{{ dash }}</li>
-        </ul>
-        <ul v-else-if="resolvePoints(item).length">
-          <li v-for="(point, pointIndex) in resolvePoints(item)" :key="pointIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.points.${pointIndex}`, (event.target as HTMLElement).innerText)">{{ point }}</li>
-        </ul>
+        <div v-if="safeVariant === 'timeline'" class="education-timeline-rail" aria-hidden="true">
+          <span class="education-timeline-dot" />
+          <v-avatar class="education-timeline-icon" rounded="lg" size="30">
+            <v-img v-if="item.schoolImageUrl" :src="item.schoolImageUrl" alt="School logo" cover />
+            <v-icon v-else icon="mdi-school-outline" size="17" />
+          </v-avatar>
+        </div>
         <div class="content-column">
           <div class="entry-heading">
             <v-avatar class="school-logo" rounded="lg" size="30">
@@ -153,6 +146,20 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
             </h4>
           </div>
           <p v-if="item.note" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.note`, (event.target as HTMLElement).innerText)">{{ item.note }}</p>
+          <template v-if="resolveContentStyle(item) === 'timeline'">
+            <div class="timeline-block">
+              <div v-for="(event, eventIndex) in resolveTimelineEvents(item)" :key="eventIndex" class="timeline-event">
+                <strong class="editable-text" :contenteditable="editable" @input="entry => updateText(`education.${index}.timelineEvents.${eventIndex}.label`, (entry.target as HTMLElement).innerText)">{{ event.label }}</strong>
+                <span class="editable-text" :contenteditable="editable" @input="entry => updateText(`education.${index}.timelineEvents.${eventIndex}.detail`, (entry.target as HTMLElement).innerText)">{{ event.detail }}</span>
+              </div>
+            </div>
+          </template>
+          <ul v-else-if="resolveContentStyle(item) === 'dashes'" class="dash-list">
+            <li v-for="(dash, dashIndex) in resolveDashes(item)" :key="dashIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.dashes.${dashIndex}`, (event.target as HTMLElement).innerText)">{{ dash }}</li>
+          </ul>
+          <ul v-else-if="resolvePoints(item).length">
+            <li v-for="(point, pointIndex) in resolvePoints(item)" :key="pointIndex" class="text-dark editable-text" :contenteditable="editable" @input="event => updateText(`education.${index}.points.${pointIndex}`, (event.target as HTMLElement).innerText)">{{ point }}</li>
+          </ul>
         </div>
       </article>
     </div>
@@ -173,6 +180,9 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
   --cv-body-line-height: 1.52;
   --cv-list-indent: calc(var(--cv-space-4) + var(--cv-space-2));
   --cv-dash-marker-width: 1.35em;
+  --education-timeline-dot-offset: 10px;
+  --education-timeline-icon-offset: 28px;
+  --education-timeline-rail-width: 44px;
 
   position: relative;
   border-bottom: var(--rs-section-separator, none);
@@ -255,18 +265,46 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
 
 /* Timeline variant */
 .education--timeline .content-column {
-  border-left: 2px solid var(--cv-timeline-line);
-  padding-left: calc(var(--cv-space-2) + var(--cv-space-1) / 2);
+  max-width: min(100%, 70ch);
 }
-.education--timeline .content-column::before {
+.education--timeline .entry {
+  grid-template-columns:
+    minmax(140px, var(--resume-date-column-width, 140px))
+    var(--education-timeline-rail-width)
+    minmax(0, 1fr);
+}
+.education--timeline .education-timeline-rail {
+  position: relative;
+  align-self: stretch;
+  width: var(--education-timeline-rail-width);
+}
+.education--timeline .education-timeline-rail::before {
   content: '';
   position: absolute;
-  left: calc((var(--cv-space-2) + var(--cv-space-1)) * -1);
-  top: .55rem;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--cv-timeline-line);
+}
+.education--timeline .education-timeline-dot,
+.education--timeline .education-timeline-icon {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.education--timeline .education-timeline-dot {
+  top: var(--education-timeline-dot-offset);
   width: max(8px, var(--rs-marker-width, var(--rs-marker-size, 8px)));
   height: max(8px, var(--rs-marker-height, var(--rs-marker-size, 8px)));
   border-radius: 999px;
   background: var(--cv-accent);
+  z-index: 1;
+}
+.education--timeline .education-timeline-icon {
+  top: var(--education-timeline-icon-offset);
+  z-index: 1;
 }
 
 /* Two-column variant */
@@ -287,6 +325,12 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
   background: var(--rs-card-bg, var(--cv-card-bg-soft));
   padding: var(--rs-card-padding, var(--cv-space-3));
 }
+.education--two-column .education-timeline-rail {
+  display: none;
+}
+.education--two-column .content-column {
+  max-width: none;
+}
 @media (max-width: 900px) {
   .education--two-column .education-list {
     grid-template-columns: minmax(0, 1fr);
@@ -296,6 +340,15 @@ function resolveTimelineEvents(item: Record<string, unknown>) {
   .entry {
     grid-template-columns: minmax(0, 1fr);
     row-gap: var(--cv-space-2);
+  }
+  .education--timeline .entry {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .education--timeline .education-timeline-rail {
+    display: none;
+  }
+  .education--timeline .content-column {
+    max-width: none;
   }
 }
 
