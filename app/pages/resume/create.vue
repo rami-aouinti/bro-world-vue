@@ -704,41 +704,73 @@ const sectionLayout = ref<SectionLayoutEntry[]>(
 const sectionItemDialogOpen = ref(false)
 const activeSectionKey = ref<PreviewSectionKey>('experience')
 const activeVariant = ref<SectionLayoutVariant[PreviewSectionKey]>('detailed')
+// single source of truth: canonical section draft factories (used for init + reset)
+const createProfileDraft = () => ({ profile: '' })
+const createExperienceDraft = () => ({
+  role: '',
+  company: '',
+  companyImageUrl: '',
+  city: '',
+  start: '',
+  end: '',
+  bullets: '',
+  contentStyle: 'points' as ContentStyle,
+})
+const createSectionItemExperienceDraft = () => ({
+  role: '',
+  company: '',
+  companyImageUrl: '',
+  city: '',
+  start: '',
+  end: '',
+  bullets: '',
+  contentStyle: 'paragraph' as ExperienceContentStyle,
+  paragraph: '',
+  lines: '',
+  timelineEventTitle: '',
+  timelineDateRange: '',
+  timelineDescription: '',
+})
+const createEducationDraft = () => ({
+  degree: '',
+  school: '',
+  schoolImageUrl: '',
+  city: '',
+  start: '',
+  end: '',
+  note: '',
+  contentStyle: 'points' as ContentStyle,
+})
+const createSkillDraft = () => ({ name: '', level: 80 })
+const createAddLanguageDraft = () => ({ name: '', level: 80, countryCode: '', flag: '' })
+const createSectionItemLanguageDraft = () => ({ name: '', level: 80, stars: 4, countryCode: '', flag: '' })
+const createHobbyDraft = () => ({ name: '' })
+const createProjectDraft = () => ({
+  name: '',
+  summary: '',
+  imageUrl: '',
+  repositoryUrl: '',
+  repositoryProvider: undefined as Project['repositoryProvider'],
+  contentStyle: 'points' as ContentStyle,
+})
+const createCertificationDraft = () => ({ title: '', school: '', start: '', end: '' })
+const createReferenceDraft = () => ({ name: '', company: '', email: '', phone: '' })
 const sectionItemDraft = reactive({
-  experience: { role: '', company: '', city: '', start: '', end: '', bullets: '', contentStyle: 'points' as ContentStyle },
-  education: { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '', contentStyle: 'points' as ContentStyle },
-  experience: {
-    role: '',
-    company: '',
-    city: '',
-    companyImageUrl: '',
-    start: '',
-    end: '',
-    contentStyle: 'paragraph' as ExperienceContentStyle,
-    paragraph: '',
-    lines: '',
-    timelineEventTitle: '',
-    timelineDateRange: '',
-    timelineDescription: '',
-  },
-  education: { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' },
-  language: { name: '', level: 80, stars: 4, countryCode: '', flag: '' },
-  project: { name: '', summary: '', imageUrl: '', repositoryUrl: '', repositoryProvider: undefined as Project['repositoryProvider'] },
-  project: { name: '', summary: '', imageUrl: '', repositoryUrl: '', contentStyle: 'points' as ContentStyle },
+  experience: createSectionItemExperienceDraft(),
+  education: createEducationDraft(),
+  language: createSectionItemLanguageDraft(),
+  project: createProjectDraft(),
 })
 const addSectionDraft = reactive({
-  profile: { profile: '' },
-  experience: { role: '', company: '', city: '', start: '', end: '', bullets: '', contentStyle: 'points' as ContentStyle },
-  education: { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '', contentStyle: 'points' as ContentStyle },
-  experience: { role: '', company: '', companyImageUrl: '', city: '', start: '', end: '', bullets: '' },
-  education: { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '' },
-  skill: { name: '', level: 80 },
-  language: { name: '', level: 80, countryCode: '', flag: '' },
-  hobby: { name: '' },
-  project: { name: '', summary: '', imageUrl: '', repositoryUrl: '', repositoryProvider: undefined as Project['repositoryProvider'] },
-  project: { name: '', summary: '', imageUrl: '', repositoryUrl: '', contentStyle: 'points' as ContentStyle },
-  certification: { title: '', school: '', start: '', end: '' },
-  reference: { name: '', company: '', email: '', phone: '' },
+  profile: createProfileDraft(),
+  experience: createExperienceDraft(),
+  education: createEducationDraft(),
+  skill: createSkillDraft(),
+  language: createAddLanguageDraft(),
+  hobby: createHobbyDraft(),
+  project: createProjectDraft(),
+  certification: createCertificationDraft(),
+  reference: createReferenceDraft(),
 })
 const EXPERIENCE_LOGO_MAX_FILE_SIZE = 2 * 1024 * 1024
 const EXPERIENCE_LOGO_ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml']
@@ -1318,34 +1350,32 @@ function applyTemplateFromToolbar(templateId: string) {
 function resetSectionDraft(section: AddSectionType) {
   switch (section) {
     case 'profile':
-      addSectionDraft.profile = { profile: '' }
+      addSectionDraft.profile = createProfileDraft()
       break
     case 'experience':
-      addSectionDraft.experience = { role: '', company: '', city: '', start: '', end: '', bullets: '', contentStyle: 'points' }
-      addSectionDraft.experience = { role: '', company: '', companyImageUrl: '', city: '', start: '', end: '', bullets: '' }
+      addSectionDraft.experience = createExperienceDraft()
       setExperienceLogoError('add-section')
       break
     case 'education':
-      addSectionDraft.education = { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '', contentStyle: 'points' }
+      addSectionDraft.education = createEducationDraft()
       break
     case 'skill':
-      addSectionDraft.skill = { name: '', level: 80 }
+      addSectionDraft.skill = createSkillDraft()
       break
     case 'language':
-      addSectionDraft.language = { name: '', level: 80, countryCode: '', flag: '' }
+      addSectionDraft.language = createAddLanguageDraft()
       break
     case 'hobby':
-      addSectionDraft.hobby = { name: '' }
+      addSectionDraft.hobby = createHobbyDraft()
       break
     case 'project':
-      addSectionDraft.project = { name: '', summary: '', imageUrl: '', repositoryUrl: '', repositoryProvider: undefined }
-      addSectionDraft.project = { name: '', summary: '', imageUrl: '', repositoryUrl: '', contentStyle: 'points' }
+      addSectionDraft.project = createProjectDraft()
       break
     case 'certification':
-      addSectionDraft.certification = { title: '', school: '', start: '', end: '' }
+      addSectionDraft.certification = createCertificationDraft()
       break
     case 'reference':
-      addSectionDraft.reference = { name: '', company: '', email: '', phone: '' }
+      addSectionDraft.reference = createReferenceDraft()
       break
   }
 }
@@ -1450,32 +1480,17 @@ function sectionDisplayLabel(sectionKey: PreviewSectionKey) {
 function resetSectionItemDraft(section: PreviewSectionKey) {
   switch (section) {
     case 'experience':
-      sectionItemDraft.experience = { role: '', company: '', city: '', start: '', end: '', bullets: '', contentStyle: 'points' }
-      sectionItemDraft.experience = {
-        role: '',
-        company: '',
-        companyImageUrl: '',
-        city: '',
-        start: '',
-        end: '',
-        contentStyle: 'paragraph',
-        paragraph: '',
-        lines: '',
-        timelineEventTitle: '',
-        timelineDateRange: '',
-        timelineDescription: '',
-      }
+      sectionItemDraft.experience = createSectionItemExperienceDraft()
       setExperienceLogoError('section-item')
       break
     case 'education':
-      sectionItemDraft.education = { degree: '', school: '', schoolImageUrl: '', city: '', start: '', end: '', note: '', contentStyle: 'points' }
+      sectionItemDraft.education = createEducationDraft()
       break
     case 'language':
-      sectionItemDraft.language = { name: '', level: 80, stars: 4, countryCode: '', flag: '' }
+      sectionItemDraft.language = createSectionItemLanguageDraft()
       break
     case 'project':
-      sectionItemDraft.project = { name: '', summary: '', imageUrl: '', repositoryUrl: '', repositoryProvider: undefined }
-      sectionItemDraft.project = { name: '', summary: '', imageUrl: '', repositoryUrl: '', contentStyle: 'points' }
+      sectionItemDraft.project = createProjectDraft()
       break
   }
 }
