@@ -32,10 +32,9 @@ const { parseCoverFlowQuery, toCoverLetterQuery } = useResumeCoverFlow()
 const tabs = [
   { value: 'edit', label: 'Edit' },
   { value: 'template', label: 'Template' },
-  { value: 'design', label: 'Design' },
 ] as const
 
-const activeTab = ref<'edit' | 'template' | 'design'>('edit')
+const activeTab = ref<'edit' | 'template'>('edit')
 const toolbarTemplateMenuOpen = ref(false)
 const fallbackTemplateId = COVER_PAGE_TEMPLATE_IDS[0] ?? 'cover-page-terra'
 const selectedTemplate = ref(fallbackTemplateId)
@@ -85,7 +84,7 @@ const continueToCoverLetter = async () => {
   })
 }
 
-const openToolbarTab = (tab: 'template' | 'design') => {
+const openToolbarTab = (tab: 'template') => {
   activeTab.value = tab
 }
 
@@ -143,7 +142,7 @@ onMounted(() => {
         </v-menu>
         <v-menu location="bottom center" origin="top center" max-width="520">
           <template #activator="{ props }">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-palette-outline" v-bind="props" @click="openToolbarTab('design')">Design</v-btn>
+            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-palette-outline" v-bind="props">Design</v-btn>
           </template>
           <v-card class="toolbar-menu-card">
             <v-card-title class="text-subtitle-2">Design</v-card-title>
@@ -221,48 +220,6 @@ onMounted(() => {
             </v-card>
           </v-window-item>
 
-          <v-window-item value="design">
-            <article class="form-section mb-4">
-              <header class="mb-4">
-                <h2>Design</h2>
-                <p>Personnalisez la palette, le style de texte et l'arrondi pour harmoniser votre cover page.</p>
-              </header>
-
-              <p class="section-label">Color palette</p>
-              <div class="palette-grid mb-4">
-                <button
-                  v-for="theme in colorThemes"
-                  :key="theme.name"
-                  type="button"
-                  class="palette-item"
-                  :class="{ 'palette-item--active': selectedTheme === theme.name }"
-                  @click="selectedTheme = theme.name"
-                >
-                  <span :style="{ background: theme.sidebar }" />
-                  <span :style="{ background: theme.accent }" />
-                  <span :style="{ background: theme.page }" />
-                </button>
-              </div>
-
-              <p class="section-label">Rounded</p>
-              <v-btn-toggle v-model="selectedRounded" mandatory divided class="rounded-toggle" color="primary">
-                <v-btn v-for="option in roundedOptions" :key="option.value" :value="option.value" variant="text">
-                  {{ option.title }}
-                </v-btn>
-              </v-btn-toggle>
-
-              <p class="section-label mt-4">Text style</p>
-              <AppSelect
-                v-model="selectedTextStyle"
-                :items="textStyleOptions"
-                item-title="label"
-                item-value="value"
-                label="Typography preset"
-                density="comfortable"
-                hide-details
-              />
-            </article>
-          </v-window-item>
         </v-window>
 
         <v-btn color="primary" size="large" class="mt-2" block @click="continueToCoverLetter">
