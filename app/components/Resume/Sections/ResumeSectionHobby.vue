@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import { getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
 
 const props = withDefaults(defineProps<{
   resume: any
@@ -29,6 +30,7 @@ const emit = defineEmits<{
 }>()
 
 const sectionStyle = computed(() => ({ ...props.themeTokens }))
+const sectionRegistry = getSectionRegistryEntry('hobby')
 
 function updateText(path: string, value: string) {
   const segments = path.split('.')
@@ -48,8 +50,9 @@ function updateText(path: string, value: string) {
     <SectionToolbar
       v-if="toolbarEnabled"
       section-key="hobby"
-      :variants="[{ label: 'Classic', value: 'classic' }]"
-      current-variant="classic"
+      :variants="sectionRegistry.variants"
+      :actions="sectionRegistry.toolbarActions"
+      :current-variant="variant"
       :can-move-up="canMoveUp"
       :can-move-down="canMoveDown"
       @add-item="() => emit('add-item', 'hobby')"

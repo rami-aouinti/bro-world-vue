@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { levelToPercent, levelToStars, levelToText } from '~/utils/resumeLanguageLevel'
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import { getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
 
 type SkillVariant = 'classic' | 'text-level' | 'stars' | 'dots' | 'progress'
 
@@ -32,6 +33,7 @@ const emit = defineEmits<{
 }>()
 
 const sectionStyle = computed(() => ({ ...props.themeTokens }))
+const sectionRegistry = getSectionRegistryEntry('skill')
 
 const safeVariant = computed<SkillVariant>(() => {
   if (
@@ -74,13 +76,8 @@ function levelToDots(level: number | string) {
     <SectionToolbar
       v-if="toolbarEnabled"
       section-key="skill"
-      :variants="[
-        { label: 'Classic', value: 'classic' },
-        { label: 'Text level', value: 'text-level' },
-        { label: 'Stars', value: 'stars' },
-        { label: 'Dots', value: 'dots' },
-        { label: 'Progress', value: 'progress' },
-      ]"
+      :variants="sectionRegistry.variants"
+      :actions="sectionRegistry.toolbarActions"
       :current-variant="safeVariant"
       :can-move-up="canMoveUp"
       :can-move-down="canMoveDown"

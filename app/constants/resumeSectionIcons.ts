@@ -1,9 +1,10 @@
 import type { ResumeSectionKey } from '~/constants/resumeTemplateSkins'
+import { RESUME_SECTION_REGISTRY } from '~/constants/resumeSectionRegistry'
 
 export const RESUME_SECTION_ICONS: Partial<Record<ResumeSectionKey, string>> = {
-  education: 'mdi-school-outline',
-  experience: 'mdi-briefcase-outline',
-  project: 'mdi-folder-star-outline',
-  reference: 'mdi-account-voice-outline',
-  certification: 'mdi-certificate-outline',
+  education: RESUME_SECTION_REGISTRY.education.icon,
+  experience: RESUME_SECTION_REGISTRY.experience.icon,
+  project: RESUME_SECTION_REGISTRY.project.icon,
+  reference: RESUME_SECTION_REGISTRY.reference.icon,
+  certification: RESUME_SECTION_REGISTRY.certification.icon,
 }

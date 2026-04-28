@@ -7,6 +7,7 @@ import ResumeSectionHobby from '~/components/Resume/Sections/ResumeSectionHobby.
 import ResumeSectionCertification from '~/components/Resume/Sections/ResumeSectionCertification.vue'
 import ResumeSectionReference from '~/components/Resume/Sections/ResumeSectionReference.vue'
 import ResumeSectionSkill from '~/components/Resume/Sections/ResumeSectionSkill.vue'
+import { getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
 import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
 import type { ResumeEditableSectionKey } from '~/types/resumeDocumentModel'
 
@@ -57,13 +58,8 @@ const componentBySectionKey = {
 const sectionComponent = computed(() => componentBySectionKey[props.sectionKey])
 
 const sectionHeadingProps = computed(() => {
-  if (
-    props.sectionKey === 'education' ||
-    props.sectionKey === 'experience' ||
-    props.sectionKey === 'project' ||
-    props.sectionKey === 'reference' ||
-    props.sectionKey === 'certification'
-  ) {
+  const sectionRegistry = getSectionRegistryEntry(props.sectionKey)
+  if (sectionRegistry.icon) {
     return {
       sectionIcon: props.sectionIcon,
       showSectionIcon: props.showSectionIcon,

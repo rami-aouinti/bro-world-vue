@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import { getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
 import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
 
 const props = withDefaults(defineProps<{
@@ -36,6 +37,7 @@ const emit = defineEmits<{
 }>()
 
 const sectionStyle = computed(() => ({ ...props.themeTokens }))
+const sectionRegistry = getSectionRegistryEntry('certification')
 const iconVariantClass = computed(() =>
   props.sectionIconStyle?.variant ? `section-icon--${props.sectionIconStyle.variant}` : 'section-icon--outline',
 )
@@ -63,8 +65,9 @@ function updateText(path: string, value: string) {
     <SectionToolbar
       v-if="toolbarEnabled"
       section-key="certification"
-      :variants="[{ label: 'Classic', value: 'classic' }]"
-      current-variant="classic"
+      :variants="sectionRegistry.variants"
+      :actions="sectionRegistry.toolbarActions"
+      :current-variant="variant"
       :can-move-up="canMoveUp"
       :can-move-down="canMoveDown"
       @add-item="() => emit('add-item', 'certification')"

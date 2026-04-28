@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { levelToPercent, levelToStars, levelToText } from '~/utils/resumeLanguageLevel'
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import { getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
 
 const props = withDefaults(defineProps<{
   resume: any
@@ -28,6 +29,7 @@ const emit = defineEmits<{
   (event: 'move-section', sectionKey: 'language', direction: 'up' | 'down'): void
 }>()
 const sectionStyle = computed(() => ({ ...props.themeTokens }))
+const sectionRegistry = getSectionRegistryEntry('language')
 const safeVariant = computed<'classic' | 'text-level' | 'stars' | 'progress' | 'flags'>(() => {
   if (props.variant === 'classic' || props.variant === 'text-level' || props.variant === 'stars' || props.variant === 'progress' || props.variant === 'flags') {
     return props.variant
@@ -68,7 +70,19 @@ function resolveLanguageFlag(language: Record<string, unknown>) {
 </script>
 <template>
   <section :class="['language-section', 'resume-section-hoverable', `density-${layoutDensity}`]" :style="sectionStyle">
-    <SectionToolbar v-if="toolbarEnabled" section-key="language" :variants="[{ label: 'Text level', value: 'text-level' }, { label: 'Stars', value: 'stars' }, { label: 'Progress', value: 'progress' }, { label: 'Flags', value: 'flags' }]" :current-variant="safeVariant" :can-move-up="canMoveUp" :can-move-down="canMoveDown" @add-item="() => emit('add-item', 'language')" @change-variant="(_, next) => emit('change-variant', 'language', next)" @move-up="() => emit('move-section', 'language', 'up')" @move-down="() => emit('move-section', 'language', 'down')" />
+    <SectionToolbar
+      v-if="toolbarEnabled"
+      section-key="language"
+      :variants="sectionRegistry.variants"
+      :actions="sectionRegistry.toolbarActions"
+      :current-variant="safeVariant"
+      :can-move-up="canMoveUp"
+      :can-move-down="canMoveDown"
+      @add-item="() => emit('add-item', 'language')"
+      @change-variant="(_, next) => emit('change-variant', 'language', next)"
+      @move-up="() => emit('move-section', 'language', 'up')"
+      @move-down="() => emit('move-section', 'language', 'down')"
+    />
     <h3 class="cv-heading-section">{{ title }}</h3>
     <ul v-if="safeVariant === 'classic' || safeVariant === 'text-level'" class="bars">
       <li v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`">

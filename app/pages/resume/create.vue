@@ -8,6 +8,7 @@ import {
   type ResumeTemplateVariant,
 } from '~/constants/resumeTemplates'
 import { resolveTemplateSkin, type ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
+import { RESUME_CONTENT_STYLE_OPTIONS, RESUME_SECTION_REGISTRY } from '~/constants/resumeSectionRegistry'
 import {
   useResumeDesignControls,
 } from '~/composables/useResumeDesignControls'
@@ -308,27 +309,16 @@ const addSectionOptions = [
   { label: 'Certification', value: 'certification' },
   { label: 'Reference', value: 'reference' },
 ] as const satisfies ReadonlyArray<{ label: string; value: AddSectionType }>
-const experienceContentStyleOptions = [
-  { label: 'Paragraph', value: 'paragraph' },
-  { label: 'Points', value: 'points' },
-  { label: 'Tirets', value: 'dashes' },
-  { label: 'Timeline', value: 'timeline' },
-] as const satisfies ReadonlyArray<{ label: string; value: ContentStyle }>
-const sectionVariantLabels: Record<string, string> = {
-  detailed: 'Detailed',
-  bullets: 'Bullets',
-  compact: 'Compact',
-  classic: 'Classic',
-  timeline: 'Timeline',
-  'two-column': 'Two-column',
-  stars: 'Stars',
-  'text-level': 'Text level',
-  progress: 'Progress',
-  dots: 'Dots',
-  flags: 'Flags',
-  cards: 'Cards',
-  list: 'List',
-}
+const sectionVariantLabels = Object.values(RESUME_SECTION_REGISTRY)
+  .flatMap(section => section.variants)
+  .reduce<Record<string, string>>((accumulator, option) => {
+    accumulator[option.value] = option.label
+    return accumulator
+  }, {})
+const resumeContentStyleSelectItems = RESUME_CONTENT_STYLE_OPTIONS.map(option => ({
+  title: option.label,
+  value: option.value,
+}))
 const sectionConfig: {
   [K in ResumePreviewSectionKey]: {
     label: string
@@ -358,24 +348,24 @@ const variantRegistry: {
     fallback: SectionLayoutVariant[K]
   }
 } = {
-  experience: { allowed: ['detailed', 'bullets', 'compact'], fallback: 'detailed' },
-  education: { allowed: ['classic', 'timeline', 'two-column'], fallback: 'classic' },
-  language: { allowed: ['classic', 'text-level', 'stars', 'progress', 'flags'], fallback: 'classic' },
-  project: { allowed: ['classic', 'list', 'cards', 'two-column'], fallback: 'classic' },
-  skill: { allowed: ['classic', 'text-level', 'stars', 'dots', 'progress'], fallback: 'progress' },
-  reference: { allowed: ['classic'], fallback: 'classic' },
-  hobby: { allowed: ['classic'], fallback: 'classic' },
-  certification: { allowed: ['classic'], fallback: 'classic' },
+  experience: { allowed: RESUME_SECTION_REGISTRY.experience.variants.map(option => option.value) as SectionLayoutVariant['experience'][], fallback: RESUME_SECTION_REGISTRY.experience.defaultVariant as SectionLayoutVariant['experience'] },
+  education: { allowed: RESUME_SECTION_REGISTRY.education.variants.map(option => option.value) as SectionLayoutVariant['education'][], fallback: RESUME_SECTION_REGISTRY.education.defaultVariant as SectionLayoutVariant['education'] },
+  language: { allowed: RESUME_SECTION_REGISTRY.language.variants.map(option => option.value) as SectionLayoutVariant['language'][], fallback: RESUME_SECTION_REGISTRY.language.defaultVariant as SectionLayoutVariant['language'] },
+  project: { allowed: RESUME_SECTION_REGISTRY.project.variants.map(option => option.value) as SectionLayoutVariant['project'][], fallback: RESUME_SECTION_REGISTRY.project.defaultVariant as SectionLayoutVariant['project'] },
+  skill: { allowed: RESUME_SECTION_REGISTRY.skill.variants.map(option => option.value) as SectionLayoutVariant['skill'][], fallback: RESUME_SECTION_REGISTRY.skill.defaultVariant as SectionLayoutVariant['skill'] },
+  reference: { allowed: RESUME_SECTION_REGISTRY.reference.variants.map(option => option.value) as SectionLayoutVariant['reference'][], fallback: RESUME_SECTION_REGISTRY.reference.defaultVariant as SectionLayoutVariant['reference'] },
+  hobby: { allowed: RESUME_SECTION_REGISTRY.hobby.variants.map(option => option.value) as SectionLayoutVariant['hobby'][], fallback: RESUME_SECTION_REGISTRY.hobby.defaultVariant as SectionLayoutVariant['hobby'] },
+  certification: { allowed: RESUME_SECTION_REGISTRY.certification.variants.map(option => option.value) as SectionLayoutVariant['certification'][], fallback: RESUME_SECTION_REGISTRY.certification.defaultVariant as SectionLayoutVariant['certification'] },
 }
 const defaultSectionLayoutEntries: SectionLayoutEntry[] = [
-  { key: 'experience', variant: 'detailed', region: 'main', order: 0 },
-  { key: 'education', variant: 'classic', region: 'main', order: 1 },
-  { key: 'project', variant: 'classic', region: 'main', order: 2 },
-  { key: 'certification', variant: 'classic', region: 'main', order: 3 },
-  { key: 'skill', variant: 'progress', region: 'aside', order: 0 },
-  { key: 'language', variant: 'classic', region: 'aside', order: 1 },
-  { key: 'reference', variant: 'classic', region: 'aside', order: 2 },
-  { key: 'hobby', variant: 'classic', region: 'aside', order: 3 },
+  { key: 'experience', variant: RESUME_SECTION_REGISTRY.experience.defaultVariant as SectionLayoutVariant['experience'], region: RESUME_SECTION_REGISTRY.experience.defaultRegion, order: 0 },
+  { key: 'education', variant: RESUME_SECTION_REGISTRY.education.defaultVariant as SectionLayoutVariant['education'], region: RESUME_SECTION_REGISTRY.education.defaultRegion, order: 1 },
+  { key: 'project', variant: RESUME_SECTION_REGISTRY.project.defaultVariant as SectionLayoutVariant['project'], region: RESUME_SECTION_REGISTRY.project.defaultRegion, order: 2 },
+  { key: 'certification', variant: RESUME_SECTION_REGISTRY.certification.defaultVariant as SectionLayoutVariant['certification'], region: RESUME_SECTION_REGISTRY.certification.defaultRegion, order: 3 },
+  { key: 'skill', variant: RESUME_SECTION_REGISTRY.skill.defaultVariant as SectionLayoutVariant['skill'], region: RESUME_SECTION_REGISTRY.skill.defaultRegion, order: 0 },
+  { key: 'language', variant: RESUME_SECTION_REGISTRY.language.defaultVariant as SectionLayoutVariant['language'], region: RESUME_SECTION_REGISTRY.language.defaultRegion, order: 1 },
+  { key: 'reference', variant: RESUME_SECTION_REGISTRY.reference.defaultVariant as SectionLayoutVariant['reference'], region: RESUME_SECTION_REGISTRY.reference.defaultRegion, order: 2 },
+  { key: 'hobby', variant: RESUME_SECTION_REGISTRY.hobby.defaultVariant as SectionLayoutVariant['hobby'], region: RESUME_SECTION_REGISTRY.hobby.defaultRegion, order: 3 },
 ]
 
 function normalizeSectionLayout(entries: Array<Partial<SectionLayoutEntry>> | SectionLayoutEntry[]) {
@@ -2601,12 +2591,7 @@ if (import.meta.client) {
                 <v-col cols="12" md="10">
                   <v-select
                     v-model="experience.contentStyle"
-                    :items="[
-                      { title: 'Paragraph', value: 'paragraph' },
-                      { title: 'Points', value: 'points' },
-                      { title: 'Tirets', value: 'dashes' },
-                      { title: 'Timeline', value: 'timeline' },
-                    ]"
+                    :items="resumeContentStyleSelectItems"
                     label="Content style"
                     variant="outlined"
                     hide-details
@@ -2737,12 +2722,7 @@ if (import.meta.client) {
                 <v-col cols="12" md="10"
                   ><v-select
                     v-model="item.contentStyle"
-                    :items="[
-                      { title: 'Paragraph', value: 'paragraph' },
-                      { title: 'Points', value: 'points' },
-                      { title: 'Tirets', value: 'dashes' },
-                      { title: 'Timeline', value: 'timeline' },
-                    ]"
+                    :items="resumeContentStyleSelectItems"
                     label="Content style"
                     variant="outlined"
                     hide-details
@@ -2950,12 +2930,7 @@ if (import.meta.client) {
                 <v-col cols="12" md="8">
                   <v-select
                     v-model="project.contentStyle"
-                    :items="[
-                      { title: 'Paragraph', value: 'paragraph' },
-                      { title: 'Points', value: 'points' },
-                      { title: 'Tirets', value: 'dashes' },
-                      { title: 'Timeline', value: 'timeline' },
-                    ]"
+                    :items="resumeContentStyleSelectItems"
                     label="Content style"
                     variant="outlined"
                     hide-details
@@ -3530,11 +3505,7 @@ if (import.meta.client) {
             </div>
             <v-select
               v-model="addSectionDraft.experience.contentStyle"
-              :items="[
-                { title: 'Points', value: 'points' },
-                { title: 'Dashes', value: 'dashes' },
-                { title: 'Timeline', value: 'timeline' },
-              ]"
+              :items="resumeContentStyleSelectItems"
               label="Content style"
               variant="outlined"
               hide-details
@@ -3568,11 +3539,7 @@ if (import.meta.client) {
             </div>
             <v-select
               v-model="addSectionDraft.education.contentStyle"
-              :items="[
-                { title: 'Points', value: 'points' },
-                { title: 'Dashes', value: 'dashes' },
-                { title: 'Timeline', value: 'timeline' },
-              ]"
+              :items="resumeContentStyleSelectItems"
               label="Content style"
               variant="outlined"
               hide-details
@@ -3600,11 +3567,7 @@ if (import.meta.client) {
             <v-text-field v-model="addSectionDraft.project.name" label="Project name" variant="outlined" hide-details />
             <v-select
               v-model="addSectionDraft.project.contentStyle"
-              :items="[
-                { title: 'Points', value: 'points' },
-                { title: 'Dashes', value: 'dashes' },
-                { title: 'Timeline', value: 'timeline' },
-              ]"
+              :items="resumeContentStyleSelectItems"
               label="Content style"
               variant="outlined"
               hide-details
@@ -3697,7 +3660,7 @@ if (import.meta.client) {
             </div>
             <v-select
               v-model="sectionItemDraft.experience.contentStyle"
-              :items="experienceContentStyleOptions"
+              :items="resumeContentStyleSelectItems"
               item-title="label"
               item-value="value"
               label="Content style"
@@ -3770,11 +3733,7 @@ if (import.meta.client) {
             </div>
             <v-select
               v-model="sectionItemDraft.education.contentStyle"
-              :items="[
-                { title: 'Points', value: 'points' },
-                { title: 'Dashes', value: 'dashes' },
-                { title: 'Timeline', value: 'timeline' },
-              ]"
+              :items="resumeContentStyleSelectItems"
               label="Content style"
               variant="outlined"
               hide-details
@@ -3808,11 +3767,7 @@ if (import.meta.client) {
             <v-text-field v-model="sectionItemDraft.project.name" label="Project name" variant="outlined" hide-details />
             <v-select
               v-model="sectionItemDraft.project.contentStyle"
-              :items="[
-                { title: 'Points', value: 'points' },
-                { title: 'Dashes', value: 'dashes' },
-                { title: 'Timeline', value: 'timeline' },
-              ]"
+              :items="resumeContentStyleSelectItems"
               label="Content style"
               variant="outlined"
               hide-details
