@@ -152,7 +152,7 @@ function removeReference(index: number) {
           size="x-small"
           variant="text"
           color="error"
-          aria-label="Supprimer cette référence"
+          aria-label="Delete this reference"
           @click="removeReference(index)"
         >
           <v-icon icon="mdi-close" size="14" />

@@ -773,7 +773,7 @@ function updateText(path: string, value: string) {
                 size="x-small"
                 variant="text"
                 color="error"
-                aria-label="Supprimer la localisation"
+                aria-label="Remove location"
                 @click="removeContactItem('location')"
               >
                 <v-icon icon="mdi-close" size="14" />
@@ -802,7 +802,7 @@ function updateText(path: string, value: string) {
                 size="x-small"
                 variant="text"
                 color="error"
-                aria-label="Supprimer le téléphone"
+                aria-label="Remove phone"
                 @click="removeContactItem('phone')"
               >
                 <v-icon icon="mdi-close" size="14" />

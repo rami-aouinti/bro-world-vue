@@ -23,7 +23,7 @@ const emit = defineEmits<{
   (event: 'upload' | 'remove' | 'toggle-visibility' | 'open-menu'): void
 }>()
 
-const hideShowLabel = computed(() => (props.photoState.hidden ? 'Afficher la photo' : 'Masquer la photo'))
+const hideShowLabel = computed(() => (props.photoState.hidden ? 'Show photo' : 'Hide photo'))
 
 function handleMove(direction: MoveDirection) {
   if (!props.canMove) return
@@ -36,9 +36,9 @@ function handleMove(direction: MoveDirection) {
     v-if="props.visible"
     class="avatar-overlay-controls"
     role="toolbar"
-    aria-label="Contrôles de photo"
+    aria-label="Photo controls"
   >
-    <v-tooltip text="Déplacer vers le haut">
+    <v-tooltip text="Move up">
       <template #activator="{ props: tooltipProps }">
         <v-btn
           icon
@@ -46,7 +46,7 @@ function handleMove(direction: MoveDirection) {
           color="surface"
           class="overlay-btn overlay-btn--move overlay-btn--up"
           :disabled="!props.canMove"
-          aria-label="Déplacer vers le haut"
+          aria-label="Move up"
           v-bind="tooltipProps"
           @click="handleMove('up')"
         >
@@ -55,7 +55,7 @@ function handleMove(direction: MoveDirection) {
       </template>
     </v-tooltip>
 
-    <v-tooltip text="Déplacer vers la droite">
+    <v-tooltip text="Move right">
       <template #activator="{ props: tooltipProps }">
         <v-btn
           icon
@@ -63,7 +63,7 @@ function handleMove(direction: MoveDirection) {
           color="surface"
           class="overlay-btn overlay-btn--move overlay-btn--right"
           :disabled="!props.canMove"
-          aria-label="Déplacer vers la droite"
+          aria-label="Move right"
           v-bind="tooltipProps"
           @click="handleMove('right')"
         >
@@ -72,7 +72,7 @@ function handleMove(direction: MoveDirection) {
       </template>
     </v-tooltip>
 
-    <v-tooltip text="Déplacer vers le bas">
+    <v-tooltip text="Move down">
       <template #activator="{ props: tooltipProps }">
         <v-btn
           icon
@@ -80,7 +80,7 @@ function handleMove(direction: MoveDirection) {
           color="surface"
           class="overlay-btn overlay-btn--move overlay-btn--down"
           :disabled="!props.canMove"
-          aria-label="Déplacer vers le bas"
+          aria-label="Move down"
           v-bind="tooltipProps"
           @click="handleMove('down')"
         >
@@ -89,7 +89,7 @@ function handleMove(direction: MoveDirection) {
       </template>
     </v-tooltip>
 
-    <v-tooltip text="Déplacer vers la gauche">
+    <v-tooltip text="Move left">
       <template #activator="{ props: tooltipProps }">
         <v-btn
           icon
@@ -97,7 +97,7 @@ function handleMove(direction: MoveDirection) {
           color="surface"
           class="overlay-btn overlay-btn--move overlay-btn--left"
           :disabled="!props.canMove"
-          aria-label="Déplacer vers la gauche"
+          aria-label="Move left"
           v-bind="tooltipProps"
           @click="handleMove('left')"
         >
@@ -106,15 +106,15 @@ function handleMove(direction: MoveDirection) {
       </template>
     </v-tooltip>
 
-    <div class="actions-column" role="group" aria-label="Actions photo">
-      <v-tooltip text="Téléverser une photo">
+    <div class="actions-column" role="group" aria-label="Photo actions">
+      <v-tooltip text="Upload photo">
         <template #activator="{ props: tooltipProps }">
           <v-btn
             icon
             variant="elevated"
             color="surface"
             class="overlay-btn"
-            aria-label="Téléverser une photo"
+            aria-label="Upload photo"
             v-bind="tooltipProps"
             @click="emit('upload')"
           >
@@ -123,14 +123,14 @@ function handleMove(direction: MoveDirection) {
         </template>
       </v-tooltip>
 
-      <v-tooltip text="Supprimer la photo">
+      <v-tooltip text="Remove photo">
         <template #activator="{ props: tooltipProps }">
           <v-btn
             icon
             variant="elevated"
             color="error"
             class="overlay-btn"
-            aria-label="Supprimer la photo"
+            aria-label="Remove photo"
             v-bind="tooltipProps"
             @click="emit('remove')"
           >
@@ -139,14 +139,14 @@ function handleMove(direction: MoveDirection) {
         </template>
       </v-tooltip>
 
-      <v-tooltip text="Zoom avant">
+      <v-tooltip text="Zoom in">
         <template #activator="{ props: tooltipProps }">
           <v-btn
             icon
             variant="elevated"
             color="surface"
             class="overlay-btn"
-            aria-label="Zoom avant"
+            aria-label="Zoom in"
             v-bind="tooltipProps"
             @click="emit('zoom', 'in')"
           >
@@ -155,14 +155,14 @@ function handleMove(direction: MoveDirection) {
         </template>
       </v-tooltip>
 
-      <v-tooltip text="Zoom arrière">
+      <v-tooltip text="Zoom out">
         <template #activator="{ props: tooltipProps }">
           <v-btn
             icon
             variant="elevated"
             color="surface"
             class="overlay-btn"
-            aria-label="Zoom arrière"
+            aria-label="Zoom out"
             v-bind="tooltipProps"
             @click="emit('zoom', 'out')"
           >
