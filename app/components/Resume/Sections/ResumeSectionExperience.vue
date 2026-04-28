@@ -278,47 +278,6 @@ function removeExperience(index: number) {
         </p>
       </div>
       <div class="content-column">
-        <h4 class="text-dark">
-          <span
-            class="editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateText(
-                  `experiences.${index}.role`,
-                  (event.target as HTMLElement).innerText,
-                )
-            "
-            >{{ experience.role }}</span
-          >,
-          <span
-            class="editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateText(
-                  `experiences.${index}.company`,
-                  (event.target as HTMLElement).innerText,
-                )
-            "
-            >{{ experience.company }}</span
-          >
-          <template v-if="variant !== 'compact' && experience.city"
-            >,
-            <span
-              class="editable-text"
-              :contenteditable="editable"
-              @input="
-                (event) =>
-                  updateText(
-                    `experiences.${index}.city`,
-                    (event.target as HTMLElement).innerText,
-                  )
-              "
-              >{{ experience.city }}</span
-            >
-          </template>
-        </h4>
         <template v-if="resolveContentStyle(experience) === 'timeline'">
           <div class="timeline-block">
             <div

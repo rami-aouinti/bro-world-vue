@@ -375,8 +375,8 @@ const createDefaultDesignSettings = (): DesignSettings => ({
       size: 120,
       color: '#1d4ed8',
       opacity: 0.15,
-      x: 86,
-      y: 10,
+      x: 90,
+      y: 4,
       rotation: 0,
     },
     decorativeShapeB: {
@@ -1112,6 +1112,33 @@ function applyTemplateSelection(templateId: string) {
   selectedTemplate.value = templateId
 }
 
+const templateShapeTypeCycle: DecorativeShapeType[] = ['circle', 'ring', 'square', 'bar']
+
+function applyShapeAForTemplate() {
+  if (selectedDocumentType.value !== 'resume') return
+  const templateIndex = resumeTemplateCards.findIndex((template) => template.id === selectedTemplate.value)
+  if (templateIndex < 0) return
+  const accentColor = activeTheme.value.accent
+  layoutSettings.decorativeShapeA = {
+    ...layoutSettings.decorativeShapeA,
+    enabled: true,
+    type: templateShapeTypeCycle[templateIndex % templateShapeTypeCycle.length],
+    color: accentColor,
+    opacity: 0.18,
+    size: 96 + (templateIndex % 4) * 18,
+    width: 90 + (templateIndex % 5) * 26,
+    height: 90 + (templateIndex % 3) * 22,
+    x: templateIndex % 2 === 0 ? 90 : 126,
+    y: 4,
+    rotation: (templateIndex % 2 === 0 ? 0 : -8),
+  }
+
+  layoutSettings.decorativeShapeB = {
+    ...layoutSettings.decorativeShapeB,
+    enabled: false,
+  }
+}
+
 function applyDesignPresetForSelectedTemplate() {
   if (selectedDocumentType.value !== 'resume') return
   const preset = templateDesignPresets[selectedTemplate.value]
@@ -1123,6 +1150,7 @@ function applyDesignPresetForSelectedTemplate() {
   if (preset.textStyle) selectedTextStyle.value = preset.textStyle
   if (preset.photoShape) selectedPhotoShape.value = preset.photoShape
   if (preset.layout) Object.assign(layoutSettings, preset.layout)
+  applyShapeAForTemplate()
 }
 
 function onTemplateQuickFilterChange(value: unknown) {
@@ -3614,7 +3642,7 @@ if (import.meta.client) {
                     <v-slider
                       v-model="layoutSettings.decorativeShapeA.x"
                       :min="0"
-                      :max="100"
+                      :max="130"
                       :step="1"
                       label="Shape A horizontal position"
                       thumb-label
@@ -3639,93 +3667,6 @@ if (import.meta.client) {
                       hide-details
                     />
 
-                    <v-divider class="my-2" />
-                    <v-switch
-                      v-model="layoutSettings.decorativeShapeB.enabled"
-                      label="Shape B visible"
-                      color="primary"
-                      hide-details
-                      inset
-                    />
-                    <AppSelect
-                      v-model="layoutSettings.decorativeShapeB.type"
-                      :items="decorativeShapeTypeOptions"
-                      item-title="label"
-                      item-value="value"
-                      label="Shape B type"
-                      density="comfortable"
-                      hide-details
-                    />
-                    <v-text-field
-                      v-model="layoutSettings.decorativeShapeB.color"
-                      label="Shape B color"
-                      type="color"
-                      density="comfortable"
-                      hide-details
-                    />
-                    <v-slider
-                      v-model="layoutSettings.decorativeShapeB.opacity"
-                      :min="0.05"
-                      :max="1"
-                      :step="0.05"
-                      label="Shape B opacity"
-                      thumb-label
-                      hide-details
-                    />
-                    <v-slider
-                      v-model="layoutSettings.decorativeShapeB.size"
-                      :min="30"
-                      :max="360"
-                      :step="2"
-                      label="Shape B size"
-                      thumb-label
-                      hide-details
-                    />
-                    <v-slider
-                      v-model="layoutSettings.decorativeShapeB.width"
-                      :min="30"
-                      :max="360"
-                      :step="2"
-                      label="Shape B width"
-                      thumb-label
-                      hide-details
-                    />
-                    <v-slider
-                      v-model="layoutSettings.decorativeShapeB.height"
-                      :min="30"
-                      :max="360"
-                      :step="2"
-                      label="Shape B height"
-                      thumb-label
-                      hide-details
-                    />
-                    <v-slider
-                      v-model="layoutSettings.decorativeShapeB.x"
-                      :min="0"
-                      :max="100"
-                      :step="1"
-                      label="Shape B horizontal position"
-                      thumb-label
-                      hide-details
-                    />
-                    <v-slider
-                      v-model="layoutSettings.decorativeShapeB.y"
-                      :min="0"
-                      :max="100"
-                      :step="1"
-                      label="Shape B vertical position"
-                      thumb-label
-                      hide-details
-                    />
-                    <v-slider
-                      v-model="layoutSettings.decorativeShapeB.rotation"
-                      :min="-180"
-                      :max="180"
-                      :step="1"
-                      label="Shape B rotation"
-                      thumb-label
-                      hide-details
-                    />
                   </div>
                 </v-card-text>
               </v-card>
