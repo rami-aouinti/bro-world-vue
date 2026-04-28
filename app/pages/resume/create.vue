@@ -3537,76 +3537,14 @@ if (import.meta.client) {
                 </v-btn>
               </template>
               <v-card class="toolbar-menu-card">
-                <v-card-title class="text-subtitle-2">Design</v-card-title>
+                <v-card-title class="text-subtitle-2">Shapes</v-card-title>
                 <v-card-text>
-                  <p class="section-label mt-4">Rounded</p>
-                  <v-btn-toggle
-                    v-model="selectedRounded"
-                    mandatory
-                    divided
-                    class="rounded-toggle"
-                    color="primary"
-                  >
-                    <v-btn
-                      v-for="option in roundedOptions"
-                      :key="`toolbar-rounded-${option.value}`"
-                      :value="option.value"
-                      variant="text"
-                    >
-                      {{ option.title }}
-                    </v-btn>
-                  </v-btn-toggle>
-                  <p class="section-label mt-4">Icons</p>
-                  <div class="d-grid ga-3">
-                    <v-switch
-                      v-model="layoutSettings.showSectionIcons"
-                      label="Show section icons"
-                      color="primary"
-                      hide-details
-                      inset
-                    />
-                    <v-switch
-                      v-model="layoutSettings.showContactIcons"
-                      label="Show contact icons"
-                      color="primary"
-                      hide-details
-                      inset
-                    />
-                    <AppSelect
-                      v-model="layoutSettings.sectionIconStyle"
-                      :items="sectionIconStyleOptions"
-                      item-title="label"
-                      item-value="value"
-                      label="Icon style"
-                      density="comfortable"
-                      hide-details
-                    />
-                    <AppSelect
-                      v-model="layoutSettings.iconSize"
-                      :items="iconSizeOptions"
-                      item-title="label"
-                      item-value="value"
-                      label="Icon size"
-                      density="comfortable"
-                      hide-details
-                    />
-                    <AppSelect
-                      v-model="layoutSettings.iconColor"
-                      :items="iconColorOptions"
-                      item-title="label"
-                      item-value="value"
-                      label="Icon color"
-                      density="comfortable"
-                      hide-details
-                    />
-                  </div>
-
-                  <p class="section-label mt-4">Shapes</p>
                   <div class="d-grid ga-3">
                     <v-switch
                       v-model="layoutSettings.decorativeShapeA.enabled"
                       label="Shape A visible"
                       color="primary"
+                      class="mb-3"
                       hide-details
                       inset
                     />
@@ -3617,6 +3555,7 @@ if (import.meta.client) {
                       item-value="value"
                       label="Shape A type"
                       density="comfortable"
+                      class="mb-3"
                       hide-details
                     />
                     <v-text-field
@@ -3624,6 +3563,7 @@ if (import.meta.client) {
                       label="Shape A color"
                       type="color"
                       density="comfortable"
+                      class="mb-3"
                       hide-details
                     />
                     <v-slider
@@ -3632,6 +3572,7 @@ if (import.meta.client) {
                       :max="1"
                       :step="0.05"
                       label="Shape A opacity"
+                      class="mb-3"
                       thumb-label
                       hide-details
                     />
@@ -3641,6 +3582,7 @@ if (import.meta.client) {
                       :max="360"
                       :step="2"
                       label="Shape A size"
+                      class="mb-3"
                       thumb-label
                       hide-details
                     />
@@ -3650,6 +3592,7 @@ if (import.meta.client) {
                       :max="360"
                       :step="2"
                       label="Shape A width"
+                      class="mb-3"
                       thumb-label
                       hide-details
                     />
@@ -3659,6 +3602,7 @@ if (import.meta.client) {
                       :max="360"
                       :step="2"
                       label="Shape A height"
+                      class="mb-3"
                       thumb-label
                       hide-details
                     />
@@ -3668,6 +3612,7 @@ if (import.meta.client) {
                       :max="130"
                       :step="1"
                       label="Shape A horizontal position"
+                      class="mb-3"
                       thumb-label
                       hide-details
                     />
@@ -3677,6 +3622,7 @@ if (import.meta.client) {
                       :max="100"
                       :step="1"
                       label="Shape A vertical position"
+                      class="mb-3"
                       thumb-label
                       hide-details
                     />
@@ -3686,6 +3632,7 @@ if (import.meta.client) {
                       :max="180"
                       :step="1"
                       label="Shape A rotation"
+                      class="mb-3"
                       thumb-label
                       hide-details
                     />
