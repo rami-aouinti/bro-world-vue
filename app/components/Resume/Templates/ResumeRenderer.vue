@@ -1350,7 +1350,9 @@ function updateText(path: string, value: string) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.1em;
+  width: 1.25em;
+  min-width: 1.25em;
+  line-height: 1;
   color: var(--resume-contact-icon-color, var(--resume-accent, var(--cv-accent)));
   flex-shrink: 0;
   transition: color 0.2s ease;
