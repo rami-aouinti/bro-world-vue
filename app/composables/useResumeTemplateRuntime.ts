@@ -6,6 +6,13 @@ import type { ResumeTemplateConfig } from '~/types/resumeTemplateConfig'
 
 export type ResumeRendererDesignState = {
   themeTokens: Record<string, string>
+  sectionTokens: Record<string, Record<string, string>>
+  profile: {
+    typography: string
+    spacing: string
+    separators: string
+    cards: string
+  }
   roundedClass: string
   textStyleClass: string
   sectionIconStyleVariant: ResumeSectionIconStyleVariant
@@ -44,6 +51,21 @@ export function toResumeRendererDesignState(template: ResumeTemplateConfig): Res
       '--cv-page': skin.colors.page,
       '--resume-text': skin.colors.text,
       '--cv-text': skin.colors.text,
+    },
+    sectionTokens: {
+      experience: { '--resume-section-emphasis': skin.sectionStyle === 'accent' ? skin.colors.accent : skin.colors.text },
+      education: { '--resume-section-emphasis': skin.sectionStyle === 'accent' ? skin.colors.accent : skin.colors.text },
+      project: { '--resume-section-emphasis': skin.sectionStyle === 'soft-block' ? skin.colors.sidebar : skin.colors.text },
+      language: { '--resume-section-emphasis': skin.sectionStyle === 'line' ? skin.colors.accent : skin.colors.text },
+      certification: { '--resume-section-emphasis': skin.sectionStyle === 'line' ? skin.colors.accent : skin.colors.text },
+      hobby: { '--resume-section-emphasis': skin.colors.text },
+      reference: { '--resume-section-emphasis': skin.colors.text },
+    },
+    profile: {
+      typography: skin.typography.family.includes('Merriweather') ? 'classic' : 'neo-grotesk',
+      spacing: skin.radius === '0px' ? 'compact' : 'balanced',
+      separators: skin.sectionStyle,
+      cards: skin.radius === '0px' ? 'flat' : 'soft',
     },
     roundedClass: `radius-${skin.radius.replace('px', '')}`,
     textStyleClass: `text-style-${skin.typography.family.includes('Merriweather') ? 'serif' : 'clean'}`,

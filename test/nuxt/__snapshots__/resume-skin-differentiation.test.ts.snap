@@ -1,0 +1,114 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`resume skin differentiation QA rule > matches snapshot for classic vs executive skin differentiation 1`] = `
+{
+  "classic": {
+    "layoutMode": "no-aside",
+    "profile": {
+      "cards": "flat",
+      "separators": "line",
+      "spacing": "compact",
+      "typography": "classic",
+    },
+    "roundedClass": "radius-0",
+    "sectionIconStyleVariant": "outline",
+    "sectionStyleClass": "section-style-line",
+    "sectionTokens": {
+      "certification": {
+        "--resume-section-emphasis": "#334155",
+      },
+      "education": {
+        "--resume-section-emphasis": "#0f172a",
+      },
+      "experience": {
+        "--resume-section-emphasis": "#0f172a",
+      },
+      "hobby": {
+        "--resume-section-emphasis": "#0f172a",
+      },
+      "language": {
+        "--resume-section-emphasis": "#334155",
+      },
+      "project": {
+        "--resume-section-emphasis": "#0f172a",
+      },
+      "reference": {
+        "--resume-section-emphasis": "#0f172a",
+      },
+    },
+    "textStyleClass": "text-style-serif",
+    "themeTokens": {
+      "--cv-accent": "#334155",
+      "--cv-font-family": "Merriweather, Georgia, serif",
+      "--cv-font-style": "normal",
+      "--cv-font-weight": "400",
+      "--cv-page": "#ffffff",
+      "--cv-radius": "0px",
+      "--cv-sidebar": "#f8fafc",
+      "--cv-text": "#0f172a",
+      "--resume-accent": "#334155",
+      "--resume-font-family": "Merriweather, Georgia, serif",
+      "--resume-font-style": "normal",
+      "--resume-font-weight": "400",
+      "--resume-page": "#ffffff",
+      "--resume-radius": "0px",
+      "--resume-sidebar": "#f8fafc",
+      "--resume-text": "#0f172a",
+    },
+  },
+  "executive": {
+    "layoutMode": "no-aside",
+    "profile": {
+      "cards": "soft",
+      "separators": "accent",
+      "spacing": "balanced",
+      "typography": "neo-grotesk",
+    },
+    "roundedClass": "radius-10",
+    "sectionIconStyleVariant": "filled",
+    "sectionStyleClass": "section-style-accent",
+    "sectionTokens": {
+      "certification": {
+        "--resume-section-emphasis": "#0f172a",
+      },
+      "education": {
+        "--resume-section-emphasis": "#2563eb",
+      },
+      "experience": {
+        "--resume-section-emphasis": "#2563eb",
+      },
+      "hobby": {
+        "--resume-section-emphasis": "#0f172a",
+      },
+      "language": {
+        "--resume-section-emphasis": "#0f172a",
+      },
+      "project": {
+        "--resume-section-emphasis": "#0f172a",
+      },
+      "reference": {
+        "--resume-section-emphasis": "#0f172a",
+      },
+    },
+    "textStyleClass": "text-style-clean",
+    "themeTokens": {
+      "--cv-accent": "#2563eb",
+      "--cv-font-family": "Inter, system-ui, sans-serif",
+      "--cv-font-style": "normal",
+      "--cv-font-weight": "600",
+      "--cv-page": "#eff6ff",
+      "--cv-radius": "10px",
+      "--cv-sidebar": "#0b3a78",
+      "--cv-text": "#0f172a",
+      "--resume-accent": "#2563eb",
+      "--resume-font-family": "Inter, system-ui, sans-serif",
+      "--resume-font-style": "normal",
+      "--resume-font-weight": "600",
+      "--resume-page": "#eff6ff",
+      "--resume-radius": "10px",
+      "--resume-sidebar": "#0b3a78",
+      "--resume-text": "#0f172a",
+    },
+  },
+}
+`;
