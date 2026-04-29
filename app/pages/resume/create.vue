@@ -30,6 +30,7 @@ import { levelToStars, starsToPercent } from '~/utils/resumeLanguageLevel'
 import ResumeRenderer from '~/components/Resume/Templates/ResumeRenderer.vue'
 import ResumeTimelineSectionFields from '~/components/Resume/Create/ResumeTimelineSectionFields.vue'
 import ResumeLevelSectionFields from '~/components/Resume/Create/ResumeLevelSectionFields.vue'
+import ProfileRichTextEditor from '~/components/Resume/Create/ProfileRichTextEditor.vue'
 import {
   isResumeEditableSectionKey,
   type ResumeEditableSectionKey,
@@ -1004,8 +1005,27 @@ function selectValidTemplateForCurrentDocumentType() {
   const fallbackTemplate = templatesByDocumentType.value[0] ?? templates[0]
 
   if (fallbackTemplate) {
-    selectedTemplate.value = fallbackTemplate.id
+    applyTemplateSelection(fallbackTemplate.id)
   }
+}
+
+
+function applyTemplateFromRouteQuery() {
+  const templateFromQuery = Array.isArray(route.query.template)
+    ? route.query.template[0]
+    : route.query.template
+
+  if (typeof templateFromQuery !== 'string') return
+
+  const resolvedTemplateId = resumeTemplateQueryAliases[templateFromQuery] ?? templateFromQuery
+  const exists = templatesByDocumentType.value.some(
+    (template) => template.id === resolvedTemplateId,
+  )
+  const templateId = exists
+    ? resolvedTemplateId
+    : templatesByDocumentType.value[0]?.id ?? templates[0]?.id ?? 'cv-socle-01'
+
+  applyTemplateSelection(templateId)
 }
 
 function hasRemoteSectionContent(sections?: RemoteResumeSection[]) {
@@ -1096,17 +1116,7 @@ onMounted(async () => {
     selectedDocumentType.value = storedDocumentType
   }
 
-  const templateFromQuery = route.query.template
-
-  if (typeof templateFromQuery === 'string') {
-    const resolvedTemplateId = resumeTemplateQueryAliases[templateFromQuery] ?? templateFromQuery
-    const exists = templatesByDocumentType.value.some(
-      (template) => template.id === resolvedTemplateId,
-    )
-    selectedTemplate.value = exists
-      ? resolvedTemplateId
-      : templatesByDocumentType.value[0]?.id ?? templates[0]?.id ?? 'cv-socle-01'
-  }
+  applyTemplateFromRouteQuery()
   selectValidTemplateForCurrentDocumentType()
 
   if (!loggedIn.value) {
@@ -2391,6 +2401,15 @@ watch(selectedDocumentType, (value) => {
   selectValidTemplateForCurrentDocumentType()
   localStorage.setItem(DOCUMENT_TYPE_STORAGE_KEY, value)
 })
+
+
+watch(
+  () => route.query.template,
+  () => {
+    applyTemplateFromRouteQuery()
+    selectValidTemplateForCurrentDocumentType()
+  },
+)
 
 watch(selectedTemplate, () => {
   selectValidTemplateForCurrentDocumentType()
@@ -4034,12 +4053,10 @@ if (import.meta.client) {
           <v-divider />
           <v-card-text class="d-grid ga-3">
             <template v-if="addSectionType === 'profile'">
-              <v-textarea
+              <ProfileRichTextEditor
                 v-model="addSectionDraft.profile.profile"
                 label="Profile summary"
-                rows="6"
-                variant="outlined"
-                hide-details
+                placeholder="Write a short professional summary"
               />
             </template>
 
