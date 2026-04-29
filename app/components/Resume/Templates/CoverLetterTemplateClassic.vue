@@ -71,7 +71,7 @@ const designVars = computed(() => buildCoverDesignVars('cl', props))
 <style scoped>
 .cover-letter-classic { font-family: var(--cl-font-family, 'Inter', 'Segoe UI', sans-serif); font-style: var(--cl-font-style, normal); font-weight: var(--cl-font-weight, 400); background: var(--cl-page); color: var(--cl-text); min-height: 100%; padding: 40px 46px; border-radius: var(--cl-rounded); }
 .cover-letter-classic header { border-bottom: var(--cl-divider-width) var(--cl-divider-style) var(--cl-soft); padding-bottom: 14px; margin-bottom: 24px; }
-.cover-letter-classic h1 { color: var(--cl-accent); font-size: 1.9rem; }
+.cover-letter-classic h1 { color: var(--cl-page); font-size: 1.9rem; }
 .cover-letter-classic__recipient { margin-bottom: 18px; }
 .cover-letter-classic section { display: grid; gap: 12px; line-height: 1.6; }
 </style>

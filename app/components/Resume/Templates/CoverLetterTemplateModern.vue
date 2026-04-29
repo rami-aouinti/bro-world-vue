@@ -68,7 +68,7 @@ const designVars = computed(() => buildCoverDesignVars('cl', props))
 <style scoped>
 .cover-letter-modern { font-family: var(--cl-font-family, 'Inter', 'Segoe UI', sans-serif); font-style: var(--cl-font-style, normal); font-weight: var(--cl-font-weight, 400); min-height: 100%; border-radius: var(--cl-rounded); overflow: hidden; display: grid; grid-template-columns: 240px 1fr; background: var(--cl-page); color: var(--cl-text); }
 .cover-letter-modern aside { background: var(--cl-soft); padding: 30px 22px; display: grid; gap: 8px; align-content: start; }
-.cover-letter-modern h2 { color: var(--cl-accent); }
+.cover-letter-modern h2 { color: var(--cl-page); }
 .cover-letter-modern section { padding: 34px 38px; display: grid; gap: 12px; line-height: 1.6; }
 @media (max-width: 960px) { .cover-letter-modern { grid-template-columns: 1fr; } }
 </style>
