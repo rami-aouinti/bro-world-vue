@@ -63,6 +63,7 @@ const defaultLayout: ResumeRendererLayoutEntry[] = [
   { key: 'education', region: 'main', order: 1 },
   { key: 'project', region: 'main', order: 2 },
   { key: 'language', region: 'aside', order: 0 },
+  { key: 'certification', region: 'aside', order: 1 },
 ]
 
 function withSkin(id: TemplateSkinId, overrides: Partial<ResumeTemplateSkin> = {}): ResumeTemplateSkin {
