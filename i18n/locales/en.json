@@ -3149,6 +3149,87 @@
         "title": "Add signature",
         "clear": "Clear",
         "addToResume": "Add to resume"
+      },
+      "documentType": {
+        "resume": "Resume",
+        "coverPage": "Cover page",
+        "coverLetter": "Cover letter"
+      },
+      "options": {
+        "lineDensity": {
+          "compact": "Compact",
+          "comfortable": "Comfortable"
+        },
+        "sectionDivider": {
+          "line": "Line",
+          "soft": "Soft",
+          "none": "None"
+        },
+        "layoutMode": {
+          "asideLeft": "Aside left",
+          "asideRight": "Aside right",
+          "noAside": "No aside"
+        },
+        "photoPosition": {
+          "left": "Left",
+          "right": "Right"
+        },
+        "sectionIconStyle": {
+          "outline": "Outline",
+          "filled": "Filled",
+          "rounded": "Rounded"
+        },
+        "iconSize": {
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large"
+        },
+        "iconColor": {
+          "accent": "Accent",
+          "neutral": "Neutral"
+        },
+        "shape": {
+          "circle": "Circle",
+          "square": "Square",
+          "ring": "Ring",
+          "bar": "Bar",
+          "diamond": "Diamond",
+          "triangle": "Triangle",
+          "pill": "Pill"
+        },
+        "photoShape": {
+          "portrait": "Portrait",
+          "blob": "Blob",
+          "hex": "Hex",
+          "square": "Square",
+          "rounded": "Rounded",
+          "circle": "Circle"
+        },
+        "addSection": {
+          "profile": "Profile",
+          "experience": "Experience",
+          "education": "Education",
+          "skill": "Skill",
+          "language": "Language",
+          "hobby": "Hobby",
+          "project": "Project",
+          "certification": "Certification",
+          "reference": "Reference"
+        }
+      },
+      "fields": {
+        "skillName": "Skill name",
+        "languageName": "Language name",
+        "projectName": "Project name",
+        "countryCodeOptional": "Country code (optional)",
+        "flagOptional": "Flag (optional)"
+      },
+      "placeholders": {
+        "countryCode": "FR",
+        "flag": "🇫🇷"
+      },
+      "static": {
+        "a4PageEnd": "End of A4 page"
       }
     },
     "meta": {

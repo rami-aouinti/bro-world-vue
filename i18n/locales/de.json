@@ -2916,6 +2916,87 @@
         "title": "Add signature",
         "clear": "Clear",
         "addToResume": "Add to resume"
+      },
+      "documentType": {
+        "resume": "Lebenslauf",
+        "coverPage": "Deckblatt",
+        "coverLetter": "Anschreiben"
+      },
+      "options": {
+        "lineDensity": {
+          "compact": "Kompakt",
+          "comfortable": "Bequem"
+        },
+        "sectionDivider": {
+          "line": "Linie",
+          "soft": "Sanft",
+          "none": "Keine"
+        },
+        "layoutMode": {
+          "asideLeft": "Seitenleiste links",
+          "asideRight": "Seitenleiste rechts",
+          "noAside": "Ohne Seitenleiste"
+        },
+        "photoPosition": {
+          "left": "Links",
+          "right": "Rechts"
+        },
+        "sectionIconStyle": {
+          "outline": "Umriss",
+          "filled": "Gefüllt",
+          "rounded": "Abgerundet"
+        },
+        "iconSize": {
+          "small": "Klein",
+          "medium": "Mittel",
+          "large": "Groß"
+        },
+        "iconColor": {
+          "accent": "Akzent",
+          "neutral": "Neutral"
+        },
+        "shape": {
+          "circle": "Kreis",
+          "square": "Quadrat",
+          "ring": "Ring",
+          "bar": "Balken",
+          "diamond": "Raute",
+          "triangle": "Dreieck",
+          "pill": "Pille"
+        },
+        "photoShape": {
+          "portrait": "Porträt",
+          "blob": "Blob",
+          "hex": "Hexagon",
+          "square": "Quadrat",
+          "rounded": "Abgerundet",
+          "circle": "Kreis"
+        },
+        "addSection": {
+          "profile": "Profil",
+          "experience": "Erfahrung",
+          "education": "Ausbildung",
+          "skill": "Fähigkeit",
+          "language": "Sprache",
+          "hobby": "Hobby",
+          "project": "Projekt",
+          "certification": "Zertifizierung",
+          "reference": "Referenz"
+        }
+      },
+      "fields": {
+        "skillName": "Name der Fähigkeit",
+        "languageName": "Name der Sprache",
+        "projectName": "Projektname",
+        "countryCodeOptional": "Ländercode (optional)",
+        "flagOptional": "Flagge (optional)"
+      },
+      "placeholders": {
+        "countryCode": "FR",
+        "flag": "🇫🇷"
+      },
+      "static": {
+        "a4PageEnd": "Ende der A4-Seite"
       }
     },
     "meta": {

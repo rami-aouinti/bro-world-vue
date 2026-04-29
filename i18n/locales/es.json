@@ -2890,6 +2890,87 @@
         "title": "Add signature",
         "clear": "Clear",
         "addToResume": "Add to resume"
+      },
+      "documentType": {
+        "resume": "Currículum",
+        "coverPage": "Portada",
+        "coverLetter": "Carta de presentación"
+      },
+      "options": {
+        "lineDensity": {
+          "compact": "Compacto",
+          "comfortable": "Cómodo"
+        },
+        "sectionDivider": {
+          "line": "Línea",
+          "soft": "Suave",
+          "none": "Ninguno"
+        },
+        "layoutMode": {
+          "asideLeft": "Lateral izquierda",
+          "asideRight": "Lateral derecha",
+          "noAside": "Sin lateral"
+        },
+        "photoPosition": {
+          "left": "Izquierda",
+          "right": "Derecha"
+        },
+        "sectionIconStyle": {
+          "outline": "Contorno",
+          "filled": "Relleno",
+          "rounded": "Redondeado"
+        },
+        "iconSize": {
+          "small": "Pequeño",
+          "medium": "Mediano",
+          "large": "Grande"
+        },
+        "iconColor": {
+          "accent": "Acento",
+          "neutral": "Neutro"
+        },
+        "shape": {
+          "circle": "Círculo",
+          "square": "Cuadrado",
+          "ring": "Anillo",
+          "bar": "Barra",
+          "diamond": "Diamante",
+          "triangle": "Triángulo",
+          "pill": "Píldora"
+        },
+        "photoShape": {
+          "portrait": "Retrato",
+          "blob": "Blob",
+          "hex": "Hexágono",
+          "square": "Cuadrado",
+          "rounded": "Redondeado",
+          "circle": "Círculo"
+        },
+        "addSection": {
+          "profile": "Perfil",
+          "experience": "Experiencia",
+          "education": "Educación",
+          "skill": "Habilidad",
+          "language": "Idioma",
+          "hobby": "Afición",
+          "project": "Proyecto",
+          "certification": "Certificación",
+          "reference": "Referencia"
+        }
+      },
+      "fields": {
+        "skillName": "Nombre de la habilidad",
+        "languageName": "Nombre del idioma",
+        "projectName": "Nombre del proyecto",
+        "countryCodeOptional": "Código de país (opcional)",
+        "flagOptional": "Bandera (opcional)"
+      },
+      "placeholders": {
+        "countryCode": "FR",
+        "flag": "🇫🇷"
+      },
+      "static": {
+        "a4PageEnd": "Fin de página A4"
       }
     },
     "meta": {
