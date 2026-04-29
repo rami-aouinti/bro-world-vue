@@ -204,8 +204,8 @@ function removeEducationItem(index: number) {
           <v-icon icon="mdi-close" size="14" />
         </v-btn>
         <p class="dates date-column">
-          <span class="date-chip-wrap">
-            <span class="date-chip" role="text">
+          <span class="dates-chip-wrap">
+            <v-chip size="small" color="primary" variant="tonal" class="dates-chip">
           <span
             class="editable-text"
             :class="{ 'date-input-invalid': !isValidResumeDate(item.start) }"
@@ -232,7 +232,7 @@ function removeEducationItem(index: number) {
                 )
             "
             >{{ renderResumeDate(item.end) }}</span
-          ></span>
+          ></v-chip>
           </span>
         </p>
         <div v-if="safeVariant === 'timeline'" class="education-timeline-rail" aria-hidden="true">
