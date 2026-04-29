@@ -441,15 +441,16 @@ const selectedRounded = toRef(designSettings.value, 'selectedRounded')
 const selectedTextStyle = toRef(designSettings.value, 'selectedTextStyle')
 const layoutSettings = designSettings.value.layout
 const levelInputMode = ref<LevelInputMode>('percent')
+const { t } = useI18n()
 
 const DOCUMENT_TYPE_STORAGE_KEY = 'resume-builder:selected-document-type'
 const documentTypeTabOptions: Array<{
   label: string
   value: Template['documentType']
 }> = [
-  { label: 'resume', value: 'resume' },
-  { label: 'cover-page', value: 'cover-page' },
-  { label: 'cover-letter', value: 'cover-letter' },
+  { label: t('resumeBuilder.create.documentType.resume'), value: 'resume' },
+  { label: t('resumeBuilder.create.documentType.coverPage'), value: 'cover-page' },
+  { label: t('resumeBuilder.create.documentType.coverLetter'), value: 'cover-letter' },
 ]
 
 const {
@@ -463,64 +464,64 @@ const {
   textStyleVarsByValue,
 } = useResumeDesignControls()
 const lineDensityOptions = [
-  { label: 'Compact', value: 'compact' },
-  { label: 'Comfortable', value: 'comfortable' },
+  { label: t('resumeBuilder.create.options.lineDensity.compact'), value: 'compact' },
+  { label: t('resumeBuilder.create.options.lineDensity.comfortable'), value: 'comfortable' },
 ] as const
 const sectionDividerStyleOptions = [
-  { label: 'Line', value: 'line' },
-  { label: 'Soft', value: 'soft' },
-  { label: 'None', value: 'none' },
+  { label: t('resumeBuilder.create.options.sectionDivider.line'), value: 'line' },
+  { label: t('resumeBuilder.create.options.sectionDivider.soft'), value: 'soft' },
+  { label: t('resumeBuilder.create.options.sectionDivider.none'), value: 'none' },
 ] as const
 const layoutModeOptions = [
-  { label: 'Aside left', value: 'aside-left' },
-  { label: 'Aside right', value: 'aside-right' },
-  { label: 'No aside', value: 'no-aside' },
+  { label: t('resumeBuilder.create.options.layoutMode.asideLeft'), value: 'aside-left' },
+  { label: t('resumeBuilder.create.options.layoutMode.asideRight'), value: 'aside-right' },
+  { label: t('resumeBuilder.create.options.layoutMode.noAside'), value: 'no-aside' },
 ] as const
 const photoPositionOptions = [
-  { label: 'Left', value: 'left' },
-  { label: 'Right', value: 'right' },
+  { label: t('resumeBuilder.create.options.photoPosition.left'), value: 'left' },
+  { label: t('resumeBuilder.create.options.photoPosition.right'), value: 'right' },
 ] as const
 const sectionIconStyleOptions = [
-  { label: 'Outline', value: 'outline' },
-  { label: 'Filled', value: 'filled' },
-  { label: 'Rounded', value: 'rounded' },
+  { label: t('resumeBuilder.create.options.sectionIconStyle.outline'), value: 'outline' },
+  { label: t('resumeBuilder.create.options.sectionIconStyle.filled'), value: 'filled' },
+  { label: t('resumeBuilder.create.options.sectionIconStyle.rounded'), value: 'rounded' },
 ] as const
 const iconSizeOptions = [
-  { label: 'Small', value: 's' },
-  { label: 'Medium', value: 'm' },
-  { label: 'Large', value: 'l' },
+  { label: t('resumeBuilder.create.options.iconSize.small'), value: 's' },
+  { label: t('resumeBuilder.create.options.iconSize.medium'), value: 'm' },
+  { label: t('resumeBuilder.create.options.iconSize.large'), value: 'l' },
 ] as const
 const iconColorOptions = [
-  { label: 'Accent', value: 'accent' },
-  { label: 'Neutral', value: 'neutral' },
+  { label: t('resumeBuilder.create.options.iconColor.accent'), value: 'accent' },
+  { label: t('resumeBuilder.create.options.iconColor.neutral'), value: 'neutral' },
 ] as const
 const decorativeShapeTypeOptions = [
-  { label: 'Circle', value: 'circle' },
-  { label: 'Square', value: 'square' },
-  { label: 'Ring', value: 'ring' },
-  { label: 'Bar', value: 'bar' },
-  { label: 'Diamond', value: 'diamond' },
-  { label: 'Triangle', value: 'triangle' },
-  { label: 'Pill', value: 'pill' },
+  { label: t('resumeBuilder.create.options.shape.circle'), value: 'circle' },
+  { label: t('resumeBuilder.create.options.shape.square'), value: 'square' },
+  { label: t('resumeBuilder.create.options.shape.ring'), value: 'ring' },
+  { label: t('resumeBuilder.create.options.shape.bar'), value: 'bar' },
+  { label: t('resumeBuilder.create.options.shape.diamond'), value: 'diamond' },
+  { label: t('resumeBuilder.create.options.shape.triangle'), value: 'triangle' },
+  { label: t('resumeBuilder.create.options.shape.pill'), value: 'pill' },
 ] as const
 const photoShapeOptions = [
-  { label: 'Square', value: 'square', icon: '□' },
-  { label: 'Rounded', value: 'rounded', icon: '▢' },
-  { label: 'Circle', value: 'circle', icon: '◯' },
-  { label: 'Portrait', value: 'portrait-card', icon: '▮' },
-  { label: 'Blob', value: 'soft-blob', icon: '⬭' },
-  { label: 'Hex', value: 'hex', icon: '⬢' },
+  { label: t('resumeBuilder.create.options.photoShape.square'), value: 'square', icon: '□' },
+  { label: t('resumeBuilder.create.options.photoShape.rounded'), value: 'rounded', icon: '▢' },
+  { label: t('resumeBuilder.create.options.photoShape.circle'), value: 'circle', icon: '◯' },
+  { label: t('resumeBuilder.create.options.photoShape.portrait'), value: 'portrait-card', icon: '▮' },
+  { label: t('resumeBuilder.create.options.photoShape.blob'), value: 'soft-blob', icon: '⬭' },
+  { label: t('resumeBuilder.create.options.photoShape.hex'), value: 'hex', icon: '⬢' },
 ] as const satisfies ReadonlyArray<PhotoShapeOption>
 const addSectionOptions = [
-  { label: 'Profile', value: 'profile' },
-  { label: 'Experience', value: 'experience' },
-  { label: 'Education', value: 'education' },
-  { label: 'Skill', value: 'skill' },
-  { label: 'Language', value: 'language' },
-  { label: 'Hobby', value: 'hobby' },
-  { label: 'Project', value: 'project' },
-  { label: 'Certification', value: 'certification' },
-  { label: 'Reference', value: 'reference' },
+  { label: t('resumeBuilder.create.options.addSection.profile'), value: 'profile' },
+  { label: t('resumeBuilder.create.options.addSection.experience'), value: 'experience' },
+  { label: t('resumeBuilder.create.options.addSection.education'), value: 'education' },
+  { label: t('resumeBuilder.create.options.addSection.skill'), value: 'skill' },
+  { label: t('resumeBuilder.create.options.addSection.language'), value: 'language' },
+  { label: t('resumeBuilder.create.options.addSection.hobby'), value: 'hobby' },
+  { label: t('resumeBuilder.create.options.addSection.project'), value: 'project' },
+  { label: t('resumeBuilder.create.options.addSection.certification'), value: 'certification' },
+  { label: t('resumeBuilder.create.options.addSection.reference'), value: 'reference' },
 ] as const satisfies ReadonlyArray<{ label: string; value: AddSectionType }>
 const sectionVariantLabels = Object.values(RESUME_SECTION_REGISTRY)
   .flatMap((section) => section.variants)
@@ -1395,7 +1396,6 @@ const safePhotoShape = computed<PhotoShape>(() =>
     : 'square',
 )
 let aiElapsedTimer: ReturnType<typeof setInterval> | null = null
-const { t } = useI18n()
 const { loggedIn, fetch: refreshSession } = useUserSession()
 const remoteResumes = ref<RemoteResume[]>([])
 const selectedRemoteResumeId = ref<string | null>(null)
@@ -4323,7 +4323,7 @@ if (import.meta.client) {
                         <img :src="signatureDataUrl" alt="Signature" />
                       </div>
                     </div>
-                    <div class="resume-page-break-hint">Fin de page A4</div>
+                    <div class="resume-page-break-hint">{{ t('resumeBuilder.create.static.a4PageEnd') }}</div>
                   </div>
                 </div>
               </div>
@@ -4520,7 +4520,7 @@ if (import.meta.client) {
             <template v-else-if="addSectionType === 'skill'">
               <v-text-field
                 v-model="addSectionDraft.skill.name"
-                label="Skill name"
+                :label="t('resumeBuilder.create.fields.skillName')"
                 variant="outlined"
                 hide-details
               />
@@ -4537,22 +4537,22 @@ if (import.meta.client) {
             <template v-else-if="addSectionType === 'language'">
               <v-text-field
                 v-model="addSectionDraft.language.name"
-                label="Language name"
+                :label="t('resumeBuilder.create.fields.languageName')"
                 variant="outlined"
                 hide-details
               />
               <v-text-field
                 v-model="addSectionDraft.language.countryCode"
-                label="Country code (optional)"
-                placeholder="FR"
+                :label="t('resumeBuilder.create.fields.countryCodeOptional')"
+                :placeholder="t('resumeBuilder.create.placeholders.countryCode')"
                 maxlength="2"
                 variant="outlined"
                 hide-details
               />
               <v-text-field
                 v-model="addSectionDraft.language.flag"
-                label="Flag (optional)"
-                placeholder="🇫🇷"
+                :label="t('resumeBuilder.create.fields.flagOptional')"
+                :placeholder="t('resumeBuilder.create.placeholders.flag')"
                 variant="outlined"
                 hide-details
               />
@@ -4578,7 +4578,7 @@ if (import.meta.client) {
             <template v-else-if="addSectionType === 'project'">
               <v-text-field
                 v-model="addSectionDraft.project.name"
-                label="Project name"
+                :label="t('resumeBuilder.create.fields.projectName')"
                 variant="outlined"
                 hide-details
               />
@@ -4929,22 +4929,22 @@ if (import.meta.client) {
             <template v-else-if="activeSectionKey === 'language'">
               <v-text-field
                 v-model="sectionItemDraft.language.name"
-                label="Language name"
+                :label="t('resumeBuilder.create.fields.languageName')"
                 variant="outlined"
                 hide-details
               />
               <v-text-field
                 v-model="sectionItemDraft.language.countryCode"
-                label="Country code (optional)"
-                placeholder="FR"
+                :label="t('resumeBuilder.create.fields.countryCodeOptional')"
+                :placeholder="t('resumeBuilder.create.placeholders.countryCode')"
                 maxlength="2"
                 variant="outlined"
                 hide-details
               />
               <v-text-field
                 v-model="sectionItemDraft.language.flag"
-                label="Flag (optional)"
-                placeholder="🇫🇷"
+                :label="t('resumeBuilder.create.fields.flagOptional')"
+                :placeholder="t('resumeBuilder.create.placeholders.flag')"
                 variant="outlined"
                 hide-details
               />
@@ -4969,7 +4969,7 @@ if (import.meta.client) {
             <template v-else-if="activeSectionKey === 'project'">
               <v-text-field
                 v-model="sectionItemDraft.project.name"
-                label="Project name"
+                :label="t('resumeBuilder.create.fields.projectName')"
                 variant="outlined"
                 hide-details
               />
