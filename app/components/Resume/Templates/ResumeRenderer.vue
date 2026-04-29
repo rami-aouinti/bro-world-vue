@@ -572,6 +572,7 @@ function updateText(path: string, value: string) {
           <span
             class="editable-text resume-skin__text"
             :contenteditable="editable"
+            dir="ltr"
             @input="
               (event) =>
                 updateText('firstName', (event.target as HTMLElement).innerText)
@@ -581,6 +582,7 @@ function updateText(path: string, value: string) {
           <span
             class="editable-text resume-skin__text mx-3"
             :contenteditable="editable"
+            dir="ltr"
             @input="
               (event) =>
                 updateText('lastName', (event.target as HTMLElement).innerText)
@@ -591,6 +593,7 @@ function updateText(path: string, value: string) {
         <p
           class="editable-text resume-skin__text"
           :contenteditable="editable"
+          dir="ltr"
           @input="
             (event) =>
               updateText('role', (event.target as HTMLElement).innerText)
