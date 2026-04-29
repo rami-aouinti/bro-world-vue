@@ -54,6 +54,12 @@ type Language = {
   flag?: string
 }
 type ContentStyle = 'paragraph' | 'points' | 'dashes' | 'timeline'
+type ExperienceContentStyle =
+  | 'paragraph'
+  | 'bullets'
+  | 'dashes'
+  | 'timeline'
+  | 'timeline-note'
 type TimelineEvent = { label: string; detail: string }
 type Experience = {
   role: string
@@ -64,7 +70,6 @@ type Experience = {
   end: string
   contentStyle?: ExperienceContentStyle
   bullets: string[]
-  contentStyle?: ContentStyle
   points?: string[]
   dashes?: string[]
   timelineEvents?: TimelineEvent[]
@@ -72,11 +77,6 @@ type Experience = {
   timelineDateRange?: string
   timelineDescription?: string
 }
-type ExperienceContentStyle =
-  | 'paragraph'
-  | 'bullets'
-  | 'dashes'
-  | 'timeline-note'
 type Education = {
   degree: string
   school: string
@@ -944,7 +944,7 @@ const resume = reactive<ResumeModel>({
       city: 'New York',
       start: 'JAN 2018',
       end: 'DEC 2020',
-      contentStyle: 'points',
+      contentStyle: 'bullets',
       bullets: [
         'Offered literary suggestions based on customer needs and preferences.',
         'Followed directions from supervisors and managed projects with precision.',
@@ -963,7 +963,7 @@ const resume = reactive<ResumeModel>({
       city: 'New York',
       start: 'JAN 2016',
       end: 'DEC 2017',
-      contentStyle: 'points',
+      contentStyle: 'bullets',
       bullets: [
         'Assisted senior editors with clerical and administrative tasks.',
         'Suggested story ideas and supported content planning meetings.',
@@ -1406,7 +1406,7 @@ const createExperienceDraft = () => ({
   start: '',
   end: '',
   bullets: '',
-  contentStyle: 'points' as ContentStyle,
+  contentStyle: 'bullets' as ExperienceContentStyle,
 })
 const createSectionItemExperienceDraft = () => ({
   role: '',
@@ -1570,7 +1570,7 @@ function applyBuilderResumeData(
       start: experience.start,
       end: experience.end,
       bullets: [...experience.bullets],
-      contentStyle: 'points',
+      contentStyle: 'bullets',
       points: [...experience.bullets],
     }))
   }
@@ -1833,6 +1833,16 @@ function parseTimelineEvents(value: string): TimelineEvent[] {
   })
 }
 
+function normalizeExperienceContentStyle(
+  style?: ExperienceContentStyle | ContentStyle,
+): ExperienceContentStyle {
+  if (style === 'points' || style === 'bullets' || !style) return 'bullets'
+  if (style === 'timeline') return 'timeline'
+  if (style === 'timeline-note') return 'timeline-note'
+  if (style === 'dashes') return 'dashes'
+  return 'paragraph'
+}
+
 function applyContentFields(
   model: {
     contentStyle?: ContentStyle
@@ -1856,10 +1866,10 @@ function applyContentFields(
     model.contentStyle === 'timeline' ? parsedTimelineEvents : []
 }
 
-function changeExperienceContentStyle(index: number, nextStyle: ContentStyle) {
+function changeExperienceContentStyle(index: number, nextStyle: ExperienceContentStyle) {
   const experience = resume.experiences[index]
   const currentText = getExperienceBullets(index)
-  experience.contentStyle = nextStyle
+  experience.contentStyle = normalizeExperienceContentStyle(nextStyle)
   setExperienceBullets(index, currentText)
 }
 
@@ -1882,10 +1892,8 @@ function setExperienceBullets(index: number, value: string) {
   const parsedLines = parseMultilineList(value)
   const parsedParagraph = splitParagraphToList(value)
   experience.bullets = parsedLines
-  if (!experience.contentStyle) {
-    experience.contentStyle = 'points'
-  }
-  if (experience.contentStyle === 'points') {
+  experience.contentStyle = normalizeExperienceContentStyle(experience.contentStyle)
+  if (experience.contentStyle === 'bullets') {
     experience.points = parsedLines
   }
   if (experience.contentStyle === 'paragraph') {
@@ -1894,19 +1902,20 @@ function setExperienceBullets(index: number, value: string) {
   if (experience.contentStyle === 'dashes') {
     experience.dashes = parsedLines
   }
-  if (experience.contentStyle === 'timeline') {
+  if (experience.contentStyle === 'timeline' || experience.contentStyle === 'timeline-note') {
     experience.timelineEvents = parseTimelineEvents(value)
   }
 }
 
 const getExperienceBullets = (index: number) =>
-  resume.experiences[index].contentStyle === 'timeline'
+  normalizeExperienceContentStyle(resume.experiences[index].contentStyle) === 'timeline' ||
+  normalizeExperienceContentStyle(resume.experiences[index].contentStyle) === 'timeline-note'
     ? (resume.experiences[index].timelineEvents || [])
         .map((event) => [event.label, event.detail].filter(Boolean).join(' | '))
         .join('\n')
-    : resume.experiences[index].contentStyle === 'paragraph'
+    : normalizeExperienceContentStyle(resume.experiences[index].contentStyle) === 'paragraph'
       ? (resume.experiences[index].points || []).join(' ')
-      : (resume.experiences[index].contentStyle === 'dashes'
+      : (normalizeExperienceContentStyle(resume.experiences[index].contentStyle) === 'dashes'
           ? resume.experiences[index].dashes || []
           : resume.experiences[index].points?.length
             ? resume.experiences[index].points
@@ -1963,7 +1972,7 @@ function addExperience() {
     city: '',
     start: '',
     end: '',
-    contentStyle: 'points',
+    contentStyle: 'bullets',
     bullets: [],
     points: [],
     dashes: [],
@@ -2248,7 +2257,7 @@ function submitAddSection() {
           start: addSectionDraft.experience.start,
           end: addSectionDraft.experience.end,
           bullets: parseMultilineList(addSectionDraft.experience.bullets),
-          contentStyle: addSectionDraft.experience.contentStyle,
+          contentStyle: normalizeExperienceContentStyle(addSectionDraft.experience.contentStyle),
         }
         applyContentFields(experience, addSectionDraft.experience.bullets)
         resume.experiences.push(experience)
@@ -2363,7 +2372,7 @@ function submitSectionItemDialog() {
           start: sectionItemDraft.experience.start,
           end: sectionItemDraft.experience.end,
           bullets: parseMultilineList(sectionItemDraft.experience.bullets),
-          contentStyle: sectionItemDraft.experience.contentStyle,
+          contentStyle: normalizeExperienceContentStyle(sectionItemDraft.experience.contentStyle),
         }
         applyContentFields(experience, sectionItemDraft.experience.bullets)
         item = experience
@@ -2706,13 +2715,40 @@ watch(
 )
 
 const previewStyle = computed(() => ({
+  '--resume-radius': roundedPxByValue[selectedRounded.value],
   '--cv-radius': roundedPxByValue[selectedRounded.value],
+  '--resume-font-family': textStyleVarsByValue[selectedTextStyle.value].family,
   '--cv-font-family': textStyleVarsByValue[selectedTextStyle.value].family,
+  '--resume-font-style': textStyleVarsByValue[selectedTextStyle.value].style,
   '--cv-font-style': textStyleVarsByValue[selectedTextStyle.value].style,
+  '--resume-font-weight': textStyleVarsByValue[selectedTextStyle.value].weight,
   '--cv-font-weight': textStyleVarsByValue[selectedTextStyle.value].weight,
+  '--resume-sidebar': activeTheme.value.sidebar,
   '--cv-sidebar': activeTheme.value.sidebar,
+  '--resume-accent': activeTheme.value.accent,
   '--cv-accent': activeTheme.value.accent,
+  '--resume-page': activePageBackground.value.page,
   '--cv-page': activePageBackground.value.page,
+  '--resume-title': bestAaTextColor(
+    activePageBackground.value.page,
+    activeTheme.value.accent,
+    4.5,
+  ),
+  '--resume-secondary': bestAaTextColor(
+    activePageBackground.value.page,
+    activeTheme.value.sidebar,
+    4.5,
+  ),
+  '--resume-on-sidebar': bestAaTextColor(
+    activeTheme.value.sidebar,
+    activePageBackground.value.page,
+    4.5,
+  ),
+  '--resume-on-accent': bestAaTextColor(
+    activeTheme.value.accent,
+    activePageBackground.value.page,
+    4.5,
+  ),
   '--cv-title': bestAaTextColor(
     activePageBackground.value.page,
     activeTheme.value.accent,
@@ -2850,8 +2886,8 @@ async function buildResumePdfBlob() {
           .preview-grid .cv-sidebar-surface,
           .cv-page-shell .resume-skin__aside,
           .cv-page-shell .cv-sidebar-surface {
-            background: var(--cv-sidebar) !important;
-            background-color: var(--cv-sidebar) !important;
+            background: var(--resume-sidebar, var(--cv-sidebar)) !important;
+            background-color: var(--resume-sidebar, var(--cv-sidebar)) !important;
           }
           .preview-grid,
           .cv-page-shell { min-height: auto !important; border-radius: 0 !important; }
@@ -3092,7 +3128,7 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
         .split(/\n|•|-/g)
         .map((bullet) => bullet.trim())
         .filter(Boolean),
-      contentStyle: 'points',
+      contentStyle: 'bullets',
       points: String(experience.description || '')
         .split(/\n|•|-/g)
         .map((bullet) => bullet.trim())
@@ -5781,7 +5817,7 @@ if (import.meta.client) {
 }
 
 .preview-sidebar {
-  background: var(--cv-sidebar);
+  background: var(--resume-sidebar, var(--cv-sidebar));
   color: #fff;
   padding: 28px 24px;
 }

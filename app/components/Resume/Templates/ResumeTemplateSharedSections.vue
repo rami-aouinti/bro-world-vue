@@ -312,33 +312,33 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
 
 <style scoped>
 @import '~/assets/styles/flag-icons.scss';
-/* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page), var(--cv-secondary) (+ color-mix). */
-.shared-extra { font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif); font-style: var(--cv-font-style, normal); font-weight: var(--cv-font-weight, 400);
-  --shared-panel-bg: color-mix(in srgb, var(--cv-page) 92%, var(--cv-sidebar));
-  --shared-panel-text: var(--cv-secondary);
-  --shared-panel-border: color-mix(in srgb, var(--cv-accent) 20%, var(--cv-page));
-  --shared-title-color: var(--cv-title, var(--cv-accent));
+/* Theme convention: use only var(--resume-sidebar, var(--cv-sidebar)), var(--resume-accent, var(--cv-accent)), var(--resume-page, var(--cv-page)), var(--resume-secondary, var(--cv-secondary)) (+ color-mix). */
+.shared-extra { font-family: var(--resume-font-family, var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif)); font-style: var(--resume-font-style, var(--cv-font-style, normal)); font-weight: var(--resume-font-weight, var(--cv-font-weight, 400));
+  --shared-panel-bg: color-mix(in srgb, var(--resume-page, var(--cv-page)) 92%, var(--resume-sidebar, var(--cv-sidebar)));
+  --shared-panel-text: var(--resume-secondary, var(--cv-secondary));
+  --shared-panel-border: color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 20%, var(--resume-page, var(--cv-page)));
+  --shared-title-color: var(--cv-title, var(--resume-accent, var(--cv-accent)));
   margin-top: 0;
-  border-top: 1px solid color-mix(in srgb, var(--cv-accent) 22%, var(--cv-page));
+  border-top: 1px solid color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 22%, var(--resume-page, var(--cv-page)));
   color: var(--shared-panel-text);
   border-inline: 1px solid var(--shared-panel-border);
   border-bottom: 1px solid var(--shared-panel-border);
-  border-radius: 0 0 var(--cv-radius, 14px) var(--cv-radius, 14px);
+  border-radius: 0 0 var(--resume-radius, var(--cv-radius, 14px)) var(--resume-radius, var(--cv-radius, 14px));
   padding: 16px;
   display: grid;
   gap: 14px;
 }
 .shared-extra--light {
-  --shared-panel-bg: color-mix(in srgb, var(--cv-page) 95%, var(--cv-sidebar));
+  --shared-panel-bg: color-mix(in srgb, var(--resume-page, var(--cv-page)) 95%, var(--resume-sidebar, var(--cv-sidebar)));
 }
 .shared-extra--dark {
-  --shared-panel-bg: color-mix(in srgb, var(--cv-page) 86%, var(--cv-sidebar));
-  --shared-panel-text: var(--cv-secondary);
-  --shared-panel-border: color-mix(in srgb, var(--cv-accent) 24%, var(--cv-page));
-  --shared-title-color: var(--cv-title, var(--cv-accent));
+  --shared-panel-bg: color-mix(in srgb, var(--resume-page, var(--cv-page)) 86%, var(--resume-sidebar, var(--cv-sidebar)));
+  --shared-panel-text: var(--resume-secondary, var(--cv-secondary));
+  --shared-panel-border: color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 24%, var(--resume-page, var(--cv-page)));
+  --shared-title-color: var(--cv-title, var(--resume-accent, var(--cv-accent)));
 }
 .shared-extra--auto {
-  --shared-panel-bg: color-mix(in srgb, var(--cv-page) 90%, var(--cv-sidebar));
+  --shared-panel-bg: color-mix(in srgb, var(--resume-page, var(--cv-page)) 90%, var(--resume-sidebar, var(--cv-sidebar)));
 }
 
 .shared-extra {
@@ -412,17 +412,17 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .project-card {
-  border: 1px solid color-mix(in srgb, var(--cv-accent) 22%, transparent);
+  border: 1px solid color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 22%, transparent);
   border-radius: 10px;
   padding: 10px;
 }
 .project-card--soft {
-  background: color-mix(in srgb, var(--cv-page) 96%, var(--cv-sidebar));
+  background: color-mix(in srgb, var(--resume-page, var(--cv-page)) 96%, var(--resume-sidebar, var(--cv-sidebar)));
 }
 .shared-section {
   position: relative;
 }
 .editable-text[contenteditable='true'] { outline: 1px dashed transparent; border-radius: 4px; transition: outline-color .2s ease; }
 .editable-text[contenteditable='true']:hover,
-.editable-text[contenteditable='true']:focus { outline-color: color-mix(in srgb, var(--cv-accent) 42%, transparent); }
+.editable-text[contenteditable='true']:focus { outline-color: color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 42%, transparent); }
 </style>

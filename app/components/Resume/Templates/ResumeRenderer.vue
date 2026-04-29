@@ -351,8 +351,8 @@ const resolvedSectionIconStyle = computed(() => {
     resolvedDesignState.value.sectionIconStyleVariant ?? style.variant
   const iconSizeByVariant = { s: 16, m: 18, l: 22 } as const
   const iconColorByMode = {
-    accent: 'var(--cv-accent)',
-    neutral: 'var(--cv-secondary)',
+    accent: 'var(--resume-accent, var(--cv-accent))',
+    neutral: 'var(--resume-secondary, var(--cv-secondary))',
   } as const
 
   return {
@@ -373,8 +373,8 @@ const contactIconSize = computed(() => {
 })
 const contactIconColor = computed(() =>
   resolvedDesignState.value.iconColorMode === 'neutral'
-    ? 'var(--cv-secondary)'
-    : 'var(--cv-accent)',
+    ? 'var(--resume-secondary, var(--cv-secondary))'
+    : 'var(--resume-accent, var(--cv-accent))',
 )
 const sectionIconCssVars = computed<Record<string, string>>(() => ({
   '--resume-section-icon-size': `${resolvedSectionIconStyle.value.size}px`,
@@ -1213,15 +1213,15 @@ function updateText(path: string, value: string) {
   --cv-space-7: var(--cv-space-7, 28px);
   --cv-space-8: var(--cv-space-8, 32px);
   --cv-space-9: var(--cv-space-9, 36px);
-  --cv-border-soft: color-mix(in srgb, var(--cv-secondary) 20%, transparent);
-  --cv-border-strong: color-mix(in srgb, var(--cv-accent) 24%, transparent);
-  --cv-surface-soft: color-mix(in srgb, var(--cv-page) 78%, transparent);
-  --cv-shadow-soft: color-mix(in srgb, var(--cv-sidebar) 12%, transparent);
-  --cv-progress-bg: color-mix(in srgb, var(--cv-accent) 22%, var(--cv-page));
+  --cv-border-soft: color-mix(in srgb, var(--resume-secondary, var(--cv-secondary)) 20%, transparent);
+  --cv-border-strong: color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 24%, transparent);
+  --cv-surface-soft: color-mix(in srgb, var(--resume-page, var(--cv-page)) 78%, transparent);
+  --cv-shadow-soft: color-mix(in srgb, var(--resume-sidebar, var(--cv-sidebar)) 12%, transparent);
+  --cv-progress-bg: color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 22%, var(--resume-page, var(--cv-page)));
 
-  font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif);
-  font-style: var(--cv-font-style, normal);
-  font-weight: var(--cv-font-weight, 400);
+  font-family: var(--resume-font-family, var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif));
+  font-style: var(--resume-font-style, var(--cv-font-style, normal));
+  font-weight: var(--resume-font-weight, var(--cv-font-weight, 400));
   padding: 18px;
   position: relative;
   overflow: hidden;
@@ -1281,12 +1281,12 @@ function updateText(path: string, value: string) {
 .resume-skin__header-contact {
   font-size: 0.9rem;
   opacity: 0.8;
-  margin-top: var(--cv-space-2);
+  margin-top: var(--resume-space-2, var(--cv-space-2));
 }
 .resume-skin__contact-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--cv-space-2) var(--cv-space-4);
+  gap: var(--resume-space-2, var(--cv-space-2)) var(--resume-space-4, var(--cv-space-4));
 }
 .resume-contact-section {
   position: relative;
@@ -1298,7 +1298,7 @@ function updateText(path: string, value: string) {
 .resume-skin__contact-item {
   display: inline-flex;
   align-items: center;
-  gap: var(--cv-space-2);
+  gap: var(--resume-space-2, var(--cv-space-2));
   min-width: 0;
   position: relative;
 }
@@ -1327,8 +1327,8 @@ function updateText(path: string, value: string) {
 }
 
 .resume-skin__contact-icon {
-  color: var(--resume-contact-icon-color, var(--cv-accent));
-  margin-right: var(--cv-space-1);
+  color: var(--resume-contact-icon-color, var(--resume-accent, var(--cv-accent)));
+  margin-right: var(--resume-space-1, var(--cv-space-1));
   transition: color 0.2s ease;
 }
 .photo-frame {
@@ -1342,7 +1342,7 @@ function updateText(path: string, value: string) {
   position: relative;
   z-index: 1;
   border-style: solid;
-  border-color: color-mix(in srgb, var(--cv-accent) 28%, var(--cv-page));
+  border-color: color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 28%, var(--resume-page, var(--cv-page)));
 }
 
 .photo-frame:hover :deep(.avatar-overlay-controls),
@@ -1359,18 +1359,18 @@ function updateText(path: string, value: string) {
 }
 .progress {
   height: 4px;
-  background: var(--cv-progress-bg);
-  margin-top: var(--cv-space-1);
+  background: var(--resume-progress-bg, var(--cv-progress-bg));
+  margin-top: var(--resume-space-1, var(--cv-space-1));
 }
 .progress i {
   display: block;
   height: 100%;
-  background: var(--cv-accent);
+  background: var(--resume-accent, var(--cv-accent));
 }
 .resume-skin__main,
 .resume-skin__aside {
   display: grid;
-  gap: var(--resume-section-gap, var(--cv-space-3));
+  gap: var(--resume-section-gap, var(--resume-space-3, var(--cv-space-3)));
   padding: var(--resume-column-padding, 0);
 }
 
@@ -1386,7 +1386,7 @@ function updateText(path: string, value: string) {
   grid-area: aside;
   height: var(--resume-sidebar-height, 100%);
   --resume-aside-text-color: #fff;
-  --resume-aside-decor-color: var(--cv-secondary);
+  --resume-aside-decor-color: var(--resume-secondary, var(--cv-secondary));
   color: var(--resume-aside-text-color);
 }
 
@@ -1430,7 +1430,7 @@ function updateText(path: string, value: string) {
 
 .resume-skin__aside :deep(.experience .entry) {
   grid-template-columns: minmax(86px, 110px) minmax(0, 1fr);
-  column-gap: var(--cv-space-2);
+  column-gap: var(--resume-space-2, var(--cv-space-2));
 }
 
 .layout-mode-aside-left {
@@ -1458,11 +1458,11 @@ function updateText(path: string, value: string) {
 .resume-skin__no-aside-columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--cv-space-4);
+  gap: var(--resume-space-4, var(--cv-space-4));
 }
 .resume-skin__no-aside-columns > div + div {
-  border-left: 1px solid color-mix(in srgb, var(--cv-accent) 22%, transparent);
-  padding-left: var(--cv-space-4);
+  border-left: 1px solid color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 22%, transparent);
+  padding-left: var(--resume-space-4, var(--cv-space-4));
 }
 
 .layout-mode-no-aside :deep(.project-grid--two-column),
@@ -1474,7 +1474,7 @@ function updateText(path: string, value: string) {
 .layout-mode-no-aside :deep(.education .entry),
 .layout-mode-no-aside :deep(.project-section .entry) {
   grid-template-columns: minmax(0, 1fr);
-  row-gap: var(--cv-space-2);
+  row-gap: var(--resume-space-2, var(--cv-space-2));
 }
 
 .density-compact {
@@ -1504,15 +1504,15 @@ function updateText(path: string, value: string) {
 .divider-line :deep(.resume-section),
 .divider-line .resume-skin__main > section,
 .divider-line .resume-skin__aside > section {
-  border-bottom: 1px solid var(--cv-border-soft);
-  padding-bottom: calc(var(--cv-space-2) + var(--cv-space-1) / 2);
+  border-bottom: 1px solid var(--resume-border-soft, var(--cv-border-soft));
+  padding-bottom: calc(var(--resume-space-2, var(--cv-space-2)) + var(--resume-space-1, var(--cv-space-1)) / 2);
 }
 
 .divider-thick :deep(.resume-section),
 .divider-thick .resume-skin__main > section,
 .divider-thick .resume-skin__aside > section {
-  border-bottom: 2px solid var(--cv-border-strong);
-  padding-bottom: var(--cv-space-3);
+  border-bottom: 2px solid var(--resume-border-strong, var(--cv-border-strong));
+  padding-bottom: var(--resume-space-3, var(--cv-space-3));
 }
 
 .divider-none :deep(.resume-section),
