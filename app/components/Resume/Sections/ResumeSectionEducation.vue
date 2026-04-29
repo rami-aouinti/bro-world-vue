@@ -408,11 +408,14 @@ function removeEducationItem(index: number) {
 }
 .entry-heading {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--cv-space-2);
+  min-width: 0;
 }
 .entry-heading h4 {
   margin: 0;
+  line-height: var(--cv-body-line-height);
+  overflow-wrap: anywhere;
 }
 .school-logo {
   flex-shrink: 0;
