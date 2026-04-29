@@ -103,6 +103,11 @@ export type ResumeStylePreferences = {
 export type ResumeDocumentModel = {
   templateId: 'cv-socle'
   presetId: string
+  template: {
+    structureId: string
+    layoutId: string
+    skinId: string
+  }
   sectionOrder: ResumeSectionLayoutModel[]
   style: ResumeStylePreferences
 }
