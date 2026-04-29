@@ -266,6 +266,20 @@ type Template = {
   isFree: boolean
   useTimeline: boolean
   variant: string
+  presetId: string
+  config?: Partial<{
+    photoShape: PhotoShape
+    photoSize: number
+    photoBorderWidth: number
+    photoPosition: 'left' | 'right'
+    layoutMode: ResumeLayoutMode
+    lineDensity: 'compact' | 'comfortable'
+    sectionDividerStyle: 'none' | 'line' | 'soft'
+    sectionIconStyle: ResumeSectionIconStyleVariant
+    iconSize: 's' | 'm' | 'l'
+    iconColor: 'accent' | 'neutral'
+    sidebarWidth: number
+  }>
 }
 
 type LevelInputMode = 'percent' | 'stars'
@@ -400,7 +414,7 @@ const createDefaultDesignSettings = (): DesignSettings => ({
   },
 })
 const builderPanelState = reactive({
-  selectedTemplate: 'cv-socle',
+  selectedTemplate: 'cv-socle-01',
   selectedPreset: CV_SOCLE_PRESETS[0]?.id ?? 'socle-classic',
   selectedDocumentType: 'resume' as Template['documentType'],
   designSettings: createDefaultDesignSettings(),
@@ -689,23 +703,41 @@ function normalizeSectionLayout(
     }
   })
 }
-const templates: Template[] = [
-  {
-    id: 'cv-socle',
-    title: 'Socle CV',
-    subtitle: 'Template unique piloté par presets visuels',
-    image: '/img/cv/cv-1.png',
-    documentType: 'resume',
-    hasPhoto: true,
-    isTwoColumn: true,
-    isAts: true,
-    hasDocx: true,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: DEFAULT_RESUME_TEMPLATE_ID,
-  },
-]
+const resumeTemplateCards = [
+  { id: 'cv-socle-01', title: 'Urban Classic', subtitle: 'Mise en page professionnelle et stable', image: '/img/cv/cv-1.png', presetId: 'socle-classic' },
+  { id: 'cv-socle-02', title: 'Compact ATS', subtitle: 'Version optimisée lecture ATS', image: '/img/cv/cv-2.png', presetId: 'socle-compact', config: { lineDensity: 'compact', photoSize: 118, photoShape: 'rounded' } },
+  { id: 'cv-socle-03', title: 'Modern Soft', subtitle: 'Style moderne sans aside', image: '/img/cv/cv-3.png', presetId: 'socle-modern', config: { layoutMode: 'no-aside', sectionDividerStyle: 'none' } },
+  { id: 'cv-socle-04', title: 'Executive Prime', subtitle: 'Rendu premium avec hiérarchie forte', image: '/img/cv/cv-4.png', presetId: 'socle-executive', config: { photoShape: 'portrait-card', photoBorderWidth: 4 } },
+  { id: 'cv-socle-05', title: 'Blue Formal', subtitle: 'Palette bleue avec sidebar claire', image: '/img/cv/cv-5.png', presetId: 'socle-classic', config: { photoPosition: 'right', sectionIconStyle: 'outline' } },
+  { id: 'cv-socle-06', title: 'Graphite Lean', subtitle: 'Design compact et neutre', image: '/img/cv/cv-1.png', presetId: 'socle-compact', config: { iconColor: 'neutral', iconSize: 's', sidebarWidth: 248 } },
+  { id: 'cv-socle-07', title: 'Skyline Focus', subtitle: 'Profil centré, structure aérée', image: '/img/cv/cv-2.png', presetId: 'socle-modern', config: { photoShape: 'soft-blob', photoSize: 132 } },
+  { id: 'cv-socle-08', title: 'Royal Editorial', subtitle: 'Lecture éditoriale avec sections marquées', image: '/img/cv/cv-3.png', presetId: 'socle-executive', config: { sectionDividerStyle: 'line', iconSize: 'm' } },
+  { id: 'cv-socle-09', title: 'Monochrome Pro', subtitle: 'Contraste doux orienté ATS', image: '/img/cv/cv-4.png', presetId: 'socle-compact', config: { photoShape: 'square', sectionIconStyle: 'filled' } },
+  { id: 'cv-socle-10', title: 'Minimal Signal', subtitle: 'Équilibre minimal et lisible', image: '/img/cv/cv-5.png', presetId: 'socle-modern', config: { sectionDividerStyle: 'soft', lineDensity: 'comfortable' } },
+  { id: 'cv-socle-11', title: 'Cobalt Edge', subtitle: 'Accent fort avec photo mise en avant', image: '/img/cv/cv-1.png', presetId: 'socle-classic', config: { photoSize: 150, photoBorderWidth: 7 } },
+  { id: 'cv-socle-12', title: 'Studio Compact', subtitle: 'Double colonne resserrée', image: '/img/cv/cv-2.png', presetId: 'socle-compact', config: { layoutMode: 'aside-right', sidebarWidth: 242 } },
+  { id: 'cv-socle-13', title: 'Aero Modern', subtitle: 'Mode no-aside orienté contenu', image: '/img/cv/cv-3.png', presetId: 'socle-modern', config: { layoutMode: 'no-aside', photoPosition: 'left' } },
+  { id: 'cv-socle-14', title: 'Boardroom', subtitle: 'Présentation sobre pour rôles seniors', image: '/img/cv/cv-4.png', presetId: 'socle-executive', config: { lineDensity: 'compact', iconColor: 'accent' } },
+  { id: 'cv-socle-15', title: 'Balanced Serif', subtitle: 'Typographie équilibrée et sections nettes', image: '/img/cv/cv-5.png', presetId: 'socle-classic', config: { sectionDividerStyle: 'soft', iconSize: 'm' } },
+  { id: 'cv-socle-16', title: 'Tech Ledger', subtitle: 'Template technique à icônes discrètes', image: '/img/cv/cv-1.png', presetId: 'socle-compact', config: { iconColor: 'neutral', sectionIconStyle: 'outline' } },
+  { id: 'cv-socle-17', title: 'Orbit Clean', subtitle: 'Mise en page claire avec photo ronde', image: '/img/cv/cv-2.png', presetId: 'socle-modern', config: { photoShape: 'circle', photoSize: 126 } },
+  { id: 'cv-socle-18', title: 'Summit Purple', subtitle: 'Accent premium pour candidatures management', image: '/img/cv/cv-3.png', presetId: 'socle-executive', config: { sidebarWidth: 292, photoPosition: 'right' } },
+  { id: 'cv-socle-19', title: 'Atlas Right', subtitle: 'Colonne à droite et lecture rapide', image: '/img/cv/cv-4.png', presetId: 'socle-classic', config: { layoutMode: 'aside-right', lineDensity: 'compact' } },
+  { id: 'cv-socle-20', title: 'Nova Portfolio', subtitle: 'Design polyvalent pour profils créatifs', image: '/img/cv/cv-5.png', presetId: 'socle-modern', config: { photoShape: 'hex', sectionIconStyle: 'rounded' } },
+] as const
+
+const templates: Template[] = resumeTemplateCards.map((template) => ({
+  ...template,
+  documentType: 'resume',
+  hasPhoto: true,
+  isTwoColumn: template.config?.layoutMode !== 'no-aside',
+  isAts: true,
+  hasDocx: true,
+  isCustomized: true,
+  isFree: true,
+  useTimeline: false,
+  variant: DEFAULT_RESUME_TEMPLATE_ID,
+}))
 
 const resume = reactive<ResumeModel>({
   role: 'Communication Specialist',
@@ -925,7 +957,24 @@ const designMenuSupportsAsideWidth = computed(
 )
 
 function applyTemplateSelection(_templateId: string) {
-  selectedTemplate.value = "cv-socle"
+  const nextTemplate = templates.find((template) => template.id === _templateId)
+  if (!nextTemplate) return
+  selectedTemplate.value = nextTemplate.id
+  selectedPreset.value = nextTemplate.presetId
+
+  const config = nextTemplate.config
+  if (!config) return
+  if (config.photoShape) selectedPhotoShape.value = config.photoShape
+  if (config.photoSize) layoutSettings.photoSize = config.photoSize
+  if (config.photoBorderWidth) layoutSettings.photoBorderWidth = config.photoBorderWidth
+  if (config.photoPosition) layoutSettings.photoPosition = config.photoPosition
+  if (config.layoutMode) layoutSettings.layoutMode = config.layoutMode
+  if (config.lineDensity) layoutSettings.lineDensity = config.lineDensity
+  if (config.sectionDividerStyle) layoutSettings.sectionDividerStyle = config.sectionDividerStyle
+  if (config.sectionIconStyle) layoutSettings.sectionIconStyle = config.sectionIconStyle
+  if (config.iconSize) layoutSettings.iconSize = config.iconSize
+  if (config.iconColor) layoutSettings.iconColor = config.iconColor
+  if (config.sidebarWidth) layoutSettings.sidebarWidth = config.sidebarWidth
 }
 
 const templateShapeTypeCycle: DecorativeShapeType[] = ['circle', 'ring', 'square', 'bar', 'diamond', 'triangle', 'pill']
@@ -1035,7 +1084,9 @@ onMounted(async () => {
     const exists = templatesByDocumentType.value.some(
       (template) => template.id === templateFromQuery,
     )
-    selectedTemplate.value = exists ? 'cv-socle' : 'cv-socle'
+    selectedTemplate.value = exists
+      ? templateFromQuery
+      : templatesByDocumentType.value[0]?.id ?? templates[0]?.id ?? 'cv-socle-01'
   }
   selectValidTemplateForCurrentDocumentType()
 
