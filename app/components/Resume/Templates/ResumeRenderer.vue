@@ -1428,6 +1428,11 @@ function updateText(path: string, value: string) {
   color: var(--resume-aside-decor-color) !important;
 }
 
+.resume-skin__aside :deep(.experience .entry) {
+  grid-template-columns: minmax(86px, 110px) minmax(0, 1fr);
+  column-gap: var(--cv-space-2);
+}
+
 .layout-mode-aside-left {
   grid-template-columns: var(--resume-sidebar-width, 280px) minmax(0, 1fr);
   grid-template-areas: 'aside main';
