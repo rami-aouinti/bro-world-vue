@@ -320,7 +320,7 @@ function removeSkill(index: number) {
   padding-left: 20px;
   position: relative;
   border-bottom: var(--rs-section-separator, none);
-  padding-bottom: var(--rs-section-padding-bottom, 0);
+  padding-bottom: calc(var(--rs-section-padding-bottom, 0px) + var(--rs-extra-line-offset, 0px));
 }
 
 .cv-heading-section {

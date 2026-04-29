@@ -502,7 +502,7 @@ function removeProject(index: number) {
 
   position: relative;
   border-bottom: var(--rs-section-separator, none);
-  padding-bottom: var(--rs-section-padding-bottom, 0);
+  padding-bottom: calc(var(--rs-section-padding-bottom, 0px) + var(--rs-extra-line-offset, 0px));
 }
 .cv-heading-section {
   display: inline-flex;
