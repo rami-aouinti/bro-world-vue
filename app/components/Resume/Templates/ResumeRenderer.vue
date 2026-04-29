@@ -98,6 +98,7 @@ const props = withDefaults(
     iconColorMode?: 'accent' | 'neutral'
     layoutMode?: ResumeLayoutMode
     templateSkin: ResumeTemplateSkin
+    templateId?: string
   }>(),
   {
     editable: false,
