@@ -521,12 +521,12 @@ const addSectionOptions = [
 const sectionVariantLabels = Object.values(RESUME_SECTION_REGISTRY)
   .flatMap((section) => section.variants)
   .reduce<Record<string, string>>((accumulator, option) => {
-    accumulator[option.value] = option.label
+    accumulator[option.value] = t(option.labelKey)
     return accumulator
   }, {})
 const resumeContentStyleSelectItems = RESUME_CONTENT_STYLE_OPTIONS.map(
   (option) => ({
-    label: option.label,
+    label: t(option.labelKey),
     value: option.value,
   }),
 )
@@ -537,19 +537,19 @@ const sectionConfig: {
   }
 } = {
   experience: {
-    label: 'Experience',
+    label: t('resumeBuilder.create.options.addSection.experience'),
     collection: 'experiences',
   },
   education: {
-    label: 'Education',
+    label: t('resumeBuilder.create.options.addSection.education'),
     collection: 'education',
   },
   language: {
-    label: 'Language',
+    label: t('resumeBuilder.create.options.addSection.language'),
     collection: 'languages',
   },
   project: {
-    label: 'Project',
+    label: t('resumeBuilder.create.options.addSection.project'),
     collection: 'projects',
   },
 }
@@ -1738,10 +1738,10 @@ function validateHttpRepositoryUrl(value?: string) {
     return (
       parsed.protocol === 'http:' ||
       parsed.protocol === 'https:' ||
-      'Repository URL must start with http:// or https://'
+      t('resumeBuilder.create.validation.repositoryUrlProtocol')
     )
   } catch {
-    return 'Repository URL must be a valid URL (http/https).'
+    return t('resumeBuilder.create.validation.repositoryUrlInvalid')
   }
 }
 
@@ -3344,7 +3344,7 @@ function syncWithProvider(provider: 'Xing' | 'LinkedIn') {
 
 async function runAiCreate() {
   if (!aiProfilePrompt.value.trim()) {
-    aiActionError.value = 'Please provide a short summary before running AI.'
+    aiActionError.value = t('resumeBuilder.create.messages.aiSummaryRequired')
     return
   }
 

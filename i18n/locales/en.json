@@ -3119,7 +3119,16 @@
         "resumeReplaced": "Resume replaced successfully.",
         "resumeCreated": "New resume created successfully.",
         "resumeReplaceFailed": "Failed to replace resume.",
-        "resumeCreateFailed": "Failed to create resume."
+        "resumeCreateFailed": "Failed to create resume.",
+        "aiSummaryRequired": "Please provide a short summary before running AI."
+      },
+      "validation": {
+        "repositoryUrlProtocol": "Repository URL must start with http:// or https://",
+        "repositoryUrlInvalid": "Repository URL must be a valid URL (http/https).",
+        "logoInvalidFormat": "Invalid file format. Use PNG, JPEG, WEBP, or SVG.",
+        "logoFileTooLarge": "File is too large (max 2MB).",
+        "logoReadFailed": "Unable to read logo file.",
+        "logoLoadFailed": "Unable to load this logo."
       },
       "previewFallback": {
         "profileTitle": "Profile",
@@ -3215,6 +3224,40 @@
           "project": "Project",
           "certification": "Certification",
           "reference": "Reference"
+        }
+      },
+      "registry": {
+        "sections": {
+          "experience": "Experience",
+          "education": "Education",
+        "language": "Language",
+          "project": "Project",
+          "skill": "Skill",
+          "reference": "Reference",
+          "hobby": "Hobby",
+          "certification": "Certification"
+        },
+        "contentStyles": {
+          "points": "Points",
+          "dashes": "Dashes",
+          "timeline": "Timeline"
+        },
+        "variants": {
+          "detailed": "Detailed",
+          "bullets": "Bullets",
+          "compact": "Compact",
+          "classic": "Classic",
+          "twoColumns": "Two columns",
+          "textLevel": "Text level",
+          "stars": "Stars",
+          "progressLine": "Progress line",
+          "progressCircle": "Progress circle",
+          "flags": "Flags",
+          "list": "List",
+          "cards": "Cards",
+          "dots": "Dots",
+          "progress": "Progress",
+          "timeline": "Timeline"
         }
       },
       "fields": {
