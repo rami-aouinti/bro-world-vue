@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import DateRangeChip from '~/components/Resume/DateRangeChip.vue'
 import {
   RESUME_CONTENT_STYLE_OPTIONS,
   getSectionRegistryEntry,
 } from '~/constants/resumeSectionRegistry'
 import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
-import { formatResumeMonthYear } from '~/utils/resumeDateFormat'
 
 const props = withDefaults(
   defineProps<{
@@ -89,10 +89,6 @@ function updateText(path: string, value: unknown) {
     target = target[segment]
   }
   target[last] = value
-}
-
-function updateDateText(path: string, value: string) {
-  updateText(path, formatResumeMonthYear(value))
 }
 
 function resolveContentStyle(item: Record<string, unknown>) {
@@ -199,33 +195,13 @@ function removeExperience(index: number) {
       </v-btn>
       <div class="date-column dates">
         <div class="dates-chip-wrap">
-          <v-chip size="small" color="primary" variant="tonal" class="dates-chip">
-            <span
-              class="editable-text"
-              :contenteditable="editable"
-              @input="
-                (event) =>
-                  updateDateText(
-                    `experiences.${index}.start`,
-                    (event.target as HTMLElement).innerText,
-                  )
-              "
-              >{{ formatResumeMonthYear(experience.start) }}</span
-            >
-            -
-            <span
-              class="editable-text"
-              :contenteditable="editable"
-              @input="
-                (event) =>
-                  updateDateText(
-                    `experiences.${index}.end`,
-                    (event.target as HTMLElement).innerText,
-                  )
-              "
-              >{{ formatResumeMonthYear(experience.end) }}</span
-            >
-          </v-chip>
+          <DateRangeChip
+            :start="experience.start"
+            :end="experience.end"
+            :editable="editable"
+            @update:start="(value) => updateText(`experiences.${index}.start`, value)"
+            @update:end="(value) => updateText(`experiences.${index}.end`, value)"
+          />
         </div>
         <h4 class="text-dark experience-heading">
           <span
@@ -457,15 +433,6 @@ function removeExperience(index: number) {
 .entry .date-column > .dates-chip-wrap {
   margin: var(--entry-title-to-date-gap) 0 0;
 }
-.dates-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 10px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--cv-accent) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--cv-accent) 24%, transparent);
-}
 .content-column > h4 {
   margin: 0;
 }
@@ -505,15 +472,6 @@ function removeExperience(index: number) {
   }
 }
 
-@media print {
-  .dates-chip {
-    background-color: color-mix(in srgb, var(--cv-accent) 18%, white) !important;
-    color: color-mix(in srgb, var(--cv-accent) 78%, #0f2f64) !important;
-    border: 1px solid color-mix(in srgb, var(--cv-accent) 35%, white) !important;
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
-  }
-}
 .entry li,
 .entry p,
 .entry strong {

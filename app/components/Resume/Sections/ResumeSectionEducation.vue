@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import DateRangeChip from '~/components/Resume/DateRangeChip.vue'
 import {
   RESUME_CONTENT_STYLE_OPTIONS,
   getSectionRegistryEntry,
 } from '~/constants/resumeSectionRegistry'
 import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
-import { formatResumeMonthYear } from '~/utils/resumeDateFormat'
 
 const props = withDefaults(
   defineProps<{
@@ -100,10 +100,6 @@ function updateText(path: string, value: unknown) {
   }
   target[last] = value
 }
-function updateDateText(path: string, value: string) {
-  updateText(path, formatResumeMonthYear(value))
-}
-
 function resolveContentStyle(item: Record<string, unknown>) {
   return item.contentStyle === 'dashes' || item.contentStyle === 'timeline'
     ? item.contentStyle
@@ -195,32 +191,13 @@ function removeEducationItem(index: number) {
         </v-btn>
         <div class="date-column dates">
           <span class="dates-chip-wrap">
-            <v-chip size="small" color="primary" variant="tonal" class="dates-chip">
-          <span
-            class="editable-text"
-                        :contenteditable="editable"
-            @input="
-              (event) =>
-                updateDateText(
-                  `education.${index}.start`,
-                  (event.target as HTMLElement).innerText,
-                )
-            "
-            >{{ formatResumeMonthYear(item.start) }}</span
-          >
-          -
-          <span
-            class="editable-text"
-                        :contenteditable="editable"
-            @input="
-              (event) =>
-                updateDateText(
-                  `education.${index}.end`,
-                  (event.target as HTMLElement).innerText,
-                )
-            "
-            >{{ formatResumeMonthYear(item.end) }}</span
-          ></v-chip>
+            <DateRangeChip
+              :start="item.start"
+              :end="item.end"
+              :editable="editable"
+              @update:start="(value) => updateText(`education.${index}.start`, value)"
+              @update:end="(value) => updateText(`education.${index}.end`, value)"
+            />
           </span>
         </div>
         <div v-if="safeVariant === 'timeline'" class="education-timeline-rail" aria-hidden="true">
@@ -425,15 +402,6 @@ function removeEducationItem(index: number) {
   margin: var(--entry-title-to-date-gap) 0 0;
 }
 
-.date-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 10px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--cv-accent) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--cv-accent) 24%, transparent);
-}
 .content-column {
   position: relative;
   min-width: 0;
