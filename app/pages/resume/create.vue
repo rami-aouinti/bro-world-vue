@@ -9,6 +9,7 @@ import { CV_SOCLE_PRESETS, resolveSoclePresetById, resolveSocleThemeTokens } fro
 import {
   type ResumeLayoutMode,
   type ResumeSectionIconStyleVariant,
+  type ResumeTemplateSkin,
   resolveTemplateSkin,
 } from '~/constants/resumeTemplateSkins'
 import {
@@ -16,6 +17,7 @@ import {
   RESUME_SECTION_REGISTRY,
   type ResumeContentStyle,
 } from '~/constants/resumeSectionRegistry'
+import type { ResumeSoclePreset } from '~/types/resumeSoclePreset'
 import { useResumeDesignControls } from '~/composables/useResumeDesignControls'
 import { useResumeDocumentState } from '~/composables/useResumeDocumentState'
 import { useResumeContentNormalization, type TimelineEvent } from '~/composables/resume/useResumeContentNormalization'
@@ -915,7 +917,7 @@ const selectedTemplateConfig = computed(
     templates[0],
 )
 
-const selectedSoclePreset = computed(() => resolveSoclePresetById(selectedPreset.value))
+const selectedSoclePreset = computed<ResumeSoclePreset>(() => resolveSoclePresetById(selectedPreset.value))
 const selectedPhotoShape = ref<string>('square')
 
 const soclePresetOptions = computed(() =>
@@ -1165,7 +1167,14 @@ onMounted(async () => {
 const templateSupportsPhoto = computed(
   () => selectedTemplateConfig.value.hasPhoto,
 )
-const selectedRendererSkin = computed(() => resolveTemplateSkin(selectedTemplate.value))
+const selectedTemplateSkin = computed<ResumeTemplateSkin>(() => resolveTemplateSkin(selectedTemplate.value))
+const rendererTemplateSkin = computed<ResumeTemplateSkin>(() => {
+  const skin = selectedTemplateSkin.value
+  if (!skin.wrapperClass || !skin.mainClass || !skin.asideClass) {
+    throw new Error('[resume/create] Invalid template skin: missing wrapperClass/mainClass/asideClass')
+  }
+  return skin
+})
 const {
   state: resumeDocumentState,
   hydrateFromStorage,
@@ -3883,7 +3892,7 @@ if (import.meta.client) {
                           :on-photo-shape-select="
                             (shape) => (selectedPhotoShape = shape)
                           "
-                          :template-skin="selectedRendererSkin"
+                          :template-skin="rendererTemplateSkin"
                           editable
                           @add-item="addItemToPreviewSection"
                           @change-variant="setSectionVariant"
@@ -4825,7 +4834,7 @@ if (import.meta.client) {
                         (shape) => (selectedPhotoShape = shape)
                       "
                       :on-photo-click="onPreviewPhotoClick"
-                      :template-skin="selectedRendererSkin"
+                      :template-skin="rendererTemplateSkin"
                       editable
                       @add-item="addItemToPreviewSection"
                       @change-variant="setSectionVariant"
