@@ -433,7 +433,7 @@ const builderPanelState = reactive({
     structureId: 'structure-professional' as Template['structureId'],
     layoutId: 'layout-aside-left' as Template['layoutId'],
     skinId: 'skin-ocean',
-    mode: 'recommended' as 'recommended' | 'filtered',
+    mode: 'filtered' as 'recommended' | 'filtered',
     search: '',
   },
 })
@@ -724,28 +724,50 @@ function normalizeSectionLayout(
     }
   })
 }
-const resumeTemplateCards = [
-  { id: 'cv-socle-01', title: 'Urban Classic', subtitle: 'Mise en page professionnelle et stable', image: '/img/cv/cv-1.png', presetId: 'socle-classic' },
-  { id: 'cv-socle-02', title: 'Compact ATS', subtitle: 'Version optimisée lecture ATS', image: '/img/cv/cv-2.png', presetId: 'socle-compact', config: { lineDensity: 'compact', photoSize: 118, photoShape: 'rounded' } },
-  { id: 'cv-socle-03', title: 'Modern Soft', subtitle: 'Style moderne sans aside', image: '/img/cv/cv-3.png', presetId: 'socle-modern', config: { layoutMode: 'no-aside', sectionDividerStyle: 'none' } },
-  { id: 'cv-socle-04', title: 'Executive Prime', subtitle: 'Rendu premium avec hiérarchie forte', image: '/img/cv/cv-4.png', presetId: 'socle-executive', config: { photoShape: 'portrait-card', photoBorderWidth: 4 } },
-  { id: 'cv-socle-05', title: 'Blue Formal', subtitle: 'Palette bleue avec sidebar claire', image: '/img/cv/cv-5.png', presetId: 'socle-classic', config: { photoPosition: 'right', sectionIconStyle: 'outline' } },
-  { id: 'cv-socle-06', title: 'Graphite Lean', subtitle: 'Design compact et neutre', image: '/img/cv/cv-1.png', presetId: 'socle-compact', config: { iconColor: 'neutral', iconSize: 's', sidebarWidth: 248 } },
-  { id: 'cv-socle-07', title: 'Skyline Focus', subtitle: 'Profil centré, structure aérée', image: '/img/cv/cv-2.png', presetId: 'socle-modern', config: { photoShape: 'soft-blob', photoSize: 132 } },
-  { id: 'cv-socle-08', title: 'Royal Editorial', subtitle: 'Lecture éditoriale avec sections marquées', image: '/img/cv/cv-3.png', presetId: 'socle-executive', config: { sectionDividerStyle: 'line', iconSize: 'm' } },
-  { id: 'cv-socle-09', title: 'Monochrome Pro', subtitle: 'Contraste doux orienté ATS', image: '/img/cv/cv-4.png', presetId: 'socle-compact', config: { photoShape: 'square', sectionIconStyle: 'filled' } },
-  { id: 'cv-socle-10', title: 'Minimal Signal', subtitle: 'Équilibre minimal et lisible', image: '/img/cv/cv-5.png', presetId: 'socle-modern', config: { sectionDividerStyle: 'soft', lineDensity: 'comfortable' } },
-  { id: 'cv-socle-11', title: 'Cobalt Edge', subtitle: 'Accent fort avec photo mise en avant', image: '/img/cv/cv-1.png', presetId: 'socle-classic', config: { photoSize: 150, photoBorderWidth: 7 } },
-  { id: 'cv-socle-12', title: 'Studio Compact', subtitle: 'Double colonne resserrée', image: '/img/cv/cv-2.png', presetId: 'socle-compact', config: { layoutMode: 'aside-right', sidebarWidth: 242 } },
-  { id: 'cv-socle-13', title: 'Aero Modern', subtitle: 'Mode no-aside orienté contenu', image: '/img/cv/cv-3.png', presetId: 'socle-modern', config: { layoutMode: 'no-aside', photoPosition: 'left' } },
-  { id: 'cv-socle-14', title: 'Boardroom', subtitle: 'Présentation sobre pour rôles seniors', image: '/img/cv/cv-4.png', presetId: 'socle-executive', config: { lineDensity: 'compact', iconColor: 'accent' } },
-  { id: 'cv-socle-15', title: 'Balanced Serif', subtitle: 'Typographie équilibrée et sections nettes', image: '/img/cv/cv-5.png', presetId: 'socle-classic', config: { sectionDividerStyle: 'soft', iconSize: 'm' } },
-  { id: 'cv-socle-16', title: 'Tech Ledger', subtitle: 'Template technique à icônes discrètes', image: '/img/cv/cv-1.png', presetId: 'socle-compact', config: { iconColor: 'neutral', sectionIconStyle: 'outline' } },
-  { id: 'cv-socle-17', title: 'Orbit Clean', subtitle: 'Mise en page claire avec photo ronde', image: '/img/cv/cv-2.png', presetId: 'socle-modern', config: { photoShape: 'circle', photoSize: 126 } },
-  { id: 'cv-socle-18', title: 'Summit Purple', subtitle: 'Accent premium pour candidatures management', image: '/img/cv/cv-3.png', presetId: 'socle-executive', config: { sidebarWidth: 292, photoPosition: 'right' } },
-  { id: 'cv-socle-19', title: 'Atlas Right', subtitle: 'Colonne à droite et lecture rapide', image: '/img/cv/cv-4.png', presetId: 'socle-classic', config: { layoutMode: 'aside-right', lineDensity: 'compact' } },
-  { id: 'cv-socle-20', title: 'Nova Portfolio', subtitle: 'Design polyvalent pour profils créatifs', image: '/img/cv/cv-5.png', presetId: 'socle-modern', config: { photoShape: 'hex', sectionIconStyle: 'rounded' } },
+const layoutBlueprints = [
+  { structureId: 'structure-professional', layoutId: 'layout-aside-left', layoutMode: 'aside-left' as ResumeLayoutMode, suffix: 'Pro Left', config: {} },
+  { structureId: 'structure-professional', layoutId: 'layout-aside-right', layoutMode: 'aside-right' as ResumeLayoutMode, suffix: 'Pro Right', config: { layoutMode: 'aside-right' as ResumeLayoutMode } },
+  { structureId: 'structure-professional', layoutId: 'layout-single-column', layoutMode: 'no-aside' as ResumeLayoutMode, suffix: 'Pro Single', config: { layoutMode: 'no-aside' as ResumeLayoutMode } },
+  { structureId: 'structure-balanced', layoutId: 'layout-aside-left', layoutMode: 'aside-left' as ResumeLayoutMode, suffix: 'Balanced Left', config: {} },
+  { structureId: 'structure-balanced', layoutId: 'layout-aside-right', layoutMode: 'aside-right' as ResumeLayoutMode, suffix: 'Balanced Right', config: { layoutMode: 'aside-right' as ResumeLayoutMode } },
+  { structureId: 'structure-balanced', layoutId: 'layout-single-column', layoutMode: 'no-aside' as ResumeLayoutMode, suffix: 'Balanced Single', config: { layoutMode: 'no-aside' as ResumeLayoutMode } },
+  { structureId: 'structure-compact', layoutId: 'layout-aside-left', layoutMode: 'aside-left' as ResumeLayoutMode, suffix: 'Compact Left', config: { lineDensity: 'compact' as const, sidebarWidth: 248 } },
+  { structureId: 'structure-compact', layoutId: 'layout-aside-right', layoutMode: 'aside-right' as ResumeLayoutMode, suffix: 'Compact Right', config: { layoutMode: 'aside-right' as ResumeLayoutMode, lineDensity: 'compact' as const, sidebarWidth: 248 } },
+  { structureId: 'structure-compact', layoutId: 'layout-single-column', layoutMode: 'no-aside' as ResumeLayoutMode, suffix: 'Compact Single', config: { layoutMode: 'no-aside' as ResumeLayoutMode, lineDensity: 'compact' as const } },
 ] as const
+
+const skinBlueprints = [
+  { key: 'classic', title: 'Classique', subtitle: 'Style classique équilibré', image: '/img/cv/cv-1.png', presetId: 'socle-classic', config: { sectionIconStyle: 'outline' as ResumeSectionIconStyleVariant } },
+  { key: 'compact', title: 'Compact ATS', subtitle: 'Version optimisée lecture ATS', image: '/img/cv/cv-2.png', presetId: 'socle-compact', config: { photoShape: 'rounded' as PhotoShape, iconSize: 's' as const } },
+  { key: 'modern', title: 'Modern Soft', subtitle: 'Style moderne lisible', image: '/img/cv/cv-3.png', presetId: 'socle-modern', config: { photoShape: 'soft-blob' as PhotoShape, sectionDividerStyle: 'soft' as const } },
+  { key: 'executive', title: 'Executive Prime', subtitle: 'Rendu premium hiérarchisé', image: '/img/cv/cv-4.png', presetId: 'socle-executive', config: { photoShape: 'portrait-card' as PhotoShape, photoBorderWidth: 4 } },
+  { key: 'blue', title: 'Blue Formal', subtitle: 'Palette bleue professionnelle', image: '/img/cv/cv-5.png', presetId: 'socle-classic', config: { photoPosition: 'right' as const, iconColor: 'accent' as const } },
+  { key: 'graphite', title: 'Graphite Lean', subtitle: 'Design compact et neutre', image: '/img/cv/cv-1.png', presetId: 'socle-compact', config: { iconColor: 'neutral' as const, sectionIconStyle: 'filled' as ResumeSectionIconStyleVariant } },
+  { key: 'skyline', title: 'Skyline Focus', subtitle: 'Profil centré et aéré', image: '/img/cv/cv-2.png', presetId: 'socle-modern', config: { photoShape: 'circle' as PhotoShape, photoSize: 132 } },
+  { key: 'royal', title: 'Royal Editorial', subtitle: 'Accent éditorial affirmé', image: '/img/cv/cv-3.png', presetId: 'socle-executive', config: { sectionDividerStyle: 'line' as const, iconSize: 'm' as const } },
+  { key: 'mono', title: 'Monochrome Pro', subtitle: 'Contraste doux orienté ATS', image: '/img/cv/cv-4.png', presetId: 'socle-compact', config: { photoShape: 'square' as PhotoShape, lineDensity: 'compact' as const } },
+  { key: 'minimal', title: 'Minimal Signal', subtitle: 'Equilibre minimal et lisible', image: '/img/cv/cv-5.png', presetId: 'socle-modern', config: { sectionDividerStyle: 'none' as const, sectionIconStyle: 'rounded' as ResumeSectionIconStyleVariant } },
+] as const
+
+const resumeTemplateCards = layoutBlueprints.flatMap((layout, layoutIndex) =>
+  skinBlueprints.map((skin, skinIndex) => {
+    const id = `cv-socle-${String(layoutIndex * skinBlueprints.length + skinIndex + 1).padStart(2, '0')}`
+    return {
+      id,
+      title: `${skin.title} · ${layout.suffix}`,
+      subtitle: `${skin.subtitle} — ${layout.suffix}`,
+      image: skin.image,
+      presetId: skin.presetId,
+      structureId: layout.structureId,
+      layoutId: layout.layoutId,
+      skinId: `skin-${skin.key}`,
+      config: {
+        ...layout.config,
+        ...skin.config,
+      },
+    }
+  }),
+) as const
 
 const templates: Template[] = resumeTemplateCards.map((template) => ({
   ...template,
@@ -758,17 +780,9 @@ const templates: Template[] = resumeTemplateCards.map((template) => ({
   isFree: true,
   useTimeline: false,
   variant: DEFAULT_RESUME_TEMPLATE_ID,
-  structureId: template.presetId === 'socle-compact'
-    ? 'structure-compact'
-    : template.presetId === 'socle-modern'
-      ? 'structure-balanced'
-      : 'structure-professional',
-  layoutId: template.config?.layoutMode === 'no-aside'
-    ? 'layout-single-column'
-    : template.config?.layoutMode === 'aside-right'
-      ? 'layout-aside-right'
-      : 'layout-aside-left',
-  skinId: `skin-${template.id.replace('cv-socle-', '')}`,
+  structureId: template.structureId,
+  layoutId: template.layoutId,
+  skinId: template.skinId,
   badges: [
     'ATS',
     template.config?.layoutMode === 'no-aside' ? '1-col' : '2-col',
@@ -988,7 +1002,7 @@ const filteredTemplates = computed(() => {
 const skinFilterOptions = computed(() =>
   templatesByDocumentType.value
     .map((template) => ({ label: template.title, value: template.skinId }))
-    .slice(0, 10),
+    ,
 )
 
 const selectedTemplateConfig = computed(
