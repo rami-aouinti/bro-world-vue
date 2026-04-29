@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { levelToPercent, levelToStars, levelToText } from '~/utils/resumeLanguageLevel'
+import { resolveLanguageFallback, resolveLanguageFlagClass, resolveLanguageFlagSrc } from '~/utils/resumeLanguageFlags'
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 
 type SharedSectionKey =
@@ -76,42 +77,6 @@ function isVisible(section: SharedSectionKey) {
 function levelToStarsText(level: number | string) {
   const stars = levelToStars(level)
   return `${'★'.repeat(stars)}${'☆'.repeat(5 - stars)}`
-}
-
-function toFlagEmoji(countryCode: string) {
-  const normalized = countryCode.trim().toUpperCase()
-  if (!/^[A-Z]{2}$/.test(normalized)) return ''
-  return normalized
-    .split('')
-    .map(char => String.fromCodePoint(127397 + char.charCodeAt(0)))
-    .join('')
-}
-
-
-function isImageFlag(flagValue: string) {
-  return /^(https?:\/\/|\/|data:image\/)/i.test(flagValue)
-}
-
-function resolveLanguageFlagSrc(language: Record<string, unknown>) {
-  const explicitFlag = String(language.flag || '').trim()
-  if (explicitFlag && isImageFlag(explicitFlag)) return explicitFlag
-  const countryCode = String(language.countryCode || '').trim()
-  if (!countryCode) return ''
-  return `/images/flags/${countryCode.toLowerCase()}.svg`
-}
-
-function resolveLanguageFlagClass(language: Record<string, unknown>) {
-  const countryCode = String(language.countryCode || '').trim().toLowerCase()
-  if (!/^[a-z]{2}$/.test(countryCode)) return ''
-  return `fi fi-${countryCode}`
-}
-
-function resolveLanguageFlag(language: Record<string, unknown>) {
-  const explicitFlag = String(language.flag || '').trim()
-  if (explicitFlag) return explicitFlag
-  const countryCode = String(language.countryCode || '').trim()
-  const emojiFlag = toFlagEmoji(countryCode)
-  return emojiFlag || ''
 }
 
 const languageVariant = computed<'text-level' | 'stars' | 'progress' | 'flags'>(() => {
@@ -203,7 +168,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
                 :aria-label="`${language.name} flag`"
                 role="img"
               />
-              <span v-else-if="resolveLanguageFlag(language)" class="language-flag">{{ resolveLanguageFlag(language) }}</span>
+              <span v-else-if="resolveLanguageFallback(language)" class="language-flag">{{ resolveLanguageFallback(language) }}</span>
               <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
             </div>
             <small>{{ levelToText(language.level) }} · {{ levelToStarsText(language.level) }}</small>
