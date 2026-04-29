@@ -12,6 +12,8 @@ export type ResumeToolbarAction =
   | 'move-down'
   | 'style-panel'
   | 'delete-section'
+  | 'line-minus'
+  | 'line-plus'
 
 export type ResumeContentStyle = 'points' | 'dashes' | 'timeline'
 
@@ -77,6 +79,8 @@ export const RESUME_SECTION_REGISTRY: Record<
       'move-up',
       'move-down',
       'style-panel',
+      'line-minus',
+      'line-plus',
       'delete-section',
     ],
     formFields: [
@@ -105,6 +109,8 @@ export const RESUME_SECTION_REGISTRY: Record<
       'move-up',
       'move-down',
       'style-panel',
+      'line-minus',
+      'line-plus',
       'delete-section',
     ],
     formFields: [
@@ -133,6 +139,8 @@ export const RESUME_SECTION_REGISTRY: Record<
       'move-up',
       'move-down',
       'style-panel',
+      'line-minus',
+      'line-plus',
       'delete-section',
     ],
     formFields: ['name', 'level', 'countryCode', 'flag'],
@@ -152,6 +160,8 @@ export const RESUME_SECTION_REGISTRY: Record<
       'move-up',
       'move-down',
       'style-panel',
+      'line-minus',
+      'line-plus',
       'delete-section',
     ],
     formFields: [
@@ -179,6 +189,8 @@ export const RESUME_SECTION_REGISTRY: Record<
       'move-up',
       'move-down',
       'style-panel',
+      'line-minus',
+      'line-plus',
       'delete-section',
     ],
     formFields: ['name', 'level'],
@@ -198,6 +210,8 @@ export const RESUME_SECTION_REGISTRY: Record<
       'move-up',
       'move-down',
       'style-panel',
+      'line-minus',
+      'line-plus',
       'delete-section',
     ],
     formFields: ['name', 'company', 'email', 'phone'],
@@ -217,6 +231,8 @@ export const RESUME_SECTION_REGISTRY: Record<
       'move-up',
       'move-down',
       'style-panel',
+      'line-minus',
+      'line-plus',
       'delete-section',
     ],
     formFields: ['name'],
@@ -236,6 +252,8 @@ export const RESUME_SECTION_REGISTRY: Record<
       'move-up',
       'move-down',
       'style-panel',
+      'line-minus',
+      'line-plus',
       'delete-section',
     ],
     formFields: ['title', 'school', 'start', 'end'],

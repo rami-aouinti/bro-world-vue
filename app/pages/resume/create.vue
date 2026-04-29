@@ -2347,8 +2347,27 @@ const previewDesignClasses = computed(() => Object.values(designClassMap.value))
 const activeRoundedClass = computed(() => designClassMap.value.rounded)
 const activeTextStyleClass = computed(() => designClassMap.value.textStyle)
 const previewExportRef = ref<HTMLElement | null>(null)
+const previewPageShellRef = ref<HTMLElement | null>(null)
 const rendererReady = ref(true)
 const rendererError = ref<string | null>(null)
+const measuredPreviewHeight = ref(0)
+const measuredPageCount = ref(1)
+const measuredLastPageUsage = ref(100)
+const A4_PREVIEW_HEIGHT = 1123
+
+function recalculatePreviewPagination() {
+  if (!import.meta.client || !previewPageShellRef.value) return
+  const nextHeight = Math.ceil(previewPageShellRef.value.getBoundingClientRect().height)
+  measuredPreviewHeight.value = nextHeight
+  const pages = Math.max(1, Math.ceil(nextHeight / A4_PREVIEW_HEIGHT))
+  measuredPageCount.value = pages
+  const lastPageHeight = nextHeight - (pages - 1) * A4_PREVIEW_HEIGHT
+  measuredLastPageUsage.value = Math.max(0, Math.min(100, Math.round((lastPageHeight / A4_PREVIEW_HEIGHT) * 100)))
+}
+
+const previewPaginationHint = computed(
+  () => `PDF: ${measuredPageCount.value} page(s) • ${measuredPreviewHeight.value}px • last page ${measuredLastPageUsage.value}%`,
+)
 
 const previewFallbackSections = computed(() => {
   const sections: Array<{ title: string; items: string[] }> = []
@@ -2421,6 +2440,26 @@ watch(
 watch(selectedTemplate, () => {
   selectValidTemplateForCurrentDocumentType()
   resetRendererGuard()
+})
+
+watch(
+  [resume, orderedPreviewSections, selectedTemplate, rendererReady],
+  async () => {
+    await nextTick()
+    recalculatePreviewPagination()
+  },
+  { deep: true },
+)
+
+onMounted(() => {
+  if (!import.meta.client) return
+  recalculatePreviewPagination()
+  window.addEventListener('resize', recalculatePreviewPagination)
+})
+
+onBeforeUnmount(() => {
+  if (!import.meta.client) return
+  window.removeEventListener('resize', recalculatePreviewPagination)
 })
 
 onErrorCaptured((error, instance, info) => {
@@ -3943,7 +3982,7 @@ if (import.meta.client) {
                       'cv-preview-stage--bordered': selectedRounded !== 'none',
                     }"
                   >
-                    <div class="cv-page-shell" :class="previewDesignClasses">
+                    <div ref="previewPageShellRef" class="cv-page-shell" :class="previewDesignClasses">
                       <template v-if="rendererReady">
                         <ResumeRenderer
                           :class="previewDesignClasses"
@@ -4032,7 +4071,7 @@ if (import.meta.client) {
                         <img :src="signatureDataUrl" alt="Signature" />
                       </div>
                     </div>
-                    <div class="resume-page-break-hint">{{ t('resumeBuilder.create.static.a4PageEnd') }}</div>
+                    <div class="resume-page-break-hint">{{ t('resumeBuilder.create.static.a4PageEnd') }} • {{ previewPaginationHint }}</div>
                   </div>
                 </div>
               </div>
