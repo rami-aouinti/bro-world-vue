@@ -2715,13 +2715,40 @@ watch(
 )
 
 const previewStyle = computed(() => ({
+  '--resume-radius': roundedPxByValue[selectedRounded.value],
   '--cv-radius': roundedPxByValue[selectedRounded.value],
+  '--resume-font-family': textStyleVarsByValue[selectedTextStyle.value].family,
   '--cv-font-family': textStyleVarsByValue[selectedTextStyle.value].family,
+  '--resume-font-style': textStyleVarsByValue[selectedTextStyle.value].style,
   '--cv-font-style': textStyleVarsByValue[selectedTextStyle.value].style,
+  '--resume-font-weight': textStyleVarsByValue[selectedTextStyle.value].weight,
   '--cv-font-weight': textStyleVarsByValue[selectedTextStyle.value].weight,
+  '--resume-sidebar': activeTheme.value.sidebar,
   '--cv-sidebar': activeTheme.value.sidebar,
+  '--resume-accent': activeTheme.value.accent,
   '--cv-accent': activeTheme.value.accent,
+  '--resume-page': activePageBackground.value.page,
   '--cv-page': activePageBackground.value.page,
+  '--resume-title': bestAaTextColor(
+    activePageBackground.value.page,
+    activeTheme.value.accent,
+    4.5,
+  ),
+  '--resume-secondary': bestAaTextColor(
+    activePageBackground.value.page,
+    activeTheme.value.sidebar,
+    4.5,
+  ),
+  '--resume-on-sidebar': bestAaTextColor(
+    activeTheme.value.sidebar,
+    activePageBackground.value.page,
+    4.5,
+  ),
+  '--resume-on-accent': bestAaTextColor(
+    activeTheme.value.accent,
+    activePageBackground.value.page,
+    4.5,
+  ),
   '--cv-title': bestAaTextColor(
     activePageBackground.value.page,
     activeTheme.value.accent,
@@ -2859,8 +2886,8 @@ async function buildResumePdfBlob() {
           .preview-grid .cv-sidebar-surface,
           .cv-page-shell .resume-skin__aside,
           .cv-page-shell .cv-sidebar-surface {
-            background: var(--cv-sidebar) !important;
-            background-color: var(--cv-sidebar) !important;
+            background: var(--resume-sidebar, var(--cv-sidebar)) !important;
+            background-color: var(--resume-sidebar, var(--cv-sidebar)) !important;
           }
           .preview-grid,
           .cv-page-shell { min-height: auto !important; border-radius: 0 !important; }
@@ -5788,7 +5815,7 @@ if (import.meta.client) {
 }
 
 .preview-sidebar {
-  background: var(--cv-sidebar);
+  background: var(--resume-sidebar, var(--cv-sidebar));
   color: #fff;
   padding: 28px 24px;
 }
