@@ -1331,6 +1331,14 @@ onBeforeUnmount(() => {
 
 :deep(.app-top-bar__menu-list .v-list-item) {
   color: rgb(var(--v-theme-on-surface));
+  border-radius: 12px;
+  margin: 2px 8px;
+}
+
+:deep(.app-top-bar__menu-list .v-list-item:hover),
+:deep(.app-top-bar__menu-list .v-list-item--active),
+:deep(.app-top-bar__menu-list .v-list-item--activated) {
+  background: rgba(var(--v-theme-primary), 0.14);
 }
 
 :deep(.app-top-bar__menu-list .v-list-item__prepend) {
