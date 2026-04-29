@@ -125,7 +125,7 @@ function removeSkill(index: number) {
     </h3>
 
     <ul
-      v-if="safeVariant === 'classic' || safeVariant === 'progress'"
+      v-if="safeVariant === 'classic'"
       class="bars"
     >
       <li
@@ -198,11 +198,11 @@ function removeSkill(index: number) {
       </li>
     </ul>
 
-    <ul v-else-if="safeVariant === 'stars'" class="bars">
-      <li
+    <div v-else-if="safeVariant === 'stars'" class="skill-stars-list">
+      <div
         v-for="(skill, index) in resume.skills"
         :key="`${skill.name}-${index}`"
-        class="d-flex align-center ga-2 justify-space-between"
+        class="skill-stars-item"
       >
         <span
           class="editable-text text-dark"
@@ -231,8 +231,47 @@ function removeSkill(index: number) {
         >
           <v-icon icon="mdi-close" size="14" />
         </v-btn>
-      </li>
-    </ul>
+      </div>
+    </div>
+
+    <div v-else-if="safeVariant === 'progress'" class="skill-progress-list">
+      <div
+        v-for="(skill, index) in resume.skills"
+        :key="`${skill.name}-${index}`"
+        class="skill-progress-item"
+      >
+        <div class="d-flex align-center justify-space-between ga-2">
+          <span
+            class="editable-text text-dark"
+            :contenteditable="editable"
+            @input="
+              (event) =>
+                updateText(
+                  `skills.${index}.name`,
+                  (event.target as HTMLElement).innerText,
+                )
+            "
+            >{{ skill.name }}</span
+          >
+          <small class="text-dark">{{ levelToPercent(skill.level) }}%</small>
+        </div>
+        <div class="progress text-dark">
+          <i :style="{ width: `${levelToPercent(skill.level)}%` }" />
+        </div>
+        <v-btn
+          v-if="editable"
+          class="resume-item-delete"
+          icon
+          size="x-small"
+          variant="text"
+          color="error"
+          aria-label="Delete this skill"
+          @click="removeSkill(index)"
+        >
+          <v-icon icon="mdi-close" size="14" />
+        </v-btn>
+      </div>
+    </div>
 
     <ul v-else class="bars">
       <li
@@ -331,6 +370,26 @@ function removeSkill(index: number) {
 }
 .skill-dots {
   letter-spacing: 1px;
+}
+
+
+.skill-stars-list,
+.skill-progress-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--entry-gap, calc(var(--cv-space-2) + var(--cv-space-1) / 2));
+}
+
+.skill-stars-item,
+.skill-progress-item {
+  position: relative;
+}
+
+.skill-stars-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cv-space-2);
 }
 
 .bars li::before {
