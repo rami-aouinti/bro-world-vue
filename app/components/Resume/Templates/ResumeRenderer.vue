@@ -1462,7 +1462,7 @@ function updateText(path: string, value: string) {
 .resume-skin__aside :deep(.v-rating .v-icon),
 .resume-skin__aside :deep(.language-stars-value),
 .resume-skin__aside :deep(.bars small:last-child) {
-  color: var(--resume-aside-decor-color) !important;
+  color: var(--resume-aside-text-color) !important;
 }
 
 .resume-skin__aside :deep(.experience .entry) {
