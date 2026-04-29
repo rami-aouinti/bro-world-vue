@@ -3840,6 +3840,7 @@ if (import.meta.client) {
               min="220"
               max="380"
               step="2"
+              class="mx-1"
               color="primary"
               hide-details
             />
@@ -3855,6 +3856,7 @@ if (import.meta.client) {
               v-model="layoutSettings.sidebarHeight"
               min="60"
               max="100"
+              class="mx-1"
               step="1"
               color="primary"
               hide-details
