@@ -4,13 +4,8 @@ import type {
   RoundedOptionId,
   Typography,
 } from '~/constants/resumeDesign'
-import {
-  COVER_LETTER_TEMPLATES,
-  COVER_PAGE_TEMPLATES,
-  DEFAULT_RESUME_TEMPLATE_ID,
-  RESUME_TEMPLATES,
-  type ResumeTemplateVariant,
-} from '~/constants/resumeTemplates'
+import { DEFAULT_RESUME_TEMPLATE_ID, type ResumeTemplateVariant } from '~/constants/resumeTemplates'
+import { RESUME_TEMPLATES_CATALOG } from '~/constants/resumeTemplates.catalog'
 import {
   resolveTemplateSkin,
   type ResumeLayoutMode,
@@ -708,63 +703,21 @@ function normalizeSectionLayout(
     }
   })
 }
-const coverPageTemplateCards: Template[] = COVER_PAGE_TEMPLATES.map(
-  (template) => ({
-    id: template.id,
-    title: template.title,
-    subtitle: template.subtitle,
-    image: template.image,
-    documentType: 'cover-page',
-    hasPhoto: template.id === 'cover-page-terra',
-    isTwoColumn: false,
-    isAts: true,
-    hasDocx: true,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: template.id === 'cover-page-terra' ? 'classic' : 'minimalist',
-  }),
-)
-
-const coverLetterTemplateCards: Template[] = COVER_LETTER_TEMPLATES.map(
-  (template) => ({
-    id: template.id,
-    title: template.title,
-    subtitle: template.subtitle,
-    image: template.image,
-    documentType: 'cover-letter',
-    hasPhoto: template.id === 'cover-letter-modern',
-    isTwoColumn: false,
-    isAts: true,
-    hasDocx: true,
-    isCustomized: true,
-    isFree: true,
-    useTimeline: false,
-    variant: template.id === 'cover-letter-classic' ? 'traditional' : 'modern',
-  }),
-)
-
-const resumeTemplateCards: Template[] = RESUME_TEMPLATES.map((template) => ({
+const templates: Template[] = RESUME_TEMPLATES_CATALOG.map((template) => ({
   id: template.id,
-  title: template.title,
+  title: template.label,
   subtitle: template.subtitle,
   image: template.image,
-  documentType: 'resume',
-  hasPhoto: template.flags.photo,
-  isTwoColumn: template.flags.twoColumn,
-  isAts: template.flags.ats,
-  hasDocx: template.flags.docx,
-  isCustomized: template.flags.customized,
-  isFree: template.flags.free,
-  useTimeline: template.flags.timeline,
+  documentType: template.type,
+  hasPhoto: template.visibleOptions.photo,
+  isTwoColumn: template.visibleOptions.twoColumn,
+  isAts: template.visibleOptions.ats,
+  hasDocx: template.visibleOptions.docx,
+  isCustomized: template.visibleOptions.customized,
+  isFree: template.visibleOptions.free,
+  useTimeline: template.visibleOptions.timeline,
   variant: template.variant,
 }))
-
-const templates: Template[] = [
-  ...resumeTemplateCards,
-  ...coverPageTemplateCards,
-  ...coverLetterTemplateCards,
-]
 
 const templateDesignPresets: Record<string, TemplateDesignPreset> = {
   'executive-portrait': {
@@ -1150,7 +1103,7 @@ const templateShapeTypeCycle: DecorativeShapeType[] = ['circle', 'ring', 'square
 
 function applyShapeAForTemplate() {
   if (selectedDocumentType.value !== 'resume') return
-  const templateIndex = resumeTemplateCards.findIndex((template) => template.id === selectedTemplate.value)
+  const templateIndex = templates.filter((template) => template.documentType === 'resume').findIndex((template) => template.id === selectedTemplate.value)
   if (templateIndex < 0) return
   const accentColor = activeTheme.value.accent
   layoutSettings.decorativeShapeA = {
