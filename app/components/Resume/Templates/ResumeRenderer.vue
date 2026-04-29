@@ -1318,7 +1318,7 @@ function updateText(path: string, value: string) {
 .resume-skin__contact-item {
   display: inline-flex;
   align-items: center;
-  gap: var(--resume-space-2, var(--cv-space-2));
+  gap: var(--resume-space-1, var(--cv-space-1));
   min-width: 0;
   position: relative;
 }
@@ -1347,6 +1347,10 @@ function updateText(path: string, value: string) {
 }
 
 .resume-skin__contact-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.1em;
   color: var(--resume-contact-icon-color, var(--resume-accent, var(--cv-accent)));
   flex-shrink: 0;
   transition: color 0.2s ease;
