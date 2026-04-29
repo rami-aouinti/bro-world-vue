@@ -19,7 +19,7 @@ export type ResumeSectionDesignPreset = {
 export const RESUME_SECTION_DESIGN_PRESETS: Record<ResumeTemplateKey, Record<ResumeSectionKey, ResumeSectionDesignPreset>> = {
   terra: {
     experience: {
-      variant: 'detailed',
+      variant: 'classic',
       headingStyle: 'underline',
       spacingDensity: 'normal',
       separators: 'line',
@@ -53,7 +53,7 @@ export const RESUME_SECTION_DESIGN_PRESETS: Record<ResumeTemplateKey, Record<Res
   },
   modern: {
     experience: {
-      variant: 'detailed',
+      variant: 'classic',
       headingStyle: 'minimal',
       spacingDensity: 'normal',
       separators: 'none',
