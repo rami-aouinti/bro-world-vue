@@ -190,7 +190,9 @@ const renderableSections = computed<RenderableSectionLayoutEntry[]>(
 )
 
 function isSectionVisible(section: RenderableSectionLayoutEntry) {
-  return section.key !== 'skill' || props.templateSkin.showSkillsInAside
+  if (section.key !== 'skill') return true
+  if (resolvedDesignState.value.layoutMode === 'no-aside') return true
+  return props.templateSkin.showSkillsInAside
 }
 
 function compareSectionOrder(

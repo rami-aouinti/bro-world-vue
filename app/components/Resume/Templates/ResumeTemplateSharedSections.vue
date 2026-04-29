@@ -87,6 +87,19 @@ function toFlagEmoji(countryCode: string) {
     .join('')
 }
 
+
+function isImageFlag(flagValue: string) {
+  return /^(https?:\/\/|\/|data:image\/)/i.test(flagValue)
+}
+
+function resolveLanguageFlagSrc(language: Record<string, unknown>) {
+  const explicitFlag = String(language.flag || '').trim()
+  if (explicitFlag && isImageFlag(explicitFlag)) return explicitFlag
+  const countryCode = String(language.countryCode || '').trim()
+  if (!countryCode) return ''
+  return `/images/flags/${countryCode.toLowerCase()}.svg`
+}
+
 function resolveLanguageFlag(language: Record<string, unknown>) {
   const explicitFlag = String(language.flag || '').trim()
   if (explicitFlag) return explicitFlag
@@ -171,7 +184,13 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
         <div v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" class="language-progress-item">
           <div class="d-flex align-center justify-space-between ga-2">
             <div class="d-flex align-center ga-2">
-              <span v-if="resolveLanguageFlag(language)" class="language-flag">{{ resolveLanguageFlag(language) }}</span>
+              <img
+                v-if="resolveLanguageFlagSrc(language)"
+                class="language-flag-image"
+                :src="resolveLanguageFlagSrc(language)"
+                :alt="`${language.name} flag`"
+              >
+              <span v-else-if="resolveLanguageFlag(language)" class="language-flag">{{ resolveLanguageFlag(language) }}</span>
               <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
             </div>
             <small>{{ levelToText(language.level) }} · {{ levelToStarsText(language.level) }}</small>
@@ -346,6 +365,13 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
 .language-stars-value {
   letter-spacing: .04em;
 }
+.language-flag-image {
+  width: 18px;
+  height: 12px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
 .language-flag {
   font-size: 1.1em;
   line-height: 1;
