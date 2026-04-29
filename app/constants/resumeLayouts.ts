@@ -3,6 +3,8 @@ import { RESUME_SECTION_REGISTRY } from '~/constants/resumeSectionRegistry'
 import type { ResumeEditableSectionKey } from '~/types/resumeDocumentModel'
 
 export type ResumeLayoutZone = 'main' | 'aside'
+export type ResumeLayoutPattern = 'A' | 'B' | 'C'
+export type ResumeLayoutSectionKey = ResumeEditableSectionKey | 'contact'
 
 type ResumeLayoutFallbackRule = {
   section: ResumeEditableSectionKey
@@ -12,8 +14,13 @@ type ResumeLayoutFallbackRule = {
 export type ResumeLayoutDefinition = {
   layoutId: string
   structure: ResumeLayoutMode
+  pattern: ResumeLayoutPattern
+  objective: 'experience' | 'skills' | 'mixed-ats'
   zones: Record<ResumeLayoutZone, ResumeEditableSectionKey[]>
+  sectionMapping: Record<ResumeLayoutSectionKey, ResumeLayoutZone>
   fallbackRules: ResumeLayoutFallbackRule[]
+  maxPageTarget: 1
+  pdfOverflowGuard: 'strict'
 }
 
 const DEFAULT_FALLBACK_RULES: ResumeLayoutFallbackRule[] = [
@@ -27,88 +34,124 @@ const DEFAULT_FALLBACK_RULES: ResumeLayoutFallbackRule[] = [
   { section: 'hobby', whenMissing: ['aside', 'main'] },
 ]
 
+function createSectionMapping(
+  main: ResumeEditableSectionKey[],
+  aside: ResumeEditableSectionKey[],
+): Record<ResumeLayoutSectionKey, ResumeLayoutZone> {
+  return {
+    contact: 'main',
+    education: main.includes('education') ? 'main' : 'aside',
+    experience: main.includes('experience') ? 'main' : 'aside',
+    skill: main.includes('skill') ? 'main' : 'aside',
+    project: main.includes('project') ? 'main' : 'aside',
+    language: main.includes('language') ? 'main' : 'aside',
+    certification: main.includes('certification') ? 'main' : 'aside',
+    reference: main.includes('reference') ? 'main' : 'aside',
+    hobby: main.includes('hobby') ? 'main' : 'aside',
+  }
+}
+
+function createLayoutDefinition({
+  layoutId,
+  structure,
+  pattern,
+  objective,
+  main,
+  aside,
+}: {
+  layoutId: string
+  structure: ResumeLayoutMode
+  pattern: ResumeLayoutPattern
+  objective: ResumeLayoutDefinition['objective']
+  main: ResumeEditableSectionKey[]
+  aside: ResumeEditableSectionKey[]
+}): ResumeLayoutDefinition {
+  return {
+    layoutId,
+    structure,
+    pattern,
+    objective,
+    zones: { main, aside },
+    sectionMapping: createSectionMapping(main, aside),
+    fallbackRules: DEFAULT_FALLBACK_RULES,
+    maxPageTarget: 1,
+    pdfOverflowGuard: 'strict',
+  }
+}
+
 export const RESUME_LAYOUTS: ResumeLayoutDefinition[] = [
-  {
+  createLayoutDefinition({
     layoutId: 'no-aside-a',
     structure: 'no-aside',
-    zones: {
-      main: ['experience', 'education', 'project', 'skill', 'language', 'reference', 'certification', 'hobby'],
-      aside: [],
-    },
-    fallbackRules: DEFAULT_FALLBACK_RULES,
-  },
-  {
+    pattern: 'A',
+    objective: 'experience',
+    main: ['experience', 'education', 'project', 'skill', 'language', 'reference', 'certification', 'hobby'],
+    aside: [],
+  }),
+  createLayoutDefinition({
     layoutId: 'no-aside-b',
     structure: 'no-aside',
-    zones: {
-      main: ['experience', 'project', 'education', 'skill', 'language', 'certification', 'reference', 'hobby'],
-      aside: [],
-    },
-    fallbackRules: DEFAULT_FALLBACK_RULES,
-  },
-  {
+    pattern: 'B',
+    objective: 'skills',
+    main: ['skill', 'language', 'certification', 'experience', 'project', 'education', 'reference', 'hobby'],
+    aside: [],
+  }),
+  createLayoutDefinition({
     layoutId: 'no-aside-c',
     structure: 'no-aside',
-    zones: {
-      main: ['experience', 'education', 'project', 'language', 'skill', 'reference', 'hobby', 'certification'],
-      aside: [],
-    },
-    fallbackRules: DEFAULT_FALLBACK_RULES,
-  },
-  {
+    pattern: 'C',
+    objective: 'mixed-ats',
+    main: ['experience', 'skill', 'project', 'education', 'language', 'certification', 'reference', 'hobby'],
+    aside: [],
+  }),
+  createLayoutDefinition({
     layoutId: 'aside-left-a',
     structure: 'aside-left',
-    zones: {
-      main: ['experience', 'education', 'project'],
-      aside: ['skill', 'language', 'reference', 'certification', 'hobby'],
-    },
-    fallbackRules: DEFAULT_FALLBACK_RULES,
-  },
-  {
+    pattern: 'A',
+    objective: 'experience',
+    main: ['experience', 'education', 'project'],
+    aside: ['skill', 'language', 'reference', 'certification', 'hobby'],
+  }),
+  createLayoutDefinition({
     layoutId: 'aside-left-b',
     structure: 'aside-left',
-    zones: {
-      main: ['experience', 'project', 'education'],
-      aside: ['skill', 'language', 'hobby', 'certification', 'reference'],
-    },
-    fallbackRules: DEFAULT_FALLBACK_RULES,
-  },
-  {
+    pattern: 'B',
+    objective: 'skills',
+    main: ['experience', 'project', 'education'],
+    aside: ['skill', 'language', 'certification', 'hobby', 'reference'],
+  }),
+  createLayoutDefinition({
     layoutId: 'aside-left-c',
     structure: 'aside-left',
-    zones: {
-      main: ['experience', 'education', 'project'],
-      aside: ['language', 'skill', 'reference', 'hobby', 'certification'],
-    },
-    fallbackRules: DEFAULT_FALLBACK_RULES,
-  },
-  {
+    pattern: 'C',
+    objective: 'mixed-ats',
+    main: ['experience', 'project', 'education'],
+    aside: ['skill', 'language', 'reference', 'certification', 'hobby'],
+  }),
+  createLayoutDefinition({
     layoutId: 'aside-right-a',
     structure: 'aside-right',
-    zones: {
-      main: ['experience', 'education', 'project'],
-      aside: ['skill', 'language', 'reference', 'certification', 'hobby'],
-    },
-    fallbackRules: DEFAULT_FALLBACK_RULES,
-  },
-  {
+    pattern: 'A',
+    objective: 'experience',
+    main: ['experience', 'education', 'project'],
+    aside: ['skill', 'language', 'reference', 'certification', 'hobby'],
+  }),
+  createLayoutDefinition({
     layoutId: 'aside-right-b',
     structure: 'aside-right',
-    zones: {
-      main: ['experience', 'project', 'education'],
-      aside: ['skill', 'language', 'hobby', 'certification', 'reference'],
-    },
-    fallbackRules: DEFAULT_FALLBACK_RULES,
-  },
-  {
+    pattern: 'B',
+    objective: 'skills',
+    main: ['experience', 'project', 'education'],
+    aside: ['skill', 'language', 'certification', 'hobby', 'reference'],
+  }),
+  createLayoutDefinition({
     layoutId: 'aside-right-c',
     structure: 'aside-right',
-    zones: {
-      main: ['experience', 'education', 'project'],
-      aside: ['language', 'skill', 'reference', 'hobby', 'certification'],
-    },
-    fallbackRules: DEFAULT_FALLBACK_RULES,
-  },
+    pattern: 'C',
+    objective: 'mixed-ats',
+    main: ['experience', 'project', 'education'],
+    aside: ['skill', 'language', 'reference', 'certification', 'hobby'],
+  }),
 ]
 
 export const RESUME_LAYOUTS_BY_ID: Record<string, ResumeLayoutDefinition> =

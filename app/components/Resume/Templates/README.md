@@ -45,3 +45,25 @@ Ce test impose:
 - Les actions de toolbar configurées (`change-variant`, `move-up`, `move-down`, `add-item`, `delete-section`) doivent rester cohérentes avec les `props`, les bindings `SectionToolbar` et les `emit` exposés.
 
 Objectif: empêcher les régressions silencieuses quand on introduit une nouvelle variante/template/section.
+
+
+## Patterns de layout CV (A/B/C par structure)
+
+> Source runtime: `app/constants/resumeLayouts.ts`.
+
+| ID | Objectif | Ordre sections | Zones |
+|---|---|---|---|
+| `no-aside-a` | A = focus expérience | `contact → experience → education → project → skill → language` | `main` uniquement |
+| `no-aside-b` | B = focus compétences | `contact → skill → language → certification → experience → project` | `main` uniquement |
+| `no-aside-c` | C = focus mixte/ATS | `contact → experience → skill → project → education → language` | `main` uniquement |
+| `aside-left-a` | A = focus expérience | `main: contact → experience → education → project` / `aside: skill → language` | `aside` à gauche |
+| `aside-left-b` | B = focus compétences | `main: contact → experience → project → education` / `aside: skill → language → certification` | `aside` à gauche |
+| `aside-left-c` | C = focus mixte/ATS | `main: contact → experience → project → education` / `aside: skill → language → reference` | `aside` à gauche |
+| `aside-right-a` | A = focus expérience | `main: contact → experience → education → project` / `aside: skill → language` | `aside` à droite |
+| `aside-right-b` | B = focus compétences | `main: contact → experience → project → education` / `aside: skill → language → certification` | `aside` à droite |
+| `aside-right-c` | C = focus mixte/ATS | `main: contact → experience → project → education` / `aside: skill → language → reference` | `aside` à droite |
+
+Règles globales:
+- Mapping explicite des sections clés `contact`, `education`, `experience`, `skill`, `project`, `language` via `sectionMapping`.
+- Fallback par section absente via `fallbackRules` (ex: `reference`, `certification`, `hobby` sont ignorées proprement si vides, sinon injectées selon la zone autorisée).
+- Contrainte de lisibilité/print: chaque layout déclare `maxPageTarget: 1` et `pdfOverflowGuard: 'strict'` pour limiter les overflows majeurs en export PDF.
