@@ -188,7 +188,7 @@ export const RESUME_SECTION_REGISTRY: Record<
   },
   reference: {
     labelKey: 'resumeBuilder.create.registry.sections.reference',
-    icon: 'mdi-card-account-details-outline',
+    icon: 'mdi-account-tie',
     variants: variantOptions('reference'),
     defaultVariant: 'classic',
     defaultRegion: 'aside',
@@ -226,7 +226,7 @@ export const RESUME_SECTION_REGISTRY: Record<
   },
   certification: {
     labelKey: 'resumeBuilder.create.registry.sections.certification',
-    icon: 'mdi-certificate-outline',
+    icon: 'mdi-certificate',
     variants: variantOptions('certification'),
     defaultVariant: 'classic',
     defaultRegion: 'aside',

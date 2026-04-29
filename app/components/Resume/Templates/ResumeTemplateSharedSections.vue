@@ -3,6 +3,7 @@ import { levelToPercent, levelToStars, levelToText } from '~/utils/resumeLanguag
 import { resolveLanguageFallback, resolveLanguageFlagClass, resolveLanguageFlagSrc } from '~/utils/resumeLanguageFlags'
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 import { RESUME_SHARED_SECTION_VARIANTS } from '~/types/resumeSectionVariants'
+import ResumeSectionHeader from '~/components/Resume/Sections/ResumeSectionHeader.vue'
 
 type SharedSectionKey =
   | 'languages'
@@ -113,7 +114,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
         @move-up="() => emit('move-section', 'language', 'up')"
         @move-down="() => emit('move-section', 'language', 'down')"
       />
-      <h3 class="cv-heading-section cv-divider-bottom">Languages</h3>
+      <ResumeSectionHeader title="Languages" icon="mdi-translate" in-aside class="cv-divider-bottom" />
       <ul v-if="languageVariant === 'text-level'">
         <li v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`">
           <small>{{ levelToText(language.level) }} — </small>
@@ -175,7 +176,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
         @move-up="() => emit('move-section', 'certification', 'up')"
         @move-down="() => emit('move-section', 'certification', 'down')"
       />
-      <h3 class="cv-heading-section cv-divider-bottom">Certifications</h3>
+      <ResumeSectionHeader title="Certifications" icon="mdi-certificate" in-aside class="cv-divider-bottom" />
       <ul>
         <li v-for="(course, index) in resume.courses" :key="`${course.title}-${index}`">
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`courses.${index}.title`, (event.target as HTMLElement).innerText)">{{ course.title }}</span>
@@ -196,7 +197,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
         @move-up="() => emit('move-section', 'project', 'up')"
         @move-down="() => emit('move-section', 'project', 'down')"
       />
-      <h3 class="cv-heading-section cv-divider-bottom">Projects</h3>
+      <ResumeSectionHeader title="Projects" icon="mdi-folder-star-outline" in-aside class="cv-divider-bottom" />
       <ul v-if="projectVariant === 'list'" class="project-list project-list--enhanced">
         <li v-for="(project, index) in resume.projects" :key="`${project.name}-${index}`">
           <strong class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</strong>
@@ -228,7 +229,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
         @move-up="() => emit('move-section', 'reference', 'up')"
         @move-down="() => emit('move-section', 'reference', 'down')"
       />
-      <h3 class="cv-heading-section cv-divider-bottom">References</h3>
+      <ResumeSectionHeader title="References" icon="mdi-account-tie" in-aside class="cv-divider-bottom" />
       <ul>
         <li v-for="(reference, index) in resume.references" :key="`${reference.name}-${index}`">
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`references.${index}.name`, (event.target as HTMLElement).innerText)">{{ reference.name }}</span>
@@ -249,7 +250,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
         @move-up="() => emit('move-section', 'hobby', 'up')"
         @move-down="() => emit('move-section', 'hobby', 'down')"
       />
-      <h3 class="cv-heading-section cv-divider-bottom">Interests</h3>
+      <ResumeSectionHeader title="Interests" icon="mdi-puzzle-heart-outline" in-aside class="cv-divider-bottom" />
       <ul>
         <li v-for="(hobby, index) in resume.hobbies" :key="`${hobby}-${index}`" class="editable-text" :contenteditable="editable" @input="event => updateText(`hobbies.${index}`, (event.target as HTMLElement).innerText)">{{ hobby }}</li>
       </ul>
