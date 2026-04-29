@@ -1531,18 +1531,19 @@ function applyBuilderResumeData(
   payload: ReturnType<typeof fromApiResumeToBuilderModel>,
 ) {
   const userNames = inferNameParts(payload.resumeInformation.fullName)
+  const normalizeText = (value?: string | null) => (value ?? '').trim()
 
-  resume.firstName = userNames.firstName || resume.firstName
-  resume.lastName = userNames.lastName || resume.lastName
-  resume.email = payload.email || resume.email
-  resume.phone = payload.phone || resume.phone
-  resume.city = payload.city || resume.city
-  resume.country = payload.country || resume.country
-  resume.birthDate = payload.birthDate || ''
-  resume.birthPlace = payload.birthPlace || ''
-  resume.homepage = payload.homepage || ''
-  resume.repoProfile = payload.repoProfile || ''
-  resume.profile = payload.profile || resume.profile
+  resume.firstName = normalizeText(userNames.firstName ?? resume.firstName)
+  resume.lastName = normalizeText(userNames.lastName ?? resume.lastName)
+  resume.email = normalizeText(payload.email)
+  resume.phone = normalizeText(payload.phone)
+  resume.city = normalizeText(payload.city)
+  resume.country = normalizeText(payload.country)
+  resume.birthDate = normalizeText(payload.birthDate)
+  resume.birthPlace = normalizeText(payload.birthPlace)
+  resume.homepage = normalizeText(payload.homepage)
+  resume.repoProfile = normalizeText(payload.repoProfile)
+  resume.profile = normalizeText(payload.profile)
 
   if (payload.skills.length) {
     resume.skills = payload.skills.map((skill) => ({ ...skill }))
