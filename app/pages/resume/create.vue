@@ -315,7 +315,7 @@ type LayoutSettings = {
   photoPosition: 'left' | 'right'
   sidebarWidth: number
   sidebarHeight: number
-  sectionDividerStyle: 'none' | 'line' | 'thick'
+  sectionDividerStyle: 'none' | 'line' | 'soft'
   headingCase: 'normal' | 'uppercase'
   dateColumnWidth: number
   lineDensity: 'compact' | 'comfortable'
@@ -920,7 +920,7 @@ const templateDesignPresets: Record<string, TemplateDesignPreset> = {
       photoSize: 116,
       photoBorderWidth: 4,
       photoPosition: 'right',
-      sectionDividerStyle: 'thick',
+      sectionDividerStyle: 'soft',
       lineDensity: 'comfortable',
       sectionIconStyle: 'rounded',
     },
