@@ -921,6 +921,12 @@ const soclePresetOptions = computed(() =>
   CV_SOCLE_PRESETS.map((preset) => ({ label: preset.label, value: preset.id })),
 )
 
+watch(selectedTheme, (themeId) => {
+  const matchingPreset = resolveSoclePresetById(themeId)
+  if (!matchingPreset || matchingPreset.id === selectedPreset.value) return
+  selectedPreset.value = matchingPreset.id
+})
+
 watch(selectedPresetConfig, (preset) => {
   if (!preset) return
   selectedTheme.value = preset.id
