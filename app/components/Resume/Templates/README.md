@@ -31,3 +31,17 @@ Checklist manuelle + garde-fou composant à exécuter à chaque refactor design:
 | `terra` | `ResumeTemplateTerra.vue` | grille terra, aside, photo, sections expérience/formation | ✅ | ✅ | ✅ | ✅ | Support complet |
 | `ocean-split` | `ResumeTemplateOceanSplit.vue` | split gauche/droite, photo, lignes de skill | ✅ | ✅ | ✅ | ✅ | Support complet |
 | `corporate-blue` | `ResumeTemplateCorporateBlue.vue` | header, body/aside, blocs article, dot rows | ✅ | ✅ | ✅ | ✅ | Support complet |
+
+## Règle de cohérence registry/sections (obligatoire)
+
+À chaque ajout/modification de template ou de section CV, exécuter et maintenir le test:
+
+- `test/nuxt/resume-section-registry-consistency.test.ts`
+
+Ce test impose:
+
+- `defaultVariant` doit toujours exister dans `variants` pour chaque entrée de `RESUME_SECTION_REGISTRY`.
+- Les variantes déclarées doivent être réellement supportées par les composants de section ciblés (au minimum `language`, `project`, `experience`).
+- Les actions de toolbar configurées (`change-variant`, `move-up`, `move-down`, `add-item`, `delete-section`) doivent rester cohérentes avec les `props`, les bindings `SectionToolbar` et les `emit` exposés.
+
+Objectif: empêcher les régressions silencieuses quand on introduit une nouvelle variante/template/section.
