@@ -229,7 +229,7 @@ function removeLanguage(index: number) {
             <small>{{ levelToPercent(language.level) }}%</small>
           </v-progress-circular>
         </div>
-        
+
         <v-btn
           v-if="editable"
           class="resume-item-delete"
@@ -308,7 +308,7 @@ function removeLanguage(index: number) {
               >{{ language.name }}</span
             >
           </div>
-          <<v-rating :model-value="levelToStars(language.level)" readonly length="5" density="compact" class="ms-auto" active-color="warning" color="grey-lighten-1" size="14" />
+          <v-rating :model-value="levelToStars(language.level)" readonly length="5" density="compact" class="ms-auto" active-color="warning" color="grey-lighten-1" size="14" />
         </div>
         <v-btn
           v-if="editable"
