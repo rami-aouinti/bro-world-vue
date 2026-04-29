@@ -1011,11 +1011,15 @@ function selectValidTemplateForCurrentDocumentType() {
 
 
 function applyTemplateFromRouteQuery() {
+  const fallbackTemplateId = templatesByDocumentType.value[0]?.id ?? templates[0]?.id ?? 'cv-socle-01'
   const templateFromQuery = Array.isArray(route.query.template)
     ? route.query.template[0]
     : route.query.template
 
-  if (typeof templateFromQuery !== 'string') return
+  if (typeof templateFromQuery !== 'string' || !templateFromQuery.trim()) {
+    applyTemplateSelection(fallbackTemplateId)
+    return
+  }
 
   const resolvedTemplateId = resumeTemplateQueryAliases[templateFromQuery] ?? templateFromQuery
   const exists = templatesByDocumentType.value.some(
@@ -1023,7 +1027,7 @@ function applyTemplateFromRouteQuery() {
   )
   const templateId = exists
     ? resolvedTemplateId
-    : templatesByDocumentType.value[0]?.id ?? templates[0]?.id ?? 'cv-socle-01'
+    : fallbackTemplateId
 
   applyTemplateSelection(templateId)
 }
