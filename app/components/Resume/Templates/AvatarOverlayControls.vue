@@ -183,8 +183,8 @@ function handlePhotoPositionUpdate(value: unknown) {
   gap: 4px;
   padding: 8px;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--cv-surface-soft) 85%, transparent);
-  border: 1px solid color-mix(in srgb, var(--cv-accent) 8%, transparent);
+  background: color-mix(in srgb, var(--resume-surface-soft, var(--cv-surface-soft)) 85%, transparent);
+  border: 1px solid color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 8%, transparent);
 }
 
 .photo-menu__actions {
@@ -203,9 +203,9 @@ function handlePhotoPositionUpdate(value: unknown) {
 }
 
 .photo-shape-picker {
-  --picker-radius: var(--cv-radius, 14px);
-  --picker-border: color-mix(in srgb, var(--cv-accent) 16%, var(--cv-page));
-  --picker-surface: var(--cv-surface-soft);
+  --picker-radius: var(--resume-radius, var(--cv-radius, 14px));
+  --picker-border: color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 16%, var(--resume-page, var(--cv-page)));
+  --picker-surface: var(--resume-surface-soft, var(--cv-surface-soft));
 
   display: inline-flex;
   align-items: center;
@@ -216,7 +216,7 @@ function handlePhotoPositionUpdate(value: unknown) {
   border-radius: calc(var(--picker-radius) - 2px);
   border: 1px solid var(--picker-border);
   background: var(--picker-surface);
-  box-shadow: 0 var(--cv-space-2) var(--cv-space-4) var(--cv-shadow-soft);
+  box-shadow: 0 var(--resume-space-2, var(--cv-space-2)) var(--resume-space-4, var(--cv-space-4)) var(--resume-shadow-soft, var(--cv-shadow-soft));
 }
 
 .avatar-overlay-controls :deep(.v-btn) {
