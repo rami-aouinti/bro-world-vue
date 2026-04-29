@@ -1,7 +1,7 @@
 import type { ResumeDocumentModel, ResumeSectionLayoutModel } from '~/types/resumeDocumentModel'
 
 export const DEFAULT_SECTION_ORDER: ResumeSectionLayoutModel[] = [
-  { key: 'experience', variant: 'detailed', region: 'main', order: 0 },
+  { key: 'experience', variant: 'classic', region: 'main', order: 0 },
   { key: 'education', variant: 'classic', region: 'main', order: 1 },
   { key: 'project', variant: 'classic', region: 'main', order: 2 },
   { key: 'certification', variant: 'classic', region: 'aside', order: 4 },
