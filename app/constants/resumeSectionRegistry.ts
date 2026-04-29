@@ -2,6 +2,7 @@ import type {
   ResumeEditableSectionKey,
   ResumeSectionRegion,
 } from '~/types/resumeDocumentModel'
+import { RESUME_SECTION_VARIANTS } from '~/types/resumeSectionVariants'
 
 export type ResumeToolbarAction =
   | 'add-item'
@@ -33,6 +34,24 @@ export type ResumeSectionRegistryEntry = {
   contentStyles: ResumeContentStyle[]
 }
 
+
+const SECTION_VARIANT_LABELS: Record<ResumeEditableSectionKey, Record<string, string>> = {
+  experience: { detailed: 'Detailed', bullets: 'Bullets', compact: 'Compact' },
+  education: { classic: 'Classic', timeline: 'Timeline', 'two-column': 'Two columns' },
+  language: { classic: 'Classic', 'text-level': 'Text level', stars: 'Stars', 'progress-line': 'Progress line', 'progress-circle': 'Progress circle', flags: 'Flags' },
+  project: { classic: 'Classic', list: 'List', cards: 'Cards', timeline: 'Timeline', 'two-column': 'Two columns' },
+  skill: { classic: 'Classic', 'text-level': 'Text level', stars: 'Stars', dots: 'Dots', progress: 'Progress' },
+  reference: { classic: 'Classic' },
+  hobby: { classic: 'Classic' },
+  certification: { classic: 'Classic' },
+}
+
+function variantOptions(sectionKey: ResumeEditableSectionKey) {
+  return RESUME_SECTION_VARIANTS[sectionKey].map((value) => ({
+    value,
+    label: SECTION_VARIANT_LABELS[sectionKey][value],
+  }))
+}
 export const RESUME_CONTENT_STYLE_OPTIONS: Array<{
   label: string
   value: ResumeContentStyle
@@ -49,11 +68,7 @@ export const RESUME_SECTION_REGISTRY: Record<
   experience: {
     label: 'Experience',
     icon: 'mdi-briefcase-outline',
-    variants: [
-      { label: 'Detailed', value: 'detailed' },
-      { label: 'Bullets', value: 'bullets' },
-      { label: 'Compact', value: 'compact' },
-    ],
+    variants: variantOptions('experience'),
     defaultVariant: 'detailed',
     defaultRegion: 'main',
     toolbarActions: [
@@ -81,11 +96,7 @@ export const RESUME_SECTION_REGISTRY: Record<
   education: {
     label: 'Education',
     icon: 'mdi-school-outline',
-    variants: [
-      { label: 'Classic', value: 'classic' },
-      { label: 'Timeline', value: 'timeline' },
-      { label: 'Two columns', value: 'two-column' },
-    ],
+    variants: variantOptions('education'),
     defaultVariant: 'classic',
     defaultRegion: 'main',
     toolbarActions: [
@@ -113,14 +124,7 @@ export const RESUME_SECTION_REGISTRY: Record<
   language: {
     label: 'Language',
     icon: 'mdi-translate',
-    variants: [
-      { label: 'Classic', value: 'classic' },
-      { label: 'Text level', value: 'text-level' },
-      { label: 'Stars', value: 'stars' },
-      { label: 'Progress line', value: 'progress-line' },
-      { label: 'Progress circle', value: 'progress-circle' },
-      { label: 'Flags', value: 'flags' },
-    ],
+    variants: variantOptions('language'),
     defaultVariant: 'classic',
     defaultRegion: 'aside',
     toolbarActions: [
@@ -139,13 +143,7 @@ export const RESUME_SECTION_REGISTRY: Record<
   project: {
     label: 'Project',
     icon: 'mdi-folder-star-outline',
-    variants: [
-      { label: 'Classic', value: 'classic' },
-      { label: 'List', value: 'list' },
-      { label: 'Cards', value: 'cards' },
-      { label: 'Timeline', value: 'timeline' },
-      { label: 'Two columns', value: 'two-column' },
-    ],
+    variants: variantOptions('project'),
     defaultVariant: 'classic',
     defaultRegion: 'main',
     toolbarActions: [
@@ -172,13 +170,7 @@ export const RESUME_SECTION_REGISTRY: Record<
   skill: {
     label: 'Skill',
     icon: 'mdi-star-circle-outline',
-    variants: [
-      { label: 'Classic', value: 'classic' },
-      { label: 'Text level', value: 'text-level' },
-      { label: 'Stars', value: 'stars' },
-      { label: 'Dots', value: 'dots' },
-      { label: 'Progress', value: 'progress' },
-    ],
+    variants: variantOptions('skill'),
     defaultVariant: 'progress',
     defaultRegion: 'aside',
     toolbarActions: [
@@ -197,7 +189,7 @@ export const RESUME_SECTION_REGISTRY: Record<
   reference: {
     label: 'Reference',
     icon: 'mdi-card-account-details-outline',
-    variants: [{ label: 'Classic', value: 'classic' }],
+    variants: variantOptions('reference'),
     defaultVariant: 'classic',
     defaultRegion: 'aside',
     toolbarActions: [
@@ -216,7 +208,7 @@ export const RESUME_SECTION_REGISTRY: Record<
   hobby: {
     label: 'Hobby',
     icon: 'mdi-puzzle-heart-outline',
-    variants: [{ label: 'Classic', value: 'classic' }],
+    variants: variantOptions('hobby'),
     defaultVariant: 'classic',
     defaultRegion: 'aside',
     toolbarActions: [
@@ -235,7 +227,7 @@ export const RESUME_SECTION_REGISTRY: Record<
   certification: {
     label: 'Certification',
     icon: 'mdi-certificate-outline',
-    variants: [{ label: 'Classic', value: 'classic' }],
+    variants: variantOptions('certification'),
     defaultVariant: 'classic',
     defaultRegion: 'aside',
     toolbarActions: [
@@ -255,4 +247,22 @@ export const RESUME_SECTION_REGISTRY: Record<
 
 export function getSectionRegistryEntry(sectionKey: ResumeEditableSectionKey) {
   return RESUME_SECTION_REGISTRY[sectionKey]
+}
+
+
+export function validateResumeSectionVariantSupportMatrix(rendererVariantsBySection: Partial<Record<ResumeEditableSectionKey, readonly string[]>>) {
+  const mismatches: string[] = []
+
+  for (const sectionKey of Object.keys(RESUME_SECTION_REGISTRY) as ResumeEditableSectionKey[]) {
+    const exposed = RESUME_SECTION_REGISTRY[sectionKey].variants.map((variant) => variant.value)
+    const rendered = rendererVariantsBySection[sectionKey]
+    if (!rendered) continue
+    const unsupported = exposed.filter((variant) => !rendered.includes(variant))
+    if (unsupported.length) mismatches.push(`${sectionKey}: ${unsupported.join(', ')}`)
+  }
+
+  return {
+    valid: mismatches.length === 0,
+    mismatches,
+  }
 }
