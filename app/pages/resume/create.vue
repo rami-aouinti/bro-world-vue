@@ -883,6 +883,7 @@ const selectedTemplateConfig = computed(
 )
 
 const selectedPresetConfig = computed(() => resolveSoclePresetById(selectedPreset.value))
+const selectedPhotoShape = ref<string>('square')
 
 const soclePresetOptions = computed(() =>
   CV_SOCLE_PRESETS.map((preset) => ({ label: preset.label, value: preset.id })),
