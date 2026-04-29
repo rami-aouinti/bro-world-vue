@@ -167,10 +167,6 @@ onUnmounted(() => {
   transition-property: padding;
 }
 
-.breadcrumbs-wrapper {
-  display: flex;
-  justify-content: center;
-}
 
 @media (max-width: 960px) {
   .v-main {
