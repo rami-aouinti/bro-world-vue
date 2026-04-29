@@ -1,0 +1,115 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { describe, expect, it } from 'vitest'
+import { RESUME_SECTION_REGISTRY } from '~/constants/resumeSectionRegistry'
+import {
+  RESUME_RENDERER_VARIANTS_BY_SECTION,
+  RESUME_SHARED_TEMPLATE_VARIANTS_BY_SECTION,
+} from '~/constants/resumeVariantSupportMatrix'
+
+function readComponentSource(filename: string) {
+  return readFileSync(
+    resolve(process.cwd(), 'app/components/Resume/Sections', filename),
+    'utf-8',
+  )
+}
+
+describe('resume section registry consistency', () => {
+  it('ensures each defaultVariant is declared in variants', () => {
+    for (const [sectionKey, entry] of Object.entries(RESUME_SECTION_REGISTRY)) {
+      const available = new Set(entry.variants.map((variant) => variant.value))
+      expect(
+        available.has(entry.defaultVariant),
+        `${sectionKey}: defaultVariant \"${entry.defaultVariant}\" missing from variants`,
+      ).toBe(true)
+    }
+  })
+
+  it('ensures language/project/experience variants are supported by target components', () => {
+    const sectionSources = {
+      language: readComponentSource('ResumeSectionLanguage.vue'),
+      project: readComponentSource('ResumeSectionProject.vue'),
+      experience: readComponentSource('ResumeSectionExperience.vue'),
+    } as const
+
+    for (const [sectionKey, source] of Object.entries(sectionSources) as Array<
+      [keyof typeof sectionSources, string]
+    >) {
+      const expectedVariants = RESUME_SECTION_REGISTRY[sectionKey].variants.map(
+        ({ value }) => value,
+      )
+
+      for (const variant of expectedVariants) {
+        expect(
+          source.includes(`'${variant}'`) || source.includes(`\"${variant}\"`),
+          `${sectionKey}: variant \"${variant}\" not found in component source`,
+        ).toBe(true)
+      }
+    }
+  })
+
+  it('ensures renderer and shared-template variant declarations stay within registry variants', () => {
+    const matrices = [
+      RESUME_RENDERER_VARIANTS_BY_SECTION,
+      RESUME_SHARED_TEMPLATE_VARIANTS_BY_SECTION,
+    ]
+
+    for (const matrix of matrices) {
+      for (const [sectionKey, variants] of Object.entries(matrix)) {
+        const allowed = new Set(
+          RESUME_SECTION_REGISTRY[
+            sectionKey as keyof typeof RESUME_SECTION_REGISTRY
+          ].variants.map(({ value }) => value),
+        )
+
+        for (const variant of variants ?? []) {
+          expect(
+            allowed.has(variant),
+            `${sectionKey}: unsupported variant \"${variant}\" in matrix`,
+          ).toBe(true)
+        }
+      }
+    }
+  })
+
+  it('ensures expected toolbar actions are coherent with section props and emits (language/project/experience)', () => {
+    const sectionSources = {
+      language: readComponentSource('ResumeSectionLanguage.vue'),
+      project: readComponentSource('ResumeSectionProject.vue'),
+      experience: readComponentSource('ResumeSectionExperience.vue'),
+    } as const
+
+    for (const [sectionKey, source] of Object.entries(sectionSources) as Array<
+      [keyof typeof sectionSources, string]
+    >) {
+      const toolbarActions = RESUME_SECTION_REGISTRY[sectionKey].toolbarActions
+
+      if (toolbarActions.includes('change-variant')) {
+        expect(source.includes("(event: 'change-variant'"), `${sectionKey}: missing change-variant emit declaration`).toBe(true)
+        expect(source.includes('@change-variant='), `${sectionKey}: missing SectionToolbar change-variant wiring`).toBe(true)
+      }
+
+      if (toolbarActions.includes('move-up')) {
+        expect(source.includes('canMoveUp?: boolean'), `${sectionKey}: missing canMoveUp prop`).toBe(true)
+        expect(source.includes(':can-move-up="canMoveUp"'), `${sectionKey}: missing can-move-up binding`).toBe(true)
+        expect(source.includes('@move-up='), `${sectionKey}: missing move-up wiring`).toBe(true)
+      }
+
+      if (toolbarActions.includes('move-down')) {
+        expect(source.includes('canMoveDown?: boolean'), `${sectionKey}: missing canMoveDown prop`).toBe(true)
+        expect(source.includes(':can-move-down="canMoveDown"'), `${sectionKey}: missing can-move-down binding`).toBe(true)
+        expect(source.includes('@move-down='), `${sectionKey}: missing move-down wiring`).toBe(true)
+      }
+
+      if (toolbarActions.includes('add-item')) {
+        expect(source.includes("(event: 'add-item'"), `${sectionKey}: missing add-item emit declaration`).toBe(true)
+        expect(source.includes('@add-item='), `${sectionKey}: missing add-item wiring`).toBe(true)
+      }
+
+      if (toolbarActions.includes('delete-section')) {
+        expect(source.includes("(event: 'delete-section'"), `${sectionKey}: missing delete-section emit declaration`).toBe(true)
+        expect(source.includes('@delete-section='), `${sectionKey}: missing delete-section wiring`).toBe(true)
+      }
+    }
+  })
+})
