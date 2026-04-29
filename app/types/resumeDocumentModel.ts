@@ -1,6 +1,5 @@
 import type { PageBackgroundId, RoundedOptionId, Typography } from '~/constants/resumeDesign'
 import type { ResumeLayoutMode, ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
-import type { ResumeTemplateVariant } from '~/constants/resumeTemplates'
 
 export type ResumeLayoutDensity = 'compact' | 'comfortable'
 export type ResumeSectionRegion = 'main' | 'aside'
@@ -102,7 +101,8 @@ export type ResumeStylePreferences = {
 }
 
 export type ResumeDocumentModel = {
-  templateVariant: ResumeTemplateVariant
+  templateId: 'cv-socle'
+  presetId: string
   sectionOrder: ResumeSectionLayoutModel[]
   style: ResumeStylePreferences
 }
