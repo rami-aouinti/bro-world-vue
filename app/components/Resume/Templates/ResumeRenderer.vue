@@ -146,13 +146,12 @@ const emit = defineEmits<{
   ): void
   (event: 'delete-section', sectionKey: ResumeEditableSectionKey): void
   (event: 'move-photo', direction: 'left' | 'right' | 'up' | 'down'): void
-  (event: 'open-photo-picker'): void
+  (event: 'open-photo-picker' | 'remove-photo'): void
   (
     event: 'update:photo-size' | 'update:photo-border-width',
     value: number,
   ): void
   (event: 'update:photo-position', value: 'left' | 'right'): void
-  (event: 'remove-photo'): void
 }>()
 
 const normalizedSectionLayout = computed<SectionLayoutEntry[]>(() => {
@@ -682,14 +681,11 @@ function updateText(path: string, value: string) {
           :selected-value="selectedPhotoShape"
           :photo-size="photoSize"
           :photo-border-width="photoBorderWidth"
-          :photo-position="resolvedDesignState.photoPosition"
           @select="onPhotoShapeSelect?.($event)"
           @upload="emit('open-photo-picker')"
           @remove="emit('remove-photo')"
           @update:photo-size="emit('update:photo-size', $event)"
           @update:photo-border-width="emit('update:photo-border-width', $event)"
-          @update:photo-position="emit('update:photo-position', $event)"
-          @move="emit('move-photo', $event)"
         />
         <v-avatar
           class="resume-skin__avatar"

@@ -10,25 +10,16 @@ const props = defineProps<{
   selectedValue: string
   photoSize: number
   photoBorderWidth: number
-  photoPosition: 'left' | 'right'
 }>()
 
 const emit = defineEmits<{
   (event: 'select', value: string): void
-  (event: 'move', direction: 'left' | 'right' | 'up' | 'down'): void
-  (event: 'upload'): void
-  (event: 'remove'): void
+  (event: 'upload' | 'remove'): void
   (event: 'update:photo-size' | 'update:photo-border-width', value: number): void
-  (event: 'update:photo-position', value: 'left' | 'right'): void
 }>()
 
+const { t } = useI18n()
 const isMenuOpen = ref(false)
-
-function handlePhotoPositionUpdate(value: unknown) {
-  if (value === 'left' || value === 'right') {
-    emit('update:photo-position', value)
-  }
-}
 </script>
 
 <template>
@@ -59,7 +50,7 @@ function handlePhotoPositionUpdate(value: unknown) {
               variant="tonal"
               color="primary"
               prepend-icon="mdi-upload"
-              text="Upload / Remplacer"
+              :text="t('resumeBuilder.create.avatarMenu.uploadReplace')"
               @click="emit('upload')"
             />
             <v-btn
@@ -67,13 +58,13 @@ function handlePhotoPositionUpdate(value: unknown) {
               variant="text"
               color="error"
               prepend-icon="mdi-delete-outline"
-              text="Retirer"
+              :text="t('resumeBuilder.create.avatarMenu.remove')"
               @click="emit('remove')"
             />
           </div>
 
           <div class="photo-menu__section">
-            <p class="photo-menu__label">Forme avatar</p>
+            <p class="photo-menu__label">{{ t('resumeBuilder.create.avatarMenu.avatarShape') }}</p>
             <div class="photo-shape-picker">
               <v-btn
                 v-for="shape in props.options"
@@ -89,7 +80,7 @@ function handlePhotoPositionUpdate(value: unknown) {
           </div>
 
           <div class="photo-menu__section">
-            <p class="photo-menu__label">Taille</p>
+            <p class="photo-menu__label">{{ t('resumeBuilder.create.avatarMenu.size') }}</p>
             <v-slider
               :model-value="props.photoSize"
               :min="96"
@@ -97,12 +88,12 @@ function handlePhotoPositionUpdate(value: unknown) {
               :step="2"
               hide-details
               density="compact"
-              @update:model-value="emit('update:photo-size', Number($event))"
+              @update:model-value="(value) => typeof value === 'number' && emit('update:photo-size', value)"
             />
           </div>
 
           <div class="photo-menu__section">
-            <p class="photo-menu__label">Épaisseur bordure</p>
+            <p class="photo-menu__label">{{ t('resumeBuilder.create.avatarMenu.borderWidth') }}</p>
             <v-slider
               :model-value="props.photoBorderWidth"
               :min="0"
@@ -110,34 +101,8 @@ function handlePhotoPositionUpdate(value: unknown) {
               :step="1"
               hide-details
               density="compact"
-              @update:model-value="emit('update:photo-border-width', Number($event))"
+              @update:model-value="(value) => typeof value === 'number' && emit('update:photo-border-width', value)"
             />
-          </div>
-
-          <div class="photo-menu__section">
-            <p class="photo-menu__label">Alignement</p>
-            <v-btn-toggle
-              :model-value="props.photoPosition"
-              mandatory
-              density="comfortable"
-              divided
-              @update:model-value="handlePhotoPositionUpdate"
-            >
-              <v-btn value="left" size="x-small">G</v-btn>
-              <v-btn value="right" size="x-small">D</v-btn>
-            </v-btn-toggle>
-          </div>
-
-          <div class="photo-menu__section">
-            <p class="photo-menu__label">Position</p>
-            <div class="photo-move-controls">
-              <v-btn icon="mdi-arrow-up" size="x-small" variant="tonal" @click="emit('move', 'up')" />
-              <div class="photo-move-controls__row">
-                <v-btn icon="mdi-arrow-left" size="x-small" variant="tonal" @click="emit('move', 'left')" />
-                <v-btn icon="mdi-arrow-right" size="x-small" variant="tonal" @click="emit('move', 'right')" />
-              </div>
-              <v-btn icon="mdi-arrow-down" size="x-small" variant="tonal" @click="emit('move', 'down')" />
-            </div>
           </div>
         </v-card-text>
       </v-card>
@@ -231,16 +196,4 @@ function handlePhotoPositionUpdate(value: unknown) {
   line-height: 1;
 }
 
-.photo-move-controls {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.photo-move-controls__row {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-}
 </style>
