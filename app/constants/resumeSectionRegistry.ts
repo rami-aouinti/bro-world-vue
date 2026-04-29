@@ -16,9 +16,9 @@ export type ResumeToolbarAction =
 export type ResumeContentStyle = 'points' | 'dashes' | 'timeline'
 
 export type ResumeSectionRegistryEntry = {
-  label: string
+  labelKey: string
   icon: string
-  variants: Array<{ label: string; value: string }>
+  variants: Array<{ labelKey: string; value: string }>
   defaultVariant: string
   defaultRegion: ResumeSectionRegion
   toolbarActions: ResumeToolbarAction[]
@@ -35,30 +35,30 @@ export type ResumeSectionRegistryEntry = {
 }
 
 
-const SECTION_VARIANT_LABELS: Record<ResumeEditableSectionKey, Record<string, string>> = {
-  experience: { detailed: 'Detailed', bullets: 'Bullets', compact: 'Compact' },
-  education: { classic: 'Classic', timeline: 'Timeline', 'two-column': 'Two columns' },
-  language: { classic: 'Classic', 'text-level': 'Text level', stars: 'Stars', 'progress-line': 'Progress line', 'progress-circle': 'Progress circle', flags: 'Flags' },
-  project: { classic: 'Classic', list: 'List', cards: 'Cards', timeline: 'Timeline', 'two-column': 'Two columns' },
-  skill: { classic: 'Classic', 'text-level': 'Text level', stars: 'Stars', dots: 'Dots', progress: 'Progress' },
-  reference: { classic: 'Classic' },
-  hobby: { classic: 'Classic' },
-  certification: { classic: 'Classic' },
+const SECTION_VARIANT_LABEL_KEYS: Record<ResumeEditableSectionKey, Record<string, string>> = {
+  experience: { detailed: 'resumeBuilder.create.registry.variants.detailed', bullets: 'resumeBuilder.create.registry.variants.bullets', compact: 'resumeBuilder.create.registry.variants.compact' },
+  education: { classic: 'resumeBuilder.create.registry.variants.classic', timeline: 'resumeBuilder.create.registry.variants.timeline', 'two-column': 'resumeBuilder.create.registry.variants.twoColumns' },
+  language: { classic: 'resumeBuilder.create.registry.variants.classic', 'text-level': 'resumeBuilder.create.registry.variants.textLevel', stars: 'resumeBuilder.create.registry.variants.stars', 'progress-line': 'resumeBuilder.create.registry.variants.progressLine', 'progress-circle': 'resumeBuilder.create.registry.variants.progressCircle', flags: 'resumeBuilder.create.registry.variants.flags' },
+  project: { classic: 'resumeBuilder.create.registry.variants.classic', list: 'resumeBuilder.create.registry.variants.list', cards: 'resumeBuilder.create.registry.variants.cards', timeline: 'resumeBuilder.create.registry.variants.timeline', 'two-column': 'resumeBuilder.create.registry.variants.twoColumns' },
+  skill: { classic: 'resumeBuilder.create.registry.variants.classic', 'text-level': 'resumeBuilder.create.registry.variants.textLevel', stars: 'resumeBuilder.create.registry.variants.stars', dots: 'resumeBuilder.create.registry.variants.dots', progress: 'resumeBuilder.create.registry.variants.progress' },
+  reference: { classic: 'resumeBuilder.create.registry.variants.classic' },
+  hobby: { classic: 'resumeBuilder.create.registry.variants.classic' },
+  certification: { classic: 'resumeBuilder.create.registry.variants.classic' },
 }
 
 function variantOptions(sectionKey: ResumeEditableSectionKey) {
   return RESUME_SECTION_VARIANTS[sectionKey].map((value) => ({
     value,
-    label: SECTION_VARIANT_LABELS[sectionKey][value],
+    labelKey: SECTION_VARIANT_LABEL_KEYS[sectionKey][value],
   }))
 }
 export const RESUME_CONTENT_STYLE_OPTIONS: Array<{
-  label: string
+  labelKey: string
   value: ResumeContentStyle
 }> = [
-  { label: 'Points', value: 'points' },
-  { label: 'Tirets', value: 'dashes' },
-  { label: 'Timeline', value: 'timeline' },
+  { labelKey: 'resumeBuilder.create.registry.contentStyles.points', value: 'points' },
+  { labelKey: 'resumeBuilder.create.registry.contentStyles.dashes', value: 'dashes' },
+  { labelKey: 'resumeBuilder.create.registry.contentStyles.timeline', value: 'timeline' },
 ]
 
 export const RESUME_SECTION_REGISTRY: Record<
@@ -66,7 +66,7 @@ export const RESUME_SECTION_REGISTRY: Record<
   ResumeSectionRegistryEntry
 > = {
   experience: {
-    label: 'Experience',
+    labelKey: 'resumeBuilder.create.registry.sections.experience',
     icon: 'mdi-briefcase-outline',
     variants: variantOptions('experience'),
     defaultVariant: 'detailed',
@@ -94,7 +94,7 @@ export const RESUME_SECTION_REGISTRY: Record<
     contentStyles: ['points', 'dashes', 'timeline'],
   },
   education: {
-    label: 'Education',
+    labelKey: 'resumeBuilder.create.registry.sections.education',
     icon: 'mdi-school-outline',
     variants: variantOptions('education'),
     defaultVariant: 'classic',
@@ -122,7 +122,7 @@ export const RESUME_SECTION_REGISTRY: Record<
     contentStyles: ['points', 'dashes', 'timeline'],
   },
   language: {
-    label: 'Language',
+    labelKey: 'resumeBuilder.create.registry.sections.language',
     icon: 'mdi-translate',
     variants: variantOptions('language'),
     defaultVariant: 'classic',
@@ -141,7 +141,7 @@ export const RESUME_SECTION_REGISTRY: Record<
     contentStyles: [],
   },
   project: {
-    label: 'Project',
+    labelKey: 'resumeBuilder.create.registry.sections.project',
     icon: 'mdi-folder-star-outline',
     variants: variantOptions('project'),
     defaultVariant: 'classic',
@@ -168,7 +168,7 @@ export const RESUME_SECTION_REGISTRY: Record<
     contentStyles: ['points', 'dashes', 'timeline'],
   },
   skill: {
-    label: 'Skill',
+    labelKey: 'resumeBuilder.create.registry.sections.skill',
     icon: 'mdi-star-circle-outline',
     variants: variantOptions('skill'),
     defaultVariant: 'progress',
@@ -187,7 +187,7 @@ export const RESUME_SECTION_REGISTRY: Record<
     contentStyles: [],
   },
   reference: {
-    label: 'Reference',
+    labelKey: 'resumeBuilder.create.registry.sections.reference',
     icon: 'mdi-card-account-details-outline',
     variants: variantOptions('reference'),
     defaultVariant: 'classic',
@@ -206,7 +206,7 @@ export const RESUME_SECTION_REGISTRY: Record<
     contentStyles: [],
   },
   hobby: {
-    label: 'Hobby',
+    labelKey: 'resumeBuilder.create.registry.sections.hobby',
     icon: 'mdi-puzzle-heart-outline',
     variants: variantOptions('hobby'),
     defaultVariant: 'classic',
@@ -225,7 +225,7 @@ export const RESUME_SECTION_REGISTRY: Record<
     contentStyles: [],
   },
   certification: {
-    label: 'Certification',
+    labelKey: 'resumeBuilder.create.registry.sections.certification',
     icon: 'mdi-certificate-outline',
     variants: variantOptions('certification'),
     defaultVariant: 'classic',

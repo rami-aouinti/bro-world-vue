@@ -1,4 +1,5 @@
 export function useResumeMediaFields() {
+  const { t } = useI18n()
   const EXPERIENCE_LOGO_MAX_FILE_SIZE = 2 * 1024 * 1024
   const EXPERIENCE_LOGO_ALLOWED_TYPES = [
     'image/png',
@@ -9,10 +10,10 @@ export function useResumeMediaFields() {
 
   function validateExperienceLogoFile(file: File) {
     if (!EXPERIENCE_LOGO_ALLOWED_TYPES.includes(file.type)) {
-      return 'Format invalide. Utilise PNG, JPEG, WEBP ou SVG.'
+      return t('resumeBuilder.create.validation.logoInvalidFormat')
     }
     if (file.size > EXPERIENCE_LOGO_MAX_FILE_SIZE) {
-      return 'Fichier trop volumineux (max 2MB).'
+      return t('resumeBuilder.create.validation.logoFileTooLarge')
     }
     return ''
   }
@@ -21,7 +22,7 @@ export function useResumeMediaFields() {
     return new Promise<string>((resolve, reject) => {
       const reader = new FileReader()
       reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : '')
-      reader.onerror = () => reject(new Error('Impossible de lire le fichier logo.'))
+      reader.onerror = () => reject(new Error(t('resumeBuilder.create.validation.logoReadFailed')))
       reader.readAsDataURL(file)
     })
   }
@@ -40,7 +41,7 @@ export function useResumeMediaFields() {
       target.onSuccess(dataUrl)
       target.onError?.('')
     } catch {
-      target.onError?.('Impossible de charger ce logo.')
+      target.onError?.(t('resumeBuilder.create.validation.logoLoadFailed'))
     }
   }
 
