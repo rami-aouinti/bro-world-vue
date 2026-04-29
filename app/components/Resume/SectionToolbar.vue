@@ -301,7 +301,7 @@ watch(
           icon
           size="default"
           variant="tonal"
-          :aria-label="`Add item à la section ${props.sectionKey}`"
+          :aria-label="`Add item to section ${props.sectionKey}`"
           v-bind="tooltipProps"
           @click="emit('add-item', props.sectionKey)"
         >
