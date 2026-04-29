@@ -176,7 +176,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
         @move-up="() => emit('move-section', 'certification', 'up')"
         @move-down="() => emit('move-section', 'certification', 'down')"
       />
-      <ResumeSectionHeader title="Certifications" icon="mdi-certificate" in-aside class="cv-divider-bottom" />
+      <ResumeSectionHeader title="Certifications" icon="mdi-certificate-outline" in-aside class="cv-divider-bottom" />
       <ul>
         <li v-for="(course, index) in resume.courses" :key="`${course.title}-${index}`">
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`courses.${index}.title`, (event.target as HTMLElement).innerText)">{{ course.title }}</span>
@@ -229,7 +229,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
         @move-up="() => emit('move-section', 'reference', 'up')"
         @move-down="() => emit('move-section', 'reference', 'down')"
       />
-      <ResumeSectionHeader title="References" icon="mdi-account-tie" in-aside class="cv-divider-bottom" />
+      <ResumeSectionHeader title="References" icon="mdi-account" in-aside class="cv-divider-bottom" />
       <ul>
         <li v-for="(reference, index) in resume.references" :key="`${reference.name}-${index}`">
           <span class="editable-text" :contenteditable="editable" @input="event => updateText(`references.${index}.name`, (event.target as HTMLElement).innerText)">{{ reference.name }}</span>
