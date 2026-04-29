@@ -169,7 +169,7 @@ export const RESUME_SECTION_REGISTRY: Record<
   },
   skill: {
     labelKey: 'resumeBuilder.create.registry.sections.skill',
-    icon: 'mdi-star-circle-outline',
+    icon: 'mdi-star-outline',
     variants: variantOptions('skill'),
     defaultVariant: 'progress',
     defaultRegion: 'aside',
@@ -188,7 +188,7 @@ export const RESUME_SECTION_REGISTRY: Record<
   },
   reference: {
     labelKey: 'resumeBuilder.create.registry.sections.reference',
-    icon: 'mdi-account-tie',
+    icon: 'mdi-account',
     variants: variantOptions('reference'),
     defaultVariant: 'classic',
     defaultRegion: 'aside',
@@ -226,7 +226,7 @@ export const RESUME_SECTION_REGISTRY: Record<
   },
   certification: {
     labelKey: 'resumeBuilder.create.registry.sections.certification',
-    icon: 'mdi-certificate',
+    icon: 'mdi-certificate-outline',
     variants: variantOptions('certification'),
     defaultVariant: 'classic',
     defaultRegion: 'aside',
