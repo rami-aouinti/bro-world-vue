@@ -556,7 +556,7 @@ function updateText(path: string, value: string) {
       <div>
         <h1>
           <span
-            class="editable-text text-dark"
+            class="editable-text resume-skin__text"
             :contenteditable="editable"
             @input="
               (event) =>
@@ -565,7 +565,7 @@ function updateText(path: string, value: string) {
             >{{ resume.firstName }}</span
           >
           <span
-            class="editable-text text-dark mx-3"
+            class="editable-text resume-skin__text mx-3"
             :contenteditable="editable"
             @input="
               (event) =>
@@ -575,7 +575,7 @@ function updateText(path: string, value: string) {
           >
         </h1>
         <p
-          class="editable-text text-dark"
+          class="editable-text resume-skin__text"
           :contenteditable="editable"
           @input="
             (event) =>
@@ -596,7 +596,7 @@ function updateText(path: string, value: string) {
               :size="contactIconSize"
             />
             <span
-              class="editable-text text-dark"
+              class="editable-text resume-skin__text"
               :contenteditable="editable"
               @input="
                 (event) =>
@@ -617,7 +617,7 @@ function updateText(path: string, value: string) {
             />
             <span>
               <span
-                class="editable-text text-dark"
+                class="editable-text resume-skin__text"
                 :contenteditable="editable"
                 @input="
                   (event) =>
@@ -628,7 +628,7 @@ function updateText(path: string, value: string) {
               <span v-if="resume.country">, </span>
               <span
                 v-if="resume.country"
-                class="editable-text text-dark"
+                class="editable-text resume-skin__text"
                 :contenteditable="editable"
                 @input="
                   (event) =>
@@ -649,7 +649,7 @@ function updateText(path: string, value: string) {
               :size="contactIconSize"
             />
             <span
-              class="editable-text text-dark"
+              class="editable-text resume-skin__text"
               :contenteditable="editable"
               @input="
                 (event) =>
@@ -666,7 +666,7 @@ function updateText(path: string, value: string) {
               :size="contactIconSize"
             />
             <span
-              class="editable-text text-dark"
+              class="editable-text resume-skin__text"
               :contenteditable="editable"
               @input="
                 (event) =>
@@ -677,11 +677,11 @@ function updateText(path: string, value: string) {
           </div>
           <div v-if="resume.homepage" class="resume-skin__contact-item">
             <v-icon v-if="showContactIcons" class="resume-skin__contact-icon" icon="mdi-web" :size="contactIconSize" />
-            <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" class="text-dark">Home Page</a>
+            <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" class="resume-skin__text">Home Page</a>
           </div>
           <div v-if="resume.repoProfile" class="resume-skin__contact-item">
             <v-icon v-if="showContactIcons" class="resume-skin__contact-icon" icon="mdi-github" :size="contactIconSize" />
-            <a :href="resume.repoProfile" target="_blank" rel="noopener noreferrer" class="text-dark">Github Repo</a>
+            <a :href="resume.repoProfile" target="_blank" rel="noopener noreferrer" class="resume-skin__text">Github Repo</a>
           </div>
         </div>
       </div>
@@ -876,7 +876,7 @@ function updateText(path: string, value: string) {
                 icon="mdi-web"
                 :size="contactIconSize"
               />
-              <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" class="text-dark"
+              <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" class="resume-skin__text"
                 >Home Page</a
               >
             </div>
@@ -890,7 +890,7 @@ function updateText(path: string, value: string) {
               <a
                 :href="resume.repoProfile"
                 target="_blank"
-                class="text-dark"
+                class="resume-skin__text"
                 rel="noopener noreferrer"
                 >Github Repo</a
               >
@@ -1042,7 +1042,7 @@ function updateText(path: string, value: string) {
                 icon="mdi-web"
                 :size="contactIconSize"
               />
-              <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" class="text-dark"
+              <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" class="resume-skin__text"
                 >Home Page</a
               >
             </div>
@@ -1057,7 +1057,7 @@ function updateText(path: string, value: string) {
                 :href="resume.repoProfile"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="text-dark"
+                class="resume-skin__text"
                 >Github Repo</a
               >
             </div>
@@ -1388,8 +1388,8 @@ function updateText(path: string, value: string) {
   color: #fff !important;
 }
 
-.resume-skin__aside :deep(.text-dark),
-.resume-skin__aside :deep(.text-dark),
+.resume-skin__aside :deep(.resume-skin__text),
+.resume-skin__aside :deep(.resume-skin__text),
 .resume-skin__aside :deep(.editable-text),
 .resume-skin__aside :deep(p),
 .resume-skin__aside :deep(li),
