@@ -2975,7 +2975,17 @@
     },
     "meta": {
       "indexTitle": "Creador de currículum",
-      "createTitle": "Crear currículum"
+      "createTitle": "Crear currículum",
+      "seo": {
+        "create": {
+          "title": "Crear mi currículum | Bro World",
+          "description": "Edita tu currículum en línea con un editor intuitivo, plantillas profesionales y una exportación lista para postular.",
+          "ogTitle": "Crear mi currículum | Bro World",
+          "ogDescription": "Personaliza cada sección de tu currículum y genera un resultado profesional en minutos.",
+          "twitterTitle": "Crear mi currículum | Bro World",
+          "twitterDescription": "Un editor de currículum moderno con vista previa en vivo y diseño profesional."
+        }
+      }
     }
   }
 }
