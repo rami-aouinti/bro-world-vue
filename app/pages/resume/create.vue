@@ -973,9 +973,12 @@ const layoutFilterByStructure: Record<Template['structureId'], Array<{ label: st
 }
 const availableLayoutFilterOptions = computed(() => layoutFilterByStructure[templatePickerState.value.structureId])
 const filteredTemplates = computed(() => {
+  const resumeTemplates = templatesByDocumentType.value.filter(
+    (template) => template.documentType === 'resume',
+  )
   const source = templatePickerState.value.mode === 'recommended'
-    ? templatesByDocumentType.value.filter((template) => template.recommended).slice(0, 6)
-    : templatesByDocumentType.value
+    ? resumeTemplates.filter((template) => template.recommended).slice(0, 6)
+    : resumeTemplates
   const query = templatePickerState.value.search.trim().toLowerCase()
   return source.filter((template) => {
     const matchesStructure = templatePickerState.value.mode === 'recommended'
@@ -2518,9 +2521,12 @@ watch(selectedTemplate, () => {
 watch(
   () => templatePickerState.value.structureId,
   (nextStructureId) => {
-    const nextLayout = layoutFilterByStructure[nextStructureId][0]?.value
-    if (nextLayout) {
-      templatePickerState.value.layoutId = nextLayout
+    const defaultLayoutForStructure = layoutFilterByStructure[nextStructureId][0]?.value
+    if (
+      defaultLayoutForStructure
+      && templatePickerState.value.layoutId !== defaultLayoutForStructure
+    ) {
+      templatePickerState.value.layoutId = defaultLayoutForStructure
     }
   },
 )
@@ -3958,6 +3964,15 @@ if (import.meta.client) {
             </div>
           </button>
         </div>
+        <v-alert
+          v-if="filteredTemplates.length === 0"
+          type="info"
+          variant="tonal"
+          density="comfortable"
+          class="mt-3"
+        >
+          Aucun template ne correspond aux filtres sélectionnés.
+        </v-alert>
       </template>
     </AppPageDrawers>
     <v-container fluid>
