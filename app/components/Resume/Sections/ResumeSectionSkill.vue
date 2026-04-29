@@ -407,11 +407,13 @@ function removeSkill(index: number) {
   height: var(--cv-space-1);
   background: var(--cv-progress-bg);
   margin-top: var(--cv-space-1);
+  border-radius: 999px;
+  overflow: hidden;
 }
 .progress i {
   display: block;
   height: var(--cv-space-1);
-  background: var(--cv-accent);
+  background: var(--cv-accent, #2563eb);
 }
 
 .density-compact {

@@ -1293,7 +1293,7 @@ function updateText(path: string, value: string) {
   container-type: inline-size;
 }
 .resume-contact-section .resume-skin__contact-grid {
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .resume-skin__contact-item {
   display: inline-flex;
@@ -1315,6 +1315,11 @@ function updateText(path: string, value: string) {
 }
 .resume-skin__contact-item .editable-text {
   min-width: 0;
+}
+.resume-skin :deep(.editable-text[contenteditable='true']) {
+  direction: ltr;
+  unicode-bidi: plaintext;
+  text-align: left;
 }
 .resume-skin__contact-item a {
   color: inherit;
