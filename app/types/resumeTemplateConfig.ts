@@ -1,4 +1,3 @@
-import type { ResumeLayoutMode, ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
 import type { ResumeEditableSectionKey } from '~/types/resumeDocumentModel'
 
 export type ResumeTemplateType = 'resume' | 'cover-page' | 'cover-letter'
@@ -8,25 +7,47 @@ export type ResumeTemplateRadius = 'none' | 'soft'
 export type ResumeTemplateTypography = 'executive' | 'modern' | 'clean' | 'serif' | 'sans'
 export type ResumeTemplateSectionVariant = 'detailed' | 'timeline' | 'compact' | 'classic' | 'list'
 export type ResumeTemplateIconStyle = 'text' | 'outline' | 'filled' | 'rounded'
-export type ResumeTemplateLayout = 'split' | 'stacked'
+export type ResumeStructureId = 'no-aside' | 'aside-left' | 'aside-right'
+export type ResumeLayoutId = string
+export type ResumeSkinId = string
+
+export type ResumeStructure = {
+  id: ResumeStructureId
+}
+
+export type ResumeLayoutSectionPlacement = {
+  section: ResumeEditableSectionKey
+  zone: 'main' | 'aside'
+  order: number
+  priority: number
+}
+
+export type ResumeLayout = {
+  id: ResumeLayoutId
+  structureId: ResumeStructureId
+  sections: ResumeLayoutSectionPlacement[]
+}
+
+export type ResumeSkin = {
+  id: ResumeSkinId
+  palette: ResumeTemplatePalette
+  radius: ResumeTemplateRadius
+  typography: ResumeTemplateTypography
+  sectionVariant?: ResumeTemplateSectionVariant
+  iconStyle: ResumeTemplateIconStyle
+}
 
 export type ResumeTemplateConfig = {
   id: string
+  structureId: ResumeStructureId
+  layoutId: ResumeLayoutId
+  skinId: ResumeSkinId
   label: string
   subtitle: string
   type: ResumeTemplateType
   image: string
   templateId: 'cv-socle'
   presetId?: string
-  layoutMode: ResumeTemplateLayout
-  sections: ResumeEditableSectionKey[]
-  styleVars: {
-    palette?: ResumeTemplatePalette
-    radius?: ResumeTemplateRadius
-    typography?: ResumeTemplateTypography
-    sectionVariant?: ResumeTemplateSectionVariant
-    iconStyle?: ResumeTemplateIconStyle
-  }
   visibleOptions: {
     photo: boolean
     twoColumn: boolean

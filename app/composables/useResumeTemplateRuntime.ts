@@ -1,5 +1,6 @@
 import { roundedPxByValue, textStyleVarsByValue, type PaletteId, type RoundedOptionId, type Typography } from '~/constants/resumeDesign'
 import type { ResumeLayoutMode, ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
+import { RESUME_LAYOUTS_CATALOG, RESUME_SKINS_CATALOG, RESUME_STRUCTURES_CATALOG } from '~/constants/resumeTemplates.catalog'
 import type { ResumeTemplateConfig } from '~/types/resumeTemplateConfig'
 
 export type ResumeRendererDesignState = {
@@ -10,7 +11,7 @@ export type ResumeRendererDesignState = {
   layoutMode: ResumeLayoutMode
 }
 
-const paletteAlias: Record<ResumeTemplateConfig['styleVars']['palette'], PaletteId> = {
+const paletteAlias: Record<(typeof RESUME_SKINS_CATALOG)[number]['palette'], PaletteId> = {
   'corporate-blue': 'ocean',
   midnight: 'slate',
   minimal: 'charcoal',
@@ -20,12 +21,12 @@ const paletteAlias: Record<ResumeTemplateConfig['styleVars']['palette'], Palette
   elegant: 'violet',
 } as const
 
-const radiusAlias: Record<NonNullable<ResumeTemplateConfig['styleVars']['radius']>, RoundedOptionId> = {
+const radiusAlias: Record<(typeof RESUME_SKINS_CATALOG)[number]['radius'], RoundedOptionId> = {
   none: 'none',
   soft: 'sm',
 } as const
 
-const typographyAlias: Record<NonNullable<ResumeTemplateConfig['styleVars']['typography']>, Typography> = {
+const typographyAlias: Record<(typeof RESUME_SKINS_CATALOG)[number]['typography'], Typography> = {
   executive: 'display',
   modern: 'clean',
   clean: 'clean',
@@ -33,12 +34,7 @@ const typographyAlias: Record<NonNullable<ResumeTemplateConfig['styleVars']['typ
   sans: 'clean',
 } as const
 
-const layoutAlias: Record<ResumeTemplateConfig['layoutMode'], ResumeLayoutMode> = {
-  split: 'aside-left',
-  stacked: 'no-aside',
-} as const
-
-const iconStyleAlias: Record<NonNullable<ResumeTemplateConfig['styleVars']['iconStyle']>, ResumeSectionIconStyleVariant> = {
+const iconStyleAlias: Record<(typeof RESUME_SKINS_CATALOG)[number]['iconStyle'], ResumeSectionIconStyleVariant> = {
   text: 'outline',
   outline: 'outline',
   filled: 'filled',
@@ -61,13 +57,17 @@ const paletteTokens: Record<PaletteId, { sidebar: string; accent: string; page: 
 }
 
 export function toResumeRendererDesignState(template: ResumeTemplateConfig): ResumeRendererDesignState {
-  const paletteId = template.styleVars.palette ? paletteAlias[template.styleVars.palette] : undefined
-  const radiusId = template.styleVars.radius ? radiusAlias[template.styleVars.radius] : undefined
-  const textStyle = template.styleVars.typography ? typographyAlias[template.styleVars.typography] : undefined
-  const iconStyle = template.styleVars.iconStyle ? iconStyleAlias[template.styleVars.iconStyle] : undefined
-  const layoutMode = layoutAlias[template.layoutMode]
+  const structure = RESUME_STRUCTURES_CATALOG.find(entry => entry.id === template.structureId)
+  const layout = RESUME_LAYOUTS_CATALOG.find(entry => entry.id === template.layoutId)
+  const skin = RESUME_SKINS_CATALOG.find(entry => entry.id === template.skinId)
 
-  if (!paletteId || !radiusId || !textStyle || !iconStyle || !layoutMode) {
+  const paletteId = skin?.palette ? paletteAlias[skin.palette] : undefined
+  const radiusId = skin?.radius ? radiusAlias[skin.radius] : undefined
+  const textStyle = skin?.typography ? typographyAlias[skin.typography] : undefined
+  const iconStyle = skin?.iconStyle ? iconStyleAlias[skin.iconStyle] : undefined
+  const layoutMode = structure?.id as ResumeLayoutMode | undefined
+
+  if (!paletteId || !radiusId || !textStyle || !iconStyle || !layoutMode || !layout || layout.structureId !== structure?.id) {
     throw new Error(`[resume-runtime] Incomplete template runtime config for "${template.id}"`)
   }
 

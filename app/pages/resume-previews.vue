@@ -14,10 +14,9 @@ const resumeTemplates = RESUME_TEMPLATES_CATALOG.filter((template) => template.t
         <h2>{{ template.label }}</h2>
         <p>{{ template.subtitle }}</p>
         <ul>
-          <li><strong>Variant:</strong> {{ template.variant }}</li>
-          <li><strong>Layout:</strong> {{ template.layoutMode }}</li>
-          <li><strong>Palette:</strong> {{ template.styleVars.palette }}</li>
-          <li><strong>Typography:</strong> {{ template.styleVars.typography }}</li>
+          <li><strong>Structure:</strong> {{ template.structureId }}</li>
+          <li><strong>Layout:</strong> {{ template.layoutId }}</li>
+          <li><strong>Skin:</strong> {{ template.skinId }}</li>
         </ul>
       </article>
     </section>
