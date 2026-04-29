@@ -46,23 +46,21 @@ definePageMeta({
   layout: 'resume',
 })
 
+const { t } = useI18n()
 const runtimeConfig = useRuntimeConfig()
 const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world.com'
 const pageUrl = `${siteUrl}/resume/create`
 
 useSeoMeta({
-  title: 'Créer mon CV | Bro World',
-  description:
-    'Éditez votre CV en ligne avec un éditeur intuitif, des modèles professionnels et un export prêt à postuler.',
-  ogTitle: 'Créer mon CV | Bro World',
-  ogDescription:
-    'Personnalisez chaque section de votre CV et générez un rendu professionnel en quelques minutes.',
+  title: t('resumeBuilder.meta.seo.create.title'),
+  description: t('resumeBuilder.meta.seo.create.description'),
+  ogTitle: t('resumeBuilder.meta.seo.create.ogTitle'),
+  ogDescription: t('resumeBuilder.meta.seo.create.ogDescription'),
   ogType: 'website',
   ogUrl: pageUrl,
   twitterCard: 'summary_large_image',
-  twitterTitle: 'Créer mon CV | Bro World',
-  twitterDescription:
-    'Un éditeur de CV moderne avec aperçu en direct et mise en page professionnelle.',
+  twitterTitle: t('resumeBuilder.meta.seo.create.twitterTitle'),
+  twitterDescription: t('resumeBuilder.meta.seo.create.twitterDescription'),
   robots: 'index, follow',
 })
 
@@ -441,7 +439,6 @@ const selectedRounded = toRef(designSettings.value, 'selectedRounded')
 const selectedTextStyle = toRef(designSettings.value, 'selectedTextStyle')
 const layoutSettings = designSettings.value.layout
 const levelInputMode = ref<LevelInputMode>('percent')
-const { t } = useI18n()
 
 const DOCUMENT_TYPE_STORAGE_KEY = 'resume-builder:selected-document-type'
 const documentTypeTabOptions: Array<{

@@ -3234,7 +3234,17 @@
     },
     "meta": {
       "indexTitle": "Resume Builder",
-      "createTitle": "Create Resume"
+      "createTitle": "Create Resume",
+      "seo": {
+        "create": {
+          "title": "Create my resume | Bro World",
+          "description": "Edit your resume online with an intuitive editor, professional templates, and an application-ready export.",
+          "ogTitle": "Create my resume | Bro World",
+          "ogDescription": "Customize every section of your resume and generate a professional result in minutes.",
+          "twitterTitle": "Create my resume | Bro World",
+          "twitterDescription": "A modern resume editor with live preview and professional layout."
+        }
+      }
     }
   }
 }

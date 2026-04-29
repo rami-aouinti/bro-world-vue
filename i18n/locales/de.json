@@ -3001,7 +3001,17 @@
     },
     "meta": {
       "indexTitle": "Lebenslauf-Builder",
-      "createTitle": "Lebenslauf erstellen"
+      "createTitle": "Lebenslauf erstellen",
+      "seo": {
+        "create": {
+          "title": "Meinen Lebenslauf erstellen | Bro World",
+          "description": "Bearbeite deinen Lebenslauf online mit einem intuitiven Editor, professionellen Vorlagen und einem bewerbungsfertigen Export.",
+          "ogTitle": "Meinen Lebenslauf erstellen | Bro World",
+          "ogDescription": "Passe jeden Abschnitt deines Lebenslaufs an und erzeuge in wenigen Minuten ein professionelles Ergebnis.",
+          "twitterTitle": "Meinen Lebenslauf erstellen | Bro World",
+          "twitterDescription": "Ein moderner Lebenslauf-Editor mit Live-Vorschau und professionellem Layout."
+        }
+      }
     }
   }
 }
