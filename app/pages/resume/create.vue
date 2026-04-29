@@ -3960,6 +3960,7 @@ if (import.meta.client) {
                           :on-photo-shape-select="
                             (shape) => (selectedPhotoShape = shape)
                           "
+                          :template-id="selectedTemplate"
                           :template-skin="rendererTemplateSkin"
                           editable
                           @add-item="addItemToPreviewSection"
@@ -4566,7 +4567,8 @@ if (import.meta.client) {
                         (shape) => (selectedPhotoShape = shape)
                       "
                       :on-photo-click="onPreviewPhotoClick"
-                      :template-skin="rendererTemplateSkin"
+                      :template-id="selectedTemplate"
+                          :template-skin="rendererTemplateSkin"
                       editable
                       @add-item="addItemToPreviewSection"
                       @change-variant="setSectionVariant"

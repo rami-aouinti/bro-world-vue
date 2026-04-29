@@ -7,7 +7,21 @@ export type ResumeSectionKey =
   | 'certification'
   | 'reference'
 
-export type TemplateSkinId = 'cv-socle'
+export type TemplateSkinId =
+  | 'cv-socle'
+  | 'cv-executive-portrait'
+  | 'cv-midnight-banner'
+  | 'cv-minimal-profile'
+  | 'cv-classic'
+  | 'cv-modern'
+
+export type ResumeTemplateId =
+  | 'executive-portrait'
+  | 'midnight-banner'
+  | 'minimal-profile'
+  | 'classic'
+  | 'modern'
+
 export type ResumeSectionIconStyleVariant = 'outline' | 'filled' | 'rounded'
 export type ResumeLayoutMode = 'aside-left' | 'aside-right' | 'no-aside'
 
@@ -54,6 +68,12 @@ export type ResumeTemplateSkin = {
   sectionTokens?: Partial<Record<ResumeSectionKey, Record<string, string>>>
 }
 
+const baseClasses = {
+  wrapperClass: 'resume-skin__layout',
+  mainClass: 'resume-skin__main',
+  asideClass: 'resume-skin__aside cv-sidebar-surface',
+}
+
 const defaultLayout: ResumeRendererLayoutEntry[] = [
   { key: 'experience', region: 'main', order: 0 },
   { key: 'education', region: 'main', order: 1 },
@@ -62,17 +82,117 @@ const defaultLayout: ResumeRendererLayoutEntry[] = [
   { key: 'certification', region: 'aside', order: 1 },
 ]
 
+const executiveLayout: ResumeRendererLayoutEntry[] = [
+  { key: 'experience', region: 'main', order: 0 },
+  { key: 'project', region: 'main', order: 1 },
+  { key: 'education', region: 'main', order: 2 },
+  { key: 'language', region: 'aside', order: 0 },
+  { key: 'certification', region: 'aside', order: 1 },
+  { key: 'reference', region: 'aside', order: 2 },
+]
+
+const midnightLayout: ResumeRendererLayoutEntry[] = [
+  { key: 'education', region: 'main', order: 0 },
+  { key: 'experience', region: 'main', order: 1 },
+  { key: 'project', region: 'main', order: 2 },
+  { key: 'certification', region: 'aside', order: 0 },
+  { key: 'hobby', region: 'aside', order: 1 },
+]
+
+const minimalLayout: ResumeRendererLayoutEntry[] = [
+  { key: 'experience', region: 'main', order: 0 },
+  { key: 'education', region: 'main', order: 1 },
+  { key: 'project', region: 'main', order: 2 },
+  { key: 'language', region: 'main', order: 3 },
+  { key: 'certification', region: 'main', order: 4 },
+]
+
+const classicLayout: ResumeRendererLayoutEntry[] = [
+  { key: 'experience', region: 'main', order: 0 },
+  { key: 'education', region: 'main', order: 1 },
+  { key: 'project', region: 'main', order: 2 },
+  { key: 'reference', region: 'main', order: 3 },
+]
+
+const modernLayout: ResumeRendererLayoutEntry[] = [
+  { key: 'project', region: 'main', order: 0 },
+  { key: 'experience', region: 'main', order: 1 },
+  { key: 'education', region: 'main', order: 2 },
+  { key: 'language', region: 'aside', order: 0 },
+  { key: 'hobby', region: 'aside', order: 1 },
+]
+
+export const DEFAULT_TEMPLATE_SKIN_ID: TemplateSkinId = 'cv-socle'
+
 export const RESUME_TEMPLATE_SKINS: Record<TemplateSkinId, ResumeTemplateSkin> = {
   'cv-socle': {
-    id: 'cv-socle', layoutMode: 'aside-left', rootClass: 'resume-skin resume-skin--cv-socle', wrapperClass: 'resume-skin__layout', mainClass: 'resume-skin__main', asideClass: 'resume-skin__aside cv-sidebar-surface',
-    showProfileInMain: true, showProfileInAside: false, showSkillsInAside: true, showContactInAside: true, showContactInHeader: false, showSectionIcons: true,
+    id: 'cv-socle',
+    layoutMode: 'aside-left',
+    rootClass: 'resume-skin resume-skin--cv-socle',
+    ...baseClasses,
+    showProfileInMain: true,
+    showProfileInAside: false,
+    showSkillsInAside: true,
+    showContactInAside: true,
+    showContactInHeader: false,
+    showSectionIcons: true,
     sectionIconStyle: { size: 18, color: 'var(--cv-accent)', roundedBackground: true, spacing: 8, variant: 'outline' },
     defaultSectionLayout: defaultLayout,
     profile: { grid: 'split', typography: 'clean', spacing: 'balanced', colors: 'light', cards: 'soft', separators: 'line' },
-    themeTokens: {}, sectionTokens: {},
+    themeTokens: {},
+    sectionTokens: {},
+  },
+  'cv-executive-portrait': {
+    id: 'cv-executive-portrait', layoutMode: 'aside-left', rootClass: 'resume-skin resume-skin--cv-executive-portrait', ...baseClasses,
+    showProfileInMain: true, showProfileInAside: false, showSkillsInAside: true, showContactInAside: true, showContactInHeader: false, showSectionIcons: true,
+    sectionIconStyle: { size: 20, color: '#2f5bb7', roundedBackground: true, spacing: 10, variant: 'filled' },
+    defaultSectionLayout: executiveLayout,
+    profile: { grid: 'magazine', typography: 'neo-grotesk', spacing: 'airy', colors: 'contrast', cards: 'elevated', separators: 'accent' },
+  },
+  'cv-midnight-banner': {
+    id: 'cv-midnight-banner', layoutMode: 'aside-right', rootClass: 'resume-skin resume-skin--cv-midnight-banner', ...baseClasses,
+    showProfileInMain: false, showProfileInAside: true, showSkillsInAside: true, showContactInAside: true, showContactInHeader: false, showSectionIcons: true,
+    sectionIconStyle: { size: 16, color: '#7cc6ff', roundedBackground: false, spacing: 6, variant: 'outline' },
+    defaultSectionLayout: midnightLayout,
+    profile: { grid: 'split', typography: 'editorial', spacing: 'balanced', colors: 'dark', cards: 'soft', separators: 'line' },
+  },
+  'cv-minimal-profile': {
+    id: 'cv-minimal-profile', layoutMode: 'no-aside', rootClass: 'resume-skin resume-skin--cv-minimal-profile', ...baseClasses,
+    showProfileInMain: true, showProfileInAside: false, showSkillsInAside: false, showContactInAside: false, showContactInHeader: true, showSectionIcons: false,
+    sectionIconStyle: { size: 14, color: '#6b7280', roundedBackground: false, spacing: 4, variant: 'rounded' },
+    defaultSectionLayout: minimalLayout,
+    profile: { grid: 'single', typography: 'clean', spacing: 'compact', colors: 'light', cards: 'flat', separators: 'none' },
+  },
+  'cv-classic': {
+    id: 'cv-classic', layoutMode: 'no-aside', rootClass: 'resume-skin resume-skin--cv-classic', ...baseClasses,
+    showProfileInMain: false, showProfileInAside: false, showSkillsInAside: false, showContactInAside: false, showContactInHeader: true, showSectionIcons: false,
+    sectionIconStyle: { size: 15, color: '#1f2937', roundedBackground: false, spacing: 4, variant: 'outline' },
+    defaultSectionLayout: classicLayout,
+    profile: { grid: 'single', typography: 'classic', spacing: 'balanced', colors: 'light', cards: 'flat', separators: 'line' },
+  },
+  'cv-modern': {
+    id: 'cv-modern', layoutMode: 'aside-right', rootClass: 'resume-skin resume-skin--cv-modern', ...baseClasses,
+    showProfileInMain: true, showProfileInAside: false, showSkillsInAside: true, showContactInAside: false, showContactInHeader: true, showSectionIcons: true,
+    sectionIconStyle: { size: 17, color: '#0ea5e9', roundedBackground: true, spacing: 7, variant: 'rounded' },
+    defaultSectionLayout: modernLayout,
+    profile: { grid: 'split', typography: 'neo-grotesk', spacing: 'balanced', colors: 'contrast', cards: 'soft', separators: 'accent' },
   },
 }
 
-export function resolveTemplateSkin(_templateOrSkinId: string): ResumeTemplateSkin {
-  return RESUME_TEMPLATE_SKINS['cv-socle']
+export const RESUME_TEMPLATE_TO_SKIN_ID: Record<ResumeTemplateId, TemplateSkinId> = {
+  'executive-portrait': 'cv-executive-portrait',
+  'midnight-banner': 'cv-midnight-banner',
+  'minimal-profile': 'cv-minimal-profile',
+  classic: 'cv-classic',
+  modern: 'cv-modern',
+}
+
+export function resolveTemplateSkin(templateOrSkinId: string): ResumeTemplateSkin {
+  const directSkin = RESUME_TEMPLATE_SKINS[templateOrSkinId as TemplateSkinId]
+  if (directSkin) return directSkin
+
+  const mappedSkinId = RESUME_TEMPLATE_TO_SKIN_ID[templateOrSkinId as ResumeTemplateId]
+  if (mappedSkinId) return RESUME_TEMPLATE_SKINS[mappedSkinId]
+
+  return RESUME_TEMPLATE_SKINS[DEFAULT_TEMPLATE_SKIN_ID]
 }
