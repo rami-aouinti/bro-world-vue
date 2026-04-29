@@ -3,6 +3,13 @@ import type { ResumeEditableSectionKey } from '~/types/resumeDocumentModel'
 
 export type ResumeTemplateType = 'resume' | 'cover-page' | 'cover-letter'
 
+export type ResumeTemplatePalette = 'corporate-blue' | 'midnight' | 'minimal' | 'classic' | 'modern' | 'terra' | 'elegant'
+export type ResumeTemplateRadius = 'none' | 'soft'
+export type ResumeTemplateTypography = 'executive' | 'modern' | 'clean' | 'serif' | 'sans'
+export type ResumeTemplateSectionVariant = 'detailed' | 'timeline' | 'compact' | 'classic' | 'list'
+export type ResumeTemplateIconStyle = 'text' | 'outline' | 'filled' | 'rounded'
+export type ResumeTemplateLayout = 'split' | 'stacked'
+
 export type ResumeTemplateConfig = {
   id: string
   label: string
@@ -11,14 +18,14 @@ export type ResumeTemplateConfig = {
   image: string
   templateId: 'cv-socle'
   presetId?: string
-  layoutMode: ResumeLayoutMode
+  layoutMode: ResumeTemplateLayout
   sections: ResumeEditableSectionKey[]
   styleVars: {
-    palette?: string
-    radius?: string
-    typography?: string
-    sectionVariant?: string
-    iconStyle?: ResumeSectionIconStyleVariant
+    palette?: ResumeTemplatePalette
+    radius?: ResumeTemplateRadius
+    typography?: ResumeTemplateTypography
+    sectionVariant?: ResumeTemplateSectionVariant
+    iconStyle?: ResumeTemplateIconStyle
   }
   visibleOptions: {
     photo: boolean
