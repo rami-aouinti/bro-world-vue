@@ -1,7 +1,8 @@
 <script setup lang="ts">
 
 type ToolbarVariantOption = {
-  label: string
+  label?: string
+  labelKey?: string
   value: string
 }
 type ToolbarContentStyleOption = ToolbarVariantOption
@@ -25,7 +26,8 @@ type StylePresetOption = {
 
 type ToolbarSectionOption = {
   key: string
-  label: string
+  label?: string
+  labelKey?: string
   modelValue: boolean
 }
 
@@ -85,6 +87,10 @@ const emit = defineEmits<{
   ): void
 }>()
 
+
+function resolveOptionLabel(option: { label?: string; labelKey?: string; value?: string }) {
+  return option.label || option.labelKey || option.value || ''
+}
 const toolbarRef = ref<HTMLElement | null>(null)
 const styleMenuOpen = ref(false)
 const pinEnabled = ref(false)
@@ -332,7 +338,7 @@ watch(
           :active="option.value === props.currentVariant"
           @click="emit('change-variant', props.sectionKey, option.value)"
         >
-          <v-list-item-title>{{ option.label }}</v-list-item-title>
+          <v-list-item-title>{{ resolveOptionLabel(option) }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -362,7 +368,7 @@ watch(
           :active="option.value === props.currentContentStyle"
           @click="emit('change-content-style', props.sectionKey, option.value)"
         >
-          <v-list-item-title>{{ option.label }}</v-list-item-title>
+          <v-list-item-title>{{ resolveOptionLabel(option) }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
