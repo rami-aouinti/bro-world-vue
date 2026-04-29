@@ -1114,7 +1114,6 @@ const signatureDialogOpen = ref(false)
 const signatureDataUrl = ref('')
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 const isDrawingSignature = ref(false)
-const selectedPhotoShape = ref<string>('square')
 const safePhotoShape = computed<PhotoShape>(() =>
   photoShapeOptions.some((option) => option.value === selectedPhotoShape.value)
     ? (selectedPhotoShape.value as PhotoShape)
