@@ -128,6 +128,7 @@ function removeHobby(index: number) {
 <style scoped>
 .hobby-section {
   position: relative;
+  padding-bottom: calc(var(--rs-section-padding-bottom, 0px) + var(--rs-extra-line-offset, 0px));
 }
 .entry-list {
   margin: 0;
