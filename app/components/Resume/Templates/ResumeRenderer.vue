@@ -737,7 +737,15 @@ function updateText(path: string, value: string) {
             :actions="['delete-section']"
             @delete-section="removeContactSection"
           />
-          <h3 class="cv-heading-section">Contact</h3>
+          <h3 class="cv-heading-section">
+            <span
+              v-if="shouldShowSectionIcons"
+              class="section-icon"
+            >
+              <v-icon icon="mdi-card-account-phone-outline" :size="resolvedSectionIconStyle.size" />
+            </span>
+            <span>Contact</span>
+          </h3>
           <div class="resume-skin__contact-grid">
             <div
               v-if="resume.birthDate ?? resume.birthday"
@@ -1401,6 +1409,8 @@ function updateText(path: string, value: string) {
 .layout-mode-aside-left .resume-skin__aside :deep(.cv-heading-section),
 .layout-mode-aside-right .resume-skin__aside :deep(.cv-heading-section) {
   color: var(--resume-page, var(--cv-page)) !important;
+  display: flex;
+  align-items: center;
 }
 
 .resume-skin__aside :deep(.resume-skin__text),
