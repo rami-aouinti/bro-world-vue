@@ -993,7 +993,26 @@ function extractRemoteResumeCreatedAtValue(resumeItem: RemoteResume) {
 function parseRemoteResumeCreatedAt(
   resumeItem: RemoteResume,
 ): { timestamp: number; isValid: boolean } {
-  const timestamp = Date.parse(extractRemoteResumeCreatedAtValue(resumeItem))
+  const createdAtValue = extractRemoteResumeCreatedAtValue(resumeItem)
+  let timestamp = Date.parse(createdAtValue)
+
+  if (Number.isNaN(timestamp)) {
+    const uuidV1Match = createdAtValue.match(
+      /^([0-9a-f]{8})-([0-9a-f]{4})-1([0-9a-f]{3})-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+    )
+
+    if (uuidV1Match) {
+      const [, timeLow, timeMid, timeHigh] = uuidV1Match
+      const gregorian100Ns =
+        (BigInt(`0x${timeHigh}`) << 48n) |
+        (BigInt(`0x${timeMid}`) << 32n) |
+        BigInt(`0x${timeLow}`)
+      const uuidEpochOffset100Ns = 122192928000000000n
+      const unix100Ns = gregorian100Ns - uuidEpochOffset100Ns
+      timestamp = Number(unix100Ns / 10000n)
+    }
+  }
+
   if (Number.isNaN(timestamp)) {
     return { timestamp: Number.NEGATIVE_INFINITY, isValid: false }
   }
