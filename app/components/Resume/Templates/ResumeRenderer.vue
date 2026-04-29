@@ -156,13 +156,24 @@ const emit = defineEmits<{
   (event: 'update:photo-position', value: 'left' | 'right'): void
 }>()
 
+const resolvedTemplateConfig = computed(() => ({
+  structureId: props.resume?.template?.structureId as string | undefined,
+  layoutId: props.resume?.template?.layoutId as string | undefined,
+  skinId: props.resume?.template?.skinId as string | undefined,
+}))
+
+const resolvedLayoutDefinition = computed(() =>
+  getResumeLayoutById(
+    resolvedTemplateConfig.value.layoutId
+    ?? props.templateId,
+  )
+  ?? getDefaultLayoutForStructure(resolvedDesignState.value.layoutMode),
+)
+
 const normalizedSectionLayout = computed<SectionLayoutEntry[]>(() => {
   if (props.sectionLayout.length) return props.sectionLayout
 
-  const resolvedLayout = getResumeLayoutById(props.templateId)
-    ?? getDefaultLayoutForStructure(resolvedDesignState.value.layoutMode)
-
-  return buildLayoutEntries(resolvedLayout).map((entry) => ({
+  return buildLayoutEntries(resolvedLayoutDefinition.value).map((entry) => ({
     ...entry,
     variant: fallbackVariant(entry.key),
   })) as SectionLayoutEntry[]
@@ -265,6 +276,19 @@ const rootDesignClasses = computed(() => [
   `divider-${resolvedDesignState.value.dividerStyle}`,
   `photo-position-${resolvedDesignState.value.photoPosition}`,
 ])
+const skinCssVars = computed<Record<string, string>>(() => {
+  const profile = props.templateSkin.profile
+  return {
+    '--resume-skin-id': resolvedTemplateConfig.value.skinId ?? props.templateSkin.id,
+    '--resume-structure-id': resolvedTemplateConfig.value.structureId ?? resolvedLayoutDefinition.value.structure,
+    '--resume-layout-id': resolvedLayoutDefinition.value.layoutId,
+    '--resume-profile-typography': profile.typography,
+    '--resume-profile-radius': profile.cards,
+    '--resume-profile-icon-style': resolvedSectionIconStyle.value.variant,
+    '--resume-profile-section-variant': profile.separators,
+  }
+})
+
 const layoutStyle = computed(() => ({
   '--resume-sidebar-width': `${resolvedDesignState.value.sidebarWidth}px`,
   '--resume-sidebar-height': `${resolvedDesignState.value.sidebarHeight}%`,
@@ -547,7 +571,7 @@ function updateText(path: string, value: string) {
 <template>
   <article
     :class="[templateSkin.rootClass, ...rootDesignClasses]"
-    :style="{ ...themeTokens, ...sectionIconCssVars }"
+    :style="{ ...themeTokens, ...skinCssVars, ...sectionIconCssVars }"
   >
     <div v-if="decorativeShapes.length" class="resume-skin__decorative-layer">
       <span
