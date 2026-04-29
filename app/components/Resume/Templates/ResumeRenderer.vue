@@ -1414,6 +1414,18 @@ function updateText(path: string, value: string) {
   color: var(--resume-page, var(--cv-page)) !important;
   display: flex;
   align-items: center;
+  gap: var(--resume-section-icon-gap, var(--cv-space-2, 8px));
+  margin: 0 0 var(--cv-space-2, 8px);
+}
+
+.layout-mode-aside-left .resume-skin__aside :deep(.cv-heading-section .section-icon),
+.layout-mode-aside-right .resume-skin__aside :deep(.cv-heading-section .section-icon) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 calc(var(--resume-section-icon-size, 18px) + 8px);
+  width: calc(var(--resume-section-icon-size, 18px) + 8px);
+  height: calc(var(--resume-section-icon-size, 18px) + 8px);
 }
 
 .resume-skin__aside :deep(.resume-skin__text),
