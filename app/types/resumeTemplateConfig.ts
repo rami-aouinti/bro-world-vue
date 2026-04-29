@@ -1,5 +1,4 @@
 import type { ResumeLayoutMode, ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
-import type { ResumeTemplateVariant } from '~/constants/resumeTemplates'
 import type { ResumeEditableSectionKey } from '~/types/resumeDocumentModel'
 
 export type ResumeTemplateType = 'resume' | 'cover-page' | 'cover-letter'
@@ -10,7 +9,8 @@ export type ResumeTemplateConfig = {
   subtitle: string
   type: ResumeTemplateType
   image: string
-  variant: ResumeTemplateVariant
+  templateId: 'cv-socle'
+  presetId?: string
   layoutMode: ResumeLayoutMode
   sections: ResumeEditableSectionKey[]
   styleVars: {

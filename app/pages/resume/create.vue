@@ -4,8 +4,8 @@ import type {
   RoundedOptionId,
   Typography,
 } from '~/constants/resumeDesign'
-import { DEFAULT_RESUME_TEMPLATE_ID, type ResumeTemplateVariant } from '~/constants/resumeTemplates'
-import { RESUME_TEMPLATES_CATALOG } from '~/constants/resumeTemplates.catalog'
+import { DEFAULT_RESUME_TEMPLATE_ID } from '~/constants/resumeTemplates'
+import { CV_SOCLE_PRESETS } from '~/constants/resumeSoclePresets'
 import {
   resolveTemplateSkin,
   type ResumeLayoutMode,
@@ -266,15 +266,8 @@ type Template = {
   isCustomized: boolean
   isFree: boolean
   useTimeline: boolean
-  variant: ResumeTemplateVariant
+  variant: string
 }
-type TemplateQuickFilter =
-  | 'all'
-  | 'photo'
-  | 'two-column'
-  | 'ats'
-  | 'free'
-  | 'timeline'
 
 type LevelInputMode = 'percent' | 'stars'
 type PhotoShape =
@@ -360,14 +353,6 @@ type DesignSettings = {
   selectedTextStyle: Typography
   layout: LayoutSettings
 }
-type TemplateDesignPreset = {
-  theme?: string
-  pageBackground?: PageBackgroundId
-  rounded?: RoundedOptionId
-  textStyle?: Typography
-  photoShape?: PhotoShape
-  layout?: Partial<LayoutSettings>
-}
 const createDefaultDesignSettings = (): DesignSettings => ({
   selectedTheme: 'ocean',
   selectedPageBackground: 'white',
@@ -416,12 +401,14 @@ const createDefaultDesignSettings = (): DesignSettings => ({
   },
 })
 const builderPanelState = reactive({
-  selectedTemplate: DEFAULT_RESUME_TEMPLATE_ID,
+  selectedTemplate: 'cv-socle',
+  selectedPreset: CV_SOCLE_PRESETS[0]?.id ?? 'socle-classic',
   selectedDocumentType: 'resume' as Template['documentType'],
   designSettings: createDefaultDesignSettings(),
 })
 const selectedTemplate = toRef(builderPanelState, 'selectedTemplate')
 const selectedDocumentType = toRef(builderPanelState, 'selectedDocumentType')
+const selectedPreset = toRef(builderPanelState, 'selectedPreset')
 const designSettings = toRef(builderPanelState, 'designSettings')
 const selectedTheme = toRef(designSettings.value, 'selectedTheme')
 const selectedPageBackground = toRef(
@@ -703,180 +690,23 @@ function normalizeSectionLayout(
     }
   })
 }
-const templates: Template[] = RESUME_TEMPLATES_CATALOG.map((template) => ({
-  id: template.id,
-  title: template.label,
-  subtitle: template.subtitle,
-  image: template.image,
-  documentType: template.type,
-  hasPhoto: template.visibleOptions.photo,
-  isTwoColumn: template.visibleOptions.twoColumn,
-  isAts: template.visibleOptions.ats,
-  hasDocx: template.visibleOptions.docx,
-  isCustomized: template.visibleOptions.customized,
-  isFree: template.visibleOptions.free,
-  useTimeline: template.visibleOptions.timeline,
-  variant: template.variant,
-}))
-
-const templateDesignPresets: Record<string, TemplateDesignPreset> = {
-  'executive-portrait': {
-    theme: 'ocean',
-    pageBackground: 'pearl-light',
-    rounded: 'lg',
-    textStyle: 'clean',
-    photoShape: 'circle',
-    layout: {
-      layoutMode: 'no-aside',
-      photoSize: 164,
-      photoBorderWidth: 4,
-      photoPosition: 'right',
-      sectionDividerStyle: 'line',
-      lineDensity: 'comfortable',
-      showSectionIcons: true,
-      showContactIcons: true,
-      decorativeShapeA: {
-        enabled: true,
-        type: 'circle',
-        size: 134,
-        width: 134,
-        height: 134,
-        color: '#1d4ed8',
-        opacity: 0.12,
-        x: 88,
-        y: 12,
-        rotation: 0,
-      },
-      decorativeShapeB: {
-        enabled: true,
-        type: 'bar',
-        size: 120,
-        width: 220,
-        height: 38,
-        color: '#0f172a',
-        opacity: 0.14,
-        x: 20,
-        y: 86,
-        rotation: -8,
-      },
-    },
+const templates: Template[] = [
+  {
+    id: 'cv-socle',
+    title: 'Socle CV',
+    subtitle: 'Template unique piloté par presets visuels',
+    image: '/img/cv/cv-1.png',
+    documentType: 'resume',
+    hasPhoto: true,
+    isTwoColumn: true,
+    isAts: true,
+    hasDocx: true,
+    isCustomized: true,
+    isFree: true,
+    useTimeline: false,
+    variant: DEFAULT_RESUME_TEMPLATE_ID,
   },
-  'midnight-banner': {
-    theme: 'slate',
-    pageBackground: 'white',
-    rounded: 'sm',
-    textStyle: 'display',
-    photoShape: 'circle',
-    layout: {
-      layoutMode: 'no-aside',
-      photoSize: 132,
-      photoBorderWidth: 3,
-      photoPosition: 'left',
-      sectionDividerStyle: 'line',
-      lineDensity: 'compact',
-      sectionIconStyle: 'filled',
-      showSectionIcons: true,
-      decorativeShapeA: {
-        enabled: true,
-        type: 'ring',
-        size: 126,
-        width: 126,
-        height: 126,
-        color: '#1e293b',
-        opacity: 0.2,
-        x: 82,
-        y: 16,
-        rotation: 0,
-      },
-      decorativeShapeB: {
-        enabled: true,
-        type: 'square',
-        size: 120,
-        width: 180,
-        height: 42,
-        color: '#0f172a',
-        opacity: 0.1,
-        x: 18,
-        y: 90,
-        rotation: -10,
-      },
-    },
-  },
-  'minimal-profile': {
-    theme: 'charcoal',
-    pageBackground: 'white',
-    rounded: 'none',
-    textStyle: 'clean',
-    photoShape: 'square',
-    layout: {
-      layoutMode: 'aside-left',
-      sidebarWidth: 230,
-      photoSize: 120,
-      photoBorderWidth: 2,
-      photoPosition: 'left',
-      sectionDividerStyle: 'line',
-      lineDensity: 'compact',
-      showSectionIcons: true,
-    },
-  },
-  'left-profile-stripe': {
-    theme: 'teal',
-    pageBackground: 'sky-light',
-    rounded: 'md',
-    textStyle: 'clean',
-    photoShape: 'rounded',
-    layout: {
-      layoutMode: 'aside-left',
-      sidebarWidth: 245,
-      photoSize: 128,
-      photoBorderWidth: 3,
-      photoPosition: 'left',
-      sectionDividerStyle: 'line',
-      lineDensity: 'comfortable',
-      sectionIconStyle: 'outline',
-      decorativeShapeA: {
-        enabled: true,
-        type: 'circle',
-        size: 110,
-        width: 110,
-        height: 110,
-        color: '#0f766e',
-        opacity: 0.16,
-        x: 14,
-        y: 15,
-        rotation: 0,
-      },
-      decorativeShapeB: {
-        enabled: false,
-        type: 'bar',
-        size: 120,
-        width: 220,
-        height: 34,
-        color: '#0f172a',
-        opacity: 0.1,
-        x: 84,
-        y: 88,
-        rotation: 5,
-      },
-    },
-  },
-  'accent-circle': {
-    theme: 'amber',
-    pageBackground: 'ivory-light',
-    rounded: 'md',
-    textStyle: 'serif',
-    photoShape: 'circle',
-    layout: {
-      layoutMode: 'no-aside',
-      photoSize: 116,
-      photoBorderWidth: 4,
-      photoPosition: 'right',
-      sectionDividerStyle: 'soft',
-      lineDensity: 'comfortable',
-      sectionIconStyle: 'rounded',
-    },
-  },
-}
+]
 
 const resume = reactive<ResumeModel>({
   role: 'Communication Specialist',
@@ -1042,37 +872,7 @@ const templatesByDocumentType = computed(() =>
     (template) => template.documentType === selectedDocumentType.value,
   ),
 )
-const templateQuickFilter = ref<TemplateQuickFilter>('all')
-const resumeTemplateQuickFilterOptions: Array<{
-  label: string
-  value: TemplateQuickFilter
-}> = [
-  { label: 'Tous', value: 'all' },
-  { label: 'Photo', value: 'photo' },
-  { label: '2 colonnes', value: 'two-column' },
-  { label: 'ATS', value: 'ats' },
-  { label: 'Gratuit', value: 'free' },
-  { label: 'Timeline', value: 'timeline' },
-]
-const templateQuickFilterOptions = computed(() =>
-  selectedDocumentType.value === 'resume'
-    ? resumeTemplateQuickFilterOptions
-    : [],
-)
-const filteredTemplates = computed(() => {
-  if (selectedDocumentType.value !== 'resume')
-    return templatesByDocumentType.value
-  if (templateQuickFilter.value === 'all') return templatesByDocumentType.value
-
-  return templatesByDocumentType.value.filter((template) => {
-    if (templateQuickFilter.value === 'photo') return template.hasPhoto
-    if (templateQuickFilter.value === 'two-column') return template.isTwoColumn
-    if (templateQuickFilter.value === 'ats') return template.isAts
-    if (templateQuickFilter.value === 'free') return template.isFree
-    if (templateQuickFilter.value === 'timeline') return template.useTimeline
-    return true
-  })
-})
+const filteredTemplates = computed(() => templatesByDocumentType.value)
 
 const selectedTemplateConfig = computed(
   () =>
@@ -1082,6 +882,25 @@ const selectedTemplateConfig = computed(
     templatesByDocumentType.value[0] ??
     templates[0],
 )
+
+const selectedPresetConfig = computed(
+  () => CV_SOCLE_PRESETS.find((preset) => preset.id === selectedPreset.value) ?? CV_SOCLE_PRESETS[0],
+)
+
+const soclePresetOptions = computed(() =>
+  CV_SOCLE_PRESETS.map((preset) => ({ label: preset.label, value: preset.id })),
+)
+
+watch(selectedPresetConfig, (preset) => {
+  if (!preset) return
+  selectedTheme.value = preset.theme
+  selectedPageBackground.value = preset.pageBackground
+  selectedRounded.value = preset.rounded
+  selectedTextStyle.value = preset.textStyle
+  selectedPhotoShape.value = preset.photoShape
+  Object.assign(layoutSettings, preset.layout)
+}, { immediate: true })
+
 const isResumeDocument = computed(() => selectedDocumentType.value === 'resume')
 const isCoverDocument = computed(
   () =>
@@ -1095,59 +914,13 @@ const designMenuSupportsAsideWidth = computed(
   () => isResumeDocument.value && layoutSettings.layoutMode !== 'no-aside',
 )
 
-function applyTemplateSelection(templateId: string) {
-  selectedTemplate.value = templateId
+function applyTemplateSelection(_templateId: string) {
+  selectedTemplate.value = "cv-socle"
 }
 
 const templateShapeTypeCycle: DecorativeShapeType[] = ['circle', 'ring', 'square', 'bar', 'diamond', 'triangle', 'pill']
 
-function applyShapeAForTemplate() {
-  if (selectedDocumentType.value !== 'resume') return
-  const templateIndex = templates.filter((template) => template.documentType === 'resume').findIndex((template) => template.id === selectedTemplate.value)
-  if (templateIndex < 0) return
-  const accentColor = activeTheme.value.accent
-  layoutSettings.decorativeShapeA = {
-    ...layoutSettings.decorativeShapeA,
-    enabled: true,
-    type: templateShapeTypeCycle[templateIndex % templateShapeTypeCycle.length],
-    color: accentColor,
-    opacity: 0.18,
-    size: 96 + (templateIndex % 4) * 18,
-    width: 90 + (templateIndex % 5) * 26,
-    height: 90 + (templateIndex % 3) * 22,
-    x: templateIndex % 2 === 0 ? 90 : 126,
-    y: 4,
-    rotation: (templateIndex % 2 === 0 ? 0 : -8),
-  }
 
-  layoutSettings.decorativeShapeB = {
-    ...layoutSettings.decorativeShapeB,
-    enabled: false,
-  }
-}
-
-function applyDesignPresetForSelectedTemplate() {
-  if (selectedDocumentType.value !== 'resume') return
-  const preset = templateDesignPresets[selectedTemplate.value]
-  if (!preset) return
-
-  if (preset.theme) selectedTheme.value = preset.theme
-  if (preset.pageBackground) selectedPageBackground.value = preset.pageBackground
-  if (preset.rounded) selectedRounded.value = preset.rounded
-  if (preset.textStyle) selectedTextStyle.value = preset.textStyle
-  if (preset.photoShape) selectedPhotoShape.value = preset.photoShape
-  if (preset.layout) Object.assign(layoutSettings, preset.layout)
-  applyShapeAForTemplate()
-}
-
-function onTemplateQuickFilterChange(value: unknown) {
-  const nextValue = typeof value === 'string' ? value : 'all'
-  templateQuickFilter.value = resumeTemplateQuickFilterOptions.some(
-    (option) => option.value === (nextValue as TemplateQuickFilter),
-  )
-    ? (nextValue as TemplateQuickFilter)
-    : 'all'
-}
 
 function selectValidTemplateForCurrentDocumentType() {
   const isCurrentTemplateValid = templatesByDocumentType.value.some(
@@ -1233,12 +1006,9 @@ onMounted(async () => {
     const exists = templatesByDocumentType.value.some(
       (template) => template.id === templateFromQuery,
     )
-    selectedTemplate.value = exists
-      ? templateFromQuery
-      : (templatesByDocumentType.value[0]?.id ?? DEFAULT_RESUME_TEMPLATE_ID)
+    selectedTemplate.value = exists ? 'cv-socle' : 'cv-socle'
   }
   selectValidTemplateForCurrentDocumentType()
-  applyDesignPresetForSelectedTemplate()
 
   if (!loggedIn.value) {
     await refreshSession()
@@ -1315,14 +1085,14 @@ const templateSupportsPhoto = computed(
   () => selectedTemplateConfig.value.hasPhoto,
 )
 const selectedTemplateSkin = computed(() =>
-  resolveTemplateSkin(selectedTemplateConfig.value.variant),
+  resolveTemplateSkin(DEFAULT_RESUME_TEMPLATE_ID),
 )
 const {
   state: resumeDocumentState,
   hydrateFromStorage,
   migrateLegacyStorage,
   persist,
-} = useResumeDocumentState(computed(() => selectedTemplateConfig.value.variant))
+} = useResumeDocumentState(computed(() => DEFAULT_RESUME_TEMPLATE_ID))
 const pdfModalOpen = ref(false)
 const photoDialogOpen = ref(false)
 const aiCreateModalOpen = ref(false)
@@ -2515,15 +2285,12 @@ function resetRendererGuard() {
 }
 
 watch(selectedDocumentType, (value) => {
-  templateQuickFilter.value = 'all'
   selectValidTemplateForCurrentDocumentType()
-  applyDesignPresetForSelectedTemplate()
   localStorage.setItem(DOCUMENT_TYPE_STORAGE_KEY, value)
 })
 
 watch(selectedTemplate, () => {
   selectValidTemplateForCurrentDocumentType()
-  applyDesignPresetForSelectedTemplate()
   resetRendererGuard()
 })
 
@@ -3864,15 +3631,14 @@ if (import.meta.client) {
         <v-chip color="primary" variant="tonal">Templates</v-chip>
         <AppSelect
           v-if="selectedDocumentType === 'resume'"
-          :model-value="templateQuickFilter"
-          :items="templateQuickFilterOptions"
+          v-model="selectedPreset"
+          :items="soclePresetOptions"
           item-title="label"
           item-value="value"
-          label="Filtre template"
+          label="Style / Preset"
           density="comfortable"
           class="my-2"
           hide-details
-          @update:model-value="onTemplateQuickFilterChange"
         />
 
         <div class="template-drawer__grid">
