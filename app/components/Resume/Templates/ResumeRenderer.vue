@@ -48,6 +48,7 @@ type ResumeRendererDesignState = {
   density?: 'compact' | 'normal' | 'spacious' | 'comfortable'
   dividerStyle?: 'none' | 'line' | 'thick'
   sidebarWidth?: number
+  sidebarHeight?: number
   photoSize?: number
   photoBorderWidth?: number
   photoPosition?: 'left' | 'right'
@@ -92,6 +93,7 @@ const props = withDefaults(
     density?: 'compact' | 'normal' | 'spacious' | 'comfortable'
     dividerStyle?: 'none' | 'line' | 'thick'
     sidebarWidth?: number
+    sidebarHeight?: number
     photoSize?: number
     photoBorderWidth?: number
     photoPosition?: 'left' | 'right'
@@ -123,6 +125,7 @@ const props = withDefaults(
     density: 'comfortable',
     dividerStyle: 'line',
     sidebarWidth: 280,
+    sidebarHeight: 100,
     photoSize: 96,
     photoBorderWidth: 4,
     photoPosition: 'right',
@@ -221,6 +224,7 @@ const resolvedDesignState = computed(() => ({
   density: props.designState?.density ?? props.density,
   dividerStyle: props.designState?.dividerStyle ?? props.dividerStyle,
   sidebarWidth: props.designState?.sidebarWidth ?? props.sidebarWidth,
+  sidebarHeight: props.designState?.sidebarHeight ?? props.sidebarHeight,
   photoSize: props.designState?.photoSize ?? props.photoSize,
   photoBorderWidth:
     props.designState?.photoBorderWidth ?? props.photoBorderWidth,
@@ -255,6 +259,7 @@ const rootDesignClasses = computed(() => [
 ])
 const layoutStyle = computed(() => ({
   '--resume-sidebar-width': `${resolvedDesignState.value.sidebarWidth}px`,
+  '--resume-sidebar-height': `${resolvedDesignState.value.sidebarHeight}%`,
 }))
 const layoutModeClass = computed(
   () => `layout-mode-${resolvedDesignState.value.layoutMode}`,
@@ -1369,6 +1374,7 @@ function updateText(path: string, value: string) {
 
 .resume-skin__aside {
   grid-area: aside;
+  height: var(--resume-sidebar-height, 100%);
   --resume-aside-text-color: color-mix(in srgb, var(--cv-page) 88%, white);
   --resume-aside-decor-color: var(--cv-secondary);
   color: var(--resume-aside-text-color);

@@ -68,6 +68,7 @@ export type ResumeStylePreferences = {
   typography: Typography
   photoPosition: 'left' | 'right'
   asideWidth: number
+  asideHeight: number
   showSectionIcons: boolean
   showContactIcons: boolean
   sectionIconStyle: ResumeSectionIconStyleVariant
