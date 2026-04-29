@@ -1307,6 +1307,11 @@ function updateText(path: string, value: string) {
 .resume-skin__contact-item .editable-text {
   min-width: 0;
 }
+.resume-skin__contact-item a {
+  color: inherit;
+  text-decoration: none;
+}
+
 .resume-skin__contact-icon {
   color: var(--resume-contact-icon-color, var(--cv-accent));
   transition: color 0.2s ease;

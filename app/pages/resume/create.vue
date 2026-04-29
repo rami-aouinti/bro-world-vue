@@ -2811,7 +2811,9 @@ async function buildResumePdfBlob() {
   )
     .map((node) => node.outerHTML)
     .join('\n')
-  const content = previewExportRef.value.outerHTML
+  const exportRoot =
+    previewExportRef.value.querySelector('.cv-page-shell') ?? previewExportRef.value
+  const content = exportRoot.outerHTML
 
   return `
     <!doctype html>
@@ -2821,7 +2823,7 @@ async function buildResumePdfBlob() {
         <title>Resume</title>
         ${stylesheetContent}
         <style>
-          body { margin: 0; padding: 18px; background: #fff; }
+          body { margin: 0; padding: 0; background: #fff; }
           .preview-grid { min-height: auto !important; border-radius: 0 !important; }
           .preview-grid .terra-template,
           .preview-grid .ocean-template,
@@ -2844,7 +2846,7 @@ async function buildResumePdfBlob() {
               grid-template-columns: minmax(220px, 32%) 1fr !important;
             }
           }
-          @page { size: A4; margin: 12mm; }
+          @page { size: A4; margin: 0; }
         </style>
       </head>
       <body>${content}</body>
@@ -4150,6 +4152,7 @@ if (import.meta.client) {
                         <img :src="signatureDataUrl" alt="Signature" />
                       </div>
                     </div>
+                    <div class="resume-page-break-hint">Fin de page A4</div>
                   </div>
                 </div>
               </div>
@@ -5281,6 +5284,7 @@ if (import.meta.client) {
 .resume-create {
   --builder-column-gap: 16px;
   --preview-page-width: 860px;
+  --preview-a4-height: 1122px;
   --preview-shell-padding: 16px;
   --preview-shell-max-width: calc(
     var(--preview-page-width) + (var(--preview-shell-padding) * 2)
@@ -5572,6 +5576,28 @@ if (import.meta.client) {
   border-radius: calc(var(--cv-space-2) + var(--cv-space-1) / 2);
   position: relative;
   z-index: 1;
+}
+
+.cv-preview-stage::after {
+  content: '';
+  position: absolute;
+  inset: var(--preview-shell-padding);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--preview-a4-height) - 2px),
+    color-mix(in srgb, var(--cv-accent) 38%, transparent) calc(var(--preview-a4-height) - 2px),
+    color-mix(in srgb, var(--cv-accent) 38%, transparent) var(--preview-a4-height)
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.resume-page-break-hint {
+  text-align: center;
+  font-size: 0.72rem;
+  color: color-mix(in srgb, var(--cv-secondary) 75%, white);
+  margin-top: 6px;
 }
 
 .cv-preview-stage--bordered {
