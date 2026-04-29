@@ -2973,11 +2973,11 @@
           "circle": "Kreis"
         },
         "avatarMenu": {
-          "uploadReplace": "Upload / Replace",
-          "remove": "Remove",
-          "avatarShape": "Avatar shape",
-          "size": "Size",
-          "borderWidth": "Border width"
+          "uploadReplace": "Hochladen / Ersetzen",
+          "remove": "Entfernen",
+          "avatarShape": "Avatarform",
+          "size": "Größe",
+          "borderWidth": "Rahmenbreite"
         },
         "addSection": {
           "profile": "Profil",

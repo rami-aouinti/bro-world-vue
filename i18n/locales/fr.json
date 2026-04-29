@@ -3203,11 +3203,11 @@
           "circle": "Cercle"
         },
         "avatarMenu": {
-          "uploadReplace": "Upload / Replace",
-          "remove": "Remove",
-          "avatarShape": "Avatar shape",
-          "size": "Size",
-          "borderWidth": "Border width"
+          "uploadReplace": "Téléverser / Remplacer",
+          "remove": "Supprimer",
+          "avatarShape": "Forme de l’avatar",
+          "size": "Taille",
+          "borderWidth": "Épaisseur de bordure"
         },
         "addSection": {
           "profile": "Profil",

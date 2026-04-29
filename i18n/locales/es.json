@@ -2947,11 +2947,11 @@
           "circle": "Círculo"
         },
         "avatarMenu": {
-          "uploadReplace": "Upload / Replace",
-          "remove": "Remove",
-          "avatarShape": "Avatar shape",
-          "size": "Size",
-          "borderWidth": "Border width"
+          "uploadReplace": "Subir / Reemplazar",
+          "remove": "Eliminar",
+          "avatarShape": "Forma del avatar",
+          "size": "Tamaño",
+          "borderWidth": "Ancho del borde"
         },
         "addSection": {
           "profile": "Perfil",
