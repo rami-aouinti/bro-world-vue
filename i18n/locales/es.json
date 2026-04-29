@@ -2891,6 +2891,10 @@
         "clear": "Clear",
         "addToResume": "Add to resume"
       }
+    },
+    "meta": {
+      "indexTitle": "Creador de currículum",
+      "createTitle": "Crear currículum"
     }
   }
 }
