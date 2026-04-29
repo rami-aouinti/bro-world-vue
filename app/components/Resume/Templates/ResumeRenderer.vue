@@ -1347,7 +1347,7 @@ function updateText(path: string, value: string) {
 
 .resume-skin__contact-icon {
   color: var(--resume-contact-icon-color, var(--resume-accent, var(--cv-accent)));
-  margin-right: var(--resume-space-1, var(--cv-space-1));
+  flex-shrink: 0;
   transition: color 0.2s ease;
 }
 .photo-frame {
