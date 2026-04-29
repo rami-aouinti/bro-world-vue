@@ -845,7 +845,7 @@ onUnmounted(() => {
             class="resume-template resume-template-modern"
           >
             <header class="resume-header">
-              <div class="d-flex ga-3 align-start">
+              <div class="d-flex ga-3 align-start resume-identity-block">
                 <v-avatar
                   v-if="profileResumeIdentity.avatar"
                   size="76"
@@ -1648,6 +1648,8 @@ onUnmounted(() => {
   --resume-space-lg: 24px;
   max-height: 75vh;
   overflow: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   padding-right: var(--resume-space-xs);
   padding-bottom: var(--resume-space-md);
 }
@@ -1822,6 +1824,12 @@ onUnmounted(() => {
 }
 
 @media (max-width: 960px) {
+  .resume-template-shell {
+    max-height: calc(100vh - 140px);
+    padding-right: 0;
+    padding-bottom: var(--resume-space-lg);
+  }
+
   .resume-template {
     padding: var(--resume-space-md);
   }
@@ -1832,6 +1840,54 @@ onUnmounted(() => {
 
   .resume-template-toggle {
     width: 100%;
+  }
+
+  .resume-template-toggle :deep(.v-btn) {
+    min-height: 46px;
+    font-size: 0.95rem;
+    padding-inline: 12px;
+  }
+
+  .resume-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .resume-identity-block {
+    order: 1;
+  }
+
+  .resume-contact-card {
+    order: 2;
+    width: 100%;
+    font-size: 0.97rem;
+  }
+
+  .resume-header-main {
+    order: 3;
+    min-width: 0;
+  }
+
+  .resume-name {
+    font-size: clamp(1.6rem, 7vw, 1.95rem);
+  }
+
+  .resume-role {
+    font-size: 1.06rem;
+  }
+
+  .resume-meta,
+  .resume-line,
+  .resume-list,
+  .resume-contact-card,
+  .resume-line p {
+    font-size: 0.98rem;
+    line-height: 1.58;
+  }
+
+  .resume-block h3 {
+    font-size: 1rem;
+    letter-spacing: 0.05em;
   }
 
   .resume-grid {
