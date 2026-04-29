@@ -19,6 +19,7 @@ import {
 import {
   RESUME_CONTENT_STYLE_OPTIONS,
   RESUME_SECTION_REGISTRY,
+  type ResumeContentStyle,
 } from '~/constants/resumeSectionRegistry'
 import { useResumeDesignControls } from '~/composables/useResumeDesignControls'
 import { useResumeDocumentState } from '~/composables/useResumeDocumentState'
@@ -75,13 +76,7 @@ type Language = {
   countryCode?: string
   flag?: string
 }
-type ContentStyle = 'paragraph' | 'points' | 'dashes' | 'timeline'
-type ExperienceContentStyle =
-  | 'paragraph'
-  | 'bullets'
-  | 'dashes'
-  | 'timeline'
-  | 'timeline-note'
+type ContentStyle = ResumeContentStyle
 type TimelineEvent = { label: string; detail: string }
 type Experience = {
   role: string
@@ -90,7 +85,7 @@ type Experience = {
   city: string
   start: string
   end: string
-  contentStyle?: ExperienceContentStyle
+  contentStyle?: ContentStyle
   bullets: string[]
   points?: string[]
   dashes?: string[]
@@ -528,7 +523,7 @@ const sectionVariantLabels = Object.values(RESUME_SECTION_REGISTRY)
   }, {})
 const resumeContentStyleSelectItems = RESUME_CONTENT_STYLE_OPTIONS.map(
   (option) => ({
-    title: option.label,
+    label: option.label,
     value: option.value,
   }),
 )
@@ -966,7 +961,7 @@ const resume = reactive<ResumeModel>({
       city: 'New York',
       start: 'JAN 2018',
       end: 'DEC 2020',
-      contentStyle: 'bullets',
+      contentStyle: 'points',
       bullets: [
         'Offered literary suggestions based on customer needs and preferences.',
         'Followed directions from supervisors and managed projects with precision.',
@@ -985,7 +980,7 @@ const resume = reactive<ResumeModel>({
       city: 'New York',
       start: 'JAN 2016',
       end: 'DEC 2017',
-      contentStyle: 'bullets',
+      contentStyle: 'points',
       bullets: [
         'Assisted senior editors with clerical and administrative tasks.',
         'Suggested story ideas and supported content planning meetings.',
@@ -1474,7 +1469,7 @@ const createExperienceDraft = () => ({
   start: '',
   end: '',
   bullets: '',
-  contentStyle: 'bullets' as ExperienceContentStyle,
+  contentStyle: 'points' as ContentStyle,
 })
 const createSectionItemExperienceDraft = () => ({
   role: '',
@@ -1484,9 +1479,7 @@ const createSectionItemExperienceDraft = () => ({
   start: '',
   end: '',
   bullets: '',
-  contentStyle: 'paragraph' as ExperienceContentStyle,
-  paragraph: '',
-  lines: '',
+  contentStyle: 'points' as ContentStyle,
   timelineEventTitle: '',
   timelineDateRange: '',
   timelineDescription: '',
@@ -1639,7 +1632,7 @@ function applyBuilderResumeData(
       start: experience.start,
       end: experience.end,
       bullets: [...experience.bullets],
-      contentStyle: 'bullets',
+      contentStyle: 'points',
       points: [...experience.bullets],
     }))
   }
@@ -1903,13 +1896,14 @@ function parseTimelineEvents(value: string): TimelineEvent[] {
 }
 
 function normalizeExperienceContentStyle(
-  style?: ExperienceContentStyle | ContentStyle,
-): ExperienceContentStyle {
-  if (style === 'points' || style === 'bullets' || !style) return 'bullets'
-  if (style === 'timeline') return 'timeline'
-  if (style === 'timeline-note') return 'timeline-note'
-  if (style === 'dashes') return 'dashes'
-  return 'paragraph'
+  style?: ContentStyle,
+): ContentStyle {
+  return normalizeSectionContentStyle(style)
+}
+
+function normalizeSectionContentStyle(style?: string): ContentStyle {
+  if (style === 'points' || style === 'dashes' || style === 'timeline') return style
+  return 'points'
 }
 
 function applyContentFields(
@@ -1921,21 +1915,16 @@ function applyContentFields(
   },
   rawMultiline: string,
 ) {
-  const parsedLines =
-    model.contentStyle === 'paragraph'
-      ? splitParagraphToList(rawMultiline)
-      : parseMultilineList(rawMultiline)
+  const parsedLines = parseMultilineList(rawMultiline)
   const parsedTimelineEvents = parseTimelineEvents(rawMultiline)
   model.points =
-    model.contentStyle === 'points' || model.contentStyle === 'paragraph'
-      ? parsedLines
-      : []
+    model.contentStyle === 'points' ? parsedLines : []
   model.dashes = model.contentStyle === 'dashes' ? parsedLines : []
   model.timelineEvents =
     model.contentStyle === 'timeline' ? parsedTimelineEvents : []
 }
 
-function changeExperienceContentStyle(index: number, nextStyle: ExperienceContentStyle) {
+function changeExperienceContentStyle(index: number, nextStyle: ContentStyle) {
   const experience = resume.experiences[index]
   const currentText = getExperienceBullets(index)
   experience.contentStyle = normalizeExperienceContentStyle(nextStyle)
@@ -1959,32 +1948,21 @@ function changeProjectContentStyle(index: number, nextStyle: ContentStyle) {
 function setExperienceBullets(index: number, value: string) {
   const experience = resume.experiences[index]
   const parsedLines = parseMultilineList(value)
-  const parsedParagraph = splitParagraphToList(value)
   experience.bullets = parsedLines
   experience.contentStyle = normalizeExperienceContentStyle(experience.contentStyle)
-  if (experience.contentStyle === 'bullets') {
-    experience.points = parsedLines
-  }
-  if (experience.contentStyle === 'paragraph') {
-    experience.points = parsedParagraph
-  }
-  if (experience.contentStyle === 'dashes') {
-    experience.dashes = parsedLines
-  }
-  if (experience.contentStyle === 'timeline' || experience.contentStyle === 'timeline-note') {
-    experience.timelineEvents = parseTimelineEvents(value)
-  }
+  experience.points = experience.contentStyle === 'points' ? parsedLines : []
+  experience.dashes = experience.contentStyle === 'dashes' ? parsedLines : []
+  experience.timelineEvents = experience.contentStyle === 'timeline'
+    ? parseTimelineEvents(value)
+    : []
 }
 
 const getExperienceBullets = (index: number) =>
-  normalizeExperienceContentStyle(resume.experiences[index].contentStyle) === 'timeline' ||
-  normalizeExperienceContentStyle(resume.experiences[index].contentStyle) === 'timeline-note'
+  normalizeExperienceContentStyle(resume.experiences[index].contentStyle) === 'timeline'
     ? (resume.experiences[index].timelineEvents || [])
         .map((event) => [event.label, event.detail].filter(Boolean).join(' | '))
         .join('\n')
-    : normalizeExperienceContentStyle(resume.experiences[index].contentStyle) === 'paragraph'
-      ? (resume.experiences[index].points || []).join(' ')
-      : (normalizeExperienceContentStyle(resume.experiences[index].contentStyle) === 'dashes'
+    : (normalizeExperienceContentStyle(resume.experiences[index].contentStyle) === 'dashes'
           ? resume.experiences[index].dashes || []
           : resume.experiences[index].points?.length
             ? resume.experiences[index].points
@@ -1994,7 +1972,7 @@ const getExperienceBullets = (index: number) =>
 function setEducationContent(index: number, value: string) {
   const education = resume.education[index]
   education.note = value
-  if (!education.contentStyle) education.contentStyle = 'points'
+  education.contentStyle = normalizeSectionContentStyle(education.contentStyle)
   applyContentFields(education, value)
 }
 
@@ -2005,7 +1983,6 @@ function getEducationContent(index: number) {
       .map((event) => [event.label, event.detail].filter(Boolean).join(' | '))
       .join('\n')
   }
-  if (education.contentStyle === 'paragraph') return education.note
   if (education.contentStyle === 'dashes')
     return (education.dashes || []).join('\n')
   if (education.points?.length) return education.points.join('\n')
@@ -2015,7 +1992,7 @@ function getEducationContent(index: number) {
 function setProjectContent(index: number, value: string) {
   const project = resume.projects[index]
   project.summary = value
-  if (!project.contentStyle) project.contentStyle = 'points'
+  project.contentStyle = normalizeSectionContentStyle(project.contentStyle)
   applyContentFields(project, value)
 }
 
@@ -2026,7 +2003,6 @@ function getProjectContent(index: number) {
       .map((event) => [event.label, event.detail].filter(Boolean).join(' | '))
       .join('\n')
   }
-  if (project.contentStyle === 'paragraph') return project.summary
   if (project.contentStyle === 'dashes')
     return (project.dashes || []).join('\n')
   if (project.points?.length) return project.points.join('\n')
@@ -2041,7 +2017,7 @@ function addExperience() {
     city: '',
     start: '',
     end: '',
-    contentStyle: 'bullets',
+    contentStyle: 'points',
     bullets: [],
     points: [],
     dashes: [],
@@ -3197,7 +3173,7 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
         .split(/\n|•|-/g)
         .map((bullet) => bullet.trim())
         .filter(Boolean),
-      contentStyle: 'bullets',
+      contentStyle: 'points',
       points: String(experience.description || '')
         .split(/\n|•|-/g)
         .map((bullet) => bullet.trim())
@@ -4790,30 +4766,7 @@ if (import.meta.client) {
                 variant="outlined"
                 hide-details
               />
-              <v-textarea
-                v-if="sectionItemDraft.experience.contentStyle === 'paragraph'"
-                v-model="sectionItemDraft.experience.paragraph"
-                label="Paragraph"
-                rows="4"
-                variant="outlined"
-                hide-details
-              />
-              <v-textarea
-                v-else-if="
-                  sectionItemDraft.experience.contentStyle === 'bullets' ||
-                  sectionItemDraft.experience.contentStyle === 'dashes'
-                "
-                v-model="sectionItemDraft.experience.lines"
-                :label="
-                  sectionItemDraft.experience.contentStyle === 'bullets'
-                    ? 'Bullets (one per line)'
-                    : 'Dashes (one per line)'
-                "
-                rows="4"
-                variant="outlined"
-                hide-details
-              />
-              <template v-else>
+              <template v-if="sectionItemDraft.experience.contentStyle === 'timeline'">
                 <v-text-field
                   v-model="sectionItemDraft.experience.timelineEventTitle"
                   label="Event title"
