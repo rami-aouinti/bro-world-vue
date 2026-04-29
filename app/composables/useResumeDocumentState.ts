@@ -1,4 +1,4 @@
-import { CV_SOCLE_PRESETS, resolveSoclePresetById } from '~/constants/resumeSoclePresets'
+import { resolveSoclePresetById } from '~/constants/resumeSoclePresets'
 import { DEFAULT_RESUME_STYLE, DEFAULT_SECTION_ORDER } from '~/constants/resumeDefaults'
 import type {
   ResumeDocumentCustomizationState,
@@ -46,26 +46,34 @@ export function normalizeStyle(styleSource: unknown, defaultLayoutMode: ResumeDo
   return { palette: typeof style.palette === 'string' ? style.palette : defaults.palette, pageBackground: normalizeEnum(style.pageBackground, ['white', 'sky-light', 'pearl-light', 'ivory-light'] as const, defaults.pageBackground), density: normalizeEnum(style.density, ['compact', 'comfortable'] as const, defaults.density), radius: (style.radius as ResumeDocumentModel['style']['radius']) ?? defaults.radius, typography: (style.typography as ResumeDocumentModel['style']['typography']) ?? defaults.typography, photoPosition: normalizeEnum(style.photoPosition, ['left', 'right'] as const, defaults.photoPosition), asideWidth: clampNumber(style.asideWidth, 220, 380, defaults.asideWidth, true), asideHeight: clampNumber(style.asideHeight, 60, 100, defaults.asideHeight ?? 100, true), showSectionIcons: typeof style.showSectionIcons === 'boolean' ? style.showSectionIcons : defaults.showSectionIcons, showContactIcons: typeof style.showContactIcons === 'boolean' ? style.showContactIcons : defaults.showContactIcons, sectionIconStyle: normalizeEnum(style.sectionIconStyle, ['outline', 'filled', 'rounded'] as const, defaults.sectionIconStyle), iconSize: normalizeEnum(style.iconSize, ['s', 'm', 'l'] as const, defaults.iconSize), iconColor: normalizeEnum(style.iconColor, ['accent', 'neutral'] as const, defaults.iconColor), layoutMode: normalizeEnum(style.layoutMode, ['aside-left', 'aside-right', 'no-aside'] as const, defaults.layoutMode), decorativeShapeA: normalizeDecorativeShape(style.decorativeShapeA, defaults.decorativeShapeA, ['circle', 'square', 'ring', 'bar'] as const), decorativeShapeB: normalizeDecorativeShape(style.decorativeShapeB, defaults.decorativeShapeB, ['circle', 'square', 'ring', 'bar'] as const) }
 }
 
-function legacyVariantToPresetId(templateVariant: unknown) {
-  return typeof templateVariant === 'string' && templateVariant.trim().length > 0 ? 'socle-classic' : CV_SOCLE_PRESETS[0]?.id ?? 'socle-classic'
-}
-
 export function normalizeModel(source: unknown, presetId: string): ResumeDocumentModel {
   const fallbackPreset = resolveSoclePresetById(presetId)
+  const fallbackTemplate = {
+    structureId: 'structure-professional',
+    layoutId: 'layout-aside-left',
+    skinId: 'skin-01',
+  }
 
   if (!isRecord(source)) {
-    return { templateId: 'cv-socle', presetId: fallbackPreset.id, sectionOrder: DEFAULT_SECTION_ORDER.map(entry => ({ ...entry })), style: normalizeStyle(null, fallbackPreset.layoutMode) }
+    return { templateId: 'cv-socle', presetId: fallbackPreset.id, template: { ...fallbackTemplate }, sectionOrder: DEFAULT_SECTION_ORDER.map(entry => ({ ...entry })), style: normalizeStyle(null, fallbackPreset.layoutMode) }
   }
 
   const resolvedPresetId = typeof source.presetId === 'string'
     ? resolveSoclePresetById(source.presetId).id
-    : legacyVariantToPresetId(source.templateVariant)
+    : fallbackPreset.id
 
   const resolvedPreset = resolveSoclePresetById(resolvedPresetId)
+  const sourceTemplate = isRecord(source.template) ? source.template : {}
+  const template = {
+    structureId: typeof sourceTemplate.structureId === 'string' ? sourceTemplate.structureId : fallbackTemplate.structureId,
+    layoutId: typeof sourceTemplate.layoutId === 'string' ? sourceTemplate.layoutId : fallbackTemplate.layoutId,
+    skinId: typeof sourceTemplate.skinId === 'string' ? sourceTemplate.skinId : fallbackTemplate.skinId,
+  }
 
   return {
     templateId: 'cv-socle',
     presetId: resolvedPreset.id,
+    template,
     sectionOrder: normalizeSectionOrder(source.sectionOrder),
     style: normalizeStyle(source.style, resolvedPreset.layoutMode),
   }

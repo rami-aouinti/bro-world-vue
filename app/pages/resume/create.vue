@@ -777,14 +777,6 @@ const templates: Template[] = resumeTemplateCards.map((template) => ({
   recommended: ['cv-socle-01', 'cv-socle-02', 'cv-socle-03', 'cv-socle-04', 'cv-socle-10', 'cv-socle-15'].includes(template.id),
 }))
 
-const resumeTemplateQueryAliases: Record<string, string> = {
-  'executive-portrait': 'cv-socle-01',
-  'midnight-banner': 'cv-socle-02',
-  'minimal-profile': 'cv-socle-10',
-  classic: 'cv-socle-15',
-  modern: 'cv-socle-03',
-}
-
 const resume = reactive<ResumeModel>({
   role: 'Communication Specialist',
   firstName: 'Emma',
@@ -1007,6 +999,18 @@ const selectedTemplateConfig = computed(
     templatesByDocumentType.value[0] ??
     templates[0],
 )
+function resolveTemplateIdFromCustomization(
+  structureId: string,
+  layoutId: string,
+  skinId: string,
+) {
+  return templates.find(
+    (template) =>
+      template.structureId === structureId
+      && template.layoutId === layoutId
+      && template.skinId === skinId,
+  )?.id
+}
 
 const selectedSoclePreset = computed<ResumeSoclePreset>(() => resolveSoclePresetById(selectedPreset.value))
 const selectedPhotoShape = ref<string>('square')
@@ -1053,6 +1057,14 @@ const designMenuSupportsAsideWidth = computed(
 function applyTemplateSelection(_templateId: string) {
   const nextTemplate = templates.find((template) => template.id === _templateId)
   if (!nextTemplate) return
+  resumeDocumentState.value.customization = {
+    ...resumeDocumentState.value.customization,
+    template: {
+      structureId: nextTemplate.structureId,
+      layoutId: nextTemplate.layoutId,
+      skinId: nextTemplate.skinId,
+    },
+  }
   selectedTemplate.value = nextTemplate.id
   selectedPreset.value = nextTemplate.presetId
   templatePickerState.value.structureId = nextTemplate.structureId
@@ -1060,18 +1072,20 @@ function applyTemplateSelection(_templateId: string) {
   templatePickerState.value.skinId = nextTemplate.skinId
 
   const config = nextTemplate.config
-  if (!config) return
-  if (config.photoShape) selectedPhotoShape.value = config.photoShape
-  if (config.photoSize) layoutSettings.photoSize = config.photoSize
-  if (config.photoBorderWidth) layoutSettings.photoBorderWidth = config.photoBorderWidth
-  if (config.photoPosition) layoutSettings.photoPosition = config.photoPosition
-  if (config.layoutMode) layoutSettings.layoutMode = config.layoutMode
-  if (config.lineDensity) layoutSettings.lineDensity = config.lineDensity
-  if (config.sectionDividerStyle) layoutSettings.sectionDividerStyle = config.sectionDividerStyle
-  if (config.sectionIconStyle) layoutSettings.sectionIconStyle = config.sectionIconStyle
-  if (config.iconSize) layoutSettings.iconSize = config.iconSize
-  if (config.iconColor) layoutSettings.iconColor = config.iconColor
-  if (config.sidebarWidth) layoutSettings.sidebarWidth = config.sidebarWidth
+  if (config) {
+    if (config.photoShape) selectedPhotoShape.value = config.photoShape
+    if (config.photoSize) layoutSettings.photoSize = config.photoSize
+    if (config.photoBorderWidth) layoutSettings.photoBorderWidth = config.photoBorderWidth
+    if (config.photoPosition) layoutSettings.photoPosition = config.photoPosition
+    if (config.layoutMode) layoutSettings.layoutMode = config.layoutMode
+    if (config.lineDensity) layoutSettings.lineDensity = config.lineDensity
+    if (config.sectionDividerStyle) layoutSettings.sectionDividerStyle = config.sectionDividerStyle
+    if (config.sectionIconStyle) layoutSettings.sectionIconStyle = config.sectionIconStyle
+    if (config.iconSize) layoutSettings.iconSize = config.iconSize
+    if (config.iconColor) layoutSettings.iconColor = config.iconColor
+    if (config.sidebarWidth) layoutSettings.sidebarWidth = config.sidebarWidth
+  }
+  persist()
 }
 
 const templateShapeTypeCycle: DecorativeShapeType[] = ['circle', 'ring', 'square', 'bar', 'diamond', 'triangle', 'pill']
@@ -1104,12 +1118,11 @@ function applyTemplateFromRouteQuery() {
     return
   }
 
-  const resolvedTemplateId = resumeTemplateQueryAliases[templateFromQuery] ?? templateFromQuery
   const exists = templatesByDocumentType.value.some(
-    (template) => template.id === resolvedTemplateId,
+    (template) => template.id === templateFromQuery,
   )
   const templateId = exists
-    ? resolvedTemplateId
+    ? templateFromQuery
     : fallbackTemplateId
 
   applyTemplateSelection(templateId)
@@ -3340,6 +3353,17 @@ if (import.meta.client) {
     migrateLegacyStorage(rawLegacyLayout, rawLegacySectionLayout)
 
   const customization = resumeDocumentState.value.customization
+  const templateIdFromCustomization = resolveTemplateIdFromCustomization(
+    customization.template.structureId,
+    customization.template.layoutId,
+    customization.template.skinId,
+  )
+  if (templateIdFromCustomization) {
+    selectedTemplate.value = templateIdFromCustomization
+    templatePickerState.value.structureId = customization.template.structureId as Template['structureId']
+    templatePickerState.value.layoutId = customization.template.layoutId as Template['layoutId']
+    templatePickerState.value.skinId = customization.template.skinId
+  }
   selectedPreset.value = customization.presetId
   selectedTheme.value = customization.style.palette
   selectedPageBackground.value = customization.style.pageBackground
@@ -3387,6 +3411,11 @@ if (import.meta.client) {
       resumeDocumentState.value.customization = {
         ...resumeDocumentState.value.customization,
         presetId: selectedPreset.value,
+        template: {
+          structureId: templatePickerState.value.structureId,
+          layoutId: templatePickerState.value.layoutId,
+          skinId: templatePickerState.value.skinId,
+        },
         style: {
           ...resumeDocumentState.value.customization.style,
           palette: selectedTheme.value,

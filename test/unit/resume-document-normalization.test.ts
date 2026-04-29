@@ -38,4 +38,26 @@ describe('resume document normalization', () => {
     expect(model.sectionOrder[0].key).toBe('experience')
     expect(model.sectionOrder[1].key).toBe('education')
   })
+
+  it('keeps template structure/layout/skin as single source of truth', () => {
+    const model = normalizeModel({
+      template: {
+        structureId: 'structure-compact',
+        layoutId: 'layout-single-column',
+        skinId: 'skin-20',
+      },
+    }, 'socle-classic')
+
+    expect(model.template.structureId).toBe('structure-compact')
+    expect(model.template.layoutId).toBe('layout-single-column')
+    expect(model.template.skinId).toBe('skin-20')
+  })
+
+  it('does not remap legacy variant ids to preset ids', () => {
+    const model = normalizeModel({
+      templateVariant: 'legacy-modern',
+    }, 'socle-executive')
+
+    expect(model.presetId).toBe('socle-executive')
+  })
 })
