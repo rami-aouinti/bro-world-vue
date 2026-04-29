@@ -1437,14 +1437,6 @@ function updateText(path: string, value: string) {
   grid-template-areas: 'main aside';
 }
 
-.layout-mode-aside-right .resume-skin__main {
-  order: 1;
-}
-
-.layout-mode-aside-right .resume-skin__aside {
-  order: 2;
-}
-
 .layout-mode-no-aside {
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas: 'main';
