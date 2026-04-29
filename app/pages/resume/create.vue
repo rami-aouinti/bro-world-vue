@@ -28,6 +28,8 @@ import {
 } from '~/utils/resumeApiMapper'
 import { levelToStars, starsToPercent } from '~/utils/resumeLanguageLevel'
 import ResumeRenderer from '~/components/Resume/Templates/ResumeRenderer.vue'
+import ResumeTimelineSectionFields from '~/components/Resume/Create/ResumeTimelineSectionFields.vue'
+import ResumeLevelSectionFields from '~/components/Resume/Create/ResumeLevelSectionFields.vue'
 import {
   isResumeEditableSectionKey,
   type ResumeEditableSectionKey,
@@ -4028,207 +4030,52 @@ if (import.meta.client) {
             </template>
 
             <template v-else-if="addSectionType === 'experience'">
-              <v-text-field
-                v-model="addSectionDraft.experience.role"
-                label="Role"
-                variant="outlined"
-                hide-details
+              <ResumeTimelineSectionFields
+                v-model="addSectionDraft.experience"
+                section="experience"
+                :content-style-items="resumeContentStyleSelectItems"
+                :logo-error-messages="getExperienceLogoError('add-section')"
+                @clear-logo-error="setExperienceLogoError('add-section')"
+                @open-logo-upload="openExperienceLogoPicker('add-section')"
               />
-              <v-text-field
-                v-model="addSectionDraft.experience.company"
-                label="Company"
-                variant="outlined"
-                hide-details
-              />
-              <v-text-field
-                v-model="addSectionDraft.experience.companyImageUrl"
-                label="Company logo URL"
-                variant="outlined"
-                :error-messages="getExperienceLogoError('add-section')"
-                @update:model-value="setExperienceLogoError('add-section')"
-              />
-              <div class="d-flex align-center ga-2">
-                <v-btn
-                  prepend-icon="mdi-image-plus-outline"
-                  size="small"
-                  variant="tonal"
-                  @click="openExperienceLogoPicker('add-section')"
-                >
-                  Upload logo
-                </v-btn>
-                <input
-                  ref="addSectionExperienceLogoInput"
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp,image/svg+xml"
-                  class="d-none"
-                  @change="onAddSectionExperienceLogoSelected"
-                />
-              </div>
-              <v-text-field
-                v-model="addSectionDraft.experience.city"
-                label="City"
-                variant="outlined"
-                hide-details
-              />
-              <div class="grid-2">
-                <v-text-field
-                  v-model="addSectionDraft.experience.start"
-                  label="Start"
-                  variant="outlined"
-                  hide-details
-                />
-                <v-text-field
-                  v-model="addSectionDraft.experience.end"
-                  label="End"
-                  variant="outlined"
-                  hide-details
-                />
-              </div>
-              <v-select
-                v-model="addSectionDraft.experience.contentStyle"
-                :items="resumeContentStyleSelectItems"
-                label="Content style"
-                variant="outlined"
-                hide-details
-              />
-              <v-textarea
-                v-model="addSectionDraft.experience.bullets"
-                label="Content (one per line, timeline: Label | Detail)"
-                rows="4"
-                variant="outlined"
-                hide-details
+              <input
+                ref="addSectionExperienceLogoInput"
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                class="d-none"
+                @change="onAddSectionExperienceLogoSelected"
               />
             </template>
 
             <template v-else-if="addSectionType === 'education'">
-              <v-text-field
-                v-model="addSectionDraft.education.degree"
-                label="Degree"
-                variant="outlined"
-                hide-details
+              <ResumeTimelineSectionFields
+                v-model="addSectionDraft.education"
+                section="education"
+                :content-style-items="resumeContentStyleSelectItems"
+                @open-logo-upload="triggerFileInputById('education-image-input-add')"
               />
-              <v-text-field
-                v-model="addSectionDraft.education.school"
-                label="School"
-                variant="outlined"
-                hide-details
-              />
-              <v-text-field
-                v-model="addSectionDraft.education.schoolImageUrl"
-                label="School logo URL (optional)"
-                variant="outlined"
-                hide-details
-              />
-              <div class="d-flex align-center ga-2">
-                <input
-                  id="education-image-input-add"
-                  type="file"
-                  accept="image/*"
-                  class="d-none"
-                  @change="(event) => onEducationImageSelected(event, 'add')"
-                />
-                <v-btn
-                  prepend-icon="mdi-image-plus-outline"
-                  variant="outlined"
-                  size="small"
-                  @click="triggerFileInputById('education-image-input-add')"
-                >
-                  Upload logo
-                </v-btn>
-                <v-avatar
-                  v-if="addSectionDraft.education.schoolImageUrl"
-                  rounded="lg"
-                  size="40"
-                >
-                  <v-img
-                    :src="addSectionDraft.education.schoolImageUrl"
-                    alt="School logo preview"
-                    cover
-                  />
-                </v-avatar>
-              </div>
-              <v-text-field
-                v-model="addSectionDraft.education.city"
-                label="City"
-                variant="outlined"
-                hide-details
-              />
-              <div class="grid-2">
-                <v-text-field
-                  v-model="addSectionDraft.education.start"
-                  label="Start"
-                  variant="outlined"
-                  hide-details
-                />
-                <v-text-field
-                  v-model="addSectionDraft.education.end"
-                  label="End"
-                  variant="outlined"
-                  hide-details
-                />
-              </div>
-              <v-select
-                v-model="addSectionDraft.education.contentStyle"
-                :items="resumeContentStyleSelectItems"
-                label="Content style"
-                variant="outlined"
-                hide-details
-              />
-              <v-textarea
-                v-model="addSectionDraft.education.note"
-                label="Content (one per line, timeline: Label | Detail)"
-                rows="3"
-                variant="outlined"
-                hide-details
+              <input
+                id="education-image-input-add"
+                type="file"
+                accept="image/*"
+                class="d-none"
+                @change="(event) => onEducationImageSelected(event, 'add')"
               />
             </template>
 
             <template v-else-if="addSectionType === 'skill'">
-              <v-text-field
-                v-model="addSectionDraft.skill.name"
-                :label="t('resumeBuilder.create.fields.skillName')"
-                variant="outlined"
-                hide-details
-              />
-              <v-slider
-                v-model="addSectionDraft.skill.level"
-                min="0"
-                max="100"
-                step="5"
-                color="primary"
-                thumb-label
+              <ResumeLevelSectionFields
+                v-model="addSectionDraft.skill"
+                section="skill"
+                :t="t"
               />
             </template>
 
             <template v-else-if="addSectionType === 'language'">
-              <v-text-field
-                v-model="addSectionDraft.language.name"
-                :label="t('resumeBuilder.create.fields.languageName')"
-                variant="outlined"
-                hide-details
-              />
-              <v-text-field
-                v-model="addSectionDraft.language.countryCode"
-                :label="t('resumeBuilder.create.fields.countryCodeOptional')"
-                :placeholder="t('resumeBuilder.create.placeholders.countryCode')"
-                maxlength="2"
-                variant="outlined"
-                hide-details
-              />
-              <v-text-field
-                v-model="addSectionDraft.language.flag"
-                :label="t('resumeBuilder.create.fields.flagOptional')"
-                :placeholder="t('resumeBuilder.create.placeholders.flag')"
-                variant="outlined"
-                hide-details
-              />
-              <v-slider
-                v-model="addSectionDraft.language.level"
-                min="0"
-                max="100"
-                step="5"
-                color="primary"
-                thumb-label
+              <ResumeLevelSectionFields
+                v-model="addSectionDraft.language"
+                section="language"
+                :t="t"
               />
             </template>
 
@@ -4387,225 +4234,46 @@ if (import.meta.client) {
           <v-divider />
           <v-card-text class="d-grid ga-3">
             <template v-if="activeSectionKey === 'experience'">
-              <v-text-field
-                v-model="sectionItemDraft.experience.role"
-                label="Role"
-                variant="outlined"
-                hide-details
+              <ResumeTimelineSectionFields
+                v-model="sectionItemDraft.experience"
+                section="experience"
+                :content-style-items="resumeContentStyleSelectItems"
+                :logo-error-messages="getExperienceLogoError('section-item')"
+                :show-timeline-extras="true"
+                @clear-logo-error="setExperienceLogoError('section-item')"
+                @open-logo-upload="openExperienceLogoPicker('section-item')"
               />
-              <v-text-field
-                v-model="sectionItemDraft.experience.company"
-                label="Company"
-                variant="outlined"
-                hide-details
+              <input
+                ref="sectionItemExperienceLogoInput"
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                class="d-none"
+                @change="onSectionItemExperienceLogoSelected"
               />
-              <v-text-field
-                v-model="sectionItemDraft.experience.companyImageUrl"
-                label="Company logo URL"
-                variant="outlined"
-                :error-messages="getExperienceLogoError('section-item')"
-                @update:model-value="setExperienceLogoError('section-item')"
-              />
-              <div class="d-flex align-center ga-2">
-                <v-btn
-                  prepend-icon="mdi-image-plus-outline"
-                  size="small"
-                  variant="tonal"
-                  @click="openExperienceLogoPicker('section-item')"
-                >
-                  Upload logo
-                </v-btn>
-                <input
-                  ref="sectionItemExperienceLogoInput"
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp,image/svg+xml"
-                  class="d-none"
-                  @change="onSectionItemExperienceLogoSelected"
-                />
-              </div>
-              <v-text-field
-                v-model="sectionItemDraft.experience.city"
-                label="City"
-                variant="outlined"
-                hide-details
-              />
-              <div class="grid-2">
-                <v-text-field
-                  v-model="sectionItemDraft.experience.start"
-                  label="Start"
-                  variant="outlined"
-                  hide-details
-                />
-                <v-text-field
-                  v-model="sectionItemDraft.experience.end"
-                  label="End"
-                  variant="outlined"
-                  hide-details
-                />
-              </div>
-              <v-select
-                v-model="sectionItemDraft.experience.contentStyle"
-                :items="resumeContentStyleSelectItems"
-                item-title="label"
-                item-value="value"
-                label="Content style"
-                variant="outlined"
-                hide-details
-              />
-              <v-textarea
-                v-model="sectionItemDraft.experience.bullets"
-                label="Content (one per line, timeline: Label | Detail)"
-                rows="4"
-                variant="outlined"
-                hide-details
-              />
-              <template v-if="sectionItemDraft.experience.contentStyle === 'timeline'">
-                <v-text-field
-                  v-model="sectionItemDraft.experience.timelineEventTitle"
-                  label="Event title"
-                  variant="outlined"
-                  hide-details
-                />
-                <v-text-field
-                  v-model="sectionItemDraft.experience.timelineDateRange"
-                  label="Date range"
-                  variant="outlined"
-                  hide-details
-                />
-                <v-textarea
-                  v-model="sectionItemDraft.experience.timelineDescription"
-                  label="Short description"
-                  rows="3"
-                  variant="outlined"
-                  hide-details
-                />
-              </template>
             </template>
 
             <template v-else-if="activeSectionKey === 'education'">
-              <v-text-field
-                v-model="sectionItemDraft.education.degree"
-                label="Degree"
-                variant="outlined"
-                hide-details
+              <ResumeTimelineSectionFields
+                v-model="sectionItemDraft.education"
+                section="education"
+                :content-style-items="resumeContentStyleSelectItems"
+                @open-logo-upload="triggerFileInputById('education-image-input-section-item')"
               />
-              <v-text-field
-                v-model="sectionItemDraft.education.school"
-                label="School"
-                variant="outlined"
-                hide-details
-              />
-              <v-text-field
-                v-model="sectionItemDraft.education.schoolImageUrl"
-                label="School logo URL (optional)"
-                variant="outlined"
-                hide-details
-              />
-              <div class="d-flex align-center ga-2">
-                <input
-                  id="education-image-input-section-item"
-                  type="file"
-                  accept="image/*"
-                  class="d-none"
-                  @change="
-                    (event) => onEducationImageSelected(event, 'section')
-                  "
-                />
-                <v-btn
-                  prepend-icon="mdi-image-plus-outline"
-                  variant="outlined"
-                  size="small"
-                  @click="
-                    triggerFileInputById('education-image-input-section-item')
-                  "
-                >
-                  Upload logo
-                </v-btn>
-                <v-avatar
-                  v-if="sectionItemDraft.education.schoolImageUrl"
-                  rounded="lg"
-                  size="40"
-                >
-                  <v-img
-                    :src="sectionItemDraft.education.schoolImageUrl"
-                    alt="School logo preview"
-                    cover
-                  />
-                </v-avatar>
-              </div>
-              <v-text-field
-                v-model="sectionItemDraft.education.city"
-                label="City"
-                variant="outlined"
-                hide-details
-              />
-              <div class="grid-2">
-                <v-text-field
-                  v-model="sectionItemDraft.education.start"
-                  label="Start"
-                  variant="outlined"
-                  hide-details
-                />
-                <v-text-field
-                  v-model="sectionItemDraft.education.end"
-                  label="End"
-                  variant="outlined"
-                  hide-details
-                />
-              </div>
-              <v-select
-                v-model="sectionItemDraft.education.contentStyle"
-                :items="resumeContentStyleSelectItems"
-                label="Content style"
-                variant="outlined"
-                hide-details
-              />
-              <v-textarea
-                v-model="sectionItemDraft.education.note"
-                label="Content (one per line, timeline: Label | Detail)"
-                rows="3"
-                variant="outlined"
-                hide-details
+              <input
+                id="education-image-input-section-item"
+                type="file"
+                accept="image/*"
+                class="d-none"
+                @change="(event) => onEducationImageSelected(event, 'section')"
               />
             </template>
 
             <template v-else-if="activeSectionKey === 'language'">
-              <v-text-field
-                v-model="sectionItemDraft.language.name"
-                :label="t('resumeBuilder.create.fields.languageName')"
-                variant="outlined"
-                hide-details
-              />
-              <v-text-field
-                v-model="sectionItemDraft.language.countryCode"
-                :label="t('resumeBuilder.create.fields.countryCodeOptional')"
-                :placeholder="t('resumeBuilder.create.placeholders.countryCode')"
-                maxlength="2"
-                variant="outlined"
-                hide-details
-              />
-              <v-text-field
-                v-model="sectionItemDraft.language.flag"
-                :label="t('resumeBuilder.create.fields.flagOptional')"
-                :placeholder="t('resumeBuilder.create.placeholders.flag')"
-                variant="outlined"
-                hide-details
-              />
-              <v-rating
-                v-if="activeVariant === 'stars'"
-                v-model="sectionItemDraft.language.stars"
-                color="amber"
-                active-color="amber"
-                length="5"
-              />
-              <v-slider
-                v-else
-                v-model="sectionItemDraft.language.level"
-                min="0"
-                max="100"
-                step="5"
-                color="primary"
-                thumb-label
+              <ResumeLevelSectionFields
+                v-model="sectionItemDraft.language"
+                section="language"
+                :t="t"
+                :show-stars="activeVariant === 'stars'"
               />
             </template>
 
