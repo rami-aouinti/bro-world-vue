@@ -72,6 +72,14 @@ describe('resume section registry consistency', () => {
     }
   })
 
+
+  it('ensures resume template preview images are unique', async () => {
+    const { RESUME_TEMPLATES_CATALOG } = await import('~/constants/resumeTemplates.catalog')
+    const resumeTemplates = RESUME_TEMPLATES_CATALOG.filter(({ type }) => type === 'resume')
+    const images = resumeTemplates.map(({ image }) => image)
+    expect(new Set(images).size, `duplicate resume images found: ${images.join(', ')}`).toBe(images.length)
+  })
+
   it('ensures expected toolbar actions are coherent with section props and emits (language/project/experience)', () => {
     const sectionSources = {
       language: readComponentSource('ResumeSectionLanguage.vue'),
