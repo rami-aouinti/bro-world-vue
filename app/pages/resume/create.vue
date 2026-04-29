@@ -46,6 +46,30 @@ definePageMeta({
   layout: 'resume',
 })
 
+const runtimeConfig = useRuntimeConfig()
+const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world.com'
+const pageUrl = `${siteUrl}/resume/create`
+
+useSeoMeta({
+  title: 'Créer mon CV | Bro World',
+  description:
+    'Éditez votre CV en ligne avec un éditeur intuitif, des modèles professionnels et un export prêt à postuler.',
+  ogTitle: 'Créer mon CV | Bro World',
+  ogDescription:
+    'Personnalisez chaque section de votre CV et générez un rendu professionnel en quelques minutes.',
+  ogType: 'website',
+  ogUrl: pageUrl,
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Créer mon CV | Bro World',
+  twitterDescription:
+    'Un éditeur de CV moderne avec aperçu en direct et mise en page professionnelle.',
+  robots: 'index, follow',
+})
+
+useHead({
+  link: [{ rel: 'canonical', href: pageUrl }],
+})
+
 type Skill = { name: string; level: number }
 type Language = {
   name: string
@@ -3581,7 +3605,7 @@ if (import.meta.client) {
 </script>
 
 <template>
-  <div>
+  <div class="fade-in-up">
     <AppPageDrawers>
       <template #left>
         <div style="min-height: 400px; overflow-y: auto">
@@ -6075,6 +6099,19 @@ if (import.meta.client) {
 .builder-form :deep(textarea) {
   direction: ltr;
   text-align: left;
+}
+.fade-in-up {
+  animation: fadeInUp 0.7s ease both;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 1120px) {

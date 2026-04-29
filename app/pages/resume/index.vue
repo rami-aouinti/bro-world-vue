@@ -6,6 +6,29 @@ definePageMeta({
 
 const { t } = useI18n()
 const router = useRouter()
+const runtimeConfig = useRuntimeConfig()
+const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world.com'
+const pageUrl = `${siteUrl}/resume`
+
+useSeoMeta({
+  title: 'Créateur de CV en ligne | Bro World',
+  description:
+    'Créez un CV professionnel en quelques minutes avec des modèles modernes, personnalisables et optimisés ATS.',
+  ogTitle: 'Créateur de CV en ligne | Bro World',
+  ogDescription:
+    'Choisissez un modèle, personnalisez votre CV et exportez un document prêt à envoyer.',
+  ogType: 'website',
+  ogUrl: pageUrl,
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Créateur de CV en ligne | Bro World',
+  twitterDescription:
+    'Un builder de CV rapide, moderne et optimisé pour les recruteurs.',
+  robots: 'index, follow',
+})
+
+useHead({
+  link: [{ rel: 'canonical', href: pageUrl }],
+})
 
 const { allTemplates } = useResumeTemplates()
 
@@ -109,8 +132,8 @@ onUnmounted(() => {
       </template>
     </AppPageDrawers>
     <v-container fluid>
-      <section class="hero px-4 px-md-8">
-        <div class="templates-showcase mt-8">
+      <section class="hero px-4 px-md-8 fade-in-up">
+        <div class="templates-showcase mt-8 fade-in-up delay-1">
           <v-tabs
             v-model="activeTemplateTab"
             color="primary"
@@ -273,6 +296,22 @@ onUnmounted(() => {
   display: inline-block;
   margin-top: 10px;
   color: rgb(var(--v-theme-primary));
+}
+.fade-in-up {
+  animation: fadeInUp 0.7s ease both;
+}
+.delay-1 {
+  animation-delay: 0.15s;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 960px) {
