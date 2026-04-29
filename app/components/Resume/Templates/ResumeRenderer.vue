@@ -34,6 +34,13 @@ type SectionLayoutEntry<
 
 type ResumeRendererDesignState = {
   themeTokens?: Record<string, string>
+  sectionTokens?: Record<string, Record<string, string>>
+  profile?: {
+    typography: string
+    spacing: string
+    separators: string
+    cards: string
+  }
   roundedClass?: string
   textStyleClass?: string
   density?: 'compact' | 'normal' | 'spacious' | 'comfortable'
@@ -275,6 +282,10 @@ const rootDesignClasses = computed(() => [
   `density-${resolvedDesignState.value.density}`,
   `divider-${resolvedDesignState.value.dividerStyle}`,
   `photo-position-${resolvedDesignState.value.photoPosition}`,
+  `profile-typography-${props.templateSkin.profile.typography}`,
+  `profile-spacing-${props.templateSkin.profile.spacing}`,
+  `profile-separators-${props.templateSkin.profile.separators}`,
+  `profile-cards-${props.templateSkin.profile.cards}`,
 ])
 const skinCssVars = computed<Record<string, string>>(() => {
   const profile = props.templateSkin.profile
@@ -478,6 +489,7 @@ function canMove(sectionKey: ResumeSectionLayoutKey, direction: 'up' | 'down') {
 function mergedSectionTokens(sectionKey: ResumeEditableSectionKey) {
   return {
     ...resolvedDesignState.value.themeTokens,
+    ...(props.designState?.sectionTokens?.[sectionKey] ?? {}),
     ...(props.templateSkin.themeTokens ?? {}),
     ...(sectionKey === 'skill'
       ? {}
@@ -571,7 +583,7 @@ function updateText(path: string, value: string) {
 <template>
   <article
     :class="[templateSkin.rootClass, ...rootDesignClasses]"
-    :style="{ ...themeTokens, ...skinCssVars, ...sectionIconCssVars }"
+    :style="{ ...themeTokens, ...(templateSkin.themeTokens ?? {}), ...skinCssVars, ...sectionIconCssVars }"
   >
     <div v-if="decorativeShapes.length" class="resume-skin__decorative-layer">
       <span
@@ -582,7 +594,7 @@ function updateText(path: string, value: string) {
         :style="decorativeShapeStyle(shape)"
       />
     </div>
-    <header class="resume-skin__header">
+    <header class="resume-skin__header" :class="`resume-skin__header--${templateSkin.profile.typography}`">
       <div>
         <h1>
           <span
@@ -745,7 +757,7 @@ function updateText(path: string, value: string) {
       :class="[templateSkin.wrapperClass, layoutModeClass]"
       :style="layoutStyle"
     >
-      <aside v-if="shouldRenderAside" :class="templateSkin.asideClass">
+      <aside v-if="shouldRenderAside" :class="[templateSkin.asideClass, `resume-skin__aside--${templateSkin.profile.cards}`]">
         <section
           v-if="(templateSkin.showContactInAside ?? true) && hasContactDetails"
           class="resume-section-hoverable resume-contact-section"
@@ -976,7 +988,7 @@ function updateText(path: string, value: string) {
         />
       </aside>
 
-      <main :class="templateSkin.mainClass">
+      <main :class="[templateSkin.mainClass, `resume-skin__main--${templateSkin.profile.spacing}`]">
         <section
           v-if="
             resolvedDesignState.layoutMode === 'no-aside' &&
