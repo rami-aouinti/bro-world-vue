@@ -75,7 +75,7 @@ export const RESUME_TEMPLATES: ResumeTemplateDefinition[] = [
   {
     id: 'terra',
     title: 'Terra Sidebar',
-    subtitle: 'Warm sidebar profile in French style',
+    subtitle: 'Warm sidebar profile style',
     image: '/img/cv/cv-1.png',
     variant: 'terra',
     flags: { photo: true, twoColumn: true, ats: false, docx: true, customized: true, free: true, timeline: false },
@@ -175,31 +175,31 @@ export const COVER_PAGE_TEMPLATES: CoverTemplateDefinition[] = [
   {
     id: 'cover-page-terra',
     title: 'Cover Page Terra',
-    subtitle: 'Page de garde simple avec titre et photo',
+    subtitle: 'Simple cover page with title and photo',
     image: '/img/cv/cv-4.png',
   },
   {
     id: 'cover-page-elegant',
     title: 'Cover Page Elegant',
-    subtitle: 'Page de garde élégante centrée',
+    subtitle: 'Centered elegant cover page',
     image: '/img/cv/cv-5.png',
   },
   {
     id: 'cover-page-hero-centered',
     title: 'Cover Page Hero Centered',
-    subtitle: 'Hero centré avec identité visuelle forte',
+    subtitle: 'Centered hero with strong visual identity',
     image: '/img/cv/cv-2.png',
   },
   {
     id: 'cover-page-sidebar-pulse',
     title: 'Cover Page Sidebar Pulse',
-    subtitle: 'Mise en page latérale pour contexte et contacts',
+    subtitle: 'Side layout for context and contacts',
     image: '/img/cv/cv-1.png',
   },
   {
     id: 'cover-page-split-editorial',
     title: 'Cover Page Split Editorial',
-    subtitle: 'Split vertical premium de style éditorial',
+    subtitle: 'Premium editorial vertical split',
     image: '/img/cv/cv-3.png',
   },
 ]
@@ -208,31 +208,31 @@ export const COVER_LETTER_TEMPLATES: CoverTemplateDefinition[] = [
   {
     id: 'cover-letter-classic',
     title: 'Cover Letter Classic',
-    subtitle: 'Lettre classique prête à personnaliser',
+    subtitle: 'Classic letter ready to customize',
     image: '/img/cv/cv-1.png',
   },
   {
     id: 'cover-letter-modern',
     title: 'Cover Letter Modern',
-    subtitle: 'Lettre moderne avec mise en avant du profil',
+    subtitle: 'Modern letter highlighting profile',
     image: '/img/cv/cv-3.png',
   },
   {
     id: 'cover-letter-ats-minimal',
     title: 'Cover Letter ATS Minimal',
-    subtitle: 'Structure minimale optimisée lecture ATS',
+    subtitle: 'Minimal structure optimized for ATS readability',
     image: '/img/cv/cv-4.png',
   },
   {
     id: 'cover-letter-premium-editorial',
     title: 'Cover Letter Premium Editorial',
-    subtitle: 'Style premium avec rythme éditorial',
+    subtitle: 'Premium style with editorial rhythm',
     image: '/img/cv/cv-5.png',
   },
   {
     id: 'cover-letter-split-focus',
     title: 'Cover Letter Split Focus',
-    subtitle: 'Split latéral pour focus profil et argumentaire',
+    subtitle: 'Side split focused on profile and argument',
     image: '/img/cv/cv-2.png',
   },
 ]

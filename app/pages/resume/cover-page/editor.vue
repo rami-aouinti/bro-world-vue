@@ -56,7 +56,7 @@ const model = reactive<CoverPageModel>({
   location: 'Paris, France',
   email: 'john@example.com',
   phone: '+33 6 00 00 00 00',
-  date: new Date().toLocaleDateString('fr-FR'),
+  date: new Date().toLocaleDateString('en-US'),
   photoUrl: '/img/default_avatar.svg',
 })
 
@@ -187,14 +187,14 @@ onMounted(() => {
         <v-window v-model="activeTab">
           <v-window-item value="edit">
             <v-card class="form-card mb-4" variant="outlined">
-              <v-card-title>Contenu</v-card-title>
+              <v-card-title>Content</v-card-title>
               <v-card-text class="d-grid ga-3">
-                <v-text-field v-model="model.fullName" label="Nom complet" variant="outlined" hide-details />
-                <v-text-field v-model="model.role" label="Titre" variant="outlined" hide-details />
-                <v-textarea v-model="model.summary" rows="5" label="Résumé" variant="outlined" hide-details />
-                <v-text-field v-model="model.location" label="Localisation" variant="outlined" hide-details />
+                <v-text-field v-model="model.fullName" label="Full name" variant="outlined" hide-details />
+                <v-text-field v-model="model.role" label="Title" variant="outlined" hide-details />
+                <v-textarea v-model="model.summary" rows="5" label="Summary" variant="outlined" hide-details />
+                <v-text-field v-model="model.location" label="Location" variant="outlined" hide-details />
                 <v-text-field v-model="model.email" label="Email" variant="outlined" hide-details />
-                <v-text-field v-model="model.phone" label="Téléphone" variant="outlined" hide-details />
+                <v-text-field v-model="model.phone" label="Phone" variant="outlined" hide-details />
               </v-card-text>
             </v-card>
           </v-window-item>
@@ -223,7 +223,7 @@ onMounted(() => {
         </v-window>
 
         <v-btn color="primary" size="large" class="mt-2" block @click="continueToCoverLetter">
-          Continuer vers Cover Letter
+          Continue to Cover Letter
         </v-btn>
       </section>
 

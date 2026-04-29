@@ -57,10 +57,10 @@ const model = reactive<CoverLetterModel>({
   role: importedFlow.value.subtitle || 'Full Stack Developer',
   recipient: 'Hiring Manager',
   company: 'Company Name',
-  date: new Date().toLocaleDateString('fr-FR'),
-  intro: 'Je vous adresse ma candidature avec enthousiasme pour rejoindre votre équipe.',
-  body: 'Mon expérience en développement produit, en architecture front-end et en collaboration transverse me permet de contribuer rapidement sur des enjeux business et techniques.',
-  closing: 'Je reste disponible pour un échange et vous remercie pour votre attention.',
+  date: new Date().toLocaleDateString('en-US'),
+  intro: 'I am excited to submit my application to join your team.',
+  body: 'My experience in product development, front-end architecture, and cross-functional collaboration allows me to contribute quickly to business and technical priorities.',
+  closing: 'I remain available for a discussion and thank you for your consideration.',
   email: 'john@example.com',
   phone: '+33 6 00 00 00 00',
 })
@@ -188,14 +188,14 @@ onMounted(() => {
     <div class="builder-layout">
       <section class="builder-form px-3 px-md-6 py-4">
         <v-card class="form-card mb-4" variant="outlined">
-          <v-card-title>Base importée</v-card-title>
+          <v-card-title>Imported base</v-card-title>
           <v-card-text class="d-grid ga-2">
             <div><strong>Template:</strong> {{ selectedCoverPageBase.templateId }}</div>
-            <div><strong>Titre:</strong> {{ selectedCoverPageBase.title }}</div>
-            <div><strong>Sous-titre:</strong> {{ selectedCoverPageBase.subtitle }}</div>
-            <div><strong>Résumé:</strong> {{ selectedCoverPageBase.summary }}</div>
+            <div><strong>Title:</strong> {{ selectedCoverPageBase.title }}</div>
+            <div><strong>Subtitle:</strong> {{ selectedCoverPageBase.subtitle }}</div>
+            <div><strong>Summary:</strong> {{ selectedCoverPageBase.summary }}</div>
             <v-btn variant="text" color="primary" class="justify-start px-0" @click="goBackToCoverPage">
-              Retour vers Cover Page
+              Back to Cover Page
             </v-btn>
           </v-card-text>
         </v-card>
@@ -207,15 +207,15 @@ onMounted(() => {
         <v-window v-model="activeTab">
           <v-window-item value="edit">
             <v-card class="form-card mb-4" variant="outlined">
-              <v-card-title>Contenu lettre</v-card-title>
+              <v-card-title>Letter content</v-card-title>
               <v-card-text class="d-grid ga-3">
-                <v-text-field v-model="model.fullName" label="Nom complet" variant="outlined" hide-details />
-                <v-text-field v-model="model.role" label="Titre" variant="outlined" hide-details />
-                <v-text-field v-model="model.recipient" label="Destinataire" variant="outlined" hide-details />
-                <v-text-field v-model="model.company" label="Entreprise" variant="outlined" hide-details />
+                <v-text-field v-model="model.fullName" label="Full name" variant="outlined" hide-details />
+                <v-text-field v-model="model.role" label="Title" variant="outlined" hide-details />
+                <v-text-field v-model="model.recipient" label="Recipient" variant="outlined" hide-details />
+                <v-text-field v-model="model.company" label="Company" variant="outlined" hide-details />
                 <v-textarea v-model="model.intro" rows="3" label="Introduction" variant="outlined" hide-details />
-                <v-textarea v-model="model.body" rows="7" label="Corps" variant="outlined" hide-details />
-                <v-textarea v-model="model.closing" rows="3" label="Conclusion" variant="outlined" hide-details />
+                <v-textarea v-model="model.body" rows="7" label="Body" variant="outlined" hide-details />
+                <v-textarea v-model="model.closing" rows="3" label="Closing" variant="outlined" hide-details />
               </v-card-text>
             </v-card>
           </v-window-item>
