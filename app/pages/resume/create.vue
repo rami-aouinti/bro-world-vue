@@ -5019,7 +5019,7 @@ if (import.meta.client) {
 .resume-control-panels {
   position: sticky;
   top: 0px;
-  z-index: 20;
+  z-index: 2201;
   display: grid;
   gap: 10px;
   justify-items: center;
