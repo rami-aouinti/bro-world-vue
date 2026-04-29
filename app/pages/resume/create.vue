@@ -1234,6 +1234,16 @@ function extractRemoteResumeCreatedAtValue(resumeItem: RemoteResume) {
   return ''
 }
 
+function parseRemoteResumeCreatedAt(
+  resumeItem: RemoteResume,
+): { timestamp: number; isValid: boolean } {
+  const timestamp = Date.parse(extractRemoteResumeCreatedAtValue(resumeItem))
+  if (Number.isNaN(timestamp)) {
+    return { timestamp: Number.NEGATIVE_INFINITY, isValid: false }
+  }
+  return { timestamp, isValid: true }
+}
+
 onMounted(async () => {
   const storedDocumentType = localStorage.getItem(DOCUMENT_TYPE_STORAGE_KEY)
   if (
@@ -1266,14 +1276,51 @@ onMounted(async () => {
     const apiResumes = await listMyResumes()
     remoteResumes.value = Array.isArray(apiResumes) ? apiResumes : []
 
-    const sortedByCreatedAt = [...remoteResumes.value].sort(
-      (a, b) =>
-        Date.parse(extractRemoteResumeCreatedAtValue(a)) -
-        Date.parse(extractRemoteResumeCreatedAtValue(b)),
+    const invalidCreatedAtIds: string[] = []
+    const withCreatedAtMeta = remoteResumes.value.map((resumeItem) => {
+      const createdAt = parseRemoteResumeCreatedAt(resumeItem)
+      if (!createdAt.isValid) invalidCreatedAtIds.push(resumeItem.id)
+      return {
+        resumeItem,
+        ...createdAt,
+      }
+    })
+
+    if (import.meta.dev && invalidCreatedAtIds.length) {
+      console.warn(
+        '[resume/create] Invalid createdAt for remote resumes:',
+        invalidCreatedAtIds,
+      )
+    }
+
+    const sortedByCreatedAt = [...withCreatedAtMeta].sort((a, b) => {
+      if (a.isValid && !b.isValid) return 1
+      if (!a.isValid && b.isValid) return -1
+      return a.timestamp - b.timestamp
+    })
+    const latestByDate = sortedByCreatedAt.at(-1)
+    const latestResume = latestByDate?.resumeItem || remoteResumes.value.at(-1)
+
+    const draftResumesWithContent = withCreatedAtMeta.filter(
+      ({ resumeItem }) =>
+        resumeItem.documentUrl === null && hasRemoteResumeContent(resumeItem),
     )
-    const latestResume = sortedByCreatedAt.at(-1) || remoteResumes.value.at(-1)
+    const draftConflictExists = draftResumesWithContent.length > 1
+    const shouldSkipAutoApplyForInvalidReferenceDate =
+      draftConflictExists && latestByDate ? !latestByDate.isValid : false
 
     selectedRemoteResumeId.value = latestResume?.id || null
+
+    if (shouldSkipAutoApplyForInvalidReferenceDate) {
+      if (import.meta.dev) {
+        console.warn(
+          '[resume/create] Auto-apply skipped due to invalid createdAt reference and conflicting drafts:',
+          draftResumesWithContent.map(({ resumeItem }) => resumeItem.id),
+        )
+      }
+      loadedFromApi.value = false
+      return
+    }
 
     if (
       !latestResume ||
