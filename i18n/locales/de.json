@@ -2972,6 +2972,13 @@
           "rounded": "Abgerundet",
           "circle": "Kreis"
         },
+        "avatarMenu": {
+          "uploadReplace": "Upload / Replace",
+          "remove": "Remove",
+          "avatarShape": "Avatar shape",
+          "size": "Size",
+          "borderWidth": "Border width"
+        },
         "addSection": {
           "profile": "Profil",
           "experience": "Erfahrung",

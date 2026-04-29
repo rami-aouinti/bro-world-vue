@@ -3214,6 +3214,13 @@
           "rounded": "Rounded",
           "circle": "Circle"
         },
+        "avatarMenu": {
+          "uploadReplace": "Upload / Replace",
+          "remove": "Remove",
+          "avatarShape": "Avatar shape",
+          "size": "Size",
+          "borderWidth": "Border width"
+        },
         "addSection": {
           "profile": "Profile",
           "experience": "Experience",
