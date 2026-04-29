@@ -586,4 +586,13 @@ function removeExperience(index: number) {
   object-fit: contain;
   border-radius: 4px;
 }
+
+@media print {
+  .entry,
+  .timeline-block,
+  .timeline-event {
+    break-inside: avoid-page;
+    page-break-inside: avoid;
+  }
+}
 </style>
