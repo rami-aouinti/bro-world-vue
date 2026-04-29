@@ -292,6 +292,7 @@ type LayoutSettings = {
   photoBorderWidth: number
   photoPosition: 'left' | 'right'
   sidebarWidth: number
+  sidebarHeight: number
   sectionDividerStyle: 'none' | 'line' | 'thick'
   headingCase: 'normal' | 'uppercase'
   dateColumnWidth: number
@@ -362,6 +363,7 @@ const createDefaultDesignSettings = (): DesignSettings => ({
     photoBorderWidth: 6,
     photoPosition: 'right',
     sidebarWidth: 280,
+    sidebarHeight: 100,
     sectionDividerStyle: 'line',
     headingCase: 'normal',
     dateColumnWidth: 120,
@@ -2768,6 +2770,7 @@ const resumeRendererDesignState = computed(() => ({
   iconColorMode: layoutSettings.iconColor,
   layoutMode: layoutSettings.layoutMode,
   sidebarWidth: layoutSettings.sidebarWidth,
+  sidebarHeight: layoutSettings.sidebarHeight,
   photoSize: layoutSettings.photoSize,
   photoBorderWidth: layoutSettings.photoBorderWidth,
   photoPosition: layoutSettings.photoPosition,
@@ -2800,6 +2803,15 @@ watch(
     const clampedValue = Math.min(380, Math.max(220, Math.round(value)))
     if (clampedValue !== value) {
       layoutSettings.sidebarWidth = clampedValue
+    }
+  },
+)
+watch(
+  () => layoutSettings.sidebarHeight,
+  (value) => {
+    const clampedValue = Math.min(100, Math.max(60, Math.round(value)))
+    if (clampedValue !== value) {
+      layoutSettings.sidebarHeight = clampedValue
     }
   },
 )
@@ -3367,6 +3379,7 @@ if (import.meta.client) {
   layoutSettings.layoutMode = customization.style.layoutMode
   layoutSettings.photoPosition = customization.style.photoPosition
   layoutSettings.sidebarWidth = customization.style.asideWidth
+  layoutSettings.sidebarHeight = customization.style.asideHeight ?? 100
   layoutSettings.decorativeShapeA = {
     ...layoutSettings.decorativeShapeA,
     ...customization.style.decorativeShapeA,
@@ -3391,6 +3404,7 @@ if (import.meta.client) {
       () => layoutSettings.layoutMode,
       () => layoutSettings.photoPosition,
       () => layoutSettings.sidebarWidth,
+      () => layoutSettings.sidebarHeight,
       () => layoutSettings.decorativeShapeA,
       () => layoutSettings.decorativeShapeB,
     ],
@@ -3411,6 +3425,7 @@ if (import.meta.client) {
           layoutMode: layoutSettings.layoutMode,
           photoPosition: layoutSettings.photoPosition,
           asideWidth: layoutSettings.sidebarWidth,
+          asideHeight: layoutSettings.sidebarHeight,
           decorativeShapeA: { ...layoutSettings.decorativeShapeA },
           decorativeShapeB: { ...layoutSettings.decorativeShapeB },
         },
@@ -3795,6 +3810,22 @@ if (import.meta.client) {
               min="220"
               max="380"
               step="2"
+              color="primary"
+              hide-details
+            />
+          </div>
+          <div v-if="designMenuSupportsAsideWidth" class="mt-3">
+            <div class="d-flex align-center justify-space-between mb-1">
+              <span class="text-caption">Aside height</span>
+              <span class="text-caption font-weight-medium">
+                {{ layoutSettings.sidebarHeight }}%
+              </span>
+            </div>
+            <v-slider
+              v-model="layoutSettings.sidebarHeight"
+              min="60"
+              max="100"
+              step="1"
               color="primary"
               hide-details
             />
