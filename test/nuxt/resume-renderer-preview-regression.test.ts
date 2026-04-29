@@ -2,6 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import ResumeRenderer from '~/components/Resume/Templates/ResumeRenderer.vue'
 import { RESUME_TEMPLATE_SKINS } from '~/constants/resumeTemplateSkins'
+import { RESUME_LAYOUTS } from '~/constants/resumeLayouts'
+import { RESUME_SKIN_IDS } from '~/constants/resumeSkins'
+import { resolveRuntimeLayoutAndSkin } from '~/composables/useResumeTemplateRuntime'
 
 const resumeFixture = {
   role: 'Frontend Developer',
@@ -149,4 +152,49 @@ describe('ResumeRenderer preview regression coverage', () => {
       }
     }
   }, 60000)
+
+  it('smoke-renders preview without crash for all 90 layout/skin combinations', async () => {
+    for (const layout of RESUME_LAYOUTS) {
+      for (const skinId of RESUME_SKIN_IDS) {
+        const runtime = resolveRuntimeLayoutAndSkin(layout.layoutId, skinId)
+        const wrapper = await mountSuspended(ResumeRenderer, {
+          props: {
+            resume: resumeFixture,
+            templateSkin: {
+              ...RESUME_TEMPLATE_SKINS.classic,
+              id: runtime.skin.id,
+            },
+            designState: {
+              layoutMode: layout.structure,
+              palette: runtime.skin.id,
+            },
+          },
+        })
+
+        expect(wrapper.find('article.resume-skin').exists(), `${layout.layoutId} × ${skinId}: root missing`).toBe(true)
+      }
+    }
+  }, 120000)
+
+  it('matches targeted structure snapshots (1 template per structure)', async () => {
+    const byStructure = [
+      { structure: 'no-aside', skin: RESUME_TEMPLATE_SKINS.classic },
+      { structure: 'aside-left', skin: RESUME_TEMPLATE_SKINS.terra },
+      { structure: 'aside-right', skin: RESUME_TEMPLATE_SKINS['ocean-split'] },
+    ] as const
+
+    for (const config of byStructure) {
+      const wrapper = await mountSuspended(ResumeRenderer, {
+        props: {
+          resume: resumeFixture,
+          templateSkin: config.skin,
+          designState: {
+            layoutMode: config.structure,
+          },
+        },
+      })
+
+      expect(wrapper.html()).toMatchSnapshot(config.structure)
+    }
+  })
 })

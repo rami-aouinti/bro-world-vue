@@ -92,6 +92,19 @@ describe('resume section registry consistency', () => {
     }
   })
 
+  it('ensures every section used by layouts is supported by SectionRenderer', () => {
+    const rendererSupported = new Set(RESUME_RENDERER_SUPPORTED_SECTIONS)
+
+    for (const layout of RESUME_LAYOUTS) {
+      for (const sectionKey of [...layout.zones.main, ...layout.zones.aside]) {
+        expect(
+          rendererSupported.has(sectionKey),
+          `${layout.layoutId}: section \"${sectionKey}\" is used by layout but not supported by SectionRenderer`,
+        ).toBe(true)
+      }
+    }
+  })
+
   it('ensures every layout supports mandatory and optional section constraints', () => {
     const mandatory = new Set(RESUME_LAYOUT_REQUIRED_SECTIONS)
     const optional = new Set(RESUME_LAYOUT_OPTIONAL_SECTIONS)
