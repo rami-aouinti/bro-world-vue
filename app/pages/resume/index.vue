@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  title: 'Resume Builder',
+  title: 'resumeBuilder.meta.indexTitle',
   layout: 'resume',
 })
 
@@ -130,8 +130,8 @@ onUnmounted(() => {
             <v-card
               v-for="templateCard in displayedTemplates"
               :key="templateCard.id"
-              @click="openTemplateInWriteMode(templateCard)"
               class="postcard-gradient-card template-slide"
+              @click="openTemplateInWriteMode(templateCard)"
             >
               <v-img :src="templateCard.image" :alt="templateCard.title" />
               <span>{{ templateCard.title }}</span>

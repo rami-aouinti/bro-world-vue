@@ -42,7 +42,7 @@ import {
 } from '~/services/resumeApi'
 
 definePageMeta({
-  title: 'Create Resume',
+  title: 'resumeBuilder.meta.createTitle',
   layout: 'resume',
 })
 
@@ -3512,8 +3512,7 @@ if (import.meta.client) {
                   variant="outlined"
                   icon="mdi-palette-outline"
                   v-bind="props"
-                >
-                </v-btn>
+                />
               </template>
               <v-card class="toolbar-menu-card">
                 <v-card-title class="text-subtitle-2">Design</v-card-title>
@@ -3578,8 +3577,7 @@ if (import.meta.client) {
                   variant="outlined"
                   icon="mdi-format-list-numbers"
                   v-bind="props"
-                >
-                </v-btn>
+                />
               </template>
               <v-card class="toolbar-menu-card">
                 <v-card-title class="text-subtitle-2">Shapes</v-card-title>
@@ -3700,8 +3698,7 @@ if (import.meta.client) {
                   variant="outlined"
                   icon="mdi-shape-plus"
                   v-bind="props"
-                >
-                </v-btn>
+                />
               </template>
               <v-card class="toolbar-menu-card">
                 <v-card-title class="text-subtitle-2">Design</v-card-title>
