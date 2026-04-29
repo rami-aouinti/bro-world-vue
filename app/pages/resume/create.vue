@@ -2824,6 +2824,16 @@ async function buildResumePdfBlob() {
         ${stylesheetContent}
         <style>
           body { margin: 0; padding: 0; background: #fff; }
+          .preview-grid,
+          .preview-grid * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          .preview-grid .resume-skin__aside,
+          .preview-grid .cv-sidebar-surface {
+            background: var(--cv-sidebar) !important;
+            background-color: var(--cv-sidebar) !important;
+          }
           .preview-grid { min-height: auto !important; border-radius: 0 !important; }
           .preview-grid .terra-template,
           .preview-grid .ocean-template,
