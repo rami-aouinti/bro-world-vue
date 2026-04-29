@@ -329,7 +329,7 @@ watch(
           </template>
         </v-tooltip>
       </template>
-      <v-list density="compact">
+      <v-list class="toolbar-menu-list" density="compact">
         <v-list-item
           v-for="option in props.variants"
           :key="option.value"
@@ -362,7 +362,7 @@ watch(
           </template>
         </v-tooltip>
       </template>
-      <v-list density="compact">
+      <v-list class="toolbar-menu-list" density="compact">
         <v-list-item
           v-for="option in props.contentStyles"
           :key="option.value"
@@ -627,6 +627,10 @@ watch(
 .section-style-popover {
   width: min(320px, calc(100vw - 24px));
   border-radius: 14px;
+}
+
+.toolbar-menu-list :deep(.v-list-item-title) {
+  color: var(--cv-on-surface, rgb(31 41 55));
 }
 
 :global(.resume-section-hoverable:hover > .section-toolbar),
