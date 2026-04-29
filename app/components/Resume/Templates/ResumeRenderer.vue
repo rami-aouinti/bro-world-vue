@@ -204,7 +204,21 @@ const sectionsByRegion = computed(() => ({
 }))
 
 const mainSections = computed(() => sectionsByRegion.value.main)
-const asideSections = computed(() => sectionsByRegion.value.aside)
+const asideSections = computed(() => {
+  const sections = [...sectionsByRegion.value.aside]
+  if (resolvedDesignState.value.layoutMode === 'aside-left' || resolvedDesignState.value.layoutMode === 'aside-right') {
+    const customOrder: ResumeEditableSectionKey[] = ['reference', 'certification', 'hobby']
+    sections.sort((left, right) => {
+      const leftIndex = customOrder.indexOf(left.key as ResumeEditableSectionKey)
+      const rightIndex = customOrder.indexOf(right.key as ResumeEditableSectionKey)
+      if (leftIndex !== -1 && rightIndex !== -1) return leftIndex - rightIndex
+      if (leftIndex !== -1) return 1
+      if (rightIndex !== -1) return -1
+      return compareSectionOrder(left, right)
+    })
+  }
+  return sections
+})
 const hasRenderedAvatar = computed(() =>
   Boolean(props.showPhoto && props.resume?.photoUrl && !props.photoHidden),
 )
@@ -1384,8 +1398,9 @@ function updateText(path: string, value: string) {
   color: var(--resume-aside-text-color);
 }
 
-.resume-skin__aside :deep(.cv-heading-section) {
-  color: #fff !important;
+.layout-mode-aside-left .resume-skin__aside :deep(.cv-heading-section),
+.layout-mode-aside-right .resume-skin__aside :deep(.cv-heading-section) {
+  color: var(--resume-page, var(--cv-page)) !important;
 }
 
 .resume-skin__aside :deep(.resume-skin__text),
@@ -1395,8 +1410,6 @@ function updateText(path: string, value: string) {
 .resume-skin__aside :deep(li),
 .resume-skin__aside :deep(small),
 .resume-skin__aside :deep(strong),
-.resume-skin__aside :deep(h2),
-.resume-skin__aside :deep(h3),
 .resume-skin__aside :deep(h4),
 .resume-skin__aside :deep(a) {
   color: var(--resume-aside-text-color) !important;
@@ -1440,6 +1453,11 @@ function updateText(path: string, value: string) {
 .layout-mode-no-aside {
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas: 'main';
+}
+
+.layout-mode-aside-left .resume-contact-section .resume-skin__contact-grid,
+.layout-mode-aside-right .resume-contact-section .resume-skin__contact-grid {
+  grid-template-columns: minmax(0, 1fr);
 }
 .resume-skin__no-aside-columns {
   display: grid;
@@ -1509,7 +1527,7 @@ function updateText(path: string, value: string) {
 }
 
 @container (min-width: 381px) {
-  .resume-contact-section .resume-skin__contact-grid {
+  .layout-mode-no-aside .resume-contact-section .resume-skin__contact-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
