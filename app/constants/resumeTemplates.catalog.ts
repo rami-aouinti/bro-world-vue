@@ -3,9 +3,20 @@ import type {
   ResumeSkin,
   ResumeStructure,
   ResumeTemplateConfig,
+  ResumeTemplateType,
 } from '~/types/resumeTemplateConfig'
 
-const DEFAULT_RESUME_SECTIONS: ResumeLayout['sections'] = [
+const DEFAULT_VISIBLE_OPTIONS: ResumeTemplateConfig['visibleOptions'] = {
+  photo: true,
+  twoColumn: true,
+  ats: true,
+  docx: true,
+  customized: true,
+  free: true,
+  timeline: false,
+}
+
+const RESUME_SECTIONS: ResumeLayout['sections'][number]['section'][] = [
   'experience',
   'education',
   'project',
@@ -14,7 +25,22 @@ const DEFAULT_RESUME_SECTIONS: ResumeLayout['sections'] = [
   'language',
   'reference',
   'hobby',
-].map((section, index) => ({ section, zone: index < 4 ? 'main' : 'aside', order: index + 1, priority: index + 1 }))
+]
+
+const createSections = (
+  distribution: Array<{ zone: 'main' | 'aside'; sections: ResumeLayout['sections'][number]['section'][] }>,
+): ResumeLayout['sections'] => {
+  const byPriority = [...distribution[0].sections, ...distribution.slice(1).flatMap(entry => entry.sections)]
+
+  return distribution.flatMap((entry, zoneIndex) =>
+    entry.sections.map((section, sectionIndex) => ({
+      section,
+      zone: entry.zone,
+      order: sectionIndex + 1,
+      priority: byPriority.indexOf(section) + 1 + zoneIndex,
+    })),
+  )
+}
 
 export const RESUME_STRUCTURES_CATALOG: ResumeStructure[] = [
   { id: 'no-aside' },
@@ -23,40 +49,121 @@ export const RESUME_STRUCTURES_CATALOG: ResumeStructure[] = [
 ]
 
 export const RESUME_LAYOUTS_CATALOG: ResumeLayout[] = [
-  { id: 'layout-split-left', structureId: 'aside-left', sections: DEFAULT_RESUME_SECTIONS },
-  { id: 'layout-split-right', structureId: 'aside-right', sections: DEFAULT_RESUME_SECTIONS },
+  { id: 'layout-no-aside-a', structureId: 'no-aside', sections: createSections([{ zone: 'main', sections: RESUME_SECTIONS }]) },
   {
-    id: 'layout-stacked',
+    id: 'layout-no-aside-b',
     structureId: 'no-aside',
-    sections: DEFAULT_RESUME_SECTIONS.map(entry => ({ ...entry, zone: 'main' })),
+    sections: createSections([
+      { zone: 'main', sections: ['experience', 'project', 'education', 'certification', 'skill', 'language', 'reference', 'hobby'] },
+    ]),
+  },
+  {
+    id: 'layout-no-aside-c',
+    structureId: 'no-aside',
+    sections: createSections([
+      { zone: 'main', sections: ['education', 'experience', 'skill', 'project', 'certification', 'language', 'reference', 'hobby'] },
+    ]),
+  },
+  {
+    id: 'layout-aside-left-a',
+    structureId: 'aside-left',
+    sections: createSections([
+      { zone: 'main', sections: ['experience', 'project', 'education', 'certification'] },
+      { zone: 'aside', sections: ['skill', 'language', 'reference', 'hobby'] },
+    ]),
+  },
+  {
+    id: 'layout-aside-left-b',
+    structureId: 'aside-left',
+    sections: createSections([
+      { zone: 'main', sections: ['experience', 'education', 'project', 'certification'] },
+      { zone: 'aside', sections: ['skill', 'reference', 'language', 'hobby'] },
+    ]),
+  },
+  {
+    id: 'layout-aside-left-c',
+    structureId: 'aside-left',
+    sections: createSections([
+      { zone: 'main', sections: ['project', 'experience', 'education', 'certification'] },
+      { zone: 'aside', sections: ['skill', 'language', 'hobby', 'reference'] },
+    ]),
+  },
+  {
+    id: 'layout-aside-right-a',
+    structureId: 'aside-right',
+    sections: createSections([
+      { zone: 'main', sections: ['experience', 'education', 'project', 'certification'] },
+      { zone: 'aside', sections: ['skill', 'language', 'reference', 'hobby'] },
+    ]),
+  },
+  {
+    id: 'layout-aside-right-b',
+    structureId: 'aside-right',
+    sections: createSections([
+      { zone: 'main', sections: ['experience', 'project', 'education', 'certification'] },
+      { zone: 'aside', sections: ['skill', 'reference', 'language', 'hobby'] },
+    ]),
+  },
+  {
+    id: 'layout-aside-right-c',
+    structureId: 'aside-right',
+    sections: createSections([
+      { zone: 'main', sections: ['project', 'experience', 'education', 'certification'] },
+      { zone: 'aside', sections: ['skill', 'language', 'hobby', 'reference'] },
+    ]),
   },
 ]
 
 export const RESUME_SKINS_CATALOG: ResumeSkin[] = [
-  { id: 'skin-executive-portrait', palette: 'corporate-blue', radius: 'soft', typography: 'executive', sectionVariant: 'detailed', iconStyle: 'filled' },
+  { id: 'skin-cobalt-executive', palette: 'corporate-blue', radius: 'soft', typography: 'executive', sectionVariant: 'detailed', iconStyle: 'filled' },
   { id: 'skin-midnight-banner', palette: 'midnight', radius: 'soft', typography: 'modern', sectionVariant: 'timeline', iconStyle: 'outline' },
   { id: 'skin-minimal-profile', palette: 'minimal', radius: 'none', typography: 'clean', sectionVariant: 'compact', iconStyle: 'text' },
-  { id: 'skin-classic', palette: 'classic', radius: 'none', typography: 'serif', sectionVariant: 'classic', iconStyle: 'text' },
-  { id: 'skin-modern', palette: 'modern', radius: 'soft', typography: 'sans', sectionVariant: 'list', iconStyle: 'filled' },
-  { id: 'skin-cover-page-terra', palette: 'terra', radius: 'soft', typography: 'serif', iconStyle: 'text' },
-  { id: 'skin-cover-page-elegant', palette: 'elegant', radius: 'soft', typography: 'serif', iconStyle: 'text' },
-  { id: 'skin-cover-letter-classic', palette: 'classic', radius: 'none', typography: 'serif', iconStyle: 'text' },
-  { id: 'skin-cover-letter-modern', palette: 'modern', radius: 'soft', typography: 'sans', iconStyle: 'outline' },
-  { id: 'skin-graphite-pro', palette: 'modern', radius: 'soft', typography: 'sans', iconStyle: 'rounded' },
+  { id: 'skin-classic-serif', palette: 'classic', radius: 'none', typography: 'serif', sectionVariant: 'classic', iconStyle: 'text' },
+  { id: 'skin-modern-balance', palette: 'modern', radius: 'soft', typography: 'sans', sectionVariant: 'list', iconStyle: 'filled' },
+  { id: 'skin-graphite-pro', palette: 'modern', radius: 'soft', typography: 'sans', sectionVariant: 'detailed', iconStyle: 'rounded' },
+  { id: 'skin-terra-edge', palette: 'terra', radius: 'soft', typography: 'serif', sectionVariant: 'classic', iconStyle: 'outline' },
+  { id: 'skin-elegant-light', palette: 'elegant', radius: 'soft', typography: 'serif', sectionVariant: 'compact', iconStyle: 'text' },
+  { id: 'skin-corporate-grid', palette: 'corporate-blue', radius: 'none', typography: 'modern', sectionVariant: 'list', iconStyle: 'outline' },
+  { id: 'skin-noir-compact', palette: 'midnight', radius: 'none', typography: 'clean', sectionVariant: 'compact', iconStyle: 'filled' },
 ]
 
-export const RESUME_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [
-  {
-    id: 'executive-portrait', structureId: 'aside-left', layoutId: 'layout-split-left', skinId: 'skin-executive-portrait', label: 'Executive Portrait', subtitle: 'Large hero name with rounded portrait focus', type: 'resume', image: '/img/cv/resume-executive-portrait.svg', templateId: 'cv-socle', visibleOptions: { photo: true, twoColumn: true, ats: true, docx: true, customized: true, free: true, timeline: false },
-  },
-  { id: 'midnight-banner', structureId: 'aside-right', layoutId: 'layout-split-right', skinId: 'skin-midnight-banner', label: 'Midnight Banner', subtitle: 'Dark header band with profile image and split details', type: 'resume', image: '/img/cv/resume-midnight-banner.svg', templateId: 'cv-socle', visibleOptions: { photo: true, twoColumn: true, ats: false, docx: true, customized: true, free: true, timeline: true } },
-  { id: 'minimal-profile', structureId: 'aside-right', layoutId: 'layout-split-right', skinId: 'skin-minimal-profile', label: 'Minimal Profile', subtitle: 'Clean profile block with light sidebar and compact details', type: 'resume', image: '/img/cv/resume-minimal-profile.svg', templateId: 'cv-socle', visibleOptions: { photo: true, twoColumn: true, ats: true, docx: true, customized: true, free: true, timeline: false } },
-  { id: 'classic', structureId: 'no-aside', layoutId: 'layout-stacked', skinId: 'skin-classic', label: 'Classic', subtitle: 'Simple and readable format', type: 'resume', image: '/img/cv/resume-classic.svg', templateId: 'cv-socle', visibleOptions: { photo: false, twoColumn: false, ats: false, docx: true, customized: false, free: true, timeline: false } },
-  { id: 'modern', structureId: 'aside-right', layoutId: 'layout-split-right', skinId: 'skin-modern', label: 'Modern', subtitle: 'Clean blocks and balanced content', type: 'resume', image: '/img/cv/resume-modern.svg', templateId: 'cv-socle', visibleOptions: { photo: true, twoColumn: true, ats: false, docx: true, customized: true, free: true, timeline: false } },
-
-  { id: 'cover-page-terra', structureId: 'no-aside', layoutId: 'layout-stacked', skinId: 'skin-cover-page-terra', label: 'Cover Page Terra', subtitle: 'Simple cover page with title and photo', type: 'cover-page', image: '/img/cv/cv-4.png', templateId: 'cv-socle', visibleOptions: { photo: true, twoColumn: false, ats: false, docx: true, customized: true, free: true, timeline: false } },
-  { id: 'cover-page-elegant', structureId: 'no-aside', layoutId: 'layout-stacked', skinId: 'skin-cover-page-elegant', label: 'Cover Page Elegant', subtitle: 'Centered elegant cover page', type: 'cover-page', image: '/img/cv/cv-5.png', templateId: 'cv-socle', visibleOptions: { photo: false, twoColumn: false, ats: false, docx: true, customized: true, free: true, timeline: false } },
-
-  { id: 'cover-letter-classic', structureId: 'no-aside', layoutId: 'layout-stacked', skinId: 'skin-cover-letter-classic', label: 'Cover Letter Classic', subtitle: 'Classic letter ready to customize', type: 'cover-letter', image: '/img/cv/cv-1.png', templateId: 'cv-socle', visibleOptions: { photo: false, twoColumn: false, ats: true, docx: true, customized: true, free: true, timeline: false } },
-  { id: 'cover-letter-modern', structureId: 'no-aside', layoutId: 'layout-stacked', skinId: 'skin-cover-letter-modern', label: 'Cover Letter Modern', subtitle: 'Modern letter highlighting profile', type: 'cover-letter', image: '/img/cv/cv-3.png', templateId: 'cv-socle', visibleOptions: { photo: true, twoColumn: false, ats: false, docx: true, customized: true, free: true, timeline: false } },
+const COVER_TEMPLATES: ResumeTemplateConfig[] = [
+  { id: 'cover-page-terra', structureId: 'no-aside', layoutId: 'layout-no-aside-a', skinId: 'skin-terra-edge', label: 'Cover Page Terra', subtitle: 'Simple cover page with title and photo', type: 'cover-page', image: '/img/cv/cv-4.png', templateId: 'cv-socle', visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, twoColumn: false } },
+  { id: 'cover-page-elegant', structureId: 'no-aside', layoutId: 'layout-no-aside-a', skinId: 'skin-elegant-light', label: 'Cover Page Elegant', subtitle: 'Centered elegant cover page', type: 'cover-page', image: '/img/cv/cv-5.png', templateId: 'cv-socle', visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, photo: false, twoColumn: false } },
+  { id: 'cover-letter-classic', structureId: 'no-aside', layoutId: 'layout-no-aside-a', skinId: 'skin-classic-serif', label: 'Cover Letter Classic', subtitle: 'Classic letter ready to customize', type: 'cover-letter', image: '/img/cv/cv-1.png', templateId: 'cv-socle', visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, photo: false, twoColumn: false } },
+  { id: 'cover-letter-modern', structureId: 'no-aside', layoutId: 'layout-no-aside-a', skinId: 'skin-modern-balance', label: 'Cover Letter Modern', subtitle: 'Modern letter highlighting profile', type: 'cover-letter', image: '/img/cv/cv-3.png', templateId: 'cv-socle', visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, twoColumn: false, ats: false } },
 ]
+
+const formatLabel = (value: string): string =>
+  value
+    .replace(/^layout-/, '')
+    .replace(/^skin-/, '')
+    .split('-')
+    .map(token => token.charAt(0).toUpperCase() + token.slice(1))
+    .join(' ')
+
+const RESUME_GENERATED_TEMPLATES: ResumeTemplateConfig[] = RESUME_LAYOUTS_CATALOG.flatMap(layout =>
+  RESUME_SKINS_CATALOG.map(skin => {
+    const isTwoColumn = layout.structureId !== 'no-aside'
+    const templateType: ResumeTemplateType = 'resume'
+
+    return {
+      id: `${layout.id}__${skin.id}`,
+      structureId: layout.structureId,
+      layoutId: layout.id,
+      skinId: skin.id,
+      label: `${formatLabel(layout.id)} · ${formatLabel(skin.id)}`,
+      subtitle: `Template CV ${formatLabel(layout.id)} avec skin ${formatLabel(skin.id)}`,
+      type: templateType,
+      image: '/img/cv/resume-modern.svg',
+      templateId: 'cv-socle',
+      visibleOptions: {
+        ...DEFAULT_VISIBLE_OPTIONS,
+        twoColumn: isTwoColumn,
+        timeline: skin.sectionVariant === 'timeline',
+      },
+    }
+  }),
+)
+
+export const RESUME_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [...RESUME_GENERATED_TEMPLATES, ...COVER_TEMPLATES]
