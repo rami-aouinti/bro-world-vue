@@ -83,6 +83,8 @@ function createEmptyResumeSection(): ResumeSectionForm {
     school: '',
     location: '',
     level: '',
+    flag: '',
+    countryCode: '',
     home_page: '',
     attachments: [],
     attachmentFiles: [],
@@ -240,6 +242,8 @@ const sectionSpecificFields: Record<
     | 'school'
     | 'location'
     | 'level'
+    | 'flag'
+    | 'countryCode'
     | 'home_page'
     | 'attachments'
   >
@@ -247,7 +251,7 @@ const sectionSpecificFields: Record<
   experiences: ['startDate', 'endDate', 'company'],
   educations: ['startDate', 'endDate', 'school', 'location'],
   skills: [],
-  languages: ['level'],
+  languages: ['level', 'flag', 'countryCode'],
   certifications: ['attachments'],
   projects: ['home_page', 'attachments'],
   references: [],
@@ -293,6 +297,12 @@ function normalizeSections(
       ...(fields.includes('level')
         ? { level: (item.level || '').trim() || null }
         : {}),
+      ...(fields.includes('flag')
+        ? { flag: (item.flag || '').trim() || null }
+        : {}),
+      ...(fields.includes('countryCode')
+        ? { countryCode: (item.countryCode || '').trim() || null }
+        : {}),
       ...(fields.includes('home_page')
         ? { home_page: (item.home_page || '').trim() || null }
         : {}),
@@ -329,6 +339,8 @@ function populateResumeFormFromResume(resume: RecruitResume) {
           school: item.school || '',
           location: item.location || '',
           level: item.level || '',
+          flag: item.flag || '',
+          countryCode: item.countryCode || '',
           home_page: item.home_page || '',
           attachments: item.attachments || [],
           attachmentFiles: [],
@@ -1313,6 +1325,30 @@ onUnmounted(() => {
                   />
                 </v-col>
                 <v-col
+                  v-if="hasSectionField(entry.key, 'countryCode')"
+                  cols="12"
+                  md="2"
+                >
+                  <v-text-field
+                    v-model="line.countryCode"
+                    label="Country code"
+                    placeholder="FR, US, ES..."
+                    variant="outlined"
+                  />
+                </v-col>
+                <v-col
+                  v-if="hasSectionField(entry.key, 'flag')"
+                  cols="12"
+                  md="2"
+                >
+                  <v-text-field
+                    v-model="line.flag"
+                    label="Flag"
+                    placeholder="🇫🇷 or URL"
+                    variant="outlined"
+                  />
+                </v-col>
+                <v-col
                   v-if="hasSectionField(entry.key, 'home_page')"
                   cols="12"
                   md="10"
@@ -1449,6 +1485,24 @@ onUnmounted(() => {
                   clearable
                 />
               </v-col>
+              <v-col
+                v-if="hasSectionField(entry.key, 'countryCode')"
+                cols="12"
+                md="2"
+                ><v-text-field
+                  v-model="line.countryCode"
+                  label="Country code"
+                  placeholder="FR, US, ES..."
+              /></v-col>
+              <v-col
+                v-if="hasSectionField(entry.key, 'flag')"
+                cols="12"
+                md="2"
+                ><v-text-field
+                  v-model="line.flag"
+                  label="Flag"
+                  placeholder="🇫🇷 or URL"
+              /></v-col>
               <v-col
                 v-if="hasSectionField(entry.key, 'home_page')"
                 cols="12"

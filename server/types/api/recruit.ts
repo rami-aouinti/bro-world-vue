@@ -49,6 +49,8 @@ export type RecruitResumeSection = {
   school?: string | null
   location?: string | null
   level?: string | null
+  flag?: string | null
+  countryCode?: string | null
   attachments?: string[]
   home_page?: string | null
 }
