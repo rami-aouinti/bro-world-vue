@@ -1321,7 +1321,8 @@ function updateText(path: string, value: string) {
 .resume-skin__contact-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--resume-space-2, var(--cv-space-2)) var(--resume-space-4, var(--cv-space-4));
+  gap: var(--resume-contact-row-gap, var(--resume-space-2, var(--cv-space-2)))
+    var(--resume-contact-column-gap, var(--resume-space-4, var(--cv-space-4)));
 }
 .resume-contact-section {
   position: relative;
@@ -1359,6 +1360,15 @@ function updateText(path: string, value: string) {
 .resume-skin__contact-item a {
   color: inherit;
   text-decoration: none;
+}
+
+.resume-skin__header h1 :deep(.resume-skin__text),
+.resume-skin__header > div > p.resume-skin__text {
+  color: var(--resume-header-text-color, var(--resume-secondary, var(--cv-secondary)));
+}
+
+.resume-skin__header > div > p.resume-skin__text {
+  color: var(--resume-header-subtitle-color, var(--resume-secondary, var(--cv-secondary)));
 }
 
 .resume-skin__contact-icon {

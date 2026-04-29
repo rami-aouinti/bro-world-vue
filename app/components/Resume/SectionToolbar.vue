@@ -637,7 +637,14 @@ watch(
 }
 
 .toolbar-menu-list :deep(.v-list-item-title) {
-  color: var(--cv-on-surface, rgb(31 41 55));
+  color: var(--cv-toolbar-menu-text, var(--cv-on-page, var(--cv-secondary, rgb(241 245 249))));
+}
+
+.toolbar-menu-list {
+  background: var(
+    --cv-toolbar-menu-bg,
+    color-mix(in srgb, var(--cv-page) 80%, var(--cv-sidebar) 20%)
+  );
 }
 
 :global(.resume-section-hoverable:hover > .section-toolbar),
