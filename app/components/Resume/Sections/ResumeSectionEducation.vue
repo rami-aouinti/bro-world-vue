@@ -630,4 +630,13 @@ function removeEducationItem(index: number) {
   border-left: 2px solid var(--cv-marker-accent);
   padding-left: 8px;
 }
+
+@media print {
+  .entry,
+  .timeline-block,
+  .timeline-event {
+    break-inside: avoid-page;
+    page-break-inside: avoid;
+  }
+}
 </style>
