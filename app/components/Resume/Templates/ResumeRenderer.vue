@@ -8,6 +8,7 @@ import type {
   ResumeTemplateSkin,
 } from '~/constants/resumeTemplateSkins'
 import { RESUME_SECTION_ICONS } from '~/constants/resumeSectionIcons'
+import { buildLayoutEntries, getDefaultLayoutForStructure, getResumeLayoutById } from '~/constants/resumeLayouts'
 import type {
   ResumeEditableSectionKey,
   ResumeSectionActionKey,
@@ -157,7 +158,11 @@ const emit = defineEmits<{
 
 const normalizedSectionLayout = computed<SectionLayoutEntry[]>(() => {
   if (props.sectionLayout.length) return props.sectionLayout
-  return props.templateSkin.defaultSectionLayout.map((entry) => ({
+
+  const resolvedLayout = getResumeLayoutById(props.templateId)
+    ?? getDefaultLayoutForStructure(resolvedDesignState.value.layoutMode)
+
+  return buildLayoutEntries(resolvedLayout).map((entry) => ({
     ...entry,
     variant: fallbackVariant(entry.key),
   })) as SectionLayoutEntry[]
@@ -205,21 +210,7 @@ const sectionsByRegion = computed(() => ({
 }))
 
 const mainSections = computed(() => sectionsByRegion.value.main)
-const asideSections = computed(() => {
-  const sections = [...sectionsByRegion.value.aside]
-  if (resolvedDesignState.value.layoutMode === 'aside-left' || resolvedDesignState.value.layoutMode === 'aside-right') {
-    const customOrder: ResumeEditableSectionKey[] = ['reference', 'certification', 'hobby']
-    sections.sort((left, right) => {
-      const leftIndex = customOrder.indexOf(left.key as ResumeEditableSectionKey)
-      const rightIndex = customOrder.indexOf(right.key as ResumeEditableSectionKey)
-      if (leftIndex !== -1 && rightIndex !== -1) return leftIndex - rightIndex
-      if (leftIndex !== -1) return 1
-      if (rightIndex !== -1) return -1
-      return compareSectionOrder(left, right)
-    })
-  }
-  return sections
-})
+const asideSections = computed(() => sectionsByRegion.value.aside)
 const hasRenderedAvatar = computed(() =>
   Boolean(props.showPhoto && props.resume?.photoUrl && !props.photoHidden),
 )
