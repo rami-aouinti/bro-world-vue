@@ -134,9 +134,12 @@ RESUME_SKINS_CATALOG.forEach((skin) => {
   }
 })
 
-const COVER_TEMPLATES: ResumeTemplateConfig[] = [
+export const COVER_PAGE_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [
   { id: 'cover-page-terra', structureId: 'no-aside', layoutId: 'layout-no-aside-a', skinId: 'skin-terra', label: 'Cover Page Terra', subtitle: 'Simple cover page with title and photo', type: 'cover-page', image: '/img/cv/cv-4.png', templateId: 'cv-socle', visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, twoColumn: false } },
   { id: 'cover-page-elegant', structureId: 'no-aside', layoutId: 'layout-no-aside-a', skinId: 'skin-elegant', label: 'Cover Page Elegant', subtitle: 'Centered elegant cover page', type: 'cover-page', image: '/img/cv/cv-5.png', templateId: 'cv-socle', visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, photo: false, twoColumn: false } },
+]
+
+export const COVER_LETTER_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [
   { id: 'cover-letter-classic', structureId: 'no-aside', layoutId: 'layout-no-aside-a', skinId: 'skin-classic', label: 'Cover Letter Classic', subtitle: 'Classic letter ready to customize', type: 'cover-letter', image: '/img/cv/cv-1.png', templateId: 'cv-socle', visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, photo: false, twoColumn: false } },
   { id: 'cover-letter-modern', structureId: 'no-aside', layoutId: 'layout-no-aside-a', skinId: 'skin-urban', label: 'Cover Letter Modern', subtitle: 'Modern letter highlighting profile', type: 'cover-letter', image: '/img/cv/cv-3.png', templateId: 'cv-socle', visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, twoColumn: false, ats: false } },
 ]
@@ -155,7 +158,7 @@ const RESUME_GENERATED_TEMPLATES: ResumeTemplateConfig[] = RESUME_LAYOUTS_CATALO
     const templateType: ResumeTemplateType = 'resume'
 
     return {
-      id: `${layout.id}__${skin.id}`,
+      id: `resume-${layout.id}-${skin.id}`,
       structureId: layout.structureId,
       layoutId: layout.id,
       skinId: skin.id,
@@ -173,4 +176,14 @@ const RESUME_GENERATED_TEMPLATES: ResumeTemplateConfig[] = RESUME_LAYOUTS_CATALO
   }),
 )
 
-export const RESUME_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [...RESUME_GENERATED_TEMPLATES, ...COVER_TEMPLATES]
+export const RESUME_TEMPLATES_CATALOG: ResumeTemplateConfig[] = RESUME_GENERATED_TEMPLATES
+
+export const COVER_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [
+  ...COVER_PAGE_TEMPLATES_CATALOG,
+  ...COVER_LETTER_TEMPLATES_CATALOG,
+]
+
+export const ALL_RESUME_DOCUMENT_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [
+  ...RESUME_TEMPLATES_CATALOG,
+  ...COVER_TEMPLATES_CATALOG,
+]
