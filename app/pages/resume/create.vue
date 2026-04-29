@@ -5,9 +5,8 @@ import type {
   Typography,
 } from '~/constants/resumeDesign'
 import { DEFAULT_RESUME_TEMPLATE_ID } from '~/constants/resumeTemplates'
-import { CV_SOCLE_PRESETS } from '~/constants/resumeSoclePresets'
+import { CV_SOCLE_PRESETS, resolveSoclePresetById, resolveSocleThemeTokens } from '~/constants/resumeSoclePresets'
 import {
-  resolveTemplateSkin,
   type ResumeLayoutMode,
   type ResumeSectionIconStyleVariant,
 } from '~/constants/resumeTemplateSkins'
@@ -373,7 +372,7 @@ const createDefaultDesignSettings = (): DesignSettings => ({
     sectionIconStyle: 'outline',
     iconSize: 'm',
     iconColor: 'accent',
-    layoutMode: resolveTemplateSkin(DEFAULT_RESUME_TEMPLATE_ID).layoutMode,
+    layoutMode: CV_SOCLE_PRESETS[0]?.layoutMode ?? 'aside-left',
     decorativeShapeA: {
       enabled: false,
       type: 'circle',
@@ -883,9 +882,7 @@ const selectedTemplateConfig = computed(
     templates[0],
 )
 
-const selectedPresetConfig = computed(
-  () => CV_SOCLE_PRESETS.find((preset) => preset.id === selectedPreset.value) ?? CV_SOCLE_PRESETS[0],
-)
+const selectedPresetConfig = computed(() => resolveSoclePresetById(selectedPreset.value))
 
 const soclePresetOptions = computed(() =>
   CV_SOCLE_PRESETS.map((preset) => ({ label: preset.label, value: preset.id })),
@@ -893,12 +890,24 @@ const soclePresetOptions = computed(() =>
 
 watch(selectedPresetConfig, (preset) => {
   if (!preset) return
-  selectedTheme.value = preset.theme
-  selectedPageBackground.value = preset.pageBackground
-  selectedRounded.value = preset.rounded
-  selectedTextStyle.value = preset.textStyle
-  selectedPhotoShape.value = preset.photoShape
-  Object.assign(layoutSettings, preset.layout)
+  selectedTheme.value = preset.id
+  selectedPageBackground.value = preset.defaults.pageBackground
+  selectedRounded.value = preset.defaults.rounded
+  selectedTextStyle.value = preset.defaults.textStyle
+  selectedPhotoShape.value = preset.defaults.photoShape
+  layoutSettings.layoutMode = preset.layoutMode
+  layoutSettings.sectionDividerStyle = preset.dividerStyle ?? 'line'
+  layoutSettings.sectionIconStyle = preset.iconStyle ?? 'outline'
+  layoutSettings.sidebarWidth = preset.defaults.sidebarWidth
+  layoutSettings.sidebarHeight = preset.defaults.sidebarHeight
+  layoutSettings.lineDensity = preset.defaults.lineDensity
+  layoutSettings.showSectionIcons = preset.defaults.showSectionIcons
+  layoutSettings.showContactIcons = preset.defaults.showContactIcons
+  layoutSettings.iconSize = preset.defaults.iconSize
+  layoutSettings.iconColor = preset.defaults.iconColor
+  layoutSettings.photoSize = preset.defaults.photoSize
+  layoutSettings.photoBorderWidth = preset.defaults.photoBorderWidth
+  layoutSettings.photoPosition = preset.defaults.photoPosition
 }, { immediate: true })
 
 const isResumeDocument = computed(() => selectedDocumentType.value === 'resume')
@@ -1084,15 +1093,13 @@ onMounted(async () => {
 const templateSupportsPhoto = computed(
   () => selectedTemplateConfig.value.hasPhoto,
 )
-const selectedTemplateSkin = computed(() =>
-  resolveTemplateSkin(DEFAULT_RESUME_TEMPLATE_ID),
-)
+const selectedTemplateSkin = computed(() => resolveSoclePresetById(selectedPreset.value))
 const {
   state: resumeDocumentState,
   hydrateFromStorage,
   migrateLegacyStorage,
   persist,
-} = useResumeDocumentState(computed(() => DEFAULT_RESUME_TEMPLATE_ID))
+} = useResumeDocumentState(selectedPreset)
 const pdfModalOpen = ref(false)
 const photoDialogOpen = ref(false)
 const aiCreateModalOpen = ref(false)
@@ -1107,7 +1114,6 @@ const signatureDialogOpen = ref(false)
 const signatureDataUrl = ref('')
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 const isDrawingSignature = ref(false)
-const selectedPhotoShape = ref<string>('square')
 const safePhotoShape = computed<PhotoShape>(() =>
   photoShapeOptions.some((option) => option.value === selectedPhotoShape.value)
     ? (selectedPhotoShape.value as PhotoShape)
@@ -2353,17 +2359,6 @@ function contrastRatio(colorA: string, colorB: string) {
   return (brightest + 0.05) / (darkest + 0.05)
 }
 
-function bestAaTextColor(background: string, preferred: string, minimum = 4.5) {
-  const candidates = [preferred, '#111827', '#0f172a', '#f8fafc', '#ffffff']
-  const passing = candidates.find(
-    (color) => contrastRatio(background, color) >= minimum,
-  )
-  if (passing) return passing
-  return candidates.sort(
-    (a, b) => contrastRatio(background, b) - contrastRatio(background, a),
-  )[0]
-}
-
 const minimumReadableContrast = 4.5
 const pageBackgroundValidation = computed(() =>
   pageBackgroundOptions.map((option) => {
@@ -2398,52 +2393,7 @@ const previewStyle = computed(() => ({
   '--cv-font-style': textStyleVarsByValue[selectedTextStyle.value].style,
   '--resume-font-weight': textStyleVarsByValue[selectedTextStyle.value].weight,
   '--cv-font-weight': textStyleVarsByValue[selectedTextStyle.value].weight,
-  '--resume-sidebar': activeTheme.value.sidebar,
-  '--cv-sidebar': activeTheme.value.sidebar,
-  '--resume-accent': activeTheme.value.accent,
-  '--cv-accent': activeTheme.value.accent,
-  '--resume-page': activePageBackground.value.page,
-  '--cv-page': activePageBackground.value.page,
-  '--resume-title': bestAaTextColor(
-    activePageBackground.value.page,
-    activeTheme.value.accent,
-    4.5,
-  ),
-  '--resume-secondary': bestAaTextColor(
-    activePageBackground.value.page,
-    activeTheme.value.sidebar,
-    4.5,
-  ),
-  '--resume-on-sidebar': bestAaTextColor(
-    activeTheme.value.sidebar,
-    activePageBackground.value.page,
-    4.5,
-  ),
-  '--resume-on-accent': bestAaTextColor(
-    activeTheme.value.accent,
-    activePageBackground.value.page,
-    4.5,
-  ),
-  '--cv-title': bestAaTextColor(
-    activePageBackground.value.page,
-    activeTheme.value.accent,
-    4.5,
-  ),
-  '--cv-secondary': bestAaTextColor(
-    activePageBackground.value.page,
-    activeTheme.value.sidebar,
-    4.5,
-  ),
-  '--cv-on-sidebar': bestAaTextColor(
-    activeTheme.value.sidebar,
-    activePageBackground.value.page,
-    4.5,
-  ),
-  '--cv-on-accent': bestAaTextColor(
-    activeTheme.value.accent,
-    activePageBackground.value.page,
-    4.5,
-  ),
+  ...resolveSocleThemeTokens(selectedPresetConfig.value),
 }))
 const decorativeShapes = computed(() => [
   {
@@ -3110,6 +3060,7 @@ if (import.meta.client) {
   migrateLegacyStorage(rawLegacyLayout, rawLegacySectionLayout)
 
   const customization = resumeDocumentState.value.customization
+  selectedPreset.value = customization.presetId
   selectedTheme.value = customization.style.palette
   selectedPageBackground.value = customization.style.pageBackground
   selectedRounded.value = customization.style.radius
@@ -3155,6 +3106,7 @@ if (import.meta.client) {
     () => {
       resumeDocumentState.value.customization = {
         ...resumeDocumentState.value.customization,
+        presetId: selectedPreset.value,
         style: {
           ...resumeDocumentState.value.customization.style,
           palette: selectedTheme.value,
@@ -3184,6 +3136,7 @@ if (import.meta.client) {
     (density) => {
       resumeDocumentState.value.customization = {
         ...resumeDocumentState.value.customization,
+        presetId: selectedPreset.value,
         style: {
           ...resumeDocumentState.value.customization.style,
           density,
