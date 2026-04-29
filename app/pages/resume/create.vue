@@ -30,6 +30,7 @@ import { levelToStars, starsToPercent } from '~/utils/resumeLanguageLevel'
 import ResumeRenderer from '~/components/Resume/Templates/ResumeRenderer.vue'
 import ResumeTimelineSectionFields from '~/components/Resume/Create/ResumeTimelineSectionFields.vue'
 import ResumeLevelSectionFields from '~/components/Resume/Create/ResumeLevelSectionFields.vue'
+import ProfileRichTextEditor from '~/components/Resume/Create/ProfileRichTextEditor.vue'
 import {
   isResumeEditableSectionKey,
   type ResumeEditableSectionKey,
@@ -4034,12 +4035,10 @@ if (import.meta.client) {
           <v-divider />
           <v-card-text class="d-grid ga-3">
             <template v-if="addSectionType === 'profile'">
-              <v-textarea
+              <ProfileRichTextEditor
                 v-model="addSectionDraft.profile.profile"
                 label="Profile summary"
-                rows="6"
-                variant="outlined"
-                hide-details
+                placeholder="Write a short professional summary"
               />
             </template>
 
