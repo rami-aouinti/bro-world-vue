@@ -250,6 +250,7 @@ function applySectionStylePreview() {
   }
 
   sectionElement.style.setProperty('--rs-extra-line-offset', `${sectionLineOffset.value}px`)
+  sectionElement.style.setProperty('--rs-extra-margin-offset', `${sectionLineOffset.value}px`)
 }
 
 function changeSectionLineOffset(direction: 'plus' | 'minus') {
@@ -613,6 +614,12 @@ watch(
     opacity 0.16s ease,
     transform 0.16s ease;
 }
+
+
+:global(.resume-section-hoverable) {
+  margin-bottom: var(--rs-extra-margin-offset, 0px);
+}
+
 
 .toolbar-btn {
   min-width: 38px;
