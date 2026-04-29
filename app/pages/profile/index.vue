@@ -850,15 +850,15 @@ onUnmounted(() => {
                     profileResumeIdentity.completeName.slice(0, 2).toUpperCase()
                   }}
                 </v-avatar>
-                <h2 class="text-h4 font-weight-bold mb-1">
+                <h2 class="resume-name">
                   {{ profileResumeIdentity.completeName }}
                 </h2>
               </div>
               <div class="resume-header-main">
-                <p class="text-subtitle-1 mb-2">
+                <p class="resume-role">
                   {{ profileResumeIdentity.title }}
                 </p>
-                <p class="mb-0 text-body-2">
+                <p class="resume-meta mb-0">
                   {{ profileResumeIdentity.summary }}
                 </p>
               </div>
@@ -989,13 +989,13 @@ onUnmounted(() => {
                   }}
                 </v-avatar>
               </div>
-              <h2 class="text-h3 font-weight-bold mb-2">
+              <h2 class="resume-name">
                 {{ profileResumeIdentity.completeName }}
               </h2>
-              <p class="text-subtitle-1 mb-2">
+              <p class="resume-role">
                 {{ profileResumeIdentity.title }}
               </p>
-              <p class="mb-0">
+              <p class="resume-meta mb-0">
                 {{
                   [
                     profileResumeIdentity.location,
@@ -1006,7 +1006,7 @@ onUnmounted(() => {
                     .join(' • ')
                 }}
               </p>
-              <p class="mb-0 text-body-2">
+              <p class="resume-meta mb-0">
                 {{
                   [
                     profileResumeIdentity.homepage,
@@ -1079,12 +1079,12 @@ onUnmounted(() => {
                     profileResumeIdentity.completeName.slice(0, 2).toUpperCase()
                   }}
                 </v-avatar>
-                <h2 class="text-h4 font-weight-bold mb-1">
+                <h2 class="resume-name">
                   {{ profileResumeIdentity.completeName }}
                 </h2>
               </div>
-              <p class="mb-0">{{ profileResumeIdentity.title }}</p>
-              <p class="mb-0 text-body-2">
+              <p class="resume-role">{{ profileResumeIdentity.title }}</p>
+              <p class="resume-meta mb-0">
                 {{
                   [
                     profileResumeIdentity.location,
@@ -1095,7 +1095,7 @@ onUnmounted(() => {
                     .join(' | ')
                 }}
               </p>
-              <p class="mb-0 text-body-2">
+              <p class="resume-meta mb-0">
                 {{
                   [
                     profileResumeIdentity.homepage,
@@ -1625,6 +1625,14 @@ onUnmounted(() => {
   color: #172536;
 }
 
+.resume-template-elegant .resume-role {
+  color: rgba(67, 43, 34, 0.9);
+}
+
+.resume-template-elegant .resume-meta {
+  color: rgba(67, 43, 34, 0.8);
+}
+
 .resume-header {
   border-bottom: 2px solid rgba(86, 106, 156, 0.35);
   margin-bottom: 18px;
@@ -1644,6 +1652,29 @@ onUnmounted(() => {
 .resume-header-main {
   flex: 1;
   min-width: 240px;
+}
+
+.resume-name {
+  font-size: clamp(1.45rem, 2.2vw, 2rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  margin: 0 0 6px;
+  color: inherit;
+}
+
+.resume-role {
+  font-size: 1.03rem;
+  font-weight: 650;
+  line-height: 1.35;
+  margin: 0 0 8px;
+  color: rgba(24, 42, 78, 0.92);
+}
+
+.resume-meta {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: rgba(24, 42, 78, 0.8);
 }
 
 .resume-contact-card {
@@ -1672,16 +1703,28 @@ onUnmounted(() => {
 
 .resume-block h3 {
   text-transform: uppercase;
-  font-size: 0.86rem;
-  letter-spacing: 0.08em;
-  margin-bottom: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  line-height: 1.35;
+  margin: 0 0 12px;
+  color: rgba(17, 35, 70, 0.92);
 }
 
 .resume-line {
-  margin-bottom: 8px;
-  padding-bottom: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  line-height: 1.5;
   border-bottom: 1px dashed rgba(78, 97, 140, 0.42);
   color: #25365d;
+}
+
+.resume-line p {
+  margin-top: 0;
+}
+
+.resume-line p + p {
+  margin-top: 4px;
 }
 
 .resume-line:last-child {
@@ -1693,6 +1736,7 @@ onUnmounted(() => {
 .resume-list {
   margin: 0;
   padding-left: 18px;
+  line-height: 1.5;
 }
 
 .resume-upload-panel,
