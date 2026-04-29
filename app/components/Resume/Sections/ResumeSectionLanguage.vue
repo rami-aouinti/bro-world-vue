@@ -5,6 +5,7 @@ import {
   levelToText,
 } from '~/utils/resumeLanguageLevel'
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import { resolveLanguageFallback, resolveLanguageFlagSrc } from '~/utils/resumeLanguageFlags'
 import { getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
 
 const props = withDefaults(
@@ -76,30 +77,6 @@ function updateText(path: string, value: unknown) {
     target = target[segment]
   }
   target[last] = value
-}
-
-function toFlagEmoji(countryCode: string) {
-  const normalized = countryCode.trim().toUpperCase()
-  if (!/^[A-Z]{2}$/.test(normalized)) return ''
-  return normalized
-    .split('')
-    .map((char) => String.fromCodePoint(127397 + char.charCodeAt(0)))
-    .join('')
-}
-
-function resolveLanguageFlag(language: Record<string, unknown>) {
-  const explicitFlag = String(language.flag || '').trim()
-  if (explicitFlag) return explicitFlag
-  const countryCode = String(language.countryCode || '').trim()
-  return toFlagEmoji(countryCode) || ''
-}
-
-function resolveLanguageFlagImage(language: Record<string, unknown>) {
-  const explicitFlag = String(language.flag || '').trim()
-  if (explicitFlag.startsWith('/') || explicitFlag.startsWith('http')) return explicitFlag
-  const countryCode = String(language.countryCode || '').trim()
-  if (!countryCode) return ''
-  return `/images/flags/${countryCode.toLowerCase()}.svg`
 }
 
 function removeLanguage(index: number) {
@@ -274,9 +251,9 @@ function removeLanguage(index: number) {
         <div class="d-flex align-center ga-2 justify-space-between">
           <div class="d-flex align-center ga-2">
             <img
-              v-if="resolveLanguageFlagImage(language)"
+              v-if="resolveLanguageFlagSrc(language)"
               class="language-flag-image"
-              :src="resolveLanguageFlagImage(language)"
+              :src="resolveLanguageFlagSrc(language)"
               :alt="`${language.name} flag`"
               width="18"
               height="14"
@@ -295,7 +272,7 @@ function removeLanguage(index: number) {
               >{{ language.name }}</span
             >
             <span
-              v-if="resolveLanguageFlagImage(language)"
+              v-if="resolveLanguageFlagSrc(language)"
               class="editable-text"
               :contenteditable="editable"
               @input="
