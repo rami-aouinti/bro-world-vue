@@ -10,16 +10,16 @@ export type ResumeTemplateIconStyle = 'text' | 'outline' | 'filled' | 'rounded'
 export type ResumeStructureId = 'no-aside' | 'aside-left' | 'aside-right'
 export type ResumeLayoutId = string
 export type ResumeTemplateSkinId =
-  | 'skin-executive-portrait'
+  | 'skin-cobalt-executive'
   | 'skin-midnight-banner'
   | 'skin-minimal-profile'
-  | 'skin-classic'
-  | 'skin-modern'
-  | 'skin-cover-page-terra'
-  | 'skin-cover-page-elegant'
-  | 'skin-cover-letter-classic'
-  | 'skin-cover-letter-modern'
+  | 'skin-classic-serif'
+  | 'skin-modern-balance'
   | 'skin-graphite-pro'
+  | 'skin-terra-edge'
+  | 'skin-elegant-light'
+  | 'skin-corporate-grid'
+  | 'skin-noir-compact'
 
 export type ResumeSkinId = ResumeTemplateSkinId
 
