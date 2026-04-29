@@ -50,7 +50,7 @@ const isMenuOpen = ref(false)
               variant="tonal"
               color="primary"
               prepend-icon="mdi-upload"
-              :text="t('resumeBuilder.create.avatarMenu.uploadReplace')"
+              :text="t('resumeBuilder.create.options.avatarMenu.uploadReplace')"
               @click="emit('upload')"
             />
             <v-btn
@@ -58,13 +58,13 @@ const isMenuOpen = ref(false)
               variant="text"
               color="error"
               prepend-icon="mdi-delete-outline"
-              :text="t('resumeBuilder.create.avatarMenu.remove')"
+              :text="t('resumeBuilder.create.options.avatarMenu.remove')"
               @click="emit('remove')"
             />
           </div>
 
           <div class="photo-menu__section">
-            <p class="photo-menu__label">{{ t('resumeBuilder.create.avatarMenu.avatarShape') }}</p>
+            <p class="photo-menu__label">{{ t('resumeBuilder.create.options.avatarMenu.avatarShape') }}</p>
             <div class="photo-shape-picker">
               <v-btn
                 v-for="shape in props.options"
@@ -80,7 +80,7 @@ const isMenuOpen = ref(false)
           </div>
 
           <div class="photo-menu__section">
-            <p class="photo-menu__label">{{ t('resumeBuilder.create.avatarMenu.size') }}</p>
+            <p class="photo-menu__label">{{ t('resumeBuilder.create.options.avatarMenu.size') }}</p>
             <v-slider
               :model-value="props.photoSize"
               :min="96"
@@ -93,7 +93,7 @@ const isMenuOpen = ref(false)
           </div>
 
           <div class="photo-menu__section">
-            <p class="photo-menu__label">{{ t('resumeBuilder.create.avatarMenu.borderWidth') }}</p>
+            <p class="photo-menu__label">{{ t('resumeBuilder.create.options.avatarMenu.borderWidth') }}</p>
             <v-slider
               :model-value="props.photoBorderWidth"
               :min="0"
