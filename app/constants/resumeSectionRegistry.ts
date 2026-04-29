@@ -196,7 +196,7 @@ export const RESUME_SECTION_REGISTRY: Record<
   },
   reference: {
     label: 'Reference',
-    icon: 'mdi-account-voice-outline',
+    icon: 'mdi-card-account-details-outline',
     variants: [{ label: 'Classic', value: 'classic' }],
     defaultVariant: 'classic',
     defaultRegion: 'aside',

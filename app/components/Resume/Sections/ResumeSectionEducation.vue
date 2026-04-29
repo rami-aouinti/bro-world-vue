@@ -194,8 +194,8 @@ function removeEducationItem(index: number) {
           <v-icon icon="mdi-close" size="14" />
         </v-btn>
         <p class="dates date-column">
-          <span class="dates-chip-wrap">
-            <v-chip size="small" color="primary" variant="tonal" class="dates-chip">
+          <span class="date-chip-wrap">
+            <span class="date-chip" role="text">
           <span
             class="editable-text"
             :contenteditable="editable"
@@ -220,7 +220,7 @@ function removeEducationItem(index: number) {
                 )
             "
             >{{ formatResumeMonthYear(item.end) }}</span
-          ></v-chip>
+          ></span>
           </span>
         </p>
         <div v-if="safeVariant === 'timeline'" class="education-timeline-rail" aria-hidden="true">
