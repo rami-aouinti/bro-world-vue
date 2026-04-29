@@ -100,6 +100,12 @@ function resolveLanguageFlagSrc(language: Record<string, unknown>) {
   return `/images/flags/${countryCode.toLowerCase()}.svg`
 }
 
+function resolveLanguageFlagClass(language: Record<string, unknown>) {
+  const countryCode = String(language.countryCode || '').trim().toLowerCase()
+  if (!/^[a-z]{2}$/.test(countryCode)) return ''
+  return `fi fi-${countryCode}`
+}
+
 function resolveLanguageFlag(language: Record<string, unknown>) {
   const explicitFlag = String(language.flag || '').trim()
   if (explicitFlag) return explicitFlag
@@ -190,6 +196,13 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
                 :src="resolveLanguageFlagSrc(language)"
                 :alt="`${language.name} flag`"
               >
+              <span
+                v-else-if="resolveLanguageFlagClass(language)"
+                class="language-flag-icon"
+                :class="resolveLanguageFlagClass(language)"
+                :aria-label="`${language.name} flag`"
+                role="img"
+              />
               <span v-else-if="resolveLanguageFlag(language)" class="language-flag">{{ resolveLanguageFlag(language) }}</span>
               <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
             </div>
@@ -298,6 +311,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
 </template>
 
 <style scoped>
+@import '~/assets/styles/flag-icons.scss';
 /* Theme convention: use only var(--cv-sidebar), var(--cv-accent), var(--cv-page), var(--cv-secondary) (+ color-mix). */
 .shared-extra { font-family: var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif); font-style: var(--cv-font-style, normal); font-weight: var(--cv-font-weight, 400);
   --shared-panel-bg: color-mix(in srgb, var(--cv-page) 92%, var(--cv-sidebar));
@@ -370,6 +384,14 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
   height: 12px;
   object-fit: cover;
   border-radius: 2px;
+}
+
+.language-flag-icon {
+  width: 18px;
+  height: 12px;
+  display: inline-block;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
 .language-flag {
