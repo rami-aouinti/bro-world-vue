@@ -101,7 +101,7 @@ function updateText(path: string, value: unknown) {
   target[last] = value
 }
 function updateDateText(path: string, value: string) {
-  updateText(path, value)
+  updateText(path, formatResumeMonthYear(value))
 }
 
 function isValidResumeDate(value: unknown) {
@@ -111,10 +111,7 @@ function isValidResumeDate(value: unknown) {
 }
 
 function renderResumeDate(value: unknown) {
-  const raw = String(value ?? '')
-  if (props.editable) return raw
-  const formatted = formatResumeMonthYear(raw)
-  return /^\d{2}-\d{2}$/.test(formatted) ? formatted : raw
+  return formatResumeMonthYear(value)
 }
 
 function resolveContentStyle(item: Record<string, unknown>) {
