@@ -41,6 +41,7 @@ export type ApiResume = {
 export type BuilderResumeModel = {
   firstName: string
   lastName: string
+  role: string
   email: string
   phone: string
   city: string
@@ -64,6 +65,14 @@ export type BuilderResumeModel = {
     email: string
     phone: string
     address: string
+    // Keep API naming in this nested object (snake_case) to preserve round-trip values as-is.
+    adresse: string
+    homepage: string
+    repo_profile: string
+    birthDate: string
+    birthPlace: string
+    profileText: string
+    title: string
   }
 }
 
@@ -208,11 +217,13 @@ export function fromApiResumeToBuilderModel(apiResume: ApiResume): BuilderResume
       email: normalizeText(info.email),
       phone: normalizeText(info.phone),
       address,
+      adresse: normalizeText(info.adresse),
       homepage: normalizeText(info.homepage),
       repo_profile: normalizeText(info.repo_profile),
       birthDate: normalizeText(info.birthDate),
       birthPlace: normalizeText(info.birthPlace),
       profileText: normalizeText(info.profileText),
+      title: normalizeText(info.title),
     },
   }
 }
@@ -233,6 +244,7 @@ export function fromBuilderModelToApiPayload(builderResume: BuilderResumeModel):
       birthDate: normalizeText(builderResume.birthDate) || null,
       birthPlace: normalizeText(builderResume.birthPlace) || null,
       profileText: normalizeText(builderResume.profile) || null,
+      title: normalizeText(builderResume.role) || null,
     },
     experiences: builderResume.experiences.map((experience) => ({
       title: normalizeText(experience.role),
