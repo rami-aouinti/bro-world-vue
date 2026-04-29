@@ -673,11 +673,11 @@ function updateText(path: string, value: string) {
           </div>
           <div v-if="resume.homepage" class="resume-skin__contact-item">
             <v-icon v-if="showContactIcons" class="resume-skin__contact-icon" icon="mdi-web" :size="contactIconSize" />
-            <a :href="resume.homepage" target="_blank" rel="noopener noreferrer">Home Page</a>
+            <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" clsas="text-dark">Home Page</a>
           </div>
           <div v-if="resume.repoProfile" class="resume-skin__contact-item">
             <v-icon v-if="showContactIcons" class="resume-skin__contact-icon" icon="mdi-github" :size="contactIconSize" />
-            <a :href="resume.repoProfile" target="_blank" rel="noopener noreferrer">Github Repo</a>
+            <a :href="resume.repoProfile" target="_blank" rel="noopener noreferrer" clsas="text-dark">Github Repo</a>
           </div>
         </div>
       </div>
@@ -875,7 +875,7 @@ function updateText(path: string, value: string) {
                 icon="mdi-web"
                 :size="contactIconSize"
               />
-              <a :href="resume.homepage" target="_blank" rel="noopener noreferrer"
+              <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" clsas="text-dark"
                 >Home Page</a
               >
             </div>
@@ -1040,7 +1040,7 @@ function updateText(path: string, value: string) {
                 icon="mdi-web"
                 :size="contactIconSize"
               />
-              <a :href="resume.homepage" target="_blank" rel="noopener noreferrer"
+              <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" clsas="text-dark"
                 >Home Page</a
               >
             </div>
