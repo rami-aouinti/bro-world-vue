@@ -3102,12 +3102,21 @@
         }
       },
       "messages": {
-        "resumeDeleted": "Resume deleted successfully.",
-        "resumeDeleteFailed": "Failed to delete resume.",
-        "resumeReplaced": "Resume replaced successfully.",
-        "resumeCreated": "New resume created successfully.",
-        "resumeReplaceFailed": "Failed to replace resume.",
-        "resumeCreateFailed": "Failed to create resume."
+        "resumeDeleted": "CV supprimé avec succès.",
+        "resumeDeleteFailed": "Échec de la suppression du CV.",
+        "resumeReplaced": "CV remplacé avec succès.",
+        "resumeCreated": "Nouveau CV créé avec succès.",
+        "resumeReplaceFailed": "Échec du remplacement du CV.",
+        "resumeCreateFailed": "Échec de la création du CV.",
+        "aiSummaryRequired": "Merci de fournir un court résumé avant de lancer l'IA."
+      },
+      "validation": {
+        "repositoryUrlProtocol": "L'URL du dépôt doit commencer par http:// ou https://",
+        "repositoryUrlInvalid": "L'URL du dépôt doit être valide (http/https).",
+        "logoInvalidFormat": "Format invalide. Utilise PNG, JPEG, WEBP ou SVG.",
+        "logoFileTooLarge": "Fichier trop volumineux (max 2MB).",
+        "logoReadFailed": "Impossible de lire le fichier logo.",
+        "logoLoadFailed": "Impossible de charger ce logo."
       },
       "previewFallback": {
         "profileTitle": "Profile",
@@ -3203,6 +3212,40 @@
           "project": "Projet",
           "certification": "Certification",
           "reference": "Référence"
+        }
+      },
+      "registry": {
+        "sections": {
+          "experience": "Expérience",
+          "education": "Formation",
+          "language": "Langue",
+          "project": "Projet",
+          "skill": "Compétence",
+          "reference": "Référence",
+          "hobby": "Loisir",
+          "certification": "Certification"
+        },
+        "contentStyles": {
+          "points": "Points",
+          "dashes": "Tirets",
+          "timeline": "Timeline"
+        },
+        "variants": {
+          "detailed": "Détaillé",
+          "bullets": "Puces",
+          "compact": "Compact",
+          "classic": "Classique",
+          "twoColumns": "Deux colonnes",
+          "textLevel": "Niveau texte",
+          "stars": "Étoiles",
+          "progressLine": "Ligne de progression",
+          "progressCircle": "Cercle de progression",
+          "flags": "Drapeaux",
+          "list": "Liste",
+          "cards": "Cartes",
+          "dots": "Points",
+          "progress": "Progression",
+          "timeline": "Timeline"
         }
       },
       "fields": {
