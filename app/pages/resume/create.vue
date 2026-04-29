@@ -2823,8 +2823,9 @@ async function buildResumePdfBlob() {
   )
     .map((node) => node.outerHTML)
     .join('\n')
-  const exportRoot =
-    previewExportRef.value.querySelector('.cv-page-shell') ?? previewExportRef.value
+  // Keep the preview root to preserve CSS variables (colors/layout) applied on .preview-grid.
+  // Exporting only .cv-page-shell drops those custom properties and can make the aside background disappear in PDF.
+  const exportRoot = previewExportRef.value
   const content = exportRoot.outerHTML
 
   return `
