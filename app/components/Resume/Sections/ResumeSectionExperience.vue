@@ -458,10 +458,13 @@ function removeExperience(index: number) {
   margin: var(--entry-title-to-date-gap) 0 0;
 }
 .dates-chip {
-  font-weight: 500;
-}
-.dates-chip :deep(.v-chip__underlay) {
-  background-color: color-mix(in srgb, var(--cv-accent) 18%, white);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cv-accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cv-accent) 24%, transparent);
 }
 .content-column > h4 {
   margin: 0;
