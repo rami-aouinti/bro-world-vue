@@ -190,11 +190,12 @@ function removeExperience(index: number) {
       </span>
       <span>{{ title }}</span>
     </h2>
-    <article
-      v-for="(experience, index) in resume.experiences"
-      :key="`${experience.company}-${index}`"
-      class="entry text-dark"
-    >
+    <div class="experience-list">
+      <article
+        v-for="(experience, index) in resume.experiences"
+        :key="`${experience.company}-${index}`"
+        class="entry text-dark"
+      >
       <v-btn
         v-if="editable"
         class="resume-item-delete"
@@ -267,6 +268,9 @@ function removeExperience(index: number) {
             >
           </template>
         </h4>
+      </div>
+      <div v-if="safeVariant === 'timeline'" class="experience-timeline-rail" aria-hidden="true">
+        <span class="experience-timeline-dot" />
       </div>
       <div class="content-column">
         <template v-if="resolveContentStyle(experience) === 'timeline'">
@@ -355,7 +359,8 @@ function removeExperience(index: number) {
           {{ resolvePoints(experience)?.[0] }}
         </p>
       </div>
-    </article>
+      </article>
+    </div>
   </section>
 </template>
 
@@ -367,12 +372,17 @@ function removeExperience(index: number) {
   --cv-space-4: var(--cv-space-4, 16px);
   --cv-space-6: var(--cv-space-6, 24px);
   --cv-marker-accent: color-mix(in srgb, var(--cv-accent) 55%, transparent);
+  --cv-timeline-line: color-mix(in srgb, var(--cv-accent) 38%, transparent);
+  --cv-card-border-soft: color-mix(in srgb, var(--cv-accent) 18%, transparent);
+  --cv-card-bg-soft: color-mix(in srgb, var(--cv-accent) 4%, transparent);
   --cv-body-line-height: 1.52;
   --cv-list-indent: calc(var(--cv-space-4) + var(--cv-space-2));
   --cv-dash-marker-width: 1.35em;
   --entry-title-to-date-gap: var(--cv-space-1);
   --entry-date-to-description-gap: var(--cv-space-2);
   --entry-description-to-list-gap: var(--cv-space-2);
+  --experience-timeline-dot-offset: 10px;
+  --experience-timeline-rail-width: 44px;
 
   position: relative;
   border-bottom: var(--rs-section-separator, none);
@@ -407,6 +417,9 @@ function removeExperience(index: number) {
 .section-icon--rounded {
   border-radius: calc(var(--resume-section-icon-radius, 8px) + 2px);
   background: color-mix(in srgb, currentColor 18%, transparent);
+}
+.experience-list {
+  display: block;
 }
 .entry {
   margin-bottom: var(--entry-gap, var(--cv-space-4));
@@ -456,10 +469,13 @@ function removeExperience(index: number) {
 .content-column {
   position: relative;
   min-width: 0;
+}
+.experience--classic .content-column {
   border-left: var(--rs-entry-border-left, none);
   padding-left: var(--rs-entry-padding-left, 0);
 }
 .content-column::before {
+  display: none;
   content: '';
   position: absolute;
   left: calc((var(--cv-space-2) + var(--cv-space-1)) * -1);
@@ -469,20 +485,81 @@ function removeExperience(index: number) {
   border-radius: var(--rs-marker-radius, 0);
   background: var(--cv-marker-accent);
 }
-.experience--timeline .content-column {
-  border-left: 2px solid color-mix(in srgb, var(--cv-accent) 38%, transparent);
-  padding-left: calc(var(--cv-space-2) + var(--cv-space-1) / 2);
+.experience--timeline .content-column { max-width: min(100%, 70ch); }
+.experience--timeline .entry {
+  grid-template-columns:
+    minmax(140px, var(--resume-date-column-width, 140px))
+    var(--experience-timeline-rail-width)
+    minmax(0, 1fr);
 }
-.experience--timeline .content-column::before {
+.experience--timeline .experience-timeline-rail {
+  position: relative;
+  align-self: stretch;
+  width: var(--experience-timeline-rail-width);
+}
+.experience--timeline .experience-timeline-rail::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--cv-timeline-line);
+}
+.experience--timeline .experience-timeline-dot {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: var(--experience-timeline-dot-offset);
   width: max(8px, var(--rs-marker-width, var(--rs-marker-size, 8px)));
   height: max(8px, var(--rs-marker-height, var(--rs-marker-size, 8px)));
   border-radius: 999px;
   background: var(--cv-accent);
+  z-index: 1;
+}
+
+.experience--two-column .experience-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--cv-space-4) var(--cv-space-6);
+}
+.experience--two-column .entry {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--cv-space-2) - var(--cv-space-1) / 2);
+  border: var(--rs-card-border, 1px solid var(--cv-card-border-soft));
+  border-radius: var(--rs-card-radius, var(--cv-space-2));
+  background: var(--rs-card-bg, var(--cv-card-bg-soft));
+  padding: var(--rs-card-padding, var(--cv-space-3));
+}
+.experience--two-column .experience-timeline-rail {
+  display: none;
+}
+.experience--two-column .content-column {
+  max-width: none;
+}
+@media (max-width: 900px) {
+  .experience--two-column .experience-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 @media (max-width: 900px) {
   .entry {
     grid-template-columns: minmax(0, 1fr);
     row-gap: var(--cv-space-2);
+  }
+  .experience--timeline .entry {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .experience--timeline .experience-timeline-rail {
+    display: none;
+  }
+  .experience--timeline .content-column {
+    max-width: none;
   }
 }
 
