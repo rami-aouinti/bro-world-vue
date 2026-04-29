@@ -744,6 +744,14 @@ const templates: Template[] = resumeTemplateCards.map((template) => ({
   variant: DEFAULT_RESUME_TEMPLATE_ID,
 }))
 
+const resumeTemplateQueryAliases: Record<string, string> = {
+  'executive-portrait': 'cv-socle-01',
+  'midnight-banner': 'cv-socle-02',
+  'minimal-profile': 'cv-socle-10',
+  classic: 'cv-socle-15',
+  modern: 'cv-socle-03',
+}
+
 const resume = reactive<ResumeModel>({
   role: 'Communication Specialist',
   firstName: 'Emma',
@@ -1091,11 +1099,12 @@ onMounted(async () => {
   const templateFromQuery = route.query.template
 
   if (typeof templateFromQuery === 'string') {
+    const resolvedTemplateId = resumeTemplateQueryAliases[templateFromQuery] ?? templateFromQuery
     const exists = templatesByDocumentType.value.some(
-      (template) => template.id === templateFromQuery,
+      (template) => template.id === resolvedTemplateId,
     )
     selectedTemplate.value = exists
-      ? templateFromQuery
+      ? resolvedTemplateId
       : templatesByDocumentType.value[0]?.id ?? templates[0]?.id ?? 'cv-socle-01'
   }
   selectValidTemplateForCurrentDocumentType()
