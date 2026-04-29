@@ -38,7 +38,7 @@ export type ResumeSectionRegistryEntry = {
 
 
 const SECTION_VARIANT_LABEL_KEYS: Record<ResumeEditableSectionKey, Record<string, string>> = {
-  experience: { detailed: 'resumeBuilder.create.registry.variants.detailed', bullets: 'resumeBuilder.create.registry.variants.bullets', compact: 'resumeBuilder.create.registry.variants.compact' },
+  experience: { classic: 'resumeBuilder.create.registry.variants.classic', timeline: 'resumeBuilder.create.registry.variants.timeline', 'two-column': 'resumeBuilder.create.registry.variants.twoColumns' },
   education: { classic: 'resumeBuilder.create.registry.variants.classic', timeline: 'resumeBuilder.create.registry.variants.timeline', 'two-column': 'resumeBuilder.create.registry.variants.twoColumns' },
   language: { classic: 'resumeBuilder.create.registry.variants.classic', 'text-level': 'resumeBuilder.create.registry.variants.textLevel', stars: 'resumeBuilder.create.registry.variants.stars', 'progress-line': 'resumeBuilder.create.registry.variants.progressLine', 'progress-circle': 'resumeBuilder.create.registry.variants.progressCircle', flags: 'resumeBuilder.create.registry.variants.flags' },
   project: { classic: 'resumeBuilder.create.registry.variants.classic', list: 'resumeBuilder.create.registry.variants.list', cards: 'resumeBuilder.create.registry.variants.cards', timeline: 'resumeBuilder.create.registry.variants.timeline', 'two-column': 'resumeBuilder.create.registry.variants.twoColumns' },
@@ -71,7 +71,7 @@ export const RESUME_SECTION_REGISTRY: Record<
     labelKey: 'resumeBuilder.create.registry.sections.experience',
     icon: 'mdi-briefcase-outline',
     variants: variantOptions('experience'),
-    defaultVariant: 'detailed',
+    defaultVariant: 'classic',
     defaultRegion: 'main',
     toolbarActions: [
       'add-item',

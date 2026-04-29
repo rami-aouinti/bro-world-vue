@@ -8,7 +8,7 @@ export type ResumeTemplateSharedSectionVariant =
   | 'list'
 
 export type ResumeSectionVariantBySection = {
-  experience: 'detailed' | 'bullets' | 'compact'
+  experience: 'classic' | 'timeline' | 'two-column'
   education: 'classic' | 'timeline' | 'two-column'
   language:
     | 'classic'
@@ -28,7 +28,7 @@ export type ResumeSectionVariant<K extends ResumeEditableSectionKey> =
   ResumeSectionVariantBySection[K]
 
 export const RESUME_SECTION_VARIANTS = {
-  experience: ['detailed', 'bullets', 'compact'],
+  experience: ['classic', 'timeline', 'two-column'],
   education: ['classic', 'timeline', 'two-column'],
   language: [
     'classic',

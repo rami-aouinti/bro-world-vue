@@ -11,7 +11,7 @@ const props = withDefaults(
   defineProps<{
     resume: any
     editable?: boolean
-    variant?: 'detailed' | 'bullets' | 'compact' | 'timeline' | string
+    variant?: 'classic' | 'timeline' | 'two-column' | string
     layoutSettings?: {
       dateColumnWidth?: number | string
     }
@@ -27,7 +27,7 @@ const props = withDefaults(
   }>(),
   {
     editable: false,
-    variant: 'detailed',
+    variant: 'classic',
     layoutSettings: () => ({}),
     themeTokens: () => ({}),
     layoutDensity: 'normal',
@@ -71,7 +71,21 @@ const sectionLayoutStyle = computed(() => {
     '--resume-date-column-width': normalized || '140px',
   }
 })
-const isTimelineVariant = computed(() => props.variant === 'timeline')
+const safeVariant = computed<'classic' | 'timeline' | 'two-column'>(() => {
+  if (
+    props.variant === 'classic' ||
+    props.variant === 'timeline' ||
+    props.variant === 'two-column'
+  ) {
+    return props.variant
+  }
+  if (import.meta.dev) {
+    console.warn(
+      `[resume-section:experience] Unknown variant "${String(props.variant)}"; fallback to "classic".`,
+    )
+  }
+  return 'classic'
+})
 const sectionRegistry = getSectionRegistryEntry('experience')
 const contentStyles = computed(() =>
   RESUME_CONTENT_STYLE_OPTIONS.filter((option) =>
@@ -146,7 +160,7 @@ function removeExperience(index: number) {
     class="resume-section resume-section-hoverable experience"
     :class="[
       `density-${layoutDensity}`,
-      { 'experience--timeline': isTimelineVariant },
+      `experience--${safeVariant}`,
     ]"
     :style="sectionLayoutStyle"
   >
@@ -156,7 +170,7 @@ function removeExperience(index: number) {
       :variants="sectionRegistry.variants"
       :content-styles="contentStyles"
       :actions="sectionRegistry.toolbarActions"
-      :current-variant="variant"
+      :current-variant="safeVariant"
       :can-move-up="canMoveUp"
       :can-move-down="canMoveDown"
       @add-item="() => emit('add-item', 'experience')"
@@ -237,7 +251,7 @@ function removeExperience(index: number) {
               >{{ experience.company }}</span
             >
           </span>
-          <template v-if="variant !== 'compact' && experience.city"
+          <template v-if="experience.city"
             >,
             <span
               class="editable-text"

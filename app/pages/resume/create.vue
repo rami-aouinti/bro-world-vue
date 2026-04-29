@@ -344,7 +344,7 @@ type AddSectionType =
   | 'certification'
   | 'reference'
 type SectionLayoutVariant = {
-  experience: 'detailed' | 'bullets' | 'compact'
+  experience: 'classic' | 'timeline' | 'two-column'
   education: 'classic' | 'timeline' | 'two-column'
   language: 'classic' | 'text-level' | 'stars' | 'progress' | 'flags'
   project: 'classic' | 'list' | 'cards' | 'two-column'
@@ -1259,7 +1259,7 @@ const sectionLayout = ref<SectionLayoutEntry[]>(
 const sectionItemDialogOpen = ref(false)
 const activeSectionKey = ref<ResumePreviewSectionKey>('experience')
 const activeVariant =
-  ref<SectionLayoutVariant[ResumePreviewSectionKey]>('detailed')
+  ref<SectionLayoutVariant[ResumePreviewSectionKey]>('classic')
 
 watch(saveMode, () => {
   replaceConfirmStep.value = false
