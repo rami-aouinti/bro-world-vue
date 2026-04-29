@@ -1,4 +1,5 @@
 import { RESUME_TEMPLATES_CATALOG } from '~/constants/resumeTemplates.catalog'
+import { RESUME_LAYOUTS_CATALOG, RESUME_SKINS_CATALOG, RESUME_STRUCTURES_CATALOG } from '~/constants/resumeTemplates.catalog'
 import type { ResumeTemplateConfig, ResumeTemplateType } from '~/types/resumeTemplateConfig'
 import { toResumeRendererDesignState } from '~/composables/useResumeTemplateRuntime'
 
@@ -13,13 +14,19 @@ export type ResumeTemplate = {
 }
 
 function isValidTemplateConfig(template: ResumeTemplateConfig): boolean {
+  const structure = RESUME_STRUCTURES_CATALOG.find(item => item.id === template.structureId)
+  const layout = RESUME_LAYOUTS_CATALOG.find(item => item.id === template.layoutId)
+  const skin = RESUME_SKINS_CATALOG.find(item => item.id === template.skinId)
   const valid = Boolean(
     template.id &&
       template.label &&
       template.type &&
-      template.layoutMode &&
-      Array.isArray(template.sections) &&
-      template.sections.length > 0,
+      template.templateId &&
+      structure &&
+      layout &&
+      skin &&
+      layout.structureId === template.structureId &&
+      layout.sections.length > 0,
   )
   if (!valid) {
     console.error(`[resume-templates] Invalid template configuration for id="${template.id || 'unknown'}"`)
