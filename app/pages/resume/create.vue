@@ -273,6 +273,11 @@ type Template = {
   useTimeline: boolean
   variant: string
   presetId: string
+  structureId: 'structure-professional' | 'structure-balanced' | 'structure-compact'
+  layoutId: 'layout-aside-left' | 'layout-aside-right' | 'layout-single-column'
+  skinId: string
+  badges: string[]
+  recommended: boolean
   config?: Partial<{
     photoShape: PhotoShape
     photoSize: number
@@ -424,6 +429,13 @@ const builderPanelState = reactive({
   selectedPreset: CV_SOCLE_PRESETS[0]?.id ?? 'socle-classic',
   selectedDocumentType: 'resume' as Template['documentType'],
   designSettings: createDefaultDesignSettings(),
+  templatePicker: {
+    structureId: 'structure-professional' as Template['structureId'],
+    layoutId: 'layout-aside-left' as Template['layoutId'],
+    skinId: 'skin-ocean',
+    mode: 'recommended' as 'recommended' | 'filtered',
+    search: '',
+  },
 })
 const selectedTemplate = toRef(builderPanelState, 'selectedTemplate')
 const selectedDocumentType = toRef(builderPanelState, 'selectedDocumentType')
@@ -437,6 +449,7 @@ const selectedPageBackground = toRef(
 const selectedRounded = toRef(designSettings.value, 'selectedRounded')
 const selectedTextStyle = toRef(designSettings.value, 'selectedTextStyle')
 const layoutSettings = designSettings.value.layout
+const templatePickerState = toRef(builderPanelState, 'templatePicker')
 const levelInputMode = ref<LevelInputMode>('percent')
 
 const DOCUMENT_TYPE_STORAGE_KEY = 'resume-builder:selected-document-type'
@@ -745,6 +758,23 @@ const templates: Template[] = resumeTemplateCards.map((template) => ({
   isFree: true,
   useTimeline: false,
   variant: DEFAULT_RESUME_TEMPLATE_ID,
+  structureId: template.presetId === 'socle-compact'
+    ? 'structure-compact'
+    : template.presetId === 'socle-modern'
+      ? 'structure-balanced'
+      : 'structure-professional',
+  layoutId: template.config?.layoutMode === 'no-aside'
+    ? 'layout-single-column'
+    : template.config?.layoutMode === 'aside-right'
+      ? 'layout-aside-right'
+      : 'layout-aside-left',
+  skinId: `skin-${template.id.replace('cv-socle-', '')}`,
+  badges: [
+    'ATS',
+    template.config?.layoutMode === 'no-aside' ? '1-col' : '2-col',
+    'photo',
+  ],
+  recommended: ['cv-socle-01', 'cv-socle-02', 'cv-socle-03', 'cv-socle-04', 'cv-socle-10', 'cv-socle-15'].includes(template.id),
 }))
 
 const resumeTemplateQueryAliases: Record<string, string> = {
@@ -919,7 +949,52 @@ const templatesByDocumentType = computed(() =>
     (template) => template.documentType === selectedDocumentType.value,
   ),
 )
-const filteredTemplates = computed(() => templatesByDocumentType.value)
+const structureFilterOptions = [
+  { label: 'Professional', value: 'structure-professional' },
+  { label: 'Balanced', value: 'structure-balanced' },
+  { label: 'Compact', value: 'structure-compact' },
+] as const
+const layoutFilterByStructure: Record<Template['structureId'], Array<{ label: string; value: Template['layoutId'] }>> = {
+  'structure-professional': [
+    { label: 'Aside left', value: 'layout-aside-left' },
+    { label: 'Aside right', value: 'layout-aside-right' },
+    { label: 'Single column', value: 'layout-single-column' },
+  ],
+  'structure-balanced': [
+    { label: 'Single column', value: 'layout-single-column' },
+    { label: 'Aside left', value: 'layout-aside-left' },
+    { label: 'Aside right', value: 'layout-aside-right' },
+  ],
+  'structure-compact': [
+    { label: 'Aside right', value: 'layout-aside-right' },
+    { label: 'Aside left', value: 'layout-aside-left' },
+    { label: 'Single column', value: 'layout-single-column' },
+  ],
+}
+const availableLayoutFilterOptions = computed(() => layoutFilterByStructure[templatePickerState.value.structureId])
+const filteredTemplates = computed(() => {
+  const source = templatePickerState.value.mode === 'recommended'
+    ? templatesByDocumentType.value.filter((template) => template.recommended).slice(0, 6)
+    : templatesByDocumentType.value
+  const query = templatePickerState.value.search.trim().toLowerCase()
+  return source.filter((template) => {
+    const matchesStructure = templatePickerState.value.mode === 'recommended'
+      || template.structureId === templatePickerState.value.structureId
+    const matchesLayout = templatePickerState.value.mode === 'recommended'
+      || template.layoutId === templatePickerState.value.layoutId
+    const matchesSkin = templatePickerState.value.mode === 'recommended'
+      || template.skinId === templatePickerState.value.skinId
+    const matchesQuery = !query
+      || template.title.toLowerCase().includes(query)
+      || template.skinId.toLowerCase().includes(query)
+    return matchesStructure && matchesLayout && matchesSkin && matchesQuery
+  })
+})
+const skinFilterOptions = computed(() =>
+  templatesByDocumentType.value
+    .map((template) => ({ label: template.title, value: template.skinId }))
+    .slice(0, 10),
+)
 
 const selectedTemplateConfig = computed(
   () =>
@@ -977,6 +1052,9 @@ function applyTemplateSelection(_templateId: string) {
   if (!nextTemplate) return
   selectedTemplate.value = nextTemplate.id
   selectedPreset.value = nextTemplate.presetId
+  templatePickerState.value.structureId = nextTemplate.structureId
+  templatePickerState.value.layoutId = nextTemplate.layoutId
+  templatePickerState.value.skinId = nextTemplate.skinId
 
   const config = nextTemplate.config
   if (!config) return
@@ -2437,6 +2515,15 @@ watch(selectedTemplate, () => {
   selectValidTemplateForCurrentDocumentType()
   resetRendererGuard()
 })
+watch(
+  () => templatePickerState.value.structureId,
+  (nextStructureId) => {
+    const nextLayout = layoutFilterByStructure[nextStructureId][0]?.value
+    if (nextLayout) {
+      templatePickerState.value.layoutId = nextLayout
+    }
+  },
+)
 
 watch(
   [resume, orderedPreviewSections, selectedTemplate, rendererReady],
@@ -3770,6 +3857,64 @@ if (import.meta.client) {
       </template>
       <template #right>
         <v-chip color="primary" variant="tonal">Templates</v-chip>
+        <div class="d-flex ga-2 my-2">
+          <v-btn
+            size="small"
+            :variant="templatePickerState.mode === 'recommended' ? 'flat' : 'outlined'"
+            color="primary"
+            @click="templatePickerState.mode = 'recommended'"
+          >
+            Recommandé
+          </v-btn>
+          <v-btn
+            size="small"
+            :variant="templatePickerState.mode === 'filtered' ? 'flat' : 'outlined'"
+            color="primary"
+            @click="templatePickerState.mode = 'filtered'"
+          >
+            Filtré
+          </v-btn>
+        </div>
+        <AppTextField
+          v-model="templatePickerState.search"
+          label="Search skin/template"
+          density="comfortable"
+          hide-details
+          prepend-inner-icon="mdi-magnify"
+          class="mb-2"
+        />
+        <template v-if="templatePickerState.mode === 'filtered'">
+          <AppSelect
+            v-model="templatePickerState.structureId"
+            :items="structureFilterOptions"
+            item-title="label"
+            item-value="value"
+            label="Structure"
+            density="comfortable"
+            hide-details
+            class="mb-2"
+          />
+          <AppSelect
+            v-model="templatePickerState.layoutId"
+            :items="availableLayoutFilterOptions"
+            item-title="label"
+            item-value="value"
+            label="Layout"
+            density="comfortable"
+            hide-details
+            class="mb-2"
+          />
+          <AppSelect
+            v-model="templatePickerState.skinId"
+            :items="skinFilterOptions"
+            item-title="label"
+            item-value="value"
+            label="Skin"
+            density="comfortable"
+            hide-details
+            class="mb-2"
+          />
+        </template>
         <AppSelect
           v-if="selectedDocumentType === 'resume'"
           v-model="selectedPreset"
@@ -3801,6 +3946,16 @@ if (import.meta.client) {
               class="template-drawer__thumb"
             />
             <span class="template-drawer__label">{{ template.title }}</span>
+            <div class="d-flex ga-1 flex-wrap mt-1">
+              <v-chip
+                v-for="badge in template.badges"
+                :key="`${template.id}-${badge}`"
+                size="x-small"
+                variant="tonal"
+              >
+                {{ badge }}
+              </v-chip>
+            </div>
           </button>
         </div>
       </template>
