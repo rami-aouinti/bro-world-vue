@@ -460,6 +460,9 @@ function removeExperience(index: number) {
 .dates-chip {
   font-weight: 500;
 }
+.dates-chip :deep(.v-chip__underlay) {
+  background-color: color-mix(in srgb, var(--cv-accent) 18%, white);
+}
 .content-column > h4 {
   margin: 0;
 }
@@ -496,6 +499,16 @@ function removeExperience(index: number) {
   .entry {
     grid-template-columns: minmax(0, 1fr);
     row-gap: var(--cv-space-2);
+  }
+}
+
+@media print {
+  .dates-chip {
+    background-color: color-mix(in srgb, var(--cv-accent) 18%, white) !important;
+    color: color-mix(in srgb, var(--cv-accent) 78%, #0f2f64) !important;
+    border: 1px solid color-mix(in srgb, var(--cv-accent) 35%, white) !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
   }
 }
 .entry li,
