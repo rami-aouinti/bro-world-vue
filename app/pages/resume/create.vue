@@ -1038,10 +1038,15 @@ function hasRemoteResumeContent(resumeItem: RemoteResume) {
 
 function extractRemoteResumeCreatedAtValue(resumeItem: RemoteResume) {
   const createdAt = resumeItem.createdAt
-  if (typeof createdAt === 'string') return createdAt
-  if (createdAt && typeof createdAt === 'object')
-    return String(createdAt.date || '')
-  return ''
+  if (typeof createdAt === 'string') {
+    const value = createdAt.trim()
+    return value.length ? value : new Date().toISOString()
+  }
+  if (createdAt && typeof createdAt === 'object') {
+    const value = String(createdAt.date || '').trim()
+    return value.length ? value : new Date().toISOString()
+  }
+  return new Date().toISOString()
 }
 
 function parseRemoteResumeCreatedAt(
