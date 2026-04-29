@@ -208,6 +208,16 @@ const asideSections = computed(() => sectionsByRegion.value.aside)
 const hasRenderedAvatar = computed(() =>
   Boolean(props.showPhoto && props.resume?.photoUrl && !props.photoHidden),
 )
+const normalizeLayoutMode = (value: unknown): ResumeLayoutMode => {
+  if (value === 'aside-left' || value === 'aside-right' || value === 'no-aside') return value
+  if (typeof value !== 'string') return 'aside-left'
+  const normalized = value.trim().toLowerCase().replace(/[\s_]+/g, '-')
+  if (normalized === 'aside-left' || normalized === 'aside-right' || normalized === 'no-aside') {
+    return normalized as ResumeLayoutMode
+  }
+  return 'aside-left'
+}
+
 const resolvedDesignState = computed(() => ({
   themeTokens: props.designState?.themeTokens ?? props.themeTokens,
   roundedClass: props.designState?.roundedClass ?? props.roundedClass,
@@ -236,10 +246,11 @@ const resolvedDesignState = computed(() => ({
   iconColorMode: props.designState?.iconColorMode ?? props.iconColorMode,
   decorativeShapeA: props.designState?.decorativeShapeA,
   decorativeShapeB: props.designState?.decorativeShapeB,
-  layoutMode:
+  layoutMode: normalizeLayoutMode(
     props.designState?.layoutMode ??
     props.layoutMode ??
     props.templateSkin.layoutMode,
+  ),
 }))
 const rootDesignClasses = computed(() => [
   resolvedDesignState.value.roundedClass,
