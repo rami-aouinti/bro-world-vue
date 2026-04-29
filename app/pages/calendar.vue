@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import { privateApi } from '~/utils/http/privateApi'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
