@@ -3052,13 +3052,14 @@ onUnmounted(() => {
 })
 
 if (import.meta.client) {
-  const LEGACY_LAYOUT_KEY = 'resume-layout-settings-v1'
-  const LEGACY_SECTION_LAYOUT_KEY = 'resume-section-layout-v1'
-  const rawLegacyLayout = localStorage.getItem(LEGACY_LAYOUT_KEY)
-  const rawLegacySectionLayout = localStorage.getItem(LEGACY_SECTION_LAYOUT_KEY)
+  onMounted(() => {
+    const LEGACY_LAYOUT_KEY = 'resume-layout-settings-v1'
+    const LEGACY_SECTION_LAYOUT_KEY = 'resume-section-layout-v1'
+    const rawLegacyLayout = localStorage.getItem(LEGACY_LAYOUT_KEY)
+    const rawLegacySectionLayout = localStorage.getItem(LEGACY_SECTION_LAYOUT_KEY)
 
-  hydrateFromStorage()
-  migrateLegacyStorage(rawLegacyLayout, rawLegacySectionLayout)
+    hydrateFromStorage()
+    migrateLegacyStorage(rawLegacyLayout, rawLegacySectionLayout)
 
   const customization = resumeDocumentState.value.customization
   selectedPreset.value = customization.presetId
@@ -3086,7 +3087,7 @@ if (import.meta.client) {
   }
   sectionLayout.value = normalizeSectionLayout(customization.sectionOrder)
 
-  watch(
+    watch(
     [
       selectedTheme,
       selectedPageBackground,
@@ -3132,7 +3133,7 @@ if (import.meta.client) {
     { deep: true },
   )
 
-  watch(
+    watch(
     () => layoutSettings.lineDensity,
     (density) => {
       resumeDocumentState.value.customization = {
@@ -3147,7 +3148,7 @@ if (import.meta.client) {
     },
   )
 
-  watch(
+    watch(
     sectionLayout,
     (value) => {
       resumeDocumentState.value.customization = {
@@ -3157,7 +3158,8 @@ if (import.meta.client) {
       persist()
     },
     { deep: true },
-  )
+    )
+  })
 }
 </script>
 
