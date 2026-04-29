@@ -64,6 +64,8 @@ const props = withDefaults(
   },
 )
 
+const { t } = useI18n()
+
 const emit = defineEmits<{
   (
     event:
@@ -89,7 +91,9 @@ const emit = defineEmits<{
 
 
 function resolveOptionLabel(option: { label?: string; labelKey?: string; value?: string }) {
-  return option.label || option.labelKey || option.value || ''
+  if (option.label) return option.label
+  if (option.labelKey) return t(option.labelKey)
+  return option.value || ''
 }
 const toolbarRef = ref<HTMLElement | null>(null)
 const styleMenuOpen = ref(false)
