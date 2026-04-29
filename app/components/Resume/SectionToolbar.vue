@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { mergeProps } from 'vue'
 
 type ToolbarVariantOption = {
   label: string
@@ -314,22 +313,19 @@ watch(
       v-if="enabledActions.has('change-variant') && props.variants.length"
     >
       <template #activator="{ props: menuProps }">
-        <v-tooltip text="Change Layout">
-          <template #activator="{ props: tooltipProps }">
-            <v-btn
-              class="toolbar-btn"
-              icon
-              size="default"
-              variant="tonal"
-              :aria-label="`Change section variant ${props.sectionKey}`"
-              v-bind="mergeProps(menuProps, tooltipProps)"
-            >
-              <v-icon icon="mdi-view-dashboard-outline" />
-            </v-btn>
-          </template>
-        </v-tooltip>
+        <v-btn
+          class="toolbar-btn"
+          icon
+          size="default"
+          variant="tonal"
+          :aria-label="`Change section variant ${props.sectionKey}`"
+          v-bind="menuProps"
+        >
+          <v-icon icon="mdi-view-dashboard-outline" />
+          <v-tooltip activator="parent" text="Change Layout" location="bottom" />
+        </v-btn>
       </template>
-      <v-list density="compact">
+      <v-list class="toolbar-menu-list" density="compact">
         <v-list-item
           v-for="option in props.variants"
           :key="option.value"
@@ -347,22 +343,19 @@ watch(
       "
     >
       <template #activator="{ props: menuProps }">
-        <v-tooltip text="Content style">
-          <template #activator="{ props: tooltipProps }">
-            <v-btn
-              class="toolbar-btn"
-              icon
-              size="default"
-              variant="tonal"
-              :aria-label="`Change content style for section ${props.sectionKey}`"
-              v-bind="mergeProps(menuProps, tooltipProps)"
-            >
-              <v-icon icon="mdi-format-list-bulleted-type" />
-            </v-btn>
-          </template>
-        </v-tooltip>
+        <v-btn
+          class="toolbar-btn"
+          icon
+          size="default"
+          variant="tonal"
+          :aria-label="`Change content style for section ${props.sectionKey}`"
+          v-bind="menuProps"
+        >
+          <v-icon icon="mdi-format-list-bulleted-type" />
+          <v-tooltip activator="parent" text="Content style" location="bottom" />
+        </v-btn>
       </template>
-      <v-list density="compact">
+      <v-list class="toolbar-menu-list" density="compact">
         <v-list-item
           v-for="option in props.contentStyles"
           :key="option.value"
@@ -382,20 +375,17 @@ watch(
       offset="10"
     >
       <template #activator="{ props: menuProps }">
-        <v-tooltip text="Section Style">
-          <template #activator="{ props: tooltipProps }">
-            <v-btn
-              class="toolbar-btn"
-              icon
-              size="default"
-              variant="tonal"
-              :aria-label="`Open section style panel ${props.sectionKey}`"
-              v-bind="mergeProps(menuProps, tooltipProps)"
-            >
-              <v-icon icon="mdi-brush-variant" />
-            </v-btn>
-          </template>
-        </v-tooltip>
+        <v-btn
+          class="toolbar-btn"
+          icon
+          size="default"
+          variant="tonal"
+          :aria-label="`Open section style panel ${props.sectionKey}`"
+          v-bind="menuProps"
+        >
+          <v-icon icon="mdi-brush-variant" />
+          <v-tooltip activator="parent" text="Section Style" location="bottom" />
+        </v-btn>
       </template>
 
       <v-card class="section-style-popover" elevation="8">
@@ -627,6 +617,10 @@ watch(
 .section-style-popover {
   width: min(320px, calc(100vw - 24px));
   border-radius: 14px;
+}
+
+.toolbar-menu-list :deep(.v-list-item-title) {
+  color: var(--cv-on-surface, rgb(31 41 55));
 }
 
 :global(.resume-section-hoverable:hover > .section-toolbar),
