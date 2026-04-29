@@ -286,12 +286,15 @@ const noAsideLeftColumnKeys: ResumeEditableSectionKey[] = [
   'language',
   'reference',
   'hobby',
+  'certification',
 ]
 const noAsideRightColumnKeys: ResumeEditableSectionKey[] = ['skill']
 const noAsideLeftSections = computed(() =>
-  visibleMainSections.value.filter((section) =>
-    noAsideLeftColumnKeys.includes(section.key),
-  ),
+  noAsideRightSections.value.length > 0
+    ? visibleMainSections.value.filter((section) =>
+        noAsideLeftColumnKeys.includes(section.key),
+      )
+    : [],
 )
 const noAsideRightSections = computed(() =>
   visibleMainSections.value.filter((section) =>
@@ -305,13 +308,14 @@ const noAsideRemainingSections = computed(() =>
         !noAsideLeftColumnKeys.includes(section.key) &&
         !noAsideRightColumnKeys.includes(section.key),
     )
-    .sort((left, right) => {
-      if (left.key === 'certification' && right.key !== 'certification')
-        return 1
-      if (right.key === 'certification' && left.key !== 'certification')
-        return -1
-      return compareSectionOrder(left, right)
-    }),
+    .concat(
+      noAsideRightSections.value.length === 0
+        ? visibleMainSections.value.filter((section) =>
+            noAsideLeftColumnKeys.includes(section.key),
+          )
+        : [],
+    )
+    .sort(compareSectionOrder),
 )
 const avatarStyle = computed(() => ({
   width: `${resolvedDesignState.value.photoSize}px`,
@@ -1161,28 +1165,29 @@ function updateText(path: string, value: string) {
             </div>
           </div>
         </template>
-        <SectionRenderer
-          v-else
-          v-for="section in visibleMainSections"
-          :key="`main-${section.key}`"
-          :section-key="section.key"
-          :resume="resume"
-          :editable="editable"
-          :variant="sectionVariant(section)"
-          :layout-density="sectionLayoutDensity"
-          :title="templateSkin.sectionTitles?.[section.key]"
-          :toolbar-enabled="true"
-          :can-move-up="canMove(section.key, 'up')"
-          :can-move-down="canMove(section.key, 'down')"
-          :theme-tokens="mergedSectionTokens(section.key)"
-          :section-icon="RESUME_SECTION_ICONS[section.key]"
-          :show-section-icon="shouldShowSectionIcons"
-          :section-icon-style="resolvedSectionIconStyle"
-          @add-item="onSectionAddItem"
-          @change-variant="onSectionVariantChange"
-          @move-section="onSectionMove"
-          @delete-section="onSectionDelete"
-        />
+        <template v-else>
+          <SectionRenderer
+            v-for="section in visibleMainSections"
+            :key="`main-${section.key}`"
+            :section-key="section.key"
+            :resume="resume"
+            :editable="editable"
+            :variant="sectionVariant(section)"
+            :layout-density="sectionLayoutDensity"
+            :title="templateSkin.sectionTitles?.[section.key]"
+            :toolbar-enabled="true"
+            :can-move-up="canMove(section.key, 'up')"
+            :can-move-down="canMove(section.key, 'down')"
+            :theme-tokens="mergedSectionTokens(section.key)"
+            :section-icon="RESUME_SECTION_ICONS[section.key]"
+            :show-section-icon="shouldShowSectionIcons"
+            :section-icon-style="resolvedSectionIconStyle"
+            @add-item="onSectionAddItem"
+            @change-variant="onSectionVariantChange"
+            @move-section="onSectionMove"
+            @delete-section="onSectionDelete"
+          />
+        </template>
       </main>
     </div>
   </article>
@@ -1423,6 +1428,10 @@ function updateText(path: string, value: string) {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--cv-space-4);
+}
+.resume-skin__no-aside-columns > div + div {
+  border-left: 1px solid color-mix(in srgb, var(--cv-accent) 22%, transparent);
+  padding-left: var(--cv-space-4);
 }
 
 .layout-mode-no-aside :deep(.project-grid--two-column),
