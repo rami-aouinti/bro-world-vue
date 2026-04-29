@@ -1,5 +1,6 @@
 import { RESUME_TEMPLATES_CATALOG } from '~/constants/resumeTemplates.catalog'
 import type { ResumeTemplateConfig, ResumeTemplateType } from '~/types/resumeTemplateConfig'
+import { toResumeRendererDesignState } from '~/composables/useResumeTemplateRuntime'
 
 export type ResumeDocumentType = ResumeTemplateType
 
@@ -27,7 +28,16 @@ function isValidTemplateConfig(template: ResumeTemplateConfig): boolean {
 }
 
 export function useResumeTemplates() {
-  const validTemplates = computed(() => RESUME_TEMPLATES_CATALOG.filter(isValidTemplateConfig))
+  const validTemplates = computed(() => RESUME_TEMPLATES_CATALOG.filter((template) => {
+    if (!isValidTemplateConfig(template)) return false
+    try {
+      toResumeRendererDesignState(template)
+      return true
+    } catch (error) {
+      console.error(`[resume-templates] Template runtime config invalid for id="${template.id}"`, error)
+      return false
+    }
+  }))
 
   const templatesByType = (type: ResumeDocumentType) =>
     computed<ResumeTemplate[]>(() =>

@@ -1,5 +1,12 @@
 import type { ResumeEditableSectionKey } from '~/types/resumeDocumentModel'
 
+export type ResumeTemplateSharedSectionVariant =
+  | 'detailed'
+  | 'timeline'
+  | 'compact'
+  | 'classic'
+  | 'list'
+
 export type ResumeSectionVariantBySection = {
   experience: 'detailed' | 'bullets' | 'compact'
   education: 'classic' | 'timeline' | 'two-column'
