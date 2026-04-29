@@ -40,6 +40,18 @@ describe('ResumeRenderer preview regression coverage', () => {
     expect(wrapper.find('aside.resume-skin__aside').text().trim().length).toBeGreaterThan(0)
   })
 
+
+  it('matches structural preview snapshot for a baseline resume dataset', async () => {
+    const wrapper = await mountSuspended(ResumeRenderer, {
+      props: {
+        resume: resumeFixture,
+        templateSkin: RESUME_TEMPLATE_SKINS.classic,
+      },
+    })
+
+    expect(wrapper.html()).toMatchSnapshot()
+  })
+
   it('switches template skin (classic/terra/ocean-split) without blank output', async () => {
     const wrapper = await mountSuspended(ResumeRenderer, {
       props: {

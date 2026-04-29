@@ -1,8 +1,13 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { RESUME_LAYOUTS } from '~/constants/resumeLayouts'
 import { RESUME_SECTION_REGISTRY } from '~/constants/resumeSectionRegistry'
 import {
+  collectSupportedSectionsByLayout,
+  RESUME_LAYOUT_OPTIONAL_SECTIONS,
+  RESUME_LAYOUT_REQUIRED_SECTIONS,
+  RESUME_RENDERER_SUPPORTED_SECTIONS,
   RESUME_RENDERER_VARIANTS_BY_SECTION,
   RESUME_SHARED_TEMPLATE_VARIANTS_BY_SECTION,
 } from '~/constants/resumeVariantSupportMatrix'
@@ -68,6 +73,44 @@ describe('resume section registry consistency', () => {
             `${sectionKey}: unsupported variant \"${variant}\" in matrix`,
           ).toBe(true)
         }
+      }
+    }
+  })
+
+
+  it('ensures declared renderer sections exist in SectionRenderer mapping', () => {
+    const rendererSource = readFileSync(
+      resolve(process.cwd(), 'app/components/Resume/Sections/SectionRenderer.vue'),
+      'utf-8',
+    )
+
+    for (const sectionKey of RESUME_RENDERER_SUPPORTED_SECTIONS) {
+      expect(
+        rendererSource.includes(`${sectionKey}:`),
+        `section \"${sectionKey}\" missing from SectionRenderer component map`,
+      ).toBe(true)
+    }
+  })
+
+  it('ensures every layout supports mandatory and optional section constraints', () => {
+    const mandatory = new Set(RESUME_LAYOUT_REQUIRED_SECTIONS)
+    const optional = new Set(RESUME_LAYOUT_OPTIONAL_SECTIONS)
+
+    for (const layout of RESUME_LAYOUTS) {
+      const supported = new Set(collectSupportedSectionsByLayout(layout))
+
+      for (const sectionKey of mandatory) {
+        expect(
+          supported.has(sectionKey),
+          `${layout.layoutId}: missing required section \"${sectionKey}\"`,
+        ).toBe(true)
+      }
+
+      for (const sectionKey of optional) {
+        expect(
+          supported.has(sectionKey),
+          `${layout.layoutId}: optional section \"${sectionKey}\" should be recoverable by fallback`,
+        ).toBe(true)
       }
     }
   })
