@@ -5,7 +5,7 @@ import type {
   Typography,
 } from '~/constants/resumeDesign'
 import { DEFAULT_RESUME_TEMPLATE_ID } from '~/constants/resumeTemplates'
-import { CV_SOCLE_PRESETS, resolveSoclePresetById, resolveSocleThemeTokens } from '~/constants/resumeSoclePresets'
+import { CV_SOCLE_PRESETS, resolveSoclePresetById } from '~/constants/resumeSoclePresets'
 import {
   type ResumeLayoutMode,
   type ResumeSectionIconStyleVariant,
@@ -2441,6 +2441,13 @@ function contrastRatio(colorA: string, colorB: string) {
 }
 
 const minimumReadableContrast = 4.5
+function bestReadableColor(background: string, preferred: string, minimum = 4.5) {
+  const candidates = [preferred, '#111827', '#0f172a', '#f8fafc', '#ffffff']
+  const passing = candidates.find((color) => contrastRatio(background, color) >= minimum)
+  if (passing) return passing
+  return candidates.sort((a, b) => contrastRatio(background, b) - contrastRatio(background, a))[0]
+}
+
 const pageBackgroundValidation = computed(() =>
   pageBackgroundOptions.map((option) => {
     const darkBlocked = !isAllowedPageBackground(option.page)
@@ -2465,17 +2472,38 @@ watch(
   { immediate: true },
 )
 
-const previewStyle = computed(() => ({
-  '--resume-radius': roundedPxByValue[selectedRounded.value],
-  '--cv-radius': roundedPxByValue[selectedRounded.value],
-  '--resume-font-family': textStyleVarsByValue[selectedTextStyle.value].family,
-  '--cv-font-family': textStyleVarsByValue[selectedTextStyle.value].family,
-  '--resume-font-style': textStyleVarsByValue[selectedTextStyle.value].style,
-  '--cv-font-style': textStyleVarsByValue[selectedTextStyle.value].style,
-  '--resume-font-weight': textStyleVarsByValue[selectedTextStyle.value].weight,
-  '--cv-font-weight': textStyleVarsByValue[selectedTextStyle.value].weight,
-  ...resolveSocleThemeTokens(selectedSoclePreset.value),
-}))
+const previewStyle = computed(() => {
+  const theme = activeTheme.value
+  const page = activePageBackground.value.page
+  const sidebar = theme.sidebar
+  const accent = theme.accent
+  const title = bestReadableColor(page, selectedSoclePreset.value.palette.text, 4.5)
+
+  return {
+    '--resume-radius': roundedPxByValue[selectedRounded.value],
+    '--cv-radius': roundedPxByValue[selectedRounded.value],
+    '--resume-font-family': textStyleVarsByValue[selectedTextStyle.value].family,
+    '--cv-font-family': textStyleVarsByValue[selectedTextStyle.value].family,
+    '--resume-font-style': textStyleVarsByValue[selectedTextStyle.value].style,
+    '--cv-font-style': textStyleVarsByValue[selectedTextStyle.value].style,
+    '--resume-font-weight': textStyleVarsByValue[selectedTextStyle.value].weight,
+    '--cv-font-weight': textStyleVarsByValue[selectedTextStyle.value].weight,
+    '--resume-sidebar': sidebar,
+    '--cv-sidebar': sidebar,
+    '--resume-accent': accent,
+    '--cv-accent': accent,
+    '--resume-page': page,
+    '--cv-page': page,
+    '--resume-title': title,
+    '--cv-title': title,
+    '--resume-secondary': bestReadableColor(page, sidebar, 4.5),
+    '--cv-secondary': bestReadableColor(page, sidebar, 4.5),
+    '--resume-on-sidebar': bestReadableColor(sidebar, page, 4.5),
+    '--cv-on-sidebar': bestReadableColor(sidebar, page, 4.5),
+    '--resume-on-accent': bestReadableColor(accent, page, 4.5),
+    '--cv-on-accent': bestReadableColor(accent, page, 4.5),
+  }
+})
 const decorativeShapes = computed(() => [
   {
     id: 'a',
