@@ -161,7 +161,10 @@ const profileResumeIdentity = computed(() => {
       .trim() ||
     currentProfile?.username ||
     'Anonymous Member'
-  const title = currentProfile?.profile?.title || 'Professional Profile'
+  const title =
+    resumeIdentity?.title ||
+    currentProfile?.profile?.title ||
+    'Professional Profile'
   const location = resumeIdentity?.address || currentProfile?.profile?.location || ''
   const email = resumeIdentity?.email || currentProfile?.email || ''
   const phone = resumeIdentity?.phone || currentProfile?.profile?.phone || ''
@@ -1741,13 +1744,14 @@ onUnmounted(() => {
   font-weight: 650;
   line-height: 1.35;
   margin: 0 0 8px;
-  color: rgba(24, 42, 78, 0.92);
+  color: inherit;
 }
 
 .resume-meta {
   font-size: 0.92rem;
   line-height: 1.5;
-  color: rgba(24, 42, 78, 0.8);
+  color: inherit;
+  opacity: 0.9;
 }
 
 .resume-contact-card {

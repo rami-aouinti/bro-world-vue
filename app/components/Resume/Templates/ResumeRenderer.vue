@@ -572,6 +572,7 @@ function updateText(path: string, value: string) {
           <span
             class="editable-text resume-skin__text"
             :contenteditable="editable"
+            dir="ltr"
             @input="
               (event) =>
                 updateText('firstName', (event.target as HTMLElement).innerText)
@@ -581,6 +582,7 @@ function updateText(path: string, value: string) {
           <span
             class="editable-text resume-skin__text mx-3"
             :contenteditable="editable"
+            dir="ltr"
             @input="
               (event) =>
                 updateText('lastName', (event.target as HTMLElement).innerText)
@@ -591,6 +593,7 @@ function updateText(path: string, value: string) {
         <p
           class="editable-text resume-skin__text"
           :contenteditable="editable"
+          dir="ltr"
           @input="
             (event) =>
               updateText('role', (event.target as HTMLElement).innerText)
@@ -1344,7 +1347,7 @@ function updateText(path: string, value: string) {
 
 .resume-skin__contact-icon {
   color: var(--resume-contact-icon-color, var(--resume-accent, var(--cv-accent)));
-  margin-right: var(--resume-space-1, var(--cv-space-1));
+  flex-shrink: 0;
   transition: color 0.2s ease;
 }
 .photo-frame {
