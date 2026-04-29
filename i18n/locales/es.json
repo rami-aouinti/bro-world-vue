@@ -2978,6 +2978,40 @@
       },
       "static": {
         "a4PageEnd": "Fin de página A4"
+      },
+      "registry": {
+        "sections": {
+          "experience": "Experience",
+          "education": "Education",
+          "language": "Language",
+          "project": "Project",
+          "skill": "Skill",
+          "reference": "Reference",
+          "hobby": "Hobby",
+          "certification": "Certification"
+        },
+        "contentStyles": {
+          "points": "Points",
+          "dashes": "Dashes",
+          "timeline": "Timeline"
+        },
+        "variants": {
+          "detailed": "Detailed",
+          "bullets": "Bullets",
+          "compact": "Compact",
+          "classic": "Classic",
+          "twoColumns": "Two columns",
+          "textLevel": "Text level",
+          "stars": "Stars",
+          "progressLine": "Progress line",
+          "progressCircle": "Progress circle",
+          "flags": "Flags",
+          "list": "List",
+          "cards": "Cards",
+          "dots": "Dots",
+          "progress": "Progress",
+          "timeline": "Timeline"
+        }
       }
     },
     "meta": {
