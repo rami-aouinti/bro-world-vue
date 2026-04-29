@@ -97,6 +97,8 @@ function resolveOptionLabel(option: { label?: string; labelKey?: string; value?:
 }
 const toolbarRef = ref<HTMLElement | null>(null)
 const styleMenuOpen = ref(false)
+const variantMenuOpen = ref(false)
+const contentStyleMenuOpen = ref(false)
 const pinEnabled = ref(false)
 
 const headingPresets: StylePresetOption[] = [
@@ -300,7 +302,7 @@ watch(
   <div
     ref="toolbarRef"
     class="section-toolbar"
-    :class="{ 'is-pinned': pinEnabled }"
+    :class="{ 'is-pinned': pinEnabled, 'is-menu-open': variantMenuOpen || contentStyleMenuOpen || styleMenuOpen }"
     role="toolbar"
     :aria-label="`Section actions ${props.sectionKey}`"
   >
@@ -322,6 +324,7 @@ watch(
 
     <v-menu
       v-if="enabledActions.has('change-variant') && props.variants.length"
+      v-model="variantMenuOpen"
     >
       <template #activator="{ props: menuProps }">
         <v-btn
@@ -352,6 +355,7 @@ watch(
       v-if="
         enabledActions.has('change-content-style') && props.contentStyles.length
       "
+      v-model="contentStyleMenuOpen"
     >
       <template #activator="{ props: menuProps }">
         <v-btn
@@ -651,7 +655,8 @@ watch(
 :global(.resume-section-hoverable:focus-within > .section-toolbar),
 :global(.resume-section-hoverable:has(:focus-visible) > .section-toolbar),
 .section-toolbar:focus-within,
-.section-toolbar.is-pinned {
+.section-toolbar.is-pinned,
+.section-toolbar.is-menu-open {
   opacity: 1;
   pointer-events: auto;
   transform: translate3d(0, 0, 0);
