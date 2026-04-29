@@ -1,5 +1,43 @@
-import { bestAaTextColor } from '~/utils/colorContrast'
 import type { ResumeSoclePreset } from '~/types/resumeSoclePreset'
+
+function hexToRgb(hex: string) {
+  const normalized = hex.replace('#', '')
+  const safeHex = normalized.length === 3 ? normalized.split('').map((char) => `${char}${char}`).join('') : normalized
+  if (!/^[\da-fA-F]{6}$/.test(safeHex)) return null
+  return {
+    r: Number.parseInt(safeHex.slice(0, 2), 16),
+    g: Number.parseInt(safeHex.slice(2, 4), 16),
+    b: Number.parseInt(safeHex.slice(4, 6), 16),
+  }
+}
+
+function relativeLuminance(hex: string) {
+  const rgb = hexToRgb(hex)
+  if (!rgb) return 1
+  const channelToLinear = (value: number) => {
+    const normalized = value / 255
+    return normalized <= 0.03928 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4
+  }
+  const r = channelToLinear(rgb.r)
+  const g = channelToLinear(rgb.g)
+  const b = channelToLinear(rgb.b)
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+
+function contrastRatio(colorA: string, colorB: string) {
+  const lumA = relativeLuminance(colorA)
+  const lumB = relativeLuminance(colorB)
+  const brightest = Math.max(lumA, lumB)
+  const darkest = Math.min(lumA, lumB)
+  return (brightest + 0.05) / (darkest + 0.05)
+}
+
+function bestAaTextColor(background: string, preferred: string, minimum = 4.5) {
+  const candidates = [preferred, '#111827', '#0f172a', '#f8fafc', '#ffffff']
+  const passing = candidates.find((color) => contrastRatio(background, color) >= minimum)
+  if (passing) return passing
+  return candidates.sort((a, b) => contrastRatio(background, b) - contrastRatio(background, a))[0]
+}
 
 export const CV_SOCLE_PRESETS: ResumeSoclePreset[] = [
   {
