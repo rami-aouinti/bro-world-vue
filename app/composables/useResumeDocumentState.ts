@@ -12,7 +12,7 @@ const DEFAULT_SECTION_ORDER: ResumeSectionLayoutModel[] = [
   { key: 'experience', variant: 'detailed', region: 'main', order: 0 },
   { key: 'education', variant: 'classic', region: 'main', order: 1 },
   { key: 'project', variant: 'classic', region: 'main', order: 2 },
-  { key: 'certification', variant: 'classic', region: 'main', order: 3 },
+  { key: 'certification', variant: 'classic', region: 'aside', order: 4 },
   { key: 'skill', variant: 'classic', region: 'aside', order: 0 },
   { key: 'language', variant: 'classic', region: 'aside', order: 1 },
   { key: 'reference', variant: 'classic', region: 'aside', order: 2 },

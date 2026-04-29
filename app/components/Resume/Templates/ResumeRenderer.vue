@@ -1369,12 +1369,16 @@ function updateText(path: string, value: string) {
 
 .resume-skin__aside {
   grid-area: aside;
-  --resume-aside-text-color: color-mix(in srgb, var(--cv-page) 92%, white);
+  --resume-aside-text-color: color-mix(in srgb, var(--cv-page) 88%, white);
   --resume-aside-decor-color: var(--cv-secondary);
   color: var(--resume-aside-text-color);
 }
 
-.resume-skin__aside :deep(.cv-heading-section),
+.resume-skin__aside :deep(.cv-heading-section) {
+  color: var(--cv-page) !important;
+}
+
+.resume-skin__aside :deep(.text-dark),
 .resume-skin__aside :deep(.text-dark),
 .resume-skin__aside :deep(.editable-text),
 .resume-skin__aside :deep(p),
@@ -1390,8 +1394,9 @@ function updateText(path: string, value: string) {
 
 .resume-skin__aside :deep(.section-icon),
 .resume-skin__aside :deep(.resume-skin__contact-icon) {
-  color: var(--resume-aside-text-color);
+  color: var(--cv-page);
 }
+
 
 .resume-skin__aside :deep(.progress) {
   background: color-mix(in srgb, var(--resume-aside-decor-color) 24%, transparent);
