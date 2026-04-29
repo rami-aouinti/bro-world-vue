@@ -3138,6 +3138,10 @@
         "clear": "Clear",
         "addToResume": "Add to resume"
       }
+    },
+    "meta": {
+      "indexTitle": "Créateur de CV",
+      "createTitle": "Créer un CV"
     }
   }
 }

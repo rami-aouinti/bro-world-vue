@@ -42,7 +42,7 @@ import {
 } from '~/services/resumeApi'
 
 definePageMeta({
-  title: 'Create Resume',
+  title: 'resumeBuilder.meta.createTitle',
   layout: 'resume',
 })
 
@@ -2887,9 +2887,33 @@ async function buildResumePdfBlob() {
             }
           }
           @page { size: A4; margin: 0; }
+          .resume-export-footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 10mm;
+            display: flex;
+            justify-content: center;
+            font-size: 11px;
+            color: #5f6368;
+            z-index: 10;
+            pointer-events: none;
+          }
+          .resume-export-footer a {
+            color: #1a73e8;
+            text-decoration: none;
+            pointer-events: auto;
+          }
         </style>
       </head>
-      <body>${content}</body>
+      <body>
+        ${content}
+        <footer class="resume-export-footer">
+          <a href="https://bro-world-space.com/resume/create?template=executive-portrait&mode=write">
+            Bro World Space
+          </a>
+        </footer>
+      </body>
     </html>
   `
 }
@@ -3512,8 +3536,7 @@ if (import.meta.client) {
                   variant="outlined"
                   icon="mdi-palette-outline"
                   v-bind="props"
-                >
-                </v-btn>
+                />
               </template>
               <v-card class="toolbar-menu-card">
                 <v-card-title class="text-subtitle-2">Design</v-card-title>
@@ -3578,8 +3601,7 @@ if (import.meta.client) {
                   variant="outlined"
                   icon="mdi-format-list-numbers"
                   v-bind="props"
-                >
-                </v-btn>
+                />
               </template>
               <v-card class="toolbar-menu-card">
                 <v-card-title class="text-subtitle-2">Shapes</v-card-title>
@@ -3700,8 +3722,7 @@ if (import.meta.client) {
                   variant="outlined"
                   icon="mdi-shape-plus"
                   v-bind="props"
-                >
-                </v-btn>
+                />
               </template>
               <v-card class="toolbar-menu-card">
                 <v-card-title class="text-subtitle-2">Design</v-card-title>

@@ -3150,6 +3150,10 @@
         "clear": "Clear",
         "addToResume": "Add to resume"
       }
+    },
+    "meta": {
+      "indexTitle": "Resume Builder",
+      "createTitle": "Create Resume"
     }
   }
 }

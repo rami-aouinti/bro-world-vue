@@ -2917,6 +2917,10 @@
         "clear": "Clear",
         "addToResume": "Add to resume"
       }
+    },
+    "meta": {
+      "indexTitle": "Lebenslauf-Builder",
+      "createTitle": "Lebenslauf erstellen"
     }
   }
 }
