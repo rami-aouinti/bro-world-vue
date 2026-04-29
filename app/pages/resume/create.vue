@@ -2887,9 +2887,33 @@ async function buildResumePdfBlob() {
             }
           }
           @page { size: A4; margin: 0; }
+          .resume-export-footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 10mm;
+            display: flex;
+            justify-content: center;
+            font-size: 11px;
+            color: #5f6368;
+            z-index: 10;
+            pointer-events: none;
+          }
+          .resume-export-footer a {
+            color: #1a73e8;
+            text-decoration: none;
+            pointer-events: auto;
+          }
         </style>
       </head>
-      <body>${content}</body>
+      <body>
+        ${content}
+        <footer class="resume-export-footer">
+          <a href="https://bro-world-space.com/resume/create?template=executive-portrait&mode=write">
+            Bro World Space
+          </a>
+        </footer>
+      </body>
     </html>
   `
 }
