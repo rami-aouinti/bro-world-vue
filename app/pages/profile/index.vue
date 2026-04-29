@@ -1588,9 +1588,14 @@ onUnmounted(() => {
 }
 
 .resume-template-shell {
+  --resume-space-xs: 8px;
+  --resume-space-sm: 12px;
+  --resume-space-md: 16px;
+  --resume-space-lg: 24px;
   max-height: 75vh;
   overflow: auto;
-  padding-right: 4px;
+  padding-right: var(--resume-space-xs);
+  padding-bottom: var(--resume-space-md);
 }
 
 .resume-template-picker {
@@ -1605,7 +1610,7 @@ onUnmounted(() => {
 
 .resume-template {
   border-radius: 18px;
-  padding: 24px;
+  padding: var(--resume-space-lg);
   border: 1px solid rgba(255, 255, 255, 0.65);
   box-shadow: 0 16px 35px rgba(16, 24, 40, 0.08);
 }
@@ -1635,11 +1640,11 @@ onUnmounted(() => {
 
 .resume-header {
   border-bottom: 2px solid rgba(86, 106, 156, 0.35);
-  margin-bottom: 18px;
-  padding-bottom: 16px;
+  margin-bottom: var(--resume-space-lg);
+  padding-bottom: var(--resume-space-md);
   display: flex;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--resume-space-md);
   flex-wrap: wrap;
 }
 
@@ -1683,19 +1688,19 @@ onUnmounted(() => {
   border: 1px solid rgba(85, 104, 148, 0.3);
   background: rgba(255, 255, 255, 0.96);
   color: #1a2a4f;
-  padding: 10px 12px;
+  padding: var(--resume-space-md);
 }
 
 .resume-grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 16px;
+  gap: var(--resume-space-md);
 }
 
 .resume-block {
-  margin-bottom: 14px;
+  margin-bottom: var(--resume-space-lg);
   border-radius: 12px;
-  padding: 10px 12px;
+  padding: var(--resume-space-md);
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(84, 104, 150, 0.28);
   color: #1a2a4d;
@@ -1707,24 +1712,24 @@ onUnmounted(() => {
   font-weight: 700;
   letter-spacing: 0.09em;
   line-height: 1.35;
-  margin: 0 0 12px;
+  margin: 0 0 var(--resume-space-md);
   color: rgba(17, 35, 70, 0.92);
 }
 
 .resume-line {
-  margin-bottom: 12px;
-  padding-bottom: 10px;
+  margin-bottom: var(--resume-space-md);
+  padding-bottom: var(--resume-space-sm);
   line-height: 1.5;
   border-bottom: 1px dashed rgba(78, 97, 140, 0.42);
   color: #25365d;
 }
 
 .resume-line p {
-  margin-top: 0;
+  margin: 0;
 }
 
 .resume-line p + p {
-  margin-top: 4px;
+  margin-top: var(--resume-space-xs);
 }
 
 .resume-line:last-child {
@@ -1764,7 +1769,7 @@ onUnmounted(() => {
 
 @media (max-width: 960px) {
   .resume-template {
-    padding: 16px;
+    padding: var(--resume-space-md);
   }
 
   .resume-template-picker {
