@@ -2837,25 +2837,37 @@ async function buildResumePdfBlob() {
         <style>
           body { margin: 0; padding: 0; background: #fff; }
           .preview-grid,
-          .preview-grid * {
+          .preview-grid *,
+          .cv-page-shell,
+          .cv-page-shell * {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
           .preview-grid .resume-skin__aside,
-          .preview-grid .cv-sidebar-surface {
+          .preview-grid .cv-sidebar-surface,
+          .cv-page-shell .resume-skin__aside,
+          .cv-page-shell .cv-sidebar-surface {
             background: var(--cv-sidebar) !important;
             background-color: var(--cv-sidebar) !important;
           }
-          .preview-grid { min-height: auto !important; border-radius: 0 !important; }
+          .preview-grid,
+          .cv-page-shell { min-height: auto !important; border-radius: 0 !important; }
           .preview-grid .terra-template,
           .preview-grid .ocean-template,
           .preview-grid .corporate-template,
           .preview-grid .professional-template,
           .preview-grid .classic-template,
-          .preview-grid .executive-template {
+          .preview-grid .executive-template,
+          .cv-page-shell .terra-template,
+          .cv-page-shell .ocean-template,
+          .cv-page-shell .corporate-template,
+          .cv-page-shell .professional-template,
+          .cv-page-shell .classic-template,
+          .cv-page-shell .executive-template {
             grid-template-columns: minmax(220px, 32%) 1fr !important;
           }
-          .preview-grid .modern-template {
+          .preview-grid .modern-template,
+          .cv-page-shell .modern-template {
             grid-template-columns: 1fr 280px !important;
           }
           @media print {
@@ -2864,7 +2876,13 @@ async function buildResumePdfBlob() {
             .preview-grid .corporate-template,
             .preview-grid .professional-template,
             .preview-grid .classic-template,
-            .preview-grid .executive-template {
+            .preview-grid .executive-template,
+            .cv-page-shell .terra-template,
+            .cv-page-shell .ocean-template,
+            .cv-page-shell .corporate-template,
+            .cv-page-shell .professional-template,
+            .cv-page-shell .classic-template,
+            .cv-page-shell .executive-template {
               grid-template-columns: minmax(220px, 32%) 1fr !important;
             }
           }
