@@ -156,16 +156,26 @@ const passthroughSlotNames = computed(() =>
 
 <style>
 .app-select-menu-surface {
-  background: color-mix(in srgb, rgb(var(--v-theme-primary)) 90%, #000 10%);
-  backdrop-filter: blur(6px);
+  border-radius: 14px;
+  border: none;
+  background:
+    linear-gradient(
+      240deg,
+      rgba(var(--v-theme-primary), 0.12) 0%,
+      transparent 28%
+    ),
+    color-mix(in srgb, rgb(var(--v-theme-surface)) 88%, transparent);
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(var(--v-theme-primary), 0.14) inset;
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  color: rgb(var(--v-theme-on-surface));
   overflow: hidden;
 }
 
 .app-select-menu-surface .v-list {
-  background: linear-gradient(
-    240deg,
-    rgba(var(--v-theme-primary), 0.18) 0%,
-    transparent 60%
-  );
+  background: transparent;
+  color: inherit;
 }
 </style>
