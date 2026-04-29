@@ -2818,6 +2818,8 @@ watch(
 
 async function buildResumePdfBlob() {
   if (!previewExportRef.value || !import.meta.client) return ''
+  await nextTick()
+  await new Promise<void>(resolve => requestAnimationFrame(() => resolve()))
   const stylesheetContent = Array.from(
     document.querySelectorAll('style,link[rel="stylesheet"]'),
   )

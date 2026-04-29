@@ -144,7 +144,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
 </script>
 
 <template>
-  <section class="shared-extra cv-card-surface text-dark" :class="toneClass">
+  <section class="shared-extra cv-card-surface" :class="toneClass">
     <div v-if="isVisible('languages') && resume.languages?.length" class="resume-section-hoverable shared-section">
       <SectionToolbar
         section-key="language"
@@ -162,16 +162,16 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
         @move-up="() => emit('move-section', 'language', 'up')"
         @move-down="() => emit('move-section', 'language', 'down')"
       />
-      <h3 class="cv-heading-section cv-divider-bottom text-dark">Languages</h3>
+      <h3 class="cv-heading-section cv-divider-bottom">Languages</h3>
       <ul v-if="languageVariant === 'text-level'">
         <li v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`">
           <small>{{ levelToText(language.level) }} — </small>
-          <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+          <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
         </li>
       </ul>
       <div v-else-if="languageVariant === 'stars'" class="language-stars-list">
         <div v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" class="language-stars-item">
-          <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+          <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
           <small class="language-stars-value">{{ levelToStarsText(language.level) }}</small>
         </div>
       </div>
@@ -180,7 +180,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
           <div class="d-flex align-center justify-space-between ga-2">
             <div class="d-flex align-center ga-2">
               <small>{{ levelToPercent(language.level) }}% — </small>
-              <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
             </div>
           </div>
           <v-progress-linear :model-value="levelToPercent(language.level)" height="8" rounded color="primary" />
@@ -204,7 +204,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
                 role="img"
               />
               <span v-else-if="resolveLanguageFlag(language)" class="language-flag">{{ resolveLanguageFlag(language) }}</span>
-              <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
+              <span class="editable-text" :contenteditable="editable" @input="event => updateText(`languages.${index}.name`, (event.target as HTMLElement).innerText)">{{ language.name }}</span>
             </div>
             <small>{{ levelToText(language.level) }} · {{ levelToStarsText(language.level) }}</small>
           </div>
@@ -224,10 +224,10 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
         @move-up="() => emit('move-section', 'certification', 'up')"
         @move-down="() => emit('move-section', 'certification', 'down')"
       />
-      <h3 class="cv-heading-section cv-divider-bottom text-dark">Certifications</h3>
+      <h3 class="cv-heading-section cv-divider-bottom">Certifications</h3>
       <ul>
         <li v-for="(course, index) in resume.courses" :key="`${course.title}-${index}`">
-          <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`courses.${index}.title`, (event.target as HTMLElement).innerText)">{{ course.title }}</span>
+          <span class="editable-text" :contenteditable="editable" @input="event => updateText(`courses.${index}.title`, (event.target as HTMLElement).innerText)">{{ course.title }}</span>
           <small class="ms-2 editable-text" :contenteditable="editable" @input="event => updateText(`courses.${index}.school`, (event.target as HTMLElement).innerText)">{{ course.school }}</small>
         </li>
       </ul>
@@ -249,11 +249,11 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
         @move-up="() => emit('move-section', 'project', 'up')"
         @move-down="() => emit('move-section', 'project', 'down')"
       />
-      <h3 class="cv-heading-section cv-divider-bottom text-dark">Projects</h3>
+      <h3 class="cv-heading-section cv-divider-bottom">Projects</h3>
       <ul v-if="projectVariant === 'list'" class="project-list project-list--enhanced">
         <li v-for="(project, index) in resume.projects" :key="`${project.name}-${index}`">
-          <strong class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</strong>
-          <p class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
+          <strong class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</strong>
+          <p class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
         </li>
       </ul>
       <div v-else :class="['project-grid', { 'project-grid--two-column': projectVariant === 'two-column' }]">
@@ -263,8 +263,8 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
           class="project-card"
           :class="{ 'project-card--soft': projectVariant === 'cards' }"
         >
-          <strong class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</strong>
-          <p class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
+          <strong class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.name`, (event.target as HTMLElement).innerText)">{{ project.name }}</strong>
+          <p class="editable-text" :contenteditable="editable" @input="event => updateText(`projects.${index}.summary`, (event.target as HTMLElement).innerText)">{{ project.summary }}</p>
         </article>
       </div>
     </div>
@@ -281,10 +281,10 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
         @move-up="() => emit('move-section', 'reference', 'up')"
         @move-down="() => emit('move-section', 'reference', 'down')"
       />
-      <h3 class="cv-heading-section cv-divider-bottom text-dark">References</h3>
+      <h3 class="cv-heading-section cv-divider-bottom">References</h3>
       <ul>
         <li v-for="(reference, index) in resume.references" :key="`${reference.name}-${index}`">
-          <span class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`references.${index}.name`, (event.target as HTMLElement).innerText)">{{ reference.name }}</span>
+          <span class="editable-text" :contenteditable="editable" @input="event => updateText(`references.${index}.name`, (event.target as HTMLElement).innerText)">{{ reference.name }}</span>
           <small class="ms-2 editable-text" :contenteditable="editable" @input="event => updateText(`references.${index}.company`, (event.target as HTMLElement).innerText)">{{ reference.company }}</small>
         </li>
       </ul>
@@ -302,9 +302,9 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
         @move-up="() => emit('move-section', 'hobby', 'up')"
         @move-down="() => emit('move-section', 'hobby', 'down')"
       />
-      <h3 class="cv-heading-section cv-divider-bottom text-dark">Interests</h3>
+      <h3 class="cv-heading-section cv-divider-bottom">Interests</h3>
       <ul>
-        <li v-for="(hobby, index) in resume.hobbies" :key="`${hobby}-${index}`" class="editable-text text-dark" :contenteditable="editable" @input="event => updateText(`hobbies.${index}`, (event.target as HTMLElement).innerText)">{{ hobby }}</li>
+        <li v-for="(hobby, index) in resume.hobbies" :key="`${hobby}-${index}`" class="editable-text" :contenteditable="editable" @input="event => updateText(`hobbies.${index}`, (event.target as HTMLElement).innerText)">{{ hobby }}</li>
       </ul>
     </div>
   </section>
@@ -340,6 +340,11 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
 .shared-extra--auto {
   --shared-panel-bg: color-mix(in srgb, var(--cv-page) 90%, var(--cv-sidebar));
 }
+
+.shared-extra {
+  color: var(--shared-panel-text);
+}
+
 .shared-extra h3 {
   color: var(--shared-title-color);
   font-size: 1rem;
@@ -378,6 +383,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
 }
 .language-stars-value {
   letter-spacing: .04em;
+  color: var(--shared-panel-text);
 }
 .language-flag-image {
   width: 18px;
