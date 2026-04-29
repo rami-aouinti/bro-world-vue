@@ -5,6 +5,7 @@ import type {
   ResumeTemplateConfig,
   ResumeTemplateType,
 } from '~/types/resumeTemplateConfig'
+import { RESUME_SKIN_PALETTES, type ResumeSkinPaletteId } from '~/constants/resumeDesign'
 
 const DEFAULT_VISIBLE_OPTIONS: ResumeTemplateConfig['visibleOptions'] = {
   photo: true,
@@ -115,23 +116,29 @@ export const RESUME_LAYOUTS_CATALOG: ResumeLayout[] = [
 ]
 
 export const RESUME_SKINS_CATALOG: ResumeSkin[] = [
-  { id: 'skin-cobalt-executive', palette: 'corporate-blue', radius: 'soft', typography: 'executive', sectionVariant: 'detailed', iconStyle: 'filled' },
+  { id: 'skin-classic', palette: 'classic', radius: 'none', typography: 'serif', sectionVariant: 'classic', iconStyle: 'text' },
+  { id: 'skin-urban', palette: 'urban', radius: 'soft', typography: 'modern', sectionVariant: 'list', iconStyle: 'outline' },
+  { id: 'skin-compact-ats', palette: 'compact-ats', radius: 'none', typography: 'clean', sectionVariant: 'compact', iconStyle: 'text' },
+  { id: 'skin-executive', palette: 'executive', radius: 'soft', typography: 'executive', sectionVariant: 'detailed', iconStyle: 'filled' },
   { id: 'skin-midnight-banner', palette: 'midnight', radius: 'soft', typography: 'modern', sectionVariant: 'timeline', iconStyle: 'outline' },
   { id: 'skin-minimal-profile', palette: 'minimal', radius: 'none', typography: 'clean', sectionVariant: 'compact', iconStyle: 'text' },
-  { id: 'skin-classic-serif', palette: 'classic', radius: 'none', typography: 'serif', sectionVariant: 'classic', iconStyle: 'text' },
-  { id: 'skin-modern-balance', palette: 'modern', radius: 'soft', typography: 'sans', sectionVariant: 'list', iconStyle: 'filled' },
-  { id: 'skin-graphite-pro', palette: 'modern', radius: 'soft', typography: 'sans', sectionVariant: 'detailed', iconStyle: 'rounded' },
-  { id: 'skin-terra-edge', palette: 'terra', radius: 'soft', typography: 'serif', sectionVariant: 'classic', iconStyle: 'outline' },
-  { id: 'skin-elegant-light', palette: 'elegant', radius: 'soft', typography: 'serif', sectionVariant: 'compact', iconStyle: 'text' },
-  { id: 'skin-corporate-grid', palette: 'corporate-blue', radius: 'none', typography: 'modern', sectionVariant: 'list', iconStyle: 'outline' },
-  { id: 'skin-noir-compact', palette: 'midnight', radius: 'none', typography: 'clean', sectionVariant: 'compact', iconStyle: 'filled' },
+  { id: 'skin-graphite-pro', palette: 'graphite', radius: 'soft', typography: 'sans', sectionVariant: 'detailed', iconStyle: 'rounded' },
+  { id: 'skin-terra', palette: 'terra', radius: 'soft', typography: 'serif', sectionVariant: 'classic', iconStyle: 'outline' },
+  { id: 'skin-elegant', palette: 'elegant', radius: 'soft', typography: 'serif', sectionVariant: 'compact', iconStyle: 'text' },
+  { id: 'skin-oceanic', palette: 'oceanic', radius: 'soft', typography: 'sans', sectionVariant: 'list', iconStyle: 'filled' },
 ]
 
+RESUME_SKINS_CATALOG.forEach((skin) => {
+  if (!RESUME_SKIN_PALETTES[skin.palette as ResumeSkinPaletteId]) {
+    throw new Error(`Unknown palette mapping for skin ${skin.id}`)
+  }
+})
+
 const COVER_TEMPLATES: ResumeTemplateConfig[] = [
-  { id: 'cover-page-terra', structureId: 'no-aside', layoutId: 'layout-no-aside-a', skinId: 'skin-terra-edge', label: 'Cover Page Terra', subtitle: 'Simple cover page with title and photo', type: 'cover-page', image: '/img/cv/cv-4.png', templateId: 'cv-socle', visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, twoColumn: false } },
-  { id: 'cover-page-elegant', structureId: 'no-aside', layoutId: 'layout-no-aside-a', skinId: 'skin-elegant-light', label: 'Cover Page Elegant', subtitle: 'Centered elegant cover page', type: 'cover-page', image: '/img/cv/cv-5.png', templateId: 'cv-socle', visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, photo: false, twoColumn: false } },
-  { id: 'cover-letter-classic', structureId: 'no-aside', layoutId: 'layout-no-aside-a', skinId: 'skin-classic-serif', label: 'Cover Letter Classic', subtitle: 'Classic letter ready to customize', type: 'cover-letter', image: '/img/cv/cv-1.png', templateId: 'cv-socle', visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, photo: false, twoColumn: false } },
-  { id: 'cover-letter-modern', structureId: 'no-aside', layoutId: 'layout-no-aside-a', skinId: 'skin-modern-balance', label: 'Cover Letter Modern', subtitle: 'Modern letter highlighting profile', type: 'cover-letter', image: '/img/cv/cv-3.png', templateId: 'cv-socle', visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, twoColumn: false, ats: false } },
+  { id: 'cover-page-terra', structureId: 'no-aside', layoutId: 'layout-no-aside-a', skinId: 'skin-terra', label: 'Cover Page Terra', subtitle: 'Simple cover page with title and photo', type: 'cover-page', image: '/img/cv/cv-4.png', templateId: 'cv-socle', visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, twoColumn: false } },
+  { id: 'cover-page-elegant', structureId: 'no-aside', layoutId: 'layout-no-aside-a', skinId: 'skin-elegant', label: 'Cover Page Elegant', subtitle: 'Centered elegant cover page', type: 'cover-page', image: '/img/cv/cv-5.png', templateId: 'cv-socle', visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, photo: false, twoColumn: false } },
+  { id: 'cover-letter-classic', structureId: 'no-aside', layoutId: 'layout-no-aside-a', skinId: 'skin-classic', label: 'Cover Letter Classic', subtitle: 'Classic letter ready to customize', type: 'cover-letter', image: '/img/cv/cv-1.png', templateId: 'cv-socle', visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, photo: false, twoColumn: false } },
+  { id: 'cover-letter-modern', structureId: 'no-aside', layoutId: 'layout-no-aside-a', skinId: 'skin-urban', label: 'Cover Letter Modern', subtitle: 'Modern letter highlighting profile', type: 'cover-letter', image: '/img/cv/cv-3.png', templateId: 'cv-socle', visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, twoColumn: false, ats: false } },
 ]
 
 const formatLabel = (value: string): string =>
@@ -160,7 +167,7 @@ const RESUME_GENERATED_TEMPLATES: ResumeTemplateConfig[] = RESUME_LAYOUTS_CATALO
       visibleOptions: {
         ...DEFAULT_VISIBLE_OPTIONS,
         twoColumn: isTwoColumn,
-        timeline: skin.sectionVariant === 'timeline',
+        timeline: false,
       },
     }
   }),

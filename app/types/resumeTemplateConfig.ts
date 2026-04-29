@@ -2,7 +2,7 @@ import type { ResumeEditableSectionKey } from '~/types/resumeDocumentModel'
 
 export type ResumeTemplateType = 'resume' | 'cover-page' | 'cover-letter'
 
-export type ResumeTemplatePalette = 'corporate-blue' | 'midnight' | 'minimal' | 'classic' | 'modern' | 'terra' | 'elegant'
+export type ResumeTemplatePalette = 'classic' | 'urban' | 'compact-ats' | 'executive' | 'midnight' | 'minimal' | 'terra' | 'elegant' | 'graphite' | 'oceanic'
 export type ResumeTemplateRadius = 'none' | 'soft'
 export type ResumeTemplateTypography = 'executive' | 'modern' | 'clean' | 'serif' | 'sans'
 export type ResumeTemplateSectionVariant = 'detailed' | 'timeline' | 'compact' | 'classic' | 'list'
@@ -10,16 +10,16 @@ export type ResumeTemplateIconStyle = 'text' | 'outline' | 'filled' | 'rounded'
 export type ResumeStructureId = 'no-aside' | 'aside-left' | 'aside-right'
 export type ResumeLayoutId = string
 export type ResumeTemplateSkinId =
-  | 'skin-cobalt-executive'
+  | 'skin-classic'
+  | 'skin-urban'
+  | 'skin-compact-ats'
+  | 'skin-executive'
   | 'skin-midnight-banner'
   | 'skin-minimal-profile'
-  | 'skin-classic-serif'
-  | 'skin-modern-balance'
   | 'skin-graphite-pro'
-  | 'skin-terra-edge'
-  | 'skin-elegant-light'
-  | 'skin-corporate-grid'
-  | 'skin-noir-compact'
+  | 'skin-terra'
+  | 'skin-elegant'
+  | 'skin-oceanic'
 
 export type ResumeSkinId = ResumeTemplateSkinId
 
