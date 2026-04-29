@@ -6023,6 +6023,12 @@ if (import.meta.client) {
   font-weight: 600;
 }
 
+.builder-form :deep(.v-field__input),
+.builder-form :deep(textarea) {
+  direction: ltr;
+  text-align: left;
+}
+
 @media (max-width: 1120px) {
   .builder-form {
     border: 0;
