@@ -5344,8 +5344,8 @@ if (import.meta.client) {
 <style scoped>
 .resume-create {
   --builder-column-gap: 16px;
-  --preview-page-width: 860px;
-  --preview-a4-height: 1122px;
+  --preview-page-width: 794px;
+  --preview-a4-height: 1123px;
   --preview-shell-padding: 16px;
   --preview-shell-max-width: calc(
     var(--preview-page-width) + (var(--preview-shell-padding) * 2)

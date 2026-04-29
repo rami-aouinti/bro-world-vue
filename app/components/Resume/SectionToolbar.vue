@@ -11,6 +11,8 @@ type ToolbarAction =
   | 'change-variant'
   | 'change-content-style'
   | 'style-panel'
+  | 'line-minus'
+  | 'line-plus'
   | 'move-up'
   | 'move-down'
   | 'delete-item'
@@ -52,6 +54,8 @@ const props = withDefaults(
       'change-variant',
       'change-content-style',
       'style-panel',
+      'line-minus',
+      'line-plus',
       'move-up',
       'move-down',
     ],
@@ -202,6 +206,12 @@ const selectedSpacing = ref('balanced')
 const selectedCard = ref('none')
 const selectedDivider = ref('none')
 
+
+const lineStep = 4
+const minLineOffset = -24
+const maxLineOffset = 48
+const sectionLineOffset = ref(0)
+
 const sectionStorageKey = computed(
   () => `resume:section-toolbar:pin:${props.sectionKey}`,
 )
@@ -233,6 +243,23 @@ function applySectionStylePreview() {
       sectionElement.style.setProperty(token, tokenValue)
     }
   }
+
+  sectionElement.style.setProperty('--rs-extra-line-offset', `${sectionLineOffset.value}px`)
+}
+
+function changeSectionLineOffset(direction: 'plus' | 'minus') {
+  const delta = direction === 'plus' ? lineStep : -lineStep
+  sectionLineOffset.value = Math.max(
+    minLineOffset,
+    Math.min(maxLineOffset, sectionLineOffset.value + delta),
+  )
+  if (import.meta.client) {
+    localStorage.setItem(
+      `resume:section-toolbar:line-offset:${props.sectionKey}`,
+      String(sectionLineOffset.value),
+    )
+  }
+  applySectionStylePreview()
 }
 
 function setPin(nextValue: boolean) {
@@ -245,6 +272,10 @@ function setPin(nextValue: boolean) {
 onMounted(() => {
   if (!import.meta.client) return
   pinEnabled.value = localStorage.getItem(sectionStorageKey.value) === 'true'
+  const storedLineOffset = Number(localStorage.getItem(`resume:section-toolbar:line-offset:${props.sectionKey}`) || '0')
+  sectionLineOffset.value = Number.isFinite(storedLineOffset)
+    ? Math.max(minLineOffset, Math.min(maxLineOffset, storedLineOffset))
+    : 0
   applySectionStylePreview()
 })
 
@@ -437,6 +468,39 @@ watch(
         </v-card-text>
       </v-card>
     </v-menu>
+
+
+    <v-tooltip v-if="enabledActions.has('line-minus')" text="Remove one line">
+      <template #activator="{ props: tooltipProps }">
+        <v-btn
+          class="toolbar-btn"
+          icon
+          size="default"
+          variant="tonal"
+          :aria-label="`Remove one line after section ${props.sectionKey}`"
+          v-bind="tooltipProps"
+          @click="changeSectionLineOffset('minus')"
+        >
+          <v-icon icon="mdi-minus" />
+        </v-btn>
+      </template>
+    </v-tooltip>
+
+    <v-tooltip v-if="enabledActions.has('line-plus')" text="Add one line">
+      <template #activator="{ props: tooltipProps }">
+        <v-btn
+          class="toolbar-btn"
+          icon
+          size="default"
+          variant="tonal"
+          :aria-label="`Add one line after section ${props.sectionKey}`"
+          v-bind="tooltipProps"
+          @click="changeSectionLineOffset('plus')"
+        >
+          <v-icon icon="mdi-plus" />
+        </v-btn>
+      </template>
+    </v-tooltip>
 
     <v-tooltip v-if="enabledActions.has('move-up')" text="Move section up">
       <template #activator="{ props: tooltipProps }">
