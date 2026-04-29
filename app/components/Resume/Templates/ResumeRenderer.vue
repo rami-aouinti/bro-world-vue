@@ -36,7 +36,7 @@ type ResumeRendererDesignState = {
   roundedClass?: string
   textStyleClass?: string
   density?: 'compact' | 'normal' | 'spacious' | 'comfortable'
-  dividerStyle?: 'none' | 'line' | 'thick'
+  dividerStyle?: 'none' | 'line' | 'soft'
   sidebarWidth?: number
   sidebarHeight?: number
   photoSize?: number
@@ -81,7 +81,7 @@ const props = withDefaults(
     roundedClass?: string
     textStyleClass?: string
     density?: 'compact' | 'normal' | 'spacious' | 'comfortable'
-    dividerStyle?: 'none' | 'line' | 'thick'
+    dividerStyle?: 'none' | 'line' | 'soft'
     sidebarWidth?: number
     sidebarHeight?: number
     photoSize?: number
@@ -1498,9 +1498,9 @@ function updateText(path: string, value: string) {
   padding-bottom: calc(var(--resume-space-2, var(--cv-space-2)) + var(--resume-space-1, var(--cv-space-1)) / 2);
 }
 
-.divider-thick :deep(.resume-section),
-.divider-thick .resume-skin__main > section,
-.divider-thick .resume-skin__aside > section {
+.divider-soft :deep(.resume-section),
+.divider-soft .resume-skin__main > section,
+.divider-soft .resume-skin__aside > section {
   border-bottom: 2px solid var(--resume-border-strong, var(--cv-border-strong));
   padding-bottom: var(--resume-space-3, var(--cv-space-3));
 }
