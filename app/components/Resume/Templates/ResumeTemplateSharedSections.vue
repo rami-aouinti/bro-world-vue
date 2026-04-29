@@ -2,6 +2,7 @@
 import { levelToPercent, levelToStars, levelToText } from '~/utils/resumeLanguageLevel'
 import { resolveLanguageFallback, resolveLanguageFlagClass, resolveLanguageFlagSrc } from '~/utils/resumeLanguageFlags'
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import { RESUME_SHARED_SECTION_VARIANTS } from '~/types/resumeSectionVariants'
 
 type SharedSectionKey =
   | 'languages'
@@ -12,20 +13,10 @@ type SharedSectionKey =
 
 type ReorderableSectionKey = 'experience' | 'education' | 'language' | 'project' | 'skill' | 'certification' | 'reference' | 'hobby'
 type SharedSectionActionKey = ReorderableSectionKey | 'course'
-type SectionLayoutVariant = {
-  experience: 'detailed' | 'bullets' | 'compact'
-  education: 'classic' | 'timeline' | 'two-column'
-  language: 'text-level' | 'stars' | 'progress' | 'flags'
-  project: 'list' | 'cards' | 'two-column'
-  skill: 'classic' | 'text-level' | 'stars' | 'dots' | 'progress'
-  certification: 'classic'
-  reference: 'classic'
-  hobby: 'classic'
-}
 type SectionLayoutEntry<K extends ReorderableSectionKey = ReorderableSectionKey> = {
   key: K
   label: string
-  variant: SectionLayoutVariant[K]
+  variant: string
   region?: 'main' | 'aside'
   order?: number
 }
@@ -79,9 +70,9 @@ function levelToStarsText(level: number | string) {
   return `${'★'.repeat(stars)}${'☆'.repeat(5 - stars)}`
 }
 
-const languageVariant = computed<'text-level' | 'stars' | 'progress' | 'flags'>(() => {
+const languageVariant = computed<'text-level' | 'stars' | 'progress-line' | 'flags'>(() => {
   const selected = props.sectionLayout.find(section => section.key === 'language')
-  return selected?.variant === 'stars' || selected?.variant === 'progress' || selected?.variant === 'text-level' || selected?.variant === 'flags'
+  return selected?.variant === 'stars' || selected?.variant === 'progress-line' || selected?.variant === 'text-level' || selected?.variant === 'flags'
     ? selected.variant
     : (props.levelInputMode === 'stars' ? 'stars' : 'text-level')
 })
@@ -113,12 +104,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
     <div v-if="isVisible('languages') && resume.languages?.length" class="resume-section-hoverable shared-section">
       <SectionToolbar
         section-key="language"
-        :variants="[
-          { label: 'Text level', value: 'text-level' },
-          { label: 'Stars', value: 'stars' },
-          { label: 'Progress', value: 'progress' },
-          { label: 'Flags', value: 'flags' },
-        ]"
+        :variants="RESUME_SHARED_SECTION_VARIANTS.language.map((value) => ({ label: value, value }))"
         :current-variant="languageVariant"
         :can-move-up="canMove('language', 'up')"
         :can-move-down="canMove('language', 'down')"
@@ -140,7 +126,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
           <small class="language-stars-value">{{ levelToStarsText(language.level) }}</small>
         </div>
       </div>
-      <div v-else-if="languageVariant === 'progress'" class="language-progress-list">
+      <div v-else-if="languageVariant === 'progress-line'" class="language-progress-list">
         <div v-for="(language, index) in resume.languages" :key="`${language.name}-${index}`" class="language-progress-item">
           <div class="d-flex align-center justify-space-between ga-2">
             <div class="d-flex align-center ga-2">
@@ -201,11 +187,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
     <div v-if="isVisible('projects') && resume.projects?.length" class="resume-section-hoverable shared-section">
       <SectionToolbar
         section-key="project"
-        :variants="[
-          { label: 'List', value: 'list' },
-          { label: 'Cards', value: 'cards' },
-          { label: 'Two columns', value: 'two-column' },
-        ]"
+        :variants="RESUME_SHARED_SECTION_VARIANTS.project.map((value) => ({ label: value, value }))"
         :current-variant="projectVariant"
         :can-move-up="canMove('project', 'up')"
         :can-move-down="canMove('project', 'down')"

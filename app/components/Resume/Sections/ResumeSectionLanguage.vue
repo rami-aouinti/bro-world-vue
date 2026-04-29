@@ -7,12 +7,13 @@ import {
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 import { resolveLanguageFallback, resolveLanguageFlagSrc } from '~/utils/resumeLanguageFlags'
 import { getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
+import type { ResumeSectionVariant } from '~/types/resumeSectionVariants'
 
 const props = withDefaults(
   defineProps<{
     resume: any
     editable?: boolean
-    variant?: 'classic' | 'text-level' | 'stars' | 'progress-line' | 'progress-circle' | 'flags' | string
+    variant?: ResumeSectionVariant<'language'> | string
     themeTokens?: Record<string, string | number>
     layoutDensity?: 'compact' | 'normal' | 'spacious' | string
     toolbarEnabled?: boolean
@@ -47,9 +48,7 @@ const emit = defineEmits<{
 }>()
 const sectionStyle = computed(() => ({ ...props.themeTokens }))
 const sectionRegistry = getSectionRegistryEntry('language')
-const safeVariant = computed<
-  'classic' | 'text-level' | 'stars' | 'progress-line' | 'progress-circle' | 'flags'
->(() => {
+const safeVariant = computed<ResumeSectionVariant<'language'>>(() => {
   if (
     props.variant === 'classic' ||
     props.variant === 'text-level' ||

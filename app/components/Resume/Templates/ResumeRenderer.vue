@@ -12,17 +12,7 @@ import type {
   ResumeEditableSectionKey,
   ResumeSectionActionKey,
 } from '~/types/resumeDocumentModel'
-
-type SectionLayoutVariant = {
-  experience: 'detailed' | 'bullets' | 'compact'
-  education: 'classic' | 'timeline' | 'two-column'
-  language: 'classic' | 'text-level' | 'stars' | 'progress' | 'flags'
-  project: 'classic' | 'list' | 'cards' | 'two-column'
-  skill: 'classic' | 'text-level' | 'stars' | 'dots' | 'progress'
-  reference: 'classic'
-  hobby: 'classic'
-  certification: 'classic'
-}
+import type { ResumeSectionVariantBySection } from '~/types/resumeSectionVariants'
 
 type ResumeSectionLayoutKey = ResumeEditableSectionKey
 
@@ -38,7 +28,7 @@ type SectionLayoutEntry<
   key: K
   region: 'main' | 'aside'
   order: number
-  variant: SectionLayoutVariant[K]
+  variant: ResumeSectionVariantBySection[K]
 }
 
 type ResumeRendererDesignState = {
