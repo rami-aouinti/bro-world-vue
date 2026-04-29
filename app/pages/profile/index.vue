@@ -1611,22 +1611,22 @@ onUnmounted(() => {
 }
 
 .resume-template-modern {
-  background: linear-gradient(180deg, #f6f9ff 0%, #eef4ff 100%);
-  color: #1d2a52;
+  background: linear-gradient(180deg, #fbfcff 0%, #f5f8ff 100%);
+  color: #16264a;
 }
 
 .resume-template-elegant {
-  background: linear-gradient(180deg, #f6eeea 0%, #fff9f4 100%);
-  color: #3e2b26;
+  background: linear-gradient(180deg, #fcf7f3 0%, #fdfaf7 100%);
+  color: #35231d;
 }
 
 .resume-template-compact {
-  background: linear-gradient(180deg, #f8fbff 0%, #f1f7ff 100%);
-  color: #1e293b;
+  background: linear-gradient(180deg, #fcfdff 0%, #f6f9ff 100%);
+  color: #172536;
 }
 
 .resume-header {
-  border-bottom: 2px solid rgba(106, 125, 175, 0.2);
+  border-bottom: 2px solid rgba(86, 106, 156, 0.35);
   margin-bottom: 18px;
   padding-bottom: 16px;
   display: flex;
@@ -1649,8 +1649,9 @@ onUnmounted(() => {
 .resume-contact-card {
   min-width: 200px;
   border-radius: 12px;
-  border: 1px solid rgba(106, 125, 175, 0.22);
-  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(85, 104, 148, 0.3);
+  background: rgba(255, 255, 255, 0.96);
+  color: #1a2a4f;
   padding: 10px 12px;
 }
 
@@ -1664,8 +1665,9 @@ onUnmounted(() => {
   margin-bottom: 14px;
   border-radius: 12px;
   padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(106, 125, 175, 0.16);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(84, 104, 150, 0.28);
+  color: #1a2a4d;
 }
 
 .resume-block h3 {
@@ -1678,7 +1680,8 @@ onUnmounted(() => {
 .resume-line {
   margin-bottom: 8px;
   padding-bottom: 8px;
-  border-bottom: 1px dashed rgba(106, 125, 175, 0.2);
+  border-bottom: 1px dashed rgba(78, 97, 140, 0.42);
+  color: #25365d;
 }
 
 .resume-line:last-child {
