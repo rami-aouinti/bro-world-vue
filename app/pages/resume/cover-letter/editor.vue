@@ -234,7 +234,10 @@ onMounted(() => {
                     @click="selectedTemplate = template.id"
                   >
                     <v-img :src="template.image" height="130" cover />
-                    <v-card-text>{{ template.title }}</v-card-text>
+                    <v-card-text class="template-card__content">
+                      <div class="template-card__title">{{ template.title }}</div>
+                      <div class="template-card__subtitle">{{ template.subtitle }}</div>
+                    </v-card-text>
                   </v-card>
                 </div>
               </v-card-text>
@@ -268,8 +271,12 @@ onMounted(() => {
 .form-card { border-radius: 14px; }
 .preview-grid { min-height: calc(100vh - 120px); background: #fff; border-radius: 16px; padding: 14px; }
 .template-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
-.template-card { cursor: pointer; transition: .2s ease; }
-.template-card--active { border-color: rgb(var(--v-theme-primary)); box-shadow: 0 0 0 1px rgb(var(--v-theme-primary)); }
+.template-card { cursor: pointer; transition: .2s ease; border-radius: 14px; overflow: hidden; border: 1px solid rgba(15, 23, 42, .08); }
+.template-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(15, 23, 42, .12); }
+.template-card__content { display: grid; gap: 6px; }
+.template-card__title { font-weight: 600; line-height: 1.25; }
+.template-card__subtitle { font-size: .78rem; color: rgba(var(--v-theme-on-surface), .68); line-height: 1.35; }
+.template-card--active { border-color: rgb(var(--v-theme-primary)); box-shadow: 0 0 0 1px rgb(var(--v-theme-primary)), 0 14px 28px rgba(var(--v-theme-primary), .18); background: color-mix(in srgb, rgb(var(--v-theme-primary)) 4%, rgb(var(--v-theme-surface))); }
 .form-section { border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity)); border-radius: 14px; padding: 18px; background: rgb(var(--v-theme-surface)); }
 .form-section h2 { margin: 0; font-size: 1.1rem; }
 .form-section p { color: rgba(var(--v-theme-on-surface), .72); }
