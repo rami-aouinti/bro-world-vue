@@ -1176,11 +1176,17 @@ onUnmounted(() => {
             class="postcard-gradient-card h-100"
             @click="resumeCreateStep = 'upload'"
           >
-            <v-card-text class="text-center py-10">
-              <v-icon icon="mdi-file-upload-outline" size="42" class="mb-3" />
+            <v-img
+              src="/images/platform-media/recruit-camille.svg"
+              height="180"
+              cover
+              class="resume-create-choice-image"
+            />
+            <v-card-text class="text-center py-6">
+              <v-icon icon="mdi-file-upload-outline" size="36" class="mb-2" />
               <h3 class="text-h6 mb-2">Upload PDF</h3>
               <p class="text-body-2 text-medium-emphasis mb-0">
-                Importer directement ton CV en PDF.
+                Importer un CV déjà finalisé pour l'afficher tel quel.
               </p>
             </v-card-text>
           </v-card>
@@ -1190,11 +1196,17 @@ onUnmounted(() => {
             class="postcard-gradient-card h-100"
             @click="resumeCreateStep = 'manual'"
           >
-            <v-card-text class="text-center py-10">
-              <v-icon icon="mdi-form-select" size="42" class="mb-3" />
+            <v-img
+              src="/images/platform-media/recruit-yanis.svg"
+              height="180"
+              cover
+              class="resume-create-choice-image"
+            />
+            <v-card-text class="text-center py-6">
+              <v-icon icon="mdi-form-select" size="36" class="mb-2" />
               <h3 class="text-h6 mb-2">Create manually</h3>
               <p class="text-body-2 text-medium-emphasis mb-0">
-                Renseigne les sections (experience, skills, projects...).
+                Construire le CV section par section avec un rendu structuré.
               </p>
             </v-card-text>
           </v-card>
@@ -1821,6 +1833,10 @@ onUnmounted(() => {
 
 .manual-section-card-text {
   padding-bottom: 8px;
+}
+
+.resume-create-choice-image {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
 }
 
 @media (max-width: 960px) {
