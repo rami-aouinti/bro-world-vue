@@ -756,15 +756,31 @@ onUnmounted(() => {
               >
                 <v-card
                   rounded="xl"
-                  class="h-100 postcard-gradient-card resume-card"
+                  :class="[
+                    'h-100 postcard-gradient-card resume-card',
+                    {
+                      'resume-card--active':
+                        selectedResume?.id === resume.id &&
+                        (resumeViewerOpen || resumeEditorOpen),
+                    },
+                  ]"
+                  tabindex="0"
+                  role="button"
                   @click="openResume(resume)"
+                  @keydown.enter.prevent="openResume(resume)"
+                  @keydown.space.prevent="openResume(resume)"
                 >
                   <v-card-text>
                     <div class="d-flex justify-space-between align-center mb-3">
                       <v-chip
                         size="small"
-                        :color="resume.documentUrl ? 'info' : 'primary'"
-                        variant="tonal"
+                        class="resume-type-chip"
+                        :class="
+                          resume.documentUrl
+                            ? 'resume-type-chip--pdf'
+                            : 'resume-type-chip--data'
+                        "
+                        variant="flat"
                       >
                         {{ resume.documentUrl ? 'PDF' : 'Data CV' }}
                       </v-chip>
@@ -1577,14 +1593,52 @@ onUnmounted(() => {
 
 .resume-card {
   cursor: pointer;
+  border: 1px solid rgba(113, 129, 171, 0.24);
   transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease;
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .resume-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.18);
+  transform: translateY(-4px);
+  border-color: rgba(128, 145, 255, 0.6);
+  box-shadow: 0 14px 28px rgba(16, 26, 56, 0.22);
+}
+
+.resume-card:focus-visible {
+  outline: 2px solid rgba(139, 160, 255, 0.95);
+  outline-offset: 2px;
+  border-color: rgba(139, 160, 255, 0.82);
+  box-shadow:
+    0 0 0 3px rgba(36, 55, 112, 0.36),
+    0 10px 22px rgba(18, 27, 56, 0.2);
+}
+
+.resume-card--active {
+  transform: translateY(-2px);
+  border-color: rgba(130, 147, 255, 0.88);
+  box-shadow:
+    0 0 0 1px rgba(140, 157, 255, 0.62),
+    0 16px 30px rgba(18, 30, 68, 0.24);
+}
+
+.resume-type-chip {
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+}
+
+.resume-type-chip--pdf {
+  color: #d9ecff;
+  background: linear-gradient(135deg, rgba(55, 127, 213, 0.33), rgba(83, 154, 241, 0.24));
+  border-color: rgba(117, 175, 243, 0.45);
+}
+
+.resume-type-chip--data {
+  color: #ede5ff;
+  background: linear-gradient(135deg, rgba(112, 86, 205, 0.34), rgba(146, 104, 229, 0.25));
+  border-color: rgba(172, 129, 246, 0.42);
 }
 
 .resume-template-shell {
