@@ -11,7 +11,7 @@ const props = withDefaults(
   defineProps<{
     resume: any
     editable?: boolean
-    variant?: 'classic' | 'text-level' | 'stars' | 'progress' | 'flags' | string
+    variant?: 'classic' | 'text-level' | 'stars' | 'progress-line' | 'progress-circle' | 'flags' | string
     themeTokens?: Record<string, string | number>
     layoutDensity?: 'compact' | 'normal' | 'spacious' | string
     toolbarEnabled?: boolean
@@ -47,13 +47,14 @@ const emit = defineEmits<{
 const sectionStyle = computed(() => ({ ...props.themeTokens }))
 const sectionRegistry = getSectionRegistryEntry('language')
 const safeVariant = computed<
-  'classic' | 'text-level' | 'stars' | 'progress' | 'flags'
+  'classic' | 'text-level' | 'stars' | 'progress-line' | 'progress-circle' | 'flags'
 >(() => {
   if (
     props.variant === 'classic' ||
     props.variant === 'text-level' ||
     props.variant === 'stars' ||
-    props.variant === 'progress' ||
+    props.variant === 'progress-line' ||
+    props.variant === 'progress-circle' ||
     props.variant === 'flags'
   ) {
     return props.variant
@@ -90,8 +91,15 @@ function resolveLanguageFlag(language: Record<string, unknown>) {
   const explicitFlag = String(language.flag || '').trim()
   if (explicitFlag) return explicitFlag
   const countryCode = String(language.countryCode || '').trim()
-  if (countryCode) return `/images/flags/${countryCode.toLowerCase()}.svg`
   return toFlagEmoji(countryCode) || ''
+}
+
+function resolveLanguageFlagImage(language: Record<string, unknown>) {
+  const explicitFlag = String(language.flag || '').trim()
+  if (explicitFlag.startsWith('/') || explicitFlag.startsWith('http')) return explicitFlag
+  const countryCode = String(language.countryCode || '').trim()
+  if (!countryCode) return ''
+  return `/images/flags/${countryCode.toLowerCase()}.svg`
 }
 
 function removeLanguage(index: number) {
@@ -200,7 +208,7 @@ function removeLanguage(index: number) {
         </v-btn>
       </li>
     </ul>
-    <ul v-else-if="safeVariant === 'progress'" class="bars">
+    <ul v-else-if="safeVariant === 'progress-circle'" class="bars">
       <li
         v-for="(language, index) in resume.languages"
         :key="`${language.name}-${index}`"
@@ -221,7 +229,7 @@ function removeLanguage(index: number) {
             <small>{{ levelToPercent(language.level) }}%</small>
           </v-progress-circular>
         </div>
-        <v-progress-linear :model-value="levelToPercent(language.level)" height="8" rounded :color="String(themeTokens['--cv-accent'] || 'primary')" />
+        
         <v-btn
           v-if="editable"
           class="resume-item-delete"
@@ -236,6 +244,28 @@ function removeLanguage(index: number) {
         </v-btn>
       </li>
     </ul>
+    <ul v-else-if="safeVariant === 'progress-line'" class="bars">
+      <li
+        v-for="(language, index) in resume.languages"
+        :key="`${language.name}-${index}`"
+      >
+        <div class="d-flex align-center ga-2 justify-space-between">
+          <span
+            class="editable-text"
+            :contenteditable="editable"
+            @input="
+              (event) =>
+                updateText(
+                  `languages.${index}.name`,
+                  (event.target as HTMLElement).innerText,
+                )
+            "
+            >{{ language.name }}</span>
+          <small>{{ levelToPercent(language.level) }}%</small>
+        </div>
+        <v-progress-linear :model-value="levelToPercent(language.level)" height="8" rounded :color="String(themeTokens['--cv-accent'] || 'primary')" />
+      </li>
+    </ul>
     <ul v-else class="bars">
       <li
         v-for="(language, index) in resume.languages"
@@ -244,9 +274,9 @@ function removeLanguage(index: number) {
         <div class="d-flex align-center ga-2 justify-space-between">
           <div class="d-flex align-center ga-2">
             <img
-              v-if="resolveLanguageFlag(language)"
+              v-if="resolveLanguageFlagImage(language)"
               class="language-flag-image"
-              :src="resolveLanguageFlag(language)"
+              :src="resolveLanguageFlagImage(language)"
               :alt="`${language.name} flag`"
               width="18"
               height="14"
@@ -265,7 +295,7 @@ function removeLanguage(index: number) {
               >{{ language.name }}</span
             >
             <span
-              v-if="resolveLanguageFlag(language)"
+              v-if="resolveLanguageFlagImage(language)"
               class="editable-text"
               :contenteditable="editable"
               @input="
@@ -278,7 +308,7 @@ function removeLanguage(index: number) {
               >{{ language.name }}</span
             >
           </div>
-          <v-rating :model-value="levelToStars(language.level)" readonly length="5" density="compact" class="ms-auto" :color="String(themeTokens['--cv-accent'] || 'primary')" size="14" />
+          <<v-rating :model-value="levelToStars(language.level)" readonly length="5" density="compact" class="ms-auto" active-color="warning" color="grey-lighten-1" size="14" />
         </div>
         <v-btn
           v-if="editable"
