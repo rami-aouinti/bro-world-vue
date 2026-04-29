@@ -182,7 +182,7 @@ const renderableSections = computed<RenderableSectionLayoutEntry[]>(
 function isSectionVisible(section: RenderableSectionLayoutEntry) {
   if (section.key !== 'skill') return true
   if (resolvedDesignState.value.layoutMode === 'no-aside') return true
-  return props.templateSkin.showSkillsInAside
+  return props.templateSkin.showSkillsInAside ?? true
 }
 
 function compareSectionOrder(
@@ -258,10 +258,7 @@ const layoutModeClass = computed(
 )
 const shouldRenderAside = computed(
   () =>
-    resolvedDesignState.value.layoutMode !== 'no-aside' &&
-    (props.templateSkin.showContactInAside ||
-      props.templateSkin.showProfileInAside ||
-      asideSections.value.length > 0),
+    resolvedDesignState.value.layoutMode !== 'no-aside',
 )
 const noAsideSectionOrderPolicy = 'main-first-then-aside' as const
 const visibleMainSections = computed(() => {
@@ -710,7 +707,7 @@ function updateText(path: string, value: string) {
     >
       <aside v-if="shouldRenderAside" :class="templateSkin.asideClass">
         <section
-          v-if="templateSkin.showContactInAside && hasContactDetails"
+          v-if="(templateSkin.showContactInAside ?? true) && hasContactDetails"
           class="resume-section-hoverable resume-contact-section"
         >
           <SectionToolbar
@@ -894,7 +891,7 @@ function updateText(path: string, value: string) {
           </div>
         </section>
 
-        <section v-if="templateSkin.showProfileInAside">
+        <section v-if="templateSkin.showProfileInAside ?? true">
           <h3 class="cv-heading-section">Profile</h3>
           <p
             class="editable-text"
@@ -935,7 +932,7 @@ function updateText(path: string, value: string) {
         <section
           v-if="
             resolvedDesignState.layoutMode === 'no-aside' &&
-            templateSkin.showContactInAside &&
+            (templateSkin.showContactInAside ?? true) &&
             hasContactDetails
           "
         >
@@ -1063,7 +1060,7 @@ function updateText(path: string, value: string) {
         <section
           v-if="
             resolvedDesignState.layoutMode === 'no-aside' &&
-            templateSkin.showProfileInAside
+            (templateSkin.showProfileInAside ?? true)
           "
         >
           <h2 class="cv-heading-section">Profile</h2>
