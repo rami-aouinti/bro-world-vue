@@ -9,6 +9,7 @@ import { CV_SOCLE_PRESETS, resolveSoclePresetById, resolveSocleThemeTokens } fro
 import {
   type ResumeLayoutMode,
   type ResumeSectionIconStyleVariant,
+  resolveTemplateSkin,
 } from '~/constants/resumeTemplateSkins'
 import {
   RESUME_CONTENT_STYLE_OPTIONS,
@@ -914,14 +915,14 @@ const selectedTemplateConfig = computed(
     templates[0],
 )
 
-const selectedPresetConfig = computed(() => resolveSoclePresetById(selectedPreset.value))
+const selectedSoclePreset = computed(() => resolveSoclePresetById(selectedPreset.value))
 const selectedPhotoShape = ref<string>('square')
 
 const soclePresetOptions = computed(() =>
   CV_SOCLE_PRESETS.map((preset) => ({ label: preset.label, value: preset.id })),
 )
 
-watch(selectedPresetConfig, (preset) => {
+watch(selectedSoclePreset, (preset) => {
   if (!preset) return
   selectedTheme.value = preset.id
   selectedPageBackground.value = preset.defaults.pageBackground
@@ -1164,7 +1165,7 @@ onMounted(async () => {
 const templateSupportsPhoto = computed(
   () => selectedTemplateConfig.value.hasPhoto,
 )
-const selectedTemplateSkin = computed(() => resolveSoclePresetById(selectedPreset.value))
+const selectedRendererSkin = computed(() => resolveTemplateSkin(selectedTemplate.value))
 const {
   state: resumeDocumentState,
   hydrateFromStorage,
@@ -2464,7 +2465,7 @@ const previewStyle = computed(() => ({
   '--cv-font-style': textStyleVarsByValue[selectedTextStyle.value].style,
   '--resume-font-weight': textStyleVarsByValue[selectedTextStyle.value].weight,
   '--cv-font-weight': textStyleVarsByValue[selectedTextStyle.value].weight,
-  ...resolveSocleThemeTokens(selectedPresetConfig.value),
+  ...resolveSocleThemeTokens(selectedSoclePreset.value),
 }))
 const decorativeShapes = computed(() => [
   {
@@ -3882,7 +3883,7 @@ if (import.meta.client) {
                           :on-photo-shape-select="
                             (shape) => (selectedPhotoShape = shape)
                           "
-                          :template-skin="selectedTemplateSkin"
+                          :template-skin="selectedRendererSkin"
                           editable
                           @add-item="addItemToPreviewSection"
                           @change-variant="setSectionVariant"
@@ -4824,7 +4825,7 @@ if (import.meta.client) {
                         (shape) => (selectedPhotoShape = shape)
                       "
                       :on-photo-click="onPreviewPhotoClick"
-                      :template-skin="selectedTemplateSkin"
+                      :template-skin="selectedRendererSkin"
                       editable
                       @add-item="addItemToPreviewSection"
                       @change-variant="setSectionVariant"
