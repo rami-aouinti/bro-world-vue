@@ -129,7 +129,7 @@ export const RESUME_TEMPLATE_SKINS: Record<TemplateSkinId, ResumeTemplateSkin> =
   }),
   minimalist: withSkin('minimalist', {
     layoutMode: 'no-aside',
-    showSectionIcons: false,
+    showSectionIcons: true,
     showContactInHeader: true,
     showContactInAside: false,
     showSkillsInAside: false,
