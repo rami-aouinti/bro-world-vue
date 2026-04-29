@@ -1428,6 +1428,7 @@ function applyBuilderResumeData(
 
   resume.firstName = normalizeText(userNames.firstName ?? resume.firstName)
   resume.lastName = normalizeText(userNames.lastName ?? resume.lastName)
+  resume.role = normalizeText(payload.role) || resume.role
   resume.email = normalizeText(payload.email)
   resume.phone = normalizeText(payload.phone)
   resume.city = normalizeText(payload.city)
