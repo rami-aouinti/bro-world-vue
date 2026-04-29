@@ -278,7 +278,7 @@ function removeSkill(index: number) {
   --cv-space-4: var(--cv-space-4, 16px);
   --cv-marker-accent: color-mix(in srgb, var(--cv-accent) 55%, transparent);
   --cv-progress-bg: color-mix(in srgb, var(--cv-accent) 22%, var(--cv-page));
-
+  padding-left: 20px;
   position: relative;
   border-bottom: var(--rs-section-separator, none);
   padding-bottom: var(--rs-section-padding-bottom, 0);

@@ -678,11 +678,11 @@ function updateText(path: string, value: string) {
           </div>
           <div v-if="resume.homepage" class="resume-skin__contact-item">
             <v-icon v-if="showContactIcons" class="resume-skin__contact-icon" icon="mdi-web" :size="contactIconSize" />
-            <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" clsas="text-dark">Home Page</a>
+            <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" class="text-dark">Home Page</a>
           </div>
           <div v-if="resume.repoProfile" class="resume-skin__contact-item">
             <v-icon v-if="showContactIcons" class="resume-skin__contact-icon" icon="mdi-github" :size="contactIconSize" />
-            <a :href="resume.repoProfile" target="_blank" rel="noopener noreferrer" clsas="text-dark">Github Repo</a>
+            <a :href="resume.repoProfile" target="_blank" rel="noopener noreferrer" class="text-dark">Github Repo</a>
           </div>
         </div>
       </div>
@@ -880,7 +880,7 @@ function updateText(path: string, value: string) {
                 icon="mdi-web"
                 :size="contactIconSize"
               />
-              <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" clsas="text-dark"
+              <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" class="text-dark"
                 >Home Page</a
               >
             </div>
@@ -894,6 +894,7 @@ function updateText(path: string, value: string) {
               <a
                 :href="resume.repoProfile"
                 target="_blank"
+                class="text-dark"
                 rel="noopener noreferrer"
                 >Github Repo</a
               >
@@ -1045,7 +1046,7 @@ function updateText(path: string, value: string) {
                 icon="mdi-web"
                 :size="contactIconSize"
               />
-              <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" clsas="text-dark"
+              <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" class="text-dark"
                 >Home Page</a
               >
             </div>
@@ -1060,6 +1061,7 @@ function updateText(path: string, value: string) {
                 :href="resume.repoProfile"
                 target="_blank"
                 rel="noopener noreferrer"
+                class="text-dark"
                 >Github Repo</a
               >
             </div>
@@ -1122,7 +1124,7 @@ function updateText(path: string, value: string) {
             @delete-section="onSectionDelete"
           />
           <div class="resume-skin__no-aside-columns">
-            <div>
+            <div style="padding-right: 20px;">
               <SectionRenderer
                 v-for="section in noAsideLeftSections"
                 :key="`main-no-aside-left-${section.key}`"
