@@ -370,7 +370,7 @@ watch(
       <v-card class="section-style-popover" elevation="8">
         <v-card-title class="text-subtitle-2">Section Style</v-card-title>
         <v-card-text class="d-grid ga-3 pt-2">
-          <v-select
+          <app-select
             v-model="selectedHeading"
             :items="headingPresets"
             item-title="label"
@@ -379,7 +379,7 @@ watch(
             density="compact"
             hide-details
           />
-          <v-select
+          <app-select
             v-model="selectedSpacing"
             :items="spacingPresets"
             item-title="label"
@@ -388,7 +388,7 @@ watch(
             density="compact"
             hide-details
           />
-          <v-select
+          <app-select
             v-model="selectedCard"
             :items="cardPresets"
             item-title="label"
@@ -397,7 +397,7 @@ watch(
             density="compact"
             hide-details
           />
-          <v-select
+          <app-select
             v-model="selectedDivider"
             :items="dividerPresets"
             item-title="label"
