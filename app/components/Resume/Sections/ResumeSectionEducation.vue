@@ -101,7 +101,20 @@ function updateText(path: string, value: unknown) {
   target[last] = value
 }
 function updateDateText(path: string, value: string) {
-  updateText(path, formatResumeMonthYear(value))
+  updateText(path, value)
+}
+
+function isValidResumeDate(value: unknown) {
+  const raw = String(value ?? '').trim()
+  if (!raw) return true
+  return /^\d{2}-\d{2}$/.test(formatResumeMonthYear(raw))
+}
+
+function renderResumeDate(value: unknown) {
+  const raw = String(value ?? '')
+  if (props.editable) return raw
+  const formatted = formatResumeMonthYear(raw)
+  return /^\d{2}-\d{2}$/.test(formatted) ? formatted : raw
 }
 
 function resolveContentStyle(item: Record<string, unknown>) {
@@ -198,6 +211,7 @@ function removeEducationItem(index: number) {
             <span class="date-chip" role="text">
           <span
             class="editable-text"
+            :class="{ 'date-input-invalid': !isValidResumeDate(item.start) }"
             :contenteditable="editable"
             @input="
               (event) =>
@@ -206,11 +220,12 @@ function removeEducationItem(index: number) {
                   (event.target as HTMLElement).innerText,
                 )
             "
-            >{{ formatResumeMonthYear(item.start) }}</span
+            >{{ renderResumeDate(item.start) }}</span
           >
           -
           <span
             class="editable-text"
+            :class="{ 'date-input-invalid': !isValidResumeDate(item.end) }"
             :contenteditable="editable"
             @input="
               (event) =>
@@ -219,7 +234,7 @@ function removeEducationItem(index: number) {
                   (event.target as HTMLElement).innerText,
                 )
             "
-            >{{ formatResumeMonthYear(item.end) }}</span
+            >{{ renderResumeDate(item.end) }}</span
           ></span>
           </span>
         </p>
@@ -332,6 +347,11 @@ function removeEducationItem(index: number) {
   </section>
 </template>
 <style scoped>
+.date-input-invalid {
+  text-decoration: underline wavy var(--v-theme-error, #b00020);
+  text-underline-offset: 2px;
+}
+
 .education {
   --cv-space-1: var(--cv-space-1, 4px);
   --cv-space-2: var(--cv-space-2, 8px);
