@@ -215,6 +215,9 @@ export default defineNuxtConfig({
     },
   },
   nitro: {
+    prerender: {
+      routes: ['/sitemap.xml', '/robots.txt'],
+    },
     storage: process.env.REDIS_URL
       ? {
           redis: {
