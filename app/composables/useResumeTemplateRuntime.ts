@@ -1,6 +1,7 @@
-import { roundedPxByValue, textStyleVarsByValue, type PaletteId, type RoundedOptionId, type Typography } from '~/constants/resumeDesign'
 import type { ResumeLayoutMode, ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
-import { RESUME_LAYOUTS_CATALOG, RESUME_SKINS_CATALOG, RESUME_STRUCTURES_CATALOG } from '~/constants/resumeTemplates.catalog'
+import { RESUME_SKINS_REGISTRY } from '~/constants/resumeSkins'
+import { getResumeLayoutById } from '~/constants/resumeLayouts'
+import { RESUME_LAYOUTS_CATALOG } from '~/constants/resumeTemplates.catalog'
 import type { ResumeTemplateConfig } from '~/types/resumeTemplateConfig'
 
 export type ResumeRendererDesignState = {
@@ -9,91 +10,45 @@ export type ResumeRendererDesignState = {
   textStyleClass: string
   sectionIconStyleVariant: ResumeSectionIconStyleVariant
   layoutMode: ResumeLayoutMode
+  sectionStyleClass: string
 }
 
-const paletteAlias: Record<(typeof RESUME_SKINS_CATALOG)[number]['palette'], PaletteId> = {
-  'corporate-blue': 'ocean',
-  midnight: 'slate',
-  minimal: 'charcoal',
-  classic: 'slate',
-  modern: 'teal',
-  terra: 'amber',
-  elegant: 'violet',
-} as const
+const ICON_ALIAS: Record<string, ResumeSectionIconStyleVariant> = { text: 'outline', outline: 'outline', filled: 'filled', rounded: 'rounded' }
 
-const radiusAlias: Record<(typeof RESUME_SKINS_CATALOG)[number]['radius'], RoundedOptionId> = {
-  none: 'none',
-  soft: 'sm',
-} as const
-
-const typographyAlias: Record<(typeof RESUME_SKINS_CATALOG)[number]['typography'], Typography> = {
-  executive: 'display',
-  modern: 'clean',
-  clean: 'clean',
-  serif: 'serif',
-  sans: 'clean',
-} as const
-
-const iconStyleAlias: Record<(typeof RESUME_SKINS_CATALOG)[number]['iconStyle'], ResumeSectionIconStyleVariant> = {
-  text: 'outline',
-  outline: 'outline',
-  filled: 'filled',
-  rounded: 'rounded',
-} as const
-
-const paletteTokens: Record<PaletteId, { sidebar: string; accent: string; page: string }> = {
-  emerald: { sidebar: '#0b3a78', accent: '#2563eb', page: '#eff6ff' },
-  ocean: { sidebar: '#0b3a78', accent: '#2563eb', page: '#eff6ff' },
-  plum: { sidebar: '#4a1d5e', accent: '#9333ea', page: '#faf5ff' },
-  charcoal: { sidebar: '#1f2937', accent: '#374151', page: '#f3f4f6' },
-  ruby: { sidebar: '#7f1d1d', accent: '#dc2626', page: '#fff1f2' },
-  amber: { sidebar: '#78350f', accent: '#d97706', page: '#fffbeb' },
-  sunset: { sidebar: '#7c2d12', accent: '#f97316', page: '#fff7ed' },
-  slate: { sidebar: '#0f172a', accent: '#475569', page: '#f8fafc' },
-  teal: { sidebar: '#134e4a', accent: '#0d9488', page: '#f0fdfa' },
-  violet: { sidebar: '#3b0764', accent: '#7c3aed', page: '#f5f3ff' },
-  forest: { sidebar: '#14532d', accent: '#16a34a', page: '#f0fdf4' },
-  rose: { sidebar: '#881337', accent: '#e11d48', page: '#fff1f2' },
+export function resolveRuntimeLayoutAndSkin(layoutId: string, skinId: string) {
+  const layout = getResumeLayoutById(layoutId) ?? RESUME_LAYOUTS_CATALOG.find(entry => entry.id === layoutId)
+  const skin = RESUME_SKINS_REGISTRY[skinId]
+  if (!layout || !skin) throw new Error(`[resume-runtime] Unknown layout/skin combination: ${layoutId}/${skinId}`)
+  return { layout, skin }
 }
 
 export function toResumeRendererDesignState(template: ResumeTemplateConfig): ResumeRendererDesignState {
-  const structure = RESUME_STRUCTURES_CATALOG.find(entry => entry.id === template.structureId)
-  const layout = RESUME_LAYOUTS_CATALOG.find(entry => entry.id === template.layoutId)
-  const skin = RESUME_SKINS_CATALOG.find(entry => entry.id === template.skinId)
-
-  const paletteId = skin?.palette ? paletteAlias[skin.palette] : undefined
-  const radiusId = skin?.radius ? radiusAlias[skin.radius] : undefined
-  const textStyle = skin?.typography ? typographyAlias[skin.typography] : undefined
-  const iconStyle = skin?.iconStyle ? iconStyleAlias[skin.iconStyle] : undefined
-  const layoutMode = structure?.id as ResumeLayoutMode | undefined
-
-  if (!paletteId || !radiusId || !textStyle || !iconStyle || !layoutMode || !layout || layout.structureId !== structure?.id) {
-    throw new Error(`[resume-runtime] Incomplete template runtime config for "${template.id}"`)
-  }
-
-  const palette = paletteTokens[paletteId]
-  const typeVars = textStyleVarsByValue[textStyle]
+  const { layout, skin } = resolveRuntimeLayoutAndSkin(template.layoutId, template.skinId)
+  const layoutMode = 'structure' in layout ? layout.structure : layout.structureId
 
   return {
     themeTokens: {
-      '--resume-radius': roundedPxByValue[radiusId],
-      '--cv-radius': roundedPxByValue[radiusId],
-      '--resume-font-family': typeVars.family,
-      '--cv-font-family': typeVars.family,
-      '--resume-font-style': typeVars.style,
-      '--cv-font-style': typeVars.style,
-      '--resume-font-weight': typeVars.weight,
-      '--cv-font-weight': typeVars.weight,
-      '--resume-sidebar': palette.sidebar,
-      '--cv-sidebar': palette.sidebar,
-      '--resume-accent': palette.accent,
-      '--cv-accent': palette.accent,
-      '--resume-page': palette.page,
-      '--cv-page': palette.page,
+      '--resume-radius': skin.radius,
+      '--cv-radius': skin.radius,
+      '--resume-font-family': skin.typography.family,
+      '--cv-font-family': skin.typography.family,
+      '--resume-font-style': skin.typography.style,
+      '--cv-font-style': skin.typography.style,
+      '--resume-font-weight': skin.typography.weight,
+      '--cv-font-weight': skin.typography.weight,
+      '--resume-sidebar': skin.colors.sidebar,
+      '--cv-sidebar': skin.colors.sidebar,
+      '--resume-accent': skin.colors.accent,
+      '--cv-accent': skin.colors.accent,
+      '--resume-page': skin.colors.page,
+      '--cv-page': skin.colors.page,
+      '--resume-text': skin.colors.text,
+      '--cv-text': skin.colors.text,
     },
-    roundedClass: `radius-${radiusId}`,
-    textStyleClass: `text-style-${textStyle}`,
-    sectionIconStyleVariant: iconStyle,
+    roundedClass: `radius-${skin.radius.replace('px', '')}`,
+    textStyleClass: `text-style-${skin.typography.family.includes('Merriweather') ? 'serif' : 'clean'}`,
+    sectionIconStyleVariant: ICON_ALIAS[skin.iconStyle] ?? 'outline',
     layoutMode,
+    sectionStyleClass: `section-style-${skin.sectionStyle}`,
   }
 }

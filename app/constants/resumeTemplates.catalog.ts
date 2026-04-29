@@ -42,6 +42,7 @@ export const RESUME_SKINS_CATALOG: ResumeSkin[] = [
   { id: 'skin-cover-page-elegant', palette: 'elegant', radius: 'soft', typography: 'serif', iconStyle: 'text' },
   { id: 'skin-cover-letter-classic', palette: 'classic', radius: 'none', typography: 'serif', iconStyle: 'text' },
   { id: 'skin-cover-letter-modern', palette: 'modern', radius: 'soft', typography: 'sans', iconStyle: 'outline' },
+  { id: 'skin-graphite-pro', palette: 'modern', radius: 'soft', typography: 'sans', iconStyle: 'rounded' },
 ]
 
 export const RESUME_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [

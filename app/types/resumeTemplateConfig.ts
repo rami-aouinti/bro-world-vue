@@ -9,7 +9,19 @@ export type ResumeTemplateSectionVariant = 'detailed' | 'timeline' | 'compact' |
 export type ResumeTemplateIconStyle = 'text' | 'outline' | 'filled' | 'rounded'
 export type ResumeStructureId = 'no-aside' | 'aside-left' | 'aside-right'
 export type ResumeLayoutId = string
-export type ResumeSkinId = string
+export type ResumeTemplateSkinId =
+  | 'skin-executive-portrait'
+  | 'skin-midnight-banner'
+  | 'skin-minimal-profile'
+  | 'skin-classic'
+  | 'skin-modern'
+  | 'skin-cover-page-terra'
+  | 'skin-cover-page-elegant'
+  | 'skin-cover-letter-classic'
+  | 'skin-cover-letter-modern'
+  | 'skin-graphite-pro'
+
+export type ResumeSkinId = ResumeTemplateSkinId
 
 export type ResumeStructure = {
   id: ResumeStructureId
