@@ -1,0 +1,52 @@
+import type { ResumeDocumentModel, ResumeSectionLayoutModel } from '~/types/resumeDocumentModel'
+
+export const DEFAULT_SECTION_ORDER: ResumeSectionLayoutModel[] = [
+  { key: 'experience', variant: 'detailed', region: 'main', order: 0 },
+  { key: 'education', variant: 'classic', region: 'main', order: 1 },
+  { key: 'project', variant: 'classic', region: 'main', order: 2 },
+  { key: 'certification', variant: 'classic', region: 'aside', order: 4 },
+  { key: 'skill', variant: 'classic', region: 'aside', order: 0 },
+  { key: 'language', variant: 'classic', region: 'aside', order: 1 },
+  { key: 'reference', variant: 'classic', region: 'aside', order: 2 },
+  { key: 'hobby', variant: 'classic', region: 'aside', order: 3 },
+]
+
+export const DEFAULT_RESUME_STYLE: ResumeDocumentModel['style'] = {
+  palette: 'ocean',
+  pageBackground: 'white',
+  density: 'comfortable',
+  radius: 'md',
+  typography: 'clean',
+  photoPosition: 'right',
+  asideWidth: 280,
+  showSectionIcons: true,
+  showContactIcons: true,
+  sectionIconStyle: 'outline',
+  iconSize: 'm',
+  iconColor: 'accent',
+  layoutMode: 'aside-right',
+  decorativeShapeA: {
+    enabled: true,
+    type: 'circle',
+    width: 120,
+    height: 120,
+    size: 120,
+    color: '#1d4ed8',
+    opacity: 0.15,
+    x: 86,
+    y: 10,
+    rotation: 0,
+  },
+  decorativeShapeB: {
+    enabled: true,
+    type: 'square',
+    width: 180,
+    height: 48,
+    size: 120,
+    color: '#0f172a',
+    opacity: 0.1,
+    x: 6,
+    y: 86,
+    rotation: -12,
+  },
+}

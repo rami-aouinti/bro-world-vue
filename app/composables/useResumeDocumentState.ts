@@ -1,5 +1,6 @@
 import type { ResumeTemplateVariant } from '~/constants/resumeTemplates'
 import { resolveTemplateSkin } from '~/constants/resumeTemplateSkins'
+import { DEFAULT_RESUME_STYLE, DEFAULT_SECTION_ORDER } from '~/constants/resumeDefaults'
 import type {
   ResumeDocumentCustomizationState,
   ResumeDocumentModel,
@@ -8,22 +9,42 @@ import type {
 
 const STORAGE_KEY = 'resume-document-model-v1'
 
-const DEFAULT_SECTION_ORDER: ResumeSectionLayoutModel[] = [
-  { key: 'experience', variant: 'detailed', region: 'main', order: 0 },
-  { key: 'education', variant: 'classic', region: 'main', order: 1 },
-  { key: 'project', variant: 'classic', region: 'main', order: 2 },
-  { key: 'certification', variant: 'classic', region: 'aside', order: 4 },
-  { key: 'skill', variant: 'classic', region: 'aside', order: 0 },
-  { key: 'language', variant: 'classic', region: 'aside', order: 1 },
-  { key: 'reference', variant: 'classic', region: 'aside', order: 2 },
-  { key: 'hobby', variant: 'classic', region: 'aside', order: 3 },
-]
-
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
 }
 
-function normalizeSectionOrder(sectionOrder: unknown): ResumeSectionLayoutModel[] {
+export function clampNumber(value: unknown, min: number, max: number, fallback: number, round = false) {
+  if (typeof value !== 'number' || !Number.isFinite(value)) return fallback
+  const clamped = Math.min(max, Math.max(min, value))
+  return round ? Math.round(clamped) : clamped
+}
+
+export function normalizeEnum<T extends string>(value: unknown, allowed: readonly T[], fallback: T): T {
+  return typeof value === 'string' && allowed.includes(value as T) ? (value as T) : fallback
+}
+
+export function normalizeDecorativeShape(
+  shape: unknown,
+  defaults: ResumeDocumentModel['style']['decorativeShapeA'],
+  allowedTypes: readonly ResumeDocumentModel['style']['decorativeShapeA']['type'][],
+): ResumeDocumentModel['style']['decorativeShapeA'] {
+  if (!isRecord(shape)) return { ...defaults }
+
+  return {
+    enabled: typeof shape.enabled === 'boolean' ? shape.enabled : defaults.enabled,
+    type: normalizeEnum(shape.type, allowedTypes, defaults.type),
+    width: clampNumber(shape.width, 30, 360, defaults.width),
+    height: clampNumber(shape.height, 30, 360, defaults.height),
+    size: clampNumber(shape.size, 30, 360, defaults.size),
+    color: typeof shape.color === 'string' ? shape.color : defaults.color,
+    opacity: clampNumber(shape.opacity, 0.05, 1, defaults.opacity),
+    x: clampNumber(shape.x, 0, 100, defaults.x),
+    y: clampNumber(shape.y, 0, 100, defaults.y),
+    rotation: clampNumber(shape.rotation, -180, 180, defaults.rotation),
+  }
+}
+
+export function normalizeSectionOrder(sectionOrder: unknown): ResumeSectionLayoutModel[] {
   if (!Array.isArray(sectionOrder)) return DEFAULT_SECTION_ORDER.map(entry => ({ ...entry }))
 
   const parsedByKey = new Map<string, Partial<ResumeSectionLayoutModel>>()
@@ -43,141 +64,47 @@ function normalizeSectionOrder(sectionOrder: unknown): ResumeSectionLayoutModel[
   })
 }
 
-function normalizeModel(source: unknown, templateVariant: ResumeTemplateVariant): ResumeDocumentModel {
+export function normalizeStyle(
+  styleSource: unknown,
+  defaultLayoutMode: ResumeDocumentModel['style']['layoutMode'],
+): ResumeDocumentModel['style'] {
+  const style = isRecord(styleSource) ? styleSource : {}
+  const defaults = { ...DEFAULT_RESUME_STYLE, layoutMode: defaultLayoutMode }
+
+  return {
+    palette: typeof style.palette === 'string' ? style.palette : defaults.palette,
+    pageBackground: normalizeEnum(style.pageBackground, ['white', 'sky-light', 'pearl-light', 'ivory-light'] as const, defaults.pageBackground),
+    density: normalizeEnum(style.density, ['compact', 'comfortable'] as const, defaults.density),
+    radius: (style.radius as ResumeDocumentModel['style']['radius']) ?? defaults.radius,
+    typography: (style.typography as ResumeDocumentModel['style']['typography']) ?? defaults.typography,
+    photoPosition: normalizeEnum(style.photoPosition, ['left', 'right'] as const, defaults.photoPosition),
+    asideWidth: clampNumber(style.asideWidth, 220, 380, defaults.asideWidth, true),
+    showSectionIcons: typeof style.showSectionIcons === 'boolean' ? style.showSectionIcons : defaults.showSectionIcons,
+    showContactIcons: typeof style.showContactIcons === 'boolean' ? style.showContactIcons : defaults.showContactIcons,
+    sectionIconStyle: normalizeEnum(style.sectionIconStyle, ['outline', 'filled', 'rounded'] as const, defaults.sectionIconStyle),
+    iconSize: normalizeEnum(style.iconSize, ['s', 'm', 'l'] as const, defaults.iconSize),
+    iconColor: normalizeEnum(style.iconColor, ['accent', 'neutral'] as const, defaults.iconColor),
+    layoutMode: normalizeEnum(style.layoutMode, ['aside-left', 'aside-right', 'no-aside'] as const, defaults.layoutMode),
+    decorativeShapeA: normalizeDecorativeShape(style.decorativeShapeA, defaults.decorativeShapeA, ['circle', 'square', 'ring', 'bar'] as const),
+    decorativeShapeB: normalizeDecorativeShape(style.decorativeShapeB, defaults.decorativeShapeB, ['circle', 'square', 'ring', 'bar'] as const),
+  }
+}
+
+export function normalizeModel(source: unknown, templateVariant: ResumeTemplateVariant): ResumeDocumentModel {
   const defaultLayoutMode = resolveTemplateSkin(templateVariant).layoutMode
 
   if (!isRecord(source)) {
     return {
       templateVariant,
       sectionOrder: DEFAULT_SECTION_ORDER.map(entry => ({ ...entry })),
-      style: {
-        palette: 'ocean',
-        pageBackground: 'white',
-        density: 'comfortable',
-        radius: 'md',
-        typography: 'clean',
-        photoPosition: 'right',
-        asideWidth: 280,
-        showSectionIcons: true,
-        showContactIcons: true,
-        sectionIconStyle: 'outline',
-        iconSize: 'm',
-        iconColor: 'accent',
-        layoutMode: defaultLayoutMode,
-        decorativeShapeA: {
-          enabled: true,
-          type: 'circle',
-          width: 120,
-          height: 120,
-          size: 120,
-          color: '#1d4ed8',
-          opacity: 0.15,
-          x: 86,
-          y: 10,
-          rotation: 0,
-        },
-        decorativeShapeB: {
-          enabled: true,
-          type: 'square',
-          width: 180,
-          height: 48,
-          size: 120,
-          color: '#0f172a',
-          opacity: 0.1,
-          x: 6,
-          y: 86,
-          rotation: -12,
-        },
-      },
+      style: normalizeStyle(null, defaultLayoutMode),
     }
   }
 
-  const style = isRecord(source.style) ? source.style : {}
-
   return {
-    templateVariant: typeof source.templateVariant === 'string'
-      ? source.templateVariant as ResumeTemplateVariant
-      : templateVariant,
+    templateVariant: typeof source.templateVariant === 'string' ? source.templateVariant as ResumeTemplateVariant : templateVariant,
     sectionOrder: normalizeSectionOrder(source.sectionOrder),
-    style: {
-      palette: typeof style.palette === 'string' ? style.palette : 'ocean',
-      pageBackground: style.pageBackground === 'sky-light' || style.pageBackground === 'pearl-light' || style.pageBackground === 'ivory-light' ? style.pageBackground : 'white',
-      density: style.density === 'compact' ? 'compact' : 'comfortable',
-      radius: (style.radius as ResumeDocumentModel['style']['radius']) ?? 'md',
-      typography: (style.typography as ResumeDocumentModel['style']['typography']) ?? 'clean',
-      photoPosition: style.photoPosition === 'left' ? 'left' : 'right',
-      asideWidth: typeof style.asideWidth === 'number' && Number.isFinite(style.asideWidth)
-        ? Math.min(380, Math.max(220, Math.round(style.asideWidth)))
-        : 280,
-      showSectionIcons: typeof style.showSectionIcons === 'boolean' ? style.showSectionIcons : true,
-      showContactIcons: typeof style.showContactIcons === 'boolean' ? style.showContactIcons : true,
-      sectionIconStyle: style.sectionIconStyle === 'filled' || style.sectionIconStyle === 'rounded' ? style.sectionIconStyle : 'outline',
-      iconSize: style.iconSize === 's' || style.iconSize === 'l' ? style.iconSize : 'm',
-      iconColor: style.iconColor === 'neutral' ? 'neutral' : 'accent',
-      layoutMode: style.layoutMode === 'aside-left' || style.layoutMode === 'aside-right' || style.layoutMode === 'no-aside'
-        ? style.layoutMode
-        : defaultLayoutMode,
-      decorativeShapeA: isRecord(style.decorativeShapeA)
-        ? {
-            enabled: typeof style.decorativeShapeA.enabled === 'boolean' ? style.decorativeShapeA.enabled : true,
-            type:
-              style.decorativeShapeA.type === 'square' ||
-              style.decorativeShapeA.type === 'ring' ||
-              style.decorativeShapeA.type === 'bar'
-                ? style.decorativeShapeA.type
-                : 'circle',
-            width: typeof style.decorativeShapeA.width === 'number' ? Math.min(360, Math.max(30, style.decorativeShapeA.width)) : 120,
-            height: typeof style.decorativeShapeA.height === 'number' ? Math.min(360, Math.max(30, style.decorativeShapeA.height)) : 120,
-            size: typeof style.decorativeShapeA.size === 'number' ? Math.min(360, Math.max(30, style.decorativeShapeA.size)) : 120,
-            color: typeof style.decorativeShapeA.color === 'string' ? style.decorativeShapeA.color : '#1d4ed8',
-            opacity: typeof style.decorativeShapeA.opacity === 'number' ? Math.min(1, Math.max(0.05, style.decorativeShapeA.opacity)) : 0.15,
-            x: typeof style.decorativeShapeA.x === 'number' ? Math.min(100, Math.max(0, style.decorativeShapeA.x)) : 86,
-            y: typeof style.decorativeShapeA.y === 'number' ? Math.min(100, Math.max(0, style.decorativeShapeA.y)) : 10,
-            rotation: typeof style.decorativeShapeA.rotation === 'number' ? Math.min(180, Math.max(-180, style.decorativeShapeA.rotation)) : 0,
-          }
-        : {
-            enabled: true,
-            type: 'circle',
-            width: 120,
-            height: 120,
-            size: 120,
-            color: '#1d4ed8',
-            opacity: 0.15,
-            x: 86,
-            y: 10,
-            rotation: 0,
-          },
-      decorativeShapeB: isRecord(style.decorativeShapeB)
-        ? {
-            enabled: typeof style.decorativeShapeB.enabled === 'boolean' ? style.decorativeShapeB.enabled : true,
-            type:
-              style.decorativeShapeB.type === 'circle' ||
-              style.decorativeShapeB.type === 'ring' ||
-              style.decorativeShapeB.type === 'bar'
-                ? style.decorativeShapeB.type
-                : 'square',
-            width: typeof style.decorativeShapeB.width === 'number' ? Math.min(360, Math.max(30, style.decorativeShapeB.width)) : 180,
-            height: typeof style.decorativeShapeB.height === 'number' ? Math.min(360, Math.max(30, style.decorativeShapeB.height)) : 48,
-            size: typeof style.decorativeShapeB.size === 'number' ? Math.min(360, Math.max(30, style.decorativeShapeB.size)) : 120,
-            color: typeof style.decorativeShapeB.color === 'string' ? style.decorativeShapeB.color : '#0f172a',
-            opacity: typeof style.decorativeShapeB.opacity === 'number' ? Math.min(1, Math.max(0.05, style.decorativeShapeB.opacity)) : 0.1,
-            x: typeof style.decorativeShapeB.x === 'number' ? Math.min(100, Math.max(0, style.decorativeShapeB.x)) : 6,
-            y: typeof style.decorativeShapeB.y === 'number' ? Math.min(100, Math.max(0, style.decorativeShapeB.y)) : 86,
-            rotation: typeof style.decorativeShapeB.rotation === 'number' ? Math.min(180, Math.max(-180, style.decorativeShapeB.rotation)) : -12,
-          }
-        : {
-            enabled: true,
-            type: 'square',
-            width: 180,
-            height: 48,
-            size: 120,
-            color: '#0f172a',
-            opacity: 0.1,
-            x: 6,
-            y: 86,
-            rotation: -12,
-          },
-    },
+    style: normalizeStyle(source.style, defaultLayoutMode),
   }
 }
 
