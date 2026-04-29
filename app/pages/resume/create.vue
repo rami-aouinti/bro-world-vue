@@ -2365,10 +2365,6 @@ function recalculatePreviewPagination() {
   measuredLastPageUsage.value = Math.max(0, Math.min(100, Math.round((lastPageHeight / A4_PREVIEW_HEIGHT) * 100)))
 }
 
-const previewPaginationHint = computed(
-  () => `PDF: ${measuredPageCount.value} page(s) • ${measuredPreviewHeight.value}px • last page ${measuredLastPageUsage.value}%`,
-)
-
 const previewFallbackSections = computed(() => {
   const sections: Array<{ title: string; items: string[] }> = []
 
@@ -4071,7 +4067,6 @@ if (import.meta.client) {
                         <img :src="signatureDataUrl" alt="Signature" />
                       </div>
                     </div>
-                    <div class="resume-page-break-hint">{{ t('resumeBuilder.create.static.a4PageEnd') }} • {{ previewPaginationHint }}</div>
                   </div>
                 </div>
               </div>
