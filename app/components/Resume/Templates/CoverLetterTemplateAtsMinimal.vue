@@ -61,6 +61,6 @@ const designVars = computed(() => buildCoverDesignVars('cl', props))
 
 <style scoped>
 .cover-letter-ats { font-family: var(--cl-font-family, 'Inter', 'Segoe UI', sans-serif); font-style: var(--cl-font-style, normal); font-weight: var(--cl-font-weight, 400); min-height: 100%; background: var(--cl-page); color: var(--cl-text); border-radius: var(--cl-rounded); padding: 34px 40px; display: grid; gap: 12px; line-height: 1.55; border: var(--cl-divider-width) var(--cl-divider-style) color-mix(in srgb, var(--cl-soft) 70%, var(--cl-page)); }
-.cover-letter-ats p:first-child { font-weight: 700; color: var(--cl-accent); }
+.cover-letter-ats p:first-child { font-weight: 700; color: var(--cl-page); }
 .cover-letter-ats p:nth-child(2) { font-size: .92rem; }
 </style>
