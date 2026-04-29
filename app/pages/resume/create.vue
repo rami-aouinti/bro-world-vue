@@ -519,17 +519,19 @@ const addSectionOptions = [
   { label: t('resumeBuilder.create.options.addSection.certification'), value: 'certification' },
   { label: t('resumeBuilder.create.options.addSection.reference'), value: 'reference' },
 ] as const satisfies ReadonlyArray<{ label: string; value: AddSectionType }>
-const sectionVariantLabels = Object.values(RESUME_SECTION_REGISTRY)
-  .flatMap((section) => section.variants)
-  .reduce<Record<string, string>>((accumulator, option) => {
-    accumulator[option.value] = t(option.labelKey)
-    return accumulator
-  }, {})
-const resumeContentStyleSelectItems = RESUME_CONTENT_STYLE_OPTIONS.map(
-  (option) => ({
+const sectionVariantLabels = computed(() =>
+  Object.values(RESUME_SECTION_REGISTRY)
+    .flatMap((section) => section.variants)
+    .reduce<Record<string, string>>((accumulator, option) => {
+      accumulator[option.value] = t(option.labelKey)
+      return accumulator
+    }, {}),
+)
+const resumeContentStyleSelectItems = computed(() =>
+  RESUME_CONTENT_STYLE_OPTIONS.map((option) => ({
     label: t(option.labelKey),
     value: option.value,
-  }),
+  })),
 )
 const sectionConfig: {
   [K in ResumePreviewSectionKey]: {

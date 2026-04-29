@@ -2860,7 +2860,8 @@
         "resumeReplaced": "Resume replaced successfully.",
         "resumeCreated": "New resume created successfully.",
         "resumeReplaceFailed": "Failed to replace resume.",
-        "resumeCreateFailed": "Failed to create resume."
+        "resumeCreateFailed": "Failed to create resume.",
+        "aiSummaryRequired": "Agrega un resumen para usar la IA."
       },
       "previewFallback": {
         "profileTitle": "Profile",
@@ -3012,6 +3013,14 @@
           "progress": "Progress",
           "timeline": "Timeline"
         }
+      },
+      "validation": {
+        "repositoryUrlProtocol": "La URL del repositorio debe comenzar con http:// o https://",
+        "repositoryUrlInvalid": "Introduce una URL de repositorio válida.",
+        "logoInvalidFormat": "Formato no válido. Usa JPG, PNG, SVG, WEBP o GIF.",
+        "logoFileTooLarge": "El archivo es demasiado grande (máx. 5 MB).",
+        "logoReadFailed": "No se pudo leer el archivo seleccionado.",
+        "logoLoadFailed": "No se pudo cargar la imagen. Inténtalo de nuevo."
       }
     },
     "meta": {
