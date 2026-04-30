@@ -420,6 +420,11 @@ function openShowDialog(item: GenericItem) {
   showDialog.value = true
 }
 
+function openEditFromDetailDialog(item: GenericItem) {
+  showDialog.value = false
+  openEditDialog(item)
+}
+
 function pathParams(path: string) {
   return Array.from(path.matchAll(/\{([^}]+)\}/g))
     .map((match) => match[1] ?? '')
@@ -861,10 +866,7 @@ async function submitApiAction() {
           color="info"
           variant="tonal"
           prepend-icon="mdi-pencil-outline"
-          @click="
-            showDialog = false
-            openEditDialog(currentItem)
-          "
+          @click="openEditFromDetailDialog(currentItem)"
         >
           Edit
         </v-btn>
