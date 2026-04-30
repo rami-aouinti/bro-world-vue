@@ -25,10 +25,10 @@ const selectedTemplate = computed(() => {
 })
 
 const selectedGeneratedTemplate = computed(() => {
-  if (!selectedTemplate.value?.id) return null
+  if (!selectedTemplate.value?.templateId) return null
   return (
     GENERATED_RESUME_TEMPLATES.find(
-      (template) => template.id === selectedTemplate.value?.id,
+      (template) => template.id === selectedTemplate.value?.templateId,
     ) || null
   )
 })

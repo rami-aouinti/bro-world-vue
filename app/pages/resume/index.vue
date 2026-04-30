@@ -62,7 +62,9 @@ const displayedTemplates = computed(() =>
   allTemplates.value.filter((template) => {
     if (template.type !== activeTemplateTab.value) return false
     if (template.type !== 'resume') return false
-    return GENERATED_RESUME_TEMPLATES.some((item) => item.id === template.id)
+    return GENERATED_RESUME_TEMPLATES.some(
+      (item) => item.id === template.templateId,
+    )
   }),
 )
 
