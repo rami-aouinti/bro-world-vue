@@ -7,9 +7,9 @@ import type {
 import { DEFAULT_RESUME_TEMPLATE_ID } from '~/constants/resumeTemplates'
 import { COVER_LETTER_TEMPLATES_CATALOG, COVER_PAGE_TEMPLATES_CATALOG } from '~/constants/resumeTemplates.catalog'
 import { CV_SOCLE_PRESETS, resolveSoclePresetById } from '~/constants/resumeSoclePresets'
-import {
-  type ResumeLayoutMode,
-  type ResumeSectionIconStyleVariant,
+import type {
+  ResumeLayoutMode,
+  ResumeSectionIconStyleVariant,
 } from '~/constants/resumeTemplateSkins'
 import {
   RESUME_CONTENT_STYLE_OPTIONS,

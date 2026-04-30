@@ -809,8 +809,8 @@ const handleLogin = async () => {
                     :hovered="motionContext.catalogMedia.hovered"
                     :tapped="motionContext.catalogMedia.tapped"
                     class="catalog-image"
-                    @click="openCategory(category.id)"
                     :style="getCatalogImageStyle(category.id, 'category')"
+                    @click="openCategory(category.id)"
                 >
                   <v-img :src="category.img" alt="Card" />
                 </div>
@@ -843,7 +843,6 @@ const handleLogin = async () => {
               <v-card-title class="text-center">{{ t(subCategory?.nameKey) }}</v-card-title>
               <div class="w-100 pa-3">
                 <div
-                    @click="openSubCategory(subCategory.id)"
                     v-motion
                     :initial="motionContext.catalogMedia.initial"
                     :enter="motionContext.catalogMedia.enter"
@@ -851,6 +850,7 @@ const handleLogin = async () => {
                     :tapped="motionContext.catalogMedia.tapped"
                     class="catalog-image"
                     :style="getCatalogImageStyle(subCategory.id, 'subCategory')"
+                    @click="openSubCategory(subCategory.id)"
                 >
                   <v-img :src="subCategory.img" alt="Card" />
                 </div>
@@ -880,15 +880,15 @@ const handleLogin = async () => {
               <v-card-subtitle class="text-center">{{ t(game?.nameKey) }}</v-card-subtitle>
               <div class="w-100 pa-3">
                 <div
-                    @click="openGame(game.id)"
-                    :disabled="!isGameAvailableForLaunch(game)"
                     v-motion
+                    :disabled="!isGameAvailableForLaunch(game)"
                     :initial="motionContext.catalogMedia.initial"
                     :enter="motionContext.catalogMedia.enter"
                     :hovered="motionContext.catalogMedia.hovered"
                     :tapped="motionContext.catalogMedia.tapped"
                     class="catalog-image"
                     :style="getCatalogImageStyle(game.id, 'game')"
+                    @click="openGame(game.id)"
                 >
                   <v-img :src="game.img" alt="Card" />
                 </div>
@@ -1062,93 +1062,93 @@ const handleLogin = async () => {
         :enter="motionContext.inGamePanel.enter"
       >
         <RamiGame
-          ref="ramiGameRef"
           v-if="selectedGame.component === 'rami'"
+          ref="ramiGameRef"
           :selected-play-mode="selectedPlayMode"
           @panel-state="onGamePanelState"
         />
         <BeloteGame
-          ref="beloteGameRef"
           v-else-if="selectedGame.component === 'belote'"
+          ref="beloteGameRef"
           :selected-play-mode="selectedPlayMode"
           :belote-mode="selectedBeloteMode ?? 'teams'"
           @panel-state="onGamePanelState"
         />
         <CheckersGame
-          ref="checkersGameRef"
           v-else-if="selectedGame.component === 'checkers'"
+          ref="checkersGameRef"
           :selected-play-mode="selectedPlayMode"
           @panel-state="onGamePanelState"
         />
         <PokerGame
-          ref="pokerGameRef"
           v-else-if="selectedGame.component === 'poker'"
+          ref="pokerGameRef"
           :selected-play-mode="selectedPlayMode"
           @panel-state="onGamePanelState"
         />
         <SolitaireGame
-          ref="solitaireGameRef"
           v-else-if="selectedGame.component === 'solitaire'"
+          ref="solitaireGameRef"
           :selected-play-mode="selectedPlayMode"
           @panel-state="onGamePanelState"
         />
         <HeartsGame
-          ref="heartsGameRef"
           v-else-if="selectedGame.component === 'hearts'"
+          ref="heartsGameRef"
           :selected-play-mode="selectedPlayMode"
           @panel-state="onGamePanelState"
         />
         <SpadesGame
-          ref="spadesGameRef"
           v-else-if="selectedGame.component === 'spades'"
+          ref="spadesGameRef"
           :selected-play-mode="selectedPlayMode"
           @panel-state="onGamePanelState"
         />
         <NonogramGame
-          ref="nonogramGameRef"
           v-else-if="selectedGame.component === 'nonogram'"
+          ref="nonogramGameRef"
           :selected-play-mode="selectedPlayMode"
           @panel-state="onGamePanelState"
         />
         <HiddenWordGame
-          ref="hiddenWordGameRef"
           v-else-if="selectedGame.component === 'hidden-word'"
+          ref="hiddenWordGameRef"
           :selected-play-mode="selectedPlayMode"
           @panel-state="onGamePanelState"
         />
         <ChessGame
-          ref="chessGameRef"
           v-else-if="selectedGame.component === 'chess'"
+          ref="chessGameRef"
           :selected-play-mode="selectedPlayMode"
           @panel-state="onGamePanelState"
         />
         <SudokuGame
-          ref="sudokuGameRef"
           v-else-if="selectedGame.component === 'sudoku'"
+          ref="sudokuGameRef"
           :selected-play-mode="selectedPlayMode"
           @panel-state="onGamePanelState"
         />
         <Game2048
-          ref="game2048Ref"
           v-else-if="selectedGame.component === 'game2048'"
+          ref="game2048Ref"
           :selected-play-mode="selectedPlayMode"
           @panel-state="onGamePanelState"
         />
         <UnoGame
-          ref="unoGameRef"
           v-else-if="selectedGame.component === 'uno'"
+          ref="unoGameRef"
           :selected-play-mode="selectedPlayMode"
           @panel-state="onGamePanelState"
         />
         <LudoGame
-          ref="ludoGameRef"
           v-else-if="selectedGame.component === 'ludo'"
+          ref="ludoGameRef"
           :selected-play-mode="selectedPlayMode"
           @panel-state="onGamePanelState"
         />
         <FlappyRocketGame
-          ref="flappyRocketGameRef"
           v-else-if="selectedGame.component === 'flappy-rocket'"
+          ref="flappyRocketGameRef"
           :selected-play-mode="selectedPlayMode"
           @panel-state="onGamePanelState"
         />

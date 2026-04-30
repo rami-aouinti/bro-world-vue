@@ -53,9 +53,9 @@ const hasSoonBadge = (game: GameEntry) => game.developmentStatus === "coming_soo
         class="pa-3"
       >
         <div class="d-flex justify-space-between align-center ga-2 mb-2">
-          <v-avatar size="32" :image="game.img"></v-avatar>
+          <v-avatar size="32" :image="game.img"/>
           <span class="font-weight-medium">{{ gameNameLabel(game) }}</span>
-          <v-spacer></v-spacer>
+          <v-spacer/>
           <v-chip
             v-if="hasSoonBadge(game)"
             size="small"

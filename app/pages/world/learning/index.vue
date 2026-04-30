@@ -198,8 +198,8 @@ watch([locale, referenceNavItems], () => {
       :module-description="t('world.learning.moduleDescription')"
       :nav-items="learningNavItems"
       :action-label="'Create School'"
-      @action="navigateTo('/platform/school/new')"
       activate-right-drawer
+      @action="navigateTo('/platform/school/new')"
     >
       <template #right>
         <div class="d-flex flex-column ga-4">

@@ -392,7 +392,7 @@ defineExpose({
           <p class="text-subtitle-2 font-weight-bold mt-3 mb-1">
             {{ t("gameComponents.belote.scoreboard.global") }}
           </p>
-          <p class="mb-1" v-if="props.beloteMode === 'teams'">
+          <p v-if="props.beloteMode === 'teams'" class="mb-1">
             {{
               t("gameComponents.belote.totalTeams", {
                 scoreA: totalTeamScores.teamA,
@@ -400,7 +400,7 @@ defineExpose({
               })
             }}
           </p>
-          <p class="mb-1" v-else>
+          <p v-else class="mb-1">
               <span
                   v-for="(player, index) in players"
                   :key="`${player.id}-global`"

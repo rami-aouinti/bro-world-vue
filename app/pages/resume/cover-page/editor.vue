@@ -181,8 +181,7 @@ onMounted(async () => {
           Continue to Cover Letter
         </v-btn>
       </template>
-      <template #right>
-      </template>
+      <template #right/>
     </AppPageDrawers>
 
     <v-container fluid>

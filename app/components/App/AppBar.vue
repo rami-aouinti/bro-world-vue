@@ -709,7 +709,7 @@ onBeforeUnmount(() => {
           {{ button.label }}
         </v-btn>
       </template>
-      <v-menu v-else v-for="menu in navMenus" :key="menu.label" location="bottom">
+      <v-menu v-for="menu in navMenus" v-else :key="menu.label" location="bottom">
         <template #activator="{ props }">
           <v-btn
             v-bind="props"

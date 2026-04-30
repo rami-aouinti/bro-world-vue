@@ -1217,8 +1217,8 @@ reset();
           <div class="hand-fan hand-fan--player">
             <button
               v-for="(card, index) in playerHand"
-              :key="card.id"
               :id="`rami-card-${card.id}`"
+              :key="card.id"
               type="button"
               class="play-card play-card--front hand-fan__card"
               :class="{
