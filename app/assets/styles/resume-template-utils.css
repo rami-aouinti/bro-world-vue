@@ -65,3 +65,61 @@
     radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--cv-sidebar) 35%, var(--cv-accent)), transparent 40%),
     radial-gradient(circle at 50% 80%, color-mix(in srgb, var(--cv-accent) 55%, var(--cv-page)), transparent 40%));
 }
+
+.resume-header-hero .resume-skin__header {
+  background: var(--cv-gradient-hero, linear-gradient(135deg, var(--cv-accent), color-mix(in srgb, var(--cv-accent) 72%, var(--cv-sidebar))));
+  color: var(--cv-on-accent, white);
+}
+
+.aside-full .resume-skin__aside,
+.resume-skin__aside.aside-full {
+  min-height: 100%;
+}
+
+.section-ribbon-soft .cv-heading-section,
+.section-ribbon-accent .cv-heading-section {
+  padding: 4px 10px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-ribbon-soft .cv-heading-section {
+  background: color-mix(in srgb, var(--cv-accent) 16%, transparent);
+}
+
+.section-ribbon-accent .cv-heading-section {
+  background: var(--cv-accent);
+  color: var(--cv-page);
+}
+
+.resume-separator-vertical-line .resume-template__columns,
+.resume-separator-vertical-line .resume-skin__wrapper {
+  position: relative;
+}
+
+.resume-separator-vertical-line .resume-template__columns::before,
+.resume-separator-vertical-line .resume-skin__wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--resume-sidebar-width, 280px);
+  width: 1px;
+  background: color-mix(in srgb, var(--cv-accent) 26%, var(--cv-page));
+}
+
+.resume-accent-contrast {
+  --cv-accent: color-mix(in srgb, var(--cv-accent) 72%, black);
+}
+
+.resume-accent-muted {
+  --cv-accent: color-mix(in srgb, var(--cv-accent) 58%, var(--cv-page));
+}
+
+.split-contact-row .resume-skin__header-contact {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 14px;
+}
