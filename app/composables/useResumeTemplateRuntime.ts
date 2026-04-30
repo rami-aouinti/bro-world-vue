@@ -63,6 +63,28 @@ const DEFAULT_RUNTIME_PRESET: TemplateRuntimePreset = {
   photoScale: 1,
 }
 
+
+const LEGACY_LAYOUT_ID_ALIASES: Record<string, string> = {
+  'layout-no-aside-a': 'no-aside-a',
+  'layout-no-aside-b': 'no-aside-b',
+  'layout-no-aside-c': 'no-aside-c',
+  'layout-aside-left-a': 'aside-left-a',
+  'layout-aside-left-b': 'aside-left-b',
+  'layout-aside-left-c': 'aside-left-c',
+  'layout-aside-right-a': 'aside-right-a',
+  'layout-aside-right-b': 'aside-right-b',
+  'layout-aside-right-c': 'aside-right-c',
+}
+
+const LEGACY_SKIN_ID_ALIASES: Record<string, string> = {
+  'skin-urban': 'skin-modern',
+  'skin-compact-ats': 'skin-minimal-profile',
+  'skin-executive': 'skin-executive-portrait',
+  'skin-terra': 'skin-cover-page-terra',
+  'skin-elegant': 'skin-cover-page-elegant',
+  'skin-oceanic': 'skin-midnight-banner',
+}
+
 const TEMPLATE_RUNTIME_PRESETS: Record<
   string,
   Partial<TemplateRuntimePreset>
@@ -102,10 +124,13 @@ function resolveRuntimePreset(
 }
 
 export function resolveRuntimeLayoutAndSkin(layoutId: string, skinId: string) {
+  const normalizedLayoutId = LEGACY_LAYOUT_ID_ALIASES[layoutId] ?? layoutId
+  const normalizedSkinId = LEGACY_SKIN_ID_ALIASES[skinId] ?? skinId
+
   const layout =
-    getResumeLayoutById(layoutId) ??
-    RESUME_LAYOUTS_CATALOG.find((entry) => entry.id === layoutId)
-  const skin = RESUME_SKINS_REGISTRY[skinId]
+    getResumeLayoutById(normalizedLayoutId) ??
+    RESUME_LAYOUTS_CATALOG.find((entry) => entry.id === normalizedLayoutId)
+  const skin = RESUME_SKINS_REGISTRY[normalizedSkinId]
   if (!layout || !skin)
     throw new Error(
       `[resume-runtime] Unknown layout/skin combination: ${layoutId}/${skinId}`,
