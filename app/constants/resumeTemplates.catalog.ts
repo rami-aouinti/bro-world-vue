@@ -6,6 +6,7 @@ import type {
   ResumeTemplateType,
 } from '~/types/resumeTemplateConfig'
 import { RESUME_SKIN_PALETTES, type ResumeSkinPaletteId } from '~/constants/resumeDesign'
+import { RESUME_BASE_PRESETS, RESUME_COMPOSED_PRESET_METADATA, RESUME_STYLE_PACKS, buildResumeTemplateFromPreset } from './resumePresets'
 
 const DEFAULT_VISIBLE_OPTIONS: ResumeTemplateConfig['visibleOptions'] = {
   photo: true,
@@ -174,38 +175,32 @@ export const COVER_LETTER_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [
   { id: 'cover-letter-split-focus', structureId: 'aside-left', layoutId: 'layout-aside-left-b', skinId: 'skin-oceanic', label: 'Cover Letter Split Focus', subtitle: 'Split focus layout to balance profile and pitch', type: 'cover-letter', image: '/img/cv/cv-4.png', templateId: 'cv-socle', visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, twoColumn: true } },
 ]
 
-const formatLabel = (value: string): string =>
-  value
-    .replace(/^layout-/, '')
-    .replace(/^skin-/, '')
-    .split('-')
-    .map(token => token.charAt(0).toUpperCase() + token.slice(1))
-    .join(' ')
+const RESUME_GENERATED_TEMPLATES: ResumeTemplateConfig[] = RESUME_COMPOSED_PRESET_METADATA.map((meta) => {
+  const basePreset = RESUME_BASE_PRESETS.find((entry) => entry.id === meta.basePresetId)
+  const stylePack = RESUME_STYLE_PACKS.find((entry) => entry.id === meta.stylePackId)
 
-const RESUME_GENERATED_TEMPLATES: ResumeTemplateConfig[] = RESUME_LAYOUTS_CATALOG.flatMap(layout =>
-  RESUME_SKINS_CATALOG.map(skin => {
-    const isTwoColumn = layout.structureId !== 'no-aside'
-    const templateType: ResumeTemplateType = 'resume'
+  if (!basePreset || !stylePack) {
+    throw new Error(`Unable to resolve preset composition for ${meta.id}`)
+  }
 
-    return {
-      id: `resume-${layout.id}-${skin.id}`,
-      structureId: layout.structureId,
-      layoutId: layout.id,
-      skinId: skin.id,
-      label: `${formatLabel(layout.id)} · ${formatLabel(skin.id)}`,
-      subtitle: `Template CV ${formatLabel(layout.id)} avec skin ${formatLabel(skin.id)}`,
-      type: templateType,
-      image: '/img/cv/resume-modern.svg',
-      templateId: 'cv-socle',
-      visibleOptions: {
-        ...DEFAULT_VISIBLE_OPTIONS,
-        twoColumn: isTwoColumn,
-        timeline: false,
-      },
-    }
-  }),
-)
+  const isTwoColumn = basePreset.structureId !== 'no-aside'
+  const commonMeta = buildResumeTemplateFromPreset(meta)
 
+  return {
+    ...commonMeta,
+    structureId: basePreset.structureId,
+    layoutId: basePreset.layoutId,
+    skinId: stylePack.skinId,
+    type: 'resume',
+    templateId: 'cv-socle',
+    presetId: meta.id,
+    visibleOptions: {
+      ...DEFAULT_VISIBLE_OPTIONS,
+      twoColumn: isTwoColumn,
+      timeline: stylePack.skinId === 'skin-midnight-banner',
+    },
+  }
+})
 
 const RESUME_CURATED_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [
   {
