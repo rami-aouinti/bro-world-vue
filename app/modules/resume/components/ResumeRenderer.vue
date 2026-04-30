@@ -2,6 +2,8 @@
 import ResumeRendererBase from '~/components/Resume/Templates/ResumeRenderer.vue'
 import { resolveTemplateSkin } from '~/constants/resumeTemplateSkins'
 import type { ResumeTemplateSkin } from '~/constants/resumeTemplateSkins'
+import { resolveSectionRenderer } from '../renderers/sections/sectionRendererRegistry'
+import type { ResumeSectionRendererKey, ResumeSectionRendererVariant } from '../renderers/sections/types'
 import { validateTemplateConfig } from '../template/template.schema'
 
 const props = defineProps<{
@@ -13,6 +15,12 @@ const props = defineProps<{
     skinId?: string
     layoutMode?: 'aside-left' | 'aside-right' | 'no-aside'
   }
+  section?: ResumeSectionRendererKey
+  sectionVariant?: ResumeSectionRendererVariant | string
+  items?: unknown[]
+  theme?: Record<string, string | number>
+  showIcon?: boolean
+  density?: 'compact' | 'normal' | 'spacious' | string
 }>()
 
 const SAFE_TEMPLATE_ID = 'classic'
@@ -55,10 +63,24 @@ const mergedResume = computed(() => ({
     skinId: normalizedTemplateConfig.value.skinId || resolvedTemplateId.value,
   },
 }))
+
+const atomicSectionRenderer = computed(() => {
+  if (!props.section) return null
+  return resolveSectionRenderer(props.section, props.sectionVariant ?? 'classic')
+})
 </script>
 
 <template>
+  <component
+    :is="atomicSectionRenderer"
+    v-if="atomicSectionRenderer"
+    :items="items"
+    :theme="theme"
+    :show-icon="showIcon"
+    :density="density"
+  />
   <ResumeRendererBase
+    v-else
     v-bind="$attrs"
     :resume="mergedResume"
     :template-id="resolvedTemplateId"
