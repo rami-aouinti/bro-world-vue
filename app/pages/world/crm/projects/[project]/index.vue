@@ -176,6 +176,14 @@ async function detachAssignee(userId: string) {
       action-icon="mdi-account-plus-outline"
     >
       <template #right>
+        <div v-if="isViewMode && isRootAdmin" class="d-flex ga-2 mb-4">
+          <v-btn color="primary" @click="router.push(`/world/crm/projects/${projectId}`)">
+            Edit
+          </v-btn>
+          <v-btn color="error" variant="tonal" @click="deleteProject">
+            Delete
+          </v-btn>
+        </div>
         <div v-if="isViewMode">
           <p class="text-caption mb-1">
             {{ t('world.crm.projects.form.description') }}
