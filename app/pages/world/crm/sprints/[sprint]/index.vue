@@ -143,6 +143,14 @@ async function detachTask() {
       action-icon="mdi-account-plus-outline"
     >
       <template #right>
+        <div v-if="isViewMode && isRootAdmin" class="d-flex ga-2 mb-4">
+          <v-btn color="primary" @click="router.push(`/world/crm/sprints/${sprintId}`)">
+            Edit
+          </v-btn>
+          <v-btn color="error" variant="tonal" @click="remove">
+            Delete
+          </v-btn>
+        </div>
         <h3 class="text-subtitle-1 mb-3">
           {{ t('world.crm.sprints.sections.assignees') }}
         </h3>

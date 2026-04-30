@@ -336,6 +336,14 @@ onBeforeUnmount(() => {
       action-icon="mdi-account-plus-outline"
     >
       <template #right>
+        <div v-if="isViewMode && isRootAdmin" class="d-flex ga-2 mb-4">
+          <v-btn color="primary" @click="router.push(`/world/crm/task-requests/${id}`)">
+            Edit
+          </v-btn>
+          <v-btn color="error" variant="tonal" @click="remove">
+            Delete
+          </v-btn>
+        </div>
         <div class="d-flex flex-column ga-4">
           <div>
             <h3 class="text-subtitle-1 mb-3">Work timer</h3>

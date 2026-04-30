@@ -17,10 +17,6 @@ const { sessionUser } = useCrmPermissions()
 const isRootAdmin = computed(() =>
   (sessionUser.value?.roles ?? []).includes('ROLE_ROOT'),
 )
-const isAdminOrRoot = computed(() => {
-  const roles = sessionUser.value?.roles ?? []
-  return roles.includes('ROLE_ROOT') || roles.includes('ROLE_ADMIN')
-})
 
 function provisioningColor(state: string | null | undefined) {
   const normalized = String(state ?? '').toLowerCase()
@@ -277,12 +273,16 @@ async function deleteProject() {
                 }}</v-chip>
               </div>
               <div class="d-flex justify-space-between align-start ga-2 mb-2">
-                <div class="d-flex align-center ga-2">
+                <button
+                  type="button"
+                  class="d-flex align-center ga-2 detail-trigger-button"
+                  @click="router.push(`/world/crm/projects/${project.id}?mode=view`)"
+                >
                   <CrmEntityAvatar :label="project.name" :size="36" />
-                  <p class="text-subtitle-1 text-truncate">
+                  <p class="text-subtitle-1 text-truncate mb-0 text-left">
                     {{ project.name }}
                   </p>
-                </div>
+                </button>
               </div>
               <div class="d-flex flex-wrap ga-2 mb-4">
                 <v-chip size="small" color="info" variant="tonal">
@@ -298,31 +298,6 @@ async function deleteProject() {
                 </v-chip>
               </div>
               <v-spacer />
-              <div v-if="isAdminOrRoot" class="d-flex justify-center ga-1 mt-1">
-                <v-btn
-                  icon="mdi-eye-outline"
-                  color="info"
-                  variant="text"
-                  size="x-small"
-                  @click="
-                    router.push(`/world/crm/projects/${project.id}?mode=view`)
-                  "
-                />
-                <v-btn
-                  icon="mdi-pencil-outline"
-                  color="primary"
-                  variant="text"
-                  size="x-small"
-                  @click="router.push(`/world/crm/projects/${project.id}`)"
-                />
-                <v-btn
-                  icon="mdi-delete-outline"
-                  color="error"
-                  variant="text"
-                  size="x-small"
-                  @click="openDeleteDialog(project.id)"
-                />
-              </div>
             </WorldCard>
           </v-col>
 
@@ -417,3 +392,12 @@ async function deleteProject() {
     </AppModal>
   </div>
 </template>
+
+<style scoped>
+.detail-trigger-button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+</style>
