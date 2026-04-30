@@ -182,7 +182,78 @@ const RESUME_GENERATED_TEMPLATES: ResumeTemplateConfig[] = RESUME_LAYOUTS_CATALO
   }),
 )
 
-export const RESUME_TEMPLATES_CATALOG: ResumeTemplateConfig[] = RESUME_GENERATED_TEMPLATES
+
+const RESUME_CURATED_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [
+  {
+    id: 'resume-hero-contact-header',
+    structureId: 'no-aside',
+    layoutId: 'layout-no-aside-b',
+    skinId: 'skin-midnight-banner',
+    label: 'Hero Contact Header',
+    subtitle: 'Header horizontal avec photo, nom et contacts en une ligne',
+    type: 'resume',
+    image: '/img/cv/resume-midnight-banner.svg',
+    templateId: 'cv-socle',
+    visibleOptions: {
+      ...DEFAULT_VISIBLE_OPTIONS,
+      twoColumn: false,
+      timeline: true,
+    },
+  },
+  {
+    id: 'resume-aside-full-height-emerald',
+    structureId: 'aside-left',
+    layoutId: 'layout-aside-left-a',
+    skinId: 'skin-oceanic',
+    label: 'Aside Full Height Emerald',
+    subtitle: 'Aside gauche pleine hauteur coloré pour compétences et langues',
+    type: 'resume',
+    image: '/img/cv/resume-minimal-profile.svg',
+    templateId: 'cv-socle',
+    visibleOptions: {
+      ...DEFAULT_VISIBLE_OPTIONS,
+      twoColumn: true,
+      timeline: false,
+    },
+  },
+  {
+    id: 'resume-top-banner-split-red',
+    structureId: 'aside-right',
+    layoutId: 'layout-aside-right-b',
+    skinId: 'skin-terra',
+    label: 'Top Banner Split Red',
+    subtitle: 'Bannière haute avec colonne skills/langues à droite',
+    type: 'resume',
+    image: '/img/cv/resume-executive-portrait.svg',
+    templateId: 'cv-socle',
+    visibleOptions: {
+      ...DEFAULT_VISIBLE_OPTIONS,
+      twoColumn: true,
+      timeline: false,
+    },
+  },
+  {
+    id: 'resume-modern-ribbon-purple',
+    structureId: 'aside-left',
+    layoutId: 'layout-aside-left-c',
+    skinId: 'skin-graphite-pro',
+    label: 'Modern Ribbon Purple',
+    subtitle: 'Style ruban moderne sur base violette pour profil créatif',
+    type: 'resume',
+    image: '/img/cv/resume-modern.svg',
+    templateId: 'cv-socle',
+    visibleOptions: {
+      ...DEFAULT_VISIBLE_OPTIONS,
+      twoColumn: true,
+      timeline: false,
+    },
+  },
+]
+
+export const RESUME_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [
+  ...RESUME_GENERATED_TEMPLATES,
+  ...RESUME_CURATED_TEMPLATES_CATALOG,
+]
 
 export const COVER_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [
   ...COVER_PAGE_TEMPLATES_CATALOG,
