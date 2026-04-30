@@ -1,0 +1,11 @@
+[
+  { "name": "ocean", "primary": "#0F4C81", "secondary": "#5FA8D3", "text": "#0F172A", "muted": "#64748B", "pageBackground": "#F8FAFC" },
+  { "name": "forest", "primary": "#1B5E20", "secondary": "#66BB6A", "text": "#102A16", "muted": "#5F7A65", "pageBackground": "#F6FBF7" },
+  { "name": "sunset", "primary": "#C2410C", "secondary": "#FB923C", "text": "#3A1A0A", "muted": "#8A5A44", "pageBackground": "#FFF8F3" },
+  { "name": "royal", "primary": "#4C1D95", "secondary": "#8B5CF6", "text": "#1F1147", "muted": "#6D5A99", "pageBackground": "#FAF7FF" },
+  { "name": "slate", "primary": "#334155", "secondary": "#94A3B8", "text": "#111827", "muted": "#6B7280", "pageBackground": "#F9FAFB" },
+  { "name": "rose", "primary": "#BE185D", "secondary": "#F472B6", "text": "#3B0A23", "muted": "#8B5A70", "pageBackground": "#FFF6FA" },
+  { "name": "teal", "primary": "#0F766E", "secondary": "#2DD4BF", "text": "#0B2E2A", "muted": "#5B7F7B", "pageBackground": "#F4FFFD" },
+  { "name": "amber", "primary": "#B45309", "secondary": "#FBBF24", "text": "#3A2305", "muted": "#8B6B2E", "pageBackground": "#FFFBF2" },
+  { "name": "mono", "primary": "#111827", "secondary": "#6B7280", "text": "#111827", "muted": "#6B7280", "pageBackground": "#FFFFFF" }
+]
