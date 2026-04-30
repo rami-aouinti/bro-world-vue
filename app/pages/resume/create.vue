@@ -999,11 +999,17 @@ const filteredTemplates = computed(() => {
     return matchesStructure && matchesLayout && matchesSkin && matchesQuery
   })
 })
-const skinFilterOptions = computed(() =>
-  templatesByDocumentType.value
-    .map((template) => ({ label: template.title, value: template.skinId }))
-    ,
-)
+const skinFilterOptions = computed(() => {
+  const filteredByLayout = templatesByDocumentType.value.filter(
+    (template) =>
+      template.structureId === templatePickerState.value.structureId
+      && template.layoutId === templatePickerState.value.layoutId,
+  )
+  return filteredByLayout.map((template) => ({
+    label: template.title,
+    value: template.skinId,
+  }))
+})
 
 const selectedTemplateConfig = computed(
   () =>
@@ -2556,6 +2562,18 @@ watch(
       templatePickerState.value.layoutId = defaultLayoutForStructure
     }
   },
+)
+
+watch(
+  () => [templatePickerState.value.structureId, templatePickerState.value.layoutId],
+  () => {
+    const availableSkins = skinFilterOptions.value.map((option) => option.value)
+    if (!availableSkins.length) return
+    if (!availableSkins.includes(templatePickerState.value.skinId)) {
+      templatePickerState.value.skinId = availableSkins[0]
+    }
+  },
+  { immediate: true },
 )
 
 watch(
