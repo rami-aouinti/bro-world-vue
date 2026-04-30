@@ -922,6 +922,17 @@ const layoutBlueprints = [
 
 const skinBlueprints = [
   {
+    key: 'urban',
+    title: 'Urban Clear',
+    subtitle: 'Style urbain moderne',
+    image: '/img/cv/cv-1.png',
+    presetId: 'socle-modern',
+    config: {
+      photoShape: 'circle' as PhotoShape,
+      sectionIconStyle: 'filled' as ResumeSectionIconStyleVariant,
+    },
+  },
+  {
     key: 'classic',
     title: 'Classique',
     subtitle: 'Style classique équilibré',
@@ -1000,6 +1011,17 @@ const skinBlueprints = [
     config: {
       photoShape: 'square' as PhotoShape,
       lineDensity: 'compact' as const,
+    },
+  },
+  {
+    key: 'terra',
+    title: 'Terra Accent',
+    subtitle: 'Palette terra chaleureuse',
+    image: '/img/cv/cv-4.png',
+    presetId: 'socle-modern',
+    config: {
+      photoShape: 'rounded' as PhotoShape,
+      sectionDividerStyle: 'line' as const,
     },
   },
   {
@@ -1477,26 +1499,70 @@ function selectValidTemplateForCurrentDocumentType() {
   }
 }
 
+
+function resolveTemplateFromQueryValue(queryValue: string) {
+  const normalizedTemplateQuery = queryValue.trim().toLowerCase()
+  const directMatch = templatesByDocumentType.value.find(
+    (template) =>
+      template.id.toLowerCase() === normalizedTemplateQuery ||
+      template.templateId?.toLowerCase?.() === normalizedTemplateQuery,
+  )
+  if (directMatch) return directMatch
+
+  const slugMatch = normalizedTemplateQuery.match(
+    /^resume-((?:no-aside|aside-left|aside-right)(?:-[abc])?)-(.+)$/,
+  )
+  if (!slugMatch) return null
+
+  const [, layoutSlug, skinSlug] = slugMatch
+  const layoutMap: Record<string, Template['layoutId']> = {
+    'no-aside-a': 'layout-single-column',
+    'no-aside-b': 'layout-single-column',
+    'no-aside-c': 'layout-single-column',
+    'no-aside': 'layout-single-column',
+    'aside-left-a': 'layout-aside-left',
+    'aside-left-b': 'layout-aside-left',
+    'aside-left-c': 'layout-aside-left',
+    'aside-left': 'layout-aside-left',
+    'aside-right-a': 'layout-aside-right',
+    'aside-right-b': 'layout-aside-right',
+    'aside-right-c': 'layout-aside-right',
+    'aside-right': 'layout-aside-right',
+  }
+
+  const expectedLayout = layoutMap[layoutSlug]
+  if (!expectedLayout) return null
+
+  return (
+    templatesByDocumentType.value.find(
+      (template) =>
+        template.layoutId === expectedLayout &&
+        template.skinId.toLowerCase().includes(skinSlug),
+    ) ??
+    templatesByDocumentType.value.find(
+      (template) => template.layoutId === expectedLayout,
+    ) ??
+    null
+  )
+}
+
 function applyTemplateFromRouteQuery() {
-  const fallbackTemplateId =
-    templatesByDocumentType.value[0]?.id ?? templates[0]?.id ?? 'cv-socle-01'
   const templateFromQuery = Array.isArray(route.query.template)
     ? route.query.template[0]
     : route.query.template
 
   if (typeof templateFromQuery !== 'string' || !templateFromQuery.trim()) {
-    applyTemplateSelection(fallbackTemplateId)
-    return
+    return false
   }
 
-  const normalizedTemplateQuery = templateFromQuery.trim()
-  const matchedTemplate = templatesByDocumentType.value.find(
-    (template) =>
-      template.id === normalizedTemplateQuery ||
-      template.templateId === normalizedTemplateQuery,
-  )
+  const matchedTemplate = resolveTemplateFromQueryValue(templateFromQuery)
 
-  applyTemplateSelection(matchedTemplate?.id ?? fallbackTemplateId)
+  if (!matchedTemplate) {
+    return false
+  }
+
+  applyTemplateSelection(matchedTemplate.id)
+  return true
 }
 
 function hasRemoteSectionContent(sections?: RemoteResumeSection[]) {
@@ -2901,8 +2967,10 @@ watch(selectedDocumentType, (value) => {
 watch(
   () => route.query.template,
   () => {
-    applyTemplateFromRouteQuery()
-    selectValidTemplateForCurrentDocumentType()
+    const appliedFromQuery = applyTemplateFromRouteQuery()
+    if (!appliedFromQuery) {
+      selectValidTemplateForCurrentDocumentType()
+    }
   },
 )
 
@@ -3781,7 +3849,15 @@ if (import.meta.client) {
         .layoutId as Template['layoutId']
       templatePickerState.value.skinId = customization.template.skinId
     }
-    selectedPreset.value = customization.presetId
+
+    const appliedTemplateFromQuery = applyTemplateFromRouteQuery()
+    if (!appliedTemplateFromQuery) {
+      selectValidTemplateForCurrentDocumentType()
+    }
+
+    if (!appliedTemplateFromQuery) {
+      selectedPreset.value = customization.presetId
+    }
     selectedTheme.value = customization.style.palette
     selectedPageBackground.value = customization.style.pageBackground
     selectedRounded.value = customization.style.radius
