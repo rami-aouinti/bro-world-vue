@@ -5,6 +5,7 @@ import type { ResumeTemplateSkin } from '~/constants/resumeTemplateSkins'
 import { resolveSectionRenderer } from '../renderers/sections/sectionRendererRegistry'
 import type { ResumeSectionRendererKey, ResumeSectionRendererVariant } from '../renderers/sections/types'
 import { validateTemplateConfig } from '../template/template.schema'
+import { resolveCompatibilityTemplateConfig } from '../template/templateCompatibility'
 
 const props = defineProps<{
   resumeData: any
@@ -15,6 +16,7 @@ const props = defineProps<{
     skinId?: string
     layoutMode?: 'aside-left' | 'aside-right' | 'no-aside'
   }
+  compatibilityTemplateId?: string
   section?: ResumeSectionRendererKey
   sectionVariant?: ResumeSectionRendererVariant | string
   items?: unknown[]
@@ -26,10 +28,13 @@ const props = defineProps<{
 const SAFE_TEMPLATE_ID = 'classic'
 
 const normalizedTemplateConfig = computed(() => {
+  const compatibilityTemplateConfig = resolveCompatibilityTemplateConfig(props.compatibilityTemplateId)
+
   const rawConfig = {
+    ...(compatibilityTemplateConfig || {}),
     ...(props.templateConfig || {}),
-    structure: props.templateConfig?.structureId,
-    layout: props.templateConfig?.layoutId,
+    structure: props.templateConfig?.structureId || compatibilityTemplateConfig?.structureId,
+    layout: props.templateConfig?.layoutId || compatibilityTemplateConfig?.layoutId,
   }
   return validateTemplateConfig(rawConfig)
 })
