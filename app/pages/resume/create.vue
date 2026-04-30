@@ -1423,6 +1423,7 @@ function applyTemplateSelection(_templateId: string) {
       structureId: nextTemplate.structureId,
       layoutId: nextTemplate.layoutId,
       skinId: nextTemplate.skinId,
+      templateId: nextTemplate.templateId,
     },
   }
   selectedTemplate.value = nextTemplate.id
@@ -2912,6 +2913,7 @@ watch(selectedTemplate, () => {
 watch(
   () => templatePickerState.value.structureId,
   (nextStructureId) => {
+    if (templatePickerState.value.mode !== 'filtered') return
     const defaultLayoutForStructure =
       layoutFilterByStructure[nextStructureId][0]?.value
     if (
@@ -2929,6 +2931,7 @@ watch(
     templatePickerState.value.layoutId,
   ],
   () => {
+    if (templatePickerState.value.mode !== 'filtered') return
     const availableSkins = skinFilterOptions.value.map((option) => option.value)
     if (!availableSkins.length) return
     if (!availableSkins.includes(templatePickerState.value.skinId)) {
@@ -3829,6 +3832,7 @@ if (import.meta.client) {
             structureId: templatePickerState.value.structureId,
             layoutId: templatePickerState.value.layoutId,
             skinId: templatePickerState.value.skinId,
+            templateId: selectedTemplateConfig.value.templateId,
           },
           style: {
             ...resumeDocumentState.value.customization.style,
@@ -4663,7 +4667,7 @@ if (import.meta.client) {
                             (shape) => (selectedPhotoShape = shape)
                           "
                           :template-config="{
-                            templateId: selectedTemplate,
+                            templateId: selectedTemplateConfig.templateId,
                             structureId: templatePickerState.structureId,
                             layoutId: templatePickerState.layoutId,
                             skinId: templatePickerState.skinId,
@@ -5292,7 +5296,7 @@ if (import.meta.client) {
                       "
                       :on-photo-click="onPreviewPhotoClick"
                       :template-config="{
-                        templateId: selectedTemplate,
+                        templateId: selectedTemplateConfig.templateId,
                         structureId: templatePickerState.structureId,
                         layoutId: templatePickerState.layoutId,
                         skinId: templatePickerState.skinId,
