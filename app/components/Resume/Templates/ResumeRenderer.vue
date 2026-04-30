@@ -763,11 +763,11 @@ function updateText(path: string, value: string) {
           </div>
           <div v-if="resume.homepage" class="resume-skin__contact-item">
             <v-icon v-if="showContactIcons" class="resume-skin__contact-icon" icon="mdi-web" :size="contactIconSize" />
-            <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" class="resume-skin__text">Home Page</a>
+            <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" class="resume-skin__text">{{ resume.homepage }}</a>
           </div>
           <div v-if="resume.repoProfile" class="resume-skin__contact-item">
             <v-icon v-if="showContactIcons" class="resume-skin__contact-icon" icon="mdi-github" :size="contactIconSize" />
-            <a :href="resume.repoProfile" target="_blank" rel="noopener noreferrer" class="resume-skin__text">Github Repo</a>
+            <a :href="resume.repoProfile" target="_blank" rel="noopener noreferrer" class="resume-skin__text">{{ resume.repoProfile }}</a>
           </div>
         </div>
       </div>
@@ -971,7 +971,7 @@ function updateText(path: string, value: string) {
                 :size="contactIconSize"
               />
               <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" class="resume-skin__text"
-                >Home Page</a
+                >{{ resume.homepage }}</a
               >
             </div>
             <div v-if="resume.repoProfile" class="resume-skin__contact-item">
@@ -986,7 +986,7 @@ function updateText(path: string, value: string) {
                 target="_blank"
                 class="resume-skin__text"
                 rel="noopener noreferrer"
-                >Github Repo</a
+                >{{ resume.repoProfile }}</a
               >
             </div>
           </div>
@@ -1137,7 +1137,7 @@ function updateText(path: string, value: string) {
                 :size="contactIconSize"
               />
               <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" class="resume-skin__text"
-                >Home Page</a
+                >{{ resume.homepage }}</a
               >
             </div>
             <div v-if="resume.repoProfile" class="resume-skin__contact-item">
@@ -1152,7 +1152,7 @@ function updateText(path: string, value: string) {
                 target="_blank"
                 rel="noopener noreferrer"
                 class="resume-skin__text"
-                >Github Repo</a
+                >{{ resume.repoProfile }}</a
               >
             </div>
           </div>
