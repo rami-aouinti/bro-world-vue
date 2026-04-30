@@ -1488,12 +1488,14 @@ function applyTemplateFromRouteQuery() {
     return
   }
 
-  const exists = templatesByDocumentType.value.some(
-    (template) => template.id === templateFromQuery,
+  const normalizedTemplateQuery = templateFromQuery.trim()
+  const matchedTemplate = templatesByDocumentType.value.find(
+    (template) =>
+      template.id === normalizedTemplateQuery ||
+      template.templateId === normalizedTemplateQuery,
   )
-  const templateId = exists ? templateFromQuery : fallbackTemplateId
 
-  applyTemplateSelection(templateId)
+  applyTemplateSelection(matchedTemplate?.id ?? fallbackTemplateId)
 }
 
 function hasRemoteSectionContent(sections?: RemoteResumeSection[]) {
