@@ -2,6 +2,7 @@
 import ResumeRendererBase from '~/components/Resume/Templates/ResumeRenderer.vue'
 import { resolveTemplateSkin } from '~/constants/resumeTemplateSkins'
 import type { ResumeTemplateSkin } from '~/constants/resumeTemplateSkins'
+import { validateTemplateConfig } from '../template/template.schema'
 
 const props = defineProps<{
   resumeData: any
@@ -16,8 +17,17 @@ const props = defineProps<{
 
 const SAFE_TEMPLATE_ID = 'classic'
 
+const normalizedTemplateConfig = computed(() => {
+  const rawConfig = {
+    ...(props.templateConfig || {}),
+    structure: props.templateConfig?.structureId,
+    layout: props.templateConfig?.layoutId,
+  }
+  return validateTemplateConfig(rawConfig)
+})
+
 const resolvedTemplateId = computed(() => {
-  const candidate = props.templateConfig?.templateId || props.templateConfig?.skinId || SAFE_TEMPLATE_ID
+  const candidate = normalizedTemplateConfig.value.templateId || normalizedTemplateConfig.value.skinId || SAFE_TEMPLATE_ID
   try {
     const skin = resolveTemplateSkin(candidate)
     return skin.id ? candidate : SAFE_TEMPLATE_ID
@@ -40,9 +50,9 @@ const mergedResume = computed(() => ({
   ...(props.resumeData || {}),
   template: {
     ...(props.resumeData?.template || {}),
-    structureId: props.templateConfig?.structureId || props.resumeData?.template?.structureId,
-    layoutId: props.templateConfig?.layoutId || props.resumeData?.template?.layoutId,
-    skinId: props.templateConfig?.skinId || resolvedTemplateId.value,
+    structureId: normalizedTemplateConfig.value.structure || props.resumeData?.template?.structureId,
+    layoutId: normalizedTemplateConfig.value.layout || props.resumeData?.template?.layoutId,
+    skinId: normalizedTemplateConfig.value.skinId || resolvedTemplateId.value,
   },
 }))
 </script>
@@ -53,6 +63,6 @@ const mergedResume = computed(() => ({
     :resume="mergedResume"
     :template-id="resolvedTemplateId"
     :template-skin="resolvedTemplateSkin"
-    :layout-mode="templateConfig?.layoutMode"
+    :layout-mode="normalizedTemplateConfig.layoutMode"
   />
 </template>
