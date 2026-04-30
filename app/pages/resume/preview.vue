@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
+import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-90.json'
 
 definePageMeta({
   title: 'resumeBuilder.meta.previewTitle',
@@ -20,6 +21,15 @@ const selectedTemplate = computed(() => {
   return (
     allTemplates.value.find((template) => template.templateId === templateId) ||
     null
+  )
+})
+
+const selectedGeneratedTemplate = computed(() => {
+  if (!selectedTemplate.value?.id) return null
+  return (
+    GENERATED_RESUME_TEMPLATES.find(
+      (template) => template.id === selectedTemplate.value?.id,
+    ) || null
   )
 })
 
@@ -55,11 +65,11 @@ onMounted(async () => {
       text="Aucun template sélectionné."
     />
 
-    <v-card v-if="selectedTemplate" class="mx-auto mt-6" variant="outlined">
+    <v-card v-if="selectedGeneratedTemplate" class="mx-auto mt-6" variant="outlined">
       <v-card-title>Données template sélectionnée</v-card-title>
       <v-card-text>
         <pre class="text-body-2">{{
-          JSON.stringify(selectedTemplate, null, 2)
+          JSON.stringify(selectedGeneratedTemplate, null, 2)
         }}</pre>
       </v-card-text>
     </v-card>
