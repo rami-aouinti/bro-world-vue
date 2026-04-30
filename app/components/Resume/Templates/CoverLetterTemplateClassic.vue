@@ -61,6 +61,7 @@ const designVars = computed(() => buildCoverDesignVars('cl', props))
     </div>
 
     <section>
+      <div class="cover-letter-classic__dropcap" aria-hidden="true">✦</div>
       <p>{{ props.model.intro }}</p>
       <p>{{ props.model.body }}</p>
       <p>{{ props.model.closing }}</p>
@@ -69,9 +70,10 @@ const designVars = computed(() => buildCoverDesignVars('cl', props))
 </template>
 
 <style scoped>
-.cover-letter-classic { font-family: var(--cl-font-family, 'Inter', 'Segoe UI', sans-serif); font-style: var(--cl-font-style, normal); font-weight: var(--cl-font-weight, 400); background: var(--cl-page); color: var(--cl-text); min-height: 100%; padding: 40px 46px; border-radius: var(--cl-rounded); }
+.cover-letter-classic { font-family: var(--cl-font-family, 'Inter', 'Segoe UI', sans-serif); font-style: var(--cl-font-style, normal); font-weight: var(--cl-font-weight, 400); background: var(--cl-page); color: var(--cl-text); min-height: 100%; padding: 40px 46px; border-radius: var(--cl-rounded); border: 1px solid color-mix(in srgb, var(--cl-accent) 18%, transparent); }
 .cover-letter-classic header { border-bottom: var(--cl-divider-width) var(--cl-divider-style) var(--cl-soft); padding-bottom: 14px; margin-bottom: 24px; }
 .cover-letter-classic h1 { color: var(--cl-page); font-size: 1.9rem; }
 .cover-letter-classic__recipient { margin-bottom: 18px; }
-.cover-letter-classic section { display: grid; gap: 12px; line-height: 1.6; }
+.cover-letter-classic section { display: grid; gap: 12px; line-height: 1.68; }
+.cover-letter-classic__dropcap { color: color-mix(in srgb, var(--cl-accent) 70%, black); font-size: 1.2rem; margin-bottom: 2px; }
 </style>

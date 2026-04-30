@@ -62,6 +62,7 @@ const designVars = computed(() => buildCoverDesignVars('cl', props))
       <p>{{ props.model.intro }}</p>
       <p>{{ props.model.body }}</p>
       <p>{{ props.model.closing }}</p>
+      <p class="cover-letter-split__sign">{{ props.model.fullName }}</p>
     </section>
   </article>
 </template>
@@ -70,7 +71,8 @@ const designVars = computed(() => buildCoverDesignVars('cl', props))
 .cover-letter-split { font-family: var(--cl-font-family, 'Inter', 'Segoe UI', sans-serif); font-style: var(--cl-font-style, normal); font-weight: var(--cl-font-weight, 400); min-height: 100%; border-radius: var(--cl-rounded); overflow: hidden; display: grid; grid-template-columns: 1fr 1.4fr; background: var(--cl-page); color: var(--cl-text); }
 .cover-letter-split aside { background: color-mix(in srgb, var(--cl-soft) 72%, var(--cl-page)); padding: 30px 24px; display: grid; align-content: start; gap: 8px; border-right: var(--cl-divider-width) var(--cl-divider-style) color-mix(in srgb, var(--cl-accent) 20%, transparent); }
 .cover-letter-split h2 { color: var(--cl-page); font-size: 1.3rem; margin-bottom: 4px; }
-.cover-letter-split section { padding: 34px 36px; display: grid; gap: 12px; line-height: 1.6; }
+.cover-letter-split section { padding: 34px 36px; display: grid; gap: 12px; line-height: 1.68; background: linear-gradient(180deg, transparent 0 82%, color-mix(in srgb, var(--cl-soft) 30%, transparent)); }
 .cover-letter-split section p:first-child { text-transform: uppercase; letter-spacing: .07em; font-size: .78rem; }
+.cover-letter-split__sign { margin-top: 8px; font-weight: 600; letter-spacing: .04em; color: color-mix(in srgb, var(--cl-accent) 76%, black); }
 @media (max-width: 960px) { .cover-letter-split { grid-template-columns: 1fr; } .cover-letter-split aside { border-right: 0; border-bottom: var(--cl-divider-width) var(--cl-divider-style) color-mix(in srgb, var(--cl-accent) 20%, transparent); } }
 </style>
