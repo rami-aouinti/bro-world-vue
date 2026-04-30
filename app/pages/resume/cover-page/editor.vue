@@ -147,6 +147,8 @@ onMounted(async () => {
             <v-text-field v-model="model.location" label="Location" variant="outlined" hide-details />
             <v-text-field v-model="model.email" label="Email" variant="outlined" hide-details />
             <v-text-field v-model="model.phone" label="Phone" variant="outlined" hide-details />
+            <v-text-field v-model="model.date" label="Date" variant="outlined" hide-details />
+            <v-text-field v-model="model.photoUrl" label="Photo URL" variant="outlined" hide-details />
           </v-window-item>
 
           <v-window-item value="template">

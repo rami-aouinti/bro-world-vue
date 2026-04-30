@@ -159,6 +159,9 @@ onMounted(async () => {
             <v-text-field v-model="model.role" label="Title" variant="outlined" hide-details />
             <v-text-field v-model="model.recipient" label="Recipient" variant="outlined" hide-details />
             <v-text-field v-model="model.company" label="Company" variant="outlined" hide-details />
+            <v-text-field v-model="model.email" label="Email" variant="outlined" hide-details />
+            <v-text-field v-model="model.phone" label="Phone" variant="outlined" hide-details />
+            <v-text-field v-model="model.date" label="Date" variant="outlined" hide-details />
             <ProfileRichTextEditor v-model="model.intro" label="Introduction" placeholder="Opening paragraph" />
             <ProfileRichTextEditor v-model="model.body" label="Body" placeholder="Main letter content" />
             <ProfileRichTextEditor v-model="model.closing" label="Closing" placeholder="Closing paragraph" />
