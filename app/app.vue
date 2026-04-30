@@ -16,6 +16,7 @@ const translateIfKey = (key: unknown) =>
   typeof key === 'string' && key ? t(key) : ''
 
 const siteUrl = computed(
+
   () => runtimeConfig.public.siteUrl || 'https://bro-world-space.com',
 )
 
