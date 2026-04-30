@@ -47,7 +47,6 @@ if (import.meta.client) {
   })
 }
 
-
 const title = computed(() => {
   const pageTitle = route.meta?.title || route.matched[0]?.meta?.title || ''
   return translateIfKey(pageTitle)
