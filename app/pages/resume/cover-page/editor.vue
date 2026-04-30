@@ -7,7 +7,7 @@ import CoverPageTemplateTerra from '~/components/Resume/Templates/CoverPageTempl
 import type { RoundedOptionId, Typography } from '~/constants/resumeDesign'
 import { COVER_PAGE_TEMPLATE_IDS } from '~/constants/resumeTemplates'
 import { useResumeDesignControls } from '~/composables/useResumeDesignControls'
-import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
+import ProfileRichTextEditor from '~/components/Resume/Create/ProfileRichTextEditor.vue'
 
 definePageMeta({
   title: 'Resume · Cover Page Editor',
@@ -143,7 +143,7 @@ onMounted(async () => {
           <v-window-item value="edit">
             <v-text-field v-model="model.fullName" label="Full name" variant="outlined" hide-details />
             <v-text-field v-model="model.role" label="Title" variant="outlined" hide-details />
-            <HoverRichTextEditor v-model="model.summary" label="Summary" placeholder="Write your cover page summary" />
+            <ProfileRichTextEditor v-model="model.summary" label="Summary" placeholder="Write your cover page summary" />
             <v-text-field v-model="model.location" label="Location" variant="outlined" hide-details />
             <v-text-field v-model="model.email" label="Email" variant="outlined" hide-details />
             <v-text-field v-model="model.phone" label="Phone" variant="outlined" hide-details />
