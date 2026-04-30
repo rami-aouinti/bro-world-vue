@@ -59,6 +59,7 @@ const designVars = computed(() => buildCoverDesignVars('cp', props))
 
     <section>
       <h1>{{ props.model.fullName }}</h1>
+      <div class="cover-page-sidebar__pill">Cover Page</div>
       <p>{{ props.model.summary }}</p>
     </section>
   </article>
@@ -69,7 +70,8 @@ const designVars = computed(() => buildCoverDesignVars('cp', props))
 .cover-page-sidebar aside { background: linear-gradient(180deg, color-mix(in srgb, var(--cp-soft) 72%, var(--cp-page)), var(--cp-soft)); padding: 32px 18px; display: grid; align-content: space-between; gap: 18px; border-right: var(--cp-divider-width) var(--cp-divider-style) color-mix(in srgb, var(--cp-accent) 20%, transparent); }
 .cover-page-sidebar h2 { color: var(--cp-accent); text-transform: uppercase; letter-spacing: .08em; font-size: .86rem; }
 .cover-page-sidebar__meta { display: grid; gap: 6px; font-size: .9rem; }
-.cover-page-sidebar section { padding: 48px 44px; display: grid; align-content: center; gap: 16px; }
+.cover-page-sidebar section { padding: 48px 44px; display: grid; align-content: center; gap: 16px; background: linear-gradient(160deg, transparent 0 60%, color-mix(in srgb, var(--cp-soft) 30%, transparent) 100%); }
+.cover-page-sidebar__pill { display: inline-flex; justify-self: start; padding: 6px 12px; border-radius: 999px; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; background: color-mix(in srgb, var(--cp-soft) 75%, white); color: color-mix(in srgb, var(--cp-accent) 75%, black); }
 .cover-page-sidebar h1 { font-size: 2.6rem; line-height: 1.05; }
 @media (max-width: 960px) { .cover-page-sidebar { grid-template-columns: 1fr; } .cover-page-sidebar aside { border-right: 0; border-bottom: var(--cp-divider-width) var(--cp-divider-style) color-mix(in srgb, var(--cp-accent) 20%, transparent); } }
 </style>
