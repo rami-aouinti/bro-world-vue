@@ -2,7 +2,7 @@
 interface AboutPageResponse {
   hero: {
     badge: string
-    title: string
+    _title: string
     subtitle: string
     paragraphs: string[]
     bullets: string[]
@@ -11,7 +11,7 @@ interface AboutPageResponse {
   }
   metricsTitle: string
   missionCards: Array<{
-    title: string
+    _title: string
     description: string
     paragraphs: string[]
     bullets: string[]
@@ -23,31 +23,31 @@ interface AboutPageResponse {
     context: string
     icon: string
   }>
-  timelineTitle: string
-  timeline: Array<{
-    title: string
+  _timelineTitle: string
+  _timeline: Array<{
+    _title: string
     period: string
     description: string
     highlights: string[]
     icon: string
   }>
   cta: {
-    title: string
+    _title: string
     description: string
     primaryAction: string
     secondaryAction: string
   }
 }
 
-const { locale, t } = useI18n()
+const { locale, _t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 const publicPagesStore = usePublicPagesStore()
 
-definePageMeta({ title: 'appbar.about' })
+definePageMeta({ _title: 'appbar.about' })
 
 const asyncKey = computed(() => `public-page-about-${locale.value}`)
 
-const { data, pending, error, refresh } = await useAsyncData(
+const { data, pending, error, _refresh } = await useAsyncData(
   asyncKey,
   () => publicPagesStore.fetchPage<AboutPageResponse>('about', locale.value),
   {
@@ -70,7 +70,7 @@ const page = computed(
       <template #left>
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible || pending || !page" />
         <div v-else class="d-flex flex-column gap-4">
-          <h3 class="text-h5 text-white mb-2">{{ page.cta.title }}</h3>
+          <h3 class="text-h5 _text-white mb-2">{{ page.cta.title }}</h3>
           <p class="text-white mb-4">{{ page.cta.description }}</p>
           <div class="d-flex flex-wrap ga-3">
             <v-btn color="white" variant="flat">{{
@@ -123,7 +123,7 @@ const page = computed(
       <SkeletonPageContent v-if="isPageSkeletonVisible || pending || !page" />
       <v-alert
         v-else-if="error"
-        type="error"
+        _type="error"
         variant="tonal"
         :text="String(error)"
       />
@@ -183,7 +183,7 @@ const page = computed(
                 />
                 <div class="text-h4 font-weight-black">{{ metric.value }}</div>
                 <div class="text-body-1">{{ metric.label }}</div>
-                <div class="text-caption text-medium-emphasis">
+                <div class="text-caption _text-medium-emphasis">
                   {{ metric.context }}
                 </div>
               </v-card-text>
@@ -236,7 +236,7 @@ const page = computed(
           side="end"
           align="start"
           density="comfortable"
-          truncate-line="both"
+          _truncate-line="both"
         >
           <v-timeline-item
             v-for="item in page.timeline"

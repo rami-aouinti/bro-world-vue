@@ -1,7 +1,7 @@
 type MercureHandlers = {
-  onMessage?: (data: unknown, event: MessageEvent<string>) => void
-  onOpen?: (event: Event) => void
-  onError?: (event: Event) => void
+  onMessage?: (data: unknown, _event: MessageEvent<string>) => void
+  onOpen?: (_event: Event) => void
+  onError?: (_event: Event) => void
 }
 
 type MercureSubscribeOptions = {
@@ -45,7 +45,7 @@ export function useMercure() {
     const parsedUrl = new URL(url)
     const configuredWithCredentials =
       runtimeConfig.public.mercureWithCredentials === true
-    const isSameOriginHub = parsedUrl.origin === window.location.origin
+    const _isSameOriginHub = parsedUrl.origin === window.location.origin
 
     const authorizationToken = String(
       options?.authorizationToken ||
@@ -75,35 +75,35 @@ export function useMercure() {
       }
     ).EventSourcePolyfill
 
-    const eventSource = options?.eventSourceFactory
+    const _eventSource = options?.eventSourceFactory
       ? options.eventSourceFactory(url, init)
       : init.headers && polyfillConstructor
         ? new polyfillConstructor(url, init)
         : new EventSource(url, { withCredentials: init.withCredentials })
 
-    eventSource.onopen = (event) => {
-      handlers?.onOpen?.(event)
+    _eventSource.onopen = (_event) => {
+      handlers?.onOpen?.(_event)
     }
 
-    eventSource.onmessage = (event: MessageEvent<string>) => {
-      const raw = event.data?.trim()
+    _eventSource.onmessage = (_event: MessageEvent<string>) => {
+      const raw = _event.data?.trim()
 
       if (!raw || raw === ':' || raw === '::') return
 
       try {
         const parsed = JSON.parse(raw)
-        handlers?.onMessage?.(parsed, event)
-      } catch (e) {
+        handlers?.onMessage?.(parsed, _event)
+      } catch {
         console.warn('Non JSON Mercure message:', raw)
-        handlers?.onMessage?.(raw, event)
+        handlers?.onMessage?.(raw, _event)
       }
     }
 
-    eventSource.onerror = (event) => {
-      handlers?.onError?.(event)
+    _eventSource.onerror = (_event) => {
+      handlers?.onError?.(_event)
     }
 
-    return eventSource
+    return _eventSource
   }
 
   return {

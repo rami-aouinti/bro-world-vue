@@ -121,7 +121,9 @@ const hydrateFromConnectedUser = async () => {
     if (user.phone) model.phone = user.phone
     const location = [user.city, user.country].filter(Boolean).join(', ')
     if (location) model.location = location
-  } catch {}
+  } catch {
+          // no-op
+        }
 }
 
 const goToImportFlow = async () => {

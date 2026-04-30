@@ -39,6 +39,7 @@ import type { GameAsidePanelState } from '~/components/games/types'
 import { useGameCatalogStore } from '~/stores/gameCatalog'
 import { useGamesStore } from '~/stores/games'
 
+defineOptions({ name: 'GameIndexPage' })
 const { t, te } = useI18n()
 const { isAuthenticated, login } = useAuth()
 const authSession = useAuthSessionStore()
@@ -303,7 +304,7 @@ const gameMetaChips = computed(() => {
 const selectedGameSetupStyle = computed(() => {
   const game = selectedGame.value
   if (!game) return null
-  const texture = game.lobbyBackground
+  const _texture = game.lobbyBackground
     ? `url(${game.lobbyBackground})`
     : 'radial-gradient(circle at top right, rgba(99,102,241,.20), transparent 50%)'
 

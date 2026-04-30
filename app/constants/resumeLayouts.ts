@@ -36,7 +36,7 @@ const DEFAULT_FALLBACK_RULES: ResumeLayoutFallbackRule[] = [
 
 function createSectionMapping(
   main: ResumeEditableSectionKey[],
-  aside: ResumeEditableSectionKey[],
+  _aside: ResumeEditableSectionKey[],
 ): Record<ResumeLayoutSectionKey, ResumeLayoutZone> {
   return {
     contact: 'main',
@@ -57,22 +57,22 @@ function createLayoutDefinition({
   pattern,
   objective,
   main,
-  aside,
+  _aside,
 }: {
   layoutId: string
   structure: ResumeLayoutMode
   pattern: ResumeLayoutPattern
   objective: ResumeLayoutDefinition['objective']
   main: ResumeEditableSectionKey[]
-  aside: ResumeEditableSectionKey[]
+  _aside: ResumeEditableSectionKey[]
 }): ResumeLayoutDefinition {
   return {
     layoutId,
     structure,
     pattern,
     objective,
-    zones: { main, aside },
-    sectionMapping: createSectionMapping(main, aside),
+    zones: { main, _aside },
+    sectionMapping: createSectionMapping(main, _aside),
     fallbackRules: DEFAULT_FALLBACK_RULES,
     maxPageTarget: 1,
     pdfOverflowGuard: 'strict',
@@ -95,7 +95,7 @@ export const RESUME_LAYOUTS: ResumeLayoutDefinition[] = [
       'certification',
       'hobby',
     ],
-    aside: [],
+    _aside: [],
   }),
   createLayoutDefinition({
     layoutId: 'no-aside-b',
@@ -112,7 +112,7 @@ export const RESUME_LAYOUTS: ResumeLayoutDefinition[] = [
       'reference',
       'hobby',
     ],
-    aside: [],
+    _aside: [],
   }),
   createLayoutDefinition({
     layoutId: 'no-aside-c',
@@ -129,7 +129,7 @@ export const RESUME_LAYOUTS: ResumeLayoutDefinition[] = [
       'reference',
       'hobby',
     ],
-    aside: [],
+    _aside: [],
   }),
   createLayoutDefinition({
     layoutId: 'aside-left-a',
@@ -137,7 +137,7 @@ export const RESUME_LAYOUTS: ResumeLayoutDefinition[] = [
     pattern: 'A',
     objective: 'experience',
     main: ['experience', 'education', 'project'],
-    aside: ['skill', 'language', 'reference', 'certification', 'hobby'],
+    _aside: ['skill', 'language', 'reference', 'certification', 'hobby'],
   }),
   createLayoutDefinition({
     layoutId: 'aside-left-b',
@@ -145,7 +145,7 @@ export const RESUME_LAYOUTS: ResumeLayoutDefinition[] = [
     pattern: 'B',
     objective: 'skills',
     main: ['experience', 'project', 'education'],
-    aside: ['skill', 'language', 'certification', 'hobby', 'reference'],
+    _aside: ['skill', 'language', 'certification', 'hobby', 'reference'],
   }),
   createLayoutDefinition({
     layoutId: 'aside-left-c',
@@ -153,7 +153,7 @@ export const RESUME_LAYOUTS: ResumeLayoutDefinition[] = [
     pattern: 'C',
     objective: 'mixed-ats',
     main: ['experience', 'project', 'education'],
-    aside: ['skill', 'language', 'reference', 'certification', 'hobby'],
+    _aside: ['skill', 'language', 'reference', 'certification', 'hobby'],
   }),
   createLayoutDefinition({
     layoutId: 'aside-right-a',
@@ -161,7 +161,7 @@ export const RESUME_LAYOUTS: ResumeLayoutDefinition[] = [
     pattern: 'A',
     objective: 'experience',
     main: ['experience', 'education', 'project'],
-    aside: ['skill', 'language', 'reference', 'certification', 'hobby'],
+    _aside: ['skill', 'language', 'reference', 'certification', 'hobby'],
   }),
   createLayoutDefinition({
     layoutId: 'aside-right-b',
@@ -169,7 +169,7 @@ export const RESUME_LAYOUTS: ResumeLayoutDefinition[] = [
     pattern: 'B',
     objective: 'skills',
     main: ['experience', 'project', 'education'],
-    aside: ['skill', 'language', 'certification', 'hobby', 'reference'],
+    _aside: ['skill', 'language', 'certification', 'hobby', 'reference'],
   }),
   createLayoutDefinition({
     layoutId: 'aside-right-c',
@@ -177,7 +177,7 @@ export const RESUME_LAYOUTS: ResumeLayoutDefinition[] = [
     pattern: 'C',
     objective: 'mixed-ats',
     main: ['experience', 'project', 'education'],
-    aside: ['skill', 'language', 'reference', 'certification', 'hobby'],
+    _aside: ['skill', 'language', 'reference', 'certification', 'hobby'],
   }),
 ]
 

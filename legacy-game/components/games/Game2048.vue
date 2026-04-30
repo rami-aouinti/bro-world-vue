@@ -9,6 +9,7 @@ import {
 } from 'vue'
 import type { GameAsidePanelState } from './types'
 const { t } = useI18n()
+defineOptions({ name: 'LegacyGame2048' })
 const props = defineProps<{
   selectedPlayMode: 'ai' | 'pvp'
 }>()

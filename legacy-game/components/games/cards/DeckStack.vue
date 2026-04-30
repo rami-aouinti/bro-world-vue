@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import PlayingCard from './PlayingCard.vue'
 
-const props = withDefaults(
+const _props = withDefaults(
   defineProps<{
     remaining: number
     disabled?: boolean

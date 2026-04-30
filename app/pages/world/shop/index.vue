@@ -6,7 +6,7 @@ definePageMeta({
   title: 'world.shop.label',
   description: 'world.shop.seo.metaDescription',
 })
-const { fetch: refreshSession, loggedIn } = useUserSession()
+const { fetch: _refreshSession, loggedIn } = useUserSession()
 
 const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()

@@ -38,7 +38,7 @@ const breadcrumbs = computed(() => {
     }))
 })
 
-const shouldShowBreadcrumbs = computed(() => breadcrumbs.value.length > 1)
+const _shouldShowBreadcrumbs = computed(() => breadcrumbs.value.length > 1)
 const shouldRenderLeftDrawer = computed(
   () => isLayoutReady.value && showLeftDrawer.value,
 )

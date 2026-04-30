@@ -11,7 +11,7 @@ definePageMeta({
 type LearningPublicReferencePage = {
   description?: string
 }
-const { fetch: refreshSession, loggedIn } = useUserSession()
+const { fetch: _refreshSession, loggedIn } = useUserSession()
 
 type ReferenceStatus = 'loading' | 'success' | 'unavailable'
 

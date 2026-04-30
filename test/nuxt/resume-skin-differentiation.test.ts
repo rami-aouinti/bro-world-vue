@@ -45,7 +45,7 @@ describe('resume skin differentiation QA rule', () => {
 
       expect(
         duplicateSkin,
-        `skin \"${skinId}\" has the same final token set as \"${duplicateSkin}\"`,
+        `skin "${skinId}" has the same final token set as "${duplicateSkin}"`,
       ).toBeUndefined()
 
       seen.set(fingerprint, skinId)

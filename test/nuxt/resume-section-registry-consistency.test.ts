@@ -25,7 +25,7 @@ describe('resume section registry consistency', () => {
       const available = new Set(entry.variants.map((variant) => variant.value))
       expect(
         available.has(entry.defaultVariant),
-        `${sectionKey}: defaultVariant \"${entry.defaultVariant}\" missing from variants`,
+        `${sectionKey}: defaultVariant "${entry.defaultVariant}" missing from variants`,
       ).toBe(true)
     }
   })
@@ -46,8 +46,8 @@ describe('resume section registry consistency', () => {
 
       for (const variant of expectedVariants) {
         expect(
-          source.includes(`'${variant}'`) || source.includes(`\"${variant}\"`),
-          `${sectionKey}: variant \"${variant}\" not found in component source`,
+          source.includes(`'${variant}'`) || source.includes(`"${variant}"`),
+          `${sectionKey}: variant "${variant}" not found in component source`,
         ).toBe(true)
       }
     }
@@ -70,7 +70,7 @@ describe('resume section registry consistency', () => {
         for (const variant of variants ?? []) {
           expect(
             allowed.has(variant),
-            `${sectionKey}: unsupported variant \"${variant}\" in matrix`,
+            `${sectionKey}: unsupported variant "${variant}" in matrix`,
           ).toBe(true)
         }
       }
@@ -89,7 +89,7 @@ describe('resume section registry consistency', () => {
     for (const sectionKey of RESUME_RENDERER_SUPPORTED_SECTIONS) {
       expect(
         rendererSource.includes(`${sectionKey}:`),
-        `section \"${sectionKey}\" missing from SectionRenderer component map`,
+        `section "${sectionKey}" missing from SectionRenderer component map`,
       ).toBe(true)
     }
   })
@@ -101,7 +101,7 @@ describe('resume section registry consistency', () => {
       for (const sectionKey of [...layout.zones.main, ...layout.zones.aside]) {
         expect(
           rendererSupported.has(sectionKey),
-          `${layout.layoutId}: section \"${sectionKey}\" is used by layout but not supported by SectionRenderer`,
+          `${layout.layoutId}: section "${sectionKey}" is used by layout but not supported by SectionRenderer`,
         ).toBe(true)
       }
     }
@@ -117,14 +117,14 @@ describe('resume section registry consistency', () => {
       for (const sectionKey of mandatory) {
         expect(
           supported.has(sectionKey),
-          `${layout.layoutId}: missing required section \"${sectionKey}\"`,
+          `${layout.layoutId}: missing required section "${sectionKey}"`,
         ).toBe(true)
       }
 
       for (const sectionKey of optional) {
         expect(
           supported.has(sectionKey),
-          `${layout.layoutId}: optional section \"${sectionKey}\" should be recoverable by fallback`,
+          `${layout.layoutId}: optional section "${sectionKey}" should be recoverable by fallback`,
         ).toBe(true)
       }
     }

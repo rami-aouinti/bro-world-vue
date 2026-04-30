@@ -10,7 +10,7 @@ import RepositoryItemDetailModal from '~/components/crm/repositories/RepositoryI
 definePageMeta({ layout: 'crm', title: 'CRM Repository Commits' })
 
 const route = useRoute()
-const router = useRouter()
+const _router = useRouter()
 const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
 const githubStore = useWorldCrmGithubStore()
