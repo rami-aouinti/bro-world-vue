@@ -2,6 +2,8 @@
 import SectionRenderer from '~/components/Resume/Sections/SectionRenderer.vue'
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 import AvatarOverlayControls from '~/components/Resume/Templates/AvatarOverlayControls.vue'
+import TemplateDecorations from '~/components/Resume/Templates/TemplateDecorations.vue'
+import { buildThemeVars } from '~/modules/resume/theme/buildThemeVars'
 import type {
   ResumeLayoutMode,
   ResumeSectionIconStyleVariant,
@@ -57,6 +59,12 @@ type ResumeRendererDesignState = {
   photoSize?: number
   photoBorderWidth?: number
   photoPosition?: 'left' | 'right'
+  photo?: {
+    position?: 'left' | 'right'
+    size?: number
+    border?: number
+    shape?: 'circle' | 'rounded' | 'square'
+  }
   photoOffsetX?: number
   photoOffsetY?: number
   photoScale?: number
@@ -270,16 +278,18 @@ const resolvedDesignState = computed(() => ({
   dividerStyle: props.designState?.dividerStyle ?? props.dividerStyle,
   sidebarWidth: props.designState?.sidebarWidth ?? props.sidebarWidth,
   sidebarHeight: props.designState?.sidebarHeight ?? props.sidebarHeight,
-  photoSize: props.designState?.photoSize ?? props.photoSize,
+  photoSize: props.designState?.photo?.size ?? props.designState?.photoSize ?? props.photoSize,
   photoBorderWidth:
-    props.designState?.photoBorderWidth ?? props.photoBorderWidth,
+    props.designState?.photo?.border ?? props.designState?.photoBorderWidth ?? props.photoBorderWidth,
   photoPosition:
-    props.designState?.photoPosition === 'left' ||
-    props.designState?.photoPosition === 'right'
-      ? props.designState.photoPosition
-      : props.photoPosition === 'left' || props.photoPosition === 'right'
-        ? props.photoPosition
-        : 'right',
+    props.designState?.photo?.position === 'left' ||
+    props.designState?.photo?.position === 'right'
+      ? props.designState.photo.position
+      : props.designState?.photoPosition === 'left' || props.designState?.photoPosition === 'right'
+        ? props.designState.photoPosition
+        : props.photoPosition === 'left' || props.photoPosition === 'right'
+          ? props.photoPosition
+          : 'right',
   photoOffsetX: props.designState?.photoOffsetX ?? 0,
   photoOffsetY: props.designState?.photoOffsetY ?? 0,
   photoScale: props.designState?.photoScale ?? 1,
@@ -335,6 +345,21 @@ const skinCssVars = computed<Record<string, string>>(() => {
     '--resume-profile-section-variant': profile.separators,
   }
 })
+
+
+const rootThemeVars = computed(() => buildThemeVars({
+  primary: String((props.themeTokens?.['--cv-accent'] ?? props.templateSkin.themeTokens?.['--cv-accent']) ?? ''),
+  pageBg: String((props.themeTokens?.['--cv-surface'] ?? props.templateSkin.themeTokens?.['--cv-surface']) ?? ''),
+  asideWidth: resolvedDesignState.value.sidebarWidth,
+  lineStyle: resolvedDesignState.value.dividerStyle,
+  fontStyle: props.templateSkin.profile.typography,
+  photo: {
+    position: resolvedDesignState.value.photoPosition,
+    size: resolvedDesignState.value.photoSize,
+    border: resolvedDesignState.value.photoBorderWidth,
+    shape: (props.designState?.photo?.shape ?? 'circle') as 'circle' | 'rounded' | 'square',
+  },
+}))
 
 const layoutStyle = computed(() => ({
   '--resume-sidebar-width': `${resolvedDesignState.value.sidebarWidth}px`,
@@ -399,11 +424,6 @@ const noAsideRemainingSections = computed(() =>
     )
     .sort(compareSectionOrder),
 )
-const avatarStyle = computed(() => ({
-  width: `${resolvedDesignState.value.photoSize}px`,
-  height: `${resolvedDesignState.value.photoSize}px`,
-  borderWidth: `${resolvedDesignState.value.photoBorderWidth}px`,
-}))
 const avatarImageStyle = computed(() => ({
   transform: `translate(${props.photoOffsetX + (resolvedDesignState.value.photoOffsetX ?? 0)}px, ${props.photoOffsetY + (resolvedDesignState.value.photoOffsetY ?? 0)}px) scale(${props.photoScale * (resolvedDesignState.value.photoScale ?? 1)})`,
   transformOrigin: 'center',
@@ -466,25 +486,6 @@ const decorativeShapes = computed<DecorativeShapeSettings[]>(() => [
   resolvedDesignState.value.decorativeShapeA,
   resolvedDesignState.value.decorativeShapeB,
 ].filter((shape): shape is DecorativeShapeSettings => Boolean(shape?.enabled)))
-
-function decorativeShapeStyle(shape: DecorativeShapeSettings) {
-  const width =
-    shape.type === 'circle' || shape.type === 'ring' || shape.type === 'diamond' || shape.type === 'triangle' ? shape.size : shape.width
-  const height =
-    shape.type === 'circle' || shape.type === 'ring' || shape.type === 'diamond' || shape.type === 'triangle' ? shape.size : shape.height
-
-  return {
-    '--shape-color': shape.color,
-    '--shape-opacity': String(shape.opacity),
-    width: `${width}px`,
-    height: `${height}px`,
-    left: `${shape.x}%`,
-    top: `${shape.y}%`,
-    '--shape-size': `${shape.size}px`,
-    '--shape-transform': `translate(-50%, -50%) rotate(${shape.rotation}deg)`,
-    transform: `translate(-50%, -50%) rotate(${shape.rotation}deg)`,
-  }
-}
 
 function fallbackVariant(sectionKey: ResumeSectionLayoutKey): string {
   if (sectionKey === 'experience') return 'detailed'
@@ -620,21 +621,13 @@ function updateText(path: string, value: string) {
 <template>
   <article
     :class="[templateSkin.rootClass, ...rootDesignClasses]"
-    :style="{ ...themeTokens, ...(templateSkin.themeTokens ?? {}), ...skinCssVars, ...sectionIconCssVars }"
+    :style="{ ...themeTokens, ...(templateSkin.themeTokens ?? {}), ...skinCssVars, ...sectionIconCssVars, ...rootThemeVars }"
   >
-    <div v-if="decorativeShapes.length" class="resume-skin__decorative-layer">
-      <span
-        v-for="(shape, index) in decorativeShapes"
-        :key="`resume-shape-${index}-${shape.type}`"
-        class="resume-skin__shape"
-        :class="`resume-skin__shape--${shape.type}`"
-        :style="decorativeShapeStyle(shape)"
-      />
-    </div>
+    <TemplateDecorations :shapes="decorativeShapes" />
     <header
       class="resume-skin__header"
       :class="[`resume-skin__header--${templateSkin.profile.typography}`, `resume-header-${resolvedDesignState.headerStyleVariant}`]"
-      :style="{ minHeight: 'var(--resume-header-height, auto)' }"
+      
     >
       <div>
         <h1>
@@ -786,7 +779,6 @@ function updateText(path: string, value: string) {
         />
         <v-avatar
           class="resume-skin__avatar"
-          :style="avatarStyle"
           @click="onPhotoClick?.()"
         >
           <v-img :src="resume.photoUrl" :style="avatarImageStyle" cover />
@@ -1445,8 +1437,16 @@ function updateText(path: string, value: string) {
 .resume-skin__avatar {
   position: relative;
   z-index: 1;
+  width: var(--photo-size);
+  height: var(--photo-size);
+  border-width: var(--photo-border);
   border-style: solid;
+  border-radius: var(--photo-radius, 999px);
   border-color: color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 28%, var(--resume-page, var(--cv-page)));
+}
+
+:global(.resume-skin__avatar .v-img__img) {
+  border-radius: inherit;
 }
 
 .photo-frame:hover :deep(.avatar-overlay-controls),
