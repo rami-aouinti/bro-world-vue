@@ -10,13 +10,13 @@ import {
 } from '~/constants/resumeTemplates.catalog'
 
 describe('resume layout + skin combinations', () => {
-  it('contains 3 structures, 12 layouts, 10 CV skins, and 124 resume templates (120 generated + 4 curated)', () => {
+  it('contains 3 structures, 12 layouts, 10 CV skins, and 94 resume templates (90 generated + 4 curated)', () => {
     const resumeTemplates = RESUME_TEMPLATES_CATALOG.filter(({ type }) => type === 'resume')
 
     expect(RESUME_STRUCTURES_CATALOG).toHaveLength(3)
     expect(RESUME_LAYOUTS_CATALOG).toHaveLength(12)
     expect(RESUME_SKINS_CATALOG).toHaveLength(10)
-    expect(resumeTemplates).toHaveLength(124)
+    expect(resumeTemplates).toHaveLength(94)
   })
 
   it('contains a 4 layouts per structure split', () => {
