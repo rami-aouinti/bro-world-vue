@@ -23,6 +23,22 @@ const selectedTemplate = computed(() => {
   )
 })
 
+const selectedTemplateId = computed(() => String(route.query.template || ''))
+
+const relatedResumes = computed(() => {
+  if (!selectedTemplateId.value) return []
+  return myResumes.value.filter((resume) => {
+    const candidateTemplateIds = [
+      (resume as any)?.templateId,
+      (resume as any)?.template?.templateId,
+      (resume as any)?.customization?.template?.templateId,
+      (resume as any)?.customization?.templateId,
+    ].filter((value): value is string => typeof value === 'string')
+
+    return candidateTemplateIds.includes(selectedTemplateId.value)
+  })
+})
+
 onMounted(async () => {
   if (!loggedIn.value) return
 
@@ -69,9 +85,14 @@ onMounted(async () => {
           variant="tonal"
           :text="resumesError"
         />
-        <pre v-else class="text-body-2">{{
-          JSON.stringify(myResumes, null, 2)
-        }}</pre>
+        <template v-else>
+          <p class="text-medium-emphasis mb-2">
+            {{ relatedResumes.length }} CV lié(s) à cette template
+          </p>
+          <pre class="text-body-2">{{
+            JSON.stringify(relatedResumes, null, 2)
+          }}</pre>
+        </template>
       </v-card-text>
     </v-card>
   </v-container>
