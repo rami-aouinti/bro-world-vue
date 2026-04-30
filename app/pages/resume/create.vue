@@ -1003,6 +1003,17 @@ const skinBlueprints = [
     },
   },
   {
+    key: 'terra',
+    title: 'Terra Accent',
+    subtitle: 'Palette terra chaleureuse',
+    image: '/img/cv/cv-4.png',
+    presetId: 'socle-modern',
+    config: {
+      photoShape: 'rounded' as PhotoShape,
+      sectionDividerStyle: 'line' as const,
+    },
+  },
+  {
     key: 'minimal',
     title: 'Minimal Signal',
     subtitle: 'Equilibre minimal et lisible',
@@ -1477,6 +1488,43 @@ function selectValidTemplateForCurrentDocumentType() {
   }
 }
 
+
+function resolveTemplateFromQueryValue(queryValue: string) {
+  const normalizedTemplateQuery = queryValue.trim().toLowerCase()
+  const directMatch = templatesByDocumentType.value.find(
+    (template) =>
+      template.id.toLowerCase() === normalizedTemplateQuery ||
+      template.templateId?.toLowerCase?.() === normalizedTemplateQuery,
+  )
+  if (directMatch) return directMatch
+
+  const slugMatch = normalizedTemplateQuery.match(
+    /^resume-(no-aside|aside-left|aside-right)(?:-[abc])?-(.+)$/,
+  )
+  if (!slugMatch) return null
+
+  const [, structureSlug, skinSlug] = slugMatch
+  const structureMap: Record<string, Template['structureId']> = {
+    'no-aside': 'structure-professional',
+    'aside-left': 'structure-balanced',
+    'aside-right': 'structure-compact',
+  }
+  const structureId = structureMap[structureSlug]
+  if (!structureId) return null
+
+  return (
+    templatesByDocumentType.value.find(
+      (template) =>
+        template.structureId === structureId &&
+        template.skinId.toLowerCase().includes(skinSlug),
+    ) ??
+    templatesByDocumentType.value.find(
+      (template) => template.structureId === structureId,
+    ) ??
+    null
+  )
+}
+
 function applyTemplateFromRouteQuery() {
   const templateFromQuery = Array.isArray(route.query.template)
     ? route.query.template[0]
@@ -1486,12 +1534,7 @@ function applyTemplateFromRouteQuery() {
     return false
   }
 
-  const normalizedTemplateQuery = templateFromQuery.trim()
-  const matchedTemplate = templatesByDocumentType.value.find(
-    (template) =>
-      template.id === normalizedTemplateQuery ||
-      template.templateId === normalizedTemplateQuery,
-  )
+  const matchedTemplate = resolveTemplateFromQueryValue(templateFromQuery)
 
   if (!matchedTemplate) {
     return false
