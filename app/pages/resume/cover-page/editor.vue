@@ -7,7 +7,7 @@ import CoverPageTemplateTerra from '~/components/Resume/Templates/CoverPageTempl
 import type { RoundedOptionId, Typography } from '~/constants/resumeDesign'
 import { COVER_PAGE_TEMPLATE_IDS } from '~/constants/resumeTemplates'
 import { useResumeDesignControls } from '~/composables/useResumeDesignControls'
-import ProfileRichTextEditor from '~/components/Resume/Create/ProfileRichTextEditor.vue'
+import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
 
 definePageMeta({
   title: 'Resume · Cover Page Editor',
@@ -143,7 +143,7 @@ onMounted(async () => {
           <v-window-item value="edit">
             <v-text-field v-model="model.fullName" label="Full name" variant="outlined" hide-details />
             <v-text-field v-model="model.role" label="Title" variant="outlined" hide-details />
-            <ProfileRichTextEditor v-model="model.summary" label="Summary" placeholder="Write your cover page summary" />
+            <v-textarea v-model="model.summary" label="Summary" variant="outlined" auto-grow hide-details />
             <v-text-field v-model="model.location" label="Location" variant="outlined" hide-details />
             <v-text-field v-model="model.email" label="Email" variant="outlined" hide-details />
             <v-text-field v-model="model.phone" label="Phone" variant="outlined" hide-details />
@@ -188,9 +188,9 @@ onMounted(async () => {
     <v-container fluid>
       <div class="local-toolbar-actions">
         <div class="local-toolbar-actions__row">
-          <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" />
-          <v-btn class="local-toolbar-btn" color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" />
-          <v-btn class="local-toolbar-btn" color="info" size="small" variant="outlined" icon="mdi-download" />
+          <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-content-save-cog-outline">Save / Import</v-btn>
+          <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-list-outline">Sections</v-btn>
+          <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-signature-freehand">Signature</v-btn>
           <v-menu v-model="toolbarTemplateMenuOpen" location="bottom center" origin="top center">
             <template #activator="{ props }">
               <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-grid-outline" v-bind="props" @click="openToolbarTab('template')">Templates</v-btn>
@@ -250,6 +250,9 @@ onMounted(async () => {
         </div>
       </div>
       <div class="preview-grid">
+        <div class="content-editors">
+          <HoverRichTextEditor v-model="model.summary" label="Summary" placeholder="Write your cover page summary" />
+        </div>
         <component
           :is="activeTemplateComponent"
           :model="model"
@@ -270,6 +273,7 @@ onMounted(async () => {
 .builder-preview { background: rgb(var(--v-theme-surface-variant)); }
 .form-card { border-radius: 14px; }
 .preview-grid { min-height: calc(100vh - 120px); background: #fff; border-radius: 16px; padding: 14px; }
+.content-editors { display: grid; gap: 10px; margin-bottom: 14px; }
 .template-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
 .template-card { cursor: pointer; transition: .2s ease; border-radius: 14px; overflow: hidden; border: 1px solid rgba(15, 23, 42, .08); }
 .template-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(15, 23, 42, .12); }

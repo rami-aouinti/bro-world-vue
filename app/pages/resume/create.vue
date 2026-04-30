@@ -10,8 +10,6 @@ import { CV_SOCLE_PRESETS, resolveSoclePresetById } from '~/constants/resumeSocl
 import {
   type ResumeLayoutMode,
   type ResumeSectionIconStyleVariant,
-  type ResumeTemplateSkin,
-  resolveTemplateSkin,
 } from '~/constants/resumeTemplateSkins'
 import {
   RESUME_CONTENT_STYLE_OPTIONS,
@@ -28,7 +26,7 @@ import {
   fromBuilderModelToApiPayload,
 } from '~/utils/resumeApiMapper'
 import { levelToStars, starsToPercent } from '~/utils/resumeLanguageLevel'
-import ResumeRenderer from '~/components/Resume/Templates/ResumeRenderer.vue'
+import ResumeRenderer from '~/modules/resume/components/ResumeRenderer.vue'
 import ResumeTimelineSectionFields from '~/components/Resume/Create/ResumeTimelineSectionFields.vue'
 import ResumeLevelSectionFields from '~/components/Resume/Create/ResumeLevelSectionFields.vue'
 import ProfileRichTextEditor from '~/components/Resume/Create/ProfileRichTextEditor.vue'
@@ -370,6 +368,7 @@ type SectionLayoutEntry<
 
 const toolbarSaveImportMenuOpen = ref(false)
 const toolbarSectionMenuOpen = ref(false)
+const toolbarTemplateMenuOpen = ref(false)
 const route = useRoute()
 type DesignSettings = {
   selectedTheme: string
@@ -1356,14 +1355,6 @@ onMounted(async () => {
 const templateSupportsPhoto = computed(
   () => selectedTemplateConfig.value.hasPhoto,
 )
-const selectedTemplateSkin = computed<ResumeTemplateSkin>(() => resolveTemplateSkin(selectedTemplate.value))
-const rendererTemplateSkin = computed<ResumeTemplateSkin>(() => {
-  const skin = selectedTemplateSkin.value
-  if (!skin.wrapperClass || !skin.mainClass || !skin.asideClass) {
-    throw new Error('[resume/create] Invalid template skin: missing wrapperClass/mainClass/asideClass')
-  }
-  return skin
-})
 const {
   state: resumeDocumentState,
   hydrateFromStorage,
@@ -2195,6 +2186,11 @@ function openAddSectionDialog(section: AddSectionType) {
   resetSectionDraft(section)
   toolbarSectionMenuOpen.value = false
   addSectionDialogOpen.value = true
+}
+
+function selectTemplateFromToolbar(templateId: string) {
+  applyTemplateSelection(templateId)
+  toolbarTemplateMenuOpen.value = false
 }
 
 function submitAddSection() {
@@ -4220,6 +4216,40 @@ if (import.meta.client) {
                 >
                   Signature
                 </v-btn>
+
+                <v-menu
+                  v-model="toolbarTemplateMenuOpen"
+                  location="bottom center"
+                  origin="top center"
+                >
+                  <template #activator="{ props }">
+                    <v-btn
+                      class="local-toolbar-btn"
+                      color="primary"
+                      size="small"
+                      variant="outlined"
+                      prepend-icon="mdi-view-grid-outline"
+                      v-bind="props"
+                    >
+                      Templates
+                    </v-btn>
+                  </template>
+                  <v-card class="toolbar-menu-card">
+                    <div class="toolbar-template-grid">
+                      <button
+                        v-for="template in filteredTemplates"
+                        :key="`toolbar-template-${template.id}`"
+                        type="button"
+                        class="template-drawer__item"
+                        :class="{ 'template-drawer__item--active': selectedTemplate === template.id }"
+                        @click="selectTemplateFromToolbar(template.id)"
+                      >
+                        <v-img :src="template.image" :alt="template.title" height="96" cover class="template-drawer__thumb" />
+                        <span class="template-drawer__label">{{ template.title }}</span>
+                      </button>
+                    </div>
+                  </v-card>
+                </v-menu>
               </div>
             </div>
           </div>
@@ -4271,8 +4301,13 @@ if (import.meta.client) {
                           :on-photo-shape-select="
                             (shape) => (selectedPhotoShape = shape)
                           "
-                          :template-id="selectedTemplate"
-                          :template-skin="rendererTemplateSkin"
+                          :template-config="{
+                            templateId: selectedTemplate,
+                            structureId: templatePickerState.structureId,
+                            layoutId: templatePickerState.layoutId,
+                            skinId: templatePickerState.skinId,
+                            layoutMode: layoutSettings.layoutMode,
+                          }"
                           editable
                           @add-item="addItemToPreviewSection"
                           @change-variant="setSectionVariant"
@@ -4877,8 +4912,13 @@ if (import.meta.client) {
                         (shape) => (selectedPhotoShape = shape)
                       "
                       :on-photo-click="onPreviewPhotoClick"
-                      :template-id="selectedTemplate"
-                          :template-skin="rendererTemplateSkin"
+                      :template-config="{
+                            templateId: selectedTemplate,
+                            structureId: templatePickerState.structureId,
+                            layoutId: templatePickerState.layoutId,
+                            skinId: templatePickerState.skinId,
+                            layoutMode: layoutSettings.layoutMode,
+                          }"
                       editable
                       @add-item="addItemToPreviewSection"
                       @change-variant="setSectionVariant"
@@ -5301,6 +5341,13 @@ if (import.meta.client) {
   background: color-mix(in srgb, rgb(var(--v-theme-surface)) 84%, transparent);
   backdrop-filter: blur(10px);
   box-shadow: 0 10px 28px rgba(15, 23, 42, 0.22);
+}
+
+.toolbar-template-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 12px;
 }
 
 .local-toolbar-btn {

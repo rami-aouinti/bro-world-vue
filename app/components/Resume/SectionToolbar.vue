@@ -629,6 +629,7 @@ watch(
 
 :global(.resume-section-hoverable) {
   margin-bottom: var(--rs-extra-margin-offset, 0px);
+  overflow: visible;
 }
 
 
