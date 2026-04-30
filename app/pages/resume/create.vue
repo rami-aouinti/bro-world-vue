@@ -5,6 +5,7 @@ import type {
   Typography,
 } from '~/constants/resumeDesign'
 import { DEFAULT_RESUME_TEMPLATE_ID } from '~/constants/resumeTemplates'
+import { COVER_LETTER_TEMPLATES_CATALOG, COVER_PAGE_TEMPLATES_CATALOG } from '~/constants/resumeTemplates.catalog'
 import { CV_SOCLE_PRESETS, resolveSoclePresetById } from '~/constants/resumeSoclePresets'
 import {
   type ResumeLayoutMode,
@@ -790,6 +791,48 @@ const templates: Template[] = resumeTemplateCards.map((template) => ({
   ],
   recommended: ['cv-socle-01', 'cv-socle-02', 'cv-socle-03', 'cv-socle-04', 'cv-socle-10', 'cv-socle-15'].includes(template.id),
 }))
+
+const mapStructureIdToBuilder = (structureId: 'no-aside' | 'aside-left' | 'aside-right'): Template['structureId'] => {
+  if (structureId === 'aside-left') return 'structure-balanced'
+  if (structureId === 'aside-right') return 'structure-compact'
+  return 'structure-professional'
+}
+
+const mapLayoutIdToBuilder = (layoutId: string): Template['layoutId'] => {
+  if (layoutId.includes('aside-left')) return 'layout-aside-left'
+  if (layoutId.includes('aside-right')) return 'layout-aside-right'
+  return 'layout-single-column'
+}
+
+const mapCatalogToTemplate = (catalog: typeof COVER_PAGE_TEMPLATES_CATALOG, documentType: Template['documentType']): Template[] =>
+  catalog.map((template) => ({
+    id: template.id,
+    title: template.label,
+    subtitle: template.subtitle,
+    image: template.image,
+    documentType,
+    hasPhoto: template.visibleOptions.photo,
+    isTwoColumn: template.visibleOptions.twoColumn,
+    isAts: template.visibleOptions.ats,
+    hasDocx: template.visibleOptions.docx,
+    isCustomized: template.visibleOptions.customized,
+    isFree: template.visibleOptions.free,
+    useTimeline: template.visibleOptions.timeline,
+    variant: DEFAULT_RESUME_TEMPLATE_ID,
+    presetId: 'socle-classic',
+    structureId: mapStructureIdToBuilder(template.structureId),
+    layoutId: mapLayoutIdToBuilder(template.layoutId),
+    skinId: template.skinId,
+    badges: [
+      template.visibleOptions.ats ? 'ATS' : 'Creative',
+      template.visibleOptions.twoColumn ? '2-col' : '1-col',
+      template.visibleOptions.photo ? 'photo' : 'no-photo',
+    ],
+    recommended: false,
+  }))
+
+templates.push(...mapCatalogToTemplate(COVER_PAGE_TEMPLATES_CATALOG, 'cover-page'))
+templates.push(...mapCatalogToTemplate(COVER_LETTER_TEMPLATES_CATALOG, 'cover-letter'))
 
 const resume = reactive<ResumeModel>({
   role: 'Communication Specialist',
