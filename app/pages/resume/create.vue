@@ -922,6 +922,17 @@ const layoutBlueprints = [
 
 const skinBlueprints = [
   {
+    key: 'urban',
+    title: 'Urban Clear',
+    subtitle: 'Style urbain moderne',
+    image: '/img/cv/cv-1.png',
+    presetId: 'socle-modern',
+    config: {
+      photoShape: 'circle' as PhotoShape,
+      sectionIconStyle: 'filled' as ResumeSectionIconStyleVariant,
+    },
+  },
+  {
     key: 'classic',
     title: 'Classique',
     subtitle: 'Style classique équilibré',
