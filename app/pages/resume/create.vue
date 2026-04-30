@@ -1499,27 +1499,37 @@ function resolveTemplateFromQueryValue(queryValue: string) {
   if (directMatch) return directMatch
 
   const slugMatch = normalizedTemplateQuery.match(
-    /^resume-(no-aside|aside-left|aside-right)(?:-[abc])?-(.+)$/,
+    /^resume-((?:no-aside|aside-left|aside-right)(?:-[abc])?)-(.+)$/,
   )
   if (!slugMatch) return null
 
-  const [, structureSlug, skinSlug] = slugMatch
-  const structureMap: Record<string, Template['structureId']> = {
-    'no-aside': 'structure-professional',
-    'aside-left': 'structure-balanced',
-    'aside-right': 'structure-compact',
+  const [, layoutSlug, skinSlug] = slugMatch
+  const layoutMap: Record<string, Template['layoutId']> = {
+    'no-aside-a': 'layout-single-column',
+    'no-aside-b': 'layout-single-column',
+    'no-aside-c': 'layout-single-column',
+    'no-aside': 'layout-single-column',
+    'aside-left-a': 'layout-aside-left',
+    'aside-left-b': 'layout-aside-left',
+    'aside-left-c': 'layout-aside-left',
+    'aside-left': 'layout-aside-left',
+    'aside-right-a': 'layout-aside-right',
+    'aside-right-b': 'layout-aside-right',
+    'aside-right-c': 'layout-aside-right',
+    'aside-right': 'layout-aside-right',
   }
-  const structureId = structureMap[structureSlug]
-  if (!structureId) return null
+
+  const expectedLayout = layoutMap[layoutSlug]
+  if (!expectedLayout) return null
 
   return (
     templatesByDocumentType.value.find(
       (template) =>
-        template.structureId === structureId &&
+        template.layoutId === expectedLayout &&
         template.skinId.toLowerCase().includes(skinSlug),
     ) ??
     templatesByDocumentType.value.find(
-      (template) => template.structureId === structureId,
+      (template) => template.layoutId === expectedLayout,
     ) ??
     null
   )
