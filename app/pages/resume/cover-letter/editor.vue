@@ -121,85 +121,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-container fluid class="editor-shell pa-0">
-    <div class="local-toolbar-actions">
-      <div class="local-toolbar-actions__row">
-        <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" />
-        <v-btn class="local-toolbar-btn" color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" />
-        <v-btn class="local-toolbar-btn" color="info" size="small" variant="outlined" icon="mdi-download" />
-        <v-menu v-model="toolbarTemplateMenuOpen" location="bottom center" origin="top center">
-          <template #activator="{ props }">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-grid-outline" v-bind="props" @click="openToolbarTab('template')">Templates</v-btn>
-          </template>
-          <v-card class="toolbar-menu-card">
-            <div class="toolbar-template-grid">
-              <v-card
-                v-for="template in coverLetterTemplates"
-                :key="`toolbar-cover-letter-${template.id}`"
-                class="template-card"
-                :class="{ 'template-card--active': selectedTemplate === template.id }"
-                variant="outlined"
-                @click="applyTemplateFromToolbar(template.id)"
-              >
-                <v-img :src="template.image" height="96" cover />
-                <v-card-text class="py-2 text-caption">{{ template.title }}</v-card-text>
-              </v-card>
-            </div>
-          </v-card>
-        </v-menu>
-        <v-menu location="bottom center" origin="top center" max-width="520">
-          <template #activator="{ props }">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-palette-outline" v-bind="props">Design</v-btn>
-          </template>
-          <v-card class="toolbar-menu-card">
-            <v-card-title class="text-subtitle-2">Design</v-card-title>
-            <v-card-text>
-              <p class="section-label">Color palette</p>
-              <div class="palette-grid mb-4">
-                <button v-for="theme in colorThemes" :key="`toolbar-theme-${theme.name}`" type="button" class="palette-item" :class="{ 'palette-item--active': selectedTheme === theme.name }" @click="selectedTheme = theme.name">
-                  <span :style="{ background: theme.sidebar }" />
-                  <span :style="{ background: theme.accent }" />
-                  <span :style="{ background: theme.page }" />
-                </button>
-              </div>
-              <p class="section-label">Rounded</p>
-              <v-btn-toggle v-model="selectedRounded" mandatory divided class="rounded-toggle" color="primary">
-                <v-btn v-for="option in roundedOptions" :key="`toolbar-rounded-${option.value}`" :value="option.value" variant="text">{{ option.title }}</v-btn>
-              </v-btn-toggle>
-              <p class="section-label mt-4">Text style</p>
-              <AppSelect v-model="selectedTextStyle" :items="textStyleOptions" item-title="label" item-value="value" label="Typography preset" density="comfortable" hide-details />
-            </v-card-text>
-          </v-card>
-        </v-menu>
-        <v-menu location="bottom center" origin="top center" max-width="460">
-          <template #activator="{ props }">
-            <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-file-import-outline" v-bind="props">Import</v-btn>
-          </template>
-          <v-card class="toolbar-menu-card">
-            <v-card-title class="text-subtitle-2">Import</v-card-title>
-            <v-card-text class="d-flex flex-column ga-2">
-              <v-btn prepend-icon="mdi-file-document-edit-outline" color="primary" variant="outlined" text="Open resume import page" @click="goToImportFlow" />
-            </v-card-text>
-          </v-card>
-        </v-menu>
-        <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" icon="mdi-creation" />
-      </div>
-    </div>
-    <div class="builder-layout">
-      <section class="builder-form px-3 px-md-6 py-4">
-        <v-card class="form-card mb-4" variant="outlined">
-          <v-card-title>Imported base</v-card-title>
-          <v-card-text class="d-grid ga-2">
-            <div><strong>Template:</strong> {{ selectedCoverPageBase.templateId }}</div>
-            <div><strong>Title:</strong> {{ selectedCoverPageBase.title }}</div>
-            <div><strong>Subtitle:</strong> {{ selectedCoverPageBase.subtitle }}</div>
-            <div><strong>Summary:</strong> {{ selectedCoverPageBase.summary }}</div>
-            <v-btn variant="text" color="primary" class="justify-start px-0" @click="goBackToCoverPage">
-              Back to Cover Page
-            </v-btn>
-          </v-card-text>
-        </v-card>
-
+  <div>
+    <AppPageDrawers>
+      <template #left>
+        <div><strong>Template:</strong> {{ selectedCoverPageBase.templateId }}</div>
+        <div><strong>Title:</strong> {{ selectedCoverPageBase.title }}</div>
+        <div><strong>Subtitle:</strong> {{ selectedCoverPageBase.subtitle }}</div>
+        <div><strong>Summary:</strong> {{ selectedCoverPageBase.summary }}</div>
+        <v-btn variant="text" color="primary" class="justify-start px-0" @click="goBackToCoverPage">
+          Back to Cover Page
+        </v-btn>
+      </template>
+      <template #right>
         <v-tabs v-model="activeTab" color="primary" grow class="mb-4">
           <v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value">{{ tab.label }}</v-tab>
         </v-tabs>
@@ -245,22 +178,85 @@ onMounted(() => {
           </v-window-item>
 
         </v-window>
-      </section>
+      </template>
+    </AppPageDrawers>
 
-      <aside class="builder-preview py-6 px-5 px-md-8">
-        <div class="preview-grid">
-          <component
-            :is="activeTemplateComponent"
-            :model="model"
-            :palette="activePalette"
-            :text-style="selectedTextStyle"
-            :rounded="selectedRounded"
-            :layout-settings="coverLayoutSettings"
-          />
+    <v-container fluid>
+      <div class="local-toolbar-actions">
+        <div class="local-toolbar-actions__row">
+          <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" />
+          <v-btn class="local-toolbar-btn" color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" />
+          <v-btn class="local-toolbar-btn" color="info" size="small" variant="outlined" icon="mdi-download" />
+          <v-menu v-model="toolbarTemplateMenuOpen" location="bottom center" origin="top center">
+            <template #activator="{ props }">
+              <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-grid-outline" v-bind="props" @click="openToolbarTab('template')">Templates</v-btn>
+            </template>
+            <v-card class="toolbar-menu-card">
+              <div class="toolbar-template-grid">
+                <v-card
+                  v-for="template in coverLetterTemplates"
+                  :key="`toolbar-cover-letter-${template.id}`"
+                  class="template-card"
+                  :class="{ 'template-card--active': selectedTemplate === template.id }"
+                  variant="outlined"
+                  @click="applyTemplateFromToolbar(template.id)"
+                >
+                  <v-img :src="template.image" height="96" cover />
+                  <v-card-text class="py-2 text-caption">{{ template.title }}</v-card-text>
+                </v-card>
+              </div>
+            </v-card>
+          </v-menu>
+          <v-menu location="bottom center" origin="top center" max-width="520">
+            <template #activator="{ props }">
+              <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-palette-outline" v-bind="props">Design</v-btn>
+            </template>
+            <v-card class="toolbar-menu-card">
+              <v-card-title class="text-subtitle-2">Design</v-card-title>
+              <v-card-text>
+                <p class="section-label">Color palette</p>
+                <div class="palette-grid mb-4">
+                  <button v-for="theme in colorThemes" :key="`toolbar-theme-${theme.name}`" type="button" class="palette-item" :class="{ 'palette-item--active': selectedTheme === theme.name }" @click="selectedTheme = theme.name">
+                    <span :style="{ background: theme.sidebar }" />
+                    <span :style="{ background: theme.accent }" />
+                    <span :style="{ background: theme.page }" />
+                  </button>
+                </div>
+                <p class="section-label">Rounded</p>
+                <v-btn-toggle v-model="selectedRounded" mandatory divided class="rounded-toggle" color="primary">
+                  <v-btn v-for="option in roundedOptions" :key="`toolbar-rounded-${option.value}`" :value="option.value" variant="text">{{ option.title }}</v-btn>
+                </v-btn-toggle>
+                <p class="section-label mt-4">Text style</p>
+                <AppSelect v-model="selectedTextStyle" :items="textStyleOptions" item-title="label" item-value="value" label="Typography preset" density="comfortable" hide-details />
+              </v-card-text>
+            </v-card>
+          </v-menu>
+          <v-menu location="bottom center" origin="top center" max-width="460">
+            <template #activator="{ props }">
+              <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-file-import-outline" v-bind="props">Import</v-btn>
+            </template>
+            <v-card class="toolbar-menu-card">
+              <v-card-title class="text-subtitle-2">Import</v-card-title>
+              <v-card-text class="d-flex flex-column ga-2">
+                <v-btn prepend-icon="mdi-file-document-edit-outline" color="primary" variant="outlined" text="Open resume import page" @click="goToImportFlow" />
+              </v-card-text>
+            </v-card>
+          </v-menu>
+          <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" icon="mdi-creation" />
         </div>
-      </aside>
-    </div>
-  </v-container>
+      </div>
+      <div class="preview-grid">
+        <component
+          :is="activeTemplateComponent"
+          :model="model"
+          :palette="activePalette"
+          :text-style="selectedTextStyle"
+          :rounded="selectedRounded"
+          :layout-settings="coverLayoutSettings"
+        />
+      </div>
+    </v-container>
+  </div>
 </template>
 
 <style scoped>
