@@ -11,7 +11,8 @@ import { validateTemplateConfig } from '../template/template.schema'
 import { resolveCompatibilityTemplateConfig } from '../template/templateCompatibility'
 
 const props = defineProps<{
-  resumeData: any
+  resumeData?: any
+  resume?: any
   templateConfig?: {
     templateId?: string
     structureId?: string
@@ -69,15 +70,17 @@ const resolvedTemplateSkin = computed<ResumeTemplateSkin>(() => {
 })
 
 const mergedResume = computed(() => ({
-  ...(props.resumeData || {}),
+  ...(props.resumeData || props.resume || {}),
   template: {
-    ...(props.resumeData?.template || {}),
+    ...(props.resumeData?.template || props.resume?.template || {}),
     structureId:
       normalizedTemplateConfig.value.structure ||
-      props.resumeData?.template?.structureId,
+      props.resumeData?.template?.structureId ||
+      props.resume?.template?.structureId,
     layoutId:
       normalizedTemplateConfig.value.layout ||
-      props.resumeData?.template?.layoutId,
+      props.resumeData?.template?.layoutId ||
+      props.resume?.template?.layoutId,
     skinId: normalizedTemplateConfig.value.skinId || resolvedTemplateId.value,
   },
 }))

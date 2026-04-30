@@ -4325,7 +4325,7 @@ if (import.meta.client) {
             Filtré
           </v-btn>
         </div>
-        <AppTextField
+        <v-text-field
           v-model="templatePickerState.search"
           label="Search skin/template"
           density="comfortable"
