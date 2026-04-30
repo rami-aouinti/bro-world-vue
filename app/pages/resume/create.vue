@@ -1478,15 +1478,12 @@ function selectValidTemplateForCurrentDocumentType() {
 }
 
 function applyTemplateFromRouteQuery() {
-  const fallbackTemplateId =
-    templatesByDocumentType.value[0]?.id ?? templates[0]?.id ?? 'cv-socle-01'
   const templateFromQuery = Array.isArray(route.query.template)
     ? route.query.template[0]
     : route.query.template
 
   if (typeof templateFromQuery !== 'string' || !templateFromQuery.trim()) {
-    applyTemplateSelection(fallbackTemplateId)
-    return
+    return false
   }
 
   const normalizedTemplateQuery = templateFromQuery.trim()
@@ -1496,7 +1493,12 @@ function applyTemplateFromRouteQuery() {
       template.templateId === normalizedTemplateQuery,
   )
 
-  applyTemplateSelection(matchedTemplate?.id ?? fallbackTemplateId)
+  if (!matchedTemplate) {
+    return false
+  }
+
+  applyTemplateSelection(matchedTemplate.id)
+  return true
 }
 
 function hasRemoteSectionContent(sections?: RemoteResumeSection[]) {
@@ -2901,8 +2903,10 @@ watch(selectedDocumentType, (value) => {
 watch(
   () => route.query.template,
   () => {
-    applyTemplateFromRouteQuery()
-    selectValidTemplateForCurrentDocumentType()
+    const appliedFromQuery = applyTemplateFromRouteQuery()
+    if (!appliedFromQuery) {
+      selectValidTemplateForCurrentDocumentType()
+    }
   },
 )
 
@@ -3781,7 +3785,15 @@ if (import.meta.client) {
         .layoutId as Template['layoutId']
       templatePickerState.value.skinId = customization.template.skinId
     }
-    selectedPreset.value = customization.presetId
+
+    const appliedTemplateFromQuery = applyTemplateFromRouteQuery()
+    if (!appliedTemplateFromQuery) {
+      selectValidTemplateForCurrentDocumentType()
+    }
+
+    if (!appliedTemplateFromQuery) {
+      selectedPreset.value = customization.presetId
+    }
     selectedTheme.value = customization.style.palette
     selectedPageBackground.value = customization.style.pageBackground
     selectedRounded.value = customization.style.radius
