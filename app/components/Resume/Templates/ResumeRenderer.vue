@@ -168,6 +168,7 @@ const props = withDefaults(
     showContactIcons: true,
     sectionIconStyleVariant: undefined,
     iconSizeVariant: 'm',
+    templateId: undefined,
     iconColorMode: 'accent',
     layoutMode: undefined,
   },
