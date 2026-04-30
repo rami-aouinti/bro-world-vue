@@ -188,9 +188,9 @@ onMounted(async () => {
     <v-container fluid>
       <div class="local-toolbar-actions">
         <div class="local-toolbar-actions__row">
-          <v-btn class="local-toolbar-btn" color="primary" size="small" icon="mdi-content-save-outline" />
-          <v-btn class="local-toolbar-btn" color="secondary" size="small" variant="outlined" icon="mdi-file-pdf-box" />
-          <v-btn class="local-toolbar-btn" color="info" size="small" variant="outlined" icon="mdi-download" />
+          <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-content-save-cog-outline">Save / Import</v-btn>
+          <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-list-outline">Sections</v-btn>
+          <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-signature-freehand">Signature</v-btn>
           <v-menu v-model="toolbarTemplateMenuOpen" location="bottom center" origin="top center">
             <template #activator="{ props }">
               <v-btn class="local-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-grid-outline" v-bind="props" @click="openToolbarTab('template')">Templates</v-btn>
