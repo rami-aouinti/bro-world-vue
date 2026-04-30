@@ -1,5 +1,9 @@
-import { ALL_RESUME_DOCUMENT_TEMPLATES_CATALOG } from '~/constants/resumeTemplates.catalog'
-import { RESUME_LAYOUTS_CATALOG, RESUME_SKINS_CATALOG, RESUME_STRUCTURES_CATALOG } from '~/constants/resumeTemplates.catalog'
+import {
+  ALL_RESUME_DOCUMENT_TEMPLATES_CATALOG,
+  RESUME_LAYOUTS_CATALOG,
+  RESUME_SKINS_CATALOG,
+  RESUME_STRUCTURES_CATALOG,
+} from '~/constants/resumeTemplates.catalog'
 import type { ResumeTemplateConfig, ResumeTemplateType } from '~/types/resumeTemplateConfig'
 import { toResumeRendererDesignState } from '~/composables/useResumeTemplateRuntime'
 
@@ -37,6 +41,7 @@ function isValidTemplateConfig(template: ResumeTemplateConfig): boolean {
 export function useResumeTemplates() {
   const validTemplates = computed(() => ALL_RESUME_DOCUMENT_TEMPLATES_CATALOG.filter((template) => {
     if (!isValidTemplateConfig(template)) return false
+    if (template.type !== 'resume') return true
     try {
       toResumeRendererDesignState(template)
       return true
