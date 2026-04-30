@@ -1,0 +1,212 @@
+[
+  {
+    "key": "classic-timeline",
+    "layout": "aside-left",
+    "structure": "structure-1",
+    "sections": {
+      "experience": "timeline",
+      "education": "timeline",
+      "skills": "progress-line",
+      "languages": "dots",
+      "languagesLabel": "classic",
+      "certifications": "list",
+      "references": "classic",
+      "projects": "cards",
+      "interests": "classic"
+    },
+    "line": "soft",
+    "density": "comfortable",
+    "textStyle": "roman",
+    "showIcon": true,
+    "photo": { "position": "left", "size": "96px", "shape": "circle" }
+  },
+  {
+    "key": "modern-cards",
+    "layout": "aside-right",
+    "structure": "structure-2",
+    "sections": {
+      "experience": "cards",
+      "education": "cards",
+      "skills": "dots",
+      "languages": "progress-circle",
+      "languagesLabel": "flags",
+      "certifications": "cards",
+      "references": "list",
+      "projects": "cards",
+      "interests": "list"
+    },
+    "line": "block",
+    "density": "comfortable",
+    "textStyle": "roman",
+    "showIcon": true,
+    "photo": { "position": "right", "size": "92px", "shape": "rounded" }
+  },
+  {
+    "key": "minimal-list",
+    "layout": "no-aside",
+    "structure": "structure-3",
+    "sections": {
+      "experience": "list",
+      "education": "list",
+      "skills": "text",
+      "languages": "text",
+      "languagesLabel": "classic",
+      "certifications": "list",
+      "references": "list",
+      "projects": "list",
+      "interests": "classic"
+    },
+    "line": "none",
+    "density": "compact",
+    "textStyle": "roman",
+    "showIcon": false,
+    "photo": { "position": "left", "size": "84px", "shape": "square" }
+  },
+  {
+    "key": "executive-two-columns",
+    "layout": "aside-left",
+    "structure": "structure-4",
+    "sections": {
+      "experience": "two-columns",
+      "education": "two-columns",
+      "skills": "stars",
+      "languages": "progress-line",
+      "languagesLabel": "classic",
+      "certifications": "two-columns",
+      "references": "classic",
+      "projects": "two-columns",
+      "interests": "list"
+    },
+    "line": "soft",
+    "density": "comfortable",
+    "textStyle": "roman",
+    "showIcon": true,
+    "photo": { "position": "left", "size": "100px", "shape": "circle" }
+  },
+  {
+    "key": "creative-mix",
+    "layout": "aside-right",
+    "structure": "structure-5",
+    "sections": {
+      "experience": "timeline",
+      "education": "cards",
+      "skills": "progress-circle",
+      "languages": "dots",
+      "languagesLabel": "flags",
+      "certifications": "cards",
+      "references": "list",
+      "projects": "timeline",
+      "interests": "cards"
+    },
+    "line": "block",
+    "density": "comfortable",
+    "textStyle": "italic",
+    "showIcon": true,
+    "photo": { "position": "right", "size": "98px", "shape": "circle" }
+  },
+  {
+    "key": "balanced-pro",
+    "layout": "aside-left",
+    "structure": "structure-2",
+    "sections": {
+      "experience": "classic",
+      "education": "classic",
+      "skills": "classic",
+      "languages": "classic",
+      "languagesLabel": "classic",
+      "certifications": "classic",
+      "references": "classic",
+      "projects": "classic",
+      "interests": "classic"
+    },
+    "line": "soft",
+    "density": "comfortable",
+    "textStyle": "roman",
+    "showIcon": true,
+    "photo": { "position": "left", "size": "90px", "shape": "rounded" }
+  },
+  {
+    "key": "airy-clean",
+    "layout": "no-aside",
+    "structure": "structure-6",
+    "sections": {
+      "experience": "timeline",
+      "education": "list",
+      "skills": "progress-line",
+      "languages": "text",
+      "languagesLabel": "classic",
+      "certifications": "list",
+      "references": "list",
+      "projects": "cards",
+      "interests": "list"
+    },
+    "line": "none",
+    "density": "comfortable",
+    "textStyle": "roman",
+    "showIcon": false,
+    "photo": { "position": "left", "size": "88px", "shape": "circle" }
+  },
+  {
+    "key": "compact-tech",
+    "layout": "aside-right",
+    "structure": "structure-7",
+    "sections": {
+      "experience": "list",
+      "education": "list",
+      "skills": "dots",
+      "languages": "progress-line",
+      "languagesLabel": "classic",
+      "certifications": "cards",
+      "references": "list",
+      "projects": "two-columns",
+      "interests": "classic"
+    },
+    "line": "soft",
+    "density": "compact",
+    "textStyle": "roman",
+    "showIcon": true,
+    "photo": { "position": "right", "size": "86px", "shape": "square" }
+  },
+  {
+    "key": "portfolio-showcase",
+    "layout": "no-aside",
+    "structure": "structure-8",
+    "sections": {
+      "experience": "cards",
+      "education": "cards",
+      "skills": "stars",
+      "languages": "dots",
+      "languagesLabel": "flags",
+      "certifications": "cards",
+      "references": "classic",
+      "projects": "cards",
+      "interests": "cards"
+    },
+    "line": "block",
+    "density": "comfortable",
+    "textStyle": "italic",
+    "showIcon": true,
+    "photo": { "position": "left", "size": "104px", "shape": "rounded" }
+  },
+  {
+    "key": "formal-academic",
+    "layout": "aside-left",
+    "structure": "structure-9",
+    "sections": {
+      "experience": "classic",
+      "education": "timeline",
+      "skills": "text",
+      "languages": "classic",
+      "languagesLabel": "classic",
+      "certifications": "timeline",
+      "references": "timeline",
+      "projects": "classic",
+      "interests": "list"
+    },
+    "line": "soft",
+    "density": "comfortable",
+    "textStyle": "roman",
+    "showIcon": false,
+    "photo": { "position": "left", "size": "92px", "shape": "circle" }
+  }
+]
