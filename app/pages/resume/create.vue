@@ -368,6 +368,7 @@ type SectionLayoutEntry<
 
 const toolbarSaveImportMenuOpen = ref(false)
 const toolbarSectionMenuOpen = ref(false)
+const toolbarTemplateMenuOpen = ref(false)
 const route = useRoute()
 type DesignSettings = {
   selectedTheme: string
@@ -2185,6 +2186,11 @@ function openAddSectionDialog(section: AddSectionType) {
   resetSectionDraft(section)
   toolbarSectionMenuOpen.value = false
   addSectionDialogOpen.value = true
+}
+
+function selectTemplateFromToolbar(templateId: string) {
+  applyTemplateSelection(templateId)
+  toolbarTemplateMenuOpen.value = false
 }
 
 function submitAddSection() {
@@ -4210,6 +4216,40 @@ if (import.meta.client) {
                 >
                   Signature
                 </v-btn>
+
+                <v-menu
+                  v-model="toolbarTemplateMenuOpen"
+                  location="bottom center"
+                  origin="top center"
+                >
+                  <template #activator="{ props }">
+                    <v-btn
+                      class="local-toolbar-btn"
+                      color="primary"
+                      size="small"
+                      variant="outlined"
+                      prepend-icon="mdi-view-grid-outline"
+                      v-bind="props"
+                    >
+                      Templates
+                    </v-btn>
+                  </template>
+                  <v-card class="toolbar-menu-card">
+                    <div class="toolbar-template-grid">
+                      <button
+                        v-for="template in filteredTemplates"
+                        :key="`toolbar-template-${template.id}`"
+                        type="button"
+                        class="template-drawer__item"
+                        :class="{ 'template-drawer__item--active': selectedTemplate === template.id }"
+                        @click="selectTemplateFromToolbar(template.id)"
+                      >
+                        <v-img :src="template.image" :alt="template.title" height="96" cover class="template-drawer__thumb" />
+                        <span class="template-drawer__label">{{ template.title }}</span>
+                      </button>
+                    </div>
+                  </v-card>
+                </v-menu>
               </div>
             </div>
           </div>
@@ -5301,6 +5341,13 @@ if (import.meta.client) {
   background: color-mix(in srgb, rgb(var(--v-theme-surface)) 84%, transparent);
   backdrop-filter: blur(10px);
   box-shadow: 0 10px 28px rgba(15, 23, 42, 0.22);
+}
+
+.toolbar-template-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 12px;
 }
 
 .local-toolbar-btn {
