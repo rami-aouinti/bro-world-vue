@@ -3495,8 +3495,6 @@ function applyStructuredResumeData(payload: StructuredResumeResponse) {
         detectRepositoryProvider(
           String(project.repositoryUrl || project.link || ''),
         ),
-      repositoryUrl: String(project.link || ''),
-      repositoryProvider: detectRepositoryProvider(String(project.link || '')),
       contentStyle: 'points',
       points: parseMultilineList(String(project.description || '')),
     }))
