@@ -52,10 +52,19 @@ const documentTabs = computed(() => [
 ])
 
 const displayedTemplates = computed(() =>
-  allTemplates.value.filter(
-    (template) => template.type === activeTemplateTab.value,
-  ),
+  allTemplates.value.filter((template) => template.type === activeTemplateTab.value),
 )
+
+const selectedTemplateId = ref<string>('')
+
+watch(displayedTemplates, (items) => {
+  if (!items.length) return
+  if (!selectedTemplateId.value || !items.some(item => item.templateId === selectedTemplateId.value)) {
+    selectedTemplateId.value = items[0]?.templateId || ''
+  }
+}, { immediate: true })
+
+const selectedTemplateCard = computed(() => displayedTemplates.value.find(item => item.templateId === selectedTemplateId.value) || displayedTemplates.value[0] || null)
 
 const openTemplateInWriteMode = (template: {
   type: 'resume' | 'cover-page' | 'cover-letter'
@@ -132,17 +141,28 @@ onUnmounted(() => {
               v-for="templateCard in displayedTemplates"
               :key="templateCard.id"
               class="postcard-gradient-card template-slide"
-              @click="openTemplateInWriteMode(templateCard)"
+              @click="selectedTemplateId = templateCard.templateId"
             >
               <v-img :src="templateCard.image" :alt="templateCard.title" />
               <span>{{ templateCard.title }}</span>
             </v-card>
           </div>
+
+          <v-card v-if="selectedTemplateCard" class="template-preview-card mt-5" variant="outlined">
+            <v-card-title>{{ selectedTemplateCard.title }}</v-card-title>
+            <v-card-text>
+              <v-img :src="selectedTemplateCard.image" :alt="selectedTemplateCard.title" class="template-preview-image" />
+              <v-btn color="primary" class="mt-4" @click="openTemplateInWriteMode(selectedTemplateCard)">
+                Utiliser cette template
+              </v-btn>
+            </v-card-text>
+          </v-card>
         </div>
       </section>
     </v-container>
   </div>
 </template>
+
 
 <style scoped>
 .hero {
@@ -228,4 +248,5 @@ onUnmounted(() => {
     transform: translateY(0);
   }
 }
+.template-preview-card{max-width:760px;margin-inline:auto}.template-preview-image{border-radius:12px;border:1px solid rgba(var(--v-theme-on-surface),.16)}
 </style>
