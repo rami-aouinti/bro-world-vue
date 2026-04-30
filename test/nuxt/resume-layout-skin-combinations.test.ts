@@ -10,23 +10,23 @@ import {
 } from '~/constants/resumeTemplates.catalog'
 
 describe('resume layout + skin combinations', () => {
-  it('contains 3 structures, 9 layouts, 10 CV skins, and 90 generated CV templates', () => {
+  it('contains 3 structures, 12 layouts, 10 CV skins, and 124 resume templates (120 generated + 4 curated)', () => {
     const resumeTemplates = RESUME_TEMPLATES_CATALOG.filter(({ type }) => type === 'resume')
 
     expect(RESUME_STRUCTURES_CATALOG).toHaveLength(3)
-    expect(RESUME_LAYOUTS_CATALOG).toHaveLength(9)
+    expect(RESUME_LAYOUTS_CATALOG).toHaveLength(12)
     expect(RESUME_SKINS_CATALOG).toHaveLength(10)
-    expect(resumeTemplates).toHaveLength(90)
+    expect(resumeTemplates).toHaveLength(124)
   })
 
-  it('contains a 3 layouts per structure split', () => {
+  it('contains a 4 layouts per structure split', () => {
     const counts = RESUME_LAYOUTS_CATALOG.reduce<Record<string, number>>((acc, layout) => {
       acc[layout.structureId] = (acc[layout.structureId] ?? 0) + 1
       return acc
     }, {})
 
     for (const structure of RESUME_STRUCTURES_CATALOG) {
-      expect(counts[structure.id]).toBe(3)
+      expect(counts[structure.id]).toBe(4)
     }
   })
 
@@ -42,7 +42,7 @@ describe('resume layout + skin combinations', () => {
     }
   })
 
-  it('generates 9 layouts × 10 skins without crash', () => {
+  it('runtime generator still resolves the 9 renderer layouts × 10 skins without crash', () => {
     expect(RESUME_LAYOUTS).toHaveLength(9)
     expect(RESUME_SKIN_IDS).toHaveLength(10)
 
