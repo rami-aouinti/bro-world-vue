@@ -113,6 +113,30 @@ export const RESUME_LAYOUTS_CATALOG: ResumeLayout[] = [
       { zone: 'aside', sections: ['skill', 'language', 'hobby', 'reference'] },
     ]),
   },
+  {
+    id: 'layout-hero-header-content-split',
+    structureId: 'no-aside',
+    sections: createSections([
+      { zone: 'main', sections: ['experience', 'education', 'project', 'certification', 'skill', 'language', 'reference', 'hobby'] },
+    ]),
+  },
+  {
+    id: 'layout-aside-left-full-height-editorial',
+    structureId: 'aside-left',
+    sections: createSections([
+      { zone: 'main', sections: ['experience', 'education', 'project', 'certification'] },
+      { zone: 'aside', sections: ['skill', 'language', 'reference', 'hobby'] },
+    ]),
+  },
+  {
+    id: 'layout-top-banner-right-utility',
+    structureId: 'aside-right',
+    sections: createSections([
+      { zone: 'main', sections: ['experience', 'education', 'project', 'certification'] },
+      { zone: 'aside', sections: ['skill', 'language', 'reference', 'hobby'] },
+    ]),
+  },
+
 ]
 
 export const RESUME_SKINS_CATALOG: ResumeSkin[] = [

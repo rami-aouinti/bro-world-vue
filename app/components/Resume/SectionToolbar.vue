@@ -325,6 +325,7 @@ watch(
     <v-menu
       v-if="enabledActions.has('change-variant') && props.variants.length"
       v-model="variantMenuOpen"
+      content-class="resume-toolbar-menu"
     >
       <template #activator="{ props: menuProps }">
         <v-btn
@@ -356,6 +357,7 @@ watch(
         enabledActions.has('change-content-style') && props.contentStyles.length
       "
       v-model="contentStyleMenuOpen"
+      content-class="resume-toolbar-menu"
     >
       <template #activator="{ props: menuProps }">
         <v-btn
@@ -388,6 +390,7 @@ watch(
       :close-on-content-click="false"
       location="bottom end"
       offset="10"
+      content-class="resume-toolbar-menu"
     >
       <template #activator="{ props: menuProps }">
         <v-btn
@@ -644,11 +647,20 @@ watch(
   color: var(--cv-toolbar-menu-text, var(--cv-on-page, var(--cv-secondary, rgb(241 245 249))));
 }
 
-.toolbar-menu-list {
+:global(.resume-toolbar-menu) {
+  --cv-toolbar-menu-bg-fallback: color-mix(in srgb, rgb(15 23 42) 88%, rgb(2 6 23) 12%);
+  --cv-toolbar-menu-text-fallback: rgb(241 245 249);
+}
+
+:global(.resume-toolbar-menu .toolbar-menu-list) {
   background: var(
     --cv-toolbar-menu-bg,
-    color-mix(in srgb, var(--cv-page) 80%, var(--cv-sidebar) 20%)
+    var(--cv-toolbar-menu-bg-fallback)
   );
+}
+
+:global(.resume-toolbar-menu .toolbar-menu-list .v-list-item-title) {
+  color: var(--cv-toolbar-menu-text, var(--cv-toolbar-menu-text-fallback));
 }
 
 :global(.resume-section-hoverable:hover > .section-toolbar),

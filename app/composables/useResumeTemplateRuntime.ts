@@ -5,6 +5,13 @@ import { RESUME_LAYOUTS_CATALOG } from '~/constants/resumeTemplates.catalog'
 import type { ResumeTemplateConfig } from '~/types/resumeTemplateConfig'
 
 export type ResumeRendererDesignState = {
+  headerStyleVariant: 'neutral' | 'hero'
+  headerHeight: string
+  asideFullHeight: boolean
+  splitContactRow: boolean
+  sectionRibbonStyle: 'none' | 'soft' | 'accent'
+  separatorStyleVariant: 'neutral' | 'vertical-line'
+  accentPaletteVariant: 'default' | 'contrast' | 'muted'
   themeTokens: Record<string, string>
   sectionTokens: Record<string, Record<string, string>>
   profile: {
@@ -22,6 +29,66 @@ export type ResumeRendererDesignState = {
 
 const ICON_ALIAS: Record<string, ResumeSectionIconStyleVariant> = { text: 'outline', outline: 'outline', filled: 'filled', rounded: 'rounded' }
 
+
+type TemplateRuntimePreset = {
+  headerStyleVariant: 'neutral' | 'hero'
+  headerHeight: string
+  asideFullHeight: boolean
+  splitContactRow: boolean
+  sectionRibbonStyle: 'none' | 'soft' | 'accent'
+  separatorStyleVariant: 'neutral' | 'vertical-line'
+  accentPaletteVariant: 'default' | 'contrast' | 'muted'
+  photoOffsetX: number
+  photoOffsetY: number
+  photoScale: number
+}
+
+const DEFAULT_RUNTIME_PRESET: TemplateRuntimePreset = {
+  headerStyleVariant: 'neutral',
+  headerHeight: 'auto',
+  asideFullHeight: false,
+  splitContactRow: false,
+  sectionRibbonStyle: 'none',
+  separatorStyleVariant: 'neutral',
+  accentPaletteVariant: 'default',
+  photoOffsetX: 0,
+  photoOffsetY: 0,
+  photoScale: 1,
+}
+
+const TEMPLATE_RUNTIME_PRESETS: Record<string, Partial<TemplateRuntimePreset>> = {
+  'resume-banner': {
+    headerStyleVariant: 'hero',
+    headerHeight: '224px',
+    asideFullHeight: true,
+    sectionRibbonStyle: 'accent',
+    separatorStyleVariant: 'vertical-line',
+    accentPaletteVariant: 'contrast',
+    splitContactRow: true,
+    photoOffsetY: -4,
+    photoScale: 1.06,
+  },
+  'resume-compact': {
+    headerHeight: '176px',
+    sectionRibbonStyle: 'soft',
+    accentPaletteVariant: 'muted',
+    photoScale: 0.95,
+  },
+  'resume-classic': {
+    separatorStyleVariant: 'vertical-line',
+    sectionRibbonStyle: 'soft',
+    photoOffsetX: -2,
+  },
+}
+
+function resolveRuntimePreset(templateId: string | undefined): TemplateRuntimePreset {
+  if (!templateId) return DEFAULT_RUNTIME_PRESET
+  return {
+    ...DEFAULT_RUNTIME_PRESET,
+    ...(TEMPLATE_RUNTIME_PRESETS[templateId] ?? {}),
+  }
+}
+
 export function resolveRuntimeLayoutAndSkin(layoutId: string, skinId: string) {
   const layout = getResumeLayoutById(layoutId) ?? RESUME_LAYOUTS_CATALOG.find(entry => entry.id === layoutId)
   const skin = RESUME_SKINS_REGISTRY[skinId]
@@ -32,6 +99,7 @@ export function resolveRuntimeLayoutAndSkin(layoutId: string, skinId: string) {
 export function toResumeRendererDesignState(template: ResumeTemplateConfig): ResumeRendererDesignState {
   const { layout, skin } = resolveRuntimeLayoutAndSkin(template.layoutId, template.skinId)
   const layoutMode = 'structure' in layout ? layout.structure : layout.structureId
+  const preset = resolveRuntimePreset(template.id)
 
   return {
     themeTokens: {
@@ -61,6 +129,16 @@ export function toResumeRendererDesignState(template: ResumeTemplateConfig): Res
       hobby: { '--resume-section-emphasis': skin.colors.text },
       reference: { '--resume-section-emphasis': skin.colors.text },
     },
+    headerStyleVariant: preset.headerStyleVariant,
+    headerHeight: preset.headerHeight,
+    asideFullHeight: preset.asideFullHeight,
+    splitContactRow: preset.splitContactRow,
+    sectionRibbonStyle: preset.sectionRibbonStyle,
+    separatorStyleVariant: preset.separatorStyleVariant,
+    accentPaletteVariant: preset.accentPaletteVariant,
+    photoOffsetX: preset.photoOffsetX,
+    photoOffsetY: preset.photoOffsetY,
+    photoScale: preset.photoScale,
     profile: {
       typography: skin.typography.family.includes('Merriweather') ? 'classic' : 'neo-grotesk',
       spacing: skin.radius === '0px' ? 'compact' : 'balanced',
