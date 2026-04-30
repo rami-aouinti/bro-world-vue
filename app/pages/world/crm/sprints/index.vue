@@ -26,10 +26,6 @@ const { sessionUser } = useCrmPermissions()
 const isRootAdmin = computed(() =>
   (sessionUser.value?.roles ?? []).includes('ROLE_ROOT'),
 )
-const isAdminOrRoot = computed(() => {
-  const roles = sessionUser.value?.roles ?? []
-  return roles.includes('ROLE_ROOT') || roles.includes('ROLE_ADMIN')
-})
 const createDialog = ref(false)
 const pendingCreate = ref(false)
 const pendingDelete = ref(false)
@@ -248,46 +244,22 @@ async function deleteSprint() {
                 }}</v-chip>
               </div>
               <div class="d-flex align-start justify-space-between ga-2 mb-2">
-                <div class="d-flex align-center ga-2">
+                <button
+                  type="button"
+                  class="d-flex align-center ga-2 detail-trigger-button"
+                  @click="router.push(`/world/crm/sprints/${sprint.id}?mode=view`)"
+                >
                   <CrmEntityAvatar :label="sprint.name" :size="36" />
-                  <p class="text-subtitle-1 text-truncate">
+                  <p class="text-subtitle-1 text-truncate mb-0 text-left">
                     {{ sprint.name }}
                   </p>
-                </div>
+                </button>
               </div>
               <p class="text-caption text-sm text-medium-emphasis mb-0 mt-3">
                 {{ formatDate(sprint.startDate) }} -
                 {{ formatDate(sprint.endDate) }}
               </p>
               <v-spacer />
-              <div v-if="isAdminOrRoot" class="d-flex justify-center ga-1 mt-2">
-                <v-btn
-                  icon="mdi-eye-outline"
-                  color="info"
-                  variant="text"
-                  class="mx-1"
-                  size="x-small"
-                  @click="
-                    router.push(`/world/crm/sprints/${sprint.id}?mode=view`)
-                  "
-                />
-                <v-btn
-                  icon="mdi-pencil-outline"
-                  color="primary"
-                  variant="text"
-                  class="mx-1"
-                  size="x-small"
-                  @click="router.push(`/world/crm/sprints/${sprint.id}`)"
-                />
-                <v-btn
-                  icon="mdi-delete-outline"
-                  color="error"
-                  variant="text"
-                  class="mx-1"
-                  size="x-small"
-                  @click="openDeleteDialog(sprint.id)"
-                />
-              </div>
             </WorldCard>
           </v-col>
 
@@ -374,3 +346,12 @@ async function deleteSprint() {
     </AppModal>
   </div>
 </template>
+
+<style scoped>
+.detail-trigger-button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+</style>
