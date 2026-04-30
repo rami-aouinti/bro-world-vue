@@ -7,6 +7,7 @@ import CoverPageTemplateTerra from '~/components/Resume/Templates/CoverPageTempl
 import type { RoundedOptionId, Typography } from '~/constants/resumeDesign'
 import { COVER_PAGE_TEMPLATE_IDS } from '~/constants/resumeTemplates'
 import { useResumeDesignControls } from '~/composables/useResumeDesignControls'
+import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
 
 definePageMeta({
   title: 'Resume · Cover Page Editor',
@@ -94,11 +95,28 @@ const applyTemplateFromToolbar = (templateId: string) => {
   toolbarTemplateMenuOpen.value = false
 }
 
+
+
+const hydrateFromConnectedUser = async () => {
+  try {
+    const me = await $fetch<{ user?: { firstName?: string; lastName?: string; email?: string; phone?: string; city?: string; country?: string } }>('/api/users/me')
+    const user = me?.user
+    if (!user) return
+    const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim()
+    if (fullName) model.fullName = fullName
+    if (user.email) model.email = user.email
+    if (user.phone) model.phone = user.phone
+    const location = [user.city, user.country].filter(Boolean).join(', ')
+    if (location) model.location = location
+  } catch {}
+}
+
 const goToImportFlow = async () => {
   await router.push('/resume/create?tab=import')
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await hydrateFromConnectedUser()
   const queryTemplate = typeof route.query.template === 'string' ? route.query.template : ''
   const flowTemplate = importedFlow.template
 
@@ -125,10 +143,12 @@ onMounted(() => {
           <v-window-item value="edit">
             <v-text-field v-model="model.fullName" label="Full name" variant="outlined" hide-details />
             <v-text-field v-model="model.role" label="Title" variant="outlined" hide-details />
-            <v-textarea v-model="model.summary" rows="5" label="Summary" variant="outlined" hide-details />
+            <HoverRichTextEditor v-model="model.summary" label="Summary" placeholder="Write your cover page summary" />
             <v-text-field v-model="model.location" label="Location" variant="outlined" hide-details />
             <v-text-field v-model="model.email" label="Email" variant="outlined" hide-details />
             <v-text-field v-model="model.phone" label="Phone" variant="outlined" hide-details />
+            <v-text-field v-model="model.date" label="Date" variant="outlined" hide-details />
+            <v-text-field v-model="model.photoUrl" label="Photo URL" variant="outlined" hide-details />
           </v-window-item>
 
           <v-window-item value="template">

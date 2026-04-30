@@ -7,6 +7,7 @@ import CoverLetterTemplateSplitFocus from '~/components/Resume/Templates/CoverLe
 import type { RoundedOptionId, Typography } from '~/constants/resumeDesign'
 import { COVER_LETTER_TEMPLATE_IDS, COVER_PAGE_TEMPLATE_IDS } from '~/constants/resumeTemplates'
 import { useResumeDesignControls } from '~/composables/useResumeDesignControls'
+import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
 
 definePageMeta({
   title: 'Resume · Cover Letter Editor',
@@ -109,11 +110,26 @@ const applyTemplateFromToolbar = (templateId: string) => {
   toolbarTemplateMenuOpen.value = false
 }
 
+
+
+const hydrateFromConnectedUser = async () => {
+  try {
+    const me = await $fetch<{ user?: { firstName?: string; lastName?: string; email?: string; phone?: string } }>('/api/users/me')
+    const user = me?.user
+    if (!user) return
+    const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim()
+    if (fullName) model.fullName = fullName
+    if (user.email) model.email = user.email
+    if (user.phone) model.phone = user.phone
+  } catch {}
+}
+
 const goToImportFlow = async () => {
   await router.push('/resume/create?tab=import')
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await hydrateFromConnectedUser()
   if (typeof route.query.template === 'string' && COVER_LETTER_TEMPLATE_IDS.includes(route.query.template)) {
     selectedTemplate.value = route.query.template
   }
@@ -143,9 +159,12 @@ onMounted(() => {
             <v-text-field v-model="model.role" label="Title" variant="outlined" hide-details />
             <v-text-field v-model="model.recipient" label="Recipient" variant="outlined" hide-details />
             <v-text-field v-model="model.company" label="Company" variant="outlined" hide-details />
-            <v-textarea v-model="model.intro" rows="3" label="Introduction" variant="outlined" hide-details />
-            <v-textarea v-model="model.body" rows="7" label="Body" variant="outlined" hide-details />
-            <v-textarea v-model="model.closing" rows="3" label="Closing" variant="outlined" hide-details />
+            <v-text-field v-model="model.email" label="Email" variant="outlined" hide-details />
+            <v-text-field v-model="model.phone" label="Phone" variant="outlined" hide-details />
+            <v-text-field v-model="model.date" label="Date" variant="outlined" hide-details />
+            <HoverRichTextEditor v-model="model.intro" label="Introduction" placeholder="Opening paragraph" />
+            <HoverRichTextEditor v-model="model.body" label="Body" placeholder="Main letter content" />
+            <HoverRichTextEditor v-model="model.closing" label="Closing" placeholder="Closing paragraph" />
           </v-window-item>
 
           <v-window-item value="template">
