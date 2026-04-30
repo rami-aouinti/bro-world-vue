@@ -140,7 +140,9 @@ const hydrateFromConnectedUser = async () => {
     if (fullName) model.fullName = fullName
     if (user.email) model.email = user.email
     if (user.phone) model.phone = user.phone
-  } catch {}
+  } catch {
+          // no-op
+        }
 }
 
 const goToImportFlow = async () => {

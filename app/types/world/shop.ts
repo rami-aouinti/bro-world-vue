@@ -210,7 +210,7 @@ export interface WorldShopCheckoutAddress {
   phone: string
 }
 
-export interface WorldShopCartLine extends ShopGeneralCartLine {}
+export type WorldShopCartLine = ShopGeneralCartLine
 
 export interface WorldShopShippingOption {
   id: string

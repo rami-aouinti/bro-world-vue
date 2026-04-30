@@ -197,7 +197,7 @@ const scoreboardRows = computed(() => {
   }))
 })
 
-const modeLabel = computed(() =>
+const _modeLabel = computed(() =>
   props.beloteMode === 'teams'
     ? t('gameComponents.belote.modes.teams')
     : t('gameComponents.belote.modes.freeForAll'),

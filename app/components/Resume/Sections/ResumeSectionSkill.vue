@@ -38,10 +38,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (event: 'add-item', sectionKey: 'skill'): void
+  (event: 'add-item' | 'delete-section', sectionKey: 'skill'): void
   (event: 'change-variant', sectionKey: 'skill', variant: string): void
   (event: 'move-section', sectionKey: 'skill', direction: 'up' | 'down'): void
-  (event: 'delete-section', sectionKey: 'skill'): void
 }>()
 
 const sectionStyle = computed(() => ({ ...props.themeTokens }))

@@ -4,7 +4,7 @@ import type {
   ShopGeneralProduct,
   WorldShopCheckoutSession,
 } from '~/types/world/shop'
-import type { SessionUser } from '~/types/session'
+import type { _SessionUser } from '~/types/session'
 import type { RecruitResume, RecruitResumeSection } from '~/types/world/jobs'
 import { privateApi } from '~/utils/http/privateApi'
 
@@ -17,7 +17,7 @@ interface UpcomingCalendarEvent {
 type TransactionState = 'idle' | 'pending' | 'success' | 'failure' | 'cancelled'
 type BuyCoinsStep = 'product' | 'confirmation' | 'payment' | 'validation'
 
-interface CoinsReceipt {
+interface _CoinsReceipt {
   id: string
   createdAt: string
   status: Exclude<TransactionState, 'idle'>
@@ -44,18 +44,18 @@ type ResumeSectionForm = RecruitResumeSection & {
 const { t, locale } = useI18n()
 const { scopedRecruitPath } = useRecruitScopedApi()
 const { isPageSkeletonVisible } = usePageSkeleton()
-const { user } = useUserSession()
+const { _user } = useUserSession()
 const profileStore = useProfileStore()
 const shopStore = useWorldShopStore()
 const { profile, loading, error } = storeToRefs(profileStore)
 const upcomingEvents = ref<UpcomingCalendarEvent[]>([])
-const { pending: shopPending } = storeToRefs(shopStore)
+const { pending: _shopPending } = storeToRefs(shopStore)
 
 const displayedProverbs = ref<string[]>([])
 let typingInterval: ReturnType<typeof setInterval> | null = null
 
 const coinProducts = ref<ShopGeneralProduct[]>([])
-const selectedProductId = ref('')
+const _selectedProductId = ref('')
 const checkout = ref<WorldShopCheckoutSession | null>(null)
 const transactionState = ref<TransactionState>('idle')
 const transactionMessage = ref('')
@@ -103,13 +103,13 @@ const resumeForm = reactive<Record<ResumeSectionKey, ResumeSectionForm[]>>({
 })
 
 const fullName = computed(() => {
-  const user = profile.value
+  const _user = profile.value
   if (!user) {
     return ''
   }
 
   return (
-    [user.firstName, user.lastName].filter(Boolean).join(' ') || user.username
+    [user.firstName, _user.lastName].filter(Boolean).join(' ') || _user.username
   )
 })
 
@@ -173,7 +173,7 @@ const profileResumeIdentity = computed(() => {
     currentProfile?.profile?.information ||
     'Experienced and motivated professional focused on delivering results.'
   const avatar = currentProfile?.photo || ''
-  const username = currentProfile?.username || ''
+  const _username = currentProfile?.username || ''
   const homepage = resumeIdentity?.homepage || ''
   const repoProfile = resumeIdentity?.repo_profile || ''
 
@@ -185,13 +185,13 @@ const profileResumeIdentity = computed(() => {
     phone,
     summary,
     avatar,
-    username,
+    _username,
     homepage,
     repoProfile,
   }
 })
-const selectedProduct = computed(() =>
-  coinProducts.value.find((product) => product.id === selectedProductId.value),
+const _selectedProduct = computed(() =>
+  coinProducts.value.find((product) => product.id === _selectedProductId.value),
 )
 const nextEventLabel = computed(() =>
   upcomingEvents.value[0]
@@ -230,7 +230,7 @@ function startTypewriter() {
   }, 45)
 }
 
-function resetTransactionState() {
+function _resetTransactionState() {
   transactionState.value = 'idle'
   transactionMessage.value = ''
   checkout.value = null

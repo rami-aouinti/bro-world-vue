@@ -42,7 +42,7 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (event: 'add-item', sectionKey: ResumeEditableSectionKey): void
+  (event: 'add-item' | 'delete-section', sectionKey: ResumeEditableSectionKey): void
   (
     event: 'change-variant',
     sectionKey: ResumeEditableSectionKey,
@@ -53,7 +53,6 @@ const emit = defineEmits<{
     sectionKey: ResumeEditableSectionKey,
     direction: 'up' | 'down',
   ): void
-  (event: 'delete-section', sectionKey: ResumeEditableSectionKey): void
 }>()
 
 const componentBySectionKey = {
