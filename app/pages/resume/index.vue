@@ -170,6 +170,16 @@ onUnmounted(() => {
             >
               <v-img :src="templateCard.image" :alt="templateCard.title" />
               <span>{{ templateCard.title }}</span>
+              <v-btn
+                color="primary"
+                variant="text"
+                size="small"
+                class="mt-2"
+                :to="`/resume/preview?template=${templateCard.templateId}`"
+                @click.stop
+              >
+                Preview
+              </v-btn>
             </v-card>
           </div>
 
