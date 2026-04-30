@@ -194,6 +194,7 @@ function removeEducationItem(index: number) {
             <DateRangeChip
               :start="item.start"
               :end="item.end"
+              variant="text"
               :editable="editable"
               @update:start="(value) => updateText(`education.${index}.start`, value)"
               @update:end="(value) => updateText(`education.${index}.end`, value)"

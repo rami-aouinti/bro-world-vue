@@ -7,7 +7,7 @@ import CoverLetterTemplateSplitFocus from '~/components/Resume/Templates/CoverLe
 import type { RoundedOptionId, Typography } from '~/constants/resumeDesign'
 import { COVER_LETTER_TEMPLATE_IDS, COVER_PAGE_TEMPLATE_IDS } from '~/constants/resumeTemplates'
 import { useResumeDesignControls } from '~/composables/useResumeDesignControls'
-import ProfileRichTextEditor from '~/components/Resume/Create/ProfileRichTextEditor.vue'
+import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
 
 definePageMeta({
   title: 'Resume · Cover Letter Editor',
@@ -159,9 +159,12 @@ onMounted(async () => {
             <v-text-field v-model="model.role" label="Title" variant="outlined" hide-details />
             <v-text-field v-model="model.recipient" label="Recipient" variant="outlined" hide-details />
             <v-text-field v-model="model.company" label="Company" variant="outlined" hide-details />
-            <ProfileRichTextEditor v-model="model.intro" label="Introduction" placeholder="Opening paragraph" />
-            <ProfileRichTextEditor v-model="model.body" label="Body" placeholder="Main letter content" />
-            <ProfileRichTextEditor v-model="model.closing" label="Closing" placeholder="Closing paragraph" />
+            <v-text-field v-model="model.email" label="Email" variant="outlined" hide-details />
+            <v-text-field v-model="model.phone" label="Phone" variant="outlined" hide-details />
+            <v-text-field v-model="model.date" label="Date" variant="outlined" hide-details />
+            <HoverRichTextEditor v-model="model.intro" label="Introduction" placeholder="Opening paragraph" />
+            <HoverRichTextEditor v-model="model.body" label="Body" placeholder="Main letter content" />
+            <HoverRichTextEditor v-model="model.closing" label="Closing" placeholder="Closing paragraph" />
           </v-window-item>
 
           <v-window-item value="template">
