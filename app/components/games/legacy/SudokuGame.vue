@@ -359,7 +359,7 @@ defineExpose({
         :variant="difficulty === 'easy' ? 'flat' : 'outlined'"
         color="success"
         @click="
-          difficulty = 'easy'
+          difficulty = 'easy';
           initGame()
         "
       >
@@ -369,7 +369,7 @@ defineExpose({
         :variant="difficulty === 'medium' ? 'flat' : 'outlined'"
         color="info"
         @click="
-          difficulty = 'medium'
+          difficulty = 'medium';
           initGame()
         "
       >
@@ -379,7 +379,7 @@ defineExpose({
         :variant="difficulty === 'hard' ? 'flat' : 'outlined'"
         color="deep-purple"
         @click="
-          difficulty = 'hard'
+          difficulty = 'hard';
           initGame()
         "
       >

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const isPageSkeletonLoading = useState('page-skeleton-loading', () => true)
+const _isPageSkeletonLoading = useState('page-skeleton-loading', () => true)
 const drawerState = useState('drawer', () => true)
 
 const { mobile } = useDisplay()
@@ -26,7 +26,7 @@ const shouldHideUserEntry = computed(() =>
 const leftDrawerSlotHost = {
   render: () => leftDrawerRenderer.value?.(),
 }
-const fallbackDrawerItems = computed(() =>
+const _fallbackDrawerItems = computed(() =>
   (() => {
     const iconRoutes = router.options.routes
       .filter((item) => item.meta?.icon && !item.path.includes(':'))

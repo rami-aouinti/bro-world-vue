@@ -47,11 +47,11 @@ describe('resume layout + skin combinations', () => {
       const layout = layoutsById.get(template.layoutId)
       expect(
         layout,
-        `${template.id}: unknown layoutId \"${template.layoutId}\"`,
+        `${template.id}: unknown layoutId "${template.layoutId}"`,
       ).toBeDefined()
       expect(
         skinsById.has(template.skinId),
-        `${template.id}: unknown skinId \"${template.skinId}\"`,
+        `${template.id}: unknown skinId "${template.skinId}"`,
       ).toBe(true)
       expect(
         layout?.structureId,

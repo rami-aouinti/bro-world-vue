@@ -17,7 +17,7 @@ interface GithubPullRequest {
 definePageMeta({ layout: 'crm', title: 'CRM Repository Actions' })
 
 const route = useRoute()
-const router = useRouter()
+const _router = useRouter()
 const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
 const githubStore = useWorldCrmGithubStore()

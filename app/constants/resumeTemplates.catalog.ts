@@ -3,7 +3,7 @@ import type {
   ResumeSkin,
   ResumeStructure,
   ResumeTemplateConfig,
-  ResumeTemplateType,
+  _ResumeTemplateType,
 } from '~/types/resumeTemplateConfig'
 import {
   RESUME_SKIN_PALETTES,

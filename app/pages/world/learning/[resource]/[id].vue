@@ -88,7 +88,7 @@ function formatBytes(value?: number) {
   return `${size.toFixed(size >= 10 ? 0 : 1)} ${units[index]}`
 }
 
-function formatDateTimeValue(value?: string) {
+function _formatDateTimeValue(value?: string) {
   if (!value) {
     return ''
   }

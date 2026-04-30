@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, TransitionGroup } from 'vue'
+import { computed, _TransitionGroup } from 'vue'
 import PlayingCard from './PlayingCard.vue'
 
 interface HandCard {

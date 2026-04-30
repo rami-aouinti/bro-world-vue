@@ -6,7 +6,7 @@ interface HomePageResponse {
   stepLabelPrefix: string
   hero: {
     badge: string
-    title: string
+    _title: string
     subtitle: string
     primaryCta: string
     secondaryCta: string
@@ -14,7 +14,7 @@ interface HomePageResponse {
   }
   featureCards: Array<{
     icon: string
-    title: string
+    _title: string
     description: string
   }>
   metrics: Array<{
@@ -23,28 +23,28 @@ interface HomePageResponse {
   }>
   steps: Array<{
     icon: string
-    title: string
+    _title: string
     description: string
   }>
   cta: {
-    title: string
+    _title: string
     description: string
     primaryAction: string
     secondaryAction: string
   }
 }
 
-const { locale, t } = useI18n()
+const { locale, _t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 const publicPagesStore = usePublicPagesStore()
 
 definePageMeta({
-  title: 'appbar.service',
+  _title: 'appbar.service',
 })
 
 const asyncKey = computed(() => `public-page-home-${locale.value}`)
 
-const { data, pending, error, refresh } = await useAsyncData(
+const { data, pending, error, _refresh } = await useAsyncData(
   asyncKey,
   () => publicPagesStore.fetchPage<HomePageResponse>('home', locale.value),
   {
@@ -68,7 +68,7 @@ const page = computed(
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible || pending || !page" />
         <div v-else class="mb-4 pa-3">
           <h3 class="text-h3 font-weight-bold mb-3">{{ page.hero.title }}</h3>
-          <p class="text-body-1 text-medium-emphasis mb-5">
+          <p class="text-body-1 _text-medium-emphasis mb-5">
             {{ page.hero.subtitle }}
           </p>
           <div class="d-flex flex-wrap ga-3">
@@ -126,7 +126,7 @@ const page = computed(
 
       <v-alert
         v-else-if="error"
-        type="error"
+        _type="error"
         variant="tonal"
         class="mb-6"
         :text="String(error)"
@@ -169,7 +169,7 @@ const page = computed(
             <v-card rounded="xl" variant="tonal" color="primary">
               <v-card-text class="text-center py-8">
                 <div class="text-h4 font-weight-black">{{ metric.value }}</div>
-                <div class="text-body-2 text-medium-emphasis">
+                <div class="text-body-2 _text-medium-emphasis">
                   {{ metric.label }}
                 </div>
               </v-card-text>
@@ -205,7 +205,7 @@ const page = computed(
         <v-card
           rounded="xl"
           color="primary"
-          class="pa-6 text-white"
+          class="pa-6 _text-white"
           elevation="0"
         >
           <h3 class="text-h5 mb-2">{{ page.cta.title }}</h3>

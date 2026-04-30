@@ -6,7 +6,7 @@ import {
 } from '~/utils/resumeLanguageLevel'
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 import {
-  resolveLanguageFallback,
+  _resolveLanguageFallback,
   resolveLanguageFlagSrc,
 } from '~/utils/resumeLanguageFlags'
 import { getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
@@ -40,14 +40,13 @@ const props = withDefaults(
   },
 )
 const emit = defineEmits<{
-  (event: 'add-item', sectionKey: 'language'): void
+  (event: 'add-item' | 'delete-section', sectionKey: 'language'): void
   (event: 'change-variant', sectionKey: 'language', variant: string): void
   (
     event: 'move-section',
     sectionKey: 'language',
     direction: 'up' | 'down',
   ): void
-  (event: 'delete-section', sectionKey: 'language'): void
 }>()
 const sectionStyle = computed(() => ({ ...props.themeTokens }))
 const sectionRegistry = getSectionRegistryEntry('language')

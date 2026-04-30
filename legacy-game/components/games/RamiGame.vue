@@ -565,7 +565,7 @@ const applyCurrentSortToPlayerHand = () => {
   syncSelectedCardIds()
 }
 
-const setSortMode = (mode: SortMode) => {
+const _setSortMode = (mode: SortMode) => {
   currentSortMode.value = mode
   applyCurrentSortToPlayerHand()
 }
