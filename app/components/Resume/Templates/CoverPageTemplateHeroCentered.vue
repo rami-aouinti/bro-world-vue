@@ -49,12 +49,17 @@ const designVars = computed(() => buildCoverDesignVars('cp', props))
   >
     <p class="cover-page-hero__date">{{ props.model.date }}</p>
 
-    <v-avatar v-if="props.model.photoUrl" size="124" class="mx-auto">
-      <v-img :src="props.model.photoUrl" cover />
-    </v-avatar>
+    <div class="cover-page-hero__identity">
+      <v-avatar v-if="props.model.photoUrl" size="138" class="cover-page-hero__avatar">
+        <v-img :src="props.model.photoUrl" cover />
+      </v-avatar>
 
-    <h1>{{ props.model.fullName }}</h1>
-    <h2>{{ props.model.role }}</h2>
+      <div class="cover-page-hero__name-block">
+        <h1>{{ props.model.fullName }}</h1>
+        <h2>{{ props.model.role }}</h2>
+      </div>
+    </div>
+
     <p class="cover-page-hero__summary">{{ props.model.summary }}</p>
 
     <footer>
@@ -66,10 +71,74 @@ const designVars = computed(() => buildCoverDesignVars('cp', props))
 </template>
 
 <style scoped>
-.cover-page-hero { font-family: var(--cp-font-family, 'Inter', 'Segoe UI', sans-serif); font-style: var(--cp-font-style, normal); font-weight: var(--cp-font-weight, 400); min-height: 100%; border-radius: var(--cp-rounded); background: radial-gradient(circle at top, color-mix(in srgb, var(--cp-soft) 76%, var(--cp-page)), var(--cp-page)); color: var(--cp-text); padding: 56px 48px; display: grid; text-align: center; align-content: center; gap: 14px; }
-.cover-page-hero__date { letter-spacing: .08em; text-transform: uppercase; font-size: .78rem; color: color-mix(in srgb, var(--cp-text) 68%, white); }
-.cover-page-hero h1 { font-size: 2.45rem; color: var(--cp-accent); line-height: 1.08; }
-.cover-page-hero h2 { text-transform: uppercase; letter-spacing: .07em; font-size: .95rem; }
-.cover-page-hero__summary { max-width: 52ch; margin: 0 auto; }
-.cover-page-hero footer { margin-top: 18px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 18px; font-size: .92rem; }
+.cover-page-hero {
+  font-family: var(--cp-font-family, 'Inter', 'Segoe UI', sans-serif);
+  font-style: var(--cp-font-style, normal);
+  font-weight: var(--cp-font-weight, 400);
+  min-height: 100%;
+  border-radius: var(--cp-rounded);
+  border: 1px solid color-mix(in srgb, var(--cp-accent) 20%, transparent);
+  background:
+    linear-gradient(168deg, color-mix(in srgb, var(--cp-soft) 88%, white) 0 34%, transparent 34%),
+    var(--cp-page);
+  color: var(--cp-text);
+  padding: 56px 52px;
+  display: grid;
+  gap: 20px;
+  box-shadow: 0 12px 40px color-mix(in srgb, var(--cp-accent) 15%, transparent);
+}
+
+.cover-page-hero__date {
+  justify-self: start;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-size: .78rem;
+  color: color-mix(in srgb, var(--cp-text) 62%, white);
+}
+
+.cover-page-hero__identity {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 28px;
+}
+
+.cover-page-hero__avatar {
+  border: 6px solid color-mix(in srgb, var(--cp-soft) 76%, white);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--cp-accent) 12%, transparent);
+}
+
+.cover-page-hero__name-block {
+  display: grid;
+  gap: 10px;
+}
+
+.cover-page-hero h1 {
+  font-size: clamp(2rem, 4vw, 2.9rem);
+  line-height: 1.03;
+  margin: 0;
+  color: color-mix(in srgb, var(--cp-accent) 86%, black);
+}
+
+.cover-page-hero h2 {
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  font-size: .88rem;
+  margin: 0;
+  color: color-mix(in srgb, var(--cp-accent) 72%, white);
+}
+
+.cover-page-hero__summary {
+  max-width: 62ch;
+  margin: 0;
+  line-height: 1.75;
+}
+
+.cover-page-hero footer {
+  margin-top: auto;
+  display: grid;
+  gap: 8px;
+  font-size: .92rem;
+  color: color-mix(in srgb, var(--cp-text) 92%, white);
+}
 </style>
