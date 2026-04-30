@@ -23,33 +23,6 @@ const selectedTemplate = computed(() => {
   )
 })
 
-const selectedTemplateId = computed(() => String(route.query.template || ''))
-
-const relatedResumes = computed(() => {
-  if (!selectedTemplateId.value) return []
-  return myResumes.value.filter((resume) => {
-    const candidateTemplateIds = [
-      (resume as any)?.templateId,
-      (resume as any)?.template?.templateId,
-      (resume as any)?.customization?.template?.templateId,
-      (resume as any)?.customization?.templateId,
-    ].filter((value): value is string => typeof value === 'string')
-
-    return candidateTemplateIds.includes(selectedTemplateId.value)
-  })
-})
-
-const templateDetails = computed(() => {
-  if (!selectedTemplate.value) return null
-  return {
-    id: selectedTemplate.value.id,
-    templateId: selectedTemplate.value.templateId,
-    title: selectedTemplate.value.title,
-    type: selectedTemplate.value.type,
-    image: selectedTemplate.value.image,
-  }
-})
-
 onMounted(async () => {
   if (!loggedIn.value) return
 
@@ -82,11 +55,11 @@ onMounted(async () => {
       text="Aucun template sélectionné."
     />
 
-    <v-card v-if="templateDetails" class="mx-auto mt-6" variant="outlined">
+    <v-card v-if="selectedTemplate" class="mx-auto mt-6" variant="outlined">
       <v-card-title>Données template sélectionnée</v-card-title>
       <v-card-text>
         <pre class="text-body-2">{{
-          JSON.stringify(templateDetails, null, 2)
+          JSON.stringify(selectedTemplate, null, 2)
         }}</pre>
       </v-card-text>
     </v-card>
@@ -102,38 +75,7 @@ onMounted(async () => {
           :text="resumesError"
         />
         <template v-else>
-          <v-alert
-            v-if="!relatedResumes.length"
-            type="info"
-            variant="tonal"
-            text="Aucun CV lié à cette template pour le moment."
-          />
-          <template v-else>
-            <v-card
-              v-for="resume in relatedResumes"
-              :key="resume.id"
-              class="mb-3"
-              variant="tonal"
-            >
-              <v-card-title class="text-subtitle-1">
-                {{ resume.resumeInformation?.fullName || 'CV sans nom' }}
-              </v-card-title>
-              <v-card-text>
-                <div><strong>ID:</strong> {{ resume.id }}</div>
-                <div>
-                  <strong>Email:</strong>
-                  {{ resume.resumeInformation?.email || 'Non renseigné' }}
-                </div>
-                <div>
-                  <strong>Téléphone:</strong>
-                  {{ resume.resumeInformation?.phone || 'Non renseigné' }}
-                </div>
-                <pre class="text-body-2 mt-2">{{
-                  JSON.stringify(resume, null, 2)
-                }}</pre>
-              </v-card-text>
-            </v-card>
-          </template>
+          <pre class="text-body-2">{{ JSON.stringify(myResumes, null, 2) }}</pre>
         </template>
       </v-card-text>
     </v-card>
