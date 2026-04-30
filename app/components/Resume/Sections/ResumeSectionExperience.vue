@@ -213,6 +213,7 @@ function removeExperience(index: number) {
           <DateRangeChip
             :start="experience.start"
             :end="experience.end"
+            variant="text"
             :editable="editable"
             @update:start="(value) => updateText(`experiences.${index}.start`, value)"
             @update:end="(value) => updateText(`experiences.${index}.end`, value)"
