@@ -39,25 +39,19 @@ const designVars = computed(() => buildCoverDesignVars('cl', props))
 </script>
 
 <template>
-  <article
-    class="cover-letter-premium text-dark"
-    :style="{
-      '--cl-page': props.palette.page,
-      '--cl-accent': props.palette.accent,
-      '--cl-soft': props.palette.soft,
-      '--cl-text': props.palette.text,
-      ...designVars,
-    }"
-  >
-    <header>
-      <p>{{ props.model.date }}</p>
-      <h1>{{ props.model.fullName }}</h1>
-      <h2>{{ props.model.role }}</h2>
-      <div class="cover-letter-premium__contact">{{ props.model.email }} · {{ props.model.phone }}</div>
+  <article class="cover-letter-premium text-dark" :style="{ '--cl-page': props.palette.page, '--cl-accent': props.palette.accent, '--cl-soft': props.palette.soft, '--cl-text': props.palette.text, ...designVars }">
+    <header class="cover-letter-premium__hero">
+      <div>
+        <p>{{ props.model.date }}</p>
+        <h1>{{ props.model.fullName }}</h1>
+        <h2>{{ props.model.role }}</h2>
+      </div>
+      <div class="cover-letter-premium__contact">{{ props.model.email }}<br>{{ props.model.phone }}</div>
     </header>
 
     <section>
       <div class="cover-letter-premium__recipient">
+        <p>TO:</p>
         <p>{{ props.model.recipient }}</p>
         <p>{{ props.model.company }}</p>
       </div>
@@ -66,83 +60,20 @@ const designVars = computed(() => buildCoverDesignVars('cl', props))
       <p>{{ props.model.closing }}</p>
     </section>
 
-    <footer>Sincerely,<br>{{ props.model.fullName }}</footer>
+    <footer>Sincerely,<br><span>{{ props.model.fullName }}</span></footer>
   </article>
 </template>
 
 <style scoped>
-.cover-letter-premium {
-  font-family: var(--cl-font-family, 'Inter', 'Segoe UI', sans-serif);
-  font-style: var(--cl-font-style, normal);
-  font-weight: var(--cl-font-weight, 400);
-  min-height: 100%;
-  border-radius: var(--cl-rounded);
-  border: 1px solid color-mix(in srgb, var(--cl-accent) 24%, transparent);
-  background:
-    linear-gradient(166deg, color-mix(in srgb, var(--cl-soft) 90%, white) 0 27%, transparent 27%),
-    var(--cl-page);
-  color: var(--cl-text);
-  padding: 42px 50px;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: 22px;
-}
-
-.cover-letter-premium header {
-  display: grid;
-  gap: 7px;
-}
-
-.cover-letter-premium header p {
-  letter-spacing: .11em;
-  text-transform: uppercase;
-  font-size: .75rem;
-  margin: 0;
-  color: color-mix(in srgb, var(--cl-text) 65%, white);
-}
-
-.cover-letter-premium h1 {
-  margin: 0;
-  color: color-mix(in srgb, var(--cl-accent) 86%, black);
-  font-size: clamp(2rem, 3vw, 2.4rem);
-  line-height: 1.05;
-}
-
-.cover-letter-premium h2 {
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: .14em;
-  font-size: .88rem;
-  color: color-mix(in srgb, var(--cl-accent) 70%, white);
-}
-
-.cover-letter-premium__contact {
-  margin-top: 8px;
-  font-size: .82rem;
-}
-
-.cover-letter-premium section {
-  display: grid;
-  gap: 14px;
-  line-height: 1.7;
-}
-
-.cover-letter-premium__recipient {
-  display: inline-grid;
-  gap: 4px;
-  background: color-mix(in srgb, var(--cl-soft) 72%, white);
-  border-left: 4px solid color-mix(in srgb, var(--cl-accent) 65%, transparent);
-  padding: 10px 14px;
-  margin-bottom: 4px;
-}
-
-.cover-letter-premium__recipient p {
-  margin: 0;
-}
-
-.cover-letter-premium footer {
-  padding-top: 14px;
-  border-top: var(--cl-divider-width) var(--cl-divider-style) color-mix(in srgb, var(--cl-accent) 24%, transparent);
-  font-weight: 500;
-}
+.cover-letter-premium { font-family: var(--cl-font-family, 'Inter', 'Segoe UI', sans-serif); min-height: 100%; border-radius: var(--cl-rounded); background: color-mix(in srgb, var(--cl-page) 93%, white); color: var(--cl-text); border: 1px solid color-mix(in srgb, var(--cl-accent) 24%, transparent); display: grid; grid-template-rows: auto 1fr auto; }
+.cover-letter-premium__hero { background: linear-gradient(120deg, color-mix(in srgb, var(--cl-accent) 88%, black), color-mix(in srgb, var(--cl-accent) 52%, black)); color: white; padding: 30px 40px; display: grid; grid-template-columns: 1fr auto; gap: 18px; }
+.cover-letter-premium__hero p { margin: 0; letter-spacing: .1em; text-transform: uppercase; font-size: .74rem; }
+.cover-letter-premium h1 { margin: 8px 0 0; font-size: clamp(2rem, 4vw, 2.8rem); line-height: 1.04; }
+.cover-letter-premium h2 { margin: 8px 0 0; letter-spacing: .15em; text-transform: uppercase; font-size: .85rem; }
+.cover-letter-premium__contact { align-self: end; text-align: right; font-size: .86rem; line-height: 1.6; }
+.cover-letter-premium section { padding: 30px 40px; display: grid; gap: 14px; line-height: 1.75; }
+.cover-letter-premium__recipient { justify-self: end; text-align: right; background: color-mix(in srgb, var(--cl-soft) 72%, white); padding: 10px 14px; border-left: 4px solid color-mix(in srgb, var(--cl-accent) 65%, transparent); }
+.cover-letter-premium__recipient p { margin: 0; }
+.cover-letter-premium footer { margin: 0 40px 24px; padding-top: 14px; border-top: var(--cl-divider-width) var(--cl-divider-style) color-mix(in srgb, var(--cl-accent) 24%, transparent); }
+.cover-letter-premium footer span { font-size: 1.08rem; font-weight: 600; letter-spacing: .05em; }
 </style>
