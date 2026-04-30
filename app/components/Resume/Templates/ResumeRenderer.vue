@@ -1489,7 +1489,7 @@ function updateText(path: string, value: string) {
 .resume-skin__aside {
   grid-area: aside;
   height: var(--resume-sidebar-height, 100%);
-  --resume-aside-text-color: #fff;
+  --resume-aside-text-color: var(--resume-page, var(--cv-page));
   --resume-aside-decor-color: var(--resume-secondary, var(--cv-secondary));
   color: var(--resume-aside-text-color);
 }
@@ -1527,7 +1527,7 @@ function updateText(path: string, value: string) {
 
 .resume-skin__aside :deep(.section-icon),
 .resume-skin__aside :deep(.resume-skin__contact-icon) {
-  color: #fff;
+  color: var(--resume-aside-text-color);
 }
 
 
