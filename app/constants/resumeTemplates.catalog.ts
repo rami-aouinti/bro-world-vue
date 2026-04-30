@@ -9,6 +9,7 @@ import {
   RESUME_SKIN_PALETTES,
   type ResumeSkinPaletteId,
 } from '~/constants/resumeDesign'
+import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-90.json'
 import {
   RESUME_BASE_PRESETS,
   RESUME_COMPOSED_PRESET_METADATA,
@@ -480,6 +481,31 @@ const RESUME_GENERATED_TEMPLATES: ResumeTemplateConfig[] =
     }
   })
 
+const GENERATED_LAYOUT_BY_STRUCTURE: Record<string, string> = {
+  'aside-left': 'layout-aside-left-a',
+  'aside-right': 'layout-aside-right-a',
+  'no-aside': 'layout-no-aside-a',
+}
+
+const RESUME_IMPORTED_TEMPLATES_CATALOG: ResumeTemplateConfig[] =
+  GENERATED_RESUME_TEMPLATES.map((template) => ({
+    id: `resume-${template.id}`,
+    structureId: template.layout,
+    layoutId:
+      GENERATED_LAYOUT_BY_STRUCTURE[template.layout] ?? 'layout-no-aside-a',
+    skinId: 'skin-classic',
+    label: template.name,
+    subtitle: `Generated template ${template.id}`,
+    type: 'resume',
+    image: '/img/cv/resume-modern.svg',
+    templateId: template.id,
+    visibleOptions: {
+      ...DEFAULT_VISIBLE_OPTIONS,
+      twoColumn: template.layout !== 'no-aside',
+      timeline: false,
+    },
+  }))
+
 const RESUME_CURATED_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [
   {
     id: 'resume-hero-contact-header',
@@ -548,6 +574,7 @@ const RESUME_CURATED_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [
 ]
 
 export const RESUME_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [
+  ...RESUME_IMPORTED_TEMPLATES_CATALOG,
   ...RESUME_GENERATED_TEMPLATES,
   ...RESUME_CURATED_TEMPLATES_CATALOG,
 ]
