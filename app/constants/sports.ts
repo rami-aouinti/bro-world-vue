@@ -22,7 +22,10 @@ const normalizeLeagueName = (name: string) => {
     .replace(/[^a-z0-9]/g, '')
 }
 
-export const getBasketballLeaguePriority = (league: { id: number; name: string }) => {
+export const getBasketballLeaguePriority = (league: {
+  id: number
+  name: string
+}) => {
   const priorityLeagueIds: readonly number[] = BASKETBALL_PRIORITY_LEAGUE_IDS
   const idIndex = priorityLeagueIds.indexOf(league.id)
 

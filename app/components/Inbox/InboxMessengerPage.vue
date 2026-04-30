@@ -86,13 +86,16 @@ const router = useRouter()
 const { locale, t } = useI18n()
 const { user: sessionUser } = useUserSession()
 const { subscribe } = useMercure()
-const pageProps = withDefaults(defineProps<{
-  applicationSlug?: string
-  routePath?: string
-}>(), {
-  applicationSlug: '',
-  routePath: '/inbox',
-})
+const pageProps = withDefaults(
+  defineProps<{
+    applicationSlug?: string
+    routePath?: string
+  }>(),
+  {
+    applicationSlug: '',
+    routePath: '/inbox',
+  },
+)
 
 const loading = ref(false)
 const messagesLoading = ref(false)
@@ -132,12 +135,19 @@ const sessionUserMeta = computed(() => {
 const currentUserId = computed(() => String(sessionUserMeta.value.id || ''))
 
 const selectedConversation = computed(() =>
-  conversations.value.find((conversation) => conversation.id === selectedConversationId.value),
+  conversations.value.find(
+    (conversation) => conversation.id === selectedConversationId.value,
+  ),
 )
 
 function isGroupConversation(conversation?: ConversationSummary | null) {
   if (!conversation) return false
-  if (String(conversation.type || '').toLowerCase().includes('group')) return true
+  if (
+    String(conversation.type || '')
+      .toLowerCase()
+      .includes('group')
+  )
+    return true
   return conversation.participants.length > 2
 }
 
@@ -145,7 +155,9 @@ const targetParticipant = computed(() => {
   const participants = selectedConversation.value?.participants || []
   return (
     participants.find((participant) => !participant.user?.owner) ||
-    participants.find((participant) => participant.user?.id !== currentUserId.value) ||
+    participants.find(
+      (participant) => participant.user?.id !== currentUserId.value,
+    ) ||
     participants[0]
   )
 })
@@ -153,7 +165,9 @@ const targetParticipant = computed(() => {
 const selectedConversationName = computed(() => {
   if (isGroupConversation(selectedConversation.value)) return 'General'
   const target = targetParticipant.value?.user
-  const fullName = [target?.firstName, target?.lastName].filter(Boolean).join(' ')
+  const fullName = [target?.firstName, target?.lastName]
+    .filter(Boolean)
+    .join(' ')
   return fullName || t('pages.inbox.conversationFallback')
 })
 
@@ -164,7 +178,8 @@ const userComboboxItems = computed(() => {
     .filter((entry) => entry.id !== currentUserId.value)
     .filter((entry) => {
       if (!keyword) return true
-      const fullName = `${entry.firstName || ''} ${entry.lastName || ''}`.toLowerCase()
+      const fullName =
+        `${entry.firstName || ''} ${entry.lastName || ''}`.toLowerCase()
       return fullName.includes(keyword)
     })
     .slice(0, 20)
@@ -203,7 +218,9 @@ function userProfilePath(
 function participantForConversation(conversation: ConversationSummary) {
   return (
     conversation.participants.find((participant) => !participant.user?.owner) ||
-    conversation.participants.find((participant) => participant.user?.id !== currentUserId.value) ||
+    conversation.participants.find(
+      (participant) => participant.user?.id !== currentUserId.value,
+    ) ||
     conversation.participants[0]
   )
 }
@@ -212,10 +229,14 @@ function conversationParticipantUser(
   conversationId: string,
   userId: string,
 ): ChatUser | undefined {
-  const conversation = conversations.value.find((entry) => entry.id === conversationId)
+  const conversation = conversations.value.find(
+    (entry) => entry.id === conversationId,
+  )
   if (!conversation) return undefined
 
-  return conversation.participants.find((participant) => participant.user?.id === userId)?.user
+  return conversation.participants.find(
+    (participant) => participant.user?.id === userId,
+  )?.user
 }
 
 function participantName(conversation: ConversationSummary) {
@@ -227,7 +248,9 @@ function participantName(conversation: ConversationSummary) {
   )
 }
 
-function conversationParticipantsPhotos(conversation?: ConversationSummary | null) {
+function conversationParticipantsPhotos(
+  conversation?: ConversationSummary | null,
+) {
   if (!conversation) return []
   return conversation.participants
     .map((participant) => participant.user)
@@ -247,7 +270,9 @@ function messageTime(createdAt: string) {
 }
 
 function upsertConversationPreview(conversationId: string, content: string) {
-  const target = conversations.value.find((entry) => entry.id === conversationId)
+  const target = conversations.value.find(
+    (entry) => entry.id === conversationId,
+  )
   if (!target) return
 
   if (!target.lastMessage) {
@@ -287,11 +312,16 @@ async function fetchConversations() {
             },
           },
         )
-      : await privateApi.request<ConversationListResponse>('/api/chat/private/conversations')
+      : await privateApi.request<ConversationListResponse>(
+          '/api/chat/private/conversations',
+        )
     conversations.value = response.items || []
 
     const queryConversationId = String(route.query.conversation || '')
-    if (queryConversationId && conversations.value.some((item) => item.id === queryConversationId)) {
+    if (
+      queryConversationId &&
+      conversations.value.some((item) => item.id === queryConversationId)
+    ) {
       await openConversation(queryConversationId, false)
       return
     }
@@ -322,13 +352,20 @@ async function openConversation(conversationId: string, syncRoute = true) {
     const response = await privateApi.request<ConversationMessagesResponse>(
       `/api/chat/private/conversations/${conversationId}`,
     )
-    messages.value = (response.items || []).sort((a, b) => a.createdAt.localeCompare(b.createdAt))
-    await privateApi.request(`/api/chat/private/conversations/${conversationId}/messages/read`, {
-      method: 'POST',
-      body: {},
-    })
+    messages.value = (response.items || []).sort((a, b) =>
+      a.createdAt.localeCompare(b.createdAt),
+    )
+    await privateApi.request(
+      `/api/chat/private/conversations/${conversationId}/messages/read`,
+      {
+        method: 'POST',
+        body: {},
+      },
+    )
 
-    const target = conversations.value.find((entry) => entry.id === conversationId)
+    const target = conversations.value.find(
+      (entry) => entry.id === conversationId,
+    )
     if (target) {
       target.unreadMessagesCount = 0
     }
@@ -337,7 +374,10 @@ async function openConversation(conversationId: string, syncRoute = true) {
     scrollToBottom()
 
     if (syncRoute && route.query.conversation !== conversationId) {
-      await router.push({ path: pageProps.routePath, query: { conversation: conversationId } })
+      await router.push({
+        path: pageProps.routePath,
+        query: { conversation: conversationId },
+      })
     }
   } finally {
     messagesLoading.value = false
@@ -350,15 +390,17 @@ function scrollToBottom() {
 }
 
 async function startConversationWithUser(entry: PublicUser) {
-  const response = await privateApi.request<{ conversationId?: string; id?: string }>(
-    `/api/chat/private/conversation/${entry.id}/user`,
-    { method: 'POST' },
-  )
+  const response = await privateApi.request<{
+    conversationId?: string
+    id?: string
+  }>(`/api/chat/private/conversation/${entry.id}/user`, { method: 'POST' })
 
   const conversationId = String(response.conversationId || response.id || '')
   if (!conversationId) return
 
-  const existing = conversations.value.find((item) => item.id === conversationId)
+  const existing = conversations.value.find(
+    (item) => item.id === conversationId,
+  )
   if (!existing) {
     conversations.value.unshift({
       id: conversationId,
@@ -399,7 +441,9 @@ async function startConversationWithUser(entry: PublicUser) {
 
 async function onComboboxUserSelected() {
   if (!selectedUserId.value) return
-  const target = publicUsers.value.find((entry) => entry.id === selectedUserId.value)
+  const target = publicUsers.value.find(
+    (entry) => entry.id === selectedUserId.value,
+  )
   if (!target) return
   await startConversationWithUser(target)
 }
@@ -415,16 +459,17 @@ async function sendMessage() {
     id?: string
     messageId?: string
     data?: { id?: string; messageId?: string }
-  }>(
-    `/api/chat/private/conversations/${conversationId}/messages`,
-    {
+  }>(`/api/chat/private/conversations/${conversationId}/messages`, {
     method: 'POST',
     body: { content, conversationId },
-    },
-  )
+  })
 
   const persistedMessageId = String(
-    response?.messageId || response?.id || response?.data?.messageId || response?.data?.id || '',
+    response?.messageId ||
+      response?.id ||
+      response?.data?.messageId ||
+      response?.data?.id ||
+      '',
   )
   const isPersisted = Boolean(persistedMessageId)
 
@@ -473,7 +518,10 @@ function ownReaction(message: ConversationMessage) {
   return mine ?? null
 }
 
-async function addReaction(message: ConversationMessage, reaction: ReactionType) {
+async function addReaction(
+  message: ConversationMessage,
+  reaction: ReactionType,
+) {
   message.reactions = message.reactions || []
   const existing = ownReaction(message)
 
@@ -559,12 +607,17 @@ async function deleteSelectedConversation() {
   deletingConversation.value = true
 
   try {
-    await privateApi.request(`/api/v1/chat/private/conversations/${selectedConversationId.value}`, {
-      method: 'DELETE',
-    })
+    await privateApi.request(
+      `/api/v1/chat/private/conversations/${selectedConversationId.value}`,
+      {
+        method: 'DELETE',
+      },
+    )
 
     const removedId = selectedConversationId.value
-    conversations.value = conversations.value.filter((entry) => entry.id !== removedId)
+    conversations.value = conversations.value.filter(
+      (entry) => entry.id !== removedId,
+    )
 
     const nextConversation = sortedConversations.value[0]
     if (nextConversation) {
@@ -582,8 +635,9 @@ async function deleteSelectedConversation() {
 function openReactionUsers(message: ConversationMessage) {
   selectedReactionUsers.value = (message.reactions || []).map((reaction) => ({
     name:
-      [reaction.user?.firstName, reaction.user?.lastName].filter(Boolean).join(' ') ||
-      t('pages.inbox.userFallback'),
+      [reaction.user?.firstName, reaction.user?.lastName]
+        .filter(Boolean)
+        .join(' ') || t('pages.inbox.userFallback'),
     reaction: reaction.type,
     profilePath: userProfilePath(reaction.user),
     photo: reaction.user?.photo || '/img/default-avatar.png',
@@ -621,24 +675,32 @@ function attachMercureSubscription(conversationId: string) {
           recipientId?: string
         }
 
-        if (payload.conversationId && payload.conversationId === selectedConversationId.value) {
+        if (
+          payload.conversationId &&
+          payload.conversationId === selectedConversationId.value
+        ) {
           const nextId = String(payload.id || '')
           const messageContent = String(payload.content || '')
           const mine = String(payload.senderId || '') === currentUserId.value
 
           if (mine) {
             const localMessage = messages.value.find(
-              (entry) => entry.id.startsWith('local-') && entry.content === messageContent,
+              (entry) =>
+                entry.id.startsWith('local-') &&
+                entry.content === messageContent,
             )
             if (localMessage && nextId) {
               localMessage.id = nextId
-              localMessage.createdAt = String(payload.createdAt || localMessage.createdAt)
+              localMessage.createdAt = String(
+                payload.createdAt || localMessage.createdAt,
+              )
               upsertConversationPreview(payload.conversationId, messageContent)
               return
             }
           }
 
-          if (!nextId || messages.value.some((entry) => entry.id === nextId)) return
+          if (!nextId || messages.value.some((entry) => entry.id === nextId))
+            return
 
           messages.value.push({
             id: nextId,
@@ -709,27 +771,32 @@ watch(
 <template>
   <AppPageDrawers>
     <template #left>
-        <v-combobox
-          v-model="selectedUserId"
-          v-model:search="search"
-          :items="userComboboxItems"
-          item-title="title"
-          item-value="value"
-          density="comfortable"
-          variant="outlined"
-          hide-details
-          clearable
-          :placeholder="t('pages.inbox.searchContact')"
-          prepend-inner-icon="mdi-account-search-outline"
-          class="mb-4"
-          @update:model-value="onComboboxUserSelected"
-        >
-          <template #item="{ props }">
-            <v-list-item v-bind="props" />
-          </template>
-        </v-combobox>
+      <v-combobox
+        v-model="selectedUserId"
+        v-model:search="search"
+        :items="userComboboxItems"
+        item-title="title"
+        item-value="value"
+        density="comfortable"
+        variant="outlined"
+        hide-details
+        clearable
+        :placeholder="t('pages.inbox.searchContact')"
+        prepend-inner-icon="mdi-account-search-outline"
+        class="mb-4"
+        @update:model-value="onComboboxUserSelected"
+      >
+        <template #item="{ props }">
+          <v-list-item v-bind="props" />
+        </template>
+      </v-combobox>
 
-        <v-progress-linear v-if="loading" indeterminate color="primary" class="mb-3" />
+      <v-progress-linear
+        v-if="loading"
+        indeterminate
+        color="primary"
+        class="mb-3"
+      />
 
       <v-alert type="info" variant="tonal" density="comfortable">
         {{ t('pages.inbox.selectConversation') }}
@@ -737,96 +804,146 @@ watch(
     </template>
 
     <template #right>
-        <v-list class="inbox-conversation-list bg-transparent">
-          <v-list-item
-            v-for="conversation in sortedConversations"
-            :key="conversation.id"
-            :active="conversation.id === selectedConversationId"
-            rounded="xl"
-            class="mb-2 conversation-item"
-            @click="openConversation(conversation.id)"
-          >
-            <template #prepend>
-              <v-avatar v-if="!isGroupConversation(conversation)" size="44">
-                <v-img
-                  :src="participantForConversation(conversation)?.user?.photo || '/img/default-avatar.png'"
-                  cover
-                />
-              </v-avatar>
-              <div v-else class="group-avatar">
-                <img
-                  v-for="(photo, index) in conversationParticipantsPhotos(conversation)"
-                  :key="`${conversation.id}-${index}`"
-                  :src="photo"
-                  class="group-avatar__img"
-                  alt=""
-                >
-              </div>
-            </template>
-
-            <v-list-item-title class="font-weight-bold text-body-1">
-              {{ participantName(conversation) }}
-            </v-list-item-title>
-            <v-list-item-subtitle class="text-caption mb-1">
-              {{ messageTime(conversation.lastMessage?.createdAt || conversation.createdAt) }}
-            </v-list-item-subtitle>
-            <v-list-item-subtitle class="text-body-2 text-truncate">
-              {{ conversation.lastMessage?.content || '...' }}
-            </v-list-item-subtitle>
-
-            <template #append>
-              <v-badge
-                v-if="(conversation.unreadMessagesCount || 0) > 0"
-                :content="conversation.unreadMessagesCount"
-                color="primary"
-                inline
+      <v-list class="inbox-conversation-list bg-transparent">
+        <v-list-item
+          v-for="conversation in sortedConversations"
+          :key="conversation.id"
+          :active="conversation.id === selectedConversationId"
+          rounded="xl"
+          class="mb-2 conversation-item"
+          @click="openConversation(conversation.id)"
+        >
+          <template #prepend>
+            <v-avatar v-if="!isGroupConversation(conversation)" size="44">
+              <v-img
+                :src="
+                  participantForConversation(conversation)?.user?.photo ||
+                  '/img/default-avatar.png'
+                "
+                cover
               />
-            </template>
-          </v-list-item>
-        </v-list>
+            </v-avatar>
+            <div v-else class="group-avatar">
+              <img
+                v-for="(photo, index) in conversationParticipantsPhotos(
+                  conversation,
+                )"
+                :key="`${conversation.id}-${index}`"
+                :src="photo"
+                class="group-avatar__img"
+                alt=""
+              />
+            </div>
+          </template>
+
+          <v-list-item-title class="font-weight-bold text-body-1">
+            {{ participantName(conversation) }}
+          </v-list-item-title>
+          <v-list-item-subtitle class="text-caption mb-1">
+            {{
+              messageTime(
+                conversation.lastMessage?.createdAt || conversation.createdAt,
+              )
+            }}
+          </v-list-item-subtitle>
+          <v-list-item-subtitle class="text-body-2 text-truncate">
+            {{ conversation.lastMessage?.content || '...' }}
+          </v-list-item-subtitle>
+
+          <template #append>
+            <v-badge
+              v-if="(conversation.unreadMessagesCount || 0) > 0"
+              :content="conversation.unreadMessagesCount"
+              color="primary"
+              inline
+            />
+          </template>
+        </v-list-item>
+      </v-list>
     </template>
   </AppPageDrawers>
 
   <v-container fluid>
-    <v-sheet border rounded="xl" class="pa-4 inbox-chat-shell content-main postcard-gradient-card">
-      <div v-if="!selectedConversation" class="text-medium-emphasis py-12 text-center">
+    <v-sheet
+      border
+      rounded="xl"
+      class="pa-4 inbox-chat-shell content-main postcard-gradient-card"
+    >
+      <div
+        v-if="!selectedConversation"
+        class="text-medium-emphasis py-12 text-center"
+      >
         {{ t('pages.inbox.selectConversation') }}
       </div>
 
       <template v-else>
-        <v-sheet color="primary" rounded="xl" class="pa-4 text-white d-flex align-center justify-space-between mb-4 chat-header">
+        <v-sheet
+          color="primary"
+          rounded="xl"
+          class="pa-4 text-white d-flex align-center justify-space-between mb-4 chat-header"
+        >
           <div class="d-flex align-center ga-3">
             <NuxtLink
-              v-if="!isGroupConversation(selectedConversation) && userProfilePath(targetParticipant?.user)"
+              v-if="
+                !isGroupConversation(selectedConversation) &&
+                userProfilePath(targetParticipant?.user)
+              "
               :to="userProfilePath(targetParticipant?.user)!"
               class="inbox-user-link"
             >
               <v-avatar size="56">
-                <v-img :src="targetParticipant?.user?.photo || '/img/default-avatar.png'" cover />
+                <v-img
+                  :src="
+                    targetParticipant?.user?.photo || '/img/default-avatar.png'
+                  "
+                  cover
+                />
               </v-avatar>
             </NuxtLink>
-            <v-avatar v-else-if="!isGroupConversation(selectedConversation)" size="56">
-              <v-img :src="targetParticipant?.user?.photo || '/img/default-avatar.png'" cover />
+            <v-avatar
+              v-else-if="!isGroupConversation(selectedConversation)"
+              size="56"
+            >
+              <v-img
+                :src="
+                  targetParticipant?.user?.photo || '/img/default-avatar.png'
+                "
+                cover
+              />
             </v-avatar>
             <div v-else class="group-avatar group-avatar--lg">
               <img
-                v-for="(photo, index) in conversationParticipantsPhotos(selectedConversation)"
+                v-for="(photo, index) in conversationParticipantsPhotos(
+                  selectedConversation,
+                )"
                 :key="`${selectedConversation.id}-${index}`"
                 :src="photo"
                 class="group-avatar__img"
                 alt=""
-              >
+              />
             </div>
             <div>
               <NuxtLink
-                v-if="!isGroupConversation(selectedConversation) && userProfilePath(targetParticipant?.user)"
+                v-if="
+                  !isGroupConversation(selectedConversation) &&
+                  userProfilePath(targetParticipant?.user)
+                "
                 :to="userProfilePath(targetParticipant?.user)!"
                 class="inbox-user-link inbox-user-link--name"
               >
                 {{ selectedConversationName }}
               </NuxtLink>
-              <div v-else class="text-h6 font-weight-bold">{{ selectedConversationName }}</div>
-              <div class="text-body-2 opacity-90">{{ messageTime(selectedConversation.lastMessage?.createdAt || selectedConversation.createdAt) }}</div>
+              <div v-else class="text-h6 font-weight-bold">
+                {{ selectedConversationName }}
+              </div>
+              <div class="text-body-2 opacity-90">
+                {{
+                  messageTime(
+                    selectedConversation.lastMessage?.createdAt ||
+                      selectedConversation.createdAt,
+                  )
+                }}
+              </div>
             </div>
           </div>
           <div class="d-flex ga-2">
@@ -842,7 +959,12 @@ watch(
         </v-sheet>
 
         <div ref="messagesContainerRef" class="inbox-messages-container mb-4">
-          <v-progress-linear v-if="messagesLoading" indeterminate color="primary" class="mb-3" />
+          <v-progress-linear
+            v-if="messagesLoading"
+            indeterminate
+            color="primary"
+            class="mb-3"
+          />
 
           <div
             v-for="message in messages"
@@ -850,25 +972,38 @@ watch(
             class="d-flex mb-3"
             :class="isMine(message) ? 'justify-end' : 'justify-start'"
           >
-            <div class="d-flex ga-2" :class="isMine(message) ? 'flex-row-reverse' : ''">
+            <div
+              class="d-flex ga-2"
+              :class="isMine(message) ? 'flex-row-reverse' : ''"
+            >
               <NuxtLink
                 v-if="userProfilePath(message.sender)"
                 :to="userProfilePath(message.sender)!"
                 class="inbox-user-link mt-1"
               >
                 <v-avatar size="34">
-                  <v-img :src="message.sender?.photo || '/img/default-avatar.png'" cover />
+                  <v-img
+                    :src="message.sender?.photo || '/img/default-avatar.png'"
+                    cover
+                  />
                 </v-avatar>
               </NuxtLink>
               <v-avatar v-else size="34" class="mt-1">
-                <v-img :src="message.sender?.photo || '/img/default-avatar.png'" cover />
+                <v-img
+                  :src="message.sender?.photo || '/img/default-avatar.png'"
+                  cover
+                />
               </v-avatar>
 
               <div>
                 <v-sheet
                   rounded="xl"
                   class="message-bubble pa-3"
-                  :class="isMine(message) ? 'message-bubble--mine' : 'message-bubble--other'"
+                  :class="
+                    isMine(message)
+                      ? 'message-bubble--mine'
+                      : 'message-bubble--other'
+                  "
                 >
                   <template v-if="editMessageId === message.id">
                     <v-text-field
@@ -878,8 +1013,18 @@ watch(
                       hide-details
                     />
                     <div class="d-flex ga-2 mt-2">
-                      <v-btn size="x-small" color="primary" @click="saveEditMessage(message.id)">{{ t('common.save') }}</v-btn>
-                      <v-btn size="x-small" variant="text" @click="editMessageId = ''">{{ t('common.cancel') }}</v-btn>
+                      <v-btn
+                        size="x-small"
+                        color="primary"
+                        @click="saveEditMessage(message.id)"
+                        >{{ t('common.save') }}</v-btn
+                      >
+                      <v-btn
+                        size="x-small"
+                        variant="text"
+                        @click="editMessageId = ''"
+                        >{{ t('common.cancel') }}</v-btn
+                      >
                     </div>
                   </template>
 
@@ -887,7 +1032,10 @@ watch(
                     <div class="text-body-1">{{ message.content }}</div>
                   </template>
 
-                  <div class="d-flex align-center ga-2 mt-1 text-caption message-time" :class="isMine(message) ? 'justify-end' : ''">
+                  <div
+                    class="d-flex align-center ga-2 mt-1 text-caption message-time"
+                    :class="isMine(message) ? 'justify-end' : ''"
+                  >
                     <v-icon
                       v-if="isMine(message)"
                       :icon="message.read ? 'mdi-check-all' : 'mdi-check'"
@@ -911,7 +1059,12 @@ watch(
 
                   <v-menu location="top" content-class="app-menu-surface">
                     <template #activator="{ props }">
-                      <v-btn size="x-small" variant="text" icon="mdi-emoticon-happy-outline" v-bind="props" />
+                      <v-btn
+                        size="x-small"
+                        variant="text"
+                        icon="mdi-emoticon-happy-outline"
+                        v-bind="props"
+                      />
                     </template>
                     <v-card>
                       <div class="d-flex ga-1 pa-2">
@@ -1020,11 +1173,19 @@ watch(
 }
 
 .message-bubble--mine {
-  background: linear-gradient(135deg, rgb(var(--v-theme-primary)) 0%, color-mix(in srgb, rgb(var(--v-theme-surface)) 56%, black) 100%);
+  background: linear-gradient(
+    135deg,
+    rgb(var(--v-theme-primary)) 0%,
+    color-mix(in srgb, rgb(var(--v-theme-surface)) 56%, black) 100%
+  );
 }
 
 .message-bubble--other {
-  background: linear-gradient(135deg, rgb(var(--v-theme-primary)) 0%, color-mix(in srgb, rgb(var(--v-theme-surface)) 56%, white) 100%);
+  background: linear-gradient(
+    135deg,
+    rgb(var(--v-theme-primary)) 0%,
+    color-mix(in srgb, rgb(var(--v-theme-surface)) 56%, white) 100%
+  );
 }
 
 .message-time {
@@ -1072,6 +1233,10 @@ watch(
 }
 
 :deep(.v-list-item--active.conversation-item) {
-  background: color-mix(in srgb, rgb(var(--v-theme-primary)) 16%, rgb(var(--v-theme-primary)));
+  background: color-mix(
+    in srgb,
+    rgb(var(--v-theme-primary)) 16%,
+    rgb(var(--v-theme-primary))
+  );
 }
 </style>

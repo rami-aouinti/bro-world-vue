@@ -79,19 +79,19 @@ Pour chaque template listé dans "Portée", exécuter les checks ci-dessous.
 
 ## Matrice d'exécution (à cocher pendant la recette)
 
-| Template | Palette | Rounded | Typo | Density/Divider | Notes |
-|---|---|---|---|---|---|
-| classic | ☐ | ☐ | ☐ | ☐ |  |
-| modern | ☐ | ☐ | ☐ | ☐ |  |
-| professional | ☐ | ☐ | ☐ | ☐ |  |
-| traditional | ☐ | ☐ | ☐ | ☐ |  |
-| creative | ☐ | ☐ | ☐ | ☐ |  |
-| minimalist | ☐ | ☐ | ☐ | ☐ |  |
-| executive | ☐ | ☐ | ☐ | ☐ |  |
-| aurora | ☐ | ☐ | ☐ | ☐ |  |
-| terra | ☐ | ☐ | ☐ | ☐ |  |
-| ocean-split | ☐ | ☐ | ☐ | ☐ |  |
-| corporate-blue | ☐ | ☐ | ☐ | ☐ |  |
+| Template       | Palette | Rounded | Typo | Density/Divider | Notes |
+| -------------- | ------- | ------- | ---- | --------------- | ----- |
+| classic        | ☐       | ☐       | ☐    | ☐               |       |
+| modern         | ☐       | ☐       | ☐    | ☐               |       |
+| professional   | ☐       | ☐       | ☐    | ☐               |       |
+| traditional    | ☐       | ☐       | ☐    | ☐               |       |
+| creative       | ☐       | ☐       | ☐    | ☐               |       |
+| minimalist     | ☐       | ☐       | ☐    | ☐               |       |
+| executive      | ☐       | ☐       | ☐    | ☐               |       |
+| aurora         | ☐       | ☐       | ☐    | ☐               |       |
+| terra          | ☐       | ☐       | ☐    | ☐               |       |
+| ocean-split    | ☐       | ☐       | ☐    | ☐               |       |
+| corporate-blue | ☐       | ☐       | ☐    | ☐               |       |
 
 ## Renfort automatisé (test composant)
 

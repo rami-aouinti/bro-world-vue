@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { buildCoverDesignVars, type CoverLayoutSettings } from '~/composables/useResumeCoverDesign'
+import {
+  buildCoverDesignVars,
+  type CoverLayoutSettings,
+} from '~/composables/useResumeCoverDesign'
 
 type Palette = {
   page: string
@@ -19,19 +22,22 @@ type CoverPageModel = {
   photoUrl?: string
 }
 
-const props = withDefaults(defineProps<{
-  model: CoverPageModel
-  palette: Palette
-  typography?: 'sans' | 'serif'
-  textStyle?: 'clean' | 'italic' | 'serif' | 'mono' | 'display'
-  rounded?: string
-  layoutSettings?: CoverLayoutSettings
-}>(), {
-  typography: 'sans',
-  textStyle: 'clean',
-  rounded: 'md',
-  layoutSettings: () => ({}),
-})
+const props = withDefaults(
+  defineProps<{
+    model: CoverPageModel
+    palette: Palette
+    typography?: 'sans' | 'serif'
+    textStyle?: 'clean' | 'italic' | 'serif' | 'mono' | 'display'
+    rounded?: string
+    layoutSettings?: CoverLayoutSettings
+  }>(),
+  {
+    typography: 'sans',
+    textStyle: 'clean',
+    rounded: 'md',
+    layoutSettings: () => ({}),
+  },
+)
 
 const designVars = computed(() => buildCoverDesignVars('cp', props))
 </script>
@@ -66,11 +72,46 @@ const designVars = computed(() => buildCoverDesignVars('cp', props))
 </template>
 
 <style scoped>
-.cover-page-terra { font-family: var(--cp-font-family, 'Inter', 'Segoe UI', sans-serif); font-style: var(--cp-font-style, normal); font-weight: var(--cp-font-weight, 400); display: grid; grid-template-columns: 180px 1fr; background: var(--cp-page); color: var(--cp-text); min-height: 100%; border-radius: var(--cp-rounded); overflow: hidden; }
-.cover-page-terra__sidebar { background: var(--cp-soft); padding: 28px 18px; display: flex; flex-direction: column; gap: 8px; }
-.cover-page-terra__content { padding: 38px; display: flex; flex-direction: column; gap: 14px; }
-.cover-page-terra__date { color: color-mix(in srgb, var(--cp-text) 70%, white); }
-.cover-page-terra h1 { font-size: 2rem; color: var(--cp-accent); }
-.cover-page-terra h2 { font-size: 1.05rem; text-transform: uppercase; letter-spacing: .05em; }
-@media (max-width: 960px) { .cover-page-terra { grid-template-columns: 1fr; } }
+.cover-page-terra {
+  font-family: var(--cp-font-family, 'Inter', 'Segoe UI', sans-serif);
+  font-style: var(--cp-font-style, normal);
+  font-weight: var(--cp-font-weight, 400);
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  background: var(--cp-page);
+  color: var(--cp-text);
+  min-height: 100%;
+  border-radius: var(--cp-rounded);
+  overflow: hidden;
+}
+.cover-page-terra__sidebar {
+  background: var(--cp-soft);
+  padding: 28px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cover-page-terra__content {
+  padding: 38px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.cover-page-terra__date {
+  color: color-mix(in srgb, var(--cp-text) 70%, white);
+}
+.cover-page-terra h1 {
+  font-size: 2rem;
+  color: var(--cp-accent);
+}
+.cover-page-terra h2 {
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+@media (max-width: 960px) {
+  .cover-page-terra {
+    grid-template-columns: 1fr;
+  }
+}
 </style>

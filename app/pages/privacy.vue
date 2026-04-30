@@ -12,15 +12,21 @@ definePageMeta({
 
     <v-card rounded="xl" class="pa-6 postcard-gradient-card">
       <p class="mb-4">
-        This Privacy Policy explains how Bro World collects, uses, stores, and protects
-        your personal data when you use our website and connected services.
+        This Privacy Policy explains how Bro World collects, uses, stores, and
+        protects your personal data when you use our website and connected
+        services.
       </p>
 
       <h2 class="text-h6 mb-2">1. Data we collect</h2>
       <ul class="mb-4 ps-6">
         <li>Account details (name, email, username).</li>
-        <li>Usage and interaction data (pages visited, actions, preferences).</li>
-        <li>Technical information (device/browser/IP logs for security and diagnostics).</li>
+        <li>
+          Usage and interaction data (pages visited, actions, preferences).
+        </li>
+        <li>
+          Technical information (device/browser/IP logs for security and
+          diagnostics).
+        </li>
       </ul>
 
       <h2 class="text-h6 mb-2">2. How we use data</h2>
@@ -32,8 +38,8 @@ definePageMeta({
 
       <h2 class="text-h6 mb-2">3. Your rights</h2>
       <p class="mb-4">
-        You can request access, correction, export, or deletion of your personal data.
-        See our dedicated data deletion page for details.
+        You can request access, correction, export, or deletion of your personal
+        data. See our dedicated data deletion page for details.
       </p>
 
       <h2 class="text-h6 mb-2">4. Contact</h2>

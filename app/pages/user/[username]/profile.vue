@@ -48,15 +48,20 @@ async function openInboxConversation() {
   openingConversation.value = true
 
   try {
-    const response = await privateApi.request<{ conversationId?: string; id?: string }>(
-      `/api/chat/private/conversation/${profile.value.id}/user`,
-      { method: 'POST' },
-    )
+    const response = await privateApi.request<{
+      conversationId?: string
+      id?: string
+    }>(`/api/chat/private/conversation/${profile.value.id}/user`, {
+      method: 'POST',
+    })
 
     const conversationId = String(response.conversationId || response.id || '')
     if (!conversationId) return
 
-    await navigateTo({ path: '/inbox', query: { conversation: conversationId } })
+    await navigateTo({
+      path: '/inbox',
+      query: { conversation: conversationId },
+    })
   } finally {
     openingConversation.value = false
   }

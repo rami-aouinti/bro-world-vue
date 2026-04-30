@@ -763,106 +763,125 @@ onUnmounted(() => {
 
     <AppModal
       v-model="dialogOpen"
-      :title="isEditing ? t('pages.calendar.editDialogTitle') : t('pages.calendar.createDialogTitle')"
+      :title="
+        isEditing
+          ? t('pages.calendar.editDialogTitle')
+          : t('pages.calendar.createDialogTitle')
+      "
     >
       <template #default>
-          <v-card
-            v-if="isEditing && (activeEvent?.description || activeEvent?.organizerEmail)"
-            variant="text"
-            class="mb-1 postcard-gradient-card"
-          >
-            <v-card-text class="text-body-2">
-              <div v-if="activeEvent?.description" class="mb-2">
-                <!-- eslint-disable-next-line vue/no-v-html -->
-                <div class="event-html-description" v-html="eventDescriptionHtml" />
-              </div>
-              <div v-if="formattedEventRange" class="text-medium-emphasis mb-2">
-                Date: {{ formattedEventRange }}
-              </div>
-              <div v-if="activeEvent?.organizerEmail" class="text-medium-emphasis">
-                Organisateur: {{ activeEvent.organizerName || activeEvent.organizerEmail }}
-              </div>
-            </v-card-text>
-          </v-card>
-          <v-text-field
-            v-model="form.title"
-            :label="t('pages.calendar.form.title')"
-            autofocus
-            :disabled="!canEditForm"
-          />
-          <v-textarea
-            v-model="form.description"
-            :label="t('pages.calendar.form.description')"
-            rows="3"
-            :disabled="!canEditForm"
-          />
-          <v-row>
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="form.startAt"
-                :label="t('pages.calendar.form.start')"
-                type="datetime-local"
-                :disabled="!canEditForm"
+        <v-card
+          v-if="
+            isEditing &&
+            (activeEvent?.description || activeEvent?.organizerEmail)
+          "
+          variant="text"
+          class="mb-1 postcard-gradient-card"
+        >
+          <v-card-text class="text-body-2">
+            <div v-if="activeEvent?.description" class="mb-2">
+              <!-- eslint-disable-next-line vue/no-v-html -->
+              <div
+                class="event-html-description"
+                v-html="eventDescriptionHtml"
               />
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="form.endAt"
-                :label="t('pages.calendar.form.end')"
-                type="datetime-local"
-                :disabled="!canEditForm"
-              />
-            </v-col>
-          </v-row>
-          <v-text-field
-            v-model="form.location"
-            :label="t('pages.calendar.form.location')"
-            :disabled="!canEditForm"
-          />
-          <v-switch
-            v-model="form.isAllDay"
-            :label="t('pages.calendar.form.allDay')"
-            color="primary"
-            :disabled="!canEditForm"
-          />
+            </div>
+            <div v-if="formattedEventRange" class="text-medium-emphasis mb-2">
+              Date: {{ formattedEventRange }}
+            </div>
+            <div
+              v-if="activeEvent?.organizerEmail"
+              class="text-medium-emphasis"
+            >
+              Organisateur:
+              {{ activeEvent.organizerName || activeEvent.organizerEmail }}
+            </div>
+          </v-card-text>
+        </v-card>
+        <v-text-field
+          v-model="form.title"
+          :label="t('pages.calendar.form.title')"
+          autofocus
+          :disabled="!canEditForm"
+        />
+        <v-textarea
+          v-model="form.description"
+          :label="t('pages.calendar.form.description')"
+          rows="3"
+          :disabled="!canEditForm"
+        />
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="form.startAt"
+              :label="t('pages.calendar.form.start')"
+              type="datetime-local"
+              :disabled="!canEditForm"
+            />
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="form.endAt"
+              :label="t('pages.calendar.form.end')"
+              type="datetime-local"
+              :disabled="!canEditForm"
+            />
+          </v-col>
+        </v-row>
+        <v-text-field
+          v-model="form.location"
+          :label="t('pages.calendar.form.location')"
+          :disabled="!canEditForm"
+        />
+        <v-switch
+          v-model="form.isAllDay"
+          :label="t('pages.calendar.form.allDay')"
+          color="primary"
+          :disabled="!canEditForm"
+        />
       </template>
       <template #actions>
-          <v-btn variant="text" @click="dialogOpen = false">
-            {{ t('common.cancel') }}
-          </v-btn>
-          <v-spacer />
-          <v-btn
-            v-if="isEditing && !isEditMode"
-            color="primary"
-            variant="tonal"
-            prepend-icon="mdi-pencil-outline"
-            @click="isEditMode = true"
-          >
-            Edit
-          </v-btn>
-          <v-btn
-            v-if="isEditing"
-            color="warning"
-            variant="text"
-            :loading="isSaving"
-            :disabled="!canEditForm"
-            @click="cancelEvent"
-          >
-            {{ t('pages.calendar.cancelEvent') }}
-          </v-btn>
-          <v-btn
-            v-if="isEditing"
-            color="error"
-            variant="text"
-            :loading="isSaving"
-            :disabled="!canEditForm"
-            @click="deleteEvent"
-          >
-            {{ t('common.delete') }}
-          </v-btn>
-          <v-btn color="primary" :loading="isSaving" :disabled="!canEditForm" @click="saveEvent">
-            {{ t('common.save') }}
-          </v-btn>
+        <v-btn variant="text" @click="dialogOpen = false">
+          {{ t('common.cancel') }}
+        </v-btn>
+        <v-spacer />
+        <v-btn
+          v-if="isEditing && !isEditMode"
+          color="primary"
+          variant="tonal"
+          prepend-icon="mdi-pencil-outline"
+          @click="isEditMode = true"
+        >
+          Edit
+        </v-btn>
+        <v-btn
+          v-if="isEditing"
+          color="warning"
+          variant="text"
+          :loading="isSaving"
+          :disabled="!canEditForm"
+          @click="cancelEvent"
+        >
+          {{ t('pages.calendar.cancelEvent') }}
+        </v-btn>
+        <v-btn
+          v-if="isEditing"
+          color="error"
+          variant="text"
+          :loading="isSaving"
+          :disabled="!canEditForm"
+          @click="deleteEvent"
+        >
+          {{ t('common.delete') }}
+        </v-btn>
+        <v-btn
+          color="primary"
+          :loading="isSaving"
+          :disabled="!canEditForm"
+          @click="saveEvent"
+        >
+          {{ t('common.save') }}
+        </v-btn>
       </template>
     </AppModal>
   </div>

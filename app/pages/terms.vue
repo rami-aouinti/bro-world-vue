@@ -17,29 +17,32 @@ definePageMeta({
 
       <h2 class="text-h6 mb-2">1. Use of service</h2>
       <p class="mb-4">
-        You agree to use the service lawfully and not to disrupt, abuse, or misuse
-        platform features.
+        You agree to use the service lawfully and not to disrupt, abuse, or
+        misuse platform features.
       </p>
 
       <h2 class="text-h6 mb-2">2. Accounts</h2>
       <p class="mb-4">
-        You are responsible for your account credentials and all activity under your account.
+        You are responsible for your account credentials and all activity under
+        your account.
       </p>
 
       <h2 class="text-h6 mb-2">3. Content and conduct</h2>
       <p class="mb-4">
-        You must own or have rights to content you publish and ensure it does not violate
-        applicable laws or third-party rights.
+        You must own or have rights to content you publish and ensure it does
+        not violate applicable laws or third-party rights.
       </p>
 
       <h2 class="text-h6 mb-2">4. Termination</h2>
       <p class="mb-4">
-        We may suspend or terminate access in case of abuse, security risks, or legal requirements.
+        We may suspend or terminate access in case of abuse, security risks, or
+        legal requirements.
       </p>
 
       <h2 class="text-h6 mb-2">5. Contact</h2>
       <p class="mb-0">
-        For legal questions, contact us via <NuxtLink to="/contact">the contact page</NuxtLink>.
+        For legal questions, contact us via
+        <NuxtLink to="/contact">the contact page</NuxtLink>.
       </p>
     </v-card>
   </v-container>

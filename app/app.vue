@@ -88,8 +88,9 @@ const metaDescription = computed(() => {
   }
 
   const localeDescription =
-    metaDescriptionByLocale[locale.value as keyof typeof metaDescriptionByLocale] ??
-    metaDescriptionByLocale.en
+    metaDescriptionByLocale[
+      locale.value as keyof typeof metaDescriptionByLocale
+    ] ?? metaDescriptionByLocale.en
 
   if (title.value) {
     return localeDescription.withTitle(title.value)

@@ -1,4 +1,7 @@
-import type { CrmEmployeeUpdatePayload, CrmIdResponse } from '~~/server/types/api/crm-general'
+import type {
+  CrmEmployeeUpdatePayload,
+  CrmIdResponse,
+} from '~~/server/types/api/crm-general'
 import { mutateCrmGeneral } from '~~/server/utils/crmGeneralPrivateApi'
 
 export default defineEventHandler(async (event): Promise<CrmIdResponse> => {
@@ -10,8 +13,12 @@ export default defineEventHandler(async (event): Promise<CrmIdResponse> => {
 
   const body = await readBody<CrmEmployeeUpdatePayload>(event)
 
-  return mutateCrmGeneral<Record<string, unknown>>(event, `employees/${employee}`, {
-    method: 'PATCH',
-    body,
-  })
+  return mutateCrmGeneral<Record<string, unknown>>(
+    event,
+    `employees/${employee}`,
+    {
+      method: 'PATCH',
+      body,
+    },
+  )
 })

@@ -165,7 +165,8 @@ const profileResumeIdentity = computed(() => {
     resumeIdentity?.title ||
     currentProfile?.profile?.title ||
     'Professional Profile'
-  const location = resumeIdentity?.address || currentProfile?.profile?.location || ''
+  const location =
+    resumeIdentity?.address || currentProfile?.profile?.location || ''
   const email = resumeIdentity?.email || currentProfile?.email || ''
   const phone = resumeIdentity?.phone || currentProfile?.profile?.phone || ''
   const summary =
@@ -720,7 +721,12 @@ onUnmounted(() => {
               color="primary"
               variant="tonal"
               prepend-icon="mdi-file-plus-outline"
-              @click="() => { resumeCreateOpen = true; resumeCreateStep = 'choice' }"
+              @click="
+                () => {
+                  resumeCreateOpen = true
+                  resumeCreateStep = 'choice'
+                }
+              "
             >
               New CV
             </v-btn>
@@ -814,7 +820,11 @@ onUnmounted(() => {
       </template>
     </v-container>
 
-    <AppModal v-model="resumeViewerOpen" title="Resume details" :max-width="980">
+    <AppModal
+      v-model="resumeViewerOpen"
+      title="Resume details"
+      :max-width="980"
+    >
       <div v-if="selectedResume">
         <iframe
           v-if="selectedResume.documentUrl"
@@ -1525,10 +1535,7 @@ onUnmounted(() => {
                   label="Country code"
                   placeholder="FR, US, ES..."
               /></v-col>
-              <v-col
-                v-if="hasSectionField(entry.key, 'flag')"
-                cols="12"
-                md="2"
+              <v-col v-if="hasSectionField(entry.key, 'flag')" cols="12" md="2"
                 ><v-text-field
                   v-model="line.flag"
                   label="Flag"
@@ -1646,13 +1653,21 @@ onUnmounted(() => {
 
 .resume-type-chip--pdf {
   color: #d9ecff;
-  background: linear-gradient(135deg, rgba(55, 127, 213, 0.33), rgba(83, 154, 241, 0.24));
+  background: linear-gradient(
+    135deg,
+    rgba(55, 127, 213, 0.33),
+    rgba(83, 154, 241, 0.24)
+  );
   border-color: rgba(117, 175, 243, 0.45);
 }
 
 .resume-type-chip--data {
   color: #ede5ff;
-  background: linear-gradient(135deg, rgba(112, 86, 205, 0.34), rgba(146, 104, 229, 0.25));
+  background: linear-gradient(
+    135deg,
+    rgba(112, 86, 205, 0.34),
+    rgba(146, 104, 229, 0.25)
+  );
   border-color: rgba(172, 129, 246, 0.42);
 }
 

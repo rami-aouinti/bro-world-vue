@@ -1,6 +1,9 @@
 import { callPrivateApi, getSessionAuth } from '~~/server/utils/privateApi'
 import { getAdminResource } from '~~/server/utils/adminManagement'
-import { invalidateByPrefix, privateCachePrefix } from '~~/server/utils/apiCache'
+import {
+  invalidateByPrefix,
+  privateCachePrefix,
+} from '~~/server/utils/apiCache'
 
 export default defineEventHandler(async (event) => {
   const { endpointResource } = getAdminResource(event)
@@ -8,13 +11,22 @@ export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
 
   if (!id) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing id parameter' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing id parameter',
+    })
   }
 
-  const response = await callPrivateApi(event, `/api/v1/${endpointResource}/${id}`, {
-    method: 'DELETE',
-  })
+  const response = await callPrivateApi(
+    event,
+    `/api/v1/${endpointResource}/${id}`,
+    {
+      method: 'DELETE',
+    },
+  )
 
-  await invalidateByPrefix(privateCachePrefix({ username, resourcePrefix: 'default' }))
+  await invalidateByPrefix(
+    privateCachePrefix({ username, resourcePrefix: 'default' }),
+  )
   return response
 })

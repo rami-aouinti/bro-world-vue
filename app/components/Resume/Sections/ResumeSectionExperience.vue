@@ -158,10 +158,7 @@ function removeExperience(index: number) {
 <template>
   <section
     class="resume-section resume-section-hoverable experience"
-    :class="[
-      `density-${layoutDensity}`,
-      `experience--${safeVariant}`,
-    ]"
+    :class="[`density-${layoutDensity}`, `experience--${safeVariant}`]"
     :style="sectionLayoutStyle"
   >
     <SectionToolbar
@@ -196,170 +193,178 @@ function removeExperience(index: number) {
         :key="`${experience.company}-${index}`"
         class="entry text-dark"
       >
-      <v-btn
-        v-if="editable"
-        class="resume-item-delete"
-        icon
-        size="x-small"
-        variant="text"
-        color="error"
-        aria-label="Delete this experience"
-        @click="removeExperience(index)"
-      >
-        <v-icon icon="mdi-close" size="14" />
-      </v-btn>
-      <div class="date-column dates">
-        <div class="dates-chip-wrap">
-          <DateRangeChip
-            :start="experience.start"
-            :end="experience.end"
-            variant="text"
-            :editable="editable"
-            @update:start="(value) => updateText(`experiences.${index}.start`, value)"
-            @update:end="(value) => updateText(`experiences.${index}.end`, value)"
-          />
-        </div>
-        <h4 class="text-dark experience-heading">
-          <span
-            class="editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateText(
-                  `experiences.${index}.role`,
-                  (event.target as HTMLElement).innerText,
-                )
-            "
-            >{{ experience.role }}</span
-          >,
-          <span class="company-line">
-            <img
-              v-if="showCompanyLogo(index, experience.companyImageUrl)"
-              :src="experience.companyImageUrl"
-              alt=""
-              class="company-logo"
-              @error="onCompanyLogoError(index, experience.companyImageUrl)"
+        <v-btn
+          v-if="editable"
+          class="resume-item-delete"
+          icon
+          size="x-small"
+          variant="text"
+          color="error"
+          aria-label="Delete this experience"
+          @click="removeExperience(index)"
+        >
+          <v-icon icon="mdi-close" size="14" />
+        </v-btn>
+        <div class="date-column dates">
+          <div class="dates-chip-wrap">
+            <DateRangeChip
+              :start="experience.start"
+              :end="experience.end"
+              variant="text"
+              :editable="editable"
+              @update:start="
+                (value) => updateText(`experiences.${index}.start`, value)
+              "
+              @update:end="
+                (value) => updateText(`experiences.${index}.end`, value)
+              "
             />
+          </div>
+          <h4 class="text-dark experience-heading">
             <span
               class="editable-text"
               :contenteditable="editable"
               @input="
                 (event) =>
                   updateText(
-                    `experiences.${index}.company`,
+                    `experiences.${index}.role`,
                     (event.target as HTMLElement).innerText,
                   )
               "
-              >{{ experience.company }}</span
-            >
-          </span>
-          <template v-if="experience.city"
+              >{{ experience.role }}</span
             >,
-            <span
-              class="editable-text"
-              :contenteditable="editable"
-              @input="
-                (event) =>
-                  updateText(
-                    `experiences.${index}.city`,
-                    (event.target as HTMLElement).innerText,
-                  )
-              "
-              >{{ experience.city }}</span
-            >
-          </template>
-        </h4>
-      </div>
-      <div v-if="safeVariant === 'timeline'" class="experience-timeline-rail" aria-hidden="true">
-        <span class="experience-timeline-dot" />
-      </div>
-      <div class="content-column">
-        <template v-if="resolveContentStyle(experience) === 'timeline'">
-          <div class="timeline-block">
-            <div
-              v-for="(event, eventIndex) in resolveTimelineEvents(experience)"
-              :key="eventIndex"
-              class="timeline-event"
-            >
-              <strong
-                class="editable-text"
-                :contenteditable="editable"
-                @input="
-                  (entry) =>
-                    updateText(
-                      `experiences.${index}.timelineEvents.${eventIndex}.label`,
-                      (entry.target as HTMLElement).innerText,
-                    )
-                "
-                >{{ event.label }}</strong
-              >
+            <span class="company-line">
+              <img
+                v-if="showCompanyLogo(index, experience.companyImageUrl)"
+                :src="experience.companyImageUrl"
+                alt=""
+                class="company-logo"
+                @error="onCompanyLogoError(index, experience.companyImageUrl)"
+              />
               <span
                 class="editable-text"
                 :contenteditable="editable"
                 @input="
-                  (entry) =>
+                  (event) =>
                     updateText(
-                      `experiences.${index}.timelineEvents.${eventIndex}.detail`,
-                      (entry.target as HTMLElement).innerText,
+                      `experiences.${index}.company`,
+                      (event.target as HTMLElement).innerText,
                     )
                 "
-                >{{ event.detail }}</span
+                >{{ experience.company }}</span
               >
+            </span>
+            <template v-if="experience.city"
+              >,
+              <span
+                class="editable-text"
+                :contenteditable="editable"
+                @input="
+                  (event) =>
+                    updateText(
+                      `experiences.${index}.city`,
+                      (event.target as HTMLElement).innerText,
+                    )
+                "
+                >{{ experience.city }}</span
+              >
+            </template>
+          </h4>
+        </div>
+        <div
+          v-if="safeVariant === 'timeline'"
+          class="experience-timeline-rail"
+          aria-hidden="true"
+        >
+          <span class="experience-timeline-dot" />
+        </div>
+        <div class="content-column">
+          <template v-if="resolveContentStyle(experience) === 'timeline'">
+            <div class="timeline-block">
+              <div
+                v-for="(event, eventIndex) in resolveTimelineEvents(experience)"
+                :key="eventIndex"
+                class="timeline-event"
+              >
+                <strong
+                  class="editable-text"
+                  :contenteditable="editable"
+                  @input="
+                    (entry) =>
+                      updateText(
+                        `experiences.${index}.timelineEvents.${eventIndex}.label`,
+                        (entry.target as HTMLElement).innerText,
+                      )
+                  "
+                  >{{ event.label }}</strong
+                >
+                <span
+                  class="editable-text"
+                  :contenteditable="editable"
+                  @input="
+                    (entry) =>
+                      updateText(
+                        `experiences.${index}.timelineEvents.${eventIndex}.detail`,
+                        (entry.target as HTMLElement).innerText,
+                      )
+                  "
+                  >{{ event.detail }}</span
+                >
+              </div>
             </div>
-          </div>
-        </template>
-        <ul
-          v-else-if="resolveContentStyle(experience) === 'dashes'"
-          class="dash-list"
-        >
-          <li
-            v-for="(dash, dashIndex) in resolveDashes(experience)"
-            :key="dashIndex"
+          </template>
+          <ul
+            v-else-if="resolveContentStyle(experience) === 'dashes'"
+            class="dash-list"
+          >
+            <li
+              v-for="(dash, dashIndex) in resolveDashes(experience)"
+              :key="dashIndex"
+              class="text-dark editable-text"
+              :contenteditable="editable"
+              @input="
+                (event) =>
+                  updateText(
+                    `experiences.${index}.dashes.${dashIndex}`,
+                    (event.target as HTMLElement).innerText,
+                  )
+              "
+            >
+              {{ dash }}
+            </li>
+          </ul>
+          <ul v-else-if="variant !== 'compact'">
+            <li
+              v-for="(bullet, bulletIndex) in resolvePoints(experience)"
+              :key="bulletIndex"
+              class="text-dark editable-text"
+              :contenteditable="editable"
+              @input="
+                (event) =>
+                  updateText(
+                    `experiences.${index}.points.${bulletIndex}`,
+                    (event.target as HTMLElement).innerText,
+                  )
+              "
+            >
+              {{ bullet }}
+            </li>
+          </ul>
+          <p
+            v-else
             class="text-dark editable-text"
             :contenteditable="editable"
             @input="
               (event) =>
                 updateText(
-                  `experiences.${index}.dashes.${dashIndex}`,
+                  `experiences.${index}.bullets.0`,
                   (event.target as HTMLElement).innerText,
                 )
             "
           >
-            {{ dash }}
-          </li>
-        </ul>
-        <ul v-else-if="variant !== 'compact'">
-          <li
-            v-for="(bullet, bulletIndex) in resolvePoints(experience)"
-            :key="bulletIndex"
-            class="text-dark editable-text"
-            :contenteditable="editable"
-            @input="
-              (event) =>
-                updateText(
-                  `experiences.${index}.points.${bulletIndex}`,
-                  (event.target as HTMLElement).innerText,
-                )
-            "
-          >
-            {{ bullet }}
-          </li>
-        </ul>
-        <p
-          v-else
-          class="text-dark editable-text"
-          :contenteditable="editable"
-          @input="
-            (event) =>
-              updateText(
-                `experiences.${index}.bullets.0`,
-                (event.target as HTMLElement).innerText,
-              )
-          "
-        >
-          {{ resolvePoints(experience)?.[0] }}
-        </p>
-      </div>
+            {{ resolvePoints(experience)?.[0] }}
+          </p>
+        </div>
       </article>
     </div>
   </section>
@@ -387,7 +392,9 @@ function removeExperience(index: number) {
 
   position: relative;
   border-bottom: var(--rs-section-separator, none);
-  padding-bottom: calc(var(--rs-section-padding-bottom, 0px) + var(--rs-extra-line-offset, 0px));
+  padding-bottom: calc(
+    var(--rs-section-padding-bottom, 0px) + var(--rs-extra-line-offset, 0px)
+  );
 }
 .cv-heading-section {
   display: inline-flex;
@@ -486,7 +493,9 @@ function removeExperience(index: number) {
   border-radius: var(--rs-marker-radius, 0);
   background: var(--cv-marker-accent);
 }
-.experience--timeline .content-column { max-width: min(100%, 70ch); }
+.experience--timeline .content-column {
+  max-width: min(100%, 70ch);
+}
 .experience--timeline .entry {
   grid-template-columns:
     minmax(140px, var(--resume-date-column-width, 140px))

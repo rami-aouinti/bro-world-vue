@@ -39,5 +39,8 @@ const resolvedGameComponent = computed(() => {
 </script>
 
 <template>
-  <component :is="resolvedGameComponent" :selected-play-mode="selectedPlayMode" />
+  <component
+    :is="resolvedGameComponent"
+    :selected-play-mode="selectedPlayMode"
+  />
 </template>

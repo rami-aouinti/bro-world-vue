@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import type { ShopGeneralOrder } from '~/types/world/shop'
 import { normalizeHttpError } from '~/utils/httpError'
-import type { ChannelOption, OrderRecord, OrderStatus, OrderStatusMeta, SalesChannel } from '~/components/Shop/types'
+import type {
+  ChannelOption,
+  OrderRecord,
+  OrderStatus,
+  OrderStatusMeta,
+  SalesChannel,
+} from '~/components/Shop/types'
 
 definePageMeta({ layout: 'shop', title: 'world.shop.orders.metaTitle' })
 
@@ -10,14 +16,38 @@ const { shopNavItems } = useShopNavItems()
 const shopStore = useWorldShopStore()
 
 const statusCatalog = computed<OrderStatusMeta[]>(() => [
-  { value: 'all', title: t('world.shop.orders.catalog.status.all'), color: 'grey' },
-  { value: 'pending', title: t('world.shop.status.pending'), color: 'amber-darken-2' },
-  { value: 'paid', title: t('world.shop.status.paid'), color: 'green-darken-1' },
+  {
+    value: 'all',
+    title: t('world.shop.orders.catalog.status.all'),
+    color: 'grey',
+  },
+  {
+    value: 'pending',
+    title: t('world.shop.status.pending'),
+    color: 'amber-darken-2',
+  },
+  {
+    value: 'paid',
+    title: t('world.shop.status.paid'),
+    color: 'green-darken-1',
+  },
   { value: 'packed', title: t('world.shop.status.packed'), color: 'indigo' },
   { value: 'shipped', title: t('world.shop.status.shipped'), color: 'blue' },
-  { value: 'delivered', title: t('world.shop.status.delivered'), color: 'teal' },
-  { value: 'returned', title: t('world.shop.status.returned'), color: 'deep-orange' },
-  { value: 'refunded', title: t('world.shop.status.refunded'), color: 'pink-darken-2' },
+  {
+    value: 'delivered',
+    title: t('world.shop.status.delivered'),
+    color: 'teal',
+  },
+  {
+    value: 'returned',
+    title: t('world.shop.status.returned'),
+    color: 'deep-orange',
+  },
+  {
+    value: 'refunded',
+    title: t('world.shop.status.refunded'),
+    color: 'pink-darken-2',
+  },
 ])
 
 const channelCatalog = computed<ChannelOption[]>(() => [
@@ -46,7 +76,11 @@ const headers = computed(() => [
   { title: t('world.shop.orders.table.date'), key: 'createdAt' },
   { title: t('world.shop.orders.table.amount'), key: 'amount' },
   { title: t('world.shop.orders.table.refunded'), key: 'refundedAmount' },
-  { title: t('world.shop.orders.table.actions'), key: 'actions', sortable: false },
+  {
+    title: t('world.shop.orders.table.actions'),
+    key: 'actions',
+    sortable: false,
+  },
 ])
 
 const orders = ref<OrderRecord[]>([])
@@ -73,7 +107,9 @@ const parseOrderChannel = (order: ShopGeneralOrder): SalesChannel => {
 
 const normalizeOrder = (order: ShopGeneralOrder): OrderRecord => ({
   id: order.id,
-  customer: t('world.shop.orders.customerLabel', { suffix: order.id.slice(-4) }),
+  customer: t('world.shop.orders.customerLabel', {
+    suffix: order.id.slice(-4),
+  }),
   channel: parseOrderChannel(order),
   status: order.status,
   createdAt: order.createdAt,
@@ -102,13 +138,19 @@ const normalizeOrder = (order: ShopGeneralOrder): OrderRecord => ({
 const extractApiMessage = (err: unknown) => {
   const normalized = normalizeHttpError(err)
   if (normalized.statusCode === 400) {
-    return t('world.shop.orders.errors.badRequest', { detail: normalized.message })
+    return t('world.shop.orders.errors.badRequest', {
+      detail: normalized.message,
+    })
   }
   if (normalized.statusCode === 404) {
-    return t('world.shop.orders.errors.notFound', { detail: normalized.message })
+    return t('world.shop.orders.errors.notFound', {
+      detail: normalized.message,
+    })
   }
   if (normalized.statusCode === 422) {
-    return t('world.shop.orders.errors.invalidData', { detail: normalized.message })
+    return t('world.shop.orders.errors.invalidData', {
+      detail: normalized.message,
+    })
   }
   return t('world.shop.orders.errors.api', { detail: normalized.message })
 }
@@ -134,23 +176,43 @@ const filteredOrders = computed(() => {
     const matchesSearch = filters.value.search
       ? textNeedle.includes(filters.value.search.toLowerCase())
       : true
-    const matchesStatus = filters.value.status === 'all' ? true : order.status === filters.value.status
-    const matchesChannel = filters.value.channel === 'all' ? true : order.channel === filters.value.channel
+    const matchesStatus =
+      filters.value.status === 'all'
+        ? true
+        : order.status === filters.value.status
+    const matchesChannel =
+      filters.value.channel === 'all'
+        ? true
+        : order.channel === filters.value.channel
 
     const orderDateMs = new Date(order.createdAt).getTime()
-    const fromMs = filters.value.dateFrom ? new Date(filters.value.dateFrom).getTime() : Number.NEGATIVE_INFINITY
-    const toMs = filters.value.dateTo ? new Date(filters.value.dateTo).getTime() : Number.POSITIVE_INFINITY
+    const fromMs = filters.value.dateFrom
+      ? new Date(filters.value.dateFrom).getTime()
+      : Number.NEGATIVE_INFINITY
+    const toMs = filters.value.dateTo
+      ? new Date(filters.value.dateTo).getTime()
+      : Number.POSITIVE_INFINITY
     const matchesDate = orderDateMs >= fromMs && orderDateMs <= toMs
 
     const minAmount = filters.value.amountMin ?? Number.NEGATIVE_INFINITY
     const maxAmount = filters.value.amountMax ?? Number.POSITIVE_INFINITY
     const matchesAmount = order.amount >= minAmount && order.amount <= maxAmount
 
-    return matchesSearch && matchesStatus && matchesChannel && matchesDate && matchesAmount
+    return (
+      matchesSearch &&
+      matchesStatus &&
+      matchesChannel &&
+      matchesDate &&
+      matchesAmount
+    )
   })
 })
 
-const selectedOrder = computed(() => filteredOrders.value.find((item) => item.id === selectedOrderId.value) ?? null)
+const selectedOrder = computed(
+  () =>
+    filteredOrders.value.find((item) => item.id === selectedOrderId.value) ??
+    null,
+)
 
 watch(
   filteredOrders,
@@ -168,7 +230,12 @@ watch(
   { immediate: true },
 )
 
-const addTimelineEvent = (order: OrderRecord, status: OrderStatus, label: string, note?: string) => {
+const addTimelineEvent = (
+  order: OrderRecord,
+  status: OrderStatus,
+  label: string,
+  note?: string,
+) => {
   order.timeline.push({
     id: `T-${Math.random().toString(36).slice(2, 8)}`,
     status,
@@ -200,7 +267,9 @@ const generateInvoice = (orderId: string) => {
   addTimelineEvent(
     order,
     order.status,
-    t('world.shop.orders.timeline.invoiceGenerated', { invoiceNumber: order.invoiceNumber }),
+    t('world.shop.orders.timeline.invoiceGenerated', {
+      invoiceNumber: order.invoiceNumber,
+    }),
   )
 }
 
@@ -208,7 +277,10 @@ const addReturnRequest = (orderId: string) => {
   const order = orders.value.find((entry) => entry.id === orderId)
   if (!order || !returnReason.value || !returnAmount.value) return
 
-  const amount = Math.max(0, Math.min(returnAmount.value, order.amount - order.refundedAmount))
+  const amount = Math.max(
+    0,
+    Math.min(returnAmount.value, order.amount - order.refundedAmount),
+  )
   order.returns.push({
     id: `RET-${Math.random().toString(36).slice(2, 7)}`,
     reason: returnReason.value,
@@ -238,7 +310,10 @@ const approvePartialRefund = (orderId: string, returnId: string) => {
   if (!record || record.status === 'refunded') return
 
   record.status = 'refunded'
-  order.refundedAmount = Math.min(order.amount, order.refundedAmount + record.amount)
+  order.refundedAmount = Math.min(
+    order.amount,
+    order.refundedAmount + record.amount,
+  )
   order.status = 'refunded'
   addTimelineEvent(
     order,
@@ -264,7 +339,16 @@ const resetFilters = () => {
 
 const exportCsv = () => {
   const lines = [
-    ['id', 'customer', 'channel', 'status', 'created_at', 'amount', 'refunded_amount', 'invoice_number'],
+    [
+      'id',
+      'customer',
+      'channel',
+      'status',
+      'created_at',
+      'amount',
+      'refunded_amount',
+      'invoice_number',
+    ],
     ...filteredOrders.value.map((order) => [
       order.id,
       order.customer,
@@ -277,7 +361,11 @@ const exportCsv = () => {
     ]),
   ]
 
-  const csv = lines.map((line) => line.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(',')).join('\n')
+  const csv = lines
+    .map((line) =>
+      line.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(','),
+    )
+    .join('\n')
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
@@ -324,7 +412,13 @@ const onSelectOrder = (orderId: string) => {
           </template>
         </ShopCatalogFilters>
 
-        <v-alert v-if="apiError" type="error" variant="tonal" class="mb-4" closable>
+        <v-alert
+          v-if="apiError"
+          type="error"
+          variant="tonal"
+          class="mb-4"
+          closable
+        >
           {{ apiError }}
         </v-alert>
 

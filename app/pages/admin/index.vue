@@ -99,7 +99,9 @@ const postStats = computed(
             icon="mdi-post-outline"
             :value="postStats.total"
           >
-            <template #footer> Last 7 days: {{ postStats.last7Days }} </template>
+            <template #footer>
+              Last 7 days: {{ postStats.last7Days }}
+            </template>
           </StatsCard>
         </v-col>
       </v-row>

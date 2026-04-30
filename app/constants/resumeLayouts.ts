@@ -85,7 +85,16 @@ export const RESUME_LAYOUTS: ResumeLayoutDefinition[] = [
     structure: 'no-aside',
     pattern: 'A',
     objective: 'experience',
-    main: ['experience', 'education', 'project', 'skill', 'language', 'reference', 'certification', 'hobby'],
+    main: [
+      'experience',
+      'education',
+      'project',
+      'skill',
+      'language',
+      'reference',
+      'certification',
+      'hobby',
+    ],
     aside: [],
   }),
   createLayoutDefinition({
@@ -93,7 +102,16 @@ export const RESUME_LAYOUTS: ResumeLayoutDefinition[] = [
     structure: 'no-aside',
     pattern: 'B',
     objective: 'skills',
-    main: ['skill', 'language', 'certification', 'experience', 'project', 'education', 'reference', 'hobby'],
+    main: [
+      'skill',
+      'language',
+      'certification',
+      'experience',
+      'project',
+      'education',
+      'reference',
+      'hobby',
+    ],
     aside: [],
   }),
   createLayoutDefinition({
@@ -101,7 +119,16 @@ export const RESUME_LAYOUTS: ResumeLayoutDefinition[] = [
     structure: 'no-aside',
     pattern: 'C',
     objective: 'mixed-ats',
-    main: ['experience', 'skill', 'project', 'education', 'language', 'certification', 'reference', 'hobby'],
+    main: [
+      'experience',
+      'skill',
+      'project',
+      'education',
+      'language',
+      'certification',
+      'reference',
+      'hobby',
+    ],
     aside: [],
   }),
   createLayoutDefinition({
@@ -182,12 +209,15 @@ export function buildLayoutEntries(layout: ResumeLayoutDefinition) {
   const existingKeys = new Set(explicitEntries.map((entry) => entry.key))
   for (const rule of layout.fallbackRules) {
     if (existingKeys.has(rule.section)) continue
-    const targetZone = rule.whenMissing.find((zone) => zone === 'main' || zone === 'aside')
+    const targetZone = rule.whenMissing.find(
+      (zone) => zone === 'main' || zone === 'aside',
+    )
     if (!targetZone) continue
     explicitEntries.push({
       key: rule.section,
       region: targetZone,
-      order: explicitEntries.filter((entry) => entry.region === targetZone).length,
+      order: explicitEntries.filter((entry) => entry.region === targetZone)
+        .length,
       variant: RESUME_SECTION_REGISTRY[rule.section].defaultVariant,
     })
     existingKeys.add(rule.section)

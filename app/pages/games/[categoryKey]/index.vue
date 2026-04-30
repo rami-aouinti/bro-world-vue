@@ -72,7 +72,10 @@ const rightDrawerSelection = computed(() => [
     </AppPageDrawers>
 
     <v-container fluid>
-      <v-card variant="text" class="content-main postcard-gradient-card mb-3 pa-3">
+      <v-card
+        variant="text"
+        class="content-main postcard-gradient-card mb-3 pa-3"
+      >
         <template v-if="selectedCategory">
           <v-breadcrumbs :items="breadcrumbs" class="pa-0 mb-2">
             <template #item="{ item }">
@@ -108,11 +111,11 @@ const rightDrawerSelection = computed(() => [
             type="info"
             variant="tonal"
             :text="
-            tOrFallback(
-              'gamePage.catalog.emptySubCategories',
-              'No sub-categories available for now.',
-            )
-          "
+              tOrFallback(
+                'gamePage.catalog.emptySubCategories',
+                'No sub-categories available for now.',
+              )
+            "
           />
         </template>
       </v-card>

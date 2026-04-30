@@ -1,8 +1,8 @@
 const shallowTransition = (duration: number, delay = 0) => ({
   duration,
   delay,
-  easing: "ease-out",
-});
+  easing: 'ease-out',
+})
 
 export const useGameMotionPresets = () => {
   const presets = {
@@ -70,7 +70,7 @@ export const useGameMotionPresets = () => {
           scale: [1, 1.03, 1],
           transition: {
             duration: 560,
-            easing: "ease-in-out",
+            easing: 'ease-in-out',
           },
         },
       },
@@ -81,12 +81,12 @@ export const useGameMotionPresets = () => {
           x: [0, -4, 4, -3, 3, 0],
           transition: {
             duration: 440,
-            easing: "ease-in-out",
+            easing: 'ease-in-out',
           },
         },
       },
     },
-  };
+  }
 
   const context = {
     catalogCard: {
@@ -113,18 +113,18 @@ export const useGameMotionPresets = () => {
       ...presets.enter.soft,
       ...presets.feedback.win,
     },
-  };
+  }
 
   const flowTransitions = {
-    catalog: "game-flow-catalog",
-    modeSelection: "game-flow-mode-selection",
-    launchSession: "game-flow-launch-session",
-    inGame: "game-flow-in-game",
-  } as const;
+    catalog: 'game-flow-catalog',
+    modeSelection: 'game-flow-mode-selection',
+    launchSession: 'game-flow-launch-session',
+    inGame: 'game-flow-in-game',
+  } as const
 
   return {
     presets,
     context,
     flowTransitions,
-  };
-};
+  }
+}

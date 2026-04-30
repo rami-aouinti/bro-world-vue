@@ -68,7 +68,9 @@ describe('world stores caching / errors / invalidation telemetry', () => {
 
   it('tracks Learning cache hit/miss and invalidates analytics on progress update', async () => {
     const store = useWorldLearningStore()
-    fetchMock.mockResolvedValueOnce({ items: [{ id: 'course-1', title: 'Vue' }] })
+    fetchMock.mockResolvedValueOnce({
+      items: [{ id: 'course-1', title: 'Vue' }],
+    })
     await store.fetchCourses()
     await store.fetchCourses()
 
@@ -96,14 +98,18 @@ describe('world stores caching / errors / invalidation telemetry', () => {
     fetchMock.mockResolvedValueOnce({
       data: [{ id: 'sku-1', name: 'Hoodie', amount: 20, currencyCode: 'EUR' }],
       total: 1,
-      meta: { pagination: { page: 1, limit: 20, totalItems: 1, totalPages: 1 } },
+      meta: {
+        pagination: { page: 1, limit: 20, totalItems: 1, totalPages: 1 },
+      },
     })
 
     await store.fetchProducts()
     await store.fetchProducts()
 
     fetchMock.mockRejectedValue(new Error('shop offline'))
-    await expect(store.fetchCategories({ force: true })).rejects.toThrow('shop offline')
+    await expect(store.fetchCategories({ force: true })).rejects.toThrow(
+      'shop offline',
+    )
 
     const telemetry = getStoreTelemetrySnapshot()
     expect(telemetry.shop.cacheHits).toBe(1)

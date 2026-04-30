@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 type ToolbarVariantOption = {
   label?: string
   labelKey?: string
@@ -89,8 +88,11 @@ const emit = defineEmits<{
   ): void
 }>()
 
-
-function resolveOptionLabel(option: { label?: string; labelKey?: string; value?: string }) {
+function resolveOptionLabel(option: {
+  label?: string
+  labelKey?: string
+  value?: string
+}) {
   if (option.label) return option.label
   if (option.labelKey) return t(option.labelKey)
   return option.value || ''
@@ -217,7 +219,6 @@ const selectedSpacing = ref('balanced')
 const selectedCard = ref('none')
 const selectedDivider = ref('none')
 
-
 const lineStep = 4
 const minLineOffset = -24
 const maxLineOffset = 48
@@ -255,8 +256,14 @@ function applySectionStylePreview() {
     }
   }
 
-  sectionElement.style.setProperty('--rs-extra-line-offset', `${sectionLineOffset.value}px`)
-  sectionElement.style.setProperty('--rs-extra-margin-offset', `${sectionLineOffset.value}px`)
+  sectionElement.style.setProperty(
+    '--rs-extra-line-offset',
+    `${sectionLineOffset.value}px`,
+  )
+  sectionElement.style.setProperty(
+    '--rs-extra-margin-offset',
+    `${sectionLineOffset.value}px`,
+  )
 }
 
 function changeSectionLineOffset(direction: 'plus' | 'minus') {
@@ -284,7 +291,11 @@ function setPin(nextValue: boolean) {
 onMounted(() => {
   if (!import.meta.client) return
   pinEnabled.value = localStorage.getItem(sectionStorageKey.value) === 'true'
-  const storedLineOffset = Number(localStorage.getItem(`resume:section-toolbar:line-offset:${props.sectionKey}`) || '0')
+  const storedLineOffset = Number(
+    localStorage.getItem(
+      `resume:section-toolbar:line-offset:${props.sectionKey}`,
+    ) || '0',
+  )
   sectionLineOffset.value = Number.isFinite(storedLineOffset)
     ? Math.max(minLineOffset, Math.min(maxLineOffset, storedLineOffset))
     : 0
@@ -302,7 +313,10 @@ watch(
   <div
     ref="toolbarRef"
     class="section-toolbar"
-    :class="{ 'is-pinned': pinEnabled, 'is-menu-open': variantMenuOpen || contentStyleMenuOpen || styleMenuOpen }"
+    :class="{
+      'is-pinned': pinEnabled,
+      'is-menu-open': variantMenuOpen || contentStyleMenuOpen || styleMenuOpen,
+    }"
     role="toolbar"
     :aria-label="`Section actions ${props.sectionKey}`"
   >
@@ -337,7 +351,11 @@ watch(
           v-bind="menuProps"
         >
           <v-icon icon="mdi-view-dashboard-outline" />
-          <v-tooltip activator="parent" text="Change Layout" location="bottom" />
+          <v-tooltip
+            activator="parent"
+            text="Change Layout"
+            location="bottom"
+          />
         </v-btn>
       </template>
       <v-list class="toolbar-menu-list" density="compact">
@@ -347,7 +365,9 @@ watch(
           :active="option.value === props.currentVariant"
           @click="emit('change-variant', props.sectionKey, option.value)"
         >
-          <v-list-item-title>{{ resolveOptionLabel(option) }}</v-list-item-title>
+          <v-list-item-title>{{
+            resolveOptionLabel(option)
+          }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -369,7 +389,11 @@ watch(
           v-bind="menuProps"
         >
           <v-icon icon="mdi-format-list-bulleted-type" />
-          <v-tooltip activator="parent" text="Content style" location="bottom" />
+          <v-tooltip
+            activator="parent"
+            text="Content style"
+            location="bottom"
+          />
         </v-btn>
       </template>
       <v-list class="toolbar-menu-list" density="compact">
@@ -379,7 +403,9 @@ watch(
           :active="option.value === props.currentContentStyle"
           @click="emit('change-content-style', props.sectionKey, option.value)"
         >
-          <v-list-item-title>{{ resolveOptionLabel(option) }}</v-list-item-title>
+          <v-list-item-title>{{
+            resolveOptionLabel(option)
+          }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -402,7 +428,11 @@ watch(
           v-bind="menuProps"
         >
           <v-icon icon="mdi-brush-variant" />
-          <v-tooltip activator="parent" text="Section Style" location="bottom" />
+          <v-tooltip
+            activator="parent"
+            text="Section Style"
+            location="bottom"
+          />
         </v-btn>
       </template>
 
@@ -477,7 +507,6 @@ watch(
       </v-card>
     </v-menu>
 
-
     <v-tooltip v-if="enabledActions.has('line-minus')" text="Remove one line">
       <template #activator="{ props: tooltipProps }">
         <v-btn
@@ -527,10 +556,7 @@ watch(
       </template>
     </v-tooltip>
 
-    <v-tooltip
-      v-if="enabledActions.has('move-down')"
-      text="Move section down"
-    >
+    <v-tooltip v-if="enabledActions.has('move-down')" text="Move section down">
       <template #activator="{ props: tooltipProps }">
         <v-btn
           class="toolbar-btn"
@@ -547,10 +573,7 @@ watch(
       </template>
     </v-tooltip>
 
-    <v-tooltip
-      v-if="enabledActions.has('delete-item')"
-      text="Delete item"
-    >
+    <v-tooltip v-if="enabledActions.has('delete-item')" text="Delete item">
       <template #activator="{ props: tooltipProps }">
         <v-btn
           class="toolbar-btn"
@@ -626,12 +649,10 @@ watch(
     transform 0.16s ease;
 }
 
-
 :global(.resume-section-hoverable) {
   margin-bottom: var(--rs-extra-margin-offset, 0px);
   overflow: visible;
 }
-
 
 .toolbar-btn {
   min-width: 38px;
@@ -645,19 +666,23 @@ watch(
 }
 
 .toolbar-menu-list :deep(.v-list-item-title) {
-  color: var(--cv-toolbar-menu-text, var(--cv-on-page, var(--cv-secondary, rgb(241 245 249))));
+  color: var(
+    --cv-toolbar-menu-text,
+    var(--cv-on-page, var(--cv-secondary, rgb(241 245 249)))
+  );
 }
 
 :global(.resume-toolbar-menu) {
-  --cv-toolbar-menu-bg-fallback: color-mix(in srgb, rgb(15 23 42) 88%, rgb(2 6 23) 12%);
+  --cv-toolbar-menu-bg-fallback: color-mix(
+    in srgb,
+    rgb(15 23 42) 88%,
+    rgb(2 6 23) 12%
+  );
   --cv-toolbar-menu-text-fallback: rgb(241 245 249);
 }
 
 :global(.resume-toolbar-menu .toolbar-menu-list) {
-  background: var(
-    --cv-toolbar-menu-bg,
-    var(--cv-toolbar-menu-bg-fallback)
-  );
+  background: var(--cv-toolbar-menu-bg, var(--cv-toolbar-menu-bg-fallback));
 }
 
 :global(.resume-toolbar-menu .toolbar-menu-list .v-list-item-title) {

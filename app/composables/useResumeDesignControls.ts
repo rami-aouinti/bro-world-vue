@@ -10,7 +10,12 @@ import {
   textStyleVarsByValue,
 } from '~/constants/resumeDesign'
 
-export type { CoverPalette, ResumeColorTheme, ResumeRoundedOption, ResumeTextStyleOption } from '~/constants/resumeDesign'
+export type {
+  CoverPalette,
+  ResumeColorTheme,
+  ResumeRoundedOption,
+  ResumeTextStyleOption,
+} from '~/constants/resumeDesign'
 
 export const resumeColorThemes = RESUME_COLOR_THEMES
 export const resumePageBackgroundOptions = RESUME_PAGE_BACKGROUND_OPTIONS
@@ -23,14 +28,21 @@ export const useResumeDesignControls = () => {
   const roundedOptions = resumeRoundedOptions
   const textStyleOptions = resumeTextStyleOptions
 
-  const resolveTheme = (themeName: string) => colorThemes.find(theme => theme.name === themeName) ?? colorThemes[0]
-  const resolvePageBackground = (value: string) => pageBackgroundOptions.find(option => option.value === value) ?? pageBackgroundOptions[0]
+  const resolveTheme = (themeName: string) =>
+    colorThemes.find((theme) => theme.name === themeName) ?? colorThemes[0]
+  const resolvePageBackground = (value: string) =>
+    pageBackgroundOptions.find((option) => option.value === value) ??
+    pageBackgroundOptions[0]
 
   const isAllowedPageBackground = (hex: string, minimumLuminance = 0.88) => {
     const normalized = hex.replace('#', '')
-    const safeHex = normalized.length === 3
-      ? normalized.split('').map(char => `${char}${char}`).join('')
-      : normalized
+    const safeHex =
+      normalized.length === 3
+        ? normalized
+            .split('')
+            .map((char) => `${char}${char}`)
+            .join('')
+        : normalized
     if (!/^[\da-fA-F]{6}$/.test(safeHex)) return false
 
     const toLinear = (value: number) => {
@@ -46,7 +58,10 @@ export const useResumeDesignControls = () => {
     return luminance >= minimumLuminance
   }
 
-  const toCoverPalette = (themeName: string, background: PageBackgroundId = 'white'): CoverPalette => {
+  const toCoverPalette = (
+    themeName: string,
+    background: PageBackgroundId = 'white',
+  ): CoverPalette => {
     const theme = resolveTheme(themeName)
     const pageBackground = resolvePageBackground(background)
 

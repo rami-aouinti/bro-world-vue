@@ -1,4 +1,7 @@
-import type { AdminSectionKey, PageManagementNavKey } from '~/constants/adminManagement'
+import type {
+  AdminSectionKey,
+  PageManagementNavKey,
+} from '~/constants/adminManagement'
 
 type CacheEntry = {
   fetchedAt: number
@@ -13,16 +16,18 @@ type PageScopeOptions = {
 const ADMIN_TTL_MS = 60 * 1000
 
 export const useAdminManagementStore = defineStore('admin-management', () => {
-  const rowsBySection = ref<Record<AdminSectionKey, Record<string, unknown>[]>>({
-    users: [],
-    'user-groups': [],
-    roles: [],
-    'api-keys': [],
-    pages: [],
-    configurations: [],
-    platforms: [],
-    plugins: [],
-  })
+  const rowsBySection = ref<Record<AdminSectionKey, Record<string, unknown>[]>>(
+    {
+      users: [],
+      'user-groups': [],
+      roles: [],
+      'api-keys': [],
+      pages: [],
+      configurations: [],
+      platforms: [],
+      plugins: [],
+    },
+  )
 
   const countBySection = ref<Record<AdminSectionKey, number>>({
     users: 0,
@@ -119,7 +124,10 @@ export const useAdminManagementStore = defineStore('admin-management', () => {
     await $fetch(`/api/admin/management/${section}`, {
       method: 'POST',
       body: payload,
-      query: section === 'pages' && options?.pageType ? { pageType: options.pageType } : undefined,
+      query:
+        section === 'pages' && options?.pageType
+          ? { pageType: options.pageType }
+          : undefined,
     })
 
     invalidateSection(section)
@@ -135,17 +143,27 @@ export const useAdminManagementStore = defineStore('admin-management', () => {
     await $fetch(`/api/admin/management/${section}/${id}`, {
       method: 'PATCH',
       body: payload,
-      query: section === 'pages' && options?.pageType ? { pageType: options.pageType } : undefined,
+      query:
+        section === 'pages' && options?.pageType
+          ? { pageType: options.pageType }
+          : undefined,
     })
 
     invalidateSection(section)
     await fetchSection(section, { force: true, pageType: options?.pageType })
   }
 
-  async function deleteItem(section: AdminSectionKey, id: string, options?: PageScopeOptions) {
+  async function deleteItem(
+    section: AdminSectionKey,
+    id: string,
+    options?: PageScopeOptions,
+  ) {
     await $fetch(`/api/admin/management/${section}/${id}`, {
       method: 'DELETE',
-      query: section === 'pages' && options?.pageType ? { pageType: options.pageType } : undefined,
+      query:
+        section === 'pages' && options?.pageType
+          ? { pageType: options.pageType }
+          : undefined,
     })
 
     invalidateSection(section)

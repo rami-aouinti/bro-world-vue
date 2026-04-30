@@ -2,7 +2,13 @@ import type { ResumeSoclePreset } from '~/types/resumeSoclePreset'
 
 function hexToRgb(hex: string) {
   const normalized = hex.replace('#', '')
-  const safeHex = normalized.length === 3 ? normalized.split('').map((char) => `${char}${char}`).join('') : normalized
+  const safeHex =
+    normalized.length === 3
+      ? normalized
+          .split('')
+          .map((char) => `${char}${char}`)
+          .join('')
+      : normalized
   if (!/^[\da-fA-F]{6}$/.test(safeHex)) return null
   return {
     r: Number.parseInt(safeHex.slice(0, 2), 16),
@@ -16,7 +22,9 @@ function relativeLuminance(hex: string) {
   if (!rgb) return 1
   const channelToLinear = (value: number) => {
     const normalized = value / 255
-    return normalized <= 0.03928 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4
+    return normalized <= 0.03928
+      ? normalized / 12.92
+      : ((normalized + 0.055) / 1.055) ** 2.4
   }
   const r = channelToLinear(rgb.r)
   const g = channelToLinear(rgb.g)
@@ -34,9 +42,13 @@ function contrastRatio(colorA: string, colorB: string) {
 
 function bestAaTextColor(background: string, preferred: string, minimum = 4.5) {
   const candidates = [preferred, '#111827', '#0f172a', '#f8fafc', '#ffffff']
-  const passing = candidates.find((color) => contrastRatio(background, color) >= minimum)
+  const passing = candidates.find(
+    (color) => contrastRatio(background, color) >= minimum,
+  )
   if (passing) return passing
-  return candidates.sort((a, b) => contrastRatio(background, b) - contrastRatio(background, a))[0]
+  return candidates.sort(
+    (a, b) => contrastRatio(background, b) - contrastRatio(background, a),
+  )[0]
 }
 
 export const CV_SOCLE_PRESETS: ResumeSoclePreset[] = [
@@ -155,7 +167,7 @@ export const CV_SOCLE_PRESETS: ResumeSoclePreset[] = [
       photoBorderWidth: 4,
       photoPosition: 'right',
     },
-  }
+  },
 ]
 
 export function resolveSocleThemeTokens(preset: ResumeSoclePreset) {
@@ -179,5 +191,8 @@ export function resolveSocleThemeTokens(preset: ResumeSoclePreset) {
 }
 
 export function resolveSoclePresetById(presetId?: string | null) {
-  return CV_SOCLE_PRESETS.find((preset) => preset.id === presetId) ?? CV_SOCLE_PRESETS[0]
+  return (
+    CV_SOCLE_PRESETS.find((preset) => preset.id === presetId) ??
+    CV_SOCLE_PRESETS[0]
+  )
 }

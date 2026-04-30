@@ -6,15 +6,18 @@ definePageMeta({
 })
 
 const route = useRoute()
-await navigateTo({
-  path: '/inbox',
-  query: {
-    conversation: String(route.params.conversation || ''),
+await navigateTo(
+  {
+    path: '/inbox',
+    query: {
+      conversation: String(route.params.conversation || ''),
+    },
   },
-}, {
-  redirectCode: 301,
-  replace: true,
-})
+  {
+    redirectCode: 301,
+    replace: true,
+  },
+)
 </script>
 
 <template>

@@ -27,8 +27,12 @@ describe('resumeLanguageFlags', () => {
   })
 
   it('resolves image src from explicit image or country code', () => {
-    expect(resolveLanguageFlagSrc({ flag: 'https://cdn.example.com/fr.svg' })).toBe('https://cdn.example.com/fr.svg')
-    expect(resolveLanguageFlagSrc({ countryCode: 'FR' })).toBe('/images/flags/fr.svg')
+    expect(
+      resolveLanguageFlagSrc({ flag: 'https://cdn.example.com/fr.svg' }),
+    ).toBe('https://cdn.example.com/fr.svg')
+    expect(resolveLanguageFlagSrc({ countryCode: 'FR' })).toBe(
+      '/images/flags/fr.svg',
+    )
     expect(resolveLanguageFlagSrc({ countryCode: 'fra' })).toBe('')
     expect(resolveLanguageFlagSrc({ flag: '🇫🇷', countryCode: '' })).toBe('')
   })
@@ -40,9 +44,18 @@ describe('resumeLanguageFlags', () => {
   })
 
   it('resolves fallback to explicit non-image flag then emoji', () => {
-    expect(resolveLanguageFallback({ flag: '🇧🇪', countryCode: 'BE' })).toBe('🇧🇪')
-    expect(resolveLanguageFallback({ flag: ' Français ', countryCode: 'FR' })).toBe('Français')
-    expect(resolveLanguageFallback({ flag: 'https://cdn.example.com/fr.svg', countryCode: 'FR' })).toBe('🇫🇷')
+    expect(resolveLanguageFallback({ flag: '🇧🇪', countryCode: 'BE' })).toBe(
+      '🇧🇪',
+    )
+    expect(
+      resolveLanguageFallback({ flag: ' Français ', countryCode: 'FR' }),
+    ).toBe('Français')
+    expect(
+      resolveLanguageFallback({
+        flag: 'https://cdn.example.com/fr.svg',
+        countryCode: 'FR',
+      }),
+    ).toBe('🇫🇷')
     expect(resolveLanguageFallback({ countryCode: 'zz' })).toBe('🇿🇿')
     expect(resolveLanguageFallback({ countryCode: 'x' })).toBe('')
   })

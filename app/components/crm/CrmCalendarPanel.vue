@@ -59,8 +59,8 @@ const isEditing = computed(() => Boolean(selectedEvent.value))
 const upcomingEvents = computed(() => {
   const now = Date.now()
   return [...events.value]
-    .filter(event => !event.isCancelled)
-    .filter(event => new Date(event.startAt).getTime() >= now)
+    .filter((event) => !event.isCancelled)
+    .filter((event) => new Date(event.startAt).getTime() >= now)
     .sort((a, b) => a.startAt.localeCompare(b.startAt))
     .slice(0, 3)
 })
@@ -82,8 +82,8 @@ const calendarOptions = computed(() => ({
   selectable: true,
   editable: true,
   events: events.value
-    .filter(event => !event.isCancelled)
-    .map(event => ({
+    .filter((event) => !event.isCancelled)
+    .map((event) => ({
       id: event.id,
       title: event.title,
       start: event.startAt,
@@ -99,7 +99,9 @@ const calendarOptions = computed(() => ({
   select: (selectionInfo: { startStr: string; endStr: string }) => {
     openCreateDialog(selectionInfo.startStr, selectionInfo.endStr)
   },
-  eventClick: (clickInfo: { event: { extendedProps: { raw?: CrmCalendarEvent } } }) => {
+  eventClick: (clickInfo: {
+    event: { extendedProps: { raw?: CrmCalendarEvent } }
+  }) => {
     const event = clickInfo.event.extendedProps.raw
     if (event) openEditDialog(event)
   },
@@ -160,18 +162,24 @@ async function loadCalendarEvents() {
   errorMessage.value = ''
 
   try {
-    const response = await privateApi.request<CrmCalendarResponse>('/api/calendar/events/employee-assigned', {
-      method: 'GET',
-      params: {
-        applicationSlug: crmApplicationSlug.value,
+    const response = await privateApi.request<CrmCalendarResponse>(
+      '/api/calendar/events/employee-assigned',
+      {
+        method: 'GET',
+        params: {
+          applicationSlug: crmApplicationSlug.value,
+        },
+        body: {
+          applicationSlug: crmApplicationSlug.value,
+        },
       },
-      body: {
-        applicationSlug: crmApplicationSlug.value,
-      },
-    })
+    )
     events.value = response.items ?? []
   } catch (error) {
-    errorMessage.value = error instanceof Error ? error.message : t('pages.calendar.notifications.loadError')
+    errorMessage.value =
+      error instanceof Error
+        ? error.message
+        : t('pages.calendar.notifications.loadError')
   } finally {
     isLoading.value = false
   }
@@ -186,10 +194,13 @@ async function saveEvent() {
     const payload = buildPayload()
 
     if (selectedEvent.value) {
-      await privateApi.request(`/api/calendar/private/events/${selectedEvent.value.id}`, {
-        method: 'PATCH',
-        body: payload,
-      })
+      await privateApi.request(
+        `/api/calendar/private/events/${selectedEvent.value.id}`,
+        {
+          method: 'PATCH',
+          body: payload,
+        },
+      )
     } else {
       await privateApi.request('/api/calendar/private/events', {
         method: 'POST',
@@ -212,9 +223,12 @@ async function deleteEvent() {
   isSaving.value = true
 
   try {
-    await privateApi.request(`/api/calendar/private/events/${selectedEvent.value.id}`, {
-      method: 'DELETE',
-    })
+    await privateApi.request(
+      `/api/calendar/private/events/${selectedEvent.value.id}`,
+      {
+        method: 'DELETE',
+      },
+    )
 
     dialogOpen.value = false
     await loadCalendarEvents()
@@ -234,16 +248,20 @@ async function onEventDrop(dropInfo: {
   }
   revert: () => void
 }) {
-  const movedEvent = events.value.find(event => event.id === dropInfo.event.id)
+  const movedEvent = events.value.find(
+    (event) => event.id === dropInfo.event.id,
+  )
   if (!movedEvent || !dropInfo.event.start) {
     dropInfo.revert()
     return
   }
 
   const previousDurationMs =
-    new Date(movedEvent.endAt).getTime() - new Date(movedEvent.startAt).getTime()
+    new Date(movedEvent.endAt).getTime() -
+    new Date(movedEvent.startAt).getTime()
   const fallbackEnd = new Date(
-    dropInfo.event.start.getTime() + (previousDurationMs > 0 ? previousDurationMs : 60 * 60 * 1000),
+    dropInfo.event.start.getTime() +
+      (previousDurationMs > 0 ? previousDurationMs : 60 * 60 * 1000),
   )
 
   const payload: EventMutationPayload = {
@@ -253,7 +271,8 @@ async function onEventDrop(dropInfo: {
     endAt: (dropInfo.event.end || fallbackEnd).toISOString(),
     isAllDay: dropInfo.event.allDay,
     location: movedEvent.location || null,
-    timezone: movedEvent.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+    timezone:
+      movedEvent.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
   }
 
   try {
@@ -285,8 +304,14 @@ onMounted(() => {
       >
         {{ t('pages.calendar.addEvent') }}
       </v-btn>
-      <v-card-title class="px-0 pt-0">{{ t('pages.calendar.upcomingTitle') }}</v-card-title>
-      <v-list v-if="upcomingEvents.length" density="comfortable" class="bg-transparent">
+      <v-card-title class="px-0 pt-0">{{
+        t('pages.calendar.upcomingTitle')
+      }}</v-card-title>
+      <v-list
+        v-if="upcomingEvents.length"
+        density="comfortable"
+        class="bg-transparent"
+      >
         <v-list-item
           v-for="event in upcomingEvents"
           :key="event.id"
@@ -329,7 +354,11 @@ onMounted(() => {
 
   <AppModal
     v-model="dialogOpen"
-    :title="isEditing ? t('pages.calendar.editDialogTitle') : t('pages.calendar.createDialogTitle')"
+    :title="
+      isEditing
+        ? t('pages.calendar.editDialogTitle')
+        : t('pages.calendar.createDialogTitle')
+    "
   >
     <v-text-field
       v-model="form.title"

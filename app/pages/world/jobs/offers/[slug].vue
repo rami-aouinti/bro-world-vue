@@ -102,16 +102,13 @@ async function createResume(): Promise<string> {
     return response.id
   }
 
-  const response = await $fetch<{ id: string }>(
-    scopedRecruitPath('/resumes'),
-    {
-      method: 'POST',
-      body: {
-        experiences: toSections(manualResume.experiences),
-        skills: toSections(manualResume.skills),
-      },
+  const response = await $fetch<{ id: string }>(scopedRecruitPath('/resumes'), {
+    method: 'POST',
+    body: {
+      experiences: toSections(manualResume.experiences),
+      skills: toSections(manualResume.skills),
     },
-  )
+  })
 
   return response.id
 }

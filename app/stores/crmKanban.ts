@@ -69,7 +69,10 @@ function mapAssignees(assignees: unknown): KanbanAssignee[] {
   if (!Array.isArray(assignees)) return []
 
   return assignees
-    .filter((entry): entry is Record<string, unknown> => !!entry && typeof entry === 'object')
+    .filter(
+      (entry): entry is Record<string, unknown> =>
+        !!entry && typeof entry === 'object',
+    )
     .map((entry) => ({
       id: String(entry.id ?? ''),
       username: typeof entry.username === 'string' ? entry.username : null,
@@ -85,10 +88,7 @@ function flattenSubtasks(payload: CrmTasksBySprintResponse): KanbanCardItem[] {
 
   for (const bucket of payload.items ?? []) {
     for (const task of bucket.tasks ?? []) {
-      const nestedItems = [
-        ...(task.subTasks ?? []),
-        ...(task.children ?? []),
-      ]
+      const nestedItems = [...(task.subTasks ?? []), ...(task.children ?? [])]
 
       if (!nestedItems.length) {
         cards.push({
@@ -161,7 +161,9 @@ export const useCrmKanbanStore = defineStore('crm-kanban', () => {
   })
 
   async function fetchSprints() {
-    const response = await $fetch<ApiListResponse<CrmSprintItem>>('/api/crm/general/sprints')
+    const response = await $fetch<ApiListResponse<CrmSprintItem>>(
+      '/api/crm/general/sprints',
+    )
     sprints.value = response.items ?? []
     return sprints.value
   }
@@ -175,17 +177,21 @@ export const useCrmKanbanStore = defineStore('crm-kanban', () => {
       return
     }
 
-    const response = await $fetch<CrmTasksBySprintResponse>('/api/crm/general/tasks/sprints/by-latest-sprint')
+    const response = await $fetch<CrmTasksBySprintResponse>(
+      '/api/crm/general/tasks/sprints/by-latest-sprint',
+    )
     const flattened = flattenSubtasks(response)
     cards.value = flattened
-    currentSprintMeta.value = response.meta?.sprint ?? response.items?.[0]?.sprint ?? null
+    currentSprintMeta.value =
+      response.meta?.sprint ?? response.items?.[0]?.sprint ?? null
     selectedSprintId.value = currentSprintMeta.value?.id ?? null
     sprintCardsCache.value[cacheKey] = flattened
     sprintMetaCache.value[cacheKey] = currentSprintMeta.value
 
     if (currentSprintMeta.value?.id) {
       sprintCardsCache.value[currentSprintMeta.value.id] = flattened
-      sprintMetaCache.value[currentSprintMeta.value.id] = currentSprintMeta.value
+      sprintMetaCache.value[currentSprintMeta.value.id] =
+        currentSprintMeta.value
     }
   }
 
@@ -197,7 +203,9 @@ export const useCrmKanbanStore = defineStore('crm-kanban', () => {
       return
     }
 
-    const response = await $fetch<CrmTasksBySprintResponse>(`/api/crm/general/tasks/sprints/by-latest-sprint/${encodeURIComponent(sprintId)}`)
+    const response = await $fetch<CrmTasksBySprintResponse>(
+      `/api/crm/general/tasks/sprints/by-latest-sprint/${encodeURIComponent(sprintId)}`,
+    )
 
     const flattened = flattenSubtasks(response)
     cards.value = flattened
@@ -219,7 +227,8 @@ export const useCrmKanbanStore = defineStore('crm-kanban', () => {
         await fetchCardsBySprint(sprints.value[0].id)
       }
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Failed to load CRM kanban data'
+      error.value =
+        err instanceof Error ? err.message : 'Failed to load CRM kanban data'
     } finally {
       pending.value = false
     }
@@ -237,7 +246,8 @@ export const useCrmKanbanStore = defineStore('crm-kanban', () => {
 
       await fetchCardsBySprint(sprintId)
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Failed to load sprint cards'
+      error.value =
+        err instanceof Error ? err.message : 'Failed to load sprint cards'
     } finally {
       pending.value = false
     }
@@ -270,7 +280,9 @@ export const useCrmKanbanStore = defineStore('crm-kanban', () => {
       return projectCache.value[projectId]
     }
 
-    const project = await $fetch<CrmProjectItem>(`/api/crm/general/projects/${projectId}`)
+    const project = await $fetch<CrmProjectItem>(
+      `/api/crm/general/projects/${projectId}`,
+    )
     projectCache.value[projectId] = project
     return project
   }
@@ -290,7 +302,9 @@ export const useCrmKanbanStore = defineStore('crm-kanban', () => {
       return taskRequestCache.value[taskRequestId]
     }
 
-    const taskRequest = await $fetch<CrmTaskRequestItem>(`/api/crm/general/task-requests/${taskRequestId}`)
+    const taskRequest = await $fetch<CrmTaskRequestItem>(
+      `/api/crm/general/task-requests/${taskRequestId}`,
+    )
     taskRequestCache.value[taskRequestId] = taskRequest
     return taskRequest
   }
@@ -300,7 +314,9 @@ export const useCrmKanbanStore = defineStore('crm-kanban', () => {
       return sprintCache.value[sprintId]
     }
 
-    const sprint = await $fetch<CrmSprintItem>(`/api/crm/general/sprints/${sprintId}`)
+    const sprint = await $fetch<CrmSprintItem>(
+      `/api/crm/general/sprints/${sprintId}`,
+    )
     sprintCache.value[sprintId] = sprint
     return sprint
   }

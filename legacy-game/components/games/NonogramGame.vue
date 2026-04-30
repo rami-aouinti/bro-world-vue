@@ -1,202 +1,202 @@
 <script setup lang="ts">
-import { computed, ref, watch, watchEffect } from "vue";
-import type { GameAsidePanelState } from "./types";
+import { computed, ref, watch, watchEffect } from 'vue'
+import type { GameAsidePanelState } from './types'
 import {
   NONOGRAM_PUZZLES,
   type NonogramDifficulty,
   type NonogramPuzzle,
-} from "~/data/games/nonogram-puzzles";
-const { t } = useI18n();
+} from '~/data/games/nonogram-puzzles'
+const { t } = useI18n()
 
 const props = defineProps<{
-  selectedPlayMode: "ai";
-}>();
+  selectedPlayMode: 'ai'
+}>()
 const emit = defineEmits<{
-  (event: "panel-state", payload: GameAsidePanelState): void;
-  (event: "game-finished", payload: { result: "win" | "lose" }): void;
-}>();
+  (event: 'panel-state', payload: GameAsidePanelState): void
+  (event: 'game-finished', payload: { result: 'win' | 'lose' }): void
+}>()
 
-type PlayerCell = "empty" | "filled" | "marked";
+type PlayerCell = 'empty' | 'filled' | 'marked'
 
-const difficulty = ref<NonogramDifficulty>("small");
-const difficultyLevels: NonogramDifficulty[] = ["small", "medium", "large"];
-const puzzleIndex = ref(0);
-const victory = ref(false);
-const gameFinishedEmitted = ref(false);
+const difficulty = ref<NonogramDifficulty>('small')
+const difficultyLevels: NonogramDifficulty[] = ['small', 'medium', 'large']
+const puzzleIndex = ref(0)
+const victory = ref(false)
+const gameFinishedEmitted = ref(false)
 
 const currentPuzzle = computed<NonogramPuzzle>(
   () => NONOGRAM_PUZZLES[difficulty.value][puzzleIndex.value],
-);
+)
 
 const createPlayerGrid = (puzzle: NonogramPuzzle) =>
-  puzzle.grid.map((row) => row.map((): PlayerCell => "empty"));
+  puzzle.grid.map((row) => row.map((): PlayerCell => 'empty'))
 
-const playerGrid = ref<PlayerCell[][]>(createPlayerGrid(currentPuzzle.value));
+const playerGrid = ref<PlayerCell[][]>(createPlayerGrid(currentPuzzle.value))
 
 const gridSizeClass = computed(() => {
-  if (difficulty.value === "small") return "grid-small";
-  if (difficulty.value === "medium") return "grid-medium";
-  return "grid-large";
-});
+  if (difficulty.value === 'small') return 'grid-small'
+  if (difficulty.value === 'medium') return 'grid-medium'
+  return 'grid-large'
+})
 
 const sequenceFromLine = (line: number[]) => {
-  const sequences: number[] = [];
-  let count = 0;
+  const sequences: number[] = []
+  let count = 0
 
   for (const value of line) {
     if (value === 1) {
-      count += 1;
+      count += 1
     } else if (count > 0) {
-      sequences.push(count);
-      count = 0;
+      sequences.push(count)
+      count = 0
     }
   }
 
   if (count > 0) {
-    sequences.push(count);
+    sequences.push(count)
   }
 
-  return sequences.length ? sequences : [0];
-};
+  return sequences.length ? sequences : [0]
+}
 
 const rowHints = computed(() =>
   currentPuzzle.value.grid.map((row) => sequenceFromLine(row)),
-);
+)
 
 const columnHints = computed(() => {
-  const width = currentPuzzle.value.grid[0]?.length ?? 0;
-  const columns: number[][] = [];
+  const width = currentPuzzle.value.grid[0]?.length ?? 0
+  const columns: number[][] = []
 
   for (let col = 0; col < width; col += 1) {
-    const column = currentPuzzle.value.grid.map((row) => row[col]);
-    columns.push(sequenceFromLine(column));
+    const column = currentPuzzle.value.grid.map((row) => row[col])
+    columns.push(sequenceFromLine(column))
   }
 
-  return columns;
-});
+  return columns
+})
 
 const maxColumnHintDepth = computed(() =>
   Math.max(...columnHints.value.map((hints) => hints.length), 1),
-);
+)
 
 const selectDifficulty = (level: NonogramDifficulty) => {
-  difficulty.value = level;
-  puzzleIndex.value = 0;
-};
+  difficulty.value = level
+  puzzleIndex.value = 0
+}
 
 const nextPuzzle = () => {
-  const puzzles = NONOGRAM_PUZZLES[difficulty.value];
-  puzzleIndex.value = (puzzleIndex.value + 1) % puzzles.length;
-};
+  const puzzles = NONOGRAM_PUZZLES[difficulty.value]
+  puzzleIndex.value = (puzzleIndex.value + 1) % puzzles.length
+}
 
 const resetGrid = () => {
-  playerGrid.value = createPlayerGrid(currentPuzzle.value);
-  victory.value = false;
-  gameFinishedEmitted.value = false;
-};
+  playerGrid.value = createPlayerGrid(currentPuzzle.value)
+  victory.value = false
+  gameFinishedEmitted.value = false
+}
 
 const checkVictory = () => {
   const solved = currentPuzzle.value.grid.every((row, rowIndex) =>
     row.every((value, colIndex) => {
-      const cell = playerGrid.value[rowIndex][colIndex];
+      const cell = playerGrid.value[rowIndex][colIndex]
 
       if (value === 1) {
-        return cell === "filled";
+        return cell === 'filled'
       }
 
-      return cell !== "filled";
+      return cell !== 'filled'
     }),
-  );
+  )
 
-  victory.value = solved;
-};
+  victory.value = solved
+}
 
 const fillCell = (row: number, col: number) => {
-  const current = playerGrid.value[row][col];
-  playerGrid.value[row][col] = current === "filled" ? "empty" : "filled";
-  checkVictory();
-};
+  const current = playerGrid.value[row][col]
+  playerGrid.value[row][col] = current === 'filled' ? 'empty' : 'filled'
+  checkVictory()
+}
 
 const markCellAsEmpty = (row: number, col: number) => {
-  const current = playerGrid.value[row][col];
-  playerGrid.value[row][col] = current === "marked" ? "empty" : "marked";
-  checkVictory();
-};
+  const current = playerGrid.value[row][col]
+  playerGrid.value[row][col] = current === 'marked' ? 'empty' : 'marked'
+  checkVictory()
+}
 
 watch(currentPuzzle, () => {
-  resetGrid();
-});
+  resetGrid()
+})
 
 watch(victory, (hasWon) => {
   if (!hasWon || gameFinishedEmitted.value) {
-    return;
+    return
   }
 
-  gameFinishedEmitted.value = true;
-  emit("game-finished", { result: "win" });
-});
+  gameFinishedEmitted.value = true
+  emit('game-finished', { result: 'win' })
+})
 
 const panelState = computed<GameAsidePanelState>(() => ({
-  gameKey: "nonogram",
-  title: t("gameComponents.nonogram.puzzle"),
+  gameKey: 'nonogram',
+  title: t('gameComponents.nonogram.puzzle'),
   phase: t(`common.size.${difficulty.value}`),
   turnLabel: props.selectedPlayMode.toUpperCase(),
   status: victory.value
-    ? t("gameComponents.nonogram.victory")
-    : t("gameComponents.nonogram.instructions"),
+    ? t('gameComponents.nonogram.victory')
+    : t('gameComponents.nonogram.instructions'),
   highlights: [
-    `${t("gameComponents.nonogram.puzzle")}: ${currentPuzzle.value.name}`,
-    `${t("gameComponents.nonogram.mode")} ${props.selectedPlayMode.toUpperCase()}`,
+    `${t('gameComponents.nonogram.puzzle')}: ${currentPuzzle.value.name}`,
+    `${t('gameComponents.nonogram.mode')} ${props.selectedPlayMode.toUpperCase()}`,
   ],
   kpis: [
     {
-      id: "width",
-      label: "Cols",
+      id: 'width',
+      label: 'Cols',
       value: currentPuzzle.value.grid[0]?.length ?? 0,
-      variant: "outlined",
+      variant: 'outlined',
     },
     {
-      id: "height",
-      label: "Rows",
+      id: 'height',
+      label: 'Rows',
       value: currentPuzzle.value.grid.length,
-      variant: "outlined",
+      variant: 'outlined',
     },
   ],
   actions: [
-    { id: "next", label: t("gameComponents.nonogram.actions.nextPuzzle") },
-    { id: "reset", label: t("gameComponents.nonogram.actions.reset") },
+    { id: 'next', label: t('gameComponents.nonogram.actions.nextPuzzle') },
+    { id: 'reset', label: t('gameComponents.nonogram.actions.reset') },
   ],
-}));
+}))
 
 watchEffect(() => {
-  emit("panel-state", panelState.value);
-});
+  emit('panel-state', panelState.value)
+})
 
 const handleAsideAction = (actionId: string) => {
-  if (actionId === "next") {
-    nextPuzzle();
-    return;
+  if (actionId === 'next') {
+    nextPuzzle()
+    return
   }
 
-  if (actionId === "reset") {
-    resetGrid();
+  if (actionId === 'reset') {
+    resetGrid()
   }
-};
+}
 
 defineExpose({
   handleAsideAction,
-});
+})
 </script>
 
 <template>
   <v-card class="nonogram pa-4" variant="outlined">
     <div class="d-flex flex-wrap align-center ga-2 mb-4">
       <v-chip prepend-icon="mdi-robot" color="info" variant="tonal"
-        >{{ t("gameComponents.nonogram.mode") }}
+        >{{ t('gameComponents.nonogram.mode') }}
         {{ props.selectedPlayMode.toUpperCase() }}</v-chip
       >
       <v-chip color="primary" variant="outlined"
-        >{{ t("gameComponents.nonogram.puzzle") }}:
+        >{{ t('gameComponents.nonogram.puzzle') }}:
         {{ currentPuzzle.name }}</v-chip
       >
       <v-spacer />
@@ -219,7 +219,7 @@ defineExpose({
           :key="`row-hint-${rowIndex}`"
           class="hint-line"
         >
-          {{ hints.join(" ") }}
+          {{ hints.join(' ') }}
         </div>
       </div>
 
@@ -239,7 +239,7 @@ defineExpose({
               class="hint-column-item"
             >
               {{
-                hints[hints.length - maxColumnHintDepth + hintIndex - 1] ?? ""
+                hints[hints.length - maxColumnHintDepth + hintIndex - 1] ?? ''
               }}
             </span>
           </div>
@@ -274,11 +274,11 @@ defineExpose({
     </div>
 
     <v-alert v-if="victory" type="success" variant="tonal" class="mt-4">
-      {{ t("gameComponents.nonogram.victory") }}
+      {{ t('gameComponents.nonogram.victory') }}
     </v-alert>
 
     <p class="text-caption mt-3 mb-0">
-      {{ t("gameComponents.nonogram.instructions") }}
+      {{ t('gameComponents.nonogram.instructions') }}
     </p>
   </v-card>
 </template>

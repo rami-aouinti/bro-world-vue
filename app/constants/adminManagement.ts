@@ -32,7 +32,8 @@ export const PAGE_MANAGEMENT_NAV_ITEMS = [
   { key: 'contact', title: 'Contact' },
 ] as const
 
-export type PageManagementNavKey = (typeof PAGE_MANAGEMENT_NAV_ITEMS)[number]['key']
+export type PageManagementNavKey =
+  (typeof PAGE_MANAGEMENT_NAV_ITEMS)[number]['key']
 
 export const ADMIN_SECTIONS: AdminSectionConfig[] = [
   {

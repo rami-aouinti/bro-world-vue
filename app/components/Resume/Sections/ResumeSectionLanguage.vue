@@ -5,7 +5,10 @@ import {
   levelToText,
 } from '~/utils/resumeLanguageLevel'
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
-import { resolveLanguageFallback, resolveLanguageFlagSrc } from '~/utils/resumeLanguageFlags'
+import {
+  resolveLanguageFallback,
+  resolveLanguageFlagSrc,
+} from '~/utils/resumeLanguageFlags'
 import { getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
 import type { ResumeSectionVariant } from '~/types/resumeSectionVariants'
 
@@ -135,7 +138,8 @@ function removeLanguage(index: number) {
                 (event.target as HTMLElement).innerText,
               )
           "
-          >{{ language.name }}</span>
+          >{{ language.name }}</span
+        >
         <small class="ms-2">{{ levelToText(language.level) }}</small>
         <v-btn
           v-if="editable"
@@ -169,7 +173,15 @@ function removeLanguage(index: number) {
           "
           >{{ language.name }}</span
         >
-        <v-rating :model-value="levelToStars(language.level)" readonly length="5" density="compact" class="ms-auto" :color="String(themeTokens['--cv-accent'] || 'primary')" size="16" />
+        <v-rating
+          :model-value="levelToStars(language.level)"
+          readonly
+          length="5"
+          density="compact"
+          class="ms-auto"
+          :color="String(themeTokens['--cv-accent'] || 'primary')"
+          size="16"
+        />
         <v-btn
           v-if="editable"
           class="resume-item-delete"
@@ -200,8 +212,14 @@ function removeLanguage(index: number) {
                   (event.target as HTMLElement).innerText,
                 )
             "
-            >{{ language.name }}</span>
-          <v-progress-circular :model-value="levelToPercent(language.level)" size="24" width="3" :color="String(themeTokens['--cv-accent'] || 'primary')">
+            >{{ language.name }}</span
+          >
+          <v-progress-circular
+            :model-value="levelToPercent(language.level)"
+            size="24"
+            width="3"
+            :color="String(themeTokens['--cv-accent'] || 'primary')"
+          >
             <small>{{ levelToPercent(language.level) }}%</small>
           </v-progress-circular>
         </div>
@@ -236,10 +254,16 @@ function removeLanguage(index: number) {
                   (event.target as HTMLElement).innerText,
                 )
             "
-            >{{ language.name }}</span>
+            >{{ language.name }}</span
+          >
           <small>{{ levelToPercent(language.level) }}%</small>
         </div>
-        <v-progress-linear :model-value="levelToPercent(language.level)" height="8" rounded :color="String(themeTokens['--cv-accent'] || 'primary')" />
+        <v-progress-linear
+          :model-value="levelToPercent(language.level)"
+          height="8"
+          rounded
+          :color="String(themeTokens['--cv-accent'] || 'primary')"
+        />
       </li>
     </ul>
     <ul v-else class="bars">
@@ -284,7 +308,16 @@ function removeLanguage(index: number) {
               >{{ language.name }}</span
             >
           </div>
-          <v-rating :model-value="levelToStars(language.level)" readonly length="5" density="compact" class="ms-auto" active-color="warning" color="grey-lighten-1" size="14" />
+          <v-rating
+            :model-value="levelToStars(language.level)"
+            readonly
+            length="5"
+            density="compact"
+            class="ms-auto"
+            active-color="warning"
+            color="grey-lighten-1"
+            size="14"
+          />
         </div>
         <v-btn
           v-if="editable"
@@ -313,7 +346,9 @@ function removeLanguage(index: number) {
 
   position: relative;
   border-bottom: var(--rs-section-separator, none);
-  padding-bottom: calc(var(--rs-section-padding-bottom, 0px) + var(--rs-extra-line-offset, 0px));
+  padding-bottom: calc(
+    var(--rs-section-padding-bottom, 0px) + var(--rs-extra-line-offset, 0px)
+  );
 }
 .cv-heading-section {
   display: inline-flex;
@@ -398,5 +433,11 @@ function removeLanguage(index: number) {
 </style>
 
 <style scoped>
-.section-icon { display:inline-flex; align-items:center; justify-content:center; color: var(--resume-section-icon-color, var(--cv-accent)); margin-right: 6px; }
+.section-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--resume-section-icon-color, var(--cv-accent));
+  margin-right: 6px;
+}
 </style>

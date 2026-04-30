@@ -35,7 +35,9 @@ export type ResumeApiItem = {
 }
 
 export async function listMyResumes() {
-  return privateApi.request<ResumeApiItem[]>('/api/v1/recruit/private/me/resumes')
+  return privateApi.request<ResumeApiItem[]>(
+    '/api/v1/recruit/private/me/resumes',
+  )
 }
 
 export async function createResume(payload: ResumeApiPayload) {
@@ -45,15 +47,24 @@ export async function createResume(payload: ResumeApiPayload) {
   })
 }
 
-export async function updateResume(resumeId: string, payload: ResumeApiPayload) {
-  return privateApi.request(`/api/v1/recruit/private/me/resumes/${encodeURIComponent(resumeId)}`, {
-    method: 'PATCH',
-    body: payload,
-  })
+export async function updateResume(
+  resumeId: string,
+  payload: ResumeApiPayload,
+) {
+  return privateApi.request(
+    `/api/v1/recruit/private/me/resumes/${encodeURIComponent(resumeId)}`,
+    {
+      method: 'PATCH',
+      body: payload,
+    },
+  )
 }
 
 export async function deleteResume(resumeId: string) {
-  return privateApi.request(`/api/v1/recruit/private/me/resumes/${encodeURIComponent(resumeId)}`, {
-    method: 'DELETE',
-  })
+  return privateApi.request(
+    `/api/v1/recruit/private/me/resumes/${encodeURIComponent(resumeId)}`,
+    {
+      method: 'DELETE',
+    },
+  )
 }

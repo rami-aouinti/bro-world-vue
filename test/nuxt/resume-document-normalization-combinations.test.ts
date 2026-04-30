@@ -9,18 +9,31 @@ describe('resume document normalization combinations', () => {
 
     for (const layout of RESUME_LAYOUTS) {
       for (const skinId of RESUME_SKIN_IDS) {
-        const model = normalizeModel({
-          presetId: 'socle-classic',
-          sectionOrder: [
-            { key: 'experience', region: 'main', order: 0, variant: 'classic' },
-            { key: 'education', region: 'main', order: 1, variant: 'classic' },
-            { key: 'project', region: 'main', order: 2, variant: 'classic' },
-          ],
-          style: {
-            layoutMode: layout.structure,
-            palette: skinId,
+        const model = normalizeModel(
+          {
+            presetId: 'socle-classic',
+            sectionOrder: [
+              {
+                key: 'experience',
+                region: 'main',
+                order: 0,
+                variant: 'classic',
+              },
+              {
+                key: 'education',
+                region: 'main',
+                order: 1,
+                variant: 'classic',
+              },
+              { key: 'project', region: 'main', order: 2, variant: 'classic' },
+            ],
+            style: {
+              layoutMode: layout.structure,
+              palette: skinId,
+            },
           },
-        }, 'socle-classic')
+          'socle-classic',
+        )
 
         expect(model.style.layoutMode).toBe(layout.structure)
         expect(model.sectionOrder).toHaveLength(8)

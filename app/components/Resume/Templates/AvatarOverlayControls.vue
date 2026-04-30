@@ -15,7 +15,10 @@ const props = defineProps<{
 const emit = defineEmits<{
   (event: 'select', value: string): void
   (event: 'upload' | 'remove'): void
-  (event: 'update:photo-size' | 'update:photo-border-width', value: number): void
+  (
+    event: 'update:photo-size' | 'update:photo-border-width',
+    value: number,
+  ): void
 }>()
 
 const { t } = useI18n()
@@ -23,7 +26,10 @@ const isMenuOpen = ref(false)
 </script>
 
 <template>
-  <div class="avatar-overlay-controls" :class="{ 'avatar-overlay-controls--menu-open': isMenuOpen }">
+  <div
+    class="avatar-overlay-controls"
+    :class="{ 'avatar-overlay-controls--menu-open': isMenuOpen }"
+  >
     <v-menu
       v-model="isMenuOpen"
       location="bottom end"
@@ -64,14 +70,18 @@ const isMenuOpen = ref(false)
           </div>
 
           <div class="photo-menu__section">
-            <p class="photo-menu__label">{{ t('resumeBuilder.create.options.avatarMenu.avatarShape') }}</p>
+            <p class="photo-menu__label">
+              {{ t('resumeBuilder.create.options.avatarMenu.avatarShape') }}
+            </p>
             <div class="photo-shape-picker">
               <v-btn
                 v-for="shape in props.options"
                 :key="`preview-photo-shape-${shape.value}`"
                 size="x-small"
                 variant="tonal"
-                :color="props.selectedValue === shape.value ? 'primary' : undefined"
+                :color="
+                  props.selectedValue === shape.value ? 'primary' : undefined
+                "
                 @click="emit('select', shape.value)"
               >
                 {{ shape.icon ?? shape.label }}
@@ -80,7 +90,9 @@ const isMenuOpen = ref(false)
           </div>
 
           <div class="photo-menu__section">
-            <p class="photo-menu__label">{{ t('resumeBuilder.create.options.avatarMenu.size') }}</p>
+            <p class="photo-menu__label">
+              {{ t('resumeBuilder.create.options.avatarMenu.size') }}
+            </p>
             <v-slider
               :model-value="props.photoSize"
               :min="96"
@@ -88,12 +100,17 @@ const isMenuOpen = ref(false)
               :step="2"
               hide-details
               density="compact"
-              @update:model-value="(value) => typeof value === 'number' && emit('update:photo-size', value)"
+              @update:model-value="
+                (value) =>
+                  typeof value === 'number' && emit('update:photo-size', value)
+              "
             />
           </div>
 
           <div class="photo-menu__section">
-            <p class="photo-menu__label">{{ t('resumeBuilder.create.options.avatarMenu.borderWidth') }}</p>
+            <p class="photo-menu__label">
+              {{ t('resumeBuilder.create.options.avatarMenu.borderWidth') }}
+            </p>
             <v-slider
               :model-value="props.photoBorderWidth"
               :min="0"
@@ -101,7 +118,11 @@ const isMenuOpen = ref(false)
               :step="1"
               hide-details
               density="compact"
-              @update:model-value="(value) => typeof value === 'number' && emit('update:photo-border-width', value)"
+              @update:model-value="
+                (value) =>
+                  typeof value === 'number' &&
+                  emit('update:photo-border-width', value)
+              "
             />
           </div>
         </v-card-text>
@@ -148,8 +169,13 @@ const isMenuOpen = ref(false)
   gap: 4px;
   padding: 8px;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--resume-surface-soft, var(--cv-surface-soft)) 85%, transparent);
-  border: 1px solid color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 8%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--resume-surface-soft, var(--cv-surface-soft)) 85%,
+    transparent
+  );
+  border: 1px solid
+    color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 8%, transparent);
 }
 
 .photo-menu__actions {
@@ -169,7 +195,11 @@ const isMenuOpen = ref(false)
 
 .photo-shape-picker {
   --picker-radius: var(--resume-radius, var(--cv-radius, 14px));
-  --picker-border: color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 16%, var(--resume-page, var(--cv-page)));
+  --picker-border: color-mix(
+    in srgb,
+    var(--resume-accent, var(--cv-accent)) 16%,
+    var(--resume-page, var(--cv-page))
+  );
   --picker-surface: var(--resume-surface-soft, var(--cv-surface-soft));
 
   display: inline-flex;
@@ -181,7 +211,9 @@ const isMenuOpen = ref(false)
   border-radius: calc(var(--picker-radius) - 2px);
   border: 1px solid var(--picker-border);
   background: var(--picker-surface);
-  box-shadow: 0 var(--resume-space-2, var(--cv-space-2)) var(--resume-space-4, var(--cv-space-4)) var(--resume-shadow-soft, var(--cv-shadow-soft));
+  box-shadow: 0 var(--resume-space-2, var(--cv-space-2))
+    var(--resume-space-4, var(--cv-space-4))
+    var(--resume-shadow-soft, var(--cv-shadow-soft));
 }
 
 .avatar-overlay-controls :deep(.v-btn) {
@@ -195,5 +227,4 @@ const isMenuOpen = ref(false)
   font-size: 0.72rem;
   line-height: 1;
 }
-
 </style>

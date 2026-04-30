@@ -1,4 +1,7 @@
-import { fetchFixturePrediction, getRequiredFootballId } from '../../../utils/footballApi'
+import {
+  fetchFixturePrediction,
+  getRequiredFootballId,
+} from '../../../utils/footballApi'
 
 export default defineEventHandler(async (event) => {
   const fixture = getRequiredFootballId(event, 'fixture')

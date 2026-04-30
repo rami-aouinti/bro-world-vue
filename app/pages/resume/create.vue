@@ -5,8 +5,14 @@ import type {
   Typography,
 } from '~/constants/resumeDesign'
 import { DEFAULT_RESUME_TEMPLATE_ID } from '~/constants/resumeTemplates'
-import { COVER_LETTER_TEMPLATES_CATALOG, COVER_PAGE_TEMPLATES_CATALOG } from '~/constants/resumeTemplates.catalog'
-import { CV_SOCLE_PRESETS, resolveSoclePresetById } from '~/constants/resumeSoclePresets'
+import {
+  COVER_LETTER_TEMPLATES_CATALOG,
+  COVER_PAGE_TEMPLATES_CATALOG,
+} from '~/constants/resumeTemplates.catalog'
+import {
+  CV_SOCLE_PRESETS,
+  resolveSoclePresetById,
+} from '~/constants/resumeSoclePresets'
 import type {
   ResumeLayoutMode,
   ResumeSectionIconStyleVariant,
@@ -19,7 +25,10 @@ import {
 import type { ResumeSoclePreset } from '~/types/resumeSoclePreset'
 import { useResumeDesignControls } from '~/composables/useResumeDesignControls'
 import { useResumeDocumentState } from '~/composables/useResumeDocumentState'
-import { useResumeContentNormalization, type TimelineEvent } from '~/composables/resume/useResumeContentNormalization'
+import {
+  useResumeContentNormalization,
+  type TimelineEvent,
+} from '~/composables/resume/useResumeContentNormalization'
 import { useResumeMediaFields } from '~/composables/resume/useResumeMediaFields'
 import {
   fromApiResumeToBuilderModel,
@@ -49,7 +58,12 @@ definePageMeta({
 })
 
 const { t } = useI18n()
-const { parseMultilineList, parseTimelineEvents, normalizeSectionContentStyle, applyContentFields } = useResumeContentNormalization()
+const {
+  parseMultilineList,
+  parseTimelineEvents,
+  normalizeSectionContentStyle,
+  applyContentFields,
+} = useResumeContentNormalization()
 const { applyExperienceLogoFromFile } = useResumeMediaFields()
 const runtimeConfig = useRuntimeConfig()
 const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world.com'
@@ -272,7 +286,10 @@ type Template = {
   useTimeline: boolean
   variant: string
   presetId: string
-  structureId: 'structure-professional' | 'structure-balanced' | 'structure-compact'
+  structureId:
+    | 'structure-professional'
+    | 'structure-balanced'
+    | 'structure-compact'
   layoutId: 'layout-aside-left' | 'layout-aside-right' | 'layout-single-column'
   skinId: string
   badges: string[]
@@ -305,7 +322,14 @@ type PhotoShapeOption = {
   value: PhotoShape
   icon: string
 }
-type DecorativeShapeType = 'circle' | 'square' | 'ring' | 'bar' | 'diamond' | 'triangle' | 'pill'
+type DecorativeShapeType =
+  | 'circle'
+  | 'square'
+  | 'ring'
+  | 'bar'
+  | 'diamond'
+  | 'triangle'
+  | 'pill'
 type DecorativeShapeSettings = {
   enabled: boolean
   type: DecorativeShapeType
@@ -458,8 +482,14 @@ const documentTypeTabOptions: Array<{
   value: Template['documentType']
 }> = [
   { label: t('resumeBuilder.create.documentType.resume'), value: 'resume' },
-  { label: t('resumeBuilder.create.documentType.coverPage'), value: 'cover-page' },
-  { label: t('resumeBuilder.create.documentType.coverLetter'), value: 'cover-letter' },
+  {
+    label: t('resumeBuilder.create.documentType.coverPage'),
+    value: 'cover-page',
+  },
+  {
+    label: t('resumeBuilder.create.documentType.coverLetter'),
+    value: 'cover-letter',
+  },
 ]
 
 const {
@@ -473,27 +503,66 @@ const {
   textStyleVarsByValue,
 } = useResumeDesignControls()
 const lineDensityOptions = [
-  { label: t('resumeBuilder.create.options.lineDensity.compact'), value: 'compact' },
-  { label: t('resumeBuilder.create.options.lineDensity.comfortable'), value: 'comfortable' },
+  {
+    label: t('resumeBuilder.create.options.lineDensity.compact'),
+    value: 'compact',
+  },
+  {
+    label: t('resumeBuilder.create.options.lineDensity.comfortable'),
+    value: 'comfortable',
+  },
 ] as const
 const sectionDividerStyleOptions = [
-  { label: t('resumeBuilder.create.options.sectionDivider.line'), value: 'line' },
-  { label: t('resumeBuilder.create.options.sectionDivider.soft'), value: 'soft' },
-  { label: t('resumeBuilder.create.options.sectionDivider.none'), value: 'none' },
+  {
+    label: t('resumeBuilder.create.options.sectionDivider.line'),
+    value: 'line',
+  },
+  {
+    label: t('resumeBuilder.create.options.sectionDivider.soft'),
+    value: 'soft',
+  },
+  {
+    label: t('resumeBuilder.create.options.sectionDivider.none'),
+    value: 'none',
+  },
 ] as const
 const layoutModeOptions = [
-  { label: t('resumeBuilder.create.options.layoutMode.asideLeft'), value: 'aside-left' },
-  { label: t('resumeBuilder.create.options.layoutMode.asideRight'), value: 'aside-right' },
-  { label: t('resumeBuilder.create.options.layoutMode.noAside'), value: 'no-aside' },
+  {
+    label: t('resumeBuilder.create.options.layoutMode.asideLeft'),
+    value: 'aside-left',
+  },
+  {
+    label: t('resumeBuilder.create.options.layoutMode.asideRight'),
+    value: 'aside-right',
+  },
+  {
+    label: t('resumeBuilder.create.options.layoutMode.noAside'),
+    value: 'no-aside',
+  },
 ] as const
 const photoPositionOptions = [
-  { label: t('resumeBuilder.create.options.photoPosition.left'), value: 'left' },
-  { label: t('resumeBuilder.create.options.photoPosition.right'), value: 'right' },
+  {
+    label: t('resumeBuilder.create.options.photoPosition.left'),
+    value: 'left',
+  },
+  {
+    label: t('resumeBuilder.create.options.photoPosition.right'),
+    value: 'right',
+  },
 ] as const
 const sectionIconStyleOptions = [
-  { label: t('resumeBuilder.create.options.sectionIconStyle.outline'), value: 'outline' },
-  { label: t('resumeBuilder.create.options.sectionIconStyle.filled'), value: 'filled' },
-  { label: t('resumeBuilder.create.options.sectionIconStyle.rounded'), value: 'rounded' },
+  {
+    label: t('resumeBuilder.create.options.sectionIconStyle.outline'),
+    value: 'outline',
+  },
+  {
+    label: t('resumeBuilder.create.options.sectionIconStyle.filled'),
+    value: 'filled',
+  },
+  {
+    label: t('resumeBuilder.create.options.sectionIconStyle.rounded'),
+    value: 'rounded',
+  },
 ] as const
 const iconSizeOptions = [
   { label: t('resumeBuilder.create.options.iconSize.small'), value: 's' },
@@ -501,8 +570,14 @@ const iconSizeOptions = [
   { label: t('resumeBuilder.create.options.iconSize.large'), value: 'l' },
 ] as const
 const iconColorOptions = [
-  { label: t('resumeBuilder.create.options.iconColor.accent'), value: 'accent' },
-  { label: t('resumeBuilder.create.options.iconColor.neutral'), value: 'neutral' },
+  {
+    label: t('resumeBuilder.create.options.iconColor.accent'),
+    value: 'accent',
+  },
+  {
+    label: t('resumeBuilder.create.options.iconColor.neutral'),
+    value: 'neutral',
+  },
 ] as const
 const decorativeShapeTypeOptions = [
   { label: t('resumeBuilder.create.options.shape.circle'), value: 'circle' },
@@ -510,27 +585,75 @@ const decorativeShapeTypeOptions = [
   { label: t('resumeBuilder.create.options.shape.ring'), value: 'ring' },
   { label: t('resumeBuilder.create.options.shape.bar'), value: 'bar' },
   { label: t('resumeBuilder.create.options.shape.diamond'), value: 'diamond' },
-  { label: t('resumeBuilder.create.options.shape.triangle'), value: 'triangle' },
+  {
+    label: t('resumeBuilder.create.options.shape.triangle'),
+    value: 'triangle',
+  },
   { label: t('resumeBuilder.create.options.shape.pill'), value: 'pill' },
 ] as const
 const photoShapeOptions = [
-  { label: t('resumeBuilder.create.options.photoShape.square'), value: 'square', icon: '□' },
-  { label: t('resumeBuilder.create.options.photoShape.rounded'), value: 'rounded', icon: '▢' },
-  { label: t('resumeBuilder.create.options.photoShape.circle'), value: 'circle', icon: '◯' },
-  { label: t('resumeBuilder.create.options.photoShape.portrait'), value: 'portrait-card', icon: '▮' },
-  { label: t('resumeBuilder.create.options.photoShape.blob'), value: 'soft-blob', icon: '⬭' },
-  { label: t('resumeBuilder.create.options.photoShape.hex'), value: 'hex', icon: '⬢' },
+  {
+    label: t('resumeBuilder.create.options.photoShape.square'),
+    value: 'square',
+    icon: '□',
+  },
+  {
+    label: t('resumeBuilder.create.options.photoShape.rounded'),
+    value: 'rounded',
+    icon: '▢',
+  },
+  {
+    label: t('resumeBuilder.create.options.photoShape.circle'),
+    value: 'circle',
+    icon: '◯',
+  },
+  {
+    label: t('resumeBuilder.create.options.photoShape.portrait'),
+    value: 'portrait-card',
+    icon: '▮',
+  },
+  {
+    label: t('resumeBuilder.create.options.photoShape.blob'),
+    value: 'soft-blob',
+    icon: '⬭',
+  },
+  {
+    label: t('resumeBuilder.create.options.photoShape.hex'),
+    value: 'hex',
+    icon: '⬢',
+  },
 ] as const satisfies ReadonlyArray<PhotoShapeOption>
 const addSectionOptions = [
-  { label: t('resumeBuilder.create.options.addSection.profile'), value: 'profile' },
-  { label: t('resumeBuilder.create.options.addSection.experience'), value: 'experience' },
-  { label: t('resumeBuilder.create.options.addSection.education'), value: 'education' },
+  {
+    label: t('resumeBuilder.create.options.addSection.profile'),
+    value: 'profile',
+  },
+  {
+    label: t('resumeBuilder.create.options.addSection.experience'),
+    value: 'experience',
+  },
+  {
+    label: t('resumeBuilder.create.options.addSection.education'),
+    value: 'education',
+  },
   { label: t('resumeBuilder.create.options.addSection.skill'), value: 'skill' },
-  { label: t('resumeBuilder.create.options.addSection.language'), value: 'language' },
+  {
+    label: t('resumeBuilder.create.options.addSection.language'),
+    value: 'language',
+  },
   { label: t('resumeBuilder.create.options.addSection.hobby'), value: 'hobby' },
-  { label: t('resumeBuilder.create.options.addSection.project'), value: 'project' },
-  { label: t('resumeBuilder.create.options.addSection.certification'), value: 'certification' },
-  { label: t('resumeBuilder.create.options.addSection.reference'), value: 'reference' },
+  {
+    label: t('resumeBuilder.create.options.addSection.project'),
+    value: 'project',
+  },
+  {
+    label: t('resumeBuilder.create.options.addSection.certification'),
+    value: 'certification',
+  },
+  {
+    label: t('resumeBuilder.create.options.addSection.reference'),
+    value: 'reference',
+  },
 ] as const satisfies ReadonlyArray<{ label: string; value: AddSectionType }>
 const sectionVariantLabels = computed(() =>
   Object.values(RESUME_SECTION_REGISTRY)
@@ -725,28 +848,171 @@ function normalizeSectionLayout(
   })
 }
 const layoutBlueprints = [
-  { structureId: 'structure-professional', layoutId: 'layout-aside-left', layoutMode: 'aside-left' as ResumeLayoutMode, suffix: 'Pro Left', config: {} },
-  { structureId: 'structure-professional', layoutId: 'layout-aside-right', layoutMode: 'aside-right' as ResumeLayoutMode, suffix: 'Pro Right', config: { layoutMode: 'aside-right' as ResumeLayoutMode } },
-  { structureId: 'structure-professional', layoutId: 'layout-single-column', layoutMode: 'no-aside' as ResumeLayoutMode, suffix: 'Pro Single', config: { layoutMode: 'no-aside' as ResumeLayoutMode } },
-  { structureId: 'structure-balanced', layoutId: 'layout-aside-left', layoutMode: 'aside-left' as ResumeLayoutMode, suffix: 'Balanced Left', config: {} },
-  { structureId: 'structure-balanced', layoutId: 'layout-aside-right', layoutMode: 'aside-right' as ResumeLayoutMode, suffix: 'Balanced Right', config: { layoutMode: 'aside-right' as ResumeLayoutMode } },
-  { structureId: 'structure-balanced', layoutId: 'layout-single-column', layoutMode: 'no-aside' as ResumeLayoutMode, suffix: 'Balanced Single', config: { layoutMode: 'no-aside' as ResumeLayoutMode } },
-  { structureId: 'structure-compact', layoutId: 'layout-aside-left', layoutMode: 'aside-left' as ResumeLayoutMode, suffix: 'Compact Left', config: { lineDensity: 'compact' as const, sidebarWidth: 248 } },
-  { structureId: 'structure-compact', layoutId: 'layout-aside-right', layoutMode: 'aside-right' as ResumeLayoutMode, suffix: 'Compact Right', config: { layoutMode: 'aside-right' as ResumeLayoutMode, lineDensity: 'compact' as const, sidebarWidth: 248 } },
-  { structureId: 'structure-compact', layoutId: 'layout-single-column', layoutMode: 'no-aside' as ResumeLayoutMode, suffix: 'Compact Single', config: { layoutMode: 'no-aside' as ResumeLayoutMode, lineDensity: 'compact' as const } },
+  {
+    structureId: 'structure-professional',
+    layoutId: 'layout-aside-left',
+    layoutMode: 'aside-left' as ResumeLayoutMode,
+    suffix: 'Pro Left',
+    config: {},
+  },
+  {
+    structureId: 'structure-professional',
+    layoutId: 'layout-aside-right',
+    layoutMode: 'aside-right' as ResumeLayoutMode,
+    suffix: 'Pro Right',
+    config: { layoutMode: 'aside-right' as ResumeLayoutMode },
+  },
+  {
+    structureId: 'structure-professional',
+    layoutId: 'layout-single-column',
+    layoutMode: 'no-aside' as ResumeLayoutMode,
+    suffix: 'Pro Single',
+    config: { layoutMode: 'no-aside' as ResumeLayoutMode },
+  },
+  {
+    structureId: 'structure-balanced',
+    layoutId: 'layout-aside-left',
+    layoutMode: 'aside-left' as ResumeLayoutMode,
+    suffix: 'Balanced Left',
+    config: {},
+  },
+  {
+    structureId: 'structure-balanced',
+    layoutId: 'layout-aside-right',
+    layoutMode: 'aside-right' as ResumeLayoutMode,
+    suffix: 'Balanced Right',
+    config: { layoutMode: 'aside-right' as ResumeLayoutMode },
+  },
+  {
+    structureId: 'structure-balanced',
+    layoutId: 'layout-single-column',
+    layoutMode: 'no-aside' as ResumeLayoutMode,
+    suffix: 'Balanced Single',
+    config: { layoutMode: 'no-aside' as ResumeLayoutMode },
+  },
+  {
+    structureId: 'structure-compact',
+    layoutId: 'layout-aside-left',
+    layoutMode: 'aside-left' as ResumeLayoutMode,
+    suffix: 'Compact Left',
+    config: { lineDensity: 'compact' as const, sidebarWidth: 248 },
+  },
+  {
+    structureId: 'structure-compact',
+    layoutId: 'layout-aside-right',
+    layoutMode: 'aside-right' as ResumeLayoutMode,
+    suffix: 'Compact Right',
+    config: {
+      layoutMode: 'aside-right' as ResumeLayoutMode,
+      lineDensity: 'compact' as const,
+      sidebarWidth: 248,
+    },
+  },
+  {
+    structureId: 'structure-compact',
+    layoutId: 'layout-single-column',
+    layoutMode: 'no-aside' as ResumeLayoutMode,
+    suffix: 'Compact Single',
+    config: {
+      layoutMode: 'no-aside' as ResumeLayoutMode,
+      lineDensity: 'compact' as const,
+    },
+  },
 ] as const
 
 const skinBlueprints = [
-  { key: 'classic', title: 'Classique', subtitle: 'Style classique équilibré', image: '/img/cv/cv-1.png', presetId: 'socle-classic', config: { sectionIconStyle: 'outline' as ResumeSectionIconStyleVariant } },
-  { key: 'compact', title: 'Compact ATS', subtitle: 'Version optimisée lecture ATS', image: '/img/cv/cv-2.png', presetId: 'socle-compact', config: { photoShape: 'rounded' as PhotoShape, iconSize: 's' as const } },
-  { key: 'modern', title: 'Modern Soft', subtitle: 'Style moderne lisible', image: '/img/cv/cv-3.png', presetId: 'socle-modern', config: { photoShape: 'soft-blob' as PhotoShape, sectionDividerStyle: 'soft' as const } },
-  { key: 'executive', title: 'Executive Prime', subtitle: 'Rendu premium hiérarchisé', image: '/img/cv/cv-4.png', presetId: 'socle-executive', config: { photoShape: 'portrait-card' as PhotoShape, photoBorderWidth: 4 } },
-  { key: 'blue', title: 'Blue Formal', subtitle: 'Palette bleue professionnelle', image: '/img/cv/cv-5.png', presetId: 'socle-classic', config: { photoPosition: 'right' as const, iconColor: 'accent' as const } },
-  { key: 'graphite', title: 'Graphite Lean', subtitle: 'Design compact et neutre', image: '/img/cv/cv-1.png', presetId: 'socle-compact', config: { iconColor: 'neutral' as const, sectionIconStyle: 'filled' as ResumeSectionIconStyleVariant } },
-  { key: 'skyline', title: 'Skyline Focus', subtitle: 'Profil centré et aéré', image: '/img/cv/cv-2.png', presetId: 'socle-modern', config: { photoShape: 'circle' as PhotoShape, photoSize: 132 } },
-  { key: 'royal', title: 'Royal Editorial', subtitle: 'Accent éditorial affirmé', image: '/img/cv/cv-3.png', presetId: 'socle-executive', config: { sectionDividerStyle: 'line' as const, iconSize: 'm' as const } },
-  { key: 'mono', title: 'Monochrome Pro', subtitle: 'Contraste doux orienté ATS', image: '/img/cv/cv-4.png', presetId: 'socle-compact', config: { photoShape: 'square' as PhotoShape, lineDensity: 'compact' as const } },
-  { key: 'minimal', title: 'Minimal Signal', subtitle: 'Equilibre minimal et lisible', image: '/img/cv/cv-5.png', presetId: 'socle-modern', config: { sectionDividerStyle: 'none' as const, sectionIconStyle: 'rounded' as ResumeSectionIconStyleVariant } },
+  {
+    key: 'classic',
+    title: 'Classique',
+    subtitle: 'Style classique équilibré',
+    image: '/img/cv/cv-1.png',
+    presetId: 'socle-classic',
+    config: { sectionIconStyle: 'outline' as ResumeSectionIconStyleVariant },
+  },
+  {
+    key: 'compact',
+    title: 'Compact ATS',
+    subtitle: 'Version optimisée lecture ATS',
+    image: '/img/cv/cv-2.png',
+    presetId: 'socle-compact',
+    config: { photoShape: 'rounded' as PhotoShape, iconSize: 's' as const },
+  },
+  {
+    key: 'modern',
+    title: 'Modern Soft',
+    subtitle: 'Style moderne lisible',
+    image: '/img/cv/cv-3.png',
+    presetId: 'socle-modern',
+    config: {
+      photoShape: 'soft-blob' as PhotoShape,
+      sectionDividerStyle: 'soft' as const,
+    },
+  },
+  {
+    key: 'executive',
+    title: 'Executive Prime',
+    subtitle: 'Rendu premium hiérarchisé',
+    image: '/img/cv/cv-4.png',
+    presetId: 'socle-executive',
+    config: { photoShape: 'portrait-card' as PhotoShape, photoBorderWidth: 4 },
+  },
+  {
+    key: 'blue',
+    title: 'Blue Formal',
+    subtitle: 'Palette bleue professionnelle',
+    image: '/img/cv/cv-5.png',
+    presetId: 'socle-classic',
+    config: { photoPosition: 'right' as const, iconColor: 'accent' as const },
+  },
+  {
+    key: 'graphite',
+    title: 'Graphite Lean',
+    subtitle: 'Design compact et neutre',
+    image: '/img/cv/cv-1.png',
+    presetId: 'socle-compact',
+    config: {
+      iconColor: 'neutral' as const,
+      sectionIconStyle: 'filled' as ResumeSectionIconStyleVariant,
+    },
+  },
+  {
+    key: 'skyline',
+    title: 'Skyline Focus',
+    subtitle: 'Profil centré et aéré',
+    image: '/img/cv/cv-2.png',
+    presetId: 'socle-modern',
+    config: { photoShape: 'circle' as PhotoShape, photoSize: 132 },
+  },
+  {
+    key: 'royal',
+    title: 'Royal Editorial',
+    subtitle: 'Accent éditorial affirmé',
+    image: '/img/cv/cv-3.png',
+    presetId: 'socle-executive',
+    config: { sectionDividerStyle: 'line' as const, iconSize: 'm' as const },
+  },
+  {
+    key: 'mono',
+    title: 'Monochrome Pro',
+    subtitle: 'Contraste doux orienté ATS',
+    image: '/img/cv/cv-4.png',
+    presetId: 'socle-compact',
+    config: {
+      photoShape: 'square' as PhotoShape,
+      lineDensity: 'compact' as const,
+    },
+  },
+  {
+    key: 'minimal',
+    title: 'Minimal Signal',
+    subtitle: 'Equilibre minimal et lisible',
+    image: '/img/cv/cv-5.png',
+    presetId: 'socle-modern',
+    config: {
+      sectionDividerStyle: 'none' as const,
+      sectionIconStyle: 'rounded' as ResumeSectionIconStyleVariant,
+    },
+  },
 ] as const
 
 const resumeTemplateCards = layoutBlueprints.flatMap((layout, layoutIndex) =>
@@ -788,10 +1054,19 @@ const templates: Template[] = resumeTemplateCards.map((template) => ({
     template.config?.layoutMode === 'no-aside' ? '1-col' : '2-col',
     'photo',
   ],
-  recommended: ['cv-socle-01', 'cv-socle-02', 'cv-socle-03', 'cv-socle-04', 'cv-socle-10', 'cv-socle-15'].includes(template.id),
+  recommended: [
+    'cv-socle-01',
+    'cv-socle-02',
+    'cv-socle-03',
+    'cv-socle-04',
+    'cv-socle-10',
+    'cv-socle-15',
+  ].includes(template.id),
 }))
 
-const mapStructureIdToBuilder = (structureId: 'no-aside' | 'aside-left' | 'aside-right'): Template['structureId'] => {
+const mapStructureIdToBuilder = (
+  structureId: 'no-aside' | 'aside-left' | 'aside-right',
+): Template['structureId'] => {
   if (structureId === 'aside-left') return 'structure-balanced'
   if (structureId === 'aside-right') return 'structure-compact'
   return 'structure-professional'
@@ -803,7 +1078,10 @@ const mapLayoutIdToBuilder = (layoutId: string): Template['layoutId'] => {
   return 'layout-single-column'
 }
 
-const mapCatalogToTemplate = (catalog: typeof COVER_PAGE_TEMPLATES_CATALOG, documentType: Template['documentType']): Template[] =>
+const mapCatalogToTemplate = (
+  catalog: typeof COVER_PAGE_TEMPLATES_CATALOG,
+  documentType: Template['documentType'],
+): Template[] =>
   catalog.map((template) => ({
     id: template.id,
     title: template.label,
@@ -830,8 +1108,12 @@ const mapCatalogToTemplate = (catalog: typeof COVER_PAGE_TEMPLATES_CATALOG, docu
     recommended: false,
   }))
 
-templates.push(...mapCatalogToTemplate(COVER_PAGE_TEMPLATES_CATALOG, 'cover-page'))
-templates.push(...mapCatalogToTemplate(COVER_LETTER_TEMPLATES_CATALOG, 'cover-letter'))
+templates.push(
+  ...mapCatalogToTemplate(COVER_PAGE_TEMPLATES_CATALOG, 'cover-page'),
+)
+templates.push(
+  ...mapCatalogToTemplate(COVER_LETTER_TEMPLATES_CATALOG, 'cover-letter'),
+)
 
 const resume = reactive<ResumeModel>({
   role: 'Communication Specialist',
@@ -1002,7 +1284,10 @@ const structureFilterOptions = [
   { label: 'Balanced', value: 'structure-balanced' },
   { label: 'Compact', value: 'structure-compact' },
 ] as const
-const layoutFilterByStructure: Record<Template['structureId'], Array<{ label: string; value: Template['layoutId'] }>> = {
+const layoutFilterByStructure: Record<
+  Template['structureId'],
+  Array<{ label: string; value: Template['layoutId'] }>
+> = {
   'structure-professional': [
     { label: 'Aside left', value: 'layout-aside-left' },
     { label: 'Aside right', value: 'layout-aside-right' },
@@ -1019,33 +1304,40 @@ const layoutFilterByStructure: Record<Template['structureId'], Array<{ label: st
     { label: 'Single column', value: 'layout-single-column' },
   ],
 }
-const availableLayoutFilterOptions = computed(() => layoutFilterByStructure[templatePickerState.value.structureId])
+const availableLayoutFilterOptions = computed(
+  () => layoutFilterByStructure[templatePickerState.value.structureId],
+)
 const filteredTemplates = computed(() => {
   const resumeTemplates = templatesByDocumentType.value.filter(
     (template) => template.documentType === 'resume',
   )
-  const source = templatePickerState.value.mode === 'recommended'
-    ? resumeTemplates.filter((template) => template.recommended).slice(0, 6)
-    : resumeTemplates
+  const source =
+    templatePickerState.value.mode === 'recommended'
+      ? resumeTemplates.filter((template) => template.recommended).slice(0, 6)
+      : resumeTemplates
   const query = templatePickerState.value.search.trim().toLowerCase()
   return source.filter((template) => {
-    const matchesStructure = templatePickerState.value.mode === 'recommended'
-      || template.structureId === templatePickerState.value.structureId
-    const matchesLayout = templatePickerState.value.mode === 'recommended'
-      || template.layoutId === templatePickerState.value.layoutId
-    const matchesSkin = templatePickerState.value.mode === 'recommended'
-      || template.skinId === templatePickerState.value.skinId
-    const matchesQuery = !query
-      || template.title.toLowerCase().includes(query)
-      || template.skinId.toLowerCase().includes(query)
+    const matchesStructure =
+      templatePickerState.value.mode === 'recommended' ||
+      template.structureId === templatePickerState.value.structureId
+    const matchesLayout =
+      templatePickerState.value.mode === 'recommended' ||
+      template.layoutId === templatePickerState.value.layoutId
+    const matchesSkin =
+      templatePickerState.value.mode === 'recommended' ||
+      template.skinId === templatePickerState.value.skinId
+    const matchesQuery =
+      !query ||
+      template.title.toLowerCase().includes(query) ||
+      template.skinId.toLowerCase().includes(query)
     return matchesStructure && matchesLayout && matchesSkin && matchesQuery
   })
 })
 const skinFilterOptions = computed(() => {
   const filteredByLayout = templatesByDocumentType.value.filter(
     (template) =>
-      template.structureId === templatePickerState.value.structureId
-      && template.layoutId === templatePickerState.value.layoutId,
+      template.structureId === templatePickerState.value.structureId &&
+      template.layoutId === templatePickerState.value.layoutId,
   )
   return filteredByLayout.map((template) => ({
     label: template.title,
@@ -1068,40 +1360,46 @@ function resolveTemplateIdFromCustomization(
 ) {
   return templates.find(
     (template) =>
-      template.structureId === structureId
-      && template.layoutId === layoutId
-      && template.skinId === skinId,
+      template.structureId === structureId &&
+      template.layoutId === layoutId &&
+      template.skinId === skinId,
   )?.id
 }
 
-const selectedSoclePreset = computed<ResumeSoclePreset>(() => resolveSoclePresetById(selectedPreset.value))
+const selectedSoclePreset = computed<ResumeSoclePreset>(() =>
+  resolveSoclePresetById(selectedPreset.value),
+)
 const selectedPhotoShape = ref<string>('square')
 
 const soclePresetOptions = computed(() =>
   CV_SOCLE_PRESETS.map((preset) => ({ label: preset.label, value: preset.id })),
 )
 
-watch(selectedSoclePreset, (preset) => {
-  if (!preset) return
-  selectedTheme.value = preset.id
-  selectedPageBackground.value = preset.defaults.pageBackground
-  selectedRounded.value = preset.defaults.rounded
-  selectedTextStyle.value = preset.defaults.textStyle
-  selectedPhotoShape.value = preset.defaults.photoShape
-  layoutSettings.layoutMode = preset.layoutMode
-  layoutSettings.sectionDividerStyle = preset.dividerStyle ?? 'line'
-  layoutSettings.sectionIconStyle = preset.iconStyle ?? 'outline'
-  layoutSettings.sidebarWidth = preset.defaults.sidebarWidth
-  layoutSettings.sidebarHeight = preset.defaults.sidebarHeight
-  layoutSettings.lineDensity = preset.defaults.lineDensity
-  layoutSettings.showSectionIcons = preset.defaults.showSectionIcons
-  layoutSettings.showContactIcons = preset.defaults.showContactIcons
-  layoutSettings.iconSize = preset.defaults.iconSize
-  layoutSettings.iconColor = preset.defaults.iconColor
-  layoutSettings.photoSize = preset.defaults.photoSize
-  layoutSettings.photoBorderWidth = preset.defaults.photoBorderWidth
-  layoutSettings.photoPosition = preset.defaults.photoPosition
-}, { immediate: true })
+watch(
+  selectedSoclePreset,
+  (preset) => {
+    if (!preset) return
+    selectedTheme.value = preset.id
+    selectedPageBackground.value = preset.defaults.pageBackground
+    selectedRounded.value = preset.defaults.rounded
+    selectedTextStyle.value = preset.defaults.textStyle
+    selectedPhotoShape.value = preset.defaults.photoShape
+    layoutSettings.layoutMode = preset.layoutMode
+    layoutSettings.sectionDividerStyle = preset.dividerStyle ?? 'line'
+    layoutSettings.sectionIconStyle = preset.iconStyle ?? 'outline'
+    layoutSettings.sidebarWidth = preset.defaults.sidebarWidth
+    layoutSettings.sidebarHeight = preset.defaults.sidebarHeight
+    layoutSettings.lineDensity = preset.defaults.lineDensity
+    layoutSettings.showSectionIcons = preset.defaults.showSectionIcons
+    layoutSettings.showContactIcons = preset.defaults.showContactIcons
+    layoutSettings.iconSize = preset.defaults.iconSize
+    layoutSettings.iconColor = preset.defaults.iconColor
+    layoutSettings.photoSize = preset.defaults.photoSize
+    layoutSettings.photoBorderWidth = preset.defaults.photoBorderWidth
+    layoutSettings.photoPosition = preset.defaults.photoPosition
+  },
+  { immediate: true },
+)
 
 const isResumeDocument = computed(() => selectedDocumentType.value === 'resume')
 const isCoverDocument = computed(
@@ -1137,12 +1435,16 @@ function applyTemplateSelection(_templateId: string) {
   if (config) {
     if (config.photoShape) selectedPhotoShape.value = config.photoShape
     if (config.photoSize) layoutSettings.photoSize = config.photoSize
-    if (config.photoBorderWidth) layoutSettings.photoBorderWidth = config.photoBorderWidth
-    if (config.photoPosition) layoutSettings.photoPosition = config.photoPosition
+    if (config.photoBorderWidth)
+      layoutSettings.photoBorderWidth = config.photoBorderWidth
+    if (config.photoPosition)
+      layoutSettings.photoPosition = config.photoPosition
     if (config.layoutMode) layoutSettings.layoutMode = config.layoutMode
     if (config.lineDensity) layoutSettings.lineDensity = config.lineDensity
-    if (config.sectionDividerStyle) layoutSettings.sectionDividerStyle = config.sectionDividerStyle
-    if (config.sectionIconStyle) layoutSettings.sectionIconStyle = config.sectionIconStyle
+    if (config.sectionDividerStyle)
+      layoutSettings.sectionDividerStyle = config.sectionDividerStyle
+    if (config.sectionIconStyle)
+      layoutSettings.sectionIconStyle = config.sectionIconStyle
     if (config.iconSize) layoutSettings.iconSize = config.iconSize
     if (config.iconColor) layoutSettings.iconColor = config.iconColor
     if (config.sidebarWidth) layoutSettings.sidebarWidth = config.sidebarWidth
@@ -1150,9 +1452,15 @@ function applyTemplateSelection(_templateId: string) {
   persist()
 }
 
-const templateShapeTypeCycle: DecorativeShapeType[] = ['circle', 'ring', 'square', 'bar', 'diamond', 'triangle', 'pill']
-
-
+const templateShapeTypeCycle: DecorativeShapeType[] = [
+  'circle',
+  'ring',
+  'square',
+  'bar',
+  'diamond',
+  'triangle',
+  'pill',
+]
 
 function selectValidTemplateForCurrentDocumentType() {
   const isCurrentTemplateValid = templatesByDocumentType.value.some(
@@ -1168,9 +1476,9 @@ function selectValidTemplateForCurrentDocumentType() {
   }
 }
 
-
 function applyTemplateFromRouteQuery() {
-  const fallbackTemplateId = templatesByDocumentType.value[0]?.id ?? templates[0]?.id ?? 'cv-socle-01'
+  const fallbackTemplateId =
+    templatesByDocumentType.value[0]?.id ?? templates[0]?.id ?? 'cv-socle-01'
   const templateFromQuery = Array.isArray(route.query.template)
     ? route.query.template[0]
     : route.query.template
@@ -1183,9 +1491,7 @@ function applyTemplateFromRouteQuery() {
   const exists = templatesByDocumentType.value.some(
     (template) => template.id === templateFromQuery,
   )
-  const templateId = exists
-    ? templateFromQuery
-    : fallbackTemplateId
+  const templateId = exists ? templateFromQuery : fallbackTemplateId
 
   applyTemplateSelection(templateId)
 }
@@ -1239,9 +1545,10 @@ function extractRemoteResumeCreatedAtValue(resumeItem: RemoteResume) {
   return new Date().toISOString()
 }
 
-function parseRemoteResumeCreatedAt(
-  resumeItem: RemoteResume,
-): { timestamp: number; isValid: boolean } {
+function parseRemoteResumeCreatedAt(resumeItem: RemoteResume): {
+  timestamp: number
+  isValid: boolean
+} {
   const createdAtValue = extractRemoteResumeCreatedAtValue(resumeItem)
   let timestamp = Date.parse(createdAtValue)
 
@@ -1858,9 +2165,7 @@ function splitParagraphToList(value: string) {
     .filter(Boolean)
 }
 
-function normalizeExperienceContentStyle(
-  style?: ContentStyle,
-): ContentStyle {
+function normalizeExperienceContentStyle(style?: ContentStyle): ContentStyle {
   return normalizeSectionContentStyle(style)
 }
 
@@ -1889,25 +2194,29 @@ function setExperienceBullets(index: number, value: string) {
   const experience = resume.experiences[index]
   const parsedLines = parseMultilineList(value)
   experience.bullets = parsedLines
-  experience.contentStyle = normalizeExperienceContentStyle(experience.contentStyle)
+  experience.contentStyle = normalizeExperienceContentStyle(
+    experience.contentStyle,
+  )
   experience.points = experience.contentStyle === 'points' ? parsedLines : []
   experience.dashes = experience.contentStyle === 'dashes' ? parsedLines : []
-  experience.timelineEvents = experience.contentStyle === 'timeline'
-    ? parseTimelineEvents(value)
-    : []
+  experience.timelineEvents =
+    experience.contentStyle === 'timeline' ? parseTimelineEvents(value) : []
 }
 
 const getExperienceBullets = (index: number) =>
-  normalizeExperienceContentStyle(resume.experiences[index].contentStyle) === 'timeline'
+  normalizeExperienceContentStyle(resume.experiences[index].contentStyle) ===
+  'timeline'
     ? (resume.experiences[index].timelineEvents || [])
         .map((event) => [event.label, event.detail].filter(Boolean).join(' | '))
         .join('\n')
-    : (normalizeExperienceContentStyle(resume.experiences[index].contentStyle) === 'dashes'
-          ? resume.experiences[index].dashes || []
-          : resume.experiences[index].points?.length
-            ? resume.experiences[index].points
-            : resume.experiences[index].bullets
-        ).join('\n')
+    : (normalizeExperienceContentStyle(
+        resume.experiences[index].contentStyle,
+      ) === 'dashes'
+        ? resume.experiences[index].dashes || []
+        : resume.experiences[index].points?.length
+          ? resume.experiences[index].points
+          : resume.experiences[index].bullets
+      ).join('\n')
 
 function setEducationContent(index: number, value: string) {
   const education = resume.education[index]
@@ -2208,7 +2517,9 @@ function submitAddSection() {
           start: addSectionDraft.experience.start,
           end: addSectionDraft.experience.end,
           bullets: parseMultilineList(addSectionDraft.experience.bullets),
-          contentStyle: normalizeExperienceContentStyle(addSectionDraft.experience.contentStyle),
+          contentStyle: normalizeExperienceContentStyle(
+            addSectionDraft.experience.contentStyle,
+          ),
         }
         applyContentFields(experience, addSectionDraft.experience.bullets)
         resume.experiences.push(experience)
@@ -2323,7 +2634,9 @@ function submitSectionItemDialog() {
           start: sectionItemDraft.experience.start,
           end: sectionItemDraft.experience.end,
           bullets: parseMultilineList(sectionItemDraft.experience.bullets),
-          contentStyle: normalizeExperienceContentStyle(sectionItemDraft.experience.contentStyle),
+          contentStyle: normalizeExperienceContentStyle(
+            sectionItemDraft.experience.contentStyle,
+          ),
         }
         applyContentFields(experience, sectionItemDraft.experience.bullets)
         item = experience
@@ -2510,12 +2823,17 @@ const A4_PREVIEW_HEIGHT = 1123
 
 function recalculatePreviewPagination() {
   if (!import.meta.client || !previewPageShellRef.value) return
-  const nextHeight = Math.ceil(previewPageShellRef.value.getBoundingClientRect().height)
+  const nextHeight = Math.ceil(
+    previewPageShellRef.value.getBoundingClientRect().height,
+  )
   measuredPreviewHeight.value = nextHeight
   const pages = Math.max(1, Math.ceil(nextHeight / A4_PREVIEW_HEIGHT))
   measuredPageCount.value = pages
   const lastPageHeight = nextHeight - (pages - 1) * A4_PREVIEW_HEIGHT
-  measuredLastPageUsage.value = Math.max(0, Math.min(100, Math.round((lastPageHeight / A4_PREVIEW_HEIGHT) * 100)))
+  measuredLastPageUsage.value = Math.max(
+    0,
+    Math.min(100, Math.round((lastPageHeight / A4_PREVIEW_HEIGHT) * 100)),
+  )
 }
 
 const previewFallbackSections = computed(() => {
@@ -2577,7 +2895,6 @@ watch(selectedDocumentType, (value) => {
   localStorage.setItem(DOCUMENT_TYPE_STORAGE_KEY, value)
 })
 
-
 watch(
   () => route.query.template,
   () => {
@@ -2593,10 +2910,11 @@ watch(selectedTemplate, () => {
 watch(
   () => templatePickerState.value.structureId,
   (nextStructureId) => {
-    const defaultLayoutForStructure = layoutFilterByStructure[nextStructureId][0]?.value
+    const defaultLayoutForStructure =
+      layoutFilterByStructure[nextStructureId][0]?.value
     if (
-      defaultLayoutForStructure
-      && templatePickerState.value.layoutId !== defaultLayoutForStructure
+      defaultLayoutForStructure &&
+      templatePickerState.value.layoutId !== defaultLayoutForStructure
     ) {
       templatePickerState.value.layoutId = defaultLayoutForStructure
     }
@@ -2604,7 +2922,10 @@ watch(
 )
 
 watch(
-  () => [templatePickerState.value.structureId, templatePickerState.value.layoutId],
+  () => [
+    templatePickerState.value.structureId,
+    templatePickerState.value.layoutId,
+  ],
   () => {
     const availableSkins = skinFilterOptions.value.map((option) => option.value)
     if (!availableSkins.length) return
@@ -2695,11 +3016,19 @@ function contrastRatio(colorA: string, colorB: string) {
 }
 
 const minimumReadableContrast = 4.5
-function bestReadableColor(background: string, preferred: string, minimum = 4.5) {
+function bestReadableColor(
+  background: string,
+  preferred: string,
+  minimum = 4.5,
+) {
   const candidates = [preferred, '#111827', '#0f172a', '#f8fafc', '#ffffff']
-  const passing = candidates.find((color) => contrastRatio(background, color) >= minimum)
+  const passing = candidates.find(
+    (color) => contrastRatio(background, color) >= minimum,
+  )
   if (passing) return passing
-  return candidates.sort((a, b) => contrastRatio(background, b) - contrastRatio(background, a))[0]
+  return candidates.sort(
+    (a, b) => contrastRatio(background, b) - contrastRatio(background, a),
+  )[0]
 }
 
 const pageBackgroundValidation = computed(() =>
@@ -2731,16 +3060,22 @@ const previewStyle = computed(() => {
   const page = activePageBackground.value.page
   const sidebar = theme.sidebar
   const accent = theme.accent
-  const title = bestReadableColor(page, selectedSoclePreset.value.palette.text, 4.5)
+  const title = bestReadableColor(
+    page,
+    selectedSoclePreset.value.palette.text,
+    4.5,
+  )
 
   return {
     '--resume-radius': roundedPxByValue[selectedRounded.value],
     '--cv-radius': roundedPxByValue[selectedRounded.value],
-    '--resume-font-family': textStyleVarsByValue[selectedTextStyle.value].family,
+    '--resume-font-family':
+      textStyleVarsByValue[selectedTextStyle.value].family,
     '--cv-font-family': textStyleVarsByValue[selectedTextStyle.value].family,
     '--resume-font-style': textStyleVarsByValue[selectedTextStyle.value].style,
     '--cv-font-style': textStyleVarsByValue[selectedTextStyle.value].style,
-    '--resume-font-weight': textStyleVarsByValue[selectedTextStyle.value].weight,
+    '--resume-font-weight':
+      textStyleVarsByValue[selectedTextStyle.value].weight,
     '--cv-font-weight': textStyleVarsByValue[selectedTextStyle.value].weight,
     '--resume-sidebar': sidebar,
     '--cv-sidebar': sidebar,
@@ -2769,8 +3104,10 @@ const decorativeShapes = computed(() => [
   },
 ])
 const decorativeShapeStyle = (shape: DecorativeShapeSettings) => {
-  const width = shape.type === 'circle' || shape.type === 'ring' ? shape.size : shape.width
-  const height = shape.type === 'circle' || shape.type === 'ring' ? shape.size : shape.height
+  const width =
+    shape.type === 'circle' || shape.type === 'ring' ? shape.size : shape.width
+  const height =
+    shape.type === 'circle' || shape.type === 'ring' ? shape.size : shape.height
   return {
     '--shape-color': shape.color,
     '--shape-opacity': String(shape.opacity),
@@ -2843,7 +3180,7 @@ watch(
 async function buildResumePdfBlob() {
   if (!previewExportRef.value || !import.meta.client) return ''
   await nextTick()
-  await new Promise<void>(resolve => requestAnimationFrame(() => resolve()))
+  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
   const stylesheetContent = Array.from(
     document.querySelectorAll('style,link[rel="stylesheet"]'),
   )
@@ -3302,7 +3639,9 @@ async function submitSaveAction() {
     if (shouldUpdate && selectedRemoteResumeId.value) {
       await updateResume(selectedRemoteResumeId.value, payload)
       saveStatus.value = 'success'
-      saveStatusMessage.value = t('resumeBuilder.create.messages.resumeReplaced')
+      saveStatusMessage.value = t(
+        'resumeBuilder.create.messages.resumeReplaced',
+      )
       replaceConfirmStep.value = false
       return
     }
@@ -3418,124 +3757,128 @@ if (import.meta.client) {
     const LEGACY_LAYOUT_KEY = 'resume-layout-settings-v1'
     const LEGACY_SECTION_LAYOUT_KEY = 'resume-section-layout-v1'
     const rawLegacyLayout = localStorage.getItem(LEGACY_LAYOUT_KEY)
-    const rawLegacySectionLayout = localStorage.getItem(LEGACY_SECTION_LAYOUT_KEY)
+    const rawLegacySectionLayout = localStorage.getItem(
+      LEGACY_SECTION_LAYOUT_KEY,
+    )
 
     hydrateFromStorage()
     migrateLegacyStorage(rawLegacyLayout, rawLegacySectionLayout)
 
-  const customization = resumeDocumentState.value.customization
-  const templateIdFromCustomization = resolveTemplateIdFromCustomization(
-    customization.template.structureId,
-    customization.template.layoutId,
-    customization.template.skinId,
-  )
-  if (templateIdFromCustomization) {
-    selectedTemplate.value = templateIdFromCustomization
-    templatePickerState.value.structureId = customization.template.structureId as Template['structureId']
-    templatePickerState.value.layoutId = customization.template.layoutId as Template['layoutId']
-    templatePickerState.value.skinId = customization.template.skinId
-  }
-  selectedPreset.value = customization.presetId
-  selectedTheme.value = customization.style.palette
-  selectedPageBackground.value = customization.style.pageBackground
-  selectedRounded.value = customization.style.radius
-  selectedTextStyle.value = customization.style.typography
-  layoutSettings.lineDensity = customization.style.density
-  layoutSettings.showSectionIcons = customization.style.showSectionIcons
-  layoutSettings.showContactIcons = customization.style.showContactIcons
-  layoutSettings.sectionIconStyle = customization.style.sectionIconStyle
-  layoutSettings.iconSize = customization.style.iconSize
-  layoutSettings.iconColor = customization.style.iconColor
-  layoutSettings.layoutMode = customization.style.layoutMode
-  layoutSettings.photoPosition = customization.style.photoPosition
-  layoutSettings.sidebarWidth = customization.style.asideWidth
-  layoutSettings.sidebarHeight = customization.style.asideHeight ?? 100
-  layoutSettings.decorativeShapeA = {
-    ...layoutSettings.decorativeShapeA,
-    ...customization.style.decorativeShapeA,
-  }
-  layoutSettings.decorativeShapeB = {
-    ...layoutSettings.decorativeShapeB,
-    ...customization.style.decorativeShapeB,
-  }
-  sectionLayout.value = normalizeSectionLayout(customization.sectionOrder)
+    const customization = resumeDocumentState.value.customization
+    const templateIdFromCustomization = resolveTemplateIdFromCustomization(
+      customization.template.structureId,
+      customization.template.layoutId,
+      customization.template.skinId,
+    )
+    if (templateIdFromCustomization) {
+      selectedTemplate.value = templateIdFromCustomization
+      templatePickerState.value.structureId = customization.template
+        .structureId as Template['structureId']
+      templatePickerState.value.layoutId = customization.template
+        .layoutId as Template['layoutId']
+      templatePickerState.value.skinId = customization.template.skinId
+    }
+    selectedPreset.value = customization.presetId
+    selectedTheme.value = customization.style.palette
+    selectedPageBackground.value = customization.style.pageBackground
+    selectedRounded.value = customization.style.radius
+    selectedTextStyle.value = customization.style.typography
+    layoutSettings.lineDensity = customization.style.density
+    layoutSettings.showSectionIcons = customization.style.showSectionIcons
+    layoutSettings.showContactIcons = customization.style.showContactIcons
+    layoutSettings.sectionIconStyle = customization.style.sectionIconStyle
+    layoutSettings.iconSize = customization.style.iconSize
+    layoutSettings.iconColor = customization.style.iconColor
+    layoutSettings.layoutMode = customization.style.layoutMode
+    layoutSettings.photoPosition = customization.style.photoPosition
+    layoutSettings.sidebarWidth = customization.style.asideWidth
+    layoutSettings.sidebarHeight = customization.style.asideHeight ?? 100
+    layoutSettings.decorativeShapeA = {
+      ...layoutSettings.decorativeShapeA,
+      ...customization.style.decorativeShapeA,
+    }
+    layoutSettings.decorativeShapeB = {
+      ...layoutSettings.decorativeShapeB,
+      ...customization.style.decorativeShapeB,
+    }
+    sectionLayout.value = normalizeSectionLayout(customization.sectionOrder)
 
     watch(
-    [
-      selectedTheme,
-      selectedPageBackground,
-      selectedRounded,
-      selectedTextStyle,
-      () => layoutSettings.showSectionIcons,
-      () => layoutSettings.showContactIcons,
-      () => layoutSettings.sectionIconStyle,
-      () => layoutSettings.iconSize,
-      () => layoutSettings.iconColor,
-      () => layoutSettings.layoutMode,
-      () => layoutSettings.photoPosition,
-      () => layoutSettings.sidebarWidth,
-      () => layoutSettings.sidebarHeight,
-      () => layoutSettings.decorativeShapeA,
-      () => layoutSettings.decorativeShapeB,
-    ],
-    () => {
-      resumeDocumentState.value.customization = {
-        ...resumeDocumentState.value.customization,
-        presetId: selectedPreset.value,
-        template: {
-          structureId: templatePickerState.value.structureId,
-          layoutId: templatePickerState.value.layoutId,
-          skinId: templatePickerState.value.skinId,
-        },
-        style: {
-          ...resumeDocumentState.value.customization.style,
-          palette: selectedTheme.value,
-          pageBackground: selectedPageBackground.value,
-          radius: selectedRounded.value,
-          typography: selectedTextStyle.value,
-          showSectionIcons: layoutSettings.showSectionIcons,
-          showContactIcons: layoutSettings.showContactIcons,
-          sectionIconStyle: layoutSettings.sectionIconStyle,
-          iconSize: layoutSettings.iconSize,
-          iconColor: layoutSettings.iconColor,
-          layoutMode: layoutSettings.layoutMode,
-          photoPosition: layoutSettings.photoPosition,
-          asideWidth: layoutSettings.sidebarWidth,
-          asideHeight: layoutSettings.sidebarHeight,
-          decorativeShapeA: { ...layoutSettings.decorativeShapeA },
-          decorativeShapeB: { ...layoutSettings.decorativeShapeB },
-        },
-      }
-      persist()
-    },
-    { deep: true },
-  )
+      [
+        selectedTheme,
+        selectedPageBackground,
+        selectedRounded,
+        selectedTextStyle,
+        () => layoutSettings.showSectionIcons,
+        () => layoutSettings.showContactIcons,
+        () => layoutSettings.sectionIconStyle,
+        () => layoutSettings.iconSize,
+        () => layoutSettings.iconColor,
+        () => layoutSettings.layoutMode,
+        () => layoutSettings.photoPosition,
+        () => layoutSettings.sidebarWidth,
+        () => layoutSettings.sidebarHeight,
+        () => layoutSettings.decorativeShapeA,
+        () => layoutSettings.decorativeShapeB,
+      ],
+      () => {
+        resumeDocumentState.value.customization = {
+          ...resumeDocumentState.value.customization,
+          presetId: selectedPreset.value,
+          template: {
+            structureId: templatePickerState.value.structureId,
+            layoutId: templatePickerState.value.layoutId,
+            skinId: templatePickerState.value.skinId,
+          },
+          style: {
+            ...resumeDocumentState.value.customization.style,
+            palette: selectedTheme.value,
+            pageBackground: selectedPageBackground.value,
+            radius: selectedRounded.value,
+            typography: selectedTextStyle.value,
+            showSectionIcons: layoutSettings.showSectionIcons,
+            showContactIcons: layoutSettings.showContactIcons,
+            sectionIconStyle: layoutSettings.sectionIconStyle,
+            iconSize: layoutSettings.iconSize,
+            iconColor: layoutSettings.iconColor,
+            layoutMode: layoutSettings.layoutMode,
+            photoPosition: layoutSettings.photoPosition,
+            asideWidth: layoutSettings.sidebarWidth,
+            asideHeight: layoutSettings.sidebarHeight,
+            decorativeShapeA: { ...layoutSettings.decorativeShapeA },
+            decorativeShapeB: { ...layoutSettings.decorativeShapeB },
+          },
+        }
+        persist()
+      },
+      { deep: true },
+    )
 
     watch(
-    () => layoutSettings.lineDensity,
-    (density) => {
-      resumeDocumentState.value.customization = {
-        ...resumeDocumentState.value.customization,
-        presetId: selectedPreset.value,
-        style: {
-          ...resumeDocumentState.value.customization.style,
-          density,
-        },
-      }
-      persist()
-    },
-  )
+      () => layoutSettings.lineDensity,
+      (density) => {
+        resumeDocumentState.value.customization = {
+          ...resumeDocumentState.value.customization,
+          presetId: selectedPreset.value,
+          style: {
+            ...resumeDocumentState.value.customization.style,
+            density,
+          },
+        }
+        persist()
+      },
+    )
 
     watch(
-    sectionLayout,
-    (value) => {
-      resumeDocumentState.value.customization = {
-        ...resumeDocumentState.value.customization,
-        sectionOrder: value.map((section) => ({ ...section })),
-      }
-      persist()
-    },
-    { deep: true },
+      sectionLayout,
+      (value) => {
+        resumeDocumentState.value.customization = {
+          ...resumeDocumentState.value.customization,
+          sectionOrder: value.map((section) => ({ ...section })),
+        }
+        persist()
+      },
+      { deep: true },
     )
   })
 }
@@ -3729,7 +4072,6 @@ if (import.meta.client) {
                       thumb-label
                       hide-details
                     />
-
                   </div>
                 </v-card-text>
               </v-card>
@@ -3966,7 +4308,9 @@ if (import.meta.client) {
         <div class="d-flex ga-2 my-2">
           <v-btn
             size="small"
-            :variant="templatePickerState.mode === 'recommended' ? 'flat' : 'outlined'"
+            :variant="
+              templatePickerState.mode === 'recommended' ? 'flat' : 'outlined'
+            "
             color="primary"
             @click="templatePickerState.mode = 'recommended'"
           >
@@ -3974,7 +4318,9 @@ if (import.meta.client) {
           </v-btn>
           <v-btn
             size="small"
-            :variant="templatePickerState.mode === 'filtered' ? 'flat' : 'outlined'"
+            :variant="
+              templatePickerState.mode === 'filtered' ? 'flat' : 'outlined'
+            "
             color="primary"
             @click="templatePickerState.mode = 'filtered'"
           >
@@ -4241,11 +4587,22 @@ if (import.meta.client) {
                         :key="`toolbar-template-${template.id}`"
                         type="button"
                         class="template-drawer__item"
-                        :class="{ 'template-drawer__item--active': selectedTemplate === template.id }"
+                        :class="{
+                          'template-drawer__item--active':
+                            selectedTemplate === template.id,
+                        }"
                         @click="selectTemplateFromToolbar(template.id)"
                       >
-                        <v-img :src="template.image" :alt="template.title" height="96" cover class="template-drawer__thumb" />
-                        <span class="template-drawer__label">{{ template.title }}</span>
+                        <v-img
+                          :src="template.image"
+                          :alt="template.title"
+                          height="96"
+                          cover
+                          class="template-drawer__thumb"
+                        />
+                        <span class="template-drawer__label">{{
+                          template.title
+                        }}</span>
                       </button>
                     </div>
                   </v-card>
@@ -4282,7 +4639,11 @@ if (import.meta.client) {
                       'cv-preview-stage--bordered': selectedRounded !== 'none',
                     }"
                   >
-                    <div ref="previewPageShellRef" class="cv-page-shell" :class="previewDesignClasses">
+                    <div
+                      ref="previewPageShellRef"
+                      class="cv-page-shell"
+                      :class="previewDesignClasses"
+                    >
                       <template v-if="rendererReady">
                         <ResumeRenderer
                           :class="previewDesignClasses"
@@ -4334,7 +4695,9 @@ if (import.meta.client) {
                         >
                           {{
                             rendererError ||
-                            t('resumeBuilder.create.previewFallback.unavailable')
+                            t(
+                              'resumeBuilder.create.previewFallback.unavailable',
+                            )
                           }}
                         </v-alert>
                         <h2 class="text-h5 mb-2">
@@ -4344,7 +4707,10 @@ if (import.meta.client) {
                           }}
                         </h2>
                         <p class="text-body-2 mb-4">
-                          {{ resume.role || t('resumeBuilder.create.previewFallback.jobTitle') }}
+                          {{
+                            resume.role ||
+                            t('resumeBuilder.create.previewFallback.jobTitle')
+                          }}
                         </p>
                         <section
                           v-for="section in previewFallbackSections"
@@ -4434,7 +4800,9 @@ if (import.meta.client) {
                 v-model="addSectionDraft.education"
                 section="education"
                 :content-style-items="resumeContentStyleSelectItems"
-                @open-logo-upload="triggerFileInputById('education-image-input-add')"
+                @open-logo-upload="
+                  triggerFileInputById('education-image-input-add')
+                "
               />
               <input
                 id="education-image-input-add"
@@ -4639,7 +5007,9 @@ if (import.meta.client) {
                 v-model="sectionItemDraft.education"
                 section="education"
                 :content-style-items="resumeContentStyleSelectItems"
-                @open-logo-upload="triggerFileInputById('education-image-input-section-item')"
+                @open-logo-upload="
+                  triggerFileInputById('education-image-input-section-item')
+                "
               />
               <input
                 id="education-image-input-section-item"
@@ -4748,7 +5118,10 @@ if (import.meta.client) {
                 value="replace"
                 :label="t('resumeBuilder.create.saveModal.optionReplace')"
               />
-              <v-radio value="create" :label="t('resumeBuilder.create.saveModal.optionCreate')" />
+              <v-radio
+                value="create"
+                :label="t('resumeBuilder.create.saveModal.optionCreate')"
+              />
             </v-radio-group>
 
             <div v-if="saveMode === 'replace'" class="d-grid ga-2">
@@ -4822,7 +5195,7 @@ if (import.meta.client) {
               variant="text"
               :disabled="saveLoading"
               @click="saveModalOpen = false"
-               >{{ t('common.cancel') }}</v-btn
+              >{{ t('common.cancel') }}</v-btn
             >
             <v-btn
               v-if="saveMode === 'replace' && !replaceConfirmStep"
@@ -4839,7 +5212,11 @@ if (import.meta.client) {
               :disabled="saveMode === 'replace' && !selectedRemoteResumeId"
               @click="submitSaveAction"
             >
-              {{ saveMode === 'replace' ? t('resumeBuilder.create.saveModal.replace') : t('resumeBuilder.create.saveModal.create') }}
+              {{
+                saveMode === 'replace'
+                  ? t('resumeBuilder.create.saveModal.replace')
+                  : t('resumeBuilder.create.saveModal.create')
+              }}
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -4848,11 +5225,13 @@ if (import.meta.client) {
       <v-dialog v-model="deleteConfirmModalOpen" max-width="460">
         <v-card>
           <v-card-title>{{ t('common.confirmation') }}</v-card-title>
-          <v-card-text>{{ t('resumeBuilder.create.saveModal.deleteConfirm') }}</v-card-text>
+          <v-card-text>{{
+            t('resumeBuilder.create.saveModal.deleteConfirm')
+          }}</v-card-text>
           <v-card-actions class="justify-end">
-            <v-btn variant="text" @click="deleteConfirmModalOpen = false"
-               >{{ t('common.cancel') }}</v-btn
-            >
+            <v-btn variant="text" @click="deleteConfirmModalOpen = false">{{
+              t('common.cancel')
+            }}</v-btn>
             <v-btn color="error" @click="confirmDeleteRemoteResume"
               >Delete</v-btn
             >
@@ -4913,12 +5292,12 @@ if (import.meta.client) {
                       "
                       :on-photo-click="onPreviewPhotoClick"
                       :template-config="{
-                            templateId: selectedTemplate,
-                            structureId: templatePickerState.structureId,
-                            layoutId: templatePickerState.layoutId,
-                            skinId: templatePickerState.skinId,
-                            layoutMode: layoutSettings.layoutMode,
-                          }"
+                        templateId: selectedTemplate,
+                        structureId: templatePickerState.structureId,
+                        layoutId: templatePickerState.layoutId,
+                        skinId: templatePickerState.skinId,
+                        layoutMode: layoutSettings.layoutMode,
+                      }"
                       editable
                       @add-item="addItemToPreviewSection"
                       @change-variant="setSectionVariant"
@@ -5123,13 +5502,13 @@ if (import.meta.client) {
               prepend-icon="mdi-eraser"
               variant="text"
               @click="clearSignature"
-               >{{ t('resumeBuilder.create.signature.clear') }}</v-btn
+              >{{ t('resumeBuilder.create.signature.clear') }}</v-btn
             >
             <v-btn
               color="primary"
               prepend-icon="mdi-content-save-outline"
               @click="saveSignature"
-               >{{ t('resumeBuilder.create.signature.addToResume') }}</v-btn
+              >{{ t('resumeBuilder.create.signature.addToResume') }}</v-btn
             >
           </v-card-actions>
         </v-card>
@@ -5463,8 +5842,10 @@ if (import.meta.client) {
     to bottom,
     transparent 0,
     transparent calc(var(--preview-a4-height) - 2px),
-    color-mix(in srgb, var(--cv-accent) 38%, transparent) calc(var(--preview-a4-height) - 2px),
-    color-mix(in srgb, var(--cv-accent) 38%, transparent) var(--preview-a4-height)
+    color-mix(in srgb, var(--cv-accent) 38%, transparent)
+      calc(var(--preview-a4-height) - 2px),
+    color-mix(in srgb, var(--cv-accent) 38%, transparent)
+      var(--preview-a4-height)
   );
   pointer-events: none;
   z-index: 0;

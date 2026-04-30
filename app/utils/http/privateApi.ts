@@ -1,7 +1,10 @@
 import type { AxiosRequestConfig, Method } from 'axios'
 import { usePrivateAxios } from './axiosClient'
 
-type PrivateApiRequestOptions = Omit<AxiosRequestConfig, 'url' | 'method' | 'data'> & {
+type PrivateApiRequestOptions = Omit<
+  AxiosRequestConfig,
+  'url' | 'method' | 'data'
+> & {
   method?: Method
   body?: AxiosRequestConfig['data']
   data?: AxiosRequestConfig['data']

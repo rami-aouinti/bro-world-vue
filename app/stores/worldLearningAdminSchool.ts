@@ -42,21 +42,23 @@ export const useWorldLearningAdminSchoolStore = defineStore(
     async function fetchSummary(options?: { force?: boolean }) {
       const cacheKey = 'summary'
       if (!options?.force && isFresh(cacheKey)) {
-        summary.value = cache.value[cacheKey].data as LearningAdminSchoolSummaryItem[]
+        summary.value = cache.value[cacheKey]
+          .data as LearningAdminSchoolSummaryItem[]
         return summary.value
       }
 
       pending.value = true
       error.value = null
       try {
-        const response = await $fetch<{ items: LearningAdminSchoolSummaryItem[] }>(
-          '/api/world/learning/admin/school/summary',
-        )
+        const response = await $fetch<{
+          items: LearningAdminSchoolSummaryItem[]
+        }>('/api/world/learning/admin/school/summary')
         summary.value = response.items
         cache.value[cacheKey] = { at: Date.now(), data: response.items }
         return response.items
       } catch (err) {
-        error.value = err instanceof Error ? err.message : 'Unable to load summary'
+        error.value =
+          err instanceof Error ? err.message : 'Unable to load summary'
         throw err
       } finally {
         pending.value = false
@@ -80,7 +82,8 @@ export const useWorldLearningAdminSchoolStore = defineStore(
         cache.value[cacheKey] = { at: Date.now(), data: response.items }
         return response.items
       } catch (err) {
-        error.value = err instanceof Error ? err.message : 'Unable to load classes'
+        error.value =
+          err instanceof Error ? err.message : 'Unable to load classes'
         throw err
       } finally {
         pending.value = false
@@ -91,7 +94,8 @@ export const useWorldLearningAdminSchoolStore = defineStore(
       if (!id) return null
       const cacheKey = `classes:item:${id}`
       if (!options?.force && isFresh(cacheKey)) {
-        selectedClass.value = cache.value[cacheKey].data as LearningAdminSchoolClass
+        selectedClass.value = cache.value[cacheKey]
+          .data as LearningAdminSchoolClass
         return selectedClass.value
       }
 
@@ -105,7 +109,8 @@ export const useWorldLearningAdminSchoolStore = defineStore(
         cache.value[cacheKey] = { at: Date.now(), data: response.item }
         return response.item
       } catch (err) {
-        error.value = err instanceof Error ? err.message : 'Unable to load class details'
+        error.value =
+          err instanceof Error ? err.message : 'Unable to load class details'
         throw err
       } finally {
         pending.value = false
@@ -122,10 +127,14 @@ export const useWorldLearningAdminSchoolStore = defineStore(
         )
         invalidate('classes:')
         invalidate('summary')
-        await Promise.all([fetchClasses({ force: true }), fetchSummary({ force: true })])
+        await Promise.all([
+          fetchClasses({ force: true }),
+          fetchSummary({ force: true }),
+        ])
         return response.item
       } catch (err) {
-        error.value = err instanceof Error ? err.message : 'Unable to create class'
+        error.value =
+          err instanceof Error ? err.message : 'Unable to create class'
         throw err
       } finally {
         pending.value = false
@@ -145,10 +154,14 @@ export const useWorldLearningAdminSchoolStore = defineStore(
         )
         invalidate('classes:')
         invalidate('summary')
-        await Promise.all([fetchClasses({ force: true }), fetchSummary({ force: true })])
+        await Promise.all([
+          fetchClasses({ force: true }),
+          fetchSummary({ force: true }),
+        ])
         return response.item
       } catch (err) {
-        error.value = err instanceof Error ? err.message : 'Unable to update class'
+        error.value =
+          err instanceof Error ? err.message : 'Unable to update class'
         throw err
       } finally {
         pending.value = false
@@ -164,9 +177,13 @@ export const useWorldLearningAdminSchoolStore = defineStore(
         })
         invalidate('classes:')
         invalidate('summary')
-        await Promise.all([fetchClasses({ force: true }), fetchSummary({ force: true })])
+        await Promise.all([
+          fetchClasses({ force: true }),
+          fetchSummary({ force: true }),
+        ])
       } catch (err) {
-        error.value = err instanceof Error ? err.message : 'Unable to delete class'
+        error.value =
+          err instanceof Error ? err.message : 'Unable to delete class'
         throw err
       } finally {
         pending.value = false

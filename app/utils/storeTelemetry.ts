@@ -8,7 +8,10 @@ export type StoreTelemetryEntry = {
   totalFetchDurationMs: number
 }
 
-export type StoreTelemetrySnapshot = Record<StoreTelemetryModule, StoreTelemetryEntry>
+export type StoreTelemetrySnapshot = Record<
+  StoreTelemetryModule,
+  StoreTelemetryEntry
+>
 
 function createEntry(): StoreTelemetryEntry {
   return {
@@ -27,7 +30,10 @@ const telemetryState: StoreTelemetrySnapshot = {
   shop: createEntry(),
 }
 
-export function recordStoreCacheEvent(module: StoreTelemetryModule, hit: boolean) {
+export function recordStoreCacheEvent(
+  module: StoreTelemetryModule,
+  hit: boolean,
+) {
   if (hit) {
     telemetryState[module].cacheHits += 1
     return

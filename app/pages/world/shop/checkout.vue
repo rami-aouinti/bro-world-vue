@@ -12,7 +12,10 @@ const loading = ref(false)
 const errorMessage = ref('')
 
 const shippingMethods = computed(() => [
-  { title: t('world.shop.checkout.shippingMethods.standard'), value: 'standard' },
+  {
+    title: t('world.shop.checkout.shippingMethods.standard'),
+    value: 'standard',
+  },
   { title: t('world.shop.checkout.shippingMethods.express'), value: 'express' },
   { title: t('world.shop.checkout.shippingMethods.pickup'), value: 'pickup' },
 ])
@@ -64,7 +67,9 @@ const defaultAddress: WorldShopCheckoutAddress = {
   phone: '+1 555-0100',
 }
 
-const shippingAddress = reactive<WorldShopCheckoutAddress>({ ...defaultAddress })
+const shippingAddress = reactive<WorldShopCheckoutAddress>({
+  ...defaultAddress,
+})
 const billingAddress = reactive<WorldShopCheckoutAddress>({ ...defaultAddress })
 
 watch(useSameBillingAddress, (same) => {
@@ -74,7 +79,8 @@ watch(useSameBillingAddress, (same) => {
 watch(
   shippingAddress,
   () => {
-    if (useSameBillingAddress.value) Object.assign(billingAddress, shippingAddress)
+    if (useSameBillingAddress.value)
+      Object.assign(billingAddress, shippingAddress)
   },
   { deep: true },
 )
@@ -155,7 +161,11 @@ onMounted(async () => {
               {{ t('world.shop.checkout.subtitle') }}
             </p>
           </div>
-          <v-btn color="primary" :loading="loading" @click="createOrderCheckout">
+          <v-btn
+            color="primary"
+            :loading="loading"
+            @click="createOrderCheckout"
+          >
             {{ t('world.shop.checkout.actions.createOrder') }}
           </v-btn>
         </div>
@@ -167,7 +177,9 @@ onMounted(async () => {
         <v-row>
           <v-col cols="12" md="7">
             <v-card variant="outlined" rounded="lg" class="pa-4 mb-4">
-              <h3 class="text-subtitle-1 mb-3">{{ t('world.shop.checkout.sections.cart') }}</h3>
+              <h3 class="text-subtitle-1 mb-3">
+                {{ t('world.shop.checkout.sections.cart') }}
+              </h3>
               <v-table density="comfortable">
                 <thead>
                   <tr>
@@ -180,23 +192,36 @@ onMounted(async () => {
                   <tr v-for="line in cart" :key="line.productId">
                     <td>{{ line.name }}</td>
                     <td>{{ line.quantity }}</td>
-                    <td>{{ formatCurrency(line.unitPrice, checkoutCurrency) }}</td>
+                    <td>
+                      {{ formatCurrency(line.unitPrice, checkoutCurrency) }}
+                    </td>
                   </tr>
                   <tr v-if="cart.length === 0">
-                    <td colspan="3" class="text-medium-emphasis">{{ t('world.shop.checkout.emptyCart') }}</td>
+                    <td colspan="3" class="text-medium-emphasis">
+                      {{ t('world.shop.checkout.emptyCart') }}
+                    </td>
                   </tr>
                 </tbody>
               </v-table>
             </v-card>
 
             <v-card variant="outlined" rounded="lg" class="pa-4 mb-4">
-              <h3 class="text-subtitle-1 mb-3">{{ t('world.shop.checkout.sections.contact') }}</h3>
+              <h3 class="text-subtitle-1 mb-3">
+                {{ t('world.shop.checkout.sections.contact') }}
+              </h3>
               <v-row>
                 <v-col cols="12" md="6">
-                  <v-text-field v-model="email" :label="t('world.shop.checkout.fields.email')" type="email" />
+                  <v-text-field
+                    v-model="email"
+                    :label="t('world.shop.checkout.fields.email')"
+                    type="email"
+                  />
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-text-field v-model="phone" :label="t('world.shop.checkout.fields.phone')" />
+                  <v-text-field
+                    v-model="phone"
+                    :label="t('world.shop.checkout.fields.phone')"
+                  />
                 </v-col>
                 <v-col cols="12" md="6">
                   <AppSelect
@@ -218,38 +243,107 @@ onMounted(async () => {
             </v-card>
 
             <v-card variant="outlined" rounded="lg" class="pa-4 mb-4">
-              <h3 class="text-subtitle-1 mb-3">{{ t('world.shop.checkout.sections.shippingAddress') }}</h3>
+              <h3 class="text-subtitle-1 mb-3">
+                {{ t('world.shop.checkout.sections.shippingAddress') }}
+              </h3>
               <v-row>
-                <v-col cols="12" md="6"><v-text-field v-model="shippingAddress.fullName" :label="t('world.shop.checkout.address.fullName')" /></v-col>
-                <v-col cols="12"><v-text-field v-model="shippingAddress.line1" :label="t('world.shop.checkout.address.line1')" /></v-col>
-                <v-col cols="12"><v-text-field v-model="shippingAddress.line2" :label="t('world.shop.checkout.address.line2')" /></v-col>
-                <v-col cols="12" md="4"><v-text-field v-model="shippingAddress.city" :label="t('world.shop.checkout.address.city')" /></v-col>
-                <v-col cols="12" md="4"><v-text-field v-model="shippingAddress.state" :label="t('world.shop.checkout.address.state')" /></v-col>
-                <v-col cols="12" md="4"><v-text-field v-model="shippingAddress.postalCode" :label="t('world.shop.checkout.address.postalCode')" /></v-col>
-                <v-col cols="12" md="6"><v-text-field v-model="shippingAddress.country" :label="t('world.shop.checkout.address.country')" /></v-col>
+                <v-col cols="12" md="6"
+                  ><v-text-field
+                    v-model="shippingAddress.fullName"
+                    :label="t('world.shop.checkout.address.fullName')"
+                /></v-col>
+                <v-col cols="12"
+                  ><v-text-field
+                    v-model="shippingAddress.line1"
+                    :label="t('world.shop.checkout.address.line1')"
+                /></v-col>
+                <v-col cols="12"
+                  ><v-text-field
+                    v-model="shippingAddress.line2"
+                    :label="t('world.shop.checkout.address.line2')"
+                /></v-col>
+                <v-col cols="12" md="4"
+                  ><v-text-field
+                    v-model="shippingAddress.city"
+                    :label="t('world.shop.checkout.address.city')"
+                /></v-col>
+                <v-col cols="12" md="4"
+                  ><v-text-field
+                    v-model="shippingAddress.state"
+                    :label="t('world.shop.checkout.address.state')"
+                /></v-col>
+                <v-col cols="12" md="4"
+                  ><v-text-field
+                    v-model="shippingAddress.postalCode"
+                    :label="t('world.shop.checkout.address.postalCode')"
+                /></v-col>
+                <v-col cols="12" md="6"
+                  ><v-text-field
+                    v-model="shippingAddress.country"
+                    :label="t('world.shop.checkout.address.country')"
+                /></v-col>
               </v-row>
             </v-card>
 
-            <v-card v-if="!useSameBillingAddress" variant="outlined" rounded="lg" class="pa-4">
-              <h3 class="text-subtitle-1 mb-3">{{ t('world.shop.checkout.sections.billingAddress') }}</h3>
+            <v-card
+              v-if="!useSameBillingAddress"
+              variant="outlined"
+              rounded="lg"
+              class="pa-4"
+            >
+              <h3 class="text-subtitle-1 mb-3">
+                {{ t('world.shop.checkout.sections.billingAddress') }}
+              </h3>
               <v-row>
-                <v-col cols="12" md="6"><v-text-field v-model="billingAddress.fullName" :label="t('world.shop.checkout.address.fullName')" /></v-col>
-                <v-col cols="12"><v-text-field v-model="billingAddress.line1" :label="t('world.shop.checkout.address.line1')" /></v-col>
-                <v-col cols="12"><v-text-field v-model="billingAddress.line2" :label="t('world.shop.checkout.address.line2')" /></v-col>
-                <v-col cols="12" md="4"><v-text-field v-model="billingAddress.city" :label="t('world.shop.checkout.address.city')" /></v-col>
-                <v-col cols="12" md="4"><v-text-field v-model="billingAddress.state" :label="t('world.shop.checkout.address.state')" /></v-col>
-                <v-col cols="12" md="4"><v-text-field v-model="billingAddress.postalCode" :label="t('world.shop.checkout.address.postalCode')" /></v-col>
-                <v-col cols="12" md="6"><v-text-field v-model="billingAddress.country" :label="t('world.shop.checkout.address.country')" /></v-col>
+                <v-col cols="12" md="6"
+                  ><v-text-field
+                    v-model="billingAddress.fullName"
+                    :label="t('world.shop.checkout.address.fullName')"
+                /></v-col>
+                <v-col cols="12"
+                  ><v-text-field
+                    v-model="billingAddress.line1"
+                    :label="t('world.shop.checkout.address.line1')"
+                /></v-col>
+                <v-col cols="12"
+                  ><v-text-field
+                    v-model="billingAddress.line2"
+                    :label="t('world.shop.checkout.address.line2')"
+                /></v-col>
+                <v-col cols="12" md="4"
+                  ><v-text-field
+                    v-model="billingAddress.city"
+                    :label="t('world.shop.checkout.address.city')"
+                /></v-col>
+                <v-col cols="12" md="4"
+                  ><v-text-field
+                    v-model="billingAddress.state"
+                    :label="t('world.shop.checkout.address.state')"
+                /></v-col>
+                <v-col cols="12" md="4"
+                  ><v-text-field
+                    v-model="billingAddress.postalCode"
+                    :label="t('world.shop.checkout.address.postalCode')"
+                /></v-col>
+                <v-col cols="12" md="6"
+                  ><v-text-field
+                    v-model="billingAddress.country"
+                    :label="t('world.shop.checkout.address.country')"
+                /></v-col>
               </v-row>
             </v-card>
           </v-col>
 
           <v-col cols="12" md="5">
             <v-card variant="outlined" rounded="lg" class="pa-4">
-              <h3 class="text-subtitle-1 mb-3">{{ t('world.shop.checkout.summary.title') }}</h3>
+              <h3 class="text-subtitle-1 mb-3">
+                {{ t('world.shop.checkout.summary.title') }}
+              </h3>
               <p class="mb-2">
                 {{ t('world.shop.checkout.summary.lastOrder') }}:
-                <strong>{{ selectedOrder?.id || t('world.shop.common.notAvailable') }}</strong>
+                <strong>{{
+                  selectedOrder?.id || t('world.shop.common.notAvailable')
+                }}</strong>
               </p>
               <p class="mb-2">
                 {{ t('world.shop.checkout.summary.status') }}:
@@ -257,11 +351,15 @@ onMounted(async () => {
               </p>
               <p class="mb-2">
                 {{ t('world.shop.checkout.summary.shippingMethod') }}:
-                <strong>{{ t(`world.shop.checkout.shippingMethods.${shippingMethod}`) }}</strong>
+                <strong>{{
+                  t(`world.shop.checkout.shippingMethods.${shippingMethod}`)
+                }}</strong>
               </p>
               <p>
                 {{ t('world.shop.checkout.summary.subtotal') }}:
-                <strong>{{ formatCurrency(subtotal, checkoutCurrency) }}</strong>
+                <strong>{{
+                  formatCurrency(subtotal, checkoutCurrency)
+                }}</strong>
               </p>
             </v-card>
           </v-col>

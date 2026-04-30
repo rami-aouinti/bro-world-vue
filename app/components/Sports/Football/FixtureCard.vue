@@ -50,28 +50,67 @@ const STATUS_CHIP_MAP: Record<string, FixtureStatusChip> = {
   PST: { color: 'warning', labelKey: 'pages.applications.football.status.PST' },
   CANC: { color: 'error', labelKey: 'pages.applications.football.status.CANC' },
   ABD: { color: 'error', labelKey: 'pages.applications.football.status.ABD' },
-  AWD: { color: 'secondary', labelKey: 'pages.applications.football.status.AWD' },
+  AWD: {
+    color: 'secondary',
+    labelKey: 'pages.applications.football.status.AWD',
+  },
   WO: { color: 'secondary', labelKey: 'pages.applications.football.status.WO' },
-  HT: { color: 'warning', labelKey: 'pages.applications.football.status.HT', live: true },
+  HT: {
+    color: 'warning',
+    labelKey: 'pages.applications.football.status.HT',
+    live: true,
+  },
   FT: { color: 'success', labelKey: 'pages.applications.football.status.FT' },
   AET: { color: 'success', labelKey: 'pages.applications.football.status.AET' },
-  PEN: { color: 'secondary', labelKey: 'pages.applications.football.status.PEN', live: true },
-  ET: { color: 'warning', labelKey: 'pages.applications.football.status.ET', live: true },
-  BT: { color: 'warning', labelKey: 'pages.applications.football.status.BT', live: true },
-  INT: { color: 'warning', labelKey: 'pages.applications.football.status.INT', live: true },
+  PEN: {
+    color: 'secondary',
+    labelKey: 'pages.applications.football.status.PEN',
+    live: true,
+  },
+  ET: {
+    color: 'warning',
+    labelKey: 'pages.applications.football.status.ET',
+    live: true,
+  },
+  BT: {
+    color: 'warning',
+    labelKey: 'pages.applications.football.status.BT',
+    live: true,
+  },
+  INT: {
+    color: 'warning',
+    labelKey: 'pages.applications.football.status.INT',
+    live: true,
+  },
   SUSP: { color: 'error', labelKey: 'pages.applications.football.status.SUSP' },
-  LIVE: { color: 'error', labelKey: 'pages.applications.football.status.LIVE', live: true },
-  '1H': { color: 'error', labelKey: 'pages.applications.football.status._1H', live: true },
-  '2H': { color: 'error', labelKey: 'pages.applications.football.status._2H', live: true },
+  LIVE: {
+    color: 'error',
+    labelKey: 'pages.applications.football.status.LIVE',
+    live: true,
+  },
+  '1H': {
+    color: 'error',
+    labelKey: 'pages.applications.football.status._1H',
+    live: true,
+  },
+  '2H': {
+    color: 'error',
+    labelKey: 'pages.applications.football.status._2H',
+    live: true,
+  },
 }
 
-const statusShort = computed(() => (props.fixture.status?.short ?? 'NS').toUpperCase())
+const statusShort = computed(() =>
+  (props.fixture.status?.short ?? 'NS').toUpperCase(),
+)
 
 const statusChip = computed<FixtureStatusChip>(() => {
-  return STATUS_CHIP_MAP[statusShort.value] ?? {
-    color: 'primary',
-    labelKey: '',
-  }
+  return (
+    STATUS_CHIP_MAP[statusShort.value] ?? {
+      color: 'primary',
+      labelKey: '',
+    }
+  )
 })
 
 const elapsedLabel = computed(() => {
@@ -96,9 +135,10 @@ const formattedKickoff = computed(() => {
   }
 
   try {
-    return formatDateTime(locale.value === 'fr' ? 'fr-FR' : 'en-US', kickoff, { dateStyle: 'medium' })
-  }
-  catch {
+    return formatDateTime(locale.value === 'fr' ? 'fr-FR' : 'en-US', kickoff, {
+      dateStyle: 'medium',
+    })
+  } catch {
     return formatDateTime('en-US', kickoff)
   }
 })
@@ -120,7 +160,6 @@ const homeGoals = computed(() => {
 const awayGoals = computed(() => {
   return props.fixture.goals?.away ?? '-'
 })
-
 
 const oddsLabel = computed(() => {
   const odds = props.fixture.odds
@@ -161,7 +200,10 @@ function selectTeam(teamId?: number | null) {
       </div>
 
       <div class="fixture-card__main-row">
-        <div class="d-flex align-center fixture-card__team fixture-card__team--clickable" @click.stop="selectTeam(fixture.teams.home.id)">
+        <div
+          class="d-flex align-center fixture-card__team fixture-card__team--clickable"
+          @click.stop="selectTeam(fixture.teams.home.id)"
+        >
           <v-avatar size="28" class="mr-2" color="primary" variant="tonal">
             <v-img
               v-if="fixture.teams.home.logo"
@@ -172,17 +214,27 @@ function selectTeam(teamId?: number | null) {
               {{ fixture.teams.home.name.charAt(0).toUpperCase() || '?' }}
             </span>
           </v-avatar>
-          <span class="text-truncate fixture-card__team-name">{{ fixture.teams.home.name }}</span>
+          <span class="text-truncate fixture-card__team-name">{{
+            fixture.teams.home.name
+          }}</span>
         </div>
 
-        <div class="fixture-card__score" :aria-label="t('pages.applications.football.misc.score')">
+        <div
+          class="fixture-card__score"
+          :aria-label="t('pages.applications.football.misc.score')"
+        >
           <span class="fixture-card__score-goal">{{ homeGoals }}</span>
           <span class="fixture-card__score-separator">-</span>
           <span class="fixture-card__score-goal">{{ awayGoals }}</span>
         </div>
 
-        <div class="d-flex align-center justify-end fixture-card__team fixture-card__team--clickable" @click.stop="selectTeam(fixture.teams.away.id)">
-          <span class="text-truncate text-right fixture-card__team-name">{{ fixture.teams.away.name }}</span>
+        <div
+          class="d-flex align-center justify-end fixture-card__team fixture-card__team--clickable"
+          @click.stop="selectTeam(fixture.teams.away.id)"
+        >
+          <span class="text-truncate text-right fixture-card__team-name">{{
+            fixture.teams.away.name
+          }}</span>
           <v-avatar size="28" class="ml-2" color="primary" variant="tonal">
             <v-img
               v-if="fixture.teams.away.logo"
@@ -197,15 +249,14 @@ function selectTeam(teamId?: number | null) {
       </div>
 
       <div class="fixture-card__status-row mt-2">
-        <div v-if="oddsLabel" class="text-caption text-medium-emphasis">{{ oddsLabel }}</div>
+        <div v-if="oddsLabel" class="text-caption text-medium-emphasis">
+          {{ oddsLabel }}
+        </div>
         <div class="text-truncate fixture-card__status-long">
           {{ longStatusLabel }}
         </div>
         <div class="d-flex align-center ga-1">
-          <span
-            v-if="elapsedLabel"
-            class="fixture-card__elapsed"
-          >
+          <span v-if="elapsedLabel" class="fixture-card__elapsed">
             {{ elapsedLabel }}
           </span>
           <v-chip
@@ -226,7 +277,11 @@ function selectTeam(teamId?: number | null) {
 .fixture-card {
   cursor: pointer;
   border-color: rgba(var(--v-theme-on-surface), 0.15);
-  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease, background-color 180ms ease;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease,
+    background-color 180ms ease;
 }
 
 .fixture-card__content {

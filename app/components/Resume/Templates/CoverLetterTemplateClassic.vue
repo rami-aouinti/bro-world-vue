@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { buildCoverDesignVars, type CoverLayoutSettings } from '~/composables/useResumeCoverDesign'
+import {
+  buildCoverDesignVars,
+  type CoverLayoutSettings,
+} from '~/composables/useResumeCoverDesign'
 
 type Palette = {
   page: string
@@ -21,19 +24,22 @@ type CoverLetterModel = {
   phone: string
 }
 
-const props = withDefaults(defineProps<{
-  model: CoverLetterModel
-  palette: Palette
-  typography?: 'sans' | 'serif'
-  textStyle?: 'clean' | 'italic' | 'serif' | 'mono' | 'display'
-  rounded?: string
-  layoutSettings?: CoverLayoutSettings
-}>(), {
-  typography: 'sans',
-  textStyle: 'clean',
-  rounded: 'md',
-  layoutSettings: () => ({}),
-})
+const props = withDefaults(
+  defineProps<{
+    model: CoverLetterModel
+    palette: Palette
+    typography?: 'sans' | 'serif'
+    textStyle?: 'clean' | 'italic' | 'serif' | 'mono' | 'display'
+    rounded?: string
+    layoutSettings?: CoverLayoutSettings
+  }>(),
+  {
+    typography: 'sans',
+    textStyle: 'clean',
+    rounded: 'md',
+    layoutSettings: () => ({}),
+  },
+)
 
 const designVars = computed(() => buildCoverDesignVars('cl', props))
 </script>
@@ -51,7 +57,10 @@ const designVars = computed(() => buildCoverDesignVars('cl', props))
   >
     <header>
       <h1>{{ props.model.fullName }}</h1>
-      <p>{{ props.model.role }} · {{ props.model.email }} · {{ props.model.phone }}</p>
+      <p>
+        {{ props.model.role }} · {{ props.model.email }} ·
+        {{ props.model.phone }}
+      </p>
     </header>
 
     <div class="cover-letter-classic__recipient">
@@ -70,10 +79,37 @@ const designVars = computed(() => buildCoverDesignVars('cl', props))
 </template>
 
 <style scoped>
-.cover-letter-classic { font-family: var(--cl-font-family, 'Inter', 'Segoe UI', sans-serif); font-style: var(--cl-font-style, normal); font-weight: var(--cl-font-weight, 400); background: var(--cl-page); color: var(--cl-text); min-height: 100%; padding: 40px 46px; border-radius: var(--cl-rounded); border: 1px solid color-mix(in srgb, var(--cl-accent) 18%, transparent); }
-.cover-letter-classic header { border-bottom: var(--cl-divider-width) var(--cl-divider-style) var(--cl-soft); padding-bottom: 14px; margin-bottom: 24px; }
-.cover-letter-classic h1 { color: var(--cl-page); font-size: 1.9rem; }
-.cover-letter-classic__recipient { margin-bottom: 18px; }
-.cover-letter-classic section { display: grid; gap: 12px; line-height: 1.68; }
-.cover-letter-classic__dropcap { color: color-mix(in srgb, var(--cl-accent) 70%, black); font-size: 1.2rem; margin-bottom: 2px; }
+.cover-letter-classic {
+  font-family: var(--cl-font-family, 'Inter', 'Segoe UI', sans-serif);
+  font-style: var(--cl-font-style, normal);
+  font-weight: var(--cl-font-weight, 400);
+  background: var(--cl-page);
+  color: var(--cl-text);
+  min-height: 100%;
+  padding: 40px 46px;
+  border-radius: var(--cl-rounded);
+  border: 1px solid color-mix(in srgb, var(--cl-accent) 18%, transparent);
+}
+.cover-letter-classic header {
+  border-bottom: var(--cl-divider-width) var(--cl-divider-style) var(--cl-soft);
+  padding-bottom: 14px;
+  margin-bottom: 24px;
+}
+.cover-letter-classic h1 {
+  color: var(--cl-page);
+  font-size: 1.9rem;
+}
+.cover-letter-classic__recipient {
+  margin-bottom: 18px;
+}
+.cover-letter-classic section {
+  display: grid;
+  gap: 12px;
+  line-height: 1.68;
+}
+.cover-letter-classic__dropcap {
+  color: color-mix(in srgb, var(--cl-accent) 70%, black);
+  font-size: 1.2rem;
+  margin-bottom: 2px;
+}
 </style>

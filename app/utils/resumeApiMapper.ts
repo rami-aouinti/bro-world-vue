@@ -51,13 +51,48 @@ export type BuilderResumeModel = {
   birthPlace: string
   homepage: string
   repoProfile: string
-  experiences: Array<{ role: string; company: string; city: string; start: string; end: string; bullets: string[] }>
-  education: Array<{ degree: string; school: string; city: string; start: string; end: string; note: string }>
+  experiences: Array<{
+    role: string
+    company: string
+    city: string
+    start: string
+    end: string
+    bullets: string[]
+  }>
+  education: Array<{
+    degree: string
+    school: string
+    city: string
+    start: string
+    end: string
+    note: string
+  }>
   skills: Array<{ name: string; level: number }>
-  languages: Array<{ name: string; level: number; countryCode?: string; flag?: string }>
-  courses: Array<{ title: string; school: string; start: string; end: string; attachments?: string[] }>
-  projects: Array<{ name: string; summary: string; repositoryUrl?: string; attachments?: string[] }>
-  references: Array<{ name: string; company: string; email: string; phone: string }>
+  languages: Array<{
+    name: string
+    level: number
+    countryCode?: string
+    flag?: string
+  }>
+  courses: Array<{
+    title: string
+    school: string
+    start: string
+    end: string
+    attachments?: string[]
+  }>
+  projects: Array<{
+    name: string
+    summary: string
+    repositoryUrl?: string
+    attachments?: string[]
+  }>
+  references: Array<{
+    name: string
+    company: string
+    email: string
+    phone: string
+  }>
   hobbies: string[]
   documentUrl: string | null
   resumeInformation: {
@@ -100,7 +135,8 @@ function parseLevelToPercent(level: unknown) {
 
   const asNumber = Number(normalized)
   if (!Number.isNaN(asNumber)) {
-    if (asNumber <= 5) return Math.max(20, Math.min(100, Math.round(asNumber * 20)))
+    if (asNumber <= 5)
+      return Math.max(20, Math.min(100, Math.round(asNumber * 20)))
     return Math.max(0, Math.min(100, Math.round(asNumber)))
   }
 
@@ -125,7 +161,10 @@ function splitName(fullName: string) {
 }
 
 function splitAddress(address: string) {
-  const parts = address.split(',').map(part => part.trim()).filter(Boolean)
+  const parts = address
+    .split(',')
+    .map((part) => part.trim())
+    .filter(Boolean)
   return {
     city: parts[0] || '',
     country: parts.length > 1 ? parts[parts.length - 1] : '',
@@ -139,11 +178,13 @@ function asArray<T>(value: T[] | null | undefined) {
 function splitBullets(description: string) {
   return description
     .split(/\n|•|-/g)
-    .map(entry => entry.trim())
+    .map((entry) => entry.trim())
     .filter(Boolean)
 }
 
-export function fromApiResumeToBuilderModel(apiResume: ApiResume): BuilderResumeModel {
+export function fromApiResumeToBuilderModel(
+  apiResume: ApiResume,
+): BuilderResumeModel {
   const info = apiResume.resumeInformation || {}
   const fullName = normalizeText(info.fullName)
   const address = normalizeText(info.address || info.adresse)
@@ -163,7 +204,7 @@ export function fromApiResumeToBuilderModel(apiResume: ApiResume): BuilderResume
     birthPlace: normalizeText(info.birthPlace),
     homepage: normalizeText(info.homepage),
     repoProfile: normalizeText(info.repo_profile),
-    experiences: asArray(apiResume.experiences).map(section => ({
+    experiences: asArray(apiResume.experiences).map((section) => ({
       role: normalizeText(section.title),
       company: normalizeText(section.company),
       city: normalizeText(section.location),
@@ -171,7 +212,7 @@ export function fromApiResumeToBuilderModel(apiResume: ApiResume): BuilderResume
       end: normalizeText(section.endDate),
       bullets: splitBullets(normalizeText(section.description)),
     })),
-    education: asArray(apiResume.educations).map(section => ({
+    education: asArray(apiResume.educations).map((section) => ({
       degree: normalizeText(section.title),
       school: normalizeText(section.school),
       city: normalizeText(section.location),
@@ -180,36 +221,36 @@ export function fromApiResumeToBuilderModel(apiResume: ApiResume): BuilderResume
       note: normalizeText(section.description),
     })),
     skills: asArray(apiResume.skills)
-      .map(section => normalizeText(section.title))
+      .map((section) => normalizeText(section.title))
       .filter(Boolean)
-      .map(name => ({ name, level: 80 })),
+      .map((name) => ({ name, level: 80 })),
     languages: asArray(apiResume.languages)
-      .map(section => ({
+      .map((section) => ({
         name: normalizeText(section.title),
         level: parseLevelToPercent(section.level),
       }))
-      .filter(language => language.name),
-    courses: asArray(apiResume.certifications).map(section => ({
+      .filter((language) => language.name),
+    courses: asArray(apiResume.certifications).map((section) => ({
       title: normalizeText(section.title),
       school: normalizeText(section.school || section.company),
       start: normalizeText(section.startDate),
       end: normalizeText(section.endDate),
       attachments: asArray(section.attachments).filter(Boolean),
     })),
-    projects: asArray(apiResume.projects).map(section => ({
+    projects: asArray(apiResume.projects).map((section) => ({
       name: normalizeText(section.title),
       summary: normalizeText(section.description),
       repositoryUrl: normalizeText(section.home_page) || undefined,
       attachments: asArray(section.attachments).filter(Boolean),
     })),
-    references: asArray(apiResume.references).map(section => ({
+    references: asArray(apiResume.references).map((section) => ({
       name: normalizeText(section.title),
       company: normalizeText(section.company || section.school),
       email: '',
       phone: normalizeText(section.description),
     })),
     hobbies: asArray(apiResume.hobbies)
-      .map(section => normalizeText(section.title))
+      .map((section) => normalizeText(section.title))
       .filter(Boolean),
     documentUrl: apiResume.documentUrl ?? null,
     resumeInformation: {
@@ -228,9 +269,16 @@ export function fromApiResumeToBuilderModel(apiResume: ApiResume): BuilderResume
   }
 }
 
-export function fromBuilderModelToApiPayload(builderResume: BuilderResumeModel): ApiResume {
-  const fullName = normalizeText(`${builderResume.firstName} ${builderResume.lastName}`)
-  const address = [builderResume.city, builderResume.country].map(normalizeText).filter(Boolean).join(', ')
+export function fromBuilderModelToApiPayload(
+  builderResume: BuilderResumeModel,
+): ApiResume {
+  const fullName = normalizeText(
+    `${builderResume.firstName} ${builderResume.lastName}`,
+  )
+  const address = [builderResume.city, builderResume.country]
+    .map(normalizeText)
+    .filter(Boolean)
+    .join(', ')
 
   return {
     documentUrl: builderResume.documentUrl ?? null,
@@ -263,15 +311,15 @@ export function fromBuilderModelToApiPayload(builderResume: BuilderResumeModel):
       location: normalizeText(education.city) || null,
     })),
     skills: builderResume.skills
-      .map(skill => normalizeText(skill.name))
+      .map((skill) => normalizeText(skill.name))
       .filter(Boolean)
-      .map(name => ({ title: name })),
+      .map((name) => ({ title: name })),
     languages: builderResume.languages
-      .map(language => ({
+      .map((language) => ({
         title: normalizeText(language.name),
         level: percentToApiLanguageLevel(Number(language.level) || 0),
       }))
-      .filter(language => language.title),
+      .filter((language) => language.title),
     certifications: builderResume.courses.map((course) => ({
       title: normalizeText(course.title),
       school: normalizeText(course.school) || null,
@@ -287,12 +335,15 @@ export function fromBuilderModelToApiPayload(builderResume: BuilderResumeModel):
     })),
     references: builderResume.references.map((reference) => ({
       title: normalizeText(reference.name),
-      description: [normalizeText(reference.phone), normalizeText(reference.email)].filter(Boolean).join(' · ') || null,
+      description:
+        [normalizeText(reference.phone), normalizeText(reference.email)]
+          .filter(Boolean)
+          .join(' · ') || null,
       company: normalizeText(reference.company) || null,
     })),
     hobbies: builderResume.hobbies
-      .map(hobby => normalizeText(hobby))
+      .map((hobby) => normalizeText(hobby))
       .filter(Boolean)
-      .map(title => ({ title })),
+      .map((title) => ({ title })),
   }
 }

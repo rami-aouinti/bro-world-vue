@@ -135,7 +135,6 @@ const colors = [
 ]
 
 const menuShow = ref(false)
-
 </script>
 
 <template>

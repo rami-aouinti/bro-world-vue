@@ -1,4 +1,7 @@
-import { cachedCrmGithubGeneralGet, mutateCrmGithubGeneral } from '~~/server/utils/crmGithubGeneralApi'
+import {
+  cachedCrmGithubGeneralGet,
+  mutateCrmGithubGeneral,
+} from '~~/server/utils/crmGithubGeneralApi'
 
 function normalizeQuery(query: Record<string, unknown>) {
   return Object.fromEntries(
@@ -15,7 +18,10 @@ export default defineEventHandler(async (event): Promise<unknown> => {
   }
 
   if (!resource) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing github resource path' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing github resource path',
+    })
   }
 
   const path = `projects/${projectId}/github/${resource}`
@@ -31,7 +37,10 @@ export default defineEventHandler(async (event): Promise<unknown> => {
     : undefined
 
   if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
-    throw createError({ statusCode: 405, statusMessage: `Method ${method} not allowed` })
+    throw createError({
+      statusCode: 405,
+      statusMessage: `Method ${method} not allowed`,
+    })
   }
 
   return await mutateCrmGithubGeneral(event, path, {

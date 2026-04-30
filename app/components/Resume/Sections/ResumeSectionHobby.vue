@@ -128,7 +128,9 @@ function removeHobby(index: number) {
 <style scoped>
 .hobby-section {
   position: relative;
-  padding-bottom: calc(var(--rs-section-padding-bottom, 0px) + var(--rs-extra-line-offset, 0px));
+  padding-bottom: calc(
+    var(--rs-section-padding-bottom, 0px) + var(--rs-extra-line-offset, 0px)
+  );
 }
 .entry-list {
   margin: 0;
@@ -165,5 +167,11 @@ function removeHobby(index: number) {
   --entry-gap: var(--cv-space-3, 12px);
 }
 
-.section-icon { display:inline-flex; align-items:center; justify-content:center; color: var(--resume-section-icon-color, var(--cv-accent)); margin-right: 6px; }
+.section-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--resume-section-icon-color, var(--cv-accent));
+  margin-right: 6px;
+}
 </style>

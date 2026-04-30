@@ -1,4 +1,7 @@
-import type { ResumeDocumentModel, ResumeSectionLayoutModel } from '~/types/resumeDocumentModel'
+import type {
+  ResumeDocumentModel,
+  ResumeSectionLayoutModel,
+} from '~/types/resumeDocumentModel'
 
 export const DEFAULT_SECTION_ORDER: ResumeSectionLayoutModel[] = [
   { key: 'experience', variant: 'classic', region: 'main', order: 0 },

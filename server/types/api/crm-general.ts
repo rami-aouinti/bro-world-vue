@@ -34,7 +34,9 @@ export interface CrmCompanyCreatePayload {
   phone?: string
 }
 
-export type CrmCompanyUpdatePayload = Partial<Omit<CrmCompanyCreatePayload, 'crmId'>>
+export type CrmCompanyUpdatePayload = Partial<
+  Omit<CrmCompanyCreatePayload, 'crmId'>
+>
 
 export interface CrmContactItem {
   id: string
@@ -58,7 +60,9 @@ export interface CrmContactCreatePayload {
   city?: string
 }
 
-export type CrmContactUpdatePayload = Partial<Omit<CrmContactCreatePayload, 'companyId'>>
+export type CrmContactUpdatePayload = Partial<
+  Omit<CrmContactCreatePayload, 'companyId'>
+>
 
 export interface CrmProvisioningState {
   state: string
@@ -118,7 +122,9 @@ export interface CrmSprintCreatePayload {
   endDate?: string
 }
 
-export type CrmSprintUpdatePayload = Partial<Omit<CrmSprintCreatePayload, 'projectId'>>
+export type CrmSprintUpdatePayload = Partial<
+  Omit<CrmSprintCreatePayload, 'projectId'>
+>
 
 export interface CrmAttachmentItem {
   id?: string
@@ -166,7 +172,10 @@ export interface CrmTaskCreatePayload {
 
 export type CrmTaskUpdatePayload = Partial<CrmTaskCreatePayload>
 
-export type CrmSubtaskCreatePayload = Omit<CrmTaskCreatePayload, 'projectId' | 'parentTaskId'>
+export type CrmSubtaskCreatePayload = Omit<
+  CrmTaskCreatePayload,
+  'projectId' | 'parentTaskId'
+>
 export type CrmSubtaskUpdatePayload = Partial<
   Omit<CrmTaskCreatePayload, 'projectId'> & { parentTaskId: string | null }
 >
@@ -192,7 +201,9 @@ export interface CrmBillingCreatePayload {
   paidAt?: string | null
 }
 
-export type CrmBillingUpdatePayload = Partial<Omit<CrmBillingCreatePayload, 'companyId'>>
+export type CrmBillingUpdatePayload = Partial<
+  Omit<CrmBillingCreatePayload, 'companyId'>
+>
 
 export interface CrmTaskRequestItem {
   id: string

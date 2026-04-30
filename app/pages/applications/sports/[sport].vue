@@ -116,14 +116,19 @@ const {
 
 const BASKETBALL_DISPLAY_LIMIT = 10
 
-const isBasketballSeasonActive = (season: BasketballLeague['seasons'][number]) => {
+const isBasketballSeasonActive = (
+  season: BasketballLeague['seasons'][number],
+) => {
   const now = new Date()
 
   if (season.start && season.end) {
     const startDate = new Date(season.start)
     const endDate = new Date(season.end)
 
-    if (!Number.isNaN(startDate.getTime()) && !Number.isNaN(endDate.getTime())) {
+    if (
+      !Number.isNaN(startDate.getTime()) &&
+      !Number.isNaN(endDate.getTime())
+    ) {
       return startDate <= now && now <= endDate
     }
   }
@@ -158,8 +163,14 @@ const displayedBasketballLeagues = computed(() => {
         return leftHasActiveSeason ? -1 : 1
       }
 
-      const leftLatestSeason = Math.max(...left.seasons.map((season) => season.season), 0)
-      const rightLatestSeason = Math.max(...right.seasons.map((season) => season.season), 0)
+      const leftLatestSeason = Math.max(
+        ...left.seasons.map((season) => season.season),
+        0,
+      )
+      const rightLatestSeason = Math.max(
+        ...right.seasons.map((season) => season.season),
+        0,
+      )
 
       if (leftLatestSeason !== rightLatestSeason) {
         return rightLatestSeason - leftLatestSeason
@@ -171,7 +182,12 @@ const displayedBasketballLeagues = computed(() => {
 })
 
 watch(
-  () => [sportSlug.value, displayedBasketballLeagues.value, basketballSelectedLeagueId.value] as const,
+  () =>
+    [
+      sportSlug.value,
+      displayedBasketballLeagues.value,
+      basketballSelectedLeagueId.value,
+    ] as const,
   ([slug, leaguesList, selectedLeagueId]) => {
     if (slug !== 'basketball') {
       return
@@ -181,7 +197,9 @@ watch(
       return
     }
 
-    const hasSelectedLeague = leaguesList.some((league) => league.id === selectedLeagueId)
+    const hasSelectedLeague = leaguesList.some(
+      (league) => league.id === selectedLeagueId,
+    )
 
     if (!hasSelectedLeague) {
       const firstLeague = leaguesList[0]
@@ -499,7 +517,9 @@ watch(
                 density="comfortable"
                 :loading="leaguesState === 'loading'"
                 :disabled="leaguesState !== 'ready'"
-                @update:model-value="(value) => selectLeague(value as string | number | null)"
+                @update:model-value="
+                  (value) => selectLeague(value as string | number | null)
+                "
               />
             </v-col>
 
@@ -510,7 +530,9 @@ watch(
                 :label="t('pages.applications.football.filters.season')"
                 density="comfortable"
                 :disabled="!selectedLeague"
-                @update:model-value="(value) => selectSeason(value as string | number | null)"
+                @update:model-value="
+                  (value) => selectSeason(value as string | number | null)
+                "
               />
             </v-col>
           </v-row>
@@ -571,7 +593,8 @@ watch(
                 :loading="basketballLeaguesState === 'loading'"
                 :disabled="basketballLeaguesState !== 'ready'"
                 @update:model-value="
-                  (value) => selectBasketballLeague(value as string | number | null)
+                  (value) =>
+                    selectBasketballLeague(value as string | number | null)
                 "
               />
             </v-col>
@@ -584,12 +607,15 @@ watch(
                 density="comfortable"
                 :disabled="!basketballSelectedLeague"
                 @update:model-value="
-                  (value) => selectBasketballSeason(value as string | number | null)
+                  (value) =>
+                    selectBasketballSeason(value as string | number | null)
                 "
               />
             </v-col>
           </v-row>
-          <v-card-title>{{ t('pages.applications.football.sections.leagues.title') }}</v-card-title>
+          <v-card-title>{{
+            t('pages.applications.football.sections.leagues.title')
+          }}</v-card-title>
           <v-divider />
           <v-card-text>
             <template v-if="basketballLeaguesState === 'loading'">
@@ -599,7 +625,9 @@ watch(
                 size="22"
                 class="mr-3"
               />
-              <span>{{ t('pages.applications.basketball.loadingLeagues') }}</span>
+              <span>{{
+                t('pages.applications.basketball.loadingLeagues')
+              }}</span>
             </template>
             <v-alert
               v-else-if="basketballLeaguesState === 'error'"
@@ -695,12 +723,7 @@ watch(
             >
               {{ basketballStandingsError }}
             </v-alert>
-            <v-alert
-              v-else
-              type="info"
-              variant="tonal"
-              density="comfortable"
-            >
+            <v-alert v-else type="info" variant="tonal" density="comfortable">
               {{
                 basketballGamesState === 'loading'
                   ? t('pages.applications.basketball.loadingData')

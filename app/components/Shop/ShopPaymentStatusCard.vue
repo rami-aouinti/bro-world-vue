@@ -3,10 +3,13 @@ import type { OrderRecord } from './types'
 
 const props = defineProps<{ order: OrderRecord }>()
 
-const netAmount = computed(() => props.order.amount - props.order.refundedAmount)
+const netAmount = computed(
+  () => props.order.amount - props.order.refundedAmount,
+)
 const statusColor = computed(() => {
   if (props.order.status === 'refunded') return 'pink-darken-2'
-  if (props.order.status === 'paid' || props.order.status === 'delivered') return 'green-darken-1'
+  if (props.order.status === 'paid' || props.order.status === 'delivered')
+    return 'green-darken-1'
   if (props.order.status === 'returned') return 'deep-orange'
   return 'blue-grey'
 })

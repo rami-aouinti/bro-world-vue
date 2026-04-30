@@ -30,8 +30,12 @@ const scoreOf = (value: unknown) => {
 }
 
 const scoreLabel = (game: BasketballGame) => {
-  const homeScore = scoreOf(game.scores?.home?.total ?? game.scores?.home?.points)
-  const awayScore = scoreOf(game.scores?.away?.total ?? game.scores?.away?.points)
+  const homeScore = scoreOf(
+    game.scores?.home?.total ?? game.scores?.home?.points,
+  )
+  const awayScore = scoreOf(
+    game.scores?.away?.total ?? game.scores?.away?.points,
+  )
   return `${homeScore ?? '-'} - ${awayScore ?? '-'}`
 }
 </script>
@@ -53,12 +57,7 @@ const scoreLabel = (game: BasketballGame) => {
       {{ t('pages.applications.basketball.noGamesForSeason') }}
     </v-alert>
 
-    <v-list
-      v-else
-      density="compact"
-      lines="two"
-      class="pa-0"
-    >
+    <v-list v-else density="compact" lines="two" class="pa-0">
       <v-list-item
         v-for="game in games"
         :key="game.id"

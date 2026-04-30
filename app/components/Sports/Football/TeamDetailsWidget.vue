@@ -1,19 +1,25 @@
 <script setup lang="ts">
-import type { FootballSection, FootballTeamDetails } from '~/composables/useFootballData'
+import type {
+  FootballSection,
+  FootballTeamDetails,
+} from '~/composables/useFootballData'
 import SportsFootballTeamDetailsPanel from '~/components/Sports/Football/TeamDetailsPanel.vue'
 
 const { t } = useI18n()
 
-withDefaults(defineProps<{
-  section: FootballSection
-  teamDetails: FootballTeamDetails | null
-  selectedPlayerId: number | null
-  title?: string
-  loadingOverride?: boolean
-}>(), {
-  title: '',
-  loadingOverride: false,
-})
+withDefaults(
+  defineProps<{
+    section: FootballSection
+    teamDetails: FootballTeamDetails | null
+    selectedPlayerId: number | null
+    title?: string
+    loadingOverride?: boolean
+  }>(),
+  {
+    title: '',
+    loadingOverride: false,
+  },
+)
 
 defineEmits<{
   selectPlayer: [playerId: number]
@@ -21,18 +27,36 @@ defineEmits<{
 </script>
 
 <template>
-  <v-card class="h-100 football-surface football-surface--dark football-interactive-card" variant="outlined">
+  <v-card
+    class="h-100 football-surface football-surface--dark football-interactive-card"
+    variant="outlined"
+  >
     <v-card-title>{{ title || section.title }}</v-card-title>
     <v-divider />
     <v-card-text>
       <template v-if="loadingOverride || section.state === 'loading'">
-        <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
+        <v-progress-circular
+          indeterminate
+          color="primary"
+          size="22"
+          class="mr-3"
+        />
         <span>{{ t('pages.applications.football.loading.teamDetails') }}</span>
       </template>
-      <v-alert v-else-if="section.state === 'error'" type="error" variant="tonal" density="compact">
+      <v-alert
+        v-else-if="section.state === 'error'"
+        type="error"
+        variant="tonal"
+        density="compact"
+      >
         {{ section.error }}
       </v-alert>
-      <v-alert v-else-if="section.state === 'empty'" type="info" variant="tonal" density="compact">
+      <v-alert
+        v-else-if="section.state === 'empty'"
+        type="info"
+        variant="tonal"
+        density="compact"
+      >
         {{ section.emptyMessage }}
       </v-alert>
       <template v-else-if="teamDetails">

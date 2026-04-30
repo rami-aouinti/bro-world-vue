@@ -6,7 +6,13 @@ import { privateApi } from '~/utils/http/privateApi'
 definePageMeta({ layout: 'learning', title: 'Learning Admin Resource' })
 
 type RowItem = Record<string, unknown> & { id?: string }
-type SchoolResource = 'classes' | 'courses' | 'teachers' | 'students' | 'exams' | 'grades'
+type SchoolResource =
+  | 'classes'
+  | 'courses'
+  | 'teachers'
+  | 'students'
+  | 'exams'
+  | 'grades'
 type SelectOption = { title: string; value: string }
 
 type ResourceConfig = {
@@ -41,14 +47,50 @@ const resourceConfig: Record<SchoolResource, ResourceConfig> = {
     tableFields: ['id', 'name', 'className', 'userId', 'classId'],
   },
   exams: {
-    createFields: ['title', 'classId', 'courseId', 'teacherId', 'type', 'status', 'term'],
-    editFields: ['title', 'classId', 'courseId', 'teacherId', 'type', 'status', 'term'],
-    tableFields: ['id', 'title', 'courseName', 'className', 'teacher', 'courseId', 'classId', 'teacherId', 'type', 'status', 'term'],
+    createFields: [
+      'title',
+      'classId',
+      'courseId',
+      'teacherId',
+      'type',
+      'status',
+      'term',
+    ],
+    editFields: [
+      'title',
+      'classId',
+      'courseId',
+      'teacherId',
+      'type',
+      'status',
+      'term',
+    ],
+    tableFields: [
+      'id',
+      'title',
+      'courseName',
+      'className',
+      'teacher',
+      'courseId',
+      'classId',
+      'teacherId',
+      'type',
+      'status',
+      'term',
+    ],
   },
   grades: {
     createFields: ['score', 'studentId', 'examId'],
     editFields: ['score', 'studentId', 'examId'],
-    tableFields: ['id', 'score', 'student', 'examTitle', 'courseName', 'studentId', 'examId'],
+    tableFields: [
+      'id',
+      'score',
+      'student',
+      'examTitle',
+      'courseName',
+      'studentId',
+      'examId',
+    ],
   },
 }
 
@@ -70,7 +112,14 @@ const enumOptions: Record<string, SelectOption[]> = {
   ],
 }
 
-const allResources: SchoolResource[] = ['classes', 'courses', 'teachers', 'students', 'exams', 'grades']
+const allResources: SchoolResource[] = [
+  'classes',
+  'courses',
+  'teachers',
+  'students',
+  'exams',
+  'grades',
+]
 if (!allResources.includes(resource.value as SchoolResource)) {
   throw createError({ statusCode: 404, statusMessage: 'Resource not found' })
 }
@@ -105,7 +154,9 @@ const linkedOptions = ref<Partial<Record<SchoolResource, SelectOption[]>>>({})
 
 const { learningNavItems } = useWorldLearningNavItems()
 
-const title = computed(() => resource.value.charAt(0).toUpperCase() + resource.value.slice(1))
+const title = computed(
+  () => resource.value.charAt(0).toUpperCase() + resource.value.slice(1),
+)
 const config = computed(() => resourceConfig[resource.value as SchoolResource])
 const headers = computed(() => [
   ...config.value.tableFields.map((key) => ({ title: key, key })),
@@ -118,7 +169,11 @@ function serializePayload(input: Record<string, string | number | null>) {
       .filter(([, value]) => value !== null && value !== '')
       .map(([key, value]) => {
         const maybeNumeric = typeof value === 'string' ? Number(value) : value
-        if (typeof maybeNumeric === 'number' && Number.isFinite(maybeNumeric) && key === 'score') {
+        if (
+          typeof maybeNumeric === 'number' &&
+          Number.isFinite(maybeNumeric) &&
+          key === 'score'
+        ) {
           return [key, maybeNumeric]
         }
         return [key, value]
@@ -127,7 +182,9 @@ function serializePayload(input: Record<string, string | number | null>) {
 }
 
 function buildFormFromFields(fields: string[], item?: RowItem) {
-  return Object.fromEntries(fields.map((key) => [key, item?.[key] == null ? '' : String(item[key])]))
+  return Object.fromEntries(
+    fields.map((key) => [key, item?.[key] == null ? '' : String(item[key])]),
+  )
 }
 
 function getItemValue(item: RowItem, key: string) {
@@ -172,7 +229,10 @@ function optionsForField(key: string): SelectOption[] {
 
 async function loadSelectOptions() {
   const resourcesToFetch = new Set<SchoolResource>()
-  for (const field of [...config.value.createFields, ...config.value.editFields]) {
+  for (const field of [
+    ...config.value.createFields,
+    ...config.value.editFields,
+  ]) {
     if (field === 'classId') resourcesToFetch.add('classes')
     if (field === 'courseId') resourcesToFetch.add('courses')
     if (field === 'teacherId') resourcesToFetch.add('teachers')
@@ -181,18 +241,32 @@ async function loadSelectOptions() {
   }
 
   const promises = [...resourcesToFetch].map(async (entityResource) => {
-    const response = await privateApi.request<{ items: RowItem[] }>(`/api/world/learning/admin/school/${entityResource}`)
+    const response = await privateApi.request<{ items: RowItem[] }>(
+      `/api/world/learning/admin/school/${entityResource}`,
+    )
     const labelKey = entityResource === 'exams' ? 'title' : 'name'
-    linkedOptions.value[entityResource] = toEntityOptions(response.items, labelKey)
+    linkedOptions.value[entityResource] = toEntityOptions(
+      response.items,
+      labelKey,
+    )
   })
 
-  if ([...config.value.createFields, ...config.value.editFields].includes('userId')) {
+  if (
+    [...config.value.createFields, ...config.value.editFields].includes(
+      'userId',
+    )
+  ) {
     promises.push(
-      $fetch<{ items?: Record<string, unknown>[]; data?: Record<string, unknown>[] }>('/api/public/users').then((response) => {
+      $fetch<{
+        items?: Record<string, unknown>[]
+        data?: Record<string, unknown>[]
+      }>('/api/public/users').then((response) => {
         const rows = response.items ?? response.data ?? []
         usersOptions.value = rows
           .map((entry) => ({
-            title: String(entry.name ?? entry.email ?? entry.username ?? entry.id ?? 'User'),
+            title: String(
+              entry.name ?? entry.email ?? entry.username ?? entry.id ?? 'User',
+            ),
             value: String(entry.id ?? ''),
           }))
           .filter((entry) => entry.value)
@@ -208,7 +282,9 @@ async function load() {
   error.value = null
   retryAction.value = null
   try {
-    const response = await privateApi.request<{ items: RowItem[] }>(`/api/world/learning/admin/school/${resource.value}`)
+    const response = await privateApi.request<{ items: RowItem[] }>(
+      `/api/world/learning/admin/school/${resource.value}`,
+    )
     rows.value = response.items
     await loadSelectOptions()
   } catch (err) {
@@ -276,7 +352,9 @@ async function handleMutationError(
   if (axios.isAxiosError(err)) {
     const axiosError = err as AxiosError<{ message?: string }>
     error.value =
-      axiosError.response?.data?.message ?? axiosError.message ?? 'Erreur inattendue.'
+      axiosError.response?.data?.message ??
+      axiosError.message ??
+      'Erreur inattendue.'
     return
   }
 
@@ -291,10 +369,13 @@ async function submitCreate() {
   error.value = null
   retryAction.value = null
   try {
-    await privateApi.request(`/api/world/learning/admin/school/${resource.value}`, {
-      method: 'POST',
-      body: serializePayload(createForm.value),
-    })
+    await privateApi.request(
+      `/api/world/learning/admin/school/${resource.value}`,
+      {
+        method: 'POST',
+        body: serializePayload(createForm.value),
+      },
+    )
     isCreateDialogOpen.value = false
     await load()
   } catch (err) {
@@ -314,10 +395,13 @@ async function submitEdit() {
   error.value = null
   retryAction.value = null
   try {
-    await privateApi.request(`/api/world/learning/admin/school/${resource.value}/${editingId.value}`, {
-      method: 'PATCH',
-      body: serializePayload(editForm.value),
-    })
+    await privateApi.request(
+      `/api/world/learning/admin/school/${resource.value}/${editingId.value}`,
+      {
+        method: 'PATCH',
+        body: serializePayload(editForm.value),
+      },
+    )
     isEditDialogOpen.value = false
     await load()
   } catch (err) {
@@ -338,9 +422,12 @@ async function confirmDelete() {
   error.value = null
   retryAction.value = null
   try {
-    await privateApi.request(`/api/world/learning/admin/school/${resource.value}/${String(id)}`, {
-      method: 'DELETE',
-    })
+    await privateApi.request(
+      `/api/world/learning/admin/school/${resource.value}/${String(id)}`,
+      {
+        method: 'DELETE',
+      },
+    )
     deleteDialogItem.value = null
     await load()
   } catch (err) {
@@ -375,9 +462,22 @@ async function retryLastAction() {
             <h2 class="text-h5">{{ title }}</h2>
           </div>
           <div class="d-flex ga-2">
-            <v-btn variant="tonal" to="/world/learning/admin" prepend-icon="mdi-arrow-left">Back to admin</v-btn>
-            <v-btn color="primary" prepend-icon="mdi-plus" @click="openCreate">Create</v-btn>
-            <v-btn variant="text" prepend-icon="mdi-refresh" :loading="pending" @click="load">Refresh</v-btn>
+            <v-btn
+              variant="tonal"
+              to="/world/learning/admin"
+              prepend-icon="mdi-arrow-left"
+              >Back to admin</v-btn
+            >
+            <v-btn color="primary" prepend-icon="mdi-plus" @click="openCreate"
+              >Create</v-btn
+            >
+            <v-btn
+              variant="text"
+              prepend-icon="mdi-refresh"
+              :loading="pending"
+              @click="load"
+              >Refresh</v-btn
+            >
           </div>
         </div>
 
@@ -396,7 +496,14 @@ async function retryLastAction() {
           </div>
         </v-alert>
 
-        <v-data-table :headers="headers" :items="rows" items-per-page="5" :loading="pending" density="comfortable" class="bg-transparent">
+        <v-data-table
+          :headers="headers"
+          :items="rows"
+          items-per-page="5"
+          :loading="pending"
+          density="comfortable"
+          class="bg-transparent"
+        >
           <template
             v-for="key in config.tableFields"
             :key="`cell-${key}`"
@@ -407,7 +514,12 @@ async function retryLastAction() {
 
           <template #item.actions="{ item }">
             <div class="d-flex ga-2">
-              <v-btn size="small" variant="tonal" prepend-icon="mdi-pencil" @click="openEdit(item)">
+              <v-btn
+                size="small"
+                variant="tonal"
+                prepend-icon="mdi-pencil"
+                @click="openEdit(item)"
+              >
                 Edit
               </v-btn>
               <v-btn
@@ -444,8 +556,16 @@ async function retryLastAction() {
             />
           </template>
           <div class="d-flex justify-end ga-2 mt-3">
-            <v-btn variant="text" @click="isCreateDialogOpen = false">Cancel</v-btn>
-            <v-btn color="primary" :loading="isSavingCreate" :disabled="isSavingCreate" @click="submitCreate">Save</v-btn>
+            <v-btn variant="text" @click="isCreateDialogOpen = false"
+              >Cancel</v-btn
+            >
+            <v-btn
+              color="primary"
+              :loading="isSavingCreate"
+              :disabled="isSavingCreate"
+              @click="submitCreate"
+              >Save</v-btn
+            >
           </div>
         </v-card>
       </v-dialog>
@@ -470,19 +590,43 @@ async function retryLastAction() {
             />
           </template>
           <div class="d-flex justify-end ga-2 mt-3">
-            <v-btn variant="text" @click="isEditDialogOpen = false">Cancel</v-btn>
-            <v-btn color="primary" :loading="isSavingEdit" :disabled="isSavingEdit" @click="submitEdit">Update</v-btn>
+            <v-btn variant="text" @click="isEditDialogOpen = false"
+              >Cancel</v-btn
+            >
+            <v-btn
+              color="primary"
+              :loading="isSavingEdit"
+              :disabled="isSavingEdit"
+              @click="submitEdit"
+              >Update</v-btn
+            >
           </div>
         </v-card>
       </v-dialog>
 
-      <v-dialog :model-value="!!deleteDialogItem" max-width="460" @update:model-value="(value) => { if (!value) deleteDialogItem = null }">
+      <v-dialog
+        :model-value="!!deleteDialogItem"
+        max-width="460"
+        @update:model-value="
+          (value) => {
+            if (!value) deleteDialogItem = null
+          }
+        "
+      >
         <v-card class="pa-4">
           <h2 class="text-h6 mb-2">Delete {{ resource.slice(0, -1) }}</h2>
           <p>Are you sure you want to delete this item?</p>
           <div class="d-flex justify-end ga-2 mt-3">
-            <v-btn variant="text" @click="deleteDialogItem = null">Cancel</v-btn>
-            <v-btn color="error" :loading="isDeleting" :disabled="isDeleting" @click="confirmDelete">Delete</v-btn>
+            <v-btn variant="text" @click="deleteDialogItem = null"
+              >Cancel</v-btn
+            >
+            <v-btn
+              color="error"
+              :loading="isDeleting"
+              :disabled="isDeleting"
+              @click="confirmDelete"
+              >Delete</v-btn
+            >
           </div>
         </v-card>
       </v-dialog>

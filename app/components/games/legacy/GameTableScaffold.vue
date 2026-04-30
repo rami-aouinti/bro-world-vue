@@ -1,45 +1,45 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed } from 'vue'
 
 interface TablePlayer {
-  id: string;
-  name: string;
-  avatar?: string;
-  isAI: boolean;
-  isCurrentTurn: boolean;
-  timerSeconds?: number;
+  id: string
+  name: string
+  avatar?: string
+  isAI: boolean
+  isCurrentTurn: boolean
+  timerSeconds?: number
 }
 
 interface Props {
-  players?: TablePlayer[];
-  turnTimerSeconds?: number;
-  tableClass?: string;
-  surfaceVariant?: "table" | "flat";
-  tableTheme?: "default" | "uno" | "belote" | "poker";
+  players?: TablePlayer[]
+  turnTimerSeconds?: number
+  tableClass?: string
+  surfaceVariant?: 'table' | 'flat'
+  tableTheme?: 'default' | 'uno' | 'belote' | 'poker'
 }
 
 const props = withDefaults(defineProps<Props>(), {
   players: () => [],
   turnTimerSeconds: 120,
-  tableClass: "",
-  surfaceVariant: "table",
-  tableTheme: "default",
-});
+  tableClass: '',
+  surfaceVariant: 'table',
+  tableTheme: 'default',
+})
 
 const seatPositions = computed(() => {
   if (props.players.length >= 6) {
     return [
-      "north",
-      "north-east",
-      "south-east",
-      "south",
-      "south-west",
-      "north-west",
-    ] as const;
+      'north',
+      'north-east',
+      'south-east',
+      'south',
+      'south-west',
+      'north-west',
+    ] as const
   }
 
-  return ["north", "east", "south", "west"] as const;
-});
+  return ['north', 'east', 'south', 'west'] as const
+})
 
 const playersWithSeats = computed(() =>
   props.players.slice(0, seatPositions.value.length).map((player, index) => ({
@@ -49,32 +49,32 @@ const playersWithSeats = computed(() =>
       ? (player.timerSeconds ?? props.turnTimerSeconds)
       : null,
   })),
-);
+)
 
-const TURN_RING_BASE_SECONDS = 30;
+const TURN_RING_BASE_SECONDS = 30
 
 const getRingTimerSeconds = (displayedTimer: number | null) => {
   if (displayedTimer === null || displayedTimer > TURN_RING_BASE_SECONDS) {
-    return null;
+    return null
   }
 
-  return Math.max(0, displayedTimer);
-};
+  return Math.max(0, displayedTimer)
+}
 
 const getRingColor = (secondsLeft: number) => {
   if (secondsLeft <= 5) {
-    return "error";
+    return 'error'
   }
 
   if (secondsLeft <= 15) {
-    return "warning";
+    return 'warning'
   }
 
-  return "success";
-};
+  return 'success'
+}
 
 const getRingProgress = (secondsLeft: number) =>
-  Math.round((secondsLeft / TURN_RING_BASE_SECONDS) * 100);
+  Math.round((secondsLeft / TURN_RING_BASE_SECONDS) * 100)
 </script>
 
 <template>
@@ -92,13 +92,21 @@ const getRingProgress = (secondsLeft: number) =>
           v-for="player in playersWithSeats"
           :key="player.id"
           class="game-seat"
-          :class="[`game-seat--${player.seat}`, { 'game-seat--active': player.isCurrentTurn }]"
+          :class="[
+            `game-seat--${player.seat}`,
+            { 'game-seat--active': player.isCurrentTurn },
+          ]"
         >
           <div class="game-seat__avatar-wrap">
             <v-progress-circular
-              v-if="player.isCurrentTurn && getRingTimerSeconds(player.displayedTimer) !== null"
+              v-if="
+                player.isCurrentTurn &&
+                getRingTimerSeconds(player.displayedTimer) !== null
+              "
               class="game-seat__turn-ring"
-              :model-value="getRingProgress(getRingTimerSeconds(player.displayedTimer)!)"
+              :model-value="
+                getRingProgress(getRingTimerSeconds(player.displayedTimer)!)
+              "
               :color="getRingColor(getRingTimerSeconds(player.displayedTimer)!)"
               :size="42"
               :width="4"
@@ -106,8 +114,15 @@ const getRingProgress = (secondsLeft: number) =>
               role="img"
               :aria-label="`${getRingTimerSeconds(player.displayedTimer)} secondes restantes`"
             />
-            <v-avatar :image="player.avatar" size="30" color="primary" variant="tonal">
-              <span class="text-caption font-weight-bold">{{ player.name.slice(0, 2).toUpperCase() }}</span>
+            <v-avatar
+              :image="player.avatar"
+              size="30"
+              color="primary"
+              variant="tonal"
+            >
+              <span class="text-caption font-weight-bold">{{
+                player.name.slice(0, 2).toUpperCase()
+              }}</span>
             </v-avatar>
           </div>
           <p class="game-seat__name mb-0">{{ player.name }}</p>
@@ -132,8 +147,15 @@ const getRingProgress = (secondsLeft: number) =>
 </template>
 
 <style scoped>
-.game-table-scaffold { display: flex; align-items: flex-start; gap: 16px; }
-.game-table-scaffold__table-wrap { flex: 1 1 auto; min-width: 0; }
+.game-table-scaffold {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.game-table-scaffold__table-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
+}
 .game-table-scaffold__table {
   position: relative;
   min-height: 520px;
@@ -141,27 +163,43 @@ const getRingProgress = (secondsLeft: number) =>
   border-radius: 48% / 40%;
   background: radial-gradient(circle at center, #2f9d59 0%, #19663c 74%);
   border: 12px solid rgba(48, 24, 13, 0.72);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), inset 0 0 0 14px rgba(0, 0, 0, 0.08), 0 18px 34px rgba(12, 31, 20, 0.28);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+    inset 0 0 0 14px rgba(0, 0, 0, 0.08),
+    0 18px 34px rgba(12, 31, 20, 0.28);
   overflow: hidden;
 }
 .game-table-scaffold__table.table-theme--uno {
   background: radial-gradient(circle at center, #f7c948 0%, #b7791f 74%);
   border-color: rgba(107, 70, 2, 0.8);
-  box-shadow: inset 0 0 0 1px rgba(255, 250, 224, 0.22), inset 0 0 0 14px rgba(74, 51, 10, 0.14), 0 18px 34px rgba(107, 70, 2, 0.3);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 250, 224, 0.22),
+    inset 0 0 0 14px rgba(74, 51, 10, 0.14),
+    0 18px 34px rgba(107, 70, 2, 0.3);
 }
 .game-table-scaffold__table.table-theme--belote {
   background: radial-gradient(circle at center, #4d94d4 0%, #124a80 74%);
   border-color: rgba(10, 33, 65, 0.78);
-  box-shadow: inset 0 0 0 1px rgba(235, 245, 255, 0.2), inset 0 0 0 14px rgba(12, 38, 72, 0.14), 0 18px 34px rgba(8, 31, 59, 0.32);
+  box-shadow:
+    inset 0 0 0 1px rgba(235, 245, 255, 0.2),
+    inset 0 0 0 14px rgba(12, 38, 72, 0.14),
+    0 18px 34px rgba(8, 31, 59, 0.32);
 }
 .game-table-scaffold__table.table-theme--poker {
   background: radial-gradient(circle at center, #bf1e2e 0%, #5b1125 74%);
   border-color: rgba(51, 9, 18, 0.85);
-  box-shadow: inset 0 0 0 1px rgba(255, 228, 230, 0.16), inset 0 0 0 14px rgba(33, 8, 14, 0.24), 0 18px 34px rgba(33, 8, 14, 0.46);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 228, 230, 0.16),
+    inset 0 0 0 14px rgba(33, 8, 14, 0.24),
+    0 18px 34px rgba(33, 8, 14, 0.46);
 }
 :global(body.theme-gaming) .game-table-scaffold__table {
   background:
-    radial-gradient(circle at 50% 40%, rgba(0, 229, 255, 0.14), transparent 52%),
+    radial-gradient(
+      circle at 50% 40%,
+      rgba(0, 229, 255, 0.14),
+      transparent 52%
+    ),
     radial-gradient(circle at center, #122242 0%, #081327 72%);
   border: 10px solid rgba(3, 9, 20, 0.95);
   box-shadow:
@@ -179,8 +217,11 @@ const getRingProgress = (secondsLeft: number) =>
   padding: 1rem;
 }
 :global(body.theme-gaming) .game-table-scaffold__table--flat {
-  background:
-    linear-gradient(160deg, rgba(11, 16, 34, 0.98), rgba(8, 12, 26, 0.95));
+  background: linear-gradient(
+    160deg,
+    rgba(11, 16, 34, 0.98),
+    rgba(8, 12, 26, 0.95)
+  );
   border-color: var(--gaming-surface-border);
   box-shadow: var(--gaming-glow-strong);
 }
@@ -207,22 +248,70 @@ const getRingProgress = (secondsLeft: number) =>
   background: rgba(5, 11, 24, 0.72);
   border-color: rgba(0, 229, 255, 0.45);
 }
-.game-seat--active { border-color: rgba(255, 235, 59, 0.8); box-shadow: 0 0 0 1px rgba(255, 235, 59, 0.35); padding-top: 8px; }
+.game-seat--active {
+  border-color: rgba(255, 235, 59, 0.8);
+  box-shadow: 0 0 0 1px rgba(255, 235, 59, 0.35);
+  padding-top: 8px;
+}
 :global(body.theme-gaming) .game-seat--active {
   border-color: rgba(0, 229, 255, 0.9);
-  box-shadow: 0 0 0 1px rgba(0, 229, 255, 0.6), 0 0 16px rgba(139, 92, 246, 0.45);
+  box-shadow:
+    0 0 0 1px rgba(0, 229, 255, 0.6),
+    0 0 16px rgba(139, 92, 246, 0.45);
 }
-.game-seat--north { top: 0px; left: 50%; transform: translateX(-50%); }
-.game-seat--east { top: 50%; right: 0px; transform: translateY(-50%); }
-.game-seat--south { bottom: 0px; left: 50%; transform: translateX(-50%); }
-.game-seat--west { top: 50%; left: 0px; transform: translateY(-50%); }
-.game-seat--north-east { top: 54px; right: 26px; }
-.game-seat--south-east { bottom: 54px; right: 26px; }
-.game-seat--south-west { bottom: 54px; left: 26px; }
-.game-seat--north-west { top: 54px; left: 26px; }
-.game-seat__name { font-size: 0.68rem; font-weight: 700; line-height: 1.1; text-align: center; }
-.game-seat__avatar-wrap { position: relative; width: 42px; height: 42px; display: grid; place-items: center; }
-.game-seat__turn-ring { position: absolute; inset: 0; }
+.game-seat--north {
+  top: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.game-seat--east {
+  top: 50%;
+  right: 0px;
+  transform: translateY(-50%);
+}
+.game-seat--south {
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.game-seat--west {
+  top: 50%;
+  left: 0px;
+  transform: translateY(-50%);
+}
+.game-seat--north-east {
+  top: 54px;
+  right: 26px;
+}
+.game-seat--south-east {
+  bottom: 54px;
+  right: 26px;
+}
+.game-seat--south-west {
+  bottom: 54px;
+  left: 26px;
+}
+.game-seat--north-west {
+  top: 54px;
+  left: 26px;
+}
+.game-seat__name {
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.1;
+  text-align: center;
+}
+.game-seat__avatar-wrap {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+}
+.game-seat__turn-ring {
+  position: absolute;
+  inset: 0;
+}
 .game-table-scaffold__surface {
   position: absolute;
   inset: 200px 150px 200px;
@@ -264,29 +353,61 @@ const getRingProgress = (secondsLeft: number) =>
   color: inherit;
 }
 .game-table-scaffold__hands,
-.game-table-scaffold__content { width: 100%; }
+.game-table-scaffold__content {
+  width: 100%;
+}
 .game-table-scaffold__content {
   border-radius: 16px;
-  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-primary)) 22%, transparent);
-  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 96%, rgb(var(--v-theme-primary)) 4%);
+  border: 1px solid
+    color-mix(in srgb, rgb(var(--v-theme-primary)) 22%, transparent);
+  background: color-mix(
+    in srgb,
+    rgb(var(--v-theme-surface)) 96%,
+    rgb(var(--v-theme-primary)) 4%
+  );
   padding: 14px;
   margin-top: 12px;
 }
-.game-table-scaffold__aside { width: min(360px, 100%); flex: 0 0 min(360px, 100%); }
+.game-table-scaffold__aside {
+  width: min(360px, 100%);
+  flex: 0 0 min(360px, 100%);
+}
 
 @media (max-width: 960px) {
-  .game-table-scaffold { flex-direction: column; }
-  .game-table-scaffold__aside { width: 100%; flex-basis: auto; }
-  .game-table-scaffold__table { min-height: 700px; border-radius: 28px; border-width: 8px; }
+  .game-table-scaffold {
+    flex-direction: column;
+  }
+  .game-table-scaffold__aside {
+    width: 100%;
+    flex-basis: auto;
+  }
+  .game-table-scaffold__table {
+    min-height: 700px;
+    border-radius: 28px;
+    border-width: 8px;
+  }
   .game-table-scaffold__table--flat {
     min-height: auto;
     border-width: 1px;
     border-radius: 16px;
   }
-  .game-table-scaffold__surface { inset: 200px 150px 200px; }
-  .game-table-scaffold__table--flat .game-table-scaffold__surface { inset: auto; }
-  .game-seat--east, .game-seat--west { top: auto; transform: none; bottom: 106px; }
-  .game-seat--east { right: 12px; }
-  .game-seat--west { left: 12px; }
+  .game-table-scaffold__surface {
+    inset: 200px 150px 200px;
+  }
+  .game-table-scaffold__table--flat .game-table-scaffold__surface {
+    inset: auto;
+  }
+  .game-seat--east,
+  .game-seat--west {
+    top: auto;
+    transform: none;
+    bottom: 106px;
+  }
+  .game-seat--east {
+    right: 12px;
+  }
+  .game-seat--west {
+    left: 12px;
+  }
 }
 </style>

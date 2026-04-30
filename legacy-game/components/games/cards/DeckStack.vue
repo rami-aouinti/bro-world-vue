@@ -1,16 +1,19 @@
 <script setup lang="ts">
 import PlayingCard from './PlayingCard.vue'
 
-const props = withDefaults(defineProps<{
-  remaining: number
-  disabled?: boolean
-  canDraw?: boolean
-  topDiscard?: { rank: string; suit: string } | null
-}>(), {
-  disabled: false,
-  canDraw: true,
-  topDiscard: null,
-})
+const props = withDefaults(
+  defineProps<{
+    remaining: number
+    disabled?: boolean
+    canDraw?: boolean
+    topDiscard?: { rank: string; suit: string } | null
+  }>(),
+  {
+    disabled: false,
+    canDraw: true,
+    topDiscard: null,
+  },
+)
 
 const emit = defineEmits<{
   (event: 'draw'): void

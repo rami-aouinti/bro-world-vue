@@ -96,7 +96,10 @@ export async function getServerPrivateAxios(
   }
 
   if (options?.headers) {
-    Object.assign(headers, Object.fromEntries(new Headers(options.headers).entries()))
+    Object.assign(
+      headers,
+      Object.fromEntries(new Headers(options.headers).entries()),
+    )
   }
 
   headers.Authorization = `Bearer ${token}`

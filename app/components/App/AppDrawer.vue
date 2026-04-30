@@ -30,9 +30,7 @@ const fallbackDrawerItems = computed(() =>
   (() => {
     const iconRoutes = router.options.routes
       .filter((item) => item.meta?.icon && !item.path.includes(':'))
-      .sort(
-        (a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 99),
-      )
+      .sort((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 99))
 
     const activeRoute = iconRoutes
       .filter((item) => {
@@ -79,7 +77,7 @@ watch(mobile, (isMobile) => {
         <v-divider class="my-2" />
       </template>
       <div v-if="shouldRenderDrawerSlot" class="app-left-drawer-list">
-        <component :is="leftDrawerSlotHost"  />
+        <component :is="leftDrawerSlotHost" />
       </div>
     </v-card>
     <v-spacer />

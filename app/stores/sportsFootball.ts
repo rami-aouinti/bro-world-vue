@@ -246,11 +246,7 @@ export const useSportsFootballStore = defineStore('sports-football', {
         return this.teams
       } catch (error) {
         this.teams = []
-        this.setResourceError(
-          'teams',
-          error,
-          footballErrorMessage('loadTeams'),
-        )
+        this.setResourceError('teams', error, footballErrorMessage('loadTeams'))
         return []
       } finally {
         this.setResourceLoading('teams', false)

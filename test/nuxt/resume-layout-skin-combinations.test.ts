@@ -11,7 +11,9 @@ import {
 
 describe('resume layout + skin combinations', () => {
   it('contains 3 structures, 12 layouts, 10 CV skins, and 94 resume templates (90 generated + 4 curated)', () => {
-    const resumeTemplates = RESUME_TEMPLATES_CATALOG.filter(({ type }) => type === 'resume')
+    const resumeTemplates = RESUME_TEMPLATES_CATALOG.filter(
+      ({ type }) => type === 'resume',
+    )
 
     expect(RESUME_STRUCTURES_CATALOG).toHaveLength(3)
     expect(RESUME_LAYOUTS_CATALOG).toHaveLength(12)
@@ -20,10 +22,13 @@ describe('resume layout + skin combinations', () => {
   })
 
   it('contains a 4 layouts per structure split', () => {
-    const counts = RESUME_LAYOUTS_CATALOG.reduce<Record<string, number>>((acc, layout) => {
-      acc[layout.structureId] = (acc[layout.structureId] ?? 0) + 1
-      return acc
-    }, {})
+    const counts = RESUME_LAYOUTS_CATALOG.reduce<Record<string, number>>(
+      (acc, layout) => {
+        acc[layout.structureId] = (acc[layout.structureId] ?? 0) + 1
+        return acc
+      },
+      {},
+    )
 
     for (const structure of RESUME_STRUCTURES_CATALOG) {
       expect(counts[structure.id]).toBe(4)
@@ -31,14 +36,27 @@ describe('resume layout + skin combinations', () => {
   })
 
   it('keeps resume template references valid (layoutId/skinId/structure compatibility)', () => {
-    const layoutsById = new Map(RESUME_LAYOUTS_CATALOG.map((layout) => [layout.id, layout]))
+    const layoutsById = new Map(
+      RESUME_LAYOUTS_CATALOG.map((layout) => [layout.id, layout]),
+    )
     const skinsById = new Set(RESUME_SKINS_CATALOG.map((skin) => skin.id))
 
-    for (const template of RESUME_TEMPLATES_CATALOG.filter(({ type }) => type === 'resume')) {
+    for (const template of RESUME_TEMPLATES_CATALOG.filter(
+      ({ type }) => type === 'resume',
+    )) {
       const layout = layoutsById.get(template.layoutId)
-      expect(layout, `${template.id}: unknown layoutId \"${template.layoutId}\"`).toBeDefined()
-      expect(skinsById.has(template.skinId), `${template.id}: unknown skinId \"${template.skinId}\"`).toBe(true)
-      expect(layout?.structureId, `${template.id}: structure/layout mismatch`).toBe(template.structureId)
+      expect(
+        layout,
+        `${template.id}: unknown layoutId \"${template.layoutId}\"`,
+      ).toBeDefined()
+      expect(
+        skinsById.has(template.skinId),
+        `${template.id}: unknown skinId \"${template.skinId}\"`,
+      ).toBe(true)
+      expect(
+        layout?.structureId,
+        `${template.id}: structure/layout mismatch`,
+      ).toBe(template.structureId)
     }
   })
 
@@ -50,7 +68,10 @@ describe('resume layout + skin combinations', () => {
     for (const layout of RESUME_LAYOUTS) {
       for (const skinId of RESUME_SKIN_IDS) {
         const runtime = resolveRuntimeLayoutAndSkin(layout.layoutId, skinId)
-        expect((runtime.layout as { layoutId?: string; id?: string }).layoutId ?? (runtime.layout as { id?: string }).id).toBe(layout.layoutId)
+        expect(
+          (runtime.layout as { layoutId?: string; id?: string }).layoutId ??
+            (runtime.layout as { id?: string }).id,
+        ).toBe(layout.layoutId)
         expect(runtime.skin.id).toBe(skinId)
         generated += 1
       }

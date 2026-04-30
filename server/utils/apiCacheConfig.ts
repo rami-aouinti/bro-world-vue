@@ -54,7 +54,9 @@ const CACHE_PROFILE_BY_SUFFIX: Record<string, CacheProfile> = {
   live: 'live',
 }
 
-export function resolveCacheProfileFromSuffix(suffix?: string | null): CacheProfile {
+export function resolveCacheProfileFromSuffix(
+  suffix?: string | null,
+): CacheProfile {
   if (!suffix) {
     return 'default'
   }

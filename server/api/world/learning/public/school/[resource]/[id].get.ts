@@ -1,7 +1,14 @@
 import { createError } from 'h3'
 import { getSchoolResourceById } from '~~/server/utils/learningPublicSchool'
 
-const supportedResources = new Set(['classes', 'courses', 'teachers', 'students', 'exams', 'grades'])
+const supportedResources = new Set([
+  'classes',
+  'courses',
+  'teachers',
+  'students',
+  'exams',
+  'grades',
+])
 
 export default defineEventHandler(async (event) => {
   const resource = getRouterParam(event, 'resource')

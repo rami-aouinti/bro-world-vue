@@ -52,22 +52,24 @@ const PAWNS_PER_PLAYER = 4
 const TRACK_LENGTH = 52
 const FINAL_PROGRESS = 57
 
-const clampPlayerCount = (value: number | undefined) => Math.max(MIN_PLAYERS, Math.min(MAX_PLAYERS, value ?? 4))
+const clampPlayerCount = (value: number | undefined) =>
+  Math.max(MIN_PLAYERS, Math.min(MAX_PLAYERS, value ?? 4))
 
-const createPlayers = (playerCount: number): LudoPlayer[] => Array.from({ length: playerCount }, (_, playerIndex) => {
-  const id = `ludo-player-${playerIndex + 1}`
+const createPlayers = (playerCount: number): LudoPlayer[] =>
+  Array.from({ length: playerCount }, (_, playerIndex) => {
+    const id = `ludo-player-${playerIndex + 1}`
 
-  return {
-    id,
-    name: `Joueur ${playerIndex + 1}`,
-    color: PLAYER_COLORS[playerIndex],
-    pawns: Array.from({ length: PAWNS_PER_PLAYER }, (_, pawnIndex) => ({
-      id: `${id}-pawn-${pawnIndex + 1}`,
-      playerId: id,
-      progress: -1,
-    })),
-  }
-})
+    return {
+      id,
+      name: `Joueur ${playerIndex + 1}`,
+      color: PLAYER_COLORS[playerIndex],
+      pawns: Array.from({ length: PAWNS_PER_PLAYER }, (_, pawnIndex) => ({
+        id: `${id}-pawn-${pawnIndex + 1}`,
+        playerId: id,
+        progress: -1,
+      })),
+    }
+  })
 
 export const useLudoEngine = (options: LudoEngineOptions = {}) => {
   const playerCount = clampPlayerCount(options.playerCount)
@@ -81,7 +83,10 @@ export const useLudoEngine = (options: LudoEngineOptions = {}) => {
   const turn = ref(1)
   const hasMovedThisTurn = ref(false)
 
-  const getPawnPosition = (pawn: LudoPawn, playerIndex: number): LudoPawnPosition => {
+  const getPawnPosition = (
+    pawn: LudoPawn,
+    playerIndex: number,
+  ): LudoPawnPosition => {
     if (pawn.progress < 0) {
       return {
         zone: 'base',
@@ -94,7 +99,8 @@ export const useLudoEngine = (options: LudoEngineOptions = {}) => {
     if (pawn.progress <= TRACK_LENGTH - 1) {
       return {
         zone: 'track',
-        trackIndex: (PLAYER_START_OFFSETS[playerIndex] + pawn.progress) % TRACK_LENGTH,
+        trackIndex:
+          (PLAYER_START_OFFSETS[playerIndex] + pawn.progress) % TRACK_LENGTH,
         homeIndex: null,
         isFinished: false,
       }
@@ -109,7 +115,9 @@ export const useLudoEngine = (options: LudoEngineOptions = {}) => {
     }
   }
 
-  const currentPlayer = computed(() => players.value[currentPlayerIndex.value] ?? null)
+  const currentPlayer = computed(
+    () => players.value[currentPlayerIndex.value] ?? null,
+  )
 
   const canAdvancePawn = (pawn: LudoPawn, dice: number) => {
     if (pawn.progress < 0) {
@@ -119,23 +127,33 @@ export const useLudoEngine = (options: LudoEngineOptions = {}) => {
     return pawn.progress + dice <= FINAL_PROGRESS
   }
 
-  const getPawnById = (playerIndex: number, pawnId: string) => players.value[playerIndex]?.pawns.find(pawn => pawn.id === pawnId) ?? null
+  const getPawnById = (playerIndex: number, pawnId: string) =>
+    players.value[playerIndex]?.pawns.find((pawn) => pawn.id === pawnId) ?? null
 
-  const getMovablePawns = (playerIndex = currentPlayerIndex.value): LudoPawn[] => {
+  const getMovablePawns = (
+    playerIndex = currentPlayerIndex.value,
+  ): LudoPawn[] => {
     const player = players.value[playerIndex]
     if (!player || diceResult.value === null) return []
 
-    return player.pawns.filter(pawn => canAdvancePawn(pawn, diceResult.value as number))
+    return player.pawns.filter((pawn) =>
+      canAdvancePawn(pawn, diceResult.value as number),
+    )
   }
 
-  const getValidMoves = (playerIndex = currentPlayerIndex.value): LudoMoveOption[] => {
+  const getValidMoves = (
+    playerIndex = currentPlayerIndex.value,
+  ): LudoMoveOption[] => {
     const dice = diceResult.value
     if (dice === null) return []
 
     return getMovablePawns(playerIndex).map((pawn) => {
       const from = getPawnPosition(pawn, playerIndex)
       const targetProgress = pawn.progress < 0 ? 0 : pawn.progress + dice
-      const to = getPawnPosition({ ...pawn, progress: targetProgress }, playerIndex)
+      const to = getPawnPosition(
+        { ...pawn, progress: targetProgress },
+        playerIndex,
+      )
 
       return {
         pawnId: pawn.id,
@@ -147,7 +165,8 @@ export const useLudoEngine = (options: LudoEngineOptions = {}) => {
 
   const rollDice = (forcedValue?: number) => {
     if (winnerIndex.value !== null) return null
-    if (diceResult.value !== null && !hasMovedThisTurn.value) return diceResult.value
+    if (diceResult.value !== null && !hasMovedThisTurn.value)
+      return diceResult.value
 
     const nextValue = forcedValue ?? Math.floor(Math.random() * 6) + 1
     if (nextValue < 1 || nextValue > 6) {
@@ -161,7 +180,7 @@ export const useLudoEngine = (options: LudoEngineOptions = {}) => {
   }
 
   const selectPawn = (pawnId: string) => {
-    const validPawnIds = new Set(getMovablePawns().map(pawn => pawn.id))
+    const validPawnIds = new Set(getMovablePawns().map((pawn) => pawn.id))
     if (!validPawnIds.has(pawnId)) return false
 
     selectedPawnId.value = pawnId
@@ -190,13 +209,20 @@ export const useLudoEngine = (options: LudoEngineOptions = {}) => {
     const to = getPawnPosition(pawn, activePlayerIndex)
 
     const capturedPawnIds: string[] = []
-    if (to.zone === 'track' && to.trackIndex !== null && !SAFE_TRACK_INDEXES.has(to.trackIndex)) {
+    if (
+      to.zone === 'track' &&
+      to.trackIndex !== null &&
+      !SAFE_TRACK_INDEXES.has(to.trackIndex)
+    ) {
       players.value.forEach((opponent, opponentIndex) => {
         if (opponentIndex === activePlayerIndex) return
 
         opponent.pawns.forEach((opponentPawn) => {
           const opponentPosition = getPawnPosition(opponentPawn, opponentIndex)
-          if (opponentPosition.zone === 'track' && opponentPosition.trackIndex === to.trackIndex) {
+          if (
+            opponentPosition.zone === 'track' &&
+            opponentPosition.trackIndex === to.trackIndex
+          ) {
             opponentPawn.progress = -1
             capturedPawnIds.push(opponentPawn.id)
           }
@@ -204,7 +230,9 @@ export const useLudoEngine = (options: LudoEngineOptions = {}) => {
       })
     }
 
-    if (player.pawns.every(playerPawn => playerPawn.progress === FINAL_PROGRESS)) {
+    if (
+      player.pawns.every((playerPawn) => playerPawn.progress === FINAL_PROGRESS)
+    ) {
       winnerIndex.value = activePlayerIndex
     }
 
@@ -237,7 +265,8 @@ export const useLudoEngine = (options: LudoEngineOptions = {}) => {
     const earnedExtraTurn = hasMovedThisTurn.value && diceResult.value === 6
 
     if (!earnedExtraTurn) {
-      currentPlayerIndex.value = (currentPlayerIndex.value + 1) % players.value.length
+      currentPlayerIndex.value =
+        (currentPlayerIndex.value + 1) % players.value.length
     }
 
     diceResult.value = null

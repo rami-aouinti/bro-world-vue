@@ -1,7 +1,20 @@
 import { computed, ref } from 'vue'
 
 export type Suit = '♠' | '♥' | '♦' | '♣'
-export type Rank = '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | 'J' | 'Q' | 'K' | 'A'
+export type Rank =
+  | '2'
+  | '3'
+  | '4'
+  | '5'
+  | '6'
+  | '7'
+  | '8'
+  | '9'
+  | '10'
+  | 'J'
+  | 'Q'
+  | 'K'
+  | 'A'
 
 export interface Card {
   id: string
@@ -41,11 +54,29 @@ interface Snapshot {
 }
 
 const SUITS: Suit[] = ['♠', '♥', '♦', '♣']
-const RANKS: Rank[] = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+const RANKS: Rank[] = [
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  'J',
+  'Q',
+  'K',
+  'A',
+]
 
-const clonePlayers = (players: Player[]) => players.map(player => ({ ...player, hand: player.hand.map(card => ({ ...card })) }))
+const clonePlayers = (players: Player[]) =>
+  players.map((player) => ({
+    ...player,
+    hand: player.hand.map((card) => ({ ...card })),
+  }))
 
-const shuffle = <T,>(items: T[]) => {
+const shuffle = <T>(items: T[]) => {
   const output = [...items]
   for (let index = output.length - 1; index > 0; index -= 1) {
     const randomIndex = Math.floor(Math.random() * (index + 1))
@@ -58,12 +89,14 @@ const shuffle = <T,>(items: T[]) => {
 
 const createDeck = () => {
   let index = 0
-  return SUITS.flatMap(suit => RANKS.map((rank, rankIndex) => ({
-    id: `spa-${index += 1}`,
-    suit,
-    rank,
-    value: rankIndex + 2,
-  })))
+  return SUITS.flatMap((suit) =>
+    RANKS.map((rank, rankIndex) => ({
+      id: `spa-${(index += 1)}`,
+      suit,
+      rank,
+      value: rankIndex + 2,
+    })),
+  )
 }
 
 export const useSpadesEngine = () => {
@@ -78,7 +111,7 @@ export const useSpadesEngine = () => {
 
   const snapshot = (): Snapshot => ({
     players: clonePlayers(players.value),
-    trick: trick.value.map(play => ({ ...play, card: { ...play.card } })),
+    trick: trick.value.map((play) => ({ ...play, card: { ...play.card } })),
     turnIndex: turnIndex.value,
     leaderIndex: leaderIndex.value,
     handNumber: handNumber.value,
@@ -87,7 +120,10 @@ export const useSpadesEngine = () => {
 
   const restore = (state: Snapshot) => {
     players.value = clonePlayers(state.players)
-    trick.value = state.trick.map(play => ({ ...play, card: { ...play.card } }))
+    trick.value = state.trick.map((play) => ({
+      ...play,
+      card: { ...play.card },
+    }))
     turnIndex.value = state.turnIndex
     leaderIndex.value = state.leaderIndex
     handNumber.value = state.handNumber
@@ -104,8 +140,10 @@ export const useSpadesEngine = () => {
   const compareCards = (left: Card, right: Card) => left.value - right.value
 
   const assignBid = (hand: Card[]) => {
-    const highCards = hand.filter(card => card.rank === 'A' || card.rank === 'K' || card.rank === 'Q').length
-    const spades = hand.filter(card => card.suit === '♠').length
+    const highCards = hand.filter(
+      (card) => card.rank === 'A' || card.rank === 'K' || card.rank === 'Q',
+    ).length
+    const spades = hand.filter((card) => card.suit === '♠').length
     return Math.max(1, Math.min(6, Math.round(highCards * 0.6 + spades * 0.5)))
   }
 
@@ -117,11 +155,13 @@ export const useSpadesEngine = () => {
     const leadSuit = trick.value[0]?.card.suit
     if (!leadSuit) {
       if (card.suit !== '♠') return true
-      const onlySpades = player.hand.every(handCard => handCard.suit === '♠')
+      const onlySpades = player.hand.every((handCard) => handCard.suit === '♠')
       return spadesBroken.value || onlySpades
     }
 
-    const cardsInLeadSuit = player.hand.filter(handCard => handCard.suit === leadSuit)
+    const cardsInLeadSuit = player.hand.filter(
+      (handCard) => handCard.suit === leadSuit,
+    )
     if (cardsInLeadSuit.length > 0) {
       return card.suit === leadSuit
     }
@@ -134,8 +174,8 @@ export const useSpadesEngine = () => {
     if (!player || playerIndex !== turnIndex.value) return []
 
     return player.hand
-      .filter(card => canPlayCard(playerIndex, card))
-      .map(card => ({ type: 'play' as const, playerIndex, cardId: card.id }))
+      .filter((card) => canPlayCard(playerIndex, card))
+      .map((card) => ({ type: 'play' as const, playerIndex, cardId: card.id }))
   }
 
   const resolveTrickWinner = () => {
@@ -173,14 +213,13 @@ export const useSpadesEngine = () => {
   }
 
   const updateScoreIfHandOver = () => {
-    const handOver = players.value.every(player => player.hand.length === 0)
+    const handOver = players.value.every((player) => player.hand.length === 0)
     if (!handOver || trick.value.length > 0) return
 
     players.value.forEach((player) => {
       if (player.tricksWon >= player.bid) {
         player.score += player.bid * 10 + (player.tricksWon - player.bid)
-      }
-      else {
+      } else {
         player.score -= player.bid * 10
       }
     })
@@ -193,7 +232,7 @@ export const useSpadesEngine = () => {
     const player = players.value[move.playerIndex]
     if (!player || move.type !== 'play') return false
 
-    const cardIndex = player.hand.findIndex(card => card.id === move.cardId)
+    const cardIndex = player.hand.findIndex((card) => card.id === move.cardId)
     if (cardIndex < 0) return false
     const [card] = player.hand.splice(cardIndex, 1)
 
@@ -230,13 +269,17 @@ export const useSpadesEngine = () => {
     const player = players.value[playerIndex]
     if (!player) return null
 
-    const legalCards = player.hand.filter(card => canPlayCard(playerIndex, card))
+    const legalCards = player.hand.filter((card) =>
+      canPlayCard(playerIndex, card),
+    )
     if (!legalCards.length) return null
 
     const needTricks = player.tricksWon < player.bid
 
     if (needTricks) {
-      const winningBias = [...legalCards].sort((left, right) => right.value - left.value)
+      const winningBias = [...legalCards].sort(
+        (left, right) => right.value - left.value,
+      )
       return { type: 'play' as const, playerIndex, cardId: winningBias[0].id }
     }
 
@@ -274,10 +317,42 @@ export const useSpadesEngine = () => {
   const startNewHand = () => {
     const deck = shuffle(createDeck())
     players.value = [
-      { id: 'spades-human', name: 'Vous', isAI: false, hand: [], bid: 0, tricksWon: 0, score: 0 },
-      { id: 'spades-ai-east', name: 'IA Est', isAI: true, hand: [], bid: 0, tricksWon: 0, score: 0 },
-      { id: 'spades-ai-north', name: 'IA Nord', isAI: true, hand: [], bid: 0, tricksWon: 0, score: 0 },
-      { id: 'spades-ai-west', name: 'IA Ouest', isAI: true, hand: [], bid: 0, tricksWon: 0, score: 0 },
+      {
+        id: 'spades-human',
+        name: 'Vous',
+        isAI: false,
+        hand: [],
+        bid: 0,
+        tricksWon: 0,
+        score: 0,
+      },
+      {
+        id: 'spades-ai-east',
+        name: 'IA Est',
+        isAI: true,
+        hand: [],
+        bid: 0,
+        tricksWon: 0,
+        score: 0,
+      },
+      {
+        id: 'spades-ai-north',
+        name: 'IA Nord',
+        isAI: true,
+        hand: [],
+        bid: 0,
+        tricksWon: 0,
+        score: 0,
+      },
+      {
+        id: 'spades-ai-west',
+        name: 'IA Ouest',
+        isAI: true,
+        hand: [],
+        bid: 0,
+        tricksWon: 0,
+        score: 0,
+      },
     ]
 
     for (let round = 0; round < 13; round += 1) {
@@ -288,7 +363,10 @@ export const useSpadesEngine = () => {
     }
 
     players.value.forEach((player) => {
-      player.hand.sort((left, right) => left.suit.localeCompare(right.suit) || compareCards(left, right))
+      player.hand.sort(
+        (left, right) =>
+          left.suit.localeCompare(right.suit) || compareCards(left, right),
+      )
       player.tricksWon = 0
       player.bid = assignBid(player.hand)
     })
@@ -301,7 +379,11 @@ export const useSpadesEngine = () => {
     message.value = 'Main Spades distribuée (enchères auto).'
   }
 
-  const isHandOver = computed(() => players.value.every(player => player.hand.length === 0) && trick.value.length === 0)
+  const isHandOver = computed(
+    () =>
+      players.value.every((player) => player.hand.length === 0) &&
+      trick.value.length === 0,
+  )
 
   startNewHand()
 

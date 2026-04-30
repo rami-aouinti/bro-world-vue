@@ -239,11 +239,13 @@ async function deleteSprint() {
             cols="12"
             md="4"
           >
-            <WorldCard extra-class="pa-4 platform-style-card h-100 d-flex flex-column">
+            <WorldCard
+              extra-class="pa-4 platform-style-card h-100 d-flex flex-column"
+            >
               <div class="text-end">
                 <v-chip size="small" color="secondary" variant="tonal">{{
-                    sprint.status
-                  }}</v-chip>
+                  sprint.status
+                }}</v-chip>
               </div>
               <div class="d-flex align-start justify-space-between ga-2 mb-2">
                 <div class="d-flex align-center ga-2">
@@ -253,9 +255,7 @@ async function deleteSprint() {
                   </p>
                 </div>
               </div>
-              <p
-                class="text-caption text-sm text-medium-emphasis mb-0 mt-3"
-              >
+              <p class="text-caption text-sm text-medium-emphasis mb-0 mt-3">
                 {{ formatDate(sprint.startDate) }} -
                 {{ formatDate(sprint.endDate) }}
               </p>

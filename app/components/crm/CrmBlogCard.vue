@@ -65,7 +65,8 @@ const posts = ref<BlogPost[]>([
     id: 'mock-post-1',
     slug: null,
     title: 'Sprint sync ready',
-    content: 'Le sprint avance bien. La prochaine review est prévue demain matin.',
+    content:
+      'Le sprint avance bien. La prochaine review est prévue demain matin.',
     createdAt: new Date(Date.now() - 1000 * 60 * 20).toISOString(),
     author: {
       firstName: 'Yanis',
@@ -82,7 +83,8 @@ const posts = ref<BlogPost[]>([
     id: 'mock-post-2',
     slug: null,
     title: 'Need QA support',
-    content: 'On a besoin d\'un check QA sur les derniers changements API avant merge.',
+    content:
+      "On a besoin d'un check QA sur les derniers changements API avant merge.",
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
     author: {
       firstName: 'Camille',
@@ -99,10 +101,10 @@ const posts = ref<BlogPost[]>([
 
 function normalizePostContent(payload: NewPostPayload): string {
   return (
-    payload.youtubeUrl?.trim()
-    || payload.imageUrl?.trim()
-    || payload.videoUrl?.trim()
-    || payload.content.trim()
+    payload.youtubeUrl?.trim() ||
+    payload.imageUrl?.trim() ||
+    payload.videoUrl?.trim() ||
+    payload.content.trim()
   )
 }
 
@@ -151,7 +153,9 @@ function reactToPost(payload: { post: BlogPost; code: string }) {
 
   const code = payload.code.toLowerCase()
   const reactions = [...(target.reactions ?? [])]
-  const existing = reactions.find((entry) => (entry.type ?? '').toLowerCase() === code)
+  const existing = reactions.find(
+    (entry) => (entry.type ?? '').toLowerCase() === code,
+  )
 
   if (existing) {
     existing.count = (existing.count ?? 0) + 1

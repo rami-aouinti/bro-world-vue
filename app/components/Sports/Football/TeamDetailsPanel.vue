@@ -49,8 +49,14 @@ const topPlayers = computed(() => props.details.squad.players.slice(0, 4))
       :goals="details.statistics.goals"
     />
 
-    <div class="text-caption mb-2">{{ t('pages.applications.football.misc.topPlayers') }}</div>
-    <TransitionGroup name="stagger" tag="div" class="d-flex flex-wrap ga-2 mb-4">
+    <div class="text-caption mb-2">
+      {{ t('pages.applications.football.misc.topPlayers') }}
+    </div>
+    <TransitionGroup
+      name="stagger"
+      tag="div"
+      class="d-flex flex-wrap ga-2 mb-4"
+    >
       <v-sheet
         v-for="player in topPlayers"
         :key="`top-${player.id}`"
@@ -67,14 +73,20 @@ const topPlayers = computed(() => props.details.squad.players.slice(0, 4))
           <div>
             <div class="text-caption font-weight-bold">{{ player.name }}</div>
             <div class="text-caption text-medium-emphasis">
-              {{ player.position || t('pages.applications.football.misc.notAvailableShort') }} · #{{ player.number ?? '-' }}
+              {{
+                player.position ||
+                t('pages.applications.football.misc.notAvailableShort')
+              }}
+              · #{{ player.number ?? '-' }}
             </div>
           </div>
         </div>
       </v-sheet>
     </TransitionGroup>
 
-    <div class="text-caption mb-2">{{ t('pages.applications.football.misc.squadHint') }}</div>
+    <div class="text-caption mb-2">
+      {{ t('pages.applications.football.misc.squadHint') }}
+    </div>
     <v-list density="comfortable" lines="one" class="pa-0 football-list-scroll">
       <TransitionGroup name="stagger" tag="div">
         <v-list-item
@@ -91,19 +103,37 @@ const topPlayers = computed(() => props.details.squad.players.slice(0, 4))
             </v-avatar>
           </template>
 
-          <v-list-item-title class="text-body-2 font-weight-medium">{{ player.name }}</v-list-item-title>
+          <v-list-item-title class="text-body-2 font-weight-medium">{{
+            player.name
+          }}</v-list-item-title>
           <v-list-item-subtitle>
-            {{ player.position || t('pages.applications.football.misc.unknownPosition') }}
-            <span class="text-medium-emphasis"> · {{ player.age ? t('pages.applications.football.misc.ageYearsShort', { age: player.age }) : t('pages.applications.football.misc.ageUnknown') }}</span>
+            {{
+              player.position ||
+              t('pages.applications.football.misc.unknownPosition')
+            }}
+            <span class="text-medium-emphasis">
+              ·
+              {{
+                player.age
+                  ? t('pages.applications.football.misc.ageYearsShort', {
+                      age: player.age,
+                    })
+                  : t('pages.applications.football.misc.ageUnknown')
+              }}</span
+            >
           </v-list-item-subtitle>
 
           <template #append>
             <div class="d-flex align-center ga-2">
-              <v-chip size="x-small" variant="tonal" color="primary">#{{ player.number ?? '-' }}</v-chip>
+              <v-chip size="x-small" variant="tonal" color="primary"
+                >#{{ player.number ?? '-' }}</v-chip
+              >
               <v-icon
                 icon="mdi-circle"
                 size="10"
-                :color="selectedPlayerId === player.id ? 'primary' : 'medium-emphasis'"
+                :color="
+                  selectedPlayerId === player.id ? 'primary' : 'medium-emphasis'
+                "
               />
             </div>
           </template>

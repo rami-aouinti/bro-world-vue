@@ -5,11 +5,18 @@ export default defineEventHandler(async (event) => {
   const taskRequest = getRouterParam(event, 'taskRequest')
 
   if (!taskRequest) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing task request id' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing task request id',
+    })
   }
 
-  return mutateCrmGeneral<CrmIdResponse>(event, `task-requests/${taskRequest}/status`, {
-    method: 'PATCH',
-    body: await readBody<Record<string, unknown>>(event),
-  })
+  return mutateCrmGeneral<CrmIdResponse>(
+    event,
+    `task-requests/${taskRequest}/status`,
+    {
+      method: 'PATCH',
+      body: await readBody<Record<string, unknown>>(event),
+    },
+  )
 })

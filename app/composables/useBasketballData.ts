@@ -161,7 +161,10 @@ export function useBasketballData() {
 
   const selectedLeague = computed<BasketballLeague | null>(() => {
     if (!selectedLeagueId.value) return null
-    return leagues.value.find((league) => league.id === selectedLeagueId.value) ?? null
+    return (
+      leagues.value.find((league) => league.id === selectedLeagueId.value) ??
+      null
+    )
   })
 
   const seasons = computed<number[]>(() => {
@@ -191,7 +194,9 @@ export function useBasketballData() {
     leaguesError.value = ''
 
     try {
-      const response = await $fetch<{ items: BasketballLeague[] }>('/api/sports/basketball/leagues')
+      const response = await $fetch<{ items: BasketballLeague[] }>(
+        '/api/sports/basketball/leagues',
+      )
       leagues.value = response.items
       leaguesState.value = leagues.value.length ? 'ready' : 'empty'
 
@@ -202,7 +207,10 @@ export function useBasketballData() {
     } catch (error) {
       leagues.value = []
       leaguesState.value = 'error'
-      leaguesError.value = toErrorMessage(error, 'Failed to load basketball leagues')
+      leaguesError.value = toErrorMessage(
+        error,
+        'Failed to load basketball leagues',
+      )
       resetLeagueData()
     }
   }
@@ -246,12 +254,9 @@ export function useBasketballData() {
               standingsAvailable?: boolean
               reason?: string | null
             }
-          }>(
-            '/api/sports/basketball/standings',
-            {
-              query: { league, season },
-            },
-          )
+          }>('/api/sports/basketball/standings', {
+            query: { league, season },
+          })
         : Promise.resolve(null),
     ])
 
@@ -264,7 +269,10 @@ export function useBasketballData() {
     } else {
       games.value = []
       gamesState.value = 'error'
-      gamesError.value = toErrorMessage(gamesResult.reason, 'Failed to load basketball games')
+      gamesError.value = toErrorMessage(
+        gamesResult.reason,
+        'Failed to load basketball games',
+      )
     }
 
     if (!canLoadStandings) {
@@ -330,14 +338,8 @@ export function useBasketballData() {
   const normalizePlayerDetails = (
     response: Record<string, any>,
   ): BasketballPlayerDetails => {
-    const profile =
-      response?.player ??
-      response?.profile ??
-      null
-    const team =
-      response?.team ??
-      response?.statistics?.[0]?.team ??
-      null
+    const profile = response?.player ?? response?.profile ?? null
+    const team = response?.team ?? response?.statistics?.[0]?.team ?? null
     const statistics = Array.isArray(response?.statistics)
       ? response.statistics
       : []
@@ -349,18 +351,25 @@ export function useBasketballData() {
             name:
               (typeof profile.name === 'string' && profile.name.trim()) ||
               [profile.firstname, profile.lastname]
-                .filter((part) => typeof part === 'string' && part.trim().length > 0)
+                .filter(
+                  (part) => typeof part === 'string' && part.trim().length > 0,
+                )
                 .join(' ') ||
               'Unknown player',
-            firstname: typeof profile.firstname === 'string' ? profile.firstname : null,
-            lastname: typeof profile.lastname === 'string' ? profile.lastname : null,
+            firstname:
+              typeof profile.firstname === 'string' ? profile.firstname : null,
+            lastname:
+              typeof profile.lastname === 'string' ? profile.lastname : null,
             age: typeof profile.age === 'number' ? profile.age : null,
             height: typeof profile.height === 'string' ? profile.height : null,
             weight: typeof profile.weight === 'string' ? profile.weight : null,
             nationality:
-              typeof profile.nationality === 'string' ? profile.nationality : null,
+              typeof profile.nationality === 'string'
+                ? profile.nationality
+                : null,
             photo: typeof profile.photo === 'string' ? profile.photo : null,
-            injured: typeof profile.injured === 'boolean' ? profile.injured : null,
+            injured:
+              typeof profile.injured === 'boolean' ? profile.injured : null,
           }
         : null,
       team: team
@@ -376,7 +385,10 @@ export function useBasketballData() {
     }
   }
 
-  const loadPlayerDetails = async (playerId: number | null, season?: number | null) => {
+  const loadPlayerDetails = async (
+    playerId: number | null,
+    season?: number | null,
+  ) => {
     selectedPlayerId.value = playerId
     playerDetails.value = null
     playerError.value = ''
@@ -397,7 +409,9 @@ export function useBasketballData() {
           query: {
             player: playerId,
             season: resolvedSeason,
-            ...(selectedLeagueId.value ? { league: selectedLeagueId.value } : {}),
+            ...(selectedLeagueId.value
+              ? { league: selectedLeagueId.value }
+              : {}),
           },
         },
       )
@@ -406,7 +420,10 @@ export function useBasketballData() {
       playerState.value = playerDetails.value.player ? 'ready' : 'empty'
     } catch (error) {
       playerState.value = 'error'
-      playerError.value = toErrorMessage(error, 'Failed to load basketball player details')
+      playerError.value = toErrorMessage(
+        error,
+        'Failed to load basketball player details',
+      )
     }
   }
 
@@ -415,7 +432,11 @@ export function useBasketballData() {
       return null
     }
 
-    return games.value.find((game) => game.id === selectedGameId.value) ?? games.value[0] ?? null
+    return (
+      games.value.find((game) => game.id === selectedGameId.value) ??
+      games.value[0] ??
+      null
+    )
   })
 
   const scoreOf = (value: unknown) => {
@@ -437,8 +458,12 @@ export function useBasketballData() {
       return 'vs'
     }
 
-    const homeScore = scoreOf(game.scores?.home?.total ?? game.scores?.home?.points)
-    const awayScore = scoreOf(game.scores?.away?.total ?? game.scores?.away?.points)
+    const homeScore = scoreOf(
+      game.scores?.home?.total ?? game.scores?.home?.points,
+    )
+    const awayScore = scoreOf(
+      game.scores?.away?.total ?? game.scores?.away?.points,
+    )
 
     return `${homeScore ?? '-'} - ${awayScore ?? '-'}`
   })

@@ -50,17 +50,18 @@ const schoolResources = computed(() =>
   schoolAdminStore.summary.map((item) => ({
     ...item,
     to: `/world/learning/admin/${item.key}`,
-    icon: item.key === 'classes'
-      ? 'mdi-google-classroom'
-      : item.key === 'courses'
-        ? 'mdi-book-open-variant'
-      : item.key === 'teachers'
-        ? 'mdi-account-tie'
-        : item.key === 'students'
-          ? 'mdi-account-school'
-          : item.key === 'exams'
-            ? 'mdi-file-document-outline'
-            : 'mdi-check-decagram-outline',
+    icon:
+      item.key === 'classes'
+        ? 'mdi-google-classroom'
+        : item.key === 'courses'
+          ? 'mdi-book-open-variant'
+          : item.key === 'teachers'
+            ? 'mdi-account-tie'
+            : item.key === 'students'
+              ? 'mdi-account-school'
+              : item.key === 'exams'
+                ? 'mdi-file-document-outline'
+                : 'mdi-check-decagram-outline',
   })),
 )
 </script>
@@ -70,10 +71,17 @@ const schoolResources = computed(() =>
     <WorldModuleShell
       :module-title="t('world.learning.label', 'Learning')"
       module-icon="mdi-school-outline"
-      :module-description="t('world.learning.admin.moduleDescription', 'Mentor/admin dashboard: completion, dropout, and cohort performance.')"
+      :module-description="
+        t(
+          'world.learning.admin.moduleDescription',
+          'Mentor/admin dashboard: completion, dropout, and cohort performance.',
+        )
+      "
       :nav-items="learningNavItems"
       deactivate-right-drawer
-      :action-label="t('world.learning.admin.actions.refreshAnalytics', 'Refresh analytics')"
+      :action-label="
+        t('world.learning.admin.actions.refreshAnalytics', 'Refresh analytics')
+      "
       action-icon="mdi-refresh"
       @action="refresh"
     />
@@ -83,12 +91,22 @@ const schoolResources = computed(() =>
         <template v-if="canAccessDashboard">
           <h2 class="text-h5 mb-2">Learning admin dashboard</h2>
           <p class="text-medium-emphasis mb-4">
-            {{ t('world.learning.admin.description', 'Track cohort KPIs, level-rule compliance, and certificate issuance.') }}
+            {{
+              t(
+                'world.learning.admin.description',
+                'Track cohort KPIs, level-rule compliance, and certificate issuance.',
+              )
+            }}
           </p>
 
           <div class="d-flex align-center justify-space-between mb-2">
             <h3 class="text-h6">School resources</h3>
-            <v-btn size="small" variant="text" prepend-icon="mdi-refresh" @click="refreshSummary">
+            <v-btn
+              size="small"
+              variant="text"
+              prepend-icon="mdi-refresh"
+              @click="refreshSummary"
+            >
               Refresh
             </v-btn>
           </div>

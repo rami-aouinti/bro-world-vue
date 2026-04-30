@@ -39,7 +39,11 @@ function onEndInput(event: Event) {
     variant="tonal"
     class="resume-date-chip"
   >
-    <span class="editable-text" :contenteditable="editable" @input="onStartInput">
+    <span
+      class="editable-text"
+      :contenteditable="editable"
+      @input="onStartInput"
+    >
       {{ formatResumeMonthYear(start) }}
     </span>
     -
@@ -48,7 +52,11 @@ function onEndInput(event: Event) {
     </span>
   </v-chip>
   <p v-else class="resume-date-range">
-    <span class="editable-text" :contenteditable="editable" @input="onStartInput">
+    <span
+      class="editable-text"
+      :contenteditable="editable"
+      @input="onStartInput"
+    >
       {{ formatResumeMonthYear(start) }}
     </span>
     -
@@ -82,7 +90,11 @@ function onEndInput(event: Event) {
 
 @media print {
   .resume-date-chip {
-    background-color: color-mix(in srgb, var(--cv-accent) 18%, white) !important;
+    background-color: color-mix(
+      in srgb,
+      var(--cv-accent) 18%,
+      white
+    ) !important;
     color: color-mix(in srgb, var(--cv-accent) 78%, #0f2f64) !important;
     border: 1px solid color-mix(in srgb, var(--cv-accent) 35%, white) !important;
     print-color-adjust: exact;

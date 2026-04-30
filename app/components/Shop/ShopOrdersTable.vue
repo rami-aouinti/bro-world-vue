@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import type { ChannelOption, OrderRecord, OrderStatus, OrderStatusMeta } from './types'
+import type {
+  ChannelOption,
+  OrderRecord,
+  OrderStatus,
+  OrderStatusMeta,
+} from './types'
 
 defineProps<{
   headers: Array<{ title: string; key: string; sortable?: boolean }>
@@ -19,7 +24,11 @@ const emit = defineEmits<{
 const currencyFormat = (value: number) => `${value.toFixed(2)} €`
 
 const statusMeta = (status: OrderStatus, statusCatalog: OrderStatusMeta[]) =>
-  statusCatalog.find((item) => item.value === status) ?? { value: 'all', title: 'All', color: 'grey' }
+  statusCatalog.find((item) => item.value === status) ?? {
+    value: 'all',
+    title: 'All',
+    color: 'grey',
+  }
 </script>
 
 <template>
@@ -48,8 +57,8 @@ const statusMeta = (status: OrderStatus, statusCatalog: OrderStatusMeta[]) =>
     </template>
     <template #item.channel="{ item }">
       {{
-        channelCatalog.find((channel) => channel.value === item.channel)?.title ||
-        item.channel
+        channelCatalog.find((channel) => channel.value === item.channel)
+          ?.title || item.channel
       }}
     </template>
     <template #item.status="{ item }">
@@ -80,10 +89,14 @@ const statusMeta = (status: OrderStatus, statusCatalog: OrderStatusMeta[]) =>
         <v-list density="compact">
           <v-list-subheader>Update status</v-list-subheader>
           <v-list-item
-            v-for="statusOption in statusCatalog.filter((entry) => entry.value !== 'all')"
+            v-for="statusOption in statusCatalog.filter(
+              (entry) => entry.value !== 'all',
+            )"
             :key="statusOption.value"
             :title="statusOption.title"
-            @click="emit('update-status', item.id, statusOption.value as OrderStatus)"
+            @click="
+              emit('update-status', item.id, statusOption.value as OrderStatus)
+            "
           />
           <v-divider class="my-1" />
           <v-list-item

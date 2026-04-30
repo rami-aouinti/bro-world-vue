@@ -10,7 +10,10 @@ export function resolveGlobalShopId(
   runtimePublicConfig?: RuntimePublicConfigLike,
 ) {
   const configuredShopId = runtimePublicConfig?.shop?.globalShopId
-  if (typeof configuredShopId === 'string' && configuredShopId.trim().length > 0) {
+  if (
+    typeof configuredShopId === 'string' &&
+    configuredShopId.trim().length > 0
+  ) {
     return configuredShopId.trim()
   }
 

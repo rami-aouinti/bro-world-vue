@@ -309,20 +309,28 @@ function isComplexValue(value: unknown) {
   return typeof value === 'object' && value !== null
 }
 
-function flattenComplexValue(value: unknown): Array<{ key: string; value: string }> {
+function flattenComplexValue(
+  value: unknown,
+): Array<{ key: string; value: string }> {
   if (!isComplexValue(value)) return []
 
   if (Array.isArray(value)) {
     return value.map((entry, index) => ({
       key: `Item ${index + 1}`,
-      value: isComplexValue(entry) ? 'Structured content' : formatPrimitive(entry),
+      value: isComplexValue(entry)
+        ? 'Structured content'
+        : formatPrimitive(entry),
     }))
   }
 
-  return Object.entries(value as Record<string, unknown>).map(([key, nestedValue]) => ({
-    key,
-    value: isComplexValue(nestedValue) ? 'Structured content' : formatPrimitive(nestedValue),
-  }))
+  return Object.entries(value as Record<string, unknown>).map(
+    ([key, nestedValue]) => ({
+      key,
+      value: isComplexValue(nestedValue)
+        ? 'Structured content'
+        : formatPrimitive(nestedValue),
+    }),
+  )
 }
 
 function inferFieldType(value: unknown): CrmAdminActionFormField['type'] {
@@ -334,9 +342,12 @@ function inferFieldType(value: unknown): CrmAdminActionFormField['type'] {
 function buildActionLabel(action: EndpointAction) {
   const title = action.title?.trim()
   if (title) return title
-  if (action.method === 'POST') return `Add ${sectionConfig.value.title.slice(0, -1)}`
-  if (action.method === 'PATCH' || action.method === 'PUT') return `Update ${sectionConfig.value.title.slice(0, -1)}`
-  if (action.method === 'DELETE') return `Delete ${sectionConfig.value.title.slice(0, -1)}`
+  if (action.method === 'POST')
+    return `Add ${sectionConfig.value.title.slice(0, -1)}`
+  if (action.method === 'PATCH' || action.method === 'PUT')
+    return `Update ${sectionConfig.value.title.slice(0, -1)}`
+  if (action.method === 'DELETE')
+    return `Delete ${sectionConfig.value.title.slice(0, -1)}`
   return 'Open action'
 }
 
@@ -507,13 +518,18 @@ function openActionDialog(action: EndpointAction, item: GenericItem) {
   selectedAction.value = action
   actionFeedback.value = ''
   currentItem.value = item
-  actionFormFields.value = Object.entries(action.defaultBody ?? {}).map(([key, value]) => ({
-    key,
-    label: key,
-    type: inferFieldType(value),
-  }))
+  actionFormFields.value = Object.entries(action.defaultBody ?? {}).map(
+    ([key, value]) => ({
+      key,
+      label: key,
+      type: inferFieldType(value),
+    }),
+  )
   actionFormModel.value = Object.fromEntries(
-    Object.entries(action.defaultBody ?? {}).map(([key, value]) => [key, typeof value === 'boolean' ? Number(value) : String(value ?? '')]),
+    Object.entries(action.defaultBody ?? {}).map(([key, value]) => [
+      key,
+      typeof value === 'boolean' ? Number(value) : String(value ?? ''),
+    ]),
   )
 
   for (const param of pathParams(action.path)) {
@@ -548,7 +564,10 @@ async function submitApiAction() {
               return [field.key, Number(rawValue || 0)]
             }
             if (field.type === 'boolean') {
-              return [field.key, rawValue === 1 || rawValue === '1' || rawValue === true]
+              return [
+                field.key,
+                rawValue === 1 || rawValue === '1' || rawValue === true,
+              ]
             }
             return [field.key, rawValue]
           }),
@@ -658,9 +677,11 @@ async function submitApiAction() {
               :key="key"
               class="text-body-2 mb-1"
             >
-            <template v-if="isComplexValue(value)">
+              <template v-if="isComplexValue(value)">
                 <span class="font-weight-medium">{{ key }}:</span>
-                <span class="text-caption text-medium-emphasis ml-1">Structured content</span>
+                <span class="text-caption text-medium-emphasis ml-1"
+                  >Structured content</span
+                >
               </template>
               <template v-else>
                 <span class="font-weight-medium">{{ key }}:</span>
@@ -717,10 +738,7 @@ async function submitApiAction() {
       </v-row>
 
       <div v-if="totalPages > 1" class="d-flex justify-center mt-6">
-        <WorldPagination
-          v-model="currentPage"
-          :length="totalPages"
-        />
+        <WorldPagination v-model="currentPage" :length="totalPages" />
       </div>
     </v-container>
 
@@ -829,7 +847,8 @@ async function submitApiAction() {
                   :key="`${key}-${entry.key}`"
                   class="text-body-2 mb-1"
                 >
-                  <span class="font-weight-medium">{{ entry.key }}:</span> {{ entry.value }}
+                  <span class="font-weight-medium">{{ entry.key }}:</span>
+                  {{ entry.value }}
                 </div>
               </v-sheet>
             </template>

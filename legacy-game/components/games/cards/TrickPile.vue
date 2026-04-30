@@ -11,16 +11,21 @@ interface TrickPlay {
   won?: boolean
 }
 
-const props = withDefaults(defineProps<{
-  trick: TrickPlay[]
-  winnerSeat?: TrickPlay['seat'] | null
-}>(), {
-  winnerSeat: null,
-})
+const props = withDefaults(
+  defineProps<{
+    trick: TrickPlay[]
+    winnerSeat?: TrickPlay['seat'] | null
+  }>(),
+  {
+    winnerSeat: null,
+  },
+)
 
 const slotsOrder: TrickPlay['seat'][] = ['north', 'east', 'south', 'west']
 
-const occupiedSeats = computed(() => new Set(props.trick.map(play => play.seat)))
+const occupiedSeats = computed(
+  () => new Set(props.trick.map((play) => play.seat)),
+)
 </script>
 
 <template>
@@ -52,7 +57,13 @@ const occupiedSeats = computed(() => new Set(props.trick.map(play => play.seat))
       class="trick-pile__slot"
       :class="`trick-pile__slot--${seat}`"
     >
-      <div v-if="!occupiedSeats.has(seat)" class="trick-pile__empty" aria-hidden="true">—</div>
+      <div
+        v-if="!occupiedSeats.has(seat)"
+        class="trick-pile__empty"
+        aria-hidden="true"
+      >
+        —
+      </div>
     </div>
   </div>
 </template>

@@ -2,10 +2,30 @@ import type { ResumeEditableSectionKey } from '~/types/resumeDocumentModel'
 
 export type ResumeTemplateType = 'resume' | 'cover-page' | 'cover-letter'
 
-export type ResumeTemplatePalette = 'classic' | 'urban' | 'compact-ats' | 'executive' | 'midnight' | 'minimal' | 'terra' | 'elegant' | 'graphite' | 'oceanic'
+export type ResumeTemplatePalette =
+  | 'classic'
+  | 'urban'
+  | 'compact-ats'
+  | 'executive'
+  | 'midnight'
+  | 'minimal'
+  | 'terra'
+  | 'elegant'
+  | 'graphite'
+  | 'oceanic'
 export type ResumeTemplateRadius = 'none' | 'soft'
-export type ResumeTemplateTypography = 'executive' | 'modern' | 'clean' | 'serif' | 'sans'
-export type ResumeTemplateSectionVariant = 'detailed' | 'timeline' | 'compact' | 'classic' | 'list'
+export type ResumeTemplateTypography =
+  | 'executive'
+  | 'modern'
+  | 'clean'
+  | 'serif'
+  | 'sans'
+export type ResumeTemplateSectionVariant =
+  | 'detailed'
+  | 'timeline'
+  | 'compact'
+  | 'classic'
+  | 'list'
 export type ResumeTemplateIconStyle = 'text' | 'outline' | 'filled' | 'rounded'
 export type ResumeStructureId = 'no-aside' | 'aside-left' | 'aside-right'
 export type ResumeLayoutId = string

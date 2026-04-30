@@ -24,13 +24,13 @@ Les stores Pinia `worldCrm`, `worldShop`, `worldLearning`, `worldJobs` appliquen
 
 Ces TTL sont des valeurs de base pour limiter les appels API tout en gardant une expérience "live" cohérente.
 
-| Endpoint            | TTL recommandé | Notes |
-| ------------------- | -------------- | ----- |
-| `leagues`           | 24h            | Donnée très stable (compétitions). |
-| `teams`             | 12h            | Effectifs / métadonnées peu volatiles hors mercato. |
-| `fixtures`          | 60s à 120s     | Liste de matchs à rafraîchir fréquemment en phase live. |
-| `fixture details`   | 15s à 30s      | Événements de match (score, stats, incidents) quasi temps réel. |
-| `standings`         | 5min           | Classements à recalculer après fin de match et événements majeurs. |
+| Endpoint          | TTL recommandé | Notes                                                              |
+| ----------------- | -------------- | ------------------------------------------------------------------ |
+| `leagues`         | 24h            | Donnée très stable (compétitions).                                 |
+| `teams`           | 12h            | Effectifs / métadonnées peu volatiles hors mercato.                |
+| `fixtures`        | 60s à 120s     | Liste de matchs à rafraîchir fréquemment en phase live.            |
+| `fixture details` | 15s à 30s      | Événements de match (score, stats, incidents) quasi temps réel.    |
+| `standings`       | 5min           | Classements à recalculer après fin de match et événements majeurs. |
 
 > Recommandation pratique: utiliser la borne basse du TTL pendant les créneaux live, et la borne haute hors match.
 
@@ -131,15 +131,15 @@ Quand un nouvel endpoint mutation (`POST`, `PUT`, `PATCH`, `DELETE`) est ajouté
 
 ### TTL GET côté serveur (`server/utils/crmGithubGeneralApi.ts`)
 
-| Endpoint (pattern) | TTL |
-| --- | --- |
-| `projects/:project/github/commits` | 60s |
-| `projects/:project/github/branches` | 60s |
-| `projects/:project/github/pull-requests` | 60s |
-| `projects/:project/github/collaborators` | 60s |
-| `projects/:project/github/actions/workflows` | 180s |
-| `projects/:project/github/actions/runs` | 45s |
-| autres endpoints CRM GitHub | TTL CRM par défaut (`resolveCacheTtl('crm')`) |
+| Endpoint (pattern)                           | TTL                                           |
+| -------------------------------------------- | --------------------------------------------- |
+| `projects/:project/github/commits`           | 60s                                           |
+| `projects/:project/github/branches`          | 60s                                           |
+| `projects/:project/github/pull-requests`     | 60s                                           |
+| `projects/:project/github/collaborators`     | 60s                                           |
+| `projects/:project/github/actions/workflows` | 180s                                          |
+| `projects/:project/github/actions/runs`      | 45s                                           |
+| autres endpoints CRM GitHub                  | TTL CRM par défaut (`resolveCacheTtl('crm')`) |
 
 ### Invalidation mutation par préfixe (éviter stale data)
 

@@ -22,15 +22,17 @@ const { data, pending, error } = await useFetch<CrmProjectItem>(
 )
 
 const wikiPages = computed<ProjectWikiPage[]>(() =>
-  Array.isArray(data.value?.wikiPages) ? (data.value?.wikiPages as ProjectWikiPage[]) : [],
+  Array.isArray(data.value?.wikiPages)
+    ? (data.value?.wikiPages as ProjectWikiPage[])
+    : [],
 )
 
 const selectedWiki = computed(() => {
   if (!wikiPages.value.length) return null
   return (
-    wikiPages.value.find(page => page.id === selectedWikiId.value)
-    || wikiPages.value[0]
-    || null
+    wikiPages.value.find((page) => page.id === selectedWikiId.value) ||
+    wikiPages.value[0] ||
+    null
   )
 })
 
@@ -56,7 +58,11 @@ function formatDate(value?: string | null) {
     >
       <template #right>
         <h3 class="text-subtitle-1 mb-3">Wiki pages</h3>
-        <v-list v-if="wikiPages.length" density="compact" bg-color="transparent">
+        <v-list
+          v-if="wikiPages.length"
+          density="compact"
+          bg-color="transparent"
+        >
           <v-list-item
             v-for="page in wikiPages"
             :key="page.id"
@@ -67,17 +73,23 @@ function formatDate(value?: string | null) {
             color="primary"
           />
         </v-list>
-        <p v-else class="text-body-2 text-medium-emphasis mb-0">Aucune page wiki.</p>
+        <p v-else class="text-body-2 text-medium-emphasis mb-0">
+          Aucune page wiki.
+        </p>
       </template>
     </WorldModuleShell>
 
     <v-container fluid>
       <CrmPageSkeleton v-if="pending" variant="detail" />
-      <v-alert v-else-if="error" type="error" variant="tonal">Impossible de charger le wiki du projet.</v-alert>
+      <v-alert v-else-if="error" type="error" variant="tonal"
+        >Impossible de charger le wiki du projet.</v-alert
+      >
       <v-card v-else rounded="xl" class="pa-4 postcard-gradient-card">
         <div class="d-flex justify-space-between align-start ga-2 mb-3">
           <div>
-            <h2 class="text-h6 mb-1">{{ selectedWiki?.title || 'Wiki du projet' }}</h2>
+            <h2 class="text-h6 mb-1">
+              {{ selectedWiki?.title || 'Wiki du projet' }}
+            </h2>
             <p class="text-caption mb-0 text-medium-emphasis">
               {{ selectedWiki ? formatDate(selectedWiki.createdAt) : '—' }}
             </p>
@@ -94,8 +106,16 @@ function formatDate(value?: string | null) {
 
         <v-divider class="mb-4" />
 
-        <p v-if="selectedWiki?.content" class="text-body-1" style="white-space: pre-wrap;">{{ selectedWiki.content }}</p>
-        <p v-else class="text-body-2 text-medium-emphasis mb-0">Aucun contenu wiki pour ce projet.</p>
+        <p
+          v-if="selectedWiki?.content"
+          class="text-body-1"
+          style="white-space: pre-wrap"
+        >
+          {{ selectedWiki.content }}
+        </p>
+        <p v-else class="text-body-2 text-medium-emphasis mb-0">
+          Aucun contenu wiki pour ce projet.
+        </p>
       </v-card>
     </v-container>
   </div>

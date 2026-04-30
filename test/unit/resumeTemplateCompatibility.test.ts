@@ -3,9 +3,15 @@ import { resolveCompatibilityTemplateConfig } from '../../app/modules/resume/tem
 
 describe('resume template compatibility mapping', () => {
   it('maps pilot legacy templates to templateConfig', () => {
-    expect(resolveCompatibilityTemplateConfig('classic')?.skinId).toBe('skin-classic')
-    expect(resolveCompatibilityTemplateConfig('fugo')?.layoutId).toBe('layout-aside-right-b')
-    expect(resolveCompatibilityTemplateConfig('minimal')?.structureId).toBe('no-aside')
+    expect(resolveCompatibilityTemplateConfig('classic')?.skinId).toBe(
+      'skin-classic',
+    )
+    expect(resolveCompatibilityTemplateConfig('fugo')?.layoutId).toBe(
+      'layout-aside-right-b',
+    )
+    expect(resolveCompatibilityTemplateConfig('minimal')?.structureId).toBe(
+      'no-aside',
+    )
   })
 
   it('returns null for unknown legacy template id', () => {

@@ -286,11 +286,18 @@ onBeforeUnmount(clearTimer)
             />
             <v-list-item
               prepend-icon="mdi-timer-outline"
-              :title="t('pages.applications.quiz.timeLeft', { time: remainingTime })"
+              :title="
+                t('pages.applications.quiz.timeLeft', { time: remainingTime })
+              "
             />
             <v-list-item
               prepend-icon="mdi-flag-checkered"
-              :title="t('pages.applications.quiz.questionCounter', { current: currentQuestionIndex + 1, total: Math.max(questions.length, 1) })"
+              :title="
+                t('pages.applications.quiz.questionCounter', {
+                  current: currentQuestionIndex + 1,
+                  total: Math.max(questions.length, 1),
+                })
+              "
             />
           </v-list>
         </div>
@@ -342,235 +349,240 @@ onBeforeUnmount(clearTimer)
               </v-row>
             </section>
 
-          <section
-            v-else-if="quizStep === 'select-level'"
-            class="quiz-level-layout d-flex flex-column"
-          >
-            <div
-              class="d-flex align-center justify-space-between flex-wrap ga-3 mb-4"
-            >
-              <h3 class="text-h6 mb-0">
-                {{ t('pages.applications.quiz.selectLevelTitle') }}
-              </h3>
-              <v-btn
-                variant="text"
-                prepend-icon="mdi-arrow-left"
-                @click="restartQuiz"
-              >
-                {{ t('pages.applications.quiz.backToCategories') }}
-              </v-btn>
-            </div>
-
-            <v-row>
-              <v-col
-                v-for="(level, index) in levels"
-                :key="level.value"
-                cols="12"
-                sm="6"
-                md="4"
-              >
-                <v-card
-                  class="quiz-card level-card h-100"
-                  rounded="xl"
-                  :class="{
-                    'level-card--selected': selectedLevelValue === level.value,
-                  }"
-                  :style="{
-                    backgroundImage: levelGradient(level),
-                    animationDelay: `${index * 80}ms`,
-                  }"
-                  @click="selectLevel(level.value)"
-                >
-                  <v-card-text class="text-center">
-                    <div class="text-h6 mb-1">{{ level.value }}</div>
-                  </v-card-text>
-                </v-card>
-              </v-col>
-            </v-row>
-
-            <div class="d-flex justify-center mt-auto pt-6">
-              <v-btn
-                color="primary"
-                size="large"
-                :disabled="!selectedLevelValue"
-                @click="launchQuiz"
-              >
-                {{ t('pages.applications.quiz.startQuiz') }}
-              </v-btn>
-            </div>
-            </section>
-
-          <section v-else-if="quizStep === 'in-quiz' && currentQuestion">
-            <div
-              class="d-flex align-center justify-space-between ga-3 mb-3 flex-wrap"
-            >
-              <div>
-                <div class="">
-                  {{
-                    t('pages.applications.quiz.questionCounter', {
-                      current: currentQuestionIndex + 1,
-                      total: questions.length,
-                    })
-                  }}
-                </div>
-                <h3 class="text-h6 mb-0">{{ selectedCategory?.name }}</h3>
-              </div>
-
-              <v-chip
-                color="warning"
-                variant="tonal"
-                label
-                prepend-icon="mdi-timer-outline"
-              >
-                {{
-                  t('pages.applications.quiz.timeLeft', { time: remainingTime })
-                }}
-              </v-chip>
-            </div>
-
-            <v-progress-linear
-              :model-value="progressValue"
-              color="primary"
-              rounded
-              height="10"
-              class="mb-6"
-            />
-
-            <v-card variant="text" rounded="lg" class="mb-4">
-              <v-card-text>
-                {{ currentQuestion.title }}
-              </v-card-text>
-            </v-card>
-
-            <v-row>
-              <v-col
-                v-for="(answer, answerIndex) in currentQuestion.answers"
-                :key="`${currentQuestion.id}-answer-${answerIndex}`"
-                cols="12"
-                md="6"
-              >
-                <v-btn
-                  block
-                  height="64"
-                  class="justify-start text-wrap answer-btn"
-                  :color="
-                    selectedAnswerIndex === null
-                      ? undefined
-                      : answerIndex === selectedAnswerIndex
-                        ? 'primary'
-                        : undefined
-                  "
-                  :variant="selectedAnswerIndex === null ? 'outlined' : 'flat'"
-                  @click="submitAnswer(answerIndex)"
-                >
-                  {{ answer.label }}
-                </v-btn>
-              </v-col>
-            </v-row>
-          </section>
-
-          <section v-else-if="quizStep === 'finished'">
-            <v-card
-              rounded="xl"
-              class="pa-4 pa-sm-6"
-              :color="hasPassed ? 'success' : 'warning'"
-              variant="tonal"
+            <section
+              v-else-if="quizStep === 'select-level'"
+              class="quiz-level-layout d-flex flex-column"
             >
               <div
                 class="d-flex align-center justify-space-between flex-wrap ga-3 mb-4"
               >
-                <h3 class="text-h5 mb-0">
-                  {{ t('pages.applications.quiz.results.title') }}
+                <h3 class="text-h6 mb-0">
+                  {{ t('pages.applications.quiz.selectLevelTitle') }}
                 </h3>
-                <v-chip :color="hasPassed ? 'success' : 'warning'" label>
+                <v-btn
+                  variant="text"
+                  prepend-icon="mdi-arrow-left"
+                  @click="restartQuiz"
+                >
+                  {{ t('pages.applications.quiz.backToCategories') }}
+                </v-btn>
+              </div>
+
+              <v-row>
+                <v-col
+                  v-for="(level, index) in levels"
+                  :key="level.value"
+                  cols="12"
+                  sm="6"
+                  md="4"
+                >
+                  <v-card
+                    class="quiz-card level-card h-100"
+                    rounded="xl"
+                    :class="{
+                      'level-card--selected':
+                        selectedLevelValue === level.value,
+                    }"
+                    :style="{
+                      backgroundImage: levelGradient(level),
+                      animationDelay: `${index * 80}ms`,
+                    }"
+                    @click="selectLevel(level.value)"
+                  >
+                    <v-card-text class="text-center">
+                      <div class="text-h6 mb-1">{{ level.value }}</div>
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
+
+              <div class="d-flex justify-center mt-auto pt-6">
+                <v-btn
+                  color="primary"
+                  size="large"
+                  :disabled="!selectedLevelValue"
+                  @click="launchQuiz"
+                >
+                  {{ t('pages.applications.quiz.startQuiz') }}
+                </v-btn>
+              </div>
+            </section>
+
+            <section v-else-if="quizStep === 'in-quiz' && currentQuestion">
+              <div
+                class="d-flex align-center justify-space-between ga-3 mb-3 flex-wrap"
+              >
+                <div>
+                  <div class="">
+                    {{
+                      t('pages.applications.quiz.questionCounter', {
+                        current: currentQuestionIndex + 1,
+                        total: questions.length,
+                      })
+                    }}
+                  </div>
+                  <h3 class="text-h6 mb-0">{{ selectedCategory?.name }}</h3>
+                </div>
+
+                <v-chip
+                  color="warning"
+                  variant="tonal"
+                  label
+                  prepend-icon="mdi-timer-outline"
+                >
                   {{
-                    t(
-                      hasPassed
-                        ? 'pages.applications.quiz.results.pass'
-                        : 'pages.applications.quiz.results.fail',
-                    )
+                    t('pages.applications.quiz.timeLeft', {
+                      time: remainingTime,
+                    })
                   }}
                 </v-chip>
               </div>
 
-              <v-alert
-                v-if="submitErrorMessage"
-                type="warning"
-                variant="tonal"
-                border="start"
-                class="mb-4"
-              >
-                {{ submitErrorMessage }}
-              </v-alert>
+              <v-progress-linear
+                :model-value="progressValue"
+                color="primary"
+                rounded
+                height="10"
+                class="mb-6"
+              />
 
-              <v-alert
-                v-else-if="isSubmittingResult"
-                type="info"
-                variant="tonal"
-                border="start"
-                class="mb-4"
-              >
-                Submitting results…
-              </v-alert>
+              <v-card variant="text" rounded="lg" class="mb-4">
+                <v-card-text>
+                  {{ currentQuestion.title }}
+                </v-card-text>
+              </v-card>
 
               <v-row>
-                <v-col cols="12" sm="4">
-                  <v-sheet rounded="lg" class="pa-4 text-center" border>
-                    <div class="text-caption text-medium-emphasis">
-                      {{ t('pages.applications.quiz.results.score') }}
-                    </div>
-                    <div class="text-h4 font-weight-bold">
-                      {{ submitResult?.score ?? 0 }}/{{
-                        submitResult?.totalPoints ?? questions.length
-                      }}
-                    </div>
-                  </v-sheet>
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <v-sheet rounded="lg" class="pa-4 text-center" border>
-                    <div class="text-caption text-medium-emphasis">
-                      {{ t('pages.applications.quiz.results.percentage') }}
-                    </div>
-                    <div class="text-h4 font-weight-bold">
-                      {{ scorePercent }}%
-                    </div>
-                  </v-sheet>
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <v-sheet rounded="lg" class="pa-4 text-center" border>
-                    <div class="text-caption text-medium-emphasis">
-                      {{ t('pages.applications.quiz.results.timeRemaining') }}
-                    </div>
-                    <div class="text-h4 font-weight-bold">
-                      {{ remainingTime }}s
-                    </div>
-                  </v-sheet>
+                <v-col
+                  v-for="(answer, answerIndex) in currentQuestion.answers"
+                  :key="`${currentQuestion.id}-answer-${answerIndex}`"
+                  cols="12"
+                  md="6"
+                >
+                  <v-btn
+                    block
+                    height="64"
+                    class="justify-start text-wrap answer-btn"
+                    :color="
+                      selectedAnswerIndex === null
+                        ? undefined
+                        : answerIndex === selectedAnswerIndex
+                          ? 'primary'
+                          : undefined
+                    "
+                    :variant="
+                      selectedAnswerIndex === null ? 'outlined' : 'flat'
+                    "
+                    @click="submitAnswer(answerIndex)"
+                  >
+                    {{ answer.label }}
+                  </v-btn>
                 </v-col>
               </v-row>
+            </section>
 
-              <p class="mt-4 mb-0 text-medium-emphasis">
-                {{
-                  t('pages.applications.quiz.results.correctAnswers', {
-                    count: submitResult?.correctAnswers ?? 0,
-                    total: submitResult?.totalQuestions ?? questions.length,
-                  })
-                }}
-              </p>
-
-              <p
-                v-if="submitResult?.attemptId"
-                class="mt-2 mb-0 text-caption text-medium-emphasis"
+            <section v-else-if="quizStep === 'finished'">
+              <v-card
+                rounded="xl"
+                class="pa-4 pa-sm-6"
+                :color="hasPassed ? 'success' : 'warning'"
+                variant="tonal"
               >
-                Attempt ID: {{ submitResult.attemptId }}
-              </p>
+                <div
+                  class="d-flex align-center justify-space-between flex-wrap ga-3 mb-4"
+                >
+                  <h3 class="text-h5 mb-0">
+                    {{ t('pages.applications.quiz.results.title') }}
+                  </h3>
+                  <v-chip :color="hasPassed ? 'success' : 'warning'" label>
+                    {{
+                      t(
+                        hasPassed
+                          ? 'pages.applications.quiz.results.pass'
+                          : 'pages.applications.quiz.results.fail',
+                      )
+                    }}
+                  </v-chip>
+                </div>
 
-              <div class="d-flex justify-end mt-6">
-                <v-btn color="primary" @click="restartQuiz">
-                  {{ t('pages.applications.quiz.playAgain') }}
-                </v-btn>
-              </div>
-            </v-card>
-          </section>
+                <v-alert
+                  v-if="submitErrorMessage"
+                  type="warning"
+                  variant="tonal"
+                  border="start"
+                  class="mb-4"
+                >
+                  {{ submitErrorMessage }}
+                </v-alert>
+
+                <v-alert
+                  v-else-if="isSubmittingResult"
+                  type="info"
+                  variant="tonal"
+                  border="start"
+                  class="mb-4"
+                >
+                  Submitting results…
+                </v-alert>
+
+                <v-row>
+                  <v-col cols="12" sm="4">
+                    <v-sheet rounded="lg" class="pa-4 text-center" border>
+                      <div class="text-caption text-medium-emphasis">
+                        {{ t('pages.applications.quiz.results.score') }}
+                      </div>
+                      <div class="text-h4 font-weight-bold">
+                        {{ submitResult?.score ?? 0 }}/{{
+                          submitResult?.totalPoints ?? questions.length
+                        }}
+                      </div>
+                    </v-sheet>
+                  </v-col>
+                  <v-col cols="12" sm="4">
+                    <v-sheet rounded="lg" class="pa-4 text-center" border>
+                      <div class="text-caption text-medium-emphasis">
+                        {{ t('pages.applications.quiz.results.percentage') }}
+                      </div>
+                      <div class="text-h4 font-weight-bold">
+                        {{ scorePercent }}%
+                      </div>
+                    </v-sheet>
+                  </v-col>
+                  <v-col cols="12" sm="4">
+                    <v-sheet rounded="lg" class="pa-4 text-center" border>
+                      <div class="text-caption text-medium-emphasis">
+                        {{ t('pages.applications.quiz.results.timeRemaining') }}
+                      </div>
+                      <div class="text-h4 font-weight-bold">
+                        {{ remainingTime }}s
+                      </div>
+                    </v-sheet>
+                  </v-col>
+                </v-row>
+
+                <p class="mt-4 mb-0 text-medium-emphasis">
+                  {{
+                    t('pages.applications.quiz.results.correctAnswers', {
+                      count: submitResult?.correctAnswers ?? 0,
+                      total: submitResult?.totalQuestions ?? questions.length,
+                    })
+                  }}
+                </p>
+
+                <p
+                  v-if="submitResult?.attemptId"
+                  class="mt-2 mb-0 text-caption text-medium-emphasis"
+                >
+                  Attempt ID: {{ submitResult.attemptId }}
+                </p>
+
+                <div class="d-flex justify-end mt-6">
+                  <v-btn color="primary" @click="restartQuiz">
+                    {{ t('pages.applications.quiz.playAgain') }}
+                  </v-btn>
+                </div>
+              </v-card>
+            </section>
           </div>
         </v-fade-transition>
       </v-card>

@@ -121,7 +121,9 @@ const filteredApplications = computed(() => {
   return applications.value.filter((application) => {
     const matchesSearch =
       !searchTerm.value ||
-      application.title.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+      application.title
+        .toLowerCase()
+        .includes(searchTerm.value.toLowerCase()) ||
       application.platformName
         .toLowerCase()
         .includes(searchTerm.value.toLowerCase()) ||
@@ -165,13 +167,16 @@ const selectedPlatform = computed(
 
 const selectedCreatePlatform = computed(() => {
   return (
-    publicPlatforms.value.find((item) => item.id === selectedCreatePlatformId.value) ??
-    null
+    publicPlatforms.value.find(
+      (item) => item.id === selectedCreatePlatformId.value,
+    ) ?? null
   )
 })
 
 const canGoToStepTwo = computed(() => {
-  return appTitle.value.trim().length > 2 && appDescription.value.trim().length > 4
+  return (
+    appTitle.value.trim().length > 2 && appDescription.value.trim().length > 4
+  )
 })
 
 const canGoToStepThree = computed(() => Boolean(selectedCreatePlatformId.value))
@@ -260,7 +265,9 @@ async function fetchPublicPlatforms() {
   publicPlatformsPending.value = true
 
   try {
-    publicPlatforms.value = await $fetch<PublicPlatform[]>(PLATFORM_PUBLIC_ENDPOINT)
+    publicPlatforms.value = await $fetch<PublicPlatform[]>(
+      PLATFORM_PUBLIC_ENDPOINT,
+    )
   } catch {
     createError.value = 'Unable to load platforms. Please retry.'
   } finally {
@@ -347,7 +354,9 @@ function inferPlatformConfigurations(): AppConfiguration[] {
   ]
 }
 
-function inferPluginConfigurations(plugin: SelectedPluginConfig): PluginConfiguration[] {
+function inferPluginConfigurations(
+  plugin: SelectedPluginConfig,
+): PluginConfiguration[] {
   return [
     {
       configurationKey: 'plugin.cache.ttl',
@@ -854,7 +863,9 @@ async function submitCreateApplication() {
                     class="d-flex"
                   >
                     <v-card variant="outlined" class="w-100 pa-2">
-                      <div class="d-flex justify-space-between align-start ga-2">
+                      <div
+                        class="d-flex justify-space-between align-start ga-2"
+                      >
                         <div>
                           <div class="text-subtitle-2">{{ plugin.name }}</div>
                           <div class="text-body-2 text-medium-emphasis">
@@ -862,7 +873,9 @@ async function submitCreateApplication() {
                           </div>
                         </div>
                         <v-switch
-                          :model-value="selectedPlugins[plugin.id]?.enabled ?? false"
+                          :model-value="
+                            selectedPlugins[plugin.id]?.enabled ?? false
+                          "
                           color="primary"
                           hide-details
                           @update:model-value="togglePlugin(plugin, $event)"
@@ -872,7 +885,9 @@ async function submitCreateApplication() {
                       <template v-if="selectedPlugins[plugin.id]?.enabled">
                         <v-divider class="my-3" />
                         <v-text-field
-                          v-model.number="selectedPlugins[plugin.id].cacheTtlSeconds"
+                          v-model.number="
+                            selectedPlugins[plugin.id].cacheTtlSeconds
+                          "
                           label="Cache TTL (seconds)"
                           type="number"
                           :min="60"
@@ -945,7 +960,6 @@ async function submitCreateApplication() {
 </template>
 
 <style scoped>
-
 .platform-page__content {
   min-height: 0;
   display: flex;

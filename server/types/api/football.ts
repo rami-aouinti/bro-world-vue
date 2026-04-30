@@ -303,10 +303,7 @@ export interface FootballOddsApiResponse extends ApiObject {
   }
 }
 
-export type FootballCoverageStatus =
-  | 'available'
-  | 'not-covered'
-  | 'unavailable'
+export type FootballCoverageStatus = 'available' | 'not-covered' | 'unavailable'
 
 export interface FootballCoverageIndicator extends ApiObject {
   covered: boolean
@@ -325,24 +322,20 @@ export interface FootballFixtureAvailabilityPlayer extends ApiObject {
   reason: string | null
 }
 
-export interface FootballFixtureAvailabilityContext
-  extends FootballCoverageIndicator {
+export interface FootballFixtureAvailabilityContext extends FootballCoverageIndicator {
   injuries: FootballFixtureAvailabilityPlayer[]
   suspensions: FootballFixtureAvailabilityPlayer[]
 }
 
-export interface FootballFixtureHeadToHeadContext
-  extends FootballCoverageIndicator {
+export interface FootballFixtureHeadToHeadContext extends FootballCoverageIndicator {
   fixtures: FootballFixture[]
 }
 
-export interface FootballFixturePredictionContext
-  extends FootballCoverageIndicator {
+export interface FootballFixturePredictionContext extends FootballCoverageIndicator {
   item: ApiObject | null
 }
 
-export interface FootballFixtureLiveOddsContext
-  extends FootballCoverageIndicator {
+export interface FootballFixtureLiveOddsContext extends FootballCoverageIndicator {
   item: ApiObject | null
 }
 

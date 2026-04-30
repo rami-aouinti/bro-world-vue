@@ -61,7 +61,10 @@ const getZoneFromApi = (row: FootballStandingRow) => {
   return null
 }
 
-const getZoneFromDefaultRules = (row: FootballStandingRow, rowsCount: number) => {
+const getZoneFromDefaultRules = (
+  row: FootballStandingRow,
+  rowsCount: number,
+) => {
   if (row.rank <= mergedZoneRules.value.qualification) {
     return 'qualification'
   }
@@ -100,13 +103,22 @@ const onRowKeydown = (event: KeyboardEvent, teamId: number) => {
 </script>
 
 <template>
-  <v-card class="h-100 football-surface football-interactive-card" variant="outlined">
+  <v-card
+    class="h-100 football-surface football-interactive-card"
+    variant="outlined"
+  >
     <v-card-title class="d-flex align-center justify-space-between">
       <span>{{ section.title }}</span>
       <div class="d-flex align-center ga-2">
-        <span class="text-caption text-medium-emphasis">{{ standingsLeague?.name }}</span>
+        <span class="text-caption text-medium-emphasis">{{
+          standingsLeague?.name
+        }}</span>
         <v-avatar v-if="standingsLeague?.flag" size="22" rounded="sm">
-          <v-img :src="standingsLeague.flag" :alt="standingsLeague.country" :transition="false" />
+          <v-img
+            :src="standingsLeague.flag"
+            :alt="standingsLeague.country"
+            :transition="false"
+          />
         </v-avatar>
       </div>
     </v-card-title>
@@ -115,15 +127,30 @@ const onRowKeydown = (event: KeyboardEvent, teamId: number) => {
 
     <v-card-text>
       <template v-if="section.state === 'loading'">
-        <v-progress-circular indeterminate color="primary" size="22" class="mr-3" />
+        <v-progress-circular
+          indeterminate
+          color="primary"
+          size="22"
+          class="mr-3"
+        />
         <span>{{ t('pages.applications.football.loading.standings') }}</span>
       </template>
 
-      <v-alert v-else-if="section.state === 'error'" type="error" variant="tonal" density="comfortable">
+      <v-alert
+        v-else-if="section.state === 'error'"
+        type="error"
+        variant="tonal"
+        density="comfortable"
+      >
         {{ section.error }}
       </v-alert>
 
-      <v-alert v-else-if="section.state === 'empty'" type="info" variant="tonal" density="comfortable">
+      <v-alert
+        v-else-if="section.state === 'empty'"
+        type="info"
+        variant="tonal"
+        density="comfortable"
+      >
         {{ section.emptyMessage }}
       </v-alert>
 
@@ -132,24 +159,56 @@ const onRowKeydown = (event: KeyboardEvent, teamId: number) => {
           v-for="group in standings"
           :key="group.name"
           class="standings-group"
-          :aria-label="t('pages.applications.football.misc.standingsGroupAria', { group: group.name })"
+          :aria-label="
+            t('pages.applications.football.misc.standingsGroupAria', {
+              group: group.name,
+            })
+          "
         >
-          <h3 class="text-subtitle-2 font-weight-medium mb-2">{{ group.name }}</h3>
+          <h3 class="text-subtitle-2 font-weight-medium mb-2">
+            {{ group.name }}
+          </h3>
 
           <div class="standings-table-wrap">
             <table class="standings-table">
               <thead>
                 <tr>
                   <th>{{ t('pages.applications.football.standings.rank') }}</th>
-                  <th class="text-left">{{ t('pages.applications.football.standings.team') }}</th>
-                  <th>{{ t('pages.applications.football.standings.playedShort') }}</th>
-                  <th>{{ t('pages.applications.football.standings.wonShort') }}</th>
-                  <th class="standings-column-mobile">{{ t('pages.applications.football.standings.drawShort') }}</th>
-                  <th class="standings-column-mobile">{{ t('pages.applications.football.standings.lostShort') }}</th>
-                  <th class="standings-column-desktop">{{ t('pages.applications.football.standings.goalsForShort') }}</th>
-                  <th class="standings-column-desktop">{{ t('pages.applications.football.standings.goalsAgainstShort') }}</th>
-                  <th>{{ t('pages.applications.football.standings.goalDiffShort') }}</th>
-                  <th>{{ t('pages.applications.football.standings.pointsShort') }}</th>
+                  <th class="text-left">
+                    {{ t('pages.applications.football.standings.team') }}
+                  </th>
+                  <th>
+                    {{ t('pages.applications.football.standings.playedShort') }}
+                  </th>
+                  <th>
+                    {{ t('pages.applications.football.standings.wonShort') }}
+                  </th>
+                  <th class="standings-column-mobile">
+                    {{ t('pages.applications.football.standings.drawShort') }}
+                  </th>
+                  <th class="standings-column-mobile">
+                    {{ t('pages.applications.football.standings.lostShort') }}
+                  </th>
+                  <th class="standings-column-desktop">
+                    {{
+                      t('pages.applications.football.standings.goalsForShort')
+                    }}
+                  </th>
+                  <th class="standings-column-desktop">
+                    {{
+                      t(
+                        'pages.applications.football.standings.goalsAgainstShort',
+                      )
+                    }}
+                  </th>
+                  <th>
+                    {{
+                      t('pages.applications.football.standings.goalDiffShort')
+                    }}
+                  </th>
+                  <th>
+                    {{ t('pages.applications.football.standings.pointsShort') }}
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -160,7 +219,11 @@ const onRowKeydown = (event: KeyboardEvent, teamId: number) => {
                   :class="getZoneClass(row, group.rows.length)"
                   tabindex="0"
                   role="button"
-                  :aria-label="t('pages.applications.football.misc.openTeamDetailsAria', { team: row.team.name })"
+                  :aria-label="
+                    t('pages.applications.football.misc.openTeamDetailsAria', {
+                      team: row.team.name,
+                    })
+                  "
                   @click="emit('selectTeam', row.team.id)"
                   @keydown="onRowKeydown($event, row.team.id)"
                 >
@@ -168,20 +231,31 @@ const onRowKeydown = (event: KeyboardEvent, teamId: number) => {
                   <td>
                     <div class="standings-team">
                       <v-avatar size="22" color="primary" variant="tonal">
-                        <v-img v-if="row.team.logo" :src="row.team.logo" :alt="row.team.name" :transition="false" />
+                        <v-img
+                          v-if="row.team.logo"
+                          :src="row.team.logo"
+                          :alt="row.team.name"
+                          :transition="false"
+                        />
                         <span v-else class="text-caption">
                           {{ getInitial(row.team.name) }}
                         </span>
                       </v-avatar>
-                      <span class="standings-team-name">{{ row.team.name }}</span>
+                      <span class="standings-team-name">{{
+                        row.team.name
+                      }}</span>
                     </div>
                   </td>
                   <td>{{ row.all.played }}</td>
                   <td>{{ row.all.win }}</td>
                   <td class="standings-column-mobile">{{ row.all.draw }}</td>
                   <td class="standings-column-mobile">{{ row.all.lose }}</td>
-                  <td class="standings-column-desktop">{{ row.all.goals.for }}</td>
-                  <td class="standings-column-desktop">{{ row.all.goals.against }}</td>
+                  <td class="standings-column-desktop">
+                    {{ row.all.goals.for }}
+                  </td>
+                  <td class="standings-column-desktop">
+                    {{ row.all.goals.against }}
+                  </td>
                   <td>{{ row.goalsDiff }}</td>
                   <td>{{ row.points }}</td>
                 </tr>
@@ -238,7 +312,9 @@ const onRowKeydown = (event: KeyboardEvent, teamId: number) => {
 
 .standings-row {
   cursor: pointer;
-  transition: background-color 160ms ease, transform 160ms ease;
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
 }
 
 .standings-row:hover {

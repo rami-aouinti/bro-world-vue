@@ -2,9 +2,15 @@ import type { ResumeTemplateConfig } from '~/types/resumeTemplateConfig'
 
 type LegacyTemplateId = 'classic' | 'fugo' | 'minimal'
 
-type PilotTemplateConfig = Pick<ResumeTemplateConfig, 'id' | 'structureId' | 'layoutId' | 'skinId' | 'templateId'>
+type PilotTemplateConfig = Pick<
+  ResumeTemplateConfig,
+  'id' | 'structureId' | 'layoutId' | 'skinId' | 'templateId'
+>
 
-export const PILOT_TEMPLATE_CONFIGS: Record<LegacyTemplateId, PilotTemplateConfig> = {
+export const PILOT_TEMPLATE_CONFIGS: Record<
+  LegacyTemplateId,
+  PilotTemplateConfig
+> = {
   classic: {
     id: 'pilot-classic',
     structureId: 'no-aside',
@@ -28,7 +34,9 @@ export const PILOT_TEMPLATE_CONFIGS: Record<LegacyTemplateId, PilotTemplateConfi
   },
 }
 
-export function resolveCompatibilityTemplateConfig(legacyTemplateId?: string): PilotTemplateConfig | null {
+export function resolveCompatibilityTemplateConfig(
+  legacyTemplateId?: string,
+): PilotTemplateConfig | null {
   if (!legacyTemplateId) return null
   return PILOT_TEMPLATE_CONFIGS[legacyTemplateId as LegacyTemplateId] ?? null
 }

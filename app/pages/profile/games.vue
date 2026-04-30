@@ -17,7 +17,7 @@ definePageMeta({
 <template>
   <div>
     <AppPageDrawers>
-      <template #right/>
+      <template #right />
     </AppPageDrawers>
     <v-container fluid>
       <SkeletonPageContent v-if="isPageSkeletonVisible" />

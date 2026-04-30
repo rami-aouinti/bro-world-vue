@@ -12,16 +12,15 @@ export default defineEventHandler(
     const player = getRequiredBasketballId(event, 'player')
     const season = getOptionalBasketballSeason(event)
 
-    const payload =
-      await cachedBasketballApiGet<ApiSportsBasketballPlayerItem>(
-        event,
-        '/players',
-        {
-          id: player,
-          ...(season ? { season } : {}),
-        },
-        { cacheProfile: 'reference', cacheKeySuffix: 'reference-player' },
-      )
+    const payload = await cachedBasketballApiGet<ApiSportsBasketballPlayerItem>(
+      event,
+      '/players',
+      {
+        id: player,
+        ...(season ? { season } : {}),
+      },
+      { cacheProfile: 'reference', cacheKeySuffix: 'reference-player' },
+    )
 
     return mapBasketballPlayerResponse(payload)
   },

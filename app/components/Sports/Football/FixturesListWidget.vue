@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import type { FootballFixture, FootballSection } from '~/composables/useFootballData'
+import type {
+  FootballFixture,
+  FootballSection,
+} from '~/composables/useFootballData'
 import SportsFootballFixtureCard from '~/components/Sports/Football/FixtureCard.vue'
 
 const { t } = useI18n()

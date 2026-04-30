@@ -189,9 +189,7 @@ function normalizeGameItem(raw: unknown): GameItem | null {
     categoryKey:
       typeof item.categoryKey === 'string' ? item.categoryKey : undefined,
     subcategoryKey:
-      typeof item.subcategoryKey === 'string'
-        ? item.subcategoryKey
-        : undefined,
+      typeof item.subcategoryKey === 'string' ? item.subcategoryKey : undefined,
     enabled: typeof item.enabled === 'boolean' ? item.enabled : true,
     minPlayers,
     maxPlayers,

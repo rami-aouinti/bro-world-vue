@@ -124,62 +124,184 @@ const modernLayout: ResumeRendererLayoutEntry[] = [
 
 export const DEFAULT_TEMPLATE_SKIN_ID: TemplateSkinId = 'cv-socle'
 
-export const RESUME_TEMPLATE_SKINS: Record<TemplateSkinId, ResumeTemplateSkin> = {
-  'cv-socle': {
-    id: 'cv-socle',
-    layoutMode: 'aside-left',
-    rootClass: 'resume-skin resume-skin--cv-socle',
-    ...baseClasses,
-    showProfileInMain: true,
-    showProfileInAside: false,
-    showSkillsInAside: true,
-    showContactInAside: true,
-    showContactInHeader: false,
-    showSectionIcons: true,
-    sectionIconStyle: { size: 18, color: 'var(--cv-accent)', roundedBackground: true, spacing: 8, variant: 'outline' },
-    defaultSectionLayout: defaultLayout,
-    profile: { grid: 'split', typography: 'clean', spacing: 'balanced', colors: 'light', cards: 'soft', separators: 'line' },
-    themeTokens: {},
-    sectionTokens: {},
-  },
-  'cv-executive-portrait': {
-    id: 'cv-executive-portrait', layoutMode: 'aside-left', rootClass: 'resume-skin resume-skin--cv-executive-portrait', ...baseClasses,
-    showProfileInMain: true, showProfileInAside: false, showSkillsInAside: true, showContactInAside: true, showContactInHeader: false, showSectionIcons: true,
-    sectionIconStyle: { size: 20, color: 'var(--resume-accent, var(--cv-accent))', roundedBackground: true, spacing: 10, variant: 'filled' },
-    defaultSectionLayout: executiveLayout,
-    profile: { grid: 'magazine', typography: 'neo-grotesk', spacing: 'airy', colors: 'contrast', cards: 'elevated', separators: 'accent' },
-  },
-  'cv-midnight-banner': {
-    id: 'cv-midnight-banner', layoutMode: 'aside-right', rootClass: 'resume-skin resume-skin--cv-midnight-banner', ...baseClasses,
-    showProfileInMain: false, showProfileInAside: true, showSkillsInAside: true, showContactInAside: true, showContactInHeader: false, showSectionIcons: true,
-    sectionIconStyle: { size: 16, color: 'var(--resume-accent, var(--cv-accent))', roundedBackground: false, spacing: 6, variant: 'outline' },
-    defaultSectionLayout: midnightLayout,
-    profile: { grid: 'split', typography: 'editorial', spacing: 'balanced', colors: 'dark', cards: 'soft', separators: 'line' },
-  },
-  'cv-minimal-profile': {
-    id: 'cv-minimal-profile', layoutMode: 'no-aside', rootClass: 'resume-skin resume-skin--cv-minimal-profile', ...baseClasses,
-    showProfileInMain: true, showProfileInAside: false, showSkillsInAside: false, showContactInAside: false, showContactInHeader: true, showSectionIcons: false,
-    sectionIconStyle: { size: 14, color: 'var(--resume-accent, var(--cv-accent))', roundedBackground: false, spacing: 4, variant: 'rounded' },
-    defaultSectionLayout: minimalLayout,
-    profile: { grid: 'single', typography: 'clean', spacing: 'compact', colors: 'light', cards: 'flat', separators: 'none' },
-  },
-  'cv-classic': {
-    id: 'cv-classic', layoutMode: 'no-aside', rootClass: 'resume-skin resume-skin--cv-classic', ...baseClasses,
-    showProfileInMain: false, showProfileInAside: false, showSkillsInAside: false, showContactInAside: false, showContactInHeader: true, showSectionIcons: false,
-    sectionIconStyle: { size: 15, color: 'var(--resume-accent, var(--cv-accent))', roundedBackground: false, spacing: 4, variant: 'outline' },
-    defaultSectionLayout: classicLayout,
-    profile: { grid: 'single', typography: 'classic', spacing: 'balanced', colors: 'light', cards: 'flat', separators: 'line' },
-  },
-  'cv-modern': {
-    id: 'cv-modern', layoutMode: 'aside-right', rootClass: 'resume-skin resume-skin--cv-modern', ...baseClasses,
-    showProfileInMain: true, showProfileInAside: false, showSkillsInAside: true, showContactInAside: false, showContactInHeader: true, showSectionIcons: true,
-    sectionIconStyle: { size: 17, color: 'var(--resume-accent, var(--cv-accent))', roundedBackground: true, spacing: 7, variant: 'rounded' },
-    defaultSectionLayout: modernLayout,
-    profile: { grid: 'split', typography: 'neo-grotesk', spacing: 'balanced', colors: 'contrast', cards: 'soft', separators: 'accent' },
-  },
-}
+export const RESUME_TEMPLATE_SKINS: Record<TemplateSkinId, ResumeTemplateSkin> =
+  {
+    'cv-socle': {
+      id: 'cv-socle',
+      layoutMode: 'aside-left',
+      rootClass: 'resume-skin resume-skin--cv-socle',
+      ...baseClasses,
+      showProfileInMain: true,
+      showProfileInAside: false,
+      showSkillsInAside: true,
+      showContactInAside: true,
+      showContactInHeader: false,
+      showSectionIcons: true,
+      sectionIconStyle: {
+        size: 18,
+        color: 'var(--cv-accent)',
+        roundedBackground: true,
+        spacing: 8,
+        variant: 'outline',
+      },
+      defaultSectionLayout: defaultLayout,
+      profile: {
+        grid: 'split',
+        typography: 'clean',
+        spacing: 'balanced',
+        colors: 'light',
+        cards: 'soft',
+        separators: 'line',
+      },
+      themeTokens: {},
+      sectionTokens: {},
+    },
+    'cv-executive-portrait': {
+      id: 'cv-executive-portrait',
+      layoutMode: 'aside-left',
+      rootClass: 'resume-skin resume-skin--cv-executive-portrait',
+      ...baseClasses,
+      showProfileInMain: true,
+      showProfileInAside: false,
+      showSkillsInAside: true,
+      showContactInAside: true,
+      showContactInHeader: false,
+      showSectionIcons: true,
+      sectionIconStyle: {
+        size: 20,
+        color: 'var(--resume-accent, var(--cv-accent))',
+        roundedBackground: true,
+        spacing: 10,
+        variant: 'filled',
+      },
+      defaultSectionLayout: executiveLayout,
+      profile: {
+        grid: 'magazine',
+        typography: 'neo-grotesk',
+        spacing: 'airy',
+        colors: 'contrast',
+        cards: 'elevated',
+        separators: 'accent',
+      },
+    },
+    'cv-midnight-banner': {
+      id: 'cv-midnight-banner',
+      layoutMode: 'aside-right',
+      rootClass: 'resume-skin resume-skin--cv-midnight-banner',
+      ...baseClasses,
+      showProfileInMain: false,
+      showProfileInAside: true,
+      showSkillsInAside: true,
+      showContactInAside: true,
+      showContactInHeader: false,
+      showSectionIcons: true,
+      sectionIconStyle: {
+        size: 16,
+        color: 'var(--resume-accent, var(--cv-accent))',
+        roundedBackground: false,
+        spacing: 6,
+        variant: 'outline',
+      },
+      defaultSectionLayout: midnightLayout,
+      profile: {
+        grid: 'split',
+        typography: 'editorial',
+        spacing: 'balanced',
+        colors: 'dark',
+        cards: 'soft',
+        separators: 'line',
+      },
+    },
+    'cv-minimal-profile': {
+      id: 'cv-minimal-profile',
+      layoutMode: 'no-aside',
+      rootClass: 'resume-skin resume-skin--cv-minimal-profile',
+      ...baseClasses,
+      showProfileInMain: true,
+      showProfileInAside: false,
+      showSkillsInAside: false,
+      showContactInAside: false,
+      showContactInHeader: true,
+      showSectionIcons: false,
+      sectionIconStyle: {
+        size: 14,
+        color: 'var(--resume-accent, var(--cv-accent))',
+        roundedBackground: false,
+        spacing: 4,
+        variant: 'rounded',
+      },
+      defaultSectionLayout: minimalLayout,
+      profile: {
+        grid: 'single',
+        typography: 'clean',
+        spacing: 'compact',
+        colors: 'light',
+        cards: 'flat',
+        separators: 'none',
+      },
+    },
+    'cv-classic': {
+      id: 'cv-classic',
+      layoutMode: 'no-aside',
+      rootClass: 'resume-skin resume-skin--cv-classic',
+      ...baseClasses,
+      showProfileInMain: false,
+      showProfileInAside: false,
+      showSkillsInAside: false,
+      showContactInAside: false,
+      showContactInHeader: true,
+      showSectionIcons: false,
+      sectionIconStyle: {
+        size: 15,
+        color: 'var(--resume-accent, var(--cv-accent))',
+        roundedBackground: false,
+        spacing: 4,
+        variant: 'outline',
+      },
+      defaultSectionLayout: classicLayout,
+      profile: {
+        grid: 'single',
+        typography: 'classic',
+        spacing: 'balanced',
+        colors: 'light',
+        cards: 'flat',
+        separators: 'line',
+      },
+    },
+    'cv-modern': {
+      id: 'cv-modern',
+      layoutMode: 'aside-right',
+      rootClass: 'resume-skin resume-skin--cv-modern',
+      ...baseClasses,
+      showProfileInMain: true,
+      showProfileInAside: false,
+      showSkillsInAside: true,
+      showContactInAside: false,
+      showContactInHeader: true,
+      showSectionIcons: true,
+      sectionIconStyle: {
+        size: 17,
+        color: 'var(--resume-accent, var(--cv-accent))',
+        roundedBackground: true,
+        spacing: 7,
+        variant: 'rounded',
+      },
+      defaultSectionLayout: modernLayout,
+      profile: {
+        grid: 'split',
+        typography: 'neo-grotesk',
+        spacing: 'balanced',
+        colors: 'contrast',
+        cards: 'soft',
+        separators: 'accent',
+      },
+    },
+  }
 
-export const RESUME_TEMPLATE_TO_SKIN_ID: Record<ResumeTemplateId, TemplateSkinId> = {
+export const RESUME_TEMPLATE_TO_SKIN_ID: Record<
+  ResumeTemplateId,
+  TemplateSkinId
+> = {
   'executive-portrait': 'cv-executive-portrait',
   'midnight-banner': 'cv-midnight-banner',
   'minimal-profile': 'cv-minimal-profile',
@@ -187,11 +309,14 @@ export const RESUME_TEMPLATE_TO_SKIN_ID: Record<ResumeTemplateId, TemplateSkinId
   modern: 'cv-modern',
 }
 
-export function resolveTemplateSkin(templateOrSkinId: string): ResumeTemplateSkin {
+export function resolveTemplateSkin(
+  templateOrSkinId: string,
+): ResumeTemplateSkin {
   const directSkin = RESUME_TEMPLATE_SKINS[templateOrSkinId as TemplateSkinId]
   if (directSkin) return directSkin
 
-  const mappedSkinId = RESUME_TEMPLATE_TO_SKIN_ID[templateOrSkinId as ResumeTemplateId]
+  const mappedSkinId =
+    RESUME_TEMPLATE_TO_SKIN_ID[templateOrSkinId as ResumeTemplateId]
   if (mappedSkinId) return RESUME_TEMPLATE_SKINS[mappedSkinId]
 
   return RESUME_TEMPLATE_SKINS[DEFAULT_TEMPLATE_SKIN_ID]

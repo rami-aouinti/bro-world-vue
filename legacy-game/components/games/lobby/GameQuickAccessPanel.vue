@@ -1,28 +1,29 @@
 <script setup lang="ts">
-import type { GameEntry, PlayMode } from "~/types/game";
+import type { GameEntry, PlayMode } from '~/types/game'
 
 defineProps<{
-  featuredGames: GameEntry[];
-  isLoading: boolean;
-  selectedGameId: string | null;
-  selectedPlayMode: PlayMode | null;
-  modeLabel: (mode: PlayMode) => string;
-  title: string;
-  emptyText: string;
-  gameNameLabel: (game: GameEntry) => string;
-}>();
+  featuredGames: GameEntry[]
+  isLoading: boolean
+  selectedGameId: string | null
+  selectedPlayMode: PlayMode | null
+  modeLabel: (mode: PlayMode) => string
+  title: string
+  emptyText: string
+  gameNameLabel: (game: GameEntry) => string
+}>()
 
 const emit = defineEmits<{
-  selectGame: [game: GameEntry];
-  selectMode: [mode: PlayMode];
-}>();
+  selectGame: [game: GameEntry]
+  selectMode: [mode: PlayMode]
+}>()
 
-const orderedModes: PlayMode[] = ["ai", "pvp"];
+const orderedModes: PlayMode[] = ['ai', 'pvp']
 const getPlayableModes = (game: GameEntry): PlayMode[] =>
-  game.availableModes ?? game.supportedModes ?? [];
+  game.availableModes ?? game.supportedModes ?? []
 const getDisplayModes = (modes: PlayMode[]): PlayMode[] =>
-  orderedModes.filter((mode) => modes.includes(mode));
-const hasSoonBadge = (game: GameEntry) => game.developmentStatus === "coming_soon";
+  orderedModes.filter((mode) => modes.includes(mode))
+const hasSoonBadge = (game: GameEntry) =>
+  game.developmentStatus === 'coming_soon'
 </script>
 
 <template>
@@ -53,9 +54,9 @@ const hasSoonBadge = (game: GameEntry) => game.developmentStatus === "coming_soo
         class="pa-3"
       >
         <div class="d-flex justify-space-between align-center ga-2 mb-2">
-          <v-avatar size="32" :image="game.img"/>
+          <v-avatar size="32" :image="game.img" />
           <span class="font-weight-medium">{{ gameNameLabel(game) }}</span>
-          <v-spacer/>
+          <v-spacer />
           <v-chip
             v-if="hasSoonBadge(game)"
             size="small"
@@ -65,11 +66,11 @@ const hasSoonBadge = (game: GameEntry) => game.developmentStatus === "coming_soo
             Soon
           </v-chip>
           <v-chip
-              v-else
-              size="small"
-              color="success"
-              variant="outlined"
-              @click="emit('selectGame', game)"
+            v-else
+            size="small"
+            color="success"
+            variant="outlined"
+            @click="emit('selectGame', game)"
           >
             Play
           </v-chip>

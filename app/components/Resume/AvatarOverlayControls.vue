@@ -9,13 +9,16 @@ type AvatarPhotoState = {
   hidden: boolean
 }
 
-const props = withDefaults(defineProps<{
-  visible: boolean
-  canMove?: boolean
-  photoState: AvatarPhotoState
-}>(), {
-  canMove: true,
-})
+const props = withDefaults(
+  defineProps<{
+    visible: boolean
+    canMove?: boolean
+    photoState: AvatarPhotoState
+  }>(),
+  {
+    canMove: true,
+  },
+)
 
 const emit = defineEmits<{
   (event: 'move', direction: MoveDirection): void
@@ -23,7 +26,9 @@ const emit = defineEmits<{
   (event: 'upload' | 'remove' | 'toggle-visibility' | 'open-menu'): void
 }>()
 
-const hideShowLabel = computed(() => (props.photoState.hidden ? 'Show photo' : 'Hide photo'))
+const hideShowLabel = computed(() =>
+  props.photoState.hidden ? 'Show photo' : 'Hide photo',
+)
 
 function handleMove(direction: MoveDirection) {
   if (!props.canMove) return
@@ -182,7 +187,13 @@ function handleMove(direction: MoveDirection) {
             v-bind="tooltipProps"
             @click="emit('toggle-visibility')"
           >
-            <v-icon :icon="props.photoState.hidden ? 'mdi-eye-outline' : 'mdi-eye-off-outline'" />
+            <v-icon
+              :icon="
+                props.photoState.hidden
+                  ? 'mdi-eye-outline'
+                  : 'mdi-eye-off-outline'
+              "
+            />
           </v-btn>
         </template>
       </v-tooltip>
@@ -225,9 +236,16 @@ function handleMove(direction: MoveDirection) {
   border-radius: 12px;
   pointer-events: auto;
   color: rgb(var(--v-theme-on-surface));
-  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 84%, rgb(var(--v-theme-on-surface)) 16%);
+  background: color-mix(
+    in srgb,
+    rgb(var(--v-theme-surface)) 84%,
+    rgb(var(--v-theme-on-surface)) 16%
+  );
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
-  transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease;
 }
 
 .overlay-btn--move {
@@ -267,12 +285,20 @@ function handleMove(direction: MoveDirection) {
   padding: 8px;
   border-radius: 14px;
   pointer-events: auto;
-  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 86%, rgb(var(--v-theme-on-surface)) 14%);
+  background: color-mix(
+    in srgb,
+    rgb(var(--v-theme-surface)) 86%,
+    rgb(var(--v-theme-on-surface)) 14%
+  );
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
 }
 
 .overlay-btn:is(:hover, :focus-visible) {
-  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 60%, rgb(var(--v-theme-primary)) 40%);
+  background: color-mix(
+    in srgb,
+    rgb(var(--v-theme-surface)) 60%,
+    rgb(var(--v-theme-primary)) 40%
+  );
   box-shadow: 0 5px 14px rgba(0, 0, 0, 0.28);
 }
 

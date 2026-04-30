@@ -102,7 +102,9 @@ export const CRM_PERMISSION_LABELS: Record<CrmPermission, string> = {
   'crm.admin.manage': 'Admin · Manage policies',
 }
 
-export function resolveCrmPermissionsForRoles(roles: string[]): CrmPermission[] {
+export function resolveCrmPermissionsForRoles(
+  roles: string[],
+): CrmPermission[] {
   const permissions = new Set<CrmPermission>()
 
   for (const role of roles) {

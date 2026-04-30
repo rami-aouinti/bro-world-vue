@@ -18,12 +18,14 @@ function normalizeMessages(value: unknown) {
 
   return value
     .map((item) => {
-      const role = item && typeof item === 'object' && 'role' in item
-        ? String((item as { role?: unknown }).role || '').trim()
-        : ''
-      const content = item && typeof item === 'object' && 'content' in item
-        ? String((item as { content?: unknown }).content || '').trim()
-        : ''
+      const role =
+        item && typeof item === 'object' && 'role' in item
+          ? String((item as { role?: unknown }).role || '').trim()
+          : ''
+      const content =
+        item && typeof item === 'object' && 'content' in item
+          ? String((item as { content?: unknown }).content || '').trim()
+          : ''
 
       if (!content || !['system', 'user'].includes(role)) {
         return null
@@ -34,7 +36,9 @@ function normalizeMessages(value: unknown) {
         content,
       }
     })
-    .filter((item): item is { role: 'system' | 'user'; content: string } => Boolean(item))
+    .filter((item): item is { role: 'system' | 'user'; content: string } =>
+      Boolean(item),
+    )
 }
 
 export default defineEventHandler(async (event) => {

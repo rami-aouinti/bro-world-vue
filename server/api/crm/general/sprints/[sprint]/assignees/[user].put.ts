@@ -5,7 +5,10 @@ export default defineEventHandler(async (event): Promise<null> => {
   const user = getRouterParam(event, 'user')
 
   if (!sprint || !user) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing sprint or user id' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing sprint or user id',
+    })
   }
 
   await mutateCrmGeneral(event, `sprints/${sprint}/assignees/${user}`, {

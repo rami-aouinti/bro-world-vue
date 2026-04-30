@@ -37,7 +37,9 @@ describe('resume skin differentiation QA rule', () => {
   it('ensures two different skins never share exactly the same final renderer token set', () => {
     const seen = new Map<string, string>()
 
-    for (const skinId of Object.keys(RESUME_SKINS_REGISTRY) as Array<keyof typeof RESUME_SKINS_REGISTRY>) {
+    for (const skinId of Object.keys(RESUME_SKINS_REGISTRY) as Array<
+      keyof typeof RESUME_SKINS_REGISTRY
+    >) {
       const fingerprint = createFingerprint(skinId)
       const duplicateSkin = seen.get(fingerprint)
 
@@ -52,8 +54,14 @@ describe('resume skin differentiation QA rule', () => {
 
   it('matches snapshot for classic vs executive skin differentiation', () => {
     expect({
-      classic: toResumeRendererDesignState({ ...baseTemplate, skinId: 'skin-classic' }),
-      executive: toResumeRendererDesignState({ ...baseTemplate, skinId: 'skin-executive-portrait' }),
+      classic: toResumeRendererDesignState({
+        ...baseTemplate,
+        skinId: 'skin-classic',
+      }),
+      executive: toResumeRendererDesignState({
+        ...baseTemplate,
+        skinId: 'skin-executive-portrait',
+      }),
     }).toMatchSnapshot()
   })
 })

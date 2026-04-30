@@ -116,7 +116,7 @@ function ownReactionCode(comment: BlogComment) {
 
 function reactionButtonEmoji(comment: BlogComment) {
   const ownCode = ownReactionCode(comment)
-  return ownCode ? iconMap[ownCode] ?? '👍' : '👍'
+  return ownCode ? (iconMap[ownCode] ?? '👍') : '👍'
 }
 
 function reactionButtonLabel(comment: BlogComment) {
@@ -265,10 +265,14 @@ function authorProfilePath(comment: BlogComment) {
                   v-bind="menuProps"
                   type="button"
                   :disabled="!canInteract"
-                  @click="pickReaction(comment, ownReactionCode(comment) ?? 'like')"
+                  @click="
+                    pickReaction(comment, ownReactionCode(comment) ?? 'like')
+                  "
                 >
                   <span class="d-inline-flex align-center ga-2">
-                    <span class="reaction-button-emoji">{{ reactionButtonEmoji(comment) }}</span>
+                    <span class="reaction-button-emoji">{{
+                      reactionButtonEmoji(comment)
+                    }}</span>
                     <span>{{ reactionButtonLabel(comment) }}</span>
                   </span>
                 </button>

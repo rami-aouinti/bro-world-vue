@@ -6,7 +6,10 @@ export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
 
   if (!id) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing id parameter' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing id parameter',
+    })
   }
 
   return cachedPrivateGet(event, `/api/v1/${endpointResource}/${id}`)

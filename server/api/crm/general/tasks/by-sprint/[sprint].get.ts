@@ -16,16 +16,18 @@ interface CrmTasksBySprintResponse {
   items: CrmSprintBucket[]
 }
 
-export default defineEventHandler(async (event): Promise<CrmTasksBySprintResponse> => {
-  const sprint = getRouterParam(event, 'sprint')
+export default defineEventHandler(
+  async (event): Promise<CrmTasksBySprintResponse> => {
+    const sprint = getRouterParam(event, 'sprint')
 
-  if (!sprint) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing sprint id' })
-  }
+    if (!sprint) {
+      throw createError({ statusCode: 400, statusMessage: 'Missing sprint id' })
+    }
 
-  return cachedCrmGeneralGet<CrmTasksBySprintResponse>(
-    event,
-    `tasks/by-sprint/${encodeURIComponent(sprint)}`,
-    getQuery(event),
-  )
-})
+    return cachedCrmGeneralGet<CrmTasksBySprintResponse>(
+      event,
+      `tasks/by-sprint/${encodeURIComponent(sprint)}`,
+      getQuery(event),
+    )
+  },
+)

@@ -275,7 +275,10 @@ function getStore(): CrmPipelineStore {
       contacts: INITIAL_CONTACTS.map((entry) => ({ ...entry })),
       opportunities: INITIAL_OPPORTUNITIES.map((entry) => ({ ...entry })),
       activities: INITIAL_ACTIVITIES.map((entry) => ({ ...entry })),
-      notes: INITIAL_NOTES.map((entry) => ({ ...entry, attachments: [...entry.attachments] })),
+      notes: INITIAL_NOTES.map((entry) => ({
+        ...entry,
+        attachments: [...entry.attachments],
+      })),
       updatedAt: new Date().toISOString(),
     }
   }
@@ -297,13 +300,17 @@ function normalizeProbability(
 }
 
 function computeKpis(opportunities: CrmOpportunity[]): CrmPipelineKpis {
-  const activeDeals = opportunities.filter((deal) => deal.stage !== 'closed').length
+  const activeDeals = opportunities.filter(
+    (deal) => deal.stage !== 'closed',
+  ).length
   const weightedForecast = opportunities.reduce(
     (sum, deal) => sum + deal.amount * (deal.probability / 100),
     0,
   )
 
-  const closedDeals = opportunities.filter((deal) => deal.stage === 'closed' && deal.outcome)
+  const closedDeals = opportunities.filter(
+    (deal) => deal.stage === 'closed' && deal.outcome,
+  )
   const wonDeals = closedDeals.filter((deal) => deal.outcome === 'won').length
   const winRate = closedDeals.length ? (wonDeals / closedDeals.length) * 100 : 0
 
@@ -313,11 +320,15 @@ function computeKpis(opportunities: CrmOpportunity[]): CrmPipelineKpis {
       const startedAt = new Date(deal.createdAt).getTime()
       const endedAt = new Date(deal.closedAt as string).getTime()
 
-      return Math.max(0, Math.round((endedAt - startedAt) / (1000 * 60 * 60 * 24)))
+      return Math.max(
+        0,
+        Math.round((endedAt - startedAt) / (1000 * 60 * 60 * 24)),
+      )
     })
 
   const averageCycleDays = cycleLengths.length
-    ? cycleLengths.reduce((total, cycleDay) => total + cycleDay, 0) / cycleLengths.length
+    ? cycleLengths.reduce((total, cycleDay) => total + cycleDay, 0) /
+      cycleLengths.length
     : 0
 
   return {
@@ -328,11 +339,20 @@ function computeKpis(opportunities: CrmOpportunity[]): CrmPipelineKpis {
   }
 }
 
-function computeAnalytics(leads: CrmLead[], opportunities: CrmOpportunity[]): CrmAnalytics {
-  const qualifiedLeadCount = leads.filter((lead) => lead.status === 'qualified').length
-  const conversionRate = leads.length ? (qualifiedLeadCount / leads.length) * 100 : 0
+function computeAnalytics(
+  leads: CrmLead[],
+  opportunities: CrmOpportunity[],
+): CrmAnalytics {
+  const qualifiedLeadCount = leads.filter(
+    (lead) => lead.status === 'qualified',
+  ).length
+  const conversionRate = leads.length
+    ? (qualifiedLeadCount / leads.length) * 100
+    : 0
 
-  const closed = opportunities.filter((entry) => entry.stage === 'closed' && entry.outcome)
+  const closed = opportunities.filter(
+    (entry) => entry.stage === 'closed' && entry.outcome,
+  )
   const wins = closed.filter((entry) => entry.outcome === 'won').length
   const losses = closed.filter((entry) => entry.outcome === 'lost').length
 
@@ -357,31 +377,50 @@ function normalizeDate(date: string) {
   return Number.isNaN(timestamp) ? 0 : timestamp
 }
 
-function filterOpportunities(opportunities: CrmOpportunity[], query: CrmOverviewQuery = {}) {
-  const search = String(query.search ?? '').trim().toLowerCase()
-  const owner = String(query.owner ?? '').trim().toLowerCase()
+function filterOpportunities(
+  opportunities: CrmOpportunity[],
+  query: CrmOverviewQuery = {},
+) {
+  const search = String(query.search ?? '')
+    .trim()
+    .toLowerCase()
+  const owner = String(query.owner ?? '')
+    .trim()
+    .toLowerCase()
   const stage = query.stage && query.stage !== 'all' ? query.stage : undefined
-  const industry = String(query.industry ?? '').trim().toLowerCase()
+  const industry = String(query.industry ?? '')
+    .trim()
+    .toLowerCase()
   const minAmount = Number(query.minAmount)
   const maxAmount = Number(query.maxAmount)
-  const fromDate = query.fromExpectedCloseDate ? normalizeDate(query.fromExpectedCloseDate) : 0
-  const toDate = query.toExpectedCloseDate ? normalizeDate(query.toExpectedCloseDate) : 0
+  const fromDate = query.fromExpectedCloseDate
+    ? normalizeDate(query.fromExpectedCloseDate)
+    : 0
+  const toDate = query.toExpectedCloseDate
+    ? normalizeDate(query.toExpectedCloseDate)
+    : 0
 
   const store = getStore()
 
   return opportunities.filter((opportunity) => {
-    const account = store.accounts.find((item) => item.id === opportunity.accountId)
+    const account = store.accounts.find(
+      (item) => item.id === opportunity.accountId,
+    )
 
     const matchesSearch =
       search.length === 0 ||
       opportunity.id.toLowerCase().includes(search) ||
       opportunity.name.toLowerCase().includes(search)
-    const matchesOwner = owner.length === 0 || opportunity.owner.toLowerCase().includes(owner)
+    const matchesOwner =
+      owner.length === 0 || opportunity.owner.toLowerCase().includes(owner)
     const matchesStage = !stage || opportunity.stage === stage
     const matchesIndustry =
-      industry.length === 0 || !!account?.industry.toLowerCase().includes(industry)
-    const matchesMinAmount = Number.isNaN(minAmount) || opportunity.amount >= minAmount
-    const matchesMaxAmount = Number.isNaN(maxAmount) || opportunity.amount <= maxAmount
+      industry.length === 0 ||
+      !!account?.industry.toLowerCase().includes(industry)
+    const matchesMinAmount =
+      Number.isNaN(minAmount) || opportunity.amount >= minAmount
+    const matchesMaxAmount =
+      Number.isNaN(maxAmount) || opportunity.amount <= maxAmount
 
     const closeDate = normalizeDate(opportunity.expectedCloseDate)
     const matchesFromDate = !fromDate || closeDate >= fromDate
@@ -414,15 +453,21 @@ export function getCrmPipelineSnapshot(): CrmPipelineApiResponse {
   }
 }
 
-export function getCrmOverview(query?: CrmOverviewQuery): CrmOverviewApiResponse {
+export function getCrmOverview(
+  query?: CrmOverviewQuery,
+): CrmOverviewApiResponse {
   const store = getStore()
   const filteredOpportunities = filterOpportunities(store.opportunities, query)
-  const filteredOpportunityIds = new Set(filteredOpportunities.map((item) => item.id))
+  const filteredOpportunityIds = new Set(
+    filteredOpportunities.map((item) => item.id),
+  )
 
   const filteredActivities = store.activities.filter((item) =>
     filteredOpportunityIds.has(item.opportunityId),
   )
-  const filteredNotes = store.notes.filter((item) => filteredOpportunityIds.has(item.opportunityId))
+  const filteredNotes = store.notes.filter((item) =>
+    filteredOpportunityIds.has(item.opportunityId),
+  )
 
   return {
     leads: store.leads,
@@ -454,18 +499,29 @@ export function getCrmOverview(query?: CrmOverviewQuery): CrmOverviewApiResponse
   }
 }
 
-export function getCrmOpportunityDetail(opportunityId: string): CrmOpportunityDetail | null {
+export function getCrmOpportunityDetail(
+  opportunityId: string,
+): CrmOpportunityDetail | null {
   const store = getStore()
-  const opportunity = store.opportunities.find((item) => item.id === opportunityId)
+  const opportunity = store.opportunities.find(
+    (item) => item.id === opportunityId,
+  )
 
   if (!opportunity) {
     return null
   }
 
-  const account = store.accounts.find((item) => item.id === opportunity.accountId) ?? null
-  const contacts = store.contacts.filter((item) => item.accountId === opportunity.accountId)
-  const activities = store.activities.filter((item) => item.opportunityId === opportunityId)
-  const notes = store.notes.filter((item) => item.opportunityId === opportunityId)
+  const account =
+    store.accounts.find((item) => item.id === opportunity.accountId) ?? null
+  const contacts = store.contacts.filter(
+    (item) => item.accountId === opportunity.accountId,
+  )
+  const activities = store.activities.filter(
+    (item) => item.opportunityId === opportunityId,
+  )
+  const notes = store.notes.filter(
+    (item) => item.opportunityId === opportunityId,
+  )
 
   const journal = [
     ...activities.map((activity) => ({
@@ -489,7 +545,10 @@ export function getCrmOpportunityDetail(opportunityId: string): CrmOpportunityDe
       eventType: 'stage_transition' as const,
       message: `Opportunity currently in stage ${opportunity.stage}`,
     },
-  ].sort((left, right) => normalizeDate(right.timestamp) - normalizeDate(left.timestamp))
+  ].sort(
+    (left, right) =>
+      normalizeDate(right.timestamp) - normalizeDate(left.timestamp),
+  )
 
   return {
     opportunity,
@@ -517,14 +576,23 @@ export function transitionCrmDeal(
     return null
   }
 
-  const nextOutcome = payload.toStage === 'closed' ? (payload.outcome ?? opportunity.outcome ?? 'won') : null
+  const nextOutcome =
+    payload.toStage === 'closed'
+      ? (payload.outcome ?? opportunity.outcome ?? 'won')
+      : null
   const isClosing = payload.toStage === 'closed'
 
   opportunity.stage = payload.toStage
   opportunity.outcome = nextOutcome
-  opportunity.probability = normalizeProbability(payload.toStage, payload.probability, nextOutcome)
+  opportunity.probability = normalizeProbability(
+    payload.toStage,
+    payload.probability,
+    nextOutcome,
+  )
   opportunity.expectedCloseDate = payload.expectedCloseDate
-  opportunity.closedAt = isClosing ? opportunity.closedAt ?? new Date().toISOString() : null
+  opportunity.closedAt = isClosing
+    ? (opportunity.closedAt ?? new Date().toISOString())
+    : null
 
   store.notes.unshift({
     id: `NOTE-${Math.floor(Math.random() * 900 + 100)}`,

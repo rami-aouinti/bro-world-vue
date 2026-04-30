@@ -8,7 +8,11 @@ export default defineEventHandler(async (event): Promise<CrmIdResponse> => {
     throw createError({ statusCode: 400, statusMessage: 'Missing employee id' })
   }
 
-  return mutateCrmGeneral<Record<string, unknown>>(event, `employees/${employee}`, {
-    method: 'DELETE',
-  })
+  return mutateCrmGeneral<Record<string, unknown>>(
+    event,
+    `employees/${employee}`,
+    {
+      method: 'DELETE',
+    },
+  )
 })

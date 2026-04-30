@@ -18,9 +18,18 @@ const { learningNavItems } = useWorldLearningNavItems()
 const route = useRoute()
 const schoolStore = useWorldLearningSchoolStore()
 
-const allowedResources: SchoolResource[] = ['exams', 'classes', 'teachers', 'students', 'grades', 'courses']
+const allowedResources: SchoolResource[] = [
+  'exams',
+  'classes',
+  'teachers',
+  'students',
+  'grades',
+  'courses',
+]
 
-const resource = computed(() => String(route.params.resource || '').toLowerCase() as SchoolResource)
+const resource = computed(
+  () => String(route.params.resource || '').toLowerCase() as SchoolResource,
+)
 const id = computed(() => String(route.params.id || ''))
 
 if (!allowedResources.includes(resource.value)) {
@@ -45,7 +54,10 @@ const courseTeacher = computed(() => {
   const teacher = raw as Record<string, unknown>
   return {
     id: String(teacher.id ?? ''),
-    name: String(teacher.name ?? `${String(teacher.firstName ?? '')} ${String(teacher.lastName ?? '')}`.trim()),
+    name: String(
+      teacher.name ??
+        `${String(teacher.firstName ?? '')} ${String(teacher.lastName ?? '')}`.trim(),
+    ),
     photo: String(teacher.photo ?? ''),
     email: String(teacher.email ?? ''),
   }
@@ -112,16 +124,20 @@ function fileHref(url?: string) {
     >
       <template v-if="isCourse" #right>
         <div class="d-flex flex-column ga-3">
-
           <div v-if="loading" class="d-flex justify-center py-8">
             <v-progress-circular indeterminate color="primary" />
           </div>
 
           <template v-else>
-            <p class="text-body-2 text-medium-emphasis mb-0">{{ courseClassName }}</p>
+            <p class="text-body-2 text-medium-emphasis mb-0">
+              {{ courseClassName }}
+            </p>
             <div v-if="courseTeacher" class="d-flex align-center ga-3">
               <v-avatar size="42">
-                <v-img :src="courseTeacher.photo" :alt="courseTeacher.name || 'Teacher'"/>
+                <v-img
+                  :src="courseTeacher.photo"
+                  :alt="courseTeacher.name || 'Teacher'"
+                />
               </v-avatar>
               <div>
                 <p class="text-body-2">{{ courseTeacher.name }}</p>
@@ -136,8 +152,12 @@ function fileHref(url?: string) {
               class="pa-3"
             >
               <div class="d-flex align-center justify-space-between ga-3 mb-2">
-                <p class="text-body-2 font-weight-medium mb-0 text-truncate">{{ attachment.originalName ?? 'Attachment' }}</p>
-                <v-chip size="x-small" color="primary" variant="tonal">{{ (attachment.extension ?? 'file').toUpperCase() }}</v-chip>
+                <p class="text-body-2 font-weight-medium mb-0 text-truncate">
+                  {{ attachment.originalName ?? 'Attachment' }}
+                </p>
+                <v-chip size="x-small" color="primary" variant="tonal">{{
+                  (attachment.extension ?? 'file').toUpperCase()
+                }}</v-chip>
               </div>
               <p class="text-caption text-medium-emphasis mb-3">
                 {{ formatBytes(attachment.size) }}
@@ -155,19 +175,29 @@ function fileHref(url?: string) {
               </v-btn>
             </v-card>
 
-            <v-alert v-if="courseAttachments.length === 0" type="info" variant="tonal" :text="t('world.learning.common.noAttachments')" />
+            <v-alert
+              v-if="courseAttachments.length === 0"
+              type="info"
+              variant="tonal"
+              :text="t('world.learning.common.noAttachments')"
+            />
           </template>
         </div>
       </template>
     </WorldModuleShell>
 
     <v-container fluid>
-      <v-card v-if="isCourse" rounded="xl" class="pa-6 postcard-gradient-card course-detail-card">
-        <div class="d-flex flex-wrap align-start justify-space-between ga-4 mb-5">
+      <v-card
+        v-if="isCourse"
+        rounded="xl"
+        class="pa-6 postcard-gradient-card course-detail-card"
+      >
+        <div
+          class="d-flex flex-wrap align-start justify-space-between ga-4 mb-5"
+        >
           <div>
             <h2 class="text-h4 font-weight-bold mb-1">{{ courseTitle }}</h2>
           </div>
-
         </div>
 
         <div v-if="loading" class="d-flex justify-center py-8">
@@ -183,18 +213,26 @@ function fileHref(url?: string) {
         />
 
         <template v-else-if="item">
-          <v-card variant="text" rounded="lg" class="pa-4 mb-5 course-content" :class="{ 'text-medium-emphasis': !courseContent }">
+          <v-card
+            variant="text"
+            rounded="lg"
+            class="pa-4 mb-5 course-content"
+            :class="{ 'text-medium-emphasis': !courseContent }"
+          >
             <!-- eslint-disable-next-line vue/no-v-html -->
             <div v-if="courseContent" v-html="courseContent" />
-            <p v-else class="mb-0">{{ t('world.learning.common.noHtmlContent') }}</p>
+            <p v-else class="mb-0">
+              {{ t('world.learning.common.noHtmlContent') }}
+            </p>
           </v-card>
-
         </template>
       </v-card>
 
       <v-card v-else rounded="xl" class="pa-5 postcard-gradient-card">
         <div class="d-flex align-center justify-space-between mb-3">
-          <h1 class="text-h5 text-capitalize">{{ resource.slice(0, -1) }} detail</h1>
+          <h1 class="text-h5 text-capitalize">
+            {{ resource.slice(0, -1) }} detail
+          </h1>
         </div>
 
         <div v-if="loading" class="d-flex justify-center py-8">

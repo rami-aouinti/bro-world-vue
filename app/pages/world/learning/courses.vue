@@ -14,7 +14,9 @@ const search = ref('')
 const selectedTeacher = ref<string | null>(null)
 const selectedClass = ref<string | null>(null)
 const referenceDialog = ref(false)
-const selectedReference = ref<{ resource: SchoolResource; id: string } | null>(null)
+const selectedReference = ref<{ resource: SchoolResource; id: string } | null>(
+  null,
+)
 
 await schoolStore.fetchCollection(resource)
 
@@ -42,8 +44,11 @@ const teacherOptions = computed(() => {
       continue
     }
 
-    const fullName = `${String(teacher.firstName ?? '')} ${String(teacher.lastName ?? '')}`.trim()
-    const teacherName = String(teacher.name ?? fullName ?? teacher.username ?? '')
+    const fullName =
+      `${String(teacher.firstName ?? '')} ${String(teacher.lastName ?? '')}`.trim()
+    const teacherName = String(
+      teacher.name ?? fullName ?? teacher.username ?? '',
+    )
     if (!teacherName) {
       continue
     }
@@ -56,7 +61,9 @@ const teacherOptions = computed(() => {
     })
   }
 
-  return Array.from(byId.values()).sort((a, b) => a.title.localeCompare(b.title))
+  return Array.from(byId.values()).sort((a, b) =>
+    a.title.localeCompare(b.title),
+  )
 })
 
 const classOptions = computed(() => {
@@ -69,7 +76,9 @@ const classOptions = computed(() => {
     byClass.set(className, { title: className, value: className })
   }
 
-  return Array.from(byClass.values()).sort((a, b) => a.title.localeCompare(b.title))
+  return Array.from(byClass.values()).sort((a, b) =>
+    a.title.localeCompare(b.title),
+  )
 })
 
 const filteredItems = computed(() => {
@@ -77,9 +86,10 @@ const filteredItems = computed(() => {
   return items.value.filter((item) => {
     if (selectedTeacher.value) {
       const teacherRaw = item.teacher
-      const teacherId = teacherRaw && typeof teacherRaw === 'object'
-        ? String((teacherRaw as Record<string, unknown>).id ?? '')
-        : ''
+      const teacherId =
+        teacherRaw && typeof teacherRaw === 'object'
+          ? String((teacherRaw as Record<string, unknown>).id ?? '')
+          : ''
       if (teacherId !== selectedTeacher.value) {
         return false
       }
@@ -96,7 +106,11 @@ const filteredItems = computed(() => {
       return true
     }
 
-    return Object.values(item).some(value => String(value ?? '').toLowerCase().includes(query))
+    return Object.values(item).some((value) =>
+      String(value ?? '')
+        .toLowerCase()
+        .includes(query),
+    )
   })
 })
 
@@ -105,7 +119,10 @@ const referenceItem = computed(() => {
     return null
   }
 
-  return schoolStore.getDetail(selectedReference.value.resource, selectedReference.value.id)
+  return schoolStore.getDetail(
+    selectedReference.value.resource,
+    selectedReference.value.id,
+  )
 })
 
 const referenceLoading = computed(() => {
@@ -113,7 +130,10 @@ const referenceLoading = computed(() => {
     return false
   }
 
-  return schoolStore.isLoading(selectedReference.value.resource, selectedReference.value.id)
+  return schoolStore.isLoading(
+    selectedReference.value.resource,
+    selectedReference.value.id,
+  )
 })
 
 async function openReference(payload: { key: string; value: string }) {
@@ -146,12 +166,20 @@ async function openReference(payload: { key: string; value: string }) {
             variant="outlined"
             hide-details
           />
-          <AppSelect v-model="selectedTeacher" :items="teacherOptions" label="Teacher" clearable>
+          <AppSelect
+            v-model="selectedTeacher"
+            :items="teacherOptions"
+            label="Teacher"
+            clearable
+          >
             <template #item="{ props, item }">
               <v-list-item v-bind="props" :subtitle="item.raw.subtitle">
                 <template #prepend>
                   <v-avatar size="24">
-                    <v-img :src="item.raw.avatar || '/img/avatar_default.svg'" :alt="item.raw.title" />
+                    <v-img
+                      :src="item.raw.avatar || '/img/avatar_default.svg'"
+                      :alt="item.raw.title"
+                    />
                   </v-avatar>
                 </template>
               </v-list-item>
@@ -159,13 +187,21 @@ async function openReference(payload: { key: string; value: string }) {
             <template #selection="{ item }">
               <div class="d-flex align-center ga-2">
                 <v-avatar size="20">
-                  <v-img :src="item.raw.avatar || '/img/avatar_default.svg'" :alt="item.raw.title" />
+                  <v-img
+                    :src="item.raw.avatar || '/img/avatar_default.svg'"
+                    :alt="item.raw.title"
+                  />
                 </v-avatar>
                 <span>{{ item.raw.title }}</span>
               </div>
             </template>
           </AppSelect>
-          <AppSelect v-model="selectedClass" :items="classOptions" label="Class" clearable />
+          <AppSelect
+            v-model="selectedClass"
+            :items="classOptions"
+            label="Class"
+            clearable
+          />
         </div>
       </template>
     </WorldModuleShell>
@@ -191,14 +227,20 @@ async function openReference(payload: { key: string; value: string }) {
       <v-card rounded="xl">
         <v-card-title class="d-flex align-center justify-space-between">
           <span>{{ t('world.learning.common.referenceDetail') }}</span>
-          <v-btn icon="mdi-close" variant="text" @click="referenceDialog = false" />
+          <v-btn
+            icon="mdi-close"
+            variant="text"
+            @click="referenceDialog = false"
+          />
         </v-card-title>
         <v-divider />
         <v-card-text>
           <div v-if="referenceLoading" class="d-flex justify-center py-8">
             <v-progress-circular indeterminate color="primary" />
           </div>
-          <pre v-else class="text-caption">{{ JSON.stringify(referenceItem, null, 2) }}</pre>
+          <pre v-else class="text-caption">{{
+            JSON.stringify(referenceItem, null, 2)
+          }}</pre>
         </v-card-text>
       </v-card>
     </v-dialog>

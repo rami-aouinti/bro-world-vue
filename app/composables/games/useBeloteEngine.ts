@@ -4,7 +4,11 @@ export type Suit = '♠' | '♥' | '♦' | '♣'
 export type Rank = '7' | '8' | '9' | 'J' | 'Q' | 'K' | '10' | 'A'
 export type BeloteMode = 'teams' | 'free-for-all'
 export type BelotePlayMode = 'ai' | 'pvp'
-export type BeloteRoundPhase = 'distribution' | 'bidding' | 'playing' | 'round-end'
+export type BeloteRoundPhase =
+  | 'distribution'
+  | 'bidding'
+  | 'playing'
+  | 'round-end'
 
 export interface BeloteContract {
   takerIndex: number
@@ -83,9 +87,12 @@ const normalCardPoints: Record<Rank, number> = {
   '7': 0,
 }
 
-const resolveSource = <T,>(source: ReactiveSource<T>) => (typeof source === 'function' ? source() : source.value)
+const resolveSource = <T>(source: ReactiveSource<T>) =>
+  typeof source === 'function' ? source() : source.value
 
-const createPlayerTemplates = (playMode: BelotePlayMode): Omit<BelotePlayer, 'hand'>[] => {
+const createPlayerTemplates = (
+  playMode: BelotePlayMode,
+): Omit<BelotePlayer, 'hand'>[] => {
   if (playMode === 'pvp') {
     return [
       { id: 'player-1', name: 'Joueur 1', isAI: false },
@@ -103,7 +110,7 @@ const createPlayerTemplates = (playMode: BelotePlayMode): Omit<BelotePlayer, 'ha
   ]
 }
 
-const shuffle = <T,>(items: T[]) => {
+const shuffle = <T>(items: T[]) => {
   const output = [...items]
   for (let index = output.length - 1; index > 0; index -= 1) {
     const randomIndex = Math.floor(Math.random() * (index + 1))
@@ -114,10 +121,18 @@ const shuffle = <T,>(items: T[]) => {
   return output
 }
 
-const createDeck = (): Card[] => suits.flatMap(suit => ranks.map(rank => ({ id: `${suit}-${rank}`, suit, rank })))
+const createDeck = (): Card[] =>
+  suits.flatMap((suit) =>
+    ranks.map((rank) => ({ id: `${suit}-${rank}`, suit, rank })),
+  )
 
-export const useBeloteEngine = (modeSource: ReactiveSource<BeloteMode>, playModeSource: ReactiveSource<BelotePlayMode>) => {
-  const initialPlayers = createPlayerTemplates(resolveSource(playModeSource)).map(player => ({ ...player, hand: [] }))
+export const useBeloteEngine = (
+  modeSource: ReactiveSource<BeloteMode>,
+  playModeSource: ReactiveSource<BelotePlayMode>,
+) => {
+  const initialPlayers = createPlayerTemplates(
+    resolveSource(playModeSource),
+  ).map((player) => ({ ...player, hand: [] }))
 
   const players = ref<BelotePlayer[]>(initialPlayers)
   const phase = ref<BeloteRoundPhase>('distribution')
@@ -149,20 +164,25 @@ export const useBeloteEngine = (modeSource: ReactiveSource<BeloteMode>, playMode
     return playerA % 2 === playerB % 2
   }
 
-  const getCardPoints = (card: Card) => (card.suit === trumpSuit.value ? trumpCardPoints[card.rank] : normalCardPoints[card.rank])
+  const getCardPoints = (card: Card) =>
+    card.suit === trumpSuit.value
+      ? trumpCardPoints[card.rank]
+      : normalCardPoints[card.rank]
 
   const compareCards = (left: Card, right: Card, leadSuit: Suit) => {
     const leftTrump = left.suit === trumpSuit.value
     const rightTrump = right.suit === trumpSuit.value
 
-    if (leftTrump && rightTrump) return trumpStrength[left.rank] - trumpStrength[right.rank]
+    if (leftTrump && rightTrump)
+      return trumpStrength[left.rank] - trumpStrength[right.rank]
     if (leftTrump) return 1
     if (rightTrump) return -1
 
     const leftLead = left.suit === leadSuit
     const rightLead = right.suit === leadSuit
 
-    if (leftLead && rightLead) return normalStrength[left.rank] - normalStrength[right.rank]
+    if (leftLead && rightLead)
+      return normalStrength[left.rank] - normalStrength[right.rank]
     if (leftLead) return 1
     if (rightLead) return -1
 
@@ -172,7 +192,9 @@ export const useBeloteEngine = (modeSource: ReactiveSource<BeloteMode>, playMode
   const getTrickWinningPlay = () => {
     const leadSuit = trick.value[0]?.card.suit
     if (!leadSuit || trick.value.length === 0) return null
-    return trick.value.reduce((best, current) => (compareCards(current.card, best.card, leadSuit) > 0 ? current : best))
+    return trick.value.reduce((best, current) =>
+      compareCards(current.card, best.card, leadSuit) > 0 ? current : best,
+    )
   }
 
   const getValidCards = (playerIndex: number) => {
@@ -182,12 +204,15 @@ export const useBeloteEngine = (modeSource: ReactiveSource<BeloteMode>, playMode
     if (!player) return []
     if (!leadSuit) return player.hand
 
-    const sameSuitCards = player.hand.filter(card => card.suit === leadSuit)
+    const sameSuitCards = player.hand.filter((card) => card.suit === leadSuit)
     const winningPlay = getTrickWinningPlay()
 
     if (sameSuitCards.length) {
       if (leadSuit === trumpSuit.value && winningPlay) {
-        const higherTrumpCards = sameSuitCards.filter(card => trumpStrength[card.rank] > trumpStrength[winningPlay.card.rank])
+        const higherTrumpCards = sameSuitCards.filter(
+          (card) =>
+            trumpStrength[card.rank] > trumpStrength[winningPlay.card.rank],
+        )
         if (higherTrumpCards.length) {
           return higherTrumpCards
         }
@@ -195,11 +220,15 @@ export const useBeloteEngine = (modeSource: ReactiveSource<BeloteMode>, playMode
       return sameSuitCards
     }
 
-    const trumpCards = player.hand.filter(card => card.suit === trumpSuit.value)
+    const trumpCards = player.hand.filter(
+      (card) => card.suit === trumpSuit.value,
+    )
     if (!trumpCards.length) return player.hand
 
     const partnerWinning = Boolean(
-      winningPlay && resolveSource(modeSource) === 'teams' && isSameTeam(playerIndex, winningPlay.playerIndex),
+      winningPlay &&
+      resolveSource(modeSource) === 'teams' &&
+      isSameTeam(playerIndex, winningPlay.playerIndex),
     )
 
     if (partnerWinning) {
@@ -207,34 +236,52 @@ export const useBeloteEngine = (modeSource: ReactiveSource<BeloteMode>, playMode
     }
 
     const currentHighestTrump = trick.value
-      .filter(play => play.card.suit === trumpSuit.value)
-      .map(play => play.card)
-      .sort((left, right) => trumpStrength[right.rank] - trumpStrength[left.rank])[0]
+      .filter((play) => play.card.suit === trumpSuit.value)
+      .map((play) => play.card)
+      .sort(
+        (left, right) => trumpStrength[right.rank] - trumpStrength[left.rank],
+      )[0]
 
     if (!currentHighestTrump) return trumpCards
 
-    const higherTrumps = trumpCards.filter(card => trumpStrength[card.rank] > trumpStrength[currentHighestTrump.rank])
+    const higherTrumps = trumpCards.filter(
+      (card) =>
+        trumpStrength[card.rank] > trumpStrength[currentHighestTrump.rank],
+    )
     if (higherTrumps.length) return higherTrumps
 
     return trumpCards
   }
 
-  const evaluateSuitStrength = (hand: Card[], suit: Suit) => hand
-    .filter(card => card.suit === suit)
-    .reduce((score, card) => score + (suit === trumpSuit.value ? trumpCardPoints[card.rank] : normalCardPoints[card.rank]), 0)
+  const evaluateSuitStrength = (hand: Card[], suit: Suit) =>
+    hand
+      .filter((card) => card.suit === suit)
+      .reduce(
+        (score, card) =>
+          score +
+          (suit === trumpSuit.value
+            ? trumpCardPoints[card.rank]
+            : normalCardPoints[card.rank]),
+        0,
+      )
 
   const chooseContract = () => {
-    const bids = players.value.map((player, index) => {
-      const bestSuit = suits
-        .map(suit => ({ suit, value: evaluateSuitStrength(player.hand, suit) }))
-        .sort((a, b) => b.value - a.value)[0]
+    const bids = players.value
+      .map((player, index) => {
+        const bestSuit = suits
+          .map((suit) => ({
+            suit,
+            value: evaluateSuitStrength(player.hand, suit),
+          }))
+          .sort((a, b) => b.value - a.value)[0]
 
-      return {
-        takerIndex: index,
-        trumpSuit: bestSuit.suit,
-        value: bestSuit.value,
-      }
-    }).sort((a, b) => b.value - a.value)
+        return {
+          takerIndex: index,
+          trumpSuit: bestSuit.suit,
+          value: bestSuit.value,
+        }
+      })
+      .sort((a, b) => b.value - a.value)
 
     const bestBid = bids[0]
     contract.value = {
@@ -283,12 +330,18 @@ export const useBeloteEngine = (modeSource: ReactiveSource<BeloteMode>, playMode
     let defensePoints = 0
 
     if (resolveSource(modeSource) === 'teams') {
-      takerPoints = contractorTeamA ? roundTeamScores.value.teamA : roundTeamScores.value.teamB
-      defensePoints = contractorTeamA ? roundTeamScores.value.teamB : roundTeamScores.value.teamA
-    }
-    else {
+      takerPoints = contractorTeamA
+        ? roundTeamScores.value.teamA
+        : roundTeamScores.value.teamB
+      defensePoints = contractorTeamA
+        ? roundTeamScores.value.teamB
+        : roundTeamScores.value.teamA
+    } else {
       takerPoints = roundPlayerScores.value[contractorIndex]
-      defensePoints = roundPlayerScores.value.reduce((sum, score, index) => sum + (index === contractorIndex ? 0 : score), 0)
+      defensePoints = roundPlayerScores.value.reduce(
+        (sum, score, index) => sum + (index === contractorIndex ? 0 : score),
+        0,
+      )
     }
 
     const contractMade = takerPoints >= contract.value.targetPoints
@@ -297,28 +350,38 @@ export const useBeloteEngine = (modeSource: ReactiveSource<BeloteMode>, playMode
       if (contractMade) {
         totalTeamScores.value.teamA += roundTeamScores.value.teamA
         totalTeamScores.value.teamB += roundTeamScores.value.teamB
-      }
-      else if (contractorTeamA) {
+      } else if (contractorTeamA) {
         totalTeamScores.value.teamB += ROUND_POINT_TOTAL + LAST_TRICK_BONUS
-        roundTeamScores.value = { teamA: 0, teamB: ROUND_POINT_TOTAL + LAST_TRICK_BONUS }
-      }
-      else {
+        roundTeamScores.value = {
+          teamA: 0,
+          teamB: ROUND_POINT_TOTAL + LAST_TRICK_BONUS,
+        }
+      } else {
         totalTeamScores.value.teamA += ROUND_POINT_TOTAL + LAST_TRICK_BONUS
-        roundTeamScores.value = { teamA: ROUND_POINT_TOTAL + LAST_TRICK_BONUS, teamB: 0 }
+        roundTeamScores.value = {
+          teamA: ROUND_POINT_TOTAL + LAST_TRICK_BONUS,
+          teamB: 0,
+        }
       }
-    }
-    else {
+    } else {
       if (contractMade) {
-        totalPlayerScores.value = totalPlayerScores.value.map((total, index) => total + roundPlayerScores.value[index])
-      }
-      else {
-        const defenseShare = Math.floor((ROUND_POINT_TOTAL + LAST_TRICK_BONUS) / 3)
-        totalPlayerScores.value = totalPlayerScores.value.map((total, index) => {
-          if (index === contractorIndex) return total
-          return total + defenseShare
-        })
+        totalPlayerScores.value = totalPlayerScores.value.map(
+          (total, index) => total + roundPlayerScores.value[index],
+        )
+      } else {
+        const defenseShare = Math.floor(
+          (ROUND_POINT_TOTAL + LAST_TRICK_BONUS) / 3,
+        )
+        totalPlayerScores.value = totalPlayerScores.value.map(
+          (total, index) => {
+            if (index === contractorIndex) return total
+            return total + defenseShare
+          },
+        )
 
-        roundPlayerScores.value = roundPlayerScores.value.map((_, index) => (index === contractorIndex ? 0 : defenseShare))
+        roundPlayerScores.value = roundPlayerScores.value.map((_, index) =>
+          index === contractorIndex ? 0 : defenseShare,
+        )
       }
     }
 
@@ -333,19 +396,23 @@ export const useBeloteEngine = (modeSource: ReactiveSource<BeloteMode>, playMode
     const leadSuit = trick.value[0]?.card.suit
     if (!leadSuit || trick.value.length !== 4) return
 
-    const winner = trick.value.reduce((best, current) => (compareCards(current.card, best.card, leadSuit) > 0 ? current : best))
-    const points = trick.value.reduce((sum, play) => sum + getCardPoints(play.card), 0)
-    const withLastTrickBonus = trickCount.value === 7 ? points + LAST_TRICK_BONUS : points
+    const winner = trick.value.reduce((best, current) =>
+      compareCards(current.card, best.card, leadSuit) > 0 ? current : best,
+    )
+    const points = trick.value.reduce(
+      (sum, play) => sum + getCardPoints(play.card),
+      0,
+    )
+    const withLastTrickBonus =
+      trickCount.value === 7 ? points + LAST_TRICK_BONUS : points
 
     if (resolveSource(modeSource) === 'teams') {
       if (winner.playerIndex % 2 === 0) {
         roundTeamScores.value.teamA += withLastTrickBonus
-      }
-      else {
+      } else {
         roundTeamScores.value.teamB += withLastTrickBonus
       }
-    }
-    else {
+    } else {
       roundPlayerScores.value[winner.playerIndex] += withLastTrickBonus
     }
 
@@ -369,16 +436,24 @@ export const useBeloteEngine = (modeSource: ReactiveSource<BeloteMode>, playMode
 
   const playCard = (playerIndex: number, cardId: string) => {
     const player = players.value[playerIndex]
-    if (!player || roundOver.value || phase.value !== 'playing' || playerIndex !== turnIndex.value) return false
+    if (
+      !player ||
+      roundOver.value ||
+      phase.value !== 'playing' ||
+      playerIndex !== turnIndex.value
+    )
+      return false
 
     const hand = player.hand
-    const card = hand.find(entry => entry.id === cardId)
+    const card = hand.find((entry) => entry.id === cardId)
     if (!card) return false
 
     const validCards = getValidCards(playerIndex)
-    if (!validCards.some(entry => entry.id === card.id)) return false
+    if (!validCards.some((entry) => entry.id === card.id)) return false
 
-    players.value[playerIndex].hand = hand.filter(entry => entry.id !== card.id)
+    players.value[playerIndex].hand = hand.filter(
+      (entry) => entry.id !== card.id,
+    )
     trick.value.push({ playerIndex, card })
 
     if (trick.value.length === 4) {
@@ -401,20 +476,26 @@ export const useBeloteEngine = (modeSource: ReactiveSource<BeloteMode>, playMode
     if (!validCards.length) return null
 
     if (!leadSuit) {
-      return [...validCards].sort((a, b) => getCardPoints(b) - getCardPoints(a))[0]
+      return [...validCards].sort(
+        (a, b) => getCardPoints(b) - getCardPoints(a),
+      )[0]
     }
 
     const currentlyWinning = getTrickWinningPlay()
-    const winningCards = validCards.filter(card => {
+    const winningCards = validCards.filter((card) => {
       if (!currentlyWinning) return true
       return compareCards(card, currentlyWinning.card, leadSuit) > 0
     })
 
     if (winningCards.length) {
-      return [...winningCards].sort((a, b) => getCardPoints(a) - getCardPoints(b))[0]
+      return [...winningCards].sort(
+        (a, b) => getCardPoints(a) - getCardPoints(b),
+      )[0]
     }
 
-    return [...validCards].sort((a, b) => getCardPoints(a) - getCardPoints(b))[0]
+    return [...validCards].sort(
+      (a, b) => getCardPoints(a) - getCardPoints(b),
+    )[0]
   }
 
   const processAiTurns = () => {
@@ -489,7 +570,13 @@ export const useBeloteEngine = (modeSource: ReactiveSource<BeloteMode>, playMode
 
   const humanTurnPlayerIndex = computed(() => {
     const activePlayer = players.value[turnIndex.value]
-    if (!activePlayer || activePlayer.isAI || roundOver.value || phase.value !== 'playing') return -1
+    if (
+      !activePlayer ||
+      activePlayer.isAI ||
+      roundOver.value ||
+      phase.value !== 'playing'
+    )
+      return -1
     return turnIndex.value
   })
 

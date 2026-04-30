@@ -1,4 +1,8 @@
-export type ResumeSectionKey = 'experience' | 'education' | 'language' | 'project'
+export type ResumeSectionKey =
+  | 'experience'
+  | 'education'
+  | 'language'
+  | 'project'
 export type ResumeTemplateKey = 'terra' | 'modern'
 
 export type SectionHeadingStyle = 'underline' | 'badge' | 'minimal'
@@ -16,7 +20,10 @@ export type ResumeSectionDesignPreset = {
   accentMarker: SectionAccentMarker
 }
 
-export const RESUME_SECTION_DESIGN_PRESETS: Record<ResumeTemplateKey, Record<ResumeSectionKey, ResumeSectionDesignPreset>> = {
+export const RESUME_SECTION_DESIGN_PRESETS: Record<
+  ResumeTemplateKey,
+  Record<ResumeSectionKey, ResumeSectionDesignPreset>
+> = {
   terra: {
     experience: {
       variant: 'classic',

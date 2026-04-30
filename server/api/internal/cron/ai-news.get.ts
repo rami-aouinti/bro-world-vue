@@ -103,7 +103,9 @@ function readUsersFromResponse(payload: unknown): PublicUser[] {
       const user = entry as Record<string, unknown>
       const id = String(user.id ?? '').trim()
       const username = String(user.username ?? '').trim()
-      const displayName = String(user.name ?? user.displayName ?? username).trim()
+      const displayName = String(
+        user.name ?? user.displayName ?? username,
+      ).trim()
 
       if (!id || !username) {
         return null
@@ -143,7 +145,10 @@ function buildFallbackArticles(users: PublicUser[]): GeneratedArticle[] {
   const pickedUsers = pickRandomItems(users, 3)
 
   return pickedTopics.map((topic, index) => {
-    const author = pickedUsers[index]?.displayName || pickedUsers[index]?.username || 'la communauté'
+    const author =
+      pickedUsers[index]?.displayName ||
+      pickedUsers[index]?.username ||
+      'la communauté'
 
     return {
       title: DEFAULT_FALLBACK_TITLES[index] ?? `News technique: ${topic.name}`,
@@ -156,7 +161,8 @@ function buildFallbackArticles(users: PublicUser[]): GeneratedArticle[] {
 }
 
 function buildPrompt(candidateUsers: PublicUser[]) {
-  return `Tu es un rédacteur tech. Génère strictement du JSON avec la forme {"articles": [{"title": string, "content": string, "sharedUrl": string}]}.
+  return (
+    `Tu es un rédacteur tech. Génère strictement du JSON avec la forme {"articles": [{"title": string, "content": string, "sharedUrl": string}]}.
 ` +
     `Contraintes: 3 articles exactement, français, ton clair, 120 à 220 mots par article, chaque article doit parler d'au moins un sujet parmi Symfony, Nuxt, Vuetify, API, Elasticsearch, RabbitMQ, Redis, MongoDB.
 ` +
@@ -165,6 +171,7 @@ function buildPrompt(candidateUsers: PublicUser[]) {
     `Liste publique d'utilisateurs (choisir un auteur aléatoire à mentionner dans le contenu, sans inventer de nom): ${JSON.stringify(candidateUsers)}
 ` +
     `Liste de références possibles: ${JSON.stringify(TOPIC_CATALOG)}`
+  )
 }
 
 async function generateArticlesWithAi(event: H3Event, users: PublicUser[]) {
@@ -209,11 +216,14 @@ async function generateArticlesWithAi(event: H3Event, users: PublicUser[]) {
   }
 }
 
-
 function hasValidCronAuth(event: H3Event, expectedToken: string) {
   const vercelCronHeader = getHeader(event, 'x-vercel-cron')
-  const vercelCronFlag = String(vercelCronHeader || '').trim().toLowerCase()
-  const userAgent = String(getHeader(event, 'user-agent') || '').trim().toLowerCase()
+  const vercelCronFlag = String(vercelCronHeader || '')
+    .trim()
+    .toLowerCase()
+  const userAgent = String(getHeader(event, 'user-agent') || '')
+    .trim()
+    .toLowerCase()
 
   if (
     ['1', 'true', 'yes', 'on'].includes(vercelCronFlag) ||
@@ -234,14 +244,16 @@ function hasValidCronAuth(event: H3Event, expectedToken: string) {
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig(event)
   const expectedToken =
-    (typeof runtimeConfig.cronSecret === 'string' && runtimeConfig.cronSecret.trim()) ||
+    (typeof runtimeConfig.cronSecret === 'string' &&
+      runtimeConfig.cronSecret.trim()) ||
     process.env.CRON_SECRET ||
     ''
 
   if (!hasValidCronAuth(event, expectedToken)) {
     throw createError({
       statusCode: 401,
-      statusMessage: 'Unauthorized (missing CRON_SECRET bearer token or x-vercel-cron header)',
+      statusMessage:
+        'Unauthorized (missing CRON_SECRET bearer token or x-vercel-cron header)',
     })
   }
 

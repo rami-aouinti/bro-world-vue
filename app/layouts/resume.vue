@@ -167,7 +167,6 @@ onUnmounted(() => {
   transition-property: padding;
 }
 
-
 @media (max-width: 960px) {
   .v-main {
     padding-top: 68px;

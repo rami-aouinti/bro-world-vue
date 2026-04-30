@@ -1,17 +1,20 @@
 <script setup lang="ts">
 const { t } = useI18n()
 
-const props = withDefaults(defineProps<{
-  modelValue: boolean
-  title: string
-  payload?: Record<string, unknown> | null
-  loading?: boolean
-  error?: string | null
-}>(), {
-  payload: null,
-  loading: false,
-  error: null,
-})
+const props = withDefaults(
+  defineProps<{
+    modelValue: boolean
+    title: string
+    payload?: Record<string, unknown> | null
+    loading?: boolean
+    error?: string | null
+  }>(),
+  {
+    payload: null,
+    loading: false,
+    error: null,
+  },
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
@@ -46,7 +49,9 @@ const hasPayload = computed(() => !!props.payload)
             {{ t('world.crm.repositories.labels.debugJson') }}
           </v-expansion-panel-title>
           <v-expansion-panel-text>
-            <pre class="json-preview">{{ JSON.stringify(payload, null, 2) }}</pre>
+            <pre class="json-preview">{{
+              JSON.stringify(payload, null, 2)
+            }}</pre>
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>

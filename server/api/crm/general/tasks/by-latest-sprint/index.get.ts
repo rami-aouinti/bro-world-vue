@@ -19,38 +19,38 @@ interface CrmTasksByLatestSprintResponse {
   }
 }
 
-export default defineEventHandler(async (event): Promise<CrmTasksByLatestSprintResponse> => {
-  const sprintsResponse = await cachedCrmGeneralGet<{ items: Array<CrmSprintBucket['sprint']> }>(
-    event,
-    'sprints',
-    getQuery(event),
-  )
+export default defineEventHandler(
+  async (event): Promise<CrmTasksByLatestSprintResponse> => {
+    const sprintsResponse = await cachedCrmGeneralGet<{
+      items: Array<CrmSprintBucket['sprint']>
+    }>(event, 'sprints', getQuery(event))
 
-  const latestSprint = sprintsResponse.items?.[0] ?? null
+    const latestSprint = sprintsResponse.items?.[0] ?? null
 
-  if (!latestSprint?.id) {
+    if (!latestSprint?.id) {
+      return {
+        items: [],
+        meta: {
+          sprint: null,
+        },
+      }
+    }
+
+    const tasksResponse = await cachedCrmGeneralGet<{ items: CrmTaskItem[] }>(
+      event,
+      `sprints/${encodeURIComponent(latestSprint.id)}/tasks`,
+    )
+
     return {
-      items: [],
+      items: [
+        {
+          sprint: latestSprint,
+          tasks: tasksResponse.items ?? [],
+        },
+      ],
       meta: {
-        sprint: null,
+        sprint: latestSprint,
       },
     }
-  }
-
-  const tasksResponse = await cachedCrmGeneralGet<{ items: CrmTaskItem[] }>(
-    event,
-    `sprints/${encodeURIComponent(latestSprint.id)}/tasks`,
-  )
-
-  return {
-    items: [
-      {
-        sprint: latestSprint,
-        tasks: tasksResponse.items ?? [],
-      },
-    ],
-    meta: {
-      sprint: latestSprint,
-    },
-  }
-})
+  },
+)

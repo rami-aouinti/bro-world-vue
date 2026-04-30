@@ -77,10 +77,12 @@ describe('resume section registry consistency', () => {
     }
   })
 
-
   it('ensures declared renderer sections exist in SectionRenderer mapping', () => {
     const rendererSource = readFileSync(
-      resolve(process.cwd(), 'app/components/Resume/Sections/SectionRenderer.vue'),
+      resolve(
+        process.cwd(),
+        'app/components/Resume/Sections/SectionRenderer.vue',
+      ),
       'utf-8',
     )
 
@@ -128,12 +130,17 @@ describe('resume section registry consistency', () => {
     }
   })
 
-
   it('ensures resume template preview images are unique', async () => {
-    const { RESUME_TEMPLATES_CATALOG } = await import('~/constants/resumeTemplates.catalog')
-    const resumeTemplates = RESUME_TEMPLATES_CATALOG.filter(({ type }) => type === 'resume')
+    const { RESUME_TEMPLATES_CATALOG } =
+      await import('~/constants/resumeTemplates.catalog')
+    const resumeTemplates = RESUME_TEMPLATES_CATALOG.filter(
+      ({ type }) => type === 'resume',
+    )
     const images = resumeTemplates.map(({ image }) => image)
-    expect(new Set(images).size, `duplicate resume images found: ${images.join(', ')}`).toBe(images.length)
+    expect(
+      new Set(images).size,
+      `duplicate resume images found: ${images.join(', ')}`,
+    ).toBe(images.length)
   })
 
   it('ensures expected toolbar actions are coherent with section props and emits (language/project/experience)', () => {
@@ -149,30 +156,66 @@ describe('resume section registry consistency', () => {
       const toolbarActions = RESUME_SECTION_REGISTRY[sectionKey].toolbarActions
 
       if (toolbarActions.includes('change-variant')) {
-        expect(source.includes("(event: 'change-variant'"), `${sectionKey}: missing change-variant emit declaration`).toBe(true)
-        expect(source.includes('@change-variant='), `${sectionKey}: missing SectionToolbar change-variant wiring`).toBe(true)
+        expect(
+          source.includes("(event: 'change-variant'"),
+          `${sectionKey}: missing change-variant emit declaration`,
+        ).toBe(true)
+        expect(
+          source.includes('@change-variant='),
+          `${sectionKey}: missing SectionToolbar change-variant wiring`,
+        ).toBe(true)
       }
 
       if (toolbarActions.includes('move-up')) {
-        expect(source.includes('canMoveUp?: boolean'), `${sectionKey}: missing canMoveUp prop`).toBe(true)
-        expect(source.includes(':can-move-up="canMoveUp"'), `${sectionKey}: missing can-move-up binding`).toBe(true)
-        expect(source.includes('@move-up='), `${sectionKey}: missing move-up wiring`).toBe(true)
+        expect(
+          source.includes('canMoveUp?: boolean'),
+          `${sectionKey}: missing canMoveUp prop`,
+        ).toBe(true)
+        expect(
+          source.includes(':can-move-up="canMoveUp"'),
+          `${sectionKey}: missing can-move-up binding`,
+        ).toBe(true)
+        expect(
+          source.includes('@move-up='),
+          `${sectionKey}: missing move-up wiring`,
+        ).toBe(true)
       }
 
       if (toolbarActions.includes('move-down')) {
-        expect(source.includes('canMoveDown?: boolean'), `${sectionKey}: missing canMoveDown prop`).toBe(true)
-        expect(source.includes(':can-move-down="canMoveDown"'), `${sectionKey}: missing can-move-down binding`).toBe(true)
-        expect(source.includes('@move-down='), `${sectionKey}: missing move-down wiring`).toBe(true)
+        expect(
+          source.includes('canMoveDown?: boolean'),
+          `${sectionKey}: missing canMoveDown prop`,
+        ).toBe(true)
+        expect(
+          source.includes(':can-move-down="canMoveDown"'),
+          `${sectionKey}: missing can-move-down binding`,
+        ).toBe(true)
+        expect(
+          source.includes('@move-down='),
+          `${sectionKey}: missing move-down wiring`,
+        ).toBe(true)
       }
 
       if (toolbarActions.includes('add-item')) {
-        expect(source.includes("(event: 'add-item'"), `${sectionKey}: missing add-item emit declaration`).toBe(true)
-        expect(source.includes('@add-item='), `${sectionKey}: missing add-item wiring`).toBe(true)
+        expect(
+          source.includes("(event: 'add-item'"),
+          `${sectionKey}: missing add-item emit declaration`,
+        ).toBe(true)
+        expect(
+          source.includes('@add-item='),
+          `${sectionKey}: missing add-item wiring`,
+        ).toBe(true)
       }
 
       if (toolbarActions.includes('delete-section')) {
-        expect(source.includes("(event: 'delete-section'"), `${sectionKey}: missing delete-section emit declaration`).toBe(true)
-        expect(source.includes('@delete-section='), `${sectionKey}: missing delete-section wiring`).toBe(true)
+        expect(
+          source.includes("(event: 'delete-section'"),
+          `${sectionKey}: missing delete-section emit declaration`,
+        ).toBe(true)
+        expect(
+          source.includes('@delete-section='),
+          `${sectionKey}: missing delete-section wiring`,
+        ).toBe(true)
       }
     }
   })

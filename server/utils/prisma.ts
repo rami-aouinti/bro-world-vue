@@ -17,7 +17,10 @@ export async function getPrismaClient(): Promise<PrismaClientType | null> {
         const prismaPkg = await import('@prisma/client')
 
         const prisma = new prismaPkg.PrismaClient({
-          log: process.env.NODE_ENV === 'development' ? ['warn', 'error'] : ['error'],
+          log:
+            process.env.NODE_ENV === 'development'
+              ? ['warn', 'error']
+              : ['error'],
         })
 
         if (process.env.NODE_ENV !== 'production') {

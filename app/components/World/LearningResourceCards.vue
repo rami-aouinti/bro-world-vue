@@ -22,9 +22,7 @@ type FieldConfig = {
 }
 
 const fieldConfigByResource: Record<SchoolResource, FieldConfig[]> = {
-  classes: [
-    { key: 'name', label: 'Name' },
-  ],
+  classes: [{ key: 'name', label: 'Name' }],
   courses: [
     { key: 'name', label: 'Name' },
     { key: 'className', label: 'Class' },
@@ -33,7 +31,12 @@ const fieldConfigByResource: Record<SchoolResource, FieldConfig[]> = {
   exams: [
     { key: 'title', label: 'Title' },
     { key: 'courseName', label: 'Course' },
-    { key: 'courseId', label: 'Course', type: 'reference', referenceResource: 'courses' },
+    {
+      key: 'courseId',
+      label: 'Course',
+      type: 'reference',
+      referenceResource: 'courses',
+    },
     { key: 'className', label: 'Class' },
     { key: 'teacher', label: 'Teacher', type: 'user-avatar' },
     { key: 'type', label: 'Type' },
@@ -43,20 +46,38 @@ const fieldConfigByResource: Record<SchoolResource, FieldConfig[]> = {
   grades: [
     { key: 'score', label: 'Score' },
     { key: 'student', label: 'Student' },
-    { key: 'studentId', label: 'Student', type: 'reference', referenceResource: 'students' },
+    {
+      key: 'studentId',
+      label: 'Student',
+      type: 'reference',
+      referenceResource: 'students',
+    },
     { key: 'examTitle', label: 'Exam' },
-    { key: 'examId', label: 'Exam', type: 'reference', referenceResource: 'exams' },
+    {
+      key: 'examId',
+      label: 'Exam',
+      type: 'reference',
+      referenceResource: 'exams',
+    },
     { key: 'courseName', label: 'Course' },
-    { key: 'courseId', label: 'Course', type: 'reference', referenceResource: 'courses' },
+    {
+      key: 'courseId',
+      label: 'Course',
+      type: 'reference',
+      referenceResource: 'courses',
+    },
   ],
   students: [
     { key: 'user', label: 'Student', type: 'user-avatar' },
     { key: 'className', label: 'Class' },
-    { key: 'classId', label: 'Class', type: 'reference', referenceResource: 'classes' },
+    {
+      key: 'classId',
+      label: 'Class',
+      type: 'reference',
+      referenceResource: 'classes',
+    },
   ],
-  teachers: [
-    { key: 'user', label: 'Profile', type: 'user-avatar' },
-  ],
+  teachers: [{ key: 'user', label: 'Profile', type: 'user-avatar' }],
 }
 
 const fields = computed(() => fieldConfigByResource[props.resource] ?? [])
@@ -85,7 +106,11 @@ function asUser(value: unknown) {
     id: String(user.id ?? ''),
     username: String(user.username ?? ''),
     photo: String(user.photo ?? user.avatar ?? ''),
-    name: String(user.name ?? `${String(user.firstName ?? '')} ${String(user.lastName ?? '')}`.trim() ?? 'User'),
+    name: String(
+      user.name ??
+        `${String(user.firstName ?? '')} ${String(user.lastName ?? '')}`.trim() ??
+        'User',
+    ),
   }
 }
 
@@ -136,10 +161,18 @@ function formatDefaultValue(value: unknown) {
         lg="4"
       >
         <WorldCard rounded="xl" extra-class="h-100 pa-4">
-          <div class="text-caption text-medium-emphasis mb-2 text-capitalize">{{ resource.slice(0, -1) }}</div>
+          <div class="text-caption text-medium-emphasis mb-2 text-capitalize">
+            {{ resource.slice(0, -1) }}
+          </div>
           <div class="d-flex flex-column ga-3">
-            <div v-for="field in fields" :key="`${String(item.id ?? index)}-${field.key}`" class="d-flex align-center justify-space-between ga-3">
-              <span class="text-caption text-medium-emphasis">{{ field.label }}</span>
+            <div
+              v-for="field in fields"
+              :key="`${String(item.id ?? index)}-${field.key}`"
+              class="d-flex align-center justify-space-between ga-3"
+            >
+              <span class="text-caption text-medium-emphasis">{{
+                field.label
+              }}</span>
 
               <v-btn
                 v-if="field.type === 'reference' && field.referenceResource"
@@ -147,20 +180,27 @@ function formatDefaultValue(value: unknown) {
                 color="secondary"
                 variant="outlined"
                 class="text-none"
-                @click="onReferenceClick(field.referenceResource, item[field.key])"
+                @click="
+                  onReferenceClick(field.referenceResource, item[field.key])
+                "
               >
                 Open
               </v-btn>
 
               <v-btn
-                v-else-if="field.type === 'user-avatar' && asUser(item[field.key])"
+                v-else-if="
+                  field.type === 'user-avatar' && asUser(item[field.key])
+                "
                 icon
                 variant="text"
                 size="x-small"
                 @click="openProfile(asUser(item[field.key]))"
               >
                 <v-avatar size="28">
-                  <v-img :src="asUser(item[field.key])?.photo" :alt="asUser(item[field.key])?.name || 'User'" />
+                  <v-img
+                    :src="asUser(item[field.key])?.photo"
+                    :alt="asUser(item[field.key])?.name || 'User'"
+                  />
                 </v-avatar>
               </v-btn>
 

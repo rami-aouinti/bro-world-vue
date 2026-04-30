@@ -9,32 +9,37 @@ import type {
   GameDevelopmentStatus,
   GameEntry,
   PlayMode,
-} from "~/types/game";
+} from '~/types/game'
 
-const supportedMoods: GameMood[] = ["competitive", "chill", "arcade", "strategy"];
-const supportedVisualStyles: GameVisualStyle[] = ["neon", "classic", "minimal"];
+const supportedMoods: GameMood[] = [
+  'competitive',
+  'chill',
+  'arcade',
+  'strategy',
+]
+const supportedVisualStyles: GameVisualStyle[] = ['neon', 'classic', 'minimal']
 
-const resolveMood = (mood: ApiGameEntry["mood"]): GameMood | undefined =>
-  supportedMoods.includes(mood as GameMood) ? (mood as GameMood) : undefined;
+const resolveMood = (mood: ApiGameEntry['mood']): GameMood | undefined =>
+  supportedMoods.includes(mood as GameMood) ? (mood as GameMood) : undefined
 
 const resolveVisualStyle = (
-  visualStyle: ApiGameEntry["visualStyle"],
+  visualStyle: ApiGameEntry['visualStyle'],
 ): GameVisualStyle | undefined =>
   supportedVisualStyles.includes(visualStyle as GameVisualStyle)
     ? (visualStyle as GameVisualStyle)
-    : undefined;
+    : undefined
 
 const apiToUiPlayModeMap: Record<ApiPlayMode, PlayMode | null> = {
-  solo: "ai",
-  versus: "pvp",
+  solo: 'ai',
+  versus: 'pvp',
   online: null,
   endless: null,
-  ai: "ai",
-  pvp: "pvp",
-};
+  ai: 'ai',
+  pvp: 'pvp',
+}
 
 export const mapApiPlayModeToUiMode = (mode: ApiPlayMode): PlayMode | null =>
-  apiToUiPlayModeMap[mode] ?? null;
+  apiToUiPlayModeMap[mode] ?? null
 
 const mapApiModesToUiModes = (modes: ApiPlayMode[] = []): PlayMode[] =>
   Array.from(
@@ -43,37 +48,39 @@ const mapApiModesToUiModes = (modes: ApiPlayMode[] = []): PlayMode[] =>
         .map((mode) => mapApiPlayModeToUiMode(mode))
         .filter((mode): mode is PlayMode => Boolean(mode)),
     ),
-  );
+  )
 
-const mapApiModesToPlannedModes = (modes: ApiPlayMode[] = []): ConceptPlayMode[] =>
+const mapApiModesToPlannedModes = (
+  modes: ApiPlayMode[] = [],
+): ConceptPlayMode[] =>
   Array.from(
     new Set(
       modes
         .map((mode): ConceptPlayMode | null => {
-          if (mode === "online") return "online";
-          return mapApiPlayModeToUiMode(mode);
+          if (mode === 'online') return 'online'
+          return mapApiPlayModeToUiMode(mode)
         })
         .filter((mode): mode is ConceptPlayMode => Boolean(mode)),
     ),
-  );
+  )
 
 const resolveDevelopmentStatus = (
   game: ApiGameEntry,
   mappedModes: PlayMode[],
 ): GameDevelopmentStatus => {
   if (game.developmentStatus) {
-    return game.developmentStatus;
+    return game.developmentStatus
   }
 
-  return game.component && mappedModes.length ? "playable" : "coming_soon";
-};
+  return game.component && mappedModes.length ? 'playable' : 'coming_soon'
+}
 
 const mapGameEntry = (game: ApiGameEntry): GameEntry => {
-  const rawModes = game.availableModes?.length ? game.availableModes : game.supportedModes;
-  const mappedModes = mapApiModesToUiModes(
-    rawModes,
-  );
-  const plannedModes = mapApiModesToPlannedModes(rawModes);
+  const rawModes = game.availableModes?.length
+    ? game.availableModes
+    : game.supportedModes
+  const mappedModes = mapApiModesToUiModes(rawModes)
+  const plannedModes = mapApiModesToPlannedModes(rawModes)
 
   return {
     ...game,
@@ -83,8 +90,8 @@ const mapGameEntry = (game: ApiGameEntry): GameEntry => {
     availableModes: mappedModes,
     plannedModes,
     developmentStatus: resolveDevelopmentStatus(game, mappedModes),
-  };
-};
+  }
+}
 
 export const mapGameCatalogFromApi = (
   categories: ApiGameCategory[],
@@ -95,4 +102,4 @@ export const mapGameCatalogFromApi = (
       ...subCategory,
       games: subCategory.games.map(mapGameEntry),
     })),
-  }));
+  }))

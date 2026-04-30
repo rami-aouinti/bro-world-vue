@@ -248,7 +248,9 @@ const contentAsMedia = computed(() => {
 
   return { type: 'link' as const, value }
 })
-const shouldRenderTextContent = computed(() => contentAsMedia.value.type === 'text')
+const shouldRenderTextContent = computed(
+  () => contentAsMedia.value.type === 'text',
+)
 const hasLongTextContent = computed(
   () => shouldRenderTextContent.value && normalizedContent.value.length > 220,
 )

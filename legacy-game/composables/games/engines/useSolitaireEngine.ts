@@ -1,7 +1,20 @@
 import { computed, ref } from 'vue'
 
 export type Suit = '♠' | '♥' | '♦' | '♣'
-export type Rank = 'A' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | 'J' | 'Q' | 'K'
+export type Rank =
+  | 'A'
+  | '2'
+  | '3'
+  | '4'
+  | '5'
+  | '6'
+  | '7'
+  | '8'
+  | '9'
+  | '10'
+  | 'J'
+  | 'Q'
+  | 'K'
 
 export interface Card {
   id: string
@@ -18,7 +31,13 @@ export interface Player {
 }
 
 export interface Move {
-  type: 'draw' | 'recycle-stock' | 'waste-to-foundation' | 'waste-to-tableau' | 'tableau-to-foundation' | 'tableau-to-tableau'
+  type:
+    | 'draw'
+    | 'recycle-stock'
+    | 'waste-to-foundation'
+    | 'waste-to-tableau'
+    | 'tableau-to-foundation'
+    | 'tableau-to-tableau'
   fromPile?: number
   toPile?: number
   cardId?: string
@@ -33,13 +52,32 @@ interface Snapshot {
 }
 
 const SUITS: Suit[] = ['♠', '♥', '♦', '♣']
-const RANKS: Rank[] = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
-const FOUNDATION_BY_SUIT: Record<Suit, number> = { '♠': 0, '♥': 1, '♦': 2, '♣': 3 }
+const RANKS: Rank[] = [
+  'A',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  'J',
+  'Q',
+  'K',
+]
+const FOUNDATION_BY_SUIT: Record<Suit, number> = {
+  '♠': 0,
+  '♥': 1,
+  '♦': 2,
+  '♣': 3,
+}
 
-const cloneCards = (cards: Card[]) => cards.map(card => ({ ...card }))
+const cloneCards = (cards: Card[]) => cards.map((card) => ({ ...card }))
 const clonePiles = (piles: Card[][]) => piles.map(cloneCards)
 
-const shuffle = <T,>(items: T[]) => {
+const shuffle = <T>(items: T[]) => {
   const output = [...items]
   for (let index = output.length - 1; index > 0; index -= 1) {
     const randomIndex = Math.floor(Math.random() * (index + 1))
@@ -52,14 +90,16 @@ const shuffle = <T,>(items: T[]) => {
 
 const createDeck = () => {
   let index = 0
-  return SUITS.flatMap(suit => RANKS.map((rank, rankIndex) => ({
-    id: `sol-${index += 1}`,
-    suit,
-    rank,
-    value: rankIndex + 1,
-    color: suit === '♥' || suit === '♦' ? 'red' : 'black',
-    faceUp: false,
-  })))
+  return SUITS.flatMap((suit) =>
+    RANKS.map((rank, rankIndex) => ({
+      id: `sol-${(index += 1)}`,
+      suit,
+      rank,
+      value: rankIndex + 1,
+      color: suit === '♥' || suit === '♦' ? 'red' : 'black',
+      faceUp: false,
+    })),
+  )
 }
 
 export const useSolitaireEngine = () => {
@@ -110,7 +150,9 @@ export const useSolitaireEngine = () => {
     const destination = tableau.value[toPile]
     if (!destination?.length) return card.rank === 'K'
     const top = destination[destination.length - 1]
-    return top.faceUp && top.color !== card.color && top.value === card.value + 1
+    return (
+      top.faceUp && top.color !== card.color && top.value === card.value + 1
+    )
   }
 
   const revealLastHiddenCard = (pileIndex: number) => {
@@ -126,7 +168,9 @@ export const useSolitaireEngine = () => {
     if (stock.value.length === 0) {
       if (!waste.value.length) return false
       saveHistory()
-      stock.value = waste.value.reverse().map(card => ({ ...card, faceUp: false }))
+      stock.value = waste.value
+        .reverse()
+        .map((card) => ({ ...card, faceUp: false }))
       waste.value = []
       moveCount.value += 1
       message.value = 'Pioche recyclée.'
@@ -142,15 +186,17 @@ export const useSolitaireEngine = () => {
     return true
   }
 
-  const canPlayCard = (move: Move) => getValidMoves().some(validMove => JSON.stringify(validMove) === JSON.stringify(move))
+  const canPlayCard = (move: Move) =>
+    getValidMoves().some(
+      (validMove) => JSON.stringify(validMove) === JSON.stringify(move),
+    )
 
   const getValidMoves = (): Move[] => {
     const moves: Move[] = []
 
     if (stock.value.length > 0) {
       moves.push({ type: 'draw' })
-    }
-    else if (waste.value.length > 0) {
+    } else if (waste.value.length > 0) {
       moves.push({ type: 'recycle-stock' })
     }
 
@@ -160,9 +206,17 @@ export const useSolitaireEngine = () => {
         moves.push({ type: 'waste-to-foundation', cardId: wasteTop.id })
       }
 
-      for (let pileIndex = 0; pileIndex < tableau.value.length; pileIndex += 1) {
+      for (
+        let pileIndex = 0;
+        pileIndex < tableau.value.length;
+        pileIndex += 1
+      ) {
         if (canMoveToTableau(wasteTop, pileIndex)) {
-          moves.push({ type: 'waste-to-tableau', toPile: pileIndex, cardId: wasteTop.id })
+          moves.push({
+            type: 'waste-to-tableau',
+            toPile: pileIndex,
+            cardId: wasteTop.id,
+          })
         }
       }
     }
@@ -173,13 +227,22 @@ export const useSolitaireEngine = () => {
         if (!card.faceUp) continue
 
         if (cardIndex === pile.length - 1 && canMoveToFoundation(card)) {
-          moves.push({ type: 'tableau-to-foundation', fromPile, cardId: card.id })
+          moves.push({
+            type: 'tableau-to-foundation',
+            fromPile,
+            cardId: card.id,
+          })
         }
 
         for (let toPile = 0; toPile < tableau.value.length; toPile += 1) {
           if (toPile === fromPile) continue
           if (!canMoveToTableau(card, toPile)) continue
-          moves.push({ type: 'tableau-to-tableau', fromPile, toPile, cardId: card.id })
+          moves.push({
+            type: 'tableau-to-tableau',
+            fromPile,
+            toPile,
+            cardId: card.id,
+          })
         }
       }
     })
@@ -218,10 +281,15 @@ export const useSolitaireEngine = () => {
     }
 
     if (move.type === 'tableau-to-tableau') {
-      if (move.fromPile === undefined || move.toPile === undefined || !move.cardId) return false
+      if (
+        move.fromPile === undefined ||
+        move.toPile === undefined ||
+        !move.cardId
+      )
+        return false
       const source = tableau.value[move.fromPile]
       const target = tableau.value[move.toPile]
-      const startIndex = source.findIndex(card => card.id === move.cardId)
+      const startIndex = source.findIndex((card) => card.id === move.cardId)
       if (startIndex < 0) return false
       const movingStack = source.splice(startIndex)
       target.push(...movingStack)
@@ -235,16 +303,26 @@ export const useSolitaireEngine = () => {
 
   const suggestBestMove = () => {
     const validMoves = getValidMoves()
-    const foundationMove = validMoves.find(move => move.type === 'waste-to-foundation' || move.type === 'tableau-to-foundation')
+    const foundationMove = validMoves.find(
+      (move) =>
+        move.type === 'waste-to-foundation' ||
+        move.type === 'tableau-to-foundation',
+    )
     if (foundationMove) return foundationMove
 
     const revealMove = validMoves.find((move) => {
-      if (move.type !== 'tableau-to-tableau' || move.fromPile === undefined) return false
+      if (move.type !== 'tableau-to-tableau' || move.fromPile === undefined)
+        return false
       const source = tableau.value[move.fromPile]
-      return source.some(card => !card.faceUp)
+      return source.some((card) => !card.faceUp)
     })
 
-    return revealMove ?? validMoves.find(move => move.type !== 'draw') ?? validMoves[0] ?? null
+    return (
+      revealMove ??
+      validMoves.find((move) => move.type !== 'draw') ??
+      validMoves[0] ??
+      null
+    )
   }
 
   const autoCompleteFoundations = () => {
@@ -253,7 +331,11 @@ export const useSolitaireEngine = () => {
 
     while (keepGoing) {
       keepGoing = false
-      const move = getValidMoves().find(item => item.type === 'waste-to-foundation' || item.type === 'tableau-to-foundation')
+      const move = getValidMoves().find(
+        (item) =>
+          item.type === 'waste-to-foundation' ||
+          item.type === 'tableau-to-foundation',
+      )
       if (!move) continue
       const applied = applyMove(move)
       if (applied) {
@@ -294,12 +376,16 @@ export const useSolitaireEngine = () => {
       }
     }
 
-    stock.value = deck.map(card => ({ ...card, faceUp: false }))
+    stock.value = deck.map((card) => ({ ...card, faceUp: false }))
     message.value = 'Nouvelle partie distribuée.'
   }
 
-  const isWon = computed(() => foundations.value.every(pile => pile.length === 13))
-  const score = computed(() => foundations.value.reduce((sum, pile) => sum + pile.length, 0) * 10)
+  const isWon = computed(() =>
+    foundations.value.every((pile) => pile.length === 13),
+  )
+  const score = computed(
+    () => foundations.value.reduce((sum, pile) => sum + pile.length, 0) * 10,
+  )
 
   startNewGame()
 

@@ -1,4 +1,7 @@
-import { getServerPublicAxios, resolveServerApiUrl } from '~~/server/utils/http/axiosClient'
+import {
+  getServerPublicAxios,
+  resolveServerApiUrl,
+} from '~~/server/utils/http/axiosClient'
 
 type PublicContactPayload = {
   firstName: string

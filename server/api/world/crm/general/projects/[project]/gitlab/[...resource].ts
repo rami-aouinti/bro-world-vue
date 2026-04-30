@@ -1,4 +1,7 @@
-import { cachedCrmGitlabGeneralGet, mutateCrmGitlabGeneral } from '~~/server/utils/crmGitlabGeneralApi'
+import {
+  cachedCrmGitlabGeneralGet,
+  mutateCrmGitlabGeneral,
+} from '~~/server/utils/crmGitlabGeneralApi'
 
 function normalizeQuery(query: Record<string, unknown>) {
   return Object.fromEntries(
@@ -15,7 +18,10 @@ export default defineEventHandler(async (event): Promise<unknown> => {
   }
 
   if (!resource) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing gitlab resource path' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing gitlab resource path',
+    })
   }
 
   const path = `projects/${projectId}/gitlab/${resource}`
@@ -31,7 +37,10 @@ export default defineEventHandler(async (event): Promise<unknown> => {
     : undefined
 
   if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
-    throw createError({ statusCode: 405, statusMessage: `Method ${method} not allowed` })
+    throw createError({
+      statusCode: 405,
+      statusMessage: `Method ${method} not allowed`,
+    })
   }
 
   return await mutateCrmGitlabGeneral(event, path, {

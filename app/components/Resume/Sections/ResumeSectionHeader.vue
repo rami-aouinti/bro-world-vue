@@ -1,18 +1,25 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
-  title: string
-  icon?: string
-  as?: 'h2' | 'h3'
-  inAside?: boolean
-}>(), {
-  icon: '',
-  as: 'h3',
-  inAside: false,
-})
+const props = withDefaults(
+  defineProps<{
+    title: string
+    icon?: string
+    as?: 'h2' | 'h3'
+    inAside?: boolean
+  }>(),
+  {
+    icon: '',
+    as: 'h3',
+    inAside: false,
+  },
+)
 </script>
 
 <template>
-  <component :is="props.as" class="cv-heading-section resume-section-header" :class="{ 'resume-section-header--aside': props.inAside }">
+  <component
+    :is="props.as"
+    class="cv-heading-section resume-section-header"
+    :class="{ 'resume-section-header--aside': props.inAside }"
+  >
     <v-icon
       v-if="props.icon"
       class="section-icon"

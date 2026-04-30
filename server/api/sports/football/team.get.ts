@@ -23,7 +23,10 @@ export default defineEventHandler(async (event) => {
       event,
       '/teams/statistics',
       { team, league, season },
-      { cacheProfile: 'reference', cacheKeySuffix: 'reference-team-statistics' },
+      {
+        cacheProfile: 'reference',
+        cacheKeySuffix: 'reference-team-statistics',
+      },
     ),
     cachedFootballApiGet<ApiSportsSquadItem>(
       event,

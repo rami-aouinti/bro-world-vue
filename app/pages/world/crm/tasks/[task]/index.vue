@@ -311,7 +311,9 @@ async function attachToSprint() {
                     {{ data.projectName || data.projectId }}
                   </span>
                 </v-chip>
-                <v-chip variant="tonal">Due: {{ formatDate(data.dueAt) || '—' }}</v-chip>
+                <v-chip variant="tonal"
+                  >Due: {{ formatDate(data.dueAt) || '—' }}</v-chip
+                >
               </div>
               <v-card variant="outlined" class="pa-3 mb-3">
                 <p class="text-caption mb-1">

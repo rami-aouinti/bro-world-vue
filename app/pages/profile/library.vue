@@ -28,8 +28,8 @@ definePageMeta({
     {
       title: 'pages.profileOverview.title',
       to: { name: 'profile-overview' },
-    }
-  ]
+    },
+  ],
 })
 
 const currentFolderId = ref<string | null>(null)

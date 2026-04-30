@@ -57,13 +57,24 @@ interface UnoEngineOptions {
 }
 
 const COLORS: UnoColor[] = ['red', 'yellow', 'green', 'blue']
-const NUMBER_VALUES: UnoValue[] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+const NUMBER_VALUES: UnoValue[] = [
+  '0',
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+]
 const ACTION_VALUES: UnoValue[] = ['skip', 'reverse', 'draw-two']
 const WILD_VALUES: UnoValue[] = ['wild', 'wild-draw-four']
 const DEFAULT_SCORE_TARGET = 500
 const STARTING_HAND_SIZE = 7
 
-const shuffle = <T,>(items: T[]) => {
+const shuffle = <T>(items: T[]) => {
   const output = [...items]
   for (let index = output.length - 1; index > 0; index -= 1) {
     const randomIndex = Math.floor(Math.random() * (index + 1))
@@ -91,22 +102,22 @@ const createUnoDeck = (): UnoCard[] => {
   const cards: UnoCard[] = []
 
   COLORS.forEach((color) => {
-    cards.push({ id: `uno-${index += 1}`, color, value: '0' })
+    cards.push({ id: `uno-${(index += 1)}`, color, value: '0' })
 
-    NUMBER_VALUES.filter(value => value !== '0').forEach((value) => {
-      cards.push({ id: `uno-${index += 1}`, color, value })
-      cards.push({ id: `uno-${index += 1}`, color, value })
+    NUMBER_VALUES.filter((value) => value !== '0').forEach((value) => {
+      cards.push({ id: `uno-${(index += 1)}`, color, value })
+      cards.push({ id: `uno-${(index += 1)}`, color, value })
     })
 
     ACTION_VALUES.forEach((value) => {
-      cards.push({ id: `uno-${index += 1}`, color, value })
-      cards.push({ id: `uno-${index += 1}`, color, value })
+      cards.push({ id: `uno-${(index += 1)}`, color, value })
+      cards.push({ id: `uno-${(index += 1)}`, color, value })
     })
   })
 
   for (let wildIndex = 0; wildIndex < 4; wildIndex += 1) {
     WILD_VALUES.forEach((value) => {
-      cards.push({ id: `uno-${index += 1}`, color: null, value })
+      cards.push({ id: `uno-${(index += 1)}`, color: null, value })
     })
   }
 
@@ -132,18 +143,19 @@ export const useUnoEngine = (options: UnoEngineOptions = {}) => {
   const currentRound = ref(1)
   const gameWinnerIndex = ref<number | null>(null)
 
-  const createPlayers = () => Array.from({ length: playerCount }, (_, index) => {
-    const human = options.includeHumanPlayer ?? true
-    const isHumanSeat = human ? index === 0 : false
-    return {
-      id: `uno-player-${index + 1}`,
-      name: isHumanSeat ? 'Vous' : `IA ${index + 1}`,
-      isAI: !isHumanSeat,
-      hand: [],
-      score: 0,
-      hasCalledUno: false,
-    }
-  })
+  const createPlayers = () =>
+    Array.from({ length: playerCount }, (_, index) => {
+      const human = options.includeHumanPlayer ?? true
+      const isHumanSeat = human ? index === 0 : false
+      return {
+        id: `uno-player-${index + 1}`,
+        name: isHumanSeat ? 'Vous' : `IA ${index + 1}`,
+        isAI: !isHumanSeat,
+        hand: [],
+        score: 0,
+        hasCalledUno: false,
+      }
+    })
 
   const getStep = (fromIndex: number, step = 1) => {
     const modulo = players.value.length
@@ -151,7 +163,9 @@ export const useUnoEngine = (options: UnoEngineOptions = {}) => {
     return (fromIndex + delta + modulo) % modulo
   }
 
-  const topDiscard = computed(() => discardPile.value[discardPile.value.length - 1] ?? null)
+  const topDiscard = computed(
+    () => discardPile.value[discardPile.value.length - 1] ?? null,
+  )
 
   const isPlayable = (card: UnoCard) => {
     if (needColorChoice.value) return false
@@ -175,18 +189,22 @@ export const useUnoEngine = (options: UnoEngineOptions = {}) => {
   }
 
   const getValidMoves = (playerIndex = currentPlayerIndex.value): UnoMove[] => {
-    if (gameWinnerIndex.value !== null || roundWinnerIndex.value !== null) return []
+    if (gameWinnerIndex.value !== null || roundWinnerIndex.value !== null)
+      return []
 
     const player = players.value[playerIndex]
     if (!player) return []
     if (playerIndex !== currentPlayerIndex.value) return []
 
     if (needColorChoice.value) {
-      return COLORS.map(color => ({ type: 'choose-color', color }))
+      return COLORS.map((color) => ({ type: 'choose-color', color }))
     }
 
     const playableCards = getPlayableCards(playerIndex)
-    const cardMoves = playableCards.map(card => ({ type: 'play' as const, cardId: card.id }))
+    const cardMoves = playableCards.map((card) => ({
+      type: 'play' as const,
+      cardId: card.id,
+    }))
 
     return [...cardMoves, { type: 'draw' }]
   }
@@ -229,10 +247,11 @@ export const useUnoEngine = (options: UnoEngineOptions = {}) => {
     }
   }
 
-  const computeRoundScore = (winnerIndex: number) => players.value
-    .filter((_, index) => index !== winnerIndex)
-    .flatMap(player => player.hand)
-    .reduce((sum, card) => sum + cardPoints(card), 0)
+  const computeRoundScore = (winnerIndex: number) =>
+    players.value
+      .filter((_, index) => index !== winnerIndex)
+      .flatMap((player) => player.hand)
+      .reduce((sum, card) => sum + cardPoints(card), 0)
 
   const endRound = (winnerIndex: number) => {
     roundWinnerIndex.value = winnerIndex
@@ -244,7 +263,9 @@ export const useUnoEngine = (options: UnoEngineOptions = {}) => {
 
     message.value = `${winner.name} gagne la manche (+${gainedScore} points).`
 
-    const firstToTarget = players.value.findIndex(player => player.score >= scoreTarget)
+    const firstToTarget = players.value.findIndex(
+      (player) => player.score >= scoreTarget,
+    )
     if (firstToTarget >= 0) {
       gameWinnerIndex.value = firstToTarget
       message.value = `${players.value[firstToTarget]?.name ?? 'Un joueur'} gagne la partie (${scoreTarget} points).`
@@ -321,12 +342,17 @@ export const useUnoEngine = (options: UnoEngineOptions = {}) => {
 
   const playCard = (playerIndex: number, cardId: string) => {
     if (playerIndex !== currentPlayerIndex.value) return false
-    if (needColorChoice.value || roundWinnerIndex.value !== null || gameWinnerIndex.value !== null) return false
+    if (
+      needColorChoice.value ||
+      roundWinnerIndex.value !== null ||
+      gameWinnerIndex.value !== null
+    )
+      return false
 
     const player = players.value[playerIndex]
     if (!player) return false
 
-    const cardIndex = player.hand.findIndex(card => card.id === cardId)
+    const cardIndex = player.hand.findIndex((card) => card.id === cardId)
     if (cardIndex < 0) return false
 
     const [card] = player.hand.splice(cardIndex, 1)
@@ -363,8 +389,10 @@ export const useUnoEngine = (options: UnoEngineOptions = {}) => {
   }
 
   const drawCard = (playerIndex = currentPlayerIndex.value) => {
-    if (playerIndex !== currentPlayerIndex.value || needColorChoice.value) return null
-    if (roundWinnerIndex.value !== null || gameWinnerIndex.value !== null) return null
+    if (playerIndex !== currentPlayerIndex.value || needColorChoice.value)
+      return null
+    if (roundWinnerIndex.value !== null || gameWinnerIndex.value !== null)
+      return null
 
     drawCards(playerIndex, 1)
     const drawn = players.value[playerIndex]?.hand.at(-1) ?? null
@@ -409,7 +437,10 @@ export const useUnoEngine = (options: UnoEngineOptions = {}) => {
     }
 
     let firstDiscard = drawPile.value.pop() ?? null
-    while (firstDiscard && (firstDiscard.value === 'wild' || firstDiscard.value === 'wild-draw-four')) {
+    while (
+      firstDiscard &&
+      (firstDiscard.value === 'wild' || firstDiscard.value === 'wild-draw-four')
+    ) {
       drawPile.value.unshift(firstDiscard)
       drawPile.value = shuffle(drawPile.value)
       firstDiscard = drawPile.value.pop() ?? null
@@ -449,8 +480,12 @@ export const useUnoEngine = (options: UnoEngineOptions = {}) => {
     turnNumber: turnNumber.value,
   }))
 
-  const currentPlayer = computed(() => players.value[currentPlayerIndex.value] ?? null)
-  const playableCards = computed(() => getPlayableCards(currentPlayerIndex.value))
+  const currentPlayer = computed(
+    () => players.value[currentPlayerIndex.value] ?? null,
+  )
+  const playableCards = computed(() =>
+    getPlayableCards(currentPlayerIndex.value),
+  )
   const actionsAvailable = computed(() => {
     if (needColorChoice.value) {
       return ['choose-color']
@@ -458,7 +493,12 @@ export const useUnoEngine = (options: UnoEngineOptions = {}) => {
 
     return ['play-card', 'draw-card', 'call-uno']
   })
-  const globalScore = computed(() => players.value.map(player => ({ playerId: player.id, score: player.score })))
+  const globalScore = computed(() =>
+    players.value.map((player) => ({
+      playerId: player.id,
+      score: player.score,
+    })),
+  )
 
   startGame()
 

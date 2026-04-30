@@ -29,9 +29,15 @@ const { crmNavItems } = useWorldCrmNavItems()
 const githubStore = useWorldCrmGithubStore()
 
 const projectId = computed(() => String(route.params.project ?? ''))
-const repository = computed(() => decodeURIComponent(String(route.params.repository ?? '')))
+const repository = computed(() =>
+  decodeURIComponent(String(route.params.repository ?? '')),
+)
 const encodedRepository = computed(() => encodeURIComponent(repository.value))
-const applicationSlugInput = ref<string>(typeof route.query.applicationSlug === 'string' ? route.query.applicationSlug : '')
+const applicationSlugInput = ref<string>(
+  typeof route.query.applicationSlug === 'string'
+    ? route.query.applicationSlug
+    : '',
+)
 const applicationSlug = ref(applicationSlugInput.value)
 
 let applicationSlugDebounce: ReturnType<typeof setTimeout> | null = null
@@ -54,7 +60,8 @@ const repositoryRouteQuery = computed(() =>
 )
 
 const { data, pending, error } = useAsyncData(
-  () => `crm-repository-dashboard-${projectId.value}-${repository.value}-${applicationSlug.value}`,
+  () =>
+    `crm-repository-dashboard-${projectId.value}-${repository.value}-${applicationSlug.value}`,
   async () => {
     await githubStore.preloadRepositoryCriticalDatasets(
       projectId.value,
@@ -71,24 +78,51 @@ const { data, pending, error } = useAsyncData(
     ] = await Promise.all([
       githubStore.getCollaborators(projectId.value, scopedQuery.value),
       githubStore.getBranches(projectId.value, scopedQuery.value),
-      githubStore.getScopedCommits(projectId.value, scopedQuery.value, applicationSlug.value || undefined),
-      githubStore.getScopedPullRequests(projectId.value, scopedQuery.value, applicationSlug.value || undefined),
-      githubStore.getScopedActionsWorkflows(projectId.value, scopedQuery.value, applicationSlug.value || undefined),
+      githubStore.getScopedCommits(
+        projectId.value,
+        scopedQuery.value,
+        applicationSlug.value || undefined,
+      ),
+      githubStore.getScopedPullRequests(
+        projectId.value,
+        scopedQuery.value,
+        applicationSlug.value || undefined,
+      ),
+      githubStore.getScopedActionsWorkflows(
+        projectId.value,
+        scopedQuery.value,
+        applicationSlug.value || undefined,
+      ),
     ])
 
     return {
-      collaborators: (collaboratorsResponse as CrmGithubListResponse<CrmGithubCollaborator>).items ?? [],
-      branches: (branchesResponse as CrmGithubListResponse<GithubBranch>).items ?? [],
-      commits: (commitsResponse as CrmGithubListResponse<CrmGithubCommitSummary>).items ?? [],
-      pullRequests: (pullRequestsResponse as CrmGithubListResponse<GithubPullRequest>).items ?? [],
-      workflows: (workflowsResponse as CrmGithubListResponse<CrmGithubWorkflow>).items ?? [],
+      collaborators:
+        (collaboratorsResponse as CrmGithubListResponse<CrmGithubCollaborator>)
+          .items ?? [],
+      branches:
+        (branchesResponse as CrmGithubListResponse<GithubBranch>).items ?? [],
+      commits:
+        (commitsResponse as CrmGithubListResponse<CrmGithubCommitSummary>)
+          .items ?? [],
+      pullRequests:
+        (pullRequestsResponse as CrmGithubListResponse<GithubPullRequest>)
+          .items ?? [],
+      workflows:
+        (workflowsResponse as CrmGithubListResponse<CrmGithubWorkflow>).items ??
+        [],
     }
   },
   {
     watch: [projectId, repository, applicationSlug],
     lazy: true,
     server: false,
-    default: () => ({ collaborators: [], branches: [], commits: [], pullRequests: [], workflows: [] }),
+    default: () => ({
+      collaborators: [],
+      branches: [],
+      commits: [],
+      pullRequests: [],
+      workflows: [],
+    }),
   },
 )
 
@@ -98,13 +132,20 @@ const commits = computed(() => data.value?.commits ?? [])
 const pullRequests = computed(() => data.value?.pullRequests ?? [])
 const workflows = computed(() => data.value?.workflows ?? [])
 
-const actionsRoute = computed(() =>
-  `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/actions`,
+const actionsRoute = computed(
+  () =>
+    `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/actions`,
 )
 
-const hasData = computed(() => (
-  collaborators.value.length + branches.value.length + commits.value.length + pullRequests.value.length + workflows.value.length
-) > 0)
+const hasData = computed(
+  () =>
+    collaborators.value.length +
+      branches.value.length +
+      commits.value.length +
+      pullRequests.value.length +
+      workflows.value.length >
+    0,
+)
 const showInitialSkeleton = computed(() => pending.value && !hasData.value)
 const showStaleOverlay = computed(() => pending.value && hasData.value)
 
@@ -115,7 +156,7 @@ const pageCards = computed(() => [
     icon: 'mdi-source-branch',
     to: `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/branches`,
     query: repositoryRouteQuery.value,
-    items: branches.value.slice(0, 4).map(branch => ({
+    items: branches.value.slice(0, 4).map((branch) => ({
       primary: branch.name || '-',
       secondary: branch.protected
         ? t('world.crm.repositories.labels.branchProtected')
@@ -128,7 +169,7 @@ const pageCards = computed(() => [
     icon: 'mdi-source-commit',
     to: `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/commits`,
     query: repositoryRouteQuery.value,
-    items: commits.value.slice(0, 4).map(commit => ({
+    items: commits.value.slice(0, 4).map((commit) => ({
       primary: commit.message || commit.sha,
       secondary: `${commit.author || '-'} • ${(commit.sha || '').slice(0, 7)}`,
     })),
@@ -139,7 +180,7 @@ const pageCards = computed(() => [
     icon: 'mdi-source-pull',
     to: `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/pull-requests`,
     query: repositoryRouteQuery.value,
-    items: pullRequests.value.slice(0, 4).map(pullRequest => ({
+    items: pullRequests.value.slice(0, 4).map((pullRequest) => ({
       primary: pullRequest.title || `#${pullRequest.number ?? '-'}`,
       secondary: `${pullRequest.state || '-'} • @${pullRequest.user?.login || '-'}`,
     })),
@@ -150,7 +191,7 @@ const pageCards = computed(() => [
     icon: 'mdi-robot',
     to: `/world/crm/repositories/${projectId.value}/${encodedRepository.value}/workflows`,
     query: repositoryRouteQuery.value,
-    items: workflows.value.slice(0, 4).map(workflow => ({
+    items: workflows.value.slice(0, 4).map((workflow) => ({
       primary: workflow.name || '-',
       secondary: `${workflow.state || '-'} • ${workflow.path || '-'}`,
     })),
@@ -161,7 +202,7 @@ const pageCards = computed(() => [
     icon: 'mdi-playlist-check',
     to: actionsRoute.value,
     query: repositoryRouteQuery.value,
-    items: collaborators.value.slice(0, 4).map(collaborator => ({
+    items: collaborators.value.slice(0, 4).map((collaborator) => ({
       primary: collaborator.login || '-',
       secondary: collaborator.type || t('world.crm.repositories.labels.user'),
     })),
@@ -169,11 +210,41 @@ const pageCards = computed(() => [
 ])
 
 const kpis = computed(() => [
-  { key: 'collaborators', label: t('world.crm.repositories.labels.collaborators'), value: collaborators.value.length, icon: 'mdi-account-multiple-outline', path: '/' },
-  { key: 'branches', label: t('world.crm.repositories.labels.branches'), value: branches.value.length, icon: 'mdi-source-branch' , path: '/'},
-  { key: 'commits', label: t('world.crm.repositories.labels.commits'), value: commits.value.length, icon: 'mdi-source-commit' , path: '/'},
-  { key: 'pullRequests', label: t('world.crm.repositories.labels.pullRequests'), value: pullRequests.value.length, icon: 'mdi-source-pull' , path: '/'},
-  { key: 'workflows', label: t('world.crm.repositories.labels.workflows'), value: workflows.value.length, icon: 'mdi-robot' , path: '/'},
+  {
+    key: 'collaborators',
+    label: t('world.crm.repositories.labels.collaborators'),
+    value: collaborators.value.length,
+    icon: 'mdi-account-multiple-outline',
+    path: '/',
+  },
+  {
+    key: 'branches',
+    label: t('world.crm.repositories.labels.branches'),
+    value: branches.value.length,
+    icon: 'mdi-source-branch',
+    path: '/',
+  },
+  {
+    key: 'commits',
+    label: t('world.crm.repositories.labels.commits'),
+    value: commits.value.length,
+    icon: 'mdi-source-commit',
+    path: '/',
+  },
+  {
+    key: 'pullRequests',
+    label: t('world.crm.repositories.labels.pullRequests'),
+    value: pullRequests.value.length,
+    icon: 'mdi-source-pull',
+    path: '/',
+  },
+  {
+    key: 'workflows',
+    label: t('world.crm.repositories.labels.workflows'),
+    value: workflows.value.length,
+    icon: 'mdi-robot',
+    path: '/',
+  },
 ])
 </script>
 
@@ -182,21 +253,24 @@ const kpis = computed(() => [
     <WorldModuleShell
       :module-title="t('world.crm.label')"
       module-icon="mdi-account-group-outline"
-      :module-description="t('world.crm.repositories.moduleDescription', 'Browse project repositories and GitHub dashboard data.')"
+      :module-description="
+        t(
+          'world.crm.repositories.moduleDescription',
+          'Browse project repositories and GitHub dashboard data.',
+        )
+      "
       :nav-items="crmNavItems"
       :action-label="t('world.crm.nav.repositories', 'Repositories')"
       action-icon="mdi-source-repository"
     >
       <template #right>
         <v-row class="mb-1">
-          <v-col
-            v-for="kpi in kpis"
-            :key="kpi.key"
-            cols="12"
-          >
+          <v-col v-for="kpi in kpis" :key="kpi.key" cols="12">
             <WorldCard class="pa-3 h-100" variant="text" rounded="xl">
               <div class="d-flex align-center justify-space-between ga-2">
-                <span class="text-body-2 text-medium-emphasis">{{ kpi.label }}</span>
+                <span class="text-body-2 text-medium-emphasis">{{
+                  kpi.label
+                }}</span>
                 <v-icon :icon="kpi.icon" size="18" />
               </div>
               <p class="text-h5 mt-2 mb-0">{{ kpi.value }}</p>
@@ -216,19 +290,33 @@ const kpis = computed(() => [
         <v-card class="pa-4 mb-4 postcard-gradient-card" rounded="xl">
           <h1 class="text-h5 mb-1">{{ repository }}</h1>
           <p class="text-body-2 text-medium-emphasis mb-0">
-            {{ t('world.crm.repositories.labels.repositoryDashboardDescription') }}
+            {{
+              t('world.crm.repositories.labels.repositoryDashboardDescription')
+            }}
           </p>
         </v-card>
 
         <v-row>
-          <v-col v-for="card in pageCards" :key="card.key" cols="12" md="6" lg="4">
-            <WorldCard extra-class="pa-4 platform-style-card h-100 d-flex flex-column">
+          <v-col
+            v-for="card in pageCards"
+            :key="card.key"
+            cols="12"
+            md="6"
+            lg="4"
+          >
+            <WorldCard
+              extra-class="pa-4 platform-style-card h-100 d-flex flex-column"
+            >
               <div class="d-flex align-center ga-2 mb-2">
                 <v-icon :icon="card.icon" />
                 <p class="text-subtitle-1 mb-0">{{ card.title }}</p>
               </div>
 
-              <v-list class="bg-transparent py-0 mb-2" density="compact" lines="two">
+              <v-list
+                class="bg-transparent py-0 mb-2"
+                density="compact"
+                lines="two"
+              >
                 <v-list-item
                   v-for="(item, index) in card.items"
                   :key="`${card.key}-${index}`"
@@ -239,7 +327,9 @@ const kpis = computed(() => [
                 <v-list-item
                   v-if="!card.items.length"
                   :title="t('world.crm.repositories.labels.noData')"
-                  :subtitle="t('world.crm.repositories.labels.noItemsAvailable')"
+                  :subtitle="
+                    t('world.crm.repositories.labels.noItemsAvailable')
+                  "
                   class="px-0"
                 />
               </v-list>
@@ -261,7 +351,9 @@ const kpis = computed(() => [
         <v-fade-transition>
           <div v-if="showStaleOverlay" class="stale-overlay pa-3 rounded-xl">
             <v-progress-linear indeterminate color="primary" class="mb-2" />
-            <p class="text-caption mb-0 text-medium-emphasis">{{ t('common.loading', 'Refreshing data...') }}</p>
+            <p class="text-caption mb-0 text-medium-emphasis">
+              {{ t('common.loading', 'Refreshing data...') }}
+            </p>
           </div>
         </v-fade-transition>
       </div>

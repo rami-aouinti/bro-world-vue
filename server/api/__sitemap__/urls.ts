@@ -1,9 +1,17 @@
 import { withQuery } from 'ufo'
 
 type BlogListResponse = {
-  posts?: Array<{ slug?: string | null; updatedAt?: string | null; createdAt?: string | null }>
+  posts?: Array<{
+    slug?: string | null
+    updatedAt?: string | null
+    createdAt?: string | null
+  }>
   data?: {
-    posts?: Array<{ slug?: string | null; updatedAt?: string | null; createdAt?: string | null }>
+    posts?: Array<{
+      slug?: string | null
+      updatedAt?: string | null
+      createdAt?: string | null
+    }>
   }
 }
 

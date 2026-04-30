@@ -3,7 +3,9 @@
     <div class="d-flex align-center flex-wrap ga-1">
       <v-btn variant="text" size="x-small" to="/privacy">Privacy Policy</v-btn>
       <v-btn variant="text" size="x-small" to="/terms">Terms of Service</v-btn>
-      <v-btn variant="text" size="x-small" to="/data-deletion">Data Deletion</v-btn>
+      <v-btn variant="text" size="x-small" to="/data-deletion"
+        >Data Deletion</v-btn
+      >
     </div>
     <v-spacer />
     <v-defaults-provider

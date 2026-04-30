@@ -6,12 +6,12 @@ import {
 
 describe('extractSocialProfileImage', () => {
   it('reads provider-specific picture fields', () => {
-    expect(extractSocialProfileImage({ avatar_url: 'https://example.com/a.png' })).toBe(
-      'https://example.com/a.png',
-    )
-    expect(extractSocialProfileImage({ picture: 'https://example.com/b.png' })).toBe(
-      'https://example.com/b.png',
-    )
+    expect(
+      extractSocialProfileImage({ avatar_url: 'https://example.com/a.png' }),
+    ).toBe('https://example.com/a.png')
+    expect(
+      extractSocialProfileImage({ picture: 'https://example.com/b.png' }),
+    ).toBe('https://example.com/b.png')
   })
 })
 
@@ -31,7 +31,9 @@ describe('extractSocialProfileNames', () => {
       lastName: 'Doe',
     })
 
-    expect(extractSocialProfileNames({ name: 'John Ronald Reuel Tolkien' })).toEqual({
+    expect(
+      extractSocialProfileNames({ name: 'John Ronald Reuel Tolkien' }),
+    ).toEqual({
       firstName: 'John',
       lastName: 'Ronald Reuel Tolkien',
     })

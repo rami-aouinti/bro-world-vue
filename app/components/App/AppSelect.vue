@@ -106,8 +106,8 @@ const passthroughSlotNames = computed(() =>
             </v-avatar>
             <crm-entity-avatar
               v-else
-                :label="
-                  resolveRawItem(slotProps.item)?.avatarLabel ||
+              :label="
+                resolveRawItem(slotProps.item)?.avatarLabel ||
                 resolveItemTitle(slotProps.item)
               "
               :size="24"
@@ -133,8 +133,8 @@ const passthroughSlotNames = computed(() =>
             </v-avatar>
             <crm-entity-avatar
               v-else
-                :label="
-                  resolveRawItem(slotProps.item)?.avatarLabel ||
+              :label="
+                resolveRawItem(slotProps.item)?.avatarLabel ||
                 resolveItemTitle(slotProps.item)
               "
               :size="20"

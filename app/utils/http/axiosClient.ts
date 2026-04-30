@@ -137,7 +137,9 @@ function ensureInstances() {
     attachUrlNormalizer(privateAxiosInstance)
 
     privateAxiosInstance.interceptors.request.use(
-      async (config: InternalAxiosRequestConfig & { _sessionRefreshed?: boolean }) => {
+      async (
+        config: InternalAxiosRequestConfig & { _sessionRefreshed?: boolean },
+      ) => {
         await ensureSessionReady()
         const token = resolveAuthToken(
           user.value as SessionUserWithToken | null,
@@ -162,7 +164,11 @@ function ensureInstances() {
           | (InternalAxiosRequestConfig & { _sessionRefreshed?: boolean })
           | undefined
 
-        if (status !== 401 || !requestConfig || requestConfig._sessionRefreshed) {
+        if (
+          status !== 401 ||
+          !requestConfig ||
+          requestConfig._sessionRefreshed
+        ) {
           throw error
         }
 

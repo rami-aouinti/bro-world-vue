@@ -21,15 +21,20 @@ export function useResumeMediaFields() {
   function readFileAsDataUrl(file: File) {
     return new Promise<string>((resolve, reject) => {
       const reader = new FileReader()
-      reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : '')
-      reader.onerror = () => reject(new Error(t('resumeBuilder.create.validation.logoReadFailed')))
+      reader.onload = () =>
+        resolve(typeof reader.result === 'string' ? reader.result : '')
+      reader.onerror = () =>
+        reject(new Error(t('resumeBuilder.create.validation.logoReadFailed')))
       reader.readAsDataURL(file)
     })
   }
 
   async function applyExperienceLogoFromFile(
     file: File,
-    target: { onSuccess: (dataUrl: string) => void; onError?: (message: string) => void },
+    target: {
+      onSuccess: (dataUrl: string) => void
+      onError?: (message: string) => void
+    },
   ) {
     const validationMessage = validateExperienceLogoFile(file)
     if (validationMessage) {
@@ -45,5 +50,9 @@ export function useResumeMediaFields() {
     }
   }
 
-  return { validateExperienceLogoFile, readFileAsDataUrl, applyExperienceLogoFromFile }
+  return {
+    validateExperienceLogoFile,
+    readFileAsDataUrl,
+    applyExperienceLogoFromFile,
+  }
 }

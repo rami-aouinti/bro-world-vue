@@ -28,9 +28,12 @@ export async function callPublicApi<TResponse extends ApiResponse>(
   options?: PublicApiOptions,
 ): Promise<TResponse> {
   const client = getServerPublicAxios(event)
-  const response = await client.get<TResponse>(resolveServerApiUrl(event, endpoint), {
-    params: options?.query,
-  })
+  const response = await client.get<TResponse>(
+    resolveServerApiUrl(event, endpoint),
+    {
+      params: options?.query,
+    },
+  )
 
   return response.data
 }

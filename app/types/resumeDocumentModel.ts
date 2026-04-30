@@ -1,5 +1,12 @@
-import type { PageBackgroundId, RoundedOptionId, Typography } from '~/constants/resumeDesign'
-import type { ResumeLayoutMode, ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
+import type {
+  PageBackgroundId,
+  RoundedOptionId,
+  Typography,
+} from '~/constants/resumeDesign'
+import type {
+  ResumeLayoutMode,
+  ResumeSectionIconStyleVariant,
+} from '~/constants/resumeTemplateSkins'
 
 export type ResumeLayoutDensity = 'compact' | 'comfortable'
 export type ResumeSectionRegion = 'main' | 'aside'
@@ -35,7 +42,9 @@ export const RESUME_EDITABLE_SECTION_KEYS = [
 export function isResumeEditableSectionKey(
   value: string,
 ): value is ResumeEditableSectionKey {
-  return RESUME_EDITABLE_SECTION_KEYS.includes(value as ResumeEditableSectionKey)
+  return RESUME_EDITABLE_SECTION_KEYS.includes(
+    value as ResumeEditableSectionKey,
+  )
 }
 
 export type ResumeSectionVariant =

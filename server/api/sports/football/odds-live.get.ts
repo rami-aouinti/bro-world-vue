@@ -1,4 +1,7 @@
-import { cachedFootballApiGet, mapOddsResponse } from '../../../utils/footballApi'
+import {
+  cachedFootballApiGet,
+  mapOddsResponse,
+} from '../../../utils/footballApi'
 import type { FootballOddsApiResponse } from '~~/server/types/api/football'
 import type { ApiSportsOddsItem } from '~~/server/types/api/football/external'
 

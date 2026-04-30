@@ -20,7 +20,9 @@ const {
   data: executive,
   pending: pendingExecutive,
   error: errorExecutive,
-} = useFetch<CrmDashboardExecutiveResponse>('/api/crm/general/dashboard/executive')
+} = useFetch<CrmDashboardExecutiveResponse>(
+  '/api/crm/general/dashboard/executive',
+)
 
 const pending = computed(() => pendingDashboard.value || pendingExecutive.value)
 const error = computed(() => errorDashboard.value || errorExecutive.value)
@@ -60,7 +62,6 @@ const todayAgenda = computed(() => executive.value?.todayAgenda ?? [])
     </WorldModuleShell>
 
     <v-container fluid>
-
       <CrmPageSkeleton v-if="pending" variant="dashboard" />
       <v-alert v-else-if="error" type="error" variant="tonal">
         Une erreur est survenue lors du chargement du dashboard CRM.
@@ -69,7 +70,8 @@ const todayAgenda = computed(() => executive.value?.todayAgenda ?? [])
         <v-card rounded="xl" class="pa-4 mb-4 postcard-gradient-card">
           <h2 class="text-h5 mb-2">CRM Pro Dashboard</h2>
           <p class="text-body-2 text-medium-emphasis mb-0">
-            Vue consolidée temps réel du revenue, pipeline, delivery, support et activité équipe.
+            Vue consolidée temps réel du revenue, pipeline, delivery, support et
+            activité équipe.
           </p>
         </v-card>
 
@@ -77,25 +79,35 @@ const todayAgenda = computed(() => executive.value?.todayAgenda ?? [])
           <v-col cols="12" sm="6" lg="3">
             <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
               <p class="text-caption text-medium-emphasis mb-1">Companies</p>
-              <p class="text-h5 font-weight-bold mb-0">{{ dashboard?.companies ?? 0 }}</p>
+              <p class="text-h5 font-weight-bold mb-0">
+                {{ dashboard?.companies ?? 0 }}
+              </p>
             </v-card>
           </v-col>
           <v-col cols="12" sm="6" lg="3">
             <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
               <p class="text-caption text-medium-emphasis mb-1">Projects</p>
-              <p class="text-h5 font-weight-bold mb-0">{{ dashboard?.projects ?? 0 }}</p>
+              <p class="text-h5 font-weight-bold mb-0">
+                {{ dashboard?.projects ?? 0 }}
+              </p>
             </v-card>
           </v-col>
           <v-col cols="12" sm="6" lg="3">
             <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
               <p class="text-caption text-medium-emphasis mb-1">Tasks</p>
-              <p class="text-h5 font-weight-bold mb-0">{{ dashboard?.tasks ?? 0 }}</p>
+              <p class="text-h5 font-weight-bold mb-0">
+                {{ dashboard?.tasks ?? 0 }}
+              </p>
             </v-card>
           </v-col>
           <v-col cols="12" sm="6" lg="3">
             <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
-              <p class="text-caption text-medium-emphasis mb-1">Task requests pending</p>
-              <p class="text-h5 font-weight-bold mb-0">{{ dashboard?.taskRequests?.pending ?? 0 }}</p>
+              <p class="text-caption text-medium-emphasis mb-1">
+                Task requests pending
+              </p>
+              <p class="text-h5 font-weight-bold mb-0">
+                {{ dashboard?.taskRequests?.pending ?? 0 }}
+              </p>
             </v-card>
           </v-col>
         </v-row>
@@ -112,10 +124,18 @@ const todayAgenda = computed(() => executive.value?.todayAgenda ?? [])
               <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
                 <div class="d-flex align-center justify-space-between">
                   <div>
-                    <p class="text-caption text-medium-emphasis mb-1">{{ tile.title }}</p>
-                    <p class="text-h5 font-weight-bold mb-1">{{ tile.value }}</p>
-                    <v-chip :color="tile.tone" size="small" label>{{ tile.trend }}</v-chip>
-                    <p class="text-caption text-medium-emphasis mt-2 mb-0">{{ tile.caption }}</p>
+                    <p class="text-caption text-medium-emphasis mb-1">
+                      {{ tile.title }}
+                    </p>
+                    <p class="text-h5 font-weight-bold mb-1">
+                      {{ tile.value }}
+                    </p>
+                    <v-chip :color="tile.tone" size="small" label>{{
+                      tile.trend
+                    }}</v-chip>
+                    <p class="text-caption text-medium-emphasis mt-2 mb-0">
+                      {{ tile.caption }}
+                    </p>
                   </div>
                   <v-avatar color="primary" variant="tonal" size="42">
                     <v-icon>{{ tile.icon }}</v-icon>
@@ -125,7 +145,6 @@ const todayAgenda = computed(() => executive.value?.todayAgenda ?? [])
             </v-col>
           </v-col>
           <v-col cols="12" lg="6">
-
             <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
               <h3 class="text-h6 mb-3">Agenda aujourd'hui</h3>
               <v-timeline density="compact" side="end" align="start">
@@ -135,8 +154,12 @@ const todayAgenda = computed(() => executive.value?.todayAgenda ?? [])
                   dot-color="primary"
                   size="small"
                 >
-                  <div class="text-caption text-medium-emphasis">{{ item.time }}</div>
-                  <div class="text-body-2 font-weight-medium">{{ item.event }}</div>
+                  <div class="text-caption text-medium-emphasis">
+                    {{ item.time }}
+                  </div>
+                  <div class="text-body-2 font-weight-medium">
+                    {{ item.event }}
+                  </div>
                   <div class="text-caption">{{ item.owner }}</div>
                 </v-timeline-item>
               </v-timeline>
@@ -149,7 +172,9 @@ const todayAgenda = computed(() => executive.value?.todayAgenda ?? [])
             <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
               <div class="d-flex align-center justify-space-between mb-3">
                 <h3 class="text-h6 mb-0">Pipeline commercial</h3>
-                <v-chip size="small" color="primary" variant="tonal">122 deals actifs</v-chip>
+                <v-chip size="small" color="primary" variant="tonal"
+                  >122 deals actifs</v-chip
+                >
               </div>
               <v-table density="comfortable" class="bg-transparent">
                 <thead>
@@ -173,7 +198,9 @@ const todayAgenda = computed(() => executive.value?.todayAgenda ?? [])
             <v-card rounded="xl" class="pa-4 postcard-gradient-card">
               <div class="d-flex align-center justify-space-between mb-3">
                 <h3 class="text-h6 mb-0">Performance équipes CRM</h3>
-                <v-chip size="small" color="info" variant="tonal">Mise à jour toutes les 4h</v-chip>
+                <v-chip size="small" color="info" variant="tonal"
+                  >Mise à jour toutes les 4h</v-chip
+                >
               </div>
               <v-table density="comfortable" class="bg-transparent">
                 <thead>

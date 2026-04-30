@@ -762,10 +762,7 @@ export async function fetchFixturePrediction(
   }
 }
 
-export async function fetchFixtureHeadToHead(
-  event: H3Event,
-  h2h: string,
-) {
+export async function fetchFixtureHeadToHead(event: H3Event, h2h: string) {
   const payload = await cachedFootballApiGet<ApiSportsFixtureItem>(
     event,
     '/fixtures/headtohead',
@@ -853,41 +850,48 @@ export async function fetchFixtureDetails(
   const [mappedFixture, events, lineups, players, statistics] =
     await Promise.all([
       fetchFixtureById(event, fixture),
-    cachedFootballApiGet<ApiSportsFixtureEventItem>(
-      event,
-      '/fixtures/events',
-      { fixture },
-      { cacheProfile: 'reference', cacheKeySuffix: 'reference-fixture-events' },
-    ),
-    cachedFootballApiGet<ApiSportsLineupItem>(
-      event,
-      '/fixtures/lineups',
-      { fixture },
-      {
-        cacheProfile: 'reference',
-        cacheKeySuffix: 'reference-fixture-lineups',
-      },
-    ),
-    cachedFootballApiGet<ApiSportsPlayerStatsItem>(
-      event,
-      '/fixtures/players',
-      { fixture },
-      {
-        cacheProfile: 'reference',
-        cacheKeySuffix: 'reference-fixture-players',
-      },
-    ),
-    cachedFootballApiGet<ApiSportsFixtureStatisticsItem>(
-      event,
-      '/fixtures/statistics',
-      { fixture },
-      {
-        cacheProfile: 'reference',
-        cacheKeySuffix: 'reference-fixture-statistics',
-      },
-    ),
+      cachedFootballApiGet<ApiSportsFixtureEventItem>(
+        event,
+        '/fixtures/events',
+        { fixture },
+        {
+          cacheProfile: 'reference',
+          cacheKeySuffix: 'reference-fixture-events',
+        },
+      ),
+      cachedFootballApiGet<ApiSportsLineupItem>(
+        event,
+        '/fixtures/lineups',
+        { fixture },
+        {
+          cacheProfile: 'reference',
+          cacheKeySuffix: 'reference-fixture-lineups',
+        },
+      ),
+      cachedFootballApiGet<ApiSportsPlayerStatsItem>(
+        event,
+        '/fixtures/players',
+        { fixture },
+        {
+          cacheProfile: 'reference',
+          cacheKeySuffix: 'reference-fixture-players',
+        },
+      ),
+      cachedFootballApiGet<ApiSportsFixtureStatisticsItem>(
+        event,
+        '/fixtures/statistics',
+        { fixture },
+        {
+          cacheProfile: 'reference',
+          cacheKeySuffix: 'reference-fixture-statistics',
+        },
+      ),
     ])
-  const matchContext = await fetchFixtureMatchContext(event, mappedFixture, fixture)
+  const matchContext = await fetchFixtureMatchContext(
+    event,
+    mappedFixture,
+    fixture,
+  )
 
   return {
     fixture: mappedFixture,

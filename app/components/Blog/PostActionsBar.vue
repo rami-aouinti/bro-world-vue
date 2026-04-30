@@ -132,7 +132,9 @@ function onPickReaction(code: string) {
                 size="18"
                 icon="mdi-thumb-up-outline"
               />
-              <span v-else class="reaction-btn-emoji">{{ currentReactionEmoji }}</span>
+              <span v-else class="reaction-btn-emoji">{{
+                currentReactionEmoji
+              }}</span>
               <span>{{ currentReactionLabel }}</span>
             </span>
           </v-btn>

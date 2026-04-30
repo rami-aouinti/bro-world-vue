@@ -19,9 +19,16 @@ const toPx = (value: unknown, fallback: number) => {
   return `${Number.isFinite(n) ? n : fallback}px`
 }
 
-export function buildThemeVars(config: ResumeThemeConfig = {}): Record<string, string> {
+export function buildThemeVars(
+  config: ResumeThemeConfig = {},
+): Record<string, string> {
   const photoShape = config.photo?.shape ?? 'circle'
-  const photoRadius = photoShape === 'square' ? '0px' : photoShape === 'rounded' ? '16px' : '999px'
+  const photoRadius =
+    photoShape === 'square'
+      ? '0px'
+      : photoShape === 'rounded'
+        ? '16px'
+        : '999px'
 
   return {
     '--primary': config.primary ?? 'var(--cv-accent)',

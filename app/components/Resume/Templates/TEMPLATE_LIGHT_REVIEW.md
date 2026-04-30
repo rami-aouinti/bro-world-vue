@@ -11,20 +11,20 @@ Périmètre: templates CV (`classic`, `modern`, `professional`, `traditional`, `
 
 ## Validation template par template
 
-| Template | Page shell visible | Fond clair respecté | Texte lisible |
-|---|---|---|---|
-| classic | ✅ | ✅ | ✅ |
-| modern | ✅ | ✅ | ✅ |
-| professional | ✅ | ✅ | ✅ |
-| traditional | ✅ | ✅ | ✅ |
-| creative | ✅ | ✅ | ✅ |
-| minimalist | ✅ | ✅ | ✅ |
-| aurora | ✅ | ✅ | ✅ |
-| executive | ✅ | ✅ | ✅ |
-| terra | ✅ | ✅ | ✅ |
-| ocean-split | ✅ | ✅ | ✅ |
-| corporate-blue | ✅ | ✅ | ✅ |
-| grid-slate (skin) | ✅ | ✅ | ✅ |
+| Template          | Page shell visible | Fond clair respecté | Texte lisible |
+| ----------------- | ------------------ | ------------------- | ------------- |
+| classic           | ✅                 | ✅                  | ✅            |
+| modern            | ✅                 | ✅                  | ✅            |
+| professional      | ✅                 | ✅                  | ✅            |
+| traditional       | ✅                 | ✅                  | ✅            |
+| creative          | ✅                 | ✅                  | ✅            |
+| minimalist        | ✅                 | ✅                  | ✅            |
+| aurora            | ✅                 | ✅                  | ✅            |
+| executive         | ✅                 | ✅                  | ✅            |
+| terra             | ✅                 | ✅                  | ✅            |
+| ocean-split       | ✅                 | ✅                  | ✅            |
+| corporate-blue    | ✅                 | ✅                  | ✅            |
+| grid-slate (skin) | ✅                 | ✅                  | ✅            |
 
 ## Notes d’implémentation
 

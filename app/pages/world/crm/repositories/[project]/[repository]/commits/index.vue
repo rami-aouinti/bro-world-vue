@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import type { CrmGithubCommitDetail, CrmGithubCommitSummary, CrmGithubListResponse } from '~/types/world/crmGithub'
+import type {
+  CrmGithubCommitDetail,
+  CrmGithubCommitSummary,
+  CrmGithubListResponse,
+} from '~/types/world/crmGithub'
 import RepositoryCommitsCard from '~/components/crm/repositories/RepositoryCommitsCard.vue'
 import RepositoryItemDetailModal from '~/components/crm/repositories/RepositoryItemDetailModal.vue'
 
@@ -12,10 +16,18 @@ const { crmNavItems } = useWorldCrmNavItems()
 const githubStore = useWorldCrmGithubStore()
 
 const projectId = computed(() => String(route.params.project ?? ''))
-const repository = computed(() => decodeURIComponent(String(route.params.repository ?? '')))
-const applicationSlugInput = ref<string>(typeof route.query.applicationSlug === 'string' ? route.query.applicationSlug : '')
+const repository = computed(() =>
+  decodeURIComponent(String(route.params.repository ?? '')),
+)
+const applicationSlugInput = ref<string>(
+  typeof route.query.applicationSlug === 'string'
+    ? route.query.applicationSlug
+    : '',
+)
 const applicationSlug = ref(applicationSlugInput.value)
-const branch = ref<string>(typeof route.query.branch === 'string' ? route.query.branch.trim() : '')
+const branch = ref<string>(
+  typeof route.query.branch === 'string' ? route.query.branch.trim() : '',
+)
 const selectedCommitSha = ref('')
 const detailModalOpen = ref(false)
 const commitDetailData = ref<CrmGithubCommitDetail | null>(null)
@@ -36,9 +48,19 @@ const query = computed(() => ({
   ...(branch.value.trim() ? { branch: branch.value.trim() } : {}),
 }))
 
-const { data: commitsData, pending, error } = useAsyncData<CrmGithubListResponse<CrmGithubCommitSummary>>(
-  () => `crm-repository-commits-page-${projectId.value}-${repository.value}-${branch.value}-${applicationSlug.value}`,
-  () => githubStore.getScopedCommits(projectId.value, query.value, applicationSlug.value || undefined),
+const {
+  data: commitsData,
+  pending,
+  error,
+} = useAsyncData<CrmGithubListResponse<CrmGithubCommitSummary>>(
+  () =>
+    `crm-repository-commits-page-${projectId.value}-${repository.value}-${branch.value}-${applicationSlug.value}`,
+  () =>
+    githubStore.getScopedCommits(
+      projectId.value,
+      query.value,
+      applicationSlug.value || undefined,
+    ),
   {
     watch: [projectId, repository, query, applicationSlug],
     lazy: true,
@@ -55,10 +77,10 @@ const showStaleOverlay = computed(() => pending.value && hasCommits.value)
 const branchOptions = computed(() => {
   const values = new Set(
     commits.value
-      .map(commit => String((commit as Record<string, unknown>).branch ?? ''))
+      .map((commit) => String((commit as Record<string, unknown>).branch ?? ''))
       .filter(Boolean),
   )
-  return Array.from(values).map(value => ({ title: value, value }))
+  return Array.from(values).map((value) => ({ title: value, value }))
 })
 
 async function loadCommitDetail() {
@@ -73,11 +95,9 @@ async function loadCommitDetail() {
       { repo: repository.value },
       applicationSlug.value || undefined,
     )
-  }
-  catch (err) {
+  } catch (err) {
     commitDetailError.value = err
-  }
-  finally {
+  } finally {
     pendingCommitDetail.value = false
   }
 }
@@ -106,7 +126,9 @@ watch(detailModalOpen, (open) => {
       module-icon="mdi-account-group-outline"
       :module-description="t('world.crm.repositories.moduleDescription')"
       :nav-items="crmNavItems"
-      :action-label="t('world.crm.repositories.sections.commits', { count: commits.length })"
+      :action-label="
+        t('world.crm.repositories.sections.commits', { count: commits.length })
+      "
       action-icon="mdi-source-commit"
     >
       <template #right>
@@ -123,9 +145,10 @@ watch(detailModalOpen, (open) => {
     </WorldModuleShell>
 
     <v-container fluid>
-
       <CrmPageSkeleton v-if="showInitialSkeleton" variant="dashboard" />
-      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">Impossible de charger les commits.</v-alert>
+      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4"
+        >Impossible de charger les commits.</v-alert
+      >
 
       <div v-else class="position-relative">
         <RepositoryCommitsCard
@@ -137,7 +160,9 @@ watch(detailModalOpen, (open) => {
         <v-fade-transition>
           <div v-if="showStaleOverlay" class="stale-overlay pa-3 rounded-xl">
             <v-progress-linear indeterminate color="primary" class="mb-2" />
-            <p class="text-caption mb-0 text-medium-emphasis">{{ t('common.loading', 'Refreshing data...') }}</p>
+            <p class="text-caption mb-0 text-medium-emphasis">
+              {{ t('common.loading', 'Refreshing data...') }}
+            </p>
           </div>
         </v-fade-transition>
       </div>
@@ -145,18 +170,49 @@ watch(detailModalOpen, (open) => {
 
     <RepositoryItemDetailModal
       v-model="detailModalOpen"
-      :title="t('world.crm.repositories.modal.commitDetailsTitle', { sha: selectedCommitSha || '' })"
+      :title="
+        t('world.crm.repositories.modal.commitDetailsTitle', {
+          sha: selectedCommitSha || '',
+        })
+      "
       :payload="commitDetailData"
       :loading="pendingCommitDetail"
-      :error="commitDetailError ? t('world.crm.repositories.alerts.loadingCommitDetails') : null"
+      :error="
+        commitDetailError
+          ? t('world.crm.repositories.alerts.loadingCommitDetails')
+          : null
+      "
     >
       <template #summary="{ payload }">
         <v-row dense>
-          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.sha') }}:</strong> {{ payload?.sha }}</v-col>
-          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.author') }}:</strong> {{ payload?.author }}</v-col>
-          <v-col cols="12"><strong>{{ t('world.crm.repositories.modal.message') }}:</strong> {{ payload?.message }}</v-col>
-          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.date') }}:</strong> {{ payload?.date ? new Date(String(payload.date)).toLocaleString() : '-' }}</v-col>
-          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.changedFiles') }}:</strong> {{ Array.isArray(payload?.files) ? payload.files.length : 0 }}</v-col>
+          <v-col cols="12" md="6"
+            ><strong>{{ t('world.crm.repositories.modal.sha') }}:</strong>
+            {{ payload?.sha }}</v-col
+          >
+          <v-col cols="12" md="6"
+            ><strong>{{ t('world.crm.repositories.modal.author') }}:</strong>
+            {{ payload?.author }}</v-col
+          >
+          <v-col cols="12"
+            ><strong>{{ t('world.crm.repositories.modal.message') }}:</strong>
+            {{ payload?.message }}</v-col
+          >
+          <v-col cols="12" md="6"
+            ><strong>{{ t('world.crm.repositories.modal.date') }}:</strong>
+            {{
+              payload?.date
+                ? new Date(String(payload.date)).toLocaleString()
+                : '-'
+            }}</v-col
+          >
+          <v-col cols="12" md="6"
+            ><strong
+              >{{ t('world.crm.repositories.modal.changedFiles') }}:</strong
+            >
+            {{
+              Array.isArray(payload?.files) ? payload.files.length : 0
+            }}</v-col
+          >
         </v-row>
 
         <v-divider class="my-3" />

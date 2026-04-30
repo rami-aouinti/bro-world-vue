@@ -74,7 +74,11 @@ async function loadRandomProducts() {
 }
 
 onMounted(async () => {
-  await Promise.all([ensureCatalogLoaded(), loadRandomGames(), loadRandomProducts()])
+  await Promise.all([
+    ensureCatalogLoaded(),
+    loadRandomGames(),
+    loadRandomProducts(),
+  ])
 })
 
 if (import.meta.client) {
@@ -123,7 +127,12 @@ async function openProduct(product: RandomProductItem) {
 
     <v-skeleton-loader v-if="gamesPending" type="list-item-two-line@2" />
 
-    <v-list v-else-if="randomGames.length > 0" density="compact" nav class="random-list">
+    <v-list
+      v-else-if="randomGames.length > 0"
+      density="compact"
+      nav
+      class="random-list"
+    >
       <v-list-item
         v-for="game in randomGames"
         :key="game.id"
@@ -162,7 +171,12 @@ async function openProduct(product: RandomProductItem) {
 
     <v-skeleton-loader v-if="productsPending" type="list-item-two-line@2" />
 
-    <v-list v-else-if="randomProducts.length > 0" density="compact" nav class="random-list">
+    <v-list
+      v-else-if="randomProducts.length > 0"
+      density="compact"
+      nav
+      class="random-list"
+    >
       <v-list-item
         v-for="product in randomProducts"
         :key="product.id"
@@ -171,7 +185,10 @@ async function openProduct(product: RandomProductItem) {
         <template #prepend>
           <v-avatar rounded="lg" size="42">
             <v-img
-              :src="product.photo || '/images/platform-media/shop-premium-hoodie.svg'"
+              :src="
+                product.photo ||
+                '/images/platform-media/shop-premium-hoodie.svg'
+              "
               cover
             />
           </v-avatar>

@@ -273,8 +273,8 @@ async function deleteProject() {
             >
               <div class="text-end">
                 <v-chip size="small" color="primary" variant="tonal">{{
-                    project.status
-                  }}</v-chip>
+                  project.status
+                }}</v-chip>
               </div>
               <div class="d-flex justify-space-between align-start ga-2 mb-2">
                 <div class="d-flex align-center ga-2">
@@ -283,7 +283,6 @@ async function deleteProject() {
                     {{ project.name }}
                   </p>
                 </div>
-
               </div>
               <div class="d-flex flex-wrap ga-2 mb-4">
                 <v-chip size="small" color="info" variant="tonal">

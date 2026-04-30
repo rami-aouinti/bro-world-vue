@@ -22,13 +22,20 @@ const emit = defineEmits<{
 const currencyFormat = (value: number) => `${value.toFixed(2)} €`
 
 const getStatusMeta = (status: string) =>
-  props.statusCatalog.find((item) => item.value === status) || { value: 'all', title: 'All', color: 'grey' }
+  props.statusCatalog.find((item) => item.value === status) || {
+    value: 'all',
+    title: 'All',
+    color: 'grey',
+  }
 
 const currentOrder = computed(() => props.order)
 
 const buildInvoiceText = (order: OrderRecord) => {
   const lineRows = order.lines
-    .map((line) => `${line.title} x${line.quantity} — ${currencyFormat(line.unitPrice * line.quantity)}`)
+    .map(
+      (line) =>
+        `${line.title} x${line.quantity} — ${currencyFormat(line.unitPrice * line.quantity)}`,
+    )
     .join('\n')
 
   return [
@@ -58,19 +65,32 @@ const buildInvoiceText = (order: OrderRecord) => {
       <template v-if="currentOrder">
         <div class="d-flex justify-space-between align-center mb-3">
           <div>
-            <h3 class="text-subtitle-1 mb-0">{{ currentOrder.id }} - {{ currentOrder.customer }}</h3>
+            <h3 class="text-subtitle-1 mb-0">
+              {{ currentOrder.id }} - {{ currentOrder.customer }}
+            </h3>
             <p class="text-body-2 text-medium-emphasis mb-0">
-              {{ channelCatalog.find((channel) => channel.value === currentOrder.channel)?.title }}
+              {{
+                channelCatalog.find(
+                  (channel) => channel.value === currentOrder.channel,
+                )?.title
+              }}
               •
               {{ new Date(currentOrder.createdAt).toLocaleDateString('en-US') }}
             </p>
           </div>
-          <v-chip size="small" :color="getStatusMeta(currentOrder.status).color" variant="tonal">
+          <v-chip
+            size="small"
+            :color="getStatusMeta(currentOrder.status).color"
+            variant="tonal"
+          >
             {{ getStatusMeta(currentOrder.status).title }}
           </v-chip>
         </div>
 
-        <ShopCartSummary :total-amount="currentOrder.amount" :refunded-amount="currentOrder.refundedAmount" />
+        <ShopCartSummary
+          :total-amount="currentOrder.amount"
+          :refunded-amount="currentOrder.refundedAmount"
+        />
         <ShopPaymentStatusCard :order="currentOrder" />
 
         <h4 class="text-subtitle-2 mb-2">Order timeline</h4>
@@ -82,7 +102,9 @@ const buildInvoiceText = (order: OrderRecord) => {
             size="small"
           >
             <div class="text-body-2 font-weight-medium">{{ event.label }}</div>
-            <div class="text-caption text-medium-emphasis">{{ new Date(event.at).toLocaleString('en-US') }}</div>
+            <div class="text-caption text-medium-emphasis">
+              {{ new Date(event.at).toLocaleString('en-US') }}
+            </div>
             <div v-if="event.note" class="text-caption">{{ event.note }}</div>
           </v-timeline-item>
         </v-timeline>
@@ -126,11 +148,21 @@ const buildInvoiceText = (order: OrderRecord) => {
               type="number"
               density="comfortable"
               hide-details
-              @update:model-value="emit('update:returnAmount', $event === '' ? null : Number($event))"
+              @update:model-value="
+                emit(
+                  'update:returnAmount',
+                  $event === '' ? null : Number($event),
+                )
+              "
             />
           </v-col>
           <v-col cols="4" md="2" class="d-flex align-center">
-            <v-btn block color="secondary" variant="tonal" @click="emit('add-return', currentOrder.id)">
+            <v-btn
+              block
+              color="secondary"
+              variant="tonal"
+              @click="emit('add-return', currentOrder.id)"
+            >
               Add
             </v-btn>
           </v-col>
@@ -145,7 +177,11 @@ const buildInvoiceText = (order: OrderRecord) => {
             <template #title>{{ record.id }} - {{ record.reason }}</template>
             <template #append>
               <div class="d-flex align-center ga-2">
-                <v-chip size="x-small" :color="record.status === 'refunded' ? 'green' : 'amber'" variant="tonal">
+                <v-chip
+                  size="x-small"
+                  :color="record.status === 'refunded' ? 'green' : 'amber'"
+                  variant="tonal"
+                >
                   {{ record.status }}
                 </v-chip>
                 <v-btn
@@ -160,7 +196,10 @@ const buildInvoiceText = (order: OrderRecord) => {
               </div>
             </template>
           </v-list-item>
-          <v-list-item v-if="!currentOrder.returns.length" title="No returns recorded" />
+          <v-list-item
+            v-if="!currentOrder.returns.length"
+            title="No returns recorded"
+          />
         </v-list>
       </template>
       <v-card v-else variant="outlined" rounded="lg" class="pa-4">

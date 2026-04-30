@@ -148,29 +148,35 @@ export async function requestAiGatewayChat(
   } satisfies Omit<AiGatewayRequestBody, 'response_format'>
 
   try {
-    return await $fetch<AiGatewayChatResponse>(AI_GATEWAY_CHAT_COMPLETIONS_URL, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: payload.response_format
-        ? {
-            ...baseBody,
-            response_format: payload.response_format,
-          }
-        : baseBody,
-    })
-  } catch (error) {
-    const statusCode = getFetchErrorStatusCode(error)
-
-    if (statusCode === 400 && payload.response_format) {
-      return await $fetch<AiGatewayChatResponse>(AI_GATEWAY_CHAT_COMPLETIONS_URL, {
+    return await $fetch<AiGatewayChatResponse>(
+      AI_GATEWAY_CHAT_COMPLETIONS_URL,
+      {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${apiKey}`,
         },
-        body: baseBody,
-      })
+        body: payload.response_format
+          ? {
+              ...baseBody,
+              response_format: payload.response_format,
+            }
+          : baseBody,
+      },
+    )
+  } catch (error) {
+    const statusCode = getFetchErrorStatusCode(error)
+
+    if (statusCode === 400 && payload.response_format) {
+      return await $fetch<AiGatewayChatResponse>(
+        AI_GATEWAY_CHAT_COMPLETIONS_URL,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: baseBody,
+        },
+      )
     }
 
     if ([401, 403, 404, 429].includes(statusCode)) {

@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import type { GameEntry } from "~/types/game";
+import type { GameEntry } from '~/types/game'
 
 defineProps<{
-  selectedGame: GameEntry;
+  selectedGame: GameEntry
   selectedGameConcept: {
-    rulesSummary: string[];
-  };
-  safeTranslate: (key?: string | null) => string;
-  selectedGameLevel: string;
-  gameDetailTags: string[];
-  gameDetailFeatures: string[];
-  formatMetaChip: (value: string) => string;
-}>();
+    rulesSummary: string[]
+  }
+  safeTranslate: (key?: string | null) => string
+  selectedGameLevel: string
+  gameDetailTags: string[]
+  gameDetailFeatures: string[]
+  formatMetaChip: (value: string) => string
+}>()
 </script>
 
 <template>
@@ -65,7 +65,9 @@ defineProps<{
           </v-chip>
         </div>
         <div>
-          <p class="text-caption text-medium-emphasis mb-1">Résumé des règles</p>
+          <p class="text-caption text-medium-emphasis mb-1">
+            Résumé des règles
+          </p>
           <ul class="pl-5 mb-0">
             <li
               v-for="rule in selectedGameConcept.rulesSummary"

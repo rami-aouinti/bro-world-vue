@@ -14,7 +14,11 @@ export type PaletteId =
 
 export type RoundedOptionId = 'none' | 'sm' | 'md' | 'lg'
 export type Typography = 'clean' | 'italic' | 'serif' | 'mono' | 'display'
-export type PageBackgroundId = 'white' | 'sky-light' | 'pearl-light' | 'ivory-light'
+export type PageBackgroundId =
+  | 'white'
+  | 'sky-light'
+  | 'pearl-light'
+  | 'ivory-light'
 
 export type ResumeColorTheme = {
   name: PaletteId
@@ -70,9 +74,13 @@ export type ResumeSkinPalette = {
 
 const hexToRgb = (hex: string): [number, number, number] => {
   const normalized = hex.replace('#', '')
-  const value = normalized.length === 3
-    ? normalized.split('').map(char => char + char).join('')
-    : normalized
+  const value =
+    normalized.length === 3
+      ? normalized
+          .split('')
+          .map((char) => char + char)
+          .join('')
+      : normalized
   const parsed = Number.parseInt(value, 16)
   return [(parsed >> 16) & 255, (parsed >> 8) & 255, parsed & 255]
 }
@@ -80,7 +88,9 @@ const hexToRgb = (hex: string): [number, number, number] => {
 const relativeLuminance = ([r, g, b]: [number, number, number]): number => {
   const channel = (value: number): number => {
     const normalized = value / 255
-    return normalized <= 0.03928 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4
+    return normalized <= 0.03928
+      ? normalized / 12.92
+      : ((normalized + 0.055) / 1.055) ** 2.4
   }
 
   return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b)
@@ -93,26 +103,95 @@ const contrastRatio = (foreground: string, background: string): number => {
   return (brightest + 0.05) / (darkest + 0.05)
 }
 
-export const RESUME_SKIN_PALETTES: Record<ResumeSkinPaletteId, ResumeSkinPalette> = {
-  classic: { mainText: '#1f2937', mainBackground: '#ffffff', sidebarText: '#f9fafb', sidebarBackground: '#1f2937', accent: '#1d4ed8' },
-  urban: { mainText: '#0f172a', mainBackground: '#f8fafc', sidebarText: '#f8fafc', sidebarBackground: '#0f172a', accent: '#0891b2' },
-  'compact-ats': { mainText: '#111827', mainBackground: '#ffffff', sidebarText: '#f9fafb', sidebarBackground: '#111827', accent: '#2563eb' },
-  executive: { mainText: '#111827', mainBackground: '#ffffff', sidebarText: '#eff6ff', sidebarBackground: '#0b3a78', accent: '#1d4ed8' },
-  midnight: { mainText: '#e2e8f0', mainBackground: '#0f172a', sidebarText: '#f8fafc', sidebarBackground: '#020617', accent: '#38bdf8' },
-  minimal: { mainText: '#111827', mainBackground: '#ffffff', sidebarText: '#111827', sidebarBackground: '#f3f4f6', accent: '#4b5563' },
-  terra: { mainText: '#3f2a1d', mainBackground: '#fffaf5', sidebarText: '#fff7ed', sidebarBackground: '#7c2d12', accent: '#ea580c' },
-  elegant: { mainText: '#3f3f46', mainBackground: '#fffbeb', sidebarText: '#fffbeb', sidebarBackground: '#4c1d95', accent: '#7c3aed' },
-  graphite: { mainText: '#111827', mainBackground: '#f3f4f6', sidebarText: '#f9fafb', sidebarBackground: '#374151', accent: '#6b7280' },
-  oceanic: { mainText: '#082f49', mainBackground: '#f0f9ff', sidebarText: '#ecfeff', sidebarBackground: '#0c4a6e', accent: '#0284c7' },
+export const RESUME_SKIN_PALETTES: Record<
+  ResumeSkinPaletteId,
+  ResumeSkinPalette
+> = {
+  classic: {
+    mainText: '#1f2937',
+    mainBackground: '#ffffff',
+    sidebarText: '#f9fafb',
+    sidebarBackground: '#1f2937',
+    accent: '#1d4ed8',
+  },
+  urban: {
+    mainText: '#0f172a',
+    mainBackground: '#f8fafc',
+    sidebarText: '#f8fafc',
+    sidebarBackground: '#0f172a',
+    accent: '#0891b2',
+  },
+  'compact-ats': {
+    mainText: '#111827',
+    mainBackground: '#ffffff',
+    sidebarText: '#f9fafb',
+    sidebarBackground: '#111827',
+    accent: '#2563eb',
+  },
+  executive: {
+    mainText: '#111827',
+    mainBackground: '#ffffff',
+    sidebarText: '#eff6ff',
+    sidebarBackground: '#0b3a78',
+    accent: '#1d4ed8',
+  },
+  midnight: {
+    mainText: '#e2e8f0',
+    mainBackground: '#0f172a',
+    sidebarText: '#f8fafc',
+    sidebarBackground: '#020617',
+    accent: '#38bdf8',
+  },
+  minimal: {
+    mainText: '#111827',
+    mainBackground: '#ffffff',
+    sidebarText: '#111827',
+    sidebarBackground: '#f3f4f6',
+    accent: '#4b5563',
+  },
+  terra: {
+    mainText: '#3f2a1d',
+    mainBackground: '#fffaf5',
+    sidebarText: '#fff7ed',
+    sidebarBackground: '#7c2d12',
+    accent: '#ea580c',
+  },
+  elegant: {
+    mainText: '#3f3f46',
+    mainBackground: '#fffbeb',
+    sidebarText: '#fffbeb',
+    sidebarBackground: '#4c1d95',
+    accent: '#7c3aed',
+  },
+  graphite: {
+    mainText: '#111827',
+    mainBackground: '#f3f4f6',
+    sidebarText: '#f9fafb',
+    sidebarBackground: '#374151',
+    accent: '#6b7280',
+  },
+  oceanic: {
+    mainText: '#082f49',
+    mainBackground: '#f0f9ff',
+    sidebarText: '#ecfeff',
+    sidebarBackground: '#0c4a6e',
+    accent: '#0284c7',
+  },
 }
 
-for (const [paletteId, palette] of Object.entries(RESUME_SKIN_PALETTES) as Array<[ResumeSkinPaletteId, ResumeSkinPalette]>) {
+for (const [paletteId, palette] of Object.entries(
+  RESUME_SKIN_PALETTES,
+) as Array<[ResumeSkinPaletteId, ResumeSkinPalette]>) {
   if (contrastRatio(palette.mainText, palette.mainBackground) < 4.5) {
-    throw new Error(`Palette ${paletteId} does not meet AA contrast for main text/background`)
+    throw new Error(
+      `Palette ${paletteId} does not meet AA contrast for main text/background`,
+    )
   }
 
   if (contrastRatio(palette.sidebarText, palette.sidebarBackground) < 4.5) {
-    throw new Error(`Palette ${paletteId} does not meet AA contrast for sidebar text/background`)
+    throw new Error(
+      `Palette ${paletteId} does not meet AA contrast for sidebar text/background`,
+    )
   }
 }
 
@@ -160,10 +239,33 @@ export const roundedPxByValue: Record<RoundedOptionId, string> = {
   lg: '24px',
 }
 
-export const textStyleVarsByValue: Record<Typography, { family: string; style: string; weight: string }> = {
-  clean: { family: "'Inter', 'Segoe UI', Arial, sans-serif", style: 'normal', weight: '400' },
-  italic: { family: "'Inter', 'Segoe UI', Arial, sans-serif", style: 'italic', weight: '400' },
-  serif: { family: "'Merriweather', Georgia, 'Times New Roman', serif", style: 'normal', weight: '400' },
-  mono: { family: "'IBM Plex Mono', 'Courier New', monospace", style: 'normal', weight: '400' },
-  display: { family: "'Poppins', 'Avenir Next', 'Segoe UI', sans-serif", style: 'normal', weight: '600' },
+export const textStyleVarsByValue: Record<
+  Typography,
+  { family: string; style: string; weight: string }
+> = {
+  clean: {
+    family: "'Inter', 'Segoe UI', Arial, sans-serif",
+    style: 'normal',
+    weight: '400',
+  },
+  italic: {
+    family: "'Inter', 'Segoe UI', Arial, sans-serif",
+    style: 'italic',
+    weight: '400',
+  },
+  serif: {
+    family: "'Merriweather', Georgia, 'Times New Roman', serif",
+    style: 'normal',
+    weight: '400',
+  },
+  mono: {
+    family: "'IBM Plex Mono', 'Courier New', monospace",
+    style: 'normal',
+    weight: '400',
+  },
+  display: {
+    family: "'Poppins', 'Avenir Next', 'Segoe UI', sans-serif",
+    style: 'normal',
+    weight: '600',
+  },
 }

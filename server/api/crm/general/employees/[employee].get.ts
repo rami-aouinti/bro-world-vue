@@ -8,5 +8,8 @@ export default defineEventHandler(async (event): Promise<CrmEmployeeItem> => {
     throw createError({ statusCode: 400, statusMessage: 'Missing employee id' })
   }
 
-  return cachedCrmGeneralGet<Record<string, unknown>>(event, `employees/${employee}`) as CrmEmployeeItem
+  return cachedCrmGeneralGet<Record<string, unknown>>(
+    event,
+    `employees/${employee}`,
+  ) as CrmEmployeeItem
 })

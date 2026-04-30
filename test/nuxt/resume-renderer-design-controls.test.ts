@@ -81,7 +81,9 @@ describe('ResumeRenderer design controls coverage', () => {
       expect(root.classes()).toContain('divider-line')
       expect(root.attributes('style')).toContain('--cv-page: #ffffff;')
       expect(root.attributes('style')).toContain('--cv-accent: #2563eb;')
-      expect(root.attributes('style')).toContain('--cv-font-family: Inter, sans-serif;')
+      expect(root.attributes('style')).toContain(
+        '--cv-font-family: Inter, sans-serif;',
+      )
       expect(root.attributes('style')).toContain('--cv-font-weight: 500;')
 
       await wrapper.setProps({
@@ -103,7 +105,9 @@ describe('ResumeRenderer design controls coverage', () => {
       expect(root.classes()).toContain('divider-thick')
       expect(root.attributes('style')).toContain('--cv-page: #0f172a;')
       expect(root.attributes('style')).toContain('--cv-accent: #f97316;')
-      expect(root.attributes('style')).toContain('--cv-font-family: Merriweather, serif;')
+      expect(root.attributes('style')).toContain(
+        '--cv-font-family: Merriweather, serif;',
+      )
       expect(root.attributes('style')).toContain('--cv-font-weight: 700;')
     })
   }

@@ -308,7 +308,9 @@ async function deleteTask() {
       <template v-else>
         <v-row>
           <v-col v-for="task in paginatedTasks" :key="task.id" cols="12" md="4">
-            <WorldCard extra-class="pa-4 platform-style-card h-100 d-flex flex-column">
+            <WorldCard
+              extra-class="pa-4 platform-style-card h-100 d-flex flex-column"
+            >
               <div class="text-end">
                 <v-chip
                   size="small"

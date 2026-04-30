@@ -10,7 +10,11 @@ const props = defineProps<{
 <template>
   <v-text-field
     v-model="draft.name"
-    :label="props.section === 'skill' ? props.t('resumeBuilder.create.fields.skillName') : props.t('resumeBuilder.create.fields.languageName')"
+    :label="
+      props.section === 'skill'
+        ? props.t('resumeBuilder.create.fields.skillName')
+        : props.t('resumeBuilder.create.fields.languageName')
+    "
     variant="outlined"
     hide-details
   />
@@ -33,6 +37,20 @@ const props = defineProps<{
     />
   </template>
 
-  <v-rating v-if="props.showStars" v-model="draft.stars" color="amber" active-color="amber" length="5" />
-  <v-slider v-else v-model="draft.level" min="0" max="100" step="5" color="primary" thumb-label />
+  <v-rating
+    v-if="props.showStars"
+    v-model="draft.stars"
+    color="amber"
+    active-color="amber"
+    length="5"
+  />
+  <v-slider
+    v-else
+    v-model="draft.level"
+    min="0"
+    max="100"
+    step="5"
+    color="primary"
+    thumb-label
+  />
 </template>

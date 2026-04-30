@@ -1,8 +1,14 @@
-import type { CrmOverviewApiResponse, CrmOverviewQuery } from '../../types/api/crm'
+import type {
+  CrmOverviewApiResponse,
+  CrmOverviewQuery,
+} from '../../types/api/crm'
 import { getCached, privateCacheKey, setCached } from '../../utils/apiCache'
 import { resolveCacheTtl } from '../../utils/apiCacheConfig'
 import { getCrmOverview } from '../../utils/crmPipelineStore'
-import { getSessionUser, requireCrmPermission } from '../../utils/crmAccessControl'
+import {
+  getSessionUser,
+  requireCrmPermission,
+} from '../../utils/crmAccessControl'
 
 export default defineEventHandler(
   async (event): Promise<CrmOverviewApiResponse> => {

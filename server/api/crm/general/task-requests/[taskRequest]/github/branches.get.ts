@@ -4,8 +4,15 @@ export default defineEventHandler(async (event) => {
   const taskRequest = getRouterParam(event, 'taskRequest')
 
   if (!taskRequest) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing task request id' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing task request id',
+    })
   }
 
-  return cachedCrmGeneralGet(event, `task-requests/${taskRequest}/github/branches`, getQuery(event) as Record<string, string | number | boolean | undefined>)
+  return cachedCrmGeneralGet(
+    event,
+    `task-requests/${taskRequest}/github/branches`,
+    getQuery(event) as Record<string, string | number | boolean | undefined>,
+  )
 })

@@ -67,12 +67,14 @@ export function getOptionalBasketballSeason(event: H3Event) {
   return getOptionalBasketballId(event, 'season')
 }
 
-function mapCountry(country?: {
-  id: number | null
-  name: string
-  code: string | null
-  flag: string | null
-} | null) {
+function mapCountry(
+  country?: {
+    id: number | null
+    name: string
+    code: string | null
+    flag: string | null
+  } | null,
+) {
   if (!country) {
     return null
   }
@@ -176,7 +178,10 @@ export function mapBasketballGamesResponse(
 }
 
 export function mapBasketballStandingsResponse(
-  payload: ApiSportsBasketballResponse<ApiSportsBasketballStandingItem> | null | undefined,
+  payload:
+    | ApiSportsBasketballResponse<ApiSportsBasketballStandingItem>
+    | null
+    | undefined,
 ): BasketballStandingsApiResponse {
   const emptyResponse: BasketballStandingsApiResponse = {
     league: {
@@ -189,7 +194,11 @@ export function mapBasketballStandingsResponse(
     groups: [],
   }
 
-  if (!payload || !Array.isArray(payload.response) || payload.response.length === 0) {
+  if (
+    !payload ||
+    !Array.isArray(payload.response) ||
+    payload.response.length === 0
+  ) {
     return emptyResponse
   }
 
@@ -372,7 +381,8 @@ export async function cachedBasketballApiGet<TItem>(
     query,
   )
 
-  const redisCached = await getCached<ApiSportsBasketballResponse<TItem>>(cacheKey)
+  const redisCached =
+    await getCached<ApiSportsBasketballResponse<TItem>>(cacheKey)
   if (redisCached) {
     return redisCached
   }

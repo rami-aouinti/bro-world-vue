@@ -167,7 +167,9 @@ function removeCertification(index: number) {
 <style scoped>
 .certification-section {
   position: relative;
-  padding-bottom: calc(var(--rs-section-padding-bottom, 0px) + var(--rs-extra-line-offset, 0px));
+  padding-bottom: calc(
+    var(--rs-section-padding-bottom, 0px) + var(--rs-extra-line-offset, 0px)
+  );
 }
 .cv-heading-section {
   display: inline-flex;

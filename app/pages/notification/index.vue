@@ -25,12 +25,14 @@ definePageMeta({
           :title="item.title"
           :subtitle="item.description"
           :prepend-icon="
-            item.type === 'blog_notification' || item.type === 'friend_notification'
+            item.type === 'blog_notification' ||
+            item.type === 'friend_notification'
               ? undefined
               : 'mdi-bell-ring-outline'
           "
           :prepend-avatar="
-            item.type === 'blog_notification' || item.type === 'friend_notification'
+            item.type === 'blog_notification' ||
+            item.type === 'friend_notification'
               ? item.from?.photo || item.fromPhoto
               : undefined
           "

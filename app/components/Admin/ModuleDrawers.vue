@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { ADMIN_SECTIONS, PAGE_MANAGEMENT_NAV_ITEMS } from '~/constants/adminManagement'
+import {
+  ADMIN_SECTIONS,
+  PAGE_MANAGEMENT_NAV_ITEMS,
+} from '~/constants/adminManagement'
 
 const route = useRoute()
 </script>

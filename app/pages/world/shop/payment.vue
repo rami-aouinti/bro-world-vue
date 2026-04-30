@@ -68,7 +68,9 @@ async function createPaymentIntent() {
     })
     Notify.success(t('world.shop.payment.success.intentCreated'))
   } catch (error: any) {
-    Notify.error(error?.statusMessage || t('world.shop.payment.errors.intentFailed'))
+    Notify.error(
+      error?.statusMessage || t('world.shop.payment.errors.intentFailed'),
+    )
   } finally {
     loading.value = false
   }
@@ -87,7 +89,9 @@ async function confirmOrderPayment() {
     await refreshOrder()
     Notify.success(t('world.shop.payment.success.paymentConfirmed'))
   } catch (error: any) {
-    Notify.error(error?.statusMessage || t('world.shop.payment.errors.confirmFailed'))
+    Notify.error(
+      error?.statusMessage || t('world.shop.payment.errors.confirmFailed'),
+    )
   } finally {
     loading.value = false
   }
@@ -102,7 +106,9 @@ onMounted(async () => {
   try {
     await refreshOrder()
   } catch (error: any) {
-    Notify.error(error?.statusMessage || t('world.shop.payment.errors.orderNotFound'))
+    Notify.error(
+      error?.statusMessage || t('world.shop.payment.errors.orderNotFound'),
+    )
   }
 })
 </script>
@@ -127,7 +133,9 @@ onMounted(async () => {
         <v-row>
           <v-col cols="12" md="6">
             <v-card variant="outlined" rounded="lg" class="pa-4 mb-4">
-              <h3 class="text-subtitle-1 mb-3">{{ t('world.shop.payment.sections.provider') }}</h3>
+              <h3 class="text-subtitle-1 mb-3">
+                {{ t('world.shop.payment.sections.provider') }}
+              </h3>
               <AppSelect
                 v-model="provider"
                 :items="providerOptions"
@@ -146,7 +154,9 @@ onMounted(async () => {
             </v-card>
 
             <v-card variant="outlined" rounded="lg" class="pa-4">
-              <h3 class="text-subtitle-1 mb-3">{{ t('world.shop.payment.sections.confirmation') }}</h3>
+              <h3 class="text-subtitle-1 mb-3">
+                {{ t('world.shop.payment.sections.confirmation') }}
+              </h3>
               <p class="text-body-2 mb-2">
                 {{ t('world.shop.payment.confirmationHint') }}
               </p>
@@ -163,10 +173,16 @@ onMounted(async () => {
 
           <v-col cols="12" md="6">
             <v-card variant="outlined" rounded="lg" class="pa-4">
-              <h3 class="text-subtitle-1 mb-3">{{ t('world.shop.payment.sections.orderState') }}</h3>
+              <h3 class="text-subtitle-1 mb-3">
+                {{ t('world.shop.payment.sections.orderState') }}
+              </h3>
               <p class="mb-2">
                 {{ t('world.shop.payment.summary.orderId') }}:
-                <strong>{{ selectedOrder?.id || orderId || t('world.shop.common.notAvailable') }}</strong>
+                <strong>{{
+                  selectedOrder?.id ||
+                  orderId ||
+                  t('world.shop.common.notAvailable')
+                }}</strong>
               </p>
               <p class="mb-2">
                 {{ t('world.shop.payment.summary.status') }}:
@@ -174,15 +190,24 @@ onMounted(async () => {
               </p>
               <p class="mb-2">
                 {{ t('world.shop.payment.summary.total') }}:
-                <strong>{{ formatCurrency(selectedOrder?.amount || 0, selectedOrder?.currency || 'USD') }}</strong>
+                <strong>{{
+                  formatCurrency(
+                    selectedOrder?.amount || 0,
+                    selectedOrder?.currency || 'USD',
+                  )
+                }}</strong>
               </p>
             </v-card>
 
             <v-card variant="outlined" rounded="lg" class="pa-4 mt-4">
-              <h3 class="text-subtitle-1 mb-3">{{ t('world.shop.payment.sections.transaction') }}</h3>
+              <h3 class="text-subtitle-1 mb-3">
+                {{ t('world.shop.payment.sections.transaction') }}
+              </h3>
               <p class="mb-1">
                 {{ t('world.shop.payment.transaction.id') }}:
-                <strong>{{ transaction?.id || t('world.shop.common.notAvailable') }}</strong>
+                <strong>{{
+                  transaction?.id || t('world.shop.common.notAvailable')
+                }}</strong>
               </p>
               <p class="mb-1">
                 {{ t('world.shop.payment.transaction.status') }}:
@@ -194,7 +219,10 @@ onMounted(async () => {
               </p>
               <p class="mb-0">
                 {{ t('world.shop.payment.transaction.reason') }}:
-                <strong>{{ transaction?.reason || t('world.shop.payment.transaction.none') }}</strong>
+                <strong>{{
+                  transaction?.reason ||
+                  t('world.shop.payment.transaction.none')
+                }}</strong>
               </p>
             </v-card>
           </v-col>

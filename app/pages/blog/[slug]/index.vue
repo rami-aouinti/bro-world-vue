@@ -271,8 +271,6 @@ const post = computed<BlogPostView | null>(() =>
   normalizePost(postResponse.value),
 )
 
-
-
 function extractDescription(content: string): string {
   const normalized = content
     .replace(/<[^>]*>/g, ' ')

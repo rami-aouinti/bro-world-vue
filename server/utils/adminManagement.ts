@@ -49,7 +49,9 @@ export function getAdminResource(event: H3Event) {
   }
 
   const query = getQuery(event)
-  const pageType = String(query.pageType ?? '').trim().toLowerCase()
+  const pageType = String(query.pageType ?? '')
+    .trim()
+    .toLowerCase()
   const scopedPageType = PAGE_RESOURCE_TYPES.has(pageType) ? pageType : 'home'
 
   return {
@@ -61,7 +63,9 @@ export function getAdminResource(event: H3Event) {
 export function sanitizeQuery(
   query: Record<string, unknown>,
 ): Record<string, string | number | boolean> {
-  const entries = Object.entries(query).filter(([, value]) => value !== undefined)
+  const entries = Object.entries(query).filter(
+    ([, value]) => value !== undefined,
+  )
 
   return Object.fromEntries(
     entries.map(([key, value]) => {

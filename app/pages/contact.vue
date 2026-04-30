@@ -89,9 +89,7 @@ const page = computed(
     publicPagesStore.getPage<ContactPageResponse>('contact', locale.value),
 )
 
-const formContent = computed(
-  () => page.value?.form ?? fallbackFormContent,
-)
+const formContent = computed(() => page.value?.form ?? fallbackFormContent)
 
 const formState = reactive({
   firstName: '',
@@ -105,16 +103,15 @@ const submitError = ref<string | null>(null)
 const submitSuccessId = ref<string | number | null>(null)
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const canSubmit = computed(
-  () =>
-    Boolean(
-      formState.firstName.trim() &&
-        formState.lastName.trim() &&
-        formState.email.trim() &&
-        formState.topic.trim() &&
-        formState.message.trim() &&
-        emailPattern.test(formState.email.trim()),
-    ),
+const canSubmit = computed(() =>
+  Boolean(
+    formState.firstName.trim() &&
+    formState.lastName.trim() &&
+    formState.email.trim() &&
+    formState.topic.trim() &&
+    formState.message.trim() &&
+    emailPattern.test(formState.email.trim()),
+  ),
 )
 
 function resetForm() {
@@ -162,13 +159,13 @@ async function submitContactForm() {
   submitPending.value = true
 
   try {
-    const response = await $fetch<{ id?: string | number; data?: { id?: string | number } }>(
-      '/api/page/public/contact',
-      {
-        method: 'POST',
-        body: payload,
-      },
-    )
+    const response = await $fetch<{
+      id?: string | number
+      data?: { id?: string | number }
+    }>('/api/page/public/contact', {
+      method: 'POST',
+      body: payload,
+    })
 
     resetForm()
     submitSuccessId.value = response.id ?? response.data?.id ?? null

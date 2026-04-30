@@ -34,24 +34,80 @@ import LanguagesProgressCircle from './LanguagesProgressCircle.vue'
 import LanguagesProgressLine from './LanguagesProgressLine.vue'
 import LanguagesStars from './LanguagesStars.vue'
 import LanguagesTimeline from './LanguagesTimeline.vue'
-import type { ResumeSectionRendererKey, ResumeSectionRendererVariant } from './types'
+import type {
+  ResumeSectionRendererKey,
+  ResumeSectionRendererVariant,
+} from './types'
 
 type RendererComponent = any
 
-type SectionRendererRegistry = Record<ResumeSectionRendererKey, Partial<Record<ResumeSectionRendererVariant, RendererComponent>>>
+type SectionRendererRegistry = Record<
+  ResumeSectionRendererKey,
+  Partial<Record<ResumeSectionRendererVariant, RendererComponent>>
+>
 
 export const sectionRendererRegistry: SectionRendererRegistry = {
-  experience: { timeline: ExperienceTimeline, cards: ExperienceCards, list: ExperienceList, classic: ExperienceList },
-  skills: { classic: SkillsClassic, stars: SkillsStars, dots: SkillsDots, 'progress-line': SkillsProgressLine, 'progress-circle': SkillsProgressCircle },
-  education: { classic: EducationClassic, timeline: EducationTimeline, cards: EducationCards, list: EducationList },
-  projects: { classic: ProjectsClassic, timeline: ProjectsTimeline, cards: ProjectsCards, list: ProjectsList },
-  certifications: { classic: CertificationsClassic, timeline: CertificationsTimeline, cards: CertificationsCards, list: CertificationsList },
-  references: { classic: ReferencesClassic, timeline: ReferencesTimeline, cards: ReferencesCards, list: ReferencesList },
-  interests: { classic: InterestsClassic, timeline: InterestsTimeline, cards: InterestsCards, list: InterestsList },
-  languages: { classic: LanguagesClassic, timeline: LanguagesTimeline, cards: LanguagesCards, list: LanguagesList, stars: LanguagesStars, dots: LanguagesDots, 'progress-line': LanguagesProgressLine, 'progress-circle': LanguagesProgressCircle },
+  experience: {
+    timeline: ExperienceTimeline,
+    cards: ExperienceCards,
+    list: ExperienceList,
+    classic: ExperienceList,
+  },
+  skills: {
+    classic: SkillsClassic,
+    stars: SkillsStars,
+    dots: SkillsDots,
+    'progress-line': SkillsProgressLine,
+    'progress-circle': SkillsProgressCircle,
+  },
+  education: {
+    classic: EducationClassic,
+    timeline: EducationTimeline,
+    cards: EducationCards,
+    list: EducationList,
+  },
+  projects: {
+    classic: ProjectsClassic,
+    timeline: ProjectsTimeline,
+    cards: ProjectsCards,
+    list: ProjectsList,
+  },
+  certifications: {
+    classic: CertificationsClassic,
+    timeline: CertificationsTimeline,
+    cards: CertificationsCards,
+    list: CertificationsList,
+  },
+  references: {
+    classic: ReferencesClassic,
+    timeline: ReferencesTimeline,
+    cards: ReferencesCards,
+    list: ReferencesList,
+  },
+  interests: {
+    classic: InterestsClassic,
+    timeline: InterestsTimeline,
+    cards: InterestsCards,
+    list: InterestsList,
+  },
+  languages: {
+    classic: LanguagesClassic,
+    timeline: LanguagesTimeline,
+    cards: LanguagesCards,
+    list: LanguagesList,
+    stars: LanguagesStars,
+    dots: LanguagesDots,
+    'progress-line': LanguagesProgressLine,
+    'progress-circle': LanguagesProgressCircle,
+  },
 }
 
-export function resolveSectionRenderer(section: ResumeSectionRendererKey, variant: ResumeSectionRendererVariant | string) {
+export function resolveSectionRenderer(
+  section: ResumeSectionRendererKey,
+  variant: ResumeSectionRendererVariant | string,
+) {
   const sectionMap = sectionRendererRegistry[section]
-  return sectionMap[variant as ResumeSectionRendererVariant] ?? sectionMap.classic
+  return (
+    sectionMap[variant as ResumeSectionRendererVariant] ?? sectionMap.classic
+  )
 }

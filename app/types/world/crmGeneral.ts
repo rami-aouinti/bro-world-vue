@@ -52,7 +52,9 @@ export interface CrmDashboardExecutiveResponse {
   todayAgenda: CrmDashboardExecutiveAgendaItem[]
 }
 
-export interface CrmGeneralCollectionResponse<T extends Record<string, unknown>> {
+export interface CrmGeneralCollectionResponse<
+  T extends Record<string, unknown>,
+> {
   items: T[]
   pagination?: {
     page: number

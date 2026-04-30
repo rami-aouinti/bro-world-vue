@@ -89,7 +89,6 @@ export type WorldJobsCandidatesListResponse = JobCandidatesApiResponse
 export type WorldJobsAdminPolicyDetailResponse = JobsAdminPolicyResponse
 export type WorldJobsAdminDashboardDetailResponse = JobsAdminDashboardResponse
 
-
 export type RecruitMyJobsResponse = {
   createdJobs: Array<{
     id: string

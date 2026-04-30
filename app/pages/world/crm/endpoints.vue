@@ -5,7 +5,9 @@ const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
 const endpointsStore = useWorldCrmEndpointsStore()
 
-await useAsyncData('world-crm-endpoints-catalog', () => endpointsStore.fetchCatalog())
+await useAsyncData('world-crm-endpoints-catalog', () =>
+  endpointsStore.fetchCatalog(),
+)
 </script>
 
 <template>
@@ -37,8 +39,16 @@ await useAsyncData('world-crm-endpoints-catalog', () => endpointsStore.fetchCata
         {{ endpointsStore.error }}
       </v-alert>
 
-      <v-row v-if="endpointsStore.pending && !endpointsStore.groups.length" class="mb-4">
-        <v-col v-for="item in 6" :key="`endpoint-skeleton-${item}`" cols="12" lg="6">
+      <v-row
+        v-if="endpointsStore.pending && !endpointsStore.groups.length"
+        class="mb-4"
+      >
+        <v-col
+          v-for="item in 6"
+          :key="`endpoint-skeleton-${item}`"
+          cols="12"
+          lg="6"
+        >
           <v-skeleton-loader type="article" class="rounded-xl" />
         </v-col>
       </v-row>
@@ -52,7 +62,12 @@ await useAsyncData('world-crm-endpoints-catalog', () => endpointsStore.fetchCata
             cols="12"
             lg="6"
           >
-            <CrmEndpointAction :config="{ ...endpoint, title: t(`world.crm.endpoints.items.${endpoint.id}`) }" />
+            <CrmEndpointAction
+              :config="{
+                ...endpoint,
+                title: t(`world.crm.endpoints.items.${endpoint.id}`),
+              }"
+            />
           </v-col>
         </v-row>
       </div>

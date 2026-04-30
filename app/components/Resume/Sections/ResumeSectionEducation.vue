@@ -196,12 +196,20 @@ function removeEducationItem(index: number) {
               :end="item.end"
               variant="text"
               :editable="editable"
-              @update:start="(value) => updateText(`education.${index}.start`, value)"
-              @update:end="(value) => updateText(`education.${index}.end`, value)"
+              @update:start="
+                (value) => updateText(`education.${index}.start`, value)
+              "
+              @update:end="
+                (value) => updateText(`education.${index}.end`, value)
+              "
             />
           </span>
         </div>
-        <div v-if="safeVariant === 'timeline'" class="education-timeline-rail" aria-hidden="true">
+        <div
+          v-if="safeVariant === 'timeline'"
+          class="education-timeline-rail"
+          aria-hidden="true"
+        >
           <span class="education-timeline-dot" />
         </div>
         <div class="content-column">
@@ -333,7 +341,9 @@ function removeEducationItem(index: number) {
 
   position: relative;
   border-bottom: var(--rs-section-separator, none);
-  padding-bottom: calc(var(--rs-section-padding-bottom, 0px) + var(--rs-extra-line-offset, 0px));
+  padding-bottom: calc(
+    var(--rs-section-padding-bottom, 0px) + var(--rs-extra-line-offset, 0px)
+  );
 }
 .cv-heading-section {
   display: inline-flex;

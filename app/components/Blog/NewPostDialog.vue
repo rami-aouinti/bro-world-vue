@@ -84,8 +84,10 @@ const actionModalOpen = computed({
 })
 const actionModalTitle = computed(() => {
   if (modalState.value === 'tag') return t('blog.newPost.modals.tag.title')
-  if (modalState.value === 'youtube') return t('blog.newPost.modals.youtube.title')
-  if (modalState.value === 'camera') return t('blog.newPost.modals.camera.title')
+  if (modalState.value === 'youtube')
+    return t('blog.newPost.modals.youtube.title')
+  if (modalState.value === 'camera')
+    return t('blog.newPost.modals.camera.title')
   if (modalState.value === 'media') return t('blog.newPost.modals.media.title')
   return t('blog.newPost.createTitle')
 })
@@ -106,7 +108,9 @@ function parseCsv(input: string): string[] {
     .filter(Boolean)
 }
 
-function openActionModal(action: 'live' | 'media' | 'feeling' | 'tag' | 'youtube') {
+function openActionModal(
+  action: 'live' | 'media' | 'feeling' | 'tag' | 'youtube',
+) {
   if (action === 'tag') {
     modalState.value = 'tag'
     return
@@ -285,7 +289,9 @@ function onSubmit() {
       </v-card-text>
       <v-card-actions class="px-4 pb-4">
         <v-spacer />
-        <v-btn variant="text" @click="modalState = null">{{ t('common.close') }}</v-btn>
+        <v-btn variant="text" @click="modalState = null">{{
+          t('common.close')
+        }}</v-btn>
       </v-card-actions>
     </v-card>
 
@@ -300,7 +306,9 @@ function onSubmit() {
       </v-card-text>
       <v-card-actions class="px-4 pb-4">
         <v-spacer />
-        <v-btn variant="text" @click="modalState = null">{{ t('common.close') }}</v-btn>
+        <v-btn variant="text" @click="modalState = null">{{
+          t('common.close')
+        }}</v-btn>
       </v-card-actions>
     </v-card>
 
@@ -313,7 +321,9 @@ function onSubmit() {
           {{ t('blog.newPost.modals.camera.open') }}
         </v-btn>
         <v-spacer />
-        <v-btn variant="text" @click="modalState = null">{{ t('common.close') }}</v-btn>
+        <v-btn variant="text" @click="modalState = null">{{
+          t('common.close')
+        }}</v-btn>
       </v-card-actions>
     </v-card>
 
@@ -351,7 +361,9 @@ function onSubmit() {
       </v-card-text>
       <v-card-actions class="px-4 pb-4">
         <v-spacer />
-        <v-btn variant="text" @click="modalState = null">{{ t('common.close') }}</v-btn>
+        <v-btn variant="text" @click="modalState = null">{{
+          t('common.close')
+        }}</v-btn>
       </v-card-actions>
     </v-card>
   </AppModal>

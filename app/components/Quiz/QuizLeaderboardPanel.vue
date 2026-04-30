@@ -38,9 +38,7 @@ function asString(value: unknown): string | null {
 }
 
 function userProfilePath(username: string | null): string | null {
-  return username
-    ? `/user/${encodeURIComponent(username)}/profile`
-    : null
+  return username ? `/user/${encodeURIComponent(username)}/profile` : null
 }
 
 const leaderboardEntries = computed<LeaderboardEntry[]>(() => {

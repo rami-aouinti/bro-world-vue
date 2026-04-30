@@ -21,7 +21,9 @@ const store = useAdminManagementStore()
 
 const section = computed(() => ADMIN_SECTIONS_BY_KEY[props.sectionKey])
 const currentPageType = computed<PageManagementNavKey | undefined>(() =>
-  props.sectionKey === 'pages' ? (props.pageType ?? PAGE_MANAGEMENT_NAV_ITEMS[0].key) : undefined,
+  props.sectionKey === 'pages'
+    ? (props.pageType ?? PAGE_MANAGEMENT_NAV_ITEMS[0].key)
+    : undefined,
 )
 
 const search = ref('')
@@ -51,10 +53,7 @@ const filteredRows = computed(() => {
 
   const needle = search.value.trim().toLowerCase()
   return rows.value.filter((row) =>
-    Object.values(row)
-      .join(' ')
-      .toLowerCase()
-      .includes(needle),
+    Object.values(row).join(' ').toLowerCase().includes(needle),
   )
 })
 
@@ -70,7 +69,10 @@ const displayedColumns = computed(() => {
     .map((key) => ({ title: key, key }))
 })
 
-const skeletonColumns = computed(() => [...displayedColumns.value, { title: 'Actions', key: 'actions' }])
+const skeletonColumns = computed(() => [
+  ...displayedColumns.value,
+  { title: 'Actions', key: 'actions' },
+])
 const canMutate = computed(() => section.value.capabilities)
 
 function openCreateDialog() {
@@ -119,7 +121,10 @@ function parseJsonObject(value: unknown): unknown | null {
   }
 }
 
-function toRows(value: unknown, parent = ''): Array<{ label: string; value: string }> {
+function toRows(
+  value: unknown,
+  parent = '',
+): Array<{ label: string; value: string }> {
   if (Array.isArray(value)) {
     return value.flatMap((item, index) => {
       const label = parent ? `${parent}[${index}]` : `[${index}]`
@@ -133,15 +138,17 @@ function toRows(value: unknown, parent = ''): Array<{ label: string; value: stri
   }
 
   if (value !== null && typeof value === 'object') {
-    return Object.entries(value as Record<string, unknown>).flatMap(([key, entryValue]) => {
-      const label = parent ? `${parent}.${key}` : key
+    return Object.entries(value as Record<string, unknown>).flatMap(
+      ([key, entryValue]) => {
+        const label = parent ? `${parent}.${key}` : key
 
-      if (entryValue !== null && typeof entryValue === 'object') {
-        return toRows(entryValue, label)
-      }
+        if (entryValue !== null && typeof entryValue === 'object') {
+          return toRows(entryValue, label)
+        }
 
-      return [{ label, value: String(entryValue ?? '') }]
-    })
+        return [{ label, value: String(entryValue ?? '') }]
+      },
+    )
   }
 
   return [{ label: parent || 'value', value: String(value ?? '') }]
@@ -210,13 +217,17 @@ async function removeItem(item: Record<string, unknown>) {
 <template>
   <v-container fluid>
     <v-card class="pa-4 postcard-gradient-card rounded-xl">
-      <div class="d-flex justify-space-between align-center flex-wrap ga-3 mb-4">
+      <div
+        class="d-flex justify-space-between align-center flex-wrap ga-3 mb-4"
+      >
         <div>
           <h2 class="text-h5 mb-1">{{ section.title }}</h2>
           <p class="text-medium-emphasis mb-0">{{ section.description }}</p>
         </div>
         <div class="d-flex align-center ga-2 flex-wrap">
-          <v-chip color="primary" variant="tonal">Count: {{ totalCount }}</v-chip>
+          <v-chip color="primary" variant="tonal"
+            >Count: {{ totalCount }}</v-chip
+          >
           <v-btn
             v-if="canMutate.create"
             color="primary"
@@ -242,7 +253,10 @@ async function removeItem(item: Record<string, unknown>) {
         <v-table class="bg-transparent">
           <thead>
             <tr>
-              <th v-for="column in skeletonColumns" :key="`skeleton-head-${column.key}`">
+              <th
+                v-for="column in skeletonColumns"
+                :key="`skeleton-head-${column.key}`"
+              >
                 {{ column.title }}
               </th>
             </tr>

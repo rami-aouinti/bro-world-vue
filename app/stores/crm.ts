@@ -29,7 +29,9 @@ export const useCrmStore = defineStore('crm', () => {
     for (const column of columns.value) {
       grouped.set(
         column.stage,
-        opportunities.value.filter((opportunity) => opportunity.stage === column.stage),
+        opportunities.value.filter(
+          (opportunity) => opportunity.stage === column.stage,
+        ),
       )
     }
 
@@ -43,18 +45,21 @@ export const useCrmStore = defineStore('crm', () => {
     filters.value = { ...filters.value, ...(forceFilters ?? {}) }
 
     try {
-      const response = await $fetch<CrmOverviewApiResponse>('/api/crm/overview', {
-        query: {
-          search: filters.value.search,
-          owner: filters.value.owner,
-          stage: filters.value.stage,
-          industry: filters.value.industry,
-          minAmount: filters.value.minAmount,
-          maxAmount: filters.value.maxAmount,
-          fromExpectedCloseDate: filters.value.fromExpectedCloseDate,
-          toExpectedCloseDate: filters.value.toExpectedCloseDate,
+      const response = await $fetch<CrmOverviewApiResponse>(
+        '/api/crm/overview',
+        {
+          query: {
+            search: filters.value.search,
+            owner: filters.value.owner,
+            stage: filters.value.stage,
+            industry: filters.value.industry,
+            minAmount: filters.value.minAmount,
+            maxAmount: filters.value.maxAmount,
+            fromExpectedCloseDate: filters.value.fromExpectedCloseDate,
+            toExpectedCloseDate: filters.value.toExpectedCloseDate,
+          },
         },
-      })
+      )
 
       overview.value = response
 
@@ -74,7 +79,8 @@ export const useCrmStore = defineStore('crm', () => {
         await fetchOpportunityDetail(selectedOpportunityId.value)
       }
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Unable to fetch CRM overview'
+      error.value =
+        err instanceof Error ? err.message : 'Unable to fetch CRM overview'
       throw err
     } finally {
       pending.value = false
@@ -85,17 +91,23 @@ export const useCrmStore = defineStore('crm', () => {
     selectedOpportunityId.value = opportunityId
 
     try {
-      selectedOpportunityDetail.value = await $fetch<CrmOpportunityDetailApiResponse>(
-        `/api/crm/opportunities/${opportunityId}`,
-      )
+      selectedOpportunityDetail.value =
+        await $fetch<CrmOpportunityDetailApiResponse>(
+          `/api/crm/opportunities/${opportunityId}`,
+        )
     } catch (err) {
       error.value =
-        err instanceof Error ? err.message : 'Unable to fetch opportunity detail'
+        err instanceof Error
+          ? err.message
+          : 'Unable to fetch opportunity detail'
       throw err
     }
   }
 
-  async function transitionOpportunity(opportunityId: string, payload: CrmTransitionPayload) {
+  async function transitionOpportunity(
+    opportunityId: string,
+    payload: CrmTransitionPayload,
+  ) {
     pending.value = true
     error.value = null
 

@@ -5,8 +5,7 @@ export async function requireLearningAdmin(event: H3Event) {
   const { user } = await requireUserSession(event)
   const sessionUser = user as SessionUser | null
   const roles = sessionUser?.roles ?? []
-  const canAccess =
-    roles.includes('ROLE_ROOT') || roles.includes('ROLE_ADMIN')
+  const canAccess = roles.includes('ROLE_ROOT') || roles.includes('ROLE_ADMIN')
 
   if (!canAccess) {
     throw createError({

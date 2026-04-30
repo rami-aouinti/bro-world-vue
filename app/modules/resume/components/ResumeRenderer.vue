@@ -3,7 +3,10 @@ import ResumeRendererBase from '~/components/Resume/Templates/ResumeRenderer.vue
 import { resolveTemplateSkin } from '~/constants/resumeTemplateSkins'
 import type { ResumeTemplateSkin } from '~/constants/resumeTemplateSkins'
 import { resolveSectionRenderer } from '../renderers/sections/sectionRendererRegistry'
-import type { ResumeSectionRendererKey, ResumeSectionRendererVariant } from '../renderers/sections/types'
+import type {
+  ResumeSectionRendererKey,
+  ResumeSectionRendererVariant,
+} from '../renderers/sections/types'
 import { validateTemplateConfig } from '../template/template.schema'
 import { resolveCompatibilityTemplateConfig } from '../template/templateCompatibility'
 
@@ -28,24 +31,31 @@ const props = defineProps<{
 const SAFE_TEMPLATE_ID = 'classic'
 
 const normalizedTemplateConfig = computed(() => {
-  const compatibilityTemplateConfig = resolveCompatibilityTemplateConfig(props.compatibilityTemplateId)
+  const compatibilityTemplateConfig = resolveCompatibilityTemplateConfig(
+    props.compatibilityTemplateId,
+  )
 
   const rawConfig = {
     ...(compatibilityTemplateConfig || {}),
     ...(props.templateConfig || {}),
-    structure: props.templateConfig?.structureId || compatibilityTemplateConfig?.structureId,
-    layout: props.templateConfig?.layoutId || compatibilityTemplateConfig?.layoutId,
+    structure:
+      props.templateConfig?.structureId ||
+      compatibilityTemplateConfig?.structureId,
+    layout:
+      props.templateConfig?.layoutId || compatibilityTemplateConfig?.layoutId,
   }
   return validateTemplateConfig(rawConfig)
 })
 
 const resolvedTemplateId = computed(() => {
-  const candidate = normalizedTemplateConfig.value.templateId || normalizedTemplateConfig.value.skinId || SAFE_TEMPLATE_ID
+  const candidate =
+    normalizedTemplateConfig.value.templateId ||
+    normalizedTemplateConfig.value.skinId ||
+    SAFE_TEMPLATE_ID
   try {
     const skin = resolveTemplateSkin(candidate)
     return skin.id ? candidate : SAFE_TEMPLATE_ID
-  }
-  catch {
+  } catch {
     return SAFE_TEMPLATE_ID
   }
 })
@@ -53,8 +63,7 @@ const resolvedTemplateId = computed(() => {
 const resolvedTemplateSkin = computed<ResumeTemplateSkin>(() => {
   try {
     return resolveTemplateSkin(resolvedTemplateId.value)
-  }
-  catch {
+  } catch {
     return resolveTemplateSkin(SAFE_TEMPLATE_ID)
   }
 })
@@ -63,15 +72,22 @@ const mergedResume = computed(() => ({
   ...(props.resumeData || {}),
   template: {
     ...(props.resumeData?.template || {}),
-    structureId: normalizedTemplateConfig.value.structure || props.resumeData?.template?.structureId,
-    layoutId: normalizedTemplateConfig.value.layout || props.resumeData?.template?.layoutId,
+    structureId:
+      normalizedTemplateConfig.value.structure ||
+      props.resumeData?.template?.structureId,
+    layoutId:
+      normalizedTemplateConfig.value.layout ||
+      props.resumeData?.template?.layoutId,
     skinId: normalizedTemplateConfig.value.skinId || resolvedTemplateId.value,
   },
 }))
 
 const atomicSectionRenderer = computed(() => {
   if (!props.section) return null
-  return resolveSectionRenderer(props.section, props.sectionVariant ?? 'classic')
+  return resolveSectionRenderer(
+    props.section,
+    props.sectionVariant ?? 'classic',
+  )
 })
 </script>
 

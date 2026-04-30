@@ -418,7 +418,7 @@ function normalizeMetricKey(key: string) {
 
   if (trimmed.includes('_')) {
     const [first, ...rest] = trimmed.split('_')
-    return `${first}${rest.map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('')}`
+    return `${first}${rest.map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join('')}`
   }
 
   return trimmed
@@ -576,8 +576,7 @@ function mapFixturePlayerStats(
     const games = (details.games as Record<string, unknown> | undefined) ?? {}
     const goals = (details.goals as Record<string, unknown> | undefined) ?? {}
     const shots = (details.shots as Record<string, unknown> | undefined) ?? {}
-    const passes =
-      (details.passes as Record<string, unknown> | undefined) ?? {}
+    const passes = (details.passes as Record<string, unknown> | undefined) ?? {}
     const tackles =
       (details.tackles as Record<string, unknown> | undefined) ?? {}
 
@@ -793,42 +792,44 @@ export function useFootballData() {
     )
   })
 
-  const mappedFixtureMatchContext = computed<FixtureMatchContextViewModel>(() => {
-    return (
-      fixtureDetails.value?.matchContext ?? {
-        coverage: {
-          injuries: false,
-          predictions: false,
-          odds: false,
-        },
-        availability: {
-          covered: false,
-          available: false,
-          status: 'not-covered',
-          injuries: [],
-          suspensions: [],
-        },
-        headToHead: {
-          covered: true,
-          available: false,
-          status: 'unavailable',
-          fixtures: [],
-        },
-        prediction: {
-          covered: false,
-          available: false,
-          status: 'not-covered',
-          item: null,
-        },
-        liveOdds: {
-          covered: false,
-          available: false,
-          status: 'not-covered',
-          item: null,
-        },
-      }
-    )
-  })
+  const mappedFixtureMatchContext = computed<FixtureMatchContextViewModel>(
+    () => {
+      return (
+        fixtureDetails.value?.matchContext ?? {
+          coverage: {
+            injuries: false,
+            predictions: false,
+            odds: false,
+          },
+          availability: {
+            covered: false,
+            available: false,
+            status: 'not-covered',
+            injuries: [],
+            suspensions: [],
+          },
+          headToHead: {
+            covered: true,
+            available: false,
+            status: 'unavailable',
+            fixtures: [],
+          },
+          prediction: {
+            covered: false,
+            available: false,
+            status: 'not-covered',
+            item: null,
+          },
+          liveOdds: {
+            covered: false,
+            available: false,
+            status: 'not-covered',
+            item: null,
+          },
+        }
+      )
+    },
+  )
 
   const resetLeagueDependentData = () => {
     fixtures.value = []

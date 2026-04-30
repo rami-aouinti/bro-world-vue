@@ -1,7 +1,10 @@
 import type { CrmOpportunityDetailApiResponse } from '../../../types/api/crm'
 import { getCached, privateCacheKey, setCached } from '../../../utils/apiCache'
 import { resolveCacheTtl } from '../../../utils/apiCacheConfig'
-import { getSessionUser, requireCrmPermission } from '../../../utils/crmAccessControl'
+import {
+  getSessionUser,
+  requireCrmPermission,
+} from '../../../utils/crmAccessControl'
 import { getCrmOpportunityDetail } from '../../../utils/crmPipelineStore'
 
 export default defineEventHandler(
@@ -17,10 +20,16 @@ export default defineEventHandler(
     const opportunityId = getRouterParam(event, 'opportunityId')
 
     if (!opportunityId) {
-      throw createError({ statusCode: 400, statusMessage: 'Missing opportunity id' })
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Missing opportunity id',
+      })
     }
 
-    const cacheKey = privateCacheKey(username, `/crm/opportunities/${opportunityId}`)
+    const cacheKey = privateCacheKey(
+      username,
+      `/crm/opportunities/${opportunityId}`,
+    )
     const cached = await getCached<CrmOpportunityDetailApiResponse>(cacheKey)
 
     if (cached) {
@@ -30,7 +39,10 @@ export default defineEventHandler(
     const detail = getCrmOpportunityDetail(opportunityId)
 
     if (!detail) {
-      throw createError({ statusCode: 404, statusMessage: 'Opportunity not found' })
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Opportunity not found',
+      })
     }
 
     await setCached(cacheKey, detail, resolveCacheTtl('default'))

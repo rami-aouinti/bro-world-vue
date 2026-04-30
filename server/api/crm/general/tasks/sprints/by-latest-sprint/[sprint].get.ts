@@ -21,16 +21,23 @@ interface CrmTasksBySprintResponse {
   }
 }
 
-export default defineEventHandler((event): Promise<CrmTasksBySprintResponse> => {
-  const sprintId = getRouterParam(event, 'sprint')
+export default defineEventHandler(
+  (event): Promise<CrmTasksBySprintResponse> => {
+    const sprintId = getRouterParam(event, 'sprint')
 
-  if (!sprintId) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing sprint id' })
-  }
+    if (!sprintId) {
+      throw createError({ statusCode: 400, statusMessage: 'Missing sprint id' })
+    }
 
-  return fetchCrmGeneral<CrmTasksBySprintResponse>(
-    event,
-    `tasks/sprints/by-latest-sprint/${encodeURIComponent(sprintId)}`,
-    { query: getQuery(event) as Record<string, string | number | boolean | undefined> },
-  )
-})
+    return fetchCrmGeneral<CrmTasksBySprintResponse>(
+      event,
+      `tasks/sprints/by-latest-sprint/${encodeURIComponent(sprintId)}`,
+      {
+        query: getQuery(event) as Record<
+          string,
+          string | number | boolean | undefined
+        >,
+      },
+    )
+  },
+)

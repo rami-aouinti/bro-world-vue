@@ -1,8 +1,11 @@
 <script setup lang="ts">
 const route = useRoute()
 
-await navigateTo({
-  path: '/resume/cover-page/editor',
-  query: route.query,
-}, { redirectCode: 302 })
+await navigateTo(
+  {
+    path: '/resume/cover-page/editor',
+    query: route.query,
+  },
+  { redirectCode: 302 },
+)
 </script>

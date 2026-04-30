@@ -2,7 +2,14 @@ import { createError } from 'h3'
 import { requireLearningAdmin } from '~~/server/utils/learningAdminAccess'
 import { getSchoolResourceById } from '~~/server/utils/learningPublicSchool'
 
-const editableResources = new Set(['classes', 'courses', 'teachers', 'students', 'exams', 'grades'])
+const editableResources = new Set([
+  'classes',
+  'courses',
+  'teachers',
+  'students',
+  'exams',
+  'grades',
+])
 
 export default defineEventHandler(async (event) => {
   await requireLearningAdmin(event)

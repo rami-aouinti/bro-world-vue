@@ -19,7 +19,9 @@ function pickQueryString(query: LocationQuery, key: string): string {
 }
 
 export function useResumeCoverFlow() {
-  const toCoverLetterQuery = (state: ResumeCoverFlowState): LocationQueryRaw => ({
+  const toCoverLetterQuery = (
+    state: ResumeCoverFlowState,
+  ): LocationQueryRaw => ({
     coverPageTemplate: state.template,
     coverPageTitle: state.title,
     coverPageSubtitle: state.subtitle,

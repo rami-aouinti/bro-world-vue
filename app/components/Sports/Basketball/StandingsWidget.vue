@@ -20,7 +20,10 @@ const resolveRowPlayer = (row: BasketballStandingRow) => {
     (row as Record<string, any>).team?.topPlayer?.id,
   ]
 
-  const playerId = candidates.find((candidate) => typeof candidate === 'number' && candidate > 0) ?? null
+  const playerId =
+    candidates.find(
+      (candidate) => typeof candidate === 'number' && candidate > 0,
+    ) ?? null
   const name =
     (typeof row.topPlayer?.name === 'string' && row.topPlayer.name.trim()) ||
     (typeof (row as Record<string, any>).leader?.name === 'string' &&

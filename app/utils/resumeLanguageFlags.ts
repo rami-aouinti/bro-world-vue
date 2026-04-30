@@ -20,14 +20,18 @@ export function resolveLanguageFlagSrc(language: ResumeLanguageLike) {
   const explicitFlag = String(language.flag || '').trim()
   if (explicitFlag && isImageFlag(explicitFlag)) return explicitFlag
 
-  const countryCode = String(language.countryCode || '').trim().toLowerCase()
+  const countryCode = String(language.countryCode || '')
+    .trim()
+    .toLowerCase()
   if (!/^[a-z]{2}$/.test(countryCode)) return ''
 
   return `/images/flags/${countryCode}.svg`
 }
 
 export function resolveLanguageFlagClass(language: ResumeLanguageLike) {
-  const countryCode = String(language.countryCode || '').trim().toLowerCase()
+  const countryCode = String(language.countryCode || '')
+    .trim()
+    .toLowerCase()
   if (!/^[a-z]{2}$/.test(countryCode)) return ''
   return `fi fi-${countryCode}`
 }

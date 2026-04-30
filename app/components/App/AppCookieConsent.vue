@@ -22,11 +22,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-dialog
-    v-model="isOpen"
-    max-width="920"
-    persistent
-  >
+  <v-dialog v-model="isOpen" max-width="920" persistent>
     <v-card class="pa-4 pa-sm-8">
       <v-card-title class="text-wrap text-h4 font-weight-bold pb-4">
         🍪 {{ t('app.cookieConsent.title') }}
@@ -37,19 +33,11 @@ onMounted(() => {
       </v-card-text>
 
       <v-card-actions class="ga-3 justify-end flex-wrap">
-        <v-btn
-          variant="text"
-          color="primary"
-          @click="closeWithoutChoice"
-        >
+        <v-btn variant="text" color="primary" @click="closeWithoutChoice">
           {{ t('app.cookieConsent.customize') }}
         </v-btn>
 
-        <v-btn
-          variant="flat"
-          color="primary"
-          @click="saveChoice('rejected')"
-        >
+        <v-btn variant="flat" color="primary" @click="saveChoice('rejected')">
           {{ t('app.cookieConsent.rejectAll') }}
         </v-btn>
 

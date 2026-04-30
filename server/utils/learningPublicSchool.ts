@@ -91,9 +91,14 @@ const SCHOOL_RESOURCES = [
 
 type SchoolResource = (typeof SCHOOL_RESOURCES)[number]
 
-function assertSchoolResource(resource: string): asserts resource is SchoolResource {
+function assertSchoolResource(
+  resource: string,
+): asserts resource is SchoolResource {
   if (!SCHOOL_RESOURCES.includes(resource as SchoolResource)) {
-    throw createError({ statusCode: 400, statusMessage: 'Unsupported school resource' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Unsupported school resource',
+    })
   }
 }
 
@@ -142,17 +147,17 @@ function mapClassesToCourses(
       modulesByTeacher.set(moduleKey, group)
     }
 
-    const modules: LearningModule[] = Array.from(modulesByTeacher.entries()).map(
-      ([teacherId, teacherExams], index) => ({
-        id: `${schoolClass.id}-module-${index + 1}`,
-        title:
-          teacherId === 'teacher-unassigned'
-            ? 'Évaluations'
-            : teachersById.get(teacherId) ?? 'Évaluations',
-        description: `Exams for ${schoolClass.name}`,
-        lessons: teacherExams.map(buildLessonFromExam),
-      }),
-    )
+    const modules: LearningModule[] = Array.from(
+      modulesByTeacher.entries(),
+    ).map(([teacherId, teacherExams], index) => ({
+      id: `${schoolClass.id}-module-${index + 1}`,
+      title:
+        teacherId === 'teacher-unassigned'
+          ? 'Évaluations'
+          : (teachersById.get(teacherId) ?? 'Évaluations'),
+      description: `Exams for ${schoolClass.name}`,
+      lessons: teacherExams.map(buildLessonFromExam),
+    }))
 
     return {
       id: schoolClass.id,
@@ -175,7 +180,9 @@ function mapClassesToCourses(
 }
 
 function mapGradesToProgress(snapshot: SchoolSnapshot): LearningProgress[] {
-  const studentsById = new Map(snapshot.students.map((entry) => [entry.id, entry]))
+  const studentsById = new Map(
+    snapshot.students.map((entry) => [entry.id, entry]),
+  )
   const gradesByStudent = new Map<string, SchoolGrade[]>()
 
   for (const grade of snapshot.grades) {
@@ -184,56 +191,66 @@ function mapGradesToProgress(snapshot: SchoolSnapshot): LearningProgress[] {
     gradesByStudent.set(grade.studentId, group)
   }
 
-  return Array.from(gradesByStudent.entries()).flatMap(([studentId, studentGrades]) => {
-    const student = studentsById.get(studentId)
-    if (!student) {
-      return []
-    }
+  return Array.from(gradesByStudent.entries()).flatMap(
+    ([studentId, studentGrades]) => {
+      const student = studentsById.get(studentId)
+      if (!student) {
+        return []
+      }
 
-    const lessonStatuses = Object.fromEntries(
-      studentGrades.map((grade) => [grade.examId, scoreToStatus(grade.score)]),
-    )
-    const completedAssessments = studentGrades
-      .filter((grade) => grade.score >= 7)
-      .map((grade) => grade.examId)
-    const totalScore = studentGrades.reduce((sum, grade) => sum + grade.score, 0)
-    const averageScore = studentGrades.length > 0 ? totalScore / studentGrades.length : 0
-    return [
-      {
-        id: `progress-${student.id}`,
-        courseId: student.classId,
-        learner: student.name,
-        cohort: 'general',
-        lessonStatuses,
-        completedAssessments,
-        score: Number(averageScore.toFixed(2)),
-        timeSpentMinutes: studentGrades.length * 45,
-        attempts: studentGrades.length,
-        currentLevel: scoreToLevel(averageScore),
-        unlockedLevels:
-          averageScore >= 8.5
-            ? ['beginner', 'intermediate', 'advanced']
-            : averageScore >= 6.5
-              ? ['beginner', 'intermediate']
-              : ['beginner'],
-        hasDroppedOut: false,
-        updatedAt: new Date().toISOString(),
-      },
-    ]
-  })
+      const lessonStatuses = Object.fromEntries(
+        studentGrades.map((grade) => [
+          grade.examId,
+          scoreToStatus(grade.score),
+        ]),
+      )
+      const completedAssessments = studentGrades
+        .filter((grade) => grade.score >= 7)
+        .map((grade) => grade.examId)
+      const totalScore = studentGrades.reduce(
+        (sum, grade) => sum + grade.score,
+        0,
+      )
+      const averageScore =
+        studentGrades.length > 0 ? totalScore / studentGrades.length : 0
+      return [
+        {
+          id: `progress-${student.id}`,
+          courseId: student.classId,
+          learner: student.name,
+          cohort: 'general',
+          lessonStatuses,
+          completedAssessments,
+          score: Number(averageScore.toFixed(2)),
+          timeSpentMinutes: studentGrades.length * 45,
+          attempts: studentGrades.length,
+          currentLevel: scoreToLevel(averageScore),
+          unlockedLevels:
+            averageScore >= 8.5
+              ? ['beginner', 'intermediate', 'advanced']
+              : averageScore >= 6.5
+                ? ['beginner', 'intermediate']
+                : ['beginner'],
+          hasDroppedOut: false,
+          updatedAt: new Date().toISOString(),
+        },
+      ]
+    },
+  )
 }
 
 export async function getSchoolSnapshot(
   event: H3Event,
 ): Promise<SchoolSnapshot> {
-  const [classes, courses, students, teachers, exams, grades] = await Promise.all([
-    fetchSchoolCollectionCached<SchoolClass>(event, 'classes'),
-    fetchSchoolCollectionCached<SchoolCourse>(event, 'courses'),
-    fetchSchoolCollectionCached<SchoolStudent>(event, 'students'),
-    fetchSchoolCollectionCached<SchoolTeacher>(event, 'teachers'),
-    fetchSchoolCollectionCached<SchoolExam>(event, 'exams'),
-    fetchSchoolCollectionCached<SchoolGrade>(event, 'grades'),
-  ])
+  const [classes, courses, students, teachers, exams, grades] =
+    await Promise.all([
+      fetchSchoolCollectionCached<SchoolClass>(event, 'classes'),
+      fetchSchoolCollectionCached<SchoolCourse>(event, 'courses'),
+      fetchSchoolCollectionCached<SchoolStudent>(event, 'students'),
+      fetchSchoolCollectionCached<SchoolTeacher>(event, 'teachers'),
+      fetchSchoolCollectionCached<SchoolExam>(event, 'exams'),
+      fetchSchoolCollectionCached<SchoolGrade>(event, 'grades'),
+    ])
 
   return {
     classes,
@@ -350,10 +367,11 @@ export async function updateSchoolClass(
 
 export async function deleteSchoolClass(event: H3Event, classId: string) {
   const client = getServerPublicAxios(event)
-  await client.delete(resolveServerApiUrl(event, `/api/v1/school/classes/${classId}`))
+  await client.delete(
+    resolveServerApiUrl(event, `/api/v1/school/classes/${classId}`),
+  )
   await invalidateSchoolCache()
 }
-
 
 export async function getSchoolResourceById(
   event: H3Event,
@@ -406,6 +424,8 @@ export async function deleteSchoolResource(
 ) {
   assertSchoolResource(resource)
   const client = getServerPublicAxios(event)
-  await client.delete(resolveServerApiUrl(event, `/api/v1/school/${resource}/${id}`))
+  await client.delete(
+    resolveServerApiUrl(event, `/api/v1/school/${resource}/${id}`),
+  )
   await invalidateSchoolCache()
 }

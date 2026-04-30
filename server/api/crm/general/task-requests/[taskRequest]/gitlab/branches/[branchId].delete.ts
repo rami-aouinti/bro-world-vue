@@ -5,12 +5,19 @@ export default defineEventHandler(async (event) => {
   const branchId = getRouterParam(event, 'branchId')
 
   if (!taskRequest || !branchId) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing task request id or branch id' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing task request id or branch id',
+    })
   }
 
-  await mutateCrmGeneral(event, `task-requests/${taskRequest}/gitlab/branches/${branchId}`, {
-    method: 'DELETE',
-  })
+  await mutateCrmGeneral(
+    event,
+    `task-requests/${taskRequest}/gitlab/branches/${branchId}`,
+    {
+      method: 'DELETE',
+    },
+  )
 
   return { success: true }
 })

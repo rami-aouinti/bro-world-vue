@@ -6,9 +6,9 @@ type ApplicationScopedConversationsPayload = {
 }
 
 export default defineEventHandler(async (event) => {
-  const payload = await readBody<ApplicationScopedConversationsPayload>(event).catch(
-    () => ({}),
-  )
+  const payload = await readBody<ApplicationScopedConversationsPayload>(
+    event,
+  ).catch(() => ({}))
   const query = getQuery(event)
   const applicationSlug = String(
     payload?.applicationSlug || query.applicationSlug || '',

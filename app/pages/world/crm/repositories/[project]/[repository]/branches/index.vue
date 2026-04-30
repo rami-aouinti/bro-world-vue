@@ -18,14 +18,27 @@ const { crmNavItems } = useWorldCrmNavItems()
 const githubStore = useWorldCrmGithubStore()
 
 const projectId = computed(() => String(route.params.project ?? ''))
-const repository = computed(() => decodeURIComponent(String(route.params.repository ?? '')))
+const repository = computed(() =>
+  decodeURIComponent(String(route.params.repository ?? '')),
+)
 const selectedBranch = ref<GithubBranch | null>(null)
 const detailModalOpen = ref(false)
 
-const { data, pending, error } = useAsyncData<CrmGithubListResponse<GithubBranch>>(
+const { data, pending, error } = useAsyncData<
+  CrmGithubListResponse<GithubBranch>
+>(
   () => `crm-repository-branches-page-${projectId.value}-${repository.value}`,
-  () => githubStore.getBranches(projectId.value, { repository: repository.value, repo: repository.value }),
-  { watch: [projectId, repository], lazy: true, server: false, default: () => ({ items: [] }) },
+  () =>
+    githubStore.getBranches(projectId.value, {
+      repository: repository.value,
+      repo: repository.value,
+    }),
+  {
+    watch: [projectId, repository],
+    lazy: true,
+    server: false,
+    default: () => ({ items: [] }),
+  },
 )
 
 const branches = computed(() => data.value?.items ?? [])
@@ -46,13 +59,19 @@ function openBranchDetail(branch: GithubBranch) {
       module-icon="mdi-account-group-outline"
       :module-description="t('world.crm.repositories.moduleDescription')"
       :nav-items="crmNavItems"
-      :action-label="t('world.crm.repositories.sections.branches', { count: branches.length })"
+      :action-label="
+        t('world.crm.repositories.sections.branches', {
+          count: branches.length,
+        })
+      "
       action-icon="mdi-source-branch"
     />
 
     <v-container fluid>
       <CrmPageSkeleton v-if="showInitialSkeleton" variant="dashboard" />
-      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">Impossible de charger les branches.</v-alert>
+      <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4"
+        >Impossible de charger les branches.</v-alert
+      >
 
       <div v-else class="position-relative">
         <v-card class="pa-4 postcard-gradient-card" rounded="xl">
@@ -71,7 +90,9 @@ function openBranchDetail(branch: GithubBranch) {
         <v-fade-transition>
           <div v-if="showStaleOverlay" class="stale-overlay pa-3 rounded-xl">
             <v-progress-linear indeterminate color="primary" class="mb-2" />
-            <p class="text-caption mb-0 text-medium-emphasis">{{ t('common.loading', 'Refreshing data...') }}</p>
+            <p class="text-caption mb-0 text-medium-emphasis">
+              {{ t('common.loading', 'Refreshing data...') }}
+            </p>
           </div>
         </v-fade-transition>
       </div>
@@ -79,14 +100,29 @@ function openBranchDetail(branch: GithubBranch) {
 
     <RepositoryItemDetailModal
       v-model="detailModalOpen"
-      :title="t('world.crm.repositories.modal.branchDetailsTitle', { name: selectedBranch?.name ?? '' })"
+      :title="
+        t('world.crm.repositories.modal.branchDetailsTitle', {
+          name: selectedBranch?.name ?? '',
+        })
+      "
       :payload="selectedBranch"
     >
       <template #summary="{ payload }">
         <v-row>
-          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.name') }}:</strong> {{ payload?.name ?? '-' }}</v-col>
-          <v-col cols="12" md="6"><strong>{{ t('world.crm.repositories.modal.protection') }}:</strong> {{ payload?.protected ? t('common.yes') : t('common.no') }}</v-col>
-          <v-col cols="12"><strong>{{ t('world.crm.repositories.modal.lastSha') }}:</strong> {{ payload?.commit?.sha ?? '-' }}</v-col>
+          <v-col cols="12" md="6"
+            ><strong>{{ t('world.crm.repositories.modal.name') }}:</strong>
+            {{ payload?.name ?? '-' }}</v-col
+          >
+          <v-col cols="12" md="6"
+            ><strong
+              >{{ t('world.crm.repositories.modal.protection') }}:</strong
+            >
+            {{ payload?.protected ? t('common.yes') : t('common.no') }}</v-col
+          >
+          <v-col cols="12"
+            ><strong>{{ t('world.crm.repositories.modal.lastSha') }}:</strong>
+            {{ payload?.commit?.sha ?? '-' }}</v-col
+          >
         </v-row>
       </template>
     </RepositoryItemDetailModal>

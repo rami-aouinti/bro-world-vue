@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { RESUME_BASE_PRESETS, RESUME_COMPOSED_PRESET_METADATA, RESUME_STYLE_PACKS } from '~/constants/resumePresets'
+import {
+  RESUME_BASE_PRESETS,
+  RESUME_COMPOSED_PRESET_METADATA,
+  RESUME_STYLE_PACKS,
+} from '~/constants/resumePresets'
 import { RESUME_TEMPLATES_CATALOG } from '~/constants/resumeTemplates.catalog'
 import type { ResumeTemplateConfig } from '~/types/resumeTemplateConfig'
 
@@ -19,8 +23,13 @@ describe('resume presets static validation', () => {
   })
 
   it('keeps every composed preset mapped to a valid ResumeTemplateConfig', () => {
-    const resumeTemplates = RESUME_TEMPLATES_CATALOG.filter((template): template is ResumeTemplateConfig => template.type === 'resume')
-    const templateByPresetId = new Map(resumeTemplates.map(template => [template.presetId, template]))
+    const resumeTemplates = RESUME_TEMPLATES_CATALOG.filter(
+      (template): template is ResumeTemplateConfig =>
+        template.type === 'resume',
+    )
+    const templateByPresetId = new Map(
+      resumeTemplates.map((template) => [template.presetId, template]),
+    )
 
     for (const preset of RESUME_COMPOSED_PRESET_METADATA) {
       const template = templateByPresetId.get(preset.id)

@@ -12,14 +12,19 @@ export default defineEventHandler(async (event): Promise<unknown> => {
   const projectId = getRouterParam(event, 'project')
 
   if (!applicationSlug) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing application slug' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing application slug',
+    })
   }
 
   if (!projectId) {
     throw createError({ statusCode: 400, statusMessage: 'Missing project id' })
   }
 
-  const query = normalizeQuery(getQuery(event) as Record<string, unknown>) as ApiQuery
+  const query = normalizeQuery(
+    getQuery(event) as Record<string, unknown>,
+  ) as ApiQuery
   const endpoint = `/crm/applications/${encodeURIComponent(applicationSlug)}/projects/${encodeURIComponent(projectId)}/github/collaborators`
 
   return await cachedPrivateGet(event, endpoint, {

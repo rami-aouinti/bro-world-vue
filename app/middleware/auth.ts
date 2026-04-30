@@ -6,8 +6,7 @@ export default defineNuxtRouteMiddleware(async () => {
   try {
     await fetch()
     await awaitSessionReady()
-  }
-  catch {
+  } catch {
     // Session refresh failure is handled by the loggedIn check below.
   }
 

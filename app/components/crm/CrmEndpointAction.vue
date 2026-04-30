@@ -19,7 +19,9 @@ const pathParams = computed(() => {
   const matches = props.config.path.matchAll(/\{([^}]+)\}/g)
   return Array.from(matches)
     .map((match) => match[1])
-    .filter((param): param is string => typeof param === 'string' && param.length > 0)
+    .filter(
+      (param): param is string => typeof param === 'string' && param.length > 0,
+    )
 })
 
 for (const param of pathParams.value) {
@@ -28,7 +30,9 @@ for (const param of pathParams.value) {
   }
 }
 
-const hasBody = computed(() => ['POST', 'PATCH', 'PUT'].includes(props.config.method))
+const hasBody = computed(() =>
+  ['POST', 'PATCH', 'PUT'].includes(props.config.method),
+)
 
 function parseJsonOrEmpty(input: string) {
   const trimmed = input.trim()
@@ -44,7 +48,9 @@ function buildPath() {
   return pathParams.value.reduce((path, param) => {
     const rawValue = routeParams[param]?.trim()
     if (!rawValue) {
-      throw new Error(t('crm.components.endpointAction.errors.missingRouteParam', { param }))
+      throw new Error(
+        t('crm.components.endpointAction.errors.missingRouteParam', { param }),
+      )
     }
 
     return path.replace(`{${param}}`, encodeURIComponent(rawValue))
@@ -93,7 +99,10 @@ async function execute() {
         <p class="text-subtitle-1 mb-0">{{ config.title }}</p>
         <p class="text-caption text-medium-emphasis mb-0">{{ config.path }}</p>
       </div>
-      <v-chip :color="config.method === 'GET' ? 'primary' : 'secondary'" size="small">
+      <v-chip
+        :color="config.method === 'GET' ? 'primary' : 'secondary'"
+        size="small"
+      >
         {{ config.method }}
       </v-chip>
     </div>
@@ -138,7 +147,12 @@ async function execute() {
     />
 
     <div class="d-flex align-center ga-2 mb-2">
-      <v-btn color="primary" :loading="pending" prepend-icon="mdi-send" @click="execute">
+      <v-btn
+        color="primary"
+        :loading="pending"
+        prepend-icon="mdi-send"
+        @click="execute"
+      >
         {{ t('crm.components.endpointAction.actions.execute') }}
       </v-btn>
       <v-chip v-if="status" color="success" variant="tonal">

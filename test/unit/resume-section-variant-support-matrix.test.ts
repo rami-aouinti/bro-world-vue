@@ -22,9 +22,9 @@ describe('resume section variant support matrix', () => {
       RESUME_SHARED_TEMPLATE_VARIANTS_BY_SECTION,
     )) {
       const exposed = new Set(
-        RESUME_SECTION_REGISTRY[sectionKey as keyof typeof RESUME_SECTION_REGISTRY].variants.map(
-          (variant) => variant.value,
-        ),
+        RESUME_SECTION_REGISTRY[
+          sectionKey as keyof typeof RESUME_SECTION_REGISTRY
+        ].variants.map((variant) => variant.value),
       )
 
       for (const variant of variants) {

@@ -139,8 +139,9 @@ const getTargetParticipant = (
 
   const candidates = notCurrentUser.length ? notCurrentUser : participants
   return (
-    candidates.find((participant) => Boolean(getParticipantPhoto(participant))) ||
-    candidates[0]
+    candidates.find((participant) =>
+      Boolean(getParticipantPhoto(participant)),
+    ) || candidates[0]
   )
 }
 
@@ -148,7 +149,10 @@ const normalizePrivateConversation = (
   conversation: PrivateConversation,
   currentUserId = '',
 ): InboxItem => {
-  const participantFallbackTitle = getTargetParticipant(conversation, currentUserId)
+  const participantFallbackTitle = getTargetParticipant(
+    conversation,
+    currentUserId,
+  )
   const title =
     conversation.title?.trim() ||
     (participantFallbackTitle
@@ -315,7 +319,8 @@ export const useInboxNotificationsStore = defineStore('inbox-notifications', {
           : ''
       const currentInboxConversationId =
         import.meta.client && typeof window !== 'undefined'
-          ? new URLSearchParams(window.location.search).get('conversation') || ''
+          ? new URLSearchParams(window.location.search).get('conversation') ||
+            ''
           : ''
       const shouldNavigateToInbox =
         locationPath === '/inbox' &&

@@ -62,9 +62,7 @@ export function levelToPercent(level: number | string) {
     return starsToPercent(levelTextToStars(level))
   }
 
-  return level <= 5
-    ? starsToPercent(level)
-    : clamp(Math.round(level), 0, 100)
+  return level <= 5 ? starsToPercent(level) : clamp(Math.round(level), 0, 100)
 }
 
 export function levelToText(level: number | string) {

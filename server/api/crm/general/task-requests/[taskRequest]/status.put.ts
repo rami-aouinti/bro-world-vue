@@ -5,13 +5,20 @@ export default defineEventHandler(async (event): Promise<CrmIdResponse> => {
   const taskRequest = getRouterParam(event, 'taskRequest')
 
   if (!taskRequest) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing task request id' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing task request id',
+    })
   }
 
   const body = await readBody<Record<string, unknown>>(event)
 
-  return mutateCrmGeneral<CrmIdResponse>(event, `task-requests/${taskRequest}/status`, {
-    method: 'PUT',
-    body,
-  })
+  return mutateCrmGeneral<CrmIdResponse>(
+    event,
+    `task-requests/${taskRequest}/status`,
+    {
+      method: 'PUT',
+      body,
+    },
+  )
 })

@@ -13,18 +13,22 @@ function crmApplicationGithubEndpoint(path: string) {
   return `${CRM_APPLICATION_BASE_ENDPOINT}/${normalizedPath}`
 }
 
-export function cachedCrmGithubApplicationsGet<TResponse extends ApiObject | ApiObject[]>(
-  event: H3Event,
-  path: string,
-  query?: ApiQuery,
-) {
-  return cachedPrivateGet<TResponse>(event, crmApplicationGithubEndpoint(path), {
-    query,
-    cacheDomain: 'crm',
-  })
+export function cachedCrmGithubApplicationsGet<
+  TResponse extends ApiObject | ApiObject[],
+>(event: H3Event, path: string, query?: ApiQuery) {
+  return cachedPrivateGet<TResponse>(
+    event,
+    crmApplicationGithubEndpoint(path),
+    {
+      query,
+      cacheDomain: 'crm',
+    },
+  )
 }
 
-export function mutateCrmGithubApplications<TResponse extends ApiObject | ApiObject[]>(
+export function mutateCrmGithubApplications<
+  TResponse extends ApiObject | ApiObject[],
+>(
   event: H3Event,
   path: string,
   options: {
@@ -40,7 +44,10 @@ export function mutateCrmGithubApplications<TResponse extends ApiObject | ApiObj
     query: options.query,
   }).then(async (response) => {
     await invalidateMutationCaches(event, CRM_GITHUB_APPLICATION_MUTATION_KEY)
-    await invalidateCrmGithubApplicationPrefixes(event, buildCrmGithubApplicationMutationPrefixes(path))
+    await invalidateCrmGithubApplicationPrefixes(
+      event,
+      buildCrmGithubApplicationMutationPrefixes(path),
+    )
     return response
   })
 }
@@ -58,7 +65,9 @@ function buildCrmPublicEndpointPrefix(endpoint: string) {
 
 function buildCrmGithubApplicationMutationPrefixes(path: string) {
   const normalizedPath = path.replace(/^\/+/, '')
-  const scopedMatch = normalizedPath.match(/^([^/]+)\/projects\/([^/]+)\/github\/(.+)$/)
+  const scopedMatch = normalizedPath.match(
+    /^([^/]+)\/projects\/([^/]+)\/github\/(.+)$/,
+  )
 
   if (!scopedMatch) {
     return []
@@ -100,10 +109,12 @@ async function invalidateCrmGithubApplicationPrefixes(
       const prefixes = [buildCrmPublicEndpointPrefix(endpointPrefix)]
 
       if (session?.username) {
-        prefixes.push(buildCrmPrivateEndpointPrefix(session.username, endpointPrefix))
+        prefixes.push(
+          buildCrmPrivateEndpointPrefix(session.username, endpointPrefix),
+        )
       }
 
-      return prefixes.map(prefix => invalidateByPrefix(prefix))
+      return prefixes.map((prefix) => invalidateByPrefix(prefix))
     }),
   )
 }

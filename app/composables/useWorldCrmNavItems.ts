@@ -25,7 +25,10 @@ export function useWorldCrmNavItems() {
   const { can, sessionUser } = useCrmPermissions()
   const { data: generalApplications } = useAsyncData(
     'world-public-general-applications-crm-nav',
-    () => $fetch<{ items?: GeneralApplicationItem[] }>('/api/application/public/general'),
+    () =>
+      $fetch<{ items?: GeneralApplicationItem[] }>(
+        '/api/application/public/general',
+      ),
   )
 
   const isRootAdmin = computed(() =>
@@ -34,13 +37,13 @@ export function useWorldCrmNavItems() {
 
   const crmGeneralApplication = computed(() =>
     (generalApplications.value?.items ?? []).find(
-      item => item.platform?.key === 'crm',
+      (item) => item.platform?.key === 'crm',
     ),
   )
 
   const crmMigrations = computed(() => {
     const config = (crmGeneralApplication.value?.configurations ?? []).find(
-      item => item.key === 'application.crm.general',
+      (item) => item.key === 'application.crm.general',
     )
 
     return {
@@ -58,7 +61,7 @@ export function useWorldCrmNavItems() {
   const pluginKeys = computed(() => {
     return new Set(
       (crmGeneralApplication.value?.plugins ?? [])
-        .map(plugin => (plugin.key || plugin.name || '').toLowerCase().trim())
+        .map((plugin) => (plugin.key || plugin.name || '').toLowerCase().trim())
         .filter(Boolean),
     )
   })

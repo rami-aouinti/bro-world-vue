@@ -5,12 +5,19 @@ export default defineEventHandler(async (event): Promise<null> => {
   const user = getRouterParam(event, 'user')
 
   if (!taskRequest || !user) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing task request id or user id' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing task request id or user id',
+    })
   }
 
-  await mutateCrmGeneral(event, `task-requests/${taskRequest}/assignees/${user}`, {
-    method: 'DELETE',
-  })
+  await mutateCrmGeneral(
+    event,
+    `task-requests/${taskRequest}/assignees/${user}`,
+    {
+      method: 'DELETE',
+    },
+  )
 
   setResponseStatus(event, 204)
   return null

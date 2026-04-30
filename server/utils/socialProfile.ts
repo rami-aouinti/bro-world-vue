@@ -14,7 +14,9 @@ function normalizeName(value: unknown) {
 
 function splitDisplayName(name: string) {
   if (name.includes(',')) {
-    const [rawLastName, rawFirstName] = name.split(',').map((part) => part.trim())
+    const [rawLastName, rawFirstName] = name
+      .split(',')
+      .map((part) => part.trim())
 
     const firstName = normalizeName(rawFirstName)
     const lastName = normalizeName(rawLastName)

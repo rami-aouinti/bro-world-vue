@@ -1,4 +1,7 @@
-import type { ResumeLayoutMode, ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
+import type {
+  ResumeLayoutMode,
+  ResumeSectionIconStyleVariant,
+} from '~/constants/resumeTemplateSkins'
 import { RESUME_SKINS_REGISTRY } from '~/constants/resumeSkins'
 import { getResumeLayoutById } from '~/constants/resumeLayouts'
 import { RESUME_LAYOUTS_CATALOG } from '~/constants/resumeTemplates.catalog'
@@ -27,8 +30,12 @@ export type ResumeRendererDesignState = {
   sectionStyleClass: string
 }
 
-const ICON_ALIAS: Record<string, ResumeSectionIconStyleVariant> = { text: 'outline', outline: 'outline', filled: 'filled', rounded: 'rounded' }
-
+const ICON_ALIAS: Record<string, ResumeSectionIconStyleVariant> = {
+  text: 'outline',
+  outline: 'outline',
+  filled: 'filled',
+  rounded: 'rounded',
+}
 
 type TemplateRuntimePreset = {
   headerStyleVariant: 'neutral' | 'hero'
@@ -56,7 +63,10 @@ const DEFAULT_RUNTIME_PRESET: TemplateRuntimePreset = {
   photoScale: 1,
 }
 
-const TEMPLATE_RUNTIME_PRESETS: Record<string, Partial<TemplateRuntimePreset>> = {
+const TEMPLATE_RUNTIME_PRESETS: Record<
+  string,
+  Partial<TemplateRuntimePreset>
+> = {
   'resume-banner': {
     headerStyleVariant: 'hero',
     headerHeight: '224px',
@@ -81,7 +91,9 @@ const TEMPLATE_RUNTIME_PRESETS: Record<string, Partial<TemplateRuntimePreset>> =
   },
 }
 
-function resolveRuntimePreset(templateId: string | undefined): TemplateRuntimePreset {
+function resolveRuntimePreset(
+  templateId: string | undefined,
+): TemplateRuntimePreset {
   if (!templateId) return DEFAULT_RUNTIME_PRESET
   return {
     ...DEFAULT_RUNTIME_PRESET,
@@ -90,15 +102,26 @@ function resolveRuntimePreset(templateId: string | undefined): TemplateRuntimePr
 }
 
 export function resolveRuntimeLayoutAndSkin(layoutId: string, skinId: string) {
-  const layout = getResumeLayoutById(layoutId) ?? RESUME_LAYOUTS_CATALOG.find(entry => entry.id === layoutId)
+  const layout =
+    getResumeLayoutById(layoutId) ??
+    RESUME_LAYOUTS_CATALOG.find((entry) => entry.id === layoutId)
   const skin = RESUME_SKINS_REGISTRY[skinId]
-  if (!layout || !skin) throw new Error(`[resume-runtime] Unknown layout/skin combination: ${layoutId}/${skinId}`)
+  if (!layout || !skin)
+    throw new Error(
+      `[resume-runtime] Unknown layout/skin combination: ${layoutId}/${skinId}`,
+    )
   return { layout, skin }
 }
 
-export function toResumeRendererDesignState(template: ResumeTemplateConfig): ResumeRendererDesignState {
-  const { layout, skin } = resolveRuntimeLayoutAndSkin(template.layoutId, template.skinId)
-  const layoutMode = 'structure' in layout ? layout.structure : layout.structureId
+export function toResumeRendererDesignState(
+  template: ResumeTemplateConfig,
+): ResumeRendererDesignState {
+  const { layout, skin } = resolveRuntimeLayoutAndSkin(
+    template.layoutId,
+    template.skinId,
+  )
+  const layoutMode =
+    'structure' in layout ? layout.structure : layout.structureId
   const preset = resolveRuntimePreset(template.id)
 
   return {
@@ -121,11 +144,32 @@ export function toResumeRendererDesignState(template: ResumeTemplateConfig): Res
       '--cv-text': skin.colors.text,
     },
     sectionTokens: {
-      experience: { '--resume-section-emphasis': skin.sectionStyle === 'accent' ? skin.colors.accent : skin.colors.text },
-      education: { '--resume-section-emphasis': skin.sectionStyle === 'accent' ? skin.colors.accent : skin.colors.text },
-      project: { '--resume-section-emphasis': skin.sectionStyle === 'soft-block' ? skin.colors.sidebar : skin.colors.text },
-      language: { '--resume-section-emphasis': skin.sectionStyle === 'line' ? skin.colors.accent : skin.colors.text },
-      certification: { '--resume-section-emphasis': skin.sectionStyle === 'line' ? skin.colors.accent : skin.colors.text },
+      experience: {
+        '--resume-section-emphasis':
+          skin.sectionStyle === 'accent'
+            ? skin.colors.accent
+            : skin.colors.text,
+      },
+      education: {
+        '--resume-section-emphasis':
+          skin.sectionStyle === 'accent'
+            ? skin.colors.accent
+            : skin.colors.text,
+      },
+      project: {
+        '--resume-section-emphasis':
+          skin.sectionStyle === 'soft-block'
+            ? skin.colors.sidebar
+            : skin.colors.text,
+      },
+      language: {
+        '--resume-section-emphasis':
+          skin.sectionStyle === 'line' ? skin.colors.accent : skin.colors.text,
+      },
+      certification: {
+        '--resume-section-emphasis':
+          skin.sectionStyle === 'line' ? skin.colors.accent : skin.colors.text,
+      },
       hobby: { '--resume-section-emphasis': skin.colors.text },
       reference: { '--resume-section-emphasis': skin.colors.text },
     },
@@ -140,7 +184,9 @@ export function toResumeRendererDesignState(template: ResumeTemplateConfig): Res
     photoOffsetY: preset.photoOffsetY,
     photoScale: preset.photoScale,
     profile: {
-      typography: skin.typography.family.includes('Merriweather') ? 'classic' : 'neo-grotesk',
+      typography: skin.typography.family.includes('Merriweather')
+        ? 'classic'
+        : 'neo-grotesk',
       spacing: skin.radius === '0px' ? 'compact' : 'balanced',
       separators: skin.sectionStyle,
       cards: skin.radius === '0px' ? 'flat' : 'soft',

@@ -10,7 +10,11 @@ import type {
   ResumeTemplateSkin,
 } from '~/constants/resumeTemplateSkins'
 import { RESUME_SECTION_ICONS } from '~/constants/resumeSectionIcons'
-import { buildLayoutEntries, getDefaultLayoutForStructure, getResumeLayoutById } from '~/constants/resumeLayouts'
+import {
+  buildLayoutEntries,
+  getDefaultLayoutForStructure,
+  getResumeLayoutById,
+} from '~/constants/resumeLayouts'
 import type {
   ResumeEditableSectionKey,
   ResumeSectionActionKey,
@@ -197,12 +201,11 @@ const resolvedTemplateConfig = computed(() => ({
   skinId: props.resume?.template?.skinId as string | undefined,
 }))
 
-const resolvedLayoutDefinition = computed(() =>
-  getResumeLayoutById(
-    resolvedTemplateConfig.value.layoutId
-    ?? props.templateId,
-  )
-  ?? getDefaultLayoutForStructure(resolvedDesignState.value.layoutMode),
+const resolvedLayoutDefinition = computed(
+  () =>
+    getResumeLayoutById(
+      resolvedTemplateConfig.value.layoutId ?? props.templateId,
+    ) ?? getDefaultLayoutForStructure(resolvedDesignState.value.layoutMode),
 )
 
 const normalizedSectionLayout = computed<SectionLayoutEntry[]>(() => {
@@ -261,10 +264,18 @@ const hasRenderedAvatar = computed(() =>
   Boolean(props.showPhoto && props.resume?.photoUrl && !props.photoHidden),
 )
 const normalizeLayoutMode = (value: unknown): ResumeLayoutMode => {
-  if (value === 'aside-left' || value === 'aside-right' || value === 'no-aside') return value
+  if (value === 'aside-left' || value === 'aside-right' || value === 'no-aside')
+    return value
   if (typeof value !== 'string') return 'aside-left'
-  const normalized = value.trim().toLowerCase().replace(/[\s_]+/g, '-')
-  if (normalized === 'aside-left' || normalized === 'aside-right' || normalized === 'no-aside') {
+  const normalized = value
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_]+/g, '-')
+  if (
+    normalized === 'aside-left' ||
+    normalized === 'aside-right' ||
+    normalized === 'no-aside'
+  ) {
     return normalized as ResumeLayoutMode
   }
   return 'aside-left'
@@ -278,14 +289,20 @@ const resolvedDesignState = computed(() => ({
   dividerStyle: props.designState?.dividerStyle ?? props.dividerStyle,
   sidebarWidth: props.designState?.sidebarWidth ?? props.sidebarWidth,
   sidebarHeight: props.designState?.sidebarHeight ?? props.sidebarHeight,
-  photoSize: props.designState?.photo?.size ?? props.designState?.photoSize ?? props.photoSize,
+  photoSize:
+    props.designState?.photo?.size ??
+    props.designState?.photoSize ??
+    props.photoSize,
   photoBorderWidth:
-    props.designState?.photo?.border ?? props.designState?.photoBorderWidth ?? props.photoBorderWidth,
+    props.designState?.photo?.border ??
+    props.designState?.photoBorderWidth ??
+    props.photoBorderWidth,
   photoPosition:
     props.designState?.photo?.position === 'left' ||
     props.designState?.photo?.position === 'right'
       ? props.designState.photo.position
-      : props.designState?.photoPosition === 'left' || props.designState?.photoPosition === 'right'
+      : props.designState?.photoPosition === 'left' ||
+          props.designState?.photoPosition === 'right'
         ? props.designState.photoPosition
         : props.photoPosition === 'left' || props.photoPosition === 'right'
           ? props.photoPosition
@@ -301,19 +318,21 @@ const resolvedDesignState = computed(() => ({
     props.designState?.sectionIconStyleVariant ?? props.sectionIconStyleVariant,
   iconSizeVariant: props.designState?.iconSizeVariant ?? props.iconSizeVariant,
   iconColorMode: props.designState?.iconColorMode ?? props.iconColorMode,
-  headerStyleVariant: props.designState?.headerStyleVariant ?? props.headerStyleVariant,
+  headerStyleVariant:
+    props.designState?.headerStyleVariant ?? props.headerStyleVariant,
   headerHeight: props.designState?.headerHeight ?? props.headerHeight,
   asideFullHeight: props.designState?.asideFullHeight ?? props.asideFullHeight,
   splitContactRow: props.designState?.splitContactRow ?? props.splitContactRow,
-  sectionRibbonStyle: props.designState?.sectionRibbonStyle ?? props.sectionRibbonStyle,
+  sectionRibbonStyle:
+    props.designState?.sectionRibbonStyle ?? props.sectionRibbonStyle,
   separatorStyleVariant: props.designState?.separatorStyleVariant ?? 'neutral',
   accentPaletteVariant: props.designState?.accentPaletteVariant ?? 'default',
   decorativeShapeA: props.designState?.decorativeShapeA,
   decorativeShapeB: props.designState?.decorativeShapeB,
   layoutMode: normalizeLayoutMode(
     props.designState?.layoutMode ??
-    props.layoutMode ??
-    props.templateSkin.layoutMode,
+      props.layoutMode ??
+      props.templateSkin.layoutMode,
   ),
 }))
 const rootDesignClasses = computed(() => [
@@ -336,8 +355,11 @@ const rootDesignClasses = computed(() => [
 const skinCssVars = computed<Record<string, string>>(() => {
   const profile = props.templateSkin.profile
   return {
-    '--resume-skin-id': resolvedTemplateConfig.value.skinId ?? props.templateSkin.id,
-    '--resume-structure-id': resolvedTemplateConfig.value.structureId ?? resolvedLayoutDefinition.value.structure,
+    '--resume-skin-id':
+      resolvedTemplateConfig.value.skinId ?? props.templateSkin.id,
+    '--resume-structure-id':
+      resolvedTemplateConfig.value.structureId ??
+      resolvedLayoutDefinition.value.structure,
     '--resume-layout-id': resolvedLayoutDefinition.value.layoutId,
     '--resume-profile-typography': profile.typography,
     '--resume-profile-radius': profile.cards,
@@ -346,20 +368,32 @@ const skinCssVars = computed<Record<string, string>>(() => {
   }
 })
 
-
-const rootThemeVars = computed(() => buildThemeVars({
-  primary: String((props.themeTokens?.['--cv-accent'] ?? props.templateSkin.themeTokens?.['--cv-accent']) ?? ''),
-  pageBg: String((props.themeTokens?.['--cv-surface'] ?? props.templateSkin.themeTokens?.['--cv-surface']) ?? ''),
-  asideWidth: resolvedDesignState.value.sidebarWidth,
-  lineStyle: resolvedDesignState.value.dividerStyle,
-  fontStyle: props.templateSkin.profile.typography,
-  photo: {
-    position: resolvedDesignState.value.photoPosition,
-    size: resolvedDesignState.value.photoSize,
-    border: resolvedDesignState.value.photoBorderWidth,
-    shape: (props.designState?.photo?.shape ?? 'circle') as 'circle' | 'rounded' | 'square',
-  },
-}))
+const rootThemeVars = computed(() =>
+  buildThemeVars({
+    primary: String(
+      props.themeTokens?.['--cv-accent'] ??
+        props.templateSkin.themeTokens?.['--cv-accent'] ??
+        '',
+    ),
+    pageBg: String(
+      props.themeTokens?.['--cv-surface'] ??
+        props.templateSkin.themeTokens?.['--cv-surface'] ??
+        '',
+    ),
+    asideWidth: resolvedDesignState.value.sidebarWidth,
+    lineStyle: resolvedDesignState.value.dividerStyle,
+    fontStyle: props.templateSkin.profile.typography,
+    photo: {
+      position: resolvedDesignState.value.photoPosition,
+      size: resolvedDesignState.value.photoSize,
+      border: resolvedDesignState.value.photoBorderWidth,
+      shape: (props.designState?.photo?.shape ?? 'circle') as
+        | 'circle'
+        | 'rounded'
+        | 'square',
+    },
+  }),
+)
 
 const layoutStyle = computed(() => ({
   '--resume-sidebar-width': `${resolvedDesignState.value.sidebarWidth}px`,
@@ -370,8 +404,7 @@ const layoutModeClass = computed(
   () => `layout-mode-${resolvedDesignState.value.layoutMode}`,
 )
 const shouldRenderAside = computed(
-  () =>
-    resolvedDesignState.value.layoutMode !== 'no-aside',
+  () => resolvedDesignState.value.layoutMode !== 'no-aside',
 )
 const noAsideSectionOrderPolicy = 'main-first-then-aside' as const
 const visibleMainSections = computed(() => {
@@ -482,10 +515,14 @@ const sectionIconCssVars = computed<Record<string, string>>(() => ({
   '--resume-contact-icon-size': `${contactIconSize.value}px`,
   '--resume-contact-icon-color': contactIconColor.value,
 }))
-const decorativeShapes = computed<DecorativeShapeSettings[]>(() => [
-  resolvedDesignState.value.decorativeShapeA,
-  resolvedDesignState.value.decorativeShapeB,
-].filter((shape): shape is DecorativeShapeSettings => Boolean(shape?.enabled)))
+const decorativeShapes = computed<DecorativeShapeSettings[]>(() =>
+  [
+    resolvedDesignState.value.decorativeShapeA,
+    resolvedDesignState.value.decorativeShapeB,
+  ].filter((shape): shape is DecorativeShapeSettings =>
+    Boolean(shape?.enabled),
+  ),
+)
 
 function fallbackVariant(sectionKey: ResumeSectionLayoutKey): string {
   if (sectionKey === 'experience') return 'detailed'
@@ -577,7 +614,11 @@ const hasContactDetails = computed(() =>
   ),
 )
 const contactBirthLine = computed(() => {
-  const birthDate = (props.resume.birthDate ?? props.resume.birthday ?? '').trim()
+  const birthDate = (
+    props.resume.birthDate ??
+    props.resume.birthday ??
+    ''
+  ).trim()
   const birthPlace = (props.resume.birthPlace ?? '').trim()
   if (birthDate && birthPlace) return `${birthDate}, ${birthPlace}`
   return birthDate || birthPlace
@@ -621,13 +662,21 @@ function updateText(path: string, value: string) {
 <template>
   <article
     :class="[templateSkin.rootClass, ...rootDesignClasses]"
-    :style="{ ...themeTokens, ...(templateSkin.themeTokens ?? {}), ...skinCssVars, ...sectionIconCssVars, ...rootThemeVars }"
+    :style="{
+      ...themeTokens,
+      ...(templateSkin.themeTokens ?? {}),
+      ...skinCssVars,
+      ...sectionIconCssVars,
+      ...rootThemeVars,
+    }"
   >
     <TemplateDecorations :shapes="decorativeShapes" />
     <header
       class="resume-skin__header"
-      :class="[`resume-skin__header--${templateSkin.profile.typography}`, `resume-header-${resolvedDesignState.headerStyleVariant}`]"
-      
+      :class="[
+        `resume-skin__header--${templateSkin.profile.typography}`,
+        `resume-header-${resolvedDesignState.headerStyleVariant}`,
+      ]"
     >
       <div>
         <h1>
@@ -755,12 +804,34 @@ function updateText(path: string, value: string) {
             >
           </div>
           <div v-if="resume.homepage" class="resume-skin__contact-item">
-            <v-icon v-if="showContactIcons" class="resume-skin__contact-icon" icon="mdi-web" :size="contactIconSize" />
-            <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" class="resume-skin__text">{{ resume.homepage }}</a>
+            <v-icon
+              v-if="showContactIcons"
+              class="resume-skin__contact-icon"
+              icon="mdi-web"
+              :size="contactIconSize"
+            />
+            <a
+              :href="resume.homepage"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="resume-skin__text"
+              >{{ resume.homepage }}</a
+            >
           </div>
           <div v-if="resume.repoProfile" class="resume-skin__contact-item">
-            <v-icon v-if="showContactIcons" class="resume-skin__contact-icon" icon="mdi-github" :size="contactIconSize" />
-            <a :href="resume.repoProfile" target="_blank" rel="noopener noreferrer" class="resume-skin__text">{{ resume.repoProfile }}</a>
+            <v-icon
+              v-if="showContactIcons"
+              class="resume-skin__contact-icon"
+              icon="mdi-github"
+              :size="contactIconSize"
+            />
+            <a
+              :href="resume.repoProfile"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="resume-skin__text"
+              >{{ resume.repoProfile }}</a
+            >
           </div>
         </div>
       </div>
@@ -777,10 +848,7 @@ function updateText(path: string, value: string) {
           @update:photo-size="emit('update:photo-size', $event)"
           @update:photo-border-width="emit('update:photo-border-width', $event)"
         />
-        <v-avatar
-          class="resume-skin__avatar"
-          @click="onPhotoClick?.()"
-        >
+        <v-avatar class="resume-skin__avatar" @click="onPhotoClick?.()">
           <v-img :src="resume.photoUrl" :style="avatarImageStyle" cover />
         </v-avatar>
       </div>
@@ -790,7 +858,14 @@ function updateText(path: string, value: string) {
       :class="[templateSkin.wrapperClass, layoutModeClass]"
       :style="layoutStyle"
     >
-      <aside v-if="shouldRenderAside" :class="[templateSkin.asideClass, `resume-skin__aside--${templateSkin.profile.cards}`, resolvedDesignState.asideFullHeight ? 'aside-full' : '']">
+      <aside
+        v-if="shouldRenderAside"
+        :class="[
+          templateSkin.asideClass,
+          `resume-skin__aside--${templateSkin.profile.cards}`,
+          resolvedDesignState.asideFullHeight ? 'aside-full' : '',
+        ]"
+      >
         <section
           v-if="(templateSkin.showContactInAside ?? true) && hasContactDetails"
           class="resume-section-hoverable resume-contact-section"
@@ -802,11 +877,11 @@ function updateText(path: string, value: string) {
             @delete-section="removeContactSection"
           />
           <h3 class="cv-heading-section">
-            <span
-              v-if="shouldShowSectionIcons"
-              class="section-icon"
-            >
-              <v-icon icon="mdi-card-account-phone-outline" :size="resolvedSectionIconStyle.size" />
+            <span v-if="shouldShowSectionIcons" class="section-icon">
+              <v-icon
+                icon="mdi-card-account-phone-outline"
+                :size="resolvedSectionIconStyle.size"
+              />
             </span>
             <span>Contact</span>
           </h3>
@@ -962,7 +1037,11 @@ function updateText(path: string, value: string) {
                 icon="mdi-web"
                 :size="contactIconSize"
               />
-              <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" class="resume-skin__text"
+              <a
+                :href="resume.homepage"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="resume-skin__text"
                 >{{ resume.homepage }}</a
               >
             </div>
@@ -1021,7 +1100,12 @@ function updateText(path: string, value: string) {
         />
       </aside>
 
-      <main :class="[templateSkin.mainClass, `resume-skin__main--${templateSkin.profile.spacing}`]">
+      <main
+        :class="[
+          templateSkin.mainClass,
+          `resume-skin__main--${templateSkin.profile.spacing}`,
+        ]"
+      >
         <section
           v-if="
             resolvedDesignState.layoutMode === 'no-aside' &&
@@ -1128,7 +1212,11 @@ function updateText(path: string, value: string) {
                 icon="mdi-web"
                 :size="contactIconSize"
               />
-              <a :href="resume.homepage" target="_blank" rel="noopener noreferrer" class="resume-skin__text"
+              <a
+                :href="resume.homepage"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="resume-skin__text"
                 >{{ resume.homepage }}</a
               >
             </div>
@@ -1206,7 +1294,7 @@ function updateText(path: string, value: string) {
             @delete-section="onSectionDelete"
           />
           <div class="resume-skin__no-aside-columns">
-            <div style="padding-right: 20px;">
+            <div style="padding-right: 20px">
               <SectionRenderer
                 v-for="section in noAsideLeftSections"
                 :key="`main-no-aside-left-${section.key}`"
@@ -1293,13 +1381,36 @@ function updateText(path: string, value: string) {
   --cv-space-7: var(--cv-space-7, 28px);
   --cv-space-8: var(--cv-space-8, 32px);
   --cv-space-9: var(--cv-space-9, 36px);
-  --cv-border-soft: color-mix(in srgb, var(--resume-secondary, var(--cv-secondary)) 20%, transparent);
-  --cv-border-strong: color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 24%, transparent);
-  --cv-surface-soft: color-mix(in srgb, var(--resume-page, var(--cv-page)) 78%, transparent);
-  --cv-shadow-soft: color-mix(in srgb, var(--resume-sidebar, var(--cv-sidebar)) 12%, transparent);
-  --cv-progress-bg: color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 22%, var(--resume-page, var(--cv-page)));
+  --cv-border-soft: color-mix(
+    in srgb,
+    var(--resume-secondary, var(--cv-secondary)) 20%,
+    transparent
+  );
+  --cv-border-strong: color-mix(
+    in srgb,
+    var(--resume-accent, var(--cv-accent)) 24%,
+    transparent
+  );
+  --cv-surface-soft: color-mix(
+    in srgb,
+    var(--resume-page, var(--cv-page)) 78%,
+    transparent
+  );
+  --cv-shadow-soft: color-mix(
+    in srgb,
+    var(--resume-sidebar, var(--cv-sidebar)) 12%,
+    transparent
+  );
+  --cv-progress-bg: color-mix(
+    in srgb,
+    var(--resume-accent, var(--cv-accent)) 22%,
+    var(--resume-page, var(--cv-page))
+  );
 
-  font-family: var(--resume-font-family, var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif));
+  font-family: var(
+    --resume-font-family,
+    var(--cv-font-family, 'Inter', 'Segoe UI', Arial, sans-serif)
+  );
   font-style: var(--resume-font-style, var(--cv-font-style, normal));
   font-weight: var(--resume-font-weight, var(--cv-font-weight, 400));
   padding: 18px;
@@ -1409,11 +1520,17 @@ function updateText(path: string, value: string) {
 
 .resume-skin__header h1 :deep(.resume-skin__text),
 .resume-skin__header > div > p.resume-skin__text {
-  color: var(--resume-header-text-color, var(--resume-secondary, var(--cv-secondary)));
+  color: var(
+    --resume-header-text-color,
+    var(--resume-secondary, var(--cv-secondary))
+  );
 }
 
 .resume-skin__header > div > p.resume-skin__text {
-  color: var(--resume-header-subtitle-color, var(--resume-secondary, var(--cv-secondary)));
+  color: var(
+    --resume-header-subtitle-color,
+    var(--resume-secondary, var(--cv-secondary))
+  );
 }
 
 .resume-skin__contact-icon {
@@ -1423,7 +1540,10 @@ function updateText(path: string, value: string) {
   width: 1.25em;
   min-width: 1.25em;
   line-height: 1;
-  color: var(--resume-contact-icon-color, var(--resume-accent, var(--cv-accent)));
+  color: var(
+    --resume-contact-icon-color,
+    var(--resume-accent, var(--cv-accent))
+  );
   flex-shrink: 0;
   transition: color 0.2s ease;
 }
@@ -1442,7 +1562,11 @@ function updateText(path: string, value: string) {
   border-width: var(--photo-border);
   border-style: solid;
   border-radius: var(--photo-radius, 999px);
-  border-color: color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 28%, var(--resume-page, var(--cv-page)));
+  border-color: color-mix(
+    in srgb,
+    var(--resume-accent, var(--cv-accent)) 28%,
+    var(--resume-page, var(--cv-page))
+  );
 }
 
 :global(.resume-skin__avatar .v-img__img) {
@@ -1503,8 +1627,12 @@ function updateText(path: string, value: string) {
   margin: 0 0 var(--cv-space-2, 8px);
 }
 
-.layout-mode-aside-left .resume-skin__aside :deep(.cv-heading-section .section-icon),
-.layout-mode-aside-right .resume-skin__aside :deep(.cv-heading-section .section-icon) {
+.layout-mode-aside-left
+  .resume-skin__aside
+  :deep(.cv-heading-section .section-icon),
+.layout-mode-aside-right
+  .resume-skin__aside
+  :deep(.cv-heading-section .section-icon) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1530,9 +1658,12 @@ function updateText(path: string, value: string) {
   color: var(--resume-aside-text-color);
 }
 
-
 .resume-skin__aside :deep(.progress) {
-  background: color-mix(in srgb, var(--resume-aside-decor-color) 24%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--resume-aside-decor-color) 24%,
+    transparent
+  );
 }
 
 .resume-skin__aside :deep(.progress i) {
@@ -1575,7 +1706,8 @@ function updateText(path: string, value: string) {
   gap: var(--resume-space-4, var(--cv-space-4));
 }
 .resume-skin__no-aside-columns > div + div {
-  border-left: 1px solid color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 22%, transparent);
+  border-left: 1px solid
+    color-mix(in srgb, var(--resume-accent, var(--cv-accent)) 22%, transparent);
   padding-left: var(--resume-space-4, var(--cv-space-4));
 }
 
@@ -1619,7 +1751,10 @@ function updateText(path: string, value: string) {
 .divider-line .resume-skin__main > section,
 .divider-line .resume-skin__aside > section {
   border-bottom: 1px solid var(--resume-border-soft, var(--cv-border-soft));
-  padding-bottom: calc(var(--resume-space-2, var(--cv-space-2)) + var(--resume-space-1, var(--cv-space-1)) / 2);
+  padding-bottom: calc(
+    var(--resume-space-2, var(--cv-space-2)) +
+      var(--resume-space-1, var(--cv-space-1)) / 2
+  );
 }
 
 .divider-soft :deep(.resume-section),

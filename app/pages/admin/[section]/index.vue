@@ -18,14 +18,19 @@ const pageType = computed<PageManagementNavKey>(() => {
     return defaultPageType
   }
 
-  const rawType = String(route.query.pageType ?? '').toLowerCase() as PageManagementNavKey
+  const rawType = String(
+    route.query.pageType ?? '',
+  ).toLowerCase() as PageManagementNavKey
   const valid = PAGE_MANAGEMENT_NAV_ITEMS.some((item) => item.key === rawType)
 
   return valid ? rawType : defaultPageType
 })
 
 if (!section.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Admin section not found' })
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Admin section not found',
+  })
 }
 
 if (sectionKey.value === 'pages') {
@@ -36,6 +41,9 @@ if (sectionKey.value === 'pages') {
 <template>
   <div>
     <AdminModuleDrawers />
-    <AdminSectionManagementView :section-key="sectionKey" :page-type="pageType" />
+    <AdminSectionManagementView
+      :section-key="sectionKey"
+      :page-type="pageType"
+    />
   </div>
 </template>

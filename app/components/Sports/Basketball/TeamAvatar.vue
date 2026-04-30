@@ -48,7 +48,9 @@ watch(
   },
 )
 
-const avatarColor = computed(() => (shouldShowImage.value ? undefined : 'grey-darken-2'))
+const avatarColor = computed(() =>
+  shouldShowImage.value ? undefined : 'grey-darken-2',
+)
 </script>
 
 <template>

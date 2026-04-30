@@ -9,7 +9,9 @@ const contactId = computed(() => String(route.params.contact ?? ''))
 
 definePageMeta({ layout: 'crm', title: 'CRM Contact Detail' })
 
-const { data, pending, error } = await useFetch<CrmContactItem>(() => `/api/crm/general/contacts/${contactId.value}`)
+const { data, pending, error } = await useFetch<CrmContactItem>(
+  () => `/api/crm/general/contacts/${contactId.value}`,
+)
 </script>
 
 <template>
@@ -27,15 +29,31 @@ const { data, pending, error } = await useFetch<CrmContactItem>(() => `/api/crm/
       <template #right />
     </WorldModuleShell>
     <v-container fluid>
-      <v-btn variant="text" prepend-icon="mdi-arrow-left" class="mb-4" @click="router.push('/world/crm/contacts')">{{ t('world.crm.contactsDetail.actions.backToList') }}</v-btn>
+      <v-btn
+        variant="text"
+        prepend-icon="mdi-arrow-left"
+        class="mb-4"
+        @click="router.push('/world/crm/contacts')"
+        >{{ t('world.crm.contactsDetail.actions.backToList') }}</v-btn
+      >
       <CrmPageSkeleton v-if="pending" variant="detail" />
-      <v-alert v-else-if="error" type="error" variant="tonal">{{ t('world.crm.contactsDetail.alerts.notFound') }}</v-alert>
+      <v-alert v-else-if="error" type="error" variant="tonal">{{
+        t('world.crm.contactsDetail.alerts.notFound')
+      }}</v-alert>
       <v-card v-else rounded="xl" class="pa-4 postcard-gradient-card">
         <h2 class="text-h6 mb-3">{{ data?.firstName }} {{ data?.lastName }}</h2>
-        <p class="text-body-2 mb-1">{{ t('world.crm.contactsDetail.fields.email') }}: {{ data?.email }}</p>
-        <p class="text-body-2 mb-1">{{ t('world.crm.contactsDetail.fields.phone') }}: {{ data?.phone }}</p>
-        <p class="text-body-2 mb-1">{{ t('world.crm.contactsDetail.fields.city') }}: {{ data?.city }}</p>
-        <p class="text-body-2 mb-0">{{ t('world.crm.contactsDetail.fields.score') }}: {{ data?.score }}</p>
+        <p class="text-body-2 mb-1">
+          {{ t('world.crm.contactsDetail.fields.email') }}: {{ data?.email }}
+        </p>
+        <p class="text-body-2 mb-1">
+          {{ t('world.crm.contactsDetail.fields.phone') }}: {{ data?.phone }}
+        </p>
+        <p class="text-body-2 mb-1">
+          {{ t('world.crm.contactsDetail.fields.city') }}: {{ data?.city }}
+        </p>
+        <p class="text-body-2 mb-0">
+          {{ t('world.crm.contactsDetail.fields.score') }}: {{ data?.score }}
+        </p>
       </v-card>
     </v-container>
   </div>

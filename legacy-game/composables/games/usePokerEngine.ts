@@ -1,8 +1,27 @@
 import { computed, ref } from 'vue'
 
 export type PokerSuit = '♠' | '♥' | '♦' | '♣'
-export type PokerRank = 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 'J' | 'Q' | 'K' | 'A'
-export type PokerStreet = 'preflop' | 'flop' | 'turn' | 'river' | 'showdown' | 'hand-over'
+export type PokerRank =
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 10
+  | 'J'
+  | 'Q'
+  | 'K'
+  | 'A'
+export type PokerStreet =
+  | 'preflop'
+  | 'flop'
+  | 'turn'
+  | 'river'
+  | 'showdown'
+  | 'hand-over'
 export type PokerAction = 'fold' | 'check' | 'call' | 'raise'
 
 export interface PokerCard {
@@ -40,7 +59,7 @@ interface RankedHand {
 }
 
 const SUITS: PokerSuit[] = ['♠', '♥', '♦', '♣']
-const RANKS: Array<{ rank: PokerRank, value: number }> = [
+const RANKS: Array<{ rank: PokerRank; value: number }> = [
   { rank: 2, value: 2 },
   { rank: 3, value: 3 },
   { rank: 4, value: 4 },
@@ -87,7 +106,13 @@ const combinationsOfFive = (cards: PokerCard[]) => {
       for (let third = second + 1; third < cards.length - 2; third += 1) {
         for (let fourth = third + 1; fourth < cards.length - 1; fourth += 1) {
           for (let fifth = fourth + 1; fifth < cards.length; fifth += 1) {
-            output.push([cards[first], cards[second], cards[third], cards[fourth], cards[fifth]])
+            output.push([
+              cards[first],
+              cards[second],
+              cards[third],
+              cards[fourth],
+              cards[fifth],
+            ])
           }
         }
       }
@@ -97,9 +122,9 @@ const combinationsOfFive = (cards: PokerCard[]) => {
 }
 
 const evaluateFiveCards = (cards: PokerCard[]): RankedHand => {
-  const values = cards.map(card => card.value).sort((a, b) => b - a)
-  const suits = cards.map(card => card.suit)
-  const isFlush = suits.every(suit => suit === suits[0])
+  const values = cards.map((card) => card.value).sort((a, b) => b - a)
+  const suits = cards.map((card) => card.suit)
+  const isFlush = suits.every((suit) => suit === suits[0])
 
   const uniqueValues = Array.from(new Set(values)).sort((a, b) => b - a)
   let straightHigh = 0
@@ -110,8 +135,9 @@ const evaluateFiveCards = (cards: PokerCard[]): RankedHand => {
     const isSequential = highest - lowest === 4
     if (isSequential) {
       straightHigh = highest
-    }
-    else if (JSON.stringify(uniqueValues) === JSON.stringify([14, 5, 4, 3, 2])) {
+    } else if (
+      JSON.stringify(uniqueValues) === JSON.stringify([14, 5, 4, 3, 2])
+    ) {
       straightHigh = 5
     }
   }
@@ -166,7 +192,10 @@ const evaluateFiveCards = (cards: PokerCard[]): RankedHand => {
   }
 
   if (groups[0].count === 3) {
-    const kickers = groups.slice(1).map(group => group.value).sort((a, b) => b - a)
+    const kickers = groups
+      .slice(1)
+      .map((group) => group.value)
+      .sort((a, b) => b - a)
     return {
       category: 3,
       tiebreakers: [groups[0].value, ...kickers],
@@ -185,7 +214,10 @@ const evaluateFiveCards = (cards: PokerCard[]): RankedHand => {
   }
 
   if (groups[0].count === 2) {
-    const kickers = groups.slice(1).map(group => group.value).sort((a, b) => b - a)
+    const kickers = groups
+      .slice(1)
+      .map((group) => group.value)
+      .sort((a, b) => b - a)
     return {
       category: 1,
       tiebreakers: [groups[0].value, ...kickers],
@@ -211,14 +243,16 @@ const evaluateSevenCards = (cards: PokerCard[]) => {
     }
   })
 
-  return best ?? {
-    category: 0,
-    tiebreakers: [0],
-    label: 'High Card',
-  }
+  return (
+    best ?? {
+      category: 0,
+      tiebreakers: [0],
+      label: 'High Card',
+    }
+  )
 }
 
-const shuffle = <T,>(cards: T[]) => {
+const shuffle = <T>(cards: T[]) => {
   const output = [...cards]
   for (let index = output.length - 1; index > 0; index -= 1) {
     const randomIndex = Math.floor(Math.random() * (index + 1))
@@ -230,34 +264,43 @@ const shuffle = <T,>(cards: T[]) => {
   return output
 }
 
-const createDeck = () => shuffle(SUITS.flatMap(suit => RANKS.map(({ rank, value }) => ({
-  id: `${suit}-${rank}`,
-  rank,
-  suit,
-  value,
-}))))
+const createDeck = () =>
+  shuffle(
+    SUITS.flatMap((suit) =>
+      RANKS.map(({ rank, value }) => ({
+        id: `${suit}-${rank}`,
+        rank,
+        suit,
+        value,
+      })),
+    ),
+  )
 
 const buildSidePots = (players: PokerPlayer[]) => {
   const contributions = players
-    .map(player => ({
+    .map((player) => ({
       playerId: player.id,
       amount: player.totalContribution,
       canWin: !player.folded,
     }))
-    .filter(entry => entry.amount > 0)
+    .filter((entry) => entry.amount > 0)
 
-  const uniqueLevels = Array.from(new Set(contributions.map(entry => entry.amount))).sort((a, b) => a - b)
+  const uniqueLevels = Array.from(
+    new Set(contributions.map((entry) => entry.amount)),
+  ).sort((a, b) => a - b)
   const pots: SidePot[] = []
   let previousLevel = 0
 
   uniqueLevels.forEach((level) => {
-    const contesting = contributions.filter(entry => entry.amount >= level)
+    const contesting = contributions.filter((entry) => entry.amount >= level)
     const slice = (level - previousLevel) * contesting.length
 
     if (slice > 0) {
       pots.push({
         amount: slice,
-        eligiblePlayerIds: contesting.filter(entry => entry.canWin).map(entry => entry.playerId),
+        eligiblePlayerIds: contesting
+          .filter((entry) => entry.canWin)
+          .map((entry) => entry.playerId),
       })
     }
 
@@ -284,7 +327,9 @@ export const usePokerEngine = () => {
 
   const humanPlayerIndex = 0
 
-  const activePlayers = computed(() => players.value.filter(player => !player.isEliminated && !player.folded))
+  const activePlayers = computed(() =>
+    players.value.filter((player) => !player.isEliminated && !player.folded),
+  )
   const humanPlayer = computed(() => players.value[humanPlayerIndex])
   const toCall = computed(() => {
     const player = players.value[currentTurnIndex.value]
@@ -292,9 +337,11 @@ export const usePokerEngine = () => {
     return Math.max(0, currentBet.value - player.currentBet)
   })
 
-  const callAmountForPlayer = (player: PokerPlayer) => Math.min(player.stack, Math.max(0, currentBet.value - player.currentBet))
+  const callAmountForPlayer = (player: PokerPlayer) =>
+    Math.min(player.stack, Math.max(0, currentBet.value - player.currentBet))
 
-  const canPlayerAct = (player: PokerPlayer) => !player.folded && !player.allIn && !player.isEliminated
+  const canPlayerAct = (player: PokerPlayer) =>
+    !player.folded && !player.allIn && !player.isEliminated
 
   const nextActiveIndex = (fromIndex: number) => {
     for (let offset = 1; offset <= players.value.length; offset += 1) {
@@ -328,21 +375,22 @@ export const usePokerEngine = () => {
     currentBet.value = 0
   }
 
-  const generatePlayers = () => Array.from({ length: PLAYER_COUNT }, (_, seat) => ({
-    id: `seat-${seat}`,
-    name: seat === 0 ? 'Vous' : `IA ${seat}`,
-    isAI: seat !== 0,
-    seat,
-    stack: STARTING_STACK,
-    hand: [],
-    folded: false,
-    allIn: false,
-    currentBet: 0,
-    totalContribution: 0,
-    lastAction: null,
-    hasActed: false,
-    isEliminated: false,
-  }))
+  const generatePlayers = () =>
+    Array.from({ length: PLAYER_COUNT }, (_, seat) => ({
+      id: `seat-${seat}`,
+      name: seat === 0 ? 'Vous' : `IA ${seat}`,
+      isAI: seat !== 0,
+      seat,
+      stack: STARTING_STACK,
+      hand: [],
+      folded: false,
+      allIn: false,
+      currentBet: 0,
+      totalContribution: 0,
+      lastAction: null,
+      hasActed: false,
+      isEliminated: false,
+    }))
 
   const dealPrivateCards = () => {
     for (let round = 0; round < 2; round += 1) {
@@ -390,16 +438,23 @@ export const usePokerEngine = () => {
     collectBetsToPot()
     sidePots.value = buildSidePots(players.value)
 
-    const nonFolded = players.value.filter(player => !player.folded && !player.isEliminated)
+    const nonFolded = players.value.filter(
+      (player) => !player.folded && !player.isEliminated,
+    )
     const rankings = new Map<string, RankedHand>()
     nonFolded.forEach((player) => {
-      rankings.set(player.id, evaluateSevenCards([...player.hand, ...board.value]))
+      rankings.set(
+        player.id,
+        evaluateSevenCards([...player.hand, ...board.value]),
+      )
     })
 
     const summary: string[] = []
 
     sidePots.value.forEach((sidePot, index) => {
-      const eligible = nonFolded.filter(player => sidePot.eligiblePlayerIds.includes(player.id))
+      const eligible = nonFolded.filter((player) =>
+        sidePot.eligiblePlayerIds.includes(player.id),
+      )
       if (!eligible.length || sidePot.amount <= 0) return
 
       let bestPlayer: PokerPlayer | null = null
@@ -414,8 +469,7 @@ export const usePokerEngine = () => {
           bestHand = hand
           bestPlayer = player
           winners = [player]
-        }
-        else if (compareHands(hand, bestHand) === 0) {
+        } else if (compareHands(hand, bestHand) === 0) {
           winners.push(player)
         }
       })
@@ -423,7 +477,7 @@ export const usePokerEngine = () => {
       if (!bestPlayer || !bestHand || !winners.length) return
 
       const gain = Math.floor(sidePot.amount / winners.length)
-      let remainder = sidePot.amount - (gain * winners.length)
+      let remainder = sidePot.amount - gain * winners.length
 
       winners.forEach((winner) => {
         winner.stack += gain
@@ -433,13 +487,17 @@ export const usePokerEngine = () => {
         }
       })
 
-      summary.push(`Pot ${index + 1}: ${winners.map(player => player.name).join(', ')} (${bestHand.label}) +${sidePot.amount}`)
+      summary.push(
+        `Pot ${index + 1}: ${winners.map((player) => player.name).join(', ')} (${bestHand.label}) +${sidePot.amount}`,
+      )
     })
 
     nonFolded.forEach((player) => {
       const hand = rankings.get(player.id)
       if (!hand) return
-      summary.push(`${player.name}: ${formatCard(player.hand[0])} ${formatCard(player.hand[1])} · ${hand.label}`)
+      summary.push(
+        `${player.name}: ${formatCard(player.hand[0])} ${formatCard(player.hand[1])} · ${hand.label}`,
+      )
     })
 
     showdownSummary.value = summary
@@ -448,15 +506,20 @@ export const usePokerEngine = () => {
     pot.value = 0
   }
 
-  const allBetsMatched = () => players.value
-    .filter(player => !player.folded && !player.isEliminated)
-    .every(player => player.allIn || player.currentBet === currentBet.value)
+  const allBetsMatched = () =>
+    players.value
+      .filter((player) => !player.folded && !player.isEliminated)
+      .every((player) => player.allIn || player.currentBet === currentBet.value)
 
-  const allPlayersActed = () => players.value
-    .filter(player => !player.folded && !player.isEliminated && !player.allIn)
-    .every(player => player.hasActed)
+  const allPlayersActed = () =>
+    players.value
+      .filter(
+        (player) => !player.folded && !player.isEliminated && !player.allIn,
+      )
+      .every((player) => player.hasActed)
 
-  const remainingContenders = () => players.value.filter(player => !player.folded && !player.isEliminated)
+  const remainingContenders = () =>
+    players.value.filter((player) => !player.folded && !player.isEliminated)
 
   const progressStreet = () => {
     if (remainingContenders().length <= 1) {
@@ -468,8 +531,8 @@ export const usePokerEngine = () => {
     }
 
     const everyoneAllIn = players.value
-      .filter(player => !player.folded && !player.isEliminated)
-      .every(player => player.allIn)
+      .filter((player) => !player.folded && !player.isEliminated)
+      .every((player) => player.allIn)
 
     if (!allBetsMatched() || !allPlayersActed()) {
       return false
@@ -480,16 +543,13 @@ export const usePokerEngine = () => {
     if (street.value === 'preflop') {
       board.value.push(...deck.value.splice(0, 3))
       street.value = 'flop'
-    }
-    else if (street.value === 'flop') {
+    } else if (street.value === 'flop') {
       board.value.push(...deck.value.splice(0, 1))
       street.value = 'turn'
-    }
-    else if (street.value === 'turn') {
+    } else if (street.value === 'turn') {
       board.value.push(...deck.value.splice(0, 1))
       street.value = 'river'
-    }
-    else if (street.value === 'river') {
+    } else if (street.value === 'river') {
       street.value = 'showdown'
       settleShowdown()
       return true
@@ -603,14 +663,22 @@ export const usePokerEngine = () => {
     currentTurnIndex.value = nextActiveIndex(currentTurnIndex.value)
   }
 
-  const performAction = (playerIndex: number, action: PokerAction, raiseToTotal?: number) => {
+  const performAction = (
+    playerIndex: number,
+    action: PokerAction,
+    raiseToTotal?: number,
+  ) => {
     const player = players.value[playerIndex]
-    if (!player || street.value === 'hand-over' || street.value === 'showdown') {
+    if (
+      !player ||
+      street.value === 'hand-over' ||
+      street.value === 'showdown'
+    ) {
       return false
     }
 
     if (playerIndex !== currentTurnIndex.value) {
-      actionMessage.value = 'Ce n\'est pas votre tour.'
+      actionMessage.value = "Ce n'est pas votre tour."
       return false
     }
 
@@ -715,7 +783,11 @@ export const usePokerEngine = () => {
     const minRaiseToTotal = getMinimumRaiseToTotal(currentTurnIndex.value)
     const maxRaiseToTotal = getMaximumRaiseToTotal(currentTurnIndex.value)
 
-    if (player.stack > currentToCall + BIG_BLIND && random > 0.83 && minRaiseToTotal <= maxRaiseToTotal) {
+    if (
+      player.stack > currentToCall + BIG_BLIND &&
+      random > 0.83 &&
+      minRaiseToTotal <= maxRaiseToTotal
+    ) {
       const spread = Math.max(0, maxRaiseToTotal - minRaiseToTotal)
       const raiseAmount = minRaiseToTotal + Math.floor(spread * Math.random())
       performAction(currentTurnIndex.value, 'raise', raiseAmount)
@@ -755,7 +827,9 @@ export const usePokerEngine = () => {
       player.hasActed = false
     })
 
-    const aliveCount = players.value.filter(player => !player.isEliminated).length
+    const aliveCount = players.value.filter(
+      (player) => !player.isEliminated,
+    ).length
     if (aliveCount <= 1) {
       actionMessage.value = 'Partie terminée.'
       street.value = 'hand-over'
@@ -778,10 +852,14 @@ export const usePokerEngine = () => {
     const { smallBlindIndex, bigBlindIndex } = getBlindIndexes()
     postBlind(smallBlindIndex, SMALL_BLIND)
     postBlind(bigBlindIndex, BIG_BLIND)
-    currentBet.value = Math.max(players.value[smallBlindIndex].currentBet, players.value[bigBlindIndex].currentBet)
+    currentBet.value = Math.max(
+      players.value[smallBlindIndex].currentBet,
+      players.value[bigBlindIndex].currentBet,
+    )
 
     players.value.forEach((player, index) => {
-      player.hasActed = index === smallBlindIndex || index === bigBlindIndex ? false : false
+      player.hasActed =
+        index === smallBlindIndex || index === bigBlindIndex ? false : false
     })
 
     currentTurnIndex.value = nextActiveIndex(bigBlindIndex)

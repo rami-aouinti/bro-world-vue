@@ -5,7 +5,10 @@ export default defineEventHandler(async (event): Promise<null> => {
   const task = getRouterParam(event, 'task')
 
   if (!sprint || !task) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing sprint or task id' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing sprint or task id',
+    })
   }
 
   await mutateCrmGeneral(event, `sprints/${sprint}/tasks/${task}`, {

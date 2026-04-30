@@ -37,11 +37,9 @@ export async function awaitSessionReady(options?: { forceRefresh?: boolean }) {
       try {
         await fetch()
         sessionInitialized = true
-      }
-      catch {
+      } catch {
         throw createSessionError('Unable to initialize user session')
-      }
-      finally {
+      } finally {
         sessionReadyPromise = null
       }
     })()

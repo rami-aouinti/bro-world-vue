@@ -1,33 +1,33 @@
 <script setup lang="ts">
-import type { GameLevel } from "~/composables/api/useGameSessionsApi";
-import type { BeloteMode, GameEntry, PlayMode } from "~/types/game";
+import type { GameLevel } from '~/composables/api/useGameSessionsApi'
+import type { BeloteMode, GameEntry, PlayMode } from '~/types/game'
 
 defineProps<{
-  selectedGame: GameEntry;
-  selectedPlayMode: PlayMode | null;
-  selectedAiLevel: GameLevel | null;
-  selectedBeloteMode: BeloteMode | null;
-  displayedLocalModes: PlayMode[];
-  aiLevels: GameLevel[];
-  isLaunchingSession: boolean;
-  canLaunchSelectedGame: boolean;
-  modeImageMap: Record<PlayMode, string>;
-  levelImageMap: Record<GameLevel, string>;
-  modeLabel: (mode: PlayMode) => string;
-  isGameAvailableForLaunch: (game: GameEntry | null | undefined) => boolean;
-  getGameBusinessKey: (game: GameEntry | null | undefined) => string | null;
-  beloteTeamsLabel: string;
-  beloteFreeForAllLabel: string;
-  soonHintLabel: string;
-  launchGameLabel: string;
-}>();
+  selectedGame: GameEntry
+  selectedPlayMode: PlayMode | null
+  selectedAiLevel: GameLevel | null
+  selectedBeloteMode: BeloteMode | null
+  displayedLocalModes: PlayMode[]
+  aiLevels: GameLevel[]
+  isLaunchingSession: boolean
+  canLaunchSelectedGame: boolean
+  modeImageMap: Record<PlayMode, string>
+  levelImageMap: Record<GameLevel, string>
+  modeLabel: (mode: PlayMode) => string
+  isGameAvailableForLaunch: (game: GameEntry | null | undefined) => boolean
+  getGameBusinessKey: (game: GameEntry | null | undefined) => string | null
+  beloteTeamsLabel: string
+  beloteFreeForAllLabel: string
+  soonHintLabel: string
+  launchGameLabel: string
+}>()
 
 const emit = defineEmits<{
-  selectPlayMode: [mode: PlayMode];
-  selectAiLevel: [level: GameLevel];
-  selectBeloteMode: [mode: BeloteMode];
-  launchGame: [];
-}>();
+  selectPlayMode: [mode: PlayMode]
+  selectAiLevel: [level: GameLevel]
+  selectBeloteMode: [mode: BeloteMode]
+  launchGame: []
+}>()
 </script>
 
 <template>
@@ -42,7 +42,13 @@ const emit = defineEmits<{
           class="mode-card d-flex align-center justify-center"
           :class="{ 'mode-card--active': selectedPlayMode === mode }"
           :variant="selectedPlayMode === mode ? 'flat' : 'outlined'"
-          :color="selectedPlayMode === mode ? (mode === 'ai' ? 'primary' : 'secondary') : undefined"
+          :color="
+            selectedPlayMode === mode
+              ? mode === 'ai'
+                ? 'primary'
+                : 'secondary'
+              : undefined
+          "
           @click="emit('selectPlayMode', mode)"
         >
           <v-card-text class="d-flex align-center justify-center">
@@ -178,7 +184,8 @@ const emit = defineEmits<{
 
 .launch-loader {
   min-height: 230px;
-  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-primary)) 28%, transparent);
+  border: 1px solid
+    color-mix(in srgb, rgb(var(--v-theme-primary)) 28%, transparent);
   border-radius: 16px;
   display: grid;
   place-items: center;

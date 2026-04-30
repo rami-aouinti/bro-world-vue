@@ -1,4 +1,8 @@
-import { roundedPxByValue, textStyleVarsByValue, type Typography } from '~/constants/resumeDesign'
+import {
+  roundedPxByValue,
+  textStyleVarsByValue,
+  type Typography,
+} from '~/constants/resumeDesign'
 
 type CoverTypography = 'sans' | 'serif'
 type CoverRounded = 'none' | 'sm' | 'md' | 'lg' | string
@@ -15,15 +19,26 @@ type CoverDesignOptions = {
   layoutSettings?: CoverLayoutSettings
 }
 
-const dividerWidthByWeight: Record<NonNullable<CoverLayoutSettings['dividerWeight']>, string> = {
+const dividerWidthByWeight: Record<
+  NonNullable<CoverLayoutSettings['dividerWeight']>,
+  string
+> = {
   none: '0px',
   thin: '1px',
   thick: '2px',
 }
 
-const roundedKeySet = new Set<keyof typeof roundedPxByValue>(['none', 'sm', 'md', 'lg'])
+const roundedKeySet = new Set<keyof typeof roundedPxByValue>([
+  'none',
+  'sm',
+  'md',
+  'lg',
+])
 
-function resolveTextStyle(textStyle?: Typography, typography?: CoverTypography): Typography {
+function resolveTextStyle(
+  textStyle?: Typography,
+  typography?: CoverTypography,
+): Typography {
   if (textStyle && textStyle in textStyleVarsByValue) return textStyle
   if (typography === 'serif') return 'serif'
   return 'clean'
@@ -31,14 +46,23 @@ function resolveTextStyle(textStyle?: Typography, typography?: CoverTypography):
 
 function resolveRounded(rounded?: CoverRounded) {
   if (!rounded) return roundedPxByValue.md
-  if (typeof rounded === 'string' && roundedKeySet.has(rounded as keyof typeof roundedPxByValue)) {
+  if (
+    typeof rounded === 'string' &&
+    roundedKeySet.has(rounded as keyof typeof roundedPxByValue)
+  ) {
     return roundedPxByValue[rounded as keyof typeof roundedPxByValue]
   }
   return rounded
 }
 
-export function buildCoverDesignVars(prefix: 'cp' | 'cl', options: CoverDesignOptions) {
-  const resolvedTextStyle = resolveTextStyle(options.textStyle, options.typography)
+export function buildCoverDesignVars(
+  prefix: 'cp' | 'cl',
+  options: CoverDesignOptions,
+) {
+  const resolvedTextStyle = resolveTextStyle(
+    options.textStyle,
+    options.typography,
+  )
   const fontVars = textStyleVarsByValue[resolvedTextStyle]
   const dividerWeight = options.layoutSettings?.dividerWeight ?? 'thin'
   const dividerStyle = options.layoutSettings?.dividerStyle ?? 'solid'

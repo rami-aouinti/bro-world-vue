@@ -43,15 +43,18 @@ export function useMercure() {
     if (!url) return null
 
     const parsedUrl = new URL(url)
-    const configuredWithCredentials = runtimeConfig.public.mercureWithCredentials === true
+    const configuredWithCredentials =
+      runtimeConfig.public.mercureWithCredentials === true
     const isSameOriginHub = parsedUrl.origin === window.location.origin
 
     const authorizationToken = String(
-      options?.authorizationToken || runtimeConfig.public.mercureSubscriberJwt || '',
+      options?.authorizationToken ||
+        runtimeConfig.public.mercureSubscriberJwt ||
+        '',
     ).trim()
 
-    const resolvedWithCredentials = options?.withCredentials
-      ?? configuredWithCredentials
+    const resolvedWithCredentials =
+      options?.withCredentials ?? configuredWithCredentials
 
     const init: EventSourceInit & { headers?: Record<string, string> } = {
       withCredentials: resolvedWithCredentials,
@@ -63,18 +66,20 @@ export function useMercure() {
       }
     }
 
-    const polyfillConstructor = (globalThis as typeof globalThis & {
-      EventSourcePolyfill?: new (
-        url: string,
-        init: EventSourceInit & { headers?: Record<string, string> },
-      ) => EventSource
-    }).EventSourcePolyfill
+    const polyfillConstructor = (
+      globalThis as typeof globalThis & {
+        EventSourcePolyfill?: new (
+          url: string,
+          init: EventSourceInit & { headers?: Record<string, string> },
+        ) => EventSource
+      }
+    ).EventSourcePolyfill
 
     const eventSource = options?.eventSourceFactory
       ? options.eventSourceFactory(url, init)
       : init.headers && polyfillConstructor
         ? new polyfillConstructor(url, init)
-      : new EventSource(url, { withCredentials: init.withCredentials })
+        : new EventSource(url, { withCredentials: init.withCredentials })
 
     eventSource.onopen = (event) => {
       handlers?.onOpen?.(event)

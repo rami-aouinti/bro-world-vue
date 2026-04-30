@@ -101,7 +101,9 @@ const fullName = computed(() => {
   const user = profile.value
   if (!user) return ''
 
-  return [user.firstName, user.lastName].filter(Boolean).join(' ') || user.username
+  return (
+    [user.firstName, user.lastName].filter(Boolean).join(' ') || user.username
+  )
 })
 
 const profileTitle = computed(() => userProfile.value?.title || 'Member')
@@ -160,7 +162,9 @@ function normalizePhotoUrl(url: string | undefined): string | undefined {
   })()
 
   if (normalizedInput.startsWith('/')) {
-    return apiOrigin ? new URL(normalizedInput, apiOrigin).toString() : normalizedInput
+    return apiOrigin
+      ? new URL(normalizedInput, apiOrigin).toString()
+      : normalizedInput
   }
 
   try {
@@ -223,7 +227,9 @@ function buildNotificationRows(
 function buildNotificationPayload() {
   return notificationRows.value.flatMap((row) =>
     NOTIFICATION_TYPES.map((type) => ({
-      switchState: Boolean(row[type.toLowerCase() as keyof Omit<NotificationRow, 'title'>]),
+      switchState: Boolean(
+        row[type.toLowerCase() as keyof Omit<NotificationRow, 'title'>],
+      ),
       type,
       text: row.title,
     })),
@@ -343,12 +349,13 @@ async function loadSessions() {
   sessionsLoading.value = true
 
   try {
-    sessions.value = await privateApi.request<UserSessionInfo[]>(
-      '/users/me/sessions',
-    )
+    sessions.value =
+      await privateApi.request<UserSessionInfo[]>('/users/me/sessions')
   } catch (error) {
     sessions.value = []
-    Notify.error(error instanceof Error ? error.message : 'Unable to load sessions')
+    Notify.error(
+      error instanceof Error ? error.message : 'Unable to load sessions',
+    )
   } finally {
     sessionsLoading.value = false
   }
@@ -356,10 +363,9 @@ async function loadSessions() {
 
 async function loadNotificationPreferences() {
   try {
-    const response =
-      await privateApi.request<NotificationPreferencesResponse>(
-        '/profile/configuration/user.notifications.preferences',
-      )
+    const response = await privateApi.request<NotificationPreferencesResponse>(
+      '/profile/configuration/user.notifications.preferences',
+    )
     notificationRows.value = buildNotificationRows(
       response.configurationValue || [],
     )
@@ -377,12 +383,15 @@ async function saveNotificationPreferences() {
   isSavingNotifications.value = true
 
   try {
-    await privateApi.request('/profile/configuration/user.notifications.preferences', {
-      method: 'PATCH',
-      body: {
-        configurationValue: buildNotificationPayload(),
+    await privateApi.request(
+      '/profile/configuration/user.notifications.preferences',
+      {
+        method: 'PATCH',
+        body: {
+          configurationValue: buildNotificationPayload(),
+        },
       },
-    })
+    )
     Notify.success('Notification preferences updated.')
   } catch (error) {
     Notify.error(
@@ -445,7 +454,9 @@ async function submitBasicInfo() {
     await refreshProfileState()
     Notify.success('Profile updated successfully.')
   } catch (error) {
-    Notify.error(error instanceof Error ? error.message : 'Unable to update profile.')
+    Notify.error(
+      error instanceof Error ? error.message : 'Unable to update profile.',
+    )
   } finally {
     isSubmittingProfile.value = false
   }
@@ -517,7 +528,9 @@ async function onPhotoSelected(event: Event) {
     await refreshProfileState()
     Notify.success('Photo updated successfully.')
   } catch (error) {
-    Notify.error(error instanceof Error ? error.message : 'Photo upload failed.')
+    Notify.error(
+      error instanceof Error ? error.message : 'Photo upload failed.',
+    )
   } finally {
     isUploadingPhoto.value = false
     input.value = ''
@@ -651,7 +664,9 @@ onUnmounted(() => {
               >
                 <v-text-field
                   :label="field.label"
-                  :model-value="getBasicInfoValue(field.key as BasicInfoFieldKey)"
+                  :model-value="
+                    getBasicInfoValue(field.key as BasicInfoFieldKey)
+                  "
                   :readonly="Boolean(field.readonly)"
                   :type="field.type || 'text'"
                   variant="outlined"
@@ -817,7 +832,11 @@ onUnmounted(() => {
                       hide-details
                       color="primary"
                       @update:model-value="
-                        onNotificationSwitchChanged(index, 'activity', Boolean($event))
+                        onNotificationSwitchChanged(
+                          index,
+                          'activity',
+                          Boolean($event),
+                        )
                       "
                     />
                   </td>
@@ -829,7 +848,11 @@ onUnmounted(() => {
                       hide-details
                       color="primary"
                       @update:model-value="
-                        onNotificationSwitchChanged(index, 'email', Boolean($event))
+                        onNotificationSwitchChanged(
+                          index,
+                          'email',
+                          Boolean($event),
+                        )
                       "
                     />
                   </td>
@@ -841,7 +864,11 @@ onUnmounted(() => {
                       hide-details
                       color="primary"
                       @update:model-value="
-                        onNotificationSwitchChanged(index, 'push', Boolean($event))
+                        onNotificationSwitchChanged(
+                          index,
+                          'push',
+                          Boolean($event),
+                        )
                       "
                     />
                   </td>
@@ -853,7 +880,11 @@ onUnmounted(() => {
                       hide-details
                       color="primary"
                       @update:model-value="
-                        onNotificationSwitchChanged(index, 'sms', Boolean($event))
+                        onNotificationSwitchChanged(
+                          index,
+                          'sms',
+                          Boolean($event),
+                        )
                       "
                     />
                   </td>

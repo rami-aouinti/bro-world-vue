@@ -36,13 +36,42 @@ export type ResumeSectionRegistryEntry = {
   contentStyles: ResumeContentStyle[]
 }
 
-
-const SECTION_VARIANT_LABEL_KEYS: Record<ResumeEditableSectionKey, Record<string, string>> = {
-  experience: { classic: 'resumeBuilder.create.registry.variants.classic', timeline: 'resumeBuilder.create.registry.variants.timeline', 'two-column': 'resumeBuilder.create.registry.variants.twoColumns' },
-  education: { classic: 'resumeBuilder.create.registry.variants.classic', timeline: 'resumeBuilder.create.registry.variants.timeline', 'two-column': 'resumeBuilder.create.registry.variants.twoColumns' },
-  language: { classic: 'resumeBuilder.create.registry.variants.classic', 'text-level': 'resumeBuilder.create.registry.variants.textLevel', stars: 'resumeBuilder.create.registry.variants.stars', 'progress-line': 'resumeBuilder.create.registry.variants.progressLine', 'progress-circle': 'resumeBuilder.create.registry.variants.progressCircle', flags: 'resumeBuilder.create.registry.variants.flags' },
-  project: { classic: 'resumeBuilder.create.registry.variants.classic', list: 'resumeBuilder.create.registry.variants.list', cards: 'resumeBuilder.create.registry.variants.cards', timeline: 'resumeBuilder.create.registry.variants.timeline', 'two-column': 'resumeBuilder.create.registry.variants.twoColumns' },
-  skill: { classic: 'resumeBuilder.create.registry.variants.classic', 'text-level': 'resumeBuilder.create.registry.variants.textLevel', stars: 'resumeBuilder.create.registry.variants.stars', dots: 'resumeBuilder.create.registry.variants.dots', progress: 'resumeBuilder.create.registry.variants.progress' },
+const SECTION_VARIANT_LABEL_KEYS: Record<
+  ResumeEditableSectionKey,
+  Record<string, string>
+> = {
+  experience: {
+    classic: 'resumeBuilder.create.registry.variants.classic',
+    timeline: 'resumeBuilder.create.registry.variants.timeline',
+    'two-column': 'resumeBuilder.create.registry.variants.twoColumns',
+  },
+  education: {
+    classic: 'resumeBuilder.create.registry.variants.classic',
+    timeline: 'resumeBuilder.create.registry.variants.timeline',
+    'two-column': 'resumeBuilder.create.registry.variants.twoColumns',
+  },
+  language: {
+    classic: 'resumeBuilder.create.registry.variants.classic',
+    'text-level': 'resumeBuilder.create.registry.variants.textLevel',
+    stars: 'resumeBuilder.create.registry.variants.stars',
+    'progress-line': 'resumeBuilder.create.registry.variants.progressLine',
+    'progress-circle': 'resumeBuilder.create.registry.variants.progressCircle',
+    flags: 'resumeBuilder.create.registry.variants.flags',
+  },
+  project: {
+    classic: 'resumeBuilder.create.registry.variants.classic',
+    list: 'resumeBuilder.create.registry.variants.list',
+    cards: 'resumeBuilder.create.registry.variants.cards',
+    timeline: 'resumeBuilder.create.registry.variants.timeline',
+    'two-column': 'resumeBuilder.create.registry.variants.twoColumns',
+  },
+  skill: {
+    classic: 'resumeBuilder.create.registry.variants.classic',
+    'text-level': 'resumeBuilder.create.registry.variants.textLevel',
+    stars: 'resumeBuilder.create.registry.variants.stars',
+    dots: 'resumeBuilder.create.registry.variants.dots',
+    progress: 'resumeBuilder.create.registry.variants.progress',
+  },
   reference: { classic: 'resumeBuilder.create.registry.variants.classic' },
   hobby: { classic: 'resumeBuilder.create.registry.variants.classic' },
   certification: { classic: 'resumeBuilder.create.registry.variants.classic' },
@@ -58,9 +87,18 @@ export const RESUME_CONTENT_STYLE_OPTIONS: Array<{
   labelKey: string
   value: ResumeContentStyle
 }> = [
-  { labelKey: 'resumeBuilder.create.registry.contentStyles.points', value: 'points' },
-  { labelKey: 'resumeBuilder.create.registry.contentStyles.dashes', value: 'dashes' },
-  { labelKey: 'resumeBuilder.create.registry.contentStyles.timeline', value: 'timeline' },
+  {
+    labelKey: 'resumeBuilder.create.registry.contentStyles.points',
+    value: 'points',
+  },
+  {
+    labelKey: 'resumeBuilder.create.registry.contentStyles.dashes',
+    value: 'dashes',
+  },
+  {
+    labelKey: 'resumeBuilder.create.registry.contentStyles.timeline',
+    value: 'timeline',
+  },
 ]
 
 export const RESUME_SECTION_REGISTRY: Record<
@@ -267,16 +305,24 @@ export function getSectionRegistryEntry(sectionKey: ResumeEditableSectionKey) {
   return RESUME_SECTION_REGISTRY[sectionKey]
 }
 
-
-export function validateResumeSectionVariantSupportMatrix(rendererVariantsBySection: Partial<Record<ResumeEditableSectionKey, readonly string[]>>) {
+export function validateResumeSectionVariantSupportMatrix(
+  rendererVariantsBySection: Partial<
+    Record<ResumeEditableSectionKey, readonly string[]>
+  >,
+) {
   const mismatches: string[] = []
 
-  for (const sectionKey of Object.keys(RESUME_SECTION_REGISTRY) as ResumeEditableSectionKey[]) {
-    const exposed = RESUME_SECTION_REGISTRY[sectionKey].variants.map((variant) => variant.value)
+  for (const sectionKey of Object.keys(
+    RESUME_SECTION_REGISTRY,
+  ) as ResumeEditableSectionKey[]) {
+    const exposed = RESUME_SECTION_REGISTRY[sectionKey].variants.map(
+      (variant) => variant.value,
+    )
     const rendered = rendererVariantsBySection[sectionKey]
     if (!rendered) continue
     const unsupported = exposed.filter((variant) => !rendered.includes(variant))
-    if (unsupported.length) mismatches.push(`${sectionKey}: ${unsupported.join(', ')}`)
+    if (unsupported.length)
+      mismatches.push(`${sectionKey}: ${unsupported.join(', ')}`)
   }
 
   return {

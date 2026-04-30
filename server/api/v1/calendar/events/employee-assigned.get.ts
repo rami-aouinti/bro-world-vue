@@ -6,30 +6,32 @@ type EmployeeAssignedEventsPayload = {
   applicationSlug?: string
 }
 
-export default defineEventHandler(async (event): Promise<CalendarApiResponse> => {
-  const payload = await readBody<EmployeeAssignedEventsPayload>(event).catch(
-    () => ({}),
-  )
-  const query = getQuery(event)
-  const applicationSlug = String(
-    payload?.applicationSlug || query.applicationSlug || '',
-  ).trim()
+export default defineEventHandler(
+  async (event): Promise<CalendarApiResponse> => {
+    const payload = await readBody<EmployeeAssignedEventsPayload>(event).catch(
+      () => ({}),
+    )
+    const query = getQuery(event)
+    const applicationSlug = String(
+      payload?.applicationSlug || query.applicationSlug || '',
+    ).trim()
 
-  if (!applicationSlug) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Missing applicationSlug',
-    })
-  }
+    if (!applicationSlug) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Missing applicationSlug',
+      })
+    }
 
-  return callPrivateApi<CalendarApiResponse>(
-    event,
-    '/api/v1/calendar/events/employee-assigned',
-    {
-      method: 'GET',
-      body: {
-        applicationSlug,
+    return callPrivateApi<CalendarApiResponse>(
+      event,
+      '/api/v1/calendar/events/employee-assigned',
+      {
+        method: 'GET',
+        body: {
+          applicationSlug,
+        },
       },
-    },
-  )
-})
+    )
+  },
+)

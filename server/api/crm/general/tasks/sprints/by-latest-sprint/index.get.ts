@@ -21,10 +21,17 @@ interface CrmTasksBySprintResponse {
   }
 }
 
-export default defineEventHandler((event): Promise<CrmTasksBySprintResponse> => {
-  return fetchCrmGeneral<CrmTasksBySprintResponse>(
-    event,
-    'tasks/sprints/by-latest-sprint',
-    { query: getQuery(event) as Record<string, string | number | boolean | undefined> },
-  )
-})
+export default defineEventHandler(
+  (event): Promise<CrmTasksBySprintResponse> => {
+    return fetchCrmGeneral<CrmTasksBySprintResponse>(
+      event,
+      'tasks/sprints/by-latest-sprint',
+      {
+        query: getQuery(event) as Record<
+          string,
+          string | number | boolean | undefined
+        >,
+      },
+    )
+  },
+)

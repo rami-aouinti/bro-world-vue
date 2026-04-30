@@ -65,7 +65,9 @@ function pickFirstString(...values: unknown[]) {
   return null
 }
 
-function resolveDynamicWarmableEndpoints(config: ReturnType<typeof useRuntimeConfig>) {
+function resolveDynamicWarmableEndpoints(
+  config: ReturnType<typeof useRuntimeConfig>,
+) {
   const dynamicEndpoints: string[] = []
   const pageSlugs = parseCsvInput(
     pickFirstString(
@@ -99,7 +101,10 @@ function resolveDynamicWarmableEndpoints(config: ReturnType<typeof useRuntimeCon
   return dynamicEndpoints
 }
 
-async function warmEndpoint(baseUrl: string, endpoint: string): Promise<WarmResult> {
+async function warmEndpoint(
+  baseUrl: string,
+  endpoint: string,
+): Promise<WarmResult> {
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), WARM_TIMEOUT_MS)
   const startedAt = Date.now()
@@ -129,8 +134,7 @@ async function warmEndpoint(baseUrl: string, endpoint: string): Promise<WarmResu
       ok: true,
       status: response.status,
     }
-  }
-  catch (error) {
+  } catch (error) {
     const duration = Date.now() - startedAt
     return {
       endpoint,
@@ -138,8 +142,7 @@ async function warmEndpoint(baseUrl: string, endpoint: string): Promise<WarmResu
       ok: false,
       error: error instanceof Error ? error.message : 'Unknown warmup error',
     }
-  }
-  finally {
+  } finally {
     clearTimeout(timeout)
   }
 }
@@ -149,13 +152,14 @@ async function warmEndpointsInBatches(baseUrl: string, endpoints: string[]) {
 
   for (let index = 0; index < endpoints.length; index += WARM_BATCH_SIZE) {
     const batch = endpoints.slice(index, index + WARM_BATCH_SIZE)
-    const batchResults = await Promise.all(batch.map((endpoint) => warmEndpoint(baseUrl, endpoint)))
+    const batchResults = await Promise.all(
+      batch.map((endpoint) => warmEndpoint(baseUrl, endpoint)),
+    )
     results.push(...batchResults)
   }
 
   return results
 }
-
 
 function isTruthyFlag(value: unknown) {
   if (typeof value !== 'string') {
@@ -181,7 +185,9 @@ function normalizeScope(scope: unknown) {
 
 function resolveDomains(scope: string | null) {
   if (!scope || scope === 'all') {
-    return PURGEABLE_PUBLIC_DOMAINS.filter((domain) => !EXCLUDED_DOMAINS.has(domain))
+    return PURGEABLE_PUBLIC_DOMAINS.filter(
+      (domain) => !EXCLUDED_DOMAINS.has(domain),
+    )
   }
 
   return scope
@@ -189,15 +195,22 @@ function resolveDomains(scope: string | null) {
     .map((domain) => domain.trim().toLowerCase())
     .filter((domain) => domain.length > 0)
     .filter((domain, index, domains) => domains.indexOf(domain) === index)
-    .filter((domain) => PURGEABLE_PUBLIC_DOMAINS.includes(domain as (typeof PURGEABLE_PUBLIC_DOMAINS)[number]))
+    .filter((domain) =>
+      PURGEABLE_PUBLIC_DOMAINS.includes(
+        domain as (typeof PURGEABLE_PUBLIC_DOMAINS)[number],
+      ),
+    )
     .filter((domain) => !EXCLUDED_DOMAINS.has(domain))
 }
 
-
 function hasValidCronAuth(event: H3Event, expectedToken: string) {
   const vercelCronHeader = getHeader(event, 'x-vercel-cron')
-  const vercelCronFlag = String(vercelCronHeader || '').trim().toLowerCase()
-  const userAgent = String(getHeader(event, 'user-agent') || '').trim().toLowerCase()
+  const vercelCronFlag = String(vercelCronHeader || '')
+    .trim()
+    .toLowerCase()
+  const userAgent = String(getHeader(event, 'user-agent') || '')
+    .trim()
+    .toLowerCase()
 
   if (
     ['1', 'true', 'yes', 'on'].includes(vercelCronFlag) ||
@@ -225,13 +238,15 @@ export default defineEventHandler(async (event) => {
   if (!hasValidCronAuth(event, expectedToken)) {
     throw createError({
       statusCode: 401,
-      statusMessage: 'Unauthorized (missing CRON_SECRET bearer token or x-vercel-cron header)',
+      statusMessage:
+        'Unauthorized (missing CRON_SECRET bearer token or x-vercel-cron header)',
     })
   }
 
   const query = getQuery(event)
-  const mode = ((typeof query.mode === 'string' ? query.mode.toLowerCase() : 'purge') ||
-    'purge') as CacheRefreshMode
+  const mode = ((typeof query.mode === 'string'
+    ? query.mode.toLowerCase()
+    : 'purge') || 'purge') as CacheRefreshMode
   const scope = normalizeScope(query.scope)
 
   if (mode !== 'purge' && mode !== 'warm') {
@@ -251,14 +266,19 @@ export default defineEventHandler(async (event) => {
 
   if (mode === 'purge') {
     await Promise.all(
-      invalidatedDomains.map((domain) => invalidateByPrefix(publicCachePrefix(domain))),
+      invalidatedDomains.map((domain) =>
+        invalidateByPrefix(publicCachePrefix(domain)),
+      ),
     )
   }
 
   if (mode === 'warm') {
     const requestUrl = getRequestURL(event)
     const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`
-    const endpoints = [...WARMABLE_ENDPOINTS, ...resolveDynamicWarmableEndpoints(config)]
+    const endpoints = [
+      ...WARMABLE_ENDPOINTS,
+      ...resolveDynamicWarmableEndpoints(config),
+    ]
       .filter((endpoint) => !endpoint.startsWith('/api/sports/'))
       .filter((endpoint, index, values) => values.indexOf(endpoint) === index)
 
@@ -269,8 +289,7 @@ export default defineEventHandler(async (event) => {
 
       if (result.ok) {
         warmSummary.warmed.push(result.endpoint)
-      }
-      else {
+      } else {
         warmSummary.failed.push({
           endpoint: result.endpoint,
           error: result.error || 'Warmup failed',
@@ -299,15 +318,17 @@ export default defineEventHandler(async (event) => {
 
       if (inboundVercelCronHeader) {
         aiNewsHeaders['x-vercel-cron'] = inboundVercelCronHeader
-      }
-      else if (expectedToken) {
+      } else if (expectedToken) {
         aiNewsHeaders.Authorization = `Bearer ${expectedToken}`
       }
 
-      const aiNewsResponse = await fetch(`${baseUrl}/api/internal/cron/ai-news`, {
-        method: 'GET',
-        headers: aiNewsHeaders,
-      })
+      const aiNewsResponse = await fetch(
+        `${baseUrl}/api/internal/cron/ai-news`,
+        {
+          method: 'GET',
+          headers: aiNewsHeaders,
+        },
+      )
 
       if (!aiNewsResponse.ok) {
         aiNewsResult = {
@@ -322,8 +343,7 @@ export default defineEventHandler(async (event) => {
           payload: await aiNewsResponse.json(),
         }
       }
-    }
-    catch (error) {
+    } catch (error) {
       aiNewsResult = {
         ok: false,
         error: error instanceof Error ? error.message : 'Unknown ai-news error',

@@ -23,7 +23,10 @@ function rewriteLegacyEndpoint(endpoint: string) {
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig(event)
-  const baseUrl = String(runtimeConfig.public.apiBaseUrl || '').replace(/\/+$/, '')
+  const baseUrl = String(runtimeConfig.public.apiBaseUrl || '').replace(
+    /\/+$/,
+    '',
+  )
 
   if (!baseUrl) {
     throw createError({
@@ -40,14 +43,18 @@ export default defineEventHandler(async (event) => {
   const requestHeaders = getRequestHeaders(event)
 
   const headers = Object.fromEntries(
-    Object.entries(requestHeaders).filter(([name]) => !HOP_BY_HOP_HEADERS.has(name.toLowerCase())),
+    Object.entries(requestHeaders).filter(
+      ([name]) => !HOP_BY_HOP_HEADERS.has(name.toLowerCase()),
+    ),
   )
 
   const response = await $fetch.raw(targetUrl, {
     method,
     headers,
     query: getQuery(event),
-    body: METHODS_WITH_BODY.has(method) ? await readRawBody(event, false) : undefined,
+    body: METHODS_WITH_BODY.has(method)
+      ? await readRawBody(event, false)
+      : undefined,
     redirect: 'manual',
   })
 

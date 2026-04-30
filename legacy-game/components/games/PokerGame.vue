@@ -6,49 +6,49 @@ import {
   ref,
   watch,
   watchEffect,
-} from "vue";
-import type { PokerCard } from "~/composables/games/usePokerEngine";
-import { usePokerEngine } from "~/composables/games/usePokerEngine";
-import type { GameAsidePanelState } from "./types";
-import CardTableLayout from "./CardTableLayout.vue";
+} from 'vue'
+import type { PokerCard } from '~/composables/games/usePokerEngine'
+import { usePokerEngine } from '~/composables/games/usePokerEngine'
+import type { GameAsidePanelState } from './types'
+import CardTableLayout from './CardTableLayout.vue'
 
 defineProps<{
-  selectedPlayMode: "ai" | "pvp";
-}>();
+  selectedPlayMode: 'ai' | 'pvp'
+}>()
 
 const emit = defineEmits<{
-  (event: "panel-state", payload: GameAsidePanelState): void;
-}>();
+  (event: 'panel-state', payload: GameAsidePanelState): void
+}>()
 
-const { t } = useI18n();
+const { t } = useI18n()
 
-const engine = usePokerEngine();
+const engine = usePokerEngine()
 
-let aiTimeout: ReturnType<typeof setTimeout> | null = null;
+let aiTimeout: ReturnType<typeof setTimeout> | null = null
 
-const handNumber = computed(() => engine.handNumber.value);
-const street = computed(() => engine.street.value);
-const pot = computed(() => engine.pot.value);
-const currentBet = computed(() => engine.currentBet.value);
-const players = computed(() => engine.players.value);
-const humanPlayer = computed(() => engine.humanPlayer.value);
-const currentTurnIndex = computed(() => engine.currentTurnIndex.value);
-const actionMessage = computed(() => engine.actionMessage.value);
+const handNumber = computed(() => engine.handNumber.value)
+const street = computed(() => engine.street.value)
+const pot = computed(() => engine.pot.value)
+const currentBet = computed(() => engine.currentBet.value)
+const players = computed(() => engine.players.value)
+const humanPlayer = computed(() => engine.humanPlayer.value)
+const currentTurnIndex = computed(() => engine.currentTurnIndex.value)
+const actionMessage = computed(() => engine.actionMessage.value)
 
-const currentPlayer = computed(() => players.value[currentTurnIndex.value]);
+const currentPlayer = computed(() => players.value[currentTurnIndex.value])
 const isHumanTurn = computed(
   () => currentPlayer.value?.id === humanPlayer.value?.id,
-);
+)
 const flyingChips = ref<
   Array<{
-    id: number;
-    fromSeat: number;
-    amount: number;
-    count: number;
-    phase: "start" | "end";
+    id: number
+    fromSeat: number
+    amount: number
+    count: number
+    phase: 'start' | 'end'
   }>
->([]);
-let chipAnimationId = 0;
+>([])
+let chipAnimationId = 0
 
 const tablePlayers = computed(() =>
   players.value.map((player, index) => ({
@@ -61,232 +61,235 @@ const tablePlayers = computed(() =>
     lastAction: player.lastAction,
     seatIndex: index,
     isCurrentTurn:
-      street.value !== "hand-over" && currentTurnIndex.value === index,
+      street.value !== 'hand-over' && currentTurnIndex.value === index,
   })),
-);
+)
 
 const opponents = computed(() =>
   players.value.filter((player) => player.id !== humanPlayer.value?.id),
-);
+)
 
 const revealedBoardCards = computed(() => {
-  if (street.value === "preflop" || street.value === "hand-over") return 0;
-  if (street.value === "flop") return 3;
-  if (street.value === "turn") return 4;
-  return 5;
-});
+  if (street.value === 'preflop' || street.value === 'hand-over') return 0
+  if (street.value === 'flop') return 3
+  if (street.value === 'turn') return 4
+  return 5
+})
 
-const boardCardAnimations = ref<Array<"idle" | "dealing" | "flip">>(
-  Array(5).fill("idle"),
-);
-const boardAnimationTimers: ReturnType<typeof setTimeout>[] = [];
+const boardCardAnimations = ref<Array<'idle' | 'dealing' | 'flip'>>(
+  Array(5).fill('idle'),
+)
+const boardAnimationTimers: ReturnType<typeof setTimeout>[] = []
 
 const getVisibleCountForStreet = (currentStreet: string) => {
-  if (currentStreet === "preflop" || currentStreet === "hand-over") return 0;
-  if (currentStreet === "flop") return 3;
-  if (currentStreet === "turn") return 4;
-  return 5;
-};
+  if (currentStreet === 'preflop' || currentStreet === 'hand-over') return 0
+  if (currentStreet === 'flop') return 3
+  if (currentStreet === 'turn') return 4
+  return 5
+}
 
 const clearBoardAnimationTimers = () => {
-  boardAnimationTimers.forEach((timer) => clearTimeout(timer));
-  boardAnimationTimers.length = 0;
-};
+  boardAnimationTimers.forEach((timer) => clearTimeout(timer))
+  boardAnimationTimers.length = 0
+}
 
 const resetBoardCardAnimations = () => {
-  boardCardAnimations.value = Array(5).fill("idle");
-};
+  boardCardAnimations.value = Array(5).fill('idle')
+}
 
 const boardSlots = computed(() =>
   Array.from({ length: 5 }, (_, index) => {
-    const card = engine.board.value[index];
-    const animationState = boardCardAnimations.value[index] ?? "idle";
+    const card = engine.board.value[index]
+    const animationState = boardCardAnimations.value[index] ?? 'idle'
     return {
       key: `board-${index}`,
       card,
       isVisible: index < revealedBoardCards.value && Boolean(card),
       animationClasses: {
-        "table-card--dealing": animationState === "dealing",
-        "table-card--flip": animationState === "flip",
+        'table-card--dealing': animationState === 'dealing',
+        'table-card--flip': animationState === 'flip',
       },
-    };
+    }
   }),
-);
+)
 
 const centerCards = computed(() =>
   boardSlots.value
     .filter((slot) => slot.isVisible && slot.card)
     .map((slot) => engine.formatCard(slot.card as PokerCard)),
-);
+)
 
 const playerCallAmount = computed(() => {
-  const player = humanPlayer.value;
-  if (!player) return 0;
+  const player = humanPlayer.value
+  if (!player) return 0
   return Math.min(
     player.stack,
     Math.max(0, currentBet.value - player.currentBet),
-  );
-});
+  )
+})
 
-const canCheck = computed(() => playerCallAmount.value === 0);
+const canCheck = computed(() => playerCallAmount.value === 0)
 const canCall = computed(
   () => playerCallAmount.value > 0 && (humanPlayer.value?.stack ?? 0) > 0,
-);
+)
 const canRaise = computed(() => {
-  const player = humanPlayer.value;
-  if (!player) return false;
+  const player = humanPlayer.value
+  if (!player) return false
 
-  const minimum = engine.getMinimumRaiseToTotal(0);
-  const maximum = engine.getMaximumRaiseToTotal(0);
-  return minimum <= maximum && maximum > currentBet.value;
-});
+  const minimum = engine.getMinimumRaiseToTotal(0)
+  const maximum = engine.getMaximumRaiseToTotal(0)
+  return minimum <= maximum && maximum > currentBet.value
+})
 
 const streetLabel = computed(() => {
-  const key = street.value;
-  return t(`gameComponents.poker.states.${key}`);
-});
+  const key = street.value
+  return t(`gameComponents.poker.states.${key}`)
+})
 
 const panelState = computed<GameAsidePanelState>(() => ({
-  gameKey: "poker",
-  title: t("gameComponents.poker.title"),
+  gameKey: 'poker',
+  title: t('gameComponents.poker.title'),
   phase: streetLabel.value,
-  turnLabel: currentPlayer.value?.name ?? "—",
+  turnLabel: currentPlayer.value?.name ?? '—',
   status: actionMessage.value,
   highlights: [
-    `${t("gameComponents.poker.handNumber", { count: handNumber.value })} · ${t("gameComponents.poker.statesLabel")}: ${streetLabel.value}`,
-    `${t("gameComponents.poker.pot")}: ${pot.value} · ${t("gameComponents.poker.turn")}: ${currentPlayer.value?.name ?? "—"}`,
+    `${t('gameComponents.poker.handNumber', { count: handNumber.value })} · ${t('gameComponents.poker.statesLabel')}: ${streetLabel.value}`,
+    `${t('gameComponents.poker.pot')}: ${pot.value} · ${t('gameComponents.poker.turn')}: ${currentPlayer.value?.name ?? '—'}`,
   ],
   kpis: [
     {
-      id: "pot",
-      label: t("gameComponents.poker.pot"),
+      id: 'pot',
+      label: t('gameComponents.poker.pot'),
       value: pot.value,
-      color: "primary",
-      variant: "flat",
+      color: 'primary',
+      variant: 'flat',
     },
     {
-      id: "current-bet",
-      label: t("gameComponents.poker.currentBet"),
+      id: 'current-bet',
+      label: t('gameComponents.poker.currentBet'),
       value: currentBet.value,
-      variant: "outlined",
+      variant: 'outlined',
     },
     {
-      id: "street",
-      label: t("gameComponents.poker.statesLabel"),
+      id: 'street',
+      label: t('gameComponents.poker.statesLabel'),
       value: streetLabel.value,
-      variant: "tonal",
+      variant: 'tonal',
     },
   ],
-}));
+}))
 
 const tableActions = computed(() => [
   {
-    id: "fold",
-    label: t("gameComponents.poker.actions.fold"),
-    disabled: !isHumanTurn.value || street.value === "hand-over",
+    id: 'fold',
+    label: t('gameComponents.poker.actions.fold'),
+    disabled: !isHumanTurn.value || street.value === 'hand-over',
   },
   {
-    id: "check",
-    label: t("gameComponents.poker.actions.check"),
-    disabled: !isHumanTurn.value || !canCheck.value || street.value === "hand-over",
+    id: 'check',
+    label: t('gameComponents.poker.actions.check'),
+    disabled:
+      !isHumanTurn.value || !canCheck.value || street.value === 'hand-over',
   },
   {
-    id: "call",
+    id: 'call',
     label:
-      `${t("gameComponents.poker.actions.call")} ${canCall.value ? `(${playerCallAmount.value})` : ""}`.trim(),
-    disabled: !isHumanTurn.value || !canCall.value || street.value === "hand-over",
+      `${t('gameComponents.poker.actions.call')} ${canCall.value ? `(${playerCallAmount.value})` : ''}`.trim(),
+    disabled:
+      !isHumanTurn.value || !canCall.value || street.value === 'hand-over',
   },
   {
-    id: "raise",
-    label: t("gameComponents.poker.actions.raise"),
-    disabled: !isHumanTurn.value || !canRaise.value || street.value === "hand-over",
+    id: 'raise',
+    label: t('gameComponents.poker.actions.raise'),
+    disabled:
+      !isHumanTurn.value || !canRaise.value || street.value === 'hand-over',
   },
   {
-    id: "next-hand",
-    label: t("gameComponents.poker.actions.nextHand"),
-    disabled: street.value !== "hand-over",
+    id: 'next-hand',
+    label: t('gameComponents.poker.actions.nextHand'),
+    disabled: street.value !== 'hand-over',
   },
-]);
+])
 
 watchEffect(() => {
-  emit("panel-state", panelState.value);
-});
+  emit('panel-state', panelState.value)
+})
 
 const handleAsideAction = (actionId: string) => {
-  if (actionId === "next-hand") {
-    engine.startNewHand();
-    return;
+  if (actionId === 'next-hand') {
+    engine.startNewHand()
+    return
   }
 
-  if (!isHumanTurn.value || street.value === "hand-over") {
-    return;
+  if (!isHumanTurn.value || street.value === 'hand-over') {
+    return
   }
 
-  if (actionId === "fold") {
-    engine.performAction(currentTurnIndex.value, "fold");
-    return;
+  if (actionId === 'fold') {
+    engine.performAction(currentTurnIndex.value, 'fold')
+    return
   }
 
-  if (actionId === "check") {
-    engine.performAction(currentTurnIndex.value, "check");
-    return;
+  if (actionId === 'check') {
+    engine.performAction(currentTurnIndex.value, 'check')
+    return
   }
 
-  if (actionId === "call") {
-    engine.performAction(currentTurnIndex.value, "call");
-    return;
+  if (actionId === 'call') {
+    engine.performAction(currentTurnIndex.value, 'call')
+    return
   }
 
-  if (actionId === "raise") {
-    const raiseToTotal = engine.getMinimumRaiseToTotal(currentTurnIndex.value);
-    engine.performAction(currentTurnIndex.value, "raise", raiseToTotal);
+  if (actionId === 'raise') {
+    const raiseToTotal = engine.getMinimumRaiseToTotal(currentTurnIndex.value)
+    engine.performAction(currentTurnIndex.value, 'raise', raiseToTotal)
   }
-};
+}
 
 defineExpose({
   handleAsideAction,
-});
+})
 
 const getCardTone = (cardLabel: string) => {
-  if (/♥|♦/.test(cardLabel)) return "table-card--red";
-  if (/♣|♠/.test(cardLabel)) return "table-card--black";
-  return "table-card--back";
-};
+  if (/♥|♦/.test(cardLabel)) return 'table-card--red'
+  if (/♣|♠/.test(cardLabel)) return 'table-card--black'
+  return 'table-card--back'
+}
 
-const getCardRank = (cardLabel: string) => cardLabel.replace(/[♠♥♦♣]/g, "");
-const getCardSuit = (cardLabel: string) => cardLabel.match(/[♠♥♦♣]/)?.[0] ?? "";
+const getCardRank = (cardLabel: string) => cardLabel.replace(/[♠♥♦♣]/g, '')
+const getCardSuit = (cardLabel: string) => cardLabel.match(/[♠♥♦♣]/)?.[0] ?? ''
 const getChipVisualCount = (amount: number) => {
-  if (amount <= 0) return 0;
-  return Math.min(12, Math.max(1, Math.round(amount / 20)));
-};
+  if (amount <= 0) return 0
+  return Math.min(12, Math.max(1, Math.round(amount / 20)))
+}
 
 const createFlyingChips = (fromSeat: number, amount: number) => {
-  if (amount <= 0) return;
+  if (amount <= 0) return
 
-  const id = ++chipAnimationId;
+  const id = ++chipAnimationId
   const chip = {
     id,
     fromSeat,
     amount,
     count: getChipVisualCount(amount),
-    phase: "start" as const,
-  };
+    phase: 'start' as const,
+  }
 
-  flyingChips.value.push(chip);
+  flyingChips.value.push(chip)
 
   nextTick(() => {
-    const activeChip = flyingChips.value.find((entry) => entry.id === id);
+    const activeChip = flyingChips.value.find((entry) => entry.id === id)
     if (activeChip) {
-      activeChip.phase = "end";
+      activeChip.phase = 'end'
     }
-  });
+  })
 
   setTimeout(() => {
-    flyingChips.value = flyingChips.value.filter((entry) => entry.id !== id);
-  }, 850);
-};
+    flyingChips.value = flyingChips.value.filter((entry) => entry.id !== id)
+  }, 850)
+}
 
-const formatCard = (card: PokerCard) => engine.formatCard(card);
+const formatCard = (card: PokerCard) => engine.formatCard(card)
 
 watch(
   [
@@ -296,19 +299,19 @@ watch(
   ],
   () => {
     if (aiTimeout) {
-      clearTimeout(aiTimeout);
-      aiTimeout = null;
+      clearTimeout(aiTimeout)
+      aiTimeout = null
     }
 
-    const player = players.value[currentTurnIndex.value];
-    if (!player?.isAI || street.value === "hand-over") return;
+    const player = players.value[currentTurnIndex.value]
+    if (!player?.isAI || street.value === 'hand-over') return
 
     aiTimeout = setTimeout(() => {
-      engine.runAiAction();
-    }, 650);
+      engine.runAiAction()
+    }, 650)
   },
   { immediate: true },
-);
+)
 
 watch(
   () => ({
@@ -321,85 +324,85 @@ watch(
     })),
   }),
   (next, previous) => {
-    if (!previous) return;
+    if (!previous) return
 
     next.playerBets.forEach((playerBet, index) => {
-      const previousBet = previous.playerBets[index];
-      if (!previousBet) return;
-      const delta = playerBet.currentBet - previousBet.currentBet;
+      const previousBet = previous.playerBets[index]
+      if (!previousBet) return
+      const delta = playerBet.currentBet - previousBet.currentBet
       if (delta > 0) {
-        createFlyingChips(playerBet.seat, delta);
+        createFlyingChips(playerBet.seat, delta)
       }
-    });
+    })
 
-    const potDelta = next.pot - previous.pot;
-    const currentBetDelta = next.currentBet - previous.currentBet;
+    const potDelta = next.pot - previous.pot
+    const currentBetDelta = next.currentBet - previous.currentBet
 
     if (potDelta > 0 && currentBetDelta > 0) {
       createFlyingChips(
         currentTurnIndex.value,
         Math.max(potDelta, currentBetDelta),
-      );
+      )
     }
   },
-);
+)
 
 watch(
   () => street.value,
   (nextStreet, previousStreet) => {
     const previousVisible = getVisibleCountForStreet(
-      previousStreet ?? "preflop",
-    );
-    const nextVisible = getVisibleCountForStreet(nextStreet);
+      previousStreet ?? 'preflop',
+    )
+    const nextVisible = getVisibleCountForStreet(nextStreet)
 
     if (nextVisible <= previousVisible) {
-      clearBoardAnimationTimers();
-      resetBoardCardAnimations();
-      return;
+      clearBoardAnimationTimers()
+      resetBoardCardAnimations()
+      return
     }
 
     const newVisibleIndexes = Array.from(
       { length: nextVisible - previousVisible },
       (_, offset) => previousVisible + offset,
-    );
+    )
 
-    const baseDelay = nextStreet === "flop" ? 120 : 0;
+    const baseDelay = nextStreet === 'flop' ? 120 : 0
     newVisibleIndexes.forEach((index, sequencePosition) => {
-      const delay = sequencePosition * baseDelay;
+      const delay = sequencePosition * baseDelay
 
       const dealingTimer = setTimeout(() => {
-        boardCardAnimations.value[index] = "dealing";
-      }, delay);
-      boardAnimationTimers.push(dealingTimer);
+        boardCardAnimations.value[index] = 'dealing'
+      }, delay)
+      boardAnimationTimers.push(dealingTimer)
 
       const flipTimer = setTimeout(() => {
-        boardCardAnimations.value[index] = "flip";
-      }, delay + 180);
-      boardAnimationTimers.push(flipTimer);
+        boardCardAnimations.value[index] = 'flip'
+      }, delay + 180)
+      boardAnimationTimers.push(flipTimer)
 
       const cleanupTimer = setTimeout(() => {
-        boardCardAnimations.value[index] = "idle";
-      }, delay + 600);
-      boardAnimationTimers.push(cleanupTimer);
-    });
+        boardCardAnimations.value[index] = 'idle'
+      }, delay + 600)
+      boardAnimationTimers.push(cleanupTimer)
+    })
   },
-);
+)
 
 onBeforeUnmount(() => {
-  clearBoardAnimationTimers();
+  clearBoardAnimationTimers()
 
   if (aiTimeout) {
-    clearTimeout(aiTimeout);
+    clearTimeout(aiTimeout)
   }
-});
+})
 </script>
 
 <template>
   <CardTableLayout
-      :players="tablePlayers"
-      :center-cards="centerCards"
-      table-theme="poker"
-      class="poker-table-layout"
+    :players="tablePlayers"
+    :center-cards="centerCards"
+    table-theme="poker"
+    class="poker-table-layout"
   >
     <template #center>
       <div class="poker-table-surface">
@@ -407,66 +410,66 @@ onBeforeUnmount(() => {
           <div class="poker-pot-zone">
             <div class="pot-stack">
               <p class="pot-stack__label mb-1">
-                {{ t("gameComponents.poker.pot") }}
+                {{ t('gameComponents.poker.pot') }}
               </p>
               <div class="chip-stack chip-stack--pot" aria-hidden="true">
-                  <span
-                      v-for="chipIndex in getChipVisualCount(pot)"
-                      :key="`pot-chip-${chipIndex}`"
-                      class="chip-stack__chip"
-                  />
+                <span
+                  v-for="chipIndex in getChipVisualCount(pot)"
+                  :key="`pot-chip-${chipIndex}`"
+                  class="chip-stack__chip"
+                />
               </div>
               <strong class="pot-stack__amount">{{ pot }}</strong>
             </div>
 
             <div class="board-row board-row--center">
-                <span
-                    v-for="slot in boardSlots"
-                    :key="slot.key"
-                    class="table-card"
-                    :class="[
-                    slot.isVisible && slot.card
-                      ? getCardTone(formatCard(slot.card))
-                      : 'table-card--back',
-                    slot.animationClasses,
-                  ]"
-                >
-                  <template v-if="slot.isVisible && slot.card">
-                    <span class="table-card__rank">{{
-                        getCardRank(formatCard(slot.card))
-                      }}</span>
-                    <span class="table-card__suit">{{
-                        getCardSuit(formatCard(slot.card))
-                      }}</span>
-                  </template>
-                  <template v-else>
-                    <span class="table-card__back-pattern">🂠</span>
-                  </template>
-                </span>
+              <span
+                v-for="slot in boardSlots"
+                :key="slot.key"
+                class="table-card"
+                :class="[
+                  slot.isVisible && slot.card
+                    ? getCardTone(formatCard(slot.card))
+                    : 'table-card--back',
+                  slot.animationClasses,
+                ]"
+              >
+                <template v-if="slot.isVisible && slot.card">
+                  <span class="table-card__rank">{{
+                    getCardRank(formatCard(slot.card))
+                  }}</span>
+                  <span class="table-card__suit">{{
+                    getCardSuit(formatCard(slot.card))
+                  }}</span>
+                </template>
+                <template v-else>
+                  <span class="table-card__back-pattern">🂠</span>
+                </template>
+              </span>
             </div>
 
             <p class="active-turn-indicator mb-0">
-              {{ t("gameComponents.poker.turn") }}:
-              {{ currentPlayer?.name ?? "—" }}
+              {{ t('gameComponents.poker.turn') }}:
+              {{ currentPlayer?.name ?? '—' }}
             </p>
           </div>
         </div>
 
         <div class="flying-chips-layer" aria-hidden="true">
           <div
-              v-for="chip in flyingChips"
-              :key="chip.id"
-              class="flying-chip"
-              :class="[
-                `flying-chip--seat-${chip.fromSeat}`,
-                { 'flying-chip--end': chip.phase === 'end' },
-              ]"
+            v-for="chip in flyingChips"
+            :key="chip.id"
+            class="flying-chip"
+            :class="[
+              `flying-chip--seat-${chip.fromSeat}`,
+              { 'flying-chip--end': chip.phase === 'end' },
+            ]"
           >
-              <span
-                  v-for="tokenIndex in chip.count"
-                  :key="`${chip.id}-token-${tokenIndex}`"
-                  class="chip-stack__chip chip-stack__chip--small"
-              />
+            <span
+              v-for="tokenIndex in chip.count"
+              :key="`${chip.id}-token-${tokenIndex}`"
+              class="chip-stack__chip chip-stack__chip--small"
+            />
           </div>
         </div>
       </div>
@@ -475,12 +478,12 @@ onBeforeUnmount(() => {
     <template #seat-north-hand>
       <section class="seat-hand seat-hand--opponent">
         <div class="card-back-row">
-            <span
-                v-for="n in opponents[0]?.hand.length ?? 0"
-                :key="`north-${n}`"
-                class="card-back"
+          <span
+            v-for="n in opponents[0]?.hand.length ?? 0"
+            :key="`north-${n}`"
+            class="card-back"
             >🂠</span
-            >
+          >
         </div>
       </section>
     </template>
@@ -488,12 +491,12 @@ onBeforeUnmount(() => {
     <template #seat-east-hand>
       <section class="seat-hand seat-hand--opponent seat-hand--side">
         <div class="card-back-row card-back-row--side">
-            <span
-                v-for="n in opponents[1]?.hand.length ?? 0"
-                :key="`east-${n}`"
-                class="card-back"
+          <span
+            v-for="n in opponents[1]?.hand.length ?? 0"
+            :key="`east-${n}`"
+            class="card-back"
             >🂠</span
-            >
+          >
         </div>
       </section>
     </template>
@@ -501,7 +504,7 @@ onBeforeUnmount(() => {
     <template #seat-south-hand>
       <section class="seat-hand seat-hand--player">
         <p class="text-caption text-white mb-2">
-          {{ t("gameComponents.poker.yourCards") }} ·
+          {{ t('gameComponents.poker.yourCards') }} ·
           {{ humanPlayer?.stack ?? 0 }}
         </p>
         <div class="table-actions">
@@ -518,19 +521,19 @@ onBeforeUnmount(() => {
           </v-btn>
         </div>
         <div class="board-row board-row--center">
-            <span
-                v-for="card in humanPlayer?.hand ?? []"
-                :key="card.id"
-                class="table-card"
-                :class="getCardTone(formatCard(card))"
-            >
-              <span class="table-card__rank">{{
-                  getCardRank(formatCard(card))
-                }}</span>
-              <span class="table-card__suit">{{
-                  getCardSuit(formatCard(card))
-                }}</span>
-            </span>
+          <span
+            v-for="card in humanPlayer?.hand ?? []"
+            :key="card.id"
+            class="table-card"
+            :class="getCardTone(formatCard(card))"
+          >
+            <span class="table-card__rank">{{
+              getCardRank(formatCard(card))
+            }}</span>
+            <span class="table-card__suit">{{
+              getCardSuit(formatCard(card))
+            }}</span>
+          </span>
         </div>
       </section>
     </template>
@@ -538,12 +541,12 @@ onBeforeUnmount(() => {
     <template #seat-west-hand>
       <section class="seat-hand seat-hand--opponent seat-hand--side">
         <div class="card-back-row card-back-row--side">
-            <span
-                v-for="n in opponents[2]?.hand.length ?? 0"
-                :key="`west-${n}`"
-                class="card-back"
+          <span
+            v-for="n in opponents[2]?.hand.length ?? 0"
+            :key="`west-${n}`"
+            class="card-back"
             >🂠</span
-            >
+          >
         </div>
       </section>
     </template>

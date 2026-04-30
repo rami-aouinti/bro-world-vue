@@ -1,7 +1,13 @@
 import { computed, ref, watch } from 'vue'
 
 export type ChessColor = 'white' | 'black'
-export type ChessPieceType = 'king' | 'queen' | 'rook' | 'bishop' | 'knight' | 'pawn'
+export type ChessPieceType =
+  | 'king'
+  | 'queen'
+  | 'rook'
+  | 'bishop'
+  | 'knight'
+  | 'pawn'
 
 export interface ChessPiece {
   type: ChessPieceType
@@ -37,20 +43,30 @@ const PIECE_VALUES: Record<ChessPieceType, number> = {
 
 const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 
-const cloneBoard = (board: ChessBoard): ChessBoard => board.map(row => row.map(cell => {
-  if (!cell) return null
-  return { ...cell }
-}))
+const cloneBoard = (board: ChessBoard): ChessBoard =>
+  board.map((row) =>
+    row.map((cell) => {
+      if (!cell) return null
+      return { ...cell }
+    }),
+  )
 
-const isInside = (row: number, col: number) => row >= 0 && row < 8 && col >= 0 && col < 8
+const isInside = (row: number, col: number) =>
+  row >= 0 && row < 8 && col >= 0 && col < 8
 
-const oppositeColor = (color: ChessColor): ChessColor => color === 'white' ? 'black' : 'white'
+const oppositeColor = (color: ChessColor): ChessColor =>
+  color === 'white' ? 'black' : 'white'
 
-const posEq = (left: ChessPosition, right: ChessPosition) => left.row === right.row && left.col === right.col
+const posEq = (left: ChessPosition, right: ChessPosition) =>
+  left.row === right.row && left.col === right.col
 
-const toAlgebraic = (position: ChessPosition) => `${FILES[position.col]}${8 - position.row}`
+const toAlgebraic = (position: ChessPosition) =>
+  `${FILES[position.col]}${8 - position.row}`
 
-const findKingPosition = (board: ChessBoard, color: ChessColor): ChessPosition | null => {
+const findKingPosition = (
+  board: ChessBoard,
+  color: ChessColor,
+): ChessPosition | null => {
   for (let row = 0; row < 8; row += 1) {
     for (let col = 0; col < 8; col += 1) {
       const piece = board[row][col]
@@ -64,8 +80,19 @@ const findKingPosition = (board: ChessBoard, color: ChessColor): ChessPosition |
 }
 
 const createInitialBoard = (): ChessBoard => {
-  const board: ChessBoard = Array.from({ length: 8 }, () => Array.from({ length: 8 }, () => null))
-  const backRank: ChessPieceType[] = ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook']
+  const board: ChessBoard = Array.from({ length: 8 }, () =>
+    Array.from({ length: 8 }, () => null),
+  )
+  const backRank: ChessPieceType[] = [
+    'rook',
+    'knight',
+    'bishop',
+    'queen',
+    'king',
+    'bishop',
+    'knight',
+    'rook',
+  ]
 
   for (let col = 0; col < 8; col += 1) {
     board[0][col] = { type: backRank[col], color: 'black' }
@@ -77,7 +104,12 @@ const createInitialBoard = (): ChessBoard => {
   return board
 }
 
-const rayMoves = (board: ChessBoard, from: ChessPosition, color: ChessColor, deltas: Array<[number, number]>) => {
+const rayMoves = (
+  board: ChessBoard,
+  from: ChessPosition,
+  color: ChessColor,
+  deltas: Array<[number, number]>,
+) => {
   const moves: ChessPosition[] = []
 
   deltas.forEach(([dr, dc]) => {
@@ -103,7 +135,10 @@ const rayMoves = (board: ChessBoard, from: ChessPosition, color: ChessColor, del
   return moves
 }
 
-const pseudoMovesForPiece = (board: ChessBoard, from: ChessPosition): ChessPosition[] => {
+const pseudoMovesForPiece = (
+  board: ChessBoard,
+  from: ChessPosition,
+): ChessPosition[] => {
   const piece = board[from.row][from.col]
   if (!piece) return []
 
@@ -113,9 +148,12 @@ const pseudoMovesForPiece = (board: ChessBoard, from: ChessPosition): ChessPosit
     const output: ChessPosition[] = []
 
     const oneForward = { row: from.row + direction, col: from.col }
-    if (isInside(oneForward.row, oneForward.col) && !board[oneForward.row][oneForward.col]) {
+    if (
+      isInside(oneForward.row, oneForward.col) &&
+      !board[oneForward.row][oneForward.col]
+    ) {
       output.push(oneForward)
-      const twoForward = { row: from.row + (2 * direction), col: from.col }
+      const twoForward = { row: from.row + 2 * direction, col: from.col }
       if (from.row === startRow && !board[twoForward.row][twoForward.col]) {
         output.push(twoForward)
       }
@@ -136,13 +174,17 @@ const pseudoMovesForPiece = (board: ChessBoard, from: ChessPosition): ChessPosit
 
   if (piece.type === 'knight') {
     return [
-      [-2, -1], [-2, 1],
-      [-1, -2], [-1, 2],
-      [1, -2], [1, 2],
-      [2, -1], [2, 1],
+      [-2, -1],
+      [-2, 1],
+      [-1, -2],
+      [-1, 2],
+      [1, -2],
+      [1, 2],
+      [2, -1],
+      [2, 1],
     ]
       .map(([dr, dc]) => ({ row: from.row + dr, col: from.col + dc }))
-      .filter(target => isInside(target.row, target.col))
+      .filter((target) => isInside(target.row, target.col))
       .filter((target) => {
         const occupant = board[target.row][target.col]
         return !occupant || occupant.color !== piece.color
@@ -150,34 +192,59 @@ const pseudoMovesForPiece = (board: ChessBoard, from: ChessPosition): ChessPosit
   }
 
   if (piece.type === 'bishop') {
-    return rayMoves(board, from, piece.color, [[1, 1], [1, -1], [-1, 1], [-1, -1]])
+    return rayMoves(board, from, piece.color, [
+      [1, 1],
+      [1, -1],
+      [-1, 1],
+      [-1, -1],
+    ])
   }
 
   if (piece.type === 'rook') {
-    return rayMoves(board, from, piece.color, [[1, 0], [-1, 0], [0, 1], [0, -1]])
+    return rayMoves(board, from, piece.color, [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ])
   }
 
   if (piece.type === 'queen') {
     return rayMoves(board, from, piece.color, [
-      [1, 1], [1, -1], [-1, 1], [-1, -1],
-      [1, 0], [-1, 0], [0, 1], [0, -1],
+      [1, 1],
+      [1, -1],
+      [-1, 1],
+      [-1, -1],
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
     ])
   }
 
   return [
-    [-1, -1], [-1, 0], [-1, 1],
-    [0, -1], [0, 1],
-    [1, -1], [1, 0], [1, 1],
+    [-1, -1],
+    [-1, 0],
+    [-1, 1],
+    [0, -1],
+    [0, 1],
+    [1, -1],
+    [1, 0],
+    [1, 1],
   ]
     .map(([dr, dc]) => ({ row: from.row + dr, col: from.col + dc }))
-    .filter(target => isInside(target.row, target.col))
+    .filter((target) => isInside(target.row, target.col))
     .filter((target) => {
       const occupant = board[target.row][target.col]
       return !occupant || occupant.color !== piece.color
     })
 }
 
-const applyMove = (board: ChessBoard, from: ChessPosition, to: ChessPosition): ChessBoard => {
+const applyMove = (
+  board: ChessBoard,
+  from: ChessPosition,
+  to: ChessPosition,
+): ChessBoard => {
   const next = cloneBoard(board)
   const movingPiece = next[from.row][from.col]
   if (!movingPiece) return next
@@ -210,16 +277,16 @@ const isInCheckOnBoard = (board: ChessBoard, color: ChessColor) => {
         const pawnAttacks = [
           { row: row + direction, col: col - 1 },
           { row: row + direction, col: col + 1 },
-        ].filter(square => isInside(square.row, square.col))
+        ].filter((square) => isInside(square.row, square.col))
 
-        if (pawnAttacks.some(square => posEq(square, kingPosition))) {
+        if (pawnAttacks.some((square) => posEq(square, kingPosition))) {
           return true
         }
         continue
       }
 
       const moves = pseudoMovesForPiece(board, { row, col })
-      if (moves.some(move => posEq(move, kingPosition))) {
+      if (moves.some((move) => posEq(move, kingPosition))) {
         return true
       }
     }
@@ -228,7 +295,10 @@ const isInCheckOnBoard = (board: ChessBoard, color: ChessColor) => {
   return false
 }
 
-const legalMovesForColor = (board: ChessBoard, color: ChessColor): ChessMove[] => {
+const legalMovesForColor = (
+  board: ChessBoard,
+  color: ChessColor,
+): ChessMove[] => {
   const legalMoves: ChessMove[] = []
 
   for (let row = 0; row < 8; row += 1) {
@@ -248,7 +318,10 @@ const legalMovesForColor = (board: ChessBoard, color: ChessColor): ChessMove[] =
           to,
           piece,
           captured: board[to.row][to.col] ?? undefined,
-          promotion: piece.type === 'pawn' && (to.row === 0 || to.row === 7) ? 'queen' : undefined,
+          promotion:
+            piece.type === 'pawn' && (to.row === 0 || to.row === 7)
+              ? 'queen'
+              : undefined,
         })
       })
     }
@@ -270,7 +343,13 @@ const evaluateBoard = (board: ChessBoard) => {
   return score
 }
 
-const minimax = (board: ChessBoard, turn: ChessColor, depth: number, alpha: number, beta: number): number => {
+const minimax = (
+  board: ChessBoard,
+  turn: ChessColor,
+  depth: number,
+  alpha: number,
+  beta: number,
+): number => {
   const moves = legalMovesForColor(board, turn)
   if (!moves.length || depth === 0) {
     if (!moves.length) {
@@ -285,7 +364,13 @@ const minimax = (board: ChessBoard, turn: ChessColor, depth: number, alpha: numb
   if (turn === 'white') {
     let best = -Infinity
     for (const move of moves) {
-      const value = minimax(applyMove(board, move.from, move.to), 'black', depth - 1, alpha, beta)
+      const value = minimax(
+        applyMove(board, move.from, move.to),
+        'black',
+        depth - 1,
+        alpha,
+        beta,
+      )
       best = Math.max(best, value)
       alpha = Math.max(alpha, best)
       if (beta <= alpha) break
@@ -295,7 +380,13 @@ const minimax = (board: ChessBoard, turn: ChessColor, depth: number, alpha: numb
 
   let best = Infinity
   for (const move of moves) {
-    const value = minimax(applyMove(board, move.from, move.to), 'white', depth - 1, alpha, beta)
+    const value = minimax(
+      applyMove(board, move.from, move.to),
+      'white',
+      depth - 1,
+      alpha,
+      beta,
+    )
     best = Math.min(best, value)
     beta = Math.min(beta, best)
     if (beta <= alpha) break
@@ -308,16 +399,24 @@ const chooseAiMove = (board: ChessBoard, color: ChessColor, depth: number) => {
   if (!moves.length) return null
 
   const scoredMoves = moves.map((move) => {
-    const score = minimax(applyMove(board, move.from, move.to), oppositeColor(color), depth - 1, -Infinity, Infinity)
+    const score = minimax(
+      applyMove(board, move.from, move.to),
+      oppositeColor(color),
+      depth - 1,
+      -Infinity,
+      Infinity,
+    )
     return { move, score }
   })
 
   const isWhite = color === 'white'
   const bestScore = isWhite
-    ? Math.max(...scoredMoves.map(entry => entry.score))
-    : Math.min(...scoredMoves.map(entry => entry.score))
+    ? Math.max(...scoredMoves.map((entry) => entry.score))
+    : Math.min(...scoredMoves.map((entry) => entry.score))
 
-  const bestMoves = scoredMoves.filter(entry => entry.score === bestScore).map(entry => entry.move)
+  const bestMoves = scoredMoves
+    .filter((entry) => entry.score === bestScore)
+    .map((entry) => entry.move)
   return bestMoves[Math.floor(Math.random() * bestMoves.length)]
 }
 
@@ -331,9 +430,13 @@ export const useChessEngine = (playMode: 'ai' | 'pvp') => {
   const statusMessage = ref('Aux blancs de jouer')
   const isAiThinking = ref(false)
 
-  const isInCheck = computed(() => isInCheckOnBoard(board.value, currentTurn.value))
+  const isInCheck = computed(() =>
+    isInCheckOnBoard(board.value, currentTurn.value),
+  )
 
-  const currentLegalMoves = computed(() => legalMovesForColor(board.value, currentTurn.value))
+  const currentLegalMoves = computed(() =>
+    legalMovesForColor(board.value, currentTurn.value),
+  )
 
   const updateStatus = () => {
     if (winner.value === 'draw') {
@@ -342,14 +445,18 @@ export const useChessEngine = (playMode: 'ai' | 'pvp') => {
     }
 
     if (winner.value) {
-      statusMessage.value = winner.value === 'white' ? 'Échec et mat : les blancs gagnent.' : 'Échec et mat : les noirs gagnent.'
+      statusMessage.value =
+        winner.value === 'white'
+          ? 'Échec et mat : les blancs gagnent.'
+          : 'Échec et mat : les noirs gagnent.'
       return
     }
 
     const checkSuffix = isInCheck.value ? ' (échec)' : ''
-    statusMessage.value = currentTurn.value === 'white'
-      ? `Aux blancs de jouer${checkSuffix}`
-      : `Aux noirs de jouer${checkSuffix}`
+    statusMessage.value =
+      currentTurn.value === 'white'
+        ? `Aux blancs de jouer${checkSuffix}`
+        : `Aux noirs de jouer${checkSuffix}`
   }
 
   const finalizeTurn = () => {
@@ -360,8 +467,7 @@ export const useChessEngine = (playMode: 'ai' | 'pvp') => {
     if (!nextMoves.length) {
       if (opponentInCheck) {
         winner.value = currentTurn.value
-      }
-      else {
+      } else {
         winner.value = 'draw'
       }
       updateStatus()
@@ -391,9 +497,12 @@ export const useChessEngine = (playMode: 'ai' | 'pvp') => {
 
   const makeMove = (from: ChessPosition, to: ChessPosition) => {
     const piece = board.value[from.row][from.col]
-    if (!piece || piece.color !== currentTurn.value || winner.value) return false
+    if (!piece || piece.color !== currentTurn.value || winner.value)
+      return false
 
-    const legalMove = currentLegalMoves.value.find(move => posEq(move.from, from) && posEq(move.to, to))
+    const legalMove = currentLegalMoves.value.find(
+      (move) => posEq(move.from, from) && posEq(move.to, to),
+    )
     if (!legalMove) return false
 
     pushMove(legalMove)
@@ -411,8 +520,8 @@ export const useChessEngine = (playMode: 'ai' | 'pvp') => {
       if (!piece || piece.color !== currentTurn.value) return
       selectedSquare.value = position
       legalTargets.value = currentLegalMoves.value
-        .filter(move => posEq(move.from, position))
-        .map(move => move.to)
+        .filter((move) => posEq(move.from, position))
+        .map((move) => move.to)
       return
     }
 
@@ -428,8 +537,8 @@ export const useChessEngine = (playMode: 'ai' | 'pvp') => {
     if (piece && piece.color === currentTurn.value) {
       selectedSquare.value = position
       legalTargets.value = currentLegalMoves.value
-        .filter(move => posEq(move.from, position))
-        .map(move => move.to)
+        .filter((move) => posEq(move.from, position))
+        .map((move) => move.to)
       return
     }
 
@@ -454,7 +563,7 @@ export const useChessEngine = (playMode: 'ai' | 'pvp') => {
     if (playMode !== 'ai' || winner.value || turn !== aiColor) return
     isAiThinking.value = true
 
-    await new Promise(resolve => setTimeout(resolve, 280))
+    await new Promise((resolve) => setTimeout(resolve, 280))
     const aiMove = chooseAiMove(board.value, aiColor, 2)
 
     if (aiMove) {

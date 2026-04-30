@@ -40,10 +40,7 @@ function isProductsResponseLike(
   }
 
   const candidate = value as { items?: unknown; data?: unknown }
-  return (
-    Array.isArray(candidate.items) ||
-    Array.isArray(candidate.data)
-  )
+  return Array.isArray(candidate.items) || Array.isArray(candidate.data)
 }
 
 function getProductsFromResponse(response: unknown): ShopGeneralProduct[] {
@@ -358,8 +355,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
           ),
         {
           i18nKey: 'world.shop.errors.productsFetch',
-          fallbackMessage:
-            'Unable to fetch store products. Please try again.',
+          fallbackMessage: 'Unable to fetch store products. Please try again.',
         },
       )
       if (!isProductsResponseLike(response)) {
@@ -397,8 +393,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
           ),
         {
           i18nKey: 'world.shop.errors.categoriesFetch',
-          fallbackMessage:
-            'Unable to fetch store categories.',
+          fallbackMessage: 'Unable to fetch store categories.',
         },
       )
       categories.value = response.data
@@ -442,8 +437,7 @@ export const useWorldShopStore = defineStore('world-shop', () => {
           ),
         {
           i18nKey: 'world.shop.errors.productDetailFetch',
-          fallbackMessage:
-            'Unable to fetch product details right now.',
+          fallbackMessage: 'Unable to fetch product details right now.',
         },
       )
 

@@ -1,4 +1,7 @@
-import { cachedCrmGithubGeneralGet, mutateCrmGithubGeneral } from '~~/server/utils/crmGithubGeneralApi'
+import {
+  cachedCrmGithubGeneralGet,
+  mutateCrmGithubGeneral,
+} from '~~/server/utils/crmGithubGeneralApi'
 
 function normalizeQuery(query: Record<string, unknown>) {
   return Object.fromEntries(
@@ -11,11 +14,17 @@ export default defineEventHandler(async (event): Promise<unknown> => {
   const resource = getRouterParam(event, 'resource')
 
   if (!taskRequestId) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing task request id' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing task request id',
+    })
   }
 
   if (!resource) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing github resource path' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing github resource path',
+    })
   }
 
   const path = `task-requests/${taskRequestId}/github/${resource}`
@@ -31,7 +40,10 @@ export default defineEventHandler(async (event): Promise<unknown> => {
     : undefined
 
   if (!['POST', 'DELETE'].includes(method)) {
-    throw createError({ statusCode: 405, statusMessage: `Method ${method} not allowed` })
+    throw createError({
+      statusCode: 405,
+      statusMessage: `Method ${method} not allowed`,
+    })
   }
 
   return await mutateCrmGithubGeneral(event, path, {

@@ -10,8 +10,12 @@ export default defineEventHandler(async (event): Promise<CrmIdResponse> => {
 
   const body = await readBody<Record<string, unknown>>(event)
 
-  return mutateCrmGeneral<Record<string, unknown>>(event, `employees/${employeeId}/roles`, {
-    method: 'POST',
-    body,
-  })
+  return mutateCrmGeneral<Record<string, unknown>>(
+    event,
+    `employees/${employeeId}/roles`,
+    {
+      method: 'POST',
+      body,
+    },
+  )
 })

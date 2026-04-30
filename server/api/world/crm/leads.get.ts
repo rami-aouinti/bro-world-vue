@@ -66,77 +66,79 @@ const normalizeStatus = (value: unknown): CrmLeadStatus | undefined => {
   return undefined
 }
 
-export default defineEventHandler(async (event): Promise<CrmLeadsApiResponse> => {
-  const user = await requireCrmPermission(event, 'crm.leads.read')
-  const username = user?.username?.trim()
+export default defineEventHandler(
+  async (event): Promise<CrmLeadsApiResponse> => {
+    const user = await requireCrmPermission(event, 'crm.leads.read')
+    const username = user?.username?.trim()
 
-  if (!username) {
-    throw createError({ statusCode: 401, statusMessage: 'Missing username' })
-  }
+    if (!username) {
+      throw createError({ statusCode: 401, statusMessage: 'Missing username' })
+    }
 
-  const query = getQuery(event) as CrmLeadsListQuery
-  const cacheKey = privateCacheKey(username, '/world/crm/leads', query)
-  const cached = await getCached<CrmLeadsApiResponse>(cacheKey)
+    const query = getQuery(event) as CrmLeadsListQuery
+    const cacheKey = privateCacheKey(username, '/world/crm/leads', query)
+    const cached = await getCached<CrmLeadsApiResponse>(cacheKey)
 
-  if (cached) {
-    return cached
-  }
+    if (cached) {
+      return cached
+    }
 
-  const page = Math.max(1, Number(query.page ?? 1) || 1)
-  const limit = Math.min(100, Math.max(1, Number(query.limit ?? 10) || 10))
-  const sortBy: string = ALLOWED_SORT_FIELDS.includes(
-    query.sortBy as (typeof ALLOWED_SORT_FIELDS)[number],
-  )
-    ? String(query.sortBy)
-    : 'id'
-  const sortOrder = normalizeSortOrder(query.sortOrder)
-  const status = normalizeStatus(query.status)
-  const search =
-    typeof query.search === 'string' ? query.search.trim().toLowerCase() : ''
-  const owner =
-    typeof query.owner === 'string' ? query.owner.trim().toLowerCase() : ''
+    const page = Math.max(1, Number(query.page ?? 1) || 1)
+    const limit = Math.min(100, Math.max(1, Number(query.limit ?? 10) || 10))
+    const sortBy: string = ALLOWED_SORT_FIELDS.includes(
+      query.sortBy as (typeof ALLOWED_SORT_FIELDS)[number],
+    )
+      ? String(query.sortBy)
+      : 'id'
+    const sortOrder = normalizeSortOrder(query.sortOrder)
+    const status = normalizeStatus(query.status)
+    const search =
+      typeof query.search === 'string' ? query.search.trim().toLowerCase() : ''
+    const owner =
+      typeof query.owner === 'string' ? query.owner.trim().toLowerCase() : ''
 
-  const filtered = LEADS.filter((lead) => {
-    const matchesSearch =
-      search.length === 0 ||
-      lead.id.toLowerCase().includes(search) ||
-      lead.project.toLowerCase().includes(search) ||
-      lead.owner.toLowerCase().includes(search)
-    const matchesStatus = !status || lead.status === status
-    const matchesOwner =
-      owner.length === 0 || lead.owner.toLowerCase().includes(owner)
+    const filtered = LEADS.filter((lead) => {
+      const matchesSearch =
+        search.length === 0 ||
+        lead.id.toLowerCase().includes(search) ||
+        lead.project.toLowerCase().includes(search) ||
+        lead.owner.toLowerCase().includes(search)
+      const matchesStatus = !status || lead.status === status
+      const matchesOwner =
+        owner.length === 0 || lead.owner.toLowerCase().includes(owner)
 
-    return matchesSearch && matchesStatus && matchesOwner
-  })
+      return matchesSearch && matchesStatus && matchesOwner
+    })
 
-  const sorted = [...filtered].sort((a, b) => {
-    const left = String(a[sortBy as keyof CrmLead]).toLowerCase()
-    const right = String(b[sortBy as keyof CrmLead]).toLowerCase()
-    const compared = left.localeCompare(right, undefined, { numeric: true })
+    const sorted = [...filtered].sort((a, b) => {
+      const left = String(a[sortBy as keyof CrmLead]).toLowerCase()
+      const right = String(b[sortBy as keyof CrmLead]).toLowerCase()
+      const compared = left.localeCompare(right, undefined, { numeric: true })
 
-    return sortOrder === 'asc' ? compared : -compared
-  })
+      return sortOrder === 'asc' ? compared : -compared
+    })
 
-  const total = sorted.length
-  const totalPages = Math.max(1, Math.ceil(total / limit))
-  const start = (page - 1) * limit
+    const total = sorted.length
+    const totalPages = Math.max(1, Math.ceil(total / limit))
+    const start = (page - 1) * limit
 
-  const response = {
-    items: sorted.slice(start, start + limit),
-    page,
-    limit,
-    total,
-    totalPages,
-    sortBy,
-    sortOrder,
-    filters: {
-      ...(search ? { search: query.search } : {}),
-      ...(status ? { status } : {}),
-      ...(owner ? { owner: query.owner } : {}),
-    },
-  }
+    const response = {
+      items: sorted.slice(start, start + limit),
+      page,
+      limit,
+      total,
+      totalPages,
+      sortBy,
+      sortOrder,
+      filters: {
+        ...(search ? { search: query.search } : {}),
+        ...(status ? { status } : {}),
+        ...(owner ? { owner: query.owner } : {}),
+      },
+    }
 
-  await setCached(cacheKey, response, resolveCacheTtl('default'))
+    await setCached(cacheKey, response, resolveCacheTtl('default'))
 
-  return response
-})
+    return response
+  },
+)

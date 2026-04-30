@@ -239,7 +239,10 @@ async function applyAction(userId: string, action: FriendAction) {
         `/api/chat/private/conversation/${userId}/user`,
         { method: 'POST' },
       )
-      await navigateTo({ path: '/inbox', query: { conversation: conversation.id } })
+      await navigateTo({
+        path: '/inbox',
+        query: { conversation: conversation.id },
+      })
       return
     }
 
@@ -297,10 +300,7 @@ onMounted(async () => {
           {{ t('pages.friends.suggestions.title') }}
         </v-card-title>
         <v-list v-if="suggestedUsers.length">
-          <v-list-item
-            v-for="item in suggestedUsers"
-            :key="item.id"
-          >
+          <v-list-item v-for="item in suggestedUsers" :key="item.id">
             <template #prepend>
               <NuxtLink
                 v-if="userProfilePath(item.username)"
@@ -366,20 +366,19 @@ onMounted(async () => {
         </v-alert>
 
         <v-row>
-          <v-col
-            cols="12"
-            md="6"
-          >
-            <v-card v-for="section in sectionConfigs" :key="section.title" variant="text" class="postcard-gradient-card mb-3">
+          <v-col cols="12" md="6">
+            <v-card
+              v-for="section in sectionConfigs"
+              :key="section.title"
+              variant="text"
+              class="postcard-gradient-card mb-3"
+            >
               <v-card-title class="d-flex align-center ga-2">
                 <v-icon :icon="section.icon" />
                 {{ section.title }}
               </v-card-title>
               <v-list v-if="section.items.length" class="bg-transparent">
-                <v-list-item
-                  v-for="item in section.items"
-                  :key="item.id"
-                >
+                <v-list-item v-for="item in section.items" :key="item.id">
                   <template #prepend>
                     <NuxtLink
                       v-if="userProfilePath(item.username)"
@@ -456,20 +455,19 @@ onMounted(async () => {
               </v-card-text>
             </v-card>
           </v-col>
-          <v-col
-            cols="12"
-            md="6"
-          >
-            <v-card v-for="section in sectionConfigsRight" :key="section.title" variant="text" class="postcard-gradient-card">
+          <v-col cols="12" md="6">
+            <v-card
+              v-for="section in sectionConfigsRight"
+              :key="section.title"
+              variant="text"
+              class="postcard-gradient-card"
+            >
               <v-card-title class="d-flex align-center ga-2">
                 <v-icon :icon="section.icon" />
                 {{ section.title }}
               </v-card-title>
               <v-list v-if="section.items.length" class="bg-transparent">
-                <v-list-item
-                  v-for="item in section.items"
-                  :key="item.id"
-                >
+                <v-list-item v-for="item in section.items" :key="item.id">
                   <template #prepend>
                     <NuxtLink
                       v-if="userProfilePath(item.username)"

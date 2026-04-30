@@ -2,29 +2,32 @@
 import { computed } from 'vue'
 import { useCardTheme } from '~/composables/games/useCardTheme'
 
-const props = withDefaults(defineProps<{
-  rank?: string
-  suit?: string
-  faceDown?: boolean
-  selected?: boolean
-  playable?: boolean
-  disabled?: boolean
-  highlighted?: boolean
-  feedback?: 'idle' | 'error' | 'combo' | 'won'
-  hoverable?: boolean
-  label?: string
-}>(), {
-  rank: '',
-  suit: '',
-  faceDown: false,
-  selected: false,
-  playable: true,
-  disabled: false,
-  highlighted: false,
-  feedback: 'idle',
-  hoverable: true,
-  label: '',
-})
+const props = withDefaults(
+  defineProps<{
+    rank?: string
+    suit?: string
+    faceDown?: boolean
+    selected?: boolean
+    playable?: boolean
+    disabled?: boolean
+    highlighted?: boolean
+    feedback?: 'idle' | 'error' | 'combo' | 'won'
+    hoverable?: boolean
+    label?: string
+  }>(),
+  {
+    rank: '',
+    suit: '',
+    faceDown: false,
+    selected: false,
+    playable: true,
+    disabled: false,
+    highlighted: false,
+    feedback: 'idle',
+    hoverable: true,
+    label: '',
+  },
+)
 
 const emit = defineEmits<{
   (event: 'select'): void
@@ -32,7 +35,9 @@ const emit = defineEmits<{
 
 const { isRedSuit } = useCardTheme()
 
-const suitClass = computed(() => (isRedSuit(props.suit) ? 'game-card--red' : 'game-card--black'))
+const suitClass = computed(() =>
+  isRedSuit(props.suit) ? 'game-card--red' : 'game-card--black',
+)
 
 const a11yLabel = computed(() => {
   if (props.label) return props.label
@@ -70,7 +75,9 @@ const a11yLabel = computed(() => {
     <template v-else>
       <span class="game-card__corner">{{ rank }}{{ suit }}</span>
       <span class="game-card__suit">{{ suit }}</span>
-      <span class="game-card__corner game-card__corner--bottom">{{ rank }}{{ suit }}</span>
+      <span class="game-card__corner game-card__corner--bottom"
+        >{{ rank }}{{ suit }}</span
+      >
     </template>
   </button>
 </template>

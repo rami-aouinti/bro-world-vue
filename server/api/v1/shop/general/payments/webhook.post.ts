@@ -18,7 +18,11 @@ function normalizeProvider(value: unknown): WebhookProvider {
   }
 
   const normalized = value.trim().toLowerCase()
-  if (normalized === 'mock' || normalized === 'stripe' || normalized === 'paypal') {
+  if (
+    normalized === 'mock' ||
+    normalized === 'stripe' ||
+    normalized === 'paypal'
+  ) {
     return normalized
   }
 

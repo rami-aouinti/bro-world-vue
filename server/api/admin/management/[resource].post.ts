@@ -1,6 +1,9 @@
 import { callPrivateApi, getSessionAuth } from '~~/server/utils/privateApi'
 import { getAdminResource } from '~~/server/utils/adminManagement'
-import { invalidateByPrefix, privateCachePrefix } from '~~/server/utils/apiCache'
+import {
+  invalidateByPrefix,
+  privateCachePrefix,
+} from '~~/server/utils/apiCache'
 
 export default defineEventHandler(async (event) => {
   const { endpointResource } = getAdminResource(event)
@@ -12,6 +15,8 @@ export default defineEventHandler(async (event) => {
     body: payload,
   })
 
-  await invalidateByPrefix(privateCachePrefix({ username, resourcePrefix: 'default' }))
+  await invalidateByPrefix(
+    privateCachePrefix({ username, resourcePrefix: 'default' }),
+  )
   return response
 })

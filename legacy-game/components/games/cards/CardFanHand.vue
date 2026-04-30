@@ -9,22 +9,27 @@ interface HandCard {
   faceDown?: boolean
 }
 
-const props = withDefaults(defineProps<{
-  cards: HandCard[]
-  orientation?: 'horizontal' | 'vertical'
-  selectedCardIds?: string[]
-  playableCardIds?: string[]
-  disabledCardIds?: string[]
-  highlightedCardIds?: string[]
-  feedbackByCardId?: Partial<Record<string, 'idle' | 'error' | 'combo' | 'won'>>
-}>(), {
-  orientation: 'horizontal',
-  selectedCardIds: () => [],
-  playableCardIds: () => [],
-  disabledCardIds: () => [],
-  highlightedCardIds: () => [],
-  feedbackByCardId: () => ({}),
-})
+const props = withDefaults(
+  defineProps<{
+    cards: HandCard[]
+    orientation?: 'horizontal' | 'vertical'
+    selectedCardIds?: string[]
+    playableCardIds?: string[]
+    disabledCardIds?: string[]
+    highlightedCardIds?: string[]
+    feedbackByCardId?: Partial<
+      Record<string, 'idle' | 'error' | 'combo' | 'won'>
+    >
+  }>(),
+  {
+    orientation: 'horizontal',
+    selectedCardIds: () => [],
+    playableCardIds: () => [],
+    disabledCardIds: () => [],
+    highlightedCardIds: () => [],
+    feedbackByCardId: () => ({}),
+  },
+)
 
 const emit = defineEmits<{
   (event: 'play-card', payload: { id: string }): void
@@ -52,7 +57,8 @@ const cardStyle = (index: number) => {
   }
 }
 
-const isPlayable = (id: string) => props.playableCardIds.length === 0 || props.playableCardIds.includes(id)
+const isPlayable = (id: string) =>
+  props.playableCardIds.length === 0 || props.playableCardIds.includes(id)
 </script>
 
 <template>

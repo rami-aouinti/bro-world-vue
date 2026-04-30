@@ -1,49 +1,59 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import type { GameAsidePanelState } from "~/components/games/types";
-import { useSolitaireEngine } from "~/composables/games/engines/useSolitaireEngine";
-import GameTableScaffold from "~/components/games/GameTableScaffold.vue";
-import DeckStack from "~/components/games/cards/DeckStack.vue";
-import PlayingCard from "~/components/games/cards/PlayingCard.vue";
+import { computed, ref, watch } from 'vue'
+import type { GameAsidePanelState } from '~/components/games/types'
+import { useSolitaireEngine } from '~/composables/games/engines/useSolitaireEngine'
+import GameTableScaffold from '~/components/games/GameTableScaffold.vue'
+import DeckStack from '~/components/games/cards/DeckStack.vue'
+import PlayingCard from '~/components/games/cards/PlayingCard.vue'
 
 const props = defineProps<{
-  selectedPlayMode: "ai" | "pvp";
-}>();
+  selectedPlayMode: 'ai' | 'pvp'
+}>()
 
 const emit = defineEmits<{
-  (event: "panel-state", payload: GameAsidePanelState): void;
-  (event: "finished", payload: { result: "win" | "lose" }): void;
-}>();
+  (event: 'panel-state', payload: GameAsidePanelState): void
+  (event: 'finished', payload: { result: 'win' | 'lose' }): void
+}>()
 
-const engine = useSolitaireEngine();
+const engine = useSolitaireEngine()
 
-const suggestedMove = computed(() => engine.suggestBestMove());
-const topWasteCard = computed(() => engine.waste.value.at(-1) ?? null);
-const suitFoundationIndex: Record<string, number> = { "♠": 0, "♥": 1, "♦": 2, "♣": 3 };
+const suggestedMove = computed(() => engine.suggestBestMove())
+const topWasteCard = computed(() => engine.waste.value.at(-1) ?? null)
+const suitFoundationIndex: Record<string, number> = {
+  '♠': 0,
+  '♥': 1,
+  '♦': 2,
+  '♣': 3,
+}
 
 const findCardById = (cardId?: string | null) => {
-  if (!cardId) return null;
-  const wasteCard = engine.waste.value.find((card) => card.id === cardId);
-  if (wasteCard) return wasteCard;
+  if (!cardId) return null
+  const wasteCard = engine.waste.value.find((card) => card.id === cardId)
+  if (wasteCard) return wasteCard
 
   for (const pile of engine.tableau.value) {
-    const card = pile.find((item) => item.id === cardId);
-    if (card) return card;
+    const card = pile.find((item) => item.id === cardId)
+    if (card) return card
   }
 
-  return null;
-};
+  return null
+}
 
-const suggestedCardId = computed(() => suggestedMove.value?.cardId ?? null);
+const suggestedCardId = computed(() => suggestedMove.value?.cardId ?? null)
 const suggestedFoundationIndex = computed(() => {
-  const move = suggestedMove.value;
-  if (!move || !["waste-to-foundation", "tableau-to-foundation"].includes(move.type)) return null;
-  const card = findCardById(move.cardId);
-  if (!card) return null;
-  return suitFoundationIndex[card.suit] ?? null;
-});
+  const move = suggestedMove.value
+  if (
+    !move ||
+    !['waste-to-foundation', 'tableau-to-foundation'].includes(move.type)
+  )
+    return null
+  const card = findCardById(move.cardId)
+  if (!card) return null
+  return suitFoundationIndex[card.suit] ?? null
+})
 
-const cardFeedback = (cardId: string) => (suggestedCardId.value === cardId ? "combo" : "idle");
+const cardFeedback = (cardId: string) =>
+  suggestedCardId.value === cardId ? 'combo' : 'idle'
 
 const foundationSummaries = computed(() =>
   engine.foundations.value.map((pile, index) => ({
@@ -53,83 +63,92 @@ const foundationSummaries = computed(() =>
     count: pile.length,
     topCard: pile.at(-1) ?? null,
   })),
-);
+)
 
 const secondaryKpis = computed(() => [
-  { id: "stock", label: "Pioche", value: engine.stock.value.length },
-  { id: "waste", label: "Défausse", value: engine.waste.value.length },
+  { id: 'stock', label: 'Pioche', value: engine.stock.value.length },
+  { id: 'waste', label: 'Défausse', value: engine.waste.value.length },
   {
-    id: "revealed",
-    label: "Cartes visibles",
-    value: engine.tableau.value.reduce((sum, pile) => sum + pile.filter((card) => card.faceUp).length, 0),
+    id: 'revealed',
+    label: 'Cartes visibles',
+    value: engine.tableau.value.reduce(
+      (sum, pile) => sum + pile.filter((card) => card.faceUp).length,
+      0,
+    ),
   },
   {
-    id: "foundations",
-    label: "Fondations",
+    id: 'foundations',
+    label: 'Fondations',
     value: foundationSummaries.value.reduce((sum, pile) => sum + pile.count, 0),
   },
-]);
+])
 
-const finishedEmitted = ref(false);
+const finishedEmitted = ref(false)
 
-watch(() => engine.isWon.value, (isWon) => {
-  if (!isWon || finishedEmitted.value) return;
-  finishedEmitted.value = true;
-  emit("finished", { result: "win" });
-});
+watch(
+  () => engine.isWon.value,
+  (isWon) => {
+    if (!isWon || finishedEmitted.value) return
+    finishedEmitted.value = true
+    emit('finished', { result: 'win' })
+  },
+)
 
-watch(() => engine.moveCount.value, () => {
-  if (!engine.isWon.value) {
-    finishedEmitted.value = false;
-  }
-});
+watch(
+  () => engine.moveCount.value,
+  () => {
+    if (!engine.isWon.value) {
+      finishedEmitted.value = false
+    }
+  },
+)
 
 const panelState = computed<GameAsidePanelState>(() => ({
-  title: "Solitaire",
-  subtitle: `Mode ${props.selectedPlayMode === "ai" ? "solo" : "duel local"}`,
+  title: 'Solitaire',
+  subtitle: `Mode ${props.selectedPlayMode === 'ai' ? 'solo' : 'duel local'}`,
   kpis: [
-    { id: "solitaire-moves", label: "Coups", value: engine.moveCount.value },
-    { id: "solitaire-score", label: "Score", value: engine.score.value },
+    { id: 'solitaire-moves', label: 'Coups', value: engine.moveCount.value },
+    { id: 'solitaire-score', label: 'Score', value: engine.score.value },
   ],
   actions: [
-    { id: "restart", label: "Nouvelle partie", icon: "mdi-refresh" },
-    { id: "undo", label: "Annuler", icon: "mdi-undo" },
-    { id: "hint", label: "Suggestion", icon: "mdi-lightbulb-on" },
+    { id: 'restart', label: 'Nouvelle partie', icon: 'mdi-refresh' },
+    { id: 'undo', label: 'Annuler', icon: 'mdi-undo' },
+    { id: 'hint', label: 'Suggestion', icon: 'mdi-lightbulb-on' },
   ],
-}));
+}))
 
 const applySuggestedMove = () => {
-  if (!suggestedMove.value) return;
-  engine.applyMove(suggestedMove.value);
-};
+  if (!suggestedMove.value) return
+  engine.applyMove(suggestedMove.value)
+}
 
 const autoPlayAi = () => {
-  if (props.selectedPlayMode !== "ai") return;
-  if (!suggestedMove.value) return;
-  engine.applyMove(suggestedMove.value);
-};
+  if (props.selectedPlayMode !== 'ai') return
+  if (!suggestedMove.value) return
+  engine.applyMove(suggestedMove.value)
+}
 
 const handleAsideAction = (actionId: string) => {
-  if (actionId === "restart") {
-    engine.startNewGame();
-    return;
+  if (actionId === 'restart') {
+    engine.startNewGame()
+    return
   }
 
-  if (actionId === "undo") {
-    engine.undo();
-    return;
+  if (actionId === 'undo') {
+    engine.undo()
+    return
   }
 
-  if (actionId === "hint") {
-    applySuggestedMove();
+  if (actionId === 'hint') {
+    applySuggestedMove()
   }
-};
+}
 
-watch(panelState, (value) => emit("panel-state", value), { immediate: true });
+watch(panelState, (value) => emit('panel-state', value), { immediate: true })
 
 defineExpose({
   handleAsideAction,
-});
+})
 </script>
 
 <template>
@@ -137,13 +156,17 @@ defineExpose({
     <template #surface>
       <section class="solitaire-surface">
         <header class="solitaire-header">
-          <v-chip v-if="engine.isWon.value" color="success" size="small">Victoire</v-chip>
+          <v-chip v-if="engine.isWon.value" color="success" size="small"
+            >Victoire</v-chip
+          >
         </header>
 
         <div class="solitaire-top-row">
           <DeckStack
             :remaining="engine.stock.value.length"
-            :can-draw="engine.stock.value.length > 0 || engine.waste.value.length > 0"
+            :can-draw="
+              engine.stock.value.length > 0 || engine.waste.value.length > 0
+            "
             :top-discard="topWasteCard"
             @draw="engine.draw"
           />
@@ -167,7 +190,11 @@ defineExpose({
                   :playable="false"
                   :selected="suggestedCardId === foundation.topCard.id"
                   :highlighted="suggestedFoundationIndex === foundation.index"
-                  :feedback="suggestedFoundationIndex === foundation.index ? 'won' : cardFeedback(foundation.topCard.id)"
+                  :feedback="
+                    suggestedFoundationIndex === foundation.index
+                      ? 'won'
+                      : cardFeedback(foundation.topCard.id)
+                  "
                 />
               </TransitionGroup>
               <div v-else class="foundation-slot__empty">A</div>
@@ -183,7 +210,11 @@ defineExpose({
             class="tableau-column"
           >
             <p class="tableau-column__label">Col {{ pileIndex + 1 }}</p>
-            <TransitionGroup name="solitaire-stack" tag="div" class="tableau-column__cards">
+            <TransitionGroup
+              name="solitaire-stack"
+              tag="div"
+              class="tableau-column__cards"
+            >
               <PlayingCard
                 v-for="(card, cardIndex) in pile"
                 :key="card.id"
@@ -213,11 +244,25 @@ defineExpose({
         </div>
 
         <div class="d-flex ga-2 flex-wrap">
-          <v-btn color="primary" variant="tonal" @click="engine.draw">Piocher</v-btn>
-          <v-btn variant="tonal" :disabled="!suggestedMove" @click="applySuggestedMove">Jouer suggestion</v-btn>
-          <v-btn variant="tonal" @click="engine.autoCompleteFoundations">Auto fondations</v-btn>
+          <v-btn color="primary" variant="tonal" @click="engine.draw"
+            >Piocher</v-btn
+          >
+          <v-btn
+            variant="tonal"
+            :disabled="!suggestedMove"
+            @click="applySuggestedMove"
+            >Jouer suggestion</v-btn
+          >
+          <v-btn variant="tonal" @click="engine.autoCompleteFoundations"
+            >Auto fondations</v-btn
+          >
           <v-btn variant="text" @click="engine.undo">Undo</v-btn>
-          <v-btn v-if="selectedPlayMode === 'ai'" variant="text" @click="autoPlayAi">IA joue</v-btn>
+          <v-btn
+            v-if="selectedPlayMode === 'ai'"
+            variant="text"
+            @click="autoPlayAi"
+            >IA joue</v-btn
+          >
         </div>
 
         <p class="text-body-2 mb-0">{{ engine.message.value }}</p>
@@ -328,7 +373,9 @@ defineExpose({
 .solitaire-stack-enter-active,
 .solitaire-stack-leave-active,
 .solitaire-stack-move {
-  transition: transform 200ms ease, opacity 200ms ease;
+  transition:
+    transform 200ms ease,
+    opacity 200ms ease;
 }
 
 .solitaire-stack-enter-from,

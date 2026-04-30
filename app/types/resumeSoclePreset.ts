@@ -1,4 +1,7 @@
-import type { ResumeLayoutMode, ResumeSectionIconStyleVariant } from '~/constants/resumeTemplateSkins'
+import type {
+  ResumeLayoutMode,
+  ResumeSectionIconStyleVariant,
+} from '~/constants/resumeTemplateSkins'
 
 export type ResumeSoclePresetPalette = {
   accent: string
@@ -19,7 +22,13 @@ export type ResumeSoclePreset = {
     pageBackground: 'white' | 'sky-light' | 'pearl-light' | 'ivory-light'
     rounded: 'none' | 'sm' | 'md' | 'lg' | 'xl'
     textStyle: 'clean' | 'display' | 'mono'
-    photoShape: 'square' | 'rounded' | 'circle' | 'portrait-card' | 'soft-blob' | 'hex'
+    photoShape:
+      | 'square'
+      | 'rounded'
+      | 'circle'
+      | 'portrait-card'
+      | 'soft-blob'
+      | 'hex'
     sidebarWidth: number
     sidebarHeight: number
     lineDensity: 'compact' | 'comfortable'

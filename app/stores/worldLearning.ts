@@ -141,7 +141,9 @@ export const useWorldLearningStore = defineStore('world-learning', () => {
     error.value = null
     try {
       const response = await runTrackedStoreFetch('learning', () =>
-        $fetch<{ items: LearningAdminAnalytics }>('/api/world/learning/analytics'),
+        $fetch<{ items: LearningAdminAnalytics }>(
+          '/api/world/learning/analytics',
+        ),
       )
       detail.value = response.items
       lastFetchedAt.value = Date.now()

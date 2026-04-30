@@ -51,13 +51,19 @@ export function useCardTheme() {
     },
   } as const
 
-  const animationPresets = computed<Record<CardAnimationPresetName, CardAnimationPreset>>(() => ({
+  const animationPresets = computed<
+    Record<CardAnimationPresetName, CardAnimationPreset>
+  >(() => ({
     deal: {
       keyframes: [
         { transform: 'translateY(-26px) scale(0.94)', opacity: 0 },
         { transform: 'translateY(0) scale(1)', opacity: 1 },
       ],
-      options: { duration: 220, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'both' },
+      options: {
+        duration: 220,
+        easing: 'cubic-bezier(.2,.8,.2,1)',
+        fill: 'both',
+      },
     },
     flip: {
       keyframes: [

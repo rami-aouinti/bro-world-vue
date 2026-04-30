@@ -166,7 +166,11 @@ const resumeEditorNavButtons = [
   { label: 'Cover page', to: '/resume/cover-page/editor' },
   { label: 'Cover letter', to: '/resume/cover-letter/editor' },
 ] as const
-const isResumeEditorRoute = computed(() => resumeEditorRoutes.includes(route.path as typeof resumeEditorRoutes[number]))
+const isResumeEditorRoute = computed(() =>
+  resumeEditorRoutes.includes(
+    route.path as (typeof resumeEditorRoutes)[number],
+  ),
+)
 
 const isDark = computed({
   get() {
@@ -188,9 +192,12 @@ const shopStore = useWorldShopStore()
 
 const inboxNotificationsStore = useInboxNotificationsStore()
 const notificationStore = useNotificationStore()
-const { notificationsSortedDesc, unreadCount, inboxLatestThree, inboxUnreadCount } = storeToRefs(
-  inboxNotificationsStore,
-)
+const {
+  notificationsSortedDesc,
+  unreadCount,
+  inboxLatestThree,
+  inboxUnreadCount,
+} = storeToRefs(inboxNotificationsStore)
 const { notifications: actionNotifications } = storeToRefs(notificationStore)
 const notificationMenuOpen = ref(false)
 const inboxMenuOpen = ref(false)
@@ -442,7 +449,10 @@ function attachMercureSubscription() {
   if (!currentUserId) return
 
   mercureEventSource.value = subscribe(
-    [`/users/${currentUserId}/notifications`, `/users/${currentUserId}/conversations`],
+    [
+      `/users/${currentUserId}/notifications`,
+      `/users/${currentUserId}/conversations`,
+    ],
     {
       onMessage: (data) => {
         const payload = (data || {}) as {
@@ -464,7 +474,9 @@ function attachMercureSubscription() {
           void inboxNotificationsStore.fetchConversationById(conversationId)
         }
 
-        const notificationId = String(payload.notificationId || payload.id || '')
+        const notificationId = String(
+          payload.notificationId || payload.id || '',
+        )
         if (notificationId && !conversationId) {
           void inboxNotificationsStore.fetchNotificationById(notificationId)
         }
@@ -577,7 +589,11 @@ onBeforeUnmount(() => {
         </div>
       </v-menu>
 
-      <v-menu v-if="!isResumeEditorRoute" v-model="mobileApplicationsMenuOpen" location="bottom">
+      <v-menu
+        v-if="!isResumeEditorRoute"
+        v-model="mobileApplicationsMenuOpen"
+        location="bottom"
+      >
         <template #activator="{ props }">
           <v-btn
             v-bind="props"
@@ -628,7 +644,11 @@ onBeforeUnmount(() => {
         </div>
       </v-menu>
 
-      <v-menu v-if="!isResumeEditorRoute" v-model="mobileWorldMenuOpen" location="bottom">
+      <v-menu
+        v-if="!isResumeEditorRoute"
+        v-model="mobileWorldMenuOpen"
+        location="bottom"
+      >
         <template #activator="{ props }">
           <v-btn
             v-bind="props"
@@ -709,7 +729,12 @@ onBeforeUnmount(() => {
           {{ button.label }}
         </v-btn>
       </template>
-      <v-menu v-for="menu in navMenus" v-else :key="menu.label" location="bottom">
+      <v-menu
+        v-for="menu in navMenus"
+        v-else
+        :key="menu.label"
+        location="bottom"
+      >
         <template #activator="{ props }">
           <v-btn
             v-bind="props"

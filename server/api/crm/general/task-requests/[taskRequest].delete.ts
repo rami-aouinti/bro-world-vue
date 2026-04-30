@@ -4,7 +4,10 @@ export default defineEventHandler(async (event): Promise<null> => {
   const taskRequest = getRouterParam(event, 'taskRequest')
 
   if (!taskRequest) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing task request id' })
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing task request id',
+    })
   }
 
   await mutateCrmGeneral(event, `task-requests/${taskRequest}`, {

@@ -33,7 +33,10 @@ const categories = computed(() =>
     </AppPageDrawers>
 
     <v-container fluid>
-      <v-card variant="text" class="content-main postcard-gradient-card mb-3 pa-3">
+      <v-card
+        variant="text"
+        class="content-main postcard-gradient-card mb-3 pa-3"
+      >
         <div class="text-h2 text-center mb-2">
           <h3>Games</h3>
         </div>
@@ -66,11 +69,11 @@ const categories = computed(() =>
           type="info"
           variant="tonal"
           :text="
-          tOrFallback(
-            'gamePage.catalog.emptyCategories',
-            'No categories available for now.',
-          )
-        "
+            tOrFallback(
+              'gamePage.catalog.emptyCategories',
+              'No categories available for now.',
+            )
+          "
         />
       </v-card>
     </v-container>

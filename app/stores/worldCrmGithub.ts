@@ -32,7 +32,9 @@ const CRM_GITHUB_TTL_MS = 3 * 60 * 1000
 function buildCacheKey(endpoint: string, query?: Record<string, unknown>) {
   const normalizedEndpoint = endpoint.trim().replace(/^\/+|\/+$/g, '')
   const normalizedQuery = Object.entries(query ?? {})
-    .filter(([, value]) => value !== undefined && value !== null && value !== '')
+    .filter(
+      ([, value]) => value !== undefined && value !== null && value !== '',
+    )
     .sort(([left], [right]) => left.localeCompare(right))
     .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
     .join('&')
@@ -72,7 +74,9 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
     query?: Record<string, unknown>,
   ): Record<string, unknown> | undefined {
     const context = syncContext.value
-    const isSyncContextEndpoint = endpoint.startsWith('/api/world/crm/general/github/sync/context')
+    const isSyncContextEndpoint = endpoint.startsWith(
+      '/api/world/crm/general/github/sync/context',
+    )
 
     if (!isSyncContextEndpoint || !context) {
       return query
@@ -177,7 +181,10 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
     }
   }
 
-  function buildRepositoryScopedQuery(repositoryName: string, query?: Record<string, unknown>) {
+  function buildRepositoryScopedQuery(
+    repositoryName: string,
+    query?: Record<string, unknown>,
+  ) {
     return {
       ...(query ?? {}),
       repository: repositoryName,
@@ -222,16 +229,30 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
     },
     getProjectDashboard: (projectId: string, options?: { force?: boolean }) =>
       get(`${projectBase(projectId)}/dashboard`, undefined, options),
-    getProjectRepositories: (projectId: string, query?: Record<string, unknown>) =>
-      get<CrmGithubListResponse>(`${projectBase(projectId)}/repositories`, query),
+    getProjectRepositories: (
+      projectId: string,
+      query?: Record<string, unknown>,
+    ) =>
+      get<CrmGithubListResponse>(
+        `${projectBase(projectId)}/repositories`,
+        query,
+      ),
     getProjectRepositoryDetail: (projectId: string, repository: string) =>
-      get(`${projectBase(projectId)}/repositories/${encodeURIComponent(repository)}`),
-    attachRepository: (projectId: string, body: CrmGithubAttachRepositoryPayload) =>
+      get(
+        `${projectBase(projectId)}/repositories/${encodeURIComponent(repository)}`,
+      ),
+    attachRepository: (
+      projectId: string,
+      body: CrmGithubAttachRepositoryPayload,
+    ) =>
       mutate(`${projectBase(projectId)}/repositories`, 'POST', {
         body,
         invalidatePrefix: `${projectBase(projectId)}/repositories`,
       }),
-    createRepository: (projectId: string, body: CrmGithubCreateRepositoryPayload) =>
+    createRepository: (
+      projectId: string,
+      body: CrmGithubCreateRepositoryPayload,
+    ) =>
       mutate(`${projectBase(projectId)}/repositories/create`, 'POST', {
         body,
         invalidatePrefix: `${projectBase(projectId)}/repositories`,
@@ -241,23 +262,34 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
       repositoryId: string,
       body: CrmGithubUpdateRepositoryBindingPayload,
     ) =>
-      mutate(`${projectBase(projectId)}/repositories/${encodeURIComponent(repositoryId)}`, 'PUT', {
-        body,
-        invalidatePrefix: `${projectBase(projectId)}/repositories`,
-      }),
+      mutate(
+        `${projectBase(projectId)}/repositories/${encodeURIComponent(repositoryId)}`,
+        'PUT',
+        {
+          body,
+          invalidatePrefix: `${projectBase(projectId)}/repositories`,
+        },
+      ),
     deleteRepositoryBinding: (
       projectId: string,
       repositoryId: string,
       query?: Record<string, unknown>,
     ) =>
-      mutate(`${projectBase(projectId)}/repositories/${encodeURIComponent(repositoryId)}`, 'DELETE', {
-        query,
-        invalidatePrefix: `${projectBase(projectId)}/repositories`,
-      }),
+      mutate(
+        `${projectBase(projectId)}/repositories/${encodeURIComponent(repositoryId)}`,
+        'DELETE',
+        {
+          query,
+          invalidatePrefix: `${projectBase(projectId)}/repositories`,
+        },
+      ),
     getIssues: (projectId: string, query?: Record<string, unknown>) =>
       get<CrmGithubListResponse>(`${projectBase(projectId)}/issues`, query),
-    getIssueDetail: (projectId: string, number: string | number, query?: Record<string, unknown>) =>
-      get(`${projectBase(projectId)}/issues/${number}`, query),
+    getIssueDetail: (
+      projectId: string,
+      number: string | number,
+      query?: Record<string, unknown>,
+    ) => get(`${projectBase(projectId)}/issues/${number}`, query),
     createIssue: (projectId: string, body: CrmGithubCreateIssuePayload) =>
       mutate(`${projectBase(projectId)}/issues`, 'POST', {
         body,
@@ -276,7 +308,10 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
       projectId: string,
       number: string | number,
       body: CrmGithubIssueCommentPayload,
-    ) => mutate(`${projectBase(projectId)}/issues/${number}/comments`, 'POST', { body }),
+    ) =>
+      mutate(`${projectBase(projectId)}/issues/${number}/comments`, 'POST', {
+        body,
+      }),
     getBranches: (projectId: string, query?: Record<string, unknown>) =>
       get<CrmGithubListResponse>(`${projectBase(projectId)}/branches`, query),
     createBranch: (projectId: string, body: CrmGithubCreateBranchPayload) =>
@@ -290,14 +325,24 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
         invalidatePrefix: `${projectBase(projectId)}/branches`,
       }),
     getPullRequests: (projectId: string, query?: Record<string, unknown>) =>
-      get<CrmGithubListResponse>(`${projectBase(projectId)}/pull-requests`, query),
+      get<CrmGithubListResponse>(
+        `${projectBase(projectId)}/pull-requests`,
+        query,
+      ),
     getScopedPullRequests: (
       projectId: string,
       query?: Record<string, unknown>,
       applicationSlug?: string,
-    ) => get<CrmGithubListResponse>(`${scopedProjectBase(projectId, applicationSlug)}/pull-requests`, query),
+    ) =>
+      get<CrmGithubListResponse>(
+        `${scopedProjectBase(projectId, applicationSlug)}/pull-requests`,
+        query,
+      ),
     getCommits: (projectId: string, query?: Record<string, unknown>) =>
-      get<CrmGithubListResponse<CrmGithubCommitSummary>>(`${projectBase(projectId)}/commits`, query),
+      get<CrmGithubListResponse<CrmGithubCommitSummary>>(
+        `${projectBase(projectId)}/commits`,
+        query,
+      ),
     getScopedCommits: (
       projectId: string,
       query?: Record<string, unknown>,
@@ -311,7 +356,11 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
       projectId: string,
       sha: string,
       query?: Record<string, unknown>,
-    ) => get<CrmGithubCommitDetail>(`${projectBase(projectId)}/commits/${encodeURIComponent(sha)}`, query),
+    ) =>
+      get<CrmGithubCommitDetail>(
+        `${projectBase(projectId)}/commits/${encodeURIComponent(sha)}`,
+        query,
+      ),
     getScopedCommitDetail: (
       projectId: string,
       sha: string,
@@ -323,7 +372,10 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
         query,
       ),
     getCollaborators: (projectId: string, query?: Record<string, unknown>) =>
-      get<CrmGithubListResponse<CrmGithubCollaborator>>(`${projectBase(projectId)}/collaborators`, query),
+      get<CrmGithubListResponse<CrmGithubCollaborator>>(
+        `${projectBase(projectId)}/collaborators`,
+        query,
+      ),
     getApplicationCollaborators: (
       applicationSlug: string,
       projectId: string,
@@ -334,9 +386,15 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
         query,
       ),
     getActionsWorkflows: (projectId: string, query?: Record<string, unknown>) =>
-      get<CrmGithubListResponse<CrmGithubWorkflow>>(`${projectBase(projectId)}/actions/workflows`, query),
+      get<CrmGithubListResponse<CrmGithubWorkflow>>(
+        `${projectBase(projectId)}/actions/workflows`,
+        query,
+      ),
     getActionsRuns: (projectId: string, query?: Record<string, unknown>) =>
-      get<CrmGithubListResponse<CrmGithubWorkflowRun>>(`${projectBase(projectId)}/actions/runs`, query),
+      get<CrmGithubListResponse<CrmGithubWorkflowRun>>(
+        `${projectBase(projectId)}/actions/runs`,
+        query,
+      ),
     getScopedActionsWorkflows: (
       projectId: string,
       query?: Record<string, unknown>,
@@ -360,20 +418,28 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
       body: CrmGithubPullRequestCreatePayload,
       applicationSlug?: string,
     ) =>
-      mutate(`${scopedProjectBase(projectId, applicationSlug)}/pull-requests`, 'POST', {
-        body,
-        invalidatePrefix: `${scopedProjectBase(projectId, applicationSlug)}/pull-requests`,
-      }),
+      mutate(
+        `${scopedProjectBase(projectId, applicationSlug)}/pull-requests`,
+        'POST',
+        {
+          body,
+          invalidatePrefix: `${scopedProjectBase(projectId, applicationSlug)}/pull-requests`,
+        },
+      ),
     patchPullRequest: (
       projectId: string,
       number: string | number,
       body: CrmGithubPullRequestPatchPayload,
       applicationSlug?: string,
     ) =>
-      mutate(`${scopedProjectBase(projectId, applicationSlug)}/pull-requests/${number}`, 'PATCH', {
-        body,
-        invalidatePrefix: `${scopedProjectBase(projectId, applicationSlug)}/pull-requests`,
-      }),
+      mutate(
+        `${scopedProjectBase(projectId, applicationSlug)}/pull-requests/${number}`,
+        'PATCH',
+        {
+          body,
+          invalidatePrefix: `${scopedProjectBase(projectId, applicationSlug)}/pull-requests`,
+        },
+      ),
     getPullRequestCommits: (
       projectId: string,
       number: string | number,
@@ -390,19 +456,27 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
       body: CrmGithubIssuePatchPayload,
       applicationSlug?: string,
     ) =>
-      mutate(`${scopedProjectBase(projectId, applicationSlug)}/issues/${number}/patch`, 'PATCH', {
-        body,
-        invalidatePrefix: `${scopedProjectBase(projectId, applicationSlug)}/issues`,
-      }),
+      mutate(
+        `${scopedProjectBase(projectId, applicationSlug)}/issues/${number}/patch`,
+        'PATCH',
+        {
+          body,
+          invalidatePrefix: `${scopedProjectBase(projectId, applicationSlug)}/issues`,
+        },
+      ),
     patchRepository: (
       projectId: string,
       body: CrmGithubRepositoryPatchPayload,
       applicationSlug?: string,
     ) =>
-      mutate(`${scopedProjectBase(projectId, applicationSlug)}/repositories/patch`, 'PATCH', {
-        body,
-        invalidatePrefix: `${scopedProjectBase(projectId, applicationSlug)}/repositories`,
-      }),
+      mutate(
+        `${scopedProjectBase(projectId, applicationSlug)}/repositories/patch`,
+        'PATCH',
+        {
+          body,
+          invalidatePrefix: `${scopedProjectBase(projectId, applicationSlug)}/repositories`,
+        },
+      ),
     getPullRequestDetail: (
       projectId: string,
       number: string | number,
@@ -422,10 +496,18 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
       projectId: string,
       number: string | number,
       body: CrmGithubPullRequestActionPayload,
-    ) => mutate(`${projectBase(projectId)}/pull-requests/${number}/action`, 'POST', { body }),
+    ) =>
+      mutate(
+        `${projectBase(projectId)}/pull-requests/${number}/action`,
+        'POST',
+        { body },
+      ),
     getProjectsBoards: (projectId: string, query?: Record<string, unknown>) =>
       get<CrmGithubListResponse>(`${projectBase(projectId)}/projects`, query),
-    createProjectBoard: (projectId: string, body: CrmGithubCreateProjectBoardPayload) =>
+    createProjectBoard: (
+      projectId: string,
+      body: CrmGithubCreateProjectBoardPayload,
+    ) =>
       mutate(`${projectBase(projectId)}/projects`, 'POST', {
         body,
         invalidatePrefix: `${projectBase(projectId)}/projects`,
@@ -434,20 +516,36 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
       projectId: string,
       githubProjectId: string,
       query?: Record<string, unknown>,
-    ) => get(`${projectBase(projectId)}/projects/${githubProjectId}/items`, query),
+    ) =>
+      get(`${projectBase(projectId)}/projects/${githubProjectId}/items`, query),
     moveProjectBoardItem: (
       projectId: string,
       githubProjectId: string,
       itemId: string,
       body: CrmGithubMoveProjectItemPayload,
-    ) => mutate(`${projectBase(projectId)}/projects/${githubProjectId}/items/${itemId}/move`, 'POST', { body }),
-    getAccountRepositories: (projectId: string, query?: Record<string, unknown>) =>
-      get<CrmGithubListResponse>(`${projectBase(projectId)}/account/repositories`, query),
+    ) =>
+      mutate(
+        `${projectBase(projectId)}/projects/${githubProjectId}/items/${itemId}/move`,
+        'POST',
+        { body },
+      ),
+    getAccountRepositories: (
+      projectId: string,
+      query?: Record<string, unknown>,
+    ) =>
+      get<CrmGithubListResponse>(
+        `${projectBase(projectId)}/account/repositories`,
+        query,
+      ),
     bootstrapSync: (body: CrmGithubBootstrapPayload) =>
-      mutate<CrmGithubBootstrapResponse>('/api/world/crm/general/github/sync/bootstrap', 'POST', {
-        body,
-        invalidatePrefix: '/api/world/crm/general/github/sync/jobs',
-      }).then((response) => {
+      mutate<CrmGithubBootstrapResponse>(
+        '/api/world/crm/general/github/sync/bootstrap',
+        'POST',
+        {
+          body,
+          invalidatePrefix: '/api/world/crm/general/github/sync/jobs',
+        },
+      ).then((response) => {
         rememberSyncContext({
           jobId: response.jobId,
           status: response.status,
@@ -455,7 +553,11 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
         return response
       }),
     getSyncJobStatus: (jobId: string, options?: { force?: boolean }) =>
-      get<CrmGithubSyncJobStatus>(`/api/world/crm/general/github/sync/jobs/${jobId}`, undefined, options).then((response) => {
+      get<CrmGithubSyncJobStatus>(
+        `/api/world/crm/general/github/sync/jobs/${jobId}`,
+        undefined,
+        options,
+      ).then((response) => {
         rememberSyncContext({
           jobId: response.id,
           applicationSlug: response.applicationSlug,
@@ -464,16 +566,27 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
         })
         return response
       }),
-    getTaskRequestBranches: (taskRequestId: string, options?: { force?: boolean }) =>
-      get<CrmGithubListResponse>(`/api/world/crm/general/task-requests/${taskRequestId}/github/branches`, undefined, options),
+    getTaskRequestBranches: (
+      taskRequestId: string,
+      options?: { force?: boolean },
+    ) =>
+      get<CrmGithubListResponse>(
+        `/api/world/crm/general/task-requests/${taskRequestId}/github/branches`,
+        undefined,
+        options,
+      ),
     createTaskRequestBranch: (
       taskRequestId: string,
       body: CrmGithubTaskRequestBranchPayload,
     ) =>
-      mutate(`/api/world/crm/general/task-requests/${taskRequestId}/github/branches`, 'POST', {
-        body,
-        invalidatePrefix: `/api/world/crm/general/task-requests/${taskRequestId}/github/branches`,
-      }),
+      mutate(
+        `/api/world/crm/general/task-requests/${taskRequestId}/github/branches`,
+        'POST',
+        {
+          body,
+          invalidatePrefix: `/api/world/crm/general/task-requests/${taskRequestId}/github/branches`,
+        },
+      ),
     deleteTaskRequestBranch: (
       taskRequestId: string,
       branchId: string,
@@ -493,7 +606,11 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
       applicationSlug?: string,
       options?: { force?: boolean },
     ) => {
-      const preloadKey = buildRepositoryPreloadKey(projectId, repositoryName, applicationSlug)
+      const preloadKey = buildRepositoryPreloadKey(
+        projectId,
+        repositoryName,
+        applicationSlug,
+      )
       if (repositoryPreloadState.value[preloadKey] && !options?.force) {
         return
       }
@@ -502,11 +619,20 @@ export const useWorldCrmGithubStore = defineStore('world-crm-github', () => {
       const basePath = projectBase(projectId)
       const scopedBasePath = scopedProjectBase(projectId, applicationSlug)
       await Promise.all([
-        get<CrmGithubListResponse<CrmGithubCollaborator>>(`${basePath}/collaborators`, query),
+        get<CrmGithubListResponse<CrmGithubCollaborator>>(
+          `${basePath}/collaborators`,
+          query,
+        ),
         get<CrmGithubListResponse>(`${basePath}/branches`, query),
-        get<CrmGithubListResponse<CrmGithubCommitSummary>>(`${scopedBasePath}/commits`, query),
+        get<CrmGithubListResponse<CrmGithubCommitSummary>>(
+          `${scopedBasePath}/commits`,
+          query,
+        ),
         get<CrmGithubListResponse>(`${scopedBasePath}/pull-requests`, query),
-        get<CrmGithubListResponse<CrmGithubWorkflow>>(`${scopedBasePath}/actions/workflows`, query),
+        get<CrmGithubListResponse<CrmGithubWorkflow>>(
+          `${scopedBasePath}/actions/workflows`,
+          query,
+        ),
       ])
 
       repositoryPreloadState.value[preloadKey] = true

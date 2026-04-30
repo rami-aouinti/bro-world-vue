@@ -1,7 +1,20 @@
 import { computed, ref } from 'vue'
 
 export type Suit = '♠' | '♥' | '♦' | '♣'
-export type Rank = '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | 'J' | 'Q' | 'K' | 'A'
+export type Rank =
+  | '2'
+  | '3'
+  | '4'
+  | '5'
+  | '6'
+  | '7'
+  | '8'
+  | '9'
+  | '10'
+  | 'J'
+  | 'Q'
+  | 'K'
+  | 'A'
 
 export interface Card {
   id: string
@@ -40,11 +53,29 @@ interface Snapshot {
 }
 
 const SUITS: Suit[] = ['♠', '♥', '♦', '♣']
-const RANKS: Rank[] = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+const RANKS: Rank[] = [
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  'J',
+  'Q',
+  'K',
+  'A',
+]
 
-const clonePlayers = (players: Player[]) => players.map(player => ({ ...player, hand: player.hand.map(card => ({ ...card })) }))
+const clonePlayers = (players: Player[]) =>
+  players.map((player) => ({
+    ...player,
+    hand: player.hand.map((card) => ({ ...card })),
+  }))
 
-const shuffle = <T,>(items: T[]) => {
+const shuffle = <T>(items: T[]) => {
   const output = [...items]
   for (let index = output.length - 1; index > 0; index -= 1) {
     const randomIndex = Math.floor(Math.random() * (index + 1))
@@ -57,12 +88,14 @@ const shuffle = <T,>(items: T[]) => {
 
 const createDeck = () => {
   let index = 0
-  return SUITS.flatMap(suit => RANKS.map((rank, rankIndex) => ({
-    id: `hea-${index += 1}`,
-    suit,
-    rank,
-    value: rankIndex + 2,
-  })))
+  return SUITS.flatMap((suit) =>
+    RANKS.map((rank, rankIndex) => ({
+      id: `hea-${(index += 1)}`,
+      suit,
+      rank,
+      value: rankIndex + 2,
+    })),
+  )
 }
 
 const cardPenalty = (card: Card) => {
@@ -83,7 +116,7 @@ export const useHeartsEngine = () => {
 
   const snapshot = (): Snapshot => ({
     players: clonePlayers(players.value),
-    trick: trick.value.map(play => ({ ...play, card: { ...play.card } })),
+    trick: trick.value.map((play) => ({ ...play, card: { ...play.card } })),
     leaderIndex: leaderIndex.value,
     turnIndex: turnIndex.value,
     heartsBroken: heartsBroken.value,
@@ -92,7 +125,10 @@ export const useHeartsEngine = () => {
 
   const restore = (state: Snapshot) => {
     players.value = clonePlayers(state.players)
-    trick.value = state.trick.map(play => ({ ...play, card: { ...play.card } }))
+    trick.value = state.trick.map((play) => ({
+      ...play,
+      card: { ...play.card },
+    }))
     leaderIndex.value = state.leaderIndex
     turnIndex.value = state.turnIndex
     heartsBroken.value = state.heartsBroken
@@ -116,11 +152,13 @@ export const useHeartsEngine = () => {
     const leadSuit = trick.value[0]?.card.suit
     if (!leadSuit) {
       if (card.suit !== '♥') return true
-      const onlyHearts = player.hand.every(handCard => handCard.suit === '♥')
+      const onlyHearts = player.hand.every((handCard) => handCard.suit === '♥')
       return heartsBroken.value || onlyHearts
     }
 
-    const sameSuitCards = player.hand.filter(handCard => handCard.suit === leadSuit)
+    const sameSuitCards = player.hand.filter(
+      (handCard) => handCard.suit === leadSuit,
+    )
     if (sameSuitCards.length > 0) {
       return card.suit === leadSuit
     }
@@ -134,8 +172,8 @@ export const useHeartsEngine = () => {
     if (playerIndex !== turnIndex.value) return []
 
     return player.hand
-      .filter(card => canPlayCard(playerIndex, card))
-      .map(card => ({
+      .filter((card) => canPlayCard(playerIndex, card))
+      .map((card) => ({
         type: 'play' as const,
         playerIndex,
         cardId: card.id,
@@ -147,12 +185,15 @@ export const useHeartsEngine = () => {
     if (!leadSuit || trick.value.length === 0) return null
 
     return trick.value
-      .filter(play => play.card.suit === leadSuit)
+      .filter((play) => play.card.suit === leadSuit)
       .sort((left, right) => compareCards(right.card, left.card))[0]
   }
 
   const scoreTrick = (winnerIndex: number) => {
-    const penalty = trick.value.reduce((sum, play) => sum + cardPenalty(play.card), 0)
+    const penalty = trick.value.reduce(
+      (sum, play) => sum + cardPenalty(play.card),
+      0,
+    )
     const winner = players.value[winnerIndex]
     if (!winner) return
 
@@ -160,8 +201,7 @@ export const useHeartsEngine = () => {
     winner.tricksWon += 1
     if (penalty > 0) {
       message.value = `${winner.name} prend ${penalty} point(s) de pénalité.`
-    }
-    else {
+    } else {
       message.value = `${winner.name} remporte le pli sans pénalité.`
     }
   }
@@ -170,7 +210,7 @@ export const useHeartsEngine = () => {
     const player = players.value[move.playerIndex]
     if (!player || move.type !== 'play') return false
 
-    const cardIndex = player.hand.findIndex(card => card.id === move.cardId)
+    const cardIndex = player.hand.findIndex((card) => card.id === move.cardId)
     if (cardIndex < 0) return false
     const [card] = player.hand.splice(cardIndex, 1)
     if (!canPlayCard(move.playerIndex, card)) {
@@ -197,7 +237,7 @@ export const useHeartsEngine = () => {
     turnIndex.value = winnerPlay.playerIndex
     trick.value = []
 
-    if (players.value.every(current => current.hand.length === 0)) {
+    if (players.value.every((current) => current.hand.length === 0)) {
       handNumber.value += 1
       message.value = 'Main terminée.'
     }
@@ -216,7 +256,7 @@ export const useHeartsEngine = () => {
 
     if (!leadSuit) {
       const nonHearts = player.hand
-        .filter(card => canPlayCard(playerIndex, card) && card.suit !== '♥')
+        .filter((card) => canPlayCard(playerIndex, card) && card.suit !== '♥')
         .sort(compareCards)
       if (nonHearts.length > 0) {
         return { type: 'play' as const, playerIndex, cardId: nonHearts[0].id }
@@ -224,8 +264,8 @@ export const useHeartsEngine = () => {
     }
 
     const safeCards = player.hand
-      .filter(card => canPlayCard(playerIndex, card))
-      .filter(card => cardPenalty(card) === 0)
+      .filter((card) => canPlayCard(playerIndex, card))
+      .filter((card) => cardPenalty(card) === 0)
       .sort(compareCards)
 
     if (safeCards.length > 0) {
@@ -233,10 +273,15 @@ export const useHeartsEngine = () => {
     }
 
     const riskyCards = player.hand
-      .filter(card => canPlayCard(playerIndex, card))
-      .sort((left, right) => cardPenalty(left) - cardPenalty(right) || compareCards(left, right))
+      .filter((card) => canPlayCard(playerIndex, card))
+      .sort(
+        (left, right) =>
+          cardPenalty(left) - cardPenalty(right) || compareCards(left, right),
+      )
 
-    return riskyCards[0] ? { type: 'play' as const, playerIndex, cardId: riskyCards[0].id } : validMoves[0]
+    return riskyCards[0]
+      ? { type: 'play' as const, playerIndex, cardId: riskyCards[0].id }
+      : validMoves[0]
   }
 
   const draw = () => {
@@ -258,10 +303,38 @@ export const useHeartsEngine = () => {
   const startNewHand = () => {
     const deck = shuffle(createDeck())
     players.value = [
-      { id: 'hearts-human', name: 'Vous', isAI: false, hand: [], score: 0, tricksWon: 0 },
-      { id: 'hearts-ai-east', name: 'IA Est', isAI: true, hand: [], score: 0, tricksWon: 0 },
-      { id: 'hearts-ai-north', name: 'IA Nord', isAI: true, hand: [], score: 0, tricksWon: 0 },
-      { id: 'hearts-ai-west', name: 'IA Ouest', isAI: true, hand: [], score: 0, tricksWon: 0 },
+      {
+        id: 'hearts-human',
+        name: 'Vous',
+        isAI: false,
+        hand: [],
+        score: 0,
+        tricksWon: 0,
+      },
+      {
+        id: 'hearts-ai-east',
+        name: 'IA Est',
+        isAI: true,
+        hand: [],
+        score: 0,
+        tricksWon: 0,
+      },
+      {
+        id: 'hearts-ai-north',
+        name: 'IA Nord',
+        isAI: true,
+        hand: [],
+        score: 0,
+        tricksWon: 0,
+      },
+      {
+        id: 'hearts-ai-west',
+        name: 'IA Ouest',
+        isAI: true,
+        hand: [],
+        score: 0,
+        tricksWon: 0,
+      },
     ]
 
     for (let round = 0; round < 13; round += 1) {
@@ -272,7 +345,10 @@ export const useHeartsEngine = () => {
     }
 
     players.value.forEach((player) => {
-      player.hand.sort((left, right) => left.suit.localeCompare(right.suit) || compareCards(left, right))
+      player.hand.sort(
+        (left, right) =>
+          left.suit.localeCompare(right.suit) || compareCards(left, right),
+      )
       player.tricksWon = 0
     })
 
@@ -290,7 +366,11 @@ export const useHeartsEngine = () => {
     return draw()
   }
 
-  const isHandOver = computed(() => players.value.every(player => player.hand.length === 0) && trick.value.length === 0)
+  const isHandOver = computed(
+    () =>
+      players.value.every((player) => player.hand.length === 0) &&
+      trick.value.length === 0,
+  )
 
   startNewHand()
 

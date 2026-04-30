@@ -14,11 +14,16 @@ const emit = defineEmits<{
 
 const subtitle = computed(() => {
   if (!props.game?.date) {
-    return props.game?.status?.long || t('pages.applications.football.misc.scheduled')
+    return (
+      props.game?.status?.long ||
+      t('pages.applications.football.misc.scheduled')
+    )
   }
 
   const date = new Date(props.game.date)
-  const label = Number.isNaN(date.getTime()) ? props.game.date : date.toLocaleDateString()
+  const label = Number.isNaN(date.getTime())
+    ? props.game.date
+    : date.toLocaleDateString()
   return `${props.game?.status?.long || t('pages.applications.football.misc.scheduled')} · ${label}`
 })
 
@@ -30,10 +35,16 @@ function selectGame() {
 </script>
 
 <template>
-  <v-card variant="outlined" class="football-surface football-surface--glow football-interactive-card" @click="selectGame">
+  <v-card
+    variant="outlined"
+    class="football-surface football-surface--glow football-interactive-card"
+    @click="selectGame"
+  >
     <v-card-title class="d-flex align-center justify-space-between">
       <span>{{ t('pages.applications.basketball.featuredGame') }}</span>
-      <v-chip size="small" color="warning" variant="tonal">{{ game?.status?.short || 'NS' }}</v-chip>
+      <v-chip size="small" color="warning" variant="tonal">{{
+        game?.status?.short || 'NS'
+      }}</v-chip>
     </v-card-title>
     <v-divider />
     <v-card-text>
@@ -45,11 +56,15 @@ function selectGame() {
               :team-name="game.teams.home.name"
               :logo="game.teams.home.logo"
             />
-            <div class="text-body-2 font-weight-bold text-truncate">{{ game.teams.home.name }}</div>
+            <div class="text-body-2 font-weight-bold text-truncate">
+              {{ game.teams.home.name }}
+            </div>
           </div>
           <div class="text-h6 font-weight-bold">{{ score }}</div>
           <div class="d-flex align-center ga-2 min-w-0 justify-end flex-1">
-            <div class="text-body-2 font-weight-bold text-truncate">{{ game.teams.away.name }}</div>
+            <div class="text-body-2 font-weight-bold text-truncate">
+              {{ game.teams.away.name }}
+            </div>
             <sports-basketball-team-avatar
               :team-name="game.teams.away.name"
               :logo="game.teams.away.logo"
@@ -58,7 +73,9 @@ function selectGame() {
         </div>
       </template>
       <template v-else>
-        <div class="text-medium-emphasis">{{ t('pages.applications.basketball.noGameAvailable') }}</div>
+        <div class="text-medium-emphasis">
+          {{ t('pages.applications.basketball.noGameAvailable') }}
+        </div>
       </template>
     </v-card-text>
   </v-card>

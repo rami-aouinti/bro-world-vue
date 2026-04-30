@@ -4,7 +4,7 @@ Liste extraite automatiquement des attributs `#[Route(...)]` du module `src/Crm/
 Chemin HTTP final exposé par l’API : `/api` + `Path`.
 
 | Method(s) | Path                                                                         | Controller file                                                                                        |
-|-----------|------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
+| --------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
 | `DELETE`  | `/v1/crm/billings/{billing}`                                                 | `src/Crm/Transport/Controller/Api/V1/Billing/DeleteBillingController.php`                              |
 | `DELETE`  | `/v1/crm/companies/{company}`                                                | `src/Crm/Transport/Controller/Api/V1/Company/DeleteCompanyController.php`                              |
 | `DELETE`  | `/v1/crm/contacts/{id}`                                                      | `src/Crm/Transport/Controller/Api/V1/Contact/DeleteContactController.php`                              |

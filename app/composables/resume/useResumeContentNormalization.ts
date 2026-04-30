@@ -26,7 +26,8 @@ export function useResumeContentNormalization() {
   }
 
   function normalizeSectionContentStyle(style?: string): ResumeContentStyle {
-    if (style === 'points' || style === 'dashes' || style === 'timeline') return style
+    if (style === 'points' || style === 'dashes' || style === 'timeline')
+      return style
     return 'points'
   }
 
@@ -43,8 +44,14 @@ export function useResumeContentNormalization() {
     const parsedTimelineEvents = parseTimelineEvents(rawMultiline)
     model.points = model.contentStyle === 'points' ? parsedLines : []
     model.dashes = model.contentStyle === 'dashes' ? parsedLines : []
-    model.timelineEvents = model.contentStyle === 'timeline' ? parsedTimelineEvents : []
+    model.timelineEvents =
+      model.contentStyle === 'timeline' ? parsedTimelineEvents : []
   }
 
-  return { parseMultilineList, parseTimelineEvents, normalizeSectionContentStyle, applyContentFields }
+  return {
+    parseMultilineList,
+    parseTimelineEvents,
+    normalizeSectionContentStyle,
+    applyContentFields,
+  }
 }

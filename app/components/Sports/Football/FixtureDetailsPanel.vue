@@ -6,58 +6,90 @@ import type {
   FixturePlayerStatViewModel,
 } from '~/composables/useFootballData'
 
-const props = withDefaults(defineProps<{
-  events: FixtureEventViewModel[]
-  lineups: FixtureLineupViewModel[]
-  playerStats: FixturePlayerStatViewModel[]
-  mode?: 'tabs' | 'single'
-  initialTab?: 'timeline' | 'lineups' | 'statistics' | 'player-notes'
-  homeTeamId?: number | null
-  awayTeamId?: number | null
-  teamStatistics?: Partial<Record<'match' | 'firstHalf' | 'secondHalf', {
-    home?: Partial<Record<'xg' | 'possession' | 'shotsTotal' | 'shotsOnTarget' | 'bigChances' | 'passes' | 'corners' | 'cards', string | number | null>>
-    away?: Partial<Record<'xg' | 'possession' | 'shotsTotal' | 'shotsOnTarget' | 'bigChances' | 'passes' | 'corners' | 'cards', string | number | null>>
-  }>>
-  matchContext?: FixtureMatchContextViewModel
-}>(), {
-  mode: 'tabs',
-  initialTab: 'timeline',
-  homeTeamId: null,
-  awayTeamId: null,
-  teamStatistics: () => ({}),
-  matchContext: () => ({
-    coverage: {
-      injuries: false,
-      predictions: false,
-      odds: false,
-    },
-    availability: {
-      covered: false,
-      available: false,
-      status: 'not-covered',
-      injuries: [],
-      suspensions: [],
-    },
-    headToHead: {
-      covered: true,
-      available: false,
-      status: 'unavailable',
-      fixtures: [],
-    },
-    prediction: {
-      covered: false,
-      available: false,
-      status: 'not-covered',
-      item: null,
-    },
-    liveOdds: {
-      covered: false,
-      available: false,
-      status: 'not-covered',
-      item: null,
-    },
-  }),
-})
+const props = withDefaults(
+  defineProps<{
+    events: FixtureEventViewModel[]
+    lineups: FixtureLineupViewModel[]
+    playerStats: FixturePlayerStatViewModel[]
+    mode?: 'tabs' | 'single'
+    initialTab?: 'timeline' | 'lineups' | 'statistics' | 'player-notes'
+    homeTeamId?: number | null
+    awayTeamId?: number | null
+    teamStatistics?: Partial<
+      Record<
+        'match' | 'firstHalf' | 'secondHalf',
+        {
+          home?: Partial<
+            Record<
+              | 'xg'
+              | 'possession'
+              | 'shotsTotal'
+              | 'shotsOnTarget'
+              | 'bigChances'
+              | 'passes'
+              | 'corners'
+              | 'cards',
+              string | number | null
+            >
+          >
+          away?: Partial<
+            Record<
+              | 'xg'
+              | 'possession'
+              | 'shotsTotal'
+              | 'shotsOnTarget'
+              | 'bigChances'
+              | 'passes'
+              | 'corners'
+              | 'cards',
+              string | number | null
+            >
+          >
+        }
+      >
+    >
+    matchContext?: FixtureMatchContextViewModel
+  }>(),
+  {
+    mode: 'tabs',
+    initialTab: 'timeline',
+    homeTeamId: null,
+    awayTeamId: null,
+    teamStatistics: () => ({}),
+    matchContext: () => ({
+      coverage: {
+        injuries: false,
+        predictions: false,
+        odds: false,
+      },
+      availability: {
+        covered: false,
+        available: false,
+        status: 'not-covered',
+        injuries: [],
+        suspensions: [],
+      },
+      headToHead: {
+        covered: true,
+        available: false,
+        status: 'unavailable',
+        fixtures: [],
+      },
+      prediction: {
+        covered: false,
+        available: false,
+        status: 'not-covered',
+        item: null,
+      },
+      liveOdds: {
+        covered: false,
+        available: false,
+        status: 'not-covered',
+        item: null,
+      },
+    }),
+  },
+)
 
 const emit = defineEmits<{
   selectTeam: [teamId: number]
@@ -66,17 +98,33 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-const activeTab = ref<'timeline' | 'lineups' | 'statistics' | 'player-notes'>(props.initialTab)
+const activeTab = ref<'timeline' | 'lineups' | 'statistics' | 'player-notes'>(
+  props.initialTab,
+)
 const selectedPlayerNotesFilter = ref<'all' | 'home' | 'away'>('all')
 const lineupView = ref<'combined' | 'home' | 'away'>('combined')
 const selectedStatsFilter = ref<'match' | 'firstHalf' | 'secondHalf'>('match')
 
-watch(() => props.initialTab, (value) => {
-  activeTab.value = value
-})
+watch(
+  () => props.initialTab,
+  (value) => {
+    activeTab.value = value
+  },
+)
 
 const teamStatsRows = computed(() => {
-  const groups = new Map<number | 'unknown', { teamId: number | null; teamName: string; rating: number; goals: number; shots: number; passes: number; tackles: number }>()
+  const groups = new Map<
+    number | 'unknown',
+    {
+      teamId: number | null
+      teamName: string
+      rating: number
+      goals: number
+      shots: number
+      passes: number
+      tackles: number
+    }
+  >()
 
   props.playerStats.forEach((stat) => {
     const key = stat.teamId ?? 'unknown'
@@ -102,7 +150,15 @@ const teamStatsRows = computed(() => {
   return [...groups.values()].slice(0, 2)
 })
 
-type StatsKey = 'xg' | 'possession' | 'shotsTotal' | 'shotsOnTarget' | 'bigChances' | 'passes' | 'corners' | 'cards'
+type StatsKey =
+  | 'xg'
+  | 'possession'
+  | 'shotsTotal'
+  | 'shotsOnTarget'
+  | 'bigChances'
+  | 'passes'
+  | 'corners'
+  | 'cards'
 type StatsPeriod = 'match' | 'firstHalf' | 'secondHalf'
 
 const statisticsMetricDefinitions: Array<{ key: StatsKey; label: string }> = [
@@ -123,14 +179,28 @@ const toNumericValue = (value: string | number | null | undefined) => {
   return Number.isFinite(parsed) ? parsed : null
 }
 
-const normalizeStatDisplay = (value: string | number | null | undefined, key: StatsKey) => {
-  if (value === null || typeof value === 'undefined' || `${value}`.trim() === '') {
-    return { text: t('pages.applications.football.misc.dataUnavailable'), numeric: null }
+const normalizeStatDisplay = (
+  value: string | number | null | undefined,
+  key: StatsKey,
+) => {
+  if (
+    value === null ||
+    typeof value === 'undefined' ||
+    `${value}`.trim() === ''
+  ) {
+    return {
+      text: t('pages.applications.football.misc.dataUnavailable'),
+      numeric: null,
+    }
   }
 
   if (key === 'possession') {
     const numeric = toNumericValue(value)
-    if (numeric === null) return { text: t('pages.applications.football.misc.dataUnavailable'), numeric: null }
+    if (numeric === null)
+      return {
+        text: t('pages.applications.football.misc.dataUnavailable'),
+        numeric: null,
+      }
     return { text: `${numeric}%`, numeric }
   }
 
@@ -140,7 +210,12 @@ const normalizeStatDisplay = (value: string | number | null | undefined, key: St
   return { text: `${numeric}`, numeric }
 }
 
-const fallbackMatchStats = computed<Record<StatsKey, { home: string | number | null; away: string | number | null }>>(() => {
+const fallbackMatchStats = computed<
+  Record<
+    StatsKey,
+    { home: string | number | null; away: string | number | null }
+  >
+>(() => {
   const [home, away] = teamStatsRows.value
   return {
     xg: { home: null, away: null },
@@ -154,7 +229,9 @@ const fallbackMatchStats = computed<Record<StatsKey, { home: string | number | n
   }
 })
 
-const availableStatsPeriods = computed<Array<{ title: string; value: StatsPeriod }>>(() => {
+const availableStatsPeriods = computed<
+  Array<{ title: string; value: StatsPeriod }>
+>(() => {
   const periods: Array<{ title: string; value: StatsPeriod }> = [
     { title: t('pages.applications.football.misc.match'), value: 'match' },
   ]
@@ -171,24 +248,52 @@ const availableStatsPeriods = computed<Array<{ title: string; value: StatsPeriod
   return periods
 })
 
-watch(availableStatsPeriods, (periods) => {
-  if (!periods.some(period => period.value === selectedStatsFilter.value)) {
-    selectedStatsFilter.value = 'match'
-  }
-}, { immediate: true })
+watch(
+  availableStatsPeriods,
+  (periods) => {
+    if (!periods.some((period) => period.value === selectedStatsFilter.value)) {
+      selectedStatsFilter.value = 'match'
+    }
+  },
+  { immediate: true },
+)
 
 const statisticsRows = computed(() => {
   const periodStats = props.teamStatistics?.[selectedStatsFilter.value]
   const source = periodStats
     ? {
-        xg: { home: periodStats.home?.xg ?? null, away: periodStats.away?.xg ?? null },
-        possession: { home: periodStats.home?.possession ?? null, away: periodStats.away?.possession ?? null },
-        shotsTotal: { home: periodStats.home?.shotsTotal ?? null, away: periodStats.away?.shotsTotal ?? null },
-        shotsOnTarget: { home: periodStats.home?.shotsOnTarget ?? null, away: periodStats.away?.shotsOnTarget ?? null },
-        bigChances: { home: periodStats.home?.bigChances ?? null, away: periodStats.away?.bigChances ?? null },
-        passes: { home: periodStats.home?.passes ?? null, away: periodStats.away?.passes ?? null },
-        corners: { home: periodStats.home?.corners ?? null, away: periodStats.away?.corners ?? null },
-        cards: { home: periodStats.home?.cards ?? null, away: periodStats.away?.cards ?? null },
+        xg: {
+          home: periodStats.home?.xg ?? null,
+          away: periodStats.away?.xg ?? null,
+        },
+        possession: {
+          home: periodStats.home?.possession ?? null,
+          away: periodStats.away?.possession ?? null,
+        },
+        shotsTotal: {
+          home: periodStats.home?.shotsTotal ?? null,
+          away: periodStats.away?.shotsTotal ?? null,
+        },
+        shotsOnTarget: {
+          home: periodStats.home?.shotsOnTarget ?? null,
+          away: periodStats.away?.shotsOnTarget ?? null,
+        },
+        bigChances: {
+          home: periodStats.home?.bigChances ?? null,
+          away: periodStats.away?.bigChances ?? null,
+        },
+        passes: {
+          home: periodStats.home?.passes ?? null,
+          away: periodStats.away?.passes ?? null,
+        },
+        corners: {
+          home: periodStats.home?.corners ?? null,
+          away: periodStats.away?.corners ?? null,
+        },
+        cards: {
+          home: periodStats.home?.cards ?? null,
+          away: periodStats.away?.cards ?? null,
+        },
       }
     : fallbackMatchStats.value
 
@@ -226,15 +331,27 @@ const metricLabelFromKey = (key: string) => {
     : translated
 }
 
-const formatDetailedMetricValue = (key: string, value: string | number | null) => {
-  if (value === null || typeof value === 'undefined' || `${value}`.trim() === '') {
+const formatDetailedMetricValue = (
+  key: string,
+  value: string | number | null,
+) => {
+  if (
+    value === null ||
+    typeof value === 'undefined' ||
+    `${value}`.trim() === ''
+  ) {
     return t('pages.applications.football.misc.dataUnavailable')
   }
 
   const keyLower = key.toLowerCase()
   const numeric = toNumericStat(value)
-  const isPercent = keyLower.includes('percentage') || keyLower.includes('percent') || keyLower.includes('possession')
-  const isDecimal = ['rating', 'xg', 'expectedgoals', 'expected_goals'].some(token => keyLower.includes(token))
+  const isPercent =
+    keyLower.includes('percentage') ||
+    keyLower.includes('percent') ||
+    keyLower.includes('possession')
+  const isDecimal = ['rating', 'xg', 'expectedgoals', 'expected_goals'].some(
+    (token) => keyLower.includes(token),
+  )
 
   if (numeric === null) return `${value}`
   if (isPercent) return `${numeric}%`
@@ -253,69 +370,105 @@ const playerMetricDefinitions: Array<{
   {
     key: 'rating',
     label: 'Rating',
-    getValue: stat => toNumericStat(stat.rating),
-    format: value => value.toFixed(2),
+    getValue: (stat) => toNumericStat(stat.rating),
+    format: (value) => value.toFixed(2),
   },
   {
     key: 'shots',
     label: 'Shots total',
-    getValue: stat => toNumericStat(stat.shots),
-    format: value => `${value}`,
+    getValue: (stat) => toNumericStat(stat.shots),
+    format: (value) => `${value}`,
   },
   {
     key: 'xg',
     label: 'xG',
-    getValue: stat => toNumericStat(stat.metrics['expected.goals'] ?? stat.metrics['goals.expected'] ?? stat.metrics['xg'] ?? null),
-    format: value => value.toFixed(2),
+    getValue: (stat) =>
+      toNumericStat(
+        stat.metrics['expected.goals'] ??
+          stat.metrics['goals.expected'] ??
+          stat.metrics['xg'] ??
+          null,
+      ),
+    format: (value) => value.toFixed(2),
   },
   {
     key: 'keyPasses',
     label: 'Key passes',
-    getValue: stat => toNumericStat(stat.metrics['passes.key'] ?? stat.metrics['passes.keyPasses'] ?? stat.metrics['keyPasses'] ?? null),
-    format: value => `${value}`,
+    getValue: (stat) =>
+      toNumericStat(
+        stat.metrics['passes.key'] ??
+          stat.metrics['passes.keyPasses'] ??
+          stat.metrics['keyPasses'] ??
+          null,
+      ),
+    format: (value) => `${value}`,
   },
   {
     key: 'tackles',
     label: 'Tackles',
-    getValue: stat => toNumericStat(stat.tackles),
-    format: value => `${value}`,
+    getValue: (stat) => toNumericStat(stat.tackles),
+    format: (value) => `${value}`,
   },
 ]
 
-const normalizedTeamKey = (name: string | null | undefined) => (name ?? '').trim().toLowerCase()
+const normalizedTeamKey = (name: string | null | undefined) =>
+  (name ?? '').trim().toLowerCase()
 
 const teamVisuals = computed(() => {
   const byId = new Map<number, { teamName: string; teamLogo: string | null }>()
-  const byName = new Map<string, { teamName: string; teamLogo: string | null }>()
+  const byName = new Map<
+    string,
+    { teamName: string; teamLogo: string | null }
+  >()
 
   props.lineups.forEach((lineup) => {
-    if (lineup.teamId !== null) byId.set(lineup.teamId, { teamName: lineup.teamName, teamLogo: lineup.teamLogo })
+    if (lineup.teamId !== null)
+      byId.set(lineup.teamId, {
+        teamName: lineup.teamName,
+        teamLogo: lineup.teamLogo,
+      })
     const key = normalizedTeamKey(lineup.teamName)
-    if (key) byName.set(key, { teamName: lineup.teamName, teamLogo: lineup.teamLogo })
+    if (key)
+      byName.set(key, { teamName: lineup.teamName, teamLogo: lineup.teamLogo })
   })
 
   return { byId, byName }
 })
 
-const teamMatches = (stat: FixturePlayerStatViewModel, teamId: number | null, teamName: string) => {
+const teamMatches = (
+  stat: FixturePlayerStatViewModel,
+  teamId: number | null,
+  teamName: string,
+) => {
   if (teamId !== null && stat.teamId === teamId) return true
   const targetName = normalizedTeamKey(teamName)
-  return targetName.length > 0 && normalizedTeamKey(stat.teamName) === targetName
+  return (
+    targetName.length > 0 && normalizedTeamKey(stat.teamName) === targetName
+  )
 }
 
 const filteredPlayerNotesStats = computed(() => {
   if (selectedPlayerNotesFilter.value === 'all') return props.playerStats
   if (selectedPlayerNotesFilter.value === 'home') {
-    return props.playerStats.filter(stat => teamMatches(stat, props.homeTeamId ?? null, homeTeamName.value))
+    return props.playerStats.filter((stat) =>
+      teamMatches(stat, props.homeTeamId ?? null, homeTeamName.value),
+    )
   }
-  return props.playerStats.filter(stat => teamMatches(stat, props.awayTeamId ?? null, awayTeamName.value))
+  return props.playerStats.filter((stat) =>
+    teamMatches(stat, props.awayTeamId ?? null, awayTeamName.value),
+  )
 })
 
 const detailedPlayerStats = computed(() => {
   return filteredPlayerNotesStats.value
     .map((stat) => {
       const entries = Object.entries(stat.metrics)
-        .filter(([, value]) => value !== null && typeof value !== 'undefined' && `${value}`.trim() !== '')
+        .filter(
+          ([, value]) =>
+            value !== null &&
+            typeof value !== 'undefined' &&
+            `${value}`.trim() !== '',
+        )
         .map(([key, value]) => ({
           key,
           label: metricLabelFromKey(key),
@@ -327,7 +480,7 @@ const detailedPlayerStats = computed(() => {
         detailEntries: entries,
       }
     })
-    .filter(stat => stat.detailEntries.length > 0)
+    .filter((stat) => stat.detailEntries.length > 0)
 })
 
 const playerNotesMetricSections = computed(() => {
@@ -337,15 +490,22 @@ const playerNotesMetricSections = computed(() => {
         const value = metric.getValue(stat)
         if (value === null) return null
 
-        const visualsById = typeof stat.teamId === 'number' ? teamVisuals.value.byId.get(stat.teamId) : null
-        const visuals = visualsById ?? teamVisuals.value.byName.get(normalizedTeamKey(stat.teamName))
+        const visualsById =
+          typeof stat.teamId === 'number'
+            ? teamVisuals.value.byId.get(stat.teamId)
+            : null
+        const visuals =
+          visualsById ??
+          teamVisuals.value.byName.get(normalizedTeamKey(stat.teamName))
 
         return {
           id: stat.id,
           playerId: stat.playerId,
           playerName: stat.playerName,
           playerPhoto: stat.playerPhoto,
-          position: stat.position || t('pages.applications.football.misc.positionUnavailable'),
+          position:
+            stat.position ||
+            t('pages.applications.football.misc.positionUnavailable'),
           teamId: stat.teamId,
           teamName: visuals?.teamName ?? stat.teamName,
           teamLogo: visuals?.teamLogo ?? null,
@@ -354,7 +514,9 @@ const playerNotesMetricSections = computed(() => {
         }
       })
       .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry))
-      .sort((a, b) => b.value - a.value || a.playerName.localeCompare(b.playerName))
+      .sort(
+        (a, b) => b.value - a.value || a.playerName.localeCompare(b.playerName),
+      )
       .slice(0, 3)
       .map((player, index) => ({ ...player, rank: index + 1 }))
 
@@ -401,10 +563,25 @@ const lineupLayouts = computed(() => {
         const grid = parseGrid(starter.grid)
         return grid ? { starter, ...grid } : null
       })
-      .filter((entry): entry is { starter: FixtureLineupViewModel['starters'][number]; row: number; col: number } => Boolean(entry))
+      .filter(
+        (
+          entry,
+        ): entry is {
+          starter: FixtureLineupViewModel['starters'][number]
+          row: number
+          col: number
+        } => Boolean(entry),
+      )
 
-    const maxRow = Math.max(...valid.map(entry => entry.row), 1)
-    const rows = new Map<number, Array<{ starter: FixtureLineupViewModel['starters'][number]; row: number; col: number }>>()
+    const maxRow = Math.max(...valid.map((entry) => entry.row), 1)
+    const rows = new Map<
+      number,
+      Array<{
+        starter: FixtureLineupViewModel['starters'][number]
+        row: number
+        col: number
+      }>
+    >()
     valid.forEach((entry) => {
       const existing = rows.get(entry.row)
       if (existing) {
@@ -420,21 +597,28 @@ const lineupLayouts = computed(() => {
 
     const positionedPlayers = valid.map((entry) => {
       const stat = props.playerStats.find((playerStat) => {
-        const sameTeam = lineup.teamId !== null
-          ? playerStat.teamId === lineup.teamId
-          : lower(playerStat.teamName) === lower(lineup.teamName)
-        const samePlayer = entry.starter.id !== null
-          ? playerStat.playerId === entry.starter.id
-          : lower(playerStat.playerName) === lower(entry.starter.name)
+        const sameTeam =
+          lineup.teamId !== null
+            ? playerStat.teamId === lineup.teamId
+            : lower(playerStat.teamName) === lower(lineup.teamName)
+        const samePlayer =
+          entry.starter.id !== null
+            ? playerStat.playerId === entry.starter.id
+            : lower(playerStat.playerName) === lower(entry.starter.name)
         return sameTeam && samePlayer
       })
 
       const rowRatio = maxRow > 1 ? (entry.row - 1) / (maxRow - 1) : 0.5
       const rowEntries = rows.get(entry.row) ?? [entry]
-      const rowIndex = rowEntries.findIndex(candidate => candidate.starter.name === entry.starter.name && candidate.starter.number === entry.starter.number)
-      const colRatio = rowEntries.length > 1
-        ? Math.max(0, rowIndex) / (rowEntries.length - 1)
-        : 0.5
+      const rowIndex = rowEntries.findIndex(
+        (candidate) =>
+          candidate.starter.name === entry.starter.name &&
+          candidate.starter.number === entry.starter.number,
+      )
+      const colRatio =
+        rowEntries.length > 1
+          ? Math.max(0, rowIndex) / (rowEntries.length - 1)
+          : 0.5
 
       return {
         ...entry.starter,
@@ -450,7 +634,9 @@ const lineupLayouts = computed(() => {
     })
 
     const fallbackPlayers = lineup.starters.map((starter) => {
-      const stat = props.playerStats.find(playerStat => playerStat.playerId === starter.id)
+      const stat = props.playerStats.find(
+        (playerStat) => playerStat.playerId === starter.id,
+      )
       return {
         ...starter,
         shortName: toShortName(starter.name),
@@ -469,45 +655,58 @@ const lineupLayouts = computed(() => {
   })
 })
 
-const resolveLineupSide = (lineup: { teamId: number | null; teamName: string }, index: number): 'home' | 'away' => {
-  if (props.homeTeamId !== null && lineup.teamId === props.homeTeamId) return 'home'
-  if (props.awayTeamId !== null && lineup.teamId === props.awayTeamId) return 'away'
+const resolveLineupSide = (
+  lineup: { teamId: number | null; teamName: string },
+  index: number,
+): 'home' | 'away' => {
+  if (props.homeTeamId !== null && lineup.teamId === props.homeTeamId)
+    return 'home'
+  if (props.awayTeamId !== null && lineup.teamId === props.awayTeamId)
+    return 'away'
 
   const normalized = normalizedTeamName(lineup.teamName)
-  if (normalized && normalized === normalizedTeamName(homeTeamName.value)) return 'home'
-  if (normalized && normalized === normalizedTeamName(awayTeamName.value)) return 'away'
+  if (normalized && normalized === normalizedTeamName(homeTeamName.value))
+    return 'home'
+  if (normalized && normalized === normalizedTeamName(awayTeamName.value))
+    return 'away'
 
   return index === 0 ? 'home' : 'away'
 }
 
 const combinedLineup = computed(() => {
   const ordered = lineupLayouts.value
-    .map((lineup, index) => ({ ...lineup, side: resolveLineupSide(lineup, index) }))
+    .map((lineup, index) => ({
+      ...lineup,
+      side: resolveLineupSide(lineup, index),
+    }))
     .sort((a, b) => (a.side === 'home' ? -1 : 1) - (b.side === 'home' ? -1 : 1))
 
-  const hasGrid = ordered.length >= 2 && ordered.every(lineup => lineup.hasGrid)
+  const hasGrid =
+    ordered.length >= 2 && ordered.every((lineup) => lineup.hasGrid)
 
   const positionedPlayers = hasGrid
-    ? ordered.flatMap((lineup) => {
-      return lineup.positionedPlayers.map((player) => {
-        const sideBase = lineup.side === 'home' ? 56 : 8
-        const sideSpan = 36
-        const adjustedTop = lineup.side === 'home'
-          ? sideBase + (1 - player.rowRatio) * sideSpan
-          : sideBase + player.rowRatio * sideSpan
+    ? ordered
+        .flatMap((lineup) => {
+          return lineup.positionedPlayers.map((player) => {
+            const sideBase = lineup.side === 'home' ? 56 : 8
+            const sideSpan = 36
+            const adjustedTop =
+              lineup.side === 'home'
+                ? sideBase + (1 - player.rowRatio) * sideSpan
+                : sideBase + player.rowRatio * sideSpan
 
-        return {
-          ...player,
-          teamId: lineup.teamId,
-          teamName: lineup.teamName,
-          teamLogo: lineup.teamLogo,
-          side: lineup.side,
-          top: adjustedTop,
-          zIndex: 10 + Math.round(adjustedTop),
-        }
-      })
-    })
-      .sort((a, b) => a.zIndex - b.zIndex)
+            return {
+              ...player,
+              teamId: lineup.teamId,
+              teamName: lineup.teamName,
+              teamLogo: lineup.teamLogo,
+              side: lineup.side,
+              top: adjustedTop,
+              zIndex: 10 + Math.round(adjustedTop),
+            }
+          })
+        })
+        .sort((a, b) => a.zIndex - b.zIndex)
     : []
 
   return {
@@ -520,10 +719,16 @@ const combinedLineup = computed(() => {
 const visibleLineups = computed(() => {
   if (lineupView.value === 'combined') return lineupLayouts.value
 
-  const targetTeamId = lineupView.value === 'home' ? props.homeTeamId : props.awayTeamId
-  const filteredById = lineupLayouts.value.filter(lineup => lineup.teamId !== null && lineup.teamId === targetTeamId)
+  const targetTeamId =
+    lineupView.value === 'home' ? props.homeTeamId : props.awayTeamId
+  const filteredById = lineupLayouts.value.filter(
+    (lineup) => lineup.teamId !== null && lineup.teamId === targetTeamId,
+  )
   if (filteredById.length) return filteredById
-  return lineupLayouts.value.slice(lineupView.value === 'home' ? 0 : 1, lineupView.value === 'home' ? 1 : 2)
+  return lineupLayouts.value.slice(
+    lineupView.value === 'home' ? 0 : 1,
+    lineupView.value === 'home' ? 1 : 2,
+  )
 })
 
 const normalizedTeamName = (name: string | null | undefined) => {
@@ -532,43 +737,57 @@ const normalizedTeamName = (name: string | null | undefined) => {
 
 const homeTeamName = computed(() => {
   return (
-    props.lineups.find(lineup => lineup.teamId === props.homeTeamId)?.teamName
-    ?? props.playerStats.find(stat => stat.teamId === props.homeTeamId)?.teamName
-    ?? props.lineups[0]?.teamName
-    ?? ''
+    props.lineups.find((lineup) => lineup.teamId === props.homeTeamId)
+      ?.teamName ??
+    props.playerStats.find((stat) => stat.teamId === props.homeTeamId)
+      ?.teamName ??
+    props.lineups[0]?.teamName ??
+    ''
   )
 })
 
 const awayTeamName = computed(() => {
   return (
-    props.lineups.find(lineup => lineup.teamId === props.awayTeamId)?.teamName
-    ?? props.playerStats.find(stat => stat.teamId === props.awayTeamId)?.teamName
-    ?? props.lineups[1]?.teamName
-    ?? ''
+    props.lineups.find((lineup) => lineup.teamId === props.awayTeamId)
+      ?.teamName ??
+    props.playerStats.find((stat) => stat.teamId === props.awayTeamId)
+      ?.teamName ??
+    props.lineups[1]?.teamName ??
+    ''
   )
 })
 
 const resolveEventSide = (event: FixtureEventViewModel): 'left' | 'right' => {
-  if (props.homeTeamId !== null && event.teamId === props.homeTeamId) return 'left'
-  if (props.awayTeamId !== null && event.teamId === props.awayTeamId) return 'right'
+  if (props.homeTeamId !== null && event.teamId === props.homeTeamId)
+    return 'left'
+  if (props.awayTeamId !== null && event.teamId === props.awayTeamId)
+    return 'right'
 
   const eventTeamName = normalizedTeamName(event.teamName)
   const homeName = normalizedTeamName(homeTeamName.value)
   const awayName = normalizedTeamName(awayTeamName.value)
 
-  if (eventTeamName && homeName && eventTeamName.includes(homeName)) return 'left'
-  if (eventTeamName && awayName && eventTeamName.includes(awayName)) return 'right'
+  if (eventTeamName && homeName && eventTeamName.includes(homeName))
+    return 'left'
+  if (eventTeamName && awayName && eventTeamName.includes(awayName))
+    return 'right'
 
   return 'left'
 }
 
 const timelineEvents = computed(() => {
   return props.events.map((event) => {
-    const playerVisual = typeof event.playerId === 'number'
-      ? props.playerStats.find(player => player.playerId === event.playerId)
-      : null
-    const teamVisualById = typeof event.teamId === 'number' ? teamVisuals.value.byId.get(event.teamId) : null
-    const teamVisualByName = teamVisuals.value.byName.get(normalizedTeamKey(event.teamName))
+    const playerVisual =
+      typeof event.playerId === 'number'
+        ? props.playerStats.find((player) => player.playerId === event.playerId)
+        : null
+    const teamVisualById =
+      typeof event.teamId === 'number'
+        ? teamVisuals.value.byId.get(event.teamId)
+        : null
+    const teamVisualByName = teamVisuals.value.byName.get(
+      normalizedTeamKey(event.teamName),
+    )
     const teamVisual = teamVisualById ?? teamVisualByName ?? null
 
     return {
@@ -581,8 +800,12 @@ const timelineEvents = computed(() => {
 })
 
 const timelineTeams = computed(() => {
-  const homeLineup = props.lineups.find(lineup => lineup.teamId === props.homeTeamId) ?? props.lineups[0]
-  const awayLineup = props.lineups.find(lineup => lineup.teamId === props.awayTeamId) ?? props.lineups[1]
+  const homeLineup =
+    props.lineups.find((lineup) => lineup.teamId === props.homeTeamId) ??
+    props.lineups[0]
+  const awayLineup =
+    props.lineups.find((lineup) => lineup.teamId === props.awayTeamId) ??
+    props.lineups[1]
 
   const home = {
     id: homeLineup?.teamId ?? props.homeTeamId ?? null,
@@ -604,7 +827,9 @@ const timelineTeams = computed(() => {
   return { home, away }
 })
 
-const formatCoverageStatus = (status: 'available' | 'not-covered' | 'unavailable') => {
+const formatCoverageStatus = (
+  status: 'available' | 'not-covered' | 'unavailable',
+) => {
   if (status === 'not-covered')
     return t('pages.applications.football.misc.notCoveredByCompetition')
   if (status === 'unavailable')
@@ -613,12 +838,16 @@ const formatCoverageStatus = (status: 'available' | 'not-covered' | 'unavailable
 }
 
 const availabilityByTeam = computed(() => {
-  const grouped = new Map<string, { teamId: number | null; teamName: string; count: number }>()
+  const grouped = new Map<
+    string,
+    { teamId: number | null; teamName: string; count: number }
+  >()
   props.matchContext.availability.injuries.forEach((entry) => {
     const key = `${entry.teamId ?? 'unknown'}-${entry.teamName ?? 'unknown'}`
     const row = grouped.get(key) ?? {
       teamId: entry.teamId,
-      teamName: entry.teamName ?? t('pages.applications.football.misc.unknownTeam'),
+      teamName:
+        entry.teamName ?? t('pages.applications.football.misc.unknownTeam'),
       count: 0,
     }
     row.count += 1
@@ -652,11 +881,15 @@ const liveOddsSummary = computed(() => {
   const item = props.matchContext.liveOdds.item
   const bookmaker = Array.isArray(item?.bookmakers) ? item.bookmakers[0] : null
   const matchWinner = Array.isArray(bookmaker?.bets)
-    ? bookmaker.bets.find((bet: Record<string, any>) => `${bet?.name ?? ''}`.toLowerCase().includes('winner'))
+    ? bookmaker.bets.find((bet: Record<string, any>) =>
+        `${bet?.name ?? ''}`.toLowerCase().includes('winner'),
+      )
     : null
   const values = Array.isArray(matchWinner?.values) ? matchWinner.values : []
   const findOdd = (labels: string[]) => {
-    const target = values.find((entry: Record<string, any>) => labels.includes(`${entry?.value ?? ''}`.toLowerCase()))
+    const target = values.find((entry: Record<string, any>) =>
+      labels.includes(`${entry?.value ?? ''}`.toLowerCase()),
+    )
     const odd = target?.odd
     return typeof odd === 'string' || typeof odd === 'number' ? `${odd}` : null
   }
@@ -679,11 +912,24 @@ function onSelectPlayer(playerId: number | null | undefined) {
 
 <template>
   <div class="d-flex flex-column ga-4">
-    <v-tabs v-if="mode === 'tabs'" v-model="activeTab" color="primary" density="compact">
-      <v-tab value="timeline">{{ t('pages.applications.football.tabs.timeline') }}</v-tab>
-      <v-tab value="lineups">{{ t('pages.applications.football.tabs.lineups') }}</v-tab>
-      <v-tab value="statistics">{{ t('pages.applications.football.misc.statistics') }}</v-tab>
-      <v-tab value="player-notes">{{ t('pages.applications.football.misc.playerNotes') }}</v-tab>
+    <v-tabs
+      v-if="mode === 'tabs'"
+      v-model="activeTab"
+      color="primary"
+      density="compact"
+    >
+      <v-tab value="timeline">{{
+        t('pages.applications.football.tabs.timeline')
+      }}</v-tab>
+      <v-tab value="lineups">{{
+        t('pages.applications.football.tabs.lineups')
+      }}</v-tab>
+      <v-tab value="statistics">{{
+        t('pages.applications.football.misc.statistics')
+      }}</v-tab>
+      <v-tab value="player-notes">{{
+        t('pages.applications.football.misc.playerNotes')
+      }}</v-tab>
     </v-tabs>
 
     <v-window v-model="activeTab">
@@ -695,19 +941,33 @@ function onSelectPlayer(playerId: number | null | undefined) {
             @click="onSelectTeam(timelineTeams.home.id)"
           >
             <v-avatar size="28" rounded="0">
-              <v-img :src="timelineTeams.home.logo || undefined" :alt="timelineTeams.home.name" cover />
+              <v-img
+                :src="timelineTeams.home.logo || undefined"
+                :alt="timelineTeams.home.name"
+                cover
+              />
             </v-avatar>
-            <span class="text-body-2 font-weight-bold">{{ timelineTeams.home.name }}</span>
+            <span class="text-body-2 font-weight-bold">{{
+              timelineTeams.home.name
+            }}</span>
           </button>
-          <span class="text-caption text-medium-emphasis">{{ t('pages.applications.football.tabs.timeline') }}</span>
+          <span class="text-caption text-medium-emphasis">{{
+            t('pages.applications.football.tabs.timeline')
+          }}</span>
           <button
             type="button"
             class="timeline-team-button timeline-team-button--right"
             @click="onSelectTeam(timelineTeams.away.id)"
           >
-            <span class="text-body-2 font-weight-bold">{{ timelineTeams.away.name }}</span>
+            <span class="text-body-2 font-weight-bold">{{
+              timelineTeams.away.name
+            }}</span>
             <v-avatar size="28" rounded="0">
-              <v-img :src="timelineTeams.away.logo || undefined" :alt="timelineTeams.away.name" cover />
+              <v-img
+                :src="timelineTeams.away.logo || undefined"
+                :alt="timelineTeams.away.name"
+                cover
+              />
             </v-avatar>
           </button>
         </div>
@@ -722,63 +982,126 @@ function onSelectPlayer(playerId: number | null | undefined) {
             <div class="timeline-col timeline-col--left">
               <article v-if="event.side === 'left'" class="timeline-card">
                 <header class="timeline-card__header">
-                  <v-chip size="small" variant="flat" color="primary" class="timeline-minute">{{ event.timeLabel }}</v-chip>
+                  <v-chip
+                    size="small"
+                    variant="flat"
+                    color="primary"
+                    class="timeline-minute"
+                    >{{ event.timeLabel }}</v-chip
+                  >
                   <v-icon :icon="event.icon" size="18" :color="event.color" />
                 </header>
                 <div class="timeline-card__title">{{ event.detail }}</div>
                 <div class="timeline-card__meta text-caption">
-                  <a href="#" class="timeline-link timeline-link--with-avatar" @click.prevent="onSelectPlayer(event.playerId)">
+                  <a
+                    href="#"
+                    class="timeline-link timeline-link--with-avatar"
+                    @click.prevent="onSelectPlayer(event.playerId)"
+                  >
                     <v-avatar size="18">
-                      <v-img :src="event.playerPhoto || undefined" :alt="event.playerName" />
+                      <v-img
+                        :src="event.playerPhoto || undefined"
+                        :alt="event.playerName"
+                      />
                     </v-avatar>
                     <span>{{ event.playerName }}</span>
                   </a>
                   <span class="mx-1">·</span>
-                  <a href="#" class="timeline-link timeline-link--with-avatar" @click.prevent="onSelectTeam(event.teamId)">
+                  <a
+                    href="#"
+                    class="timeline-link timeline-link--with-avatar"
+                    @click.prevent="onSelectTeam(event.teamId)"
+                  >
                     <v-avatar size="16" rounded="0">
-                      <v-img :src="event.teamLogo || undefined" :alt="event.teamName" cover />
+                      <v-img
+                        :src="event.teamLogo || undefined"
+                        :alt="event.teamName"
+                        cover
+                      />
                     </v-avatar>
                     <span>{{ event.teamName }}</span>
                   </a>
                 </div>
-                <div v-if="event.comment" class="text-caption text-medium-emphasis">{{ event.comment }}</div>
+                <div
+                  v-if="event.comment"
+                  class="text-caption text-medium-emphasis"
+                >
+                  {{ event.comment }}
+                </div>
               </article>
             </div>
 
             <div class="timeline-axis" aria-hidden="true">
               <span class="timeline-axis__line" />
-              <span class="timeline-axis__dot" :style="{ backgroundColor: `rgb(var(--v-theme-${event.color}))` }" />
+              <span
+                class="timeline-axis__dot"
+                :style="{
+                  backgroundColor: `rgb(var(--v-theme-${event.color}))`,
+                }"
+              />
             </div>
 
             <div class="timeline-col timeline-col--right">
               <article v-if="event.side === 'right'" class="timeline-card">
                 <header class="timeline-card__header">
-                  <v-chip size="small" variant="flat" color="primary" class="timeline-minute">{{ event.timeLabel }}</v-chip>
+                  <v-chip
+                    size="small"
+                    variant="flat"
+                    color="primary"
+                    class="timeline-minute"
+                    >{{ event.timeLabel }}</v-chip
+                  >
                   <v-icon :icon="event.icon" size="18" :color="event.color" />
                 </header>
                 <div class="timeline-card__title">{{ event.detail }}</div>
                 <div class="timeline-card__meta text-caption">
-                  <a href="#" class="timeline-link timeline-link--with-avatar" @click.prevent="onSelectPlayer(event.playerId)">
+                  <a
+                    href="#"
+                    class="timeline-link timeline-link--with-avatar"
+                    @click.prevent="onSelectPlayer(event.playerId)"
+                  >
                     <v-avatar size="18">
-                      <v-img :src="event.playerPhoto || undefined" :alt="event.playerName" />
+                      <v-img
+                        :src="event.playerPhoto || undefined"
+                        :alt="event.playerName"
+                      />
                     </v-avatar>
                     <span>{{ event.playerName }}</span>
                   </a>
                   <span class="mx-1">·</span>
-                  <a href="#" class="timeline-link timeline-link--with-avatar" @click.prevent="onSelectTeam(event.teamId)">
+                  <a
+                    href="#"
+                    class="timeline-link timeline-link--with-avatar"
+                    @click.prevent="onSelectTeam(event.teamId)"
+                  >
                     <v-avatar size="16" rounded="0">
-                      <v-img :src="event.teamLogo || undefined" :alt="event.teamName" cover />
+                      <v-img
+                        :src="event.teamLogo || undefined"
+                        :alt="event.teamName"
+                        cover
+                      />
                     </v-avatar>
                     <span>{{ event.teamName }}</span>
                   </a>
                 </div>
-                <div v-if="event.comment" class="text-caption text-medium-emphasis">{{ event.comment }}</div>
+                <div
+                  v-if="event.comment"
+                  class="text-caption text-medium-emphasis"
+                >
+                  {{ event.comment }}
+                </div>
               </article>
             </div>
           </div>
         </div>
 
-        <v-alert v-if="!events.length" class="mt-2" type="info" variant="tonal" density="compact">
+        <v-alert
+          v-if="!events.length"
+          class="mt-2"
+          type="info"
+          variant="tonal"
+          density="compact"
+        >
           {{ t('pages.applications.football.empty.events') }}
         </v-alert>
       </v-window-item>
@@ -794,9 +1117,18 @@ function onSelectPlayer(playerId: number | null | undefined) {
             mandatory
             class="modal-filter-toggle"
           >
-            <v-btn value="combined" size="small" class="modal-filter-toggle__btn">{{ t('pages.applications.football.misc.combined') }}</v-btn>
-            <v-btn value="home" size="small" class="modal-filter-toggle__btn">{{ t('pages.applications.football.misc.homeTeam') }}</v-btn>
-            <v-btn value="away" size="small" class="modal-filter-toggle__btn">{{ t('pages.applications.football.misc.awayTeam') }}</v-btn>
+            <v-btn
+              value="combined"
+              size="small"
+              class="modal-filter-toggle__btn"
+              >{{ t('pages.applications.football.misc.combined') }}</v-btn
+            >
+            <v-btn value="home" size="small" class="modal-filter-toggle__btn">{{
+              t('pages.applications.football.misc.homeTeam')
+            }}</v-btn>
+            <v-btn value="away" size="small" class="modal-filter-toggle__btn">{{
+              t('pages.applications.football.misc.awayTeam')
+            }}</v-btn>
           </v-btn-toggle>
         </div>
 
@@ -804,23 +1136,36 @@ function onSelectPlayer(playerId: number | null | undefined) {
           v-if="lineupView === 'combined' && combinedLineup.hasGrid"
           class="pa-3 rounded border lineup-board mb-3"
         >
-          <div class="d-flex align-center justify-space-between flex-wrap ga-3 mb-3">
+          <div
+            class="d-flex align-center justify-space-between flex-wrap ga-3 mb-3"
+          >
             <div
               v-for="lineup in combinedLineup.lineups"
               :key="`combined-header-${lineup.teamId ?? lineup.teamName}`"
               class="d-flex align-center ga-2"
             >
               <v-avatar size="26" rounded="0">
-                <v-img :src="lineup.teamLogo || undefined" :alt="lineup.teamName" cover />
+                <v-img
+                  :src="lineup.teamLogo || undefined"
+                  :alt="lineup.teamName"
+                  cover
+                />
               </v-avatar>
-              <a href="#" class="lineup-team text-body-2 font-weight-bold" @click.prevent="onSelectTeam(lineup.teamId)">
+              <a
+                href="#"
+                class="lineup-team text-body-2 font-weight-bold"
+                @click.prevent="onSelectTeam(lineup.teamId)"
+              >
                 {{ lineup.teamName }}
               </a>
             </div>
           </div>
 
           <div class="pitch-layout pitch-layout--combined">
-            <div class="pitch-overlay pitch-overlay--combined" aria-hidden="true">
+            <div
+              class="pitch-overlay pitch-overlay--combined"
+              aria-hidden="true"
+            >
               <span class="pitch-line pitch-line--mid" />
               <span class="pitch-circle" />
               <span class="pitch-area pitch-area--top" />
@@ -833,19 +1178,31 @@ function onSelectPlayer(playerId: number | null | undefined) {
               type="button"
               class="pitch-player"
               :class="`pitch-player--${player.side}`"
-              :style="{ top: `${player.top}%`, left: `${player.left}%`, zIndex: player.zIndex }"
+              :style="{
+                top: `${player.top}%`,
+                left: `${player.left}%`,
+                zIndex: player.zIndex,
+              }"
               :title="`${player.teamName} · ${player.name} (#${player.number})`"
               @click="onSelectPlayer(player.id)"
             >
               <div class="pitch-player__avatar">
                 <v-avatar size="28">
-                  <v-img :src="player.playerPhoto || undefined" :alt="player.name">
+                  <v-img
+                    :src="player.playerPhoto || undefined"
+                    :alt="player.name"
+                  >
                     <template #error>
-                      <span class="text-caption font-weight-bold">{{ player.number }}</span>
+                      <span class="text-caption font-weight-bold">{{
+                        player.number
+                      }}</span>
                     </template>
                   </v-img>
                 </v-avatar>
-                <span class="pitch-player__rating" :style="{ backgroundColor: player.ratingColor }">
+                <span
+                  class="pitch-player__rating"
+                  :style="{ backgroundColor: player.ratingColor }"
+                >
                   {{ player.rating ?? '-' }}
                 </span>
               </div>
@@ -858,15 +1215,31 @@ function onSelectPlayer(playerId: number | null | undefined) {
         </v-sheet>
 
         <v-row v-if="lineupView !== 'combined' || !combinedLineup.hasGrid">
-          <v-col v-for="lineup in visibleLineups" :key="lineup.teamId ?? lineup.teamName" cols="12" :md="lineupView === 'combined' ? 6 : 12">
+          <v-col
+            v-for="lineup in visibleLineups"
+            :key="lineup.teamId ?? lineup.teamName"
+            cols="12"
+            :md="lineupView === 'combined' ? 6 : 12"
+          >
             <v-sheet class="pa-3 rounded border lineup-board">
               <div class="d-flex align-center ga-3 mb-3">
                 <v-avatar size="28" rounded="0">
-                  <v-img :src="lineup.teamLogo || undefined" :alt="lineup.teamName" cover />
+                  <v-img
+                    :src="lineup.teamLogo || undefined"
+                    :alt="lineup.teamName"
+                    cover
+                  />
                 </v-avatar>
                 <div>
-                  <a href="#" class="lineup-team text-subtitle-1 font-weight-bold" @click.prevent="onSelectTeam(lineup.teamId)">{{ lineup.teamName }}</a>
-                  <div class="text-caption text-medium-emphasis">{{ lineup.formation }} · {{ lineup.coachName }}</div>
+                  <a
+                    href="#"
+                    class="lineup-team text-subtitle-1 font-weight-bold"
+                    @click.prevent="onSelectTeam(lineup.teamId)"
+                    >{{ lineup.teamName }}</a
+                  >
+                  <div class="text-caption text-medium-emphasis">
+                    {{ lineup.formation }} · {{ lineup.coachName }}
+                  </div>
                 </div>
               </div>
 
@@ -889,19 +1262,31 @@ function onSelectPlayer(playerId: number | null | undefined) {
                 >
                   <div class="pitch-player__avatar">
                     <v-avatar size="28">
-                      <v-img :src="player.playerPhoto || undefined" :alt="player.name">
+                      <v-img
+                        :src="player.playerPhoto || undefined"
+                        :alt="player.name"
+                      >
                         <template #error>
-                          <span class="text-caption font-weight-bold">{{ player.number }}</span>
+                          <span class="text-caption font-weight-bold">{{
+                            player.number
+                          }}</span>
                         </template>
                       </v-img>
                     </v-avatar>
-                    <span class="pitch-player__rating" :style="{ backgroundColor: player.ratingColor }">
+                    <span
+                      class="pitch-player__rating"
+                      :style="{ backgroundColor: player.ratingColor }"
+                    >
                       {{ player.rating ?? '-' }}
                     </span>
                   </div>
                   <div class="pitch-player__meta">
-                    <span class="pitch-player__name">{{ player.shortName }}</span>
-                    <span class="pitch-player__badge">#{{ player.number }}</span>
+                    <span class="pitch-player__name">{{
+                      player.shortName
+                    }}</span>
+                    <span class="pitch-player__badge"
+                      >#{{ player.number }}</span
+                    >
                   </div>
                 </button>
               </div>
@@ -915,33 +1300,60 @@ function onSelectPlayer(playerId: number | null | undefined) {
                 >
                   <template #prepend>
                     <v-avatar size="28">
-                      <v-img :src="player.playerPhoto || undefined" :alt="player.name" />
+                      <v-img
+                        :src="player.playerPhoto || undefined"
+                        :alt="player.name"
+                      />
                     </v-avatar>
                   </template>
                   <v-list-item-title class="text-body-2">
-                    <a href="#" class="lineup-player-link" @click.prevent.stop="onSelectPlayer(player.id)">
+                    <a
+                      href="#"
+                      class="lineup-player-link"
+                      @click.prevent.stop="onSelectPlayer(player.id)"
+                    >
                       {{ player.shortName }} · #{{ player.number }}
                     </a>
                   </v-list-item-title>
                   <v-list-item-subtitle>
-                    {{ player.position || t('pages.applications.football.misc.positionUnavailable') }}
+                    {{
+                      player.position ||
+                      t('pages.applications.football.misc.positionUnavailable')
+                    }}
                   </v-list-item-subtitle>
                   <template #append>
-                    <v-chip size="x-small" :color="numericRating(player.rating) && Number(player.rating) >= 7 ? 'success' : 'default'">
+                    <v-chip
+                      size="x-small"
+                      :color="
+                        numericRating(player.rating) &&
+                        Number(player.rating) >= 7
+                          ? 'success'
+                          : 'default'
+                      "
+                    >
                       {{ player.rating ?? '-' }}
                     </v-chip>
                   </template>
                 </v-list-item>
               </v-list>
 
-              <div v-if="!lineup.hasGrid" class="text-caption text-medium-emphasis mt-2">
+              <div
+                v-if="!lineup.hasGrid"
+                class="text-caption text-medium-emphasis mt-2"
+              >
                 {{ t('pages.applications.football.misc.positionUnavailable') }}
               </div>
             </v-sheet>
           </v-col>
         </v-row>
 
-        <v-alert v-if="!lineups.length" class="mt-2" type="info" variant="tonal" density="compact">
+        <v-alert
+          v-if="!lineups.length"
+          class="mt-2"
+          type="info"
+          variant="tonal"
+          density="compact"
+        >
           {{ t('pages.applications.football.empty.lineups') }}
         </v-alert>
       </v-window-item>
@@ -949,7 +1361,9 @@ function onSelectPlayer(playerId: number | null | undefined) {
       <v-window-item value="statistics">
         <v-sheet class="stats-panel pa-4 rounded border">
           <div class="d-flex align-center justify-space-between ga-3 mb-4">
-            <div class="text-subtitle-1 font-weight-bold">{{ t('pages.applications.football.misc.topStatistics') }}</div>
+            <div class="text-subtitle-1 font-weight-bold">
+              {{ t('pages.applications.football.misc.topStatistics') }}
+            </div>
             <v-btn-toggle
               v-if="availableStatsPeriods.length > 1"
               v-model="selectedStatsFilter"
@@ -972,20 +1386,32 @@ function onSelectPlayer(playerId: number | null | undefined) {
 
           <div v-for="row in statisticsRows" :key="row.label" class="stats-row">
             <div class="stats-row__values text-body-2">
-              <span class="stats-row__value stats-row__value--home">{{ row.leftText }}</span>
+              <span class="stats-row__value stats-row__value--home">{{
+                row.leftText
+              }}</span>
               <span class="stats-row__label">{{ row.label }}</span>
-              <span class="stats-row__value stats-row__value--away">{{ row.rightText }}</span>
+              <span class="stats-row__value stats-row__value--away">{{
+                row.rightText
+              }}</span>
             </div>
             <div v-if="!row.unavailable" class="stats-bar">
-              <div class="stats-bar__left" :style="{ width: `${row.leftPct}%` }" />
-              <div class="stats-bar__right" :style="{ width: `${row.rightPct}%` }" />
+              <div
+                class="stats-bar__left"
+                :style="{ width: `${row.leftPct}%` }"
+              />
+              <div
+                class="stats-bar__right"
+                :style="{ width: `${row.rightPct}%` }"
+              />
             </div>
           </div>
 
           <v-divider class="my-4" />
 
           <section class="context-section">
-            <div class="text-subtitle-2 font-weight-bold mb-2">{{ t('pages.applications.football.misc.teamAvailability') }}</div>
+            <div class="text-subtitle-2 font-weight-bold mb-2">
+              {{ t('pages.applications.football.misc.teamAvailability') }}
+            </div>
             <v-alert
               v-if="matchContext.availability.status !== 'available'"
               type="info"
@@ -1001,13 +1427,19 @@ function onSelectPlayer(playerId: number | null | undefined) {
                 @click="onSelectTeam(team.teamId)"
               >
                 <v-list-item-title>{{ team.teamName }}</v-list-item-title>
-                <v-list-item-subtitle>{{ t('pages.applications.football.misc.unavailableCount', { count: team.count }) }}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{
+                  t('pages.applications.football.misc.unavailableCount', {
+                    count: team.count,
+                  })
+                }}</v-list-item-subtitle>
               </v-list-item>
             </v-list>
           </section>
 
           <section class="context-section">
-            <div class="text-subtitle-2 font-weight-bold mb-2">{{ t('pages.applications.football.misc.headToHeadSnapshot') }}</div>
+            <div class="text-subtitle-2 font-weight-bold mb-2">
+              {{ t('pages.applications.football.misc.headToHeadSnapshot') }}
+            </div>
             <v-alert
               v-if="matchContext.headToHead.status !== 'available'"
               type="info"
@@ -1028,7 +1460,9 @@ function onSelectPlayer(playerId: number | null | undefined) {
           </section>
 
           <section class="context-section">
-            <div class="text-subtitle-2 font-weight-bold mb-2">{{ t('pages.applications.football.misc.preMatchPrediction') }}</div>
+            <div class="text-subtitle-2 font-weight-bold mb-2">
+              {{ t('pages.applications.football.misc.preMatchPrediction') }}
+            </div>
             <v-alert
               v-if="matchContext.prediction.status !== 'available'"
               type="info"
@@ -1038,14 +1472,25 @@ function onSelectPlayer(playerId: number | null | undefined) {
               {{ formatCoverageStatus(matchContext.prediction.status) }}
             </v-alert>
             <div v-else class="text-body-2">
-              <div>{{ t('pages.applications.football.misc.favorite') }}: {{ predictionSummary?.winnerName ?? '—' }}</div>
-              <div>{{ t('pages.applications.football.misc.doubleChance') }}: {{ predictionSummary?.winOrDraw ?? '—' }}</div>
-              <div>{{ t('pages.applications.football.misc.advice') }}: {{ predictionSummary?.comment ?? '—' }}</div>
+              <div>
+                {{ t('pages.applications.football.misc.favorite') }}:
+                {{ predictionSummary?.winnerName ?? '—' }}
+              </div>
+              <div>
+                {{ t('pages.applications.football.misc.doubleChance') }}:
+                {{ predictionSummary?.winOrDraw ?? '—' }}
+              </div>
+              <div>
+                {{ t('pages.applications.football.misc.advice') }}:
+                {{ predictionSummary?.comment ?? '—' }}
+              </div>
             </div>
           </section>
 
           <section class="context-section">
-            <div class="text-subtitle-2 font-weight-bold mb-2">{{ t('pages.applications.football.misc.liveOdds') }}</div>
+            <div class="text-subtitle-2 font-weight-bold mb-2">
+              {{ t('pages.applications.football.misc.liveOdds') }}
+            </div>
             <v-alert
               v-if="matchContext.liveOdds.status !== 'available'"
               type="info"
@@ -1055,8 +1500,15 @@ function onSelectPlayer(playerId: number | null | undefined) {
               {{ formatCoverageStatus(matchContext.liveOdds.status) }}
             </v-alert>
             <div v-else class="text-body-2">
-              <div>{{ t('pages.applications.football.misc.bookmaker') }}: {{ liveOddsSummary.bookmaker ?? '—' }}</div>
-              <div>1: {{ liveOddsSummary.home ?? '—' }} · X: {{ liveOddsSummary.draw ?? '—' }} · 2: {{ liveOddsSummary.away ?? '—' }}</div>
+              <div>
+                {{ t('pages.applications.football.misc.bookmaker') }}:
+                {{ liveOddsSummary.bookmaker ?? '—' }}
+              </div>
+              <div>
+                1: {{ liveOddsSummary.home ?? '—' }} · X:
+                {{ liveOddsSummary.draw ?? '—' }} · 2:
+                {{ liveOddsSummary.away ?? '—' }}
+              </div>
             </div>
           </section>
         </v-sheet>
@@ -1073,9 +1525,15 @@ function onSelectPlayer(playerId: number | null | undefined) {
             mandatory
             class="modal-filter-toggle"
           >
-            <v-btn value="all" size="small" class="modal-filter-toggle__btn">{{ t('pages.applications.football.misc.all') }}</v-btn>
-            <v-btn value="home" size="small" class="modal-filter-toggle__btn">{{ t('pages.applications.football.misc.homeTeam') }}</v-btn>
-            <v-btn value="away" size="small" class="modal-filter-toggle__btn">{{ t('pages.applications.football.misc.awayTeam') }}</v-btn>
+            <v-btn value="all" size="small" class="modal-filter-toggle__btn">{{
+              t('pages.applications.football.misc.all')
+            }}</v-btn>
+            <v-btn value="home" size="small" class="modal-filter-toggle__btn">{{
+              t('pages.applications.football.misc.homeTeam')
+            }}</v-btn>
+            <v-btn value="away" size="small" class="modal-filter-toggle__btn">{{
+              t('pages.applications.football.misc.awayTeam')
+            }}</v-btn>
           </v-btn-toggle>
         </div>
 
@@ -1099,22 +1557,38 @@ function onSelectPlayer(playerId: number | null | undefined) {
               <v-expansion-panel-title>
                 <div class="d-flex align-center ga-3">
                   <v-avatar size="30">
-                    <v-img :src="player.playerPhoto || undefined" :alt="player.playerName" />
+                    <v-img
+                      :src="player.playerPhoto || undefined"
+                      :alt="player.playerName"
+                    />
                   </v-avatar>
                   <div class="d-flex flex-column">
-                    <a href="#" class="player-link text-body-2 font-weight-medium" @click.prevent.stop="onSelectPlayer(player.playerId)">
+                    <a
+                      href="#"
+                      class="player-link text-body-2 font-weight-medium"
+                      @click.prevent.stop="onSelectPlayer(player.playerId)"
+                    >
                       {{ player.playerName }}
                     </a>
-                    <span class="text-caption text-medium-emphasis">{{ player.teamName }}</span>
+                    <span class="text-caption text-medium-emphasis">{{
+                      player.teamName
+                    }}</span>
                   </div>
                 </div>
               </v-expansion-panel-title>
               <v-expansion-panel-text>
                 <v-table density="compact" class="detailed-player-table">
                   <tbody>
-                    <tr v-for="metric in player.detailEntries" :key="`${player.id}-${metric.key}`">
-                      <td class="text-caption text-medium-emphasis">{{ metric.label }}</td>
-                      <td class="text-body-2 font-weight-medium text-right">{{ metric.value }}</td>
+                    <tr
+                      v-for="metric in player.detailEntries"
+                      :key="`${player.id}-${metric.key}`"
+                    >
+                      <td class="text-caption text-medium-emphasis">
+                        {{ metric.label }}
+                      </td>
+                      <td class="text-body-2 font-weight-medium text-right">
+                        {{ metric.value }}
+                      </td>
                     </tr>
                   </tbody>
                 </v-table>
@@ -1135,12 +1609,17 @@ function onSelectPlayer(playerId: number | null | undefined) {
           >
             <header class="player-metric-section__header">
               <h4 class="player-metric-section__title">{{ section.label }}</h4>
-              <span class="player-metric-section__count text-caption text-medium-emphasis">
+              <span
+                class="player-metric-section__count text-caption text-medium-emphasis"
+              >
                 Top {{ section.players.length }}
               </span>
             </header>
 
-            <div v-if="section.empty" class="text-caption text-medium-emphasis py-2 px-1">
+            <div
+              v-if="section.empty"
+              class="text-caption text-medium-emphasis py-2 px-1"
+            >
               {{ t('pages.applications.football.misc.dataUnavailable') }}
             </div>
 
@@ -1155,17 +1634,26 @@ function onSelectPlayer(playerId: number | null | undefined) {
                   <div class="d-flex align-center ga-2 mr-2">
                     <span class="player-rank-badge">{{ player.rank }}</span>
                     <v-avatar size="34">
-                      <v-img :src="player.playerPhoto || undefined" :alt="player.playerName" />
+                      <v-img
+                        :src="player.playerPhoto || undefined"
+                        :alt="player.playerName"
+                      />
                     </v-avatar>
                   </div>
                 </template>
 
                 <v-list-item-title class="text-body-2 font-weight-medium">
-                  <a href="#" class="player-link" @click.prevent.stop="onSelectPlayer(player.playerId)">
+                  <a
+                    href="#"
+                    class="player-link"
+                    @click.prevent.stop="onSelectPlayer(player.playerId)"
+                  >
                     {{ player.playerName }}
                   </a>
                 </v-list-item-title>
-                <v-list-item-subtitle class="d-flex align-center ga-2 flex-wrap">
+                <v-list-item-subtitle
+                  class="d-flex align-center ga-2 flex-wrap"
+                >
                   <span>{{ player.position }}</span>
                   <v-chip
                     size="x-small"
@@ -1183,7 +1671,9 @@ function onSelectPlayer(playerId: number | null | undefined) {
                 </v-list-item-subtitle>
 
                 <template #append>
-                  <span class="player-metric-value">{{ player.valueLabel }}</span>
+                  <span class="player-metric-value">{{
+                    player.valueLabel
+                  }}</span>
                 </template>
               </v-list-item>
             </v-list>
@@ -1206,17 +1696,31 @@ function onSelectPlayer(playerId: number | null | undefined) {
   align-items: center;
   gap: 8px;
   justify-self: start;
-  border: 1px solid rgba(var(--v-theme-on-surface), .14);
-  background: rgba(var(--v-theme-surface), .35);
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.14);
+  background: rgba(var(--v-theme-surface), 0.35);
   border-radius: 999px;
   padding: 6px 10px;
   color: inherit;
   cursor: pointer;
 }
-.timeline-team-button--right { justify-self: end; }
-.timeline-split { display: flex; flex-direction: column; gap: 12px; padding: 4px 0 8px; }
-.timeline-row { display: grid; grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr); gap: 14px; align-items: stretch; }
-.timeline-col { min-height: 100%; }
+.timeline-team-button--right {
+  justify-self: end;
+}
+.timeline-split {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 0 8px;
+}
+.timeline-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr);
+  gap: 14px;
+  align-items: stretch;
+}
+.timeline-col {
+  min-height: 100%;
+}
 .timeline-card {
   display: flex;
   flex-direction: column;
@@ -1224,25 +1728,59 @@ function onSelectPlayer(playerId: number | null | undefined) {
   height: 100%;
   padding: 12px 14px;
   border-radius: 14px;
-  border: 1px solid rgba(var(--v-theme-on-surface), .12);
-  background: linear-gradient(180deg, rgba(var(--v-theme-surface), .94), rgba(var(--v-theme-surface), .7));
-  box-shadow: 0 10px 26px rgba(0, 0, 0, .08);
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.12);
+  background: linear-gradient(
+    180deg,
+    rgba(var(--v-theme-surface), 0.94),
+    rgba(var(--v-theme-surface), 0.7)
+  );
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
 }
 
-.timeline-card__header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.timeline-minute { min-width: 56px; justify-content: center; font-weight: 700; }
-.timeline-card__title { font-size: .9rem; font-weight: 700; line-height: 1.3; }
-.timeline-card__meta { display: flex; flex-wrap: wrap; align-items: center; color: rgba(var(--v-theme-on-surface), .84); }
-.timeline-link--with-avatar { display: inline-flex; align-items: center; gap: 6px; }
+.timeline-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.timeline-minute {
+  min-width: 56px;
+  justify-content: center;
+  font-weight: 700;
+}
+.timeline-card__title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.timeline-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  color: rgba(var(--v-theme-on-surface), 0.84);
+}
+.timeline-link--with-avatar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
 
-.timeline-axis { position: relative; display: flex; justify-content: center; }
+.timeline-axis {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
 .timeline-axis__line {
   position: absolute;
   top: -8px;
   bottom: -8px;
   width: 2px;
   border-radius: 99px;
-  background: linear-gradient(180deg, rgba(var(--v-theme-primary), .45), rgba(var(--v-theme-on-surface), .2));
+  background: linear-gradient(
+    180deg,
+    rgba(var(--v-theme-primary), 0.45),
+    rgba(var(--v-theme-on-surface), 0.2)
+  );
 }
 .timeline-axis__dot {
   position: relative;
@@ -1254,26 +1792,59 @@ function onSelectPlayer(playerId: number | null | undefined) {
   box-shadow: 0 0 0 4px rgba(var(--v-theme-surface), 1);
 }
 
-.timeline-link, .lineup-team { color: rgb(var(--v-theme-primary)); text-decoration: none; }
-.timeline-link:hover, .lineup-team:hover { text-decoration: underline; }
-.lineup-player-link, .player-link { color: inherit; text-decoration: none; }
-.lineup-player-link:hover, .player-link:hover { color: rgb(var(--v-theme-primary)); text-decoration: underline; }
+.timeline-link,
+.lineup-team {
+  color: rgb(var(--v-theme-primary));
+  text-decoration: none;
+}
+.timeline-link:hover,
+.lineup-team:hover {
+  text-decoration: underline;
+}
+.lineup-player-link,
+.player-link {
+  color: inherit;
+  text-decoration: none;
+}
+.lineup-player-link:hover,
+.player-link:hover {
+  color: rgb(var(--v-theme-primary));
+  text-decoration: underline;
+}
 .pitch-layout {
   position: relative;
   min-height: 900px;
   border-radius: 16px;
-  border: 1px solid rgba(var(--v-theme-on-surface), .16);
-  background: linear-gradient(180deg, rgba(17, 65, 52, .95), rgba(11, 48, 39, .96));
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.16);
+  background: linear-gradient(
+    180deg,
+    rgba(17, 65, 52, 0.95),
+    rgba(11, 48, 39, 0.96)
+  );
   overflow: hidden;
 }
-.pitch-overlay { position: absolute; inset: 0; pointer-events: none; }
+.pitch-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
 .pitch-overlay--combined::after {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(44, 118, 214, .2) 0%, rgba(44, 118, 214, .08) 48%, transparent 52%),
-    linear-gradient(0deg, rgba(221, 84, 84, .22) 0%, rgba(221, 84, 84, .08) 48%, transparent 52%);
+    linear-gradient(
+      180deg,
+      rgba(44, 118, 214, 0.2) 0%,
+      rgba(44, 118, 214, 0.08) 48%,
+      transparent 52%
+    ),
+    linear-gradient(
+      0deg,
+      rgba(221, 84, 84, 0.22) 0%,
+      rgba(221, 84, 84, 0.08) 48%,
+      transparent 52%
+    );
 }
 .pitch-overlay::before {
   content: '';
@@ -1281,13 +1852,20 @@ function onSelectPlayer(playerId: number | null | undefined) {
   inset: 0;
   background-image: repeating-linear-gradient(
     180deg,
-    rgba(255, 255, 255, .04),
-    rgba(255, 255, 255, .04) 32px,
-    rgba(255, 255, 255, .01) 32px,
-    rgba(255, 255, 255, .01) 64px
+    rgba(255, 255, 255, 0.04),
+    rgba(255, 255, 255, 0.04) 32px,
+    rgba(255, 255, 255, 0.01) 32px,
+    rgba(255, 255, 255, 0.01) 64px
   );
 }
-.pitch-line--mid { position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(255, 255, 255, .45); }
+.pitch-line--mid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.45);
+}
 .pitch-circle {
   position: absolute;
   left: 50%;
@@ -1295,7 +1873,7 @@ function onSelectPlayer(playerId: number | null | undefined) {
   width: 84px;
   height: 84px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, .45);
+  border: 1px solid rgba(255, 255, 255, 0.45);
   transform: translate(-50%, -50%);
 }
 .pitch-area {
@@ -1303,10 +1881,18 @@ function onSelectPlayer(playerId: number | null | undefined) {
   left: 17%;
   right: 17%;
   height: 18%;
-  border: 1px solid rgba(255, 255, 255, .45);
+  border: 1px solid rgba(255, 255, 255, 0.45);
 }
-.pitch-area--top { top: 0; border-top: 0; border-radius: 0 0 12px 12px; }
-.pitch-area--bottom { bottom: 0; border-bottom: 0; border-radius: 12px 12px 0 0; }
+.pitch-area--top {
+  top: 0;
+  border-top: 0;
+  border-radius: 0 0 12px 12px;
+}
+.pitch-area--bottom {
+  bottom: 0;
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+}
 .pitch-player {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -1319,63 +1905,125 @@ function onSelectPlayer(playerId: number | null | undefined) {
   z-index: 2;
   width: 76px;
 }
-.pitch-player__avatar { position: relative; margin-bottom: 4px; }
+.pitch-player__avatar {
+  position: relative;
+  margin-bottom: 4px;
+}
 .pitch-player__rating {
   position: absolute;
   bottom: -3px;
   right: -14px;
   color: #fff;
-  font-size: .62rem;
+  font-size: 0.62rem;
   line-height: 1;
   font-weight: 700;
   padding: 2px 4px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, .35);
+  border: 1px solid rgba(255, 255, 255, 0.35);
 }
 .pitch-player__meta {
   width: 100%;
   text-align: center;
   border-radius: 10px;
   padding: 4px 6px;
-  background: rgba(7, 18, 15, .62);
-  border: 1px solid rgba(255, 255, 255, .12);
+  background: rgba(7, 18, 15, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
-.pitch-player--home .pitch-player__avatar { filter: drop-shadow(0 0 8px rgba(242, 86, 86, .55)); }
-.pitch-player--away .pitch-player__avatar { filter: drop-shadow(0 0 8px rgba(82, 151, 255, .55)); }
-.pitch-player__badge { display: block; font-size: .62rem; color: rgba(255, 255, 255, .78); }
-.pitch-player__name { display: block; font-size: .66rem; font-weight: 700; color: rgba(255, 255, 255, .96); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.lineup-fallback { border: 1px solid rgba(var(--v-theme-on-surface), .12); border-radius: 12px; }
-.lineup-fallback__item { border-radius: 10px; margin: 2px 4px; }
+.pitch-player--home .pitch-player__avatar {
+  filter: drop-shadow(0 0 8px rgba(242, 86, 86, 0.55));
+}
+.pitch-player--away .pitch-player__avatar {
+  filter: drop-shadow(0 0 8px rgba(82, 151, 255, 0.55));
+}
+.pitch-player__badge {
+  display: block;
+  font-size: 0.62rem;
+  color: rgba(255, 255, 255, 0.78);
+}
+.pitch-player__name {
+  display: block;
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.96);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lineup-fallback {
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.12);
+  border-radius: 12px;
+}
+.lineup-fallback__item {
+  border-radius: 10px;
+  margin: 2px 4px;
+}
 .stats-panel {
-  background: linear-gradient(180deg, rgba(var(--v-theme-surface), .95), rgba(var(--v-theme-surface), .72));
+  background: linear-gradient(
+    180deg,
+    rgba(var(--v-theme-surface), 0.95),
+    rgba(var(--v-theme-surface), 0.72)
+  );
 }
-.context-section { margin-top: 16px; }
-.stats-row { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-.stats-row:last-child { margin-bottom: 0; }
+.context-section {
+  margin-top: 16px;
+}
+.stats-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.stats-row:last-child {
+  margin-bottom: 0;
+}
 .stats-row__values {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 10px;
 }
-.stats-row__value { font-weight: 700; }
-.stats-row__value--home { text-align: left; color: rgb(var(--v-theme-primary)); }
-.stats-row__value--away { text-align: right; color: rgba(var(--v-theme-on-surface), .92); }
+.stats-row__value {
+  font-weight: 700;
+}
+.stats-row__value--home {
+  text-align: left;
+  color: rgb(var(--v-theme-primary));
+}
+.stats-row__value--away {
+  text-align: right;
+  color: rgba(var(--v-theme-on-surface), 0.92);
+}
 .stats-row__label {
   text-align: center;
-  font-size: .75rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: .04em;
+  letter-spacing: 0.04em;
   font-weight: 700;
-  color: rgba(var(--v-theme-on-surface), .72);
+  color: rgba(var(--v-theme-on-surface), 0.72);
 }
-.stats-bar { height: 8px; border-radius: 99px; display: flex; overflow: hidden; background: rgba(var(--v-theme-on-surface), .12); }
-.stats-bar__left { background: linear-gradient(90deg, rgba(var(--v-theme-primary), .7), rgb(var(--v-theme-primary))); }
-.stats-bar__right { background: rgba(var(--v-theme-on-surface), .42); }
-.stats-bar--muted { opacity: .7; }
+.stats-bar {
+  height: 8px;
+  border-radius: 99px;
+  display: flex;
+  overflow: hidden;
+  background: rgba(var(--v-theme-on-surface), 0.12);
+}
+.stats-bar__left {
+  background: linear-gradient(
+    90deg,
+    rgba(var(--v-theme-primary), 0.7),
+    rgb(var(--v-theme-primary))
+  );
+}
+.stats-bar__right {
+  background: rgba(var(--v-theme-on-surface), 0.42);
+}
+.stats-bar--muted {
+  opacity: 0.7;
+}
 .modal-filter-toggle {
-  background: rgba(var(--v-theme-surface), .42);
-  border: 1px solid rgba(var(--v-theme-on-surface), .12);
+  background: rgba(var(--v-theme-surface), 0.42);
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.12);
   padding: 2px;
 }
 .modal-filter-toggle__btn {
@@ -1384,27 +2032,43 @@ function onSelectPlayer(playerId: number | null | undefined) {
   font-weight: 600;
 }
 .player-notes-panel {
-  background: linear-gradient(180deg, rgba(18, 20, 30, .82), rgba(11, 13, 20, .66));
+  background: linear-gradient(
+    180deg,
+    rgba(18, 20, 30, 0.82),
+    rgba(11, 13, 20, 0.66)
+  );
 }
 .player-details-panel {
-  background: linear-gradient(180deg, rgba(var(--v-theme-surface), .95), rgba(var(--v-theme-surface), .78));
+  background: linear-gradient(
+    180deg,
+    rgba(var(--v-theme-surface), 0.95),
+    rgba(var(--v-theme-surface), 0.78)
+  );
 }
-.player-details-panel__header { padding: 2px 6px 8px; }
+.player-details-panel__header {
+  padding: 2px 6px 8px;
+}
 .player-details-panel__title {
   margin: 0;
-  font-size: .82rem;
+  font-size: 0.82rem;
   text-transform: uppercase;
-  letter-spacing: .05em;
+  letter-spacing: 0.05em;
   font-weight: 800;
-  color: rgba(var(--v-theme-on-surface), .8);
+  color: rgba(var(--v-theme-on-surface), 0.8);
 }
-.detailed-player-table td { padding: 6px 8px; }
-.detailed-player-table tr + tr td { border-top: 1px solid rgba(var(--v-theme-on-surface), .08); }
+.detailed-player-table td {
+  padding: 6px 8px;
+}
+.detailed-player-table tr + tr td {
+  border-top: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+}
 .player-metric-section {
   padding: 10px 8px 6px;
-  border-bottom: 1px solid rgba(var(--v-theme-on-surface), .12);
+  border-bottom: 1px solid rgba(var(--v-theme-on-surface), 0.12);
 }
-.player-metric-section:last-child { border-bottom: 0; }
+.player-metric-section:last-child {
+  border-bottom: 0;
+}
 .player-metric-section__header {
   display: flex;
   align-items: center;
@@ -1413,15 +2077,19 @@ function onSelectPlayer(playerId: number | null | undefined) {
   padding: 0 4px;
 }
 .player-metric-section__title {
-  font-size: .8rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
-  letter-spacing: .05em;
+  letter-spacing: 0.05em;
   font-weight: 800;
   margin: 0;
-  color: rgba(var(--v-theme-on-surface), .8);
+  color: rgba(var(--v-theme-on-surface), 0.8);
 }
-.player-note-item { border-radius: 10px; }
-.player-note-item--ranked { margin-bottom: 2px; }
+.player-note-item {
+  border-radius: 10px;
+}
+.player-note-item--ranked {
+  margin-bottom: 2px;
+}
 .player-rank-badge {
   min-width: 22px;
   height: 22px;
@@ -1429,31 +2097,58 @@ function onSelectPlayer(playerId: number | null | undefined) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: .7rem;
+  font-size: 0.7rem;
   font-weight: 800;
   color: rgb(var(--v-theme-primary));
-  border: 1px solid rgba(var(--v-theme-primary), .5);
-  background: rgba(var(--v-theme-primary), .14);
+  border: 1px solid rgba(var(--v-theme-primary), 0.5);
+  background: rgba(var(--v-theme-primary), 0.14);
 }
-.player-team-chip { cursor: pointer; }
+.player-team-chip {
+  cursor: pointer;
+}
 .player-metric-value {
   min-width: 46px;
   text-align: right;
-  font-size: .82rem;
+  font-size: 0.82rem;
   font-weight: 800;
   color: rgb(var(--v-theme-primary));
 }
 
 @media (max-width: 720px) {
-  .timeline-header { gap: 8px; }
-  .timeline-team-button { padding: 4px 8px; font-size: .75rem; }
-  .timeline-row { grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr); gap: 8px; }
-  .timeline-card { padding: 10px; border-radius: 12px; }
-  .timeline-minute { min-width: 52px; }
-  .timeline-card__title { font-size: .85rem; }
-  .timeline-axis__dot { top: 16px; width: 10px; height: 10px; }
-  .pitch-layout { min-height: 800px; }
-  .pitch-player { width: 68px; }
-  .pitch-player__name { font-size: .62rem; }
+  .timeline-header {
+    gap: 8px;
+  }
+  .timeline-team-button {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+  }
+  .timeline-row {
+    grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr);
+    gap: 8px;
+  }
+  .timeline-card {
+    padding: 10px;
+    border-radius: 12px;
+  }
+  .timeline-minute {
+    min-width: 52px;
+  }
+  .timeline-card__title {
+    font-size: 0.85rem;
+  }
+  .timeline-axis__dot {
+    top: 16px;
+    width: 10px;
+    height: 10px;
+  }
+  .pitch-layout {
+    min-height: 800px;
+  }
+  .pitch-player {
+    width: 68px;
+  }
+  .pitch-player__name {
+    font-size: 0.62rem;
+  }
 }
 </style>

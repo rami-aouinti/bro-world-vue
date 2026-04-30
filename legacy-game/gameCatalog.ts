@@ -26,13 +26,12 @@ export const useGameCatalogStore = defineStore('game-catalog', () => {
 
       categories.value = mapGameCatalogFromApi(apiCategories)
       return categories.value
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err.message : 'Unable to load game catalog.'
+    } catch (err) {
+      error.value =
+        err instanceof Error ? err.message : 'Unable to load game catalog.'
       categories.value = []
       return categories.value
-    }
-    finally {
+    } finally {
       isLoading.value = false
     }
   }

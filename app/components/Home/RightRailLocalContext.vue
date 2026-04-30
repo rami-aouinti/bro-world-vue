@@ -83,7 +83,6 @@ const weatherSummary = computed(() => {
   return `${weather.temperatureC.toFixed(1)}°C · ${weather.condition}`
 })
 
-
 function uniqByKey<T>(items: T[], getKey: (item: T) => string) {
   const seen = new Set<string>()
 
@@ -123,14 +122,20 @@ async function loadRecommendations() {
   featuredJobs.value =
     jobsResult.status === 'fulfilled'
       ? pickRandomItems(
-          uniqByKey(jobsResult.value.items ?? [], item => item.slug || item.id),
+          uniqByKey(
+            jobsResult.value.items ?? [],
+            (item) => item.slug || item.id,
+          ),
           2,
         )
       : []
 
   featuredProjects.value =
     projectsResult.status === 'fulfilled'
-      ? pickRandomItems(uniqByKey(projectsResult.value.items ?? [], item => item.id), 2)
+      ? pickRandomItems(
+          uniqByKey(projectsResult.value.items ?? [], (item) => item.id),
+          2,
+        )
       : []
 }
 
@@ -300,11 +305,20 @@ onMounted(() => {
 
     <div v-else-if="permissionDenied">
       <v-card-text class="py-6 text-center">
-        <v-icon icon="mdi-map-marker-off-outline" color="warning" class="mb-3" />
+        <v-icon
+          icon="mdi-map-marker-off-outline"
+          color="warning"
+          class="mb-3"
+        />
         <div class="text-body-2 mb-3">
           {{ $t('home.rightNav.localContext.statePermissionDenied') }}
         </div>
-        <v-btn color="primary" variant="tonal" size="small" @click="requestLocation">
+        <v-btn
+          color="primary"
+          variant="tonal"
+          size="small"
+          @click="requestLocation"
+        >
           {{ $t('home.rightNav.localContext.permissionCta') }}
         </v-btn>
       </v-card-text>
@@ -319,7 +333,12 @@ onMounted(() => {
         <div class="text-caption text-medium-emphasis mb-3">
           {{ loadError }}
         </div>
-        <v-btn color="primary" variant="tonal" size="small" @click="requestLocation">
+        <v-btn
+          color="primary"
+          variant="tonal"
+          size="small"
+          @click="requestLocation"
+        >
           {{ $t('home.rightNav.localContext.retryCta') }}
         </v-btn>
       </v-card-text>
@@ -392,7 +411,9 @@ onMounted(() => {
           :key="project.id"
           :to="`/world/crm/projects/${project.id}`"
         >
-          <v-list-item-title>{{ project.name || project.code || project.id }}</v-list-item-title>
+          <v-list-item-title>{{
+            project.name || project.code || project.id
+          }}</v-list-item-title>
           <v-list-item-subtitle>
             {{ project.code || '—' }}
             <span v-if="project.status"> · {{ project.status }}</span>

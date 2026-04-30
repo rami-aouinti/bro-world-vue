@@ -325,7 +325,8 @@ async function deleteRequest() {
                 size="small"
                 :color="requestStatusColor(request.status)"
                 variant="tonal"
-              >{{ request.status }}</v-chip>
+                >{{ request.status }}</v-chip
+              >
             </div>
             <div class="d-flex align-start justify-space-between ga-2 mb-2">
               <div class="d-flex align-center ga-2 min-w-0">

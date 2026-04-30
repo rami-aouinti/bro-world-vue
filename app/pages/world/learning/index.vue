@@ -25,14 +25,20 @@ const LEARNING_REFERENCE_CONFIG = {
     publicPageSlug: 'learning-teachers',
     fallbackI18nKey: 'world.learning.references.fallback.teachers',
   },
-} as const satisfies Record<string, { publicPageSlug: PublicPageSlug; fallbackI18nKey: string }>
+} as const satisfies Record<
+  string,
+  { publicPageSlug: PublicPageSlug; fallbackI18nKey: string }
+>
 
 const { locale, t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 const runtimeConfig = useRuntimeConfig()
 const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world-space.com'
 const pageUrl = new URL('/world/learning', siteUrl).toString()
-const seoImage = new URL('/img/platform/general/learning.png', siteUrl).toString()
+const seoImage = new URL(
+  '/img/platform/general/learning.png',
+  siteUrl,
+).toString()
 const { learningNavItems } = useWorldLearningNavItems()
 const publicPagesStore = usePublicPagesStore()
 
@@ -54,13 +60,16 @@ useSeoMeta({
 })
 
 const learningStore = useWorldLearningStore()
-const { pending: pendingLearningBootstrap } = useAsyncData('world-learning-home-bootstrap', async () => {
-  await Promise.all([
-    learningStore.fetchCourses(),
-    learningStore.fetchAnalytics(),
-  ])
-  return true
-})
+const { pending: pendingLearningBootstrap } = useAsyncData(
+  'world-learning-home-bootstrap',
+  async () => {
+    await Promise.all([
+      learningStore.fetchCourses(),
+      learningStore.fetchAnalytics(),
+    ])
+    return true
+  },
+)
 
 const firstCourseId = computed(() => learningStore.items[0]?.id ?? '')
 watch(
@@ -83,9 +92,18 @@ const certifiedCount = computed(
 )
 
 const quickAccessLinks = computed(() => [
-  { label: t('world.learning.documentation.navigation.courses'), to: '/world/learning/courses' },
-  { label: t('world.learning.documentation.navigation.students'), to: '/world/learning/students' },
-  { label: t('world.learning.documentation.navigation.exams'), to: '/world/learning/exams' },
+  {
+    label: t('world.learning.documentation.navigation.courses'),
+    to: '/world/learning/courses',
+  },
+  {
+    label: t('world.learning.documentation.navigation.students'),
+    to: '/world/learning/students',
+  },
+  {
+    label: t('world.learning.documentation.navigation.exams'),
+    to: '/world/learning/exams',
+  },
 ])
 
 const documentationSections = computed(() => [
@@ -99,13 +117,17 @@ const documentationSections = computed(() => [
     key: 'students',
     to: '/world/learning/students',
     title: t('world.learning.documentation.sections.students.title'),
-    description: t('world.learning.documentation.sections.students.description'),
+    description: t(
+      'world.learning.documentation.sections.students.description',
+    ),
   },
   {
     key: 'analytics',
     to: '/world/learning',
     title: t('world.learning.documentation.sections.analytics.title'),
-    description: t('world.learning.documentation.sections.analytics.description'),
+    description: t(
+      'world.learning.documentation.sections.analytics.description',
+    ),
   },
 ])
 
@@ -118,7 +140,10 @@ const referenceNavItems = computed(() =>
 
 const referenceCards = computed(() =>
   referenceNavItems.value.map((item) => {
-    const config = LEARNING_REFERENCE_CONFIG[item.to as keyof typeof LEARNING_REFERENCE_CONFIG]
+    const config =
+      LEARNING_REFERENCE_CONFIG[
+        item.to as keyof typeof LEARNING_REFERENCE_CONFIG
+      ]
     const status = referenceStatuses.value[item.to] ?? 'loading'
     const fallback = t(config.fallbackI18nKey)
 
@@ -127,23 +152,26 @@ const referenceCards = computed(() =>
       status,
       description:
         status === 'success'
-          ? referenceDescriptions.value[item.to] ?? fallback
+          ? (referenceDescriptions.value[item.to] ?? fallback)
           : fallback,
     }
   }),
 )
 
-const isReferencesLoading = computed(() =>
-  referenceNavItems.value.length > 0 &&
-  referenceNavItems.value.some((item) => (referenceStatuses.value[item.to] ?? 'loading') === 'loading'),
+const isReferencesLoading = computed(
+  () =>
+    referenceNavItems.value.length > 0 &&
+    referenceNavItems.value.some(
+      (item) => (referenceStatuses.value[item.to] ?? 'loading') === 'loading',
+    ),
 )
 
 const isPageLoading = computed(
   () =>
-    isPageSkeletonVisible.value
-    || pendingLearningBootstrap.value
-    || learningStore.pending
-    || isReferencesLoading.value,
+    isPageSkeletonVisible.value ||
+    pendingLearningBootstrap.value ||
+    learningStore.pending ||
+    isReferencesLoading.value,
 )
 
 async function loadReferences() {
@@ -151,14 +179,18 @@ async function loadReferences() {
 
   await Promise.all(
     entries.map(async (item) => {
-      const config = LEARNING_REFERENCE_CONFIG[item.to as keyof typeof LEARNING_REFERENCE_CONFIG]
+      const config =
+        LEARNING_REFERENCE_CONFIG[
+          item.to as keyof typeof LEARNING_REFERENCE_CONFIG
+        ]
       referenceStatuses.value[item.to] = 'loading'
 
       try {
-        const page = await publicPagesStore.fetchPage<LearningPublicReferencePage>(
-          config.publicPageSlug,
-          locale.value,
-        )
+        const page =
+          await publicPagesStore.fetchPage<LearningPublicReferencePage>(
+            config.publicPageSlug,
+            locale.value,
+          )
 
         const description =
           typeof page.description === 'string' ? page.description.trim() : ''
@@ -177,9 +209,13 @@ async function loadReferences() {
   )
 }
 
-watch([locale, referenceNavItems], () => {
-  loadReferences()
-}, { immediate: true })
+watch(
+  [locale, referenceNavItems],
+  () => {
+    loadReferences()
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
@@ -192,169 +228,217 @@ watch([locale, referenceNavItems], () => {
 
     <template v-else>
       <WorldModuleDrawers
-      :module-title="t('world.learning.label')"
-      module-path="/world/learning"
-      module-icon="mdi-school-outline"
-      :module-description="t('world.learning.moduleDescription')"
-      :nav-items="learningNavItems"
-      :action-label="'Create School'"
-      activate-right-drawer
-      @action="navigateTo('/platform/school/new')"
-    >
-      <template #right>
-        <div class="d-flex flex-column ga-4">
-          <v-card rounded="xl" variant="tonal" color="primary">
-            <div class="pa-4 d-flex ga-3">
-              <v-avatar size="56" rounded="xl" color="primary" variant="tonal">
-                <v-icon icon="mdi-school-outline" size="28" />
-              </v-avatar>
-              <div class="flex-grow-1">
-                <div class="text-subtitle-2 font-weight-bold mb-1">
-                  {{ t('world.learning.label') }}
-                </div>
-                <div class="text-body-2 text-medium-emphasis">
-                  {{ t('world.learning.moduleDescription') }}
-                </div>
-              </div>
-            </div>
-          </v-card>
-
-          <v-card variant="tonal" color="primary" class="pa-4">
-            <div class="text-subtitle-2 font-weight-bold mb-2">
-              {{ t('world.learning.documentation.labels.platformSummaryTitle') }}
-            </div>
-            <div class="d-flex flex-wrap ga-2">
-              <v-chip color="primary" variant="tonal" label>
-                {{ analytics?.totalLearners ?? 0 }} {{ t('world.learning.kpis.activeLearners') }}
-              </v-chip>
-              <v-chip color="info" variant="tonal" label>
-                {{ analytics?.completionRate ?? 0 }}% {{ t('world.learning.kpis.courseCompletion') }}
-              </v-chip>
-              <v-chip color="success" variant="tonal" label>
-                {{ certifiedCount }} {{ t('world.learning.kpis.certificatesIssued') }}
-              </v-chip>
-            </div>
-          </v-card>
-
-          <v-card variant="tonal" color="primary" class="pa-4">
-            <div class="text-subtitle-2 font-weight-bold mb-2">
-              {{ t('world.learning.documentation.labels.quickActionsTitle') }}
-            </div>
-            <div class="d-flex flex-wrap ga-2">
-              <v-chip
-                v-for="link in quickAccessLinks"
-                :key="link.to"
-                color="primary"
-                variant="tonal"
-                label
-                :to="link.to"
-              >
-                {{ link.label }}
-              </v-chip>
-            </div>
-          </v-card>
-        </div>
-      </template>
-    </WorldModuleDrawers>
-
-    <v-container fluid>
-      <v-row>
-        <v-col cols="12">
-          <v-card rounded="xl" class="pa-6 postcard-gradient-card learning-doc-hero">
-            <div class="d-flex align-center justify-space-between ga-3 flex-wrap">
-              <div>
-                <h1 class="text-h5 font-weight-bold mb-2">
-                  {{ t('world.learning.documentation.heroTitle') }}
-                </h1>
-                <p class="text-body-1 mb-0">
-                  {{ t('world.learning.documentation.heroDescription') }}
-                </p>
-              </div>
-              <v-btn
-                color="primary"
-                :variant="loggedIn ? 'elevated' : 'tonal'"
-                :prepend-icon="loggedIn ? 'mdi-rocket-launch-outline' : 'mdi-login'"
-                @click="loggedIn ? navigateTo('/platform/school/new') : (loginDialogOpen = true)"
-              >
-                {{ loggedIn ? 'Create School Application' : t('appbar.login') }}
-              </v-btn>
-            </div>
-          </v-card>
-        </v-col>
-
-
-        <v-col cols="12">
-          <v-card rounded="xl" class="pa-5 postcard-gradient-card learning-doc-card">
-            <v-row density="comfortable">
-              <v-col
-                v-for="section in documentationSections"
-                :key="section.key"
-                cols="12"
-                md="4"
-              >
-                <v-card rounded="xl" variant="outlined" class="pa-4 h-100">
-                  <h2 class="text-subtitle-1 font-weight-bold mb-2">{{ section.title }}</h2>
-                  <p class="text-body-2 text-medium-emphasis mb-4">{{ section.description }}</p>
-                  <v-btn color="primary" variant="tonal" append-icon="mdi-arrow-right" :to="section.to">
-                    {{ t('world.learning.documentation.cta.openSection', { section: section.title }) }}
-                  </v-btn>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-
-        <v-col cols="12">
-          <v-card rounded="xl" class="pa-5 postcard-gradient-card learning-doc-card">
-            <div class="d-flex align-center ga-2 mb-3">
-              <v-icon icon="mdi-book-open-page-variant-outline" color="primary" />
-              <h2 class="text-h6 mb-0">{{ t('world.learning.references.title') }}</h2>
-            </div>
-            <p class="text-body-2 text-medium-emphasis mb-4">
-              {{ t('world.learning.references.subtitle') }}
-            </p>
-
-            <v-row density="comfortable">
-              <v-col
-                v-for="reference in referenceCards"
-                :key="reference.to"
-                cols="12"
-                md="6"
-              >
-                <v-card rounded="xl" variant="outlined" class="pa-4 h-100">
-                  <div class="d-flex align-center ga-2 mb-2">
-                    <v-icon :icon="reference.icon" color="primary" />
-                    <h3 class="text-subtitle-1 mb-0">{{ reference.title }}</h3>
-                    <v-spacer />
-                    <v-progress-circular
-                      v-if="reference.status === 'loading'"
-                      size="16"
-                      width="2"
-                      indeterminate
-                      color="primary"
-                    />
+        :module-title="t('world.learning.label')"
+        module-path="/world/learning"
+        module-icon="mdi-school-outline"
+        :module-description="t('world.learning.moduleDescription')"
+        :nav-items="learningNavItems"
+        :action-label="'Create School'"
+        activate-right-drawer
+        @action="navigateTo('/platform/school/new')"
+      >
+        <template #right>
+          <div class="d-flex flex-column ga-4">
+            <v-card rounded="xl" variant="tonal" color="primary">
+              <div class="pa-4 d-flex ga-3">
+                <v-avatar
+                  size="56"
+                  rounded="xl"
+                  color="primary"
+                  variant="tonal"
+                >
+                  <v-icon icon="mdi-school-outline" size="28" />
+                </v-avatar>
+                <div class="flex-grow-1">
+                  <div class="text-subtitle-2 font-weight-bold mb-1">
+                    {{ t('world.learning.label') }}
                   </div>
+                  <div class="text-body-2 text-medium-emphasis">
+                    {{ t('world.learning.moduleDescription') }}
+                  </div>
+                </div>
+              </div>
+            </v-card>
 
-                  <p class="text-body-2 text-medium-emphasis mb-4">
-                    {{ reference.description }}
+            <v-card variant="tonal" color="primary" class="pa-4">
+              <div class="text-subtitle-2 font-weight-bold mb-2">
+                {{
+                  t('world.learning.documentation.labels.platformSummaryTitle')
+                }}
+              </div>
+              <div class="d-flex flex-wrap ga-2">
+                <v-chip color="primary" variant="tonal" label>
+                  {{ analytics?.totalLearners ?? 0 }}
+                  {{ t('world.learning.kpis.activeLearners') }}
+                </v-chip>
+                <v-chip color="info" variant="tonal" label>
+                  {{ analytics?.completionRate ?? 0 }}%
+                  {{ t('world.learning.kpis.courseCompletion') }}
+                </v-chip>
+                <v-chip color="success" variant="tonal" label>
+                  {{ certifiedCount }}
+                  {{ t('world.learning.kpis.certificatesIssued') }}
+                </v-chip>
+              </div>
+            </v-card>
+
+            <v-card variant="tonal" color="primary" class="pa-4">
+              <div class="text-subtitle-2 font-weight-bold mb-2">
+                {{ t('world.learning.documentation.labels.quickActionsTitle') }}
+              </div>
+              <div class="d-flex flex-wrap ga-2">
+                <v-chip
+                  v-for="link in quickAccessLinks"
+                  :key="link.to"
+                  color="primary"
+                  variant="tonal"
+                  label
+                  :to="link.to"
+                >
+                  {{ link.label }}
+                </v-chip>
+              </div>
+            </v-card>
+          </div>
+        </template>
+      </WorldModuleDrawers>
+
+      <v-container fluid>
+        <v-row>
+          <v-col cols="12">
+            <v-card
+              rounded="xl"
+              class="pa-6 postcard-gradient-card learning-doc-hero"
+            >
+              <div
+                class="d-flex align-center justify-space-between ga-3 flex-wrap"
+              >
+                <div>
+                  <h1 class="text-h5 font-weight-bold mb-2">
+                    {{ t('world.learning.documentation.heroTitle') }}
+                  </h1>
+                  <p class="text-body-1 mb-0">
+                    {{ t('world.learning.documentation.heroDescription') }}
                   </p>
+                </div>
+                <v-btn
+                  color="primary"
+                  :variant="loggedIn ? 'elevated' : 'tonal'"
+                  :prepend-icon="
+                    loggedIn ? 'mdi-rocket-launch-outline' : 'mdi-login'
+                  "
+                  @click="
+                    loggedIn
+                      ? navigateTo('/platform/school/new')
+                      : (loginDialogOpen = true)
+                  "
+                >
+                  {{
+                    loggedIn ? 'Create School Application' : t('appbar.login')
+                  }}
+                </v-btn>
+              </div>
+            </v-card>
+          </v-col>
 
-                  <v-btn
-                    color="primary"
-                    variant="tonal"
-                    append-icon="mdi-arrow-right"
-                    :to="reference.to"
-                    :disabled="reference.status === 'unavailable'"
-                  >
-                    {{ t('world.learning.references.cta') }}
-                  </v-btn>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
+          <v-col cols="12">
+            <v-card
+              rounded="xl"
+              class="pa-5 postcard-gradient-card learning-doc-card"
+            >
+              <v-row density="comfortable">
+                <v-col
+                  v-for="section in documentationSections"
+                  :key="section.key"
+                  cols="12"
+                  md="4"
+                >
+                  <v-card rounded="xl" variant="outlined" class="pa-4 h-100">
+                    <h2 class="text-subtitle-1 font-weight-bold mb-2">
+                      {{ section.title }}
+                    </h2>
+                    <p class="text-body-2 text-medium-emphasis mb-4">
+                      {{ section.description }}
+                    </p>
+                    <v-btn
+                      color="primary"
+                      variant="tonal"
+                      append-icon="mdi-arrow-right"
+                      :to="section.to"
+                    >
+                      {{
+                        t('world.learning.documentation.cta.openSection', {
+                          section: section.title,
+                        })
+                      }}
+                    </v-btn>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-col>
+
+          <v-col cols="12">
+            <v-card
+              rounded="xl"
+              class="pa-5 postcard-gradient-card learning-doc-card"
+            >
+              <div class="d-flex align-center ga-2 mb-3">
+                <v-icon
+                  icon="mdi-book-open-page-variant-outline"
+                  color="primary"
+                />
+                <h2 class="text-h6 mb-0">
+                  {{ t('world.learning.references.title') }}
+                </h2>
+              </div>
+              <p class="text-body-2 text-medium-emphasis mb-4">
+                {{ t('world.learning.references.subtitle') }}
+              </p>
+
+              <v-row density="comfortable">
+                <v-col
+                  v-for="reference in referenceCards"
+                  :key="reference.to"
+                  cols="12"
+                  md="6"
+                >
+                  <v-card rounded="xl" variant="outlined" class="pa-4 h-100">
+                    <div class="d-flex align-center ga-2 mb-2">
+                      <v-icon :icon="reference.icon" color="primary" />
+                      <h3 class="text-subtitle-1 mb-0">
+                        {{ reference.title }}
+                      </h3>
+                      <v-spacer />
+                      <v-progress-circular
+                        v-if="reference.status === 'loading'"
+                        size="16"
+                        width="2"
+                        indeterminate
+                        color="primary"
+                      />
+                    </div>
+
+                    <p class="text-body-2 text-medium-emphasis mb-4">
+                      {{ reference.description }}
+                    </p>
+
+                    <v-btn
+                      color="primary"
+                      variant="tonal"
+                      append-icon="mdi-arrow-right"
+                      :to="reference.to"
+                      :disabled="reference.status === 'unavailable'"
+                    >
+                      {{ t('world.learning.references.cta') }}
+                    </v-btn>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
     </template>
   </div>
 </template>
@@ -373,12 +457,18 @@ watch([locale, referenceNavItems], () => {
   top: -140px;
   right: -110px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(var(--v-theme-primary), 0.2) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(var(--v-theme-primary), 0.2) 0%,
+    transparent 70%
+  );
   animation: learningGlow 8s ease-in-out infinite;
 }
 
 .learning-doc-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   animation: learningCardIn 0.45s ease both;
 }
 

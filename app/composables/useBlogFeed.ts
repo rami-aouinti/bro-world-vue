@@ -356,7 +356,7 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
     const clearFn =
       typeof clearNuxtData === 'function'
         ? clearNuxtData
-        : ((_: string) => undefined)
+        : (_: string) => undefined
 
     for (const key of blogCacheKeys) {
       clearFn(key)
@@ -492,9 +492,14 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
     const createdId = pickId(source.id)
     const createdSlug = pickNullableString(source.slug)
     const responseFilePath =
-      pickNullableString(source.filePath) ?? pickNullableString(payload.filePath)
-    const responseContent = pickString(payload.content, pickString(body.content))
-    const responseTitle = pickNullableString(payload.title) ?? pickNullableString(body.title)
+      pickNullableString(source.filePath) ??
+      pickNullableString(payload.filePath)
+    const responseContent = pickString(
+      payload.content,
+      pickString(body.content),
+    )
+    const responseTitle =
+      pickNullableString(payload.title) ?? pickNullableString(body.title)
 
     if (createdId) {
       const draft = normalizePost({
@@ -592,7 +597,10 @@ export function useBlogFeed(options: UseBlogFeedOptions = {}) {
       return
     }
 
-    const parentLocation = findCommentInTree(postEntry.comments, parentCommentId)
+    const parentLocation = findCommentInTree(
+      postEntry.comments,
+      parentCommentId,
+    )
 
     if (!parentLocation) {
       postEntry.comments = [commentEntry, ...postEntry.comments]

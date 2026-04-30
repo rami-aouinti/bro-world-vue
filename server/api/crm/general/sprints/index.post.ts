@@ -1,4 +1,7 @@
-import type { CrmSprintCreatePayload, CrmIdResponse } from '~~/server/types/api/crm-general'
+import type {
+  CrmSprintCreatePayload,
+  CrmIdResponse,
+} from '~~/server/types/api/crm-general'
 import { mutateCrmGeneral } from '~~/server/utils/crmGeneralPrivateApi'
 
 export default defineEventHandler(async (event): Promise<CrmIdResponse> => {

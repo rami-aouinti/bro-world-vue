@@ -23,23 +23,48 @@ const profileNavItems: ProfileNavItem[] = [
     to: '/profile/friends',
     icon: 'mdi-account-group-outline',
   },
-  { labelKey: 'pages.profileOverview.libraryTitle', to: '/profile/library', icon: 'mdi-bookshelf' },
-  { labelKey: 'profile.posts.title', to: '/profile/posts', icon: 'mdi-post-outline' },
-  { labelKey: 'pages.profileOverview.applicationsTitle', to: '/profile/applications', icon: 'mdi-apps' },
+  {
+    labelKey: 'pages.profileOverview.libraryTitle',
+    to: '/profile/library',
+    icon: 'mdi-bookshelf',
+  },
+  {
+    labelKey: 'profile.posts.title',
+    to: '/profile/posts',
+    icon: 'mdi-post-outline',
+  },
+  {
+    labelKey: 'pages.profileOverview.applicationsTitle',
+    to: '/profile/applications',
+    icon: 'mdi-apps',
+  },
   {
     labelKey: 'pages.profileOverview.gamesTitle',
     to: '/profile/games',
     icon: 'mdi-controller-classic-outline',
   },
-  { labelKey: 'appbar.calendar', to: '/calendar', icon: 'mdi-calendar-month-outline' },
+  {
+    labelKey: 'appbar.calendar',
+    to: '/calendar',
+    icon: 'mdi-calendar-month-outline',
+  },
   { labelKey: 'appbar.inbox', to: '/inbox', icon: 'mdi-inbox-outline' },
   {
     labelKey: 'appbar.notifications',
     to: '/notification',
     icon: 'mdi-bell-outline',
   },
-  { labelKey: 'appbar.admin', to: '/admin', icon: 'mdi-shield-crown-outline', rootOnly: true },
-  { labelKey: 'appbar.settings', to: '/profile/settings', icon: 'mdi-cog-outline' },
+  {
+    labelKey: 'appbar.admin',
+    to: '/admin',
+    icon: 'mdi-shield-crown-outline',
+    rootOnly: true,
+  },
+  {
+    labelKey: 'appbar.settings',
+    to: '/profile/settings',
+    icon: 'mdi-cog-outline',
+  },
 ]
 
 const visibleNavItems = computed(() =>
@@ -48,7 +73,6 @@ const visibleNavItems = computed(() =>
 function isNavItemActive(item: ProfileNavItem) {
   return route.path === item.to || route.path.startsWith(`${item.to}/`)
 }
-
 </script>
 
 <template>

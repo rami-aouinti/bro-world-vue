@@ -1,18 +1,18 @@
-export type NonogramDifficulty = "small" | "medium" | "large";
+export type NonogramDifficulty = 'small' | 'medium' | 'large'
 
 export interface NonogramPuzzle {
-  id: string;
-  name: string;
-  difficulty: NonogramDifficulty;
-  grid: number[][];
+  id: string
+  name: string
+  difficulty: NonogramDifficulty
+  grid: number[][]
 }
 
 export const NONOGRAM_PUZZLES: Record<NonogramDifficulty, NonogramPuzzle[]> = {
   small: [
     {
-      id: "petit-coeur",
-      name: "Cœur",
-      difficulty: "small",
+      id: 'petit-coeur',
+      name: 'Cœur',
+      difficulty: 'small',
       grid: [
         [0, 1, 0, 1, 0],
         [1, 1, 1, 1, 1],
@@ -22,9 +22,9 @@ export const NONOGRAM_PUZZLES: Record<NonogramDifficulty, NonogramPuzzle[]> = {
       ],
     },
     {
-      id: "petit-flocon",
-      name: "Flocon",
-      difficulty: "small",
+      id: 'petit-flocon',
+      name: 'Flocon',
+      difficulty: 'small',
       grid: [
         [0, 0, 1, 0, 0],
         [0, 1, 1, 1, 0],
@@ -36,9 +36,9 @@ export const NONOGRAM_PUZZLES: Record<NonogramDifficulty, NonogramPuzzle[]> = {
   ],
   medium: [
     {
-      id: "moyen-fusee",
-      name: "Fusée",
-      difficulty: "medium",
+      id: 'moyen-fusee',
+      name: 'Fusée',
+      difficulty: 'medium',
       grid: [
         [0, 0, 0, 1, 1, 0, 0, 0],
         [0, 0, 1, 1, 1, 1, 0, 0],
@@ -51,9 +51,9 @@ export const NONOGRAM_PUZZLES: Record<NonogramDifficulty, NonogramPuzzle[]> = {
       ],
     },
     {
-      id: "moyen-chat",
-      name: "Tête de chat",
-      difficulty: "medium",
+      id: 'moyen-chat',
+      name: 'Tête de chat',
+      difficulty: 'medium',
       grid: [
         [1, 0, 0, 0, 0, 0, 0, 1],
         [1, 1, 0, 0, 0, 0, 1, 1],
@@ -68,9 +68,9 @@ export const NONOGRAM_PUZZLES: Record<NonogramDifficulty, NonogramPuzzle[]> = {
   ],
   large: [
     {
-      id: "grand-etoile",
-      name: "Grande étoile",
-      difficulty: "large",
+      id: 'grand-etoile',
+      name: 'Grande étoile',
+      difficulty: 'large',
       grid: [
         [0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
         [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
@@ -85,9 +85,9 @@ export const NONOGRAM_PUZZLES: Record<NonogramDifficulty, NonogramPuzzle[]> = {
       ],
     },
     {
-      id: "grand-maison",
-      name: "Maison",
-      difficulty: "large",
+      id: 'grand-maison',
+      name: 'Maison',
+      difficulty: 'large',
       grid: [
         [0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
         [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
@@ -102,4 +102,4 @@ export const NONOGRAM_PUZZLES: Record<NonogramDifficulty, NonogramPuzzle[]> = {
       ],
     },
   ],
-};
+}

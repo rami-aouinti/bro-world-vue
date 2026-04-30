@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import type { CrmProjectItem, CrmSprintItem, CrmTaskItem, CrmTaskRequestItem } from '~~/server/types/api/crm-general'
+import type {
+  CrmProjectItem,
+  CrmSprintItem,
+  CrmTaskItem,
+  CrmTaskRequestItem,
+} from '~~/server/types/api/crm-general'
 import { useCrmKanbanStore } from '~/stores/crmKanban'
 
 definePageMeta({ layout: 'crm', title: 'world.crm.label' })
@@ -28,7 +33,9 @@ crmKanbanStore.hydrate()
 function truncateLabel(value: string | null | undefined, max = 30) {
   const normalized = String(value ?? '').trim()
   if (!normalized) return '—'
-  return normalized.length > max ? `${normalized.slice(0, max - 1)}…` : normalized
+  return normalized.length > max
+    ? `${normalized.slice(0, max - 1)}…`
+    : normalized
 }
 
 const sprintOptions = computed(() =>
@@ -64,7 +71,9 @@ async function onDrop(targetStatus: string) {
   if (!isRootAdmin.value) return
   if (!draggingCardId.value) return
 
-  const current = crmKanbanStore.cards.find((card) => card.id === draggingCardId.value)
+  const current = crmKanbanStore.cards.find(
+    (card) => card.id === draggingCardId.value,
+  )
   if (!current || current.status === targetStatus) {
     draggingCardId.value = null
     return
@@ -82,7 +91,8 @@ async function openTaskRequest(taskRequestId: string) {
   taskRequestModalOpen.value = true
 
   try {
-    selectedTaskRequest.value = await crmKanbanStore.fetchTaskRequest(taskRequestId)
+    selectedTaskRequest.value =
+      await crmKanbanStore.fetchTaskRequest(taskRequestId)
   } finally {
     modalLoading.value = false
   }
@@ -152,230 +162,286 @@ function profileLink(username: string | null) {
     />
     <v-container fluid>
       <v-card rounded="xl" class="pa-4 mb-4 postcard-gradient-card">
-      <v-row align="center">
-        <v-col cols="12" md="5" lg="4">
-          <AppSelect
-            :model-value="crmKanbanStore.selectedSprintId"
-            :items="sprintOptions"
-            item-title="title"
-            item-value="value"
-            clearable
-            :label="t('world.crm.kanban.selectSprint')"
-            :loading="crmKanbanStore.pending"
-            @update:model-value="onSprintChange"
-          />
-        </v-col>
-        <v-col cols="12" md="7" lg="8">
-          <v-alert
-            type="info"
-            density="comfortable"
-            variant="tonal"
-            class="mb-0"
-          >
-            {{
-              crmKanbanStore.currentSprintMeta?.name
-                ? t('world.crm.kanban.currentSprint', {
-                    name: crmKanbanStore.currentSprintMeta.name,
-                    start: formatDate(crmKanbanStore.currentSprintMeta.startDate),
-                    end: formatDate(crmKanbanStore.currentSprintMeta.endDate),
-                  })
-                : t('world.crm.kanban.noSprint')
-            }}
-          </v-alert>
-        </v-col>
-      </v-row>
-    </v-card>
+        <v-row align="center">
+          <v-col cols="12" md="5" lg="4">
+            <AppSelect
+              :model-value="crmKanbanStore.selectedSprintId"
+              :items="sprintOptions"
+              item-title="title"
+              item-value="value"
+              clearable
+              :label="t('world.crm.kanban.selectSprint')"
+              :loading="crmKanbanStore.pending"
+              @update:model-value="onSprintChange"
+            />
+          </v-col>
+          <v-col cols="12" md="7" lg="8">
+            <v-alert
+              type="info"
+              density="comfortable"
+              variant="tonal"
+              class="mb-0"
+            >
+              {{
+                crmKanbanStore.currentSprintMeta?.name
+                  ? t('world.crm.kanban.currentSprint', {
+                      name: crmKanbanStore.currentSprintMeta.name,
+                      start: formatDate(
+                        crmKanbanStore.currentSprintMeta.startDate,
+                      ),
+                      end: formatDate(crmKanbanStore.currentSprintMeta.endDate),
+                    })
+                  : t('world.crm.kanban.noSprint')
+              }}
+            </v-alert>
+          </v-col>
+        </v-row>
+      </v-card>
 
-    <v-alert
-      v-if="crmKanbanStore.error"
-      type="error"
-      variant="tonal"
-      class="mb-4"
-    >
-      {{ crmKanbanStore.error }}
-    </v-alert>
-
-    <v-row class="kanban-row" no-gutters>
-      <v-col
-        v-for="status in crmKanbanStore.statuses"
-        :key="status"
-        cols="12"
-        md="3"
-        class="pa-2"
+      <v-alert
+        v-if="crmKanbanStore.error"
+        type="error"
+        variant="tonal"
+        class="mb-4"
       >
-        <v-card
-          rounded="xl"
-          class="pa-3 h-100 postcard-gradient-card"
-          @dragover.prevent
-          @drop.prevent="onDrop(status)"
+        {{ crmKanbanStore.error }}
+      </v-alert>
+
+      <v-row class="kanban-row" no-gutters>
+        <v-col
+          v-for="status in crmKanbanStore.statuses"
+          :key="status"
+          cols="12"
+          md="3"
+          class="pa-2"
         >
-          <div class="d-flex align-center justify-space-between mb-3">
-            <h3 class="text-subtitle-1 text-capitalize mb-0">{{ statusLabel(status) }}</h3>
-            <v-chip size="small" color="primary" variant="tonal">
-              {{ crmKanbanStore.cardsByStatus[status]?.length ?? 0 }}
-            </v-chip>
-          </div>
-
-          <div
-            v-if="!(crmKanbanStore.cardsByStatus[status]?.length)"
-            class="text-caption text-medium-emphasis"
-          >
-            {{ t('world.crm.kanban.emptyStatus') }}
-          </div>
-
           <v-card
-            v-for="card in crmKanbanStore.cardsByStatus[status]"
-            :key="card.id"
-            rounded="lg"
-            class="pa-3 mb-2 cursor-pointer postcard-gradient-card"
-            variant="text"
-            :draggable="isRootAdmin"
-            @dragstart="onDragStart(card.id)"
-            @click="openTaskRequest(card.id)"
+            rounded="xl"
+            class="pa-3 h-100 postcard-gradient-card"
+            @dragover.prevent
+            @drop.prevent="onDrop(status)"
           >
-            <div class="d-flex align-start justify-space-between ga-2 mb-2">
-              <p class="font-weight-medium mb-0">{{ card.title }}</p>
-            </div>
-
-            <div class="d-flex flex-wrap ga-2 mb-2">
-              <v-chip
-                v-if="card.parentTaskId"
-                size="small"
-                color="primary"
-                variant="outlined"
-                @click.stop="openTask(card.parentTaskId)"
-              >
-                {{ card.parentTaskTitle ?? t('world.crm.kanban.task') }}
+            <div class="d-flex align-center justify-space-between mb-3">
+              <h3 class="text-subtitle-1 text-capitalize mb-0">
+                {{ statusLabel(status) }}
+              </h3>
+              <v-chip size="small" color="primary" variant="tonal">
+                {{ crmKanbanStore.cardsByStatus[status]?.length ?? 0 }}
               </v-chip>
             </div>
-            <div class="d-flex flex-wrap ga-2">
-              <NuxtLink
-                v-for="assignee in card.assignees"
-                :key="assignee.id"
-                :to="profileLink(assignee.username) ?? '#'"
-                class="text-decoration-none"
-                @click.stop
-              >
-                <v-avatar size="28">
-                  <v-img
-                    :src="assignee.photo || '/img/avatar_default.svg'"
-                    :alt="assignee.username ?? assignee.id"
-                    cover
-                  />
-                </v-avatar>
-              </NuxtLink>
+
+            <div
+              v-if="!crmKanbanStore.cardsByStatus[status]?.length"
+              class="text-caption text-medium-emphasis"
+            >
+              {{ t('world.crm.kanban.emptyStatus') }}
             </div>
+
+            <v-card
+              v-for="card in crmKanbanStore.cardsByStatus[status]"
+              :key="card.id"
+              rounded="lg"
+              class="pa-3 mb-2 cursor-pointer postcard-gradient-card"
+              variant="text"
+              :draggable="isRootAdmin"
+              @dragstart="onDragStart(card.id)"
+              @click="openTaskRequest(card.id)"
+            >
+              <div class="d-flex align-start justify-space-between ga-2 mb-2">
+                <p class="font-weight-medium mb-0">{{ card.title }}</p>
+              </div>
+
+              <div class="d-flex flex-wrap ga-2 mb-2">
+                <v-chip
+                  v-if="card.parentTaskId"
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                  @click.stop="openTask(card.parentTaskId)"
+                >
+                  {{ card.parentTaskTitle ?? t('world.crm.kanban.task') }}
+                </v-chip>
+              </div>
+              <div class="d-flex flex-wrap ga-2">
+                <NuxtLink
+                  v-for="assignee in card.assignees"
+                  :key="assignee.id"
+                  :to="profileLink(assignee.username) ?? '#'"
+                  class="text-decoration-none"
+                  @click.stop
+                >
+                  <v-avatar size="28">
+                    <v-img
+                      :src="assignee.photo || '/img/avatar_default.svg'"
+                      :alt="assignee.username ?? assignee.id"
+                      cover
+                    />
+                  </v-avatar>
+                </NuxtLink>
+              </div>
+            </v-card>
           </v-card>
-        </v-card>
-      </v-col>
-    </v-row>
+        </v-col>
+      </v-row>
 
-    <AppModal
-      v-model="taskRequestModalOpen"
-      title="Subtask request detail"
-      :max-width="760"
-    >
-      <v-progress-linear v-if="modalLoading" indeterminate class="mb-3" />
-      <div v-else-if="selectedTaskRequest">
-        <p><strong>ID:</strong> {{ selectedTaskRequest.id }}</p>
-        <p><strong>Title:</strong> {{ selectedTaskRequest.title }}</p>
-        <p><strong>Description:</strong> {{ selectedTaskRequest.description || '—' }}</p>
-        <p><strong>Status:</strong> {{ selectedTaskRequest.status }}</p>
-        <p><strong>Requested at:</strong> {{ selectedTaskRequest.requestedAt }}</p>
-        <p><strong>Resolved at:</strong> {{ selectedTaskRequest.resolvedAt || '—' }}</p>
-        <p><strong>Repository ID:</strong> {{ selectedTaskRequest.repositoryId }}</p>
-        <div class="d-flex align-center ga-2">
-          <strong>Task:</strong>
-          <v-chip size="small" color="primary" variant="outlined" @click="openTaskFromRequest(selectedTaskRequest.taskId)">
-            {{ selectedTaskRequest.taskId }}
-          </v-chip>
+      <AppModal
+        v-model="taskRequestModalOpen"
+        title="Subtask request detail"
+        :max-width="760"
+      >
+        <v-progress-linear v-if="modalLoading" indeterminate class="mb-3" />
+        <div v-else-if="selectedTaskRequest">
+          <p><strong>ID:</strong> {{ selectedTaskRequest.id }}</p>
+          <p><strong>Title:</strong> {{ selectedTaskRequest.title }}</p>
+          <p>
+            <strong>Description:</strong>
+            {{ selectedTaskRequest.description || '—' }}
+          </p>
+          <p><strong>Status:</strong> {{ selectedTaskRequest.status }}</p>
+          <p>
+            <strong>Requested at:</strong> {{ selectedTaskRequest.requestedAt }}
+          </p>
+          <p>
+            <strong>Resolved at:</strong>
+            {{ selectedTaskRequest.resolvedAt || '—' }}
+          </p>
+          <p>
+            <strong>Repository ID:</strong>
+            {{ selectedTaskRequest.repositoryId }}
+          </p>
+          <div class="d-flex align-center ga-2">
+            <strong>Task:</strong>
+            <v-chip
+              size="small"
+              color="primary"
+              variant="outlined"
+              @click="openTaskFromRequest(selectedTaskRequest.taskId)"
+            >
+              {{ selectedTaskRequest.taskId }}
+            </v-chip>
+          </div>
         </div>
-      </div>
-    </AppModal>
+      </AppModal>
 
-    <AppModal
-      v-model="projectModalOpen"
-      :title="t('world.crm.kanban.projectDetail')"
-      :max-width="700"
-    >
-      <v-progress-linear v-if="modalLoading" indeterminate class="mb-3" />
-      <div v-else-if="selectedProject">
-        <p><strong>ID:</strong> {{ selectedProject.id }}</p>
-        <p><strong>{{ t('world.crm.projects.form.name') }}:</strong> {{ selectedProject.name }}</p>
-        <p><strong>{{ t('world.crm.projects.form.code') }}:</strong> {{ selectedProject.code || '—' }}</p>
-        <p><strong>{{ t('world.crm.projects.form.status') }}:</strong> {{ selectedProject.status }}</p>
-        <p><strong>{{ t('world.crm.projects.form.description') }}:</strong> {{ selectedProject.description || '—' }}</p>
-      </div>
-    </AppModal>
-
-    <AppModal
-      v-model="sprintModalOpen"
-      title="Sprint detail"
-      :max-width="700"
-    >
-      <v-progress-linear v-if="modalLoading" indeterminate class="mb-3" />
-      <div v-else-if="selectedSprint">
-        <p><strong>ID:</strong> {{ selectedSprint.id }}</p>
-        <p><strong>Name:</strong> {{ selectedSprint.name }}</p>
-        <p><strong>Status:</strong> {{ selectedSprint.status }}</p>
-        <p><strong>Goal:</strong> {{ selectedSprint.goal || '—' }}</p>
-        <p><strong>Start:</strong> {{ selectedSprint.startDate || '—' }}</p>
-        <p><strong>End:</strong> {{ selectedSprint.endDate || '—' }}</p>
-        <p><strong>Project ID:</strong> {{ selectedSprint.projectId }}</p>
-      </div>
-    </AppModal>
-
-    <AppModal
-      v-model="taskModalOpen"
-      :title="t('world.crm.kanban.taskDetail')"
-      :max-width="700"
-    >
-      <v-progress-linear v-if="modalLoading" indeterminate class="mb-3" />
-      <div v-else-if="selectedTask">
-        <p><strong>ID:</strong> {{ selectedTask.id }}</p>
-        <p><strong>{{ t('world.crm.tasks.form.title') }}:</strong> {{ selectedTask.title || '—' }}</p>
-        <p><strong>{{ t('world.crm.tasks.form.status') }}:</strong> {{ selectedTask.status || '—' }}</p>
-        <p><strong>{{ t('world.crm.tasks.form.priority') }}:</strong> {{ selectedTask.priority || '—' }}</p>
-        <p><strong>{{ t('world.crm.tasks.form.description') }}:</strong> {{ selectedTask.description || '—' }}</p>
-        <p><strong>{{ t('world.crm.tasks.form.dueAt') }}:</strong> {{ selectedTask.dueAt || '—' }}</p>
-        <p><strong>{{ t('world.crm.tasks.form.estimatedHours') }}:</strong> {{ selectedTask.estimatedHours ?? '—' }}</p>
-        <div class="d-flex flex-wrap ga-2 mb-2">
-          <v-chip
-            v-if="selectedTask.projectId"
-            size="small"
-            color="secondary"
-            variant="outlined"
-            @click="openProject(selectedTask.projectId)"
-          >
-            Project {{ selectedTask.projectId }}
-          </v-chip>
-          <v-chip
-            v-if="selectedTask.sprintId"
-            size="small"
-            color="primary"
-            variant="outlined"
-            @click="openSprint(selectedTask.sprintId)"
-          >
-            Sprint {{ selectedTask.sprintId }}
-          </v-chip>
+      <AppModal
+        v-model="projectModalOpen"
+        :title="t('world.crm.kanban.projectDetail')"
+        :max-width="700"
+      >
+        <v-progress-linear v-if="modalLoading" indeterminate class="mb-3" />
+        <div v-else-if="selectedProject">
+          <p><strong>ID:</strong> {{ selectedProject.id }}</p>
+          <p>
+            <strong>{{ t('world.crm.projects.form.name') }}:</strong>
+            {{ selectedProject.name }}
+          </p>
+          <p>
+            <strong>{{ t('world.crm.projects.form.code') }}:</strong>
+            {{ selectedProject.code || '—' }}
+          </p>
+          <p>
+            <strong>{{ t('world.crm.projects.form.status') }}:</strong>
+            {{ selectedProject.status }}
+          </p>
+          <p>
+            <strong>{{ t('world.crm.projects.form.description') }}:</strong>
+            {{ selectedProject.description || '—' }}
+          </p>
         </div>
-        <div>
-          <strong>Attachments:</strong>
-          <v-list density="compact" bg-color="transparent">
-            <v-list-item
-              v-for="(attachment, index) in selectedTask.attachments"
-              :key="index"
-              :title="String(attachment.originalName ?? attachment.url ?? `Attachment ${index + 1}`)"
-              :subtitle="String(attachment.mimeType ?? '')"
-              :href="attachment.url"
-              target="_blank"
-              rel="noopener noreferrer"
-              prepend-icon="mdi-download"
-            />
-          </v-list>
+      </AppModal>
+
+      <AppModal
+        v-model="sprintModalOpen"
+        title="Sprint detail"
+        :max-width="700"
+      >
+        <v-progress-linear v-if="modalLoading" indeterminate class="mb-3" />
+        <div v-else-if="selectedSprint">
+          <p><strong>ID:</strong> {{ selectedSprint.id }}</p>
+          <p><strong>Name:</strong> {{ selectedSprint.name }}</p>
+          <p><strong>Status:</strong> {{ selectedSprint.status }}</p>
+          <p><strong>Goal:</strong> {{ selectedSprint.goal || '—' }}</p>
+          <p><strong>Start:</strong> {{ selectedSprint.startDate || '—' }}</p>
+          <p><strong>End:</strong> {{ selectedSprint.endDate || '—' }}</p>
+          <p><strong>Project ID:</strong> {{ selectedSprint.projectId }}</p>
         </div>
-      </div>
-    </AppModal>
+      </AppModal>
+
+      <AppModal
+        v-model="taskModalOpen"
+        :title="t('world.crm.kanban.taskDetail')"
+        :max-width="700"
+      >
+        <v-progress-linear v-if="modalLoading" indeterminate class="mb-3" />
+        <div v-else-if="selectedTask">
+          <p><strong>ID:</strong> {{ selectedTask.id }}</p>
+          <p>
+            <strong>{{ t('world.crm.tasks.form.title') }}:</strong>
+            {{ selectedTask.title || '—' }}
+          </p>
+          <p>
+            <strong>{{ t('world.crm.tasks.form.status') }}:</strong>
+            {{ selectedTask.status || '—' }}
+          </p>
+          <p>
+            <strong>{{ t('world.crm.tasks.form.priority') }}:</strong>
+            {{ selectedTask.priority || '—' }}
+          </p>
+          <p>
+            <strong>{{ t('world.crm.tasks.form.description') }}:</strong>
+            {{ selectedTask.description || '—' }}
+          </p>
+          <p>
+            <strong>{{ t('world.crm.tasks.form.dueAt') }}:</strong>
+            {{ selectedTask.dueAt || '—' }}
+          </p>
+          <p>
+            <strong>{{ t('world.crm.tasks.form.estimatedHours') }}:</strong>
+            {{ selectedTask.estimatedHours ?? '—' }}
+          </p>
+          <div class="d-flex flex-wrap ga-2 mb-2">
+            <v-chip
+              v-if="selectedTask.projectId"
+              size="small"
+              color="secondary"
+              variant="outlined"
+              @click="openProject(selectedTask.projectId)"
+            >
+              Project {{ selectedTask.projectId }}
+            </v-chip>
+            <v-chip
+              v-if="selectedTask.sprintId"
+              size="small"
+              color="primary"
+              variant="outlined"
+              @click="openSprint(selectedTask.sprintId)"
+            >
+              Sprint {{ selectedTask.sprintId }}
+            </v-chip>
+          </div>
+          <div>
+            <strong>Attachments:</strong>
+            <v-list density="compact" bg-color="transparent">
+              <v-list-item
+                v-for="(attachment, index) in selectedTask.attachments"
+                :key="index"
+                :title="
+                  String(
+                    attachment.originalName ??
+                      attachment.url ??
+                      `Attachment ${index + 1}`,
+                  )
+                "
+                :subtitle="String(attachment.mimeType ?? '')"
+                :href="attachment.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                prepend-icon="mdi-download"
+              />
+            </v-list>
+          </div>
+        </div>
+      </AppModal>
     </v-container>
   </div>
 </template>

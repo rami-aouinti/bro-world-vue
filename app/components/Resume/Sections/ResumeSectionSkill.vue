@@ -124,10 +124,7 @@ function removeSkill(index: number) {
       <span>{{ title }}</span>
     </h3>
 
-    <ul
-      v-if="safeVariant === 'classic'"
-      class="bars"
-    >
+    <ul v-if="safeVariant === 'classic'" class="bars">
       <li
         v-for="(skill, index) in resume.skills"
         :key="`${skill.name}-${index}`"
@@ -291,7 +288,9 @@ function removeSkill(index: number) {
           "
           >{{ skill.name }}</span
         >
-        <small class="text-dark skill-dots">{{ levelToDots(skill.level) }}</small>
+        <small class="text-dark skill-dots">{{
+          levelToDots(skill.level)
+        }}</small>
         <v-btn
           v-if="editable"
           class="resume-item-delete"
@@ -320,7 +319,9 @@ function removeSkill(index: number) {
   padding-left: 0;
   position: relative;
   border-bottom: var(--rs-section-separator, none);
-  padding-bottom: calc(var(--rs-section-padding-bottom, 0px) + var(--rs-extra-line-offset, 0px));
+  padding-bottom: calc(
+    var(--rs-section-padding-bottom, 0px) + var(--rs-extra-line-offset, 0px)
+  );
 }
 
 .cv-heading-section {
@@ -371,7 +372,6 @@ function removeSkill(index: number) {
 .skill-dots {
   letter-spacing: 1px;
 }
-
 
 .skill-stars-list,
 .skill-progress-list {
@@ -428,5 +428,11 @@ function removeSkill(index: number) {
 </style>
 
 <style scoped>
-.section-icon { display:inline-flex; align-items:center; justify-content:center; color: var(--resume-section-icon-color, var(--cv-accent)); margin-right: 6px; }
+.section-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--resume-section-icon-color, var(--cv-accent));
+  margin-right: 6px;
+}
 </style>
