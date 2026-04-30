@@ -16,10 +16,6 @@ definePageMeta({ layout: 'crm', title: 'CRM Task Requests' })
 const isRootAdmin = computed(() =>
   (sessionUser.value?.roles ?? []).includes('ROLE_ROOT'),
 )
-const isAdminOrRoot = computed(() => {
-  const roles = sessionUser.value?.roles ?? []
-  return roles.includes('ROLE_ROOT') || roles.includes('ROLE_ADMIN')
-})
 
 const createDialog = ref(false)
 const pendingDelete = ref(false)
@@ -329,12 +325,18 @@ async function deleteRequest() {
               >
             </div>
             <div class="d-flex align-start justify-space-between ga-2 mb-2">
-              <div class="d-flex align-center ga-2 min-w-0">
+              <button
+                type="button"
+                class="d-flex align-center ga-2 min-w-0 detail-trigger-button"
+                @click="
+                  router.push(`/world/crm/task-requests/${request.id}?mode=view`)
+                "
+              >
                 <CrmEntityAvatar :label="request.title" :size="36" />
-                <p class="text-subtitle-1 text-truncate">
+                <p class="text-subtitle-1 text-truncate mb-0 text-left">
                   {{ request.title }}
                 </p>
-              </div>
+              </button>
             </div>
 
             <div class="mb-4">
@@ -357,36 +359,6 @@ async function deleteRequest() {
               </v-chip>
             </div>
             <v-spacer />
-            <div v-if="isAdminOrRoot" class="d-flex justify-center ga-1 mt-2">
-              <v-btn
-                icon="mdi-eye-outline"
-                color="info"
-                variant="text"
-                class="mx-1"
-                size="x-small"
-                @click="
-                  router.push(
-                    `/world/crm/task-requests/${request.id}?mode=view`,
-                  )
-                "
-              />
-              <v-btn
-                icon="mdi-pencil-outline"
-                color="primary"
-                variant="text"
-                class="mx-1"
-                size="x-small"
-                @click="router.push(`/world/crm/task-requests/${request.id}`)"
-              />
-              <v-btn
-                icon="mdi-delete-outline"
-                color="error"
-                variant="text"
-                class="mx-1"
-                size="x-small"
-                @click="openDeleteDialog(request.id)"
-              />
-            </div>
           </WorldCard>
         </v-col>
 
@@ -503,3 +475,12 @@ async function deleteRequest() {
     </v-container>
   </div>
 </template>
+
+<style scoped>
+.detail-trigger-button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+</style>

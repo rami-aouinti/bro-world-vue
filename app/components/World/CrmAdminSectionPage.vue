@@ -42,6 +42,7 @@ interface SectionField {
 
 const router = useRouter()
 const { t } = useI18n()
+const { can } = useCrmPermissions()
 const { crmNavItems } = useWorldCrmNavItems()
 const { adminRightNavItems } = useWorldCrmAdminNavItems()
 const crmAdminActionsStore = useCrmAdminActionsStore()
@@ -276,6 +277,7 @@ const paginatedItems = computed(() => {
 })
 
 const formFields = computed(() => sectionFields[props.section])
+const canManageSectionItems = computed(() => can('crm.admin.manage'))
 
 watch([search, filteredItems], () => {
   currentPage.value = 1
@@ -666,11 +668,32 @@ async function submitApiAction() {
         >
           <v-card rounded="xl" class="pa-4 postcard-gradient-card h-100">
             <div class="d-flex align-start justify-space-between ga-2 mb-3">
-              <h3 class="text-subtitle-1 mb-0">{{ itemTitle(item) }}</h3>
+              <button
+                type="button"
+                class="text-subtitle-1 mb-0 text-left detail-trigger-button"
+                @click="openShowDialog(item)"
+              >
+                {{ itemTitle(item) }}
+              </button>
               <v-chip size="small" color="primary" variant="tonal">{{
                 item.id ?? 'n/a'
               }}</v-chip>
             </div>
+
+            <button
+              type="button"
+              class="d-flex align-center ga-2 mb-3 detail-trigger-button"
+              @click="openShowDialog(item)"
+            >
+              <CrmEntityAvatar
+                :label="itemTitle(item)"
+                :photo-url="String(item.photo ?? item.avatar ?? '')"
+                size="36"
+              />
+              <span class="text-caption text-medium-emphasis"
+                >Open details</span
+              >
+            </button>
 
             <p
               v-for="[key, value] in previewEntries(item)"
@@ -688,32 +711,6 @@ async function submitApiAction() {
                 {{ formatPrimitive(value) }}
               </template>
             </p>
-
-            <div class="d-flex flex-wrap ga-2 mt-4">
-              <v-btn
-                size="small"
-                variant="tonal"
-                icon="mdi-eye-outline"
-                @click="openShowDialog(item)"
-              />
-              <v-btn
-                v-if="updateAction"
-                size="small"
-                variant="tonal"
-                color="info"
-                icon="mdi-pencil-outline"
-                @click="openEditDialog(item)"
-              />
-              <v-btn
-                v-if="deleteAction"
-                size="small"
-                variant="tonal"
-                color="error"
-                icon="mdi-delete-outline"
-                :loading="deletePendingId === getItemId(item)"
-                @click="submitDelete(item)"
-              />
-            </div>
 
             <div
               v-if="extraItemActions.length"
@@ -859,6 +856,28 @@ async function submitApiAction() {
         </v-col>
       </v-row>
       <template #actions>
+        <v-btn
+          v-if="canManageSectionItems && updateAction && currentItem"
+          color="info"
+          variant="tonal"
+          prepend-icon="mdi-pencil-outline"
+          @click="
+            showDialog = false
+            openEditDialog(currentItem)
+          "
+        >
+          Edit
+        </v-btn>
+        <v-btn
+          v-if="canManageSectionItems && deleteAction && currentItem"
+          color="error"
+          variant="tonal"
+          prepend-icon="mdi-delete-outline"
+          :loading="deletePendingId === getItemId(currentItem)"
+          @click="submitDelete(currentItem)"
+        >
+          Delete
+        </v-btn>
         <v-spacer />
         <v-btn color="primary" variant="tonal" @click="showDialog = false"
           >Close</v-btn
@@ -944,3 +963,12 @@ async function submitApiAction() {
     </AppModal>
   </div>
 </template>
+
+<style scoped>
+.detail-trigger-button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+</style>

@@ -19,10 +19,6 @@ const { sessionUser } = useCrmPermissions()
 const isRootAdmin = computed(() =>
   (sessionUser.value?.roles ?? []).includes('ROLE_ROOT'),
 )
-const isAdminOrRoot = computed(() => {
-  const roles = sessionUser.value?.roles ?? []
-  return roles.includes('ROLE_ROOT') || roles.includes('ROLE_ADMIN')
-})
 const createDialog = ref(false)
 const pendingCreate = ref(false)
 const pendingDelete = ref(false)
@@ -321,12 +317,16 @@ async function deleteTask() {
                 </v-chip>
               </div>
               <div class="d-flex align-start justify-space-between ga-2 mb-2">
-                <div class="d-flex align-center ga-2">
+                <button
+                  type="button"
+                  class="d-flex align-center ga-2 detail-trigger-button"
+                  @click="router.push(`/world/crm/tasks/${task.id}?mode=view`)"
+                >
                   <CrmEntityAvatar :label="task.title" :size="36" />
-                  <p class="text-subtitle-1 text-truncate">
+                  <p class="text-subtitle-1 text-truncate mb-0 text-left">
                     {{ task.title }}
                   </p>
-                </div>
+                </button>
               </div>
               <div class="d-flex flex-wrap ga-2 mb-2">
                 <v-chip
@@ -356,32 +356,6 @@ async function deleteTask() {
                 {{ formatDate(task.dueAt) }}
               </p>
               <v-spacer />
-              <div v-if="isAdminOrRoot" class="d-flex justify-center ga-1 mt-2">
-                <v-btn
-                  icon="mdi-eye-outline"
-                  color="info"
-                  variant="text"
-                  class="mx-1"
-                  size="x-small"
-                  @click="router.push(`/world/crm/tasks/${task.id}?mode=view`)"
-                />
-                <v-btn
-                  icon="mdi-pencil-outline"
-                  color="primary"
-                  variant="text"
-                  class="mx-1"
-                  size="x-small"
-                  @click="router.push(`/world/crm/tasks/${task.id}`)"
-                />
-                <v-btn
-                  icon="mdi-delete-outline"
-                  color="error"
-                  variant="text"
-                  class="mx-1"
-                  size="x-small"
-                  @click="openDeleteDialog(task.id)"
-                />
-              </div>
             </WorldCard>
           </v-col>
 
@@ -504,3 +478,12 @@ async function deleteTask() {
     </AppModal>
   </div>
 </template>
+
+<style scoped>
+.detail-trigger-button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+</style>
