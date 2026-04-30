@@ -33,6 +33,13 @@ type SectionLayoutEntry<
 }
 
 type ResumeRendererDesignState = {
+  headerStyleVariant?: 'neutral' | 'hero'
+  headerHeight?: string
+  asideFullHeight?: boolean
+  splitContactRow?: boolean
+  sectionRibbonStyle?: 'none' | 'soft' | 'accent'
+  separatorStyleVariant?: 'neutral' | 'vertical-line'
+  accentPaletteVariant?: 'default' | 'contrast' | 'muted'
   themeTokens?: Record<string, string>
   sectionTokens?: Record<string, Record<string, string>>
   profile?: {
@@ -50,6 +57,9 @@ type ResumeRendererDesignState = {
   photoSize?: number
   photoBorderWidth?: number
   photoPosition?: 'left' | 'right'
+  photoOffsetX?: number
+  photoOffsetY?: number
+  photoScale?: number
   showSectionIcons?: boolean
   showContactIcons?: boolean
   sectionIconStyleVariant?: ResumeSectionIconStyleVariant
@@ -99,6 +109,11 @@ const props = withDefaults(
     photoOffsetY?: number
     photoScale?: number
     photoHidden?: boolean
+    headerStyleVariant?: 'neutral' | 'hero'
+    headerHeight?: string
+    asideFullHeight?: boolean
+    splitContactRow?: boolean
+    sectionRibbonStyle?: 'none' | 'soft' | 'accent'
     showSectionIcons?: boolean
     showContactIcons?: boolean
     sectionIconStyleVariant?: ResumeSectionIconStyleVariant
@@ -132,6 +147,11 @@ const props = withDefaults(
     photoOffsetY: 0,
     photoScale: 1,
     photoHidden: false,
+    headerStyleVariant: 'neutral',
+    headerHeight: 'auto',
+    asideFullHeight: false,
+    splitContactRow: false,
+    sectionRibbonStyle: 'none',
     showSectionIcons: undefined,
     showContactIcons: true,
     sectionIconStyleVariant: undefined,
@@ -260,6 +280,9 @@ const resolvedDesignState = computed(() => ({
       : props.photoPosition === 'left' || props.photoPosition === 'right'
         ? props.photoPosition
         : 'right',
+  photoOffsetX: props.designState?.photoOffsetX ?? 0,
+  photoOffsetY: props.designState?.photoOffsetY ?? 0,
+  photoScale: props.designState?.photoScale ?? 1,
   showSectionIcons:
     props.designState?.showSectionIcons ?? props.showSectionIcons,
   showContactIcons:
@@ -268,6 +291,13 @@ const resolvedDesignState = computed(() => ({
     props.designState?.sectionIconStyleVariant ?? props.sectionIconStyleVariant,
   iconSizeVariant: props.designState?.iconSizeVariant ?? props.iconSizeVariant,
   iconColorMode: props.designState?.iconColorMode ?? props.iconColorMode,
+  headerStyleVariant: props.designState?.headerStyleVariant ?? props.headerStyleVariant,
+  headerHeight: props.designState?.headerHeight ?? props.headerHeight,
+  asideFullHeight: props.designState?.asideFullHeight ?? props.asideFullHeight,
+  splitContactRow: props.designState?.splitContactRow ?? props.splitContactRow,
+  sectionRibbonStyle: props.designState?.sectionRibbonStyle ?? props.sectionRibbonStyle,
+  separatorStyleVariant: props.designState?.separatorStyleVariant ?? 'neutral',
+  accentPaletteVariant: props.designState?.accentPaletteVariant ?? 'default',
   decorativeShapeA: props.designState?.decorativeShapeA,
   decorativeShapeB: props.designState?.decorativeShapeB,
   layoutMode: normalizeLayoutMode(
@@ -286,6 +316,12 @@ const rootDesignClasses = computed(() => [
   `profile-spacing-${props.templateSkin.profile.spacing}`,
   `profile-separators-${props.templateSkin.profile.separators}`,
   `profile-cards-${props.templateSkin.profile.cards}`,
+  `resume-header-${resolvedDesignState.value.headerStyleVariant}`,
+  `resume-separator-${resolvedDesignState.value.separatorStyleVariant}`,
+  `resume-accent-${resolvedDesignState.value.accentPaletteVariant}`,
+  resolvedDesignState.value.asideFullHeight ? 'aside-full' : '',
+  resolvedDesignState.value.splitContactRow ? 'split-contact-row' : '',
+  `section-ribbon-${resolvedDesignState.value.sectionRibbonStyle}`,
 ])
 const skinCssVars = computed<Record<string, string>>(() => {
   const profile = props.templateSkin.profile
@@ -303,6 +339,7 @@ const skinCssVars = computed<Record<string, string>>(() => {
 const layoutStyle = computed(() => ({
   '--resume-sidebar-width': `${resolvedDesignState.value.sidebarWidth}px`,
   '--resume-sidebar-height': `${resolvedDesignState.value.sidebarHeight}%`,
+  '--resume-header-height': resolvedDesignState.value.headerHeight,
 }))
 const layoutModeClass = computed(
   () => `layout-mode-${resolvedDesignState.value.layoutMode}`,
@@ -368,7 +405,7 @@ const avatarStyle = computed(() => ({
   borderWidth: `${resolvedDesignState.value.photoBorderWidth}px`,
 }))
 const avatarImageStyle = computed(() => ({
-  transform: `translate(${props.photoOffsetX}px, ${props.photoOffsetY}px) scale(${props.photoScale})`,
+  transform: `translate(${props.photoOffsetX + (resolvedDesignState.value.photoOffsetX ?? 0)}px, ${props.photoOffsetY + (resolvedDesignState.value.photoOffsetY ?? 0)}px) scale(${props.photoScale * (resolvedDesignState.value.photoScale ?? 1)})`,
   transformOrigin: 'center',
 }))
 const sectionLayoutDensity = computed<'compact' | 'normal' | 'spacious'>(() =>
@@ -594,7 +631,11 @@ function updateText(path: string, value: string) {
         :style="decorativeShapeStyle(shape)"
       />
     </div>
-    <header class="resume-skin__header" :class="`resume-skin__header--${templateSkin.profile.typography}`">
+    <header
+      class="resume-skin__header"
+      :class="[`resume-skin__header--${templateSkin.profile.typography}`, `resume-header-${resolvedDesignState.headerStyleVariant}`]"
+      :style="{ minHeight: 'var(--resume-header-height, auto)' }"
+    >
       <div>
         <h1>
           <span
@@ -757,7 +798,7 @@ function updateText(path: string, value: string) {
       :class="[templateSkin.wrapperClass, layoutModeClass]"
       :style="layoutStyle"
     >
-      <aside v-if="shouldRenderAside" :class="[templateSkin.asideClass, `resume-skin__aside--${templateSkin.profile.cards}`]">
+      <aside v-if="shouldRenderAside" :class="[templateSkin.asideClass, `resume-skin__aside--${templateSkin.profile.cards}`, resolvedDesignState.asideFullHeight ? 'aside-full' : '']">
         <section
           v-if="(templateSkin.showContactInAside ?? true) && hasContactDetails"
           class="resume-section-hoverable resume-contact-section"
