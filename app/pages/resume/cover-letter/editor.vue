@@ -139,40 +139,28 @@ onMounted(() => {
 
         <v-window v-model="activeTab">
           <v-window-item value="edit">
-            <v-card class="form-card mb-4" variant="outlined">
-              <v-card-title>Letter content</v-card-title>
-              <v-card-text class="d-grid ga-3">
-                <v-text-field v-model="model.fullName" label="Full name" variant="outlined" hide-details />
-                <v-text-field v-model="model.role" label="Title" variant="outlined" hide-details />
-                <v-text-field v-model="model.recipient" label="Recipient" variant="outlined" hide-details />
-                <v-text-field v-model="model.company" label="Company" variant="outlined" hide-details />
-                <v-textarea v-model="model.intro" rows="3" label="Introduction" variant="outlined" hide-details />
-                <v-textarea v-model="model.body" rows="7" label="Body" variant="outlined" hide-details />
-                <v-textarea v-model="model.closing" rows="3" label="Closing" variant="outlined" hide-details />
-              </v-card-text>
-            </v-card>
+            <v-text-field v-model="model.fullName" label="Full name" variant="outlined" hide-details />
+            <v-text-field v-model="model.role" label="Title" variant="outlined" hide-details />
+            <v-text-field v-model="model.recipient" label="Recipient" variant="outlined" hide-details />
+            <v-text-field v-model="model.company" label="Company" variant="outlined" hide-details />
+            <v-textarea v-model="model.intro" rows="3" label="Introduction" variant="outlined" hide-details />
+            <v-textarea v-model="model.body" rows="7" label="Body" variant="outlined" hide-details />
+            <v-textarea v-model="model.closing" rows="3" label="Closing" variant="outlined" hide-details />
           </v-window-item>
 
           <v-window-item value="template">
-            <v-card class="form-card mb-4" variant="outlined">
-              <v-card-title>Templates Cover Letter</v-card-title>
-              <v-card-text>
-                <div class="template-grid">
-                  <v-card
-                    v-for="template in coverLetterTemplates"
-                    :key="template.id"
-                    class="template-card"
-                    :class="{ 'template-card--active': selectedTemplate === template.id }"
-                    variant="outlined"
-                    @click="selectedTemplate = template.id"
-                  >
-                    <v-img :src="template.image" height="130" cover />
-                    <v-card-text class="template-card__content">
-                      <div class="template-card__title">{{ template.title }}</div>
-                      <div class="template-card__subtitle">{{ template.subtitle }}</div>
-                    </v-card-text>
-                  </v-card>
-                </div>
+            <v-card
+              v-for="template in coverLetterTemplates"
+              :key="template.id"
+              class="template-card"
+              :class="{ 'template-card--active': selectedTemplate === template.id }"
+              variant="outlined"
+              @click="selectedTemplate = template.id"
+            >
+              <v-img :src="template.image" height="130" cover />
+              <v-card-text class="template-card__content">
+                <div class="template-card__title">{{ template.title }}</div>
+                <div class="template-card__subtitle">{{ template.subtitle }}</div>
               </v-card-text>
             </v-card>
           </v-window-item>
