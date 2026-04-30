@@ -10,8 +10,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (event: 'panel-state', payload: GameAsidePanelState): void
-  (event: 'finished', payload: { result: SessionResult }): void
-  (event: 'game-finished', payload: { result: SessionResult }): void
+  (event: 'finished' | 'game-finished', payload: { result: SessionResult }): void
 }>()
 
 type GameStatus = 'idle' | 'running' | 'gameover'

@@ -474,10 +474,10 @@ const selectedRounded = toRef(designSettings.value, 'selectedRounded')
 const selectedTextStyle = toRef(designSettings.value, 'selectedTextStyle')
 const layoutSettings = designSettings.value.layout
 const templatePickerState = toRef(builderPanelState, 'templatePicker')
-const levelInputMode = ref<LevelInputMode>('percent')
+const _levelInputMode = ref<LevelInputMode>('percent')
 
 const DOCUMENT_TYPE_STORAGE_KEY = 'resume-builder:selected-document-type'
-const documentTypeTabOptions: Array<{
+const _documentTypeTabOptions: Array<{
   label: string
   value: Template['documentType']
 }> = [
@@ -1452,7 +1452,7 @@ function applyTemplateSelection(_templateId: string) {
   persist()
 }
 
-const templateShapeTypeCycle: DecorativeShapeType[] = [
+const _templateShapeTypeCycle: DecorativeShapeType[] = [
   'circle',
   'ring',
   'square',
@@ -1997,15 +1997,15 @@ function onPhotoSelected(event: Event) {
   input.value = ''
 }
 
-function setProjectImageInputRef(index: number, element: Element | null) {
+function _setProjectImageInputRef(index: number, element: Element | null) {
   projectImageInputs.value[index] = element as HTMLInputElement | null
 }
 
-function openProjectImagePicker(index: number) {
+function _openProjectImagePicker(index: number) {
   projectImageInputs.value[index]?.click()
 }
 
-function onProjectImageSelected(index: number, event: Event) {
+function _onProjectImageSelected(index: number, event: Event) {
   const input = event.target as HTMLInputElement
   const file = input.files?.[0]
   if (!file) return
@@ -2043,7 +2043,7 @@ function validateHttpRepositoryUrl(value?: string) {
   }
 }
 
-function updateProjectRepositoryProvider(project: Project) {
+function _updateProjectRepositoryProvider(project: Project) {
   project.repositoryProvider = detectRepositoryProvider(project.repositoryUrl)
 }
 
@@ -2158,7 +2158,7 @@ function saveSignature() {
   signatureDialogOpen.value = false
 }
 
-function splitParagraphToList(value: string) {
+function _splitParagraphToList(value: string) {
   return value
     .split(/\n+|(?<=[.!?])\s+/)
     .map((item) => item.trim())
@@ -2169,21 +2169,21 @@ function normalizeExperienceContentStyle(style?: ContentStyle): ContentStyle {
   return normalizeSectionContentStyle(style)
 }
 
-function changeExperienceContentStyle(index: number, nextStyle: ContentStyle) {
+function _changeExperienceContentStyle(index: number, nextStyle: ContentStyle) {
   const experience = resume.experiences[index]
   const currentText = getExperienceBullets(index)
   experience.contentStyle = normalizeExperienceContentStyle(nextStyle)
   setExperienceBullets(index, currentText)
 }
 
-function changeEducationContentStyle(index: number, nextStyle: ContentStyle) {
+function _changeEducationContentStyle(index: number, nextStyle: ContentStyle) {
   const education = resume.education[index]
   const currentText = getEducationContent(index)
   education.contentStyle = nextStyle
   setEducationContent(index, currentText)
 }
 
-function changeProjectContentStyle(index: number, nextStyle: ContentStyle) {
+function _changeProjectContentStyle(index: number, nextStyle: ContentStyle) {
   const project = resume.projects[index]
   const currentText = getProjectContent(index)
   project.contentStyle = nextStyle
@@ -2258,7 +2258,7 @@ function getProjectContent(index: number) {
   return project.summary
 }
 
-function addExperience() {
+function _addExperience() {
   resume.experiences.push({
     role: '',
     company: '',
@@ -2301,7 +2301,7 @@ function openExperienceLogoPicker(
   input?.click()
 }
 
-async function onResumeExperienceLogoSelected(event: Event, index: number) {
+async function _onResumeExperienceLogoSelected(event: Event, index: number) {
   const input = event.target as HTMLInputElement
   const file = input.files?.[0]
   if (!file) return
@@ -2340,19 +2340,19 @@ async function onSectionItemExperienceLogoSelected(event: Event) {
   input.value = ''
 }
 
-function removeExperience(index: number) {
+function _removeExperience(index: number) {
   if (resume.experiences.length === 1) return
   resume.experiences.splice(index, 1)
 }
 
-function moveExperience(index: number, direction: 'up' | 'down') {
+function _moveExperience(index: number, direction: 'up' | 'down') {
   const targetIndex = direction === 'up' ? index - 1 : index + 1
   if (targetIndex < 0 || targetIndex >= resume.experiences.length) return
   const [item] = resume.experiences.splice(index, 1)
   resume.experiences.splice(targetIndex, 0, item)
 }
 
-function addEducation() {
+function _addEducation() {
   resume.education.push({
     degree: '',
     school: '',
@@ -2368,41 +2368,41 @@ function addEducation() {
   })
 }
 
-function removeEducation(index: number) {
+function _removeEducation(index: number) {
   if (resume.education.length === 1) return
   resume.education.splice(index, 1)
 }
 
-function moveEducation(index: number, direction: 'up' | 'down') {
+function _moveEducation(index: number, direction: 'up' | 'down') {
   const targetIndex = direction === 'up' ? index - 1 : index + 1
   if (targetIndex < 0 || targetIndex >= resume.education.length) return
   const [item] = resume.education.splice(index, 1)
   resume.education.splice(targetIndex, 0, item)
 }
 
-function addSkill() {
+function _addSkill() {
   resume.skills.push({ name: '', level: 75 })
 }
 
-function removeSkill(index: number) {
+function _removeSkill(index: number) {
   if (resume.skills.length === 1) return
   resume.skills.splice(index, 1)
 }
 
-function addLanguage() {
+function _addLanguage() {
   resume.languages.push({ name: '', level: 75, countryCode: '', flag: '' })
 }
 
-function removeLanguage(index: number) {
+function _removeLanguage(index: number) {
   if (resume.languages.length === 1) return
   resume.languages.splice(index, 1)
 }
 
-function getLevelAsStars(level: number) {
+function _getLevelAsStars(level: number) {
   return levelToStars(level)
 }
 
-function setLevelFromStars(
+function _setLevelFromStars(
   collection: 'skills' | 'languages',
   index: number,
   stars: number,
@@ -2410,7 +2410,7 @@ function setLevelFromStars(
   resume[collection][index].level = starsToPercent(stars)
 }
 
-function addProject() {
+function _addProject() {
   resume.projects.push({
     name: '',
     summary: '',
@@ -2424,12 +2424,12 @@ function addProject() {
   })
 }
 
-function removeProject(index: number) {
+function _removeProject(index: number) {
   if (resume.projects.length === 1) return
   resume.projects.splice(index, 1)
 }
 
-function addReference() {
+function _addReference() {
   resume.references.push({
     name: '',
     company: '',
@@ -2438,12 +2438,12 @@ function addReference() {
   })
 }
 
-function removeReference(index: number) {
+function _removeReference(index: number) {
   if (resume.references.length === 1) return
   resume.references.splice(index, 1)
 }
 
-function addCertification() {
+function _addCertification() {
   resume.courses.push({
     title: '',
     school: '',
@@ -2452,7 +2452,7 @@ function addCertification() {
   })
 }
 
-function removeCertification(index: number) {
+function _removeCertification(index: number) {
   if (resume.courses.length === 1) return
   resume.courses.splice(index, 1)
 }

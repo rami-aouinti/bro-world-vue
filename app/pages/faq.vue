@@ -2,7 +2,7 @@
 interface FaqPageResponse {
   hero: {
     badge: string
-    title: string
+    _title: string
     subtitle: string
     primaryCta: string
     secondaryCta: string
@@ -25,24 +25,24 @@ interface FaqPageResponse {
     bullets: string[]
   }>
   emptyState: {
-    title: string
+    _title: string
     description: string
     suggestion: string
   }
 }
 
-const { locale, t } = useI18n()
+const { locale, _t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 const publicPagesStore = usePublicPagesStore()
 
-definePageMeta({ title: 'appbar.faq' })
+definePageMeta({ _title: 'appbar.faq' })
 
 const searchTerm = ref('')
 const activeCategory = ref('all')
 
 const asyncKey = computed(() => `public-page-faq-${locale.value}`)
 
-const { data, pending, error, refresh } = await useAsyncData(
+const { data, pending, error, _refresh } = await useAsyncData(
   asyncKey,
   () => publicPagesStore.fetchPage<FaqPageResponse>('faq', locale.value),
   {
@@ -134,7 +134,7 @@ const filteredItems = computed(() => {
               page.hero.secondaryCta
             }}</v-card-subtitle>
             <v-card-actions>
-              <v-btn block color="primary" to="/contact" variant="flat">{{
+              <v-btn block color="primary" _to="/contact" variant="flat">{{
                 page.hero.primaryCta
               }}</v-btn>
             </v-card-actions>
@@ -147,7 +147,7 @@ const filteredItems = computed(() => {
       <SkeletonPageContent v-if="isPageSkeletonVisible || pending || !page" />
       <v-alert
         v-else-if="error"
-        type="error"
+        _type="error"
         variant="tonal"
         :text="String(error)"
       />
@@ -186,7 +186,7 @@ const filteredItems = computed(() => {
                   <p
                     v-for="paragraph in item.detailsParagraphs"
                     :key="paragraph"
-                    class="mb-2 text-medium-emphasis"
+                    class="mb-2 _text-medium-emphasis"
                   >
                     {{ paragraph }}
                   </p>
@@ -208,7 +208,7 @@ const filteredItems = computed(() => {
             v-else
             rounded="xl"
             variant="outlined"
-            class="pa-8 text-center postcard-gradient-card"
+            class="pa-8 _text-center postcard-gradient-card"
           >
             <h3 class="text-h5 mb-2">{{ page.emptyState.title }}</h3>
             <p class="mb-1">{{ page.emptyState.description }}</p>

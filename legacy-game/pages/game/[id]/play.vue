@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
@@ -601,6 +602,7 @@ onMounted(async () => {
 @keyframes result-pop {
   from {
     transform: scale(1);
+defineOptions({ name: 'GamePlayPage' })
   }
   to {
     transform: scale(1.1);

@@ -87,7 +87,9 @@ export function normalizeStyle(
   styleSource: unknown,
   defaultLayoutMode: ResumeDocumentModel['style']['layoutMode'],
 ): ResumeDocumentModel['style'] {
-  const style = isRecord(styleSource) ? styleSource : {}
+  const style = isRecord(styleSource) ? styleSource : {
+          // no-op
+        }
   const defaults = { ...DEFAULT_RESUME_STYLE, layoutMode: defaultLayoutMode }
   return {
     palette:
@@ -195,7 +197,9 @@ export function normalizeModel(
       : fallbackPreset.id
 
   const resolvedPreset = resolveSoclePresetById(resolvedPresetId)
-  const sourceTemplate = isRecord(source.template) ? source.template : {}
+  const sourceTemplate = isRecord(source.template) ? source.template : {
+          // no-op
+        }
   const template = {
     structureId:
       typeof sourceTemplate.structureId === 'string'
@@ -251,13 +255,17 @@ export function useResumeDocumentState(presetId: Ref<string>) {
         }>
         if (parsed.lineDensity)
           nextStyle = { ...nextStyle, density: parsed.lineDensity }
-      } catch {}
+      } catch {
+          // no-op
+        }
     }
     if (sectionLayoutRaw) {
       try {
         const parsed = JSON.parse(sectionLayoutRaw)
         nextSectionOrder = normalizeSectionOrder(parsed)
-      } catch {}
+      } catch {
+          // no-op
+        }
     }
     state.value.customization = {
       ...current,

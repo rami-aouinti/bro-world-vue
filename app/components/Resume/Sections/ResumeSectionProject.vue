@@ -40,10 +40,9 @@ const props = withDefaults(
   },
 )
 const emit = defineEmits<{
-  (event: 'add-item', sectionKey: 'project'): void
+  (event: 'add-item' | 'delete-section', sectionKey: 'project'): void
   (event: 'change-variant', sectionKey: 'project', variant: string): void
   (event: 'move-section', sectionKey: 'project', direction: 'up' | 'down'): void
-  (event: 'delete-section', sectionKey: 'project'): void
 }>()
 const sectionStyle = computed(() => {
   const width = props.layoutSettings?.dateColumnWidth

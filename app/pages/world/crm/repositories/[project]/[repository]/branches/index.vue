@@ -12,7 +12,7 @@ interface GithubBranch {
 definePageMeta({ layout: 'crm', title: 'CRM Repository Branches' })
 
 const route = useRoute()
-const router = useRouter()
+const _router = useRouter()
 const { t } = useI18n()
 const { crmNavItems } = useWorldCrmNavItems()
 const githubStore = useWorldCrmGithubStore()
