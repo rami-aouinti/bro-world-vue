@@ -10,8 +10,6 @@ import { CV_SOCLE_PRESETS, resolveSoclePresetById } from '~/constants/resumeSocl
 import {
   type ResumeLayoutMode,
   type ResumeSectionIconStyleVariant,
-  type ResumeTemplateSkin,
-  resolveTemplateSkin,
 } from '~/constants/resumeTemplateSkins'
 import {
   RESUME_CONTENT_STYLE_OPTIONS,
@@ -28,7 +26,7 @@ import {
   fromBuilderModelToApiPayload,
 } from '~/utils/resumeApiMapper'
 import { levelToStars, starsToPercent } from '~/utils/resumeLanguageLevel'
-import ResumeRenderer from '~/components/Resume/Templates/ResumeRenderer.vue'
+import ResumeRenderer from '~/modules/resume/components/ResumeRenderer.vue'
 import ResumeTimelineSectionFields from '~/components/Resume/Create/ResumeTimelineSectionFields.vue'
 import ResumeLevelSectionFields from '~/components/Resume/Create/ResumeLevelSectionFields.vue'
 import ProfileRichTextEditor from '~/components/Resume/Create/ProfileRichTextEditor.vue'
@@ -1356,14 +1354,6 @@ onMounted(async () => {
 const templateSupportsPhoto = computed(
   () => selectedTemplateConfig.value.hasPhoto,
 )
-const selectedTemplateSkin = computed<ResumeTemplateSkin>(() => resolveTemplateSkin(selectedTemplate.value))
-const rendererTemplateSkin = computed<ResumeTemplateSkin>(() => {
-  const skin = selectedTemplateSkin.value
-  if (!skin.wrapperClass || !skin.mainClass || !skin.asideClass) {
-    throw new Error('[resume/create] Invalid template skin: missing wrapperClass/mainClass/asideClass')
-  }
-  return skin
-})
 const {
   state: resumeDocumentState,
   hydrateFromStorage,
@@ -4271,8 +4261,13 @@ if (import.meta.client) {
                           :on-photo-shape-select="
                             (shape) => (selectedPhotoShape = shape)
                           "
-                          :template-id="selectedTemplate"
-                          :template-skin="rendererTemplateSkin"
+                          :template-config="{
+                            templateId: selectedTemplate,
+                            structureId: templatePickerState.structureId,
+                            layoutId: templatePickerState.layoutId,
+                            skinId: templatePickerState.skinId,
+                            layoutMode: layoutSettings.layoutMode,
+                          }"
                           editable
                           @add-item="addItemToPreviewSection"
                           @change-variant="setSectionVariant"
@@ -4877,8 +4872,13 @@ if (import.meta.client) {
                         (shape) => (selectedPhotoShape = shape)
                       "
                       :on-photo-click="onPreviewPhotoClick"
-                      :template-id="selectedTemplate"
-                          :template-skin="rendererTemplateSkin"
+                      :template-config="{
+                            templateId: selectedTemplate,
+                            structureId: templatePickerState.structureId,
+                            layoutId: templatePickerState.layoutId,
+                            skinId: templatePickerState.skinId,
+                            layoutMode: layoutSettings.layoutMode,
+                          }"
                       editable
                       @add-item="addItemToPreviewSection"
                       @change-variant="setSectionVariant"
