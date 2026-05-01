@@ -87,7 +87,7 @@ const styleVars = computed(() => {
       :title="getSectionTitle(section.id)"
       :icon="resolveSectionIcon(section.id)"
       :show-icon="shouldShowSectionIcons"
-      :is-empty="sectionEmpty(section.id)" :section-key="section.id">
+      :is-empty="sectionEmpty(section.id)">
       <ResumeSectionContact v-if="section.id === 'contact'" :resume="resume" :show-title="false" :contact-style="template?.sections?.contact || template?.contactStyle || 'labels'" />
       <ResumeSectionProfile v-else-if="section.id === 'profile'" :resume="resume" :show-title="false" />
       <ResumeSectionRenderer v-else :section-key="section.rendererKey" :resume="resume" :template="template" />
