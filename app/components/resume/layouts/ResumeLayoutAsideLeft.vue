@@ -140,6 +140,7 @@ aside {
   border: 1px var(--line-style, solid) color-mix(in srgb, var(--aside-text, #ffffff) 22%, transparent);
   border-radius: 0;
 }
+
 .aside-left:not(.reverse) aside {
   border-top-right-radius: var(--aside-radius, 18px);
 }
