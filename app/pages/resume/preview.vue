@@ -18,7 +18,6 @@ definePageMeta({
 
 type GeneratedTemplate = (typeof GENERATED_RESUME_TEMPLATES)[number]
 type SectionVariants = Record<string, string>
-
 const route = useRoute()
 const router = useRouter()
 const { allTemplates } = useResumeTemplates()
