@@ -89,13 +89,13 @@ const styleVars = computed(() => {
   <div class="aside-left" :class="{ reverse }" :style="styleVars">
     <ResumeSectionHeader class="full" :class="{ 'full--on-primary': headerOnPrimary }" :resume="resume" :template="template" />
     <aside class="aside-surface on-primary">
-      <ResumeSectionBlock v-for="section in asideSections" :key="`aside-${section.id}`" tone="on-primary" :title="getSectionTitle(section.id)" :icon="resolveSectionIcon(section.id)" :show-icon="shouldShowSectionIcons" :is-empty="sectionEmpty(section.id)">
+      <ResumeSectionBlock v-for="section in asideSections" :key="`aside-${section.id}`" tone="on-primary" :title="getSectionTitle(section.id)" :icon="resolveSectionIcon(section.id)" :show-icon="shouldShowSectionIcons" :is-empty="sectionEmpty(section.id)" :section-key="section.id">
         <ResumeSectionContact v-if="section.id === 'contact'" :resume="resume" :show-title="false" :contact-style="template?.sections?.contact || template?.contactStyle || 'labels'" />
         <ResumeSectionRenderer v-else :section-key="section.rendererKey" :resume="resume" :template="template" />
       </ResumeSectionBlock>
     </aside>
     <main>
-      <ResumeSectionBlock v-for="section in mainSections" :key="`main-${section.id}`" :title="getSectionTitle(section.id)" :icon="resolveSectionIcon(section.id)" :show-icon="shouldShowSectionIcons" :is-empty="sectionEmpty(section.id)">
+      <ResumeSectionBlock v-for="section in mainSections" :key="`main-${section.id}`" :title="getSectionTitle(section.id)" :icon="resolveSectionIcon(section.id)" :show-icon="shouldShowSectionIcons" :is-empty="sectionEmpty(section.id)" :section-key="section.id">
         <ResumeSectionProfile v-if="section.id === 'profile'" :resume="resume" :show-title="false" />
         <ResumeSectionRenderer v-else :section-key="section.rendererKey" :resume="resume" :template="template" />
       </ResumeSectionBlock>
