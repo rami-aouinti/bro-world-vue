@@ -12,20 +12,34 @@ const initials = computed(() =>
     .toUpperCase(),
 )
 
-const photoPosition = computed(() =>
-  props.template?.photo?.position === 'right' ? 'right' : 'left',
-)
+const photoConfig = computed(() => {
+  const photo = props.template?.photo ?? {}
+  const position = photo.position === 'right' ? 'right' : 'left'
+  const size =
+    typeof photo.size === 'number'
+      ? `${photo.size}px`
+      : typeof photo.size === 'string' && photo.size.trim()
+        ? photo.size
+        : '64px'
+  const shape = photo.shape === 'square' || photo.shape === 'rounded' ? photo.shape : 'circle'
+  const borderRadius = shape === 'square' ? '10px' : shape === 'rounded' ? '16px' : '999px'
+  const border = typeof photo.border === 'string' && photo.border.trim()
+    ? photo.border
+    : '2px solid var(--primary, #0f4c81)'
+
+  return { position, size, borderRadius, border }
+})
 
 const avatarStyle = computed(() => ({
-  width: props.template?.photo?.size || '64px',
-  height: props.template?.photo?.size || '64px',
-  borderRadius: props.template?.photo?.shape === 'square' ? '12px' : '999px',
-  border: props.template?.photo?.border || '2px solid var(--primary, #0f4c81)',
+  width: photoConfig.value.size,
+  height: photoConfig.value.size,
+  borderRadius: photoConfig.value.borderRadius,
+  border: photoConfig.value.border,
 }))
 </script>
 
 <template>
-  <section class="section header" :class="`is-${photoPosition}`">
+  <section class="section header" :class="`is-${photoConfig.position}`">
     <div class="avatar" :style="avatarStyle">{{ initials }}</div>
     <div>
       <h1>{{ resume.resumeInformation?.fullName }}</h1>
@@ -37,9 +51,11 @@ const avatarStyle = computed(() => ({
 <style scoped>
 .header {
   display: flex;
-  gap: 12px;
+  gap: var(--section-space, 12px);
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: calc(var(--section-space, 12px) * 1.33);
+  padding-bottom: var(--section-space, 12px);
+  border-bottom: 1px var(--line-style, solid) var(--line-color, #cbd5e1);
 }
 
 .header.is-right {
