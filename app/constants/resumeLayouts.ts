@@ -13,7 +13,11 @@ type ResumeLayoutFallbackRule = {
 
 export type ResumeLayoutDefinition = {
   layoutId: string
-  structure: ResumeLayoutMode
+  structure:
+    | ResumeLayoutMode
+    | 'two-columns-balanced'
+    | 'two-columns-main-heavy'
+    | 'header-band-split'
   pattern: ResumeLayoutPattern
   objective: 'experience' | 'skills' | 'mixed-ats'
   zones: Record<ResumeLayoutZone, ResumeEditableSectionKey[]>
@@ -60,7 +64,11 @@ function createLayoutDefinition({
   _aside,
 }: {
   layoutId: string
-  structure: ResumeLayoutMode
+  structure:
+    | ResumeLayoutMode
+    | 'two-columns-balanced'
+    | 'two-columns-main-heavy'
+    | 'header-band-split'
   pattern: ResumeLayoutPattern
   objective: ResumeLayoutDefinition['objective']
   main: ResumeEditableSectionKey[]
@@ -178,6 +186,40 @@ export const RESUME_LAYOUTS: ResumeLayoutDefinition[] = [
     objective: 'mixed-ats',
     main: ['experience', 'project', 'education'],
     _aside: ['skill', 'language', 'reference', 'certification', 'hobby'],
+  }),
+
+  createLayoutDefinition({
+    layoutId: 'two-columns-balanced-a',
+    structure: 'two-columns-balanced',
+    pattern: 'A',
+    objective: 'mixed-ats',
+    main: ['experience', 'project', 'education', 'certification'],
+    _aside: ['skill', 'language', 'reference', 'hobby'],
+  }),
+  createLayoutDefinition({
+    layoutId: 'two-columns-main-heavy-a',
+    structure: 'two-columns-main-heavy',
+    pattern: 'A',
+    objective: 'experience',
+    main: ['experience', 'project', 'education', 'skill', 'certification'],
+    _aside: ['language', 'reference', 'hobby'],
+  }),
+  createLayoutDefinition({
+    layoutId: 'header-band-split-a',
+    structure: 'header-band-split',
+    pattern: 'A',
+    objective: 'mixed-ats',
+    main: [
+      'experience',
+      'education',
+      'project',
+      'skill',
+      'language',
+      'reference',
+      'certification',
+      'hobby',
+    ],
+    _aside: [],
   }),
 ]
 

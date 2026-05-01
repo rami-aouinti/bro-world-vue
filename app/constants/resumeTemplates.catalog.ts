@@ -206,6 +206,40 @@ export const RESUME_LAYOUTS_CATALOG: ResumeLayout[] = [
       { zone: 'aside', sections: ['skill', 'language', 'reference', 'hobby'] },
     ]),
   },
+
+  {
+    id: 'layout-two-columns-balanced-a',
+    structureId: 'aside-left',
+    sections: createSections([
+      {
+        zone: 'main',
+        sections: ['experience', 'project', 'education', 'certification'],
+      },
+      { zone: 'aside', sections: ['skill', 'language', 'reference', 'hobby'] },
+    ]),
+  },
+  {
+    id: 'layout-two-columns-main-heavy-a',
+    structureId: 'aside-right',
+    sections: createSections([
+      {
+        zone: 'main',
+        sections: [
+          'experience',
+          'project',
+          'education',
+          'skill',
+          'certification',
+        ],
+      },
+      { zone: 'aside', sections: ['language', 'reference', 'hobby'] },
+    ]),
+  },
+  {
+    id: 'layout-header-band-split-a',
+    structureId: 'no-aside',
+    sections: createSections([{ zone: 'main', sections: RESUME_SECTIONS }]),
+  },
   {
     id: 'layout-top-banner-right-utility',
     structureId: 'aside-right',
@@ -487,14 +521,31 @@ const GENERATED_LAYOUT_BY_STRUCTURE: Record<string, string> = {
   'aside-left': 'layout-aside-left-a',
   'aside-right': 'layout-aside-right-a',
   'no-aside': 'layout-no-aside-a',
+  'two-columns-balanced': 'layout-two-columns-balanced-a',
+  'two-columns-main-heavy': 'layout-two-columns-main-heavy-a',
+  'header-band-split': 'layout-header-band-split-a',
 }
+
+const GENERATED_STRUCTURE_FALLBACK: Record<string, string> = {
+  aside: 'aside-left',
+  'two-columns-balanced': 'aside-left',
+  'two-columns-main-heavy': 'aside-right',
+  'header-band-split': 'no-aside',
+}
+
+const resolveStructureId = (rawStructure: string): string =>
+  GENERATED_STRUCTURE_FALLBACK[rawStructure] ?? rawStructure
+
+const resolveLayoutId = (rawStructure: string): string =>
+  GENERATED_LAYOUT_BY_STRUCTURE[rawStructure] ??
+  GENERATED_LAYOUT_BY_STRUCTURE[resolveStructureId(rawStructure)] ??
+  'layout-no-aside-a'
 
 const RESUME_IMPORTED_TEMPLATES_CATALOG: ResumeTemplateConfig[] =
   GENERATED_RESUME_TEMPLATES.map((template) => ({
     id: `resume-${template.id}`,
-    structureId: template.layout === 'aside' ? 'aside-left' : template.layout,
-    layoutId:
-      GENERATED_LAYOUT_BY_STRUCTURE[template.layout] ?? 'layout-no-aside-a',
+    structureId: resolveStructureId(template.layout),
+    layoutId: resolveLayoutId(template.layout),
     skinId: 'skin-classic',
     label: template.name,
     subtitle: `Generated template ${template.id}`,
