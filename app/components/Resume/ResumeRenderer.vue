@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { buildThemeVars } from "./buildThemeVars";
 import { resolveSectionRenderer } from "./sectionRendererRegistry";
+import ResumeTemplateDecor from "./ResumeTemplateDecor.vue";
 
 type ResumeData = Record<string, any>;
 
@@ -33,12 +34,15 @@ type TemplateConfig = {
     border?: string;
   };
   decor?: {
-    corners?: Array<{
-      shape: "circle" | "square";
-      size: string;
+    enabled?: boolean;
+    zIndex?: number;
+    elements?: Array<{
+      type: "circle" | "square" | "line" | "blob";
+      size: string | number;
       color: string;
-      x: string;
-      y: string;
+      x: string | number;
+      y: string | number;
+      zIndex?: number;
     }>;
   };
 };
@@ -114,23 +118,7 @@ function getSectionItems(sectionKey: string) {
       </section>
     </main>
 
-    <!-- Décor -->
-    <div class="resume-decor">
-      <div
-        v-for="(c, i) in templateConfig.decor?.corners || []"
-        :key="i"
-        class="corner-obj"
-        :style="{
-          width: c.size,
-          height: c.size,
-          background: c.color,
-          borderRadius: c.shape === 'circle' ? '50%' : '6px',
-          insetInlineEnd: c.x.includes('right') ? '0' : 'auto',
-          insetInlineStart: c.x.includes('left') ? '0' : 'auto',
-          top: c.y
-        }"
-      />
-    </div>
+    <ResumeTemplateDecor :decor="templateConfig.decor" />
   </div>
 </template>
 
@@ -177,14 +165,4 @@ function getSectionItems(sectionKey: string) {
   margin-top: 14px;
 }
 
-.resume-decor {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.corner-obj {
-  position: absolute;
-  opacity: 0.18;
-}
 </style>
