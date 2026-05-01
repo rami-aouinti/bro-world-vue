@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import ResumeSectionHeading from '~/components/Resume/Sections/ResumeSectionHeading.vue'
 import DateRangeChip from '~/components/Resume/DateRangeChip.vue'
 import {
   RESUME_CONTENT_STYLE_OPTIONS,
@@ -160,17 +161,13 @@ function removeEducationItem(index: number) {
       @move-down="() => emit('move-section', 'education', 'down')"
       @delete-section="() => emit('delete-section', 'education')"
     />
-    <h2 class="cv-heading-section">
-      <span
-        v-if="showSectionIcon && sectionIcon"
-        class="section-icon"
-        :class="iconVariantClass"
-        :style="iconStyle"
-      >
-        <v-icon :icon="sectionIcon" :size="sectionIconStyle?.size ?? 18" />
-      </span>
-      <span>{{ title }}</span>
-    </h2>
+    <ResumeSectionHeading
+      section-key="education"
+      variant="h2"
+      :title="title"
+      :icon="showSectionIcon ? sectionIcon : undefined"
+      decorative-line
+    />
     <div class="education-list">
       <article
         v-for="(item, index) in resume.education"

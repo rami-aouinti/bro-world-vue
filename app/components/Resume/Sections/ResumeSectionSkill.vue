@@ -5,6 +5,7 @@ import {
   levelToText,
 } from '~/utils/resumeLanguageLevel'
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import ResumeSectionHeading from '~/components/Resume/Sections/ResumeSectionHeading.vue'
 import { getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
 
 type SkillVariant = 'classic' | 'text-level' | 'stars' | 'dots' | 'progress'
@@ -115,13 +116,12 @@ function removeSkill(index: number) {
       @move-down="() => emit('move-section', 'skill', 'down')"
       @delete-section="() => emit('delete-section', 'skill')"
     />
-
-    <h3 class="cv-heading-section">
-      <span v-if="showSectionIcon && sectionIcon" class="section-icon">
-        <v-icon :icon="sectionIcon" size="16" />
-      </span>
-      <span>{{ title }}</span>
-    </h3>
+    <ResumeSectionHeading
+      section-key="skill"
+      :title="title"
+      :icon="showSectionIcon ? sectionIcon : undefined"
+      decorative-line
+    />
 
     <ul v-if="safeVariant === 'classic'" class="bars">
       <li
