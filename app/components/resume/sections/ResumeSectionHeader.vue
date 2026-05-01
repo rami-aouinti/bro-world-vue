@@ -201,6 +201,8 @@ onBeforeUnmount(() => {
   display: block;
 }
 .avatar-corner-icon {
+  opacity: 0;
+  transition: opacity .15s ease;
   position: absolute;
   top: 6px;
   right: 6px;
@@ -229,6 +231,8 @@ onBeforeUnmount(() => {
 }
 .avatar:hover .avatar-overlay,
 .avatar:focus-visible .avatar-overlay { opacity: 1; }
+.avatar:hover .avatar-corner-icon,
+.avatar:focus-visible .avatar-corner-icon { opacity: 1; }
 .avatar-loader { position:absolute; inset:0; display:grid; place-items:center; font-size:11px; background: rgba(0,0,0,.4); }
 .avatar--uploading { pointer-events: none; }
 .avatar--error { box-shadow: 0 0 0 2px #dc2626 inset; }
