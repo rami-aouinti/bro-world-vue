@@ -71,7 +71,7 @@ const styleVars = computed(() => {
 <template>
   <div class="aside-left" :class="{ reverse }" :style="styleVars">
     <ResumeSectionHeader class="full" :resume="resume" :template="template" />
-    <aside>
+    <aside class="aside-surface">
       <ResumeSectionBlock :title="getSectionTitle('contact')" :is-empty="isContactEmpty"><ResumeSectionContact :resume="resume" :show-title="false" /></ResumeSectionBlock>
       <ResumeSectionBlock :title="getSectionTitle('skills')" :is-empty="!(resume.skills?.length)"><ResumeSectionRenderer section-key="skill" :resume="resume" :template="template" /></ResumeSectionBlock>
       <ResumeSectionBlock :title="getSectionTitle('languages')" :is-empty="!(resume.languages?.length)"><ResumeSectionRenderer section-key="language" :resume="resume" :template="template" /></ResumeSectionBlock>
@@ -107,8 +107,14 @@ aside {
   grid-area: aside;
   padding: var(--panel-pad, 12px);
   background: var(--aside-bg, var(--primary, #0f4c81));
-  color: var(--aside-text, #ffffff);
+  color: var(--aside-text-primary, var(--aside-text, #f8fafc));
   border: 1px var(--line-style, solid) color-mix(in srgb, var(--aside-text, #ffffff) 22%, transparent);
+}
+aside.aside-surface {
+  --aside-text-primary: color-mix(in srgb, var(--aside-text, #ffffff) 96%, #fff 4%);
+  --aside-text-secondary: color-mix(in srgb, var(--aside-text-primary) 68%, transparent);
+  --aside-link: color-mix(in srgb, var(--aside-text-primary) 88%, #fff 12%);
+  --aside-separator: color-mix(in srgb, var(--aside-text-primary) 24%, transparent);
 }
 main {
   grid-area: main;
@@ -137,5 +143,47 @@ aside :deep(.resume-item),
 aside :deep(.icon),
 aside :deep(::marker) {
   color: inherit !important;
+}
+aside.aside-surface :deep(p),
+aside.aside-surface :deep(li),
+aside.aside-surface :deep(span),
+aside.aside-surface :deep(label),
+aside.aside-surface :deep(small) {
+  color: var(--aside-text-secondary) !important;
+}
+aside.aside-surface :deep(h1),
+aside.aside-surface :deep(h2),
+aside.aside-surface :deep(h3),
+aside.aside-surface :deep(h4),
+aside.aside-surface :deep(h5),
+aside.aside-surface :deep(h6),
+aside.aside-surface :deep(strong) {
+  color: var(--aside-text-primary) !important;
+}
+aside.aside-surface :deep(a) {
+  color: var(--aside-link) !important;
+  text-decoration-line: underline;
+  text-decoration-color: color-mix(in srgb, var(--aside-link) 55%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.12em;
+}
+aside.aside-surface :deep(a:hover),
+aside.aside-surface :deep(a:focus-visible) {
+  color: var(--aside-text-primary) !important;
+  text-decoration-color: currentColor;
+}
+aside.aside-surface :deep(a:focus-visible) {
+  outline: 2px solid color-mix(in srgb, var(--aside-text-primary) 72%, transparent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+aside.aside-surface :deep(svg),
+aside.aside-surface :deep(i),
+aside.aside-surface :deep(.icon) {
+  color: var(--aside-text-primary) !important;
+}
+aside.aside-surface :deep(.resume-section-block + .resume-section-block) {
+  border-top: 1px var(--line-style, solid) var(--aside-separator);
+  padding-top: var(--section-space, 12px);
 }
 </style>
