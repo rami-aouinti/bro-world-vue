@@ -52,6 +52,12 @@ withDefaults(
   display: flex;
   flex-direction: column;
   gap: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease;
+}
+
+.resume-section-block:hover .section-toolbar {
   opacity: 1;
   pointer-events: auto;
 }
