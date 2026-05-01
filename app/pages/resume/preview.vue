@@ -100,9 +100,9 @@ const activeLayoutComponent = computed(() => {
 </script>
 
 <template>
-  <v-container class="resume-preview-page py-6" max-width="900">
-    <v-card class="resume-preview-card mx-auto mt-6" variant="outlined">
-      <v-card-text class="resume-preview-card__body">
+  <v-container class="py-6" max-width="900">
+    <v-card class="mx-auto mt-6" variant="outlined">
+      <v-card-text>
         <v-progress-linear v-if="loggedIn && loadingResumes" indeterminate />
         <v-alert
           v-else-if="loggedIn && resumesError"
@@ -111,42 +111,9 @@ const activeLayoutComponent = computed(() => {
           :text="resumesError"
         />
         <template v-else>
-          <div class="resume-preview-sheet">
-            <component :is="activeLayoutComponent" :resume="resumeToDisplay" :template="selectedGeneratedTemplate" />
-          </div>
+          <component :is="activeLayoutComponent" :resume="resumeToDisplay" :template="selectedGeneratedTemplate" />
         </template>
       </v-card-text>
     </v-card>
   </v-container>
 </template>
-
-<style scoped>
-.resume-preview-card {
-  border-color: rgba(148, 163, 184, 0.35);
-}
-
-.resume-preview-card__body {
-  padding: 20px;
-}
-
-.resume-preview-sheet {
-  border-radius: 14px;
-  overflow: hidden;
-  background: #ffffff;
-  border: 1px solid rgba(148, 163, 184, 0.32);
-}
-
-:global(.v-theme--dark) .resume-preview-card {
-  border-color: rgba(129, 150, 204, 0.5);
-  background: linear-gradient(180deg, #0b1220 0%, #0f1a2e 100%);
-}
-
-:global(.v-theme--dark) .resume-preview-card__body {
-  background: transparent;
-}
-
-:global(.v-theme--dark) .resume-preview-sheet {
-  background: linear-gradient(180deg, #111c31 0%, #15253d 100%);
-  border-color: rgba(129, 150, 204, 0.42);
-}
-</style>
