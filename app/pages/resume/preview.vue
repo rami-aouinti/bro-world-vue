@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
 import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-90.json'
+import ResumeLayoutAside from '~/components/resume/layouts/ResumeLayoutAside.vue'
+import ResumeLayoutAsideLeft from '~/components/resume/layouts/ResumeLayoutAsideLeft.vue'
+import ResumeLayoutAsideRight from '~/components/resume/layouts/ResumeLayoutAsideRight.vue'
+import ResumeLayoutNoAside from '~/components/resume/layouts/ResumeLayoutNoAside.vue'
 
 definePageMeta({
   title: 'resumeBuilder.meta.previewTitle',
@@ -88,10 +92,10 @@ const resumeToDisplay = computed<ResumeApiItem>(() => {
 
 const activeLayoutComponent = computed(() => {
   const layout = selectedGeneratedTemplate.value?.layout || 'no-aside'
-  if (layout === 'aside') return 'ResumeLayoutAside'
-  if (layout === 'aside-left') return 'ResumeLayoutAsideLeft'
-  if (layout === 'aside-right') return 'ResumeLayoutAsideRight'
-  return 'ResumeLayoutNoAside'
+  if (layout === 'aside') return ResumeLayoutAside
+  if (layout === 'aside-left') return ResumeLayoutAsideLeft
+  if (layout === 'aside-right') return ResumeLayoutAsideRight
+  return ResumeLayoutNoAside
 })
 </script>
 
