@@ -124,7 +124,7 @@ onBeforeUnmount(() => {
       type="button"
       @click="openPhotoPicker"
     >
-      <img v-if="currentPhotoUrl" :src="currentPhotoUrl" alt="Photo de profil" class="avatar-image">
+      <v-img v-if="currentPhotoUrl" :src="currentPhotoUrl" alt="Photo de profil" class="avatar-image"/>
       <span v-else>{{ initials }}</span>
       <span class="avatar-overlay">Changer</span>
       <span v-if="isPhotoLoading" class="avatar-loader">Chargement…</span>
@@ -156,7 +156,6 @@ onBeforeUnmount(() => {
   border: var(--photo-border);
   position: relative;
   overflow: hidden;
-  background: var(--primary, #0f4c81);
   color: #fff;
   display: grid;
   place-items: center;
