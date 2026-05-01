@@ -89,6 +89,36 @@ const selectedPalette = ref<string>('template')
 const customPalettePrimary = ref<string>('#0F4C81')
 const selectedSectionVariants = ref<SectionVariants>({})
 
+const selectedPhotoPosition = ref<string>('left')
+const selectedPhotoSize = ref<number>(96)
+const selectedPhotoShape = ref<string>('circle')
+const selectedPhotoBorderWidth = ref<number>(2)
+const selectedPhotoBorderStyle = ref<string>('solid')
+const selectedPhotoBorderColor = ref<string>('#0F4C81')
+
+
+const photoPositionOptions = [
+  { title: 'Left', value: 'left' },
+  { title: 'Right', value: 'right' },
+  { title: 'Center', value: 'center' },
+]
+
+const photoShapeOptions = computed(() => {
+  const shapes = new Set<string>(['circle', 'rounded', 'square'])
+  GENERATED_RESUME_TEMPLATES.forEach((template) => {
+    ;(template.photoOptions?.shapeList || []).forEach((shape) => shapes.add(shape))
+  })
+  return Array.from(shapes).map((shape) => ({ title: shape, value: shape }))
+})
+
+const photoBorderStyleOptions = [
+  { title: 'Solid', value: 'solid' },
+  { title: 'Dashed', value: 'dashed' },
+  { title: 'Dotted', value: 'dotted' },
+  { title: 'Double', value: 'double' },
+  { title: 'None', value: 'none' },
+]
+
 const sectionVariantOptions = computed(() => {
   const map = new Map<string, string[]>()
   GENERATED_RESUME_TEMPLATES.forEach((template) => {
@@ -135,6 +165,13 @@ const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
   const base = selectedGeneratedTemplate.value
   const nextSections = { ...base.sections, ...selectedSectionVariants.value }
   const nextTheme = { ...base.theme, palette: { ...base.theme.palette } }
+  const nextPhoto = {
+    ...base.photo,
+    position: selectedPhotoPosition.value,
+    size: `${selectedPhotoSize.value}px`,
+    shape: selectedPhotoShape.value,
+    border: `${selectedPhotoBorderWidth.value}px ${selectedPhotoBorderStyle.value} ${selectedPhotoBorderColor.value}`,
+  }
 
   if (selectedPalette.value === 'custom') {
     nextTheme.palette.primary = customPalettePrimary.value
@@ -147,6 +184,7 @@ const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
     layout: selectedLayout.value,
     sections: nextSections,
     theme: nextTheme,
+    photo: nextPhoto,
   }
 })
 
@@ -183,6 +221,25 @@ watch(
       },
     )
     selectedSectionVariants.value = nextSections
+
+    const photo = template.photo || { position: 'left', size: '96px', shape: 'circle', border: '2px solid #0F4C81' }
+    selectedPhotoPosition.value =
+      typeof route.query.photoPosition === 'string' ? route.query.photoPosition : photo.position || 'left'
+    const sizeSource =
+      typeof route.query.photoSize === 'string' ? route.query.photoSize : String(photo.size || '96px')
+    const parsedSize = Number.parseInt(sizeSource.replace('px', ''), 10)
+    selectedPhotoSize.value = Number.isFinite(parsedSize) ? parsedSize : 96
+    selectedPhotoShape.value =
+      typeof route.query.photoShape === 'string' ? route.query.photoShape : photo.shape || 'circle'
+
+    const borderSource =
+      typeof route.query.photoBorder === 'string' ? route.query.photoBorder : String(photo.border || '2px solid #0F4C81')
+    const borderMatch = borderSource.match(/^(\d+)px\s+(\w+)\s+(.+)$/)
+    if (borderMatch) {
+      selectedPhotoBorderWidth.value = Number.parseInt(borderMatch[1] || '2', 10)
+      selectedPhotoBorderStyle.value = borderMatch[2] || 'solid'
+      selectedPhotoBorderColor.value = borderMatch[3] || '#0F4C81'
+    }
   },
   { immediate: true },
 )
@@ -193,6 +250,12 @@ watch(
     selectedPalette,
     customPalettePrimary,
     selectedSectionVariants,
+    selectedPhotoPosition,
+    selectedPhotoSize,
+    selectedPhotoShape,
+    selectedPhotoBorderWidth,
+    selectedPhotoBorderStyle,
+    selectedPhotoBorderColor,
   ],
   () => {
     if (!selectedGeneratedTemplate.value) return
@@ -203,6 +266,10 @@ watch(
       palette: selectedPalette.value,
       paletteCustom: customPalettePrimary.value,
       structure: selectedStructure.value,
+      photoPosition: selectedPhotoPosition.value,
+      photoSize: String(selectedPhotoSize.value),
+      photoShape: selectedPhotoShape.value,
+      photoBorder: `${selectedPhotoBorderWidth.value}px ${selectedPhotoBorderStyle.value} ${selectedPhotoBorderColor.value}`,
     } as Record<string, string>
 
     Object.entries(selectedSectionVariants.value).forEach(
@@ -282,6 +349,47 @@ const activeLayoutComponent = computed(() => {
           v-model="customPalettePrimary"
           label="Custom primary color"
           placeholder="#0F4C81"
+          hide-details
+        />
+        <AppSelect
+          v-model="selectedPhotoPosition"
+          :items="photoPositionOptions"
+          label="Photo position"
+          hide-details
+        />
+        <v-slider
+          v-model="selectedPhotoSize"
+          label="Photo size (px)"
+          min="48"
+          max="220"
+          step="2"
+          hide-details
+        />
+        <AppSelect
+          v-model="selectedPhotoShape"
+          :items="photoShapeOptions"
+          label="Photo shape"
+          hide-details
+        />
+        <v-slider
+          v-model="selectedPhotoBorderWidth"
+          label="Photo border width (px)"
+          min="0"
+          max="16"
+          step="1"
+          hide-details
+        />
+        <AppSelect
+          v-model="selectedPhotoBorderStyle"
+          :items="photoBorderStyleOptions"
+          label="Photo border style"
+          hide-details
+        />
+        <v-text-field
+          v-model="selectedPhotoBorderColor"
+          label="Photo border color"
+          placeholder="#0F4C81"
+          type="color"
           hide-details
         />
       </template>
