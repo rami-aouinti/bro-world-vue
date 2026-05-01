@@ -1,0 +1,33 @@
+:where(.resume-atomic-renderer) {
+  --section-space-2xs: 0.2rem;
+  --section-space-xs: 0.35rem;
+  --section-space-sm: 0.5rem;
+  --section-space-md: 0.75rem;
+  --section-space-lg: 1rem;
+
+  --section-radius-sm: 0.35rem;
+  --section-radius-md: 0.55rem;
+
+  --section-border-soft: color-mix(in srgb, currentColor 16%, transparent);
+  --section-border-subtle: color-mix(in srgb, currentColor 10%, transparent);
+  --section-shadow-soft: 0 2px 8px color-mix(in srgb, currentColor 10%, transparent);
+
+  --section-font-title: 0.98rem;
+  --section-font-subtitle: 0.84rem;
+  --section-font-meta: 0.75rem;
+  --section-font-description: 0.82rem;
+}
+
+:where(.resume-atomic-renderer.mode-aside) {
+  --section-font-title: 0.9rem;
+  --section-font-subtitle: 0.78rem;
+  --section-font-meta: 0.71rem;
+  --section-font-description: 0.76rem;
+}
+
+:where(.resume-atomic-renderer.mode-main) {
+  --section-font-title: 1rem;
+  --section-font-subtitle: 0.85rem;
+  --section-font-meta: 0.77rem;
+  --section-font-description: 0.83rem;
+}
