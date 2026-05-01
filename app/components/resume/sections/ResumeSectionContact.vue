@@ -17,6 +17,7 @@ type ContactField = {
   icon: string
   value: string
   href?: string
+  displayValue?: string
 }
 
 const contactFields = computed<ContactField[]>(() => {
@@ -28,8 +29,22 @@ const contactFields = computed<ContactField[]>(() => {
     { key: 'phone', label: 'Phone', icon: 'mdi-phone-outline', value: normalize(info?.phone), href: normalize(info?.phone) ? `tel:${normalize(info?.phone).replace(/\s+/g, '')}` : undefined },
     { key: 'address', label: 'Address', icon: 'mdi-map-marker-outline', value: normalize(info?.adresse) },
     { key: 'birthDate', label: 'Birth date', icon: 'mdi-cake-variant-outline', value: normalize(info?.birthDate) },
-    { key: 'homepage', label: 'Homepage', icon: 'mdi-web', value: normalize(info?.homepage), href: normalize(info?.homepage) || undefined },
-    { key: 'repo', label: 'Repo', icon: 'mdi-source-repository', value: normalize(info?.repo_profile), href: normalize(info?.repo_profile) || undefined },
+    {
+      key: 'homepage',
+      label: 'Homepage',
+      icon: 'mdi-web',
+      value: normalize(info?.homepage),
+      href: normalize(info?.homepage) || undefined,
+      displayValue: 'Official Website',
+    },
+    {
+      key: 'repo',
+      label: 'Repo',
+      icon: 'mdi-source-repository',
+      value: normalize(info?.repo_profile),
+      href: normalize(info?.repo_profile) || undefined,
+      displayValue: 'Link Repo',
+    },
   ].filter((field) => field.value.length > 0)
 })
 </script>
@@ -50,7 +65,7 @@ const contactFields = computed<ContactField[]>(() => {
         target="_blank"
         rel="noopener noreferrer"
       >
-        {{ field.value }}
+        {{ field.displayValue || field.value }}
       </a>
       <span v-else>{{ field.value }}</span>
     </p>
