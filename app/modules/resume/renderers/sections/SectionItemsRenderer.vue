@@ -10,6 +10,7 @@ type DescriptionChunk =
 
 type NormalizedItem = {
   heading: string
+  prefix: string
   level: number
   levelSteps: number
   subheading: string
@@ -146,9 +147,13 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
       ''
 
     const level = normalizeLevel(item.level)
+    const prefix = props.sectionKey === 'languages'
+      ? String((item.flag as string) || (item.countryCode as string) || '').trim()
+      : ''
 
     return {
       heading,
+      prefix,
       level,
       levelSteps: levelToSteps(level),
       subheading,
@@ -161,7 +166,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 </script>
 
 <template>
-  <section class="resume-atomic-renderer" :class="[`density-${density}`, density === 'compact' ? 'mode-aside' : 'mode-main']" :style="theme">
+  <section class="resume-atomic-renderer" :class="[`density-${density}`, density === 'compact' ? 'mode-aside' : 'mode-main', `section-${sectionKey}`]" :style="theme">
     <p v-if="!normalizedItems.length" class="renderer-empty-state">
       {{ emptyMessage }}
     </p>
@@ -170,7 +175,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
       <li v-for="(item, index) in normalizedItems" :key="index" class="renderer-timeline-item">
         <p v-if="item.period" class="renderer-period">{{ item.period }}</p>
         <div class="renderer-timeline-content">
-          <p class="renderer-heading">{{ item.heading }}</p>
+          <p class="renderer-heading"><span v-if="template === 'flags' && item.prefix" class="renderer-prefix">{{ item.prefix }}</span>{{ item.heading }}</p>
           <p v-if="item.subheading || item.location" class="renderer-subheading">
             <span v-if="item.subheading">{{ item.subheading }}</span>
             <span v-if="item.subheading && item.location" aria-hidden="true"> · </span>
@@ -191,19 +196,19 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
     <div v-else-if="template === 'cards'" class="renderer-cards">
       <article v-for="(item, index) in normalizedItems" :key="index" class="renderer-card">
         <div class="renderer-heading-row">
-          <p class="renderer-heading">{{ item.heading }}</p>
+          <p class="renderer-heading"><span v-if="template === 'flags' && item.prefix" class="renderer-prefix">{{ item.prefix }}</span>{{ item.heading }}</p>
           <p v-if="item.period" class="renderer-period">{{ item.period }}</p>
         </div>
         <p v-if="item.subheading" class="renderer-subheading">{{ item.subheading }}</p>
       </article>
     </div>
 
-    <ul v-else-if="template === 'list' || template === 'dots' || template === 'stars' || template === 'progress-line' || template === 'progress-circle'" class="renderer-list">
+    <ul v-else-if="template === 'list' || template === 'dots' || template === 'stars' || template === 'progress-line' || template === 'progress-circle' || template === 'flags'" class="renderer-list">
       <li v-for="(item, index) in normalizedItems" :key="index" class="renderer-list-item">
         <span v-if="showIcon && template === 'list'" aria-hidden="true">•</span>
         <div>
           <div class="renderer-heading-row">
-            <p class="renderer-heading">{{ item.heading }}</p>
+            <p class="renderer-heading"><span v-if="template === 'flags' && item.prefix" class="renderer-prefix">{{ item.prefix }}</span>{{ item.heading }}</p>
             <p v-if="template === 'progress-line' || template === 'progress-circle'" class="renderer-period">{{ item.level }}%</p>
             <p v-else-if="item.period" class="renderer-period">{{ item.period }}</p>
           </div>
@@ -226,7 +231,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
     <ul v-else class="renderer-classic">
       <li v-for="(item, index) in normalizedItems" :key="index" class="renderer-classic-item">
         <div class="renderer-heading-row">
-          <p class="renderer-heading">{{ item.heading }}</p>
+          <p class="renderer-heading"><span v-if="template === 'flags' && item.prefix" class="renderer-prefix">{{ item.prefix }}</span>{{ item.heading }}</p>
           <p v-if="item.period" class="renderer-period">{{ item.period }}</p>
         </div>
         <p v-if="item.subheading" class="renderer-subheading">{{ item.subheading }}</p>
@@ -443,4 +448,20 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 .density-compact .renderer-list-item,
 .density-compact .renderer-timeline-item { padding-bottom: var(--section-space-sm); }
 .density-compact .renderer-card { padding: var(--section-space-sm) var(--section-space-md); }
+.renderer-prefix { margin-right: .35rem; }
+.resume-atomic-renderer.section-skills .renderer-heading,
+.resume-atomic-renderer.section-languages .renderer-heading,
+.resume-atomic-renderer.section-references .renderer-heading,
+.resume-atomic-renderer.section-certifications .renderer-heading,
+.resume-atomic-renderer.section-interests .renderer-heading,
+.resume-atomic-renderer.section-skills .renderer-subheading,
+.resume-atomic-renderer.section-languages .renderer-subheading,
+.resume-atomic-renderer.section-references .renderer-subheading,
+.resume-atomic-renderer.section-certifications .renderer-subheading,
+.resume-atomic-renderer.section-interests .renderer-subheading {
+  font-weight: var(--cv-font-weight, 400);
+}
+
 </style>
+
+

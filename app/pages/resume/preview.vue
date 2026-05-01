@@ -89,6 +89,9 @@ const selectedStructure = ref<'structure-1' | 'structure-2'>('structure-1')
 const selectedPalette = ref<string>('template')
 const customPalettePrimary = ref<string>('#0F4C81')
 const selectedSectionVariants = ref<SectionVariants>({})
+const selectedTextStyle = ref<string>('')
+const selectedAsideWidth = ref<string>('')
+const selectedAsideHeight = ref<string>('')
 
 const selectedPhotoPosition = ref<string>('left')
 const selectedPhotoSize = ref<number>(96)
@@ -200,6 +203,22 @@ const paletteOptions = computed(() => [
   { title: 'Preset · Rose', value: '#E11D48' },
   { title: 'Custom', value: 'custom' },
 ])
+
+const textStyleFilterOptions = computed(() => {
+  const styles = Array.from(new Set(GENERATED_RESUME_TEMPLATES.map((template) => template.theme?.textStyle).filter(Boolean)))
+  return styles.map((style) => ({ title: String(style), value: String(style) }))
+})
+
+const asideWidthOptions = computed(() => {
+  const widths = Array.from(new Set(GENERATED_RESUME_TEMPLATES.map((template) => template.aside?.width).filter(Boolean)))
+  return widths.map((width) => ({ title: String(width), value: String(width) }))
+})
+
+const asideHeightOptions = computed(() => {
+  const heights = Array.from(new Set(GENERATED_RESUME_TEMPLATES.map((template) => template.aside?.height).filter(Boolean)))
+  return heights.map((height) => ({ title: String(height), value: String(height) }))
+})
+
 const contactStyleOptions = [
   { title: 'Labels', value: 'labels' },
   { title: 'Icons', value: 'icons' },
@@ -216,6 +235,7 @@ const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
   const base = selectedGeneratedTemplate.value
   const nextSections = { ...base.sections, ...selectedSectionVariants.value }
   const nextTheme = { ...base.theme, palette: { ...base.theme.palette } }
+  const nextAside = { ...base.aside }
   const nextPhoto = {
     ...base.photo,
     position: selectedPhotoPosition.value,
@@ -223,6 +243,10 @@ const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
     shape: selectedPhotoShape.value,
     border: `${selectedPhotoBorderWidth.value}px ${selectedPhotoBorderStyle.value} ${selectedPhotoBorderColor.value}`,
   }
+
+  if (selectedTextStyle.value) nextTheme.textStyle = selectedTextStyle.value as any
+  if (selectedAsideWidth.value) nextAside.width = selectedAsideWidth.value
+  if (selectedAsideHeight.value) nextAside.height = selectedAsideHeight.value
 
   if (selectedPalette.value === 'custom') {
     nextTheme.palette.primary = customPalettePrimary.value
@@ -236,6 +260,7 @@ const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
     structure: selectedStructure.value,
     sections: nextSections,
     theme: nextTheme,
+    aside: nextAside,
     photo: nextPhoto,
     decor: {
       ...(base.decor || {}),
@@ -283,6 +308,9 @@ watch(
       },
     )
     selectedSectionVariants.value = nextSections
+    selectedTextStyle.value = typeof route.query.textStyle === 'string' ? route.query.textStyle : String(template.theme?.textStyle || '')
+    selectedAsideWidth.value = typeof route.query.asideWidth === 'string' ? route.query.asideWidth : String(template.aside?.width || '')
+    selectedAsideHeight.value = typeof route.query.asideHeight === 'string' ? route.query.asideHeight : String(template.aside?.height || '')
 
     const photo = template.photo || { position: 'left', size: '96px', shape: 'circle', border: '2px solid #0F4C81' }
     editableDecorCorners.value = (template.decor?.corners || []).map((corner: any) => normalizeDecorCorner(corner))
@@ -313,6 +341,9 @@ watch(
     selectedPalette,
     customPalettePrimary,
     selectedSectionVariants,
+    selectedTextStyle,
+    selectedAsideWidth,
+    selectedAsideHeight,
     selectedPhotoPosition,
     selectedPhotoSize,
     selectedPhotoShape,
@@ -395,6 +426,24 @@ const activeLayoutComponent = computed(() => {
           v-model="selectedLayout"
           :items="layoutFilterOptions"
           label="Layout"
+          hide-details
+        />
+        <AppSelect
+          v-model="selectedTextStyle"
+          :items="textStyleFilterOptions"
+          label="Text style"
+          hide-details
+        />
+        <AppSelect
+          v-model="selectedAsideWidth"
+          :items="asideWidthOptions"
+          label="Aside width"
+          hide-details
+        />
+        <AppSelect
+          v-model="selectedAsideHeight"
+          :items="asideHeightOptions"
+          label="Aside height"
           hide-details
         />
         <AppSelect
