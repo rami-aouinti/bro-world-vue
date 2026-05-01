@@ -391,7 +391,9 @@ const rootThemeVars = computed(() =>
       shape: (props.designState?.photo?.shape ?? 'circle') as
         | 'circle'
         | 'rounded'
-        | 'square',
+        | 'square'
+        | 'hex'
+        | 'blob',
     },
   }),
 )
@@ -1563,6 +1565,7 @@ function updateText(path: string, value: string) {
   border-width: var(--photo-border);
   border-style: solid;
   border-radius: var(--photo-radius, 999px);
+  clip-path: var(--photo-clip-path, none);
   border-color: color-mix(
     in srgb,
     var(--resume-accent, var(--cv-accent)) 28%,

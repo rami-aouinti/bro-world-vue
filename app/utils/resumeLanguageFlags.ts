@@ -1,6 +1,8 @@
 export type ResumeLanguageLike = {
   flag?: unknown
   countryCode?: unknown
+  name?: unknown
+  title?: unknown
 }
 
 export function toFlagEmoji(countryCode: string) {
@@ -42,4 +44,19 @@ export function resolveLanguageFallback(language: ResumeLanguageLike) {
 
   const countryCode = String(language.countryCode || '').trim()
   return toFlagEmoji(countryCode) || ''
+}
+
+export function resolveLanguageDisplayName(language: ResumeLanguageLike) {
+  const name = String(language.name || '').trim()
+  if (name) return name
+
+  const title = String(language.title || '').trim()
+  if (title) return title
+
+  return ''
+}
+
+export function resolveLanguageFlagSymbol(language: ResumeLanguageLike) {
+  const fallback = resolveLanguageFallback(language)
+  return fallback || '🌐'
 }
