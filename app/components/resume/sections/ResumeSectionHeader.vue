@@ -49,7 +49,8 @@ const avatarStyle = computed(() => ({
 
 const currentPhotoUrl = computed(() => {
   const resumePhoto = (props.resume as ResumeApiItem & { photoUrl?: string }).photoUrl
-  return previewPhotoUrl.value || resumePhoto || ''
+  const apiPhoto = props.resume.resumeInformation?.photo
+  return previewPhotoUrl.value || resumePhoto || apiPhoto || ''
 })
 
 function openPhotoPicker() {

@@ -23,6 +23,11 @@ export type ResumeApiItem = {
     phone?: string | null
     address?: string | null
     adresse?: string | null
+    title?: string | null
+    profileText?: string | null
+    homepage?: string | null
+    repo_profile?: string | null
+    photo?: string | null
   } | null
   experiences?: ResumeApiSection[]
   educations?: ResumeApiSection[]
