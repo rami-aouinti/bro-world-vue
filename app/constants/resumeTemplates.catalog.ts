@@ -60,6 +60,7 @@ const createSections = (
 }
 
 export const RESUME_STRUCTURES_CATALOG: ResumeStructure[] = [
+  { id: 'aside' },
   { id: 'no-aside' },
   { id: 'aside-left' },
   { id: 'aside-right' },
