@@ -70,8 +70,8 @@ const styleVars = computed(() => {
     '--text': palette.text ?? '#0f172a',
     '--muted': palette.muted ?? '#64748b',
     '--page-bg': palette.pageBackground ?? '#ffffff',
-    '--aside-bg': 'var(--primary)',
-    '--aside-text': resolveAsideTextColor(primary),
+    '--aside-bg': palette.asideBackground ?? primary,
+    '--aside-text': palette.asideText ?? resolveAsideTextColor(primary),
   } as CSSProperties
 })
 </script>
@@ -108,11 +108,15 @@ const styleVars = computed(() => {
   grid-template-columns: 1fr var(--aside-width, 240px);
   grid-template-areas: 'header header' 'main aside';
 }
-.full { grid-area: header; }
+.full {
+  grid-area: header;
+  background: var(--aside-bg, var(--primary, #0f4c81));
+  color: var(--aside-text, #ffffff);
+}
 aside {
   grid-area: aside;
   padding: var(--panel-pad, 12px);
-  background: var(--primary, #0f4c81);
+  background: var(--aside-bg, var(--primary, #0f4c81));
   color: var(--aside-text-primary, var(--aside-text, #f8fafc));
   border: 1px var(--line-style, solid) color-mix(in srgb, var(--aside-text, #ffffff) 22%, transparent);
 }
@@ -130,28 +134,28 @@ main {
   grid-area: main;
   padding: var(--panel-pad, 12px);
 }
-aside :deep(h1),
-aside :deep(h2),
-aside :deep(h3),
-aside :deep(h4),
-aside :deep(h5),
-aside :deep(h6),
-aside :deep(p),
-aside :deep(span),
-aside :deep(label),
-aside :deep(li),
-aside :deep(a),
-aside :deep(svg),
-aside :deep(i),
-aside :deep(strong),
-aside :deep(em),
-aside :deep(small),
-aside :deep(.section-title),
-aside :deep(.resume-section-title),
-aside :deep(.resume-section-content),
-aside :deep(.resume-item),
-aside :deep(.icon),
-aside :deep(::marker) {
+:where(aside, .full) :deep(h1),
+:where(aside, .full) :deep(h2),
+:where(aside, .full) :deep(h3),
+:where(aside, .full) :deep(h4),
+:where(aside, .full) :deep(h5),
+:where(aside, .full) :deep(h6),
+:where(aside, .full) :deep(p),
+:where(aside, .full) :deep(span),
+:where(aside, .full) :deep(label),
+:where(aside, .full) :deep(li),
+:where(aside, .full) :deep(a),
+:where(aside, .full) :deep(svg),
+:where(aside, .full) :deep(i),
+:where(aside, .full) :deep(strong),
+:where(aside, .full) :deep(em),
+:where(aside, .full) :deep(small),
+:where(aside, .full) :deep(.section-title),
+:where(aside, .full) :deep(.resume-section-title),
+:where(aside, .full) :deep(.resume-section-content),
+:where(aside, .full) :deep(.resume-item),
+:where(aside, .full) :deep(.icon),
+:where(aside, .full) :deep(::marker) {
   color: inherit !important;
 }
 aside.aside-surface :deep(a) {
