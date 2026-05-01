@@ -22,13 +22,25 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-dialog v-model="isOpen" max-width="920" persistent>
+  <v-dialog
+    v-model="isOpen"
+    max-width="920"
+    persistent
+    aria-labelledby="cookie-consent-title"
+    aria-describedby="cookie-consent-description"
+  >
     <v-card class="pa-4 pa-sm-8">
-      <v-card-title class="text-wrap text-h4 font-weight-bold pb-4">
+      <v-card-title
+        id="cookie-consent-title"
+        class="text-wrap text-h4 font-weight-bold pb-4"
+      >
         🍪 {{ t('app.cookieConsent.title') }}
       </v-card-title>
 
-      <v-card-text class="text-body-1 text-sm-h6 pb-6">
+      <v-card-text
+        id="cookie-consent-description"
+        class="text-body-1 text-sm-h6 pb-6"
+      >
         {{ t('app.cookieConsent.description') }}
       </v-card-text>
 
