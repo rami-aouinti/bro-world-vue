@@ -5,6 +5,7 @@ import {
   levelToText,
 } from '~/utils/resumeLanguageLevel'
 import {
+  resolveLanguageDisplayName,
   resolveLanguageFallback,
   resolveLanguageFlagClass,
   resolveLanguageFlagSrc,
@@ -176,9 +177,12 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
       <ul v-if="languageVariant === 'text-level'">
         <li
           v-for="(language, index) in resume.languages"
-          :key="`${language.name}-${index}`"
+          :key="`${resolveLanguageDisplayName(language)}-${index}`"
         >
           <small>{{ levelToText(language.level) }} — </small>
+          <span class="language-flag-fallback">{{
+            resolveLanguageFallback(language) || '🌐'
+          }}</span>
           <span
             class="editable-text"
             :contenteditable="editable"
@@ -189,16 +193,19 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
                   (event.target as HTMLElement).innerText,
                 )
             "
-            >{{ language.name }}</span
+            >{{ resolveLanguageDisplayName(language) }}</span
           >
         </li>
       </ul>
       <div v-else-if="languageVariant === 'stars'" class="language-stars-list">
         <div
           v-for="(language, index) in resume.languages"
-          :key="`${language.name}-${index}`"
+          :key="`${resolveLanguageDisplayName(language)}-${index}`"
           class="language-stars-item"
         >
+          <span class="language-flag-fallback">{{
+            resolveLanguageFallback(language) || '🌐'
+          }}</span>
           <span
             class="editable-text"
             :contenteditable="editable"
@@ -209,7 +216,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
                   (event.target as HTMLElement).innerText,
                 )
             "
-            >{{ language.name }}</span
+            >{{ resolveLanguageDisplayName(language) }}</span
           >
           <small class="language-stars-value">{{
             levelToStarsText(language.level)
@@ -222,12 +229,15 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
       >
         <div
           v-for="(language, index) in resume.languages"
-          :key="`${language.name}-${index}`"
+          :key="`${resolveLanguageDisplayName(language)}-${index}`"
           class="language-progress-item"
         >
           <div class="d-flex align-center justify-space-between ga-2">
             <div class="d-flex align-center ga-2">
               <small>{{ levelToPercent(language.level) }}% — </small>
+              <span class="language-flag-fallback">{{
+                resolveLanguageFallback(language) || '🌐'
+              }}</span>
               <span
                 class="editable-text"
                 :contenteditable="editable"
@@ -238,7 +248,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
                       (event.target as HTMLElement).innerText,
                     )
                 "
-                >{{ language.name }}</span
+                >{{ resolveLanguageDisplayName(language) }}</span
               >
             </div>
           </div>
@@ -253,7 +263,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
       <div v-else class="language-progress-list">
         <div
           v-for="(language, index) in resume.languages"
-          :key="`${language.name}-${index}`"
+          :key="`${resolveLanguageDisplayName(language)}-${index}`"
           class="language-progress-item"
         >
           <div class="d-flex align-center justify-space-between ga-2">
@@ -262,13 +272,13 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
                 v-if="resolveLanguageFlagSrc(language)"
                 class="language-flag-image"
                 :src="resolveLanguageFlagSrc(language)"
-                :alt="`${language.name} flag`"
+                :alt="`${resolveLanguageDisplayName(language)} flag`"
               />
               <span
                 v-else-if="resolveLanguageFlagClass(language)"
                 class="language-flag-icon"
                 :class="resolveLanguageFlagClass(language)"
-                :aria-label="`${language.name} flag`"
+                :aria-label="`${resolveLanguageDisplayName(language)} flag`"
                 role="img"
               />
               <span
@@ -276,6 +286,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
                 class="language-flag"
                 >{{ resolveLanguageFallback(language) }}</span
               >
+              <span v-else class="language-flag-fallback">🌐</span>
               <span
                 class="editable-text"
                 :contenteditable="editable"
@@ -286,7 +297,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
                       (event.target as HTMLElement).innerText,
                     )
                 "
-                >{{ language.name }}</span
+                >{{ resolveLanguageDisplayName(language) }}</span
               >
             </div>
             <small
@@ -696,6 +707,10 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
 
 .language-flag {
   font-size: 1.1em;
+  line-height: 1;
+}
+.language-flag-fallback {
+  font-size: 1em;
   line-height: 1;
 }
 .project-grid {

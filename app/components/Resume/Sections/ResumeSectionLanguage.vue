@@ -7,7 +7,8 @@ import {
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 import ResumeSectionHeading from '~/components/Resume/Sections/ResumeSectionHeading.vue'
 import {
-  _resolveLanguageFallback,
+  resolveLanguageDisplayName,
+  resolveLanguageFlagSymbol,
   resolveLanguageFlagSrc,
 } from '~/utils/resumeLanguageFlags'
 import { getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
@@ -126,8 +127,11 @@ function removeLanguage(index: number) {
     >
       <li
         v-for="(language, index) in resume.languages"
-        :key="`${language.name}-${index}`"
+        :key="`${resolveLanguageDisplayName(language)}-${index}`"
       >
+        <span class="language-flag-fallback">{{
+          resolveLanguageFlagSymbol(language)
+        }}</span>
         <span
           class="editable-text"
           :contenteditable="editable"
@@ -138,7 +142,7 @@ function removeLanguage(index: number) {
                 (event.target as HTMLElement).innerText,
               )
           "
-          >{{ language.name }}</span
+          >{{ resolveLanguageDisplayName(language) }}</span
         >
         <small class="ms-2">{{ levelToText(language.level) }}</small>
         <v-btn
@@ -158,9 +162,12 @@ function removeLanguage(index: number) {
     <ul v-else-if="safeVariant === 'stars'" class="bars">
       <li
         v-for="(language, index) in resume.languages"
-        :key="`${language.name}-${index}`"
+        :key="`${resolveLanguageDisplayName(language)}-${index}`"
         class="d-flex align-center ga-2"
       >
+        <span class="language-flag-fallback">{{
+          resolveLanguageFlagSymbol(language)
+        }}</span>
         <span
           class="editable-text"
           :contenteditable="editable"
@@ -171,7 +178,7 @@ function removeLanguage(index: number) {
                 (event.target as HTMLElement).innerText,
               )
           "
-          >{{ language.name }}</span
+          >{{ resolveLanguageDisplayName(language) }}</span
         >
         <v-rating
           :model-value="levelToStars(language.level)"
@@ -199,9 +206,12 @@ function removeLanguage(index: number) {
     <ul v-else-if="safeVariant === 'progress-circle'" class="bars">
       <li
         v-for="(language, index) in resume.languages"
-        :key="`${language.name}-${index}`"
+        :key="`${resolveLanguageDisplayName(language)}-${index}`"
       >
         <div class="d-flex align-center ga-2">
+          <span class="language-flag-fallback">{{
+            resolveLanguageFlagSymbol(language)
+          }}</span>
           <span
             class="editable-text"
             :contenteditable="editable"
@@ -212,7 +222,7 @@ function removeLanguage(index: number) {
                   (event.target as HTMLElement).innerText,
                 )
             "
-            >{{ language.name }}</span
+            >{{ resolveLanguageDisplayName(language) }}</span
           >
           <v-progress-circular
             :model-value="levelToPercent(language.level)"
@@ -241,9 +251,12 @@ function removeLanguage(index: number) {
     <ul v-else-if="safeVariant === 'progress-line'" class="bars">
       <li
         v-for="(language, index) in resume.languages"
-        :key="`${language.name}-${index}`"
+        :key="`${resolveLanguageDisplayName(language)}-${index}`"
       >
         <div class="d-flex align-center ga-2 justify-space-between">
+          <span class="language-flag-fallback">{{
+            resolveLanguageFlagSymbol(language)
+          }}</span>
           <span
             class="editable-text"
             :contenteditable="editable"
@@ -254,7 +267,7 @@ function removeLanguage(index: number) {
                   (event.target as HTMLElement).innerText,
                 )
             "
-            >{{ language.name }}</span
+            >{{ resolveLanguageDisplayName(language) }}</span
           >
           <small>{{ levelToPercent(language.level) }}%</small>
         </div>
@@ -269,7 +282,7 @@ function removeLanguage(index: number) {
     <ul v-else class="bars">
       <li
         v-for="(language, index) in resume.languages"
-        :key="`${language.name}-${index}`"
+        :key="`${resolveLanguageDisplayName(language)}-${index}`"
       >
         <div class="d-flex align-center ga-2 justify-space-between">
           <div class="d-flex align-center ga-2">
@@ -277,12 +290,14 @@ function removeLanguage(index: number) {
               v-if="resolveLanguageFlagSrc(language)"
               class="language-flag-image"
               :src="resolveLanguageFlagSrc(language)"
-              :alt="`${language.name} flag`"
+                :alt="`${resolveLanguageDisplayName(language)} flag`"
               width="18"
               height="14"
             />
+            <span v-else class="language-flag-fallback">{{
+              resolveLanguageFlagSymbol(language)
+            }}</span>
             <span
-              v-else
               class="editable-text"
               :contenteditable="editable"
               @input="
@@ -292,20 +307,7 @@ function removeLanguage(index: number) {
                     (event.target as HTMLElement).innerText,
                   )
               "
-              >{{ language.name }}</span
-            >
-            <span
-              v-if="resolveLanguageFlagSrc(language)"
-              class="editable-text"
-              :contenteditable="editable"
-              @input="
-                (event) =>
-                  updateText(
-                    `languages.${index}.name`,
-                    (event.target as HTMLElement).innerText,
-                  )
-              "
-              >{{ language.name }}</span
+              >{{ resolveLanguageDisplayName(language) }}</span
             >
           </div>
           <v-rating
@@ -420,6 +422,11 @@ function removeLanguage(index: number) {
   object-fit: cover;
   border-radius: 2px;
   border: 1px solid color-mix(in srgb, var(--cv-accent) 12%, transparent);
+}
+.language-flag-fallback {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.95rem;
 }
 .density-compact {
   --entry-gap: calc(var(--cv-space-2) - var(--cv-space-1) / 2);
