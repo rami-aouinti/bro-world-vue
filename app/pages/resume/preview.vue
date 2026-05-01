@@ -182,6 +182,11 @@ const sectionVariantOptions = computed(() => {
     return acc
   }, {})
 })
+const sectionVariantOptionsForDrawer = computed(() =>
+  Object.fromEntries(
+    Object.entries(sectionVariantOptions.value).filter(([sectionKey]) => sectionKey !== 'contact'),
+  ),
+)
 
 const paletteOptions = computed(() => [
   { title: 'Template palette', value: 'template' },
@@ -195,6 +200,10 @@ const paletteOptions = computed(() => [
   { title: 'Preset · Rose', value: '#E11D48' },
   { title: 'Custom', value: 'custom' },
 ])
+const contactStyleOptions = [
+  { title: 'Labels', value: 'labels' },
+  { title: 'Icons', value: 'icons' },
+]
 
 const structureLayoutMap: Record<string, (typeof CONTROLLED_LAYOUTS)[number]> =
   {
@@ -393,6 +402,12 @@ const activeLayoutComponent = computed(() => {
           hide-details
         />
         <AppSelect
+          v-model="selectedSectionVariants.contact"
+          :items="contactStyleOptions"
+          label="Contact style"
+          hide-details
+        />
+        <AppSelect
           v-model="selectedPalette"
           :items="paletteOptions"
           label="Palette"
@@ -470,7 +485,7 @@ const activeLayoutComponent = computed(() => {
       </template>
       <template #right>
         <AppSelect
-          v-for="(variantOptions, sectionKey) in sectionVariantOptions"
+          v-for="(variantOptions, sectionKey) in sectionVariantOptionsForDrawer"
           :key="sectionKey"
           v-model="selectedSectionVariants[sectionKey]"
           :items="variantOptions"

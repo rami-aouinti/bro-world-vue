@@ -76,7 +76,7 @@ const styleVars = computed(() => {
   <div class="aside-left" :class="{ reverse }" :style="styleVars">
     <ResumeSectionHeader class="full" :resume="resume" :template="template" />
     <aside class="aside-surface on-primary">
-      <ResumeSectionBlock tone="on-primary" :title="getSectionTitle('contact')" :icon="resolveSectionIcon('contact')" :show-icon="shouldShowSectionIcons" :is-empty="isContactEmpty"><ResumeSectionContact :resume="resume" :show-title="false" /></ResumeSectionBlock>
+      <ResumeSectionBlock tone="on-primary" :title="getSectionTitle('contact')" :icon="resolveSectionIcon('contact')" :show-icon="shouldShowSectionIcons" :is-empty="isContactEmpty"><ResumeSectionContact :resume="resume" :show-title="false" :contact-style="template?.sections?.contact || template?.contactStyle || 'labels'" /></ResumeSectionBlock>
       <ResumeSectionBlock tone="on-primary" :title="getSectionTitle('skills')" :icon="resolveSectionIcon('skills')" :show-icon="shouldShowSectionIcons" :is-empty="!(resume.skills?.length)"><ResumeSectionRenderer section-key="skill" :resume="resume" :template="template" /></ResumeSectionBlock>
       <ResumeSectionBlock tone="on-primary" :title="getSectionTitle('languages')" :icon="resolveSectionIcon('languages')" :show-icon="shouldShowSectionIcons" :is-empty="!(resume.languages?.length)"><ResumeSectionRenderer section-key="language" :resume="resume" :template="template" /></ResumeSectionBlock>
       <ResumeSectionBlock tone="on-primary" :title="getSectionTitle('references')" :icon="resolveSectionIcon('references')" :show-icon="shouldShowSectionIcons" :is-empty="!(resume.references?.length)"><ResumeSectionRenderer section-key="reference" :resume="resume" :template="template" /></ResumeSectionBlock>

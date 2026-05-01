@@ -87,7 +87,7 @@ const styleVars = computed(() => {
 <template>
   <div class="no-aside" :class="{ 'header-on-primary': headerOnPrimary }" :style="styleVars">
     <ResumeSectionHeader class="layout-header" :resume="resume" :template="template" />
-    <ResumeSectionBlock :title="getSectionTitle('contact')" :icon="resolveSectionIcon('contact')" :show-icon="shouldShowSectionIcons" :is-empty="isContactEmpty"><ResumeSectionContact :resume="resume" :show-title="false" /></ResumeSectionBlock>
+    <ResumeSectionBlock :title="getSectionTitle('contact')" :icon="resolveSectionIcon('contact')" :show-icon="shouldShowSectionIcons" :is-empty="isContactEmpty"><ResumeSectionContact :resume="resume" :show-title="false" :contact-style="template?.sections?.contact || template?.contactStyle || 'labels'" /></ResumeSectionBlock>
     <ResumeSectionBlock :title="getSectionTitle('profile')" :icon="resolveSectionIcon('profile')" :show-icon="shouldShowSectionIcons" :is-empty="isProfileEmpty"><ResumeSectionProfile :resume="resume" :show-title="false" /></ResumeSectionBlock>
     <ResumeSectionBlock :title="getSectionTitle('experience')" :icon="resolveSectionIcon('experience')" :show-icon="shouldShowSectionIcons" :is-empty="!(resume.experiences?.length)"><ResumeSectionRenderer section-key="experience" :resume="resume" :template="template" /></ResumeSectionBlock>
     <ResumeSectionBlock :title="getSectionTitle('education')" :icon="resolveSectionIcon('education')" :show-icon="shouldShowSectionIcons" :is-empty="!(resume.educations?.length)"><ResumeSectionRenderer section-key="education" :resume="resume" :template="template" /></ResumeSectionBlock>

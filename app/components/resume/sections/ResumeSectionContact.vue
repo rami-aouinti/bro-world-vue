@@ -1,41 +1,71 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { ResumeApiItem } from '~/services/resumeApi'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     resume: ResumeApiItem
     showTitle?: boolean
+    contactStyle?: 'labels' | 'icons'
   }>(),
-  { showTitle: true },
+  { showTitle: true, contactStyle: 'labels' },
 )
+
+type ContactField = {
+  key: string
+  label: string
+  icon: string
+  value: string
+  href?: string
+}
+
+const contactFields = computed<ContactField[]>(() => {
+  const info = props.resume.resumeInformation
+  const normalize = (value: unknown) => (typeof value === 'string' ? value.trim() : '')
+
+  return [
+    { key: 'email', label: 'Email', icon: 'mdi-email-outline', value: normalize(info?.email), href: normalize(info?.email) ? `mailto:${normalize(info?.email)}` : undefined },
+    { key: 'phone', label: 'Phone', icon: 'mdi-phone-outline', value: normalize(info?.phone), href: normalize(info?.phone) ? `tel:${normalize(info?.phone).replace(/\s+/g, '')}` : undefined },
+    { key: 'address', label: 'Address', icon: 'mdi-map-marker-outline', value: normalize(info?.adresse) },
+    { key: 'birthDate', label: 'Birth date', icon: 'mdi-cake-variant-outline', value: normalize(info?.birthDate) },
+    { key: 'homepage', label: 'Homepage', icon: 'mdi-web', value: normalize(info?.homepage), href: normalize(info?.homepage) || undefined },
+    { key: 'repo', label: 'Repo', icon: 'mdi-source-repository', value: normalize(info?.repo_profile), href: normalize(info?.repo_profile) || undefined },
+  ].filter((field) => field.value.length > 0)
+})
 </script>
 
 <template>
-  <section class="section">
+  <section class="section contact-section">
     <h3 v-if="showTitle">Contact</h3>
-    <p>{{ resume.resumeInformation?.email }}</p>
-    <p>{{ resume.resumeInformation?.phone }}</p>
-    <p>{{ resume.resumeInformation?.adresse }}</p>
-    <p>{{ resume.resumeInformation?.birthDate }}</p>
-    <p>
+    <p v-for="field in contactFields" :key="field.key" class="contact-line">
+      <template v-if="contactStyle === 'icons'">
+        <v-icon size="16" class="mr-2">{{ field.icon }}</v-icon>
+      </template>
+      <template v-else>
+        <strong class="label">{{ field.label }}:</strong>
+      </template>
       <a
-        v-if="resume.resumeInformation?.homepage"
-        :href="resume.resumeInformation.homepage"
+        v-if="field.href"
+        :href="field.href"
         target="_blank"
         rel="noopener noreferrer"
       >
-        {{ resume.resumeInformation.homepage }}
+        {{ field.value }}
       </a>
-    </p>
-    <p>
-      <a
-        v-if="resume.resumeInformation?.repo_profile"
-        :href="resume.resumeInformation.repo_profile"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {{ resume.resumeInformation.repo_profile }}
-      </a>
+      <span v-else>{{ field.value }}</span>
     </p>
   </section>
 </template>
+
+<style scoped>
+.contact-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 6px;
+}
+
+.label {
+  min-width: 82px;
+}
+</style>

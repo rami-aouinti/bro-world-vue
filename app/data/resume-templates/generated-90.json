@@ -14,7 +14,8 @@
       "certifications": "list",
       "references": "classic",
       "projects": "cards",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -93,7 +94,8 @@
       "certifications": "list",
       "references": "classic",
       "projects": "cards",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -172,7 +174,8 @@
       "certifications": "list",
       "references": "classic",
       "projects": "cards",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -251,7 +254,8 @@
       "certifications": "list",
       "references": "classic",
       "projects": "cards",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -330,7 +334,8 @@
       "certifications": "list",
       "references": "classic",
       "projects": "cards",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -409,7 +414,8 @@
       "certifications": "list",
       "references": "classic",
       "projects": "cards",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -488,7 +494,8 @@
       "certifications": "list",
       "references": "classic",
       "projects": "cards",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -567,7 +574,8 @@
       "certifications": "list",
       "references": "classic",
       "projects": "cards",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -646,7 +654,8 @@
       "certifications": "list",
       "references": "classic",
       "projects": "cards",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -725,7 +734,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "cards",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -804,7 +814,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "cards",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -883,7 +894,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "cards",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -962,7 +974,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "cards",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -1014,7 +1027,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "cards",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -1066,7 +1080,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "cards",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -1118,7 +1133,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "cards",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -1170,7 +1186,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "cards",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -1222,7 +1239,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "cards",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -1274,7 +1292,8 @@
       "certifications": "list",
       "references": "list",
       "projects": "list",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -1326,7 +1345,8 @@
       "certifications": "list",
       "references": "list",
       "projects": "list",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -1378,7 +1398,8 @@
       "certifications": "list",
       "references": "list",
       "projects": "list",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -1430,7 +1451,8 @@
       "certifications": "list",
       "references": "list",
       "projects": "list",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -1482,7 +1504,8 @@
       "certifications": "list",
       "references": "list",
       "projects": "list",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -1534,7 +1557,8 @@
       "certifications": "list",
       "references": "list",
       "projects": "list",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -1586,7 +1610,8 @@
       "certifications": "list",
       "references": "list",
       "projects": "list",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -1638,7 +1663,8 @@
       "certifications": "list",
       "references": "list",
       "projects": "list",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -1690,7 +1716,8 @@
       "certifications": "list",
       "references": "list",
       "projects": "list",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -1742,7 +1769,8 @@
       "certifications": "two-columns",
       "references": "classic",
       "projects": "two-columns",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -1794,7 +1822,8 @@
       "certifications": "two-columns",
       "references": "classic",
       "projects": "two-columns",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -1846,7 +1875,8 @@
       "certifications": "two-columns",
       "references": "classic",
       "projects": "two-columns",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -1898,7 +1928,8 @@
       "certifications": "two-columns",
       "references": "classic",
       "projects": "two-columns",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -1950,7 +1981,8 @@
       "certifications": "two-columns",
       "references": "classic",
       "projects": "two-columns",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2002,7 +2034,8 @@
       "certifications": "two-columns",
       "references": "classic",
       "projects": "two-columns",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2054,7 +2087,8 @@
       "certifications": "two-columns",
       "references": "classic",
       "projects": "two-columns",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2106,7 +2140,8 @@
       "certifications": "two-columns",
       "references": "classic",
       "projects": "two-columns",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2158,7 +2193,8 @@
       "certifications": "two-columns",
       "references": "classic",
       "projects": "two-columns",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2210,7 +2246,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "timeline",
-      "interests": "cards"
+      "interests": "cards",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2262,7 +2299,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "timeline",
-      "interests": "cards"
+      "interests": "cards",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2314,7 +2352,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "timeline",
-      "interests": "cards"
+      "interests": "cards",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2366,7 +2405,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "timeline",
-      "interests": "cards"
+      "interests": "cards",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2418,7 +2458,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "timeline",
-      "interests": "cards"
+      "interests": "cards",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2470,7 +2511,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "timeline",
-      "interests": "cards"
+      "interests": "cards",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2522,7 +2564,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "timeline",
-      "interests": "cards"
+      "interests": "cards",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2574,7 +2617,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "timeline",
-      "interests": "cards"
+      "interests": "cards",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2626,7 +2670,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "timeline",
-      "interests": "cards"
+      "interests": "cards",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2678,7 +2723,8 @@
       "certifications": "classic",
       "references": "classic",
       "projects": "classic",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2730,7 +2776,8 @@
       "certifications": "classic",
       "references": "classic",
       "projects": "classic",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2782,7 +2829,8 @@
       "certifications": "classic",
       "references": "classic",
       "projects": "classic",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2834,7 +2882,8 @@
       "certifications": "classic",
       "references": "classic",
       "projects": "classic",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2886,7 +2935,8 @@
       "certifications": "classic",
       "references": "classic",
       "projects": "classic",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2938,7 +2988,8 @@
       "certifications": "classic",
       "references": "classic",
       "projects": "classic",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -2990,7 +3041,8 @@
       "certifications": "classic",
       "references": "classic",
       "projects": "classic",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -3042,7 +3094,8 @@
       "certifications": "classic",
       "references": "classic",
       "projects": "classic",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -3094,7 +3147,8 @@
       "certifications": "classic",
       "references": "classic",
       "projects": "classic",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -3146,7 +3200,8 @@
       "certifications": "list",
       "references": "list",
       "projects": "cards",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -3198,7 +3253,8 @@
       "certifications": "list",
       "references": "list",
       "projects": "cards",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -3250,7 +3306,8 @@
       "certifications": "list",
       "references": "list",
       "projects": "cards",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -3302,7 +3359,8 @@
       "certifications": "list",
       "references": "list",
       "projects": "cards",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -3354,7 +3412,8 @@
       "certifications": "list",
       "references": "list",
       "projects": "cards",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -3406,7 +3465,8 @@
       "certifications": "list",
       "references": "list",
       "projects": "cards",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -3458,7 +3518,8 @@
       "certifications": "list",
       "references": "list",
       "projects": "cards",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -3510,7 +3571,8 @@
       "certifications": "list",
       "references": "list",
       "projects": "cards",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -3562,7 +3624,8 @@
       "certifications": "list",
       "references": "list",
       "projects": "cards",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -3614,7 +3677,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "two-columns",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -3666,7 +3730,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "two-columns",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -3718,7 +3783,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "two-columns",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -3770,7 +3836,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "two-columns",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -3822,7 +3889,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "two-columns",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -3874,7 +3942,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "two-columns",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -3926,7 +3995,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "two-columns",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -3978,7 +4048,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "two-columns",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -4030,7 +4101,8 @@
       "certifications": "cards",
       "references": "list",
       "projects": "two-columns",
-      "interests": "classic"
+      "interests": "classic",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -4082,7 +4154,8 @@
       "certifications": "cards",
       "references": "classic",
       "projects": "cards",
-      "interests": "cards"
+      "interests": "cards",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -4134,7 +4207,8 @@
       "certifications": "cards",
       "references": "classic",
       "projects": "cards",
-      "interests": "cards"
+      "interests": "cards",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -4186,7 +4260,8 @@
       "certifications": "cards",
       "references": "classic",
       "projects": "cards",
-      "interests": "cards"
+      "interests": "cards",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -4238,7 +4313,8 @@
       "certifications": "cards",
       "references": "classic",
       "projects": "cards",
-      "interests": "cards"
+      "interests": "cards",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -4290,7 +4366,8 @@
       "certifications": "cards",
       "references": "classic",
       "projects": "cards",
-      "interests": "cards"
+      "interests": "cards",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -4342,7 +4419,8 @@
       "certifications": "cards",
       "references": "classic",
       "projects": "cards",
-      "interests": "cards"
+      "interests": "cards",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -4394,7 +4472,8 @@
       "certifications": "cards",
       "references": "classic",
       "projects": "cards",
-      "interests": "cards"
+      "interests": "cards",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -4446,7 +4525,8 @@
       "certifications": "cards",
       "references": "classic",
       "projects": "cards",
-      "interests": "cards"
+      "interests": "cards",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -4498,7 +4578,8 @@
       "certifications": "cards",
       "references": "classic",
       "projects": "cards",
-      "interests": "cards"
+      "interests": "cards",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -4550,7 +4631,8 @@
       "certifications": "timeline",
       "references": "timeline",
       "projects": "classic",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -4602,7 +4684,8 @@
       "certifications": "timeline",
       "references": "timeline",
       "projects": "classic",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -4654,7 +4737,8 @@
       "certifications": "timeline",
       "references": "timeline",
       "projects": "classic",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -4706,7 +4790,8 @@
       "certifications": "timeline",
       "references": "timeline",
       "projects": "classic",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -4758,7 +4843,8 @@
       "certifications": "timeline",
       "references": "timeline",
       "projects": "classic",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -4810,7 +4896,8 @@
       "certifications": "timeline",
       "references": "timeline",
       "projects": "classic",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -4862,7 +4949,8 @@
       "certifications": "timeline",
       "references": "timeline",
       "projects": "classic",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -4914,7 +5002,8 @@
       "certifications": "timeline",
       "references": "timeline",
       "projects": "classic",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -4966,7 +5055,8 @@
       "certifications": "timeline",
       "references": "timeline",
       "projects": "classic",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -5018,7 +5108,8 @@
       "certifications": "list",
       "references": "classic",
       "projects": "classic",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -5067,7 +5158,8 @@
       "certifications": "list",
       "references": "classic",
       "projects": "classic",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
@@ -5116,7 +5208,8 @@
       "certifications": "list",
       "references": "classic",
       "projects": "classic",
-      "interests": "list"
+      "interests": "list",
+      "contact": "labels"
     },
     "theme": {
       "palette": {
