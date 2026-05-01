@@ -2,7 +2,7 @@ export type ResumePhotoConfig = {
   position?: 'left' | 'right'
   size?: number
   border?: number
-  shape?: 'circle' | 'rounded' | 'square'
+  shape?: 'circle' | 'rounded' | 'square' | 'hex' | 'blob'
 }
 
 export type ResumeThemeConfig = {
@@ -28,7 +28,15 @@ export function buildThemeVars(
       ? '0px'
       : photoShape === 'rounded'
         ? '16px'
-        : '999px'
+        : photoShape === 'blob'
+          ? '58% 42% 62% 38% / 36% 56% 44% 64%'
+          : '999px'
+  const photoClipPath =
+    photoShape === 'hex'
+      ? 'polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0 50%)'
+      : photoShape === 'circle'
+        ? 'circle(50% at 50% 50%)'
+        : 'none'
 
   return {
     '--primary': config.primary ?? 'var(--cv-accent)',
@@ -41,5 +49,6 @@ export function buildThemeVars(
     '--photo-border': toPx(config.photo?.border, 4),
     '--photo-shape': photoShape,
     '--photo-radius': photoRadius,
+    '--photo-clip-path': photoClipPath,
   }
 }
