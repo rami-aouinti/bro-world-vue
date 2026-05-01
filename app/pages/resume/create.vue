@@ -306,6 +306,29 @@ type Template = {
     iconSize: 's' | 'm' | 'l'
     iconColor: 'accent' | 'neutral'
     sidebarWidth: number
+    layoutOptions: {
+      columnsGap: 'compact' | 'normal' | 'wide'
+      asideWidthMode: 'narrow' | 'standard' | 'wide'
+      sectionSpacing: 'tight' | 'normal' | 'loose'
+    }
+    photoOptions: {
+      shapeList: PhotoShape[]
+      shadow: 'none' | 'soft' | 'hard'
+      frame: 'none' | 'line' | 'double'
+    }
+    levelStyle: {
+      skills: 'dots' | 'bars' | 'text'
+      languages: 'dots' | 'bars' | 'text'
+    }
+    decorOptions: {
+      enabled: boolean
+      preset: 'none' | 'minimal' | 'geo'
+    }
+    sectionTitleStyle: {
+      icon: 'none' | 'outline' | 'filled'
+      underline: 'none' | 'solid' | 'accent'
+      casing: 'normal' | 'uppercase' | 'smallcaps'
+    }
   }>
 }
 
@@ -359,6 +382,17 @@ type LayoutSettings = {
   iconSize: 's' | 'm' | 'l'
   iconColor: 'accent' | 'neutral'
   layoutMode: ResumeLayoutMode
+  columnsGap: 'compact' | 'normal' | 'wide'
+  asideWidthMode: 'narrow' | 'standard' | 'wide'
+  sectionSpacing: 'tight' | 'normal' | 'loose'
+  photoShadow: 'none' | 'soft' | 'hard'
+  photoFrame: 'none' | 'line' | 'double'
+  skillLevelStyle: 'dots' | 'bars' | 'text'
+  languageLevelStyle: 'dots' | 'bars' | 'text'
+  decorPreset: 'none' | 'minimal' | 'geo'
+  sectionTitleIcon: 'none' | 'outline' | 'filled'
+  sectionTitleUnderline: 'none' | 'solid' | 'accent'
+  sectionTitleCasing: 'normal' | 'uppercase' | 'smallcaps'
   decorativeShapeA: DecorativeShapeSettings
   decorativeShapeB: DecorativeShapeSettings
 }
@@ -423,6 +457,17 @@ const createDefaultDesignSettings = (): DesignSettings => ({
     iconSize: 'm',
     iconColor: 'accent',
     layoutMode: CV_SOCLE_PRESETS[0]?.layoutMode ?? 'aside-left',
+    columnsGap: 'normal',
+    asideWidthMode: 'standard',
+    sectionSpacing: 'normal',
+    photoShadow: 'none',
+    photoFrame: 'none',
+    skillLevelStyle: 'dots',
+    languageLevelStyle: 'dots',
+    decorPreset: 'none',
+    sectionTitleIcon: 'outline',
+    sectionTitleUnderline: 'none',
+    sectionTitleCasing: 'normal',
     decorativeShapeA: {
       enabled: false,
       type: 'circle',
@@ -541,6 +586,23 @@ const layoutModeOptions = [
     value: 'no-aside',
   },
 ] as const
+
+const columnsGapOptions = [
+  { label: 'Columns gap · Compact', value: 'compact' },
+  { label: 'Columns gap · Normal', value: 'normal' },
+  { label: 'Columns gap · Wide', value: 'wide' },
+] as const
+const asideWidthModeOptions = [
+  { label: 'Aside width · Narrow', value: 'narrow' },
+  { label: 'Aside width · Standard', value: 'standard' },
+  { label: 'Aside width · Wide', value: 'wide' },
+] as const
+const sectionSpacingOptions = [
+  { label: 'Section spacing · Tight', value: 'tight' },
+  { label: 'Section spacing · Normal', value: 'normal' },
+  { label: 'Section spacing · Loose', value: 'loose' },
+] as const
+
 const photoPositionOptions = [
   {
     label: t('resumeBuilder.create.options.photoPosition.left'),
@@ -1459,6 +1521,15 @@ function applyTemplateSelection(_templateId: string) {
     if (config.photoPosition)
       layoutSettings.photoPosition = config.photoPosition
     if (config.layoutMode) layoutSettings.layoutMode = config.layoutMode
+    if (config.layoutOptions?.columnsGap) layoutSettings.columnsGap = config.layoutOptions.columnsGap
+    if (config.layoutOptions?.asideWidthMode) layoutSettings.asideWidthMode = config.layoutOptions.asideWidthMode
+    if (config.layoutOptions?.sectionSpacing) layoutSettings.sectionSpacing = config.layoutOptions.sectionSpacing
+    if (config.photoOptions?.shadow) layoutSettings.photoShadow = config.photoOptions.shadow
+    if (config.photoOptions?.frame) layoutSettings.photoFrame = config.photoOptions.frame
+    if (config.levelStyle?.skills) layoutSettings.skillLevelStyle = config.levelStyle.skills
+    if (config.levelStyle?.languages) layoutSettings.languageLevelStyle = config.levelStyle.languages
+    if (config.decorOptions?.preset) layoutSettings.decorPreset = config.decorOptions.preset
+    if (config.sectionTitleStyle?.icon) layoutSettings.sectionTitleIcon = config.sectionTitleStyle.icon
     if (config.lineDensity) layoutSettings.lineDensity = config.lineDensity
     if (config.sectionDividerStyle)
       layoutSettings.sectionDividerStyle = config.sectionDividerStyle
@@ -3203,6 +3274,11 @@ const resumeRendererDesignState = computed(() => ({
   iconSizeVariant: layoutSettings.iconSize,
   iconColorMode: layoutSettings.iconColor,
   layoutMode: layoutSettings.layoutMode,
+  layoutOptions: { columnsGap: layoutSettings.columnsGap, asideWidthMode: layoutSettings.asideWidthMode, sectionSpacing: layoutSettings.sectionSpacing },
+  photoOptions: { shapeList: [selectedPhotoShape.value], shadow: layoutSettings.photoShadow, frame: layoutSettings.photoFrame },
+  levelStyle: { skills: layoutSettings.skillLevelStyle, languages: layoutSettings.languageLevelStyle },
+  decorOptions: { enabled: layoutSettings.decorativeShapeA.enabled || layoutSettings.decorativeShapeB.enabled, preset: layoutSettings.decorPreset },
+  sectionTitleStyle: { icon: layoutSettings.sectionTitleIcon, underline: layoutSettings.sectionTitleUnderline, casing: layoutSettings.sectionTitleCasing },
   sidebarWidth: layoutSettings.sidebarWidth,
   sidebarHeight: layoutSettings.sidebarHeight,
   photoSize: layoutSettings.photoSize,
@@ -3928,6 +4004,11 @@ if (import.meta.client) {
             iconSize: layoutSettings.iconSize,
             iconColor: layoutSettings.iconColor,
             layoutMode: layoutSettings.layoutMode,
+  layoutOptions: { columnsGap: layoutSettings.columnsGap, asideWidthMode: layoutSettings.asideWidthMode, sectionSpacing: layoutSettings.sectionSpacing },
+  photoOptions: { shapeList: [selectedPhotoShape.value], shadow: layoutSettings.photoShadow, frame: layoutSettings.photoFrame },
+  levelStyle: { skills: layoutSettings.skillLevelStyle, languages: layoutSettings.languageLevelStyle },
+  decorOptions: { enabled: layoutSettings.decorativeShapeA.enabled || layoutSettings.decorativeShapeB.enabled, preset: layoutSettings.decorPreset },
+  sectionTitleStyle: { icon: layoutSettings.sectionTitleIcon, underline: layoutSettings.sectionTitleUnderline, casing: layoutSettings.sectionTitleCasing },
             photoPosition: layoutSettings.photoPosition,
             asideWidth: layoutSettings.sidebarWidth,
             asideHeight: layoutSettings.sidebarHeight,
@@ -4388,6 +4469,37 @@ if (import.meta.client) {
             hide-details
             class="mt-3"
           />
+
+          <AppSelect
+            v-model="layoutSettings.columnsGap"
+            :items="columnsGapOptions"
+            item-title="label"
+            item-value="value"
+            label="Columns gap"
+            density="comfortable"
+            hide-details
+            class="mt-3"
+          />
+          <AppSelect
+            v-model="layoutSettings.asideWidthMode"
+            :items="asideWidthModeOptions"
+            item-title="label"
+            item-value="value"
+            label="Aside width mode"
+            density="comfortable"
+            hide-details
+            class="mt-3"
+          />
+          <AppSelect
+            v-model="layoutSettings.sectionSpacing"
+            :items="sectionSpacingOptions"
+            item-title="label"
+            item-value="value"
+            label="Section spacing"
+            density="comfortable"
+            hide-details
+            class="mt-3"
+          />
           <AppSelect
             v-model="selectedTextStyle"
             :items="textStyleOptions"
@@ -4765,6 +4877,11 @@ if (import.meta.client) {
                             layoutId: templatePickerState.layoutId,
                             skinId: templatePickerState.skinId,
                             layoutMode: layoutSettings.layoutMode,
+  layoutOptions: { columnsGap: layoutSettings.columnsGap, asideWidthMode: layoutSettings.asideWidthMode, sectionSpacing: layoutSettings.sectionSpacing },
+  photoOptions: { shapeList: [selectedPhotoShape.value], shadow: layoutSettings.photoShadow, frame: layoutSettings.photoFrame },
+  levelStyle: { skills: layoutSettings.skillLevelStyle, languages: layoutSettings.languageLevelStyle },
+  decorOptions: { enabled: layoutSettings.decorativeShapeA.enabled || layoutSettings.decorativeShapeB.enabled, preset: layoutSettings.decorPreset },
+  sectionTitleStyle: { icon: layoutSettings.sectionTitleIcon, underline: layoutSettings.sectionTitleUnderline, casing: layoutSettings.sectionTitleCasing },
                           }"
                           editable
                           @add-item="addItemToPreviewSection"
@@ -5394,6 +5511,11 @@ if (import.meta.client) {
                         layoutId: templatePickerState.layoutId,
                         skinId: templatePickerState.skinId,
                         layoutMode: layoutSettings.layoutMode,
+  layoutOptions: { columnsGap: layoutSettings.columnsGap, asideWidthMode: layoutSettings.asideWidthMode, sectionSpacing: layoutSettings.sectionSpacing },
+  photoOptions: { shapeList: [selectedPhotoShape.value], shadow: layoutSettings.photoShadow, frame: layoutSettings.photoFrame },
+  levelStyle: { skills: layoutSettings.skillLevelStyle, languages: layoutSettings.languageLevelStyle },
+  decorOptions: { enabled: layoutSettings.decorativeShapeA.enabled || layoutSettings.decorativeShapeB.enabled, preset: layoutSettings.decorPreset },
+  sectionTitleStyle: { icon: layoutSettings.sectionTitleIcon, underline: layoutSettings.sectionTitleUnderline, casing: layoutSettings.sectionTitleCasing },
                       }"
                       editable
                       @add-item="addItemToPreviewSection"

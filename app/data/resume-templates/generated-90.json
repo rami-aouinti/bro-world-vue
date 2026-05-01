@@ -49,6 +49,33 @@
           "y": "0"
         }
       ]
+    },
+    "layoutOptions": {
+      "columnsGap": "wide",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal"
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "none",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "dots",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "geo"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "none",
+      "casing": "normal"
     }
   },
   {
@@ -101,6 +128,33 @@
           "y": "0"
         }
       ]
+    },
+    "layoutOptions": {
+      "columnsGap": "normal",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal"
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "soft",
+      "frame": "line"
+    },
+    "levelStyle": {
+      "skills": "bars",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "minimal"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "solid",
+      "casing": "normal"
     }
   },
   {
@@ -153,6 +207,33 @@
           "y": "0"
         }
       ]
+    },
+    "layoutOptions": {
+      "columnsGap": "normal",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal"
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "none",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "dots",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "geo"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "none",
+      "casing": "normal"
     }
   },
   {
@@ -205,6 +286,33 @@
           "y": "0"
         }
       ]
+    },
+    "layoutOptions": {
+      "columnsGap": "wide",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal"
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "soft",
+      "frame": "line"
+    },
+    "levelStyle": {
+      "skills": "bars",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "minimal"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "solid",
+      "casing": "normal"
     }
   },
   {
@@ -257,6 +365,33 @@
           "y": "0"
         }
       ]
+    },
+    "layoutOptions": {
+      "columnsGap": "normal",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal"
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "none",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "dots",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "geo"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "none",
+      "casing": "normal"
     }
   },
   {
@@ -309,6 +444,33 @@
           "y": "0"
         }
       ]
+    },
+    "layoutOptions": {
+      "columnsGap": "normal",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal"
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "soft",
+      "frame": "line"
+    },
+    "levelStyle": {
+      "skills": "bars",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "minimal"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "solid",
+      "casing": "normal"
     }
   },
   {
@@ -361,6 +523,33 @@
           "y": "0"
         }
       ]
+    },
+    "layoutOptions": {
+      "columnsGap": "wide",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal"
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "none",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "dots",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "geo"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "none",
+      "casing": "normal"
     }
   },
   {
@@ -413,6 +602,33 @@
           "y": "0"
         }
       ]
+    },
+    "layoutOptions": {
+      "columnsGap": "normal",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal"
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "soft",
+      "frame": "line"
+    },
+    "levelStyle": {
+      "skills": "bars",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "minimal"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "solid",
+      "casing": "normal"
     }
   },
   {
@@ -465,6 +681,33 @@
           "y": "0"
         }
       ]
+    },
+    "layoutOptions": {
+      "columnsGap": "normal",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal"
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "none",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "dots",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "geo"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "none",
+      "casing": "normal"
     }
   },
   {
@@ -517,6 +760,33 @@
           "y": "0"
         }
       ]
+    },
+    "layoutOptions": {
+      "columnsGap": "wide",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal"
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "soft",
+      "frame": "line"
+    },
+    "levelStyle": {
+      "skills": "bars",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "minimal"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "solid",
+      "casing": "normal"
     }
   },
   {
@@ -569,6 +839,33 @@
           "y": "0"
         }
       ]
+    },
+    "layoutOptions": {
+      "columnsGap": "normal",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal"
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "none",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "dots",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "geo"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "none",
+      "casing": "normal"
     }
   },
   {
@@ -621,6 +918,33 @@
           "y": "0"
         }
       ]
+    },
+    "layoutOptions": {
+      "columnsGap": "normal",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal"
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "soft",
+      "frame": "line"
+    },
+    "levelStyle": {
+      "skills": "bars",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "minimal"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "solid",
+      "casing": "normal"
     }
   },
   {

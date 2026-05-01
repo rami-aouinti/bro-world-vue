@@ -25,6 +25,18 @@ export const TEXT_STYLES = [
 ] as const
 export const LAYOUT_MODES = ['aside-left', 'aside-right', 'no-aside'] as const
 
+export const COLUMN_GAPS = ['compact', 'normal', 'wide'] as const
+export const ASIDE_WIDTH_MODES = ['narrow', 'standard', 'wide'] as const
+export const SECTION_SPACINGS = ['tight', 'normal', 'loose'] as const
+export const PHOTO_SHAPES = ['circle', 'rounded', 'square', 'hex', 'blob'] as const
+export const PHOTO_SHADOWS = ['none', 'soft', 'hard'] as const
+export const PHOTO_FRAMES = ['none', 'line', 'double'] as const
+export const LEVEL_STYLES = ['dots', 'bars', 'text'] as const
+export const DECOR_PRESETS = ['none', 'minimal', 'geo'] as const
+export const TITLE_ICONS = ['none', 'outline', 'filled'] as const
+export const TITLE_UNDERLINES = ['none', 'solid', 'accent'] as const
+export const TITLE_CASINGS = ['normal', 'uppercase', 'smallcaps'] as const
+
 export type TemplateLayout = (typeof TEMPLATE_LAYOUTS)[number]
 export type TemplateStructure = (typeof TEMPLATE_STRUCTURES)[number]
 export type ExperienceForm = (typeof EXPERIENCE_FORMS)[number]
@@ -36,6 +48,7 @@ export type LineStyle = (typeof LINE_STYLES)[number]
 export type Density = (typeof DENSITIES)[number]
 export type TextStyle = (typeof TEXT_STYLES)[number]
 export type LayoutMode = (typeof LAYOUT_MODES)[number]
+export type LevelStyle = (typeof LEVEL_STYLES)[number]
 
 export type TemplateSectionFormMap = {
   experience: ExperienceForm
@@ -55,6 +68,29 @@ export type TemplateConfig = {
   layoutMode?: LayoutMode
   languagesLabel?: LanguagesLabel
   forms?: Partial<TemplateSectionFormMap>
+  layoutOptions?: {
+    columnsGap?: (typeof COLUMN_GAPS)[number]
+    asideWidthMode?: (typeof ASIDE_WIDTH_MODES)[number]
+    sectionSpacing?: (typeof SECTION_SPACINGS)[number]
+  }
+  photoOptions?: {
+    shapeList?: Array<(typeof PHOTO_SHAPES)[number]>
+    shadow?: (typeof PHOTO_SHADOWS)[number]
+    frame?: (typeof PHOTO_FRAMES)[number]
+  }
+  levelStyle?: {
+    skills?: LevelStyle
+    languages?: LevelStyle
+  }
+  decorOptions?: {
+    enabled?: boolean
+    preset?: (typeof DECOR_PRESETS)[number]
+  }
+  sectionTitleStyle?: {
+    icon?: (typeof TITLE_ICONS)[number]
+    underline?: (typeof TITLE_UNDERLINES)[number]
+    casing?: (typeof TITLE_CASINGS)[number]
+  }
 }
 
 export type NormalizedTemplateConfig = {
@@ -68,6 +104,29 @@ export type NormalizedTemplateConfig = {
   layoutMode: LayoutMode
   languagesLabel: LanguagesLabel
   forms: TemplateSectionFormMap
+  layoutOptions: {
+    columnsGap: (typeof COLUMN_GAPS)[number]
+    asideWidthMode: (typeof ASIDE_WIDTH_MODES)[number]
+    sectionSpacing: (typeof SECTION_SPACINGS)[number]
+  }
+  photoOptions: {
+    shapeList: Array<(typeof PHOTO_SHAPES)[number]>
+    shadow: (typeof PHOTO_SHADOWS)[number]
+    frame: (typeof PHOTO_FRAMES)[number]
+  }
+  levelStyle: {
+    skills: LevelStyle
+    languages: LevelStyle
+  }
+  decorOptions: {
+    enabled: boolean
+    preset: (typeof DECOR_PRESETS)[number]
+  }
+  sectionTitleStyle: {
+    icon: (typeof TITLE_ICONS)[number]
+    underline: (typeof TITLE_UNDERLINES)[number]
+    casing: (typeof TITLE_CASINGS)[number]
+  }
 }
 
 const DEFAULT_TEMPLATE_CONFIG: NormalizedTemplateConfig = {
@@ -86,6 +145,11 @@ const DEFAULT_TEMPLATE_CONFIG: NormalizedTemplateConfig = {
     skills: 'dots',
     languages: 'rating',
   },
+  layoutOptions: { columnsGap: 'normal', asideWidthMode: 'standard', sectionSpacing: 'normal' },
+  photoOptions: { shapeList: ['circle', 'rounded', 'square'], shadow: 'none', frame: 'none' },
+  levelStyle: { skills: 'dots', languages: 'dots' },
+  decorOptions: { enabled: false, preset: 'none' },
+  sectionTitleStyle: { icon: 'outline', underline: 'none', casing: 'normal' },
 }
 
 const SECTION_FALLBACKS: TemplateSectionFormMap = {
@@ -184,6 +248,29 @@ export function validateTemplateConfig(raw: unknown): NormalizedTemplateConfig {
         LANGUAGES_FORMS,
         SECTION_FALLBACKS.languages,
       ),
+    },
+    layoutOptions: {
+      columnsGap: normalizeEnum(candidate.layoutOptions?.columnsGap, COLUMN_GAPS, DEFAULT_TEMPLATE_CONFIG.layoutOptions.columnsGap),
+      asideWidthMode: normalizeEnum(candidate.layoutOptions?.asideWidthMode, ASIDE_WIDTH_MODES, DEFAULT_TEMPLATE_CONFIG.layoutOptions.asideWidthMode),
+      sectionSpacing: normalizeEnum(candidate.layoutOptions?.sectionSpacing, SECTION_SPACINGS, DEFAULT_TEMPLATE_CONFIG.layoutOptions.sectionSpacing),
+    },
+    photoOptions: {
+      shapeList: Array.isArray(candidate.photoOptions?.shapeList) ? candidate.photoOptions.shapeList.filter((shape): shape is (typeof PHOTO_SHAPES)[number] => PHOTO_SHAPES.includes(shape as any)) : DEFAULT_TEMPLATE_CONFIG.photoOptions.shapeList,
+      shadow: normalizeEnum(candidate.photoOptions?.shadow, PHOTO_SHADOWS, DEFAULT_TEMPLATE_CONFIG.photoOptions.shadow),
+      frame: normalizeEnum(candidate.photoOptions?.frame, PHOTO_FRAMES, DEFAULT_TEMPLATE_CONFIG.photoOptions.frame),
+    },
+    levelStyle: {
+      skills: normalizeEnum(candidate.levelStyle?.skills, LEVEL_STYLES, DEFAULT_TEMPLATE_CONFIG.levelStyle.skills),
+      languages: normalizeEnum(candidate.levelStyle?.languages, LEVEL_STYLES, DEFAULT_TEMPLATE_CONFIG.levelStyle.languages),
+    },
+    decorOptions: {
+      enabled: typeof candidate.decorOptions?.enabled === 'boolean' ? candidate.decorOptions.enabled : DEFAULT_TEMPLATE_CONFIG.decorOptions.enabled,
+      preset: normalizeEnum(candidate.decorOptions?.preset, DECOR_PRESETS, DEFAULT_TEMPLATE_CONFIG.decorOptions.preset),
+    },
+    sectionTitleStyle: {
+      icon: normalizeEnum(candidate.sectionTitleStyle?.icon, TITLE_ICONS, DEFAULT_TEMPLATE_CONFIG.sectionTitleStyle.icon),
+      underline: normalizeEnum(candidate.sectionTitleStyle?.underline, TITLE_UNDERLINES, DEFAULT_TEMPLATE_CONFIG.sectionTitleStyle.underline),
+      casing: normalizeEnum(candidate.sectionTitleStyle?.casing, TITLE_CASINGS, DEFAULT_TEMPLATE_CONFIG.sectionTitleStyle.casing),
     },
   }
 }
