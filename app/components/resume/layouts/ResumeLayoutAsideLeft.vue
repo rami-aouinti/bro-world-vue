@@ -35,9 +35,17 @@ const getSectionTitle = (sectionKey: string) => {
 }
 const shouldShowSectionIcons = computed(() => props.template?.theme?.showIcon !== false)
 
-const resolvedZones = computed(() => resolveLayoutZonesWithConfig(props.template?.structure, props.template?.structureConfig))
-const asideSections = computed(() => (resolvedZones.value.aside.length ? resolvedZones.value.aside : resolveLayoutZonesWithConfig('structure-2').aside))
-const mainSections = computed(() => (resolvedZones.value.aside.length ? resolvedZones.value.main : resolvedZones.value.main.filter((section) => section.id !== 'contact')))
+const resolvedZones = computed(() =>
+  resolveLayoutZonesWithConfig(props.template?.structure, props.template?.structureConfig),
+)
+const fallbackSplitZones = resolveLayoutZonesWithConfig('structure-2')
+const usesFallbackSplit = computed(() => resolvedZones.value.aside.length === 0)
+const asideSections = computed(() =>
+  usesFallbackSplit.value ? fallbackSplitZones.aside : resolvedZones.value.aside,
+)
+const mainSections = computed(() =>
+  usesFallbackSplit.value ? fallbackSplitZones.main : resolvedZones.value.main,
+)
 
 function sectionEmpty(sectionId: string) {
   return isSectionEmpty(props.resume, sectionId)
