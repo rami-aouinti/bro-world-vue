@@ -20,6 +20,8 @@ export type ResumeSectionRendererVariant =
 
 export type ResumeSectionRendererProps = {
   items?: unknown[]
+  sectionKey?: ResumeSectionRendererKey | 'general'
+  template?: ResumeSectionRendererVariant
   theme?: Record<string, string | number>
   showIcon?: boolean
   density?: 'compact' | 'normal' | 'spacious' | string

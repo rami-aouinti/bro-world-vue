@@ -10,6 +10,7 @@ defineProps<ResumeSectionRendererProps>()
     :theme="theme"
     :show-icon="showIcon"
     :density="density"
-    variant-label="LanguagesTimeline"
+    section-key="languages"
+    template="timeline"
   />
 </template>

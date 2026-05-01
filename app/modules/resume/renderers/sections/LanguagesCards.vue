@@ -10,6 +10,7 @@ defineProps<ResumeSectionRendererProps>()
     :theme="theme"
     :show-icon="showIcon"
     :density="density"
-    variant-label="LanguagesCards"
+    section-key="languages"
+    template="cards"
   />
 </template>

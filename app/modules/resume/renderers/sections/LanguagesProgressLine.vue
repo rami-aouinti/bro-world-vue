@@ -10,6 +10,7 @@ defineProps<ResumeSectionRendererProps>()
     :theme="theme"
     :show-icon="showIcon"
     :density="density"
-    variant-label="LanguagesProgressLine"
+    section-key="languages"
+    template="progress-line"
   />
 </template>

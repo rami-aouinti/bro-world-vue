@@ -10,6 +10,7 @@ defineProps<ResumeSectionRendererProps>()
     :theme="theme"
     :show-icon="showIcon"
     :density="density"
-    variant-label="ExperienceTimeline"
+    section-key="experience"
+    template="timeline"
   />
 </template>

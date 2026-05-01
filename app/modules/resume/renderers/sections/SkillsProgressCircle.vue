@@ -10,6 +10,7 @@ defineProps<ResumeSectionRendererProps>()
     :theme="theme"
     :show-icon="showIcon"
     :density="density"
-    variant-label="SkillsProgressCircle"
+    section-key="skills"
+    template="progress-circle"
   />
 </template>
