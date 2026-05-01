@@ -124,9 +124,18 @@ onBeforeUnmount(() => {
       type="button"
       @click="openPhotoPicker"
     >
-      <v-img v-if="currentPhotoUrl" :src="currentPhotoUrl" alt="Photo de profil" class="avatar-image"/>
+      <v-img
+        v-if="currentPhotoUrl"
+        :src="currentPhotoUrl"
+        alt="Photo de profil"
+        class="avatar-image"
+        cover
+      />
       <span v-else>{{ initials }}</span>
       <span class="avatar-overlay">Changer</span>
+      <span class="avatar-corner-icon" aria-hidden="true">
+        <v-icon icon="mdi-camera-plus" size="16" />
+      </span>
       <span v-if="isPhotoLoading" class="avatar-loader">Chargement…</span>
     </button>
 
@@ -177,7 +186,36 @@ onBeforeUnmount(() => {
 }
 .avatar:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(15, 76, 129, .24); }
 .avatar:focus-visible { outline: 2px solid #1d4ed8; outline-offset: 2px; }
-.avatar-image { width: 100%; height: 100%; object-fit: cover; }
+.avatar-image { width: 100%; height: 100%; }
+.avatar-image :deep(.v-responsive),
+.avatar-image :deep(.v-img),
+.avatar-image :deep(.v-responsive__content) {
+  width: 100%;
+  height: 100%;
+}
+.avatar-image :deep(.v-img__img) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+.avatar-corner-icon {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: rgba(15, 76, 129, 0.92);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 2;
+  pointer-events: none;
+}
 .avatar-overlay {
   position: absolute;
   inset: auto 0 0 0;
