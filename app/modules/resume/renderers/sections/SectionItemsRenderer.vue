@@ -3,11 +3,16 @@ import { computed } from 'vue'
 import { formatDateRange, sortByStartDateDescKeepingSourceOrder } from '../formatters/dateRange'
 import type { ResumeSectionRendererProps } from './types'
 
+type DescriptionChunk =
+  | { type: 'paragraph'; text: string }
+  | { type: 'bullets'; items: string[] }
+
 type NormalizedItem = {
   heading: string
   subheading: string
+  location: string
   period: string
-  description: string
+  descriptionChunks: DescriptionChunk[]
 }
 
 const props = withDefaults(defineProps<ResumeSectionRendererProps>(), {
@@ -18,6 +23,69 @@ const props = withDefaults(defineProps<ResumeSectionRendererProps>(), {
   sectionKey: 'general',
   template: 'list',
 })
+
+function normalizeBulletLine(line: string): string {
+  return line.replace(/^[-*•◦▪‣]+\s*/, '').trim()
+}
+
+function toDescriptionChunks(raw: string): DescriptionChunk[] {
+  const text = raw.trim()
+  if (!text) {
+    return []
+  }
+
+  const lines = text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+
+  if (!lines.length) {
+    return []
+  }
+
+  const chunks: DescriptionChunk[] = []
+  let paragraphBuffer: string[] = []
+  let bulletBuffer: string[] = []
+
+  const flushParagraph = () => {
+    if (paragraphBuffer.length) {
+      chunks.push({ type: 'paragraph', text: paragraphBuffer.join(' ') })
+      paragraphBuffer = []
+    }
+  }
+
+  const flushBullets = () => {
+    if (bulletBuffer.length) {
+      chunks.push({ type: 'bullets', items: [...bulletBuffer] })
+      bulletBuffer = []
+    }
+  }
+
+  for (const line of lines) {
+    const isBullet = /^[-*•◦▪‣]\s+/.test(line)
+
+    if (isBullet) {
+      flushParagraph()
+      const normalized = normalizeBulletLine(line)
+      if (normalized) {
+        bulletBuffer.push(normalized)
+      }
+      continue
+    }
+
+    flushBullets()
+    paragraphBuffer.push(line)
+  }
+
+  flushParagraph()
+  flushBullets()
+
+  if (!chunks.length) {
+    return [{ type: 'paragraph', text }]
+  }
+
+  return chunks
+}
 
 const emptyMessage = computed(() => {
   const labels: Record<string, string> = {
@@ -58,6 +126,12 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
       (item.institution as string) ||
       ''
 
+    const location =
+      (item.location as string) ||
+      (item.city as string) ||
+      (item.place as string) ||
+      ''
+
     const start = item.startDate ?? item.start
     const end = item.endDate ?? item.end
     const period = formatDateRange(start, end)
@@ -68,7 +142,13 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
       (item.details as string) ||
       ''
 
-    return { heading, subheading, period, description }
+    return {
+      heading,
+      subheading,
+      location,
+      period,
+      descriptionChunks: toDescriptionChunks(description),
+    }
   })
 })
 </script>
@@ -84,8 +164,19 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
         <p v-if="item.period" class="renderer-period">{{ item.period }}</p>
         <div class="renderer-timeline-content">
           <p class="renderer-heading">{{ item.heading }}</p>
-          <p v-if="item.subheading" class="renderer-subheading">{{ item.subheading }}</p>
-          <p v-if="item.description" class="renderer-description">{{ item.description }}</p>
+          <p v-if="item.subheading || item.location" class="renderer-subheading">
+            <span v-if="item.subheading">{{ item.subheading }}</span>
+            <span v-if="item.subheading && item.location" aria-hidden="true"> · </span>
+            <span v-if="item.location">{{ item.location }}</span>
+          </p>
+          <div v-if="item.descriptionChunks.length" class="renderer-description-block">
+            <template v-for="(chunk, chunkIndex) in item.descriptionChunks" :key="chunkIndex">
+              <p v-if="chunk.type === 'paragraph'" class="renderer-description">{{ chunk.text }}</p>
+              <ul v-else class="renderer-description-list">
+                <li v-for="(bullet, bulletIndex) in chunk.items" :key="bulletIndex">{{ bullet }}</li>
+              </ul>
+            </template>
+          </div>
         </div>
       </li>
     </ol>
@@ -97,7 +188,6 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
           <p v-if="item.period" class="renderer-period">{{ item.period }}</p>
         </div>
         <p v-if="item.subheading" class="renderer-subheading">{{ item.subheading }}</p>
-        <p v-if="item.description" class="renderer-description">{{ item.description }}</p>
       </article>
     </div>
 
@@ -110,7 +200,6 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
             <p v-if="item.period" class="renderer-period">{{ item.period }}</p>
           </div>
           <p v-if="item.subheading" class="renderer-subheading">{{ item.subheading }}</p>
-          <p v-if="item.description" class="renderer-description">{{ item.description }}</p>
         </div>
       </li>
     </ul>
@@ -123,7 +212,6 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
           <p v-if="item.period" class="renderer-period">{{ item.period }}</p>
         </div>
         <p v-if="item.subheading" class="renderer-subheading">{{ item.subheading }}</p>
-        <p v-if="item.description" class="renderer-description">{{ item.description }}</p>
       </li>
     </ul>
   </section>
@@ -178,6 +266,24 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
   color: color-mix(in srgb, currentColor 87%, transparent);
 }
 
+.renderer-description-block {
+  margin-top: var(--section-space-xs);
+  display: grid;
+  gap: var(--section-space-xs);
+}
+
+.renderer-description-block .renderer-description {
+  margin: 0;
+}
+
+.renderer-description-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: var(--section-font-description);
+  line-height: 1.45;
+  color: color-mix(in srgb, currentColor 87%, transparent);
+}
+
 .renderer-list {
   margin: 0;
   padding: 0;
@@ -221,7 +327,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 .renderer-timeline-item {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(5.3rem, 7rem) 1fr;
+  grid-template-columns: minmax(7rem, 8.5rem) 1fr;
   gap: var(--section-space-md);
   padding: 0 0 var(--section-space-md) 1.05rem;
 }
@@ -246,6 +352,10 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
   border-radius: 999px;
   border: 1px solid var(--section-border-soft);
   background: color-mix(in srgb, currentColor 8%, white);
+}
+
+.renderer-timeline-item:last-child::before {
+  bottom: 0.35rem;
 }
 
 .renderer-timeline-item .renderer-period { grid-column: 1; }
