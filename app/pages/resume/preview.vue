@@ -64,7 +64,11 @@ const fakeResume: ResumeApiItem = {
     },
   ],
   skills: [{ title: 'Vue.js' }, { title: 'TypeScript' }, { title: 'Node.js' }],
-  languages: [{ title: 'Français' }, { title: 'Anglais' }],
+  languages: [
+    { title: 'Français', countryCode: 'FR' },
+    { title: 'Anglais', countryCode: 'GB' },
+    { title: 'Espagnol', countryCode: 'ES' },
+  ],
 }
 
 const selectedTemplate = computed(() => {
