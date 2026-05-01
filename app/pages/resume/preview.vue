@@ -5,6 +5,10 @@ import ResumeLayoutAside from '~/components/resume/layouts/ResumeLayoutAside.vue
 import ResumeLayoutAsideLeft from '~/components/resume/layouts/ResumeLayoutAsideLeft.vue'
 import ResumeLayoutAsideRight from '~/components/resume/layouts/ResumeLayoutAsideRight.vue'
 import ResumeLayoutNoAside from '~/components/resume/layouts/ResumeLayoutNoAside.vue'
+import ResumeLayoutAsideFullLeft from '~/components/resume/layouts/ResumeLayoutAsideFullLeft.vue'
+import ResumeLayoutAsideFullRight from '~/components/resume/layouts/ResumeLayoutAsideFullRight.vue'
+import ResumeLayoutBarLeft from '~/components/resume/layouts/ResumeLayoutBarLeft.vue'
+import ResumeLayoutBarRight from '~/components/resume/layouts/ResumeLayoutBarRight.vue'
 import ResumeTemplateDecor from '~/components/Resume/ResumeTemplateDecor.vue'
 
 definePageMeta({
@@ -14,7 +18,6 @@ definePageMeta({
 
 type GeneratedTemplate = (typeof GENERATED_RESUME_TEMPLATES)[number]
 type SectionVariants = Record<string, string>
-
 const route = useRoute()
 const router = useRouter()
 const { allTemplates } = useResumeTemplates()
@@ -23,7 +26,7 @@ const loadingResumes = ref(false)
 const resumesError = ref('')
 const myResumes = ref<ResumeApiItem[]>([])
 
-const CONTROLLED_LAYOUTS = ['aside-left', 'aside-right', 'no-aside', 'aside'] as const
+const CONTROLLED_LAYOUTS = ['aside-left', 'aside-right', 'no-aside', 'aside', 'aside-full-left', 'aside-full-right', 'bar-left', 'bar-right'] as const
 
 const layoutFilterOptions = computed(() => {
   const layouts = Array.from(
@@ -92,6 +95,7 @@ const selectedSectionVariants = ref<SectionVariants>({})
 const selectedTextStyle = ref<string>('')
 const selectedAsideWidth = ref<number>(240)
 const selectedAsideHeight = ref<number>(100)
+const selectedHeaderBandHeight = ref<number>(100)
 
 const selectedPhotoPosition = ref<string>('left')
 const selectedPhotoSize = ref<number>(96)
@@ -242,6 +246,7 @@ const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
   if (selectedTextStyle.value) nextTheme.textStyle = selectedTextStyle.value as any
   nextAside.width = `${selectedAsideWidth.value}px`
   nextAside.height = `${selectedAsideHeight.value}%`
+  ;(nextTheme as any).headerBandHeight = selectedHeaderBandHeight.value
 
   if (selectedPalette.value === 'custom') {
     nextTheme.palette.primary = customPalettePrimary.value
@@ -309,6 +314,9 @@ watch(
     selectedAsideWidth.value = Number.parseInt(asideWidthSource.replace('px', ''), 10) || 240
     selectedAsideHeight.value = Number.parseInt(asideHeightSource.replace('%', ''), 10) || 100
 
+    const headerBandHeightSource = typeof route.query.headerBandHeight === 'string' ? route.query.headerBandHeight : String((template.theme as any)?.headerBandHeight || '100')
+    selectedHeaderBandHeight.value = Number.parseInt(headerBandHeightSource, 10) || 100
+
     const photo = template.photo || { position: 'left', size: '96px', shape: 'circle', border: '2px solid #0F4C81' }
     editableDecorCorners.value = (template.decor?.corners || []).map((corner: any) => normalizeDecorCorner(corner))
     selectedPhotoPosition.value =
@@ -341,6 +349,7 @@ watch(
     selectedTextStyle,
     selectedAsideWidth,
     selectedAsideHeight,
+    selectedHeaderBandHeight,
     selectedPhotoPosition,
     selectedPhotoSize,
     selectedPhotoShape,
@@ -362,6 +371,7 @@ watch(
       photoSize: String(selectedPhotoSize.value),
       photoShape: selectedPhotoShape.value,
       photoBorder: `${selectedPhotoBorderWidth.value}px ${selectedPhotoBorderStyle.value} ${selectedPhotoBorderColor.value}`,
+      headerBandHeight: String(selectedHeaderBandHeight.value),
     } as Record<string, string>
 
     Object.entries(selectedSectionVariants.value).forEach(
@@ -402,6 +412,10 @@ const activeLayoutComponent = computed(() => {
   if (layout === 'aside') return ResumeLayoutAside
   if (layout === 'aside-left') return ResumeLayoutAsideLeft
   if (layout === 'aside-right') return ResumeLayoutAsideRight
+  if (layout === 'aside-full-left') return ResumeLayoutAsideFullLeft
+  if (layout === 'aside-full-right') return ResumeLayoutAsideFullRight
+  if (layout === 'bar-left') return ResumeLayoutBarLeft
+  if (layout === 'bar-right') return ResumeLayoutBarRight
   return ResumeLayoutNoAside
 })
 </script>
@@ -443,6 +457,14 @@ const activeLayoutComponent = computed(() => {
           v-model="selectedAsideHeight"
           label="Aside height (%)"
           min="60"
+          max="100"
+          step="1"
+          hide-details
+        />
+        <v-slider
+          v-model="selectedHeaderBandHeight"
+          label="Header colored height (%)"
+          min="0"
           max="100"
           step="1"
           hide-details
@@ -555,6 +577,7 @@ const activeLayoutComponent = computed(() => {
             :is="activeLayoutComponent"
             :resume="resumeToDisplay"
             :template="effectiveTemplate"
+            :header-band-height="selectedHeaderBandHeight"
           />
         </div>
       </template>

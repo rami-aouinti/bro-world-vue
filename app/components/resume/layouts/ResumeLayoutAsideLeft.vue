@@ -11,7 +11,7 @@ import ResumeSectionBlock from '~/components/resume/sections/ResumeSectionBlock.
 import { resolveTemplateStyleVars } from '~/modules/resume/template/resolveTemplateStyleVars'
 import { resolveSectionIcon } from '~/modules/resume/renderers/sectionIcons'
 
-const props = defineProps<{ resume: ResumeApiItem; template?: any; reverse?: boolean }>()
+const props = defineProps<{ resume: ResumeApiItem; template?: any; reverse?: boolean; headerOnPrimary?: boolean; headerBandHeight?: number }>()
 
 const { t, te } = useI18n()
 
@@ -80,13 +80,14 @@ const styleVars = computed(() => {
     '--page-bg': palette.pageBackground ?? '#ffffff',
     '--aside-bg': palette.asideBackground ?? primary,
     '--aside-text': palette.asideText ?? resolveAsideTextColor(primary),
+    '--header-band-height': `${Math.min(100, Math.max(0, props.headerBandHeight ?? 100))}%`,
   } as CSSProperties
 })
 </script>
 
 <template>
   <div class="aside-left" :class="{ reverse }" :style="styleVars">
-    <ResumeSectionHeader class="full" :resume="resume" :template="template" />
+    <ResumeSectionHeader class="full" :class="{ 'full--on-primary': headerOnPrimary }" :resume="resume" :template="template" />
     <aside class="aside-surface on-primary">
       <ResumeSectionBlock v-for="section in asideSections" :key="`aside-${section.id}`" tone="on-primary" :title="getSectionTitle(section.id)" :icon="resolveSectionIcon(section.id)" :show-icon="shouldShowSectionIcons" :is-empty="sectionEmpty(section.id)">
         <ResumeSectionContact v-if="section.id === 'contact'" :resume="resume" :show-title="false" :contact-style="template?.sections?.contact || template?.contactStyle || 'labels'" />
@@ -117,7 +118,17 @@ const styleVars = computed(() => {
 }
 .full {
   grid-area: header;
-  background: var(--aside-bg, var(--primary, #0f4c81));
+  position: relative;
+}
+.full--on-primary {
+  background:
+    linear-gradient(
+      to bottom,
+      var(--aside-bg, var(--primary, #0f4c81)) 0,
+      var(--aside-bg, var(--primary, #0f4c81)) var(--header-band-height, 100%),
+      transparent var(--header-band-height, 100%),
+      transparent 100%
+    );
   color: var(--aside-text, #ffffff);
 }
 aside {
@@ -141,28 +152,28 @@ main {
   grid-area: main;
   padding: var(--panel-pad, 12px);
 }
-:where(aside, .full) :deep(h1),
-:where(aside, .full) :deep(h2),
-:where(aside, .full) :deep(h3),
-:where(aside, .full) :deep(h4),
-:where(aside, .full) :deep(h5),
-:where(aside, .full) :deep(h6),
-:where(aside, .full) :deep(p),
-:where(aside, .full) :deep(span),
-:where(aside, .full) :deep(label),
-:where(aside, .full) :deep(li),
-:where(aside, .full) :deep(a),
-:where(aside, .full) :deep(svg),
-:where(aside, .full) :deep(i),
-:where(aside, .full) :deep(strong),
-:where(aside, .full) :deep(em),
-:where(aside, .full) :deep(small),
-:where(aside, .full) :deep(.section-title),
-:where(aside, .full) :deep(.resume-section-title),
-:where(aside, .full) :deep(.resume-section-content),
-:where(aside, .full) :deep(.resume-item),
-:where(aside, .full) :deep(.icon),
-:where(aside, .full) :deep(::marker) {
+:where(aside, .full--on-primary) :deep(h1),
+:where(aside, .full--on-primary) :deep(h2),
+:where(aside, .full--on-primary) :deep(h3),
+:where(aside, .full--on-primary) :deep(h4),
+:where(aside, .full--on-primary) :deep(h5),
+:where(aside, .full--on-primary) :deep(h6),
+:where(aside, .full--on-primary) :deep(p),
+:where(aside, .full--on-primary) :deep(span),
+:where(aside, .full--on-primary) :deep(label),
+:where(aside, .full--on-primary) :deep(li),
+:where(aside, .full--on-primary) :deep(a),
+:where(aside, .full--on-primary) :deep(svg),
+:where(aside, .full--on-primary) :deep(i),
+:where(aside, .full--on-primary) :deep(strong),
+:where(aside, .full--on-primary) :deep(em),
+:where(aside, .full--on-primary) :deep(small),
+:where(aside, .full--on-primary) :deep(.section-title),
+:where(aside, .full--on-primary) :deep(.resume-section-title),
+:where(aside, .full--on-primary) :deep(.resume-section-content),
+:where(aside, .full--on-primary) :deep(.resume-item),
+:where(aside, .full--on-primary) :deep(.icon),
+:where(aside, .full--on-primary) :deep(::marker) {
   color: inherit !important;
 }
 aside.aside-surface :deep(a) {
