@@ -161,12 +161,11 @@ aside.on-primary {
   background: transparent;
   color: var(--text, #0f172a);
   border: 0;
-  border-inline-start: 8px solid var(--aside-bg, var(--primary, #0f4c81));
+  border-inline-end: 8px solid var(--aside-bg, var(--primary, #0f4c81));
   padding-inline-start: calc(var(--panel-pad, 12px) - 2px);
 }
 .aside-left.bar-only.reverse aside {
-  border-inline-start: 0;
-  border-inline-end: 8px solid var(--aside-bg, var(--primary, #0f4c81));
+  border-inline-start: 20;
   padding-inline-start: var(--panel-pad, 12px);
   padding-inline-end: calc(var(--panel-pad, 12px) - 2px);
 }
