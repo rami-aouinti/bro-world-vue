@@ -147,7 +147,7 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.header { display:flex; gap:var(--section-space, 12px); align-items:center; margin-bottom:calc(var(--section-space, 12px) * 1.33); padding-bottom:var(--section-space, 12px); border-bottom:1px var(--line-style, solid) var(--line-color, #cbd5e1); }
+.header { display:flex; gap:var(--section-space, 12px); align-items:center; padding-bottom:var(--section-space, 12px); border-bottom:1px var(--line-style, solid) var(--line-color, #cbd5e1); }
 .header.is-right { flex-direction: row-reverse; justify-content: flex-start; }
 .photo-input { display:none; }
 .avatar {

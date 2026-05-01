@@ -107,7 +107,6 @@ const styleVars = computed(() => {
   display: grid;
   grid-template-columns: var(--aside-width, 240px) 1fr;
   grid-template-areas: 'header header' 'aside main';
-  gap: var(--layout-gap, 20px);
   font-family: var(--font-family, 'Inter', 'Segoe UI', sans-serif);
   letter-spacing: var(--font-letter-spacing, normal);
   font-style: var(--font-style, normal);

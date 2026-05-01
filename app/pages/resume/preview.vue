@@ -540,28 +540,24 @@ const activeLayoutComponent = computed(() => {
         />
       </template>
     </AppPageDrawers>
-    <v-container class="py-6" max-width="900">
-      <v-card class="mx-auto" variant="outlined">
-        <v-card-text>
-          <v-progress-linear v-if="loggedIn && loadingResumes" indeterminate />
-          <v-alert
-            v-else-if="loggedIn && resumesError"
-            type="error"
-            variant="tonal"
-            :text="resumesError"
+    <v-container fluid>
+      <v-progress-linear v-if="loggedIn && loadingResumes" indeterminate />
+      <v-alert
+        v-else-if="loggedIn && resumesError"
+        type="error"
+        variant="tonal"
+        :text="resumesError"
+      />
+      <template v-else>
+        <div class="resume-preview-canvas">
+          <ResumeTemplateDecor :decor="effectiveTemplate?.decor" />
+          <component
+            :is="activeLayoutComponent"
+            :resume="resumeToDisplay"
+            :template="effectiveTemplate"
           />
-          <template v-else>
-            <div class="resume-preview-canvas">
-              <ResumeTemplateDecor :decor="effectiveTemplate?.decor" />
-              <component
-                :is="activeLayoutComponent"
-                :resume="resumeToDisplay"
-                :template="effectiveTemplate"
-              />
-            </div>
-          </template>
-        </v-card-text>
-      </v-card>
+        </div>
+      </template>
     </v-container>
   </div>
 </template>

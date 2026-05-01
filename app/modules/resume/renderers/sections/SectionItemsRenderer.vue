@@ -34,6 +34,7 @@ function normalizeBulletLine(line: string): string {
 
 function toDescriptionChunks(raw: string): DescriptionChunk[] {
   const text = raw.trim()
+
   if (!text) {
     return []
   }
@@ -70,10 +71,13 @@ function toDescriptionChunks(raw: string): DescriptionChunk[] {
 
     if (isBullet) {
       flushParagraph()
+
       const normalized = normalizeBulletLine(line)
+
       if (normalized) {
         bulletBuffer.push(normalized)
       }
+
       continue
     }
 
@@ -109,6 +113,7 @@ const emptyMessage = computed(() => {
 
 const normalizedItems = computed<NormalizedItem[]>(() => {
   const scopedItems = (props.items ?? []) as Record<string, unknown>[]
+
   const orderedItems =
     props.sectionKey === 'experience' || props.sectionKey === 'education'
       ? sortByStartDateDescKeepingSourceOrder(scopedItems)
@@ -116,6 +121,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 
   return orderedItems.map((entry) => {
     const item = (entry ?? {}) as Record<string, unknown>
+
     const heading =
       (item.name as string) ||
       (item.title as string) ||
@@ -147,9 +153,11 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
       ''
 
     const level = normalizeLevel(item.level)
-    const prefix = props.sectionKey === 'languages'
-      ? String((item.flag as string) || (item.countryCode as string) || '').trim()
-      : ''
+
+    const prefix =
+      props.sectionKey === 'languages'
+        ? String((item.flag as string) || (item.countryCode as string) || '').trim()
+        : ''
 
     return {
       heading,
@@ -166,26 +174,70 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 </script>
 
 <template>
-  <section class="resume-atomic-renderer" :class="[`density-${density}`, density === 'compact' ? 'mode-aside' : 'mode-main', `section-${sectionKey}`]" :style="theme">
+  <section
+    class="resume-atomic-renderer"
+    :class="[
+      `density-${density}`,
+      density === 'compact' ? 'mode-aside' : 'mode-main',
+      `section-${sectionKey}`,
+    ]"
+    :style="theme"
+  >
     <p v-if="!normalizedItems.length" class="renderer-empty-state">
       {{ emptyMessage }}
     </p>
 
     <ol v-else-if="template === 'timeline'" class="renderer-timeline">
-      <li v-for="(item, index) in normalizedItems" :key="index" class="renderer-timeline-item">
-        <p v-if="item.period" class="renderer-period">{{ item.period }}</p>
+      <li
+        v-for="(item, index) in normalizedItems"
+        :key="index"
+        class="renderer-timeline-item"
+      >
+        <p v-if="item.period" class="renderer-period">
+          {{ item.period }}
+        </p>
+
         <div class="renderer-timeline-content">
-          <p class="renderer-heading"><span v-if="template === 'flags' && item.prefix" class="renderer-prefix">{{ item.prefix }}</span>{{ item.heading }}</p>
+          <p class="renderer-heading">
+            <span
+              v-if="template === 'flags' && item.prefix"
+              class="renderer-prefix"
+            >
+              {{ item.prefix }}
+            </span>
+            {{ item.heading }}
+          </p>
+
           <p v-if="item.subheading || item.location" class="renderer-subheading">
             <span v-if="item.subheading">{{ item.subheading }}</span>
-            <span v-if="item.subheading && item.location" aria-hidden="true"> · </span>
+            <span v-if="item.subheading && item.location" aria-hidden="true">
+              ·
+            </span>
             <span v-if="item.location">{{ item.location }}</span>
           </p>
-          <div v-if="item.descriptionChunks.length" class="renderer-description-block">
-            <template v-for="(chunk, chunkIndex) in item.descriptionChunks" :key="chunkIndex">
-              <p v-if="chunk.type === 'paragraph'" class="renderer-description">{{ chunk.text }}</p>
+
+          <div
+            v-if="item.descriptionChunks.length"
+            class="renderer-description-block"
+          >
+            <template
+              v-for="(chunk, chunkIndex) in item.descriptionChunks"
+              :key="chunkIndex"
+            >
+              <p
+                v-if="chunk.type === 'paragraph'"
+                class="renderer-description"
+              >
+                {{ chunk.text }}
+              </p>
+
               <ul v-else class="renderer-description-list">
-                <li v-for="(bullet, bulletIndex) in chunk.items" :key="bulletIndex">{{ bullet }}</li>
+                <li
+                  v-for="(bullet, bulletIndex) in chunk.items"
+                  :key="bulletIndex"
+                >
+                  {{ bullet }}
+                </li>
               </ul>
             </template>
           </div>
@@ -194,47 +246,164 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
     </ol>
 
     <div v-else-if="template === 'cards'" class="renderer-cards">
-      <article v-for="(item, index) in normalizedItems" :key="index" class="renderer-card">
+      <article
+        v-for="(item, index) in normalizedItems"
+        :key="index"
+        class="renderer-card"
+      >
         <div class="renderer-heading-row">
-          <p class="renderer-heading"><span v-if="template === 'flags' && item.prefix" class="renderer-prefix">{{ item.prefix }}</span>{{ item.heading }}</p>
-          <p v-if="item.period" class="renderer-period">{{ item.period }}</p>
+          <p class="renderer-heading">
+            <span
+              v-if="template === 'flags' && item.prefix"
+              class="renderer-prefix"
+            >
+              {{ item.prefix }}
+            </span>
+            {{ item.heading }}
+          </p>
+
+          <p v-if="item.period" class="renderer-period">
+            {{ item.period }}
+          </p>
         </div>
-        <p v-if="item.subheading" class="renderer-subheading">{{ item.subheading }}</p>
+
+        <p v-if="item.subheading" class="renderer-subheading">
+          {{ item.subheading }}
+        </p>
       </article>
     </div>
 
-    <ul v-else-if="template === 'list' || template === 'dots' || template === 'stars' || template === 'progress-line' || template === 'progress-circle' || template === 'flags'" class="renderer-list">
-      <li v-for="(item, index) in normalizedItems" :key="index" class="renderer-list-item">
-        <span v-if="showIcon && template === 'list'" aria-hidden="true">•</span>
-        <div>
-          <div class="renderer-heading-row">
-            <p class="renderer-heading"><span v-if="template === 'flags' && item.prefix" class="renderer-prefix">{{ item.prefix }}</span>{{ item.heading }}</p>
-            <p v-if="template === 'progress-line' || template === 'progress-circle'" class="renderer-period">{{ item.level }}%</p>
-            <p v-else-if="item.period" class="renderer-period">{{ item.period }}</p>
+    <ul
+      v-else-if="
+        template === 'list' ||
+        template === 'dots' ||
+        template === 'stars' ||
+        template === 'progress-line' ||
+        template === 'progress-circle' ||
+        template === 'flags'
+      "
+      class="renderer-list"
+    >
+      <li
+        v-for="(item, index) in normalizedItems"
+        :key="index"
+        class="renderer-list-item"
+        :class="{ 'renderer-list-item--with-icon': showIcon && template === 'list' }"
+      >
+        <span
+          v-if="showIcon && template === 'list'"
+          class="renderer-list-bullet"
+          aria-hidden="true"
+        >
+          •
+        </span>
+
+        <div class="renderer-list-content">
+          <div class="renderer-list-main">
+            <div class="renderer-heading-row">
+              <p class="renderer-heading">
+                <span
+                  v-if="template === 'flags' && item.prefix"
+                  class="renderer-prefix"
+                >
+                  {{ item.prefix }}
+                </span>
+                {{ item.heading }}
+              </p>
+
+              <p
+                v-if="template === 'progress-line'"
+                class="renderer-period"
+              >
+                {{ item.level }}%
+              </p>
+
+              <p v-else-if="item.period" class="renderer-period">
+                {{ item.period }}
+              </p>
+            </div>
+
+            <p v-if="item.subheading" class="renderer-subheading">
+              {{ item.subheading }}
+            </p>
           </div>
-          <div v-if="template === 'stars'" class="renderer-rating" :aria-label="`${item.levelSteps} sur 5`">
-            {{ '★'.repeat(item.levelSteps) }}{{ '☆'.repeat(5 - item.levelSteps) }}
+
+          <div
+            v-if="
+              template === 'stars' ||
+              template === 'dots' ||
+              template === 'progress-line' ||
+              template === 'progress-circle'
+            "
+            class="renderer-list-end"
+          >
+            <div
+              v-if="template === 'stars'"
+              class="renderer-rating"
+              :aria-label="`${item.levelSteps} sur 5`"
+            >
+              {{ '★'.repeat(item.levelSteps) }}{{ '☆'.repeat(5 - item.levelSteps) }}
+            </div>
+
+            <div
+              v-else-if="template === 'dots'"
+              class="renderer-rating renderer-rating--dots"
+              :aria-label="`${item.levelSteps} sur 5`"
+            >
+              <span
+                v-for="dot in 5"
+                :key="dot"
+                class="renderer-dot"
+                :class="{ 'renderer-dot--active': dot <= item.levelSteps }"
+              />
+            </div>
+
+            <div
+              v-else-if="template === 'progress-line'"
+              class="renderer-progress"
+            >
+              <span
+                class="renderer-progress-fill"
+                :style="{ width: `${item.level}%` }"
+              />
+            </div>
+
+            <div
+              v-else-if="template === 'progress-circle'"
+              class="renderer-circle"
+            >
+              {{ item.level }}%
+            </div>
           </div>
-          <div v-else-if="template === 'dots'" class="renderer-rating" :aria-label="`${item.levelSteps} sur 5`">
-            <span v-for="dot in 5" :key="dot" class="renderer-dot" :class="{ 'renderer-dot--active': dot <= item.levelSteps }" />
-          </div>
-          <div v-else-if="template === 'progress-line'" class="renderer-progress">
-            <span class="renderer-progress-fill" :style="{ width: `${item.level}%` }" />
-          </div>
-          <div v-else-if="template === 'progress-circle'" class="renderer-circle">{{ item.level }}%</div>
-          <p v-if="item.subheading" class="renderer-subheading">{{ item.subheading }}</p>
         </div>
       </li>
     </ul>
 
-
     <ul v-else class="renderer-classic">
-      <li v-for="(item, index) in normalizedItems" :key="index" class="renderer-classic-item">
+      <li
+        v-for="(item, index) in normalizedItems"
+        :key="index"
+        class="renderer-classic-item"
+      >
         <div class="renderer-heading-row">
-          <p class="renderer-heading"><span v-if="template === 'flags' && item.prefix" class="renderer-prefix">{{ item.prefix }}</span>{{ item.heading }}</p>
-          <p v-if="item.period" class="renderer-period">{{ item.period }}</p>
+          <p class="renderer-heading">
+            <span
+              v-if="template === 'flags' && item.prefix"
+              class="renderer-prefix"
+            >
+              {{ item.prefix }}
+            </span>
+            {{ item.heading }}
+          </p>
+
+          <p v-if="item.period" class="renderer-period">
+            {{ item.period }}
+          </p>
         </div>
-        <p v-if="item.subheading" class="renderer-subheading">{{ item.subheading }}</p>
+
+        <p v-if="item.subheading" class="renderer-subheading">
+          {{ item.subheading }}
+        </p>
       </li>
     </ul>
   </section>
@@ -258,6 +427,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
   align-items: baseline;
   justify-content: space-between;
   gap: var(--section-space-sm);
+  min-width: 0;
 }
 
 .renderer-heading {
@@ -265,6 +435,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
   font-size: var(--section-font-title);
   font-weight: 650;
   line-height: 1.3;
+  min-width: 0;
 }
 
 .renderer-subheading {
@@ -307,6 +478,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
   color: color-mix(in srgb, currentColor 87%, transparent);
 }
 
+/* LIST / STARS / DOTS / PROGRESS / FLAGS */
 .renderer-list {
   margin: 0;
   padding: 0;
@@ -315,23 +487,64 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 
 .renderer-list-item {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 1fr;
   gap: var(--section-space-sm);
   padding: var(--section-space-sm) 0;
   border-bottom: 1px solid var(--section-border-subtle);
 }
 
-.renderer-list-item:last-child { border-bottom: 0; }
+.renderer-list-item--with-icon {
+  grid-template-columns: auto minmax(0, 1fr);
+}
 
-.renderer-list-item > span {
+.renderer-list-item:last-child {
+  border-bottom: 0;
+}
+
+.renderer-list-bullet {
+  grid-column: 1;
   margin-top: 0.22rem;
   color: color-mix(in srgb, currentColor 45%, transparent);
+}
+
+.renderer-list-content {
+  grid-column: 1;
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--section-space-md);
+}
+
+.renderer-list-item--with-icon .renderer-list-content {
+  grid-column: 2;
+}
+
+.renderer-list-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.renderer-list-end {
+  margin-left: auto;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .renderer-rating {
   font-size: var(--section-font-description);
   letter-spacing: 0.08em;
+  white-space: nowrap;
   color: color-mix(in srgb, currentColor 78%, transparent);
+}
+
+.renderer-rating--dots {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .renderer-dot {
@@ -339,7 +552,6 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
   width: 0.4rem;
   height: 0.4rem;
   border-radius: 999px;
-  margin-right: 0.25rem;
   background: color-mix(in srgb, currentColor 20%, transparent);
 }
 
@@ -348,8 +560,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 }
 
 .renderer-progress {
-  margin-top: var(--section-space-2xs);
-  width: 100%;
+  width: 5rem;
   height: 0.45rem;
   border-radius: 999px;
   background: color-mix(in srgb, currentColor 20%, transparent);
@@ -363,7 +574,6 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 }
 
 .renderer-circle {
-  margin-top: var(--section-space-2xs);
   width: 2.2rem;
   height: 2.2rem;
   border-radius: 999px;
@@ -371,8 +581,10 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
   display: grid;
   place-items: center;
   font-size: 0.68rem;
+  white-space: nowrap;
 }
 
+/* CARDS */
 .renderer-cards {
   display: grid;
   gap: var(--section-space-md);
@@ -386,6 +598,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
   background: color-mix(in srgb, currentColor 2%, transparent);
 }
 
+/* TIMELINE */
 .renderer-timeline {
   margin: 0;
   padding: 0;
@@ -426,9 +639,15 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
   bottom: 0.35rem;
 }
 
-.renderer-timeline-item .renderer-period { grid-column: 1; }
-.renderer-timeline-content { grid-column: 2; }
+.renderer-timeline-item .renderer-period {
+  grid-column: 1;
+}
 
+.renderer-timeline-content {
+  grid-column: 2;
+}
+
+/* CLASSIC */
 .renderer-classic {
   margin: 0;
   padding: 0;
@@ -441,14 +660,30 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
   padding-bottom: var(--section-space-sm);
 }
 
+/* DENSITY */
 .density-spacious .renderer-list-item,
-.density-spacious .renderer-timeline-item { padding-bottom: var(--section-space-lg); }
-.density-spacious .renderer-card { padding: var(--section-space-lg); }
+.density-spacious .renderer-timeline-item {
+  padding-bottom: var(--section-space-lg);
+}
+
+.density-spacious .renderer-card {
+  padding: var(--section-space-lg);
+}
 
 .density-compact .renderer-list-item,
-.density-compact .renderer-timeline-item { padding-bottom: var(--section-space-sm); }
-.density-compact .renderer-card { padding: var(--section-space-sm) var(--section-space-md); }
-.renderer-prefix { margin-right: .35rem; }
+.density-compact .renderer-timeline-item {
+  padding-bottom: var(--section-space-sm);
+}
+
+.density-compact .renderer-card {
+  padding: var(--section-space-sm) var(--section-space-md);
+}
+
+.renderer-prefix {
+  margin-right: 0.35rem;
+}
+
+/* FONT WEIGHT OVERRIDES */
 .resume-atomic-renderer.section-skills .renderer-heading,
 .resume-atomic-renderer.section-languages .renderer-heading,
 .resume-atomic-renderer.section-references .renderer-heading,
@@ -461,7 +696,4 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 .resume-atomic-renderer.section-interests .renderer-subheading {
   font-weight: var(--cv-font-weight, 400);
 }
-
 </style>
-
-
