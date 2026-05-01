@@ -209,6 +209,11 @@ const textStyleFilterOptions = computed(() => {
   return styles.map((style) => ({ title: String(style), value: String(style) }))
 })
 
+const asideHeightOptions = computed(() => {
+  const heights = Array.from({ length: 11 }, (_, index) => 50 + index * 5)
+  return heights.map((height) => ({ title: String(height), value: String(height) }))
+})
+
 const contactStyleOptions = [
   { title: 'Labels', value: 'labels' },
   { title: 'Icons', value: 'icons' },
