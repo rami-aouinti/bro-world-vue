@@ -101,32 +101,7 @@ const activeLayoutComponent = computed(() => {
 
 <template>
   <v-container class="py-6" max-width="900">
-    <v-card v-if="selectedTemplate" variant="outlined" class="mx-auto">
-      <v-img
-        :src="selectedTemplate.image"
-        :alt="selectedTemplate.title"
-        cover
-      />
-    </v-card>
-
-    <v-alert
-      v-else
-      type="info"
-      variant="tonal"
-      text="Aucun template sélectionné."
-    />
-
-    <v-card v-if="selectedGeneratedTemplate" class="mx-auto mt-6" variant="outlined">
-      <v-card-title>Données template sélectionnée</v-card-title>
-      <v-card-text>
-        <pre class="text-body-2">{{
-          JSON.stringify(selectedGeneratedTemplate, null, 2)
-        }}</pre>
-      </v-card-text>
-    </v-card>
-
     <v-card class="mx-auto mt-6" variant="outlined">
-      <v-card-title>CV affiché</v-card-title>
       <v-card-text>
         <v-progress-linear v-if="loggedIn && loadingResumes" indeterminate />
         <v-alert
