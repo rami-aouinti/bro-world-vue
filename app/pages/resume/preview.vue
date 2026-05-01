@@ -90,8 +90,8 @@ const selectedPalette = ref<string>('template')
 const customPalettePrimary = ref<string>('#0F4C81')
 const selectedSectionVariants = ref<SectionVariants>({})
 const selectedTextStyle = ref<string>('')
-const selectedAsideWidth = ref<string>('')
-const selectedAsideHeight = ref<string>('')
+const selectedAsideWidth = ref<number>(240)
+const selectedAsideHeight = ref<number>(100)
 
 const selectedPhotoPosition = ref<string>('left')
 const selectedPhotoSize = ref<number>(96)
@@ -209,13 +209,6 @@ const textStyleFilterOptions = computed(() => {
   return styles.map((style) => ({ title: String(style), value: String(style) }))
 })
 
-const asideWidthOptions = computed(() => {
-  const widths = Array.from(new Set(GENERATED_RESUME_TEMPLATES.map((template) => template.aside?.width).filter(Boolean)))
-  return widths.map((width) => ({ title: String(width), value: String(width) }))
-})
-
-const asideHeightOptions = computed(() => {
-  const heights = Array.from(new Set(GENERATED_RESUME_TEMPLATES.map((template) => template.aside?.height).filter(Boolean)))
   return heights.map((height) => ({ title: String(height), value: String(height) }))
 })
 
@@ -245,8 +238,8 @@ const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
   }
 
   if (selectedTextStyle.value) nextTheme.textStyle = selectedTextStyle.value as any
-  if (selectedAsideWidth.value) nextAside.width = selectedAsideWidth.value
-  if (selectedAsideHeight.value) nextAside.height = selectedAsideHeight.value
+  nextAside.width = `${selectedAsideWidth.value}px`
+  nextAside.height = `${selectedAsideHeight.value}%`
 
   if (selectedPalette.value === 'custom') {
     nextTheme.palette.primary = customPalettePrimary.value
@@ -309,8 +302,10 @@ watch(
     )
     selectedSectionVariants.value = nextSections
     selectedTextStyle.value = typeof route.query.textStyle === 'string' ? route.query.textStyle : String(template.theme?.textStyle || '')
-    selectedAsideWidth.value = typeof route.query.asideWidth === 'string' ? route.query.asideWidth : String(template.aside?.width || '')
-    selectedAsideHeight.value = typeof route.query.asideHeight === 'string' ? route.query.asideHeight : String(template.aside?.height || '')
+    const asideWidthSource = typeof route.query.asideWidth === 'string' ? route.query.asideWidth : String(template.aside?.width || '240px')
+    const asideHeightSource = typeof route.query.asideHeight === 'string' ? route.query.asideHeight : String(template.aside?.height || '100%')
+    selectedAsideWidth.value = Number.parseInt(asideWidthSource.replace('px', ''), 10) || 240
+    selectedAsideHeight.value = Number.parseInt(asideHeightSource.replace('%', ''), 10) || 100
 
     const photo = template.photo || { position: 'left', size: '96px', shape: 'circle', border: '2px solid #0F4C81' }
     editableDecorCorners.value = (template.decor?.corners || []).map((corner: any) => normalizeDecorCorner(corner))
@@ -434,16 +429,20 @@ const activeLayoutComponent = computed(() => {
           label="Text style"
           hide-details
         />
-        <AppSelect
+        <v-slider
           v-model="selectedAsideWidth"
-          :items="asideWidthOptions"
-          label="Aside width"
+          label="Aside width (px)"
+          min="160"
+          max="450"
+          step="2"
           hide-details
         />
-        <AppSelect
+        <v-slider
           v-model="selectedAsideHeight"
-          :items="asideHeightOptions"
-          label="Aside height"
+          label="Aside height (%)"
+          min="60"
+          max="100"
+          step="1"
           hide-details
         />
         <AppSelect
