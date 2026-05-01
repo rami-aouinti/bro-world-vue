@@ -6,5 +6,5 @@ defineProps<{ resume: ResumeApiItem; template?: any; headerBandHeight?: number }
 </script>
 
 <template>
-  <ResumeLayoutAsideLeft :resume="resume" :template="template" :header-band-height="headerBandHeight" reverse />
+  <ResumeLayoutAsideLeft :resume="resume" :template="template" :header-band-height="headerBandHeight" bar-only reverse />
 </template>

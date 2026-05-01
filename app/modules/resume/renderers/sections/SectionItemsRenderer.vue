@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { formatDateRange, sortByStartDateDescKeepingSourceOrder } from '../formatters/dateRange'
 import { levelToSteps, normalizeLevel } from './levelUtils'
 import type { ResumeSectionRendererProps } from './types'
@@ -9,6 +9,7 @@ type DescriptionChunk =
   | { type: 'bullets'; items: string[] }
 
 type NormalizedItem = {
+  sourceIndex: number
   heading: string
   prefix: string
   level: number
@@ -111,6 +112,39 @@ const emptyMessage = computed(() => {
   return labels[props.sectionKey] ?? labels.general
 })
 
+
+
+const activeDateEditor = ref<string | null>(null)
+
+function toInputDate(value: unknown): string {
+  if (typeof value !== 'string' || !value.trim()) return ''
+  const match = value.match(/^(\d{4}-\d{2}-\d{2})/)
+  return match ? match[1] : ''
+}
+
+function updateItemField(index: number, field: string, value: string | number) {
+  const target = props.items?.[index] as Record<string, unknown> | undefined
+  if (!target) return
+  target[field] = value
+}
+
+function onEditableInput(event: Event, index: number, field: string) {
+  const value = (event.target as HTMLElement).innerText
+  updateItemField(index, field, value.trim())
+}
+
+function updateLevel(index: number, level: number) {
+  updateItemField(index, 'level', level)
+}
+
+function activateDateEditor(key: string) {
+  activeDateEditor.value = key
+}
+
+function updateDate(index: number, field: 'startDate' | 'endDate', value: string) {
+  updateItemField(index, field, value || null as any)
+}
+
 const normalizedItems = computed<NormalizedItem[]>(() => {
   const scopedItems = (props.items ?? []) as Record<string, unknown>[]
 
@@ -119,7 +153,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
       ? sortByStartDateDescKeepingSourceOrder(scopedItems)
       : scopedItems
 
-  return orderedItems.map((entry) => {
+  return orderedItems.map((entry, index) => {
     const item = (entry ?? {}) as Record<string, unknown>
 
     const heading =
@@ -168,6 +202,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
       location,
       period,
       descriptionChunks: toDescriptionChunks(description),
+      sourceIndex: index,
     }
   })
 })
@@ -194,7 +229,14 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
         class="renderer-timeline-item"
       >
         <p v-if="item.period" class="renderer-period">
-          {{ item.period }}
+          <template v-if="activeDateEditor !== `${sectionKey}-${item.sourceIndex}`">
+                  <span @click="activateDateEditor(`${sectionKey}-${item.sourceIndex}`)">{{ item.period }}</span>
+                </template>
+                <span v-else class="renderer-date-edit">
+                  <input type="date" :value="toInputDate((items[item.sourceIndex] as any)?.startDate)" @input="updateDate(item.sourceIndex, 'startDate', ($event.target as HTMLInputElement).value)">
+                  <input type="date" :value="toInputDate((items[item.sourceIndex] as any)?.endDate)" @input="updateDate(item.sourceIndex, 'endDate', ($event.target as HTMLInputElement).value)">
+                </span>
+
         </p>
 
         <div class="renderer-timeline-content">
@@ -205,11 +247,11 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
             >
               {{ item.prefix }}
             </span>
-            {{ item.heading }}
+            <span contenteditable="true" @input="onEditableInput($event, item.sourceIndex, 'title')">{{ item.heading }}</span>
           </p>
 
           <p v-if="item.subheading || item.location" class="renderer-subheading">
-            <span v-if="item.subheading">{{ item.subheading }}</span>
+            <span v-if="item.subheading"><span contenteditable="true" @input="onEditableInput($event, item.sourceIndex, sectionKey === 'education' ? 'school' : 'company')">{{ item.subheading }}</span></span>
             <span v-if="item.subheading && item.location" aria-hidden="true">
               ·
             </span>
@@ -259,16 +301,23 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
             >
               {{ item.prefix }}
             </span>
-            {{ item.heading }}
+            <span contenteditable="true" @input="onEditableInput($event, item.sourceIndex, 'title')">{{ item.heading }}</span>
           </p>
 
           <p v-if="item.period" class="renderer-period">
-            {{ item.period }}
+            <template v-if="activeDateEditor !== `${sectionKey}-${item.sourceIndex}`">
+                  <span @click="activateDateEditor(`${sectionKey}-${item.sourceIndex}`)">{{ item.period }}</span>
+                </template>
+                <span v-else class="renderer-date-edit">
+                  <input type="date" :value="toInputDate((items[item.sourceIndex] as any)?.startDate)" @input="updateDate(item.sourceIndex, 'startDate', ($event.target as HTMLInputElement).value)">
+                  <input type="date" :value="toInputDate((items[item.sourceIndex] as any)?.endDate)" @input="updateDate(item.sourceIndex, 'endDate', ($event.target as HTMLInputElement).value)">
+                </span>
+
           </p>
         </div>
 
         <p v-if="item.subheading" class="renderer-subheading">
-          {{ item.subheading }}
+          <span contenteditable="true" @input="onEditableInput($event, item.sourceIndex, sectionKey === 'education' ? 'school' : 'company')">{{ item.subheading }}</span>
         </p>
       </article>
     </div>
@@ -308,7 +357,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
                 >
                   {{ item.prefix }}
                 </span>
-                {{ item.heading }}
+                <span contenteditable="true" @input="onEditableInput($event, item.sourceIndex, 'title')">{{ item.heading }}</span>
               </p>
 
               <p
@@ -316,15 +365,23 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
                 class="renderer-period"
               >
                 {{ item.level }}%
+              <input class="renderer-level-input" type="range" min="0" max="100" step="5" :value="item.level" @input="updateLevel(item.sourceIndex, Number(($event.target as HTMLInputElement).value))">
               </p>
 
               <p v-else-if="item.period" class="renderer-period">
-                {{ item.period }}
+                <template v-if="activeDateEditor !== `${sectionKey}-${item.sourceIndex}`">
+                  <span @click="activateDateEditor(`${sectionKey}-${item.sourceIndex}`)">{{ item.period }}</span>
+                </template>
+                <span v-else class="renderer-date-edit">
+                  <input type="date" :value="toInputDate((items[item.sourceIndex] as any)?.startDate)" @input="updateDate(item.sourceIndex, 'startDate', ($event.target as HTMLInputElement).value)">
+                  <input type="date" :value="toInputDate((items[item.sourceIndex] as any)?.endDate)" @input="updateDate(item.sourceIndex, 'endDate', ($event.target as HTMLInputElement).value)">
+                </span>
+
               </p>
             </div>
 
             <p v-if="item.subheading" class="renderer-subheading">
-              {{ item.subheading }}
+              <span contenteditable="true" @input="onEditableInput($event, item.sourceIndex, sectionKey === 'education' ? 'school' : 'company')">{{ item.subheading }}</span>
             </p>
           </div>
 
@@ -343,6 +400,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
               :aria-label="`${item.levelSteps} sur 5`"
             >
               {{ '★'.repeat(item.levelSteps) }}{{ '☆'.repeat(5 - item.levelSteps) }}
+              <input class="renderer-level-input" type="range" min="0" max="100" step="5" :value="item.level" @input="updateLevel(item.sourceIndex, Number(($event.target as HTMLInputElement).value))">
             </div>
 
             <div
@@ -357,6 +415,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
                 :class="{ 'renderer-dot--active': dot <= item.levelSteps }"
               />
             </div>
+            <input v-if="template === 'dots'" class="renderer-level-input" type="range" min="0" max="100" step="5" :value="item.level" @input="updateLevel(item.sourceIndex, Number(($event.target as HTMLInputElement).value))">
 
             <div
               v-else-if="template === 'progress-line'"
@@ -373,6 +432,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
               class="renderer-circle"
             >
               {{ item.level }}%
+              <input class="renderer-level-input" type="range" min="0" max="100" step="5" :value="item.level" @input="updateLevel(item.sourceIndex, Number(($event.target as HTMLInputElement).value))">
             </div>
           </div>
         </div>
@@ -393,16 +453,23 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
             >
               {{ item.prefix }}
             </span>
-            {{ item.heading }}
+            <span contenteditable="true" @input="onEditableInput($event, item.sourceIndex, 'title')">{{ item.heading }}</span>
           </p>
 
           <p v-if="item.period" class="renderer-period">
-            {{ item.period }}
+            <template v-if="activeDateEditor !== `${sectionKey}-${item.sourceIndex}`">
+                  <span @click="activateDateEditor(`${sectionKey}-${item.sourceIndex}`)">{{ item.period }}</span>
+                </template>
+                <span v-else class="renderer-date-edit">
+                  <input type="date" :value="toInputDate((items[item.sourceIndex] as any)?.startDate)" @input="updateDate(item.sourceIndex, 'startDate', ($event.target as HTMLInputElement).value)">
+                  <input type="date" :value="toInputDate((items[item.sourceIndex] as any)?.endDate)" @input="updateDate(item.sourceIndex, 'endDate', ($event.target as HTMLInputElement).value)">
+                </span>
+
           </p>
         </div>
 
         <p v-if="item.subheading" class="renderer-subheading">
-          {{ item.subheading }}
+          <span contenteditable="true" @input="onEditableInput($event, item.sourceIndex, sectionKey === 'education' ? 'school' : 'company')">{{ item.subheading }}</span>
         </p>
       </li>
     </ul>
@@ -696,4 +763,10 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 .resume-atomic-renderer.section-interests .renderer-subheading {
   font-weight: var(--cv-font-weight, 400);
 }
+</style>
+
+
+<style scoped>
+.renderer-date-edit{display:inline-flex;gap:4px;}
+.renderer-level-input{width:96px; margin-left:8px;}
 </style>
