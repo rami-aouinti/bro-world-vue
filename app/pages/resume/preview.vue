@@ -89,6 +89,9 @@ const selectedStructure = ref<'structure-1' | 'structure-2'>('structure-1')
 const selectedPalette = ref<string>('template')
 const customPalettePrimary = ref<string>('#0F4C81')
 const selectedSectionVariants = ref<SectionVariants>({})
+const selectedTextStyle = ref<string>('')
+const selectedAsideWidth = ref<number>(240)
+const selectedAsideHeight = ref<number>(100)
 
 const selectedPhotoPosition = ref<string>('left')
 const selectedPhotoSize = ref<number>(96)
@@ -200,6 +203,15 @@ const paletteOptions = computed(() => [
   { title: 'Preset · Rose', value: '#E11D48' },
   { title: 'Custom', value: 'custom' },
 ])
+
+const textStyleFilterOptions = computed(() => {
+  const styles = Array.from(new Set(GENERATED_RESUME_TEMPLATES.map((template) => template.theme?.textStyle).filter(Boolean)))
+  return styles.map((style) => ({ title: String(style), value: String(style) }))
+})
+
+  return heights.map((height) => ({ title: String(height), value: String(height) }))
+})
+
 const contactStyleOptions = [
   { title: 'Labels', value: 'labels' },
   { title: 'Icons', value: 'icons' },
@@ -216,6 +228,7 @@ const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
   const base = selectedGeneratedTemplate.value
   const nextSections = { ...base.sections, ...selectedSectionVariants.value }
   const nextTheme = { ...base.theme, palette: { ...base.theme.palette } }
+  const nextAside = { ...base.aside }
   const nextPhoto = {
     ...base.photo,
     position: selectedPhotoPosition.value,
@@ -223,6 +236,10 @@ const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
     shape: selectedPhotoShape.value,
     border: `${selectedPhotoBorderWidth.value}px ${selectedPhotoBorderStyle.value} ${selectedPhotoBorderColor.value}`,
   }
+
+  if (selectedTextStyle.value) nextTheme.textStyle = selectedTextStyle.value as any
+  nextAside.width = `${selectedAsideWidth.value}px`
+  nextAside.height = `${selectedAsideHeight.value}%`
 
   if (selectedPalette.value === 'custom') {
     nextTheme.palette.primary = customPalettePrimary.value
@@ -236,6 +253,7 @@ const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
     structure: selectedStructure.value,
     sections: nextSections,
     theme: nextTheme,
+    aside: nextAside,
     photo: nextPhoto,
     decor: {
       ...(base.decor || {}),
@@ -283,6 +301,11 @@ watch(
       },
     )
     selectedSectionVariants.value = nextSections
+    selectedTextStyle.value = typeof route.query.textStyle === 'string' ? route.query.textStyle : String(template.theme?.textStyle || '')
+    const asideWidthSource = typeof route.query.asideWidth === 'string' ? route.query.asideWidth : String(template.aside?.width || '240px')
+    const asideHeightSource = typeof route.query.asideHeight === 'string' ? route.query.asideHeight : String(template.aside?.height || '100%')
+    selectedAsideWidth.value = Number.parseInt(asideWidthSource.replace('px', ''), 10) || 240
+    selectedAsideHeight.value = Number.parseInt(asideHeightSource.replace('%', ''), 10) || 100
 
     const photo = template.photo || { position: 'left', size: '96px', shape: 'circle', border: '2px solid #0F4C81' }
     editableDecorCorners.value = (template.decor?.corners || []).map((corner: any) => normalizeDecorCorner(corner))
@@ -313,6 +336,9 @@ watch(
     selectedPalette,
     customPalettePrimary,
     selectedSectionVariants,
+    selectedTextStyle,
+    selectedAsideWidth,
+    selectedAsideHeight,
     selectedPhotoPosition,
     selectedPhotoSize,
     selectedPhotoShape,
@@ -395,6 +421,28 @@ const activeLayoutComponent = computed(() => {
           v-model="selectedLayout"
           :items="layoutFilterOptions"
           label="Layout"
+          hide-details
+        />
+        <AppSelect
+          v-model="selectedTextStyle"
+          :items="textStyleFilterOptions"
+          label="Text style"
+          hide-details
+        />
+        <v-slider
+          v-model="selectedAsideWidth"
+          label="Aside width (px)"
+          min="160"
+          max="450"
+          step="2"
+          hide-details
+        />
+        <v-slider
+          v-model="selectedAsideHeight"
+          label="Aside height (%)"
+          min="60"
+          max="100"
+          step="1"
           hide-details
         />
         <AppSelect
