@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import ResumeSectionHeading from '~/components/Resume/Sections/ResumeSectionHeading.vue'
-import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 
 withDefaults(
   defineProps<{
-    sectionKey?: string
     title: string
     icon?: string
     tone?: 'default' | 'on-primary'
@@ -12,7 +10,6 @@ withDefaults(
     isEmpty?: boolean
   }>(),
   {
-    sectionKey: undefined,
     icon: undefined,
     tone: 'default',
     showIcon: true,
@@ -22,12 +19,7 @@ withDefaults(
 </script>
 
 <template>
-  <section v-if="!isEmpty" class="resume-section-block resume-section-hoverable">
-    <SectionToolbar
-      v-if="sectionKey"
-      :section-key="sectionKey"
-      :actions="['add-item', 'change-variant', 'style-panel', 'line-minus', 'line-plus', 'move-up', 'move-down', 'delete-section']"
-    />
+  <section v-if="!isEmpty" class="resume-section-block">
     <ResumeSectionHeading
       :title="title"
       :icon="icon"
@@ -41,20 +33,7 @@ withDefaults(
 
 <style scoped>
 .resume-section-block {
-  position: relative;
-  overflow: visible;
   display: grid;
   gap: 8px;
-}
-
-.section-toolbar {
-  position: absolute;
-  left: -54px;
-  top: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  opacity: 1;
-  pointer-events: auto;
 }
 </style>
