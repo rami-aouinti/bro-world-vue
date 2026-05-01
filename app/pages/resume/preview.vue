@@ -85,7 +85,7 @@ const selectedGeneratedTemplate = computed<GeneratedTemplate | null>(() => {
 })
 
 const selectedLayout = ref<(typeof CONTROLLED_LAYOUTS)[number]>('no-aside')
-const selectedStructure = ref<string>('')
+const selectedStructure = ref<'structure-1' | 'structure-2'>('structure-1')
 const selectedPalette = ref<string>('template')
 const customPalettePrimary = ref<string>('#0F4C81')
 const selectedSectionVariants = ref<SectionVariants>({})
@@ -205,11 +205,10 @@ const contactStyleOptions = [
   { title: 'Icons', value: 'icons' },
 ]
 
-const structureLayoutMap: Record<string, (typeof CONTROLLED_LAYOUTS)[number]> =
+const structureLayoutMap: Record<'structure-1' | 'structure-2', (typeof CONTROLLED_LAYOUTS)[number]> =
   {
-    'two-columns-balanced': 'aside-left',
-    'two-columns-main-heavy': 'aside-right',
-    'header-band-split': 'no-aside',
+    'structure-1': 'no-aside',
+    'structure-2': 'aside-left',
   }
 
 const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
@@ -234,6 +233,7 @@ const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
   return {
     ...base,
     layout: selectedLayout.value,
+    structure: selectedStructure.value,
     sections: nextSections,
     theme: nextTheme,
     photo: nextPhoto,
@@ -256,9 +256,9 @@ watch(
     if (!template) return
 
     selectedStructure.value =
-      typeof route.query.structure === 'string'
-        ? route.query.structure
-        : (template as any).structure || ''
+      route.query.structure === 'structure-2' || (template as any).structure === 'structure-2'
+        ? 'structure-2'
+        : 'structure-1'
     const queryLayout =
       typeof route.query.layout === 'string' ? route.query.layout : ''
     selectedLayout.value = CONTROLLED_LAYOUTS.includes(
@@ -326,6 +326,7 @@ watch(
     const query = {
       ...route.query,
       layout: selectedLayout.value,
+    structure: selectedStructure.value,
       palette: selectedPalette.value,
       paletteCustom: customPalettePrimary.value,
       structure: selectedStructure.value,
@@ -384,13 +385,8 @@ const activeLayoutComponent = computed(() => {
         <AppSelect
           v-model="selectedStructure"
           :items="[
-            { title: 'Default', value: '' },
-            { title: 'Two columns balanced', value: 'two-columns-balanced' },
-            {
-              title: 'Two columns main-heavy',
-              value: 'two-columns-main-heavy',
-            },
-            { title: 'Header band + split', value: 'header-band-split' },
+            { title: 'Structure 1 · Linéaire', value: 'structure-1' },
+            { title: 'Structure 2 · Split', value: 'structure-2' },
           ]"
           label="Structure"
           hide-details
