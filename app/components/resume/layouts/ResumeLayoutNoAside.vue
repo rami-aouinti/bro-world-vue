@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, type CSSProperties } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { ResumeApiItem } from '~/services/resumeApi'
 import ResumeSectionHeader from '~/components/resume/sections/ResumeSectionHeader.vue'
@@ -9,7 +9,7 @@ import ResumeSectionRenderer from '~/components/resume/sections/ResumeSectionRen
 import ResumeSectionBlock from '~/components/resume/sections/ResumeSectionBlock.vue'
 import { resolveTemplateStyleVars } from '~/modules/resume/template/resolveTemplateStyleVars'
 
-const props = defineProps<{ resume: ResumeApiItem; template?: any }>()
+const props = defineProps<{ resume: ResumeApiItem; template?: any; headerOnPrimary?: boolean }>()
 
 const { t, te } = useI18n()
 
@@ -59,12 +59,31 @@ const isContactEmpty = computed(() => {
 
 const isProfileEmpty = computed(() => !(props.resume.resumeInformation?.profileText || '').trim())
 
-const styleVars = computed(() => resolveTemplateStyleVars(props.template))
+function resolveHeaderTextColor(primary: unknown): string {
+  if (typeof primary !== 'string') return '#ffffff'
+  const hex = primary.trim().replace('#', '')
+  const normalized = hex.length === 3 ? hex.split('').map((char) => `${char}${char}`).join('') : hex
+  if (!/^[0-9a-fA-F]{6}$/.test(normalized)) return '#ffffff'
+  const [r, g, b] = [0, 2, 4].map((index) => parseInt(normalized.slice(index, index + 2), 16) / 255)
+  const [lr, lg, lb] = [r, g, b].map((channel) => (channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4))
+  const luminance = 0.2126 * lr + 0.7152 * lg + 0.0722 * lb
+  return luminance > 0.45 ? '#0f172a' : '#ffffff'
+}
+
+const styleVars = computed(() => {
+  const baseVars = resolveTemplateStyleVars(props.template)
+  const primary = props.template?.theme?.palette?.primary ?? '#0f4c81'
+  return {
+    ...baseVars,
+    '--primary': primary,
+    '--header-text': resolveHeaderTextColor(primary),
+  } as CSSProperties
+})
 </script>
 
 <template>
-  <div class="no-aside" :style="styleVars">
-    <ResumeSectionHeader :resume="resume" :template="template" />
+  <div class="no-aside" :class="{ 'header-on-primary': headerOnPrimary }" :style="styleVars">
+    <ResumeSectionHeader class="layout-header" :resume="resume" :template="template" />
     <ResumeSectionBlock :title="getSectionTitle('contact')" :is-empty="isContactEmpty"><ResumeSectionContact :resume="resume" :show-title="false" /></ResumeSectionBlock>
     <ResumeSectionBlock :title="getSectionTitle('profile')" :is-empty="isProfileEmpty"><ResumeSectionProfile :resume="resume" :show-title="false" /></ResumeSectionBlock>
     <ResumeSectionBlock :title="getSectionTitle('experience')" :is-empty="!(resume.experiences?.length)"><ResumeSectionRenderer section-key="experience" :resume="resume" :template="template" /></ResumeSectionBlock>
@@ -83,5 +102,13 @@ const styleVars = computed(() => resolveTemplateStyleVars(props.template))
   font-family: var(--font-family, 'Inter', 'Segoe UI', sans-serif);
   letter-spacing: var(--font-letter-spacing, normal);
   font-style: var(--font-style, normal);
+}
+.no-aside.header-on-primary .layout-header {
+  background: var(--primary, #0f4c81);
+  color: var(--header-text, #ffffff);
+  padding: var(--panel-pad, 12px);
+}
+.no-aside.header-on-primary .layout-header :deep(*) {
+  color: inherit !important;
 }
 </style>
