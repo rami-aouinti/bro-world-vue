@@ -209,9 +209,6 @@ const textStyleFilterOptions = computed(() => {
   return styles.map((style) => ({ title: String(style), value: String(style) }))
 })
 
-  return heights.map((height) => ({ title: String(height), value: String(height) }))
-})
-
 const contactStyleOptions = [
   { title: 'Labels', value: 'labels' },
   { title: 'Icons', value: 'icons' },
