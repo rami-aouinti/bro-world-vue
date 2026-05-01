@@ -3061,7 +3061,8 @@
           "twitterTitle": "Meinen Lebenslauf erstellen | Bro World",
           "twitterDescription": "Ein moderner Lebenslauf-Editor mit Live-Vorschau und professionellem Layout."
         }
-      }
+      },
+      "previewTitle": "Resume Preview"
     }
   }
 }

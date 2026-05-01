@@ -77,7 +77,7 @@ export function useResumeTemplates() {
               : template.label,
           image: template.image,
           type: template.type,
-          templateId: template.id,
+          templateId: template.templateId,
         })),
     )
 
@@ -93,7 +93,7 @@ export function useResumeTemplates() {
           : template.label,
       image: template.image,
       type: template.type,
-      templateId: template.id,
+      templateId: template.templateId,
     })),
   )
 

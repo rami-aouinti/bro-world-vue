@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-90.json'
+
 definePageMeta({
   title: 'resumeBuilder.meta.indexTitle',
   layout: 'resume',
@@ -57,9 +59,13 @@ const documentTabs = computed(() => [
 ])
 
 const displayedTemplates = computed(() =>
-  allTemplates.value.filter(
-    (template) => template.type === activeTemplateTab.value,
-  ),
+  allTemplates.value.filter((template) => {
+    if (template.type !== activeTemplateTab.value) return false
+    if (template.type !== 'resume') return false
+    return GENERATED_RESUME_TEMPLATES.some(
+      (item) => item.id === template.templateId,
+    )
+  }),
 )
 
 const selectedTemplateId = ref<string>('')
@@ -170,6 +176,16 @@ onUnmounted(() => {
             >
               <v-img :src="templateCard.image" :alt="templateCard.title" />
               <span>{{ templateCard.title }}</span>
+              <v-btn
+                color="primary"
+                variant="text"
+                size="small"
+                class="mt-2"
+                :to="`/resume/preview?template=${templateCard.templateId}`"
+                @click.stop
+              >
+                Preview
+              </v-btn>
             </v-card>
           </div>
 
