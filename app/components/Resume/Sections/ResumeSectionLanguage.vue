@@ -163,7 +163,7 @@ function removeLanguage(index: number) {
       <li
         v-for="(language, index) in resume.languages"
         :key="`${resolveLanguageDisplayName(language)}-${index}`"
-        class="d-flex align-center ga-2"
+        class="language-inline-row d-flex align-center ga-2"
       >
         <span class="language-flag-fallback">{{
           resolveLanguageFlagSymbol(language)
@@ -253,7 +253,7 @@ function removeLanguage(index: number) {
         v-for="(language, index) in resume.languages"
         :key="`${resolveLanguageDisplayName(language)}-${index}`"
       >
-        <div class="d-flex align-center ga-2 justify-space-between">
+        <div class="language-inline-row d-flex align-center ga-2 justify-space-between">
           <span class="language-flag-fallback">{{
             resolveLanguageFlagSymbol(language)
           }}</span>
@@ -284,7 +284,7 @@ function removeLanguage(index: number) {
         v-for="(language, index) in resume.languages"
         :key="`${resolveLanguageDisplayName(language)}-${index}`"
       >
-        <div class="d-flex align-center ga-2 justify-space-between">
+        <div class="language-inline-row d-flex align-center ga-2 justify-space-between">
           <div class="d-flex align-center ga-2">
             <img
               v-if="resolveLanguageFlagSrc(language)"
@@ -404,6 +404,13 @@ function removeLanguage(index: number) {
 }
 .bars li:last-child {
   margin-bottom: 0;
+}
+.language-inline-row {
+  width: 100%;
+  flex-wrap: nowrap;
+}
+.language-inline-row .editable-text {
+  min-width: 0;
 }
 .progress {
   height: var(--cv-space-1);
