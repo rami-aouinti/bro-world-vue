@@ -12,7 +12,6 @@ export const RESUME_RENDERER_SECTION_ICONS: Record<string, string> = {
   hobby: 'mdi-puzzle-heart-outline',
 }
 
-
 export function resolveSectionIcon(sectionKey: string): string | undefined {
   return RESUME_RENDERER_SECTION_ICONS[sectionKey]
 }
