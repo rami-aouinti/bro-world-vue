@@ -4678,5 +4678,152 @@
         }
       ]
     }
+  },
+  {
+    "id": "tpl-091",
+    "name": "generated-aside-clean-1",
+    "version": 1,
+    "layout": "aside",
+    "structure": "structure-10",
+    "sections": {
+      "experience": "classic",
+      "education": "classic",
+      "skills": "text",
+      "languages": "classic",
+      "languagesLabel": "classic",
+      "certifications": "list",
+      "references": "classic",
+      "projects": "classic",
+      "interests": "list"
+    },
+    "theme": {
+      "palette": {
+        "primary": "#1F2937",
+        "secondary": "#6B7280",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FFFFFF"
+      },
+      "line": "soft",
+      "density": "comfortable",
+      "textStyle": "roman",
+      "showIcon": true
+    },
+    "aside": {
+      "width": "250px",
+      "height": "100%"
+    },
+    "photo": {
+      "position": "left",
+      "size": "92px",
+      "shape": "circle",
+      "border": "2px solid #1F2937"
+    },
+    "decor": {
+      "corners": [
+        {
+          "position": "top-left",
+          "size": "sm"
+        }
+      ]
+    }
+  },
+  {
+    "id": "tpl-092",
+    "name": "generated-aside-clean-2",
+    "version": 1,
+    "layout": "aside",
+    "structure": "structure-10",
+    "sections": {
+      "experience": "classic",
+      "education": "classic",
+      "skills": "text",
+      "languages": "classic",
+      "languagesLabel": "classic",
+      "certifications": "list",
+      "references": "classic",
+      "projects": "classic",
+      "interests": "list"
+    },
+    "theme": {
+      "palette": {
+        "primary": "#1F2937",
+        "secondary": "#6B7280",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FFFFFF"
+      },
+      "line": "soft",
+      "density": "comfortable",
+      "textStyle": "roman",
+      "showIcon": true
+    },
+    "aside": {
+      "width": "250px",
+      "height": "100%"
+    },
+    "photo": {
+      "position": "left",
+      "size": "92px",
+      "shape": "circle",
+      "border": "2px solid #1F2937"
+    },
+    "decor": {
+      "corners": [
+        {
+          "position": "top-left",
+          "size": "sm"
+        }
+      ]
+    }
+  },
+  {
+    "id": "tpl-093",
+    "name": "generated-aside-clean-3",
+    "version": 1,
+    "layout": "aside",
+    "structure": "structure-10",
+    "sections": {
+      "experience": "classic",
+      "education": "classic",
+      "skills": "text",
+      "languages": "classic",
+      "languagesLabel": "classic",
+      "certifications": "list",
+      "references": "classic",
+      "projects": "classic",
+      "interests": "list"
+    },
+    "theme": {
+      "palette": {
+        "primary": "#1F2937",
+        "secondary": "#6B7280",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FFFFFF"
+      },
+      "line": "soft",
+      "density": "comfortable",
+      "textStyle": "roman",
+      "showIcon": true
+    },
+    "aside": {
+      "width": "250px",
+      "height": "100%"
+    },
+    "photo": {
+      "position": "left",
+      "size": "92px",
+      "shape": "circle",
+      "border": "2px solid #1F2937"
+    },
+    "decor": {
+      "corners": [
+        {
+          "position": "top-left",
+          "size": "sm"
+        }
+      ]
+    }
   }
 ]

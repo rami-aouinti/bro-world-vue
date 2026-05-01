@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-90.json'
+
 definePageMeta({
   title: 'resumeBuilder.meta.indexTitle',
   layout: 'resume',
@@ -40,6 +42,17 @@ const {
 const activeTemplateTab = ref<'resume' | 'cover-page' | 'cover-letter'>(
   'resume',
 )
+const selectedLayoutFilter = ref<string | null>(null)
+
+const layoutFilterOptions = computed(() => {
+  const layouts = Array.from(
+    new Set(GENERATED_RESUME_TEMPLATES.map((template) => template.layout)),
+  )
+  return layouts.map((layout) => ({
+    title: layout,
+    value: layout,
+  }))
+})
 
 const documentTabs = computed(() => [
   {
@@ -57,9 +70,16 @@ const documentTabs = computed(() => [
 ])
 
 const displayedTemplates = computed(() =>
-  allTemplates.value.filter(
-    (template) => template.type === activeTemplateTab.value,
-  ),
+  allTemplates.value.filter((template) => {
+    if (template.type !== activeTemplateTab.value) return false
+    if (template.type !== 'resume') return false
+    const generatedTemplate = GENERATED_RESUME_TEMPLATES.find(
+      (item) => item.id === template.templateId,
+    )
+    if (!generatedTemplate) return false
+    if (!selectedLayoutFilter.value) return true
+    return generatedTemplate.layout === selectedLayoutFilter.value
+  }),
 )
 
 const selectedTemplateId = ref<string>('')
@@ -133,6 +153,14 @@ onUnmounted(() => {
       <template #right>
         <h3>{{ t('resumeBuilder.index.heroTitle') }}</h3>
         <p class="hero-subtitle">{{ t('resumeBuilder.index.heroSubtitle') }}</p>
+        <AppSelect
+          v-model="selectedLayoutFilter"
+          :items="layoutFilterOptions"
+          label="Filter by layout"
+          clearable
+          hide-details
+          class="mt-3"
+        />
         <v-btn color="primary" size="large" to="/resume/create" class="mt-3">
           {{ t('resumeBuilder.index.journey.steps.template.cta') }}
         </v-btn>
@@ -170,6 +198,16 @@ onUnmounted(() => {
             >
               <v-img :src="templateCard.image" :alt="templateCard.title" />
               <span>{{ templateCard.title }}</span>
+              <v-btn
+                color="primary"
+                variant="text"
+                size="small"
+                class="mt-2"
+                :to="`/resume/preview?template=${templateCard.templateId}`"
+                @click.stop
+              >
+                Preview
+              </v-btn>
             </v-card>
           </div>
 
