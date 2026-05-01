@@ -1540,9 +1540,11 @@ function updateText(path: string, value: string) {
 .resume-contact-section {
   position: relative;
   container-type: inline-size;
+  margin-top: var(--resume-space-2, var(--cv-space-2));
 }
 .resume-contact-section .resume-skin__contact-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: var(--resume-space-2, var(--cv-space-2));
 }
 .resume-skin__contact-item {
   display: inline-flex;
@@ -1863,6 +1865,14 @@ function updateText(path: string, value: string) {
 @media (max-width: 768px) {
   .resume-skin__contact-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .resume-skin__contact-grid--aside-left-aside,
+  .resume-skin__contact-grid--aside-left-main,
+  .resume-skin__contact-grid--aside-right-aside,
+  .resume-skin__contact-grid--aside-right-main,
+  .resume-skin__contact-grid--no-aside-main {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
