@@ -140,7 +140,7 @@ async function openProduct(product: RandomProductItem) {
       >
         <template #prepend>
           <v-avatar rounded="lg" size="42">
-            <v-img :src="game.img || '/img/game/classic-card.png'" cover />
+            <v-img :src="game.img || '/img/game/200.png'" cover width="42" height="42" loading="lazy" />
           </v-avatar>
         </template>
 
@@ -190,6 +190,9 @@ async function openProduct(product: RandomProductItem) {
                 '/images/platform-media/shop-premium-hoodie.svg'
               "
               cover
+              width="42"
+              height="42"
+              loading="lazy"
             />
           </v-avatar>
         </template>
