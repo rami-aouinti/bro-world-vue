@@ -86,7 +86,9 @@ export function resolveLayoutZonesWithConfig(
     }
     const main = (structureConfig.main ?? []).map(toDescriptor)
     const aside = (structureConfig.aside ?? []).map(toDescriptor)
-    if (main.length || aside.length) return { main, aside }
+    const asideIds = new Set(aside.map((entry) => entry.id))
+    const dedupedMain = main.filter((entry) => !asideIds.has(entry.id))
+    if (dedupedMain.length || aside.length) return { main: dedupedMain, aside }
   }
 
   if (structure === 'structure-2') {
