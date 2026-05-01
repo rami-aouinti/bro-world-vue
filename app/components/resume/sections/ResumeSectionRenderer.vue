@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ResumeApiItem } from '~/services/resumeApi'
-import { isResumeSectionVariantSupported } from '~/constants/resumeVariantSupportMatrix'
 import {
   resolveSectionRenderer,
   type ResumeRendererSectionKey,
@@ -40,6 +39,17 @@ const SECTION_TO_RENDERER_KEY: Record<string, ResumeRendererSectionKey> = {
   language: 'languages',
 }
 
+const SECTION_TEMPLATE_KEYS: Record<string, string[]> = {
+  experience: ['experience'],
+  education: ['education'],
+  skill: ['skill', 'skills'],
+  project: ['project', 'projects'],
+  certification: ['certification', 'certifications'],
+  reference: ['reference', 'references'],
+  hobby: ['hobby', 'interests'],
+  language: ['language', 'languages'],
+}
+
 const SECTION_TO_ITEMS: Record<string, (resume: ResumeApiItem) => unknown[]> = {
   experience: (resume) => resume.experiences || [],
   education: (resume) => resume.educations || [],
@@ -63,12 +73,12 @@ const legacyComponents: Record<string, any> = {
 }
 
 const selectedVariant = computed(() => {
-  const requested = props.template?.sections?.[props.sectionKey]
-  if (
-    typeof requested === 'string' &&
-    isResumeSectionVariantSupported(props.sectionKey, requested)
-  )
-    return requested
+  const sectionEntries = props.template?.sections || {}
+  const keys = SECTION_TEMPLATE_KEYS[props.sectionKey] || [props.sectionKey]
+  for (const key of keys) {
+    const requested = sectionEntries[key]
+    if (typeof requested === 'string') return requested
+  }
   return 'classic'
 })
 
