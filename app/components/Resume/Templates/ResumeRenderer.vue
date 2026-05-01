@@ -508,6 +508,14 @@ const contactIconColor = computed(() =>
     ? 'var(--resume-secondary, var(--cv-secondary))'
     : 'var(--resume-accent, var(--cv-accent))',
 )
+type ContactLayoutZone = 'header' | 'aside' | 'main'
+
+function getContactGridClass(
+  layoutMode: ResumeLayoutMode,
+  zone: ContactLayoutZone,
+): string {
+  return `resume-skin__contact-grid--${layoutMode}-${zone}`
+}
 const sectionIconCssVars = computed<Record<string, string>>(() => ({
   '--resume-section-icon-size': `${resolvedSectionIconStyle.value.size}px`,
   '--resume-section-icon-color': resolvedSectionIconStyle.value.color,
@@ -718,7 +726,11 @@ function updateText(path: string, value: string) {
         </p>
         <div
           v-if="templateSkin.showContactInHeader"
-          class="resume-skin__contact-grid resume-skin__header-contact"
+          :class="[
+            'resume-skin__contact-grid',
+            'resume-skin__header-contact',
+            getContactGridClass(resolvedDesignState.layoutMode, 'header'),
+          ]"
         >
           <div class="resume-skin__contact-item">
             <v-icon
@@ -886,7 +898,12 @@ function updateText(path: string, value: string) {
             :tone="isOnPrimary ? 'on-primary' : 'default'"
             divider
           />
-          <div class="resume-skin__contact-grid">
+          <div
+            :class="[
+              'resume-skin__contact-grid',
+              getContactGridClass(resolvedDesignState.layoutMode, 'aside'),
+            ]"
+          >
             <div
               v-if="resume.birthDate ?? resume.birthday"
               class="resume-skin__contact-item"
@@ -1124,7 +1141,12 @@ function updateText(path: string, value: string) {
             :tone="isOnPrimary ? 'on-primary' : 'default'"
             divider
           />
-          <div class="resume-skin__contact-grid">
+          <div
+            :class="[
+              'resume-skin__contact-grid',
+              getContactGridClass(resolvedDesignState.layoutMode, 'main'),
+            ]"
+          >
             <div class="resume-skin__contact-item">
               <v-icon
                 v-if="showContactIcons"
@@ -1719,7 +1741,13 @@ function updateText(path: string, value: string) {
 
 .layout-mode-aside-left .resume-contact-section .resume-skin__contact-grid,
 .layout-mode-aside-right .resume-contact-section .resume-skin__contact-grid {
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@container (max-width: 360px) {
+  .resume-contact-section .resume-skin__contact-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 .resume-skin__no-aside-columns {
   display: grid;
@@ -1801,6 +1829,14 @@ function updateText(path: string, value: string) {
 @media (max-width: 768px) {
   .resume-skin__contact-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 769px) {
+  .resume-skin__contact-grid--aside-left-main,
+  .resume-skin__contact-grid--aside-right-main,
+  .resume-skin__contact-grid--no-aside-main {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

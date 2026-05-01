@@ -5,6 +5,7 @@ import ResumeLayoutAside from '~/components/resume/layouts/ResumeLayoutAside.vue
 import ResumeLayoutAsideLeft from '~/components/resume/layouts/ResumeLayoutAsideLeft.vue'
 import ResumeLayoutAsideRight from '~/components/resume/layouts/ResumeLayoutAsideRight.vue'
 import ResumeLayoutNoAside from '~/components/resume/layouts/ResumeLayoutNoAside.vue'
+import ResumeTemplateDecor from '~/components/Resume/ResumeTemplateDecor.vue'
 
 definePageMeta({
   title: 'resumeBuilder.meta.previewTitle',
@@ -84,7 +85,7 @@ const selectedGeneratedTemplate = computed<GeneratedTemplate | null>(() => {
 })
 
 const selectedLayout = ref<(typeof CONTROLLED_LAYOUTS)[number]>('no-aside')
-const selectedStructure = ref<string>('')
+const selectedStructure = ref<'structure-1' | 'structure-2'>('structure-1')
 const selectedPalette = ref<string>('template')
 const customPalettePrimary = ref<string>('#0F4C81')
 const selectedSectionVariants = ref<SectionVariants>({})
@@ -95,6 +96,7 @@ const selectedPhotoShape = ref<string>('circle')
 const selectedPhotoBorderWidth = ref<number>(2)
 const selectedPhotoBorderStyle = ref<string>('solid')
 const selectedPhotoBorderColor = ref<string>('#0F4C81')
+const decorShapeOptions = ['circle', 'square', 'triangle', 'blob', 'line'] as const
 
 
 const photoPositionOptions = [
@@ -110,6 +112,47 @@ const photoShapeOptions = computed(() => {
   })
   return Array.from(shapes).map((shape) => ({ title: shape, value: shape }))
 })
+
+
+const editableDecorCorners = ref<Array<{ shape: string; size: number; x: number; y: number; color: string }>>([])
+
+function normalizeDecorCorner(corner: any) {
+  const sizeRaw = String(corner?.size ?? '96').replace('px', '')
+  const size = Number.parseInt(sizeRaw, 10)
+  const xRaw = corner?.x
+  const yRaw = corner?.y
+
+  const parseAxis = (value: unknown, axis: 'x' | 'y') => {
+    if (typeof value === 'number') return value
+    const stringValue = String(value ?? '')
+    if (/^-?\d+(\.\d+)?$/.test(stringValue)) return Number.parseFloat(stringValue)
+    if (stringValue.endsWith('%')) return Number.parseFloat(stringValue.replace('%', ''))
+    const tokens = stringValue.toLowerCase().split('-')
+    if (axis === 'x') {
+      if (tokens.includes('left')) return 0
+      if (tokens.includes('right')) return 100
+    }
+    if (tokens.includes('top')) return 0
+    if (tokens.includes('bottom')) return 100
+    return 50
+  }
+
+  return {
+    shape: String(corner?.shape || corner?.type || 'circle'),
+    size: Number.isFinite(size) ? size : 96,
+    x: parseAxis(xRaw, 'x'),
+    y: parseAxis(yRaw, 'y'),
+    color: String(corner?.color || '#0F4C81'),
+  }
+}
+
+function addDecorCorner() {
+  editableDecorCorners.value.push({ shape: 'circle', size: 96, x: 50, y: 50, color: '#5FA8D3' })
+}
+
+function removeDecorCorner(index: number) {
+  editableDecorCorners.value.splice(index, 1)
+}
 
 const photoBorderStyleOptions = [
   { title: 'Solid', value: 'solid' },
@@ -139,6 +182,11 @@ const sectionVariantOptions = computed(() => {
     return acc
   }, {})
 })
+const sectionVariantOptionsForDrawer = computed(() =>
+  Object.fromEntries(
+    Object.entries(sectionVariantOptions.value).filter(([sectionKey]) => sectionKey !== 'contact'),
+  ),
+)
 
 const paletteOptions = computed(() => [
   { title: 'Template palette', value: 'template' },
@@ -152,12 +200,15 @@ const paletteOptions = computed(() => [
   { title: 'Preset · Rose', value: '#E11D48' },
   { title: 'Custom', value: 'custom' },
 ])
+const contactStyleOptions = [
+  { title: 'Labels', value: 'labels' },
+  { title: 'Icons', value: 'icons' },
+]
 
-const structureLayoutMap: Record<string, (typeof CONTROLLED_LAYOUTS)[number]> =
+const structureLayoutMap: Record<'structure-1' | 'structure-2', (typeof CONTROLLED_LAYOUTS)[number]> =
   {
-    'two-columns-balanced': 'aside-left',
-    'two-columns-main-heavy': 'aside-right',
-    'header-band-split': 'no-aside',
+    'structure-1': 'no-aside',
+    'structure-2': 'aside-left',
   }
 
 const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
@@ -182,9 +233,20 @@ const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
   return {
     ...base,
     layout: selectedLayout.value,
+    structure: selectedStructure.value,
     sections: nextSections,
     theme: nextTheme,
     photo: nextPhoto,
+    decor: {
+      ...(base.decor || {}),
+      corners: editableDecorCorners.value.map((corner) => ({
+        shape: corner.shape,
+        size: `${corner.size}px`,
+        color: corner.color,
+        x: corner.x,
+        y: corner.y,
+      })),
+    },
   }
 })
 
@@ -194,9 +256,9 @@ watch(
     if (!template) return
 
     selectedStructure.value =
-      typeof route.query.structure === 'string'
-        ? route.query.structure
-        : (template as any).structure || ''
+      route.query.structure === 'structure-2' || (template as any).structure === 'structure-2'
+        ? 'structure-2'
+        : 'structure-1'
     const queryLayout =
       typeof route.query.layout === 'string' ? route.query.layout : ''
     selectedLayout.value = CONTROLLED_LAYOUTS.includes(
@@ -223,6 +285,7 @@ watch(
     selectedSectionVariants.value = nextSections
 
     const photo = template.photo || { position: 'left', size: '96px', shape: 'circle', border: '2px solid #0F4C81' }
+    editableDecorCorners.value = (template.decor?.corners || []).map((corner: any) => normalizeDecorCorner(corner))
     selectedPhotoPosition.value =
       typeof route.query.photoPosition === 'string' ? route.query.photoPosition : photo.position || 'left'
     const sizeSource =
@@ -263,6 +326,7 @@ watch(
     const query = {
       ...route.query,
       layout: selectedLayout.value,
+    structure: selectedStructure.value,
       palette: selectedPalette.value,
       paletteCustom: customPalettePrimary.value,
       structure: selectedStructure.value,
@@ -321,13 +385,8 @@ const activeLayoutComponent = computed(() => {
         <AppSelect
           v-model="selectedStructure"
           :items="[
-            { title: 'Default', value: '' },
-            { title: 'Two columns balanced', value: 'two-columns-balanced' },
-            {
-              title: 'Two columns main-heavy',
-              value: 'two-columns-main-heavy',
-            },
-            { title: 'Header band + split', value: 'header-band-split' },
+            { title: 'Structure 1 · Linéaire', value: 'structure-1' },
+            { title: 'Structure 2 · Split', value: 'structure-2' },
           ]"
           label="Structure"
           hide-details
@@ -336,6 +395,12 @@ const activeLayoutComponent = computed(() => {
           v-model="selectedLayout"
           :items="layoutFilterOptions"
           label="Layout"
+          hide-details
+        />
+        <AppSelect
+          v-model="selectedSectionVariants.contact"
+          :items="contactStyleOptions"
+          label="Contact style"
           hide-details
         />
         <AppSelect
@@ -392,10 +457,31 @@ const activeLayoutComponent = computed(() => {
           type="color"
           hide-details
         />
+        <v-divider class="my-4" />
+        <div class="text-subtitle-2 mb-2">Corner decor</div>
+        <v-btn size="small" variant="outlined" class="mb-3" @click="addDecorCorner">ajouter un corner decor</v-btn>
+        <v-card
+          v-for="(corner, index) in editableDecorCorners"
+          :key="`corner-${index}`"
+          variant="tonal"
+          class="pa-2 mb-3"
+        >
+          <AppSelect
+            v-model="corner.shape"
+            :items="decorShapeOptions.map((shape) => ({ title: shape, value: shape }))"
+            label="Shape"
+            hide-details
+          />
+          <v-slider v-model="corner.size" label="Size (px)" min="20" max="300" step="1" hide-details />
+          <v-slider v-model="corner.x" label="X (%)" min="0" max="100" step="1" hide-details />
+          <v-slider v-model="corner.y" label="Y (%)" min="0" max="100" step="1" hide-details />
+          <v-text-field v-model="corner.color" label="Color" type="color" hide-details />
+          <v-btn size="x-small" color="error" variant="text" @click="removeDecorCorner(index)">supprimer un corner decor</v-btn>
+        </v-card>
       </template>
       <template #right>
         <AppSelect
-          v-for="(variantOptions, sectionKey) in sectionVariantOptions"
+          v-for="(variantOptions, sectionKey) in sectionVariantOptionsForDrawer"
           :key="sectionKey"
           v-model="selectedSectionVariants[sectionKey]"
           :items="variantOptions"
@@ -415,14 +501,25 @@ const activeLayoutComponent = computed(() => {
             :text="resumesError"
           />
           <template v-else>
-            <component
-              :is="activeLayoutComponent"
-              :resume="resumeToDisplay"
-              :template="effectiveTemplate"
-            />
+            <div class="resume-preview-canvas">
+              <ResumeTemplateDecor :decor="effectiveTemplate?.decor" />
+              <component
+                :is="activeLayoutComponent"
+                :resume="resumeToDisplay"
+                :template="effectiveTemplate"
+              />
+            </div>
           </template>
         </v-card-text>
       </v-card>
     </v-container>
   </div>
 </template>
+
+
+<style scoped>
+.resume-preview-canvas {
+  position: relative;
+  overflow: hidden;
+}
+</style>
