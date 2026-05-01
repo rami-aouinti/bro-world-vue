@@ -27,7 +27,9 @@ const CONTROLLED_LAYOUTS = ['aside-left', 'aside-right', 'no-aside'] as const
 const layoutFilterOptions = computed(() => {
   const layouts = Array.from(
     new Set(GENERATED_RESUME_TEMPLATES.map((template) => template.layout)),
-  ).filter((layout) => CONTROLLED_LAYOUTS.includes(layout as (typeof CONTROLLED_LAYOUTS)[number]))
+  ).filter((layout) =>
+    CONTROLLED_LAYOUTS.includes(layout as (typeof CONTROLLED_LAYOUTS)[number]),
+  )
 
   return layouts.map((layout) => ({ title: layout, value: layout }))
 })
@@ -41,8 +43,24 @@ const fakeResume: ResumeApiItem = {
     phone: '+33 6 00 00 00 00',
     adresse: 'Paris, France',
   },
-  experiences: [{ title: 'Full Stack Developer', company: 'Bro Labs', description: 'Développement APIs, Vue.js et architecture applicative.', startDate: '2021-01-01', endDate: null }],
-  educations: [{ title: 'Master Informatique', school: 'Université de Lyon', startDate: '2018-09-01', endDate: '2020-06-30', location: 'Lyon' }],
+  experiences: [
+    {
+      title: 'Full Stack Developer',
+      company: 'Bro Labs',
+      description: 'Développement APIs, Vue.js et architecture applicative.',
+      startDate: '2021-01-01',
+      endDate: null,
+    },
+  ],
+  educations: [
+    {
+      title: 'Master Informatique',
+      school: 'Université de Lyon',
+      startDate: '2018-09-01',
+      endDate: '2020-06-30',
+      location: 'Lyon',
+    },
+  ],
   skills: [{ title: 'Vue.js' }, { title: 'TypeScript' }, { title: 'Node.js' }],
   languages: [{ title: 'Français' }, { title: 'Anglais' }],
 }
@@ -50,15 +68,23 @@ const fakeResume: ResumeApiItem = {
 const selectedTemplate = computed(() => {
   const templateId = String(route.query.template || '')
   if (!templateId) return null
-  return allTemplates.value.find((template) => template.templateId === templateId) || null
+  return (
+    allTemplates.value.find((template) => template.templateId === templateId) ||
+    null
+  )
 })
 
 const selectedGeneratedTemplate = computed<GeneratedTemplate | null>(() => {
   if (!selectedTemplate.value?.templateId) return null
-  return GENERATED_RESUME_TEMPLATES.find((template) => template.id === selectedTemplate.value?.templateId) || null
+  return (
+    GENERATED_RESUME_TEMPLATES.find(
+      (template) => template.id === selectedTemplate.value?.templateId,
+    ) || null
+  )
 })
 
 const selectedLayout = ref<(typeof CONTROLLED_LAYOUTS)[number]>('no-aside')
+const selectedStructure = ref<string>('')
 const selectedPalette = ref<string>('template')
 const customPalettePrimary = ref<string>('#0F4C81')
 const selectedSectionVariants = ref<SectionVariants>({})
@@ -73,8 +99,13 @@ const sectionVariantOptions = computed(() => {
     })
   })
 
-  return Array.from(map.entries()).reduce<Record<string, { title: string, value: string }[]>>((acc, [sectionKey, variants]) => {
-    acc[sectionKey] = variants.map((variant) => ({ title: variant, value: variant }))
+  return Array.from(map.entries()).reduce<
+    Record<string, { title: string; value: string }[]>
+  >((acc, [sectionKey, variants]) => {
+    acc[sectionKey] = variants.map((variant) => ({
+      title: variant,
+      value: variant,
+    }))
     return acc
   }, {})
 })
@@ -91,6 +122,13 @@ const paletteOptions = computed(() => [
   { title: 'Preset · Rose', value: '#E11D48' },
   { title: 'Custom', value: 'custom' },
 ])
+
+const structureLayoutMap: Record<string, (typeof CONTROLLED_LAYOUTS)[number]> =
+  {
+    'two-columns-balanced': 'aside-left',
+    'two-columns-main-heavy': 'aside-right',
+    'header-band-split': 'no-aside',
+  }
 
 const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
   if (!selectedGeneratedTemplate.value) return null
@@ -117,26 +155,45 @@ watch(
   (template) => {
     if (!template) return
 
-    const queryLayout = typeof route.query.layout === 'string' ? route.query.layout : ''
-    selectedLayout.value = CONTROLLED_LAYOUTS.includes(queryLayout as (typeof CONTROLLED_LAYOUTS)[number])
+    selectedStructure.value =
+      typeof route.query.structure === 'string'
+        ? route.query.structure
+        : (template as any).structure || ''
+    const queryLayout =
+      typeof route.query.layout === 'string' ? route.query.layout : ''
+    selectedLayout.value = CONTROLLED_LAYOUTS.includes(
+      queryLayout as (typeof CONTROLLED_LAYOUTS)[number],
+    )
       ? (queryLayout as (typeof CONTROLLED_LAYOUTS)[number])
-      : ((template.layout as (typeof CONTROLLED_LAYOUTS)[number]) || 'no-aside')
+      : (template.layout as (typeof CONTROLLED_LAYOUTS)[number]) || 'no-aside'
 
-    selectedPalette.value = typeof route.query.palette === 'string' ? route.query.palette : 'template'
-    customPalettePrimary.value = typeof route.query.paletteCustom === 'string' ? route.query.paletteCustom : template.theme.palette.primary
+    selectedPalette.value =
+      typeof route.query.palette === 'string' ? route.query.palette : 'template'
+    customPalettePrimary.value =
+      typeof route.query.paletteCustom === 'string'
+        ? route.query.paletteCustom
+        : template.theme.palette.primary
 
     const nextSections: SectionVariants = {}
-    Object.entries(template.sections || {}).forEach(([sectionKey, defaultVariant]) => {
-      const rawQueryValue = route.query[sectionKey]
-      nextSections[sectionKey] = typeof rawQueryValue === 'string' ? rawQueryValue : defaultVariant
-    })
+    Object.entries(template.sections || {}).forEach(
+      ([sectionKey, defaultVariant]) => {
+        const rawQueryValue = route.query[sectionKey]
+        nextSections[sectionKey] =
+          typeof rawQueryValue === 'string' ? rawQueryValue : defaultVariant
+      },
+    )
     selectedSectionVariants.value = nextSections
   },
   { immediate: true },
 )
 
 watch(
-  [selectedLayout, selectedPalette, customPalettePrimary, selectedSectionVariants],
+  [
+    selectedLayout,
+    selectedPalette,
+    customPalettePrimary,
+    selectedSectionVariants,
+  ],
   () => {
     if (!selectedGeneratedTemplate.value) return
 
@@ -145,22 +202,35 @@ watch(
       layout: selectedLayout.value,
       palette: selectedPalette.value,
       paletteCustom: customPalettePrimary.value,
+      structure: selectedStructure.value,
     } as Record<string, string>
 
-    Object.entries(selectedSectionVariants.value).forEach(([sectionKey, variant]) => {
-      query[sectionKey] = variant
-    })
+    Object.entries(selectedSectionVariants.value).forEach(
+      ([sectionKey, variant]) => {
+        query[sectionKey] = variant
+      },
+    )
 
     router.replace({ query })
   },
   { deep: true },
 )
 
+watch(selectedStructure, (structure) => {
+  const mapped = structureLayoutMap[structure]
+  if (mapped) selectedLayout.value = mapped
+})
 onMounted(async () => {
   if (!loggedIn.value) return
   loadingResumes.value = true
   resumesError.value = ''
-  try { myResumes.value = await listMyResumes() } catch { resumesError.value = "Impossible de charger vos données de CV." } finally { loadingResumes.value = false }
+  try {
+    myResumes.value = await listMyResumes()
+  } catch {
+    resumesError.value = 'Impossible de charger vos données de CV.'
+  } finally {
+    loadingResumes.value = false
+  }
 })
 
 const resumeToDisplay = computed<ResumeApiItem>(() => {
@@ -181,8 +251,32 @@ const activeLayoutComponent = computed(() => {
   <div>
     <AppPageDrawers>
       <template #left>
-        <AppSelect v-model="selectedLayout" :items="layoutFilterOptions" label="Layout" hide-details />
-        <AppSelect v-model="selectedPalette" :items="paletteOptions" label="Palette" hide-details />
+        <AppSelect
+          v-model="selectedStructure"
+          :items="[
+            { title: 'Default', value: '' },
+            { title: 'Two columns balanced', value: 'two-columns-balanced' },
+            {
+              title: 'Two columns main-heavy',
+              value: 'two-columns-main-heavy',
+            },
+            { title: 'Header band + split', value: 'header-band-split' },
+          ]"
+          label="Structure"
+          hide-details
+        />
+        <AppSelect
+          v-model="selectedLayout"
+          :items="layoutFilterOptions"
+          label="Layout"
+          hide-details
+        />
+        <AppSelect
+          v-model="selectedPalette"
+          :items="paletteOptions"
+          label="Palette"
+          hide-details
+        />
         <v-text-field
           v-if="selectedPalette === 'custom'"
           v-model="customPalettePrimary"
@@ -213,7 +307,11 @@ const activeLayoutComponent = computed(() => {
             :text="resumesError"
           />
           <template v-else>
-            <component :is="activeLayoutComponent" :resume="resumeToDisplay" :template="effectiveTemplate" />
+            <component
+              :is="activeLayoutComponent"
+              :resume="resumeToDisplay"
+              :template="effectiveTemplate"
+            />
           </template>
         </v-card-text>
       </v-card>
