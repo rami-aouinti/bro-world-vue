@@ -334,7 +334,7 @@ function removeEducationItem(index: number) {
   --entry-description-to-list-gap: var(--cv-space-2);
   --education-timeline-dot-offset: 10px;
   --education-timeline-icon-offset: 28px;
-  --education-timeline-rail-width: 44px;
+  --education-timeline-rail-width: 32px;
 
   position: relative;
   border-bottom: var(--rs-section-separator, none);
@@ -451,6 +451,7 @@ function removeEducationItem(index: number) {
     minmax(140px, var(--resume-date-column-width, 140px))
     var(--education-timeline-rail-width)
     minmax(0, 1fr);
+  column-gap: var(--cv-space-2);
 }
 .education--timeline .education-timeline-rail {
   position: relative;
