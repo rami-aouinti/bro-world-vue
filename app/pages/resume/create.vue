@@ -311,12 +311,13 @@ type Template = {
 
 type LevelInputMode = 'percent' | 'stars'
 type PhotoShape =
-  | 'square'
-  | 'rounded'
   | 'circle'
+  | 'rounded'
+  | 'square'
+  | 'hex'
+  | 'blob'
   | 'portrait-card'
   | 'soft-blob'
-  | 'hex'
 type PhotoShapeOption = {
   label: string
   value: PhotoShape
@@ -593,6 +594,11 @@ const decorativeShapeTypeOptions = [
 ] as const
 const photoShapeOptions = [
   {
+    label: t('resumeBuilder.create.options.photoShape.circle'),
+    value: 'circle',
+    icon: '◯',
+  },
+  {
     label: t('resumeBuilder.create.options.photoShape.square'),
     value: 'square',
     icon: '□',
@@ -603,18 +609,8 @@ const photoShapeOptions = [
     icon: '▢',
   },
   {
-    label: t('resumeBuilder.create.options.photoShape.circle'),
-    value: 'circle',
-    icon: '◯',
-  },
-  {
-    label: t('resumeBuilder.create.options.photoShape.portrait'),
-    value: 'portrait-card',
-    icon: '▮',
-  },
-  {
     label: t('resumeBuilder.create.options.photoShape.blob'),
-    value: 'soft-blob',
+    value: 'blob',
     icon: '⬭',
   },
   {
@@ -1752,9 +1748,13 @@ const signatureDataUrl = ref('')
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 const isDrawingSignature = ref(false)
 const safePhotoShape = computed<PhotoShape>(() =>
-  photoShapeOptions.some((option) => option.value === selectedPhotoShape.value)
-    ? (selectedPhotoShape.value as PhotoShape)
-    : 'square',
+  selectedPhotoShape.value === 'soft-blob'
+    ? 'blob'
+    : selectedPhotoShape.value === 'portrait-card'
+      ? 'rounded'
+      : photoShapeOptions.some((option) => option.value === selectedPhotoShape.value)
+        ? (selectedPhotoShape.value as PhotoShape)
+        : 'circle',
 )
 let aiElapsedTimer: ReturnType<typeof setInterval> | null = null
 const { loggedIn, fetch: refreshSession } = useUserSession()
@@ -3208,6 +3208,12 @@ const resumeRendererDesignState = computed(() => ({
   photoSize: layoutSettings.photoSize,
   photoBorderWidth: layoutSettings.photoBorderWidth,
   photoPosition: layoutSettings.photoPosition,
+  photo: {
+    shape: safePhotoShape.value,
+    size: layoutSettings.photoSize,
+    border: layoutSettings.photoBorderWidth,
+    position: layoutSettings.photoPosition,
+  },
   decorativeShapeA: layoutSettings.decorativeShapeA,
   decorativeShapeB: layoutSettings.decorativeShapeB,
 }))
@@ -4367,6 +4373,17 @@ if (import.meta.client) {
             item-title="label"
             item-value="value"
             label="Photo alignment"
+            density="comfortable"
+            hide-details
+            class="mt-3"
+          />
+          <AppSelect
+            v-if="templateSupportsPhoto"
+            v-model="selectedPhotoShape"
+            :items="photoShapeOptions"
+            item-title="label"
+            item-value="value"
+            label="Photo shape"
             density="comfortable"
             hide-details
             class="mt-3"

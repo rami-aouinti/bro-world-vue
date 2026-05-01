@@ -31,20 +31,21 @@ const photoConfig = computed(() => {
       : typeof photo.size === 'string' && photo.size.trim()
         ? photo.size
         : '64px'
-  const shape = photo.shape === 'square' || photo.shape === 'rounded' ? photo.shape : 'circle'
-  const borderRadius = shape === 'square' ? '10px' : shape === 'rounded' ? '16px' : '999px'
+  const allowedShapes = new Set(['circle', 'rounded', 'square', 'hex', 'blob'])
+  const shape =
+    typeof photo.shape === 'string' && allowedShapes.has(photo.shape)
+      ? photo.shape
+      : 'circle'
   const border = typeof photo.border === 'string' && photo.border.trim()
     ? photo.border
     : '2px solid var(--primary, #0f4c81)'
 
-  return { position, size, borderRadius, border }
+  return { position, size, shape, border }
 })
 
 const avatarStyle = computed(() => ({
-  width: photoConfig.value.size,
-  height: photoConfig.value.size,
-  borderRadius: photoConfig.value.borderRadius,
-  border: photoConfig.value.border,
+  '--photo-size': photoConfig.value.size,
+  '--photo-border': photoConfig.value.border,
 }))
 
 const currentPhotoUrl = computed(() => {
@@ -114,7 +115,10 @@ onBeforeUnmount(() => {
   <section class="section header" :class="`is-${photoConfig.position}`">
     <button
       class="avatar"
-      :class="{ 'avatar--uploading': isPhotoLoading, 'avatar--error': Boolean(photoError), 'avatar--with-photo': Boolean(currentPhotoUrl) }"
+      :class="[
+        `avatar--shape-${photoConfig.shape}`,
+        { 'avatar--uploading': isPhotoLoading, 'avatar--error': Boolean(photoError), 'avatar--with-photo': Boolean(currentPhotoUrl) },
+      ]"
       :style="avatarStyle"
       type="button"
       @click="openPhotoPicker"
@@ -146,6 +150,9 @@ onBeforeUnmount(() => {
 .header.is-right { flex-direction: row-reverse; justify-content: flex-start; }
 .photo-input { display:none; }
 .avatar {
+  width: var(--photo-size);
+  height: var(--photo-size);
+  border: var(--photo-border);
   position: relative;
   overflow: hidden;
   background: var(--primary, #0f4c81);
@@ -156,6 +163,16 @@ onBeforeUnmount(() => {
   flex: 0 0 auto;
   cursor: pointer;
   transition: transform .15s ease, box-shadow .15s ease;
+}
+.avatar--shape-circle { border-radius: 999px; clip-path: circle(50% at 50% 50%); }
+.avatar--shape-rounded { border-radius: 16px; }
+.avatar--shape-square { border-radius: 10px; }
+.avatar--shape-hex {
+  border-radius: 0;
+  clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0 50%);
+}
+.avatar--shape-blob {
+  border-radius: 58% 42% 62% 38% / 36% 56% 44% 64%;
 }
 .avatar:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(15, 76, 129, .24); }
 .avatar:focus-visible { outline: 2px solid #1d4ed8; outline-offset: 2px; }
