@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SectionRenderer from '~/components/Resume/Sections/SectionRenderer.vue'
+import ResumeSectionHeading from '~/components/Resume/Sections/ResumeSectionHeading.vue'
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 import AvatarOverlayControls from '~/components/Resume/Templates/AvatarOverlayControls.vue'
 import TemplateDecorations from '~/components/Resume/Templates/TemplateDecorations.vue'
@@ -879,15 +880,12 @@ function updateText(path: string, value: string) {
             :actions="['delete-section']"
             @delete-section="removeContactSection"
           />
-          <h3 class="cv-heading-section">
-            <span v-if="shouldShowSectionIcons" class="section-icon">
-              <v-icon
-                icon="mdi-card-account-phone-outline"
-                :size="resolvedSectionIconStyle.size"
-              />
-            </span>
-            <span>Contact</span>
-          </h3>
+          <ResumeSectionHeading
+            title="Contact"
+            :icon="shouldShowSectionIcons ? 'mdi-card-account-phone-outline' : undefined"
+            :tone="isOnPrimary ? 'on-primary' : 'default'"
+            divider
+          />
           <div class="resume-skin__contact-grid">
             <div
               v-if="resume.birthDate ?? resume.birthday"
@@ -1067,7 +1065,11 @@ function updateText(path: string, value: string) {
         </section>
 
         <section v-if="templateSkin.showProfileInAside ?? true">
-          <h3 class="cv-heading-section">Profile</h3>
+          <ResumeSectionHeading
+            title="Profile"
+            :tone="isOnPrimary ? 'on-primary' : 'default'"
+            divider
+          />
           <p
             class="editable-text"
             :contenteditable="editable"
@@ -1116,7 +1118,12 @@ function updateText(path: string, value: string) {
             hasContactDetails
           "
         >
-          <h2 class="cv-heading-section">Contact</h2>
+          <ResumeSectionHeading
+            title="Contact"
+            variant="h2"
+            :tone="isOnPrimary ? 'on-primary' : 'default'"
+            divider
+          />
           <div class="resume-skin__contact-grid">
             <div class="resume-skin__contact-item">
               <v-icon
@@ -1247,7 +1254,12 @@ function updateText(path: string, value: string) {
             (templateSkin.showProfileInAside ?? true)
           "
         >
-          <h2 class="cv-heading-section">Profile</h2>
+          <ResumeSectionHeading
+            title="Profile"
+            variant="h2"
+            :tone="isOnPrimary ? 'on-primary' : 'default'"
+            divider
+          />
           <p
             class="editable-text"
             :contenteditable="editable"
@@ -1261,7 +1273,12 @@ function updateText(path: string, value: string) {
         </section>
 
         <section v-if="templateSkin.showProfileInMain">
-          <h2 class="cv-heading-section">Profile</h2>
+          <ResumeSectionHeading
+            title="Profile"
+            variant="h2"
+            :tone="isOnPrimary ? 'on-primary' : 'default'"
+            divider
+          />
           <p
             class="editable-text"
             :contenteditable="editable"

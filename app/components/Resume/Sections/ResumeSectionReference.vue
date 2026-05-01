@@ -108,7 +108,7 @@ function removeReference(index: number) {
       section-key="reference"
       :title="title"
       :icon="showSectionIcon ? sectionIcon : undefined"
-      decorative-line
+      divider
     />
     <ul class="entry-list">
       <li

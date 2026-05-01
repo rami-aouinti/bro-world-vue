@@ -120,7 +120,7 @@ function removeSkill(index: number) {
       section-key="skill"
       :title="title"
       :icon="showSectionIcon ? sectionIcon : undefined"
-      decorative-line
+      divider
     />
 
     <ul v-if="safeVariant === 'classic'" class="bars">

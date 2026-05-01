@@ -166,7 +166,7 @@ function removeEducationItem(index: number) {
       variant="h2"
       :title="title"
       :icon="showSectionIcon ? sectionIcon : undefined"
-      decorative-line
+      divider
     />
     <div class="education-list">
       <article

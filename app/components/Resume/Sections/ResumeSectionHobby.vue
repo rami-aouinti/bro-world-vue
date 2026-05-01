@@ -90,7 +90,7 @@ function removeHobby(index: number) {
       section-key="hobby"
       :title="title"
       :icon="showSectionIcon ? sectionIcon : undefined"
-      decorative-line
+      divider
     />
     <ul class="entry-list">
       <li
