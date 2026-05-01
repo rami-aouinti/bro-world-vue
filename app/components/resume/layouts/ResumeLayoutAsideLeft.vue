@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, type CSSProperties } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { ResumeApiItem } from '~/services/resumeApi'
 import ResumeSectionHeader from '~/components/resume/sections/ResumeSectionHeader.vue'
@@ -37,7 +37,35 @@ const isContactEmpty = computed(() => {
 })
 const isProfileEmpty = computed(() => !(props.resume.resumeInformation?.profileText || '').trim())
 
-const styleVars = computed(() => resolveTemplateStyleVars(props.template))
+function resolveAsideTextColor(primary: unknown): string {
+  if (typeof primary !== 'string') return '#ffffff'
+  const value = primary.trim()
+  const hex = value.replace('#', '')
+  const normalized = hex.length === 3 ? hex.split('').map((char) => `${char}${char}`).join('') : hex
+  if (!/^[0-9a-fA-F]{6}$/.test(normalized)) return '#ffffff'
+
+  const [r, g, b] = [0, 2, 4].map((index) => parseInt(normalized.slice(index, index + 2), 16) / 255)
+  const [lr, lg, lb] = [r, g, b].map((channel) => (channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4))
+  const luminance = 0.2126 * lr + 0.7152 * lg + 0.0722 * lb
+
+  return luminance > 0.45 ? '#0f172a' : '#ffffff'
+}
+
+const styleVars = computed(() => {
+  const baseVars = resolveTemplateStyleVars(props.template)
+  const primary = props.template?.theme?.palette?.primary ?? '#0f4c81'
+
+  return {
+    ...baseVars,
+    '--primary': primary,
+    '--secondary': props.template?.theme?.palette?.secondary ?? '#334155',
+    '--text': props.template?.theme?.palette?.text ?? '#0f172a',
+    '--muted': props.template?.theme?.palette?.muted ?? '#64748b',
+    '--page-bg': props.template?.theme?.palette?.pageBackground ?? '#ffffff',
+    '--aside-bg': 'var(--primary)',
+    '--aside-text': resolveAsideTextColor(primary),
+  } as CSSProperties
+})
 </script>
 
 <template>
@@ -78,11 +106,36 @@ const styleVars = computed(() => resolveTemplateStyleVars(props.template))
 aside {
   grid-area: aside;
   padding: var(--panel-pad, 12px);
-  background: color-mix(in srgb, var(--secondary, #334155) 8%, white);
-  border: 1px var(--line-style, solid) var(--line-color, #cbd5e1);
+  background: var(--aside-bg, var(--primary, #0f4c81));
+  color: var(--aside-text, #ffffff);
+  border: 1px var(--line-style, solid) color-mix(in srgb, var(--aside-text, #ffffff) 22%, transparent);
 }
 main {
   grid-area: main;
   padding: var(--panel-pad, 12px);
+}
+aside :deep(h1),
+aside :deep(h2),
+aside :deep(h3),
+aside :deep(h4),
+aside :deep(h5),
+aside :deep(h6),
+aside :deep(p),
+aside :deep(span),
+aside :deep(label),
+aside :deep(li),
+aside :deep(a),
+aside :deep(svg),
+aside :deep(i),
+aside :deep(strong),
+aside :deep(em),
+aside :deep(small),
+aside :deep(.section-title),
+aside :deep(.resume-section-title),
+aside :deep(.resume-section-content),
+aside :deep(.resume-item),
+aside :deep(.icon),
+aside :deep(::marker) {
+  color: inherit !important;
 }
 </style>
