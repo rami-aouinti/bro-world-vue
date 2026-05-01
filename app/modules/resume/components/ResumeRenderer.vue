@@ -87,9 +87,12 @@ const mergedResume = computed(() => ({
 
 const atomicSectionRenderer = computed(() => {
   if (!props.section) return null
+  const templateSectionVariant =
+    props.resumeData?.template?.sections?.[props.section] ??
+    props.resume?.template?.sections?.[props.section]
   return resolveSectionRenderer(
     props.section,
-    props.sectionVariant ?? 'classic',
+    props.sectionVariant ?? templateSectionVariant ?? 'classic',
   )
 })
 </script>
