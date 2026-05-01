@@ -62,3 +62,11 @@ export function collectSupportedSectionsByLayout(
 
   return [...fromZones]
 }
+
+export function isResumeSectionVariantSupported(
+  section: ResumeEditableSectionKey,
+  variant: string,
+) {
+  const supported = RESUME_RENDERER_VARIANTS_BY_SECTION[section] || []
+  return supported.includes(variant)
+}
