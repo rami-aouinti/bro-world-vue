@@ -99,6 +99,7 @@ export const sectionRendererRegistry: SectionRendererRegistry = {
     dots: LanguagesDots,
     'progress-line': LanguagesProgressLine,
     'progress-circle': LanguagesProgressCircle,
+    flags: LanguagesList,
   },
 }
 
