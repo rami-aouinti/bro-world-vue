@@ -8,6 +8,8 @@ export const RESUME_RENDERER_SECTION_ICONS: Record<string, string> = {
   certifications: 'mdi-certificate-outline',
   references: 'mdi-account-group-outline',
   projects: 'mdi-folder-star-outline',
+  interests: 'mdi-puzzle-heart-outline',
+  hobby: 'mdi-puzzle-heart-outline',
 }
 
 export function resolveSectionIcon(sectionKey: string): string | undefined {
