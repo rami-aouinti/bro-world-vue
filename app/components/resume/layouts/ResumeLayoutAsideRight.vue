@@ -1,23 +1,7 @@
 <script setup lang="ts">
-import type { ResumeApiItem } from '~/services/resumeApi'
-defineProps<{ resume: ResumeApiItem }>()
+import type { ResumeApiItem } from '~/services/resumeApi';import { STRUCTURES, type SectionKey } from './layoutSections'
+import ResumeLayoutAsideLeft from './ResumeLayoutAsideLeft.vue'
+defineProps<{ resume: ResumeApiItem; template?: any }>()
 </script>
-
-<template>
-  <div class="layout aside-right">
-    <main>
-      <h3>Experience</h3>
-      <p v-for="(item, i) in resume.experiences || []" :key="i">{{ item.title }} · {{ item.company }}</p>
-    </main>
-    <aside>
-      <h3>{{ resume.resumeInformation?.fullName }}</h3>
-      <p>{{ resume.resumeInformation?.email }}</p>
-      <h4>Languages</h4>
-      <p v-for="(language, i) in resume.languages || []" :key="i">{{ language.title }}</p>
-    </aside>
-  </div>
-</template>
-
-<style scoped>
-.aside-right { display:grid; grid-template-columns: 1fr 260px; gap:16px; }
-</style>
+<template><ResumeLayoutAsideLeft :resume="resume" :template="template" class="right"/></template>
+<style scoped>.right{direction:rtl}.right :deep(*){direction:ltr}</style>
