@@ -82,6 +82,11 @@ const sectionVariantOptions = computed(() => {
 const paletteOptions = computed(() => [
   { title: 'Template palette', value: 'template' },
   { title: 'Preset · Indigo', value: '#4F46E5' },
+  { title: 'Preset · Gray', value: '#3e3d4d' },
+  { title: 'Preset · Yellow', value: '#aaae79' },
+  { title: 'Preset · Green', value: '#6e8063' },
+  { title: 'Preset · Lees', value: '#4c304f' },
+  { title: 'Preset · Mauve', value: '#3d3a76' },
   { title: 'Preset · Emerald', value: '#059669' },
   { title: 'Preset · Rose', value: '#E11D48' },
   { title: 'Custom', value: 'custom' },
