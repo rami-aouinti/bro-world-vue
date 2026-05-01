@@ -865,8 +865,23 @@ function updateText(path: string, value: string) {
           @update:photo-border-width="emit('update:photo-border-width', $event)"
         />
         <v-avatar class="resume-skin__avatar" @click="onPhotoClick?.()">
-          <v-img :src="resume.photoUrl" :style="avatarImageStyle" cover />
+          <v-img
+            class="resume-skin__avatar-image"
+            :src="resume.photoUrl"
+            :style="avatarImageStyle"
+            cover
+          />
         </v-avatar>
+        <v-btn
+          class="photo-upload-corner"
+          icon
+          size="x-small"
+          color="primary"
+          aria-label="Upload photo"
+          @click.stop="emit('open-photo-picker')"
+        >
+          <v-icon icon="mdi-camera-plus" size="14" />
+        </v-btn>
       </div>
     </header>
 
@@ -1605,6 +1620,7 @@ function updateText(path: string, value: string) {
   border-style: solid;
   border-radius: var(--photo-radius, 999px);
   clip-path: var(--photo-clip-path, none);
+  overflow: hidden;
   border-color: color-mix(
     in srgb,
     var(--resume-accent, var(--cv-accent)) 28%,
@@ -1612,8 +1628,26 @@ function updateText(path: string, value: string) {
   );
 }
 
+.resume-skin__avatar-image,
+.resume-skin__avatar-image :deep(.v-responsive),
+.resume-skin__avatar-image :deep(.v-img) {
+  width: 100%;
+  height: 100%;
+}
+
 :global(.resume-skin__avatar .v-img__img) {
   border-radius: inherit;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+.photo-upload-corner {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  z-index: 3;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 28%);
 }
 
 .photo-frame:hover :deep(.avatar-overlay-controls),
