@@ -3294,7 +3294,8 @@
           "twitterTitle": "Create my resume | Bro World",
           "twitterDescription": "A modern resume editor with live preview and professional layout."
         }
-      }
+      },
+      "previewTitle": "Resume Preview"
     }
   }
 }
