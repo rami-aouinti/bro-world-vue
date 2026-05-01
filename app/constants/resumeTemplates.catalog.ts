@@ -60,6 +60,7 @@ const createSections = (
 }
 
 export const RESUME_STRUCTURES_CATALOG: ResumeStructure[] = [
+  { id: 'aside' },
   { id: 'no-aside' },
   { id: 'aside-left' },
   { id: 'aside-right' },
@@ -482,6 +483,7 @@ const RESUME_GENERATED_TEMPLATES: ResumeTemplateConfig[] =
   })
 
 const GENERATED_LAYOUT_BY_STRUCTURE: Record<string, string> = {
+  aside: 'layout-aside-left-a',
   'aside-left': 'layout-aside-left-a',
   'aside-right': 'layout-aside-right-a',
   'no-aside': 'layout-no-aside-a',
