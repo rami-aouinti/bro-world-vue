@@ -244,11 +244,9 @@ const menuShow = ref(false)
 .settings-fab-wrap {
   position: fixed;
   right: 16px;
-  left: 16px;
   bottom: 16px;
   z-index: 1300;
-  display: flex;
-  justify-content: space-between;
+  display: inline-flex;
   align-items: flex-end;
   pointer-events: none;
 }

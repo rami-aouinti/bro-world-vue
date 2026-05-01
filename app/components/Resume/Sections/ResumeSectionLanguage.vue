@@ -119,7 +119,7 @@ function removeLanguage(index: number) {
       section-key="language"
       :title="title"
       :icon="showSectionIcon ? sectionIcon : undefined"
-      decorative-line
+      divider
     />
     <ul
       v-if="safeVariant === 'classic' || safeVariant === 'text-level'"
