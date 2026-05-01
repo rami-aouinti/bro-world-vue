@@ -6,5 +6,5 @@ defineProps<{ resume: ResumeApiItem; template?: any }>()
 </script>
 
 <template>
-  <ResumeLayoutNoAside :resume="resume" :template="template" />
+  <ResumeLayoutNoAside :resume="resume" :template="template" header-on-primary />
 </template>

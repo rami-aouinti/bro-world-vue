@@ -53,15 +53,16 @@ function resolveAsideTextColor(primary: unknown): string {
 
 const styleVars = computed(() => {
   const baseVars = resolveTemplateStyleVars(props.template)
-  const primary = props.template?.theme?.palette?.primary ?? '#0f4c81'
+  const palette = props.template?.theme?.palette ?? {}
+  const primary = palette.primary ?? '#0f4c81'
 
   return {
     ...baseVars,
     '--primary': primary,
-    '--secondary': props.template?.theme?.palette?.secondary ?? '#334155',
-    '--text': props.template?.theme?.palette?.text ?? '#0f172a',
-    '--muted': props.template?.theme?.palette?.muted ?? '#64748b',
-    '--page-bg': props.template?.theme?.palette?.pageBackground ?? '#ffffff',
+    '--secondary': palette.secondary ?? '#334155',
+    '--text': palette.text ?? '#0f172a',
+    '--muted': palette.muted ?? '#64748b',
+    '--page-bg': palette.pageBackground ?? '#ffffff',
     '--aside-bg': 'var(--primary)',
     '--aside-text': resolveAsideTextColor(primary),
   } as CSSProperties
@@ -71,7 +72,7 @@ const styleVars = computed(() => {
 <template>
   <div class="aside-left" :class="{ reverse }" :style="styleVars">
     <ResumeSectionHeader class="full" :resume="resume" :template="template" />
-    <aside class="aside-surface">
+    <aside class="aside-surface on-primary">
       <ResumeSectionBlock :title="getSectionTitle('contact')" :is-empty="isContactEmpty"><ResumeSectionContact :resume="resume" :show-title="false" /></ResumeSectionBlock>
       <ResumeSectionBlock :title="getSectionTitle('skills')" :is-empty="!(resume.skills?.length)"><ResumeSectionRenderer section-key="skill" :resume="resume" :template="template" /></ResumeSectionBlock>
       <ResumeSectionBlock :title="getSectionTitle('languages')" :is-empty="!(resume.languages?.length)"><ResumeSectionRenderer section-key="language" :resume="resume" :template="template" /></ResumeSectionBlock>
@@ -106,7 +107,7 @@ const styleVars = computed(() => {
 aside {
   grid-area: aside;
   padding: var(--panel-pad, 12px);
-  background: var(--aside-bg, var(--primary, #0f4c81));
+  background: var(--primary, #0f4c81);
   color: var(--aside-text-primary, var(--aside-text, #f8fafc));
   border: 1px var(--line-style, solid) color-mix(in srgb, var(--aside-text, #ffffff) 22%, transparent);
 }
@@ -115,6 +116,10 @@ aside.aside-surface {
   --aside-text-secondary: color-mix(in srgb, var(--aside-text-primary) 68%, transparent);
   --aside-link: color-mix(in srgb, var(--aside-text-primary) 88%, #fff 12%);
   --aside-separator: color-mix(in srgb, var(--aside-text-primary) 24%, transparent);
+}
+aside.on-primary {
+  --text: var(--aside-text-primary);
+  --muted: var(--aside-text-secondary);
 }
 main {
   grid-area: main;
@@ -143,22 +148,6 @@ aside :deep(.resume-item),
 aside :deep(.icon),
 aside :deep(::marker) {
   color: inherit !important;
-}
-aside.aside-surface :deep(p),
-aside.aside-surface :deep(li),
-aside.aside-surface :deep(span),
-aside.aside-surface :deep(label),
-aside.aside-surface :deep(small) {
-  color: var(--aside-text-secondary) !important;
-}
-aside.aside-surface :deep(h1),
-aside.aside-surface :deep(h2),
-aside.aside-surface :deep(h3),
-aside.aside-surface :deep(h4),
-aside.aside-surface :deep(h5),
-aside.aside-surface :deep(h6),
-aside.aside-surface :deep(strong) {
-  color: var(--aside-text-primary) !important;
 }
 aside.aside-surface :deep(a) {
   color: var(--aside-link) !important;
