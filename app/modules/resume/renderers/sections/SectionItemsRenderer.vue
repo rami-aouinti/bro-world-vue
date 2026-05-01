@@ -395,7 +395,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 .renderer-timeline-item {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(7rem, 8.5rem) 1fr;
+  grid-template-columns: minmax(2rem, 5rem) 1fr;
   gap: var(--section-space-md);
   padding: 0 0 var(--section-space-md) 1.05rem;
 }
