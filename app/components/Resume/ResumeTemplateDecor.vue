@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-type DecorShapeType = 'circle' | 'square' | 'line' | 'blob'
+type DecorShapeType = 'circle' | 'square' | 'line' | 'blob' | 'triangle'
 
 type DecorElement = {
-  type: DecorShapeType
+  shape?: DecorShapeType | string
+  type?: DecorShapeType | string
   size: string | number
   color: string
   x: string | number
@@ -20,7 +21,7 @@ type ResumeDecorConfig = {
 
 const props = defineProps<{ decor?: ResumeDecorConfig }>()
 
-const decorElements = computed(() => props.decor?.elements ?? [])
+const decorElements = computed(() => props.decor?.corners ?? props.decor?.elements ?? [])
 const isDecorEnabled = computed(() => props.decor?.enabled ?? true)
 const layerZIndex = computed(() => props.decor?.zIndex ?? 0)
 
@@ -29,9 +30,10 @@ function toCssUnit(value: string | number) {
 }
 
 function elementStyle(element: DecorElement) {
+  const shape = (element.shape ?? element.type ?? 'circle').toString()
   const size = toCssUnit(element.size)
-  const left = typeof element.x === 'number' ? `${element.x}%` : element.x
-  const top = typeof element.y === 'number' ? `${element.y}%` : element.y
+  const left = resolveAxisPosition(element.x, 'horizontal')
+  const top = resolveAxisPosition(element.y, 'vertical')
   const base = {
     left,
     top,
@@ -39,7 +41,7 @@ function elementStyle(element: DecorElement) {
     zIndex: String(element.zIndex ?? 0),
   }
 
-  if (element.type === 'line') {
+  if (shape === 'line') {
     return {
       ...base,
       width: size,
@@ -54,6 +56,29 @@ function elementStyle(element: DecorElement) {
     height: size,
   }
 }
+
+function resolveAxisPosition(
+  value: string | number,
+  axis: 'horizontal' | 'vertical',
+): string {
+  if (typeof value === 'number') return `${value}%`
+  if (/^-?\d+(\.\d+)?$/.test(value)) return `${value}%`
+  if (value.includes('%') || value.includes('px')) return value
+  const tokens = value.toLowerCase().split('-')
+  if (axis === 'horizontal') {
+    if (tokens.includes('left')) return '0%'
+    if (tokens.includes('right')) return '100%'
+  }
+  if (axis === 'vertical') {
+    if (tokens.includes('top')) return '0%'
+    if (tokens.includes('bottom')) return '100%'
+  }
+  return '50%'
+}
+
+function elementShapeClass(element: DecorElement) {
+  return (element.shape ?? element.type ?? 'circle').toString()
+}
 </script>
 
 <template>
@@ -65,9 +90,9 @@ function elementStyle(element: DecorElement) {
   >
     <span
       v-for="(element, index) in decorElements"
-      :key="`resume-template-decor-${index}-${element.type}`"
+      :key="`resume-template-decor-${index}-${elementShapeClass(element)}`"
       class="resume-template-decor__item"
-      :class="`resume-template-decor__item--${element.type}`"
+      :class="`resume-template-decor__item--${elementShapeClass(element)}`"
       :style="elementStyle(element)"
     />
   </div>
@@ -96,6 +121,10 @@ function elementStyle(element: DecorElement) {
 
 .resume-template-decor__item--blob {
   border-radius: 44% 56% 62% 38% / 42% 40% 60% 58%;
+}
+
+.resume-template-decor__item--triangle {
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
 }
 
 .resume-template-decor__item--line {
