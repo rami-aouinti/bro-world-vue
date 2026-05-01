@@ -2,7 +2,7 @@
 import type { ResumeApiItem } from '~/services/resumeApi'
 import ResumeLayoutNoAside from './ResumeLayoutNoAside.vue'
 
-defineProps<{ resume: ResumeApiItem; template?: any }>()
+defineProps<{ resume: ResumeApiItem; template?: any; headerBandHeight?: number }>()
 </script>
 
 <template>
