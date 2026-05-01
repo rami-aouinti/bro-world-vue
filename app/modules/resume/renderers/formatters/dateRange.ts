@@ -1,6 +1,6 @@
 const MONTH_FORMATTER = new Intl.DateTimeFormat('en-US', {
-  month: 'short',
-  year: 'numeric',
+  month: '2-digit',
+  year: '2-digit',
   timeZone: 'UTC',
 })
 
