@@ -11,7 +11,7 @@ import ResumeSectionBlock from '~/components/resume/sections/ResumeSectionBlock.
 import { resolveTemplateStyleVars } from '~/modules/resume/template/resolveTemplateStyleVars'
 import { resolveSectionIcon } from '~/modules/resume/renderers/sectionIcons'
 
-const props = defineProps<{ resume: ResumeApiItem; template?: any; reverse?: boolean; headerOnPrimary?: boolean; headerBandHeight?: number }>()
+const props = defineProps<{ resume: ResumeApiItem; template?: any; reverse?: boolean; headerOnPrimary?: boolean; headerBandHeight?: number; barOnly?: boolean }>()
 
 const { t, te } = useI18n()
 
@@ -86,7 +86,7 @@ const styleVars = computed(() => {
 </script>
 
 <template>
-  <div class="aside-left" :class="{ reverse }" :style="styleVars">
+  <div class="aside-left" :class="{ reverse, 'bar-only': barOnly }" :style="styleVars">
     <ResumeSectionHeader class="full" :class="{ 'full--on-primary': headerOnPrimary }" :resume="resume" :template="template" />
     <aside class="aside-surface on-primary">
       <ResumeSectionBlock v-for="section in asideSections" :key="`aside-${section.id}`" tone="on-primary" :title="getSectionTitle(section.id)" :icon="resolveSectionIcon(section.id)" :show-icon="shouldShowSectionIcons" :is-empty="sectionEmpty(section.id)">
@@ -148,6 +148,24 @@ aside.on-primary {
   --text: var(--aside-text-primary);
   --muted: var(--aside-text-secondary);
 }
+
+.aside-left.bar-only aside {
+  background: transparent;
+  color: var(--text, #0f172a);
+  border: 0;
+  border-inline-start: 8px solid var(--aside-bg, var(--primary, #0f4c81));
+  padding-inline-start: calc(var(--panel-pad, 12px) - 2px);
+}
+.aside-left.bar-only.reverse aside {
+  border-inline-start: 0;
+  border-inline-end: 8px solid var(--aside-bg, var(--primary, #0f4c81));
+  padding-inline-start: var(--panel-pad, 12px);
+  padding-inline-end: calc(var(--panel-pad, 12px) - 2px);
+}
+.aside-left.bar-only :where(aside) :deep(*) {
+  color: inherit !important;
+}
+
 main {
   grid-area: main;
   padding: var(--panel-pad, 12px);
