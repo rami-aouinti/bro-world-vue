@@ -156,6 +156,7 @@ onBeforeUnmount(() => {
   border: var(--photo-border);
   position: relative;
   overflow: hidden;
+  background: var(--primary, #0f4c81);
   color: #fff;
   display: grid;
   place-items: center;
