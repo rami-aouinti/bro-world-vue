@@ -492,7 +492,7 @@ const GENERATED_LAYOUT_BY_STRUCTURE: Record<string, string> = {
 const RESUME_IMPORTED_TEMPLATES_CATALOG: ResumeTemplateConfig[] =
   GENERATED_RESUME_TEMPLATES.map((template) => ({
     id: `resume-${template.id}`,
-    structureId: template.layout,
+    structureId: template.layout === 'aside' ? 'aside-left' : template.layout,
     layoutId:
       GENERATED_LAYOUT_BY_STRUCTURE[template.layout] ?? 'layout-no-aside-a',
     skinId: 'skin-classic',
