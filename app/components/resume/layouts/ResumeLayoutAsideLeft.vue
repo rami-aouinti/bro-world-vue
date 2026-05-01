@@ -89,7 +89,7 @@ const styleVars = computed(() => {
 <template>
   <div class="aside-left" :class="{ reverse, 'bar-only': barOnly }" :style="styleVars">
     <ResumeSectionHeader class="full" :class="{ 'full--on-primary': headerOnPrimary }" :resume="resume" :template="template" />
-    <aside class="aside-surface on-primary">
+    <aside class="aside-surface" :class="{ 'on-primary': !barOnly, 'text-dark': barOnly }">
       <ResumeSectionBlock v-for="section in asideSections" :key="`aside-${section.id}`" tone="on-primary" :title="getSectionTitle(section.id)" :icon="resolveSectionIcon(section.id)" :show-icon="shouldShowSectionIcons" :is-empty="sectionEmpty(section.id)">
         <ResumeSectionContact v-if="section.id === 'contact'" :resume="resume" :show-title="false" :contact-style="template?.sections?.contact || template?.contactStyle || 'labels'" />
         <ResumeSectionRenderer v-else :section-key="section.rendererKey" :resume="resume" :template="template" />
@@ -171,6 +171,19 @@ aside.on-primary {
 }
 .aside-left.bar-only :where(aside) :deep(*) {
   color: inherit !important;
+}
+.aside-left.bar-only aside.text-dark {
+  --text: #0f172a;
+  --muted: #334155;
+  --aside-link: #0f172a;
+}
+.aside-left.bar-only aside.text-dark :deep(a),
+.aside-left.bar-only aside.text-dark :deep(a:hover),
+.aside-left.bar-only aside.text-dark :deep(a:focus-visible),
+.aside-left.bar-only aside.text-dark :deep(svg),
+.aside-left.bar-only aside.text-dark :deep(i),
+.aside-left.bar-only aside.text-dark :deep(.icon) {
+  color: #0f172a !important;
 }
 
 main {
