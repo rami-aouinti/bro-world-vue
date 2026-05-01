@@ -1843,6 +1843,51 @@ onUnmounted(() => {
   );
 }
 
+:global(.v-theme--dark) .resume-template-toggle {
+  background: rgba(16, 22, 38, 0.92);
+  border: 1px solid rgba(132, 151, 211, 0.32);
+}
+
+:global(.v-theme--dark) .resume-template {
+  border-color: rgba(145, 167, 230, 0.3);
+  box-shadow: 0 16px 35px rgba(2, 8, 20, 0.55);
+}
+
+:global(.v-theme--dark) .resume-template-modern {
+  background: linear-gradient(180deg, #0f172a 0%, #131f38 100%);
+  color: #e6eeff;
+}
+
+:global(.v-theme--dark) .resume-template-elegant {
+  background: linear-gradient(180deg, #19141b 0%, #241a28 100%);
+  color: #f4e8df;
+}
+
+:global(.v-theme--dark) .resume-template-compact {
+  background: linear-gradient(180deg, #0d1b2c 0%, #15263b 100%);
+  color: #e5f0ff;
+}
+
+:global(.v-theme--dark) .resume-header {
+  border-bottom-color: rgba(154, 176, 236, 0.38);
+}
+
+:global(.v-theme--dark) .resume-contact-card,
+:global(.v-theme--dark) .resume-block {
+  background: rgba(12, 20, 37, 0.86);
+  border-color: rgba(143, 167, 230, 0.38);
+  color: #e7efff;
+}
+
+:global(.v-theme--dark) .resume-block h3 {
+  color: #d6e4ff;
+}
+
+:global(.v-theme--dark) .resume-line {
+  border-bottom-color: rgba(136, 159, 219, 0.45);
+  color: rgba(230, 239, 255, 0.95);
+}
+
 .manual-section {
   border-radius: 14px;
   padding: 14px;
