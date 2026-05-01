@@ -25,7 +25,6 @@ const { loggedIn } = useUserSession()
 const loadingResumes = ref(false)
 const resumesError = ref('')
 const myResumes = ref<ResumeApiItem[]>([])
-
 const CONTROLLED_LAYOUTS = ['aside-left', 'aside-right', 'no-aside', 'aside', 'aside-full-left', 'aside-full-right', 'bar-left', 'bar-right'] as const
 
 const layoutFilterOptions = computed(() => {
