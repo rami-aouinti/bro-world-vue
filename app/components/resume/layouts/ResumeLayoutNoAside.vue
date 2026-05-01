@@ -11,8 +11,16 @@ import ResumeSectionProject from '~/components/resume/sections/ResumeSectionProj
 import ResumeSectionInterest from '~/components/resume/sections/ResumeSectionInterest.vue'
 import ResumeSectionReference from '~/components/resume/sections/ResumeSectionReference.vue'
 import ResumeSectionCertification from '~/components/resume/sections/ResumeSectionCertification.vue'
+
 const props = defineProps<{ resume: ResumeApiItem; template?: any }>()
+
 const components: Record<SectionKey, any> = { header: ResumeSectionHeader, contact: ResumeSectionContact, experience: ResumeSectionExperience, education: ResumeSectionEducation, skill: ResumeSectionSkill, language: ResumeSectionLanguage, project: ResumeSectionProject, interest: ResumeSectionInterest, reference: ResumeSectionReference, certification: ResumeSectionCertification }
-const sections = computed(() => STRUCTURES[props.template?.structure || 'structure-1'] || STRUCTURES['structure-1'])
+const sections = computed(() => (STRUCTURES[props.template?.structure || 'structure-1'] || STRUCTURES['structure-1']).filter((key) => key !== 'header'))
 </script>
-<template><div class="no-aside" :style="{'--primary': template?.theme?.palette?.primary}"><component :is="components[key]" v-for="key in sections" :key="key" :resume="resume"/></div></template>
+
+<template>
+  <div class="no-aside" :style="{ '--primary': template?.theme?.palette?.primary }">
+    <ResumeSectionHeader :resume="resume" :template="template" />
+    <component :is="components[key]" v-for="key in sections" :key="key" :resume="resume" />
+  </div>
+</template>

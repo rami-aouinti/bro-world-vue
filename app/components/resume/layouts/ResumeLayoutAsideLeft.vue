@@ -11,13 +11,43 @@ import ResumeSectionProject from '~/components/resume/sections/ResumeSectionProj
 import ResumeSectionInterest from '~/components/resume/sections/ResumeSectionInterest.vue'
 import ResumeSectionReference from '~/components/resume/sections/ResumeSectionReference.vue'
 import ResumeSectionCertification from '~/components/resume/sections/ResumeSectionCertification.vue'
-const props = defineProps<{ resume: ResumeApiItem; template?: any }>()
+
+const props = defineProps<{ resume: ResumeApiItem; template?: any; reverse?: boolean }>()
 const components: Record<SectionKey, any> = { header: ResumeSectionHeader, contact: ResumeSectionContact, experience: ResumeSectionExperience, education: ResumeSectionEducation, skill: ResumeSectionSkill, language: ResumeSectionLanguage, project: ResumeSectionProject, interest: ResumeSectionInterest, reference: ResumeSectionReference, certification: ResumeSectionCertification }
-const sections = computed(() => STRUCTURES[props.template?.structure || 'structure-1'] || STRUCTURES['structure-1'])
-const asideKeys: SectionKey[] = ['contact','skill','language','interest','reference','certification']
+const sections = computed(() => (STRUCTURES[props.template?.structure || 'structure-1'] || STRUCTURES['structure-1']).filter((key) => key !== 'header'))
+const asideKeys: SectionKey[] = ['contact', 'skill', 'language', 'interest', 'reference', 'certification']
 </script>
-<template><div class="aside-left" :style="{'--primary': template?.theme?.palette?.primary, background: template?.theme?.palette?.pageBackground}">
-  <aside><component :is="components[key]" v-for="key in sections.filter(k=>asideKeys.includes(k))" :key="key" :resume="resume"/></aside>
-  <main><component :is="components[key]" v-for="key in sections.filter(k=>!asideKeys.includes(k))" :key="key" :resume="resume"/></main>
-</div></template>
-<style scoped>.aside-left{display:grid;grid-template-columns:240px 1fr;gap:20px}.aside-left aside{padding:12px;background:#f1f5f9}.aside-left main{padding:12px}.section{margin-bottom:14px}</style>
+
+<template>
+  <div class="aside-left" :class="{ reverse }" :style="{ '--primary': template?.theme?.palette?.primary, background: template?.theme?.palette?.pageBackground }">
+    <ResumeSectionHeader class="full" :resume="resume" :template="template" />
+    <aside>
+      <component :is="components[key]" v-for="key in sections.filter((k) => asideKeys.includes(k))" :key="key" :resume="resume" />
+    </aside>
+    <main>
+      <component :is="components[key]" v-for="key in sections.filter((k) => !asideKeys.includes(k))" :key="key" :resume="resume" />
+    </main>
+  </div>
+</template>
+
+<style scoped>
+.aside-left {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  grid-template-areas:
+    'header header'
+    'aside main';
+  gap: 20px;
+}
+
+.aside-left.reverse {
+  grid-template-columns: 1fr 240px;
+  grid-template-areas:
+    'header header'
+    'main aside';
+}
+
+.full { grid-area: header; }
+aside { grid-area: aside; padding: 12px; background: #f1f5f9; }
+main { grid-area: main; padding: 12px; }
+</style>

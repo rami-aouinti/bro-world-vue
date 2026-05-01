@@ -6,15 +6,5 @@ defineProps<{ resume: ResumeApiItem; template?: any }>()
 </script>
 
 <template>
-  <ResumeLayoutAsideLeft :resume="resume" :template="template" class="right" />
+  <ResumeLayoutAsideLeft :resume="resume" :template="template" reverse />
 </template>
-
-<style scoped>
-.right {
-  direction: rtl;
-}
-
-.right :deep(*) {
-  direction: ltr;
-}
-</style>
