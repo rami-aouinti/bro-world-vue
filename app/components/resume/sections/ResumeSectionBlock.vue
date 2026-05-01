@@ -46,4 +46,15 @@ withDefaults(
   display: grid;
   gap: 8px;
 }
+
+.section-toolbar {
+  position: absolute;
+  left: -54px;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 1;
+  pointer-events: auto;
+}
 </style>
