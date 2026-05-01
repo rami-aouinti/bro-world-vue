@@ -173,40 +173,45 @@ const activeLayoutComponent = computed(() => {
 </script>
 
 <template>
-  <v-container class="py-6" max-width="900">
-    <v-card class="mx-auto" variant="outlined">
-      <v-card-text>
-        <div class="d-grid ga-3 mb-4">
-          <AppSelect v-model="selectedLayout" :items="layoutFilterOptions" label="Layout" hide-details />
-          <AppSelect v-model="selectedPalette" :items="paletteOptions" label="Palette" hide-details />
-          <v-text-field
-            v-if="selectedPalette === 'custom'"
-            v-model="customPalettePrimary"
-            label="Custom primary color"
-            placeholder="#0F4C81"
-            hide-details
-          />
-          <AppSelect
-            v-for="(variantOptions, sectionKey) in sectionVariantOptions"
-            :key="sectionKey"
-            v-model="selectedSectionVariants[sectionKey]"
-            :items="variantOptions"
-            :label="`Section: ${sectionKey}`"
-            hide-details
-          />
-        </div>
-
-        <v-progress-linear v-if="loggedIn && loadingResumes" indeterminate />
-        <v-alert
-          v-else-if="loggedIn && resumesError"
-          type="error"
-          variant="tonal"
-          :text="resumesError"
+  <div>
+    <AppPageDrawers>
+      <template #left>
+        <AppSelect v-model="selectedLayout" :items="layoutFilterOptions" label="Layout" hide-details />
+        <AppSelect v-model="selectedPalette" :items="paletteOptions" label="Palette" hide-details />
+        <v-text-field
+          v-if="selectedPalette === 'custom'"
+          v-model="customPalettePrimary"
+          label="Custom primary color"
+          placeholder="#0F4C81"
+          hide-details
         />
-        <template v-else>
-          <component :is="activeLayoutComponent" :resume="resumeToDisplay" :template="effectiveTemplate" />
-        </template>
-      </v-card-text>
-    </v-card>
-  </v-container>
+      </template>
+      <template #right>
+        <AppSelect
+          v-for="(variantOptions, sectionKey) in sectionVariantOptions"
+          :key="sectionKey"
+          v-model="selectedSectionVariants[sectionKey]"
+          :items="variantOptions"
+          :label="`Section: ${sectionKey}`"
+          hide-details
+        />
+      </template>
+    </AppPageDrawers>
+    <v-container class="py-6" max-width="900">
+      <v-card class="mx-auto" variant="outlined">
+        <v-card-text>
+          <v-progress-linear v-if="loggedIn && loadingResumes" indeterminate />
+          <v-alert
+            v-else-if="loggedIn && resumesError"
+            type="error"
+            variant="tonal"
+            :text="resumesError"
+          />
+          <template v-else>
+            <component :is="activeLayoutComponent" :resume="resumeToDisplay" :template="effectiveTemplate" />
+          </template>
+        </v-card-text>
+      </v-card>
+    </v-container>
+  </div>
 </template>
