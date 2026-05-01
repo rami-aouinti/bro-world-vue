@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { formatDateRange, sortByStartDateDescKeepingSourceOrder } from '../formatters/dateRange'
 import type { ResumeSectionRendererProps } from './types'
 
 type NormalizedItem = {
@@ -35,7 +36,13 @@ const emptyMessage = computed(() => {
 })
 
 const normalizedItems = computed<NormalizedItem[]>(() => {
-  return (props.items ?? []).map((entry) => {
+  const scopedItems = (props.items ?? []) as Record<string, unknown>[]
+  const orderedItems =
+    props.sectionKey === 'experience' || props.sectionKey === 'education'
+      ? sortByStartDateDescKeepingSourceOrder(scopedItems)
+      : scopedItems
+
+  return orderedItems.map((entry) => {
     const item = (entry ?? {}) as Record<string, unknown>
     const heading =
       (item.title as string) ||
@@ -51,9 +58,9 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
       (item.institution as string) ||
       ''
 
-    const start = (item.startDate as string) || (item.start as string) || ''
-    const end = (item.endDate as string) || (item.end as string) || ''
-    const period = start || end ? `${start}${start && end ? ' — ' : ''}${end}` : ''
+    const start = item.startDate ?? item.start
+    const end = item.endDate ?? item.end
+    const period = formatDateRange(start, end)
 
     const description =
       (item.description as string) ||
@@ -74,18 +81,22 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 
     <ol v-else-if="template === 'timeline'" class="renderer-timeline">
       <li v-for="(item, index) in normalizedItems" :key="index" class="renderer-timeline-item">
-        <p class="renderer-heading">{{ item.heading }}</p>
+        <div class="renderer-heading-row">
+          <p class="renderer-heading">{{ item.heading }}</p>
+          <p v-if="item.period" class="renderer-period">{{ item.period }}</p>
+        </div>
         <p v-if="item.subheading" class="renderer-subheading">{{ item.subheading }}</p>
-        <p v-if="item.period" class="renderer-period">{{ item.period }}</p>
         <p v-if="item.description" class="renderer-description">{{ item.description }}</p>
       </li>
     </ol>
 
     <div v-else-if="template === 'cards'" class="renderer-cards">
       <article v-for="(item, index) in normalizedItems" :key="index" class="renderer-card">
-        <p class="renderer-heading">{{ item.heading }}</p>
+        <div class="renderer-heading-row">
+          <p class="renderer-heading">{{ item.heading }}</p>
+          <p v-if="item.period" class="renderer-period">{{ item.period }}</p>
+        </div>
         <p v-if="item.subheading" class="renderer-subheading">{{ item.subheading }}</p>
-        <p v-if="item.period" class="renderer-period">{{ item.period }}</p>
         <p v-if="item.description" class="renderer-description">{{ item.description }}</p>
       </article>
     </div>
@@ -94,9 +105,11 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
       <li v-for="(item, index) in normalizedItems" :key="index" class="renderer-list-item">
         <span v-if="showIcon" aria-hidden="true">•</span>
         <div>
-          <p class="renderer-heading">{{ item.heading }}</p>
+          <div class="renderer-heading-row">
+            <p class="renderer-heading">{{ item.heading }}</p>
+            <p v-if="item.period" class="renderer-period">{{ item.period }}</p>
+          </div>
           <p v-if="item.subheading" class="renderer-subheading">{{ item.subheading }}</p>
-          <p v-if="item.period" class="renderer-period">{{ item.period }}</p>
           <p v-if="item.description" class="renderer-description">{{ item.description }}</p>
         </div>
       </li>
