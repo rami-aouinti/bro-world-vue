@@ -1,10 +1,18 @@
 <script setup lang="ts">
+import ResumeSectionHeading from '~/components/Resume/Sections/ResumeSectionHeading.vue'
+
 withDefaults(
   defineProps<{
     title: string
+    icon?: string
+    tone?: 'default' | 'on-primary'
+    showIcon?: boolean
     isEmpty?: boolean
   }>(),
   {
+    icon: undefined,
+    tone: 'default',
+    showIcon: true,
     isEmpty: false,
   },
 )
@@ -12,7 +20,13 @@ withDefaults(
 
 <template>
   <section v-if="!isEmpty" class="resume-section-block">
-    <h3 class="resume-section-block__title">{{ title }}</h3>
+    <ResumeSectionHeading
+      :title="title"
+      :icon="icon"
+      :tone="tone"
+      :show-icon="showIcon"
+      variant="h3"
+    />
     <slot />
   </section>
 </template>
@@ -21,11 +35,5 @@ withDefaults(
 .resume-section-block {
   display: grid;
   gap: 8px;
-}
-
-.resume-section-block__title {
-  margin: 0;
-  font-size: 1.05rem;
-  line-height: 1.3;
 }
 </style>
