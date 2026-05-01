@@ -1481,6 +1481,7 @@ watch(
   { immediate: true },
 )
 
+
 const isResumeDocument = computed(() => selectedDocumentType.value === 'resume')
 const isCoverDocument = computed(
   () =>
