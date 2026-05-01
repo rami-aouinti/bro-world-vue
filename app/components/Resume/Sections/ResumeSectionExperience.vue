@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import ResumeSectionHeading from '~/components/Resume/Sections/ResumeSectionHeading.vue'
 import DateRangeChip from '~/components/Resume/DateRangeChip.vue'
 import {
   RESUME_CONTENT_STYLE_OPTIONS,
@@ -176,17 +177,14 @@ function removeExperience(index: number) {
       @move-down="() => emit('move-section', 'experience', 'down')"
       @delete-section="() => emit('delete-section', 'experience')"
     />
-    <h2 class="cv-heading-section">
-      <span
-        v-if="showSectionIcon && sectionIcon"
-        class="section-icon"
-        :class="iconVariantClass"
-        :style="iconStyle"
-      >
-        <v-icon :icon="sectionIcon" :size="sectionIconStyle?.size ?? 18" />
-      </span>
-      <span>{{ title }}</span>
-    </h2>
+    <ResumeSectionHeading
+      section-key="experience"
+      variant="h2"
+      :title="title"
+      :icon="showSectionIcon ? sectionIcon : undefined"
+      :tone="themeTokens['--cv-on-primary'] ? 'on-primary' : 'default'"
+      decorative-line
+    />
     <div class="experience-list">
       <article
         v-for="(experience, index) in resume.experiences"

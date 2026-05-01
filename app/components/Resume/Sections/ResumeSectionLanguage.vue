@@ -5,6 +5,7 @@ import {
   levelToText,
 } from '~/utils/resumeLanguageLevel'
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import ResumeSectionHeading from '~/components/Resume/Sections/ResumeSectionHeading.vue'
 import {
   _resolveLanguageFallback,
   resolveLanguageFlagSrc,
@@ -113,12 +114,12 @@ function removeLanguage(index: number) {
       @move-down="() => emit('move-section', 'language', 'down')"
       @delete-section="() => emit('delete-section', 'language')"
     />
-    <h3 class="cv-heading-section">
-      <span v-if="showSectionIcon && sectionIcon" class="section-icon">
-        <v-icon :icon="sectionIcon" size="16" />
-      </span>
-      <span>{{ title }}</span>
-    </h3>
+    <ResumeSectionHeading
+      section-key="language"
+      :title="title"
+      :icon="showSectionIcon ? sectionIcon : undefined"
+      decorative-line
+    />
     <ul
       v-if="safeVariant === 'classic' || safeVariant === 'text-level'"
       class="bars"

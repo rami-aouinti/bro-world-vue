@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
+import ResumeSectionHeading from '~/components/Resume/Sections/ResumeSectionHeading.vue'
 import { getSectionRegistryEntry } from '~/constants/resumeSectionRegistry'
 import type { ResumeSectionIconStyle } from '~/constants/resumeTemplateSkins'
 
@@ -105,18 +106,12 @@ function removeCertification(index: number) {
       @move-down="() => emit('move-section', 'certification', 'down')"
       @delete-section="() => emit('delete-section', 'certification')"
     />
-
-    <h3 class="cv-heading-section">
-      <span
-        v-if="showSectionIcon && sectionIcon"
-        class="section-icon"
-        :class="iconVariantClass"
-        :style="iconStyle"
-      >
-        <v-icon :icon="sectionIcon" :size="sectionIconStyle?.size ?? 18" />
-      </span>
-      <span>{{ title }}</span>
-    </h3>
+    <ResumeSectionHeading
+      section-key="certification"
+      :title="title"
+      :icon="showSectionIcon ? sectionIcon : undefined"
+      decorative-line
+    />
     <ul class="entry-list">
       <li
         v-for="(course, index) in resume.courses"
