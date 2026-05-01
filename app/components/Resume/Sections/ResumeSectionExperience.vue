@@ -386,7 +386,7 @@ function removeExperience(index: number) {
   --entry-date-to-description-gap: var(--cv-space-2);
   --entry-description-to-list-gap: var(--cv-space-2);
   --experience-timeline-dot-offset: 10px;
-  --experience-timeline-rail-width: 44px;
+  --experience-timeline-rail-width: 32px;
 
   position: relative;
   border-bottom: var(--rs-section-separator, none);
@@ -499,6 +499,7 @@ function removeExperience(index: number) {
     minmax(140px, var(--resume-date-column-width, 140px))
     var(--experience-timeline-rail-width)
     minmax(0, 1fr);
+  column-gap: var(--cv-space-2);
 }
 .experience--timeline .experience-timeline-rail {
   position: relative;
