@@ -524,6 +524,10 @@ const GENERATED_LAYOUT_BY_STRUCTURE: Record<string, string> = {
   'two-columns-balanced': 'layout-two-columns-balanced-a',
   'two-columns-main-heavy': 'layout-two-columns-main-heavy-a',
   'header-band-split': 'layout-header-band-split-a',
+  'aside-full-left': 'layout-aside-left-a',
+  'aside-full-right': 'layout-aside-right-a',
+  'bar-left': 'layout-aside-left-b',
+  'bar-right': 'layout-aside-right-b',
 }
 
 const GENERATED_STRUCTURE_FALLBACK: Record<string, string> = {
@@ -531,6 +535,10 @@ const GENERATED_STRUCTURE_FALLBACK: Record<string, string> = {
   'two-columns-balanced': 'aside-left',
   'two-columns-main-heavy': 'aside-right',
   'header-band-split': 'no-aside',
+  'aside-full-left': 'aside-left',
+  'aside-full-right': 'aside-right',
+  'bar-left': 'aside-left',
+  'bar-right': 'aside-right',
 }
 
 const resolveStructureId = (rawStructure: string): string =>
