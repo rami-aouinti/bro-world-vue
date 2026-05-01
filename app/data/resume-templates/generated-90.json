@@ -44,7 +44,7 @@
       "corners": [
         {
           "shape": "circle",
-          "size": "110px",
+          "size": "130px",
           "color": "#5FA8D3",
           "x": "top-right",
           "y": "0"
