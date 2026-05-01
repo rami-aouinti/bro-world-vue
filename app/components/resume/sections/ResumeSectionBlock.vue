@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import ResumeSectionHeading from '~/components/Resume/Sections/ResumeSectionHeading.vue'
+import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 
 withDefaults(
   defineProps<{
+    sectionKey?: string
     title: string
     icon?: string
     tone?: 'default' | 'on-primary'
@@ -10,6 +12,7 @@ withDefaults(
     isEmpty?: boolean
   }>(),
   {
+    sectionKey: undefined,
     icon: undefined,
     tone: 'default',
     showIcon: true,
@@ -19,14 +22,12 @@ withDefaults(
 </script>
 
 <template>
-  <section v-if="!isEmpty" class="resume-section-block">
-    <div class="section-toolbar" aria-hidden="true">
-      <v-btn icon="mdi-plus" size="x-small" variant="text" density="compact" />
-      <v-btn icon="mdi-view-grid-outline" size="x-small" variant="text" density="compact" />
-      <v-btn icon="mdi-palette-outline" size="x-small" variant="text" density="compact" />
-      <v-btn icon="mdi-arrow-up" size="x-small" variant="text" density="compact" />
-      <v-btn icon="mdi-arrow-down" size="x-small" variant="text" density="compact" />
-    </div>
+  <section v-if="!isEmpty" class="resume-section-block resume-section-hoverable">
+    <SectionToolbar
+      v-if="sectionKey"
+      :section-key="sectionKey"
+      :actions="['add-item', 'change-variant', 'style-panel', 'line-minus', 'line-plus', 'move-up', 'move-down', 'delete-section']"
+    />
     <ResumeSectionHeading
       :title="title"
       :icon="icon"
@@ -41,6 +42,7 @@ withDefaults(
 <style scoped>
 .resume-section-block {
   position: relative;
+  overflow: visible;
   display: grid;
   gap: 8px;
 }
