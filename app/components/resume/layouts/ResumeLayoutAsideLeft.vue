@@ -8,6 +8,7 @@ import ResumeSectionProfile from '~/components/resume/sections/ResumeSectionProf
 import ResumeSectionRenderer from '~/components/resume/sections/ResumeSectionRenderer.vue'
 import ResumeSectionBlock from '~/components/resume/sections/ResumeSectionBlock.vue'
 import { resolveTemplateStyleVars } from '~/modules/resume/template/resolveTemplateStyleVars'
+import { resolveSectionIcon } from '~/modules/resume/renderers/sectionIcons'
 
 const props = defineProps<{ resume: ResumeApiItem; template?: any; reverse?: boolean }>()
 
@@ -36,6 +37,8 @@ const isContactEmpty = computed(() => {
   return ![info?.email, info?.phone, info?.adresse, info?.birthDate, info?.homepage, info?.repo_profile].some((value) => typeof value === 'string' && value.trim().length > 0)
 })
 const isProfileEmpty = computed(() => !(props.resume.resumeInformation?.profileText || '').trim())
+const shouldShowSectionIcons = computed(() => props.template?.theme?.showIcon !== false)
+
 
 function resolveAsideTextColor(primary: unknown): string {
   if (typeof primary !== 'string') return '#ffffff'
@@ -73,18 +76,18 @@ const styleVars = computed(() => {
   <div class="aside-left" :class="{ reverse }" :style="styleVars">
     <ResumeSectionHeader class="full" :resume="resume" :template="template" />
     <aside class="aside-surface on-primary">
-      <ResumeSectionBlock :title="getSectionTitle('contact')" :is-empty="isContactEmpty"><ResumeSectionContact :resume="resume" :show-title="false" /></ResumeSectionBlock>
-      <ResumeSectionBlock :title="getSectionTitle('skills')" :is-empty="!(resume.skills?.length)"><ResumeSectionRenderer section-key="skill" :resume="resume" :template="template" /></ResumeSectionBlock>
-      <ResumeSectionBlock :title="getSectionTitle('languages')" :is-empty="!(resume.languages?.length)"><ResumeSectionRenderer section-key="language" :resume="resume" :template="template" /></ResumeSectionBlock>
-      <ResumeSectionBlock :title="getSectionTitle('references')" :is-empty="!(resume.references?.length)"><ResumeSectionRenderer section-key="reference" :resume="resume" :template="template" /></ResumeSectionBlock>
-      <ResumeSectionBlock :title="getSectionTitle('certifications')" :is-empty="!(resume.certifications?.length)"><ResumeSectionRenderer section-key="certification" :resume="resume" :template="template" /></ResumeSectionBlock>
-      <ResumeSectionBlock :title="getSectionTitle('interests')" :is-empty="!(resume.hobbies?.length)"><ResumeSectionRenderer section-key="hobby" :resume="resume" :template="template" /></ResumeSectionBlock>
+      <ResumeSectionBlock tone="on-primary" :title="getSectionTitle('contact')" :icon="resolveSectionIcon('contact')" :show-icon="shouldShowSectionIcons" :is-empty="isContactEmpty"><ResumeSectionContact :resume="resume" :show-title="false" /></ResumeSectionBlock>
+      <ResumeSectionBlock tone="on-primary" :title="getSectionTitle('skills')" :icon="resolveSectionIcon('skills')" :show-icon="shouldShowSectionIcons" :is-empty="!(resume.skills?.length)"><ResumeSectionRenderer section-key="skill" :resume="resume" :template="template" /></ResumeSectionBlock>
+      <ResumeSectionBlock tone="on-primary" :title="getSectionTitle('languages')" :icon="resolveSectionIcon('languages')" :show-icon="shouldShowSectionIcons" :is-empty="!(resume.languages?.length)"><ResumeSectionRenderer section-key="language" :resume="resume" :template="template" /></ResumeSectionBlock>
+      <ResumeSectionBlock tone="on-primary" :title="getSectionTitle('references')" :icon="resolveSectionIcon('references')" :show-icon="shouldShowSectionIcons" :is-empty="!(resume.references?.length)"><ResumeSectionRenderer section-key="reference" :resume="resume" :template="template" /></ResumeSectionBlock>
+      <ResumeSectionBlock tone="on-primary" :title="getSectionTitle('certifications')" :icon="resolveSectionIcon('certifications')" :show-icon="shouldShowSectionIcons" :is-empty="!(resume.certifications?.length)"><ResumeSectionRenderer section-key="certification" :resume="resume" :template="template" /></ResumeSectionBlock>
+      <ResumeSectionBlock tone="on-primary" :title="getSectionTitle('interests')" :icon="resolveSectionIcon('interests')" :show-icon="shouldShowSectionIcons" :is-empty="!(resume.hobbies?.length)"><ResumeSectionRenderer section-key="hobby" :resume="resume" :template="template" /></ResumeSectionBlock>
     </aside>
     <main>
-      <ResumeSectionBlock :title="getSectionTitle('profile')" :is-empty="isProfileEmpty"><ResumeSectionProfile :resume="resume" :show-title="false" /></ResumeSectionBlock>
-      <ResumeSectionBlock :title="getSectionTitle('experience')" :is-empty="!(resume.experiences?.length)"><ResumeSectionRenderer section-key="experience" :resume="resume" :template="template" /></ResumeSectionBlock>
-      <ResumeSectionBlock :title="getSectionTitle('education')" :is-empty="!(resume.educations?.length)"><ResumeSectionRenderer section-key="education" :resume="resume" :template="template" /></ResumeSectionBlock>
-      <ResumeSectionBlock :title="getSectionTitle('projects')" :is-empty="!(resume.projects?.length)"><ResumeSectionRenderer section-key="project" :resume="resume" :template="template" /></ResumeSectionBlock>
+      <ResumeSectionBlock :title="getSectionTitle('profile')" :icon="resolveSectionIcon('profile')" :show-icon="shouldShowSectionIcons" :is-empty="isProfileEmpty"><ResumeSectionProfile :resume="resume" :show-title="false" /></ResumeSectionBlock>
+      <ResumeSectionBlock :title="getSectionTitle('experience')" :icon="resolveSectionIcon('experience')" :show-icon="shouldShowSectionIcons" :is-empty="!(resume.experiences?.length)"><ResumeSectionRenderer section-key="experience" :resume="resume" :template="template" /></ResumeSectionBlock>
+      <ResumeSectionBlock :title="getSectionTitle('education')" :icon="resolveSectionIcon('education')" :show-icon="shouldShowSectionIcons" :is-empty="!(resume.educations?.length)"><ResumeSectionRenderer section-key="education" :resume="resume" :template="template" /></ResumeSectionBlock>
+      <ResumeSectionBlock :title="getSectionTitle('projects')" :icon="resolveSectionIcon('projects')" :show-icon="shouldShowSectionIcons" :is-empty="!(resume.projects?.length)"><ResumeSectionRenderer section-key="project" :resume="resume" :template="template" /></ResumeSectionBlock>
     </main>
   </div>
 </template>

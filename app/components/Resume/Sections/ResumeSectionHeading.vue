@@ -9,6 +9,7 @@ const props = withDefaults(
     variant?: 'h2' | 'h3' | string
     sectionKey?: ResumeEditableSectionKey
     divider?: boolean
+    showIcon?: boolean
   }>(),
   {
     title: undefined,
@@ -17,6 +18,7 @@ const props = withDefaults(
     variant: 'h3',
     sectionKey: undefined,
     divider: false,
+    showIcon: true,
   },
 )
 
@@ -51,7 +53,7 @@ const headingTag = computed(() => (props.variant === 'h2' ? 'h2' : 'h3'))
     class="resume-section-heading"
     :class="[`resume-section-heading--${tone}`]"
   >
-    <span v-if="icon" class="resume-section-heading__icon">
+    <span v-if="showIcon && icon" class="resume-section-heading__icon">
       <v-icon :icon="icon" size="18" />
     </span>
     <span class="resume-section-heading__label">{{ resolvedTitle }}</span>
