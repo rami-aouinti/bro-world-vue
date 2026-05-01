@@ -3,7 +3,7 @@ export const TEMPLATE_LAYOUTS = [
   'two-column',
   'hybrid',
 ] as const
-export const TEMPLATE_STRUCTURES = ['classic', 'modern', 'minimal'] as const
+export const TEMPLATE_STRUCTURES = ['classic', 'modern', 'minimal', 'structure-1', 'structure-2'] as const
 export const EXPERIENCE_FORMS = ['classic', 'timeline', 'cards'] as const
 export const EDUCATION_FORMS = ['classic', 'timeline', 'grid'] as const
 export const SKILLS_FORMS = ['dots', 'bars', 'tags'] as const
@@ -57,11 +57,17 @@ export type TemplateSectionFormMap = {
   languages: LanguagesForm
 }
 
+export type TemplateStructureConfig = {
+  main?: string[]
+  aside?: string[]
+}
+
 export type TemplateConfig = {
   templateId?: string
   skinId?: string
   layout?: TemplateLayout
   structure?: TemplateStructure
+  structureConfig?: TemplateStructureConfig
   lineStyle?: LineStyle
   density?: Density
   textStyle?: TextStyle
@@ -91,6 +97,52 @@ export type TemplateConfig = {
     underline?: (typeof TITLE_UNDERLINES)[number]
     casing?: (typeof TITLE_CASINGS)[number]
   }
+  photo?: {
+    position?: string
+    size?: string
+    shape?: string
+    borderWidth?: number
+    borderStyle?: string
+    borderColor?: string
+  }
+  decor?: {
+    corners?: Array<{
+      shape?: string
+      size?: string
+      x?: string | number
+      y?: string | number
+      color?: string
+    }>
+  }
+  sections?: {
+    contact?: 'labels' | 'icons'
+  }
+}
+
+export type NormalizedTemplatePhoto = {
+  position: string
+  size: string
+  shape: string
+  borderWidth: number
+  borderStyle: string
+  borderColor: string
+}
+
+export type NormalizedTemplateDecorCorner = {
+  shape: string
+  size: string
+  x: number
+  y: number
+  color: string
+}
+
+export type NormalizedTemplateSections = {
+  contact: 'labels' | 'icons'
+}
+
+export type NormalizedTemplateStructureConfig = {
+  main: string[]
+  aside: string[]
 }
 
 export type NormalizedTemplateConfig = {
@@ -127,7 +179,14 @@ export type NormalizedTemplateConfig = {
     underline: (typeof TITLE_UNDERLINES)[number]
     casing: (typeof TITLE_CASINGS)[number]
   }
+  photo: NormalizedTemplatePhoto
+  decor: {
+    corners: NormalizedTemplateDecorCorner[]
+  }
+  sections: NormalizedTemplateSections
+  structureConfig: NormalizedTemplateStructureConfig
 }
+
 
 const DEFAULT_TEMPLATE_CONFIG: NormalizedTemplateConfig = {
   templateId: 'classic',
@@ -150,6 +209,13 @@ const DEFAULT_TEMPLATE_CONFIG: NormalizedTemplateConfig = {
   levelStyle: { skills: 'dots', languages: 'dots' },
   decorOptions: { enabled: false, preset: 'none' },
   sectionTitleStyle: { icon: 'outline', underline: 'none', casing: 'normal' },
+  photo: { position: 'left', size: '96px', shape: 'circle', borderWidth: 2, borderStyle: 'solid', borderColor: '#0F4C81' },
+  decor: { corners: [] },
+  sections: { contact: 'labels' },
+  structureConfig: {
+    main: ['contact','profile','experience','education','skills','projects','languages','references','certifications','interests'],
+    aside: [],
+  },
 }
 
 const SECTION_FALLBACKS: TemplateSectionFormMap = {
@@ -168,6 +234,19 @@ function normalizeEnum<T extends readonly string[]>(
     (allowed as readonly string[]).includes(value)
     ? (value as T[number])
     : fallback
+}
+
+
+function normalizeNumber(value: unknown, fallback: number): number {
+  if (typeof value === 'number' && Number.isFinite(value)) return value
+  const parsed = Number.parseFloat(String(value ?? ''))
+  return Number.isFinite(parsed) ? parsed : fallback
+}
+
+function normalizeAxis(value: unknown, fallback: number): number {
+  if (typeof value === 'number' && Number.isFinite(value)) return value
+  const parsed = Number.parseFloat(String(value ?? '').replace('%', ''))
+  return Number.isFinite(parsed) ? parsed : fallback
 }
 
 export function validateTemplateConfig(raw: unknown): NormalizedTemplateConfig {
@@ -271,6 +350,32 @@ export function validateTemplateConfig(raw: unknown): NormalizedTemplateConfig {
       icon: normalizeEnum(candidate.sectionTitleStyle?.icon, TITLE_ICONS, DEFAULT_TEMPLATE_CONFIG.sectionTitleStyle.icon),
       underline: normalizeEnum(candidate.sectionTitleStyle?.underline, TITLE_UNDERLINES, DEFAULT_TEMPLATE_CONFIG.sectionTitleStyle.underline),
       casing: normalizeEnum(candidate.sectionTitleStyle?.casing, TITLE_CASINGS, DEFAULT_TEMPLATE_CONFIG.sectionTitleStyle.casing),
+    },
+    photo: {
+      position: typeof candidate.photo?.position === 'string' ? candidate.photo.position : DEFAULT_TEMPLATE_CONFIG.photo.position,
+      size: typeof candidate.photo?.size === 'string' ? candidate.photo.size : DEFAULT_TEMPLATE_CONFIG.photo.size,
+      shape: typeof candidate.photo?.shape === 'string' ? candidate.photo.shape : DEFAULT_TEMPLATE_CONFIG.photo.shape,
+      borderWidth: normalizeNumber(candidate.photo?.borderWidth, DEFAULT_TEMPLATE_CONFIG.photo.borderWidth),
+      borderStyle: typeof candidate.photo?.borderStyle === 'string' ? candidate.photo.borderStyle : DEFAULT_TEMPLATE_CONFIG.photo.borderStyle,
+      borderColor: typeof candidate.photo?.borderColor === 'string' ? candidate.photo.borderColor : DEFAULT_TEMPLATE_CONFIG.photo.borderColor,
+    },
+    decor: {
+      corners: Array.isArray(candidate.decor?.corners)
+        ? candidate.decor.corners.map((corner) => ({
+            shape: typeof corner?.shape === 'string' ? corner.shape : 'circle',
+            size: typeof corner?.size === 'string' ? corner.size : '96px',
+            x: normalizeAxis(corner?.x, 50),
+            y: normalizeAxis(corner?.y, 50),
+            color: typeof corner?.color === 'string' ? corner.color : '#0F4C81',
+          }))
+        : DEFAULT_TEMPLATE_CONFIG.decor.corners,
+    },
+    sections: {
+      contact: candidate.sections?.contact === 'icons' ? 'icons' : 'labels',
+    },
+    structureConfig: {
+      main: Array.isArray(candidate.structureConfig?.main) ? candidate.structureConfig.main.filter((item): item is string => typeof item === 'string' && item.trim().length > 0) : DEFAULT_TEMPLATE_CONFIG.structureConfig.main,
+      aside: Array.isArray(candidate.structureConfig?.aside) ? candidate.structureConfig.aside.filter((item): item is string => typeof item === 'string' && item.trim().length > 0) : DEFAULT_TEMPLATE_CONFIG.structureConfig.aside,
     },
   }
 }

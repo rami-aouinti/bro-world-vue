@@ -11,6 +11,10 @@ export type ResolvedZones = {
   main: ResumeSectionDescriptor[]
   aside: ResumeSectionDescriptor[]
 }
+export type TemplateStructureConfig = {
+  main?: string[]
+  aside?: string[]
+}
 
 const STRUCTURE_1_ORDER: ResumeSectionDescriptor[] = [
   { id: 'contact', blockKey: 'contact' },
@@ -62,6 +66,29 @@ export function isSectionEmpty(resume: ResumeApiItem, sectionId: string) {
 }
 
 export function resolveLayoutZones(structure?: string): ResolvedZones {
+  return resolveLayoutZonesWithConfig(structure)
+}
+
+export function resolveLayoutZonesWithConfig(
+  structure?: string,
+  structureConfig?: TemplateStructureConfig,
+): ResolvedZones {
+  if (
+    structureConfig &&
+    (Array.isArray(structureConfig.main) || Array.isArray(structureConfig.aside))
+  ) {
+    const toDescriptor = (id: string): ResumeSectionDescriptor => {
+      const found =
+        STRUCTURE_1_ORDER.find((entry) => entry.id === id) ||
+        STRUCTURE_2_MAIN.find((entry) => entry.id === id) ||
+        STRUCTURE_2_ASIDE.find((entry) => entry.id === id)
+      return found ?? { id, blockKey: id, rendererKey: id }
+    }
+    const main = (structureConfig.main ?? []).map(toDescriptor)
+    const aside = (structureConfig.aside ?? []).map(toDescriptor)
+    if (main.length || aside.length) return { main, aside }
+  }
+
   if (structure === 'structure-2') {
     return { main: STRUCTURE_2_MAIN, aside: STRUCTURE_2_ASIDE }
   }

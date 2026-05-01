@@ -6,7 +6,7 @@ import ResumeSectionHeader from '~/components/resume/sections/ResumeSectionHeade
 import ResumeSectionContact from '~/components/resume/sections/ResumeSectionContact.vue'
 import ResumeSectionProfile from '~/components/resume/sections/ResumeSectionProfile.vue'
 import ResumeSectionRenderer from '~/components/resume/sections/ResumeSectionRenderer.vue'
-import { isSectionEmpty, resolveLayoutZones } from './sectionStructureResolver'
+import { isSectionEmpty, resolveLayoutZonesWithConfig } from './sectionStructureResolver'
 import ResumeSectionBlock from '~/components/resume/sections/ResumeSectionBlock.vue'
 import { resolveTemplateStyleVars } from '~/modules/resume/template/resolveTemplateStyleVars'
 import { resolveSectionIcon } from '~/modules/resume/renderers/sectionIcons'
@@ -49,7 +49,7 @@ const getSectionTitle = (sectionKey: string) => {
 
 const shouldShowSectionIcons = computed(() => props.template?.theme?.showIcon !== false)
 
-const resolvedZones = computed(() => resolveLayoutZones(props.template?.structure))
+const resolvedZones = computed(() => resolveLayoutZonesWithConfig(props.template?.structure, props.template?.structureConfig))
 const orderedSections = computed(() => resolvedZones.value.main)
 
 function sectionEmpty(sectionId: string) {
