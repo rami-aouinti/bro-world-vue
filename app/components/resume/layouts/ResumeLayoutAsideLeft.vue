@@ -187,6 +187,13 @@ aside.aside-surface :deep(i),
 aside.aside-surface :deep(.icon) {
   color: var(--aside-text-primary) !important;
 }
+aside.aside-surface :deep(.resume-section-block > :not(.resume-section-heading)) {
+  font-size: 0.88em;
+  line-height: 1.35;
+}
+aside.aside-surface :deep(.resume-section-block > :not(.resume-section-heading) *) {
+  font-size: inherit;
+}
 aside.aside-surface :deep(.resume-section-block + .resume-section-block) {
   border-top: 1px var(--line-style, solid) var(--aside-separator);
   padding-top: var(--section-space, 12px);
