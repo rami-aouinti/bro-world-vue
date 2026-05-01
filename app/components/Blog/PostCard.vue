@@ -401,6 +401,9 @@ function applyTagFilter(tag: string) {
               :src="authorPhoto"
               :alt="`${authorName} avatar`"
               class="post-avatar-image"
+              width="52"
+              height="52"
+              loading="lazy"
             />
             <v-icon v-else icon="mdi-account" />
           </v-avatar>
@@ -412,6 +415,9 @@ function applyTagFilter(tag: string) {
               :src="authorPhoto"
               :alt="`${authorName} avatar`"
               class="post-avatar-image"
+              width="52"
+              height="52"
+              loading="lazy"
             />
             <v-icon v-else icon="mdi-account" />
           </v-avatar>
