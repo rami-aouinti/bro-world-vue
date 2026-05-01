@@ -22,7 +22,7 @@ const loadingResumes = ref(false)
 const resumesError = ref('')
 const myResumes = ref<ResumeApiItem[]>([])
 
-const CONTROLLED_LAYOUTS = ['aside-left', 'aside-right', 'no-aside'] as const
+const CONTROLLED_LAYOUTS = ['aside-left', 'aside-right', 'no-aside', 'aside'] as const
 
 const layoutFilterOptions = computed(() => {
   const layouts = Array.from(
