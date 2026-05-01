@@ -183,7 +183,7 @@ function removeExperience(index: number) {
       :title="title"
       :icon="showSectionIcon ? sectionIcon : undefined"
       :tone="themeTokens['--cv-on-primary'] ? 'on-primary' : 'default'"
-      decorative-line
+      divider
     />
     <div class="experience-list">
       <article

@@ -8,7 +8,7 @@ const props = withDefaults(
     tone?: 'default' | 'on-primary'
     variant?: 'h2' | 'h3' | string
     sectionKey?: ResumeEditableSectionKey
-    decorativeLine?: boolean
+    divider?: boolean
   }>(),
   {
     title: undefined,
@@ -16,7 +16,7 @@ const props = withDefaults(
     tone: 'default',
     variant: 'h3',
     sectionKey: undefined,
-    decorativeLine: false,
+    divider: false,
   },
 )
 
@@ -56,7 +56,7 @@ const headingTag = computed(() => (props.variant === 'h2' ? 'h2' : 'h3'))
     </span>
     <span class="resume-section-heading__label">{{ resolvedTitle }}</span>
     <span
-      v-if="decorativeLine"
+      v-if="divider"
       class="resume-section-heading__line"
       aria-hidden="true"
     />
@@ -68,10 +68,11 @@ const headingTag = computed(() => (props.variant === 'h2' ? 'h2' : 'h3'))
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-block: clamp(0.75rem, 1.8vw, 1.1rem);
-  font-size: clamp(1rem, 1.5vw, 1.2rem);
-  line-height: 1.2;
+  margin: 0 0 0.65rem;
+  font-size: clamp(1rem, 1.4vw, 1.125rem);
+  line-height: 1.25;
   letter-spacing: 0.01em;
+  font-weight: 650;
 }
 
 .resume-section-heading__icon {
@@ -80,7 +81,7 @@ const headingTag = computed(() => (props.variant === 'h2' ? 'h2' : 'h3'))
 }
 
 .resume-section-heading__label {
-  font-weight: 700;
+  font-weight: inherit;
 }
 
 .resume-section-heading--on-primary {

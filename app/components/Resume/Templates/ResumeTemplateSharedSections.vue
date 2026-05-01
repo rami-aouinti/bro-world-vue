@@ -12,7 +12,7 @@ import {
 } from '~/utils/resumeLanguageFlags'
 import SectionToolbar from '~/components/Resume/SectionToolbar.vue'
 import { RESUME_SHARED_SECTION_VARIANTS } from '~/types/resumeSectionVariants'
-import ResumeSectionHeader from '~/components/Resume/Sections/ResumeSectionHeader.vue'
+import ResumeSectionHeading from '~/components/Resume/Sections/ResumeSectionHeading.vue'
 
 type SharedSectionKey =
   | 'languages'
@@ -77,6 +77,9 @@ const toneClass = computed(() => {
   if (props.tone === 'dark') return 'shared-extra--dark'
   return 'shared-extra--auto'
 })
+const headingTone = computed<'default' | 'on-primary'>(() =>
+  props.tone === 'dark' ? 'on-primary' : 'default',
+)
 
 function updateText(path: string, value: string) {
   const segments = path.split('.')
@@ -168,11 +171,11 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
         @move-up="() => emit('move-section', 'language', 'up')"
         @move-down="() => emit('move-section', 'language', 'down')"
       />
-      <ResumeSectionHeader
+      <ResumeSectionHeading
         title="Languages"
         icon="mdi-translate"
-        in-aside
-        class="cv-divider-bottom"
+        :tone="headingTone"
+        divider
       />
       <ul v-if="languageVariant === 'text-level'">
         <li
@@ -326,11 +329,11 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
         @move-up="() => emit('move-section', 'certification', 'up')"
         @move-down="() => emit('move-section', 'certification', 'down')"
       />
-      <ResumeSectionHeader
+      <ResumeSectionHeading
         title="Certifications"
         icon="mdi-certificate-outline"
-        in-aside
-        class="cv-divider-bottom"
+        :tone="headingTone"
+        divider
       />
       <ul>
         <li
@@ -387,11 +390,11 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
         @move-up="() => emit('move-section', 'project', 'up')"
         @move-down="() => emit('move-section', 'project', 'down')"
       />
-      <ResumeSectionHeader
+      <ResumeSectionHeading
         title="Projects"
         icon="mdi-folder-star-outline"
-        in-aside
-        class="cv-divider-bottom"
+        :tone="headingTone"
+        divider
       />
       <ul
         v-if="projectVariant === 'list'"
@@ -487,11 +490,11 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
         @move-up="() => emit('move-section', 'reference', 'up')"
         @move-down="() => emit('move-section', 'reference', 'down')"
       />
-      <ResumeSectionHeader
+      <ResumeSectionHeading
         title="References"
         icon="mdi-account"
-        in-aside
-        class="cv-divider-bottom"
+        :tone="headingTone"
+        divider
       />
       <ul>
         <li
@@ -543,11 +546,11 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
         @move-up="() => emit('move-section', 'hobby', 'up')"
         @move-down="() => emit('move-section', 'hobby', 'down')"
       />
-      <ResumeSectionHeader
+      <ResumeSectionHeading
         title="Interests"
         icon="mdi-puzzle-heart-outline"
-        in-aside
-        class="cv-divider-bottom"
+        :tone="headingTone"
+        divider
       />
       <ul>
         <li
