@@ -10,6 +10,7 @@ defineProps<ResumeSectionRendererProps>()
     :theme="theme"
     :show-icon="showIcon"
     :density="density"
-    variant-label="CertificationsClassic"
+    section-key="certifications"
+    template="classic"
   />
 </template>
