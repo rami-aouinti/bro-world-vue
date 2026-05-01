@@ -111,7 +111,7 @@ const activeLayoutComponent = computed(() => {
           :text="resumesError"
         />
         <template v-else>
-          <component :is="activeLayoutComponent" :resume="resumeToDisplay" />
+          <component :is="activeLayoutComponent" :resume="resumeToDisplay" :template="selectedGeneratedTemplate" />
         </template>
       </v-card-text>
     </v-card>
