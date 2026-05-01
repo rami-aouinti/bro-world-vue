@@ -80,6 +80,7 @@ const styleVars = computed(() => {
     '--page-bg': palette.pageBackground ?? '#ffffff',
     '--aside-bg': palette.asideBackground ?? primary,
     '--aside-text': palette.asideText ?? resolveAsideTextColor(primary),
+    '--aside-radius': props.template?.aside?.radius ?? '18px',
     '--header-band-height': `${Math.min(100, Math.max(0, props.headerBandHeight ?? 100))}%`,
   } as CSSProperties
 })
@@ -137,6 +138,13 @@ aside {
   background: var(--aside-bg, var(--primary, #0f4c81));
   color: var(--aside-text-primary, var(--aside-text, #f8fafc));
   border: 1px var(--line-style, solid) color-mix(in srgb, var(--aside-text, #ffffff) 22%, transparent);
+  border-radius: 0;
+}
+.aside-left:not(.reverse) aside {
+  border-top-right-radius: var(--aside-radius, 18px);
+}
+.aside-left.reverse aside {
+  border-top-left-radius: var(--aside-radius, 18px);
 }
 aside.aside-surface {
   --aside-text-primary: color-mix(in srgb, var(--aside-text, #ffffff) 96%, #fff 4%);

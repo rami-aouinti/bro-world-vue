@@ -93,6 +93,7 @@ const selectedSectionVariants = ref<SectionVariants>({})
 const selectedTextStyle = ref<string>('')
 const selectedAsideWidth = ref<number>(240)
 const selectedAsideHeight = ref<number>(100)
+const selectedAsideRadius = ref<number>(18)
 const selectedHeaderBandHeight = ref<number>(100)
 
 const selectedPhotoPosition = ref<string>('left')
@@ -244,6 +245,7 @@ const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
   if (selectedTextStyle.value) nextTheme.textStyle = selectedTextStyle.value as any
   nextAside.width = `${selectedAsideWidth.value}px`
   nextAside.height = `${selectedAsideHeight.value}%`
+  nextAside.radius = `${selectedAsideRadius.value}px`
   ;(nextTheme as any).headerBandHeight = selectedHeaderBandHeight.value
 
   if (selectedPalette.value === 'custom') {
@@ -309,8 +311,10 @@ watch(
     selectedTextStyle.value = typeof route.query.textStyle === 'string' ? route.query.textStyle : String(template.theme?.textStyle || '')
     const asideWidthSource = typeof route.query.asideWidth === 'string' ? route.query.asideWidth : String(template.aside?.width || '240px')
     const asideHeightSource = typeof route.query.asideHeight === 'string' ? route.query.asideHeight : String(template.aside?.height || '100%')
+    const asideRadiusSource = typeof route.query.asideRadius === 'string' ? route.query.asideRadius : String(template.aside?.radius || '18px')
     selectedAsideWidth.value = Number.parseInt(asideWidthSource.replace('px', ''), 10) || 240
     selectedAsideHeight.value = Number.parseInt(asideHeightSource.replace('%', ''), 10) || 100
+    selectedAsideRadius.value = Number.parseInt(asideRadiusSource.replace('px', ''), 10) || 18
 
     const headerBandHeightSource = typeof route.query.headerBandHeight === 'string' ? route.query.headerBandHeight : String((template.theme as any)?.headerBandHeight || '100')
     selectedHeaderBandHeight.value = Number.parseInt(headerBandHeightSource, 10) || 100
@@ -347,6 +351,7 @@ watch(
     selectedTextStyle,
     selectedAsideWidth,
     selectedAsideHeight,
+    selectedAsideRadius,
     selectedHeaderBandHeight,
     selectedPhotoPosition,
     selectedPhotoSize,
@@ -369,6 +374,7 @@ watch(
       photoSize: String(selectedPhotoSize.value),
       photoShape: selectedPhotoShape.value,
       photoBorder: `${selectedPhotoBorderWidth.value}px ${selectedPhotoBorderStyle.value} ${selectedPhotoBorderColor.value}`,
+      asideRadius: `${selectedAsideRadius.value}px`,
       headerBandHeight: String(selectedHeaderBandHeight.value),
     } as Record<string, string>
 
@@ -550,6 +556,15 @@ const activeLayoutComponent = computed(() => {
         </v-card>
       </template>
       <template #right>
+        <v-slider
+          v-model="selectedAsideRadius"
+          label="Aside radius (px)"
+          min="0"
+          max="48"
+          step="1"
+          hide-details
+          class="mb-3"
+        />
         <AppSelect
           v-for="(variantOptions, sectionKey) in sectionVariantOptionsForDrawer"
           :key="sectionKey"
