@@ -109,9 +109,22 @@ watch(addFields, (fields) => {
   formState.value = next
 }, { immediate: true })
 
-function onVariantChange(value: string) {
-  selectedVariant.value = value
-  emit('change-variant', normalizedSectionKey(props.sectionKey), value)
+function normalizeVariantValue(value: unknown): string {
+  if (typeof value === 'string') return value
+  if (typeof value === 'number') return String(value)
+  if (value && typeof value === 'object') {
+    const record = value as Record<string, unknown>
+    const rawValue = record.value ?? record.raw
+    if (typeof rawValue === 'string' || typeof rawValue === 'number') return String(rawValue)
+  }
+  return ''
+}
+
+function onVariantChange(value: unknown) {
+  const nextVariant = normalizeVariantValue(value)
+  if (!nextVariant) return
+  selectedVariant.value = nextVariant
+  emit('change-variant', normalizedSectionKey(props.sectionKey), nextVariant)
 }
 
 function onSubmitAddItem() {
@@ -136,7 +149,7 @@ function onSubmitAddItem() {
           density="compact"
           hide-details
           class="resume-hover-section__select"
-          @update:model-value="onVariantChange(String($event))"
+          @update:model-value="onVariantChange($event)"
         >
   <template #selection>
     <v-icon>
