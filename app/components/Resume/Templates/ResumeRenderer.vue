@@ -1865,6 +1865,10 @@ function updateText(path: string, value: string) {
 @media (max-width: 768px) {
   .resume-skin__contact-grid--aside-aside,
   .resume-skin__contact-grid--aside-main,
+  .resume-skin__contact-grid--aside-left-aside,
+  .resume-skin__contact-grid--aside-left-main,
+  .resume-skin__contact-grid--aside-right-aside,
+  .resume-skin__contact-grid--aside-right-main,
   .resume-skin__contact-grid--no-aside-main {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1872,6 +1876,8 @@ function updateText(path: string, value: string) {
 
 @media (min-width: 769px) {
   .resume-skin__contact-grid--aside-main,
+  .resume-skin__contact-grid--aside-left-main,
+  .resume-skin__contact-grid--aside-right-main,
   .resume-skin__contact-grid--no-aside-main {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1879,6 +1885,8 @@ function updateText(path: string, value: string) {
 
 @media print {
   .layout-mode-aside .resume-skin__contact-grid,
+  .layout-mode-aside-left .resume-skin__contact-grid,
+  .layout-mode-aside-right .resume-skin__contact-grid,
   .layout-mode-no-aside .resume-skin__contact-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
