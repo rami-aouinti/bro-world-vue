@@ -662,7 +662,7 @@ function applyTagFilter(tag: string) {
 }
 
 .post-content {
-  font-size: clamp(1rem, 1.5vw + 0.75rem, 0.2rem);
+  font-size: clamp(1rem, 1.5vw + 0.75rem, 1.2rem);
   line-height: 1.65;
   margin-bottom: 1rem;
   text-align: left;
@@ -744,22 +744,22 @@ function applyTagFilter(tag: string) {
 }
 
 @media (max-width: 600px) {
-  .post-card :deep(.v-card-title) {
+  .post-card ::v-deep(.v-card-title) {
     font-size: 1rem;
     line-height: 1.3;
   }
 
-  .post-card :deep(.v-card-subtitle) {
+  .post-card ::v-deep(.v-card-subtitle) {
     font-size: 0.78rem;
   }
 }
 
-.post-card--light :deep(.comment-input .v-field) {
+.post-card--light ::v-deep(.comment-input .v-field) {
   background: #f7f8fb;
   border: 1px solid rgba(15, 23, 42, 0.08);
 }
 
-.post-card--light :deep(.comment-bubble) {
+.post-card--light ::v-deep(.comment-bubble) {
   background: #f4f6fb;
   border: 1px solid rgba(15, 23, 42, 0.08);
 }
