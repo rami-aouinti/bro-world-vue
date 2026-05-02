@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
 import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-90.json'
+import GENERATED_RESUME_TEMPLATES_20 from '~/data/resume-templates/generated-20.json'
 import ResumeLayoutAside from '~/components/resume/layouts/ResumeLayoutAside.vue'
 import ResumeLayoutAsideLeft from '~/components/resume/layouts/ResumeLayoutAsideLeft.vue'
 import ResumeLayoutAsideRight from '~/components/resume/layouts/ResumeLayoutAsideRight.vue'
@@ -135,9 +136,69 @@ const selectedPhotoBorderStyle = ref<string>('solid')
 const selectedPhotoBorderColor = ref<string>('#0F4C81')
 const decorShapeOptions = ['circle', 'square', 'triangle', 'blob', 'line'] as const
 const previewToolbarTemplateMenuOpen = ref(false)
+const signatureDialogOpen = ref(false)
+const signatureDataUrl = ref<string>('')
+const signatureCanvas = ref<HTMLCanvasElement | null>(null)
+const savingResume = ref(false)
+const saveResumeError = ref('')
+const saveResumeSuccess = ref('')
+const drawingSignature = ref(false)
+const signatureStrokeColor = ref('#0f172a')
 
 function goToCreateResume() {
   router.push('/resume/preview')
+}
+
+function normalizeTemplateLabel(name: string) {
+  return name
+    .split('-')
+    .filter(Boolean)
+    .map((word) => word[0]?.toUpperCase() + word.slice(1))
+    .join(' ')
+}
+
+const previewToolbarTemplates = computed(() =>
+  GENERATED_RESUME_TEMPLATES_20.map((template) => ({
+    id: template.id,
+    label: normalizeTemplateLabel(template.name),
+    previewColor: template.theme?.palette?.primary || '#0F4C81',
+  })),
+)
+
+function openSignatureDialog() {
+  signatureDialogOpen.value = true
+}
+
+function drawSignatureAtBottom() {
+  if (!signatureDataUrl.value) return
+  const info = resumeToDisplay.value.resumeInformation || {}
+  resumeToDisplay.value.resumeInformation = {
+    ...info,
+    photo: signatureDataUrl.value,
+  }
+}
+
+async function saveResumeFromPreview() {
+  savingResume.value = true
+  saveResumeError.value = ''
+  saveResumeSuccess.value = ''
+  try {
+    await $fetch('/api/v1/recruit/resumes', {
+      method: 'POST',
+      body: resumeToDisplay.value,
+    })
+    saveResumeSuccess.value = 'CV enregistré avec succès.'
+  }
+  catch (error: any) {
+    saveResumeError.value = error?.data?.message || 'Impossible de sauvegarder le CV.'
+  }
+  finally {
+    savingResume.value = false
+  }
+}
+
+function downloadPdf() {
+  window.print()
 }
 
 
@@ -479,6 +540,68 @@ const activeLayoutComponent = computed(() => {
   if (layout === 'bar-right') return ResumeLayoutBarRight
   return ResumeLayoutNoAside
 })
+
+const signatureBackgroundColor = computed(
+  () => effectiveTemplate.value?.theme?.palette?.pageBackground || '#FFFFFF',
+)
+
+function getCanvasPosition(event: PointerEvent) {
+  const canvas = signatureCanvas.value
+  if (!canvas) return null
+  const rect = canvas.getBoundingClientRect()
+  return { x: event.clientX - rect.left, y: event.clientY - rect.top }
+}
+
+function ensureSignatureCanvas() {
+  const canvas = signatureCanvas.value
+  if (!canvas) return
+  canvas.width = 700
+  canvas.height = 240
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return
+  ctx.fillStyle = signatureBackgroundColor.value
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
+  ctx.strokeStyle = signatureStrokeColor.value
+  ctx.lineWidth = 2
+  ctx.lineCap = 'round'
+}
+
+function onSignaturePointerDown(event: PointerEvent) {
+  const canvas = signatureCanvas.value
+  const ctx = canvas?.getContext('2d')
+  const point = getCanvasPosition(event)
+  if (!canvas || !ctx || !point) return
+  drawingSignature.value = true
+  ctx.beginPath()
+  ctx.moveTo(point.x, point.y)
+}
+
+function onSignaturePointerMove(event: PointerEvent) {
+  const canvas = signatureCanvas.value
+  const ctx = canvas?.getContext('2d')
+  const point = getCanvasPosition(event)
+  if (!drawingSignature.value || !canvas || !ctx || !point) return
+  ctx.lineTo(point.x, point.y)
+  ctx.stroke()
+}
+
+function onSignaturePointerUp() {
+  drawingSignature.value = false
+  signatureDataUrl.value = signatureCanvas.value?.toDataURL('image/png') || ''
+}
+
+watch(signatureDialogOpen, (opened) => {
+  if (!opened) return
+  nextTick(() => {
+    ensureSignatureCanvas()
+    const canvas = signatureCanvas.value
+    if (!canvas) return
+    canvas.onpointerdown = onSignaturePointerDown
+    canvas.onpointermove = onSignaturePointerMove
+    canvas.onpointerup = onSignaturePointerUp
+    canvas.onpointerleave = onSignaturePointerUp
+  })
+})
 </script>
 
 <template>
@@ -612,9 +735,10 @@ const activeLayoutComponent = computed(() => {
             size="small"
             variant="outlined"
             prepend-icon="mdi-content-save-cog-outline"
-            @click="goToCreateResume"
+            :loading="savingResume"
+            @click="saveResumeFromPreview"
           >
-            Save / Import
+            Save
           </v-btn>
 
           <v-btn
@@ -622,10 +746,10 @@ const activeLayoutComponent = computed(() => {
             color="primary"
             size="small"
             variant="outlined"
-            prepend-icon="mdi-view-list-outline"
+            prepend-icon="mdi-robot-outline"
             @click="goToCreateResume"
           >
-            Sections
+            AI
           </v-btn>
 
           <v-btn
@@ -634,9 +758,19 @@ const activeLayoutComponent = computed(() => {
             size="small"
             variant="outlined"
             prepend-icon="mdi-signature-freehand"
-            @click="goToCreateResume"
+            @click="openSignatureDialog"
           >
             Signature
+          </v-btn>
+          <v-btn
+            class="preview-toolbar-btn"
+            color="primary"
+            size="small"
+            variant="outlined"
+            prepend-icon="mdi-file-pdf-box"
+            @click="downloadPdf"
+          >
+            PDF
           </v-btn>
 
           <v-menu
@@ -658,15 +792,36 @@ const activeLayoutComponent = computed(() => {
             </template>
             <v-list density="compact" min-width="240">
               <v-list-item
-                v-for="template in allTemplates"
+                v-for="template in previewToolbarTemplates"
                 :key="`preview-toolbar-template-${template.id}`"
-                :title="template.name"
+                :title="template.label"
                 @click="router.replace({ query: { ...route.query, template: template.id } })"
-              />
+              >
+                <template #prepend>
+                  <div class="template-chip-preview" :style="{ backgroundColor: template.previewColor }" />
+                </template>
+              </v-list-item>
             </v-list>
           </v-menu>
         </div>
       </div>
+      <v-alert v-if="saveResumeError" type="error" variant="tonal" class="mb-3" :text="saveResumeError" />
+      <v-alert v-if="saveResumeSuccess" type="success" variant="tonal" class="mb-3" :text="saveResumeSuccess" />
+      <v-dialog v-model="signatureDialogOpen" max-width="760">
+        <v-card>
+          <v-card-title>Signature</v-card-title>
+          <v-card-text>
+            <div class="signature-modal-body" :style="{ backgroundColor: signatureBackgroundColor }">
+              <canvas ref="signatureCanvas" class="signature-canvas" />
+            </div>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn variant="text" @click="signatureDialogOpen = false">Fermer</v-btn>
+            <v-btn color="primary" @click="drawSignatureAtBottom">Ajouter la signature</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 
       <v-progress-linear v-if="loggedIn && loadingResumes" indeterminate />
       <v-alert
@@ -732,5 +887,26 @@ const activeLayoutComponent = computed(() => {
   height: 56px !important;
   min-width: 56px !important;
   border-radius: 16px !important;
+}
+
+.template-chip-preview {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1px solid rgba(15, 23, 42, 0.25);
+}
+
+.signature-modal-body {
+  border: 1px dashed rgba(15, 23, 42, 0.25);
+  border-radius: 12px;
+  padding: 8px;
+}
+
+.signature-canvas {
+  width: 100%;
+  min-height: 220px;
+  display: block;
+  border-radius: 10px;
+  touch-action: none;
 }
 </style>
