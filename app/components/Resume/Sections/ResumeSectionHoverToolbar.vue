@@ -56,21 +56,46 @@ const emit = defineEmits<{
   (event: 'move-down', sectionKey: string): void
 }>()
 
+
+const SECTION_KEY_ALIASES: Record<string, string[]> = {
+  experience: ['experience', 'experiences'],
+  education: ['education', 'educations'],
+  skill: ['skill', 'skills'],
+  language: ['language', 'languages'],
+  project: ['project', 'projects'],
+  certification: ['certification', 'certifications'],
+  reference: ['reference', 'references'],
+  hobby: ['hobby', 'interests'],
+  contact: ['contact'],
+}
+
+function normalizedSectionKey(sectionKey: string) {
+  const lower = sectionKey.toLowerCase().trim()
+  for (const [canonical, aliases] of Object.entries(SECTION_KEY_ALIASES)) {
+    if (aliases.includes(lower)) return canonical
+  }
+  return lower
+}
+
 const addModalOpen = ref(false)
 const selectedVariant = ref('')
 const formState = ref<AddPayload>({})
 
 const autoVariants = computed<VariantOption[]>(() => {
   const values = new Set<string>()
+  const key = normalizedSectionKey(props.sectionKey)
+  const aliases = SECTION_KEY_ALIASES[key] || [key]
   GENERATED_RESUME_TEMPLATES.forEach((template) => {
-    const variant = (template.sections || {})[props.sectionKey as keyof typeof template.sections]
-    if (variant) values.add(String(variant))
+    aliases.forEach((alias) => {
+      const variant = (template.sections || {})[alias as keyof typeof template.sections]
+      if (variant) values.add(String(variant))
+    })
   })
   return Array.from(values).map((value) => ({ title: value, value }))
 })
 
 const variantOptions = computed(() => (props.variants.length ? props.variants : autoVariants.value))
-const addFields = computed(() => SECTION_ADD_FIELDS[props.sectionKey] || [{ key: 'title', label: 'Title', type: 'text', required: true }])
+const addFields = computed(() => SECTION_ADD_FIELDS[normalizedSectionKey(props.sectionKey)] || [{ key: 'title', label: 'Title', type: 'text', required: true }])
 
 watch(
   () => props.currentVariant,
@@ -86,12 +111,13 @@ watch(addFields, (fields) => {
 
 function onVariantChange(value: string) {
   selectedVariant.value = value
-  emit('change-variant', props.sectionKey, value)
+  emit('change-variant', normalizedSectionKey(props.sectionKey), value)
 }
 
 function onSubmitAddItem() {
-  emit('submit-add-item', props.sectionKey, { ...formState.value })
-  emit('add-item', props.sectionKey)
+  const key = normalizedSectionKey(props.sectionKey)
+  emit('submit-add-item', key, { ...formState.value })
+  emit('add-item', key)
   addModalOpen.value = false
 }
 </script>
