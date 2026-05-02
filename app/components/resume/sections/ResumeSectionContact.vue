@@ -80,7 +80,15 @@ const contactFields = computed<ContactField[]>(() => {
   margin: 0 0 6px;
 }
 
+.contact-line :deep(a),
+.contact-line > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .label {
   min-width: 82px;
+  flex: 0 0 auto;
 }
 </style>

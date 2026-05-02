@@ -112,6 +112,8 @@ const styleVars = computed(() => {
   font-family: var(--font-family, 'Inter', 'Segoe UI', sans-serif);
   letter-spacing: var(--font-letter-spacing, normal);
   font-style: var(--font-style, normal);
+  padding-inline: var(--layout-edge-pad, 10px);
+  box-sizing: border-box;
 }
 .aside-left.reverse {
   grid-template-columns: 1fr var(--aside-width, 240px);
@@ -166,9 +168,10 @@ aside.on-primary {
   padding-inline-start: calc(var(--panel-pad, 12px) - 2px);
 }
 .aside-left.bar-only.reverse aside {
-  border-inline-start: 20;
-  padding-inline-start: var(--panel-pad, 12px);
-  padding-inline-end: calc(var(--panel-pad, 12px) - 2px);
+  border-inline-end: 0;
+  border-inline-start: 8px solid var(--aside-bg, var(--primary, #0f4c81));
+  padding-inline-start: calc(var(--panel-pad, 12px) - 2px);
+  padding-inline-end: var(--panel-pad, 12px);
 }
 .aside-left.bar-only :where(aside) :deep(*) {
   color: inherit !important;
