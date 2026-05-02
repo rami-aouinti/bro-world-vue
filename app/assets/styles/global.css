@@ -97,13 +97,12 @@ html.dark {
   .v-list-item,
   .v-avatar,
   .v-chip,
-  .v-overlay__content,
   .v-card
 ) {
   border-radius: var(--app-rounded) !important;
 }
 
-:is(.v-list, .v-overlay__content, .v-card) {
+:is(.v-list, .v-card) {
   box-shadow: var(--app-shadow) !important;
 }
 
