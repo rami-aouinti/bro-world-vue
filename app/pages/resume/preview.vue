@@ -682,7 +682,7 @@ const activeLayoutComponent = computed(() => {
 
 .preview-toolbar-wrap {
   position: sticky;
-  top: 16px;
+  top: 90px;
   z-index: 20;
   display: flex;
   justify-content: center;
