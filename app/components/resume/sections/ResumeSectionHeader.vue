@@ -157,7 +157,7 @@ onBeforeUnmount(() => {
           cover
         />
         <span v-else>{{ initials }}</span>
-        <span class="avatar-corner-icon" aria-hidden="true">
+        <span class="avatar-tool avatar-tool--camera" aria-hidden="true">
           <v-icon icon="mdi-camera-plus" size="16" />
         </span>
         <span v-if="isPhotoLoading" class="avatar-loader">Chargement…</span>
@@ -233,7 +233,22 @@ onBeforeUnmount(() => {
 .avatar-image { width: 100%; height: 100%; transition: transform .15s ease; }
 .avatar-image :deep(.v-responsive), .avatar-image :deep(.v-img), .avatar-image :deep(.v-responsive__content) { width: 100%; height: 100%; }
 .avatar-image :deep(.v-img__img) { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
-.avatar-corner-icon { position: absolute; top: 3px; right: 3px; width: 24px; height: 24px; border-radius: 999px; background: rgba(15, 76, 129, 0.92); color: #fff; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); z-index: 2; pointer-events: none; }
+.avatar-tool--camera {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: rgb(var(--v-theme-primary));
+  color: rgb(var(--v-theme-on-primary, 255,255,255));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 3;
+  pointer-events: none;
+}
 .avatar-loader { position:absolute; inset:0; display:grid; place-items:center; font-size:11px; background: rgba(0,0,0,.4); }
 .avatar--uploading { pointer-events: none; }
 .avatar--error { box-shadow: 0 0 0 2px #dc2626 inset; }
@@ -252,11 +267,11 @@ onBeforeUnmount(() => {
   transform: scale(1);
 }
 .avatar-tool:deep(.v-btn) {
-  background: #0f172a !important;
-  color: #e2e8f0 !important;
-  border: 1px solid #334155;
+  background: rgb(var(--v-theme-primary)) !important;
+  color: rgb(var(--v-theme-on-primary, 255,255,255)) !important;
+  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-primary)) 75%, #000 25%);
 }
-.avatar-tool:hover:deep(.v-btn) { background: #1e293b !important; }
+.avatar-tool:hover:deep(.v-btn) { filter: brightness(1.05); }
 .avatar-tool--top-left { left: -14px; top: -14px; }
 .avatar-tool--left { left: -18px; top: 42%; }
 .avatar-tool--bottom-left { left: -14px; bottom: -14px; }
