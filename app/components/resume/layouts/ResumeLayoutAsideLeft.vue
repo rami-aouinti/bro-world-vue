@@ -173,7 +173,7 @@ aside.on-primary {
   padding-inline-start: calc(var(--panel-pad, 12px) - 2px);
   padding-inline-end: var(--panel-pad, 12px);
 }
-.aside-left.bar-only :where(aside) :deep(*) {
+.aside-left.bar-only aside ::v-deep(*) {
   color: inherit !important;
 }
 .aside-left.bar-only aside.text-dark {
@@ -181,12 +181,12 @@ aside.on-primary {
   --muted: #334155;
   --aside-link: #0f172a;
 }
-.aside-left.bar-only aside.text-dark :deep(a),
-.aside-left.bar-only aside.text-dark :deep(a:hover),
-.aside-left.bar-only aside.text-dark :deep(a:focus-visible),
-.aside-left.bar-only aside.text-dark :deep(svg),
-.aside-left.bar-only aside.text-dark :deep(i),
-.aside-left.bar-only aside.text-dark :deep(.icon) {
+.aside-left.bar-only aside.text-dark ::v-deep(a),
+.aside-left.bar-only aside.text-dark ::v-deep(a:hover),
+.aside-left.bar-only aside.text-dark ::v-deep(a:focus-visible),
+.aside-left.bar-only aside.text-dark ::v-deep(svg),
+.aside-left.bar-only aside.text-dark ::v-deep(i),
+.aside-left.bar-only aside.text-dark ::v-deep(.icon) {
   color: #0f172a !important;
 }
 
@@ -194,60 +194,82 @@ main {
   grid-area: main;
   padding: var(--panel-pad, 12px);
 }
-:where(aside, .full--on-primary) :deep(h1),
-:where(aside, .full--on-primary) :deep(h2),
-:where(aside, .full--on-primary) :deep(h3),
-:where(aside, .full--on-primary) :deep(h4),
-:where(aside, .full--on-primary) :deep(h5),
-:where(aside, .full--on-primary) :deep(h6),
-:where(aside, .full--on-primary) :deep(p),
-:where(aside, .full--on-primary) :deep(span),
-:where(aside, .full--on-primary) :deep(label),
-:where(aside, .full--on-primary) :deep(li),
-:where(aside, .full--on-primary) :deep(a),
-:where(aside, .full--on-primary) :deep(svg),
-:where(aside, .full--on-primary) :deep(i),
-:where(aside, .full--on-primary) :deep(strong),
-:where(aside, .full--on-primary) :deep(em),
-:where(aside, .full--on-primary) :deep(small),
-:where(aside, .full--on-primary) :deep(.section-title),
-:where(aside, .full--on-primary) :deep(.resume-section-title),
-:where(aside, .full--on-primary) :deep(.resume-section-content),
-:where(aside, .full--on-primary) :deep(.resume-item),
-:where(aside, .full--on-primary) :deep(.icon),
-:where(aside, .full--on-primary) :deep(::marker) {
+.aside-left aside ::v-deep(h1),
+.aside-left .full--on-primary ::v-deep(h1),
+.aside-left aside ::v-deep(h2),
+.aside-left .full--on-primary ::v-deep(h2),
+.aside-left aside ::v-deep(h3),
+.aside-left .full--on-primary ::v-deep(h3),
+.aside-left aside ::v-deep(h4),
+.aside-left .full--on-primary ::v-deep(h4),
+.aside-left aside ::v-deep(h5),
+.aside-left .full--on-primary ::v-deep(h5),
+.aside-left aside ::v-deep(h6),
+.aside-left .full--on-primary ::v-deep(h6),
+.aside-left aside ::v-deep(p),
+.aside-left .full--on-primary ::v-deep(p),
+.aside-left aside ::v-deep(span),
+.aside-left .full--on-primary ::v-deep(span),
+.aside-left aside ::v-deep(label),
+.aside-left .full--on-primary ::v-deep(label),
+.aside-left aside ::v-deep(li),
+.aside-left .full--on-primary ::v-deep(li),
+.aside-left aside ::v-deep(a),
+.aside-left .full--on-primary ::v-deep(a),
+.aside-left aside ::v-deep(svg),
+.aside-left .full--on-primary ::v-deep(svg),
+.aside-left aside ::v-deep(i),
+.aside-left .full--on-primary ::v-deep(i),
+.aside-left aside ::v-deep(strong),
+.aside-left .full--on-primary ::v-deep(strong),
+.aside-left aside ::v-deep(em),
+.aside-left .full--on-primary ::v-deep(em),
+.aside-left aside ::v-deep(small),
+.aside-left .full--on-primary ::v-deep(small),
+.aside-left aside ::v-deep(.section-title),
+.aside-left .full--on-primary ::v-deep(.section-title),
+.aside-left aside ::v-deep(.resume-section-title),
+.aside-left .full--on-primary ::v-deep(.resume-section-title),
+.aside-left aside ::v-deep(.resume-section-content),
+.aside-left .full--on-primary ::v-deep(.resume-section-content),
+.aside-left aside ::v-deep(.resume-item),
+.aside-left .full--on-primary ::v-deep(.resume-item),
+.aside-left aside ::v-deep(.icon),
+.aside-left .full--on-primary ::v-deep(.icon),
+.aside-left aside ::v-deep(::marker),
+.aside-left .full--on-primary ::v-deep(::marker) {
   color: inherit !important;
 }
-aside.aside-surface :deep(a) {
+aside.aside-surface ::v-deep(a) {
   color: var(--aside-link) !important;
   text-decoration-line: underline;
   text-decoration-color: color-mix(in srgb, var(--aside-link) 55%, transparent);
   text-decoration-thickness: 1px;
   text-underline-offset: 0.12em;
 }
-aside.aside-surface :deep(a:hover),
-aside.aside-surface :deep(a:focus-visible) {
+aside.aside-surface ::v-deep(a:hover),
+aside.aside-surface ::v-deep(a:focus-visible) {
   color: var(--aside-text-primary) !important;
   text-decoration-color: currentColor;
 }
-aside.aside-surface :deep(a:focus-visible) {
+aside.aside-surface ::v-deep(a:focus-visible) {
   outline: 2px solid color-mix(in srgb, var(--aside-text-primary) 72%, transparent);
   outline-offset: 2px;
   border-radius: 2px;
 }
-aside.aside-surface :deep(svg),
-aside.aside-surface :deep(i),
-aside.aside-surface :deep(.icon) {
+aside.aside-surface ::v-deep(svg),
+aside.aside-surface ::v-deep(i),
+aside.aside-surface ::v-deep(.icon) {
   color: var(--aside-text-primary) !important;
 }
-aside.aside-surface :deep(.resume-section-block > :not(.resume-section-heading)) {
+aside.aside-surface ::v-deep(.resume-section-block > :not(.resume-section-heading)) {
   font-size: 0.88em;
   line-height: 1.35;
 }
-aside.aside-surface :deep(.resume-section-block > :not(.resume-section-heading) *) {
+aside.aside-surface ::v-deep(.resume-section-block > :not(.resume-section-heading) *) {
   font-size: inherit;
 }
-aside.aside-surface :deep(.resume-section-block + .resume-section-block) {
+aside.aside-surface ::v-deep(.resume-section-block + .resume-section-block) {
   border-top: 1px var(--line-style, solid) var(--aside-separator);
   padding-top: var(--section-space, 12px);
 }
