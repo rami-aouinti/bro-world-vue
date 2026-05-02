@@ -77,7 +77,7 @@ const selectedTemplate = computed(() => {
   const templateId = String(route.query.template || '')
   if (!templateId) return null
   return (
-    allTemplates.value.find((template) => template.templateId === templateId) ||
+    allTemplates.value.find((template) => template.id === templateId || template.templateId === templateId) ||
     null
   )
 })
@@ -642,9 +642,9 @@ const activeLayoutComponent = computed(() => {
             <v-list density="compact" min-width="240">
               <v-list-item
                 v-for="template in allTemplates"
-                :key="`preview-toolbar-template-${template.templateId}`"
+                :key="`preview-toolbar-template-${template.id}`"
                 :title="template.name"
-                @click="router.replace({ query: { ...route.query, template: template.templateId } })"
+                @click="router.replace({ query: { ...route.query, template: template.id } })"
               />
             </v-list>
           </v-menu>
