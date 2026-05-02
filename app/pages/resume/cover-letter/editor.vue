@@ -11,6 +11,7 @@ import {
 } from '~/constants/resumeTemplates'
 import { useResumeDesignControls } from '~/composables/useResumeDesignControls'
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
+import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
 
 definePageMeta({
   title: 'Resume · Cover Letter Editor',
@@ -32,6 +33,7 @@ type CoverLetterModel = {
 
 const route = useRoute()
 const router = useRouter()
+const { loggedIn } = useUserSession()
 const { coverLetterTemplates } = useResumeTemplates()
 const { parseCoverFlowQuery, toCoverLetterQuery } = useResumeCoverFlow()
 
@@ -62,7 +64,7 @@ const model = reactive<CoverLetterModel>({
   fullName: importedFlow.value.title || 'John Doe',
   role: importedFlow.value.subtitle || 'Full Stack Developer',
   recipient: 'Hiring Manager',
-  company: 'Company Name',
+  company: '',
   date: new Date().toLocaleDateString('en-US'),
   intro: 'I am excited to submit my application to join your team.',
   body: 'My experience in product development, front-end architecture, and cross-functional collaboration allows me to contribute quickly to business and technical priorities.',
@@ -71,6 +73,18 @@ const model = reactive<CoverLetterModel>({
   email: 'john@example.com',
   phone: '+33 6 00 00 00 00',
 })
+
+const fallbackResumeData: ResumeApiItem = {
+  id: 'fallback-cover-letter-resume',
+  documentUrl: null,
+  resumeInformation: {
+    fullName: 'Rami Aouinti',
+    title: 'Backend Developer',
+    email: 'rami.aouinti@gmail.com',
+    phone: '0176 35587613',
+    adresse: 'Widdersdorfer Landstr.11, 50589 Köln',
+  },
+}
 
 const selectedCoverPageBase = computed(() => ({
   templateId:
@@ -141,8 +155,17 @@ const hydrateFromConnectedUser = async () => {
     if (user.email) model.email = user.email
     if (user.phone) model.phone = user.phone
   } catch {
-          // no-op
-        }
+    // no-op
+  }
+}
+
+const hydrateFromResume = (resume: ResumeApiItem | null | undefined) => {
+  const info = resume?.resumeInformation
+  if (!info) return
+  if (info.fullName) model.fullName = info.fullName
+  if (info.title) model.role = info.title
+  if (info.email) model.email = info.email
+  if (info.phone) model.phone = info.phone
 }
 
 const goToImportFlow = async () => {
@@ -150,6 +173,20 @@ const goToImportFlow = async () => {
 }
 
 onMounted(async () => {
+  if (loggedIn.value) {
+    try {
+      const resumes = await listMyResumes()
+      if (Array.isArray(resumes) && resumes.length > 0) {
+        hydrateFromResume(resumes[0])
+      } else {
+        hydrateFromResume(fallbackResumeData)
+      }
+    } catch {
+      hydrateFromResume(fallbackResumeData)
+    }
+  } else {
+    hydrateFromResume(fallbackResumeData)
+  }
   await hydrateFromConnectedUser()
   if (
     typeof route.query.template === 'string' &&

@@ -72,11 +72,11 @@ const documentTabs = computed(() => [
 const displayedTemplates = computed(() =>
   allTemplates.value.filter((template) => {
     if (template.type !== activeTemplateTab.value) return false
-    if (template.type !== 'resume') return false
+    if (template.type !== 'resume') return true
     const generatedTemplate = GENERATED_RESUME_TEMPLATES.find(
       (item) => item.id === template.templateId,
     )
-    if (!generatedTemplate) return false
+    if (!generatedTemplate) return true
     if (!selectedLayoutFilter.value) return true
     return generatedTemplate.layout === selectedLayoutFilter.value
   }),
