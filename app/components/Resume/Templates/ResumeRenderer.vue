@@ -1533,7 +1533,7 @@ function updateText(path: string, value: string) {
 }
 .resume-skin__contact-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--resume-contact-row-gap, var(--resume-space-2, var(--cv-space-2)))
     var(--resume-contact-column-gap, var(--resume-space-4, var(--cv-space-4)));
 }
@@ -1543,7 +1543,7 @@ function updateText(path: string, value: string) {
   margin-top: var(--resume-space-2, var(--cv-space-2));
 }
 .resume-contact-section .resume-skin__contact-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   margin-top: var(--resume-space-2, var(--cv-space-2));
 }
 .resume-skin__contact-item {
@@ -1777,7 +1777,7 @@ function updateText(path: string, value: string) {
 
 .layout-mode-aside-left .resume-contact-section .resume-skin__contact-grid,
 .layout-mode-aside-right .resume-contact-section .resume-skin__contact-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
 }
 
 @container (max-width: 360px) {
@@ -1863,28 +1863,22 @@ function updateText(path: string, value: string) {
 }
 
 @media (max-width: 768px) {
-  .resume-skin__contact-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .resume-skin__contact-grid--aside-left-aside,
-  .resume-skin__contact-grid--aside-left-main,
-  .resume-skin__contact-grid--aside-right-aside,
-  .resume-skin__contact-grid--aside-right-main,
+  .resume-skin__contact-grid--aside-aside,
+  .resume-skin__contact-grid--aside-main,
   .resume-skin__contact-grid--no-aside-main {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 769px) {
-  .resume-skin__contact-grid--aside-left-main,
-  .resume-skin__contact-grid--aside-right-main,
+  .resume-skin__contact-grid--aside-main,
   .resume-skin__contact-grid--no-aside-main {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media print {
+  .layout-mode-aside .resume-skin__contact-grid,
   .layout-mode-no-aside .resume-skin__contact-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
