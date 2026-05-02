@@ -188,8 +188,9 @@ function drawSignatureAtBottom() {
   const info = resumeToDisplay.value.resumeInformation || {}
   resumeToDisplay.value.resumeInformation = {
     ...info,
-    photo: signatureDataUrl.value,
+    signature: signatureDataUrl.value,
   }
+  signatureDialogOpen.value = false
 }
 
 async function saveResumeFromPreview() {
@@ -567,6 +568,11 @@ const signatureBackgroundColor = computed(
   () => effectiveTemplate.value?.theme?.palette?.pageBackground || '#FFFFFF',
 )
 
+const signaturePreviewUrl = computed(() => {
+  const info = resumeToDisplay.value.resumeInformation as Record<string, any> | undefined
+  return (typeof info?.signature === 'string' && info.signature) || ''
+})
+
 function getCanvasPosition(event: PointerEvent) {
   const canvas = signatureCanvas.value
   if (!canvas) return null
@@ -894,6 +900,9 @@ watch(signatureDialogOpen, (opened) => {
             @change-variant="onLayoutSectionVariantChange"
             :header-band-height="selectedHeaderBandHeight"
           />
+          <footer v-if="signaturePreviewUrl" class="resume-signature-footer">
+            <img :src="signaturePreviewUrl" alt="Signature" class="resume-signature-image">
+          </footer>
         </div>
       </template>
     </v-container>
@@ -926,6 +935,18 @@ watch(signatureDialogOpen, (opened) => {
 .resume-preview-canvas {
   position: relative;
   overflow: hidden;
+}
+
+.resume-signature-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 18px 8px;
+}
+
+.resume-signature-image {
+  height: 56px;
+  width: auto;
+  object-fit: contain;
 }
 
 .preview-toolbar-wrap {

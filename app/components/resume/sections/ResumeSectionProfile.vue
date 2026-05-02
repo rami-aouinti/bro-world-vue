@@ -11,8 +11,8 @@ withDefaults(
 </script>
 
 <template>
-      <h3 v-if="showTitle">Profile</h3>
-    <p class="profile-text">{{ resume.resumeInformation?.profileText }}</p>
+  <h3 v-if="showTitle" contenteditable="true">Profile</h3>
+  <p class="profile-text" contenteditable="true">{{ resume.resumeInformation?.profileText }}</p>
 </template>
 
 <style scoped>

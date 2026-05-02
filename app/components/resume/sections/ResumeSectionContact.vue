@@ -65,10 +65,11 @@ const contactFields = computed<ContactField[]>(() => {
       :href="field.href"
       target="_blank"
       rel="noopener noreferrer"
+      contenteditable="true"
     >
       {{ field.displayValue || field.value }}
     </a>
-    <span v-else>{{ field.value }}</span>
+    <span v-else contenteditable="true">{{ field.value }}</span>
   </p>
   </div>
 </template>
@@ -76,8 +77,8 @@ const contactFields = computed<ContactField[]>(() => {
 <style scoped>
 .contact-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px 20px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
 }
 
 .contact-line {
