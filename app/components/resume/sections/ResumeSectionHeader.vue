@@ -157,15 +157,12 @@ onBeforeUnmount(() => {
           cover
         />
         <span v-else>{{ initials }}</span>
-        <span class="avatar-tool avatar-tool--camera" aria-hidden="true">
-          <v-icon icon="mdi-camera-plus" size="16" />
-        </span>
-        <span v-if="isPhotoLoading" class="avatar-loader">Chargement…</span>
+        <span v-if="isPhotoLoading" class="avatar-loader">Loading…</span>
       </button>
 
       <v-menu location="top" offset="8">
         <template #activator="{ props: menuProps }">
-          <v-btn class="avatar-tool avatar-tool--top-left" icon="mdi-shape-outline" size="x-small" density="comfortable" v-bind="menuProps" />
+          <v-btn color="primary" variant="text" class="avatar-tool avatar-tool--top-left" icon="mdi-shape-outline" size="x-small" density="comfortable" v-bind="menuProps" />
         </template>
         <v-list density="compact">
           <v-list-item v-for="shape in PHOTO_SHAPES" :key="shape.value" @click="customShape = shape.value">
@@ -174,13 +171,13 @@ onBeforeUnmount(() => {
         </v-list>
       </v-menu>
 
-      <v-btn class="avatar-tool avatar-tool--left" icon="mdi-magnify-plus" size="x-small" density="comfortable" @click="zoomIn" />
-      <v-btn class="avatar-tool avatar-tool--bottom-left" icon="mdi-magnify-minus" size="x-small" density="comfortable" @click="zoomOut" />
-      <v-btn class="avatar-tool avatar-tool--right" icon="mdi-swap-horizontal" size="x-small" density="comfortable" :title="sideSwitchLabel" @click="togglePhotoSide" />
+      <v-btn color="primary" variant="text" class="avatar-tool avatar-tool--left" icon="mdi-magnify-plus" size="x-small" density="comfortable" @click="zoomIn" />
+      <v-btn color="primary" variant="text" class="avatar-tool avatar-tool--bottom-left" icon="mdi-magnify-minus" size="x-small" density="comfortable" @click="zoomOut" />
+      <v-btn color="primary" variant="text" class="avatar-tool avatar-tool--right" icon="mdi-swap-horizontal" size="x-small" density="comfortable" :title="sideSwitchLabel" @click="togglePhotoSide" />
 
       <v-menu location="bottom" offset="8">
         <template #activator="{ props: menuProps }">
-          <v-btn class="avatar-tool avatar-tool--bottom-right" icon="mdi-border-all-variant" size="x-small" density="comfortable" v-bind="menuProps" />
+          <v-btn color="primary" variant="text" class="avatar-tool avatar-tool--bottom-right" icon="mdi-border-all-variant" size="x-small" density="comfortable" v-bind="menuProps" />
         </template>
         <div class="avatar-border-menu">
           <label>Border width</label>
