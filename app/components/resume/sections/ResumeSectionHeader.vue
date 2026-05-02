@@ -25,6 +25,7 @@ const customShape = ref<PhotoShape | null>(null)
 const borderWidth = ref(2)
 const borderColor = ref('#0f4c81')
 const borderStyle = ref<'solid' | 'dashed' | 'dotted' | 'double'>('solid')
+const customPosition = ref<'left' | 'right' | null>(null)
 
 const initials = computed(() =>
   (props.resume.resumeInformation?.fullName || '?')
@@ -39,7 +40,8 @@ const photoStorageKey = computed(() => `resume-builder-photo-${props.resume.id |
 
 const photoConfig = computed(() => {
   const photo = props.template?.photo ?? {}
-  const position = photo.position === 'right' ? 'right' : 'left'
+  const templatePosition = photo.position === 'right' ? 'right' : 'left'
+  const position = customPosition.value ?? templatePosition
   const size =
     typeof photo.size === 'number'
       ? `${photo.size}px`
@@ -73,16 +75,14 @@ const currentPhotoUrl = computed(() => {
 })
 
 const sideSwitchLabel = computed(() =>
-  photoConfig.value.position === 'right' ? 'Déplacer à gauche' : 'Déplacer à droite',
+  photoConfig.value.position === 'right' ? 'Mettre la photo à gauche' : 'Mettre la photo à droite',
 )
 
 function openPhotoPicker() { fileInput.value?.click() }
 function zoomIn() { photoZoom.value = Math.min(2.4, Number((photoZoom.value + 0.1).toFixed(2))) }
 function zoomOut() { photoZoom.value = Math.max(0.6, Number((photoZoom.value - 0.1).toFixed(2))) }
-function nudgePhoto() {
-  photoOffsetX.value = photoConfig.value.position === 'right'
-    ? Math.max(-24, photoOffsetX.value - 4)
-    : Math.min(24, photoOffsetX.value + 4)
+function togglePhotoSide() {
+  customPosition.value = photoConfig.value.position === 'right' ? 'left' : 'right'
 }
 
 function persistPhotoLocally(photoUrl: string) {
@@ -176,7 +176,7 @@ onBeforeUnmount(() => {
 
       <v-btn class="avatar-tool avatar-tool--left" icon="mdi-magnify-plus" size="x-small" density="comfortable" @click="zoomIn" />
       <v-btn class="avatar-tool avatar-tool--bottom-left" icon="mdi-magnify-minus" size="x-small" density="comfortable" @click="zoomOut" />
-      <v-btn class="avatar-tool avatar-tool--right" icon="mdi-swap-horizontal" size="x-small" density="comfortable" :title="sideSwitchLabel" @click="nudgePhoto" />
+      <v-btn class="avatar-tool avatar-tool--right" icon="mdi-swap-horizontal" size="x-small" density="comfortable" :title="sideSwitchLabel" @click="togglePhotoSide" />
 
       <v-menu location="bottom" offset="8">
         <template #activator="{ props: menuProps }">
@@ -237,13 +237,32 @@ onBeforeUnmount(() => {
 .avatar-loader { position:absolute; inset:0; display:grid; place-items:center; font-size:11px; background: rgba(0,0,0,.4); }
 .avatar--uploading { pointer-events: none; }
 .avatar--error { box-shadow: 0 0 0 2px #dc2626 inset; }
-.avatar-tool { position: absolute !important; z-index: 3; }
+.avatar-tool {
+  position: absolute !important;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(.92);
+  transition: opacity .15s ease, transform .15s ease;
+}
+.header:hover .avatar-tool,
+.header:focus-within .avatar-tool {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}
+.avatar-tool:deep(.v-btn) {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+  border: 1px solid #334155;
+}
+.avatar-tool:hover:deep(.v-btn) { background: #1e293b !important; }
 .avatar-tool--top-left { left: -14px; top: -14px; }
 .avatar-tool--left { left: -18px; top: 42%; }
 .avatar-tool--bottom-left { left: -14px; bottom: -14px; }
 .avatar-tool--right { right: -18px; top: 42%; }
 .avatar-tool--bottom-right { right: -14px; bottom: -14px; }
-.avatar-border-menu { width: 220px; padding: 10px; background: #fff; border-radius: 10px; box-shadow: 0 8px 20px rgba(0,0,0,.1); display: grid; gap: 4px; }
-.avatar-border-menu label { font-size: 12px; color: #334155; }
+.avatar-border-menu { width: 220px; padding: 10px; background: #0f172a; border: 1px solid #334155; color: #e2e8f0; border-radius: 10px; box-shadow: 0 8px 20px rgba(0,0,0,.35); display: grid; gap: 4px; }
+.avatar-border-menu label { font-size: 12px; color: #cbd5e1; }
 .photo-error { margin-top: 4px; color: #b91c1c; font-size: 12px; }
 </style>
