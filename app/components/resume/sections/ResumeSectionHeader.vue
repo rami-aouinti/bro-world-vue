@@ -304,10 +304,11 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .header.with-contact { align-items: flex-start; }
-.header-main { flex: 1 1 auto; }
-.header-contact { margin-inline-start: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 14px; max-width: min(560px, 58%); }
+.header-main { flex: 1 1 auto; min-width: 180px; }
+.header-contact { margin-inline-start: auto; display: grid; grid-template-columns: repeat(2, minmax(180px, 1fr)); gap: 10px 16px; max-width: min(620px, 62%); align-self: center; }
 .header.is-right .header-contact { margin-inline-start: 0; margin-inline-end: auto; }
-.contact-item { margin: 0; display: flex; gap: 6px; min-width: 0; }
-.contact-item strong { flex: 0 0 auto; }
+.contact-item { margin: 0; display: flex; gap: 6px; min-width: 0; align-items: baseline; }
+.contact-item strong { flex: 0 0 auto; white-space: nowrap; }
 .contact-item a, .contact-item span { min-width: 0; overflow-wrap: anywhere; word-break: break-word; color: inherit; text-decoration: none; }
+@media (max-width: 900px) { .header.with-contact { flex-wrap: wrap; } .header-contact { max-width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-inline-start: 0; } }
 </style>

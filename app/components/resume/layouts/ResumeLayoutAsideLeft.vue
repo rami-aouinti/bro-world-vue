@@ -15,7 +15,8 @@ const emit = defineEmits<{ (event: 'change-variant', sectionKey: string, variant
 
 const props = defineProps<{ resume: ResumeApiItem; template?: any; reverse?: boolean; headerOnPrimary?: boolean; headerBandHeight?: number; barOnly?: boolean }>()
 
-const usesHeaderContact = computed(() => ['aside', 'aside-full-right', 'aside-full-left'].includes(props.template?.layout || ''))
+const usesHeaderContact = computed(() => ['aside', 'aside-full-right', 'aside-full-left', 'no-aside'].includes(props.template?.layout || ''))
+const asideStartsAtTop = computed(() => Boolean(props.template?.layoutOptions?.asideStartsAtTop))
 
 const { t, te } = useI18n()
 
@@ -147,7 +148,7 @@ const styleVars = computed(() => {
 </script>
 
 <template>
-  <div class="aside-left" :class="{ reverse, 'bar-only': barOnly }" :style="styleVars">
+  <div class="aside-left" :class="{ reverse, 'bar-only': barOnly, 'aside-start-top': asideStartsAtTop }" :style="styleVars">
     <ResumeSectionHeader class="full" :class="{ 'full--on-primary': headerOnPrimary }" :resume="resume" :template="template" :show-contact-in-header="usesHeaderContact" />
     <aside class="aside-surface" :class="{ 'on-primary': !barOnly, 'text-dark': barOnly }">
       <ResumeSectionBlock v-for="section in localAsideSections" :key="`aside-${section.id}`" tone="on-primary" :title="getSectionTitle(section.id)" :icon="resolveSectionIcon(section.id)" :show-icon="shouldShowSectionIcons" :is-empty="sectionEmpty(section.id)" :section-key="section.id" @move-up="onMove($event, 'up')" @move-down="onMove($event, 'down')" @delete-section="onDeleteSection" @submit-add-item="onAddItem" @change-variant="onChangeVariant">
@@ -179,6 +180,17 @@ const styleVars = computed(() => {
 .aside-left.reverse {
   grid-template-columns: 1fr var(--aside-width, 240px);
   grid-template-areas: 'header header' 'main aside';
+}
+
+.aside-left.aside-start-top {
+  grid-template-areas: 'aside header' 'aside main';
+}
+.aside-left.aside-start-top.reverse {
+  grid-template-areas: 'header aside' 'main aside';
+}
+.aside-left.aside-start-top aside {
+  height: auto;
+  min-height: 100%;
 }
 .full {
   grid-area: header;

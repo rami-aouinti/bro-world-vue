@@ -15,7 +15,7 @@ const emit = defineEmits<{ (event: 'change-variant', sectionKey: string, variant
 
 const props = defineProps<{ resume: ResumeApiItem; template?: any; headerOnPrimary?: boolean }>()
 
-const usesHeaderContact = computed(() => ['aside', 'aside-full-right', 'aside-full-left'].includes(props.template?.layout || ''))
+const usesHeaderContact = computed(() => ['aside', 'aside-full-right', 'aside-full-left', 'no-aside'].includes(props.template?.layout || ''))
 
 const { t, te } = useI18n()
 
