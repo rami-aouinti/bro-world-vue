@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, type CSSProperties } from 'vue'
+import { computed, ref, watch, type CSSProperties } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { ResumeApiItem } from '~/services/resumeApi'
 import ResumeSectionHeader from '~/components/resume/sections/ResumeSectionHeader.vue'
@@ -46,6 +46,14 @@ const asideSections = computed(() =>
 const mainSections = computed(() =>
   usesFallbackSplit.value ? fallbackSplitZones.main : resolvedZones.value.main,
 )
+const localAsideSections = ref<{ id: string; rendererKey: string }[]>([])
+const localMainSections = ref<{ id: string; rendererKey: string }[]>([])
+watch([asideSections, mainSections], ([a, m]) => {
+  if (!localAsideSections.value.length && !localMainSections.value.length) {
+    localAsideSections.value = a.map((item: any) => ({ ...item }))
+    localMainSections.value = m.map((item: any) => ({ ...item }))
+  }
+}, { immediate: true })
 
 function sectionEmpty(sectionId: string) {
   return isSectionEmpty(props.resume, sectionId)
@@ -64,6 +72,53 @@ function resolveAsideTextColor(primary: unknown): string {
   const luminance = 0.2126 * lr + 0.7152 * lg + 0.0722 * lb
 
   return luminance > 0.45 ? '#0f172a' : '#ffffff'
+}
+
+
+
+function mapSectionKeyToResumeField(sectionKey: string) {
+  const map: Record<string, string> = {
+    experience: 'experiences', education: 'educations', educations: 'educations',
+    skill: 'skills', skills: 'skills', language: 'languages', languages: 'languages',
+    project: 'projects', projects: 'projects', certification: 'certifications', certifications: 'certifications',
+    reference: 'references', references: 'references', hobby: 'hobbies', interests: 'hobbies',
+  }
+  return map[sectionKey] || ''
+}
+
+function onAddItem(sectionKey: string, payload: Record<string, string>) {
+  const resumeField = mapSectionKeyToResumeField(sectionKey)
+  if (!resumeField) return
+  const list = ((props.resume as any)[resumeField] || []) as Record<string, any>[]
+  ;(props.resume as any)[resumeField] = [...list, payload]
+}
+
+function allSections() { return [...localAsideSections.value, ...localMainSections.value] }
+function setAllSections(next: { id: string; rendererKey: string }[]) {
+  const asideIds = new Set(localAsideSections.value.map((s) => s.id))
+  const mainIds = new Set(localMainSections.value.map((s) => s.id))
+  localAsideSections.value = next.filter((s) => asideIds.has(s.id))
+  localMainSections.value = next.filter((s) => mainIds.has(s.id))
+}
+function onMove(sectionKey: string, direction: 'up' | 'down') {
+  const sections = allSections()
+  const idx = sections.findIndex((s) => s.id === sectionKey)
+  if (idx < 0) return
+  const target = direction === 'up' ? idx - 1 : idx + 1
+  if (target < 0 || target >= sections.length) return
+  const clone = [...sections]
+  const [item] = clone.splice(idx, 1)
+  clone.splice(target, 0, item)
+  setAllSections(clone)
+}
+function onDeleteSection(sectionKey: string) {
+  localAsideSections.value = localAsideSections.value.filter((s) => s.id !== sectionKey)
+  localMainSections.value = localMainSections.value.filter((s) => s.id !== sectionKey)
+}
+function onChangeVariant(sectionKey: string, variant: string) {
+  if (!props.template) return
+  if (!props.template.sections) props.template.sections = {}
+  props.template.sections[sectionKey] = variant
 }
 
 const styleVars = computed(() => {
@@ -90,13 +145,13 @@ const styleVars = computed(() => {
   <div class="aside-left" :class="{ reverse, 'bar-only': barOnly }" :style="styleVars">
     <ResumeSectionHeader class="full" :class="{ 'full--on-primary': headerOnPrimary }" :resume="resume" :template="template" />
     <aside class="aside-surface" :class="{ 'on-primary': !barOnly, 'text-dark': barOnly }">
-      <ResumeSectionBlock v-for="section in asideSections" :key="`aside-${section.id}`" tone="on-primary" :title="getSectionTitle(section.id)" :icon="resolveSectionIcon(section.id)" :show-icon="shouldShowSectionIcons" :is-empty="sectionEmpty(section.id)">
+      <ResumeSectionBlock v-for="section in localAsideSections" :key="`aside-${section.id}`" tone="on-primary" :title="getSectionTitle(section.id)" :icon="resolveSectionIcon(section.id)" :show-icon="shouldShowSectionIcons" :is-empty="sectionEmpty(section.id)" :section-key="section.id" @move-up="onMove($event, 'up')" @move-down="onMove($event, 'down')" @delete-section="onDeleteSection" @submit-add-item="onAddItem" @change-variant="onChangeVariant">
         <ResumeSectionContact v-if="section.id === 'contact'" :resume="resume" :show-title="false" :contact-style="template?.sections?.contact || template?.contactStyle || 'labels'" />
         <ResumeSectionRenderer v-else :section-key="section.rendererKey" :resume="resume" :template="template" />
       </ResumeSectionBlock>
     </aside>
     <main>
-      <ResumeSectionBlock v-for="section in mainSections" :key="`main-${section.id}`" :title="getSectionTitle(section.id)" :icon="resolveSectionIcon(section.id)" :show-icon="shouldShowSectionIcons" :is-empty="sectionEmpty(section.id)">
+      <ResumeSectionBlock v-for="section in localMainSections" :key="`main-${section.id}`" :title="getSectionTitle(section.id)" :icon="resolveSectionIcon(section.id)" :show-icon="shouldShowSectionIcons" :is-empty="sectionEmpty(section.id)" :section-key="section.id" @move-up="onMove($event, 'up')" @move-down="onMove($event, 'down')" @delete-section="onDeleteSection" @submit-add-item="onAddItem" @change-variant="onChangeVariant">
         <ResumeSectionProfile v-if="section.id === 'profile'" :resume="resume" :show-title="false" />
         <ResumeSectionRenderer v-else :section-key="section.rendererKey" :resume="resume" :template="template" />
       </ResumeSectionBlock>
