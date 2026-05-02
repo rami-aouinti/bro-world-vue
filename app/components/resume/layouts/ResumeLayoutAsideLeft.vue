@@ -172,6 +172,7 @@ const styleVars = computed(() => {
   font-style: var(--font-style, normal);
   padding-inline: var(--layout-edge-pad, 10px);
   box-sizing: border-box;
+  min-height: 100%;
 }
 .aside-left.reverse {
   grid-template-columns: 1fr var(--aside-width, 240px);
@@ -199,6 +200,9 @@ aside {
   color: var(--aside-text-primary, var(--aside-text, #f8fafc));
   border: 1px var(--line-style, solid) color-mix(in srgb, var(--aside-text, #ffffff) 22%, transparent);
   border-radius: 0;
+  height: var(--aside-height, 100%);
+  align-self: start;
+  overflow: hidden;
 }
 
 .aside-left:not(.reverse) aside {
