@@ -5,6 +5,6 @@ defineProps<{ resume: ResumeApiItem }>()
 </script>
 
 <template>
-      <h3>Reference</h3>
-    <article v-for="(item, i) in resume.references || []" :key="i">{{ item.title }}<p>{{ item.description }}</p></article>
+  <h3 contenteditable="true">Reference</h3>
+  <article v-for="(item, i) in resume.references || []" :key="i" contenteditable="true">{{ item.title }}<p>{{ item.description }}</p></article>
 </template>
