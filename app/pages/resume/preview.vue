@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
 import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-90.json'
-import GENERATED_RESUME_TEMPLATES_20 from '~/data/resume-templates/generated-20.json'
 import ResumeLayoutAside from '~/components/resume/layouts/ResumeLayoutAside.vue'
 import ResumeLayoutAsideLeft from '~/components/resume/layouts/ResumeLayoutAsideLeft.vue'
 import ResumeLayoutAsideRight from '~/components/resume/layouts/ResumeLayoutAsideRight.vue'
@@ -154,13 +153,19 @@ function normalizeTemplateLabel(name: string) {
     .join(' ')
 }
 
-const previewToolbarTemplates = computed(() =>
-  GENERATED_RESUME_TEMPLATES.map((template) => ({
-    id: template.id,
-    label: normalizeTemplateLabel(template.name),
-    previewColor: template.theme?.palette?.primary || '#0F4C81',
-  })),
-)
+const previewToolbarTemplates = computed(() => {
+  const uniqueTemplates = new Map<string, { id: string; label: string; previewColor: string }>()
+
+  GENERATED_RESUME_TEMPLATES.forEach((template) => {
+    uniqueTemplates.set(template.id, {
+      id: template.id,
+      label: normalizeTemplateLabel(template.name),
+      previewColor: template.theme?.palette?.primary || '#0F4C81',
+    })
+  })
+
+  return Array.from(uniqueTemplates.values())
+})
 
 
 function applyPreviewTemplate(templateId: string) {
