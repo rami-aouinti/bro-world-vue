@@ -57,6 +57,14 @@ const headingTag = computed(() => (props.variant === 'h2' ? 'h2' : 'h3'))
       <v-icon :icon="icon" size="18" />
     </span>
     <span class="resume-section-heading__label">{{ resolvedTitle }}</span>
+    <span class="resume-section-heading__toolbar" role="toolbar" aria-label="Section actions">
+      <button type="button" class="resume-section-heading__tool-btn" aria-label="Add section">
+        <v-icon icon="mdi-plus" size="14" />
+      </button>
+      <button type="button" class="resume-section-heading__tool-btn" aria-label="Remove section">
+        <v-icon icon="mdi-minus" size="14" />
+      </button>
+    </span>
     <span
       v-if="divider"
       class="resume-section-heading__line"
@@ -96,5 +104,41 @@ const headingTag = computed(() => (props.variant === 'h2' ? 'h2' : 'h3'))
   height: 1px;
   opacity: 0.5;
   background: currentColor;
+}
+
+.resume-section-heading__toolbar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-4px);
+  transition: opacity .15s ease, transform .15s ease;
+}
+
+.resume-section-heading:hover .resume-section-heading__toolbar,
+.resume-section-heading:focus-within .resume-section-heading__toolbar {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+.resume-section-heading__tool-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  color: inherit;
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background .15s ease, transform .15s ease;
+}
+
+.resume-section-heading__tool-btn:hover {
+  background: color-mix(in srgb, currentColor 18%, transparent);
+  transform: translateY(-1px);
 }
 </style>
