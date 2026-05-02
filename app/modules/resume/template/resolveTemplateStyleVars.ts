@@ -36,6 +36,7 @@ export function resolveTemplateStyleVars(template?: AnyTemplate): CSSProperties 
     '--muted': template?.theme?.palette?.muted ?? '#64748b',
     '--page-bg': template?.theme?.palette?.pageBackground ?? '#ffffff',
     '--aside-width': normalizeSize(template?.aside?.width, '240px'),
+    '--aside-height': normalizeSize(template?.aside?.height, '100%'),
     '--layout-gap': density.gap,
     '--section-space': density.space,
     '--section-pad': density.sectionPad,
