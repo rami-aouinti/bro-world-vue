@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ResumeApiItem } from '~/services/resumeApi'
+import ResumeSectionHoverToolbar from '~/components/Resume/Sections/ResumeSectionHoverToolbar.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -50,8 +51,10 @@ const contactFields = computed<ContactField[]>(() => {
 </script>
 
 <template>
-  <section class="section contact-section">
-    <h3 v-if="showTitle">Contact</h3>
+  <ResumeSectionHoverToolbar class="section contact-section">
+    <template #title>
+      <h3 v-if="showTitle">Contact</h3>
+    </template>
     <p v-for="field in contactFields" :key="field.key" class="contact-line">
       <template v-if="contactStyle === 'icons'">
         <v-icon size="16" class="mr-2">{{ field.icon }}</v-icon>
@@ -69,7 +72,7 @@ const contactFields = computed<ContactField[]>(() => {
       </a>
       <span v-else>{{ field.value }}</span>
     </p>
-  </section>
+  </ResumeSectionHoverToolbar>
 </template>
 
 <style scoped>
