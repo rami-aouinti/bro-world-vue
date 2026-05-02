@@ -109,6 +109,11 @@ const selectedPhotoBorderWidth = ref<number>(2)
 const selectedPhotoBorderStyle = ref<string>('solid')
 const selectedPhotoBorderColor = ref<string>('#0F4C81')
 const decorShapeOptions = ['circle', 'square', 'triangle', 'blob', 'line'] as const
+const previewToolbarTemplateMenuOpen = ref(false)
+
+function goToCreateResume() {
+  router.push('/resume/create')
+}
 
 
 const photoPositionOptions = [
@@ -582,6 +587,70 @@ const activeLayoutComponent = computed(() => {
       </template>
     </AppPageDrawers>
     <v-container fluid>
+      <div class="preview-toolbar-wrap">
+        <div class="preview-toolbar-row">
+          <v-btn
+            class="preview-toolbar-btn"
+            color="primary"
+            size="small"
+            variant="outlined"
+            prepend-icon="mdi-content-save-cog-outline"
+            @click="goToCreateResume"
+          >
+            Save / Import
+          </v-btn>
+
+          <v-btn
+            class="preview-toolbar-btn"
+            color="primary"
+            size="small"
+            variant="outlined"
+            prepend-icon="mdi-view-list-outline"
+            @click="goToCreateResume"
+          >
+            Sections
+          </v-btn>
+
+          <v-btn
+            class="preview-toolbar-btn"
+            color="primary"
+            size="small"
+            variant="outlined"
+            prepend-icon="mdi-signature-freehand"
+            @click="goToCreateResume"
+          >
+            Signature
+          </v-btn>
+
+          <v-menu
+            v-model="previewToolbarTemplateMenuOpen"
+            location="bottom center"
+            origin="top center"
+          >
+            <template #activator="{ props }">
+              <v-btn
+                class="preview-toolbar-btn"
+                color="primary"
+                size="small"
+                variant="outlined"
+                prepend-icon="mdi-view-grid-outline"
+                v-bind="props"
+              >
+                Templates
+              </v-btn>
+            </template>
+            <v-list density="compact" min-width="240">
+              <v-list-item
+                v-for="template in allTemplates"
+                :key="`preview-toolbar-template-${template.templateId}`"
+                :title="template.name"
+                @click="router.replace({ query: { ...route.query, template: template.templateId } })"
+              />
+            </v-list>
+          </v-menu>
+        </div>
+      </div>
+
       <v-progress-linear v-if="loggedIn && loadingResumes" indeterminate />
       <v-alert
         v-else-if="loggedIn && resumesError"
@@ -609,5 +678,34 @@ const activeLayoutComponent = computed(() => {
 .resume-preview-canvas {
   position: relative;
   overflow: hidden;
+}
+
+.preview-toolbar-wrap {
+  position: sticky;
+  top: 16px;
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+  margin: 12px 0 20px;
+}
+
+.preview-toolbar-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-primary)) 30%, transparent);
+  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 84%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.22);
+}
+
+.preview-toolbar-btn {
+  height: 56px !important;
+  min-width: 56px !important;
+  border-radius: 16px !important;
 }
 </style>
