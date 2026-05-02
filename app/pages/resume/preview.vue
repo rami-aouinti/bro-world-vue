@@ -293,9 +293,22 @@ const sectionVariantOptionsForDrawer = computed(() =>
 
 const palettePresetOptions = computed<PalettePresetOption[]>(() => {
   const uniquePrimaries = new Set<string>()
+  const extraPrimaries = [
+    '#4F46E5',
+    '#3E3D4D',
+    '#AAAE79',
+    '#6E8063',
+    '#4C304F',
+    '#3D3A76',
+    '#059669',
+    '#E11D48',
+    '#0EA5E9',
+    '#F97316',
+  ]
   GENERATED_RESUME_TEMPLATES.forEach((template) => {
     uniquePrimaries.add(normalizeHexColor(template.theme?.palette?.primary || '#0F4C81'))
   })
+  extraPrimaries.forEach((color) => uniquePrimaries.add(normalizeHexColor(color)))
   return Array.from(uniquePrimaries).map((primary, index) => ({
     title: `Preset · ${index + 1}`,
     value: primary,
