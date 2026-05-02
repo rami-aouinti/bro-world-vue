@@ -244,13 +244,13 @@ html.dark {
 }
 
 .content-main {
-  height: calc(93dvh - 58px);
-  overflow-y: hidden;
+  min-height: calc(93dvh - 58px);
+  overflow-y: auto;
 }
 
 @media (max-width: 960px) {
   .content-main {
-    height: calc(93dvh - 35px);
+    min-height: calc(93dvh - 35px);
   }
 }
 
