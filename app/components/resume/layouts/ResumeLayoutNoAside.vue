@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, type CSSProperties } from 'vue'
+import { computed, ref, watch, type CSSProperties } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { ResumeApiItem } from '~/services/resumeApi'
 import ResumeSectionHeader from '~/components/resume/sections/ResumeSectionHeader.vue'
@@ -51,6 +51,8 @@ const shouldShowSectionIcons = computed(() => props.template?.theme?.showIcon !=
 
 const resolvedZones = computed(() => resolveLayoutZonesWithConfig(props.template?.structure, props.template?.structureConfig))
 const orderedSections = computed(() => resolvedZones.value.main)
+const localSections = ref<{ id: string; rendererKey: string }[]>([])
+watch(orderedSections, (v) => { localSections.value = v.map((i: any) => ({ ...i })) }, { immediate: true })
 
 function sectionEmpty(sectionId: string) {
   return isSectionEmpty(props.resume, sectionId)
@@ -65,6 +67,56 @@ function resolveHeaderTextColor(primary: unknown): string {
   const [lr, lg, lb] = [r, g, b].map((channel) => (channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4))
   const luminance = 0.2126 * lr + 0.7152 * lg + 0.0722 * lb
   return luminance > 0.45 ? '#0f172a' : '#ffffff'
+}
+
+
+
+function onMove(sectionKey: string, direction: 'up' | 'down') {
+  const idx = localSections.value.findIndex((section) => section.id === sectionKey)
+  if (idx < 0) return
+  const target = direction === 'up' ? idx - 1 : idx + 1
+  if (target < 0 || target >= localSections.value.length) return
+  const clone = [...localSections.value]
+  const [item] = clone.splice(idx, 1)
+  clone.splice(target, 0, item)
+  localSections.value = clone
+}
+
+function onDeleteSection(sectionKey: string) {
+  localSections.value = localSections.value.filter((section) => section.id !== sectionKey)
+}
+
+function mapSectionKeyToResumeField(sectionKey: string) {
+  const map: Record<string, string> = {
+    experience: 'experiences',
+    education: 'educations',
+    skill: 'skills',
+    skills: 'skills',
+    language: 'languages',
+    languages: 'languages',
+    project: 'projects',
+    projects: 'projects',
+    certification: 'certifications',
+    certifications: 'certifications',
+    reference: 'references',
+    references: 'references',
+    hobby: 'hobbies',
+    interests: 'hobbies',
+  }
+  return map[sectionKey] || ''
+}
+
+function onAddItem(sectionKey: string, payload: Record<string, string>) {
+  const resumeField = mapSectionKeyToResumeField(sectionKey)
+  if (!resumeField) return
+  const list = ((props.resume as any)[resumeField] || []) as Record<string, any>[]
+  ;(props.resume as any)[resumeField] = [...list, payload]
+}
+
+function onChangeVariant(sectionKey: string, variant: string) {
+  if (!props.template) return
+  if (!props.template.sections) props.template.sections = {}
+  props.template.sections[sectionKey] = variant
 }
 
 const styleVars = computed(() => {
@@ -82,12 +134,18 @@ const styleVars = computed(() => {
   <div class="no-aside" :class="{ 'header-on-primary': headerOnPrimary }" :style="styleVars">
     <ResumeSectionHeader class="layout-header" :resume="resume" :template="template" />
         <ResumeSectionBlock
-      v-for="section in orderedSections"
+      v-for="section in localSections"
       :key="section.id"
       :title="getSectionTitle(section.id)"
       :icon="resolveSectionIcon(section.id)"
       :show-icon="shouldShowSectionIcons"
-      :is-empty="sectionEmpty(section.id)">
+      :is-empty="sectionEmpty(section.id)"
+      :section-key="section.id"
+      @move-up="onMove($event, 'up')"
+      @move-down="onMove($event, 'down')"
+      @delete-section="onDeleteSection"
+      @submit-add-item="onAddItem"
+      @change-variant="onChangeVariant">
       <ResumeSectionContact v-if="section.id === 'contact'" :resume="resume" :show-title="false" :contact-style="template?.sections?.contact || template?.contactStyle || 'labels'" />
       <ResumeSectionProfile v-else-if="section.id === 'profile'" :resume="resume" :show-title="false" />
       <ResumeSectionRenderer v-else :section-key="section.rendererKey" :resume="resume" :template="template" />
