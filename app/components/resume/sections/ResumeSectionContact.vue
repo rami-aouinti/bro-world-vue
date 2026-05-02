@@ -51,28 +51,24 @@ const contactFields = computed<ContactField[]>(() => {
 </script>
 
 <template>
-  <ResumeSectionHoverToolbar class="section contact-section">
-    <template #title>
-      <h3 v-if="showTitle">Contact</h3>
+  <h3 v-if="showTitle">Contact</h3>
+  <p v-for="field in contactFields" :key="field.key" class="contact-line">
+    <template v-if="contactStyle === 'icons'">
+      <v-icon size="16" class="mr-2">{{ field.icon }}</v-icon>
     </template>
-    <p v-for="field in contactFields" :key="field.key" class="contact-line">
-      <template v-if="contactStyle === 'icons'">
-        <v-icon size="16" class="mr-2">{{ field.icon }}</v-icon>
-      </template>
-      <template v-else>
-        <strong class="label">{{ field.label }}:</strong>
-      </template>
-      <a
-        v-if="field.href"
-        :href="field.href"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {{ field.displayValue || field.value }}
-      </a>
-      <span v-else>{{ field.value }}</span>
-    </p>
-  </ResumeSectionHoverToolbar>
+    <template v-else>
+      <strong class="label">{{ field.label }}:</strong>
+    </template>
+    <a
+      v-if="field.href"
+      :href="field.href"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {{ field.displayValue || field.value }}
+    </a>
+    <span v-else>{{ field.value }}</span>
+  </p>
 </template>
 
 <style scoped>

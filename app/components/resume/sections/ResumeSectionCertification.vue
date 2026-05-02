@@ -6,10 +6,6 @@ defineProps<{ resume: ResumeApiItem }>()
 </script>
 
 <template>
-  <ResumeSectionHoverToolbar class="section">
-    <template #title>
       <h3>Certification</h3>
-    </template>
     <article v-for="(item, i) in resume.certifications || []" :key="i">{{ item.title }}<p>{{ item.description }}</p></article>
-  </ResumeSectionHoverToolbar>
 </template>
