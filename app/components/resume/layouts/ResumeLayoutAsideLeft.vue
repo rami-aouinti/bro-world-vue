@@ -199,6 +199,8 @@ aside {
   color: var(--aside-text-primary, var(--aside-text, #f8fafc));
   border: 1px var(--line-style, solid) color-mix(in srgb, var(--aside-text, #ffffff) 22%, transparent);
   border-radius: 0;
+  min-height: var(--aside-height, 100%);
+  align-self: start;
 }
 
 .aside-left:not(.reverse) aside {
