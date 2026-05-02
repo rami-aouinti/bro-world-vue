@@ -127,19 +127,30 @@ function onSubmitAddItem() {
     <div class="resume-hover-section__header">
       <slot name="title" />
       <span class="resume-hover-section__toolbar" role="toolbar" :aria-label="`Section actions ${props.sectionKey}`">
-        <div class="resume-hover-section__select-wrap">
-          <AppSelect
-            :model-value="selectedVariant"
-            :items="variantOptions"
-            item-title="title"
-            item-value="value"
-            density="compact"
-            hide-details
-            prepend-inner-icon="mdi-earth"
-            class="resume-hover-section__select"
-            @update:model-value="onVariantChange(String($event))"
-          />
-        </div>
+        <AppSelect
+          :model-value="selectedVariant"
+          :items="variantOptions"
+          item-title="title"
+          variant="solo"
+          item-value="value"
+          density="compact"
+          hide-details
+          class="resume-hover-section__select"
+          @update:model-value="onVariantChange(String($event))"
+        >
+  <template #selection>
+    <v-icon>
+      mdi-earth
+    </v-icon>
+  </template>
+
+  <template #item="{ props, item }">
+    <v-list-item
+      v-bind="props"
+      :title="item.title"
+    />
+  </template>
+</AppSelect>
         <v-btn icon="mdi-plus" size="sm" variant="text" aria-label="Add section" @click="addModalOpen = true" />
         <v-btn icon="mdi-minus" size="sm" variant="text" aria-label="Remove section" @click="emit('delete-section', props.sectionKey)" />
         <v-btn icon="mdi-arrow-down" size="sm" variant="text" aria-label="Down section" :disabled="!props.canMoveDown" @click="emit('move-down', props.sectionKey)" />
