@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-90.json'
+import { RESUME_LAYOUTS_CATALOG } from '~/constants/resumeTemplates.catalog'
 
 definePageMeta({
   title: 'resumeBuilder.meta.indexTitle',
@@ -46,11 +46,19 @@ const selectedLayoutFilter = ref<string | null>(null)
 
 const layoutFilterOptions = computed(() => {
   const layouts = Array.from(
-    new Set(GENERATED_RESUME_TEMPLATES.map((template) => template.layout)),
+    new Set(
+      resumeTemplates.value
+        .map((template) =>
+          RESUME_LAYOUTS_CATALOG.find((layout) => layout.id === template.layoutId)
+            ?.structureId,
+        )
+        .filter(Boolean),
+    ),
   )
+
   return layouts.map((layout) => ({
-    title: layout,
-    value: layout,
+    title: String(layout),
+    value: String(layout),
   }))
 })
 
@@ -73,12 +81,11 @@ const displayedTemplates = computed(() =>
   allTemplates.value.filter((template) => {
     if (template.type !== activeTemplateTab.value) return false
     if (template.type !== 'resume') return true
-    const generatedTemplate = GENERATED_RESUME_TEMPLATES.find(
-      (item) => item.id === template.templateId,
-    )
-    if (!generatedTemplate) return true
     if (!selectedLayoutFilter.value) return true
-    return generatedTemplate.layout === selectedLayoutFilter.value
+    const structureId = RESUME_LAYOUTS_CATALOG.find(
+      (layout) => layout.id === template.layoutId,
+    )?.structureId
+    return structureId === selectedLayoutFilter.value
   }),
 )
 
@@ -108,8 +115,8 @@ const selectedTemplateCard = computed(
 )
 
 const openTemplateInWriteMode = (template: {
+  id: string
   type: 'resume' | 'cover-page' | 'cover-letter'
-  templateId: string
 }) => {
   const pathByType = {
     resume: '/resume/preview',
@@ -120,7 +127,7 @@ const openTemplateInWriteMode = (template: {
   router.push({
     path: pathByType[template.type],
     query: {
-      template: template.templateId,
+      template: template.id,
       mode: 'write',
     },
   })
