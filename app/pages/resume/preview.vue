@@ -133,6 +133,7 @@ const selectedPhotoBorderStyle = ref<string>('solid')
 const selectedPhotoBorderColor = ref<string>('#0F4C81')
 const decorShapeOptions = ['circle', 'square', 'triangle', 'blob', 'line'] as const
 const previewToolbarTemplateMenuOpen = ref(false)
+const layoutMenuOpen = ref(false)
 const signatureDialogOpen = ref(false)
 const signatureDataUrl = ref<string>('')
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
@@ -648,39 +649,9 @@ watch(signatureDialogOpen, (opened) => {
   <div>
     <AppPageDrawers>
       <template #left>
-        <AppSelect
-          v-model="selectedStructure"
-          :items="[
-            { title: 'Structure 1 · Linéaire', value: 'structure-1' },
-            { title: 'Structure 2 · Split', value: 'structure-2' },
-          ]"
-          label="Structure"
-          class="pt-3"
-          hide-details
-        />
-        <AppSelect
-          v-model="selectedLayout"
-          :items="layoutFilterOptions"
-          label="Layout"
-          class="pt-3"
-          hide-details
-        />
-        <AppSelect
-          v-model="selectedTextStyle"
-          :items="textStyleFilterOptions"
-          label="Text style"
-          class="pt-3"
-          hide-details
-        />
-        <AppSelect
-          v-model="selectedSectionVariants.contact"
-          :items="contactStyleOptions"
-          label="Contact style"
-          class="pt-3"
-          hide-details
-        />
+
         <div class="pt-3">
-          <AppMenu v-model="previewToolbarTemplateMenuOpen" :close-on-content-click="true">
+          <v-menu v-model="previewToolbarTemplateMenuOpen" :close-on-content-click="true">
             <template #activator="{ props }">
               <v-btn v-bind="props" variant="outlined" block justify="space-between" prepend-icon="mdi-palette">
                 Palette
@@ -717,13 +688,44 @@ watch(signatureDialogOpen, (opened) => {
                 </template>
               </v-list-item>
             </v-list>
-          </AppMenu>
+          </v-menu>
         </div>
         <v-text-field
           v-if="selectedPalette === 'custom'"
           v-model="customPalettePrimary"
           label="Custom primary color"
           placeholder="#0F4C81"
+          class="pt-3"
+          hide-details
+        />
+        <AppSelect
+          v-model="selectedStructure"
+          :items="[
+            { title: 'Structure 1 · Linéaire', value: 'structure-1' },
+            { title: 'Structure 2 · Split', value: 'structure-2' },
+          ]"
+          label="Structure"
+          class="pt-3"
+          hide-details
+        />
+        <AppSelect
+          v-model="selectedLayout"
+          :items="layoutFilterOptions"
+          label="Layout"
+          class="pt-3"
+          hide-details
+        />
+        <AppSelect
+          v-model="selectedTextStyle"
+          :items="textStyleFilterOptions"
+          label="Text style"
+          class="pt-3"
+          hide-details
+        />
+        <AppSelect
+          v-model="selectedSectionVariants.contact"
+          :items="contactStyleOptions"
+          label="Contact style"
           class="pt-3"
           hide-details
         />
@@ -825,7 +827,7 @@ watch(signatureDialogOpen, (opened) => {
           </v-btn>
 
           <v-menu
-            v-model="previewToolbarTemplateMenuOpen"
+            v-model="layoutMenuOpen"
             location="bottom center"
             origin="top center"
           >
