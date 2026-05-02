@@ -8,6 +8,7 @@ import type { RoundedOptionId, Typography } from '~/constants/resumeDesign'
 import { COVER_PAGE_TEMPLATE_IDS } from '~/constants/resumeTemplates'
 import { useResumeDesignControls } from '~/composables/useResumeDesignControls'
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
+import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
 
 definePageMeta({
   title: 'Resume · Cover Page Editor',
@@ -27,6 +28,7 @@ type CoverPageModel = {
 
 const route = useRoute()
 const router = useRouter()
+const { loggedIn } = useAuth()
 const { coverPageTemplates } = useResumeTemplates()
 const { parseCoverFlowQuery, toCoverLetterQuery } = useResumeCoverFlow()
 
@@ -61,6 +63,19 @@ const model = reactive<CoverPageModel>({
   date: new Date().toLocaleDateString('en-US'),
   photoUrl: '/img/default_avatar.svg',
 })
+
+const fallbackResumeData: ResumeApiItem = {
+  id: 'fallback-cover-page-resume',
+  documentUrl: null,
+  resumeInformation: {
+    fullName: 'Rami Aouinti',
+    title: 'Backend Developer',
+    email: 'rami.aouinti@gmail.com',
+    phone: '0176 35587613',
+    adresse: 'Widdersdorfer Landstr.11, 50589 Köln',
+    photo: '/img/default_avatar.svg',
+  },
+}
 
 const templateComponents = {
   'cover-page-terra': CoverPageTemplateTerra,
@@ -122,8 +137,20 @@ const hydrateFromConnectedUser = async () => {
     const location = [user.city, user.country].filter(Boolean).join(', ')
     if (location) model.location = location
   } catch {
-          // no-op
-        }
+    // no-op
+  }
+}
+
+const hydrateFromResume = (resume: ResumeApiItem | null | undefined) => {
+  const info = resume?.resumeInformation
+  if (!info) return
+  if (info.fullName) model.fullName = info.fullName
+  if (info.title) model.role = info.title
+  if (info.email) model.email = info.email
+  if (info.phone) model.phone = info.phone
+  const location = info.adresse || info.address
+  if (location) model.location = location
+  if (info.photo) model.photoUrl = info.photo
 }
 
 const goToImportFlow = async () => {
@@ -131,6 +158,20 @@ const goToImportFlow = async () => {
 }
 
 onMounted(async () => {
+  if (loggedIn.value) {
+    try {
+      const resumes = await listMyResumes()
+      if (Array.isArray(resumes) && resumes.length > 0) {
+        hydrateFromResume(resumes[0])
+      } else {
+        hydrateFromResume(fallbackResumeData)
+      }
+    } catch {
+      hydrateFromResume(fallbackResumeData)
+    }
+  } else {
+    hydrateFromResume(fallbackResumeData)
+  }
   await hydrateFromConnectedUser()
   const queryTemplate =
     typeof route.query.template === 'string' ? route.query.template : ''
