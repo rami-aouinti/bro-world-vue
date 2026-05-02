@@ -891,7 +891,7 @@ watch(signatureDialogOpen, (opened) => {
         :text="resumesError"
       />
       <template v-else>
-        <div class="resume-preview-canvas">
+        <div class="resume-preview-canvas" :style="{ backgroundColor: signatureBackgroundColor }">
           <ResumeTemplateDecor :decor="effectiveTemplate?.decor" />
           <component
             :is="activeLayoutComponent"
