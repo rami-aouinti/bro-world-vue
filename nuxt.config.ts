@@ -59,9 +59,7 @@ export default defineNuxtConfig({
     'vuetify/styles',
     '~/assets/styles/material-dashboard.scss',
     '~/assets/styles/football-dashboard.scss',
-    '~/assets/styles/index.css',
-    '~/assets/styles/theme.css',
-    '~/assets/styles/resume-template-utils.css',
+    '~/assets/styles/index.css'
   ],
   experimental: { typedPages: true },
   typescript: {
