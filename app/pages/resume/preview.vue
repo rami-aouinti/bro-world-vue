@@ -891,7 +891,7 @@ watch(signatureDialogOpen, (opened) => {
         :text="resumesError"
       />
       <template v-else>
-        <div class="resume-preview-canvas">
+        <div class="resume-preview-canvas" :style="{ backgroundColor: signatureBackgroundColor }">
           <ResumeTemplateDecor :decor="effectiveTemplate?.decor" />
           <component
             :is="activeLayoutComponent"
@@ -939,6 +939,7 @@ watch(signatureDialogOpen, (opened) => {
 
 .resume-signature-footer {
   display: flex;
+  background: inherit;
   justify-content: flex-end;
   padding: 16px 18px 8px;
 }
