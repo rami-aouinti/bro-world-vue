@@ -422,6 +422,13 @@ const resumeToDisplay = computed<ResumeApiItem>(() => {
   return fakeResume
 })
 
+function onLayoutSectionVariantChange(sectionKey: string, variant: string) {
+  selectedSectionVariants.value = {
+    ...selectedSectionVariants.value,
+    [sectionKey]: variant,
+  }
+}
+
 const activeLayoutComponent = computed(() => {
   const layout = effectiveTemplate.value?.layout || 'no-aside'
   if (layout === 'aside') return ResumeLayoutAside
@@ -665,6 +672,7 @@ const activeLayoutComponent = computed(() => {
             :is="activeLayoutComponent"
             :resume="resumeToDisplay"
             :template="effectiveTemplate"
+            @change-variant="onLayoutSectionVariantChange"
             :header-band-height="selectedHeaderBandHeight"
           />
         </div>

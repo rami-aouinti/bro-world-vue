@@ -11,6 +11,8 @@ import ResumeSectionBlock from '~/components/resume/sections/ResumeSectionBlock.
 import { resolveTemplateStyleVars } from '~/modules/resume/template/resolveTemplateStyleVars'
 import { resolveSectionIcon } from '~/modules/resume/renderers/sectionIcons'
 
+const emit = defineEmits<{ (event: 'change-variant', sectionKey: string, variant: string): void }>()
+
 const props = defineProps<{ resume: ResumeApiItem; template?: any; reverse?: boolean; headerOnPrimary?: boolean; headerBandHeight?: number; barOnly?: boolean }>()
 
 const { t, te } = useI18n()
@@ -119,6 +121,7 @@ function onChangeVariant(sectionKey: string, variant: string) {
   if (!props.template) return
   if (!props.template.sections) props.template.sections = {}
   props.template.sections[sectionKey] = variant
+  emit('change-variant', sectionKey, variant)
 }
 
 const styleVars = computed(() => {
