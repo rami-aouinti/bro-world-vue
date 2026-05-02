@@ -109,12 +109,9 @@ const selectedTemplate = computed(() => {
 })
 
 const selectedGeneratedTemplate = computed<GeneratedTemplate | null>(() => {
-  if (!selectedTemplate.value?.templateId) return null
-  return (
-    GENERATED_RESUME_TEMPLATES.find(
-      (template) => template.id === selectedTemplate.value?.templateId,
-    ) || null
-  )
+  const generatedTemplateId = selectedTemplate.value?.templateId || selectedTemplate.value?.id
+  if (!generatedTemplateId) return null
+  return GENERATED_RESUME_TEMPLATES.find((template) => template.id === generatedTemplateId) || null
 })
 
 const selectedLayout = ref<(typeof CONTROLLED_LAYOUTS)[number]>('no-aside')
@@ -164,6 +161,23 @@ const previewToolbarTemplates = computed(() =>
     previewColor: template.theme?.palette?.primary || '#0F4C81',
   })),
 )
+
+
+function applyPreviewTemplate(templateId: string) {
+  const selected = GENERATED_RESUME_TEMPLATES.find((template) => template.id === templateId)
+  if (!selected) return
+
+  router.replace({
+    query: {
+      ...route.query,
+      template: templateId,
+      layout: selected.layout || 'no-aside',
+      structure: (selected as any).structure === 'structure-2' ? 'structure-2' : 'structure-1',
+      palette: 'template',
+      textStyle: String(selected.theme?.textStyle || ''),
+    },
+  })
+}
 
 function openSignatureDialog() {
   signatureDialogOpen.value = true
@@ -544,7 +558,12 @@ function getCanvasPosition(event: PointerEvent) {
   const canvas = signatureCanvas.value
   if (!canvas) return null
   const rect = canvas.getBoundingClientRect()
-  return { x: event.clientX - rect.left, y: event.clientY - rect.top }
+  const scaleX = canvas.width / rect.width
+  const scaleY = canvas.height / rect.height
+  return {
+    x: (event.clientX - rect.left) * scaleX,
+    y: (event.clientY - rect.top) * scaleY,
+  }
 }
 
 function ensureSignatureCanvas() {
@@ -566,6 +585,8 @@ function onSignaturePointerDown(event: PointerEvent) {
   const ctx = canvas?.getContext('2d')
   const point = getCanvasPosition(event)
   if (!canvas || !ctx || !point) return
+  event.preventDefault()
+  canvas.setPointerCapture(event.pointerId)
   drawingSignature.value = true
   ctx.beginPath()
   ctx.moveTo(point.x, point.y)
@@ -576,13 +597,18 @@ function onSignaturePointerMove(event: PointerEvent) {
   const ctx = canvas?.getContext('2d')
   const point = getCanvasPosition(event)
   if (!drawingSignature.value || !canvas || !ctx || !point) return
+  event.preventDefault()
   ctx.lineTo(point.x, point.y)
   ctx.stroke()
 }
 
-function onSignaturePointerUp() {
+function onSignaturePointerUp(event?: PointerEvent) {
+  const canvas = signatureCanvas.value
+  if (event && canvas?.hasPointerCapture(event.pointerId)) {
+    canvas.releasePointerCapture(event.pointerId)
+  }
   drawingSignature.value = false
-  signatureDataUrl.value = signatureCanvas.value?.toDataURL('image/png') || ''
+  signatureDataUrl.value = canvas?.toDataURL('image/png') || ''
 }
 
 watch(signatureDialogOpen, (opened) => {
@@ -810,7 +836,7 @@ watch(signatureDialogOpen, (opened) => {
                 v-for="template in previewToolbarTemplates"
                 :key="`preview-toolbar-template-${template.id}`"
                 :title="template.label"
-                @click="router.replace({ query: { ...route.query, template: template.id } })"
+                @click="applyPreviewTemplate(template.id)"
               >
                 <template #prepend>
                   <div class="template-chip-preview" :style="{ backgroundColor: template.previewColor }" />
@@ -937,5 +963,24 @@ watch(signatureDialogOpen, (opened) => {
   display: block;
   border-radius: 10px;
   touch-action: none;
+}
+
+@media print {
+  :global(body *) {
+    visibility: hidden !important;
+  }
+
+  .resume-preview-canvas,
+  .resume-preview-canvas * {
+    visibility: visible !important;
+  }
+
+  .resume-preview-canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    overflow: visible;
+  }
 }
 </style>
