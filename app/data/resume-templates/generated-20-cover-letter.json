@@ -1,0 +1,542 @@
+[
+  {
+    "id": "cletter-001",
+    "name": "cover-letter-classic-01",
+    "version": 1,
+    "layout": "aside-left",
+    "structure": "letter-structure-1",
+    "theme": {
+      "palette": {
+        "primary": "#BE123C",
+        "secondary": "#FDA4AF",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#FFF1F2"
+      },
+      "density": "comfortable",
+      "textStyle": "roman"
+    },
+    "sections": {
+      "header": "minimal",
+      "body": "narrative",
+      "signature": "simple"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "normal",
+      "showDivider": true
+    }
+  },
+  {
+    "id": "cletter-002",
+    "name": "cover-letter-modern-02",
+    "version": 1,
+    "layout": "aside-right",
+    "structure": "letter-structure-2",
+    "theme": {
+      "palette": {
+        "primary": "#065F46",
+        "secondary": "#6EE7B7",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#ECFDF5"
+      },
+      "density": "compact",
+      "textStyle": "sans"
+    },
+    "sections": {
+      "header": "detailed",
+      "body": "bullet-mix",
+      "signature": "formal"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "wide",
+      "showDivider": false
+    }
+  },
+  {
+    "id": "cletter-003",
+    "name": "cover-letter-ats-03",
+    "version": 1,
+    "layout": "header-band-split",
+    "structure": "letter-structure-3",
+    "theme": {
+      "palette": {
+        "primary": "#9A3412",
+        "secondary": "#FDBA74",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#FFF7ED"
+      },
+      "density": "airy",
+      "textStyle": "serif"
+    },
+    "sections": {
+      "header": "contact-band",
+      "body": "impact",
+      "signature": "simple"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "tight",
+      "showDivider": true
+    }
+  },
+  {
+    "id": "cletter-004",
+    "name": "cover-letter-premium-04",
+    "version": 1,
+    "layout": "two-columns-balanced",
+    "structure": "letter-structure-4",
+    "theme": {
+      "palette": {
+        "primary": "#0F4C81",
+        "secondary": "#5FA8D3",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#F8FAFC"
+      },
+      "density": "comfortable",
+      "textStyle": "roman"
+    },
+    "sections": {
+      "header": "minimal",
+      "body": "narrative",
+      "signature": "formal"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "normal",
+      "showDivider": false
+    }
+  },
+  {
+    "id": "cletter-005",
+    "name": "cover-letter-split-05",
+    "version": 1,
+    "layout": "no-aside",
+    "structure": "letter-structure-1",
+    "theme": {
+      "palette": {
+        "primary": "#7C3AED",
+        "secondary": "#C4B5FD",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#FAF5FF"
+      },
+      "density": "compact",
+      "textStyle": "sans"
+    },
+    "sections": {
+      "header": "detailed",
+      "body": "bullet-mix",
+      "signature": "simple"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "wide",
+      "showDivider": true
+    }
+  },
+  {
+    "id": "cletter-006",
+    "name": "cover-letter-classic-06",
+    "version": 1,
+    "layout": "aside-left",
+    "structure": "letter-structure-2",
+    "theme": {
+      "palette": {
+        "primary": "#BE123C",
+        "secondary": "#FDA4AF",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#FFF1F2"
+      },
+      "density": "airy",
+      "textStyle": "serif"
+    },
+    "sections": {
+      "header": "contact-band",
+      "body": "impact",
+      "signature": "formal"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "tight",
+      "showDivider": false
+    }
+  },
+  {
+    "id": "cletter-007",
+    "name": "cover-letter-modern-07",
+    "version": 1,
+    "layout": "aside-right",
+    "structure": "letter-structure-3",
+    "theme": {
+      "palette": {
+        "primary": "#065F46",
+        "secondary": "#6EE7B7",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#ECFDF5"
+      },
+      "density": "comfortable",
+      "textStyle": "roman"
+    },
+    "sections": {
+      "header": "minimal",
+      "body": "narrative",
+      "signature": "simple"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "normal",
+      "showDivider": true
+    }
+  },
+  {
+    "id": "cletter-008",
+    "name": "cover-letter-ats-08",
+    "version": 1,
+    "layout": "header-band-split",
+    "structure": "letter-structure-4",
+    "theme": {
+      "palette": {
+        "primary": "#9A3412",
+        "secondary": "#FDBA74",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#FFF7ED"
+      },
+      "density": "compact",
+      "textStyle": "sans"
+    },
+    "sections": {
+      "header": "detailed",
+      "body": "bullet-mix",
+      "signature": "formal"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "wide",
+      "showDivider": false
+    }
+  },
+  {
+    "id": "cletter-009",
+    "name": "cover-letter-premium-09",
+    "version": 1,
+    "layout": "two-columns-balanced",
+    "structure": "letter-structure-1",
+    "theme": {
+      "palette": {
+        "primary": "#0F4C81",
+        "secondary": "#5FA8D3",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#F8FAFC"
+      },
+      "density": "airy",
+      "textStyle": "serif"
+    },
+    "sections": {
+      "header": "contact-band",
+      "body": "impact",
+      "signature": "simple"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "tight",
+      "showDivider": true
+    }
+  },
+  {
+    "id": "cletter-010",
+    "name": "cover-letter-split-10",
+    "version": 1,
+    "layout": "no-aside",
+    "structure": "letter-structure-2",
+    "theme": {
+      "palette": {
+        "primary": "#7C3AED",
+        "secondary": "#C4B5FD",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#FAF5FF"
+      },
+      "density": "comfortable",
+      "textStyle": "roman"
+    },
+    "sections": {
+      "header": "minimal",
+      "body": "narrative",
+      "signature": "formal"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "normal",
+      "showDivider": false
+    }
+  },
+  {
+    "id": "cletter-011",
+    "name": "cover-letter-classic-11",
+    "version": 1,
+    "layout": "aside-left",
+    "structure": "letter-structure-3",
+    "theme": {
+      "palette": {
+        "primary": "#BE123C",
+        "secondary": "#FDA4AF",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#FFF1F2"
+      },
+      "density": "compact",
+      "textStyle": "sans"
+    },
+    "sections": {
+      "header": "detailed",
+      "body": "bullet-mix",
+      "signature": "simple"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "wide",
+      "showDivider": true
+    }
+  },
+  {
+    "id": "cletter-012",
+    "name": "cover-letter-modern-12",
+    "version": 1,
+    "layout": "aside-right",
+    "structure": "letter-structure-4",
+    "theme": {
+      "palette": {
+        "primary": "#065F46",
+        "secondary": "#6EE7B7",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#ECFDF5"
+      },
+      "density": "airy",
+      "textStyle": "serif"
+    },
+    "sections": {
+      "header": "contact-band",
+      "body": "impact",
+      "signature": "formal"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "tight",
+      "showDivider": false
+    }
+  },
+  {
+    "id": "cletter-013",
+    "name": "cover-letter-ats-13",
+    "version": 1,
+    "layout": "header-band-split",
+    "structure": "letter-structure-1",
+    "theme": {
+      "palette": {
+        "primary": "#9A3412",
+        "secondary": "#FDBA74",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#FFF7ED"
+      },
+      "density": "comfortable",
+      "textStyle": "roman"
+    },
+    "sections": {
+      "header": "minimal",
+      "body": "narrative",
+      "signature": "simple"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "normal",
+      "showDivider": true
+    }
+  },
+  {
+    "id": "cletter-014",
+    "name": "cover-letter-premium-14",
+    "version": 1,
+    "layout": "two-columns-balanced",
+    "structure": "letter-structure-2",
+    "theme": {
+      "palette": {
+        "primary": "#0F4C81",
+        "secondary": "#5FA8D3",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#F8FAFC"
+      },
+      "density": "compact",
+      "textStyle": "sans"
+    },
+    "sections": {
+      "header": "detailed",
+      "body": "bullet-mix",
+      "signature": "formal"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "wide",
+      "showDivider": false
+    }
+  },
+  {
+    "id": "cletter-015",
+    "name": "cover-letter-split-15",
+    "version": 1,
+    "layout": "no-aside",
+    "structure": "letter-structure-3",
+    "theme": {
+      "palette": {
+        "primary": "#7C3AED",
+        "secondary": "#C4B5FD",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#FAF5FF"
+      },
+      "density": "airy",
+      "textStyle": "serif"
+    },
+    "sections": {
+      "header": "contact-band",
+      "body": "impact",
+      "signature": "simple"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "tight",
+      "showDivider": true
+    }
+  },
+  {
+    "id": "cletter-016",
+    "name": "cover-letter-classic-16",
+    "version": 1,
+    "layout": "aside-left",
+    "structure": "letter-structure-4",
+    "theme": {
+      "palette": {
+        "primary": "#BE123C",
+        "secondary": "#FDA4AF",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#FFF1F2"
+      },
+      "density": "comfortable",
+      "textStyle": "roman"
+    },
+    "sections": {
+      "header": "minimal",
+      "body": "narrative",
+      "signature": "formal"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "normal",
+      "showDivider": false
+    }
+  },
+  {
+    "id": "cletter-017",
+    "name": "cover-letter-modern-17",
+    "version": 1,
+    "layout": "aside-right",
+    "structure": "letter-structure-1",
+    "theme": {
+      "palette": {
+        "primary": "#065F46",
+        "secondary": "#6EE7B7",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#ECFDF5"
+      },
+      "density": "compact",
+      "textStyle": "sans"
+    },
+    "sections": {
+      "header": "detailed",
+      "body": "bullet-mix",
+      "signature": "simple"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "wide",
+      "showDivider": true
+    }
+  },
+  {
+    "id": "cletter-018",
+    "name": "cover-letter-ats-18",
+    "version": 1,
+    "layout": "header-band-split",
+    "structure": "letter-structure-2",
+    "theme": {
+      "palette": {
+        "primary": "#9A3412",
+        "secondary": "#FDBA74",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#FFF7ED"
+      },
+      "density": "airy",
+      "textStyle": "serif"
+    },
+    "sections": {
+      "header": "contact-band",
+      "body": "impact",
+      "signature": "formal"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "tight",
+      "showDivider": false
+    }
+  },
+  {
+    "id": "cletter-019",
+    "name": "cover-letter-premium-19",
+    "version": 1,
+    "layout": "two-columns-balanced",
+    "structure": "letter-structure-3",
+    "theme": {
+      "palette": {
+        "primary": "#0F4C81",
+        "secondary": "#5FA8D3",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#F8FAFC"
+      },
+      "density": "comfortable",
+      "textStyle": "roman"
+    },
+    "sections": {
+      "header": "minimal",
+      "body": "narrative",
+      "signature": "simple"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "normal",
+      "showDivider": true
+    }
+  },
+  {
+    "id": "cletter-020",
+    "name": "cover-letter-split-20",
+    "version": 1,
+    "layout": "no-aside",
+    "structure": "letter-structure-4",
+    "theme": {
+      "palette": {
+        "primary": "#7C3AED",
+        "secondary": "#C4B5FD",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#FAF5FF"
+      },
+      "density": "compact",
+      "textStyle": "sans"
+    },
+    "sections": {
+      "header": "detailed",
+      "body": "bullet-mix",
+      "signature": "formal"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "wide",
+      "showDivider": false
+    }
+  }
+]
