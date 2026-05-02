@@ -1,6 +1,6 @@
 # Checklist conformité templates CV
 
-Cette checklist couvre les templates CV visibles dans le sélecteur de `app/pages/resume/create.vue`.
+Cette checklist couvre les templates CV visibles dans le sélecteur de `app/pages/resume/preview.vue`.
 
 ## QA design (refactors)
 

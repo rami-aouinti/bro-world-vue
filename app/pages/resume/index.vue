@@ -112,7 +112,7 @@ const openTemplateInWriteMode = (template: {
   templateId: string
 }) => {
   const pathByType = {
-    resume: '/resume/create',
+    resume: '/resume/preview',
     'cover-page': '/resume/cover-page/editor',
     'cover-letter': '/resume/cover-letter/editor',
   } as const
@@ -146,7 +146,7 @@ onUnmounted(() => {
       <template #left>
         <h3>{{ t('resumeBuilder.index.heroTitle') }}</h3>
         <p class="hero-subtitle">{{ t('resumeBuilder.index.heroSubtitle') }}</p>
-        <v-btn color="primary" size="large" to="/resume/create" class="mt-3">
+        <v-btn color="primary" size="large" to="/resume/preview" class="mt-3">
           {{ t('resumeBuilder.index.journey.steps.template.cta') }}
         </v-btn>
       </template>
@@ -161,7 +161,7 @@ onUnmounted(() => {
           hide-details
           class="mt-3"
         />
-        <v-btn color="primary" size="large" to="/resume/create" class="mt-3">
+        <v-btn color="primary" size="large" to="/resume/preview" class="mt-3">
           {{ t('resumeBuilder.index.journey.steps.template.cta') }}
         </v-btn>
       </template>
