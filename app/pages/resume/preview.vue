@@ -453,19 +453,55 @@ const activeLayoutComponent = computed(() => {
             { title: 'Structure 2 · Split', value: 'structure-2' },
           ]"
           label="Structure"
+          class="pt-3"
           hide-details
         />
         <AppSelect
           v-model="selectedLayout"
           :items="layoutFilterOptions"
           label="Layout"
+          class="pt-3"
           hide-details
         />
         <AppSelect
           v-model="selectedTextStyle"
           :items="textStyleFilterOptions"
           label="Text style"
+          class="pt-3"
           hide-details
+        />
+        <AppSelect
+          v-model="selectedSectionVariants.contact"
+          :items="contactStyleOptions"
+          label="Contact style"
+          class="pt-3"
+          hide-details
+        />
+        <AppSelect
+          v-model="selectedPalette"
+          :items="paletteOptions"
+          label="Palette"
+          class="pt-3"
+          hide-details
+        />
+        <v-text-field
+          v-if="selectedPalette === 'custom'"
+          v-model="customPalettePrimary"
+          label="Custom primary color"
+          placeholder="#0F4C81"
+          class="pt-3"
+          hide-details
+        />
+      </template>
+      <template #right>
+        <v-slider
+          v-model="selectedAsideRadius"
+          label="Aside radius (px)"
+          min="0"
+          max="48"
+          step="1"
+          hide-details
+          class="mb-3"
         />
         <v-slider
           v-model="selectedAsideWidth"
@@ -483,81 +519,13 @@ const activeLayoutComponent = computed(() => {
           step="1"
           hide-details
         />
-        <v-slider
-          v-model="selectedHeaderBandHeight"
-          label="Header colored height (%)"
-          min="0"
-          max="100"
-          step="1"
-          hide-details
-        />
-        <AppSelect
-          v-model="selectedSectionVariants.contact"
-          :items="contactStyleOptions"
-          label="Contact style"
-          hide-details
-        />
-        <AppSelect
-          v-model="selectedPalette"
-          :items="paletteOptions"
-          label="Palette"
-          hide-details
-        />
-        <v-text-field
-          v-if="selectedPalette === 'custom'"
-          v-model="customPalettePrimary"
-          label="Custom primary color"
-          placeholder="#0F4C81"
-          hide-details
-        />
-        <AppSelect
-          v-model="selectedPhotoPosition"
-          :items="photoPositionOptions"
-          label="Photo position"
-          hide-details
-        />
-        <v-slider
-          v-model="selectedPhotoSize"
-          label="Photo size (px)"
-          min="48"
-          max="220"
-          step="2"
-          hide-details
-        />
-        <AppSelect
-          v-model="selectedPhotoShape"
-          :items="photoShapeOptions"
-          label="Photo shape"
-          hide-details
-        />
-        <v-slider
-          v-model="selectedPhotoBorderWidth"
-          label="Photo border width (px)"
-          min="0"
-          max="16"
-          step="1"
-          hide-details
-        />
-        <AppSelect
-          v-model="selectedPhotoBorderStyle"
-          :items="photoBorderStyleOptions"
-          label="Photo border style"
-          hide-details
-        />
-        <v-text-field
-          v-model="selectedPhotoBorderColor"
-          label="Photo border color"
-          placeholder="#0F4C81"
-          type="color"
-          hide-details
-        />
         <v-divider class="my-4" />
         <div class="text-subtitle-2 mb-2">Corner decor</div>
-        <v-btn size="small" variant="outlined" class="mb-3" @click="addDecorCorner">ajouter un corner decor</v-btn>
+        <v-btn size="small" variant="outlined" class="mb-3" @click="addDecorCorner">Add corner decor</v-btn>
         <v-card
           v-for="(corner, index) in editableDecorCorners"
           :key="`corner-${index}`"
-          variant="tonal"
+          variant="text"
           class="pa-2 mb-3"
         >
           <AppSelect
@@ -572,25 +540,6 @@ const activeLayoutComponent = computed(() => {
           <v-text-field v-model="corner.color" label="Color" type="color" hide-details />
           <v-btn size="x-small" color="error" variant="text" @click="removeDecorCorner(index)">supprimer un corner decor</v-btn>
         </v-card>
-      </template>
-      <template #right>
-        <v-slider
-          v-model="selectedAsideRadius"
-          label="Aside radius (px)"
-          min="0"
-          max="48"
-          step="1"
-          hide-details
-          class="mb-3"
-        />
-        <AppSelect
-          v-for="(variantOptions, sectionKey) in sectionVariantOptionsForDrawer"
-          :key="sectionKey"
-          v-model="selectedSectionVariants[sectionKey]"
-          :items="variantOptions"
-          :label="`Section: ${sectionKey}`"
-          hide-details
-        />
       </template>
     </AppPageDrawers>
     <v-container fluid>
