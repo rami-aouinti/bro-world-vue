@@ -57,6 +57,14 @@ const headingTag = computed(() => (props.variant === 'h2' ? 'h2' : 'h3'))
       <v-icon :icon="icon" size="18" />
     </span>
     <span class="resume-section-heading__label">{{ resolvedTitle }}</span>
+    <span class="resume-section-heading__toolbar" role="toolbar" aria-label="Section actions">
+      <button type="button" class="resume-section-heading__tool-btn" aria-label="Add section">
+        <v-icon icon="mdi-plus" size="14" />
+      </button>
+      <button type="button" class="resume-section-heading__tool-btn" aria-label="Remove section">
+        <v-icon icon="mdi-minus" size="14" />
+      </button>
+    </span>
     <span
       v-if="divider"
       class="resume-section-heading__line"
