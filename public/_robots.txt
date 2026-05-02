@@ -2,6 +2,6 @@ User-Agent: *
 Disallow:
 Allow: /resume
 Allow: /resume/
-Allow: /resume/create
+Allow: /resume/preview
 
 Sitemap: https://bro-world.com/sitemap.xml

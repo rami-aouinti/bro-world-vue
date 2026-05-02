@@ -157,12 +157,12 @@ const featureMenu = navMenus[0]!
 const applicationsMenu = navMenus[1]!
 const worldMenu = navMenus[2]!
 const resumeEditorRoutes = [
-  '/resume/create',
+  '/resume/preview',
   '/resume/cover-page/editor',
   '/resume/cover-letter/editor',
 ] as const
 const resumeEditorNavButtons = [
-  { label: 'Resume', to: '/resume/create' },
+  { label: 'Resume', to: '/resume/preview' },
   { label: 'Cover page', to: '/resume/cover-page/editor' },
   { label: 'Cover letter', to: '/resume/cover-letter/editor' },
 ] as const

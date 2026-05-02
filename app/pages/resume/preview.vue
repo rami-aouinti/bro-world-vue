@@ -112,7 +112,7 @@ const decorShapeOptions = ['circle', 'square', 'triangle', 'blob', 'line'] as co
 const previewToolbarTemplateMenuOpen = ref(false)
 
 function goToCreateResume() {
-  router.push('/resume/create')
+  router.push('/resume/preview')
 }
 
 

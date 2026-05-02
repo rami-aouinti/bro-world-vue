@@ -5,7 +5,7 @@ Objectif: vérifier que chaque section éditable ciblée affiche bien `SectionTo
 ## Pré-requis
 
 1. Lancer l'app (`npm run dev`).
-2. Ouvrir `/resume/create`.
+2. Ouvrir `/resume/preview`.
 3. Charger un CV avec suffisamment de contenu pour forcer plusieurs pages à l'export/preview.
 
 ## Sections à vérifier

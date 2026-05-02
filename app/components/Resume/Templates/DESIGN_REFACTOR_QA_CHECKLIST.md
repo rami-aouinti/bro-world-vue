@@ -34,7 +34,7 @@ Pipeline attendu (à préserver lors des refactors):
 ## Pré-requis
 
 1. Lancer l'application: `npm run dev`.
-2. Ouvrir `/resume/create`.
+2. Ouvrir `/resume/preview`.
 3. Charger un CV de test avec contenu dans toutes les sections (experience/education/projects/languages/skills/references/hobbies).
 4. Ouvrir le sélecteur de template (pour passer template par template).
 
