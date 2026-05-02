@@ -1,0 +1,542 @@
+[
+  {
+    "id": "cpage-001",
+    "name": "cover-page-hero-01",
+    "version": 1,
+    "layout": "no-aside",
+    "structure": "cover-structure-1",
+    "theme": {
+      "palette": {
+        "primary": "#0F4C81",
+        "secondary": "#5FA8D3",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#F8FAFC"
+      },
+      "density": "airy",
+      "textStyle": "sans"
+    },
+    "hero": {
+      "alignment": "left",
+      "showPhoto": true,
+      "accent": "bar"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "normal",
+      "titleCase": "upper"
+    }
+  },
+  {
+    "id": "cpage-002",
+    "name": "cover-page-editorial-02",
+    "version": 1,
+    "layout": "aside-left",
+    "structure": "cover-structure-2",
+    "theme": {
+      "palette": {
+        "primary": "#7C3AED",
+        "secondary": "#C4B5FD",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FAF5FF"
+      },
+      "density": "comfortable",
+      "textStyle": "roman"
+    },
+    "hero": {
+      "alignment": "center",
+      "showPhoto": false,
+      "accent": "shape"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "relaxed",
+      "titleCase": "normal"
+    }
+  },
+  {
+    "id": "cpage-003",
+    "name": "cover-page-minimal-03",
+    "version": 1,
+    "layout": "aside-right",
+    "structure": "cover-structure-3",
+    "theme": {
+      "palette": {
+        "primary": "#BE123C",
+        "secondary": "#FDA4AF",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FFF1F2"
+      },
+      "density": "compact",
+      "textStyle": "serif"
+    },
+    "hero": {
+      "alignment": "right",
+      "showPhoto": true,
+      "accent": "line"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "tight",
+      "titleCase": "upper"
+    }
+  },
+  {
+    "id": "cpage-004",
+    "name": "cover-page-executive-04",
+    "version": 1,
+    "layout": "header-band-split",
+    "structure": "cover-structure-4",
+    "theme": {
+      "palette": {
+        "primary": "#065F46",
+        "secondary": "#6EE7B7",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#ECFDF5"
+      },
+      "density": "airy",
+      "textStyle": "sans"
+    },
+    "hero": {
+      "alignment": "left",
+      "showPhoto": false,
+      "accent": "badge"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "normal",
+      "titleCase": "normal"
+    }
+  },
+  {
+    "id": "cpage-005",
+    "name": "cover-page-creative-05",
+    "version": 1,
+    "layout": "two-columns-balanced",
+    "structure": "cover-structure-1",
+    "theme": {
+      "palette": {
+        "primary": "#9A3412",
+        "secondary": "#FDBA74",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FFF7ED"
+      },
+      "density": "comfortable",
+      "textStyle": "roman"
+    },
+    "hero": {
+      "alignment": "center",
+      "showPhoto": true,
+      "accent": "bar"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "relaxed",
+      "titleCase": "upper"
+    }
+  },
+  {
+    "id": "cpage-006",
+    "name": "cover-page-hero-06",
+    "version": 1,
+    "layout": "no-aside",
+    "structure": "cover-structure-2",
+    "theme": {
+      "palette": {
+        "primary": "#0F4C81",
+        "secondary": "#5FA8D3",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#F8FAFC"
+      },
+      "density": "compact",
+      "textStyle": "serif"
+    },
+    "hero": {
+      "alignment": "right",
+      "showPhoto": false,
+      "accent": "shape"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "tight",
+      "titleCase": "normal"
+    }
+  },
+  {
+    "id": "cpage-007",
+    "name": "cover-page-editorial-07",
+    "version": 1,
+    "layout": "aside-left",
+    "structure": "cover-structure-3",
+    "theme": {
+      "palette": {
+        "primary": "#7C3AED",
+        "secondary": "#C4B5FD",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FAF5FF"
+      },
+      "density": "airy",
+      "textStyle": "sans"
+    },
+    "hero": {
+      "alignment": "left",
+      "showPhoto": true,
+      "accent": "line"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "normal",
+      "titleCase": "upper"
+    }
+  },
+  {
+    "id": "cpage-008",
+    "name": "cover-page-minimal-08",
+    "version": 1,
+    "layout": "aside-right",
+    "structure": "cover-structure-4",
+    "theme": {
+      "palette": {
+        "primary": "#BE123C",
+        "secondary": "#FDA4AF",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FFF1F2"
+      },
+      "density": "comfortable",
+      "textStyle": "roman"
+    },
+    "hero": {
+      "alignment": "center",
+      "showPhoto": false,
+      "accent": "badge"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "relaxed",
+      "titleCase": "normal"
+    }
+  },
+  {
+    "id": "cpage-009",
+    "name": "cover-page-executive-09",
+    "version": 1,
+    "layout": "header-band-split",
+    "structure": "cover-structure-1",
+    "theme": {
+      "palette": {
+        "primary": "#065F46",
+        "secondary": "#6EE7B7",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#ECFDF5"
+      },
+      "density": "compact",
+      "textStyle": "serif"
+    },
+    "hero": {
+      "alignment": "right",
+      "showPhoto": true,
+      "accent": "bar"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "tight",
+      "titleCase": "upper"
+    }
+  },
+  {
+    "id": "cpage-010",
+    "name": "cover-page-creative-10",
+    "version": 1,
+    "layout": "two-columns-balanced",
+    "structure": "cover-structure-2",
+    "theme": {
+      "palette": {
+        "primary": "#9A3412",
+        "secondary": "#FDBA74",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FFF7ED"
+      },
+      "density": "airy",
+      "textStyle": "sans"
+    },
+    "hero": {
+      "alignment": "left",
+      "showPhoto": false,
+      "accent": "shape"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "normal",
+      "titleCase": "normal"
+    }
+  },
+  {
+    "id": "cpage-011",
+    "name": "cover-page-hero-11",
+    "version": 1,
+    "layout": "no-aside",
+    "structure": "cover-structure-3",
+    "theme": {
+      "palette": {
+        "primary": "#0F4C81",
+        "secondary": "#5FA8D3",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#F8FAFC"
+      },
+      "density": "comfortable",
+      "textStyle": "roman"
+    },
+    "hero": {
+      "alignment": "center",
+      "showPhoto": true,
+      "accent": "line"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "relaxed",
+      "titleCase": "upper"
+    }
+  },
+  {
+    "id": "cpage-012",
+    "name": "cover-page-editorial-12",
+    "version": 1,
+    "layout": "aside-left",
+    "structure": "cover-structure-4",
+    "theme": {
+      "palette": {
+        "primary": "#7C3AED",
+        "secondary": "#C4B5FD",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FAF5FF"
+      },
+      "density": "compact",
+      "textStyle": "serif"
+    },
+    "hero": {
+      "alignment": "right",
+      "showPhoto": false,
+      "accent": "badge"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "tight",
+      "titleCase": "normal"
+    }
+  },
+  {
+    "id": "cpage-013",
+    "name": "cover-page-minimal-13",
+    "version": 1,
+    "layout": "aside-right",
+    "structure": "cover-structure-1",
+    "theme": {
+      "palette": {
+        "primary": "#BE123C",
+        "secondary": "#FDA4AF",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FFF1F2"
+      },
+      "density": "airy",
+      "textStyle": "sans"
+    },
+    "hero": {
+      "alignment": "left",
+      "showPhoto": true,
+      "accent": "bar"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "normal",
+      "titleCase": "upper"
+    }
+  },
+  {
+    "id": "cpage-014",
+    "name": "cover-page-executive-14",
+    "version": 1,
+    "layout": "header-band-split",
+    "structure": "cover-structure-2",
+    "theme": {
+      "palette": {
+        "primary": "#065F46",
+        "secondary": "#6EE7B7",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#ECFDF5"
+      },
+      "density": "comfortable",
+      "textStyle": "roman"
+    },
+    "hero": {
+      "alignment": "center",
+      "showPhoto": false,
+      "accent": "shape"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "relaxed",
+      "titleCase": "normal"
+    }
+  },
+  {
+    "id": "cpage-015",
+    "name": "cover-page-creative-15",
+    "version": 1,
+    "layout": "two-columns-balanced",
+    "structure": "cover-structure-3",
+    "theme": {
+      "palette": {
+        "primary": "#9A3412",
+        "secondary": "#FDBA74",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FFF7ED"
+      },
+      "density": "compact",
+      "textStyle": "serif"
+    },
+    "hero": {
+      "alignment": "right",
+      "showPhoto": true,
+      "accent": "line"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "tight",
+      "titleCase": "upper"
+    }
+  },
+  {
+    "id": "cpage-016",
+    "name": "cover-page-hero-16",
+    "version": 1,
+    "layout": "no-aside",
+    "structure": "cover-structure-4",
+    "theme": {
+      "palette": {
+        "primary": "#0F4C81",
+        "secondary": "#5FA8D3",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#F8FAFC"
+      },
+      "density": "airy",
+      "textStyle": "sans"
+    },
+    "hero": {
+      "alignment": "left",
+      "showPhoto": false,
+      "accent": "badge"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "normal",
+      "titleCase": "normal"
+    }
+  },
+  {
+    "id": "cpage-017",
+    "name": "cover-page-editorial-17",
+    "version": 1,
+    "layout": "aside-left",
+    "structure": "cover-structure-1",
+    "theme": {
+      "palette": {
+        "primary": "#7C3AED",
+        "secondary": "#C4B5FD",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FAF5FF"
+      },
+      "density": "comfortable",
+      "textStyle": "roman"
+    },
+    "hero": {
+      "alignment": "center",
+      "showPhoto": true,
+      "accent": "bar"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "relaxed",
+      "titleCase": "upper"
+    }
+  },
+  {
+    "id": "cpage-018",
+    "name": "cover-page-minimal-18",
+    "version": 1,
+    "layout": "aside-right",
+    "structure": "cover-structure-2",
+    "theme": {
+      "palette": {
+        "primary": "#BE123C",
+        "secondary": "#FDA4AF",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FFF1F2"
+      },
+      "density": "compact",
+      "textStyle": "serif"
+    },
+    "hero": {
+      "alignment": "right",
+      "showPhoto": false,
+      "accent": "shape"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "tight",
+      "titleCase": "normal"
+    }
+  },
+  {
+    "id": "cpage-019",
+    "name": "cover-page-executive-19",
+    "version": 1,
+    "layout": "header-band-split",
+    "structure": "cover-structure-3",
+    "theme": {
+      "palette": {
+        "primary": "#065F46",
+        "secondary": "#6EE7B7",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#ECFDF5"
+      },
+      "density": "airy",
+      "textStyle": "sans"
+    },
+    "hero": {
+      "alignment": "left",
+      "showPhoto": true,
+      "accent": "line"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "normal",
+      "titleCase": "upper"
+    }
+  },
+  {
+    "id": "cpage-020",
+    "name": "cover-page-creative-20",
+    "version": 1,
+    "layout": "two-columns-balanced",
+    "structure": "cover-structure-4",
+    "theme": {
+      "palette": {
+        "primary": "#9A3412",
+        "secondary": "#FDBA74",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FFF7ED"
+      },
+      "density": "comfortable",
+      "textStyle": "roman"
+    },
+    "hero": {
+      "alignment": "center",
+      "showPhoto": false,
+      "accent": "badge"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "relaxed",
+      "titleCase": "normal"
+    }
+  }
+]

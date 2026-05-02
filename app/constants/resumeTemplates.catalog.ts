@@ -10,6 +10,8 @@ import {
   type ResumeSkinPaletteId,
 } from '~/constants/resumeDesign'
 import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-90.json'
+import GENERATED_COVER_PAGE_TEMPLATES from '~/data/resume-templates/generated-20-cover-page.json'
+import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-20-cover-letter.json'
 import {
   RESUME_BASE_PRESETS,
   RESUME_COMPOSED_PRESET_METADATA,
@@ -640,8 +642,51 @@ export const RESUME_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [
   ...RESUME_IMPORTED_TEMPLATES_CATALOG,
 ]
 
-export const COVER_TEMPLATES_CATALOG: ResumeTemplateConfig[] = []
+const COVER_PAGE_IMPORTED_TEMPLATES_CATALOG: ResumeTemplateConfig[] =
+  GENERATED_COVER_PAGE_TEMPLATES.map((template) => ({
+    id: `cover-page-${template.id}`,
+    structureId: resolveStructureId(template.layout),
+    layoutId: resolveLayoutId(template.layout),
+    skinId: 'skin-elegant',
+    label: template.name,
+    subtitle: `Generated cover page ${template.id}`,
+    type: 'cover-page',
+    image: '/img/cv/cv-5.png',
+    templateId: template.id,
+    visibleOptions: {
+      ...DEFAULT_VISIBLE_OPTIONS,
+      twoColumn: template.layout !== 'no-aside',
+      timeline: false,
+    },
+  }))
+
+const COVER_LETTER_IMPORTED_TEMPLATES_CATALOG: ResumeTemplateConfig[] =
+  GENERATED_COVER_LETTER_TEMPLATES.map((template) => ({
+    id: `cover-letter-${template.id}`,
+    structureId: resolveStructureId(template.layout),
+    layoutId: resolveLayoutId(template.layout),
+    skinId: 'skin-compact-ats',
+    label: template.name,
+    subtitle: `Generated cover letter ${template.id}`,
+    type: 'cover-letter',
+    image: '/img/cv/cv-2.png',
+    templateId: template.id,
+    visibleOptions: {
+      ...DEFAULT_VISIBLE_OPTIONS,
+      photo: false,
+      twoColumn: template.layout !== 'no-aside',
+      timeline: false,
+    },
+  }))
+
+export const COVER_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [
+  ...COVER_PAGE_TEMPLATES_CATALOG,
+  ...COVER_LETTER_TEMPLATES_CATALOG,
+  ...COVER_PAGE_IMPORTED_TEMPLATES_CATALOG,
+  ...COVER_LETTER_IMPORTED_TEMPLATES_CATALOG,
+]
 
 export const ALL_RESUME_DOCUMENT_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [
   ...RESUME_TEMPLATES_CATALOG,
+  ...COVER_TEMPLATES_CATALOG,
 ]
