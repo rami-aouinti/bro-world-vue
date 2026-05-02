@@ -680,19 +680,10 @@ watch(signatureDialogOpen, (opened) => {
           hide-details
         />
         <div class="pt-3">
-          <div class="text-caption mb-1">Palette</div>
           <AppMenu v-model="previewToolbarTemplateMenuOpen" :close-on-content-click="true">
             <template #activator="{ props }">
-              <v-btn v-bind="props" variant="outlined" block justify="space-between">
-                <div class="d-flex align-center ga-2">
-                  <span v-if="selectedPalette === 'template'">Template palette</span>
-                  <span v-else-if="selectedPalette === 'custom'">Custom</span>
-                  <div v-else-if="selectedPaletteOption" class="d-flex ga-1">
-                    <span class="palette-dot" :style="{ backgroundColor: selectedPaletteOption.primary }" />
-                    <span class="palette-dot" :style="{ backgroundColor: selectedPaletteOption.dark }" />
-                    <span class="palette-dot" :style="{ backgroundColor: selectedPaletteOption.light }" />
-                  </div>
-                </div>
+              <v-btn v-bind="props" variant="outlined" block justify="space-between" prepend-icon="mdi-palette">
+                Palette
                 <v-icon icon="mdi-chevron-down" />
               </v-btn>
             </template>
