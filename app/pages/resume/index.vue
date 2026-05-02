@@ -90,9 +90,9 @@ watch(
     if (!items.length) return
     if (
       !selectedTemplateId.value ||
-      !items.some((item) => item.templateId === selectedTemplateId.value)
+      !items.some((item) => item.id === selectedTemplateId.value)
     ) {
-      selectedTemplateId.value = items[0]?.templateId || ''
+      selectedTemplateId.value = items[0]?.id || ''
     }
   },
   { immediate: true },
@@ -101,7 +101,7 @@ watch(
 const selectedTemplateCard = computed(
   () =>
     displayedTemplates.value.find(
-      (item) => item.templateId === selectedTemplateId.value,
+      (item) => item.id === selectedTemplateId.value,
     ) ||
     displayedTemplates.value[0] ||
     null,
@@ -194,7 +194,7 @@ onUnmounted(() => {
               v-for="templateCard in displayedTemplates"
               :key="templateCard.id"
               class="postcard-gradient-card template-slide"
-              @click="selectedTemplateId = templateCard.templateId"
+              @click="selectedTemplateId = templateCard.id"
             >
               <v-img :src="templateCard.image" :alt="templateCard.title" />
               <span>{{ templateCard.title }}</span>
@@ -203,7 +203,7 @@ onUnmounted(() => {
                 variant="text"
                 size="small"
                 class="mt-2"
-                :to="`/resume/preview?template=${templateCard.templateId}`"
+                :to="`/resume/preview?template=${templateCard.id}`"
                 @click.stop
               >
                 Preview
