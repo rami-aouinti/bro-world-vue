@@ -544,7 +544,12 @@ function getCanvasPosition(event: PointerEvent) {
   const canvas = signatureCanvas.value
   if (!canvas) return null
   const rect = canvas.getBoundingClientRect()
-  return { x: event.clientX - rect.left, y: event.clientY - rect.top }
+  const scaleX = canvas.width / rect.width
+  const scaleY = canvas.height / rect.height
+  return {
+    x: (event.clientX - rect.left) * scaleX,
+    y: (event.clientY - rect.top) * scaleY,
+  }
 }
 
 function ensureSignatureCanvas() {
@@ -566,6 +571,8 @@ function onSignaturePointerDown(event: PointerEvent) {
   const ctx = canvas?.getContext('2d')
   const point = getCanvasPosition(event)
   if (!canvas || !ctx || !point) return
+  event.preventDefault()
+  canvas.setPointerCapture(event.pointerId)
   drawingSignature.value = true
   ctx.beginPath()
   ctx.moveTo(point.x, point.y)
@@ -576,13 +583,18 @@ function onSignaturePointerMove(event: PointerEvent) {
   const ctx = canvas?.getContext('2d')
   const point = getCanvasPosition(event)
   if (!drawingSignature.value || !canvas || !ctx || !point) return
+  event.preventDefault()
   ctx.lineTo(point.x, point.y)
   ctx.stroke()
 }
 
-function onSignaturePointerUp() {
+function onSignaturePointerUp(event?: PointerEvent) {
+  const canvas = signatureCanvas.value
+  if (event && canvas?.hasPointerCapture(event.pointerId)) {
+    canvas.releasePointerCapture(event.pointerId)
+  }
   drawingSignature.value = false
-  signatureDataUrl.value = signatureCanvas.value?.toDataURL('image/png') || ''
+  signatureDataUrl.value = canvas?.toDataURL('image/png') || ''
 }
 
 watch(signatureDialogOpen, (opened) => {
