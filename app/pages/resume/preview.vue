@@ -716,7 +716,7 @@ watch(signatureDialogOpen, (opened) => {
         <AppSelect
           v-model="selectedStructure"
           :items="[
-            { title: 'Structure 1 · Linéaire', value: 'structure-1' },
+            { title: 'Structure 1 · Linear', value: 'structure-1' },
             { title: 'Structure 2 · Split', value: 'structure-2' },
           ]"
           label="Structure"
