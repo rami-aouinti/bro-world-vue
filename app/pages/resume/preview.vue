@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
 import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-90.json'
+import GENERATED_RESUME_TEMPLATES_20 from '~/data/resume-templates/generated-20.json'
 import ResumeLayoutAside from '~/components/resume/layouts/ResumeLayoutAside.vue'
 import ResumeLayoutAsideLeft from '~/components/resume/layouts/ResumeLayoutAsideLeft.vue'
 import ResumeLayoutAsideRight from '~/components/resume/layouts/ResumeLayoutAsideRight.vue'
@@ -304,11 +305,6 @@ const palettePresetOptions = computed<PalettePresetOption[]>(() => {
   }))
 })
 const selectedPaletteOption = computed(() => palettePresetOptions.value.find((option) => option.value === selectedPalette.value) || null)
-const paletteButtonLabel = computed(() => {
-  if (selectedPalette.value === 'template') return 'Template palette'
-  if (selectedPalette.value === 'custom') return 'Custom'
-  return selectedPaletteOption.value?.title || 'Palette preset'
-})
 
 const textStyleFilterOptions = computed(() => {
   const styles = Array.from(new Set(GENERATED_RESUME_TEMPLATES.map((template) => template.theme?.textStyle).filter(Boolean)))
@@ -643,27 +639,47 @@ watch(signatureDialogOpen, (opened) => {
           <AppMenu v-model="previewToolbarTemplateMenuOpen" :close-on-content-click="true">
             <template #activator="{ props }">
               <v-btn v-bind="props" variant="outlined" block justify="space-between">
-                {{ paletteButtonLabel }}
+                <div class="d-flex align-center ga-2">
+                  <span v-if="selectedPalette === 'template'">Template palette</span>
+                  <span v-else-if="selectedPalette === 'custom'">Custom</span>
+                  <div v-else-if="selectedPaletteOption" class="d-flex ga-1">
+                    <span class="palette-dot" :style="{ backgroundColor: selectedPaletteOption.primary }" />
+                    <span class="palette-dot" :style="{ backgroundColor: selectedPaletteOption.dark }" />
+                    <span class="palette-dot" :style="{ backgroundColor: selectedPaletteOption.light }" />
+                  </div>
+                </div>
                 <v-icon icon="mdi-chevron-down" />
               </v-btn>
             </template>
             <v-list min-width="320">
               <v-list-item title="Template palette" @click="selectedPalette = 'template'" />
-              <v-list-item
-                v-for="option in palettePresetOptions"
-                :key="option.value"
-                :title="option.title"
-                @click="selectedPalette = option.value"
-              >
+              <v-list-item>
+                <div class="palette-grid">
+                  <button
+                    v-for="option in palettePresetOptions"
+                    :key="option.value"
+                    type="button"
+                    class="palette-swatch-btn"
+                    :class="{ 'palette-swatch-btn--active': selectedPalette === option.value }"
+                    @click="selectedPalette = option.value"
+                  >
+                    <div class="d-flex ga-1">
+                      <span class="palette-dot" :style="{ backgroundColor: option.primary }" />
+                      <span class="palette-dot" :style="{ backgroundColor: option.dark }" />
+                      <span class="palette-dot" :style="{ backgroundColor: option.light }" />
+                    </div>
+                  </button>
+                </div>
+              </v-list-item>
+              <v-list-item title="Custom" @click="selectedPalette = 'custom'">
                 <template #append>
                   <div class="d-flex ga-1">
-                    <span class="palette-dot" :style="{ backgroundColor: option.primary }" />
-                    <span class="palette-dot" :style="{ backgroundColor: option.dark }" />
-                    <span class="palette-dot" :style="{ backgroundColor: option.light }" />
+                    <span class="palette-dot" :style="{ backgroundColor: customPalettePrimary }" />
+                    <span class="palette-dot" :style="{ backgroundColor: blendHexColor(customPalettePrimary, 'black', 0.2) }" />
+                    <span class="palette-dot" :style="{ backgroundColor: blendHexColor(customPalettePrimary, 'white', 0.9) }" />
                   </div>
                 </template>
               </v-list-item>
-              <v-list-item title="Custom" @click="selectedPalette = 'custom'" />
             </v-list>
           </AppMenu>
         </div>
@@ -852,6 +868,20 @@ watch(signatureDialogOpen, (opened) => {
   height: 16px;
   border-radius: 50%;
   border: 1px solid rgb(var(--v-theme-on-surface), 0.2);
+}
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.palette-swatch-btn {
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 12px;
+  background: transparent;
+  padding: 8px;
+}
+.palette-swatch-btn--active {
+  border-color: rgb(var(--v-theme-primary));
 }
 
 .resume-preview-canvas {
