@@ -95,8 +95,8 @@ const isMenuOpen = ref(false)
             </p>
             <v-slider
               :model-value="props.photoSize"
-              :min="96"
-              :max="190"
+              :min="72"
+              :max="320"
               :step="2"
               hide-details
               density="compact"
