@@ -262,8 +262,12 @@ const sectionsByRegion = computed(() => ({
 
 const mainSections = computed(() => sectionsByRegion.value.main)
 const asideSections = computed(() => sectionsByRegion.value.aside)
+const fallbackAvatarUrl = '/img/default-avatar.png'
+const renderedAvatarSrc = computed(
+  () => props.resume?.photoUrl || fallbackAvatarUrl,
+)
 const hasRenderedAvatar = computed(() =>
-  Boolean(props.showPhoto && props.resume?.photoUrl && !props.photoHidden),
+  Boolean(props.showPhoto && !props.photoHidden),
 )
 const normalizeLayoutMode = (value: unknown): ResumeLayoutMode => {
   if (value === 'aside-left' || value === 'aside-right' || value === 'no-aside')
@@ -867,7 +871,7 @@ function updateText(path: string, value: string) {
         <v-avatar class="resume-skin__avatar" @click="onPhotoClick?.()">
           <v-img
             class="resume-skin__avatar-image"
-            :src="resume.photoUrl"
+            :src="renderedAvatarSrc"
             :style="avatarImageStyle"
             cover
           />

@@ -130,7 +130,17 @@ const selectedPhotoShape = ref<string>('circle')
 const selectedPhotoBorderWidth = ref<number>(2)
 const selectedPhotoBorderStyle = ref<string>('solid')
 const selectedPhotoBorderColor = ref<string>('#0F4C81')
-const decorShapeOptions = ['circle', 'square', 'triangle', 'blob', 'line'] as const
+const decorShapeOptions = [
+  'circle',
+  'square',
+  'triangle',
+  'blob',
+  'line',
+  'ring',
+  'bar',
+  'diamond',
+  'pill',
+] as const
 const previewToolbarTemplateMenuOpen = ref(false)
 const signatureDialogOpen = ref(false)
 const signatureDataUrl = ref<string>('')
@@ -270,7 +280,7 @@ function normalizeDecorCorner(corner: any) {
 }
 
 function addDecorCorner() {
-  editableDecorCorners.value.push({ shape: 'circle', size: 96, x: 50, y: 50, color: '#5FA8D3' })
+  editableDecorCorners.value.push({ shape: 'circle', size: 120, x: 50, y: 50, color: '#5FA8D3' })
 }
 
 function removeDecorCorner(index: number) {
@@ -774,7 +784,7 @@ watch(signatureDialogOpen, (opened) => {
             label="Shape"
             hide-details
           />
-          <v-slider v-model="corner.size" label="Size (px)" min="20" max="300" step="1" hide-details />
+          <v-slider v-model="corner.size" label="Size (px)" min="20" max="520" step="1" hide-details />
           <v-slider v-model="corner.x" label="X (%)" min="0" max="100" step="1" hide-details />
           <v-slider v-model="corner.y" label="Y (%)" min="0" max="100" step="1" hide-details />
           <v-text-field v-model="corner.color" label="Color" type="color" hide-details />
