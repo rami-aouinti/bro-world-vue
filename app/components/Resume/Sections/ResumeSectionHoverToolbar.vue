@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-90.json'
+import { sectionRendererRegistry } from '~/modules/resume/renderers/sections/sectionRendererRegistry'
 
 type VariantOption = { title: string; value: string }
 type AddFieldType = 'text' | 'textarea' | 'date'
@@ -94,7 +95,27 @@ const autoVariants = computed<VariantOption[]>(() => {
   return Array.from(values).map((value) => ({ title: value, value }))
 })
 
-const variantOptions = computed(() => (props.variants.length ? props.variants : autoVariants.value))
+
+const SECTION_KEY_TO_RENDERER_KEY: Record<string, keyof typeof sectionRendererRegistry> = {
+  experience: 'experience',
+  education: 'education',
+  skill: 'skills',
+  language: 'languages',
+  project: 'projects',
+  certification: 'certifications',
+  reference: 'references',
+  hobby: 'interests',
+}
+
+const registryVariants = computed<VariantOption[]>(() => {
+  const key = normalizedSectionKey(props.sectionKey)
+  const rendererKey = SECTION_KEY_TO_RENDERER_KEY[key]
+  if (!rendererKey) return []
+  const variants = Object.keys(sectionRendererRegistry[rendererKey] || {})
+  return variants.map((value) => ({ title: value, value }))
+})
+
+const variantOptions = computed(() => (props.variants.length ? props.variants : (registryVariants.value.length ? registryVariants.value : autoVariants.value)))
 const addFields = computed(() => SECTION_ADD_FIELDS[normalizedSectionKey(props.sectionKey)] || [{ key: 'title', label: 'Title', type: 'text', required: true }])
 
 watch(
