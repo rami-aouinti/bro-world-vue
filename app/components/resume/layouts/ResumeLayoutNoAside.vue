@@ -15,6 +15,8 @@ const emit = defineEmits<{ (event: 'change-variant', sectionKey: string, variant
 
 const props = defineProps<{ resume: ResumeApiItem; template?: any; headerOnPrimary?: boolean }>()
 
+const usesHeaderContact = computed(() => ['aside', 'aside-full-right', 'aside-full-left'].includes(props.template?.layout || ''))
+
 const { t, te } = useI18n()
 
 const SECTION_TITLE_KEYS: Record<string, string> = {
@@ -137,7 +139,7 @@ const styleVars = computed(() => {
 
 <template>
   <div class="no-aside" :class="{ 'header-on-primary': headerOnPrimary }" :style="styleVars">
-    <ResumeSectionHeader class="layout-header" :resume="resume" :template="template" />
+    <ResumeSectionHeader class="layout-header" :resume="resume" :template="template" :show-contact-in-header="usesHeaderContact" />
         <ResumeSectionBlock
       v-for="section in localSections"
       :key="section.id"
@@ -151,7 +153,7 @@ const styleVars = computed(() => {
       @delete-section="onDeleteSection"
       @submit-add-item="onAddItem"
       @change-variant="onChangeVariant">
-      <ResumeSectionContact v-if="section.id === 'contact'" :resume="resume" :show-title="false" :contact-style="template?.sections?.contact || template?.contactStyle || 'labels'" />
+      <ResumeSectionContact v-if="section.id === 'contact' && !usesHeaderContact" :resume="resume" :show-title="false" :contact-style="template?.sections?.contact || template?.contactStyle || 'labels'" />
       <ResumeSectionProfile v-else-if="section.id === 'profile'" :resume="resume" :show-title="false" />
       <ResumeSectionRenderer v-else :section-key="section.rendererKey" :resume="resume" :template="template" />
     </ResumeSectionBlock>

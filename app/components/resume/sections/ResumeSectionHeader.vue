@@ -3,7 +3,7 @@ import type { ResumeApiItem } from '~/services/resumeApi'
 
 type PhotoShape = 'circle' | 'rounded' | 'square' | 'hex' | 'blob'
 
-const props = defineProps<{ resume: ResumeApiItem; template?: any }>()
+const props = defineProps<{ resume: ResumeApiItem; template?: any; showContactInHeader?: boolean }>()
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024
@@ -78,6 +78,21 @@ const sideSwitchLabel = computed(() =>
   photoConfig.value.position === 'right' ? 'Mettre la photo à gauche' : 'Mettre la photo à droite',
 )
 
+const headerContactFields = computed(() => {
+  const info = props.resume.resumeInformation
+  const normalize = (value: unknown) => (typeof value === 'string' ? value.trim() : '')
+
+  return [
+    { key: 'email', label: 'Email', value: normalize(info?.email), href: normalize(info?.email) ? `mailto:${normalize(info?.email)}` : undefined },
+    { key: 'phone', label: 'Phone', value: normalize(info?.phone), href: normalize(info?.phone) ? `tel:${normalize(info?.phone).replace(/\s+/g, '')}` : undefined },
+    { key: 'address', label: 'Address', value: normalize(info?.adresse) },
+    { key: 'birthDate', label: 'Birth date', value: normalize(info?.birthDate) },
+    { key: 'homepage', label: 'Homepage', value: normalize(info?.homepage), href: normalize(info?.homepage) || undefined, displayValue: 'Official Website' },
+    { key: 'repo', label: 'Repo', value: normalize(info?.repo_profile), href: normalize(info?.repo_profile) || undefined, displayValue: 'Link Repo' },
+  ].filter((field) => field.value.length > 0)
+})
+
+
 function openPhotoPicker() { fileInput.value?.click() }
 function zoomIn() { photoZoom.value = Math.min(2.4, Number((photoZoom.value + 0.1).toFixed(2))) }
 function zoomOut() { photoZoom.value = Math.max(0.6, Number((photoZoom.value - 0.1).toFixed(2))) }
@@ -136,7 +151,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section class="section header" :class="`is-${photoConfig.position}`">
+  <section class="section header" :class="[`is-${photoConfig.position}`, { 'with-contact': showContactInHeader }]">
     <div class="avatar-shell">
       <button
         class="avatar"
@@ -192,10 +207,18 @@ onBeforeUnmount(() => {
 
     <input ref="fileInput" class="photo-input" type="file" accept="image/png,image/jpeg,image/webp" @change="onPhotoSelected">
 
-    <div>
+    <div class="header-main">
       <h1>{{ resume.resumeInformation?.fullName }}</h1>
       <p>{{ resume.resumeInformation?.title }}</p>
       <p v-if="photoError" class="photo-error">{{ photoError }}</p>
+    </div>
+
+    <div v-if="showContactInHeader" class="header-contact">
+      <p v-for="field in headerContactFields" :key="field.key" class="contact-item">
+        <strong>{{ field.label }}:</strong>
+        <a v-if="field.href" :href="field.href" target="_blank" rel="noopener noreferrer">{{ field.displayValue || field.value }}</a>
+        <span v-else>{{ field.value }}</span>
+      </p>
     </div>
   </section>
 </template>
@@ -277,4 +300,14 @@ onBeforeUnmount(() => {
 .avatar-border-menu { width: 220px; padding: 10px; background: #0f172a; border: 1px solid #334155; color: #e2e8f0; border-radius: 10px; box-shadow: 0 8px 20px rgba(0,0,0,.35); display: grid; gap: 4px; }
 .avatar-border-menu label { font-size: 12px; color: #cbd5e1; }
 .photo-error { margin-top: 4px; color: #b91c1c; font-size: 12px; }
+</style>
+
+<style scoped>
+.header.with-contact { align-items: flex-start; }
+.header-main { flex: 1 1 auto; }
+.header-contact { margin-inline-start: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 14px; max-width: min(560px, 58%); }
+.header.is-right .header-contact { margin-inline-start: 0; margin-inline-end: auto; }
+.contact-item { margin: 0; display: flex; gap: 6px; min-width: 0; }
+.contact-item strong { flex: 0 0 auto; }
+.contact-item a, .contact-item span { min-width: 0; overflow-wrap: anywhere; word-break: break-word; color: inherit; text-decoration: none; }
 </style>
