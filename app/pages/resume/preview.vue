@@ -109,12 +109,9 @@ const selectedTemplate = computed(() => {
 })
 
 const selectedGeneratedTemplate = computed<GeneratedTemplate | null>(() => {
-  if (!selectedTemplate.value?.templateId) return null
-  return (
-    GENERATED_RESUME_TEMPLATES.find(
-      (template) => template.id === selectedTemplate.value?.templateId,
-    ) || null
-  )
+  const generatedTemplateId = selectedTemplate.value?.templateId || selectedTemplate.value?.id
+  if (!generatedTemplateId) return null
+  return GENERATED_RESUME_TEMPLATES.find((template) => template.id === generatedTemplateId) || null
 })
 
 const selectedLayout = ref<(typeof CONTROLLED_LAYOUTS)[number]>('no-aside')
@@ -164,6 +161,23 @@ const previewToolbarTemplates = computed(() =>
     previewColor: template.theme?.palette?.primary || '#0F4C81',
   })),
 )
+
+
+function applyPreviewTemplate(templateId: string) {
+  const selected = GENERATED_RESUME_TEMPLATES.find((template) => template.id === templateId)
+  if (!selected) return
+
+  router.replace({
+    query: {
+      ...route.query,
+      template: templateId,
+      layout: selected.layout || 'no-aside',
+      structure: (selected as any).structure === 'structure-2' ? 'structure-2' : 'structure-1',
+      palette: 'template',
+      textStyle: String(selected.theme?.textStyle || ''),
+    },
+  })
+}
 
 function openSignatureDialog() {
   signatureDialogOpen.value = true
@@ -835,7 +849,7 @@ watch(signatureDialogOpen, (opened) => {
                 v-for="template in previewToolbarTemplates"
                 :key="`preview-toolbar-template-${template.id}`"
                 :title="template.label"
-                @click="router.replace({ query: { ...route.query, template: template.id } })"
+                @click="applyPreviewTemplate(template.id)"
               >
                 <template #prepend>
                   <div class="template-chip-preview" :style="{ backgroundColor: template.previewColor }" />
@@ -962,5 +976,24 @@ watch(signatureDialogOpen, (opened) => {
   display: block;
   border-radius: 10px;
   touch-action: none;
+}
+
+@media print {
+  :global(body *) {
+    visibility: hidden !important;
+  }
+
+  .resume-preview-canvas,
+  .resume-preview-canvas * {
+    visibility: visible !important;
+  }
+
+  .resume-preview-canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    overflow: visible;
+  }
 }
 </style>
