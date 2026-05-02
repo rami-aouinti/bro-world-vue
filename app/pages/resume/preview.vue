@@ -110,8 +110,6 @@ const selectedPhotoBorderStyle = ref<string>('solid')
 const selectedPhotoBorderColor = ref<string>('#0F4C81')
 const decorShapeOptions = ['circle', 'square', 'triangle', 'blob', 'line'] as const
 const previewToolbarTemplateMenuOpen = ref(false)
-const showAsideWidthHoverControl = ref(false)
-const RESUME_LAYOUTS_WITH_ASIDE_HOVER_CONTROL = ['aside-left', 'aside-right', 'bar-left', 'bar-right'] as const
 
 function goToCreateResume() {
   router.push('/resume/preview')
@@ -225,6 +223,10 @@ const textStyleFilterOptions = computed(() => {
   return styles.map((style) => ({ title: String(style), value: String(style) }))
 })
 
+const asideHeightOptions = computed(() => {
+  const heights = Array.from({ length: 11 }, (_, index) => 50 + index * 5)
+  return heights.map((height) => ({ title: String(height), value: String(height) }))
+})
 
 const contactStyleOptions = [
   { title: 'Labels', value: 'labels' },
@@ -425,28 +427,6 @@ function onLayoutSectionVariantChange(sectionKey: string, variant: string) {
     ...selectedSectionVariants.value,
     [sectionKey]: variant,
   }
-}
-
-
-
-const shouldEnableAsideHoverControl = computed(() =>
-  RESUME_LAYOUTS_WITH_ASIDE_HOVER_CONTROL.includes(
-    (effectiveTemplate.value?.layout || 'no-aside') as (typeof RESUME_LAYOUTS_WITH_ASIDE_HOVER_CONTROL)[number],
-  ),
-)
-
-function onPreviewCanvasMouseMove(event: MouseEvent) {
-  if (!shouldEnableAsideHoverControl.value) {
-    showAsideWidthHoverControl.value = false
-    return
-  }
-
-  const target = event.target as HTMLElement | null
-  showAsideWidthHoverControl.value = Boolean(target?.closest('aside'))
-}
-
-function onPreviewCanvasMouseLeave() {
-  showAsideWidthHoverControl.value = false
 }
 
 const activeLayoutComponent = computed(() => {
@@ -686,27 +666,14 @@ const activeLayoutComponent = computed(() => {
         :text="resumesError"
       />
       <template v-else>
-        <div class="resume-preview-canvas" @mousemove="onPreviewCanvasMouseMove" @mouseleave="onPreviewCanvasMouseLeave">
-          <div
-            v-if="showAsideWidthHoverControl && shouldEnableAsideHoverControl"
-            class="aside-width-hover-control"
-          >
-            <v-slider
-              v-model="selectedAsideWidth"
-              label="Aside width (px)"
-              min="160"
-              max="450"
-              step="2"
-              hide-details
-            />
-          </div>
+        <div class="resume-preview-canvas">
           <ResumeTemplateDecor :decor="effectiveTemplate?.decor" />
           <component
             :is="activeLayoutComponent"
             :resume="resumeToDisplay"
             :template="effectiveTemplate"
-            :header-band-height="selectedHeaderBandHeight"
             @change-variant="onLayoutSectionVariantChange"
+            :header-band-height="selectedHeaderBandHeight"
           />
         </div>
       </template>
@@ -719,21 +686,6 @@ const activeLayoutComponent = computed(() => {
 .resume-preview-canvas {
   position: relative;
   overflow: hidden;
-}
-
-.aside-width-hover-control {
-  position: absolute;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 30;
-  width: min(440px, calc(100% - 32px));
-  padding: 8px 14px;
-  border-radius: 14px;
-  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 90%, transparent);
-  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-primary)) 28%, transparent);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.18);
 }
 
 .preview-toolbar-wrap {
