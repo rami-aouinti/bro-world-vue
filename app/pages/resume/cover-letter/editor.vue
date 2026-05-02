@@ -33,7 +33,7 @@ type CoverLetterModel = {
 
 const route = useRoute()
 const router = useRouter()
-const { loggedIn } = useAuth()
+const { loggedIn } = useUserSession()
 const { coverLetterTemplates } = useResumeTemplates()
 const { parseCoverFlowQuery, toCoverLetterQuery } = useResumeCoverFlow()
 

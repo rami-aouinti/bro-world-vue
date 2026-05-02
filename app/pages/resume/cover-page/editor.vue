@@ -28,7 +28,7 @@ type CoverPageModel = {
 
 const route = useRoute()
 const router = useRouter()
-const { loggedIn } = useAuth()
+const { loggedIn } = useUserSession()
 const { coverPageTemplates } = useResumeTemplates()
 const { parseCoverFlowQuery, toCoverLetterQuery } = useResumeCoverFlow()
 
