@@ -52,7 +52,8 @@ const contactFields = computed<ContactField[]>(() => {
 
 <template>
   <h3 v-if="showTitle">Contact</h3>
-  <p v-for="field in contactFields" :key="field.key" class="contact-line">
+  <div class="contact-grid">
+    <p v-for="field in contactFields" :key="field.key" class="contact-line">
     <template v-if="contactStyle === 'icons'">
       <v-icon size="16" class="mr-2">{{ field.icon }}</v-icon>
     </template>
@@ -69,9 +70,16 @@ const contactFields = computed<ContactField[]>(() => {
     </a>
     <span v-else>{{ field.value }}</span>
   </p>
+  </div>
 </template>
 
 <style scoped>
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 20px;
+}
+
 .contact-line {
   display: flex;
   align-items: center;
@@ -84,6 +92,11 @@ const contactFields = computed<ContactField[]>(() => {
   min-width: 0;
   overflow-wrap: anywhere;
   word-break: break-word;
+}
+
+.contact-line a {
+  color: inherit;
+  text-decoration: none;
 }
 
 .label {
