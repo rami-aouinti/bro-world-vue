@@ -99,5 +99,6 @@ const items = computed(
     :resume="resume"
     :items="items"
     :theme="template?.theme"
+    :editable="true"
   />
 </template>
