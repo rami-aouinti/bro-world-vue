@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ResumeSectionHeading from '~/components/Resume/Sections/ResumeSectionHeading.vue'
+import ResumeSectionHoverToolbar from '~/components/Resume/Sections/ResumeSectionHoverToolbar.vue'
 
 withDefaults(
   defineProps<{
@@ -19,16 +20,18 @@ withDefaults(
 </script>
 
 <template>
-  <section v-if="!isEmpty" class="resume-section-block">
-    <ResumeSectionHeading
-      :title="title"
-      :icon="icon"
-      :tone="tone"
-      :show-icon="showIcon"
-      variant="h3"
-    />
+  <ResumeSectionHoverToolbar v-if="!isEmpty" class="resume-section-block">
+    <template #title>
+      <ResumeSectionHeading
+        :title="title"
+        :icon="icon"
+        :tone="tone"
+        :show-icon="showIcon"
+        variant="h3"
+      />
+    </template>
     <slot />
-  </section>
+  </ResumeSectionHoverToolbar>
 </template>
 
 <style scoped>

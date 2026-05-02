@@ -97,4 +97,5 @@ const headingTag = computed(() => (props.variant === 'h2' ? 'h2' : 'h3'))
   opacity: 0.5;
   background: currentColor;
 }
+
 </style>
