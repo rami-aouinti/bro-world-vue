@@ -158,7 +158,7 @@ function normalizeTemplateLabel(name: string) {
 }
 
 const previewToolbarTemplates = computed(() =>
-  GENERATED_RESUME_TEMPLATES_20.map((template) => ({
+  GENERATED_RESUME_TEMPLATES.map((template) => ({
     id: template.id,
     label: normalizeTemplateLabel(template.name),
     previewColor: template.theme?.palette?.primary || '#0F4C81',
