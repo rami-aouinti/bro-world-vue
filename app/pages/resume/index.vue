@@ -34,7 +34,6 @@ useHead({
 
 const {
   allTemplates,
-  resumeTemplates,
   coverPageTemplates,
   coverLetterTemplates,
 } = useResumeTemplates()
@@ -44,10 +43,23 @@ const activeTemplateTab = ref<'resume' | 'cover-page' | 'cover-letter'>(
 )
 const selectedLayoutFilter = ref<string | null>(null)
 
+
+const generatedResumeTemplates = computed(() =>
+  GENERATED_RESUME_TEMPLATES.map((template) => ({
+    id: template.id,
+    title: `Resume · ${template.name}`,
+    image: '/img/cv/resume-modern.svg',
+    type: 'resume' as const,
+    templateId: template.id,
+    layout: template.layout,
+  })),
+)
+
 const layoutFilterOptions = computed(() => {
   const layouts = Array.from(
-    new Set(GENERATED_RESUME_TEMPLATES.map((template) => template.layout)),
+    new Set(generatedResumeTemplates.value.map((template) => template.layout)),
   )
+
   return layouts.map((layout) => ({
     title: layout,
     value: layout,
@@ -69,18 +81,16 @@ const documentTabs = computed(() => [
   },
 ])
 
-const displayedTemplates = computed(() =>
-  allTemplates.value.filter((template) => {
-    if (template.type !== activeTemplateTab.value) return false
-    if (template.type !== 'resume') return true
-    const generatedTemplate = GENERATED_RESUME_TEMPLATES.find(
-      (item) => item.id === template.templateId,
-    )
-    if (!generatedTemplate) return true
-    if (!selectedLayoutFilter.value) return true
-    return generatedTemplate.layout === selectedLayoutFilter.value
-  }),
-)
+const displayedTemplates = computed(() => {
+  if (activeTemplateTab.value === 'resume') {
+    return generatedResumeTemplates.value.filter((template) => {
+      if (!selectedLayoutFilter.value) return true
+      return template.layout === selectedLayoutFilter.value
+    })
+  }
+
+  return allTemplates.value.filter((template) => template.type === activeTemplateTab.value)
+})
 
 const selectedTemplateId = ref<string>('')
 
@@ -108,8 +118,9 @@ const selectedTemplateCard = computed(
 )
 
 const openTemplateInWriteMode = (template: {
+  id: string
+  templateId?: string
   type: 'resume' | 'cover-page' | 'cover-letter'
-  templateId: string
 }) => {
   const pathByType = {
     resume: '/resume/preview',
@@ -120,7 +131,7 @@ const openTemplateInWriteMode = (template: {
   router.push({
     path: pathByType[template.type],
     query: {
-      template: template.templateId,
+      template: template.type === 'resume' ? template.templateId || template.id : template.id,
       mode: 'write',
     },
   })
@@ -184,7 +195,7 @@ onUnmounted(() => {
             </v-tab>
           </v-tabs>
           <p class="mt-3 text-medium-emphasis">
-            {{ resumeTemplates.length }} resume ·
+            {{ generatedResumeTemplates.length }} resume ·
             {{ coverPageTemplates.length }} cover page ·
             {{ coverLetterTemplates.length }} cover letter
           </p>

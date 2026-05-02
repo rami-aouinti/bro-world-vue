@@ -18,6 +18,7 @@ export type ResumeTemplate = {
   image: string
   type: ResumeDocumentType
   templateId: string
+  layoutId?: string
 }
 
 function isValidTemplateConfig(template: ResumeTemplateConfig): boolean {
@@ -78,6 +79,7 @@ export function useResumeTemplates() {
           image: template.image,
           type: template.type,
           templateId: template.templateId,
+          layoutId: template.layoutId,
         })),
     )
 
@@ -94,6 +96,7 @@ export function useResumeTemplates() {
       image: template.image,
       type: template.type,
       templateId: template.templateId,
+      layoutId: template.layoutId,
     })),
   )
 
