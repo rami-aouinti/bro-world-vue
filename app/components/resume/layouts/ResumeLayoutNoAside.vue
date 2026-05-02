@@ -125,10 +125,12 @@ function onChangeVariant(sectionKey: string, variant: string) {
 const styleVars = computed(() => {
   const baseVars = resolveTemplateStyleVars(props.template)
   const primary = props.template?.theme?.palette?.primary ?? '#0f4c81'
+  const secondary = props.template?.theme?.palette?.secondary ?? '#334155'
   return {
     ...baseVars,
     '--primary': primary,
-    '--header-text': resolveHeaderTextColor(primary),
+    '--secondary': secondary,
+    '--header-text': resolveHeaderTextColor(secondary),
   } as CSSProperties
 })
 </script>
@@ -165,7 +167,7 @@ const styleVars = computed(() => {
   box-sizing: border-box;
 }
 .no-aside.header-on-primary .layout-header {
-  background: var(--primary, #0f4c81);
+  background: var(--secondary, #334155);
   color: var(--header-text, #ffffff);
   padding: var(--panel-pad, 12px);
 }
