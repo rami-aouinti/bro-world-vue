@@ -1573,8 +1573,8 @@ function updateText(path: string, value: string) {
   text-align: left;
 }
 .resume-skin__contact-item a {
-  color: inherit;
-  text-decoration: none;
+  color: inherit !important;
+  text-decoration: none !important;
 }
 
 .resume-skin__header h1 :deep(.resume-skin__text),
@@ -1864,7 +1864,7 @@ function updateText(path: string, value: string) {
 
 @media (max-width: 768px) {
   .resume-skin__contact-grid {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .resume-skin__contact-grid--aside-left-aside,
