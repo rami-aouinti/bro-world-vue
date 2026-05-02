@@ -112,6 +112,8 @@ const styleVars = computed(() => {
   font-family: var(--font-family, 'Inter', 'Segoe UI', sans-serif);
   letter-spacing: var(--font-letter-spacing, normal);
   font-style: var(--font-style, normal);
+  padding-inline: var(--layout-edge-pad, 10px);
+  box-sizing: border-box;
 }
 .aside-left.reverse {
   grid-template-columns: 1fr var(--aside-width, 240px);

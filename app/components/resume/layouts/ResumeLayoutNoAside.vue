@@ -100,6 +100,8 @@ const styleVars = computed(() => {
   font-family: var(--font-family, 'Inter', 'Segoe UI', sans-serif);
   letter-spacing: var(--font-letter-spacing, normal);
   font-style: var(--font-style, normal);
+  padding-inline: var(--layout-edge-pad, 10px);
+  box-sizing: border-box;
 }
 .no-aside.header-on-primary .layout-header {
   background: var(--primary, #0f4c81);
