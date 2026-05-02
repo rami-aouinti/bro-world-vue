@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
 import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-90.json'
-import GENERATED_RESUME_TEMPLATES_20 from '~/data/resume-templates/generated-20.json'
 import ResumeLayoutAside from '~/components/resume/layouts/ResumeLayoutAside.vue'
 import ResumeLayoutAsideLeft from '~/components/resume/layouts/ResumeLayoutAsideLeft.vue'
 import ResumeLayoutAsideRight from '~/components/resume/layouts/ResumeLayoutAsideRight.vue'
@@ -131,8 +130,19 @@ const selectedPhotoShape = ref<string>('circle')
 const selectedPhotoBorderWidth = ref<number>(2)
 const selectedPhotoBorderStyle = ref<string>('solid')
 const selectedPhotoBorderColor = ref<string>('#0F4C81')
-const decorShapeOptions = ['circle', 'square', 'triangle', 'blob', 'line'] as const
+const decorShapeOptions = [
+  'circle',
+  'square',
+  'triangle',
+  'blob',
+  'line',
+  'ring',
+  'bar',
+  'diamond',
+  'pill',
+] as const
 const previewToolbarTemplateMenuOpen = ref(false)
+const layoutMenuOpen = ref(false)
 const signatureDialogOpen = ref(false)
 const signatureDataUrl = ref<string>('')
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
@@ -154,13 +164,19 @@ function normalizeTemplateLabel(name: string) {
     .join(' ')
 }
 
-const previewToolbarTemplates = computed(() =>
-  GENERATED_RESUME_TEMPLATES.map((template) => ({
-    id: template.id,
-    label: normalizeTemplateLabel(template.name),
-    previewColor: template.theme?.palette?.primary || '#0F4C81',
-  })),
-)
+const previewToolbarTemplates = computed(() => {
+  const uniqueTemplates = new Map<string, { id: string; label: string; previewColor: string }>()
+
+  GENERATED_RESUME_TEMPLATES.forEach((template) => {
+    uniqueTemplates.set(template.id, {
+      id: template.id,
+      label: normalizeTemplateLabel(template.name),
+      previewColor: template.theme?.palette?.primary || '#0F4C81',
+    })
+  })
+
+  return Array.from(uniqueTemplates.values())
+})
 
 
 function applyPreviewTemplate(templateId: string) {
@@ -265,7 +281,7 @@ function normalizeDecorCorner(corner: any) {
 }
 
 function addDecorCorner() {
-  editableDecorCorners.value.push({ shape: 'circle', size: 96, x: 50, y: 50, color: '#5FA8D3' })
+  editableDecorCorners.value.push({ shape: 'circle', size: 120, x: 50, y: 50, color: '#5FA8D3' })
 }
 
 function removeDecorCorner(index: number) {
@@ -648,39 +664,9 @@ watch(signatureDialogOpen, (opened) => {
   <div>
     <AppPageDrawers>
       <template #left>
-        <AppSelect
-          v-model="selectedStructure"
-          :items="[
-            { title: 'Structure 1 · Linéaire', value: 'structure-1' },
-            { title: 'Structure 2 · Split', value: 'structure-2' },
-          ]"
-          label="Structure"
-          class="pt-3"
-          hide-details
-        />
-        <AppSelect
-          v-model="selectedLayout"
-          :items="layoutFilterOptions"
-          label="Layout"
-          class="pt-3"
-          hide-details
-        />
-        <AppSelect
-          v-model="selectedTextStyle"
-          :items="textStyleFilterOptions"
-          label="Text style"
-          class="pt-3"
-          hide-details
-        />
-        <AppSelect
-          v-model="selectedSectionVariants.contact"
-          :items="contactStyleOptions"
-          label="Contact style"
-          class="pt-3"
-          hide-details
-        />
+
         <div class="pt-3">
-          <AppMenu v-model="previewToolbarTemplateMenuOpen" :close-on-content-click="true">
+          <v-menu v-model="previewToolbarTemplateMenuOpen" :close-on-content-click="true">
             <template #activator="{ props }">
               <v-btn v-bind="props" variant="outlined" block justify="space-between" prepend-icon="mdi-palette">
                 Palette
@@ -717,13 +703,44 @@ watch(signatureDialogOpen, (opened) => {
                 </template>
               </v-list-item>
             </v-list>
-          </AppMenu>
+          </v-menu>
         </div>
         <v-text-field
           v-if="selectedPalette === 'custom'"
           v-model="customPalettePrimary"
           label="Custom primary color"
           placeholder="#0F4C81"
+          class="pt-3"
+          hide-details
+        />
+        <AppSelect
+          v-model="selectedStructure"
+          :items="[
+            { title: 'Structure 1 · Linéaire', value: 'structure-1' },
+            { title: 'Structure 2 · Split', value: 'structure-2' },
+          ]"
+          label="Structure"
+          class="pt-3"
+          hide-details
+        />
+        <AppSelect
+          v-model="selectedLayout"
+          :items="layoutFilterOptions"
+          label="Layout"
+          class="pt-3"
+          hide-details
+        />
+        <AppSelect
+          v-model="selectedTextStyle"
+          :items="textStyleFilterOptions"
+          label="Text style"
+          class="pt-3"
+          hide-details
+        />
+        <AppSelect
+          v-model="selectedSectionVariants.contact"
+          :items="contactStyleOptions"
+          label="Contact style"
           class="pt-3"
           hide-details
         />
@@ -769,7 +786,7 @@ watch(signatureDialogOpen, (opened) => {
             label="Shape"
             hide-details
           />
-          <v-slider v-model="corner.size" label="Size (px)" min="20" max="300" step="1" hide-details />
+          <v-slider v-model="corner.size" label="Size (px)" min="20" max="520" step="1" hide-details />
           <v-slider v-model="corner.x" label="X (%)" min="0" max="100" step="1" hide-details />
           <v-slider v-model="corner.y" label="Y (%)" min="0" max="100" step="1" hide-details />
           <v-text-field v-model="corner.color" label="Color" type="color" hide-details />
@@ -825,7 +842,7 @@ watch(signatureDialogOpen, (opened) => {
           </v-btn>
 
           <v-menu
-            v-model="previewToolbarTemplateMenuOpen"
+            v-model="layoutMenuOpen"
             location="bottom center"
             origin="top center"
           >
