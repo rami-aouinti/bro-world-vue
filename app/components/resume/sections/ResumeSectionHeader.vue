@@ -25,7 +25,7 @@ const customShape = ref<PhotoShape | null>(null)
 const borderWidth = ref(2)
 const borderColor = ref('#0f4c81')
 const borderStyle = ref<'solid' | 'dashed' | 'dotted' | 'double'>('solid')
-const customPosition = ref<'left' | 'center' | 'right' | null>(null)
+const customPosition = ref<'left' | 'right' | null>(null)
 
 const initials = computed(() =>
   (props.resume.resumeInformation?.fullName || '?')
@@ -40,7 +40,7 @@ const photoStorageKey = computed(() => `resume-builder-photo-${props.resume.id |
 
 const photoConfig = computed(() => {
   const photo = props.template?.photo ?? {}
-  const templatePosition = photo.position === 'right' ? 'right' : photo.position === 'center' ? 'center' : 'left'
+  const templatePosition = photo.position === 'right' ? 'right' : 'left'
   const position = customPosition.value ?? templatePosition
   const size =
     typeof photo.size === 'number'
@@ -74,11 +74,15 @@ const currentPhotoUrl = computed(() => {
   return previewPhotoUrl.value || resumePhoto || apiPhoto || ''
 })
 
+const sideSwitchLabel = computed(() =>
+  photoConfig.value.position === 'right' ? 'Mettre la photo à gauche' : 'Mettre la photo à droite',
+)
+
 function openPhotoPicker() { fileInput.value?.click() }
 function zoomIn() { photoZoom.value = Math.min(2.4, Number((photoZoom.value + 0.1).toFixed(2))) }
 function zoomOut() { photoZoom.value = Math.max(0.6, Number((photoZoom.value - 0.1).toFixed(2))) }
-function centerPhotoInHeader() {
-  customPosition.value = 'center'
+function togglePhotoSide() {
+  customPosition.value = photoConfig.value.position === 'right' ? 'left' : 'right'
 }
 
 function persistPhotoLocally(photoUrl: string) {
@@ -169,7 +173,7 @@ onBeforeUnmount(() => {
 
       <v-btn color="primary" variant="text" class="avatar-tool avatar-tool--left" icon="mdi-magnify-plus" size="x-small" density="comfortable" @click="zoomIn" />
       <v-btn color="primary" variant="text" class="avatar-tool avatar-tool--bottom-left" icon="mdi-magnify-minus" size="x-small" density="comfortable" @click="zoomOut" />
-      <v-btn color="primary" variant="text" class="avatar-tool avatar-tool--right" icon="mdi-format-horizontal-align-center" size="x-small" density="comfortable" title="Centrer la photo" @click="centerPhotoInHeader" />
+      <v-btn color="primary" variant="text" class="avatar-tool avatar-tool--right" icon="mdi-swap-horizontal" size="x-small" density="comfortable" :title="sideSwitchLabel" @click="togglePhotoSide" />
 
       <v-menu location="bottom" offset="8">
         <template #activator="{ props: menuProps }">
@@ -199,7 +203,6 @@ onBeforeUnmount(() => {
 <style scoped>
 .header { display:flex; gap:var(--section-space, 12px); align-items:center; padding-bottom:var(--section-space, 12px); border-bottom:1px var(--line-style, solid) var(--line-color, #cbd5e1); }
 .header.is-right { flex-direction: row-reverse; justify-content: flex-start; }
-.header.is-center { justify-content: center; text-align: center; }
 .photo-input { display:none; }
 .avatar-shell { position: relative; flex: 0 0 auto; }
 .avatar {
@@ -208,7 +211,7 @@ onBeforeUnmount(() => {
   border: var(--photo-border);
   position: relative;
   overflow: hidden;
-  background: transparent;
+  background: var(--primary, #0f4c81);
   color: #fff;
   display: grid;
   place-items: center;
@@ -227,7 +230,6 @@ onBeforeUnmount(() => {
 .avatar-image { width: 100%; height: 100%; transition: transform .15s ease; }
 .avatar-image :deep(.v-responsive), .avatar-image :deep(.v-img), .avatar-image :deep(.v-responsive__content) { width: 100%; height: 100%; }
 .avatar-image :deep(.v-img__img) { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
-.avatar--with-photo { background: transparent; color: transparent; }
 .avatar-tool--camera {
   position: absolute;
   top: 3px;
@@ -268,9 +270,9 @@ onBeforeUnmount(() => {
 }
 .avatar-tool:hover:deep(.v-btn) { filter: brightness(1.05); }
 .avatar-tool--top-left { left: -14px; top: -14px; }
-.avatar-tool--left { left: -10px; top: calc(50% - 12px); }
-.avatar-tool--bottom-left { left: 30%; bottom: -14px; }
-.avatar-tool--right { right: -10px; top: calc(50% - 12px); }
+.avatar-tool--left { left: -18px; top: 42%; }
+.avatar-tool--bottom-left { left: -14px; bottom: -14px; }
+.avatar-tool--right { right: -18px; top: 42%; }
 .avatar-tool--bottom-right { right: -14px; bottom: -14px; }
 .avatar-border-menu { width: 220px; padding: 10px; background: #0f172a; border: 1px solid #334155; color: #e2e8f0; border-radius: 10px; box-shadow: 0 8px 20px rgba(0,0,0,.35); display: grid; gap: 4px; }
 .avatar-border-menu label { font-size: 12px; color: #cbd5e1; }
