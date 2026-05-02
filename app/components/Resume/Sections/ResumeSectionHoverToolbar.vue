@@ -1,14 +1,15 @@
+<script setup lang="ts">
+</script>
 <template>
   <section class="resume-hover-section">
     <div class="resume-hover-section__header">
       <slot name="title" />
       <span class="resume-hover-section__toolbar" role="toolbar" aria-label="Section actions">
-        <button type="button" class="resume-hover-section__tool-btn" aria-label="Add section">
-          <v-icon icon="mdi-plus" size="14" />
-        </button>
-        <button type="button" class="resume-hover-section__tool-btn" aria-label="Remove section">
-          <v-icon icon="mdi-minus" size="14" />
-        </button>
+        <v-btn icon="mdi-earth" size="sm" variant="text" aria-label="Change Form"></v-btn>
+        <v-btn icon="mdi-plus" size="sm" variant="text" aria-label="Add section"></v-btn>
+        <v-btn icon="mdi-minus" size="sm" variant="text" aria-label="Remove section"></v-btn>
+        <v-btn icon="mdi-arrow-down" size="sm" variant="text" aria-label="Down section"></v-btn>
+        <v-btn icon="mdi-arrow-up" size="sm" variant="text" aria-label="Up section"></v-btn>
       </span>
     </div>
     <slot />
@@ -24,7 +25,6 @@
 .resume-hover-section__header {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
 }
 
 .resume-hover-section__toolbar {
@@ -35,6 +35,7 @@
   pointer-events: none;
   transform: translateX(-4px);
   transition: opacity .15s ease, transform .15s ease;
+  margin: 0 20px 0.65rem;
 }
 
 .resume-hover-section:hover .resume-hover-section__toolbar,
