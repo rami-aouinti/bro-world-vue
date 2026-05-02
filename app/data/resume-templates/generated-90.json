@@ -6734,5 +6734,329 @@
         }
       ]
     }
+  },
+  {
+    "id": "tpl-114",
+    "name": "classic-timeline-ocean - Top Aside Left A",
+    "version": 1,
+    "layout": "aside-left",
+    "structure": "structure-1",
+    "sections": {
+      "experience": "timeline",
+      "education": "timeline",
+      "skills": "progress-line",
+      "languages": "dots",
+      "languagesLabel": "classic",
+      "certifications": "list",
+      "references": "classic",
+      "projects": "cards",
+      "interests": "classic",
+      "contact": "icons"
+    },
+    "theme": {
+      "palette": {
+        "primary": "#0F4C81",
+        "secondary": "#5FA8D3",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#F8FAFC"
+      },
+      "line": "soft",
+      "density": "comfortable",
+      "textStyle": "roman",
+      "showIcon": true
+    },
+    "aside": {
+      "width": "240px",
+      "height": "100%"
+    },
+    "photo": {
+      "position": "left",
+      "size": "96px",
+      "shape": "circle",
+      "border": "2px solid #0F4C81"
+    },
+    "decor": {
+      "corners": [
+        {
+          "shape": "circle",
+          "size": "130px",
+          "color": "#5FA8D3",
+          "x": "top-right",
+          "y": "0"
+        }
+      ]
+    },
+    "layoutOptions": {
+      "columnsGap": "wide",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal",
+      "asideStartsAtTop": true
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "none",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "dots",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "geo"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "none",
+      "casing": "normal"
+    }
+  },
+  {
+    "id": "tpl-115",
+    "name": "classic-timeline-forest - Top Aside Left B",
+    "version": 1,
+    "layout": "aside-left",
+    "structure": "structure-1",
+    "sections": {
+      "experience": "timeline",
+      "education": "timeline",
+      "skills": "progress-line",
+      "languages": "dots",
+      "languagesLabel": "classic",
+      "certifications": "list",
+      "references": "classic",
+      "projects": "cards",
+      "interests": "classic",
+      "contact": "labels"
+    },
+    "theme": {
+      "palette": {
+        "primary": "#1B5E20",
+        "secondary": "#66BB6A",
+        "text": "#102A16",
+        "muted": "#5F7A65",
+        "pageBackground": "#F6FBF7"
+      },
+      "line": "soft",
+      "density": "comfortable",
+      "textStyle": "italic",
+      "showIcon": true
+    },
+    "aside": {
+      "width": "240px",
+      "height": "100%"
+    },
+    "photo": {
+      "position": "left",
+      "size": "96px",
+      "shape": "circle",
+      "border": "2px solid #1B5E20"
+    },
+    "decor": {
+      "corners": [
+        {
+          "shape": "circle",
+          "size": "110px",
+          "color": "#66BB6A",
+          "x": "top-right",
+          "y": "0"
+        }
+      ]
+    },
+    "layoutOptions": {
+      "columnsGap": "normal",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal",
+      "asideStartsAtTop": true
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "soft",
+      "frame": "line"
+    },
+    "levelStyle": {
+      "skills": "bars",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "minimal"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "solid",
+      "casing": "normal"
+    }
+  },
+  {
+    "id": "tpl-116",
+    "name": "modern-cards-ocean - Top Aside Right A",
+    "version": 1,
+    "layout": "aside-right",
+    "structure": "structure-2",
+    "sections": {
+      "experience": "cards",
+      "education": "cards",
+      "skills": "dots",
+      "languages": "progress-circle",
+      "languagesLabel": "flags",
+      "certifications": "cards",
+      "references": "list",
+      "projects": "cards",
+      "interests": "list",
+      "contact": "labels"
+    },
+    "theme": {
+      "palette": {
+        "primary": "#0F4C81",
+        "secondary": "#5FA8D3",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#F8FAFC"
+      },
+      "line": "block",
+      "density": "comfortable",
+      "textStyle": "display",
+      "showIcon": true
+    },
+    "aside": {
+      "width": "240px",
+      "height": "100%"
+    },
+    "photo": {
+      "position": "right",
+      "size": "92px",
+      "shape": "rounded",
+      "border": "2px solid #0F4C81"
+    },
+    "decor": {
+      "corners": [
+        {
+          "shape": "circle",
+          "size": "110px",
+          "color": "#5FA8D3",
+          "x": "top-right",
+          "y": "0"
+        }
+      ]
+    },
+    "layoutOptions": {
+      "columnsGap": "wide",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal",
+      "asideStartsAtTop": true
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "soft",
+      "frame": "line"
+    },
+    "levelStyle": {
+      "skills": "bars",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "minimal"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "solid",
+      "casing": "normal"
+    }
+  },
+  {
+    "id": "tpl-117",
+    "name": "modern-cards-forest - Top Aside Right B",
+    "version": 1,
+    "layout": "aside-right",
+    "structure": "structure-2",
+    "sections": {
+      "experience": "cards",
+      "education": "cards",
+      "skills": "dots",
+      "languages": "progress-circle",
+      "languagesLabel": "flags",
+      "certifications": "cards",
+      "references": "list",
+      "projects": "cards",
+      "interests": "list",
+      "contact": "labels"
+    },
+    "theme": {
+      "palette": {
+        "primary": "#1B5E20",
+        "secondary": "#66BB6A",
+        "text": "#102A16",
+        "muted": "#5F7A65",
+        "pageBackground": "#F6FBF7"
+      },
+      "line": "block",
+      "density": "comfortable",
+      "textStyle": "roman",
+      "showIcon": true
+    },
+    "aside": {
+      "width": "240px",
+      "height": "100%"
+    },
+    "photo": {
+      "position": "right",
+      "size": "92px",
+      "shape": "rounded",
+      "border": "2px solid #1B5E20"
+    },
+    "decor": {
+      "corners": [
+        {
+          "shape": "circle",
+          "size": "110px",
+          "color": "#66BB6A",
+          "x": "top-right",
+          "y": "0"
+        }
+      ]
+    },
+    "layoutOptions": {
+      "columnsGap": "normal",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal",
+      "asideStartsAtTop": true
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "none",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "dots",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "geo"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "none",
+      "casing": "normal"
+    }
   }
 ]
