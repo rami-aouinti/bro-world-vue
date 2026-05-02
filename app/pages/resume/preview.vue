@@ -26,6 +26,31 @@ const loadingResumes = ref(false)
 const resumesError = ref('')
 const myResumes = ref<ResumeApiItem[]>([])
 const CONTROLLED_LAYOUTS = ['aside-left', 'aside-right', 'no-aside', 'aside', 'aside-full-left', 'aside-full-right', 'bar-left', 'bar-right'] as const
+type PalettePresetOption = { title: string; value: string; primary: string; dark: string; light: string }
+
+function clampChannel(value: number) {
+  return Math.min(255, Math.max(0, Math.round(value)))
+}
+
+function normalizeHexColor(color: string) {
+  const value = color.trim().replace('#', '')
+  if (value.length === 3) return `#${value.split('').map((char) => char + char).join('').toUpperCase()}`
+  if (value.length === 6) return `#${value.toUpperCase()}`
+  return '#0F4C81'
+}
+
+function blendHexColor(hex: string, target: 'white' | 'black', amount: number) {
+  const normalized = normalizeHexColor(hex)
+  const r = Number.parseInt(normalized.slice(1, 3), 16)
+  const g = Number.parseInt(normalized.slice(3, 5), 16)
+  const b = Number.parseInt(normalized.slice(5, 7), 16)
+  const mix = target === 'white' ? 255 : 0
+  const ratio = Math.min(1, Math.max(0, amount))
+  const nextR = clampChannel(r + (mix - r) * ratio)
+  const nextG = clampChannel(g + (mix - g) * ratio)
+  const nextB = clampChannel(b + (mix - b) * ratio)
+  return `#${nextR.toString(16).padStart(2, '0')}${nextG.toString(16).padStart(2, '0')}${nextB.toString(16).padStart(2, '0')}`.toUpperCase()
+}
 
 
 const layoutFilterOptions = computed(() => {
@@ -205,18 +230,20 @@ const sectionVariantOptionsForDrawer = computed(() =>
   ),
 )
 
-const paletteOptions = computed(() => [
-  { title: 'Template palette', value: 'template' },
-  { title: 'Preset · Indigo', value: '#4F46E5' },
-  { title: 'Preset · Gray', value: '#3e3d4d' },
-  { title: 'Preset · Yellow', value: '#aaae79' },
-  { title: 'Preset · Green', value: '#6e8063' },
-  { title: 'Preset · Lees', value: '#4c304f' },
-  { title: 'Preset · Mauve', value: '#3d3a76' },
-  { title: 'Preset · Emerald', value: '#059669' },
-  { title: 'Preset · Rose', value: '#E11D48' },
-  { title: 'Custom', value: 'custom' },
-])
+const palettePresetOptions = computed<PalettePresetOption[]>(() => {
+  const uniquePrimaries = new Set<string>()
+  GENERATED_RESUME_TEMPLATES.forEach((template) => {
+    uniquePrimaries.add(normalizeHexColor(template.theme?.palette?.primary || '#0F4C81'))
+  })
+  return Array.from(uniquePrimaries).map((primary, index) => ({
+    title: `Preset · ${index + 1}`,
+    value: primary,
+    primary,
+    dark: blendHexColor(primary, 'black', 0.2),
+    light: blendHexColor(primary, 'white', 0.9),
+  }))
+})
+const selectedPaletteOption = computed(() => palettePresetOptions.value.find((option) => option.value === selectedPalette.value) || null)
 
 const textStyleFilterOptions = computed(() => {
   const styles = Array.from(new Set(GENERATED_RESUME_TEMPLATES.map((template) => template.theme?.textStyle).filter(Boolean)))
@@ -261,8 +288,15 @@ const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
 
   if (selectedPalette.value === 'custom') {
     nextTheme.palette.primary = customPalettePrimary.value
+    nextTheme.palette.secondary = blendHexColor(customPalettePrimary.value, 'black', 0.2)
+    nextTheme.palette.pageBackground = blendHexColor(customPalettePrimary.value, 'white', 0.9)
   } else if (selectedPalette.value !== 'template') {
-    nextTheme.palette.primary = selectedPalette.value
+    const selectedPreset = selectedPaletteOption.value
+    if (selectedPreset) {
+      nextTheme.palette.primary = selectedPreset.primary
+      nextTheme.palette.secondary = selectedPreset.dark
+      nextTheme.palette.pageBackground = selectedPreset.light
+    }
   }
 
   return {
@@ -477,13 +511,55 @@ const activeLayoutComponent = computed(() => {
           class="pt-3"
           hide-details
         />
-        <AppSelect
-          v-model="selectedPalette"
-          :items="paletteOptions"
-          label="Palette"
-          class="pt-3"
-          hide-details
-        />
+        <div class="pt-3">
+          <div class="text-caption mb-1">Palette</div>
+          <AppMenu v-model="previewToolbarTemplateMenuOpen" :close-on-content-click="true">
+            <template #activator="{ props }">
+              <v-btn v-bind="props" variant="outlined" block justify="space-between">
+                <div class="d-flex align-center ga-2">
+                  <span v-if="selectedPalette === 'template'">Template palette</span>
+                  <span v-else-if="selectedPalette === 'custom'">Custom</span>
+                  <div v-else-if="selectedPaletteOption" class="d-flex ga-1">
+                    <span class="palette-dot" :style="{ backgroundColor: selectedPaletteOption.primary }" />
+                    <span class="palette-dot" :style="{ backgroundColor: selectedPaletteOption.dark }" />
+                    <span class="palette-dot" :style="{ backgroundColor: selectedPaletteOption.light }" />
+                  </div>
+                </div>
+                <v-icon icon="mdi-chevron-down" />
+              </v-btn>
+            </template>
+            <v-list min-width="320">
+              <v-list-item title="Template palette" @click="selectedPalette = 'template'" />
+              <v-list-item>
+                <div class="palette-grid">
+                  <button
+                    v-for="option in palettePresetOptions"
+                    :key="option.value"
+                    type="button"
+                    class="palette-swatch-btn"
+                    :class="{ 'palette-swatch-btn--active': selectedPalette === option.value }"
+                    @click="selectedPalette = option.value"
+                  >
+                    <div class="d-flex ga-1">
+                      <span class="palette-dot" :style="{ backgroundColor: option.primary }" />
+                      <span class="palette-dot" :style="{ backgroundColor: option.dark }" />
+                      <span class="palette-dot" :style="{ backgroundColor: option.light }" />
+                    </div>
+                  </button>
+                </div>
+              </v-list-item>
+              <v-list-item title="Custom" @click="selectedPalette = 'custom'">
+                <template #append>
+                  <div class="d-flex ga-1">
+                    <span class="palette-dot" :style="{ backgroundColor: customPalettePrimary }" />
+                    <span class="palette-dot" :style="{ backgroundColor: blendHexColor(customPalettePrimary, 'black', 0.2) }" />
+                    <span class="palette-dot" :style="{ backgroundColor: blendHexColor(customPalettePrimary, 'white', 0.9) }" />
+                  </div>
+                </template>
+              </v-list-item>
+            </v-list>
+          </AppMenu>
+        </div>
         <v-text-field
           v-if="selectedPalette === 'custom'"
           v-model="customPalettePrimary"
@@ -632,6 +708,27 @@ const activeLayoutComponent = computed(() => {
 
 
 <style scoped>
+.palette-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid rgb(var(--v-theme-on-surface), 0.2);
+}
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.palette-swatch-btn {
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 12px;
+  background: transparent;
+  padding: 8px;
+}
+.palette-swatch-btn--active {
+  border-color: rgb(var(--v-theme-primary));
+}
+
 .resume-preview-canvas {
   position: relative;
   overflow: hidden;
