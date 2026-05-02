@@ -1,7 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-type DecorShapeType = 'circle' | 'square' | 'line' | 'blob' | 'triangle'
+type DecorShapeType =
+  | 'circle'
+  | 'square'
+  | 'line'
+  | 'blob'
+  | 'triangle'
+  | 'ring'
+  | 'bar'
+  | 'diamond'
+  | 'diamand'
+  | 'pill'
 
 type DecorElement = {
   shape?: DecorShapeType | string
@@ -30,7 +40,8 @@ function toCssUnit(value: string | number) {
 }
 
 function elementStyle(element: DecorElement) {
-  const shape = (element.shape ?? element.type ?? 'circle').toString()
+  const rawShape = (element.shape ?? element.type ?? 'circle').toString()
+  const shape = rawShape === 'diamand' ? 'diamond' : rawShape
   const size = toCssUnit(element.size)
   const left = resolveAxisPosition(element.x, 'horizontal')
   const top = resolveAxisPosition(element.y, 'vertical')
@@ -47,6 +58,44 @@ function elementStyle(element: DecorElement) {
       width: size,
       height: '2px',
       borderRadius: '999px',
+    }
+  }
+
+  if (shape === 'bar') {
+    return {
+      ...base,
+      width: size,
+      height: '14px',
+      borderRadius: '999px',
+    }
+  }
+
+  if (shape === 'pill') {
+    return {
+      ...base,
+      width: `calc(${size} * 1.8)`,
+      height: `calc(${size} * 0.62)`,
+      borderRadius: '999px',
+    }
+  }
+
+  if (shape === 'ring') {
+    return {
+      ...base,
+      width: size,
+      height: size,
+      background: 'transparent',
+      border: `8px solid ${element.color}`,
+      borderRadius: '50%',
+    }
+  }
+
+  if (shape === 'triangle') {
+    return {
+      ...base,
+      width: size,
+      height: size,
+      background: element.color,
     }
   }
 
@@ -77,7 +126,8 @@ function resolveAxisPosition(
 }
 
 function elementShapeClass(element: DecorElement) {
-  return (element.shape ?? element.type ?? 'circle').toString()
+  const shape = (element.shape ?? element.type ?? 'circle').toString()
+  return shape === 'diamand' ? 'diamond' : shape
 }
 </script>
 
@@ -129,5 +179,21 @@ function elementShapeClass(element: DecorElement) {
 
 .resume-template-decor__item--line {
   opacity: 0.3;
+}
+
+.resume-template-decor__item--ring {
+  border-radius: 50%;
+}
+
+.resume-template-decor__item--bar {
+  opacity: 0.28;
+}
+
+.resume-template-decor__item--diamond {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.resume-template-decor__item--pill {
+  opacity: 0.24;
 }
 </style>
