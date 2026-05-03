@@ -3252,7 +3252,8 @@
           "cards": "Cartes",
           "dots": "Points",
           "progress": "Progression",
-          "timeline": "Timeline"
+          "timeline": "Timeline",
+          "mini": "Mini"
         }
       },
       "fields": {
