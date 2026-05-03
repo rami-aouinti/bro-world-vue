@@ -8,6 +8,11 @@ provide(
 )
 
 const route = useRoute()
+
+const hideCookieConsent = computed(() =>
+  route.path.startsWith('/resume/preview') ||
+  route.path.startsWith('/resume/template-capture'),
+)
 const { locale, t } = useI18n()
 const runtimeConfig = useRuntimeConfig()
 const rounded = useStorage('theme-rounded', 'md')
@@ -164,5 +169,5 @@ useSeoMeta({
     <NuxtPage />
   </NuxtLayout>
 
-  <AppCookieConsent />
+  <AppCookieConsent v-if="!hideCookieConsent" />
 </template>

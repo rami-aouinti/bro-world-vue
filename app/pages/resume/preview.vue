@@ -68,17 +68,35 @@ const fakeResume: ResumeApiItem = {
   documentUrl: null,
   resumeInformation: {
     fullName: 'Alex Martin',
+    title: 'Senior Full Stack Developer',
+    profileText:
+      'Product-minded engineer with 8+ years delivering scalable web platforms, mentoring teams, and shipping high-impact features end-to-end.',
     email: 'alex.martin@example.com',
     phone: '+33 6 00 00 00 00',
     adresse: 'Paris, France',
+    address: 'Paris, France',
+    homepage: 'https://alexmartin.dev',
+    repo_profile: 'https://github.com/alexmartin-dev',
+    photo: '/img/default_avatar.svg',
   },
   experiences: [
     {
-      title: 'Full Stack Developer',
+      title: 'Senior Full Stack Developer',
       company: 'Bro Labs',
-      description: 'API development, Vue.js implementation, and application architecture.',
+      location: 'Paris, France',
+      description:
+        'Led delivery of SaaS modules, optimized API latency by 35%, and built reusable UI systems with Vue 3 and TypeScript.',
       startDate: '2021-01-01',
       endDate: null,
+    },
+    {
+      title: 'Frontend Engineer',
+      company: 'Nova Digital',
+      location: 'Lyon, France',
+      description:
+        'Built design-system components and analytics dashboards used by 40k+ monthly users.',
+      startDate: '2018-06-01',
+      endDate: '2020-12-31',
     },
   ],
   educations: [
@@ -87,16 +105,78 @@ const fakeResume: ResumeApiItem = {
       school: 'University of Lyon',
       startDate: '2018-09-01',
       endDate: '2020-06-30',
-      location: 'Lyon',
+      location: 'Lyon, France',
+      description: 'Specialization in distributed systems and software architecture.',
+    },
+    {
+      title: 'Bachelor in Software Engineering',
+      school: 'Université Grenoble Alpes',
+      startDate: '2014-09-01',
+      endDate: '2017-06-30',
+      location: 'Grenoble, France',
     },
   ],
-  skills: [{ title: 'Vue.js' }, { title: 'TypeScript' }, { title: 'Node.js' }],
+  skills: [
+    { title: 'Vue.js' },
+    { title: 'TypeScript' },
+    { title: 'Node.js' },
+    { title: 'Nuxt' },
+    { title: 'PostgreSQL' },
+    { title: 'Docker' },
+  ],
+  projects: [
+    {
+      title: 'Recruitment Analytics Platform',
+      description: 'Real-time hiring KPIs dashboard with role-based access and export workflows.',
+      home_page: 'https://demo.bro-world-space.com',
+      startDate: '2023-02-01',
+      endDate: null,
+    },
+    {
+      title: 'Design System Kit',
+      description: 'Reusable component library shared across 6 internal products.',
+      startDate: '2022-01-01',
+      endDate: '2022-11-01',
+    },
+  ],
+  certifications: [
+    {
+      title: 'AWS Certified Developer – Associate',
+      description: 'Amazon Web Services',
+      startDate: '2023-05-01',
+      endDate: '2026-05-01',
+    },
+    {
+      title: 'Professional Scrum Master I',
+      description: 'Scrum.org',
+      startDate: '2022-09-01',
+      endDate: null,
+    },
+  ],
   languages: [
-    { title: 'French', countryCode: 'FR' },
-    { title: 'English', countryCode: 'GB' },
-    { title: 'Spanish', countryCode: 'ES' },
+    { title: 'French', level: 'Native', countryCode: 'FR' },
+    { title: 'English', level: 'Professional', countryCode: 'GB' },
+    { title: 'Spanish', level: 'Conversational', countryCode: 'ES' },
+  ],
+  references: [
+    {
+      title: 'Sophie Bernard · Engineering Manager',
+      company: 'Bro Labs',
+      description: 'sophie.bernard@brolabs.dev · +33 6 11 22 33 44',
+    },
+    {
+      title: 'Julien Roche · Product Director',
+      company: 'Nova Digital',
+      description: 'julien.roche@novadigital.fr · +33 6 55 44 33 22',
+    },
+  ],
+  hobbies: [
+    { title: 'Open-source contribution' },
+    { title: 'Trail running' },
+    { title: 'Photography' },
   ],
 }
+
 
 const selectedTemplate = computed(() => {
   const templateId = String(route.query.template || '')
