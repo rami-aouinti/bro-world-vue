@@ -374,5 +374,5 @@ const activeLayoutComponent = computed(() => {
 </template>
 
 <style scoped>
-.capture-page { position: relative; width: 794px; min-height: 1123px; margin: 0; background: #fff; overflow: hidden; }
+.capture-page { position: relative; width: 794px; max-height: 1123px; margin: 0; background: #fff; overflow: hidden; }
 </style>

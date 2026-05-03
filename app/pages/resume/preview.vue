@@ -268,8 +268,8 @@ function applyPreviewTemplate(templateId: string) {
     query: {
       ...route.query,
       template: templateId,
-      layout: selected.layout || 'no-aside',
-      structure: (selected as any).structure === 'structure-2' ? 'structure-2' : 'structure-1',
+      layout: selected.layout,
+      structure: (selected as any).structure === 'structure-2' ? 'structure-2' : 'structure-2',
       palette: 'template',
       textStyle: String(selected.theme?.textStyle || ''),
     },
@@ -320,15 +320,6 @@ const photoPositionOptions = [
   { title: 'Center', value: 'center' },
 ]
 
-const photoShapeOptions = computed(() => {
-  const shapes = new Set<string>(['circle', 'rounded', 'square'])
-  GENERATED_RESUME_TEMPLATES.forEach((template) => {
-    ;(template.photoOptions?.shapeList || []).forEach((shape) => shapes.add(shape))
-  })
-  return Array.from(shapes).map((shape) => ({ title: shape, value: shape }))
-})
-
-
 const editableDecorCorners = ref<Array<{ shape: string; size: number; x: number; y: number; color: string }>>([])
 
 function normalizeDecorCorner(corner: any) {
@@ -369,14 +360,6 @@ function removeDecorCorner(index: number) {
   editableDecorCorners.value.splice(index, 1)
 }
 
-const photoBorderStyleOptions = [
-  { title: 'Solid', value: 'solid' },
-  { title: 'Dashed', value: 'dashed' },
-  { title: 'Dotted', value: 'dotted' },
-  { title: 'Double', value: 'double' },
-  { title: 'None', value: 'none' },
-]
-
 const sectionVariantOptions = computed(() => {
   const map = new Map<string, string[]>()
   GENERATED_RESUME_TEMPLATES.forEach((template) => {
@@ -397,11 +380,6 @@ const sectionVariantOptions = computed(() => {
     return acc
   }, {})
 })
-const sectionVariantOptionsForDrawer = computed(() =>
-  Object.fromEntries(
-    Object.entries(sectionVariantOptions.value).filter(([sectionKey]) => sectionKey !== 'contact'),
-  ),
-)
 
 const palettePresetOptions = computed<PalettePresetOption[]>(() => {
   const uniquePrimaries = new Set<string>()
@@ -434,11 +412,6 @@ const selectedPaletteOption = computed(() => palettePresetOptions.value.find((op
 const textStyleFilterOptions = computed(() => {
   const styles = Array.from(new Set(GENERATED_RESUME_TEMPLATES.map((template) => template.theme?.textStyle).filter(Boolean)))
   return styles.map((style) => ({ title: String(style), value: String(style) }))
-})
-
-const asideHeightOptions = computed(() => {
-  const heights = Array.from({ length: 11 }, (_, index) => 50 + index * 5)
-  return heights.map((height) => ({ title: String(height), value: String(height) }))
 })
 
 const contactStyleOptions = [
