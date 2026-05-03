@@ -202,6 +202,7 @@ const selectedAsideWidth = ref<number>(240)
 const selectedAsideHeight = ref<number>(100)
 const selectedAsideRadius = ref<number>(18)
 const selectedHeaderBandHeight = ref<number>(100)
+const syncingTemplateControls = ref(false)
 
 const selectedPhotoPosition = ref<string>('left')
 const selectedPhotoSize = ref<number>(96)
@@ -506,8 +507,10 @@ const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
 
 watch(
   selectedGeneratedTemplate,
-  (template) => {
+  async (template) => {
     if (!template) return
+
+    syncingTemplateControls.value = true
 
     selectedStructure.value =
       route.query.structure === 'structure-2' || (template as any).structure === 'structure-2'
@@ -567,6 +570,9 @@ watch(
       selectedPhotoBorderStyle.value = borderMatch[2] || 'solid'
       selectedPhotoBorderColor.value = borderMatch[3] || '#0F4C81'
     }
+
+    await nextTick()
+    syncingTemplateControls.value = false
   },
   { immediate: true },
 )
@@ -619,6 +625,7 @@ watch(
 )
 
 watch(selectedStructure, (structure) => {
+  if (syncingTemplateControls.value) return
   const mapped = structureLayoutMap[structure]
   if (mapped) selectedLayout.value = mapped
 })
