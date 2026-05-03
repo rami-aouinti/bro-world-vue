@@ -809,7 +809,7 @@ watch(signatureDialogOpen, (opened) => {
           v-model="selectedAsideWidth"
           label="Aside width (px)"
           min="160"
-          max="450"
+          max="1600"
           step="2"
           hide-details
         />

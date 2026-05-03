@@ -146,7 +146,8 @@ const styleVars = computed(() => {
   padding-inline: var(--layout-edge-pad, 10px);
 }
 .header-aside-shell {
-  width: min(100%, var(--aside-width, 900px));
+  width: var(--aside-width, 900px);
+  max-width: 100%;
   min-height: var(--aside-height, 180px);
   border-radius: var(--aside-radius, 18px);
   background: var(--aside-bg, var(--primary, #0f4c81));
