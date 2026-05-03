@@ -53,6 +53,12 @@ const mainSections = computed(() =>
 )
 const localAsideSections = ref<{ id: string; rendererKey: string }[]>([])
 const localMainSections = ref<{ id: string; rendererKey: string }[]>([])
+const displayAsideSections = computed(() =>
+  localAsideSections.value.filter((section) => !(usesHeaderContact.value && section.id === 'contact')),
+)
+const displayMainSections = computed(() =>
+  localMainSections.value.filter((section) => !(usesHeaderContact.value && section.id === 'contact')),
+)
 watch([asideSections, mainSections], ([a, m]) => {
   if (!localAsideSections.value.length && !localMainSections.value.length) {
     localAsideSections.value = a.map((item: any) => ({ ...item }))
@@ -151,13 +157,13 @@ const styleVars = computed(() => {
   <div class="aside-left" :class="{ reverse, 'bar-only': barOnly, 'aside-start-top': asideStartsAtTop }" :style="styleVars">
     <ResumeSectionHeader class="full" :class="{ 'full--on-primary': headerOnPrimary }" :resume="resume" :template="template" :show-contact-in-header="usesHeaderContact" />
     <aside class="aside-surface" :class="{ 'on-primary': !barOnly, 'text-dark': barOnly }">
-      <ResumeSectionBlock v-for="section in localAsideSections" :key="`aside-${section.id}`" tone="on-primary" :title="getSectionTitle(section.id)" :icon="resolveSectionIcon(section.id)" :show-icon="shouldShowSectionIcons" :is-empty="sectionEmpty(section.id)" :section-key="section.id" @move-up="onMove($event, 'up')" @move-down="onMove($event, 'down')" @delete-section="onDeleteSection" @submit-add-item="onAddItem" @change-variant="onChangeVariant">
+      <ResumeSectionBlock v-for="section in displayAsideSections" :key="`aside-${section.id}`" tone="on-primary" :title="getSectionTitle(section.id)" :icon="resolveSectionIcon(section.id)" :show-icon="shouldShowSectionIcons" :is-empty="sectionEmpty(section.id)" :section-key="section.id" @move-up="onMove($event, 'up')" @move-down="onMove($event, 'down')" @delete-section="onDeleteSection" @submit-add-item="onAddItem" @change-variant="onChangeVariant">
         <ResumeSectionContact v-if="section.id === 'contact' && !usesHeaderContact" :resume="resume" :show-title="false" :contact-style="template?.sections?.contact || template?.contactStyle || 'labels'" />
         <ResumeSectionRenderer v-else :section-key="section.rendererKey" :resume="resume" :template="template" />
       </ResumeSectionBlock>
     </aside>
     <main>
-      <ResumeSectionBlock v-for="section in localMainSections" :key="`main-${section.id}`" :title="getSectionTitle(section.id)" :icon="resolveSectionIcon(section.id)" :show-icon="shouldShowSectionIcons" :is-empty="sectionEmpty(section.id)" :section-key="section.id" @move-up="onMove($event, 'up')" @move-down="onMove($event, 'down')" @delete-section="onDeleteSection" @submit-add-item="onAddItem" @change-variant="onChangeVariant">
+      <ResumeSectionBlock v-for="section in displayMainSections" :key="`main-${section.id}`" :title="getSectionTitle(section.id)" :icon="resolveSectionIcon(section.id)" :show-icon="shouldShowSectionIcons" :is-empty="sectionEmpty(section.id)" :section-key="section.id" @move-up="onMove($event, 'up')" @move-down="onMove($event, 'down')" @delete-section="onDeleteSection" @submit-add-item="onAddItem" @change-variant="onChangeVariant">
         <ResumeSectionProfile v-if="section.id === 'profile'" :resume="resume" :show-title="false" />
         <ResumeSectionRenderer v-else :section-key="section.rendererKey" :resume="resume" :template="template" />
       </ResumeSectionBlock>
