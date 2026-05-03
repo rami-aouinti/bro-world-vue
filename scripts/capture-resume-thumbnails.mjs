@@ -1,7 +1,7 @@
-import { access, mkdir, readFile } from 'node:fs/promises'
+import { execSync } from 'node:child_process'
+import { mkdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { chromium } from 'playwright-core'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -15,39 +15,37 @@ const generatedResumeTemplates = JSON.parse(templatesRaw)
 
 await mkdir(outDir, { recursive: true })
 
-async function resolveBrowserPath() {
-  if (process.env.CHROMIUM_PATH) return process.env.CHROMIUM_PATH
+let chromium
+let hasPlaywrightPackage = false
+try {
+  ;({ chromium } = await import('playwright'))
+  hasPlaywrightPackage = true
+}
+catch {
+  ;({ chromium } = await import('playwright-core'))
+}
 
-  const candidates = [
-    '/usr/bin/google-chrome',
-    '/usr/bin/google-chrome-stable',
-    '/usr/bin/chromium-browser',
-    '/usr/bin/chromium',
-    '/snap/bin/chromium',
-  ]
-
-  for (const candidate of candidates) {
-    try {
-      await access(candidate)
-      return candidate
-    }
-    catch {
-      // try next path
-    }
+async function launchBrowser() {
+  try {
+    return await chromium.launch({ headless: true })
   }
+  catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    const browserMissing = message.includes("Executable doesn't exist")
 
-  return null
+    if (!browserMissing) throw error
+
+    if (!hasPlaywrightPackage) {
+      throw new Error('Playwright browser is missing and package "playwright" is not installed. Install playwright or provide CHROMIUM_PATH.')
+    }
+
+    console.log('Playwright browser missing. Installing chromium...')
+    execSync('pnpm exec playwright install chromium', { stdio: 'inherit' })
+    return chromium.launch({ headless: true })
+  }
 }
 
-const executablePath = await resolveBrowserPath()
-if (!executablePath) {
-  console.error('❌ Unable to locate Chrome/Chromium automatically.')
-  console.error('Set CHROMIUM_PATH, for example:')
-  console.error('CHROMIUM_PATH=/usr/bin/google-chrome pnpm run capture:resume-thumbnails')
-  process.exit(1)
-}
-
-const browser = await chromium.launch({ headless: true, executablePath })
+const browser = await launchBrowser()
 const page = await browser.newPage({ viewport: { width: 794, height: 1123 } })
 
 for (const tpl of generatedResumeTemplates) {
