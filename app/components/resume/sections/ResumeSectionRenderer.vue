@@ -5,14 +5,6 @@ import {
   resolveSectionRenderer,
   type ResumeRendererSectionKey,
 } from '~/modules/resume/renderers/sectionRegistry'
-import ResumeSectionExperience from '~/components/resume/sections/ResumeSectionExperience.vue'
-import ResumeSectionEducation from '~/components/resume/sections/ResumeSectionEducation.vue'
-import ResumeSectionSkill from '~/components/resume/sections/ResumeSectionSkill.vue'
-import ResumeSectionProject from '~/components/resume/sections/ResumeSectionProject.vue'
-import ResumeSectionCertification from '~/components/resume/sections/ResumeSectionCertification.vue'
-import ResumeSectionReference from '~/components/resume/sections/ResumeSectionReference.vue'
-import ResumeSectionInterest from '~/components/resume/sections/ResumeSectionInterest.vue'
-import ResumeSectionLanguage from '~/components/resume/sections/ResumeSectionLanguage.vue'
 
 const props = defineProps<{
   resume: ResumeApiItem
@@ -61,17 +53,6 @@ const SECTION_TO_ITEMS: Record<string, (resume: ResumeApiItem) => unknown[]> = {
   language: (resume) => resume.languages || [],
 }
 
-const legacyComponents: Record<string, any> = {
-  experience: ResumeSectionExperience,
-  education: ResumeSectionEducation,
-  skill: ResumeSectionSkill,
-  project: ResumeSectionProject,
-  certification: ResumeSectionCertification,
-  reference: ResumeSectionReference,
-  hobby: ResumeSectionInterest,
-  language: ResumeSectionLanguage,
-}
-
 const selectedVariant = computed(() => {
   const sectionEntries = props.template?.sections || {}
   const keys = SECTION_TEMPLATE_KEYS[props.sectionKey] || [props.sectionKey]
@@ -84,7 +65,6 @@ const selectedVariant = computed(() => {
 
 const dynamicComponent = computed(() => {
   const rendererKey = SECTION_TO_RENDERER_KEY[props.sectionKey]
-  if (!rendererKey) return legacyComponents[props.sectionKey]
   return resolveSectionRenderer(rendererKey, selectedVariant.value)
 })
 
