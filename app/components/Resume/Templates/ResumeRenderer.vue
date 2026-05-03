@@ -539,6 +539,11 @@ const decorativeShapes = computed<DecorativeShapeSettings[]>(() =>
     Boolean(shape?.enabled),
   ),
 )
+const shouldRenderAsideDecorations = computed(
+  () =>
+    shouldRenderAside.value &&
+    ['aside-left', 'aside-right'].includes(resolvedDesignState.value.layoutMode),
+)
 
 function fallbackVariant(sectionKey: ResumeSectionLayoutKey): string {
   if (sectionKey === 'experience') return 'detailed'
@@ -686,7 +691,10 @@ function updateText(path: string, value: string) {
       ...rootThemeVars,
     }"
   >
-    <TemplateDecorations :shapes="decorativeShapes" />
+    <TemplateDecorations
+      v-if="!shouldRenderAsideDecorations"
+      :shapes="decorativeShapes"
+    />
     <header
       class="resume-skin__header"
       :class="[
@@ -901,6 +909,11 @@ function updateText(path: string, value: string) {
           resolvedDesignState.asideFullHeight ? 'aside-full' : '',
         ]"
       >
+        <TemplateDecorations
+          v-if="shouldRenderAsideDecorations"
+          :shapes="decorativeShapes"
+          class="resume-skin__aside-decorative-layer"
+        />
         <section
           v-if="(templateSkin.showContactInAside ?? true) && hasContactDetails"
           class="resume-section-hoverable resume-contact-section"
@@ -1595,6 +1608,10 @@ function updateText(path: string, value: string) {
     var(--resume-secondary, var(--cv-secondary))
   );
 }
+.resume-skin__header h1 {
+  font-size: clamp(1.95rem, 3.8vw, 2.65rem);
+  line-height: 1.1;
+}
 
 .resume-skin__contact-icon {
   display: inline-flex;
@@ -1696,9 +1713,22 @@ function updateText(path: string, value: string) {
 .resume-skin__aside {
   grid-area: aside;
   height: var(--resume-sidebar-height, 100%);
+  border-radius: var(--resume-radius, var(--cv-radius, 0));
+  overflow: hidden;
+  align-self: start;
+  position: relative;
   --resume-aside-text-color: var(--resume-page, var(--cv-page));
   --resume-aside-decor-color: var(--resume-secondary, var(--cv-secondary));
   color: var(--resume-aside-text-color);
+}
+.resume-skin__aside-decorative-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.resume-skin__aside > section {
+  position: relative;
+  z-index: 1;
 }
 
 .layout-mode-aside-left .resume-skin__aside :deep(.cv-heading-section),
