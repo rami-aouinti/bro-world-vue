@@ -7061,29 +7061,29 @@
   },
   {
     "id": "tpl-118",
-    "name": "lebenslauf-minimal-gray-left-aside",
+    "name": "photo-match-gray-sidebar",
     "version": 1,
     "layout": "aside-left",
     "structure": "structure-1",
     "sections": {
       "experience": "timeline",
       "education": "timeline",
-      "skills": "bars",
-      "languages": "bars",
+      "skills": "progress-line",
+      "languages": "text",
       "languagesLabel": "classic",
       "certifications": "list",
-      "references": "classic",
+      "references": "list",
       "projects": "classic",
       "interests": "classic",
       "contact": "icons"
     },
     "theme": {
       "palette": {
-        "primary": "#2F3B4A",
-        "secondary": "#C7CDD4",
+        "primary": "#2E3440",
+        "secondary": "#D8DEE9",
         "text": "#20242A",
-        "muted": "#68707A",
-        "pageBackground": "#F2F3F5"
+        "muted": "#6B7280",
+        "pageBackground": "#F3F4F6"
       },
       "line": "soft",
       "density": "comfortable",
@@ -7091,14 +7091,14 @@
       "showIcon": true
     },
     "aside": {
-      "width": "210px",
+      "width": "220px",
       "height": "100%"
     },
     "photo": {
       "position": "left",
-      "size": "108px",
+      "size": "110px",
       "shape": "square",
-      "border": "0 solid transparent"
+      "border": "1px solid #CBD5E1"
     },
     "decor": {
       "corners": []
@@ -7106,46 +7106,56 @@
     "layoutOptions": {
       "columnsGap": "normal",
       "asideWidthMode": "compact",
-      "sectionSpacing": "normal"
+      "sectionSpacing": "normal",
+      "asideStartsAtTop": true
     },
     "photoOptions": {
-      "effect": "none",
-      "grayscale": false,
-      "padding": "tight"
+      "shapeList": [
+        "square",
+        "rounded"
+      ],
+      "shadow": "none",
+      "frame": "none"
     },
-    "levelStyle": "bars-solid",
+    "levelStyle": {
+      "skills": "bars",
+      "languages": "bars"
+    },
     "decorOptions": {
-      "topBand": false,
-      "sideBand": true,
-      "separator": "thin"
+      "enabled": true,
+      "preset": "minimal"
     },
-    "sectionTitleStyle": "uppercase"
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "solid",
+      "casing": "upper"
+    }
   },
   {
     "id": "tpl-119",
-    "name": "lebenslauf-soft-circle-accent",
+    "name": "photo-match-soft-circle-header",
     "version": 1,
     "layout": "top-bar",
-    "structure": "structure-2",
+    "structure": "structure-1",
     "sections": {
       "experience": "timeline",
       "education": "timeline",
-      "skills": "bars",
-      "languages": "bars",
+      "skills": "progress-line",
+      "languages": "text",
       "languagesLabel": "classic",
       "certifications": "list",
-      "references": "classic",
+      "references": "list",
       "projects": "classic",
       "interests": "classic",
       "contact": "icons"
     },
     "theme": {
       "palette": {
-        "primary": "#2F3A45",
-        "secondary": "#DCC8B4",
+        "primary": "#303841",
+        "secondary": "#D9C5AE",
         "text": "#1F2329",
-        "muted": "#717780",
-        "pageBackground": "#F6F6F6"
+        "muted": "#6B7280",
+        "pageBackground": "#F7F7F7"
       },
       "line": "soft",
       "density": "comfortable",
@@ -7158,7 +7168,7 @@
     },
     "photo": {
       "position": "left",
-      "size": "110px",
+      "size": "112px",
       "shape": "circle",
       "border": "3px solid #FFFFFF"
     },
@@ -7167,7 +7177,7 @@
         {
           "shape": "circle",
           "size": "170px",
-          "color": "#DCC8B4",
+          "color": "#D9C5AE",
           "x": "left",
           "y": "top"
         }
@@ -7175,47 +7185,57 @@
     },
     "layoutOptions": {
       "columnsGap": "normal",
-      "asideWidthMode": "hidden",
-      "sectionSpacing": "normal"
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal",
+      "asideStartsAtTop": true
     },
     "photoOptions": {
-      "effect": "soft-shadow",
-      "grayscale": false,
-      "padding": "normal"
+      "shapeList": [
+        "circle",
+        "rounded"
+      ],
+      "shadow": "soft",
+      "frame": "none"
     },
-    "levelStyle": "bars-solid",
+    "levelStyle": {
+      "skills": "bars",
+      "languages": "dots"
+    },
     "decorOptions": {
-      "topBand": true,
-      "sideBand": false,
-      "separator": "thin"
+      "enabled": true,
+      "preset": "geo"
     },
-    "sectionTitleStyle": "uppercase"
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "solid",
+      "casing": "upper"
+    }
   },
   {
     "id": "tpl-120",
-    "name": "lebenslauf-dark-header-circle",
+    "name": "photo-match-dark-banner-circle",
     "version": 1,
     "layout": "top-bar",
     "structure": "structure-1",
     "sections": {
       "experience": "timeline",
       "education": "timeline",
-      "skills": "list",
-      "languages": "classic",
+      "skills": "progress-line",
+      "languages": "text",
       "languagesLabel": "classic",
       "certifications": "list",
-      "references": "classic",
+      "references": "list",
       "projects": "classic",
       "interests": "classic",
       "contact": "icons"
     },
     "theme": {
       "palette": {
-        "primary": "#24313E",
-        "secondary": "#E3E6EA",
-        "text": "#1D242D",
-        "muted": "#6D7782",
-        "pageBackground": "#F1F3F5"
+        "primary": "#243342",
+        "secondary": "#E5E7EB",
+        "text": "#1E293B",
+        "muted": "#6B7280",
+        "pageBackground": "#F3F4F6"
       },
       "line": "soft",
       "density": "compact",
@@ -7224,60 +7244,69 @@
     },
     "aside": {
       "width": "100%",
-      "height": "145px"
+      "height": "150px"
     },
     "photo": {
       "position": "left",
-      "size": "115px",
+      "size": "116px",
       "shape": "circle",
-      "border": "2px solid #D8DEE6"
+      "border": "2px solid #D1D5DB"
     },
     "decor": {
       "corners": []
     },
     "layoutOptions": {
       "columnsGap": "normal",
-      "asideWidthMode": "hidden",
-      "sectionSpacing": "compact"
+      "asideWidthMode": "standard",
+      "sectionSpacing": "compact",
+      "asideStartsAtTop": true
     },
     "photoOptions": {
-      "effect": "none",
-      "grayscale": false,
-      "padding": "normal"
+      "shapeList": [
+        "circle"
+      ],
+      "shadow": "none",
+      "frame": "line"
     },
-    "levelStyle": "minimal",
+    "levelStyle": {
+      "skills": "dots",
+      "languages": "dots"
+    },
     "decorOptions": {
-      "topBand": true,
-      "sideBand": false,
-      "separator": "thin"
+      "enabled": true,
+      "preset": "minimal"
     },
-    "sectionTitleStyle": "boxed"
+    "sectionTitleStyle": {
+      "icon": "solid",
+      "underline": "none",
+      "casing": "normal"
+    }
   },
   {
     "id": "tpl-121",
-    "name": "lebenslauf-photo-card-right",
+    "name": "photo-match-right-photo-card",
     "version": 1,
     "layout": "top-photo-right",
     "structure": "structure-2",
     "sections": {
       "experience": "timeline",
       "education": "timeline",
-      "skills": "bars",
-      "languages": "bars",
+      "skills": "progress-line",
+      "languages": "text",
       "languagesLabel": "classic",
       "certifications": "list",
-      "references": "classic",
+      "references": "list",
       "projects": "classic",
       "interests": "classic",
       "contact": "icons"
     },
     "theme": {
       "palette": {
-        "primary": "#151A3B",
+        "primary": "#121A3A",
         "secondary": "#D6DAE2",
         "text": "#20242A",
-        "muted": "#6A727B",
-        "pageBackground": "#F5F6F8"
+        "muted": "#6B7280",
+        "pageBackground": "#F6F7F9"
       },
       "line": "soft",
       "density": "comfortable",
@@ -7286,11 +7315,11 @@
     },
     "aside": {
       "width": "100%",
-      "height": "165px"
+      "height": "170px"
     },
     "photo": {
       "position": "right",
-      "size": "122px",
+      "size": "124px",
       "shape": "square",
       "border": "0 solid transparent"
     },
@@ -7299,7 +7328,7 @@
         {
           "shape": "rect",
           "size": "220px",
-          "color": "#151A3B",
+          "color": "#121A3A",
           "x": "right",
           "y": "top"
         }
@@ -7307,20 +7336,30 @@
     },
     "layoutOptions": {
       "columnsGap": "wide",
-      "asideWidthMode": "hidden",
-      "sectionSpacing": "normal"
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal",
+      "asideStartsAtTop": true
     },
     "photoOptions": {
-      "effect": "soft-shadow",
-      "grayscale": false,
-      "padding": "normal"
+      "shapeList": [
+        "square",
+        "rounded"
+      ],
+      "shadow": "soft",
+      "frame": "none"
     },
-    "levelStyle": "bars-solid",
+    "levelStyle": {
+      "skills": "bars",
+      "languages": "bars"
+    },
     "decorOptions": {
-      "topBand": false,
-      "sideBand": false,
-      "separator": "thin"
+      "enabled": true,
+      "preset": "minimal"
     },
-    "sectionTitleStyle": "uppercase"
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "solid",
+      "casing": "upper"
+    }
   }
 ]
