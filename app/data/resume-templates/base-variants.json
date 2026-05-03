@@ -18,6 +18,16 @@
     "density": "comfortable",
     "textStyle": "roman",
     "showIcon": true,
+    "layoutOptions": {
+      "columnsGap": "wide",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal",
+      "asideStartsAtTop": false
+    },
+    "theme": {
+      "line": "soft",
+      "density": "comfortable"
+    },
     "photo": { "position": "left", "size": "96px", "shape": "circle" }
   },
   {

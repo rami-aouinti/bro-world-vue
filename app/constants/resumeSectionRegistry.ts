@@ -61,6 +61,7 @@ const SECTION_VARIANT_LABEL_KEYS: Record<
   project: {
     classic: 'resumeBuilder.create.registry.variants.classic',
     list: 'resumeBuilder.create.registry.variants.list',
+    mini: 'resumeBuilder.create.registry.variants.mini',
     cards: 'resumeBuilder.create.registry.variants.cards',
     timeline: 'resumeBuilder.create.registry.variants.timeline',
     'two-column': 'resumeBuilder.create.registry.variants.twoColumns',
