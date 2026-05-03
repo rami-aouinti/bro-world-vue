@@ -7058,5 +7058,308 @@
       "underline": "none",
       "casing": "normal"
     }
+  },
+  {
+    "id": "tpl-118",
+    "name": "photo-match-gray-sidebar",
+    "version": 1,
+    "layout": "aside-left",
+    "structure": "structure-1",
+    "sections": {
+      "experience": "timeline",
+      "education": "timeline",
+      "skills": "progress-line",
+      "languages": "text",
+      "languagesLabel": "classic",
+      "certifications": "list",
+      "references": "list",
+      "projects": "classic",
+      "interests": "classic",
+      "contact": "icons"
+    },
+    "theme": {
+      "palette": {
+        "primary": "#2E3440",
+        "secondary": "#D8DEE9",
+        "text": "#20242A",
+        "muted": "#6B7280",
+        "pageBackground": "#F3F4F6"
+      },
+      "line": "soft",
+      "density": "comfortable",
+      "textStyle": "roman",
+      "showIcon": true
+    },
+    "aside": {
+      "width": "220px",
+      "height": "100%"
+    },
+    "photo": {
+      "position": "left",
+      "size": "110px",
+      "shape": "square",
+      "border": "1px solid #CBD5E1"
+    },
+    "decor": {
+      "corners": []
+    },
+    "layoutOptions": {
+      "columnsGap": "normal",
+      "asideWidthMode": "compact",
+      "sectionSpacing": "normal",
+      "asideStartsAtTop": true
+    },
+    "photoOptions": {
+      "shapeList": [
+        "square",
+        "rounded"
+      ],
+      "shadow": "none",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "bars",
+      "languages": "bars"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "minimal"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "solid",
+      "casing": "upper"
+    }
+  },
+  {
+    "id": "tpl-119",
+    "name": "photo-match-soft-circle-header",
+    "version": 1,
+    "layout": "top-bar",
+    "structure": "structure-1",
+    "sections": {
+      "experience": "timeline",
+      "education": "timeline",
+      "skills": "progress-line",
+      "languages": "text",
+      "languagesLabel": "classic",
+      "certifications": "list",
+      "references": "list",
+      "projects": "classic",
+      "interests": "classic",
+      "contact": "icons"
+    },
+    "theme": {
+      "palette": {
+        "primary": "#303841",
+        "secondary": "#D9C5AE",
+        "text": "#1F2329",
+        "muted": "#6B7280",
+        "pageBackground": "#F7F7F7"
+      },
+      "line": "soft",
+      "density": "comfortable",
+      "textStyle": "roman",
+      "showIcon": true
+    },
+    "aside": {
+      "width": "100%",
+      "height": "170px"
+    },
+    "photo": {
+      "position": "left",
+      "size": "112px",
+      "shape": "circle",
+      "border": "3px solid #FFFFFF"
+    },
+    "decor": {
+      "corners": [
+        {
+          "shape": "circle",
+          "size": "170px",
+          "color": "#D9C5AE",
+          "x": "left",
+          "y": "top"
+        }
+      ]
+    },
+    "layoutOptions": {
+      "columnsGap": "normal",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal",
+      "asideStartsAtTop": true
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded"
+      ],
+      "shadow": "soft",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "bars",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "geo"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "solid",
+      "casing": "upper"
+    }
+  },
+  {
+    "id": "tpl-120",
+    "name": "photo-match-dark-banner-circle",
+    "version": 1,
+    "layout": "top-bar",
+    "structure": "structure-1",
+    "sections": {
+      "experience": "timeline",
+      "education": "timeline",
+      "skills": "progress-line",
+      "languages": "text",
+      "languagesLabel": "classic",
+      "certifications": "list",
+      "references": "list",
+      "projects": "classic",
+      "interests": "classic",
+      "contact": "icons"
+    },
+    "theme": {
+      "palette": {
+        "primary": "#243342",
+        "secondary": "#E5E7EB",
+        "text": "#1E293B",
+        "muted": "#6B7280",
+        "pageBackground": "#F3F4F6"
+      },
+      "line": "soft",
+      "density": "compact",
+      "textStyle": "roman",
+      "showIcon": true
+    },
+    "aside": {
+      "width": "100%",
+      "height": "150px"
+    },
+    "photo": {
+      "position": "left",
+      "size": "116px",
+      "shape": "circle",
+      "border": "2px solid #D1D5DB"
+    },
+    "decor": {
+      "corners": []
+    },
+    "layoutOptions": {
+      "columnsGap": "normal",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "compact",
+      "asideStartsAtTop": true
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle"
+      ],
+      "shadow": "none",
+      "frame": "line"
+    },
+    "levelStyle": {
+      "skills": "dots",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "minimal"
+    },
+    "sectionTitleStyle": {
+      "icon": "solid",
+      "underline": "none",
+      "casing": "normal"
+    }
+  },
+  {
+    "id": "tpl-121",
+    "name": "photo-match-right-photo-card",
+    "version": 1,
+    "layout": "top-photo-right",
+    "structure": "structure-2",
+    "sections": {
+      "experience": "timeline",
+      "education": "timeline",
+      "skills": "progress-line",
+      "languages": "text",
+      "languagesLabel": "classic",
+      "certifications": "list",
+      "references": "list",
+      "projects": "classic",
+      "interests": "classic",
+      "contact": "icons"
+    },
+    "theme": {
+      "palette": {
+        "primary": "#121A3A",
+        "secondary": "#D6DAE2",
+        "text": "#20242A",
+        "muted": "#6B7280",
+        "pageBackground": "#F6F7F9"
+      },
+      "line": "soft",
+      "density": "comfortable",
+      "textStyle": "roman",
+      "showIcon": true
+    },
+    "aside": {
+      "width": "100%",
+      "height": "170px"
+    },
+    "photo": {
+      "position": "right",
+      "size": "124px",
+      "shape": "square",
+      "border": "0 solid transparent"
+    },
+    "decor": {
+      "corners": [
+        {
+          "shape": "rect",
+          "size": "220px",
+          "color": "#121A3A",
+          "x": "right",
+          "y": "top"
+        }
+      ]
+    },
+    "layoutOptions": {
+      "columnsGap": "wide",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal",
+      "asideStartsAtTop": true
+    },
+    "photoOptions": {
+      "shapeList": [
+        "square",
+        "rounded"
+      ],
+      "shadow": "soft",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "bars",
+      "languages": "bars"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "minimal"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "solid",
+      "casing": "upper"
+    }
   }
 ]
