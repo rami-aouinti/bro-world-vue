@@ -486,11 +486,16 @@ watch(
         : 'structure-1'
     const queryLayout =
       typeof route.query.layout === 'string' ? route.query.layout : ''
+    const templateLayout = String(template.layout || '')
     selectedLayout.value = CONTROLLED_LAYOUTS.includes(
       queryLayout as (typeof CONTROLLED_LAYOUTS)[number],
     )
       ? (queryLayout as (typeof CONTROLLED_LAYOUTS)[number])
-      : (template.layout as (typeof CONTROLLED_LAYOUTS)[number]) || 'no-aside'
+      : CONTROLLED_LAYOUTS.includes(
+            templateLayout as (typeof CONTROLLED_LAYOUTS)[number],
+          )
+        ? (templateLayout as (typeof CONTROLLED_LAYOUTS)[number])
+        : 'no-aside'
 
     selectedPalette.value =
       typeof route.query.palette === 'string' ? route.query.palette : 'template'
