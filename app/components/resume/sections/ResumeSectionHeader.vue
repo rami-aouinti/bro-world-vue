@@ -208,8 +208,8 @@ onBeforeUnmount(() => {
     <input ref="fileInput" class="photo-input" type="file" accept="image/png,image/jpeg,image/webp" @change="onPhotoSelected">
 
     <div class="header-main">
-      <h1>{{ resume.resumeInformation?.fullName }}</h1>
-      <p>{{ resume.resumeInformation?.title }}</p>
+      <h1 class="editable-text" contenteditable="true" @input="(event) => { if (!resume.resumeInformation) resume.resumeInformation = {} as any; resume.resumeInformation.fullName = (event.target as HTMLElement).innerText }">{{ resume.resumeInformation?.fullName }}</h1>
+      <p class="editable-text" contenteditable="true" @input="(event) => { if (!resume.resumeInformation) resume.resumeInformation = {} as any; resume.resumeInformation.title = (event.target as HTMLElement).innerText }">{{ resume.resumeInformation?.title }}</p>
       <p v-if="photoError" class="photo-error">{{ photoError }}</p>
     </div>
 

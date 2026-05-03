@@ -26,6 +26,7 @@ const props = withDefaults(defineProps<ResumeSectionRendererProps>(), {
   density: 'normal',
   sectionKey: 'general',
   template: 'list',
+  editable: false,
 })
 
 function normalizeBulletLine(line: string): string {
@@ -93,6 +94,13 @@ function toDescriptionChunks(raw: string): DescriptionChunk[] {
   }
 
   return chunks
+}
+
+
+function updateItemField(index: number, key: string, value: string) {
+  const entry = (props.items?.[index] ?? null) as Record<string, unknown> | null
+  if (!entry) return
+  entry[key] = value
 }
 
 const emptyMessage = computed(() => {
@@ -205,11 +213,11 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
             >
               {{ item.prefix }}
             </span>
-            {{ item.heading }}
+            <span class="editable-text" :contenteditable="editable" @input="(event) => updateItemField(index, 'title', (event.target as HTMLElement).innerText)">{{ item.heading }}</span>
           </p>
 
           <p v-if="item.subheading || item.location" class="renderer-subheading">
-            <span v-if="item.subheading">{{ item.subheading }}</span>
+            <span v-if="item.subheading"><span class="editable-text" :contenteditable="editable" @input="(event) => updateItemField(index, 'company', (event.target as HTMLElement).innerText)">{{ item.subheading }}</span></span>
             <span v-if="item.subheading && item.location" aria-hidden="true">
               ·
             </span>
@@ -259,7 +267,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
             >
               {{ item.prefix }}
             </span>
-            {{ item.heading }}
+            <span class="editable-text" :contenteditable="editable" @input="(event) => updateItemField(index, 'title', (event.target as HTMLElement).innerText)">{{ item.heading }}</span>
           </p>
 
           <p v-if="item.period" class="renderer-period">
@@ -268,7 +276,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
         </div>
 
         <p v-if="item.subheading" class="renderer-subheading">
-          {{ item.subheading }}
+          <span class="editable-text" :contenteditable="editable" @input="(event) => updateItemField(index, 'company', (event.target as HTMLElement).innerText)">{{ item.subheading }}</span>
         </p>
       </article>
     </div>
@@ -308,7 +316,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
                 >
                   {{ item.prefix }}
                 </span>
-                {{ item.heading }}
+                <span class="editable-text" :contenteditable="editable" @input="(event) => updateItemField(index, 'title', (event.target as HTMLElement).innerText)">{{ item.heading }}</span>
               </p>
 
               <p
@@ -324,7 +332,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
             </div>
 
             <p v-if="item.subheading" class="renderer-subheading">
-              {{ item.subheading }}
+              <span class="editable-text" :contenteditable="editable" @input="(event) => updateItemField(index, 'company', (event.target as HTMLElement).innerText)">{{ item.subheading }}</span>
             </p>
           </div>
 
@@ -393,7 +401,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
             >
               {{ item.prefix }}
             </span>
-            {{ item.heading }}
+            <span class="editable-text" :contenteditable="editable" @input="(event) => updateItemField(index, 'title', (event.target as HTMLElement).innerText)">{{ item.heading }}</span>
           </p>
 
           <p v-if="item.period" class="renderer-period">
@@ -402,7 +410,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
         </div>
 
         <p v-if="item.subheading" class="renderer-subheading">
-          {{ item.subheading }}
+          <span class="editable-text" :contenteditable="editable" @input="(event) => updateItemField(index, 'company', (event.target as HTMLElement).innerText)">{{ item.subheading }}</span>
         </p>
       </li>
     </ul>
