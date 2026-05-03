@@ -1,7 +1,14 @@
-import { execSync } from 'node:child_process'
 import { mkdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+
+let chromium
+try {
+  ;({ chromium } = await import('playwright'))
+}
+catch {
+  throw new Error('Missing dependency "playwright". Run: pnpm add -D playwright && pnpm exec playwright install chromium')
+}
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -15,33 +22,24 @@ const generatedResumeTemplates = JSON.parse(templatesRaw)
 
 await mkdir(outDir, { recursive: true })
 
-let chromium
-let hasPlaywrightPackage = false
-try {
-  ;({ chromium } = await import('playwright'))
-  hasPlaywrightPackage = true
-}
-catch {
-  ;({ chromium } = await import('playwright-core'))
-}
-
 async function launchBrowser() {
+  const explicitPath = process.env.CHROMIUM_PATH
+  if (explicitPath) {
+    return chromium.launch({ headless: true, executablePath: explicitPath })
+  }
+
   try {
     return await chromium.launch({ headless: true })
   }
   catch (error) {
     const message = error instanceof Error ? error.message : String(error)
-    const browserMissing = message.includes("Executable doesn't exist")
 
-    if (!browserMissing) throw error
-
-    if (!hasPlaywrightPackage) {
-      throw new Error('Playwright browser is missing and package "playwright" is not installed. Install playwright or provide CHROMIUM_PATH.')
+    if (message.includes('libnspr4.so') || message.includes('error while loading shared libraries')) {
+      console.warn('Playwright bundled Chromium is missing Linux system libs, retrying with system Chrome channel...')
+      return chromium.launch({ headless: true, channel: 'chrome' })
     }
 
-    console.log('Playwright browser missing. Installing chromium...')
-    execSync('pnpm exec playwright install chromium', { stdio: 'inherit' })
-    return chromium.launch({ headless: true })
+    throw error
   }
 }
 

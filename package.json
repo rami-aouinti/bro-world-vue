@@ -38,7 +38,8 @@
     "vite": "^7.3.1",
     "vitest": "^4.1.2",
     "vue-tsc": "^3.2.6",
-    "vuetify-nuxt-module": "^0.19.5"
+    "vuetify-nuxt-module": "^0.19.5",
+    "playwright": "^1.58.2"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.20",
