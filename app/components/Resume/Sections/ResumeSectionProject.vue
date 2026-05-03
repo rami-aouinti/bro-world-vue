@@ -11,7 +11,7 @@ const props = withDefaults(
   defineProps<{
     resume: any
     editable?: boolean
-    variant?: 'classic' | 'list' | 'cards' | 'two-column' | 'timeline' | string
+    variant?: 'classic' | 'list' | 'mini' | 'cards' | 'two-column' | 'timeline' | string
     layoutSettings?: {
       dateColumnWidth?: number | string
     }
@@ -65,12 +65,13 @@ const iconStyle = computed(() => ({
   '--resume-section-icon-gap': `${props.sectionIconStyle?.spacing ?? 8}px`,
 }))
 const safeVariant = computed<
-  'classic' | 'list' | 'cards' | 'two-column' | 'timeline'
+  'classic' | 'list' | 'mini' | 'cards' | 'two-column' | 'timeline'
 >(() => {
   if (
     props.variant === 'classic' ||
     props.variant === 'list' ||
     props.variant === 'cards' ||
+    props.variant === 'mini' ||
     props.variant === 'two-column' ||
     props.variant === 'timeline'
   ) {

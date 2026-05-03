@@ -3011,7 +3011,8 @@
           "cards": "Cards",
           "dots": "Dots",
           "progress": "Progress",
-          "timeline": "Timeline"
+          "timeline": "Timeline",
+          "mini": "Mini"
         }
       },
       "validation": {

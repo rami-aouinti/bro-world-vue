@@ -120,12 +120,13 @@ const languageVariant = computed<
       : 'text-level'
 })
 
-const projectVariant = computed<'list' | 'cards' | 'two-column'>(() => {
+const projectVariant = computed<'list' | 'mini' | 'cards' | 'two-column'>(() => {
   const selected = props.sectionLayout.find(
     (section) => section.key === 'project',
   )
   return selected?.variant === 'cards' ||
     selected?.variant === 'two-column' ||
+    selected?.variant === 'mini' ||
     selected?.variant === 'list'
     ? selected.variant
     : 'list'
@@ -436,6 +437,7 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
         :class="[
           'project-grid',
           { 'project-grid--two-column': projectVariant === 'two-column' },
+          { 'project-grid--mini': projectVariant === 'mini' },
         ]"
       >
         <article
@@ -722,6 +724,17 @@ function canMove(sectionKey: ReorderableSectionKey, direction: 'up' | 'down') {
 }
 .project-grid--two-column {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+
+.project-grid--mini {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 900px) {
+  .project-grid--mini {
+    grid-template-columns: 1fr;
+  }
 }
 .project-card {
   border: 1px solid
