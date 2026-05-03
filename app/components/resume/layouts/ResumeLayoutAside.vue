@@ -37,7 +37,7 @@ const shouldShowSectionIcons = computed(() => props.template?.theme?.showIcon !=
 
 function isTwoColumnsSection(sectionId: string) {
   const variant = props.template?.sections?.[sectionId]
-  return variant === 'two-columns'
+  return variant === 'two-column' || variant === 'two-columns'
 }
 
 const resolvedZones = computed(() => resolveLayoutZonesWithConfig(props.template?.structure, props.template?.structureConfig))
