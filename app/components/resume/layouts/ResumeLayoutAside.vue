@@ -35,6 +35,11 @@ const getSectionTitle = (sectionKey: string) => {
 }
 const shouldShowSectionIcons = computed(() => props.template?.theme?.showIcon !== false)
 
+function isTwoColumnsSection(sectionId: string) {
+  const variant = props.template?.sections?.[sectionId]
+  return variant === 'two-columns'
+}
+
 const resolvedZones = computed(() => resolveLayoutZonesWithConfig(props.template?.structure, props.template?.structureConfig))
 const orderedSections = computed(() => {
   const main = resolvedZones.value.main || []
@@ -119,7 +124,7 @@ const styleVars = computed(() => {
     <div class="header-aside-shell">
       <ResumeSectionHeader class="layout-header" :resume="resume" :template="template" :show-contact-in-header="usesHeaderContact" />
     </div>
-    <main>
+    <main class="sections-grid">
       <ResumeSectionBlock
         v-for="section in localSections"
         :key="section.id"
@@ -128,6 +133,7 @@ const styleVars = computed(() => {
         :show-icon="shouldShowSectionIcons"
         :is-empty="sectionEmpty(section.id)"
         :section-key="section.id"
+        :class="{ 'section-block--two-columns': isTwoColumnsSection(section.id) }"
         @move-up="onMove($event, 'up')"
         @move-down="onMove($event, 'down')"
         @delete-section="onDeleteSection"
@@ -144,6 +150,7 @@ const styleVars = computed(() => {
 <style scoped>
 .aside-layout {
   padding-inline: var(--layout-edge-pad, 10px);
+  margin-top: 16px;
 }
 .header-aside-shell {
   width: var(--aside-width, 900px);
@@ -162,7 +169,27 @@ const styleVars = computed(() => {
   min-height: inherit;
   padding: var(--panel-pad, 12px);
 }
-main {
+main.sections-grid {
   padding: var(--panel-pad, 12px);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+main.sections-grid > * {
+  min-width: 0;
+}
+
+main.sections-grid > :not(.section-block--two-columns) {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 900px) {
+  main.sections-grid {
+    grid-template-columns: 1fr;
+  }
+  main.sections-grid > :not(.section-block--two-columns) {
+    grid-column: auto;
+  }
 }
 </style>
