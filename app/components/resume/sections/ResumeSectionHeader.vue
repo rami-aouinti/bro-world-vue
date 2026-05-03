@@ -220,7 +220,7 @@ onBeforeUnmount(() => {
 
     <div v-if="showContactInHeader" class="header-contact">
       <p v-for="field in headerContactFields" :key="field.key" class="contact-item">
-        <v-icon v-if="usesContactIcons" :icon="field.icon" size="18" class="contact-icon" />
+        <v-icon v-if="usesContactIcons" :icon="field.icon" size="14" class="contact-icon" />
         <strong v-else>{{ field.label }}:</strong>
         <a v-if="field.href" :href="field.href" target="_blank" rel="noopener noreferrer">{{ field.displayValue || field.value }}</a>
         <span v-else>{{ field.value }}</span>
@@ -329,7 +329,8 @@ onBeforeUnmount(() => {
   flex-direction: row-reverse;
 }
 .contact-item { margin: 0; display: flex; gap: 6px; min-width: 0; align-items: baseline; }
-.contact-icon { flex: 0 0 auto; opacity: .95; }
+.header-contact .contact-item { font-size: .89em; line-height: 1.2; }
+.contact-icon { flex: 0 0 auto; opacity: .95; font-size: 14px !important; }
 .contact-item strong { flex: 0 0 auto; white-space: nowrap; }
 .contact-item a, .contact-item span { min-width: 0; overflow-wrap: anywhere; word-break: break-word; color: inherit; text-decoration: none; }
 @media (max-width: 900px) {
