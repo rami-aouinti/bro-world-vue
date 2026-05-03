@@ -30,7 +30,22 @@ const usesHeaderContact = computed(() =>
 const splitSectionIds = new Set(['skills', 'languages', 'certifications', 'interests', 'references', 'projects'])
 const isSplitLayout = computed(() => props.template?.layout === 'no-aside-split')
 function isTwoColumnsSection(sectionId: string) {
-  return isSplitLayout.value && splitSectionIds.has(sectionId)
+  const variants = props.template?.sections || {}
+  const aliases: Record<string, string[]> = {
+    experience: ['experience', 'experiences'],
+    education: ['education', 'educations'],
+    skills: ['skills', 'skill'],
+    languages: ['languages', 'language'],
+    projects: ['projects', 'project'],
+    certifications: ['certifications', 'certification'],
+    references: ['references', 'reference'],
+    interests: ['interests', 'hobby'],
+  }
+  const variant =
+    aliases[sectionId]?.map((key) => variants[key]).find((value) => typeof value === 'string')
+    || variants[sectionId]
+  const usesTwoColumnsVariant = variant === 'two-column' || variant === 'two-columns'
+  return usesTwoColumnsVariant || (isSplitLayout.value && splitSectionIds.has(sectionId))
 }
 
 const { t, te } = useI18n()
