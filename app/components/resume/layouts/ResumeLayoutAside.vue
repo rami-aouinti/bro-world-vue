@@ -138,24 +138,23 @@ const styleVars = computed(() => {
       <ResumeSectionHeader class="layout-header" :resume="resume" :template="template" :show-contact-in-header="usesHeaderContact" />
     </div>
     <main class="sections-grid">
-      <ResumeSectionBlock
-        v-for="section in localSections"
-        :key="section.id"
-        :title="getSectionTitle(section.id)"
-        :icon="resolveSectionIcon(section.id)"
-        :show-icon="shouldShowSectionIcons"
-        :is-empty="sectionEmpty(section.id)"
-        :section-key="section.id"
-        :class="{ 'section-block--two-columns': isTwoColumnsSection(section.id) }"
-        @move-up="onMove($event, 'up')"
-        @move-down="onMove($event, 'down')"
-        @delete-section="onDeleteSection"
-        @submit-add-item="onAddItem"
-        @change-variant="onChangeVariant"
-      >
-        <ResumeSectionProfile v-if="section.id === 'profile'" :resume="resume" :show-title="false" />
-        <ResumeSectionRenderer v-else :section-key="section.rendererKey || section.id" :resume="resume" :template="template" />
-      </ResumeSectionBlock>
+      <div v-for="section in localSections" :key="section.id" :class="{ 'section-block--two-columns': isTwoColumnsSection(section.id) }">
+        <ResumeSectionBlock
+          :title="getSectionTitle(section.id)"
+          :icon="resolveSectionIcon(section.id)"
+          :show-icon="shouldShowSectionIcons"
+          :is-empty="sectionEmpty(section.id)"
+          :section-key="section.id"
+          @move-up="onMove($event, 'up')"
+          @move-down="onMove($event, 'down')"
+          @delete-section="onDeleteSection"
+          @submit-add-item="onAddItem"
+          @change-variant="onChangeVariant"
+        >
+          <ResumeSectionProfile v-if="section.id === 'profile'" :resume="resume" :show-title="false" />
+          <ResumeSectionRenderer v-else :section-key="section.rendererKey || section.id" :resume="resume" :template="template" />
+        </ResumeSectionBlock>
+      </div>
     </main>
   </div>
 </template>
