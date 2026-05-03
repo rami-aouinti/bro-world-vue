@@ -177,18 +177,41 @@ const fakeResume: ResumeApiItem = {
   ],
 }
 
+function resolveQueryTemplateId(rawTemplateId: string): string {
+  const normalized = rawTemplateId.trim()
+  if (!normalized) return ''
+
+  const exactGenerated = GENERATED_RESUME_TEMPLATES.find((template) => template.id === normalized)
+  if (exactGenerated) return exactGenerated.id
+
+  const exactCatalog = allTemplates.value.find(
+    (template) => template.id === normalized || template.templateId === normalized,
+  )
+  if (exactCatalog?.templateId) return exactCatalog.templateId
+
+  const unprefixed = normalized.startsWith('resume-') ? normalized.slice('resume-'.length) : normalized
+  const prefixedGenerated = GENERATED_RESUME_TEMPLATES.find((template) => template.id === unprefixed)
+  if (prefixedGenerated) return prefixedGenerated.id
+
+  const prefixGenerated = GENERATED_RESUME_TEMPLATES.find((template) => template.id.startsWith(normalized))
+  if (prefixGenerated) return prefixGenerated.id
+
+  return ''
+}
+
 const selectedTemplate = computed(() => {
-  const templateId = String(route.query.template || '')
-  if (!templateId) return null
+  const queryTemplateId = String(route.query.template || '')
+  const resolvedGeneratedId = resolveQueryTemplateId(queryTemplateId)
+  if (!resolvedGeneratedId) return null
   return (
-    allTemplates.value.find((template) => template.id === templateId || template.templateId === templateId) ||
+    allTemplates.value.find((template) => template.templateId === resolvedGeneratedId || template.id === queryTemplateId) ||
     null
   )
 })
 
 const selectedGeneratedTemplate = computed<GeneratedTemplate | null>(() => {
   const queryTemplateId = String(route.query.template || '')
-  const generatedTemplateId = selectedTemplate.value?.templateId || selectedTemplate.value?.id || queryTemplateId
+  const generatedTemplateId = selectedTemplate.value?.templateId || resolveQueryTemplateId(queryTemplateId)
   if (!generatedTemplateId) return null
   return GENERATED_RESUME_TEMPLATES.find((template) => template.id === generatedTemplateId) || null
 })
