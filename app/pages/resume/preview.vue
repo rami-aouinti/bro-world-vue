@@ -943,6 +943,7 @@ watch(signatureDialogOpen, (opened) => {
 .resume-preview-canvas {
   position: relative;
   overflow: hidden;
+  background-color: v-bind(signatureBackgroundColor);
 }
 
 .resume-signature-footer {
@@ -1008,6 +1009,13 @@ watch(signatureDialogOpen, (opened) => {
 }
 
 @media print {
+  :global(html),
+  :global(body) {
+    background: #ffffff !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
   :global(body *) {
     visibility: hidden !important;
   }
@@ -1022,7 +1030,11 @@ watch(signatureDialogOpen, (opened) => {
     left: 0;
     top: 0;
     width: 100%;
+    min-height: 100vh;
     overflow: visible;
+    background-color: v-bind(signatureBackgroundColor) !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
   }
 }
 </style>
