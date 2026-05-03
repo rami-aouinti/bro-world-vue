@@ -15,7 +15,16 @@ const emit = defineEmits<{ (event: 'change-variant', sectionKey: string, variant
 
 const props = defineProps<{ resume: ResumeApiItem; template?: any; reverse?: boolean; headerOnPrimary?: boolean; headerBandHeight?: number; barOnly?: boolean }>()
 
-const usesHeaderContact = computed(() => ['aside', 'aside-full-right', 'aside-full-left', 'no-aside'].includes(props.template?.layout || ''))
+const usesHeaderContact = computed(() =>
+  [
+    'aside',
+    'aside-left',
+    'aside-right',
+    'aside-full-right',
+    'aside-full-left',
+    'no-aside',
+  ].includes(props.template?.layout || ''),
+)
 const asideStartsAtTop = computed(() => Boolean(props.template?.layoutOptions?.asideStartsAtTop))
 
 const { t, te } = useI18n()
