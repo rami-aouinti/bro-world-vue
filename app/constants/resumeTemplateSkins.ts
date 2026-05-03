@@ -134,8 +134,8 @@ export const RESUME_TEMPLATE_SKINS: Record<TemplateSkinId, ResumeTemplateSkin> =
       showProfileInMain: true,
       showProfileInAside: false,
       showSkillsInAside: true,
-      showContactInAside: true,
-      showContactInHeader: false,
+      showContactInAside: false,
+      showContactInHeader: true,
       showSectionIcons: true,
       sectionIconStyle: {
         size: 18,
@@ -164,8 +164,8 @@ export const RESUME_TEMPLATE_SKINS: Record<TemplateSkinId, ResumeTemplateSkin> =
       showProfileInMain: true,
       showProfileInAside: false,
       showSkillsInAside: true,
-      showContactInAside: true,
-      showContactInHeader: false,
+      showContactInAside: false,
+      showContactInHeader: true,
       showSectionIcons: true,
       sectionIconStyle: {
         size: 20,
@@ -192,8 +192,8 @@ export const RESUME_TEMPLATE_SKINS: Record<TemplateSkinId, ResumeTemplateSkin> =
       showProfileInMain: false,
       showProfileInAside: true,
       showSkillsInAside: true,
-      showContactInAside: true,
-      showContactInHeader: false,
+      showContactInAside: false,
+      showContactInHeader: true,
       showSectionIcons: true,
       sectionIconStyle: {
         size: 16,
