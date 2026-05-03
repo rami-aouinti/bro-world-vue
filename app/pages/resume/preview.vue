@@ -202,6 +202,7 @@ const selectedAsideWidth = ref<number>(240)
 const selectedAsideHeight = ref<number>(100)
 const selectedAsideRadius = ref<number>(18)
 const selectedHeaderBandHeight = ref<number>(100)
+const syncingTemplateControls = ref(false)
 
 const selectedPhotoPosition = ref<string>('left')
 const selectedPhotoSize = ref<number>(96)
@@ -444,12 +445,6 @@ const contactStyleOptions = [
   { title: 'Icons', value: 'icons' },
 ]
 
-const structureLayoutMap: Record<'structure-1' | 'structure-2', (typeof CONTROLLED_LAYOUTS)[number]> =
-  {
-    'structure-1': 'no-aside',
-    'structure-2': 'aside-left',
-  }
-
 const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
   if (!selectedGeneratedTemplate.value) return null
   const base = selectedGeneratedTemplate.value
@@ -506,8 +501,10 @@ const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
 
 watch(
   selectedGeneratedTemplate,
-  (template) => {
+  async (template) => {
     if (!template) return
+
+    syncingTemplateControls.value = true
 
     selectedStructure.value =
       route.query.structure === 'structure-2' || (template as any).structure === 'structure-2'
@@ -567,6 +564,9 @@ watch(
       selectedPhotoBorderStyle.value = borderMatch[2] || 'solid'
       selectedPhotoBorderColor.value = borderMatch[3] || '#0F4C81'
     }
+
+    await nextTick()
+    syncingTemplateControls.value = false
   },
   { immediate: true },
 )
@@ -595,7 +595,6 @@ watch(
     const query = {
       ...route.query,
       layout: selectedLayout.value,
-    structure: selectedStructure.value,
       palette: selectedPalette.value,
       paletteCustom: customPalettePrimary.value,
       structure: selectedStructure.value,
@@ -617,11 +616,6 @@ watch(
   },
   { deep: true },
 )
-
-watch(selectedStructure, (structure) => {
-  const mapped = structureLayoutMap[structure]
-  if (mapped) selectedLayout.value = mapped
-})
 onMounted(async () => {
   if (!loggedIn.value) return
   loadingResumes.value = true
