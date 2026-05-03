@@ -311,30 +311,22 @@ onBeforeUnmount(() => {
 <style scoped>
 .header.with-contact {
   align-items: flex-start;
-  display: grid;
-  grid-template-columns: auto minmax(180px, 1fr) minmax(320px, 44%);
-  gap: var(--section-space, 12px);
+  flex-wrap: nowrap;
   padding-top: 2px;
 }
-.header-main { min-width: 0; }
+.header-main {
+  flex: 1 1 220px;
+  min-width: 0;
+}
 .header-contact {
+  flex: 1 1 340px;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(140px, 1fr));
   gap: 8px 14px;
   min-width: 0;
 }
 .header.is-right {
-  grid-template-columns: minmax(320px, 44%) minmax(180px, 1fr) auto;
-}
-.header.is-right .header-contact {
-  grid-column: 1;
-}
-.header.is-right .header-main {
-  grid-column: 2;
-  text-align: right;
-}
-.header.is-right .avatar-shell {
-  grid-column: 3;
+  flex-direction: row-reverse;
 }
 .contact-item { margin: 0; display: flex; gap: 6px; min-width: 0; align-items: baseline; }
 .contact-icon { flex: 0 0 auto; opacity: .95; }
@@ -346,8 +338,23 @@ onBeforeUnmount(() => {
     flex-wrap: wrap;
   }
   .header-contact {
+    flex-basis: 100%;
     width: 100%;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media print {
+  .header.with-contact {
+    flex-wrap: nowrap;
+  }
+  .header-main {
+    flex-basis: 200px;
+  }
+  .header-contact {
+    flex-basis: 320px;
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+    gap: 6px 10px;
   }
 }
 </style>
