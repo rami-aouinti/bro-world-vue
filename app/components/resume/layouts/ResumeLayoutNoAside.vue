@@ -23,8 +23,15 @@ const usesHeaderContact = computed(() =>
     'aside-full-right',
     'aside-full-left',
     'no-aside',
+    'aside-split',
+    'no-aside-split',
   ].includes(props.template?.layout || ''),
 )
+const splitSectionIds = new Set(['skills', 'languages', 'certifications', 'interests', 'references', 'projects'])
+const isSplitLayout = computed(() => props.template?.layout === 'no-aside-split')
+function isTwoColumnsSection(sectionId: string) {
+  return isSplitLayout.value && splitSectionIds.has(sectionId)
+}
 
 const { t, te } = useI18n()
 
@@ -149,23 +156,26 @@ const styleVars = computed(() => {
 <template>
   <div class="no-aside" :class="{ 'header-on-primary': headerOnPrimary }" :style="styleVars">
     <ResumeSectionHeader class="layout-header" :resume="resume" :template="template" :show-contact-in-header="usesHeaderContact" />
-        <ResumeSectionBlock
-      v-for="section in localSections"
-      :key="section.id"
-      :title="getSectionTitle(section.id)"
-      :icon="resolveSectionIcon(section.id)"
-      :show-icon="shouldShowSectionIcons"
-      :is-empty="sectionEmpty(section.id)"
-      :section-key="section.id"
-      @move-up="onMove($event, 'up')"
-      @move-down="onMove($event, 'down')"
-      @delete-section="onDeleteSection"
-      @submit-add-item="onAddItem"
-      @change-variant="onChangeVariant">
-      <ResumeSectionContact v-if="section.id === 'contact' && !usesHeaderContact" :resume="resume" :show-title="false" :contact-style="template?.sections?.contact || template?.contactStyle || 'labels'" />
-      <ResumeSectionProfile v-else-if="section.id === 'profile'" :resume="resume" :show-title="false" />
-      <ResumeSectionRenderer v-else :section-key="section.rendererKey || section.id" :resume="resume" :template="template" />
-    </ResumeSectionBlock>
+    <main :class="{ 'sections-grid': isSplitLayout }">
+      <ResumeSectionBlock
+        v-for="section in localSections"
+        :key="section.id"
+        :title="getSectionTitle(section.id)"
+        :icon="resolveSectionIcon(section.id)"
+        :show-icon="shouldShowSectionIcons"
+        :is-empty="sectionEmpty(section.id)"
+        :section-key="section.id"
+        :class="{ 'section-block--two-columns': isTwoColumnsSection(section.id) }"
+        @move-up="onMove($event, 'up')"
+        @move-down="onMove($event, 'down')"
+        @delete-section="onDeleteSection"
+        @submit-add-item="onAddItem"
+        @change-variant="onChangeVariant">
+        <ResumeSectionContact v-if="section.id === 'contact' && !usesHeaderContact" :resume="resume" :show-title="false" :contact-style="template?.sections?.contact || template?.contactStyle || 'labels'" />
+        <ResumeSectionProfile v-else-if="section.id === 'profile'" :resume="resume" :show-title="false" />
+        <ResumeSectionRenderer v-else :section-key="section.rendererKey || section.id" :resume="resume" :template="template" />
+      </ResumeSectionBlock>
+    </main>
   </div>
 </template>
 
@@ -184,5 +194,25 @@ const styleVars = computed(() => {
 }
 .no-aside.header-on-primary .layout-header :deep(*) {
   color: inherit !important;
+}
+.sections-grid {
+  padding: var(--panel-pad, 12px);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.sections-grid > * {
+  min-width: 0;
+}
+.sections-grid > :not(.section-block--two-columns) {
+  grid-column: 1 / -1;
+}
+@media (max-width: 900px) {
+  .sections-grid {
+    grid-template-columns: 1fr;
+  }
+  .sections-grid > :not(.section-block--two-columns) {
+    grid-column: auto;
+  }
 }
 </style>
