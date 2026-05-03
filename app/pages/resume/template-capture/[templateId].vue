@@ -144,7 +144,7 @@ const activeLayoutComponent = computed(() => {
 
 <template>
   <main class="capture-page">
-    <component :is="activeLayoutComponent" :resume="fakeResume" :theme="selectedTemplate.theme" :layout="selectedTemplate.layout" :section-variants="selectedTemplate.sections" :photo-options="selectedTemplate.photo" :decor="selectedTemplate.decor" :aside-options="selectedTemplate.aside" :text-style="selectedTemplate.theme?.textStyle" />
+    <component :is="activeLayoutComponent" :resume="fakeResume" :template="selectedTemplate" />
   </main>
 </template>
 
