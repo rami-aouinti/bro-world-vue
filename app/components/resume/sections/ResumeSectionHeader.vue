@@ -89,9 +89,9 @@ const headerContactFields = computed(() => {
 
   return [
     { key: 'email', icon: 'mdi-email-outline', label: 'Email', value: normalize(info?.email), href: normalize(info?.email) ? `mailto:${normalize(info?.email)}` : undefined },
+    { key: 'birthDate', icon: 'mdi-cake-variant-outline', label: 'Birth date', value: normalize(info?.birthDate) },
     { key: 'phone', icon: 'mdi-phone-outline', label: 'Phone', value: normalize(info?.phone), href: normalize(info?.phone) ? `tel:${normalize(info?.phone).replace(/\s+/g, '')}` : undefined },
     { key: 'address', icon: 'mdi-map-marker-outline', label: 'Address', value: normalize(info?.adresse) },
-    { key: 'birthDate', icon: 'mdi-cake-variant-outline', label: 'Birth date', value: normalize(info?.birthDate) },
     { key: 'homepage', icon: 'mdi-web', label: 'Homepage', value: normalize(info?.homepage), href: normalize(info?.homepage) || undefined, displayValue: 'Official Website' },
     { key: 'repo', icon: 'mdi-source-repository', label: 'Repo', value: normalize(info?.repo_profile), href: normalize(info?.repo_profile) || undefined, displayValue: 'Link Repo' },
   ].filter((field) => field.value.length > 0)
@@ -212,13 +212,13 @@ onBeforeUnmount(() => {
 
     <input ref="fileInput" class="photo-input" type="file" accept="image/png,image/jpeg,image/webp" @change="onPhotoSelected">
 
-    <div class="header-main">
-      <h1 class="editable-text" contenteditable="true" @input="(event) => { if (!resume.resumeInformation) resume.resumeInformation = {} as any; resume.resumeInformation.fullName = (event.target as HTMLElement).innerText }">{{ resume.resumeInformation?.fullName }}</h1>
+    <div class="header-main" style="max-width: 180px;">
+      <h2 class="editable-text" contenteditable="true" @input="(event) => { if (!resume.resumeInformation) resume.resumeInformation = {} as any; resume.resumeInformation.fullName = (event.target as HTMLElement).innerText }">{{ resume.resumeInformation?.fullName }}</h2>
       <p class="editable-text" contenteditable="true" @input="(event) => { if (!resume.resumeInformation) resume.resumeInformation = {} as any; resume.resumeInformation.title = (event.target as HTMLElement).innerText }">{{ resume.resumeInformation?.title }}</p>
       <p v-if="photoError" class="photo-error">{{ photoError }}</p>
     </div>
 
-    <div v-if="showContactInHeader" class="header-contact">
+    <div v-if="showContactInHeader" class="header-contact" style="min-width: 420px;">
       <p v-for="field in headerContactFields" :key="field.key" class="contact-item">
         <v-icon v-if="usesContactIcons" :icon="field.icon" size="18" class="contact-icon" />
         <strong v-else>{{ field.label }}:</strong>
@@ -318,7 +318,7 @@ onBeforeUnmount(() => {
 .header-main { flex: 1 1 auto; min-width: 180px; }
 .header-contact {
   position: absolute;
-  top: 0;
+  top: 30px;
   inset-inline-end: 0;
   display: grid;
   grid-template-columns: repeat(2, minmax(160px, 1fr));
