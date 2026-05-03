@@ -4,6 +4,8 @@ import {
   RESUME_SKINS_CATALOG,
   RESUME_STRUCTURES_CATALOG,
 } from '~/constants/resumeTemplates.catalog'
+import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-20-cover-letter.json'
+import GENERATED_COVER_PAGE_TEMPLATES from '~/data/resume-templates/generated-20-cover-page.json'
 import type {
   ResumeTemplateConfig,
   ResumeTemplateType,
@@ -86,24 +88,47 @@ export function useResumeTemplates() {
   const resumeTemplates = templatesByType('resume')
   const coverPageTemplates = templatesByType('cover-page')
   const coverLetterTemplates = templatesByType('cover-letter')
-  const allTemplates = computed(() =>
-    validTemplates.value.map((template) => ({
+  const generatedCoverPageTemplates = computed<ResumeTemplate[]>(() =>
+    GENERATED_COVER_PAGE_TEMPLATES.map((template) => ({
       id: template.id,
-      title:
-        template.type === 'resume'
-          ? `Resume · ${template.label}`
-          : template.label,
-      image: template.image,
-      type: template.type,
-      templateId: template.templateId,
-      layoutId: template.layoutId,
+      title: `Cover Page · ${template.name}`,
+      image: `/img/cv/generated/${template.id}.png`,
+      type: 'cover-page',
+      templateId: template.id,
+      layoutId: template.layout,
     })),
+  )
+  const generatedCoverLetterTemplates = computed<ResumeTemplate[]>(() =>
+    GENERATED_COVER_LETTER_TEMPLATES.map((template) => ({
+      id: template.id,
+      title: `Cover Letter · ${template.name}`,
+      image: `/img/cv/generated/${template.id}.png`,
+      type: 'cover-letter',
+      templateId: template.id,
+      layoutId: template.layout,
+    })),
+  )
+  const allTemplates = computed(() =>
+    [
+      ...validTemplates.value
+        .filter((template) => template.type === 'resume')
+        .map((template) => ({
+          id: template.id,
+          title: `Resume · ${template.label}`,
+          image: template.image,
+          type: template.type,
+          templateId: template.templateId,
+          layoutId: template.layoutId,
+        })),
+      ...generatedCoverPageTemplates.value,
+      ...generatedCoverLetterTemplates.value,
+    ] satisfies ResumeTemplate[],
   )
 
   return {
     resumeTemplates,
-    coverPageTemplates,
-    coverLetterTemplates,
+    coverPageTemplates: generatedCoverPageTemplates,
+    coverLetterTemplates: generatedCoverLetterTemplates,
     allTemplates,
   }
 }
