@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { formatDateRange, sortByStartDateDescKeepingSourceOrder } from '../formatters/dateRange'
 import { levelToSteps, normalizeLevel } from './levelUtils'
 import type { ResumeSectionRendererProps } from './types'
@@ -28,6 +29,7 @@ const props = withDefaults(defineProps<ResumeSectionRendererProps>(), {
   template: 'list',
   editable: false,
 })
+const { t } = useI18n()
 
 function normalizeBulletLine(line: string): string {
   return line.replace(/^[-*•◦▪‣]+\s*/, '').trim()
@@ -105,15 +107,15 @@ function updateItemField(index: number, key: string, value: string) {
 
 const emptyMessage = computed(() => {
   const labels: Record<string, string> = {
-    experience: 'Aucune expérience à afficher pour le moment.',
-    education: 'Aucune formation à afficher pour le moment.',
-    skills: 'Aucune compétence à afficher pour le moment.',
-    projects: 'Aucun projet à afficher pour le moment.',
-    certifications: 'Aucune certification à afficher pour le moment.',
-    references: 'Aucune référence à afficher pour le moment.',
-    interests: "Aucun centre d'intérêt à afficher pour le moment.",
-    languages: 'Aucune langue à afficher pour le moment.',
-    general: 'Aucun élément à afficher pour le moment.',
+    experience: t('resumeBuilder.create.preview.empty.experience'),
+    education: t('resumeBuilder.create.preview.empty.education'),
+    skills: t('resumeBuilder.create.preview.empty.skills'),
+    projects: t('resumeBuilder.create.preview.empty.projects'),
+    certifications: t('resumeBuilder.create.preview.empty.certifications'),
+    references: t('resumeBuilder.create.preview.empty.references'),
+    interests: t('resumeBuilder.create.preview.empty.interests'),
+    languages: t('resumeBuilder.create.preview.empty.languages'),
+    general: t('resumeBuilder.create.preview.empty.general'),
   }
 
   return labels[props.sectionKey] ?? labels.general
@@ -135,7 +137,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
       (item.title as string) ||
       (item.role as string) ||
       (item.position as string) ||
-      'Élément'
+      t('resumeBuilder.create.preview.itemFallback')
 
     const subheading =
       (item.company as string) ||

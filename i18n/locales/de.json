@@ -3048,6 +3048,28 @@
         "logoFileTooLarge": "Datei ist zu groß (max. 5 MB).",
         "logoReadFailed": "Die ausgewählte Datei konnte nicht gelesen werden.",
         "logoLoadFailed": "Bild konnte nicht geladen werden. Bitte versuche es erneut."
+      },
+      "preview": {
+        "empty": {
+          "experience": "Derzeit keine Berufserfahrung anzuzeigen.",
+          "education": "Derzeit keine Ausbildung anzuzeigen.",
+          "skills": "Derzeit keine Fähigkeiten anzuzeigen.",
+          "projects": "Derzeit keine Projekte anzuzeigen.",
+          "certifications": "Derzeit keine Zertifizierungen anzuzeigen.",
+          "references": "Derzeit keine Referenzen anzuzeigen.",
+          "interests": "Derzeit keine Interessen anzuzeigen.",
+          "languages": "Derzeit keine Sprachen anzuzeigen.",
+          "general": "Derzeit keine Einträge anzuzeigen."
+        },
+        "itemFallback": "Eintrag",
+        "photo": {
+          "moveLeft": "Foto nach links verschieben",
+          "moveRight": "Foto nach rechts verschieben",
+          "errors": {
+            "invalidFormat": "Ungültiges Format. Verwenden Sie JPG, PNG oder WEBP.",
+            "tooLarge": "Bild ist zu groß (max. 5 MB)."
+          }
+        }
       }
     },
     "meta": {

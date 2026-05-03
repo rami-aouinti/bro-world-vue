@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import type { ResumeApiItem } from '~/services/resumeApi'
+import { useI18n } from 'vue-i18n'
 
 type PhotoShape = 'circle' | 'rounded' | 'square' | 'hex' | 'blob'
 
 const props = defineProps<{ resume: ResumeApiItem; template?: any; showContactInHeader?: boolean }>()
+const { t } = useI18n()
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024
@@ -75,7 +77,9 @@ const currentPhotoUrl = computed(() => {
 })
 
 const sideSwitchLabel = computed(() =>
-  photoConfig.value.position === 'right' ? 'Mettre la photo à gauche' : 'Mettre la photo à droite',
+  photoConfig.value.position === 'right'
+    ? t('resumeBuilder.create.preview.photo.moveLeft')
+    : t('resumeBuilder.create.preview.photo.moveRight'),
 )
 const usesContactIcons = computed(() => (props.template?.sections?.contact || props.template?.contactStyle || 'labels') === 'icons')
 
@@ -122,13 +126,13 @@ function onPhotoSelected(event: Event) {
   photoError.value = ''
 
   if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-    photoError.value = 'Format invalide. Utilisez JPG, PNG ou WEBP.'
+    photoError.value = t('resumeBuilder.create.preview.photo.errors.invalidFormat')
     input.value = ''
     return
   }
 
   if (file.size > MAX_PHOTO_BYTES) {
-    photoError.value = 'Image trop volumineuse (max 5 Mo).'
+    photoError.value = t('resumeBuilder.create.preview.photo.errors.tooLarge')
     input.value = ''
     return
   }
