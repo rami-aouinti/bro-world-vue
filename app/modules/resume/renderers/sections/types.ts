@@ -13,6 +13,7 @@ export type ResumeSectionRendererVariant =
   | 'cards'
   | 'list'
   | 'classic'
+  | 'two-columns'
   | 'stars'
   | 'dots'
   | 'progress-line'
