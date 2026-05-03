@@ -7058,5 +7058,269 @@
       "underline": "none",
       "casing": "normal"
     }
+  },
+  {
+    "id": "tpl-118",
+    "name": "lebenslauf-minimal-gray-left-aside",
+    "version": 1,
+    "layout": "aside-left",
+    "structure": "structure-1",
+    "sections": {
+      "experience": "timeline",
+      "education": "timeline",
+      "skills": "bars",
+      "languages": "bars",
+      "languagesLabel": "classic",
+      "certifications": "list",
+      "references": "classic",
+      "projects": "classic",
+      "interests": "classic",
+      "contact": "icons"
+    },
+    "theme": {
+      "palette": {
+        "primary": "#2F3B4A",
+        "secondary": "#C7CDD4",
+        "text": "#20242A",
+        "muted": "#68707A",
+        "pageBackground": "#F2F3F5"
+      },
+      "line": "soft",
+      "density": "comfortable",
+      "textStyle": "roman",
+      "showIcon": true
+    },
+    "aside": {
+      "width": "210px",
+      "height": "100%"
+    },
+    "photo": {
+      "position": "left",
+      "size": "108px",
+      "shape": "square",
+      "border": "0 solid transparent"
+    },
+    "decor": {
+      "corners": []
+    },
+    "layoutOptions": {
+      "columnsGap": "normal",
+      "asideWidthMode": "compact",
+      "sectionSpacing": "normal"
+    },
+    "photoOptions": {
+      "effect": "none",
+      "grayscale": false,
+      "padding": "tight"
+    },
+    "levelStyle": "bars-solid",
+    "decorOptions": {
+      "topBand": false,
+      "sideBand": true,
+      "separator": "thin"
+    },
+    "sectionTitleStyle": "uppercase"
+  },
+  {
+    "id": "tpl-119",
+    "name": "lebenslauf-soft-circle-accent",
+    "version": 1,
+    "layout": "top-bar",
+    "structure": "structure-2",
+    "sections": {
+      "experience": "timeline",
+      "education": "timeline",
+      "skills": "bars",
+      "languages": "bars",
+      "languagesLabel": "classic",
+      "certifications": "list",
+      "references": "classic",
+      "projects": "classic",
+      "interests": "classic",
+      "contact": "icons"
+    },
+    "theme": {
+      "palette": {
+        "primary": "#2F3A45",
+        "secondary": "#DCC8B4",
+        "text": "#1F2329",
+        "muted": "#717780",
+        "pageBackground": "#F6F6F6"
+      },
+      "line": "soft",
+      "density": "comfortable",
+      "textStyle": "roman",
+      "showIcon": true
+    },
+    "aside": {
+      "width": "100%",
+      "height": "170px"
+    },
+    "photo": {
+      "position": "left",
+      "size": "110px",
+      "shape": "circle",
+      "border": "3px solid #FFFFFF"
+    },
+    "decor": {
+      "corners": [
+        {
+          "shape": "circle",
+          "size": "170px",
+          "color": "#DCC8B4",
+          "x": "left",
+          "y": "top"
+        }
+      ]
+    },
+    "layoutOptions": {
+      "columnsGap": "normal",
+      "asideWidthMode": "hidden",
+      "sectionSpacing": "normal"
+    },
+    "photoOptions": {
+      "effect": "soft-shadow",
+      "grayscale": false,
+      "padding": "normal"
+    },
+    "levelStyle": "bars-solid",
+    "decorOptions": {
+      "topBand": true,
+      "sideBand": false,
+      "separator": "thin"
+    },
+    "sectionTitleStyle": "uppercase"
+  },
+  {
+    "id": "tpl-120",
+    "name": "lebenslauf-dark-header-circle",
+    "version": 1,
+    "layout": "top-bar",
+    "structure": "structure-1",
+    "sections": {
+      "experience": "timeline",
+      "education": "timeline",
+      "skills": "list",
+      "languages": "classic",
+      "languagesLabel": "classic",
+      "certifications": "list",
+      "references": "classic",
+      "projects": "classic",
+      "interests": "classic",
+      "contact": "icons"
+    },
+    "theme": {
+      "palette": {
+        "primary": "#24313E",
+        "secondary": "#E3E6EA",
+        "text": "#1D242D",
+        "muted": "#6D7782",
+        "pageBackground": "#F1F3F5"
+      },
+      "line": "soft",
+      "density": "compact",
+      "textStyle": "roman",
+      "showIcon": true
+    },
+    "aside": {
+      "width": "100%",
+      "height": "145px"
+    },
+    "photo": {
+      "position": "left",
+      "size": "115px",
+      "shape": "circle",
+      "border": "2px solid #D8DEE6"
+    },
+    "decor": {
+      "corners": []
+    },
+    "layoutOptions": {
+      "columnsGap": "normal",
+      "asideWidthMode": "hidden",
+      "sectionSpacing": "compact"
+    },
+    "photoOptions": {
+      "effect": "none",
+      "grayscale": false,
+      "padding": "normal"
+    },
+    "levelStyle": "minimal",
+    "decorOptions": {
+      "topBand": true,
+      "sideBand": false,
+      "separator": "thin"
+    },
+    "sectionTitleStyle": "boxed"
+  },
+  {
+    "id": "tpl-121",
+    "name": "lebenslauf-photo-card-right",
+    "version": 1,
+    "layout": "top-photo-right",
+    "structure": "structure-2",
+    "sections": {
+      "experience": "timeline",
+      "education": "timeline",
+      "skills": "bars",
+      "languages": "bars",
+      "languagesLabel": "classic",
+      "certifications": "list",
+      "references": "classic",
+      "projects": "classic",
+      "interests": "classic",
+      "contact": "icons"
+    },
+    "theme": {
+      "palette": {
+        "primary": "#151A3B",
+        "secondary": "#D6DAE2",
+        "text": "#20242A",
+        "muted": "#6A727B",
+        "pageBackground": "#F5F6F8"
+      },
+      "line": "soft",
+      "density": "comfortable",
+      "textStyle": "roman",
+      "showIcon": true
+    },
+    "aside": {
+      "width": "100%",
+      "height": "165px"
+    },
+    "photo": {
+      "position": "right",
+      "size": "122px",
+      "shape": "square",
+      "border": "0 solid transparent"
+    },
+    "decor": {
+      "corners": [
+        {
+          "shape": "rect",
+          "size": "220px",
+          "color": "#151A3B",
+          "x": "right",
+          "y": "top"
+        }
+      ]
+    },
+    "layoutOptions": {
+      "columnsGap": "wide",
+      "asideWidthMode": "hidden",
+      "sectionSpacing": "normal"
+    },
+    "photoOptions": {
+      "effect": "soft-shadow",
+      "grayscale": false,
+      "padding": "normal"
+    },
+    "levelStyle": "bars-solid",
+    "decorOptions": {
+      "topBand": false,
+      "sideBand": false,
+      "separator": "thin"
+    },
+    "sectionTitleStyle": "uppercase"
   }
 ]
