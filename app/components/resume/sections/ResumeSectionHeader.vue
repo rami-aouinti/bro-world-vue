@@ -212,15 +212,15 @@ onBeforeUnmount(() => {
 
     <input ref="fileInput" class="photo-input" type="file" accept="image/png,image/jpeg,image/webp" @change="onPhotoSelected">
 
-    <div class="header-main" style="max-width: 180px;">
+    <div class="header-main">
       <h2 class="editable-text" contenteditable="true" @input="(event) => { if (!resume.resumeInformation) resume.resumeInformation = {} as any; resume.resumeInformation.fullName = (event.target as HTMLElement).innerText }">{{ resume.resumeInformation?.fullName }}</h2>
       <p class="editable-text" contenteditable="true" @input="(event) => { if (!resume.resumeInformation) resume.resumeInformation = {} as any; resume.resumeInformation.title = (event.target as HTMLElement).innerText }">{{ resume.resumeInformation?.title }}</p>
       <p v-if="photoError" class="photo-error">{{ photoError }}</p>
     </div>
 
-    <div v-if="showContactInHeader" class="header-contact" style="min-width: 420px;">
+    <div v-if="showContactInHeader" class="header-contact">
       <p v-for="field in headerContactFields" :key="field.key" class="contact-item">
-        <v-icon v-if="usesContactIcons" :icon="field.icon" size="18" class="contact-icon" />
+        <v-icon v-if="usesContactIcons" :icon="field.icon" size="14" class="contact-icon" />
         <strong v-else>{{ field.label }}:</strong>
         <a v-if="field.href" :href="field.href" target="_blank" rel="noopener noreferrer">{{ field.displayValue || field.value }}</a>
         <span v-else>{{ field.value }}</span>
@@ -311,42 +311,50 @@ onBeforeUnmount(() => {
 <style scoped>
 .header.with-contact {
   align-items: flex-start;
-  position: relative;
+  flex-wrap: nowrap;
   padding-top: 2px;
-  padding-inline-end: min(44%, 420px);
 }
-.header-main { flex: 1 1 auto; min-width: 180px; }
+.header-main {
+  flex: 1 1 220px;
+  min-width: 0;
+}
 .header-contact {
-  position: absolute;
-  top: 30px;
-  inset-inline-end: 0;
+  flex: 1 1 340px;
   display: grid;
-  grid-template-columns: repeat(2, minmax(160px, 1fr));
+  grid-template-columns: repeat(2, minmax(140px, 1fr));
   gap: 8px 14px;
-  width: min(44%, 420px);
+  min-width: 0;
 }
 .header.is-right {
-  padding-inline-end: 0;
-  padding-inline-start: min(44%, 420px);
-}
-.header.is-right .header-contact {
-  inset-inline-end: auto;
-  inset-inline-start: 0;
+  flex-direction: row-reverse;
 }
 .contact-item { margin: 0; display: flex; gap: 6px; min-width: 0; align-items: baseline; }
-.contact-icon { flex: 0 0 auto; opacity: .95; }
+.header-contact .contact-item { font-size: .89em; line-height: 1.2; }
+.contact-icon { flex: 0 0 auto; opacity: .95; font-size: 14px !important; }
 .contact-item strong { flex: 0 0 auto; white-space: nowrap; }
 .contact-item a, .contact-item span { min-width: 0; overflow-wrap: anywhere; word-break: break-word; color: inherit; text-decoration: none; }
 @media (max-width: 900px) {
   .header.with-contact {
     flex-wrap: wrap;
-    padding-inline-end: 0;
-    padding-inline-start: 0;
   }
   .header-contact {
-    position: static;
+    flex-basis: 100%;
     width: 100%;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media print {
+  .header.with-contact {
+    flex-wrap: nowrap;
+  }
+  .header-main {
+    flex-basis: 200px;
+  }
+  .header-contact {
+    flex-basis: 320px;
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+    gap: 6px 10px;
   }
 }
 </style>
