@@ -309,13 +309,44 @@ onBeforeUnmount(() => {
 </style>
 
 <style scoped>
-.header.with-contact { align-items: flex-start; }
+.header.with-contact {
+  align-items: flex-start;
+  position: relative;
+  padding-top: 2px;
+  padding-inline-end: min(44%, 420px);
+}
 .header-main { flex: 1 1 auto; min-width: 180px; }
-.header-contact { margin-inline-start: auto; display: grid; grid-template-columns: repeat(2, minmax(180px, 1fr)); gap: 10px 16px; max-width: min(620px, 62%); align-self: center; }
-.header.is-right .header-contact { margin-inline-start: 0; margin-inline-end: auto; }
+.header-contact {
+  position: absolute;
+  top: 0;
+  inset-inline-end: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(160px, 1fr));
+  gap: 8px 14px;
+  width: min(44%, 420px);
+}
+.header.is-right {
+  padding-inline-end: 0;
+  padding-inline-start: min(44%, 420px);
+}
+.header.is-right .header-contact {
+  inset-inline-end: auto;
+  inset-inline-start: 0;
+}
 .contact-item { margin: 0; display: flex; gap: 6px; min-width: 0; align-items: baseline; }
 .contact-icon { flex: 0 0 auto; opacity: .95; }
 .contact-item strong { flex: 0 0 auto; white-space: nowrap; }
 .contact-item a, .contact-item span { min-width: 0; overflow-wrap: anywhere; word-break: break-word; color: inherit; text-decoration: none; }
-@media (max-width: 900px) { .header.with-contact { flex-wrap: wrap; } .header-contact { max-width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-inline-start: 0; } }
+@media (max-width: 900px) {
+  .header.with-contact {
+    flex-wrap: wrap;
+    padding-inline-end: 0;
+    padding-inline-start: 0;
+  }
+  .header-contact {
+    position: static;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
 </style>
