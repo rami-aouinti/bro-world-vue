@@ -164,7 +164,7 @@
     "name": "classic-timeline-sunset",
     "version": 1,
     "layout": "aside",
-    "structure": "structure-1",
+    "structure": "structure-2",
     "sections": {
       "experience": "timeline",
       "education": "timeline",
@@ -192,7 +192,8 @@
     },
     "aside": {
       "width": "250px",
-      "height": "100%"
+      "height": "100%",
+      "radius": "18px"
     },
     "photo": {
       "position": "left",
@@ -210,6 +211,9 @@
           "y": "0"
         }
       ]
+    },
+    "layoutOptions": {
+      "asideStartsAtTop": true
     }
   },
   {
