@@ -4,7 +4,7 @@
     "name": "classic-timeline-ocean",
     "version": 1,
     "layout": "aside-left",
-    "structure": "structure-3",
+    "structure": "structure-2",
     "sections": {
       "experience": "timeline",
       "education": "timeline",
