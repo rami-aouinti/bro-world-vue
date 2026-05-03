@@ -511,13 +511,13 @@ watch(
       typeof route.query.layout === 'string' ? route.query.layout : ''
     const templateLayout = String(template.layout || '')
     selectedLayout.value = CONTROLLED_LAYOUTS.includes(
-      queryLayout as (typeof CONTROLLED_LAYOUTS)[number],
+      templateLayout as (typeof CONTROLLED_LAYOUTS)[number],
     )
-      ? (queryLayout as (typeof CONTROLLED_LAYOUTS)[number])
+      ? (templateLayout as (typeof CONTROLLED_LAYOUTS)[number])
       : CONTROLLED_LAYOUTS.includes(
-            templateLayout as (typeof CONTROLLED_LAYOUTS)[number],
+            queryLayout as (typeof CONTROLLED_LAYOUTS)[number],
           )
-        ? (templateLayout as (typeof CONTROLLED_LAYOUTS)[number])
+        ? (queryLayout as (typeof CONTROLLED_LAYOUTS)[number])
         : 'no-aside'
 
     selectedPalette.value =
