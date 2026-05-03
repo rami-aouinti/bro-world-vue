@@ -48,6 +48,23 @@ const getSectionTitle = (sectionKey: string) => {
   return SECTION_TITLE_FALLBACKS[sectionKey] ?? sectionKey
 }
 const shouldShowSectionIcons = computed(() => props.template?.theme?.showIcon !== false)
+function isTwoColumnsSection(sectionId: string) {
+  const variants = props.template?.sections || {}
+  const aliases: Record<string, string[]> = {
+    experience: ['experience', 'experiences'],
+    education: ['education', 'educations'],
+    skills: ['skills', 'skill'],
+    languages: ['languages', 'language'],
+    projects: ['projects', 'project'],
+    certifications: ['certifications', 'certification'],
+    references: ['references', 'reference'],
+    interests: ['interests', 'hobby'],
+  }
+  const variant =
+    aliases[sectionId]?.map((key) => variants[key]).find((value) => typeof value === 'string')
+    || variants[sectionId]
+  return variant === 'two-column' || variant === 'two-columns'
+}
 
 const resolvedZones = computed(() =>
   resolveLayoutZonesWithConfig(props.template?.structure, props.template?.structureConfig),
@@ -171,8 +188,8 @@ const styleVars = computed(() => {
         <ResumeSectionRenderer v-else :section-key="section.rendererKey || section.id" :resume="resume" :template="template" />
       </ResumeSectionBlock>
     </aside>
-    <main>
-      <ResumeSectionBlock v-for="section in displayMainSections" :key="`main-${section.id}`" :title="getSectionTitle(section.id)" :icon="resolveSectionIcon(section.id)" :show-icon="shouldShowSectionIcons" :is-empty="sectionEmpty(section.id)" :section-key="section.id" @move-up="onMove($event, 'up')" @move-down="onMove($event, 'down')" @delete-section="onDeleteSection" @submit-add-item="onAddItem" @change-variant="onChangeVariant">
+    <main class="sections-grid">
+      <ResumeSectionBlock v-for="section in displayMainSections" :key="`main-${section.id}`" :title="getSectionTitle(section.id)" :icon="resolveSectionIcon(section.id)" :show-icon="shouldShowSectionIcons" :is-empty="sectionEmpty(section.id)" :section-key="section.id" :class="{ 'section-block--two-columns': isTwoColumnsSection(section.id) }" @move-up="onMove($event, 'up')" @move-down="onMove($event, 'down')" @delete-section="onDeleteSection" @submit-add-item="onAddItem" @change-variant="onChangeVariant">
         <ResumeSectionProfile v-if="section.id === 'profile'" :resume="resume" :show-title="false" />
         <ResumeSectionRenderer v-else :section-key="section.rendererKey || section.id" :resume="resume" :template="template" />
       </ResumeSectionBlock>
@@ -284,6 +301,25 @@ aside.on-primary {
 main {
   grid-area: main;
   padding: var(--panel-pad, 12px);
+}
+main.sections-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+main.sections-grid > * {
+  min-width: 0;
+}
+main.sections-grid > :not(.section-block--two-columns) {
+  grid-column: 1 / -1;
+}
+@media (max-width: 900px) {
+  main.sections-grid {
+    grid-template-columns: 1fr;
+  }
+  main.sections-grid > :not(.section-block--two-columns) {
+    grid-column: auto;
+  }
 }
 .aside-left aside ::v-deep(h1),
 .aside-left .full--on-primary ::v-deep(h1),

@@ -36,8 +36,21 @@ const getSectionTitle = (sectionKey: string) => {
 const shouldShowSectionIcons = computed(() => props.template?.theme?.showIcon !== false)
 
 function isTwoColumnsSection(sectionId: string) {
-  const variant = props.template?.sections?.[sectionId]
-  return variant === 'two-columns'
+  const variants = props.template?.sections || {}
+  const aliases: Record<string, string[]> = {
+    experience: ['experience', 'experiences'],
+    education: ['education', 'educations'],
+    skills: ['skills', 'skill'],
+    languages: ['languages', 'language'],
+    projects: ['projects', 'project'],
+    certifications: ['certifications', 'certification'],
+    references: ['references', 'reference'],
+    interests: ['interests', 'hobby'],
+  }
+  const variant =
+    aliases[sectionId]?.map((key) => variants[key]).find((value) => typeof value === 'string')
+    || variants[sectionId]
+  return variant === 'two-column' || variant === 'two-columns'
 }
 
 const resolvedZones = computed(() => resolveLayoutZonesWithConfig(props.template?.structure, props.template?.structureConfig))
