@@ -16,7 +16,8 @@
     "format": "prettier . --write",
     "lint:football": "eslint app/composables/useFootballData.ts app/components/Sports/Football/FixtureDetailsPanel.vue --max-warnings=0 --rule no-redeclare:error --rule no-dupe-args:error --rule no-dupe-keys:error --rule vue/no-parsing-error:error",
     "check:football": "pnpm run typecheck && pnpm run lint:football",
-    "check:resume-presets": "vitest run test/nuxt/resume-presets-validation.test.ts"
+    "check:resume-presets": "vitest run test/nuxt/resume-presets-validation.test.ts",
+    "capture:resume-thumbnails": "node scripts/capture-resume-thumbnails.mjs"
   },
   "devDependencies": {
     "@iconify-json/mdi": "^1.2.3",
@@ -34,7 +35,8 @@
     "vite": "^7.3.1",
     "vitest": "^4.1.2",
     "vue-tsc": "^3.2.6",
-    "vuetify-nuxt-module": "^0.19.5"
+    "vuetify-nuxt-module": "^0.19.5",
+    "playwright": "^1.58.2"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.20",
