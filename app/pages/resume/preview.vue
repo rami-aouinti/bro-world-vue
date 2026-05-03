@@ -445,12 +445,6 @@ const contactStyleOptions = [
   { title: 'Icons', value: 'icons' },
 ]
 
-const structureLayoutMap: Record<'structure-1' | 'structure-2', (typeof CONTROLLED_LAYOUTS)[number]> =
-  {
-    'structure-1': 'no-aside',
-    'structure-2': 'aside-left',
-  }
-
 const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
   if (!selectedGeneratedTemplate.value) return null
   const base = selectedGeneratedTemplate.value
@@ -601,7 +595,6 @@ watch(
     const query = {
       ...route.query,
       layout: selectedLayout.value,
-    structure: selectedStructure.value,
       palette: selectedPalette.value,
       paletteCustom: customPalettePrimary.value,
       structure: selectedStructure.value,
@@ -623,12 +616,6 @@ watch(
   },
   { deep: true },
 )
-
-watch(selectedStructure, (structure) => {
-  if (syncingTemplateControls.value) return
-  const mapped = structureLayoutMap[structure]
-  if (mapped) selectedLayout.value = mapped
-})
 onMounted(async () => {
   if (!loggedIn.value) return
   loadingResumes.value = true
