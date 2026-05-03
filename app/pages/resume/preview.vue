@@ -604,6 +604,8 @@ watch(
       photoSize: String(selectedPhotoSize.value),
       photoShape: selectedPhotoShape.value,
       photoBorder: `${selectedPhotoBorderWidth.value}px ${selectedPhotoBorderStyle.value} ${selectedPhotoBorderColor.value}`,
+      asideWidth: `${selectedAsideWidth.value}px`,
+      asideHeight: `${selectedAsideHeight.value}%`,
       asideRadius: `${selectedAsideRadius.value}px`,
       headerBandHeight: String(selectedHeaderBandHeight.value),
     } as Record<string, string>
