@@ -1,4 +1,4 @@
-import { mkdir, readFile } from 'node:fs/promises'
+import { access, mkdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright-core'
@@ -15,8 +15,37 @@ const generatedResumeTemplates = JSON.parse(templatesRaw)
 
 await mkdir(outDir, { recursive: true })
 
-const executablePath = process.env.CHROMIUM_PATH
-if (!executablePath) throw new Error('Set CHROMIUM_PATH to a Chromium/Chrome executable path')
+async function resolveBrowserPath() {
+  if (process.env.CHROMIUM_PATH) return process.env.CHROMIUM_PATH
+
+  const candidates = [
+    '/usr/bin/google-chrome',
+    '/usr/bin/google-chrome-stable',
+    '/usr/bin/chromium-browser',
+    '/usr/bin/chromium',
+    '/snap/bin/chromium',
+  ]
+
+  for (const candidate of candidates) {
+    try {
+      await access(candidate)
+      return candidate
+    }
+    catch {
+      // try next path
+    }
+  }
+
+  return null
+}
+
+const executablePath = await resolveBrowserPath()
+if (!executablePath) {
+  console.error('❌ Unable to locate Chrome/Chromium automatically.')
+  console.error('Set CHROMIUM_PATH, for example:')
+  console.error('CHROMIUM_PATH=/usr/bin/google-chrome pnpm run capture:resume-thumbnails')
+  process.exit(1)
+}
 
 const browser = await chromium.launch({ headless: true, executablePath })
 const page = await browser.newPage({ viewport: { width: 794, height: 1123 } })
