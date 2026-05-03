@@ -336,13 +336,6 @@ function downloadPdf() {
   window.print()
 }
 
-
-const photoPositionOptions = [
-  { title: 'Left', value: 'left' },
-  { title: 'Right', value: 'right' },
-  { title: 'Center', value: 'center' },
-]
-
 const editableDecorCorners = ref<Array<{ shape: string; size: number; x: number; y: number; color: string }>>([])
 
 function normalizeDecorCorner(corner: any) {
@@ -382,27 +375,6 @@ function addDecorCorner() {
 function removeDecorCorner(index: number) {
   editableDecorCorners.value.splice(index, 1)
 }
-
-const sectionVariantOptions = computed(() => {
-  const map = new Map<string, string[]>()
-  GENERATED_RESUME_TEMPLATES.forEach((template) => {
-    Object.entries(template.sections || {}).forEach(([sectionKey, variant]) => {
-      if (!map.has(sectionKey)) map.set(sectionKey, [])
-      const entries = map.get(sectionKey)!
-      if (!entries.includes(variant)) entries.push(variant)
-    })
-  })
-
-  return Array.from(map.entries()).reduce<
-    Record<string, { title: string; value: string }[]>
-  >((acc, [sectionKey, variants]) => {
-    acc[sectionKey] = variants.map((variant) => ({
-      title: variant,
-      value: variant,
-    }))
-    return acc
-  }, {})
-})
 
 const palettePresetOptions = computed<PalettePresetOption[]>(() => {
   const uniquePrimaries = new Set<string>()
