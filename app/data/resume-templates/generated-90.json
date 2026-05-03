@@ -54,7 +54,8 @@
     "layoutOptions": {
       "columnsGap": "wide",
       "asideWidthMode": "standard",
-      "sectionSpacing": "normal"
+      "sectionSpacing": "normal",
+      "asideStartsAtTop": false
     },
     "photoOptions": {
       "shapeList": [
