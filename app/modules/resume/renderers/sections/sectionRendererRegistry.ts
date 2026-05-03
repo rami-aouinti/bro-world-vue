@@ -103,12 +103,19 @@ export const sectionRendererRegistry: SectionRendererRegistry = {
   },
 }
 
+const DEFAULT_SECTION_RENDERER = ExperienceList
+
 export function resolveSectionRenderer(
-  section: ResumeSectionRendererKey,
+  section: ResumeSectionRendererKey | string,
   variant: ResumeSectionRendererVariant | string,
 ) {
-  const sectionMap = sectionRendererRegistry[section]
+  const sectionMap = sectionRendererRegistry[section as ResumeSectionRendererKey]
+  if (!sectionMap) return DEFAULT_SECTION_RENDERER
+
   return (
-    sectionMap[variant as ResumeSectionRendererVariant] ?? sectionMap.classic
+    sectionMap[variant as ResumeSectionRendererVariant] ??
+    sectionMap.classic ??
+    Object.values(sectionMap)[0] ??
+    DEFAULT_SECTION_RENDERER
   )
 }
