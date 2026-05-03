@@ -76,15 +76,15 @@ const fakeResume: ResumeApiItem = {
     {
       title: 'Full Stack Developer',
       company: 'Bro Labs',
-      description: 'Développement APIs, Vue.js et architecture applicative.',
+      description: 'API development, Vue.js implementation, and application architecture.',
       startDate: '2021-01-01',
       endDate: null,
     },
   ],
   educations: [
     {
-      title: 'Master Informatique',
-      school: 'Université de Lyon',
+      title: 'Master in Computer Science',
+      school: 'University of Lyon',
       startDate: '2018-09-01',
       endDate: '2020-06-30',
       location: 'Lyon',
@@ -92,9 +92,9 @@ const fakeResume: ResumeApiItem = {
   ],
   skills: [{ title: 'Vue.js' }, { title: 'TypeScript' }, { title: 'Node.js' }],
   languages: [
-    { title: 'Français', countryCode: 'FR' },
-    { title: 'Anglais', countryCode: 'GB' },
-    { title: 'Espagnol', countryCode: 'ES' },
+    { title: 'French', countryCode: 'FR' },
+    { title: 'English', countryCode: 'GB' },
+    { title: 'Spanish', countryCode: 'ES' },
   ],
 }
 
@@ -218,10 +218,10 @@ async function saveResumeFromPreview() {
       method: 'POST',
       body: resumeToDisplay.value,
     })
-    saveResumeSuccess.value = 'CV enregistré avec succès.'
+    saveResumeSuccess.value = 'Resume saved successfully.'
   }
   catch (error: any) {
-    saveResumeError.value = error?.data?.message || 'Impossible de sauvegarder le CV.'
+    saveResumeError.value = error?.data?.message || 'Unable to save the resume.'
   }
   finally {
     savingResume.value = false
@@ -550,7 +550,7 @@ onMounted(async () => {
   try {
     myResumes.value = await listMyResumes()
   } catch {
-    resumesError.value = 'Impossible de charger vos données de CV.'
+    resumesError.value = 'Unable to load your resume data.'
   } finally {
     loadingResumes.value = false
   }

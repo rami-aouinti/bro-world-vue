@@ -3269,6 +3269,28 @@
       },
       "static": {
         "a4PageEnd": "Fin de page A4"
+      },
+      "preview": {
+        "empty": {
+          "experience": "Aucune expérience à afficher pour le moment.",
+          "education": "Aucune formation à afficher pour le moment.",
+          "skills": "Aucune compétence à afficher pour le moment.",
+          "projects": "Aucun projet à afficher pour le moment.",
+          "certifications": "Aucune certification à afficher pour le moment.",
+          "references": "Aucune référence à afficher pour le moment.",
+          "interests": "Aucun centre d'intérêt à afficher pour le moment.",
+          "languages": "Aucune langue à afficher pour le moment.",
+          "general": "Aucun élément à afficher pour le moment."
+        },
+        "itemFallback": "Élément",
+        "photo": {
+          "moveLeft": "Mettre la photo à gauche",
+          "moveRight": "Mettre la photo à droite",
+          "errors": {
+            "invalidFormat": "Format invalide. Utilisez JPG, PNG ou WEBP.",
+            "tooLarge": "Image trop volumineuse (max 5 Mo)."
+          }
+        }
       }
     },
     "meta": {

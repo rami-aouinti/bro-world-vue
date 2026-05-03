@@ -3281,6 +3281,28 @@
       },
       "static": {
         "a4PageEnd": "End of A4 page"
+      },
+      "preview": {
+        "empty": {
+          "experience": "No experience to display yet.",
+          "education": "No education to display yet.",
+          "skills": "No skills to display yet.",
+          "projects": "No projects to display yet.",
+          "certifications": "No certifications to display yet.",
+          "references": "No references to display yet.",
+          "interests": "No interests to display yet.",
+          "languages": "No languages to display yet.",
+          "general": "No items to display yet."
+        },
+        "itemFallback": "Item",
+        "photo": {
+          "moveLeft": "Move photo to the left",
+          "moveRight": "Move photo to the right",
+          "errors": {
+            "invalidFormat": "Invalid format. Use JPG, PNG, or WEBP.",
+            "tooLarge": "Image is too large (max 5 MB)."
+          }
+        }
       }
     },
     "meta": {

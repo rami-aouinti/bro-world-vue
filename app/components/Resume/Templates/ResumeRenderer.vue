@@ -1470,7 +1470,7 @@ function updateText(path: string, value: string) {
                 @delete-section="onSectionDelete"
               />
             </div>
-            <div v-if="index < visibleMainSections.length - 1" class="section-gap-control" role="group" aria-label="Contrôle de saut de ligne entre sections">
+            <div v-if="index < visibleMainSections.length - 1" class="section-gap-control" role="group" aria-label="Section line-break control">
               <div class="section-gap-control__line" />
               <div class="section-gap-control__actions">
                 <button type="button" class="section-gap-control__button" @click="increaseSectionSpacer(section.key)">+</button>
