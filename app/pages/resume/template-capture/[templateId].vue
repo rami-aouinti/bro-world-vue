@@ -8,6 +8,7 @@ import ResumeLayoutAsideFullLeft from '~/components/resume/layouts/ResumeLayoutA
 import ResumeLayoutAsideFullRight from '~/components/resume/layouts/ResumeLayoutAsideFullRight.vue'
 import ResumeLayoutBarLeft from '~/components/resume/layouts/ResumeLayoutBarLeft.vue'
 import ResumeLayoutBarRight from '~/components/resume/layouts/ResumeLayoutBarRight.vue'
+import ResumeTemplateDecor from '~/components/Resume/ResumeTemplateDecor.vue'
 import type { ResumeApiItem } from '~/services/resumeApi'
 
 definePageMeta({ layout: false })
@@ -144,10 +145,11 @@ const activeLayoutComponent = computed(() => {
 
 <template>
   <main class="capture-page">
+    <ResumeTemplateDecor :decor="selectedTemplate.decor" />
     <component :is="activeLayoutComponent" :resume="fakeResume" :template="selectedTemplate" />
   </main>
 </template>
 
 <style scoped>
-.capture-page { width: 794px; min-height: 1123px; margin: 0; background: #fff; }
+.capture-page { position: relative; width: 794px; min-height: 1123px; margin: 0; background: #fff; overflow: hidden; }
 </style>
