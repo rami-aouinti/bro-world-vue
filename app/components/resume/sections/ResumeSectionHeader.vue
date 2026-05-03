@@ -335,6 +335,7 @@ onBeforeUnmount(() => {
 .contact-item a, .contact-item span { min-width: 0; overflow-wrap: anywhere; word-break: break-word; color: inherit; text-decoration: none; }
 @media (max-width: 900px) {
   .header.with-contact {
+    display: flex;
     flex-wrap: wrap;
   }
   .header-contact {
