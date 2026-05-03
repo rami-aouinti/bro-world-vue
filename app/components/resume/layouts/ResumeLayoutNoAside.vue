@@ -155,7 +155,7 @@ const styleVars = computed(() => {
       @change-variant="onChangeVariant">
       <ResumeSectionContact v-if="section.id === 'contact' && !usesHeaderContact" :resume="resume" :show-title="false" :contact-style="template?.sections?.contact || template?.contactStyle || 'labels'" />
       <ResumeSectionProfile v-else-if="section.id === 'profile'" :resume="resume" :show-title="false" />
-      <ResumeSectionRenderer v-else :section-key="section.rendererKey" :resume="resume" :template="template" />
+      <ResumeSectionRenderer v-else :section-key="section.rendererKey || section.id" :resume="resume" :template="template" />
     </ResumeSectionBlock>
   </div>
 </template>
