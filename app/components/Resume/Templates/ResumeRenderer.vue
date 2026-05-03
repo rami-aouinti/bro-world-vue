@@ -1808,6 +1808,20 @@ function updateText(path: string, value: string) {
   column-gap: var(--resume-space-2, var(--cv-space-2));
 }
 
+.layout-mode-aside {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'aside'
+    'main';
+}
+
+.layout-mode-aside .resume-skin__aside {
+  width: min(100%, var(--resume-sidebar-width, 280px));
+  max-height: var(--resume-sidebar-height, 100%);
+  border-radius: var(--resume-radius, var(--cv-radius, 0));
+  justify-self: center;
+}
+
 .layout-mode-aside-left {
   grid-template-columns: var(--resume-sidebar-width, 280px) minmax(0, 1fr);
   grid-template-areas: 'aside main';
