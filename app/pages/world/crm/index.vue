@@ -7,6 +7,7 @@ definePageMeta({
   description: 'world.crm.seo.metaDescription',
 })
 
+
 const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 const runtimeConfig = useRuntimeConfig()
