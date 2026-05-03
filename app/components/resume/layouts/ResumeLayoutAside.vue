@@ -106,7 +106,7 @@ const styleVars = computed(() => {
     ...baseVars,
     '--aside-bg': palette.asideBackground ?? primary,
     '--aside-text': palette.asideText ?? resolveAsideTextColor(primary),
-    '--aside-width': props.template?.aside?.width ?? '250px',
+    '--aside-width': props.template?.aside?.width ?? '900px',
     '--aside-height': props.template?.aside?.height ?? '180px',
     '--aside-radius': props.template?.aside?.radius ?? '18px',
     '--header-band-height': `${Math.min(100, Math.max(0, props.headerBandHeight ?? 100))}%`,
@@ -146,7 +146,7 @@ const styleVars = computed(() => {
   padding-inline: var(--layout-edge-pad, 10px);
 }
 .header-aside-shell {
-  width: min(100%, var(--aside-width, 250px));
+  width: min(100%, var(--aside-width, 900px));
   min-height: var(--aside-height, 180px);
   border-radius: var(--aside-radius, 18px);
   background: var(--aside-bg, var(--primary, #0f4c81));

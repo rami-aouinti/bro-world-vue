@@ -222,7 +222,7 @@ const selectedPalette = ref<string>('template')
 const customPalettePrimary = ref<string>('#0F4C81')
 const selectedSectionVariants = ref<SectionVariants>({})
 const selectedTextStyle = ref<string>('')
-const selectedAsideWidth = ref<number>(240)
+const selectedAsideWidth = ref<number>(900)
 const selectedAsideHeight = ref<number>(100)
 const selectedAsideRadius = ref<number>(18)
 const selectedHeaderBandHeight = ref<number>(100)
@@ -509,10 +509,10 @@ watch(
     )
     selectedSectionVariants.value = nextSections
     selectedTextStyle.value = typeof route.query.textStyle === 'string' ? route.query.textStyle : String(template.theme?.textStyle || '')
-    const asideWidthSource = typeof route.query.asideWidth === 'string' ? route.query.asideWidth : String(template.aside?.width || '240px')
+    const asideWidthSource = typeof route.query.asideWidth === 'string' ? route.query.asideWidth : String(template.aside?.width || '900px')
     const asideHeightSource = typeof route.query.asideHeight === 'string' ? route.query.asideHeight : String(template.aside?.height || '180px')
     const asideRadiusSource = typeof route.query.asideRadius === 'string' ? route.query.asideRadius : String(template.aside?.radius || '18px')
-    selectedAsideWidth.value = Number.parseInt(asideWidthSource.replace('px', ''), 10) || 240
+    selectedAsideWidth.value = Number.parseInt(asideWidthSource.replace('px', ''), 10) || 900
     selectedAsideHeight.value = Number.parseInt(asideHeightSource.replace('px', ''), 10) || 180
     selectedAsideRadius.value = Number.parseInt(asideRadiusSource.replace('px', ''), 10) || 18
 

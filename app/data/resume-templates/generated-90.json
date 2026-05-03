@@ -191,7 +191,7 @@
       "showIcon": true
     },
     "aside": {
-      "width": "100%",
+      "width": "900px",
       "height": "220px",
       "radius": "18px"
     },
