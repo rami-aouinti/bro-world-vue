@@ -48,7 +48,7 @@ const generatedResumeTemplates = computed(() =>
   GENERATED_RESUME_TEMPLATES.map((template) => ({
     id: template.id,
     title: `Resume · ${template.name}`,
-    image: '/img/cv/resume-modern.svg',
+    image: template.id ? `/img/cv/generated/${template.id}.png` : '/img/cv/resume-modern.sv',
     type: 'resume' as const,
     templateId: template.id,
     layout: template.layout,
