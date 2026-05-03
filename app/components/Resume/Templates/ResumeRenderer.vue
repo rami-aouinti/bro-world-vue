@@ -96,6 +96,27 @@ type DecorativeShapeSettings = {
   rotation: number
 }
 
+const sectionSpacerSteps = ref<Record<string, number>>({})
+const MAX_SECTION_SPACER_STEPS = 6
+
+function getSectionSpacerStep(sectionKey: string) {
+  return sectionSpacerSteps.value[sectionKey] ?? 0
+}
+
+function getSectionSpacerStyle(sectionKey: string) {
+  const step = getSectionSpacerStep(sectionKey)
+  if (step <= 0) return undefined
+  return { marginBottom: `${step * 8}px` }
+}
+
+function increaseSectionSpacer(sectionKey: string) {
+  sectionSpacerSteps.value[sectionKey] = Math.min(MAX_SECTION_SPACER_STEPS, getSectionSpacerStep(sectionKey) + 1)
+}
+
+function decreaseSectionSpacer(sectionKey: string) {
+  sectionSpacerSteps.value[sectionKey] = Math.max(0, getSectionSpacerStep(sectionKey) - 1)
+}
+
 const props = withDefaults(
   defineProps<{
     resume: any
@@ -1427,27 +1448,36 @@ function updateText(path: string, value: string) {
           </div>
         </template>
         <template v-else>
-          <SectionRenderer
-            v-for="section in visibleMainSections"
-            :key="`main-${section.key}`"
-            :section-key="section.key"
-            :resume="resume"
-            :editable="editable"
-            :variant="sectionVariant(section)"
-            :layout-density="sectionLayoutDensity"
-            :title="templateSkin.sectionTitles?.[section.key]"
-            :toolbar-enabled="true"
-            :can-move-up="canMove(section.key, 'up')"
-            :can-move-down="canMove(section.key, 'down')"
-            :theme-tokens="mergedSectionTokens(section.key)"
-            :section-icon="RESUME_SECTION_ICONS[section.key]"
-            :show-section-icon="shouldShowSectionIcons"
-            :section-icon-style="resolvedSectionIconStyle"
-            @add-item="onSectionAddItem"
-            @change-variant="onSectionVariantChange"
-            @move-section="onSectionMove"
-            @delete-section="onSectionDelete"
-          />
+          <template v-for="(section, index) in visibleMainSections" :key="`main-${section.key}`">
+            <div :style="getSectionSpacerStyle(section.key)">
+              <SectionRenderer
+                :section-key="section.key"
+                :resume="resume"
+                :editable="editable"
+                :variant="sectionVariant(section)"
+                :layout-density="sectionLayoutDensity"
+                :title="templateSkin.sectionTitles?.[section.key]"
+                :toolbar-enabled="true"
+                :can-move-up="canMove(section.key, 'up')"
+                :can-move-down="canMove(section.key, 'down')"
+                :theme-tokens="mergedSectionTokens(section.key)"
+                :section-icon="RESUME_SECTION_ICONS[section.key]"
+                :show-section-icon="shouldShowSectionIcons"
+                :section-icon-style="resolvedSectionIconStyle"
+                @add-item="onSectionAddItem"
+                @change-variant="onSectionVariantChange"
+                @move-section="onSectionMove"
+                @delete-section="onSectionDelete"
+              />
+            </div>
+            <div v-if="index < visibleMainSections.length - 1" class="section-gap-control" role="group" aria-label="Contrôle de saut de ligne entre sections">
+              <div class="section-gap-control__line" />
+              <div class="section-gap-control__actions">
+                <button type="button" class="section-gap-control__button" @click="increaseSectionSpacer(section.key)">+</button>
+                <button type="button" class="section-gap-control__button" @click="decreaseSectionSpacer(section.key)">−</button>
+              </div>
+            </div>
+          </template>
         </template>
       </main>
     </div>
@@ -1455,6 +1485,45 @@ function updateText(path: string, value: string) {
 </template>
 
 <style scoped>
+
+.section-gap-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 6px 0;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.section-gap-control:hover {
+  opacity: 1;
+}
+
+.section-gap-control__line {
+  width: 100%;
+  border-top: 2px solid #e30613;
+}
+
+.section-gap-control__actions {
+  position: absolute;
+  display: inline-flex;
+  gap: 8px;
+  padding: 2px 10px;
+  border: 2px solid #e30613;
+  background: var(--cv-surface, #fff);
+}
+
+.section-gap-control__button {
+  border: none;
+  background: transparent;
+  color: #e30613;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
 .resume-skin {
   --cv-space-1: var(--cv-space-1, 4px);
   --cv-space-2: var(--cv-space-2, 8px);
