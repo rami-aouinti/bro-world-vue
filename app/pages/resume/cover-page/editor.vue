@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CoverPageTemplateAuroraFrame from '~/components/Resume/Templates/CoverPageTemplateAuroraFrame.vue'
 import CoverPageTemplateElegant from '~/components/Resume/Templates/CoverPageTemplateElegant.vue'
 import CoverPageTemplateHeroCentered from '~/components/Resume/Templates/CoverPageTemplateHeroCentered.vue'
 import CoverPageTemplateSidebarPulse from '~/components/Resume/Templates/CoverPageTemplateSidebarPulse.vue'
@@ -83,6 +84,7 @@ const templateComponents = {
   'cover-page-hero-centered': CoverPageTemplateHeroCentered,
   'cover-page-sidebar-pulse': CoverPageTemplateSidebarPulse,
   'cover-page-split-editorial': CoverPageTemplateSplitEditorial,
+  'cover-page-aurora-frame': CoverPageTemplateAuroraFrame,
 } as const
 
 const activeTemplateComponent = computed(
