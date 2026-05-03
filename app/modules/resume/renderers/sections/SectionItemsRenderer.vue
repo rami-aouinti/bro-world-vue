@@ -290,9 +290,11 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
         template === 'stars' ||
         template === 'progress-line' ||
         template === 'progress-circle' ||
-        template === 'flags'
+        template === 'flags' ||
+        template === 'two-columns'
       "
       class="renderer-list"
+      :class="{ 'renderer-list--two-columns': template === 'two-columns' }"
     >
       <li
         v-for="(item, index) in normalizedItems"
@@ -494,6 +496,11 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
   padding: 0;
   list-style: none;
 }
+.renderer-list--two-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--section-space-md);
+}
 
 .renderer-list-item {
   display: grid;
@@ -509,6 +516,9 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 
 .renderer-list-item:last-child {
   border-bottom: 0;
+}
+.renderer-list--two-columns .renderer-list-item:last-child {
+  border-bottom: 1px solid var(--section-border-subtle);
 }
 
 .renderer-list-bullet {
@@ -691,6 +701,15 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 
 .renderer-prefix {
   margin-right: 0.35rem;
+}
+
+@media (max-width: 720px) {
+  .renderer-list--two-columns {
+    grid-template-columns: 1fr;
+  }
+  .renderer-list--two-columns .renderer-list-item:last-child {
+    border-bottom: 0;
+  }
 }
 
 /* FONT WEIGHT OVERRIDES */

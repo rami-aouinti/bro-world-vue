@@ -52,6 +52,7 @@ export const sectionRendererRegistry: SectionRendererRegistry = {
     cards: ExperienceCards,
     list: ExperienceList,
     classic: ExperienceList,
+    'two-columns': ExperienceList,
   },
   skills: {
     classic: SkillsClassic,
@@ -65,30 +66,35 @@ export const sectionRendererRegistry: SectionRendererRegistry = {
     timeline: EducationTimeline,
     cards: EducationCards,
     list: EducationList,
+    'two-columns': EducationList,
   },
   projects: {
     classic: ProjectsClassic,
     timeline: ProjectsTimeline,
     cards: ProjectsCards,
     list: ProjectsList,
+    'two-columns': ProjectsList,
   },
   certifications: {
     classic: CertificationsClassic,
     timeline: CertificationsTimeline,
     cards: CertificationsCards,
     list: CertificationsList,
+    'two-columns': CertificationsList,
   },
   references: {
     classic: ReferencesClassic,
     timeline: ReferencesTimeline,
     cards: ReferencesCards,
     list: ReferencesList,
+    'two-columns': ReferencesList,
   },
   interests: {
     classic: InterestsClassic,
     timeline: InterestsTimeline,
     cards: InterestsCards,
     list: InterestsList,
+    'two-columns': InterestsList,
   },
   languages: {
     classic: LanguagesClassic,
@@ -100,6 +106,7 @@ export const sectionRendererRegistry: SectionRendererRegistry = {
     'progress-line': LanguagesProgressLine,
     'progress-circle': LanguagesProgressCircle,
     flags: LanguagesList,
+    'two-columns': LanguagesList,
   },
 }
 
