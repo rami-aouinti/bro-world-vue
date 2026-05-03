@@ -817,7 +817,7 @@ watch(signatureDialogOpen, (opened) => {
           v-model="selectedAsideHeight"
           label="Aside height (px)"
           min="120"
-          max="520"
+          max="3000"
           step="1"
           hide-details
         />
@@ -836,7 +836,7 @@ watch(signatureDialogOpen, (opened) => {
             label="Shape"
             hide-details
           />
-          <v-slider v-model="corner.size" label="Size (px)" min="20" max="520" step="1" hide-details />
+          <v-slider v-model="corner.size" label="Size (px)" min="20" max="3000" step="1" hide-details />
           <v-slider v-model="corner.x" label="X (%)" min="0" max="100" step="1" hide-details />
           <v-slider v-model="corner.y" label="Y (%)" min="0" max="100" step="1" hide-details />
           <v-text-field v-model="corner.color" label="Color" type="color" hide-details />
