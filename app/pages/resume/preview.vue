@@ -177,7 +177,6 @@ const fakeResume: ResumeApiItem = {
   ],
 }
 
-
 const selectedTemplate = computed(() => {
   const templateId = String(route.query.template || '')
   if (!templateId) return null
