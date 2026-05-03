@@ -409,6 +409,19 @@ export const COVER_PAGE_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [
     templateId: 'cv-socle',
     visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, twoColumn: true },
   },
+  {
+    id: 'cover-page-aurora-frame',
+    structureId: 'no-aside',
+    layoutId: 'layout-no-aside-b',
+    skinId: 'skin-midnight-banner',
+    label: 'Cover Page Aurora Frame',
+    subtitle: 'Framed hero cover with ambient glow accents',
+    type: 'cover-page',
+    image: '/img/cv/cv-3.png',
+    templateId: 'cv-socle',
+    visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, twoColumn: false },
+  },
+
 ]
 
 export const COVER_LETTER_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [
@@ -484,6 +497,19 @@ export const COVER_LETTER_TEMPLATES_CATALOG: ResumeTemplateConfig[] = [
     templateId: 'cv-socle',
     visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, twoColumn: true },
   },
+  {
+    id: 'cover-letter-nordic-slate',
+    structureId: 'aside-left',
+    layoutId: 'layout-aside-left-c',
+    skinId: 'skin-graphite-pro',
+    label: 'Cover Letter Nordic Slate',
+    subtitle: 'Two-panel slate style with modern contact rail',
+    type: 'cover-letter',
+    image: '/img/cv/cv-4.png',
+    templateId: 'cv-socle',
+    visibleOptions: { ...DEFAULT_VISIBLE_OPTIONS, twoColumn: true, photo: false },
+  },
+
 ]
 
 const RESUME_GENERATED_TEMPLATES: ResumeTemplateConfig[] =

@@ -2,6 +2,7 @@
 import CoverLetterTemplateAtsMinimal from '~/components/Resume/Templates/CoverLetterTemplateAtsMinimal.vue'
 import CoverLetterTemplateClassic from '~/components/Resume/Templates/CoverLetterTemplateClassic.vue'
 import CoverLetterTemplateModern from '~/components/Resume/Templates/CoverLetterTemplateModern.vue'
+import CoverLetterTemplateNordicSlate from '~/components/Resume/Templates/CoverLetterTemplateNordicSlate.vue'
 import CoverLetterTemplatePremiumEditorial from '~/components/Resume/Templates/CoverLetterTemplatePremiumEditorial.vue'
 import CoverLetterTemplateSplitFocus from '~/components/Resume/Templates/CoverLetterTemplateSplitFocus.vue'
 import type { RoundedOptionId, Typography } from '~/constants/resumeDesign'
@@ -118,6 +119,7 @@ const templateComponents = {
   'cover-letter-ats-minimal': CoverLetterTemplateAtsMinimal,
   'cover-letter-premium-editorial': CoverLetterTemplatePremiumEditorial,
   'cover-letter-split-focus': CoverLetterTemplateSplitFocus,
+  'cover-letter-nordic-slate': CoverLetterTemplateNordicSlate,
 } as const
 
 const activeTemplateComponent = computed(
