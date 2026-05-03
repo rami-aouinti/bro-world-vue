@@ -4,7 +4,7 @@
     "name": "classic-timeline-ocean",
     "version": 1,
     "layout": "aside-left",
-    "structure": "structure-1",
+    "structure": "structure-3",
     "sections": {
       "experience": "timeline",
       "education": "timeline",
@@ -31,7 +31,7 @@
       "showIcon": true
     },
     "aside": {
-      "width": "240px",
+      "width": "260px",
       "height": "100%"
     },
     "photo": {
@@ -44,7 +44,7 @@
       "corners": [
         {
           "shape": "circle",
-          "size": "130px",
+          "size": "530px",
           "color": "#5FA8D3",
           "x": "top-right",
           "y": "0"

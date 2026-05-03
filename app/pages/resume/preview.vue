@@ -718,6 +718,7 @@ watch(signatureDialogOpen, (opened) => {
           :items="[
             { title: 'Structure 1 · Linear', value: 'structure-1' },
             { title: 'Structure 2 · Split', value: 'structure-2' },
+            { title: 'Structure 3 · Split', value: 'structure-3' },
           ]"
           label="Structure"
           class="pt-3"
