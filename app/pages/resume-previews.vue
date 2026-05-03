@@ -5,7 +5,17 @@ const allResumeTemplates = RESUME_TEMPLATES_CATALOG.filter(
   (template) => template.type === 'resume',
 )
 
-const structureFilter = ref<'all' | 'aside-left' | 'aside-right' | 'no-aside'>('all')
+const layoutFilter = ref<
+  | 'all'
+  | 'aside'
+  | 'no-aside'
+  | 'aside-left'
+  | 'aside-right'
+  | 'bar-left'
+  | 'bar-light'
+  | 'aside-split'
+  | 'no-aside-split'
+>('all')
 const lineFilter = ref<'all' | 'soft' | 'none' | 'block'>('all')
 const densityFilter = ref<'all' | 'comfortable' | 'compact'>('all')
 
@@ -15,14 +25,14 @@ const filteredResumeTemplates = computed(() =>
     const themeLine = config.theme?.line ?? config.line
     const themeDensity = config.theme?.density ?? config.density
 
-    const structureMatch =
-      structureFilter.value === 'all' ||
-      template.structureId === structureFilter.value
+    const layoutMatch =
+      layoutFilter.value === 'all' ||
+      (template as any).layout === layoutFilter.value
     const lineMatch = lineFilter.value === 'all' || themeLine === lineFilter.value
     const densityMatch =
       densityFilter.value === 'all' || themeDensity === densityFilter.value
 
-    return structureMatch && lineMatch && densityMatch
+    return layoutMatch && lineMatch && densityMatch
   }),
 )
 </script>
@@ -34,12 +44,17 @@ const filteredResumeTemplates = computed(() =>
 
     <section class="filters">
       <label>
-        Structure
-        <select v-model="structureFilter">
+        Layout
+        <select v-model="layoutFilter">
           <option value="all">All</option>
+          <option value="aside">Aside</option>
+          <option value="no-aside">No Aside</option>
           <option value="aside-left">Aside Left</option>
           <option value="aside-right">Aside Right</option>
-          <option value="no-aside">No Aside</option>
+          <option value="bar-left">Bar Left</option>
+          <option value="bar-light">Bar Light</option>
+          <option value="aside-split">Aside Split</option>
+          <option value="no-aside-split">No Aside Split</option>
         </select>
       </label>
       <label>
