@@ -141,8 +141,22 @@ function normalizeVariantValue(value: unknown): string {
   return ''
 }
 
+function normalizeVariantAlias(value: string): string {
+  if (value === 'two-columns') return 'two-column'
+  return value
+}
+
+const prettyVariantOptions = computed<VariantOption[]>(() =>
+  variantOptions.value.map((option) => ({
+    ...option,
+    title: option.value === 'two-column' ? 'two-columns' : option.title,
+  })),
+)
+
+const selectedVariantForUi = computed(() => (selectedVariant.value === 'two-column' ? 'two-columns' : selectedVariant.value))
+
 function onVariantChange(value: unknown) {
-  const nextVariant = normalizeVariantValue(value)
+  const nextVariant = normalizeVariantAlias(normalizeVariantValue(value))
   if (!nextVariant) return
   selectedVariant.value = nextVariant
   emit('change-variant', normalizedSectionKey(props.sectionKey), nextVariant)
@@ -162,8 +176,8 @@ function onSubmitAddItem() {
       <slot name="title" />
       <span class="resume-hover-section__toolbar" role="toolbar" :aria-label="`Section actions ${props.sectionKey}`">
         <AppSelect
-          :model-value="selectedVariant"
-          :items="variantOptions"
+          :model-value="selectedVariantForUi"
+          :items="prettyVariantOptions"
           item-title="title"
           variant="solo"
           item-value="value"
@@ -194,7 +208,7 @@ function onSubmitAddItem() {
     <slot />
 
     <AppModal v-model="addModalOpen" :title="props.addModalTitle" max-width="720">
-      <div class="d-grid ga-3 py-2">
+      <div class="resume-hover-section__form-grid py-2">
         <template v-for="field in addFields" :key="field.key">
           <v-textarea
             v-if="field.type === 'textarea'"
@@ -234,4 +248,14 @@ function onSubmitAddItem() {
 .resume-hover-section__select :deep(.v-field) { min-height: 32px; }
 .resume-hover-section:hover .resume-hover-section__toolbar,
 .resume-hover-section:focus-within .resume-hover-section__toolbar { opacity: 1; pointer-events: auto; transform: translateX(0); }
+.resume-hover-section__form-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 720px) {
+  .resume-hover-section__form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 </style>
