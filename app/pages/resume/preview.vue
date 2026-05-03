@@ -430,7 +430,7 @@ const effectiveTemplate = computed<GeneratedTemplate | null>(() => {
 
   if (selectedTextStyle.value) nextTheme.textStyle = selectedTextStyle.value as any
   nextAside.width = `${selectedAsideWidth.value}px`
-  nextAside.height = `${selectedAsideHeight.value}%`
+  nextAside.height = `${selectedAsideHeight.value}px`
   nextAside.radius = `${selectedAsideRadius.value}px`
   ;(nextTheme as any).headerBandHeight = selectedHeaderBandHeight.value
 
@@ -510,10 +510,10 @@ watch(
     selectedSectionVariants.value = nextSections
     selectedTextStyle.value = typeof route.query.textStyle === 'string' ? route.query.textStyle : String(template.theme?.textStyle || '')
     const asideWidthSource = typeof route.query.asideWidth === 'string' ? route.query.asideWidth : String(template.aside?.width || '240px')
-    const asideHeightSource = typeof route.query.asideHeight === 'string' ? route.query.asideHeight : String(template.aside?.height || '100%')
+    const asideHeightSource = typeof route.query.asideHeight === 'string' ? route.query.asideHeight : String(template.aside?.height || '180px')
     const asideRadiusSource = typeof route.query.asideRadius === 'string' ? route.query.asideRadius : String(template.aside?.radius || '18px')
     selectedAsideWidth.value = Number.parseInt(asideWidthSource.replace('px', ''), 10) || 240
-    selectedAsideHeight.value = Number.parseInt(asideHeightSource.replace('%', ''), 10) || 100
+    selectedAsideHeight.value = Number.parseInt(asideHeightSource.replace('px', ''), 10) || 180
     selectedAsideRadius.value = Number.parseInt(asideRadiusSource.replace('px', ''), 10) || 18
 
     const headerBandHeightSource = typeof route.query.headerBandHeight === 'string' ? route.query.headerBandHeight : String((template.theme as any)?.headerBandHeight || '100')
@@ -577,7 +577,7 @@ watch(
       photoShape: selectedPhotoShape.value,
       photoBorder: `${selectedPhotoBorderWidth.value}px ${selectedPhotoBorderStyle.value} ${selectedPhotoBorderColor.value}`,
       asideWidth: `${selectedAsideWidth.value}px`,
-      asideHeight: `${selectedAsideHeight.value}%`,
+      asideHeight: `${selectedAsideHeight.value}px`,
       asideRadius: `${selectedAsideRadius.value}px`,
       headerBandHeight: String(selectedHeaderBandHeight.value),
     } as Record<string, string>
@@ -815,9 +815,9 @@ watch(signatureDialogOpen, (opened) => {
         />
         <v-slider
           v-model="selectedAsideHeight"
-          label="Aside height (%)"
-          min="60"
-          max="100"
+          label="Aside height (px)"
+          min="120"
+          max="520"
           step="1"
           hide-details
         />
