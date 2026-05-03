@@ -84,6 +84,8 @@ const metaDescriptionByLocale = {
   },
 } as const
 
+
+
 const metaDescription = computed(() => {
   const routeDescription =
     typeof route.meta?.description === 'string' ? route.meta.description : ''
