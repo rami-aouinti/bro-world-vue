@@ -25,4 +25,5 @@ export type ResumeSectionRendererProps = {
   theme?: Record<string, string | number>
   showIcon?: boolean
   density?: 'compact' | 'normal' | 'spacious' | string
+  editable?: boolean
 }
