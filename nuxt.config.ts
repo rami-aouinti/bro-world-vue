@@ -43,7 +43,7 @@ export default defineNuxtConfig({
   ],
   sitemap: {
     siteUrl: 'https://bro-world-space.com',
-    sources: ['/api/__sitemap__/urls'],
+    // Rely on Nuxt page discovery so all public pages are present in sitemap.
   },
   robots: {
     sitemap: 'https://bro-world-space.com/sitemap.xml',
