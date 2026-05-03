@@ -1,11 +1,24 @@
 <script setup lang="ts">
 import type { ResumeApiItem } from '~/services/resumeApi'
-import ResumeLayoutNoAside from './ResumeLayoutNoAside.vue'
+import ResumeLayoutAsideLeft from './ResumeLayoutAsideLeft.vue'
 
 const emit = defineEmits<{ (event: 'change-variant', sectionKey: string, variant: string): void }>()
-defineProps<{ resume: ResumeApiItem; template?: any; headerBandHeight?: number }>()
+const props = defineProps<{ resume: ResumeApiItem; template?: any; headerBandHeight?: number }>()
+
+const normalizedTemplate = computed(() => ({
+  ...props.template,
+  layoutOptions: {
+    ...(props.template?.layoutOptions || {}),
+    asideStartsAtTop: true,
+  },
+}))
 </script>
 
 <template>
-  <ResumeLayoutNoAside :resume="resume" :template="template" header-on-primary  @change-variant="(sectionKey, variant) => emit('change-variant', sectionKey, variant)" />
+  <ResumeLayoutAsideLeft
+    :resume="resume"
+    :template="normalizedTemplate"
+    :header-band-height="headerBandHeight"
+    @change-variant="(sectionKey, variant) => emit('change-variant', sectionKey, variant)"
+  />
 </template>
