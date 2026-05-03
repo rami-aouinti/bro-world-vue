@@ -187,7 +187,8 @@ const selectedTemplate = computed(() => {
 })
 
 const selectedGeneratedTemplate = computed<GeneratedTemplate | null>(() => {
-  const generatedTemplateId = selectedTemplate.value?.templateId || selectedTemplate.value?.id
+  const queryTemplateId = String(route.query.template || '')
+  const generatedTemplateId = selectedTemplate.value?.templateId || selectedTemplate.value?.id || queryTemplateId
   if (!generatedTemplateId) return null
   return GENERATED_RESUME_TEMPLATES.find((template) => template.id === generatedTemplateId) || null
 })
