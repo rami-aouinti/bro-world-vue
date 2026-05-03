@@ -542,7 +542,12 @@ const decorativeShapes = computed<DecorativeShapeSettings[]>(() =>
 const shouldRenderAsideDecorations = computed(
   () =>
     shouldRenderAside.value &&
-    ['aside-left', 'aside-right'].includes(resolvedDesignState.value.layoutMode),
+    ['aside', 'aside-left', 'aside-right'].includes(
+      resolvedDesignState.value.layoutMode,
+    ),
+)
+const shouldRenderBodyContactSection = computed(
+  () => !(templateSkin.value.showContactInHeader ?? false),
 )
 
 function fallbackVariant(sectionKey: ResumeSectionLayoutKey): string {
@@ -915,7 +920,11 @@ function updateText(path: string, value: string) {
           class="resume-skin__aside-decorative-layer"
         />
         <section
-          v-if="(templateSkin.showContactInAside ?? true) && hasContactDetails"
+          v-if="
+            shouldRenderBodyContactSection &&
+            (templateSkin.showContactInAside ?? true) &&
+            hasContactDetails
+          "
           class="resume-section-hoverable resume-contact-section"
         >
           <SectionToolbar
@@ -1162,6 +1171,7 @@ function updateText(path: string, value: string) {
       >
         <section
           v-if="
+            shouldRenderBodyContactSection &&
             resolvedDesignState.layoutMode === 'no-aside' &&
             (templateSkin.showContactInAside ?? true) &&
             hasContactDetails
@@ -1731,6 +1741,7 @@ function updateText(path: string, value: string) {
   z-index: 1;
 }
 
+.layout-mode-aside .resume-skin__aside :deep(.cv-heading-section),
 .layout-mode-aside-left .resume-skin__aside :deep(.cv-heading-section),
 .layout-mode-aside-right .resume-skin__aside :deep(.cv-heading-section) {
   color: var(--resume-page, var(--cv-page)) !important;
@@ -1740,6 +1751,9 @@ function updateText(path: string, value: string) {
   margin: 0 0 var(--cv-space-2, 8px);
 }
 
+.layout-mode-aside
+  .resume-skin__aside
+  :deep(.cv-heading-section .section-icon),
 .layout-mode-aside-left
   .resume-skin__aside
   :deep(.cv-heading-section .section-icon),
