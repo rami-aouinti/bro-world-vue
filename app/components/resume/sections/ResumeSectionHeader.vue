@@ -77,18 +77,19 @@ const currentPhotoUrl = computed(() => {
 const sideSwitchLabel = computed(() =>
   photoConfig.value.position === 'right' ? 'Mettre la photo à gauche' : 'Mettre la photo à droite',
 )
+const usesContactIcons = computed(() => (props.template?.sections?.contact || props.template?.contactStyle || 'labels') === 'icons')
 
 const headerContactFields = computed(() => {
   const info = props.resume.resumeInformation
   const normalize = (value: unknown) => (typeof value === 'string' ? value.trim() : '')
 
   return [
-    { key: 'email', label: 'Email', value: normalize(info?.email), href: normalize(info?.email) ? `mailto:${normalize(info?.email)}` : undefined },
-    { key: 'phone', label: 'Phone', value: normalize(info?.phone), href: normalize(info?.phone) ? `tel:${normalize(info?.phone).replace(/\s+/g, '')}` : undefined },
-    { key: 'address', label: 'Address', value: normalize(info?.adresse) },
-    { key: 'birthDate', label: 'Birth date', value: normalize(info?.birthDate) },
-    { key: 'homepage', label: 'Homepage', value: normalize(info?.homepage), href: normalize(info?.homepage) || undefined, displayValue: 'Official Website' },
-    { key: 'repo', label: 'Repo', value: normalize(info?.repo_profile), href: normalize(info?.repo_profile) || undefined, displayValue: 'Link Repo' },
+    { key: 'email', icon: 'mdi-email-outline', label: 'Email', value: normalize(info?.email), href: normalize(info?.email) ? `mailto:${normalize(info?.email)}` : undefined },
+    { key: 'phone', icon: 'mdi-phone-outline', label: 'Phone', value: normalize(info?.phone), href: normalize(info?.phone) ? `tel:${normalize(info?.phone).replace(/\s+/g, '')}` : undefined },
+    { key: 'address', icon: 'mdi-map-marker-outline', label: 'Address', value: normalize(info?.adresse) },
+    { key: 'birthDate', icon: 'mdi-cake-variant-outline', label: 'Birth date', value: normalize(info?.birthDate) },
+    { key: 'homepage', icon: 'mdi-web', label: 'Homepage', value: normalize(info?.homepage), href: normalize(info?.homepage) || undefined, displayValue: 'Official Website' },
+    { key: 'repo', icon: 'mdi-source-repository', label: 'Repo', value: normalize(info?.repo_profile), href: normalize(info?.repo_profile) || undefined, displayValue: 'Link Repo' },
   ].filter((field) => field.value.length > 0)
 })
 
@@ -215,7 +216,8 @@ onBeforeUnmount(() => {
 
     <div v-if="showContactInHeader" class="header-contact">
       <p v-for="field in headerContactFields" :key="field.key" class="contact-item">
-        <strong>{{ field.label }}:</strong>
+        <v-icon v-if="usesContactIcons" :icon="field.icon" size="18" class="contact-icon" />
+        <strong v-else>{{ field.label }}:</strong>
         <a v-if="field.href" :href="field.href" target="_blank" rel="noopener noreferrer">{{ field.displayValue || field.value }}</a>
         <span v-else>{{ field.value }}</span>
       </p>
@@ -308,6 +310,7 @@ onBeforeUnmount(() => {
 .header-contact { margin-inline-start: auto; display: grid; grid-template-columns: repeat(2, minmax(180px, 1fr)); gap: 10px 16px; max-width: min(620px, 62%); align-self: center; }
 .header.is-right .header-contact { margin-inline-start: 0; margin-inline-end: auto; }
 .contact-item { margin: 0; display: flex; gap: 6px; min-width: 0; align-items: baseline; }
+.contact-icon { flex: 0 0 auto; opacity: .95; }
 .contact-item strong { flex: 0 0 auto; white-space: nowrap; }
 .contact-item a, .contact-item span { min-width: 0; overflow-wrap: anywhere; word-break: break-word; color: inherit; text-decoration: none; }
 @media (max-width: 900px) { .header.with-contact { flex-wrap: wrap; } .header-contact { max-width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-inline-start: 0; } }
