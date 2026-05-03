@@ -1,8 +1,29 @@
 <script setup lang="ts">
 import { RESUME_TEMPLATES_CATALOG } from '~/constants/resumeTemplates.catalog'
 
-const resumeTemplates = RESUME_TEMPLATES_CATALOG.filter(
+const allResumeTemplates = RESUME_TEMPLATES_CATALOG.filter(
   (template) => template.type === 'resume',
+)
+
+const structureFilter = ref<'all' | 'aside-left' | 'aside-right' | 'no-aside'>('all')
+const lineFilter = ref<'all' | 'soft' | 'none' | 'block'>('all')
+const densityFilter = ref<'all' | 'comfortable' | 'compact'>('all')
+
+const filteredResumeTemplates = computed(() =>
+  allResumeTemplates.filter((template) => {
+    const config = template as any
+    const themeLine = config.theme?.line ?? config.line
+    const themeDensity = config.theme?.density ?? config.density
+
+    const structureMatch =
+      structureFilter.value === 'all' ||
+      template.structureId === structureFilter.value
+    const lineMatch = lineFilter.value === 'all' || themeLine === lineFilter.value
+    const densityMatch =
+      densityFilter.value === 'all' || themeDensity === densityFilter.value
+
+    return structureMatch && lineMatch && densityMatch
+  }),
 )
 </script>
 
@@ -10,9 +31,39 @@ const resumeTemplates = RESUME_TEMPLATES_CATALOG.filter(
   <main class="resume-previews-page">
     <h1>Resume template previews</h1>
     <p>Visual checks for template thumbnails and main settings.</p>
+
+    <section class="filters">
+      <label>
+        Structure
+        <select v-model="structureFilter">
+          <option value="all">All</option>
+          <option value="aside-left">Aside Left</option>
+          <option value="aside-right">Aside Right</option>
+          <option value="no-aside">No Aside</option>
+        </select>
+      </label>
+      <label>
+        Theme line
+        <select v-model="lineFilter">
+          <option value="all">All</option>
+          <option value="soft">Soft</option>
+          <option value="none">None</option>
+          <option value="block">Block</option>
+        </select>
+      </label>
+      <label>
+        Theme density
+        <select v-model="densityFilter">
+          <option value="all">All</option>
+          <option value="comfortable">Comfortable</option>
+          <option value="compact">Compact</option>
+        </select>
+      </label>
+    </section>
+
     <section class="grid">
       <article
-        v-for="template in resumeTemplates"
+        v-for="template in filteredResumeTemplates"
         :key="template.id"
         class="card"
       >
@@ -27,6 +78,8 @@ const resumeTemplates = RESUME_TEMPLATES_CATALOG.filter(
           <li><strong>Structure:</strong> {{ template.structureId }}</li>
           <li><strong>Layout:</strong> {{ template.layoutId }}</li>
           <li><strong>Skin:</strong> {{ template.skinId }}</li>
+          <li><strong>Line:</strong> {{ (template as any).theme?.line ?? (template as any).line ?? '-' }}</li>
+          <li><strong>Density:</strong> {{ (template as any).theme?.density ?? (template as any).density ?? '-' }}</li>
         </ul>
       </article>
     </section>
@@ -34,9 +87,9 @@ const resumeTemplates = RESUME_TEMPLATES_CATALOG.filter(
 </template>
 
 <style scoped>
-.resume-previews-page {
-  padding: 24px;
-}
+.resume-previews-page { padding: 24px; }
+.filters { display:flex; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+.filters label { display:flex; flex-direction:column; gap:4px; font-size:.85rem; }
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -55,19 +108,7 @@ img {
   border-radius: 8px;
   border: 1px solid #e5e7eb;
 }
-h2 {
-  margin: 10px 0 6px;
-  font-size: 1rem;
-}
-p {
-  margin: 0 0 8px;
-  color: #4b5563;
-  font-size: 0.9rem;
-}
-ul {
-  margin: 0;
-  padding-left: 16px;
-  color: #374151;
-  font-size: 0.85rem;
-}
+h2 { margin: 10px 0 6px; font-size: 1rem; }
+p { margin: 0 0 8px; color: #4b5563; font-size: 0.9rem; }
+ul { margin: 0; padding-left: 16px; color: #374151; font-size: 0.85rem; }
 </style>
