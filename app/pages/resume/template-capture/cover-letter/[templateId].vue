@@ -22,7 +22,8 @@ const resolvedStyles = computed(() => {
     paragraphSpacing: spacingMap[tpl?.layoutOptions?.paragraphSpacing] || 30,
     radius: radiusMap[tpl?.designTokens?.borderRadius] || 8,
     barPrimaryWidth: barIntensityMap[tpl?.hero?.accentIntensity || tpl?.sections?.accentIntensity] || 10,
-    barSecondaryWidth: 4,
+    barSecondaryWidth: 5,
+    barLayout: tpl?.decor?.headerStyle === 'band' ? 'double' : 'single',
     shadow: tpl?.designTokens?.shadowDepth === 'none' ? 'none' : '0 10px 30px rgba(15,23,42,.18)',
   }
 })
@@ -61,6 +62,7 @@ const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.obj
       '--paragraph-spacing': `${resolvedStyles.paragraphSpacing}px`,
       '--cl-radius': `${resolvedStyles.radius}px`,
       '--cl-bar-primary-width': `${resolvedStyles.barPrimaryWidth}px`,
+      '--cl-bar-secondary-width': `${resolvedStyles.barSecondaryWidth}px`,
       '--cl-shadow': resolvedStyles.shadow,
     }"
   >
@@ -75,7 +77,7 @@ const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.obj
       <p class="date" :style="itemStyles.date">May 3, 2026</p>
       <p class="address" :style="itemStyles.address">Paris, France</p>
     </div>
-    <header class="hero">
+    <header class="hero" :class="{ 'hero--double': resolvedStyles.barLayout === 'double' }">
       <div class="hero-row">
         <img src="/img/team-1.jpg" alt="profile" class="capture-photo">
         <h1>Alex Martin</h1>
@@ -102,7 +104,8 @@ const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.obj
 .meta-top-right { position: absolute; top: 64px; right: 72px; text-align: right; display: flex; flex-direction: column; gap: 2px; align-items: flex-end; }
 .date { color: var(--cl-muted); margin: 0; }
 .address { margin: 0; }
-.hero { border-left: var(--cl-bar-primary-width) solid var(--cl-primary); padding-left: 24px; padding-top: 6px; margin-bottom: 42px; min-height: 140px; }
+.hero { border-left: var(--cl-bar-primary-width) solid var(--cl-primary); padding-left: 24px; padding-top: 6px; margin-bottom: 42px; min-height: 140px; position: relative; border-radius: var(--cl-radius); }
+.hero--double::before{content:'';position:absolute;left:calc(var(--cl-bar-primary-width) + 6px);top:0;bottom:0;width:var(--cl-bar-secondary-width);background:var(--cl-secondary);border-radius:var(--cl-radius)}
 .hero-row { display: flex; flex-direction: column; gap: 6px; }
 h1 { color: var(--cl-text); margin: 0; font-size: 44px; line-height: 1.05; }
 .role { color: var(--cl-muted); margin: 0; font-size: 24px; }
