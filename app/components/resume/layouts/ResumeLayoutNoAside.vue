@@ -172,24 +172,23 @@ const styleVars = computed(() => {
   <div class="no-aside" :class="{ 'header-on-primary': headerOnPrimary }" :style="styleVars">
     <ResumeSectionHeader class="layout-header" :resume="resume" :template="template" :show-contact-in-header="usesHeaderContact" />
     <main :class="{ 'sections-grid': isSplitLayout }">
-      <ResumeSectionBlock
-        v-for="section in localSections"
-        :key="section.id"
-        :title="getSectionTitle(section.id)"
-        :icon="resolveSectionIcon(section.id)"
-        :show-icon="shouldShowSectionIcons"
-        :is-empty="sectionEmpty(section.id)"
-        :section-key="section.id"
-        :class="{ 'section-block--two-columns': isTwoColumnsSection(section.id) }"
-        @move-up="onMove($event, 'up')"
-        @move-down="onMove($event, 'down')"
-        @delete-section="onDeleteSection"
-        @submit-add-item="onAddItem"
-        @change-variant="onChangeVariant">
-        <ResumeSectionContact v-if="section.id === 'contact' && !usesHeaderContact" :resume="resume" :show-title="false" :contact-style="template?.sections?.contact || template?.contactStyle || 'labels'" />
-        <ResumeSectionProfile v-else-if="section.id === 'profile'" :resume="resume" :show-title="false" />
-        <ResumeSectionRenderer v-else :section-key="section.rendererKey || section.id" :resume="resume" :template="template" />
-      </ResumeSectionBlock>
+      <div v-for="section in localSections" :key="section.id" :class="{ 'section-block--two-columns': isTwoColumnsSection(section.id) }">
+        <ResumeSectionBlock
+          :title="getSectionTitle(section.id)"
+          :icon="resolveSectionIcon(section.id)"
+          :show-icon="shouldShowSectionIcons"
+          :is-empty="sectionEmpty(section.id)"
+          :section-key="section.id"
+          @move-up="onMove($event, 'up')"
+          @move-down="onMove($event, 'down')"
+          @delete-section="onDeleteSection"
+          @submit-add-item="onAddItem"
+          @change-variant="onChangeVariant">
+          <ResumeSectionContact v-if="section.id === 'contact' && !usesHeaderContact" :resume="resume" :show-title="false" :contact-style="template?.sections?.contact || template?.contactStyle || 'labels'" />
+          <ResumeSectionProfile v-else-if="section.id === 'profile'" :resume="resume" :show-title="false" />
+          <ResumeSectionRenderer v-else :section-key="section.rendererKey || section.id" :resume="resume" :template="template" />
+        </ResumeSectionBlock>
+      </div>
     </main>
   </div>
 </template>
