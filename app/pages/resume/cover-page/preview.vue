@@ -14,6 +14,7 @@ const editableDecorObjects = ref<any[]>([])
 const signatureDataUrl = ref('')
 const signatureDialogOpen = ref(false)
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
+const photoInput = ref<HTMLInputElement | null>(null)
 const layoutMenuOpen = ref(false)
 
 watch(activeTemplate, (tpl) => { editableDecorObjects.value = JSON.parse(JSON.stringify(tpl?.decor?.objects || [])) }, { immediate: true })
@@ -22,7 +23,16 @@ function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
 function goToCreateResume(){ navigateTo('/resume/preview') }
 function applyPreviewTemplate(id:string){ selectedTemplate.value = id; layoutMenuOpen.value = false }
 function saveFromPreview(){ localStorage.setItem('resume-cover-preview-page', JSON.stringify({ template:selectedTemplate.value, model, decor:editableDecorObjects.value, signature:signatureDataUrl.value })) }
-async function downloadPdf(){ const node=document.querySelector('.capture-cover-page') as HTMLElement|null; if(!node) return; const w=window.open('','_blank','width=950,height=1200'); if(!w) return; w.document.write(`<html><body style="margin:0;display:flex;justify-content:center;background:#fff">${node.outerHTML}</body></html>`); w.document.close(); await new Promise((r)=>setTimeout(r,350)); w.print(); w.close() }
+async function downloadPdf(){ const node=document.querySelector('.capture-cover-page') as HTMLElement|null; if(!node) return; const w=window.open('','_blank','width=900,height=1300'); if(!w) return; w.document.write(`<html><head><style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center}.capture-cover-page{width:210mm;min-height:297mm;box-sizing:border-box;zoom:.94}img{max-width:100%;display:block}</style></head><body>${node.outerHTML}</body></html>`); w.document.close(); await new Promise((r)=>setTimeout(r,500)); w.focus(); w.print(); w.close() }
+function openPhotoUpload() { photoInput.value?.click() }
+function onPhotoUpload(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  const reader = new FileReader()
+  reader.onload = () => { model.photoUrl = String(reader.result || model.photoUrl) }
+  reader.readAsDataURL(file)
+}
 function openSignatureDialog(){ signatureDialogOpen.value=true; nextTick(initCanvas) }
 function initCanvas(){ const c=signatureCanvas.value; if(!c) return; const ctx=c.getContext('2d'); if(!ctx) return; c.width=c.clientWidth||680; c.height=200; ctx.lineWidth=2; ctx.lineCap='round'; let draw=false; const p=(e:PointerEvent)=>{const r=c.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}; c.onpointerdown=(e)=>{draw=true;const x=p(e);ctx.beginPath();ctx.moveTo(x.x,x.y)}; c.onpointermove=(e)=>{if(!draw)return;const x=p(e);ctx.lineTo(x.x,x.y);ctx.stroke()}; c.onpointerup=()=>{draw=false;signatureDataUrl.value=c.toDataURL('image/png')} }
 onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query.template:''; if(q&&coverPageTemplates.value.some((t)=>t.id===q)) selectedTemplate.value=q
@@ -43,6 +53,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
   <AppPageDrawers>
     <template #left>
       <AppSelect v-model="model.photoUrl" :items="photoOptions.map((value)=>({title:value,value}))" label="Photo" hide-details class="mt-3"/>
+      <input ref="photoInput" type="file" accept="image/*" class="d-none" @change="onPhotoUpload">
       <v-text-field v-model="model.date" label="Date" hide-details class="mt-3"/>
     </template>
     <template #right>
@@ -67,7 +78,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
     </div></div>
     <div class="py-8 d-flex justify-center"><main class="capture-cover-page" :style="{'--cp-primary':activeTemplate.theme.palette.primary,'--cp-secondary':activeTemplate.theme.palette.secondary,'--cp-text':activeTemplate.theme.palette.text,'--cp-muted':activeTemplate.theme.palette.muted,'--cp-bg':activeTemplate.theme.palette.pageBackground}">
       <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="{left:obj.x,top:obj.y,width:`${obj.size}px`,height:`${obj.size}px`,opacity:obj.opacity}"/>
-      <header class="hero"><v-avatar size="84" class="mb-4"><v-img :src="model.photoUrl" cover/></v-avatar>
+      <header class="hero"><v-avatar size="84" class="mb-4 avatar-upload" @click="openPhotoUpload"><v-img :src="model.photoUrl" cover/></v-avatar>
         <h1 contenteditable="true" @input="model.fullName=($event.target as HTMLElement).innerText">{{ model.fullName }}</h1>
         <p contenteditable="true" @input="model.role=($event.target as HTMLElement).innerText">{{ model.role }}</p>
         <p class="meta" contenteditable="true" @input="model.date=($event.target as HTMLElement).innerText">{{ model.date }}</p>
@@ -84,6 +95,6 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
   </v-container>
 </div>
 </template>
-<style scoped>.capture-cover-page{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:80px;background:var(--cp-bg);color:var(--cp-text)}.hero{border-left:10px solid var(--cp-primary);padding-left:24px;margin-bottom:48px}h1{font-size:58px;margin:0}p{font-size:24px;color:var(--cp-muted)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:40px;margin:0 0 16px}section{border-top:3px solid var(--cp-secondary);padding-top:24px}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.preview-toolbar-wrap{position:sticky;top:74px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background:rgba(255,255,255,.92)}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}</style>
+<style scoped>.capture-cover-page{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:80px;background:var(--cp-bg);color:var(--cp-text)}.hero{border-left:10px solid var(--cp-primary);padding-left:24px;margin-bottom:48px}.avatar-upload{cursor:pointer;border:2px dashed rgba(15,23,42,.25)}h1{font-size:58px;margin:0}p{font-size:24px;color:var(--cp-muted)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:40px;margin:0 0 16px}section{border-top:3px solid var(--cp-secondary);padding-top:24px}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.preview-toolbar-wrap{position:sticky;top:74px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background:rgba(255,255,255,.92)}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}</style>
 
 <style scoped>@media (prefers-color-scheme: dark){.preview-toolbar-row{background:rgba(15,23,42,.82);border-color:rgba(148,163,184,.45)} .preview-toolbar-btn{color:#e2e8f0} .capture-cover-page,.capture-cover-letter{box-shadow:0 10px 30px rgba(0,0,0,.45)}}</style>
