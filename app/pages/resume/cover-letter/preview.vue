@@ -27,6 +27,7 @@ const activeColors = computed(() => {
 const signatureDataUrl = ref('')
 const signatureDialogOpen = ref(false)
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
+const photoInput = ref<HTMLInputElement | null>(null)
 const layoutMenuOpen = ref(false)
 
 watch(activeTemplate, (tpl) => { editableDecorObjects.value = JSON.parse(JSON.stringify(tpl?.decor?.objects || [])) }, { immediate: true })
@@ -36,6 +37,8 @@ function goToCreateResume(){ navigateTo('/resume/preview') }
 function applyPreviewTemplate(id:string){ selectedTemplate.value = id; layoutMenuOpen.value = false }
 function saveFromPreview(){ localStorage.setItem('resume-cover-preview-letter', JSON.stringify({ template:selectedTemplate.value, model, decor:editableDecorObjects.value, signature:signatureDataUrl.value })) }
 async function downloadPdf(){ const node=document.querySelector('.capture-cover-letter') as HTMLElement|null; if(!node) return; const w=window.open('','_blank','width=950,height=1200'); if(!w) return; w.document.write(`<html><body style="margin:0;display:flex;justify-content:center">${node.outerHTML}</body></html>`); w.document.close(); await new Promise((r)=>setTimeout(r,350)); w.print(); w.close() }
+function openPhotoUpload(){ photoInput.value?.click() }
+function onPhotoUpload(event: Event){ const input = event.target as HTMLInputElement; const file = input.files?.[0]; if(!file) return; const reader=new FileReader(); reader.onload=()=>{ model.photoUrl = String(reader.result || model.photoUrl) }; reader.readAsDataURL(file) }
 function openSignatureDialog(){ signatureDialogOpen.value=true; nextTick(initCanvas) }
 function initCanvas(){ const c=signatureCanvas.value; if(!c) return; const ctx=c.getContext('2d'); if(!ctx) return; c.width=c.clientWidth||680; c.height=200; ctx.lineWidth=2; ctx.lineCap='round'; let draw=false; const p=(e:PointerEvent)=>{const r=c.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}; c.onpointerdown=(e)=>{draw=true;const x=p(e);ctx.beginPath();ctx.moveTo(x.x,x.y)}; c.onpointermove=(e)=>{if(!draw)return;const x=p(e);ctx.lineTo(x.x,x.y);ctx.stroke()}; c.onpointerup=()=>{draw=false;signatureDataUrl.value=c.toDataURL('image/png')} }
 onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query.template:''; if(q&&coverLetterTemplates.value.some((t)=>t.id===q)) selectedTemplate.value=q; try { const resumes = await listMyResumes(); const info = resumes?.[0]?.resumeInformation; if (info?.fullName) model.fullName = info.fullName; if (info?.title) model.role = info.title; if (info?.profileText) model.summary = info.profileText; if (info?.email) model.email = info.email; if (info?.phone) model.phone = info.phone; if (info?.photo && 'photoUrl' in model) model.photoUrl = info.photo } catch { /* noop */ } })
@@ -45,6 +48,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
   <AppPageDrawers>
     <template #left>
       <AppSelect v-model="model.photoUrl" :items="photoOptions.map((value)=>({title:value,value}))" label="Photo" hide-details class="mt-3"/>
+      <input ref="photoInput" type="file" accept="image/*" class="d-none" @change="onPhotoUpload">
       <v-text-field v-model="model.date" label="Date" hide-details class="mt-3"/>
       <v-slider v-model="imageSize" label="Image size" min="48" max="180" step="1" hide-details class="mt-3"/>
       <AppSelect v-model="imageShape" :items="[{ title: 'Circle', value: 'circle' }, { title: 'Square', value: 'square' }]" label="Image shape" hide-details class="mt-3"/>
@@ -75,7 +79,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
     </div></div>
     <div class="py-8 d-flex justify-center"><main class="capture-cover-letter" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground}">
       <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="{left:obj.x,top:obj.y,width:`${obj.size}px`,height:`${obj.size}px`,opacity:obj.opacity}"/>
-      <header class="hero"><v-avatar size="84" class="mb-4"><v-img :src="model.photoUrl" cover/></v-avatar>
+      <header class="hero"><v-avatar :size="imageSize" class="mb-4 avatar-upload" :rounded="imageShape === 'circle' ? 'circle' : 'lg'" @click="openPhotoUpload"><v-img :src="model.photoUrl" cover/></v-avatar>
         <h1 contenteditable="true" @input="model.fullName=($event.target as HTMLElement).innerText">{{ model.fullName }}</h1>
         <p contenteditable="true" @input="model.role=($event.target as HTMLElement).innerText">{{ model.role }}</p>
         <p class="meta" contenteditable="true" @input="model.date=($event.target as HTMLElement).innerText">{{ model.date }}</p>
