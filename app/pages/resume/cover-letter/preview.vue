@@ -7,10 +7,7 @@ definePageMeta({ title: 'Resume · Cover Letter Preview', layout: 'resume' })
 const route = useRoute()
 const { coverLetterTemplates } = useResumeTemplates()
 const selectedTemplate = ref(coverLetterTemplates.value[0]?.id || GENERATED_COVER_LETTER_TEMPLATES[0]?.id || '')
-const photoOptions = ['/img/team-1.jpg', '/img/team-2.jpg', '/img/team-3.jpg', '/img/team-4.jpg']
 const decorShapeOptions = ['circle', 'ring', 'blob', 'square', 'diamond', 'star', 'triangle', 'pill', 'bar']
-const imageShape = ref<'circle' | 'square'>('circle')
-const imageSize = ref(84)
 const imageBorderWidth = ref(2)
 const imageBorderColor = ref('#0f172a')
 const photoPosition = ref<'left' | 'right'>('left')
@@ -29,8 +26,6 @@ const secondaryBarWidth = ref(5)
 const model = reactive({ fullName:'Alex Martin', location:'221B Baker Street, London, UK', date:new Date().toLocaleDateString('en-US'), heading:'Cover Letter', company:'Dear Hiring Manager,', companyParagraph:'I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture, and cross-functional collaboration.', summary:'I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.', email:'Sincerely,', phone:'Alex Martin' })
 const activeTemplate = computed(() => GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_LETTER_TEMPLATES[0])
 const letterItemConfig = computed(() => activeTemplate.value?.items || {})
-const letterStyleOptionsFor = (key: 'date' | 'address') => ((letterItemConfig.value as any)?.[key]?.styles || ['regular','medium','semibold','bold']).map((v:string)=>({title:v,value:fontWeightMap[v]||'400'}))
-const letterSizeBoundsFor = (key: 'date' | 'address') => ({ min: (letterItemConfig.value as any)?.[key]?.size?.min ?? 16, max: (letterItemConfig.value as any)?.[key]?.size?.max ?? 22 })
 const editableDecorObjects = ref<any[]>([])
 const defaultDecorPresets = [
   { type: 'circle', x: 8, y: 6, size: 80, opacity: 0.08 },
