@@ -42,8 +42,11 @@ function toNumber(value: unknown, fallback: number): number {
 }
 
 function normalizeDecorObject(obj: any) {
+  const rawType = String(obj?.type ?? 'circle')
+  const normalizedType = rawType === 'diamand' ? 'diamond' : rawType
   return {
     ...obj,
+    type: normalizedType,
     x: toPercentNumber(obj?.x, 50),
     y: toPercentNumber(obj?.y, 50),
     size: toNumber(obj?.size, 120),
