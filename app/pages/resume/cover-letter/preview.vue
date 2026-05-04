@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { listMyResumes } from '~/services/resumeApi'
 import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-20-cover-letter.json'
 
 definePageMeta({ title: 'Resume · Cover Letter Preview', layout: 'resume' })
@@ -21,10 +22,10 @@ function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
 function goToCreateResume(){ navigateTo('/resume/preview') }
 function applyPreviewTemplate(id:string){ selectedTemplate.value = id; layoutMenuOpen.value = false }
 function saveFromPreview(){ localStorage.setItem('resume-cover-preview-letter', JSON.stringify({ template:selectedTemplate.value, model, decor:editableDecorObjects.value, signature:signatureDataUrl.value })) }
-function downloadPdf(){ const node=document.querySelector('.capture-cover-letter') as HTMLElement|null; if(!node) return; const w=window.open('','_blank','width=950,height=1200'); if(!w) return; w.document.write(`<html><body style="margin:0;display:flex;justify-content:center">${node.outerHTML}</body></html>`); w.document.close(); w.print(); w.close() }
+async function downloadPdf(){ const node=document.querySelector('.capture-cover-letter') as HTMLElement|null; if(!node) return; const w=window.open('','_blank','width=950,height=1200'); if(!w) return; w.document.write(`<html><body style="margin:0;display:flex;justify-content:center">${node.outerHTML}</body></html>`); w.document.close(); await new Promise((r)=>setTimeout(r,350)); w.print(); w.close() }
 function openSignatureDialog(){ signatureDialogOpen.value=true; nextTick(initCanvas) }
 function initCanvas(){ const c=signatureCanvas.value; if(!c) return; const ctx=c.getContext('2d'); if(!ctx) return; c.width=c.clientWidth||680; c.height=200; ctx.lineWidth=2; ctx.lineCap='round'; let draw=false; const p=(e:PointerEvent)=>{const r=c.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}; c.onpointerdown=(e)=>{draw=true;const x=p(e);ctx.beginPath();ctx.moveTo(x.x,x.y)}; c.onpointermove=(e)=>{if(!draw)return;const x=p(e);ctx.lineTo(x.x,x.y);ctx.stroke()}; c.onpointerup=()=>{draw=false;signatureDataUrl.value=c.toDataURL('image/png')} }
-onMounted(()=>{ const q=typeof route.query.template==='string'?route.query.template:''; if(q&&coverLetterTemplates.value.some((t)=>t.id===q)) selectedTemplate.value=q })
+onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query.template:''; if(q&&coverLetterTemplates.value.some((t)=>t.id===q)) selectedTemplate.value=q; try { const resumes = await listMyResumes(); const info = resumes?.[0]?.resumeInformation; if (info?.fullName) model.fullName = info.fullName; if (info?.title) model.role = info.title; if (info?.profileText) model.summary = info.profileText; if (info?.email) model.email = info.email; if (info?.phone) model.phone = info.phone; if (info?.photo && 'photoUrl' in model) model.photoUrl = info.photo } catch { /* noop */ } })
 </script>
 <template>
 <div>
@@ -73,3 +74,5 @@ onMounted(()=>{ const q=typeof route.query.template==='string'?route.query.templ
 </div>
 </template>
 <style scoped>.capture-cover-letter{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:80px;background:var(--cp-bg);color:var(--cp-text)}.hero{border-left:10px solid var(--cp-primary);padding-left:24px;margin-bottom:48px}h1{font-size:58px;margin:0}p{font-size:24px;color:var(--cp-muted)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:40px;margin:0 0 16px}section{border-top:3px solid var(--cp-secondary);padding-top:24px}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.preview-toolbar-wrap{position:sticky;top:74px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background:rgba(255,255,255,.92)}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}</style>
+
+<style scoped>@media (prefers-color-scheme: dark){.preview-toolbar-row{background:rgba(15,23,42,.82);border-color:rgba(148,163,184,.45)} .preview-toolbar-btn{color:#e2e8f0} .capture-cover-page,.capture-cover-letter{box-shadow:0 10px 30px rgba(0,0,0,.45)}}</style>
