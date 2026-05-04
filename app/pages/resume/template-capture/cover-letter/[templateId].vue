@@ -40,8 +40,17 @@ const itemStyles = computed(() => {
     return { fontSize: `${size}px`, color, fontWeight: weight }
   }
   return {
+    fullName: build('fullName', 56),
+    role: build('role', 28),
     date: build('date', 18),
     address: build('address', 18),
+    heading: build('heading', 24),
+    greeting: build('greeting', 24),
+    paragraphOne: build('paragraphOne', 22),
+    paragraphTwo: build('paragraphTwo', 22),
+    signoff: build('signoff', 24),
+    email: build('email', 18),
+    phone: build('phone', 18),
   }
 })
 
@@ -78,18 +87,18 @@ const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.obj
     </div>
     <header class="hero" :class="{ 'hero--double': selectedTemplate.hero?.barLayout === 'double' }">
       <img v-if="selectedTemplate.hero?.showPhoto !== false" src="/img/team-1.jpg" alt="profile" class="capture-photo">
-      <h1>Alex Martin</h1>
-      <p class="role">Senior Full Stack Developer</p>
+      <h1 :style="itemStyles.fullName">Alex Martin</h1>
+      <p class="role" :style="itemStyles.role">Senior Full Stack Developer</p>
     </header>
-    <p class="intro">Dear Hiring Manager,</p>
-    <p>
+    <p class="intro" :style="itemStyles.greeting">Dear Hiring Manager,</p>
+    <p :style="itemStyles.paragraphOne">
       I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture,
       and cross-functional collaboration.
     </p>
-    <p>
+    <p :style="itemStyles.paragraphTwo">
       I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.
     </p>
-    <p class="signature">Sincerely,<br>Alex Martin</p>
+    <p class="signature" :style="itemStyles.signoff">Sincerely,<br><span :style="itemStyles.phone">Alex Martin</span></p>
   </main>
 </template>
 

@@ -19,9 +19,16 @@ const secondaryBarWidth = ref(5)
 const editableDecorObjects = ref<any[]>([])
 
 const itemStyles = reactive<Record<string, { size: number, color: string, weight: string }>>({
+  fullName: { size: 56, color: '#0F172A', weight: '700' },
+  role: { size: 28, color: '#64748B', weight: '500' },
   date: { size: 18, color: '#64748B', weight: '400' },
   address: { size: 18, color: '#0F172A', weight: '500' },
+  location: { size: 18, color: '#0F172A', weight: '500' },
   heading: { size: 24, color: '#0F172A', weight: '700' },
+  greeting: { size: 24, color: '#0F172A', weight: '600' },
+  paragraphOne: { size: 22, color: '#0F172A', weight: '400' },
+  paragraphTwo: { size: 22, color: '#0F172A', weight: '400' },
+  signoff: { size: 24, color: '#0F172A', weight: '600' },
   email: { size: 18, color: '#0F172A', weight: '500' },
   phone: { size: 18, color: '#0F172A', weight: '500' },
 })
@@ -114,19 +121,19 @@ onMounted(async () => {
     <div class="py-8 d-flex justify-center"><main class="capture-cover-letter" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
       <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"/>
       <header class="hero" :class="{ 'hero--double': barLayout === 'double' }">
-        <HoverRichTextEditor v-model="model.fullName" font-size="56px" :color="activeColors.text" font-weight="700" />
-        <HoverRichTextEditor v-model="model.role" font-size="28px" :color="activeColors.muted" font-weight="500" />
+        <HoverRichTextEditor v-model="model.fullName" :font-size="`${itemStyles.fullName.size}px`" :color="itemStyles.fullName.color" :font-weight="itemStyles.fullName.weight" />
+        <HoverRichTextEditor v-model="model.role" :font-size="`${itemStyles.role.size}px`" :color="itemStyles.role.color" :font-weight="itemStyles.role.weight" />
       </header>
       <div class="meta-top-right">
         <HoverRichTextEditor v-model="model.date" :font-size="`${itemStyles.date.size}px`" :color="itemStyles.date.color" :font-weight="itemStyles.date.weight" />
-        <HoverRichTextEditor v-model="model.location" :font-size="`${itemStyles.address.size}px`" :color="itemStyles.address.color" :font-weight="itemStyles.address.weight" />
+        <HoverRichTextEditor v-model="model.location" :font-size="`${itemStyles.location.size}px`" :color="itemStyles.location.color" :font-weight="itemStyles.location.weight" />
       </div>
       <section>
         <HoverRichTextEditor v-model="model.heading" :font-size="`${itemStyles.heading.size}px`" :color="itemStyles.heading.color" :font-weight="itemStyles.heading.weight" />
-        <HoverRichTextEditor v-model="model.greeting" font-size="24px" :color="activeColors.text" font-weight="600" />
-        <HoverRichTextEditor v-model="model.paragraphOne" font-size="22px" :color="activeColors.text" font-weight="400" />
-        <HoverRichTextEditor v-model="model.paragraphTwo" font-size="22px" :color="activeColors.text" font-weight="400" />
-        <HoverRichTextEditor v-model="model.signoff" font-size="24px" :color="activeColors.text" font-weight="600" />
+        <HoverRichTextEditor v-model="model.greeting" :font-size="`${itemStyles.greeting.size}px`" :color="itemStyles.greeting.color" :font-weight="itemStyles.greeting.weight" />
+        <HoverRichTextEditor v-model="model.paragraphOne" :font-size="`${itemStyles.paragraphOne.size}px`" :color="itemStyles.paragraphOne.color" :font-weight="itemStyles.paragraphOne.weight" />
+        <HoverRichTextEditor v-model="model.paragraphTwo" :font-size="`${itemStyles.paragraphTwo.size}px`" :color="itemStyles.paragraphTwo.color" :font-weight="itemStyles.paragraphTwo.weight" />
+        <HoverRichTextEditor v-model="model.signoff" :font-size="`${itemStyles.signoff.size}px`" :color="itemStyles.signoff.color" :font-weight="itemStyles.signoff.weight" />
         <HoverRichTextEditor v-model="model.email" :font-size="`${itemStyles.email.size}px`" :color="itemStyles.email.color" :font-weight="itemStyles.email.weight" />
         <HoverRichTextEditor v-model="model.phone" :font-size="`${itemStyles.phone.size}px`" :color="itemStyles.phone.color" :font-weight="itemStyles.phone.weight" />
       </section>
