@@ -25,6 +25,16 @@ const model = reactive({ fullName:'Alex Martin', location:'221B Baker Street, Lo
 const activeTemplate = computed(() => GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_LETTER_TEMPLATES[0])
 const _letterItemConfig = computed(() => activeTemplate.value?.items || {})
 const editableDecorObjects = ref<any[]>([])
+const defaultDecorPresets = [
+  { type: 'circle', x: 8, y: 6, size: 80, opacity: 0.08 },
+  { type: 'diamond', x: 70, y: 75, size: 120, opacity: 0.08 },
+  { type: 'star', x: 14, y: 84, size: 28, opacity: 0.1 },
+  { type: 'square', x: 82, y: 10, size: 24, opacity: 0.08 },
+]
+const templateDecorPresets = computed(() => {
+  const fromTemplate = (activeLetterTemplate.value?.decor?.objects || []).map((obj:any) => normalizeDecorObject(obj))
+  return fromTemplate.length ? fromTemplate : defaultDecorPresets.map((obj) => normalizeDecorObject(obj))
+})
 
 const model = reactive({
   fullName: 'Alex Martin',
@@ -73,6 +83,7 @@ const activeColors = computed(() => {
 
 watch(activeLetterTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); letterPhotoPosition.value = tpl?.hero?.letterPhotoPosition || tpl?.sections?.letterPhotoPosition || 'left'; const items=(tpl as any)?.items||{}; const aliases: Record<string, string[]> = { fullName:['fullName'], role:['role'], date:['date'], address:['location','address'], heading:['heading'], greeting:['greeting','company'], paragraphOne:['paragraphOne','companyParagraph'], paragraphTwo:['paragraphTwo','summary'], signoff:['signoff','email'], email:['email'], phone:['phone'] }; for (const key of Object.keys(aliases)) { const sourceKey = aliases[key].find((candidate)=>items[candidate]); const cfg = sourceKey ? items[sourceKey] : null; const b=cfg?.size; if (b) (letterElementStyles as any)[key].size=Math.round((b.min+b.max)/2); if (cfg?.colors?.[0]) (letterElementStyles as any)[key].color=cfg.colors[0]; if (cfg?.styles?.[0]) (letterElementStyles as any)[key].weight=letterFontWeightMap[cfg.styles[0]]||'400' } }, { immediate: true })
 function addDecorObject(){ editableDecorObjects.value.push(normalizeDecorObject({ type:'circle', x:50, y:50, size:120, opacity:0.15 })) }
+function addDecorObjectFromPreset(preset:any){ editableDecorObjects.value.push(normalizeDecorObject({ ...preset })) }
 function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
 function goToCreateResume(){ navigateTo('/resume/preview') }
 function applyPreviewTemplate(id:string){ selectedTemplate.value = id; layoutMenuOpen.value = false }
@@ -87,27 +98,12 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
 <div>
   <AppPageDrawers>
     <template #left>
-     <v-card-text>
-       <v-menu><template #activator="{ props }"><v-btn v-bind="props" class="mt-3" variant="outlined" block>Palette</v-btn></template><v-list><v-list-item title="Template" @click="selectedPalette='template'"/><v-list-item title="Sunset" @click="selectedPalette='sunset'"/><v-list-item title="Forest" @click="selectedPalette='forest'"/><v-list-item title="Custom" @click="selectedPalette='custom'"/></v-list></v-menu>
-       <v-text-field v-if="selectedPalette==='custom'" v-model="customPrimary" label="Custom primary" hide-details class="mt-3"/>
-       <v-text-field v-if="selectedPalette==='custom'" v-model="customSecondary" label="Custom secondary" hide-details class="mt-3"/>
-       <v-text-field v-if="selectedPalette==='custom'" v-model="customPageBackground" label="Custom page background" hide-details class="mt-3"/>
-       <v-slider v-model="barRadius" label="Bar radius" min="0" max="30" step="1" hide-details class="mt-3"/>
-       <AppSelect v-model="barLayout" :items="[{ title: 'Single bar', value: 'single' }, { title: 'Double bars', value: 'double' }]" label="Bar layout" hide-details class="mt-3"/>
-       <v-slider v-model="primaryBarWidth" label="Bar width" min="4" max="24" step="1" hide-details class="mt-3"/>
-       <v-slider v-if="barLayout==='double'" v-model="secondaryBarWidth" label="Sec Bar width" min="2" max="20" step="1" hide-details class="mt-3"/>
-     </v-card-text>
-    </template>
-    <template #right>
-      <v-btn class="mt-3" size="small" variant="outlined" @click="addDecorObject">Add decor</v-btn>
-      <v-card v-for="(obj,i) in editableDecorObjects" :key="`obj-${i}`" class="mt-3 pa-2" variant="outlined">
-        <AppSelect v-model="obj.type" :items="decorShapeOptions.map((s)=>({title:s,value:s}))" label="Shape" hide-details class="mt-3"/>
-        <v-slider v-model="obj.size" label="Size" min="20" max="420" step="1" hide-details class="mt-3"/>
-        <v-slider v-model="obj.opacity" label="Opacity" min="0.02" max="0.4" step="0.01" hide-details class="mt-3"/>
-        <v-slider v-model="obj.x" label="X (%)" min="0" max="100" step="1" hide-details class="mt-3"/>
-        <v-slider v-model="obj.y" label="Y (%)" min="0" max="100" step="1" hide-details class="mt-3"/>
-        <v-btn size="x-small" color="error" variant="text" @click="removeDecorObject(i)">remove</v-btn>
-      </v-card>
+      <v-card-text>
+        <v-menu><template #activator="{ props }"><v-btn v-bind="props" class="mt-3" variant="outlined" block>Palette</v-btn></template><v-list><v-list-item title="Template" @click="selectedPalette='template'"/><v-list-item title="Sunset" @click="selectedPalette='sunset'"/><v-list-item title="Forest" @click="selectedPalette='forest'"/><v-list-item title="Custom" @click="selectedPalette='custom'"/></v-list></v-menu>
+        <v-text-field v-if="selectedPalette==='custom'" v-model="customPrimary" label="Custom primary" hide-details class="mt-3"/>
+        <v-text-field v-if="selectedPalette==='custom'" v-model="customSecondary" label="Custom secondary" hide-details class="mt-3"/>
+        <v-text-field v-if="selectedPalette==='custom'" v-model="customPageBackground" label="Custom page background" hide-details class="mt-3"/>
+      </v-card-text>
     </template>
   </AppPageDrawers>
   <v-container fluid>
