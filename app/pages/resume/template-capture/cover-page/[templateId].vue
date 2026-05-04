@@ -30,20 +30,42 @@ const selectedTemplate = computed(() => {
   return GENERATED_COVER_PAGE_TEMPLATES.find((tpl) => tpl.id === resolvedTemplateId) || GENERATED_COVER_PAGE_TEMPLATES[0]
 })
 
-const dividerStyleMap: Record<string, string> = { solid: 'solid', dashed: 'dashed', dotted: 'dotted' }
-const spacingMap: Record<string, number> = { compact: 20, normal: 30, relaxed: 42 }
+const spacingMap: Record<string, number> = { compact: 24, normal: 30, wide: 40, relaxed: 42 }
 const radiusMap: Record<string, number> = { none: 0, sm: 8, md: 16, lg: 24, xl: 32 }
-const barIntensityMap: Record<string, number> = { low: 6, medium: 10, high: 14 }
+const defaultBarDesignConfig = {
+  barRadius: { min: 0, max: 30 },
+  barLayout: ['single', 'double'],
+  barWidth: { min: 4, max: 24 },
+  secondaryBarWidth: { min: 2, max: 20 },
+}
+
+function toPercentNumber(value: unknown, fallback = 50): number {
+  if (typeof value === 'number' && Number.isFinite(value)) return Math.min(100, Math.max(0, value))
+  if (typeof value === 'string') {
+    const parsed = Number.parseFloat(value.replace('%', '').trim())
+    if (Number.isFinite(parsed)) return Math.min(100, Math.max(0, parsed))
+  }
+  return fallback
+}
+
+function toNumber(value: unknown, fallback: number): number {
+  const parsed = typeof value === 'number' ? value : Number.parseFloat(String(value ?? ''))
+  return Number.isFinite(parsed) ? parsed : fallback
+}
 
 const resolvedStyles = computed(() => {
   const tpl = selectedTemplate.value as any
+  const items = tpl?.items || {}
+  const firstItem = Object.values(items || {})[0] as { designConfig?: typeof defaultBarDesignConfig } | undefined
+  const designConfig = firstItem?.designConfig || defaultBarDesignConfig
   return {
-    sectionDividerStyle: dividerStyleMap[tpl?.decor?.divider] || 'solid',
+    sectionDividerStyle: tpl?.decor?.divider === 'dashed' ? 'dashed' : 'solid',
     sectionSpacing: spacingMap[tpl?.layoutOptions?.sectionSpacing] || 30,
     radius: radiusMap[tpl?.designTokens?.borderRadius] || 8,
-    barWidth: barIntensityMap[tpl?.hero?.accentIntensity] || 10,
-    barSecondaryWidth: 5,
-    barLayout: tpl?.hero?.accent === 'bar' && tpl?.decor?.headerStyle === 'band' ? 'double' : 'single',
+    barWidth: Number(designConfig?.barWidth?.min ?? defaultBarDesignConfig.barWidth.min),
+    barSecondaryWidth: Number(designConfig?.secondaryBarWidth?.min ?? defaultBarDesignConfig.secondaryBarWidth.min),
+    barLayout: Array.isArray(designConfig?.barLayout) && designConfig.barLayout.includes('double') ? 'double' : 'single',
+    barRadius: Number(designConfig?.barRadius?.min ?? defaultBarDesignConfig.barRadius.min),
     shadow: tpl?.designTokens?.shadowDepth === 'none' ? 'none' : '0 10px 30px rgba(15,23,42,.18)',
   }
 })
@@ -70,7 +92,15 @@ const itemStyles = computed(() => {
   }
 })
 
-const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.objects || []) as Array<Record<string, any>>)
+const decorObjects = computed(() =>
+  (((selectedTemplate.value as any)?.decor?.objects || []) as Array<Record<string, any>>).map((object) => ({
+    ...object,
+    x: `${toPercentNumber(object?.x, 50)}%`,
+    y: `${toPercentNumber(object?.y, 50)}%`,
+    size: toNumber(object?.size, 120),
+    opacity: toNumber(object?.opacity, 0.08),
+  })),
+)
 </script>
 
 <template>
@@ -88,6 +118,7 @@ const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.obj
       '--cp-bar-width': `${resolvedStyles.barWidth}px`,
       '--cp-bar-secondary-width': `${resolvedStyles.barSecondaryWidth}px`,
       '--cp-shadow': resolvedStyles.shadow,
+      '--cp-bar-radius': `${resolvedStyles.barRadius}px`,
     }"
   >
     <div
@@ -122,8 +153,8 @@ const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.obj
 .meta-top-right { position: absolute; top: 80px; right: 80px; text-align: right; color: var(--cp-muted); display:flex; flex-direction:column; gap:6px; align-items:flex-end; }
 .date, .address { margin: 0; font-size: 18px; }
 .address { margin-top: 8px; color: var(--cp-text); }
-.hero { border-left: var(--cp-bar-width) solid var(--cp-primary); padding-left: 24px; margin-bottom: 48px; border-radius: 0; min-height: 148px; position:relative; }
-.hero--double::before{content:'';position:absolute;left:calc(var(--cp-bar-width) + 6px);top:0;bottom:0;width:var(--cp-bar-secondary-width);background:var(--cp-secondary);border-radius:0}
+.hero { border-left: var(--cp-bar-width) solid var(--cp-primary); padding-left: 24px; margin-bottom: 48px; border-radius: var(--cp-bar-radius); min-height: 148px; position:relative; }
+.hero--double::before{content:'';position:absolute;left:calc(var(--cp-bar-width) + 6px);top:0;bottom:0;width:var(--cp-bar-secondary-width);background:var(--cp-secondary);border-radius:var(--cp-bar-radius)}
 h1 { font-size: 58px; margin: 0; }
 p { font-size: 24px; color: var(--cp-muted); }
 .role { margin-top: 8px; }
