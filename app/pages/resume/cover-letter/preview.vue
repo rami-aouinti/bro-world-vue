@@ -3,7 +3,7 @@ import { listMyResumes } from '~/services/resumeApi'
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
 import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-20-cover-letter.json'
 
-definePageMeta({ title: 'Resume · Cover Letter Preview', layout: 'resume' })
+definePageMeta({ title: 'Resume · Cover Letter Preview' })
 const route = useRoute()
 const { coverLetterTemplates } = useResumeTemplates()
 const selectedTemplate = ref(coverLetterTemplates.value[0]?.id || GENERATED_COVER_LETTER_TEMPLATES[0]?.id || '')

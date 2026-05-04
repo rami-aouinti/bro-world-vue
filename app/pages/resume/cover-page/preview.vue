@@ -3,7 +3,7 @@ import GENERATED_COVER_PAGE_TEMPLATES from '~/data/resume-templates/generated-20
 import { listMyResumes } from '~/services/resumeApi'
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
 
-definePageMeta({ title: 'Resume · Cover Page Preview', layout: 'resume' })
+definePageMeta({ title: 'Resume · Cover Page Preview' })
 const route = useRoute()
 const { coverPageTemplates } = useResumeTemplates()
 const selectedTemplate = ref(coverPageTemplates.value[0]?.id || GENERATED_COVER_PAGE_TEMPLATES[0]?.id || '')
