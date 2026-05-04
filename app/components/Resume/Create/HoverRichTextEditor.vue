@@ -84,10 +84,15 @@ const isEmpty = computed(() => !props.modelValue)
 }
 .hover-editor__surface {
   position: relative;
-  border: 1px solid rgba(120, 120, 120, 0.45);
+  border: 1px solid transparent;
   border-radius: 10px;
   min-height: 100px;
   padding: 10px;
+  transition: border-color .15s ease;
+}
+.hover-editor:hover .hover-editor__surface,
+.hover-editor__surface:focus-within {
+  border-color: rgba(120, 120, 120, 0.45);
 }
 .hover-editor__placeholder {
   position: absolute;
