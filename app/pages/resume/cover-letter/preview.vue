@@ -7,64 +7,98 @@ definePageMeta({ title: 'Resume · Cover Letter Preview', layout: 'resume' })
 const route = useRoute()
 const { coverLetterTemplates } = useResumeTemplates()
 const selectedTemplate = ref(coverLetterTemplates.value[0]?.id || GENERATED_COVER_LETTER_TEMPLATES[0]?.id || '')
-
+const decorShapeOptions = ['circle', 'ring', 'blob', 'square', 'diamond', 'star', 'triangle', 'pill', 'bar']
+const imageBorderWidth = ref(2)
+const imageBorderColor = ref('#0f172a')
+const photoPosition = ref<'left' | 'right'>('left')
 const selectedPalette = ref<'template' | 'sunset' | 'forest' | 'custom'>('template')
 const customPrimary = ref('#0F4C81')
 const customSecondary = ref('#5FA8D3')
 const customPageBackground = ref('#F8FAFC')
+const textFontSize = ref(24)
+const textColor = ref('#475569')
 const barRadius = ref(0)
 const barLayout = ref<'single' | 'double'>('single')
+const letterElementStyles = reactive({ date:{size:18,color:'#475569',weight:'400'}, address:{size:18,color:'#334155',weight:'400'} })
+const fontWeightMap: Record<string, string> = { regular: '400', medium: '500', semibold: '600', bold: '700' }
 const primaryBarWidth = ref(10)
 const secondaryBarWidth = ref(5)
-const editableDecorObjects = ref<any[]>([])
-
-const itemStyles = reactive<Record<string, { size: number, color: string, weight: string }>>({
-  fullName: { size: 56, color: '#0F172A', weight: '700' },
-  role: { size: 28, color: '#64748B', weight: '500' },
-  date: { size: 18, color: '#64748B', weight: '400' },
-  address: { size: 18, color: '#0F172A', weight: '500' },
-  location: { size: 18, color: '#0F172A', weight: '500' },
-  heading: { size: 24, color: '#0F172A', weight: '700' },
-  greeting: { size: 24, color: '#0F172A', weight: '600' },
-  paragraphOne: { size: 22, color: '#0F172A', weight: '400' },
-  paragraphTwo: { size: 22, color: '#0F172A', weight: '400' },
-  signoff: { size: 24, color: '#0F172A', weight: '600' },
-  email: { size: 18, color: '#0F172A', weight: '500' },
-  phone: { size: 18, color: '#0F172A', weight: '500' },
-})
-
-const model = reactive({
-  fullName: 'Alex Martin',
-  role: 'Senior Full Stack Developer',
-  date: new Date().toLocaleDateString('en-US'),
-  location: '221B Baker Street, London, UK',
-  heading: 'Cover Letter',
-  greeting: 'Dear Hiring Manager,',
-  paragraphOne: 'I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture, and cross-functional collaboration.',
-  paragraphTwo: 'I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.',
-  signoff: 'Sincerely,',
-  email: 'alex@example.com',
-  phone: '+33 6 00 00 00 00',
-})
-
+const model = reactive({ fullName:'Alex Martin', location:'221B Baker Street, London, UK', date:new Date().toLocaleDateString('en-US'), heading:'Cover Letter', company:'Dear Hiring Manager,', companyParagraph:'I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture, and cross-functional collaboration.', summary:'I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.', email:'Sincerely,', phone:'Alex Martin' })
 const activeTemplate = computed(() => GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_LETTER_TEMPLATES[0])
-const fontWeightMap: Record<string, string> = { regular: '400', medium: '500', semibold: '600', bold: '700' }
+const letterItemConfig = computed(() => activeTemplate.value?.items || {})
+const editableDecorObjects = ref<any[]>([])
+const defaultDecorPresets = [
+  { type: 'circle', x: 8, y: 6, size: 80, opacity: 0.08 },
+  { type: 'diamond', x: 70, y: 75, size: 120, opacity: 0.08 },
+  { type: 'star', x: 14, y: 84, size: 28, opacity: 0.1 },
+  { type: 'square', x: 82, y: 10, size: 24, opacity: 0.08 },
+]
+const templateDecorPresets = computed(() => {
+  const fromTemplate = (activeTemplate.value?.decor?.objects || []).map((obj:any) => normalizeDecorObject(obj))
+  return fromTemplate.length ? fromTemplate : defaultDecorPresets.map((obj) => normalizeDecorObject(obj))
+})
+
+function toPercentNumber(value: unknown, fallback = 50): number {
+  if (typeof value === 'number' && Number.isFinite(value)) return Math.min(100, Math.max(0, value))
+  if (typeof value === 'string') {
+    const parsed = Number.parseFloat(value.replace('%', '').trim())
+    if (Number.isFinite(parsed)) return Math.min(100, Math.max(0, parsed))
+  }
+  return fallback
+}
+
+function toNumber(value: unknown, fallback: number): number {
+  const parsed = typeof value === 'number' ? value : Number.parseFloat(String(value ?? ''))
+  return Number.isFinite(parsed) ? parsed : fallback
+}
 
 function normalizeDecorObject(obj: any) {
   const rawType = String(obj?.type ?? 'circle')
   const normalizedType = rawType === 'diamand' ? 'diamond' : rawType
-  return { ...obj, type: normalizedType, x: Number.parseFloat(String(obj?.x ?? 50)), y: Number.parseFloat(String(obj?.y ?? 50)), size: Number(obj?.size ?? 120), opacity: Number(obj?.opacity ?? 0.15) }
+  return {
+    ...obj,
+    type: normalizedType,
+    x: toPercentNumber(obj?.x, 50),
+    y: toPercentNumber(obj?.y, 50),
+    size: toNumber(obj?.size, 120),
+    opacity: toNumber(obj?.opacity, 0.15),
+  }
 }
 
 function decorObjectStyle(obj: any) {
-  const size = Number(obj?.size ?? 120)
-  const x = Number(obj?.x ?? 50)
-  const y = Number(obj?.y ?? 50)
-  const opacity = Number(obj?.opacity ?? 0.15)
-  return { left: `${x}%`, top: `${y}%`, opacity, width: `${size}px`, height: `${size}px` }
+  const size = toNumber(obj?.size, 120)
+  const x = toPercentNumber(obj?.x, 50)
+  const y = toPercentNumber(obj?.y, 50)
+  const opacity = toNumber(obj?.opacity, 0.15)
+  const type = String(obj?.type ?? 'circle')
+
+  const base: Record<string, string | number> = {
+    left: `${x}%`,
+    top: `${y}%`,
+    opacity,
+    width: `${size}px`,
+    height: `${size}px`,
+  }
+
+  if (type === 'bar') {
+    base.width = `${Math.round(size * 1.8)}px`
+    base.height = `${Math.max(8, Math.round(size * 0.22))}px`
+  }
+
+  if (type === 'pill') {
+    base.width = `${Math.round(size * 1.8)}px`
+    base.height = `${Math.max(14, Math.round(size * 0.62))}px`
+  }
+
+  return base
 }
 
-const sectionDividerStyle = computed(() => activeTemplate.value?.decor?.divider === 'dashed' ? 'dashed' : 'solid')
+const sectionDividerStyle = computed(() => {
+  const showDivider = activeTemplate.value?.layoutOptions?.showDivider ?? true
+  if (!showDivider) return 'none'
+  return activeTemplate.value?.decor?.divider === 'dashed' ? 'dashed' : 'solid'
+})
+const sectionSpacing = computed(() => activeTemplate.value?.layoutOptions?.sectionSpacing === 'wide' ? '40px' : '24px')
 const activeColors = computed(() => {
   const palette = activeTemplate.value.theme.palette
   if (selectedPalette.value === 'sunset') return { ...palette, primary: '#C2410C', secondary: '#FDBA74', pageBackground: '#FFF7ED' }
@@ -72,88 +106,141 @@ const activeColors = computed(() => {
   if (selectedPalette.value === 'custom') return { ...palette, primary: customPrimary.value, secondary: customSecondary.value, pageBackground: customPageBackground.value }
   return palette
 })
+const signatureDataUrl = ref('')
+const signatureDialogOpen = ref(false)
+const signatureCanvas = ref<HTMLCanvasElement | null>(null)
+const layoutMenuOpen = ref(false)
 
-watch(activeTemplate, (tpl) => {
-  editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj: any) => normalizeDecorObject(obj))
-  barLayout.value = tpl?.hero?.barLayout === 'double' ? 'double' : 'single'
-  const intensityMap: Record<string, number> = { low: 6, medium: 10, high: 14 }
-  primaryBarWidth.value = intensityMap[tpl?.hero?.accentIntensity || tpl?.sections?.accentIntensity] || 10
-  secondaryBarWidth.value = Math.max(3, Math.round(primaryBarWidth.value * 0.5))
-  const items = (tpl as any)?.items || {}
-  for (const key of Object.keys(itemStyles)) {
-    const cfg = items[key]
-    if (!cfg) continue
-    if (cfg?.size) itemStyles[key].size = Math.round((Number(cfg.size.min) + Number(cfg.size.max)) / 2)
-    if (cfg?.colors?.[0]) itemStyles[key].color = cfg.colors[0]
-    if (cfg?.styles?.[0]) itemStyles[key].weight = fontWeightMap[cfg.styles[0]] || '400'
-  }
-}, { immediate: true })
-
-function applyPreviewTemplate(id: string) { selectedTemplate.value = id }
-onMounted(async () => {
-  const q = typeof route.query.template === 'string' ? route.query.template : ''
-  if (q && coverLetterTemplates.value.some((t) => t.id === q)) selectedTemplate.value = q
-  try {
-    const resumes = await listMyResumes()
-    const info = resumes?.[0]?.resumeInformation
-    if (info?.fullName) model.fullName = info.fullName
-    if (info?.title) model.role = info.title
-    if (info?.email) model.email = info.email
-    if (info?.phone) model.phone = info.phone
-    if (info?.profileText) model.paragraphOne = info.profileText
-  } catch { /* noop */ }
-})
+watch(activeTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; const items=(tpl as any)?.items||{}; for (const key of ['date','address']) { const b=items[key]?.size; if (b) letterElementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) letterElementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) letterElementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
+function addDecorObject(){ editableDecorObjects.value.push(normalizeDecorObject({ type:'circle', x:50, y:50, size:120, opacity:0.15 })) }
+function addDecorObjectFromPreset(preset:any){ editableDecorObjects.value.push(normalizeDecorObject({ ...preset })) }
+function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
+function goToCreateResume(){ navigateTo('/resume/preview') }
+function applyPreviewTemplate(id:string){ selectedTemplate.value = id; layoutMenuOpen.value = false }
+function saveFromPreview(){ localStorage.setItem('resume-cover-preview-letter', JSON.stringify({ template:selectedTemplate.value, model, decor:editableDecorObjects.value, signature:signatureDataUrl.value })) }
+async function downloadPdf(){ const node=document.querySelector('.capture-cover-letter') as HTMLElement|null; if(!node) return; const w=window.open('','_blank','width=900,height=1300'); if(!w) return; const headStyles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]')).map((el)=>el.outerHTML).join(''); w.document.write(`<html><head>${headStyles}<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center;align-items:flex-start}.capture-cover-letter{width:210mm;min-height:297mm;box-sizing:border-box;margin:0}</style></head><body>${node.outerHTML}</body></html>`); w.document.close(); await new Promise((r)=>setTimeout(r,900)); w.focus(); w.print(); w.close() }
+function openSignatureDialog(){ signatureDialogOpen.value=true; nextTick(initCanvas) }
+function initCanvas(){ const c=signatureCanvas.value; if(!c) return; const ctx=c.getContext('2d'); if(!ctx) return; c.width=c.clientWidth||680; c.height=200; ctx.lineWidth=2; ctx.lineCap='round'; let draw=false; const p=(e:PointerEvent)=>{const r=c.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}; c.onpointerdown=(e)=>{draw=true;const x=p(e);ctx.beginPath();ctx.moveTo(x.x,x.y)}; c.onpointermove=(e)=>{if(!draw)return;const x=p(e);ctx.lineTo(x.x,x.y);ctx.stroke()}; c.onpointerup=()=>{draw=false;signatureDataUrl.value=c.toDataURL('image/png')} }
+onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query.template:''; if(q&&coverLetterTemplates.value.some((t)=>t.id===q)) selectedTemplate.value=q; try { const resumes = await listMyResumes(); const info = resumes?.[0]?.resumeInformation; if (info?.fullName) { model.fullName = info.fullName; model.phone = info.fullName } if (info?.profileText) model.companyParagraph = info.profileText; } catch { /* noop */ } })
 </script>
-
 <template>
 <div>
   <AppPageDrawers>
     <template #left>
-      <v-card-text>
-        <v-menu><template #activator="{ props }"><v-btn v-bind="props" class="mt-3" variant="outlined" block>Palette</v-btn></template><v-list><v-list-item title="Template" @click="selectedPalette='template'"/><v-list-item title="Sunset" @click="selectedPalette='sunset'"/><v-list-item title="Forest" @click="selectedPalette='forest'"/><v-list-item title="Custom" @click="selectedPalette='custom'"/></v-list></v-menu>
-        <v-text-field v-if="selectedPalette==='custom'" v-model="customPrimary" label="Custom primary" hide-details class="mt-3"/>
-        <v-text-field v-if="selectedPalette==='custom'" v-model="customSecondary" label="Custom secondary" hide-details class="mt-3"/>
-        <v-text-field v-if="selectedPalette==='custom'" v-model="customPageBackground" label="Custom page background" hide-details class="mt-3"/>
-      </v-card-text>
+     <v-card-text>
+       <v-menu><template #activator="{ props }"><v-btn v-bind="props" class="mt-3" variant="outlined" block>Palette</v-btn></template><v-list><v-list-item title="Template" @click="selectedPalette='template'"/><v-list-item title="Sunset" @click="selectedPalette='sunset'"/><v-list-item title="Forest" @click="selectedPalette='forest'"/><v-list-item title="Custom" @click="selectedPalette='custom'"/></v-list></v-menu>
+       <v-text-field v-if="selectedPalette==='custom'" v-model="customPrimary" label="Custom primary" hide-details class="mt-3"/>
+       <v-text-field v-if="selectedPalette==='custom'" v-model="customSecondary" label="Custom secondary" hide-details class="mt-3"/>
+       <v-text-field v-if="selectedPalette==='custom'" v-model="customPageBackground" label="Custom page background" hide-details class="mt-3"/>
+       <v-slider v-model="barRadius" label="Bar radius" min="0" max="30" step="1" hide-details class="mt-3"/>
+       <AppSelect v-model="barLayout" :items="[{ title: 'Single bar', value: 'single' }, { title: 'Double bars', value: 'double' }]" label="Bar layout" hide-details class="mt-3"/>
+       <v-slider v-model="primaryBarWidth" label="Bar width" min="4" max="24" step="1" hide-details class="mt-3"/>
+       <v-slider v-if="barLayout==='double'" v-model="secondaryBarWidth" label="Sec bar width" min="2" max="20" step="1" hide-details class="mt-3"/>
+     </v-card-text>
+    </template>
+    <template #right>
+      <v-card class="mt-3 pa-3" variant="outlined">
+        <div class="text-caption mb-2">Template decor presets</div>
+        <div class="d-flex flex-wrap ga-2">
+          <v-btn
+            v-for="(preset, presetIndex) in templateDecorPresets"
+            :key="`preset-${presetIndex}`"
+            size="x-small"
+            variant="tonal"
+            @click="addDecorObjectFromPreset(preset)"
+          >
+            {{ preset.type }}
+          </v-btn>
+        </div>
+      </v-card>
+      <v-btn class="mt-3" size="small" variant="outlined" @click="addDecorObject">Add decor</v-btn>
+      <v-card v-for="(obj,i) in editableDecorObjects" :key="`obj-${i}`" class="mt-3 pa-2" variant="outlined">
+        <AppSelect v-model="obj.type" :items="decorShapeOptions.map((s)=>({title:s,value:s}))" label="Shape" hide-details class="mt-3"/>
+        <v-slider v-model="obj.size" label="Size" min="20" max="420" step="1" hide-details class="mt-3"/>
+        <v-slider v-model="obj.opacity" label="Opacity" min="0.02" max="0.4" step="0.01" hide-details class="mt-3"/>
+        <v-slider v-model="obj.x" label="X (%)" min="0" max="100" step="1" hide-details class="mt-3"/>
+        <v-slider v-model="obj.y" label="Y (%)" min="0" max="100" step="1" hide-details class="mt-3"/>
+        <v-btn size="x-small" color="error" variant="text" @click="removeDecorObject(i)">remove</v-btn>
+      </v-card>
     </template>
   </AppPageDrawers>
   <v-container fluid>
-    <div class="py-8 d-flex justify-center"><main class="capture-cover-letter" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
+    <div class="preview-toolbar-wrap"><div class="preview-toolbar-row">
+      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-content-save-cog-outline" @click="saveFromPreview">Save</v-btn>
+      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-robot-outline" @click="goToCreateResume">AI</v-btn>
+      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-signature-freehand" @click="openSignatureDialog">Signature</v-btn>
+      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-file-pdf-box" @click="downloadPdf">PDF</v-btn>
+      <v-menu v-model="layoutMenuOpen" location="bottom center" origin="top center">
+        <template #activator="{ props }"><v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-view-grid-outline" v-bind="props">Templates</v-btn></template>
+        <v-card class="template-menu-card">
+          <div class="template-menu-grid">
+            <v-card
+              v-for="template in coverLetterTemplates"
+              :key="`cover-letter-preview-${template.id}`"
+              class="template-menu-item"
+              :class="{ 'template-menu-item--active': selectedTemplate === template.id }"
+              variant="outlined"
+              @click="applyPreviewTemplate(template.id)"
+            >
+              <v-img :src="template.image" height="96" cover />
+              <v-card-text class="py-2 text-caption">{{ template.title }}</v-card-text>
+            </v-card>
+          </div>
+        </v-card>
+      </v-menu>
+    </div></div>
+    <div class="py-8 d-flex justify-center"><main class="capture-cover-letter" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
       <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"/>
-      <header class="hero" :class="{ 'hero--double': barLayout === 'double' }">
-        <HoverRichTextEditor v-model="model.fullName" :font-size="`${itemStyles.fullName.size}px`" :color="itemStyles.fullName.color" :font-weight="itemStyles.fullName.weight" />
-        <HoverRichTextEditor v-model="model.role" :font-size="`${itemStyles.role.size}px`" :color="itemStyles.role.color" :font-weight="itemStyles.role.weight" />
+      <header class="hero" :class="{'hero--double': barLayout === 'double', 'hero--photo-right': photoPosition === 'right'}">
+        <div class="meta-top-right">
+          <HoverRichTextEditor v-model="model.date" :font-size="`${letterElementStyles.date.size}px`" :color="letterElementStyles.date.color" :font-weight="letterElementStyles.date.weight" />
+          <HoverRichTextEditor v-model="model.location" :font-size="`${letterElementStyles.address.size}px`" :color="letterElementStyles.address.color" :font-weight="letterElementStyles.address.weight" />
+        </div>
       </header>
-      <div class="meta-top-right">
-        <HoverRichTextEditor v-model="model.date" :font-size="`${itemStyles.date.size}px`" :color="itemStyles.date.color" :font-weight="itemStyles.date.weight" />
-        <HoverRichTextEditor v-model="model.location" :font-size="`${itemStyles.location.size}px`" :color="itemStyles.location.color" :font-weight="itemStyles.location.weight" />
-      </div>
-      <section>
-        <HoverRichTextEditor v-model="model.heading" :font-size="`${itemStyles.heading.size}px`" :color="itemStyles.heading.color" :font-weight="itemStyles.heading.weight" />
-        <HoverRichTextEditor v-model="model.greeting" :font-size="`${itemStyles.greeting.size}px`" :color="itemStyles.greeting.color" :font-weight="itemStyles.greeting.weight" />
-        <HoverRichTextEditor v-model="model.paragraphOne" :font-size="`${itemStyles.paragraphOne.size}px`" :color="itemStyles.paragraphOne.color" :font-weight="itemStyles.paragraphOne.weight" />
-        <HoverRichTextEditor v-model="model.paragraphTwo" :font-size="`${itemStyles.paragraphTwo.size}px`" :color="itemStyles.paragraphTwo.color" :font-weight="itemStyles.paragraphTwo.weight" />
-        <HoverRichTextEditor v-model="model.signoff" :font-size="`${itemStyles.signoff.size}px`" :color="itemStyles.signoff.color" :font-weight="itemStyles.signoff.weight" />
-        <HoverRichTextEditor v-model="model.email" :font-size="`${itemStyles.email.size}px`" :color="itemStyles.email.color" :font-weight="itemStyles.email.weight" />
-        <HoverRichTextEditor v-model="model.phone" :font-size="`${itemStyles.phone.size}px`" :color="itemStyles.phone.color" :font-weight="itemStyles.phone.weight" />
+      <section class="letter-body">
+        <HoverRichTextEditor v-model="model.heading" />
+        <HoverRichTextEditor v-model="model.company" />
+        <HoverRichTextEditor v-model="model.companyParagraph" />
+        <HoverRichTextEditor v-model="model.summary" />
+        <div class="signature-rule" />
+        <HoverRichTextEditor v-model="model.email" />
+        <HoverRichTextEditor v-model="model.phone" />
       </section>
-      <div class="signature-rule"/>
+      <footer v-if="signatureDataUrl" class="signature-footer"><img :src="signatureDataUrl" alt="signature" class="signature-image"/></footer>
     </main></div>
-
-    <div class="d-flex flex-wrap ga-2 justify-center">
-      <v-btn v-for="template in coverLetterTemplates" :key="template.id" size="small" variant="outlined" @click="applyPreviewTemplate(template.id)">{{ template.title }}</v-btn>
-    </div>
+    <v-dialog v-model="signatureDialogOpen" max-width="760"><v-card><v-card-title>Signature</v-card-title><v-card-text><canvas ref="signatureCanvas" style="width:100%;height:200px;border:1px solid rgba(0,0,0,.15);border-radius:10px"/></v-card-text></v-card></v-dialog>
   </v-container>
 </div>
 </template>
+<style scoped>
+.capture-cover-letter{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:80px;background:var(--cp-bg);color:var(--cp-text)}.hero{border-left:var(--bar-primary-width) solid var(--cp-primary);padding-left:24px;margin-bottom:48px;border-radius:var(--bar-radius);position:relative}.meta-top-right{position:absolute;top:0;right:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px;text-align:right}.hero-row{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding-top:52px}.hero-avatar{align-self:flex-start}.hero-avatar--right{align-self:flex-end}.hero--photo-right{padding-top:8px}.hero--double::before{content:'';position:absolute;left:calc(var(--bar-primary-width) + 6px);top:0;bottom:0;width:var(--bar-secondary-width);background:var(--cp-secondary);border-radius:var(--bar-radius)}.avatar-upload{cursor:pointer;position:relative;overflow:visible;border-style:solid;border-color:v-bind(imageBorderColor);border-width:v-bind(imageBorderWidth + 'px')}.photo-shell{display:block;position:relative}.photo-quick-trigger{position:absolute;top:-10px;left:-10px;z-index:30;opacity:0;transition:opacity .15s ease;background:#fff;border:1px solid rgba(15,23,42,.2)}.photo-shell:hover .photo-quick-trigger,.photo-shell:focus-within .photo-quick-trigger,.photo-quick-trigger:focus-visible{opacity:1}.photo-quick-menu{border:1px solid rgba(148,163,184,.4)}h1{font-size:58px;margin:0}p{font-size:var(--body-size);color:var(--body-color)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:40px;margin:0 0 16px}section{border-top:3px var(--section-divider-style) var(--cp-secondary);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.decor-square{border-radius:10px}.decor-diamond{border-radius:8px;transform:translate(-50%,-50%) rotate(45deg)}.decor-star{-webkit-clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}.decor-triangle{-webkit-clip-path:polygon(50% 0%,0 100%,100% 100%);clip-path:polygon(50% 0%,0 100%,100% 100%)}.decor-pill{border-radius:999px}.decor-bar{border-radius:999px}.preview-toolbar-wrap{position:sticky;top:76px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background: rgba(var(--v-theme-primary))}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}</style>
 
 <style scoped>
-.capture-cover-letter{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:80px;background:var(--cp-bg);color:var(--cp-text)}
-.hero{border-left:var(--bar-primary-width) solid var(--cp-primary);padding-left:24px;margin-bottom:48px;border-radius:var(--bar-radius);position:relative}
-.hero--double::before{content:'';position:absolute;left:calc(var(--bar-primary-width) + 6px);top:0;bottom:0;width:var(--bar-secondary-width);background:var(--cp-secondary);border-radius:var(--bar-radius)}
-.meta-top-right{position:absolute;top:80px;right:80px;display:flex;flex-direction:column;align-items:flex-end;gap:6px;text-align:right}
-section{border-top:3px var(--section-divider-style) var(--cp-secondary);padding-top:24px;margin-top:24px}
-.signature-rule{margin-top:32px;border-top:2px var(--section-divider-style) var(--cp-secondary);width:180px}
-.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}
-.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.decor-square{border-radius:10px}.decor-diamond{border-radius:8px;transform:translate(-50%,-50%) rotate(45deg)}.decor-star{-webkit-clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}.decor-triangle{-webkit-clip-path:polygon(50% 0%,0 100%,100% 100%);clip-path:polygon(50% 0%,0 100%,100% 100%)}.decor-pill{border-radius:999px}.decor-bar{border-radius:999px}
+@media (prefers-color-scheme: dark) {
+  .capture-cover-page,
+  .capture-cover-letter { box-shadow: 0 10px 30px rgba(0,0,0,.45); }
+}
+</style>
+
+<style scoped>
+.template-menu-card {
+  margin-top: 8px;
+  padding: 12px;
+}
+
+.template-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.template-menu-item {
+  margin: 0;
+}
+
+@media (max-width: 1100px) {
+  .template-menu-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
 </style>
