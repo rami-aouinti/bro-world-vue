@@ -170,6 +170,10 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
     <div class="py-8 d-flex justify-center"><main class="capture-cover-page" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
       <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="{left:`${obj.x}%`,top:`${obj.y}%`,width:`${obj.size}px`,height:`${obj.size}px`,opacity:obj.opacity}"/>
       <header class="hero" :class="{'hero--double': barLayout === 'double', 'hero--photo-right': photoPosition === 'right'}">
+        <div class="meta-top-right">
+          <HoverRichTextEditor v-model="model.date" />
+          <HoverRichTextEditor v-model="model.location" />
+        </div>
         <div class="hero-row">
 
           <div class="mb-4 avatar-upload hero-avatar photo-shell" :style="{ width: `${imageSize}px`, height: `${imageSize}px`, borderRadius: imageShape === 'circle' ? '999px' : '12px' }" @click="openPhotoUpload">
@@ -224,6 +228,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
   border-radius:var(--bar-radius);
   position:relative
 }
+.meta-top-right{position:absolute;top:0;right:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px;text-align:right;color:var(--cp-muted)}
 .hero-row{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
 .hero-avatar{align-self:flex-start}.hero-avatar--right{align-self:flex-end}
 .hero--photo-right{padding-top:8px}
