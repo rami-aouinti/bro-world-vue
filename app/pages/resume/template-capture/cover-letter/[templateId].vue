@@ -6,24 +6,66 @@ definePageMeta({ layout: false })
 const route = useRoute()
 const templateId = computed(() => String(route.params.templateId || 'cletter-001'))
 
+function resolveGeneratedTemplateId(rawTemplateId: string): string {
+  const normalized = rawTemplateId.trim()
+  if (!normalized) return ''
+
+  const exactGenerated = GENERATED_COVER_LETTER_TEMPLATES.find((template) => template.id === normalized)
+  if (exactGenerated) return exactGenerated.id
+
+  const unprefixed = normalized.startsWith('cover-letter-')
+    ? normalized.slice('cover-letter-'.length)
+    : normalized
+  const prefixedGenerated = GENERATED_COVER_LETTER_TEMPLATES.find((template) => template.id === unprefixed)
+  if (prefixedGenerated) return prefixedGenerated.id
+
+  const startsWithGenerated = GENERATED_COVER_LETTER_TEMPLATES.find((template) => template.id.startsWith(normalized))
+  if (startsWithGenerated) return startsWithGenerated.id
+
+  return ''
+}
+
 const selectedTemplate = computed(() => {
-  return GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === templateId.value) || GENERATED_COVER_LETTER_TEMPLATES[0]
+  const resolvedTemplateId = resolveGeneratedTemplateId(templateId.value)
+  return GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === resolvedTemplateId) || GENERATED_COVER_LETTER_TEMPLATES[0]
 })
 
-const dividerStyleMap: Record<string, string> = { solid: 'solid', dashed: 'dashed', dotted: 'dotted' }
-const spacingMap: Record<string, number> = { compact: 20, normal: 30, relaxed: 42 }
+const spacingMap: Record<string, number> = { compact: 24, normal: 30, wide: 40, relaxed: 42 }
 const radiusMap: Record<string, number> = { none: 0, sm: 8, md: 16, lg: 24, xl: 32 }
-const barIntensityMap: Record<string, number> = { low: 6, medium: 10, high: 14 }
+const defaultBarDesignConfig = {
+  barRadius: { min: 0, max: 30 },
+  barLayout: ['single', 'double'],
+  barWidth: { min: 4, max: 24 },
+  secondaryBarWidth: { min: 2, max: 20 },
+}
+
+function toPercentNumber(value: unknown, fallback = 50): number {
+  if (typeof value === 'number' && Number.isFinite(value)) return Math.min(100, Math.max(0, value))
+  if (typeof value === 'string') {
+    const parsed = Number.parseFloat(value.replace('%', '').trim())
+    if (Number.isFinite(parsed)) return Math.min(100, Math.max(0, parsed))
+  }
+  return fallback
+}
+
+function toNumber(value: unknown, fallback: number): number {
+  const parsed = typeof value === 'number' ? value : Number.parseFloat(String(value ?? ''))
+  return Number.isFinite(parsed) ? parsed : fallback
+}
 
 const resolvedStyles = computed(() => {
   const tpl = selectedTemplate.value as any
+  const items = tpl?.items || {}
+  const firstItem = Object.values(items || {})[0] as { designConfig?: typeof defaultBarDesignConfig } | undefined
+  const designConfig = firstItem?.designConfig || defaultBarDesignConfig
   return {
-    sectionDividerStyle: dividerStyleMap[tpl?.decor?.divider] || 'solid',
+    sectionDividerStyle: tpl?.decor?.divider === 'dashed' ? 'dashed' : 'solid',
     paragraphSpacing: spacingMap[tpl?.layoutOptions?.paragraphSpacing] || 30,
     radius: radiusMap[tpl?.designTokens?.borderRadius] || 8,
-    barPrimaryWidth: barIntensityMap[tpl?.hero?.accentIntensity || tpl?.sections?.accentIntensity] || 10,
-    barSecondaryWidth: 5,
-    barLayout: tpl?.decor?.headerStyle === 'band' ? 'double' : 'single',
+    barPrimaryWidth: Number(designConfig?.barWidth?.min ?? defaultBarDesignConfig.barWidth.min),
+    barSecondaryWidth: Number(designConfig?.secondaryBarWidth?.min ?? defaultBarDesignConfig.secondaryBarWidth.min),
+    barLayout: Array.isArray(designConfig?.barLayout) && designConfig.barLayout.includes('double') ? 'double' : 'single',
+    barRadius: Number(designConfig?.barRadius?.min ?? defaultBarDesignConfig.barRadius.min),
     shadow: tpl?.designTokens?.shadowDepth === 'none' ? 'none' : '0 10px 30px rgba(15,23,42,.18)',
   }
 })
@@ -46,7 +88,15 @@ const itemStyles = computed(() => {
   }
 })
 
-const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.objects || []) as Array<Record<string, any>>)
+const decorObjects = computed(() =>
+  (((selectedTemplate.value as any)?.decor?.objects || []) as Array<Record<string, any>>).map((object) => ({
+    ...object,
+    x: `${toPercentNumber(object?.x, 50)}%`,
+    y: `${toPercentNumber(object?.y, 50)}%`,
+    size: toNumber(object?.size, 120),
+    opacity: toNumber(object?.opacity, 0.08),
+  })),
+)
 </script>
 
 <template>
@@ -64,6 +114,7 @@ const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.obj
       '--cl-bar-primary-width': `${resolvedStyles.barPrimaryWidth}px`,
       '--cl-bar-secondary-width': `${resolvedStyles.barSecondaryWidth}px`,
       '--cl-shadow': resolvedStyles.shadow,
+      '--cl-bar-radius': `${resolvedStyles.barRadius}px`,
     }"
   >
     <div
@@ -104,8 +155,8 @@ const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.obj
 .meta-top-right { position: absolute; top: 64px; right: 72px; text-align: right; display: flex; flex-direction: column; gap: 2px; align-items: flex-end; }
 .date { color: var(--cl-muted); margin: 0; }
 .address { margin: 0; }
-.hero { border-left: var(--cl-bar-primary-width) solid var(--cl-primary); padding-left: 24px; padding-top: 6px; margin-bottom: 42px; min-height: 140px; position: relative; border-radius: var(--cl-radius); }
-.hero--double::before{content:'';position:absolute;left:calc(var(--cl-bar-primary-width) + 6px);top:0;bottom:0;width:var(--cl-bar-secondary-width);background:var(--cl-secondary);border-radius:var(--cl-radius)}
+.hero { border-left: var(--cl-bar-primary-width) solid var(--cl-primary); padding-left: 24px; padding-top: 6px; margin-bottom: 42px; min-height: 140px; position: relative; border-radius: var(--cl-bar-radius); }
+.hero--double::before{content:'';position:absolute;left:calc(var(--cl-bar-primary-width) + 6px);top:0;bottom:0;width:var(--cl-bar-secondary-width);background:var(--cl-secondary);border-radius:var(--cl-bar-radius)}
 .hero-row { display: flex; flex-direction: column; gap: 6px; }
 h1 { color: var(--cl-text); margin: 0; font-size: 44px; line-height: 1.05; }
 .role { color: var(--cl-muted); margin: 0; font-size: 24px; }
