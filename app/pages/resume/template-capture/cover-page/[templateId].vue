@@ -23,6 +23,7 @@ const selectedTemplate = computed(() => {
     }"
   >
     <header class="hero">
+      <img src="/img/team-1.jpg" alt="profile" class="capture-photo">
       <h1>Alex Martin</h1>
       <p>Senior Full Stack Developer</p>
     </header>
@@ -40,4 +41,8 @@ h1 { font-size: 58px; margin: 0; }
 p { font-size: 24px; color: var(--cp-muted); }
 h2 { color: var(--cp-primary); font-size: 40px; margin: 0 0 16px; }
 section { border-top: 3px solid var(--cp-secondary); padding-top: 24px; }
+</style>
+
+<style scoped>
+.capture-photo{width:92px;height:92px;border-radius:999px;object-fit:cover;margin-bottom:16px}
 </style>
