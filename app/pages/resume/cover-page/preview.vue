@@ -284,3 +284,26 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
   .capture-cover-letter { box-shadow: 0 10px 30px rgba(0,0,0,.45); }
 }
 </style>
+
+<style scoped>
+.template-menu-card {
+  margin-top: 8px;
+  padding: 12px;
+}
+
+.template-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.template-menu-item {
+  margin: 0;
+}
+
+@media (max-width: 1100px) {
+  .template-menu-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+</style>
