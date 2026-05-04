@@ -50,10 +50,24 @@
           "opacity": 0.08
         },
         {
-          "type": "ring",
+          "type": "diamond",
           "x": "70%",
           "y": "75%",
           "size": "120",
+          "opacity": 0.08
+        },
+        {
+          "type": "star",
+          "x": "14%",
+          "y": "84%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "82%",
+          "y": "10%",
+          "size": "24",
           "opacity": 0.08
         }
       ]
@@ -211,11 +225,25 @@
           "opacity": 0.11
         },
         {
-          "type": "blob",
+          "type": "square",
           "x": "65%",
           "y": "72%",
           "size": "138",
           "opacity": 0.11
+        },
+        {
+          "type": "star",
+          "x": "86%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "18%",
+          "y": "90%",
+          "size": "24",
+          "opacity": 0.08
         }
       ]
     },
@@ -372,11 +400,25 @@
           "opacity": 0.14
         },
         {
-          "type": "ring",
+          "type": "diamond",
           "x": "60%",
           "y": "69%",
           "size": "156",
           "opacity": 0.14
+        },
+        {
+          "type": "star",
+          "x": "14%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "82%",
+          "y": "10%",
+          "size": "24",
+          "opacity": 0.08
         }
       ]
     },
@@ -533,11 +575,25 @@
           "opacity": 0.17
         },
         {
-          "type": "blob",
+          "type": "square",
           "x": "55%",
           "y": "66%",
           "size": "174",
           "opacity": 0.16
+        },
+        {
+          "type": "star",
+          "x": "86%",
+          "y": "84%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "18%",
+          "y": "90%",
+          "size": "24",
+          "opacity": 0.08
         }
       ]
     },
@@ -694,11 +750,25 @@
           "opacity": 0.08
         },
         {
-          "type": "ring",
+          "type": "diamond",
           "x": "50%",
           "y": "63%",
           "size": "192",
           "opacity": 0.06
+        },
+        {
+          "type": "star",
+          "x": "14%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "82%",
+          "y": "10%",
+          "size": "24",
+          "opacity": 0.08
         }
       ]
     },
@@ -855,10 +925,24 @@
           "opacity": 0.11
         },
         {
-          "type": "blob",
+          "type": "square",
           "x": "45%",
           "y": "60%",
           "size": "210",
+          "opacity": 0.08
+        },
+        {
+          "type": "star",
+          "x": "86%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "18%",
+          "y": "90%",
+          "size": "24",
           "opacity": 0.08
         }
       ]
@@ -1016,11 +1100,25 @@
           "opacity": 0.14
         },
         {
-          "type": "ring",
+          "type": "diamond",
           "x": "40%",
           "y": "57%",
           "size": "120",
           "opacity": 0.11
+        },
+        {
+          "type": "star",
+          "x": "14%",
+          "y": "84%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "82%",
+          "y": "10%",
+          "size": "24",
+          "opacity": 0.08
         }
       ]
     },
@@ -1177,11 +1275,25 @@
           "opacity": 0.17
         },
         {
-          "type": "blob",
+          "type": "square",
           "x": "35%",
           "y": "54%",
           "size": "138",
           "opacity": 0.14
+        },
+        {
+          "type": "star",
+          "x": "86%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "18%",
+          "y": "90%",
+          "size": "24",
+          "opacity": 0.08
         }
       ]
     },
@@ -1338,11 +1450,25 @@
           "opacity": 0.08
         },
         {
-          "type": "ring",
+          "type": "diamond",
           "x": "30%",
           "y": "51%",
           "size": "156",
           "opacity": 0.16
+        },
+        {
+          "type": "star",
+          "x": "14%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "82%",
+          "y": "10%",
+          "size": "24",
+          "opacity": 0.08
         }
       ]
     },
@@ -1499,11 +1625,25 @@
           "opacity": 0.11
         },
         {
-          "type": "blob",
+          "type": "square",
           "x": "25%",
           "y": "48%",
           "size": "174",
           "opacity": 0.06
+        },
+        {
+          "type": "star",
+          "x": "86%",
+          "y": "84%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "18%",
+          "y": "90%",
+          "size": "24",
+          "opacity": 0.08
         }
       ]
     },
@@ -1660,10 +1800,24 @@
           "opacity": 0.14
         },
         {
-          "type": "ring",
+          "type": "diamond",
           "x": "20%",
           "y": "45%",
           "size": "192",
+          "opacity": 0.08
+        },
+        {
+          "type": "star",
+          "x": "14%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "82%",
+          "y": "10%",
+          "size": "24",
           "opacity": 0.08
         }
       ]
@@ -1821,11 +1975,25 @@
           "opacity": 0.17
         },
         {
-          "type": "blob",
+          "type": "square",
           "x": "15%",
           "y": "42%",
           "size": "210",
           "opacity": 0.11
+        },
+        {
+          "type": "star",
+          "x": "86%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "18%",
+          "y": "90%",
+          "size": "24",
+          "opacity": 0.08
         }
       ]
     },
@@ -1982,11 +2150,25 @@
           "opacity": 0.08
         },
         {
-          "type": "ring",
+          "type": "diamond",
           "x": "70%",
           "y": "39%",
           "size": "120",
           "opacity": 0.14
+        },
+        {
+          "type": "star",
+          "x": "14%",
+          "y": "84%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "82%",
+          "y": "10%",
+          "size": "24",
+          "opacity": 0.08
         }
       ]
     },
@@ -2143,11 +2325,25 @@
           "opacity": 0.11
         },
         {
-          "type": "blob",
+          "type": "square",
           "x": "65%",
           "y": "36%",
           "size": "138",
           "opacity": 0.16
+        },
+        {
+          "type": "star",
+          "x": "86%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "18%",
+          "y": "90%",
+          "size": "24",
+          "opacity": 0.08
         }
       ]
     },
@@ -2304,11 +2500,25 @@
           "opacity": 0.14
         },
         {
-          "type": "ring",
+          "type": "diamond",
           "x": "60%",
           "y": "33%",
           "size": "156",
           "opacity": 0.06
+        },
+        {
+          "type": "star",
+          "x": "14%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "82%",
+          "y": "10%",
+          "size": "24",
+          "opacity": 0.08
         }
       ]
     },
@@ -2465,10 +2675,24 @@
           "opacity": 0.17
         },
         {
-          "type": "blob",
+          "type": "square",
           "x": "55%",
           "y": "30%",
           "size": "174",
+          "opacity": 0.08
+        },
+        {
+          "type": "star",
+          "x": "86%",
+          "y": "84%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "18%",
+          "y": "90%",
+          "size": "24",
           "opacity": 0.08
         }
       ]
@@ -2626,11 +2850,25 @@
           "opacity": 0.08
         },
         {
-          "type": "ring",
+          "type": "diamond",
           "x": "50%",
           "y": "27%",
           "size": "192",
           "opacity": 0.11
+        },
+        {
+          "type": "star",
+          "x": "14%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "82%",
+          "y": "10%",
+          "size": "24",
+          "opacity": 0.08
         }
       ]
     },
@@ -2787,11 +3025,25 @@
           "opacity": 0.11
         },
         {
-          "type": "blob",
+          "type": "square",
           "x": "45%",
           "y": "24%",
           "size": "210",
           "opacity": 0.14
+        },
+        {
+          "type": "star",
+          "x": "86%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "18%",
+          "y": "90%",
+          "size": "24",
+          "opacity": 0.08
         }
       ]
     },
@@ -2948,11 +3200,25 @@
           "opacity": 0.14
         },
         {
-          "type": "ring",
+          "type": "diamond",
           "x": "40%",
           "y": "21%",
           "size": "120",
           "opacity": 0.16
+        },
+        {
+          "type": "star",
+          "x": "14%",
+          "y": "84%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "82%",
+          "y": "10%",
+          "size": "24",
+          "opacity": 0.08
         }
       ]
     },
@@ -3109,11 +3375,25 @@
           "opacity": 0.17
         },
         {
-          "type": "blob",
+          "type": "square",
           "x": "35%",
           "y": "73%",
           "size": "138",
           "opacity": 0.06
+        },
+        {
+          "type": "star",
+          "x": "86%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "18%",
+          "y": "90%",
+          "size": "24",
+          "opacity": 0.08
         }
       ]
     },
