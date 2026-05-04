@@ -40,8 +40,7 @@
     "vite": "^7.3.1",
     "vitest": "^4.1.2",
     "vue-tsc": "^3.2.6",
-    "vuetify-nuxt-module": "^0.19.5",
-    "playwright": "^1.58.2"
+    "vuetify-nuxt-module": "^0.19.5"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.20",
@@ -54,6 +53,8 @@
     "@nuxtjs/sitemap": "^8.0.12",
     "@pinia/nuxt": "^0.11.3",
     "@prisma/client": "^6.19.3",
+    "@tiptap/extension-color": "^3.22.5",
+    "@tiptap/extension-text-style": "^3.22.5",
     "@tiptap/starter-kit": "^3.22.5",
     "@tiptap/vue-3": "^3.22.5",
     "@vueuse/nuxt": "^14.2.1",
