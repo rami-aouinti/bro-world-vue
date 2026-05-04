@@ -149,4 +149,15 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
 :global(body.print-cover-mode) .preview-toolbar-wrap,:global(body.print-cover-mode) .v-navigation-drawer,:global(body.print-cover-mode) .v-app-bar,:global(body.print-cover-mode) .app-page-drawers{display:none !important}
 @media print{.preview-toolbar-wrap,.app-page-drawers,.avatar-overlay{display:none !important}}h1{font-size:58px;margin:0}p{font-size:var(--body-size);color:var(--body-color)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:40px;margin:0 0 16px}section{border-top:3px var(--section-divider-style) var(--cp-secondary);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.preview-toolbar-wrap{position:sticky;top:74px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background:rgba(255,255,255,.92)}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}</style>
 
-<style scoped>@media (prefers-color-scheme: dark){.preview-toolbar-row{background:rgba(15,23,42,.82);border-color:rgba(148,163,184,.45)} .preview-toolbar-btn{color:#e2e8f0} .capture-cover-page,.capture-cover-letter{box-shadow:0 10px 30px rgba(0,0,0,.45)}}</style>
+<style scoped>
+@media (prefers-color-scheme: dark) {
+  .preview-toolbar-row { background: rgba(15,23,42,.82); border-color: rgba(148,163,184,.45); }
+  .preview-toolbar-btn { color: #e2e8f0; }
+  .capture-cover-page,
+  .capture-cover-letter { box-shadow: 0 10px 30px rgba(0,0,0,.45); }
+}
+:global(.v-theme--dark) .preview-toolbar-row { background: rgba(15,23,42,.82); border-color: rgba(148,163,184,.45); }
+:global(.v-theme--dark) .preview-toolbar-btn { color: #e2e8f0; }
+:global(.v-theme--dark) .capture-cover-page,
+:global(.v-theme--dark) .capture-cover-letter { box-shadow: 0 10px 30px rgba(0,0,0,.45); }
+</style>
