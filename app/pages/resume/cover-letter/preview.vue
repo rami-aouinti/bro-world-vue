@@ -18,6 +18,8 @@ const model = reactive({
 })
 
 const activeTemplate = computed(() => GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_LETTER_TEMPLATES[0])
+const decorObjects = computed(() => activeTemplate.value?.decor?.objects || [])
+const styleVariantClass = computed(() => `variant-${activeTemplate.value?.name?.split('-')[3] || '01'}`)
 
 onMounted(() => {
   const q = typeof route.query.template === 'string' ? route.query.template : ''
@@ -43,7 +45,7 @@ onMounted(() => {
 
     <v-container fluid class="py-8 d-flex justify-center">
       <main
-        class="capture-cover-letter"
+        class="capture-cover-letter" :class="styleVariantClass"
         :style="{
           '--cl-primary': activeTemplate.theme.palette.primary,
           '--cl-secondary': activeTemplate.theme.palette.secondary,
@@ -52,6 +54,14 @@ onMounted(() => {
           '--cl-bg': activeTemplate.theme.palette.pageBackground,
         }"
       >
+
+        <div
+          v-for="(obj, index) in decorObjects"
+          :key="`decor-${index}`"
+          class="decor-object"
+          :class="`decor-${obj.type}`"
+          :style="{ left: obj.x, top: obj.y, width: `${obj.size}px`, height: `${obj.size}px`, opacity: obj.opacity }"
+        />
         <p class="date">{{ model.date }}</p>
         <h1>{{ model.title }}</h1>
         <p class="intro">{{ model.intro }}</p>
@@ -70,4 +80,16 @@ h1 { color: var(--cl-primary); margin: 24px 0; }
 p { font-size: 24px; line-height: 1.5; margin: 20px 0; }
 .intro { font-weight: 700; }
 .signature { margin-top: 60px; border-top: 2px solid var(--cl-secondary); padding-top: 24px; width: fit-content; }
+</style>
+
+<style scoped>
+.decor-object { position: absolute; pointer-events: none; background: color-mix(in srgb, var(--cp-primary, var(--cl-primary)) 35%, transparent); filter: blur(0.2px); }
+.decor-circle { border-radius: 999px; }
+.decor-ring { border-radius: 999px; background: transparent; border: 3px solid color-mix(in srgb, var(--cp-secondary, var(--cl-secondary)) 55%, transparent); }
+.decor-blob { border-radius: 40% 60% 55% 45% / 50% 35% 65% 50%; }
+.variant-01 .hero, .variant-01 h1 { letter-spacing: 0.5px; }
+.variant-02 section, .variant-02 .signature { border-style: dashed; }
+.variant-03 h1 { text-transform: uppercase; }
+.variant-04 p { font-style: italic; }
+.variant-05 .hero, .variant-05 .date { text-align: center; border-left: 0; border-top: 10px solid var(--cp-primary); padding-top: 18px; }
 </style>
