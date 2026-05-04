@@ -57,6 +57,42 @@
           "opacity": 0.08
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#BE123C"
+        ]
+      }
     }
   },
   {
@@ -117,6 +153,42 @@
           "opacity": 0.11
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#065F46"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#065F46"
+        ]
+      }
     }
   },
   {
@@ -177,6 +249,42 @@
           "opacity": 0.14
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#9A3412"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#9A3412"
+        ]
+      }
     }
   },
   {
@@ -237,6 +345,42 @@
           "opacity": 0.16
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#0F4C81"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#0F4C81"
+        ]
+      }
     }
   },
   {
@@ -297,6 +441,42 @@
           "opacity": 0.06
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#7C3AED"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#7C3AED"
+        ]
+      }
     }
   },
   {
@@ -357,6 +537,42 @@
           "opacity": 0.08
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#BE123C"
+        ]
+      }
     }
   },
   {
@@ -417,6 +633,42 @@
           "opacity": 0.11
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#065F46"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#065F46"
+        ]
+      }
     }
   },
   {
@@ -477,6 +729,42 @@
           "opacity": 0.14
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#9A3412"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#9A3412"
+        ]
+      }
     }
   },
   {
@@ -537,6 +825,42 @@
           "opacity": 0.16
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#0F4C81"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#0F4C81"
+        ]
+      }
     }
   },
   {
@@ -597,6 +921,42 @@
           "opacity": 0.06
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#7C3AED"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#7C3AED"
+        ]
+      }
     }
   },
   {
@@ -657,6 +1017,42 @@
           "opacity": 0.08
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#BE123C"
+        ]
+      }
     }
   },
   {
@@ -717,6 +1113,42 @@
           "opacity": 0.11
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#065F46"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#065F46"
+        ]
+      }
     }
   },
   {
@@ -777,6 +1209,42 @@
           "opacity": 0.14
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#9A3412"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#9A3412"
+        ]
+      }
     }
   },
   {
@@ -837,6 +1305,42 @@
           "opacity": 0.16
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#0F4C81"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#0F4C81"
+        ]
+      }
     }
   },
   {
@@ -897,6 +1401,42 @@
           "opacity": 0.06
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#7C3AED"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#7C3AED"
+        ]
+      }
     }
   },
   {
@@ -957,6 +1497,42 @@
           "opacity": 0.08
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#BE123C"
+        ]
+      }
     }
   },
   {
@@ -1017,6 +1593,42 @@
           "opacity": 0.11
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#065F46"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#065F46"
+        ]
+      }
     }
   },
   {
@@ -1077,6 +1689,42 @@
           "opacity": 0.14
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#9A3412"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#9A3412"
+        ]
+      }
     }
   },
   {
@@ -1137,6 +1785,42 @@
           "opacity": 0.16
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#0F4C81"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#0F4C81"
+        ]
+      }
     }
   },
   {
@@ -1197,6 +1881,42 @@
           "opacity": 0.06
         }
       ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#7C3AED"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#7C3AED"
+        ]
+      }
     }
   }
 ]
