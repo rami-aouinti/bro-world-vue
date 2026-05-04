@@ -93,6 +93,7 @@ const displayedTemplates = computed(() => {
 })
 
 const selectedTemplateId = ref<string>('')
+const isTemplateModalOpen = ref(false)
 
 watch(
   displayedTemplates,
@@ -135,6 +136,17 @@ const openTemplateInWriteMode = (template: {
       mode: 'write',
     },
   })
+}
+
+const openTemplateModal = (template: {
+  id: string
+  title: string
+  image: string
+  type: 'resume' | 'cover-page' | 'cover-letter'
+  templateId?: string
+}) => {
+  selectedTemplateId.value = template.id
+  isTemplateModalOpen.value = true
 }
 
 const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => true)
@@ -219,33 +231,47 @@ onUnmounted(() => {
               >
                 Preview
               </v-btn>
-            </v-card>
-          </div>
-
-          <v-card
-            v-if="selectedTemplateCard"
-            class="template-preview-card mt-5"
-            variant="outlined"
-          >
-            <v-card-title>{{ selectedTemplateCard.title }}</v-card-title>
-            <v-card-text>
-              <v-img
-                :src="selectedTemplateCard.image"
-                :alt="selectedTemplateCard.title"
-                class="template-preview-image"
-              />
               <v-btn
                 color="primary"
-                class="mt-4"
-                @click="openTemplateInWriteMode(selectedTemplateCard)"
+                variant="text"
+                size="small"
+                class="mt-2 ml-2"
+                @click.stop="openTemplateModal(templateCard)"
               >
-                Utiliser cette template
+                Show
               </v-btn>
-            </v-card-text>
-          </v-card>
+            </v-card>
+          </div>
         </div>
       </section>
     </v-container>
+
+    <v-dialog
+      v-model="isTemplateModalOpen"
+      max-width="960"
+    >
+      <v-card
+        v-if="selectedTemplateCard"
+        class="template-preview-card"
+        variant="outlined"
+      >
+        <v-card-title>{{ selectedTemplateCard.title }}</v-card-title>
+        <v-card-text>
+          <v-img
+            :src="selectedTemplateCard.image"
+            :alt="selectedTemplateCard.title"
+            class="template-preview-image"
+          />
+          <v-btn
+            color="primary"
+            class="mt-4"
+            @click="openTemplateInWriteMode(selectedTemplateCard)"
+          >
+            Utiliser cette template
+          </v-btn>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
